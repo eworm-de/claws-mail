@@ -900,8 +900,6 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		procmsg_msginfo_free(msginfo);
 	}
 
-	folder_update_item(queue, FALSE);
-
 	return ret;
 }
 
@@ -969,7 +967,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 	    procmsg_msginfo_free(msginfo);
 	}
-	folder_update_item(outbox, TRUE);
+	folder_item_update(outbox, TRUE);
 
 	return 0;
 }
@@ -1454,20 +1452,17 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	if ((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new++;
-		item->need_update = TRUE;
 	}
 
 	/* if unread flag is set */
 	if ((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread++;
-		item->need_update = TRUE;
 	}
 
 	if (!MSG_IS_UNREAD(msginfo->flags) &&(perm_flags & MSG_UNREAD)
 	&& procmsg_msg_has_marked_parent(msginfo)) {
 		item->unreadmarked++;
-		item->need_update = TRUE;
 	}
 	
 	if (!MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)) {
@@ -1479,16 +1474,13 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	if ((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		if (MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
 			item->new--;
-			item->need_update = TRUE;
 		}
 		if (MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
 			item->unread--;
-			item->need_update = TRUE;
 		}
 		if ((perm_flags & MSG_UNREAD) || (MSG_IS_UNREAD(msginfo->flags)
 		&& procmsg_msg_has_marked_parent(msginfo))) {
 			item->unreadmarked--;
-			item->need_update = TRUE;
 		}
 		if ((perm_flags & MSG_MARKED) || (MSG_IS_MARKED(msginfo->flags)
 		&& !MSG_IS_IGNORE_THREAD(msginfo->flags))) {
@@ -1505,6 +1497,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 	msginfo_update.msginfo = msginfo;
 	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
@@ -1525,21 +1518,18 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	if ((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new--;
-		item->need_update = TRUE;
 	}
 
 	/* if unread flag is unset */
 	if ((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread--;
-		item->need_update = TRUE;
 	}
 	
 	if (MSG_IS_UNREAD(msginfo->flags) && (perm_flags & MSG_UNREAD)
 	&& !MSG_IS_IGNORE_THREAD(msginfo->flags)
 	&& procmsg_msg_has_marked_parent(msginfo)) {
 		item->unreadmarked--;
-		item->need_update = TRUE;
 	}
 
 	if (MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)
@@ -1551,16 +1541,13 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	if ((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		if (MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
 			item->new++;
-			item->need_update = TRUE;
 		}
 		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
 			item->unread++;
-			item->need_update = TRUE;
 		}
 		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)
 		&& procmsg_msg_has_marked_parent(msginfo)) {
 			item->unreadmarked++;
-			item->need_update = TRUE;
 		}
 		if (MSG_IS_MARKED(msginfo->flags) && !(perm_flags & MSG_MARKED)) {
 			procmsg_update_unread_children(msginfo, TRUE);
@@ -1576,6 +1563,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 
 	msginfo_update.msginfo = msginfo;
 	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
@@ -1704,7 +1692,7 @@ GSList *procmsg_find_children (MsgInfo *info)
 	return children;
 }
 
-static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked)
+static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 {
 	GSList *children = procmsg_find_children(info);
 	GSList *cur;
@@ -1715,7 +1703,7 @@ static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked
 				info->folder->unreadmarked++;
 			else
 				info->folder->unreadmarked--;
-			info->folder->need_update = TRUE;
+			folder_item_update(info->folder, F_ITEM_UPDATE_MSGCNT);
 		}
 		procmsg_msginfo_free(tmp);
 	}

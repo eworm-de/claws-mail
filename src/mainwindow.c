@@ -1362,13 +1362,6 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 
 	procmsg_empty_trash();
 
-	for (list = folder_get_list(); list != NULL; list = list->next) {
-		folder = list->data;
-		if (folder && folder->trash) {
-			folder_update_item(folder->trash, TRUE);
-		}
-	}
-
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
 		gtk_widget_grab_focus(mainwin->folderview->ctree);

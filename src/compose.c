@@ -2816,7 +2816,6 @@ gint compose_send(Compose *compose)
 	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
-	folder_update_item(folder, TRUE);
 
 	return val;
 }
@@ -2917,9 +2916,6 @@ gint compose_send(Compose *compose)
 	} else {
 		if (compose->mode == COMPOSE_REEDIT) {
 			compose_remove_reedit_target(compose);
-			if (compose->targetinfo)
-				folder_update_item
-					(compose->targetinfo->folder, TRUE);
 		}
 		/* save message to outbox */
 		if (prefs_common.savemsg) {
@@ -2930,8 +2926,6 @@ gint compose_send(Compose *compose)
 			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
 				alertpanel_error
 					(_("Can't save the message to Sent."));
-			else
-				folder_update_item(outbox, TRUE);
 		}
 	}
 
@@ -3473,7 +3467,6 @@ void compose_remove_draft(Compose *compose)
 
 	if (procmsg_msg_exist(msginfo)) {
 		folder_item_remove_msg(drafts, msginfo->msgnum);
-		folder_update_item(drafts, TRUE);
 	}
 
 }
@@ -3683,13 +3676,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
-		if (compose->targetinfo &&
-		    compose->targetinfo->folder != queue)
-			folder_update_item
-				(compose->targetinfo->folder, TRUE);
 	}
-
-	folder_update_item(queue, TRUE);
 
 	if ((msgnum != NULL) && (item != NULL)) {
 		*msgnum = num;
@@ -6065,17 +6052,12 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
-		if (compose->targetinfo &&
-		    compose->targetinfo->folder != draft)
-			folder_update_item(compose->targetinfo->folder,
-					       TRUE);
 	}
 
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
-		folder_update_item(draft, TRUE);
 		procmsg_msginfo_free(newmsginfo);
 	}
 	

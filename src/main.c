@@ -786,13 +786,9 @@ static void send_queue(void)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
-				folder_update_item(folder->outbox, TRUE);
 				if (folder->outbox == def_outbox)
 					def_outbox = NULL;
 			}
 		}
 	}
-
-	if (prefs_common.savemsg && def_outbox)
-		folder_update_item(def_outbox, TRUE);
 }

@@ -1,4 +1,26 @@
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws62
+2003-01-07 [christoph]	0.8.8claws63
+
+	* src/compose.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/import.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_folder_item.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/toolbar.c
+		o remove all folder update triggering from the UI code. The folder
+		  system should know much better when a folder needs an update.
+		o to prevent multiple updates in a row the folder updates can be
+		  frozen for some time.
+
+		Note: - Please verify that no updates are missing
+		      - Check where freeze/thaws should be added
+
+2003-01-07 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws62
 
 	* src/prefs_actions.c
 		don't translate empty strings

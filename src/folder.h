@@ -109,6 +109,12 @@ typedef enum
 	F_MOVE_FAILED
 } FolderMoveStatus;
 
+typedef enum
+{
+	F_ITEM_UPDATE_MSGCNT = 1 << 0,
+	F_ITEM_UPDATE_CONTENT = 1 << 1,
+} FolderItemUpdateFlags;
+
 typedef void (*FolderUIFunc)		(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
@@ -260,8 +266,8 @@ struct _FolderItem
 	guint ret_rcpt       : 1; /* return receipt       */
 
 	gint op_count;
-	guint opened    : 1; /* opened by summary view */
-	guint need_update    : 1; /* folderview for this folder should be updated */
+	guint opened         : 1; /* opened by summary view */
+	FolderItemUpdateFlags update_flags; /* folderview for this folder should be updated */
 
 	FolderSortKey sort_key;
 	FolderSortType sort_type;
@@ -292,8 +298,8 @@ typedef struct {
 
 struct _FolderItemUpdateData
 {
-	FolderItem	*item;
-	gboolean	 content_change;
+	FolderItem		*item;
+	FolderItemUpdateFlags	 update_flags;
 };
 
 Folder     *folder_new			(FolderType	 type,
@@ -409,10 +415,11 @@ void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
 void folder_item_apply_processing	(FolderItem *item);
 
-void folder_update_item			(FolderItem *item,
-					 gboolean contentchange);
-void folder_update_items_when_required	(gboolean contentchange);
-void folder_update_item_recursive	(FolderItem *item,
-					 gboolean update_summary);
+void folder_item_update			(FolderItem *item,
+					 FolderItemUpdateFlags update_flags);
+void folder_item_update_recursive	(FolderItem *item,
+					 FolderItemUpdateFlags update_flags);
+void folder_item_update_freeze		();
+void folder_item_update_thaw		();
 
 #endif /* __FOLDER_H__ */
