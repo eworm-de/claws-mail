@@ -750,7 +750,6 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			procmsg_msginfo_free(msginfo);		/* refcnt-- */
 		}	
 	}
-	folder_item_update(outbox, TRUE);
 
 	return 0;
 }

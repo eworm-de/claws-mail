@@ -1,3 +1,13 @@
+2003-12-16 [christoph]	0.9.7claws47
+
+	* src/folder.c
+		fix folder update before adding MsgInfo to cache
+		in add_msginfo_to_cache()
+
+	* src/procmsg.c
+		remove old call to folder_item_update() that is no
+		longer required
+
 2003-12-16 [christoph]	0.9.7claws46
 
 	* src/main.c

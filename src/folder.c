@@ -1839,8 +1839,6 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	procmsg_msginfo_set_flags(dest,
 				  ~dest->flags.perm_flags & perm_flags,
 				  ~dest->flags.tmp_flags  & tmp_flags);
-
-	folder_item_update(dest->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 }
 
 static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo *flagsource)
@@ -1854,9 +1852,11 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 		item->unreadmarked_msgs++;
 	item->total_msgs++;
 
-	copy_msginfo_flags(flagsource, newmsginfo);
-
+	folder_item_update_freeze();
 	msgcache_add_msg(item->cache, newmsginfo);
+	copy_msginfo_flags(flagsource, newmsginfo);
+	folder_item_update(item, F_ITEM_UPDATE_CONTENT);
+	folder_item_update_thaw();
 }
 
 static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
