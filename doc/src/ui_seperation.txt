@@ -50,3 +50,5 @@ about.[ch]		gtk/about.[ch]		ok
 colorlabel.[ch]		gtk/colorlabel.[ch]	ok
 
 filesel.[ch]		gtk/filesel.[ch]	ok
+
+gtkaspell.[ch]		gtk/gtkaspell.[ch]	ok

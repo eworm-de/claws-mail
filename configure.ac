@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws20
+EXTRA_VERSION=claws21
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -128,7 +128,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
-		 wchar.h wctype.h fnmatch.h)
+		 wchar.h wctype.h)
 
 dnl alf - Check for apache installation f*ck up. apache may also install an 
 dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined

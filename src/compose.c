@@ -5076,7 +5076,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	if (mode != COMPOSE_REDIRECT) {
         	if (prefs_common.enable_aspell && prefs_common.dictionary &&
 	    	    strcmp(prefs_common.dictionary, _("None"))) {
-			gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
+			gtkaspell = gtkaspell_new(prefs_common.aspell_path,
+						  prefs_common.dictionary,
 						  conv_get_current_charset_str(),
 						  prefs_common.misspelled_col,
 						  prefs_common.check_while_typing,

@@ -53,7 +53,6 @@
 
 #include "intl.h"
 #include "gtkstext.h"
-#include "prefs_common.h"
 #include "utils.h"
 #include "gtkaspell.h"
 
@@ -255,7 +254,8 @@ void gtkaspell_checkers_reset_error(void)
 	gtkaspellcheckers->error_message = NULL;
 }
 
-GtkAspell *gtkaspell_new(const gchar *dictionary, 
+GtkAspell *gtkaspell_new(const gchar *dictionary_path,
+			 const gchar *dictionary, 
 			 const gchar *encoding,
 			 gint  misspelled_color,
 			 gboolean check_while_typing,
@@ -279,6 +279,8 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		return NULL;
 	
 	gtkaspell = g_new0(GtkAspell, 1);
+
+	gtkaspell->dictionary_path    = dictionary_path;
 
 	gtkaspell->gtkaspeller	      = gtkaspeller;
 	gtkaspell->alternate_speller  = NULL;
@@ -346,6 +348,8 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 
 	if (gtkaspell->suggestions_list)
 		free_suggestions_list(gtkaspell);
+
+	g_free((gchar *)gtkaspell->dictionary_path);
 	
 	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 
@@ -1801,7 +1805,7 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 			gtk_widget_destroy(GTK_WIDGET(amenu->data));
 			amenu = alist;
 		}
-}
+	}
 	
 	dictname = g_strdup_printf(_("Dictionary: %s"),
 				   gtkaspeller->dictionary->dictname);
@@ -1887,7 +1891,7 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 
 	/* Dict list */
         if (gtkaspellcheckers->dictionary_list == NULL)
-		gtkaspell_get_dictionary_list(prefs_common.aspell_path, FALSE);
+		gtkaspell_get_dictionary_list(gtkaspell->dictionary_path, FALSE);
         {
 		GtkWidget * curmenu = submenu;
 		int count = 0;

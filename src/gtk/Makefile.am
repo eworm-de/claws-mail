@@ -5,6 +5,7 @@ libsylpheedgtk_la_SOURCES = \
 	colorlabel.c colorlabel.h \
 	description_window.c description_window.h \
 	filesel.c filesel.h \
+	gtkaspell.c gtkaspell.h \
 	gtkutils.c gtkutils.h \
 	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \
@@ -18,9 +19,11 @@ libsylpheedgtk_la_SOURCES = \
 CPPFLAGS = \
 	-I../common \
 	-I.. \
-	$(GTK_CFLAGS)
-	$(OPENSSL_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(OPENSSL_CFLAGS) \
+	$(ASPELL_CFLAGS)
 
 libsylpheedgtk_la_LIBADD = \
 	../common/libsylpheedcommon.la \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(ASPELL_LIBS)

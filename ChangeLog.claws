@@ -1,3 +1,13 @@
+2003-06-07 [christoph]	0.9.0claws21
+
+	* src/Makefile.am
+	* src/compose.c
+	* src/gtkaspell.[ch]		** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/gtkaspell.[ch]	** NEW **
+		o make gtkaspell independent from sylpheed's prefs
+		o move gtkaspell.[ch] to gtk directory
+
 2003-06-07 [christoph]	0.9.0claws20
 
 	* src/Makefile.am

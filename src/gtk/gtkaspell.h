@@ -67,6 +67,8 @@ typedef void (*ContCheckFunc) (gpointer *gtkaspell);
 
 typedef struct _GtkAspell
 {
+	const gchar	*dictionary_path;
+
 	GtkAspeller	*gtkaspeller;
 	GtkAspeller	*alternate_speller;
 	gchar 		 theword[GTKASPELLWORDSIZE];
@@ -103,7 +105,8 @@ GtkAspellCheckers*	gtkaspell_checkers_delete	(void);
 
 void 			gtkaspell_checkers_reset_error	(void);
 
-GtkAspell*		gtkaspell_new			(const gchar *dictionary, 
+GtkAspell*		gtkaspell_new			(const gchar *dictionary_path,
+							 const gchar *dictionary, 
 							 const gchar *encoding,
 							 gint  misspelled_color,
 							 gboolean check_while_typing,  
