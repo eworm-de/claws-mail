@@ -1,3 +1,9 @@
+2002-07-25 [alfons]	0.8.0claws12
+
+	* src/summaryview.c
+		fix a brown paper bag bug, and also add some more
+		checks
+
 2002-07-25 [christoph]	0.8.0claws11
 
 	* src/folder.c
