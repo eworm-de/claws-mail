@@ -1,11 +1,12 @@
 2002-07-22 [paul]	0.7.8claws95
 
-	* po/it.po
+	* po/es.po
+	  po/it.po
 	  po/nl.po
 	  po/pt_BR.po
-		updated translations by Alessandro Maestri,
-		Wilbert Berendsen and Fabio Jr. Beneditto
-		respectively
+		updated translations by Ricardo Mones Lastra,
+		Alessandro Maestri, Wilbert Berendsen and 
+		Fabio Jr. Beneditto respectively
 
 2002-07-22 [melvin]	0.7.8claws94
 
