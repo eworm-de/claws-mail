@@ -10,5 +10,11 @@ if BUILD_MATHML_VIEWER_PLUGIN
 mathml_viewer_dir = mathml_viewer
 endif
 
-SUBDIRS = $(demo_dir) $(spamassasssin_dir) $(mathml_viewer_dir)
+if BUILD_DILLO_VIEWER_PLUGIN
+dillo_viewer_dir = dillo_viewer
+endif
+
+
+SUBDIRS = $(demo_dir) $(spamassasssin_dir) $(mathml_viewer_dir) \
+	  $(dillo_viewer_dir) 
 

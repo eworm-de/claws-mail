@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws13
+EXTRA_VERSION=claws14
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -408,6 +408,15 @@ if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	PLUGINS="mathml-viewer $PLUGINS"
 fi
 
+AC_ARG_ENABLE(dillo-viewer-plugin,
+	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
+	[ac_cv_enable_dillo_plugin=$enableval], [ac_cv_enable_dillo_plugin=no])
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_plugin" = xyes)
+if test x"$ac_cv_enable_dillo_plugin" = xyes; then
+	PLUGINS="dillo $PLUGINS"
+fi
+
+
 dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
@@ -427,6 +436,7 @@ src/plugins/Makefile
 src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/mathml_viewer/Makefile
+src/plugins/dillo_viewer/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile

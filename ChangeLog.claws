@@ -1,3 +1,11 @@
+2003-03-15 [melvin]	0.8.11claws14
+
+	* src/plugins/dillo_viewer/.cvsignore			** NEW **
+	* src/plugins/dillo_viewer/Makefile.am			** NEW **
+	* src/plugins/dillo_viewer/dillo_viewer.c		** NEW **
+		Added a html mail viewer plugin that uses Dillo v0.7.0 or
+		newer (http://dillo.auriga.wearlab.de/).
+
 2003-03-15 [christoph]	0.8.11claws13
 
 	* src/imap.c
