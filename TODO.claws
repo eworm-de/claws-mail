@@ -1,11 +1,13 @@
 [alfons]
-	
+
+0.8.3claws
+	o find and fix glitches in crash handler
+	o make mark and cache file endian neutral
+
+0.8.3claws+	
 	o make noticeview interface more generic
 	o revisit email/URL parser 
 	o include and adapt Christian Mertes' top level domain patch
-	o with the new cache / mark system done by Christoph, it's
-	  about time to make the cache files endian neutral (bribe
-	  Hiro to accept the new system too)
 	o make sock_gets() use buffered I/O
 
 [thorsten]
