@@ -1,3 +1,12 @@
+2003-05-22 [paul]	0.8.11claws173
+
+	* sync with 0.9.0cvs7
+		see ChangeLog 2003-05-22
+		
+	* src/summaryview.c
+		revert change in 0.8.11claws172: follow
+		Hiroyuki's decision and that's the end of it.
+
 2003-05-21 [paul]	0.8.11claws172
 
 	* src/summaryview.c

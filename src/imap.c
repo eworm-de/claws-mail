@@ -2914,7 +2914,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	to = g_malloc(strlen(mutf7_str) + 1);
 	to_p = to;
 
-	while (from_p = mutf7_str; *from_p != '\0'; from_p++) {
+	for (from_p = mutf7_str; *from_p != '\0'; from_p++) {
 		if (*from_p == '&' && *(from_p + 1) == '-') {
 			*to_p++ = '&';
 			from_p++;
@@ -3003,7 +3003,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	to = g_malloc(strlen(from) * 2 + 1);
 	to_p = to;
 
-	while (from_p = from; *from_p != '\0'; from_p++) {
+	for (from_p = from; *from_p != '\0'; from_p++) {
 		if (*from_p == '&') {
 			*to_p++ = '&';
 			*to_p++ = '-';

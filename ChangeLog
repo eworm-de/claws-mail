@@ -1,3 +1,10 @@
+2003-05-22
+
+	* src/imap.c:
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): fixed compilation failure when not
+	  using iconv().
+
 2003-05-21
 
 	* src/procmime.c: procmime_scan_multipart_message(): fixed parsing
