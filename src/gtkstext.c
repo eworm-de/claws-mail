@@ -1003,8 +1003,6 @@ gtk_stext_thaw (GtkSText *text)
 void
 gtk_stext_compact_buffer (GtkSText    *text)
 {
-  GtkEditable *editable = GTK_EDITABLE (text);
-
   g_return_if_fail (text != NULL);
   g_return_if_fail (GTK_IS_STEXT (text));
   move_gap (text, gtk_stext_get_length(text));
@@ -5210,6 +5208,16 @@ find_line_params (GtkSText* text,
 		      /* If whole line is one word, revert to char wrapping */
 		      if (lp.end.index == lp.start.index)
 			{
+		          /* SYLPHEED: don't wrap URLs */
+                          if (is_url_string(text, lp.end.index,
+                                        gtk_stext_get_length(text)))
+                            {
+			      lp.end = saved_mark;
+			      lp.displayable_chars = saved_characters + 1;
+                              lp.wraps = 0;
+                              goto no_url_wrap;
+                            }
+
 			  lp.end = saved_mark;
 			  lp.displayable_chars = saved_characters;
 			  decrement_mark (&lp.end);
@@ -5232,6 +5240,7 @@ find_line_params (GtkSText* text,
 	  lp.displayable_chars += 1;
 	}
       
+no_url_wrap:
       lp.font_ascent = MAX (font->ascent, lp.font_ascent);
       lp.font_descent = MAX (font->descent, lp.font_descent);
       lp.pixel_width  += ch_width;

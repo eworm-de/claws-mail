@@ -2266,7 +2266,7 @@ static gint gtkstext_strncmp(GtkSText *text, guint pos1, guint pos2, guint len,
 }
 
 /* return true if text at pos is URL */
-static guint is_url_string(GtkSText *text, guint start_pos, guint text_len)
+guint is_url_string(GtkSText *text, guint start_pos, guint text_len)
 {
 	guint len;
 

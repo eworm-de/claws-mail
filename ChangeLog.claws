@@ -1,3 +1,12 @@
+2001-10-25 [darko]	0.6.4claws4
+
+	* src/compose.c
+		don't declare is_url_string as static function since
+		we need it in gtkstext.c
+	* src/gtkstext.c
+		remove unused variable
+		don't wrap long URLs while composing a message
+
 2001-10-24 [christoph]	0.6.4claws3
 
 	* src/socket.c
