@@ -2567,7 +2567,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 			
 	}
 
-	if (acceptable) {
+	if (acceptable || (src_item && src_item == item)) {
 		folderview_recollapse_nodes(folderview, node);
 		if (item->collapsed) {
 			gtk_ctree_expand(GTK_CTREE(widget), node);
@@ -2575,7 +2575,9 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 								folderview->nodes_to_recollapse,
 					 			node);
 		}
-
+	}
+		
+	if (acceptable) {
 		gtk_signal_handler_block_by_func
 			(GTK_OBJECT(widget),
 			 GTK_SIGNAL_FUNC(folderview_selected), folderview);

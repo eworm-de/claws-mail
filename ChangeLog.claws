@@ -1,3 +1,9 @@
+2002-11-26 [colin]	0.8.6claws11
+
+	* src/folderview.c
+		Fix collapsed folder not auto-expanding during
+		mail dnd, if it was the source folder.
+
 2002-11-25 [colin]	0.8.6claws10
 
 	* src/folderview.[ch]
