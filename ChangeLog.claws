@@ -1,3 +1,27 @@
+2002-06-20 [alfons]
+
+	* tools/Makefile.am
+		gpg-sign <-- gpg-sign-syl
+
+2002-06-20 [alfons]	0.7.8claws11
+
+	* src/selective_download.c
+	* src/selective_download.h
+		fix assorted mix of allocation errors (should solve
+		problem reported by Philippe Gramoullé, see:
+		http://sourceforge.net/mailarchive/forum.php?thread_id=828668&forum_id=2006)
+
+2002-06-20 [melvin]	0.7.8claws10
+
+	* tools/gpg-sign *REMOVED*
+	  tools/gpg-sign-syl *ADDED*
+	  	Replaced the gpg clearsigning script with the version using
+		xterm instead of ssh-askpass and changed its name.
+
+	* README.claws
+		Updated actions example to reflect the renaming of the
+		gpg clearsigning script.
+
 2002-06-19 [paul]	0.7.8claws9
 
 	* sync with 0.7.8claws9
@@ -85,7 +109,7 @@
 	* src/mainwindow.[ch]
 		more cleanups (removing unnecessary menu items Expand 
 		summary / message view)
-	
+
 2002-06-13 [melvin]	0.7.6claws44
 
 	* po/POTFILES.in

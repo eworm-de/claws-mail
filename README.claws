@@ -231,7 +231,7 @@ are hardly noticeable, but deserve mentioning:
 
   Purpose:	Display uuencoded image
   Definition:	Display uuencoded: uudec %f&
-  Details:	Displays uuencoded files. The uudec script can be found in 
+  Details:	Displays uuencoded files. The uudec[1] script can be found in 
 		the 'tools' directory of the distribution package.
  
   Purpose:	Alter messages
@@ -250,9 +250,9 @@ are hardly noticeable, but deserve mentioning:
   Details:	Browse the selected message part in Dillo.
 
   Purpose:	Clear Sign
-  Definition:	GnuPG/Clear Sign: |gpg-sign|
-  Details:	Clear sign a message. The gpg-sign script is responsible for 
-		asking the passphrase and for running gnupg. 
+  Definition:	GnuPG/Clear Sign: |gpg-sign-syl|
+  Details:	Clear sign a message. The gpg-sign-syl[2] script is responsible
+		for asking the passphrase and for running gnupg. 
 
   Purpose:	Verify Clear Signed
   Definition:	GnuPG/Verify: |gpg --no-tty --verify
@@ -264,17 +264,14 @@ are hardly noticeable, but deserve mentioning:
   Details:	Decrypt ASCII armored messages. The passphrase is entered 
 		into the opened action's input dialog.
 
-  The gpg-sign script can be found in the 'tools' directory of the 
-  distribution package. It needs the ssh-askpass utility found in OpenSSH. 
-  It can be replaced by any X11 tool that asks some (hidden) text which is 
-  then sent to standard output.
-
-  The uudec script can be found in the 'tools' directory of the 
+  [1] The uudec script can be found in the 'tools' directory of the 
   distribution package. It needs uudecode and ImageMagick's display. The 
   latter can be replaced by any image viewer that can get input from 
   standard input. The script could also be modified to use temporary files 
   instead of standard input. 
 
+  [2] The gpg-sign-syl script can be found in the 'tools' directory of the 
+  distribution package. 
 
 * Spell checker for Sylpheed-Claws
 -----------------------------------

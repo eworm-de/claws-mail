@@ -2,7 +2,7 @@ EXTRA_TOOLS = \
 	eud2gc.py \
 	filter_conv.pl \
 	gif2xface.pl \
-	gpg-sign \
+	gpg-sign-syl \
 	kmail2sylpheed.pl \
 	ldif-to-xml.py \
 	newscache_clean.pl \
