@@ -1,3 +1,9 @@
+2002-06-12 [paul]	0.7.6claws41
+
+	* src/prefs_account.c
+		CREATE_RADIO_BUTTONS(): fixed a typo and corrected the 
+		behavior of the radio buttons, (from 0.7.7cvs2)
+
 2002-06-11 [alfons]	0.7.6claws40
 
 	* src/messageview.[ch]
