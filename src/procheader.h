@@ -71,6 +71,10 @@ MsgInfo *procheader_file_parse		(FILE		*fp,
 
 gchar *procheader_get_fromname		(const gchar	*str);
 
+gboolean procheader_date_parse_to_tm	(const gchar	*str,
+					 struct tm	*t,
+					 char		*zone);
+
 time_t procheader_date_parse		(gchar		*dest,
 					 const gchar	*src,
 					 gint		 len);

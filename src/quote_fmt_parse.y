@@ -9,6 +9,7 @@
 #include "procmime.h"
 #include "utils.h"
 #include "intl.h"
+#include "procheader.h"
 
 #include "quote_fmt.h"
 #include "quote_fmt_lex.h"
@@ -194,14 +195,64 @@ special:
 	}
 	| SHOW_DATE_EXPR OPARENT string CPARENT
 	{
-		if (msginfo->date_t) {
-			char timef[128];
-			struct tm *lt;
+		/* 
+		 * ALF - GNU C's strftime() has a nice format specifier 
+		 * for time zone offset (%z). Non-standard however, so 
+		 * emulate it.
+		 */
+		if (msginfo->date) {
+			char  result[100];
+			char *rptr;
+			char  zone[6];
+			struct tm lt;
+			const char *fptr;
+			const char *zptr;
 
-			if (NULL != (lt = localtime(&msginfo->date_t))) {
-				strftime(timef, sizeof timef, $3, lt);
-				INSERT(timef);
+#define RLEFT (sizeof result) - (rptr - result)	
+#define STR_SIZE(x) (sizeof (x) - 1)
+
+			zone[0] = 0;
+
+			if (procheader_date_parse_to_tm(msginfo->date, &lt, zone)) {
+				/*
+				 * break up format string in tiny bits delimited by valid %z's and 
+				 * feed it to strftime(). don't forget that '%%z' mean literal '%z'.
+				 */
+				for (rptr = result, fptr = $3; fptr && *fptr && rptr < &result[sizeof result - 1];) {
+					int	    perc;
+					const char *p;
+					char	   *tmp;
+					
+					if (NULL != (zptr = strstr(fptr, "%z"))) {
+						/*
+						 * count nr. of prepended percent chars
+						 */
+						for (perc = 0, p = zptr; p && p >= $3 && *p == '%'; p--, perc++)
+							;
+						/*
+						 * feed to strftime()
+						 */
+						tmp = g_strndup(fptr, zptr - fptr + (perc % 2 ? 0 : STR_SIZE("%z")));
+						if (tmp) {
+							rptr += strftime(rptr, RLEFT, tmp, &lt);
+							g_free(tmp);
+						}
+						/*
+						 * append time zone offset
+						 */
+						if (zone[0] && perc % 2) 
+							rptr += g_snprintf(rptr, RLEFT, "%s", zone);
+						fptr = zptr + STR_SIZE("%z");
+					} else {
+						rptr += strftime(rptr, RLEFT, fptr, &lt);
+						fptr  = NULL;
+					}
+				}
+				
+				INSERT(result);
 			}
+#undef STR_SIZE			
+#undef RLEFT			
 		}
 	}
 	| SHOW_DATE

@@ -36,6 +36,7 @@ static void quote_fmt_quote_description_key_pressed	(GtkWidget *widget,
 
 static gchar *symbol_table[][2] =
 {
+	{"%D{fmt}",	N_("Customize date format (see man strftime)")}, /* date expression */
 	{"%d",		N_("Date")}, /* date */
 	{"%f",		N_("From")}, /* from */
 	{"%N",		N_("Full Name of Sender")}, /* full name */
