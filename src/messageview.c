@@ -674,6 +674,7 @@ static void messageview_change_view_type(MessageView *messageview,
 {
 	TextView *textview = messageview->textview;
 	MimeView *mimeview = messageview->mimeview;
+	gboolean hadfocus  = GTK_WIDGET_HAS_FOCUS(textview->text);
 
 	if (messageview->type == type) return;
 
@@ -698,6 +699,7 @@ static void messageview_change_view_type(MessageView *messageview,
 				   GTK_WIDGET_PTR(textview), TRUE, TRUE, 0);
 	} else
 		return;
+	if (hadfocus) gtk_widget_grab_focus(textview->text);
 
 	messageview->type = type;
 }
