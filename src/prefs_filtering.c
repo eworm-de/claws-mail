@@ -389,7 +389,7 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), cond_label, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -405,7 +405,7 @@ static void prefs_filtering_create(void)
 			    NULL);
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -441,7 +441,7 @@ static void prefs_filtering_create(void)
 	/* accounts */
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -481,7 +481,7 @@ static void prefs_filtering_create(void)
 	/* destination */
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
