@@ -1406,7 +1406,7 @@ static void prefs_matcher_ok(void)
 				}
 				if (strcmp(matcher_str, str) != 0) {
 		                        val = alertpanel(_("Entry not registered"),
-        		                         _("The entry was not registered\nAre you really finish?"),
+        		                         _("The entry was not registered\nAre you really finished?"),
                 		                 _("Yes"), _("No"), NULL);
 	                        	if (G_ALERTDEFAULT != val) {
 	        	                        g_free(str);

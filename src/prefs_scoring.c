@@ -765,7 +765,7 @@ static void prefs_scoring_ok(void)
 		}
                 if (strcmp(scoring_str, str) != 0) {
                         val = alertpanel(_("Entry not registered"),
-                                 _("The entry was not registered\nAre you really finish?"),
+                                 _("The entry was not registered\nAre you really finished?"),
                                  _("Yes"), _("No"), NULL);
                         if (G_ALERTDEFAULT != val) {
                                 g_free(str);
