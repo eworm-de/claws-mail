@@ -44,7 +44,7 @@ typedef struct _SummaryColumnState	SummaryColumnState;
 typedef enum
 {
 	S_COL_MARK,
-	S_COL_UNREAD,
+	S_COL_STATUS,
 	S_COL_MIME,
 	S_COL_SUBJECT,
 	S_COL_FROM,

@@ -2308,7 +2308,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			else if (!strcmp(attr->value, "mark"))
 				sort_key = SORT_BY_MARK;
 			else if (!strcmp(attr->value, "unread"))
-				sort_key = SORT_BY_UNREAD;
+				sort_key = SORT_BY_STATUS;
 			else if (!strcmp(attr->value, "mime"))
 				sort_key = SORT_BY_MIME;
 			else if (!strcmp(attr->value, "to"))

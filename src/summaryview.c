@@ -89,7 +89,7 @@
 #include "description_window.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
-#define SUMMARY_COL_UNREAD_WIDTH	13
+#define SUMMARY_COL_STATUS_WIDTH	13
 #define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		11
 
@@ -344,7 +344,7 @@ static void summary_drag_data_get       (GtkWidget        *widget,
 static gint summary_cmp_by_mark		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
-static gint summary_cmp_by_unread	(GtkCList		*clist,
+static gint summary_cmp_by_status	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 static gint summary_cmp_by_mime		(GtkCList		*clist,
@@ -457,7 +457,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("M"),	/* S_COL_MARK    */
-	N_("U"),	/* S_COL_UNREAD  */
+	N_("S"),	/* S_COL_STATUS  */
 	"",		/* S_COL_MIME    */
 	N_("Subject"),	/* S_COL_SUBJECT */
 	N_("From"),	/* S_COL_FROM    */
@@ -2009,7 +2009,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 	static FolderSortKey sort_by[N_SUMMARY_COLS] = {
 		SORT_BY_MARK,
-		SORT_BY_UNREAD,
+		SORT_BY_STATUS,
 		SORT_BY_MIME,
 		SORT_BY_SUBJECT,
 		SORT_BY_FROM,
@@ -2024,7 +2024,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		type = summaryview->col_state[pos].type;
 
 		/* CLAWS: mime and unread are single char headers */
-		single_char = (type == S_COL_MIME || type == S_COL_UNREAD);
+		single_char = (type == S_COL_MIME || type == S_COL_STATUS);
 		justify = (type == S_COL_NUMBER || type == S_COL_SIZE)
 			? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT;
 
@@ -2105,8 +2105,8 @@ void summary_sort(SummaryView *summaryview,
 	case SORT_BY_MARK:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_mark;
 		break;
-	case SORT_BY_UNREAD:
-		cmp_func = (GtkCListCompareFunc)summary_cmp_by_unread;
+	case SORT_BY_STATUS:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_status;
 		break;
 	case SORT_BY_MIME:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_mime;
@@ -2338,7 +2338,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gint *col_pos = summaryview->col_pos;
 
 	text[col_pos[S_COL_MARK]]   = NULL;
-	text[col_pos[S_COL_UNREAD]] = NULL;
+	text[col_pos[S_COL_STATUS]] = NULL;
 	text[col_pos[S_COL_MIME]]   = NULL;
 	text[col_pos[S_COL_LOCKED]] = NULL;
 	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
@@ -2645,22 +2645,22 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	/* set new/unread column */
 	if (MSG_IS_IGNORE_THREAD(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  ignorethreadxpm, ignorethreadxpmmask);
 	} else if (MSG_IS_NEW(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  newxpm, newxpmmask);
 	} else if (MSG_IS_UNREAD(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  unreadxpm, unreadxpmmask);
 	} else if (MSG_IS_REPLIED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  repliedxpm, repliedxpmmask);
 	} else if (MSG_IS_FORWARDED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  forwardedxpm, forwardedxpmmask);
 	} else {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_UNREAD],
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_STATUS],
 					NULL);
 	}
 
@@ -4387,7 +4387,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],
 					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_STATUS],
 					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_LOCKED],
 					   GTK_JUSTIFY_CENTER);
@@ -4401,8 +4401,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MARK],
 				   SUMMARY_COL_MARK_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
-				   SUMMARY_COL_UNREAD_WIDTH);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_STATUS],
+				   SUMMARY_COL_STATUS_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_LOCKED],
 				   SUMMARY_COL_LOCKED_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
@@ -4446,7 +4446,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 		 summaryview)
 
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_UNREAD , summary_unread_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_STATUS , summary_unread_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
@@ -4766,7 +4766,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		} else
 			summary_mark_row(summaryview, row);
 		break;
-	case S_COL_UNREAD:
+	case S_COL_STATUS:
 		if (MSG_IS_UNREAD(msginfo->flags)) {
 			summary_mark_row_as_read(summaryview, row);
 			summary_status_show(summaryview);
@@ -4859,7 +4859,7 @@ static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)
 
 static void summary_unread_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort_by_column_click(summaryview, SORT_BY_UNREAD);
+	summary_sort_by_column_click(summaryview, SORT_BY_STATUS);
 }
 
 static void summary_mime_clicked(GtkWidget *button, SummaryView *summaryview)
@@ -4987,7 +4987,7 @@ static gint func_name(GtkCList *clist,					 \
 
 CMP_FUNC_DEF(summary_cmp_by_mark,
 	     MSG_IS_MARKED(msginfo1->flags) - MSG_IS_MARKED(msginfo2->flags))
-CMP_FUNC_DEF(summary_cmp_by_unread,
+CMP_FUNC_DEF(summary_cmp_by_status,
 	     MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags))
 CMP_FUNC_DEF(summary_cmp_by_mime,
 	     MSG_IS_MIME(msginfo1->flags) - MSG_IS_MIME(msginfo2->flags))
