@@ -1,3 +1,11 @@
+2003-06-23 [paul]	0.9.0claws56
+
+	* src/sourcewindow.c
+		 enable the use of Ctrl+A to select all text in
+		 the sourcewindow
+		 Patch submitted by Ivan Francolin Martinez
+		 <ivanfm@users.sourceforge.net>
+
 2003-06-22 [christoph]	0.9.0claws55
 
 	* src/folder.[ch]
