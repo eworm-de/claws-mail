@@ -1976,13 +1976,14 @@ static gchar *compose_get_signature_str(Compose *compose)
 		g_free(tmp);
 	}
 
-	if (compose->account->sig_sep) {
+	if (compose->account->sig_sep)
 		sig_str = g_strconcat("\n\n", compose->account->sig_sep, "\n", sig_body,
 				      NULL);
-		g_free(sig_body);
-	} else
-		sig_str = sig_body;
+	else
+		sig_str = g_strconcat("\n\n", sig_body, NULL);
 
+	g_free(sig_body);
+	
 	return sig_str;
 }
 
