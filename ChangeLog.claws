@@ -1,3 +1,10 @@
+2003-02-07 [paul]	0.8.9claws47
+
+	* src/folderview.c
+		fix bug where both an 'Account properties' window and a
+		'Folder properties' window were opened when clicking on
+		'Properties' in an NNTP or IMAP folder's popup menu.
+
 2003-02-07 [paul]	0.8.9claws46
 
 	* sync with 0.8.10cvs6
