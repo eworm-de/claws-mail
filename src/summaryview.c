@@ -5046,6 +5046,8 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	GtkCTreeNode *node;
 	GtkWidget *pixmap;
 
+	summary_write_cache(summaryview);
+
 	gtk_widget_destroy(summaryview->folder_pixmap);
 
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);

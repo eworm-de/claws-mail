@@ -1,3 +1,9 @@
+2002-02-12 [carsten]	0.7.0claws60
+	* src/folderview.c
+	  src/summaryview.c
+		had to write the cache twice (nasty!); some marks would 
+		get lost if not
+
 2002-02-11 [carsten]	0.7.0claws59
 	* acconfig.h
 	  configure.in
