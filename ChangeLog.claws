@@ -1,3 +1,30 @@
+2004-09-02 [colin]	0.9.12cvs87
+
+	* src/prefs_spelling.c
+		Fix bug with aspell prefs init, where spell checking
+		is enabled at first but dictionary not specified. Use
+		LANG's dictionary by default.
+
+2004-09-01 [colin]	0.9.12cvs86
+
+	* src/filtering.c
+	* src/imap.c
+	* src/prefs_matcher.c
+	* src/stock_pixmap.c
+		Fix more nasty uninitialized variables
+
+2004-08-31 [colin]	0.9.12cvs85
+
+	* src/folder.c
+		Fix memory corruption when entering procmsg_msginfo_free()
+		with unitialized msginfo. Thanks Valgrind.
+
+2004-08-29 [colin]	0.9.12cvs84
+
+	* src/mimeview.c
+		Don't escape filenames before saving - that's 
+		not dangerous. By the way, fix the leak.
+
 2004-08-27 [paul]	0.9.12cvs83
 
 	* src/mh.c

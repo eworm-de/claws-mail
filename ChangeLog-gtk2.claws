@@ -14,12 +14,14 @@
 	* src/summaryview.c
 	* src/wizard.c
 	* src/wizard.h
-		Sync with HEAD + gtk2 specific warning fixes
+		Sync with HEAD (uninitialized vars fixes)
+		+ gtk2 specific warning fixes
 
 2004-08-31 [colin]	0.9.12cvs85.1
 
 	* src/folder.c
-		Sync with HEAD
+		Sync with HEAD (Fix memory corruption due to 
+		uninitialized var)
 
 2004-08-31 [colin]	0.9.12cvs84.4
 
@@ -43,7 +45,7 @@
 2004-08-29 [colin]	0.9.12cvs84.1
 
 	* src/mimeview.c
-		Sync with HEAD
+		Sync with HEAD (don't escape saved filenames)
 
 2004-08-27 [colin]	0.9.12cvs83.1
 
@@ -57,7 +59,7 @@
 	* src/common/utils.c
 	* src/gtk/menu.h
 	* po/
-		Sync with HEAD 0.9.12cvs83
+		Sync with HEAD 0.9.12cvs83 (sync with main)
 
 2004-08-26 [colin]	0.9.12cvs82.4
 
@@ -81,14 +83,14 @@
 2004-08-25 [colin]	0.9.12cvs82.1
 
 	* src/plugins/pgpmime/pgpmime.c
-		Sync with HEAD.
+		Sync with HEAD (leak fix).
 
 2004-08-25 [colin]	0.9.12cvs81.1
 
 	* src/plugins/pgpmime/pgpmime.c
 	* src/plugins/pgpmime/sgpgme.c
 	* src/plugins/pgpmime/sgpgme.h
-		Sync with HEAD.
+		Sync with HEAD (Handle combined messages).
 
 2004-08-24 [colin]	0.9.12cvs80.3
 
@@ -111,7 +113,7 @@
 2004-08-24 [colin]	0.9.12cvs80.1
 
 	* src/folder.c
-		Sync with HEAD 0.9.12cvs80
+		Sync with HEAD (set mimeflags on all messages)
 
 2004-08-24 [colin]	0.9.12cvs79.3
 
@@ -126,13 +128,13 @@
 2004-08-23 [colin]	0.9.12cvs79.1
 
 	* src/compose.c
-		Sync with HEAD 0.9.12cvs79
+		Sync with HEAD (create message header in memory)
 
 2004-08-23 [colin]	0.9.12cvs78.1
 
 	* src/rfc2015.c
 	* src/rfc2015.h
-		Sync with HEAD cvs78
+		Sync with HEAD (fix bug 197 again)
 
 2004-08-23 [colin]	0.9.12cvs77.3
 
@@ -156,12 +158,12 @@
 	* po/pt_BR.po
 	* po/sk.po
 	* po/sr.po
-		Sync with HEAD
+		Sync with HEAD (fix bug 577)
 
 2004-08-22 [colin]	0.9.12cvs76.1
 
 	* src/plugins/trayicon/trayicon.c
-		Sync with HEAD
+		Sync with HEAD (fix formatting bug)
 
 2004-08-21 [colin]	0.9.12cvs74.2
 
@@ -175,13 +177,13 @@
 	* src/compose.c
 	* src/summaryview.c
 	* src/toolbar.c
-		Sync with HEAD
+		Sync with HEAD (fix bug 576)
 
 2004-08-21 [colin]	0.9.12cvs70.1
 
 	* src/compose.c
 	* src/mainwindow.c
-		Sync with HEAD 0.9.12cvs70
+		Sync with HEAD
 		
 
 2004-08-21 [paul]	0.9.12cvs66.4
@@ -239,12 +241,12 @@
 2004-08-13 [colin]	0.9.12cvs60.1
 
 	* src/folderutils.c
-		Sync with HEAD 0.9.12cvs60
+		Sync with HEAD
 
 2004-08-12 [colin]	0.9.12cvs59.1
 
 	* src/plugins/trayicon/trayicon.c
-		Sync with HEAD 0.9.12cvs59
+		Sync with HEAD
 
 2004-08-12 [colin]	0.9.12cvs57.5
 
