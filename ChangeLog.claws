@@ -1,3 +1,17 @@
+2001-07-22 [alfons]
+
+	add English User Manual for Sylpheed by Paul Kater (paul@nlpagan.net).
+	this is a work in progress, for more information: http://nlpagan.net/sylman 
+	
+	* configure.in, src/mainwindow.c, manual/Makefile.am
+		add support for English manual
+
+	* AUTHORS
+		add authors of user manuals
+
+	* manual/en/sylpheed*.html
+		add English documentation
+
 2001-07-22 [christoph]
 
 	* po/POTFILES.in

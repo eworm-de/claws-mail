@@ -278,4 +278,5 @@ libkcc/Makefile
 src/Makefile
 manual/Makefile
 manual/ja/Makefile
+manual/en/Makefile
 ])

@@ -569,7 +569,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 	{N_("/_Help"),				NULL, NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_Manual"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual/_English"),		NULL, NULL, MANUAL_LANG_EN, NULL},
+	{N_("/_Help/_Manual/_English"),		NULL, manual_open_cb, MANUAL_LANG_EN, NULL},
 	{N_("/_Help/_Manual/_Japanese"),	NULL, manual_open_cb, MANUAL_LANG_JA, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
@@ -776,7 +776,7 @@ MainWindow *main_window_create(SeparateType type)
 	*/
 	main_window_set_thread_option(mainwin);
 
-	menu_set_sensitive(ifactory, "/Help/Manual/English", FALSE);
+	/* menu_set_sensitive(ifactory, "/Help/Manual/English", FALSE); */
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
