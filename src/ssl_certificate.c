@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "intl.h"
 #include "prefs_common.h"
+#include "log.h"
 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 

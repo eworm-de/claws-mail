@@ -1,3 +1,8 @@
+2002-12-08 [colin] 	0.8.6claws72
+
+	* src/ssl_certificate.c
+		Put back a badly-removed include
+
 2002-12-08 [colin] 	0.8.6claws71
 
 	* src/gtk/sslcertwindow.[ch]	** NEW **
