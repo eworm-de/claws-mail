@@ -27,6 +27,7 @@
 /* Function prototypes */
 AddressBookFile *addrgather_dlg_execute( FolderItem *folderItem,
 					 AddressIndex *addrIndex,
+					 gboolean sourceInd,
 					 GList *msgList );
 
 #endif /* __ADDR_GATHER_H__ */

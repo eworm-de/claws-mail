@@ -3967,18 +3967,22 @@ static void addressbook_import_pine_cb() {
 }
 
 /*
- * Gather addresses.
+ * Harvest addresses.
  * Enter: folderItem Folder to import.
+ *        sourceInd  Source indicator: FALSE - Folder, TRUE - Messages.
  *        msgList    List of message numbers, or NULL to process folder.
  */
-void addressbook_gather( FolderItem *folderItem, GList *msgList ) {
+void addressbook_harvest(
+	FolderItem *folderItem, gboolean sourceInd, GList *msgList )
+{
 	AddressDataSource *ds = NULL;
 	AdapterDSource *ads = NULL;
 	AddressBookFile *abf = NULL;
 	AdapterInterface *adapter;
 	GtkCTreeNode *newNode;
 
-	abf = addrgather_dlg_execute( folderItem, _addressIndex_, msgList );
+	abf = addrgather_dlg_execute(
+		folderItem, _addressIndex_, sourceInd, msgList );
 	if( abf ) {
 		ds = addrindex_index_add_datasource(
 			_addressIndex_, ADDR_IF_BOOK, abf );

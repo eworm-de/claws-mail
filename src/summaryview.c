@@ -5293,9 +5293,9 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 }
 
 /*
- * Gather addresses for selected messages in summary view.
+ * Harvest addresses for selected messages in summary view.
  */
-void summary_gather_address( SummaryView *summaryview ) {
+void summary_harvest_address( SummaryView *summaryview ) {
 	GtkCTree *ctree = GTK_CTREE( summaryview->ctree );
 	GList *cur;
 	GList *msgList;
@@ -5306,7 +5306,7 @@ void summary_gather_address( SummaryView *summaryview ) {
 		msginfo = gtk_ctree_node_get_row_data( ctree, GTK_CTREE_NODE(cur->data) );
 		msgList = g_list_append( msgList, GUINT_TO_POINTER( msginfo->msgnum ) );
 	}
-	addressbook_gather( summaryview->folder_item, msgList );
+	addressbook_harvest( summaryview->folder_item, TRUE, msgList );
 	g_list_free( msgList );
 }
 

@@ -49,6 +49,9 @@ static gchar *_headerTo_       = HEADER_TO;
 #define REM_NAME_STRING  "(E-mail)"
 #define REM_NAME_STRING2 "(E-mail 2)"
 
+/* Directories to ignore */
+#define DIR_IGNORE ".\t..\t.sylpheed_mark\t.sylpheed_cache"
+
 /*
  * Header entry.
  */
@@ -174,6 +177,18 @@ void addrharvest_set_folder_size(
 	if( value > 0 ) {
 		harvester->folderSize = value;
 	}
+}
+
+/*
+ * Specify folder recursion.
+ * Entry: harvester Harvester object.
+ *        value     TRUE to process sub-folders, FALSE to process folder only.
+ */
+void addrharvest_set_recurse(
+	AddressHarvester* harvester, const gboolean value )
+{
+	g_return_if_fail( harvester != NULL );
+	harvester->folderRecurse = value;
 }
 
 /*
@@ -713,6 +728,81 @@ static gint addrharvest_readfile(
 }
 
 /*
+ * Read all files in specified directory into address book. Directories are
+ * traversed recursively if necessary.
+ * Enter:  harvester Harvester object.
+ *         cache     Address cache to load.
+ *         msgList   List of message numbers, or NULL to process folder.
+ *         dir       Directory to process.
+ */
+static void addrharvest_harvest_dir(
+	AddressHarvester *harvester, AddressCache *cache, GList *listHdr,
+	gchar *dir )
+{
+	DIR *dp;
+	struct dirent *d;
+	struct stat s;
+	gint num;
+
+	if( ( dp = opendir( dir ) ) == NULL ) {
+		return;
+	}
+
+	/* Process directory */
+	chdir( dir );
+	while( ( d = readdir( dp ) ) != NULL ) {
+		stat( d->d_name, &s );
+		if( S_ISDIR( s.st_mode ) ) {
+			if( harvester->folderRecurse ) {
+				if( strstr( DIR_IGNORE, d->d_name ) != NULL )
+					continue;
+				addrharvest_harvest_dir(
+					harvester, cache, listHdr, d->d_name );
+			}
+		}
+		if( S_ISREG( s.st_mode ) ) {
+			if( ( num = to_number( d->d_name ) ) >= 0 ) {
+				addrharvest_readfile(
+					harvester, d->d_name, cache, listHdr );
+			}
+		}
+	}
+	chdir( ".." );
+	closedir( dp );
+}
+
+/*
+ * Read list of files in specified directory into address book.
+ * Enter:  harvester Harvester object.
+ *         cache     Address cache to load.
+ *         msgList   List of message numbers, or NULL to process folder.
+ */
+static void addrharvest_harvest_list(
+	AddressHarvester *harvester, AddressCache *cache, GList *listHdr,
+	GList *msgList )
+{
+	DIR *dp;
+	gint num;
+	GList *node;
+	gchar msgNum[ MSGNUM_BUFFSIZE ];
+
+	if( ( dp = opendir( harvester->path ) ) == NULL ) {
+		return;
+	}
+
+	/* Process message list */
+	chdir( harvester->path );
+	node = msgList;
+	while( node ) {
+		num = GPOINTER_TO_UINT( node->data );
+		sprintf( msgNum, "%d", num );
+		addrharvest_readfile( harvester, msgNum, cache, listHdr );
+		node = g_list_next( node );
+	}
+	closedir( dp );
+}
+
+/*
  * ============================================================================
  * Read all files in specified directory into address book.
  * Enter:  harvester Harvester object.
@@ -725,13 +815,8 @@ gint addrharvest_harvest(
 	AddressHarvester *harvester, AddressCache *cache, GList *msgList )
 {
 	gint retVal;
-	DIR *dp;
-	struct dirent *d;
-	struct stat s;
-	gint num;
 	GList *node;
 	GList *listHdr;
-	gchar msgNum[ MSGNUM_BUFFSIZE ];
 
 	retVal = MGU_BAD_ARGS;
 	g_return_val_if_fail( harvester != NULL, retVal );
@@ -741,16 +826,6 @@ gint addrharvest_harvest(
 	/* Clear cache */
 	addrcache_clear( cache );
 	cache->dataRead = FALSE;
-
-	if( chdir( harvester->path ) < 0 ) {
-		/* printf( "Error changing dir\n" ); */
-		return retVal;
-	}
-
-	if( ( dp = opendir( harvester->path ) ) == NULL ) {
-		/* printf( "Error opening dir\n" ); */
-		return retVal;
-	}
 
 	/* Build list of headers of interest */
 	listHdr = NULL;
@@ -769,32 +844,14 @@ gint addrharvest_harvest(
 		node = g_list_next( node );
 	}
 
+	/* Process directory/files */
 	if( msgList == NULL ) {
-		/* Process directory */
-		while( ( d = readdir( dp ) ) != NULL ) {
-			stat( d->d_name, &s );
-			if( S_ISREG( s.st_mode ) ) {
-				if( ( num = to_number( d->d_name ) ) >= 0 ) {
-					addrharvest_readfile(
-						harvester, d->d_name, cache, listHdr );
-				}
-			}
-		}
+		addrharvest_harvest_dir( harvester, cache, listHdr, harvester->path );
 	}
 	else {
-		/* Process message list */
-		node = msgList;
-		while( node ) {
-			num = GPOINTER_TO_UINT( node->data );
-			sprintf( msgNum, "%d", num );
-			addrharvest_readfile(
-				harvester, msgNum, cache, listHdr );
-			node = g_list_next( node );
-		}
+		addrharvest_harvest_list( harvester, cache, listHdr, msgList );
 	}
 	mgu_free_dlist( listHdr );
-
-	closedir( dp );
 
 	/* Mark cache */
 	cache->modified = FALSE;

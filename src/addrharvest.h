@@ -44,6 +44,7 @@ struct _AddressHarvester {
 	GHashTable *dupTable;
 	gint       folderSize;
 	gint       retVal;
+	gboolean   folderRecurse;
 };
 
 /* Function prototypes */
@@ -55,6 +56,8 @@ void addrharvest_set_folder_size	( AddressHarvester* harvester,
 					  const gint value );
 void addrharvest_set_header		( AddressHarvester* harvester,
 					  const gchar *name,
+					  const gboolean value );
+void addrharvest_set_recurse		( AddressHarvester* harvester,
 					  const gboolean value );
 gint addrharvest_get_count		( AddressHarvester* harvester,
 					  const gchar *name );

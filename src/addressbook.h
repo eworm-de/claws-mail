@@ -41,6 +41,7 @@ gboolean addressbook_add_contact	( const gchar	*name,
 gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) );
 
 void addressbook_gather			( FolderItem *folderItem,
+					  gboolean sourceInd,
 					  GList *msgList );
 
 #endif /* __ADDRESSBOOK_H__ */

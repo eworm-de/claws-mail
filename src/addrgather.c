@@ -73,18 +73,19 @@
 typedef enum {
 	FIELD_COL_HEADER = 0,
 	FIELD_COL_COUNT  = 1
-} AddrGather_FieldColPos;
+} AddrHarvest;
 
 /*
 * The dialog.
 */
-static struct _AddrGather_Dlg_ {
+static struct _AddrHarvest {
 	GtkWidget *window;
 	GtkWidget *notebook;
 	GtkWidget *labelFolder;
 	GtkWidget *entryBook;
 	GtkWidget *checkHeader[ NUM_FIELDS ];
 	GtkWidget *spinbtnFolder;
+	GtkWidget *checkRecurse;
 	GtkWidget *btnOk;
 	GtkWidget *btnCancel;
 	GtkWidget *statusbar;
@@ -166,6 +167,9 @@ static gboolean addrgather_dlg_harvest() {
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]) ) );
 	}
+	addrharvest_set_recurse( harvester,
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( addrgather_dlg.checkRecurse ) ) );
 
 	if( addrharvest_check_header( harvester ) == FALSE ) {
 		addrgather_dlg_status_show(
@@ -174,6 +178,8 @@ static gboolean addrgather_dlg_harvest() {
 		return FALSE;
 	}
 
+	/* Go fer it */
+	addrgather_dlg_status_show( _( "Busy harvesting addresses..." ) );
 	sz = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON( addrgather_dlg.spinbtnFolder ) );
 	addrharvest_set_folder_size( harvester, sz );
@@ -275,15 +281,21 @@ static void addrgather_page_warning( gint pageNum, gchar *pageLbl ) {
 
 	/* First row */
 	top++;
-	label = gtk_label_new(_("No folder was selected."));
+	label = gtk_label_new( _("No folder or message was selected." ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_justify( GTK_LABEL(label), GTK_JUSTIFY_LEFT );
+	gtk_misc_set_alignment( GTK_MISC(label), 0, 0.5 );
 
 	/* Second row */
 	top++;
-	label = gtk_label_new(_("Please select a folder to process from the folder list."));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	label = gtk_label_new( _(
+			"Please select a folder to process from the folder\n"
+			"list. Alternatively, select one or messages from\n"
+			"the message list." ) );
+
+	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_label_set_justify( GTK_LABEL(label), GTK_JUSTIFY_LEFT );
+	gtk_misc_set_alignment( GTK_MISC(label), 0, 0.5 );
 }
 
 /*
@@ -303,6 +315,7 @@ static void addrgather_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkHeader[ NUM_FIELDS ];
 	GtkWidget *spinbtnFolder;
 	GtkObject *adjFolder;
+	GtkWidget *checkRecurse;
 	gint top;
 	gint i;
 
@@ -380,9 +393,16 @@ static void addrgather_page_fields( gint pageNum, gchar *pageLbl ) {
 		addrgather_dlg.checkHeader[i] = checkHeader[i];
 	}
 
+	/* Recurse folders */
+	top += 4;
+	checkRecurse = gtk_check_button_new_with_label( _("Include sub-folders" ) );
+	gtk_table_attach( GTK_TABLE(table), checkRecurse, 0, 2, top, (top + 1),
+			GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+
 	addrgather_dlg.labelFolder   = labelFolder;
 	addrgather_dlg.entryBook     = entryBook;
 	addrgather_dlg.spinbtnFolder = spinbtnFolder;
+	addrgather_dlg.checkRecurse  = checkRecurse;
 }
 
 /*
@@ -500,7 +520,7 @@ static void addrgather_dlg_create( void ) {
 	addrgather_dlg.btnCancel  = btnCancel;
 	addrgather_dlg.statusbar  = statusbar;
 	addrgather_dlg.status_cid = gtk_statusbar_get_context_id(
-		GTK_STATUSBAR(statusbar), "Gather E-Mail Address Dialog" );
+		GTK_STATUSBAR(statusbar), "Harvest E-Mail Address Dialog" );
 
 	/* Create notebook pages */
 	addrgather_page_warning( PAGE_WARNING, _( "Warning" ) );
@@ -510,14 +530,16 @@ static void addrgather_dlg_create( void ) {
 }
 
 /*
- * Gather addresses main window.
+ * Harvest addresses main window.
  * Enter: folderItem Source folder.
  *        addrIndex  Address index.
+ *        sourceInd  Source indicator: FALSE - Folder, TRUE - Messages.
  *        msgList    List of message numbers, or NULL to process folder.
  * Return: Populated address book file, or NULL if none created.
  */
 AddressBookFile *addrgather_dlg_execute(
-	FolderItem *folderItem, AddressIndex *addrIndex, GList *msgList )
+	FolderItem *folderItem, AddressIndex *addrIndex, gboolean sourceInd,
+	GList *msgList )
 {
 	gboolean errFlag;
 	gint i;
@@ -558,25 +580,36 @@ AddressBookFile *addrgather_dlg_execute(
 		gtk_widget_grab_default( addrgather_dlg.btnOk );
 		errFlag = FALSE;
 	}
+
+	/* Apply window title */
+	if( sourceInd ) {
+		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
+			_("Harvest E-Mail Addresses - from Selected Messages") );
+		gtk_widget_set_sensitive( addrgather_dlg.checkRecurse, FALSE );
+		if( msgList == NULL ) {
+			errFlag = TRUE;
+		}
+	}
 	else {
+		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
+			_("Harvest E-Mail Addresses - from Folder") );
+		gtk_widget_set_sensitive( addrgather_dlg.checkRecurse, TRUE );
+	}
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( addrgather_dlg.checkRecurse ), FALSE );
+
+	addrgather_dlg_status_show( "" );
+	gtk_widget_show( addrgather_dlg.window );
+
+	if( errFlag ) {
 		gtk_notebook_set_page(
 			GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_WARNING );
 		gtk_widget_set_sensitive( addrgather_dlg.btnOk, FALSE );
 		gtk_widget_grab_default( addrgather_dlg.btnCancel );
 	}
-
-	if( msgList ) {
-		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
-			_("Gather E-Mail Addresses - from Selected Messages") );
-	}
 	else {
-		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
-			_("Gather E-Mail Addresses - from Folder") );
+		gtk_widget_grab_focus( addrgather_dlg.entryBook );
 	}
-	addrgather_dlg_status_show( "" );
-	gtk_widget_show( addrgather_dlg.window );
-
-	gtk_widget_grab_focus( addrgather_dlg.entryBook );
 	manage_window_set_transient( GTK_WINDOW(addrgather_dlg.window) );
 	gtk_main();
 
