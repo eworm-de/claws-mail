@@ -1,3 +1,13 @@
+2004-07-10 [colin]	0.9.11cvs17.23
+
+	* src/inc.c
+		Add debug
+	* src/pop.c
+	* src/pop.h
+		Don't re-use same enums for unrelated stuff: it's 
+		completely misleading !
+		Document a bit
+
 2004-07-09 [colin]	0.9.11cvs17.22
 
 	* src/inc.c

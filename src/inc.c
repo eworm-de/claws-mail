@@ -1078,6 +1078,8 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file,
 		int num = 0;
 		FolderItem *item = NULL;
 		
+		debug_print("too big message updated,should remove %s\n", file);
+		
 		if (snum) {
 			snum++;
 		} else {
@@ -1092,6 +1094,8 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file,
 		
 		item = folder_find_item_from_phys_path(path);
 		if (item) {
+			debug_print("removing %d in %s\n", num, 
+				folder_item_get_identifier(item));
 			folder_item_remove_msg(item, num);
 		} 
 		g_free(path);

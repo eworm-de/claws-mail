@@ -269,7 +269,8 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 					session->partial_recv_table, id);
 
 		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE) {
-			session->msg[num].received = (partial_recv != 2);
+			session->msg[num].received = 
+				(partial_recv != POP3_MUST_COMPLETE_RECV);
 			session->msg[num].partial_recv = partial_recv;
 
 		}
@@ -354,7 +355,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	g_free(mail_receive_data.data);
 
 	if (session->msg[session->cur_msg].partial_recv 
-	    == POP3_PARTIAL_DLOAD_DELE) {
+	    == POP3_MUST_COMPLETE_RECV) {
 		gchar *old_file = pop3_get_filename_for_partial_mail(
 				session, session->msg[session->cur_msg].uidl);
 		if (old_file != NULL) {
@@ -381,7 +382,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	session->cur_total_num++;
 
 	session->msg[session->cur_msg].received = TRUE;
-	session->msg[session->cur_msg].partial_recv = FALSE;
+	session->msg[session->cur_msg].partial_recv = POP3_TOTALLY_RECEIVED;
 
 	session->msg[session->cur_msg].recv_time =
 		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
@@ -441,7 +442,7 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 	session->cur_total_num++;
 
 	session->msg[session->cur_msg].received = TRUE;
-	session->msg[session->cur_msg].partial_recv = TRUE;
+	session->msg[session->cur_msg].partial_recv = POP3_PARTIALLY_RECEIVED;
 	session->msg[session->cur_msg].recv_time =
 		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
 
@@ -581,7 +582,7 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		partial_recv = 0;
+		partial_recv = POP3_TOTALLY_RECEIVED;
 		
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
@@ -595,9 +596,9 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		g_hash_table_insert(table, g_strdup(uidl),
 				    GINT_TO_POINTER(recv_time));
 		if (strlen(tmp) == 1)
-			partial_recv = atoi(tmp);
+			partial_recv = atoi(tmp); /* totally received ?*/
 		else
-			partial_recv = POP3_PARTIAL_DLOAD_DELE;
+			partial_recv = POP3_MUST_COMPLETE_RECV;
 
 		g_hash_table_insert(partial_recv_table, g_strdup(uidl),
 				    GINT_TO_POINTER(partial_recv));
@@ -644,7 +645,7 @@ int pop3_msg_in_uidl_list(const gchar *server, const gchar *login,
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		partial_recv = 0;
+		partial_recv = POP3_TOTALLY_RECEIVED;
 		
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
@@ -699,7 +700,7 @@ static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session,
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		partial_recv = 0;
+		partial_recv = POP3_TOTALLY_RECEIVED;
 		
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
@@ -837,6 +838,30 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 	return 0;
 }
 
+/* Partial download:
+ * A mail which has been completely downloaded will have no special headers,
+ * and its entry in the uidl file will end by 0 (POP3_TOTALLY_RECEIVED);
+ *
+ * A mail which has been partially downloaded will have some special headers,
+ * and its entry in the uidl file will first be 1 (POP3_PARTIALLY_RECEIVED);
+ * the special headers will be including "SC-Marked-For-Download" which can 
+ * have three values:
+ * 0 (POP3_PARTIAL_DLOAD_UNKN) meaning that the user has not yet chosen to
+ *  download the mail or let it be deleted - this header is absent until the
+ *  user first chooses an action
+ * 1 (POP3_PARTIAL_DLOAD_DLOAD) meaning that the user wants to finish 
+ *  downloading the mail
+ * 2 (POP3_PARTIAL_DLOAD_DELE) meaning that the user does not want to finish
+ *  downloading the mail
+ * When updating this header to POP3_PARTIAL_DLOAD_DLOAD, the uidl line of
+ * this mail will end with the mail's physical path, which Sylpheed will remove
+ * after having downloaded the complete mail. msg->partial_recv will equal
+ * 2 (POP3_MUST_COMPLETE_RECV).
+ * When updating this header to POP3_PARTIAL_DLOAD_DELE, the uidl line of
+ * this mail will be 0 (POP3_TOTALLY_RECEIVED), which will let Sylpheed delete
+ * this mail from the server as soon as the leave_time preference specifies.
+ */
+ 
 int pop3_mark_for_delete(const gchar *server, const gchar *login, 
 			 const gchar *muidl, const gchar *filename)
 {
@@ -988,7 +1013,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		if (ac->rmmail &&
 		    msg->recv_time != RECV_TIME_NONE &&
 		    msg->recv_time != RECV_TIME_KEEP &&
-		    msg->partial_recv == POP3_PARTIAL_DLOAD_UNKN &&
+		    msg->partial_recv == POP3_TOTALLY_RECEIVED &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
 			log_message
@@ -999,10 +1024,11 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		}
 
 		if (size_limit_over) {
-			if (!msg->received && msg->partial_recv != 2) {
+			if (!msg->received && msg->partial_recv != 
+			    POP3_MUST_COMPLETE_RECV) {
 				pop3_top_send(session, ac->size_limit);
 				return POP3_TOP;
-			} else if (msg->partial_recv == POP3_PARTIAL_DLOAD_DELE)
+			} else if (msg->partial_recv == POP3_MUST_COMPLETE_RECV)
 				break;
 
 			log_message

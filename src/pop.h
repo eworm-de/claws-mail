@@ -104,6 +104,12 @@ typedef enum {
 	POP3_PARTIAL_DLOAD_DELE = 2
 } PartialDownloadAction;
 
+typedef enum {
+	POP3_TOTALLY_RECEIVED	= 0,
+	POP3_PARTIALLY_RECEIVED = 1,
+	POP3_MUST_COMPLETE_RECV = 2
+} PartialDownloadStatus;
+
 struct _Pop3MsgInfo
 {
 	gint size;
