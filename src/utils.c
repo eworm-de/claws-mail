@@ -2157,6 +2157,64 @@ gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 	return 0;
 }
 
+gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
+{
+	FILE *dest_fp;
+	gint n_read;
+	gint bytes_left, to_read;
+	gchar buf[BUFSIZ];
+	gboolean err = FALSE;
+
+	if (fseek(fp, offset, SEEK_SET) < 0) {
+		perror("fseek");
+		return -1;
+	}
+
+	if ((dest_fp = fopen(dest, "wb")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
+	bytes_left = length;
+	to_read = MIN(bytes_left, sizeof(buf));
+
+	while ((n_read = fread(buf, sizeof(gchar), to_read, fp)) > 0) {
+		if (n_read < to_read && ferror(fp))
+			break;
+		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
+			g_warning(_("writing to %s failed.\n"), dest);
+			fclose(dest_fp);
+			unlink(dest);
+			return -1;
+		}
+		bytes_left -= n_read;
+		if (bytes_left == 0)
+			break;
+		to_read = MIN(bytes_left, sizeof(buf));
+	}
+
+	if (ferror(fp)) {
+		perror("fread");
+		err = TRUE;
+	}
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
+	if (err) {
+		unlink(dest);
+		return -1;
+	}
+
+	return 0;
+}
+
 /* convert line endings into CRLF. If the last line doesn't end with
  * linebreak, add it.
  */

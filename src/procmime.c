@@ -1395,15 +1395,29 @@ EncodingType procmime_get_encoding_for_file(const gchar *file)
 	return ENC_7BIT;
 }
 
+struct EncodingTable 
+{
+	gchar *str;
+	EncodingType enc_type;
+};
+
+struct EncodingTable encoding_table[] = {
+	{"7bit", ENC_7BIT},
+	{"8bit", ENC_8BIT},
+	{"binary", ENC_BINARY},
+	{"quoted-printable", ENC_QUOTED_PRINTABLE},
+	{"base64", ENC_BASE64},
+	{"x-uuencode", ENC_UNKNOWN},
+	{NULL, ENC_UNKNOWN},
+};
+
 const gchar *procmime_get_encoding_str(EncodingType encoding)
 {
-	static const gchar *encoding_str[] = {
-		"7bit", "8bit", "quoted-printable", "base64", "x-uuencode",
-		NULL
-	};
-
-	if (encoding >= ENC_7BIT && encoding <= ENC_UNKNOWN)
-		return encoding_str[encoding];
-	else
-		return NULL;
+	struct EncodingTable *enc_table;
+	
+	for (enc_table = encoding_table; enc_table->str != NULL; enc_table++) {
+		if (enc_table->enc_type == encoding)
+			return enc_table->str;
+	}
+	return NULL;
 }

@@ -278,6 +278,8 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     GpgmeSigStat status = GPGME_SIG_STAT_NONE;
     GpgmegtkSigStatus statuswindow = NULL;
     const char *result = NULL;
+    gchar *tmp_file;
+    gint n_exclude_chars = 0;
 
     if (prefs_common.gpg_signature_popup)
 	statuswindow = gpgmegtk_sig_status_create ();
@@ -288,12 +290,47 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 	goto leave;
     }
 
-    /* don't include the last character (LF). It does not belong to the
-     * signed text */
-    err = gpgme_data_new_from_filepart (&text, NULL, fp,
-					mimeinfo->children->fpos,
-					mimeinfo->children->size ?
-					(mimeinfo->children->size - 1) : 0 );
+    /* don't include the last empty line.
+       It does not belong to the signed text */
+    if (mimeinfo->children->size > 0) {
+	if (fseek(fp, mimeinfo->children->fpos + mimeinfo->children->size - 1,
+		  SEEK_SET) < 0) {
+	    perror("fseek");
+	    goto leave;
+	}
+	if (fgetc(fp) == '\n') {
+	    n_exclude_chars++;
+	    if (mimeinfo->children->size > 1) {
+		if (fseek(fp, mimeinfo->children->fpos + mimeinfo->children->size - 2,
+			  SEEK_SET) < 0) {
+		    perror("fseek");
+		    goto leave;
+		}
+		if (fgetc(fp) == '\r')
+		    n_exclude_chars++;
+	    }
+	}
+    }
+
+    /* canonicalize the file part. */
+    tmp_file = get_tmp_file();
+    if (copy_file_part(fp, mimeinfo->children->fpos,
+		       mimeinfo->children->size - n_exclude_chars,
+		       tmp_file) < 0) {
+	g_free(tmp_file);
+	goto leave;
+    }
+    if (canonicalize_file_replace(tmp_file) < 0) {
+	unlink(tmp_file);
+	g_free(tmp_file);
+	goto leave;
+    }
+
+    err = gpgme_data_new_from_file(&text, tmp_file, 1);
+
+    unlink(tmp_file);
+    g_free(tmp_file);
+
     if (!err)
 	err = gpgme_data_new_from_filepart (&sig, NULL, fp,
 					    partinfo->fpos, partinfo->size);

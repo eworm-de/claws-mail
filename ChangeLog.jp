@@ -1,3 +1,33 @@
+2002-09-20
+
+	* src/mainwindow.c: 「編集/スレッドを選択」メニューを追加。
+	* src/summaryview.[ch]: コンテキストメニューに「スレッドを選択」を
+	  追加。
+	  summary_select_thread(): 新規。現在のスレッドのメッセージを全て
+	  選択する。
+
+2002-09-19
+
+	* src/rfc2015.c: check_signature(): エラー処理とメモリリークを修正。
+
+2002-09-19
+
+	* src/rfc2015.c: check_signature(): 検証前にファイルパートの最後の
+	  空行を正しく除去し、正規化するようにした(Evolution その他 MUA
+	  との非互換性を解消するはず)。
+	* src/utils.[ch]: copy_file_part(): 新規。指定した範囲のファイル
+	  ストリームを別のファイルにコピーする。
+
+2002-09-19
+
+	* src/compose.c: compose_write_to_file(): 8-bit テキストの署名時に
+	  は BASE64 エンコードを強制するようにした(Colin Leroy さん thanks)。
+
+2002-09-16
+
+	* src/prefs_common.c: prefs_send_create(): Cyrillic (Windows-1251)
+	  用の charset 文字列を修正。
+
 2002-09-15
 
 	* version 0.8.3

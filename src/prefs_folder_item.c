@@ -470,7 +470,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	rowcount++;
 
 	/* Folder color */
-	folder_color = gtk_label_new(_("Folder color"));
+	folder_color = gtk_label_new(_("Folder color: "));
 	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
 	gtk_widget_show(folder_color);
 	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
@@ -481,7 +481,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	gtk_container_set_border_width(GTK_CONTAINER(folder_color_btn), 2);
 	gtk_widget_show(folder_color_btn);
 	gtk_table_attach(GTK_TABLE(table), folder_color_btn,
-			 0, 1, rowcount, rowcount + 1,
+			 1, 2, rowcount, rowcount + 1,
 			 GTK_SHRINK, 0, 0, 0);
 
 	dialog->item->prefs->color = item->prefs->color;

@@ -740,7 +740,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		if (mailto && *mailto != '\0') {
 			compose_entries_set(compose, mailto);
 
-		} else if(item && item->prefs->enable_default_to) {
+		} else if (item && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
 			compose_entry_select(compose, item->prefs->default_to);
 			grab_focus_on_last = FALSE;
@@ -772,7 +772,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	compose_show_first_last_header(compose, TRUE);
 
 	/* Set save folder */
-	if(item && item->prefs && item->prefs->save_copy_to_folder) {
+	if (item && item->prefs && item->prefs->save_copy_to_folder) {
 		gchar *folderidentifier;
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
@@ -782,7 +782,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	}
 	
 	/* Grab focus on last header only if no default_to was set */
-	if(grab_focus_on_last)
+	if (grab_focus_on_last)
 		gtk_widget_grab_focus(compose->header_last->entry);
 
 	if (prefs_common.auto_exteditor && !keep_original)
@@ -876,7 +876,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		}
 		if (!account) {
 			gchar cc[BUFFSIZE];
-			if(!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
+			if (!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
 				extract_address(cc);
 				account = account_find_from_address(cc);
 			}        
@@ -917,7 +917,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	}
 
 	/* Set save folder */
-	if(msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
+	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
 		gchar *folderidentifier;
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
@@ -1003,9 +1003,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		account = account_find_from_address(to);
 	}
 
-	if(!account && prefs_common.forward_account_autosel) {
+	if (!account && prefs_common.forward_account_autosel) {
 		gchar cc[BUFFSIZE];
-		if(!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
+		if (!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
 		        extract_address(cc);
 		        account = account_find_from_address(cc);
                 }
@@ -1258,7 +1258,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
-	if(!account)
+	if (!account)
  		account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
@@ -2984,21 +2984,21 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
         compose->newsgroup_list = NULL;
 
 	/* search header entries for to and newsgroup entries */
-	for(list = compose->header_list; list; list = list->next) {
+	for (list = compose->header_list; list; list = list->next) {
 		gchar *header;
 		gchar *entry;
 		header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 		g_strstrip(entry);
-		if(entry[0] != '\0') {
-			for(strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
-				if(!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+		if (entry[0] != '\0') {
+			for (strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
+				if (!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
 					compose->to_list = address_list_append(compose->to_list, entry);
 					recipient_found = TRUE;
 				}
 			}
-			for(strptr = recipient_headers_news; *strptr != NULL; strptr++) {
-				if(!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+			for (strptr = recipient_headers_news; *strptr != NULL; strptr++) {
+				if (!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
 					compose->newsgroup_list = newsgroup_list_append(compose->newsgroup_list, entry);
 					recipient_found = TRUE;
 				}
@@ -3038,6 +3038,7 @@ gint compose_send(Compose *compose)
 	gint msgnum;
 	FolderItem *folder;
 	gint val;
+	gchar *msgpath;
 
 	if (compose_check_entries(compose, TRUE) == FALSE)
 		return -1;
@@ -3048,7 +3049,9 @@ gint compose_send(Compose *compose)
 		return -1;
 	}
 	
-	val = procmsg_send_message_queue(folder_item_fetch_msg(folder, msgnum));
+	msgpath = folder_item_fetch_msg(folder, msgnum);
+	val = procmsg_send_message_queue(msgpath);
+	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
 	folderview_update_item(folder, TRUE);
@@ -3203,20 +3206,20 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
  	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
 
 	first_address = TRUE;
-	for(list = compose->header_list; list; list = list->next) {
+	for (list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
 
-		if(g_strcasecmp(headerentryname, cc_hdr) == 0 
+		if (g_strcasecmp(headerentryname, cc_hdr) == 0 
 		   || g_strcasecmp(headerentryname, to_hdr) == 0) {
 			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
-			if(str[0] != '\0') {
+			if (str[0] != '\0') {
 				compose_convert_header
 					(buf, sizeof(buf), str,
 					strlen("Resent-To") + 2);
-				if(first_address) {
+				if (first_address) {
 					fprintf(fp, "Resent-To: ");
 					first_address = FALSE;
 				} else {
@@ -3226,7 +3229,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 			}
 		}
 	}
-	/* if(!first_address) { */
+	/* if (!first_address) { */
 	fprintf(fp, "\n");
 	/* } */
 
@@ -3484,6 +3487,13 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			out_codeset = CS_ISO_8859_1;
 		encoding = procmime_get_encoding_for_charset(out_codeset);
 
+#if USE_GPGME
+		if (!is_draft &&
+		    compose->use_signing && !compose->account->clearsign &&
+		    encoding == ENC_8BIT)
+			encoding = ENC_BASE64;
+#endif
+
 		src_codeset = conv_get_current_charset_str();
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
@@ -3726,7 +3736,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
                 return -1;
         }
 
-	if(compose->to_list) {
+	if (compose->to_list) {
     		if (compose->account->protocol != A_NNTP)
             		mailac = compose->account;
 		else if (compose->orig_account->protocol != A_NNTP)
@@ -3740,10 +3750,10 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		}
 	}
 
-	if(compose->newsgroup_list) {
+	if (compose->newsgroup_list) {
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
-                else if(!(newsac = compose->orig_account) || (newsac->protocol != A_NNTP)) {
+                else if (!(newsac = compose->orig_account) || (newsac->protocol != A_NNTP)) {
 			lock = FALSE;
 			alertpanel_error(_("No account for posting news available!"));
 			return -1;
@@ -3820,7 +3830,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	fprintf(fp, "SSH:\n");
 	/* write recepient list */
 	fprintf(fp, "R:");
-	if(compose->to_list) {
+	if (compose->to_list) {
 		fprintf(fp, "<%s>", (gchar *)compose->to_list->data);
 		for (cur = compose->to_list->next; cur != NULL; cur = cur->next)
 			fprintf(fp, ",<%s>", (gchar *)cur->data);
@@ -3828,21 +3838,21 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	fprintf(fp, "\n");
 	/* write newsgroup list */
 	fprintf(fp, "NG:");
-	if(compose->newsgroup_list) {
+	if (compose->newsgroup_list) {
 		fprintf(fp, "%s", (gchar *)compose->newsgroup_list->data);
 		for (cur = compose->newsgroup_list->next; cur != NULL; cur = cur->next)
 			fprintf(fp, ",%s", (gchar *)cur->data);
 	}
 	fprintf(fp, "\n");
 	/* Sylpheed account IDs */
-	if(mailac) {
+	if (mailac) {
 		fprintf(fp, "MAID:%d\n", mailac->account_id);
 	}
-	if(newsac) {
+	if (newsac) {
 		fprintf(fp, "NAID:%d\n", newsac->account_id);
 	}
 	/* Save copy folder */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 		gchar *savefolderid;
 		
 		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
@@ -3850,7 +3860,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		g_free(savefolderid);
 	}
 	/* Message-ID of message replying to */
-	if((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
+	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->replyinfo->folder);
@@ -3910,7 +3920,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	folderview_update_item(queue, TRUE);
 
-	if((msgnum != NULL) && (item != NULL)) {
+	if ((msgnum != NULL) && (item != NULL)) {
 		*msgnum = num;
 		*item = queue;
 	}
@@ -4046,19 +4056,19 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 	trans_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
 
 	first_address = TRUE;
-	for(list = compose->header_list; list; list = list->next) {
+	for (list = compose->header_list; list; list = list->next) {
     		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
 
-		if(!g_strcasecmp(trans_hdr, headerentryname)) {
+		if (!g_strcasecmp(trans_hdr, headerentryname)) {
 			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
-			if(str[0] != '\0') {
+			if (str[0] != '\0') {
 				compose_convert_header
 					(buf, sizeof(buf), str,
 					strlen(header) + 2);
-				if(first_address) {
+				if (first_address) {
 					fprintf(fp, "%s: ", header);
 					first_address = FALSE;
 				} else {
@@ -4068,7 +4078,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			}
 		}
 	}
-	if(!first_address) {
+	if (!first_address) {
 		fprintf(fp, "\n");
 	}
 
@@ -4085,7 +4095,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar *str;
 	gchar *name;
 	GSList *list;
-	gchar * std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
+	gchar *std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
 
 	/* struct utsname utsbuf; */
 
@@ -4095,7 +4105,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	g_return_val_if_fail(compose->account->address != NULL, -1);
 
 	/* Save copy folder */
-	if(is_draft) {
+	if (is_draft) {
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 			gchar *savefolderid;
 
@@ -4418,36 +4428,36 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* get special headers */
 	for (list = compose->header_list; list; list = list->next) {
     		ComposeHeaderEntry *headerentry;
-		gchar * tmp;
-		gchar * headername;
-		gchar * headername_wcolon;
-		gchar * headername_trans;
-		gchar * headervalue;
+		gchar *tmp;
+		gchar *headername;
+		gchar *headername_wcolon;
+		gchar *headername_trans;
+		gchar *headervalue;
 		gchar **string;
 		gboolean standard_header = FALSE;
 
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
-		if (!strstr(tmp,":")) {
-			headername_wcolon = g_strconcat(tmp,":",NULL);
+		if (!strstr(tmp, ":")) {
+			headername_wcolon = g_strconcat(tmp, ":", NULL);
 			headername = g_strdup(tmp);
 		} else {
 			headername_wcolon = g_strdup(tmp);
-			headername = g_strdup(strtok(tmp,":"));
+			headername = g_strdup(strtok(tmp, ":"));
 		}
 		g_free(tmp);
 		
 		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 		string = std_headers;
 		while (*string != NULL) {
-			headername_trans = (prefs_common.trans_hdr ? gettext(*string) : *string);
+			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
 			if (!strcmp(headername_trans,headername_wcolon))
 				standard_header = TRUE;
 			string++;
 		}
 		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
-			fprintf(fp,"%s %s\n",headername_wcolon, headervalue);
+			fprintf(fp, "%s %s\n", headername_wcolon, headervalue);
 				
 		g_free(headername);
 		g_free(headername_wcolon);
@@ -4536,11 +4546,11 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO(combo)->entry), TRUE);
 	gtk_widget_show(combo);
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1, compose->header_nextrow, compose->header_nextrow+1, GTK_SHRINK, GTK_FILL, 0, 0);
-	if(compose->header_last) {	
+	if (compose->header_last) {	
 		gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
 		string = headers;
 		while (*string != NULL) {
-			if (!strcmp(*string,last_header_entry))
+			if (!strcmp(*string, last_header_entry))
 				standard_header = TRUE;
 			string++;
 		}
@@ -4801,7 +4811,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 	savemsg_checkbtn = gtk_check_button_new_with_label(_("Save Message to "));
 	gtk_widget_show(savemsg_checkbtn);
 	gtk_table_attach(GTK_TABLE(table), savemsg_checkbtn, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	if(account_get_special_folder(compose->account, F_OUTBOX)) {
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
 	}
 	gtk_signal_connect(GTK_OBJECT(savemsg_checkbtn), "toggled",
@@ -4811,7 +4821,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 	gtk_widget_show(savemsg_entry);
 	gtk_table_attach_defaults(GTK_TABLE(table), savemsg_entry, 1, 2, rowcount, rowcount + 1);
 	gtk_editable_set_editable(GTK_EDITABLE(savemsg_entry), prefs_common.savemsg);
-	if(account_get_special_folder(compose->account, F_OUTBOX)) {
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		folderidentifier = folder_item_get_identifier(account_get_special_folder
 				  (compose->account, F_OUTBOX));
 		gtk_entry_set_text(GTK_ENTRY(savemsg_entry), folderidentifier);

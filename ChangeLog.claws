@@ -1,3 +1,78 @@
+2002-09-20 [paul]	0.8.2claws64
+
+	* sync with 0.8.3cvs4
+		'Select thread' re-implemented 
+		see ChangeLog 2002-09-20
+
+2002-09-21 [alfons]	0.8.2claws63
+
+	* src/compose.c
+		compose_send(): plug unnoticed memleak
+
+2002-09-20 [alfons]	0.8.2claws62
+
+	* src/addr_compl.c
+		replace_address_in_edit(): strict check for NULL address to
+		fix "[ 607348 ] Segfault in address completion". My guess is
+		that this happens with an empty address book, but it's good
+		to have this check here anyway
+		
+		completion_window_button_press(): free string returned 
+		from the internal cache
+
+2002-09-20 [christoph]	0.8.2claws61
+
+	* src/procmime.h
+		added ENC_BINARY to EncodingType
+	* src/procmime.c
+		the string returned by procmime_get_encoding_str
+		should not depend on the order of values in the
+		EncodingType definition
+	* doc-src/rfc1806.txt	** NEW FILE **
+		Added rfc1806 about MIME Content-Disposition
+		Extension
+
+2002-09-19 [paul]	0.8.2claws60
+
+	* sync with 0.8.2cvs3
+		see ChangeLog 2002-09-19
+
+2002-09-19 [paul]	0.8.2claws59
+
+	* src/prefs_folder_item.c
+		revert to Darko's original alignment of colour
+		selector button
+		add a colon to folder_color label
+		
+	* src/compose.c
+		add Colin's patch (with Hiro's modifications) to 
+		force BASE64 encoding for 8-bit text when signing
+		(sync with 0.8.3cvs2)
+
+2002-09-18 [alfons]	0.8.2claws58
+
+	* src/compose.c
+		:%sno/if(/if (/gc
+		:%sno/for(/for (/gc
+		(beautify a little bit)
+
+2002-09-18 [christoph]	0.8.2claws57
+
+	* src/pine.c
+		fix handling of fgetc return value
+
+2002-09-17 [alfons]	0.8.2claws56
+	
+	* src/summaryview.c
+		summary_sort(): check non-NULL summaryview->folder_item when no 
+		folder is selected at all
+		(closes "[ 610344 ] sort label make syl Crash")
+
+2002-09-17 [alfons]	0.8.2claws55
+	
+	* src/compose.c
+		beautify a little bit
+
 2002-09-17 [christoph]	0.8.2claws54
 
 	* src/folder.c

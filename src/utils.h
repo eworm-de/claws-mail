@@ -342,6 +342,10 @@ gint copy_file			(const gchar	*src,
 gint move_file			(const gchar	*src,
 				 const gchar	*dest,
 				 gboolean	 overwrite);
+gint copy_file_part		(FILE		*fp,
+				 off_t		 offset,
+				 size_t		 length,
+				 const gchar	*dest);
 gint canonicalize_file		(const gchar	*src,
 				 const gchar	*dest);
 gint canonicalize_file_replace	(const gchar	*file);
