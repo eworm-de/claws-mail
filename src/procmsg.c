@@ -1228,8 +1228,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				if (replymessageid != NULL) {
 					procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
-				} 
-				else {
+				}  else {
 					procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_FORWARDED, 0);
 				}
@@ -1287,6 +1286,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
 	MsgPermFlags perm_flags_new, perm_flags_old;
+	MsgTmpFlags tmp_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1306,14 +1306,19 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 		update_folder_msg_counts(item, msginfo, perm_flags_old);
 
+	}
+
+	/* Tmp flags handling */
+	tmp_flags_old = msginfo->flags.tmp_flags;
+	msginfo->flags.tmp_flags |= tmp_flags;
+
+	/* update notification */
+	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {
 		msginfo_update.msginfo = msginfo;
 		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
 		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
-
-	/* Tmp flags hanlding */
-	msginfo->flags.tmp_flags |= tmp_flags;
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1321,6 +1326,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
 	MsgPermFlags perm_flags_new, perm_flags_old;
+	MsgTmpFlags tmp_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1344,7 +1350,16 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	}
 
 	/* Tmp flags hanlding */
+	tmp_flags_old = msginfo->flags.tmp_flags;
 	msginfo->flags.tmp_flags &= ~tmp_flags;
+
+	/* update notification */
+	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {
+		msginfo_update.msginfo = msginfo;
+		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
+		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
+	}
 }
 
 /*!

@@ -1173,7 +1173,6 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 		for (field = msginfo->to; fieldno++ < 2; field = msginfo->cc) {
 			if (!account && field) {
 				gchar *to = NULL;
-				printf("finding from %s\n", field);
 				if (!strchr(field, ',')) {
 					Xstrdup_a(to, field, return NULL);
 					extract_address(to);

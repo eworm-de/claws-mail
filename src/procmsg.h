@@ -93,11 +93,11 @@ typedef guint32 MsgPermFlags;
 #define MSG_SIGNED		(1U << 21)
 #define MSG_MULTIPART		(1U << 29)
 #define MSG_HAS_ATTACHMENT	(1U << 30)
-#define MSG_CACHED		(1U << 31)
+#define MSG_SCANNED		(1U << 31)
 
 typedef guint32 MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED | MSG_HAS_ATTACHMENT)
+#define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED | MSG_HAS_ATTACHMENT | MSG_SCANNED)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
@@ -137,7 +137,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_NEWS(msg)		(((msg).tmp_flags & MSG_NEWS) != 0)
 #define MSG_IS_MULTIPART(msg)		(((msg).tmp_flags & MSG_MULTIPART) != 0)
 #define MSG_IS_WITH_ATTACHMENT(msg)	(((msg).tmp_flags & MSG_HAS_ATTACHMENT) != 0)
-#define MSG_IS_CACHED(msg)		(((msg).tmp_flags & MSG_CACHED) != 0)
+#define MSG_IS_SCANNED(msg)		(((msg).tmp_flags & MSG_SCANNED) != 0)
 
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)

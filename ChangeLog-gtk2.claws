@@ -1,3 +1,12 @@
+2004-09-08 [colin]	0.9.12cvs99.1
+
+	* src/account.c
+	* src/folder.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/plugins/pgpmime/pgpmime.c
+		Sync with HEAD
+
 2004-09-08 [colin]	0.9.12cvs97.2
 
 	* src/summaryview.c
