@@ -65,6 +65,11 @@ typedef enum {
 	SIGN_KEY_BY_FROM,
 	SIGN_KEY_CUSTOM
 } SignKeyType;
+
+typedef enum {
+	GNUPG_MODE_DETACH,
+	GNUPG_MODE_INLINE
+} DefaultGnuPGMode;
 #endif /* USE_GPGME */
 
 struct _PrefsAccount
@@ -146,8 +151,7 @@ struct _PrefsAccount
 	/* Privacy */
 	gboolean default_encrypt;
 	gboolean default_sign;
-	gboolean ascii_armored;
-	gboolean clearsign;
+	gboolean default_gnupg_mode;;
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */

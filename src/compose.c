@@ -148,14 +148,6 @@ typedef enum
 	PRIORITY_LOWEST
 } PriorityLevel;
 
-#if USE_GPGME
-typedef enum
-{
-	GNUPG_MODE_DETACH,
-	GNUPG_MODE_INLINE
-} ComposeGnuPGMode;
-#endif
-
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -6831,7 +6823,7 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 
 static void activate_gnupg_mode (Compose *compose, PrefsAccount *account) 
 {
-	if (account->clearsign || account->ascii_armored)
+	if (account->default_gnupg_mode)
 		compose->gnupg_mode = GNUPG_MODE_INLINE;
 	else
 		compose->gnupg_mode = GNUPG_MODE_DETACH;

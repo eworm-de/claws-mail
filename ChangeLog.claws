@@ -1,3 +1,11 @@
+2002-11-08 [paul]	0.8.5claws92
+
+	* src/compose.c
+	  src/prefs_account.[ch]
+	  	remove account options 'clearsign' and 'ascii_armored',
+		replace with 'default_gnupg_mode' to prevent mixed-mode
+		Privacy settings
+
 2002-11-08 [paul]	0.8.5claws91
 
 	* src/compose.[ch]
