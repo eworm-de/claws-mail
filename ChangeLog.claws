@@ -1,3 +1,10 @@
+2002-11-09 [colin]	0.8.5claws103
+
+	* src/folderview.c
+		Fix prefs_filtering renaming for MH folders (we
+		shouldn't rename by path as another folder could
+		have the same hierarchy).
+
 2002-11-09 [colin]	0.8.5claws102
 
 	* src/folder.c

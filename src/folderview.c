@@ -2072,8 +2072,8 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	}
 	g_free(new_folder);
 
-	if (FOLDER_TYPE(item->folder) == F_MH)
-		prefs_filtering_rename_path(old_path, item->path);
+	/* if (FOLDER_TYPE(item->folder) == F_MH)
+		prefs_filtering_rename_path(old_path, item->path); */
 	new_id = folder_item_get_identifier(item);
 	prefs_filtering_rename_path(old_id, new_id);
 
