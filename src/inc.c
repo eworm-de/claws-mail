@@ -1125,8 +1125,12 @@ static gint inc_spool_account(PrefsAccount *account)
 	else 
 		mbox = g_strconcat(account->local_mbox,
 			   	   G_DIR_SEPARATOR_S, logname, NULL);
+	
 	result = get_spool(inbox, mbox);
 	g_free(mbox);
+	
+	statusbar_pop_all();
+	
 	return result;
 }
 

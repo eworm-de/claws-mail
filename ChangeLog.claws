@@ -1,4 +1,13 @@
-2004-01-20 [paul]	0.9.8clawws35
+2004-01-20 [paul]	0.9.8claws36
+
+	* src/compose.c
+	  src/undo.c
+	  	remove superfluous debug_print's
+		
+	* src/inc.c
+		clear the statusbar after LOCAL incorporation
+
+2004-01-20 [paul]	0.9.8claws35
 
 	* sync with 0.9.8cvs3
 		see ChangeLog 2004-01-20
