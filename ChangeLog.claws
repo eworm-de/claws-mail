@@ -1,3 +1,8 @@
+2003-09-01 [paul]	0.9.4claws54
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
 2003-09-01 [alfons]	0.9.4claws53
 
 	* src/gtk/gtkaspell.[ch]
