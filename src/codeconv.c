@@ -370,7 +370,7 @@ static gchar valid_eucjp_tbl[][96] = {
 
 static gboolean isprintableeuckanji(guchar c1, guchar c2)
 {
-	if (c1 <= 0xa0 || c1 == 0xff)
+	if (c1 <= 0xa0 || c1 >= 0xf5)
 		return FALSE;
 	if (c2 <= 0xa0 || c2 == 0xff)
 		return FALSE;

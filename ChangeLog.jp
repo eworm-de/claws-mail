@@ -1,3 +1,30 @@
+2003-02-13
+
+	* src/codeconv.c: isprintableeuckanji(): 1バイト目で 0xf4 を超える
+	  値を許可しないようにした(glibc の abort() 問題を修正)。
+	* src/html.c: html_read_line(): 現在の locale で表示不能な文字を
+	  削除。
+
+2003-02-11
+
+	* src/utils.[ch]:
+	  trim_subject_for_compare(): trim_subject() を改名。
+	  trim_subject(): 新規。件名の先頭の[...]または(...)を削除する。
+	* src/prefs_folder_item.c
+	  src/folder.[ch]:
+	  サマリ/返信時の件名を省略するオプションを追加。
+	* src/summaryview.c: summary_set_header(): フォルダオプションが設定
+	  されていれば件名を短縮。
+	* src/compose.c: compose_reply_set_entry(): フォルダオプションが設定
+	  されていれば件名を短縮。
+
+2003-02-09
+
+	* src/codeconv.c:
+	  LBREAK_IF_REQUIRED(): 最初の単語の前で改行しないようにした(X-Face
+	  ヘッダの問題を修正)。
+	  conv_encode_header(): 1単語97文字まで許可するようにした。
+
 2003-02-07
 
 	* src/filter.c: filter_match_condition(): 2番目の条件が正規表現を

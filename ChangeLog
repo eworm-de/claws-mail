@@ -1,3 +1,29 @@
+2003-02-13
+
+	* src/prefs_account.c: prefs_account_receive_create()
+	  src/utils.c: to_human_readable(): made units translatable.
+
+2003-02-13
+
+	* src/codeconv.c: isprintableeuckanji(): don't allow more than 0xf4
+	  at first byte (fixes abort() problem of glibc).
+	* src/html.c: html_read_line(): remove characters which can't be
+	  displayed on the current locale.
+
+2003-02-11
+
+	* src/utils.[ch]:
+	  trim_subject_for_compare(): renamed from trim_subject().
+	  trim_subject(): new. It removes [...] or (...) at the beginning
+	  of subject.
+	* src/prefs_folder_item.c
+	  src/folder.[ch]:
+	  added options for trimming summary / compose subject.
+	* src/summaryview.c: summary_set_header(): trim subject if the folder
+	  option is set.
+	* src/compose.c: compose_reply_set_entry(): trim subject if the folder
+	  option is set.
+
 2003-02-09
 
 	* src/codeconv.c:
