@@ -1,3 +1,10 @@
+2002-05-20 [alfons]	0.7.6claws8
+
+	* src/procheader.c
+		don't forget to call mktime() so we have a valid week 
+		and year day
+		(Bug report by Roger Sondermann <mail@jumaros.de>)
+
 2002-05-20 [paul]	0.7.6claws7
 
 	* src/html.c
