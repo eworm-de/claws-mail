@@ -7365,10 +7365,10 @@ static void text_activated(GtkWidget *widget, Compose *compose)
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 			  const gchar *text, gint len, Compose *compose)
 {
-	g_return_if_fail(text);
-
 	gint paste_as_quotation = GPOINTER_TO_INT(g_object_get_data
 				(G_OBJECT(compose->text), "paste_as_quotation"));
+
+	g_return_if_fail(text);
 
 	g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
