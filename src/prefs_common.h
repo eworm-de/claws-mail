@@ -83,7 +83,9 @@ struct _PrefsCommon
 	gboolean forward_account_autosel;
 	gboolean reedit_account_autosel;
 	gboolean show_ruler;
-
+	gboolean autosave;
+	gint autosave_length;
+	
 	/* Quote */
 	gboolean reply_with_quote;
 	gchar *quotemark;

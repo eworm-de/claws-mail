@@ -221,6 +221,7 @@ static gint compose_write_to_file		(Compose	*compose,
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose);
+void compose_remove_draft			(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item);
@@ -3360,6 +3361,19 @@ static gint compose_remove_reedit_target(Compose *compose)
 	return 0;
 }
 
+void compose_remove_draft(Compose *compose)
+{
+	FolderItem *drafts;
+	MsgInfo *msginfo = compose->targetinfo;
+	drafts = account_get_special_folder(compose->account, F_DRAFT);
+
+	if (procmsg_msg_exist(msginfo)) {
+		folder_item_remove_msg(drafts, msginfo->msgnum);
+		folderview_update_item(drafts, TRUE);
+	}
+
+}
+
 static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 {
 	return compose_queue_sub (compose, msgnum, item, FALSE);
@@ -6265,7 +6279,8 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
-
+	gchar *tmp = NULL;
+	
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;
@@ -6278,6 +6293,8 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 
 		switch (val) {
 		case G_ALERTDEFAULT:
+			if (prefs_common.autosave)
+				compose_remove_draft(compose);			
 			break;
 		case G_ALERTALTERNATE:
 			compose_draft_cb(data, 0, NULL);
@@ -6809,6 +6826,9 @@ static void text_activated(GtkWidget *widget, Compose *compose)
 	compose_send_control_enter(compose);
 }
 
+#define EDITABLE_LENGTH(x) \
+	strlen(gtk_editable_get_chars(x,0,-1))
+
 static void text_inserted(GtkWidget *widget, const gchar *text,
 			  gint length, gint *position, Compose *compose)
 {
@@ -6843,6 +6863,11 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 					   GTK_SIGNAL_FUNC(text_inserted),
 					   compose);
 	gtk_signal_emit_stop_by_name(GTK_OBJECT(editable), "insert_text");
+
+	
+	if (prefs_common.autosave && 
+	    EDITABLE_LENGTH(editable) % prefs_common.autosave_length == 0)
+		compose_draft_cb((gpointer)compose, 1, NULL);
 }
 
 static gboolean compose_send_control_enter(Compose *compose)

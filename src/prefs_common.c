@@ -126,6 +126,9 @@ static struct Compose {
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *checkbtn_reply_with_quote;
+	
+	GtkWidget *checkbtn_autosave;
+	GtkWidget *entry_autosave_length;
 } compose;
 
 	/* spelling */
@@ -380,6 +383,12 @@ static PrefParam param[] = {
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+        {"autosave", "FALSE", &prefs_common.autosave,
+	 P_BOOL, &compose.checkbtn_autosave,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+        {"autosave_length", "50", &prefs_common.autosave_length,
+	 P_INT, &compose.entry_autosave_length,
+	 prefs_set_data_from_entry, prefs_set_entry},
 #if USE_ASPELL
 	{"enable_aspell", "TRUE", &prefs_common.enable_aspell,
 	 P_BOOL, &spelling.checkbtn_enable_aspell,
@@ -1717,6 +1726,11 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *frame_msgwrap;
 
+	GtkWidget *hbox_autosave;
+	GtkWidget *checkbtn_autosave;
+	GtkWidget *entry_autosave_length;
+	GtkWidget *label_autosave_length;
+	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1780,6 +1794,23 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
 
+	
+	hbox_autosave = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_autosave);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
+	
+	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
+			   _("Autosave to drafts every "));
+
+	entry_autosave_length = gtk_entry_new();
+	gtk_widget_set_usize (entry_autosave_length, 64, -1);	
+	gtk_widget_show (entry_autosave_length);
+	gtk_box_pack_start (GTK_BOX (hbox_autosave), entry_autosave_length, FALSE, FALSE, 0);
+	
+	label_autosave_length = gtk_label_new(_("characters"));
+	gtk_widget_show (label_autosave_length);
+	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
+	
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
@@ -1856,12 +1887,15 @@ static void prefs_compose_create(void)
 	compose.spinbtn_undolevel     = spinbtn_undolevel;
 	compose.spinbtn_undolevel_adj = spinbtn_undolevel_adj;
 
-	compose.spinbtn_linewrap     = spinbtn_linewrap;
-	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
-	compose.checkbtn_wrapquote   = checkbtn_wrapquote;
-	compose.checkbtn_autowrap    = checkbtn_autowrap;
-	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
+	compose.spinbtn_linewrap      = spinbtn_linewrap;
+	compose.spinbtn_linewrap_adj  = spinbtn_linewrap_adj;
+	compose.checkbtn_wrapquote    = checkbtn_wrapquote;
+	compose.checkbtn_autowrap     = checkbtn_autowrap;
+	compose.checkbtn_wrapatsend   = checkbtn_wrapatsend;
 
+	compose.checkbtn_autosave     = checkbtn_autosave;
+	compose.entry_autosave_length = entry_autosave_length;
+	
 	compose.checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_redirect_keep_from =

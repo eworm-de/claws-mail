@@ -1,3 +1,15 @@
+2002-09-03 [colin]      0.8.2claws26
+
+	* src/prefs_common.[ch]
+		Added autosave and autosave_length prefs
+	* src/compose.c
+		Added compose_remove_draft()
+		Auto-save drafts according to the prefs
+	* src/main.c
+		Added a crash-indicator file, allowing to check
+		for new messages on startup if Sylpheed crashed
+		(makes saved drafts "reappear")
+
 2002-09-03 [colin]	0.8.2claws25
 
 	* src/textview.[ch]
