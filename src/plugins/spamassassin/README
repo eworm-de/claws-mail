@@ -1,0 +1,23 @@
+SpamAssassin Plugin
+-------------------
+
+This plugin will filter incoming messages using SpamAssassin. Like the
+spamc command from the SpamAssassin package the message is send to a
+spamd server that decides if the message is spam or not.
+
+To build the plugin run configure with --enable-spamassassin-plugin
+
+The spamd server localtion is currently fixed to localhost:783. If you
+want to change that spamd's location you have to edit the lines in the
+spamassassin_read_config function in spamassassin.c until a configuration
+for the plugin is available. The plugin is also configured to filter
+only messages that are smaller then 250kB.
+
+Message that are classified as spam will be moved to the default trash
+folder.
+
+libspamc.[ch] and utils.[ch] are copied from the SpamAssassin package. I
+hope SpamAssassin will provide their functions as a library with the
+required includes files in the future for easier building. Building the
+library as a shared object is already possible, but it is not installable
+with the package and the includes are also not available.
