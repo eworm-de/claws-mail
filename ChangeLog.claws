@@ -1,3 +1,9 @@
+2002-11-09 [christoph]	0.8.5claws110
+
+	* src/folderview.c
+		better unlock the mouse cursor before calling
+		summary_show because it changes the cursor too
+
 2002-11-09 [christoph]	0.8.5claws109
 
 	* src/folder.[ch]

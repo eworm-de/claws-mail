@@ -1699,7 +1699,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	g_free(buf);
 
 	main_window_cursor_wait(folderview->mainwin);
-	
+
 	if (folder_item_open(item) != 0) {
 		STATUSBAR_POP(folderview->mainwin);
 		main_window_cursor_normal(folderview->mainwin);
@@ -1708,6 +1708,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 		return;
         }
+
+	main_window_cursor_normal(folderview->mainwin);
 
 	/* Show messages */
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
@@ -1726,7 +1728,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	STATUSBAR_POP(folderview->mainwin);
-	main_window_cursor_normal(folderview->mainwin);
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;
