@@ -74,11 +74,8 @@
 #include "editgroup.h"
 #include "editaddress.h"
 #include "editbook.h"
-#include "ldif.h"
 #include "importldif.h"
-#include "mutt.h"
 #include "importmutt.h"
-#include "pine.h"
 #include "importpine.h"
 
 #ifdef USE_JPILOT
@@ -97,6 +94,8 @@
 #include "addrselect.h"
 #include "addrclip.h"
 #include "addrgather.h"
+#include "adbookbase.h"
+#include "exphtmldlg.h"
 
 typedef enum
 {
@@ -335,6 +334,7 @@ static void addressbook_list_select_remove	( AddrItemObject    *aio );
 static void addressbook_import_ldif_cb		( void );
 static void addressbook_import_mutt_cb		( void );
 static void addressbook_import_pine_cb		( void );
+static void addressbook_export_html_cb		( void );
 static void addressbook_clip_cut_cb		( void );
 static void addressbook_clip_copy_cb		( void );
 static void addressbook_clip_paste_cb		( void );
@@ -374,22 +374,14 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/_Edit"),		"<alt>Return",	addressbook_edit_address_cb,    0, NULL},
 	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
-	{N_("/_Tools/Import M_utt file"), NULL,         addressbook_import_mutt_cb,	0, NULL},
-	{N_("/_Tools/Import _Pine file"), NULL,         addressbook_import_pine_cb,	0, NULL},
+	{N_("/_Tools/Import _LDIF file..."), NULL,	addressbook_import_ldif_cb,	0, NULL},
+	{N_("/_Tools/Import M_utt file..."), NULL,	addressbook_import_mutt_cb,	0, NULL},
+	{N_("/_Tools/Import _Pine file..."), NULL,	addressbook_import_pine_cb,	0, NULL},
+	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
+	{N_("/_Tools/Export _HTML..."), NULL,           addressbook_export_html_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
-
-/* New options to be added. */
-/*
-	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
-	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
-	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
-	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Export _LDIF file"), NULL,		NULL,				0, NULL},
-	{N_("/_Tools/Export v_Card"),	NULL,           NULL,				0, NULL},
-*/
 
 static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
 {
@@ -791,8 +783,7 @@ static void addressbook_create(void)
 
 }
 
-static gint addressbook_close(void)
-{
+static gint addressbook_close( void ) {
 	gtk_widget_hide(addrbook.window);
 	addressbook_export_to_file();
 	return TRUE;
@@ -897,7 +888,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	/* Test for read only */
 	iface = ds->interface;
 	if( iface->readOnly ) {
-		aval = alertpanel( _("Delete address(es)"),
+		alertpanel( _("Delete address(es)"),
 			_("This address data is readonly and cannot be deleted."),
 			_("Close"), NULL, NULL );
 		return;
@@ -1114,6 +1105,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 	gboolean canAdd = FALSE;
 	gboolean canEditTr = TRUE;
 	gboolean editAddress = FALSE;
+	gboolean canExport = TRUE;
 	AddressTypeControlItem *atci = NULL;
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
@@ -1129,7 +1121,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 				menu_set_sensitive( addrbook.menu_factory, atci->menuCommand, TRUE );
 			}
 		}
-		canEditTr = FALSE;
+		canEditTr = canExport = FALSE;
 	}
 	else if( obj->type == ADDR_DATASOURCE ) {
 		AdapterDSource *ads = ADAPTER_DSOURCE(obj);
@@ -1139,7 +1131,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 			canAdd = canEdit = editAddress = TRUE;
 		}
 		if( ! iface->haveLibrary ) {
-			canAdd = canEdit = editAddress = FALSE;
+			canAdd = canEdit = editAddress = canExport = FALSE;
 		}
 	}
 	else if( obj->type == ADDR_ITEM_FOLDER ) {
@@ -1179,6 +1171,9 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 
 	menu_set_sensitive( addrbook.menu_factory, "/File/Edit",      canEditTr );
 	menu_set_sensitive( addrbook.menu_factory, "/File/Delete",    canEditTr );
+
+	/* Export data */
+	menu_set_sensitive( addrbook.menu_factory, "/Tools/Export HTML...", canExport );
 }
 
 static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
@@ -4001,6 +3996,30 @@ void addressbook_harvest(
 		/* Notify address completion */
 		invalidate_address_completion();
 	}
+}
+
+/*
+* Export HTML file.
+*/
+static void addressbook_export_html_cb( void ) {
+	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
+	AddressObject *obj;
+	AddressDataSource *ds = NULL;
+	AddrBookBase *adbase;
+	AddressCache *cache;
+	GtkCTreeNode *node = NULL;
+
+	if( ! addrbook.treeSelected ) return;
+	node = addrbook.treeSelected;
+	if( GTK_CTREE_ROW(node)->level == 1 ) return;
+	obj = gtk_ctree_node_get_row_data( ctree, node );
+	if( obj == NULL ) return;
+
+	ds = addressbook_find_datasource( node );
+	if( ds == NULL ) return;
+	adbase = ( AddrBookBase * ) ds->rawDataSource;
+	cache = adbase->addressCache;
+	addressbook_exp_html( cache );
 }
 
 /*

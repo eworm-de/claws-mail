@@ -172,7 +172,7 @@ static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data
 	}
 	key = NULL;
 	value = NULL;
-	return 0;
+	return TRUE;
 }
 
 /*
@@ -183,17 +183,21 @@ static void addrcache_free_item_hash( GHashTable *table ) {
 	g_hash_table_freeze( table );
 	g_hash_table_foreach_remove( table, addrcache_free_item_vis, NULL );
 	g_hash_table_thaw( table );
-	g_hash_table_destroy( table );
 }
 
 /*
 * Free up folders and groups.
 */
 static void addrcache_free_all_folders( ItemFolder *parent ) {
-	GList *node = parent->listFolder;
+	GList *node;
+
+	if( parent == NULL ) return;
+
+	node = parent->listFolder;
 	while( node ) {
 		ItemFolder *folder = node->data;
 		addrcache_free_all_folders( folder );
+		node->data = NULL;
 		node = g_list_next( node );
 	}
 	g_list_free( parent->listPerson );
@@ -214,11 +218,12 @@ void addrcache_clear( AddressCache *cache ) {
 	/* Free up folders and hash table */
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
+	g_hash_table_destroy( cache->itemHash );
 	cache->itemHash = NULL;
 	ADDRITEM_PARENT(cache->rootFolder) = NULL;
 	addritem_free_item_folder( cache->rootFolder );
 	cache->rootFolder = NULL;
-	g_list_free( cache->tempList );
+	if( cache->tempList ) g_list_free( cache->tempList );
 	cache->tempList = NULL;
 
 	/* Reset to initial state */
@@ -228,7 +233,6 @@ void addrcache_clear( AddressCache *cache ) {
 	ADDRITEM_PARENT(cache->rootFolder) = NULL;
 
 	addrcache_refresh( cache );
-
 }
 
 /*
@@ -240,6 +244,7 @@ void addrcache_free( AddressCache *cache ) {
 	cache->dirtyFlag = FALSE;
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
+	g_hash_table_destroy( cache->itemHash );
 	cache->itemHash = NULL;
 	ADDRITEM_PARENT(cache->rootFolder) = NULL;
 	addritem_free_item_folder( cache->rootFolder );

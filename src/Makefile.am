@@ -69,6 +69,9 @@ sylpheed_SOURCES = \
 	addressadd.c addressadd.h \
 	addrharvest.c addrharvest.h \
 	addrgather.c addrgather.h \
+	exporthtml.c exporthtml.h \
+	exphtmldlg.c exphtmldlg.h \
+	xmlprops.c xmlprops.h \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \

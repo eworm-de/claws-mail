@@ -1126,5 +1126,32 @@ void addritem_parse_first_last( ItemPerson *person ) {
 }
 
 /*
+ * Build a path of all ancestor folders for specified folder.
+ * Enter:  folder Folder.
+ *         seq    Path sequence, FALSE top down, TRUE bottom up.
+ * Return: List of folders from the top down.
+ */
+GList *addritem_folder_path( const ItemFolder *folder, const gboolean seq ) {
+	GList *list;
+	AddrItemObject *item;
+
+	list = NULL;
+	item = ( AddrItemObject * ) folder;
+	if( seq ) {
+		while( item ) {
+			list = g_list_prepend( list, item );
+			item = ADDRITEM_PARENT( item );
+		}
+	}
+	else {
+		while( item ) {
+			list = g_list_append( list, item );
+			item = ADDRITEM_PARENT( item );
+		}
+	}
+	return list;
+}
+
+/*
 * End of Source.
 */

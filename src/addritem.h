@@ -160,9 +160,9 @@ void addritem_folder_set_remarks	( ItemFolder *folder, const gchar *value );
 void addritem_free_item_folder		( ItemFolder *folder );
 void addritem_free_item_folder_recurse	( ItemFolder *parent );
 
-gboolean addritem_group_add_email		( ItemGroup *group, ItemEMail *email );
-ItemEMail *addritem_group_remove_email		( ItemGroup *group, ItemEMail *email );
-ItemEMail *addritem_group_remove_email_id	( ItemGroup *group, const gchar *eid );
+gboolean addritem_group_add_email	( ItemGroup *group, ItemEMail *email );
+ItemEMail *addritem_group_remove_email	( ItemGroup *group, ItemEMail *email );
+ItemEMail *addritem_group_remove_email_id( ItemGroup *group, const gchar *eid );
 
 gboolean addritem_folder_add_person	( ItemFolder *folder, ItemPerson *item );
 gboolean addritem_folder_add_folder	( ItemFolder *folder, ItemFolder *item );
@@ -171,9 +171,15 @@ void addritem_folder_free_person	( ItemFolder *folder );
 GList *addritem_folder_get_person_list	( ItemFolder *folder );
 GList *addritem_folder_get_group_list	( ItemFolder *folder );
 
-ItemEMail *addritem_move_email_before	( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget );
-ItemEMail *addritem_move_email_after	( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget );
+ItemEMail *addritem_move_email_before	( ItemPerson *person,
+					  ItemEMail *itemMove,
+					  ItemEMail *itemTarget );
+ItemEMail *addritem_move_email_after	( ItemPerson *person,
+					  ItemEMail *itemMove,
+					  ItemEMail *itemTarget );
 
 void addritem_parse_first_last		( ItemPerson *person );
+GList *addritem_folder_path		( const ItemFolder *folder,
+					  const gboolean seq );
 
 #endif /* __ADDRITEM_H__ */

@@ -19,7 +19,6 @@
 
 /*
  * Functions for an E-Mail address harvester.
- * Code still needs some work. Address parsing not strictly correct.
  */
 
 #include <sys/stat.h>
