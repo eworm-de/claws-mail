@@ -877,9 +877,6 @@ static void open_compose_new(const gchar *address, GPtrArray *attach_files)
 static void send_queue(void)
 {
 	GList *list;
-	FolderItem *def_outbox;
-
-	def_outbox = folder_get_default_outbox();
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;
@@ -892,10 +889,6 @@ static void send_queue(void)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			if (res) 	
 				folder_item_scan(folder->queue);
-			if (prefs_common.savemsg && folder->outbox) {
-				if (folder->outbox == def_outbox)
-					def_outbox = NULL;
-			}
 		}
 	}
 }

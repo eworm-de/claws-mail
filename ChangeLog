@@ -1,3 +1,37 @@
+2003-11-14
+
+	* src/folder.h: added 'updated' flag to FolderItem.
+	* src/folderview.[ch]: folderview_update_all_updated(): new. It
+	  updates all updated folders.
+	* src/imap.c: set FolderView::update flag on changes of contents.
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): code cleanup.
+	* src/mh.c: code cleanup.
+	  mh_scan_folder(): correctly count new messages.
+	* src/procmsg.[ch]: code cleanup.
+	  procmsg_open_cache_file(): new.
+	  procmsg_open_mark_file(): enable read/write/append.
+	  procmsg_send_queue(): correctly choose outbox for accounts.
+	* src/send_message.[ch]: send_get_queue_info(): get a queue
+	  information from queued messages.
+	  send_queue_info_free(): free QueueInfo.
+	  send_message_queue(): take QueueInfo as an argument instead of file.	
+	* src/summaryview.c: summary_write_cache(): code cleanup.
+
+2003-11-10
+
+	* src/compose.c: compose_redirect_write_headers(): correctly add
+	  Resent-Cc: header.
+
+2003-11-05
+
+	* src/imap.c: imap_get_msg_list(): fallback to FETCH command if SEARCH
+	  command to get flags failed.
+	  imap_search_flags(): returns UID array and flags hash table using
+	  SEARCH command.
+	  imap_fetch_flags(): returns UID array and flags hash table using
+	  FETCH command.
+
 2003-10-28
 
 	* src/summary_search.c: summary_search_execute(): fixed 'Select all

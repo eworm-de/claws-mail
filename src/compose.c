@@ -3235,7 +3235,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 {
 	gchar buf[BUFFSIZE];
 	gchar *str;
-	gboolean first_address;
+	gboolean first_to_address;
+	gboolean first_cc_address;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	gchar *headerentryname;
@@ -3247,7 +3248,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	cc_hdr = prefs_common.trans_hdr ? _("Cc:") : "Cc:";
  	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
 
-	first_address = TRUE;
+	first_to_address = TRUE;
+	first_cc_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
@@ -3261,12 +3263,24 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 				compose_convert_header
 					(buf, sizeof(buf), str,
 					strlen("Resent-To") + 2, TRUE);
-				if (first_address) {
-					fprintf(fp, "Resent-To: ");
-					first_address = FALSE;
-				} else {
-					fprintf(fp, ",");
+				if (g_strcasecmp(headerentryname, to_hdr) == 0) {
+					if (first_to_address) {
+						fprintf(fp, "Resent-To: ");
+						first_to_address = FALSE;
+					} else {
+						fprintf(fp, ",");
+					}
 				}
+				if (g_strcasecmp(headerentryname, cc_hdr) == 0) {
+					if (first_cc_address) {
+						fprintf(fp, "\n");
+						fprintf(fp, "Resent-Cc: ");
+						first_cc_address = FALSE;
+					} else {
+						fprintf(fp, ",");
+					}
+				}
+				
 				fprintf(fp, "%s", buf);
 			}
 		}

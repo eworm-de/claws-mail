@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # Script name : tb2sylpheed
-# Script version: 1.0.1
+# Script version: 1.0.2
 # Script based on : script kmail2sylpheed.pl
 # Script purpose : convert The Bat! addressbook into Sylpheed addressbook
 # Author : Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
@@ -14,6 +14,9 @@
 #        tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
 #
 # Change Log:
+#
+# 18-12-2003 v 1.0.2
+#	- bugfix: added missing attribute-list start
 #
 # 01-01-2003 v 1.0.1
 #	- bugfix: no more empty Business Homepage entry
@@ -110,6 +113,7 @@ foreach $tbline (@tblines) {
     }
 
     if ($check > 0) {
+    $sylph_addr .= "    <attribute-list>\n";
 	if ($tbdata[1] ne "" || $tbdata[2] ne "") {
 	    $time++;
 	    if($tbdata[29] ne "" && $tbdata[1] ne "") { $full_name = "$tbdata[29] $tbdata[1]"; } else { $full_name = "$tbdata[1]"; }
@@ -237,6 +241,10 @@ foreach $tbline (@tblines) {
 	}
 	$sylph_addr .= "    </attribute-list>\n";
     }
+#    if ( $check > 0 ) {
+#        $sylph_addr .= "</attribute-list>\n";
+#    }
+
     $sylph_addr .=  "  </person>\n";
     $time++;
 }
