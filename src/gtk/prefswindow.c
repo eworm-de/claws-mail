@@ -194,8 +194,8 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 
 gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
-	PrefsTreeNode *prefsnode1 = ((GtkCListRow *)ptr1)->data;;
-	PrefsTreeNode *prefsnode2 = ((GtkCListRow *)ptr2)->data;;
+	PrefsTreeNode *prefsnode1 = ((GtkCListRow *)ptr1)->data;
+	PrefsTreeNode *prefsnode2 = ((GtkCListRow *)ptr2)->data;
 
 	if (prefsnode1 == NULL || prefsnode2 == NULL)
 		return 0;

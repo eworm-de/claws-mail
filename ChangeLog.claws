@@ -1,3 +1,8 @@
+2003-08-09 [alfons]	0.9.4claws14
+
+	* src/gtk/prefswindow.c
+		make it compile
+
 2003-08-09 [christoph]	0.9.4claws13
 
 	* src/prefs_spelling.c
