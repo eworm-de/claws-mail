@@ -367,6 +367,46 @@ void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
 	gtk_container_remove(container, widget);
 }
 
+void gtkut_window_popup(GtkWidget *window)
+{
+	gint x, y, sx, sy, new_x, new_y;
+
+	g_return_if_fail(window != NULL);
+	g_return_if_fail(window->window != NULL);
+
+	sx = gdk_screen_width();
+	sy = gdk_screen_height();
+
+	gdk_window_get_origin(window->window, &x, &y);
+	new_x = x % sx; if (new_x < 0) new_x = 0;
+	new_y = y % sy; if (new_y < 0) new_y = 0;
+	if (new_x != x || new_y != y)
+		gdk_window_move(window->window, new_x, new_y);
+
+	gdk_window_raise(window->window);
+	gdk_window_show(window->window);
+}
+
+void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
+{
+	gint x, y;
+	gint sx, sy;
+
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(widget->window != NULL);
+
+	sx = gdk_screen_width();
+	sy = gdk_screen_height();
+
+	/* gdk_window_get_root_origin ever return *rootwindow*'s position */
+	gdk_window_get_root_origin(widget->window, &x, &y);
+
+	x %= sx; if (x < 0) x = 0;
+	y %= sy; if (y < 0) y = 0;
+	*px = x;
+	*py = y;
+}
+
 void gtkut_widget_disable_theme_engine(GtkWidget *widget)
 {
 	GtkStyle *style, *new_style;
@@ -402,45 +442,6 @@ void gtkut_widget_wait_for_draw(GtkWidget *widget)
 	while (!flag)
 		gtk_main_iteration();
 }
-
-void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
-{
-	gint x, y;
-	gint sx, sy;
-
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(widget->window != NULL);
-
-	/* gdk_window_get_root_origin ever return *rootwindow*'s position*/
-	gdk_window_get_root_origin(widget->window, &x, &y);
-
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
-	x %= sx; if (x < 0) x = 0;
-	y %= sy; if (y < 0) y = 0;
-	*px = x;
-	*py = y;
-}
-
-void gtkut_window_popup(GtkWidget *window)
-{
-	gint x, y, sx, sy, new_x, new_y;
-
-	g_return_if_fail(window != NULL);
-	g_return_if_fail(window->window != NULL);
-
-	gdk_window_get_origin(window->window, &x, &y);
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
-	new_x = x % sx; if (new_x < 0) new_x = 0;
-	new_y = y % sy; if (new_y < 0) new_y = 0;
-	if (new_x != x || new_y != y)
-		gdk_window_move(window->window, new_x, new_y);
-
-	gdk_window_raise(window->window);
-	gdk_window_show(window->window);
-}
-
 
 static void gtkut_clist_bindings_add(GtkWidget *clist)
 {

@@ -1,3 +1,39 @@
+2002-12-18
+
+	* src/main.c: X なしでリモート操作を可能にするために gtk_init()
+	  の前にコマンドラインオプションを処理するようにした(Ruslan N.
+	  Balkin さん thanks)。
+	* src/codeconv.c: conv_encode_header(): 潜在的なバッファオーバー
+	  フローを修正。
+
+2002-12-18
+
+	* src/Makefile.am: $(target_alias) を $(target_triplet) に変更
+	  (autotools の仕様変更の模様)。
+
+2002-12-18
+
+	* src/imap.c: サーバが NAMESPACE コマンドをサポートしていないとき
+	  LIST コマンドを使ってパスセパレータを取得するようにした(Brian
+	  Sammon さんのパッチに基づく)。
+	  imap_parse_list(): パスセパレータを返すための引数を追加。
+	  imap_get_namespace_by_list(): 新規。
+
+2002-12-17
+
+	* src/addr_compl.c: add_address(): デバッグ出力を削除。
+	* src/gtkutils.[ch]: gtkut_window_popup()
+	  src/mainwindow.c: main_window_popup(): ウィンドウのポップアップの
+	  挙動を修正する Sergey Vlasov さんのパッチを適用(thanks!)
+	* src/account.c: account_edit_create(): row_move シグナルに
+	  signal_connect_after を使用して行位置のバグを修正。
+	  account_row_moved(): CList を半ページスクロールするようにした。
+	* src/prefs_filter.c: prefs_filter_row_move(): CList を半ページ
+	  スクロールするようにした。
+	* src/summaryview.c: summary_reply(): 表示されているメッセージが
+	  選択されている場合のみ選択部テキストを使用するようにした(Sergey
+	  Vlasov さん thanks)。
+
 2002-12-13
 
 	* src/codeconv.c: conv_encode_header(): MIME ヘッダエンコーディング

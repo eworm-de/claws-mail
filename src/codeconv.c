@@ -1058,7 +1058,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 
 #define LBREAK_IF_REQUIRED(cond)				\
 {								\
-	if (len - (destp - dest) < MAX_LINELEN) {		\
+	if (len - (destp - dest) < MAX_LINELEN + 2) {		\
 		*destp = '\0';					\
 		return;						\
 	}							\

@@ -95,7 +95,8 @@ static gint imap_scan_tree_recursive	(IMAPSession	*session,
 					 FolderItem	*item);
 static GSList *imap_parse_list		(Folder		*folder,
 					 IMAPSession	*session,
-					 const gchar	*real_path);
+					 const gchar	*real_path,
+					 gchar		*separator);
 
 static void imap_create_missing_folders	(Folder			*folder);
 static FolderItem *imap_create_special_folder
@@ -171,6 +172,8 @@ static gint imap_status			(IMAPSession	*session,
 					 gint		*unseen);
 
 static void imap_parse_namespace		(IMAPSession	*session,
+						 IMAPFolder	*folder);
+static void imap_get_namespace_by_list		(IMAPSession	*session,
 						 IMAPFolder	*folder);
 static IMAPNameSpace *imap_find_namespace	(IMAPFolder	*folder,
 						 const gchar	*path);
@@ -1233,7 +1236,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			  wildcard_path);
 
 	strtailchomp(real_path, separator);
-	item_list = imap_parse_list(folder, session, real_path);
+	item_list = imap_parse_list(folder, session, real_path, NULL);
 	g_free(real_path);
 
 	for (cur = item_list; cur != NULL; cur = cur->next) {
@@ -1275,11 +1278,12 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	return IMAP_SUCCESS;
 }
 
-static GSList *imap_parse_list(Folder *folder, IMAPSession *session, const gchar *real_path)
+static GSList *imap_parse_list(Folder *folder, IMAPSession *session,
+			       const gchar *real_path, gchar *separator)
 {
 	gchar buf[IMAPBUFSIZE];
 	gchar flags[256];
-	gchar separator[16];
+	gchar separator_str[16];
 	gchar *p;
 	gchar *name;
 	gchar *loc_name, *loc_path;
@@ -1315,11 +1319,13 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session, const gchar
 		if (!p) continue;
 		while (*p == ' ') p++;
 
-		p = strchr_cpy(p, ' ', separator, sizeof(separator));
+		p = strchr_cpy(p, ' ', separator_str, sizeof(separator_str));
 		if (!p) continue;
-		extract_quote(separator, '"');
-		if (!strcmp(separator, "NIL"))
-			separator[0] = '\0';
+		extract_quote(separator_str, '"');
+		if (!strcmp(separator_str, "NIL"))
+			separator_str[0] = '\0';
+		if (separator)
+			*separator = separator_str[0];
 
 		buf[0] = '\0';
 		while (*p == ' ') p++;
@@ -1328,12 +1334,12 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session, const gchar
 					    buf, sizeof(buf), str);
 		else
 			strncpy2(buf, p, sizeof(buf));
-		strtailchomp(buf, separator[0]);
+		strtailchomp(buf, separator_str[0]);
 		if (buf[0] == '\0') continue;
 		if (!strcmp(buf, real_path)) continue;
 
-		if (separator[0] != '\0')
-			subst_char(buf, separator[0], '/');
+		if (separator_str[0] != '\0')
+			subst_char(buf, separator_str[0], '/');
 		name = g_basename(buf);
 		if (name[0] == '.') continue;
 
@@ -1924,6 +1930,7 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 	if (imap_cmd_namespace(SESSION(session)->sock, &ns_str)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get namespace\n"));
+		imap_get_namespace_by_list(session, folder);
 		return;
 	}
 
@@ -1936,6 +1943,32 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 		folder->ns_shared = imap_parse_namespace_str(str_array[2]);
 	g_strfreev(str_array);
 	g_free(ns_str);
+}
+
+static void imap_get_namespace_by_list(IMAPSession *session, IMAPFolder *folder)
+{
+	GSList *item_list, *cur;
+	gchar separator = '\0';
+	IMAPNameSpace *namespace;
+
+	g_return_if_fail(session != NULL);
+	g_return_if_fail(folder != NULL);
+
+	if (folder->ns_personal != NULL ||
+	    folder->ns_others   != NULL ||
+	    folder->ns_shared   != NULL)
+		return;
+
+	imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" \"\"");
+	item_list = imap_parse_list(NULL, session, "", &separator);
+	for (cur = item_list; cur != NULL; cur = cur->next)
+		folder_item_destroy(FOLDER_ITEM(cur->data));
+	g_slist_free(item_list);
+
+	namespace = g_new(IMAPNameSpace, 1);
+	namespace->name = g_strdup("");
+	namespace->separator = separator;
+	folder->ns_personal = g_list_append(NULL, namespace);
 }
 
 static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,

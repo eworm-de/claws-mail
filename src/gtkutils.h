@@ -122,14 +122,14 @@ gchar *gtkut_editable_get_selection	(GtkEditable	*editable);
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 
-void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
-void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
-void gtkut_widget_get_uposition		(GtkWidget	*widget,
-					 gint		*px,
-					 gint		*py);
 
 void gtkut_window_popup			(GtkWidget	*window);
 
+void gtkut_widget_get_uposition		(GtkWidget	*widget,
+					 gint		*px,
+					 gint		*py);
+void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
+void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
 void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);

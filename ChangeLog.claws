@@ -1,24 +1,34 @@
-2002-12-14 [christoph]	0.8.6claws114
+2002-12-18 [paul]	0.8.6claws115
+
+	* src/Makefile.am
+	* src/account.c
+	* src/codeconv.c
+	* src/gtkutils.[ch]
+	* src/imap.c
+		sync with 0.8.6cvs22.
+		see ChangeLog 2002-12-17 and 2002-12-18
+
+2002-12-17 [christoph]	0.8.6claws114
 
 	* src/imap.c
 		o don't create a session if imap greeting fails
 		o don't close socket when authentication fails
 		  this is done by imap_session_destroy
 
-2002-12-14 [thorsten]	0.8.6claws113
+2002-12-17 [thorsten]	0.8.6claws113
 
 	* tools/Makefile.am
 	  tools/README
 	  tools/google_msgid.pl	** NEW FILE **
 	  	Added "search for message-id" script and doc
 
-2002-12-14 [thorsten]	0.8.6claws112
+2002-12-17 [thorsten]	0.8.6claws112
 
 	* po/hu.po
 		Updated hungarian translation
 		(updated by Gal Zoltan)
 
-2002-12-14 [christoph]	0.8.6claws111
+2002-12-16 [christoph]	0.8.6claws111
 
 	* src/addr_compl.c
 		remove stupid addressbook dump to debug output
