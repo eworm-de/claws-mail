@@ -478,10 +478,10 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		while (fgets(inbuf, sizeof(inbuf), infp) != NULL) {
 			qp_encode_line(outbuf, inbuf);
 
-			if (!strncmp("From ", outbuf, strlen("From "))) {
+			if (!strncmp("From ", outbuf, sizeof("From ")-1)) {
 				gchar *tmpbuf = outbuf;
 				
-				tmpbuf += strlen("From ");
+				tmpbuf += sizeof("From ")-1;
 				
 				fputs("=46rom ", outfp);
 				fputs(tmpbuf, outfp);
