@@ -700,9 +700,6 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 			return -1;
 		else {
 			strncpy2(outbuf, str, outlen);
-#ifndef WIN32	/* XXX:tm	conv_codeset_strdup crash */
-			g_free(str);
-#endif
 		}
 	}
 #else /* !HAVE_ICONV */
@@ -924,6 +921,16 @@ static const struct {
 	{C_BIG5,		CS_BIG5},
 	{C_TIS_620,		CS_TIS_620},
 	{C_WINDOWS_874,		CS_WINDOWS_874},
+#ifdef WIN32
+	{C_WINDOWS_1250,	CS_WINDOWS_1250},
+	{C_WINDOWS_1252,	CS_WINDOWS_1252},
+	{C_WINDOWS_1253,	CS_WINDOWS_1253},
+	{C_WINDOWS_1254,	CS_WINDOWS_1254},
+	{C_WINDOWS_1255,	CS_WINDOWS_1255},
+	{C_WINDOWS_1256,	CS_WINDOWS_1256},
+	{C_WINDOWS_1257,	CS_WINDOWS_1257},
+	{C_WINDOWS_1258,	CS_WINDOWS_1258},
+#endif
 };
 
 static const struct {
@@ -1047,6 +1054,23 @@ CharSet conv_get_current_charset(void)
 		cur_charset = C_ISO_8859_15;
 		return cur_charset;
 	}
+#ifdef WIN32 /* @windows is default, maybe overriden by LANG="de"(8859-1) or "de@euro"(8859-15) */
+	if ((p = strcasestr(cur_locale, "@windows-"))) {
+		CharSet tmp_charset=conv_get_charset_from_str(p+1);
+		if (tmp_charset) {
+			cur_charset=tmp_charset;
+			return cur_charset;
+		}
+	} else if ((p = strcasestr(cur_locale, "@windows")) && p[8] == '\0') {
+		gchar *tmp_str=g_strdup_printf("Windows-%d",GetACP());
+		CharSet tmp_charset=conv_get_charset_from_str(tmp_str);
+		g_free(tmp_str);
+		if (tmp_charset) {
+			cur_charset=tmp_charset;
+			return cur_charset;
+		}
+	}
+#endif
 
 	for (i = 0; i < sizeof(locale_table) / sizeof(locale_table[0]); i++) {
 		const gchar *p;
@@ -1101,6 +1125,12 @@ CharSet conv_get_outgoing_charset(void)
 		out_charset = C_ISO_8859_15;
 		return out_charset;
 	}
+#ifdef WIN32 /* do not send windows encoding by default */
+	if ((p = strcasestr(cur_locale, "@windows")) && p[8] == '\0') {
+		out_charset = C_ISO_8859_15;
+		return out_charset;
+	}
+#endif
 
 	for (i = 0; i < sizeof(locale_table) / sizeof(locale_table[0]); i++) {
 		const gchar *p;
@@ -1153,10 +1183,20 @@ const gchar *conv_get_outgoing_charset_str(void)
 const gchar *conv_get_current_locale(void)
 {
 	gchar *cur_locale;
+#ifdef WIN32
+	static gchar *gtklocale=NULL;
+#endif
 
 	cur_locale = g_getenv("LC_ALL");
 	if (!cur_locale) cur_locale = g_getenv("LC_CTYPE");
 	if (!cur_locale) cur_locale = g_getenv("LANG");
+#ifdef WIN32
+	if (!cur_locale) {
+		if (!gtklocale)
+			gtklocale=g_strdup_printf("%s@windows",gtk_set_locale());
+		cur_locale = gtklocale;
+	}
+#endif
 	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
 
 	debug_print("current locale: %s\n",
@@ -1434,6 +1474,30 @@ void conv_X_locale_to_utf8(gchar *buf, gint buflen){
 		strncpy(buf, p, buflen);
 		g_free(p);
 	}
+}
+
+const gchar *conv_X_get_current_iso_charset_str(void) {
+	static const gchar *iso_codeset = NULL;
+	if (!iso_codeset) {
+		CharSet curcs = conv_get_current_charset();
+		CharSet isocs;
+		if (!strncasecmp(conv_get_current_charset_str(), "Windows", 7)) {
+			switch (curcs) { /* http://czyborra.com/charsets/codepages.html */
+			case C_WINDOWS_1250 : isocs = C_ISO_8859_2; break;
+			case C_WINDOWS_1251 : isocs = C_ISO_8859_5; break;
+			case C_WINDOWS_1252 : isocs = C_ISO_8859_15; break;
+			case C_WINDOWS_1253 : isocs = C_ISO_8859_7; break;
+			case C_WINDOWS_1254 : isocs = C_ISO_8859_9; break;
+			case C_WINDOWS_1255 : isocs = C_ISO_8859_8; break;
+/*			case C_WINDOWS_1256 : isocs = C_ISO_8859_6; break;	*/
+			case C_WINDOWS_1257 : isocs = C_ISO_8859_13; break;
+			case C_WINDOWS_1258 : isocs = C_ISO_8859_15; break;
+			default : isocs = C_ISO_8859_15;
+			}
+		} else isocs = curcs;
+		iso_codeset = conv_get_charset_str(isocs);
+	}
+	return iso_codeset ? iso_codeset : CS_US_ASCII;
 }
 #endif
 

@@ -61,6 +61,17 @@ typedef enum
 	C_BIG5,
 	C_TIS_620,
 	C_WINDOWS_874
+#ifdef WIN32
+	,
+	C_WINDOWS_1250,
+	C_WINDOWS_1252,
+	C_WINDOWS_1253,
+	C_WINDOWS_1254,
+	C_WINDOWS_1255,
+	C_WINDOWS_1256,
+	C_WINDOWS_1257,
+	C_WINDOWS_1258
+#endif
 } CharSet;
 
 typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -112,6 +123,16 @@ struct _CodeConverter
 #define CS_BIG5			"Big5"
 #define CS_TIS_620		"TIS-620"
 #define CS_WINDOWS_874		"Windows-874"
+#ifdef WIN32
+#define CS_WINDOWS_1250		"Windows-1250"
+#define CS_WINDOWS_1252		"Windows-1252"
+#define CS_WINDOWS_1253		"Windows-1253"
+#define CS_WINDOWS_1254		"Windows-1254"
+#define CS_WINDOWS_1255		"Windows-1255"
+#define CS_WINDOWS_1256		"Windows-1256"
+#define CS_WINDOWS_1257		"Windows-1257"
+#define CS_WINDOWS_1258		"Windows-1258"
+#endif
 
 void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf);

@@ -1,3 +1,21 @@
+2003-02-06 [thorsten]	0.8.9claws-42-1
+
+	* src/codeconv.c
+		add Windows-XXXX encodings
+		@Windows[-XXXX] locale extension
+		remove old iconv g_free() crashfix
+		add Windows-XXXX to ISO- translation
+	* src/codeconv.h
+		add Windows-XXXX encodings
+	* src/mainwindow.c
+		add Windows-XXXX encodings (display)
+	* src/prefs_common.c
+		add Windows-XXXX encodings (outgoing)
+	* src/summaryview.c
+		utf8-encoding for simplified subjects
+	* src/unmime.c
+		remove old iconv g_free() crashfix
+
 2003-02-02 [thorsten]	0.8.9claws-34-1
 
 	* src/codeconv.c

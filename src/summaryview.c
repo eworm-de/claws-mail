@@ -2492,10 +2492,22 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	}
 
 	if (summaryview->simplify_subject_preg != NULL)
+#ifdef WIN32
+		if (msginfo->subject) {
+			gchar *p_subject;
+			p_subject = g_strdup(string_remove_match(
+				buf, BUFFSIZE, msginfo->subject, 
+				summaryview->simplify_subject_preg));
+			locale_to_utf8(&p_subject);
+			text[col_pos[S_COL_SUBJECT]] = p_subject;
+		} else
+			text[col_pos[S_COL_SUBJECT]] = _("(No Subject)");
+#else
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
 					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
+#endif
 	else 
 #ifdef WIN32
 		{

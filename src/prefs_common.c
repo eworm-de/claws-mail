@@ -1472,6 +1472,16 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Korean (EUC-KR)"),		 CS_EUC_KR);
 	SET_MENUITEM(_("Thai (TIS-620)"),		 CS_TIS_620);
 	SET_MENUITEM(_("Thai (Windows-874)"),		 CS_WINDOWS_874);
+#ifdef WIN32
+	SET_MENUITEM(_("WinLatin1 (Windows-1250)"),	 CS_WINDOWS_1250);
+	SET_MENUITEM(_("WinLatin2 (Windows-1252)"),	 CS_WINDOWS_1252);
+	SET_MENUITEM(_("WinGreek (Windows-1253)"),	 CS_WINDOWS_1253);
+	SET_MENUITEM(_("WinTurkish (Windows-1254)"),	 CS_WINDOWS_1254);
+	SET_MENUITEM(_("WinHebrew (Windows-1255)"),	 CS_WINDOWS_1255);
+	SET_MENUITEM(_("WinArabic (Windows-1256)"),	 CS_WINDOWS_1256);
+	SET_MENUITEM(_("WinBaltic (Windows-1257)"),	 CS_WINDOWS_1257);
+	SET_MENUITEM(_("WinVietnamnese (Windows-1258)"), CS_WINDOWS_1258);
+#endif
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_charset),
 				  optmenu_menu);
