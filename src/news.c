@@ -900,7 +900,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
-	guint count = 0, lines = (end - begin + 1) * 3;
+	guint count = 0, lines = (end - begin + 2) * 3;
 
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);

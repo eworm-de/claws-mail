@@ -1,3 +1,8 @@
+2003-03-03 [christoph]	0.8.10claws78
+
+	* src/news.c
+		fix calculation of expected lines for progress indicator
+
 2003-03-03 [christoph]	0.8.10claws77
 
 	* src/summaryview.c
