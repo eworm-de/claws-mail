@@ -375,9 +375,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 	gint i;
 
 	for (i = 1; i < argc; i++) {
-		if (!strncmp(argv[i], "--debug", 7))
-			debug_set_mode(TRUE);
-		else if (!strncmp(argv[i], "--receive-all", 13))
+		if (!strncmp(argv[i], "--receive-all", 13))
 			cmd.receive_all = TRUE;
 		else if (!strncmp(argv[i], "--receive", 9))
 			cmd.receive = TRUE;

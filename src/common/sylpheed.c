@@ -37,10 +37,54 @@
 
 static gboolean sylpheed_initialized = FALSE;
 
+/**
+ * Parse program parameters and remove all parameters
+ * that have been processed. Arguments are pointers to
+ * original passed programm arguments and these will
+ * be modified leaving only unknown parameters for
+ * further processing
+ *
+ * \param argc pointer to number of parameters
+ * \param argv pointer to array of parameter strings
+ */
+static void parse_parameter(int *argc, char ***argv)
+{
+	gint i, j, k;
+
+	g_return_if_fail(argc != NULL);
+	g_return_if_fail(argv != NULL);
+
+	for (i = 1; i < *argc;) {
+		if (strcmp("--debug", (*argv)[i]) == 0) {
+			debug_set_mode(TRUE);
+
+			(*argv)[i] = NULL;
+		}
+
+		i += 1;
+	}
+
+	/* Remove NULL args from argv[] for further processing */
+	for (i = 1; i < *argc; i++) {
+		for (k = i; k < *argc; k++)
+			if ((*argv)[k] != NULL)
+				break;
+
+		if (k > i) {
+			k -= i;
+			for (j = i + k; j < *argc; j++)
+				(*argv)[j - k] = (*argv)[j];
+			*argc -= k;
+		}
+	}
+}
+
 gboolean sylpheed_init(int *argc, char ***argv)
 {
 	if (sylpheed_initialized)
 		return TRUE;
+
+	parse_parameter(argc, argv);
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);

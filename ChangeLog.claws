@@ -1,3 +1,9 @@
+2003-02-25 [christoph]	0.8.10claws50
+
+	* src/main.c
+	* src/common/sylpheed.c
+		add command line parameter parsing to common code
+
 2003-02-24 [christoph]
 
 	* Makefile.am
@@ -5,6 +11,9 @@
 		fix gnome prefix problems, the configure script now removed
 		`gnome-config --prefix` from `gnome-config --datadir`
 		and adds $(prefix} instead
+
+	(closes Bug 24 Makefile does not respect prefix when installing
+	 GNOME data)
 
 2003-02-24 [christoph]	0.8.10claws49
 
