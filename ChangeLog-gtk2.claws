@@ -1,7 +1,7 @@
 2004-07-21 [colin]	0.9.12cvs33.12
 
 	* src/prefs_common.c
-		Fix a gtk warning (Patch by Ticho)
+		Fix a gtk warning (Patch by Andrej Kacian)
 
 2004-07-21 [colin]	0.9.12cvs33.11
 
