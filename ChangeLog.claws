@@ -1,3 +1,11 @@
+2001-04-28 [hoa]
+
+	* src/prefs_account.[ch], added A_LOCAL_CMD
+		(send mail with mail command)
+	* src/send.c added function send_message_with_command()
+	* src/inc.c made a more secure get_spool() function with
+		mktemp() but maybe mkstemp() or something more
+		secure can be used.
 
 2001-04-28 [alfons]
 
@@ -56,7 +64,7 @@
 	  and font descent also taken in account when drawing
 	  cursor. [alfons]
 
-2001-04-24
+2001-04-24 [hoa]
 	* added comments in src/news.c src/nntp.c
 	* added src/prefs_headers.[ch]
 	* added src/headers.[ch]
@@ -87,7 +95,7 @@
 		 * updated all .cvsignores to really ignore things that could
 		   be unintentionally committed by a recursive commit.
 
-2001-04-23
+2001-04-23 [hoa]
 	* added src/grouplist_dialog.[ch]
 	* changed src/folderview.c to call grouplist_dialog instead
 		of inputdialog
