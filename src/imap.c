@@ -398,6 +398,7 @@ static void imap_reset_uid_lists(Folder *folder)
 static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
+	Session *session = NULL;
 	gushort port;
 
 	g_return_val_if_fail(folder != NULL, NULL);
@@ -413,24 +414,30 @@ static IMAPSession *imap_session_get(Folder *folder)
 		: IMAP4_PORT;
 #endif
 
-	if (!rfolder->session) {
-		rfolder->session =
-			imap_session_new(folder->account);
-		if (rfolder->session) {
-			if (!IMAP_SESSION(rfolder->session)->authenticated)
-				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
-			if (IMAP_SESSION(rfolder->session)->authenticated) {
-				imap_parse_namespace(IMAP_SESSION(rfolder->session),
-						     IMAP_FOLDER(folder));
-				rfolder->session->last_access_time = time(NULL);
-				imap_reset_uid_lists(folder);
-			} else {
-				session_destroy(rfolder->session);
-				rfolder->session = NULL;
-			}
-		}
-		return IMAP_SESSION(rfolder->session);
+	/* Make sure we have a session */
+	if (rfolder->session != NULL) {
+		session = rfolder->session;
+	} else {
+		imap_reset_uid_lists(folder);
+		session = imap_session_new(folder->account);
+		session->last_access_time = time(NULL);
 	}
+	if(!session) {
+		return NULL;
+	}
+
+	/* Make sure session is authenticated */
+	if (!IMAP_SESSION(session)->authenticated)
+		imap_session_authenticate(IMAP_SESSION(session), folder->account);
+	if (!IMAP_SESSION(session)->authenticated) {
+		session_destroy(session);
+		rfolder->session = NULL;
+		return NULL;
+	}
+
+	/* Make sure we have parsed the IMAP namespace */
+	imap_parse_namespace(IMAP_SESSION(session),
+			     IMAP_FOLDER(folder));
 
 	/* I think the point of this code is to avoid sending a
 	 * keepalive if we've used the session recently and therefore
@@ -440,36 +447,36 @@ static IMAPSession *imap_session_get(Folder *folder)
 	 * A better solution than sending a NOOP every time would be
 	 * for every command to be prepared to retry until it is
 	 * successfully sent. -- mbp */
-	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
-		rfolder->session->last_access_time = time(NULL);
-		return IMAP_SESSION(rfolder->session);
-	}
-
-	if (imap_cmd_noop(rfolder->session->sock) != IMAP_SUCCESS) {
-		log_warning(_("IMAP4 connection to %s:%d has been"
-			      " disconnected. Reconnecting...\n"),
-			    folder->account->recv_server, port);
-		session_destroy(rfolder->session);
-		rfolder->session =
-			imap_session_new(folder->account);
-		if (rfolder->session) {
-			if (!IMAP_SESSION(rfolder->session)->authenticated)
-				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
-			if (IMAP_SESSION(rfolder->session)->authenticated) {
-				imap_parse_namespace(IMAP_SESSION(rfolder->session),
-						     IMAP_FOLDER(folder));
-				rfolder->session->last_access_time = time(NULL);
-				imap_reset_uid_lists(folder);
+	if (time(NULL) - session->last_access_time > SESSION_TIMEOUT) {
+		/* verify that the session is still alive */
+		if (imap_cmd_noop(session->sock) != IMAP_SUCCESS) {
+			/* Check if this is the first try to establish a
+			   connection, if yes we don't try to reconnect */
+			if (rfolder->session == NULL) {
+				log_warning(_("Connecting %s:%d failed"),
+					    folder->account->recv_server, port);
+				session_destroy(session);
+				session = NULL;
 			} else {
-				session_destroy(rfolder->session);
+				log_warning(_("IMAP4 connection to %s:%d has been"
+					      " disconnected. Reconnecting...\n"),
+					    folder->account->recv_server, port);
+				session_destroy(session);
+				/* Clear folders session to make imap_session_get create
+				   a new session, because of rfolder->session == NULL
+				   it will not try to reconnect again and so avoid an
+				   endless loop */
 				rfolder->session = NULL;
+				session = SESSION(imap_session_get(folder));
 			}
 		}
 	}
 
-	if (rfolder->session)
-		rfolder->session->last_access_time = time(NULL);
-	return IMAP_SESSION(rfolder->session);
+	rfolder->session = session;
+	if (session) {
+		session->last_access_time = time(NULL);
+	}
+	return IMAP_SESSION(session);
 }
 
 Session *imap_session_new(const PrefsAccount *account)

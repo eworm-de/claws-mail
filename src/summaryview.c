@@ -2713,18 +2713,19 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-	}
-	if (MSG_IS_COPY(msginfo->flags)) {
-		summaryview->copied--;
-		changed = TRUE;
-	}
-	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
-
-	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
 			folder_update_item(msginfo->to_folder, FALSE);
 	}
+	if (MSG_IS_COPY(msginfo->flags)) {
+		summaryview->copied--;
+		changed = TRUE;
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folder_update_item(msginfo->to_folder, FALSE);
+	}
+	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
+
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_MARKED, 0);
@@ -2941,18 +2942,19 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-	}
-	if (MSG_IS_COPY(msginfo->flags)) {
-		summaryview->copied--;
-		changed = TRUE;
-	}
-	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
-
-	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
 			folder_update_item(msginfo->to_folder, FALSE);
 	}
+	if (MSG_IS_COPY(msginfo->flags)) {
+		summaryview->copied--;
+		changed = TRUE;
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folder_update_item(msginfo->to_folder, FALSE);
+	}
+	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
+
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);

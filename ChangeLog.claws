@@ -1,3 +1,10 @@
+2002-12-20 [christoph]	0.8.6claws120
+
+	* src/summaryview.c
+		don't use "changed" to check if op_count has to be changed as it
+		is also set when the message has unread children
+		(closes bug [ 653221 ] crash while deleting duplicates)
+
 2002-12-20 [paul]	0.8.6claws119
 
 	* sync with 0.8.6cvs27
