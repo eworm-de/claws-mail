@@ -750,8 +750,11 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_state->ac_prefs->popport : 110;
 #endif
 
+	statusbar_verbosity_set(TRUE);
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s ..."), server);
 	log_message("%s\n", buf);
+	statusbar_verbosity_set(FALSE);
+
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();

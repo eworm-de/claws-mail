@@ -1,3 +1,8 @@
+2003-01-23 [colin]	0.8.8claws125
+
+	* src/inc.c
+		Fix "Connecting to..." status message
+
 2003-01-22 [paul]	0.8.8claws124
 
 	* po/bg.po
