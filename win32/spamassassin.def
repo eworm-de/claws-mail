@@ -114,10 +114,13 @@ EXPORTS
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
 	gpg_started 
+	libspamc_timeout 
 	lookup_host 
+	lookup_host_for_failover 
 	message_cleanup 
 	message_dump 
 	message_filter 
+	message_filter_with_failover 
 	message_process 
 	message_read 
 	message_write 
@@ -132,6 +135,7 @@ EXPORTS
 	plugin_init 
 	plugin_name 
 	process_message 
+	socketread 
 	spamassassin_cfg 
 	spamassassin_enable 
 	spamassassin_getconf 
@@ -142,6 +146,7 @@ EXPORTS
 	spamassassin_save_config 
 	spamassassin_save_folder 
 	spamassassin_setconf 
+	timeout_read 
 	to_aspell_document_checker 
 	to_aspell_filter 
 	to_aspell_speller 

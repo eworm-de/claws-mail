@@ -1,3 +1,96 @@
+2003-02-02 [thorsten]	0.8.9claws32
+
+	* src/mh.c
+		Fix mh_get_msginfo() segfault if file is inaccessible
+
+2003-01-31 [colin]	0.8.9claws31
+
+	* src/procheader.c
+		Fix last commit's bug
+
+2003-01-31 [colin]	0.8.9claws30
+
+	* src/procheader.c
+		Missing a change for gpg-signed messages
+
+2003-01-31 [paul]	0.8.9claws29
+
+	* src/pixmaps/gpg_signed.xpm	** NEW FILE **
+	  src/procheader.c
+	  src/stock_pixmap.[ch]
+	  src/summaryview.c
+	  	indicate GnuPG signed messages by displaying an icon
+		in the Attachment column.
+
+2003-01-31 [paul]	0.8.9claws28
+
+	* sync with 0.8.9cvs4
+		see ChangeLog 2003-01-31
+
+2003-01-31 [alfons]	0.8.9claws27
+
+	* src/textview.c
+		tune URI parser to accept mailto URLs with a '?'
+		(patch from Ruslan Balkin)
+
+2003-01-31 [colin]	0.8.9claws26
+
+	* src/summaryview.c
+		Fix a leak introduced in claws24
+
+2003-01-31 [colin]	0.8.9claws25
+
+	* src/summaryview.c
+		Freeze/Thaw folder updates when deleting dups
+
+2003-01-31 [colin]	0.8.9claws24
+	
+	* src/addr_compl.c
+	  src/summaryview.c
+	  src/msgcache.c
+	  	little speed improvements
+
+2003-01-31 [colin]	0.8.9claws23
+
+	* src/summaryview.c
+		Fix segfault when forwarding nothing
+		Patch from "Ruslan N. Balkin" <baron@voices.ru>
+		
+2003-01-30 [paul]	0.8.9claws22
+
+	* sync with 0.8.9cvs3
+		see ChangeLog 2003-01-30
+
+2003-01-30 [paul]	0.8.9claws21
+
+	* sync with 0.8.9cvs2
+		see ChangeLog 2003-01-30
+
+2003-01-29 [paul]	0.8.9claws20
+
+	* sync with 0.8.9cvs1
+		see ChangeLog 2003-01-29
+
+2003-01-28 [paul]	0.8.9claws19
+
+	* po/POTFILES.in
+		update to reflect changes. 
+		thanks to Ricardo Mones Lastra
+
+2003-01-27 [christoph]	0.8.9claws18
+
+	* ac/openssl.m4
+	* ac/spamassassin.m4
+	* src/plugins/spamassassin/README
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		updated to latest libspamc
+
+2003-01-27 [christoph]	0.8.9claws17
+
+	* src/folder.c
+		fix wrong use of procheader_get_header_fields
+
 2003-01-27 [christoph]	0.8.9claws16
 
 	* src/news.c

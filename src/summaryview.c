@@ -131,6 +131,8 @@ static GdkPixmap *keyxpm;
 static GdkBitmap *keyxpmmask;
 static GdkPixmap *clipkeyxpm;
 static GdkBitmap *clipkeyxpmmask;
+static GdkPixmap *gpgsignedxpm;
+static GdkBitmap *gpgsignedxpmmask;
 
 static void summary_free_msginfo_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -744,6 +746,8 @@ void summary_init(SummaryView *summaryview)
 			 &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
 			 &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
+			 &gpgsignedxpm, &gpgsignedxpmmask);
 
 	if (!small_style) {
 		small_style = gtk_style_copy
@@ -1021,7 +1025,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			     || MSG_IS_LOCKED(msginfo->flags)
 			     || CURRENTLY_DISPLAYED(msginfo))
 			     && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			    not_killed = g_slist_append(not_killed, msginfo);
+			    not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
@@ -1074,12 +1078,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			}
 			if (search_type != S_SEARCH_EXTENDED) {
 				if (searched_header && strcasestr(searched_header, search_string) != NULL)
-					not_killed = g_slist_append(not_killed, msginfo);
+					not_killed = g_slist_prepend(not_killed, msginfo);
 				else
 					procmsg_msginfo_free(msginfo);
 			} else {
 				if ((tmp_list != NULL) && matcherlist_match(tmp_list, msginfo))
-					not_killed = g_slist_append(not_killed, msginfo);
+					not_killed = g_slist_prepend(not_killed, msginfo);
 				else
 					procmsg_msginfo_free(msginfo);
 			}
@@ -1105,7 +1109,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 
 			if (msginfo->score > kill_score)
-				not_killed = g_slist_append(not_killed, msginfo);
+				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
@@ -1117,6 +1121,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	/* set ctree and hash table from the msginfo list
 	   creating thread, and count the number of messages */
+	
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
@@ -1671,7 +1676,7 @@ static GtkCTreeNode *summary_find_prev_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (msginfo && !MSG_IS_DELETED(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1691,7 +1696,7 @@ static GtkCTreeNode *summary_find_next_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (msginfo && !MSG_IS_DELETED(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1716,7 +1721,7 @@ static GtkCTreeNode *summary_find_prev_flagged_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if ((msginfo->flags.perm_flags & flags) != 0) break;
+		if (msginfo && (msginfo->flags.perm_flags & flags) != 0) break;
 	}
 
 	return node;
@@ -1744,7 +1749,7 @@ static GtkCTreeNode *summary_find_next_flagged_msg(SummaryView *summaryview,
 		/* Find msg with matching flags but ignore messages with
 		   ignore flags, if searching for new or unread messages */
 		if (!(((flags & (MSG_NEW | MSG_UNREAD)) != 0) && MSG_IS_IGNORE_THREAD(msginfo->flags)) && 
-			((msginfo->flags.perm_flags & flags) != 0))
+			(msginfo && (msginfo->flags.perm_flags & flags) != 0))
 			break;
 	}
 
@@ -1762,7 +1767,7 @@ static GtkCTreeNode *summary_find_msg_by_msgnum(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo->msgnum == msgnum) break;
+		if (msginfo && msginfo->msgnum == msgnum) break;
 	}
 
 	return node;
@@ -1949,8 +1954,12 @@ static void summary_status_show(SummaryView *summaryview)
 		msginfo = gtk_ctree_node_get_row_data
 			(GTK_CTREE(summaryview->ctree),
 			 GTK_CTREE_NODE(cur->data));
-		sel_size += msginfo->size;
-		n_selected++;
+		if (!msginfo)
+			g_warning("summary_status_show(): msginfo == NULL\n");
+		else {
+			sel_size += msginfo->size;
+			n_selected++;
+		}
 	}
 
 	if (summaryview->folder_item->folder->type == F_NEWS) {
@@ -2315,8 +2324,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-
-		mlist = g_slist_reverse(mlist);
+		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
@@ -2336,7 +2344,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					     msginfo->subject,
 					     node);
 		}
-		mlist = g_slist_reverse(mlist);
+		mlist = cur;
 	}
 
 	if (prefs_common.enable_hscrollbar &&
@@ -2821,7 +2829,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
 	}
 
-	if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
+	if (MSG_IS_SIGNED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  gpgsignedxpm, gpgsignedxpmmask);
+	} else if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipkeyxpm, clipkeyxpmmask);
 	} else if (MSG_IS_ENCRYPTED(flags)) {
@@ -3192,6 +3203,8 @@ void summary_delete_duplicated(SummaryView *summaryview)
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Deleting duplicated messages..."));
 
+	folder_item_update_freeze();
+	
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 				GTK_CTREE_FUNC(summary_delete_duplicated_func),
 				summaryview);
@@ -3200,6 +3213,8 @@ void summary_delete_duplicated(SummaryView *summaryview)
 		summary_execute(summaryview);
 	else
 		summary_status_show(summaryview);
+
+	folder_item_update_thaw();
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
@@ -3562,6 +3577,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node, *next;
+	GtkCTreeNode *new_selected = NULL;
 
 	if (!summaryview->folder_item) return FALSE;
 
@@ -3580,19 +3596,36 @@ gboolean summary_execute(SummaryView *summaryview)
 	folder_item_update_thaw();
 
 	node = GTK_CTREE_NODE(clist->row_list);
-	while (node != NULL) {
+	for (; node != NULL; node = next) {
 		next = gtkut_ctree_node_next(ctree, node);
-		if (gtk_ctree_node_get_row_data(ctree, node) == NULL) {
-			if (node == summaryview->displayed) {
-				messageview_clear(summaryview->messageview);
-				summaryview->displayed = NULL;
-			}
-			if (GTK_CTREE_ROW(node)->children != NULL)
-				g_warning("summary_execute(): children != NULL\n");
-			else
-				gtk_ctree_remove_node(ctree, node);
+		if (gtk_ctree_node_get_row_data(ctree, node) != NULL) continue;
+
+		if (node == summaryview->displayed) {
+			messageview_clear(summaryview->messageview);
+			summaryview->displayed = NULL;
 		}
-		node = next;
+		if (GTK_CTREE_ROW(node)->children != NULL) {
+			g_warning("summary_execute(): children != NULL\n");
+			continue;
+		}
+
+		if (!new_selected &&
+		    gtkut_ctree_node_is_selected(ctree, node)) {
+			gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+			new_selected = summary_find_next_msg(summaryview, node);
+			if (!new_selected)
+				new_selected = summary_find_prev_msg
+					(summaryview, node);
+		}
+
+		gtk_ctree_remove_node(ctree, node);
+	}
+
+	if (new_selected) {
+		gtk_sctree_select
+			(GTK_SCTREE(ctree),
+			 summaryview->displayed ? summaryview->displayed
+			 : new_selected);
 	}
 
 	if (summaryview->threaded)
@@ -4251,7 +4284,7 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
-		if (!sel->next) {
+		if (sel && !sel->next) {
 			compose_forward(NULL, msginfo, FALSE, text);
 			break;
 		}
@@ -4857,7 +4890,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_status_show(summaryview);
 
 	if (GTK_CLIST(ctree)->selection &&
-	     GTK_CLIST(ctree)->selection->next) {
+	    GTK_CLIST(ctree)->selection->next) {
 		summaryview->display_msg = FALSE;
 		summary_set_menu_sensitive(summaryview);
 		toolbar_main_set_sensitive(summaryview->mainwin);
@@ -4867,6 +4900,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summaryview->selected = row;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	g_return_if_fail(msginfo != NULL);
 
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
@@ -5397,6 +5431,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

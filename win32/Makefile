@@ -351,10 +351,13 @@ spamassassin.o:	spamassassin.c spamassassin.h
 libspamc.o:	libspamc.c libspamc.h
 #utils.o:	utils.c utils.h
 libspamc_utils.o:	libspamc_utils.c $(SRCDIR)/plugins/spamassassin/utils.h
-libspamc_utils.c:
-	cp $(SRCDIR)/plugins/spamassassin/utils.c libspamc_utils.c
+libspamc_utils.c: libspamc_utils.h
+	cp $(SRCDIR)/plugins/spamassassin/utils.c $@
+libspamc_utils.h:
+	cp $(SRCDIR)/plugins/spamassassin/utils.h $@
 
-spamassassin_LIBS = $(APPNAME).dll -lwsock32 $(EXTRALIBS) $(LIBS)
+#spamassassin_LIBS = $(APPNAME).dll -lwsock32 $(EXTRALIBS) $(LIBS)
+spamassassin_LIBS =  $(APPNAME).dll -lws2_32 $(windir)/system32/ws2_32.dll $(LIBS)  
 spamassassin_OBJECTS = \
 	spamassassin.o \
 	libspamc.o \
@@ -362,14 +365,14 @@ spamassassin_OBJECTS = \
 
 spamassassin.dll: libspamc_utils.c $(spamassassin_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_OBJECTS)
-	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_OBJECTS) $(spamassassin_LIBS)
+	$(CC) -mdll -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_OBJECTS) $(spamassassin_LIBS)
 	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
-	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_OBJECTS) -Wl,$@.exp $(spamassassin_LIBS)
+	$(CC) -mdll -o $@ $(spamassassin_OBJECTS) -Wl,$@.exp $(spamassassin_LIBS)
 	-rm $@.base $@.exp $@.lib junk.tmp
 	#-rm $@.def $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared $? $(APPNAME).dll -lwsock32 /dev/lib/libglib-2.0.dll.a -o $@
 spamassassin_clean:
-	-rm $(spamassassin_OBJECTS) libspamc_utils.c
+	-rm $(spamassassin_OBJECTS) libspamc_utils.c libspamc_utils.o
 
 ### spamassassin (gui)
 

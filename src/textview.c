@@ -864,6 +864,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	static GHashTable *dom_tab;
 	const gchar *last_dot = NULL;
 	const gchar *prelast_dot = NULL;
+	const gchar *last_tld_char = NULL;
 
 	/* the informative part of the email address (describing the name
 	 * of the email address owner) may contain quoted parts. the
@@ -915,8 +916,12 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 		if (last_dot == NULL || (scanpos + 1 >= last_dot))
 			return FALSE;
 		last_dot++;
-	
-		if (is_toplvl_domain(dom_tab, last_dot, ep_))
+
+		for (last_tld_char = last_dot; last_tld_char < ep_; last_tld_char++)
+			if (*last_tld_char == '?')
+				break;
+
+		if (is_toplvl_domain(dom_tab, last_dot, last_tld_char))
 			result = TRUE;
 
 		*ep = ep_;

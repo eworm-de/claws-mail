@@ -3228,8 +3228,9 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	to_len = strlen(mutf7_str) * 5;
 	to_p = to_str = g_malloc(to_len + 1);
 
-	if (iconv(cd, &norm_utf7_p, &norm_utf7_len, &to_p, &to_len) == -1) {
-		g_warning("iconv cannot convert UTF-7 to %s\n",
+	if (iconv(cd, (ICONV_CONST gchar **)&norm_utf7_p, &norm_utf7_len,
+		  &to_p, &to_len) == -1) {
+		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
 			  conv_get_current_charset_str());
 		g_string_free(norm_utf7, TRUE);
 		g_free(to_str);
@@ -3294,7 +3295,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 			     mblen++)
 				;
 			from_len -= mblen;
-			if (iconv(cd, &from_tmp, &mblen,
+			if (iconv(cd, (ICONV_CONST gchar **)&from_tmp, &mblen,
 				  &norm_utf7_p, &norm_utf7_len) == -1) {
 				g_warning("iconv cannot convert %s to UTF-7\n",
 					  conv_get_current_charset_str());

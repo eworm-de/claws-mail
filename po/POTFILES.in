@@ -28,9 +28,11 @@ src/folder.c
 src/foldersel.c
 src/folderview.c
 src/grouplistdialog.c
+src/gtk/gtkutils.c
+src/gtk/pluginwindow.c
+src/gtk/prefswindow.c
 src/gtk/sslcertwindow.c
 src/gtkaspell.c
-src/gtkutils.c
 src/headerview.c
 src/imap.c
 src/import.c
@@ -77,5 +79,3 @@ src/string_match.c
 src/summary_search.c
 src/summaryview.c
 src/toolbar.c
-src/gtk/pluginwindow.c
-src/gtk/prefswindow.c

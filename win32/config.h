@@ -124,6 +124,8 @@
 
 /* Define if you have the iconv() function. */
 #define HAVE_ICONV 1
+/* Define as const if the declaration of iconv() needs const. */
+#define ICONV_CONST const
 
 /* Define if you have the inet_addr function.  */
 #undef HAVE_INET_ADDR
@@ -335,9 +337,6 @@
 
 /* Define if you have the __argz_stringify function.  */
 #undef HAVE___ARGZ_STRINGIFY
-
-/* Define as const if the declaration of iconv() needs const. */
-#undef ICONV_CONST
 
 /* The number of bytes in a unsigned int.  */
 #undef SIZEOF_UNSIGNED_INT

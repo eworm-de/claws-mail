@@ -311,13 +311,12 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 #define WRITE_CACHE_DATA(data, fp) \
 { \
 	gint len; \
- \
-	if (data == NULL || (len = strlen(data)) == 0) { \
+	if (data == NULL) \
 		len = 0; \
-		WRITE_CACHE_DATA_INT(len, fp); \
-	} else { \
+	else \
 		len = strlen(data); \
-		WRITE_CACHE_DATA_INT(len, fp); \
+	WRITE_CACHE_DATA_INT(len, fp); \
+	if (len > 0) { \
 		fwrite(data, len, 1, fp); \
 	} \
 }

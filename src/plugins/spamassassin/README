@@ -11,12 +11,6 @@ Message that are classified as spam can be deleted or moved to a folder
 that can be specified in the configuration, if the folder is not
 specified or not found the default trash folder will be used.
 
-libspamc.[ch] and utils.[ch] are copied from the SpamAssassin package. I
-hope SpamAssassin will provide their functions as a library with the
-required includes files in the future for easier building. Building the
-library as a shared object is already possible, but it is not installable
-with the package and the includes are also not available.
-
 Please note that the spamassassin.so plugin only provides the actual
 filtering. By default it is not enabled. You probably want to load the
 spamassassin_gtk.so plugin too to get a configuration page under
@@ -51,3 +45,7 @@ save_folder=#mh/Mail/trash/Spam		the folder that should be used to save
 					spam mails, if empty the default trash
 					folder is used
 					[default: none, use default trash]
+
+libspamc.[ch] and utils.[ch] are files from the SpamAssassin distribution.
+The copyright holders and license information can be found inside the files.
+The SpamAssassin distribution can be downloaded from http://www.spamassassin.org/

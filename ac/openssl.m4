@@ -4,10 +4,12 @@ dnl ******************************
 
 AC_DEFUN(AM_PATH_OPENSSL,
 [dnl
+	USE_OPENSSL=0
+
 	AC_ARG_ENABLE(openssl, [  --enable-openssl        Attempt to use OpenSSL for SSL support.],
 		[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=no])
 
-	dnl delect OpenSSL
+	dnl detect OpenSSL
 	if test "x${ac_cv_enable_openssl}" != "xno"; then
 		AC_ARG_WITH(openssl-includes, [  --with-openssl-includes=PREFIX     Location of OpenSSL includes.],
 			with_openssl_includes="$withval", with_openssl_includes="/usr/include")
@@ -52,6 +54,7 @@ AC_DEFUN(AM_PATH_OPENSSL,
 			])
 			if test "x${openssl_libs}" != "xno"; then
 				AC_DEFINE(USE_OPENSSL, 1, [Define if you use OpenSSL to support SSL])
+				USE_OPENSSL=1
 				msg_ssl="yes (OpenSSL)"
 				OPENSSL_LIBS="$with_openssl_libs -lssl -lcrypto $DL_LIBS"
 			else
