@@ -969,6 +969,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 	    procmsg_msginfo_free(msginfo);
 	}
+	folder_update_item(outbox, TRUE);
 
 	return 0;
 }

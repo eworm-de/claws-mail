@@ -1,3 +1,8 @@
+2003-01-04 [christoph]	0.8.8claws43
+
+	* src/procmsg.c
+		update save folder after adding the sent message
+
 2003-01-02 [christoph]	0.8.8claws42
 
 	* src/common/plugin.c
