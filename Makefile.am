@@ -3,7 +3,7 @@ SUBDIRS = m4 po src tools config intl doc
 EXTRA_DIST = \
 	ChangeLog.claws \
 	ChangeLog.jp \
-	ChangeLog-gtk2 \
+	ChangeLog-gtk2.claws \
 	ChangeLog-gtk2.jp \
 	README.claws \
 	README.jp \

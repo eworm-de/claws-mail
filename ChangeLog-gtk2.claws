@@ -1,3 +1,9 @@
+2004-05-25 [paul]	0.9.10claws67.6
+
+	* Makefile.am
+	  src/Makefile.am
+	  	clean up
+
 2004-05-25 [paul]	0.9.10claws67.5
 
 	* replace deprecated gtk_signal... functions

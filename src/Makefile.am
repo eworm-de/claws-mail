@@ -1,19 +1,5 @@
 SUBDIRS = common gtk plugins
 
-
-if PLATFORM_WIN32
-
-SYLPHEED_RES = sylpheed.res
-
-sylpheed.rc:
-	echo "SYLPHEED ICON sylpheed.ico" > sylpheed.rc
-
-sylpheed.res: sylpheed.rc
-	$(WINDRES) $< -O coff -o $@
-
-endif
-
-
 bin_PROGRAMS = sylpheed
 
 sylpheed_SOURCES = \
@@ -273,7 +259,6 @@ BUILT_SOURCES = \
 	quote_fmt_parse.h
 
 EXTRA_DIST = \
-	sylpheed.ico \
 	pixmaps/address_book.xpm \
 	pixmaps/address_search.xpm \
 	pixmaps/address.xpm \
@@ -378,8 +363,7 @@ sylpheed_LDADD = \
 	$(OPENSSL_LIBS) \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
-	$(LIBICONV) \
-	$(SYLPHEED_RES)
+	$(LIBICONV)
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
