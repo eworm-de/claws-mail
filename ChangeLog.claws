@@ -1,3 +1,8 @@
+2001-09-13 [darko]
+	
+	* src/folderview.c
+		fix target folder colourization to use user selected colour
+
 2001-09-12 [darko]
 	
 	* src/summaryview.c

@@ -95,6 +95,7 @@ static GtkStyle *normal_style;
 static GtkStyle *normal_color_style;
 static GtkStyle *bold_style;
 static GtkStyle *bold_color_style;
+static GtkStyle *bold_tgtfold_style;
 
 static GdkPixmap *inboxxpm;
 static GdkBitmap *inboxxpmmask;
@@ -440,6 +441,9 @@ void folderview_init(FolderView *folderview)
 		bold_style->font = boldfont;
 		bold_color_style = gtk_style_copy(bold_style);
 		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+
+		bold_tgtfold_style = gtk_style_copy(bold_style);
+		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
 	}
 	if (!normal_style) {
 		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
@@ -950,10 +954,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	else if (use_bold) {
 		style = bold_style;
 		if (item->op_count > 0) {
-			gtk_ctree_node_set_foreground(ctree, node,
-			                              &folderview->color_op);
-		} else {
-			style = bold_style;
+			style = bold_tgtfold_style;
 		}
 	}
 	else if (use_color) {
@@ -962,9 +963,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 					      &folderview->color_new);
 	}
 	else if (item->op_count > 0) {
-        	style = normal_color_style;
-		gtk_ctree_node_set_foreground(ctree, node,
-					      &folderview->color_op);
+		style = bold_tgtfold_style;
 	} else {
 		style = normal_style;
 	}
