@@ -1,3 +1,8 @@
+2002-09-21 [alfons]	0.8.2claws63
+
+	* src/compose.c
+		compose_send(): plug unnoticed memleak
+
 2002-09-20 [alfons]	0.8.2claws62
 
 	* src/addr_compl.c

@@ -2846,6 +2846,7 @@ gint compose_send(Compose *compose)
 	gint msgnum;
 	FolderItem *folder;
 	gint val;
+	gchar *msgpath;
 
 	if (compose_check_entries(compose, TRUE) == FALSE)
 		return -1;
@@ -2856,7 +2857,9 @@ gint compose_send(Compose *compose)
 		return -1;
 	}
 	
-	val = procmsg_send_message_queue(folder_item_fetch_msg(folder, msgnum));
+	msgpath = folder_item_fetch_msg(folder, msgnum);
+	val = procmsg_send_message_queue(msgpath);
+	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
 	folderview_update_item(folder, TRUE);
