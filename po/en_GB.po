@@ -14,97 +14,105 @@
 msgid "/_View/_Sort/by _color label"
 msgstr "/_View/_Sort/by _colour label"
 
-#: src/imap.c:398
+#: src/alertpanel.c:188
+msgid "Creating alert panel dialog...\n"
+msgstr "Creating alert panel dialogue...\n"
+
+#: src/imap.c:410
 msgid "creating tunneled IMAP4 connection\n"
 msgstr "creating tunnelled IMAP4 connection\n"
 
-#: src/imap.c:1114
+#: src/imap.c:1139
 msgid "error occured while getting LIST.\n"
 msgstr "error occurred while getting LIST.\n"
 
-#: src/inc.c:557
+#: src/inc.c:558
 #, c-format
 msgid "Authorization for %s on %s failed"
 msgstr "Authorisation for %s on %s failed"
 
-#: src/mainwindow.c:587
+#: src/mainwindow.c:578
 msgid "/_View/_Go to/Prev _labeled message"
 msgstr "/_View/_Go to/Prev _labelled message"
 
-#: src/mainwindow.c:589
+#: src/mainwindow.c:580
 msgid "/_View/_Go to/Next la_beled message"
 msgstr "/_View/_Go to/Next la_belled message"
 
-#: src/mainwindow.c:1031
+#: src/mainwindow.c:1021
 #, c-format
 msgid "MainWindow: color allocation %d failed\n"
 msgstr "MainWindow: colour allocation %d failed\n"
 
-#: src/prefs_account.c:845
+#: src/prefs_account.c:844
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/prefs_account.c:1851
+#: src/prefs_account.c:1862
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Mark cross-posted messages as read and colour:"
 
-#: src/prefs_common.c:1652
+#: src/prefs_common.c:1656
 msgid "Misspelled word color:"
 msgstr "Misspelled word colour:"
 
-#: src/prefs_common.c:2320
+#: src/prefs_common.c:2316
 msgid "Enable coloration of message"
 msgstr "Enable colouration of message"
 
-#: src/prefs_common.c:2686
+#: src/prefs_common.c:2685
+msgid "No popup error dialog on receive error"
+msgstr "No popup error dialogue on receive error"
+
+#: src/prefs_common.c:2691
 msgid "Show receive dialog"
 msgstr "Show receive dialogue"
 
-#: src/prefs_common.c:2719
+#: src/prefs_common.c:2724
 msgid "Show no-unread-message dialog"
 msgstr "Show no-unread-message dialogue"
 
-#: src/prefs_common.c:3282
+#: src/prefs_common.c:3290
 msgid "Set message colors"
 msgstr "Set message colours"
 
-#: src/prefs_common.c:3290
+#: src/prefs_common.c:3298
 msgid "Colors"
 msgstr "Colours"
 
-#: src/prefs_common.c:3362
+#: src/prefs_common.c:3370
 msgid "Recycle quote colors"
 msgstr "Recycle quote colours"
 
-#: src/prefs_common.c:3425
+#: src/prefs_common.c:3433
 msgid "Pick color for quotation level 1"
 msgstr "Pick colour for quotation level 1"
 
-#: src/prefs_common.c:3428
+#: src/prefs_common.c:3436
 msgid "Pick color for quotation level 2"
 msgstr "Pick colour for quotation level 2"
 
-#: src/prefs_common.c:3431
+#: src/prefs_common.c:3439
 msgid "Pick color for quotation level 3"
 msgstr "Pick colour for quotation level 3"
 
-#: src/prefs_common.c:3434
+#: src/prefs_common.c:3442
 msgid "Pick color for URI"
 msgstr "Pick colour for URI"
 
-#: src/prefs_common.c:3437
+#: src/prefs_common.c:3445
 msgid "Pick color for target folder"
 msgstr "Pick colour for target folder"
 
-#: src/prefs_common.c:3441
+#: src/prefs_common.c:3449
 msgid "Pick color for misspelled word"
 msgstr "Pick colour for misspelled word"
 
-#: src/prefs_actions.c:1558
+#: src/prefs_actions.c:1552
 msgid "Updating actions input/output dialog.\n"
 msgstr "Updating actions input/output dialogue.\n"
 
-#: src/prefs_actions.c:1638
+#: src/prefs_actions.c:1607
 msgid "Creating actions dialog\n"
 msgstr "Creating actions dialogue\n"
 
@@ -112,23 +120,23 @@ msgstr "Creating actions dialogue\n"
 msgid "Creating progress dialog...\n"
 msgstr "Creating progress dialogue...\n"
 
-#: src/selective_download.c:764
-msgid "Exit Dialog"
-msgstr "Exit Dialogue"
+#: src/selective_download.c:669
+msgid "Exit dialog"
+msgstr "Exit dialogue"
 
-#: src/summaryview.c:1315 src/summaryview.c:1340
+#: src/summaryview.c:1321 src/summaryview.c:1346
 msgid "No more labeled messages"
 msgstr "No more labelled messages"
 
-#: src/summaryview.c:1316
+#: src/summaryview.c:1322
 msgid "No labeled message found. Search from the end?"
 msgstr "No labelled message found. Search from the end?"
 
-#: src/summaryview.c:1325 src/summaryview.c:1350
+#: src/summaryview.c:1331 src/summaryview.c:1356
 msgid "No labeled messages."
 msgstr "No labelled messages."
 
-#: src/summaryview.c:1314
+#: src/summaryview.c:1347
 msgid "No labeled message found. Search from the beginning?"
 msgstr "No labelled message found. Search from the beginning?"
 
@@ -136,11 +144,15 @@ msgstr "No labelled message found. Search from the beginning?"
 msgid "or double-click, or click the center button, "
 msgstr "or double-click, or click the centre button, "
 
-#: src/prefs_filtering.c:234 src/prefs_filtering.c:479
-msgid "Color"
-msgstr "Colour"
+#: src/exphtmldlg.c:527
+msgid "Color Banding"
+msgstr "Colour Banding"
 
 #: src/summaryview.c:415
 msgid "/Color la_bel"
 msgstr "Colour la_bel"
+
+#: src/prefs_filtering.c:234 src/prefs_filtering.c:478
+msgid "Color"
+msgstr "Colour"
 

@@ -2934,12 +2934,13 @@ static void prefs_other_create(void)
 			       "\"?p\\mozilla\\mozilla.exe\" \"%s\"",
 			       "\"?p\\k-meleon\\k-meleon.exe\" \"%s\"",
 #else
+			       "mozilla -remote 'openurl(%s,new-window)'",
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
 #endif
 			       "gnome-moz-remote --raise --newwin '%s'",
 			       "kfmclient openURL '%s'",
-			       "opera -newwindow '%s'",	       
+			       "opera -newwindow '%s'",
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
 			       NULL);

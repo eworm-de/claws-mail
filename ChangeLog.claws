@@ -1,3 +1,32 @@
+2002-07-19 [melvin]	0.7.8claws77
+
+	* src/selective_download.[ch]
+		Fixed bug where closing the dialog with the window manager's
+		close button will not unlock the summary
+		Corrected some function declarations that missed a return value
+		Made the source code comply better with coding style.
+	* src/prefs_common.c
+		Added new browser command line for Mozilla.
+
+2002-07-18 [paul]	0.7.8claws76
+
+	* src/mainwindow.c
+	  src/selective_download.[ch]
+		reflect theme changes, fix Gdk Warning when creating 
+		pixmap from NULL window, and minor clean up.
+		Patch submitted by Oliver Haertel <oha@users.sourceforge.net>
+
+	* po/en_GB.po
+		updated
+
+2002-07-17 [paul]	0.7.8claws75
+
+	* INSTALL[.jp]
+		sync with 0.8.0
+	
+	* po/en_GB.po
+		updated
+
 2002-07-16 [paul]	0.7.8claws74
 
 	* tools/filter_conv.pl
@@ -37,7 +66,7 @@
 	* src/summaryview.c
 		removed setting folder status from summaryview.
 		folder.c should update all message counts correctly.
-	
+
 2002-07-15 [paul]	0.7.8claws68
 
 	* po/pt_BR.po
@@ -357,7 +386,7 @@
 
 	* src/prefs_common.c
 		...and in the process, tweak the gui a little
-	
+
 2002-06-25 [alfons]	0.7.8claws27
 	
 	* configure.in
