@@ -2373,6 +2373,7 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	gchar *name;
 	gchar *message;
+	gchar *old_id;
 	AlertValue avalue;
 
 	if (!folderview->selected) return;
@@ -2382,6 +2383,8 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
+
+	old_id = folder_item_get_identifier(item);
 
 	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really delete newsgroup `%s'?"), name);
@@ -2399,7 +2402,8 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	folder_item_remove(item);
 	folder_write_list();
 	
-	prefs_filtering_delete_path(name);
+	prefs_filtering_delete_path(old_id);
+	g_free(old_id);
 }
 
 static void folderview_rm_news_server_cb(FolderView *folderview, guint action,

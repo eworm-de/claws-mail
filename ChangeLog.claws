@@ -1,3 +1,9 @@
+2004-02-15 [paul]	0.9.10claws15
+
+	* src/folderview.c
+		fix bug where unsubscribing a newsgroup would destroy
+		(most of the) filtering rules
+
 2004-02-15 [paul]	0.9.10claws14
 
 	* src/folderview.c
