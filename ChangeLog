@@ -1,3 +1,10 @@
+2001-10-26
+
+	* src/textview.c: textview_set_font(): support Russian charset
+	  on EUC-JP locale.
+	* src/summaryview.c: summary_delete(): (hopefully) fixed the crash
+	  bug on deleting.
+
 2001-10-21
 
 	* version 0.6.4

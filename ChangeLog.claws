@@ -1,3 +1,8 @@
+2001-10-26 [paul]	0.6.4claws7
+
+	* sync with sylpheed 0.6.4cvs1
+		see ChangeLog entry 2001-10-26
+
 2001-10-25 [alfons]	0.6.4claws6
 
 	* src/gtkstext.c

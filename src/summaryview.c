@@ -2649,14 +2649,16 @@ void summary_delete(SummaryView *summaryview)
 	node = summary_find_next_msg(summaryview, sel_last);
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
-	if (node == gtkut_ctree_node_next(ctree, sel_last))
-		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
-	else if (node == GTK_CTREE_NODE_PREV(sel_last))
-		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-	else
-		summary_select_node
-			(summaryview, node,
-			 summaryview->msg_is_toggled_on);
+
+	if (node) {
+		if (sel_last && node == gtkut_ctree_node_next(ctree, sel_last))
+			summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
+		else if (sel_last && node == GTK_CTREE_NODE_PREV(sel_last))
+			summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
+		else
+			summary_select_node(summaryview, node,
+					    summaryview->msg_is_toggled_on);
+	}
 
 	if (prefs_common.immediate_exec || item->stype == F_TRASH)
 		summary_execute(summaryview);

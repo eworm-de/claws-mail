@@ -843,10 +843,12 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	if (MB_CUR_MAX > 1) {
 		if (codeset) {
 			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
-			    !g_strncasecmp(codeset, "KOI8-", 5)     ||
-			    !g_strncasecmp(codeset, "CP", 2)        ||
-			    !g_strncasecmp(codeset, "WINDOWS-", 8)  ||
 			    !g_strcasecmp(codeset, "BALTIC"))
+				use_fontset = FALSE;
+			else if (conv_get_current_charset() != C_EUC_JP &&
+				 (!g_strncasecmp(codeset, "KOI8-", 5) ||
+				  !g_strncasecmp(codeset, "CP", 2)    ||
+				  !g_strncasecmp(codeset, "WINDOWS-", 8)))
 				use_fontset = FALSE;
 		}
 	} else

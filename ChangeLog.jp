@@ -1,3 +1,10 @@
+2001-10-26
+
+	* src/textview.c: textview_set_font(): EUC-JP locale でロシア語
+	  の文字集合に対応。
+	* src/summaryview.c: summary_delete(): (多分)削除時のクラッシュ
+	  バグを修正。
+
 2001-10-21
 
 	* version 0.6.4
