@@ -1,3 +1,82 @@
+2004-08-09 [paul]       0.9.12cvs54
+
+	* po/POTFILES.in
+		reflect new location of sgpgme.c
+	* src/main.c
+		sync with main, see ChangeLog 2004-08-09
+
+2004-08-08 [christoph]	0.9.12cvs53
+
+	* src/folderutils.c
+		freeze FolderItem updates while deleting duplicate messages
+
+2004-08-08 [christoph]	0.9.12cvs52
+
+	* configure.ac
+	* src/Makefile.am
+	* src/main.c
+	* src/pgpmime.c
+	* src/pgpmime.h
+	* src/sgpgme.c
+	* src/sgpgme.h
+	* src/plugins/Makefile.am
+	* src/plugins/pgpmime/.cvsignore
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		new plugin for PGP/MIME
+
+2004-08-07 [christoph]	0.9.12cvs51
+
+	* src/folder.c
+		disable immediate folder change notification on opened folders
+		until SummaryView can handle it quickly
+
+2004-08-07 [colin]	0.9.12cvs50
+
+	* src/pop.c
+	* src/common/partial_download.c
+		fix warnings
+
+2004-08-07 [colin]	0.9.12cvs49
+
+	* src/Makefile.am
+	* src/account.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/alertpanel.h
+	* src/compose.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/main.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/pop.c
+	* src/sgpgme.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/sslcertwindow.c
+	* src/pixmaps/stock_dialog-error.xpm
+	* src/pixmaps/stock_dialog-info.xpm
+	* src/pixmaps/stock_dialog-question.xpm
+	* src/pixmaps/stock_dialog-warning.xpm
+		sync new alertpanel from gtk2
+
+2004-08-07 [colin]	0.9.12cvs48
+
+	* src/prefs_folder_item.c
+		fix memory corruption in folderitem's prefs
+
+2004-08-06 [colin]	0.9.12cvs47
+
+	* src/compose.c
+		close compose window after queuing, before 
+		sending when user presses Send
+
 2004-08-05 [christoph]	0.9.12cvs46
 
 	* src/msgcache.c

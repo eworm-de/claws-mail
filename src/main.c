@@ -80,10 +80,6 @@
 #include "news_gtk.h"
 #include "matcher.h"
 
-#if USE_GPGME
-#  include "sgpgme.h"
-#  include "pgpmime.h"
-#endif
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -233,8 +229,6 @@ int main(int argc, char *argv[])
 	gtk_rc_parse(userrc);
 	g_free(userrc);
 
-	gtk_rc_parse("./gtkrc-2.0");
-
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 	gtk_accel_map_load (userrc);
 	g_free(userrc);
@@ -258,10 +252,6 @@ int main(int argc, char *argv[])
 	prefs_common_init();
 	prefs_common_read_config();
 
-#if USE_GPGME
-	sgpgme_init();
-	pgpmime_init();
-#endif
 	prefs_themes_init();
 	prefs_fonts_init();
 	prefs_ext_prog_init();
@@ -437,10 +427,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	addressbook_destroy();
 
-#ifdef USE_GPGME
-	pgpmime_done();
-	sgpgme_done();
-#endif
 	prefs_themes_done();
 	prefs_fonts_done();
 	prefs_ext_prog_done();

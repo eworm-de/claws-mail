@@ -35,6 +35,8 @@ gint folderutils_delete_duplicates(FolderItem *item,
 	
 	debug_print("Deleting duplicated messages...\n");
 
+	folder_item_update_freeze();
+
 	msglist = folder_item_get_msg_list(item);
 	if (msglist == NULL)
 		return 0;
@@ -96,6 +98,8 @@ gint folderutils_delete_duplicates(FolderItem *item,
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(msglist);
+
+	folder_item_update_thaw();
 
 	debug_print("done.\n");
 

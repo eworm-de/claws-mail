@@ -1,3 +1,27 @@
+2004-08-09 [paul]	0.9.12cvs54.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/folderutils.c
+	* src/main.c
+	* src/pgpmime.c
+	* src/pgpmime.h
+	* src/sgpgme.c
+	* src/sgpgme.h
+	* src/plugins/Makefile.am
+	* src/plugins/pgpmime/.cvsignore
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		sync with HEAD
+
 2004-08-08 [paul]	0.9.12cvs51.1
 
 	* configure.ac
