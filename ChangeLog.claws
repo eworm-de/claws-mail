@@ -1,3 +1,9 @@
+2002-11-21 [colin]	0.8.5claws174
+
+	* src/mh.c
+		Fix moving/copying from queue/draft folders
+		for MH folders
+
 2002-11-21 [christoph]	0.8.5claws173
 
 	* src/crash.c
