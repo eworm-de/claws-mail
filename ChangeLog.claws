@@ -1,3 +1,8 @@
+2003-05-14 [christoph]	0.8.11claws152
+
+	* src/folder.c
+		fix folder update after adding a message
+
 2003-05-13 [alfons]	0.8.11claws151
 
 	* src/common/session.c

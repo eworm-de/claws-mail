@@ -1605,6 +1605,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 		if (msginfo != NULL) {
 			add_msginfo_to_cache(dest, msginfo, NULL);
     			procmsg_msginfo_free(msginfo);
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 		}
 
                 dest->last_num = num;
