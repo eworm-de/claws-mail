@@ -62,12 +62,17 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window, gpointer data)
+static void spamassassin_create_widget_func(PrefsPage * _page,
+					    GtkWindow * window,
+					    gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
 	SpamAssassinConfig *config;
 
-	/* ------------------ code made by glade -------------------- */
+	/*
+	 * BEGIN GLADE CODE
+	 * DO NOT EDIT
+	 */
 	GtkWidget *table1;
 	GtkWidget *label3;
 	GtkWidget *label4;
@@ -82,14 +87,16 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	GtkWidget *enable;
 	GtkWidget *receive_spam;
 	GtkWidget *label10;
-	GtkObject *max_size_adj;
-	GtkWidget *max_size;
 	GtkWidget *save_folder;
 	GtkWidget *button4;
 	GtkWidget *label11;
+	GtkWidget *hbox3;
+	GtkObject *max_size_adj;
+	GtkWidget *max_size;
 
 	table1 = gtk_table_new(6, 3, FALSE);
 	gtk_widget_show(table1);
+	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table1), 8);
 
@@ -139,16 +146,16 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_widget_show(hostname);
 	gtk_box_pack_start(GTK_BOX(hbox1), hostname, TRUE, TRUE, 0);
 
-	label5 = gtk_label_new(":");
+	label5 = gtk_label_new(_(":"));
 	gtk_widget_show(label5);
 	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE, 0);
 	gtk_misc_set_padding(GTK_MISC(label5), 8, 0);
 
 	port_adj = gtk_adjustment_new(783, 1, 65535, 1, 10, 10);
-	port =
-	    gtk_spin_button_new(GTK_ADJUSTMENT(port_adj), 1, 0);
+	port = gtk_spin_button_new(GTK_ADJUSTMENT(port_adj), 1, 0);
 	gtk_widget_show(port);
-	gtk_box_pack_start(GTK_BOX(hbox1), port, FALSE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox1), port, FALSE, TRUE, 0);
+	gtk_widget_set_usize(port, 64, -2);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(port), TRUE);
 
 	enable = gtk_check_button_new_with_label("");
@@ -173,20 +180,13 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_label_set_justify(GTK_LABEL(label10), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label10), 1, 0.5);
 
-	max_size_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 10);
-	max_size = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_adj), 1, 0);
-	gtk_widget_show(max_size);
-	gtk_table_attach(GTK_TABLE(table1), max_size, 1, 2, 2, 3,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
 	save_folder = gtk_entry_new();
 	gtk_widget_show(save_folder);
 	gtk_table_attach(GTK_TABLE(table1), save_folder, 1, 2, 4, 5,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	button4 = gtk_button_new_with_label("...");
+	button4 = gtk_button_new_with_label(_("..."));
 	gtk_widget_show(button4);
 	gtk_table_attach(GTK_TABLE(table1), button4, 2, 3, 4, 5,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
@@ -198,11 +198,25 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
-	/* --------------------------------------------------------- */
+
+	hbox3 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox3);
+	gtk_table_attach(GTK_TABLE(table1), hbox3, 1, 2, 2, 3,
+			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			 (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+	max_size_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 10);
+	max_size = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_adj), 1, 0);
+	gtk_widget_show(max_size);
+	gtk_box_pack_end(GTK_BOX(hbox3), max_size, FALSE, TRUE, 0);
+	gtk_widget_set_usize(max_size, 64, -2);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size), TRUE);
+	/*
+	 * END GLADE CODE
+	 */
 
 	config = spamassassin_get_config();
 
-	gtk_widget_set_usize(GTK_WIDGET(port), 64, -1);
 	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), config->enable);
@@ -276,19 +290,19 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "SpamAssassin GTK";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin provides a Preferences page for the SpamAssassin "
 	       "plugin.\n"
@@ -304,7 +318,7 @@ const gchar *plugin_desc()
 	       "saved.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

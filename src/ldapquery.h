@@ -77,7 +77,7 @@ struct _LdapQuery {
 	void        (*callBackEnd)( void * );
 	ItemFolder  *folder;		/* Reference to folder in cache */
 	LdapServer  *server;		/* Reference to (parent) LDAP server */
-	// SyldapServer *server;		/* Reference to (parent) LDAP server */
+	/* SyldapServer *server; */		/* Reference to (parent) LDAP server */
 };
 
 /* Function prototypes */
@@ -94,7 +94,6 @@ void ldapqry_set_callback_start	( LdapQuery *qry, void *func );
 void ldapqry_set_callback_entry	( LdapQuery *qry, void *func );
 void ldapqry_set_callback_end	( LdapQuery *qry, void *func );
 void ldapqry_clear		( LdapQuery *qry );
-void ldapqry_release_thread	( LdapQuery *qry );
 void ldapqry_free		( LdapQuery *qry );
 void ldapqry_print		( const LdapQuery *qry, FILE *stream );
 void ldapqry_set_stop_flag	( LdapQuery *qry, const gboolean value );

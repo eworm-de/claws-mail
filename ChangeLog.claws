@@ -1,3 +1,250 @@
+2003-05-03 [thorsten]	0.8.11claws140
+
+	* src/addrquery.h
+	  src/ldapquery.h
+	  src/mainwindow.c
+		removed C++ comments
+	* src/addr_compl.c
+		function with non-int retval/param used before
+		implementation/declaration
+
+2003-05-02 [paul]	0.8.11claws139
+
+	* src/addr_compl.[ch]
+	  src/addressbook.[ch]
+	  src/addrindex.c
+	  src/summaryview.c
+	  	revert match's changes to (finally) remove the bug where
+		opening a folder causes massive slowdown when using the 
+		'Display sender using address book' option
+
+2003-05-01 [melvin]	0.8.11claws138
+
+	* src/plugins/dillo_viewer/dillo_prefs.[ch]
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Fixed bug where "Cancel" button from prefs issued
+		warnings.
+		Comply a little more to coding style
+
+2003-05-01 [paul]	0.8.11claws137
+
+	* sync with 0.8.11cvs38
+		see ChangeLog 2003-05-01
+
+2003-05-01 [paul]	0.8.11claws136
+
+	* po/bg.po
+		updated by George Danchev
+
+2003-04-30 [christoph]	0.8.11claws135
+
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		remove gtk_widget_ref() calls for widgets in
+		glade code
+
+2003-04-30 [paul]	0.8.11claws134
+
+	* src/addrindex.c
+		ok, this time a better fix for the bug where opening folder
+		has massive slowdown when using the 'Display sender using 
+		address book' option
+
+2003-04-30 [paul]	0.8.11claws133
+
+	* src/addrindex.c
+		revert the 'fix' of 0.8.11claws128 because it doesn't fix it
+	
+2003-04-30 [melvin]	0.8.11claws132
+
+	New: Dillo plugin preferences (patch by Dimitar Haralanov)
+
+	* src/plugins/dillo_viewer/dillo_prefs.[ch]	*** NEW ***
+		Preferences for the dillo plugin
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Support for preferences
+	* src/plugins/dillo_viewer/Makefile.am
+		Added dillo_prefs.[ch]
+
+2003-04-30 [alfons]	0.8.11claws131
+
+	* src/common/plugin.[ch]
+		see? this ANSI C'fication immediately gives us type
+		checking for free.
+
+2003-04-30 [alfons]	0.8.11claws130
+
+	* src/common/plugin.[ch]
+	* src/plugins/clamav/clamav_plugin.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/image_viewer/viewer.[ch]
+	* src/plugins/image_viewer/viewerprefs.[ch]
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+		clean up
+
+2003-04-30 [alfons]	0.8.11claws129
+
+	* src/common/utils.c
+		make is_ascii_str() fail gracefully when NULL pointer
+		is passed
+
+2003-04-30 [paul]	0.8.11claws128
+
+	* src/addrindex.c
+		fix bug where opening folder has massive slowdown when
+		using the 'Display sender using address book' option
+
+2003-04-30 [paul]	0.8.11claws127
+
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  src/plugins/demo/demo.c
+	  src/plugins/dillo_viewer/dillo_viewer.c
+	  src/plugins/image_viewer/plugin.c
+	  src/plugins/mathml_viewer/mathml_viewer.c
+	  src/plugins/spamassassin/spamassassin.c
+	  src/plugins/spamassassin/spamassassin_gtk.c
+	  src/plugins/trayicon/trayicon.c
+	  	get rid of eye-hurting function signatures
+
+2003-04-30 [paul]	0.8.11claws126
+
+	* src/plugins/trayicon/trayicon.c
+		add description
+		
+	* src/mimeview.c
+		be more descriptive
+
+2003-04-30 [paul]	0.8.11claws125
+
+	* configure.ac
+		arrange the plugins in reverse alphabetical order
+		
+	* src/plugins/clamav/clamav_plugin.[ch]
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  	rename some params
+		resize max_size window
+		re-arrange the order of some gui elements
+		improve descriptions
+	
+	* src/plugins/image_viewer/plugin.c
+	  src/plugins/mathml_viewer/mathml_viewer.c
+	  	add descriptions
+		
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		resize max_size window
+		re-arrange the order of some gui elements
+		
+	* src/messageview.c
+	  src/mimeview.c
+	  	correct typos
+
+2003-04-30 [alfons]	0.8.11claws124
+
+	* src/imap.c
+		fix a leak found while browsing Martin Kluge's 
+		valgrind log (Claws only)
+
+2003-04-29 [darko]	0.8.11claws123
+
+	* src/gtk/gtkstext.h
+		include wchar.h if it is available, fixes compilation
+		on HP-UX systems
+
+2003-04-29 [melvin]	0.8.11claws122
+
+	* src/prefs_actions.c
+		Improved help text of Actions' syntax
+
+2003-04-28 [paul]	0.8.11claws121
+
+	* src/action.c
+		a better fix for the crash when performing an action
+		on a mime part
+
+2003-04-28 [paul]	0.8.11claws120
+
+	* src/action.c
+		fix crash when performing an action on a
+		mime part
+
+2003-04-28 [paul]	0.8.11claws119
+
+	* sync with 0.8.11cvs36
+		see ChangeLog 2003-04-28
+
+2003-04-27 [paul]	0.8.11claws118
+
+	* more sync with 0.8.11cvs35
+		see ChangeLog 2003-04-25
+
+2003-04-26 [christoph]	0.8.11claws117
+
+	* src/folder.c
+		fix remove virtual check
+
+2003-04-26 [paul]	0.8.11claws116
+
+	* src/messageview.c
+		fix return-receipt, make it work again
+
+2003-04-26 [paul]	0.8.11claws115
+
+	* src/mimeview.c
+		restore double-clicking of the [application/pgp-signature 
+		(Select "Check signature" to check)] line in the message view,
+		broken in recent sync
+
+2003-04-26 [christoph]	0.8.11claws114
+
+	* src/folder.c
+		check if remove virtual really exists before
+		calling the function
+
+2003-04-25 [match]	0.8.11claws113
+
+	* src/addrindex.c
+	* src/addrbook.c
+	* src/ldapquery.[ch]
+	* src/ldapctrl.[ch]
+		fix memleak.
+	* src/ldapserver.[ch]
+		fix memleak. fix segfault.
+		plug a Claws memleak
+
+2003-04-25 [alfons]	0.8.11claws112
+
+	* src/folder.c
+		plug a Claws memleak
+
+2003-04-25 [alfons]	0.8.11claws111
+
+	* src/common/session.c
+		plug a memleak
+
+2003-04-25 [paul]	0.8.11claws110
+
+	* sync with 0.8.11cvs35
+		see ChangeLog 2003-04-24 and 2003-04-25
+		
+	* src/gtk/pluginwindow.c
+		correct another strange float value
+
+2003-04-24 [christoph]	0.8.11claws109
+
+	* src/folder.c
+		freeze folder item updates when unsetting new flags
+
+	* src/gtk/pluginwindow.c
+		correct strange float value
+
 2003-04-23 [paul]	0.8.11claws108
 
 	* sync with 0.8.11cvs33

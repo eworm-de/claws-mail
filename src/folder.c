@@ -1047,6 +1047,7 @@ void folder_item_close(FolderItem *item)
 	g_return_if_fail(item != NULL);
 
 	if (item->new_msgs) {
+		folder_item_update_freeze();
 		mlist = folder_item_get_msg_list(item);
 		for (cur = mlist ; cur != NULL ; cur = cur->next) {
 			MsgInfo * msginfo;
@@ -1057,6 +1058,7 @@ void folder_item_close(FolderItem *item)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
+		folder_item_update_thaw();
 	}		
 
 	folder_item_write_cache(item);
@@ -1940,7 +1942,6 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 			if (!folderscan && 
 			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
-				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
 				add_msginfo_to_cache(dest, newmsginfo, msginfo);
 				procmsg_msginfo_free(newmsginfo);
 			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
@@ -2116,8 +2117,9 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	MsgInfo *msginfo;
 
 	g_return_val_if_fail(item != NULL, -1);
-
 	folder = item->folder;
+	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
+
 	if (!item->cache) folder_item_read_cache(item);
 
 	ret = folder->klass->remove_msg(folder, item, num);

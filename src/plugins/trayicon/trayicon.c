@@ -82,7 +82,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
 }
 
-static void update()
+static void update(void)
 {
 	gint new, unread, unreadmarked, total;
 	gchar *buf;
@@ -135,7 +135,7 @@ int plugin_init(gchar **error)
 	}
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
-//        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+/*        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
@@ -168,23 +168,28 @@ int plugin_init(gchar **error)
         return 0;
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Trayicon";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
-	return "";
+	return "This plugin places a mailbox icon in the system tray that "
+	       "indicates if you have new or unread mail.\n"
+	       "\n"
+	       "The mailbox is empty if you have no unread mail, otherwise "
+	       "it contains a letter. A tooltip shows new, unread and total "
+	       "number of messages.";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

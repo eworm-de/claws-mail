@@ -52,10 +52,12 @@ struct _LdapServer {
 };
 
 /* Function prototypes */
+LdapServer *ldapsvr_create_noctl( void );
 LdapServer *ldapsvr_create	( void );
 void ldapsvr_set_name		( LdapServer *server, const gchar *value );
 void ldapsvr_set_accessed	( LdapServer *server, const gboolean value );
 void ldapsvr_force_refresh	( LdapServer *server );
+void ldapsvr_free_all_query	( LdapServer *server );
 void ldapsvr_free		( LdapServer *server );
 gint ldapsvr_get_status		( LdapServer *server );
 gboolean ldapsvr_get_accessed	( LdapServer *server );

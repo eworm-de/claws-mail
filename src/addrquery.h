@@ -25,7 +25,7 @@
 #define __ADDRQUERY_H__
 
 #include <glib.h>
-// #include <stdio.h>
+/* #include <stdio.h> */
 
 /* Address search call back function */
 typedef gint ( AddrSearchCallbackFunc ) ( gint cacheID,

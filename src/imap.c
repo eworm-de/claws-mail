@@ -2730,9 +2730,10 @@ static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 			continue;
 		}
 
-		if (sscanf(buf, "%d %s", &cmd_num, cmd_status) < 2)
+		if (sscanf(buf, "%d %s", &cmd_num, cmd_status) < 2) {
+			g_free(buf);
 			return IMAP_ERROR;
-		else if (cmd_num == imap_cmd_count &&
+		} else if (cmd_num == imap_cmd_count &&
 			 !strcmp(cmd_status, "OK")) {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf));

@@ -38,6 +38,8 @@
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
 #  include <wctype.h>
+#elif (HAVE_WCHAR_H)
+#  include <wchar.h>
 #endif
 
 #include <gdk/gdk.h>

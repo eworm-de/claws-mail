@@ -335,7 +335,7 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
 
 void gpgmegtk_free_passphrase()
 {
-    (void)free_passphrase(NULL); // could be inline
+    (void)free_passphrase(NULL); /* could be inline */
 }
 
 #endif /* USE_GPGME */

@@ -719,8 +719,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
-	if (MSG_IS_RETRCPT_PENDING(msginfo->flags))
-		return_receipt_show(messageview->noticeview, msginfo);
+	if (MSG_IS_RETRCPT_PENDING(messageview->msginfo->flags))
+		return_receipt_show(messageview->noticeview, messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
 
@@ -1060,7 +1060,7 @@ void messageview_toggle_view_real(MessageView *messageview)
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
-	noticeview_set_text(noticeview, _("This messages asks for a return receipt."));
+	noticeview_set_text(noticeview, _("This message asks for a return receipt"));
 	noticeview_set_button_text(noticeview, _("Send receipt"));
 	noticeview_set_button_press_callback(noticeview,
 					     GTK_SIGNAL_FUNC(return_receipt_send_clicked),

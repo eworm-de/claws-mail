@@ -538,7 +538,8 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 {
 	GList *attr;
 	gchar *name, *value;
-	gchar *pid = NULL, *eid = NULL;
+	gchar *eid = NULL;
+	/* gchar *pid = NULL; */
 	ItemEMail *email = NULL;
 
 	attr = xml_get_current_tag_attr(file);
@@ -549,10 +550,14 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 		value = g_strdup(value);
 		locale_to_utf8(&value);
 #endif
+		/*
 		if (strcmp(name, AB_ATTAG_PID) == 0)
 			pid = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_EID) == 0)
 			eid = g_strdup(value);
+		*/
+		if( strcmp( name, AB_ATTAG_EID ) == 0 )
+			eid = g_strdup( value );
 		attr = g_list_next(attr);
 #ifdef WIN32
 		g_free(value);

@@ -69,7 +69,6 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *resize;
 
 	table2 = gtk_table_new(2, 2, FALSE);
-	gtk_widget_ref(table2);
 	gtk_widget_show(table2);
 	gtk_container_set_border_width(GTK_CONTAINER(table2), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table2), 4);
@@ -77,7 +76,6 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 
 	label14 =
 	    gtk_label_new(_("Automatically display attached images"));
-	gtk_widget_ref(label14);
 	gtk_widget_show(label14);
 	gtk_table_attach(GTK_TABLE(table2), label14, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -85,7 +83,6 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label14), 0, 0.5);
 
 	label15 = gtk_label_new(_("Resize attached images"));
-	gtk_widget_ref(label15);
 	gtk_widget_show(label15);
 	gtk_table_attach(GTK_TABLE(table2), label15, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -93,14 +90,12 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label15), 0, 0.5);
 
 	autoload = gtk_check_button_new_with_label("");
-	gtk_widget_ref(autoload);
 	gtk_widget_show(autoload);
 	gtk_table_attach(GTK_TABLE(table2), autoload, 1, 2, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
 	resize = gtk_check_button_new_with_label("");
-	gtk_widget_ref(resize);
 	gtk_widget_show(resize);
 	gtk_table_attach(GTK_TABLE(table2), resize, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -150,7 +145,7 @@ static void imageviewer_save_func(PrefsPage * _page)
 
 static struct ImageViewerPage imageviewer_page;
 
-void image_viewer_prefs_init()
+void image_viewer_prefs_init(void)
 {
 	prefs_set_default(param);
 	prefs_read_config(param, PREFS_BLOCK_NAME, COMMON_RC);
@@ -163,7 +158,7 @@ void image_viewer_prefs_init()
 	prefs_gtk_register_page((PrefsPage *) &imageviewer_page);
 }
 
-void image_viewer_prefs_done()
+void image_viewer_prefs_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *) &imageviewer_page);
 }

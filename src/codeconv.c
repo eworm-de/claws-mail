@@ -773,7 +773,8 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	switch (src_charset) {
 	case C_ISO_2022_JP:
 	case C_ISO_2022_JP_2:
-		if (dest_charset == C_AUTO)
+		if (dest_charset == C_AUTO &&
+		    conv_get_current_charset() == C_EUC_JP)
 			code_conv = conv_jistodisp;
 		else if (dest_charset == C_EUC_JP)
 			code_conv = conv_jistoeuc;
@@ -802,13 +803,15 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 #endif
 		break;
 	case C_SHIFT_JIS:
-		if (dest_charset == C_AUTO)
+		if (dest_charset == C_AUTO &&
+		    conv_get_current_charset() == C_EUC_JP)
 			code_conv = conv_sjistodisp;
 		else if (dest_charset == C_EUC_JP)
 			code_conv = conv_sjistoeuc;
 		break;
 	case C_EUC_JP:
-		if (dest_charset == C_AUTO)
+		if (dest_charset == C_AUTO &&
+		    conv_get_current_charset() == C_EUC_JP)
 			code_conv = conv_euctodisp;
 		else if (dest_charset == C_ISO_2022_JP ||
 			 dest_charset == C_ISO_2022_JP_2)

@@ -27,13 +27,13 @@ typedef struct _ClamAvConfig ClamAvConfig;
 struct _ClamAvConfig
 {
 	gboolean	 clamav_enable;
-	gboolean 	 clamav_archive_enable;
+	gboolean 	 clamav_enable_arc;
 	guint 		 clamav_max_size;
-	gboolean 	 clamav_receive_infected;
+	gboolean 	 clamav_recv_infected;
 	gchar 		*clamav_save_folder;
 };
 
-ClamAvConfig *clamav_get_config();
-void	      clamav_save_config();
+ClamAvConfig *clamav_get_config		(void);
+void	      clamav_save_config	(void);
 
 #endif

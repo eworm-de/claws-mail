@@ -678,17 +678,17 @@ GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
  * Perform any other initialization of address index.
  * \param addrIndex Address index.
  */
-void addrindex_initialize( AddressIndex *addrIndex ) {
+/* void addrindex_initialize( AddressIndex *addrIndex ) {
 	addrcompl_initialize();
-}
+} */
 
 /**
  * Perform any other teardown of address index.
  * \param addrIndex Address index.
  */
-void addrindex_teardown( AddressIndex *addrIndex ) {
+/* void addrindex_teardown( AddressIndex *addrIndex ) {
 	addrcompl_teardown();
-}
+} */
 
 /**
  * Free up address index.
@@ -1235,24 +1235,6 @@ static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 	}
 }
 
-#else
-/*
- * Just read/write DOM fragments (preserve data found in file).
- */
-static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
-	AddressDataSource *ds;
-
-	ds = addrindex_create_datasource( ADDR_IF_JPILOT );
-	ds->rawDataSource = addrindex_read_fragment( file );
-	return ds;
-}
-
-static void addrindex_write_jpilot( FILE *fp, AddressDataSource *ds, gint lvl ) {
-	AddressIfFragment *fragment = ds->rawDataSource;
-	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
-	}
-}
 #endif
 
 #ifdef USE_LDAP
@@ -1390,7 +1372,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		attr = g_list_next( attr );
 	}
 
-	server = ldapsvr_create();
+	server = ldapsvr_create_noctl();
 	ldapsvr_set_name( server, serverName );
 	ldapsvr_set_search_flag( server, bSearch );
 	g_free( serverName );
@@ -1469,25 +1451,6 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP );
 
 }
-
-#else
-/*
- * Just read/write DOM fragments (preserve data found in file).
- */
-static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
-	AddressDataSource *ds;
-
-	ds = addrindex_create_datasource( ADDR_IF_LDAP );
-	ds->rawDataSource = addrindex_read_fragment( file );
-	return ds;
-}
-
-static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
-	AddressIfFragment *fragment = ds->rawDataSource;
-	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
-	}
-}
 #endif
 
 /* **********************************************************************
@@ -1537,12 +1500,16 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 				else if( addrIndex->lastType == ADDR_IF_VCARD ) {
 					ds = addrindex_parse_vcard( file );
 				}
+#ifdef USE_JPILOT
 				else if( addrIndex->lastType == ADDR_IF_JPILOT ) {
 					ds = addrindex_parse_jpilot( file );
 				}
+#endif
+#ifdef USE_LDAP
 				else if( addrIndex->lastType == ADDR_IF_LDAP ) {
 					ds = addrindex_parse_ldap( file );
 				}
+#endif
 				if( ds ) {
 					ds->Xinterface = dsIFace;
 					addrindex_hash_add_cache( addrIndex, ds );
@@ -1652,12 +1619,16 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 					if( iface->type == ADDR_IF_VCARD ) {
 						addrindex_write_vcard( fp, ds, lvlItem );
 					}
+#ifdef USE_JPILOT
 					if( iface->type == ADDR_IF_JPILOT ) {
 						addrindex_write_jpilot( fp, ds, lvlItem );
 					}
+#endif
+#ifdef USE_LDAP
 					if( iface->type == ADDR_IF_LDAP ) {
 						addrindex_write_ldap( fp, ds, lvlItem );
 					}
+#endif
 				}
 				nodeDS = g_list_next( nodeDS );
 			}
@@ -2611,7 +2582,7 @@ static void addrindex_search_ldap( LdapServer *server, const gint queryID ) {
 	gchar *name;
 
 	if( ! server->searchFlag ) return;
-	printf( "Searching ::%s::\n", ldapsvr_get_name( server ) );
+	/* printf( "Searching ::%s::\n", ldapsvr_get_name( server ) ); */
 
 	/* Retire any aged queries */
 	ldapsvr_retire_query( server );

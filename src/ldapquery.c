@@ -300,20 +300,6 @@ gboolean ldapqry_get_aged_flag( LdapQuery *qry ) {
 }
 
 /**
- * Release the thread associated with the query.
- * \param qry Query object to process.
- */
-void ldapqry_release_thread( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
-	printf( "ldapqry_release_thread...\n" );
-	if( qry->thread != NULL ) {
-		g_free( qry->thread );
-		printf( "\t===========>done\n" );
-	}
-	qry->thread = NULL;
-}
-
-/**
  * Release the LDAP control data associated with the query.
  * \param qry Query object to process.
  */
@@ -354,7 +340,8 @@ void ldapqry_clear( LdapQuery *qry ) {
 }
 
 /**
- * Free up LDAP query object by releasing internal memory.
+ * Free up LDAP query object by releasing internal memory. Note that
+ * the thread object will be freed by the OS.
  * \param qry Query object to process.
  */
 void ldapqry_free( LdapQuery *qry ) {
@@ -957,7 +944,7 @@ gint ldapqry_read_data_th( LdapQuery *qry ) {
  * to prevent joining threads.
  * \param qry Query object to process.
  */
-void ldapqry_join_thread( LdapQuery *qry ) {
+void ldapqry_join_threadX( LdapQuery *qry ) {
 	g_return_if_fail( qry != NULL );
 
 	/* Wait for thread */
@@ -968,7 +955,7 @@ void ldapqry_join_thread( LdapQuery *qry ) {
 
 /**
  * Cleanup LDAP thread data. This function will be called when each thread
- * exits.
+ * exits. Note that the thread object will be freed by the kernel.
  * \param ptr Pointer to object being destroyed (a query object in this case).
  */
 static void ldapqry_destroyer( void * ptr ) {
@@ -984,10 +971,6 @@ static void ldapqry_destroyer( void * ptr ) {
 		ldapctl_free( qry->control );
 	}
 	qry->control = NULL;
-
-	if( qry->thread ) {
-		g_free( qry->thread );
-	}
 	qry->thread = NULL;
 	ldapqry_set_busy_flag( qry, FALSE );
 	/*

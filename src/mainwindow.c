@@ -1218,7 +1218,7 @@ void main_window_separation_change(MainWindow *mainwin, SeparateType type)
 {
 	GtkWidget *folder_wid  = GTK_WIDGET_PTR(mainwin->folderview);
 	GtkWidget *summary_wid = GTK_WIDGET_PTR(mainwin->summaryview);
-	//GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview);
+	/* GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview); */
 	GtkWidget *message_wid = mainwin->messageview->vbox;
 
 	debug_print("Changing window separation type from %d to %d\n",

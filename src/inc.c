@@ -739,7 +739,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	statusbar_verbosity_set(TRUE);
 
 	while (SESSION(pop3_session)->state != SESSION_DISCONNECTED &&
-	       SESSION(pop3_session)->state != SESSION_ERROR)
+	       SESSION(pop3_session)->state != SESSION_ERROR &&
+	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
 
@@ -973,7 +974,6 @@ static void inc_cancel(IncProgressDialog *dialog)
 
 	session = dialog->queue_list->data;
 
-	session->session->state = SESSION_DISCONNECTED;
 	session->inc_state = INC_CANCEL;
 
 	log_message(_("Incorporation cancelled\n"));

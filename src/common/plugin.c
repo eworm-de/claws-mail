@@ -32,9 +32,9 @@ struct _Plugin
 {
 	gchar	*filename;
 	GModule	*module;
-	gchar	*(*name) ();
-	gchar	*(*desc) ();
-	gchar	*(*type) ();
+	gchar	*(*name) (void);
+	gchar	*(*desc) (void);
+	gchar	*(*type) (void);
 };
 
 /**
@@ -48,7 +48,7 @@ static gint list_find_by_string(gconstpointer data, gconstpointer str)
 	return strcmp((gchar *)data, (gchar *)str) ? TRUE : FALSE;
 }
 
-void plugin_save_list()
+void plugin_save_list(void)
 {
 	gchar *rcpath, *block;
 	PrefFile *pfile;
@@ -96,7 +96,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 {
 	Plugin *plugin;
 	gint (*plugin_init) (gchar **error);
-	gchar *plugin_name, *plugin_desc, *plugin_type;
+	gpointer plugin_name, plugin_desc, plugin_type;
 	gint ok;
 
 	g_return_val_if_fail(filename != NULL, -1);
@@ -115,10 +115,10 @@ gint plugin_load(const gchar *filename, gchar **error)
 		return -1;
 	}
 
-	if (!g_module_symbol(plugin->module, "plugin_name", (gpointer *)&plugin_name) ||
-	    !g_module_symbol(plugin->module, "plugin_desc", (gpointer *)&plugin_desc) ||
-	    !g_module_symbol(plugin->module, "plugin_type", (gpointer *)&plugin_type) ||
-	    !g_module_symbol(plugin->module, "plugin_init", (gpointer *)&plugin_init)) {
+	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
+	    !g_module_symbol(plugin->module, "plugin_desc", &plugin_desc) ||
+	    !g_module_symbol(plugin->module, "plugin_type", &plugin_type) ||
+	    !g_module_symbol(plugin->module, "plugin_init", (gpointer *) &plugin_init)) {
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
 		g_free(plugin);
@@ -215,7 +215,7 @@ void plugin_unload_all(gchar *type)
 	}
 }
 
-GSList *plugin_get_list()
+GSList *plugin_get_list(void)
 {
 	return g_slist_copy(plugins);
 }

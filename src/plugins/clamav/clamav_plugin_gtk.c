@@ -73,28 +73,24 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *label3;
   	GtkWidget *enable_arc;
   	GtkWidget *arc_scanning;
-  	GtkWidget *label24;
+  	GtkWidget *label4;
   	GtkObject *max_size_adj;
   	GtkWidget *max_size;
-  	GtkWidget *mb;
-  	GtkWidget *label26;
+	GtkWidget *hbox1;
+  	GtkWidget *label5;
+  	GtkWidget *label6;
   	GtkWidget *recv_infected;
-  	GtkWidget *label27;
+  	GtkWidget *label7;
   	GtkWidget *save_folder;
   	GtkWidget *save_folder_select;
+	GtkWidget *label8;
 
   	table = gtk_table_new (6, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-  	enable_clamav = gtk_check_button_new_with_label ("");
-	gtk_widget_show (enable_clamav);
-  	gtk_table_attach (GTK_TABLE (table), enable_clamav, 1, 2, 0, 1,
-                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
-
-  	label1 = gtk_label_new ("Enable ClamAV filtering");
+  	label1 = gtk_label_new ("Enable virus scanning");
   	gtk_widget_show (label1);
   	gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 0, 1,
                     	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -102,46 +98,53 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
   	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
 
-  	enable_arc = gtk_check_button_new_with_label ("");
-	gtk_widget_show (enable_arc);
-  	gtk_table_attach (GTK_TABLE (table), enable_arc, 1, 2, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL),
+  	enable_clamav = gtk_check_button_new_with_label ("");
+	gtk_widget_show (enable_clamav);
+  	gtk_table_attach (GTK_TABLE (table), enable_clamav, 1, 2, 0, 1,
+                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	arc_scanning = gtk_label_new ("Enable archive scanning");
+  	arc_scanning = gtk_label_new ("Enable archive content scanning");
 	gtk_widget_show (arc_scanning);
   	gtk_table_attach (GTK_TABLE (table), arc_scanning, 0, 1, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
   	gtk_misc_set_alignment (GTK_MISC (arc_scanning), 0, 0.5);
 
-  	label24 = gtk_label_new ("Maximum message size");
-	gtk_widget_show (label24);
-  	gtk_table_attach (GTK_TABLE (table), label24, 0, 1, 4, 5,
+  	enable_arc = gtk_check_button_new_with_label ("");
+	gtk_widget_show (enable_arc);
+  	gtk_table_attach (GTK_TABLE (table), enable_arc, 1, 2, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
+
+  	label4 = gtk_label_new ("Maximum attachment size");
+  	gtk_widget_show (label4);
+  	gtk_table_attach (GTK_TABLE (table), label4, 0, 1, 4, 5,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label24), 0, 0.5);
+  	gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
 
-  	max_size_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  	hbox1 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox1);
+  	gtk_table_attach (GTK_TABLE (table), hbox1, 1, 2, 4, 5,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  	max_size_adj = gtk_adjustment_new (1, 1, 1024, 1, 10, 10);
   	max_size = gtk_spin_button_new (GTK_ADJUSTMENT (max_size_adj), 1, 0);
 	gtk_widget_show (max_size);
-  	gtk_table_attach (GTK_TABLE (table), max_size, 1, 2, 4, 5,
-                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+  	gtk_box_pack_start (GTK_BOX (hbox1), max_size, FALSE, FALSE, 0);
 
-  	mb = gtk_label_new ("MB");
-  	gtk_widget_show (mb);
-  	gtk_table_attach (GTK_TABLE (table), mb, 2, 3, 4, 5,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
-  	gtk_misc_set_alignment (GTK_MISC (mb), 0, 0.5);
+  	label5 = gtk_label_new ("MB");
+	gtk_widget_show (label5);
+  	gtk_box_pack_start (GTK_BOX (hbox1), label5, FALSE, FALSE, 0);
 
-  	label26 = gtk_label_new ("Receive infected email");
-	gtk_widget_show (label26);
- 	gtk_table_attach (GTK_TABLE (table), label26, 0, 1, 5, 6,
+  	label6 = gtk_label_new ("Receive infected messages");
+	gtk_widget_show (label6);
+ 	gtk_table_attach (GTK_TABLE (table), label6, 0, 1, 5, 6,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label26), 0, 0.5);
+  	gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
 
   	recv_infected = gtk_check_button_new_with_label ("");
 	gtk_widget_show (recv_infected);
@@ -149,12 +152,12 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	label27 = gtk_label_new ("Save folder");
-	gtk_widget_show (label27);
-  	gtk_table_attach (GTK_TABLE (table), label27, 0, 1, 6, 7,
+  	label7 = gtk_label_new ("Save folder");
+	gtk_widget_show (label7);
+  	gtk_table_attach (GTK_TABLE (table), label7, 0, 1, 6, 7,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label27), 0, 0.5);
+  	gtk_misc_set_alignment (GTK_MISC (label7), 0, 0.5);
 
   	save_folder = gtk_entry_new ();
 	gtk_widget_show (save_folder);
@@ -168,14 +171,24 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
                     	  (GtkAttachOptions) (0),
                     	  (GtkAttachOptions) (0), 0, 0);
 
+	label8 =
+	    gtk_label_new(_
+			  ("Leave empty to use the default trash folder"));
+	gtk_widget_show(label8);
+	gtk_table_attach(GTK_TABLE(table), label8, 1, 2, 7, 8,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label8), 1, 0.5);
+	
 	config = clamav_get_config();
 
 	gtk_signal_connect(GTK_OBJECT(save_folder_select), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_clamav), config->clamav_enable);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_arc), config->clamav_archive_enable);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_arc), config->clamav_enable_arc);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) config->clamav_max_size);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(recv_infected), config->clamav_receive_infected);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(recv_infected), config->clamav_recv_infected);
 	if (config->clamav_save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_folder), config->clamav_save_folder);
 	
@@ -203,10 +216,10 @@ static void clamav_save_func(PrefsPage *_page)
 	config = clamav_get_config();
 
 	config->clamav_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_clamav));
-	config->clamav_archive_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_arc));
+	config->clamav_enable_arc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_arc));
 
 	config->clamav_max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
-	config->clamav_receive_infected = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->recv_infected));
+	config->clamav_recv_infected = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->recv_infected));
 	g_free(config->clamav_save_folder);
 	config->clamav_save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
 
@@ -228,19 +241,19 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *) &clamav_page);
 
 	debug_print("ClamAV GTK plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Clam AntiVirus GTK";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin provides a Preferences page for the Clam AntiVirus "
 	       "plugin.\n"
@@ -248,14 +261,14 @@ const gchar *plugin_desc()
 	       "You will find the options in the Other Preferences window "
 	       "under Filtering/Clam AntiVirus.\n"
 	       "\n"
-	       "With this plugin you can enable the filtering, enable archive "
-	       "scanning, set the maximum size of messages to be checked, (if "
-	       "the message is larger it will not be checked), configure "
-	       "whether infected mail should be received (default: Yes) "
+	       "With this plugin you can enable the scanning, enable archive "
+	       "content scanning, set the maximum size of an attachment to be "
+	       "checked, (if the attachment is larger it will not be checked), "
+	       "configure whether infected mail should be received (default: Yes) "
 	       "and select the folder where infected mail will be saved.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }
