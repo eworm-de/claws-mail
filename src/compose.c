@@ -497,21 +497,10 @@ Compose * compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem *item)
 {
 	Compose *compose;
-	GList *cur_ac;
-	GList *account_list;
-	PrefsAccount *ac_prefs;
 
-	if (item && item->prefs->enable_default_account) {
-		/* get a PrefsAccount *pointer on the wished account */
-		account_list=account_get_list();
-		for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-			ac_prefs = (PrefsAccount *)cur_ac->data;
-			if (ac_prefs->account_id == item->prefs->default_account) {
-				account = ac_prefs;
-				break;
-			}
-		}
-	}
+	if (item && item->prefs && item->prefs->enable_default_account)
+		account = account_find_from_id(item->prefs->default_account);
+
 	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
@@ -603,28 +592,14 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	PrefsAccount *account;
 	PrefsAccount *reply_account;
 	GtkSText *text;
-	GList *cur_ac;
-	GList *account_list;
-	PrefsAccount *ac_prefs;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	/* select the account set in folderitem's property (if enabled) */
 	account = NULL;
-	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account) {
-		if (!account) {
-			/* get a PrefsAccount *pointer on the wished account */
-			account_list = account_get_list();
-			for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-				ac_prefs = (PrefsAccount *)cur_ac->data;
-				if (ac_prefs->account_id == msginfo->folder->prefs->default_account) {
-					account = ac_prefs;
-					break;
-				}
-			}
-		}
-	}
+	/* select the account set in folderitem's property (if enabled) */
+	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
+		account = account_find_from_id(msginfo->folder->prefs->default_account);
 	
 	/* select the account for the whole folder (IMAP / NNTP) */
 	if (!account)

@@ -3,6 +3,9 @@
 	* src/compose.c
 		make the folder's default account to be used when
 		replying. (patch by wwp <subscript@free.fr>)
+	* src/compose.c
+		code cleanup, nearly killed all of wwp's patch
+		for folder's default account in compose
 
 2001-10-26 [alfons]
 
@@ -47,7 +50,7 @@
 	* src/gtkstext.c
 	
 		make GtkSText follow style of GtkText (closes bug 
-		#469211 "text selection while writing message");
+		#469211 "text selection while writing message")
 		
 		do sync with GTK 1.2.10
 
