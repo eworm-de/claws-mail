@@ -153,10 +153,10 @@ void plugin_load_all()
 	while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
 		if (buf[0] == '[')
 			break;
-			
+
 		g_strstrip(buf);
-		if (plugin_load(buf, &error) < 0) {
-			debug_print("plugin loading error: %s\n", error);
+		if ((buf[0] != '\0') && (plugin_load(buf, &error) < 0)) {
+			g_warning("plugin loading error: %s\n", error);
 			g_free(error);
 		}							
 	}

@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 
 #if HAVE_LOCALE_H
@@ -33,8 +35,11 @@
 #include "inc.h"
 #include "procmsg.h"
 #include "folder.h"
+#include "prefs.h"
+#include "prefs_gtk.h"
 
 #include "libspamc.h"
+#include "spamassassin.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -59,10 +64,31 @@
 #endif
 
 static gint hook_id;
-static int max_size;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
-static gchar *hostname = NULL;
-static int port;
+
+gboolean spamassassin_enable;
+gchar *spamassassin_hostname;
+int spamassassin_port;
+int spamassassin_max_size;
+gboolean spamassassin_receive_spam;
+gchar *spamassassin_save_folder;
+
+static PrefParam param[] = {
+	{"enable", "FALSE", &spamassassin_enable, P_BOOL,
+	 NULL, NULL, NULL},
+	{"hostname", "localhost", &spamassassin_hostname, P_STRING,
+	 NULL, NULL, NULL},
+	{"port", "783", &spamassassin_port, P_USHORT,
+	 NULL, NULL, NULL},
+	{"max_size", "250", &spamassassin_max_size, P_USHORT,
+	 NULL, NULL, NULL},
+	{"receive_spam", "250", &spamassassin_receive_spam, P_BOOL,
+	 NULL, NULL, NULL},
+	{"save_folder", NULL, &spamassassin_save_folder, P_STRING,
+	 NULL, NULL, NULL},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
 
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
@@ -74,33 +100,46 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	int ret;
 	gchar *username = NULL, *oldlocale = NULL;
 	struct sockaddr addr;
-	
+
+	if (!spamassassin_enable)
+		return FALSE;
+
 	debug_print("Filtering message %d\n", msginfo->msgnum);
 
 	oldlocale = g_strdup(setlocale(LC_ALL, NULL));
-	if (oldlocale == NULL)
+	if (oldlocale == NULL) {
+		debug_print("failed to get locale");
 		goto CATCH;
+	}
 
 	setlocale(LC_ALL, "C");
 
-	ret = lookup_host(hostname, port, &addr);
-	if (ret != EX_OK)
+	ret = lookup_host(spamassassin_hostname, spamassassin_port, &addr);
+	if (ret != EX_OK) {
+		debug_print("failed to look up spamd host");
 		goto CATCH;
+	}
 
 	m.type = MESSAGE_NONE;
-	m.max_len = max_size;
+	m.max_len = spamassassin_max_size * 1024;
 
 	username = g_get_user_name();
-	if (username == NULL)
+	if (username == NULL) {
+		debug_print("failed to get username");
 		goto CATCH;
+	}
 
 	fp = procmsg_open_message(msginfo);
-	if (fp == NULL)
+	if (fp == NULL) {
+		debug_print("failed to open message file");
 		goto CATCH;
+	}
 
 	ret = message_read(fileno(fp), flags, &m);
-	if (ret != EX_OK)
+	if (ret != EX_OK) {
+		debug_print("failed to read message");
 		goto CATCH;
+	}
 
 	ret = message_filter(&addr, username, flags, &m);
 	if ((ret == EX_OK) && (m.is_spam == EX_ISSPAM))
@@ -116,20 +155,49 @@ CATCH:
 	}
 
 	if (is_spam) {
-		debug_print("Message is spam\n");
+		if (spamassassin_receive_spam) {
+			FolderItem *save_folder;
 
-		folder_item_move_msg(folder_get_default_trash(), msginfo);
+			debug_print("message is spam\n");
+			    
+			if ((!spamassassin_save_folder) ||
+			    (spamassassin_save_folder[0] == '\0') ||
+			    ((save_folder = folder_find_item_from_identifier(spamassassin_save_folder)) == NULL))
+				save_folder = folder_get_default_trash();
+
+			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+			folder_item_move_msg(save_folder, msginfo);
+		} else {
+			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+		}
+
 		return TRUE;
 	}
 	
 	return FALSE;
 }
 
-static void spamassassin_read_config()
+void spamassassin_save_config()
 {
-	max_size = 250*1024;
-	hostname = "127.0.0.1";
-	port = 783;
+	PrefFile *pfile;
+	gchar *rcpath;
+
+	debug_print("Saving SpamAssassin Page\n");
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+	pfile = prefs_write_open(rcpath);
+	g_free(rcpath);
+	if (!pfile || (prefs_set_block_label(pfile, "SpamAssassin") < 0))
+		return;
+
+	if (prefs_write_param(param, pfile->fp) < 0) {
+		g_warning("failed to write SpamAssassin configuration to file\n");
+		prefs_file_close_revert(pfile);
+		return;
+	}
+	fprintf(pfile->fp, "\n");
+
+	prefs_file_close(pfile);
 }
 
 gint plugin_init(gchar **error)
@@ -140,7 +208,8 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	spamassassin_read_config();
+	prefs_set_default(param);
+	prefs_read_config(param, "SpamAssassin", COMMON_RC);
 
 	debug_print("Spamassassin plugin loaded\n");
 
@@ -151,17 +220,18 @@ gint plugin_init(gchar **error)
 void plugin_done()
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+	g_free(spamassassin_hostname);
 
 	debug_print("Spamassassin plugin unloaded\n");
 }
 
 const gchar *plugin_name()
 {
-	return "Spamassassin Plugin";
+	return "SpamAssassin";
 }
 
 const gchar *plugin_desc()
 {
-	return "Check incoming mails for spam with spamassassin";
+	return "Check incoming mails for spam with SpamAssassin";
 }
 

@@ -6,6 +6,7 @@ libsylpheedgtk_la_SOURCES = \
 	gtkstext.c gtkstext.h \
 	manage_window.c manage_window.h \
 	menu.c menu.h \
+	prefswindow.c prefswindow.h \
 	sslcertwindow.c sslcertwindow.h
 
 INCLUDES = \

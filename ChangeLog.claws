@@ -1,3 +1,21 @@
+2002-12-31 [christoph]	0.8.8claws30
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/prefswindow.c				** NEW **
+	* src/gtk/prefswindow.h				** NEW **
+		add new prefs window
+
+	* src/common/plugin.c
+		don't try to load empty config lines
+	
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h	** NEW **
+	* src/plugins/spamassassin/spamassassin_gtk.c	** NEW **
+		GTK config for SpamAssassin Plugin using
+		the new prefs window
+
 2002-12-31 [paul]	0.8.8claws29
 
 	* po/POTFILES.in
