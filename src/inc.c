@@ -199,16 +199,28 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 	inc_autocheck_timer_set();
 }
 
-gint inc_selective_download(MainWindow *mainwin, gint session_type)
+void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session)
 {
-	PrefsAccount *account = cur_account;
-	gint new_msgs = 0;	
+	GSList *cur;
+	gint new_msgs = 0;
 
-	account->session_type = session_type;
-	new_msgs = inc_account_mail(account, mainwin);
-	account->session_type = RETR_NORMAL;
+	acc->session = session;
+	inc_account_mail(acc, mainwin);
+	acc->session = STYPE_NORMAL;
 	
-	return new_msgs;
+	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
+		HeaderItems *items =(HeaderItems*)cur->data;
+
+		if (items->state == SD_DOWNLOADED && 
+		    items->del_by_old_session == FALSE) {
+			new_msgs++;			
+		}
+	}
+
+	if (new_msgs) {
+		inc_finished(mainwin, TRUE);
+		inc_notify_cmd(new_msgs, prefs_common.newmail_notify_manu);
+	}
 }
 
 static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
@@ -295,7 +307,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	for (list = account_get_list(); list != NULL; list = list->next) {
 		IncSession *session;
 		PrefsAccount *account = list->data;
-		account->session_type = RETR_NORMAL;
+		account->session = STYPE_NORMAL;
 		if (account->recv_at_getall) {
 			session = inc_session_new(account);
 			if (session)
@@ -745,6 +757,13 @@ static IncState inc_pop3_session_do(IncSession *session)
 	atm->help_sock = sockinfo;
 
 	log_verbosity_set(TRUE);
+	/* oha: this messes up inc_progress update:
+	   disabling this would avoid the label "Retrieve Header"
+	   being overwritten by "Retrieve Message"
+	   Setting inc_pop3_recv_func is not necessary
+	   since atm already handles the progress dialog ui
+	   just fine.
+	*/
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
 	atm->tag = sock_gdk_input_add(sockinfo,
@@ -755,6 +774,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		gtk_main_iteration();
 
 	log_verbosity_set(FALSE);
+	/* oha: see above */
 	recv_set_ui_func(NULL, NULL);
 
 	automaton_destroy(atm);

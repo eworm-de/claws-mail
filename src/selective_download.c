@@ -29,21 +29,17 @@
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <regex.h>
 
 #include "intl.h"
 #include "main.h"
 #include "prefs.h"
 #include "prefs_matcher.h"
 #include "prefs_filtering.h"
-#include "prefs_common.h"
 #include "prefs_account.h"
 #include "account.h"
 #include "mainwindow.h"
-#include "foldersel.h"
 #include "manage_window.h"
+#include "menu.h"
 #include "stock_pixmap.h"
 #include "inc.h"
 #include "utils.h"
@@ -56,51 +52,125 @@
 #include "selective_download.h"
 #include "procheader.h"
 
-struct _SDView {
+static struct _SDView {
 	MainWindow *mainwin;
 
 	GtkWidget *window;
-	GtkWidget *btn_getmail;
-	GtkWidget *btn_remove;
-	GtkWidget *btn_done;
 	GtkWidget *clist;
-	GtkWidget *label_account_name;
-	GtkWidget *label_mails;
+	GtkWidget *preview_btn;
+	GtkWidget *remove_btn;
+	GtkWidget *download_btn;
+	GtkWidget *ac_button;
+	GtkWidget *ac_label;
+	GtkWidget *ac_menu;
+	GtkWidget *preview_popup;
+	GtkWidget *msgs_label;
+	GtkWidget *show_old_chkbtn;
+
 }selective;
 
-GSList *header_item_list = NULL;
-
 static GdkPixmap *checkboxonxpm;
-static GdkPixmap *checkboxonxpmmask;
+static GdkBitmap *checkboxonxpmmask;
 static GdkPixmap *checkboxoffxpm;
-static GdkPixmap *checkboxoffxpmmask;
+static GdkBitmap *checkboxoffxpmmask;
+static GdkPixmap *markxpm;
+static GdkBitmap *markxpmmask;
+static GdkPixmap *deletedxpm;
+static GdkBitmap *deletedxpmmask;
+static GdkPixmap *continuexpm;
+static GdkBitmap *continuexpmmask;
 
-static void sd_window_create(MainWindow *mainwin);
-static void sd_clist_set();
+
+/* local functions */
+static void sd_clear_msglist();
 static void sd_remove_header_files();
+static void sd_toggle_btn();
+static SD_State sd_header_filter (MsgInfo *msginfo);
+static MsgInfo *sd_get_msginfo_from_file (const gchar *filename);
 
+static void sd_clist_set_pixmap(HeaderItems *items, gint row);
+static void sd_clist_get_items();
+static void sd_clist_set_items();
+static void sd_update_msg_num(PrefsAccount *acc);
+
+enum {
+	PREVIEW_NEW,
+	PREVIEW_ALL,
+	REMOVE,
+	DOWNLOAD,
+	DONE,
+	CHECKBTN,
+};
+
+/* callbacks */
+static void sd_action_cb(GtkWidget *widget, guint action);
+
+static void sd_select_row_cb (GtkCList *clist, gint row, gint column,
+			      GdkEvent *event, gpointer user_data);
+static void sd_key_pressed (GtkWidget *widget,
+			    GdkEventKey *event,
+			    gpointer data);
+/* account menu */
+static void sd_ac_label_pressed(GtkWidget *widget, 
+				GdkEventButton *event,
+				gpointer data);
+
+static void sd_ac_menu_popup_closed(GtkMenuShell *menu_shell);
+static void sd_ac_menu_cb(GtkMenuItem *menuitem, gpointer data);
+static void sd_ac_menu_set();
+
+/* preview popup */
+static void sd_preview_popup_closed(GtkMenuShell *menu_shell);
+static void sd_preview_popup_cb(GtkWidget *widget, GdkEventButton *event);
+static GtkItemFactoryEntry preview_popup_entries[] =
+{
+	{N_("/Preview _new Messages"), NULL, sd_action_cb, PREVIEW_NEW, NULL},
+	{N_("/Preview _all Messages"), NULL, sd_action_cb, PREVIEW_ALL, NULL}
+};
+
+/* create dialog */
+static void sd_window_create (MainWindow *mainwin);
 
 void selective_download(MainWindow *mainwin)
 {
-	PrefsAccount *account = cur_account;
-
 	summary_write_cache(mainwin->summaryview);
-	main_window_lock(mainwin);
 
 	sd_remove_header_files();
-
-	header_item_list = NULL;
 	
-	sd_window_create(mainwin);
-
-	stock_pixmap_gdk(selective.clist, STOCK_PIXMAP_CHECKBOX_OFF,
+	stock_pixmap_gdk(mainwin->window, STOCK_PIXMAP_CHECKBOX_OFF,
 			 &checkboxoffxpm, &checkboxoffxpmmask);
-	stock_pixmap_gdk(selective.clist, STOCK_PIXMAP_CHECKBOX_ON,
+	stock_pixmap_gdk(mainwin->window, STOCK_PIXMAP_CHECKBOX_ON,
 			 &checkboxonxpm, &checkboxonxpmmask);
-	
-	gtk_label_set_text(GTK_LABEL(selective.label_account_name), account->account_name);
+	stock_pixmap_gdk(mainwin->window, STOCK_PIXMAP_DELETED,
+			 &deletedxpm, &deletedxpmmask);
+	stock_pixmap_gdk(mainwin->window, STOCK_PIXMAP_CONTINUE,
+			 &continuexpm, &continuexpmmask);
+	stock_pixmap_gdk(mainwin->window, STOCK_PIXMAP_MARK,
+			 &markxpm, &markxpmmask);
+	inc_lock();
+
+	if (!selective.window)
+	    sd_window_create(mainwin);
+
+	manage_window_set_transient(GTK_WINDOW(selective.window));
+	gtk_widget_show(selective.window);
+	sd_clear_msglist();
+	sd_ac_menu_set();
+	gtk_clist_clear(GTK_CLIST(selective.clist));
+
+
 }
 
+static void sd_clear_msglist()
+{
+	PrefsAccount *acc = cur_account;
+	while (acc->msg_list != NULL) {
+		HeaderItems *item = (HeaderItems*)acc->msg_list->data;
+		acc->msg_list = g_slist_remove(acc->msg_list, item);
+	}	
+	g_slist_free(acc->msg_list);
+	sd_update_msg_num(acc);
+}
 
 /* sd_remove_header_files()
  * 
@@ -115,33 +185,28 @@ static void sd_remove_header_files()
 	g_free(path);
 }
 
-
-/* sd_toggle_btn_remove()
+/* sd_toggle_btn()
  *
- * - checks whether at least on email is selected for deletion
- *   if so, untoggle remove button
+ * - checks whether at least on email is selected 
+ *   if so, untoggle remove / download button
  */
-static gboolean sd_toggle_btn_remove()
+static void sd_toggle_btn()
 {
+	PrefsAccount *acc = cur_account;
 	GSList *cur;
-	gint num = 0;
-	gpointer row;
-
-
-	for (cur = header_item_list; cur != NULL; cur = cur->next) {
-		HeaderItems *item = (HeaderItems*)cur->data;
+	
+	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
+		HeaderItems *items = (HeaderItems*)cur->data;
 		
-		if (item->state == CHECKED) {
-			gtk_widget_set_sensitive (selective.btn_remove, TRUE);
-			return CHECKED;
+		if (items->state == SD_CHECKED) {
+			gtk_widget_set_sensitive (selective.remove_btn, TRUE);
+			gtk_widget_set_sensitive (selective.download_btn, TRUE);
+			return;
 		}
-		num++;
 	}
 
-	gtk_widget_set_sensitive (selective.btn_remove, FALSE);
-	return UNCHECKED;
+	gtk_widget_set_sensitive (selective.remove_btn, FALSE);
 }
-
 
 /* sd_header_filter(MsgInfo *msginfo)
  *
@@ -149,7 +214,7 @@ static gboolean sd_toggle_btn_remove()
  * - if message matches other MATCHACTION --> return
  *
  */
-gboolean sd_header_filter(MsgInfo *msginfo)
+SD_State sd_header_filter(MsgInfo *msginfo)
 {
 	GSList *rules;
 
@@ -157,20 +222,20 @@ gboolean sd_header_filter(MsgInfo *msginfo)
 	for (rules = global_processing; rules != NULL; rules = rules->next) { 
 
 		FilteringProp *prop = (FilteringProp*) rules->data; 
-		gchar line[POPBUFSIZE];
 
 		if ( matcherlist_match(prop->matchers, msginfo) ) {
 			if (prop->action->type == MATCHACTION_DELETE_ON_SERVER) {
-				return CHECKED;
+				debug_print(_("action matched\n"));
+				return SD_CHECKED;
 			}
-			else 
-				return UNCHECKED;
+			else {
+				debug_print(_("action not matched\n"));
+				return SD_UNCHECKED;
+			}
 		}
-		
 	}
-	return UNCHECKED;
+	return SD_UNCHECKED;
 }
-
 
 /* sd_get_msginfo_from_file(const gchar *filename)
  *
@@ -178,56 +243,148 @@ gboolean sd_header_filter(MsgInfo *msginfo)
  */
 MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 {
-	FILE *fp;
-	gchar buf[BUFFSIZE];
 	MsgInfo *msginfo  = g_new0(MsgInfo, 1);
+	MsgInfo *msg;
 	MsgFlags msgflags = { 0, 0 };
 
-	msginfo  = (MsgInfo*) procheader_parse(filename, msgflags, TRUE, FALSE);
-	if ( (fp = fopen(filename, "rb")) != NULL ) {
-		static HeaderEntry hentry[] = { { SIZE_HEADER, NULL, FALSE},
-						{ NULL, NULL, FALSE} };
-		
-		procheader_get_one_field (buf, sizeof(buf), fp, hentry);
-		fclose(fp);
-	}
+	msg  = procheader_parse(filename, msgflags, TRUE, FALSE);
 
-	if (buf)
-		msginfo->size = (off_t)atoi(buf + SIZE_HEADER_LEN);
-	else
-		msginfo->size = 0;
-	
+	if (!msg) {
+		msginfo->subject = _("(No Subject)");
+		msginfo->from    = _("(No Sender)");
+		msginfo->date    = _("(No Date)");
+	} else {
+		g_memmove(&msginfo, &msg, sizeof(msginfo)); 
+
+		if (msginfo->date_t) {
+			gchar date_modified[80];
+			procheader_date_get_localtime(date_modified,
+						      sizeof(date_modified),
+						      msginfo->date_t);
+			msginfo->date = date_modified;
+		}
+	} 
 	return msginfo;
 }
 
-
-/* sd_clist_set()
- *
- * - fill clist and set toggle button accordingly
- */
-void sd_clist_set()
+static void sd_clist_set_pixmap(HeaderItems *items, gint row)
 {
-	gint index = 1;
-
-	gchar *path     = g_strconcat(get_header_cache_dir(), G_DIR_SEPARATOR_S, NULL);
-	gchar *filename = g_strdup_printf("%s%i", path, index);
 	
-	while ( is_file_exist(filename) ) {
+	switch (items->state) {
+	case SD_REMOVED:
+		gtk_clist_set_pixmap (GTK_CLIST (selective.clist), 
+				      row, 0,
+				     deletedxpm, deletedxpmmask);
+		break;
+	case SD_CHECKED:
+		gtk_clist_set_pixmap (GTK_CLIST (selective.clist), 
+				      row, 0,
+				      checkboxonxpm, checkboxonxpmmask);
+		break;
+	case SD_DOWNLOADED:
+		gtk_clist_set_pixmap (GTK_CLIST (selective.clist), 
+				      row, 0,
+				      markxpm, markxpmmask);
+		break;		
+	default:
+		gtk_clist_set_pixmap (GTK_CLIST (selective.clist), 
+				      row, 0,
+				      checkboxoffxpm, checkboxoffxpmmask);
+		break;
+	}
+}
 
+static void sd_clist_set_items()
+{
+	PrefsAccount *acc = cur_account;
+	GSList *cur;
+	gboolean show_old = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(selective.show_old_chkbtn));
+	
+	gtk_clist_clear(GTK_CLIST(selective.clist));
+	gtk_clist_freeze(GTK_CLIST(selective.clist));
+
+	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
+		HeaderItems *items = (HeaderItems*)cur->data;
+		gchar *row[5];
+		gint row_num;
+		
+		row[0] = _("");
+		row[1] = items->from;
+		row[2] = items->subject;
+		row[3] = items->date;
+		row[4] = g_strdup_printf("%i KB", items->size/1024);
+		
+		switch (items->state) {
+		case SD_REMOVED:
+		case SD_DOWNLOADED:
+			items->del_by_old_session = TRUE;
+		default:
+			break;
+		}
+		if (show_old) {
+			if (items->received) {
+				row_num = gtk_clist_append(GTK_CLIST(selective.clist), row);
+				sd_clist_set_pixmap(items, row_num);
+			}
+		}
+		else {
+			row_num = gtk_clist_append(GTK_CLIST(selective.clist), row);
+			sd_clist_set_pixmap(items, row_num);
+		}
+		g_free(row[4]);
+	}
+
+	gtk_clist_thaw(GTK_CLIST(selective.clist));
+	sd_toggle_btn();
+}
+
+/* sd_update_msg_num(PrefsAccount *acc)
+ * - keep track of msgs still on server
+ * - count UNCHECKED items as well as downloaded but not removed
+ */
+static void sd_update_msg_num(PrefsAccount *acc)
+{
+	GSList *cur;
+	gint msg_num = g_slist_length(acc->msg_list);
+	gchar *text;
+
+	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
+		HeaderItems *items = (HeaderItems*) cur->data;
+
+		if (items->state != SD_UNCHECKED)
+			msg_num--;
+		if (items->state == SD_DOWNLOADED)
+			if (!acc->sd_rmmail_on_download)
+				msg_num++;
+	}
+
+	text = g_strdup_printf("%i Messages", msg_num);
+	gtk_label_set_text(GTK_LABEL(selective.msgs_label), text);
+
+	g_free(text);
+}
+
+/* sd_clist_get_items()
+ *
+ * - get items for clist from Files
+ */
+static void sd_clist_get_items()
+{
+	GSList *cur;
+	PrefsAccount *acc = cur_account;
+	gchar *path = g_strconcat(get_header_cache_dir(), G_DIR_SEPARATOR_S, NULL);
+	
+	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
+
+		HeaderItems *items = (HeaderItems*) cur->data;
+		gchar *filename = g_strdup_printf("%s%i", path, items->index);
 		MsgInfo *msginfo  = sd_get_msginfo_from_file(filename);
-		HeaderItems *line = g_new0 (HeaderItems, 1);
-		gchar *row[4];
-		gint msgid;	
 		
-		line->index = index;
-
-		row[0] = "";
-		row[1] = line->from    = msginfo->from;
-		row[2] = line->subject = msginfo->subject;
-		row[3] = line->size    = to_human_readable(msginfo->size);
+		items->from    = msginfo->from;
+		items->subject = msginfo->subject;
+		strncpy2(items->date, msginfo->date, sizeof(items->date));
 		
-		gtk_clist_append (GTK_CLIST(selective.clist), row);
-
 		msginfo->folder = folder_get_default_processing();
 
 		/* move msg file to drop folder */
@@ -237,123 +394,194 @@ void sd_clist_set()
 			return;
 		}
 		
-		if (sd_header_filter(msginfo)) {
-			line->state = CHECKED;
-			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
-					      checkboxonxpm, checkboxonxpmmask);
-		}
-		else {
-			line->state = UNCHECKED;
-			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
-					      checkboxoffxpm, checkboxoffxpmmask);
-		}
-		
-		folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+		if (acc->sd_filter_on_recv)
+			items->state = sd_header_filter(msginfo);
 
-		header_item_list = g_slist_append(header_item_list, line);
-		
-		index++;
-		filename = g_strdup_printf("%s%i", path, index);
+		folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+		g_free(filename);
+		g_free(msginfo);
 	}
-	
-	sd_toggle_btn_remove();
 
 	g_free(path);
-	g_free(filename);
 }
 
-
-/* --- Callbacks -- */
-static void sd_btn_remove_cb()
-{
-	GSList *cur;
-	PrefsAccount *account = cur_account;
-	gboolean enable_dele  = FALSE;
-
-	account->to_delete = NULL;
-
-	/* loop through list collecting mails marked for delete */
-	for (cur = header_item_list; cur != NULL; cur = cur->next) {
-		
-		HeaderItems *items = (HeaderItems*)cur->data;
-		
-		if (items->state == CHECKED) {
-			gchar *row[4];
-
-			/* replace deleted Mail */
-			row[0] = "D";
-			row[1] = items->from;
-			row[2] = items->subject;
-			row[3] = items->size;
-
-			account->to_delete = g_slist_append(account->to_delete, 
-							    GINT_TO_POINTER(items->index));
-
-			gtk_clist_remove(GTK_CLIST(selective.clist), items->index-1);
-			gtk_clist_insert(GTK_CLIST(selective.clist), items->index-1, row);
-			gtk_clist_set_selectable(GTK_CLIST(selective.clist), 
-						 items->index - 1, FALSE);
-			enable_dele = TRUE;
-			debug_print(_("marked to delete %i\n"), 
-				    items->index);
-			
-			items->state = UNCHECKED;
-		}
-	}
-
-
-	if (enable_dele == TRUE) {
-		inc_selective_download(selective.mainwin, DELE_HEADER);
-	}
-
-	sd_toggle_btn_remove();	
-
-	g_slist_free(account->to_delete);
-	account->to_delete = NULL;	
-}
-
-static void sd_btn_receive_cb()
-{
-
-	manage_window_focus_in(selective.window, NULL, NULL);
-
-	inc_selective_download(selective.mainwin, RETR_HEADER);
-
-	gtk_clist_clear(GTK_CLIST(selective.clist));
-	sd_clist_set();
-}
-
-static void sd_btn_done_cb()
+static gint sd_deleted_cb(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
 	sd_remove_header_files();
-	
-	if (header_item_list)
-		slist_free_strings (header_item_list);
-
-	gtk_widget_hide(selective.window);
-	main_window_unlock(selective.mainwin);
+	sd_clear_msglist();
+	gtk_widget_destroy(selective.window);	
+	selective.window = NULL;
+	inc_unlock();
+	return TRUE;
 }
 
+/* --- Callbacks -- */
+static void sd_action_cb(GtkWidget *widget, guint action)
+{
+	PrefsAccount *acc = cur_account;
+	
+	switch(action) {
+	case PREVIEW_NEW:
+	case PREVIEW_ALL:
+		if ( (acc->protocol != A_APOP) &&
+		     (acc->protocol != A_POP3) ) {
+			alertpanel_error(
+				_("Selected Account \"%s\" is not a POP Mail Server.\nPlease select a different Account"), acc->account_name);
+			return;
+		}
+		sd_clear_msglist();
+		if (action == PREVIEW_NEW) {
+			gtk_widget_set_sensitive(selective.show_old_chkbtn, FALSE);
+			inc_selective_download(selective.mainwin, acc, STYPE_PREVIEW_NEW);
+		}
+		else {
+			gtk_widget_set_sensitive(selective.show_old_chkbtn, TRUE);
+			inc_selective_download(selective.mainwin, acc, STYPE_PREVIEW_ALL);
+		}
+		
+		gtk_clist_clear(GTK_CLIST(selective.clist));
+		sd_clist_get_items();	
+		sd_clist_set_items();
+		break;
+	case REMOVE:
+		inc_selective_download(selective.mainwin, acc, STYPE_DELETE);
+		sd_clist_set_items();
+		break;
+	case DOWNLOAD:
+		inc_selective_download(selective.mainwin, acc, STYPE_DOWNLOAD);
+		sd_clist_set_items();
+		break;
+	case DONE:
+		sd_remove_header_files();
+		sd_clear_msglist();
+		gtk_widget_hide(selective.window);
+		inc_unlock();
+		break;
+	case CHECKBTN:
+		sd_clist_set_items();
+		break;
+	default:
+		break;
+	}
+	
+	sd_update_msg_num(acc);
+}
+
+/* Events */
 static void sd_select_row_cb(GtkCList *clist, gint row, gint column,
 			     GdkEvent *event, gpointer user_data)
 {
-
 	if ((row >= 0) && (column >= 0)) {
-		HeaderItems *item = (HeaderItems*) g_slist_nth_data (header_item_list, row);
+		PrefsAccount *acc  = cur_account;
+		HeaderItems *items = (HeaderItems*) g_slist_nth_data (acc->msg_list, row);
 
-		if (!item) return;
+		if (!items) return;
 		if (!gtk_clist_get_selectable(GTK_CLIST(selective.clist), row)) return;
 
-		if (item->state == UNCHECKED) {
-			item->state = CHECKED;
+		if (items->state == SD_UNCHECKED) {
+			items->state = SD_CHECKED;
 			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), row, 0,
 					      checkboxonxpm, checkboxonxpmmask);
-		} else {
-			item->state = UNCHECKED;
+		} else if (items->state == SD_CHECKED) {
+			items->state = SD_UNCHECKED;
 			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), row, 0,
 					      checkboxoffxpm, checkboxoffxpmmask);
 		}
-		sd_toggle_btn_remove();
+		sd_toggle_btn();
+	}
+}
+
+static void sd_key_pressed(GtkWidget *widget,
+			   GdkEventKey *event,
+			   gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		sd_action_cb(widget, DONE);
+}
+
+/* account menu */
+static void sd_ac_label_pressed(GtkWidget *widget, GdkEventButton *event,
+				    gpointer data)
+{
+	if (!event) return;
+
+	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+	gtk_object_set_data(GTK_OBJECT(selective.ac_menu), "menu_button",
+			    widget);
+
+	gtk_menu_popup(GTK_MENU(selective.ac_menu), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+}
+
+static void sd_ac_menu_popup_closed(GtkMenuShell *menu_shell)
+{
+	GtkWidget *button;
+
+	button = gtk_object_get_data(GTK_OBJECT(menu_shell), "menu_button");
+	if (!button) return;
+	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
+	gtk_clist_clear(GTK_CLIST(selective.clist));
+	sd_clear_msglist();
+	sd_toggle_btn();
+	gtk_object_remove_data(GTK_OBJECT(selective.ac_menu), "menu_button");
+}
+
+static void sd_ac_menu_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	cur_account = (PrefsAccount *)data;
+	gtk_label_set_text(GTK_LABEL(selective.ac_label), cur_account->account_name);
+	gtk_widget_queue_resize(selective.ac_button);
+	main_window_reflect_prefs_all();
+}
+
+static void sd_ac_menu_set()
+{
+	GList *cur_ac, *cur_item;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+	GList *account_list = account_get_list();
+
+	/* destroy all previous menu item */
+	cur_item = GTK_MENU_SHELL(selective.ac_menu)->children;
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	gtk_label_set_text(GTK_LABEL(selective.ac_label), cur_account->account_name);
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+		
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(selective.ac_menu), menuitem);
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+					   GTK_SIGNAL_FUNC(sd_ac_menu_cb),
+					   ac_prefs);
+	}
+}
+
+/* receive button popup */
+static void sd_preview_popup_closed(GtkMenuShell *menu_shell)
+{
+	gtk_button_set_relief(GTK_BUTTON(selective.preview_btn), GTK_RELIEF_NORMAL);
+	manage_window_focus_in(selective.window, NULL, NULL);
+}
+
+static void sd_preview_popup_cb(GtkWidget *widget, GdkEventButton *event)
+{
+	if (!event) return;
+	
+	if (event->button == 1) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(selective.preview_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
 	}
 }
 
@@ -361,204 +589,212 @@ static void sd_window_create(MainWindow *mainwin)
 {
 	GtkWidget *window;
 	GtkWidget *table;
-	GtkWidget *label_mails;
-	GtkWidget *hbox_bottom;
-	GtkWidget *label_fixed;
-	GtkWidget *label_account_name;
+	GtkWidget *msgs_label;
+	GtkWidget *bottom_hbox;
+	GtkWidget *fixed_label;
+	GtkWidget *expand_label;
+	GtkWidget *ac_button;
+	GtkWidget *ac_label;
+	GtkWidget *ac_menu;
+	GtkWidget *show_old_chkbtn;
 	GtkWidget *scrolledwindow;
 	GtkWidget *clist;
-	GtkWidget *label_state;
-	GtkWidget *label_from;
-	GtkWidget *label_subject;
-	GtkWidget *label_size;
-	GtkWidget *hbox_toolbar;
+	GtkWidget *state_label;
+	GtkWidget *from_label;
+	GtkWidget *subject_label;
+	GtkWidget *size_label;
+	GtkWidget *date_label;
+	GtkWidget *toolbar_hbox;
 	GtkWidget *toolbar;
-	GtkWidget *btn_receive;
 	GtkWidget *tmp_toolbar_icon;
-	GtkWidget *btn_remove;
-	GtkWidget *btn_done;
+	GtkWidget *preview_btn;
+	GtkWidget *preview_popup;
+	GtkWidget *remove_btn;
+	GtkWidget *download_btn;
+	GtkWidget *done_btn;
+	gint n_menu_entries;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
 	gtk_window_set_title (GTK_WINDOW (window), _("Selective download"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size (GTK_WINDOW (window), 450, 250);
-	
+	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, TRUE);
+
 	table = gtk_table_new (2, 2, FALSE);
-	gtk_widget_ref (table);
-	gtk_object_set_data_full (GTK_OBJECT (window), "table", table,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
-	
-	label_mails = gtk_label_new (_("0 Mail(s)"));
-	gtk_widget_ref (label_mails);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_mails", label_mails,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_mails);
-	gtk_table_attach (GTK_TABLE (table), label_mails, 1, 2, 1, 2,
+
+	msgs_label = gtk_label_new (_("0 Messages"));
+	gtk_table_attach (GTK_TABLE (table), msgs_label, 1, 2, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_mails), 0, 0.5);
-	
-	hbox_bottom = gtk_hbox_new (FALSE, 0);
-	gtk_widget_ref (hbox_bottom);
-	gtk_object_set_data_full (GTK_OBJECT (window), "hbox_bottom", hbox_bottom,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (hbox_bottom);
-	gtk_table_attach (GTK_TABLE (table), hbox_bottom, 0, 1, 1, 2,
+	gtk_misc_set_alignment (GTK_MISC (msgs_label), 0, 0.5);
+
+	bottom_hbox = gtk_hbox_new (FALSE, 0);
+	gtk_table_attach (GTK_TABLE (table), bottom_hbox, 0, 1, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
 	
-	label_fixed = gtk_label_new (_("current Account:"));
-	gtk_widget_ref (label_fixed);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_fixed", label_fixed,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_fixed);
-	gtk_box_pack_start (GTK_BOX (hbox_bottom), label_fixed, FALSE, FALSE, 0);
+	show_old_chkbtn = gtk_check_button_new_with_label("Show only old Messages"); 
+	gtk_box_pack_start(GTK_BOX(bottom_hbox), show_old_chkbtn, FALSE, FALSE, 0); 
 	
-	label_account_name = gtk_label_new (_("none"));
-	gtk_widget_ref (label_account_name);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_account_name", label_account_name,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_account_name);
-	gtk_box_pack_start (GTK_BOX (hbox_bottom), label_account_name, TRUE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(show_old_chkbtn), "toggled", 
+			   GTK_SIGNAL_FUNC(sd_action_cb), GUINT_TO_POINTER(CHECKBTN)); 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_old_chkbtn), FALSE);
+	GTK_WIDGET_UNSET_FLAGS(show_old_chkbtn, GTK_CAN_FOCUS);							
+			   
+	expand_label = gtk_label_new (_(" "));
+	gtk_box_pack_start (GTK_BOX (bottom_hbox), expand_label, TRUE, TRUE, 0);
 	
+	fixed_label = gtk_label_new (_(" contains "));
+	gtk_box_pack_end (GTK_BOX (bottom_hbox), fixed_label, FALSE, FALSE, 0);
+
+	ac_menu = gtk_menu_new();
+	gtk_signal_connect(GTK_OBJECT(ac_menu), "selection_done",
+			   GTK_SIGNAL_FUNC(sd_ac_menu_popup_closed), NULL);
+	ac_button = gtk_button_new();
+	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
+	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
+	gtk_widget_set_usize(ac_button, -1, 1);
+	gtk_box_pack_start(GTK_BOX(bottom_hbox), ac_button, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(ac_button), "button_press_event",
+			   GTK_SIGNAL_FUNC(sd_ac_label_pressed), GTK_OBJECT(ac_menu));
+
+	ac_label = gtk_label_new("");
+	gtk_container_add(GTK_CONTAINER(ac_button), ac_label);
+
 	scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_ref (scrolledwindow);
-	gtk_object_set_data_full (GTK_OBJECT (window), "scrolledwindow", scrolledwindow,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (scrolledwindow);
 	gtk_table_attach (GTK_TABLE (table), scrolledwindow, 0, 1, 0, 1,
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), 
+					GTK_POLICY_NEVER, 
+					GTK_POLICY_AUTOMATIC);
 	
-	clist = gtk_clist_new (4);
-	gtk_widget_ref (clist);
-	gtk_object_set_data_full (GTK_OBJECT (window), "clist", clist,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (clist);
+	clist = gtk_clist_new (5);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow), clist);
 	gtk_container_set_border_width (GTK_CONTAINER (clist), 5);
-	gtk_clist_set_column_width (GTK_CLIST (clist), 0, 21);
-	gtk_clist_set_column_width (GTK_CLIST (clist), 1, 143);
-	gtk_clist_set_column_width (GTK_CLIST (clist), 2, 158);
-	gtk_clist_set_column_width (GTK_CLIST (clist), 3, 15);
+	gtk_clist_set_column_width (GTK_CLIST (clist), 0, 20);
+	gtk_clist_set_column_width (GTK_CLIST (clist), 1, 150);
+	gtk_clist_set_column_width (GTK_CLIST (clist), 2, 150);
+	gtk_clist_set_column_width (GTK_CLIST (clist), 3, 100);
+	gtk_clist_set_column_width (GTK_CLIST (clist), 4, 30);
 	gtk_clist_set_selection_mode (GTK_CLIST (clist), GTK_SELECTION_BROWSE);
 	gtk_clist_column_titles_show (GTK_CLIST (clist));
 	
-	label_state = gtk_label_new (_("#"));
-	gtk_widget_ref (label_state);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_state", label_state,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_state);
-	gtk_clist_set_column_widget (GTK_CLIST (clist), 0, label_state);
+	state_label = gtk_label_new (_("#"));
+	gtk_clist_set_column_widget (GTK_CLIST (clist), 0, state_label);
 	
-	label_from = gtk_label_new (_("From"));
-	gtk_widget_ref (label_from);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_from", label_from,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_from);
-	gtk_clist_set_column_widget (GTK_CLIST (clist), 1, label_from);
+	from_label = gtk_label_new (_("From"));
+	gtk_clist_set_column_widget (GTK_CLIST (clist), 1, from_label);
 	
-	label_subject = gtk_label_new (_("Subject"));
-	gtk_widget_ref (label_subject);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_subject", label_subject,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_subject);
-	gtk_clist_set_column_widget (GTK_CLIST (clist), 2, label_subject);
+	subject_label = gtk_label_new (_("Subject"));
+	gtk_clist_set_column_widget (GTK_CLIST (clist), 2, subject_label);
 	
-	label_size = gtk_label_new (_("Size"));
-	gtk_widget_ref (label_size);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_size", label_size,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label_size);
-	gtk_clist_set_column_widget (GTK_CLIST (clist), 3, label_size);
+	date_label = gtk_label_new (_("Date"));
+	gtk_clist_set_column_widget (GTK_CLIST (clist), 3, date_label);
+
+	size_label = gtk_label_new (_("Size"));
+	gtk_widget_ref (size_label);
+	gtk_clist_set_column_widget (GTK_CLIST (clist), 4, size_label);
 	
-	hbox_toolbar = gtk_hbox_new (FALSE, 0);
-	gtk_widget_ref (hbox_toolbar);
-	gtk_object_set_data_full (GTK_OBJECT (window), "hbox_toolbar", hbox_toolbar,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (hbox_toolbar);
-	gtk_table_attach (GTK_TABLE (table), hbox_toolbar, 1, 2, 0, 1,
+	toolbar_hbox = gtk_hbox_new (FALSE, 0);
+
+	gtk_table_attach (GTK_TABLE (table), toolbar_hbox, 1, 2, 0, 1,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
 	
 	toolbar = gtk_toolbar_new (GTK_ORIENTATION_VERTICAL, GTK_TOOLBAR_BOTH);
-	gtk_widget_ref (toolbar);
-	gtk_object_set_data_full (GTK_OBJECT (window), "toolbar", toolbar,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (toolbar);
-	gtk_box_pack_start (GTK_BOX (hbox_toolbar), toolbar, FALSE, FALSE, 0);
-	gtk_toolbar_set_space_size (GTK_TOOLBAR (toolbar), 20);
+
+	gtk_box_pack_end (GTK_BOX (toolbar_hbox), toolbar, FALSE, FALSE, 0);
+	gtk_toolbar_set_space_size (GTK_TOOLBAR (toolbar), 30);
 	gtk_toolbar_set_space_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_SPACE_LINE);
+	gtk_container_set_border_width (GTK_CONTAINER (toolbar), 5);
 	
-	tmp_toolbar_icon = stock_pixmap_widget(hbox_toolbar, STOCK_PIXMAP_MAIL_RECEIVE);
-	btn_receive = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+	tmp_toolbar_icon = stock_pixmap_widget(toolbar_hbox, STOCK_PIXMAP_MAIL_RECEIVE);
+	preview_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
 						  GTK_TOOLBAR_CHILD_BUTTON,
 						  NULL,
-						  _("Receive"),
-						  _("preview E-Mail"), NULL,
+						  _("Preview Mail"),
+						  _("preview old/new E-Mail on account"), NULL,
 						  tmp_toolbar_icon, NULL, NULL);
-	gtk_widget_ref (btn_receive);
-	gtk_object_set_data_full (GTK_OBJECT (window), "btn_receive", btn_receive,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (btn_receive);
-	
+
+	n_menu_entries = sizeof(preview_popup_entries)/sizeof(preview_popup_entries[0]);
+	preview_popup = popupmenu_create(preview_btn, preview_popup_entries, n_menu_entries,
+				      "<SelectiveDownload>", window);
+
+	gtk_signal_connect(GTK_OBJECT(preview_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(sd_preview_popup_closed), NULL);
+
 	gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 	
-	tmp_toolbar_icon = stock_pixmap_widget(hbox_toolbar, STOCK_PIXMAP_CONTINUE);
-	btn_remove = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+	tmp_toolbar_icon = stock_pixmap_widget(toolbar_hbox, STOCK_PIXMAP_CLOSE);
+	remove_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
 						 GTK_TOOLBAR_CHILD_BUTTON,
 						 NULL,
 						 _("Remove"),
 						 _("remove selected E-Mails"), NULL,
 						 tmp_toolbar_icon, NULL, NULL);
-	gtk_widget_ref (btn_remove);
-	gtk_object_set_data_full (GTK_OBJECT (window), "btn_remove", btn_remove,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_set_sensitive (btn_remove, FALSE);
-	
+
+	gtk_widget_set_sensitive (remove_btn, FALSE);
+
+	tmp_toolbar_icon = stock_pixmap_widget(toolbar_hbox, STOCK_PIXMAP_DOWN_ARROW);
+	download_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+						 GTK_TOOLBAR_CHILD_BUTTON,
+						 NULL,
+						 _("Download"),
+						 _("Download selected E-Mails"), NULL,
+						 tmp_toolbar_icon, NULL, NULL);
+
+	gtk_widget_set_sensitive (download_btn, FALSE);
+
 	gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
-	
-	tmp_toolbar_icon = stock_pixmap_widget (hbox_toolbar, STOCK_PIXMAP_CLOSE);
-	btn_done = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+
+	tmp_toolbar_icon = stock_pixmap_widget (toolbar_hbox, STOCK_PIXMAP_COMPLETE);
+	done_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
 					       GTK_TOOLBAR_CHILD_BUTTON,
 					       NULL,
 					       _("Done"),
 					       _("Exit Dialog"), NULL,
 					       tmp_toolbar_icon, NULL, NULL);
-	gtk_widget_ref (btn_done);
-	gtk_object_set_data_full (GTK_OBJECT (window), "btn_done", btn_done,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (btn_done);
 	
-	gtk_signal_connect (GTK_OBJECT (window), "destroy",
-			    GTK_SIGNAL_FUNC (sd_btn_done_cb),
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
+			    GTK_SIGNAL_FUNC (gtk_widget_hide_on_delete),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (btn_receive), "clicked",
-			    GTK_SIGNAL_FUNC (sd_btn_receive_cb),
+	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
+			    GTK_SIGNAL_FUNC(sd_key_pressed),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (btn_remove), "clicked",
-			    GTK_SIGNAL_FUNC (sd_btn_remove_cb),
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
+	gtk_signal_connect (GTK_OBJECT (preview_btn), "button_press_event",
+			    GTK_SIGNAL_FUNC (sd_preview_popup_cb),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (btn_done), "clicked",
-			    GTK_SIGNAL_FUNC (sd_btn_done_cb),
-			    NULL);
+
+	gtk_signal_connect (GTK_OBJECT (remove_btn), "clicked",
+			    GTK_SIGNAL_FUNC (sd_action_cb),
+			    GUINT_TO_POINTER(REMOVE));
+	gtk_signal_connect (GTK_OBJECT (download_btn), "clicked",
+			    GTK_SIGNAL_FUNC (sd_action_cb),
+			    GUINT_TO_POINTER(DOWNLOAD));
+	gtk_signal_connect (GTK_OBJECT (done_btn), "clicked",
+			    GTK_SIGNAL_FUNC (sd_action_cb),
+			    GUINT_TO_POINTER(DONE));
 	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
 			    GTK_SIGNAL_FUNC (sd_select_row_cb),
 			    NULL);
 
 
-
-	selective.mainwin            = mainwin;
-	selective.window             = window;
-	selective.btn_remove         = btn_remove;
-	selective.btn_done           = btn_done;
-	selective.clist              = clist;
-	selective.label_account_name = label_account_name;
-	selective.label_mails        = label_mails;
+	selective.mainwin         = mainwin;
+	selective.window          = window;
+	selective.clist           = clist;
+	selective.preview_btn     = preview_btn;
+	selective.remove_btn      = remove_btn;
+	selective.download_btn    = download_btn;
+	selective.ac_label        = ac_label;
+	selective.ac_button       = ac_button;
+	selective.ac_menu         = ac_menu;
+	selective.preview_popup   = preview_popup;
+	selective.msgs_label      = msgs_label;
+	selective.show_old_chkbtn = show_old_chkbtn;
 
 	gtk_widget_show_all(window);
 }

@@ -68,7 +68,9 @@
 static gint pop3_ok(SockInfo *sock, gchar *argbuf);
 static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
 static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size);
-static gboolean pop3_delete_header (Pop3State *state);
+static gboolean pop3_sd_get_next (Pop3State *state);
+static void pop3_sd_new_header(Pop3State *state);
+gboolean pop3_sd_state(Pop3State *state, gint cur_state, guint *next_state);
 static gboolean should_delete (const char *uidl, gpointer data); 
 
 gint pop3_greeting_recv(SockInfo *sock, gpointer data)
@@ -162,13 +164,9 @@ gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS) {
-		
-		if (pop3_delete_header(state) == TRUE)
-			return POP3_DELETE_SEND;
-		else
-			return POP3_GETRANGE_STAT_SEND;
-	}
+	if (pop3_ok(sock, NULL) == PS_SUCCESS) 
+		return POP3_GETRANGE_STAT_SEND;
+	
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
@@ -213,13 +211,8 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS) {
-		
-		if (pop3_delete_header(state) == TRUE)
-			return POP3_DELETE_SEND;
-		else
+	if (pop3_ok(sock, NULL) == PS_SUCCESS) 
 		return POP3_GETRANGE_STAT_SEND;
-	}
 
 	else {
 		log_warning(_("error occurred on authentication\n"));
@@ -308,6 +301,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	gboolean get_all = FALSE;
 	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
+	gint next_state;
 
 	if (!state->uidl_table) new = TRUE;
 	if (state->ac_prefs->getall)
@@ -315,6 +309,9 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) {
 		/* UIDL is not supported */
+		if (pop3_sd_state(state, POP3_GETRANGE_UIDL_RECV, &next_state))
+			return next_state;
+
 		if (!get_all)
 			return POP3_GETRANGE_LAST_SEND;
 		else
@@ -350,6 +347,9 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	}
 
 	state->uidl_is_valid = TRUE;
+
+	if (pop3_sd_state(state, POP3_GETRANGE_UIDL_RECV, &next_state))
+		return next_state;
 
 	if (new == TRUE)
 		return POP3_GETSIZE_LIST_SEND;
@@ -408,6 +408,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar buf[POPBUFSIZE];
+	gint next_state;
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
 
@@ -426,12 +427,12 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 			state->cur_total_bytes += size;
 	}
 
-	LOOKUP_NEXT_MSG();
-	if (state->ac_prefs->session_type == RETR_HEADER) 
-		return POP3_TOP_SEND;
-	else
- 		return POP3_RETR_SEND;
- }
+	if (pop3_sd_state(state, POP3_GETSIZE_LIST_RECV, &next_state))
+		return next_state;
+
+	LOOKUP_NEXT_MSG();	
+	return POP3_RETR_SEND;
+}
  
 gint pop3_top_send(SockInfo *sock, gpointer data)
 {
@@ -447,13 +448,9 @@ gint pop3_top_send(SockInfo *sock, gpointer data)
 gint pop3_top_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
-	FILE  *fp;
-	gchar buf[POPBUFSIZE];
-	gchar *header;
 	gchar *filename, *path;
+	gint next_state;
 	
-	inc_progress_update(state, POP3_TOP_RECV); 
-
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) 
 		return POP3_LOGOUT_SEND;
 
@@ -468,21 +465,9 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 		state->inc_state = INC_NOSPACE;
 		return -1;
 	}
-	/* we add a Complete-Size Header Item ...
-	   note: overwrites first line  --> this is dirty */
-	if ( (fp = fopen(filename, "rb+")) != NULL ) {
-		gchar *buf = g_strdup_printf("%s%i", SIZE_HEADER, 
-					     state->msg[state->cur_msg].size);
-	
-		if (change_file_mode_rw(fp, filename) == 0) 
-			fprintf(fp, "%s\n", buf);
-		g_free(buf);	
-		fclose(fp);
-	}
-	
-	g_free(path);
-	g_free(filename);
 
+	pop3_sd_state(state, POP3_TOP_RECV, &next_state);
+	
 	if (state->cur_msg < state->count) {
 		state->cur_msg++;
 		return POP3_TOP_SEND;
@@ -504,6 +489,7 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 	Pop3State *state = (Pop3State *)data;
 	const gchar *file;
 	gint ok, drop_ok;
+	gint next_state;
 	int keep_for;
 	
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
@@ -517,6 +503,9 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 			state->inc_state = INC_ERROR;
 			return -1;
 		}
+
+		if (pop3_sd_state(state, POP3_RETR_RECV, &next_state))
+			return next_state;
 	
 		state->cur_total_bytes += state->msg[state->cur_msg].size;
 		state->cur_total_num++;
@@ -553,14 +542,15 @@ gint pop3_delete_send(SockInfo *sock, gpointer data)
 gint pop3_delete_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
+	gint next_state;
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		if (state->ac_prefs->session_type == RETR_NORMAL)
-			state->msg[state->cur_msg].deleted = TRUE;
 
-		if (pop3_delete_header(state) == TRUE) 
-			return POP3_DELETE_SEND;
+		state->msg[state->cur_msg].deleted = TRUE;
+		
+		if (pop3_sd_state(state, POP3_DELETE_RECV, &next_state))
+			return next_state;	
 
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
@@ -677,17 +667,147 @@ static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
 	}
 }
 
-gboolean pop3_delete_header (Pop3State *state)
+static void pop3_sd_new_header(Pop3State *state)
 {
-	
-	if ( (state->ac_prefs->session_type == DELE_HEADER) &&
-	     (g_slist_length(state->ac_prefs->to_delete) > 0) ) {
-
-		state->cur_msg = (gint) state->ac_prefs->to_delete->data;
-		debug_print(_("next to delete %i\n"), state->cur_msg);
-		state->ac_prefs->to_delete = g_slist_remove 
-			(state->ac_prefs->to_delete, state->ac_prefs->to_delete->data);
-		return TRUE;
+	HeaderItems *new_msg;
+	if (state->cur_msg <= state->count) {
+		new_msg = g_new0(HeaderItems, 1); 
+		
+		new_msg->index              = state->cur_msg;
+		new_msg->state              = SD_UNCHECKED;
+		new_msg->size               = state->msg[state->cur_msg].size; 
+		new_msg->received           = state->msg[state->cur_msg].received;
+		new_msg->del_by_old_session = FALSE;
+		
+		state->ac_prefs->msg_list = g_slist_append(state->ac_prefs->msg_list, 
+							   new_msg);
 	}
-	return FALSE;
+}
+
+gboolean pop3_sd_state(Pop3State *state, gint cur_state, guint *next_state) 
+{
+	gint session = state->ac_prefs->session;
+	guint goto_state = -1;
+
+	switch (cur_state) { 
+	case POP3_GETRANGE_UIDL_RECV:
+		switch (session) {
+		case STYPE_DOWNLOAD:
+		case STYPE_DELETE:
+		case STYPE_PREVIEW_ALL:
+			goto_state = POP3_GETSIZE_LIST_SEND;
+		default:
+			break;
+		}
+		break;
+	case POP3_GETSIZE_LIST_RECV:
+		switch (session) {
+		case STYPE_PREVIEW_ALL:
+			state->cur_msg = 1;
+		case STYPE_PREVIEW_NEW:
+			goto_state = POP3_TOP_SEND;
+			break;
+		case STYPE_DELETE:
+			if (pop3_sd_get_next(state))
+				goto_state = POP3_DELETE_SEND;		
+			else
+				goto_state = POP3_LOGOUT_SEND;
+			break;
+		case STYPE_DOWNLOAD:
+			if (pop3_sd_get_next(state))
+				goto_state = POP3_RETR_SEND;
+			else
+				goto_state = POP3_LOGOUT_SEND;
+		default:
+			break;
+		}
+		break;
+	case POP3_TOP_RECV: 
+		switch (session) { 
+		case STYPE_PREVIEW_ALL:
+		case STYPE_PREVIEW_NEW:
+			pop3_sd_new_header(state);
+		default:
+			break;
+		}
+		break;
+	case POP3_RETR_RECV:
+		switch (session) {
+		case STYPE_DOWNLOAD:
+			if (state->ac_prefs->sd_rmmail_on_download) 
+				goto_state = POP3_DELETE_SEND;
+			else {
+				if (pop3_sd_get_next(state)) 
+					goto_state = POP3_RETR_SEND;
+				else
+					goto_state = POP3_LOGOUT_SEND;
+			}
+		default:	
+			break;
+		}
+		break;
+	case POP3_DELETE_RECV:
+		switch (session) {
+		case STYPE_DELETE:
+			if (pop3_sd_get_next(state)) 
+				goto_state = POP3_DELETE_SEND;
+			else
+				goto_state =  POP3_LOGOUT_SEND;
+			break;
+		case STYPE_DOWNLOAD:
+			if (pop3_sd_get_next(state)) 
+				goto_state = POP3_RETR_SEND;
+			else
+				goto_state = POP3_LOGOUT_SEND;
+		default:
+			break;
+		}
+	default:
+		break;
+		
+	}		  
+
+	*next_state = goto_state;
+	if (goto_state != -1)
+		return TRUE;
+	else 
+		return FALSE;
+}
+
+gboolean pop3_sd_get_next(Pop3State *state)
+{
+	GSList *cur;
+	gint deleted_msgs = 0;
+	
+	switch (state->ac_prefs->session) {
+	case STYPE_DOWNLOAD:
+	case STYPE_DELETE: 	
+		for (cur = state->ac_prefs->msg_list; cur != NULL; cur = cur->next) {
+			HeaderItems *items = (HeaderItems*)cur->data;
+
+			if (items->del_by_old_session)
+				deleted_msgs++;
+
+			switch (items->state) {
+			case SD_REMOVE:
+				items->state = SD_REMOVED;
+				break;
+			case SD_DOWNLOAD:
+				items->state = SD_DOWNLOADED;
+				break;
+			case SD_CHECKED:
+				state->cur_msg = items->index - deleted_msgs;
+				if (state->ac_prefs->session == STYPE_DELETE)
+					items->state = SD_REMOVE;
+				else
+					items->state = SD_DOWNLOAD;
+				return TRUE;
+			default:
+				break;
+			}
+		}
+		return FALSE;
+	default:
+		return FALSE;
+	}
 }
