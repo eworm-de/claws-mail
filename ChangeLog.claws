@@ -1,3 +1,8 @@
+2002-08-29 [colin]	0.8.2claws1
+
+	* src/summary_search.c
+		Added "AND search"
+
 2002-08-28 [jens]	0.8.2claws
 
 	*po/de.po

@@ -59,6 +59,7 @@ static GtkWidget *body_entry;
 static GtkWidget *case_checkbtn;
 static GtkWidget *backward_checkbtn;
 static GtkWidget *all_checkbtn;
+static GtkWidget *and_checkbtn;
 static GtkWidget *search_btn;
 static GtkWidget *clear_btn;
 static GtkWidget *close_btn;
@@ -195,6 +196,12 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), all_checkbtn,
 			    FALSE, FALSE, 0);
 
+	and_checkbtn =
+		gtk_check_button_new_with_label (_("AND search"));
+	gtk_widget_show (and_checkbtn);
+	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), and_checkbtn,
+			    FALSE, FALSE, 0);
+
 	gtkut_button_set_create(&confirm_area,
 				&search_btn, _("Search"),
 				&clear_btn,  _("Clear"),
@@ -223,7 +230,9 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	gboolean case_sens;
 	gboolean backward;
 	gboolean search_all;
+	gboolean search_and;
 	gboolean all_searched = FALSE;
+	gboolean all_matched = FALSE;
 	gboolean from_matched;
 	gboolean   to_matched;
 	gboolean subj_matched;
@@ -242,7 +251,9 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		(GTK_TOGGLE_BUTTON(backward_checkbtn));
 	search_all = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(all_checkbtn));
-
+	search_and = gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(and_checkbtn));
+	
 	if (case_sens)
 #if HAVE_WCSSTR
 		WCSFindFunc = wcsstr;
@@ -325,33 +336,43 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		}
 
 		from_matched = to_matched = subj_matched = body_matched = FALSE;
-
+		all_matched = search_and;
+		
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
 		if (*fromwcs && msginfo->from) {
 			wcs_hs = strdup_mbstowcs(msginfo->from);
 			if (wcs_hs && WCSFindFunc(wcs_hs, fromwcs) != NULL)
 				from_matched = TRUE;
+			else
+				all_matched = FALSE;
 			g_free(wcs_hs);
-		}
+		}	
 		if (*towcs && msginfo->to) {
 			wcs_hs = strdup_mbstowcs(msginfo->to);
 			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
 				to_matched = TRUE;
+			else
+				all_matched = FALSE;
 			g_free(wcs_hs);
 		}
 		if (*subjwcs && msginfo->subject) {
 			wcs_hs = strdup_mbstowcs(msginfo->subject);
 			if (wcs_hs && WCSFindFunc(wcs_hs, subjwcs) != NULL)
 				subj_matched = TRUE;
+			else
+				all_matched = FALSE;
 			g_free(wcs_hs);
 		}
 		if (*body_str) {
 			if (procmime_find_string(msginfo, body_str, case_sens))
 				body_matched = TRUE;
+			else
+				all_matched = FALSE;
 		}
 
-		if (from_matched || to_matched || subj_matched || body_matched) {
+		if ((from_matched || to_matched || subj_matched || body_matched)
+		    && (!search_and || all_matched)) {
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {
