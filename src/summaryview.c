@@ -315,20 +315,20 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/_Unmark"),		NULL, summary_unmark,	0, NULL},
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
-	{N_("/_Mark/Make it as _being read"),
+	{N_("/_Mark/Mark as rea_d"),
 					NULL, summary_mark_as_read, 0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
 	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/Forward as an a_ttachment"),
+	{N_("/Forward as a_ttachment"),
 					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Open in new _window"),	NULL, summary_open_msg,	0, NULL},
 	{N_("/View so_urce"),		NULL, summary_view_source, 0, NULL},
 	{N_("/Show all _header"),	NULL, summary_show_all_header_cb, 0, NULL},
-	{N_("/Re_edit"),		NULL, summary_reedit,   0, NULL},
+	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		NULL, summary_save_as,	0, NULL},
 	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
@@ -932,7 +932,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  sens);
-	menu_set_sensitive(ifactory, "/Forward as an attachment", sens);
+	menu_set_sensitive(ifactory, "/Forward as attachment",    sens);
 
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
@@ -940,7 +940,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	if ((summaryview->folder_item->stype == F_DRAFT) ||
 	    (summaryview->folder_item->stype == F_OUTBOX) ||
 	    (summaryview->folder_item->stype == F_QUEUE))
-		menu_set_sensitive(ifactory, "/Reedit", sens);
+		menu_set_sensitive(ifactory, "/Re-edit", sens);
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);
@@ -951,7 +951,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread",        TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Make it as being read", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Make as read",          TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 }

@@ -934,9 +934,9 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
-			   _("Save sent message to outbox"));
+			   _("Save sent messages to outbox"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
-			   _("Queue message that failed to send"));
+			   _("Queue messages that fail to send"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,
 			   _("Send return receipt on request"));
 
@@ -2422,30 +2422,32 @@ static void prefs_quote_description_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	label = gtk_label_new
-		("d:\n"		/* date */
-		 "f:\n"		/* from */
-		 "N:\n"		/* full name */
-		 "F:\n"		/* first name */
-		 "I:\n"		/* sender's initial */
-		 "s:\n"		/* subject line */
-		 "t:\n"		/* to */
-		 "c:\n"		/* cc */
-		 "n:\n"		/* newsgroups */
-		 "i:\n"		/* message id */
-		 "r:\n"		/* references */
+		("SYMBOL\n\n"
+                 "%d\n"		/* date */
+		 "%f\n"		/* from */
+		 "%N\n"		/* full name */
+		 "%F\n"		/* first name */
+		 "%I\n"		/* sender's initial */
+		 "%s\n"		/* subject line */
+		 "%t\n"		/* to */
+		 "%c\n"		/* cc */
+		 "%n\n"		/* newsgroups */
+		 "%i\n"		/* message id */
+		 "%r\n"		/* references */
 		 "\n"
 		 "%x\n"
 		 "?x(expr)\n"
 		 "\n"
-		 "%M:\n"
-		 "%Q:\n"
-		 "%%:");
+		 "%M\n"
+		 "%Q\n"
+		 "%%");
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
 	label = gtk_label_new
-		(_("Date\n"
+		(_("DESCRIPTION\n\n"
+                   "Date\n"
 		   "From\n"
 		   "Full Name of Sender\n"
 		   "First Name of Sender\n"

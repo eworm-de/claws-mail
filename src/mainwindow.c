@@ -384,7 +384,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Toolbar/Icon _and text"),	NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
 	{N_("/_View/_Toolbar/_Icon"),		NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Toolbar/_Text"),		NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Toolbar/Icon and text"},
-	{N_("/_View/_Toolbar/_Non-display"),	NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
+	{N_("/_View/_Toolbar/_None"),	        NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Status bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
@@ -465,8 +465,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #undef CODESET_ACTION
 
 	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Rece_ive new mail"),	"<alt>I",	inc_mail_cb, 0, NULL},
-	{N_("/_Message/Receive from _all accounts"),
+	{N_("/_Message/Get new ma_il"),	        "<alt>I",	inc_mail_cb, 0, NULL},
+	{N_("/_Message/Get from _all accounts"),
 						"<shift><alt>I", inc_all_account_mail_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Send queued messa_ges"),
@@ -477,7 +477,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Message/_Forward"),		"<control>F", reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/_Message/Forward as an a_ttachment"),
+	{N_("/_Message/Forward as a_ttachment"),
 						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<alt>O", move_to_cb, 0, NULL},
@@ -488,13 +488,13 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/_Unmark"),		NULL, unmark_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark/Mark as unr_ead"),	NULL, mark_as_unread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Mark it as _being read"),
+	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
 	{N_("/_Message/View _source"),		"<control>U", view_source_cb, 0, NULL},
 	{N_("/_Message/Show all _header"),	"<control>H", header_window_show_cb, 0, NULL},
-	{N_("/_Message/Re_edit"),		NULL, reedit_cb, 0, NULL},
+	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Summary"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Summary/_Delete duplicated messages"),
@@ -720,7 +720,7 @@ MainWindow *main_window_create(SeparateType type)
 	switch (prefs_common.toolbar_style) {
 	case TOOLBAR_NONE:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Toolbar/Non-display");
+			(ifactory, "/View/Toolbar/None");
 		break;
 	case TOOLBAR_ICON:
 		menuitem = gtk_item_factory_get_item
@@ -1149,14 +1149,14 @@ void main_window_set_menu_sensitive(MainWindow *mainwin, gint selection)
 	menu_set_sensitive(ifactory, "/Message/Reply to sender", sens);
 	menu_set_sensitive(ifactory, "/Message/Reply to all", sens);
 	menu_set_sensitive(ifactory, "/Message/Forward", sens);
-	menu_set_sensitive(ifactory, "/Message/Forward as an attachment", sens);
+	menu_set_sensitive(ifactory, "/Message/Forward an attachment", sens);
 	menu_set_sensitive(ifactory, "/Message/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/Message/Show all header", sens);
 	menu_set_sensitive(ifactory, "/Message/View source", sens);
 	if (sens && (!mainwin->summaryview->folder_item ||
 		     mainwin->summaryview->folder_item->stype != F_DRAFT))
 		sens = FALSE;
-	menu_set_sensitive(ifactory, "/Message/Reedit", sens);
+	menu_set_sensitive(ifactory, "/Message/Re-edit", sens);
 
 	if (selection == SUMMARY_SELECTED_SINGLE ||
 	    selection == SUMMARY_SELECTED_MULTIPLE)
