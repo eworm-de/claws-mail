@@ -1,3 +1,9 @@
+2003-03-06 [paul]	0.8.10claws92
+
+	* src/compose.c
+		freeze text before autosave and thaw afterwards
+		fixes bug 67 'autosave make re-rediting message crazy'
+
 2003-03-06 [christoph]	0.8.10claws91
 
 	* src/compose.c
