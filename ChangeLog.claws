@@ -1,3 +1,12 @@
+2003-09-27 [paul]	0.9.5claws33
+
+	* src/prefs_common.[ch]
+	  src/procmsg.c
+	  src/send_message.c
+	  	remove External Program settings from Common Prefs/Send
+		as they are now unnecessary due to Local account settings.
+		plus a little tidying-up after 0.9.5claws31
+
 2003-09-27 [paul]	0.9.5claws32
 
 	* src/prefs_account.c

@@ -106,13 +106,7 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		val = send_message_local(ac_prefs->mail_command, fp);
 		fclose(fp);
 		return val;
-	}
-	else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
-		val = send_message_local(prefs_common.extsend_cmd, fp);
-		fclose(fp);
-		return val;
-	}
-	else {
+	} else {
 		val = send_message_smtp(ac_prefs, to_list, fp);
 		
 		fclose(fp);

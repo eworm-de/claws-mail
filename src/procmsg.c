@@ -1162,9 +1162,6 @@ gint procmsg_send_message_queue(const gchar *file)
 			   mailac->mail_command && (* mailac->mail_command)) {
 			mailval = send_message_local(mailac->mail_command, fp);
 			local = 1;
-		} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
-			mailval = send_message_local(prefs_common.extsend_cmd, fp);
-			local = 1;
 		} else {
 			if (!mailac) {
 				mailac = account_find_from_smtp_server(from, smtpserver);
