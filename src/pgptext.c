@@ -69,6 +69,19 @@ struct passphrase_cb_info_s {
     int did_it;
 };
 
+/* stolen from rfc2015.c */
+static int
+gpg_name_cmp(const char *a, const char *b)
+{
+    for( ; *a && *b; a++, b++) {
+        if(*a != *b
+           && toupper(*(unsigned char *)a) != toupper(*(unsigned char *)b))
+            return 1;
+    }
+
+    return *a != *b;
+}
+
 static const char *
 passphrase_cb (void *opaque, const char *desc, void *r_hd)
 {
@@ -165,7 +178,7 @@ headerp(char *p, char **names)
     c = *p2;
     *p2 = 0;
     for(i = 0 ; names[i] != NULL; i++) {
-        if(!name_cmp (names[i], p))
+        if(!gpg_name_cmp (names[i], p))
             break;
     }
     *p2 = c;

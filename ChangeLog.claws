@@ -1,3 +1,8 @@
+2001-10-19 [alfons]
+
+	* src/gpgtext.[ch]
+		fix compilation problems (part of bug #472895)
+
 2001-10-18 [hoa]        0.6.3claws27
 
 	* src/grouplistdialog.[c]

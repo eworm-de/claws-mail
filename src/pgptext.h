@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __RFC2015_H__
-#define __RFC2015_H__
+#ifndef PGPTXT_H__ 
+#define PGPTXT_H__
 
 #include <glib.h>
 #include <stdio.h>
@@ -38,4 +38,4 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp);
 int pgptext_encrypt (const char *file, GSList *recp_list);
 int pgptext_sign (const char *file, PrefsAccount *ac);
 
-#endif /* __RFC2015_H__ */
+#endif /* PGPTEXT_H__ */
