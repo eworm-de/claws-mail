@@ -180,3 +180,4 @@
 ( cvs diff -u -r 1.149.2.15 -r 1.149.2.16 src/inc.c; ) > 0.9.12cvs106.1.patchset
 ( cvs diff -u -r 1.60.2.10 -r 1.60.2.11 src/addressbook.c; ) > 0.9.12cvs108.1.patchset
 ( cvs diff -u -r 1.207.2.15 -r 1.207.2.16 src/folderview.c; ) > 0.9.12cvs110.1.patchset
+( cvs diff -u -r 1.207.2.16 -r 1.207.2.17 src/folderview.c; cvs diff -u -r 1.274.2.19 -r 1.274.2.20 src/mainwindow.c; ) > 0.9.12cvs112.1.patchset

@@ -1,3 +1,9 @@
+2004-09-28 [colin]	0.9.12cvs112.1
+
+	* src/folderview.c
+	* src/mainwindow.c
+		Sync with HEAD
+
 2004-09-28 [colin]	0.9.12cvs110.1
 
 	* src/folderview.c

@@ -1397,7 +1397,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[0], folderview, 1);
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[1], folderview, 1);
-	} else {
+	} else if (item != folder->trash) {
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
 	}
