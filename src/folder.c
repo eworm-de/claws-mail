@@ -1559,7 +1559,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	return new_item;
 }
 
-FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest, char *error)
+gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item)
 {
 	FolderItem *tmp = dest->parent;
 	char * src_identifier, * dst_identifier, * new_identifier;
@@ -1568,8 +1568,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest, char *error)
 	
 	while (tmp) {
 		if (tmp == src) {
-			error = g_strdup(_("Can't move a folder to one of its children."));
-			return NULL;
+			return F_MOVE_FAILED_DEST_IS_CHILD;
 		}
 		tmp = tmp->parent;
 	}
@@ -1585,24 +1584,22 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest, char *error)
 	}
 	if (src_identifier == NULL || dst_identifier == NULL) {
 		printf("Can't get identifiers\n");
-		return NULL;
+		return F_MOVE_FAILED;
 	}
 
 	phys_srcpath = folder_item_get_path(src);
 	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(phys_srcpath),NULL);
 
 	if (src->parent == dest) {
-		error = g_strdup(_("Source and destination are the same."));
 		g_free(src_identifier);
 		g_free(dst_identifier);
 		g_free(phys_srcpath);
 		g_free(phys_dstpath);
-		return NULL;
+		return F_MOVE_FAILED_DEST_IS_PARENT;
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
 	if ((tmp = folder_item_move_recursive(src, dest)) == NULL) {
-		error = g_strdup(_("Move failed!"));
-		return NULL;
+		return F_MOVE_FAILED;
 	}
 	
 	/* update rules */
@@ -1626,7 +1623,9 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest, char *error)
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
 
-	return tmp;
+	*new_item = tmp;
+
+	return F_MOVE_OK;
 }
 
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)

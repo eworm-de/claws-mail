@@ -1,3 +1,10 @@
+2002-11-14 [colin]	0.8.5claws155
+
+	* src/folder.[ch]
+	  src/folderview.c
+		Fix error handling of folder_item_move_to()
+		(thanks to Alfons!)
+
 2002-11-14 [colin]	0.8.5claws154
 
 	* src/folder.[ch]
