@@ -2778,8 +2778,6 @@ static void activate_compose_button (MainWindow *mainwin,
 		return;
 
 	if (style == TOOLBAR_BOTH) {
-		debug_print("preferring %s\n",
-			    type == COMPOSEBUTTON_NEWS ? "news" : "mail");
 		gtk_widget_hide(mainwin->compose_mail_btn_plain);
 		gtk_widget_hide(mainwin->compose_news_btn_plain);
 		gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn 
