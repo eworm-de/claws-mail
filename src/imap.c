@@ -752,8 +752,6 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint messages, recent, unseen;
-	guint32 uid_next, uid_validity;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -762,13 +760,6 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	session = imap_session_get(folder);
 	if (!session) return -1;
-
-	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
-			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	if (ok != IMAP_SUCCESS) {
-		g_warning("can't append message %s\n", file);
-		return -1;
-	}
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	ok = imap_cmd_append(SESSION(session)->sock, destdir, file);
@@ -784,7 +775,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 			FILE_OP_ERROR(file, "unlink");
 	}
 
-	return uid_next;
+	return 0;
 }
 
 static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,

@@ -2818,6 +2818,11 @@ gint compose_send(Compose *compose)
 		alertpanel_error(_("Could not queue message for sending"));
 		return -1;
 	}
+
+	if (msgnum == 0) {
+		alertpanel_error(_("The message was queue but could not be send.\nUse \"Send queued messages\" from the main window to send it"));
+		return 0;
+	}
 	
 	msgpath = folder_item_fetch_msg(folder, msgnum);
 	val = procmsg_send_message_queue(msgpath);

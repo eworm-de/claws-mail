@@ -1,3 +1,17 @@
+2001-01-25 [christoph]	0.8.9claws2
+
+	* po/POTFILES.in
+		add pluginwindow and prefswindow
+	* src/compose.c
+		make send respond correctly to messages that could be added
+		to the queue folder, but the UID of the message is unknown
+	* src/folder.c
+	* src/imap.c
+		don't return guessed UIDs in imap_add_msg anymore. We return
+		0 to tell the folder system it was appened but the UID is
+		unknown. Folder system now get's the UID by scaning the folder
+		and searching the cache for the Message-ID
+
 2001-01-25 [paul]	0.8.9claws1
 
 	* codeconv.c

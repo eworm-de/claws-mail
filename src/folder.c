@@ -1458,6 +1458,40 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	return folder->fetch_msg(folder, item, num);
 }
 
+static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
+{
+	static HeaderEntry hentry[] = {{"Message-ID:",  NULL, TRUE},
+				       {NULL,		NULL, FALSE}};
+	FILE *fp;
+	MsgInfo *msginfo;
+	gint msgnum = 0;
+	gchar buf[BUFFSIZE];
+
+	if ((fp = fopen(file, "rb")) == NULL)
+		return 0;
+
+	if ((dest->stype == F_QUEUE) || (dest->stype == F_DRAFT))
+		while (fgets(buf, sizeof(buf), fp) != NULL)
+			if (buf[0] == '\r' || buf[0] == '\n') break;
+
+	procheader_get_header_fields(fp, hentry);
+	if (hentry[0].body) {
+    		extract_parenthesis(hentry[0].body, '<', '>');
+		remove_space(hentry[0].body);
+		if ((msginfo = msgcache_get_msg_by_id(dest->cache, hentry[0].body)) != NULL) {
+			msgnum = msginfo->msgnum;
+			procmsg_msginfo_free(msginfo);
+
+			debug_print("found message as uid %d\n", msgnum);
+		}
+	}
+	
+	g_free(hentry[0].body);
+	fclose(fp);
+
+	return msgnum;
+}
+
 gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 			 gboolean remove_source)
 {
@@ -1475,7 +1509,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	if (!dest->cache)
 		folder_item_read_cache(dest);
 
-	num = folder->add_msg(folder, dest, file, remove_source);
+	num = folder->add_msg(folder, dest, file, FALSE);
 
         if (num > 0) {
     		msginfo = folder->get_msginfo(folder, dest, num);
@@ -1498,7 +1532,15 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 		}
 
                 dest->last_num = num;
-        }
+        } else if (num == 0) {
+		folder_item_scan(dest);
+		num = folder_item_get_msg_num_by_file(dest, file);
+	}
+
+	if (num >= 0 && remove_source) {
+		if (unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
+	}
 
 	return num;
 }
