@@ -144,6 +144,8 @@ EXTRA_DIST = \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_open.xpm \
 	pixmaps/dir_open_hrm.xpm \
+	pixmaps/drafts_close.xpm \
+	pixmaps/drafts_open.xpm \
 	pixmaps/down_arrow.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
