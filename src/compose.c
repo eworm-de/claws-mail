@@ -2674,25 +2674,22 @@ static Compose *compose_create(PrefsAccount *account)
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		gtk_widget_set_sensitive(menuitem, FALSE);
 	}
-	if (account->set_autocc && account->auto_cc) {
-		gtk_entry_set_text(GTK_ENTRY(cc_entry), account->auto_cc);
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	}
-	if (account->set_autobcc && account->auto_bcc) {
-		gtk_entry_set_text(GTK_ENTRY(bcc_entry), account->auto_bcc);
+	if (account->set_autobcc) {
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Bcc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		if (account->auto_bcc)
+			gtk_entry_set_text(GTK_ENTRY(bcc_entry),
+					   account->auto_bcc);
 	}
-	if (account->set_autoreplyto && account->auto_replyto) {
-		gtk_entry_set_text(GTK_ENTRY(reply_entry),
-				   account->auto_replyto);
+	if (account->set_autoreplyto) {
 		menuitem = gtk_item_factory_get_item(ifactory,
 						     "/Message/Reply to");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		if (account->auto_replyto)
+			gtk_entry_set_text(GTK_ENTRY(reply_entry),
+					   account->auto_replyto);
 	}
 
 	menuitem = gtk_item_factory_get_item(ifactory, "/Tool/Show ruler");

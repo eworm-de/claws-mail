@@ -263,16 +263,20 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
+
 	progress_dialog_set_value(progress, 0.0);
 
-	gtk_widget_show(progress->window);
+	if (prefs_common.show_retrieve_dialog)
+        {
+	  gtk_widget_show(progress->window);
 
-	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
-	PIXMAP_CREATE(progress->clist,
+	  PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
+	  PIXMAP_CREATE(progress->clist,
 		      currentxpm, currentxpmmask, continue_xpm);
-	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
+   	  PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
 
-	gtk_widget_show_now(progress->window);
+	  gtk_widget_show_now(progress->window);
+	}
 
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;
@@ -661,19 +665,19 @@ static gint connection_check_cb(Automaton *atm)
 	if (sockinfo->state == CONN_LOOKUPFAILED ||
 	    sockinfo->state == CONN_FAILED) {
 		atm->timeout_tag = 0;
-		pop3_automaton_terminate(sockinfo->sock, atm);
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    sockinfo->hostname, sockinfo->port);
 		manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 		alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
 				 sockinfo->hostname, sockinfo->port);
 		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		pop3_automaton_terminate(sockinfo, atm);
 		return FALSE;
 	} else if (sockinfo->state == CONN_ESTABLISHED) {
 		atm->timeout_tag = 0;
-		atm->tag = gdk_input_add(sockinfo->sock,
-					 atm->state[atm->num].condition,
-					 automaton_input_cb, atm);
+		atm->tag = sock_gdk_input_add(sockinfo,
+					      atm->state[atm->num].condition,
+					      automaton_input_cb, atm);
 		return FALSE;
 	} else {
 		return TRUE;

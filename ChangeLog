@@ -1,3 +1,10 @@
+2001-05-11
+
+	* src/inc.c: connection_check_cb(): fixed a bug that caused
+	  segmentation fault if connection was not established.
+	* src/compose.c: compose_create(): even if set_autobcc or set
+	  autoreplyto is checked and the entries are empty, show them.
+
 2001-05-10
 
 	* src/textview.c: textview_show_mime_part(): modified the messages.

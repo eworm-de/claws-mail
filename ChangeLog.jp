@@ -1,3 +1,10 @@
+2001-05-11
+
+	* src/inc.c: connection_check_cb(): 接続が確立しなかったときに
+	  segmentation fault を起こすバグを修正。
+	* src/compose.c: compose_create(): set_autobcc または set_autoreplyto
+	  がセットされていたら、それらが空でも表示するようにした。
+
 2001-05-10
 
 	* src/textview.c: textview_show_mime_part(): メッセージを修正。

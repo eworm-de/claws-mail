@@ -1,3 +1,13 @@
+2001-05-12 [alfons]
+
+	0.4.67claws2
+	
+	* src/inc.c, src/prefs_common.c, src/prefs_common.h: 
+		applied "toggle mail-retrieval dialog window" patch submitted 
+		by Eric Limpens <eric@qnt.net>
+
+	* sync with sylpheed 0.4.67cvs4
+
 2001-05-12 [sergey]
 
 	* src/matcher.c, src/scoring.c: changed "#ifdef 0" to "#if 0" for
