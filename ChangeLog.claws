@@ -1,3 +1,8 @@
+2002-06-24 [paul]	0.7.8claws21
+
+	* tools/update-po
+		add GPL copyright information
+
 2002-06-24 [paul]	0.7.8claws20
 
 	* tools/Makefile.am
