@@ -360,6 +360,7 @@ int main(int argc, char *argv[])
 #if USE_ASPELL       
 	gtkaspell_checkers_delete();
 #endif
+	sylpheed_done();
 
 	return 0;
 }
@@ -591,10 +592,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	/* delete crashfile */
 	if (!cmd.crash)
 		unlink(get_crashfile_name());
-
-#if USE_OPENSSL
-	ssl_done();
-#endif
 
 	gtk_main_quit();
 }

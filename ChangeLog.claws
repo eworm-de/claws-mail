@@ -1,3 +1,26 @@
+2002-12-26 [christoph]	0.8.8claws2
+
+	* configure.in
+		sort configure checks into common / gtk / plugins
+	* po/POTFILES.in
+		add src/prefs_gtk.c
+	* src/Makefile.am
+		add plugins SUBDIR
+	* src/main.c
+	* src/common/sylpheed.[ch]
+		added now sylpheed_done function for shutdown
+	* src/common/Makefile.am
+	* src/common/plugin.[ch]		** NEW **
+		plugin loader and unloader
+	* src/plugins/.cvsignore		** NEW **
+	* src/plugins/Makefile.am		** NEW **
+		build plugins
+	* src/plugins/demo/.cvsignore		** NEW **
+	* src/plugins/demo/Makefile.am		** NEW **
+	* src/plugins/demo/demo.c		** NEW **
+		small demo plugin that installs a logtext hook and
+		outputs the log text to stdout
+
 2002-12-26 [paul]	0.8.8claws1
 
 	* po/es.po

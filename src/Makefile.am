@@ -1,4 +1,4 @@
-SUBDIRS = common gtk
+SUBDIRS = common gtk plugins
 
 bin_PROGRAMS = sylpheed
 

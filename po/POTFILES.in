@@ -50,6 +50,7 @@ src/mimeview.c
 src/news.c
 src/passphrase.c
 src/pop.c
+src/prefs_gtk.c
 src/prefs_account.c
 src/prefs_actions.c
 src/prefs_common.c

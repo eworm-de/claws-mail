@@ -8,6 +8,7 @@ libsylpheedcommon_la_SOURCES = \
 	log.c log.h \
 	md5.c md5.h \
 	nntp.c nntp.h \
+	plugin.c plugin.h \
 	prefs.c prefs.h \
 	quoted-printable.c quoted-printable.h \
 	session.c session.h \
@@ -21,11 +22,9 @@ libsylpheedcommon_la_SOURCES = \
 	version.h \
 	uuencode.c uuencode.h
 
-INCLUDES = \
-	$(GLIB_CFLAGS) \
-	$(OPENSSL_CFLAGS)
-
 CPPFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(OPENSSL_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\"
 
 libsylpheedcommon_la_LIBADD = \

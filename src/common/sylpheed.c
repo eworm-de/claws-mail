@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"
+#include "plugin.h"
 
 static gboolean sylpheed_initialized = FALSE;
 
@@ -53,13 +54,24 @@ gboolean sylpheed_init(int *argc, char ***argv)
 		}
 	}
 
+	srandom((gint)time(NULL));
+
 #if USE_OPENSSL
 	ssl_init();
 #endif
 
-	srandom((gint)time(NULL));
+	plugin_load_all();
 
 	sylpheed_initialized = TRUE;
 
 	return TRUE;
+}
+
+void sylpheed_done()
+{
+	plugin_unload_all();
+
+#if USE_OPENSSL
+	ssl_done();
+#endif
 }

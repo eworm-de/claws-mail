@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto and the Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-gboolean sylpheed_init	(int *argc, char ***argv);
-void sylpheed_done	();
+#ifndef PLUGIN_H
+#define PLUGIN_H 1
+
+#include <glib.h>
+
+typedef struct _Plugin Plugin;
+
+/* Functions to implement by the plugin */
+gint plugin_init		(gchar		**error);
+void plugin_done		();
+
+/* Functions by the sylpheed plugin system */
+gint plugin_load		(const gchar	 *filename,
+				 gchar		**error);
+void plugin_unload		(Plugin		 *plugin);
+void plugin_load_all		();
+void plugin_unload_all		();
+void plugin_save_list		();
+
+GSList *plugin_get_list		();
+const gchar *plugin_get_name	(Plugin		 *plugin);
+const gchar *plugin_get_desc	(Plugin		 *plugin);
+
+#endif
