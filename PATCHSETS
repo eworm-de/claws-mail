@@ -128,3 +128,4 @@
 ( cvs diff -u -r 1.2504.2.14 -r 1.2504.2.15 ChangeLog.claws; cvs diff -u -r 1.382.2.41 -r 1.382.2.42 src/compose.c; cvs diff -u -r 1.274.2.18 -r 1.274.2.19 src/mainwindow.c; ) > 0.9.12cvs70.1.patchset
 ( cvs diff -u -r 1.2504.2.15 -r 1.2504.2.16 ChangeLog.claws; cvs diff -u -r 1.382.2.42 -r 1.382.2.43 src/compose.c; cvs diff -u -r 1.395.2.27 -r 1.395.2.28 src/summaryview.c; cvs diff -u -r 1.43.2.8 -r 1.43.2.9 src/toolbar.c; ) > 0.9.12cvs74.1.patchset
 ( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/colorsel.c; ) > 0.9.12cvs74.2.patchset
+( cvs diff -u -r 1.14.2.10 -r 1.14.2.11 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs76.1.patchset

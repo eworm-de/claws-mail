@@ -1,3 +1,8 @@
+2004-08-22 [colin]	0.9.12cvs76.1
+
+	* src/plugins/trayicon/trayicon.c
+		Sync with HEAD
+
 2004-08-21 [colin]	0.9.12cvs74.2
 
 	* src/gtk/colorsel.c
