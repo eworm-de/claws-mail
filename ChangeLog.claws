@@ -1,3 +1,11 @@
+2002-08-19 [paul]	0.8.1claws76
+
+	* src/inc.c
+		sync with 0.8.1cvs25 (plug memory leak)
+
+	* src/prefs_toolbar.c
+		re-order prefs_toolbar_cancel()
+
 2002-08-18 [alfons]	0.8.1claws75
 
 	* src/inc.c
