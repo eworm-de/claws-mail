@@ -1,3 +1,10 @@
+2002-11-25 [colin]	0.8.6claws5
+
+	* src/gtkutils.[ch]
+		Add gtkut_ctree_node_is_parent()
+	* src/folderview.c
+		Spring-loaded folders
+
 2002-11-25 [colin]	0.8.6claws4
 
 	* src/utils.[ch]

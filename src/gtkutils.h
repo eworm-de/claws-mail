@@ -106,6 +106,8 @@ GtkCTreeNode *gtkut_ctree_find_collapsed_parent
 					 GtkCTreeNode	*node);
 void gtkut_ctree_expand_parent_all	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
+gboolean gtkut_ctree_node_is_parent	(GtkCTreeNode 	*parent, 
+					 GtkCTreeNode 	*node);
 void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 

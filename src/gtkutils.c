@@ -255,6 +255,22 @@ void gtkut_ctree_expand_parent_all(GtkCTree *ctree, GtkCTreeNode *node)
 		gtk_ctree_expand(ctree, node);
 }
 
+gboolean gtkut_ctree_node_is_parent(GtkCTreeNode *parent, GtkCTreeNode *node)
+{
+	GtkCTreeNode *tmp;
+	g_return_val_if_fail(node != NULL, FALSE);
+	g_return_val_if_fail(parent != NULL, FALSE);
+	tmp = node;
+	
+	while (tmp) {
+		if(GTK_CTREE_ROW(tmp)->parent && GTK_CTREE_ROW(tmp)->parent == parent)
+			return TRUE;
+		tmp = GTK_CTREE_ROW(tmp)->parent;
+	}
+	
+	return FALSE;
+}
+
 void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
 {
 	gtkut_clist_set_focus_row(GTK_CLIST(ctree),
