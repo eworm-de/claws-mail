@@ -568,7 +568,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 		ATTACH_ROW(_("First Name"), entry_fn);
 		ATTACH_ROW(_("Last Name"), entry_ln);
 	}
-	ATTACH_ROW(_("Nick Name"), entry_nn);
+	ATTACH_ROW(_("Nickname"), entry_nn);
 
 #undef ATTACH_ROW
 
