@@ -1,3 +1,14 @@
+2003-05-16 [paul]	0.8.11claws157
+
+	* po/POTFILES.in
+		remove non-existant entries
+	
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  src/plugins/dillo_viewer/dillo_prefs.c
+	  src/plugins/dillo_viewer/dillo_viewer.c
+	  	gettextise
+
 2003-05-16 [christoph]	0.8.11claws156
 
 	* po/POTFILES.in

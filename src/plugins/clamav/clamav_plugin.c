@@ -26,8 +26,9 @@
 #include <glib.h>
 #include <clamav.h>
 
-#include "common/plugin.h"
-#include "common/utils.h"
+#include "intl.h"
+#include "plugin.h"
+#include "utils.h"
 #include "hooks.h"
 #include "inc.h"
 #include "mimeview.h"
@@ -244,12 +245,12 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "Clam AntiVirus";
+	return _("Clam AntiVirus");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin uses Clam AntiVirus to scan all message attachments "
+	return _("This plugin uses Clam AntiVirus to scan all message attachments "
 	       "that are received from a POP account.\n"
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
@@ -258,7 +259,7 @@ const gchar *plugin_desc(void)
 	       "This plugin only contains the actual function for scanning "
 	       "and deleting or moving the message. You probably want to load "
 	       "the Gtk+ User Interface plugin too, otherwise you will have to "
-	       "manually write the plugin configuration.\n";
+	       "manually write the plugin configuration.\n");
 }
 
 const gchar *plugin_type(void)

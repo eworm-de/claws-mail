@@ -85,8 +85,6 @@ src/plugins/mathml_viewer/mathml_viewer.c
 src/plugins/image_viewer/viewerprefs.c
 src/plugins/image_viewer/viewer.c
 src/plugins/image_viewer/plugin.c
-src/plugins/maildir/maildir.c
-src/plugins/maildir/plugin.c
 src/plugins/dillo_viewer/dillo_viewer.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/clamav/clamav_plugin_gtk.c
