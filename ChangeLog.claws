@@ -1,3 +1,24 @@
+2004-05-25 [luke]	0.9.10claws71
+
+	* AUTHORS
+	* src/mimeview.c
+	* src/stockpixmap.[ch]
+	* src/Makefile.am
+	* src/pixmaps/privacy_emblem_encrypted.xpm	** NEW **
+	* src/pixmaps/privacy_emblem_failed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_passed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_signed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_warn.xpm		** NEW **
+
+		o Added privacy emblems from Jesper Shultz 
+		  <jesper@schultz-net.dk>
+		o Overlay emblems onto mimeview icons to indicate
+	          status of signature and if a message is encrypted
+	
+	* src/textview.c
+		remove unused color definitions (were used to 
+		indicate sig status)
+
 2004-05-25 [paul]	0.9.10claws70
 
 	* AUTHORS
