@@ -63,11 +63,6 @@ FolderItem *filter_get_dest_folder(GSList *fltlist, const gchar *file)
 		}
 	}
 
-	if (dummy != NULL) {
-		g_free(dummy->path);
-		g_free(dummy);
-	}
-
 	procheader_header_list_destroy(hlist);
 
 	return dest_folder;
