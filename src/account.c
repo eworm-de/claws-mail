@@ -649,11 +649,19 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 
 	text[COL_DEFAULT] = ac_prefs->is_default ? "*" : "";
 	text[COL_NAME] = ac_prefs->account_name;
+#if !USE_SSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3"  :
 			     ac_prefs->protocol == A_APOP  ? "APOP"  :
 			     ac_prefs->protocol == A_IMAP4 ? "IMAP4" :
 			     ac_prefs->protocol == A_LOCAL ? "Local" :
 			     ac_prefs->protocol == A_NNTP  ? "NNTP"  :  "";
+#else
+	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? (!ac_prefs->ssl_pop ? "POP3" : "POP3 (SSL)") :
+			     ac_prefs->protocol == A_APOP  ? (!ac_prefs->ssl_pop ? "APOP" : "APOP (SSL)") :
+			     ac_prefs->protocol == A_IMAP4 ? (!ac_prefs->ssl_imap ? "IMAP4" : "IMAP4 (SSL)") :
+			     ac_prefs->protocol == A_LOCAL ? "Local" :
+			     ac_prefs->protocol == A_NNTP  ? "NNTP"  :  "";
+#endif
 	text[COL_SERVER] = ac_prefs->protocol == A_NNTP
 		? ac_prefs->nntp_server : ac_prefs->recv_server;
 

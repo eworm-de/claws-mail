@@ -566,7 +566,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	server = pop3_state->ac_prefs->recv_server;
 #if USE_SSL
 	port = pop3_state->ac_prefs->set_popport ?
-		pop3_state->ac_prefs->popport : (pop3_state->ac_prefs->pop_ssl ? 995 : 110);
+		pop3_state->ac_prefs->popport : (pop3_state->ac_prefs->ssl_pop ? 995 : 110);
 #else
 	port = pop3_state->ac_prefs->set_popport ?
 		pop3_state->ac_prefs->popport : 110;
@@ -606,7 +606,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	atm->help_sock = sockinfo;
 
 #ifdef USE_SSL
-	if(pop3_state->ac_prefs->pop_ssl) {
+	if(pop3_state->ac_prefs->ssl_pop) {
 		if(!ssl_init_socket(sockinfo)) {
 			pop3_automaton_terminate(NULL, atm);
 			automaton_destroy(atm);

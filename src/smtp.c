@@ -160,3 +160,24 @@ gint smtp_ok(SockInfo *sock)
 
 	return SM_UNRECOVERABLE;
 }
+
+#if USE_SSL
+gint smtp_starttls(SockInfo *sock, const char *hostname, gboolean use_smtp_auth)
+{
+	gint ret;
+
+	sock_printf(sock, "STARTTLS\r\n", hostname);
+	if (verbose)
+		log_print("SMTP> STARTTLS\n", hostname);
+
+	ret = smtp_ok(sock);
+	if(ret != SM_OK)
+		return ret;
+		
+	if(!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
+		return SM_ERROR;
+	}
+
+	return smtp_helo(sock, hostname, use_smtp_auth);
+}
+#endif

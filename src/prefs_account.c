@@ -124,6 +124,17 @@ static struct Privacy {
 } privacy;
 #endif /* USE_GPGME */
 
+#if USE_SSL
+static struct SSLPrefs {
+	GtkWidget *pop_chkbtn;
+	GtkWidget *imap_chkbtn;
+
+	GtkWidget *smtp_nossl_radiobtn;
+	GtkWidget *smtp_ssltunnel_radiobtn;
+	GtkWidget *smtp_sslstarttls_radiobtn;
+} ssl;
+#endif /* USE_SSL */
+
 static struct Advanced {
 	GtkWidget *smtpport_chkbtn;
 	GtkWidget *smtpport_entry;
@@ -138,11 +149,6 @@ static struct Advanced {
 	GtkWidget *nntpport_entry;
 	GtkWidget *domain_chkbtn;
 	GtkWidget *domain_entry;
-#if USE_SSL
-	GtkWidget *smtpssl_chkbtn;
-	GtkWidget *popssl_chkbtn;
-	GtkWidget *imapssl_chkbtn;
-#endif
 } advanced;
 
 static void prefs_account_fix_size			(void);
@@ -151,8 +157,8 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 #if USE_GPGME
-static void prefs_account_sign_key_set_data_from_radiobtn (PrefParam *pparam);
-static void prefs_account_sign_key_set_radiobtn		  (PrefParam *pparam);
+static void prefs_account_enum_set_data_from_radiobtn (PrefParam *pparam);
+static void prefs_account_enum_set_radiobtn		  (PrefParam *pparam);
 #endif /* USE_GPGME */
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
@@ -288,12 +294,28 @@ static PrefParam param[] = {
 	/* Privacy */
 	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
 	 &privacy.defaultkey_radiobtn,
-	 prefs_account_sign_key_set_data_from_radiobtn,
-	 prefs_account_sign_key_set_radiobtn},
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
 	{"sign_key_id", NULL, &tmp_ac_prefs.sign_key_id, P_STRING,
 	 &privacy.customkey_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #endif /* USE_GPGME */
+
+#if USE_SSL
+	/* SSL Config */
+	{"ssl_smtp", "FALSE", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	 &ssl.smtp_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
+
+	{"ssl_pop", "FALSE", &tmp_ac_prefs.ssl_pop, P_BOOL,
+	 &ssl.pop_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"ssl_imap", "FALSE", &tmp_ac_prefs.ssl_imap, P_BOOL,
+	 &ssl.imap_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+#endif /* USE_SSL */
 
 	/* Advanced */
 	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
@@ -336,20 +358,6 @@ static PrefParam param[] = {
 	 &advanced.domain_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-#if USE_SSL
-	{"smtp_ssl", "FALSE", &tmp_ac_prefs.smtp_ssl, P_BOOL,
-	 &advanced.smtpssl_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"pop_ssl", "FALSE", &tmp_ac_prefs.pop_ssl, P_BOOL,
-	 &advanced.popssl_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"imap_ssl", "FALSE", &tmp_ac_prefs.imap_ssl, P_BOOL,
-	 &advanced.imapssl_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-#endif
-
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -361,6 +369,9 @@ static void prefs_account_compose_create	(void);
 #if USE_GPGME
 static void prefs_account_privacy_create	(void);
 #endif /* USE_GPGME */
+#if USE_SSL
+static void prefs_account_ssl_create		(void);
+#endif /* USE_SSL */
 static void prefs_account_advanced_create	(void);
 
 static void prefs_account_edit_custom_header	(void);
@@ -581,6 +592,10 @@ static void prefs_account_create(void)
 #if USE_GPGME
 	prefs_account_privacy_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"), page++);
+#endif /* USE_GPGME */
+#if USE_SSL
+	prefs_account_ssl_create();
+	SET_NOTEBOOK_LABEL(dialog.notebook, _("SSL"), page++);
 #endif /* USE_GPGME */
 	prefs_account_advanced_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
@@ -1214,6 +1229,81 @@ static void prefs_account_privacy_create(void)
 }
 #endif /* USE_GPGME */
 
+#if USE_SSL
+static void prefs_account_ssl_create(void)
+{
+	GtkWidget *vbox1;
+
+	GtkWidget *receive_frame;
+	GtkWidget *vbox2;
+	GtkWidget *pop_chkbtn;
+	GtkWidget *imap_chkbtn;
+
+	GtkWidget *send_frame;
+	GtkWidget *vbox3;
+	GtkWidget *smtp_nossl_radiobtn;
+	GtkWidget *smtp_ssltunnel_radiobtn;
+	GtkWidget *smtp_sslstarttls_radiobtn;
+
+	/* Vertial Box */
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+
+	/* Receive Options */
+	PACK_FRAME (vbox1, receive_frame, _("Receive"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (receive_frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	PACK_CHECK_BUTTON (vbox2, pop_chkbtn, _("Use SSL tunnel to connect to POP server"));
+	PACK_CHECK_BUTTON (vbox2, imap_chkbtn, _("Use SSL tunnel to connect to IMAP server"));
+
+	/* Send Options */
+	PACK_FRAME (vbox1, send_frame, _("Send"));
+
+	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (send_frame), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+
+	smtp_nossl_radiobtn = gtk_radio_button_new_with_label
+		(NULL, _("No SSL for SMTP"));
+	gtk_widget_show (smtp_nossl_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox3), smtp_nossl_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (smtp_nossl_radiobtn),
+				  GINT_TO_POINTER (SSL_SMTP_NONE));
+
+	smtp_ssltunnel_radiobtn = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (smtp_nossl_radiobtn),
+		 _("Use SSL tunnel to connect to SMTP server"));
+	gtk_widget_show (smtp_ssltunnel_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox3), smtp_ssltunnel_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (smtp_ssltunnel_radiobtn),
+				  GINT_TO_POINTER (SSL_SMTP_TUNNEL));
+
+	smtp_sslstarttls_radiobtn = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (smtp_nossl_radiobtn),
+		 _("Use STARTTLS command to start SMTP SSL session"));
+	gtk_widget_show (smtp_sslstarttls_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox3), smtp_sslstarttls_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (smtp_sslstarttls_radiobtn),
+				  GINT_TO_POINTER (SSL_SMTP_STARTTLS));
+
+	ssl.pop_chkbtn	= pop_chkbtn;
+	ssl.imap_chkbtn	= imap_chkbtn;
+	ssl.smtp_nossl_radiobtn = smtp_nossl_radiobtn;
+	ssl.smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
+	ssl.smtp_sslstarttls_radiobtn = smtp_sslstarttls_radiobtn;
+}
+#endif /* USE_SSL */
+
 static void prefs_account_advanced_create(void)
 {
 	GtkWidget *vbox1;
@@ -1232,11 +1322,6 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *entry_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
-#ifdef USE_SSL
-	GtkWidget *checkbtn_smtpssl;
-	GtkWidget *checkbtn_popssl;
-	GtkWidget *checkbtn_imapssl;
-#endif
 
 #define PACK_HBOX(hbox) \
 { \
@@ -1267,29 +1352,17 @@ static void prefs_account_advanced_create(void)
 	PACK_PORT_ENTRY (hbox1, entry_smtpport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, entry_smtpport);
 
-#ifdef USE_SSL
-	PACK_CHECK_BUTTON (vbox2, checkbtn_smtpssl, _("Use SSL to connect to SMTP server"));
-#endif
-
 	PACK_HBOX (hbox_popport);
 	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
 			   _("Specify POP3 port"));
 	PACK_PORT_ENTRY (hbox_popport, entry_popport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_popport, entry_popport);
 
-#ifdef USE_SSL
-	PACK_CHECK_BUTTON (vbox2, checkbtn_popssl, _("Use SSL to connect to POP server"));
-#endif
-
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
 			   _("Specify IMAP4 port"));
 	PACK_PORT_ENTRY (hbox_imapport, entry_imapport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, entry_imapport);
-
-#ifdef USE_SSL
-	PACK_CHECK_BUTTON (vbox2, checkbtn_imapssl, _("Use SSL to connect to IMAP server"));
-#endif
 
 	PACK_HBOX (hbox_nntpport);
 	PACK_CHECK_BUTTON (hbox_nntpport, checkbtn_nntpport,
@@ -1313,11 +1386,6 @@ static void prefs_account_advanced_create(void)
 	advanced.popport_hbox		= hbox_popport;
 	advanced.popport_chkbtn		= checkbtn_popport;
 	advanced.popport_entry		= entry_popport;
-#ifdef USE_SSL
-	advanced.smtpssl_chkbtn		 = checkbtn_smtpssl;
-	advanced.popssl_chkbtn		 = checkbtn_popssl;
-	advanced.imapssl_chkbtn		 = checkbtn_imapssl;
-#endif
 	advanced.imapport_hbox		= hbox_imapport;
 	advanced.imapport_chkbtn	= checkbtn_imapport;
 	advanced.imapport_entry		= entry_imapport;
@@ -1417,7 +1485,7 @@ static void prefs_account_edit_custom_header(void)
 }
 
 #if USE_GPGME
-static void prefs_account_sign_key_set_data_from_radiobtn(PrefParam *pparam)
+static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
 	GSList *group;
@@ -1427,7 +1495,7 @@ static void prefs_account_sign_key_set_data_from_radiobtn(PrefParam *pparam)
 	while (group != NULL) {
 		GtkToggleButton *btn = GTK_TOGGLE_BUTTON (group->data);
 		if (gtk_toggle_button_get_active (btn)) {
-			*((SignKeyType *)pparam->data) = GPOINTER_TO_INT
+			*((gint *)pparam->data) = GPOINTER_TO_INT
 				(gtk_object_get_user_data (GTK_OBJECT (btn)));
 			break;
 		}
@@ -1435,13 +1503,13 @@ static void prefs_account_sign_key_set_data_from_radiobtn(PrefParam *pparam)
 	}
 }
 
-static void prefs_account_sign_key_set_radiobtn(PrefParam *pparam)
+static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
 	GSList *group;
 	gpointer data;
 
-	data = GINT_TO_POINTER (*((RecvProtocol *)pparam->data));
+	data = GINT_TO_POINTER (*((gint *)pparam->data));
 	radiobtn = GTK_RADIO_BUTTON (*pparam->widget);
 	group = gtk_radio_button_group (radiobtn);
 	while (group != NULL) {
@@ -1569,8 +1637,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(advanced.nntpport_hbox);
 
 #if USE_SSL
-		gtk_widget_hide(advanced.popssl_chkbtn);
-		gtk_widget_hide(advanced.imapssl_chkbtn);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
 #endif
 		break;
 	case A_LOCAL:
@@ -1623,8 +1691,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 
 #if USE_SSL
-		gtk_widget_hide(advanced.popssl_chkbtn);
-		gtk_widget_hide(advanced.imapssl_chkbtn);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
 #endif
 		break;
 	case A_IMAP4:
@@ -1679,8 +1747,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.nntpport_hbox);
 
 #if USE_SSL
-		gtk_widget_hide(advanced.popssl_chkbtn);
-		gtk_widget_show(advanced.imapssl_chkbtn);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, TRUE);
 #endif
 		break;
 	case A_POP3:
@@ -1736,8 +1804,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.nntpport_hbox);
 
 #if USE_SSL
-		gtk_widget_show(advanced.popssl_chkbtn);
-		gtk_widget_hide(advanced.imapssl_chkbtn);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, TRUE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
 #endif
 		break;
 	}

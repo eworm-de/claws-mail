@@ -47,6 +47,14 @@ typedef enum {
 } SignKeyType;
 #endif /* USE_GPGME */
 
+#if USE_SSL
+typedef enum {
+	SSL_SMTP_NONE,
+	SSL_SMTP_TUNNEL,
+	SSL_SMTP_STARTTLS
+} SSLSMTPType;
+#endif /* USE_SSL */
+
 struct _PrefsAccount
 {
 	gchar *account_name;
@@ -105,6 +113,13 @@ struct _PrefsAccount
 	gchar *sign_key_id;
 #endif /* USE_GPGME */
 
+#if USE_SSL
+	/* SSL Config */
+	gboolean  ssl_pop;
+	gboolean  ssl_imap;
+	SSLSMTPType  ssl_smtp;
+#endif /* USE_SSL */
+
 	/* Advanced */
 	gboolean  set_smtpport;
 	gushort   smtpport;
@@ -116,11 +131,6 @@ struct _PrefsAccount
 	gushort   nntpport;
 	gboolean  set_domain;
 	gchar    *domain;
-#if USE_SSL
-	gboolean  smtp_ssl;
-	gboolean  pop_ssl;
-	gboolean  imap_ssl;
-#endif
 
 	/* Default or not */
 	gboolean is_default;

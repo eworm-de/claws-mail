@@ -75,10 +75,10 @@ static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 const gchar *server, gushort port,
 				 const gchar *domain, const gchar *userid,
 				 const gchar *passwd, gboolean use_smtp_auth,
-				 FILE *fp, gboolean use_ssl);
+				 FILE *fp, SSLSMTPType ssl);
 
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
-				 const gchar *domain, gboolean use_smtp_auth, gboolean use_ssl);
+				 const gchar *domain, gboolean use_smtp_auth, SSLSMTPType ssl);
 #endif
 
 static SendProgressDialog *send_progress_dialog_create(void);
@@ -109,21 +109,26 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 						ac_prefs->mail_command,
 						fp);
 	} else {
-#if USE_SSL
-		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : (ac_prefs->smtp_ssl ? SSMTP_PORT : SMTP_PORT);
-#else
+#if !USE_SSL
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
+#else
+		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : 
+		    (ac_prefs->ssl_smtp == SSL_SMTP_TUNNEL ? SSMTP_PORT : SMTP_PORT);
 #endif
 		domain = ac_prefs->set_domain ? ac_prefs->domain : NULL;
 
+#if !USE_SSL
 		val = send_message_smtp(to_list, ac_prefs->address,
 					ac_prefs->smtp_server, port, domain,
                                         ac_prefs->userid, ac_prefs->passwd,
-					ac_prefs->use_smtp_auth, fp
-#if USE_SSL
-					, ac_prefs->smtp_ssl
+					ac_prefs->use_smtp_auth, fp);
+#else
+		val = send_message_smtp(to_list, ac_prefs->address,
+					ac_prefs->smtp_server, port, domain,
+                                        ac_prefs->userid, ac_prefs->passwd,
+					ac_prefs->use_smtp_auth, fp,
+					ac_prefs->ssl_smtp);
 #endif
-					);
 	}
 
 	fclose(fp);
@@ -237,7 +242,7 @@ gint send_message_queue(const gchar *file)
 #if !USE_SSL
 			port = ac->set_smtpport ? ac->smtpport : SMTP_PORT;
 #else
-			port = ac->set_smtpport ? ac->smtpport : (ac->smtp_ssl ? SSMTP_PORT : SMTP_PORT);
+			port = ac->set_smtpport ? ac->smtpport : (ac->ssl_smtp == SSL_SMTP_TUNNEL ? SSMTP_PORT : SMTP_PORT);
 #endif
 			domain = ac->set_domain ? ac->domain : NULL;
 #if !USE_SSL
@@ -247,7 +252,7 @@ gint send_message_queue(const gchar *file)
 #else
 			val = send_message_smtp
 				(to_list, from, server, port, domain,
-				 ac->userid, ac->passwd, ac->use_smtp_auth, fp, ac->smtp_ssl);
+				 ac->userid, ac->passwd, ac->use_smtp_auth, fp, ac->ssl_smtp);
 #endif
 		} else {
 			g_warning(_("Account not found.\n"));
@@ -316,7 +321,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 			      const gchar *server, gushort port,
 			      const gchar *domain, const gchar *userid,
 			      const gchar *passwd, gboolean use_smtp_auth,
-			      FILE *fp, gboolean use_ssl)
+			      FILE *fp, SSLSMTPType ssl)
 #endif
 {
 	SockInfo *smtp_sock = NULL;
@@ -359,7 +364,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 			   "connecting to server");
 #else
 	SEND_EXIT_IF_ERROR((smtp_sock = send_smtp_open
-				(server, port, domain, use_smtp_auth, use_ssl)),
+				(server, port, domain, use_smtp_auth, ssl)),
 			   "connecting to server");
 #endif
 
@@ -432,7 +437,7 @@ static SockInfo *send_smtp_open(const gchar *server, gushort port,
 			   const gchar *domain, gboolean use_smtp_auth)
 #else
 static SockInfo *send_smtp_open(const gchar *server, gushort port,
-			   const gchar *domain, gboolean use_smtp_auth, gboolean use_ssl)
+			   const gchar *domain, gboolean use_smtp_auth, SSLSMTPType ssl)
 #endif
 {
 	SockInfo *sock;
@@ -447,7 +452,7 @@ static SockInfo *send_smtp_open(const gchar *server, gushort port,
 	}
 
 #if USE_SSL
-	if(use_ssl && !ssl_init_socket(sock)) {
+	if((ssl == SSL_SMTP_TUNNEL) && !ssl_init_socket(sock)) {
 		log_warning(_("SSL connection failed"));
 		sock_close(sock);
 		return NULL;
@@ -457,13 +462,26 @@ static SockInfo *send_smtp_open(const gchar *server, gushort port,
 	if (smtp_ok(sock) == SM_OK) {
 		val = smtp_helo(sock, domain ? domain : get_domain_name(),
 				use_smtp_auth);
-		if (val == SM_OK) return sock;
+		if (val != SM_OK) {
+			log_warning(_("Error occurred while sending HELO\n"));
+			sock_close(sock);
+			return NULL;
+		}
 	}
 
-	log_warning(_("Error occurred while sending HELO\n"));
-	sock_close(sock);
+#if USE_SSL
+	if(ssl == SSL_SMTP_STARTTLS) {
+		val = smtp_starttls(sock, domain ? domain : get_domain_name(),
+				use_smtp_auth);
+		if (val != SM_OK) {
+			log_warning(_("Error occurred while sending STARTTLS\n"));
+			sock_close(sock);
+			return NULL;
+		}
+	}
+#endif
 
-	return NULL;
+	return sock;
 }
 
 

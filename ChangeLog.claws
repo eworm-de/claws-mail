@@ -1,3 +1,21 @@
+2001-08-06 [christoph]
+
+	* src/account.c
+		show usage of SSL in protocol column
+
+	* src/imap.c
+	* src/inc.c
+		renamed ssl options
+
+	* src/prefs_account.[ch]
+		moved ssl options to a new page
+
+	* src/send.c
+	* src/smtp.c
+	* src/ssl.[ch]
+		renamed ssl options
+		added support for SMTP STARTTLS command
+
 2001-08-05 [christoph]
 
 	* configure.in

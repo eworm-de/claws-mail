@@ -235,7 +235,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 		: IMAP4_PORT;
 #else
 	port = folder->account->set_imapport ? folder->account->imapport
-		: (folder->account->imap_ssl ? IMAPS_PORT : IMAP4_PORT);
+		: (folder->account->ssl_imap ? IMAPS_PORT : IMAP4_PORT);
 #endif
 
 	if (!rfolder->session) {
@@ -248,7 +248,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 			imap_session_new(folder->account->recv_server, port,
 					 folder->account->userid,
 					 folder->account->passwd,
-					 folder->account->imap_ssl);
+					 folder->account->ssl_imap);
 #endif
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
@@ -271,7 +271,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 			imap_session_new(folder->account->recv_server, port,
 					 folder->account->userid,
 					 folder->account->passwd,
-					 folder->account->imap_ssl);
+					 folder->account->ssl_imap);
 #endif
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),

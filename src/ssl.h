@@ -30,9 +30,15 @@
 
 #include "socket.h"
 
+typedef enum {
+    SSL_METHOD_SSLv23,
+    SSL_METHOD_TLSv1
+} SSL_METHODs;
+
 void ssl_init();
 void ssl_done();
 gboolean ssl_init_socket(SockInfo *sockinfo);
+gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSL_METHODs method);
 void ssl_done_socket(SockInfo *sockinfo);
 
 #endif /* __SSL_H__ */
