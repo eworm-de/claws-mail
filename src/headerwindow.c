@@ -159,11 +159,11 @@ void header_window_show_cb(gpointer data, guint action, GtkWidget *widget)
 	GtkCTreeNode *node = mainwin->summaryview->displayed;
 	MsgInfo *msginfo;
 
-	if (node && !GTK_WIDGET_VISIBLE(mainwin->headerwin->window)) {
-		msginfo = gtk_ctree_node_get_row_data
-			(GTK_CTREE(mainwin->summaryview->ctree), node);
-		header_window_show(mainwin->headerwin, msginfo);
-	}
+	g_return_if_fail(node != NULL);
+
+	msginfo = gtk_ctree_node_get_row_data
+		(GTK_CTREE(mainwin->summaryview->ctree), node);
+	header_window_show(mainwin->headerwin, msginfo);
 
 	gtk_widget_hide(mainwin->headerwin->window);
 	gtk_widget_show(mainwin->headerwin->window);
