@@ -206,12 +206,13 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(hbox2), scrolledwindow2, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow2), GTK_POLICY_NEVER,
-				       GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_ALWAYS);
 
 	plugin_list = gtk_clist_new(1);
 	gtk_widget_show(plugin_list);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow2), plugin_list);
 	gtk_clist_set_column_width(GTK_CLIST(plugin_list), 0, 80);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(plugin_list), 0, TRUE);
 	gtk_clist_column_titles_show(GTK_CLIST(plugin_list));
 	gtk_clist_set_selection_mode(GTK_CLIST (plugin_list), GTK_SELECTION_BROWSE);
 	gtk_widget_grab_focus(GTK_WIDGET(plugin_list));
@@ -241,7 +242,7 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(vbox2), scrolledwindow3, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow3), GTK_POLICY_NEVER,
-				       GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_ALWAYS);
 
 	plugin_desc = gtk_text_view_new();
 	gtk_widget_show(plugin_desc);
