@@ -1,3 +1,27 @@
+2002-01-09
+
+	* README
+	  README.jp
+	  src/about.c: modified the copyright year.
+	* src/gtkstext.h: added the notice for modification by the Sylpheed
+	  Team.
+
+2002-01-08
+
+	* INSTALL
+	  INSTALL.jp: added the URL for compface.
+
+2002-01-07
+
+	* version 0.7.0
+
+2002-01-07
+
+	* src/headerwindow.c
+	  src/logwindow.c
+	  src/messageview.c
+	  src/sourcewindow.c: set wmclass when creating windows.
+
 2002-01-04
 
 	* src/compose.c: compose_wrap_line_all(): fixed the bug that

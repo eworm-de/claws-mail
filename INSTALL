@@ -98,6 +98,7 @@ o Solaris 2.6
 o Solaris 7
 o Solaris 8
 o IRIX 6.3
+o IRIX 6.4
 o IRIX 6.5 6.5.8m
 o HP-UX 10.20
 o HP-UX 11.0
@@ -110,6 +111,8 @@ Others
 
 o Windows (cygwin + GTK+ for win32) (unstable)
 
+Build it
+========
 
 For installation, just type:
 
@@ -119,9 +122,22 @@ For installation, just type:
 Password: [Enter password]
 # make install
 
-I recommend you to install gdk-pixbuf or gdk_imlib library before installing
-for built-in image view support, and libcompface for X-Face support.
+Additional libraries
+====================
 
+I recommend you to install gdk-pixbuf or gdk_imlib library before installing
+for built-in image view support, and compface library for X-Face support.
+
+You can get compface utilities and library from the following location:
+
+  http://freshmeat.net/projects/compface/
+
+Sylpheed supports US-ASCII, ISO-8859-1, and EUC-JP by default.
+If you want other character set / encoding (such as UTF-8, KOI8-R, and GB2312)
+to be supported, you have to install libjconv, which is a wrapper for
+iconv(). You can obtain it from the following location:
+
+  http://www.kondara.org/libjconv/index.html
 
 If you want to enable SSL support, append the option
 --enable-ssl after ./configure (you need OpenSSL).
@@ -133,7 +149,7 @@ If you want to enable GnuPG support, you need GPGME 0.2.3 or later, and
 GnuPG 1.0.6 or later. You can get them from the following location:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
-  ftp://ftp.gnupg.org/pub/gcrypt/devel/
+  ftp://ftp.gnupg.org/pub/gcrypt/gnupg/
 
 and append the option --enable-gpgme after ./configure.
 

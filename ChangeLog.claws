@@ -1,14 +1,20 @@
-2001-01-09 [alfons]
+2002-01-10 [paul]	0.6.6claws46
+
+	* sync with sylpheed 0.7.0 release
+		see ChangeLog entries 2002-01-07, 2002-01-08 and
+		2002-01-09
+
+2002-01-09 [alfons]
 
 	* src/summaryview.c
 		remove more dirt traces...
 
-2001-01-09 [alfons]
+2002-01-09 [alfons]
 	
 	* src/summaryview.c
 		clean up some traces of my debugging stuff
 
-2001-01-09 [alfons]	0.6.6claws45
+2002-01-09 [alfons]	0.6.6claws45
 
 	* src/filtering.c
 		break up filteringprop_apply() in three separate pieces

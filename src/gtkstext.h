@@ -24,6 +24,10 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+/*
+ * Modified by the Sylpheed Team and others 2001-2002.
+ */
+
 #ifndef __GTK_STEXT_H__
 #define __GTK_STEXT_H__
 
