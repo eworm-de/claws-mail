@@ -2660,22 +2660,21 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			else 
 				debug_print("can't remove src node: is null\n");
 
+			STATUSBAR_POP(folderview->mainwin);
 			folderview_create_folder_node_recursive(folderview, new_item);
 			folder_update_item(src_parent, TRUE);
 			folder_update_item_recursive(new_item, TRUE); 
 			folderview_sort_folders(folderview, 
 				gtk_ctree_find_by_row_data(GTK_CTREE(widget), 
 					NULL, new_item->parent), new_item->folder);
-			statusbar_pop_all();
 			folderview_select(folderview, new_item);
 		} else {
 			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
-			statusbar_pop_all();
+			STATUSBAR_POP(folderview->mainwin);
 		}	
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
-		statusbar_pop_all();
 	}
 }
 

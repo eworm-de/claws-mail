@@ -1520,12 +1520,14 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 		cnt++;
-		msginfo = (MsgInfo *) cur->data;
-		folder_item_move_msg(new_item, msginfo);
 		if (cnt%500)
 			statusbar_print_all(_("Moving %s to %s (%d%%)..."), src->name, 
 					new_item->path,
 					100*cnt/g_slist_length(mlist));
+		msginfo = (MsgInfo *) cur->data;
+		folder_item_move_msg(new_item, msginfo);
+		if (cnt%500)
+			statusbar_pop_all();
 	}
 	
 	/*copy prefs*/
