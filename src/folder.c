@@ -1364,7 +1364,8 @@ gint folder_item_open(FolderItem *item)
 	folder_item_syncronize_flags(item);
 	
 	/* Processing */
-	buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
+	buf = g_strdup_printf(_("Processing (%s)...\n"), 
+			      item->path ? item->path : item->name);
 	debug_print("%s\n", buf);
 	g_free(buf);
 	

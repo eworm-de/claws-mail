@@ -1,6 +1,13 @@
+2004-03-29 [alfons]	0.9.10claws35
+
+	* src/folder.c
+		don't pass NULL to XXXprintf(); fixes Solaris crashes
+		when selecting top-level folder node (thanks to 
+		Alex S. Moore)
+
 2004-03-28 [keith]	0.9.10claws34
 
-	* textview.c
+	* src/textview.c
 		prepend "http://" to URIs of the form "www.example.com"
 
 2004-03-28 [paul]	0.9.10claws33
