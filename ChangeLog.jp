@@ -28,6 +28,8 @@
 	  フォルダツリーを更新していなかったバグを修正。
 	* src/grouplistdialog.c: 排他ロック変数をグローバルにし、
 	  grouplist_dialog_set_list() でロックするようにした。
+	* src/textview.c: メッセージの色を無効にしたときにクリッカブル URI
+	  も無効になっていたバグを修正。
 
 2001-07-15
 

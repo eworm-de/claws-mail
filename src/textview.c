@@ -313,7 +313,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		mimeinfo = mimeinfo->sub;
 	} else if (!mimeinfo->parent &&
 		   mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-		if (headers) procheader_header_array_destroy(headers);   
+		if (headers) procheader_header_array_destroy(headers);
 		if (!mimeinfo->sub) return;
 		headers = textview_scan_header(textview, fp);
 		mimeinfo = mimeinfo->sub;
@@ -789,8 +789,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview_make_clickable_parts(textview, textview->msgfont,
 					      fg_color, &uri_color, buf);
 	else
-		gtk_text_insert(text, textview->msgfont, fg_color, NULL,
-				buf, -1);
+		textview_make_clickable_parts(textview, textview->msgfont,
+					      fg_color, NULL, buf);
 }
 
 void textview_clear(TextView *textview)
@@ -932,9 +932,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	GPtrArray *headers, *sorted_headers;
 	GSList *disphdr_list;
 	Header *header;
-	guint i;
-
-	textview = textview;
+	gint i;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
@@ -985,7 +983,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
 	GtkText *text = GTK_TEXT(textview->text);
 	Header *header;
-	guint i;
+	gint i;
 
 	g_return_if_fail(headers != NULL);
 
@@ -1019,8 +1017,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 						      NULL, NULL, &uri_color,
 						      header->body);
 		} else {
-			gtk_text_insert(text, NULL, NULL, NULL,
-					header->body, -1);
+			textview_make_clickable_parts(textview,
+						      NULL, NULL, NULL,
+						      header->body);
 		}
 		gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	}

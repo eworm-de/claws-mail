@@ -27,6 +27,8 @@
 	  folder tree when a news account was added.
 	* src/grouplistdialog.c: made exclusive lock variable global, and
 	  lock at grouplist_dialog_set_list().
+	* src/textview.c: fixed a bug that disabled clickable URI if
+	  message color was disabled.
 
 2001-07-15
 
