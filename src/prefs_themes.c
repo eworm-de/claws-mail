@@ -506,17 +506,22 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	prefs_themes_foreach_file(source, prefs_themes_file_install, cinfo);
 	if (cinfo->status == NULL) {
 		GList *insted;
-		
-		alertpanel_notice(_("Theme installed succesfully"));
+
 		/* update interface to show newly installed theme */
 		prefs_themes_get_themes_and_names(tdata);
 		insted = g_list_find_custom(tdata->themes, 
 					    (gpointer)(cinfo->dest), 
 					    (GCompareFunc)strcmp2);
-		tdata->displayed = (gchar *)(insted->data);
-		prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
-		prefs_themes_display_global_stats(tdata);
-		prefs_themes_get_theme_info(tdata);	
+		if (NULL != insted)
+		{
+			alertpanel_notice(_("Theme installed succesfully"));
+			tdata->displayed = (gchar *)(insted->data);
+			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
+			prefs_themes_display_global_stats(tdata);
+			prefs_themes_get_theme_info(tdata);
+		}
+		else
+			alertpanel_error(_("Failed installing theme"));
 	}
 	else
 		alertpanel_error(_("File %s failed\nwhile installing theme."), cinfo->status);
