@@ -1,3 +1,9 @@
+2004-03-25 [alfons]	0.9.10claws31
+
+	* src/prefs_common.h
+		add new members at the end of prefs_common, so
+		they get properly initialized
+
 2004-03-24 [christoph]	0.9.10claws30
 
 	* src/imap.c

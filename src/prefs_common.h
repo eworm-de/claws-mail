@@ -292,8 +292,9 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
-	GList *summary_quicksearch_history;
 	gulong color_new;
+	
+	GList *summary_quicksearch_history;
 };
 
 extern PrefsCommon prefs_common;
