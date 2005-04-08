@@ -197,6 +197,8 @@ static struct Advanced {
 
 	GtkWidget *sent_folder_chkbtn;
 	GtkWidget *sent_folder_entry;
+	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_entry;
 	GtkWidget *draft_folder_chkbtn;
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_chkbtn;
@@ -512,6 +514,13 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"sent_folder", NULL, &tmp_ac_prefs.sent_folder, P_STRING,
 	 &advanced.sent_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_queue_folder", "FALSE", &tmp_ac_prefs.set_queue_folder, P_BOOL,
+	 &advanced.queue_folder_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"queue_folder", NULL, &tmp_ac_prefs.queue_folder, P_STRING,
+	 &advanced.queue_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_draft_folder", "FALSE", &tmp_ac_prefs.set_draft_folder, P_BOOL,
@@ -2137,6 +2146,8 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *table;
 	GtkWidget *sent_folder_chkbtn;
 	GtkWidget *sent_folder_entry;
+	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_entry;
 	GtkWidget *draft_folder_chkbtn;
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_chkbtn;
@@ -2243,7 +2254,7 @@ static void prefs_account_advanced_create(void)
 	gtk_container_add (GTK_CONTAINER (folder_frame), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
 
-	table = gtk_table_new (3, 3, FALSE);
+	table = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (vbox3), table);
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
@@ -2279,10 +2290,12 @@ static void prefs_account_advanced_create(void)
 
 	SET_CHECK_BTN_AND_ENTRY(_("Put sent messages in"),
 				sent_folder_chkbtn, sent_folder_entry, 0);
+	SET_CHECK_BTN_AND_ENTRY(_("Put queued messages in"),
+				queue_folder_chkbtn, queue_folder_entry, 1);
 	SET_CHECK_BTN_AND_ENTRY(_("Put draft messages in"),
-				draft_folder_chkbtn, draft_folder_entry, 1);
+				draft_folder_chkbtn, draft_folder_entry, 2);
 	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages in"),
-				trash_folder_chkbtn, trash_folder_entry, 2);
+				trash_folder_chkbtn, trash_folder_entry, 3);
 
 	advanced.smtpport_chkbtn	= checkbtn_smtpport;
 	advanced.smtpport_entry		= entry_smtpport;
@@ -2307,6 +2320,8 @@ static void prefs_account_advanced_create(void)
 
 	advanced.sent_folder_chkbtn  = sent_folder_chkbtn;
 	advanced.sent_folder_entry   = sent_folder_entry;
+	advanced.queue_folder_chkbtn  = queue_folder_chkbtn;
+	advanced.queue_folder_entry   = queue_folder_entry;
 	advanced.draft_folder_chkbtn = draft_folder_chkbtn;
 	advanced.draft_folder_entry  = draft_folder_entry;
 	advanced.trash_folder_chkbtn = trash_folder_chkbtn;

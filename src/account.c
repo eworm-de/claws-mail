@@ -543,10 +543,16 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 		}
 		break;
 	case F_QUEUE:
-		if (ac_prefs->folder)
-			item = FOLDER(ac_prefs->folder)->queue;
-		if (!item)
-			item = folder_get_default_queue();
+		if (ac_prefs->set_queue_folder && ac_prefs->queue_folder) {
+			item = folder_find_item_from_identifier
+				(ac_prefs->queue_folder);
+		}
+		if (!item) {
+			if (ac_prefs->folder)
+				item = FOLDER(ac_prefs->folder)->queue;
+			if (!item)
+				item = folder_get_default_queue();
+		}
 		break;
 	case F_TRASH:
 		if (ac_prefs->set_trash_folder && ac_prefs->trash_folder) {
