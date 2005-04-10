@@ -1,3 +1,10 @@
+2005-04-10 [colin]	1.9.6cvs31
+
+	* src/inc.c
+		Make Message -> Receive -> Cancel cancel 
+		incorporation on all accounts. Fixes
+		bug #693
+
 2005-04-10 [colin]	1.9.6cvs30
 
 	* src/prefs_account.c
