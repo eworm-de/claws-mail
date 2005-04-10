@@ -580,6 +580,20 @@ typedef struct AccountPage
 
 static AccountPage account_page;
 
+static void privacy_system_activated(GtkMenuItem *menuitem)
+{
+	const gchar* system_id;
+	gboolean privacy_enabled = FALSE;
+	
+	system_id = g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
+	
+	privacy_enabled = strcmp(system_id, "");
+
+	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, privacy_enabled);
+}
+
 void update_privacy_system_menu() {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -592,6 +606,10 @@ void update_privacy_system_menu() {
 	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
 	gtk_menu_append(GTK_MENU(menu), menuitem);
 
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(privacy_system_activated),
+			 NULL);
+
 	system_ids = privacy_get_system_ids();
 	for (cur = system_ids; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *id = (gchar *) cur->data;
@@ -602,6 +620,12 @@ void update_privacy_system_menu() {
 		gtk_widget_show(menuitem);
 		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, id, g_free);
 		gtk_menu_append(GTK_MENU(menu), menuitem);
+
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(privacy_system_activated),
+				 NULL);
+
+		
 	}
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);

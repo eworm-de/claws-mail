@@ -1,3 +1,20 @@
+2005-04-10 [colin]	1.9.6cvs30
+
+	* src/prefs_account.c
+		Update Privacy checkbuttons status based
+		on the selected privacy system
+	* src/compose.c
+		Always connect the "None" privacy system; the
+		static boolean was probably there to avoid
+		reconnecting twice in the same compose window,
+		but as the parent function is only called once
+		per compose, it's only a bug - as a static is
+		initialized once per application instance.
+		Also, don't uncheck Sign and Encrypt when
+		selecting None as privacy system; just ignore
+		them when sending/queuing.
+		Should fix bug #695
+
 2005-04-08 [colin]	1.9.6cvs29
 
 	* src/account.c

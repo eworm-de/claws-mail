@@ -5136,11 +5136,7 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
-	if (!can_sign)
-		menu_set_active(ifactory, "/Options/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
-	if (!can_encrypt)
-		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose)
@@ -5222,7 +5218,6 @@ void compose_update_actions_menu(Compose *compose)
 void compose_update_privacy_systems_menu(Compose *compose)
 {
 	static gchar *branch_path = "/Options/Privacy System";
-	static gboolean connected = FALSE;
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
 	GSList *systems, *cur;
@@ -5246,11 +5241,9 @@ void compose_update_privacy_systems_menu(Compose *compose)
 
 	system_none = gtk_item_factory_get_widget(ifactory,
 		"/Options/Privacy System/None");
-	if (!connected) {
-		g_signal_connect(G_OBJECT(system_none), "activate",
-			G_CALLBACK(compose_set_privacy_system_cb), compose);
-		connected = TRUE;
-	}
+
+	g_signal_connect(G_OBJECT(system_none), "activate",
+		G_CALLBACK(compose_set_privacy_system_cb), compose);
 
 	systems = privacy_get_system_ids();
 	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
