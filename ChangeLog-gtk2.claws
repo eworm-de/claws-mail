@@ -1,3 +1,9 @@
+2005-04-10 [colin]	1.9.6cvs32
+
+	* src/filtering.c
+		Copy score when copying FilteringActions
+		Fix bug #674
+
 2005-04-10 [colin]	1.9.6cvs31
 
 	* src/inc.c

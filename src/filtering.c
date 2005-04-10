@@ -108,6 +108,7 @@ static FilteringAction * filteringaction_copy(FilteringAction * src)
 	else 
 		new->destination = NULL;
 	new->labelcolor = src->labelcolor;
+	new->score = src->score;
 
         return new;
 }
