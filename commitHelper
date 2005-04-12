@@ -17,8 +17,13 @@ for file in $filelist; do
 	merge=`echo $file | grep Merge`
 	modif=`echo $file | grep Locally`
 	patch=`echo $file | grep -i patch`
-	if [ "$merge" != "" || "$patch" != "" ]; then
-		echo $merge $patch
+	if [ "$patch" != "" ]; then
+		echo $patch 
+		echo You have to update first
+		exit
+	fi;
+	if [ "$merge" != "" ]; then
+		echo $merge 
 		echo You have to update first
 		exit
 	fi;
