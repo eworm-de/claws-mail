@@ -1,3 +1,11 @@
+2005-04-12 [colin]	1.9.6cvs34
+
+	* src/prefs_account.c
+		Fix smtp auth type off-by-one. We forgot to
+		add PLAIN in the prefs-to-gui setter func and
+		as a result, the selected auth when opening
+		account prefs was not the correct one.
+
 2005-04-12 [paul]	1.9.6cvs33
 
 	* src/inc.c

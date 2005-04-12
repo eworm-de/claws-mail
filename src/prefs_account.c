@@ -2558,11 +2558,14 @@ static void prefs_account_imap_auth_type_set_optmenu(PrefParam *pparam)
 	GtkWidget *menuitem;
 
 	switch (type) {
-	case IMAP_AUTH_LOGIN:
+	case IMAP_AUTH_PLAIN:
 		gtk_option_menu_set_history(optmenu, 1);
 		break;
-	case IMAP_AUTH_CRAM_MD5:
+	case IMAP_AUTH_LOGIN:
 		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	case IMAP_AUTH_CRAM_MD5:
+		gtk_option_menu_set_history(optmenu, 3);
 		break;
 	case 0:
 	default:
