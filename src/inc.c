@@ -501,6 +501,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	FolderItem *processing, *inbox;
 	MsgInfo *msginfo;
 	GSList *msglist, *msglist_element;
+	gboolean cancelled = FALSE;
 
 	qlist = inc_dialog->queue_list;
 	while (qlist != NULL) {
@@ -548,7 +549,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gtk_clist_set_text(clist, inc_dialog->cur_row, 2, str);		   \
 }
 
-	for (; inc_dialog->queue_list != NULL; inc_dialog->cur_row++) {
+	for (; inc_dialog->queue_list != NULL && !cancelled; inc_dialog->cur_row++) {
 		session = inc_dialog->queue_list->data;
 		pop3_session = POP3_SESSION(session->session);
 
@@ -605,6 +606,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			break;
 		case INC_CANCEL:
 			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, _("Cancelled"));
+			if (!inc_dialog->show_dialog)
+				cancelled = TRUE;
 			break;
 		default:
 			break;

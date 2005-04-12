@@ -196,6 +196,8 @@ static struct Advanced {
 
 	GtkWidget *sent_folder_chkbtn;
 	GtkWidget *sent_folder_entry;
+	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_entry;
 	GtkWidget *draft_folder_chkbtn;
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_chkbtn;
@@ -286,7 +288,7 @@ static PrefParam param[] = {
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
 	 &basic.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"inbox", "inbox", &tmp_ac_prefs.inbox, P_STRING,
+	{"inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.inbox, P_STRING,
 	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
@@ -514,6 +516,13 @@ static PrefParam param[] = {
 	 &advanced.sent_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+	{"set_queue_folder", "FALSE", &tmp_ac_prefs.set_queue_folder, P_BOOL,
+	 &advanced.queue_folder_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"queue_folder", NULL, &tmp_ac_prefs.queue_folder, P_STRING,
+	 &advanced.queue_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
 	{"set_draft_folder", "FALSE", &tmp_ac_prefs.set_draft_folder, P_BOOL,
 	 &advanced.draft_folder_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -571,6 +580,20 @@ typedef struct AccountPage
 
 static AccountPage account_page;
 
+static void privacy_system_activated(GtkMenuItem *menuitem)
+{
+	const gchar* system_id;
+	gboolean privacy_enabled = FALSE;
+	
+	system_id = gtk_object_get_user_data(GTK_OBJECT(menuitem));
+	
+	privacy_enabled = strcmp(system_id, "");
+
+	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, privacy_enabled);
+}
+
 void update_privacy_system_menu() {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -583,6 +606,10 @@ void update_privacy_system_menu() {
 	gtk_object_set_data(GTK_OBJECT(menuitem), "user_data", "");
 	gtk_menu_append(GTK_MENU(menu), menuitem);
 
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(privacy_system_activated),
+			   NULL);
+
 	system_ids = privacy_get_system_ids();
 	for (cur = system_ids; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *id = (gchar *) cur->data;
@@ -593,6 +620,10 @@ void update_privacy_system_menu() {
 		gtk_widget_show(menuitem);
 		gtk_object_set_data_full(GTK_OBJECT(menuitem), "user_data", id, g_free);
 		gtk_menu_append(GTK_MENU(menu), menuitem);
+
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+				   GTK_SIGNAL_FUNC(privacy_system_activated),
+				   NULL);
 	}
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);
@@ -2123,6 +2154,8 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *table;
 	GtkWidget *sent_folder_chkbtn;
 	GtkWidget *sent_folder_entry;
+	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_entry;
 	GtkWidget *draft_folder_chkbtn;
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_chkbtn;
@@ -2228,7 +2261,7 @@ static void prefs_account_advanced_create(void)
 	gtk_container_add (GTK_CONTAINER (folder_frame), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
 
-	table = gtk_table_new (3, 3, FALSE);
+	table = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (vbox3), table);
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
@@ -2264,10 +2297,12 @@ static void prefs_account_advanced_create(void)
 
 	SET_CHECK_BTN_AND_ENTRY(_("Put sent messages in"),
 				sent_folder_chkbtn, sent_folder_entry, 0);
+	SET_CHECK_BTN_AND_ENTRY(_("Put queued messages in"),
+				queue_folder_chkbtn, queue_folder_entry, 1);
 	SET_CHECK_BTN_AND_ENTRY(_("Put draft messages in"),
-				draft_folder_chkbtn, draft_folder_entry, 1);
+				draft_folder_chkbtn, draft_folder_entry, 2);
 	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages in"),
-				trash_folder_chkbtn, trash_folder_entry, 2);
+				trash_folder_chkbtn, trash_folder_entry, 3);
 
 	advanced.smtpport_chkbtn	= checkbtn_smtpport;
 	advanced.smtpport_entry		= entry_smtpport;
@@ -2292,6 +2327,8 @@ static void prefs_account_advanced_create(void)
 
 	advanced.sent_folder_chkbtn  = sent_folder_chkbtn;
 	advanced.sent_folder_entry   = sent_folder_entry;
+	advanced.queue_folder_chkbtn  = queue_folder_chkbtn;
+	advanced.queue_folder_entry   = queue_folder_entry;
 	advanced.draft_folder_chkbtn = draft_folder_chkbtn;
 	advanced.draft_folder_entry  = draft_folder_entry;
 	advanced.trash_folder_chkbtn = trash_folder_chkbtn;

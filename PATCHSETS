@@ -272,3 +272,4 @@
 ( cvs diff -u -r 1.16 -r 1.17 src/common/socket.c; cvs diff -u -r 1.209 -r 1.210 src/imap.c; ) > 1.0.4cvs2.patchset
 ( cvs diff -u -r 1.88 -r 1.89 src/mh.c; ) > 1.0.4cvs3.patchset
 ( cvs diff -u -r 1.460 -r 1.461 ChangeLog; cvs diff -u -r 1.455 -r 1.456 ChangeLog.jp; cvs diff -u -r 1.20 -r 1.21 src/send_message.c; cvs diff -u -r 1.17 -r 1.18 src/common/socket.c; ) > 1.0.4cvs4.patchset
+( cvs diff -u -r 1.78 -r 1.79 src/account.c; cvs diff -u -r 1.482 -r 1.483 src/compose.c; cvs diff -u -r 1.72 -r 1.73 src/filtering.c; cvs diff -u -r 1.179 -r 1.180 src/inc.c; cvs diff -u -r 1.124 -r 1.125 src/prefs_account.c; cvs diff -u -r 1.57 -r 1.58 src/prefs_account.h; ) > 1.0.4cvs5.patchset

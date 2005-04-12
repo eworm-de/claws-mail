@@ -1,3 +1,36 @@
+2005-04-12 [paul]	1.0.4cvs5
+	
+	backported from GTK2...
+
+	* src/account.c
+		Add account preference to queue message in a certain
+		folder.
+	* src/compose.c
+		Always connect the "None" privacy system; the
+		static boolean was probably there to avoid
+		reconnecting twice in the same compose window,
+		but as the parent function is only called once
+		per compose, it's only a bug - as a static is
+		initialized once per application instance.
+		Also, don't uncheck Sign and Encrypt when
+		selecting None as privacy system; just ignore
+		them when sending/queuing.
+		Should fix bug #695
+	* src/filtering.c
+		Copy score when copying FilteringActions
+		Fix bug #674
+	* src/inc.c
+		Make Message -> Receive -> Cancel cancel 
+		incorporation on all accounts. Fixes bug #693
+		if the recv dialog is visible, Cancel only
+		cancels the current account
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Add account preference to queue message in a certain
+		folder.
+		Update Privacy checkbuttons status based
+		on the selected privacy system
+
 2005-04-06 [paul]	1.0.4cvs4
 
 	* ChangeLog

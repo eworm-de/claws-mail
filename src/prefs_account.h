@@ -163,6 +163,8 @@ struct _PrefsAccount
 
 	gboolean set_sent_folder;
 	gchar *sent_folder;
+	gboolean set_queue_folder;
+	gchar *queue_folder;
 	gboolean set_draft_folder;
 	gchar *draft_folder;
 	gboolean set_trash_folder;
