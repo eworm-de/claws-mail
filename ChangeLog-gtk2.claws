@@ -1,3 +1,10 @@
+2005-04-12 [paul]	1.9.6cvs33
+
+	* src/inc.c
+		if the recv dialog is visible, Cancel only
+		cancels the current account
+
+
 2005-04-10 [colin]	1.9.6cvs32
 
 	* src/filtering.c

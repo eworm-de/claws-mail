@@ -601,7 +601,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			break;
 		case INC_CANCEL:
 			SET_PIXMAP_AND_TEXT(okpix, _("Cancelled"));
-			cancelled = TRUE;
+			if (!inc_dialog->show_dialog)
+				cancelled = TRUE;
 			break;
 		default:
 			break;

@@ -449,3 +449,4 @@
 ( cvs diff -u -r 1.105.2.20 -r 1.105.2.21 src/prefs_account.c; cvs diff -u -r 1.382.2.116 -r 1.382.2.117 src/compose.c; ) > 1.9.6cvs30.patchset
 ( cvs diff -u -r 1.149.2.21 -r 1.149.2.22 src/inc.c; ) > 1.9.6cvs31.patchset
 ( cvs diff -u -r 1.60.2.5 -r 1.60.2.6 src/filtering.c; ) > 1.9.6cvs32.patchset
+( cvs diff -u -r 1.149.2.22 -r 1.149.2.23 src/inc.c; ) > 1.9.6cvs33.patchset
