@@ -16,7 +16,7 @@ filelist=`cvs status $@ configure.ac 2>/dev/null |grep ^File`
 for file in $filelist; do
 	merge=`echo $file | grep Merge`
 	modif=`echo $file | grep Locally`
-	patch=`echo $file | grep -i patch`
+	patch=`echo $file | grep Patch`
 	if [ "$patch" != "" ]; then
 		echo $patch 
 		echo You have to update first
