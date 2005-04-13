@@ -995,16 +995,18 @@ static void prefs_filtering_ok(void)
 			if (strcmp(filtering_str, str) == 0) break;
 			row++;
 		}
-		if (strcmp(filtering_str, str) != 0) {
+		if (!filtering_str || strcmp(filtering_str, str) != 0) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
 				 _("Yes"), _("No"), NULL);
 			if (G_ALERTDEFAULT != val) {
 				g_free(str);
+				filteringprop_free(prop);
 				return;
 			}
 		}
 		g_free(str);
+		filteringprop_free(prop);
 	}
 	prefs_filtering_set_list();
 	prefs_matcher_write_config();

@@ -1,3 +1,10 @@
+2005-04-13 [holger]	1.0.4cvs6
+
+	* src/prefs_filtering.c
+		Fix a crash when changes to the filtering
+		dialog were not added and no filter rules
+		are defined. Also fix a memleak.
+
 2005-04-12 [paul]	1.0.4cvs5
 	
 	backported from GTK2...
