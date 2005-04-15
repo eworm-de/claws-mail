@@ -453,3 +453,4 @@
 ( cvs diff -u -r 1.105.2.21 -r 1.105.2.22 src/prefs_account.c; ) > 1.9.6cvs34.patchset
 ( cvs diff -u -r 1.105.2.22 -r 1.105.2.23 src/prefs_account.c; ) > 1.9.6cvs35.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/pgpmime/pgpmime.c; ) > 1.9.6cvs36.patchset
+( cvs diff -u -r 1.395.2.66 -r 1.395.2.67 src/summaryview.c; ) > 1.9.6cvs37.patchset

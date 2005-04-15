@@ -3356,11 +3356,11 @@ void summary_save_as(SummaryView *summaryview)
 		subst_for_filename(filename);
 	}
 	if (g_getenv ("G_BROKEN_FILENAMES") &&
-	    filename && g_utf8_validate(filename, -1, NULL)) {
+	    filename && !g_utf8_validate(filename, -1, NULL)) {
 		gchar *oldstr = filename;
 		filename = conv_codeset_strdup(filename,
-					       CS_UTF_8,
-					       conv_get_locale_charset_str());
+					       conv_get_locale_charset_str(),
+					       CS_UTF_8);
 		if (!filename) {
 			g_warning("summary_save_as(): faild to convert character set.");
 			filename = g_strdup(oldstr);
