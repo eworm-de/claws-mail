@@ -1,3 +1,9 @@
+2005-04-15 [colin]	1.9.6cvs36
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix bus error on 64bit. Spotted by 
+		macallan1888@gmail.com
+
 2005-04-15 [colin]	1.9.6cvs35
 
 	* src/prefs_account.c
