@@ -2558,14 +2558,11 @@ static void prefs_account_imap_auth_type_set_optmenu(PrefParam *pparam)
 	GtkWidget *menuitem;
 
 	switch (type) {
-	case IMAP_AUTH_PLAIN:
+	case IMAP_AUTH_LOGIN:
 		gtk_option_menu_set_history(optmenu, 1);
 		break;
-	case IMAP_AUTH_LOGIN:
-		gtk_option_menu_set_history(optmenu, 2);
-		break;
 	case IMAP_AUTH_CRAM_MD5:
-		gtk_option_menu_set_history(optmenu, 3);
+		gtk_option_menu_set_history(optmenu, 2);
 		break;
 	case 0:
 	default:
@@ -2596,14 +2593,17 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 	GtkWidget *menuitem;
 
 	switch (type) {
-	case SMTPAUTH_LOGIN:
+	case SMTPAUTH_PLAIN:
 		gtk_option_menu_set_history(optmenu, 1);
 		break;
-	case SMTPAUTH_CRAM_MD5:
+	case SMTPAUTH_LOGIN:
 		gtk_option_menu_set_history(optmenu, 2);
 		break;
-	case SMTPAUTH_DIGEST_MD5:
+	case SMTPAUTH_CRAM_MD5:
 		gtk_option_menu_set_history(optmenu, 3);
+		break;
+	case SMTPAUTH_DIGEST_MD5:
+		gtk_option_menu_set_history(optmenu, 4);
 		break;
 	case 0:
 	default:
