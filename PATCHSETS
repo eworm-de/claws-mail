@@ -455,3 +455,4 @@
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/pgpmime/pgpmime.c; ) > 1.9.6cvs36.patchset
 ( cvs diff -u -r 1.395.2.66 -r 1.395.2.67 src/summaryview.c; ) > 1.9.6cvs37.patchset
 ( cvs diff -u -r 1.207.2.31 -r 1.207.2.32 src/folderview.c; ) > 1.9.6cvs38.patchset
+( cvs diff -u -r 1.274.2.33 -r 1.274.2.34 src/mainwindow.c; ) > 1.9.6cvs39.patchset
