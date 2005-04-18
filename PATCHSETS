@@ -457,3 +457,4 @@
 ( cvs diff -u -r 1.207.2.31 -r 1.207.2.32 src/folderview.c; ) > 1.9.6cvs38.patchset
 ( cvs diff -u -r 1.274.2.33 -r 1.274.2.34 src/mainwindow.c; ) > 1.9.6cvs39.patchset
 ( cvs diff -u -r 1.382.2.117 -r 1.382.2.118 src/compose.c; ) > 1.9.6cvs40.patchset
+( cvs diff -u -r 1.18.2.7 -r 1.18.2.8 src/jpilot.c; ) > 1.9.6cvs41.patchset

@@ -692,7 +692,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 /* Shamelessly copied from JPilot (libplugin.c) */
 static int unpack_header(PC3RecordHeader *header, unsigned char *packed_header) {
 	unsigned char *p;
-	unsigned long l;
+	guint32 l;
 
 	p = packed_header;
 
@@ -724,7 +724,8 @@ static int unpack_header(PC3RecordHeader *header, unsigned char *packed_header) 
 
 /* Shamelessly copied from JPilot (libplugin.c) */
 static int read_header(FILE *pc_in, PC3RecordHeader *header) {
-	unsigned long l, len;
+	guint32 l;
+	unsigned long len;
 	unsigned char packed_header[256];
 	int num;
 
