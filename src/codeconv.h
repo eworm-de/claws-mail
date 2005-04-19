@@ -158,6 +158,7 @@ struct _CodeConverter
 #define CS_EUC_CN		"EUC-CN"
 #define CS_GB2312		"GB2312"
 #define CS_GBK			"GBK"
+#define CS_X_GBK		"X-GBK"
 #define CS_EUC_TW		"EUC-TW"
 #define CS_BIG5			"Big5"
 #define CS_BIG5_HKSCS		"BIG5-HKSCS"

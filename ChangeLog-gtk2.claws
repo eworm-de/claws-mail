@@ -1,3 +1,22 @@
+2005-04-19 [paul]	1.9.6cvs42
+
+	sync with main:
+
+	* src/action.c
+		catch_output(): correctly select the insert text
+		(fix invalid iterator warnings).
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.c
+		support GBK encoding. Fallback to GBK if "X-GBK"
+		is passed (thanks to SuperMMX)
+	* src/common/session.c
+	* src/common/session.h
+		use separate buffer for large data to be sent,
+		and don't duplicate it (reduces memory usage) (thanks to Dirk).
+
 2005-04-18 [paul]	1.9.6cvs41
 
 	* src/jpilot.c

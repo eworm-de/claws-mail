@@ -1152,7 +1152,7 @@ static const struct {
 	{"ko_KR.EUC-KR"	, C_EUC_KR	, C_EUC_KR},
 	{"ko_KR"	, C_EUC_KR	, C_EUC_KR},
 	{"zh_CN.GB2312"	, C_GB2312	, C_GB2312},
-	{"zh_CN.GBK"	, C_GBK		, C_GB2312},
+	{"zh_CN.GBK"	, C_GBK		, C_GBK},
 	{"zh_CN"	, C_GB2312	, C_GB2312},
 	{"zh_HK"	, C_BIG5_HKSCS	, C_BIG5_HKSCS},
 	{"zh_TW.eucTW"	, C_EUC_TW	, C_BIG5},
@@ -1519,6 +1519,7 @@ gboolean conv_is_multibyte_encoding(CharSet encoding)
 	case C_ISO_2022_CN:
 	case C_SHIFT_JIS:
 	case C_GB2312:
+	case C_GBK:
 	case C_BIG5:
 	case C_UTF_8:
 	case C_UTF_7:
