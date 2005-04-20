@@ -1,3 +1,9 @@
+2005-04-20 [paul]	1.9.6cvs43
+
+	* src/codeconv.c
+		complete 1.9.6cvs42's sync:
+		Fallback to GBK if "X-GBK" is passed (thanks to SuperMMX)
+
 2005-04-19 [paul]	1.9.6cvs42
 
 	sync with main:
@@ -10,8 +16,7 @@
 	* src/mainwindow.c
 	* src/messageview.c
 	* src/prefs_common.c
-		support GBK encoding. Fallback to GBK if "X-GBK"
-		is passed (thanks to SuperMMX)
+		support GBK encoding.
 	* src/common/session.c
 	* src/common/session.h
 		use separate buffer for large data to be sent,

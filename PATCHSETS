@@ -459,3 +459,4 @@
 ( cvs diff -u -r 1.382.2.117 -r 1.382.2.118 src/compose.c; ) > 1.9.6cvs40.patchset
 ( cvs diff -u -r 1.18.2.7 -r 1.18.2.8 src/jpilot.c; ) > 1.9.6cvs41.patchset
 ( cvs diff -u -r 1.12.2.21 -r 1.12.2.22 src/action.c; cvs diff -u -r 1.65.2.26 -r 1.65.2.27 src/codeconv.c; cvs diff -u -r 1.15.2.6 -r 1.15.2.7 src/codeconv.h; cvs diff -u -r 1.274.2.34 -r 1.274.2.35 src/mainwindow.c; cvs diff -u -r 1.94.2.49 -r 1.94.2.50 src/messageview.c; cvs diff -u -r 1.204.2.34 -r 1.204.2.35 src/prefs_common.c; cvs diff -u -r 1.23.2.4 -r 1.23.2.5 src/common/session.c; cvs diff -u -r 1.8.2.2 -r 1.8.2.3 src/common/session.h; ) > 1.9.6cvs42.patchset
+( cvs diff -u -r 1.1.2.498 -r 1.1.2.499 ChangeLog-gtk2.claws; cvs diff -u -r 1.65.2.27 -r 1.65.2.28 src/codeconv.c; ) > 1.9.6cvs43.patchset

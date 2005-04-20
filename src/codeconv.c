@@ -825,9 +825,23 @@ static void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
 	strncpy2(outbuf, inbuf, outlen);
 }
 
+static const gchar *
+conv_get_fallback_for_private_encoding(const gchar *encoding)
+{
+	if (encoding && (encoding[0] == 'X' || encoding[0] == 'x') &&
+	    encoding[1] == '-') {
+		if (!g_ascii_strcasecmp(encoding, CS_X_GBK))
+			return CS_GBK;
+	}
+
+	return encoding;
+}
+
 CodeConverter *conv_code_converter_new(const gchar *src_charset)
 {
 	CodeConverter *conv;
+
+	src_charset = conv_get_fallback_for_private_encoding(src_charset);
 
 	conv = g_new0(CodeConverter, 1);
 	conv->code_conv_func = conv_get_code_conv_func(src_charset, NULL);
@@ -870,6 +884,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	size_t len;
 	CodeConvFunc conv_func;
 
+	src_code = conv_get_fallback_for_private_encoding(src_code);
 	conv_func = conv_get_code_conv_func(src_code, dest_code);
 	if (conv_func != conv_noconv) {
 		len = (strlen(inbuf) + 1) * 3;
