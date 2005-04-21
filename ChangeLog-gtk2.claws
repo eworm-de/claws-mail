@@ -1,3 +1,9 @@
+2005-04-21 [paul]	1.9.6cvs45
+
+	* ChangeLog-gtk2.claws
+	* src/setup.c
+		correction to sync
+
 2005-04-21 [paul]	1.9.6cvs44
 
 	sync with main:
@@ -5,9 +11,12 @@
 	* src/setup.c
 	* src/statusbar.c
 	* src/statusbar.h
-	* src/textview.c
 		use gtkut_widget_draw_now(). Improved performance
 		of the update of statusbar
+	* src/textview.c
+		textview_smooth_scroll_do(): redraw it after scroll
+		is done (fixed incorrect display when a part of the
+		view is hidden).
 	* src/gtk/gtkutils.c
 	* src/gtk/gtkutils.h
 		gtkut_widget_draw_now(): use gdk_window_process_updates()
