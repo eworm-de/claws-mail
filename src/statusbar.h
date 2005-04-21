@@ -40,7 +40,7 @@ void statusbar_verbosity_set	(gboolean	 verbose);
 { \
 	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
 			   mainwin->folderview_cid, str); \
-	gtkut_widget_wait_for_draw(mainwin->hbox_stat); \
+	gtkut_widget_draw_now(mainwin->hbox_stat); \
 }
 
 #define STATUSBAR_POP(mainwin) \

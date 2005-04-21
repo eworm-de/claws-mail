@@ -1,3 +1,20 @@
+2005-04-21 [paul]	1.9.6cvs44
+
+	sync with main:
+
+	* src/setup.c
+	* src/statusbar.c
+	* src/statusbar.h
+	* src/textview.c
+		use gtkut_widget_draw_now(). Improved performance
+		of the update of statusbar
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		gtkut_widget_draw_now(): use gdk_window_process_updates()
+		to force update of widgets.
+		Removed gtkut_widget_wait_for_draw() which had a big
+		overhead  because of waiting for all events processed 
+
 2005-04-20 [paul]	1.9.6cvs43
 
 	* src/codeconv.c

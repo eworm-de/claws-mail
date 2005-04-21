@@ -166,7 +166,7 @@ void gtkut_window_popup			(GtkWidget	*window);
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,
 					 gint		*py);
-void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
+void gtkut_widget_draw_now		(GtkWidget	*widget);
 void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);

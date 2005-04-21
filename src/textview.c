@@ -1718,6 +1718,8 @@ static void textview_smooth_scroll_do(TextView *textview,
 
 	vadj->value = last_value;
 	g_signal_emit_by_name(G_OBJECT(vadj), "value_changed", 0);
+
+	gtk_widget_queue_draw(GTK_WIDGET(text));
 }
 
 static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
