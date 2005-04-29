@@ -309,6 +309,9 @@ struct _PrefsCommon
 	gulong color_new;
 	
 	GList *summary_quicksearch_history;
+	
+	gint filteringwin_width;
+	gint filteringwin_height;
 };
 
 extern PrefsCommon prefs_common;

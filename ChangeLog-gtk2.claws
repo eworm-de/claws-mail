@@ -1,3 +1,12 @@
+2005-04-29 [colin]	1.9.6cvs46
+
+	* src/messageview.c
+		Fix window resizing that refused to size down
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_filtering.c
+		Save Filtering's window size
+
 2005-04-21 [paul]	1.9.6cvs45
 
 	* ChangeLog-gtk2.claws

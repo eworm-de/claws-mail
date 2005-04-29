@@ -741,6 +741,11 @@ static PrefParam param[] = {
 	{"color_new", "179", &prefs_common.color_new, P_COLOR,
 	 NULL, NULL, NULL},
 
+	{"filteringwin_width", "500", &prefs_common.filteringwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"filteringwin_height", "-1", &prefs_common.filteringwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
