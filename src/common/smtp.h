@@ -79,6 +79,7 @@ typedef enum
 	SMTP_QUIT,
 	SMTP_ERROR,
 	SMTP_DISCONNECTED,
+	SMTP_MAIL_SENT_OK,
 
 	N_SMTP_PHASE
 } SMTPState;
@@ -115,6 +116,8 @@ struct _SMTPSession
 	gchar *error_msg;
 	gboolean is_esmtp;
 	ESMTPFlag esmtp_flags;
+	
+	void *dialog;
 };
 
 Session *smtp_session_new	(void);

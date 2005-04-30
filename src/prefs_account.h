@@ -177,6 +177,7 @@ struct _PrefsAccount
 
 	Folder *folder;
 	GHashTable *privacy_prefs;
+	SMTPSession *session;
 };
 
 void prefs_account_init			(void);

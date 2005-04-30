@@ -34,7 +34,7 @@
 
 static void smtp_session_destroy(Session *session);
 
-static gint smtp_from(SMTPSession *session);
+gint smtp_from(SMTPSession *session);
 
 static gint smtp_auth(SMTPSession *session);
 static gint smtp_starttls(SMTPSession *session);
@@ -49,8 +49,8 @@ static gint smtp_helo(SMTPSession *session);
 static gint smtp_rcpt(SMTPSession *session);
 static gint smtp_data(SMTPSession *session);
 static gint smtp_send_data(SMTPSession *session);
-/* static gint smtp_rset(SMTPSession *session); */
-static gint smtp_quit(SMTPSession *session);
+static gint smtp_make_ready(SMTPSession *session);
+gint smtp_quit(SMTPSession *session);
 static gint smtp_eom(SMTPSession *session);
 
 static gint smtp_session_recv_msg(Session *session, const gchar *msg);
@@ -118,7 +118,7 @@ static void smtp_session_destroy(Session *session)
 	g_free(smtp_session->error_msg);
 }
 
-static gint smtp_from(SMTPSession *session)
+gint smtp_from(SMTPSession *session)
 {
 	gchar buf[MSGBUFSIZE];
 	gchar *mail_size = NULL;
@@ -466,7 +466,14 @@ static gint smtp_rset(SMTPSession *session)
 }
 #endif
 
-static gint smtp_quit(SMTPSession *session)
+static gint smtp_make_ready(SMTPSession *session)
+{
+	session->state = SMTP_MAIL_SENT_OK;
+
+	return SM_OK;
+}
+
+gint smtp_quit(SMTPSession *session)
 {
 	session->state = SMTP_QUIT;
 
@@ -635,7 +642,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		smtp_send_data(smtp_session);
 		break;
 	case SMTP_EOM:
-		smtp_quit(smtp_session);
+		smtp_make_ready(smtp_session);
 		break;
 	case SMTP_QUIT:
 		session_disconnect(session);

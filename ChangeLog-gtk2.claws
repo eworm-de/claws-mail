@@ -1,3 +1,13 @@
+2005-04-30 [colin]	1.9.6cvs47
+
+	* src/prefs_account.h
+	* src/procmsg.c
+	* src/send_message.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Try to batch sending mails (per account) instead of
+		reconnecting to server every time.
+
 2005-04-29 [colin]	1.9.6cvs46
 
 	* src/messageview.c

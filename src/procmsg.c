@@ -43,6 +43,24 @@
 #include "msgcache.h"
 #include "partial_download.h"
 
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
+
+enum
+{
+	Q_SENDER           = 0,
+	Q_SMTPSERVER       = 1,
+	Q_RECIPIENTS       = 2,
+	Q_NEWSGROUPS       = 3,
+	Q_MAIL_ACCOUNT_ID  = 4,
+	Q_NEWS_ACCOUNT_ID  = 5,
+	Q_SAVE_COPY_FOLDER = 6,
+	Q_REPLY_MESSAGE_ID = 7,
+	Q_FWD_MESSAGE_ID   = 8,
+	Q_PRIVACY_SYSTEM   = 9,
+	Q_ENCRYPT 	   = 10,
+	Q_ENCRYPT_DATA	   = 11,
+};
+
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
 	GHashTable *msg_table;
@@ -638,6 +656,134 @@ void procmsg_empty_all_trash(void)
 	}
 }
 
+static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
+{
+	PrefsAccount *mailac = NULL;
+	FILE *fp;
+	int hnum;
+	gchar buf[BUFFSIZE];
+	
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
+				       {"SSV:",  NULL, FALSE},
+				       {"R:",    NULL, FALSE},
+				       {"NG:",   NULL, FALSE},
+				       {"MAID:", NULL, FALSE},
+				       {"NAID:", NULL, FALSE},
+				       {"SCF:",  NULL, FALSE},
+				       {"RMID:", NULL, FALSE},
+				       {"FMID:", NULL, FALSE},
+				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
+				       {NULL,    NULL, FALSE}};
+
+	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, qentry))
+	       != -1) {
+		gchar *p = buf + strlen(qentry[hnum].name);
+
+		if (hnum == Q_MAIL_ACCOUNT_ID) {
+			mailac = account_find_from_id(atoi(p));
+			break;
+		}
+	}
+	fclose(fp);
+	return mailac;
+}
+
+static GSList *procmsg_list_sort_by_account(FolderItem *queue, GSList *list)
+{
+	GSList *result = NULL;
+	GSList *orig = NULL;
+	PrefsAccount *last_account = NULL;
+	MsgInfo *msg = NULL;
+	GSList *cur = NULL;
+	gboolean nothing_to_sort = TRUE;
+
+	if (!list)
+		return NULL;
+
+	orig = g_slist_copy(list);
+	
+	msg = (MsgInfo *)orig->data;
+	
+	for (cur = orig; cur; cur = cur->next)
+		debug_print("sort before %s\n", ((MsgInfo *)cur->data)->from);
+	
+	debug_print("\n");
+
+parse_again:	
+	nothing_to_sort = TRUE;
+	cur = orig;
+	while (cur) {
+		gchar *file;
+		msg = (MsgInfo *)cur->data;
+		file = folder_item_fetch_msg(queue, msg->msgnum);
+		PrefsAccount *ac = procmsg_get_account_from_file(file);
+		g_free(file);
+
+		if (last_account == NULL || (ac != NULL && ac == last_account)) {
+			result = g_slist_append(result, msg);
+			orig = g_slist_remove(orig, msg);
+			last_account = ac;
+			nothing_to_sort = FALSE;
+			goto parse_again;
+		}
+		cur = cur->next;
+	}
+	
+	if (orig || g_slist_length(orig)) {
+		if (!last_account && nothing_to_sort) {
+			/* can't find an account for the rest of the list */
+			cur = orig;
+			while (cur) {
+				result = g_slist_append(result, cur->data);
+				cur = cur->next;
+			}
+		} else {
+			last_account = NULL;
+			goto parse_again;
+		}
+	}
+	
+	g_slist_free(orig);
+	
+	for (cur = result; cur; cur = cur->next)
+		debug_print("sort after  %s\n", ((MsgInfo *)cur->data)->from);
+
+	debug_print("\n");
+
+	return result;
+}
+
+static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo, GSList *elem)
+{
+	gchar *file = folder_item_fetch_msg(queue, msginfo->msgnum);
+	PrefsAccount *ac = procmsg_get_account_from_file(file);
+	GSList *cur = elem;
+	g_free(file);
+	for (cur = elem; cur; cur = cur->next) {
+		MsgInfo *cur_msginfo = (MsgInfo *)cur->data;
+		PrefsAccount *cur_ac = NULL;
+		file = folder_item_fetch_msg(queue, cur_msginfo->msgnum);
+		
+		if (cur_msginfo != msginfo && !MSG_IS_LOCKED(cur_msginfo->flags)) {
+			if (procmsg_get_account_from_file(file) == ac) {
+				g_free(file);
+				return FALSE;
+			}
+		}
+		
+		g_free(file);
+	}
+	return TRUE;
+}
+
 /*!
  *\brief	Send messages in queue
  *
@@ -651,6 +797,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
 	gint sent = 0, err = 0;
 	GSList *list, *elem;
+	GSList *sorted_list = NULL;
 
 	if (!queue)
 		queue = folder_get_default_queue();
@@ -659,15 +806,19 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
 
-	for (elem = list; elem != NULL; elem = elem->next) {
+	/* sort the list per sender account; this helps reusing the same SMTP server */
+	sorted_list = procmsg_list_sort_by_account(queue, list);
+	
+	for (elem = sorted_list; elem != NULL; elem = elem->next) {
 		gchar *file;
 		MsgInfo *msginfo;
-		
+			
 		msginfo = (MsgInfo *)(elem->data);
 		if (!MSG_IS_LOCKED(msginfo->flags)) {
 			file = folder_item_fetch_msg(queue, msginfo->msgnum);
 			if (file) {
-				if (procmsg_send_message_queue(file) < 0) {
+				if (procmsg_send_message_queue_full(file, 
+						!procmsg_is_last_for_account(queue, msginfo, elem)) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
 					err++;
@@ -693,6 +844,8 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		 * "freeing msg ## in folder (nil)". */
 		procmsg_msginfo_free(msginfo);
 	}
+
+	g_slist_free(sorted_list);
 
 	return (err != 0 ? -err : sent);
 }
@@ -1046,23 +1199,7 @@ gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 	return msginfo1->msgnum - msginfo2->msgnum;
 }
 
-enum
-{
-	Q_SENDER           = 0,
-	Q_SMTPSERVER       = 1,
-	Q_RECIPIENTS       = 2,
-	Q_NEWSGROUPS       = 3,
-	Q_MAIL_ACCOUNT_ID  = 4,
-	Q_NEWS_ACCOUNT_ID  = 5,
-	Q_SAVE_COPY_FOLDER = 6,
-	Q_REPLY_MESSAGE_ID = 7,
-	Q_FWD_MESSAGE_ID   = 8,
-	Q_PRIVACY_SYSTEM   = 9,
-	Q_ENCRYPT 	   = 10,
-	Q_ENCRYPT_DATA	   = 11,
-};
-
-gint procmsg_send_message_queue(const gchar *file)
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session)
 {
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
@@ -1229,7 +1366,7 @@ gint procmsg_send_message_queue(const gchar *file)
 			}
 
 			if (mailac)
-				mailval = send_message_smtp(mailac, to_list, fp);
+				mailval = send_message_smtp_full(mailac, to_list, fp, keep_session);
 			else {
 				PrefsAccount tmp_ac;
 
@@ -1368,6 +1505,11 @@ gint procmsg_send_message_queue(const gchar *file)
 	g_free(encrypt_data);
 
 	return (newsval != 0 ? newsval : mailval);
+}
+
+gint procmsg_send_message_queue(const gchar *file)
+{
+	return procmsg_send_message_queue_full(file, FALSE);
 }
 
 static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old_flags)
