@@ -389,8 +389,6 @@ static void compose_advanced_action_cb	(Compose		   *compose,
 
 static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
-static void compose_grab_focus_before_cb(GtkWidget	*widget,
-					 Compose	*compose);
 
 static void compose_changed_cb		(GtkTextBuffer	*textbuf,
 					 Compose	*compose);
@@ -4280,8 +4278,6 @@ static void compose_create_header_entry(Compose *compose)
 	if (header)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry), header);
 
-	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "grab_focus",
-			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(GTK_COMBO(combo)->entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 
@@ -4296,8 +4292,6 @@ static void compose_create_header_entry(Compose *compose)
     	g_signal_connect(G_OBJECT(entry), "changed", 
 			 G_CALLBACK(compose_headerentry_changed_cb), 
 			 headerentry);
-	g_signal_connect(G_OBJECT(entry), "grab_focus",
-			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 			 
@@ -4578,8 +4572,6 @@ static GtkWidget *compose_create_others(Compose *compose)
 	gtk_widget_show(savemsg_entry);
 	gtk_table_attach_defaults(GTK_TABLE(table), savemsg_entry, 1, 2, rowcount, rowcount + 1);
 	gtk_editable_set_editable(GTK_EDITABLE(savemsg_entry), prefs_common.savemsg);
-	g_signal_connect(G_OBJECT(savemsg_entry), "grab_focus",
-			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(savemsg_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
@@ -4759,8 +4751,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	subject_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
-	g_signal_connect(G_OBJECT(subject_entry), "grab_focus",
-			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(subject_entry);
@@ -6521,7 +6511,7 @@ static void entry_cut_clipboard(GtkWidget *entry)
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_cut_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
-			gtk_clipboard_get(GDK_NONE),
+			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
 			TRUE);
 }
 
@@ -6532,7 +6522,7 @@ static void entry_copy_clipboard(GtkWidget *entry)
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_copy_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
-			gtk_clipboard_get(GDK_NONE));
+			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
 static void entry_paste_clipboard(GtkWidget *entry)
@@ -6542,7 +6532,7 @@ static void entry_paste_clipboard(GtkWidget *entry)
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_paste_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
-			gtk_clipboard_get(GDK_NONE),
+			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
 			NULL, TRUE);
 }
 
@@ -6895,25 +6885,9 @@ static void compose_advanced_action_cb(Compose *compose,
 	}
 }
 
-static gchar *cliptext = NULL;
-
-static void compose_grab_focus_before_cb(GtkWidget *widget, Compose *compose)
-{
-	gchar *str = NULL;
-	GtkClipboard *clip = gtk_clipboard_get(gdk_atom_intern("PRIMARY", FALSE));
-	if (cliptext) {
-		g_free(cliptext);
-		cliptext = NULL;
-	}
-
-	if (gtk_clipboard_wait_is_text_available(clip))
-		cliptext = gtk_clipboard_wait_for_text(clip);
-}
-
 static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 {
 	gchar *str = NULL;
-	GtkClipboard *clip = gtk_clipboard_get(gdk_atom_intern("PRIMARY", FALSE));
 	
 	if (GTK_IS_EDITABLE(widget)) {
 		str = gtk_editable_get_chars(GTK_EDITABLE(widget), 0, -1);
@@ -6921,8 +6895,6 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 			strlen(str));
 		g_free(str);
 	}
-	if (cliptext)
-		gtk_clipboard_set_text(clip, cliptext, -1);
 
 	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))
 		compose->focused_editable = widget;

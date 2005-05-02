@@ -1,3 +1,9 @@
+2005-05-02 [colin]	1.9.6cvs48
+
+	* src/compose.c
+		Try to fix the copy/paste mess once again.
+
+
 2005-04-30 [colin]	1.9.6cvs47
 
 	* src/prefs_account.h
