@@ -465,3 +465,4 @@
 ( cvs diff -u -r 1.94.2.50 -r 1.94.2.51 src/messageview.c; cvs diff -u -r 1.204.2.35 -r 1.204.2.36 src/prefs_common.c; cvs diff -u -r 1.103.2.14 -r 1.103.2.15 src/prefs_common.h; cvs diff -u -r 1.59.2.15 -r 1.59.2.16 src/prefs_filtering.c; ) > 1.9.6cvs46.patchset
 ( cvs diff -u -r 1.49.2.10 -r 1.49.2.11 src/prefs_account.h; cvs diff -u -r 1.150.2.22 -r 1.150.2.23 src/procmsg.c; cvs diff -u -r 1.17.2.8 -r 1.17.2.9 src/send_message.c; cvs diff -u -r 1.11.2.9 -r 1.11.2.10 src/common/smtp.c; cvs diff -u -r 1.6.2.5 -r 1.6.2.6 src/common/smtp.h; ) > 1.9.6cvs47.patchset
 ( cvs diff -u -r 1.382.2.118 -r 1.382.2.119 src/compose.c; ) > 1.9.6cvs48.patchset
+( cvs diff -u -r 1.49.2.38 -r 1.49.2.39 src/procmime.c; ) > 1.9.6cvs49.patchset

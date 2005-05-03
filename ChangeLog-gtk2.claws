@@ -1,3 +1,9 @@
+2005-05-03 [colin]	1.9.6cvs49
+
+	* src/procmime.c
+		Fix possible DOS in mime parser
+		(see bug #634)
+
 2005-05-02 [colin]	1.9.6cvs48
 
 	* src/compose.c
