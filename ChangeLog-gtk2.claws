@@ -1,3 +1,10 @@
+2005-05-04 [colin]	1.9.6cvs50
+
+	* src/partial_download.c
+	* src/pop.c
+		Escape login when writing uidl file
+		fixes bug #736
+
 2005-05-03 [colin]	1.9.6cvs49
 
 	* src/procmime.c
