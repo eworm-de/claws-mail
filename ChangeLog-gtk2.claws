@@ -1,3 +1,9 @@
+2005-05-04 [colin]	1.9.6cvs51
+
+	* src/common/utils.c
+		Fix crash when subst_for_filename is called
+		with a NULL parameter
+
 2005-05-04 [colin]	1.9.6cvs50
 
 	* src/partial_download.c

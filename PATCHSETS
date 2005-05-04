@@ -467,3 +467,4 @@
 ( cvs diff -u -r 1.382.2.118 -r 1.382.2.119 src/compose.c; ) > 1.9.6cvs48.patchset
 ( cvs diff -u -r 1.49.2.38 -r 1.49.2.39 src/procmime.c; ) > 1.9.6cvs49.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/partial_download.c; cvs diff -u -r 1.56.2.33 -r 1.56.2.34 src/pop.c; ) > 1.9.6cvs50.patchset
+( cvs diff -u -r 1.36.2.28 -r 1.36.2.29 src/common/utils.c; ) > 1.9.6cvs51.patchset
