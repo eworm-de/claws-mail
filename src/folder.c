@@ -1937,7 +1937,7 @@ void folder_clean_cache_memory(void)
 		while((listitem != NULL) && (memusage > (prefs_common.cache_max_mem_usage * 1024))) {
 			FolderItem *item = (FolderItem *)(listitem->data);
 
-			debug_print("Freeing cache memory for %s\n", item->path);
+			debug_print("Freeing cache memory for %s\n", item->path ? item->path : item->name);
 			memusage -= msgcache_get_memory_usage(item->cache);
 		        folder_item_free_cache(item);
 			listitem = listitem->next;
