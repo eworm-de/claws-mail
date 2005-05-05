@@ -236,15 +236,15 @@ GHashTable *folderview_popups;
 
 static GtkItemFactoryEntry folderview_common_popup_entries[] =
 {
-	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
+	{N_("/Mark all re_ad"),		NULL, mark_all_read_cb, 0, NULL},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
-	{N_("/Pr_ocessing..."),		NULL, folderview_processing_cb, 0, NULL},
+	{N_("/Process_ing..."),		NULL, folderview_processing_cb, 0, NULL},
 };
 
 static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
 	{N_("/------"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/Empty trash..."),		NULL, folderview_empty_trash_cb, 0, NULL},
+	{N_("/Empty _trash..."),	NULL, folderview_empty_trash_cb, 0, NULL},
 };
 
 

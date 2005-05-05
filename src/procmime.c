@@ -1197,7 +1197,7 @@ gchar *procmime_get_content_type_str(MimeMediaType type,
 	return g_strdup_printf("%s/%s", type_str, subtype);
 }
 
-void procmime_parse_mimepart(MimeInfo *parent,
+int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_type,
 			     gchar *content_encoding,
 			     gchar *content_description,
@@ -1293,6 +1293,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 	gint boundary_len = 0, lastoffset = -1, i;
 	gchar buf[BUFFSIZE];
 	FILE *fp;
+	int result = 0;
 
 	boundary = g_hash_table_lookup(mimeinfo->typeparameters, "boundary");
 	if (!boundary)
@@ -1307,13 +1308,13 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 		return;
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
-	while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
+	while ((p = fgets(buf, sizeof(buf), fp)) != NULL && result == 0) {
 		if (ftell(fp) > (mimeinfo->offset + mimeinfo->length))
 			break;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
 			if (lastoffset != -1) {
-				procmime_parse_mimepart(mimeinfo,
+				result = procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, 
@@ -1574,7 +1575,7 @@ static void procmime_parse_content_encoding(const gchar *content_encoding, MimeI
 	return;
 }
 
-void procmime_parse_mimepart(MimeInfo *parent,
+int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_type,
 			     gchar *content_encoding,
 			     gchar *content_description,
@@ -1589,8 +1590,17 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	/* Create MimeInfo */
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
-	if (parent != NULL)
+	if (parent != NULL) {
+		if (g_node_depth(parent->node) > 32) {
+			/* 32 is an arbitrary value
+			 * this avoids DOSsing ourselves 
+			 * with enormous messages
+			 */
+			procmime_mimeinfo_free_all(mimeinfo);
+			return -1;			
+		}
 		g_node_append(parent->node, mimeinfo->node);
+	}
 	mimeinfo->data.filename = g_strdup(filename);
 	mimeinfo->offset = offset;
 	mimeinfo->length = length;
@@ -1641,6 +1651,8 @@ void procmime_parse_mimepart(MimeInfo *parent,
 		default:
 			break;
 	}
+
+	return 0;
 }
 
 static gchar *typenames[] = {

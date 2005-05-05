@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -426,14 +426,23 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 {
 	MessageView *msgview;
 	GtkWidget *window;
+	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "message_view", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 320;
+		geometry.min_height = 200;
+	}
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+
 	gtk_widget_set_usize(window, prefs_common.msgwin_width,
 			     prefs_common.msgwin_height);
-
+	
 	msgview = messageview_create(mainwin);
 
 	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",

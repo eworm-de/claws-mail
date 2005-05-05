@@ -760,7 +760,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_entry_mark_default_to(compose, item->prefs->default_to);
 		}
 		if (item && item->ret_rcpt) {
-			menu_set_active(ifactory, "/Message/Request Return Receipt", TRUE);
+			menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
 		}
 	} else {
 		if (mailto) {
@@ -770,7 +770,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		 * CLAWS: just don't allow return receipt request, even if the user
 		 * may want to send an email. simple but foolproof.
 		 */
-		menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE); 
+		menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE); 
 	}
 	compose_add_field_list( compose, listAddress );
 
@@ -972,7 +972,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
 
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
-		menu_set_active(ifactory, "/Message/Request Return Receipt", TRUE);
+		menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {

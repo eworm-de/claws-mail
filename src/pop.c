@@ -267,7 +267,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 					session->partial_recv_table, id);
 
 		if ((!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
-		||  partial_recv != POP3_TOTALLY_RECEIVED) {
+		|| partial_recv != POP3_TOTALLY_RECEIVED) {
 			session->msg[num].received = 
 				(partial_recv != POP3_MUST_COMPLETE_RECV);
 			session->msg[num].partial_recv = partial_recv;
@@ -563,13 +563,18 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 	time_t recv_time;
 	time_t now;
 	gint partial_recv;
+	gchar *sanitized_uid = g_strdup(ac_prefs->userid);
+	
+	subst_for_filename(sanitized_uid);
 	
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 	partial_recv_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
-			   "-", ac_prefs->userid, NULL);
+			   "-", sanitized_uid, NULL);
+			   
+	g_free(sanitized_uid);
 	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
@@ -633,13 +638,20 @@ gint pop3_write_uidl_list(Pop3Session *session)
 	FILE *fp;
 	Pop3MsgInfo *msg;
 	gint n;
+	gchar *sanitized_uid = g_strdup(session->ac_prefs->userid);
+	
+	subst_for_filename(sanitized_uid);
+	
 
 	if (!session->uidl_is_valid) return 0;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S,
 			   session->ac_prefs->recv_server,
-			   "-", session->ac_prefs->userid, NULL);
+			   "-", sanitized_uid, NULL);
+	
+	g_free(sanitized_uid);
+
 	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);

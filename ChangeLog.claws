@@ -1,3 +1,36 @@
+2005-05-05 [paul]	1.0.4cvs7
+
+	backported from GTK2...
+
+	* src/compose.c
+		Fix 'Request return receipt' from folder
+		properties (bug #708)
+	* src/folderview.c
+		Fix duplicate hotkeys in Folderview's contextual
+		menu
+	* src/mainwindow.c
+		Fix duplicate hotkeys in Mainwindow's menu
+	* src/messageview.c
+		Fix window resizing
+	* src/partial_download.c
+	* src/pop.c
+		Escape login when writing uidl file
+		fixes bug #736
+	* src/prefs_account.c
+		Fix smtp auth type off-by-one. We forgot to
+		add PLAIN in the prefs-to-gui setter func and
+		as a result, the selected auth when opening
+		account prefs was not the correct one
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_filtering.c
+		Save Filtering's window size
+	* src/procmime.c
+		Fix possible DOS in mime parser
+		(see bug #634)
+	* src/plugins/pgpmime/pgpmime.c
+		Fix bus error on 64bit
+
 2005-04-13 [holger]	1.0.4cvs6
 
 	* src/prefs_filtering.c

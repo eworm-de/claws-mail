@@ -137,6 +137,15 @@ void prefs_filtering_open(GSList ** p_processing,
 	start_address_completion();
 }
 
+static void prefs_filtering_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.filteringwin_width = allocation->width;
+	prefs_common.filteringwin_height = allocation->height;
+}
+
 /* prefs_filtering_close() - just to have one common exit point */
 static void prefs_filtering_close(void)
 {
@@ -181,6 +190,7 @@ static void prefs_filtering_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 	GtkWidget *bottom_btn;
+	static GdkGeometry geometry;
 
 	gchar *title[1];
 
@@ -209,6 +219,8 @@ static void prefs_filtering_create(void)
 			    GTK_SIGNAL_FUNC(prefs_filtering_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_filtering_key_pressed), NULL);
+	gtk_signal_connect (GTK_OBJECT(window), "size_allocate",
+			    GTK_SIGNAL_FUNC(prefs_filtering_size_allocate_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_filtering_ok), NULL);
@@ -353,7 +365,15 @@ static void prefs_filtering_create(void)
 	gtk_signal_connect (GTK_OBJECT (bottom_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_filtering_bottom), NULL);
 
-	gtk_widget_set_usize(window, 500, -1);
+	if (!geometry.min_height) {
+		geometry.min_width = 500;
+		geometry.min_height = 400;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_usize(window, prefs_common.filteringwin_width, 
+				     prefs_common.filteringwin_height);
 
 	gtk_widget_show_all(window);
 

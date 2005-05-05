@@ -417,7 +417,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gchar *boundary, *sigcontent;
 	GpgmeCtx ctx;
 	GpgmeData gpgtext, gpgsig;
-	guint len;
+	size_t len;
 	struct passphrase_cb_info_s info;
 
 	memset (&info, 0, sizeof info);
@@ -505,7 +505,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	MimeInfo *msgcontent, *encmultipart, *newinfo;
 	FILE *fp;
 	gchar *boundary, *enccontent;
-	guint len;
+	size_t len;
 	gchar *textstr;
 	GpgmeData gpgtext, gpgenc;
 	gchar **recipients, **nextrecp;
