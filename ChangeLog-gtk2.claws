@@ -1,3 +1,8 @@
+2005-05-05 [thorsten]	1.9.6cvs55
+
+	* src/folder.c
+		fix possible crash
+
 2005-05-05 [paul]	1.9.6cvs54
 	
 	sync with HEAD
