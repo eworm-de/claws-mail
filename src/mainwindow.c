@@ -2008,35 +2008,63 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 	/* create separated window(s) if needed */
 	if (type & SEPARATE_FOLDER) {
+		static GdkGeometry folderwin_geometry;
+		
 		folderwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(folderwin),
 				     _("Sylpheed - Folder View"));
-		gtk_window_set_resizable(GTK_WINDOW(folderwin), TRUE);
-		gtk_window_move(GTK_WINDOW(folderwin), prefs_common.folderwin_x,
+
+		gtk_window_move(GTK_WINDOW(folderwin),
+				prefs_common.folderwin_x,
 				prefs_common.folderwin_y);
+
+		if (!folderwin_geometry.min_height) {
+			folderwin_geometry.min_width = 320;
+			folderwin_geometry.min_height = 200;
+		}
+		gtk_window_set_geometry_hints(GTK_WINDOW(folderwin), NULL,
+					      &folderwin_geometry, GDK_HINT_MIN_SIZE);
+				
+		gtk_widget_set_size_request(folderwin,
+					    prefs_common.folderview_width,
+					    prefs_common.folderview_height);
+
 		gtk_container_set_border_width(GTK_CONTAINER(folderwin),
 					       BORDER_WIDTH);
+
 		g_signal_connect(G_OBJECT(folderwin), "delete_event",
 				 G_CALLBACK(folder_window_close_cb),
 				   mainwin);
 		gtk_container_add(GTK_CONTAINER(folderwin),
 				  GTK_WIDGET_PTR(mainwin->folderview));
 		gtk_widget_realize(folderwin);
+
 		if (prefs_common.folderview_visible)
 			gtk_widget_show(folderwin);
 	}
 
 	if (type & SEPARATE_MESSAGE) {
+		static GdkGeometry msgwin_geometry;
+		
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(messagewin),
 				     _("Sylpheed - Message View"));
-		gtk_window_set_resizable(GTK_WINDOW(messagewin), TRUE);
+				     
 		gtk_window_move(GTK_WINDOW(messagewin), 
 				prefs_common.main_msgwin_x,
 				prefs_common.main_msgwin_y);
+
+		if (!msgwin_geometry.min_height) {
+			msgwin_geometry.min_width = 320;
+			msgwin_geometry.min_height = 200;
+		}
+		gtk_window_set_geometry_hints(GTK_WINDOW(messagewin), NULL,
+					      &msgwin_geometry, GDK_HINT_MIN_SIZE);
+		
 		gtk_widget_set_size_request(messagewin, 
 					    prefs_common.msgwin_width,
 					    prefs_common.msgwin_height);
+
 		gtk_container_set_border_width(GTK_CONTAINER(messagewin),
 					       BORDER_WIDTH);
 		g_signal_connect(G_OBJECT(messagewin), "delete_event",
