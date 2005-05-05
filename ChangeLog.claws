@@ -1,3 +1,10 @@
+2005-05-05 [paul]	1.0.4cvs8
+
+	* AUTHORS
+	* src/compose.c
+		fix Bug 713 'Resent-To and Resent-Cc headers are garbled'
+		patch by Tim Mann
+
 2005-05-05 [paul]	1.0.4cvs7
 
 	backported from GTK2...
