@@ -1,3 +1,12 @@
+2005-05-05 [paul]	1.9.6cvs54
+	
+	sync with HEAD
+
+	* AUTHORS
+	* src/compose.c
+		fix bug 713 'Resent-To and Resent-Cc headers are garbled'
+		patch by Tim Mann
+
 2005-05-05 [paul]	1.9.6cvs53
 
 	* src/mainwindow.c
