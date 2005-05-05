@@ -1937,13 +1937,13 @@ void main_window_show(MainWindow *mainwin)
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
 
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->folderview),
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
 			     prefs_common.folderview_width,
 			     prefs_common.folderview_height);
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->summaryview),
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
 			     prefs_common.summaryview_width,
 			     prefs_common.summaryview_height);
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->messageview),
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
 			     prefs_common.msgview_width,
 			     prefs_common.msgview_height);
 
@@ -2261,13 +2261,13 @@ static gboolean toolbar_account_button_pressed(GtkWidget *widget,
 static void toolbar_child_attached(GtkWidget *widget, GtkWidget *child,
 				   gpointer data)
 {
-	gtk_widget_set_usize(child, 1, -1);
+	gtk_widget_set_size_request(child, 1, -1);
 }
 
 static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
 				   gpointer data)
 {
-	gtk_widget_set_usize(child, -1, -1);
+	gtk_widget_set_size_request(child, -1, -1);
 }
 
 static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,

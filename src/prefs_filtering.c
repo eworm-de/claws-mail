@@ -304,7 +304,7 @@ static void prefs_filtering_create(void)
 	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show (arrow);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize (arrow, -1, 16);
+	gtk_widget_set_size_request (arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (btn_hbox);
@@ -335,7 +335,7 @@ static void prefs_filtering_create(void)
 
 	cond_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (cond_scrolledwin);
-	gtk_widget_set_usize (cond_scrolledwin, -1, 150);
+	gtk_widget_set_size_request (cond_scrolledwin, -1, 150);
 	gtk_box_pack_start (GTK_BOX (cond_hbox), cond_scrolledwin,
 			    TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (cond_scrolledwin),
@@ -385,8 +385,8 @@ static void prefs_filtering_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_usize(window, prefs_common.filteringwin_width, 
-				     prefs_common.filteringwin_height);
+	gtk_widget_set_size_request(window, prefs_common.filteringwin_width,
+				    prefs_common.filteringwin_height);
 
 	gtk_widget_show_all(window);
 

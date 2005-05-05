@@ -349,7 +349,7 @@ QuickSearch *quicksearch_new()
 		clear_search = gtk_button_new_with_label(_("Clear"));
 		gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search,
 				   FALSE, FALSE, 0);
-		gtk_widget_set_usize(clear_search, 120, -1);
+		gtk_widget_set_size_request(clear_search, 120, -1);
 		g_signal_connect(G_OBJECT(clear_search), "clicked",
 				 G_CALLBACK(clear_search_cb), quicksearch);
 		gtk_widget_show(clear_search);

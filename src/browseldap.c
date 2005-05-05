@@ -233,7 +233,7 @@ static void browse_create( void ) {
 	gint top;
 
 	window = gtk_dialog_new();
-	gtk_widget_set_usize( window, BROWSELDAP_WIDTH, BROWSELDAP_HEIGHT );
+	gtk_widget_set_size_request( window, BROWSELDAP_WIDTH, BROWSELDAP_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Browse Directory Entry") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );

@@ -117,7 +117,7 @@ ProgressDialog *progress_dialog_create(void)
 	clist = gtk_clist_new_with_titles(3, text);
 	gtk_widget_hide(clist);
 	/* gtk_container_add(GTK_CONTAINER(scrolledwin), clist); */
-	/* gtk_widget_set_usize(clist, -1, 120); */
+	/* gtk_widget_set_size_request(clist, -1, 120); */
 	gtk_clist_set_column_justification(GTK_CLIST(clist), 0,
 					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_width(GTK_CLIST(clist), 0, 16);
@@ -126,7 +126,7 @@ ProgressDialog *progress_dialog_create(void)
 	list_view = progress_dialog_list_view_create();
 	gtk_widget_show(list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), list_view);
-	gtk_widget_set_usize(list_view, -1, 120);
+	gtk_widget_set_size_request(list_view, -1, 120);
 
 	progress->window      = dialog;
 	progress->label       = label;

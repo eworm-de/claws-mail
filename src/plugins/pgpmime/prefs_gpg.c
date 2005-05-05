@@ -168,7 +168,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(spinbtn_store_passphrase);
 	gtk_box_pack_start(GTK_BOX(hbox1), spinbtn_store_passphrase, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(spinbtn_store_passphrase, 64, -2);
+	gtk_widget_set_size_request(spinbtn_store_passphrase, 64, -2);
 	gtk_tooltips_set_tip(tooltips, spinbtn_store_passphrase,
 			     _
 			     ("Setting to '0' will store the passphrase for the whole session"),

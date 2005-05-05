@@ -257,7 +257,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(misspelled_btn);
 	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(misspelled_btn, 30, 20);
+	gtk_widget_set_size_request(misspelled_btn, 30, 20);
 	/* END GLADE CODE */
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_aspell),

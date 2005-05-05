@@ -189,7 +189,7 @@ static void startup_notification_complete(gboolean with_window)
 		 * We have to display a window, so let it be very little */
 		hack = gtk_window_new(GTK_WINDOW_POPUP);
 		gtk_widget_set_uposition(hack, 0, 0);
-		gtk_widget_set_usize(hack, 1, 1);
+		gtk_widget_set_size_request(hack, 1, 1);
 		gtk_widget_show(hack);
 	}
 

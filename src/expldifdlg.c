@@ -707,7 +707,7 @@ static void export_ldif_dialog_create( void ) {
 	GtkWidget *statusbar;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_usize(window, EXPORTLDIF_WIDTH, EXPORTLDIF_HEIGHT );
+	gtk_widget_set_size_request(window, EXPORTLDIF_WIDTH, EXPORTLDIF_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window),
 		_("Export Address Book to LDIF File") );

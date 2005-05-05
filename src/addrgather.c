@@ -373,7 +373,7 @@ static void addrgather_page_fields( gint pageNum, gchar *pageLbl ) {
 		gtk_adjustment_new( DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 100 );
 	spinbtnFolder = gtk_spin_button_new( GTK_ADJUSTMENT(adjFolder), 1, 0 );
 	gtk_box_pack_start( GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
-	gtk_widget_set_usize( spinbtnFolder, 100, -1);
+	gtk_widget_set_size_request( spinbtnFolder, 100, -1);
 	gtk_spin_button_set_numeric( GTK_SPIN_BUTTON(spinbtnFolder), TRUE );
 	gtk_table_attach( GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0 );
 
@@ -472,7 +472,7 @@ static void addrgather_dlg_create( void ) {
 	GtkWidget *hsbox;
 
 	window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-	gtk_widget_set_usize( window, 380, -1 );
+	gtk_widget_set_size_request( window, 380, -1 );
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_CENTER );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );	

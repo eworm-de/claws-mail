@@ -175,7 +175,7 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 
 	/* pack space */
 	w = gtk_alignment_new (0, 0, 0, 0);
-	gtk_widget_set_usize (w, 0, 6);
+	gtk_widget_set_size_request (w, 0, 6);
 	gtk_box_pack_start (GTK_BOX(vbox), w, FALSE, FALSE, 0);
 
 	return vbox;

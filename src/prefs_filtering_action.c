@@ -362,7 +362,7 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), account_label, FALSE, FALSE, 0);
 
 	account_combo = gtk_combo_new ();
-	gtk_widget_set_usize (account_combo, 150, -1);
+	gtk_widget_set_size_request (account_combo, 150, -1);
 	gtk_widget_show (account_combo);
 
 	combo_items = NULL;
@@ -423,7 +423,7 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
 
 	dest_entry = gtk_entry_new ();
-	gtk_widget_set_usize (dest_entry, 150, -1);
+	gtk_widget_set_size_request (dest_entry, 150, -1);
 	gtk_widget_show (dest_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
 	
@@ -455,7 +455,7 @@ static void prefs_filtering_action_create(void)
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize(arrow, -1, 16);
+	gtk_widget_set_size_request(arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(btn_hbox);
@@ -486,7 +486,7 @@ static void prefs_filtering_action_create(void)
 
 	action_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(action_scrolledwin);
-	gtk_widget_set_usize(action_scrolledwin, -1, 150);
+	gtk_widget_set_size_request(action_scrolledwin, -1, 150);
 	gtk_box_pack_start(GTK_BOX(action_hbox), action_scrolledwin,
 			   TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(action_scrolledwin),

@@ -1,3 +1,30 @@
+2005-05-05 [paul]	1.9.6cvs52
+
+	* src/account.c
+	* src/addrgather.c
+	* src/browseldap.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/importmutt.c
+	* src/importpine.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/noticeview.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_spelling.c
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+	* src/wizard.c
+	* src/gtk/description_window.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/progressdialog.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpmime/prefs_gpg.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		replace deprecated gtk_widget_set_usize
+
 2005-05-04 [colin]	1.9.6cvs51
 
 	* src/common/utils.c

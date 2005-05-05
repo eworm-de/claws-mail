@@ -231,7 +231,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	port = gtk_spin_button_new(GTK_ADJUSTMENT(port_adj), 1, 0);
 	gtk_widget_show(port);
 	gtk_box_pack_end(GTK_BOX(hbox1), port, FALSE, TRUE, 0);
-	gtk_widget_set_usize(port, 64, -2);
+	gtk_widget_set_size_request(port, 64, -2);
 	gtk_tooltips_set_tip(tooltips, port, _("Port of spamd server"),
 			     NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(port), TRUE);
@@ -259,7 +259,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	timeout = gtk_spin_button_new(GTK_ADJUSTMENT(timeout_adj), 1, 0);
 	gtk_widget_show(timeout);
 	gtk_box_pack_end(GTK_BOX(hbox6), timeout, FALSE, TRUE, 0);
-	gtk_widget_set_usize(timeout, 64, -2);
+	gtk_widget_set_size_request(timeout, 64, -2);
 	gtk_tooltips_set_tip(tooltips, timeout,
 			     _
 			     ("Time that is allowed for checking. If the check takes longer the check will be aborted and the message will be handled as not spam."),
@@ -300,7 +300,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	max_size = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_adj), 1, 0);
 	gtk_widget_show(max_size);
 	gtk_box_pack_end(GTK_BOX(hbox3), max_size, FALSE, TRUE, 0);
-	gtk_widget_set_usize(max_size, 64, -2);
+	gtk_widget_set_size_request(max_size, 64, -2);
 	gtk_tooltips_set_tip(tooltips, max_size,
 			     _
 			     ("Maximum size a message is allowed to have to be checked"),

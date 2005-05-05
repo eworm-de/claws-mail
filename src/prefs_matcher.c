@@ -438,7 +438,7 @@ static void prefs_matcher_create(void)
 
 	g_list_free(combo_items);
 
-	gtk_widget_set_usize(criteria_combo, 120, -1);
+	gtk_widget_set_size_request(criteria_combo, 120, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
 	criteria_list = GTK_COMBO(criteria_combo)->list;
@@ -459,7 +459,7 @@ static void prefs_matcher_create(void)
 
 	header_combo = gtk_combo_new();
 	gtk_widget_show(header_combo);
-	gtk_widget_set_usize(header_combo, 96, -1);
+	gtk_widget_set_size_request(header_combo, 96, -1);
 	gtkut_combo_set_items(GTK_COMBO (header_combo),
 			      "Subject", "From", "To", "Cc", "Reply-To",
 			      "Sender", "X-ML-Name", "X-List", "X-Sequence",
@@ -480,7 +480,7 @@ static void prefs_matcher_create(void)
 
 	value_entry = gtk_entry_new();
 	gtk_widget_show(value_entry);
-	gtk_widget_set_usize(value_entry, 200, -1);
+	gtk_widget_set_size_request(value_entry, 200, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), value_entry, 2, 3, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
@@ -513,7 +513,7 @@ static void prefs_matcher_create(void)
 
 	predicate_combo = gtk_combo_new();
 	gtk_widget_show(predicate_combo);
-	gtk_widget_set_usize(predicate_combo, 120, -1);
+	gtk_widget_set_size_request(predicate_combo, 120, -1);
 	predicate_list = GTK_COMBO(predicate_combo)->list;
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_combo)->entry),
 			       FALSE);
@@ -535,7 +535,7 @@ static void prefs_matcher_create(void)
 
 	predicate_flag_combo = gtk_combo_new();
 	gtk_widget_hide(predicate_flag_combo);
-	gtk_widget_set_usize(predicate_flag_combo, 120, -1);
+	gtk_widget_set_size_request(predicate_flag_combo, 120, -1);
 	predicate_flag_list = GTK_COMBO(predicate_flag_combo)->list;
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_flag_combo)->entry), FALSE);
 
@@ -568,7 +568,7 @@ static void prefs_matcher_create(void)
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize(arrow, -1, 16);
+	gtk_widget_set_size_request(arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(btn_hbox);
@@ -603,7 +603,7 @@ static void prefs_matcher_create(void)
 
 	bool_op_combo = gtk_combo_new();
 	gtk_widget_show(bool_op_combo);
-	gtk_widget_set_usize(bool_op_combo, 50, -1);
+	gtk_widget_set_size_request(bool_op_combo, 50, -1);
 	bool_op_list = GTK_COMBO(bool_op_combo)->list;
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(bool_op_combo)->entry),
 			       FALSE);
@@ -627,7 +627,7 @@ static void prefs_matcher_create(void)
 
 	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(cond_scrolledwin);
-	gtk_widget_set_usize(cond_scrolledwin, -1, 150);
+	gtk_widget_set_size_request(cond_scrolledwin, -1, 150);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), cond_scrolledwin,
 			   TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(cond_scrolledwin),
@@ -1371,7 +1371,7 @@ static void prefs_matcher_set_value_widget(GtkWidget *old_widget,
 	gtk_widget_ref(old_widget);
 	gtkut_container_remove(GTK_CONTAINER(matcher.criteria_table), old_widget);
 	gtk_widget_show(new_widget);
-	gtk_widget_set_usize(new_widget, 200, -1);
+	gtk_widget_set_size_request(new_widget, 200, -1);
 	gtk_table_attach(GTK_TABLE(matcher.criteria_table), new_widget, 
 			 2, 3, 1, 2, 
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 

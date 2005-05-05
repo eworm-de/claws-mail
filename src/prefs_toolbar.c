@@ -712,7 +712,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_widget_show(list_view_icons);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_icons), list_view_icons);
 	gtk_container_set_border_width(GTK_CONTAINER(list_view_icons), 1);
-	gtk_widget_set_usize(list_view_icons, 225, 108); 
+	gtk_widget_set_size_request(list_view_icons, 225, 108);
 
 	table = gtk_table_new (2, 3, FALSE);
 	gtk_container_add (GTK_CONTAINER (vbox_frame), table);
@@ -774,7 +774,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize(arrow, -1, 16);
+	gtk_widget_set_size_request(arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
@@ -820,7 +820,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	list_view_set = create_set_list_view(prefs_toolbar); 
 	gtk_widget_show(list_view_set);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_set), list_view_set);
-	gtk_widget_set_usize(list_view_set, 225, 120);
+	gtk_widget_set_size_request(list_view_set, 225, 120);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
