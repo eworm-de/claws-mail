@@ -1,3 +1,15 @@
+2005-05-06 [paul]	1.0.4cvs10
+
+	backported from GTK2...
+
+	* src/inc.c
+	* src/mainwindow.c
+		use gettext plural forms
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/toolbar.c
+		small improvement to english usage
+
 2005-05-05 [thorsten]	1.0.4cvs9
 
 	* src/folder.c

@@ -573,8 +573,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		switch (inc_state) {
 		case INC_SUCCESS:
 			if (pop3_session->cur_total_num > 0)
-				msg = g_strdup_printf
-					(_("Done (%d message(s) (%s) received)"),
+				msg = g_strdup_printf(
+					ngettext("Done (%d message (%s) received)",
+						 "Done (%d messages (%s) received)",
+					 pop3_session->cur_total_num),
 					 pop3_session->cur_total_num,
 					 to_human_readable(pop3_session->cur_total_recv_bytes));
 			else
@@ -683,8 +685,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 #undef SET_PIXMAP_AND_TEXT
 
 	if (new_msgs > 0)
-		fin_msg = g_strdup_printf(_("Finished (%d new message(s))"),
-					  new_msgs);
+		fin_msg = g_strdup_printf(ngettext("Finished (%d new message)",
+					  	   "Finished (%d new messages)",
+					  	   new_msgs), new_msgs);
 	else
 		fin_msg = g_strdup_printf(_("Finished (no new messages)"));
 
@@ -935,7 +938,9 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 
 	if (pop3_session->cur_total_num > 0) {
 		g_snprintf(buf, sizeof(buf),
-			   _("Retrieving (%d message(s) (%s) received)"),
+			   ngettext("Retrieving (%d message (%s) received)",
+			   	    "Retrieving (%d messages (%s) received)",
+				    pop3_session->cur_total_num),
 			   pop3_session->cur_total_num,
 			   to_human_readable
 			   (pop3_session->cur_total_recv_bytes));

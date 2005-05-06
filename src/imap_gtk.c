@@ -307,7 +307,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
-		(_("All folder(s) and message(s) under `%s' will be deleted.\n"
+		(_("All folders and messages under `%s' will be deleted.\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel(_("Delete folder"), message,
 			    _("Yes"), _("+No"), NULL);
