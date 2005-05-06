@@ -2852,7 +2852,9 @@ static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
 	struct DelDupsData data = {0, 0};
 
 	folder_func_to_all_folders(deldup_all, &data);
-	alertpanel_notice(_("Deleted %d duplicate message(s) in %d folders.\n"),
+	alertpanel_notice(ngettext("Deleted %d duplicate message in %d folders.\n",
+				   "Deleted %d duplicate messages in %d folders.\n",
+				   data.dups),
 			  data.dups, data.folders);
 }
 

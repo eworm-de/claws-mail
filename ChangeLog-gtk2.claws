@@ -1,3 +1,13 @@
+2005-05-06 [paul]	1.9.6cvs56
+
+	* src/inc.c
+	* src/mainwindow.c
+		use gettext plural forms
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/toolbar.c
+		small improvement to english usage
+
 2005-05-05 [thorsten]	1.9.6cvs55
 
 	* src/folder.c

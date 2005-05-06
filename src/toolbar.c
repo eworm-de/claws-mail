@@ -154,7 +154,7 @@ struct {
 } toolbar_text [] = {
 	{ "A_RECEIVE_ALL",   	N_("Receive Mail on all Accounts")         },
 	{ "A_RECEIVE_CUR",   	N_("Receive Mail on current Account")      },
-	{ "A_SEND_QUEUED",   	N_("Send Queued Message(s)")               },
+	{ "A_SEND_QUEUED",   	N_("Send Queued Messages")                 },
 	{ "A_COMPOSE_EMAIL", 	N_("Compose Email")                        },
 	{ "A_COMPOSE_NEWS",  	N_("Compose News")                         },
 	{ "A_REPLY_MESSAGE", 	N_("Reply to Message")                     },
@@ -1344,7 +1344,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->send_btn = item; 
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->send_btn,
-					   _("Send Queued Message(s)"), NULL);
+					   _("Send Queued Messages"), NULL);
 			break;
 		case A_COMPOSE_EMAIL:
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
