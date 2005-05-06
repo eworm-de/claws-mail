@@ -208,8 +208,8 @@ static void grouplist_dialog_create(void)
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolledwin),
-				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_ALWAYS,
+				       GTK_POLICY_ALWAYS);
 
 	titles[0] = _("Newsgroup name");
 	titles[1] = _("Messages");
@@ -218,6 +218,7 @@ static void grouplist_dialog_create(void)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_clist_set_column_width
 		(GTK_CLIST(ctree), 0, GROUPLIST_COL_NAME_WIDTH);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(ctree), 0, TRUE);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_MULTIPLE);
 	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
