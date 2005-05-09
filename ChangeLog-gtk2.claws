@@ -1,3 +1,13 @@
+2005-05-09 [paul]
+
+	* tools/claws.i18n.status.pl
+		add Ricardo Mones Lastra's script that has been providing
+		the i18n status page for many months
+
+2005-05-09 [paul]	1.9.9
+
+	1.9.9 release
+
 2005-05-09 [paul]	1.9.6cvs58
 
 	* AUTHORS
