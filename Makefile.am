@@ -3,6 +3,7 @@ SUBDIRS = m4 po src tools config intl doc
 EXTRA_DIST = \
 	ChangeLog.claws \
 	README.claws \
+	RELEASE_NOTES.claws \
 	sylpheed-128x128.png \
 	sylpheed-64x64.png \
 	sylpheed-claws.pc.in \

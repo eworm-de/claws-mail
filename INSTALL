@@ -25,6 +25,10 @@ only needed if you require the additional functionality
 compface
     for X-Face support
     http://freshmeat.net/projects/compface/
+GnuPG (>= 1.2.1) and GPGME (>= 0.3.12 and < 0.4)
+    for GnuPG support
+    http://www.gnupg.org/
+    ftp://ftp.gnupg.org/gcrypt/gpgme/
 OpenSSL (>= 0.9.7)
     for SSL support
     http://www.openssl.org/
@@ -50,10 +54,6 @@ Clam AntiVirus
 Dillo (>= 0.7.0)
     for Dillo HTML viewer plugin support
     http://www.dillo.org/
-GnuPG (>= 1.2.1) and GPGME (>= 0.3.12 and < 0.4)
-    for PGP/MIME plugin support
-    http://www.gnupg.org/
-    http://www.gnupg.org/gpgme.html
 GtkMathView (>= 0.4.2 and < 0.5)
     for MathML viewer plugin support
     http://helm.cs.unibo.it/mml-widget/
@@ -63,7 +63,7 @@ Options for configure script
   --with-config-dir=RCDIR      	    Local config dir (default: .sylpheed)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
-  --enable-openssl    		    OpenSSL support
+  --disable-openssl    		    disable OpenSSL support
   --enable-aspell     		    GNU/aspell support
   --enable-ldap       		    LDAP support
   --enable-jpilot     		    JPilot support

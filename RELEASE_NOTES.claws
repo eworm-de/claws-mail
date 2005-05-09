@@ -1,0 +1,68 @@
+9th May 2005                                    Sylpheed-Claws 1.0.4a
+
+		    SYLPHEED-CLAWS  RELEASE NOTES
+                      http://claws.sylpheed.org
+
+Sylpheed-Claws is an extended version of  Sylpheed, a GTK+ based,
+lightweight, and fast e-mail client
+
+This is the GTK 1 version of Sylpheed-Claws.
+		     
+This release of Sylpheed-Claws is based on version 1.0.4 of the main
+Sylpheed branch.
+
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* This is a maintenance release. As all active development is now
+  focused on the GTK 2 branch (v1.9.x), new releases of the GTK 1
+  branch (v1.0.x) will be maintenance releases containing bug fixes.
+  New features that appear in the GTK 2 branch may or may not be
+  backported to the GTK 1 branch.
+		  
+New in this release:
+~~~~~~~~~~~~~~~~~~~~
+
+* An option for a default Queue folder has been added to the
+  'Advanced' tab of Account Preferences
+
+* Filtering Preferences window size is saved
+
+* New translations: Catalan, Finnish
+
+* Updated translations: French, German, Italian, Polish, Russian,
+  Serbian, Slovak, Spanish, Simplified Chinese
+
+* Bug fixes, including the following:
+	o bug 634 'Segfault when opening this message'
+	o bug 674 'folder DnD looses scoring values'
+	o bug 693 'undesirable cancelling action'
+	o bug 695 'Disabling Privacy System Doesn't Work + Related
+	           Issues'
+	o bug 697 'Segmentation Fault due to NULL string (%s)
+		   pointers in fprintf'
+	o bug 708 'Request return reciept setting isn't honored.'
+	o bug 713 'Resent-To and Resent-Cc headers are garbled'
+	o bug 736 'Accounts containing a slash break UIDL managing'
+	o duplicate hotkeys in Folderview's contextual menu
+	o duplicate hotkeys in Mainwindow's menu
+	o msgview window resizing
+	o gtkaspell.c: don't pass NULL to *printf()
+	o imap.c: handling of folders with [] in their name
+	o mh.c: marks lost on filesystems with different stat()
+	  results on summer-/wintertime
+	o pgpmime.c: bus error on 64bit
+	o prefs_account.c: smtp auth type off-by-one
+	o prefs_filtering.c: crash when changes to filtering
+	  dialog were not added and no filter rules are defined
+	o prefs_filtering.c: memory leak
+	o send_message.c: workaround for Gmail SMTP server
+	o socket.c: refresh DNS if necessary
+
+For further details of the numbered bugs listed above consult
+www.thewildbeast.co.uk/sylpheed-claws/bugzilla/
+
+----------------------------------------------------------
+See ChangeLog.claws and README.claws for full information 
+regarding changes in this release. Refer to ChangeLog for
+changes synchronised from sylpheed main.

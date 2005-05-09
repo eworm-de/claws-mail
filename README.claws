@@ -1,20 +1,20 @@
 README.claws
 ------------
-[last revision: 2004-12-06]
+[last revision: 2005-05-09]
 
 Summary:
 
  1. What is Sylpheed-Claws?
  2. Plugins
- 3. Actions
- 4. Icon Themes
- 5. Spell Checking
- 6. Quick Search
- 7. Custom toolbar
- 8. Partial downloading of POP3 mails
- 9. Other things that Claws does differently
-10. Tools
-11. Switching from Sylpheed to Sylpheed-Claws
+ 3. Switching between Sylpheed Claws and Sylpheed
+ 4. Actions
+ 5. Icon Themes
+ 6. Spell Checking
+ 7. Quick Search
+ 8. Custom toolbar
+ 9. Partial downloading of POP3 mails
+10. Other things that Claws does differently
+11. Tools
 12. How to contribute
 13. How to request features
 14. Installing Claws from CVS
@@ -83,9 +83,7 @@ Select the plugin that you want and click 'OK'
   o PGP/MIME
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails. Preferences are found in '/Configuration/Preferences/
-    Privacy/GPG'.
-    Uses GnuPG/GPGME, <http://www.gnupg.org/gpgme.html>
+    own mails.Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
 
   o SpamAssassin
     Enables the scanning of incoming mail received from a POP,
@@ -106,8 +104,63 @@ More plugins can be found here:
 http://sylpheed-claws.sourceforge.net/plugins.php
 
 
+3. Switching between Sylpheed Claws and Sylpheed
+------------------------------------------------
 
-3. Actions
+  From Sylpheed to Sylpheed Claws	
+  -------------------------------
+
+  From the user perspective Claws is just a fancy Sylpheed, so it uses the
+  same Sylpheed setting files located in ~/.sylpheed. However, you may wish
+  to use the ./configure option --with-config-dir=RCDIR, so that you can
+  preserve your Sylpheed settings.
+
+  It's always a good idea to back up all files in ~/.sylpheed in case
+  you want to switch back to Sylpheed and didn't use the --with-config-dir
+  option. (You don't have to backup the directories.)
+
+  If you use a new configuration directory you will need to manually copy
+  all of your address book files, ~/.sylpheed/addrbook*
+  
+  There are some things that frequently come up when switching to Claws:
+
+
+  * What happened to my filter rules? 
+
+    Claws uses a new filtering system. Your old Sylpheed filter rules will not 
+    be used. In subdirectory tools/ of the distribution there is a Perl script 
+    called filter_conv.pl which converts old filter rules to the claws 
+    filtering system, see tools/README for details. This currently only supports
+    conversion from Sylpheed's old filtering system, < 0.9.99.
+ 
+  * What happened to the compose email and compose news buttons? 
+
+    There's a composite button for both composing mail and news. It is toggled
+    between composing mail and news automatically when  a mail or news folder
+    is selected.
+
+
+  * And to the Preferences and Execute buttons?
+
+    Sorry, they're not there.
+
+
+  From Sylpheed Claws to Sylpheed
+  -------------------------------
+
+  Moving from Claws to Sylpheed is also simple. Sylpheed should neglect the things
+  Claws put in the settings files. This also means that the old rules will work
+  again. 
+
+  If you want to switch back to Claws at a later time, and are using the same config
+  directory for both, make sure you back up at least  ~/.sylpheed/matcherrc (the
+  Claws filtering rules), and ~/.sylpheed/sylpheedrc (which may have some claws
+  specific settings).
+
+  When switching back to Sylpheed you will not lose messages or message flags (color
+  labels, read / unread status of messages). 
+
+4. Actions
 ----------
   The "actions" feature is a convenient way for the user to launch external 
   commands to process a complete message file including headers and body or 
@@ -241,7 +294,7 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 
 
 
-4. Icon Themes
+5. Icon Themes
 --------------
   Claws has support for different icon sets. Several icon sets can be
   downloaded from http://sylpheed-claws.sourceforge.net/themes.php
@@ -253,7 +306,7 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 
 
 
-5. Spell Checking
+6. Spell Checking
 -----------------
   a. Requirements
   b. Configuration and installation
@@ -354,10 +407,15 @@ http://sylpheed-claws.sourceforge.net/plugins.php
   misspelled word.  This way, you can spell check easily a whole message
   starting from its beginning and using the 'Forward to next misspelled
   word' keyboard short cut.
+  
+
+  d. Known problems
+  -----------------
+
+    No known problems as the time of this writing (0.8.2claws3).
 
 
-
-6. Quick Search with extended search
+7. Quick Search with extended search
 ------------------------------------
     Quick Search, with its powerful Extended search function,
     enables searching through folder's messages.
@@ -424,11 +482,10 @@ http://sylpheed-claws.sourceforge.net/plugins.php
     f foo & ~s bar     messages from foo that do not have bar in thesubject
 
 
-
-7. Custom toolbar
+8. Custom toolbar
 -----------------
 
-   '/Configuration/Preferences/Customize Toolbars' lets you define the
+   /Configuration/Preferences/Customize Toolbars lets you define the
    toolbar you want. The configuration dialog enables you to set an icon,
    an appropriate text, and map an action to it. Actions to choose
    from are predefined. You can also have your "Sylpheed Actions" (refer
@@ -444,10 +501,10 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 
 
     
-8. Partial downloading of POP3 mails
+9. Partial downloading of POP3 mails
 ------------------------------------
-  Messages over the configured size limit, ('/[Account preferences]/
-  Receive/Message size limit'), will be partially retrieved. These
+  Messages over the configured size limit, (/[Account preferences]/
+  Receive/Message size limit), will be partially retrieved. These
   messages will have a Notice View displayed (above the Message View),
   informing of the partially retrieved state and the total size of the
   message. The Notice View will also contain two buttons, 'Mark for
@@ -463,15 +520,15 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 
 
 
-9. Other things that Claws does differently
--------------------------------------------
+10. Other things that Claws does differently
+--------------------------------------------
   Claws does a lot of things differently. Here is a quick run-down of
   just a few of them:
 
   * auto address replacement in summary view
   
     This matches a plain email address with a person in the address book.
-    This feature is enabled in '/Configuration/Preferences/Common/Display'
+    This feature is enabled in /Configuration/Preferences/Common/Display
     'Display sender using addressbook'
 
   * manual selection of MIME types for attachments
@@ -583,11 +640,12 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 
 
 
-10. Tools
+11. Tools
 --------- 
-  You will find all of these tools in the 'tools' directory,
-  see tools/README for further information:
+  You will find all of these tools in the 'tools' directory:
 
+  acroread2sylpheed.pl 
+	send PDFs from Adobe Reader 7
   calypso_convert.pl 
 	import mbox files exported by calypso
   convert_mbox.pl
@@ -596,8 +654,8 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 	convert a Eudora (v.3?) addressbook to vCard 
 	(GnomeCard) format
   filter_conv.pl
-	convert Sylpheed's filter rules, (< 0.9.99), into
-	Claws' filtering format
+	convert sylpheed main's filter rules, (< 0.9.99),
+	into Claws' filtering format
   freshmeat_search.pl
   	Actions script to lookup the selected text on
 	Freshmeat www.freshmeat.net using the configured
@@ -614,7 +672,8 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 	GnuPG cleartext-signing script for use with
 	Actions
   kmail2sylpheed.pl
-	convert a Kmail addressbook to a Claws addressbook
+	convert a Kmail addressbook to a Sylpheed
+	addressbook
   kmail2sylpheed_v2.pl
 	new version of the address book conversion script
 	for newer versions of Kmail/Kaddressbook
@@ -624,81 +683,33 @@ http://sylpheed-claws.sourceforge.net/plugins.php
   	search any searchable website for the selected text
   nautilus2sylpheed.sh
   	enables sending files from the Nautilus file manager
-	to Claws
+	to Sylpheed
   OOo2sylpheed.pl
-	enable OpenOffice to send documents through Claws
+	enable OpenOffice to send documents through
+	sylpheed
   outlook2sylpheed.pl
-	convert an Outlook contacts list to a Claws addressbook
+	convert an Outlook contacts list to a Sylpheed
+	addressbook
   sylpheed-switcher
-	enable quick-switching between Claws and Sylpheed
+	enable quick-switching between claws and main
 	in a non-destructive way
   sylprint.pl
-	process a Claws mail and print it using enscript if
-	available or lpr if not
+	process a Sylpheed mail and print it using enscript
+	if available or lpr if not
   tb2sylpheed
-	convert an addressbook exported from The Bat! into a
-	Claws addressbook
+	convert an addressbook exported from The Bat! into 
+	a Sylpheed addressbook
   textviewer.sh
   	attempt to view an attachment as plain text
   update-po 
-	translators' tool that eases the creation of *.po files
+	translators' tool that eases the creation of 
+	*.po files
   uudec
 	decode UUencoded mails, for use with Actions
   kdeservicemenu/*
   	Service Menus for Konqueror to allow attaching files and
 	compressing/attaching files/directories to a new Compose
 	window
-
-
-
-11. Switching from Sylpheed to Sylpheed-Claws
----------------------------------------------
-
-  Sylpheed-Claws uses many of the same settings as Sylpheed and, by
-  default, the same configuration directory. Therefore, it is possible
-  to simply install Claws and continue as usual.
-
-  However, if you wish to preserve your Sylpheed settings, simply copy
-  Sylpheed's configuration directory to a new location, and use the
-  ./configure option --with-config-dir=RCDIR when building Claws.
-  e.g.
-  cd
-  cp -r .sylpheed .sylpheed-claws
-  cd [Sylpheed-Claws source directory]
-  ./configure --with-config-dir=.sylpheed-claws
-
-  Sylpheed and Claws, by default, both share the same executable name,
-  'sylpheed', so if you want to have them both installed you can, for
-  example, pass a prefix to the ./configure script, or use
-  --program-suffix=SUFFIX
-  e.g.
-  ./configure --prefix=/usr
-  or
-  ./configure --program-suffix=-claws
-
-  
-  Certain features that are built into Sylpheed are available as
-  plugins in Claws, for example, image viewing and GnuPG support.
-  To enable these features you will need to load the plugins.
-  Go to '/Configuration/Plugins' and click 'Load Plugin'. Then
-  select the plugin file (ending in .so) that you want to load.
-  Configuration options for the plugins can be found in
-  'Configuration/Preferences'. (See the Plugins section of this
-  document for further details.)
-
-
-  Claws uses a different Filtering system from Sylpheed and your
-  Sylpheed filter settings will not be used. In subdirectory tools/
-  of the distribution there is a Perl script called filter_conv.pl
-  which converts old Sylpheed filter rules to the Claws filtering
-  system, see tools/README for details. Currently this only supports
-  conversion from Sylpheed's old filtering system, < 0.9.99.
-   
-
-  The toolbar contains a composite button for both composing mail and
-  news. It is toggled between composing mail and news automatically when
-  a mail or news folder is selected.
-
 
 
 12. How to contribute
@@ -766,13 +777,25 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
   make install		[as root]
 
   You will need a full set of development tools installed to be able to run
-  autogen.sh. Also see ac/README.
+  autogen.sh. See also ac/README.
 
 
 
 15. Release History
 -------------------
 
+GTK 2 Version
+-------------
+2005-05-09	1.9.9
+2005-03-18	1.9.6
+
+GTK 1 Version
+-------------
+2005-05-09	1.0.4a
+2005-03-24	1.0.4
+2005-03-10	1.0.3
+2005-02-08	1.0.1
+2005-01-17	1.0.0
 2004-12-06	0.9.13
 2004-09-27	0.9.12b
 2004-08-23	0.9.12a

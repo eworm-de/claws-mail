@@ -1,3 +1,41 @@
+2005-05-09 [paul]	1.0.4cvs11
+
+	* AUTHORS
+	* INSTALL
+	* README.claws
+		updated 
+	* Makefile.am 
+	* RELEASE_NOTES.claws
+		add release notes to cvs to simplify release
+		procedure
+	* configure.ac
+	* po/ca.po
+	* po/fi.po
+		add new Catalan and Finnish translations
+		submitted by Miquel Oliete and Flammie Pirinen
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pl.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Thomas Gilgin, Ricardo Mones Lastra, Fabien Vantard,
+		Andrea Spadaccini, Emilian Nowak, Pavlo Bohmat, Andrej Kacian,
+		Urke MMI, and Hansom Young
+	* src/main.c
+		Fix drafting when quitting. compose_draft() closes the 
+		compose windows, which modifies the compose_list GSList.
+		We have to refresh this list after echo drafting to avoid a 
+		segfault
+	* src/partial_download.c
+		fix segfault on exit
+	* src/common/utils.c
+		Fix crash when subst_for_filename is called
+		with a NULL parameter
+
 2005-05-06 [paul]	1.0.4cvs10
 
 	backported from GTK2...

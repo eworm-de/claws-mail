@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=10
+EXTRA_VERSION=11
 EXTRA_RELEASE=
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
@@ -90,7 +90,7 @@ esac
 AM_ICONV
 
 dnl for gettext
-ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
+ALL_LINGUAS="bg ca cs de el en_GB es fi fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
 AM_GNU_GETTEXT([use-libtool])
 AM_GNU_GETTEXT_VERSION(0.12.1)
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))

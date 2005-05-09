@@ -652,15 +652,12 @@ static void initial_processing(FolderItem *item, gpointer data)
 
 static void draft_all_messages(void)
 {
-	GList *compose_list = compose_get_compose_list();
+	GList *compose_list = NULL;
 	GList *elem = NULL;
 	
-	if (compose_list) {
-		for (elem = compose_list; elem != NULL && elem->data != NULL; 
-		     elem = elem->next) {
-			Compose *c = (Compose*)elem->data;
-			compose_draft(c);
-		}
+	while ((compose_list = compose_get_compose_list()) != NULL) {
+		Compose *c = (Compose*)compose_list->data;
+		compose_draft(c);
 	}	
 }
 
