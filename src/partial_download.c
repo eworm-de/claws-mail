@@ -141,10 +141,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	int err = -1;
 	gchar *filename;
 	MsgInfo *tinfo;
-	gchar *sanitized_uid = g_strdup(tinfo->account_login);
-	
-	subst_for_filename(sanitized_uid);
-	
+	gchar *sanitized_uid = NULL;	
 
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename) {
@@ -152,6 +149,9 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		return err;
 	}
 	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);
+
+	sanitized_uid = g_strdup(tinfo->account_login);
+	subst_for_filename(sanitized_uid);
 
 	if (!tinfo->account_server
 	||  !tinfo->account_login

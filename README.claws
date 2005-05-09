@@ -1,10 +1,10 @@
 README.claws
 ------------
-[last revision: 2004-12-05]
+[last revision: 2005-05-09]
 
 Summary:
 
- 1. What is Sylpheed Claws?
+ 1. What is Sylpheed-Claws?
  2. Plugins
  3. Switching between Sylpheed Claws and Sylpheed
  4. Actions
@@ -22,18 +22,18 @@ Summary:
 16. Useful Links
 
 
-1. What is Sylpheed Claws?
+1. What is Sylpheed-Claws?
 --------------------------
 
-Sylpheed Claws is a extended version of Sylpheed, a light weight mail
+Sylpheed-Claws is an extended version of Sylpheed, a light weight mail
 user agent for UNIX. Features in this branch may (or may not) end up in 
 Sylpheed. 
 
-Hiroyuki's ChangeLog is also included in the claws-branch distribution, 
+Hiroyuki's ChangeLog is also included in the Claws branch distribution,
 so it should be easy to spot which features were merged with Sylpheed
 (and which features were not).
 
-For brevity Sylpheed Claws is referred to as Claws, and Sylpheed as either
+For brevity Sylpheed-Claws is referred to as Claws, and Sylpheed as either
 Sylpheed or Main.
 
 
@@ -55,25 +55,15 @@ Select the plugin that you want and click 'OK'
     received from a POP, IMAP or LOCAL account using Clam 
     AntiVirus. It can optionally delete the mail or save it 
     to a designated folder. Preferences can be found in 
-    'Configuration/Other Preferences/Filtering/Clam AntiVirus'. 
+    '/Configuration/Preferences/Filtering/Clam AntiVirus'.
     Clam AntiVirus is available from http://clamav.sourceforge.net/
   
   o Dillo HTML Viewer 
     Enables the viewing of html messages using the Dillo web
     browser, version 0.7.0 or newer. It uses Dillo's --local
     option by default for safe browsing. Preferences can be 
-    found in 'Configuration/Other Preferences/Message View/
-    Dillo Browser'. Dillo is available from 
-    http://www.dillo.org/
-	
-  o Image Viewer
-    Enables viewing of attached images and replaces the 
-    previous built-in image viewer. Preferences can now be 
-    found in 'Configuration/Other Preferences/Messageview/
-    Image Viewer'. If the option 'Automatically display
-    attached images' is not set, the user is presented with
-    a 'Load Image' button in the messageview and information
-    about the file.
+    found in '/Configuration/Preferences/Message View/Dillo Browser'.
+    Dillo is available from http://www.dillo.org/
 	
   o MathML Viewer
     Enables the viewing of attachments that have the 
@@ -84,16 +74,14 @@ Select the plugin that you want and click 'OK'
   o PGP/MIME
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails.Uses GnuPG/GPGME, <http://www.gnupg.org/gpgme.html>
-    Relies upon the standard configure option:
-    	--enable-gpgme
-   	
+    own mails.Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+
   o SpamAssassin
     Enables the scanning of incoming mail received from a POP,
     IMAP or LOCAL account using SpamAssassin. It can optionally 
     delete mail identified as spam or save it to a designated 
-    folder. Preferences can be found in 
-    'Configuration/Other Preferences/Filtering/SpamAssassin'. 
+    folder. Preferences can be found in '/Configuration/
+    Preferences/Filtering/SpamAssassin'.
     SpamAssassin is available from http://spamassassin.org
     Configure option:
     	--enable-spamassassin-plugin
@@ -319,13 +307,7 @@ http://sylpheed-claws.sourceforge.net/plugins.php
   a. Requirements
   ---------------
 
-  Note:
-  As for version 0.8.3 (and cvs version 0.8.2claws3), Sylpheed-Claws uses
-  the new GNU/aspell 0.50 for spell checking instead of the obsolete pspell
-  and old aspell 0.33.x.  You will need to upgrade your system.  See
-  http://www.gnu.org/software/aspell for instructions on how to do this.
-
-  The spell checker in Sylpheed requires the new GNU/aspell library
+  The spell checker in Sylpheed-Claws requires the GNU/aspell library
   (http://www.gnu.org/software/aspell), version 0.50 or newer.
 
   You also need the dictionaries. Check GNU/aspell home page for how
@@ -333,11 +315,11 @@ http://sylpheed-claws.sourceforge.net/plugins.php
   
   NB: The old dictionaries used by the old aspell will not work.
 
-  b. Configuring Sylpheed
-  -----------------------
+  b. Configuring Claws
+  --------------------
 
-  Spell checking is enabled if you configure Sylpheed appropriately. Add
-  the option '--enable-aspell' when configuring. E.g.:
+  Spell checking is enabled if you configure Claws appropriately. Add
+  the option '--enable-aspell' when configuring, e.g.:
 
   ./configure --enable-aspell
 
@@ -370,22 +352,16 @@ http://sylpheed-claws.sourceforge.net/plugins.php
   c. Usage
   --------
 
-  NOTE: if you upgraded from Sylpheed-Claws 0.8.2 (or cvs version 0.8.2claws2) 
-  or earlier, please check if the dictionary path was updated in the
-  Configuration -> Common Preferences -> Spell Checker menu.  If not, update
-  it accordingly as explained below.
-
   After successful compiling, you need to tell Sylpheed where your
   dictionaries reside. The configure script should have found it,
   but in case it did not, run 'aspell config dict-dir' on the
   shell to get the path to the dictionaries.
 
-  Then run Sylpheed and go to Configuration -> Common preferences ->
-  Spell Checker.  Check the box 'Enable spell checker' and
-  use the file selector ('...' button) to select the path where the
-  dictionaries reside.  Within the file selector, go to that directory
-  and select *any* file in the file lists.  Click OK. Then, you should 
-  be able to select your default dictionary.
+  Then run Sylpheed and go to /Configuration/Preferences/Compose/Spell Checker.
+  Check the box 'Enable spell checker' and use the file selector ('...' button)
+  to select the path where the dictionaries reside.  Within the file selector,
+  go to that directory and select *any* file in the file lists.  Click OK.
+  Then, you should be able to select your default dictionary.
 
   When composing, misspelled words are highlighted.  Click on any
   highlighted word with the right mouse button to get a list of
@@ -659,6 +635,8 @@ http://sylpheed-claws.sourceforge.net/plugins.php
 --------- 
   You will find all of these tools in the 'tools' directory:
 
+  acroread2sylpheed.pl 
+	send PDFs from Adobe Reader 7
   calypso_convert.pl 
 	import mbox files exported by calypso
   convert_mbox.pl
@@ -732,8 +710,9 @@ You are encourged to send patches via the Sylpheed-Claws sourceforge
 project's Patch Tracker.
 http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
 
-If that's too troublesome, either contact Paul Mangan or consider
-posting to the Sylpheed-Claws-users mailing list.
+If that's too troublesome, either contact Paul Mangan
+<twb@users.sourceforge.net> or consider posting to the
+Sylpheed-Claws-users mailing list.
 http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users
 
 Bugs can be reported with Claws' bugzilla at:
@@ -743,8 +722,9 @@ Of course, you can also post to the Sylpheed-Claws-users mailing list.
 
 Also, we really try to incorporate good contributions, but sometimes we
 don't have enough time. If the contribution is really big, or requires
-a long time to stabilize, send a mail to Paul Mangan. We can probably
-arrange access to the Sylpheed-Claws CVS tree.
+a long time to stabilise, send a mail to Paul Mangan
+<twb@users.sourceforge.net>. We can probably arrange access to the
+Sylpheed-Claws CVS tree.
 
 
 
@@ -775,7 +755,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
   When prompted for a password press the RETURN key.
   After anonymously logging in:
 
-  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws co sylpheed-claws 
+  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws co -r gtk2 sylpheed-claws 
 
 
   b. Installing
@@ -795,6 +775,18 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 15. Release History
 -------------------
 
+GTK 2 Version
+-------------
+2005-05-09	1.9.9
+2005-03-18	1.9.6
+
+GTK 1 Version
+-------------
+2005-05-09	1.0.4a
+2005-03-24	1.0.4
+2005-03-10	1.0.3
+2005-02-08	1.0.1
+2005-01-17	1.0.0
 2004-12-06	0.9.13
 2004-09-27	0.9.12b
 2004-08-23	0.9.12a
@@ -856,7 +848,7 @@ External Plugins
 Icon Themes
     http://sylpheed-claws.sourceforge.net/themes.php
 CVS webview
-    http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/sylpheed-claws/sylpheed-claws/
+    http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/sylpheed-claws/sylpheed-claws/?only_with_tag=gtk2
 Users Mailing List subscription page
     http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/
 Users Mailing List archive

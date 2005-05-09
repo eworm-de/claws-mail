@@ -5,6 +5,7 @@ EXTRA_DIST = \
 	ChangeLog-gtk2.claws \
 	ChangeLog-gtk2.jp \
 	README.claws \
+	RELEASE_NOTES.claws \
 	sylpheed-128x128.png \
 	sylpheed-64x64.png \
 	sylpheed-claws.pc.in \

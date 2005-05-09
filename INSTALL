@@ -28,7 +28,7 @@ compface
 GnuPG (>= 1.2.1) and GPGME (>= 0.3.12 and < 0.4)
     for GnuPG support
     http://www.gnupg.org/
-    http://www.gnupg.org/gpgme.html
+    ftp://ftp.gnupg.org/gcrypt/gpgme/
 OpenSSL (>= 0.9.7)
     for SSL support
     http://www.openssl.org/
@@ -41,17 +41,13 @@ Aspell (>= 0.50) (and dictionaries)
 J-Pilot
     for J-Pilot support
     http://www.jpilot.org/
-gdk-pixbuf or imlib
-    for image viewer plugin support
-    ftp://ftp.gnome.org/pub/GNOME/sources/gdk-pixbuf/
-    ftp://ftp.gnome.org/pub/GNOME/sources/imlib/
 SpamAssassin
     for SpamAssassin plugin support
     http://spamassassin.org/
 Clam AntiVirus
     for Clam AntiVirus plugin support
     http://clamav.sourceforge.net/
-Dillo
+Dillo (>= 0.7.0)
     for Dillo HTML viewer plugin support
     http://www.dillo.org/
 GtkMathView (>= 0.4.2 and < 0.5)
@@ -60,11 +56,10 @@ GtkMathView (>= 0.4.2 and < 0.5)
   
 Options for configure script
 ============================
-  --with-config-dir=RCDIR      	    Local config dir (default: .sylpheed)
+  --with-config-dir=RCDIR      	    Local config dir (default: .sylpheed-gtk2)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
-  --enable-openssl    		    OpenSSL support
-  --enable-gpgme      		    GnuPG support
+  --disable-openssl    		    disable OpenSSL support
   --enable-aspell     		    GNU/aspell support
   --enable-ldap       		    LDAP support
   --enable-jpilot     		    JPilot support
@@ -74,7 +69,6 @@ Options for configure script
   --enable-spamassassin-plugin      Build SpamAssassin plugin
   --disable-pgpmime-plugin          Do not build PGP/MIME plugin
   --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin
-  --disable-image-viewer-plugin     Do not build image viewer plugin
   --disable-dillo-viewer-plugin     Do not build Dillo plugin
   --disable-clamav-plugin           Do not build Clam AntiVirus plugin
  

@@ -1,3 +1,41 @@
+2005-05-09 [paul]	1.9.6cvs58
+
+	* AUTHORS
+	* INSTALL
+	* README.claws
+		updated
+	* Makefile.am 
+	* RELEASE_NOTES.claws
+		add release notes to cvs to simplify release
+		procedure
+	* configure.ac
+		add ca and fi to ALL_LINGUAS
+	* po/Makefile.in.in
+		workaround for missing Makevars
+	* po/ca.po
+	* po/fi.po
+		add new Catalan and Finnish translations
+		submitted by Miquel Oliete and Flammie Pirinen
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pl.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Thomas Gilgin, Ricardo Mones Lastra, Fabien Vantard,
+		Andrea Spadaccini, Emilian Nowak, Pavlo Bohmat, Andrej Kacian,
+		Urke MMI, and Hansom Young
+	* src/main.c
+		Fix drafting when quitting. compose_draft() closes the
+		compose windows, which modifies the compose_list GSList.
+		We have to refresh this list after echo drafting to avoid a
+		segfault
+	* src/partial_download.c
+		fix segfault on exit
+
 2005-05-06 [paul]	1.9.6cvs57
 
 	* src/grouplistdialog.c
