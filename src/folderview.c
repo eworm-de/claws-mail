@@ -901,138 +901,75 @@ void folderview_check_new_all(void)
 	inc_unlock();
 }
 
-static gboolean folderview_search_new_recursive(GtkCTree *ctree,
-						GtkCTreeNode *node)
-{
-	FolderItem *item;
-
-	if (node) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item) {
-			if (item->new_msgs > 0 ||
-			    (item->stype == F_QUEUE && item->total_msgs > 0))
-				return TRUE;
-		}
-		node = GTK_CTREE_ROW(node)->children;
-	} else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	while (node) {
-		if (folderview_search_new_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
-	}
-
-	return FALSE;
-}
-
 static gboolean folderview_have_new_children(FolderView *folderview,
-					     GtkCTreeNode *node)
+						FolderItem *item)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GNode *node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
 
-	if (!node)
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	if (!node)
-		return FALSE;
-
-	node = GTK_CTREE_ROW(node)->children;
-
-	while (node) {
-		if (folderview_search_new_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
+	if (item->unread_msgs > 0 ||
+	    (item->stype == F_QUEUE && item->total_msgs > 0)){
+		return TRUE;
 	}
 
-	return FALSE;
-}
-
-static gboolean folderview_search_unread_recursive(GtkCTree *ctree,
-						   GtkCTreeNode *node)
-{
-	FolderItem *item;
-
-	if (node) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item) {
-			if (item->unread_msgs > 0 ||
-			    (item->stype == F_QUEUE && item->total_msgs > 0))
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_new_children(folderview, next_item))
 				return TRUE;
 		}
-		node = GTK_CTREE_ROW(node)->children;
-	} else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	while (node) {
-		if (folderview_search_unread_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
 	}
 
 	return FALSE;
 }
 
 static gboolean folderview_have_unread_children(FolderView *folderview,
-						GtkCTreeNode *node)
+						FolderItem *item)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GNode *node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
 
-	if (!node)
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	if (!node)
-		return FALSE;
-
-	node = GTK_CTREE_ROW(node)->children;
-
-	while (node) {
-		if (folderview_search_unread_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
+	if (item->unread_msgs > 0 ||
+	    (item->stype == F_QUEUE && item->total_msgs > 0)){
+		return TRUE;
 	}
 
-	return FALSE;
-}
-
-static gboolean folderview_search_matching_recursive(GtkCTree *ctree,
-						   GtkCTreeNode *node)
-{
-	FolderItem *item;
-
-	if (node) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item) {
-			if (item->search_match)
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_unread_children(folderview, next_item))
 				return TRUE;
 		}
-		node = GTK_CTREE_ROW(node)->children;
-	} else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	while (node) {
-		if (folderview_search_matching_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
 	}
 
 	return FALSE;
 }
 
 static gboolean folderview_have_matching_children(FolderView *folderview,
-						GtkCTreeNode *node)
+						FolderItem *item)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GNode *node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
 
-	if (!node)
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	if (!node)
-		return FALSE;
+	if (item->search_match){
+		return TRUE;
+	}
 
-	node = GTK_CTREE_ROW(node)->children;
-
-	while (node) {
-		if (folderview_search_matching_recursive(ctree, node) == TRUE)
-			return TRUE;
-		node = GTK_CTREE_ROW(node)->sibling;
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_matching_children(folderview, next_item))
+				return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -1134,9 +1071,9 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	if (!GTK_CTREE_ROW(node)->expanded) {
 		add_unread_mark = folderview_have_unread_children(
-					folderview, node);
+					folderview, item);
 		add_sub_match_mark = folderview_have_matching_children(
-					folderview, node);
+					folderview, item);
 	} else {
 		add_unread_mark = FALSE;
 		add_sub_match_mark = FALSE;
@@ -1207,7 +1144,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		use_color =
 			(item->new_msgs > 0) ||
 			(add_unread_mark &&
-			 folderview_have_new_children(folderview, node));	
+			 folderview_have_new_children(folderview, item));	
 	}
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);

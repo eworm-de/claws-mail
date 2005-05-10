@@ -1,3 +1,9 @@
+2005-05-10 [colin]	1.9.9cvs1
+
+	* src/folderview.c
+	* src/summaryview.c
+		Try to fix bolding bugs again.
+
 2005-05-09 [paul]
 
 	* tools/claws.i18n.status.pl

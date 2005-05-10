@@ -964,7 +964,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	   create the thread */
 	summary_set_ctree_from_list(summaryview, mlist);
 
-
 	g_slist_free(mlist);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -2138,6 +2137,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		       _("Setting summary from message data..."));
 	gdk_flush();
 
+	g_signal_handlers_block_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	summaryview->msgid_table = msgid_table;
 	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -2215,6 +2217,19 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	}
 
 	summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
+
+	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	while (prefs_common.bold_unread && node) {
+		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+		if (GTK_CTREE_ROW(node)->children)
+			summary_set_row_marks(summaryview, node);
+		node = next;
+	}
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+
 }
 
 static gchar *summary_complete_address(const gchar *addr)
@@ -2573,7 +2588,6 @@ static gboolean summary_have_unread_children(SummaryView *summaryview,
 			return TRUE;
 		node = GTK_CTREE_ROW(node)->sibling;
 	}
-
 	return FALSE;
 }
 
@@ -3711,16 +3725,6 @@ void summary_thread_build(SummaryView *summaryview)
 		node = next;
 	}
 
-	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	while (node) {
-		next = GTK_CTREE_NODE_NEXT(node);
-		if (prefs_common.bold_unread &&
-		    GTK_CTREE_ROW(node)->children)
-			summary_set_row_marks(summaryview, node);
-		node = next;
-	}
-
 	gtkut_ctree_set_focus_row(ctree, summaryview->selected);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -3743,20 +3747,17 @@ static void summary_thread_init(SummaryView *summaryview)
 	GtkCTreeNode *next;
 
 	if (!summaryview->thread_collapsed) {
+		g_signal_handlers_block_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
 		while (node) {
 			next = GTK_CTREE_ROW(node)->sibling;
 			if (GTK_CTREE_ROW(node)->children)
 				gtk_ctree_expand_recursive(ctree, node);
 			node = next;
 		}
-	} else if (prefs_common.bold_unread) {
-		while (node) {
-			next = GTK_CTREE_ROW(node)->sibling;
-			if (GTK_CTREE_ROW(node)->children)
-				summary_set_row_marks(summaryview, node);
-			node = next;
-		}
-	}
+		g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+	} 
 }
 
 void summary_unthread(SummaryView *summaryview)
@@ -3865,15 +3866,21 @@ void summary_expand_threads(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
+	g_signal_handlers_block_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	while (node) {
-		if (GTK_CTREE_ROW(node)->children)
+		if (GTK_CTREE_ROW(node)->children) {
 			gtk_ctree_expand(ctree, node);
+			summary_set_row_marks(summaryview, node);
+		}
 		node = GTK_CTREE_NODE_NEXT(node);
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
+	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+					 G_CALLBACK(summary_tree_expanded), summaryview);
 
 	summaryview->thread_collapsed = FALSE;
 
@@ -4547,6 +4554,12 @@ static void summary_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,
 				  SummaryView *summaryview)
 {
 	summary_set_row_marks(summaryview, node);
+	while (prefs_common.bold_unread && node) {
+		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+		if (GTK_CTREE_ROW(node)->children)
+			summary_set_row_marks(summaryview, node);
+		node = next;
+	}
 }
 
 static void summary_tree_collapsed(GtkCTree *ctree, GtkCTreeNode *node,
