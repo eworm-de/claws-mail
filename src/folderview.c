@@ -909,7 +909,7 @@ static gboolean folderview_have_new_children(FolderView *folderview,
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
 
-	if (item->unread_msgs > 0 ||
+	if (item->new_msgs > 0 ||
 	    (item->stype == F_QUEUE && item->total_msgs > 0)){
 		return TRUE;
 	}
