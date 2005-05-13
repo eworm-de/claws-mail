@@ -901,16 +901,18 @@ void folderview_check_new_all(void)
 	inc_unlock();
 }
 
-static gboolean folderview_have_new_children(FolderView *folderview,
-						FolderItem *item)
+static gboolean folderview_have_new_children_sub(FolderView *folderview,
+						 FolderItem *item,
+						 gboolean in_sub)
 {
 	GNode *node = item->folder->node;
 	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
 
-	if (item->new_msgs > 0 ||
-	    (item->stype == F_QUEUE && item->total_msgs > 0)){
+	if (in_sub &&
+	    (item->new_msgs > 0 ||
+	    (item->stype == F_QUEUE && item->total_msgs > 0))) {
 		return TRUE;
 	}
 
@@ -918,7 +920,43 @@ static gboolean folderview_have_new_children(FolderView *folderview,
 		if (node && node->data) {
 			FolderItem *next_item = (FolderItem*) node->data;
 			node = node->next;
-			if (folderview_have_new_children(folderview, next_item))
+			if (folderview_have_new_children_sub(folderview, 
+							     next_item, TRUE))
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_have_new_children(FolderView *folderview,
+					     FolderItem *item)
+{
+	return folderview_have_new_children_sub(folderview, item, FALSE);
+}
+
+static gboolean folderview_have_unread_children_sub(FolderView *folderview,
+						    FolderItem *item, 
+						    gboolean in_sub)
+{
+	GNode *node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+
+	if (in_sub &&
+	    (item->unread_msgs > 0 ||
+	    (item->stype == F_QUEUE && item->total_msgs > 0))) {
+		return TRUE;
+	}
+
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_unread_children_sub(folderview, 
+							        next_item, 
+								TRUE))
 				return TRUE;
 		}
 	}
@@ -929,13 +967,19 @@ static gboolean folderview_have_new_children(FolderView *folderview,
 static gboolean folderview_have_unread_children(FolderView *folderview,
 						FolderItem *item)
 {
+	return folderview_have_unread_children_sub(folderview, item, FALSE);
+}
+
+static gboolean folderview_have_matching_children_sub(FolderView *folderview,
+						      FolderItem *item,
+						      gboolean in_sub)
+{
 	GNode *node = item->folder->node;
 	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
 
-	if (item->unread_msgs > 0 ||
-	    (item->stype == F_QUEUE && item->total_msgs > 0)){
+	if (in_sub && item->search_match){
 		return TRUE;
 	}
 
@@ -943,7 +987,9 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 		if (node && node->data) {
 			FolderItem *next_item = (FolderItem*) node->data;
 			node = node->next;
-			if (folderview_have_unread_children(folderview, next_item))
+			if (folderview_have_matching_children_sub(folderview, 
+							          next_item, 
+								  TRUE))
 				return TRUE;
 		}
 	}
@@ -952,27 +998,9 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 }
 
 static gboolean folderview_have_matching_children(FolderView *folderview,
-						FolderItem *item)
+						  FolderItem *item)
 {
-	GNode *node = item->folder->node;
-	
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	node = node->children;
-
-	if (item->search_match){
-		return TRUE;
-	}
-
-	while (node != NULL) {
-		if (node && node->data) {
-			FolderItem *next_item = (FolderItem*) node->data;
-			node = node->next;
-			if (folderview_have_matching_children(folderview, next_item))
-				return TRUE;
-		}
-	}
-
-	return FALSE;
+	return folderview_have_matching_children_sub(folderview, item, FALSE);
 }
 
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
