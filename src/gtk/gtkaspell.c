@@ -1777,7 +1777,6 @@ static void destroy_menu(GtkWidget *widget,
 	GtkAspell *gtkaspell = (GtkAspell *)user_data;
 
 	if (gtkaspell->accel_group) {
-		printf("remove accel from cb\n");
 		gtk_window_remove_accel_group(GTK_WINDOW(gtkaspell->parent_window), 
 				gtkaspell->accel_group);
 		gtkaspell->accel_group = NULL;
@@ -1855,7 +1854,6 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 		gtk_widget_destroy(gtkaspell->sug_menu);
 
 	if (gtkaspell->accel_group) {
-		printf("remove accel\n");
 		gtk_window_remove_accel_group(GTK_WINDOW(gtkaspell->parent_window), 
 				gtkaspell->accel_group);
 		gtkaspell->accel_group = NULL;
