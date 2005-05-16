@@ -1,3 +1,8 @@
+2005-05-16 [colin]	1.9.9cvs8
+
+	* src/gtk/gtkaspell.c
+		Revert last commit, it was a mistake.
+
 2005-05-16 [colin]	1.9.9cvs7
 
 	* src/gtk/gtkaspell.c
