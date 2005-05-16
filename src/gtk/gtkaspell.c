@@ -254,6 +254,7 @@ static gint 		find_gtkaspeller		(gconstpointer aa,
 static void		gtkaspell_alert_dialog		(gchar *message);
 /* gtkspellconfig - only one config per session */
 GtkAspellConfig * gtkaspellconfig;
+static void destroy_menu(GtkWidget *widget, gpointer user_data);	
 
 /******************************************************************************/
 static gint get_textview_buffer_charcount(GtkTextView *view);
@@ -1097,6 +1098,7 @@ static gboolean check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 			pos += direc;
 	}
 	if (misspelled) {
+		GtkMenu *menu = NULL;
 		misspelled_suggest(gtkaspell, gtkaspell->theword);
 
 		if (forward)
@@ -1113,8 +1115,12 @@ static gboolean check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 		while (gtk_events_pending ())
 			gtk_main_iteration ();
 
-		gtk_menu_popup(make_sug_menu(gtkaspell), NULL, NULL,
+		menu = make_sug_menu(gtkaspell);
+		gtk_menu_popup(menu, NULL, NULL,
 				set_menu_pos, gtkaspell, 0, GDK_CURRENT_TIME);
+		g_signal_connect(G_OBJECT(menu), "deactivate",
+					 G_CALLBACK(destroy_menu), 
+					 gtkaspell);
 
 	} else {
 		reset_theword_data(gtkaspell);
@@ -1396,15 +1402,19 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 		gtkaspell->misspelled = misspelled;
 
 		if (gtkaspell->misspelled) {
-
+			GtkMenu *menu;
 			misspelled_suggest(gtkaspell, gtkaspell->theword);
 
 			set_textview_buffer_offset(gtkaspell->gtktext,
 					    gtkaspell->end_pos);
 
-			gtk_menu_popup(make_sug_menu(gtkaspell), NULL, NULL,
+			menu = make_sug_menu(gtkaspell);
+			gtk_menu_popup(menu, NULL, NULL,
 				       set_menu_pos, gtkaspell, 0,
 				       GDK_CURRENT_TIME);
+			g_signal_connect(G_OBJECT(menu), "deactivate",
+					 G_CALLBACK(destroy_menu), 
+					 gtkaspell);
 			return;
 		}
 	} else

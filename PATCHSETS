@@ -480,3 +480,4 @@
 ( cvs diff -u -r 1.207.2.34 -r 1.207.2.35 src/folderview.c; ) > 1.9.9cvs3.patchset
 ( cvs diff -u -r 1.9.2.11 -r 1.9.2.12 src/gtk/gtkaspell.c; ) > 1.9.9cvs4.patchset
 ( cvs diff -u -r 1.9.2.12 -r 1.9.2.13 src/gtk/gtkaspell.c; ) > 1.9.9cvs5.patchset
+( cvs diff -u -r 1.9.2.13 -r 1.9.2.14 src/gtk/gtkaspell.c; ) > 1.9.9cvs6.patchset
