@@ -1834,10 +1834,7 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 				   GdkEventKey *event,
 				   GtkAspell *gtkaspell)
 {
-	if (event && isascii(event->keyval)) {
-		gtk_accel_groups_activate(gtkaspell->parent_window, 
-				event->keyval, event->state);
-	} else if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_Escape) {
 		destroy_menu(NULL, gtkaspell);
 	}
 	return FALSE;
