@@ -1,3 +1,9 @@
+2005-05-16 [colin]	1.9.9cvs4
+
+	* src/gtk/gtkaspell.c
+		Fix a bit aspell problems
+		(see bug #629)
+
 2005-05-13 [colin]	1.9.9cvs3
 
 	* src/folderview.c

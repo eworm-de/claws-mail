@@ -136,6 +136,7 @@ struct _GtkAspell
 
 	GtkTextView	*gtktext;
 	GdkColor 	 highlight;
+	GtkAccelGroup	*accel_group;
 };
 
 typedef AspellConfig GtkAspellConfig;
@@ -564,12 +565,15 @@ static gint button_press_intercept_cb(GtkTextView *gtktext,
 	if (eb->button != 3) 
 		return FALSE;
 
-	/* forge the leftclick */
-	eb->button = 1;
-
         g_signal_handlers_block_by_func(G_OBJECT(gtktext),
 					G_CALLBACK(button_press_intercept_cb), 
 					gtkaspell);
+	g_signal_emit_by_name(G_OBJECT(gtktext), "button-release-event",
+			      e, &retval);
+
+	/* forge the leftclick */
+	eb->button = 1;
+	
 	g_signal_emit_by_name(G_OBJECT(gtktext), "button-press-event",
 			      e, &retval);
 	g_signal_emit_by_name(G_OBJECT(gtktext), "button-release-event",
@@ -1767,9 +1771,23 @@ static void use_alternate_dict(GtkAspell *gtkaspell)
 		populate_submenu(gtkaspell, gtkaspell->config_menu);
 }
 
+static void destroy_menu(GtkWidget *widget,
+			     gpointer user_data) {
+
+	GtkAspell *gtkaspell = (GtkAspell *)user_data;
+
+	if (gtkaspell->accel_group) {
+		printf("remove accel from cb\n");
+		gtk_window_remove_accel_group(GTK_WINDOW(gtkaspell->parent_window), 
+				gtkaspell->accel_group);
+		gtkaspell->accel_group = NULL;
+	}
+}
+
 static void popup_menu(GtkAspell *gtkaspell, GdkEventButton *eb) 
 {
 	GtkTextView * gtktext;
+	GtkMenu *menu = NULL;
 	
 	gtktext = gtkaspell->gtktext;
 
@@ -1781,18 +1799,26 @@ static void popup_menu(GtkAspell *gtkaspell, GdkEventButton *eb)
 			set_textview_buffer_offset(gtktext, gtkaspell->orig_pos);
 
 			if (misspelled_suggest(gtkaspell, gtkaspell->theword)) {
-				gtk_menu_popup(make_sug_menu(gtkaspell),
+				menu = make_sug_menu(gtkaspell);
+				gtk_menu_popup(menu,
 					       NULL, NULL, NULL, NULL,
-					       eb->button, GDK_CURRENT_TIME);
+					       eb->button, eb->time);
 
+				g_signal_connect(G_OBJECT(menu), "deactivate",
+							 G_CALLBACK(destroy_menu), 
+							 gtkaspell);
 				return;
 			}
 		} else
 			set_textview_buffer_offset(gtktext, gtkaspell->orig_pos);
 	}
+	menu = make_config_menu(gtkaspell);
+	gtk_menu_popup(menu, NULL, NULL, NULL, NULL,
+		       eb->button, eb->time);
 
-	gtk_menu_popup(make_config_menu(gtkaspell), NULL, NULL, NULL, NULL,
-		       eb->button, GDK_CURRENT_TIME);
+	g_signal_connect(G_OBJECT(menu), "deactivate",
+				 G_CALLBACK(destroy_menu), 
+				 gtkaspell);
 }
 
 static gboolean aspell_key_pressed(GtkWidget *widget,
@@ -1802,6 +1828,8 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 	if (event && isascii(event->keyval)) {
 		gtk_accel_groups_activate(gtkaspell->parent_window, 
 				event->keyval, event->state);
+	} else if (event && event->keyval == GDK_Escape) {
+		destroy_menu(NULL, gtkaspell);
 	}
 	return FALSE;
 }
@@ -1825,6 +1853,13 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 
 	if (gtkaspell->sug_menu)
 		gtk_widget_destroy(gtkaspell->sug_menu);
+
+	if (gtkaspell->accel_group) {
+		printf("remove accel\n");
+		gtk_window_remove_accel_group(GTK_WINDOW(gtkaspell->parent_window), 
+				gtkaspell->accel_group);
+		gtkaspell->accel_group = NULL;
+	}
 
 	gtkaspell->sug_menu = menu;	
 
@@ -1944,6 +1979,8 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	gtk_window_add_accel_group
 		(GTK_WINDOW(gtkaspell->parent_window),
 		 accel);
+	gtkaspell->accel_group = accel;
+
 	g_signal_connect(G_OBJECT(menu),
 			"key_press_event",
 		       	G_CALLBACK(aspell_key_pressed), gtkaspell);
