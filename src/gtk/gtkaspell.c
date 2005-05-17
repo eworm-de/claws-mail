@@ -59,7 +59,7 @@
 #include "gtk/gtktext.h"
 #include "utils.h"
 #include "codeconv.h"
-
+#include "alertpanel.h"
 #include "gtkaspell.h"
 #define ASPELL_FASTMODE       1
 #define ASPELL_NORMALMODE     2
@@ -251,7 +251,6 @@ static void 		free_checkers			(gpointer elt,
 							 gpointer data);
 static gint 		find_gtkaspeller		(gconstpointer aa, 
 							 gconstpointer bb);
-static void		gtkaspell_alert_dialog		(gchar *message);
 /* gtkspellconfig - only one config per session */
 GtkAspellConfig * gtkaspellconfig;
 static void destroy_menu(GtkWidget *widget, gpointer user_data);	
@@ -1125,7 +1124,7 @@ static gboolean check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 	} else {
 		reset_theword_data(gtkaspell);
 
-		gtkaspell_alert_dialog(_("No misspelled word found."));
+		alertpanel_notice(_("No misspelled word found."));
 		set_textview_buffer_offset(gtkaspell->gtktext,
 					  gtkaspell->orig_pos);
 	}
@@ -1846,7 +1845,7 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 				   GdkEventKey *event,
 				   GtkAspell *gtkaspell)
 {
-	if (event && isascii(event->keyval)) {
+	if (event && (isascii(event->keyval) || event->keyval == GDK_Return)) {
 		gtk_accel_groups_activate(
 				G_OBJECT(gtkaspell->parent_window),
 				event->keyval, event->state);
@@ -2272,7 +2271,7 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 		message = g_strdup_printf(_("The spell checker could not change dictionary.\n%s"), 
 					  gtkaspellcheckers->error_message);
 
-		gtkaspell_alert_dialog(message); 
+		alertpanel_warning(message); 
 		g_free(message);
 	} else {
 		if (gtkaspell->use_alternate) {
@@ -2479,42 +2478,5 @@ static gint find_gtkaspeller(gconstpointer aa, gconstpointer bb)
 		return strcmp(a->encoding, b->encoding);
 
 	return 1;
-}
-
-static void gtkaspell_alert_dialog(gchar *message)
-{
-	GtkWidget *dialog;
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *ok_button;
-
-	dialog = gtk_dialog_new();
-	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
-	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
-				 G_CALLBACK(gtk_widget_destroy), 
-				 G_OBJECT(dialog));
-
-	label  = gtk_label_new(message);
-	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
-
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
-	
-	hbox = gtk_hbox_new(FALSE, 0);
-
-	ok_button = gtk_button_new_with_label(_("OK"));
-	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
-	gtk_box_pack_start(GTK_BOX(hbox), ok_button, TRUE, TRUE, 8);	
-
-	g_signal_connect_swapped(G_OBJECT(ok_button), "clicked",
-				 G_CALLBACK(gtk_widget_destroy), 
-				 G_OBJECT(dialog));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
-			
-	gtk_widget_grab_default(ok_button);
-	gtk_widget_grab_focus(ok_button);
-	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-
-	gtk_widget_show_all(dialog);
 }
 #endif

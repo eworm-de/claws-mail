@@ -484,3 +484,4 @@
 ( cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/gtk/gtkaspell.c; ) > 1.9.9cvs7.patchset
 ( cvs diff -u -r 1.9.2.15 -r 1.9.2.16 src/gtk/gtkaspell.c; ) > 1.9.9cvs8.patchset
 ( cvs diff -u -r 1.9.2.16 -r 1.9.2.17 src/gtk/gtkaspell.c; ) > 1.9.9cvs9.patchset
+( cvs diff -u -r 1.9.2.17 -r 1.9.2.18 src/gtk/gtkaspell.c; ) > 1.9.9cvs10.patchset
