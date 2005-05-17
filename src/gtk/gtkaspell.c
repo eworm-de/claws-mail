@@ -1423,6 +1423,21 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 	set_point_continue(gtkaspell);
 }
 	
+static gboolean replace_key_pressed(GtkWidget *widget,
+				   GdkEventKey *event,
+				   GtkAspell *gtkaspell)
+{
+	if (event && event->keyval == GDK_Escape) {
+		gtk_widget_destroy(widget);
+		return TRUE;
+	} else if (event && event->keyval == GDK_Return) {
+		replace_with_supplied_word_cb(NULL, gtkaspell);
+		gtk_widget_destroy(widget);
+		return TRUE;
+	}
+	return FALSE;
+}
+	
 static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 {
 	GtkWidget *dialog;
@@ -1462,12 +1477,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtkaspell->replace_entry = entry;
 	gtk_entry_set_text(GTK_ENTRY(entry), gtkaspell->theword);
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
-	g_signal_connect(G_OBJECT(entry), "activate",
-			 G_CALLBACK(replace_with_supplied_word_cb), 
-			 gtkaspell);
-	g_signal_connect_swapped(G_OBJECT(entry), "activate",
-			   	 G_CALLBACK(gtk_widget_destroy), 
-			   	 G_OBJECT(dialog));
+	g_signal_connect(G_OBJECT(dialog),
+			"key_press_event",
+		       	G_CALLBACK(replace_key_pressed), gtkaspell);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, TRUE, 
@@ -1916,6 +1928,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 0,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 
+				   GDK_CONTROL_MASK,
+				   GTK_ACCEL_LOCKED);
 
 	if (gtkaspell->use_alternate && gtkaspell->alternate_speller) {
 		caption = g_strdup_printf(_("Check with %s"), 
@@ -1929,6 +1944,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 				 gtkaspell);
 		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 0,
 					   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 
+					   GDK_CONTROL_MASK,
+					   GTK_ACCEL_LOCKED);
 	}
 
 	item = gtk_menu_item_new();
