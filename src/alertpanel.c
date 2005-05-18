@@ -261,7 +261,6 @@ static void alertpanel_create(const gchar *title,
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
 			 G_CALLBACK(alertpanel_deleted),
 			 (gpointer)G_ALERTOTHER);

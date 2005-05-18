@@ -1,3 +1,11 @@
+2005-05-18 [colin]	1.9.9cvs11
+
+	* src/gtk/inputdialog.c
+	* src/gtk/gtkaspell.c
+		HIGuify dialogs
+	* src/alertpanel.c
+		Remove a double call
+
 2005-05-17 [colin]	1.9.9cvs10
 
 	* src/gtk/gtkaspell.c

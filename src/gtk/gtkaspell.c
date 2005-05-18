@@ -1226,7 +1226,7 @@ static void replace_with_supplied_word_cb(GtkWidget *w, GtkAspell *gtkaspell)
 {
 	unsigned char *newword;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
-	
+
 	newword = gtk_editable_get_chars(GTK_EDITABLE(gtkaspell->replace_entry),
 					 0, -1);
 
@@ -1244,6 +1244,10 @@ static void replace_with_supplied_word_cb(GtkWidget *w, GtkAspell *gtkaspell)
 	}
 
 	g_free(newword);
+
+	if (w && GTK_IS_DIALOG(w)) {
+		gtk_widget_destroy(w);
+	}
 
 	set_point_continue(gtkaspell);
 }
@@ -1430,8 +1434,7 @@ static gboolean replace_key_pressed(GtkWidget *widget,
 		gtk_widget_destroy(widget);
 		return TRUE;
 	} else if (event && event->keyval == GDK_Return) {
-		replace_with_supplied_word_cb(NULL, gtkaspell);
-		gtk_widget_destroy(widget);
+		replace_with_supplied_word_cb(widget, gtkaspell);
 		return TRUE;
 	}
 	return FALSE;
@@ -1439,12 +1442,17 @@ static gboolean replace_key_pressed(GtkWidget *widget,
 	
 static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 {
+	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
 	GtkWidget *label;
+	GtkWidget *w_hbox;
 	GtkWidget *hbox;
+	GtkWidget *vbox;
 	GtkWidget *entry;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
+	GtkWidget *confirm_area;
+	GtkWidget *icon;
 	gchar *thelabel;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
@@ -1457,21 +1465,56 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_widget_set_uposition(dialog, xx, yy);
 
 	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
 				 G_CALLBACK(gtk_widget_destroy), 
 				 G_OBJECT(dialog));
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+			    FALSE, FALSE, 0);
 
-	thelabel = g_strdup_printf(_("Replace \"%s\" with: "), 
+	thelabel = g_strdup_printf(_("<span weight=\"bold\" "
+					"size=\"larger\">Replace \"%s\" with: </span>"), 
 				   gtkaspell->theword);
+	/* for title label */
+	w_hbox = gtk_hbox_new(FALSE, 0);
+	
+	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+        				GTK_ICON_SIZE_DIALOG); 
+	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
+	
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_widget_show (vbox);
+	
 	label = gtk_label_new(thelabel);
-	g_free(thelabel);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	if (!font_desc) {
+		gint size;
 
+		size = pango_font_description_get_size
+			(label->style->font_desc);
+		font_desc = pango_font_description_new();
+		pango_font_description_set_weight
+			(font_desc, PANGO_WEIGHT_BOLD);
+		pango_font_description_set_size
+			(font_desc, size * PANGO_SCALE_LARGE);
+	}
+	if (font_desc)
+		gtk_widget_modify_font(label, font_desc);
+	g_free(thelabel);
+	
 	entry = gtk_entry_new();
 	gtkaspell->replace_entry = entry;
 	gtk_entry_set_text(GTK_ENTRY(entry), gtkaspell->theword);
@@ -1479,22 +1522,26 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	g_signal_connect(G_OBJECT(dialog),
 			"key_press_event",
 		       	G_CALLBACK(replace_key_pressed), gtkaspell);
-	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, TRUE, 
-			   TRUE, 0);
 	label = gtk_label_new(_("Holding down Control key while pressing "
 				"Enter\nwill learn from mistake.\n"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
-	gtk_misc_set_padding(GTK_MISC(label), 8, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, 
-			TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show(label);
 
 	hbox = gtk_hbox_new(TRUE, 0);
 
-	ok_button = gtk_button_new_with_label(_("OK"));
-	gtk_box_pack_start(GTK_BOX(hbox), ok_button, TRUE, TRUE, 8);
+	gtkut_stock_button_set_create(&confirm_area,
+				      &ok_button, GTK_STOCK_OK,
+				      &cancel_button, GTK_STOCK_CANCEL,
+				      NULL, NULL);
+
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+			 confirm_area, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
+
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			 G_CALLBACK(replace_with_supplied_word_cb), 
 			 gtkaspell);
@@ -1502,13 +1549,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 				   G_CALLBACK(gtk_widget_destroy), 
 				   G_OBJECT(dialog));
 
-	cancel_button = gtk_button_new_with_label(_("Cancel"));
-	gtk_box_pack_start(GTK_BOX(hbox), cancel_button, TRUE, TRUE, 8);
 	g_signal_connect_swapped(G_OBJECT(cancel_button), "clicked",
 				 G_CALLBACK(gtk_widget_destroy), 
 				 G_OBJECT(dialog));
-
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
 	gtk_widget_grab_focus(entry);
 

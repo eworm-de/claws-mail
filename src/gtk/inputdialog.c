@@ -58,6 +58,7 @@ static gboolean fin;
 static InputDialogType type;
 
 static GtkWidget *dialog;
+static GtkWidget *msg_title;
 static GtkWidget *msg_label;
 static GtkWidget *entry;
 static GtkWidget *combo;
@@ -160,35 +161,72 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 
 static void input_dialog_create(void)
 {
-	GtkWidget *vbox;
+	static PangoFontDescription *font_desc;
+	GtkWidget *w_hbox;
 	GtkWidget *hbox;
-	GtkWidget *confirm_area;
+	GtkWidget *vbox;
+	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
+	GtkWidget *confirm_area;
+	GtkWidget *icon;
 
 	dialog = gtk_dialog_new();
+
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-	gtk_widget_set_size_request(dialog, INPUT_DIALOG_WIDTH, -1);
-	gtk_container_set_border_width
-		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
+	gtk_window_set_title(GTK_WINDOW(dialog),_(""));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
 			 G_CALLBACK(delete_event), NULL);
 	g_signal_connect(G_OBJECT(dialog), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
-	gtk_widget_realize(dialog);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+			    FALSE, FALSE, 0);
 
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), vbox);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
+	/* for title label */
+	w_hbox = gtk_hbox_new(FALSE, 0);
+	
+	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+        				GTK_ICON_SIZE_DIALOG); 
+	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
+	
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_widget_show (vbox);
+	
+	msg_title = gtk_label_new("");
+	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
+	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
+	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), msg_title, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(msg_title), TRUE);
+	if (!font_desc) {
+		gint size;
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
+		size = pango_font_description_get_size
+			(msg_title->style->font_desc);
+		font_desc = pango_font_description_new();
+		pango_font_description_set_weight
+			(font_desc, PANGO_WEIGHT_BOLD);
+		pango_font_description_set_size
+			(font_desc, size * PANGO_SCALE_LARGE);
+	}
+	if (font_desc)
+		gtk_widget_modify_font(msg_title, font_desc);
+	
 	msg_label = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(msg_label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(msg_label), GTK_JUSTIFY_LEFT);
-
+	gtk_box_pack_start(GTK_BOX(vbox), msg_label, FALSE, FALSE, 0);
+	gtk_widget_show(msg_label);
+		
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(entry), "activate",
@@ -199,21 +237,25 @@ static void input_dialog_create(void)
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
+	hbox = gtk_hbox_new(TRUE, 0);
+
 	gtkut_stock_button_set_create(&confirm_area,
 				      &ok_button, GTK_STOCK_OK,
 				      &cancel_button, GTK_STOCK_CANCEL,
 				      NULL, NULL);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
-			  confirm_area);
+
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+			 confirm_area, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
+
+	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
+	
 	gtk_widget_grab_default(ok_button);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			 G_CALLBACK(ok_clicked), NULL);
 	g_signal_connect(G_OBJECT(cancel_button), "clicked",
 			 G_CALLBACK(cancel_clicked), NULL);
-
-
-	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 }
 
 static gchar *input_dialog_open(const gchar *title, const gchar *message,
@@ -272,6 +314,7 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 		entry_ = entry;
 
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
+	gtk_label_set_text(GTK_LABEL(msg_title), title);
 	gtk_label_set_text(GTK_LABEL(msg_label), message);
 	if (default_string && *default_string) {
 		gtk_entry_set_text(GTK_ENTRY(entry_), default_string);
