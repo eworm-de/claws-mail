@@ -1,3 +1,10 @@
+2005-05-18 [colin]	1.9.9cvs12
+
+	* src/compose.c
+		Dereference freed pointer
+	* src/gtk/gtkaspell.c
+		Fix duplication of dictionaries (is it an aspell issue?)
+
 2005-05-18 [colin]	1.9.9cvs11
 
 	* src/gtk/inputdialog.c

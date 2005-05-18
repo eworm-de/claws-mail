@@ -1626,17 +1626,7 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 	list = NULL;
 
 	config = new_aspell_config();
-#if 0 
-	aspell_config_replace(config, "rem-all-word-list-path", "");
-	if (aspell_config_error_number(config) != 0) {
-		gtkaspellcheckers->error_message = g_strdup(
-				aspell_config_error_message(config));
-		gtkaspellcheckers->dictionary_list =
-			create_empty_dictionary_list();
 
-		return gtkaspellcheckers->dictionary_list; 
-	}
-#endif
 	aspell_config_replace(config, "dict-dir", aspell_path);
 	if (aspell_config_error_number(config) != 0) {
 		gtkaspellcheckers->error_message = g_strdup(
@@ -1659,8 +1649,15 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 				entry->name);
 		dict->dictname = dict->fullname + strlen(aspell_path);
 		dict->encoding = g_strdup(entry->code);
-		debug_print("Aspell: found dictionary %s %s\n", dict->fullname,
-				dict->dictname);
+		
+		if (g_slist_find_custom(list, dict, 
+				(GCompareFunc) compare_dict) != NULL) {
+			dictionary_delete(dict);
+			continue;	
+		}
+		
+		debug_print("Aspell: found dictionary %s %s %s\n", dict->fullname,
+				dict->dictname, dict->encoding);
 		list = g_slist_insert_sorted(list, dict,
 				(GCompareFunc) compare_dict);
 	}

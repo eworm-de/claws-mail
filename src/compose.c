@@ -5399,6 +5399,7 @@ static void compose_destroy(Compose *compose)
 #if USE_ASPELL
         if (compose->gtkaspell) {
 	        gtkaspell_delete(compose->gtkaspell);
+		compose->gtkaspell = NULL;
         }
 #endif
 
