@@ -1242,9 +1242,12 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			mainwin->offline_pixmap = pixmap;
 		}
 		
-		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
+
+		textview_reflect_prefs(mainwin->messageview->mimeview->textview);
+
+		summary_redisplay_msg(mainwin->summaryview);
 	}
 }
 

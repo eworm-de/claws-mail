@@ -1,3 +1,13 @@
+2005-05-19 [paul]	1.9.9cvs13
+
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c
+	* src/textview.h
+		add an option to toggle cursor in message
+		view (sync with main)
+
 2005-05-18 [colin]	1.9.9cvs12
 
 	* src/compose.c

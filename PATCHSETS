@@ -487,3 +487,4 @@
 ( cvs diff -u -r 1.9.2.17 -r 1.9.2.18 src/gtk/gtkaspell.c; ) > 1.9.9cvs10.patchset
 ( cvs diff -u -r 1.2.2.5 -r 1.2.2.6 src/gtk/inputdialog.c; cvs diff -u -r 1.9.2.18 -r 1.9.2.19 src/gtk/gtkaspell.c; cvs diff -u -r 1.17.2.12 -r 1.17.2.13 src/alertpanel.c; ) > 1.9.9cvs11.patchset
 ( cvs diff -u -r 1.382.2.120 -r 1.382.2.121 src/compose.c; cvs diff -u -r 1.9.2.19 -r 1.9.2.20 src/gtk/gtkaspell.c; ) > 1.9.9cvs12.patchset
+( cvs diff -u -r 1.274.2.38 -r 1.274.2.39 src/mainwindow.c; cvs diff -u -r 1.204.2.36 -r 1.204.2.37 src/prefs_common.c; cvs diff -u -r 1.103.2.15 -r 1.103.2.16 src/prefs_common.h; cvs diff -u -r 1.96.2.53 -r 1.96.2.54 src/textview.c; cvs diff -u -r 1.12.2.5 -r 1.12.2.6 src/textview.h; ) > 1.9.9cvs13.patchset
