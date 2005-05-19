@@ -173,7 +173,7 @@ static void input_dialog_create(void)
 	dialog = gtk_dialog_new();
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-	gtk_window_set_title(GTK_WINDOW(dialog),_(""));
+	gtk_window_set_title(GTK_WINDOW(dialog), "");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
