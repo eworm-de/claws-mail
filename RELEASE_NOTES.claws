@@ -1,4 +1,4 @@
-9th May 2005                                     Sylpheed-Claws 1.9.9
+19th May 2005                                   Sylpheed-Claws 1.9.11
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
@@ -11,69 +11,8 @@ This is the GTK 2 version of Sylpheed-Claws.
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-As image viewing is directly supported under GTK2 the Image Viewer
-plugin is obsolete and has been removed.
-
-New in this release:
-~~~~~~~~~~~~~~~~~~~~
-
-* Inline image display
-
-* An option to render HTML as text has been added to
-  /Configuration/Preferences/Common/Message
-
-* An option for a default Queue folder has been added to the
-  'Advanced' tab of Account Preferences
-
-* Filtering Preferences window size is saved
-
-* Batch sending of mails (per account)
-
-* Support for GBK encoding
-
-* New logo in About window
-
-* tools/acroread2sylpheed.pl
-	script to send pdfs as attachments from Adobe Reader 7
-	see tools/README for details
-
-* New translations: Catalan, Finnish
-
-* Updated translations: French, German, Italian, Polish, Russian,
-  Serbian, Simplified Chinese, Slovak, Spanish
-
-* Bug fixes, including the following:
-	o bug 634 'Segfault when opening this message'
-	o bug 674 'folder DnD looses scoring values'
-	o bug 693 'undesirable cancelling action'
-	o bug 695 'Disabling Privacy System Doesn't Work + Related
-	           Issues'
-	o bug 708 'Request return reciept setting isn't honored.'
-	o bug 713 'Resent-To and Resent-Cc headers are garbled'
-	o bug 736 'Accounts containing a slash break UIDL managing'
-	o msgview window resizing
-	o resizing of separate message and folder views
-	o duplicate hotkeys in Folderview's contextual menu
-	o duplicate hotkeys in Mainwindow's menu
-	o copy/paste in compose window
-	o compose.c: neglect Reply-To header if empty
-	o grouplistdialog.c: unresizeable newsgroup name column
-	o imap.c: handling of folders with [] in their name
-	o mh.c: marks lost on filesystems with different stat()
-	  results on summer-/wintertime
-	o pgpmime.c: bus error on 64bit
-	o prefs_account.c: smtp auth type off-by-one
-	o send_message.c: workaround for Gmail SMTP server
-	o socket.c: refresh DNS if necessary
-	o summaryview.c: 'Save as...' with non-ascii filenames
-	o textview.c: incorrect display when part of view is hidden
-	o trayicon.c: clipping of icon under KDE3
-	o utils.c: crash when subst_for_filename is called with a
-	  NULL parameter
-
-
-For further details of the numbered bugs listed above consult
-www.thewildbeast.co.uk/sylpheed-claws/bugzilla/
+This is a bug-fix release which fixes the ASpell Spell Checker
+support.
 
 ---------------------------------------------------------------------
 See ChangeLog-gtk2.claws and README.claws for full information 
