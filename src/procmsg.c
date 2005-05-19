@@ -662,13 +662,6 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 	FILE *fp;
 	int hnum;
 	gchar buf[BUFFSIZE];
-	
-	g_return_val_if_fail(file != NULL, NULL);
-
-	if ((fp = fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return NULL;
-	}
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
 				       {"R:",    NULL, FALSE},
@@ -682,6 +675,13 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
+	
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
 
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, qentry))
 	       != -1) {
