@@ -333,7 +333,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	 * easier.
 	 */
 	if (!keep_session || ret != 0) {
-		smtp_quit(session);
+		if (session_is_connected(session))
+			smtp_quit(session);
 		while (session_is_connected(session))
 			gtk_main_iteration();
 		session_destroy(session);

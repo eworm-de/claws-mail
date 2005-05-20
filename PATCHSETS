@@ -490,3 +490,4 @@
 ( cvs diff -u -r 1.274.2.38 -r 1.274.2.39 src/mainwindow.c; cvs diff -u -r 1.204.2.36 -r 1.204.2.37 src/prefs_common.c; cvs diff -u -r 1.103.2.15 -r 1.103.2.16 src/prefs_common.h; cvs diff -u -r 1.96.2.53 -r 1.96.2.54 src/textview.c; cvs diff -u -r 1.12.2.5 -r 1.12.2.6 src/textview.h; ) > 1.9.9cvs13.patchset
 ( cvs diff -u -r 1.2.2.6 -r 1.2.2.7 src/gtk/inputdialog.c; ) > 1.9.9cvs14.patchset
 ( cvs diff -u -r 1.150.2.23 -r 1.150.2.24 src/procmsg.c; ) > 1.9.11cvs1.patchset
+( cvs diff -u -r 1.150.2.24 -r 1.150.2.25 src/procmsg.c; cvs diff -u -r 1.17.2.9 -r 1.17.2.10 src/send_message.c; ) > 1.9.11cvs2.patchset

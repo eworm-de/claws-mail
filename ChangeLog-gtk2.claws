@@ -1,3 +1,11 @@
+2005-05-20 [colin]	1.9.11cvs2
+
+	* src/procmsg.c
+		Fix another compilation error with gcc-2.9x
+		Thanks to Pawel Pekala <c0rn@gazeta.pl>
+	* src/send_message.c
+		Don't send QUIT if we aren't connected
+
 2005-05-19 [colin]	1.9.11cvs1
 
 	* src/procmsg.c

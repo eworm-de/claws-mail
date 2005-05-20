@@ -722,9 +722,9 @@ parse_again:
 	cur = orig;
 	while (cur) {
 		gchar *file;
+		PrefsAccount *ac = procmsg_get_account_from_file(file);
 		msg = (MsgInfo *)cur->data;
 		file = folder_item_fetch_msg(queue, msg->msgnum);
-		PrefsAccount *ac = procmsg_get_account_from_file(file);
 		g_free(file);
 
 		if (last_account == NULL || (ac != NULL && ac == last_account)) {
