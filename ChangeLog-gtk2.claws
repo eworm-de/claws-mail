@@ -1,3 +1,11 @@
+2005-05-23 [colin]	1.9.11cvs3
+
+	* src/plugins/pgpmime/pgpmime.c
+		Change name to "PGP MIME" instead of "PGP/MIME" to avoid
+		breaking menu accelerators and stuff. Users will have to
+		reselect "PGP MIME" instead of "PGP/MIME" in their 
+		account's privacy preferences if needed.
+
 2005-05-22 [paul]
 
 	* tools/kdeservicemenu/install.sh
