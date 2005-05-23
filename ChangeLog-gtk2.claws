@@ -1,3 +1,9 @@
+2005-05-23 [colin]	1.9.11cvs4
+
+	* src/common/socket.c
+		Check another special SSL_peek() error.
+		Should help wrt bug #728
+
 2005-05-23 [colin]	1.9.11cvs3
 
 	* src/plugins/pgpmime/pgpmime.c

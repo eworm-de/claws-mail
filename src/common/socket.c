@@ -1381,6 +1381,9 @@ gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 		return -1;
 	case SSL_ERROR_ZERO_RETURN:
 		return 0;
+	case SSL_ERROR_SYSCALL:
+		g_warning("SSL_peek() returned syscall error. errno=%d\n", errno);
+		return -1;
 	default:
 		g_warning("SSL_peek() returned error %d, ret = %d\n", err, ret);
 		if (ret == 0)
