@@ -1,3 +1,8 @@
+2005-05-23 [colin]	1.0.4cvs12
+
+	* src/gtk/colorsel.c
+		Fix bug #699
+
 2005-05-09 [paul]
 
 	1.0.4a release

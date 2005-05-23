@@ -34,12 +34,20 @@ static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
 	gtk_main_quit();
 }
 
-static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+static gint quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	*((gint *) data) = 1;
-	gtk_main_quit();
+	if (event && event->keyval == GDK_Escape) {
+		*((gint *) data) = 1;
+		gtk_main_quit();
+		return TRUE;
+	} else if (event && event->keyval == GDK_Return) {
+		*((gint *) data) = 0;
+		gtk_main_quit();
+		return FALSE;
+	}
+	return FALSE;
 }
 
 gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
