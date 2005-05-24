@@ -1,3 +1,8 @@
+2005-05-24 [colin]	1.0.4cvs13
+
+	* src/gtk/colorsel.c
+		Fix compile error
+
 2005-05-23 [colin]	1.0.4cvs12
 
 	* src/gtk/colorsel.c

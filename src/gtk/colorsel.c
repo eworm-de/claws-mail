@@ -18,6 +18,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "colorsel.h"
 #include "manage_window.h"
