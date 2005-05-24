@@ -1855,6 +1855,22 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 
 	src_node = gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), NULL, from_folder);
 	from_parent = folder_item_parent(from_folder);
+	
+	if (prefs_common.warn_dnd) {
+		buf = g_strdup_printf(_("Do you really want to move folder `%s' to a "
+					"sub-folder of `%s' ?"), from_folder->name,
+					to_folder->name);
+		status = alertpanel_message_with_disable(_("Move folder"), buf, 
+				_("Yes"), _("No"), NULL, ALERT_QUESTION);
+		g_free(buf);
+
+		if (status != G_ALERTDEFAULT
+		 && status != (G_ALERTDEFAULT | G_ALERTDISABLE))
+			return;
+		if (status & G_ALERTDISABLE)
+			prefs_common.warn_dnd = FALSE;
+	}
+
 	buf = g_strdup_printf(_("Moving %s to %s..."), from_folder->name, to_folder->name);
 	STATUSBAR_PUSH(folderview->mainwin, buf);
 	g_free(buf);

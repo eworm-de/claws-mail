@@ -353,7 +353,8 @@ void sgpgme_init()
 				(_("Warning"),
 				 _("GnuPG is not installed properly, or needs "
 				   "to be upgraded.\n"
-				   "OpenPGP support disabled."), ALERT_WARNING);
+				   "OpenPGP support disabled."), 
+				NULL, NULL, NULL, ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
 				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}

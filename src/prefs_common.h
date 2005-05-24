@@ -313,6 +313,7 @@ struct _PrefsCommon
 	
 	gint filteringwin_width;
 	gint filteringwin_height;
+	gint warn_dnd;
 };
 
 extern PrefsCommon prefs_common;

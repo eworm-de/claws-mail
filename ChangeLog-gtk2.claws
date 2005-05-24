@@ -1,3 +1,18 @@
+2005-05-24 [colin]	1.9.11cvs6
+
+	* src/folderview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add a confirmation to folder drag and drop
+		fixes bug #156
+	* src/alertpanel.c
+	* src/alertpanel.h
+		fix _with_disable parameters so that
+		the buttons labels are specifiable too
+	* src/plugins/pgpmime/sgpgme.c
+		reflect said change
+		
+
 2005-05-24 [colin]	1.9.11cvs5
 
 	* src/folderview.c

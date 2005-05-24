@@ -124,6 +124,9 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 
 AlertValue alertpanel_message_with_disable(const gchar *title,
 					   const gchar *message,
+					   const gchar	*button1_label,
+					   const gchar	*button2_label,
+					   const gchar	*button3_label,
 					   gint alert_type)
 {
 	if (alertpanel_is_open)
@@ -131,8 +134,8 @@ AlertValue alertpanel_message_with_disable(const gchar *title,
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL, TRUE, NULL,
-			  alert_type);
+	alertpanel_create(title, message, button1_label, button2_label, 
+			  button3_label, TRUE, NULL, alert_type);
 	alertpanel_show();
 
 	return value;

@@ -749,6 +749,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"filteringwin_height", "-1", &prefs_common.filteringwin_height, P_INT,
 	 NULL, NULL, NULL},
+	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
