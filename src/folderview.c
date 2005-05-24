@@ -1418,6 +1418,18 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 
 	if (event->button == 1) {
 		folderview->open_folder = TRUE;
+
+	        if (event->type == GDK_2BUTTON_PRESS) {
+			if (clist->selection) {
+				GtkCTreeNode *node;
+
+				node = GTK_CTREE_NODE(clist->selection->data);
+				if (node)
+					gtk_ctree_toggle_expansion(
+						GTK_CTREE(ctree),
+						node);
+			}
+		}
 		return FALSE;
 	}
 

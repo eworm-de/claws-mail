@@ -1,3 +1,10 @@
+2005-05-24 [colin]	1.9.11cvs5
+
+	* src/folderview.c
+		Uncollapse/collapse folders on double-click
+		patch by Torsten Schoenfeld <kaffeetisch@gmx.de>
+		closes bug #108
+
 2005-05-23 [colin]	1.9.11cvs4
 
 	* src/common/socket.c
