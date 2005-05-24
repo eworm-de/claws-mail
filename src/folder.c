@@ -2086,13 +2086,15 @@ static void msginfo_set_mime_flags(GNode *node, gpointer data)
 {
 	MsgInfo *msginfo = data;
 	MimeInfo *mimeinfo = node->data;
-
+printf("setting mime flags\n");
 	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
 		 mimeinfo->type != MIMETYPE_TEXT &&
 		 mimeinfo->type != MIMETYPE_MULTIPART) {
-		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
+		if (!mimeinfo->subtype 
+		||  strcmp(mimeinfo->subtype, "pgp-signature"))
+			procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	}
 
 	/* don't descend below top level message for signed and encrypted info */

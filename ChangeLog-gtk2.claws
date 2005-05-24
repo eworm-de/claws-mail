@@ -1,3 +1,23 @@
+2005-05-24 [colin]	1.9.11cvs8
+
+	* src/summaryview.c
+		Fix bug #688 f) read/unread marker not
+		changed on first click
+		Also, optimize summary_status_show()
+		calls
+	* src/folder.c
+	* src/inc.c
+	* src/procmime.c
+		Fix bug #688 b) and c) wrt message
+		attachments and signature
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/Makefile.am
+	* src/pixmaps/clip_gpg_signed.xpm
+		Add clip/signed icon
+
 2005-05-24 [colin]	1.9.11cvs7
 
 	* src/folder_item_prefs.c
