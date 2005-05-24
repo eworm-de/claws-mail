@@ -495,3 +495,4 @@
 ( cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/common/socket.c; ) > 1.9.11cvs4.patchset
 ( cvs diff -u -r 1.207.2.35 -r 1.207.2.36 src/folderview.c; ) > 1.9.11cvs5.patchset
 ( cvs diff -u -r 1.207.2.36 -r 1.207.2.37 src/folderview.c; cvs diff -u -r 1.204.2.37 -r 1.204.2.38 src/prefs_common.c; cvs diff -u -r 1.103.2.16 -r 1.103.2.17 src/prefs_common.h; cvs diff -u -r 1.17.2.13 -r 1.17.2.14 src/alertpanel.c; cvs diff -u -r 1.5.2.3 -r 1.5.2.4 src/alertpanel.h; cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/pgpmime/sgpgme.c; ) > 1.9.11cvs6.patchset
+( cvs diff -u -r 1.2.2.6 -r 1.2.2.7 src/folder_item_prefs.c; ) > 1.9.11cvs7.patchset

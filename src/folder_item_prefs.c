@@ -249,7 +249,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.sort_descending		= src->prefs->sort_descending;
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
         tmp_prefs.enable_processing             = src->prefs->enable_processing;
-    tmp_prefs.newmailcheck             = src->prefs->newmailcheck;
+	tmp_prefs.newmailcheck                  = src->prefs->newmailcheck;
 
 	prefs_matcher_read_config();
 
