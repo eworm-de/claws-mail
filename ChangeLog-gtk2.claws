@@ -1,3 +1,10 @@
+2005-05-25 [colin]	1.9.11cvs9
+
+	* src/procmime.c
+		Use correct encoding when sending mails
+		with attachments that have accentued 
+		chars in their name
+
 2005-05-24 [colin]	1.9.11cvs8
 
 	* src/summaryview.c
