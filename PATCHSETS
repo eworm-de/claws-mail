@@ -498,3 +498,4 @@
 ( cvs diff -u -r 1.2.2.6 -r 1.2.2.7 src/folder_item_prefs.c; ) > 1.9.11cvs7.patchset
 ( cvs diff -u -r 1.155.2.21 -r 1.155.2.22 src/Makefile.am; cvs diff -u -r 1.213.2.25 -r 1.213.2.26 src/folder.c; cvs diff -u -r 1.149.2.24 -r 1.149.2.25 src/inc.c; cvs diff -u -r 1.49.2.39 -r 1.49.2.40 src/procmime.c; cvs diff -u -r 1.25.2.11 -r 1.25.2.12 src/stock_pixmap.c; cvs diff -u -r 1.18.2.7 -r 1.18.2.8 src/stock_pixmap.h; cvs diff -u -r 1.395.2.68 -r 1.395.2.69 src/summaryview.c; cvs diff -u -r 0 -r 1 src/pixmaps/clip_gpg_signed.xpm; ) > 1.9.11cvs8.patchset
 ( cvs diff -u -r 1.49.2.40 -r 1.49.2.41 src/procmime.c; ) > 1.9.11cvs9.patchset
+( cvs diff -u -r 1.213.2.26 -r 1.213.2.27 src/folder.c; cvs diff -u -r 1.207.2.37 -r 1.207.2.38 src/folderview.c; cvs diff -u -r 1.150.2.25 -r 1.150.2.26 src/procmsg.c; cvs diff -u -r 1.395.2.69 -r 1.395.2.70 src/summaryview.c; ) > 1.9.11cvs10.patchset

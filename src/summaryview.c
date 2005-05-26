@@ -3151,6 +3151,9 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_LOCKED(msginfo->flags))
+		return;
+
 	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;

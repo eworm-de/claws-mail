@@ -1,3 +1,14 @@
+2005-05-26 [colin]	1.9.11cvs10
+
+	* src/folder.c
+	* src/folderview.c
+	* src/procmsg.c
+	* src/summaryview.c
+		Forbid locked messages to be moved or
+		deleted. Locked messages in trashes 
+		still get deleted, for performance
+		reason (mh.c::mh_remove_all_msgs)
+
 2005-05-25 [colin]	1.9.11cvs9
 
 	* src/procmime.c

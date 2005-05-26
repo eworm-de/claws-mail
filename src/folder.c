@@ -2796,7 +2796,10 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	folder_item_update_freeze();
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
-
+		if (MSG_IS_LOCKED(msginfo->flags)) {
+			msglist = msglist->next;
+			continue;
+		}
 		ret = folder_item_remove_msg(item, msginfo->msgnum);
 		if (ret != 0) break;
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
