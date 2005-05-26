@@ -502,3 +502,4 @@
 ( cvs diff -u -r 1.60.2.13 -r 1.60.2.14 src/prefs_actions.c; cvs diff -u -r 1.12.2.8 -r 1.12.2.9 src/prefs_template.c; cvs diff -u -r 1.2.4.5 -r 1.2.4.6 src/common/template.c; ) > 1.9.11cvs11.patchset
 ( cvs diff -u -r 1.3.2.18 -r 1.3.2.19 src/prefs_themes.c; ) > 1.9.11cvs12.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpmime/passphrase.c; ) > 1.9.11cvs13.patchset
+( cvs diff -u -r 1.6.2.5 -r 1.6.2.6 src/common/nntp.c; ) > 1.9.11cvs14.patchset

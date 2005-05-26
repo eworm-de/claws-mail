@@ -95,7 +95,9 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 	SESSION(session)->destroy		= nntp_session_destroy;
 
 	session->group = NULL;
-
+	
+	nntp_mode(session, FALSE);
+	
 	if (userid && passwd) {
 		gint ok;
 
