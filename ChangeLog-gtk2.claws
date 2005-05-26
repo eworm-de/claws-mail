@@ -1,3 +1,8 @@
+2005-05-26 [colin]	1.9.11cvs15
+
+	* src/folder.c
+		remove printf
+
 2005-05-26 [colin]	1.9.11cvs14
 
 	* src/common/nntp.c
