@@ -1,7 +1,7 @@
 2005-05-26 [colin]	1.9.11cvs12
 
 	* src/prefs_themes.c
-		Fix g_warning
+		Fix g_warning (bug #541)
 
 2005-05-26 [colin]	1.9.11cvs11
 
