@@ -1,3 +1,12 @@
+2005-05-26 [colin]	1.9.11cvs11
+
+	* src/prefs_actions.c
+	* src/prefs_template.c
+		Fix bug #506 (no warning if action/template
+		is not saved)
+	* src/common/template.c
+		Fix a possible crash
+
 2005-05-26 [colin]	1.9.11cvs10
 
 	* src/folder.c

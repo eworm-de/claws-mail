@@ -206,7 +206,10 @@ void template_write_config(GSList *tmpl_list)
 		if (tmpl->cc && *tmpl->bcc != '\0')
 			fprintf(fp, "Cc: %s\n", tmpl->bcc);
 		fputs("\n", fp);
-		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1, fp);
+		if (tmpl->value && *tmpl->value != '\0')
+			fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1, fp);
+		else
+			fwrite("", sizeof(gchar), 1, fp);
 
 		fclose(fp);
 		g_free(filename);

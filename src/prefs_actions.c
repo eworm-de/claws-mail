@@ -43,6 +43,7 @@
 #include "prefs_actions.h"
 #include "action.h"
 #include "description_window.h"
+#include "gtkutils.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -66,6 +67,8 @@ static struct Actions
 
 	GtkWidget *actions_list_view;
 } actions;
+
+static int modified = FALSE;
 
 /* widget creating functions */
 static void prefs_actions_create	(MainWindow *mainwin);
@@ -531,6 +534,7 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 static void prefs_actions_register_cb(GtkWidget *w, gpointer data)
 {
 	prefs_actions_clist_set_row(NULL);
+	modified = FALSE;
 }
 
 static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
@@ -555,6 +559,7 @@ static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 
 	gtk_tree_path_free(path_sel);
 	gtk_tree_path_free(path_new);
+	modified = FALSE;
 }
 
 static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
@@ -672,11 +677,24 @@ static gboolean prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_actions_cancel(widget, data);
+	else {
+		GtkWidget *focused = gtkut_get_focused_child(
+					GTK_CONTAINER(widget));
+		if (focused && GTK_IS_EDITABLE(focused)) {
+			modified = TRUE;
+		}
+	}
 	return FALSE;
 }
 
 static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
+	if (modified && alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+		return;
+	}
+	modified = FALSE;
 	prefs_actions_read_config();
 	gtk_widget_hide(actions.window);
 	inc_unlock();
@@ -690,6 +708,12 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 	MessageView *msgview;
 	Compose *compose;
 
+	if (modified && alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+		return;
+	}
+	modified = FALSE;
 	prefs_actions_write_config();
 
 	/* Update mainwindow actions menu */
