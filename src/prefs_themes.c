@@ -1015,8 +1015,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 			 G_CALLBACK(prefs_themes_btn_more_clicked_cb),
 			 NULL);
 
-	gtk_widget_grab_default (btn_use);
-
 	prefs_themes->window = GTK_WIDGET(window);
 	
 	prefs_themes->name   = label_name;

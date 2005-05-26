@@ -1,3 +1,8 @@
+2005-05-26 [colin]	1.9.11cvs12
+
+	* src/prefs_themes.c
+		Fix g_warning
+
 2005-05-26 [colin]	1.9.11cvs11
 
 	* src/prefs_actions.c
