@@ -49,39 +49,59 @@
 #include "manage_window.h"
 #include "alertpanel.h"
 
-static GtkWidget *window;
-static GtkWidget *body_entry;
-static GtkWidget *case_checkbtn;
-static GtkWidget *backward_checkbtn;
-static GtkWidget *search_btn;
-static GtkWidget *clear_btn;
-static GtkWidget *close_btn;
+static struct MessageSearchWindow {
+	GtkWidget *window;
+	GtkWidget *body_entry;
+	GtkWidget *case_checkbtn;
+	GtkWidget *prev_btn;
+	GtkWidget *next_btn;
+	GtkWidget *close_btn;
 
-static void message_search_create(MessageView *summaryview);
-static void message_search_execute(GtkButton *button, gpointer data);
-static void message_search_clear(GtkButton *button, gpointer data);
-static void body_activated(void);
-static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+	MessageView *messageview;
+} search_window;
+
+static void message_search_create	(void);
+static void message_search_execute	(gboolean	 backward);
+
+static void message_search_prev_clicked	(GtkButton	*button,
+					 gpointer	 data);
+static void message_search_next_clicked	(GtkButton	*button,
+					 gpointer	 data);
+static void body_activated		(void);
+static gboolean key_pressed		(GtkWidget	*widget,
+					 GdkEventKey	*event,
+					 gpointer	 data);
 
 void message_search(MessageView *messageview)
 {
-	if (!window)
-		message_search_create(messageview);
+	if (!search_window.window)
+		message_search_create();
 	else
-		gtk_widget_hide(window);
+		gtk_widget_hide(search_window.window);
 
-	gtk_widget_grab_focus(search_btn);
-	gtk_widget_grab_focus(body_entry);
-	gtk_widget_show(window);
+	search_window.messageview = messageview;
+
+	gtk_widget_grab_focus(search_window.next_btn);
+	gtk_widget_grab_focus(search_window.body_entry);
+	gtk_widget_show(search_window.window);
 }
 
-static void message_search_create(MessageView *messageview)
+static void message_search_create(void)
 {
+	GtkWidget *window;
+
 	GtkWidget *vbox1;
 	GtkWidget *hbox1;
 	GtkWidget *body_label;
+	GtkWidget *body_entry;
+
 	GtkWidget *checkbtn_hbox;
+	GtkWidget *case_checkbtn;
+
 	GtkWidget *confirm_area;
+	GtkWidget *prev_btn;
+	GtkWidget *next_btn;
+	GtkWidget *close_btn;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window),
@@ -111,7 +131,7 @@ static void message_search_create(MessageView *messageview)
 	gtk_widget_show (body_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(body_entry), "activate",
-			 G_CALLBACK(body_activated), messageview);
+			 G_CALLBACK(body_activated), NULL);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);
@@ -122,50 +142,45 @@ static void message_search_create(MessageView *messageview)
 	gtk_widget_show (case_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), FALSE);
-
-	backward_checkbtn =
-		gtk_check_button_new_with_label (_("Backward search"));
-	gtk_widget_show (backward_checkbtn);
-	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), backward_checkbtn,
-			    FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &search_btn, GTK_STOCK_FIND,
-				      &clear_btn, GTK_STOCK_CLEAR,
+				      &prev_btn, GTK_STOCK_GO_BACK,
+				      &next_btn, GTK_STOCK_GO_FORWARD,
 				      &close_btn, GTK_STOCK_CLOSE);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default(search_btn);
+	gtk_widget_grab_default(next_btn);
 
-	g_signal_connect(G_OBJECT(search_btn), "clicked",
-			 G_CALLBACK(message_search_execute),
-			 messageview);
-	g_signal_connect(G_OBJECT(clear_btn), "clicked",
-			 G_CALLBACK(message_search_clear),
-			 messageview);
+	g_signal_connect(G_OBJECT(prev_btn), "clicked",
+			 G_CALLBACK(message_search_prev_clicked), NULL);
+	g_signal_connect(G_OBJECT(next_btn), "clicked",
+			 G_CALLBACK(message_search_next_clicked), NULL);
 	g_signal_connect_closure
 		(G_OBJECT(close_btn), "clicked",
 		 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide),
 				     window, NULL),
 		 FALSE);
+
+	search_window.window = window;
+	search_window.body_entry = body_entry;
+	search_window.case_checkbtn = case_checkbtn;
+	search_window.prev_btn = prev_btn;
+	search_window.next_btn = next_btn;
+	search_window.close_btn = close_btn;
 }
 
-static void message_search_execute(GtkButton *button, gpointer data)
+static void message_search_execute(gboolean backward)
 {
-	MessageView *messageview = data;
+	MessageView *messageview = search_window.messageview;
 	gboolean case_sens;
-	gboolean backward;
 	gboolean all_searched = FALSE;
 	const gchar *body_str;
 
-	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
+	body_str = gtk_entry_get_text(GTK_ENTRY(search_window.body_entry));
 	if (*body_str == '\0') return;
 
 	case_sens = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(case_checkbtn));
-	backward = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(backward_checkbtn));
+		(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
 
 	for (;;) {
 		gchar *str;
@@ -182,8 +197,11 @@ static void message_search_execute(GtkButton *button, gpointer data)
 		}
 
 		if (all_searched) {
-			alertpanel_notice
-				(_("Search string not found."));
+			alertpanel_with_type
+				(_("Search failed"),
+				 _("Search string not found."),
+				 NULL, NULL, NULL, NULL,
+				 ALERT_WARNING);
 			break;
 		}
 
@@ -199,7 +217,8 @@ static void message_search_execute(GtkButton *button, gpointer data)
 		val = alertpanel(_("Search finished"), str,
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (G_ALERTDEFAULT == val) {
-			manage_window_focus_in(window, NULL, NULL);
+			manage_window_focus_in(search_window.window,
+					       NULL, NULL);
 			messageview_set_position(messageview,
 						 backward ? -1 : 0);
 		} else
@@ -207,19 +226,25 @@ static void message_search_execute(GtkButton *button, gpointer data)
 	}
 }
 
-static void message_search_clear(GtkButton *button, gpointer data)
+static void message_search_prev_clicked(GtkButton *button, gpointer data)
 {
-	gtk_editable_delete_text(GTK_EDITABLE(body_entry),    0, -1);
+	message_search_execute(TRUE);
+}
+
+static void message_search_next_clicked(GtkButton *button, gpointer data)
+{
+	message_search_execute(FALSE);
 }
 
 static void body_activated(void)
 {
-	gtk_button_clicked(GTK_BUTTON(search_btn));
+	gtk_button_clicked(GTK_BUTTON(search_window.next_btn));
 }
 
-static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
+			    gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		gtk_widget_hide(window);
+		gtk_widget_hide(search_window.window);
 	return FALSE;
 }

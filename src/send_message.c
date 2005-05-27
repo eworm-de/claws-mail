@@ -46,6 +46,7 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "manage_window.h"
+#include "socket.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
@@ -117,39 +118,54 @@ enum
 
 gint send_message_local(const gchar *command, FILE *fp)
 {
-	FILE *pipefp;
+	gchar **argv;
+	GPid pid;
+	gint child_stdin;
 	gchar buf[BUFFSIZE];
-	int r;
-	sigset_t osig, mask;
+	gboolean err = FALSE;
 
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
 
-	pipefp = popen(command, "w");
-	if (!pipefp) {
-		g_warning("Can't execute external command: %s\n", command);
+	log_message(_("Sending message using command: %s\n"), command);
+
+	argv = strsplit_with_quote(command, " ", 0);
+
+	if (g_spawn_async_with_pipes(NULL, argv, NULL, 0, NULL, NULL, &pid,
+				     &child_stdin, NULL, NULL, NULL) == FALSE) {
+		g_snprintf(buf, sizeof(buf),
+			   _("Can't execute command: %s"), command);
+		log_warning("%s\n", buf);
+		alertpanel_error("%s", buf);
+		g_strfreev(argv);
 		return -1;
 	}
+	g_strfreev(argv);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
-		fputs(buf, pipefp);
-		fputc('\n', pipefp);
+		if (buf[0] == '.' && buf[1] == '\0') {
+			if (fd_write_all(child_stdin, ".", 1) < 0) {
+				err = TRUE;
+				break;
+			}
+		}
+		if (fd_write_all(child_stdin, buf, strlen(buf)) < 0 ||
+		    fd_write_all(child_stdin, "\n", 1) < 0) {
+			err = TRUE;
+			break;
+		}
 	}
 
-	/* we need to block SIGCHLD, otherwise pspell's handler will wait()
-	 * the pipecommand away and pclose will return -1 because of its
-	 * failed wait4().
-	 */
-	sigemptyset(&mask);
-	sigaddset(&mask, SIGCHLD);
-	sigprocmask(SIG_BLOCK, &mask, &osig);
-	
-	r = pclose(pipefp);
+	fd_close(child_stdin);
+	g_spawn_close_pid(pid);
 
-	sigprocmask(SIG_SETMASK, &osig, NULL);
-	if (r != 0) {
-		g_warning("external command `%s' failed with code `%i'\n", command, r);
+	if (err) {
+		g_snprintf(buf, sizeof(buf),
+			   _("Error occurred while executing command: %s"),
+			   command);
+		log_warning("%s\n", buf);
+		alertpanel_error("%s", buf);
 		return -1;
 	}
 

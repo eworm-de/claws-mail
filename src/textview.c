@@ -1340,7 +1340,9 @@ void textview_write_link(TextView *textview, const gchar *str,
 	gchar *bufp;
 	RemoteURI *r_uri;
 
-	if (*str == '\0')
+	if (!str || *str == '\0')
+		return;
+	if (!uri)
 		return;
 
 	text = GTK_TEXT_VIEW(textview->text);
@@ -1352,12 +1354,23 @@ void textview_write_link(TextView *textview, const gchar *str,
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
 		conv_utf8todisp(buf, sizeof(buf), str);
 
+	if (g_utf8_validate(buf, -1, NULL) == FALSE) {
+		g_free(buf);
+		return;
+	}
+
 	strcrchomp(buf);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
+	for (bufp = buf; *bufp != '\0'; bufp = g_utf8_next_char(bufp)) {
+		gunichar ch;
 
-	for (bufp = buf; isspace(*(guchar *)bufp); bufp++)
-		gtk_text_buffer_insert(buffer, &iter, bufp, 1);
+		ch = g_utf8_get_char(bufp);
+		if (!g_unichar_isspace(ch))
+			break;
+	}
+	if (bufp > buf)
+		gtk_text_buffer_insert(buffer, &iter, buf, bufp - buf);
 
     	if (prefs_common.enable_color) {
 		link_color = &uri_color;

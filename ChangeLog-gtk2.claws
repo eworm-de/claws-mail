@@ -1,3 +1,24 @@
+2005-05-27 [paul]	1.9.11cvs16
+
+	sync with main:
+
+	* src/main.c
+		app_will_exit(): cleanup tmp directory when exit
+	* src/message_search.c
+		improved the interface and made code cleanup.
+		removed Clear button
+	* src/send_message.c
+		send_message_local(): use GSpawn, and detect errors
+	* src/summary_search.c
+		improved the interface and made code cleanup
+	* src/textview.c
+		textview_write_link(): also skip non-ascii space
+		 at the head of link strings (phishing check
+		 didn't work at the case)
+	* src/common/utils.c
+		get_command_output(): use g_spawn_command_line_sync()
+		instead of popen()
+
 2005-05-26 [colin]	1.9.11cvs15
 
 	* src/folder.c
