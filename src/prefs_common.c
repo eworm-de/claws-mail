@@ -349,7 +349,7 @@ static PrefParam param[] = {
 	/* Quote */
 	{"reply_quote_mark", "> ", &prefs_common.quotemark, P_STRING,
 	 &quote.entry_quotemark, prefs_set_data_from_entry, prefs_set_entry},
-	{"reply_quote_format", "On %d\\n%f wrote:\\n\\n%Q",
+	{"reply_quote_format", "On %d\\n%f wrote:\\n\\n%q",
 	 &prefs_common.quotefmt, P_STRING, &quote.text_quotefmt,
 	 prefs_set_data_from_text, prefs_set_text},
 
