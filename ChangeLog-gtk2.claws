@@ -1,3 +1,10 @@
+2005-05-29 [colin]	1.9.11cvs17
+
+	* src/summaryview.c
+		Don't let always_show_msg override
+		open_unread_on_enter when opening a new
+		directory.
+
 2005-05-27 [paul]	1.9.11cvs16
 
 	sync with main:
