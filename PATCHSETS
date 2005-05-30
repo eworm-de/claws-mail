@@ -508,3 +508,4 @@
 ( cvs diff -u -r 1.395.2.70 -r 1.395.2.71 src/summaryview.c; ) > 1.9.11cvs17.patchset
 ( cvs diff -u -r 1.204.2.38 -r 1.204.2.39 src/prefs_common.c; ) > 1.9.11cvs18.patchset
 ( cvs diff -u -r 0 -r 1 doc/src/rfc2368.txt; cvs diff -u -r 1.382.2.121 -r 1.382.2.122 src/compose.c; ) > 1.9.11cvs19.patchset
+( cvs diff -u -r 1.2.4.6 -r 1.2.4.7 src/common/template.c; ) > 1.9.11cvs20.patchset

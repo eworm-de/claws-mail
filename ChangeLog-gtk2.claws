@@ -1,3 +1,8 @@
+2005-05-30 [paul]	1.9.11cvs20
+
+	* src/common/template.c
+		fix Bcc
+
 2005-05-30 [paul]	1.9.11cvs19
 
 	* doc/src/rfc2368.txt	**NEW FILE**
