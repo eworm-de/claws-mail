@@ -636,34 +636,38 @@ void trim_subject_for_sort(gchar *str)
 
 void trim_subject(gchar *str)
 {
-	register guchar *srcp, *destp;
+	register guchar *srcp;
 	gchar op, cl;
 	gint in_brace;
+	
+	g_strstrip(str);
 
-	destp = str + subject_get_prefix_length(str);
+	srcp = str + subject_get_prefix_length(str);
 
-	if (*destp == '[') {
+	if (*srcp == '[') {
 		op = '[';
 		cl = ']';
-	} else if (*destp == '(') {
+	} else if (*srcp == '(') {
 		op = '(';
 		cl = ')';
 	} else
-		return;
+		op = 0;
 
-	srcp = destp + 1;
-	in_brace = 1;
-	while (*srcp) {
-		if (*srcp == op)
-			in_brace++;
-		else if (*srcp == cl)
-			in_brace--;
-		srcp++;
-		if (in_brace == 0)
-			break;
+	if (op) {
+		++srcp;
+		in_brace = 1;
+		while (*srcp) {
+			if (*srcp == op)
+				in_brace++;
+			else if (*srcp == cl)
+				in_brace--;
+			srcp++;
+			if (in_brace == 0)
+				break;
+		}
 	}
 	while (isspace(*srcp)) srcp++;
-	memmove(destp, srcp, strlen(srcp) + 1);
+	memmove(str, srcp, strlen(srcp) + 1);
 }
 
 void eliminate_parenthesis(gchar *str, gchar op, gchar cl)
