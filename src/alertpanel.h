@@ -65,6 +65,9 @@ AlertValue alertpanel_with_type	(const gchar *title,
 
 AlertValue alertpanel_message_with_disable	(const gchar	*title,
 						 const gchar	*message,
+						 const gchar	*button1_label,
+						 const gchar	*button2_label,
+						 const gchar	*button3_label,
 						 gint		 alert_type);
 
 void alertpanel_notice	(const gchar	*format,

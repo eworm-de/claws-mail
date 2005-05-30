@@ -477,6 +477,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	g_free(filename);
 
 	/* delete temporary files */
+	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
 
 	close_log_file();

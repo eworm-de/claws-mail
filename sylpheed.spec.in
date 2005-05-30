@@ -65,11 +65,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 cp -r tools $RPM_BUILD_ROOT%{prefix}/share/sylpheed
 rm $RPM_BUILD_ROOT%{prefix}/share/sylpheed/tools/Makefile*
 mv $RPM_BUILD_ROOT%{prefix}/share/sylpheed/tools/README ./README.tools
-# fixing permissions
-pushd $RPM_BUILD_ROOT%{prefix}/share/sylpheed
-find . -name "*.xpm" -o -name ".directory" | xargs chmod 644
-popd
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT

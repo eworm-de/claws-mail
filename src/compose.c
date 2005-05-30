@@ -1556,18 +1556,15 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 {
 	gchar *to = NULL;
 	gchar *cc = NULL;
-	gchar *bcc = NULL;
 	gchar *subject = NULL;
 	gchar *body = NULL;
 
-	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body);
+	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body);
 
 	if (to)
 		compose_entry_append(compose, to, COMPOSE_TO);
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC);
-	if (bcc)
-		compose_entry_append(compose, bcc, COMPOSE_BCC);
 	if (subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 	if (body) {
@@ -1579,7 +1576,6 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 
 	g_free(to);
 	g_free(cc);
-	g_free(bcc);
 	g_free(subject);
 	g_free(body);
 }

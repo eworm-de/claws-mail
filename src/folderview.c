@@ -1444,6 +1444,18 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 	if (event->button == 1) {
 		folderview->open_folder = TRUE;
+
+	        if (event->type == GDK_2BUTTON_PRESS) {
+			if (clist->selection) {
+				GtkCTreeNode *node;
+
+				node = GTK_CTREE_NODE(clist->selection->data);
+				if (node)
+					gtk_ctree_toggle_expansion(
+						GTK_CTREE(ctree),
+						node);
+			}
+		}
 		return;
 	}
 
@@ -1791,6 +1803,8 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
+		if (MSG_IS_LOCKED(msginfo->flags))
+			continue;
 		/* is it partially received? (partial_recv isn't cached) */
 		if (msginfo->total_size != 0 && 
 		    msginfo->size != (off_t)msginfo->total_size)
@@ -1860,6 +1874,22 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 
 	src_node = gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), NULL, from_folder);
 	from_parent = folder_item_parent(from_folder);
+	
+	if (prefs_common.warn_dnd) {
+		buf = g_strdup_printf(_("Do you really want to move folder `%s' to a "
+					"sub-folder of `%s' ?"), from_folder->name,
+					to_folder->name);
+		status = alertpanel_message_with_disable(_("Move folder"), buf, 
+				_("Yes"), _("No"), NULL, ALERT_QUESTION);
+		g_free(buf);
+
+		if (status != G_ALERTDEFAULT
+		 && status != (G_ALERTDEFAULT | G_ALERTDISABLE))
+			return;
+		if (status & G_ALERTDISABLE)
+			prefs_common.warn_dnd = FALSE;
+	}
+
 	buf = g_strdup_printf(_("Moving %s to %s..."), from_folder->name, to_folder->name);
 	STATUSBAR_PUSH(folderview->mainwin, buf);
 	g_free(buf);

@@ -590,7 +590,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 static PrivacySystem pgpmime_system = {
 	"pgpmime",			/* id */
-	"PGP/MIME",			/* name */
+	"PGP MIME",			/* name */
 
 	pgpmime_free_privacydata,	/* free_privacydata */
 

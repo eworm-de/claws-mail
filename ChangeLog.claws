@@ -1,3 +1,70 @@
+2005-05-30 [paul]	1.0.4cvs14
+
+	backported from GTK2
+
+	* sylpheed.spec.in
+		fix bug 477
+	* doc/src/rfc2368.txt
+		added
+	* src/Makefile.am
+		add clip/signed icon
+	* src/alertpanel.c
+	* src/alertpanel.h
+		fix _with_disable parameters so that
+		the buttons labels are specifiable too
+	* src/compose.c
+		compose_entries_set(): don't interpret Bcc
+		header field (conform to RFC 2368)
+	* src/folder.c
+		Forbid locked messages to be moved or deleted
+		Fix bug #688 b) and c)
+	* src/folderview.c
+		Forbid locked messages to be moved or deleted
+		Fix bugs #156 and #108
+	* src/inc.c
+		Fix bug #688 b) and c)
+	* src/main.c
+		cleanup tmp directory when exit
+	* src/prefs_actions.c
+		Fix bug #506
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Let the default reply format respect
+		netiquette by cutting the signature.
+		Fix bug #156
+	* src/prefs_template.c
+		Fix bug #506
+	* src/procmime.c
+		Fix bug #688 b) and c)
+	* src/procmsg.c
+		Forbid locked messages to be moved or deleted
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+		Add clip/signed icon
+	* src/summaryview.c
+		Don't let always_show_msg override
+		open_unread_on_enter when opening a new
+		directory.
+		Forbid locked messages to be moved or deleted.
+		Fix bug #688 f) read/unread marker not
+		changed on first click.
+	* src/common/nntp.c
+		Fix bug #611 nntp mode reader
+	* src/common/socket.c
+		Check another special SSL_peek() error.
+		Should help wrt bug #728
+	* src/common/template.c
+		Fix a possible crash
+	* src/pixmaps/clip_gpg_signed.xpm
+		added
+	* src/plugins/pgpmime/pgpmime.c
+		Change name to "PGP MIME"
+	* src/plugins/pgpmime/sgpgme.c
+		reflect fixed _with_disable parameters
+	* tools/kdeservicemenu/install.sh
+		use kdesu to prompt for root password if doing
+		global install/uninstall
+
 2005-05-24 [colin]	1.0.4cvs13
 
 	* src/gtk/colorsel.c

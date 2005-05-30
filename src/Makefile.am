@@ -265,6 +265,7 @@ EXTRA_DIST = \
 	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
 	pixmaps/clip.xpm \
+	pixmaps/clip_gpg_signed.xpm \
 	pixmaps/close.xpm \
 	pixmaps/complete.xpm \
 	pixmaps/continue.xpm \

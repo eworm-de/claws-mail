@@ -66,9 +66,7 @@ case $1 in
     PREFIX=$(kde-config --prefix)
     echo "Installing in $PREFIX ..."
     if [ "$(id -u)" != "0" ]; then
-      echo "You are not root, as would be expected."
-      echo "However, we will still attempt a system-wide install."
-      echo "But, you probably don't have permission."
+	exec kdesu "$0 --global"
     fi
     install_all
     ;;
@@ -89,7 +87,7 @@ case $1 in
     PREFIX=$(kde-config --prefix)
     echo "Uninstalling in $PREFIX ..."
     if [ "$(id -u)" != "0" ]; then
-      echo "You are not root, if you have any global installs, you will probably not have permission to remove them."
+	exec kdesu "$0 --uninstall-global"
     fi
     uninstall_all
     ;;

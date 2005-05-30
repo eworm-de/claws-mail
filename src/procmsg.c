@@ -609,7 +609,12 @@ void procmsg_empty_trash(FolderItem *trash)
 		GSList *cur;
 		for (cur = mlist ; cur != NULL ; cur = cur->next) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
-			partial_mark_for_delete(msginfo);
+			if (MSG_IS_LOCKED(msginfo->flags))
+				continue;
+			if (msginfo->total_size != 0 && 
+			    msginfo->size != (off_t)msginfo->total_size)
+				partial_mark_for_delete(msginfo);
+
 			procmsg_msginfo_free(msginfo);
 		}
 

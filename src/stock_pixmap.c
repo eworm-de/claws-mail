@@ -92,6 +92,7 @@
 #include "pixmaps/notice_error.xpm"
 #include "pixmaps/notice_note.xpm"
 #include "pixmaps/quicksearch.xpm"
+#include "pixmaps/clip_gpg_signed.xpm"
 #include "pixmaps/gpg_signed.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
@@ -159,6 +160,7 @@ static StockPixmapData pixmaps[] =
 	{check_spelling_xpm                     , NULL, NULL, "check_spelling", NULL},
 	{clip_xpm				, NULL, NULL, "clip", NULL},
 	{clipkey_xpm				, NULL, NULL, "clipkey", NULL},
+	{clip_gpg_signed_xpm			, NULL, NULL, "clip_gpg_signed", NULL},
 	{close_xpm				, NULL, NULL, "close", NULL},
 	{complete_xpm				, NULL, NULL, "complete", NULL},
 	{continue_xpm				, NULL, NULL, "continue", NULL},

@@ -641,8 +641,12 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		/* process messages */
 		folder_item_update_freeze();
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
+			gchar *filename;
 			msginfo = (MsgInfo *) msglist_element->data;
-			if (!pop3_session->ac_prefs->filter_on_recv || !procmsg_msginfo_filter(msginfo))
+			filename = folder_item_fetch_msg(processing, msginfo->msgnum);
+			g_free(filename);
+			if (!pop3_session->ac_prefs->filter_on_recv || 
+			    !procmsg_msginfo_filter(msginfo))
 				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}

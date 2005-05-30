@@ -124,6 +124,8 @@ static GdkPixmap *clipkeyxpm;
 static GdkBitmap *clipkeyxpmmask;
 static GdkPixmap *gpgsignedxpm;
 static GdkBitmap *gpgsignedxpmmask;
+static GdkPixmap *clipgpgsignedxpm;
+static GdkBitmap *clipgpgsignedxpmmask;
 
 static void summary_free_msginfo_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -637,6 +639,8 @@ void summary_init(SummaryView *summaryview)
 			 &keyxpm, &keyxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
 			 &gpgsignedxpm, &gpgsignedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
+			 &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 
 	if (!bold_style) {
 		bold_style = gtk_style_copy
@@ -1015,8 +1019,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				 item->sort_type == SORT_DESCENDING
 				 ? 0 : GTK_CLIST(ctree)->rows - 1);
 		}
-		if (prefs_common.open_unread_on_enter ||
-		    prefs_common.always_show_msg) {
+		if (prefs_common.open_unread_on_enter) {
 			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, 
 					    messageview_is_visible(summaryview->messageview), 
@@ -2423,7 +2426,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
-	if (val == 0) {
+	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)) {
 		if (prefs_common.mark_as_read_delay) {
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
 			data->summaryview = summaryview;
@@ -2684,7 +2687,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
 	}
 
-	if (MSG_IS_SIGNED(flags)) {
+	if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_SIGNED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  clipgpgsignedxpm, clipgpgsignedxpmmask);
+	} else if (MSG_IS_SIGNED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  gpgsignedxpm, gpgsignedxpmmask);
 	} else if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_ENCRYPTED(flags)) {
@@ -3126,6 +3132,9 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_LOCKED(msginfo->flags))
+		return;
+
 	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
@@ -4496,8 +4505,13 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			     gint column, SummaryView *summaryview)
 {
 	MsgInfo *msginfo;
+	gboolean marked_unread = FALSE;
 
-	summary_status_show(summaryview);
+	if (column == -1 && GTK_CLIST(ctree)->selection
+	 && GTK_CLIST(ctree)->selection->next) {
+		/* multiple selection */
+		summary_status_show(summaryview);
+	}
 
 	if (GTK_CLIST(ctree)->selection &&
 	    GTK_CLIST(ctree)->selection->next) {
@@ -4530,8 +4544,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			summary_status_show(summaryview);
 		} else if (!MSG_IS_REPLIED(msginfo->flags) &&
 			 !MSG_IS_FORWARDED(msginfo->flags)) {
-			summary_mark_row_as_unread(summaryview, row);
-			summary_status_show(summaryview);
+			marked_unread = TRUE;
 		} else if (MSG_IS_REPLIED(msginfo->flags)) {
 			summary_find_answers(summaryview, msginfo);
 			return;
@@ -4555,9 +4568,18 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		summaryview->display_msg = FALSE;
 		if (summaryview->displayed != row) {
 			summary_display_msg(summaryview, row);
+			if (marked_unread) {
+				summary_mark_row_as_unread(summaryview, row);
+				summary_status_show(summaryview);
+			} 
 			return;
 		}
 	}
+	
+	if (marked_unread) {
+		summary_mark_row_as_unread(summaryview, row);
+		summary_status_show(summaryview);
+	} 
 
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
@@ -5137,6 +5159,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

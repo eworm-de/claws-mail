@@ -51,6 +51,8 @@ static struct Templates {
 	GtkWidget *text_value;
 } templates;
 
+static int modified = FALSE;
+
 /* widget creating functions */
 static void prefs_template_window_create	(void);
 static void prefs_template_window_setup		(void);
@@ -350,12 +352,26 @@ static void prefs_template_key_pressed_cb(GtkWidget *widget,
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_template_cancel_cb();
+	else {
+		GtkWidget *focused = gtkut_get_focused_child(
+					GTK_CONTAINER(widget));
+		if (focused && GTK_IS_EDITABLE(focused)) {
+			modified = TRUE;
+		}
+	}
+	return;
 }
 
 static void prefs_template_ok_cb(void)
 {
 	GSList *tmpl_list;
 
+	if (modified && alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+		return;
+	}
+	modified = FALSE;
 	tmpl_list = prefs_template_get_list();
 	template_set_config(tmpl_list);
 	compose_reflect_prefs_all();
@@ -366,6 +382,12 @@ static void prefs_template_ok_cb(void)
 
 static void prefs_template_cancel_cb(void)
 {
+	if (modified && alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+		return;
+	}
+	modified = FALSE;
 	prefs_template_clear();
 	gtk_widget_hide(templates.window);
 	inc_unlock();

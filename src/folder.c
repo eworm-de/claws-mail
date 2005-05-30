@@ -2087,7 +2087,9 @@ static void msginfo_set_mime_flags(GNode *node, gpointer data)
 	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
 		 mimeinfo->type != MIMETYPE_TEXT &&
 		 mimeinfo->type != MIMETYPE_MULTIPART) {
-		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
+		if (!mimeinfo->subtype 
+		||  strcmp(mimeinfo->subtype, "pgp-signature"))
+			procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	}
 
 	/* don't descend below top level message for signed and encrypted info */
@@ -2786,7 +2788,10 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	folder_item_update_freeze();
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
-
+		if (MSG_IS_LOCKED(msginfo->flags)) {
+			msglist = msglist->next;
+			continue;
+		}
 		ret = folder_item_remove_msg(item, msginfo->msgnum);
 		if (ret != 0) break;
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
