@@ -1452,31 +1452,9 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			  ComposeEntryType type)
 {
 	gchar *header;
-
+	gchar **parts = g_strsplit(address, ",", 0);
+	int i = 0;
 	if (!address || *address == '\0') return;
-
-#if 0 /* NEW COMPOSE GUI */
-	switch (type) {
-	case COMPOSE_CC:
-		entry = GTK_ENTRY(compose->cc_entry);
-		break;
-	case COMPOSE_BCC:
-		entry = GTK_ENTRY(compose->bcc_entry);
-		break;
-	case COMPOSE_NEWSGROUPS:
-		entry = GTK_ENTRY(compose->newsgroups_entry);
-		break;
-	case COMPOSE_TO:
-	default:
-		entry = GTK_ENTRY(compose->to_entry);
-		break;
-	}
-
-	text = gtk_entry_get_text(entry);
-	if (*text != '\0')
-		gtk_entry_append_text(entry, ", ");
-	gtk_entry_append_text(entry, address);
-#endif
 
 	switch (type) {
 	case COMPOSE_CC:
@@ -1500,8 +1478,14 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		break;
 	}
 	header = prefs_common.trans_hdr ? gettext(header) : header;
-
-	compose_add_header_entry(compose, header, (gchar *)address);
+	while (parts[i] && *parts[i]) {
+		gchar *tmp = parts[i];
+		while (*tmp == ' ')
+			tmp++;
+		compose_add_header_entry(compose, header, tmp);
+		i++;
+	}
+	g_strfreev(parts);
 }
 
 void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
@@ -2284,19 +2268,19 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gchar *name;
 
 	if (!is_file_exist(file)) {
-		g_warning("File %s doesn't exist\n", file);
+		g_warning("File %s doesn't exist\n", filename);
 		return;
 	}
 	if ((size = get_file_size(file)) < 0) {
-		g_warning("Can't get file size of %s\n", file);
+		g_warning("Can't get file size of %s\n", filename);
 		return;
 	}
 	if (size == 0) {
-		alertpanel_notice(_("File %s is empty."), file);
+		alertpanel_notice(_("File %s is empty."), filename);
 		return;
 	}
 	if ((fp = fopen(file, "rb")) == NULL) {
-		alertpanel_error(_("Can't read %s."), file);
+		alertpanel_error(_("Can't read %s."), filename);
 		return;
 	}
 	fclose(fp);

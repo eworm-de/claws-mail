@@ -330,10 +330,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	}
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn))) {
+		int old_color = prefs->color;
 		prefs->color = page->folder_color;
 	
 		/* update folder view */
-		if (prefs->color > 0)
+		if (prefs->color != old_color)
 			folder_item_update(folder, F_ITEM_UPDATE_MSGCNT);
 	}
 

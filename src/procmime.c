@@ -314,6 +314,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		gchar outbuf[BUFFSIZE];
 		gint len;
 		Base64Decoder *decoder;
+		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
 		FILE *tmpfp = outfp;
 
@@ -331,13 +332,18 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		decoder = base64_decoder_new();
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			len = base64_decoder_decode(decoder, buf, outbuf);
-			if (len < 0) {
+			if (len < 0 && !got_error) {
 				g_warning("Bad BASE64 content.\n");
 				fwrite(_("[Error decoding BASE64]\n"),
 					sizeof(gchar),
 					strlen(_("[Error decoding BASE64]\n")),
 					tmpfp);
+				got_error = TRUE;
 				continue;
+			} else if (len >= 0) {
+				/* print out the error message only once 
+				 * per block */
+				got_error = FALSE;
 			}
 			fwrite(outbuf, sizeof(gchar), len, tmpfp);
 		}

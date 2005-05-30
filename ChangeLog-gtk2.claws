@@ -1,3 +1,15 @@
+2005-05-30 [colin]	1.9.11cvs21
+
+	* src/compose.c
+		Fix concatenation of different headers of
+		the same type (bug #645)
+	* src/prefs_folder_item.c
+		Fix bug #699 (setting color to black doesn't
+		work immediately)
+	* src/procmime.c
+		Print out decoding error only once per
+		block
+
 2005-05-30 [paul]	1.9.11cvs20
 
 	* src/common/template.c
