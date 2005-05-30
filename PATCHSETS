@@ -507,3 +507,4 @@
 ( cvs diff -u -r 1.115.2.33 -r 1.115.2.34 src/main.c; cvs diff -u -r 1.3.12.8 -r 1.3.12.9 src/message_search.c; cvs diff -u -r 1.17.2.10 -r 1.17.2.11 src/send_message.c; cvs diff -u -r 1.15.2.14 -r 1.15.2.15 src/summary_search.c; cvs diff -u -r 1.96.2.54 -r 1.96.2.55 src/textview.c; cvs diff -u -r 1.36.2.29 -r 1.36.2.30 src/common/utils.c; ) > 1.9.11cvs16.patchset
 ( cvs diff -u -r 1.395.2.70 -r 1.395.2.71 src/summaryview.c; ) > 1.9.11cvs17.patchset
 ( cvs diff -u -r 1.204.2.38 -r 1.204.2.39 src/prefs_common.c; ) > 1.9.11cvs18.patchset
+( cvs diff -u -r 0 -r 1 doc/src/rfc2368.txt; cvs diff -u -r 1.382.2.121 -r 1.382.2.122 src/compose.c; ) > 1.9.11cvs19.patchset

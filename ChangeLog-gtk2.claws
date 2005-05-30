@@ -1,3 +1,11 @@
+2005-05-30 [paul]	1.9.11cvs19
+
+	* doc/src/rfc2368.txt	**NEW FILE**
+	* src/compose.c
+		compose_entries_set(): don't interpret Bcc
+		header field (conform to RFC 2368)
+		(sync with main)
+
 2005-05-29 [colin]	1.9.11cvs18
 
 	* src/prefs_common.c
