@@ -85,6 +85,7 @@ sylpheed_SOURCES = \
 	prefs_account.c \
 	prefs_actions.c \
 	prefs_common.c \
+	prefs_compose_writing.c \
 	prefs_customheader.c \
 	prefs_display_header.c \
 	prefs_ext_prog.c \
@@ -215,6 +216,7 @@ sylpheedinclude_HEADERS = \
 	prefs_account.h \
 	prefs_actions.h \
 	prefs_common.h \
+	prefs_compose_writing.h \
 	prefs_customheader.h \
 	prefs_display_header.h \
 	prefs_ext_prog.h \

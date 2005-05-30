@@ -279,18 +279,14 @@ static PrefParam param[] = {
 
 	/* Compose */
 	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
-	 &compose.checkbtn_autoextedit,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
-	 P_BOOL, &compose.checkbtn_forward_as_attachment,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 P_BOOL, NULL, NULL, NULL},
 	{"redirect_keep_from", "FALSE",
 	 &prefs_common.redirect_keep_from, P_BOOL,
-	 &compose.checkbtn_redirect_keep_from,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"undo_level", "50", &prefs_common.undolevels, P_INT,
-	 &compose.spinbtn_undolevel,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+	 NULL, NULL, NULL},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
 	 NULL, NULL, NULL},
@@ -301,11 +297,9 @@ static PrefParam param[] = {
 	{"linewrap_before_sending", "FALSE", &prefs_common.linewrap_at_send, P_BOOL, 
 	 NULL, NULL, NULL},
         {"autosave", "FALSE", &prefs_common.autosave,
-	 P_BOOL, &compose.checkbtn_autosave,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-        {"autosave_length", "50", &prefs_common.autosave_length,
-	 P_INT, &compose.entry_autosave_length,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 P_BOOL, NULL, NULL, NULL},
+        {"autosave_length", "50", &prefs_common.autosave_length, P_INT,
+	 NULL, NULL, NULL},
 #if USE_ASPELL
 	{"enable_aspell", "TRUE", &prefs_common.enable_aspell, P_BOOL,
 	 NULL, NULL, NULL},
@@ -323,25 +317,21 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
-	 &compose.checkbtn_reply_with_quote, prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	/* Account autoselection */
 	{"reply_account_autoselect", "TRUE",
 	 &prefs_common.reply_account_autosel, P_BOOL,
-	 &compose.checkbtn_reply_account_autosel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"forward_account_autoselect", "TRUE",
 	 &prefs_common.forward_account_autosel, P_BOOL,
-	 &compose.checkbtn_forward_account_autosel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"reedit_account_autoselect", "TRUE",
 	 &prefs_common.reedit_account_autosel, P_BOOL,
-	 &compose.checkbtn_reedit_account_autosel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	{"default_reply_list", "TRUE", &prefs_common.default_reply_list, P_BOOL,
-	 &compose.checkbtn_default_reply_list,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
 	 NULL, NULL, NULL},
@@ -759,7 +749,6 @@ static PrefParam param[] = {
 static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
 static void prefs_send_create		(void);
-static void prefs_compose_create	(void);
 static void prefs_quote_create		(void);
 static void prefs_display_create	(void);
 static void prefs_message_create	(void);
@@ -964,8 +953,6 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(notebook, _("Receive"),   page++);
 	prefs_send_create();
 	SET_NOTEBOOK_LABEL(notebook, _("Send"),      page++);
-	prefs_compose_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Compose"),   page++);
 	prefs_quote_create();
 	SET_NOTEBOOK_LABEL(notebook, _("Quote"),     page++);
 	prefs_display_create();
@@ -1352,134 +1339,6 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 		  gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(receive.checkbtn_newmail_auto));
 	gtk_widget_set_sensitive(receive.hbox_newmail_notify, toggled);
-}
-
-static void prefs_compose_create(void)
-{
-	GtkWidget *vbox1;
-	GtkWidget *vbox2;
-
-	GtkWidget *checkbtn_autoextedit;
-
-	GtkWidget *frame_autosel;
-	GtkWidget *hbox_autosel;
-	GtkWidget *checkbtn_reply_account_autosel;
-	GtkWidget *checkbtn_forward_account_autosel;
-	GtkWidget *checkbtn_reedit_account_autosel;
-
-	GtkWidget *hbox_undolevel;
-	GtkWidget *label_undolevel;
-	GtkObject *spinbtn_undolevel_adj;
-	GtkWidget *spinbtn_undolevel;
-
-	GtkWidget *hbox5;
-
-	GtkWidget *checkbtn_default_reply_list;
-
-	GtkWidget *checkbtn_forward_as_attachment;
-	GtkWidget *checkbtn_redirect_keep_from;
-
-	GtkWidget *hbox_autosave;
-	GtkWidget *checkbtn_autosave;
-	GtkWidget *entry_autosave_length;
-	GtkWidget *label_autosave_length;
-	
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-        /* Account autoselection */
-	PACK_FRAME(vbox1, frame_autosel, _("Automatic account selection"));
-
-	hbox_autosel = gtk_hbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (hbox_autosel);
-	gtk_container_add (GTK_CONTAINER (frame_autosel), hbox_autosel);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox_autosel), 8);
-
-        PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reply_account_autosel,
-			   _("when replying"));
-	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_forward_account_autosel,
-			   _("when forwarding"));
-	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
-			   _("when re-editing"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_default_reply_list,
-			   _("Reply button invokes mailing list reply"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
-			   _("Automatically launch the external editor"));
-
-	hbox5 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox5);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox5, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox5, checkbtn_forward_as_attachment,
-			   _("Forward as attachment"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
-			   _("Keep the original 'From' header when redirecting"));
-
-	
-	hbox_autosave = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_autosave);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
-	
-	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave to Drafts folder every "));
-
-	entry_autosave_length = gtk_entry_new();
-	gtk_widget_set_size_request (entry_autosave_length, 64, -1);	
-	gtk_widget_show (entry_autosave_length);
-	gtk_box_pack_start (GTK_BOX (hbox_autosave), entry_autosave_length, FALSE, FALSE, 0);
-	
-	label_autosave_length = gtk_label_new(_("characters"));
-	gtk_widget_show (label_autosave_length);
-	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
-	
-	hbox_undolevel = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_undolevel);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
-
-	label_undolevel = gtk_label_new (_("Undo level"));
-	gtk_widget_show (label_undolevel);
-	gtk_box_pack_start (GTK_BOX (hbox_undolevel), label_undolevel, FALSE, FALSE, 0);
-
-	spinbtn_undolevel_adj = gtk_adjustment_new (50, 0, 100, 1, 10, 10);
-	spinbtn_undolevel = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
-	gtk_widget_show (spinbtn_undolevel);
-	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
-
-       /*
-	compose.checkbtn_quote   = checkbtn_quote;
-	compose.entry_quotemark  = entry_quotemark;
-	compose.text_quotefmt    = text_quotefmt;
-	*/
-
-	compose.checkbtn_autoextedit = checkbtn_autoextedit;
-
-        compose.checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
-	compose.checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
-	compose.checkbtn_reedit_account_autosel  = checkbtn_reedit_account_autosel;
-
-	compose.spinbtn_undolevel     = spinbtn_undolevel;
-	compose.spinbtn_undolevel_adj = spinbtn_undolevel_adj;
-
-	compose.checkbtn_autosave     = checkbtn_autosave;
-	compose.entry_autosave_length = entry_autosave_length;
-	
-	compose.checkbtn_forward_as_attachment =
-		checkbtn_forward_as_attachment;
-	compose.checkbtn_redirect_keep_from =
-		checkbtn_redirect_keep_from;
-	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;
 }
 
 static void prefs_quote_create(void)

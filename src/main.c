@@ -60,6 +60,7 @@
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
 #include "prefs_wrapping.h"
+#include "prefs_compose_writing.h"
 #include "prefs_display_header.h"
 #include "account.h"
 #include "procmsg.h"
@@ -312,6 +313,7 @@ int main(int argc, char *argv[])
 	prefs_fonts_init();
 	prefs_ext_prog_init();
 	prefs_wrapping_init();
+	prefs_compose_writing_init();
 	prefs_msg_colors_init();
 	image_viewer_init();
 	prefs_image_viewer_init();
@@ -507,6 +509,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_fonts_done();
 	prefs_ext_prog_done();
 	prefs_wrapping_done();
+	prefs_compose_writing_done();
 	prefs_msg_colors_done();
 	prefs_image_viewer_done();
 	image_viewer_done();
