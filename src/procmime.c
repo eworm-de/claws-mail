@@ -340,6 +340,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 					tmpfp);
 				got_error = TRUE;
 				continue;
+			} else if (len >= 0) {
+				/* print out the error message only once 
+				 * per block */
+				got_error = FALSE;
 			}
 			fwrite(outbuf, sizeof(gchar), len, tmpfp);
 		}
