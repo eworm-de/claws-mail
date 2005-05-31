@@ -373,6 +373,8 @@ static PrefParam param[] = {
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, NULL, NULL, NULL},
 
+	{"enable_rules_hint", "TRUE", &prefs_common.enable_rules_hint, P_BOOL,
+	 NULL, NULL, NULL},
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
 	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,

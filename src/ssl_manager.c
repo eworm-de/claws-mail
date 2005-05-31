@@ -35,6 +35,7 @@
 #include "gtksctree.h"
 #include "alertpanel.h"
 #include "sslcertwindow.h"
+#include "prefs_common.h"
 
 enum {
 	SSL_MANAGER_HOST,
@@ -119,7 +120,7 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
-	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

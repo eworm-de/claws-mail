@@ -35,6 +35,7 @@
 #include "progressdialog.h"
 #include "gtkutils.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 enum {
 	PROGRESS_IMAGE,
@@ -295,7 +296,7 @@ static GtkWidget *progress_dialog_list_view_create(void)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
-	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
 	
 	/* create the columns */
 	progress_dialog_create_list_view_columns(list_view);

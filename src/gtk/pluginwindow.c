@@ -32,6 +32,7 @@
 
 #include "filesel.h"
 #include "alertpanel.h"
+#include "prefs_common.h"
 #include "../inc.h"
 
 enum {
@@ -332,7 +333,7 @@ static GtkWidget *pluginwindow_list_view_create(PluginWindow *pluginwindow)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
-	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

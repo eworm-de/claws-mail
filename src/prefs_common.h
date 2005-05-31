@@ -151,6 +151,7 @@ struct _PrefsCommon
 	gboolean use_addr_book;
 	gchar *date_format;
 
+	gboolean enable_rules_hint;
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
 	gboolean enable_thread;

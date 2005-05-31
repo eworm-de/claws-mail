@@ -1,3 +1,30 @@
+2005-05-31 [paul]	1.9.11cvs26
+
+	* src/account.c
+	* src/addr_compl.c
+	* src/compose.c
+	* src/foldersel.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_summaries.c
+	* src/prefs_summary_column.c
+	* src/prefs_template.c
+	* src/prefs_toolbar.c
+	* src/ssl_manager.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+	* src/gtk/progressdialog.c
+		add hidden prefs 'enable_rules_hint'
+		for gtk_tree_view_set_rules_hint()
+		(sync with main)
+		
+
 2005-05-31 [colin]	1.9.11cvs25
 
 	* src/Makefile.am
