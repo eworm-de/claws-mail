@@ -791,7 +791,7 @@ void prefs_common_init(void)
 	prefs_common.disphdr_list = NULL;
             
         path[0] = _("Common");
-        path[2] = NULL;
+        path[1] = NULL;
         
         common_page.page.path = path;
 	common_page.page.weight = 1000.0;

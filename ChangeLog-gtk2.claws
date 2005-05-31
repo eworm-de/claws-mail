@@ -1,3 +1,8 @@
+2005-05-31 [paul]	1.9.11cvs27
+
+	* src/prefs_common.c
+		fix 'off-by-one' typo
+
 2005-05-31 [paul]	1.9.11cvs26
 
 	* src/account.c
