@@ -56,11 +56,15 @@
 #include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
 #include "prefs_image_viewer.h"
+#include "prefs_message.h"
+#include "prefs_receive.h"
 #include "prefs_msg_colors.h"
 #include "prefs_quote.h"
 #include "prefs_spelling.h"
 #include "prefs_summaries.h"
 #include "prefs_themes.h"
+#include "prefs_other.h"
+#include "prefs_send.h"
 #include "prefs_wrapping.h"
 #include "prefs_compose_writing.h"
 #include "prefs_display_header.h"
@@ -308,7 +312,6 @@ int main(int argc, char *argv[])
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
 	folder_system_init();
-	prefs_common_init();
 	prefs_common_read_config();
 
 	prefs_themes_init();
@@ -321,6 +324,10 @@ int main(int argc, char *argv[])
 	prefs_image_viewer_init();
 	prefs_quote_init();
 	prefs_summaries_init();
+	prefs_message_init();
+	prefs_other_init();
+	prefs_receive_init();
+	prefs_send_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -519,6 +526,10 @@ static void exit_sylpheed(MainWindow *mainwin)
 	image_viewer_done();
 	prefs_quote_done();
 	prefs_summaries_done();
+	prefs_message_done();
+	prefs_other_done();
+	prefs_receive_done();
+	prefs_send_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();
@@ -674,7 +685,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 static void draft_all_messages(void)
 {
 	GList *compose_list = NULL;
-	GList *elem = NULL;
 	
 	while ((compose_list = compose_get_compose_list()) != NULL) {
 		Compose *c = (Compose*)compose_list->data;

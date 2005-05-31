@@ -1200,7 +1200,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		style = bold_tgtfold_style;
 	} else if (item->prefs->color > 0) {
 		GdkColor gdk_color;
-
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 		color_style = gtk_style_copy(normal_style);
 		color_style->fg[GTK_STATE_NORMAL] = gdk_color;
@@ -1267,7 +1266,6 @@ gboolean folderview_update_item_claws(gpointer source, gpointer data)
 	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
-
 	g_return_val_if_fail(update_info != NULL, TRUE);
 	g_return_val_if_fail(update_info->item != NULL, TRUE);
 	g_return_val_if_fail(folderview != NULL, FALSE);
@@ -2089,7 +2087,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  FolderView     *folderview)
 {
 	gint row, column;
-	FolderItem *item, *src_item = NULL;
+	FolderItem *item = NULL, *src_item = NULL;
 	GtkCTreeNode *node = NULL;
 	gboolean acceptable = FALSE;
 	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(

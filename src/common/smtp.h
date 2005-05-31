@@ -121,5 +121,7 @@ struct _SMTPSession
 };
 
 Session *smtp_session_new	(void);
+gint smtp_from(SMTPSession *session);
+gint smtp_quit(SMTPSession *session);
 
 #endif /* __SMTP_H__ */

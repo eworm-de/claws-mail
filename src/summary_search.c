@@ -316,7 +316,6 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	gboolean body_matched;
 	const gchar *from_str, *to_str, *subject_str, *body_str;
 	StrFindFunc str_find_func;
-	gboolean valid;
 
 	if (summary_is_locked(summaryview)) return;
 	summary_lock(summaryview);

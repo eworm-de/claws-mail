@@ -105,7 +105,6 @@ gint export_mbox(FolderItem *default_src)
 			const gchar *dest_codeset = conv_get_locale_charset_str();
 			gchar *mbox;
 
-#warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
 			mbox = conv_codeset_strdup(utf8mbox, src_codeset, dest_codeset);
 			if (!mbox) {
 				g_warning("faild to convert character set\n");

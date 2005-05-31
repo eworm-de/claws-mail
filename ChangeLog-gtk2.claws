@@ -1,3 +1,67 @@
+2005-05-31 [colin]	1.9.11cvs28
+
+	* src/Makefile.am
+	* src/account.c
+	* src/action.c
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/export.c
+	* src/folder.c
+	* src/folderview.c
+	* src/image_viewer.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/msgcache.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_compose_writing.c
+	* src/prefs_customheader.c
+	* src/prefs_ext_prog.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_fonts.c
+	* src/prefs_image_viewer.c
+	* src/prefs_message.c
+	* src/prefs_message.h
+	* src/prefs_msg_colors.c
+	* src/prefs_other.c
+	* src/prefs_other.h
+	* src/prefs_quote.c
+	* src/prefs_receive.c
+	* src/prefs_receive.h
+	* src/prefs_send.c
+	* src/prefs_send.h
+	* src/prefs_spelling.c
+	* src/prefs_summaries.c
+	* src/prefs_summary_column.c
+	* src/prefs_template.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/prefs_wrapping.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/send_message.h
+	* src/ssl_manager.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/wizard.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/gtk/gtkutils.h
+		o Move the rest of Common prefs to new style
+		o Lots of -Wall warning fixes
+		o fix FIXME in cache memusage calculation
+		o Let return receipts be sent from any account
+		o Little cache optimisation (read)
+		o Fix bug #746 (don't treat commas as separators
+		  when inside a quoted string)
+
 2005-05-31 [paul]	1.9.11cvs27
 
 	* src/prefs_common.c

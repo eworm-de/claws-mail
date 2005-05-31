@@ -340,10 +340,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 					tmpfp);
 				got_error = TRUE;
 				continue;
-			} else if (len >= 0) {
-				/* print out the error message only once 
-				 * per block */
-				got_error = FALSE;
 			}
 			fwrite(outbuf, sizeof(gchar), len, tmpfp);
 		}
@@ -404,7 +400,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 {
-	FILE *infp, *outfp;
+	FILE *infp = NULL, *outfp;
 	gint len;
 	gchar *tmpfilename;
 	struct stat statbuf;
@@ -745,7 +741,6 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		}
 		
 		dup2(oldout, 1);
-#warning FIXME_GTK2 HTML/RTF not yet utf8
 /* CodeConverter seems to have no effect here */
 	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
 		HTMLParser *parser;
@@ -921,7 +916,7 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	static GHashTable *mime_type_table = NULL;
 	MimeType *mime_type;
 	const gchar *p;
-	gchar *ext;
+	gchar *ext = NULL;
 	gchar *base;
 
 	if (!mime_type_table) {
@@ -2081,7 +2076,6 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 gchar *procmime_get_part_file_name(MimeInfo *mimeinfo)
 {
 	gchar *base;
-	const gchar *base_;
 
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
 		base = g_strdup("mimetmp.html");

@@ -114,7 +114,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
 	} else
-		gtk_pixmap_set(imageviewer->image, pixmap, mask);
+		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), pixmap, mask);
 
 	gtk_widget_show(imageviewer->image);
 

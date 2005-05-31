@@ -304,8 +304,6 @@ static void prefs_template_window_setup(void)
 {
 	GSList *tmpl_list;
 	GSList *cur;
-	gchar *title[1];
-	gint row;
 	Template *tmpl;
 	GtkListStore *store;
 
@@ -448,7 +446,6 @@ static GSList *prefs_template_get_list(void)
 static void prefs_template_list_view_set_row(GtkTreeIter *row)
 {
 	Template *tmpl;
-	Template *tmp_tmpl;
 	gchar *name;
 	gchar *subject;
 	gchar *to;

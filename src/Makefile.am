@@ -96,8 +96,12 @@ sylpheed_SOURCES = \
 	prefs_gtk.c \
 	prefs_image_viewer.c \
 	prefs_matcher.c \
+	prefs_message.c \
 	prefs_msg_colors.c \
+	prefs_other.c \
 	prefs_quote.c \
+	prefs_receive.c \
+	prefs_send.c \
 	prefs_spelling.c \
 	prefs_summaries.c \
 	prefs_summary_column.c \
@@ -229,8 +233,12 @@ sylpheedinclude_HEADERS = \
 	prefs_gtk.h \
 	prefs_image_viewer.h \
 	prefs_matcher.h \
+	prefs_message.h \
 	prefs_msg_colors.h \
+	prefs_other.h \
 	prefs_quote.h \
+	prefs_receive.h \
+	prefs_send.h \
 	prefs_spelling.h \
 	prefs_summaries.h \
 	prefs_summary_column.h \

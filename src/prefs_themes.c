@@ -347,7 +347,7 @@ void prefs_themes_init(void)
 	page->page.create_widget = prefs_themes_create_widget;
 	page->page.destroy_widget = prefs_themes_destroy_widget;
 	page->page.save_page = prefs_themes_save;
-	page->page.weight = 15.0;
+	page->page.weight = 130.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 
 	tdata->page = page;

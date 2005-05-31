@@ -432,7 +432,6 @@ static void prefs_actions_set_dialog(void)
 
 static void prefs_actions_set_list(void)
 {
-	gchar *action;
 	GtkTreeIter iter;
 	GtkListStore *store;
 	
@@ -897,7 +896,7 @@ static gboolean prefs_actions_selected(GtkTreeSelection *selector,
 	if (cmd && cmd[2])
 		ENTRY_SET_TEXT(actions.cmd_entry, &cmd[2]);
 	else
-		return;
+		return TRUE;
 
 	*cmd = 0x00;
 	ENTRY_SET_TEXT(actions.name_entry, buf);

@@ -48,6 +48,7 @@
 
 #include "main.h"
 #include "menu.h"
+#include "mbox.h"
 #include "mainwindow.h"
 #include "folderview.h"
 #include "summaryview.h"

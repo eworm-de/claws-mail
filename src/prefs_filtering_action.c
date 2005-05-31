@@ -567,8 +567,6 @@ static void prefs_filtering_action_list_view_set_row(GtkTreeIter *row,
  */
 static void prefs_filtering_action_set_dialog(GSList *action_list)
 {
-	GtkTreeView *list_view = GTK_TREE_VIEW
-					(filtering_action.action_list_view);
 	GSList *cur;
 
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model
@@ -880,7 +878,6 @@ static void prefs_filtering_action_delete_cb(void)
 	GtkTreeModel *model;
 	gboolean is_valid;
 	GtkTreeIter row;
-	FilteringAction *action;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &row))
 		return;
@@ -1316,7 +1313,6 @@ static void prefs_filtering_action_list_view_insert_action(GtkWidget   *list_vie
 {
 	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
 					(GTK_TREE_VIEW(list_view)));
-	gint result = -1;
 	GtkTreeIter iter;
 	
 	

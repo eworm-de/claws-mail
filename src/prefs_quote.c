@@ -81,8 +81,6 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *checkbtn_reply_with_quote;
 
-	GtkTextBuffer *buffer;
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -239,8 +237,6 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 void prefs_quote_save(PrefsPage *_page)
 {
 	QuotePage *page = (QuotePage *) _page;
-	GtkTextBuffer *buffer;
-	GtkTextIter start, end;
 	
 	g_free(prefs_common.quotefmt); 
 	prefs_common.quotefmt = NULL;
@@ -289,7 +285,7 @@ void prefs_quote_init(void)
 	page->page.create_widget = prefs_quote_create_widget;
 	page->page.destroy_widget = prefs_quote_destroy_widget;
 	page->page.save_page = prefs_quote_save;
-	page->page.weight = 60.0;
+	page->page.weight = 185.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_quote = page;
 }

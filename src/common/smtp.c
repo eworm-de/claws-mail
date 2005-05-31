@@ -34,8 +34,6 @@
 
 static void smtp_session_destroy(Session *session);
 
-gint smtp_from(SMTPSession *session);
-
 static gint smtp_auth(SMTPSession *session);
 static gint smtp_starttls(SMTPSession *session);
 static gint smtp_auth_cram_md5(SMTPSession *session);
@@ -50,7 +48,6 @@ static gint smtp_rcpt(SMTPSession *session);
 static gint smtp_data(SMTPSession *session);
 static gint smtp_send_data(SMTPSession *session);
 static gint smtp_make_ready(SMTPSession *session);
-gint smtp_quit(SMTPSession *session);
 static gint smtp_eom(SMTPSession *session);
 
 static gint smtp_session_recv_msg(Session *session, const gchar *msg);

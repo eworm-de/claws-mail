@@ -161,7 +161,7 @@ void prefs_wrapping_init(void)
 	page->page.create_widget = prefs_wrapping_create_widget;
 	page->page.destroy_widget = prefs_wrapping_destroy_widget;
 	page->page.save_page = prefs_wrapping_save;
-	page->page.weight = 60.0;
+	page->page.weight = 182.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_wrapping = page;
 }

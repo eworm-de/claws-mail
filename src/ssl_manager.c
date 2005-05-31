@@ -329,9 +329,7 @@ static void ssl_manager_double_clicked(GtkTreeView		*list_view,
 				   	gpointer		 data)
 {
 	SSLCertificate *cert;
-	gchar *cmd;
 	GtkTreeIter iter;
-	gboolean is_valid;
 	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
 
 	if (!gtk_tree_model_get_iter(model, &iter, path))
@@ -355,11 +353,9 @@ static void ssl_manager_delete_cb(GtkWidget *widget,
 			      gpointer data) 
 {
 	SSLCertificate *cert;
-	GList *rowlist;
 	int val;
 	GtkTreeIter sel;
 	GtkTreeModel *model;
-	gchar *action;
 
 	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
 				(GTK_TREE_VIEW(manager.certlist)),
@@ -387,11 +383,8 @@ static void ssl_manager_view_cb(GtkWidget *widget,
 			        gpointer data) 
 {
 	SSLCertificate *cert;
-	GList *rowlist;
-	int val;
 	GtkTreeIter sel;
 	GtkTreeModel *model;
-	gchar *action;
 
 	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
 				(GTK_TREE_VIEW(manager.certlist)),

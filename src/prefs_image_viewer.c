@@ -151,7 +151,7 @@ void prefs_image_viewer_init(void)
 	page->page.create_widget = imageviewer_create_widget_func;
 	page->page.destroy_widget = imageviewer_destroy_widget_func;
 	page->page.save_page = imageviewer_save_func;
-	page->page.weight = 60.0;
+	page->page.weight = 160.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_imageviewer = page;
 }

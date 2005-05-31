@@ -1233,7 +1233,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 void compose_reedit(MsgInfo *msginfo)
 {
-	Compose *compose;
+	Compose *compose = NULL;
 	PrefsAccount *account = NULL;
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
@@ -1452,7 +1452,8 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			  ComposeEntryType type)
 {
 	gchar *header;
-	gchar **parts = g_strsplit(address, ",", 0);
+	gchar *cur, *begin;
+	gboolean in_quote = FALSE;
 	int i = 0;
 	if (!address || *address == '\0') return;
 
@@ -1478,14 +1479,39 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		break;
 	}
 	header = prefs_common.trans_hdr ? gettext(header) : header;
-	while (parts[i] && *parts[i]) {
-		gchar *tmp = parts[i];
+	
+	cur = begin = (gchar *)address;
+	
+	/* we separate the line by commas, but not if we're inside a quoted
+	 * string */
+	while (*cur != '\0') {
+		if (*cur == '"') 
+			in_quote = !in_quote;
+		if (*cur == ',' && !in_quote) {
+			gchar *tmp = g_strdup(begin);
+			gchar *o_tmp = tmp;
+			tmp[cur-begin]='\0';
+			cur++;
+			begin = cur;
+			while (*tmp == ' ')
+				tmp++;
+			compose_add_header_entry(compose, header, tmp);
+			g_free(o_tmp);
+			continue;
+		}
+		cur++;
+	}
+	if (begin < cur) {
+		gchar *tmp = g_strdup(begin);
+		gchar *o_tmp = tmp;
+		tmp[cur-begin]='\0';
+		cur++;
+		begin = cur;
 		while (*tmp == ' ')
 			tmp++;
 		compose_add_header_entry(compose, header, tmp);
-		i++;
+		g_free(o_tmp);		
 	}
-	g_strfreev(parts);
 }
 
 void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
@@ -1585,7 +1611,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 		compose_entry_append(compose, to, COMPOSE_TO);
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC);
-	if (subject)
+	if (subject) {
 		if (!g_utf8_validate (subject, -1, NULL)) {
 			temp = g_locale_to_utf8 (subject, -1, NULL, &len, NULL);
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), temp);
@@ -1593,6 +1619,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 		}
+	}
 	if (body) {
 		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
@@ -2694,7 +2721,6 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 
 static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
 {
-	char *text = NULL;
 	GtkTextIter start = *iter;
 	GtkTextIter end_iter;
 	int start_pos = gtk_text_iter_get_offset(&start);
@@ -3498,11 +3524,12 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			    g_strdup(out_codeset));
 	/* protect trailing spaces when signing message */
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
-	    privacy_system_can_sign(compose->privacy_system))
+	    privacy_system_can_sign(compose->privacy_system)) {
 	    	if (encoding == ENC_7BIT)
 			encoding = ENC_QUOTED_PRINTABLE;
 		else if (encoding == ENC_8BIT)
 			encoding = ENC_BASE64;
+	}
 	if (encoding != ENC_UNKNOWN)
 		procmime_encode_content(mimetext, encoding);
 
@@ -3546,7 +3573,6 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	FILE *fp;
 	size_t len;
 	gchar *chars, *tmp;
-	const gchar *src_codeset, *dest_codeset;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -5409,7 +5435,6 @@ static void compose_attach_info_free(AttachInfo *ainfo)
 static void compose_attach_remove_selected(Compose *compose)
 {
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
-	AttachInfo *ainfo;
 	GtkTreeSelection *selection;
 	GList *sel, *cur;
 	GtkTreeModel *model;
@@ -6134,8 +6159,6 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				      gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
-	GtkTreeIter iter;
 
 	if (!event) return FALSE;
 

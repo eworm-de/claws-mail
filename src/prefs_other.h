@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 2004 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,32 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SEND_MESSAGE_H__
-#define __SEND_MESSAGE_H__
+#ifndef PREFS_OTHER_H
+#define PREFS_OTHER_H
 
-#include <glib.h>
+void prefs_other_init	(void);
+void prefs_other_done	(void);
 
-#include "prefs_account.h"
-
-#define SMTP_PORT	25
-#if USE_OPENSSL
-#define SSMTP_PORT	465
-#endif
-
-gint send_message		(const gchar	*file,
-				 PrefsAccount	*ac_prefs,
-				 GSList		*to_list);
-#if 0
-gint send_message_queue		(const gchar	*file);
-#endif
-gint send_message_local		(const gchar *command,
-				 FILE *fp);
-gint send_message_smtp		(PrefsAccount *ac_prefs,
-				 GSList *to_list,
-				 FILE *fp);
-gint send_message_smtp_full	(PrefsAccount *ac_prefs, 
-				 GSList *to_list, 
-				 FILE *fp, 
-				 gboolean keep_session);
-
-#endif /* __SEND_H__ */
+#endif /* PREFS_OTHER_H */ 

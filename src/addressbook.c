@@ -3733,7 +3733,7 @@ static void addressbook_perform_search(
 	gchar *name;
 	gint queryID;
 	guint idleID;
-	AddressObjectType aoType;
+	AddressObjectType aoType = ADDR_NONE;
 
 	/* Setup a query */
 	if( *searchTerm == '\0' || strlen( searchTerm ) < 1 ) return;

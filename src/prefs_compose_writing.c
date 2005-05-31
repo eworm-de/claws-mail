@@ -255,7 +255,7 @@ void prefs_compose_writing_init(void)
 	page->page.create_widget = prefs_compose_writing_create_widget;
 	page->page.destroy_widget = prefs_compose_writing_destroy_widget;
 	page->page.save_page = prefs_compose_writing_save;
-	page->page.weight = 60.0;
+	page->page.weight = 190.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_writing = page;
 }

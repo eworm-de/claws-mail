@@ -1549,7 +1549,7 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 	    item->folder, item, msglist, relation)) == 0) {
 		GTuples *tuples;
 		MsgInfo *msginfo;
-		MsgPermFlags permflags;
+		MsgPermFlags permflags = 0;
 		gboolean skip;
 
 		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
@@ -2082,7 +2082,7 @@ GSList *folder_item_get_msg_list(FolderItem *item)
 	return msgcache_get_msg_list(item->cache);
 }
 
-static void msginfo_set_mime_flags(GNode *node, gpointer data)
+void msginfo_set_mime_flags(GNode *node, gpointer data)
 {
 	MsgInfo *msginfo = data;
 	MimeInfo *mimeinfo = node->data;

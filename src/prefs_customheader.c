@@ -154,8 +154,6 @@ static void prefs_custom_header_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	gchar *title[1];
-
 	debug_print("Creating custom header setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -569,7 +567,7 @@ static void prefs_custom_header_up(void)
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(customhdr.list_view)),
-		 (GtkTreeModel **) &store,	
+		 (GtkTreeModel **) &store,
 		 &isel))
 		return;
 

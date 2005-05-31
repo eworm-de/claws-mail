@@ -35,6 +35,7 @@
 #include "prefs_gtk.h"
 #include "prefs_summary_column.h"
 
+#include "gtk/menu.h"
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
 
@@ -54,6 +55,14 @@ typedef struct _SummariesPage
 	GtkWidget *chkbtn_threadsubj;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
+
+	GtkWidget *checkbtn_always_show_msg;
+	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
+	GtkWidget *checkbtn_openinbox;
+	GtkWidget *checkbtn_immedexec;
+ 	GtkWidget *optmenu_nextunreadmsgdialog;
+
 } SummariesPage;
 
 enum {
@@ -121,7 +130,6 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 		{ "%Z", NULL }
 	};
 
-	gchar *titles[2];
 	gint i;
 	const gint TIME_FORMAT_ELEMS =
 		sizeof time_format / sizeof time_format[0];
@@ -288,6 +296,393 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	return datefmt_win;
 }
 
+static struct KeybindDialog {
+	GtkWidget *window;
+	GtkWidget *combo;
+} keybind;
+
+static void prefs_keybind_select		(void);
+static gint prefs_keybind_deleted		(GtkWidget	*widget,
+						 GdkEventAny	*event,
+						 gpointer	 data);
+static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
+						 GdkEventKey	*event,
+						 gpointer	 data);
+static void prefs_keybind_cancel		(void);
+static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
+
+
+static void prefs_keybind_select(void)
+{
+	GtkWidget *window;
+	GtkWidget *vbox1;
+	GtkWidget *hbox1;
+	GtkWidget *label;
+	GtkWidget *combo;
+	GtkWidget *confirm_area;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
+
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
+	gtk_window_set_title (GTK_WINDOW (window), _("Key bindings"));
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+	gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
+	manage_window_set_transient (GTK_WINDOW (window));
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_container_add (GTK_CONTAINER (window), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("Select preset:"));
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	combo = gtk_combo_new ();
+	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
+	gtkut_combo_set_items (GTK_COMBO (combo),
+			       _("Default"),
+			       "Mew / Wanderlust",
+			       "Mutt",
+			       _("Old Sylpheed"),
+			       NULL);
+	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO (combo)->entry), FALSE);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("You can also modify each menu shortcut by pressing\n"
+		   "any key(s) when placing the mouse pointer on the item."));
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	gtkut_stock_button_set_create (&confirm_area, &ok_btn, GTK_STOCK_OK,
+				       &cancel_btn, GTK_STOCK_CANCEL,
+				       NULL, NULL);
+	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_default (ok_btn);
+
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
+	g_signal_connect (G_OBJECT (window), "delete_event",
+			  G_CALLBACK (prefs_keybind_deleted), NULL);
+	g_signal_connect (G_OBJECT (window), "key_press_event",
+			  G_CALLBACK (prefs_keybind_key_pressed), NULL);
+	g_signal_connect (G_OBJECT (ok_btn), "clicked",
+			  G_CALLBACK (prefs_keybind_apply_clicked),
+			  NULL);
+	g_signal_connect (G_OBJECT (cancel_btn), "clicked",
+			  G_CALLBACK (prefs_keybind_cancel),
+			  NULL);
+
+	gtk_widget_show_all(window);
+
+	keybind.window = window;
+	keybind.combo = combo;
+}
+
+static gboolean prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
+					  gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		prefs_keybind_cancel();
+	return FALSE;
+}
+
+static gint prefs_keybind_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer data)
+{
+	prefs_keybind_cancel();
+	return TRUE;
+}
+
+static void prefs_keybind_cancel(void)
+{
+	gtk_widget_destroy(keybind.window);
+	keybind.window = NULL;
+	keybind.combo = NULL;
+}
+  
+struct KeyBind {
+	const gchar *accel_path;
+	const gchar *accel_key;
+};
+
+static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
+{
+	gint i;
+	guint key;
+	GdkModifierType mods;
+
+	for (i = 0; i < num; i++) {
+		const gchar *accel_key
+			= keybind[i].accel_key ? keybind[i].accel_key : "";
+		gtk_accelerator_parse(accel_key, &key, &mods);
+		gtk_accel_map_change_entry(keybind[i].accel_path,
+					   key, mods, TRUE);
+	}
+}
+
+static void prefs_keybind_apply_clicked(GtkWidget *widget)
+{
+	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(keybind.combo)->entry);
+	const gchar *text;
+	struct KeyBind *menurc;
+	gint n_menurc;
+
+	static struct KeyBind default_menurc[] = {
+		{"<Main>/File/Empty all Trash folders",		""},
+		{"<Main>/File/Save as...",			"<control>S"},
+		{"<Main>/File/Print...",			""},
+		{"<Main>/File/Exit",				"<control>Q"},
+
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<shift><control>F"},
+
+		{"<Main>/View/Show or hide/Message View",	"V"},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"G"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/Message source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update summary",			"<control><alt>U"},
+
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
+		{"<Main>/Message/Compose an email message",	"<control>M"},
+		{"<Main>/Message/Reply",			"<control>R"},
+		{"<Main>/Message/Reply to/all",			"<shift><control>R"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"<control><alt>F"},
+		/* {"<Main>/Message/Forward as attachment",	 ""}, */
+		{"<Main>/Message/Move...",			"<control>O"},
+		{"<Main>/Message/Copy...",			"<shift><control>O"},
+		{"<Main>/Message/Delete",			"<control>D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		""},
+
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
+
+		{"<Compose>/Message/Close",				"<control>W"},
+		{"<Compose>/Edit/Select all",				"<control>A"},
+		{"<Compose>/Edit/Advanced/Move a word backward",	""},
+		{"<Compose>/Edit/Advanced/Move a word forward",		""},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	""},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	""},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	""},
+	};
+
+	static struct KeyBind mew_wl_menurc[] = {
+		{"<Main>/File/Empty all Trash folders",			"<shift>D"},
+		{"<Main>/File/Save as...",			"Y"},
+		{"<Main>/File/Print...",			"<shift>numbersign"},
+		{"<Main>/File/Exit",				"<shift>Q"},
+
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<control>S"},
+
+		{"<Main>/View/Show or hide/Message View",	""},
+		{"<Main>/View/Thread view",			"<shift>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"G"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/Message source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<shift>H"},
+		{"<Main>/View/Update summary",			"<shift>S"},
+
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
+		{"<Main>/Message/Compose an email message",	"W"},
+		{"<Main>/Message/Reply",			"<control>R"},
+		{"<Main>/Message/Reply to/all",			"<shift>A"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"F"},
+		/* {"<Main>/Message/Forward as attachment", "<shift>F"}, */
+		{"<Main>/Message/Move...",			"O"},
+		{"<Main>/Message/Copy...",			"<shift>O"},
+		{"<Main>/Message/Delete",			"D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		"<shift>R"},
+
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
+
+		{"<Compose>/Message/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward,"	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
+
+	static struct KeyBind mutt_menurc[] = {
+		{"<Main>/File/Empty all Trash folders",		""},
+		{"<Main>/File/Save as...",			"S"},
+		{"<Main>/File/Print...",			"P"},
+		{"<Main>/File/Exit",				"Q"},
+
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search messages...",		"slash"},
+
+		{"<Main>/View/Show or hide/Message view",	"V"},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		""},
+		{"<Main>/View/Go to/Next message",		""},
+		{"<Main>/View/Go to/Prev unread message",	""},
+		{"<Main>/View/Go to/Next unread message",	""},
+		{"<Main>/View/Go to/Other folder...",		"C"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/Message source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update summary",				"<control><alt>U"},
+
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
+		{"<Main>/Message/Compose an email message",		"M"},
+		{"<Main>/Message/Reply",			"R"},
+		{"<Main>/Message/Reply to/all",			"G"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"F"},
+		{"<Main>/Message/Forward as attachment",	""},
+		{"<Main>/Message/Move...",			"<control>O"},
+		{"<Main>/Message/Copy...",			"<shift>C"},
+		{"<Main>/Message/Delete",			"D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>F"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>N"},
+		{"<Main>/Message/Mark/Mark as read",		""},
+
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
+
+		{"<Compose>/Message/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
+
+	static struct KeyBind old_sylpheed_menurc[] = {
+		{"<Main>/File/Empty all Trash folders",		""},
+		{"<Main>/File/Save as...",			""},
+		{"<Main>/File/Print...",			"<alt>P"},
+		{"<Main>/File/Exit",				"<alt>Q"},
+
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<control>S"},
+
+		{"<Main>/View/Show or hide/Message View",	""},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"<alt>G"},
+		{"<Main>/View/Open in new window",		"<shift><control>N"},
+		{"<Main>/View/Message source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update summary",			"<alt>U"},
+
+		{"<Main>/Message/Receive/Get from current account",
+								"<alt>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><alt>I"},
+		{"<Main>/Message/Compose an email message",	"<alt>N"},
+		{"<Main>/Message/Reply",			"<alt>R"},
+		{"<Main>/Message/Reply to/all",			"<shift><alt>R"},
+		{"<Main>/Message/Reply to/sender",		"<control><alt>R"},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			 "<shift><alt>F"},
+		/* "(menu-path \"<Main>/Message/Forward as attachment", "<shift><control>F"}, */
+		{"<Main>/Message/Move...",			"<alt>O"},
+		{"<Main>/Message/Copy...",			""},
+		{"<Main>/Message/Delete",			"<alt>D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		""},
+
+		{"<Main>/Tools/Address book",			"<alt>A"},
+		{"<Main>/Tools/Execute",			"<alt>X"},
+		{"<Main>/Tools/Log window",			"<alt>L"},
+
+		{"<Compose>/Message/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
+  
+	text = gtk_entry_get_text(entry);
+  
+	if (!strcmp(text, _("Default"))) {
+		menurc = default_menurc;
+		n_menurc = G_N_ELEMENTS(default_menurc);
+	} else if (!strcmp(text, "Mew / Wanderlust")) {
+		menurc = mew_wl_menurc;
+		n_menurc = G_N_ELEMENTS(mew_wl_menurc);
+	} else if (!strcmp(text, "Mutt")) {
+		menurc = mutt_menurc;
+		n_menurc = G_N_ELEMENTS(mutt_menurc);
+	} else if (!strcmp(text, _("Old Sylpheed"))) {
+	        menurc = old_sylpheed_menurc;
+		n_menurc = G_N_ELEMENTS(old_sylpheed_menurc);
+	} else {
+		return;
+	}
+
+	/* prefs_keybind_apply(empty_menurc, G_N_ELEMENTS(empty_menurc)); */
+	prefs_keybind_apply(menurc, n_menurc);
+
+	gtk_widget_destroy(keybind.window);
+	keybind.window = NULL;
+	keybind.combo = NULL;
+}
+
 void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
@@ -310,6 +705,19 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
+
+	GtkWidget *checkbtn_always_show_msg;
+	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
+	GtkWidget *checkbtn_openinbox;
+	GtkWidget *checkbtn_immedexec;
+	GtkTooltips *immedexec_tooltip;
+	GtkWidget *label;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	GtkWidget *button_keybind;
+	GtkWidget *hbox_nextunreadmsgdialog;
+ 	GtkWidget *optmenu_nextunreadmsgdialog;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -406,6 +814,83 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
 
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
+	/* PACK_CHECK_BUTTON (vbox2, checkbtn_emacs,
+			   _("Emulate the behavior of mouse operation of\n"
+			     "Emacs-based mailer"));
+	gtk_label_set_justify (GTK_LABEL (GTK_BIN (checkbtn_emacs)->child),
+			       GTK_JUSTIFY_LEFT);   */
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_always_show_msg,
+		 _("Always open messages in summary when selected"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_openunread,
+		 _("Open first unread message when entering a folder"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_mark_as_read_on_newwin,
+		 _("Only mark message as read when opened in new window"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_openinbox,
+		 _("Go to inbox after receiving new mail"));
+
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
+	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
+
+	immedexec_tooltip = gtk_tooltips_new();
+
+	PACK_CHECK_BUTTON
+		(vbox3, checkbtn_immedexec,
+		 _("Execute immediately when moving or deleting messages"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(immedexec_tooltip), checkbtn_immedexec,
+			     _("Messages will be marked until execution"
+		   	       " if this is turned off"),
+			     NULL);
+
+	hbox1 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
+
+ 	/* Next Unread Message Dialog */
+	hbox_nextunreadmsgdialog = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_nextunreadmsgdialog);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_nextunreadmsgdialog, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Show no-unread-message dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), label, FALSE, FALSE, 8);
+
+ 	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_nextunreadmsgdialog);
+	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), optmenu_nextunreadmsgdialog, FALSE, FALSE, 8);
+	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Assume 'Yes'"), 
+		      NEXTUNREADMSGDIALOG_ASSUME_YES);
+	MENUITEM_ADD (menu, menuitem, _("Assume 'No'"), 
+		      NEXTUNREADMSGDIALOG_ASSUME_NO);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog), menu);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	button_keybind = gtk_button_new_with_label (_(" Set key bindings... "));
+	gtk_widget_show (button_keybind);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_keybind), "clicked",
+			  G_CALLBACK (prefs_keybind_select), NULL);
+
+
 	prefs_summaries->window			= GTK_WIDGET(window);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_transhdr),
@@ -423,6 +908,20 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(entry_datefmt), 
 			prefs_common.date_format?prefs_common.date_format:"");	
 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
+			prefs_common.always_show_msg);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openunread),
+			prefs_common.open_unread_on_enter);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
+			prefs_common.mark_as_read_on_new_window);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openinbox),
+			prefs_common.open_inbox_on_inc);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_immedexec),
+			prefs_common.immediate_exec);
+
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_nextunreadmsgdialog),
+			prefs_common.next_unread_msg_dialog);
+
 	prefs_summaries->chkbtn_transhdr = chkbtn_transhdr;
 	prefs_summaries->chkbtn_folder_unread = chkbtn_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
@@ -431,12 +930,21 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->chkbtn_threadsubj = chkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
+	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
+	prefs_summaries->checkbtn_openunread = checkbtn_openunread;
+	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
+	prefs_summaries->checkbtn_openinbox = checkbtn_openinbox;
+	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
+	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+
 	prefs_summaries->page.widget = vbox1;
 }
 
 void prefs_summaries_save(PrefsPage *_page)
 {
 	SummariesPage *page = (SummariesPage *) _page;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 
 	prefs_common.trans_hdr = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->chkbtn_transhdr));
@@ -454,6 +962,22 @@ void prefs_summaries_save(PrefsPage *_page)
 	g_free(prefs_common.date_format); 
 	prefs_common.date_format = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_datefmt), 0, -1);	
+
+	prefs_common.always_show_msg = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));
+	prefs_common.open_unread_on_enter = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_openunread));
+	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_newwin));
+	prefs_common.open_inbox_on_inc = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_openinbox));
+	prefs_common.immediate_exec = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_nextunreadmsgdialog));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	prefs_common.next_unread_msg_dialog = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_summaries_destroy_widget(PrefsPage *_page)
@@ -476,7 +1000,7 @@ void prefs_summaries_init(void)
 	page->page.create_widget = prefs_summaries_create_widget;
 	page->page.destroy_widget = prefs_summaries_destroy_widget;
 	page->page.save_page = prefs_summaries_save;
-	page->page.weight = 60.0;
+	page->page.weight = 140.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_summaries = page;
 }

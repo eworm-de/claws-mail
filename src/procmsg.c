@@ -726,7 +726,7 @@ parse_again:
 	nothing_to_sort = TRUE;
 	cur = orig;
 	while (cur) {
-		gchar *file;
+		gchar *file = NULL;
 		PrefsAccount *ac = procmsg_get_account_from_file(file);
 		msg = (MsgInfo *)cur->data;
 		file = folder_item_fetch_msg(queue, msg->msgnum);
@@ -774,7 +774,6 @@ static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo,
 	g_free(file);
 	for (cur = elem; cur; cur = cur->next) {
 		MsgInfo *cur_msginfo = (MsgInfo *)cur->data;
-		PrefsAccount *cur_ac = NULL;
 		file = folder_item_fetch_msg(queue, cur_msginfo->msgnum);
 		
 		if (cur_msginfo != msginfo && !MSG_IS_LOCKED(cur_msginfo->flags)) {
@@ -1154,6 +1153,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 {
 	guint memusage = 0;
+	GSList *refs;
 	
 	memusage += sizeof(MsgInfo);
 	if (msginfo->fromname)
@@ -1180,11 +1180,10 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 		memusage += strlen(msginfo->dispositionnotificationto);
 	if (msginfo->returnreceiptto)
 		memusage += strlen(msginfo->returnreceiptto);
-#warning FIXME: Calculate size of references list                
-#if 0
-	if (msginfo->references)
-		memusage += strlen(msginfo->references);
-#endif                
+	for (refs = msginfo->references; refs; refs=refs->next) {
+		gchar *r = (gchar *)refs->data;
+		memusage += r?strlen(r):0;
+	}
 	if (msginfo->fromspace)
 		memusage += strlen(msginfo->fromspace);
 
@@ -1835,7 +1834,7 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 		gchar *tmpfile = get_tmp_file();
 		str_write_to_file(mimeinfo->data.mem, tmpfile);
 		g_free(mimeinfo->data.mem);
-		mimeinfo->content == MIMECONTENT_FILE;
+		mimeinfo->content = MIMECONTENT_FILE;
 		mimeinfo->data.filename = g_strdup(tmpfile);
 		g_free(tmpfile);
 	}

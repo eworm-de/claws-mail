@@ -131,9 +131,6 @@ struct _CompletionWindow {
 
 static GtkListStore *addr_compl_create_store	(void);
 
-static void addr_compl_list_view_add_address	(GtkWidget *list_view,
-						 const gchar *address);
-
 static GtkWidget *addr_compl_list_view_create	(CompletionWindow *window);
 
 static void addr_compl_create_list_view_columns	(GtkWidget *list_view);
@@ -1467,19 +1464,6 @@ static GtkListStore *addr_compl_create_store(void)
 	return gtk_list_store_new(N_ADDR_COMPL_COLUMNS,
 				  G_TYPE_STRING,
 				  -1);
-}
-
-static void addr_compl_list_view_add_address(GtkWidget *list_view,
-					     const gchar *address)
-{
-	GtkTreeIter iter;
-	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
-					(GTK_TREE_VIEW(list_view)));
-	
-	gtk_list_store_append(store, &iter);
-	gtk_list_store_set(store, &iter,
-			   ADDR_COMPL_ADDRESS, address,
-			   -1);
 }
 					     
 static GtkWidget *addr_compl_list_view_create(CompletionWindow *window)

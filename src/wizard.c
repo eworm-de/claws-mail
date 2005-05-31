@@ -181,20 +181,6 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	return vbox;
 }
 
-static GtkWidget*
-create_page_with_text (WizardWindow *wizard, const char * title, 
-			const char * text)
-{
-	GtkWidget *label;
-	GtkWidget *page;
-       
-	page = create_page (wizard, title);
-	label = gtk_label_new (text);
-	gtk_box_pack_start (GTK_BOX(page), label, TRUE, TRUE, 0);
-
-	return page;
-}
-
 #define GTK_TABLE_ADD_ROW_AT(table,text,entry,i) { 			      \
 	GtkWidget *label = gtk_label_new(text);				      \
 	gtk_table_attach(GTK_TABLE(table), label, 			      \

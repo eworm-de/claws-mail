@@ -561,15 +561,7 @@ static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 
 static void prefs_account_edit_custom_header	(void);
 
-static gint prefs_account_deleted		(GtkWidget	*widget,
-						 GdkEventAny	*event,
-						 gpointer	 data);
-static gboolean prefs_account_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
-static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
-static void prefs_account_cancel		(void);
 
 typedef struct AccountPage
 {
@@ -2352,27 +2344,6 @@ static void prefs_account_advanced_create(void)
 	advanced.trash_folder_entry  = trash_folder_entry;
 }
 
-static gint prefs_account_deleted(GtkWidget *widget, GdkEventAny *event,
-				  gpointer data)
-{
-	prefs_account_cancel();
-	return TRUE;
-}
-
-static gboolean prefs_account_key_pressed(GtkWidget *widget, GdkEventKey *event,
-					  gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		prefs_account_cancel();
-	return FALSE;
-}
-
-static void prefs_account_ok(void)
-{
-	if (prefs_account_apply() == 0)
-		gtk_main_quit();
-}
-
 static gint prefs_account_apply(void)
 {
 	RecvProtocol protocol;
@@ -2434,12 +2405,6 @@ static gint prefs_account_apply(void)
 
 	prefs_set_data_from_dialog(param);
 	return 0;
-}
-
-static void prefs_account_cancel(void)
-{
-	cancelled = TRUE;
-	gtk_main_quit();
 }
 
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)

@@ -444,8 +444,6 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkTextView *text;
-
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
@@ -2091,8 +2089,6 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 {
 	GdkEventButton *bevent;
 	RemoteURI *uri = NULL;
-	GSList *cur;
-	gchar *trimmed_uri;
 
 	if (!event)
 		return FALSE;

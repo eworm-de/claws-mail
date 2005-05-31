@@ -879,6 +879,7 @@ void prefs_toolbar_init(void)
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
 	page->source = TOOLBAR_MAIN;
+	page->page.weight = 50.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_mainwindow = page;
 
@@ -892,6 +893,7 @@ void prefs_toolbar_init(void)
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
 	page->source = TOOLBAR_MSGVIEW;
+	page->page.weight = 45.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_messageview = page;
 
@@ -905,6 +907,7 @@ void prefs_toolbar_init(void)
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
 	page->source = TOOLBAR_COMPOSE;
+	page->page.weight = 40.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_composewindow = page;
 }
@@ -1099,7 +1102,6 @@ static gboolean icon_list_selected(GtkTreeSelection *selector,
 				   ToolbarPage *prefs_toolbar)
 {
 	GtkTreeIter iter;
-	GtkTreeView *list_ico = gtk_tree_selection_get_tree_view(selector);
 	gchar *text;
 	
 	if (currently_selected ||!gtk_tree_model_get_iter(model, &iter, path))
@@ -1135,7 +1137,6 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 {
 	GtkTreeIter iter;
 	GtkTreeView *list_ico = GTK_TREE_VIEW(prefs_toolbar->list_view_icons);
-	GtkTreeView *list_set = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	gchar *file, *icon_text, *descr;
 	GList *cur;

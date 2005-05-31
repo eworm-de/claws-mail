@@ -272,7 +272,7 @@ void prefs_ext_prog_init(void)
 	page->page.create_widget = prefs_ext_prog_create_widget;
 	page->page.destroy_widget = prefs_ext_prog_destroy_widget;
 	page->page.save_page = prefs_ext_prog_save;
-	page->page.weight = 45.0;
+	page->page.weight = 155.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_ext_prog = page;
 }

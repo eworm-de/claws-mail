@@ -603,8 +603,6 @@ static void account_edit_create(void)
 	GtkWidget *hbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *list_view;
-	gchar *titles[N_EDIT_ACCOUNT_COLS];
-	gint i;
 
 	GtkWidget *vbox2;
 	GtkWidget *add_btn;
@@ -925,7 +923,6 @@ static void account_clone(GtkWidget *widget, gpointer data)
 static void account_delete(GtkWidget *widget, gpointer data)
 {
 	PrefsAccount *ac_prefs;
-	gint account_id;
 	GList *list;
 	Folder *folder;
  
@@ -1421,7 +1418,6 @@ GtkTreePath *account_list_view_get_selected_account_path(GtkWidget *list_view)
 	GtkTreeSelection *selector;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	GtkTreePath *res;
 
 	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
 	

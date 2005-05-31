@@ -116,9 +116,7 @@ static void conv_anytoutf8(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_utf8toeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_utf8tojis(gchar *outbuf, gint outlen, const gchar *inbuf);
 
-static void conv_unreadable_eucjp(gchar *str);
 static void conv_unreadable_8bit(gchar *str);
-static void conv_unreadable_latin(gchar *str);
 
 static void conv_jistodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_sjistodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -511,131 +509,6 @@ static void conv_utf8tojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 	conv_euctojis(outbuf, outlen, eucstr);
 }
 
-static gchar valid_eucjp_tbl[][96] = {
-	/* 0xa2a0 - 0xa2ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 1, 1, 1, 1, 1, 1,
-	  1, 1, 0, 0, 0, 0, 0, 0,  0, 0, 1, 1, 1, 1, 1, 1,
-	  1, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 0, 0, 0, 0, 0,
-	  0, 0, 1, 1, 1, 1, 1, 1,  1, 1, 0, 0, 0, 0, 1, 0 },
-
-	/* 0xa3a0 - 0xa3ff */
-	{ 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 0, 0, 0, 0, 0, 0,
-	  0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 0, 0, 0, 0, 0,
-	  0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 0, 0, 0, 0, 0 },
-
-	/* 0xa4a0 - 0xa4ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0 },
-
-	/* 0xa5a0 - 0xa5ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 0,  0, 0, 0, 0, 0, 0, 0, 0 },
-
-	/* 0xa6a0 - 0xa6ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 0, 0, 0, 0, 0, 0, 0,
-	  0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0 },
-
-	/* 0xa7a0 - 0xa7ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0 },
-
-	/* 0xa8a0 - 0xa8ff */
-	{ 0, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
-	  1, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0 }
-};
-
-static gboolean isprintableeuckanji(guchar c1, guchar c2)
-{
-	if (c1 <= 0xa0 || c1 >= 0xf5)
-		return FALSE;
-	if (c2 <= 0xa0 || c2 == 0xff)
-		return FALSE;
-
-	if (c1 >= 0xa9 && c1 <= 0xaf)
-		return FALSE;
-
-	if (c1 >= 0xa2 && c1 <= 0xa8)
-		return (gboolean)valid_eucjp_tbl[c1 - 0xa2][c2 - 0xa0];
-
-	if (c1 == 0xcf) {
-		if (c2 >= 0xd4 && c2 <= 0xfe)
-			return FALSE;
-	} else if (c1 == 0xf4) {
-		if (c2 >= 0xa7 && c2 <= 0xfe)
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-static void conv_unreadable_eucjp(gchar *str)
-{
-	register guchar *p = str;
-
-	while (*p != '\0') {
-		if (IS_ASCII(*p)) {
-			/* convert CR+LF -> LF */
-			if (*p == '\r' && *(p + 1) == '\n')
-				memmove(p, p + 1, strlen(p));
-			/* printable 7 bit code */
-			p++;
-		} else if (iseuckanji(*p)) {
-			if (isprintableeuckanji(*p, *(p + 1))) {
-				/* printable euc-jp code */
-				p += 2;
-			} else {
-				/* substitute unprintable code */
-				*p++ = SUBST_CHAR;
-				if (*p != '\0') {
-					if (IS_ASCII(*p))
-						p++;
-					else
-						*p++ = SUBST_CHAR;
-				}
-			}
-		} else if (iseuchwkana1(*p)) {
-			if (iseuchwkana2(*(p + 1)))
-				/* euc-jp hankaku kana */
-				p += 2;
-			else
-				*p++ = SUBST_CHAR;
-		} else if (iseucaux(*p)) {
-			if (iseuckanji(*(p + 1)) && iseuckanji(*(p + 2))) {
-				/* auxiliary kanji */
-				p += 3;
-			} else
-				*p++ = SUBST_CHAR;
-		} else
-			/* substitute unprintable 1 byte code */
-			*p++ = SUBST_CHAR;
-	}
-}
-
 static void conv_unreadable_8bit(gchar *str)
 {
 	register guchar *p = str;
@@ -645,20 +518,6 @@ static void conv_unreadable_8bit(gchar *str)
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
 		else if (!IS_ASCII(*p)) *p = SUBST_CHAR;
-		p++;
-	}
-}
-
-static void conv_unreadable_latin(gchar *str)
-{
-	register guchar *p = str;
-
-	while (*p != '\0') {
-		/* convert CR+LF -> LF */
-		if (*p == '\r' && *(p + 1) == '\n')
-			memmove(p, p + 1, strlen(p));
-		else if ((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f)
-			*p = SUBST_CHAR;
 		p++;
 	}
 }

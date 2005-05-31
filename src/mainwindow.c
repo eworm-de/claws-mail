@@ -363,9 +363,6 @@ static void create_processing_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
-static void prefs_common_open_cb	(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
 static void prefs_template_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -2990,12 +2987,6 @@ static void create_processing_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
 	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 1);
-}
-
-static void prefs_common_open_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
-{
-	/* prefs_common_open(); */
 }
 
 static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,

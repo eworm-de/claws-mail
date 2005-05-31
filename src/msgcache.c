@@ -225,13 +225,14 @@ gint msgcache_get_memory_usage(MsgCache *cache)
  *  Cache saving functions
  */
 
-#define READ_CACHE_DATA(data, fp) \
+#define READ_CACHE_DATA(data, fp, total_len) \
 { \
-	if (msgcache_read_cache_data_str(fp, &data, conv) < 0) { \
+	if ((tmp_len = msgcache_read_cache_data_str(fp, &data, conv)) < 0) { \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
 	} \
+	total_len += tmp_len; \
 }
 
 #define READ_CACHE_DATA_INT(n, fp) \
@@ -305,7 +306,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 			fp = NULL;
 		}
 	}
-
+	
 	if (mode == DATA_READ)
 		return fp;
 
@@ -360,7 +361,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	} else 
 		*str = tmpstr;
 
-	return 0;
+	return len;
 }
 
 gchar *strconv_strdup_convert(StringConverter *conv, gchar *srcstr)
@@ -396,7 +397,15 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	StringConverter *conv = NULL;
 	gchar *srccharset = NULL;
 	const gchar *dstcharset = NULL;
-
+	gchar *ref = NULL;
+	guint memusage = 0;
+	guint tmp_len = 0;
+#if 0
+	struct timeval start;
+	struct timeval end;
+	struct timeval diff;
+	gettimeofday(&start, NULL);
+#endif
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
@@ -444,35 +453,38 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 
 	cache = msgcache_new();
 	g_hash_table_freeze(cache->msgnum_table);
+	g_hash_table_freeze(cache->msgid_table);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
 		msginfo = procmsg_msginfo_new();
 		msginfo->msgnum = num;
+		memusage += sizeof(MsgInfo);
+		
 		READ_CACHE_DATA_INT(msginfo->size, fp);
 		READ_CACHE_DATA_INT(msginfo->mtime, fp);
 		READ_CACHE_DATA_INT(msginfo->date_t, fp);
 		READ_CACHE_DATA_INT(msginfo->flags.tmp_flags, fp);
+				
+		READ_CACHE_DATA(msginfo->fromname, fp, memusage);
 
-		READ_CACHE_DATA(msginfo->fromname, fp);
-
-		READ_CACHE_DATA(msginfo->date, fp);
-		READ_CACHE_DATA(msginfo->from, fp);
-		READ_CACHE_DATA(msginfo->to, fp);
-		READ_CACHE_DATA(msginfo->cc, fp);
-		READ_CACHE_DATA(msginfo->newsgroups, fp);
-		READ_CACHE_DATA(msginfo->subject, fp);
-		READ_CACHE_DATA(msginfo->msgid, fp);
-		READ_CACHE_DATA(msginfo->inreplyto, fp);
-		READ_CACHE_DATA(msginfo->xref, fp);
+		READ_CACHE_DATA(msginfo->date, fp, memusage);
+		READ_CACHE_DATA(msginfo->from, fp, memusage);
+		READ_CACHE_DATA(msginfo->to, fp, memusage);
+		READ_CACHE_DATA(msginfo->cc, fp, memusage);
+		READ_CACHE_DATA(msginfo->newsgroups, fp, memusage);
+		READ_CACHE_DATA(msginfo->subject, fp, memusage);
+		READ_CACHE_DATA(msginfo->msgid, fp, memusage);
+		READ_CACHE_DATA(msginfo->inreplyto, fp, memusage);
+		READ_CACHE_DATA(msginfo->xref, fp, memusage);
+		
 		READ_CACHE_DATA_INT(msginfo->planned_download, fp);
 		READ_CACHE_DATA_INT(msginfo->total_size, fp);
-
 		READ_CACHE_DATA_INT(refnum, fp);
-
+		
 		for (; refnum != 0; refnum--) {
-			gchar *ref = NULL;
+			ref = NULL;
 
-			READ_CACHE_DATA(ref, fp);
+			READ_CACHE_DATA(ref, fp, memusage);
 
 			if (ref && strlen(ref))
 				msginfo->references =
@@ -488,10 +500,10 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		g_hash_table_insert(cache->msgnum_table, &msginfo->msgnum, msginfo);
 		if(msginfo->msgid)
 			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
-		cache->memusage += procmsg_msginfo_memusage(msginfo);
 	}
 	fclose(fp);
 	g_hash_table_thaw(cache->msgnum_table);
+	g_hash_table_thaw(cache->msgid_table);
 
 	if (conv != NULL) {
 		if (conv->free != NULL)
@@ -505,10 +517,15 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	}
 
 	cache->last_access = time(NULL);
+	cache->memusage = memusage;
 
 	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
 	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
-
+#if 0
+	gettimeofday(&end, NULL);
+	timersub(&end, &start, &diff);
+	printf("spent %d seconds %d usages %d;%d\n", diff.tv_sec, diff.tv_usec, cache->memusage, memusage);
+#endif
 	return cache;
 }
 

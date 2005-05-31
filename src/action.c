@@ -1145,7 +1145,6 @@ static void create_io_dialog(Children *children)
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
-	PangoFontDescription *text_font;
 
 	debug_print("Creating action IO dialog\n");
 

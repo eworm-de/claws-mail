@@ -1507,7 +1507,7 @@ static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
 
 static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo) 
 {
-	GtkWidget *pixmap;
+	GtkWidget *pixmap = NULL;
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;

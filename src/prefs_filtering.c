@@ -213,8 +213,6 @@ static void prefs_filtering_create(void)
 	GtkWidget *bottom_btn;
 	static GdkGeometry geometry;
 
-	gchar *title[1];
-
 	debug_print("Creating filtering configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -612,7 +610,6 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	GSList *cur;
 	GSList * prefs_filtering;
 	gchar *cond_str;
-	gint row;
 	GtkListStore *list_store;
 	
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(list_view));

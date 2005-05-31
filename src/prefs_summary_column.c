@@ -127,7 +127,7 @@ static gboolean prefs_summary_column_key_pressed(GtkWidget	*widget,
 
 static GtkListStore *prefs_summary_column_create_store	(void);
 
-static gint prefs_summary_column_insert_column	(GtkListStore *store,
+static void prefs_summary_column_insert_column	(GtkListStore *store,
 						 gint row,
 						 const gchar *name,
 						 SummaryColumnType type);
@@ -421,7 +421,6 @@ static void prefs_summary_column_set_dialog(SummaryColumnState *state)
 		state = prefs_summary_column_get_config();
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
-		gint row;
 		type = state[pos].type;
 		name = gettext(col_name[type]);
 
@@ -668,7 +667,7 @@ static GtkListStore *prefs_summary_column_create_store(void)
 				  -1);
 }
 
-static gint prefs_summary_column_insert_column(GtkListStore *store,
+static void prefs_summary_column_insert_column(GtkListStore *store,
 					       gint row,
 					       const gchar *name,
 					       SummaryColumnType type)
@@ -687,8 +686,7 @@ static gint prefs_summary_column_insert_column(GtkListStore *store,
 				   SUMCOL_NAME, name,
 				   SUMCOL_TYPE, type,
 				   -1);
-		return -1 + gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store),
-							   NULL);
+		return;
 	} else {
 		/* change existing */
 		gtk_list_store_set(store, &iter, 
@@ -774,7 +772,6 @@ static void drag_data_get(GtkTreeView *tree_view, GdkDragContext *context,
 			  GtkSelectionData *data, guint info, 
 			  guint time, GtkTreeModel *model)
 {
-	GtkWidget *source;
 	GtkTreeIter iter;
 	SummaryColumnType type;
 	GtkTreeModel *source_model;
@@ -803,7 +800,6 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 	GtkTreePath *dst = NULL, *sel = NULL;
 	GtkTreeIter isel, idst;
 	GtkTreeViewDropPosition pos;
-	gboolean before;
 	SummaryColumnType type;
 	GtkTreeModel *sel_model;
 	gchar *name;

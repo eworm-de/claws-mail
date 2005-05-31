@@ -499,7 +499,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	gchar tmp[MAXPATHLEN + 1];
 	FILE *fp;
 	GList *ac_list;
-	PrefsAccount *account;
+	PrefsAccount *account = NULL;
 	gint ok;
 	gchar *to;
 	FolderItem *queue, *outbox;
@@ -553,23 +553,34 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	ac_list = account_find_all_from_address(ac_list, msginfo->cc);
 
 	if (ac_list == NULL) {
-		alertpanel_error(_("This message is asking for a return "
+		AlertValue val = 
+		alertpanel_with_type(_("Warning"),
+				_("This message is asking for a return "
 				   "receipt notification\n"
 				   "but according to its 'To:' and 'CC:' "
 				   "headers it was not\nofficially addressed "
 				   "to you.\n"
-				   "Receipt notification cancelled."));
-		return -1;
+				   "It is advised to not to send the return ."
+				   "receipt."),
+				_("Send"), _("+Don't Send"), NULL, 
+				NULL, ALERT_WARNING);
+		if (val != G_ALERTDEFAULT)
+			return -1;
 	}
 
 	if (g_list_length(ac_list) > 1)
 		account = select_account_from_list(ac_list);
-	else
+	else if (ac_list != NULL)
 		account = (PrefsAccount *) ac_list->data;
 	g_list_free(ac_list);
 
 	if (account == NULL)
+		account = account_get_default();
+	if (!account || account->protocol == A_NNTP) {
+		alertpanel_error(_("Account for sending mail is not specified.\n"
+				   "Please select a mail account before sending."));
 		return -1;
+	}
 
 	/* write to temporary file */
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
@@ -1403,7 +1414,6 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
 	GSList *msginfo_list = NULL;
-	MsgInfo *msginfo;
 
 	g_return_if_fail(messageview->msginfo);
 
