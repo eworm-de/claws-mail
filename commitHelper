@@ -59,8 +59,11 @@ for line in $files; do
 	nextversion=`echo $version | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 	
 	log="$log\t* $file\n"
-	patchset="$patchset cvs diff -u -r $version -r $nextversion $file;\
-"
+	if [ "$version" != "0" ]; then
+	patchset="$patchset cvs diff -u -r $version -r $nextversion $file; "
+	else
+	patchset="$patchset diff -u /dev/null $file; "
+	fi
 done;
 patchset="$patchset ) > $nextsversion.patchset"
 
