@@ -59,6 +59,7 @@
 #include "prefs_msg_colors.h"
 #include "prefs_quote.h"
 #include "prefs_spelling.h"
+#include "prefs_summaries.h"
 #include "prefs_themes.h"
 #include "prefs_wrapping.h"
 #include "prefs_compose_writing.h"
@@ -319,6 +320,7 @@ int main(int argc, char *argv[])
 	image_viewer_init();
 	prefs_image_viewer_init();
 	prefs_quote_init();
+	prefs_summaries_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -516,6 +518,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_image_viewer_done();
 	image_viewer_done();
 	prefs_quote_done();
+	prefs_summaries_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

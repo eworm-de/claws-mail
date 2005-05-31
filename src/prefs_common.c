@@ -355,30 +355,23 @@ static PrefParam param[] = {
 
 	{"display_folder_unread_num", "TRUE",
 	 &prefs_common.display_folder_unread, P_BOOL,
-	 &display.chkbtn_folder_unread,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"newsgroup_abbrev_len", "16",
 	 &prefs_common.ng_abbrev_len, P_INT,
-	 &display.spinbtn_ng_abbrev_len,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+	 NULL, NULL, NULL},
 
 	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
-	 &display.chkbtn_transhdr,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	/* Display: Summary View */
 	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
-	 &display.chkbtn_swapfrom,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"use_address_book", "TRUE", &prefs_common.use_addr_book, P_BOOL,
-	 &display.chkbtn_useaddrbook,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
-	 &display.chkbtn_threadsubj,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
-	 P_STRING, &display.entry_datefmt,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 P_STRING, NULL, NULL, NULL},
 
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
@@ -714,7 +707,6 @@ static PrefParam param[] = {
 static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
 static void prefs_send_create		(void);
-static void prefs_display_create	(void);
 static void prefs_message_create	(void);
 static void prefs_interface_create	(void);
 static void prefs_other_create		(void);
@@ -735,9 +727,6 @@ static void date_format_select_row	        (GtkTreeView *list_view,
 						 GtkTreePath *path,
 						 GtkTreeViewColumn *column,
 						 GtkWidget *date_format);
-static GtkWidget *date_format_create            (GtkButton      *button,
-                                                 void           *data);
-
 static void prefs_keybind_select		(void);
 static gint prefs_keybind_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
@@ -917,8 +906,6 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(notebook, _("Receive"),   page++);
 	prefs_send_create();
 	SET_NOTEBOOK_LABEL(notebook, _("Send"),      page++);
-	prefs_display_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Display"),   page++);
 	prefs_message_create();
 	SET_NOTEBOOK_LABEL(notebook, _("Message"),   page++);
 	prefs_interface_create();
@@ -1301,133 +1288,6 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 		  gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(receive.checkbtn_newmail_auto));
 	gtk_widget_set_sensitive(receive.hbox_newmail_notify, toggled);
-}
-
-static void prefs_display_create(void)
-{
-	GtkWidget *vbox1;
-	GtkWidget *chkbtn_transhdr;
-	GtkWidget *chkbtn_folder_unread;
-	GtkWidget *hbox1;
-	GtkWidget *label_ng_abbrev;
-	GtkWidget *spinbtn_ng_abbrev_len;
-	GtkObject *spinbtn_ng_abbrev_len_adj;
-	GtkWidget *frame_summary;
-	GtkWidget *vbox2;
-	GtkWidget *chkbtn_swapfrom;
-	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_threadsubj;
-	GtkWidget *vbox3;
-	GtkWidget *label_datefmt;
-	GtkWidget *button_datefmt;
-	GtkWidget *entry_datefmt;
-	GtkWidget *button_dispitem;
-
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, TRUE, 0);
-
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_transhdr,
-		 _("Translate header name (such as `From:', `Subject:')"));
-
-	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
-			   _("Display unread number next to folder name"));
-
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	label_ng_abbrev = gtk_label_new
-		(_("Abbreviate newsgroup names longer than"));
-	gtk_widget_show (label_ng_abbrev);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
-
-	spinbtn_ng_abbrev_len_adj = gtk_adjustment_new (16, 0, 999, 1, 10, 10);
-	spinbtn_ng_abbrev_len = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_ng_abbrev_len_adj), 1, 0);
-	gtk_widget_show (spinbtn_ng_abbrev_len);
-	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_ng_abbrev_len,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_ng_abbrev_len, 56, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_ng_abbrev_len),
-				     TRUE);
-
-	label_ng_abbrev = gtk_label_new
-		(_("letters"));
-	gtk_widget_show (label_ng_abbrev);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
-
-	/* ---- Summary ---- */
-
-	PACK_FRAME(vbox1, frame_summary, _("Summary View"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_summary), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_swapfrom,
-		 _("Display recipient in `From' column if sender is yourself"));
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_useaddrbook,
-		 _("Display sender using address book"));
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_threadsubj,
-		 _("Thread using subject in addition to standard headers"));
-
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	label_datefmt = gtk_label_new (_("Date format"));
-	gtk_widget_show (label_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
-
-	entry_datefmt = gtk_entry_new ();
-	gtk_widget_show (entry_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
-
-	button_datefmt = gtk_button_new_with_label (" ... ");
-
-	gtk_widget_show (button_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
-			  G_CALLBACK (date_format_create), NULL);
-
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	button_dispitem = gtk_button_new_with_label
-		(_(" Set displayed items in summary... "));
-	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
-			  G_CALLBACK (prefs_summary_column_open),
-			  NULL);
-
-	display.chkbtn_transhdr           = chkbtn_transhdr;
-	display.chkbtn_folder_unread      = chkbtn_folder_unread;
-	display.spinbtn_ng_abbrev_len     = spinbtn_ng_abbrev_len;
-	display.spinbtn_ng_abbrev_len_adj = spinbtn_ng_abbrev_len_adj;
-
-	display.chkbtn_swapfrom      = chkbtn_swapfrom;
-	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
-	display.chkbtn_threadsubj    = chkbtn_threadsubj;
-	display.entry_datefmt        = entry_datefmt;
 }
 
 static void prefs_message_create(void)
@@ -1988,214 +1848,6 @@ static void date_format_select_row(GtkTreeView *list_view,
 	gtk_editable_set_position(GTK_EDITABLE(datefmt_sample), cur_pos + 2);
 
 	g_free(new_format);
-}
-
-static GtkWidget *date_format_create(GtkButton *button, void *data)
-{
-	static GtkWidget *datefmt_win = NULL;
-
-	GtkWidget *vbox1;
-	GtkWidget *scrolledwindow1;
-	GtkWidget *datefmt_list_view;
-	GtkWidget *table;
-	GtkWidget *label1;
-	GtkWidget *label2;
-	GtkWidget *label3;
-	GtkWidget *confirm_area;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-	GtkWidget *datefmt_entry;
-	GtkListStore *store;
-
-	struct {
-		gchar *fmt;
-		gchar *txt;
-	} time_format[] = {
-		{ "%a", NULL },
-		{ "%A", NULL },
-		{ "%b", NULL },
-		{ "%B", NULL },
-		{ "%c", NULL },
-		{ "%C", NULL },
-		{ "%d", NULL },
-		{ "%H", NULL },
-		{ "%I", NULL },
-		{ "%j", NULL },
-		{ "%m", NULL },
-		{ "%M", NULL },
-		{ "%p", NULL },
-		{ "%S", NULL },
-		{ "%w", NULL },
-		{ "%x", NULL },
-		{ "%y", NULL },
-		{ "%Y", NULL },
-		{ "%Z", NULL }
-	};
-
-	gchar *titles[2];
-	gint i;
-	const gint TIME_FORMAT_ELEMS =
-		sizeof time_format / sizeof time_format[0];
-
-	GtkCellRenderer *renderer;
-	GtkTreeViewColumn *column;
-	GtkTreeSelection *selection;
-
-	time_format[0].txt  = _("the full abbreviated weekday name");
-	time_format[1].txt  = _("the full weekday name");
-	time_format[2].txt  = _("the abbreviated month name");
-	time_format[3].txt  = _("the full month name");
-	time_format[4].txt  = _("the preferred date and time for the current locale");
-	time_format[5].txt  = _("the century number (year/100)");
-	time_format[6].txt  = _("the day of the month as a decimal number");
-	time_format[7].txt  = _("the hour as a decimal number using a 24-hour clock");
-	time_format[8].txt  = _("the hour as a decimal number using a 12-hour clock");
-	time_format[9].txt  = _("the day of the year as a decimal number");
-	time_format[10].txt = _("the month as a decimal number");
-	time_format[11].txt = _("the minute as a decimal number");
-	time_format[12].txt = _("either AM or PM");
-	time_format[13].txt = _("the second as a decimal number");
-	time_format[14].txt = _("the day of the week as a decimal number");
-	time_format[15].txt = _("the preferred date for the current locale");
-	time_format[16].txt = _("the last two digits of a year");
-	time_format[17].txt = _("the year as a decimal number");
-	time_format[18].txt = _("the time zone or name or abbreviation");
-
-	if (datefmt_win) return datefmt_win;
-
-	store = gtk_list_store_new(N_DATEFMT_COLUMNS,
-				   G_TYPE_STRING,
-				   G_TYPE_STRING,
-				   -1);
-
-	for (i = 0; i < TIME_FORMAT_ELEMS; i++) {
-		GtkTreeIter iter;
-
-		gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter,
-				   DATEFMT_FMT, time_format[i].fmt,
-				   DATEFMT_TXT, time_format[i].txt,
-				   -1);
-	}
-
-	datefmt_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
-	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
-	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
-	gtk_widget_set_size_request(datefmt_win, 440, 280);
-
-	vbox1 = gtk_vbox_new(FALSE, 10);
-	gtk_widget_show(vbox1);
-	gtk_container_add(GTK_CONTAINER(datefmt_win), vbox1);
-
-	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW(scrolledwindow1),
-		 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_show(scrolledwindow1);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
-
-	datefmt_list_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(G_OBJECT(store));
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(datefmt_list_view), TRUE);
-	gtk_widget_show(datefmt_list_view);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_list_view);
-
-	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes
-			(_("Specifier"), renderer, "text", DATEFMT_FMT,
-			 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(datefmt_list_view), column);
-	
-	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes
-			(_("Description"), renderer, "text", DATEFMT_TXT,
-			 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(datefmt_list_view), column);
-	
-	/* gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80); */
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(datefmt_list_view));
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
-
-	g_signal_connect(G_OBJECT(datefmt_list_view), "row_activated", 
-			 G_CALLBACK(date_format_select_row),
-			 datefmt_win);
-	
-	table = gtk_table_new(2, 2, FALSE);
-	gtk_widget_show(table);
-	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-
-	label1 = gtk_label_new(_("Date format"));
-	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
-			 GTK_FILL, 0, 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
-
-	datefmt_entry = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(datefmt_entry), 256);
-	gtk_widget_show(datefmt_entry);
-	gtk_table_attach(GTK_TABLE(table), datefmt_entry, 1, 2, 0, 1,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	/* we need the "sample" entry box; add it as data so callbacks can
-	 * get the entry box */
-	g_object_set_data(G_OBJECT(datefmt_win), "datefmt_sample",
-			  datefmt_entry);
-
-	label2 = gtk_label_new(_("Example"));
-	gtk_widget_show(label2);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
-			 GTK_FILL, 0, 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
-
-	label3 = gtk_label_new("");
-	gtk_widget_show(label3);
-	gtk_table_attach(GTK_TABLE(table), label3, 1, 2, 1, 2,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
-
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				&cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
-
-	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_show(confirm_area);
-	gtk_widget_grab_default(ok_btn);
-
-	/* set the current format */
-	gtk_entry_set_text(GTK_ENTRY(datefmt_entry), prefs_common.date_format);
-	date_format_entry_on_change(GTK_EDITABLE(datefmt_entry),
-				    GTK_LABEL(label3));
-
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-			 G_CALLBACK(date_format_ok_btn_clicked),
-			 &datefmt_win);
-	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
-			 G_CALLBACK(date_format_cancel_btn_clicked),
-			 &datefmt_win);
-	g_signal_connect(G_OBJECT(datefmt_win), "key_press_event",
-			 G_CALLBACK(date_format_key_pressed),
-			 &datefmt_win);
-	g_signal_connect(G_OBJECT(datefmt_win), "delete_event",
-			 G_CALLBACK(date_format_on_delete),
-			 &datefmt_win);
-	g_signal_connect(G_OBJECT(datefmt_entry), "changed",
-			 G_CALLBACK(date_format_entry_on_change),
-			 label3);
-
-	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
-
-	gtk_widget_show(datefmt_win);
-	manage_window_set_transient(GTK_WINDOW(datefmt_win));
-
-	gtk_widget_grab_focus(ok_btn);
-
-	return datefmt_win;
 }
 
 static void prefs_keybind_select(void)
