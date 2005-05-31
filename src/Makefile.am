@@ -97,6 +97,7 @@ sylpheed_SOURCES = \
 	prefs_image_viewer.c \
 	prefs_matcher.c \
 	prefs_msg_colors.c \
+	prefs_quote.c \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
@@ -228,6 +229,7 @@ sylpheedinclude_HEADERS = \
 	prefs_image_viewer.h \
 	prefs_matcher.h \
 	prefs_msg_colors.h \
+	prefs_quote.h \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \

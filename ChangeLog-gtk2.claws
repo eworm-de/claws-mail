@@ -1,3 +1,17 @@
+2005-05-31 [colin]	1.9.11cvs24
+
+	* src/Makefile.am
+	* src/main.c
+	* src/prefs_quote.c ** ADDED **
+	* src/prefs_quote.h ** ADDED **
+		Move Common/Quote to Compose/Quoting
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Remove old quote stuff, add
+		convenience functions for GtkTextView prefs
+	* src/gtk/prefswindow.c
+		Set default height higher
+
 2005-05-30 [colin]	1.9.11cvs23
 
 	* src/Makefile.am
