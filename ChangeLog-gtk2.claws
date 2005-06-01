@@ -1,3 +1,10 @@
+2005-06-01 [paul]	1.9.11cvs30
+
+	* po/fi.po
+		updated by Flammie Pirinen
+	* src/procmime.c
+		fix 'Bad BASE64 content' output
+
 2005-05-31 [colin]	1.9.11cvs29
 
 	* src/procmime.c

@@ -343,9 +343,9 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			} else if (len >= 0) {
 				/* print out the error message only once 
 				 * per block */
+				fwrite(outbuf, sizeof(gchar), len, tmpfp);
 				got_error = FALSE;
 			}
-			fwrite(outbuf, sizeof(gchar), len, tmpfp);
 		}
 		base64_decoder_free(decoder);
 
