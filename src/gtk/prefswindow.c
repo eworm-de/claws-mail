@@ -333,9 +333,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)
 {
-	gint optsize;
 	PrefsWindow *prefswindow;
-	GtkTreeStore *store;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 

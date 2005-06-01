@@ -37,6 +37,7 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtkimage.h>
 
 #include "inputdialog.h"
 #include "manage_window.h"

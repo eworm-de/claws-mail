@@ -1456,7 +1456,6 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 	GList *result = NULL;
 	const gchar *p, *q;
 	gchar *escaped_utf8uri;
-	gchar *file;
 
 	p = uri_list;
 
@@ -1480,7 +1479,6 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 					strncpy(escaped_utf8uri, p, q - p + 1);
 					escaped_utf8uri[q - p + 1] = '\0';
 					decode_uri(file, escaped_utf8uri);
-#warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
                     /*
 		     * g_filename_from_uri() rejects escaped/locale encoded uri
 		     * string which come from Nautilus.
@@ -3843,8 +3841,9 @@ GAuto *g_auto_pointer_new(gpointer p)
 	ptr->ref = ref;
 	ptr->ptr = p;
 
+#ifdef REF_DEBUG
 	G_PRINT_REF ("XXXX ALLOC(%lx)\n", p);
-
+#endif
 	return ptr;
 }
 
@@ -3898,8 +3897,9 @@ GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
 	newp->ptr = ref->pointer;
 	++(ref->cnt);
 	
+#ifdef REF_DEBUG
 	G_PRINT_REF ("XXXX COPY(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
-
+#endif
 	return newp;
 }
 
@@ -3918,11 +3918,16 @@ void g_auto_pointer_free(GAuto *auto_ptr)
 	ref = ptr->ref;
 
 	if (--(ref->cnt) == 0) {
+#ifdef REF_DEBUG
 		G_PRINT_REF ("XXXX FREE(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
+#endif
 		ref->free(ref->pointer);
 		g_free(ref);
-	} else
+	} 
+#ifdef REF_DEBUG
+	else
 		G_PRINT_REF ("XXXX DEREF(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
+#endif
 	g_free(ptr);		
 }
 

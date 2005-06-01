@@ -459,7 +459,7 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 
 void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config)
 {
-	gchar *confstr;
+	gchar *confstr = NULL;
 
 	switch (config->sign_key) {
 	case SIGN_KEY_DEFAULT:
@@ -471,6 +471,9 @@ void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *confi
 	case SIGN_KEY_CUSTOM:
 		confstr = g_strdup_printf("CUSTOM;%s", config->sign_key_id);
 		break;
+	default:
+		confstr = g_strdup("");
+		g_warning("prefs_gpg_account_set_config: bad sign_key val\n");
 	}
 
 	prefs_account_set_privacy_prefs(account, "gpg", confstr);

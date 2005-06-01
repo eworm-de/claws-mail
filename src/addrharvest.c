@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "mgutils.h"
 #include "addrharvest.h"
+#include "codeconv.h"
 #include "addritem.h"
 
 /* Mail header names of interest */
@@ -514,7 +515,6 @@ static void addrharvest_parse_address(
 		AddressCache *cache, const gchar *hdrBuf )
 {
 	gchar buffer[ ADDR_BUFFSIZE + 2 ];
-	gchar buf[ADDR_BUFFSIZE];
 	const gchar *bp;
 	const gchar *ep;
 	gchar *atCh, *email, *name;
@@ -553,18 +553,18 @@ static void addrharvest_parse_address(
 			g_strstrip( buffer );
 
 			if( g_ascii_strcasecmp( buffer, email ) == 0 ) {
-				name = "";
+				name = g_strdup("");
 			}
 			else {
 				name = buffer;
-				conv_unmime_header(buf, sizeof(buf), name,
-				NULL);
+				name = conv_unmime_header(buffer, NULL);
 			}
 
 			/* Insert into address book */
 			addrharvest_insert_cache(
 				harvester, entry, cache, name, email );
 			g_free( email );
+			g_free( name );
 		}
 		hdrBuf = ep;
 	}

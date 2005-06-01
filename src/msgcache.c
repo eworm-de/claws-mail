@@ -242,7 +242,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
  \
 	if ((ni = fread(&idata, 1, sizeof(idata), fp)) != sizeof(idata)) { \
 		g_warning("read_int: Cache data corrupted, read %d of %d at " \
-			  "offset %d\n", ni, sizeof(idata), ftell(fp)); \
+			  "offset %ld\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
@@ -336,7 +336,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	if ((ni = fread(&len, 1, sizeof(len), fp) != sizeof(len)) ||
 	    len > G_MAXINT) {
 		g_warning("read_data_str: Cache data (len) corrupted, read %d "
-			  "of %d bytes at offset %d\n", ni, sizeof(len), 
+			  "of %d bytes at offset %ld\n", ni, sizeof(len), 
 			  ftell(fp));
 		return -1;
 	}
@@ -348,7 +348,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 
 	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
 		g_warning("read_data_str: Cache data corrupted, read %d of %d "
-			  "bytes at offset %d\n", 
+			  "bytes at offset %ld\n", 
 			  ni, len, ftell(fp));
 		g_free(tmpstr);
 		return -1;

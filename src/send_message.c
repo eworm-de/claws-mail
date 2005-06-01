@@ -176,7 +176,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 {
 	Session *session;
 	SMTPSession *smtp_session;
-	gushort port;
+	gushort port = 0;
 	SendProgressDialog *dialog;
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
@@ -350,7 +350,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	 */
 	if (!keep_session || ret != 0) {
 		if (session_is_connected(session))
-			smtp_quit(session);
+			smtp_quit(smtp_session);
 		while (session_is_connected(session))
 			gtk_main_iteration();
 		session_destroy(session);

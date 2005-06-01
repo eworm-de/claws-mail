@@ -417,7 +417,6 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 gint export_to_mbox(FolderItem *src, const gchar *mbox)
 {
 	GSList *mlist;
-	int res = 0;
 	
 	g_return_val_if_fail(src != NULL, -1);
 	g_return_val_if_fail(src->folder != NULL, -1);

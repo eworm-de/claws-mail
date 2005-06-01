@@ -518,10 +518,10 @@ static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 	struct stat s;
 
 	if (stat(itos(msginfo->msgnum), &s) < 0 ||
-	    msginfo->size  != s.st_size ||
+	    msginfo->size  != s.st_size || (
 		(msginfo->mtime - s.st_mtime != 0) &&
 		(msginfo->mtime - s.st_mtime != 3600) &&
-		(msginfo->mtime - s.st_mtime != -3600))
+		(msginfo->mtime - s.st_mtime != -3600)))
 		return TRUE;
 
 	return FALSE;
@@ -986,7 +986,6 @@ static gboolean mh_rename_folder_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-#warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
 static gchar *mh_filename_from_utf8(const gchar *path)
 {
 	const gchar *src_codeset = CS_UTF_8;
@@ -1003,7 +1002,6 @@ static gchar *mh_filename_from_utf8(const gchar *path)
 	return real_path;
 }
 
-#warning FIXME_GTK2 /* should we use g_filename_to_utf8()? */
 static gchar *mh_filename_to_utf8(const gchar *path)
 {
 	const gchar *src_codeset = conv_get_locale_charset_str();

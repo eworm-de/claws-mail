@@ -35,14 +35,6 @@
 #include "menu.h"
 #include "utils.h"
 
-static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
-				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
-				 gpointer user_data);
-
-static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group,
-			           guint accel_key, GdkModifierType accel_mods,
-			           gpointer user_data);
-
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) ;
 
 
@@ -95,14 +87,6 @@ gchar *menu_translate(const gchar *path, gpointer data)
 	retval = gettext(path);
 
 	return retval;
-}
-
-static void factory_print_func(gpointer data, gchar *string)
-{
-	GString *out_str = data;
-
-	g_string_append(out_str, string);
-	g_string_append_c(out_str, '\n');
 }
 
 void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
@@ -214,45 +198,8 @@ gpointer menu_get_option_menu_active_user_data(GtkOptionMenu *optmenu)
 	return g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
 }
 
-/* call backs for accelerator changes on selected menu items */
-static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
-				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
-				 gpointer user_data)
-{
-#warning FIXME_GTK2
-#if 0
-	GtkWidget *connected = GTK_WIDGET(user_data);	
-	if (gtk_signal_n_emissions_by_name(G_OBJECT(widget),"add_accelerator") > 1 ) return;
-	gtk_widget_remove_accelerators(connected,"activate",FALSE);
-	/* lock _this_ widget */
-	gtk_accel_group_lock_entry(accel_group,accel_key,accel_mods);
-	/* modify the _other_ widget */
-	gtk_widget_add_accelerator(connected, "activate",
-				   gtk_item_factory_from_widget(connected)->accel_group,
-				   accel_key, accel_mods,
-				   GTK_ACCEL_VISIBLE );
-	gtk_accel_group_unlock_entry(accel_group,accel_key,accel_mods);				   
-#endif
-}
-
-static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group,
-			           guint accel_key, GdkModifierType accel_mods,
-			           gpointer user_data)
-{	
-#warning FIXME_GTK2
-#if 0
-	GtkWidget *wid = GTK_WIDGET(user_data);
-
-	if (gtk_signal_n_emissions_by_name(G_OBJECT(widget),
-	    "remove_accelerator") > 2 )
-		return;
-	gtk_widget_remove_accelerators(wid,"activate",FALSE);
-#endif
-}
-
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
-#warning FIXME_GTK2
 #if 0
 	g_signal_connect_after(G_OBJECT(widget), "add_accelerator", 
 			       G_CALLBACK(menu_item_add_accel), wid2);

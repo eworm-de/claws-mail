@@ -83,7 +83,6 @@ passphrase_mbox (const gchar *desc)
     GtkWidget *pass_entry;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
-    gint       grab_result;
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Passphrase"));
@@ -140,8 +139,8 @@ try_again:
 	gdk_flush();
 	while(gtk_events_pending())
 		gtk_main_iteration();
-        if (err = gdk_pointer_grab(window->window, TRUE, 0,
-                             window->window, NULL, GDK_CURRENT_TIME)) {
+        if ((err = gdk_pointer_grab(window->window, TRUE, 0,
+                             window->window, NULL, GDK_CURRENT_TIME))) {
 	    if (err == GDK_GRAB_NOT_VIEWABLE && cnt < 10) {
 		/* HACK! */
 		cnt++;

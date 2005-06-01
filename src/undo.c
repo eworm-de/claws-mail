@@ -574,7 +574,6 @@ void undo_delete_text_cb(GtkTextBuffer *textbuf, GtkTextIter *start,
 
 void undo_paste_clipboard_cb(GtkTextView *textview, UndoMain *undostruct)
 {
-#warning GTK2 check clipboard content
 #if 0
 	if (editable->clipboard_text == NULL) return;
 #endif

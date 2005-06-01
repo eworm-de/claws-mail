@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=30
+EXTRA_VERSION=31
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -121,6 +121,8 @@ case "$host" in
 esac
 AC_MSG_RESULT([$os_win32])
 AM_CONDITIONAL(OS_WIN32, test x"$os_win32" = x"yes")
+
+CFLAGS="$CFLAGS -Wall"
 
 case "$target" in
 *-darwin*)

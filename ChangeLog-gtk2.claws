@@ -1,3 +1,54 @@
+2005-06-01 [colin]	1.9.11cvs31
+
+	* src/addrharvest.c
+	* src/compose.c
+	* src/mbox.c
+	* src/mbox.h
+	* src/mh.c
+	* src/msgcache.c
+	* src/send_message.c
+	* src/setup.c
+	* src/undo.c
+	* src/common/hooks.c
+	* src/common/prefs.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/gtk/gtkutils.c
+	* src/gtk/inputdialog.c
+	* src/gtk/menu.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/prefs_gpg.c
+		More -Wall fixes
+
+	* src/common/Makefile.am
+	* src/common/timing.h
+		Add basic timing code
+
+	* src/summaryview.c
+		Fix a bug with unread messages when 
+		re-sorting folders, and by the way
+		fix a big performance hit when 
+		re-sorting (10k mails: before 5s,
+		after .5s)
+
+	* src/prefs_compose_writing.c
+	* src/prefs_compose_writing.h
+	* src/prefs_message.c
+	* src/prefs_message.h
+	* src/prefs_other.c
+	* src/prefs_other.h
+	* src/prefs_quote.c
+	* src/prefs_quote.h
+	* src/prefs_receive.c
+	* src/prefs_receive.h
+	* src/prefs_send.c
+	* src/prefs_send.h
+	* src/prefs_summaries.c
+	* src/prefs_summaries.h
+		Fix copyright banner
+
 2005-06-01 [paul]	1.9.11cvs30
 
 	* po/fi.po

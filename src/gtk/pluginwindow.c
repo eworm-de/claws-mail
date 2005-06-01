@@ -72,7 +72,6 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 {
 	GSList *plugins, *cur;
 	const gchar *text;
-	gint row;
 	GtkListStore *store;
 	GtkTreeIter iter;
 	GtkTextBuffer *textbuf;

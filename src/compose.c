@@ -1454,7 +1454,6 @@ void compose_entry_append(Compose *compose, const gchar *address,
 	gchar *header;
 	gchar *cur, *begin;
 	gboolean in_quote = FALSE;
-	int i = 0;
 	if (!address || *address == '\0') return;
 
 	switch (type) {

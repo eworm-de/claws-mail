@@ -49,6 +49,7 @@ sylpheedcommoninclude_HEADERS = \
 	stringtable.h \
 	sylpheed.h \
 	template.h \
+	timing.h \
 	utils.h \
 	uuencode.h \
 	version.h \

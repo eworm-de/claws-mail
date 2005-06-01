@@ -30,9 +30,6 @@ typedef enum {
 } LockType;
 
 
-#warning FIXME_GTK2
-/*  file name should be locale encode. */
-
 gint proc_mbox		(FolderItem	*dest,
 			 const gchar	*mbox,
 			 gboolean	 apply_filter);

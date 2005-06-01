@@ -67,7 +67,7 @@ guint hooks_register_hook(const gchar *hooklist_name,
 
 	g_hook_append(hooklist, hook);
 
-	debug_print("registed new hook for '%s' as id %d\n", hooklist_name, hook->hook_id);
+	debug_print("registed new hook for '%s' as id %lu\n", hooklist_name, hook->hook_id);
 
 	return hook->hook_id;
 }
@@ -86,7 +86,7 @@ void hooks_unregister_hook(const gchar *hooklist_name,
 	hook = g_hook_get(hooklist, hook_id);
 	g_return_if_fail(hook != NULL);
 
-	debug_print("unregisted hook %d in '%s'\n", hook->hook_id, hooklist_name);
+	debug_print("unregisted hook %lu in '%s'\n", hook->hook_id, hooklist_name);
 
 	g_hook_destroy(hooklist, hook_id);
 }

@@ -85,6 +85,7 @@
 #include "folderutils.h"
 #include "quicksearch.h"
 #include "partial_download.h"
+#include "timing.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -2129,10 +2130,11 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
-		GtkCTreeNode *node = NULL;
+	GtkCTreeNode *node = NULL;
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	GSList * cur;
+	START_TIMING("summary_set_ctree_from_list");
 	
 	if (!mlist) return;
 
@@ -2233,7 +2235,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
-
+	END_TIMING();
 }
 
 static gchar *summary_complete_address(const gchar *addr)
@@ -4739,12 +4741,31 @@ static void summary_create_processing_cb(SummaryView *summaryview,
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
+	GtkCTreeNode *node = NULL;
+	START_TIMING("summary_sort_by_column_click");
+	g_signal_handlers_block_by_func(G_OBJECT(summaryview->ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 	if (summaryview->sort_key == sort_key)
 		summary_sort(summaryview, sort_key,
 			     summaryview->sort_type == SORT_ASCENDING
 			     ? SORT_DESCENDING : SORT_ASCENDING);
 	else
 		summary_sort(summaryview, sort_key, SORT_ASCENDING);
+
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+
+	node = GTK_CTREE_NODE(GTK_CLIST(summaryview->ctree)->row_list);
+
+	while (prefs_common.bold_unread && node) {
+		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+		if (GTK_CTREE_ROW(node)->children)
+			summary_set_row_marks(summaryview, node);
+		node = next;
+	}
+	END_TIMING();
 }
 
 static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)

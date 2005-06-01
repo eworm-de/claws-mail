@@ -51,7 +51,6 @@
 #include "prefs_account.h"
 #include "prefs_common.h"
 
-#warning FIXME_GTK2
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)
 {

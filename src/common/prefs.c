@@ -206,7 +206,7 @@ gint prefs_file_close(PrefFile *pfile)
  */
 gint prefs_file_close_revert(PrefFile *pfile)
 {
-	gchar *tmppath;
+	gchar *tmppath = NULL;
 
 	g_return_val_if_fail(pfile != NULL, -1);
 

@@ -54,8 +54,6 @@ static Template *template_load(gchar *filename)
 	tmpl->value = NULL;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		gchar *tmp = NULL;
-
 		if (buf[0] == '\n')
 			break;
 		else if (!g_ascii_strncasecmp(buf, "Name:", 5))
