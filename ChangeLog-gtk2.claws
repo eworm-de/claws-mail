@@ -1,3 +1,9 @@
+2005-06-02 [colin]	1.9.11cvs33
+
+	* src/prefs_account.c
+		Fix bug #245 (filtering rules broken when
+		renaming a remote account (imap4 or nntp)
+
 2005-06-02 [colin]	1.9.11cvs32
 
 	* src/imap.c

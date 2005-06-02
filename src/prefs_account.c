@@ -2349,7 +2349,9 @@ static gint prefs_account_apply(void)
 	RecvProtocol protocol;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-
+	gchar *old_id = NULL;
+	gchar *new_id = NULL;
+	
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(basic.protocol_optmenu));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	protocol = GPOINTER_TO_INT
@@ -2402,8 +2404,23 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("mail command is not entered."));
 		return -1;
 	}
-
+	
+	if (protocol == A_IMAP4 || protocol == A_NNTP) 
+		old_id = g_strdup_printf("#%s/%s",
+				protocol == A_IMAP4 ? "imap":"nntp",
+				tmp_ac_prefs.account_name);
+	
 	prefs_set_data_from_dialog(param);
+	
+	if (protocol == A_IMAP4 || protocol == A_NNTP) {
+		new_id = g_strdup_printf("#%s/%s",
+				protocol == A_IMAP4 ? "imap":"nntp",
+				tmp_ac_prefs.account_name);
+		if (old_id != NULL && new_id != NULL)
+			prefs_filtering_rename_path(old_id, new_id);
+		g_free(old_id);
+		g_free(new_id);
+	}
 	return 0;
 }
 
