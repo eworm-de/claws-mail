@@ -319,7 +319,6 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
-void prefs_common_init		(void);
 void prefs_common_read_config	(void);
 void prefs_common_write_config	(void);
 void prefs_common_open		(void);

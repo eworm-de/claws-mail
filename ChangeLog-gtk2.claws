@@ -1,3 +1,10 @@
+2005-06-02 [colin]	1.9.11cvs34
+
+	* src/crash.c
+	* src/prefs_common.h
+		Fix build (prefs_common_init() doesn't exist
+		anymore)
+
 2005-06-02 [colin]	1.9.11cvs33
 
 	* src/prefs_account.c

@@ -148,7 +148,6 @@ void crash_main(const char *arg)
 	/*
 	 * try to get the settings
 	 */
-	prefs_common_init();
 	prefs_common_read_config();
 
 	crash_dialog_show(text, output->str);
