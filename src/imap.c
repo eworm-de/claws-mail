@@ -69,6 +69,7 @@ typedef struct _thread_data {
 	gchar *server;
 	gushort port;
 	gboolean done;
+	SockInfo *sock;
 #ifdef USE_OPENSSL
 	SSLType ssl_type;
 #endif
@@ -464,6 +465,53 @@ static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
 
 static FolderClass imap_class;
+
+#ifdef USE_PTHREAD
+void *imap_getline_thread(void *data)
+{
+	thread_data *td = (thread_data *)data;
+	gchar *line = NULL;
+	
+	line = sock_getline(td->sock);
+	
+	td->done = TRUE;
+	
+	return (void *)line;
+}
+#endif
+
+static gchar *imap_getline(SockInfo *sock)
+{
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	thread_data *td = g_new0(thread_data, 1);
+	pthread_t pt;
+	gchar *line;
+	td->sock = sock;
+	td->done = FALSE;
+	
+	debug_print("creating imap_getline_thread...\n");
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			imap_getline_thread, td) != 0) {
+		g_free(td);
+		return sock_getline(sock);
+	}
+	
+	debug_print("waiting for imap_getline_thread...\n");
+	while(!td->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, (void *)&line);
+	g_free(td);
+
+	debug_print("imap_getline_thread returned %s\n", line);
+	return line;
+#else
+	return sock_getline(sock);
+#endif
+}
 
 FolderClass *imap_get_class(void)
 {
@@ -1880,7 +1928,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		str = g_string_new(NULL);
 
 		for (;;) {
-			if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
+			if ((tmp = imap_getline(SESSION(session)->sock)) == NULL) {
 				log_warning(_("error occurred while getting envelope.\n"));
 				g_string_free(str, TRUE);
 				break;
@@ -2052,6 +2100,8 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_open_thread, td) != 0) {
 		statusbar_pop_all();
+		g_free(td->server);
+		g_free(td);
 #if USE_OPENSSL
 		return imap_open_blocking(server, port, ssl_type);
 #else
@@ -2288,7 +2338,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	/* read the next line if the current response buffer is empty */
 	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
-		if ((nextline = sock_getline(sock)) == NULL)
+		if ((nextline = imap_getline(sock)) == NULL)
 			return cur_pos;
 		g_string_assign(str, nextline);
 		cur_pos = str->str;
@@ -2321,7 +2371,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 		cur_pos = str->str;
 
 		do {
-			if ((nextline = sock_getline(sock)) == NULL)
+			if ((nextline = imap_getline(sock)) == NULL)
 				return cur_pos;
 			line_len += strlen(nextline);
 			g_string_append(str, nextline);
@@ -2364,7 +2414,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	cur_pos = str->str;
 
 	do {
-		if ((nextline = sock_getline(sock)) == NULL)
+		if ((nextline = imap_getline(sock)) == NULL)
 			return cur_pos;
 		block_len += strlen(nextline);
 		g_string_append(str, nextline);
@@ -2381,7 +2431,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 
 	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
-		if ((nextline = sock_getline(sock)) == NULL)
+		if ((nextline = imap_getline(sock)) == NULL)
 			return cur_pos;
 		g_string_assign(str, nextline);
 		cur_pos = str->str;
@@ -3365,7 +3415,7 @@ static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 
 static gint imap_gen_recv(IMAPSession *session, gchar **ret)
 {
-	if ((*ret = sock_getline(SESSION(session)->sock)) == NULL)
+	if ((*ret = imap_getline(SESSION(session)->sock)) == NULL)
 		return IMAP_SOCKET;
 
 	strretchomp(*ret);

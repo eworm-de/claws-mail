@@ -1,3 +1,15 @@
+2005-06-02 [colin]	1.9.11cvs35
+
+	* src/imap.c
+		Use a non-blocking imap_getline() if possible.
+		This should completely prevent the interface
+		from freezin on imap operations, although it
+		may do strange stuff in case of folder switching
+		while a big imap operation is taking place...
+
+		In addition, fix a leak in the case thread
+		creation fails on connection.
+
 2005-06-02 [colin]	1.9.11cvs34
 
 	* src/crash.c
