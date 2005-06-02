@@ -43,6 +43,7 @@
 #include "session.h"
 #include "procmsg.h"
 #include "imap.h"
+#include "imap_gtk.h"
 #include "socket.h"
 #include "ssl.h"
 #include "recv.h"
@@ -57,6 +58,23 @@
 #include "log.h"
 #include "remotefolder.h"
 #include "alertpanel.h"
+#include "sylpheed.h"
+#include "statusbar.h"
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
+
+#ifdef USE_PTHREAD
+typedef struct _thread_data {
+	gchar *server;
+	gushort port;
+	gboolean done;
+#ifdef USE_OPENSSL
+	SSLType ssl_type;
+#endif
+} thread_data;
+#endif
+
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -619,8 +637,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	
-	if (prefs_common.work_offline)
-		return NULL;
+	if (prefs_common.work_offline && !imap_gtk_should_override())
+			return NULL;
 
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {
@@ -674,6 +692,9 @@ static IMAPSession *imap_session_get(Folder *folder)
 				log_warning(_("IMAP4 connection to %s has been"
 					    " disconnected. Reconnecting...\n"),
 					    folder->account->recv_server);
+				statusbar_print_all(_("IMAP4 connection to %s has been"
+					    " disconnected. Reconnecting...\n"),
+					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				/* Clear folders session to make imap_session_get create
 				   a new session, because of rfolder->session == NULL
@@ -681,6 +702,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 				   endless loop */
 				rfolder->session = NULL;
 				session = imap_session_get(folder);
+				statusbar_pop_all();
 			}
 		}
 	}
@@ -1951,15 +1973,41 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 }
 
 
+#ifdef USE_PTHREAD
+void *imap_open_thread(void *data)
+{
+	SockInfo *sock = NULL;
+	thread_data *td = (thread_data *)data;
+	if ((sock = sock_connect(td->server, td->port)) == NULL) {
+		log_warning(_("Can't connect to IMAP4 server: %s:%d\n"),
+			    td->server, td->port);
+		td->done = TRUE;
+		return NULL;
+	}
+
 #if USE_OPENSSL
-static SockInfo *imap_open(const gchar *server, gushort port,
+	if (td->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
+		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
+			    td->server, td->port);
+		sock_close(sock);
+		sock = NULL;
+		td->done = TRUE;
+		return NULL;
+	}
+#endif
+	td->done = TRUE;
+	return sock;
+}
+#endif
+
+#if USE_OPENSSL
+static SockInfo *imap_open_blocking(const gchar *server, gushort port,
 			   SSLType ssl_type)
 #else
-static SockInfo *imap_open(const gchar *server, gushort port)
+static SockInfo *imap_open_blocking(const gchar *server, gushort port)
 #endif
 {
 	SockInfo *sock;
-
 	if ((sock = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to IMAP4 server: %s:%d\n"),
 			    server, port);
@@ -1971,10 +2019,67 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
 			    server, port);
 		sock_close(sock);
+		sock = NULL;
 		return NULL;
 	}
 #endif
 	return sock;
+}
+
+#if USE_OPENSSL
+static SockInfo *imap_open(const gchar *server, gushort port,
+			   SSLType ssl_type)
+#else
+static SockInfo *imap_open(const gchar *server, gushort port)
+#endif
+{
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	/* non blocking stuff */
+	thread_data *td = g_new0(thread_data, 1);
+	pthread_t pt;
+	SockInfo *sock = NULL;
+	
+#if USE_OPENSSL
+	td->ssl_type = ssl_type;
+#endif
+	td->server = g_strdup(server);
+	td->port = port;
+	td->done = FALSE;
+
+	statusbar_print_all(_("Connecting to IMAP4 server: %s..."), server);
+
+	debug_print("creating imap_open_thread...\n");
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			imap_open_thread, td) != 0) {
+		statusbar_pop_all();
+#if USE_OPENSSL
+		return imap_open_blocking(server, port, ssl_type);
+#else
+		return imap_open_blocking(server, port);
+#endif
+	}
+	
+	debug_print("waiting for imap_open_thread...\n");
+	while(!td->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, (void *)&sock);
+	g_free(td->server);
+	g_free(td);
+
+	debug_print("imap_open_thread returned %p\n", sock);
+	statusbar_pop_all();
+	return sock;
+#else
+#if USE_OPENSSL
+	return imap_open_blocking(server, port, ssl_type);
+#else
+	return imap_open_blocking(server, port);
+#endif
+#endif
 }
 
 #if USE_OPENSSL

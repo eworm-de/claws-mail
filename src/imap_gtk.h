@@ -20,6 +20,9 @@
 #ifndef IMAP_GTK_H
 #define IMAP_GTK_H
 
+#include <glib.h>
+
 void imap_gtk_init(void);
+gboolean imap_gtk_should_override(void);
 
 #endif /* IMAP_GTK_H */

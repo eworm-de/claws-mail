@@ -1,3 +1,19 @@
+2005-06-02 [colin]	1.9.11cvs32
+
+	* src/imap.c
+		Try to fix IMAP shortcomings: 
+		o Multithread imap_open()
+		o allow offline-mode overriding instead of
+		  just returning NULL
+	* src/imap_gtk.c
+	* src/imap_gtk.h
+		Add a function to ask whether we want to
+		override offline-mode for 10 minutes (one-shot
+		asking was painful)
+	* src/procheader.c
+		Fix segfault when imap parser isn't happy about
+		a missing {
+
 2005-06-01 [colin]	1.9.11cvs31
 
 	* src/addrharvest.c

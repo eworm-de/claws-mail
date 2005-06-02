@@ -27,6 +27,7 @@
 #include <glib/gi18n.h>
 
 #include <gtk/gtk.h>
+#include <time.h>
 
 #include "utils.h"
 #include "folder.h"
@@ -38,6 +39,7 @@
 #include "inputdialog.h"
 #include "imap.h"
 #include "inc.h"
+#include "prefs_common.h"
 
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void rename_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -371,16 +373,7 @@ static void download_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-#if 0
-	if (!prefs_common.online_mode) {
-		if (alertpanel(_("Offline"),
-			       _("You are offline. Go online?"),
-			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT)
-			main_window_toggle_online(folderview->mainwin, TRUE);
-		else
-			return;
-	}
-#endif
+
 	main_window_cursor_wait(mainwin);
 	inc_lock();
 	main_window_lock(mainwin);
@@ -400,4 +393,21 @@ static void download_cb(FolderView *folderview, guint action,
 	main_window_unlock(mainwin);
 	inc_unlock();
 	main_window_cursor_normal(mainwin);
+}
+
+gboolean imap_gtk_should_override(void)
+{
+	static time_t overridden = NULL;
+	if (prefs_common.work_offline) {
+		if (time(NULL) - overridden < 600)
+			 return TRUE;
+		else if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override during 10 minutes?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			return FALSE;
+
+		overridden = time(NULL);
+	}
+	return TRUE;
+	
 }

@@ -76,7 +76,7 @@ static gint string_get_one_field(gchar *buf, size_t len, char **str,
 
 static char *string_getline(char *buf, size_t len, char **str)
 {
-	if (!**str)
+	if (!*str || !**str)
 		return NULL;
 
 	for (; **str && len > 1; --len)
