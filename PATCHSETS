@@ -524,3 +524,4 @@
 ( cvs diff -u -r 1.105.2.24 -r 1.105.2.25 src/prefs_account.c;  ) > 1.9.11cvs33.patchset
 ( cvs diff -u -r 1.23.2.9 -r 1.23.2.10 src/crash.c;  cvs diff -u -r 1.103.2.19 -r 1.103.2.20 src/prefs_common.h;  ) > 1.9.11cvs34.patchset
 ( cvs diff -u -r 1.179.2.18 -r 1.179.2.19 src/imap.c;  ) > 1.9.11cvs35.patchset
+( cvs diff -u -r 1.53.2.10 -r 1.53.2.11 po/POTFILES.in;  ) > 1.9.11cvs36.patchset
