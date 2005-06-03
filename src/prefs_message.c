@@ -267,6 +267,8 @@ void prefs_message_save(PrefsPage *_page)
 		GTK_SPIN_BUTTON(page->spinbtn_linespc));
 	prefs_common.scroll_step = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_scrollstep));
+
+	main_window_reflect_prefs_all_real(FALSE);
 }
 
 static void prefs_message_destroy_widget(PrefsPage *_page)
