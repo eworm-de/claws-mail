@@ -1,3 +1,9 @@
+2005-06-03 [paul]	1.9.11cvs39
+
+	* src/compose.c
+		don't allow editing of mail while sending.
+		patch by Colin
+
 2005-06-03 [paul]	1.9.11cvs38
 
 	* src/folderview.c

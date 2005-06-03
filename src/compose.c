@@ -3157,7 +3157,7 @@ gint compose_send(Compose *compose)
 	val = compose_queue(compose, &msgnum, &folder);
 
 	if (val) {
-		alertpanel_error(_("Could not queue message for sending"));
+		alertpanel_error(_("Could not queue message for sending."));
 		goto bail;
 	}
 
@@ -3167,6 +3167,7 @@ gint compose_send(Compose *compose)
 		compose_close(compose);
 		/* No more compose access in the normal codepath 
 		 * after this point! */
+		compose = NULL;
 	}
 
 	if (msgnum == 0) {
@@ -6197,6 +6198,9 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 	menu_set_sensitive(ifactory, "/Options", allow);
 	menu_set_sensitive(ifactory, "/Tools", allow);
 	menu_set_sensitive(ifactory, "/Help", allow);
+	
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), allow);
+
 }
 
 static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
