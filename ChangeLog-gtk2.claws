@@ -1,3 +1,8 @@
+2005-06-03 [paul]	1.9.11cvs38
+
+	* src/folderview.c
+		add a freeze/thaw to speed up 'mark all read'
+
 2005-06-03 [paul]	1.9.11cvs37
 
 	* src/prefs_message.c

@@ -526,3 +526,4 @@
 ( cvs diff -u -r 1.179.2.18 -r 1.179.2.19 src/imap.c;  ) > 1.9.11cvs35.patchset
 ( cvs diff -u -r 1.53.2.10 -r 1.53.2.11 po/POTFILES.in;  ) > 1.9.11cvs36.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/prefs_message.c;  ) > 1.9.11cvs37.patchset
+( cvs diff -u -r 1.207.2.39 -r 1.207.2.40 src/folderview.c;  ) > 1.9.11cvs38.patchset
