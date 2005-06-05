@@ -2660,6 +2660,8 @@ static void show_all_header_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	if (mainwin->menu_lock_count) return;
+	mainwin->summaryview->messageview->all_headers = 
+			GTK_CHECK_MENU_ITEM(widget)->active;
 	summary_display_msg_selected(mainwin->summaryview,
 				     GTK_CHECK_MENU_ITEM(widget)->active);
 }

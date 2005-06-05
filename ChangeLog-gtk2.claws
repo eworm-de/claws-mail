@@ -1,3 +1,11 @@
+2005-06-05 [colin]	1.9.11cvs40
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.c
+		Fix bug #749 (Show all headers should be
+		sticky as the GUI suggests)
+
 2005-06-03 [paul]	1.9.11cvs39
 
 	* src/compose.c

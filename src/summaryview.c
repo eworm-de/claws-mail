@@ -4716,6 +4716,8 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
+	summaryview->messageview->all_headers = 
+			GTK_CHECK_MENU_ITEM(widget)->active;
 	summary_display_msg_selected(summaryview,
 				     GTK_CHECK_MENU_ITEM(widget)->active);
 }

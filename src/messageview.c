@@ -759,8 +759,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	headerview_show(messageview->headerview, messageview->msginfo);
 
-	messageview->all_headers = all_headers;
-	textview_set_all_headers(messageview->mimeview->textview, all_headers);
+	textview_set_all_headers(messageview->mimeview->textview, 
+			messageview->all_headers);
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	messageview_set_position(messageview, 0);
@@ -1381,6 +1381,8 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo = messageview->msginfo;
 
+	messageview->all_headers = 
+			GTK_CHECK_MENU_ITEM(widget)->active;
 	if (!msginfo) return;
 	messageview->msginfo = NULL;
 	messageview_show(messageview, msginfo,
