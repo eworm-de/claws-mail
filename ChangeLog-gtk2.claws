@@ -1,3 +1,17 @@
+2005-06-06 [colin]	1.9.11cvs42
+
+	* src/common/md5.c
+		Fix a warning
+	* src/summaryview.c
+	* src/folderview.c
+		Factorize long operations beginning and end
+		(locking, freezing/thawing, cursor, ...)
+		Check selection->data member in selection-
+		related loops; this avoids dying an awful
+		death if the selection changes on us while
+		we're marking a whole IMAP folder unread, 
+		for example.
+
 2005-06-06 [paul]	1.9.11cvs41
 
 	* src/textview.c

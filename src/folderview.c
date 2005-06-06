@@ -592,11 +592,15 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 	if (item == NULL)
 		return;
 
+	summary_lock(folderview->summaryview);
+	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item == item)
 		gtk_clist_freeze(GTK_CLIST(folderview->summaryview->ctree));
 	folderutils_mark_all_read(item);
 	if (folderview->summaryview->folder_item == item)
 		gtk_clist_thaw(GTK_CLIST(folderview->summaryview->ctree));
+	folder_item_update_thaw();
+	summary_unlock(folderview->summaryview);
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
