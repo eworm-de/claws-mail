@@ -1352,10 +1352,8 @@ void textview_write_link(TextView *textview, const gchar *str,
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
 		conv_utf8todisp(buf, sizeof(buf), str);
 
-	if (g_utf8_validate(buf, -1, NULL) == FALSE) {
-		g_free(buf);
+	if (g_utf8_validate(buf, -1, NULL) == FALSE)
 		return;
-	}
 
 	strcrchomp(buf);
 
