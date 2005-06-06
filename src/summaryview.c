@@ -1028,8 +1028,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					    messageview_is_visible(summaryview->messageview), 
 					    TRUE);
 			summary_lock(summaryview);
-		} else
+		} else {
+			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, FALSE, TRUE);
+			summary_lock(summaryview);
+		}
 	}
 
 	summary_set_column_titles(summaryview);

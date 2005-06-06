@@ -1,3 +1,9 @@
+2005-06-06 [colin]	1.9.11cvs43
+
+	* src/summaryview.c
+		Fix selection bug when prefs_common.open_unread 
+		is FALSE
+
 2005-06-06 [colin]	1.9.11cvs42
 
 	* src/common/md5.c
