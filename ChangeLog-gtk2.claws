@@ -1,3 +1,8 @@
+2005-06-07 [colin]	1.9.11cvs45
+
+	* src/summaryview.c
+		Add missing unlocks/locks
+
 2005-06-07 [paul]	1.9.11cvs44
 
 	* src/summaryview.c

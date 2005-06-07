@@ -993,7 +993,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						   displayed_msgnum);
 		if (!summaryview->displayed)
 			messageview_clear(summaryview->messageview);
+		summary_unlock(summaryview);
 		summary_select_by_msgnum(summaryview, selected_msgnum);
+		summary_lock(summaryview);
 		if (!summaryview->selected) {
 			/* no selected message - select first unread
 			   message, but do not display it */
@@ -1004,16 +1006,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					(ctree,
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CLIST(ctree)->rows - 1);
+			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, FALSE, TRUE);
+			summary_lock(summaryview);
 		}
 	} else {
 		/* select first unread message */
-#if 0
-		if (summaryview->sort_key == SORT_BY_SCORE)
-			node = summary_find_next_important_score(summaryview,
-								 NULL);
-		else
-#endif
 		node = summary_find_next_flagged_msg(summaryview, NULL,
 						     MSG_UNREAD, FALSE);
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
