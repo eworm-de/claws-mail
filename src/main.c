@@ -266,6 +266,9 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
+	g_thread_init(NULL);
+	gdk_threads_init();
+
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -273,11 +276,8 @@ int main(int argc, char *argv[])
 	gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
 	gtk_widget_set_default_visual(gdk_rgb_get_visual());
 
-#if USE_THREADS || USE_LDAP
-	g_thread_init(NULL);
 	if (!g_thread_supported())
 		g_error(_("g_thread is not supported by glib.\n"));
-#endif
 
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc-2.0",
