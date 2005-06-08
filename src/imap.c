@@ -410,10 +410,18 @@ static gint imap_cmd_close      (IMAPSession    *session);
 
 static gint imap_cmd_ok		(IMAPSession	*session,
 				 GPtrArray	*argbuf);
+static gint imap_cmd_ok_block	(IMAPSession	*session,
+				 GPtrArray	*argbuf);
 static void imap_gen_send	(IMAPSession	*session,
 				 const gchar	*format, ...);
 static gint imap_gen_recv	(IMAPSession	*session,
 				 gchar	       **ret);
+static gint imap_gen_recv_block	(IMAPSession	*session,
+				 gchar	       **ret);
+static gint imap_gen_recv_with_block	
+				(IMAPSession	*session,
+				 gchar	       **ret,
+				 gboolean	 block);
 
 /* misc utility functions */
 static gchar *strchr_cpy			(const gchar	*src,
@@ -3064,36 +3072,53 @@ static gint imap_cmd_search(IMAPSession *session, const gchar *criteria,
 	return IMAP_SUCCESS;
 }
 
-static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, 
-			   const gchar *filename)
+typedef struct _fetch_data {
+	IMAPSession *session;
+	guint32 uid;
+	const gchar *filename;
+	gboolean done;
+} fetch_data;
+
+static void *imap_cmd_fetch_thread(void *data)
 {
+	fetch_data *stuff = (fetch_data *)data;
+	IMAPSession *session = stuff->session;
+	guint32 uid = stuff->uid;
+	const gchar *filename = stuff->filename;
+	
 	gint ok;
 	gchar *buf = NULL;
 	gchar *cur_pos;
 	gchar size_str[32];
 	glong size_num;
 
-	g_return_val_if_fail(filename != NULL, IMAP_ERROR);
+	if (filename == NULL) {
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(IMAP_ERROR);
+	}
 
 	imap_gen_send(session, "UID FETCH %d BODY.PEEK[]", uid);
 
-	while ((ok = imap_gen_recv(session, &buf)) == IMAP_SUCCESS) {
+	while ((ok = imap_gen_recv_block(session, &buf)) == IMAP_SUCCESS) {
 		if (buf[0] != '*' || buf[1] != ' ') {
 			g_free(buf);
-			return IMAP_ERROR;
+			stuff->done = TRUE;
+			return GINT_TO_POINTER(IMAP_ERROR);
 		}
 		if (strstr(buf, "FETCH") != NULL) break;
 		g_free(buf);
 	}
 	if (ok != IMAP_SUCCESS) {
 		g_free(buf);
-		return ok;
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(ok);
 	}
 
 #define RETURN_ERROR_IF_FAIL(cond)	\
 	if (!(cond)) {			\
 		g_free(buf);		\
-		return IMAP_ERROR;	\
+		stuff->done = TRUE;	\
+		return GINT_TO_POINTER(IMAP_ERROR);	\
 	}
 
 	cur_pos = strchr(buf, '{');
@@ -3110,23 +3135,64 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	g_free(buf);
 
 	if (recv_bytes_write_to_file(SESSION(session)->sock,
-				     size_num, filename) != 0)
-		return IMAP_ERROR;
-
-	if (imap_gen_recv(session, &buf) != IMAP_SUCCESS) {
+				     size_num, filename) != 0) {
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(IMAP_ERROR);
+	}
+	if (imap_gen_recv_block(session, &buf) != IMAP_SUCCESS) {
 		g_free(buf);
-		return IMAP_ERROR;
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(IMAP_ERROR);
 	}
 
 	if (buf[0] == '\0' || buf[strlen(buf) - 1] != ')') {
 		g_free(buf);
-		return IMAP_ERROR;
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(IMAP_ERROR);
 	}
 	g_free(buf);
 
-	ok = imap_cmd_ok(session, NULL);
+	ok = imap_cmd_ok_block(session, NULL);
 
-	return ok;
+	stuff->done = TRUE;
+	return GINT_TO_POINTER(ok);
+}
+
+static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
+				const gchar *filename)
+{
+	fetch_data *data = g_new0(fetch_data, 1);
+	int result = 0;
+	void *tmp;
+#ifdef USE_PTHREAD
+	pthread_t pt;
+#endif
+	data->done = FALSE;
+	data->session = session;
+	data->uid = uid;
+	data->filename = filename;
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			imap_cmd_fetch_thread, data) != 0) {
+		result = GPOINTER_TO_INT(imap_cmd_fetch_thread(data));
+		g_free(data);
+		return result;
+	}
+	debug_print("waiting for imap_cmd_fetch_thread...\n");
+	while(!data->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+	debug_print("imap_cmd_fetch_thread done\n");
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, &tmp);
+	result = GPOINTER_TO_INT(tmp);
+#else
+	result = GPOINTER_TO_INT(imap_cmd_fetch_thread(data));
+#endif
+	g_free(data);
+	return result;
 }
 
 static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
@@ -3374,14 +3440,14 @@ static gint imap_cmd_close(IMAPSession *session)
 	return ok;
 }
 
-static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
+static gint imap_cmd_ok_with_block(IMAPSession *session, GPtrArray *argbuf, gboolean block)
 {
 	gint ok = IMAP_SUCCESS;
 	gchar *buf;
 	gint cmd_num;
 	gchar *data;
 
-	while ((ok = imap_gen_recv(session, &buf))
+	while ((ok = imap_gen_recv_with_block(session, &buf, block))
 	       == IMAP_SUCCESS) {
 		/* make sure data is long enough for any substring of buf */
 		data = alloca(strlen(buf) + 1);
@@ -3421,7 +3487,14 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 
 	return ok;
 }
-
+static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
+{
+	return imap_cmd_ok_with_block(session, argbuf, FALSE);
+}
+static gint imap_cmd_ok_block(IMAPSession *session, GPtrArray *argbuf)
+{
+	return imap_cmd_ok_with_block(session, argbuf, TRUE);
+}
 static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 {
 	gchar *buf;
@@ -3447,11 +3520,15 @@ static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 	g_free(buf);
 }
 
-static gint imap_gen_recv(IMAPSession *session, gchar **ret)
+static gint imap_gen_recv_with_block(IMAPSession *session, gchar **ret, gboolean block)
 {
-	if ((*ret = imap_getline(SESSION(session)->sock)) == NULL)
-		return IMAP_SOCKET;
-
+	if (!block) {
+		if ((*ret = imap_getline(SESSION(session)->sock)) == NULL)
+			return IMAP_SOCKET;
+	} else {
+		if ((*ret = sock_getline(SESSION(session)->sock)) == NULL)
+			return IMAP_SOCKET;
+	}
 	strretchomp(*ret);
 
 	log_print("IMAP4< %s\n", *ret);
@@ -3461,7 +3538,15 @@ static gint imap_gen_recv(IMAPSession *session, gchar **ret)
 	return IMAP_SUCCESS;
 }
 
+static gint imap_gen_recv_block(IMAPSession *session, gchar **ret)
+{
+	return imap_gen_recv_with_block(session, ret, TRUE);
+}
 
+static gint imap_gen_recv(IMAPSession *session, gchar **ret)
+{
+	return imap_gen_recv_with_block(session, ret, FALSE);
+}
 /* misc utility functions */
 
 static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)

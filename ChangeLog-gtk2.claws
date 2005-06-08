@@ -1,3 +1,8 @@
+2005-06-08 [colin]	1.9.11cvs53
+
+	* src/imap.c
+		Thread-ize imap_cmd_fetch
+
 2005-06-08 [colin]	1.9.11cvs52
 
 	* src/main.c
