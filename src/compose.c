@@ -197,6 +197,7 @@ static Compose *compose_create			(PrefsAccount	*account,
 
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
+static void compose_set_out_encoding		(Compose	*compose);
 static void compose_set_template_menu		(Compose	*compose);
 static void compose_template_apply		(Compose	*compose,
 						 Template	*tmpl,
@@ -357,6 +358,10 @@ static void compose_insert_sig_cb	(gpointer	 data,
 					 GtkWidget	*widget);
 
 static void compose_close_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+static void compose_set_encoding_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -669,7 +674,88 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Options/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Options/Priority/Highest"},
 	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Options/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Options/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+
+#define ENC_ACTION(action) \
+	NULL, compose_set_encoding_cb, action, \
+	"/Options/Character encoding/Automatic"
+
+	{N_("/_Options/Character _encoding"), NULL, NULL, 0, "<Branch>"},
+	{N_("/_Options/Character _encoding/_Automatic"),
+			NULL, compose_set_encoding_cb, C_AUTO, "<RadioItem>"},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/7bit ascii (US-ASC_II)"),
+	 ENC_ACTION(C_US_ASCII)},
+	{N_("/_Options/Character _encoding/Unicode (_UTF-8)"),
+	 ENC_ACTION(C_UTF_8)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Western European (ISO-8859-_1)"),
+	 ENC_ACTION(C_ISO_8859_1)},
+	{N_("/_Options/Character _encoding/Western European (ISO-8859-15)"),
+	 ENC_ACTION(C_ISO_8859_15)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Central European (ISO-8859-_2)"),
+	 ENC_ACTION(C_ISO_8859_2)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/_Baltic (ISO-8859-13)"),
+	 ENC_ACTION(C_ISO_8859_13)},
+	{N_("/_Options/Character _encoding/Baltic (ISO-8859-_4)"),
+	 ENC_ACTION(C_ISO_8859_4)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Greek (ISO-8859-_7)"),
+	 ENC_ACTION(C_ISO_8859_7)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Hebrew (ISO-8859-_8)"),
+	 ENC_ACTION(C_ISO_8859_8)},
+	{N_("/_Options/Character _encoding/Hebrew (Windows-1255)"),
+	 ENC_ACTION(C_WINDOWS_1255)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Turkish (ISO-8859-_9)"),
+	 ENC_ACTION(C_ISO_8859_9)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Cyrillic (ISO-8859-_5)"),
+	 ENC_ACTION(C_ISO_8859_5)},
+	{N_("/_Options/Character _encoding/Cyrillic (KOI8-_R)"),
+	 ENC_ACTION(C_KOI8_R)},
+	{N_("/_Options/Character _encoding/Cyrillic (KOI8-U)"),
+	 ENC_ACTION(C_KOI8_U)},
+	{N_("/_Options/Character _encoding/Cyrillic (Windows-1251)"),
+	 ENC_ACTION(C_WINDOWS_1251)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Japanese (ISO-2022-_JP)"),
+	 ENC_ACTION(C_ISO_2022_JP)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Simplified Chinese (_GB2312)"),
+	 ENC_ACTION(C_GB2312)},
+	{N_("/_Options/Character _encoding/Simplified Chinese (GBK)"),
+	 ENC_ACTION(C_GBK)},
+	{N_("/_Options/Character _encoding/Traditional Chinese (_Big5)"),
+	 ENC_ACTION(C_BIG5)},
+	{N_("/_Options/Character _encoding/Traditional Chinese (EUC-_TW)"),
+	 ENC_ACTION(C_EUC_TW)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Korean (EUC-_KR)"),
+	 ENC_ACTION(C_EUC_KR)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
+	{N_("/_Options/Character _encoding/Thai (TIS-620)"),
+	 ENC_ACTION(C_TIS_620)},
+	{N_("/_Options/Character _encoding/Thai (Windows-874)"),
+	 ENC_ACTION(C_WINDOWS_874)},
+
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -3453,7 +3539,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	} else {
 		const gchar *src_codeset;
 
-		out_codeset = conv_get_outgoing_charset_str();
+		out_codeset = conv_get_charset_str(compose->out_encoding);
+		if (!out_codeset)
+			out_codeset = conv_get_outgoing_charset_str();
+
 		if (!g_ascii_strcasecmp(out_codeset, CS_US_ASCII))
 			out_codeset = CS_ISO_8859_1;
 
@@ -5022,6 +5111,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->priority = PRIORITY_NORMAL;
 	compose_update_priority_menu_item(compose);
 
+	compose_set_out_encoding(compose);
+	
 	/* Actions menu */
 	compose_update_actions_menu(compose);
 
@@ -5189,6 +5280,41 @@ static void compose_update_privacy_system_menu_item(Compose * compose)
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
 }	
  
+static void compose_set_out_encoding(Compose *compose)
+{
+	GtkItemFactoryEntry *entry;
+	GtkItemFactory *ifactory;
+	CharSet out_encoding;
+	gchar *path, *p, *q;
+	GtkWidget *item;
+
+	out_encoding = conv_get_charset_from_str(prefs_common.outgoing_charset);
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
+	for (entry = compose_entries; entry->callback != compose_address_cb;
+	     entry++) {
+		if (entry->callback == compose_set_encoding_cb &&
+		    (CharSet)entry->callback_action == out_encoding) {
+			p = q = path = g_strdup(entry->path);
+			while (*p) {
+				if (*p == '_') {
+					if (p[1] == '_') {
+						p++;
+						*q++ = '_';
+					}
+				} else
+					*q++ = *p;
+				p++;
+			}
+			*q = '\0';
+			item = gtk_item_factory_get_item(ifactory, path);
+			gtk_widget_activate(item);
+			g_free(path);
+			break;
+		}
+	}
+}
+
 static void compose_set_template_menu(Compose *compose)
 {
 	GSList *tmpl_list, *cur;
@@ -6460,6 +6586,15 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 	compose_close(compose);
+}
+
+static void compose_set_encoding_cb(gpointer data, guint action,
+				    GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active)
+		compose->out_encoding = (CharSet)action;
 }
 
 static void compose_address_cb(gpointer data, guint action, GtkWidget *widget)

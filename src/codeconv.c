@@ -1364,14 +1364,6 @@ const gchar *conv_get_outgoing_charset_str(void)
 	CharSet out_charset;
 	const gchar *str;
 
-	if (prefs_common.outgoing_charset) {
-		if (!isalpha((guchar)prefs_common.outgoing_charset[0])) {
-			g_free(prefs_common.outgoing_charset);
-			prefs_common.outgoing_charset = g_strdup(CS_AUTO);
-		} else if (strcmp(prefs_common.outgoing_charset, CS_AUTO) != 0)
-			return prefs_common.outgoing_charset;
-	}
-
 	out_charset = conv_get_outgoing_charset();
 	str = conv_get_charset_str(out_charset);
 

@@ -1,3 +1,15 @@
+2005-06-08 [paul]	1.9.11cvs48
+
+	* src/codeconv.c
+		conv_get_outgoing_charset_str(): don't
+		use prefs_common setting
+	* src/compose.c
+	* src/compose.h
+		add /Options/Character encoding/... to
+		temporarily change the outgoing encoding
+
+	(belated sync with main)
+
 2005-06-08 [paul]	1.9.11cvs47
 
 	* src/compose.c

@@ -34,6 +34,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "undo.h"
 #include "toolbar.h"
 #include "messageview.h"
+#include "codeconv.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -171,6 +172,8 @@ struct _Compose
 	gboolean use_newsgroups;
 	gboolean use_followupto;
 	gboolean use_attach;
+
+	CharSet out_encoding;
 
 	/* privacy settings */
 	gboolean use_signing;
