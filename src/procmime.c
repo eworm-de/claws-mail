@@ -434,7 +434,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	}
 
 	if (encoding == ENC_BASE64) {
-		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+		gchar inbuf[B64_LINE_SIZE+1], outbuf[B64_BUFFSIZE];
 		FILE *tmp_fp = infp;
 		gchar *tmp_file = NULL;
 
@@ -1015,14 +1015,20 @@ GList *procmime_get_mime_type_list(void)
 	guchar *p;
 	gchar *delim;
 	MimeType *mime_type;
+	gboolean fp_is_glob_file = TRUE;
 
 	if (mime_type_list) 
 		return mime_type_list;
-
-	if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
-		if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) == NULL) {
-			FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
-			return NULL;
+	
+	if ((fp = fopen("/usr/share/mime/globs", "rb")) == NULL) {
+		fp_is_glob_file = FALSE;
+		if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
+			if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) 
+				== NULL) {
+				FILE_OP_ERROR(SYSCONFDIR "/mime.types", 
+					"fopen");
+				return NULL;
+			}
 		}
 	}
 
@@ -1032,7 +1038,13 @@ GList *procmime_get_mime_type_list(void)
 		g_strstrip(buf);
 
 		p = buf;
-		while (*p && !isspace(*p)) p++;
+		
+		if (fp_is_glob_file) {
+			while (*p && !isspace(*p) && (*p!=':')) p++;
+		} else {
+			while (*p && !isspace(*p)) p++;
+		}
+
 		if (*p) {
 			*p = '\0';
 			p++;
@@ -1045,7 +1057,12 @@ GList *procmime_get_mime_type_list(void)
 		mime_type->type = g_strdup(buf);
 		mime_type->sub_type = g_strdup(delim + 1);
 
-		while (*p && isspace(*p)) p++;
+		if (fp_is_glob_file) {
+			while (*p && (isspace(*p)||(*p=='*')||(*p=='.'))) p++;
+		} else {
+			while (*p && isspace(*p)) p++;
+		}
+
 		if (*p)
 			mime_type->extension = g_strdup(p);
 		else

@@ -41,7 +41,7 @@ typedef struct _LogText LogText;
 
 struct _LogText
 {
-	const gchar	*text;
+	gchar		*text;
 	LogType		 type;	
 };
 

@@ -397,7 +397,7 @@ static void download_cb(FolderView *folderview, guint action,
 
 gboolean imap_gtk_should_override(void)
 {
-	static time_t overridden = NULL;
+	static time_t overridden = 0;
 	if (prefs_common.work_offline) {
 		if (time(NULL) - overridden < 600)
 			 return TRUE;

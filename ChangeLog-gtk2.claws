@@ -1,3 +1,15 @@
+2005-06-08 [colin]	1.9.11cvs49
+
+	* src/imap_gtk.c
+		Warning fix
+	* src/procmime.c
+		Apply patch from gentoo to use /usr/share/mime/globs if 
+		available, after un-breaking it
+	* src/common/log.c
+	* src/common/log.h
+		Use g_timeout for invoking hooks that possibly use gtk
+		calls. This should leave gtk calls in the main thread.
+
 2005-06-08 [paul]	1.9.11cvs48
 
 	* src/codeconv.c

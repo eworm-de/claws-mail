@@ -32,6 +32,15 @@
 
 static FILE *log_fp = NULL;
 
+gboolean invoke_hook_cb (gpointer data)
+{
+	LogText *logtext = (LogText *)data;
+	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, logtext);
+	g_free(logtext->text);
+	g_free(logtext);
+	return FALSE;
+}
+
 void set_log_file(const gchar *filename)
 {
 	if (log_fp)
@@ -65,8 +74,8 @@ void log_print(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
-	LogText logtext;
-
+	LogText *logtext = g_new0(LogText, 1);
+	
 	time(&t);
 	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
@@ -75,9 +84,12 @@ void log_print(const gchar *format, ...)
 	va_end(args);
 
 	if (debug_get_mode()) fputs(buf, stdout);
-	logtext.text = buf;
-	logtext.type = LOG_NORMAL;
-	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
+
+	logtext->text = g_strdup(buf);
+	logtext->type = LOG_NORMAL;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+	
 	if (log_fp) {
 		fputs(buf, log_fp);
 		fflush(log_fp);
@@ -89,7 +101,7 @@ void log_message(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
-	LogText logtext;
+	LogText *logtext = g_new0(LogText, 1);
 
 	time(&t);
 	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -99,9 +111,11 @@ void log_message(const gchar *format, ...)
 	va_end(args);
 
 	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
-	logtext.text = buf + LOG_TIME_LEN;
-	logtext.type = LOG_MSG;
-	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_MSG;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
 	if (log_fp) {
 		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("* message: ", log_fp);
@@ -115,7 +129,7 @@ void log_warning(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
-	LogText logtext;
+	LogText *logtext = g_new0(LogText, 1);
 
 	time(&t);
 	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -125,9 +139,11 @@ void log_warning(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
-	logtext.text = buf + LOG_TIME_LEN;
-	logtext.type = LOG_WARN;
-	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_WARN;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
 	if (log_fp) {
 		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("** warning: ", log_fp);
@@ -141,7 +157,7 @@ void log_error(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
-	LogText logtext;
+	LogText *logtext = g_new0(LogText, 1);
 
 	time(&t);
 	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -151,9 +167,11 @@ void log_error(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
-	logtext.text = buf + LOG_TIME_LEN;
-	logtext.type = LOG_ERROR;
-	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_ERROR;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
 	if (log_fp) {
 		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("*** error: ", log_fp);
