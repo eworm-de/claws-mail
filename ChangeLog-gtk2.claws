@@ -1,3 +1,23 @@
+2005-06-08 [paul]	1.9.11cvs46
+
+	sync with main:
+	
+	* src/codeconv.c
+	* src/codeconv.h
+		always enabled Japanese auto-detection
+		if the first letters of locale string
+		is "ja"
+	* src/compose.c
+		don't use "destroy" signal to destroy
+		Compose object (fix rare crashes on discard?)
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_send.c
+		added Hebrew encodings
+	* src/sourcewindow.c
+		don't use "destroy" signal to destroy
+		objects
+
 2005-06-07 [colin]	1.9.11cvs45
 
 	* src/summaryview.c

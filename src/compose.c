@@ -373,8 +373,6 @@ static void compose_ext_editor_cb	(gpointer	 data,
 static gint compose_delete_cb		(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
-static void compose_destroy_cb		(GtkWidget	*widget,
-					 Compose	*compose);
 
 static void compose_undo_cb		(Compose	*compose);
 static void compose_redo_cb		(Compose	*compose);
@@ -4717,8 +4715,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(compose_delete_cb), compose);
-	g_signal_connect(G_OBJECT(window), "destroy",
-			 G_CALLBACK(compose_destroy_cb), compose);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_widget_realize(window);
 
@@ -5363,6 +5359,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 static void compose_destroy(Compose *compose)
 {
+	compose_list = g_list_remove(compose_list, compose);
+
 	/* NOTE: address_completion_end() does nothing with the window
 	 * however this may change. */
 	address_completion_end(compose->window);
@@ -5417,6 +5415,7 @@ static void compose_destroy(Compose *compose)
 		gtk_widget_destroy(compose->paned);
 	gtk_widget_destroy(compose->popupmenu);
 
+	gtk_widget_destroy(compose->window);
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
 	g_free(compose);
@@ -6502,13 +6501,6 @@ static void compose_ext_editor_cb(gpointer data, guint action,
 	compose_exec_ext_editor(compose);
 }
 
-static void compose_destroy_cb(GtkWidget *widget, Compose *compose)
-{
-	if (compose->sending)
-		return;
-	compose_destroy(compose);
-}
-
 static void compose_undo_cb(Compose *compose)
 {
 	gboolean prev_autowrap = compose->autowrap;
@@ -7385,7 +7377,7 @@ static void compose_close(Compose *compose)
 	gtkut_widget_get_uposition(compose->window, &x, &y);
 	prefs_common.compose_x = x;
 	prefs_common.compose_y = y;
-	gtk_widget_destroy(compose->window);
+	compose_destroy(compose);
 }
 
 /**

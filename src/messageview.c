@@ -64,8 +64,9 @@
 
 static GList *messageview_list = NULL;
 
-static void messageview_destroy_cb	(GtkWidget	*widget,
-					 MessageView	*messageview);
+static gint messageview_delete_cb	(GtkWidget		*widget,
+					 GdkEventAny		*event,
+					 MessageView		*messageview);
 static void messageview_size_allocate_cb(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
 static gboolean key_pressed		(GtkWidget	*widget,
@@ -195,6 +196,11 @@ static GtkItemFactoryEntry msgview_entries[] =
 	ENC_SEPARATOR,
 	{N_("/_View/Character _encoding/Greek (ISO-8859-_7)"),
 	 ENC_ACTION(C_ISO_8859_7)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Hebrew (ISO-8859-_8)"),
+	 ENC_ACTION(C_ISO_8859_8)},
+	{N_("/_View/Character _encoding/Hebrew (Windows-1255)"),
+	 ENC_ACTION(C_CP1255)},
 	ENC_SEPARATOR,
 	{N_("/_View/Character _encoding/Turkish (ISO-8859-_9)"),
 	 ENC_ACTION(C_ISO_8859_9)},
@@ -440,8 +446,8 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(messageview_size_allocate_cb),
 			 msgview);
-	g_signal_connect(G_OBJECT(window), "destroy",
-			 G_CALLBACK(messageview_destroy_cb), msgview);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(messageview_delete_cb), msgview);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), msgview);
 
@@ -831,6 +837,8 @@ void messageview_destroy(MessageView *messageview)
 	
 	msgview_list = g_list_remove(msgview_list, messageview); 
 
+	if (messageview->window)
+		gtk_widget_destroy(messageview->window);
 	g_free(messageview);
 }
 
@@ -1026,9 +1034,11 @@ void messageview_save_as(MessageView *messageview)
 	g_free(src);
 }
 
-static void messageview_destroy_cb(GtkWidget *widget, MessageView *messageview)
+static gint messageview_delete_cb(GtkWidget *widget, GdkEventAny *event,
+				  MessageView *messageview)
 {
 	messageview_destroy(messageview);
+	return TRUE;
 }
 
 static void messageview_size_allocate_cb(GtkWidget *widget,
@@ -1043,8 +1053,10 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			MessageView *messageview)
 {
-	if (event && event->keyval == GDK_Escape && messageview->window)
-		gtk_widget_destroy(messageview->window);
+	if (event && event->keyval == GDK_Escape && messageview->window) {
+		messageview_destroy(messageview);
+		return TRUE;
+	}
 	return FALSE;
 }
 
@@ -1315,7 +1327,7 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 static void close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	gtk_widget_destroy(messageview->window);
+	messageview_destroy(messageview);
 }
 
 static void copy_cb(gpointer data, guint action, GtkWidget *widget)

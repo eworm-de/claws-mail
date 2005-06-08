@@ -771,7 +771,7 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 
 	/* auto detection mode */
 	if (!src_charset_str && !dest_charset_str) {
-		if (src_charset == C_EUC_JP || src_charset == C_SHIFT_JIS)
+		if (conv_is_ja_locale())
 			return conv_anytodisp;
 		else
 			return conv_noconv;
@@ -1418,6 +1418,24 @@ const gchar *conv_get_current_locale(void)
 	return cur_locale;
 }
 
+gboolean conv_is_ja_locale(void)
+{
+	static gint is_ja_locale = -1;
+	const gchar *cur_locale;
+
+	if (is_ja_locale != -1)
+		return is_ja_locale != 0;
+
+	is_ja_locale = 0;
+	cur_locale = conv_get_current_locale();
+	if (cur_locale) {
+		if (g_strncasecmp(cur_locale, "ja", 2) == 0)
+			is_ja_locale = 1;
+	}
+
+	return is_ja_locale != 0;
+}
+
 gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding)
 {
 	gchar buf[BUFFSIZE];
@@ -1439,7 +1457,7 @@ gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding)
 		}
 	}
 
-	if (conv_get_locale_charset() == C_EUC_JP)
+	if (conv_is_ja_locale())
 		conv_anytodisp(buf, sizeof(buf), str);
 	else
 		conv_localetodisp(buf, sizeof(buf), str);
