@@ -540,3 +540,4 @@
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/imap_gtk.c;  cvs diff -u -r 1.49.2.45 -r 1.49.2.46 src/procmime.c;  cvs diff -u -r 1.6 -r 1.7 src/common/log.c;  cvs diff -u -r 1.4 -r 1.5 src/common/log.h;  ) > 1.9.11cvs49.patchset
 ( cvs diff -u -r 1.179.2.19 -r 1.179.2.20 src/imap.c;  ) > 1.9.11cvs50.patchset
 ( cvs diff -u -r 1.115.2.38 -r 1.115.2.39 src/main.c;  ) > 1.9.11cvs51.patchset
+( cvs diff -u -r 1.115.2.39 -r 1.115.2.40 src/main.c;  ) > 1.9.11cvs52.patchset
