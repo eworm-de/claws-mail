@@ -538,3 +538,4 @@
 ( cvs diff -u -r 1.382.2.128 -r 1.382.2.129 src/compose.c;  ) > 1.9.11cvs47.patchset
 ( cvs diff -u -r 1.65.2.30 -r 1.65.2.31 src/codeconv.c;  cvs diff -u -r 1.382.2.129 -r 1.382.2.130 src/compose.c;  cvs diff -u -r 1.50.2.8 -r 1.50.2.9 src/compose.h;  ) > 1.9.11cvs48.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/imap_gtk.c;  cvs diff -u -r 1.49.2.45 -r 1.49.2.46 src/procmime.c;  cvs diff -u -r 1.6 -r 1.7 src/common/log.c;  cvs diff -u -r 1.4 -r 1.5 src/common/log.h;  ) > 1.9.11cvs49.patchset
+( cvs diff -u -r 1.179.2.19 -r 1.179.2.20 src/imap.c;  ) > 1.9.11cvs50.patchset

@@ -1898,10 +1898,20 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-static GSList *imap_get_uncached_messages(IMAPSession *session,
-					  FolderItem *item,
-					  MsgNumberList *numlist)
+typedef struct _uncached_data {
+	IMAPSession *session;
+	FolderItem *item;
+	MsgNumberList *numlist;
+	gboolean done;
+} uncached_data;
+
+static void *imap_get_uncached_messages_thread(void *data)
 {
+	uncached_data *stuff = (uncached_data *)data;
+	IMAPSession *session = stuff->session;
+	FolderItem *item = stuff->item;
+	MsgNumberList *numlist = stuff->numlist;
+
 	gchar *tmp;
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
@@ -1910,10 +1920,11 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	GSList *seq_list, *cur;
 	IMAPSet imapset;
 
-	g_return_val_if_fail(session != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &imap_class, NULL);
+	if (session == NULL || item == NULL || item->folder == NULL
+	    || FOLDER_CLASS(item->folder) != &imap_class) {
+		stuff->done = TRUE;
+		return NULL;
+	}
 
 	seq_list = imap_get_seq_set_from_numlist(numlist);
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
@@ -1928,7 +1939,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		str = g_string_new(NULL);
 
 		for (;;) {
-			if ((tmp = imap_getline(SESSION(session)->sock)) == NULL) {
+			if ((tmp =sock_getline(SESSION(session)->sock)) == NULL) {
 				log_warning(_("error occurred while getting envelope.\n"));
 				g_string_free(str, TRUE);
 				break;
@@ -1975,8 +1986,45 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	imap_seq_set_free(seq_list);
 	
 	session_set_access_time(SESSION(session));
+	stuff->done = TRUE;
 
 	return newlist;
+}
+
+static GSList *imap_get_uncached_messages(IMAPSession *session,
+					FolderItem *item,
+					MsgNumberList *numlist)
+{
+	uncached_data *data = g_new0(uncached_data, 1);
+	GSList *result = NULL;
+#ifdef USE_PTHREAD
+	pthread_t pt;
+#endif
+	data->done = FALSE;
+	data->session = session;
+	data->item = item;
+	data->numlist = numlist;
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			imap_get_uncached_messages_thread, data) != 0) {
+		result = (GSList *)imap_get_uncached_messages_thread(data);
+		g_free(data);
+		return result;
+	}
+	debug_print("waiting for imap_get_uncached_messages_thread...\n");
+	while(!data->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+	debug_print("imap_get_uncached_messages_thread done\n");
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, (void *)&result);
+#else
+	result = (GSList *)imap_get_uncached_messages_thread(data);
+#endif
+	g_free(data);
+	return result;
 }
 
 static void imap_delete_all_cached_messages(FolderItem *item)
@@ -2414,7 +2462,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	cur_pos = str->str;
 
 	do {
-		if ((nextline = imap_getline(sock)) == NULL)
+		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
 		block_len += strlen(nextline);
 		g_string_append(str, nextline);
@@ -2424,14 +2472,15 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 		g_free(nextline);
 	} while (block_len < len);
 
-	debug_print("IMAP4< [contents of BODY.PEEK[HEADER.FIELDS (...)]]\n");
+	debug_print("IMAP4< [contents of RFC822.HEADER]\n");
 
 	*headers = g_strndup(cur_pos, len);
+	debug_print("IMAP4< %s ---\n", *headers);
 	cur_pos += len;
 
 	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
-		if ((nextline = imap_getline(sock)) == NULL)
+		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
 		g_string_assign(str, nextline);
 		cur_pos = str->str;
@@ -2533,24 +2582,10 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
 		} else if (!strncmp(cur_pos, "RFC822.SIZE ", 12)) {
 			cur_pos += 12;
 			size = strtol(cur_pos, &cur_pos, 10);
-		} else if (!strncmp(cur_pos, "BODY[HEADER.FIELDS ", 19)) {
+		} else if (!strncmp(cur_pos, "RFC822.HEADER ", 14)) {
 			gchar *headers;
 
-			cur_pos += 19;
-			if (*cur_pos != '(') {
-				g_warning("*cur_pos != '('\n");
-				procmsg_msginfo_free(msginfo);
-				return NULL;
-			}
-			cur_pos++;
-			PARSE_ONE_ELEMENT(')');
-			if (*cur_pos != ']') {
-				g_warning("*cur_pos != ']'\n");
-				procmsg_msginfo_free(msginfo);
-				return NULL;
-			}
-			cur_pos++;
-
+			cur_pos += 14;
 			cur_pos = imap_get_header(sock, cur_pos, &headers,
 						  line_str);
 			msginfo = procheader_parse_str(headers, flags, FALSE, FALSE);
@@ -3187,7 +3222,6 @@ static MsgNumberList *imapset_to_numlist(IMAPSet imapset)
 	
 	ranges = g_strsplit(imapset, ",", 0);
 	for (range = ranges; *range != NULL; range++) {
-		printf("%s\n", *range);
 		if (sscanf(*range, "%u:%u", &low, &high) == 1)
 			uids = g_slist_prepend(uids, GINT_TO_POINTER(low));
 		else {
@@ -3291,8 +3325,8 @@ gint imap_cmd_envelope(IMAPSession *session, IMAPSet set)
 	}
 
 	imap_gen_send
-		(session, "UID FETCH %s (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
-		 set, header_fields->str);
+		(session, "UID FETCH %s (UID FLAGS RFC822.SIZE RFC822.HEADER)",
+		 set);
 
 	return IMAP_SUCCESS;
 }
