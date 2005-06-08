@@ -1,3 +1,9 @@
+2005-06-08 [paul]	1.9.11cvs47
+
+	* src/compose.c
+		correction to/completion of last
+		sync with main
+
 2005-06-08 [paul]	1.9.11cvs46
 
 	sync with main:

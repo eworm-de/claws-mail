@@ -5419,8 +5419,6 @@ static void compose_destroy(Compose *compose)
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
 	g_free(compose);
-
-	compose_list = g_list_remove(compose_list, compose);
 }
 
 static void compose_attach_info_free(AttachInfo *ainfo)
