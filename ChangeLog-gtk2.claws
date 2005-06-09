@@ -1,3 +1,14 @@
+2005-06-09 [colin]	1.9.11cvs54
+
+	* src/imap.c
+		o add a bit of status output
+		o remove some dead code
+		o threadize get_list_of_uids
+		o threadize imap_get_flags
+		o defer flag changing by 500ms so that they
+		  can be batched
+
+
 2005-06-08 [colin]	1.9.11cvs53
 
 	* src/imap.c
