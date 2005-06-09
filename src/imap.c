@@ -722,8 +722,9 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	
-	if (prefs_common.work_offline && !imap_gtk_should_override())
-			return NULL;
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		return NULL;
+	}
 
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {
@@ -2044,6 +2045,12 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	data->session = session;
 	data->item = item;
 	data->numlist = numlist;
+
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		g_free(data);
+		return NULL;
+	}
+
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_get_uncached_messages_thread, data) != 0) {
@@ -3203,6 +3210,12 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	data->session = session;
 	data->uid = uid;
 	data->filename = filename;
+
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		g_free(data);
+		return -1;
+	}
+
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_cmd_fetch_thread, data) != 0) {
@@ -4034,6 +4047,12 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	data->folder = folder;
 	data->item = item;
 	data->msgnum_list = msgnum_list;
+
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		g_free(data);
+		return -1;
+	}
+
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			get_list_of_uids_thread, data) != 0) {
@@ -4600,6 +4619,12 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	data->item = item;
 	data->msginfo_list = msginfo_list;
 	data->msgflags = msgflags;
+
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		g_free(data);
+		return -1;
+	}
+
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_get_flags_thread, data) != 0) {
