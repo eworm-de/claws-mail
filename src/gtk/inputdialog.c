@@ -353,6 +353,11 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 	if (event && event->keyval == GDK_Escape) {
 		ack = FALSE;
 		fin = TRUE;
+	} else if (event && event->keyval == GDK_Return) {
+		ack = TRUE;
+		fin = TRUE;
+		return TRUE; /* do not let Return pass - it
+			      * pops up the combo on validating */
 	}
 
 	return FALSE;

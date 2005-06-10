@@ -299,6 +299,10 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 			session->max_message_size = atoi(p);
 			session->esmtp_flags |= ESMTP_SIZE;
 		}
+		if (g_ascii_strncasecmp(p, "STARTTLS", 8) == 0) {
+			p += 9;
+			session->avail_auth_type |= SMTPAUTH_TLS_AVAILABLE;
+		}
 		return SM_OK;
 	} else if ((msg[0] == '1' || msg[0] == '2' || msg[0] == '3') &&
 	    (msg[3] == ' ' || msg[3] == '\0'))
@@ -597,8 +601,16 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		}
 #endif
 		if (smtp_session->user) {
-			if (smtp_auth(smtp_session) != SM_OK)
-				smtp_from(smtp_session);
+			if (smtp_auth(smtp_session) != SM_OK) {
+#if USE_OPENSSL
+				if (session->ssl_type == SSL_NONE
+				&&  smtp_session->tls_init_done == FALSE
+				&&  (smtp_session->avail_auth_type & SMTPAUTH_TLS_AVAILABLE))
+					smtp_starttls(smtp_session);
+				else
+#endif
+					smtp_from(smtp_session);
+			}
 		} else
 			smtp_from(smtp_session);
 		break;

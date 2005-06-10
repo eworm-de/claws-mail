@@ -434,7 +434,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	}
 
 	if (encoding == ENC_BASE64) {
-		gchar inbuf[B64_LINE_SIZE+1], outbuf[B64_BUFFSIZE];
+		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
 		FILE *tmp_fp = infp;
 		gchar *tmp_file = NULL;
 
@@ -458,6 +458,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				gchar *out = canonicalize_str(mimeinfo->data.mem);
 				fclose(infp);
 				infp = str_open_as_stream(out);
+				tmp_fp = infp;
 				g_free(out);
 				if (infp == NULL)
 					return FALSE;

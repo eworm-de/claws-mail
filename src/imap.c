@@ -521,7 +521,7 @@ static gchar *imap_getline(SockInfo *sock)
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
-	debug_print("---imap_getline_thread done %s\n");
+	debug_print("---imap_getline_thread done\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, (void *)&line);
@@ -2075,16 +2075,6 @@ void *imap_open_thread(void *data)
 		return NULL;
 	}
 
-#if USE_OPENSSL
-	if (td->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
-			    td->server, td->port);
-		sock_close(sock);
-		sock = NULL;
-		td->done = TRUE;
-		return NULL;
-	}
-#endif
 	td->done = TRUE;
 	return sock;
 }
@@ -2158,6 +2148,16 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, (void *)&sock);
+#if USE_OPENSSL
+	if (sock && td->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
+		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
+			    td->server, td->port);
+		sock_close(sock);
+		sock = NULL;
+		td->done = TRUE;
+		return NULL;
+	}
+#endif
 	g_free(td->server);
 	g_free(td);
 

@@ -1,3 +1,21 @@
+2005-06-10 [colin]	1.9.11cvs57
+
+	* src/imap.c
+		o Fix a format string error
+		o init ssl socket outside of the thread 
+		  (it possibly invokes gtk calls)
+	* src/procmime.c
+		o Put back the buffer to its necessary size
+		o Fix changing a file pointer without keeping
+		  track of it (thanks Valgrind)
+	* src/common/smtp.c
+		o Fix automatic STARTTLS if login should be done
+		  and the server only allows it after starting TLS
+	* src/gtk/gtkinputdialog.c
+		o Eat GDK_Return so that the combo popup doesn't 
+		  appear when we press Enter to validate the combo
+		  input dialog (as seen in the Open with... dialog)
+
 2005-06-10 [colin]	1.9.11cvs56
 
 	* src/imap.c
