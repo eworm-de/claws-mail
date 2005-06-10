@@ -510,24 +510,23 @@ static gchar *imap_getline(SockInfo *sock)
 	td->sock = sock;
 	td->done = FALSE;
 	
-	debug_print("creating imap_getline_thread...\n");
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_getline_thread, td) != 0) {
 		g_free(td);
 		return sock_getline(sock);
 	}
 	
-	debug_print("waiting for imap_getline_thread...\n");
+	debug_print("+++waiting for imap_getline_thread...\n");
 	while(!td->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
+	debug_print("---imap_getline_thread done %s\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, (void *)&line);
 	g_free(td);
 
-	debug_print("imap_getline_thread returned %s\n", line);
 	return line;
 #else
 	return sock_getline(sock);
@@ -585,7 +584,8 @@ static gchar *get_seq_set_from_seq_list(GSList *seq_list)
 	for (cur = seq_list; cur != NULL; cur = cur->next) {
 		tmp = val?g_strdup(val):NULL;
 		g_free(val);
-		val = g_strconcat(tmp?tmp:"", tmp?",":"",(gchar *)cur->data);
+		val = g_strconcat(tmp?tmp:"", tmp?",":"",(gchar *)cur->data,
+				  NULL);
 		g_free(tmp);
 	}
 	return val;
@@ -957,6 +957,7 @@ static gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 		return NULL;
 	}
 
+printf("fetching messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS) {
@@ -1177,60 +1178,6 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	procmsg_message_file_list_free(file_list);
 
 	return ret;
-}
-
-static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
-{
-	gint ok;
-	IMAPSession *session;
-	gchar *dir;
-	MsgNumberList numlist;
-	
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
-	g_return_val_if_fail(item != NULL, -1);
-
-	session = imap_session_get(folder);
-	if (!session) return -1;
-
-	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 NULL, NULL, NULL, NULL, FALSE);
-	if (ok != IMAP_SUCCESS)
-		return ok;
-
-	numlist.next = NULL;
-	numlist.data = GINT_TO_POINTER(uid);
-	
-	ok = imap_set_message_flags
-		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
-		&numlist, IMAP_FLAG_DELETED, TRUE);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: %d\n"), uid);
-		return ok;
-	}
-
-	if (!session->uidplus) {
-		ok = imap_cmd_expunge(session, NULL);
-	} else {
-		gchar *uidstr;
-
-		uidstr = g_strdup_printf("%u", uid);
-		ok = imap_cmd_expunge(session, uidstr);
-		g_free(uidstr);
-	}
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
-		return ok;
-	}
-
-	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
-	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);
-	dir = folder_item_get_path(item);
-	if (is_dir_exist(dir))
-		remove_numbered_files(dir, uid, uid);
-	g_free(dir);
-
-	return IMAP_SUCCESS;
 }
 
 static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
@@ -2058,12 +2005,12 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		g_free(data);
 		return result;
 	}
-	debug_print("waiting for imap_get_uncached_messages_thread...\n");
+	debug_print("+++waiting for imap_get_uncached_messages_thread...\n");
 	while(!data->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
-	debug_print("imap_get_uncached_messages_thread done\n");
+	debug_print("---imap_get_uncached_messages_thread done\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, (void *)&result);
@@ -2191,7 +2138,6 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 
 	statusbar_print_all(_("Connecting to IMAP4 server: %s..."), server);
 
-	debug_print("creating imap_open_thread...\n");
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_open_thread, td) != 0) {
 		statusbar_pop_all();
@@ -2204,7 +2150,7 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
 	}
 	
-	debug_print("waiting for imap_open_thread...\n");
+	debug_print("+++waiting for imap_open_thread...\n");
 	while(!td->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
@@ -2215,7 +2161,7 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 	g_free(td->server);
 	g_free(td);
 
-	debug_print("imap_open_thread returned %p\n", sock);
+	debug_print("---imap_open_thread returned %p\n", sock);
 	statusbar_pop_all();
 	return sock;
 #else
@@ -2522,7 +2468,6 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	debug_print("IMAP4< [contents of RFC822.HEADER]\n");
 
 	*headers = g_strndup(cur_pos, len);
-	debug_print("IMAP4< %s ---\n", *headers);
 	cur_pos += len;
 
 	while (isspace(*(guchar *)cur_pos)) cur_pos++;
@@ -2703,6 +2648,33 @@ static gint imap_set_message_flags(IMAPSession *session,
 	return ok;
 }
 
+typedef struct _select_data {
+	IMAPSession *session;
+	gchar *real_path;
+	gint *exists;
+	gint *recent;
+	gint *unseen;
+	guint32 *uid_validity;
+	gboolean done;
+} select_data;
+
+static void *imap_select_thread(void *data)
+{
+	select_data *stuff = (select_data *)data;
+	IMAPSession *session = stuff->session;
+	gchar *real_path = stuff->real_path;
+	gint *exists = stuff->exists;
+	gint *recent = stuff->recent;
+	gint *unseen = stuff->unseen;
+	guint32 *uid_validity = stuff->uid_validity;
+	gint ok;
+	
+	ok = imap_cmd_select(session, real_path,
+			     exists, recent, unseen, uid_validity, TRUE);
+	stuff->done = TRUE;
+	return GINT_TO_POINTER(ok);
+}
+		
 static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 			const gchar *path,
 			gint *exists, gint *recent, gint *unseen,
@@ -2712,7 +2684,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	gint ok;
 	gint exists_, recent_, unseen_;
 	guint32 uid_validity_;
-
+	
 	if (!exists || !recent || !unseen || !uid_validity) {
 		if (session->mbox && strcmp(session->mbox, path) == 0)
 			return IMAP_SUCCESS;
@@ -2726,8 +2698,45 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	session->mbox = NULL;
 
 	real_path = imap_get_real_path(folder, path);
+	
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	if (block == FALSE) {
+		select_data *data = g_new0(select_data, 1);
+		void *tmp;
+		pthread_t pt;
+		data->session = session;
+		data->real_path = real_path;
+		data->exists = exists;
+		data->recent = recent;
+		data->unseen = unseen;
+		data->uid_validity = uid_validity;
+		data->done = FALSE;
+		
+		if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+				imap_select_thread, data) != 0) {
+			ok = GPOINTER_TO_INT(imap_select_thread(data));
+			g_free(data);
+		} else {
+			debug_print("+++waiting for imap_select_thread...\n");
+			while(!data->done) {
+				/* don't let the interface freeze while waiting */
+				sylpheed_do_idle();
+			}
+			debug_print("---imap_select_thread done\n");
+
+			/* get the thread's return value and clean its resources */
+			pthread_join(pt, &tmp);
+			ok = GPOINTER_TO_INT(tmp);
+			g_free(data);
+		}
+	} else {
+		ok = imap_cmd_select(session, real_path,
+			     exists, recent, unseen, uid_validity, block);
+	}
+#else
 	ok = imap_cmd_select(session, real_path,
 			     exists, recent, unseen, uid_validity, block);
+#endif
 	if (ok != IMAP_SUCCESS)
 		log_warning(_("can't select folder: %s\n"), real_path);
 	else {
@@ -3223,12 +3232,12 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 		g_free(data);
 		return result;
 	}
-	debug_print("waiting for imap_cmd_fetch_thread...\n");
+	debug_print("+++waiting for imap_cmd_fetch_thread...\n");
 	while(!data->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
-	debug_print("imap_cmd_fetch_thread done\n");
+	debug_print("---imap_cmd_fetch_thread done\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &tmp);
@@ -4060,12 +4069,12 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 		g_free(data);
 		return result;
 	}
-	debug_print("waiting for get_list_of_uids_thread...\n");
+	debug_print("+++waiting for get_list_of_uids_thread...\n");
 	while(!data->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
-	debug_print("get_list_of_uids_thread done\n");
+	debug_print("---get_list_of_uids_thread done\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &tmp);
@@ -4222,6 +4231,7 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
+printf("getting msginfos\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS)
@@ -4352,7 +4362,21 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 	data->msglist = g_slist_reverse(data->msglist);
 	
 	imap_set_message_flags(data->session, data->msglist, flags_value, flags_set);
-	
+
+	if (flags_value == IMAP_FLAG_DELETED && flags_set == TRUE) {
+		if (!data->session->uidplus) {
+			imap_cmd_expunge(data->session, NULL);
+		} else {
+			GSList *seq_list;
+			IMAPSet imapset;
+			seq_list = imap_get_seq_set_from_numlist(data->msglist);
+			imapset = get_seq_set_from_seq_list(seq_list);
+
+			imap_cmd_expunge(data->session, imapset);
+			g_free(imapset);
+			g_free(seq_list);
+		}
+	}
 	g_slist_free(data->msglist);	
 	g_free(data);
 	return TRUE;
@@ -4391,7 +4415,7 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 
 	session = imap_session_get(folder);
 	if (!session) return;
-
+printf("changing flags\n");
 	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS)
 		return;
@@ -4453,6 +4477,59 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	hashtable_process_tag = gtk_timeout_add(500, process_hashtable, NULL);
 	
 	return;
+}
+
+static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
+{
+	gint ok;
+	IMAPSession *session;
+	gchar *dir;
+	MsgNumberList numlist;
+	hashtable_data *ht_data;
+	
+	if (!flags_set_table) {
+		flags_set_table = g_hash_table_new(NULL, g_direct_equal);
+	}
+	if (!flags_unset_table) {
+		flags_unset_table = g_hash_table_new(NULL, g_direct_equal);
+	}
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
+	g_return_val_if_fail(item != NULL, -1);
+
+	session = imap_session_get(folder);
+	if (!session) return -1;
+
+printf("removing messages\n");
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 NULL, NULL, NULL, NULL, FALSE);
+	if (ok != IMAP_SUCCESS)
+		return ok;
+
+	ht_data = g_hash_table_lookup(flags_set_table, GINT_TO_POINTER(IMAP_FLAG_DELETED));
+	if (ht_data == NULL) {
+		ht_data = g_new0(hashtable_data, 1);
+		ht_data->session = session;
+		g_hash_table_insert(flags_set_table, GINT_TO_POINTER(IMAP_FLAG_DELETED), ht_data);
+	}
+	if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(uid)))
+		ht_data->msglist = g_slist_prepend(ht_data->msglist, 
+				GINT_TO_POINTER(uid));
+	
+	if (hashtable_process_tag != -1)
+		gtk_timeout_remove(hashtable_process_tag);
+		
+	hashtable_process_tag = gtk_timeout_add(500, process_hashtable, NULL);
+
+	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
+	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);
+	dir = folder_item_get_path(item);
+	if (is_dir_exist(dir))
+		remove_numbered_files(dir, uid, uid);
+	g_free(dir);
+
+	return IMAP_SUCCESS;
 }
 
 static gint compare_msginfo(gconstpointer a, gconstpointer b)
@@ -4632,12 +4709,12 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 		g_free(data);
 		return result;
 	}
-	debug_print("waiting for imap_get_flags_thread...\n");
+	debug_print("+++waiting for imap_get_flags_thread...\n");
 	while(!data->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
 	}
-	debug_print("imap_get_flags_thread done\n");
+	debug_print("---imap_get_flags_thread done\n");
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &tmp);

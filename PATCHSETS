@@ -544,3 +544,4 @@
 ( cvs diff -u -r 1.179.2.20 -r 1.179.2.21 src/imap.c;  ) > 1.9.11cvs53.patchset
 ( cvs diff -u -r 1.179.2.21 -r 1.179.2.22 src/imap.c;  ) > 1.9.11cvs54.patchset
 ( cvs diff -u -r 1.179.2.22 -r 1.179.2.23 src/imap.c;  ) > 1.9.11cvs55.patchset
+( cvs diff -u -r 1.179.2.23 -r 1.179.2.24 src/imap.c;  ) > 1.9.11cvs56.patchset

@@ -1,3 +1,13 @@
+2005-06-10 [colin]	1.9.11cvs56
+
+	* src/imap.c
+		o A bit less debug
+		o Fix a crash on deletion
+		o Threadize imap_select (it's called outside of 
+		  threads)
+		o Defer treatment of DELETED flags
+
+
 2005-06-09 [colin]	1.9.11cvs55
 
 	* src/imap.c
