@@ -546,3 +546,4 @@
 ( cvs diff -u -r 1.179.2.22 -r 1.179.2.23 src/imap.c;  ) > 1.9.11cvs55.patchset
 ( cvs diff -u -r 1.179.2.23 -r 1.179.2.24 src/imap.c;  ) > 1.9.11cvs56.patchset
 ( cvs diff -u -r 1.179.2.24 -r 1.179.2.25 src/imap.c;  cvs diff -u -r 1.49.2.46 -r 1.49.2.47 src/procmime.c;  cvs diff -u -r 1.11.2.11 -r 1.11.2.12 src/common/smtp.c;  cvs diff -u -r 1.2.2.8 -r 1.2.2.9 src/gtk/inputdialog.c;  ) > 1.9.11cvs57.patchset
+( cvs diff -u -r 1.179.2.25 -r 1.179.2.26 src/imap.c;  ) > 1.9.11cvs58.patchset

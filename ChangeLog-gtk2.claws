@@ -1,3 +1,14 @@
+2005-06-11 [colin]	1.9.11cvs58
+
+	* src/imap.c
+		o Fix build without USE_PTHREAD
+		o Factorize imap_open
+		o Alertpanel in case of impossible connection
+		o Alertpanel in case of impossible login
+		o Fix deferred flags processing to force a 
+		  flush before adding some more flags to process,
+		  but in another folder.
+
 2005-06-10 [colin]	1.9.11cvs57
 
 	* src/imap.c

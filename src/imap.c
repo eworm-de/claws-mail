@@ -60,22 +60,10 @@
 #include "alertpanel.h"
 #include "sylpheed.h"
 #include "statusbar.h"
+
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
-
-#ifdef USE_PTHREAD
-typedef struct _thread_data {
-	gchar *server;
-	gushort port;
-	gboolean done;
-	SockInfo *sock;
-#ifdef USE_OPENSSL
-	SSLType ssl_type;
-#endif
-} thread_data;
-#endif
-
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -483,6 +471,15 @@ static gchar *imap_item_get_path		(Folder		*folder,
 
 static FolderClass imap_class;
 
+typedef struct _thread_data {
+	gchar *server;
+	gushort port;
+	gboolean done;
+	SockInfo *sock;
+#ifdef USE_OPENSSL
+	SSLType ssl_type;
+#endif
+} thread_data;
 
 #ifdef USE_PTHREAD
 void *imap_getline_thread(void *data)
@@ -917,6 +914,9 @@ static void imap_session_authenticate(IMAPSession *session,
 	if (imap_auth(session, account->userid, pass, account->imap_auth_type) != IMAP_SUCCESS) {
 		imap_cmd_logout(session);
 		statusbar_pop_all();
+		alertpanel_error(_("Can't authenticate on IMAP4 server: %s"),
+				 account->recv_server);
+		
 		return;
 	}
 	statusbar_pop_all();
@@ -2062,8 +2062,6 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 #endif
 }
 
-
-#ifdef USE_PTHREAD
 void *imap_open_thread(void *data)
 {
 	SockInfo *sock = NULL;
@@ -2078,33 +2076,6 @@ void *imap_open_thread(void *data)
 	td->done = TRUE;
 	return sock;
 }
-#endif
-
-#if USE_OPENSSL
-static SockInfo *imap_open_blocking(const gchar *server, gushort port,
-			   SSLType ssl_type)
-#else
-static SockInfo *imap_open_blocking(const gchar *server, gushort port)
-#endif
-{
-	SockInfo *sock;
-	if ((sock = sock_connect(server, port)) == NULL) {
-		log_warning(_("Can't connect to IMAP4 server: %s:%d\n"),
-			    server, port);
-		return NULL;
-	}
-
-#if USE_OPENSSL
-	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
-			    server, port);
-		sock_close(sock);
-		sock = NULL;
-		return NULL;
-	}
-#endif
-	return sock;
-}
 
 #if USE_OPENSSL
 static SockInfo *imap_open(const gchar *server, gushort port,
@@ -2113,12 +2084,12 @@ static SockInfo *imap_open(const gchar *server, gushort port,
 static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
 {
-#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
-	/* non blocking stuff */
 	thread_data *td = g_new0(thread_data, 1);
+#if USE_PTHREAD
 	pthread_t pt;
+#endif
 	SockInfo *sock = NULL;
-	
+
 #if USE_OPENSSL
 	td->ssl_type = ssl_type;
 #endif
@@ -2128,26 +2099,24 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 
 	statusbar_print_all(_("Connecting to IMAP4 server: %s..."), server);
 
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_open_thread, td) != 0) {
 		statusbar_pop_all();
-		g_free(td->server);
-		g_free(td);
-#if USE_OPENSSL
-		return imap_open_blocking(server, port, ssl_type);
-#else
-		return imap_open_blocking(server, port);
-#endif
-	}
-	
-	debug_print("+++waiting for imap_open_thread...\n");
-	while(!td->done) {
-		/* don't let the interface freeze while waiting */
-		sylpheed_do_idle();
-	}
+		sock = imap_open_thread(td);
+	} else {	
+		debug_print("+++waiting for imap_open_thread...\n");
+		while(!td->done) {
+			/* don't let the interface freeze while waiting */
+			sylpheed_do_idle();
+		}
 
-	/* get the thread's return value and clean its resources */
-	pthread_join(pt, (void *)&sock);
+		/* get the thread's return value and clean its resources */
+		pthread_join(pt, (void *)&sock);
+	}
+#else
+	sock = imap_open_thread(td);
+#endif
 #if USE_OPENSSL
 	if (sock && td->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
@@ -2155,7 +2124,6 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 		sock_close(sock);
 		sock = NULL;
 		td->done = TRUE;
-		return NULL;
 	}
 #endif
 	g_free(td->server);
@@ -2163,14 +2131,13 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 
 	debug_print("---imap_open_thread returned %p\n", sock);
 	statusbar_pop_all();
+
+	if(!sock && !prefs_common.no_recv_err_panel) {
+		alertpanel_error(_("Can't connect to IMAP4 server: %s:%d"),
+				 server, port);
+	}
+
 	return sock;
-#else
-#if USE_OPENSSL
-	return imap_open_blocking(server, port, ssl_type);
-#else
-	return imap_open_blocking(server, port);
-#endif
-#endif
 }
 
 #if USE_OPENSSL
@@ -4351,6 +4318,7 @@ static gint hashtable_process_tag = -1;
 typedef struct _hashtable_data {
 	IMAPSession *session;
 	GSList *msglist;
+	FolderItem *item;
 } hashtable_data;
 
 static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
@@ -4382,8 +4350,10 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
+static FolderItem *last_deferred_item = NULL;
 static gboolean process_hashtable(void *data)
 {
+	FolderItem *item = (FolderItem *)data;
 	debug_print("processing flags change hashtables\n");
 	if (flags_set_table) {
 		g_hash_table_foreach_remove(flags_set_table, process_flags, GINT_TO_POINTER(TRUE));
@@ -4396,6 +4366,8 @@ static gboolean process_hashtable(void *data)
 		flags_unset_table = NULL;
 	}
 	
+	folder_item_scan_full(item, FALSE);
+	hashtable_process_tag = -1;
 	return FALSE;
 }
 
@@ -4416,6 +4388,18 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	session = imap_session_get(folder);
 	if (!session) return;
 printf("changing flags\n");
+
+	if (hashtable_process_tag != -1 && item != last_deferred_item
+	&&  last_deferred_item != NULL) {
+		debug_print("forcing flush for %s (!= %s)\n",
+				last_deferred_item->path,
+				item->path);
+		gtk_timeout_remove(hashtable_process_tag);
+		process_hashtable(last_deferred_item);
+		hashtable_process_tag = -1;
+	}
+	last_deferred_item = item;
+	
 	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS)
 		return;
@@ -4444,7 +4428,7 @@ printf("changing flags\n");
 
 	/* instead of performing an UID STORE command for each message change,
 	 * as a lot of them can change "together", we just fill in hashtables
-	 * and defer the treatment 500ms so that we're able to send only one
+	 * and defer the treatment 100ms so that we're able to send only one
 	 * command.
 	 */
 	if (flags_set) {
@@ -4474,7 +4458,7 @@ printf("changing flags\n");
 	if (hashtable_process_tag != -1)
 		gtk_timeout_remove(hashtable_process_tag);
 		
-	hashtable_process_tag = gtk_timeout_add(500, process_hashtable, NULL);
+	hashtable_process_tag = gtk_timeout_add(100, process_hashtable, item);
 	
 	return;
 }
@@ -4501,6 +4485,17 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	session = imap_session_get(folder);
 	if (!session) return -1;
 
+	if (hashtable_process_tag != -1 && item != last_deferred_item
+	&&  last_deferred_item != NULL) {
+		debug_print("forcing flush for %s (!= %s)\n",
+				last_deferred_item->path,
+				item->path);
+		gtk_timeout_remove(hashtable_process_tag);
+		process_hashtable(last_deferred_item);
+		hashtable_process_tag = -1;
+	}
+	last_deferred_item = item;
+
 printf("removing messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
@@ -4520,7 +4515,7 @@ printf("removing messages\n");
 	if (hashtable_process_tag != -1)
 		gtk_timeout_remove(hashtable_process_tag);
 		
-	hashtable_process_tag = gtk_timeout_add(500, process_hashtable, NULL);
+	hashtable_process_tag = gtk_timeout_add(100, process_hashtable, item);
 
 	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
 	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);
