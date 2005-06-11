@@ -1,3 +1,8 @@
+2005-06-11 [colin]	1.9.11cvs59
+
+	* src/imap.c
+		printf -> debug_print
+
 2005-06-11 [colin]	1.9.11cvs58
 
 	* src/imap.c

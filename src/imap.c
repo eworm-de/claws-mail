@@ -957,7 +957,7 @@ static gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 		return NULL;
 	}
 
-printf("fetching messages\n");
+	debug_print("-> fetching messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS) {
@@ -4198,7 +4198,7 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
-printf("getting msginfos\n");
+	debug_print("-> getting msginfos\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS)
@@ -4387,7 +4387,8 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 
 	session = imap_session_get(folder);
 	if (!session) return;
-printf("changing flags\n");
+
+	debug_print("-> changing flags\n");
 
 	if (hashtable_process_tag != -1 && item != last_deferred_item
 	&&  last_deferred_item != NULL) {
@@ -4496,7 +4497,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	}
 	last_deferred_item = item;
 
-printf("removing messages\n");
+debug_print("-> removing messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS)
