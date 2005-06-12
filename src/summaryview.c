@@ -3073,7 +3073,9 @@ void summary_delete(SummaryView *summaryview)
 		     cur = cur->next) {
 			GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
 			msginfo = gtk_ctree_node_get_row_data(ctree, row);
-			partial_mark_for_delete(msginfo);
+			if (msginfo->total_size != 0 && 
+			    msginfo->size != (off_t)msginfo->total_size)
+				partial_mark_for_delete(msginfo);
 		}
 	
 	}

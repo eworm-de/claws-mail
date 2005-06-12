@@ -1,3 +1,14 @@
+2005-06-12 [colin]	1.9.11cvs62
+
+	* src/imap.c
+		Fix harmful typo
+		Factorize remove_all_msg
+		Thread-ize expunge
+	* src/summaryview.c
+		Don't update partial-download status if unnecessary
+	* src/folder.c
+		Use remove_msgs everywhere possible
+
 2005-06-12 [colin]	1.9.11cvs61
 
 	* src/folder.c

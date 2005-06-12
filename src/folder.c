@@ -2803,17 +2803,25 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	if (!item->cache) folder_item_read_cache(item);
 
 	folder_item_update_freeze();
-	while (msglist != NULL) {
+	if (item->folder->klass->remove_msgs) {
+		ret = item->folder->klass->remove_msgs(item->folder,
+					    		item,
+						    	msglist,
+							NULL);
+	}
+	while (ret == 0 && msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
 		if (MSG_IS_LOCKED(msginfo->flags)) {
 			msglist = msglist->next;
 			continue;
 		}
-		ret = folder_item_remove_msg(item, msginfo->msgnum);
+		if (!item->folder->klass->remove_msgs)
+			ret = folder_item_remove_msg(item, msginfo->msgnum);
 		if (ret != 0) break;
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
 		msglist = msglist->next;
 	}
+	folder_item_scan_full(item, FALSE);
 	folder_item_update_thaw();
 
 	return ret;

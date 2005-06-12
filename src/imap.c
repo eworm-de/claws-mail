@@ -1188,6 +1188,7 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	return ret;
 }
 
+
 static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest, 
 			        MsgInfoList *msglist, GRelation *relation)
 {
@@ -1237,7 +1238,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	}
 	
 	g_relation_destroy(uid_mapping);
-	g_list_free(seq_list);
+	g_slist_free(seq_list);
 
 	g_free(destdir);
 
@@ -1251,7 +1252,7 @@ static gint imap_remove_msgs(Folder *folder, FolderItem *dest,
 		    MsgInfoList *msglist, GRelation *relation)
 {
 	MsgInfo *msginfo;
-printf("removing %d messages\n", g_slist_length(msglist));
+
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -1264,41 +1265,10 @@ printf("removing %d messages\n", g_slist_length(msglist));
 
 static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
-	gint ok;
-	IMAPSession *session;
-	gchar *dir;
-
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-
-	session = imap_session_get(folder);
-	if (!session) {
-		return -1;
-	}
-	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 NULL, NULL, NULL, NULL, FALSE);
-	if (ok != IMAP_SUCCESS) {
-		return ok;
-	}
-	imap_gen_send(session, "STORE 1:* +FLAGS.SILENT (\\Deleted)");
-	ok = imap_cmd_ok(session, NULL);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: 1:*\n"));
-		return ok;
-	}
-
-	ok = imap_cmd_expunge(session, NULL);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
-		return ok;
-	}
-
-	dir = folder_item_get_path(item);
-	if (is_dir_exist(dir))
-		remove_all_numbered_files(dir);
-	g_free(dir);
-
-	return IMAP_SUCCESS;
+	GSList *list = folder_item_get_msg_list(item);
+	gint res = imap_remove_msgs(folder, item, list, NULL);
+	g_slist_free(list);
+	return res;
 }
 
 static gboolean imap_is_msg_changed(Folder *folder, FolderItem *item,
@@ -3505,20 +3475,73 @@ static gint imap_cmd_store(IMAPSession *session, IMAPSet seq_set,
 	return IMAP_SUCCESS;
 }
 
-static gint imap_cmd_expunge(IMAPSession *session, IMAPSet seq_set)
+typedef struct _expunge_data {
+	IMAPSession *session;
+	IMAPSet seq_set;
+	gboolean done;
+} expunge_data;
+
+static void *imap_cmd_expunge_thread(void *data)
 {
+	expunge_data *stuff = (expunge_data *)data;
+	IMAPSession *session = stuff->session;
+	IMAPSet seq_set = stuff->seq_set;
+
 	gint ok;
 
 	if (seq_set && session->uidplus)
 		imap_gen_send(session, "UID EXPUNGE %s", seq_set);
 	else	
 		imap_gen_send(session, "EXPUNGE");
-	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS) {
+	if ((ok = imap_cmd_ok_with_block(session, NULL, TRUE)) != IMAP_SUCCESS) {
 		log_warning(_("error while imap command: EXPUNGE\n"));
-		return ok;
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(ok);
 	}
 
-	return IMAP_SUCCESS;
+	stuff->done = TRUE;
+	return GINT_TO_POINTER(IMAP_SUCCESS);
+}
+
+static gint imap_cmd_expunge(IMAPSession *session, IMAPSet seq_set)
+{
+	expunge_data *data = g_new0(expunge_data, 1);
+	int result;
+#ifdef USE_PTHREAD
+	void *tmp;
+	pthread_t pt;
+#endif
+	data->done = FALSE;
+	data->session = session;
+	data->seq_set = seq_set;
+
+	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		g_free(data);
+		return -1;
+	}
+
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			imap_cmd_expunge_thread, data) != 0) {
+		result = GPOINTER_TO_INT(imap_cmd_expunge_thread(data));
+		g_free(data);
+		return result;
+	}
+	debug_print("+++waiting for imap_cmd_expunge_thread...\n");
+	while(!data->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+	debug_print("---imap_cmd_expunge_thread done\n");
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, &tmp);
+	result = GPOINTER_TO_INT(tmp);
+#else
+	result = GPOINTER_TO_INT(imap_cmd_expunge_thread(data));
+#endif
+	g_free(data);
+	return result;
 }
 
 static gint imap_cmd_close(IMAPSession *session)

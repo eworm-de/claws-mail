@@ -550,3 +550,4 @@
 ( cvs diff -u -r 1.179.2.26 -r 1.179.2.27 src/imap.c;  ) > 1.9.11cvs59.patchset
 ( cvs diff -u -r 1.179.2.27 -r 1.179.2.28 src/imap.c;  ) > 1.9.11cvs60.patchset
 ( cvs diff -u -r 1.213.2.29 -r 1.213.2.30 src/folder.c;  cvs diff -u -r 1.87.2.10 -r 1.87.2.11 src/folder.h;  cvs diff -u -r 1.179.2.28 -r 1.179.2.29 src/imap.c;  ) > 1.9.11cvs61.patchset
+( cvs diff -u -r 1.179.2.29 -r 1.179.2.30 src/imap.c;  cvs diff -u -r 1.395.2.78 -r 1.395.2.79 src/summaryview.c;  cvs diff -u -r 1.213.2.30 -r 1.213.2.31 src/folder.c;  ) > 1.9.11cvs62.patchset
