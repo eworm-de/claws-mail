@@ -204,6 +204,10 @@ static gint 	imap_copy_msgs		(Folder 	*folder,
 static gint 	imap_remove_msg		(Folder 	*folder, 
 					 FolderItem 	*item, 
 					 gint 		 uid);
+static gint 	imap_remove_msgs	(Folder 	*folder, 
+					 FolderItem 	*dest, 
+		    			 MsgInfoList 	*msglist, 
+					 GRelation 	*relation);
 static gint 	imap_remove_all_msg	(Folder 	*folder, 
 					 FolderItem 	*item);
 
@@ -563,6 +567,7 @@ FolderClass *imap_get_class(void)
 		imap_class.copy_msg = imap_copy_msg;
 		imap_class.copy_msgs = imap_copy_msgs;
 		imap_class.remove_msg = imap_remove_msg;
+		imap_class.remove_msgs = imap_remove_msgs;
 		imap_class.remove_all_msg = imap_remove_all_msg;
 		imap_class.is_msg_changed = imap_is_msg_changed;
 		imap_class.change_flags = imap_change_flags;
@@ -1181,6 +1186,80 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	procmsg_message_file_list_free(file_list);
 
 	return ret;
+}
+
+static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest, 
+			        MsgInfoList *msglist, GRelation *relation)
+{
+	gchar *destdir;
+	GSList *seq_list = NULL, *cur;
+	MsgInfo *msginfo;
+	IMAPSession *session;
+	gint ok = IMAP_SUCCESS;
+	GRelation *uid_mapping;
+	
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	session = imap_session_get(folder);
+	if (!session) {
+		return -1;
+	}
+	msginfo = (MsgInfo *)msglist->data;
+
+	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			 NULL, NULL, NULL, NULL, FALSE);
+	if (ok != IMAP_SUCCESS) {
+		return ok;
+	}
+
+	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
+	for (cur = msglist; cur; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		seq_list = g_slist_append(seq_list, GINT_TO_POINTER(msginfo->msgnum));
+	}
+
+	uid_mapping = g_relation_new(2);
+	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
+
+	ok = imap_set_message_flags
+		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
+		seq_list, IMAP_FLAG_DELETED, TRUE);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't set deleted flags\n"));
+		return ok;
+	}
+	ok = imap_cmd_expunge(session, NULL);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't expunge\n"));
+		return ok;
+	}
+	
+	g_relation_destroy(uid_mapping);
+	g_list_free(seq_list);
+
+	g_free(destdir);
+
+	if (ok == IMAP_SUCCESS)
+		return 0;
+	else
+		return -1;
+}
+
+static gint imap_remove_msgs(Folder *folder, FolderItem *dest, 
+		    MsgInfoList *msglist, GRelation *relation)
+{
+	MsgInfo *msginfo;
+printf("removing %d messages\n", g_slist_length(msglist));
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	msginfo = (MsgInfo *)msglist->data;
+	g_return_val_if_fail(msginfo->folder != NULL, -1);
+
+	return imap_do_remove_msgs(folder, dest, msglist, relation);
 }
 
 static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
@@ -2436,7 +2515,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 		g_free(nextline);
 	} while (block_len < len);
 
-	debug_print("IMAP4< [contents of RFC822.HEADER]\n");
+	debug_print("IMAP4< [contents of BODY.PEEK[HEADER_FIELDS (...)]\n");
 
 	*headers = g_strndup(cur_pos, len);
 	cur_pos += len;
@@ -2545,10 +2624,23 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
 		} else if (!strncmp(cur_pos, "RFC822.SIZE ", 12)) {
 			cur_pos += 12;
 			size = strtol(cur_pos, &cur_pos, 10);
-		} else if (!strncmp(cur_pos, "RFC822.HEADER ", 14)) {
+		} else if (!strncmp(cur_pos, "BODY[HEADER.FIELDS ", 19)) {
 			gchar *headers;
 
-			cur_pos += 14;
+			cur_pos += 19;
+			if (*cur_pos != '(') {
+				g_warning("*cur_pos != '('\n");
+				procmsg_msginfo_free(msginfo);
+				return NULL;
+			}
+			cur_pos++;
+			PARSE_ONE_ELEMENT(')');
+			if (*cur_pos != ']') {
+				g_warning("*cur_pos != ']'\n");
+				procmsg_msginfo_free(msginfo);
+				return NULL;
+			}
+			cur_pos++;
 			cur_pos = imap_get_header(sock, cur_pos, &headers,
 						  line_str);
 			msginfo = procheader_parse_str(headers, flags, FALSE, FALSE);
@@ -3387,9 +3479,12 @@ static gint imap_cmd_copy(IMAPSession *session, const gchar *seq_set,
 
 gint imap_cmd_envelope(IMAPSession *session, IMAPSet set)
 {
+	static gchar *header_fields = 
+		"Date From To Cc Subject Message-ID References In-Reply-To" ;
+
 	imap_gen_send
-		(session, "UID FETCH %s (UID FLAGS RFC822.SIZE RFC822.HEADER)",
-		 set);
+		(session, "UID FETCH %s (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
+		 set, header_fields);
 
 	return IMAP_SUCCESS;
 }

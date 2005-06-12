@@ -1,3 +1,12 @@
+2005-06-12 [colin]	1.9.11cvs61
+
+	* src/folder.c
+	* src/folder.h
+		Add a remove_msgs function to remove a 
+		list of messages
+	* src/imap.c
+		Implement that.
+
 2005-06-12 [colin]	1.9.11cvs60
 
 	* src/imap.c

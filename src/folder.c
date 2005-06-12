@@ -2666,14 +2666,22 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	}
 
 	if (remove_source) {
+		MsgInfo *msginfo = (MsgInfo *) msglist->data;
+		FolderItem *item = msginfo->folder;
 		/*
 		 * Remove source messages from their folders if
 		 * copying was successfull and update folder
 		 * message counts
 		 */
+		if (item->folder->klass->remove_msgs) {
+			item->folder->klass->remove_msgs(item->folder,
+					    		        msginfo->folder,
+						    		msglist,
+								relation);
+		}
 		for (l = msglist; l != NULL; l = g_slist_next(l)) {
-			MsgInfo *msginfo = (MsgInfo *) l->data;
-			FolderItem *item = msginfo->folder;
+			msginfo = (MsgInfo *) l->data;
+			item = msginfo->folder;
             	        GTuples *tuples;
 
             		tuples = g_relation_select(relation, msginfo, 0);
@@ -2681,7 +2689,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
             		g_tuples_destroy(tuples);
 
 			if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
-				item->folder->klass->remove_msg(item->folder,
+				if (!item->folder->klass->remove_msgs)
+					item->folder->klass->remove_msg(item->folder,
 					    		        msginfo->folder,
 						    		msginfo->msgnum);
 				remove_msginfo_from_cache(item, msginfo);

@@ -503,6 +503,10 @@ struct _FolderClass
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
+	gint    	(*remove_msgs)		(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfoList    *msglist,
+						 GRelation	*relation);
 	/**
 	 * Remove all messages in a \ c FolderItem
 	 *
