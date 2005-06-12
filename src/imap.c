@@ -567,6 +567,7 @@ FolderClass *imap_get_class(void)
 		imap_class.is_msg_changed = imap_is_msg_changed;
 		imap_class.change_flags = imap_change_flags;
 		imap_class.get_flags = imap_get_flags;
+
 	}
 	
 	return &imap_class;
@@ -1076,8 +1077,9 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(msglist != NULL, -1);
 
 	session = imap_session_get(folder);
-	if (!session) return -1;
-
+	if (!session) {
+		return -1;
+	}
 	msginfo = (MsgInfo *)msglist->data;
 
 	src = msginfo->folder;
@@ -1088,8 +1090,9 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 			 NULL, NULL, NULL, NULL, FALSE);
-	if (ok != IMAP_SUCCESS)
+	if (ok != IMAP_SUCCESS) {
 		return ok;
+	}
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	seq_list = imap_get_seq_set_from_msglist(msglist);
@@ -1190,13 +1193,14 @@ static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 
 	session = imap_session_get(folder);
-	if (!session) return -1;
-
+	if (!session) {
+		return -1;
+	}
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
-	if (ok != IMAP_SUCCESS)
+	if (ok != IMAP_SUCCESS) {
 		return ok;
-
+	}
 	imap_gen_send(session, "STORE 1:* +FLAGS.SILENT (\\Deleted)");
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS) {
@@ -4311,72 +4315,12 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 	return FALSE;
 }
 
-static GHashTable *flags_set_table = NULL;
-static GHashTable *flags_unset_table = NULL;
-static gint hashtable_process_tag = -1;
-
-typedef struct _hashtable_data {
-	IMAPSession *session;
-	GSList *msglist;
-	FolderItem *item;
-} hashtable_data;
-
-static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
-{
-	gboolean flags_set = GPOINTER_TO_INT(user_data);
-	gint flags_value = GPOINTER_TO_INT(key);
-	hashtable_data *data = (hashtable_data *)value;
-	
-	data->msglist = g_slist_reverse(data->msglist);
-	
-	imap_set_message_flags(data->session, data->msglist, flags_value, flags_set);
-
-	if (flags_value == IMAP_FLAG_DELETED && flags_set == TRUE) {
-		if (!data->session->uidplus) {
-			imap_cmd_expunge(data->session, NULL);
-		} else {
-			GSList *seq_list;
-			IMAPSet imapset;
-			seq_list = imap_get_seq_set_from_numlist(data->msglist);
-			imapset = get_seq_set_from_seq_list(seq_list);
-
-			imap_cmd_expunge(data->session, imapset);
-			g_free(imapset);
-			g_free(seq_list);
-		}
-	}
-	g_slist_free(data->msglist);	
-	g_free(data);
-	return TRUE;
-}
-
-static FolderItem *last_deferred_item = NULL;
-static gboolean process_hashtable(void *data)
-{
-	FolderItem *item = (FolderItem *)data;
-	debug_print("processing flags change hashtables\n");
-	if (flags_set_table) {
-		g_hash_table_foreach_remove(flags_set_table, process_flags, GINT_TO_POINTER(TRUE));
-		g_free(flags_set_table);
-		flags_set_table = NULL;
-	}
-	if (flags_unset_table) {
-		g_hash_table_foreach_remove(flags_unset_table, process_flags, GINT_TO_POINTER(FALSE));
-		g_free(flags_unset_table);
-		flags_unset_table = NULL;
-	}
-	
-	folder_item_scan_full(item, FALSE);
-	hashtable_process_tag = -1;
-	return FALSE;
-}
-
 void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPermFlags newflags)
 {
 	IMAPSession *session;
 	IMAPFlags flags_set = 0, flags_unset = 0;
 	gint ok = IMAP_SUCCESS;
-	hashtable_data *ht_data = NULL;
+	MsgNumberList numlist;
 	
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->klass == &imap_class);
@@ -4389,29 +4333,11 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if (!session) return;
 
 	debug_print("-> changing flags\n");
-
-	if (hashtable_process_tag != -1 && item != last_deferred_item
-	&&  last_deferred_item != NULL) {
-		debug_print("forcing flush for %s (!= %s)\n",
-				last_deferred_item->path,
-				item->path);
-		gtk_timeout_remove(hashtable_process_tag);
-		process_hashtable(last_deferred_item);
-		hashtable_process_tag = -1;
-	}
-	last_deferred_item = item;
 	
 	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS)
 		return;
 		
-	if (!flags_set_table) {
-		flags_set_table = g_hash_table_new(NULL, g_direct_equal);
-	}
-	if (!flags_unset_table) {
-		flags_unset_table = g_hash_table_new(NULL, g_direct_equal);
-	}
-
 	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
 		flags_set |= IMAP_FLAG_FLAGGED;
 	if ( MSG_IS_MARKED(msginfo->flags) && !(newflags & MSG_MARKED))
@@ -4427,39 +4353,19 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
 		flags_set |= IMAP_FLAG_ANSWERED;
 
-	/* instead of performing an UID STORE command for each message change,
-	 * as a lot of them can change "together", we just fill in hashtables
-	 * and defer the treatment 100ms so that we're able to send only one
-	 * command.
-	 */
+	numlist.next = NULL;
+	numlist.data = GINT_TO_POINTER(msginfo->msgnum);
+
 	if (flags_set) {
-		ht_data = g_hash_table_lookup(flags_set_table, GINT_TO_POINTER(flags_set));
-		if (ht_data == NULL) {
-			ht_data = g_new0(hashtable_data, 1);
-			ht_data->session = session;
-			g_hash_table_insert(flags_set_table, GINT_TO_POINTER(flags_set), ht_data);
-		}
-		if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum)))
-			ht_data->msglist = g_slist_prepend(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum));
+		ok = imap_set_message_flags(session, &numlist, flags_set, TRUE);
+		if (ok != IMAP_SUCCESS) return;
 	}
 
 	if (flags_unset) {
-		ht_data = g_hash_table_lookup(flags_unset_table, GINT_TO_POINTER(flags_unset));
-		if (ht_data == NULL) {
-			ht_data = g_new0(hashtable_data, 1);
-			ht_data->session = session;
-			g_hash_table_insert(flags_unset_table, GINT_TO_POINTER(flags_unset), ht_data);
-		}
-		if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum)))
-			ht_data->msglist = g_slist_prepend(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum));
+		ok = imap_set_message_flags(session, &numlist, flags_unset, FALSE);
+		if (ok != IMAP_SUCCESS) return;
 	}
-
 	msginfo->flags.perm_flags = newflags;
-	
-	if (hashtable_process_tag != -1)
-		gtk_timeout_remove(hashtable_process_tag);
-		
-	hashtable_process_tag = gtk_timeout_add(100, process_hashtable, item);
 	
 	return;
 }
@@ -4470,15 +4376,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	IMAPSession *session;
 	gchar *dir;
 	MsgNumberList numlist;
-	hashtable_data *ht_data;
 	
-	if (!flags_set_table) {
-		flags_set_table = g_hash_table_new(NULL, g_direct_equal);
-	}
-	if (!flags_unset_table) {
-		flags_unset_table = g_hash_table_new(NULL, g_direct_equal);
-	}
-
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -4486,37 +4384,35 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	session = imap_session_get(folder);
 	if (!session) return -1;
 
-	if (hashtable_process_tag != -1 && item != last_deferred_item
-	&&  last_deferred_item != NULL) {
-		debug_print("forcing flush for %s (!= %s)\n",
-				last_deferred_item->path,
-				item->path);
-		gtk_timeout_remove(hashtable_process_tag);
-		process_hashtable(last_deferred_item);
-		hashtable_process_tag = -1;
-	}
-	last_deferred_item = item;
-
-debug_print("-> removing messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
-	ht_data = g_hash_table_lookup(flags_set_table, GINT_TO_POINTER(IMAP_FLAG_DELETED));
-	if (ht_data == NULL) {
-		ht_data = g_new0(hashtable_data, 1);
-		ht_data->session = session;
-		g_hash_table_insert(flags_set_table, GINT_TO_POINTER(IMAP_FLAG_DELETED), ht_data);
-	}
-	if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(uid)))
-		ht_data->msglist = g_slist_prepend(ht_data->msglist, 
-				GINT_TO_POINTER(uid));
+	numlist.next = NULL;
+	numlist.data = GINT_TO_POINTER(uid);
 	
-	if (hashtable_process_tag != -1)
-		gtk_timeout_remove(hashtable_process_tag);
-		
-	hashtable_process_tag = gtk_timeout_add(100, process_hashtable, item);
+	ok = imap_set_message_flags
+		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
+		&numlist, IMAP_FLAG_DELETED, TRUE);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't set deleted flags: %d\n"), uid);
+		return ok;
+	}
+
+	if (!session->uidplus) {
+		ok = imap_cmd_expunge(session, NULL);
+	} else {
+		gchar *uidstr;
+
+		uidstr = g_strdup_printf("%u", uid);
+		ok = imap_cmd_expunge(session, uidstr);
+		g_free(uidstr);
+	}
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't expunge\n"));
+		return ok;
+	}
 
 	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
 	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);

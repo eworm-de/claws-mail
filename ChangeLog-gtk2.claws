@@ -1,3 +1,9 @@
+2005-06-12 [colin]	1.9.11cvs60
+
+	* src/imap.c
+		Remove flags-processing deferring... Too hard
+		to get it to work in all cases.
+
 2005-06-11 [colin]	1.9.11cvs59
 
 	* src/imap.c
