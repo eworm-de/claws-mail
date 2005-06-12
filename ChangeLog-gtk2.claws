@@ -1,3 +1,9 @@
+2005-06-12 [colin]	1.9.11cvs63
+
+	* src/folder.c
+		lock incorporation during long operations.
+		Avoids fucking up the IMAP socket.
+
 2005-06-12 [colin]	1.9.11cvs62
 
 	* src/imap.c

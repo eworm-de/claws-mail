@@ -2729,10 +2729,13 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
  */
 gint folder_item_move_msgs(FolderItem *dest, GSList *msglist)
 {
+	gint result = -1;
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
-
-	return do_copy_msgs(dest, msglist, TRUE);
+	inc_lock();
+	result = do_copy_msgs(dest, msglist, TRUE);
+	inc_unlock();
+	return result;
 }
 
 /**
@@ -2750,7 +2753,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
     
 	list.data = msginfo;
 	list.next = NULL;
-	
+
 	return do_copy_msgs(dest, &list, FALSE);
 }
 
@@ -2762,10 +2765,15 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
  */
 gint folder_item_copy_msgs(FolderItem *dest, GSList *msglist)
 {
+	gint result;
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
-	return do_copy_msgs(dest, msglist, FALSE);
+	inc_lock();
+	result = do_copy_msgs(dest, msglist, FALSE);
+	inc_unlock();
+	
+	return result;
 }
 
 gint folder_item_remove_msg(FolderItem *item, gint num)
@@ -2799,7 +2807,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	g_return_val_if_fail(item != NULL, -1);
 	folder = item->folder;
 	g_return_val_if_fail(folder != NULL, -1);
-
+	inc_lock();
 	if (!item->cache) folder_item_read_cache(item);
 
 	folder_item_update_freeze();
@@ -2823,7 +2831,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	}
 	folder_item_scan_full(item, FALSE);
 	folder_item_update_thaw();
-
+	inc_unlock();
 	return ret;
 }
 
@@ -2836,6 +2844,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 	folder = item->folder;
 
+	inc_lock();
 	if (folder->klass->remove_all_msg != NULL) {
 		result = folder->klass->remove_all_msg(folder, item);
 
@@ -2859,6 +2868,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	}
 
+	inc_unlock();
 	return result;
 }
 
