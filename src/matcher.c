@@ -845,7 +845,7 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 	if (!read_headers && !read_body)
 		return result;
 
-	file = procmsg_get_message_file(info);
+	file = procmsg_get_message_file_full(info, read_headers, read_body);
 	if (file == NULL)
 		return FALSE;
 

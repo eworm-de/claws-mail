@@ -469,8 +469,10 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	main_window_cursor_wait(summaryview->mainwin);		\
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	\
 	folder_item_update_freeze();				\
+	inc_lock();						\
 }
 #define END_LONG_OPERATION(summaryview) {			\
+	inc_unlock();						\
 	folder_item_update_thaw();				\
 	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));		\
 	main_window_cursor_normal(summaryview->mainwin);	\
@@ -1027,9 +1029,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					    TRUE);
 			summary_lock(summaryview);
 		} else {
-			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, FALSE, TRUE);
-			summary_lock(summaryview);
 		}
 	}
 
@@ -1317,7 +1317,8 @@ void summary_select_next_unread(SummaryView *summaryview)
 	
 	if (summaryview->displayed 
 	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping cur\n");
+		debug_print("skipping cur (%p %p)\n",
+			summaryview->displayed, summaryview->selected);
 		skip_cur = TRUE;
 	}
 
@@ -1555,6 +1556,8 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 			summaryview->displayed = NULL;
 		summaryview->display_msg = display_msg;
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		if (summaryview->selected == NULL)
+			summaryview->selected = node;
 	}
 }
 
@@ -2809,8 +2812,10 @@ void summary_mark(SummaryView *summaryview)
 	GList *cur;
 
 	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
 		summary_mark_row(summaryview, GTK_CTREE_NODE(cur->data));
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 
 	summary_status_show(summaryview);
@@ -2843,9 +2848,11 @@ void summary_mark_as_read(SummaryView *summaryview)
 	GList *cur;
 
 	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
 		summary_mark_row_as_read(summaryview,
 					 GTK_CTREE_NODE(cur->data));
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	
 	summary_status_show(summaryview);
@@ -2885,9 +2892,11 @@ void summary_mark_all_read(SummaryView *summaryview)
 	GtkCTreeNode *node;
 
 	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node)) {
 		if (!GTK_CTREE_ROW(node)->expanded)
@@ -2928,10 +2937,12 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	GList *cur;
 
 	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
 		cur = cur->next)
 		summary_mark_row_as_unread(summaryview,
 					   GTK_CTREE_NODE(cur->data));
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	
 	summary_status_show(summaryview);
@@ -3140,9 +3151,10 @@ void summary_unmark(SummaryView *summaryview)
 	GList *cur;
 
 	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
 		summary_unmark_row(summaryview, GTK_CTREE_NODE(cur->data));
-
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	
 	summary_status_show(summaryview);
@@ -4371,6 +4383,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	summary_show(summaryview, item);
 
 	summary_select_by_msgnum(summaryview, selected_msgnum);
+
 	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
 	if (!summaryview->displayed)
 		messageview_clear(summaryview->messageview);

@@ -430,6 +430,20 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 	return filename;
 }
 
+gchar *procmsg_get_message_file_full(MsgInfo *msginfo, gboolean headers, gboolean body)
+{
+	gchar *filename = NULL;
+
+	g_return_val_if_fail(msginfo != NULL, NULL);
+
+	filename = folder_item_fetch_msg_full(msginfo->folder, msginfo->msgnum,
+						headers, body);
+	if (!filename)
+		debug_print("can't fetch message %d\n", msginfo->msgnum);
+
+	return filename;
+}
+
 GSList *procmsg_get_message_file_list(GSList *mlist)
 {
         GSList *file_list = NULL;

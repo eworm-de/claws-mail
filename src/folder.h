@@ -430,6 +430,11 @@ struct _FolderClass
 	gchar 		*(*fetch_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
+	gchar 		*(*fetch_msg_full)	(Folder		*folder,
+						 FolderItem	*item,
+						 gint		 num,
+						 gboolean	 headers,
+						 gboolean	 body);
 	/**
 	 * Add a single message file to a folder with the given flags (if
 	 * flag handling is supported by the folder)
@@ -563,6 +568,10 @@ struct _FolderClass
 						 FolderItem	*item,
 						 MsgInfoList	*msglist,
 						 GRelation	*msgflags);
+	
+	void		(*set_batch)		(Folder		*folder,
+						 FolderItem	*item,
+						 gboolean	 batch);
 };
 
 struct _FolderItem
@@ -737,6 +746,10 @@ GSList *folder_item_get_msg_list	(FolderItem 	*item);
 /* return value is locale charset */
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
+gchar *folder_item_fetch_msg_full	(FolderItem	*item,
+					 gint		 num, 
+					 gboolean 	 get_headers,
+					 gboolean	 get_body);
 gint   folder_item_fetch_all_msg	(FolderItem	*item);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
@@ -789,5 +802,5 @@ void folder_item_update_recursive	(FolderItem *item,
 					 FolderItemUpdateFlags update_flags);
 void folder_item_update_freeze		(void);
 void folder_item_update_thaw		(void);
-
+void folder_item_set_batch		(FolderItem *item, gboolean batch);
 #endif /* __FOLDER_H__ */

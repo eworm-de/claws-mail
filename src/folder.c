@@ -34,6 +34,7 @@
 
 #include "folder.h"
 #include "session.h"
+#include "inc.h"
 #include "imap.h"
 #include "news.h"
 #include "mh.h"
@@ -2150,6 +2151,47 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	return msgfile;
 }
 
+gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
+				  gboolean body)
+{
+	Folder *folder;
+	gchar *msgfile;
+	MsgInfo *msginfo;
+
+	g_return_val_if_fail(item != NULL, NULL);
+
+	folder = item->folder;
+
+	if (folder->klass->fetch_msg_full == NULL)
+		return folder_item_fetch_msg(item, num);
+
+	msgfile = folder->klass->fetch_msg_full(folder, item, num, 
+						headers, body);
+
+	if (msgfile != NULL) {
+		msginfo = folder_item_get_msginfo(item, num);
+		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
+			MimeInfo *mimeinfo;
+
+			if (msginfo->folder->stype != F_QUEUE && 
+			    msginfo->folder->stype != F_DRAFT)
+				mimeinfo = procmime_scan_file(msgfile);
+			else
+				mimeinfo = procmime_scan_queue_file(msgfile);
+			/* check for attachments */
+			if (mimeinfo != NULL) {	
+				g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+				procmime_mimeinfo_free_all(mimeinfo);
+
+				procmsg_msginfo_set_flags(msginfo, 0, MSG_SCANNED);
+			}
+		}
+	}
+
+	return msgfile;
+}
+
+
 gint folder_item_fetch_all_msg(FolderItem *item)
 {
 	Folder *folder;
@@ -3419,6 +3461,13 @@ void folder_item_update_thaw(void)
 	if (folder_item_update_freeze_cnt == 0) {
 		/* Update all folders */
 		folder_func_to_all_folders(folder_item_update_func, NULL);
+	}
+}
+
+void folder_item_set_batch (FolderItem *item, gboolean batch)
+{
+	if (item->folder->klass->set_batch) {
+		item->folder->klass->set_batch(item->folder, item, batch);
 	}
 }
 

@@ -1,3 +1,32 @@
+2005-06-13 [colin]	1.9.11cvs64
+
+	* matcher.c
+	* procmsg.c
+	* procmsg.h
+		Add a way to fetch only headers. This speeds
+		up filtering on headers for IMAP. Fixes:
+		bug #481 extraneous imap commands slow down 
+			imap filtering
+		bug #522 Sylpheed downloads all messages 
+			when opening mailbox (IMAP)
+		bug #677 IMAP fetch is soooooooooooooo slow
+	* src/folder.c
+	* src/folder.h
+		Add a folder set_batch method so that
+		implementations can speed up flags changes
+	* src/folderutils.c
+	* src/summaryview.c
+		Use that in mark as (un)read and mark all read
+		Refix bug #679
+	* src/imap.c
+		Implement set_batch - brings back deferred
+		flags in a less buggy manner. Fixes:
+		bug #729 IMAP immediate expunge of deleted messages
+		bug #191 remove list of messages with one command
+		Fix login with strange chars
+		Implement fetch_msg_full
+		Fix copy (wrong counts)
+
 2005-06-12 [colin]	1.9.11cvs63
 
 	* src/folder.c

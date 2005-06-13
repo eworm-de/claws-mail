@@ -116,6 +116,7 @@ void folderutils_mark_all_read(FolderItem *item)
 		return;
 
 	folder_item_update_freeze();
+	folder_item_set_batch(item, TRUE);
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = cur->data;
 
@@ -123,6 +124,7 @@ void folderutils_mark_all_read(FolderItem *item)
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		procmsg_msginfo_free(msginfo);
 	}
+	folder_item_set_batch(item, FALSE);
 	folder_item_update_thaw();
 
 	g_slist_free(msglist);
