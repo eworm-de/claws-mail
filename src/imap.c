@@ -964,16 +964,20 @@ static guint get_size_with_lfs(MsgInfo *info)
 	FILE *fp = NULL;
 	guint cnt = 0;
 	gchar buf[4096];
+	
 	if (info == NULL)
 		return -1;
+	
 	fp = procmsg_open_message(info);
 	if (!fp)
 		return -1;
+	
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
 		cnt += strlen(buf);
 		if (!strstr(buf, "\r") && strstr(buf, "\n"))
 			cnt++;
 	}
+	
 	fclose(fp);
 	return cnt;
 }
@@ -998,6 +1002,9 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 	g_free(path);
 
 	if (is_file_exist(filename)) {
+		/* see whether the local file represents the whole message
+		 * or not. As the IMAP server reports size with \r chars,
+		 * we have to update the local file (UNIX \n only) size */
 		MsgInfo *msginfo = imap_parse_msg(filename, item);
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
 		guint have_size = get_size_with_lfs(msginfo);
@@ -2019,7 +2026,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 	gchar *tmp;
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
-	GString *str;
+	GString *str = NULL;
 	MsgInfo *msginfo;
 	GSList *seq_list, *cur;
 	IMAPSet imapset;
@@ -2046,6 +2053,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 			if ((tmp =sock_getline(SESSION(session)->sock)) == NULL) {
 				log_warning(_("error occurred while getting envelope.\n"));
 				g_string_free(str, TRUE);
+				str = NULL;
 				break;
 			}
 			strretchomp(tmp);
@@ -2084,8 +2092,8 @@ static void *imap_get_uncached_messages_thread(void *data)
 				llast = llast->next;
 			}
 		}
-
-		g_string_free(str, TRUE);
+		if (str)
+			g_string_free(str, TRUE);
 	}
 	imap_seq_set_free(seq_list);
 	
@@ -2538,8 +2546,10 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	cur_pos = str->str;
 
 	do {
-		if ((nextline = sock_getline(sock)) == NULL)
+		if ((nextline = sock_getline(sock)) == NULL) {
+			*headers = NULL;
 			return cur_pos;
+		}
 		block_len += strlen(nextline);
 		g_string_append(str, nextline);
 		cur_pos = str->str;
@@ -2995,7 +3005,7 @@ static gint imap_cmd_login(IMAPSession *session,
 		return IMAP_ERROR;
 	}
 	g_free(ans);
-	imap_gen_recv_with_block(session, &ans, TRUE);
+	ok = imap_gen_recv_with_block(session, &ans, TRUE);
 	if (ok != IMAP_SUCCESS || ans[0] != '+' || ans[1] != ' ') {
 		g_free(ans);
 		return IMAP_ERROR;

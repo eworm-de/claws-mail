@@ -1,3 +1,8 @@
+2005-06-14 [colin]	1.9.11cvs65
+
+	* src/imap.c
+		Various little fixes, mainly on error paths
+
 2005-06-13 [colin]	1.9.11cvs64
 
 	* matcher.c
