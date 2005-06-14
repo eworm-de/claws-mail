@@ -1,3 +1,13 @@
+2005-06-14 [paul]	1.9.11cvs66
+
+	* src/account.c
+		change a couple stock icons
+	* src/inc.c
+	* src/send_message.c
+	* src/gtk/progressdialog.c
+	* src/gtk/progressdialog.h
+		sync main's GtkTreeView implementation
+
 2005-06-14 [colin]	1.9.11cvs65
 
 	* src/imap.c

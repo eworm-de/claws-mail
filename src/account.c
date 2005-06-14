@@ -672,13 +672,17 @@ static void account_edit_create(void)
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
 
+#ifdef GTK_STOCK_EDIT
+	edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+#else
 	edit_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
+#endif
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
 			  G_CALLBACK (account_edit_prefs), NULL);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",

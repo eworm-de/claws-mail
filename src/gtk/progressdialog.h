@@ -22,6 +22,8 @@
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkliststore.h>
+#include <gdk/gdkpixbuf.h>
 
 typedef struct _ProgressDialog	ProgressDialog;
 
@@ -31,39 +33,53 @@ struct _ProgressDialog
 	GtkWidget *label;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
-	GtkWidget *clist;
-	GtkWidget *list_view;
+
+	GtkWidget *treeview;
+	GtkListStore *store;
 };
 
+typedef enum
+{
+	PROG_COL_PIXBUF,
+	PROG_COL_NAME,
+	PROG_COL_STATUS,
+	PROG_COL_POINTER,
+	PROG_N_COLS
+} ProgressColumn;
+
 ProgressDialog *progress_dialog_create	(void);
-void progress_dialog_set_label		(ProgressDialog	*progress,
-					 gchar		*str);
-void progress_dialog_get_fraction	(ProgressDialog	*progress);
-void progress_dialog_set_fraction	(ProgressDialog	*progress,
-					 gfloat		 percentage);
 void progress_dialog_destroy		(ProgressDialog	*progress);
 
+void progress_dialog_set_label		(ProgressDialog	*progress,
+					 gchar		*str);
+void progress_dialog_set_value		(ProgressDialog	*progress,
+					 gfloat		 value);
+void progress_dialog_set_percentage	(ProgressDialog	*progress,
+					 gfloat		 percentage);
 
-/*
- * Use these functions to access the dialog list
- */
+void progress_dialog_append		(ProgressDialog	*progress,
+					 GdkPixbuf	*pixbuf,
+					 const gchar	*name,
+					 const gchar	*status,
+					 gpointer	 data);
+void progress_dialog_set_row		(ProgressDialog	*progress,
+					 gint		 row,
+					 GdkPixbuf	*pixbuf,
+					 const gchar	*name,
+					 const gchar	*status,
+					 gpointer	 data);
 
-gint progress_dialog_list_set_account	(ProgressDialog *progress,
+void progress_dialog_set_row_pixbuf	(ProgressDialog	*progress,
 					 gint		 row,
-					 const gchar	*account_name);
-gint progress_dialog_list_set_image	(ProgressDialog *progress,
+					 GdkPixbuf	*pixbuf);
+void progress_dialog_set_row_name	(ProgressDialog	*progress,
 					 gint		 row,
-					 GdkPixbuf	*image);
-gint progress_dialog_list_set_status	(ProgressDialog *progress,
+					 const gchar	*name);
+void progress_dialog_set_row_status	(ProgressDialog	*progress,
 					 gint		 row,
-					 const gchar    *status);
-gint progress_dialog_list_set		(ProgressDialog *progress,
-					 gint		 row,
-					 GdkPixbuf	*image,
-					 const gchar	*account_name,
-					 const gchar    *status);
+					 const gchar	*status);
 
-gboolean progress_dialog_list_select_row(ProgressDialog *progress,
+void progress_dialog_scroll_to_row	(ProgressDialog	*progress,
 					 gint		 row);
 
 #endif /* __PROGRESS_H__ */
