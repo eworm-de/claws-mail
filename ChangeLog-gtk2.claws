@@ -1,3 +1,9 @@
+2005-06-15 [paul]	1.9.11cvs73
+
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		fix build warnings
+
 2005-06-15 [paul]	1.9.11cvs72
 
 	* src/prefs_filtering.c

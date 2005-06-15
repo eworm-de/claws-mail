@@ -56,11 +56,12 @@
 
 #include <aspell.h>
 
-#include "gtk/gtktext.h"
 #include "utils.h"
 #include "codeconv.h"
 #include "alertpanel.h"
 #include "gtkaspell.h"
+#include "gtk/gtkutils.h"
+
 #define ASPELL_FASTMODE       1
 #define ASPELL_NORMALMODE     2
 #define ASPELL_BADSPELLERMODE 3
@@ -257,7 +258,6 @@ static void destroy_menu(GtkWidget *widget, gpointer user_data);
 
 /******************************************************************************/
 static gint get_textview_buffer_charcount(GtkTextView *view);
-static gint get_textview_buffer_position(GtkTextView *view);
 
 static gint get_textview_buffer_charcount(GtkTextView *view)
 {
@@ -484,7 +484,6 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 			    gint len,
 			    GtkAspell *gtkaspell)
 {
-	size_t wlen;
 	guint pos;
 
 	g_return_if_fail(gtkaspell->gtkaspeller->checker);
@@ -1283,7 +1282,6 @@ static void replace_real_word(GtkAspell *gtkaspell, gchar *newword)
 	int		oldlen, newlen, wordlen;
 	gint		origpos;
 	gint		pos;
-	gint 		start = gtkaspell->start_pos;
 	GtkTextView	*gtktext;
 	GtkTextBuffer	*textbuf;
 	GtkTextIter	startiter, enditer;
@@ -1378,7 +1376,6 @@ static void add_word_to_session_cb(GtkWidget *w, gpointer data)
 static void add_word_to_personal_cb(GtkWidget *w, gpointer data)
 {
    	GtkAspell *gtkaspell = (GtkAspell *) data; 
-	GtkTextView *gtktext    = gtkaspell->gtktext;
 
 	aspell_speller_add_to_personal(gtkaspell->gtkaspeller->checker,
 				       gtkaspell->theword,
@@ -1562,9 +1559,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 void gtkaspell_uncheck_all(GtkAspell * gtkaspell) 
 {
-	gint 	  origpos;
-	gchar	 *text;
-	gfloat 	  adj_value;
 	GtkTextView *gtktext;
 	GtkTextBuffer *buffer;
 	GtkTextIter startiter, enditer;

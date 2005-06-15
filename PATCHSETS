@@ -561,3 +561,4 @@
 ( cvs diff -u -r 1.149.2.26 -r 1.149.2.27 src/inc.c;  cvs diff -u -r 1.17.2.13 -r 1.17.2.14 src/send_message.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/gtk/progressdialog.h;  ) > 1.9.11cvs70.patchset
 ( cvs diff -u -r 1.5 -r 1.6 COPYING;  cvs diff -u -r 1.65.2.31 -r 1.65.2.32 src/codeconv.c;  cvs diff -u -r 1.149.2.27 -r 1.149.2.28 src/inc.c;  cvs diff -u -r 1.17.2.14 -r 1.17.2.15 src/send_message.c;  cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk/progressdialog.h;  ) > 1.9.11cvs71.patchset
 ( cvs diff -u -r 1.59.2.19 -r 1.59.2.20 src/prefs_filtering.c;  ) > 1.9.11cvs72.patchset
+( cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.2 -r 1.5.2.3 src/gtk/gtkaspell.h;  ) > 1.9.11cvs73.patchset

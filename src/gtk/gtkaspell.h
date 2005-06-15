@@ -40,8 +40,6 @@
 
 #include <gtk/gtkoptionmenu.h>
 
-#include "gtk/gtktext.h"
-
 typedef struct _GtkAspell GtkAspell; /* Defined in gtkaspell.c */
 
 void		gtkaspell_checkers_init		(void);
