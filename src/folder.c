@@ -50,6 +50,7 @@
 #include "folder_item_prefs.h"
 #include "remotefolder.h"
 #include "partial_download.h"
+#include "statusbar.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -3353,7 +3354,9 @@ void folder_item_apply_processing(FolderItem *item)
 {
 	GSList *processing_list;
 	GSList *mlist, *cur;
-	
+	guint total = 0, curmsg = 0;
+	gchar buf[32];
+
 	g_return_if_fail(item != NULL);
 	
 	processing_list = item->prefs->processing;
@@ -3361,6 +3364,8 @@ void folder_item_apply_processing(FolderItem *item)
 	folder_item_update_freeze();
 
 	mlist = folder_item_get_msg_list(item);
+	total = g_slist_length(mlist);
+	statusbar_print_all(_("Processing messages..."));
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 
@@ -3369,7 +3374,16 @@ void folder_item_apply_processing(FolderItem *item)
                 /* reset parameters that can be modified by processing */
                 msginfo->hidden = 0;
                 msginfo->score = 0;
-                
+                curmsg ++;
+		if (curmsg % 10 == 0) {
+			g_snprintf(buf, sizeof(buf), "%d / %d",
+				   curmsg, total);
+			gtk_progress_bar_set_text
+				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
+			gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
+			 (gfloat)curmsg / (gfloat)total);
+		}
                 /* apply pre global rules */
 		filter_message_by_msginfo(pre_global_processing, msginfo);
                 
@@ -3382,6 +3396,12 @@ void folder_item_apply_processing(FolderItem *item)
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(mlist);
+	
+	gtk_progress_bar_set_text
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	gtk_progress_bar_set_fraction
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
+	statusbar_pop_all();
 
 	folder_item_update_thaw();
 }

@@ -2013,6 +2013,8 @@ typedef struct _uncached_data {
 	IMAPSession *session;
 	FolderItem *item;
 	MsgNumberList *numlist;
+	guint cur;
+	guint total;
 	gboolean done;
 } uncached_data;
 
@@ -2030,6 +2032,9 @@ static void *imap_get_uncached_messages_thread(void *data)
 	MsgInfo *msginfo;
 	GSList *seq_list, *cur;
 	IMAPSet imapset;
+	
+	stuff->total = g_slist_length(numlist);
+	stuff->cur = 0;
 
 	if (session == NULL || item == NULL || item->folder == NULL
 	    || FOLDER_CLASS(item->folder) != &imap_class) {
@@ -2070,6 +2075,8 @@ static void *imap_get_uncached_messages_thread(void *data)
 			log_print("IMAP4< %s\n", tmp);
 			g_string_assign(str, tmp);
 			g_free(tmp);
+			
+			stuff->cur++;
 
 			msginfo = imap_parse_envelope
 				(SESSION(session)->sock, item, str);
@@ -2109,6 +2116,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 {
 	uncached_data *data = g_new0(uncached_data, 1);
 	GSList *result = NULL;
+	gint last_cur = 0;
 #ifdef USE_PTHREAD
 	pthread_t pt;
 #endif
@@ -2116,7 +2124,9 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	data->session = session;
 	data->item = item;
 	data->numlist = numlist;
-
+	data->cur = 0;
+	data->total = 0;
+	
 	if (prefs_common.work_offline && !imap_gtk_should_override()) {
 		g_free(data);
 		return NULL;
@@ -2130,10 +2140,28 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		return result;
 	}
 	debug_print("+++waiting for imap_get_uncached_messages_thread...\n");
+	statusbar_print_all(_("IMAP4 Fetching uncached short headers..."));
 	while(!data->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
+		if (data->total != 0 && last_cur != data->cur && data->cur % 10 == 0) {
+			gchar buf[32];
+			g_snprintf(buf, sizeof(buf), "%d / %d",
+				   data->cur, data->total);
+			gtk_progress_bar_set_text
+				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
+			gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
+			 (gfloat)data->cur / (gfloat)data->total);
+			last_cur = data->cur;
+		}
 	}
+	gtk_progress_bar_set_fraction
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
+	gtk_progress_bar_set_text
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	statusbar_pop_all();
+
 	debug_print("---imap_get_uncached_messages_thread done\n");
 
 	/* get the thread's return value and clean its resources */

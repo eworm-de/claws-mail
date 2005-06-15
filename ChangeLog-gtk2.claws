@@ -1,3 +1,13 @@
+2005-06-15 [colin]	1.9.11cvs67
+
+	* src/folder.c
+		Provide visual feedback while processing
+		folder's rules.
+	* src/imap.c
+		Provide visual feedback while getting
+		short headers (for uncached messages)
+
+
 2005-06-14 [paul]	1.9.11cvs66
 
 	* src/account.c
