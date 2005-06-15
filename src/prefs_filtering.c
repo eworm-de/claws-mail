@@ -1142,6 +1142,7 @@ static GtkWidget *prefs_filtering_list_view_create(void)
 		(prefs_filtering_create_data_store())));
 	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
+	gtk_tree_view_set_reorderable(list_view, TRUE);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
