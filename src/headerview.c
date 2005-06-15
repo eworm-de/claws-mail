@@ -116,10 +116,11 @@ HeaderView *headerview_create(void)
 	gtk_misc_set_alignment(GTK_MISC(to_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(ng_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(subject_body_label), 0, 0.5);
+#if (GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 6))
 	gtk_label_set_ellipsize(GTK_LABEL(to_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(ng_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(subject_body_label), PANGO_ELLIPSIZE_END);
-
+#endif
 	headerview->hbox = hbox;
 	headerview->from_header_label    = from_header_label;
 	headerview->from_body_label      = from_body_label;

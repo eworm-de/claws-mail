@@ -275,7 +275,8 @@ static void compose_add_attachments		(Compose	*compose,
 						 MimeInfo	*parent);
 static gchar *compose_get_header		(Compose	*compose);
 
-static void compose_convert_header		(gchar		*dest,
+static void compose_convert_header		(Compose	*compose,
+						 gchar		*dest,
 						 gint		 len,
 						 gchar		*src,
 						 gint		 header_len,
@@ -3321,7 +3322,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				compose_convert_header
-					(buf, sizeof(buf), str,
+					(compose, buf, sizeof(buf), str,
 					strlen("Resent-To") + 2, TRUE);
 
 				if (first_to_address) {
@@ -3349,7 +3350,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				compose_convert_header
-					(buf, sizeof(buf), str,
+					(compose, buf, sizeof(buf), str,
 					strlen("Resent-Cc") + 2, TRUE);
 
                                 if (first_cc_address) {
@@ -3387,7 +3388,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	/* Resent-From */
 	if (compose->account->name && *compose->account->name) {
 		compose_convert_header
-			(buf, sizeof(buf), compose->account->name,
+			(compose, buf, sizeof(buf), compose->account->name,
 			 strlen("From: "), TRUE);
 		fprintf(fp, "Resent-From: %s <%s>\n",
 			buf, compose->account->address);
@@ -3400,7 +3401,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		Xstrdup_a(str, entstr, return -1);
 		g_strstrip(str);
 		if (*str != '\0') {
-			compose_convert_header(buf, sizeof(buf), str,
+			compose_convert_header(compose, buf, sizeof(buf), str,
 					       strlen("Subject: "), FALSE);
 			fprintf(fp, "Subject: %s\n", buf);
 		}
@@ -3456,7 +3457,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 				if (compose->account->name
 				    && *compose->account->name) {
 					compose_convert_header
-						(buf, sizeof(buf),
+						(compose, buf, sizeof(buf),
 						 compose->account->name,
 						 strlen("From: "),
 						 FALSE);
@@ -4069,7 +4070,7 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 
 		buf = g_new0(gchar, fieldstr->len * 4 + 256);
 		compose_convert_header
-			(buf, fieldstr->len * 4  + 256, fieldstr->str,
+			(compose, buf, fieldstr->len * 4  + 256, fieldstr->str,
 			strlen(fieldname) + 2, TRUE);
 		g_string_append_printf(header, "%s: %s\n", fieldname, buf);
 		g_free(buf);
@@ -4107,7 +4108,7 @@ static gchar *compose_get_header(Compose *compose)
 	/* From */
 	if (compose->account->name && *compose->account->name) {
 		compose_convert_header
-			(buf, sizeof(buf), compose->account->name,
+			(compose, buf, sizeof(buf), compose->account->name,
 			 strlen("From: "), TRUE);
 		QUOTE_IF_REQUIRED(name, buf);
 		g_string_append_printf(header, "From: %s <%s>\n",
@@ -4132,7 +4133,7 @@ static gchar *compose_get_header(Compose *compose)
 	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
 		g_strstrip(str);
 		if (*str != '\0') {
-			compose_convert_header(buf, sizeof(buf), str,
+			compose_convert_header(compose, buf, sizeof(buf), str,
 					       strlen("Subject: "), FALSE);
 			g_string_append_printf(header, "Subject: %s\n", buf);
 		}
@@ -4166,7 +4167,7 @@ static gchar *compose_get_header(Compose *compose)
 	if (compose->account->organization &&
 	    strlen(compose->account->organization) &&
 	    !IS_IN_CUSTOM_HEADER("Organization")) {
-		compose_convert_header(buf, sizeof(buf),
+		compose_convert_header(compose, buf, sizeof(buf),
 				       compose->account->organization,
 				       strlen("Organization: "), FALSE);
 		g_string_append_printf(header, "Organization: %s\n", buf);
@@ -4200,7 +4201,7 @@ static gchar *compose_get_header(Compose *compose)
 
 			if (custom_header_is_allowed(chdr->name)) {
 				compose_convert_header
-					(buf, sizeof(buf),
+					(compose, buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
 					 strlen(chdr->name) + 2, FALSE);
 				g_string_append_printf(header, "%s: %s\n", chdr->name, buf);
@@ -4232,7 +4233,7 @@ static gchar *compose_get_header(Compose *compose)
 		if (compose->return_receipt) {
 			if (compose->account->name
 			    && *compose->account->name) {
-				compose_convert_header(buf, sizeof(buf), 
+				compose_convert_header(compose, buf, sizeof(buf), 
 						       compose->account->name, 
 						       strlen("Disposition-Notification-To: "),
 						       TRUE);
@@ -4296,7 +4297,7 @@ static gchar *compose_get_header(Compose *compose)
 
 #undef IS_IN_CUSTOM_HEADER
 
-static void compose_convert_header(gchar *dest, gint len, gchar *src,
+static void compose_convert_header(Compose *compose, gchar *dest, gint len, gchar *src,
 				   gint header_len, gboolean addr_field)
 {
 	gchar *tmpstr = NULL;
@@ -4312,7 +4313,8 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	subst_char(tmpstr, '\r', ' ');
 	g_strchomp(tmpstr);
 
-	conv_encode_header(dest, len, tmpstr, header_len, addr_field);
+	conv_encode_header_full(dest, len, tmpstr, header_len, addr_field, 
+		conv_get_charset_str(compose->out_encoding));
 	g_free(tmpstr);
 }
 

@@ -563,3 +563,4 @@
 ( cvs diff -u -r 1.59.2.19 -r 1.59.2.20 src/prefs_filtering.c;  ) > 1.9.11cvs72.patchset
 ( cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.2 -r 1.5.2.3 src/gtk/gtkaspell.h;  ) > 1.9.11cvs73.patchset
 ( cvs diff -u -r 1.24.2.8 -r 1.24.2.9 Makefile.am;  cvs diff -u -r 1.65.2.32 -r 1.65.2.33 src/codeconv.c;  cvs diff -u -r 1.15.2.8 -r 1.15.2.9 src/codeconv.h;  cvs diff -u -r 1.213.2.34 -r 1.213.2.35 src/folder.c;  cvs diff -u -r 1.207.2.41 -r 1.207.2.42 src/folderview.c;  cvs diff -u -r 1.395.2.80 -r 1.395.2.81 src/summaryview.c;  cvs diff -u -r 1.68.2.7 -r 1.68.2.8 src/summaryview.h;  ) > 1.9.11cvs74.patchset
+( cvs diff -u -r 1.382.2.131 -r 1.382.2.132 src/compose.c;  cvs diff -u -r 1.395.2.81 -r 1.395.2.82 src/summaryview.c;  cvs diff -u -r 1.8.2.6 -r 1.8.2.7 src/headerview.c;  ) > 1.9.11cvs75.patchset

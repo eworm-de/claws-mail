@@ -1,3 +1,13 @@
+2005-06-15 [colin]	1.9.11cvs75
+
+	* src/compose.c
+		Finish header encoding fix
+	* src/summaryview.c
+		Fix segfault
+	* src/headerview.c
+		Fix compilation (Thanks Stephan
+		Sachse)
+
 2005-06-15 [colin]	1.9.11cvs74
 
 	* Makefile.am
