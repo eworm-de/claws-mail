@@ -1421,7 +1421,7 @@ gboolean conv_is_ja_locale(void)
 	is_ja_locale = 0;
 	cur_locale = conv_get_current_locale();
 	if (cur_locale) {
-		if (g_strncasecmp(cur_locale, "ja", 2) == 0)
+		if (g_ascii_strncasecmp(cur_locale, "ja", 2) == 0)
 			is_ja_locale = 1;
 	}
 

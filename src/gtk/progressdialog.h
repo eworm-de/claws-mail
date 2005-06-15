@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkliststore.h>
 
 typedef struct _ProgressDialog	ProgressDialog;
 
@@ -31,8 +32,8 @@ struct _ProgressDialog
 	GtkWidget *label;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
-	GtkWidget *clist;
-	GtkWidget *list_view;
+	GtkWidget *treeview;
+	GtkListStore *store;
 };
 
 ProgressDialog *progress_dialog_create	(void);
@@ -63,7 +64,7 @@ gint progress_dialog_list_set		(ProgressDialog *progress,
 					 const gchar	*account_name,
 					 const gchar    *status);
 
-gboolean progress_dialog_list_select_row(ProgressDialog *progress,
+void progress_dialog_scroll_to_row	(ProgressDialog	*progress,
 					 gint		 row);
 
 #endif /* __PROGRESS_H__ */

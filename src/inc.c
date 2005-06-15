@@ -385,11 +385,11 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 
 	progress_dialog_get_fraction(progress);
 
-	stock_pixbuf_gdk(progress->list_view, STOCK_PIXMAP_COMPLETE,
+	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_COMPLETE,
 			 &okpix);
-	stock_pixbuf_gdk(progress->list_view, STOCK_PIXMAP_CONTINUE,
+	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_CONTINUE,
 			 &currentpix);
-	stock_pixbuf_gdk(progress->list_view, STOCK_PIXMAP_ERROR,
+	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_ERROR,
 			 &errorpix);
 
 	if (prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS ||
@@ -560,8 +560,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		inc_progress_dialog_clear(inc_dialog);
-		progress_dialog_list_select_row(inc_dialog->dialog,
-						inc_dialog->cur_row);
+		progress_dialog_scroll_to_row(inc_dialog->dialog,
+					      inc_dialog->cur_row);
 
 		SET_PIXMAP_AND_TEXT(currentpix, _("Retrieving"));
 

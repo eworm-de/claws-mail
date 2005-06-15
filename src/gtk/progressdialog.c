@@ -23,12 +23,16 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtk.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtktreeselection.h>
+#include <gtk/gtkcellrendererpixbuf.h>
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkstock.h>
 
@@ -44,15 +48,11 @@ enum {
 	N_PROGRESS_COLUMNS
 };
 
-
-static GtkListStore* progress_dialog_create_data_store(void);
-static gint progress_dialog_list_view_insert_account(GtkWidget   *list_view,
-						     gint	  row,
-						     const gchar *account,
-						     const gchar *status,
-						     GdkPixbuf	 *image);
-static GtkWidget *progress_dialog_list_view_create(void);
-static void progress_dialog_create_list_view_columns(GtkTreeView *list_view);
+static gint progress_dialog_insert_account(ProgressDialog *progress,
+					   gint	 	   row,
+					   const gchar	  *account,
+					   const gchar	  *status,
+					   GdkPixbuf	  *image);
 
 ProgressDialog *progress_dialog_create(void)
 {
@@ -63,12 +63,11 @@ ProgressDialog *progress_dialog_create(void)
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
 	GtkWidget *scrolledwin;
-	GtkWidget *clist;
-	GtkWidget *list_view;
-	gchar *text[] = {NULL, NULL, NULL};
-
-	text[1] = _("Account");
-	text[2] = _("Status");
+	GtkWidget *treeview;
+	GtkListStore *store;
+	GtkTreeSelection *selection;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
 
 	debug_print("Creating progress dialog...\n");
 	progress = g_new0(ProgressDialog, 1);
@@ -112,29 +111,51 @@ ProgressDialog *progress_dialog_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	/* GTK2: we hide the clist, but it is available for migration
-	 * purposes. now if there only was a way to catch "set clist 
-	 * things"!.. */
-	clist = gtk_clist_new_with_titles(3, text);
-	gtk_widget_hide(clist);
-	/* gtk_container_add(GTK_CONTAINER(scrolledwin), clist); */
-	/* gtk_widget_set_size_request(clist, -1, 120); */
-	gtk_clist_set_column_justification(GTK_CLIST(clist), 0,
-					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_width(GTK_CLIST(clist), 0, 16);
-	gtk_clist_set_column_width(GTK_CLIST(clist), 1, 160);
 
-	list_view = progress_dialog_list_view_create();
-	gtk_widget_show(list_view);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), list_view);
-	gtk_widget_set_size_request(list_view, -1, 120);
+	store = gtk_list_store_new(N_PROGRESS_COLUMNS, GDK_TYPE_PIXBUF, G_TYPE_STRING,
+				   G_TYPE_STRING, G_TYPE_POINTER);
 
+	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(G_OBJECT(store));
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), TRUE);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview), TRUE);
+	gtk_widget_show(treeview);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), treeview);
+	gtk_widget_set_size_request(treeview, -1, 120);
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
+
+	renderer = gtk_cell_renderer_pixbuf_new();
+	g_object_set(renderer, "xalign", 0.5, NULL);
+	column = gtk_tree_view_column_new_with_attributes
+		(NULL, renderer, "pixbuf", PROGRESS_IMAGE, NULL);
+	gtk_tree_view_column_set_alignment(column, 0.5);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_fixed_width(column, 20);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Account"), renderer, "text", PROGRESS_ACCOUNT, NULL);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_fixed_width(column, 160);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Status"), renderer, "text", PROGRESS_STATE, NULL);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+	
 	progress->window      = dialog;
 	progress->label       = label;
 	progress->cancel_btn  = cancel_btn;
 	progress->progressbar = progressbar;
-	progress->clist       = clist;
-	progress->list_view   = list_view;
+	progress->treeview    = treeview;
+	progress->store       = store;
 
 	return progress;
 }
@@ -171,9 +192,8 @@ gint progress_dialog_list_set_account(ProgressDialog *progress,
 				      gint	      row,
 				      const gchar    *account_name)
 {
-	return progress_dialog_list_view_insert_account(progress->list_view,
-							row, account_name, NULL, 
-							NULL);
+	return progress_dialog_insert_account(progress, row, account_name,
+					      NULL, NULL);
 }
 
 /*!
@@ -183,9 +203,8 @@ gint progress_dialog_list_set_image(ProgressDialog *progress,
 				    gint	    row,
 				    GdkPixbuf	   *image)
 {
-	return progress_dialog_list_view_insert_account(progress->list_view,
-							row, NULL, NULL, 
-							image);
+	return progress_dialog_insert_account(progress, row, NULL,
+					      NULL, image);
 }
 
 /*!
@@ -195,9 +214,8 @@ gint progress_dialog_list_set_status(ProgressDialog *progress,
 				     gint	     row,
 				     const gchar    *status)
 {
-	return progress_dialog_list_view_insert_account(progress->list_view,
-							row, NULL, status, 
-							NULL);
+	return progress_dialog_insert_account(progress, row, NULL,
+					      status, NULL);
 }
 
 /*!
@@ -209,49 +227,33 @@ gint progress_dialog_list_set(ProgressDialog	*progress,
 			      const gchar	*account_name,
 			      const gchar	*status)
 {
-	return progress_dialog_list_view_insert_account(progress->list_view,
-							row,  account_name, 
-							status, image);
+	return progress_dialog_insert_account(progress, row, account_name,
+					      status, image);
 }
 
-/* XXX: maybe scroll into view, but leaving that for someone else to
- * pickup: I don't have that many accounts... */
-gboolean progress_dialog_list_select_row(ProgressDialog *progress,
-					 gint		 row)
+void progress_dialog_scroll_to_row(ProgressDialog *progress, gint row)
 {
-	GtkTreeSelection *selection = gtk_tree_view_get_selection
-					(GTK_TREE_VIEW(progress->list_view));
+	GtkTreeModel *model = GTK_TREE_MODEL(progress->store);
 	GtkTreeIter iter;
-	GtkTreeModel *model;
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(progress->list_view));
+	GtkTreePath *path;
 
 	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
-		return FALSE;
+		return;
 
-	gtk_tree_selection_select_iter(selection, &iter);		
-
-	return TRUE;
+	path = gtk_tree_model_get_path(model, &iter);
+	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(progress->treeview),
+				     path, NULL, FALSE, 0.0, 0.0);
+	gtk_tree_path_free(path);
 }
 
-static GtkListStore* progress_dialog_create_data_store(void)
-{
-	return gtk_list_store_new(N_PROGRESS_COLUMNS,
-				  GDK_TYPE_PIXBUF,
-				  G_TYPE_STRING,
-				  G_TYPE_STRING,	
-				  -1);
-}
-
-static gint progress_dialog_list_view_insert_account(GtkWidget   *list_view,
-						     gint	  row,
-						     const gchar *account,
-						     const gchar *status,
-						     GdkPixbuf	 *image)
+static gint progress_dialog_insert_account(ProgressDialog *progress,
+					   gint	 	   row,
+					   const gchar 	  *account,
+					   const gchar 	  *status,
+					   GdkPixbuf	  *image)
 {
 	GtkTreeIter iter;
-	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
-					(GTK_TREE_VIEW(list_view)));
+	GtkListStore *store = progress->store;
 	gint result = -1;					
 	
 	if (account == NULL && status == NULL && image == NULL)
@@ -286,50 +288,3 @@ static gint progress_dialog_list_view_insert_account(GtkWidget   *list_view,
 
 	return result;
 }
-
-static GtkWidget *progress_dialog_list_view_create(void)
-{
-	GtkTreeView *list_view;
-	GtkTreeModel *model;
-
-	model = GTK_TREE_MODEL(progress_dialog_create_data_store());
-	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
-	g_object_unref(model);	
-	
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
-	
-	/* create the columns */
-	progress_dialog_create_list_view_columns(list_view);
-
-	return GTK_WIDGET(list_view);
-}
-
-static void progress_dialog_create_list_view_columns(GtkTreeView *list_view)
-{
-	GtkTreeViewColumn *column;
-	GtkCellRenderer *renderer;
-
-	renderer = gtk_cell_renderer_pixbuf_new();
-	column = gtk_tree_view_column_new_with_attributes
-			("", renderer, 
-			 "pixbuf", PROGRESS_IMAGE,
-			 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);			 
-
-	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes
-		(_("Account"),
-		 renderer,
-		 "text", PROGRESS_ACCOUNT,
-		 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
-
-	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes
-		(_("Status"),
-		 renderer,
-		 "text", PROGRESS_STATE,
-		 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
-}
-
