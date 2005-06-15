@@ -903,31 +903,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
         return compose;
 }
 
-/*
-Compose *compose_new_followup_and_replyto(PrefsAccount *account,
-					   const gchar *followupto, gchar * to)
-{
-	Compose *compose;
-
-	if (!account) account = cur_account;
-	g_return_val_if_fail(account != NULL, NULL);
-	g_return_val_if_fail(account->protocol != A_NNTP, NULL);
-
-	compose = compose_create(account, COMPOSE_NEW);
-
-	if (prefs_common.auto_sig)
-		compose_insert_sig(compose);
-	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
-
-	compose_entry_append(compose, to, COMPOSE_TO);
-	compose_entry_append(compose, followupto, COMPOSE_NEWSGROUPS);
-	gtk_widget_grab_focus(compose->subject_entry);
-
-	return compose;
-}
-*/
-
 void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 {
 	MsgInfo *msginfo;
@@ -2240,7 +2215,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
 					compose);
-	
+		
 	compose->autowrap = prev_autowrap;
 	if (compose->autowrap)
 		compose_wrap_all(compose);
@@ -2939,6 +2914,8 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 
 	buffer = gtk_text_view_get_buffer(text);
 
+	undo_block(compose->undostruct);
+	
 	if (par_iter) {
 		iter = *par_iter;
 	} else {
@@ -3021,6 +2998,7 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 	if (par_iter)
 		*par_iter = iter;
 
+	undo_unblock(compose->undostruct);
 	compose->autowrap = prev_autowrap;
 }
 
@@ -3037,9 +3015,13 @@ static void compose_wrap_all_full(Compose *compose, gboolean autowrap)
 
 	buffer = gtk_text_view_get_buffer(text);
 
+	undo_block(compose->undostruct);
+
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	while (!gtk_text_iter_is_end(&iter))
 		compose_wrap_paragraph(compose, &iter);
+
+	undo_unblock(compose->undostruct);
 }
 
 static void compose_set_title(Compose *compose)
