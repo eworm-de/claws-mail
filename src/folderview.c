@@ -857,10 +857,14 @@ gint folderview_check_new(Folder *folder)
 
 			folderview_scan_tree_func(item->folder, item, NULL);
 			former_new = item->new_msgs;
+			summaryview_lock(folderview->summaryview, item);
 			if (folder_item_scan(item) < 0) {
+				summaryview_unlock(folderview->summaryview, item);
 				if (folder && !FOLDER_IS_LOCAL(folder))
 					break;
 			}
+			summaryview_unlock(folderview->summaryview, item);
+
 			folderview_update_node(folderview, node);
 			new_msgs += item->new_msgs;
 			former_new_msgs += former_new;

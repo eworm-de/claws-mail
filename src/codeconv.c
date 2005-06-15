@@ -1484,8 +1484,9 @@ gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding)
 	}								\
 }
 
-void conv_encode_header(gchar *dest, gint len, const gchar *src,
-			gint header_len, gboolean addr_field)
+void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
+			gint header_len, gboolean addr_field,
+			const gchar *out_encoding_)
 {
 	const gchar *cur_encoding;
 	const gchar *out_encoding;
@@ -1507,7 +1508,12 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	}
 
 	cur_encoding = CS_INTERNAL;
-	out_encoding = conv_get_outgoing_charset_str();
+
+	if (out_encoding_)
+		out_encoding = out_encoding_;
+	else
+		out_encoding = conv_get_outgoing_charset_str();
+
 	if (!strcmp(out_encoding, CS_US_ASCII))
 		out_encoding = CS_ISO_8859_1;
 
@@ -1644,6 +1650,12 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	}
 
 	*destp = '\0';
+}
+
+void conv_encode_header(gchar *dest, gint len, const gchar *src,
+			gint header_len, gboolean addr_field)
+{
+	conv_encode_header_full(dest,len,src,header_len,addr_field,NULL);
 }
 
 #undef LBREAK_IF_REQUIRED

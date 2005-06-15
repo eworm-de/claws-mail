@@ -5445,3 +5445,14 @@ void summaryview_export_mbox_list(SummaryView *summaryview)
 	g_free(mbox);
 	
 }
+
+void summaryview_lock(SummaryView *summaryview, FolderItem *item)
+{
+	if (summaryview->folder_item->folder == item->folder) {
+		gtk_widget_set_sensitive(summaryview->ctree, FALSE);
+	}
+}
+void summaryview_unlock(SummaryView *summaryview, FolderItem *item)
+{
+	gtk_widget_set_sensitive(summaryview->ctree, TRUE);
+}

@@ -2200,10 +2200,12 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 	GSList *cur;
 	gint num = 0;
 	gint ret = 0;
+	gint total = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
 
 	debug_print("fetching all messages in %s ...\n", item->path);
+	statusbar_print_all(_("Fetching all messages in %s ...\n"), item->path);
 
 	folder = item->folder;
 
@@ -2213,11 +2215,24 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 
 	mlist = folder_item_get_msg_list(item);
 
+	total = g_slist_length(mlist);
+
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		gchar *msg;
 
 		num++;
+		if (num % 10 == 0) {
+			gchar buf[32];
+			g_snprintf(buf, sizeof(buf), "%d / %d",
+				   num, total);
+			gtk_progress_bar_set_text
+				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
+			gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
+			 (gfloat)num / (gfloat)total);
+		}
+
 		if (folder->ui_func)
 			folder->ui_func(folder, item,
 					folder->ui_func_data ?
@@ -2234,6 +2249,11 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 		g_free(msg);
 	}
 
+	gtk_progress_bar_set_fraction
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
+	gtk_progress_bar_set_text
+		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	statusbar_pop_all();
 	procmsg_msg_list_free(mlist);
 
 	return ret;

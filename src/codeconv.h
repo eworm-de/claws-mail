@@ -217,6 +217,12 @@ void conv_encode_header			(gchar		*dest,
 					 const gchar	*src,
 					 gint		 header_len,
 					 gboolean	 addr_field);
+void conv_encode_header_full		(gchar		*dest,
+					 gint		 len,
+					 const gchar	*src,
+					 gint		 header_len,
+					 gboolean	 addr_field,
+					 const gchar	*out_encoding_);
 
 gchar *conv_filename_from_utf8		(const gchar	*utf8_file);
 gchar *conv_filename_to_utf8		(const gchar	*fs_file);

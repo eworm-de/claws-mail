@@ -17,17 +17,17 @@ EXTRA_DIST = \
 	TODO-gtk2.jp \
 	autogen.sh 
 
-if SYLPHEED_GNOME
-pixmapdir=$(gnomedatadir)/pixmaps
-pixmap_DATA=sylpheed.png
-gnomapdir=$(gnomedatadir)/gnome/apps/Internet
-gnomap_DATA=sylpheed.desktop
-else
 if SYLPHEED_GNOME2
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 pixmap_DATA=sylpheed.png
 gnomapdir = $(datadir)/applications
+gnomap_DATA=sylpheed.desktop
+else
+if SYLPHEED_GNOME
+pixmapdir=$(gnomedatadir)/pixmaps
+pixmap_DATA=sylpheed.png
+gnomapdir=$(gnomedatadir)/gnome/apps/Internet
 gnomap_DATA=sylpheed.desktop
 else
 pixmapdir=

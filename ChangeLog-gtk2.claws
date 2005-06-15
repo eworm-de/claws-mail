@@ -1,3 +1,20 @@
+2005-06-15 [colin]	1.9.11cvs74
+
+	* Makefile.am
+		Install gnome2 stuff rather than gnome1, 
+		if both are present
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+		Fix headers encoding
+	* src/folder.c
+		Visual progress when fetching all messages
+	* src/folderview.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Prevent changing current message while
+		incorporating
+
 2005-06-15 [paul]	1.9.11cvs73
 
 	* src/gtk/gtkaspell.c
