@@ -557,3 +557,4 @@
 ( cvs diff -u -r 1.61.2.26 -r 1.61.2.27 src/account.c;  cvs diff -u -r 1.149.2.25 -r 1.149.2.26 src/inc.c;  cvs diff -u -r 1.17.2.12 -r 1.17.2.13 src/send_message.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/progressdialog.h;  ) > 1.9.11cvs66.patchset
 ( cvs diff -u -r 1.213.2.33 -r 1.213.2.34 src/folder.c;  cvs diff -u -r 1.179.2.32 -r 1.179.2.33 src/imap.c;  ) > 1.9.11cvs67.patchset
 ( cvs diff -u -r 1.382.2.130 -r 1.382.2.131 src/compose.c;  ) > 1.9.11cvs68.patchset
+( cvs diff -u -r 1.8.2.5 -r 1.8.2.6 src/headerview.c;  ) > 1.9.11cvs69.patchset

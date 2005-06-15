@@ -107,11 +107,18 @@ HeaderView *headerview_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox1), from_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), from_body_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), to_header_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), to_body_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), to_body_label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), ng_header_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), ng_body_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), ng_body_label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox2), subject_header_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox2), subject_body_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox2), subject_body_label, TRUE, TRUE, 0);
+
+	gtk_misc_set_alignment(GTK_MISC(to_body_label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(ng_body_label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(subject_body_label), 0, 0.5);
+	gtk_label_set_ellipsize(GTK_LABEL(to_body_label), PANGO_ELLIPSIZE_END);
+	gtk_label_set_ellipsize(GTK_LABEL(ng_body_label), PANGO_ELLIPSIZE_END);
+	gtk_label_set_ellipsize(GTK_LABEL(subject_body_label), PANGO_ELLIPSIZE_END);
 
 	headerview->hbox = hbox;
 	headerview->from_header_label    = from_header_label;
