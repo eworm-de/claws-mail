@@ -1,3 +1,12 @@
+2005-06-15 [paul]	1.9.11cvs70
+
+	* src/inc.c
+	* src/send_message.c
+	* src/gtk/progressdialog.c
+	* src/gtk/progressdialog.h
+		revert yesterday's sync with main
+		it contains deprecated functions
+
 2005-06-15 [colin]	1.9.11cvs69
 
 	* src/headerview.c

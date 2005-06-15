@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkclist.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
@@ -252,18 +253,17 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		dialog->session = session;
 		smtp_session->dialog = dialog;
 
-		progress_dialog_append(dialog->dialog, NULL, ac_prefs->smtp_server,
-			       	       _("Connecting"), NULL);
+		progress_dialog_list_set(dialog->dialog, 0, NULL, 
+					 ac_prefs->smtp_server, 
+					 _("Connecting"));
 
-		
 		if (ac_prefs->pop_before_smtp
 		    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
 		    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 			g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
-			log_message("%s\n", buf);
+			log_message(buf);
 			progress_dialog_set_label(dialog->dialog, buf);
-			progress_dialog_append(dialog->dialog, NULL, ac_prefs->smtp_server,
-			       	               _("POP before SMTP"), NULL);
+			progress_dialog_list_set_status(dialog->dialog, 0, _("POP before SMTP"));
 			GTK_EVENTS_FLUSH();
 			inc_pop_before_smtp(ac_prefs);
 		}
@@ -424,7 +424,7 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	}
 
 	progress_dialog_set_label(dialog->dialog, buf);
-	progress_dialog_set_row_status(dialog->dialog, 0, state_str);
+	progress_dialog_list_set_status(dialog->dialog, 0, state_str);
 
 	return 0;
 }
@@ -444,7 +444,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
 		   cur_len, total_len);
 	progress_dialog_set_label(dialog->dialog, buf);
-	progress_dialog_set_percentage
+	progress_dialog_set_fraction
 		(dialog->dialog, (gfloat)cur_len / (gfloat)total_len);
 
 	return 0;
@@ -477,9 +477,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 	gtk_window_set_modal(GTK_WINDOW(progress->window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
-	progress_dialog_set_value(progress, 0.0);
-
-	gtk_widget_show_now(progress->window);
+	progress_dialog_get_fraction(progress);
 
 	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
 		gtk_widget_show_now(progress->window);
