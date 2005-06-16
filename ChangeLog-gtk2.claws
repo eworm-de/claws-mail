@@ -1,3 +1,15 @@
+2005-06-16 [colin]	1.9.11cvs78
+
+	* src/imap_gtk.c
+		Lock summaryview while downloading messages
+		on user demand
+	* src/procheader.c
+	* src/unmime.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Replace \r and \n with spaces in From and
+		Subject headers
+
 2005-06-16 [paul]	1.9.11cvs77
 
 	* src/procmime.c

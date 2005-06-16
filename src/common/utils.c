@@ -3931,3 +3931,15 @@ void g_auto_pointer_free(GAuto *auto_ptr)
 	g_free(ptr);		
 }
 
+void replace_returns(gchar *str)
+{
+	if (!str)
+		return;
+
+	while (strstr(str, "\n")) {
+		*strstr(str, "\n") = ' ';
+	}
+	while (strstr(str, "\r")) {
+		*strstr(str, "\r") = ' ';
+	}
+}

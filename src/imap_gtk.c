@@ -40,6 +40,7 @@
 #include "imap.h"
 #include "inc.h"
 #include "prefs_common.h"
+#include "summaryview.h"
 
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void rename_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -379,6 +380,7 @@ static void download_cb(FolderView *folderview, guint action,
 	main_window_lock(mainwin);
 	gtk_widget_set_sensitive(folderview->ctree, FALSE);
 	main_window_progress_on(mainwin);
+	summaryview_lock(folderview->summaryview, item);
 	GTK_EVENTS_FLUSH();
 	if (folder_item_fetch_all_msg(item) < 0) {
 		gchar *name;
@@ -389,6 +391,7 @@ static void download_cb(FolderView *folderview, guint action,
 	}
 	folder_set_ui_func(item->folder, NULL, NULL);
 	main_window_progress_off(mainwin);
+	summaryview_unlock(folderview->summaryview, item);
 	gtk_widget_set_sensitive(folderview->ctree, TRUE);
 	main_window_unlock(mainwin);
 	inc_unlock();

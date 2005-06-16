@@ -492,7 +492,7 @@ GAuto *g_auto_pointer_new_with_free	(gpointer p,
 gpointer g_auto_pointer_get_ptr		(GAuto *auto_ptr);
 GAuto *g_auto_pointer_copy		(GAuto *auto_ptr);
 void g_auto_pointer_free		(GAuto *auto_ptr);
-
+void replace_returns			(gchar *str);
 #ifdef __cplusplus
 }
 #endif

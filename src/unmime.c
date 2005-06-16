@@ -127,7 +127,7 @@ gchar *unmime_header(const gchar *encoded_str)
 
 		p = eword_end_p + 2;
 	}
-
+	
 	out_str = outbuf->str;
 	out_len = outbuf->len;
 	g_string_free(outbuf, FALSE);
