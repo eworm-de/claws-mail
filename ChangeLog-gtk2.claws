@@ -1,3 +1,10 @@
+2005-06-16 [paul]	1.9.11cvs77
+
+	* src/procmime.c
+		liberalise the mime parser
+	* src/gtk/about.c
+		add text wrapping
+
 2005-06-16 [paul]	1.9.11cvs76
 
 	* src/gtk/about.c

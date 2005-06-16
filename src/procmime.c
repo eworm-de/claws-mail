@@ -1253,7 +1253,6 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
-	gint mime_major, mime_minor;
         gchar *tmp;
 
 	procmime_decode_content(mimeinfo);
@@ -1282,30 +1281,14 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
         }                
 	content_start = ftell(fp);
 	fclose(fp);
-
-	if ((hentry[5].body != NULL) &&
-	    (sscanf(hentry[5].body, "%d.%d", &mime_major, &mime_minor) == 2) &&
-	    (mime_major == 1) && (mime_minor == 0)) {
-		procmime_parse_mimepart(mimeinfo,
-				        hentry[0].body, hentry[1].body,
-					hentry[2].body, hentry[3].body, 
-					hentry[4].body, 
-					mimeinfo->data.filename, content_start,
-					mimeinfo->length - (content_start - mimeinfo->offset));
-	} else {
-		MimeInfo *subinfo;
-
-		subinfo = procmime_mimeinfo_new();
-		subinfo->content = MIMECONTENT_FILE;
-		subinfo->encoding_type = ENC_UNKNOWN;
-		subinfo->type = MIMETYPE_TEXT;
-		subinfo->subtype = g_strdup("plain");
-		subinfo->data.filename = g_strdup(mimeinfo->data.filename);
-		subinfo->offset = content_start;
-		subinfo->length = mimeinfo->length - (content_start - mimeinfo->offset);
-
-		g_node_append(mimeinfo->node, subinfo->node);
-	}
+	
+	procmime_parse_mimepart(mimeinfo,
+				hentry[0].body, hentry[1].body,
+				hentry[2].body, hentry[3].body,
+				hentry[4].body,
+				mimeinfo->data.filename, content_start,
+				mimeinfo->length - (content_start - mimeinfo->offset));
+	
 	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
 		hentry[i].body = NULL;
