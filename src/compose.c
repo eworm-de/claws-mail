@@ -2702,6 +2702,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	gint pos = 0;
 	gboolean can_break = FALSE;
 	gboolean do_break = FALSE;
+	gboolean was_white = FALSE;
 
 	gtk_text_iter_forward_to_line_end(&line_end);
 	str = gtk_text_buffer_get_text(buffer, &iter, &line_end, FALSE);
@@ -2735,8 +2736,10 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		gunichar wc;
 		gint uri_len;
 
-		if (attr->is_line_break && can_break)
+		if (attr->is_line_break && can_break && was_white)
 			pos = i;
+		
+		was_white = attr->is_white;
 
 		/* don't wrap URI */
 		if ((uri_len = get_uri_len(p)) > 0) {

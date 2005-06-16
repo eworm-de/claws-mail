@@ -567,3 +567,4 @@
 ( cvs diff -u -r 1.4.2.10 -r 1.4.2.11 src/gtk/about.c;  ) > 1.9.11cvs76.patchset
 ( cvs diff -u -r 1.49.2.47 -r 1.49.2.48 src/procmime.c;  cvs diff -u -r 1.4.2.11 -r 1.4.2.12 src/gtk/about.c;  ) > 1.9.11cvs77.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/imap_gtk.c;  cvs diff -u -r 1.47.2.20 -r 1.47.2.21 src/procheader.c;  cvs diff -u -r 1.8.2.4 -r 1.8.2.5 src/unmime.c;  cvs diff -u -r 1.36.2.32 -r 1.36.2.33 src/common/utils.c;  cvs diff -u -r 1.20.2.15 -r 1.20.2.16 src/common/utils.h;  ) > 1.9.11cvs78.patchset
+( cvs diff -u -r 1.382.2.132 -r 1.382.2.133 src/compose.c;  ) > 1.9.11cvs79.patchset

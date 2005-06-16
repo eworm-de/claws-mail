@@ -1,3 +1,11 @@
+2005-06-16 [colin]	1.9.11cvs79
+
+	* src/compose.c
+		Fix bug #707 (Dash splits rows)
+		Only wrap if we're on a line break position and
+		the previous one was a "white" (space) char.
+		Pango stuff is weird.
+
 2005-06-16 [colin]	1.9.11cvs78
 
 	* src/imap_gtk.c
