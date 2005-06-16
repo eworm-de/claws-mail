@@ -1,3 +1,8 @@
+2005-06-16 [paul]	1.9.11cvs76
+
+	* src/gtk/about.c
+		reworked
+
 2005-06-15 [colin]	1.9.11cvs75
 
 	* src/compose.c

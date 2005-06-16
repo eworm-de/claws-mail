@@ -63,24 +63,23 @@ void about_show(void)
 
 static void about_create(void)
 {
-	GtkWidget *pixmap;
-	GtkWidget *label;
-	GtkWidget *hbox1;
-	GtkWidget *hbox2;
 	GtkWidget *vbox1;
+	GtkWidget *table;
+	GtkWidget *image;	
  	GtkWidget *vbox2;
+	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
-	GtkWidget *text;
-	GtkWidget *confirm_area;
-	GtkWidget *ok_button;
-	GtkTextBuffer *buffer;
-	GtkTextIter iter;
 	GtkStyle *style;
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
 	char *markup;
+	GtkWidget *text;
+	GtkWidget *confirm_area;
+	GtkWidget *close_button;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -101,31 +100,31 @@ static void about_create(void)
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
-  	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+	table = gtk_table_new (1, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
 
-	pixmap = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
-	gtk_box_pack_start(GTK_BOX(hbox1), pixmap, FALSE, FALSE, 0);
+	image = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
+	gtk_table_attach(GTK_TABLE(table), image, 0, 1, 0, 1,
+			 (GtkAttachOptions) (GTK_SHRINK),
+			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
-  	vbox2 = gtk_vbox_new (FALSE, 6);
-  	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, FALSE, 0);
-	
+	vbox2 = gtk_vbox_new (TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), vbox2, 1, 2, 0, 1,
+			 (GtkAttachOptions) (GTK_EXPAND),
+			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
+
 	label = gtk_label_new("");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, FALSE, 0);
-
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 	markup = g_markup_printf_escaped
 		("<span weight=\"bold\" size=\"x-large\">Sylpheed-Claws</span>\nversion %s",
 		 VERSION);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 
-	hbox2 = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
-
 	button = gtk_button_new_with_label(" "HOMEPAGE_URI" ");
-	gtk_box_pack_start(GTK_BOX(hbox2), button, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(about_uri_clicked), NULL);
@@ -199,9 +198,11 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
+		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		 "and the Sylpheed-Claws team");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 4);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+	gtk_box_pack_start(GTK_BOX(vbox1), label, TRUE, TRUE, 0);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -238,12 +239,12 @@ static void about_create(void)
 		  "Foundation, Inc., 59 Temple Place - Suite 330, Boston, "
 		  "MA 02111-1307, USA."), -1);
 
-	gtkut_stock_button_set_create(&confirm_area, &ok_button, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_button);
+	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 4);
+	gtk_widget_grab_default(close_button);
 	g_signal_connect_closure
-		(G_OBJECT(ok_button), "clicked",
+		(G_OBJECT(close_button), "clicked",
 		 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide_on_delete),
 				     window, NULL), FALSE);
 
