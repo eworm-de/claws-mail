@@ -1,3 +1,15 @@
+2005-06-17 [colin]	1.9.11cvs80
+
+	Forgotten files on 1.9.11cvs79
+	* src/summaryview.c
+		Fix stepping when not immediately executing
+	* src/imap.c
+		Really prevent UID FETCH 0
+	* src/codeconv.c
+		Fix outgoing charset never set to utf-8
+	* src/mh.c
+		Fix leak
+
 2005-06-16 [colin]	1.9.11cvs79
 
 	* src/compose.c

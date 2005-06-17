@@ -2045,6 +2045,9 @@ static void *imap_get_uncached_messages_thread(void *data)
 	seq_list = imap_get_seq_set_from_numlist(numlist);
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
 		imapset = cur->data;
+		
+		if (!imapset || strlen(imapset) == 0)
+			continue;
 
 		if (imap_cmd_envelope(session, imapset)
 		    != IMAP_SUCCESS) {
@@ -4072,6 +4075,9 @@ static GSList *imap_get_seq_set_from_numlist(MsgNumberList *numlist)
 	first = GPOINTER_TO_INT(sorted_list->data);
 
 	for (cur = sorted_list; cur != NULL; cur = g_slist_next(cur)) {
+		if (GPOINTER_TO_INT(cur->data) == 0)
+			continue;
+
 		last = GPOINTER_TO_INT(cur->data);
 		if (cur->next)
 			next = GPOINTER_TO_INT(cur->next->data);

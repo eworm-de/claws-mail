@@ -3215,11 +3215,10 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 	END_LONG_OPERATION(summaryview);
 
-	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
-
-	if (prefs_common.immediate_exec)
+	if (prefs_common.immediate_exec) {
+		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 		summary_execute(summaryview);
-	else {
+	} else {
 		summary_status_show(summaryview);
 	}
 	

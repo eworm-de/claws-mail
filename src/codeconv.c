@@ -1334,6 +1334,11 @@ CharSet conv_get_outgoing_charset(void)
 		return out_charset;
 	}
 
+	if (strcasestr(cur_locale, "UTF-8")) {
+		out_charset = C_UTF_8;
+		return out_charset;
+	}
+
 	if ((p = strcasestr(cur_locale, "@euro")) && p[5] == '\0') {
 		out_charset = C_ISO_8859_15;
 		return out_charset;

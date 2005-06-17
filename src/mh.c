@@ -293,9 +293,10 @@ static gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 
 	if (!is_file_exist(file)) {
 		g_free(file);
+		g_free(path);
 		return NULL;
 	}
-
+	g_free(path);
 	return file;
 }
 
