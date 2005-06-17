@@ -1,3 +1,9 @@
+2005-06-17 [colin]	1.9.11cvs81
+
+	* src/imap.c
+		Fix IMAP breaking on folders containing '('
+		(Probably won't be enough)
+
 2005-06-17 [colin]	1.9.11cvs80
 
 	Forgotten files on 1.9.11cvs79
