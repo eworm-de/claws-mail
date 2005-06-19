@@ -400,17 +400,25 @@ static void download_cb(FolderView *folderview, guint action,
 
 gboolean imap_gtk_should_override(void)
 {
-	static time_t overridden = 0;
-	if (prefs_common.work_offline) {
-		if (time(NULL) - overridden < 600)
-			 return TRUE;
-		else if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override during 10 minutes?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
-			return FALSE;
+	static time_t overridden_yes = 0;
+	static time_t overridden_no  = 0;
+	gboolean answer = TRUE;
 
-		overridden = time(NULL);
+	if (prefs_common.work_offline) {
+		if (time(NULL) - overridden_yes < 600)
+			 return TRUE;
+		else if (time(NULL) - overridden_no < 3)
+			 return FALSE;
+		
+		answer = (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override during 10 minutes?"),
+			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT);
+		
+		if (answer == TRUE)
+			overridden_yes = time(NULL);
+		else
+			overridden_no  = time(NULL);
 	}
-	return TRUE;
+	return answer;
 	
 }

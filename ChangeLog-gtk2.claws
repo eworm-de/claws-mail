@@ -1,3 +1,10 @@
+2005-06-19 [colin]	1.9.11cvs82
+
+	* src/imap_gtk.c
+		Remember that the user doesn't want to override
+		offline mode, for 3 seconds. It avoid presenting
+		him with N popups in a really short time.
+
 2005-06-17 [colin]	1.9.11cvs81
 
 	* src/imap.c
