@@ -2633,6 +2633,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	gint num, lastnum = -1;
 	gboolean folderscan = FALSE;
 	GRelation *relation;
+	GSList *not_moved = NULL;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -2670,7 +2671,10 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			MsgInfo * msginfo = (MsgInfo *) l->data;
 
 			num = folder->klass->copy_msg(folder, dest, msginfo);
-			g_relation_insert(relation, msginfo, GINT_TO_POINTER(num));
+			if (num > 0)
+				g_relation_insert(relation, msginfo, GINT_TO_POINTER(num));
+			else
+				not_moved = g_slist_prepend(not_moved, msginfo);
 		}
 	}
 
@@ -2750,6 +2754,9 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
             		tuples = g_relation_select(relation, msginfo, 0);
             	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
             		g_tuples_destroy(tuples);
+
+			if (g_slist_find(not_moved, msginfo))
+				continue;
 
 			if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
 				if (!item->folder->klass->remove_msgs)

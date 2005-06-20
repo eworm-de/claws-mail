@@ -1,3 +1,8 @@
+2005-06-20 [colin]	1.9.11cvs84
+
+	* src/folder.c
+		Be sure not to remove source if copy failed
+
 2005-06-20 [colin]	1.9.11cvs83
 
 	* src/folderview.c
