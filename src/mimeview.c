@@ -564,9 +564,10 @@ gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 		return FALSE;
 	}
 
+	if (mimeview->mimeviewer != NULL)
+		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
+
 	if (mimeview->mimeviewer != viewer) {
-		if (mimeview->mimeviewer != NULL)
-			mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
 		mimeview->mimeviewer = viewer;
 		mimeview_change_view_type(mimeview, MIMEVIEW_VIEWER);
 	}

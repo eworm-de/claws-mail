@@ -1,3 +1,16 @@
+2005-06-20 [colin]	1.9.11cvs83
+
+	* src/folderview.c
+	* src/imap_gtk.c
+		remove summaryview's lock
+	* src/imap.c
+		introduce threads to avoid problems when foreground tasks
+		interfere with background tasks
+	* src/mh.c
+		prevent moving to drafts/queue
+	* src/mimeview.c
+		fix leak
+
 2005-06-19 [colin]	1.9.11cvs82
 
 	* src/imap_gtk.c

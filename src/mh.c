@@ -444,6 +444,11 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 			g_free(destfile);
 			return -1;
 		}
+	} else if (!(MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
+	&& (dest->stype == F_QUEUE || dest->stype == F_DRAFT)) {
+		g_free(srcfile);
+		g_free(destfile);
+		return -1;
 	} else if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);

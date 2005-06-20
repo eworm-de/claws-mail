@@ -64,6 +64,39 @@
 
 #ifdef USE_PTHREAD
 #include <pthread.h>
+static pthread_mutex_t imap_mutex;
+static const char *mutex_hold = NULL;
+
+#define MUTEX_TRYLOCK_OR_RETURN() {					\
+	debug_print("%s: locking mutex\n", __FUNCTION__);		\
+	if (pthread_mutex_trylock(&imap_mutex) == EBUSY) {		\
+		g_warning("can't lock mutex (held by %s)\n", 		\
+				mutex_hold ? mutex_hold:"(nil)");	\
+		return;							\
+	}								\
+	mutex_hold = __FUNCTION__;					\
+}
+
+#define MUTEX_TRYLOCK_OR_RETURN_VAL(retval) {				\
+	debug_print("%s: locking mutex\n", __FUNCTION__);		\
+	if (pthread_mutex_trylock(&imap_mutex) == EBUSY) {		\
+		g_warning("can't lock mutex (held by %s)\n", 		\
+				mutex_hold ? mutex_hold:"(nil)");	\
+		return retval;						\
+	}								\
+	mutex_hold = __FUNCTION__;					\
+}
+
+#define MUTEX_UNLOCK() {						\
+	debug_print("%s: unlocking mutex\n", __FUNCTION__);\
+	pthread_mutex_unlock(&imap_mutex);				\
+	mutex_hold = NULL;						\
+}
+
+#else
+#define MUTEX_TRYLOCK_OR_RETURN() do {} while(0)
+#define MUTEX_TRYLOCK_OR_RETURN_VAL(retval) do {} while(0)
+#define MUTEX_UNLOCK() do {} while(0)
 #endif
 
 typedef struct _IMAPFolder	IMAPFolder;
@@ -528,7 +561,6 @@ static gchar *imap_getline(SockInfo *sock)
 	gchar *line;
 	td->sock = sock;
 	td->done = FALSE;
-	
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_getline_thread, td) != 0) {
 		g_free(td);
@@ -592,6 +624,9 @@ FolderClass *imap_get_class(void)
 		imap_class.change_flags = imap_change_flags;
 		imap_class.get_flags = imap_get_flags;
 		imap_class.set_batch = imap_set_batch;
+#ifdef USE_PTREAD
+		pthread_mutex_init(&imap_mutex, NULL);
+#endif
 	}
 	
 	return &imap_class;
@@ -1078,13 +1113,18 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	MsgFileInfo *fileinfo;
 	gint ok;
 
+
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file_list != NULL, -1);
+	
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
 
 	session = imap_session_get(folder);
-	if (!session) return -1;
-
+	if (!session) {
+		MUTEX_UNLOCK();
+		return -1;
+	}
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
 	for (cur = file_list; cur != NULL; cur = cur->next) {
@@ -1114,6 +1154,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		if (ok != IMAP_SUCCESS) {
 			g_warning("can't append message %s\n", fileinfo->file);
 			g_free(destdir);
+			MUTEX_UNLOCK();
 			return -1;
 		}
 
@@ -1127,6 +1168,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 	g_free(destdir);
 
+	MUTEX_UNLOCK();
 	return last_uid;
 }
 
@@ -1242,11 +1284,16 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
+
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
-	if (folder == msginfo->folder->folder)
-		return imap_do_copy_msgs(folder, dest, msglist, relation);
+	if (folder == msginfo->folder->folder) {
+		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
+		MUTEX_UNLOCK();
+		return ret;
+	}
 
 	file_list = procmsg_get_message_file_list(msglist);
 	g_return_val_if_fail(file_list != NULL, -1);
@@ -1255,6 +1302,7 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 
 	procmsg_message_file_list_free(file_list);
 
+	MUTEX_UNLOCK();
 	return ret;
 }
 
@@ -1273,8 +1321,11 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
+
 	session = imap_session_get(folder);
 	if (!session) {
+		MUTEX_UNLOCK();
 		return -1;
 	}
 	msginfo = (MsgInfo *)msglist->data;
@@ -1282,6 +1333,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS) {
+		MUTEX_UNLOCK();
 		return ok;
 	}
 
@@ -1299,11 +1351,13 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 		seq_list, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags\n"));
+		MUTEX_UNLOCK();
 		return ok;
 	}
 	ok = imap_cmd_expunge(session, NULL);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
+		MUTEX_UNLOCK();
 		return ok;
 	}
 	
@@ -1312,6 +1366,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 
 	g_free(destdir);
 
+	MUTEX_UNLOCK();
 	if (ok == IMAP_SUCCESS)
 		return 0;
 	else
@@ -1386,6 +1441,8 @@ static gint imap_scan_tree(Folder *folder)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
+
 	session = imap_session_get(folder);
 	if (!session) {
 		if (!folder->node) {
@@ -1394,6 +1451,7 @@ static gint imap_scan_tree(Folder *folder)
 			item->folder = folder;
 			folder->node = item->node = g_node_new(item);
 		}
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
@@ -1402,7 +1460,7 @@ static gint imap_scan_tree(Folder *folder)
 		GPtrArray *argbuf;
 		gint ok;
 
-		Xstrdup_a(root_folder, folder->account->imap_dir, return -1);
+		Xstrdup_a(root_folder, folder->account->imap_dir, {MUTEX_UNLOCK();return -1;});
 		extract_quote(root_folder, '"');
 		subst_char(root_folder,
 			   imap_get_path_separator(IMAP_FOLDER(folder),
@@ -1427,6 +1485,7 @@ static gint imap_scan_tree(Folder *folder)
 				item->folder = folder;
 				folder->node = item->node = g_node_new(item);
 			}
+			MUTEX_UNLOCK();
 			return -1;
 		}
 		g_ptr_array_free(argbuf, TRUE);
@@ -1446,6 +1505,7 @@ static gint imap_scan_tree(Folder *folder)
 	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data));
 	imap_create_missing_folders(folder);
 
+	MUTEX_UNLOCK();
 	return 0;
 }
 
@@ -1798,8 +1858,13 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(parent != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(NULL);
+
 	session = imap_session_get(folder);
-	if (!session) return NULL;
+	if (!session) {
+		MUTEX_UNLOCK();
+		return NULL;
+	}
 
 	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0)
 		dirpath = g_strdup(name);
@@ -1810,7 +1875,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	else if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *imap_dir;
 
-		Xstrdup_a(imap_dir, folder->account->imap_dir, return NULL);
+		Xstrdup_a(imap_dir, folder->account->imap_dir, {MUTEX_UNLOCK();return NULL;});
 		strtailchomp(imap_dir, '/');
 		dirpath = g_strconcat(imap_dir, "/", name, NULL);
 	} else
@@ -1820,7 +1885,11 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	   sub folder */
 	imap_path = imap_utf8_to_modified_utf7(dirpath);
 	strtailchomp(dirpath, '/');
-	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
+	Xstrdup_a(new_name, name, {
+		g_free(dirpath); 		
+		MUTEX_UNLOCK();
+		return NULL;});
+
 	strtailchomp(new_name, '/');
 	separator = imap_get_path_separator(IMAP_FOLDER(folder), imap_path);
 	imap_path_separator_subst(imap_path, separator);
@@ -1840,6 +1909,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 			g_free(dirpath);
 			ptr_array_free_strings(argbuf);
 			g_ptr_array_free(argbuf, TRUE);
+			MUTEX_UNLOCK();
 			return NULL;
 		}
 
@@ -1860,6 +1930,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 				log_warning(_("can't create mailbox\n"));
 				g_free(imap_path);
 				g_free(dirpath);
+				MUTEX_UNLOCK();
 				return NULL;
 			}
 		}
@@ -1875,6 +1946,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		make_dir_hier(dirpath);
 	g_free(dirpath);
 
+	MUTEX_UNLOCK();
 	return new_item;
 }
 
@@ -1899,15 +1971,20 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item->path != NULL, -1);
 	g_return_val_if_fail(name != NULL, -1);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
+
 	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
 		g_warning(_("New folder name must not contain the namespace "
 			    "path separator"));
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
 	session = imap_session_get(folder);
-	if (!session) return -1;
-
+	if (!session) {
+		MUTEX_UNLOCK();
+		return -1;
+	}
 	real_oldpath = imap_get_real_path(IMAP_FOLDER(folder), item->path);
 
 	g_free(session->mbox);
@@ -1916,6 +1993,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 			      &exists, &recent, &unseen, &uid_validity, FALSE);
 	if (ok != IMAP_SUCCESS) {
 		g_free(real_oldpath);
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
@@ -1937,6 +2015,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		g_free(real_oldpath);
 		g_free(newpath);
 		g_free(real_newpath);
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
@@ -1964,6 +2043,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_free(real_oldpath);
 	g_free(real_newpath);
 
+	MUTEX_UNLOCK();
 	return 0;
 }
 
@@ -1980,15 +2060,20 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->path != NULL, -1);
 
-	session = imap_session_get(folder);
-	if (!session) return -1;
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
 
+	session = imap_session_get(folder);
+	if (!session) {
+		MUTEX_UNLOCK();
+		return -1;
+	}
 	path = imap_get_real_path(IMAP_FOLDER(folder), item->path);
 
 	ok = imap_cmd_examine(session, "INBOX",
 			      &exists, &recent, &unseen, &uid_validity, FALSE);
 	if (ok != IMAP_SUCCESS) {
 		g_free(path);
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
@@ -1996,6 +2081,7 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't delete mailbox\n"));
 		g_free(path);
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
@@ -2006,6 +2092,7 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 	g_free(cache_dir);
 	folder_item_remove(item);
 
+	MUTEX_UNLOCK();
 	return 0;
 }
 
@@ -2136,10 +2223,13 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	}
 
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	MUTEX_TRYLOCK_OR_RETURN_VAL(NULL);
+
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_get_uncached_messages_thread, data) != 0) {
 		result = (GSList *)imap_get_uncached_messages_thread(data);
 		g_free(data);
+		MUTEX_UNLOCK();
 		return result;
 	}
 	debug_print("+++waiting for imap_get_uncached_messages_thread...\n");
@@ -2169,6 +2259,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, (void *)&result);
+	MUTEX_UNLOCK();
 #else
 	result = (GSList *)imap_get_uncached_messages_thread(data);
 #endif
@@ -2837,6 +2928,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	real_path = imap_get_real_path(folder, path);
 	
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+
 	if (block == FALSE) {
 		select_data *data = g_new0(select_data, 1);
 		void *tmp;
@@ -3383,10 +3475,12 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	}
 
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_cmd_fetch_thread, data) != 0) {
 		result = GPOINTER_TO_INT(imap_cmd_fetch_thread(data));
 		g_free(data);
+		MUTEX_UNLOCK();
 		return result;
 	}
 	debug_print("+++waiting for imap_cmd_fetch_thread...\n");
@@ -3399,6 +3493,7 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &tmp);
 	result = GPOINTER_TO_INT(tmp);
+	MUTEX_UNLOCK();
 #else
 	result = GPOINTER_TO_INT(imap_cmd_fetch_thread(data));
 #endif
@@ -4311,12 +4406,14 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
-
+	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->item.path != NULL, -1);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
+
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
@@ -4325,17 +4422,20 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 			  (!strcmp(session->mbox, item->item.path));
 	if (selected_folder) {
 		ok = imap_cmd_noop(session);
-		if (ok != IMAP_SUCCESS)
+		if (ok != IMAP_SUCCESS) {
+			MUTEX_UNLOCK();
 			return -1;
+		}
 		exists = session->exists;
 
 		*old_uids_valid = TRUE;
 	} else {
 		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
 				 &exists, &recent, &uid_next, &uid_val, &unseen, FALSE);
-		if (ok != IMAP_SUCCESS)
+		if (ok != IMAP_SUCCESS) {
+			MUTEX_UNLOCK();
 			return -1;
-
+		}
 		if(item->item.mtime == uid_val)
 			*old_uids_valid = TRUE;
 		else {
@@ -4368,6 +4468,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		   out which numbers have been removed */
 		if (exists == nummsgs) {
 			*msgnum_list = g_slist_copy(item->uid_list);
+			MUTEX_UNLOCK();
 			return nummsgs;
 		} else if (exists < nummsgs) {
 			debug_print("Freeing imap uid cache");
@@ -4379,10 +4480,16 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	if (exists == 0) {
 		*msgnum_list = NULL;
+		MUTEX_UNLOCK();
 		return 0;
 	}
 
 	nummsgs = get_list_of_uids(folder, item, &uidlist);
+
+	if (nummsgs < 0) {
+		MUTEX_UNLOCK();
+		return -1;
+	}
 
 	if (nummsgs != exists) {
 		/* Cache contains more messages then folder, we have cached
@@ -4405,6 +4512,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	debug_print("removing old messages from %s\n", dir);
 	remove_numbered_files_not_in_list(dir, *msgnum_list);
 	g_free(dir);
+	MUTEX_UNLOCK();
 
 	return nummsgs;
 }
@@ -4576,13 +4684,19 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder == item);
 
+	MUTEX_TRYLOCK_OR_RETURN();
+
 	session = imap_session_get(folder);
-	if (!session) return;
-	
-	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
-	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS)
+	if (!session) {
+		MUTEX_UNLOCK();
 		return;
-		
+	}
+	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
+		MUTEX_UNLOCK();
+		return;
+	}
+
 	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
 		flags_set |= IMAP_FLAG_FLAGGED;
 	if ( MSG_IS_MARKED(msginfo->flags) && !(newflags & MSG_MARKED))
@@ -4632,16 +4746,23 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 		debug_print("IMAP changing flags\n");
 		if (flags_set) {
 			ok = imap_set_message_flags(session, &numlist, flags_set, TRUE);
-			if (ok != IMAP_SUCCESS) return;
+			if (ok != IMAP_SUCCESS) {
+				MUTEX_UNLOCK();
+				return;
+			}
 		}
 
 		if (flags_unset) {
 			ok = imap_set_message_flags(session, &numlist, flags_unset, FALSE);
-			if (ok != IMAP_SUCCESS) return;
+			if (ok != IMAP_SUCCESS) {
+				MUTEX_UNLOCK();
+				return;
+			}
 		}
 	}
 	msginfo->flags.perm_flags = newflags;
 	
+	MUTEX_UNLOCK();
 	return;
 }
 
@@ -4870,10 +4991,12 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	}
 
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
 			imap_get_flags_thread, data) != 0) {
 		result = GPOINTER_TO_INT(imap_get_flags_thread(data));
 		g_free(data);
+		MUTEX_UNLOCK();
 		return result;
 	}
 	debug_print("+++waiting for imap_get_flags_thread...\n");
@@ -4886,6 +5009,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &tmp);
 	result = GPOINTER_TO_INT(tmp);
+	MUTEX_UNLOCK();
 #else
 	result = GPOINTER_TO_INT(imap_get_flags_thread(data));
 #endif
@@ -4915,6 +5039,7 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 
 static void process_hashtable(void)
 {
+	MUTEX_TRYLOCK_OR_RETURN();
 	if (flags_set_table) {
 		g_hash_table_foreach_remove(flags_set_table, process_flags, GINT_TO_POINTER(TRUE));
 		g_free(flags_set_table);
@@ -4925,6 +5050,7 @@ static void process_hashtable(void)
 		g_free(flags_unset_table);
 		flags_unset_table = NULL;
 	}
+	MUTEX_UNLOCK();
 }
 
 static IMAPFolderItem *batching_item = NULL;
