@@ -1,3 +1,15 @@
+2005-06-21 [colin]	1.9.11cvs86
+
+	* src/folder.c
+	* src/folderview.c
+		Respect the no_select flag
+	* src/imap.c
+		Fix recursive deletion
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Make the folder deletion's warning
+		more explicit
+
 2005-06-21 [colin]	1.9.11cvs85
 
 	* src/textview.c

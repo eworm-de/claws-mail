@@ -1380,7 +1380,8 @@ static gint imap_remove_msgs(Folder *folder, FolderItem *dest,
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
+	if (msglist == NULL)
+		return 0;
 
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
@@ -2047,7 +2048,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	return 0;
 }
 
-static gint imap_remove_folder(Folder *folder, FolderItem *item)
+static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 {
 	gint ok;
 	IMAPSession *session;
@@ -2094,6 +2095,29 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 
 	MUTEX_UNLOCK();
 	return 0;
+}
+
+static gint imap_remove_folder(Folder *folder, FolderItem *item)
+{
+	GNode *node, *next;
+
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->folder != NULL, -1);
+	g_return_val_if_fail(item->node != NULL, -1);
+	g_return_val_if_fail(item->no_select == FALSE, -1);
+
+	node = item->node->children;
+	while (node != NULL) {
+		next = node->next;
+		if (imap_remove_folder(folder, FOLDER_ITEM(node->data)) < 0)
+			return -1;
+		node = next;
+	}
+	debug_print("IMAP removing %s\n", item->path);
+
+	if (imap_remove_all_msg(folder, item) < 0)
+		return -1;
+	return imap_remove_folder_real(folder, item);
 }
 
 typedef struct _uncached_data {

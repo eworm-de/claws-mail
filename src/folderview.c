@@ -135,6 +135,9 @@ static GdkBitmap *draftsxpmmask;
 static GdkPixmap *draftsopenxpm;
 static GdkBitmap *draftsopenxpmmask;
 
+static GdkPixmap *noselectxpm;
+static GdkBitmap *noselectxpmmask;
+
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
 static void folderview_set_folders	 (FolderView	*folderview);
@@ -465,6 +468,7 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm, &queueopenhrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm, &draftsxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm, &draftsopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm, &noselectxpmmask);
 
 	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
 	 * instead text (text overflows making them unreadable and ugly) */
@@ -1106,6 +1110,12 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openmask = folderopenxpmmask;
 		}
 	}
+	
+	if (item->no_select) {
+		xpm = openxpm = noselectxpm;
+		mask = openmask = noselectxpmmask;
+	}
+
 	name = folder_item_get_name(item);
 
 	if (!GTK_CTREE_ROW(node)->expanded) {
@@ -1576,7 +1586,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		folderview->open_folder = FALSE;
 		return;
 	}
-
+	
 	if (!can_select || summary_is_locked(folderview->summaryview)) {
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
 		gtk_ctree_select(ctree, folderview->opened);
@@ -1586,7 +1596,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (!folderview->open_folder) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, row);
-	if (!item) return;
+	if (!item || item->no_select) return;
 
 	can_select = FALSE;
 
@@ -2196,7 +2206,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		src_item = folderview->summaryview->folder_item;
 		
 		/* re-check (due to acceptable possibly set for folder moves */
-		if (!(item && item->folder && item->path &&
+		if (!(item && item->folder && item->path && !item->no_select && 
 		      src_item && src_item != item && FOLDER_CLASS(item->folder)->copy_msg != NULL)) {
 			return;
 		}
@@ -2232,7 +2242,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folder_find_item_from_identifier(source);
 
-		if (!item || !src_item || src_item->stype != F_NORMAL) {
+		if (!item || item->no_select || !src_item || src_item->stype != F_NORMAL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		}
