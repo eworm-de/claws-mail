@@ -1,3 +1,10 @@
+2005-06-21 [colin]	1.9.11cvs85
+
+	* src/textview.c
+		Prevent email addresses from spanning accross
+		lines - fixes bug # 646 (newline-chars in 
+		email addresses)
+
 2005-06-20 [colin]	1.9.11cvs84
 
 	* src/folder.c

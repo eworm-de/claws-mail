@@ -573,3 +573,4 @@
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/imap_gtk.c;  ) > 1.9.11cvs82.patchset
 ( cvs diff -u -r 1.207.2.42 -r 1.207.2.43 src/folderview.c;  cvs diff -u -r 1.179.2.35 -r 1.179.2.36 src/imap.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/imap_gtk.c;  cvs diff -u -r 1.79.2.12 -r 1.79.2.13 src/mh.c;  cvs diff -u -r 1.83.2.33 -r 1.83.2.34 src/mimeview.c;  ) > 1.9.11cvs83.patchset
 ( cvs diff -u -r 1.213.2.35 -r 1.213.2.36 src/folder.c;  ) > 1.9.11cvs84.patchset
+( cvs diff -u -r 1.96.2.57 -r 1.96.2.58 src/textview.c;  ) > 1.9.11cvs85.patchset
