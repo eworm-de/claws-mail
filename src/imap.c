@@ -67,6 +67,10 @@
 static pthread_mutex_t imap_mutex;
 static const char *mutex_hold = NULL;
 
+#ifndef __GNUC__
+#define __FUNCTION__ __FILE__
+#endif 
+
 #define MUTEX_TRYLOCK_OR_RETURN() {					\
 	debug_print("%s: locking mutex\n", __FUNCTION__);		\
 	if (pthread_mutex_trylock(&imap_mutex) == EBUSY) {		\
@@ -1298,11 +1302,11 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	file_list = procmsg_get_message_file_list(msglist);
 	g_return_val_if_fail(file_list != NULL, -1);
 
+	MUTEX_UNLOCK();
 	ret = imap_add_msgs(folder, dest, file_list, relation);
 
 	procmsg_message_file_list_free(file_list);
 
-	MUTEX_UNLOCK();
 	return ret;
 }
 

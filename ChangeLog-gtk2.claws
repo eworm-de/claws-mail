@@ -1,3 +1,9 @@
+2005-06-22 [colin]	1.9.11cvs88
+
+	* src/imap.c
+		o Fix compilation with non-gnu compiler (thanks Alex S Moore)
+		o Fix a deadlock (thanks Darko)
+
 2005-06-22 [colin]	1.9.11cvs87
 
 	* src/gtk/foldersort.c
