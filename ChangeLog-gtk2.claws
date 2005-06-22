@@ -1,3 +1,12 @@
+2005-06-22 [colin]	1.9.11cvs91
+
+	* src/plugins/spamassassin/libspamc.c
+		As we do spagetti code with assignations in multiple
+		places (see _message_read_raw where out = msg = raw),
+		let's be sure we don't free the same pointer twice.
+		Should fix bug #683 (Crash in libpam at 
+		message_cleanup).
+
 2005-06-22 [colin]	1.9.11cvs90
 
 	* src/compose.c
