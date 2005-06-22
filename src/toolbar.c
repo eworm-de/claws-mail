@@ -898,7 +898,7 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
         	break;
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow *)toolbar_item->parent;
-        	summary_delete(mainwin->summaryview);
+        	summary_delete_trash(mainwin->summaryview);
         	break;
         default: 
         	debug_print("toolbar event not supported\n");

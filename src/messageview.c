@@ -400,6 +400,7 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 	handlebox = gtk_handle_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+	gtk_widget_realize(handlebox);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
 
@@ -855,7 +856,7 @@ void messageview_delete(MessageView *msgview)
 	if (msginfo && msgview->msginfo && 
 	    msginfo->msgnum == msgview->msginfo->msgnum && 
 	    msginfo->folder == msgview->msginfo->folder) {
-		summary_delete(msgview->mainwin->summaryview);
+		summary_delete_trash(msgview->mainwin->summaryview);
 	} else {		
 		msginfo = msgview->msginfo;
 

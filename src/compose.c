@@ -4807,6 +4807,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	handlebox = gtk_handle_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
+	gtk_widget_realize(handlebox);
 	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, handlebox,
 					  (gpointer)compose);
 

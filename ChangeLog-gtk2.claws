@@ -1,3 +1,13 @@
+2005-06-22 [colin]	1.9.11cvs90
+
+	* src/compose.c
+	* src/messageview.c
+	* src/toolbar.c
+		Make toolbar's delete use the move to trash stuff;
+		Add gtk_widget_realize to be sure pixmaps can get
+		created (that may fix an old worksforme bug which
+		I can't find back...)
+
 2005-06-22 [colin]	1.9.11cvs89
 
 	* src/summaryview.c
