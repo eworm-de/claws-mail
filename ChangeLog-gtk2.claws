@@ -1,3 +1,9 @@
+2005-06-22 [colin]	1.9.11cvs87
+
+	* src/gtk/foldersort.c
+		Add missing include for the i18n;
+		patch by Fabien Vantard
+
 2005-06-21 [colin]	1.9.11cvs86
 
 	* src/folder.c
