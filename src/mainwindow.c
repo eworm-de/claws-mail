@@ -229,6 +229,9 @@ static void copy_to_cb			(MainWindow	*mainwin,
 static void delete_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void delete_trash_cb			(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void cancel_cb                   (MainWindow     *mainwin,
 					 guint           action,
@@ -681,7 +684,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
-	{N_("/_Message/_Delete"),		"<control>D", delete_cb,  0, NULL},
+	{N_("/_Message/Move to _trash"),	"<control>D", delete_trash_cb,  0, NULL},
+	{N_("/_Message/_Delete..."),		NULL, delete_cb,  0, NULL},
 	{N_("/_Message/Cancel a news message"), "", cancel_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
@@ -1804,7 +1808,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
         	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"              , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
@@ -2644,6 +2649,11 @@ static void copy_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void delete_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_delete(mainwin->summaryview);
+}
+
+static void delete_trash_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_delete_trash(mainwin->summaryview);
 }
 
 static void cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

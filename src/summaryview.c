@@ -404,7 +404,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
-	{N_("/_Delete"),		"<control>D", summary_delete,	0, NULL},
+	{N_("/Move to _trash"),		"<control>D", summary_delete_trash,	0, NULL},
+	{N_("/_Delete..."),		NULL, summary_delete, 0, NULL},
 	{N_("/Cancel a news message"),	NULL, summary_cancel,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
@@ -1215,7 +1216,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 
 		{"/Mark"			, M_TARGET_EXIST},
@@ -3065,30 +3067,28 @@ void summary_delete(SummaryView *summaryview)
 	GList *cur;
 	GtkCTreeNode *sel_last = NULL;
 	GtkCTreeNode *node;
+	AlertValue aval;
+	MsgInfo *msginfo;
 
 	if (!item) return;
 
 	if (summary_is_locked(summaryview)) return;
 
-	/* if current folder is trash, ask for confirmation */
-	if (item->stype == F_TRASH) {
-		AlertValue aval;
-		MsgInfo *msginfo;
+	if (!summaryview->folder_item ||
+	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
 
-		aval = alertpanel(_("Delete message(s)"),
-				  _("Do you really want to delete message(s) from the trash?"),
-				  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (aval != G_ALERTDEFAULT) return;
+	aval = alertpanel(_("Delete message(s)"),
+			  _("Do you really want to delete selected message(s)?"),
+			  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+	if (aval != G_ALERTDEFAULT) return;
 
-		for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
-		     cur = cur->next) {
-			GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
-			msginfo = gtk_ctree_node_get_row_data(ctree, row);
-			if (msginfo->total_size != 0 && 
-			    msginfo->size != (off_t)msginfo->total_size)
-				partial_mark_for_delete(msginfo);
-		}
-	
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
+	     cur = cur->next) {
+		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
+		msginfo = gtk_ctree_node_get_row_data(ctree, row);
+		if (msginfo->total_size != 0 && 
+		    msginfo->size != (off_t)msginfo->total_size)
+			partial_mark_for_delete(msginfo);
 	}
 
 	main_window_cursor_wait(summaryview->mainwin);
@@ -3122,6 +3122,22 @@ void summary_delete(SummaryView *summaryview)
 		
 	main_window_cursor_normal(summaryview->mainwin);
 }
+
+void summary_delete_trash(SummaryView *summaryview)
+{
+	FolderItem *to_folder;
+
+	if (!summaryview->folder_item ||
+	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
+
+	to_folder = summaryview->folder_item->folder->trash;
+	
+	if (to_folder == NULL || to_folder == summaryview->folder_item)
+		summary_delete(summaryview);
+	else
+		summary_move_selected_to(summaryview, to_folder);
+}
+
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
@@ -3640,10 +3656,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 static void summary_execute_delete(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	FolderItem *trash;
 	GSList *cur;
-
-	trash = summaryview->folder_item->folder->trash;
 
 	/* search deleting messages and execute */
 	gtk_ctree_pre_recursive
@@ -3651,11 +3664,8 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	if (!summaryview->mlist) return;
 
-	if (trash == NULL || summaryview->folder_item == trash)
-		folder_item_remove_msgs(summaryview->folder_item,
-					summaryview->mlist);
-	else
-		folder_item_move_msgs(trash, summaryview->mlist);
+	folder_item_remove_msgs(summaryview->folder_item,
+				summaryview->mlist);
 
 	for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
 		procmsg_msginfo_free((MsgInfo *)cur->data);
