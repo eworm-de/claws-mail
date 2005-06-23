@@ -3350,18 +3350,9 @@ void summary_select_all(SummaryView *summaryview)
 {
 	if (!summaryview->folder_item) return;
 
-	if (summaryview->folder_item->total_msgs >= 500) {
-		STATUSBAR_PUSH(summaryview->mainwin,
-			       _("Selecting all messages..."));
-		main_window_cursor_wait(summaryview->mainwin);
-	}
-
+	summary_lock(summaryview);
 	gtk_clist_select_all(GTK_CLIST(summaryview->ctree));
-
-	if (summaryview->folder_item->total_msgs >= 500) {
-		STATUSBAR_POP(summaryview->mainwin);
-		main_window_cursor_normal(summaryview->mainwin);
-	}
+	summary_unlock(summaryview);
 }
 
 void summary_unselect_all(SummaryView *summaryview)

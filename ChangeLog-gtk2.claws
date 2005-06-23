@@ -1,3 +1,17 @@
+2005-06-23 [colin]	1.9.11cvs93
+
+	* src/summaryview.c
+		Optimize Select All
+		Before, in a 5K mails folder: 11s
+		After, in the same folder: 58000µs
+		The joys of locking... gtk_clist_select_all() fires a 
+		tree-select-row event for each selected row, which in 
+		summaryview, callbacks summary_selected which in turn,
+		calls summary_status_show, which walks the selected
+		rows. Hence, calling gtk_clist_select_all was 
+		exponential. Locking the summaryview makes 
+		summary_selected return early.
+
 2005-06-23 [colin]	1.9.11cvs92
 
 	* src/imap.c
