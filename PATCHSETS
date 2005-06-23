@@ -582,3 +582,4 @@
 ( cvs diff -u -r 1.4.2.4 -r 1.4.2.5 src/plugins/spamassassin/libspamc.c;  ) > 1.9.11cvs91.patchset
 ( cvs diff -u -r 1.179.2.38 -r 1.179.2.39 src/imap.c;  cvs diff -u -r 1.395.2.84 -r 1.395.2.85 src/summaryview.c;  ) > 1.9.11cvs92.patchset
 ( cvs diff -u -r 1.395.2.85 -r 1.395.2.86 src/summaryview.c;  ) > 1.9.11cvs93.patchset
+( cvs diff -u -r 1.395.2.86 -r 1.395.2.87 src/summaryview.c;  ) > 1.9.11cvs94.patchset

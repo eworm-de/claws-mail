@@ -1553,7 +1553,7 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 			gtk_widget_grab_focus(GTK_WIDGET(ctree));
 			gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
 		}
-		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		summary_unselect_all(summaryview);
 		if (display_msg && summaryview->displayed == node)
 			summaryview->displayed = NULL;
 		summaryview->display_msg = display_msg;
@@ -3353,11 +3353,15 @@ void summary_select_all(SummaryView *summaryview)
 	summary_lock(summaryview);
 	gtk_clist_select_all(GTK_CLIST(summaryview->ctree));
 	summary_unlock(summaryview);
+	summary_status_show(summaryview);
 }
 
 void summary_unselect_all(SummaryView *summaryview)
 {
+	summary_lock(summaryview);
 	gtk_sctree_unselect_all(GTK_SCTREE(summaryview->ctree));
+	summary_unlock(summaryview);
+	summary_status_show(summaryview);
 }
 
 void summary_select_thread(SummaryView *summaryview)
@@ -3529,7 +3533,7 @@ gboolean summary_execute(SummaryView *summaryview)
 
 		if (!new_selected &&
 		    gtkut_ctree_node_is_selected(ctree, node)) {
-			gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+			summary_unselect_all(summaryview);
 			new_selected = summary_find_next_msg(summaryview, node);
 			if (!new_selected)
 				new_selected = summary_find_prev_msg
@@ -4599,11 +4603,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (summary_is_locked(summaryview))
 		return;
 
-	if (column == -1 && GTK_CLIST(ctree)->selection
-	 && GTK_CLIST(ctree)->selection->next) {
-		/* multiple selection */
-		summary_status_show(summaryview);
-	}
+	summary_status_show(summaryview);
 
 	if (GTK_CLIST(ctree)->selection &&
 	    GTK_CLIST(ctree)->selection->next) {

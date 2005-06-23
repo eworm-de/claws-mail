@@ -1,3 +1,9 @@
+2005-06-23 [colin]	1.9.11cvs94
+
+	* src/summaryview.c
+		Fix rough edges (be sure to call status_show whenever
+		necessary).
+
 2005-06-23 [colin]	1.9.11cvs93
 
 	* src/summaryview.c
