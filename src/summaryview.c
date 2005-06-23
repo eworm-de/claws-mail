@@ -4541,7 +4541,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		break;
 	case GDK_Delete:
 		BREAK_ON_MODIFIER_KEY();
-		summary_delete(summaryview);
+		summary_delete_trash(summaryview);
 		break;
 	default:
 		break;

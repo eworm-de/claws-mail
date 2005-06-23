@@ -1,3 +1,12 @@
+2005-06-23 [colin]	1.9.11cvs92
+
+	* src/imap.c
+		Move mutex at the important place to avoid
+		deadlocks
+	* src/summaryview.c
+		Fix Del key deleting directly instead of
+		moving to trash
+
 2005-06-22 [colin]	1.9.11cvs91
 
 	* src/plugins/spamassassin/libspamc.c

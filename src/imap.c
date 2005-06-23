@@ -1192,8 +1192,12 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
+	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
+	
 	session = imap_session_get(folder);
+	
 	if (!session) {
+		MUTEX_UNLOCK();
 		return -1;
 	}
 	msginfo = (MsgInfo *)msglist->data;
@@ -1201,12 +1205,14 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	src = msginfo->folder;
 	if (src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
+		MUTEX_UNLOCK();
 		return -1;
 	}
 
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS) {
+		MUTEX_UNLOCK();
 		return ok;
 	}
 
@@ -1259,6 +1265,8 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	g_slist_free(IMAP_FOLDER_ITEM(dest)->uid_list);
 	IMAP_FOLDER_ITEM(dest)->uid_list = NULL;
 
+	MUTEX_UNLOCK();
+
 	if (ok == IMAP_SUCCESS)
 		return last_num;
 	else
@@ -1288,21 +1296,17 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
-	MUTEX_TRYLOCK_OR_RETURN_VAL(-1);
-
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
 	if (folder == msginfo->folder->folder) {
 		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
-		MUTEX_UNLOCK();
 		return ret;
 	}
 
 	file_list = procmsg_get_message_file_list(msglist);
 	g_return_val_if_fail(file_list != NULL, -1);
 
-	MUTEX_UNLOCK();
 	ret = imap_add_msgs(folder, dest, file_list, relation);
 
 	procmsg_message_file_list_free(file_list);

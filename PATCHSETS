@@ -580,3 +580,4 @@
 ( cvs diff -u -r 1.395.2.83 -r 1.395.2.84 src/summaryview.c;  cvs diff -u -r 1.68.2.8 -r 1.68.2.9 src/summaryview.h;  cvs diff -u -r 1.274.2.42 -r 1.274.2.43 src/mainwindow.c;  ) > 1.9.11cvs89.patchset
 ( cvs diff -u -r 1.382.2.133 -r 1.382.2.134 src/compose.c;  cvs diff -u -r 1.94.2.54 -r 1.94.2.55 src/messageview.c;  cvs diff -u -r 1.43.2.17 -r 1.43.2.18 src/toolbar.c;  ) > 1.9.11cvs90.patchset
 ( cvs diff -u -r 1.4.2.4 -r 1.4.2.5 src/plugins/spamassassin/libspamc.c;  ) > 1.9.11cvs91.patchset
+( cvs diff -u -r 1.179.2.38 -r 1.179.2.39 src/imap.c;  cvs diff -u -r 1.395.2.84 -r 1.395.2.85 src/summaryview.c;  ) > 1.9.11cvs92.patchset
