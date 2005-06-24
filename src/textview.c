@@ -211,15 +211,15 @@ static void save_file_cb			(TextView 	*textview,
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
-	{N_("/_Open link"),		NULL, open_uri_cb, 0, NULL},
-	{N_("/_Copy link location"),	NULL, copy_uri_cb, 0, NULL},
+	{N_("/_Open with Web browser"),	NULL, open_uri_cb, 0, NULL},
+	{N_("/Copy this _link"),	NULL, copy_uri_cb, 0, NULL},
 };
 
 static GtkItemFactoryEntry textview_mail_popup_entries[] = 
 {
-	{N_("/_Add to addressbook"),	NULL, add_uri_to_addrbook_cb, 0, NULL},
-	{N_("/_Email"),			NULL, mail_to_uri_cb, 0, NULL},
-	{N_("/_Copy"),			NULL, copy_mail_to_uri_cb, 0, NULL},
+	{N_("/Compose _new message"),	NULL, mail_to_uri_cb, 0, NULL},
+	{N_("/Add to _address book"),	NULL, add_uri_to_addrbook_cb, 0, NULL},
+	{N_("/Copy this add_ress"),	NULL, copy_mail_to_uri_cb, 0, NULL},
 };
 
 static GtkItemFactoryEntry textview_file_popup_entries[] = 

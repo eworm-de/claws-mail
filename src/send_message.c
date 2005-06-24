@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "send_message.h"
 #include "session.h"
@@ -122,6 +124,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	gint child_stdin;
 	gchar buf[BUFFSIZE];
 	gboolean err = FALSE;
+	gint status;
 
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
@@ -130,8 +133,10 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 	argv = strsplit_with_quote(command, " ", 0);
 
-	if (g_spawn_async_with_pipes(NULL, argv, NULL, 0, NULL, NULL, &pid,
-				     &child_stdin, NULL, NULL, NULL) == FALSE) {
+	if (g_spawn_async_with_pipes(NULL, argv, NULL,
+				     G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL,
+				     &pid, &child_stdin, NULL, NULL,
+				     NULL) == FALSE) {
 		g_snprintf(buf, sizeof(buf),
 			   _("Can't execute command: %s"), command);
 		log_warning("%s\n", buf);
@@ -157,6 +162,11 @@ gint send_message_local(const gchar *command, FILE *fp)
 	}
 
 	fd_close(child_stdin);
+
+	waitpid(pid, &status, 0);
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+		err = TRUE;
+
 	g_spawn_close_pid(pid);
 
 	if (err) {

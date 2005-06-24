@@ -1,3 +1,15 @@
+2005-06-24 [paul]	1.9.11cvs96
+
+	* src/editldap.c
+		made bind password entry invisible
+		(sync with main)
+	* src/send_message.c
+		send_message_local(): check exit status
+		to detect errors (sync with main)
+	* src/textview.c
+		use main's less ambiguous popup menu
+		wording
+
 2005-06-24 [paul]	1.9.11cvs95
 
 	* src/prefs_actions.c

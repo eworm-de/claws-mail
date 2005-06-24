@@ -691,6 +691,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	entry_bindPW = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_bindPW, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_entry_set_visibility(GTK_ENTRY(entry_bindPW), FALSE);
 
 	toolTip = gtk_tooltips_new();
 	gtk_tooltips_set_tip( toolTip, entry_bindPW, _( 
