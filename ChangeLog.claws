@@ -1,3 +1,8 @@
+2005-06-24 [paul]	1.0.4cvs15
+
+	* src/editldap.c
+		made bind password entry invisible
+
 2005-05-30 [paul]	1.0.4cvs14
 
 	backported from GTK2
