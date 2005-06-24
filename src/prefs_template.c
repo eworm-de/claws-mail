@@ -243,7 +243,7 @@ static void prefs_template_window_create(void)
 			 G_CALLBACK(prefs_template_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",

@@ -51,7 +51,7 @@ static void description_create(DescriptionWindow * dwindow)
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *hbbox;
-	GtkWidget *ok_btn;
+	GtkWidget *close_btn;
 	GtkWidget *scrolledwin;
 	int i;
 	int sz;
@@ -117,7 +117,7 @@ static void description_create(DescriptionWindow * dwindow)
 		line++;
 	}
 
-	gtkut_stock_button_set_create(&hbbox, &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 
@@ -133,8 +133,8 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_table_attach_defaults(GTK_TABLE(table), hbbox,
 				  1, 2, i, i+1);
 */
-	gtk_widget_grab_default(ok_btn);
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+	gtk_widget_grab_default(close_btn);
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(gtk_main_quit), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",
 		 	 G_CALLBACK(description_window_key_pressed), NULL);

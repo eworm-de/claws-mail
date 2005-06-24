@@ -1,3 +1,16 @@
+2005-06-24 [paul]	1.9.11cvs95
+
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/prefs_toolbar.c
+		replace GTK_STOCK_REMOVE with GTK_STOCK_DELETE
+	* src/gtk/description_window.c
+		replace GTK_STOCK_OK with GTK_STOCK_CLOSE
+
 2005-06-23 [colin]	1.9.11cvs94
 
 	* src/summaryview.c

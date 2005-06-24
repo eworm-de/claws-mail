@@ -583,3 +583,4 @@
 ( cvs diff -u -r 1.179.2.38 -r 1.179.2.39 src/imap.c;  cvs diff -u -r 1.395.2.84 -r 1.395.2.85 src/summaryview.c;  ) > 1.9.11cvs92.patchset
 ( cvs diff -u -r 1.395.2.85 -r 1.395.2.86 src/summaryview.c;  ) > 1.9.11cvs93.patchset
 ( cvs diff -u -r 1.395.2.86 -r 1.395.2.87 src/summaryview.c;  ) > 1.9.11cvs94.patchset
+( cvs diff -u -r 1.60.2.16 -r 1.60.2.17 src/prefs_actions.c;  cvs diff -u -r 1.16.2.10 -r 1.16.2.11 src/prefs_customheader.c;  cvs diff -u -r 1.16.2.9 -r 1.16.2.10 src/prefs_display_header.c;  cvs diff -u -r 1.1.4.15 -r 1.1.4.16 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.19 -r 1.43.2.20 src/prefs_matcher.c;  cvs diff -u -r 1.12.2.11 -r 1.12.2.12 src/prefs_template.c;  cvs diff -u -r 1.30.2.14 -r 1.30.2.15 src/prefs_toolbar.c;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/description_window.c;  ) > 1.9.11cvs95.patchset

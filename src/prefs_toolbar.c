@@ -791,7 +791,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_substitute),
 			 prefs_toolbar);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_delete), 
