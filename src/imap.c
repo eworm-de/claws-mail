@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
+#include <errno.h>
 #if HAVE_ICONV
 #  include <iconv.h>
 #endif

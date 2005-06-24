@@ -1,3 +1,8 @@
+2005-06-24 [paul]	1.9.11cvs97
+
+	* src/imap.c
+		add missing include
+
 2005-06-24 [paul]	1.9.11cvs96
 
 	* src/editldap.c
