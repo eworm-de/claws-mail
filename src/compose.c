@@ -904,6 +904,25 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
         return compose;
 }
 
+static void compose_force_encryption(Compose *compose, PrefsAccount *account)
+{
+	gchar *privacy = NULL;
+	if (account->default_privacy_system
+	&&  strlen(account->default_privacy_system)) {
+		privacy = account->default_privacy_system;
+	} else {
+		GSList *privacy_avail = privacy_get_system_ids();
+		if (privacy_avail && g_slist_length(privacy_avail)) {
+			privacy = (gchar *)(privacy_avail->data);
+		}
+	}
+	if (privacy != NULL) {
+		compose->privacy_system = g_strdup(privacy);
+		compose_update_privacy_system_menu_item(compose);
+		compose_use_encryption(compose, TRUE);
+	}
+}	
+
 void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 {
 	MsgInfo *msginfo;
@@ -1091,6 +1110,9 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_quote_fmt(compose, compose->replyinfo,
 			          prefs_common.quotefmt,
 			          qmark, body);
+	}
+	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
+		compose_force_encryption(compose, account);
 	}
 
 	if (account->auto_sig)
@@ -1400,9 +1422,14 @@ void compose_reedit(MsgInfo *msginfo)
 					G_CALLBACK(compose_changed_cb),
 					compose);
 					
-	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-		g_warning("Can't get text part\n");
-	else {
+	if ((fp = procmime_get_first_text_content(msginfo)) == NULL) {
+		if ((fp = procmime_get_first_encrypted_text_content(msginfo)) == NULL)
+			g_warning("Can't get text part\n");
+		else {
+			compose_force_encryption(compose, account);
+		}
+	}
+	if (fp != NULL) {
 		gboolean prev_autowrap = compose->autowrap;
 
 		compose->autowrap = FALSE;
@@ -2516,13 +2543,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	} else if (compose->mode == COMPOSE_REEDIT &&
 		 child->type == MIMETYPE_APPLICATION &&
 		 !g_ascii_strcasecmp(child->subtype, "pgp-encrypted")) {
-		AlertValue val;
-		val = alertpanel(_("Encrypted message"),
-				 _("Cannot re-edit an encrypted message. \n"
-				   "Discard encrypted part?"),
-				 _("Yes"), _("No"), NULL);
-		if (val == G_ALERTDEFAULT) 
-			encrypted = (MimeInfo *)child->node->parent->data;
+		encrypted = (MimeInfo *)child->node->parent->data;
 	}
      
 	child = (MimeInfo *) mimeinfo->node->children->data;

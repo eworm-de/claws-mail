@@ -1,3 +1,17 @@
+2005-06-25 [colin]	1.9.11cvs98
+
+	* src/compose.c
+	* src/procmime.c
+	* src/procmime.h
+	* src/quote_fmt_parse.y
+		o Make reedition of encrypted messages possible
+		  (as long as it is encrypted to self too, no
+		   magic there)
+		o Make replying with quote (and without selecting
+		  text) possible for encrypted messages.
+		Closes bug #550 (Not possible to "reply with quote"
+		to gnupg encrypted messages)
+
 2005-06-24 [paul]	1.9.11cvs97
 
 	* src/imap.c

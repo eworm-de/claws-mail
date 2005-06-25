@@ -188,6 +188,8 @@ gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
 FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
 FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
+FILE *procmime_get_first_encrypted_text_content
+					(MsgInfo 	*msginfo);
 
 gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,
 					 const gchar	*filename,
@@ -215,6 +217,7 @@ gchar *procmime_get_content_type_str		(MimeMediaType   type,
 						 const gchar	*subtype);
 void procmime_force_charset			(const gchar 	*str);
 void procmime_force_encoding			(EncodingType	 encoding);
+gboolean procmime_msginfo_is_encrypted		(MsgInfo 	*msginfo);
 
 void renderer_read_config(void);
 void renderer_write_config(void);
