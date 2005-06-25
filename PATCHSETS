@@ -588,3 +588,4 @@
 ( cvs diff -u -r 1.179.2.39 -r 1.179.2.40 src/imap.c;  ) > 1.9.11cvs97.patchset
 ( cvs diff -u -r 1.382.2.134 -r 1.382.2.135 src/compose.c;  cvs diff -u -r 1.49.2.48 -r 1.49.2.49 src/procmime.c;  cvs diff -u -r 1.17.2.9 -r 1.17.2.10 src/procmime.h;  cvs diff -u -r 1.22.2.8 -r 1.22.2.9 src/quote_fmt_parse.y;  ) > 1.9.11cvs98.patchset
 ( cvs diff -u -r 1.382.2.135 -r 1.382.2.136 src/compose.c;  cvs diff -u -r 1.22.2.9 -r 1.22.2.10 src/quote_fmt_parse.y;  ) > 1.9.11cvs99.patchset
+( cvs diff -u -r 1.105.2.25 -r 1.105.2.26 src/prefs_account.c;  cvs diff -u -r 1.49.2.11 -r 1.49.2.12 src/prefs_account.h;  cvs diff -u -r 1.382.2.136 -r 1.382.2.137 src/compose.c;  ) > 1.9.11cvs100.patchset

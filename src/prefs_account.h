@@ -131,6 +131,7 @@ struct _PrefsAccount
 	/* Privacy */
 	gchar	 *default_privacy_system;
 	gboolean  default_encrypt;
+	gboolean  default_encrypt_reply;
 	gboolean  default_sign;
 	gboolean  save_encrypted_as_clear_text;
 

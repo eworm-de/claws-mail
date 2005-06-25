@@ -144,6 +144,7 @@ static struct Compose {
 static struct Privacy {
 	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
+	GtkWidget *default_encrypt_reply_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *save_clear_text_chkbtn;
 } privacy;
@@ -416,6 +417,9 @@ static PrefParam param[] = {
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
 	 &privacy.default_encrypt_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"default_encrypt_reply", "TRUE", &tmp_ac_prefs.default_encrypt_reply, P_BOOL,
+	 &privacy.default_encrypt_reply_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy.default_sign_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -582,6 +586,7 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 	privacy_enabled = strcmp(system_id, "");
 
 	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.default_encrypt_reply_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, privacy_enabled);
 }
@@ -1877,6 +1882,7 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *label;
 	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
+	GtkWidget *default_encrypt_reply_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *save_clear_text_chkbtn;
 
@@ -1903,6 +1909,9 @@ static void prefs_account_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
 			   _("Encrypt message by default"));
+	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_chkbtn,
+			   _("Encrypt message by default when replying to an "
+			     "encrypted message"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
 	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
@@ -1910,6 +1919,7 @@ static void prefs_account_privacy_create(void)
 
 	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
+	privacy.default_encrypt_reply_chkbtn = default_encrypt_reply_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
 	privacy.save_clear_text_chkbtn = save_clear_text_chkbtn;
 }

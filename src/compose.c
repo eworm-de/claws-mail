@@ -904,9 +904,14 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
         return compose;
 }
 
-static void compose_force_encryption(Compose *compose, PrefsAccount *account)
+static void compose_force_encryption(Compose *compose, PrefsAccount *account,
+		gboolean override_pref)
 {
 	gchar *privacy = NULL;
+
+	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
+		return;
+
 	if (account->default_privacy_system
 	&&  strlen(account->default_privacy_system)) {
 		privacy = account->default_privacy_system;
@@ -1112,7 +1117,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 			          qmark, body);
 	}
 	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
-		compose_force_encryption(compose, account);
+		compose_force_encryption(compose, account, FALSE);
 	}
 
 	if (account->auto_sig)
@@ -1425,7 +1430,7 @@ void compose_reedit(MsgInfo *msginfo)
 	if (procmime_msginfo_is_encrypted(msginfo)) {
 		fp = procmime_get_first_encrypted_text_content(msginfo);
 		if (fp) 
-			compose_force_encryption(compose, account);
+			compose_force_encryption(compose, account, TRUE);
 	} else
 		fp = procmime_get_first_text_content(msginfo);
 	if (fp == NULL)
