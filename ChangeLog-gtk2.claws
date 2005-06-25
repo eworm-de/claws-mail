@@ -1,3 +1,9 @@
+2005-06-25 [colin]	1.9.11cvs103
+
+	* src/imap.c
+		Optimize get_seq_set_from_seq_list
+		(Patch by Ricardo) 
+
 2005-06-25 [colin]	1.9.11cvs102
 
 	* src/mh.c

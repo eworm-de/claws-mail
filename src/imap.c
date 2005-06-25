@@ -643,12 +643,17 @@ static gchar *get_seq_set_from_seq_list(GSList *seq_list)
 	gchar *tmp = NULL;
 	GSList *cur = NULL;
 	
-	for (cur = seq_list; cur != NULL; cur = cur->next) {
-		tmp = val?g_strdup(val):NULL;
-		g_free(val);
-		val = g_strconcat(tmp?tmp:"", tmp?",":"",(gchar *)cur->data,
-				  NULL);
-		g_free(tmp);
+	if (seq_list != NULL) {
+		cur = seq_list;
+		val = g_strdup((gchar *)(cur->data));
+		cur = cur->next;
+		while (cur != NULL) {
+			tmp = val;
+			val = g_strconcat(tmp, ",", (gchar *)(cur->data),
+					  NULL);
+			g_free(tmp);
+			cur = cur->next;
+		}
 	}
 	return val;
 }
