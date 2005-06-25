@@ -1,3 +1,10 @@
+2005-06-25 [colin]	1.9.11cvs102
+
+	* src/mh.c
+		If the directory exists, but not in the
+		correct encoding, rename it. This should
+		handle old-versions-induced bugs.
+
 2005-06-25 [colin]	1.9.11cvs101
 
 	* src/mh.c

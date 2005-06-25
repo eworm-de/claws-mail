@@ -622,6 +622,13 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
         }
 	g_free(folder_path);
 	real_path = mh_filename_from_utf8(path);
+	if (!is_dir_exist(real_path) && is_dir_exist(path)) {
+		/* mmh, older version did put utf8 filenames instead of
+		 * the correct encoding */
+		rename(path, real_path);
+		folder_item_scan(item);
+	}
+
 	g_free(path);
 	return real_path;
 }

@@ -590,3 +590,4 @@
 ( cvs diff -u -r 1.382.2.135 -r 1.382.2.136 src/compose.c;  cvs diff -u -r 1.22.2.9 -r 1.22.2.10 src/quote_fmt_parse.y;  ) > 1.9.11cvs99.patchset
 ( cvs diff -u -r 1.105.2.25 -r 1.105.2.26 src/prefs_account.c;  cvs diff -u -r 1.49.2.11 -r 1.49.2.12 src/prefs_account.h;  cvs diff -u -r 1.382.2.136 -r 1.382.2.137 src/compose.c;  ) > 1.9.11cvs100.patchset
 ( cvs diff -u -r 1.79.2.13 -r 1.79.2.14 src/mh.c;  ) > 1.9.11cvs101.patchset
+( cvs diff -u -r 1.79.2.14 -r 1.79.2.15 src/mh.c;  ) > 1.9.11cvs102.patchset
