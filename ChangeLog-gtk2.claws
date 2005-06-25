@@ -1,3 +1,10 @@
+2005-06-25 [colin]	1.9.11cvs101
+
+	* src/mh.c
+		Fix path access with extended dir names
+		Fixes bug #589 (SC segfaults with wrong locale
+		settings)
+
 2005-06-25 [colin]	1.9.11cvs100
 
 	* src/prefs_account.c

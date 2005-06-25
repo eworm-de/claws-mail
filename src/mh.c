@@ -598,7 +598,7 @@ static gint mh_create_tree(Folder *folder)
 static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
-
+	gchar *real_path;
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
@@ -621,8 +621,9 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
                                            folder_path, NULL);
         }
 	g_free(folder_path);
-
-	return path;
+	real_path = mh_filename_from_utf8(path);
+	g_free(path);
+	return real_path;
 }
 
 static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
@@ -994,14 +995,10 @@ static gboolean mh_rename_folder_func(GNode *node, gpointer data)
 
 static gchar *mh_filename_from_utf8(const gchar *path)
 {
-	const gchar *src_codeset = CS_UTF_8;
-	const gchar *dest_codeset = conv_get_locale_charset_str();
-	gchar *real_path;
+	gchar *real_path = g_filename_from_utf8(path, -1, NULL, NULL, NULL);
 
-	real_path = conv_codeset_strdup(path, src_codeset, dest_codeset);
 	if (!real_path) {
 		g_warning("mh_filename_from_utf8: faild to convert character set\n");
-		/* FIXME: show dialog? */
 		real_path = g_strdup(path);
 	}
 
@@ -1010,14 +1007,9 @@ static gchar *mh_filename_from_utf8(const gchar *path)
 
 static gchar *mh_filename_to_utf8(const gchar *path)
 {
-	const gchar *src_codeset = conv_get_locale_charset_str();
-	const gchar *dest_codeset = CS_UTF_8;
-	gchar *utf8path;
-
-	utf8path = conv_codeset_strdup(path, src_codeset, dest_codeset);
+	gchar *utf8path = g_filename_to_utf8(path, -1, NULL, NULL, NULL);
 	if (!utf8path) {
 		g_warning("mh_filename_to_utf8: faild to convert character set\n");
-		/* FIXME: show dialog? */
 		utf8path = g_strdup(path);
 	}
 
