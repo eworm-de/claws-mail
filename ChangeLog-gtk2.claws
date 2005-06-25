@@ -1,3 +1,9 @@
+2005-06-25 [colin]	1.9.11cvs99
+
+	* src/compose.c
+	* src/quote_fmt_parse.y
+		... And make it work with pgpinline.
+
 2005-06-25 [colin]	1.9.11cvs98
 
 	* src/compose.c

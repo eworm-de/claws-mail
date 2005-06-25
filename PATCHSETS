@@ -587,3 +587,4 @@
 ( cvs diff -u -r 1.8.2.4 -r 1.8.2.5 src/editldap.c;  cvs diff -u -r 1.17.2.15 -r 1.17.2.16 src/send_message.c;  cvs diff -u -r 1.96.2.58 -r 1.96.2.59 src/textview.c;  ) > 1.9.11cvs96.patchset
 ( cvs diff -u -r 1.179.2.39 -r 1.179.2.40 src/imap.c;  ) > 1.9.11cvs97.patchset
 ( cvs diff -u -r 1.382.2.134 -r 1.382.2.135 src/compose.c;  cvs diff -u -r 1.49.2.48 -r 1.49.2.49 src/procmime.c;  cvs diff -u -r 1.17.2.9 -r 1.17.2.10 src/procmime.h;  cvs diff -u -r 1.22.2.8 -r 1.22.2.9 src/quote_fmt_parse.y;  ) > 1.9.11cvs98.patchset
+( cvs diff -u -r 1.382.2.135 -r 1.382.2.136 src/compose.c;  cvs diff -u -r 1.22.2.9 -r 1.22.2.10 src/quote_fmt_parse.y;  ) > 1.9.11cvs99.patchset

@@ -332,11 +332,11 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 	if (body)
 		fp = str_open_as_stream(body);
 	else {
-		fp = procmime_get_first_text_content(msginfo);
-		if (fp == NULL)
+		if (procmime_msginfo_is_encrypted(msginfo))
 			fp = procmime_get_first_encrypted_text_content(msginfo);
+		else
+			fp = procmime_get_first_text_content(msginfo);
 	}
-
 
 	if (fp == NULL)
 		g_warning("Can't get text part\n");

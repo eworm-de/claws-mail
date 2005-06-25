@@ -1421,14 +1421,16 @@ void compose_reedit(MsgInfo *msginfo)
 	g_signal_handlers_block_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
-					
-	if ((fp = procmime_get_first_text_content(msginfo)) == NULL) {
-		if ((fp = procmime_get_first_encrypted_text_content(msginfo)) == NULL)
-			g_warning("Can't get text part\n");
-		else {
+	
+	if (procmime_msginfo_is_encrypted(msginfo)) {
+		fp = procmime_get_first_encrypted_text_content(msginfo);
+		if (fp) 
 			compose_force_encryption(compose, account);
-		}
-	}
+	} else
+		fp = procmime_get_first_text_content(msginfo);
+	if (fp == NULL)
+		g_warning("Can't get text part\n");
+
 	if (fp != NULL) {
 		gboolean prev_autowrap = compose->autowrap;
 
