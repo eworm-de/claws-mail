@@ -594,3 +594,4 @@
 ( cvs diff -u -r 1.179.2.40 -r 1.179.2.41 src/imap.c;  ) > 1.9.11cvs103.patchset
 ( cvs diff -u -r 1.59.2.20 -r 1.59.2.21 src/prefs_filtering.c;  ) > 1.9.11cvs104.patchset
 ( cvs diff -u -r 1.213.2.37 -r 1.213.2.38 src/folder.c;  cvs diff -u -r 1.179.2.41 -r 1.179.2.42 src/imap.c;  ) > 1.9.11cvs105.patchset
+( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/imap_gtk.c;  ) > 1.9.11cvs106.patchset
