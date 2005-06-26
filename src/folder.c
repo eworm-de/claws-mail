@@ -333,7 +333,6 @@ void folder_item_remove(FolderItem *item)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->node != NULL);
-	g_return_if_fail(item->no_select == FALSE);
 	node = item->node;
 
 	if (item->folder->node == node)
@@ -781,8 +780,6 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
 
-	g_return_val_if_fail(parent->no_select == FALSE, NULL);
-
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item) {
 		FolderUpdateData hookdata;
@@ -804,7 +801,6 @@ gint folder_item_rename(FolderItem *item, gchar *newname)
 
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(newname != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
 
 	retval = item->folder->klass->rename_folder(item->folder, item, newname);
 
@@ -1599,7 +1595,6 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
     
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
-	g_return_val_if_fail(item->no_select == FALSE, -1);
 
 	folder = item->folder;
 
@@ -2502,8 +2497,6 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 
 	mlist = folder_item_get_msg_list(src);
 	
-	g_return_val_if_fail(dest->no_select == FALSE, NULL);
-
 	/* move messages */
 	debug_print("Moving %s to %s\n", src->path, dest->path);
 	new_item = folder_create_folder(dest, src->name);
@@ -2592,9 +2585,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	if (src->folder != dest->folder) {
 		return F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX;
 	}
-
-	if (dest->no_select)
-		return F_MOVE_FAILED;
 
 	phys_srcpath = folder_item_get_path(src);
 	phys_dstpath = g_strconcat(folder_item_get_path(dest),

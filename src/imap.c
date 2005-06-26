@@ -2118,7 +2118,6 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
 	g_return_val_if_fail(item->node != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
 
 	node = item->node->children;
 	while (node != NULL) {

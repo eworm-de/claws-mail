@@ -1,3 +1,12 @@
+2005-06-26 [colin]	1.9.11cvs105
+
+	* src/folder.c
+	* src/imap.c
+		Fix problems with folder operations in no_select
+		imap folders. it applies only to mails, and 
+		creation/deletion/move/renaming of folders 
+		should be possible
+
 2005-06-26 [paul]	1.9.11cvs104
 
 	* src/prefs_filtering.c
