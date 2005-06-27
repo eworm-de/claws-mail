@@ -411,6 +411,8 @@ void quicksearch_show(QuickSearch *quicksearch)
 	prepare_matcher(quicksearch);
 	gtk_widget_show(quicksearch->hbox_search);
 	update_extended_button(quicksearch);
+	gtk_widget_grab_focus(
+		GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
 }
 
 void quicksearch_hide(QuickSearch *quicksearch)

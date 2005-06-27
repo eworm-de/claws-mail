@@ -43,6 +43,7 @@ sylpheed_SOURCES = \
 	foldersel.c \
 	folderutils.c \
 	folderview.c \
+	gedit-print.c \
 	grouplistdialog.c \
 	headerview.c \
 	html.c \
@@ -179,6 +180,7 @@ sylpheedinclude_HEADERS = \
 	foldersel.h \
 	folderutils.h \
 	folderview.h \
+	gedit-print.h \
 	grouplistdialog.h \
 	headerview.h \
 	html.h \
@@ -386,6 +388,7 @@ sylpheed_LDADD = \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
 	$(PTHREAD_LIBS) \
+	$(GNOMEPRINT_LIBS) \
 	$(LIBICONV) \
 	$(STARTUP_NOTIFICATION_LIBS)
 
@@ -400,6 +403,7 @@ AM_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
+	$(GNOMEPRINT_CFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS)
 
 AM_YFLAGS = -d

@@ -16,6 +16,7 @@ libsylpheedgtk_la_SOURCES = \
 	gtksctree.c \
 	gtkshruler.c \
 	gtksctree.c \
+	gtksourceprintjob.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	logwindow.c \
@@ -41,6 +42,7 @@ sylpheedgtkinclude_HEADERS = \
 	gtksctree.h \
 	gtkshruler.h \
 	gtksctree.h \
+	gtksourceprintjob.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
 	inputdialog.h \
@@ -61,12 +63,14 @@ AM_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	$(ASPELL_CFLAGS) \
-	-DPLUGINDIR=\"$(PLUGINDIR)\"
+	$(GNOMEPRINT_CFLAGS) \
+	-DPLUGINDIR=\"$(PLUGINDIR)\" 
 
 libsylpheedgtk_la_LIBADD = \
 	../common/libsylpheedcommon.la \
 	$(GTK_LIBS) \
-	$(ASPELL_LIBS)
+	$(ASPELL_LIBS) \
+	$(GNOMEPRINT_LIBS)
 
 BUILT_SOURCES=sylpheed-marshal.c sylpheed-marshal.h
 

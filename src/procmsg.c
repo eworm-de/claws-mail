@@ -956,7 +956,11 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 
 	g_return_if_fail(msginfo);
 
-	if ((tmpfp = procmime_get_first_text_content(msginfo)) == NULL) {
+	if (procmime_msginfo_is_encrypted(msginfo))
+		tmpfp = procmime_get_first_encrypted_text_content(msginfo);
+	else
+		tmpfp = procmime_get_first_text_content(msginfo);
+	if (tmpfp == NULL) {
 		g_warning("Can't get text part\n");
 		return;
 	}

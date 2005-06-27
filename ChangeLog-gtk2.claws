@@ -1,3 +1,17 @@
+2005-06-27 [colin]	1.9.12cvs1
+
+	* src/Makefile.am
+	* src/gtk/Makefile.am
+	* src/messageview.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* configure.ac
+		Add optional libgnomeprint-based printing
+	* src/mainwindow.c
+	* src/gtk/quicksearch.c
+		Add an Edit/Quick search menu item to show
+		and focus the quicksearch
+
 2005-06-27 [paul]	1.9.12
 
 	1.9.12 release

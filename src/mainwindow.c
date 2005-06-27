@@ -436,6 +436,9 @@ void main_window_reply_cb			(MainWindow 	*mainwin,
 gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 						 gpointer 	 userdata);
 #define  SEPARATE_ACTION 500 
+static void mainwindow_quicksearch		(MainWindow 	*mainwin, 
+						 guint 		 action, 
+						 GtkWidget 	*widget);
 
 static GtkItemFactoryEntry mainwin_entries[] =
 {
@@ -468,6 +471,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
 	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
+	{N_("/_Edit/_Quick search"),		"slash", mainwindow_quicksearch, 0, NULL},
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Show or hi_de"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Show or hi_de/_Folder tree"),
@@ -2478,6 +2482,12 @@ static void search_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		summary_search(mainwin->summaryview);
 	else
 		message_search(mainwin->messageview);
+}
+
+static void mainwindow_quicksearch(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	prefs_common.show_searchbar = TRUE;
+ 	quicksearch_show(mainwin->summaryview->quicksearch);
 }
 
 static void toggle_folder_cb(MainWindow *mainwin, guint action,

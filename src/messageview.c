@@ -61,6 +61,7 @@
 #include "hooks.h"
 #include "filtering.h"
 #include "partial_download.h"
+#include "gedit-print.h"
 
 static GList *messageview_list = NULL;
 
@@ -1303,11 +1304,13 @@ static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 static void print_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	gchar *cmdline;
+#ifndef USE_GNOMEPRINT
+	gchar *cmdline = NULL;
 	gchar *p;
+#endif
 
 	if (!messageview->msginfo) return;
-
+#ifndef USE_GNOMEPRINT
 	cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
 				 "(`%s' will be replaced with file name)"),
@@ -1320,9 +1323,19 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 		g_free(cmdline);
 		return;
 	}
-
 	procmsg_print_message(messageview->msginfo, cmdline);
 	g_free(cmdline);
+#else
+	if (!messageview->mimeview 
+	||  !messageview->mimeview->textview
+	||  !messageview->mimeview->textview->text)
+		alertpanel_warning(_("Cannot print: the message doesn't "
+				     "contain text."));
+
+	gedit_print(
+		GTK_TEXT_VIEW(messageview->mimeview
+				->textview->text));
+#endif
 }
 
 static void close_cb(gpointer data, guint action, GtkWidget *widget)

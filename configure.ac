@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=0
+EXTRA_VERSION=1
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -52,6 +52,13 @@ AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
 dnl GNOME 2.x installed?
 PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)
 AM_CONDITIONAL(SYLPHEED_GNOME2, test x"$ac_enable_gnome2" = x"yes")
+
+dnl libgnomeprint installed?
+PKG_CHECK_MODULES(GNOMEPRINT, libgnomeprint-2.2 libgnomeprintui-2.2, ac_enable_gnomeprint=yes, ac_enable_gnomeprint=no)
+AM_CONDITIONAL(SYLPHEED_GNOMEPRINT, test x"$ac_enable_gnomeprint" = x"yes")
+if test x$ac_enable_gnomeprint = xyes; then
+	AC_DEFINE(USE_GNOMEPRINT, 1, Define if you want libgnomeprint support)
+fi
 
 dnl Claws version
 AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)

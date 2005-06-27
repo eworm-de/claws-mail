@@ -86,6 +86,7 @@
 #include "quicksearch.h"
 #include "partial_download.h"
 #include "timing.h"
+#include "gedit-print.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -3461,15 +3462,20 @@ void summary_save_as(SummaryView *summaryview)
 
 void summary_print(SummaryView *summaryview)
 {
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+#ifndef USE_GNOMEPRINT
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
-	GList *cur;
-	gchar *cmdline;
+	gchar *cmdline = NULL;
 	gchar *p;
+#else
+	gboolean first = TRUE;
+	GList *tmplist;
+#endif
+	GList *cur;
 
 	if (clist->selection == NULL) return;
-
+#ifndef USE_GNOMEPRINT
 	cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
 				 "(`%s' will be replaced with file name)"),
@@ -3482,7 +3488,6 @@ void summary_print(SummaryView *summaryview)
 		g_free(cmdline);
 		return;
 	}
-
 	for (cur = clist->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		msginfo = gtk_ctree_node_get_row_data
 			(ctree, GTK_CTREE_NODE(cur->data));
@@ -3490,6 +3495,30 @@ void summary_print(SummaryView *summaryview)
 	}
 
 	g_free(cmdline);
+	
+#else
+	tmplist = g_list_copy(clist->selection);
+	summary_unselect_all(summaryview);
+	for (cur = tmplist; cur != NULL && cur->data != NULL; cur = cur->next) {
+		GtkCTreeNode *node = GTK_CTREE_NODE(cur->data);
+		summary_select_node(summaryview, node, TRUE, TRUE);
+		if (!summaryview->messageview->mimeview 
+		||  !summaryview->messageview->mimeview->textview
+		||  !summaryview->messageview->mimeview->textview->text)
+			alertpanel_warning(_("Cannot print: the message doesn't "
+					     "contain text."));
+		gedit_print(
+			GTK_TEXT_VIEW(summaryview->messageview->mimeview
+					->textview->text));
+	}
+	for (cur = tmplist; cur != NULL && cur->data != NULL; cur = cur->next) {
+		GtkCTreeNode *node = GTK_CTREE_NODE(cur->data);
+		gtk_sctree_select_with_state(
+			GTK_SCTREE(clist), node, first ? 0:GDK_CONTROL_MASK);
+		first = FALSE;
+	}
+	g_list_free(tmplist);
+#endif
 }
 
 gboolean summary_execute(SummaryView *summaryview)
