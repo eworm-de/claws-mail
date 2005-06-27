@@ -1,18 +1,146 @@
-19th May 2005                                   Sylpheed-Claws 1.9.11
+27th June 2005                                  Sylpheed-Claws 1.9.12
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
-
+		      
+		   the "Welcome back IMAP" release
+		     
 Sylpheed-Claws is an extended version of  Sylpheed, a GTK+ based,
 lightweight, and fast e-mail client
 
 This is the GTK 2 version of Sylpheed-Claws.
-		     
+
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-This is a bug-fix release which fixes the ASpell Spell Checker
-support.
+* IMAP support
+	Perhaps the most significant changes in this release have
+	happened in the IMAP code. Over the months we have received
+	several bug reports and complaints from IMAP users. The
+	changes to the IMAP implementation in this release are mostly
+	concerned with speedups in imap operation, and using non-
+	blocking I/O as much as possible. There have been far too
+	many changes to list them here in these release notes, so
+	interested users are pointed at ChangeLog-gtk2.claws. There
+	are more significant changes to the IMAP implemenation
+	planned, but IMAP users should already find this release is a
+	lot more comfortable for them.
+
+* Performance increases
+	Users will discover substantial performance increases when
+	re-sorting folders, when using 'Select all', and when using
+	'Mark all read'
+
+* /Message/Delete and /Message/Move to trash
+	'/Message/Delete' has been renamed '/Message/Move to trash'
+	and '/Message/Delete' has been added. '/Message/Delete' will
+	now directly destroy the message, after asking for a
+	confirmation, instead of moving it to the Trash folder.
+
+* Common Preferences
+	All '/Configuration/Preferences/Common/...' options have been
+  	integrated into the new style options interface.
+
+* PGP MIME plugin
+ 	The 'PGP/MIME' plugin has been renamed 'PGP MIME', users will
+	need to reselect 'PGP MIME' as their default privacy system
+	in their account's Privacy preferences. 
+
+* LDAP
+	The bind password is no longer visible onscreen.
+
+New in this release:
+~~~~~~~~~~~~~~~~~~~~
+
+* An option to encrypt replies to encrypted messages by default
+  '/[Account Prefs]/Account/Privacy/Encrypt message by default when
+  replying to an encrypted message'
+
+* Filtering rules can be reordered by drag n drop
+
+* '/Options/Character encoding/...' has been added to the Compose
+  window to enable temporarily changing the outgoing encoding
+
+* Hebrew encodings have been added
+
+* The 'Show all headers' option is now sticky.
+
+* Return Receipts can now be sent from any account.
+
+* A clip/signed icon has been added. This is displayed in the Status
+  column of the message list to indicate a signed message that has
+  one or more attachments.
+
+* updated translations: Brazilian Portuguese, British English,
+  Catalan, Finnish, French, German, Italian, Korean, Simplified
+  Chinese, Slovak, and Spanish
+
+* Bug fixes, including the following:
+	o bug 108, ' Uncollapse/collapse on double-click'
+	o bug 156, 'possible race condition?'
+	o bug 191, ' 	remove list of messages with one command'
+	o bug 245, 'Renaming Account with RemoteFolder breaks
+		    Filtering Rules'
+	o bug 421, 'incomplete implementation of undo'
+	o bug 477, 'sylpheed.spec.in is outdated'
+	o bug 481, 'extraneous imap commands slow down imap
+		    filtering'
+	o bug 506, 'No warning if action/template not saved'
+	o bug 522, 'Sylpheed downloads all messages when opening
+		    mailbox (IMAP)'
+	o bug 541, 'gtk warning when selecting "Themes" from Other
+		    preferences'
+	o bug 550, 'Not possible to "reply with quote" to gnupg
+		    encrypted messages'
+	o bug 557, '"Grab input while entering a passphrase" not
+		    working'
+	o bug 589, 'SC segfaults with wrong locale setting'
+	o bug 611, 'nntp authentication broken'
+	o bug 645, 'Problems with mails with multiple recipients and
+		    drafting'
+	o bug 646, 'newline-chars in email addresses'
+	o bug 651, 'Attract by Subject confused by minor differences
+		    in Subject'
+	o bug 670, 'multi user to: will corrupt message headers
+		    display'
+	o bug 677, 'IMAP fetch is soooooooooooooo slow'
+	o bug 679, '"open first unread message when entering a
+		    folder" is always on'
+	o bug 683, 'Crash in libspam at message_cleanup'
+	o bug 688, 'Issues with Summary View'
+	o bug 699, 'Setting folder color works/Unsetting doesn't
+		    (almost)'
+	o bug 707, 'Dash splits rows'
+	o bug 728, 'imap ssl segfault'
+	o bug 729, 'IMAP immediate expunge of deleted messages'
+	o bug 746, 'Reply function treats quoted commas as
+		    separators'
+	o bug 749, 'problem with show all headers'
+	o compilation errors with gcc 2.9x
+	o Use correct encoding when sending mails with attachments
+		that have accented characters in their name
+	o Forbid locked messages to be moved or deleted
+	o Eat GDK_Return so that the combo popup doesn't appear when
+		we press Enter to validate the combo input dialog (as
+		seen in the Open with... dialog)
+	o Fix automatic STARTTLS if login should be done and the
+	  server only allows it after starting TLS
+	o Add gtk_widget_realize to be sure toolbar pixmaps can get
+		created	
+	o src/compose.c: compose_entries_set(): don't interpret
+		Bcc header field (conform to RFC 2368)
+	o src/compose.c: Fix headers encoding
+	o src/procmime.c: liberalise the mime parser
+	o src/summaryview.c: don't let always_show_msg override
+		open_unread_on_enter when opening a new directory
+	o src/textview.c: textview_write_link(): also skip non-ascii
+		space at head of link strings (phishing check fix)
+	o src/common/template.c: fix Bcc
+
+For further details of the numbered bugs listed above consult
+www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
+
+* and other code reorganisation, cleanups, and more.
 
 ---------------------------------------------------------------------
 See ChangeLog-gtk2.claws and README.claws for full information 

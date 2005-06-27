@@ -1,13 +1,14 @@
 # British English translation of Sylpheed
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Paul Mangan <claws@thewildbeast.co.uk>, 2003.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# Paul Mangan <claws@thewildbeast.co.uk>, 2003-2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
 "POT-Creation-Date: 2005-06-08 10:02+0100\n"
-"PO-Revision-Date: 2003-10-02 06:38+0000\n"
+"PO-Revision-Date: 2005-06-27 06:46+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "Last-Translator: Paul Mangan <claws@thewildbeast.co.uk>\n"
 "Language-Team: Paul Mangan <claws@thewildbeast.co.uk>\n"
 "MIME-Version: 1.0\n"
@@ -2998,7 +2999,7 @@ msgstr ""
 
 #: src/gtk/sslcertwindow.c:135 src/gtk/sslcertwindow.c:156
 msgid "Organization: "
-msgstr "Organisation"
+msgstr "Organisation: "
 
 #: src/gtk/sslcertwindow.c:142 src/gtk/sslcertwindow.c:163
 msgid "Location: "
