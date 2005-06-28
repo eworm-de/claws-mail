@@ -1,3 +1,8 @@
+2005-06-28 [paul]	1.9.12cvs4
+
+	* src/alertpanel.c
+		wrap and make the error msg selectable
+
 2005-06-28 [paul]	1.9.12cvs3
 
 	* src/ssl_manager.c

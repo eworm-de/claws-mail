@@ -296,7 +296,7 @@ static void alertpanel_create(const gchar *title,
 	label = gtk_label_new(title_full);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_use_markup(GTK_LABEL (label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	if (!font_desc) {
@@ -317,6 +317,8 @@ static void alertpanel_create(const gchar *title,
 	label = gtk_label_new(message);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 		
