@@ -1,3 +1,12 @@
+2005-06-28 [colin]	1.9.12cvs2
+
+	* src/gedit-print.c		** ADDED **
+	* src/gedit-print.h		** ADDED **
+	* src/gtk/gtksourceprintjob.c	** ADDED **
+	* src/gtk/gtksourceprintjob.h	** ADDED **
+		I can't believe no one had enough time to tell
+		me I forgot the `cvs add`
+
 2005-06-27 [colin]	1.9.12cvs1
 
 	* src/Makefile.am
