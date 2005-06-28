@@ -53,12 +53,12 @@ static struct SSLManager
 	GtkWidget *certlist;
 	GtkWidget *view_btn;
 	GtkWidget *delete_btn;
-	GtkWidget *ok_btn;
+	GtkWidget *close_btn;
 } manager;
 
 static void ssl_manager_view_cb		(GtkWidget *widget, gpointer data);
 static void ssl_manager_delete_cb	(GtkWidget *widget, gpointer data);
-static void ssl_manager_ok_cb		(GtkWidget *widget, gpointer data);
+static void ssl_manager_close_cb	(GtkWidget *widget, gpointer data);
 static void ssl_manager_load_certs	(void);
 static void ssl_manager_double_clicked(GtkTreeView		*list_view,
 				   	GtkTreePath		*path,
@@ -71,7 +71,7 @@ void ssl_manager_open(MainWindow *mainwin)
 		ssl_manager_create();
 
 	manage_window_set_transient(GTK_WINDOW(manager.window));
-	gtk_widget_grab_focus(manager.ok_btn);
+	gtk_widget_grab_focus(manager.close_btn);
 
 	ssl_manager_load_certs();
 
@@ -144,7 +144,7 @@ void ssl_manager_create(void)
 	GtkWidget *certlist;
 	GtkWidget *view_btn;
 	GtkWidget *delete_btn;
-	GtkWidget *ok_btn;
+	GtkWidget *close_btn;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -154,7 +154,7 @@ void ssl_manager_create(void)
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
-			 G_CALLBACK(ssl_manager_ok_cb), NULL);
+			 G_CALLBACK(ssl_manager_close_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
 	hbox1 = gtk_hbox_new(FALSE, 6);
@@ -168,9 +168,9 @@ void ssl_manager_create(void)
 	g_signal_connect(G_OBJECT(view_btn), "clicked",
 			 G_CALLBACK(ssl_manager_view_cb), NULL);
 
-	ok_btn = gtk_button_new_from_stock(GTK_STOCK_OK);
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-			 G_CALLBACK(ssl_manager_ok_cb), NULL);
+	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
+			 G_CALLBACK(ssl_manager_close_cb), NULL);
 
 	certlist = ssl_manager_list_view_create();
 	
@@ -178,12 +178,12 @@ void ssl_manager_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 4);
-	gtk_box_pack_end(GTK_BOX(vbox1), ok_btn, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(vbox1), close_btn, FALSE, FALSE, 4);
 	
 	gtk_widget_show(certlist);
 	gtk_widget_show(hbox1);
 	gtk_widget_show(vbox1);
-	gtk_widget_show(ok_btn);
+	gtk_widget_show(close_btn);
 	gtk_widget_show(delete_btn);
 	gtk_widget_show(view_btn);
 	gtk_container_add(GTK_CONTAINER (window), hbox1);
@@ -194,7 +194,7 @@ void ssl_manager_create(void)
 	manager.certlist = certlist;
 	manager.view_btn = view_btn;
 	manager.delete_btn = delete_btn;
-	manager.ok_btn = ok_btn;
+	manager.close_btn = close_btn;
 
 	gtk_widget_show(window);
 		
@@ -317,8 +317,8 @@ void ssl_manager_close(void)
 	gtk_widget_hide(manager.window);
 }
 
-static void ssl_manager_ok_cb(GtkWidget *widget, 
-			      gpointer data) 
+static void ssl_manager_close_cb(GtkWidget *widget,
+			         gpointer data) 
 {
 	ssl_manager_close();
 }

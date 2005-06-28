@@ -1,3 +1,10 @@
+2005-06-28 [paul]	1.9.12cvs3
+
+	* src/ssl_manager.c
+		replace the OK button with a Close button
+	* src/gtk/foldersort.c
+		use GTK_STOCK_ icons/buttons
+
 2005-06-28 [colin]	1.9.12cvs2
 
 	* src/gedit-print.c		** ADDED **

@@ -129,9 +129,7 @@ void foldersort_open()
 	GtkWidget *cancel_btn;
 	GtkWidget *vbox1;
 	GtkWidget *moveup_btn;
-	GtkWidget *arrow1;
 	GtkWidget *movedown_btn;
-	GtkWidget *arrow2;
 	GtkWidget *scrolledwindow1;
 	GtkWidget *folderlist;
 	GtkWidget *label2;
@@ -172,12 +170,12 @@ void foldersort_open()
 	gtk_button_box_set_child_ipadding(GTK_BUTTON_BOX(hbuttonbox1), 0,
 					  0);
 
-	ok_btn = gtk_button_new_with_label(_("Ok"));
+	ok_btn = gtk_button_new_from_stock(GTK_STOCK_OK);
 	gtk_widget_show(ok_btn);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox1), ok_btn);
 	GTK_WIDGET_SET_FLAGS(ok_btn, GTK_CAN_DEFAULT);
 
-	cancel_btn = gtk_button_new_with_label(_("Cancel"));
+	cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 	gtk_widget_show(cancel_btn);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox1), cancel_btn);
 	GTK_WIDGET_SET_FLAGS(cancel_btn, GTK_CAN_DEFAULT);
@@ -188,21 +186,13 @@ void foldersort_open()
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-	moveup_btn = gtk_button_new();
+	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(moveup_btn);
 	gtk_box_pack_start(GTK_BOX(vbox1), moveup_btn, FALSE, FALSE, 0);
 
-	arrow1 = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow1);
-	gtk_container_add(GTK_CONTAINER(moveup_btn), arrow1);
-
-	movedown_btn = gtk_button_new();
+	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(vbox1), movedown_btn, FALSE, FALSE, 0);
-
-	arrow2 = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow2);
-	gtk_container_add(GTK_CONTAINER(movedown_btn), arrow2);
 
 	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow1);
