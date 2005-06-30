@@ -2811,7 +2811,6 @@ static void addressbook_folder_load_one_person(
 				FALSE, person->isOpened );
 		gtk_ctree_node_set_row_data(clist, nodePerson, person );
 	}
-	gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
 	return;
 }
 
@@ -3069,7 +3068,7 @@ static void addressbook_set_clist( AddressObject *obj ) {
 			addressbook_folder_load_group( ctreelist, itemFolder );
 		}
 	}
-	/* gtk_clist_sort(clist); */
+	gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
 	gtk_clist_thaw(clist);
 }
 

@@ -1,3 +1,8 @@
+2005-06-30 [colin]	1.9.12cvs6
+
+	* src/addressbook.c
+		Optimize addressbook opening 
+
 2005-06-30 [colin]	1.9.12cvs5
 
 	* src/summaryview.c
