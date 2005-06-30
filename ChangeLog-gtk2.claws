@@ -1,3 +1,20 @@
+2005-06-30 [colin]	1.9.12cvs7
+
+	* src/common/utils.c
+	* src/common/utils.h
+		Add an fwrite_atomic() function to make
+		sure we write everything: fwrite can make
+		short writes.
+	* src/compose.c
+	* src/msgcache.c
+	* src/pop.c
+	* src/procmime.c
+	* src/recv.c
+	* src/common/log.c
+	* src/common/template.c
+		Use that (and fix swapping of size and nmemb).
+		Thanks to Rich Coe for the heads up.
+
 2005-06-30 [colin]	1.9.12cvs6
 
 	* src/addressbook.c

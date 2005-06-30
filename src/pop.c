@@ -699,7 +699,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	prev = data;
 	while ((cur = (gchar *)my_memmem(prev, len - (prev - data), "\r\n", 2))
 	       != NULL) {
-		if ((cur > prev && fwrite(prev, cur - prev, 1, fp) < 1) ||
+		if ((cur > prev && fwrite_atomic(prev, 1, cur - prev, fp) < 1) ||
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR(file, "fwrite");
 			g_warning("can't write to file: %s\n", file);
@@ -726,7 +726,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	}
 
 	if (prev - data < len &&
-	    fwrite(prev, len - (prev - data), 1, fp) < 1) {
+	    fwrite_atomic(prev, 1, len - (prev - data), fp) < 1) {
 		FILE_OP_ERROR(file, "fwrite");
 		g_warning("can't write to file: %s\n", file);
 		fclose(fp);

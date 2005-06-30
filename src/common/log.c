@@ -117,7 +117,7 @@ void log_message(const gchar *format, ...)
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
 	if (log_fp) {
-		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
+		fwrite_atomic(buf, 1, LOG_TIME_LEN, log_fp);
 		fputs("* message: ", log_fp);
 		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);
@@ -145,7 +145,7 @@ void log_warning(const gchar *format, ...)
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
 	if (log_fp) {
-		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
+		fwrite_atomic(buf, 1, LOG_TIME_LEN, log_fp);
 		fputs("** warning: ", log_fp);
 		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);
@@ -173,7 +173,7 @@ void log_error(const gchar *format, ...)
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
 	if (log_fp) {
-		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
+		fwrite_atomic(buf, 1, LOG_TIME_LEN, log_fp);
 		fputs("*** error: ", log_fp);
 		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);

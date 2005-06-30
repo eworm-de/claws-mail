@@ -192,8 +192,8 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 	while ((cur = memchr(prev, '\r', size - (prev - buf))) != NULL) {
 		if (cur == buf + size - 1) break;
 
-		if (fwrite(prev, sizeof(gchar), cur - prev, fp) == EOF ||
-		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
+		if (fwrite_atomic(prev, sizeof(gchar), cur - prev, fp) == EOF ||
+		    fwrite_atomic("\n", sizeof(gchar), 1, fp) == EOF) {
 			perror("fwrite");
 			g_warning("Can't write to file.\n");
 			g_free(buf);
@@ -208,7 +208,7 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		if (prev - buf >= size) break;
 	}
 
-	if (prev - buf < size && fwrite(buf, sizeof(gchar),
+	if (prev - buf < size && fwrite_atomic(buf, sizeof(gchar),
 					size - (prev - buf), fp) == EOF) {
 		perror("fwrite");
 		g_warning("Can't write to file.\n");

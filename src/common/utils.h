@@ -434,6 +434,8 @@ gint str_write_to_file		(const gchar	*str,
 gchar *file_read_to_str		(const gchar	*file);
 gchar *file_read_stream_to_str	(FILE		*fp);
 
+size_t fwrite_atomic(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+
 /* process execution */
 gint execute_async		(gchar *const	 argv[]);
 gint execute_sync		(gchar *const	 argv[]);

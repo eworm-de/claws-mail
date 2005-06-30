@@ -3509,7 +3509,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 	compose_redirect_write_headers(compose, fdest);
 
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (fwrite(buf, sizeof(gchar), len, fdest) != len)
+		if (fwrite_atomic(buf, sizeof(gchar), len, fdest) != len)
 			goto error;
 	}
 
@@ -3699,7 +3699,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 
 	/* write body */
 	len = strlen(chars);
-	if (fwrite(chars, sizeof(gchar), len, fp) != len) {
+	if (fwrite_atomic(chars, sizeof(gchar), len, fp) != len) {
 		FILE_OP_ERROR(file, "fwrite");
 		g_free(chars);
 		fclose(fp);
