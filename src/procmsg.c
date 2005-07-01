@@ -868,6 +868,26 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	return (err != 0 ? -err : sent);
 }
 
+/*!
+ *\brief	Determine if a queue folder is empty
+ *
+ *\param	queue Queue folder to process
+ *
+ *\return	TRUE if the queue folder is empty, otherwise return FALSE
+ */
+gboolean procmsg_queue_is_empty(FolderItem *queue)
+{
+	GSList *list;
+
+	if (!queue)
+		queue = folder_get_default_queue();
+	g_return_val_if_fail(queue != NULL, TRUE);
+
+	folder_item_scan(queue);
+	list = folder_item_get_msg_list(queue);
+	return (list == NULL);
+}
+
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 {
 	FILE *fp, *outfp;
@@ -1563,10 +1583,12 @@ static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPerm
 	/* MARK flag */
 	if (!(old_flags & MSG_MARKED) && (new_flags & MSG_MARKED)) {
 		procmsg_update_unread_children(msginfo, TRUE);
+		item->marked_msgs++;
 	}
 
 	if ((old_flags & MSG_MARKED) && !(new_flags & MSG_MARKED)) {
 		procmsg_update_unread_children(msginfo, FALSE);
+		item->marked_msgs--;
 	}
 }
 

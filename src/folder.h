@@ -587,6 +587,7 @@ struct _FolderItem
 	gint unread_msgs;
 	gint total_msgs;
 	gint unreadmarked_msgs;
+	gint marked_msgs;
 
 	gint last_num;
 
@@ -701,10 +702,9 @@ gint   folder_item_rename	(FolderItem *item, gchar *newname);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
-void   folder_count_total_msgs	(guint		*new_msgs,
-				 guint		*unread_msgs,
-				 guint		*unreadmarked_msgs,
-				 guint		*total_msgs);
+void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, 
+			     guint *unreadmarked_msgs, guint *marked_msgs,
+			     guint *total_msgs);
 gchar *folder_get_status	(GPtrArray	*folders,
 				 gboolean	 full);
 

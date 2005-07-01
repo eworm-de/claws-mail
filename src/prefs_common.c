@@ -105,6 +105,8 @@ static PrefParam param[] = {
 	/* Send */
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
 	 NULL, NULL, NULL},
+	{"confirm_send_queued_messages", "FALSE", &prefs_common.confirm_send_queued_messages,
+	 P_BOOL, NULL, NULL, NULL},
 	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
 

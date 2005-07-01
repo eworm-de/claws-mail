@@ -1857,12 +1857,34 @@ void inc_all_account_mail_cb(gpointer data, guint action, GtkWidget *widget)
 void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	GList *list;
+	gboolean found;
 
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
+
+	/* ask for confirmation before sending queued messages only
+	   in online mode and if there is at least one message queued
+	   in any of the folder queue
+	*/
+	if (prefs_common.confirm_send_queued_messages) {
+		found = FALSE;
+		/* check if there's a queued message */
+		for (list = folder_get_list(); !found && list != NULL; list = list->next) {
+			Folder *folder = list->data;
+
+			found = !procmsg_queue_is_empty(folder->queue);
+		}
+		/* if necessary, ask for confirmation before sending */
+		if (found && !prefs_common.work_offline) {
+			if (alertpanel(_("Send queued messages"), 
+			    	   _("Send all queued messages?"),
+			    	   _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+				return;
+		}
+	}
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;

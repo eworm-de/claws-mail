@@ -136,11 +136,11 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 
 static void update(void)
 {
-	gint new, unread, unreadmarked, total;
+	gint new, unread, unreadmarked, marked, total;
 	gchar *buf;
 	TrayIconType icontype = TRAYICON_NOTHING;
 
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
 	buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"), new, unread, total);
 
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");

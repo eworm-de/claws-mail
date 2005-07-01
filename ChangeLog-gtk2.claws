@@ -1,3 +1,35 @@
+2005-07-01 [colin]	1.9.12cvs10
+
+	* src/Makefile.am
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/plugins/trayicon/trayicon.c
+		Add marked symbol on folders containing
+		marked messages
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/toolbar.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_send.c
+		Add an optional confirmation dialog on queue
+		sending. Patch by wwp.
+	* src/pixmaps/dir_close_mark.xpm	** ADDED **
+	* src/pixmaps/dir_open_hrm_mark.xpm	** ADDED **
+	* src/pixmaps/dir_open_mark.xpm		** ADDED **
+	* src/pixmaps/drafts_close_mark.xpm	** ADDED **
+	* src/pixmaps/drafts_open_mark.xpm	** ADDED **
+	* src/pixmaps/inbox_hrm_mark.xpm	** ADDED **
+	* src/pixmaps/inbox_mark.xpm		** ADDED **
+	* src/pixmaps/outbox_hrm_mark.xpm	** ADDED **
+	* src/pixmaps/outbox_mark.xpm		** ADDED **
+	* src/pixmaps/trash_hrm_mark.xpm	** ADDED **
+	* src/pixmaps/trash_mark.xpm		** ADDED **
+		New pixmaps
+
 2005-07-01 [colin]	1.9.12cvs9
 
 	* src/summaryview.c

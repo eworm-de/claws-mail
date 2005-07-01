@@ -47,6 +47,7 @@ typedef struct _SendPage
 	GtkWidget *window;
 
 	GtkWidget *checkbtn_savemsg;
+	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *optmenu_senddialog;
 	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_encoding_method;
@@ -128,6 +129,7 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *menu;
 	GtkWidget *optmenu_senddialog;
 	GtkWidget *hbox_senddialog;
+	GtkWidget *checkbtn_confirm_send_queued_messages;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -139,6 +141,10 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
 			   _("Save sent messages to Sent folder"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_confirm_send_queued_messages,
+		 _("Confirm before sending queued messages"));
 
 	hbox_senddialog = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show(hbox_senddialog);
@@ -269,6 +275,8 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_savemsg),
 		prefs_common.savemsg);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confirm_send_queued_messages),
+		prefs_common.confirm_send_queued_messages);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_senddialog),
 		prefs_common.send_dialog_mode);
 	prefs_common_charset_set_optmenu(optmenu_charset, 
@@ -279,6 +287,7 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_send->window			= GTK_WIDGET(window);
 	
 	prefs_send->checkbtn_savemsg = checkbtn_savemsg;
+	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
 	prefs_send->optmenu_senddialog = optmenu_senddialog;
 	prefs_send->optmenu_charset = optmenu_charset;
 	prefs_send->optmenu_encoding_method = optmenu_encoding;
@@ -294,6 +303,8 @@ void prefs_send_save(PrefsPage *_page)
 
 	prefs_common.savemsg = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_savemsg));
+	prefs_common.confirm_send_queued_messages = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_confirm_send_queued_messages));
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_senddialog));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));

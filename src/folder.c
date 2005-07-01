@@ -273,6 +273,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->new_msgs = 0;
 	item->unread_msgs = 0;
 	item->unreadmarked_msgs = 0;
+	item->marked_msgs = 0;
 	item->total_msgs = 0;
 	item->last_num = -1;
 	item->cache = NULL;
@@ -442,6 +443,8 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			item->unread_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "unreadmarked"))
 			item->unreadmarked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "marked"))
+			item->marked_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "total"))
 			item->total_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "no_sub"))
@@ -543,6 +546,7 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	xml_tag_add_attr(tag, xml_attr_new_int("new", item->new_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("unread", item->unread_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("unreadmarked", item->unreadmarked_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("marked", item->marked_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("total", item->total_msgs));
 
 	if (item->account)
@@ -821,6 +825,7 @@ struct TotalMsgCount
 	guint new_msgs;
 	guint unread_msgs;
 	guint unreadmarked_msgs;
+	guint marked_msgs;
 	guint total_msgs;
 };
 
@@ -871,6 +876,7 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 	count->new_msgs += item->new_msgs;
 	count->unread_msgs += item->unread_msgs;
 	count->unreadmarked_msgs += item->unreadmarked_msgs;
+	count->marked_msgs += item->marked_msgs;
 	count->total_msgs += item->total_msgs;
 }
 
@@ -981,7 +987,9 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 	return ret;
 }
 
-void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, guint *unreadmarked_msgs, guint *total_msgs)
+void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, 
+			     guint *unreadmarked_msgs, guint *marked_msgs,
+			     guint *total_msgs)
 {
 	struct TotalMsgCount count;
 
@@ -994,6 +1002,7 @@ void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, guint *unreadm
 	*new_msgs = count.new_msgs;
 	*unread_msgs = count.unread_msgs;
 	*unreadmarked_msgs = count.unreadmarked_msgs;
+	*marked_msgs = count.marked_msgs;
 	*total_msgs = count.total_msgs;
 }
 
@@ -1589,7 +1598,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	GSList *folder_list_cur, *cache_list_cur, *new_list = NULL;
 	GSList *exists_list = NULL, *elem;
 	GSList *newmsg_list = NULL;
-	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
+	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
+	guint markedcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0, old_uids_valid = FALSE;
     
@@ -1806,6 +1816,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			unreadcnt++;
 		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 			unreadmarkedcnt++;
+		if (MSG_IS_MARKED(msginfo->flags))
+			markedcnt++;
+
 		totalcnt++;
 
 		procmsg_msginfo_free(msginfo);
@@ -1816,6 +1829,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	item->unread_msgs = unreadcnt;
 	item->total_msgs = totalcnt;
 	item->unreadmarked_msgs = unreadmarkedcnt;
+	item->marked_msgs = markedcnt;
 
 	update_flags |= F_ITEM_UPDATE_MSGCNT;
 
@@ -1970,7 +1984,8 @@ void folder_item_read_cache(FolderItem *item)
 		item->cache = msgcache_read_cache(item, cache_file);
 		if (!item->cache) {
 			MsgInfoList *list, *cur;
-			guint newcnt = 0, unreadcnt = 0, unreadmarkedcnt = 0;
+			guint newcnt = 0, unreadcnt = 0;
+			guint markedcnt = 0, unreadmarkedcnt = 0;
 			MsgInfo *msginfo;
 
 			item->cache = msgcache_new();
@@ -1988,10 +2003,13 @@ void folder_item_read_cache(FolderItem *item)
 					unreadcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 					unreadmarkedcnt++;
+				if (MSG_IS_MARKED(msginfo->flags))
+					markedcnt++;
 			}
 			item->new_msgs = newcnt;
 		        item->unread_msgs = unreadcnt;
 			item->unreadmarked_msgs = unreadmarkedcnt;
+			item->marked_msgs = markedcnt;
 			procmsg_msg_list_free(list);
 		} else
 			msgcache_read_mark(item->cache, mark_file);
@@ -2352,6 +2370,8 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 		item->unread_msgs++;
 	if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 		item->unreadmarked_msgs++;
+	if (MSG_IS_MARKED(newmsginfo->flags))
+		item->marked_msgs++;
 	item->total_msgs++;
 
 	folder_item_update_freeze();
@@ -2374,6 +2394,9 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 		msginfo->folder->unread_msgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		msginfo->folder->unreadmarked_msgs--;
+	if (MSG_IS_MARKED(msginfo->flags))
+		item->marked_msgs--;
+
 	msginfo->folder->total_msgs--;
 
 	msginfo_update.msginfo = msginfo;
@@ -2930,6 +2953,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		item->new_msgs = 0;
 		item->unread_msgs = 0;
 		item->unreadmarked_msgs = 0;
+		item->marked_msgs = 0;
 		item->total_msgs = 0;
 		folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	}

@@ -274,6 +274,7 @@ void	procmsg_empty_all_trash		(void);
 
 gint	procmsg_send_queue		(FolderItem	*queue,
 					 gboolean	 save_msgs);
+gboolean procmsg_queue_is_empty	(FolderItem *queue);
 gint	procmsg_save_to_outbox		(FolderItem	*outbox,
 					 const gchar	*file,
 					 gboolean	 is_queued);

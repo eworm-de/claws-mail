@@ -84,7 +84,7 @@ static GtkStyle *bold_style;
 static GtkStyle *bold_color_style;
 static GtkStyle *bold_tgtfold_style;
 
-static GdkBitmap *inboxxpm;
+static GdkPixmap *inboxxpm;
 static GdkBitmap *inboxxpmmask;
 static GdkPixmap *inboxhrmxpm;
 static GdkBitmap *inboxhrmxpmmask;
@@ -124,19 +124,65 @@ static GdkPixmap *queueopenxpm;
 static GdkBitmap *queueopenxpmmask;
 static GdkPixmap *queueopenhrmxpm;
 static GdkBitmap *queueopenhrmxpmmask;
+static GdkPixmap *draftsxpm;
+static GdkBitmap *draftsxpmmask;
+static GdkPixmap *draftsopenxpm;
+static GdkBitmap *draftsopenxpmmask;
+static GdkPixmap *noselectxpm;
+static GdkBitmap *noselectxpmmask;
+
+static GdkPixmap *m_inboxxpm;
+static GdkBitmap *m_inboxxpmmask;
+static GdkPixmap *m_inboxhrmxpm;
+static GdkBitmap *m_inboxhrmxpmmask;
+static GdkPixmap *m_inboxopenxpm;
+static GdkBitmap *m_inboxopenxpmmask;
+static GdkPixmap *m_inboxopenhrmxpm;
+static GdkBitmap *m_inboxopenhrmxpmmask;
+static GdkPixmap *m_outboxxpm;
+static GdkBitmap *m_outboxxpmmask;
+static GdkPixmap *m_outboxhrmxpm;
+static GdkBitmap *m_outboxhrmxpmmask;
+static GdkPixmap *m_outboxopenxpm;
+static GdkBitmap *m_outboxopenxpmmask;
+static GdkPixmap *m_outboxopenhrmxpm;
+static GdkBitmap *m_outboxopenhrmxpmmask;
+static GdkPixmap *m_folderxpm;
+static GdkBitmap *m_folderxpmmask;
+static GdkPixmap *m_folderhrmxpm;
+static GdkBitmap *m_folderhrmxpmmask;
+static GdkPixmap *m_folderopenxpm;
+static GdkBitmap *m_folderopenxpmmask;
+static GdkPixmap *m_folderopenhrmxpm;
+static GdkBitmap *m_folderopenhrmxpmmask;
+static GdkPixmap *m_trashopenxpm;
+static GdkBitmap *m_trashopenxpmmask;
+static GdkPixmap *m_trashopenhrmxpm;
+static GdkBitmap *m_trashopenhrmxpmmask;
+static GdkPixmap *m_trashxpm;
+static GdkBitmap *m_trashxpmmask;
+static GdkPixmap *m_trashhrmxpm;
+static GdkBitmap *m_trashhrmxpmmask;
+static GdkPixmap *m_queuexpm;
+static GdkBitmap *m_queuexpmmask;
+static GdkPixmap *m_queuehrmxpm;
+static GdkBitmap *m_queuehrmxpmmask;
+static GdkPixmap *m_queueopenxpm;
+static GdkBitmap *m_queueopenxpmmask;
+static GdkPixmap *m_queueopenhrmxpm;
+static GdkBitmap *m_queueopenhrmxpmmask;
+static GdkPixmap *m_draftsxpm;
+static GdkBitmap *m_draftsxpmmask;
+static GdkPixmap *m_draftsopenxpm;
+static GdkBitmap *m_draftsopenxpmmask;
+
 static GdkPixmap *newxpm;
 static GdkBitmap *newxpmmask;
 static GdkPixmap *unreadxpm;
 static GdkBitmap *unreadxpmmask;
 static GdkPixmap *readxpm;
 static GdkBitmap *readxpmmask;
-static GdkPixmap *draftsxpm;
-static GdkBitmap *draftsxpmmask;
-static GdkPixmap *draftsopenxpm;
-static GdkBitmap *draftsopenxpmmask;
 
-static GdkPixmap *noselectxpm;
-static GdkBitmap *noselectxpmmask;
 
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
@@ -469,6 +515,29 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm, &draftsxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm, &draftsopenxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm, &noselectxpmmask);
+
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_MARK, &m_inboxxpm, &m_inboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM_MARK, &m_inboxhrmxpm, &m_inboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_MARK, &m_inboxopenxpm, &m_inboxopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_HRM_MARK, &m_inboxopenhrmxpm, &m_inboxopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_MARK, &m_outboxxpm, &m_outboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_HRM_MARK, &m_outboxhrmxpm, &m_outboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_MARK, &m_outboxopenxpm, &m_outboxopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_HRM_MARK, &m_outboxopenhrmxpm, &m_outboxopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_MARK, &m_folderxpm, &m_folderxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_HRM_MARK, &m_folderhrmxpm, &m_folderhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_MARK, &m_folderopenxpm, &m_folderopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM_MARK, &m_folderopenhrmxpm, &m_folderopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_MARK, &m_trashopenxpm, &m_trashopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_HRM_MARK, &m_trashopenhrmxpm, &m_trashopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_MARK, &m_trashxpm, &m_trashxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_HRM_MARK, &m_trashhrmxpm, &m_trashhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_MARK, &m_queuexpm, &m_queuexpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_HRM_MARK, &m_queuehrmxpm, &m_queuehrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_MARK, &m_queueopenxpm, &m_queueopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm, &m_queueopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm, &m_draftsxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm, &m_draftsopenxpmmask);
 
 	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
 	 * instead text (text overflows making them unreadable and ugly) */
@@ -1028,7 +1097,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	GdkBitmap *mask, *openmask;
 	static GdkPixmap *searchicon;
 	static GdkBitmap *searchmask;
-
+	gboolean mark = FALSE;
 	gchar *name;
 	gchar *str;
 	gboolean add_unread_mark;
@@ -1038,76 +1107,78 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
 
+	mark = (item->marked_msgs != 0);
+
 	switch (item->stype) {
 	case F_INBOX:
 		if (item->hide_read_msgs) {
-			xpm = inboxhrmxpm;
-			mask = inboxhrmxpmmask;
-			openxpm = inboxopenhrmxpm;
-			openmask = inboxopenhrmxpmmask;
+			xpm = mark?m_inboxhrmxpm:inboxhrmxpm;
+			mask = mark?m_inboxhrmxpmmask:inboxhrmxpmmask;
+			openxpm = mark?m_inboxopenhrmxpm:inboxopenhrmxpm;
+			openmask = mark?m_inboxopenhrmxpmmask:inboxopenhrmxpmmask;
 		} else {
-			xpm = inboxxpm;
-			mask = inboxxpmmask;
-			openxpm = inboxopenxpm;
-			openmask = inboxopenxpmmask;
+			xpm = mark?m_inboxxpm:inboxxpm;
+			mask = mark?m_inboxxpmmask:inboxxpmmask;
+			openxpm = mark?m_inboxopenxpm:inboxopenxpm;
+			openmask = mark?m_inboxopenxpmmask:inboxopenxpmmask;
 		}
 		break;
 	case F_OUTBOX:
 		if (item->hide_read_msgs) {
-			xpm = outboxhrmxpm;
-			mask = outboxhrmxpmmask;
-			openxpm = outboxopenhrmxpm;
-			openmask = outboxopenhrmxpmmask;
+			xpm = mark?m_outboxhrmxpm:outboxhrmxpm;
+			mask = mark?m_outboxhrmxpmmask:outboxhrmxpmmask;
+			openxpm = mark?m_outboxopenhrmxpm:outboxopenhrmxpm;
+			openmask = mark?m_outboxopenhrmxpmmask:outboxopenhrmxpmmask;
 		} else {
-			xpm = outboxxpm;
-			mask = outboxxpmmask;
-			openxpm = outboxopenxpm;
-			openmask = outboxopenxpmmask;
+			xpm = mark?m_outboxxpm:outboxxpm;
+			mask = mark?m_outboxxpmmask:outboxxpmmask;
+			openxpm = mark?m_outboxopenxpm:outboxopenxpm;
+			openmask = mark?m_outboxopenxpmmask:outboxopenxpmmask;
 		}
 		break;
 	case F_QUEUE:
 		if (item->hide_read_msgs) {
-			xpm = queuehrmxpm;
-			mask = queuehrmxpmmask;
-			openxpm = queueopenhrmxpm;
-			openmask = queueopenhrmxpmmask;
+			xpm = mark?m_queuehrmxpm:queuehrmxpm;
+			mask = mark?m_queuehrmxpmmask:queuehrmxpmmask;
+			openxpm = mark?m_queueopenhrmxpm:queueopenhrmxpm;
+			openmask = mark?m_queueopenhrmxpmmask:queueopenhrmxpmmask;
 		} else {
-			xpm = queuexpm;
-			mask = queuexpmmask;
-			openxpm = queueopenxpm;
-			openmask = queueopenxpmmask;
+			xpm = mark?m_queuexpm:queuexpm;
+			mask = mark?m_queuexpmmask:queuexpmmask;
+			openxpm = mark?m_queueopenxpm:queueopenxpm;
+			openmask = mark?m_queueopenxpmmask:queueopenxpmmask;
 		}
 		break;
 	case F_TRASH:
 		if (item->hide_read_msgs) {
-			xpm = trashhrmxpm;
-			mask = trashhrmxpmmask;
-			openxpm = trashopenhrmxpm;
-			openmask = trashopenhrmxpmmask;
+			xpm = mark?m_trashhrmxpm:trashhrmxpm;
+			mask = mark?m_trashhrmxpmmask:trashhrmxpmmask;
+			openxpm = mark?m_trashopenhrmxpm:trashopenhrmxpm;
+			openmask = mark?m_trashopenhrmxpmmask:trashopenhrmxpmmask;
 		} else {
-			xpm = trashxpm;
-			mask = trashxpmmask;
-			openxpm = trashopenxpm;
-			openmask = trashopenxpmmask;
+			xpm = mark?m_trashxpm:trashxpm;
+			mask = mark?m_trashxpmmask:trashxpmmask;
+			openxpm = mark?m_trashopenxpm:trashopenxpm;
+			openmask = mark?m_trashopenxpmmask:trashopenxpmmask;
 		}
 		break;
 	case F_DRAFT:
-		xpm = draftsxpm;
-		mask = draftsxpmmask;
-		openxpm = draftsopenxpm;
-		openmask = draftsopenxpmmask;
+		xpm = mark?m_draftsxpm:draftsxpm;
+		mask = mark?m_draftsxpmmask:draftsxpmmask;
+		openxpm = mark?m_draftsopenxpm:draftsopenxpm;
+		openmask = mark?m_draftsopenxpmmask:draftsopenxpmmask;
 		break;
 	default:
 		if (item->hide_read_msgs) {
-			xpm = folderhrmxpm;
-			mask = folderhrmxpmmask;
-			openxpm = folderopenhrmxpm;
-			openmask = folderopenhrmxpmmask;
+			xpm = mark?m_folderhrmxpm:folderhrmxpm;
+			mask = mark?m_folderhrmxpmmask:folderhrmxpmmask;
+			openxpm = mark?m_folderopenhrmxpm:folderopenhrmxpm;
+			openmask = mark?m_folderopenhrmxpmmask:folderopenhrmxpmmask;
 		} else {
-			xpm = folderxpm;
-			mask = folderxpmmask;
-			openxpm = folderopenxpm;
-			openmask = folderopenxpmmask;
+			xpm = mark?m_folderxpm:folderxpm;
+			mask = mark?m_folderxpmmask:folderxpmmask;
+			openxpm = mark?m_folderopenxpm:folderopenxpm;
+			openmask = mark?m_folderopenxpmmask:folderopenxpmmask;
 		}
 	}
 	

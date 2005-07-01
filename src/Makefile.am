@@ -368,7 +368,19 @@ EXTRA_DIST = \
 	pixmaps/unread.xpm \
 	pixmaps/read.xpm \
 	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm
+	pixmaps/vcard.xpm \
+	pixmaps/dir_close_mark.xpm \
+	pixmaps/dir_open_hrm_mark.xpm \
+	pixmaps/dir_open_mark.xpm \
+	pixmaps/drafts_close_mark.xpm \
+	pixmaps/drafts_open_mark.xpm \
+	pixmaps/inbox_hrm_mark.xpm \
+	pixmaps/inbox_mark.xpm \
+	pixmaps/outbox_hrm_mark.xpm \
+	pixmaps/outbox_mark.xpm \
+	pixmaps/trash_hrm_mark.xpm \
+	pixmaps/trash_mark.xpm
+
 
 INCLUDES = \
 	-Icommon \

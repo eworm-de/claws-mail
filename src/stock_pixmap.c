@@ -39,14 +39,9 @@
 #include "pixmaps/complete.xpm"
 #include "pixmaps/continue.xpm"
 #include "pixmaps/deleted.xpm"
-#include "pixmaps/dir_close.xpm"
-#include "pixmaps/dir_open.xpm"
-#include "pixmaps/dir_open_hrm.xpm"
 #include "pixmaps/error.xpm"
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/group.xpm"
-#include "pixmaps/inbox.xpm"
-#include "pixmaps/inbox_hrm.xpm"
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
 #include "pixmaps/key.xpm"
@@ -56,8 +51,6 @@
 #include "pixmaps/mark.xpm"
 #include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
-#include "pixmaps/outbox.xpm"
-#include "pixmaps/outbox_hrm.xpm"
 #include "pixmaps/replied.xpm"
 #include "pixmaps/close.xpm"
 #include "pixmaps/down_arrow.xpm"
@@ -81,8 +74,6 @@
 #include "pixmaps/sylpheed_icon.xpm"
 #include "pixmaps/sylpheed_logo.xpm"
 #include "pixmaps/address_book.xpm"
-#include "pixmaps/trash.xpm"
-#include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/read.xpm"
 #include "pixmaps/vcard.xpm"
@@ -95,8 +86,6 @@
 #include "pixmaps/quicksearch.xpm"
 #include "pixmaps/clip_gpg_signed.xpm"
 #include "pixmaps/gpg_signed.xpm"
-#include "pixmaps/drafts_close.xpm"
-#include "pixmaps/drafts_open.xpm"
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
 #include "pixmaps/mime_application.xpm"
@@ -118,6 +107,29 @@
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
+
+#include "pixmaps/dir_close.xpm"
+#include "pixmaps/dir_open.xpm"
+#include "pixmaps/dir_open_hrm.xpm"
+#include "pixmaps/inbox.xpm"
+#include "pixmaps/inbox_hrm.xpm"
+#include "pixmaps/outbox.xpm"
+#include "pixmaps/outbox_hrm.xpm"
+#include "pixmaps/trash.xpm"
+#include "pixmaps/trash_hrm.xpm"
+#include "pixmaps/drafts_close.xpm"
+#include "pixmaps/drafts_open.xpm"
+#include "pixmaps/dir_close_mark.xpm"
+#include "pixmaps/dir_open_mark.xpm"
+#include "pixmaps/dir_open_hrm_mark.xpm"
+#include "pixmaps/inbox_mark.xpm"
+#include "pixmaps/inbox_hrm_mark.xpm"
+#include "pixmaps/outbox_mark.xpm"
+#include "pixmaps/outbox_hrm_mark.xpm"
+#include "pixmaps/trash_mark.xpm"
+#include "pixmaps/trash_hrm_mark.xpm"
+#include "pixmaps/drafts_close_mark.xpm"
+#include "pixmaps/drafts_open_mark.xpm"
 #include "pixmaps/dir_noselect.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -172,6 +184,10 @@ static StockPixmapData pixmaps[] =
 	{dir_close_xpm				, NULL, NULL, "dir_close_hrm", NULL},
 	{dir_open_xpm				, NULL, NULL, "dir_open", NULL},
 	{dir_open_hrm_xpm			, NULL, NULL, "dir_open_hrm", NULL},
+	{dir_close_mark_xpm			, NULL, NULL, "dir_close_mark", NULL},
+	{dir_close_mark_xpm			, NULL, NULL, "dir_close_mark_hrm", NULL},
+	{dir_open_mark_xpm			, NULL, NULL, "dir_open_mark", NULL},
+	{dir_open_hrm_mark_xpm			, NULL, NULL, "dir_open_mark_hrm", NULL},
 	{down_arrow_xpm				, NULL, NULL, "down_arrow", NULL},
 	{up_arrow_xpm				, NULL, NULL, "up_arrow", NULL},
 	{mail_compose_xpm			, NULL, NULL, "edit_extern", NULL},
@@ -184,6 +200,10 @@ static StockPixmapData pixmaps[] =
 	{inbox_hrm_xpm				, NULL, NULL, "inbox_close_hrm", NULL},
 	{inbox_xpm				, NULL, NULL, "inbox_open", NULL},
 	{inbox_hrm_xpm				, NULL, NULL, "inbox_open_hrm", NULL},
+	{inbox_mark_xpm				, NULL, NULL, "inbox_close_mark", NULL},
+	{inbox_hrm_mark_xpm			, NULL, NULL, "inbox_close_mark_hrm", NULL},
+	{inbox_mark_xpm				, NULL, NULL, "inbox_open_mark", NULL},
+	{inbox_hrm_mark_xpm			, NULL, NULL, "inbox_open_mark_hrm", NULL},
 	{paste_xpm				, NULL, NULL, "insert_file", NULL},
 	{interface_xpm				, NULL, NULL, "interface", NULL},
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
@@ -211,6 +231,10 @@ static StockPixmapData pixmaps[] =
 	{outbox_hrm_xpm				, NULL, NULL, "outbox_close_hrm", NULL},
 	{outbox_xpm				, NULL, NULL, "outbox_open", NULL},
 	{outbox_hrm_xpm				, NULL, NULL, "outbox_open_hrm", NULL},
+	{outbox_mark_xpm			, NULL, NULL, "outbox_close_mark", NULL},
+	{outbox_hrm_mark_xpm			, NULL, NULL, "outbox_close_mark_hrm", NULL},
+	{outbox_mark_xpm			, NULL, NULL, "outbox_open_mark", NULL},
+	{outbox_hrm_mark_xpm			, NULL, NULL, "outbox_open_mark_hrm", NULL},
 	{replied_xpm				, NULL, NULL, "replied", NULL},
 	{paste_xpm				, NULL, NULL, "paste", NULL},
 	{preferences_xpm			, NULL, NULL, "preferences", NULL},
@@ -223,6 +247,14 @@ static StockPixmapData pixmaps[] =
 	{trash_hrm_xpm				, NULL, NULL, "trash_open_hrm", NULL},
 	{trash_xpm				, NULL, NULL, "trash_close", NULL},
 	{trash_hrm_xpm				, NULL, NULL, "trash_close_hrm", NULL},
+	{outbox_mark_xpm			, NULL, NULL, "queue_close_mark", NULL},
+	{outbox_hrm_mark_xpm			, NULL, NULL, "queue_close_mark_hrm", NULL},
+	{outbox_mark_xpm			, NULL, NULL, "queue_open_mark", NULL},
+	{outbox_hrm_mark_xpm			, NULL, NULL, "queue_open_mark_hrm", NULL},
+	{trash_mark_xpm				, NULL, NULL, "trash_open_mark", NULL},
+	{trash_hrm_mark_xpm			, NULL, NULL, "trash_open_mark_hrm", NULL},
+	{trash_mark_xpm				, NULL, NULL, "trash_close_mark", NULL},
+	{trash_hrm_mark_xpm			, NULL, NULL, "trash_close_mark_hrm", NULL},
 	{unread_xpm				, NULL, NULL, "unread", NULL},
 	{vcard_xpm				, NULL, NULL, "vcard", NULL},
 	{online_xpm				, NULL, NULL, "online", NULL},
@@ -234,6 +266,8 @@ static StockPixmapData pixmaps[] =
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", NULL},
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", NULL},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", NULL},
+	{drafts_close_mark_xpm			, NULL, NULL, "drafts_close_mark", NULL},
+	{drafts_open_mark_xpm			, NULL, NULL, "drafts_open_mark", NULL},
 	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", NULL},
 	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", NULL},
 	{mime_application_xpm			, NULL, NULL, "mime_application", NULL},
