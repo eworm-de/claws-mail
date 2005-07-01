@@ -91,6 +91,7 @@ static struct _AddrHarvest {
 	GtkWidget *statusbar;
 	gint      status_cid;
 	gboolean  cancelled;
+	gboolean  done;
 	gchar     *folderPath;
 	GtkWidget *clistCount;
 } addrgather_dlg;
@@ -181,7 +182,8 @@ static gboolean addrgather_dlg_harvest() {
 	}
 
 	/* Go fer it */
-	addrgather_dlg_status_show( _( "Busy harvesting addresses..." ) );
+	addrgather_dlg_status_show( _( "Harvesting addresses..." ) );
+	GTK_EVENTS_FLUSH();
 	sz = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON( addrgather_dlg.spinbtnFolder ) );
 	addrharvest_set_folder_size( harvester, sz );
@@ -224,13 +226,19 @@ static gboolean addrgather_dlg_harvest() {
 	/* Display summary page */
 	gtk_notebook_set_current_page(
 		GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_FINISH );
-	gtk_widget_set_sensitive( addrgather_dlg.btnOk, FALSE );
-	gtk_widget_grab_default( addrgather_dlg.btnCancel );
+	addrgather_dlg.done = TRUE;
+	gtk_widget_set_sensitive( addrgather_dlg.btnCancel, FALSE );
+	gtk_widget_grab_default( addrgather_dlg.btnOk );
 
 	return TRUE;
 }
 
 static void addrgather_dlg_ok( GtkWidget *widget, gpointer data ) {
+	if(addrgather_dlg.done) {
+		addrgather_dlg.done = FALSE;
+		gtk_main_quit();
+		return;
+	}
 	if( addrgather_dlg_harvest() ) {
 		addrgather_dlg.cancelled = FALSE;
 	}
@@ -508,7 +516,7 @@ static void addrgather_dlg_create( void ) {
 				      &btnCancel, GTK_STOCK_CANCEL,
 				      NULL, NULL );
 	gtk_box_pack_end( GTK_BOX(vbox), hbbox, FALSE, FALSE, 0 );
-	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
+	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 10 );
 
 	/* Signal handlers */
 	g_signal_connect(G_OBJECT(btnOk), "clicked",
@@ -555,6 +563,8 @@ AddressBookFile *addrgather_dlg_execute(
 	if( ! addrgather_dlg.window ) {
 		addrgather_dlg_create();
 	}
+	
+	addrgather_dlg.done = FALSE;
 
 	errFlag = TRUE;
 	if( folderItem && folderItem->path ) {

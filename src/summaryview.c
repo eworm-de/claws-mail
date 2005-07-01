@@ -3576,8 +3576,10 @@ gboolean summary_execute(SummaryView *summaryview)
 			 : new_selected);
 	}
 
-	if (summaryview->threaded)
+	if (summaryview->threaded) {
 		summary_thread_build(summaryview);
+		summary_thread_init(summaryview);
+	}
 
 	summaryview->selected = clist->selection ?
 		GTK_CTREE_NODE(clist->selection->data) : NULL;

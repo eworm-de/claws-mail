@@ -1806,7 +1806,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to"              , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
@@ -1816,9 +1816,14 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
-		{"/Message/Re-edit"              , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
+		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
+		{"/Tools/Harvest addresses/from Folder..."       
+						       , M_UNLOCKED|M_MSG_EXIST},
+		{"/Tools/Harvest addresses/from Messages..."
+						       , M_UNLOCKED|M_MSG_EXIST|M_TARGET_EXIST},
 		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},

@@ -1,3 +1,11 @@
+2005-07-01 [colin]	1.9.12cvs9
+
+	* src/summaryview.c
+		Fix a little threading bug
+	* src/addrgather.c
+	* src/mainwindow.c
+		A little bit of HIG normality never hurts
+
 2005-07-01 [colin]	1.9.12cvs8
 
 	* src/compose.c
