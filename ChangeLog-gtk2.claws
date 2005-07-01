@@ -1,3 +1,17 @@
+2005-07-01 [colin]	1.9.12cvs8
+
+	* src/compose.c
+	* src/msgcache.c
+	* src/pop.c
+	* src/procmime.c
+	* src/recv.c
+	* src/common/log.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Reverted the fwrite_atomic stuff. In fact
+		it is already atomic.
+
 2005-06-30 [colin]	1.9.12cvs7
 
 	* src/common/utils.c

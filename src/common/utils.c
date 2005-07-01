@@ -2406,7 +2406,7 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
-		if (fwrite_atomic(buf, 1, n_read, dest_fp) < n_read) {
+		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
@@ -2474,7 +2474,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
-		if (fwrite_atomic(buf, 1, n_read, dest_fp) < n_read) {
+		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
@@ -2554,7 +2554,7 @@ gint copy_file_part_to_fp(FILE *fp, off_t offset, size_t length, FILE *dest_fp)
 	while ((n_read = fread(buf, sizeof(gchar), to_read, fp)) > 0) {
 		if (n_read < to_read && ferror(fp))
 			break;
-		if (fwrite_atomic(buf, 1, n_read, dest_fp) < n_read) {
+		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
 			return -1;
 		}
 		bytes_left -= n_read;
@@ -2677,7 +2677,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 			r = fputs(buf, dest_fp);
 		} else {
 			if (len > 1) {
-				r = fwrite_atomic(buf, 1, len - 1, dest_fp);
+				r = fwrite(buf, 1, len - 1, dest_fp);
 				if (r != (len -1))
 					r = EOF;
 			}
@@ -3005,7 +3005,7 @@ FILE *str_open_as_stream(const gchar *str)
 	len = strlen(str);
 	if (len == 0) return fp;
 
-	if (fwrite_atomic(str, 1, len, fp) != len) {
+	if (fwrite(str, 1, len, fp) != len) {
 		FILE_OP_ERROR("str_open_as_stream", "fwrite");
 		fclose(fp);
 		return NULL;
@@ -3034,7 +3034,7 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 		return 0;
 	}
 
-	if (fwrite_atomic(str, 1, len, fp) != len) {
+	if (fwrite(str, 1, len, fp) != len) {
 		FILE_OP_ERROR(file, "fwrite");
 		fclose(fp);
 		unlink(file);
@@ -3942,21 +3942,4 @@ void replace_returns(gchar *str)
 	while (strstr(str, "\r")) {
 		*strstr(str, "\r") = ' ';
 	}
-}
-
-size_t fwrite_atomic(const void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-	size_t done = 0;
-	size_t todo = nmemb;
-	const void *curp = ptr;
-	
-	while (todo > 0) {
-		size_t cnt = fwrite(curp, size, todo, stream);
-		if (cnt == EOF) 
-			return EOF;
-		done += cnt;
-		curp += cnt;
-		todo -= cnt;
-	}
-	return done;
 }

@@ -255,7 +255,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	guint32 idata;				\
 						\
 	idata = (guint32)n;			\
-	fwrite_atomic(&idata, sizeof(idata), 1, fp);	\
+	fwrite(&idata, sizeof(idata), 1, fp);	\
 }
 
 #define WRITE_CACHE_DATA(data, fp) \
@@ -267,7 +267,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 		len = strlen(data); \
 	WRITE_CACHE_DATA_INT(len, fp); \
 	if (len > 0) { \
-		fwrite_atomic(data, len, 1, fp); \
+		fwrite(data, len, 1, fp); \
 	} \
 }
 

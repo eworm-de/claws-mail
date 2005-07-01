@@ -207,9 +207,9 @@ void template_write_config(GSList *tmpl_list)
 			fprintf(fp, "Bcc: %s\n", tmpl->bcc);						
 		fputs("\n", fp);
 		if (tmpl->value && *tmpl->value != '\0')
-			fwrite_atomic(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp);
+			fwrite(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp);
 		else
-			fwrite_atomic("", sizeof(gchar), 1, fp);
+			fwrite("", sizeof(gchar), 1, fp);
 
 		fclose(fp);
 		g_free(filename);

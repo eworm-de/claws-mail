@@ -308,7 +308,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			gint len;
 			len = qp_decode_line(buf);
-			fwrite_atomic(buf, 1, len, outfp);
+			fwrite(buf, 1, len, outfp);
 		}
 	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
@@ -334,7 +334,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			len = base64_decoder_decode(decoder, buf, outbuf);
 			if (len < 0 && !got_error) {
 				g_warning("Bad BASE64 content.\n");
-				fwrite_atomic(_("[Error decoding BASE64]\n"),
+				fwrite(_("[Error decoding BASE64]\n"),
 					sizeof(gchar),
 					strlen(_("[Error decoding BASE64]\n")),
 					tmpfp);
@@ -343,7 +343,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			} else if (len >= 0) {
 				/* print out the error message only once 
 				 * per block */
-				fwrite_atomic(outbuf, sizeof(gchar), len, tmpfp);
+				fwrite(outbuf, sizeof(gchar), len, tmpfp);
 				got_error = FALSE;
 			}
 		}
@@ -372,7 +372,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 						g_warning("Bad UUENCODE content(%d)\n", len);
 					break;
 				}
-				fwrite_atomic(outbuf, sizeof(gchar), len, outfp);
+				fwrite(outbuf, sizeof(gchar), len, outfp);
 			} else
 				flag = TRUE;
 		}
@@ -561,7 +561,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	restlength = mimeinfo->length;
 
 	while ((restlength > 0) && ((readlength = fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
-		fwrite_atomic(buf, 1, readlength, outfp);
+		fwrite(buf, 1, readlength, outfp);
 		restlength -= readlength;
 	}
 
@@ -741,7 +741,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 			while ((count =
 				fread(buf, sizeof(char), sizeof(buf),
 				      tmpfp)) > 0)
-				fwrite_atomic(buf, sizeof(char), count, p);
+				fwrite(buf, sizeof(char), count, p);
 			pclose(p);
 		}
 		
@@ -2023,14 +2023,14 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 				skip = TRUE;
 				continue;
 			}
-			fwrite_atomic(buf, sizeof(gchar), strlen(buf), fp);
+			fwrite(buf, sizeof(gchar), strlen(buf), fp);
 			skip = FALSE;
 		}
 		fclose(infp);
 		break;
 
 	case MIMECONTENT_MEM:
-		fwrite_atomic(mimeinfo->data.mem, 
+		fwrite(mimeinfo->data.mem, 
 				sizeof(gchar), 
 				strlen(mimeinfo->data.mem), 
 				fp);
@@ -2072,7 +2072,7 @@ gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 		while (fgets(buf, sizeof(buf), infp) == buf) {
 			if (IS_BOUNDARY(buf, boundary, strlen(boundary)))
 				break;
-			fwrite_atomic(buf, sizeof(gchar), strlen(buf), fp);
+			fwrite(buf, sizeof(gchar), strlen(buf), fp);
 		}
 		fclose(infp);
 		break;
@@ -2082,7 +2082,7 @@ gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 		if (((str2 = strstr(str, boundary)) != NULL) && ((str2 - str) >= 2) &&
 		    (*(str2 - 1) == '-') && (*(str2 - 2) == '-'))
 			*(str2 - 2) = '\0';
-		fwrite_atomic(str, sizeof(gchar), strlen(str), fp);
+		fwrite(str, sizeof(gchar), strlen(str), fp);
 		g_free(str);
 		break;
 
@@ -2130,7 +2130,7 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 			return 0;
 
 		case MIMECONTENT_MEM:
-			fwrite_atomic(mimeinfo->data.mem, 
+			fwrite(mimeinfo->data.mem, 
 					sizeof(gchar), 
 					strlen(mimeinfo->data.mem), 
 					fp);
