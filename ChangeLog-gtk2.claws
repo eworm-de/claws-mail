@@ -1,3 +1,19 @@
+2005-07-03 [hoa]	1.9.12cvs11
+
+	* src/etpan/Makefile.am
+	* src/etpan/etpan-errors.h
+	* src/etpan/etpan-log.[ch]
+	* src/etpan/etpan-thread-manager-types.h
+	* src/etpan/etpan-thread-manager.[ch]
+	* src/etpan/imap-thread.[ch]
+	* src/Makefile.am
+	* src/imap.c
+	* src/main.c
+	* src/prefs_other.c
+	* configure.ac
+	    merged imap branch.
+	    dependency on libetpan 0.37 is now added.
+
 2005-07-01 [colin]	1.9.12cvs10
 
 	* src/Makefile.am
