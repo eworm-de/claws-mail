@@ -38,6 +38,7 @@
 #include "gtk/prefswindow.h"
 
 #include "manage_window.h"
+#include "imap-thread.h"
 
 typedef struct _OtherPage
 {
@@ -235,6 +236,7 @@ void prefs_other_save(PrefsPage *_page)
 	prefs_common.io_timeout_secs = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_iotimeout));
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
+	imap_main_set_timeout(prefs_common.io_timeout_secs);
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);

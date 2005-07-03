@@ -613,6 +613,29 @@ fi
 AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
+dnl Libetpan
+libetpan=no
+AC_PATH_PROG(libetpanconfig, [libetpan-config])
+if test "x$libetpanconfig" != "x"; then
+  CPPFLAGS="$CPPFLAGS `$libetpanconfig --cflags 2>/dev/null`"
+  AC_CHECK_HEADER(libetpan/libetpan.h, [libetpan=yes])
+  if test "x$libetpan" = "xyes"; then
+    AC_MSG_CHECKING([whether libetpan-config hints compiles and links fine])
+    LDFLAGS="$LDFLAGS `$libetpanconfig --libs 2>/dev/null`"
+    AC_TRY_LINK([], [db_mailstorage_init();], [libetpan=yes], [libetpan=no])
+    AC_MSG_RESULT([$libetpan])
+  fi
+fi
+if test "x$libetpan" = "xyes"; then
+   LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
+   LIBETPAN_LIBS="`$libetpanconfig --libs`"
+else
+   AC_MSG_ERROR([Sylpheed requires libetpan.])
+fi
+
+AC_SUBST(LIBETPAN_FLAGS)
+AC_SUBST(LIBETPAN_LIBS)
+
 dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
@@ -627,6 +650,7 @@ src/Makefile
 src/common/Makefile
 src/common/passcrypt.h
 src/gtk/Makefile
+src/etpan/Makefile
 src/plugins/Makefile
 src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile

@@ -1,4 +1,4 @@
-SUBDIRS = common gtk plugins
+SUBDIRS = common gtk plugins etpan
 
 bin_PROGRAMS = sylpheed
 
@@ -384,12 +384,14 @@ EXTRA_DIST = \
 
 INCLUDES = \
 	-Icommon \
-	-Igtk
+	-Igtk \
+	-Ietpan
 
 sylpheed_LDFLAGS = \
 	-export-dynamic
 
 sylpheed_LDADD = \
+	etpan/libsylpheedetpan.la \
 	gtk/libsylpheedgtk.la \
 	$(ASPELL_LIBS) \
 	$(INTLLIBS) \
@@ -402,7 +404,8 @@ sylpheed_LDADD = \
 	$(PTHREAD_LIBS) \
 	$(GNOMEPRINT_LIBS) \
 	$(LIBICONV) \
-	$(STARTUP_NOTIFICATION_LIBS)
+	$(STARTUP_NOTIFICATION_LIBS) \
+	$(LIBETPAN_LIBS)
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
@@ -416,6 +419,7 @@ AM_CPPFLAGS = \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
+	$(LIBETPAN_CPPFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS)
 
 AM_YFLAGS = -d
