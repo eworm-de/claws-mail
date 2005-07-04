@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=12
+EXTRA_VERSION=13
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -629,8 +629,12 @@ fi
 if test "x$libetpan" = "xyes"; then
    LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
    LIBETPAN_LIBS="`$libetpanconfig --libs`"
+   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
+   if test "$LIBETPAN_VERSION" -lt "037"; then
+   	AC_MSG_ERROR([Sylpheed requires libetpan 0.37 or newer. See http://www.etpan.org/])
+   fi
 else
-   AC_MSG_ERROR([Sylpheed requires libetpan.])
+   AC_MSG_ERROR([Sylpheed requires libetpan 0.37 or newer. See http://www.etpan.org/ ])
 fi
 
 AC_SUBST(LIBETPAN_FLAGS)
