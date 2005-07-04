@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -320,6 +320,10 @@ gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const guchar	*str);
 gint get_quote_level			(const gchar	*str,
 					 const gchar	*quote_chars);
+gint check_line_length			(const gchar	*str,
+					 gint		 max_chars,
+					 gint		*line);
+
 gchar *strstr_with_skip_quote		(const gchar	*haystack,
 					 const gchar	*needle);
 gchar *strchr_parenthesis_close		(const gchar	*str,
@@ -450,6 +454,11 @@ time_t tzoffset_sec		(time_t		*now);
 gchar *tzoffset			(time_t		*now);
 void get_rfc822_date		(gchar		*buf,
 				 gint		 len);
+
+size_t my_strftime		(gchar			*s,
+				 size_t			 max,
+				 const gchar		*format,
+				 const struct tm	*tm);
 
 /* debugging */
 void debug_print_real	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);

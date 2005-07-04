@@ -1174,6 +1174,32 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 	return quote_level;
 }
 
+gint check_line_length(const gchar *str, gint max_chars, gint *line)
+{
+	const gchar *p = str, *q;
+	gint cur_line = 0, len;
+
+	while ((q = strchr(p, '\n')) != NULL) {
+		len = q - p + 1;
+		if (len > max_chars) {
+			if (line)
+				*line = cur_line;
+			return -1;
+		}
+		p = q + 1;
+		++cur_line;
+	}
+
+	len = strlen(p);
+	if (len > max_chars) {
+		if (line)
+			*line = cur_line;
+		return -1;
+	}
+
+	return 0;
+}
+
 const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars) 
 {
 	gchar * position = NULL;
@@ -1897,41 +1923,22 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
 
 gboolean is_dir_exist(const gchar *dir)
 {
-	struct stat s;
-
 	if (dir == NULL)
 		return FALSE;
 
-	if (stat(dir, &s) < 0) {
-		if (ENOENT != errno) FILE_OP_ERROR(dir, "stat");
-		return FALSE;
-	}
-
-	if (S_ISDIR(s.st_mode))
-		return TRUE;
-
-	return FALSE;
+	return g_file_test(dir, G_FILE_TEST_IS_DIR);
 }
 
 gboolean is_file_entry_exist(const gchar *file)
 {
-	struct stat s;
-
 	if (file == NULL)
 		return FALSE;
 
-	if (stat(file, &s) < 0) {
-		if (ENOENT != errno) FILE_OP_ERROR(file, "stat");
-		return FALSE;
-	}
-
-	return TRUE;
+	return g_file_test(file, G_FILE_TEST_EXISTS);
 }
 
 gboolean dirent_is_regular_file(struct dirent *d)
 {
-	struct stat s;
-
 #ifdef HAVE_DIRENT_D_TYPE
 	if (d->d_type == DT_REG)
 		return TRUE;
@@ -1939,13 +1946,11 @@ gboolean dirent_is_regular_file(struct dirent *d)
 		return FALSE;
 #endif
 
-	return (stat(d->d_name, &s) == 0 && S_ISREG(s.st_mode));
+	return g_file_test(d->d_name, G_FILE_TEST_IS_REGULAR);
 }
 
 gboolean dirent_is_directory(struct dirent *d)
 {
-	struct stat s;
-
 #ifdef HAVE_DIRENT_D_TYPE
 	if (d->d_type == DT_DIR)
 		return TRUE;
@@ -1953,7 +1958,7 @@ gboolean dirent_is_directory(struct dirent *d)
 		return FALSE;
 #endif
 
-	return (stat(d->d_name, &s) == 0 && S_ISDIR(s.st_mode));
+	return g_file_test(d->d_name, G_FILE_TEST_IS_DIR);
 }
 
 gint change_dir(const gchar *dir)
@@ -3415,6 +3420,13 @@ void get_rfc822_date(gchar *buf, gint len)
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
+}
+
+/* just a wrapper to suppress the warning of gcc about %c */
+size_t my_strftime(gchar *s, size_t max, const gchar *format,
+		   const struct tm *tm)
+{
+	return strftime(s, max, format, tm);
 }
 
 void debug_set_mode(gboolean mode)

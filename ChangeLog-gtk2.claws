@@ -1,3 +1,15 @@
+2005-07-04 [paul]	1.9.12cvs17
+
+	sync with main (forgotten in last commit)
+	
+	* src/common/utils.c
+	* src/common/utils.h
+		check_line_length(): new.
+		is_dir_exist()
+		is_file_entry_exist()
+		dirent_is_regular_file()
+		dirent_is_directory(): use g_file_test() instead of stat().
+
 2005-07-04 [paul]	1.9.12cvs16
 
 	sync with main:
