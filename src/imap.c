@@ -3065,7 +3065,8 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		if (ok != IMAP_SUCCESS)
 			return FALSE;
 
-		if (session->folder_content_changed)
+		if (session->folder_content_changed
+		||  session->exists != item->item.total_msgs)
 			return TRUE;
 	} else {
 		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,

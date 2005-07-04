@@ -613,3 +613,4 @@
 ( cvs diff -u -r 1.382.2.139 -r 1.382.2.140 src/compose.c;  cvs diff -u -r 1.18.2.8 -r 1.18.2.9 src/jpilot.c;  cvs diff -u -r 1.47.2.21 -r 1.47.2.22 src/procheader.c;  cvs diff -u -r 1.14.2.2 -r 1.14.2.3 src/vcard.c;  ) > 1.9.12cvs16.patchset
 ( cvs diff -u -r 1.36.2.35 -r 1.36.2.36 src/common/utils.c;  cvs diff -u -r 1.20.2.18 -r 1.20.2.19 src/common/utils.h;  ) > 1.9.12cvs17.patchset
 ( cvs diff -u -r 1.395.2.90 -r 1.395.2.91 src/summaryview.c;  ) > 1.9.12cvs18.patchset
+( cvs diff -u -r 1.179.2.45 -r 1.179.2.46 src/imap.c;  ) > 1.9.12cvs19.patchset
