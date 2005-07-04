@@ -1,3 +1,9 @@
+2005-07-04 [paul]	1.9.12cvs15
+
+	* src/stock_pixmap.c
+		fix new pixmap naming errors
+		patch by Aleksandar Urosevic <urke.dd@urosevic.net>
+
 2005-07-04 [colin]	1.9.12cvs14
 
 	* src/imap.c
