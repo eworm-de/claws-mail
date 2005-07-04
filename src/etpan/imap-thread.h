@@ -29,7 +29,7 @@ int imap_threaded_login(Folder * folder,
 int imap_threaded_status(Folder * folder, const char * mb,
 		struct mailimap_mailbox_data_status ** data_status);
 
-int imap_threaded_noop(Folder * folder);
+int imap_threaded_noop(Folder * folder, unsigned int * p_exists);
 int imap_threaded_starttls(Folder * folder);
 int imap_threaded_create(Folder * folder, const char * mb);
 int imap_threaded_rename(Folder * folder,

@@ -2256,10 +2256,13 @@ static gint imap_cmd_logout(IMAPSession *session)
 static gint imap_cmd_noop(IMAPSession *session)
 {
 	int r;
+	unsigned int exists;
 	
-	r = imap_threaded_noop(session->folder);
+	r = imap_threaded_noop(session->folder, &exists);
 	if (r != MAILIMAP_NO_ERROR)
 		return IMAP_ERROR;
+	
+	session->exists = exists;
 	
 	return IMAP_SUCCESS;
 }

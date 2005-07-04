@@ -35,7 +35,7 @@ void imap_main_init(void)
 	mailstream_network_delay.tv_sec = ETPAN_DEFAULT_NETWORK_TIMEOUT;
 	mailstream_network_delay.tv_usec = 0;
 
-#if 0	
+#if 0
 	mailstream_debug = 1;
 #endif
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
@@ -517,16 +517,25 @@ static void noop_run(struct etpan_thread_op * op)
 	debug_print("imap noop run - end %i\n", r);
 }
 
-int imap_threaded_noop(Folder * folder)
+int imap_threaded_noop(Folder * folder, unsigned int * p_exists)
 {
 	struct noop_param param;
 	struct noop_result result;
+	mailimap * imap;
 	
 	debug_print("imap noop - begin\n");
 	
-	param.imap = get_imap(folder);
+	imap = get_imap(folder);
+	param.imap = imap;
 	
 	threaded_run(folder, &param, &result, noop_run);
+	
+	if (imap->imap_selection_info != NULL) {
+		* p_exists = imap->imap_selection_info->sel_exists;
+	}
+	else {
+		* p_exists = 0;
+	}
 	
 	debug_print("imap noop - end\n");
 	

@@ -48,6 +48,9 @@ fi;
 if [ "$name" == "torte" ]; then
 	name="thorsten";
 fi;
+if [ "$name" == "dinh" ]; then
+	name="hoa";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do

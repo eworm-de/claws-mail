@@ -1,3 +1,11 @@
+2005-07-04 [hoa]	1.9.12cvs12
+
+	* commitHelper
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		fixed IMAP implementation of check of mails.
+
 2005-07-03 [hoa]	1.9.12cvs11
 
 	* src/etpan/Makefile.am
