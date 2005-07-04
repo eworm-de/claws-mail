@@ -1770,7 +1770,7 @@ gchar *jpilot_find_pilotdb( void ) {
 	gint len;
 	FILE *fp;
 
-	homedir = g_get_home_dir();
+	homedir = get_home_dir();
 	if( ! homedir ) return g_strdup( "" );
 
 	strcpy( str, homedir );

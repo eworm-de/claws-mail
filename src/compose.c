@@ -3531,6 +3531,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	const gchar *out_codeset;
 	EncodingType encoding;
 	MimeInfo *mimemsg, *mimetext;
+	gint line;
 
 	/* create message MimeInfo */
 	mimemsg = procmime_mimeinfo_new();
@@ -3631,6 +3632,27 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		else if (encoding == ENC_8BIT)
 			encoding = ENC_BASE64;
 	}
+	
+	/* check for line length limit */
+	if (encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
+	    check_line_length(buf, 1000, &line) < 0) {
+		AlertValue aval;
+		gchar *msg;
+
+		msg = g_strdup_printf
+			(_("Line %d exceeds the line length limit (998 bytes).\n"
+			   "The contents of the message might be broken on the way to the delivery.\n"
+			   "\n"
+			   "Send it anyway?"), line + 1);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL);
+		if (aval != G_ALERTDEFAULT) {
+			g_free(msg);
+			fclose(fp);
+			g_free(buf);
+			return -1;
+		}
+	}
+	
 	if (encoding != ENC_UNKNOWN)
 		procmime_encode_content(mimetext, encoding);
 

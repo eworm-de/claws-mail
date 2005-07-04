@@ -610,3 +610,4 @@
 ( cvs diff -u -r 1.654.2.647 -r 1.654.2.648 configure.ac;  ) > 1.9.12cvs13.patchset
 ( cvs diff -u -r 1.179.2.44 -r 1.179.2.45 src/imap.c;  ) > 1.9.12cvs14.patchset
 ( cvs diff -u -r 1.25.2.13 -r 1.25.2.14 src/stock_pixmap.c;  ) > 1.9.12cvs15.patchset
+( cvs diff -u -r 1.382.2.139 -r 1.382.2.140 src/compose.c;  cvs diff -u -r 1.18.2.8 -r 1.18.2.9 src/jpilot.c;  cvs diff -u -r 1.47.2.21 -r 1.47.2.22 src/procheader.c;  cvs diff -u -r 1.14.2.2 -r 1.14.2.3 src/vcard.c;  ) > 1.9.12cvs16.patchset
