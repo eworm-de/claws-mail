@@ -1031,7 +1031,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					    TRUE);
 			summary_lock(summaryview);
 		} else {
-			summary_select_node(summaryview, node, FALSE, TRUE);
+			summary_unlock(summaryview);
+			summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
+			summary_lock(summaryview);
 		}
 	}
 
@@ -1051,6 +1053,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 }
 
 #undef CURRENTLY_DISPLAYED
+
 
 void summary_clear_list(SummaryView *summaryview)
 {
@@ -2541,7 +2544,6 @@ gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
 	GtkCTreeNode *node;
 
 	if (summary_is_locked(summaryview)) return FALSE;
-
 	if (type == GTK_SCROLL_STEP_FORWARD) {
 		node = gtkut_ctree_node_next(ctree, summaryview->selected);
 		if (node)
@@ -3111,7 +3113,7 @@ void summary_delete(SummaryView *summaryview)
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
-	summary_select_node(summaryview, node, FALSE, FALSE);
+	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 	
 	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
 		summary_execute(summaryview);
@@ -3242,7 +3244,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		GtkCTreeNode *node = gtk_ctree_node_nth (GTK_CTREE(summaryview->ctree), 
 							 GTK_CLIST(summaryview->ctree)->rows - 1);
 		if (node)
-			summary_select_node(summaryview, node, TRUE, TRUE);
+			summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 	}
 
 }
@@ -3570,10 +3572,12 @@ gboolean summary_execute(SummaryView *summaryview)
 	}
 
 	if (new_selected) {
+		summary_unlock(summaryview);
 		gtk_sctree_select
 			(GTK_SCTREE(ctree),
 			 summaryview->displayed ? summaryview->displayed
 			 : new_selected);
+		summary_lock(summaryview);
 	}
 
 	if (summaryview->threaded) {
@@ -4628,8 +4632,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	MsgInfo *msginfo;
 	gboolean marked_unread = FALSE;
 
-	if (summary_is_locked(summaryview))
+	if (summary_is_locked(summaryview)) {
 		return;
+	}
 
 	summary_status_show(summaryview);
 

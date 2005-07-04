@@ -1,3 +1,8 @@
+2005-07-04 [colin]	1.9.12cvs18
+
+	* src/summaryview.c
+		Fix always_show_msg pref
+
 2005-07-04 [paul]	1.9.12cvs17
 
 	sync with main (forgotten in last commit)
