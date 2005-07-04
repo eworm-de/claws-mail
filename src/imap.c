@@ -1029,9 +1029,8 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		
 		seq_set = cur->data;
 		
-		debug_print("Copying message %s%c[%s] to %s ...\n",
-			    src->path, G_DIR_SEPARATOR,
-			    seq_set, destdir);
+		debug_print("Copying messages from %s to %s ...\n",
+			    src->path, destdir);
 
 		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping);
 		if (ok != IMAP_SUCCESS) {

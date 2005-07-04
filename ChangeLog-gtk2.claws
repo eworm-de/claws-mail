@@ -1,3 +1,8 @@
+2005-07-04 [colin]	1.9.12cvs14
+
+	* src/imap.c
+		Fix debugging string with a warning
+
 2005-07-04 [colin]	1.9.12cvs13
 
 	* configure.ac
