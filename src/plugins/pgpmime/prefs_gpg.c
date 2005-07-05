@@ -524,4 +524,5 @@ void prefs_gpg_init()
 void prefs_gpg_done()
 {
 	prefs_gtk_unregister_page((PrefsPage *) &gpg_page);
+	prefs_account_unregister_page((PrefsPage *) &gpg_account_page);
 }

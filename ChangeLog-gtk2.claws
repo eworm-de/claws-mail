@@ -1,3 +1,20 @@
+2005-07-05 [colin]	1.9.12cvs20
+
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Fix typo
+	* src/gtk/filesel.c
+	* src/gtk/filesel.h
+		Add a way to filter the view
+	* src/gtk/pluginwindow.c
+		Filter loadable stuff
+	* src/plugins/pgpmime/prefs_gpg.c
+		Fix missing unregistration
+	* .cvsignore
+	* src/etpan/.cvsignore
+	* src/plugins/spamassassin/.cvsignore
+		Add more stuff to cvs ignored files
+
 2005-07-04 [colin]	1.9.12cvs19
 
 	* src/imap.c

@@ -5,6 +5,9 @@ config.h
 config.h.in
 config.log
 config.status
+config.guess
+config.sub
+ltmain.sh
 configure
 depcomp
 libtool
@@ -19,3 +22,4 @@ TAGS
 *.swp
 depcomp
 sylpheed-claws.pc
+patches

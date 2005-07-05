@@ -44,7 +44,8 @@
 static gchar *last_selected_dir = NULL;
 static GList *filesel_create(const gchar *title, const gchar *path, 
 			     gboolean multiple_files,
-			     gboolean open, gboolean folder_mode)
+			     gboolean open, gboolean folder_mode,
+			     const gchar *filter)
 {
 	GSList *slist = NULL, *slist_orig = NULL;
 	GList *list = NULL;
@@ -59,7 +60,13 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_OK, 
 				NULL);
-	
+	if (filter != NULL) {
+		GtkFileFilter *file_filter = gtk_file_filter_new();
+		gtk_file_filter_add_pattern(file_filter, filter);
+		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser),
+					    file_filter);
+	}
+
 	manage_window_set_transient (GTK_WINDOW(chooser));
 	gtk_window_set_modal(GTK_WINDOW(chooser), TRUE);
 
@@ -126,7 +133,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
  */
 GList *filesel_select_multiple_files_open(const gchar *title)
 {
-	return filesel_create(title, NULL, TRUE, TRUE, FALSE);
+	return filesel_create(title, NULL, TRUE, TRUE, FALSE, NULL);
 }
 
 /**
@@ -137,9 +144,10 @@ GList *filesel_select_multiple_files_open(const gchar *title)
  * @param path the optional path to save to
  */
 static gchar *filesel_select_file(const gchar *title, const gchar *path,
-				  gboolean open, gboolean folder_mode)
+				  gboolean open, gboolean folder_mode,
+				  const gchar *filter)
 {
-	GList * list = filesel_create(title, path, FALSE, open, folder_mode);
+	GList * list = filesel_create(title, path, FALSE, open, folder_mode, filter);
 	gchar * result = NULL;
 	if (list) {
 		result = strdup(list->data);
@@ -149,16 +157,22 @@ static gchar *filesel_select_file(const gchar *title, const gchar *path,
 }
 gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 {
-	return filesel_select_file (title, path, TRUE, FALSE);
+	return filesel_select_file (title, path, TRUE, FALSE, NULL);
+}
+
+gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *path,
+					    const gchar *filter)
+{
+	return filesel_select_file (title, path, TRUE, FALSE, filter);
 }
 
 gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 {
-	return filesel_select_file (title, path, FALSE, FALSE);
+	return filesel_select_file (title, path, FALSE, FALSE, NULL);
 }
 
 gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 {
-	return filesel_select_file (title, path, TRUE, TRUE);
+	return filesel_select_file (title, path, TRUE, TRUE, NULL);
 }
 

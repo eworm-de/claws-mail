@@ -3116,7 +3116,7 @@ void prefs_account_register_page(PrefsPage *page)
 	prefs_pages = g_slist_append(prefs_pages, page);
 }
 
-void prefs_acount_unregister_page(PrefsPage *page)
+void prefs_account_unregister_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_remove(prefs_pages, page);
 }

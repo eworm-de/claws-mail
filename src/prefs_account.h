@@ -197,6 +197,6 @@ const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id);
 void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value);
 
 void prefs_account_register_page	(PrefsPage 	*page);
-void prefs_acount_unregister_page	(PrefsPage 	*page);
+void prefs_account_unregister_page	(PrefsPage 	*page);
 
 #endif /* PREFS_ACCOUNT_H */
