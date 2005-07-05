@@ -1,3 +1,8 @@
+2005-07-05 [colin]	1.9.12cvs21
+
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+		Fix crash on plugin reloading (with a hack)
+
 2005-07-05 [colin]	1.9.12cvs20
 
 	* src/prefs_account.c

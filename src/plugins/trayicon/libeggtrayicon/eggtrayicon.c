@@ -22,6 +22,7 @@
 #  include "config.h"
 #endif
 
+#include <time.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 
@@ -64,6 +65,7 @@ egg_tray_icon_get_type (void)
 
   if (our_type == 0)
     {
+      gchar *type_name = g_strdup_printf("EggTrayIcon%d", (int)time(NULL));
       static const GTypeInfo our_info =
       {
 	sizeof (EggTrayIconClass),
@@ -77,7 +79,9 @@ egg_tray_icon_get_type (void)
 	(GInstanceInitFunc) egg_tray_icon_init
       };
 
-      our_type = g_type_register_static (GTK_TYPE_PLUG, "EggTrayIcon", &our_info, 0);
+      our_type = g_type_register_static (GTK_TYPE_PLUG, type_name, 
+                                         &our_info, 0);
+      g_free(type_name);
     }
 
   return our_type;
