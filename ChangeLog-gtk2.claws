@@ -1,3 +1,10 @@
+2005-07-05 [colin]	1.9.12cvs22
+
+	* src/imap.c
+		Add an alertpanel on auth error
+		Add pseudo-log
+		Remove pthread-related stuff
+
 2005-07-05 [colin]	1.9.12cvs21
 
 	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
