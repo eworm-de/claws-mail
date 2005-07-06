@@ -1,3 +1,9 @@
+2005-07-06 [colin]	1.9.12cvs25
+
+	* src/imap.c
+		Use real_path in status command. This will
+		help later, when namespaces will be used.
+
 2005-07-06 [colin]	1.9.12cvs24
 
 	* configure.ac

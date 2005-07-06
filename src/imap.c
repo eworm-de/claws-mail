@@ -2037,8 +2037,12 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	clistiter * iter;
 	struct mailimap_mailbox_data_status * data_status;
 	int got_values;
-	
-	r = imap_threaded_status(FOLDER(folder), path, &data_status);
+	gchar *real_path;
+
+	real_path = imap_get_real_path(folder, path);
+
+	r = imap_threaded_status(FOLDER(folder), real_path, &data_status);
+	g_free(real_path);
 	if (r != MAILIMAP_NO_ERROR) {
 		debug_print("status err %d\n", r);
 		return IMAP_ERROR;
