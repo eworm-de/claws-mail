@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#ifdef HAVE_LIBETPAN
+
 #include "etpan-log.h"
 
 #include <pthread.h>
@@ -183,5 +189,6 @@ void etpan_log_stack(void)
   ETPAN_STACK_LOG("this feature not available");
 }
 
+#endif
 #endif
 #endif

@@ -412,7 +412,10 @@ void account_add(void)
 			folder = folder_new(folder_get_class_from_string("news"), ac_prefs->account_name,
 					    ac_prefs->nntp_server);
 		}
-
+		if (folder == NULL) {
+			alertpanel_error(_("Can't create folder."));
+			return;
+		}
 		folder->account = ac_prefs;
 		ac_prefs->folder = folder;
 		folder_add(folder);
@@ -495,7 +498,8 @@ void account_set_missing_folder(void)
 				folder = folder_new(folder_get_class_from_string("news"), ap->account_name,
 						    ap->nntp_server);
 			}
-
+			if (folder == NULL)
+				return;
 			folder->account = ap;
 			ap->folder = folder;
 			folder_add(folder);

@@ -27,6 +27,11 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
+#include "imap.h"
+#include "imap_gtk.h"
+
+#ifdef HAVE_LIBETPAN
+
 #include <stdlib.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -44,8 +49,6 @@
 #include "folder.h"
 #include "session.h"
 #include "procmsg.h"
-#include "imap.h"
-#include "imap_gtk.h"
 #include "socket.h"
 #include "recv.h"
 #include "procheader.h"
@@ -3752,3 +3755,47 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFlags flags)
 	
 	return flag_list;
 }
+#else /* HAVE_LIBETPAN */
+
+static FolderClass imap_class;
+
+static Folder	*imap_folder_new	(const gchar	*name,
+					 const gchar	*path)
+{
+	return NULL;
+}
+static gint 	imap_create_tree	(Folder 	*folder)
+{
+	return -1;
+}
+static FolderItem *imap_create_folder	(Folder 	*folder,
+				      	 FolderItem 	*parent,
+				      	 const gchar 	*name)
+{
+	return NULL;
+}
+static gint 	imap_rename_folder	(Folder 	*folder,
+			       		 FolderItem 	*item, 
+					 const gchar 	*name)
+{
+	return -1;
+}
+
+FolderClass *imap_get_class(void)
+{
+	if (imap_class.idstr == NULL) {
+		imap_class.type = F_IMAP;
+		imap_class.idstr = "imap";
+		imap_class.uistr = "IMAP4";
+
+		imap_class.new_folder = imap_folder_new;
+		imap_class.create_tree = imap_create_tree;
+		imap_class.create_folder = imap_create_folder;
+		imap_class.rename_folder = imap_rename_folder;
+		/* nothing implemented */
+	}
+
+	return &imap_class;
+}
+
+#endif

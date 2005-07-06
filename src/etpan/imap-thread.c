@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#ifdef HAVE_LIBETPAN
+
 #include "imap-thread.h"
 
 #include <sys/types.h>
@@ -2167,3 +2173,16 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	
 	return result.error;
 }
+#else
+
+void imap_main_init(void)
+{
+}
+void imap_main_done(void)
+{
+}
+void imap_main_set_timeout(int sec)
+{
+}
+
+#endif

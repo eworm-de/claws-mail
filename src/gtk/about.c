@@ -239,7 +239,11 @@ static void about_create(void)
 		  "along with this program; if not, write to the Free Software "
 		  "Foundation, Inc., 59 Temple Place - Suite 330, Boston, "
 		  "MA 02111-1307, USA."), -1);
-
+#ifdef USE_OPENSSL
+	gtk_text_buffer_insert(buffer, &iter,
+		_("\n\nThis product includes software developed by the OpenSSL Project "
+		  "for use in the OpenSSL Toolkit (http://www.openssl.org/)"), -1);
+#endif
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 4);

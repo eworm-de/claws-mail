@@ -156,6 +156,9 @@ Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 
 	/* Create root folder item */
 	item = folder_item_new(folder, name, NULL);
+	if (item == NULL) {
+		return NULL;
+	}
 	item->folder = folder;
 	folder->node = item->node = g_node_new(item);
 	folder->data = NULL;
@@ -257,7 +260,9 @@ XMLTag *folder_get_xml(Folder *folder)
 FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path)
 {
 	FolderItem *item = NULL;
-
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+	
 	if (folder->klass->item_new) {
 		item = folder->klass->item_new(folder);
 	} else {

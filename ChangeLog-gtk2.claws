@@ -1,3 +1,28 @@
+2005-07-06 [colin]	1.9.12cvs24
+
+	* configure.ac
+	* src/account.c
+	* src/folder.c
+	* src/imap.c
+	* src/etpan/etpan-log.c
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/imap-thread.c
+		Add a --disable-libetpan parameter. With this,
+		users that don't want IMAP4 support can avoid
+		the new dependancy (and have no IMAP support).
+		Users that have IMAP4 accounts and use this
+		parameter won't lose their configuration, their
+		IMAP accounts will just be invisible and not
+		used.
+	* src/textview.c
+		Make the "Copy ..." contextual menu items 
+		copy to both the X clipboard and the gtk 
+		clipboard - as most other apps do.
+	* src/gtk/about.c
+		Add a notice about OpenSSL usage, in order to
+		comply with OpenSSL's license (point 6):
+		http://www.openssl.org/source/license.html
+
 2005-07-06 [colin]	1.9.12cvs23
 
 	* src/alertpanel.c

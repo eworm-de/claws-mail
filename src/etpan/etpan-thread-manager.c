@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#ifdef HAVE_LIBETPAN
+
 #include "etpan-thread-manager.h"
 
 #include <stdlib.h>
@@ -631,3 +637,4 @@ void etpan_thread_manager_join(struct etpan_thread_manager * manager)
     etpan_thread_manager_loop(manager);
   }
 }
+#endif
