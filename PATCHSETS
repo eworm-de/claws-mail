@@ -617,3 +617,4 @@
 ( cvs diff -u -r 1.8 -r 1.9 .cvsignore;  cvs diff -u -r 1.105.2.26 -r 1.105.2.27 src/prefs_account.c;  cvs diff -u -r 1.49.2.12 -r 1.49.2.13 src/prefs_account.h;  diff -u /dev/null src/etpan/.cvsignore;  cvs diff -u -r 1.2.2.13 -r 1.2.2.14 src/gtk/filesel.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/gtk/filesel.h;  cvs diff -u -r 1.5.2.15 -r 1.5.2.16 src/gtk/pluginwindow.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpmime/prefs_gpg.c;  cvs diff -u -r 1.1 -r 1.2 src/plugins/spamassassin/.cvsignore;  ) > 1.9.12cvs20.patchset
 ( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c;  ) > 1.9.12cvs21.patchset
 ( cvs diff -u -r 1.179.2.46 -r 1.179.2.47 src/imap.c;  ) > 1.9.12cvs22.patchset
+( cvs diff -u -r 1.17.2.15 -r 1.17.2.16 src/alertpanel.c;  cvs diff -u -r 1.382.2.140 -r 1.382.2.141 src/compose.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/imap_gtk.c;  cvs diff -u -r 1.2.2.7 -r 1.2.2.8 src/mh_gtk.c;  ) > 1.9.12cvs23.patchset

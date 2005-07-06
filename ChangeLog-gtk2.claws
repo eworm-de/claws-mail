@@ -1,3 +1,15 @@
+2005-07-06 [colin]	1.9.12cvs23
+
+	* src/alertpanel.c
+		Fix a minimum size for alertpanels
+	* src/compose.c
+		Show 'No space left on device' type errors
+		when queuing/sending
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Rework folder's deletion message (remove 
+		extra \n)
+
 2005-07-05 [colin]	1.9.12cvs22
 
 	* src/imap.c

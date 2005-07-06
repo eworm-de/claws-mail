@@ -3255,7 +3255,11 @@ gint compose_send(Compose *compose)
 	val = compose_queue(compose, &msgnum, &folder);
 
 	if (val) {
-		alertpanel_error(_("Could not queue message for sending."));
+		if (val == -2) {
+			alertpanel_error(_("Could not queue message for sending:\n\n%s."), strerror(errno));
+		} else {
+			alertpanel_error(_("Could not queue message for sending."));
+		}
 		goto bail;
 	}
 
@@ -3835,7 +3839,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if ((fp = fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
-		return -1;
+		return -2;
 	}
 
 	if (change_file_mode_rw(fp, tmp) < 0) {
@@ -3936,7 +3940,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			fclose(fp);
 			unlink(tmp);
 			g_free(tmp);
-			return -1;
+			return -2;
 		}
 	} else {
 		if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND) < 0) {
@@ -3944,7 +3948,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			fclose(fp);
 			unlink(tmp);
 			g_free(tmp);
-			return -1;
+			return -2;
 		}
 	}
 
@@ -3952,7 +3956,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		FILE_OP_ERROR(tmp, "fclose");
 		unlink(tmp);
 		g_free(tmp);
-		return -1;
+		return -2;
 	}
 
 	queue = account_get_special_folder(compose->account, F_QUEUE);
@@ -6391,6 +6395,9 @@ static void compose_send_later_cb(gpointer data, guint action,
 	val = compose_queue_sub(compose, NULL, NULL, TRUE);
 	if (!val) 
 		compose_close(compose);
+	else if (val == -2) {
+		alertpanel_error(_("Could not queue message:\n\n%s."), strerror(errno));
+	}
 }
 
 void compose_draft (gpointer data) 
