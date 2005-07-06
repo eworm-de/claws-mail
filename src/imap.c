@@ -1928,10 +1928,36 @@ static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
 	return NULL;
 }
 
+
 static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 {
 	IMAPNameSpace *namespace;
 	gchar separator = '/';
+	static gchar last_seen_separator = 0;
+
+	if (last_seen_separator == 0) {
+		clist * lep_list;
+		int r = imap_threaded_list((Folder *)folder, "", "", &lep_list);
+		if (r != MAILIMAP_NO_ERROR) {
+			log_warning(_("LIST failed\n"));
+			return '/';
+		}
+		
+		if (clist_count(lep_list) > 0) {
+			clistiter * iter = clist_begin(lep_list); 
+			struct mailimap_mailbox_list * mb;
+			mb = clist_content(iter);
+		
+			last_seen_separator = mb->mb_delimiter;
+			debug_print("got separator: %c\n", last_seen_separator);
+		}
+		mailimap_list_result_free(lep_list);
+	}
+
+	if (last_seen_separator != 0) {
+		debug_print("using separator: %c\n", last_seen_separator);
+		return last_seen_separator;
+	}
 
 	namespace = imap_find_namespace(folder, path);
 	if (namespace && namespace->separator)

@@ -1,3 +1,12 @@
+2005-07-06 [colin]	1.9.12cvs26
+
+	* src/imap.c
+		Try to use the correct separator in
+		most cases. Possibly fixes bug #759
+		(only creates the INBOX folder when 
+		setting up new IMAP account) and 
+		bug #760 (Can't retrieve messages)
+
 2005-07-06 [colin]	1.9.12cvs25
 
 	* src/imap.c
