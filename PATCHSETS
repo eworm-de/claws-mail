@@ -622,3 +622,4 @@
 ( cvs diff -u -r 1.179.2.48 -r 1.179.2.49 src/imap.c;  ) > 1.9.12cvs25.patchset
 ( cvs diff -u -r 1.179.2.49 -r 1.179.2.50 src/imap.c;  ) > 1.9.12cvs26.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 commitHelper;  cvs diff -u -r 1.2.4.10 -r 1.2.4.11 src/common/template.c;  ) > 1.9.12cvs27.patchset
+( cvs diff -u -r 1.179.2.50 -r 1.179.2.51 src/imap.c;  ) > 1.9.12cvs28.patchset

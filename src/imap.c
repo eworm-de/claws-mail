@@ -86,6 +86,7 @@ struct _IMAPFolder
 	GList *ns_personal;
 	GList *ns_others;
 	GList *ns_shared;
+	gchar last_seen_separator;
 };
 
 struct _IMAPSession
@@ -689,6 +690,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	session->mbox = NULL;
 	session->cmd_count = 0;
 	session->folder = folder;
+	IMAP_FOLDER(session->folder)->last_seen_separator = 0;
 
 #if USE_OPENSSL
 	if (account->ssl_imap == SSL_STARTTLS) {
@@ -1933,9 +1935,8 @@ static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 {
 	IMAPNameSpace *namespace;
 	gchar separator = '/';
-	static gchar last_seen_separator = 0;
 
-	if (last_seen_separator == 0) {
+	if (folder->last_seen_separator == 0) {
 		clist * lep_list;
 		int r = imap_threaded_list((Folder *)folder, "", "", &lep_list);
 		if (r != MAILIMAP_NO_ERROR) {
@@ -1948,15 +1949,15 @@ static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 			struct mailimap_mailbox_list * mb;
 			mb = clist_content(iter);
 		
-			last_seen_separator = mb->mb_delimiter;
-			debug_print("got separator: %c\n", last_seen_separator);
+			folder->last_seen_separator = mb->mb_delimiter;
+			debug_print("got separator: %c\n", folder->last_seen_separator);
 		}
 		mailimap_list_result_free(lep_list);
 	}
 
-	if (last_seen_separator != 0) {
-		debug_print("using separator: %c\n", last_seen_separator);
-		return last_seen_separator;
+	if (folder->last_seen_separator != 0) {
+		debug_print("using separator: %c\n", folder->last_seen_separator);
+		return folder->last_seen_separator;
 	}
 
 	namespace = imap_find_namespace(folder, path);
@@ -2221,7 +2222,8 @@ static gint imap_cmd_noop(IMAPSession *session)
 		return IMAP_ERROR;
 	}
 	session->exists = exists;
-	
+	session_set_access_time(SESSION(session));
+
 	return IMAP_SUCCESS;
 }
 
