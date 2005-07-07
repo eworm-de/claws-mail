@@ -1,3 +1,8 @@
+2005-07-07 [darko]	1.9.12cvs27
+
+	* src/common/template.c
+		Sort templates alphabetically
+
 2005-07-06 [colin]	1.9.12cvs26
 
 	* src/imap.c

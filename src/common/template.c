@@ -110,6 +110,17 @@ void template_clear_config(GSList *tmpl_list)
 	g_slist_free(tmpl_list);
 }
 
+int tmpl_compare(Template *tmpl1, Template *tmpl2)
+{
+	if (tmpl1 == NULL || tmpl2 == NULL)
+		return 0;
+
+	if (tmpl1->name == NULL || tmpl2->name == NULL)
+		return 0;
+
+	return strcmp(tmpl1->name, tmpl2->name);
+}
+
 GSList *template_read_config(void)
 {
 	const gchar *path;
@@ -148,7 +159,7 @@ GSList *template_read_config(void)
 
 		tmpl = template_load(filename);
 		if (tmpl)
-			tmpl_list = g_slist_append(tmpl_list, tmpl);
+			tmpl_list = g_slist_insert_sorted(tmpl_list, tmpl, tmpl_compare);
 
 		g_free(filename);
 	}
