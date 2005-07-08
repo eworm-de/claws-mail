@@ -24,6 +24,13 @@
 		Fixes bug #159 (The index file, in the mailboxes, is 
 		hardware depending).
 
+		To have the cache/mark files updated to the new little-
+		endian format, "Check for new messages" or even
+		"Rebuild folder tree" aren't enough. Files will be
+		updated as soon as a folder has been opened/closed.
+		To update everything, just select all folders by
+		selecting them one by one.
+
 2005-07-07 [colin]	1.9.12cvs28
 
 	* src/imap.c
