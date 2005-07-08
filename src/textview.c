@@ -1158,6 +1158,12 @@ static void textview_make_clickable_parts(TextView *textview,
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextIter iter;
+	gchar *mybuf = g_strdup(linebuf);
+	
+	if (!g_utf8_validate(linebuf, -1, NULL)) {
+		mybuf = g_malloc(strlen(linebuf)*2 +1);
+		conv_localetodisp(mybuf, strlen(linebuf)*2 +1, linebuf);
+	}
 
 	/* parse table - in order of priority */
 	struct table {
@@ -1198,7 +1204,7 @@ static void textview_make_clickable_parts(TextView *textview,
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (walk = linebuf, n = 0;;) {
+	for (walk = mybuf, n = 0;;) {
 		gint last_index = PARSE_ELEMS;
 		gchar *scanpos = NULL;
 
@@ -1230,7 +1236,7 @@ static void textview_make_clickable_parts(TextView *textview,
 
 	/* colorize this line */
 	if (head.next) {
-		const gchar *normal_text = linebuf;
+		const gchar *normal_text = mybuf;
 
 		/* insert URIs */
 		for (last = head.next; last != NULL;
@@ -1260,8 +1266,9 @@ static void textview_make_clickable_parts(TextView *textview,
 				(buffer, &iter, normal_text, -1, fg_tag, NULL);
 	} else {
 		gtk_text_buffer_insert_with_tags_by_name
-			(buffer, &iter, linebuf, -1, fg_tag, NULL);
+			(buffer, &iter, mybuf, -1, fg_tag, NULL);
 	}
+	g_free(mybuf);
 }
 
 #undef ADD_TXT_POS
@@ -1284,8 +1291,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		conv_utf8todisp(buf, sizeof(buf), str);
-
+		conv_localetodisp(buf, sizeof(buf), str);
+		
 	strcrchomp(buf);
 	//if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
 	fg_color = NULL;

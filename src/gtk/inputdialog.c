@@ -166,7 +166,6 @@ static void input_dialog_create(void)
 	GtkWidget *w_hbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
-	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
 	GtkWidget *confirm_area;
 	GtkWidget *icon;

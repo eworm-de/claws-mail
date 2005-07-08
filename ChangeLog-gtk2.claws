@@ -1,3 +1,11 @@
+2005-07-08 [colin]	1.9.12cvs30
+
+	* src/textview.c
+	* src/unmime.c
+		Fix again problems decoding broken headers
+	* src/gtk/inputdialog.c
+		Fix local variable shadowing a global one
+
 2005-07-08 [colin]	1.9.12cvs29
 
 	* src/msgcache.c
