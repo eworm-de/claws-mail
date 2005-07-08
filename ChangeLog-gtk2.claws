@@ -1,3 +1,21 @@
+2005-07-08 [colin]	1.9.12cvs29
+
+	* src/msgcache.c
+		Make the cache/mark files platform-agnostic by writing
+		them in little-endian format. Reading them is also done
+		in little-endian format, of course; however, in order
+		to avoid trashing mark data on big-endian machines, the
+		files are, at first, read from the native format if the
+		little-endian one doesn't exist. This is easy to deter-
+		mine by trying to open a file with a swapped data_ver
+		and seeing if it's the wanted version.
+		Little-endian using users should see absolutely no
+		difference, Big-endian users may get a very little
+		performance drop due to byte-swapping.
+		Tested on i386 and ppc32. 
+		Fixes bug 153 (The index file, in the mailboxes, is 
+		hardware depending).
+
 2005-07-07 [colin]	1.9.12cvs28
 
 	* src/imap.c

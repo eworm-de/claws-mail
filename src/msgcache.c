@@ -24,10 +24,22 @@
 
 #include <time.h>
 
+#include <endian.h>
+
 #include "msgcache.h"
 #include "utils.h"
 #include "procmsg.h"
 #include "codeconv.h"
+
+#ifdef __BIG_ENDIAN__
+#define bswap_32(x) \
+     ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
+      (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
+#else
+#define bswap_32(x) (x)
+#endif
+
+static gboolean swapping = TRUE;
 
 typedef enum
 {
@@ -240,21 +252,21 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	guint32 idata; \
 	size_t ni; \
  \
-	if ((ni = fread(&idata, 1, sizeof(idata), fp)) != sizeof(idata)) { \
+	if ((ni = fread(&idata, sizeof(idata), 1, fp)) != 1) { \
 		g_warning("read_int: Cache data corrupted, read %d of %d at " \
 			  "offset %ld\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
 	} else \
-		n = idata;\
+		n = swapping ? bswap_32(idata) : (idata);\
 }
 
 #define WRITE_CACHE_DATA_INT(n, fp)		\
 {						\
 	guint32 idata;				\
 						\
-	idata = (guint32)n;			\
+	idata = (guint32)bswap_32(n);			\
 	fwrite(&idata, sizeof(idata), 1, fp);	\
 }
 
@@ -299,12 +311,13 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 		if (buf && buf_size > 0)
 			setvbuf(fp, buf, _IOFBF, buf_size);
 		if (fread(&data_ver, sizeof(data_ver), 1, fp) != 1 ||
-			 version != data_ver) {
-			g_message("%s: Mark/Cache version is different (%u != %u). Discarding it.\n",
-				  file, data_ver, version);
+			 version != bswap_32(data_ver)) {
+			g_message("%s: Mark/Cache version is different (%u != %u).\n",
+				  file, bswap_32(data_ver), version);
 			fclose(fp);
 			fp = NULL;
 		}
+		data_ver = bswap_32(data_ver);
 	}
 	
 	if (mode == DATA_READ)
@@ -333,12 +346,23 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	guint32 len;
 
 	*str = NULL;
-	if ((ni = fread(&len, 1, sizeof(len), fp) != sizeof(len)) ||
-	    len > G_MAXINT) {
-		g_warning("read_data_str: Cache data (len) corrupted, read %d "
-			  "of %d bytes at offset %ld\n", ni, sizeof(len), 
-			  ftell(fp));
-		return -1;
+	if (!swapping) {
+		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
+		    len > G_MAXINT) {
+			g_warning("read_data_str: Cache data (len) corrupted, read %d "
+				  "of %d bytes at offset %ld\n", ni, sizeof(len), 
+				  ftell(fp));
+			return -1;
+		}
+	} else {
+		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
+		    bswap_32(len) > G_MAXINT) {
+			g_warning("read_data_str: Cache data (len) corrupted, read %d "
+				  "of %d bytes at offset %ld\n", ni, sizeof(len), 
+				  ftell(fp));
+			return -1;
+		}
+		len = bswap_32(len);
 	}
 
 	if (len == 0)
@@ -409,11 +433,23 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
-	if ((fp = msgcache_open_data_file
-		(cache_file, CACHE_VERSION, DATA_READ, file_buf, sizeof(file_buf))) == NULL)
-		return NULL;
+	swapping = TRUE;
 
-	debug_print("\tReading message cache from %s...\n", cache_file);
+	/* In case we can't open the mark file with MARK_VERSION, check if we can open it with the
+	 * swapped MARK_VERSION. As msgcache_open_data_file swaps it too, if this succeeds, 
+	 * it means it's the old version (not little-endian) on a big-endian machine. The code has
+	 * no effect on x86 as their file doesn't change. */
+
+	if ((fp = msgcache_open_data_file
+		(cache_file, CACHE_VERSION, DATA_READ, file_buf, sizeof(file_buf))) == NULL) {
+		if ((fp = msgcache_open_data_file
+		(cache_file, bswap_32(CACHE_VERSION), DATA_READ, file_buf, sizeof(file_buf))) == NULL)
+			return NULL;
+		else
+			swapping = FALSE;
+	}
+
+	debug_print("\tReading %sswapped message cache from %s...\n", swapping?"":"un", cache_file);
 
 	if (item->stype == F_QUEUE) {
 		tmp_flags |= MSG_QUEUED;
@@ -456,6 +492,9 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	g_hash_table_freeze(cache->msgid_table);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
+		if (swapping)
+			num = bswap_32(num);
+
 		msginfo = procmsg_msginfo_new();
 		msginfo->msgnum = num;
 		memusage += sizeof(MsgInfo);
@@ -535,20 +574,33 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	MsgInfo *msginfo;
 	MsgPermFlags perm_flags;
 	guint32 num;
+	
+	swapping = TRUE;
 
-	if ((fp = msgcache_open_data_file(mark_file, MARK_VERSION, DATA_READ, NULL, 0)) == NULL)
-		return;
+	/* In case we can't open the mark file with MARK_VERSION, check if we can open it with the
+	 * swapped MARK_VERSION. As msgcache_open_data_file swaps it too, if this succeeds, 
+	 * it means it's the old version (not little-endian) on a big-endian machine. The code has
+	 * no effect on x86 as their file doesn't change. */
 
-	debug_print("\tReading message marks from %s...\n", mark_file);
-
+	if ((fp = msgcache_open_data_file(mark_file, MARK_VERSION, DATA_READ, NULL, 0)) == NULL) {
+		/* see if it isn't swapped ? */
+		if ((fp = msgcache_open_data_file(mark_file, bswap_32(MARK_VERSION), DATA_READ, NULL, 0)) == NULL)
+			return;
+		else
+			swapping = FALSE; /* yay */
+	}
+	debug_print("reading %sswapped mark file.\n", swapping?"":"un");
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
+		if (swapping)
+			num = bswap_32(num);
 		if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
-
+		if (swapping)
+			perm_flags = bswap_32(perm_flags);
 		msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
 		if(msginfo) {
 			msginfo->flags.perm_flags = perm_flags;
 		}
-	}
+	}	
 	fclose(fp);
 }
 
