@@ -13,7 +13,7 @@
 		difference, Big-endian users may get a very little
 		performance drop due to byte-swapping.
 		Tested on i386 and ppc32. 
-		Fixes bug 153 (The index file, in the mailboxes, is 
+		Fixes bug #159 (The index file, in the mailboxes, is 
 		hardware depending).
 
 2005-07-07 [colin]	1.9.12cvs28
