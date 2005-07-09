@@ -464,13 +464,13 @@ static void imap_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
-	imap_done(folder);
 	dir = imap_folder_get_path(folder);
 	if (is_dir_exist(dir))
 		remove_dir_recursive(dir);
 	g_free(dir);
 
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
+	imap_done(folder);
 }
 
 static void imap_folder_init(Folder *folder, const gchar *name,

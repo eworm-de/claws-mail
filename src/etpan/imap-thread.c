@@ -67,11 +67,12 @@ void imap_main_set_timeout(int sec)
 
 void imap_main_done(void)
 {
+	etpan_thread_manager_stop(thread_manager);
+	etpan_thread_manager_join(thread_manager);
+	
 	g_source_remove(thread_manager_signal);
 	g_io_channel_unref(io_channel);
 	
-	etpan_thread_manager_stop(thread_manager);
-	etpan_thread_manager_join(thread_manager);
 	etpan_thread_manager_free(thread_manager);
 	
 	chash_free(session_hash);
@@ -110,9 +111,11 @@ void imap_done(Folder * folder)
 	
 	thread = value.data;
 	
-	etpan_thread_stop(thread);
+	etpan_thread_unbind(thread);
 	
 	chash_delete(imap_hash, &key, NULL);
+	
+	debug_print("remove thread");
 }
 
 static struct etpan_thread * get_thread(Folder * folder)
@@ -155,6 +158,8 @@ static void generic_cb(int cancelled, void * result, void * callback_data)
 	int * p_finished;
 	
 	p_finished = callback_data;
+
+	debug_print("generic_cb\n");
 	
 	* p_finished = 1;
 }
@@ -1378,6 +1383,8 @@ static void fetch_content_run(struct etpan_thread_op * op)
 	
 	param = op->param;
 	
+	content = NULL;
+	content_size = 0;
 	if (param->with_body)
 		r = imap_fetch(param->imap, param->msg_index,
 			       &content, &content_size);
