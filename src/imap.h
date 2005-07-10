@@ -29,5 +29,8 @@ typedef enum
 } IMAPAuthType;
 
 FolderClass *imap_get_class		(void);
+guint imap_folder_get_refcnt(Folder *folder);
+void imap_folder_ref(Folder *folder);
+void imap_folder_unref(Folder *folder);
 
 #endif /* __IMAP_H__ */

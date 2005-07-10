@@ -1780,9 +1780,18 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	folder_item_update_freeze();
 	if (newmsg_list != NULL) {
 		GSList *elem;
-
+		int total = g_slist_length(newmsg_list), cur = 0;
+		
+		if ((filtering == TRUE) &&
+		    (item->stype == F_INBOX) &&
+		    (item->folder->account != NULL) && 
+		    (item->folder->account->filter_on_recv)) 
+			statusbar_print_all(_("Filtering messages...\n"));
+		
 		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
 			MsgInfo *msginfo = (MsgInfo *) elem->data;
+
+			statusbar_progress_all(cur++,total, 10);
 
 			msgcache_add_msg(item->cache, msginfo);
 			if ((filtering == TRUE) &&
@@ -1796,6 +1805,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		}
 		g_slist_free(newmsg_list);
 
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 	}
 
@@ -2254,17 +2265,7 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		gchar *msg;
 
-		num++;
-		if (num % 10 == 0) {
-			gchar buf[32];
-			g_snprintf(buf, sizeof(buf), "%d / %d",
-				   num, total);
-			gtk_progress_bar_set_text
-				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
-			gtk_progress_bar_set_fraction
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
-			 (gfloat)num / (gfloat)total);
-		}
+		statusbar_progress_all(num++,total, 10);
 
 		if (folder->ui_func)
 			folder->ui_func(folder, item,
@@ -2281,11 +2282,8 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 		}
 		g_free(msg);
 	}
-
-	gtk_progress_bar_set_fraction
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
-	gtk_progress_bar_set_text
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	
+	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 	procmsg_msg_list_free(mlist);
 
@@ -3409,7 +3407,6 @@ void folder_item_apply_processing(FolderItem *item)
 	GSList *processing_list;
 	GSList *mlist, *cur;
 	guint total = 0, curmsg = 0;
-	gchar buf[32];
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->no_select == FALSE);	
@@ -3428,16 +3425,9 @@ void folder_item_apply_processing(FolderItem *item)
                 /* reset parameters that can be modified by processing */
                 msginfo->hidden = 0;
                 msginfo->score = 0;
-                curmsg ++;
-		if (curmsg % 10 == 0) {
-			g_snprintf(buf, sizeof(buf), "%d / %d",
-				   curmsg, total);
-			gtk_progress_bar_set_text
-				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
-			gtk_progress_bar_set_fraction
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
-			 (gfloat)curmsg / (gfloat)total);
-		}
+
+		statusbar_progress_all(curmsg++,total, 10);
+
                 /* apply pre global rules */
 		filter_message_by_msginfo(pre_global_processing, msginfo);
                 
@@ -3451,10 +3441,7 @@ void folder_item_apply_processing(FolderItem *item)
 	}
 	g_slist_free(mlist);
 	
-	gtk_progress_bar_set_text
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
-	gtk_progress_bar_set_fraction
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
+	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 
 	folder_item_update_thaw();

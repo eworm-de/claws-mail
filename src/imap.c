@@ -87,6 +87,7 @@ struct _IMAPFolder
 	GList *ns_others;
 	GList *ns_shared;
 	gchar last_seen_separator;
+	guint refcnt;
 };
 
 struct _IMAPSession
@@ -464,6 +465,9 @@ static void imap_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
+	while (imap_folder_get_refcnt(folder) > 0)
+		gtk_main_iteration();
+	
 	dir = imap_folder_get_path(folder);
 	if (is_dir_exist(dir))
 		remove_dir_recursive(dir);
@@ -1842,18 +1846,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		partial_result =
 			(GSList *)imap_get_uncached_messages_thread(data);
 		
-		{
-			gchar buf[32];
-			g_snprintf(buf, sizeof(buf), "%d / %d",
-				   data->cur, data->total);
-			gtk_progress_bar_set_text
-				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
-			gtk_progress_bar_set_fraction
-				(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
-				 (gfloat)data->cur / (gfloat)data->total);
-			debug_print("update progress %g\n",
-				(gfloat)data->cur / (gfloat)data->total);
-		}
+		statusbar_progress_all(data->cur,data->total, 1);
 		
 		g_slist_free(newlist);
 		
@@ -1861,10 +1854,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	}
 	g_free(data);
 	
-	gtk_progress_bar_set_fraction
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
-	gtk_progress_bar_set_text
-		(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 	
 	log_print(_("IMAP< Done\n"));
@@ -3787,6 +3777,23 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFlags flags)
 	
 	return flag_list;
 }
+
+guint imap_folder_get_refcnt(Folder *folder)
+{
+	return ((IMAPFolder *)folder)->refcnt;
+}
+
+void imap_folder_ref(Folder *folder)
+{
+	((IMAPFolder *)folder)->refcnt++;
+}
+
+void imap_folder_unref(Folder *folder)
+{
+	if (((IMAPFolder *)folder)->refcnt > 0)
+		((IMAPFolder *)folder)->refcnt--;
+}
+
 #else /* HAVE_LIBETPAN */
 
 static FolderClass imap_class;
@@ -3829,5 +3836,4 @@ FolderClass *imap_get_class(void)
 
 	return &imap_class;
 }
-
 #endif

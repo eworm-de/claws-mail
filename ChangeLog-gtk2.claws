@@ -1,3 +1,16 @@
+2005-07-10 [colin]	1.9.12cvs32
+
+	* src/folder.c
+	* src/statusbar.c
+	* src/statusbar.h
+		Add visual progress indicator on filtering/processing
+		Factorize the progress bar code
+	* src/imap.c
+	* src/imap.h
+	* src/etpan/imap-thread.c
+		Add a reference counter to avoid destroying the Folder
+		while it's in use by another callback.
+
 2005-07-09 [hoa]	1.9.12cvs31
 
 	* src/imap.c

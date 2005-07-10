@@ -36,6 +36,7 @@ void statusbar_print_all	(const gchar	*format, ...)
 void statusbar_pop_all		(void);
 void statusbar_verbosity_set	(gboolean	 verbose);
 
+void statusbar_progress_all	(gint done, gint total, gint step);
 #define STATUSBAR_PUSH(mainwin, str) \
 { \
 	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \

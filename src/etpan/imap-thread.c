@@ -5,7 +5,7 @@
 #ifdef HAVE_LIBETPAN
 
 #include "imap-thread.h"
-
+#include <imap.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -171,6 +171,8 @@ static void threaded_run(Folder * folder, void * param, void * result,
 	struct etpan_thread * thread;
 	int finished;
 	
+	imap_folder_ref(folder);
+
 	op = etpan_thread_op_new();
 	op->param = param;
 	op->result = result;
@@ -191,6 +193,8 @@ static void threaded_run(Folder * folder, void * param, void * result,
 	}
 	
 	etpan_thread_op_free(op);
+
+	imap_folder_unref(folder);
 }
 
 

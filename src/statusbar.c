@@ -24,8 +24,10 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtkstatusbar.h>
+#include <gtk/gtkprogressbar.h>
 #include <stdarg.h>
 
+#include "mainwindow.h"
 #include "statusbar.h"
 #include "gtkutils.h"
 #include "utils.h"
@@ -142,4 +144,23 @@ void statusbar_verbosity_set(gboolean verbose)
 		statusbar_puts_all_hook_id = -1;
 		statusbar_pop_all();
 	}
+}
+
+void statusbar_progress_all (gint done, gint total, gint step) 
+{
+	gchar buf[32];
+	g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
+	if (total && done % step == 0) {
+		gtk_progress_bar_set_text
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
+			 (gfloat)done / (gfloat)total);
+	} else if (total == 0) {
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0);
+		gtk_progress_bar_set_text
+			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
+	}
+	
 }
