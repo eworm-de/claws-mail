@@ -1,3 +1,8 @@
+2005-07-10 [hoa]	1.9.12cvs33
+
+	* src/etpan/imap-thread.c
+		workaround for old Courier IMAP servers.
+
 2005-07-10 [colin]	1.9.12cvs32
 
 	* src/folder.c

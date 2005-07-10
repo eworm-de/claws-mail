@@ -16,6 +16,7 @@
 #include "etpan-thread-manager.h"
 
 static struct etpan_thread_manager * thread_manager = NULL;
+static chash * courier_workaround_hash = NULL;
 static chash * imap_hash = NULL;
 static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
@@ -46,6 +47,7 @@ void imap_main_init(void)
 #endif
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
+	courier_workaround_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	
 	thread_manager = etpan_thread_manager_new();
 	
@@ -75,6 +77,7 @@ void imap_main_done(void)
 	
 	etpan_thread_manager_free(thread_manager);
 	
+	chash_free(courier_workaround_hash);
 	chash_free(session_hash);
 	chash_free(imap_hash);
 }
@@ -341,6 +344,10 @@ void imap_threaded_disconnect(Folder * folder)
 	value.data = imap;
 	value.len = 0;
 	chash_delete(session_hash, &key, NULL);
+	
+	key.data = &imap;
+	key.len = sizeof(imap);
+	chash_delete(courier_workaround_hash, &key, NULL);
 	
 	mailimap_free(imap);
 	
@@ -1114,6 +1121,7 @@ static void fetch_uid_run(struct etpan_thread_op * op)
 	
 	param = op->param;
 	
+	fetch_result = NULL;
 	r = imap_get_messages_list(param->imap, param->first_index,
 				   &fetch_result);
 	
@@ -1655,6 +1663,18 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
 	return MAIL_NO_ERROR;
 }
 
+int imap_add_header_fetch_att(struct mailimap_fetch_type * fetch_type)
+{
+	struct mailimap_fetch_att * fetch_att;
+	struct mailimap_section * section;
+	
+	section = mailimap_section_new_header();
+	fetch_att = mailimap_fetch_att_new_body_peek_section(section);
+	mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	
+	return MAIL_NO_ERROR;
+}
+
 static int
 imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 			carray ** p_env_list)
@@ -1665,6 +1685,8 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 	clist * fetch_result;
 	int r;
 	carray * env_list;
+	chashdatum key;
+	chashdatum value;
 	
 	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
   
@@ -1681,7 +1703,13 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
   
 	/* headers */
-	r = imap_add_envelope_fetch_att(fetch_type);
+	key.data = &imap;
+	key.len = sizeof(imap);
+	r = chash_get(courier_workaround_hash, &key, &value);
+	if (r < 0)
+		r = imap_add_envelope_fetch_att(fetch_type);
+	else
+		r = imap_add_header_fetch_att(fetch_type);
 	
 	r = mailimap_uid_fetch(imap, set, fetch_type, &fetch_result);
 	
@@ -1736,6 +1764,7 @@ static void fetch_env_run(struct etpan_thread_op * op)
 	
 	param = op->param;
 	
+	env_list = NULL;
 	r = imap_get_envelopes_list(param->imap, param->set,
 				    &env_list);
 	
@@ -1760,6 +1789,23 @@ int imap_threaded_fetch_env(Folder * folder, struct mailimap_set * set,
 	param.set = set;
 	
 	threaded_run(folder, &param, &result, fetch_env_run);
+	
+	if (result.error != MAILIMAP_NO_ERROR) {
+		chashdatum key;
+		chashdatum value;
+		int r;
+		
+		key.data = &imap;
+		key.len = sizeof(imap);
+		r = chash_get(courier_workaround_hash, &key, &value);
+		if (r < 0) {
+			value.data = NULL;
+			value.len = 0;
+			chash_set(courier_workaround_hash, &key, &value, NULL);
+			
+			threaded_run(folder, &param, &result, fetch_env_run);
+		}
+	}
 	
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;

@@ -627,3 +627,4 @@
 ( cvs diff -u -r 1.96.2.60 -r 1.96.2.61 src/textview.c;  cvs diff -u -r 1.8.2.5 -r 1.8.2.6 src/unmime.c;  cvs diff -u -r 1.2.2.9 -r 1.2.2.10 src/gtk/inputdialog.c;  ) > 1.9.12cvs30.patchset
 ( cvs diff -u -r 1.179.2.51 -r 1.179.2.52 src/imap.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/etpan/imap-thread.c;  ) > 1.9.12cvs31.patchset
 ( cvs diff -u -r 1.213.2.40 -r 1.213.2.41 src/folder.c;  cvs diff -u -r 1.179.2.52 -r 1.179.2.53 src/imap.c;  cvs diff -u -r 1.34.2.1 -r 1.34.2.2 src/imap.h;  cvs diff -u -r 1.5.2.4 -r 1.5.2.5 src/statusbar.c;  cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/statusbar.h;  cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/etpan/imap-thread.c;  ) > 1.9.12cvs32.patchset
+( cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/etpan/imap-thread.c;  ) > 1.9.12cvs33.patchset
