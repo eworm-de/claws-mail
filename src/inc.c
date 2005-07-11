@@ -548,6 +548,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 }
 
 	for (; inc_dialog->queue_list != NULL && !cancelled; inc_dialog->cur_row++) {
+		int cur = 0, total = 0;
 		session = inc_dialog->queue_list->data;
 		pop3_session = POP3_SESSION(session->session);
 
@@ -635,17 +636,30 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		/* process messages */
 		folder_item_update_freeze();
-		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
+		if (pop3_session->ac_prefs->filter_on_recv)
+			statusbar_print_all(_("Filtering messages...\n"));
+		total = g_slist_length(msglist);
+
+		for(msglist_element = msglist; msglist_element != NULL; 
+		    msglist_element = msglist_element->next) {
 			gchar *filename;
 			msginfo = (MsgInfo *) msglist_element->data;
 			filename = folder_item_fetch_msg(processing, msginfo->msgnum);
 			g_free(filename);
+
+			if (pop3_session->ac_prefs->filter_on_recv)
+				statusbar_progress_all(cur++,total, 10);
+
 			if (!pop3_session->ac_prefs->filter_on_recv || 
 			    !procmsg_msginfo_filter(msginfo))
 				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
 		folder_item_update_thaw();
+		
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
+
 		g_slist_free(msglist);
 
 		statusbar_pop_all();

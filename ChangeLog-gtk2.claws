@@ -1,3 +1,12 @@
+2005-07-11 [colin]	1.9.12cvs36
+
+	* src/inc.c
+		Add visual indication that filtering is running
+	* src/textview.c
+		Make {}[] uri delimiters
+	* src/summaryview.c
+		Remove useless (and slow) calls
+
 2005-07-11 [paul]	1.9.12cvs35
 
 	* src/plugins/clamav/clamav_plugin_gtk.c

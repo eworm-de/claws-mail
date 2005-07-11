@@ -836,7 +836,7 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
 		if (!isgraph(*(const guchar *)ep_) ||
 		    !IS_ASCII(*(const guchar *)ep_) ||
-		    strchr("()<>\"", *ep_))
+		    strchr("[]{}()<>\"", *ep_))
 			break;
 	}
 

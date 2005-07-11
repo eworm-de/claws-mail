@@ -2764,7 +2764,6 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	procmsg_update_unread_children (msginfo, TRUE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
@@ -3020,7 +3019,6 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	procmsg_update_unread_children (msginfo, FALSE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
@@ -3154,7 +3152,6 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	procmsg_update_unread_children (msginfo, FALSE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
