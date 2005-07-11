@@ -246,7 +246,7 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	path[0] = _("Filtering");
+	path[0] = _("Plugins");
 	path[1] = _("Clam AntiVirus");
 	path[2] = NULL;
 

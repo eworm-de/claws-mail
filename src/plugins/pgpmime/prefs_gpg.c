@@ -500,7 +500,7 @@ void prefs_gpg_init()
 	prefs_read_config(param, "GPG", rcpath, NULL);
 	g_free(rcpath);
 
-        path[0] = _("Privacy");
+        path[0] = _("Plugins");
         path[1] = _("GPG");
         path[2] = NULL;
 

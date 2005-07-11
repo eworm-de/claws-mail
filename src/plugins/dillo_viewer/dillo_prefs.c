@@ -71,7 +71,7 @@ void dillo_prefs_init(void)
 	static gchar *path[3];
 	gchar *rcpath;
 
-	path[0] = _("Message View");
+	path[0] = _("Plugins");
 	path[1] = _("Dillo Browser");
 	path[2] = NULL;
 
