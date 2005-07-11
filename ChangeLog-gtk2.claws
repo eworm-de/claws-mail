@@ -1,3 +1,18 @@
+2005-07-11 [paul]	1.9.12cvs34
+
+	sync with main
+
+	* src/account.c
+		account_delete(): modified alert dialog
+	* src/editjpilot.c
+	* src/editvcard.c
+		fixed a crash when cancelling file selection
+		dialog by Escape key. Made non-ascii filename
+		selectable.
+	* src/prefs_template.c
+		prefs_template_window_create(): make scrolled
+		window policy AUTOMATIC
+
 2005-07-10 [hoa]	1.9.12cvs33
 
 	* src/etpan/imap-thread.c

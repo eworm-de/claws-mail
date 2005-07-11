@@ -199,8 +199,10 @@ static void prefs_template_window_create(void)
 	scroll2 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scroll2);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll2),
-				       GTK_POLICY_NEVER,
+				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll2),
+					    GTK_SHADOW_IN);
 	gtk_box_pack_start(GTK_BOX(vbox1), scroll2, TRUE, TRUE, 0);
 
 	text_value = gtk_text_view_new();

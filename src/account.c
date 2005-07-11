@@ -931,6 +931,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
 static void account_delete(GtkWidget *widget, gpointer data)
 {
 	PrefsAccount *ac_prefs;
+	gchar buf[BUFFSIZE];
 	GList *list;
 	Folder *folder;
  
@@ -938,8 +939,11 @@ static void account_delete(GtkWidget *widget, gpointer data)
  	if (ac_prefs == NULL)
  		return;
 
-	if (alertpanel(_("Delete account"),
-		       _("Do you really want to delete this account?"),
+	g_snprintf(buf, sizeof(buf),
+		   _("Do you really want to delete the account '%s'?"),
+		   ac_prefs->account_name ? ac_prefs->account_name :
+		   _("(Untitled)"));
+	if (alertpanel(_("Delete account"), buf,
 		       _("Yes"), _("+No"), NULL) != G_ALERTDEFAULT)
 		return;
 
