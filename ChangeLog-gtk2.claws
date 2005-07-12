@@ -1,3 +1,8 @@
+2005-07-12 [colin]	1.9.12cvs38
+
+	* src/statusbar.c
+		Fix progress bar showing stuff at startup.
+
 2005-07-12 [paul]	1.9.12cvs37
 
 	* src/editjpilot.c
