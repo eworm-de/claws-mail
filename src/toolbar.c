@@ -110,6 +110,8 @@ static void toolbar_reply_to_sender_cb	   	(GtkWidget	*widget,
 static void toolbar_forward_cb		   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
+static void toolbar_prev_unread_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
 static void toolbar_next_unread_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
@@ -164,9 +166,10 @@ struct {
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
 	{ "A_DELETE",        	N_("Delete Message")                       },
 	{ "A_EXECUTE",       	N_("Execute")                              },
-	{ "A_GOTO_NEXT",     	N_("Goto Next Message")                    },
-	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			},
-	{ "A_PRINT",	     	N_("Print")				},
+	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
+	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
+	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			   },
+	{ "A_PRINT",	     	N_("Print")				   },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -294,8 +297,8 @@ GList *toolbar_get_action_items(ToolbarType source)
 		gint main_items[]   = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
 					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
-					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT, 
-					A_IGNORE_THREAD, A_PRINT,  
+					A_DELETE,        A_EXECUTE,       A_GOTO_PREV, 
+					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_PRINT,
 					A_ADDRBOOK, 	 A_SYL_ACTIONS };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
@@ -323,8 +326,8 @@ GList *toolbar_get_action_items(ToolbarType source)
 	else if (source == TOOLBAR_MSGVIEW) {
 		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
-				        A_DELETE,        A_GOTO_NEXT,	  A_ADDRBOOK,
-					A_SYL_ACTIONS };	
+				        A_DELETE,        A_GOTO_PREV,	  A_GOTO_NEXT,
+					A_ADDRBOOK,	 A_SYL_ACTIONS };	
 
 		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
@@ -382,6 +385,7 @@ static void toolbar_set_default_main(void)
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_DELETE,        STOCK_PIXMAP_CLOSE,                _("Delete")  },
 		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
+		{ A_GOTO_PREV,     STOCK_PIXMAP_UP_ARROW,             _("Previous")},
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 	};
 	
@@ -1012,6 +1016,44 @@ static void toolbar_forward_cb(GtkWidget *widget, gpointer data)
 	toolbar_reply(data, COMPOSE_FORWARD);
 }
 
+/*
+ * Goto Prev Unread Message
+ */
+static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		summary_select_prev_unread(mainwin->summaryview);
+		break;
+		
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)toolbar_item->parent;
+		summary_select_prev_unread(msgview->mainwin->summaryview);
+		
+		/* Now we need to update the messageview window */
+		if (msgview->mainwin->summaryview->selected) {
+			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
+			
+			MsgInfo * msginfo = gtk_ctree_node_get_row_data(ctree, 
+									msgview->mainwin->summaryview->selected);
+		       
+			messageview_show(msgview, msginfo, 
+					 msgview->all_headers);
+		} else {
+			gtk_widget_destroy(msgview->window);
+		}
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+	}
+}
 
 /*
  * Goto Next Unread Message
@@ -1225,6 +1267,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_FORWARD,		toolbar_forward_cb		},
 		{ A_DELETE,         	toolbar_delete_cb		},
 		{ A_EXECUTE,        	toolbar_exec_cb			},
+		{ A_GOTO_PREV,      	toolbar_prev_unread_cb		},
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
 		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
 		{ A_PRINT,		toolbar_print_cb		},
@@ -1460,11 +1503,19 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 					     toolbar_data->exec_btn,
 					   _("Execute"), NULL);
 			break;
+		case A_GOTO_PREV:
+			toolbar_data->prev_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->prev_btn,
+					     _("Go to Previous Unread Message"),
+					     NULL);
+			break;
 		case A_GOTO_NEXT:
 			toolbar_data->next_btn = item;
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->next_btn,
-					     _("Goto Next Message"), NULL);
+					     _("Go to Next Unread Message"),
+					     NULL);
 			break;
 		
 		/* Compose Toolbar */
@@ -1783,6 +1834,7 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->replylist_btn    	= NULL;
 	toolbar->fwd_btn          	= NULL;
 	toolbar->delete_btn       	= NULL;
+	toolbar->prev_btn         	= NULL;
 	toolbar->next_btn         	= NULL;
 	toolbar->exec_btn         	= NULL;
 
