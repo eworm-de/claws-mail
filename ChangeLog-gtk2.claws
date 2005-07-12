@@ -1,3 +1,8 @@
+2005-07-12 [paul]	1.9.12cvs37
+
+	* src/editjpilot.c
+		fix building with jpilot support
+
 2005-07-11 [colin]	1.9.12cvs36
 
 	* src/inc.c

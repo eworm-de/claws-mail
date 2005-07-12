@@ -209,7 +209,7 @@ static void edit_jpilot_file_select( void ) {
 	gchar *sFile;
 	gchar *sUTF8File;
 
-	sFile = filesel_select_file( _("Select JPilot File"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN );
+	sFile = filesel_select_file_open( _("Select JPilot File"), NULL);
 
 	if( sFile ) {
 		sUTF8File = conv_filename_to_utf8( sFile );
