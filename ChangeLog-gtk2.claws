@@ -1,3 +1,12 @@
+2005-07-13 [paul]	1.9.12cvs44
+
+	* configure.ac
+		add large file support
+	* src/html.c
+		fix bug #763 where href attribute was not
+		the very first attribute of a link
+		patch by Thomas Gilgin
+
 2005-07-13 [colin]	1.9.12cvs43
 
 	* src/gtk/pluginwindow.c

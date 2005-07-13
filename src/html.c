@@ -419,12 +419,14 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 		html_append_char(parser, '\n');
 		parser->state = HTML_BR;
 	} else if (!strcmp(tag->name, "a")) {
-		if (tag->attr && tag->attr->data &&
-		    !strcmp(((HTMLAttr *)tag->attr->data)->name, "href")) {
-			g_free(parser->href);
-			parser->href =
-				g_strdup(((HTMLAttr *)tag->attr->data)->value);
-			parser->state = HTML_HREF_BEG;
+		GList *cur;
+		for (cur = tag->attr; cur != NULL; cur = cur->next) {
+			if (cur->data && !strcmp(((HTMLAttr *)cur->data)->name, "href")) {
+				g_free(parser->href);
+				parser->href = g_strdup(((HTMLAttr *)cur->data)->value);
+				parser->state = HTML_HREF_BEG;
+				break;
+			}
 		}
 	} else if (!strcmp(tag->name, "/a")) {
 		parser->state = HTML_HREF;
