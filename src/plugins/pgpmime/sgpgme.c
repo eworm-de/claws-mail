@@ -295,6 +295,10 @@ gchar *sgpgme_get_encrypt_data(GSList *recp_names)
 	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names);
 	gchar *ret = NULL;
 	int i = 0;
+
+	if (!keys)
+		return NULL;
+
 	while (keys[i]) {
 		gpgme_subkey_t skey = keys[i]->subkeys;
 		gchar *fpr = skey->fpr;
