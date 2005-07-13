@@ -1,3 +1,10 @@
+2005-07-13 [colin]	1.9.12cvs41
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.c
+		Use gpgme_data_release_and_get_mem instead
+		of gpgme_data_read.
+
 2005-07-13 [colin]	1.9.12cvs40
 
 	* configure.ac

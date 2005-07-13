@@ -279,8 +279,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 		return NULL;
 	}
 
-	err = gpgme_data_rewind(plain); /* why doesn't gpgme_data_seek() work here?! */
-/*	err = gpgme_data_seek(plain, 0, SEEK_SET);*/
+	err = gpgme_data_seek(plain, 0, SEEK_SET);
 	if (err) {
 		debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
 	}

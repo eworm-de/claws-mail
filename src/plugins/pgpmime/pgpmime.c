@@ -273,12 +273,12 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	gpgme_data_t cipher = NULL, plain = NULL;
 	static gint id = 0;
 	FILE *dstfp;
-	gint nread;
 	gchar *fname;
-	gchar buf[BUFFSIZE];
 	gpgme_verify_result_t sigstat = NULL;
 	PrivacyDataPGP *data = NULL;
 	gpgme_ctx_t ctx;
+	gchar *chars;
+	int len;
 
 	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
 		return NULL;
@@ -312,14 +312,10 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	fprintf(dstfp, "MIME-Version: 1.0\n");
 
-	while ((nread = gpgme_data_read(plain, buf, sizeof(buf))) > 0) {
-		debug_print("read %d:%s\n", nread, buf);
-      		fwrite (buf, nread, 1, dstfp);
-	}
-	debug_print("nread %d!\n", nread);
+	chars = gpgme_data_release_and_get_mem(plain, &len);
+	if (len > 0)
+		fwrite(chars, len, 1, dstfp);
 	fclose(dstfp);
-	
-	gpgme_data_release(plain);
 
 	parseinfo = procmime_scan_file(fname);
 	g_free(fname);
