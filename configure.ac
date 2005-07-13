@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=44
+EXTRA_VERSION=45
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -236,9 +236,6 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
-
-AC_SYS_LARGEFILE
-AC_FUNC_FSEEKO
 
 dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
 dnl may be defined only in wchar.h (this happens with gcc-2.96).

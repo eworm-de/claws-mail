@@ -639,3 +639,4 @@
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpmime/sgpgme.c;  ) > 1.9.12cvs42.patchset
 ( cvs diff -u -r 1.5.2.16 -r 1.5.2.17 src/gtk/pluginwindow.c;  ) > 1.9.12cvs43.patchset
 ( cvs diff -u -r 1.654.2.678 -r 1.654.2.679 configure.ac;  cvs diff -u -r 1.12.2.7 -r 1.12.2.8 src/html.c;  ) > 1.9.12cvs44.patchset
+( cvs diff -u -r 1.654.2.679 -r 1.654.2.680 configure.ac;  ) > 1.9.12cvs45.patchset
