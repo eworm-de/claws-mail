@@ -152,7 +152,8 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	gchar *file, *error = NULL;
 
 	file = filesel_select_file_open_with_filter(_("Select Plugin to load"), 
-						    PLUGINDIR, "*.so");
+						    PLUGINDIR, 
+						    "*." G_MODULE_SUFFIX);
 	if (file == NULL)
 		return;
 

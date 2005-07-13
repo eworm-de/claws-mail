@@ -1,3 +1,8 @@
+2005-07-13 [colin]	1.9.12cvs43
+
+	* src/gtk/pluginwindow.c
+		Little portability fix
+
 2005-07-13 [colin]	1.9.12cvs42
 
 	* src/plugins/pgpmime/sgpgme.c
