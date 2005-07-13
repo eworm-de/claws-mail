@@ -1,3 +1,11 @@
+2005-07-13 [paul]	1.9.12cvs46
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.c
+		(temporarily) use deprecated gpgme_data_rewind()
+		while largefile support is not present
+		(as suggested by Colin)
+
 2005-07-13 [paul]	1.9.12cvs45
 
 	* configure.ac

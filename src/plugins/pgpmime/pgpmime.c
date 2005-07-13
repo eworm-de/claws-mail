@@ -520,7 +520,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
 	gpgme_set_armor(ctx, 1);
-	gpgme_data_seek(gpgtext, 0, SEEK_SET);
+	gpgme_data_rewind(gpgtext);
 	
 	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
