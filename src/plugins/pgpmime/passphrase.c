@@ -47,9 +47,9 @@
 
 #include "passphrase.h"
 #include "prefs_common.h"
+#include "prefs_gpg.h"
 #include "manage_window.h"
 #include "utils.h"
-#include "prefs_gpg.h"
 
 static gboolean grab_all = FALSE;
 
@@ -62,10 +62,11 @@ static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
 			       gpointer data);
 static gboolean passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       gpointer data);
-static gchar* passphrase_mbox (const gchar *desc);
+static gchar* passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint,
+			      gint prev_bad);
 
-
-static GtkWidget *create_description (const gchar *desc);
+static GtkWidget *create_description(const gchar *uid_hint,
+				     const gchar *pass_hint, gint prev_bad);
 
 void
 gpgmegtk_set_passphrase_grab(gint yes)
@@ -74,7 +75,7 @@ gpgmegtk_set_passphrase_grab(gint yes)
 }
 
 static gchar*
-passphrase_mbox (const gchar *desc)
+passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 {
     gchar *the_passphrase = NULL;
     GtkWidget *vbox;
@@ -89,11 +90,11 @@ passphrase_mbox (const gchar *desc)
     gtk_widget_set_size_request(window, 450, -1);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
     g_signal_connect(G_OBJECT(window), "delete_event",
-		     G_CALLBACK(passphrase_deleted), NULL);
+                     G_CALLBACK(passphrase_deleted), NULL);
     g_signal_connect(G_OBJECT(window), "key_press_event",
-		     G_CALLBACK(passphrase_key_pressed), NULL);
+                     G_CALLBACK(passphrase_key_pressed), NULL);
     MANAGE_WINDOW_SIGNALS_CONNECT(window);
     manage_window_set_transient(GTK_WINDOW(window));
 
@@ -101,9 +102,9 @@ passphrase_mbox (const gchar *desc)
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
-    if (desc) {
+    if (uid_hint || pass_hint) {
         GtkWidget *label;
-        label = create_description (desc);
+        label = create_description (uid_hint, pass_hint, prev_bad);
         gtk_box_pack_start (GTK_BOX(vbox), label, FALSE, FALSE, 0);
     }
 
@@ -119,42 +120,50 @@ passphrase_mbox (const gchar *desc)
     gtk_widget_grab_default(ok_button);
 
     g_signal_connect(G_OBJECT(ok_button), "clicked",
-		     G_CALLBACK(passphrase_ok_cb), NULL);
+                     G_CALLBACK(passphrase_ok_cb), NULL);
     g_signal_connect(G_OBJECT(pass_entry), "activate",
-		     G_CALLBACK(passphrase_ok_cb), NULL);
+                     G_CALLBACK(passphrase_ok_cb), NULL);
     g_signal_connect(G_OBJECT(cancel_button), "clicked",
-		     G_CALLBACK(passphrase_cancel_cb), NULL);
+                     G_CALLBACK(passphrase_cancel_cb), NULL);
 
     gtk_window_set_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     if (grab_all)   
-        gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+        gtk_window_set_policy (GTK_WINDOW(window), FALSE, FALSE, TRUE);
     
     gtk_widget_show_all(window);
 
     if (grab_all) {
-	int err, cnt = 0;
-try_again:
-	/* make sure that window is viewable */
+        int err = 0, cnt = 0;
+        /* make sure that window is viewable */
         gtk_widget_show_now(window);
 	gdk_flush();
 	while(gtk_events_pending())
 		gtk_main_iteration();
+#ifdef GDK_WINDOWING_X11
+	gdk_x11_display_grab(gdk_display_get_default());
+#endif /* GDK_WINDOWING_X11 */
+try_again:
         if ((err = gdk_pointer_grab(window->window, TRUE, 0,
                              window->window, NULL, GDK_CURRENT_TIME))) {
 	    if (err == GDK_GRAB_NOT_VIEWABLE && cnt < 10) {
-		/* HACK! */
-		cnt++;
+	        cnt++;
 		g_warning("trying to grab mouse again\n");
 		goto try_again;
-	    } else {
-            	g_warning("OOPS: Could not grab mouse (%d)\n", err);
-            	gtk_widget_destroy(window);
-            	return NULL;
+            } else {
+#ifdef GDK_WINDOWING_X11
+                gdk_x11_display_ungrab(gdk_display_get_default());
+#endif /* GDK_WINDOWING_X11 */
+                g_warning("OOPS: Could not grab mouse\n");
+                gtk_widget_destroy(window);
+                return NULL;
 	    }
         }
         if (gdk_keyboard_grab(window->window, FALSE, GDK_CURRENT_TIME)) {
             gdk_display_pointer_ungrab(gdk_display_get_default(),
 			 	       GDK_CURRENT_TIME);
+#ifdef GDK_WINDOWING_X11
+            gdk_x11_display_ungrab(gdk_display_get_default());
+#endif /* GDK_WINDOWING_X11 */
             g_warning("OOPS: Could not grab keyboard\n");
             gtk_widget_destroy(window);
             return NULL;
@@ -167,13 +176,17 @@ try_again:
         gdk_display_keyboard_ungrab(gdk_display_get_default(),
 				    GDK_CURRENT_TIME);
         gdk_display_pointer_ungrab(gdk_display_get_default(), GDK_CURRENT_TIME);
+#ifdef GDK_WINDOWING_X11
+        gdk_x11_display_ungrab(gdk_display_get_default());
+#endif /* GDK_WINDOWING_X11 */
         gdk_flush();
     }
 
     manage_window_focus_out(window, NULL, NULL);
 
     if (pass_ack) {
-        const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(pass_entry));
+        const gchar *entry_text;
+        entry_text = gtk_entry_get_text(GTK_ENTRY(pass_entry));
         if (entry_text) /* Hmmm: Do we really need this? */
             the_passphrase = g_strdup (entry_text);
     }
@@ -226,29 +239,25 @@ linelen (const gchar *s)
 }
 
 static GtkWidget *
-create_description (const gchar *desc)
+create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 {
-    const gchar *cmd = NULL, *uid = NULL, *info = NULL;
+    const gchar *uid = NULL, *info = NULL;
     gchar *buf;
     GtkWidget *label;
 
-    cmd = desc;
-    uid = strchr (cmd, '\n');
-    if (uid) {
-        info = strchr (++uid, '\n');
-        if (info )
-            info++;
-    }
-
-    if (!uid)
+    if (!uid_hint)
         uid = _("[no user id]");
-    if (!info)
+    else
+        uid = uid_hint;
+    if (!pass_hint)
         info = "";
+    else
+        info = pass_hint;
 
     buf = g_strdup_printf (_("%sPlease enter the passphrase for:\n\n"
                            "  %.*s  \n"
                            "(%.*s)\n"),
-                           !strncmp (cmd, "TRY_AGAIN", 9 ) ?
+                           prev_bad ?
                            _("Bad passphrase! Try again...\n\n") : "",
                            linelen (uid), uid, linelen (info), info);
 
@@ -271,28 +280,25 @@ static int free_passphrase(gpointer _unused)
     return FALSE;
 }
 
-const char*
-gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
+gpgme_error_t
+gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
+        const char *passphrase_hint, int prev_bad, int fd)
 {
-    struct passphrase_cb_info_s *info = opaque;
-    GpgmeCtx ctx = info ? info->c : NULL;
     const char *pass;
 
-    if (!desc) {
-        /* FIXME: cleanup by looking at *r_hd */
-        return NULL;
+    if (prefs_gpg_get_config()->store_passphrase && last_pass != NULL && !prev_bad) {
+        write(fd, last_pass, strlen(last_pass));
+        write(fd, "\n", 1);
+        return GPG_ERR_NO_ERROR;
     }
-    if (prefs_gpg_get_config()->store_passphrase && last_pass != NULL &&
-        strncmp(desc, "TRY_AGAIN", 9) != 0)
-        return g_strdup(last_pass);
-
     gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
-    debug_print ("%% requesting passphrase for `%s': ", desc);
-    pass = passphrase_mbox (desc);
+    debug_print ("%% requesting passphrase for `%s': ", uid_hint);
+    pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad);
     gpgmegtk_free_passphrase();
     if (!pass) {
         debug_print ("%% cancel passphrase entry");
-        gpgme_cancel (ctx);
+        write(fd, "\n", 1);
+        return GPG_ERR_CANCELED;
     }
     else {
         if (prefs_gpg_get_config()->store_passphrase) {
@@ -307,13 +313,14 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
         }
         debug_print ("%% sending passphrase");
     }
-
-    return pass;
+    write(fd, pass, strlen(pass));
+    write(fd, "\n", 1);
+    return GPG_ERR_NO_ERROR;
 }
 
-void gpgmegtk_free_passphrase(void)
+void gpgmegtk_free_passphrase()
 {
-    (void)free_passphrase(NULL); /* could be inline */
+    (void)free_passphrase(NULL); // could be inline
 }
 
 #endif /* USE_GPGME */

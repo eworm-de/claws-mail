@@ -45,8 +45,8 @@ struct _PrivacyDataPGP
 	
 	gboolean	done_sigtest;
 	gboolean	is_signed;
-	GpgmeSigStat	sigstatus;
-	GpgmeCtx 	ctx;
+	gpgme_verify_result_t	sigstatus;
+	gpgme_ctx_t 	ctx;
 };
 
 static PrivacySystem pgpmime_system;
@@ -61,7 +61,7 @@ static PrivacyDataPGP *pgpmime_new_privacydata()
 	data->data.system = &pgpmime_system;
 	data->done_sigtest = FALSE;
 	data->is_signed = FALSE;
-	data->sigstatus = GPGME_SIG_STAT_NONE;
+	data->sigstatus = NULL;
 	gpgme_new(&data->ctx);
 	
 	return data;
@@ -160,11 +160,12 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	FILE *fp;
 	gchar *boundary;
 	gchar *textstr;
-	GpgmeData sigdata, textdata;
-	
+	gpgme_data_t sigdata = NULL, textdata = NULL;
+	gpgme_error_t err;
 	g_return_val_if_fail(mimeinfo != NULL, -1);
 	g_return_val_if_fail(mimeinfo->privacy != NULL, -1);
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
+	gpgme_new(&data->ctx);
 	
 	debug_print("Checking PGP/MIME signature\n");
 	parent = procmime_mimeinfo_parent(mimeinfo);
@@ -178,13 +179,17 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 
 	textstr = get_canonical_content(fp, boundary);
 
-	gpgme_data_new_from_mem(&textdata, textstr, strlen(textstr), 0);
+	err = gpgme_data_new_from_mem(&textdata, textstr, strlen(textstr), 0);
+	if (err) {
+		debug_print ("gpgme_data_new_from_mem failed: %s\n",
+                   gpgme_strerror (err));
+	}
 	signature = (MimeInfo *) mimeinfo->node->next->data;
 	sigdata = sgpgme_data_from_mimeinfo(signature);
 
 	data->sigstatus =
-		sgpgme_verify_signature	(data->ctx, sigdata, textdata);
-	
+		sgpgme_verify_signature	(data->ctx, sigdata, textdata, NULL);
+
 	gpgme_data_release(sigdata);
 	gpgme_data_release(textdata);
 	g_free(textstr);
@@ -199,7 +204,7 @@ static SignatureStatus pgpmime_get_sig_status(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
-	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
@@ -212,7 +217,7 @@ static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
-	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
@@ -225,7 +230,7 @@ static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
-	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
@@ -265,17 +270,17 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 {
 	MimeInfo *encinfo, *decinfo, *parseinfo;
-	GpgmeData cipher, plain;
+	gpgme_data_t cipher = NULL, plain = NULL;
 	static gint id = 0;
 	FILE *dstfp;
 	gint nread;
 	gchar *fname;
 	gchar buf[BUFFSIZE];
-	GpgmeSigStat sigstat = 0;
+	gpgme_verify_result_t sigstat = NULL;
 	PrivacyDataPGP *data = NULL;
-	GpgmeCtx ctx;
-	
-	if (gpgme_new(&ctx) != GPGME_No_Error)
+	gpgme_ctx_t ctx;
+
+	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
 		return NULL;
 
 	
@@ -288,6 +293,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	gpgme_data_release(cipher);
 	if (plain == NULL) {
+		debug_print("plain is null!\n");
 		gpgme_release(ctx);
 		return NULL;
 	}
@@ -300,14 +306,17 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
         	g_free(fname);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
+		debug_print("can't open!\n");
 		return NULL;
     	}
 
 	fprintf(dstfp, "MIME-Version: 1.0\n");
-	gpgme_data_rewind (plain);
-	while (gpgme_data_read(plain, buf, sizeof(buf), &nread) == GPGME_No_Error) {
+
+	while ((nread = gpgme_data_read(plain, buf, sizeof(buf))) > 0) {
+		debug_print("read %d:%s\n", nread, buf);
       		fwrite (buf, nread, 1, dstfp);
 	}
+	debug_print("nread %d!\n", nread);
 	fclose(dstfp);
 	
 	gpgme_data_release(plain);
@@ -330,7 +339,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	decinfo->tmp = TRUE;
 
-	if (sigstat != GPGME_SIG_STAT_NONE) {
+	if (sigstat != NULL && sigstat->signatures != NULL) {
 		if (decinfo->privacy != NULL) {
 			data = (PrivacyDataPGP *) decinfo->privacy;
 		} else {
@@ -349,76 +358,17 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 }
 
-/*
- * Find TAG in XML and return a pointer into xml set just behind the
- * closing angle.  Return NULL if not found. 
- */
-static const char *
-find_xml_tag (const char *xml, const char *tag)
-{
-    int taglen = strlen (tag);
-    const char *s = xml;
- 
-    while ( (s = strchr (s, '<')) ) {
-        s++;
-        if (!strncmp (s, tag, taglen)) {
-            const char *s2 = s + taglen;
-            if (*s2 == '>' || isspace (*(const unsigned char*)s2) ) {
-                /* found */
-                while (*s2 && *s2 != '>') /* skip attributes */
-                    s2++;
-                /* fixme: do need to handle angles inside attribute vallues? */
-                return *s2? (s2+1):NULL;
-            }
-        }
-        while (*s && *s != '>') /* skip to end of tag */
-            s++;
-    }
-    return NULL;
-}
-
-
-/*
- * Extract the micalg from an GnupgOperationInfo XML container.
- */
-static char *
-extract_micalg (char *xml)
-{
-    const char *s;
-
-    s = find_xml_tag (xml, "GnupgOperationInfo");
-    if (s) {
-        const char *s_end = find_xml_tag (s, "/GnupgOperationInfo");
-        s = find_xml_tag (s, "signature");
-        if (s && s_end && s < s_end) {
-            const char *s_end2 = find_xml_tag (s, "/signature");
-            if (s_end2 && s_end2 < s_end) {
-                s = find_xml_tag (s, "micalg");
-                if (s && s < s_end2) {
-                    s_end = strchr (s, '<');
-                    if (s_end) {
-                        char *p = g_malloc (s_end - s + 1);
-                        memcpy (p, s, s_end - s);
-                        p[s_end-s] = 0;
-                        return p;
-                    }
-                }
-            }
-        }
-    }
-    return NULL;
-}
-
 gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 {
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
-	gchar *textstr, *opinfo, *micalg;
+	gchar *textstr, *micalg;
 	FILE *fp;
 	gchar *boundary, *sigcontent;
-	GpgmeCtx ctx;
-	GpgmeData gpgtext, gpgsig;
+	gpgme_ctx_t ctx;
+	gpgme_data_t gpgtext, gpgsig;
 	size_t len;
 	struct passphrase_cb_info_s info;
+	gpgme_sign_result_t result = NULL;
 
 	memset (&info, 0, sizeof info);
 
@@ -453,6 +403,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_new(&ctx);
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
+	gpgme_signers_clear (ctx);
 
 	if (!sgpgme_setup_signers(ctx, account)) {
 		gpgme_release(ctx);
@@ -464,13 +415,23 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
 	}
 
-	if (gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH) != GPGME_No_Error) {
+	if (gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH) != GPG_ERR_NO_ERROR) {
 		gpgme_release(ctx);
 		return FALSE;
 	}
-	opinfo = gpgme_get_op_info(ctx, 0);
-	micalg = extract_micalg(opinfo);
-	g_free(opinfo);
+	result = gpgme_op_sign_result(ctx);
+	if (result && result->signatures) {
+	    if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
+		micalg = g_strdup_printf("PGP-%s", gpgme_hash_algo_name(
+			    result->signatures->hash_algo));
+	    } else {
+		micalg = g_strdup(gpgme_hash_algo_name(
+			    result->signatures->hash_algo));
+	    }
+	} else {
+	    /* can't get result (maybe no signing key?) */
+	    return FALSE;
+	}
 
 	gpgme_release(ctx);
 	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
@@ -494,7 +455,6 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	return TRUE;
 }
-
 gchar *pgpmime_get_encrypt_data(GSList *recp_names)
 {
 	return sgpgme_get_encrypt_data(recp_names);
@@ -507,20 +467,32 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gchar *boundary, *enccontent;
 	size_t len;
 	gchar *textstr;
-	GpgmeData gpgtext, gpgenc;
-	gchar **recipients, **nextrecp;
-	GpgmeRecipients recp;
-	GpgmeCtx ctx;
-
-	/* build GpgmeRecipients from encrypt_data */
-	recipients = g_strsplit(encrypt_data, " ", 0);
-	gpgme_recipients_new(&recp);
-	for (nextrecp = recipients; *nextrecp != NULL; nextrecp++) {
-		gpgme_recipients_add_name_with_validity(recp, *nextrecp,
-							GPGME_VALIDITY_FULL);
+	gpgme_data_t gpgtext = NULL, gpgenc = NULL;
+	gpgme_ctx_t ctx = NULL;
+	gpgme_key_t *kset = NULL;
+	gchar **fprs = g_strsplit(encrypt_data, " ", -1);
+	gint i = 0;
+	while (fprs[i] && strlen(fprs[i])) {
+		i++;
 	}
-	g_strfreev(recipients);
-
+	
+	kset = g_malloc(sizeof(gpgme_key_t)*(i+1));
+	memset(kset, 0, sizeof(gpgme_key_t)*(i+1));
+	gpgme_new(&ctx);
+	i = 0;
+	while (fprs[i] && strlen(fprs[i])) {
+		gpgme_key_t key;
+		gpgme_error_t err;
+		err = gpgme_get_key(ctx, fprs[i], &key, 0);
+		if (err) {
+			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
+			break;
+		}
+		debug_print("found %s at %d\n", fprs[i], i);
+		kset[i] = key;
+		i++;
+	}
+	
 	debug_print("Encrypting message content\n");
 
 	/* remove content node from message */
@@ -551,14 +523,13 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
-	gpgme_new(&ctx);
 	gpgme_set_armor(ctx, 1);
-
-	gpgme_op_encrypt(ctx, recp, gpgtext, gpgenc);
+	gpgme_data_seek(gpgtext, 0, SEEK_SET);
+	
+	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	gpgme_release(ctx);
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
-	gpgme_recipients_release(recp);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
 

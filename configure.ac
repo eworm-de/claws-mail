@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=39
+EXTRA_VERSION=40
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -553,7 +553,7 @@ AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	AM_PATH_GPGME(0.3.10, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+	AM_PATH_GPGME(0.4.5, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
 		      [ac_cv_enable_pgpmime_plugin=no])
 	if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
 		PLUGINS="pgpmime $PLUGINS"

@@ -634,3 +634,4 @@
 ( cvs diff -u -r 1.5.12.4 -r 1.5.12.5 src/editjpilot.c;  ) > 1.9.12cvs37.patchset
 ( cvs diff -u -r 1.5.2.5 -r 1.5.2.6 src/statusbar.c;  ) > 1.9.12cvs38.patchset
 ( cvs diff -u -r 1.100.2.21 -r 1.100.2.22 AUTHORS;  cvs diff -u -r 1.43.2.19 -r 1.43.2.20 src/toolbar.c;  cvs diff -u -r 1.19.2.3 -r 1.19.2.4 src/toolbar.h;  ) > 1.9.12cvs39.patchset
+( cvs diff -u -r 1.654.2.674 -r 1.654.2.675 configure.ac;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpmime/passphrase.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/passphrase.h;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/plugins/pgpmime/pgpmime.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpmime/plugin.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpmime/select-keys.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/select-keys.h;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpmime/sgpgme.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpmime/sgpgme.h;  ) > 1.9.12cvs40.patchset

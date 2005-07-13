@@ -27,20 +27,22 @@
 void sgpgme_init(void);
 void sgpgme_done(void);
 
-GpgmeSigStat sgpgme_verify_signature	(GpgmeCtx ctx,
-				    	 GpgmeData sig,
-				    	 GpgmeData plain);
+gpgme_verify_result_t sgpgme_verify_signature	(gpgme_ctx_t ctx,
+				    	 gpgme_data_t sig,
+				    	 gpgme_data_t plain,
+					 gpgme_data_t dummy);
 SignatureStatus sgpgme_sigstat_gpgme_to_privacy
-					(GpgmeCtx ctx,
-					 GpgmeSigStat status);
-gchar *sgpgme_sigstat_info_short	(GpgmeCtx ctx,
-					 GpgmeSigStat status);
-gchar *sgpgme_sigstat_info_full		(GpgmeCtx ctx,
-					 GpgmeSigStat status);
-GpgmeData sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
-GpgmeData sgpgme_decrypt_verify		(GpgmeData cipher, GpgmeSigStat *status,
-					 GpgmeCtx ctx);
+					(gpgme_ctx_t ctx,
+					 gpgme_verify_result_t status);
+gchar *sgpgme_sigstat_info_short	(gpgme_ctx_t ctx,
+					 gpgme_verify_result_t status);
+gchar *sgpgme_sigstat_info_full		(gpgme_ctx_t ctx,
+					 gpgme_verify_result_t status);
+gpgme_data_t sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
+gpgme_data_t sgpgme_decrypt_verify	(gpgme_data_t cipher, 
+					 gpgme_verify_result_t *status,
+					 gpgme_ctx_t ctx);
 gchar *sgpgme_get_encrypt_data		(GSList *recp_names);
-gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account);
+gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account);
 
 #endif /* SGPGME_H */

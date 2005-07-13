@@ -45,6 +45,7 @@
 #include "gtkutils.h"
 #include "inputdialog.h"
 #include "manage_window.h"
+#include "alertpanel.h"
 
 #define DIM(v) (sizeof(v)/sizeof((v)[0]))
 #define DIMof(type,member)   DIM(((type *)0)->member)
@@ -66,8 +67,9 @@ struct select_keys_s {
     GtkLabel *toplabel;
     GtkCList *clist;
     const char *pattern;
-    GpgmeRecipients rset;
-    GpgmeCtx select_ctx;
+    unsigned int num_keys;
+    gpgme_key_t *kset;
+    gpgme_ctx_t select_ctx;
 
     GtkSortType sort_type;
     enum col_titles sort_column;
@@ -75,7 +77,7 @@ struct select_keys_s {
 };
 
 
-static void set_row (GtkCList *clist, GpgmeKey key);
+static void set_row (GtkCList *clist, gpgme_key_t key);
 static void fill_clist (struct select_keys_s *sk, const char *pattern);
 static void create_dialog (struct select_keys_s *sk);
 static void open_dialog (struct select_keys_s *sk);
@@ -84,7 +86,6 @@ static gint delete_event_cb (GtkWidget *widget,
                              GdkEventAny *event, gpointer data);
 static gboolean key_pressed_cb (GtkWidget *widget,
                                 GdkEventKey *event, gpointer data);
-static void showall_btn_cb (GtkWidget *widget, gpointer data);
 static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
 static void other_btn_cb (GtkWidget *widget, gpointer data);
@@ -92,6 +93,7 @@ static void sort_keys (struct select_keys_s *sk, enum col_titles column);
 static void sort_keys_name (GtkWidget *widget, gpointer data);
 static void sort_keys_email (GtkWidget *widget, gpointer data);
 
+static gboolean use_untrusted (gpgme_key_t);
 
 static void
 update_progress (struct select_keys_s *sk, int running, const char *pattern)
@@ -112,7 +114,7 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
 
 
 /**
- * select_keys_get_recipients:
+ * gpgmegtk_recipient_selection:
  * @recp_names: A list of email addresses
  * 
  * Select a list of recipients from a given list of email addresses.
@@ -121,20 +123,12 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
  * 
  * Return value: NULL on error or a list of list of recipients.
  **/
-GpgmeRecipients
+gpgme_key_t *
 gpgmegtk_recipient_selection (GSList *recp_names)
 {
     struct select_keys_s sk;
-    GpgmeError err;
 
     memset (&sk, 0, sizeof sk);
-
-    err = gpgme_recipients_new (&sk.rset);
-    if (err) {
-        g_warning ("failed to allocate recipients set: %s",
-                   gpgme_strerror (err));
-        return NULL;
-    }
 
     open_dialog (&sk);
 
@@ -151,63 +145,72 @@ gpgmegtk_recipient_selection (GSList *recp_names)
     close_dialog (&sk);
 
     if (!sk.okay) {
-        gpgme_recipients_release (sk.rset);
-        sk.rset = NULL;
+        g_free(sk.kset);
+        sk.kset = NULL;
+    } else {
+        sk.kset = g_realloc(sk.kset, sizeof(gpgme_key_t) * (sk.num_keys + 1));
+        sk.kset[sk.num_keys] = NULL;
     }
-    return sk.rset;
+    return sk.kset;
 } 
 
 static void
 destroy_key (gpointer data)
 {
-    GpgmeKey key = data;
+    gpgme_key_t key = data;
     gpgme_key_release (key);
 }
 
 static void
-set_row (GtkCList *clist, GpgmeKey key)
+set_row (GtkCList *clist, gpgme_key_t key)
 {
     const char *s;
     const char *text[N_COL_TITLES];
     char *algo_buf;
     int row;
-    gssize by_read = 0, by_written = 0;
-    gchar *ret_str;
 
     /* first check whether the key is capable of encryption which is not
      * the case for revoked, expired or sign-only keys */
-    if ( !gpgme_key_get_ulong_attr (key, GPGME_ATTR_CAN_ENCRYPT, NULL, 0 ) )
+    if (!key->can_encrypt)
         return;
-    
-    algo_buf = g_strdup_printf ("%lu/%s", 
-         gpgme_key_get_ulong_attr (key, GPGME_ATTR_LEN, NULL, 0 ),
-         gpgme_key_get_string_attr (key, GPGME_ATTR_ALGO, NULL, 0 ) );
+    algo_buf = g_strdup_printf ("%du/%s", 
+         key->subkeys->length,
+         gpgme_pubkey_algo_name(key->subkeys->pubkey_algo) );
     text[COL_ALGO] = algo_buf;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_KEYID, NULL, 0);
+    s = key->subkeys->keyid;
     if (strlen (s) == 16)
         s += 8; /* show only the short keyID */
     text[COL_KEYID] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_NAME, NULL, 0);
-    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
-    if (ret_str && by_written) {
-        s = ret_str;
-    }
+    s = key->uids->name;
     text[COL_NAME] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_EMAIL, NULL, 0);
-    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
-    if (ret_str && by_written) {
-        s = ret_str;
-    }
+    s = key->uids->email;
     text[COL_EMAIL] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_VALIDITY, NULL, 0);
-    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
-    if (ret_str && by_written) {
-        s = ret_str;
-    }
+    switch (key->uids->validity)
+      {
+      case GPGME_VALIDITY_UNDEFINED:
+        s = "q";
+        break;
+      case GPGME_VALIDITY_NEVER:
+        s = "n";
+        break;
+      case GPGME_VALIDITY_MARGINAL:
+        s = "m";
+        break;
+      case GPGME_VALIDITY_FULL:
+        s = "f";
+        break;
+      case GPGME_VALIDITY_ULTIMATE:
+        s = "u";
+        break;
+      case GPGME_VALIDITY_UNKNOWN:
+      default:
+        s = "?";
+        break;
+      }
     text[COL_VALIDITY] = s;
 
     row = gtk_clist_append (clist, (gchar**)text);
@@ -216,14 +219,13 @@ set_row (GtkCList *clist, GpgmeKey key)
     gtk_clist_set_row_data_full (clist, row, key, destroy_key);
 }
 
-
 static void 
 fill_clist (struct select_keys_s *sk, const char *pattern)
 {
     GtkCList *clist;
-    GpgmeCtx ctx;
-    GpgmeError err;
-    GpgmeKey key;
+    gpgme_ctx_t ctx;
+    gpgme_error_t err;
+    gpgme_key_t key;
     int running=0;
 
     g_return_if_fail (sk);
@@ -247,6 +249,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
         debug_print ("** gpgme_op_keylist_start(%s) failed: %s",
                      pattern, gpgme_strerror (err));
         sk->select_ctx = NULL;
+        gpgme_release(ctx);
         return;
     }
     update_progress (sk, ++running, pattern);
@@ -258,9 +261,11 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
             gtk_main_iteration ();
     }
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
-    if (err != GPGME_EOF)
+    if (gpgme_err_code(err) != GPG_ERR_EOF) {
         debug_print ("** gpgme_op_keylist_next failed: %s",
                      gpgme_strerror (err));
+        gpgme_op_keylist_end(ctx);
+    }
     sk->select_ctx = NULL;
     gpgme_release (ctx);
     /*gtk_clist_thaw (select_keys.clist);*/
@@ -277,7 +282,6 @@ create_dialog (struct select_keys_s *sk)
     GtkWidget *clist;
     GtkWidget *label;
     GtkWidget *select_btn, *cancel_btn, *other_btn;
-    GtkWidget *showall_btn;
     const char *titles[N_COL_TITLES];
 
     g_assert (!sk->window);
@@ -287,9 +291,9 @@ create_dialog (struct select_keys_s *sk)
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     g_signal_connect (G_OBJECT (window), "delete_event",
-		      G_CALLBACK (delete_event_cb), sk);
+                      G_CALLBACK (delete_event_cb), sk);
     g_signal_connect (G_OBJECT (window), "key_press_event",
-		      G_CALLBACK (key_pressed_cb), sk);
+                      G_CALLBACK (key_pressed_cb), sk);
     MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
     vbox = gtk_vbox_new (FALSE, 8);
@@ -326,20 +330,13 @@ create_dialog (struct select_keys_s *sk)
     gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
     g_signal_connect (G_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
 		      "clicked",
-		      G_CALLBACK(sort_keys_name), sk);
+                      G_CALLBACK(sort_keys_name), sk);
     g_signal_connect (G_OBJECT(GTK_CLIST(clist)->column[COL_EMAIL].button),
 		      "clicked",
-		      G_CALLBACK(sort_keys_email), sk);
+                      G_CALLBACK(sort_keys_email), sk);
 
     hbox = gtk_hbox_new (FALSE, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-
-    showall_btn = gtk_button_new_with_label (_(" List all keys "));
-    gtk_widget_show (showall_btn);
-    gtk_box_pack_start (GTK_BOX (hbox), showall_btn, FALSE, FALSE, 0);
-
-    g_signal_connect(G_OBJECT (showall_btn), "clicked",
-                     G_CALLBACK(showall_btn_cb), sk);
 
     gtkut_stock_button_set_create (&bbox, 
                                    &select_btn, _("Select"),
@@ -349,11 +346,11 @@ create_dialog (struct select_keys_s *sk)
     gtk_widget_grab_default (select_btn);
 
     g_signal_connect (G_OBJECT (select_btn), "clicked",
-		      G_CALLBACK (select_btn_cb), sk);
+                      G_CALLBACK (select_btn_cb), sk);
     g_signal_connect (G_OBJECT(cancel_btn), "clicked",
-		      G_CALLBACK (cancel_btn_cb), sk);
+                      G_CALLBACK (cancel_btn_cb), sk);
     g_signal_connect (G_OBJECT (other_btn), "clicked",
-		      G_CALLBACK (other_btn_cb), sk);
+                      G_CALLBACK (other_btn_cb), sk);
 
     vbox2 = gtk_vbox_new (FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
@@ -400,7 +397,7 @@ delete_event_cb (GtkWidget *widget, GdkEventAny *event, gpointer data)
 }
 
 
-static gboolean 
+static gboolean
 key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     struct select_keys_s *sk = data;
@@ -410,7 +407,7 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
         sk->okay = 0;
         gtk_main_quit ();
     }
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -419,7 +416,8 @@ select_btn_cb (GtkWidget *widget, gpointer data)
 {
     struct select_keys_s *sk = data;
     int row;
-    GpgmeKey key;
+    gboolean use_key;
+    gpgme_key_t key;
 
     g_return_if_fail (sk);
     if (!sk->clist->selection) {
@@ -429,18 +427,20 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     row = GPOINTER_TO_INT(sk->clist->selection->data);
     key = gtk_clist_get_row_data(sk->clist, row);
     if (key) {
-        const char *s = gpgme_key_get_string_attr (key,
-                                                   GPGME_ATTR_FPR,
-                                                   NULL, 0 );
-        if ( gpgme_key_get_ulong_attr (key, GPGME_ATTR_VALIDITY, NULL, 0 )
-             < GPGME_VALIDITY_FULL ) {
-            debug_print ("** FIXME: we are faking the trust calculation");
+        if ( key->uids->validity < GPGME_VALIDITY_FULL ) {
+            use_key = use_untrusted(key);
+            if (!use_key) {
+                debug_print ("** Key untrusted, will not encrypt");
+                return;
+            }
         }
-        if (!gpgme_recipients_add_name_with_validity (sk->rset, s,
-                                                      GPGME_VALIDITY_FULL) ) {
+        sk->kset = g_realloc(sk->kset,
+                sizeof(gpgme_key_t) * (sk->num_keys + 1));
+        gpgme_key_ref(key);
+        sk->kset[sk->num_keys] = key;
+        sk->num_keys++;
             sk->okay = 1;
             gtk_main_quit ();
-        }
     }
 }
 
@@ -475,28 +475,35 @@ other_btn_cb (GtkWidget *widget, gpointer data)
     g_free (uid);
 }
 
-static void
-showall_btn_cb (GtkWidget *widget, gpointer data)
-{
-    struct select_keys_s *sk = data;
-    char *uid;
 
-    g_return_if_fail (sk);
-    uid = "";
-	
-    fill_clist (sk, uid);
-    update_progress (sk, 0, sk->pattern);
+static gboolean
+use_untrusted (gpgme_key_t key)
+{
+    AlertValue aval;
+
+    aval = alertpanel
+	    (_("Trust key"),
+	     _("The selected key is not fully trusted.\n"
+	       "If you choose to encrypt the message with this key you don't\n"
+	       "know for sure that it will go to the person you mean it to.\n"
+	       "Do you trust it enough to use it anyway?"),
+	     GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+    if (aval == G_ALERTDEFAULT)
+	return TRUE;
+    else
+	return FALSE;
 }
 
+
 static gint 
-cmp_attr (gconstpointer pa, gconstpointer pb, GpgmeAttr attr)
+cmp_name (GtkCList *clist, gconstpointer pa, gconstpointer pb)
 {
-    GpgmeKey a = ((GtkCListRow *)pa)->data;
-    GpgmeKey b = ((GtkCListRow *)pb)->data;
+    gpgme_key_t a = ((GtkCListRow *)pa)->data;
+    gpgme_key_t b = ((GtkCListRow *)pb)->data;
     const char *sa, *sb;
     
-    sa = a? gpgme_key_get_string_attr (a, attr, NULL, 0 ) : NULL;
-    sb = b? gpgme_key_get_string_attr (b, attr, NULL, 0 ) : NULL;
+    sa = a? a->uids->name : NULL;
+    sb = b? b->uids->name : NULL;
     if (!sa)
         return !!sb;
     if (!sb)
@@ -505,15 +512,19 @@ cmp_attr (gconstpointer pa, gconstpointer pb, GpgmeAttr attr)
 }
 
 static gint 
-cmp_name (GtkCList *clist, gconstpointer pa, gconstpointer pb)
-{
-    return cmp_attr (pa, pb, GPGME_ATTR_NAME);
-}
-
-static gint 
 cmp_email (GtkCList *clist, gconstpointer pa, gconstpointer pb)
 {
-    return cmp_attr (pa, pb, GPGME_ATTR_EMAIL);
+    gpgme_key_t a = ((GtkCListRow *)pa)->data;
+    gpgme_key_t b = ((GtkCListRow *)pb)->data;
+    const char *sa, *sb;
+    
+    sa = a? a->uids->email : NULL;
+    sb = b? b->uids->email : NULL;
+    if (!sa)
+        return !!sb;
+    if (!sb)
+        return -1;
+    return g_ascii_strcasecmp(sa, sb);
 }
 
 static void

@@ -28,6 +28,7 @@
 #include <gpgme.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <stdio.h>
 
 #include "sgpgme.h"
 #include "privacy.h"
@@ -38,62 +39,65 @@
 #include "prefs_gpg.h"
 #include "select-keys.h"
 
-static void idle_function_for_gpgme(void)
-{
-	while (gtk_events_pending())
-		gtk_main_iteration();
-}
-
 static void sgpgme_disable_all(void)
 {
     /* FIXME: set a flag, so that we don't bother the user with failed
      * gpgme messages */
 }
 
-GpgmeSigStat sgpgme_verify_signature(GpgmeCtx ctx, GpgmeData sig, 
-					GpgmeData plain)
+gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig, 
+					gpgme_data_t plain, gpgme_data_t dummy)
 {
-	GpgmeSigStat status;
+	gpgme_verify_result_t status = NULL;
+	gpgme_error_t err;
 
-	if (gpgme_op_verify(ctx, sig, plain, &status) != GPGME_No_Error)
-		return GPGME_SIG_STAT_ERROR;
+	if ((err = gpgme_op_verify(ctx, sig, plain, dummy)) != GPG_ERR_NO_ERROR) {
+		debug_print("op_verify err %s\n", gpgme_strerror(err));
+		return NULL;
+	}
+	status = gpgme_op_verify_result(ctx);
 
 	return status;
 }
 
-SignatureStatus sgpgme_sigstat_gpgme_to_privacy(GpgmeCtx ctx, GpgmeSigStat status)
+SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	unsigned long validity = 0;
+	gpgme_signature_t sig = NULL;
 	
-	validity = gpgme_get_sig_ulong_attr(ctx, 0,
-		GPGME_ATTR_VALIDITY, 0);
+	if (status == NULL)
+		return SIGNATURE_UNCHECKED;
 
-	switch (status) {
-	case GPGME_SIG_STAT_GOOD:
+	sig = status->signatures;
+
+	if (sig == NULL)
+		return SIGNATURE_UNCHECKED;
+
+	validity = sig->validity;
+
+	switch (gpg_err_code(sig->status)) {
+	case GPG_ERR_NO_ERROR:
 		if ((validity != GPGME_VALIDITY_MARGINAL) &&
 		    (validity != GPGME_VALIDITY_FULL) &&
 		    (validity != GPGME_VALIDITY_ULTIMATE))
 			return SIGNATURE_WARN;
 		return SIGNATURE_OK;
-	case GPGME_SIG_STAT_GOOD_EXP:
-	case GPGME_SIG_STAT_GOOD_EXPKEY:
-	case GPGME_SIG_STAT_DIFF:
+	case GPG_ERR_SIG_EXPIRED:
+	case GPG_ERR_KEY_EXPIRED:
 		return SIGNATURE_WARN;
-	case GPGME_SIG_STAT_BAD:
+	case GPG_ERR_BAD_SIGNATURE:
 		return SIGNATURE_INVALID;
-	case GPGME_SIG_STAT_NOKEY:
-	case GPGME_SIG_STAT_NOSIG:
-	case GPGME_SIG_STAT_ERROR:
+	case GPG_ERR_NO_PUBKEY:
 		return SIGNATURE_CHECK_FAILED;
-	case GPGME_SIG_STAT_NONE:
-		return SIGNATURE_UNCHECKED;
+	default:
+		return SIGNATURE_CHECK_FAILED;
 	}
 	return SIGNATURE_CHECK_FAILED;
 }
 
 static const gchar *get_validity_str(unsigned long validity)
 {
-	switch (validity) {
+	switch (gpg_err_code(validity)) {
 	case GPGME_VALIDITY_UNKNOWN:
 		return _("Unknown");
 	case GPGME_VALIDITY_UNDEFINED:
@@ -111,81 +115,81 @@ static const gchar *get_validity_str(unsigned long validity)
 	}
 }
 
-gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
+gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
-	switch (status) {
-	case GPGME_SIG_STAT_GOOD:
-	{
-		GpgmeKey key;
-		unsigned long validity = 0;
+	gpgme_signature_t sig = NULL;
 	
-        	if (gpgme_get_sig_key(ctx, 0, &key) != GPGME_No_Error)
-                	return g_strdup(_("Error"));
-
-		validity = gpgme_get_sig_ulong_attr(ctx, 0,
-			GPGME_ATTR_VALIDITY, 0);
-		
-		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
-			gpgme_key_get_string_attr(key, GPGME_ATTR_NAME, NULL, 0),
-			get_validity_str(validity));
+	if (status == NULL) {
+		return g_strdup(_("The signature has not been checked"));
 	}
-	case GPGME_SIG_STAT_GOOD_EXP:
+	sig = status->signatures;
+	if (sig == NULL) {
+		return g_strdup(_("The signature has not been checked"));
+	}
+
+	switch (gpg_err_code(sig->status)) {
+	case GPG_ERR_NO_ERROR:
+	{	gpgme_user_id_t user = NULL;
+		gpgme_key_t key;
+
+		gpgme_get_key(ctx, sig->fpr, &key, 0);
+
+		user = key->uids;
+
+		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
+			user->uid, get_validity_str(sig->validity));
+	}
+	case GPG_ERR_SIG_EXPIRED:
 		return g_strdup(_("The signature has expired"));
-	case GPGME_SIG_STAT_GOOD_EXPKEY:
+	case GPG_ERR_KEY_EXPIRED:
 		return g_strdup(_("The key that was used to sign this part has expired"));
-	case GPGME_SIG_STAT_DIFF:
-		return g_strdup(_("Not all signatures are valid"));
-	case GPGME_SIG_STAT_BAD:
+	case GPG_ERR_BAD_SIGNATURE:
 		return g_strdup(_("This signature is invalid"));
-	case GPGME_SIG_STAT_NOKEY:
+	case GPG_ERR_NO_PUBKEY:
 		return g_strdup(_("You have no key to verify this signature"));
-	case GPGME_SIG_STAT_NOSIG:
-		return g_strdup(_("No signature found"));
-	case GPGME_SIG_STAT_ERROR:
-		return g_strdup(_("An error occured"));
-	case GPGME_SIG_STAT_NONE:
+	default:
 		return g_strdup(_("The signature has not been checked"));
 	}
 	return g_strdup(_("Error"));
 }
 
-gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
+gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gint i = 0;
 	gchar *ret;
 	GString *siginfo;
-	GpgmeKey key;
+	gpgme_signature_t sig = status->signatures;
 	
 	siginfo = g_string_sized_new(64);
-	while (gpgme_get_sig_key(ctx, i, &key) != GPGME_EOF) {
-		time_t sigtime, expiretime;
-		GpgmeSigStat sigstatus;
-		gchar timestr[64];
+	while (sig) {
+		gpgme_user_id_t user = NULL;
+		gpgme_key_t key;
+
 		const gchar *keytype, *keyid, *uid;
 		
-		sigtime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_CREATED, 0);
-		strftime(timestr, 64, "%c", gmtime(&sigtime));
-		keytype = gpgme_key_get_string_attr(key, GPGME_ATTR_ALGO, NULL, 0);
-		keyid = gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0);
+		gpgme_get_key(ctx, sig->fpr, &key, 0);
+		user = key->uids;
+
+		keytype = gpgme_pubkey_algo_name(key->subkeys->pubkey_algo);
+		keyid = key->subkeys->keyid;
 		g_string_append_printf(siginfo,
-			_("Signature made %s using %s key ID %s\n"),
-			timestr, keytype, keyid);
+			_("Signature made using %s key ID %s\n"),
+			keytype, keyid);
 		
-		sigstatus = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_SIG_STATUS, 0);	
-		uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0);
-		switch (sigstatus) {
-		case GPGME_SIG_STAT_GOOD:
-		case GPGME_SIG_STAT_GOOD_EXPKEY:
+		uid = user->uid;
+		switch (gpg_err_code(sig->status)) {
+		case GPG_ERR_NO_ERROR:
+		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Good signature from \"%s\"\n"),
 				uid);
 			break;
-		case GPGME_SIG_STAT_GOOD_EXP:
+		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Expired signature from \"%s\"\n"),
 				uid);
 			break;
-		case GPGME_SIG_STAT_BAD:
+		case GPG_ERR_BAD_SIGNATURE:
 			g_string_append_printf(siginfo,
 				_("BAD signature from \"%s\"\n"),
 				uid);
@@ -193,35 +197,24 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 		default:
 			break;
 		}
-		if (sigstatus != GPGME_SIG_STAT_BAD) {
+		if (sig->status != GPG_ERR_BAD_SIGNATURE) {
 			gint j = 1;
-			
-			while ((uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) != 0) {
+			user = user->next;
+			while (user != NULL) {
 				g_string_append_printf(siginfo,
 					_("                aka \"%s\"\n"),
-					uid);
+					user->uid);
 				j++;
+				user = user->next;
 			}
 			g_string_append_printf(siginfo,
 				_("Primary key fingerprint: %s\n"), 
-				gpgme_key_get_string_attr(key, GPGME_ATTR_FPR, NULL, 0));
-		}
-
-		
-		expiretime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_EXPIRE, 0);
-		if (expiretime > 0) {
-			const gchar *format;
-
-			strftime(timestr, 64, "%c", gmtime(&expiretime));
-			if (time(NULL) < expiretime)
-				format = _("Signature expires %s\n");
-			else
-				format = _("Signature expired %s\n");
-			g_string_append_printf(siginfo, format, timestr);
+				sig->fpr);
 		}
 		
 		g_string_append(siginfo, "\n");
 		i++;
+		sig = sig->next;
 	}
 
 	ret = siginfo->str;
@@ -229,28 +222,46 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 	return ret;
 }
 
-GpgmeData sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
+gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 {
-	GpgmeData data;
+	gpgme_data_t data = NULL;
+	gpgme_error_t err;
+	FILE *fp = fopen(mimeinfo->data.filename, "rb");
+	gchar *tmp_file = NULL;
+
+	if (!fp) 
+		return NULL;
+
+	tmp_file = get_tmp_file();
+	copy_file_part(fp, mimeinfo->offset, mimeinfo->length, tmp_file);
+	fclose(fp);
+	fp = fopen(tmp_file, "rb");
+	debug_print("tmp file %s\n", tmp_file);
+	if (!fp) 
+		return NULL;
 	
-	gpgme_data_new_from_filepart(&data,
-		mimeinfo->data.filename,
-		NULL,
-		mimeinfo->offset,
-		mimeinfo->length);
-	
+	err = gpgme_data_new_from_file(&data, tmp_file, 1);
+	unlink(tmp_file);
+	g_free(tmp_file);
+
+	debug_print("data %p (%d %d)\n", data, mimeinfo->offset, mimeinfo->length);
+	if (err) {
+		debug_print ("gpgme_data_new_from_file failed: %s\n",
+                   gpgme_strerror (err));
+		return NULL;
+	}
 	return data;
 }
 
-GpgmeData sgpgme_decrypt_verify(GpgmeData cipher, GpgmeSigStat *status, GpgmeCtx ctx)
+gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *status, gpgme_ctx_t ctx)
 {
 	struct passphrase_cb_info_s info;
-	GpgmeData plain;
-	GpgmeError err;
+	gpgme_data_t plain;
+	gpgme_error_t err;
 
 	memset (&info, 0, sizeof info);
 	
-	if (gpgme_data_new(&plain) != GPGME_No_Error) {
+	if (gpgme_data_new(&plain) != GPG_ERR_NO_ERROR) {
 		gpgme_release(ctx);
 		return NULL;
 	}
@@ -260,51 +271,45 @@ GpgmeData sgpgme_decrypt_verify(GpgmeData cipher, GpgmeSigStat *status, GpgmeCtx
         	gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
     	}
 
-	err = gpgme_op_decrypt_verify(ctx, cipher, plain, status);
-
-	if (err != GPGME_No_Error) {
+	err = gpgme_op_decrypt_verify(ctx, cipher, plain);
+	if (err != GPG_ERR_NO_ERROR) {
+		debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
 		gpgmegtk_free_passphrase();
 		gpgme_data_release(plain);
 		return NULL;
 	}
+
+	err = gpgme_data_rewind(plain); /* why doesn't gpgme_data_seek() work here?! */
+/*	err = gpgme_data_seek(plain, 0, SEEK_SET);*/
+	if (err) {
+		debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+	}
+
+	debug_print("decrypted.\n");
+	*status = gpgme_op_verify_result (ctx);
 
 	return plain;
 }
 
 gchar *sgpgme_get_encrypt_data(GSList *recp_names)
 {
-
-	GpgmeRecipients recp;
-	GString *encdata;
-	void *iter;
-	const gchar *recipient;
-	gchar *data;
-
-	recp = gpgmegtk_recipient_selection(recp_names);
-	if (recp == NULL)
-		return NULL;
-
-	if (gpgme_recipients_enum_open(recp, &iter) != GPGME_No_Error) {
-		gpgme_recipients_release(recp);
-		return NULL;
+	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names);
+	gchar *ret = NULL;
+	int i = 0;
+	while (keys[i]) {
+		gpgme_subkey_t skey = keys[i]->subkeys;
+		gchar *fpr = skey->fpr;
+		gchar *tmp = NULL;
+		debug_print("adding %s\n", fpr);
+		tmp = g_strconcat(ret?ret:"", fpr, " ", NULL);
+		g_free(ret);
+		ret = tmp;
+		i++;
 	}
-
-	encdata = g_string_sized_new(64);
-	while ((recipient = gpgme_recipients_enum_read(recp, &iter)) != NULL) {
-		if (encdata->len > 0)
-			g_string_append_c(encdata, ' ');
-		g_string_append(encdata, recipient);
-	}
-
-	gpgme_recipients_release(recp);
-
-	data = encdata->str;
-	g_string_free(encdata, FALSE);
-
-	return data;
+	return ret;
 }
 
-gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account)
+gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 {
 	GPGAccountConfig *config;
 
@@ -314,7 +319,7 @@ gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account)
 
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
 		gchar *keyid;
-		GpgmeKey key;
+		gpgme_key_t key;
 
 		if (config->sign_key == SIGN_KEY_BY_FROM)
 			keyid = account->address;
@@ -325,8 +330,6 @@ gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account)
 
 		gpgme_op_keylist_start(ctx, keyid, 1);
 		while (!gpgme_op_keylist_next(ctx, &key)) {
-			debug_print("adding key: %s\n", 
-				gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0));
 			gpgme_signers_add(ctx, key);
 			gpgme_key_release(key);
 		}
@@ -340,11 +343,20 @@ gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account)
 
 void sgpgme_init()
 {
-	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
-			GPGME_No_Error) {  /* Also does some gpgme init */
+	gpgme_engine_info_t engineInfo;
+	if (gpgme_check_version("0.4.5")) {
+		gpgme_set_locale(NULL, LC_CTYPE, setlocale(LC_CTYPE, NULL));
+		gpgme_set_locale(NULL, LC_MESSAGES, setlocale(LC_MESSAGES, NULL));
+		if (!gpgme_get_engine_info(&engineInfo)) {
+			while (engineInfo) {
+				debug_print("GpgME Protocol: %s\n      Version: %s\n",
+					gpgme_get_protocol_name(engineInfo->protocol),
+					engineInfo->version);
+				engineInfo = engineInfo->next;
+			}
+		}
+	} else {
 		sgpgme_disable_all();
-		debug_print("gpgme_engine_version:\n%s\n",
-			    gpgme_get_engine_info());
 
 		if (prefs_gpg_get_config()->gpg_warning) {
 			AlertValue val;
@@ -359,14 +371,11 @@ void sgpgme_init()
 				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}
 	}
-
-	gpgme_register_idle(idle_function_for_gpgme);
 }
 
 void sgpgme_done()
 {
         gpgmegtk_free_passphrase();
-	gpgme_register_idle(NULL);
 }
 
 #endif /* USE_GPGME */
