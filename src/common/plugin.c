@@ -35,6 +35,7 @@ struct _Plugin
 	const gchar *(*name) (void);
 	const gchar *(*desc) (void);
 	const gchar *(*type) (void);
+	GSList *rdeps;
 };
 
 /**
@@ -53,7 +54,6 @@ static gint list_find_by_plugin_filename(const Plugin *plugin, const gchar *file
         g_return_val_if_fail(plugin, 1);
         g_return_val_if_fail(plugin->filename, 1);
         g_return_val_if_fail(filename, 1);
-        
         return strcmp(filename, plugin->filename);
 }
 
@@ -90,14 +90,103 @@ void plugin_save_list(void)
 	}
 }
 
+static gboolean plugin_is_loaded(const gchar *filename)
+{
+	return (g_slist_find_custom(plugins, filename, 
+                  (GCompareFunc)list_find_by_plugin_filename) != NULL);
+}
+
+static Plugin *plugin_get_by_filename(const gchar *filename)
+{
+	GSList *cur = plugins;
+	for(; cur; cur = cur->next) {
+		Plugin *p = (Plugin *)cur->data;
+		if (!strcmp(p->filename, filename)) {
+			return p;
+		} 
+	}
+	return NULL;
+}
+
+/** 
+ * Loads a plugin dependancies
+ * 
+ * Plugin dependancies are, optionnaly, listed in a file in
+ * PLUGINDIR/$pluginname.deps.
+ * \param filename The filename of the plugin for which we have to load deps
+ * \param error The location where an error string can be stored
+ * \return 0 on success, -1 otherwise
+ */
+static gint plugin_load_deps(const gchar *filename, gchar **error)
+{
+	gchar *tmp = g_strdup(filename);
+	gchar *deps_file = NULL;
+	FILE *fp = NULL;
+	gchar buf[BUFFSIZE];
+	
+	*strrchr(tmp, '.') = '\0';
+	deps_file = g_strconcat(tmp, ".deps", NULL);
+	g_free(tmp);
+	
+	fp = fopen(deps_file, "rb");
+	g_free(deps_file);
+	
+	if (!fp)
+		return 0;
+	
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		Plugin *dep_plugin = NULL;
+		gchar *path = NULL;
+		buf[strlen(buf)-1]='\0'; /* chop off \n */
+		path = g_strconcat(PLUGINDIR, buf,
+				".", G_MODULE_SUFFIX, NULL);
+		if ((dep_plugin = plugin_get_by_filename(path)) == NULL) {
+			debug_print("trying to load %s\n", path);
+			dep_plugin = plugin_load(path, error);
+			if (dep_plugin == NULL) {
+				g_free(path);
+				return -1;
+			}
+		}
+		if (!g_slist_find_custom(dep_plugin->rdeps, 
+				(gpointer) filename, list_find_by_string)) {
+			debug_print("adding %s to %s rdeps\n",
+				filename,
+				dep_plugin->filename);
+			dep_plugin->rdeps = 
+				g_slist_append(dep_plugin->rdeps, 
+					g_strdup(filename));
+		}
+	}
+	fclose(fp);
+	return 0;
+}
+
+static void plugin_unload_rdeps(Plugin *plugin)
+{
+	GSList *cur = plugin->rdeps;
+	debug_print("removing %s rdeps\n", plugin->filename);
+	while (cur) {
+		gchar *file = (gchar *)cur->data;
+		Plugin *rdep_plugin = file?plugin_get_by_filename(file):NULL;
+		debug_print(" rdep %s: %p\n", file, rdep_plugin);
+		if (rdep_plugin) {
+			plugin_unload(rdep_plugin);
+		}
+		g_free(file);
+		cur = cur->next;
+	}
+	g_slist_free(plugin->rdeps);
+	plugin->rdeps = NULL;
+}
 /**
  * Loads a plugin
  *
  * \param filename The filename of the plugin to load
  * \param error The location where an error string can be stored
- * \return 0 on success, -1 otherwise
+ * \return the plugin on success, NULL otherwise
  */
-gint plugin_load(const gchar *filename, gchar **error)
+Plugin *plugin_load(const gchar *filename, gchar **error)
 {
 	Plugin *plugin;
 	gint (*plugin_init) (gchar **error);
@@ -105,27 +194,28 @@ gint plugin_load(const gchar *filename, gchar **error)
 	const gchar *(*plugin_type)(void);
 	gint ok;
 
-	g_return_val_if_fail(filename != NULL, -1);
-	g_return_val_if_fail(error != NULL, -1);
+	g_return_val_if_fail(filename != NULL, NULL);
+	g_return_val_if_fail(error != NULL, NULL);
 
         /* check duplicate plugin path name */
-        if (g_slist_find_custom(plugins, filename, 
-                                (GCompareFunc)list_find_by_plugin_filename)) {
+        if (plugin_is_loaded(filename)) {
                 *error = g_strdup(_("Plugin already loaded"));
-                return -1;                
+                return NULL;                
         }                               
 	
+	if (plugin_load_deps(filename, error) < 0)
+		return NULL;
 	plugin = g_new0(Plugin, 1);
 	if (plugin == NULL) {
 		*error = g_strdup(_("Failed to allocate memory for Plugin"));
-		return -1;
+		return NULL;
 	}
 
 	plugin->module = g_module_open(filename, 0);
 	if (plugin->module == NULL) {
 		*error = g_strdup(g_module_error());
 		g_free(plugin);
-		return -1;
+		return NULL;
 	}
 
 	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
@@ -135,20 +225,20 @@ gint plugin_load(const gchar *filename, gchar **error)
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
 		g_free(plugin);
-		return -1;
+		return NULL;
 	}
 	
 	if (!strcmp(plugin_type(), "GTK")) {
 		*error = g_strdup(_("This module is for Sylpheed-Claws GTK1."));
 		g_module_close(plugin->module);
 		g_free(plugin);
-		return -1;
+		return NULL;
 	}
 
 	if ((ok = plugin_init(error)) < 0) {
 		g_module_close(plugin->module);
 		g_free(plugin);
-		return ok;
+		return NULL;
 	}
 
 	plugin->name = plugin_name;
@@ -160,12 +250,14 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 	debug_print("Plugin %s (from file %s) loaded\n", plugin->name(), filename);
 
-	return 0;
+	return plugin;
 }
 
 void plugin_unload(Plugin *plugin)
 {
 	void (*plugin_done) (void);
+
+	plugin_unload_rdeps(plugin);
 
 	if (g_module_symbol(plugin->module, "plugin_done", (gpointer *)&plugin_done)) {
 		plugin_done();
@@ -200,7 +292,7 @@ void plugin_load_all(const gchar *type)
 			break;
 
 		g_strstrip(buf);
-		if ((buf[0] != '\0') && (plugin_load(buf, &error) < 0)) {
+		if ((buf[0] != '\0') && (plugin_load(buf, &error) == NULL)) {
 			g_warning("plugin loading error: %s\n", error);
 			g_free(error);
 		}							

@@ -31,7 +31,7 @@ const gchar *plugin_name	(void);
 const gchar *plugin_desc	(void);
 
 /* Functions by the sylpheed plugin system */
-gint plugin_load		(const gchar	 *filename,
+Plugin *plugin_load		(const gchar	 *filename,
 				 gchar		**error);
 void plugin_unload		(Plugin		 *plugin);
 void plugin_load_all		(const gchar	 *type);

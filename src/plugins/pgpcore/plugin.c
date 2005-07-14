@@ -27,7 +27,8 @@
 
 #include "version.h"
 #include "common/sylpheed.h"
-#include "pgpmime.h"
+#include "sgpgme.h"
+#include "prefs_gpg.h"
 
 gint plugin_init(gchar **error)
 {
@@ -41,29 +42,27 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	pgpmime_init();
+	sgpgme_init();
+	prefs_gpg_init();
 
 	return 0;	
 }
 
 void plugin_done(void)
 {
-	pgpmime_done();
+	prefs_gpg_done();
+	sgpgme_done();
 }
 
 const gchar *plugin_name(void)
 {
-	return _("PGP/MIME");
+	return _("PGP/Core");
 }
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin handles PGP/MIME signed and/or encrypted "
-		 "mails. You can decrypt mails, verify signatures or "
-                 "sign and encrypt your own mails.\n"
-		 "\n"
-		 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
-		 "\n"
+	return _("This plugin handles PGP core operations. It is used by other\n"
+		 "plugins, like PGP/Mime.\n\n"
 		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n");
 }
 

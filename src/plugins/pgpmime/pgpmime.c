@@ -31,11 +31,13 @@
 #include "utils.h"
 #include "privacy.h"
 #include "procmime.h"
+
 #include "pgpmime.h"
-#include "sgpgme.h"
+#include <plugins/pgpcore/sgpgme.h>
+#include <plugins/pgpcore/prefs_gpg.h>
+#include <plugins/pgpcore/passphrase.h>
+
 #include "prefs_common.h"
-#include "prefs_gpg.h"
-#include "passphrase.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 

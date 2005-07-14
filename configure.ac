@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=48
+EXTRA_VERSION=49
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -548,7 +548,19 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
-dnl --- PGP/MIME ---
+dnl --- PGP/CORE ---
+AC_ARG_ENABLE(pgpcore-plugin,
+	[  --disable-pgpcore-plugin           Do not build PGP/Core plugin],
+	[ac_cv_enable_pgpcore_plugin=$enableval], [ac_cv_enable_pgpcore_plugin=yes])
+if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
+	AM_PATH_GPGME(0.4.5, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+		      [ac_cv_enable_pgpcore_plugin=no])
+	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
+		PLUGINS="pgpcore $PLUGINS"
+	fi
+fi
+AM_CONDITIONAL(BUILD_PGPCORE_PLUGIN, test x"$ac_cv_enable_pgpcore_plugin" = xyes)
+
 AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
@@ -669,6 +681,7 @@ src/plugins/dillo_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
+src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 doc/Makefile
 doc/faq/Makefile

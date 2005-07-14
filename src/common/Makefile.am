@@ -1,3 +1,4 @@
+PLUGINDIR = $(pkglibdir)/plugins/
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
@@ -62,7 +63,8 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\"
+	-DLOCALEDIR=\""$(localedir)"\" \
+	-DPLUGINDIR=\"$(PLUGINDIR)\" 
 
 libsylpheedcommon_la_LIBADD = \
 	$(GLIB_LIBS) \

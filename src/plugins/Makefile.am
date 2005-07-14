@@ -22,8 +22,11 @@ if BUILD_CLAMAV_PLUGIN
 clamav_dir = clamav
 endif
 
+if BUILD_PGPCORE_PLUGIN
+pgpcore_dir = pgpcore
 if BUILD_PGPMIME_PLUGIN
 pgpmime_dir = pgpmime
+endif
 endif
 
 SUBDIRS = $(demo_dir) \
@@ -32,4 +35,5 @@ SUBDIRS = $(demo_dir) \
 	$(dillo_viewer_dir) \
 	$(trayicon_dir) \
 	$(clamav_dir) \
+	$(pgpcore_dir) \
 	$(pgpmime_dir)
