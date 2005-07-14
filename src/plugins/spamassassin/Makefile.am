@@ -2,7 +2,6 @@ plugindir = $(pkglibdir)/plugins
 plugin_DATA=spamassassin_gtk.deps
 
 plugin_LTLIBRARIES = spamassassin.la spamassassin_gtk.la
-EXTRA_DIST=spamassassin_gtk.deps
 
 spamassassin_la_SOURCES = \
 	spamassassin.c spamassassin.h \
@@ -33,4 +32,4 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS)
 
 EXTRA_DIST = \
-	README
+	README spamassassin_gtk.deps

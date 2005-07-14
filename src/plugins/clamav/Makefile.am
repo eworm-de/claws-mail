@@ -2,7 +2,6 @@ plugindir = $(pkglibdir)/plugins
 plugin_DATA=clamav_plugin_gtk.deps
 
 plugin_LTLIBRARIES = clamav_plugin.la clamav_plugin_gtk.la
-EXTRA_DIST=clamav_plugin_gtk.deps
 
 clamav_plugin_la_SOURCES = \
 	clamav_plugin.c clamav_plugin.h
@@ -30,4 +29,4 @@ AM_CPPFLAGS = \
 	$(GTK_CFLAGS)
 
 EXTRA_DIST = \
-	README
+	README clamav_plugin_gtk.deps
