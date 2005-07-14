@@ -14,6 +14,7 @@
 
 #include <gtk/gtk.h>
 #include "etpan-thread-manager.h"
+#include "utils.h"
 
 static struct etpan_thread_manager * thread_manager = NULL;
 static chash * courier_workaround_hash = NULL;
@@ -41,10 +42,10 @@ void imap_main_init(void)
 	
 	mailstream_network_delay.tv_sec = ETPAN_DEFAULT_NETWORK_TIMEOUT;
 	mailstream_network_delay.tv_usec = 0;
-
-#if 0
-	mailstream_debug = 1;
-#endif
+	
+	if (debug_get_mode())
+		mailstream_debug = 1;
+	
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	courier_workaround_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);

@@ -1,3 +1,8 @@
+2005-07-14 [hoa]	1.9.12cvs50
+
+	* src/etpan/imap-thread.c
+		enable debug log of libetpan when running with --debug
+
 2005-07-14 [colin]	1.9.12cvs49
 
 	* configure.ac
