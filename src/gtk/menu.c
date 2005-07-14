@@ -228,7 +228,7 @@ void menu_connect_identical_items(void)
 		{"<Main>/Message/Re-edit",			"<SummaryView>/Re-edit"},
 		{"<Main>/Message/Move...",			"<SummaryView>/Move..."},
 		{"<Main>/Message/Copy...",			"<SummaryView>/Copy..."},
-		{"<Main>/Message/Delete",			"<SummaryView>/Delete"},
+		{"<Main>/Message/Delete...",			"<SummaryView>/Delete..."},
 		{"<Main>/Message/Cancel a news message",	"<SummaryView>/Cancel a news message"},
 		{"<Main>/Message/Mark/Mark",			"<SummaryView>/Mark/Mark"},
 		{"<Main>/Message/Mark/Unmark",			"<SummaryView>/Mark/Unmark"},

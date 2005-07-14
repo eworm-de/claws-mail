@@ -196,10 +196,10 @@ struct _Compose
 	gchar *sig_str;
 
 	/* external editor */
-	gchar *exteditor_file;
-	pid_t  exteditor_pid;
-	gint   exteditor_readdes;
-	gint   exteditor_tag;
+	gchar      *exteditor_file;
+	pid_t       exteditor_pid;
+	GIOChannel *exteditor_ch;
+	gint        exteditor_tag;
 
 #if USE_ASPELL
         /* GNU/aspell spell checker */

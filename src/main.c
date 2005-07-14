@@ -90,6 +90,7 @@
 #include "news_gtk.h"
 #include "matcher.h"
 #include "imap-thread.h"
+#include "stock_pixmap.h"
 
 #if USE_OPENSSL
 #  include "ssl.h"
@@ -228,6 +229,7 @@ int main(int argc, char *argv[])
 	gchar *userrc;
 	MainWindow *mainwin;
 	FolderView *folderview;
+	GdkPixbuf *icon;
 
 	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
@@ -344,6 +346,8 @@ int main(int argc, char *argv[])
 	renderer_read_config();
 
 	gtkut_widget_init();
+	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_SYLPHEED_ICON, &icon);
+	gtk_window_set_default_icon(icon);
 
 	folderview_initialize();
 	mh_gtk_init();

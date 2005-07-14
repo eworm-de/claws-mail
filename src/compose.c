@@ -298,14 +298,14 @@ static gboolean attach_property_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gboolean	*cancelled);
 
-static void compose_exec_ext_editor		(Compose	   *compose);
-static gint compose_exec_ext_editor_real	(const gchar	   *file);
-static gboolean compose_ext_editor_kill		(Compose	   *compose);
-static void compose_input_cb			(gpointer	    data,
-						 gint		    source,
-						 GdkInputCondition  condition);
-static void compose_set_ext_editor_sensitive	(Compose	   *compose,
-						 gboolean	    sensitive);
+static void compose_exec_ext_editor		(Compose	*compose);
+static gint compose_exec_ext_editor_real	(const gchar	*file);
+static gboolean compose_ext_editor_kill		(Compose	*compose);
+static gboolean compose_input_cb		(GIOChannel	*source,
+						 GIOCondition	 condition,
+						 gpointer	 data);
+static void compose_set_ext_editor_sensitive	(Compose	*compose,
+						 gboolean	 sensitive);
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
@@ -2295,12 +2295,14 @@ static gchar *compose_get_signature_str(Compose *compose)
 		sig_str = g_strconcat("\n\n", sig_body, NULL);
 
 	if (sig_str) {
-		if (!g_utf8_validate(sig_str,1, NULL)) {
-			utf8_sig_str = conv_codeset_strdup
-				(sig_str, conv_get_locale_charset_str(), CS_INTERNAL);
-			g_free(sig_str);
-		} else
+		if (g_utf8_validate(sig_str, -1, NULL) == TRUE)
 			utf8_sig_str = sig_str;
+		else {
+			utf8_sig_str = conv_codeset_strdup
+				(sig_str, conv_get_locale_charset_str(),
+				 CS_INTERNAL);
+			g_free(sig_str);
+		}
 	}
 
 	return utf8_sig_str;
@@ -2343,7 +2345,11 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *str;
 
-		str = conv_codeset_strdup(buf, cur_encoding, CS_INTERNAL);
+		if (g_utf8_validate(buf, -1, NULL) == TRUE)
+			str = g_strdup(buf);
+		else
+			str = conv_codeset_strdup
+				(buf, cur_encoding, CS_INTERNAL);
 		if (!str) continue;
 
 		/* strip <CR> if DOS/Windows file,
@@ -2731,6 +2737,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	gboolean can_break = FALSE;
 	gboolean do_break = FALSE;
 	gboolean was_white = FALSE;
+	gboolean prev_hyphen = FALSE;
 
 	gtk_text_iter_forward_to_line_end(&line_end);
 	str = gtk_text_buffer_get_text(buffer, &iter, &line_end, FALSE);
@@ -2764,7 +2771,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		gunichar wc;
 		gint uri_len;
 
-		if (attr->is_line_break && can_break && was_white)
+		if (attr->is_line_break && can_break && was_white && !prev_hyphen)
 			pos = i;
 		
 		was_white = attr->is_white;
@@ -2783,9 +2790,11 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		}
 
 		wc = g_utf8_get_char(p);
-		if (g_unichar_iswide(wc))
+		if (g_unichar_iswide(wc)) {
 			col += 2;
-		else if (*p == '\t')
+			if (prev_hyphen && can_break && attr->is_line_break)
+				pos = i;
+		} else if (*p == '\t')
 			col += 8;
 		else
 			col++;
@@ -2793,6 +2802,11 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 			do_break = TRUE;
 			break;
 		}
+
+		if (*p == '-')
+			prev_hyphen = TRUE;
+		else
+			prev_hyphen = FALSE;
 
 		p = g_utf8_next_char(p);
 		can_break = TRUE;
@@ -5069,7 +5083,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
-	compose->exteditor_readdes = -1;
 	compose->exteditor_tag     = -1;
 	compose->draft_timeout_tag = -1;
 
@@ -5983,13 +5996,14 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		compose->exteditor_file    = g_strdup(tmp);
 		compose->exteditor_pid     = pid;
-		compose->exteditor_readdes = pipe_fds[0];
 
 		compose_set_ext_editor_sensitive(compose, FALSE);
 
-		compose->exteditor_tag =
-			gdk_input_add(pipe_fds[0], GDK_INPUT_READ,
-				      compose_input_cb, compose);
+		compose->exteditor_ch = g_io_channel_unix_new(pipe_fds[0]);
+		compose->exteditor_tag = g_io_add_watch(compose->exteditor_ch,
+							G_IO_IN,
+							compose_input_cb,
+							compose);
 	} else {	/* process-monitoring process */
 		pid_t pid_ed;
 
@@ -6083,8 +6097,10 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 		g_free(msg);
 
 		if (val == G_ALERTDEFAULT) {
-			gdk_input_remove(compose->exteditor_tag);
-			close(compose->exteditor_readdes);
+			g_source_remove(compose->exteditor_tag);
+			g_io_channel_shutdown(compose->exteditor_ch,
+					      FALSE, NULL);
+			g_io_channel_unref(compose->exteditor_ch);
 
 			if (kill(pgid, SIGTERM) < 0) perror("kill");
 			waitpid(compose->exteditor_pid, NULL, 0);
@@ -6098,7 +6114,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			g_free(compose->exteditor_file);
 			compose->exteditor_file    = NULL;
 			compose->exteditor_pid     = -1;
-			compose->exteditor_readdes = -1;
+			compose->exteditor_ch      = NULL;
 			compose->exteditor_tag     = -1;
 		} else
 			return FALSE;
@@ -6107,30 +6123,19 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 	return TRUE;
 }
 
-static void compose_input_cb(gpointer data, gint source,
-			     GdkInputCondition condition)
+static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
+				 gpointer data)
 {
-	gchar buf[3];
+	gchar buf[3] = "3";
 	Compose *compose = (Compose *)data;
-	gint i = 0;
+	gsize bytes_read;
 
-	debug_print("Compose: input from monitoring process\n");
+	debug_print(_("Compose: input from monitoring process\n"));
 
-	gdk_input_remove(compose->exteditor_tag);
+	g_io_channel_read_chars(source, buf, sizeof(buf), &bytes_read, NULL);
 
-	for (;;) {
-		if (read(source, &buf[i], 1) < 1) {
-			buf[0] = '3';
-			break;
-		}
-		if (buf[i] == '\n') {
-			buf[i] = '\0';
-			break;
-		}
-		i++;
-		if (i == sizeof(buf) - 1)
-			break;
-	}
+	g_io_channel_shutdown(source, FALSE, NULL);
+	g_io_channel_unref(source);
 
 	waitpid(compose->exteditor_pid, NULL, 0);
 
@@ -6154,15 +6159,15 @@ static void compose_input_cb(gpointer data, gint source,
 		g_warning("Pipe read failed\n");
 	}
 
-	close(source);
-
 	compose_set_ext_editor_sensitive(compose, TRUE);
 
 	g_free(compose->exteditor_file);
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
-	compose->exteditor_readdes = -1;
+	compose->exteditor_ch      = NULL;
 	compose->exteditor_tag     = -1;
+
+	return FALSE;
 }
 
 static void compose_set_ext_editor_sensitive(Compose *compose,
@@ -6662,7 +6667,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	msg = g_strdup_printf(_("Do you want to apply the template `%s' ?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
-			 _("Replace"), _("Insert"), GTK_STOCK_CANCEL);
+			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL);
 	g_free(msg);
 
 	if (val == G_ALERTDEFAULT)

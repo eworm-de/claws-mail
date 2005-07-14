@@ -1,3 +1,29 @@
+2005-07-14 [paul]	1.9.12cvs47
+
+	* src/account.c
+	* src/addressbook.c
+		add accelerators for the buttons (sync with main)
+	* src/compose.c
+	* src/compose.h
+		add accelerators for the buttons.
+		fix editing with external editor.
+		replace gdk_input_*() with GIOChannel;
+		(sync with main)
+	* src/foldersel.c
+		display folder names with new/unread
+		representation (sync with main)
+	* src/main.c
+		specify default window icon (sync with main)
+	* src/prefs_common.c
+		use_addr_book default to FALSE
+	* src/summaryview.c
+	* src/textview.c
+		add accelerators for the buttons (sync with main)
+	* src/gtk/menu.c
+		fix typos
+	* src/pixmaps/sylpheed_icon.xpm
+		updated
+
 2005-07-13 [paul]	1.9.12cvs46
 
 	* src/plugins/pgpmime/pgpmime.c

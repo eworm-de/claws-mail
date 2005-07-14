@@ -1291,7 +1291,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
  			case NEXTUNREADMSGDIALOG_ALWAYS:
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
-						   "Search from the end?"),
+						   "_Search from the end?"),
 						 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
@@ -1384,7 +1384,7 @@ void summary_select_prev_new(SummaryView *summaryview)
 
 		val = alertpanel(_("No more new messages"),
 				 _("No new message found. "
-				   "Search from the end?"),
+				   "_Search from the end?"),
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
@@ -1409,7 +1409,7 @@ void summary_select_next_new(SummaryView *summaryview)
 		val = alertpanel(_("No more new messages"),
 				 _("No new message found. "
 				   "Go to next folder?"),
-				 GTK_STOCK_YES, _("Search again"),
+				 GTK_STOCK_YES, _("_Search again"),
 				 GTK_STOCK_NO);
 		if (val == G_ALERTDEFAULT) {
 			g_signal_stop_emission_by_name(G_OBJECT(ctree),"key_press_event");
@@ -1437,7 +1437,7 @@ void summary_select_prev_marked(SummaryView *summaryview)
 
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
-				   "Search from the end?"),
+				   "_Search from the end?"),
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
@@ -1462,7 +1462,7 @@ void summary_select_next_marked(SummaryView *summaryview)
 
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
-				   "Search from the beginning?"),
+				   "_Search from the beginning?"),
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_next_flagged_msg(summaryview, NULL,
@@ -1487,7 +1487,7 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
-				   "Search from the end?"),
+				   "_Search from the end?"),
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
@@ -1512,7 +1512,7 @@ void summary_select_next_labeled(SummaryView *summaryview)
 
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
-				   "Search from the beginning?"),
+				   "_Search from the beginning?"),
 				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_next_flagged_msg(summaryview, NULL,
