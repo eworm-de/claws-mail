@@ -315,11 +315,10 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 {
 	StockPixmapData *pix_d;
 
-	g_return_val_if_fail(window != NULL, -1);
-	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
-
-	if (pixbuf) 
+	if (pixbuf)
 		*pixbuf = NULL;
+		
+	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
 
 	pix_d = &pixmaps[icon];
 
