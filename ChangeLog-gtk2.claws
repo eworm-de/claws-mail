@@ -1,3 +1,8 @@
+2005-07-15 [paul]	1.9.12cvs56
+
+	* src/gtk/pluginwindow.c
+		sort plugin list alphabetically
+
 2005-07-15 [paul]	1.9.12cvs55
 
 	* src/prefs_spelling.c

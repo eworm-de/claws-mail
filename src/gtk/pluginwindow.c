@@ -82,6 +82,8 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
 				(pluginwindow->plugin_list_view)));
+ 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
+                                             0, GTK_SORT_ASCENDING);
 	gtk_list_store_clear(store);
 	
 	textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pluginwindow->plugin_desc));
