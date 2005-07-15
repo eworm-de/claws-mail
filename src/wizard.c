@@ -131,7 +131,7 @@ static void wizard_write_config(WizardWindow *wizard)
 #ifdef USE_OPENSSL			
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
 		prefs_account->ssl_smtp = SSL_TUNNEL;
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl))) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl))) {
 		if (prefs_account->protocol == A_IMAP4)
 			prefs_account->ssl_imap = SSL_TUNNEL;
 		else
