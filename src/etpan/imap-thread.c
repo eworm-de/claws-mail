@@ -434,6 +434,7 @@ static void login_run(struct etpan_thread_op * op)
 	
 #ifdef DISABLE_LOG_DURING_LOGIN
 	old_debug = mailstream_debug;
+	mailstream_debug = 0;
 #endif
 	
 	r = mailimap_login(param->imap,
