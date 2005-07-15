@@ -1,3 +1,9 @@
+2005-07-15 [paul]	1.9.12cvs58
+
+	* src/account.c
+		don't automatically sort
+		do allow drag n drop
+
 2005-07-15 [paul]	1.9.12cvs57
 
 	* src/account.c
