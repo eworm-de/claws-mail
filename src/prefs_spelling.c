@@ -359,7 +359,7 @@ void prefs_spelling_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Compose");
-	path[1] = _("Spell Checker");
+	path[1] = _("Spell Checking");
 	path[2] = NULL;
 
 	page = g_new0(SpellingPage, 1);

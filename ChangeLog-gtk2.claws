@@ -1,3 +1,9 @@
+2005-07-15 [paul]	1.9.12cvs55
+
+	* src/prefs_spelling.c
+	* src/prefs_wrapping.c
+		unify English usage
+
 2005-07-15 [colin]	1.9.12cvs54
 
 	* src/wizard.c

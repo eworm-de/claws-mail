@@ -153,7 +153,7 @@ void prefs_wrapping_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Compose");
-	path[1] = _("Message Wrapping");
+	path[1] = _("Wrapping");
 	path[2] = NULL;
 
 	page = g_new0(WrappingPage, 1);
