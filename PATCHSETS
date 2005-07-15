@@ -647,3 +647,4 @@
 ( cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/etpan/imap-thread.c;  ) > 1.9.12cvs50.patchset
 ( cvs diff -u -r 1.4 -r 1.5 src/plugins/clamav/Makefile.am;  diff -u /dev/null src/plugins/clamav/clamav_plugin_gtk.deps;  cvs diff -u -r 1.5 -r 1.6 src/plugins/spamassassin/Makefile.am;  diff -u /dev/null src/plugins/spamassassin/spamassassin_gtk.deps;  ) > 1.9.12cvs51.patchset
 ( cvs diff -u -r 1.5.2.1 -r 1.5.2.2 src/plugins/spamassassin/Makefile.am;  cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/clamav/Makefile.am;  ) > 1.9.12cvs52.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_message.c;  ) > 1.9.12cvs53.patchset

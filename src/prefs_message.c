@@ -50,7 +50,6 @@ typedef struct _MessagePage
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
 	GtkWidget *chkbtn_html;
-	GtkWidget *chkbtn_cursor;
 	GtkWidget *spinbtn_linespc;
 
 	GtkWidget *chkbtn_smoothscroll;
@@ -74,7 +73,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *chkbtn_disphdr;
 	GtkWidget *button_edit_disphdr;
 	GtkWidget *chkbtn_html;
-	GtkWidget *chkbtn_cursor;
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
@@ -128,9 +126,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_html,
 			  _("Render HTML messages as text"));
-
-	PACK_CHECK_BUTTON(vbox2, chkbtn_cursor,
-			  _("Display cursor in message view"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -215,8 +210,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.display_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_html),
 		prefs_common.render_html);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_cursor),
-		prefs_common.textview_cursor_visible);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_smoothscroll),
 		prefs_common.enable_smooth_scroll);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_halfpage),
@@ -233,7 +226,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->chkbtn_disphdrpane = chkbtn_disphdrpane;
 	prefs_message->chkbtn_disphdr = chkbtn_disphdr;
 	prefs_message->chkbtn_html = chkbtn_html;
-	prefs_message->chkbtn_cursor = chkbtn_cursor;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
 	prefs_message->chkbtn_smoothscroll = chkbtn_smoothscroll;
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
@@ -255,8 +247,6 @@ void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdr));
 	prefs_common.render_html = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_html));
-	prefs_common.textview_cursor_visible = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_cursor));
 	prefs_common.enable_smooth_scroll = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_smoothscroll));
 	prefs_common.scroll_halfpage = gtk_toggle_button_get_active(
