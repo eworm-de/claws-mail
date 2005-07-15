@@ -120,6 +120,8 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
+ 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model),
+                                             0, GTK_SORT_ASCENDING);
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
 	
 	selector = gtk_tree_view_get_selection(list_view);

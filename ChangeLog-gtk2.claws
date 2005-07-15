@@ -1,3 +1,9 @@
+2005-07-15 [paul]	1.9.12cvs57
+
+	* src/account.c
+	* src/ssl_manager.c
+		alphabetical listing
+
 2005-07-15 [paul]	1.9.12cvs56
 
 	* src/gtk/pluginwindow.c
