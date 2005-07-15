@@ -1,3 +1,8 @@
+2005-07-15 [colin]	1.9.12cvs64
+
+	* src/prefs_other.c
+		Continue fixing build without libetpan.
+
 2005-07-15 [colin]	1.9.12cvs63
 
 	* src/main.c
