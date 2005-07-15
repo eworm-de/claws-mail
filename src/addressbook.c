@@ -1115,6 +1115,8 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			else if( aio->type == ADDR_ITEM_PERSON ) {
 				ItemPerson *item = ( ItemPerson * ) aio;
 				addressbook_folder_remove_one_person( clist, item );
+				if (pobj->type == ADDR_ITEM_FOLDER)
+					addritem_folder_remove_person((ItemFolder *)pobj, item);
 				item = addrbook_remove_person( abf, item );
 				if( item ) {
 					addritem_free_item_person( item );
@@ -1132,7 +1134,10 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		}
 		g_list_free( list );
 		addressbook_list_select_clear();
-		if( refreshList ) gtk_ctree_select( ctree, addrbook.opened);
+		if( refreshList ) 
+			gtk_ctree_select( ctree, addrbook.opened);
+		addrbook_set_dirty(abf, TRUE);
+		addressbook_export_to_file();
 		return;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
@@ -1155,6 +1160,8 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		g_list_free( list );
 		addressbook_list_select_clear();
 		gtk_ctree_select( ctree, addrbook.opened);
+		addrbook_set_dirty(abf, TRUE);
+		addressbook_export_to_file();
 		return;
 	}
 
@@ -1896,7 +1903,7 @@ static void addressbook_list_row_selected( GtkCTree *clist,
 
 	aio = gtk_ctree_node_get_row_data( clist, node );
 	if( aio ) {
-		/* printf( "list select: %d : '%s'\n", aio->type, aio->name ); */
+		printf( "list select: %d : '%s'\n", aio->type, aio->name );
 		addressbook_list_select_add( aio, ds );
 	}
 
@@ -4504,7 +4511,7 @@ static void addressbook_start_drag(GtkWidget *widget, gint button,
 	gtk_drag_set_icon_default(context);
 }
 
-static ItemPerson *dragged_person = NULL;
+static GSList *dragged_persons = NULL;
 static ItemFolder *dragged_folder = NULL;
 static AddressBookFile *dragged_ab = NULL;
 
@@ -4519,6 +4526,7 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 	AddressObject *pobj = NULL;
 	AdapterDSource *ads = NULL;
 	AddressDataSource *ds = NULL;
+	GList *cur;
 
 	pobj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
 	if( pobj == NULL ) return;
@@ -4535,16 +4543,20 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 		if (!ds)
 			return;
 	}
-	if (addrbook.listSelected)
-		aio = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.clist), 
-				addrbook.listSelected );
 	
-	while (aio && aio->type != ADDR_ITEM_PERSON) {
-		aio = aio->parent;
+
+	for(cur = GTK_CLIST(addrbook.clist)->selection; cur; cur = cur->next) {
+		aio = (AddrItemObject *)gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.clist), 
+			GTK_CTREE_NODE(cur->data));
+		while (aio && aio->type != ADDR_ITEM_PERSON) {
+			aio = aio->parent;
+		}
+		if (aio) {
+			dragged_persons = g_slist_append(dragged_persons, aio);
+		}
 	}
 
 	if (aio && aio->type == ADDR_ITEM_PERSON) {
-		dragged_person = (ItemPerson *)aio;
 		dragged_folder = (ItemFolder *)ADAPTER_FOLDER(pobj)->itemFolder;
 		dragged_ab = addressbook_get_book_file();
 
@@ -4561,13 +4573,15 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 				    drag_context->action = GDK_ACTION_COPY;
 			} else {
 				dragged_folder = NULL;
-				dragged_person = NULL;
+				g_slist_free(dragged_persons);
+				dragged_persons = NULL;
 				dragged_ab = NULL;
 			}
 		}
 	} else {
 		dragged_folder = NULL;
-		dragged_person = NULL;
+		g_slist_free(dragged_persons);
+		dragged_persons = NULL;
 		dragged_ab = NULL;
 	}
 }
@@ -4674,38 +4688,35 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 		AddressObject *obj = NULL;
 		AdapterDSource *ads = NULL;
 		AddressDataSource *ds = NULL;
-		
+		GSList *cur = dragged_persons;
+
 		if (gtk_clist_get_selection_info
 			(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0) {
-			return;
+			goto free_list;
 		}
 	
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		if( node ) 
 			obj = gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), node );
 		if( obj == NULL ) 
-			return;
-			
-		
-		
-		person = ( ItemPerson * )dragged_person;
-		
+			goto free_list;
+				
 		if (obj->type == ADDR_ITEM_FOLDER) {
 			afolder = ADAPTER_FOLDER(obj)->itemFolder;
 
 		} else if (obj->type == ADDR_DATASOURCE) {
 			ads = ADAPTER_DSOURCE(obj);
 			if( ads == NULL ) 
-				return;
+				goto free_list;
 			ds = ads->dataSource;
 			if( ds == NULL ||
 			    ds->type == ADDR_IF_JPILOT || 
 			    ds->type == ADDR_IF_LDAP) 
-			    	return;		
+			    	goto free_list;		
 			afolder = addrindex_ds_get_root_folder( ds );
 			
 		} else {
-			return;
+			goto free_list;
 		}
 
 		ofolder = dragged_folder;
@@ -4713,8 +4724,11 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 		if (afolder && ofolder) {
 			AddressBookFile *obook = dragged_ab;
 			AddressBookFile *abook = addressbook_get_book_file_for_node(node);
-			addritem_folder_remove_person(ofolder, person);
-			addritem_folder_add_person(afolder, person);
+			for (cur = dragged_persons; cur; cur = cur->next) {
+				person = (ItemPerson *)cur->data;
+				addritem_folder_remove_person(ofolder, person);
+				addritem_folder_add_person(afolder, person);
+			}
 			addressbook_list_select_clear();
 			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened);
 							
@@ -4730,6 +4744,9 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 
 		gtk_drag_finish(drag_context, TRUE, TRUE, time);
 	}
+free_list:
+	g_slist_free(dragged_persons);
+	dragged_persons = NULL;
 }
 
 /*
