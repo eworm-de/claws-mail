@@ -16,6 +16,8 @@
 #include "etpan-thread-manager.h"
 #include "utils.h"
 
+#define DISABLE_LOG_DURING_LOGIN
+
 static struct etpan_thread_manager * thread_manager = NULL;
 static chash * courier_workaround_hash = NULL;
 static chash * imap_hash = NULL;
@@ -424,10 +426,22 @@ static void login_run(struct etpan_thread_op * op)
 	struct login_param * param;
 	struct login_result * result;
 	int r;
+#ifdef DISABLE_LOG_DURING_LOGIN
+	int old_debug;
+#endif
 	
 	param = op->param;
+	
+#ifdef DISABLE_LOG_DURING_LOGIN
+	old_debug = mailstream_debug;
+#endif
+	
 	r = mailimap_login(param->imap,
 			   param->login, param->password);
+	
+#ifdef DISABLE_LOG_DURING_LOGIN
+	mailstream_debug = old_debug;
+#endif
 	
 	result = op->result;
 	result->error = r;
