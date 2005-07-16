@@ -1,3 +1,10 @@
+2005-07-16 [colin]	1.9.12cvs66
+
+	* src/imap.c
+		Remove pseudo-log
+	* src/etpan/imap-thread.c
+		Add real log
+
 2005-07-16 [colin]	1.9.12cvs65
 
 	* src/main.c

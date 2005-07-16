@@ -13,6 +13,7 @@
 #include <sys/wait.h>
 
 #include <gtk/gtk.h>
+#include <log.h>
 #include "etpan-thread-manager.h"
 #include "utils.h"
 
@@ -35,6 +36,25 @@ static gboolean thread_manager_event(GIOChannel * source,
 	return TRUE;
 }
 
+void imap_logger(int direction, const char * str, size_t size) 
+{
+	gchar buf[512];
+	strncpy(buf, str, 511);
+	buf[511] = '\0';
+	if (size < 511)
+		buf[size] = '\0';
+	if (!strncmp(buf, "<<<<<<<", 7) 
+	||  !strncmp(buf, ">>>>>>>", 7) 
+	||  buf[0] == '\r' ||  buf[0] == '\n')
+		return;
+
+	while (strstr(buf, "\r"))
+		*strstr(buf, "\r") = ' ';
+	while (strstr(buf, "\n"))
+		*strstr(buf, "\n") = ' ';
+
+	log_print("IMAP4%c %s\n", direction?'>':'<', buf);
+}
 
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
 
@@ -45,9 +65,9 @@ void imap_main_init(void)
 	mailstream_network_delay.tv_sec = ETPAN_DEFAULT_NETWORK_TIMEOUT;
 	mailstream_network_delay.tv_usec = 0;
 	
-	if (debug_get_mode())
-		mailstream_debug = 1;
-	
+	mailstream_debug = 1;
+	mailstream_logger = imap_logger;
+
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	courier_workaround_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
