@@ -1,3 +1,8 @@
+2005-07-16 [colin]	1.9.12cvs67
+
+	* src/plugins/pgpcore/sgpgme.c
+		Make messages a bit better.
+
 2005-07-16 [colin]	1.9.12cvs66
 
 	* src/imap.c

@@ -118,37 +118,39 @@ static const gchar *get_validity_str(unsigned long validity)
 gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gpgme_signature_t sig = NULL;
-	
+	gpgme_user_id_t user = NULL;
+	gchar *uname = NULL;
+	gpgme_key_t key;
+
 	if (status == NULL) {
-		return g_strdup(_("The signature has not been checked"));
+		return g_strdup(_("The signature has not been checked."));
 	}
 	sig = status->signatures;
 	if (sig == NULL) {
-		return g_strdup(_("The signature has not been checked"));
+		return g_strdup(_("The signature has not been checked."));
 	}
 
+	gpgme_get_key(ctx, sig->fpr, &key, 0);
+	if (key)
+		uname = key->uids->uid;
+	else
+		uname = "<?>";
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-	{	gpgme_user_id_t user = NULL;
-		gpgme_key_t key;
-
-		gpgme_get_key(ctx, sig->fpr, &key, 0);
-
-		user = key->uids;
-
-		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
-			user->uid, get_validity_str(sig->validity));
+	{
+		return g_strdup_printf(_("Good signature from %s (Trust: %s)."),
+			uname, get_validity_str(sig->validity));
 	}
 	case GPG_ERR_SIG_EXPIRED:
-		return g_strdup(_("The signature has expired"));
+		return g_strdup_printf(_("Expired signature from %s."), uname);
 	case GPG_ERR_KEY_EXPIRED:
-		return g_strdup(_("The key that was used to sign this part has expired"));
+		return g_strdup_printf(_("Expired key from %s."), uname);
 	case GPG_ERR_BAD_SIGNATURE:
-		return g_strdup(_("This signature is invalid"));
+		return g_strdup_printf(_("Bad signature from %s."), uname);
 	case GPG_ERR_NO_PUBKEY:
-		return g_strdup(_("You have no key to verify this signature"));
+		return g_strdup(_("No key available to verify this signature."));
 	default:
-		return g_strdup(_("The signature has not been checked"));
+		return g_strdup(_("The signature has not been checked."));
 	}
 	return g_strdup(_("Error"));
 }
