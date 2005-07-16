@@ -38,7 +38,7 @@
 #include "gtk/prefswindow.h"
 
 #include "manage_window.h"
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
 #endif
 
@@ -238,7 +238,7 @@ void prefs_other_save(PrefsPage *_page)
 	prefs_common.io_timeout_secs = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_iotimeout));
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif
 	mainwindow = mainwindow_get_mainwindow();

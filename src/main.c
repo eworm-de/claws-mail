@@ -89,7 +89,7 @@
 #include "imap_gtk.h"
 #include "news_gtk.h"
 #include "matcher.h"
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
 #endif
 #include "stock_pixmap.h"
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
 #endif
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif
 	prefs_actions_read_config();
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
 			exit_sylpheed(mainwin);
 	}
 
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 	imap_main_init();
 #endif	
 	account_set_missing_folder();
@@ -479,7 +479,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	gchar *filename;
 
 	debug_print("shutting down\n");
-#ifdef USE_LIBETPAN
+#ifdef HAVE_LIBETPAN
 	imap_main_done();
 #endif
 	inc_autocheck_timer_remove();
