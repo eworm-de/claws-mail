@@ -662,3 +662,4 @@
 ( cvs diff -u -r 1.115.2.43 -r 1.115.2.44 src/main.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/prefs_other.c;  ) > 1.9.12cvs65.patchset
 ( cvs diff -u -r 1.179.2.53 -r 1.179.2.54 src/imap.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/etpan/imap-thread.c;  ) > 1.9.12cvs66.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.12cvs67.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpcore/prefs_gpg.c;  ) > 1.9.12cvs68.patchset

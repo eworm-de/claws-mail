@@ -31,7 +31,7 @@ struct GPGConfig prefs_gpg;
 
 static PrefParam param[] = {
 	/* Privacy */
-	{"auto_check_signatures", "TRUE",
+	{"auto_check_signatures", "FALSE",
 	 &prefs_gpg.auto_check_signatures, P_BOOL,
 	 NULL, NULL, NULL},
 	{"store_passphrase", "FALSE", &prefs_gpg.store_passphrase, P_BOOL,
