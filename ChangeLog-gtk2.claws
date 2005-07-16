@@ -1,3 +1,8 @@
+2005-07-16 [colin]	1.9.12cvs69
+
+	* src/image_viewer.c
+		Add extra paranoid checks
+
 2005-07-16 [colin]	1.9.12cvs68
 
 	* src/plugins/pgpcore/prefs_gpg.c

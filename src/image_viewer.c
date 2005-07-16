@@ -179,13 +179,17 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 
 	if (imageviewer->image != NULL)
 		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), NULL, NULL);
-	hadj = gtk_scrolled_window_get_hadjustment
-		(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
-	gtk_adjustment_set_value(hadj, 0.0);
-	vadj = gtk_scrolled_window_get_vadjustment
-		(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
-	gtk_adjustment_set_value(vadj, 0.0);
 
+	if (imageviewer->scrolledwin) {
+		hadj = gtk_scrolled_window_get_hadjustment
+			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
+		if (hadj)
+			gtk_adjustment_set_value(hadj, 0.0);
+		vadj = gtk_scrolled_window_get_vadjustment
+			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
+		if (vadj)
+			gtk_adjustment_set_value(vadj, 0.0);
+	}
 	g_free(imageviewer->file);
 	imageviewer->file = NULL;
 	imageviewer->mimeinfo = NULL;
