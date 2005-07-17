@@ -176,7 +176,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 		return;
 
 	inc_lock();
@@ -281,7 +281,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 			return 0;
 
 	inc_autocheck_timer_remove();
@@ -307,7 +307,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 		return;
 
 	if (inc_lock_count) return;

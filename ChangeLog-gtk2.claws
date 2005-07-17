@@ -1,3 +1,32 @@
+2005-07-17 [paul]	1.9.12cvs76
+
+	* src/account.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/alertpanel.h
+	* src/compose.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/inc.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/prefs_themes.c
+	* src/ssl_manager.c
+	* src/summary_search.c
+	* src/textview.c
+	* src/toolbar.c
+	* src/gtk/sslcertwindow.c
+	* src/plugins/pgpcore/sgpgme.c
+		rework alertpanels
+
 2005-07-17 [colin]	1.9.12cvs75
 
 	* src/privacy.c

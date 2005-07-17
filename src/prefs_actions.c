@@ -690,7 +690,7 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;
@@ -709,7 +709,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("Yes"), _("No"), NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;

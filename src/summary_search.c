@@ -374,11 +374,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			}
 
 			if (all_searched) {
-				alertpanel_with_type
-					(_("Search failed"),
-					 _("Search string not found."),
-					 NULL, NULL, NULL, NULL,
-					 ALERT_WARNING);
+				alertpanel_full(_("Search failed"),
+						_("Search string not found."),
+				 		GTK_STOCK_CLOSE, NULL, NULL, FALSE,
+				 		NULL, ALERT_WARNING, G_ALERTDEFAULT);
 				break;
 			}
 

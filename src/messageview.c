@@ -550,8 +550,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				   "Return path: %s\n"
 				   "It is advised to not to send the return "
 				   "receipt."), to, buf);
-		val = alertpanel_with_type(_("Warning"), message, _("Send"),
-				_("+Don't Send"), NULL, NULL, ALERT_WARNING);
+		val = alertpanel_full(_("Warning"), message,
+				       	_("Send"), _("+Don't Send"), NULL, FALSE,
+				       	NULL, ALERT_WARNING, G_ALERTALTERNATE);
 		g_free(message);				
 		if (val != G_ALERTDEFAULT)
 			return -1;
@@ -562,16 +563,16 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (ac_list == NULL) {
 		AlertValue val = 
-		alertpanel_with_type(_("Warning"),
+		alertpanel_full(_("Warning"),
 				_("This message is asking for a return "
-				   "receipt notification\n"
-				   "but according to its 'To:' and 'CC:' "
-				   "headers it was not\nofficially addressed "
-				   "to you.\n"
-				   "It is advised to not to send the return ."
-				   "receipt."),
-				_("Send"), _("+Don't Send"), NULL, 
-				NULL, ALERT_WARNING);
+				"receipt notification\n"
+				"but according to its 'To:' and 'CC:' "
+				"headers it was not\nofficially addressed "
+				"to you.\n"
+				"It is advised to not to send the return ."
+				"receipt."),
+				_("Send"), _("+Don't Send"),NULL, FALSE,
+				NULL, ALERT_WARNING, G_ALERTALTERNATE);
 		if (val != G_ALERTDEFAULT)
 			return -1;
 	}
@@ -691,7 +692,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 			return 0;
 
 	/* send it */

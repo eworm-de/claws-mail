@@ -202,8 +202,9 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really unsubscribe newsgroup '%s'?"), name);
-	avalue = alertpanel(_("Unsubscribe newsgroup"), message,
-			    _("Yes"), _("+No"), NULL);
+	avalue = alertpanel_full(_("Unsubscribe newsgroup"), message,
+		 	         GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+			         NULL, ALERT_WARNING, G_ALERTALTERNATE);
 	g_free(message);
 	g_free(name);
 	if (avalue != G_ALERTDEFAULT) return;
@@ -251,8 +252,9 @@ static void remove_news_server_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really delete news account '%s'?"), name);
-	avalue = alertpanel(_("Delete news account"), message,
-			    _("Yes"), _("+No"), NULL);
+	avalue = alertpanel_full(_("Delete news account"), message,
+		 	         GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+			         NULL, ALERT_WARNING, G_ALERTALTERNATE);
 	g_free(message);
 	g_free(name);
 

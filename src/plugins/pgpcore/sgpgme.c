@@ -366,12 +366,13 @@ void sgpgme_init()
 		if (prefs_gpg_get_config()->gpg_warning) {
 			AlertValue val;
 
-			val = alertpanel_message_with_disable
+			val = alertpanel_full
 				(_("Warning"),
 				 _("GnuPG is not installed properly, or needs "
-				   "to be upgraded.\n"
-				   "OpenPGP support disabled."), 
-				NULL, NULL, NULL, ALERT_WARNING);
+				 "to be upgraded.\n"
+				 "OpenPGP support disabled."),
+				 GTK_STOCK_CLOSE, NULL, NULL, TRUE, NULL,
+				 ALERT_WARNING, G_ALERTDEFAULT);
 			if (val & G_ALERTDISABLE)
 				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}

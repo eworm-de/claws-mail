@@ -1868,7 +1868,7 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Empty all messages in trash?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 			return;
 	}
 	
@@ -1952,8 +1952,9 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 		buf = g_strdup_printf(_("Do you really want to make folder '%s' a "
 					"sub-folder of '%s' ?"), from_folder->name,
 					to_folder->name);
-		status = alertpanel_message_with_disable(_("Move folder"), buf, 
-				_("Yes"), _("No"), NULL, ALERT_QUESTION);
+		status = alertpanel_full(_("Move folder"), buf,
+				       	 GTK_STOCK_YES, GTK_STOCK_NO, NULL, TRUE,
+				       	 NULL, ALERT_QUESTION, G_ALERTALTERNATE);
 		g_free(buf);
 
 		if (status != G_ALERTDEFAULT

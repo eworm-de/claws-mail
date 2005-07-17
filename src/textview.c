@@ -2213,9 +2213,9 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 					"\n"
 					"Open it anyway?"),
 				      uri->uri, visible_str);
-		aval = alertpanel_with_type(_("Fake URL warning"), msg,
-					    GTK_STOCK_YES, GTK_STOCK_NO,
-					    NULL, NULL, ALERT_WARNING);
+		aval = alertpanel_full(_("Fake URL warning"), msg,
+				       GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+				       NULL, ALERT_WARNING, G_ALERTALTERNATE);
 		g_free(msg);
 		if (aval == G_ALERTDEFAULT)
 			retval = TRUE;

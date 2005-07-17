@@ -226,7 +226,8 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	gchar *buf;
 	
 	buf = g_strdup_printf(_("SSL certificate for %s"), cert->host);
-	alertpanel_with_type(buf, NULL, _("OK"), NULL, NULL, cert_widget, ALERT_NOTICE);
+	alertpanel_full(buf, NULL, GTK_STOCK_CLOSE, NULL, NULL,
+	 		FALSE, cert_widget, ALERT_NOTICE, G_ALERTDEFAULT);
 	g_free(buf);
 }
 
@@ -240,7 +241,7 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	GtkWidget *cert_widget;
 	
 	vbox = gtk_vbox_new(FALSE, 5);
-	buf = g_strdup_printf(_("Certificate for %s is unknown. Do you want to accept it?"), cert->host);
+	buf = g_strdup_printf(_("Certificate for %s is unknown.\nDo you want to accept it?"), cert->host);
 	label = gtk_label_new(buf);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
@@ -262,7 +263,10 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	cert_widget = cert_presenter(cert);
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
-	val = alertpanel_with_type(_("Unknown SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox, ALERT_QUESTION);
+
+	val = alertpanel_full(_("Unknown SSL Certificate"), NULL,
+	 		      _("Accept and save"), _("Cancel connection"), NULL,
+	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
 	return (val == G_ALERTDEFAULT);
 }
@@ -313,7 +317,9 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(button), vbox);
 
-	val = alertpanel_with_type(_("Changed SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox2, ALERT_WARNING);
+	val = alertpanel_full(_("Changed SSL Certificate"), NULL,
+	 		      _("Accept and save"), _("Cancel connection"), NULL,
+	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);
 	
 	return (val == G_ALERTDEFAULT);
 }

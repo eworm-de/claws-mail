@@ -431,7 +431,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
-			 _("No"), _("Yes"), _("Cancel"));
+			 GTK_STOCK_YES, GTK_STOCK_NO, GTK_STOCK_CANCEL);
 	g_free(alert_title);
 	if (G_ALERTALTERNATE == val) {
 		gchar *status = NULL;
@@ -486,14 +486,14 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	if (file_exist(themeinfo, FALSE) == FALSE) {
 		val = alertpanel(alert_title,
 				 _("This folder doesn't seem to be a theme folder.\nInstall anyway?"),
-				 _("Yes"), _("No"), _("Cancel"));
+				 GTK_STOCK_YES, GTK_STOCK_NO, GTK_STOCK_CANCEL);
 		if (G_ALERTDEFAULT != val)
 			goto end_inst;
 	}
 	if (getuid() == 0) {
 		val = alertpanel(alert_title,
 				 _("Do you want to install theme for all users?"),
-				 _("Yes"), _("No"), _("Cancel"));
+				 GTK_STOCK_YES, GTK_STOCK_NO, GTK_STOCK_CANCEL);
 		switch (val) {
 		case G_ALERTDEFAULT:
 			cinfo->dest = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,

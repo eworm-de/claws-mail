@@ -267,8 +267,9 @@ static void remove_server_cb(FolderView *folderview, guint action, GtkWidget *wi
 
 	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really delete IMAP4 account '%s'?"), name);
-	avalue = alertpanel(_("Delete IMAP4 account"), message,
-			    _("Yes"), _("+No"), NULL);
+	avalue = alertpanel_full(_("Delete IMAP4 account"), message,
+		 		 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+				 NULL, ALERT_WARNING, G_ALERTALTERNATE);
 	g_free(message);
 	g_free(name);
 
@@ -315,8 +316,9 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 		(_("All folders and messages under '%s' will be permanently deleted. "
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
-	avalue = alertpanel(_("Delete folder"), message,
-			    _("Yes"), _("+No"), NULL);
+	avalue = alertpanel_full(_("Delete folder"), message,
+		 		 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+				 NULL, ALERT_WARNING, G_ALERTALTERNATE);
 	g_free(message);
 	if (avalue != G_ALERTDEFAULT) return;
 
@@ -411,7 +413,7 @@ gboolean imap_gtk_should_override(void)
 		
 		answer = (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override during 10 minutes?"),
-			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT);
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) == G_ALERTDEFAULT);
 		
 		if (answer == TRUE)
 			overridden_yes = time(NULL);

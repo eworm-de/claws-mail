@@ -3607,9 +3607,9 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 				msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
 							"%s to %s.\n"
 							"Send it anyway?"), src_codeset, out_codeset);
-				aval = alertpanel_with_type
-					(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
-				g_free(msg);
+				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+						      NULL, ALERT_ERROR, G_ALERTALTERNATE);
+	g_free(msg);
 
 				if (aval != G_ALERTDEFAULT) {
 					g_free(chars);
@@ -6093,7 +6093,9 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
 			   "process group id: %d"), -pgid);
-		val = alertpanel(_("Notice"), msg, _("Yes"), _("+No"), NULL);
+		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_YES, GTK_STOCK_NO,
+		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
+			
 		g_free(msg);
 
 		if (val == G_ALERTDEFAULT) {
@@ -6380,7 +6382,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 			return;
 	
 	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
