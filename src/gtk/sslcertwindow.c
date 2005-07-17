@@ -33,8 +33,6 @@
 #include "alertpanel.h"
 #include "hooks.h"
 
-static void toggle_cert_cb(GtkWidget	*widget,
-			 gpointer	 data);
 gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
 gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
@@ -232,21 +230,6 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	g_free(buf);
 }
 
-static void toggle_cert_cb(GtkWidget	*widget,
-			 gpointer	 data)
-{
-	GtkWidget *cert_widget = GTK_WIDGET(data);
-	GtkWidget *box = widget->parent;
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		if(cert_widget->parent == NULL) {
-			gtk_box_pack_start(GTK_BOX(box), cert_widget, TRUE, TRUE, 0);
-			gtk_widget_show(cert_widget);
-		} else
-			gtk_widget_show(cert_widget);
-	} else
-		gtk_widget_hide(cert_widget);
-}
-
 gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 {
 	gchar *buf, *sig_status;
@@ -275,12 +258,10 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	g_free(buf);
 	g_free(sig_status);
 	
-	button = gtk_toggle_button_new_with_label(_("View certificate"));
+	button = gtk_expander_new_with_mnemonic(_("_View certificate"));
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	cert_widget = cert_presenter(cert);
-	g_signal_connect(G_OBJECT(button), "toggled",
-			 G_CALLBACK(toggle_cert_cb), cert_widget);
-
+	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 	val = alertpanel_with_type(_("Unknown SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox, ALERT_QUESTION);
 	
 	return (val == G_ALERTDEFAULT);
@@ -328,10 +309,9 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	g_free(buf);
 	g_free(sig_status);
 	
-	button = gtk_toggle_button_new_with_label(_("View certificates"));
+	button = gtk_expander_new_with_mnemonic(_("_View certificates"));
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "toggled",
-			 G_CALLBACK(toggle_cert_cb), vbox);
+	gtk_container_add(GTK_CONTAINER(button), vbox);
 
 	val = alertpanel_with_type(_("Changed SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox2, ALERT_WARNING);
 	

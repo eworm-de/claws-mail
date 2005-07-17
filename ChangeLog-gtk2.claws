@@ -1,3 +1,8 @@
+2005-07-17 [colin]	1.9.12cvs73
+
+	* src/gtk/sslcertwindow.c
+		Use a gtkExpander
+
 2005-07-17 [colin]	1.9.12cvs72
 
 	* src/plugins/pgpcore/Makefile.am
