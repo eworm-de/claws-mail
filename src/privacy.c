@@ -25,6 +25,14 @@
 
 static GSList *systems = NULL;
 
+PrivacySystem *privacy_data_get_system(PrivacyData *data)
+{
+	/* Make sure the cached system is still registered */
+	if (data->system && g_slist_find(systems, data->system))
+		return data->system;
+	else
+		return NULL;
+}
 /**
  * Register a new Privacy System
  *
@@ -53,9 +61,14 @@ void privacy_unregister_system(PrivacySystem *system)
  */
 void privacy_free_privacydata(PrivacyData *privacydata)
 {
+	PrivacySystem *system = NULL;
+	
 	g_return_if_fail(privacydata != NULL);
 
-	privacydata->system->free_privacydata(privacydata);
+	system = privacy_data_get_system(privacydata);
+	if (!system)
+		return;
+	system->free_privacydata(privacydata);
 }
 
 /**
@@ -73,14 +86,20 @@ gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (mimeinfo->privacy != NULL) {
-		PrivacySystem *system = mimeinfo->privacy->system;
+		PrivacySystem *system = 
+			privacy_data_get_system(mimeinfo->privacy);
+
+		if (system == NULL) {
+			mimeinfo->privacy = NULL;
+			goto try_others;
+		}
 
 		if (system->is_signed != NULL)
 			return system->is_signed(mimeinfo);
 		else
 			return FALSE;
 	}
-
+try_others:
 	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		PrivacySystem *system = (PrivacySystem *) cur->data;
 
@@ -111,7 +130,10 @@ gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo)
 	if (mimeinfo->privacy == NULL)
 		return -1;
 	
-	system = mimeinfo->privacy->system;
+	system = privacy_data_get_system(mimeinfo->privacy);
+	if (system == NULL)
+		return -1;
+
 	if (system->check_signature == NULL)
 		return -1;
 	
@@ -130,7 +152,9 @@ SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
 	if (mimeinfo->privacy == NULL)
 		return SIGNATURE_UNCHECKED;
 	
-	system = mimeinfo->privacy->system;
+	system = privacy_data_get_system(mimeinfo->privacy);
+	if (system == NULL)
+		return SIGNATURE_UNCHECKED;
 	if (system->get_sig_status == NULL)
 		return SIGNATURE_UNCHECKED;
 	
@@ -149,7 +173,9 @@ gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
 	if (mimeinfo->privacy == NULL)
 		return g_strdup(_("No signature found"));
 	
-	system = mimeinfo->privacy->system;
+	system = privacy_data_get_system(mimeinfo->privacy);
+	if (system == NULL)
+		return g_strdup(_("No signature found"));
 	if (system->get_sig_info_short == NULL)
 		return g_strdup(_("No information available"));
 	
@@ -168,7 +194,9 @@ gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
 	if (mimeinfo->privacy == NULL)
 		return g_strdup(_("No signature found"));
 	
-	system = mimeinfo->privacy->system;
+	system = privacy_data_get_system(mimeinfo->privacy);
+	if (system == NULL)
+		return g_strdup(_("No signature found"));
 	if (system->get_sig_info_full == NULL)
 		return g_strdup(_("No information available"));
 	

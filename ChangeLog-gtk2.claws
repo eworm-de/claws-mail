@@ -1,3 +1,12 @@
+2005-07-17 [colin]	1.9.12cvs75
+
+	* src/privacy.c
+		add a PrivacySystem accessor that checks that
+		the system cached in a MimeInfo's privacydata
+		is still registered. Use this accessor instead
+		of directly using data->system. Fixes crashes
+		after unloading pgp plugins.
+
 2005-07-17 [colin]	1.9.12cvs74
 
 	* src/alertpanel.c
