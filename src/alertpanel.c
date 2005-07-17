@@ -247,7 +247,6 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *icon;
 	const gchar *label2;
 	const gchar *label3;
-	GdkGeometry geometry;
 	
 	gchar *title_full = g_strdup_printf("<span weight=\"bold\" "
 				"size=\"larger\">%s</span>",
@@ -262,13 +261,9 @@ static void alertpanel_create(const gchar *title,
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
-	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-	
-	geometry.min_width = 300;
-	geometry.min_height = 100;
-	
-	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
-				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
+
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 100);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);

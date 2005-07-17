@@ -1,3 +1,9 @@
+2005-07-17 [colin]	1.9.12cvs74
+
+	* src/alertpanel.c
+		Change geometry hints to a simple default size.
+		Fixes the certs dialogs.
+
 2005-07-17 [colin]	1.9.12cvs73
 
 	* src/gtk/sslcertwindow.c
