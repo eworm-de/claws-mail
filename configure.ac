@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=70
+EXTRA_VERSION=71
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -52,13 +52,6 @@ AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
 dnl GNOME 2.x installed?
 PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)
 AM_CONDITIONAL(SYLPHEED_GNOME2, test x"$ac_enable_gnome2" = x"yes")
-
-dnl libgnomeprint installed?
-PKG_CHECK_MODULES(GNOMEPRINT, libgnomeprint-2.2 libgnomeprintui-2.2, ac_enable_gnomeprint=yes, ac_enable_gnomeprint=no)
-AM_CONDITIONAL(SYLPHEED_GNOMEPRINT, test x"$ac_enable_gnomeprint" = x"yes")
-if test x$ac_enable_gnomeprint = xyes; then
-	AC_DEFINE(USE_GNOMEPRINT, 1, Define if you want libgnomeprint support)
-fi
 
 dnl Claws version
 AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)
@@ -658,6 +651,22 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   AC_MSG_ERROR([You can use --disable-libetpan if you don't need IMAP4 support.])
 	fi
 fi
+
+dnl Libgnomeprint
+AC_ARG_ENABLE(gnomeprint,
+	[  --disable-gnomeprint		Do not use libgnomeprint for printing],
+	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=yes])
+if test x$ac_cv_enable_gnomeprint = xyes; then
+	PKG_CHECK_MODULES(GNOMEPRINT, libgnomeprint-2.2 libgnomeprintui-2.2,
+			  ac_cv_enable_gnomeprint=yes, ac_cv_enable_gnomeprint=no)
+   	if test x$ac_cv_enable_gnomeprint = xno; then
+      		AC_MSG_WARN([gnomeprint support enabled but libgnomeprintui wasn't found])
+	else
+		AC_DEFINE(USE_GNOMEPRINT, 1, Define if you want libgnomeprint support)
+   	fi
+fi
+AM_CONDITIONAL(SYLPHEED_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
+
 dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
@@ -715,6 +724,7 @@ echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "IMAP4         : $ac_cv_enable_libetpan"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
+echo "libgnomeprint : $ac_cv_enable_gnomeprint"
 echo "Plugins       : $PLUGINS"
 echo "Config dir    : $ac_cv_with_config_dir"
 echo ""
