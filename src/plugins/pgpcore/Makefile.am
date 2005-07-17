@@ -17,7 +17,9 @@ plugininclude_HEADERS = \
 	sgpgme.h
 
 pgpcore_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module \
+        $(GTK_LIBS) \
+	$(GPGME_LIBS)
 
 INCLUDES = \
 	-I../../ \

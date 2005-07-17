@@ -14,7 +14,10 @@ plugininclude_HEADERS = \
 	pgpmime.h 
 
 pgpmime_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module \
+        $(GTK_LIBS) \
+	$(GPGME_LIBS)
+		
 
 INCLUDES = \
 	-I../../ \

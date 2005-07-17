@@ -1,3 +1,9 @@
+2005-07-17 [colin]	1.9.12cvs72
+
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+		Add gpgme libs
+
 2005-07-17 [paul]	1.9.12cvs71
 
 	* configure.ac
