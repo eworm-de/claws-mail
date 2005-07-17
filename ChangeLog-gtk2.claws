@@ -1,3 +1,33 @@
+2005-07-17 [paul]	1.9.12cvs70
+
+	* src/common/defs.h
+		update urls
+	* src/account.c
+	* src/action.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/foldersel.c
+	* src/folderview.c
+	* src/html.c
+	* src/imap_gtk.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/mimeview.c
+	* src/news_gtk.c
+	* src/prefs_account.c
+	* src/prefs_send.c
+	* src/prefs_summaries.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/common/utils.c
+	* src/common/xml.c
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/select-keys.c
+		replace inappropriately used backticks
+		with single quotes
+
 2005-07-16 [colin]	1.9.12cvs69
 
 	* src/image_viewer.c

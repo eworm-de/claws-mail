@@ -1418,7 +1418,7 @@ static gchar *get_user_string(const gchar *action, ActionType type)
 	case ACTION_USER_HIDDEN_STR:
 		message = g_strdup_printf
 			(_("Enter the argument for the following action:\n"
-			   "(`%%h' will be replaced with the argument)\n"
+			   "('%%h' will be replaced with the argument)\n"
 			   "  %s"),
 			 action);
 		user_str = input_dialog_with_invisible
@@ -1427,7 +1427,7 @@ static gchar *get_user_string(const gchar *action, ActionType type)
 	case ACTION_USER_STR:
 		message = g_strdup_printf
 			(_("Enter the argument for the following action:\n"
-			   "(`%%u' will be replaced with the argument)\n"
+			   "('%%u' will be replaced with the argument)\n"
 			   "  %s"),
 			 action);
 		user_str = input_dialog

@@ -1072,7 +1072,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	}
 
 	if (!is_dir_exist (dirname)) {
-		alertpanel_error(_("`%s' is not a directory."),
+		alertpanel_error(_("'%s' is not a directory."),
 				 dirname);
 		if (startdir) g_free(startdir);
 		return;
@@ -1259,7 +1259,7 @@ static void mimeview_open_with(MimeView *mimeview)
 	cmd = input_dialog_combo
 		(_("Open with"),
 		 _("Enter the command line to open file:\n"
-		   "(`%s' will be replaced with file name)"),
+		   "('%s' will be replaced with file name)"),
 		 prefs_common.mime_open_cmd,
 		 prefs_common.mime_open_cmd_history,
 		 TRUE);
@@ -1318,7 +1318,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		g_snprintf(buf, sizeof(buf), cmd, filename);
 	else {
 		if (cmd)
-			g_warning("MIME viewer command line is invalid: `%s'", cmd);
+			g_warning("MIME viewer command line is invalid: '%s'", cmd);
 		if (def_cmd)
 			g_snprintf(buf, sizeof(buf), def_cmd, filename);
 		else

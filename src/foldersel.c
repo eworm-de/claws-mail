@@ -538,7 +538,7 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 	if ((p && FOLDER_TYPE(selected_item->folder) != F_IMAP) ||
 	    (p && FOLDER_TYPE(selected_item->folder) == F_IMAP &&
 	     *(p + 1) != '\0')) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				G_DIR_SEPARATOR);
 		return;
 	}
@@ -548,14 +548,14 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 
 	/* find whether the directory already exists */
 	if (folder_find_child_item_by_name(selected_item, new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."),
+		alertpanel_error(_("The folder '%s' already exists."),
 				 disp_name);
 		return;
 	}
 
 	new_item = folder_create_folder(selected_item, new_folder);
 	if (!new_item) {
-		alertpanel_error(_("Can't create the folder `%s'."), disp_name);
+		alertpanel_error(_("Can't create the folder '%s'."), disp_name);
 		return;
 	}
 

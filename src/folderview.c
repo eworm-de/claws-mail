@@ -1949,8 +1949,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	from_parent = folder_item_parent(from_folder);
 	
 	if (prefs_common.warn_dnd) {
-		buf = g_strdup_printf(_("Do you really want to move folder `%s' to a "
-					"sub-folder of `%s' ?"), from_folder->name,
+		buf = g_strdup_printf(_("Do you really want to make folder '%s' a "
+					"sub-folder of '%s' ?"), from_folder->name,
 					to_folder->name);
 		status = alertpanel_message_with_disable(_("Move folder"), buf, 
 				_("Yes"), _("No"), NULL, ALERT_QUESTION);

@@ -1029,7 +1029,7 @@ void messageview_save_as(MessageView *messageview)
 	src = procmsg_get_message_file(msginfo);
 	if (copy_file(src, dest, TRUE) < 0) {
 		tmp =  g_path_get_basename(dest);
-		alertpanel_error(_("Can't save the file `%s'."), tmp);
+		alertpanel_error(_("Can't save the file '%s'."), tmp);
 		g_free(tmp);
 	}
 	g_free(dest);
@@ -1313,12 +1313,12 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 #ifndef USE_GNOMEPRINT
 	cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
-				 "(`%s' will be replaced with file name)"),
+				 "('%s' will be replaced with file name)"),
 			       prefs_common.print_cmd);
 	if (!cmdline) return;
 	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
 	    strchr(p + 2, '%')) {
-		alertpanel_error(_("Print command line is invalid:\n`%s'"),
+		alertpanel_error(_("Print command line is invalid:\n'%s'"),
 				 cmdline);
 		g_free(cmdline);
 		return;

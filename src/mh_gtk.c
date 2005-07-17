@@ -123,7 +123,7 @@ static void new_folder_cb(FolderView *folderview, guint action,
 
 	p = strchr(new_folder, G_DIR_SEPARATOR);
 	if (p) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
 		return;
 	}
@@ -133,13 +133,13 @@ static void new_folder_cb(FolderView *folderview, guint action,
 
 	/* find whether the directory already exists */
 	if (folder_find_child_item_by_name(item, new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."), name);
+		alertpanel_error(_("The folder '%s' already exists."), name);
 		return;
 	}
 
 	new_item = folder_create_folder(item, new_folder);
 	if (!new_item) {
-		alertpanel_error(_("Can't create the folder `%s'."), name);
+		alertpanel_error(_("Can't create the folder '%s'."), name);
 		return;
 	}
 
@@ -164,7 +164,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
-		(_("All folders and messages under `%s' will be permanently deleted. "
+		(_("All folders and messages under '%s' will be permanently deleted. "
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_with_type(_("Delete folder"), message,
@@ -185,7 +185,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 
 	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
 		folder_item_scan(item);
-		alertpanel_error(_("Can't remove the folder `%s'."), name);
+		alertpanel_error(_("Can't remove the folder '%s'."), name);
 		g_free(old_id);
 		return;
 	}
@@ -215,7 +215,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
-	message = g_strdup_printf(_("Input new name for `%s':"), name);
+	message = g_strdup_printf(_("Input new name for '%s':"), name);
 	base = g_path_get_basename(item->path);
 	new_folder = input_dialog(_("Rename folder"), message, base);
 	g_free(message);
@@ -225,14 +225,14 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
 		return;
 	}
 
 	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
 		name = trim_string(new_folder, 32);
-		alertpanel_error(_("The folder `%s' already exists."), name);
+		alertpanel_error(_("The folder '%s' already exists."), name);
 		g_free(name);
 		return;
 	}
@@ -308,7 +308,7 @@ static void remove_mailbox_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf
-		(_("Really remove the mailbox `%s' ?\n"
+		(_("Really remove the mailbox '%s' ?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel(_("Remove mailbox"), message,
 			    _("Yes"), _("+No"), NULL);

@@ -1705,7 +1705,7 @@ const gchar *get_home_dir(void)
             if (!home_dir || !*home_dir) 
                 home_dir = g_strdup ("c:\\sylpheed");
         }
-        debug_print("initialized home_dir to `%s'\n", home_dir);
+        debug_print("initialized home_dir to '%s'\n", home_dir);
     }
     return home_dir;
 #else /* standard glib */

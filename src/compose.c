@@ -6064,7 +6064,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		g_snprintf(buf, sizeof(buf), prefs_common.ext_editor_cmd, file);
 	} else {
 		if (prefs_common.ext_editor_cmd)
-			g_warning("External editor command line is invalid: `%s'\n",
+			g_warning("External editor command line is invalid: '%s'\n",
 				  prefs_common.ext_editor_cmd);
 		g_snprintf(buf, sizeof(buf), def_cmd, file);
 	}
@@ -6664,7 +6664,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	tmpl = g_object_get_data(G_OBJECT(widget), "template");
 	g_return_if_fail(tmpl != NULL);
 
-	msg = g_strdup_printf(_("Do you want to apply the template `%s' ?"),
+	msg = g_strdup_printf(_("Do you want to apply the template '%s' ?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
 			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL);

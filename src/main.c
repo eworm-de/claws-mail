@@ -166,7 +166,7 @@ static void exit_sylpheed		(MainWindow *mainwin);
 	if (!is_dir_exist(dir)) { \
 		if (is_file_exist(dir)) { \
 			alertpanel_warning \
-				(_("File `%s' already exists.\n" \
+				(_("File '%s' already exists.\n" \
 				   "Can't create folder."), \
 				 dir); \
 			return 1; \

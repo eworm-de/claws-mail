@@ -729,7 +729,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_transhdr,
-		 _("Translate header name (such as `From:', `Subject:')"));
+		 _("Translate header name (such as 'From:', 'Subject:')"));
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
@@ -771,7 +771,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_swapfrom,
-		 _("Display recipient in `From' column if sender is yourself"));
+		 _("Display recipient in 'From' column if sender is yourself"));
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));

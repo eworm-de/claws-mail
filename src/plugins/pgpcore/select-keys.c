@@ -102,10 +102,10 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
     char *buf;
 
     if (!running)
-        buf = g_strdup_printf (_("Please select key for `%s'"), 
+        buf = g_strdup_printf (_("Please select key for '%s'"),
                                pattern);
     else 
-        buf = g_strdup_printf (_("Collecting info for `%s' ... %c"), 
+        buf = g_strdup_printf (_("Collecting info for '%s' ... %c"),
                                pattern,
                                windmill[running%DIM(windmill)]);
     gtk_label_set_text (sk->toplabel, buf);
@@ -232,7 +232,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
     clist = sk->clist;
     g_return_if_fail (clist);
 
-    debug_print ("select_keys:fill_clist:  pattern `%s'\n", pattern);
+    debug_print ("select_keys:fill_clist:  pattern '%s'\n", pattern);
 
     /*gtk_clist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);

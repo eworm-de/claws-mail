@@ -292,7 +292,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         return GPG_ERR_NO_ERROR;
     }
     gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
-    debug_print ("%% requesting passphrase for `%s': ", uid_hint);
+    debug_print ("%% requesting passphrase for '%s': ", uid_hint);
     pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad);
     gpgmegtk_free_passphrase();
     if (!pass) {

@@ -645,7 +645,7 @@ static void account_edit_create(void)
 
 	label = gtk_label_new
 		(_("New messages will be checked in this order. Check the boxes\n"
-		   "on the `G' column to enable message retrieval by `Get all'."));
+		   "on the 'G' column to enable message retrieval by 'Get all'."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -796,13 +796,13 @@ static void account_clone(GtkWidget *widget, gpointer data)
 		return;
 
 	if (ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) {
-		alertpanel_error(_("Accounts with remote folders cannot be cloned"));
+		alertpanel_error(_("Accounts with remote folders cannot be copied."));
 		return;
 	}
 	
 	ac_clon = prefs_account_new();
 	/* copy fields */
-	ac_clon->account_name = g_strdup_printf(_("Cloned %s"), 
+	ac_clon->account_name = g_strdup_printf(_("Copy of %s"),
 						ac_prefs->account_name);
 	/* personal */
 	ACP_FDUP(name);

@@ -1512,7 +1512,7 @@ static void prefs_account_receive_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox1, recvatgetall_chkbtn,
-		 _("`Get all' checks for new messages on this account"));
+		 _("'Get all' checks for new messages on this account"));
 
 	receive.pop3_frame               = frame1;
 	receive.use_apop_chkbtn          = use_apop_chkbtn;

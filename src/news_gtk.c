@@ -201,7 +201,7 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 	old_id = folder_item_get_identifier(item);
 
 	name = trim_string(item->path, 32);
-	message = g_strdup_printf(_("Really unsubscribe newsgroup `%s'?"), name);
+	message = g_strdup_printf(_("Really unsubscribe newsgroup '%s'?"), name);
 	avalue = alertpanel(_("Unsubscribe newsgroup"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
@@ -250,7 +250,7 @@ static void remove_news_server_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->account != NULL);
 
 	name = trim_string(item->folder->name, 32);
-	message = g_strdup_printf(_("Really delete news account `%s'?"), name);
+	message = g_strdup_printf(_("Really delete news account '%s'?"), name);
 	avalue = alertpanel(_("Delete news account"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
@@ -323,7 +323,7 @@ static void download_cb(FolderView *folderview, guint action,
 		gchar *name;
 
 		name = trim_string(item->name, 32);
-		alertpanel_error(_("Error occurred while downloading messages in `%s'."), name);
+		alertpanel_error(_("Error occurred while downloading messages in '%s'."), name);
 		g_free(name);
 	}
 	folder_set_ui_func(item->folder, NULL, NULL);

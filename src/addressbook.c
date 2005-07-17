@@ -2371,7 +2371,7 @@ static void addressbook_treenode_delete_cb(
 		if( iface->externalQuery ) {
 			message = g_strdup_printf( _(
 				"Do you want to delete the query " \
-				"results and addresses in `%s' ?" ),
+				"results and addresses in '%s' ?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
 				GTK_STOCK_YES, GTK_STOCK_NO, NULL );
@@ -2382,7 +2382,7 @@ static void addressbook_treenode_delete_cb(
 		}
 		else {
 			message = g_strdup_printf
-				( _( "Do you want to delete the folder AND all addresses in `%s' ?\n"
+				( _( "Do you want to delete the folder AND all addresses in '%s' ?\n"
 			    	     "If deleting the folder only, addresses will be moved into parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
@@ -2398,7 +2398,7 @@ static void addressbook_treenode_delete_cb(
 		}
 	}
 	else {
-		message = g_strdup_printf(_("Really delete `%s' ?"), obj->name);
+		message = g_strdup_printf(_("Really delete '%s' ?"), obj->name);
 		aval = alertpanel(_("Delete"), message, GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		g_free(message);
 		if( aval == G_ALERTDEFAULT ) delType = ADDRTREE_DEL_DATA;

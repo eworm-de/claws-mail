@@ -1664,7 +1664,7 @@ void main_window_add_mailbox(MainWindow *mainwin)
 			    "Mail");
 	if (!path) return;
 	if (folder_find_from_path(path)) {
-		alertpanel_error(_("The mailbox `%s' already exists."), path);
+		alertpanel_error(_("The mailbox '%s' already exists."), path);
 		g_free(path);
 		return;
 	}

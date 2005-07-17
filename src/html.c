@@ -42,6 +42,10 @@ static HTMLSymbol symbol_list[] = {
 	{"&gt;"    , ">"},
 	{"&amp;"   , "&"},
 	{"&quot;"  , "\""},
+	{"&lsquo;",  "'"},
+	{"&rsquo;",  "'"},
+	{"&ldquo;",  "\""},
+	{"&rdquo;",  "\""},
 	{"&nbsp;"  , " "},
 	{"&trade;" , "(TM)"},
 
@@ -527,6 +531,9 @@ static void html_parse_special(HTMLParser *parser)
 			char *symb = NULL;
 			switch (ch) {
 			/* http://www.w3schools.com/html/html_entitiesref.asp */
+			case 96:	/* backtick  */
+				symb = "`";
+				break;
 			case 338:	/* capital ligature OE  &OElig;  */
 				symb = "OE";  
 				break;
@@ -560,8 +567,6 @@ static void html_parse_special(HTMLParser *parser)
 				symb = "--";  
 				break;
 			case 8216:	/* l single quot mark   &lsquo;  */
-				symb = "`";  
-				break;
 			case 8217:	/* r single quot mark   &rsquo;  */
 				symb = "'";  
 				break;
@@ -569,10 +574,8 @@ static void html_parse_special(HTMLParser *parser)
 				symb = ",";  
 				break;
 			case 8220:	/* l double quot mark   &ldquo;  */
-				symb = "``";  
-				break;
 			case 8221:	/* r double quot mark   &rdquo;  */
-				symb = "''";  
+				symb = "\"";  
 				break;
 			case 8222:	/* double low-9 quot	&bdquo;  */
 				symb = ",,";  

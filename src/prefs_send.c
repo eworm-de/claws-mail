@@ -177,7 +177,7 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	optmenu_charset = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_charset);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(charset_tooltip), optmenu_charset,
-			     _("If `Automatic' is selected, the optimal encoding"
+			     _("If 'Automatic' is selected, the optimal encoding"
 		   	       " for the current locale will be used"),
 			     NULL);
  	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_charset, FALSE, FALSE, 0);

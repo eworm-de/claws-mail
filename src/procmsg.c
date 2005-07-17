@@ -1015,7 +1015,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf) - 1, cmdline, prtmp);
 	else {
 		if (cmdline)
-			g_warning("Print command line is invalid: `%s'\n",
+			g_warning("Print command line is invalid: '%s'\n",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf) - 1, def_cmd, prtmp);
 	}

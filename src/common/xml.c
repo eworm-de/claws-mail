@@ -502,7 +502,7 @@ gint xml_unescape_str(gchar *str)
 
 	while ((start = strchr(p, '&')) != NULL) {
 		if ((end = strchr(start + 1, ';')) == NULL) {
-			g_warning("Unescaped `&' appeared\n");
+			g_warning("Unescaped '&' appeared\n");
 			p = start + 1;
 			continue;
 		}
