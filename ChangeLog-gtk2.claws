@@ -1,3 +1,13 @@
+2005-07-18 [colin]	1.9.12cvs78
+
+	* src/imap.c
+		Allow empty passwords
+		Create drafts/queue/outbox if necessary
+	* src/summaryview.c
+		Remove old code
+	* src/etpan/imap-thread.c
+		Fix STARTTLS (Thanks to Hoa)
+
 2005-07-18 [paul]	1.9.12cvs77
 
 	* ChangeLog-gtk2.jp

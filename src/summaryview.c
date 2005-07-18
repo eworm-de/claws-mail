@@ -888,13 +888,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	main_window_cursor_wait(summaryview->mainwin);
 
-/*
-	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
-
-	!!! NEW !!!
-	USE LIST FROM CACHE, WILL NOT DISPLAY ANY MESSAGES DROPED
-	BY OTHER PROGRAMS TO THE FOLDER
-*/
 	mlist = folder_item_get_msg_list(item);
 
 	if (summaryview->folder_item->hide_read_msgs) {

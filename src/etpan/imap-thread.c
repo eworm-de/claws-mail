@@ -621,6 +621,29 @@ static void starttls_run(struct etpan_thread_op * op)
 	result = op->result;
 	result->error = r;
 	debug_print("imap starttls run - end %i\n", r);
+	
+	if (r == 0) {
+		mailimap *imap = param->imap;
+		mailstream_low *plain_low = NULL;
+		mailstream_low *tls_low = NULL;
+		int fd = -1;
+		
+		plain_low = mailstream_get_low(imap->imap_stream);
+		fd = mailstream_low_get_fd(plain_low);
+		if (fd == -1) {
+			debug_print("imap starttls run - can't get fd\n");
+			result->error = MAIL_ERROR_STREAM;
+			return;
+		}
+		tls_low = mailstream_low_ssl_open(fd);
+		if (tls_low == NULL) {
+			debug_print("imap starttls run - can't ssl_open\n");
+			result->error = MAIL_ERROR_STREAM;
+			return;
+		}
+		mailstream_low_free(plain_low);
+		mailstream_set_low(imap->imap_stream, tls_low);
+	}
 }
 
 int imap_threaded_starttls(Folder * folder)

@@ -731,7 +731,7 @@ static void imap_session_authenticate(IMAPSession *session,
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
 		if (!tmp_pass)
-			return;
+			tmp_pass = g_strdup(""); /* allow empty password */
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
 		g_free(tmp_pass);
 	}
@@ -1392,6 +1392,15 @@ static void imap_create_missing_folders(Folder *folder)
 	if (!folder->trash)
 		folder->trash = imap_create_special_folder
 			(folder, F_TRASH, "Trash");
+	if (!folder->queue)
+		folder->queue = imap_create_special_folder
+			(folder, F_QUEUE, "Queue");
+	if (!folder->outbox)
+		folder->outbox = imap_create_special_folder
+			(folder, F_OUTBOX, "Sent");
+	if (!folder->draft)
+		folder->draft = imap_create_special_folder
+			(folder, F_DRAFT, "Drafts");
 }
 
 static FolderItem *imap_create_special_folder(Folder *folder,
