@@ -1,3 +1,27 @@
+2005-07-18 [paul]	1.9.12cvs77
+
+	* ChangeLog-gtk2.jp
+	* ChangeLog.jp
+		removed
+	* Makefile.am
+		updated to reflect additions and removals
+	* TODO
+		updated to be claws-specific
+	* TODO-gtk2
+	* TODO-gtk2.jp
+	* TODO.jp
+	* sylpheed-128x128.png
+	* sylpheed-64x64.png
+		removed
+	* sylpheed-claws-128x128.png
+	* sylpheed-claws-64x64.png
+	* sylpheed-claws.desktop
+	* sylpheed-claws.png
+		added
+	* sylpheed.desktop
+	* sylpheed.png
+		removed
+
 2005-07-17 [paul]	1.9.12cvs76
 
 	* src/account.c

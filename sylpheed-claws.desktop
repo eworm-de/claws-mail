@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding: UTF-8
+Name=Sylpheed-Claws
+Exec=sylpheed
+Icon=sylpheed-claws.png
+Info="Sylpheed-Claws"
+Categories=Application;Network;
+Comment="Gtk+ based Mail Client"
+Terminal=0
+Type=Application
+StartupNotify=true

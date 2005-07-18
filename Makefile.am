@@ -3,32 +3,29 @@ SUBDIRS = m4 po src tools config doc
 EXTRA_DIST = \
 	ChangeLog.claws \
 	ChangeLog-gtk2.claws \
-	ChangeLog-gtk2.jp \
 	README.claws \
 	RELEASE_NOTES.claws \
-	sylpheed-128x128.png \
-	sylpheed-64x64.png \
+	sylpheed-claws-128x128.png \
+	sylpheed-claws-64x64.png \
 	sylpheed-claws.pc.in \
-	sylpheed.desktop \
-	sylpheed.png \
+	sylpheed-claws.desktop \
+	sylpheed-claws.png \
 	sylpheed.spec \
 	sylpheed.spec.in \
-	TODO-gtk2 \
-	TODO-gtk2.jp \
-	autogen.sh 
+	autogen.sh
 
 if SYLPHEED_GNOME2
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
-pixmap_DATA=sylpheed.png
+pixmap_DATA=sylpheed-claws.png
 gnomapdir = $(datadir)/applications
-gnomap_DATA=sylpheed.desktop
+gnomap_DATA=sylpheed-claws.desktop
 else
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedatadir)/pixmaps
-pixmap_DATA=sylpheed.png
+pixmap_DATA=sylpheed-claws.png
 gnomapdir=$(gnomedatadir)/gnome/apps/Internet
-gnomap_DATA=sylpheed.desktop
+gnomap_DATA=sylpheed-claws.desktop
 else
 pixmapdir=
 pixmap_DATA=
