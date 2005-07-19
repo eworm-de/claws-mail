@@ -1,3 +1,9 @@
+2005-07-19 [paul]	1.9.12cvs83
+
+	* src/prefs_actions.c
+		prevent '//' in menu names, which cause a crash
+		thanks to Colin
+
 2005-07-19 [paul]	1.9.12cvs82
 
 	* configure.ac

@@ -488,6 +488,15 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 	}
 
 	strncpy(action, entry_text, PREFSBUFSIZE - 1);
+	
+	while (strstr(action, "//")) {
+		char *to_move = strstr(action, "//")+1;
+		char *where = strstr(action, "//");
+		int old_len = strlen(action);
+		memmove(where, to_move, strlen(to_move));
+		action[old_len-1] = '\0';
+	}
+	
 	g_strstrip(action);
 
 	/* Keep space for the ': ' delimiter */
