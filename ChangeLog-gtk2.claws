@@ -1,3 +1,15 @@
+2005-07-19 [colin]	1.9.12cvs84
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/pgpinline/.cvsignore
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpinline/pgpinline.deps
+	* src/plugins/pgpinline/pgpinline.h
+	* src/plugins/pgpinline/plugin.c
+		Put pgpinline in the main tree
+
 2005-07-19 [paul]	1.9.12cvs83
 
 	* src/prefs_actions.c

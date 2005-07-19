@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=83
+EXTRA_VERSION=84
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -592,6 +592,23 @@ else
 fi
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
 
+AC_MSG_CHECKING([whether to build PGP/Inline plugin])
+AC_ARG_ENABLE(pgpinline-plugin,
+	[  --disable-pgpinline-plugin           Do not build PGP/Inline plugin],
+	[ac_cv_enable_pgpinline_plugin=$enableval], [ac_cv_enable_pgpinline_plugin=yes])
+if test x"$ac_cv_enable_pgpinline_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
+		PLUGINS="pgpinline $PLUGINS"
+	else
+		AC_MSG_WARN([*** PGP/Inline plugin cannot be built ***])
+		AC_MSG_WARN([*** without the PGP/CORE plugin     ***])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN, test x"$ac_cv_enable_pgpinline_plugin" = xyes)
+
 dnl --- MathML Viewer ---
 AC_MSG_CHECKING([whether to build MathML-Viewer plugin])
 AC_ARG_ENABLE(mathml-viewer-plugin,
@@ -742,6 +759,7 @@ src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
+src/plugins/pgpinline/Makefile
 doc/Makefile
 doc/faq/Makefile
 doc/faq/de/Makefile

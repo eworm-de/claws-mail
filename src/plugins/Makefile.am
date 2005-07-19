@@ -27,6 +27,9 @@ pgpcore_dir = pgpcore
 if BUILD_PGPMIME_PLUGIN
 pgpmime_dir = pgpmime
 endif
+if BUILD_PGPINLINE_PLUGIN
+pgpinline_dir = pgpinline
+endif
 endif
 
 SUBDIRS = $(demo_dir) \
@@ -36,4 +39,5 @@ SUBDIRS = $(demo_dir) \
 	$(trayicon_dir) \
 	$(clamav_dir) \
 	$(pgpcore_dir) \
-	$(pgpmime_dir)
+	$(pgpmime_dir) \
+	$(pgpinline_dir)
