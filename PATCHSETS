@@ -675,3 +675,4 @@
 ( cvs diff -u -r 1.179.2.54 -r 1.179.2.55 src/imap.c;  cvs diff -u -r 1.395.2.94 -r 1.395.2.95 src/summaryview.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/etpan/imap-thread.c;  ) > 1.9.12cvs78.patchset
 ( cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/etpan/imap-thread.c;  ) > 1.9.12cvs79.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 sylpheed-claws.desktop;  cvs diff -u -r 1.61.2.34 -r 1.61.2.35 src/account.c;  ) > 1.9.12cvs80.patchset
+( cvs diff -u -r 1.395.2.95 -r 1.395.2.96 src/summaryview.c;  ) > 1.9.12cvs81.patchset

@@ -1,3 +1,9 @@
+2005-07-19 [colin]	1.9.12cvs81
+
+	* src/summaryview.c
+		Fix slow thread rebuilding in particular
+		cases
+
 2005-07-19 [paul]	1.9.12cvs80
 
 	* sylpheed-claws.desktop

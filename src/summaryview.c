@@ -3528,7 +3528,6 @@ gboolean summary_execute(SummaryView *summaryview)
 		summary_unthread_for_exec(summaryview);
 
 	folder_item_update_freeze();
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 	summary_execute_move(summaryview);
 	summary_execute_copy(summaryview);
 	summary_execute_delete(summaryview);
@@ -3571,8 +3570,10 @@ gboolean summary_execute(SummaryView *summaryview)
 	}
 
 	if (summaryview->threaded) {
+		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 		summary_thread_build(summaryview);
 		summary_thread_init(summaryview);
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
 
 	summaryview->selected = clist->selection ?
@@ -3589,8 +3590,6 @@ gboolean summary_execute(SummaryView *summaryview)
 	summary_status_show(summaryview);
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
-
-	gtk_clist_thaw(clist);
 
 	summary_unlock(summaryview);
 	return TRUE;
