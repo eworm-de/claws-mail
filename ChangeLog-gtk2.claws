@@ -1,3 +1,19 @@
+2005-07-19 [paul]	1.9.12cvs82
+
+	* configure.ac
+		be generally more informative in configure output.
+		OpenSSL: correction: '[ --enable-openssl ...' -> 
+		'[ --disable-openssl ...', as --enable-openssl is default
+		PGP/MIME: don't check for GPGME again, check for
+		pgpcore instead. Therefore prevent the possibility of
+		attempting to build pgpmime if pgpcore dependencies are
+		not met
+		ClamAV: use pkgconfig to check for lib
+		libgnomeprint: revert logic on inner test to match
+		everything else
+	* src/plugins/pgpcore/sgpgme.c
+		add missing include
+
 2005-07-19 [colin]	1.9.12cvs81
 
 	* src/summaryview.c

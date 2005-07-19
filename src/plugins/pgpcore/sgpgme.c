@@ -29,6 +29,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "sgpgme.h"
 #include "privacy.h"

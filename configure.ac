@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=81
+EXTRA_VERSION=82
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -298,13 +298,20 @@ fi
 
 dnl Check for OpenSSL
 AC_ARG_ENABLE(openssl,
-	[  --enable-openssl    Attempt to use OpenSSL for SSL support.],
+	[  --disable-openssl    Do not use OpenSSL for SSL support.],
 	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+AC_MSG_CHECKING([whether to use OpenSSL])
 if test x"$ac_cv_enable_openssl" = xyes; then
+	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
 	if test x$ac_cv_enable_openssl = xyes; then
 		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+	else
+		AC_MSG_RESULT(not found)
+		AC_MSG_WARN([*** OpenSSL will not be supported ***])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AC_SUBST(OPENSSL_CFLAGS)
 AC_SUBST(OPENSSL_LIBS)
@@ -523,71 +530,101 @@ dnl *************************
 PLUGINS=""
 
 dnl --- Trayicon ---
+AC_MSG_CHECKING([whether to build Trayicon plugin])
 AC_ARG_ENABLE(trayicon-plugin,
 	[  --disable-trayicon-plugin         Do not build System Tray Icon plugin],
 	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
 if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
 	PLUGINS="trayicon $PLUGINS"
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
 
 dnl --- SpamAssassin ---
+AC_MSG_CHECKING([whether to build SpamAssassin plugin])
 AC_ARG_ENABLE(spamassassin-plugin,
 	[  --enable-spamassassin-plugin      Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
 	AC_SPAMASSASSIN
 	PLUGINS="spamassassin $PLUGINS"
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
 dnl --- PGP/CORE ---
+AC_MSG_CHECKING([whether to build PGP/CORE plugin])
 AC_ARG_ENABLE(pgpcore-plugin,
 	[  --disable-pgpcore-plugin           Do not build PGP/Core plugin],
 	[ac_cv_enable_pgpcore_plugin=$enableval], [ac_cv_enable_pgpcore_plugin=yes])
 if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
 	AM_PATH_GPGME(0.4.5, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
 		      [ac_cv_enable_pgpcore_plugin=no])
 	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 		PLUGINS="pgpcore $PLUGINS"
+	else
+		AC_MSG_WARN([*** PGP/CORE plugin will not be built ***])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_PGPCORE_PLUGIN, test x"$ac_cv_enable_pgpcore_plugin" = xyes)
 
+AC_MSG_CHECKING([whether to build PGP/MIME plugin])
 AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	AM_PATH_GPGME(0.4.5, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
-		      [ac_cv_enable_pgpmime_plugin=no])
-	if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 		PLUGINS="pgpmime $PLUGINS"
+	else
+		AC_MSG_WARN([*** PGP/MIME plugin cannot be built ***])
+		AC_MSG_WARN([*** without the PGP/CORE plugin     ***])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
 
 dnl --- MathML Viewer ---
+AC_MSG_CHECKING([whether to build MathML-Viewer plugin])
 AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 
 		PLUGINS="mathml-viewer $PLUGINS"
+	else
+		AC_MSG_RESULT(not found)
+		AC_MSG_WARN([*** MathML-Viewer plugin will not be built ***])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AC_SUBST(GTK_MATH_VIEW_CFLAGS)
 AC_SUBST(GTK_MATH_VIEW_LIBS)
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
 dnl --- Dillo Viewer ---
+AC_MSG_CHECKING([whether to build Dillo plugin])
 AC_ARG_ENABLE(dillo-viewer-plugin,
 	[  --disable-dillo-viewer-plugin     Do not build Dillo plugin for html mail rendering],
 	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
 if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
 	PLUGINS="dillo-viewer $PLUGINS"
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
 
@@ -601,28 +638,33 @@ fi
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
 dnl --- ClamAV ---
+AC_MSG_CHECKING([whether to build ClamAV plugin])
 AC_ARG_ENABLE(clamav-plugin,
 	[  --disable-clamav-plugin           Do not build Clam AntiVirus plugin],
 	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
-	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav, ac_cv_enable_clamav_plugin=no)
-	AC_CHECK_HEADERS(clamav.h, :, ac_cv_enable_clamav_plugin=no)
+	AC_MSG_RESULT(yes)
+	PKG_CHECK_MODULES(CLAMAV, libclamav, ac_cv_enable_clamav_plugin=yes,
+			  ac_cv_enable_clamav_plugin=no)
 	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
-		CLAMAV_LIBS="${clamav_lib}"
-
 		PLUGINS="clamav $PLUGINS"
 	else
-		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
+		AC_MSG_RESULT(not found)
+		AC_MSG_WARN([*** ClamAV plugin will not be built ***])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
 dnl Libetpan
+AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
 	[  --disable-libetpan		Do not compile IMAP4 support with libetpan],
 	[ac_cv_enable_libetpan=$enableval], [ac_cv_enable_libetpan=yes])
 if test x"$ac_cv_enable_libetpan" = xyes; then
+	AC_MSG_RESULT(yes)
 	libetpan_result=no
 	AC_PATH_PROG(libetpanconfig, [libetpan-config])
 	if test "x$libetpanconfig" != "x"; then
@@ -650,20 +692,28 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   AC_MSG_ERROR([Sylpheed requires libetpan 0.38 or newer. See http://www.etpan.org/ ])
 	   AC_MSG_ERROR([You can use --disable-libetpan if you don't need IMAP4 support.])
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl Libgnomeprint
+AC_MSG_CHECKING([whether to use libgnomeprint])
 AC_ARG_ENABLE(gnomeprint,
 	[  --disable-gnomeprint		Do not use libgnomeprint for printing],
 	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=yes])
 if test x$ac_cv_enable_gnomeprint = xyes; then
+	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(GNOMEPRINT, libgnomeprint-2.2 libgnomeprintui-2.2,
 			  ac_cv_enable_gnomeprint=yes, ac_cv_enable_gnomeprint=no)
-   	if test x$ac_cv_enable_gnomeprint = xno; then
-      		AC_MSG_WARN([gnomeprint support enabled but libgnomeprintui wasn't found])
-	else
+	if test x"$ac_cv_enable_gnomeprint" = xyes; then
 		AC_DEFINE(USE_GNOMEPRINT, 1, Define if you want libgnomeprint support)
-   	fi
+	else
+		AC_MSG_RESULT(not found)
+     		AC_MSG_WARN([*** libgnomeprintui wasn't found    ***])
+		AC_MSG_WARN([*** using built-in printing support ***])
+	fi
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(SYLPHEED_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
 
