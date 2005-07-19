@@ -670,7 +670,7 @@ static void account_edit_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(add_btn), "clicked",

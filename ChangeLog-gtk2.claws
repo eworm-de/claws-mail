@@ -1,3 +1,11 @@
+2005-07-19 [paul]	1.9.12cvs80
+
+	* sylpheed-claws.desktop
+		fix typo, spotted by Stephan Sachse
+	* src/account.c
+		replace GTK_STOCK_ADD with
+		GTK_STOCK_NEW button
+
 2005-07-18 [colin]	1.9.12cvs79
 
 	* src/etpan/imap-thread.c
