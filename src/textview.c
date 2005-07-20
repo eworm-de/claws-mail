@@ -1160,11 +1160,6 @@ static void textview_make_clickable_parts(TextView *textview,
 	GtkTextIter iter;
 	gchar *mybuf = g_strdup(linebuf);
 	
-	if (!g_utf8_validate(linebuf, -1, NULL)) {
-		mybuf = g_malloc(strlen(linebuf)*2 +1);
-		conv_localetodisp(mybuf, strlen(linebuf)*2 +1, linebuf);
-	}
-
 	/* parse table - in order of priority */
 	struct table {
 		const gchar *needle; /* token */
@@ -1200,6 +1195,11 @@ static void textview_make_clickable_parts(TextView *textview,
 		gint		 pti;		/* index in parse table */
 		struct txtpos	*next;		/* next */
 	} head = {NULL, NULL, 0,  NULL}, *last = &head;
+
+	if (!g_utf8_validate(linebuf, -1, NULL)) {
+		mybuf = g_malloc(strlen(linebuf)*2 +1);
+		conv_localetodisp(mybuf, strlen(linebuf)*2 +1, linebuf);
+	}
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 

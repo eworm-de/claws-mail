@@ -1,3 +1,15 @@
+2005-07-20 [colin]	1.9.12cvs87
+
+	* src/folder.c
+	* src/textview.c
+		Gcc 2.9x compilation fixes, thanks to Darko
+	* src/plugins/clamav/clamav_plugin.c
+		Little optimisation: load virus database only once
+	* src/plugins/spamassassin/spamassassin.c
+		Big optimisation: filtering one mail took at least 1 second,
+		now it takes at least 50ms. Doesn't speed up spamassassin 
+		itself, but should already be much more tolerable.
+
 2005-07-20 [colin]	1.9.12cvs86
 
 	* src/summaryview.c

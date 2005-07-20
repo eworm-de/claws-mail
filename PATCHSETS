@@ -681,3 +681,4 @@
 ( cvs diff -u -r 1.654.2.718 -r 1.654.2.719 configure.ac;  cvs diff -u -r 1.8.2.3 -r 1.8.2.4 src/plugins/Makefile.am;  diff -u /dev/null src/plugins/pgpinline/.cvsignore;  diff -u /dev/null src/plugins/pgpinline/Makefile.am;  diff -u /dev/null src/plugins/pgpinline/pgpinline.c;  diff -u /dev/null src/plugins/pgpinline/pgpinline.deps;  diff -u /dev/null src/plugins/pgpinline/pgpinline.h;  diff -u /dev/null src/plugins/pgpinline/plugin.c;  ) > 1.9.12cvs84.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpinline/plugin.c;  ) > 1.9.12cvs85.patchset
 ( cvs diff -u -r 1.395.2.96 -r 1.395.2.97 src/summaryview.c;  ) > 1.9.12cvs86.patchset
+( cvs diff -u -r 1.213.2.41 -r 1.213.2.42 src/folder.c;  cvs diff -u -r 1.96.2.64 -r 1.96.2.65 src/textview.c;  cvs diff -u -r 1.13.2.6 -r 1.13.2.7 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.18.2.7 -r 1.18.2.8 src/plugins/spamassassin/spamassassin.c;  ) > 1.9.12cvs87.patchset

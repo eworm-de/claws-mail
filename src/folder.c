@@ -2766,9 +2766,9 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 								relation);
 		}
 		for (l = msglist; l != NULL; l = g_slist_next(l)) {
+            	        GTuples *tuples;
 			msginfo = (MsgInfo *) l->data;
 			item = msginfo->folder;
-            	        GTuples *tuples;
 
             		tuples = g_relation_select(relation, msginfo, 0);
             	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));

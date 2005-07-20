@@ -195,7 +195,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 		running |= CHILD_RUNNING;
 
-		g_timeout_add(1000, timeout_func, &running);
+		g_timeout_add(50, timeout_func, &running);
 		running |= TIMEOUT_RUNNING;
 
 		while(running & CHILD_RUNNING) {

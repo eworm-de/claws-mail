@@ -60,11 +60,12 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+static struct cl_node *cl_database;
 struct scan_parameters {
 	gboolean is_infected;
 
-	struct cl_node *root;
 	struct cl_limits limits;
+	struct cl_node *root;
 	gboolean scan_archive;
 };
 
@@ -104,7 +105,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
 	MimeInfo *mimeinfo;
 
-	int ret, no = 0;
 	struct scan_parameters params;
 
 	if (!config.clamav_enable)
@@ -118,7 +118,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		message_callback(_("ClamAV: scanning message..."));
 
 	params.is_infected = FALSE;
-	params.root = NULL;
+	params.root = cl_database;
 
     	params.limits.maxfiles = 1000; /* max files */
     	params.limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
@@ -126,15 +126,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	if (config.clamav_enable_arc)
 		params.scan_archive = TRUE;
-
-    	if ((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
-		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
-		return FALSE;
-    	}
-
-    	debug_print("Database loaded (containing in total %d signatures)\n", no);
-
-    	cl_buildtrie(params.root);
 
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, scan_func, &params);
 
@@ -154,7 +145,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		}
 	}
 	
-    	cl_freetrie(params.root);
 	procmime_mimeinfo_free_all(mimeinfo);
 	
 	return params.is_infected;
@@ -196,7 +186,7 @@ void clamav_set_message_callback(MessageCallback callback)
 gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
-	
+	int no, ret;
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
 		return -1;
@@ -217,7 +207,16 @@ gint plugin_init(gchar **error)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "ClamAV", rcpath, NULL);
 	g_free(rcpath);
-	
+
+    	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no)) != 0) {
+		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
+		return -1;
+    	}
+
+    	debug_print("Database loaded (containing in total %d signatures)\n", no);
+
+    	cl_buildtrie(cl_database);
+
 	debug_print("ClamAV plugin loaded\n");
 
 	return 0;
@@ -228,7 +227,7 @@ void plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);
-	
+	cl_freetrie(cl_database);
 	debug_print("ClamAV plugin unloaded\n");
 }
 
