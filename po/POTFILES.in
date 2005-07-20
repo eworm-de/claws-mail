@@ -75,6 +75,8 @@ src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/prefs_gpg.c
 src/plugins/pgpcore/select-keys.c
 src/plugins/pgpcore/sgpgme.c
+src/plugins/pgpinline/pgpinline.c
+src/plugins/pgpinline/plugin.c
 src/plugins/pgpmime/plugin.c
 src/plugins/pgpmime/pgpmime.c
 src/plugins/spamassassin/spamassassin.c
