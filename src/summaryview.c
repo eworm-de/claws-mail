@@ -3531,8 +3531,6 @@ gboolean summary_execute(SummaryView *summaryview)
 	summary_execute_move(summaryview);
 	summary_execute_copy(summaryview);
 	summary_execute_delete(summaryview);
-	folder_item_update_thaw();
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	
 	node = GTK_CTREE_NODE(clist->row_list);
 	for (; node != NULL; node = next) {
@@ -3559,6 +3557,9 @@ gboolean summary_execute(SummaryView *summaryview)
 
 		gtk_ctree_remove_node(ctree, node);
 	}
+
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	if (new_selected) {
 		summary_unlock(summaryview);

@@ -680,3 +680,4 @@
 ( cvs diff -u -r 1.60.2.18 -r 1.60.2.19 src/prefs_actions.c;  ) > 1.9.12cvs83.patchset
 ( cvs diff -u -r 1.654.2.718 -r 1.654.2.719 configure.ac;  cvs diff -u -r 1.8.2.3 -r 1.8.2.4 src/plugins/Makefile.am;  diff -u /dev/null src/plugins/pgpinline/.cvsignore;  diff -u /dev/null src/plugins/pgpinline/Makefile.am;  diff -u /dev/null src/plugins/pgpinline/pgpinline.c;  diff -u /dev/null src/plugins/pgpinline/pgpinline.deps;  diff -u /dev/null src/plugins/pgpinline/pgpinline.h;  diff -u /dev/null src/plugins/pgpinline/plugin.c;  ) > 1.9.12cvs84.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpinline/plugin.c;  ) > 1.9.12cvs85.patchset
+( cvs diff -u -r 1.395.2.96 -r 1.395.2.97 src/summaryview.c;  ) > 1.9.12cvs86.patchset

@@ -1,3 +1,8 @@
+2005-07-20 [colin]	1.9.12cvs86
+
+	* src/summaryview.c
+		Fix performance issue
+
 2005-07-19 [colin]	1.9.12cvs85
 
 	* src/plugins/pgpinline/plugin.c
