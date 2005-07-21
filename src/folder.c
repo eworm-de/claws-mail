@@ -1810,6 +1810,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 	}
 
+	folder_item_set_batch(item, TRUE);
 	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
 
@@ -1839,6 +1840,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 		procmsg_msginfo_free(msginfo);
 	}
+	folder_item_set_batch(item, FALSE);
 	g_slist_free(exists_list);
 
 	item->new_msgs = newcnt;

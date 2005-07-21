@@ -1,3 +1,10 @@
+2005-07-21 [colin]	1.9.12cvs90
+
+	* src/folder.c
+		Set folder to batch mode when scanning it. Makes deletion
+		of unread mails on IMAP much faster (due to the UNREAD 
+		flag unsetting)
+
 2005-07-21 [darko]	1.9.12cvs89
 
 	* configure.ac
