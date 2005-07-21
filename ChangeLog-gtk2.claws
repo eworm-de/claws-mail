@@ -1,3 +1,10 @@
+2005-07-21 [darko]	1.9.12cvs89
+
+	* configure.ac
+		link against libresolv if necessary (patch by Paul)
+	* src/msgcache.c
+		use glib's portable macros to determine endianness
+
 2005-07-21 [paul]	1.9.12cvs88
 
 	* src/crash.c

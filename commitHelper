@@ -51,7 +51,7 @@ fi;
 if [ "$name" == "dinh" ]; then
 	name="hoa";
 fi;
-if [ "$name" == "f" ]; then
+if [ "$name" == "f" -o "$name" == "darkok" ]; then
 	name="darko";
 fi;
 

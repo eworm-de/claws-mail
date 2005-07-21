@@ -24,14 +24,12 @@
 
 #include <time.h>
 
-#include <endian.h>
-
 #include "msgcache.h"
 #include "utils.h"
 #include "procmsg.h"
 #include "codeconv.h"
 
-#ifdef __BIG_ENDIAN__
+#if G_BYTE_ORDER == G_BIG_ENDIAN
 #define bswap_32(x) \
      ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
       (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))

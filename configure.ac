@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=88
+EXTRA_VERSION=89
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -419,6 +419,29 @@ else
 fi
 AC_SUBST(PTHREAD_LIBS)
 
+t_oldLibs="$LIBS"
+LIBS="$LIBS"
+ac_cv_var__res_options=no
+AC_TRY_LINK([#include <sys/types.h>
+ 	     #include <sys/socket.h>
+	     #include <netinet/in.h>
+ 	     #include <arpa/nameser.h>
+	     #include <resolv.h>],
+ 	  	[_res.options = RES_INIT;],
+ 	 	ac_cv_var__res_options=yes);
+if test "$ac_cv_var__res_options" != "yes"; then
+	LIBRESOLV="-lresolv"
+fi
+LIBS="$t_oldLibs"
+
+if test "x$LIBRESOLV" = "x"; then
+	AC_CHECK_LIB(resolv, res_query, [LIBRESOLV=-lresolv])
+	LIBS="$t_oldLibs"
+fi
+AC_SUBST(LIBRESOLV)
+
+LIBS="$LIBS $LIBRESOLV"
+ 	  	 
 dnl for LDAP support in addressbook
 dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
