@@ -682,3 +682,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpinline/plugin.c;  ) > 1.9.12cvs85.patchset
 ( cvs diff -u -r 1.395.2.96 -r 1.395.2.97 src/summaryview.c;  ) > 1.9.12cvs86.patchset
 ( cvs diff -u -r 1.213.2.41 -r 1.213.2.42 src/folder.c;  cvs diff -u -r 1.96.2.64 -r 1.96.2.65 src/textview.c;  cvs diff -u -r 1.13.2.6 -r 1.13.2.7 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.18.2.7 -r 1.18.2.8 src/plugins/spamassassin/spamassassin.c;  ) > 1.9.12cvs87.patchset
+( cvs diff -u -r 1.23.2.10 -r 1.23.2.11 src/crash.c;  cvs diff -u -r 1.4.2.13 -r 1.4.2.14 src/gtk/about.c;  ) > 1.9.12cvs88.patchset

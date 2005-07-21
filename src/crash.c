@@ -399,11 +399,11 @@ static const gchar *get_compiled_in_features(void)
 #if INET6
 		   " IPv6"
 #endif
-#if HAVE_LIBCOMPFACE
-		   " libcompface"
+#if HAVE_ICONV
+		   " iconv"
 #endif
-#if HAVE_LIBJCONV
-		   " libjconv"
+#if HAVE_LIBCOMPFACE
+		   " compface"
 #endif
 #if USE_OPENSSL
 		   " OpenSSL"
@@ -416,6 +416,12 @@ static const gchar *get_compiled_in_features(void)
 #endif
 #if USE_ASPELL
 		   " GNU/aspell"
+#endif
+#if HAVE_LIBETPAN
+		   " libetpan"
+#endif
+#if USE_GNOMEPRINT
+		   " libgnomeprint"
 #endif
 	"");
 }

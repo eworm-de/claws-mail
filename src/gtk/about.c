@@ -191,6 +191,12 @@ static void about_create(void)
 #if USE_ASPELL
 		   " GNU/aspell"
 #endif
+#if HAVE_LIBETPAN
+		   " libetpan"
+#endif
+#if USE_GNOMEPRINT
+		   " libgnomeprint"
+#endif
 	"");
 
 	label = gtk_label_new(buf);

@@ -1,3 +1,9 @@
+2005-07-21 [paul]	1.9.12cvs88
+
+	* src/crash.c
+	* src/gtk/about.c
+		update compiled-in features list
+
 2005-07-20 [colin]	1.9.12cvs87
 
 	* src/folder.c
