@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2005-06-26 07:52+0100\n"
+"POT-Creation-Date: 2005-07-21 06:53+0100\n"
 "PO-Revision-Date: 2005-05-08 08:04+0100\n"
 "Last-Translator: Miquel Oliete i Baliarda <miqueloliete@softhome.net>\n"
 "Language-Team: Miquel Oliete i Baliarda <miqueloliete@softhome.net>\n"
@@ -23,74 +23,62 @@ msgstr ""
 "Hi ha finestres de composició obertes.\n"
 "Tanqueu totes les finestres de composició abans d'editar els comptes."
 
-#: src/account.c:625
+#: src/account.c:416
+msgid "Can't create folder."
+msgstr "No s'ha pogut crear la carpeta."
+
+#: src/account.c:629
 msgid "Edit accounts"
 msgstr "Editar comptes"
 
-#: src/account.c:643
+#: src/account.c:647
 msgid ""
 "New messages will be checked in this order. Check the boxes\n"
-"on the `G' column to enable message retrieval by `Get all'."
+"on the 'G' column to enable message retrieval by 'Get all'."
 msgstr ""
-"L'ordre de comprovació de missatges serà aquest. Marqueu les caselles\n"
-"a la columna `G' per habilitar la descarrega mitjançant `Rebre tot'."
+"Els nous missatges seran comprovats en aquest ordre. Valida les bústies\n"
+"a la columna 'G' per activar la recollida de missatges amb 'Get all'."
 
-#: src/account.c:717
-msgid " Set as default account "
-msgstr " Establir com primària "
+#: src/account.c:722
+msgid " _Set as default account "
+msgstr " E_stablir com a compte primari "
 
-#: src/account.c:794
-msgid "Accounts with remote folders cannot be cloned"
-msgstr "Els comptes amb carpetes remotes no es poden clonar"
+#: src/account.c:799
+msgid "Accounts with remote folders cannot be copied."
+msgstr "Els comptes amb carpetes remotes no es poden copiar"
 
 #. copy fields
-#: src/account.c:800
+#: src/account.c:805
 #, c-format
-msgid "Cloned %s"
-msgstr "Còpia de %s"
+msgid "Copy of %s"
+msgstr "Copia de %s"
 
-#: src/account.c:937
+#: src/account.c:944
+msgid "Do you really want to delete the account '%s'?"
+msgstr "Realment voleu esborrar el compte '%s'?"
+
+#: src/account.c:946
+msgid "(Untitled)"
+msgstr "(Sense títol)"
+
+#: src/account.c:947
 msgid "Delete account"
 msgstr "Esborrar compte"
 
-#: src/account.c:938
-msgid "Do you really want to delete this account?"
-msgstr "Realment voleu esborrar aquest compte?"
-
-#: src/account.c:939 src/compose.c:3592 src/compose.c:6056 src/compose.c:6352
-#: src/exphtmldlg.c:186 src/expldifdlg.c:193 src/expldifdlg.c:251
-#: src/folderview.c:1800 src/folderview.c:1885 src/imap_gtk.c:271
-#: src/imap_gtk.c:319 src/imap_gtk.c:414 src/inc.c:179 src/inc.c:284
-#: src/inc.c:310 src/messageview.c:693 src/mh_gtk.c:171 src/mh_gtk.c:314
-#: src/news_gtk.c:206 src/news_gtk.c:255 src/news_gtk.c:310
-#: src/prefs_actions.c:693 src/prefs_actions.c:712 src/prefs_filtering.c:878
-#: src/prefs_filtering.c:1035 src/prefs_matcher.c:1605
-#: src/prefs_template.c:371 src/prefs_template.c:387 src/prefs_themes.c:434
-#: src/prefs_themes.c:489 src/prefs_themes.c:496 src/ssl_manager.c:373
-#: src/toolbar.c:1864
-msgid "Yes"
-msgstr "Si"
-
-#: src/account.c:939 src/compose.c:3592 src/compose.c:6056 src/imap_gtk.c:271
-#: src/imap_gtk.c:319 src/mh_gtk.c:171 src/mh_gtk.c:314 src/news_gtk.c:206
-#: src/news_gtk.c:255 src/ssl_manager.c:373
-msgid "+No"
-msgstr "+No"
-
-#: src/account.c:1377 src/addressadd.c:185 src/addressbook.c:675
-#: src/compose.c:4632 src/compose.c:4797 src/editaddress.c:776
+#: src/account.c:1388 src/addressadd.c:185 src/addressbook.c:675
+#: src/compose.c:4672 src/compose.c:4837 src/editaddress.c:776
 #: src/editaddress.c:825 src/editbook.c:175 src/editgroup.c:260
-#: src/editjpilot.c:296 src/editldap.c:398 src/editvcard.c:211
+#: src/editjpilot.c:270 src/editldap.c:398 src/editvcard.c:183
 #: src/importmutt.c:262 src/importpine.c:262 src/mimeview.c:198
-#: src/plugins/pgpmime/select-keys.c:315
+#: src/plugins/pgpcore/select-keys.c:319
 msgid "Name"
 msgstr "Nom"
 
-#: src/account.c:1384 src/prefs_account.c:1132
+#: src/account.c:1395 src/prefs_account.c:1132
 msgid "Protocol"
 msgstr "Protocol"
 
-#: src/account.c:1391 src/ssl_manager.c:98
+#: src/account.c:1402 src/ssl_manager.c:98
 msgid "Server"
 msgstr "Servidor"
 
@@ -156,13 +144,12 @@ msgid "Action's input/output"
 msgstr "Entrada/sortida de la acció"
 
 #: src/action.c:1420
-#, c-format
 msgid ""
 "Enter the argument for the following action:\n"
-"(`%%h' will be replaced with the argument)\n"
+"('%%h' will be replaced with the argument)\n"
 "  %s"
 msgstr ""
-"Teclejeu l'argument per la acció sigüent:\n"
+"Teclejeu l'argument per la acció següent:\n"
 "(`%%h' serà substituït amb l'argument)\n"
 "  %s"
 
@@ -171,13 +158,12 @@ msgid "Action's hidden user argument"
 msgstr "Argument d'usuari ocult per a la acció"
 
 #: src/action.c:1429
-#, c-format
 msgid ""
 "Enter the argument for the following action:\n"
-"(`%%u' will be replaced with the argument)\n"
+"('%%u' will be replaced with the argument)\n"
 "  %s"
 msgstr ""
-"Teclejeu l'argument per a la acció sigüent:\n"
+"Teclejeu l'argument per a la acció següent:\n"
 "(`%%u' serà substituït amb l'argument)\n"
 "  %s"
 
@@ -189,8 +175,8 @@ msgstr "Argument d'usuari per a la acció"
 msgid "Add to address book"
 msgstr "Afegir a l'agenda"
 
-#: src/addressadd.c:197 src/plugins/pgpmime/select-keys.c:316
-#: src/toolbar.c:434
+#: src/addressadd.c:197 src/plugins/pgpcore/select-keys.c:320
+#: src/toolbar.c:438
 msgid "Address"
 msgstr "Adreça"
 
@@ -203,7 +189,7 @@ msgstr "Notes"
 msgid "Select Address Book Folder"
 msgstr "Seleccionar carpeta de l'agenda"
 
-#: src/addressbook.c:400 src/mainwindow.c:442 src/messageview.c:154
+#: src/addressbook.c:400 src/mainwindow.c:445 src/messageview.c:155
 msgid "/_File"
 msgstr "/_Arxiu"
 
@@ -223,9 +209,9 @@ msgstr "/_Fitxer/Nou _JPilot"
 msgid "/_File/New _Server"
 msgstr "/_Fitxer/Nou _servidor"
 
-#: src/addressbook.c:409 src/addressbook.c:412 src/mainwindow.c:445
-#: src/mainwindow.c:447 src/mainwindow.c:452 src/mainwindow.c:454
-#: src/mainwindow.c:457 src/mainwindow.c:459 src/messageview.c:157
+#: src/addressbook.c:409 src/addressbook.c:412 src/mainwindow.c:448
+#: src/mainwindow.c:450 src/mainwindow.c:455 src/mainwindow.c:457
+#: src/mainwindow.c:460 src/mainwindow.c:462 src/messageview.c:158
 msgid "/_File/---"
 msgstr "/_Fitxer/---"
 
@@ -241,12 +227,12 @@ msgstr "/_Fitxer/_Esborrar"
 msgid "/_File/_Save"
 msgstr "/_Fitxer/_Guardar"
 
-#: src/addressbook.c:414 src/messageview.c:158
+#: src/addressbook.c:414 src/messageview.c:159
 msgid "/_File/_Close"
 msgstr "/_Fitxer/_Tancar"
 
 #: src/addressbook.c:415 src/addressbook.c:443 src/addressbook.c:457
-#: src/compose.c:555 src/mainwindow.c:463 src/messageview.c:160
+#: src/compose.c:555 src/mainwindow.c:466 src/messageview.c:161
 msgid "/_Edit"
 msgstr "/_Editar"
 
@@ -254,8 +240,8 @@ msgstr "/_Editar"
 msgid "/_Edit/C_ut"
 msgstr "/_Editar/_Tallar"
 
-#: src/addressbook.c:417 src/compose.c:560 src/mainwindow.c:464
-#: src/messageview.c:161
+#: src/addressbook.c:417 src/compose.c:560 src/mainwindow.c:467
+#: src/messageview.c:162
 msgid "/_Edit/_Copy"
 msgstr "/_Editar/C_opiar"
 
@@ -264,7 +250,7 @@ msgid "/_Edit/_Paste"
 msgstr "/_Editar/_Enganxar"
 
 #: src/addressbook.c:419 src/compose.c:558 src/compose.c:641 src/compose.c:647
-#: src/mainwindow.c:467 src/messageview.c:163
+#: src/mainwindow.c:470 src/messageview.c:164
 msgid "/_Edit/---"
 msgstr "/_Editar/---"
 
@@ -304,10 +290,10 @@ msgstr "/_Adreça/_Esborrar"
 msgid "/_Address/_Mail To"
 msgstr "/_Adreça/_Correu per"
 
-#: src/addressbook.c:430 src/addressbook.c:434 src/mainwindow.c:711
-#: src/mainwindow.c:734 src/mainwindow.c:736 src/mainwindow.c:745
-#: src/mainwindow.c:748 src/mainwindow.c:752 src/messageview.c:293
-#: src/messageview.c:314
+#: src/addressbook.c:430 src/addressbook.c:434 src/mainwindow.c:715
+#: src/mainwindow.c:738 src/mainwindow.c:740 src/mainwindow.c:749
+#: src/mainwindow.c:752 src/mainwindow.c:756 src/messageview.c:294
+#: src/messageview.c:315
 msgid "/_Tools/---"
 msgstr "/E_ines/---"
 
@@ -331,13 +317,13 @@ msgstr "/E_ines/Exportar _HTML..."
 msgid "/_Tools/Export LDI_F..."
 msgstr "/E_ines/Exportar LDI_F..."
 
-#: src/addressbook.c:437 src/compose.c:765 src/mainwindow.c:777
-#: src/messageview.c:317
+#: src/addressbook.c:437 src/compose.c:765 src/mainwindow.c:781
+#: src/messageview.c:318
 msgid "/_Help"
 msgstr "/A_juda"
 
-#: src/addressbook.c:438 src/compose.c:766 src/mainwindow.c:787
-#: src/messageview.c:318
+#: src/addressbook.c:438 src/compose.c:766 src/mainwindow.c:791
+#: src/messageview.c:319
 msgid "/_Help/_About"
 msgstr "/A_juda/_Sobre"
 
@@ -351,8 +337,8 @@ msgstr "/_Esborrar"
 #: src/mh_gtk.c:54 src/mh_gtk.c:57 src/mh_gtk.c:59 src/news_gtk.c:52
 #: src/news_gtk.c:54 src/news_gtk.c:56 src/news_gtk.c:59
 #: src/plugins/trayicon/trayicon.c:93 src/plugins/trayicon/trayicon.c:96
-#: src/summaryview.c:401 src/summaryview.c:404 src/summaryview.c:410
-#: src/summaryview.c:424 src/summaryview.c:426 src/summaryview.c:447
+#: src/summaryview.c:402 src/summaryview.c:405 src/summaryview.c:411
+#: src/summaryview.c:425 src/summaryview.c:427 src/summaryview.c:448
 msgid "/---"
 msgstr "/---"
 
@@ -393,7 +379,7 @@ msgid "/_Browse Entry"
 msgstr "/_Veure entrada"
 
 #: src/addressbook.c:484 src/crash.c:433 src/crash.c:452 src/importldif.c:118
-#: src/plugins/pgpmime/sgpgme.c:98 src/prefs_themes.c:660
+#: src/plugins/pgpcore/sgpgme.c:103 src/prefs_themes.c:660
 #: src/prefs_themes.c:692 src/prefs_themes.c:693
 msgid "Unknown"
 msgstr "Desconegut"
@@ -482,8 +468,8 @@ msgstr "Error iniciant la connexió TLS"
 msgid "E-Mail address"
 msgstr "Direcció de correu"
 
-#: src/addressbook.c:681 src/prefs_other.c:94 src/toolbar.c:180
-#: src/toolbar.c:1529
+#: src/addressbook.c:681 src/prefs_other.c:97 src/toolbar.c:183
+#: src/toolbar.c:1580
 msgid "Address book"
 msgstr "Agenda d'adreces"
 
@@ -492,9 +478,9 @@ msgid "Name:"
 msgstr "Nom:"
 
 #. Buttons
-#: src/addressbook.c:828 src/addressbook.c:2369 src/addressbook.c:2383
-#: src/addressbook.c:2398 src/editaddress.c:718 src/editaddress.c:852
-#: src/prefs_filtering_action.c:151 src/toolbar.c:383 src/toolbar.c:476
+#: src/addressbook.c:828 src/addressbook.c:2376 src/addressbook.c:2402
+#: src/editaddress.c:718 src/editaddress.c:852
+#: src/prefs_filtering_action.c:151 src/toolbar.c:386 src/toolbar.c:480
 msgid "Delete"
 msgstr "Esborrar"
 
@@ -506,13 +492,13 @@ msgstr "Afegir"
 msgid "Lookup"
 msgstr "Buscar"
 
-#: src/addressbook.c:846 src/compose.c:1571 src/compose.c:3343
-#: src/compose.c:4397 src/compose.c:5104 src/headerview.c:53
+#: src/addressbook.c:846 src/compose.c:1571 src/compose.c:3361
+#: src/compose.c:4437 src/compose.c:5143 src/headerview.c:53
 #: src/prefs_template.c:190 src/summary_search.c:218
 msgid "To:"
 msgstr "Per a:"
 
-#: src/addressbook.c:850 src/compose.c:1555 src/compose.c:3342
+#: src/addressbook.c:850 src/compose.c:1555 src/compose.c:3360
 #: src/prefs_template.c:192
 msgid "Cc:"
 msgstr "Cc:"
@@ -534,54 +520,55 @@ msgstr "Aqyesta adreça és només de lectura i no es pot esborrar."
 msgid "Really delete the address(es)?"
 msgstr "Esborrar realment la/les adreça/es?"
 
-#: src/addressbook.c:1631 src/addressbook.c:1704
+#: src/addressbook.c:1638 src/addressbook.c:1711
 msgid "Cannot paste. Target address book is readonly."
 msgstr "No es pot enganxar. El llibre d'adreces de destinació és només de lectura."
 
-#: src/addressbook.c:1642
+#: src/addressbook.c:1649
 msgid "Cannot paste into an address group."
 msgstr "No es pot enganxar dins d'un grup d'adreces."
 
-#: src/addressbook.c:2366
-#, c-format
-msgid "Do you want to delete the query results and addresses in `%s' ?"
-msgstr "Voleu esborrar els resultats de la búsqueda i adreces a `%s'?"
-
-#: src/addressbook.c:2378
-#, c-format
-msgid ""
-"Do you want to delete the folder AND all addresses in `%s' ? \n"
-"If deleting the folder only, addresses will be moved into parent folder."
-msgstr ""
-"Voleu esborrar la carpeta I totes les adreces a `%s'? \n"
-"Si només esborreu la carpeta, les adreces es mouran a la carpeta mare."
-
-#: src/addressbook.c:2384
-msgid "Folder only"
-msgstr "Només carpeta"
+#: src/addressbook.c:2373
+msgid "Do you want to delete the query results and addresses in '%s' ?"
+msgstr "Voleu esborrar els resultats de la búsqueda i adreces a `%s' ?"
 
 #: src/addressbook.c:2385
-msgid "Folder and Addresses"
-msgstr "Carpeta i adreces"
+msgid ""
+"Do you want to delete the folder AND all addresses in '%s' ?\n"
+"If deleting the folder only, addresses will be moved into parent folder."
+msgstr ""
+"Voleu esborrar la carpeta I totes les adreces a '%s' ?\n"
+"Si només esborreu la carpeta, les adreces es mouran a la carpeta mare."
 
-#: src/addressbook.c:2397
-#, c-format
-msgid "Really delete `%s' ?"
-msgstr "Esborrar realment `%s' ?"
+#: src/addressbook.c:2388 src/imap_gtk.c:319 src/mh_gtk.c:170
+msgid "Delete folder"
+msgstr "Esborrar carpeta"
 
-#: src/addressbook.c:3192
+#: src/addressbook.c:2389
+msgid "_Folder only"
+msgstr "_Només la carpeta"
+
+#: src/addressbook.c:2389
+msgid "Folder and _addresses"
+msgstr "Carpeta i _adreces"
+
+#: src/addressbook.c:2401
+msgid "Really delete '%s' ?"
+msgstr "Esborrar realment '%s' ?"
+
+#: src/addressbook.c:3195
 msgid "New user, could not save index file."
 msgstr "Nou usuari, no s'ha pogut guardar l'arxiu índex."
 
-#: src/addressbook.c:3196
+#: src/addressbook.c:3199
 msgid "New user, could not save address book files."
 msgstr "Nou usuari, no s'han pogut guardar els arxius d'adreces"
 
-#: src/addressbook.c:3206
+#: src/addressbook.c:3209
 msgid "Old address book converted successfully."
 msgstr "Agenda antiga d'adreces convertida amb èxit"
 
-#: src/addressbook.c:3211
+#: src/addressbook.c:3214
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file"
@@ -589,7 +576,7 @@ msgstr ""
 "Agenda antiga d'adreces convertida,\n"
 "no s'ha pogut guardar el nou arxiu índex"
 
-#: src/addressbook.c:3224
+#: src/addressbook.c:3227
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -597,7 +584,7 @@ msgstr ""
 "No s'ha pogut convertir l'agenda antiga,\n"
 "pero s'han creat nous arxius d'adreces buits."
 
-#: src/addressbook.c:3230
+#: src/addressbook.c:3233
 msgid ""
 "Could not convert address book,\n"
 "could not create new address book files."
@@ -605,7 +592,7 @@ msgstr ""
 "No s'ha pogut convertir l'agenda antiga,\n"
 "no s'han pogut crear els arxius per la nova."
 
-#: src/addressbook.c:3235
+#: src/addressbook.c:3238
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -613,19 +600,15 @@ msgstr ""
 "No s'ha pogut convertir l'agenda antiga\n"
 "i no s'han pogut crear els arxius per la nova."
 
-#: src/addressbook.c:3242
+#: src/addressbook.c:3245 src/addressbook.c:3251
 msgid "Addressbook conversion error"
 msgstr "Error en la conversió de l'agenda de Sylpheed"
 
-#: src/addressbook.c:3247
-msgid "Addressbook conversion"
-msgstr "Conversió de l'agenda"
-
-#: src/addressbook.c:3284
+#: src/addressbook.c:3289
 msgid "Addressbook Error"
 msgstr "Error en l'agenda"
 
-#: src/addressbook.c:3285
+#: src/addressbook.c:3290
 msgid "Could not read address index"
 msgstr "No s'ha pogut llegir l'índex d'adreces"
 
@@ -633,83 +616,83 @@ msgstr "No s'ha pogut llegir l'índex d'adreces"
 #. * Message that is displayed whilst a query is executing in a background
 #. * thread.
 #.
-#: src/addressbook.c:3644
+#: src/addressbook.c:3649
 msgid "Busy searching..."
 msgstr "Buscant..."
 
 #. *
 #. * Label (a format string) that is used to name each folder.
 #.
-#: src/addressbook.c:3715
+#: src/addressbook.c:3720
 #, c-format
 msgid "Search '%s'"
 msgstr " Buscar '%s'"
 
-#: src/addressbook.c:3935
+#: src/addressbook.c:3940
 msgid "Interface"
 msgstr "Interficie"
 
-#: src/addressbook.c:3951 src/exphtmldlg.c:426 src/expldifdlg.c:438
+#: src/addressbook.c:3956 src/exphtmldlg.c:427 src/expldifdlg.c:439
 #: src/exporthtml.c:1011 src/importldif.c:692
 msgid "Address Book"
 msgstr "Agenda d'adreces"
 
-#: src/addressbook.c:3967
+#: src/addressbook.c:3972
 msgid "Person"
 msgstr "Persona"
 
-#: src/addressbook.c:3983
+#: src/addressbook.c:3988
 msgid "EMail Address"
 msgstr "Adreça de correu"
 
-#: src/addressbook.c:3999
+#: src/addressbook.c:4004
 msgid "Group"
 msgstr "Grup"
 
 #. special folder setting (maybe these options are redundant)
-#: src/addressbook.c:4015 src/exporthtml.c:913 src/folderview.c:329
+#: src/addressbook.c:4020 src/exporthtml.c:913 src/folderview.c:375
 #: src/prefs_account.c:2276
 msgid "Folder"
 msgstr "Carpeta"
 
-#: src/addressbook.c:4031
+#: src/addressbook.c:4036
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:4047 src/addressbook.c:4063
+#: src/addressbook.c:4052 src/addressbook.c:4068
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:4079
+#: src/addressbook.c:4084
 msgid "LDAP Server"
 msgstr "Servidor LDAP"
 
-#: src/addressbook.c:4095
+#: src/addressbook.c:4100
 msgid "LDAP Query"
 msgstr "Petició LDAP"
 
-#: src/addrgather.c:157
+#: src/addrgather.c:158
 msgid "Please specify name for address book."
 msgstr "Especifiqueu el nom de l'agenda, per favor."
 
-#: src/addrgather.c:177
+#: src/addrgather.c:178
 msgid "Please select the mail headers to search."
 msgstr "Seleccioneu les capçaleres a buscar per favor."
 
 #. Go fer it
-#: src/addrgather.c:184
-msgid "Busy harvesting addresses..."
-msgstr "Ocupat recopilant adreces..."
+#: src/addrgather.c:185
+msgid "Harvesting addresses..."
+msgstr "Recopilant adreces..."
 
-#: src/addrgather.c:222
+#: src/addrgather.c:224
 msgid "Addresses gathered successfully."
 msgstr "Adreces recopilades amb èxit."
 
-#: src/addrgather.c:286
+#: src/addrgather.c:294
 msgid "No folder or message was selected."
 msgstr "No heu seleccionat cap missatge ni carpeta."
 
-#: src/addrgather.c:294
+#: src/addrgather.c:302
 msgid ""
 "Please select a folder to process from the folder\n"
 "list. Alternatively, select one or messages from\n"
@@ -719,55 +702,56 @@ msgstr ""
 "Alternativament, seleccioneu algun(s) missatge(s) de la\n"
 "llista de missatges."
 
-#: src/addrgather.c:346
+#: src/addrgather.c:354
 msgid "Folder :"
 msgstr "Carpeta :"
 
-#: src/addrgather.c:357 src/exphtmldlg.c:640 src/expldifdlg.c:670
+#: src/addrgather.c:365 src/exphtmldlg.c:641 src/expldifdlg.c:671
 #: src/importldif.c:950
 msgid "Address Book :"
 msgstr "Agenda d'adreces :"
 
-#: src/addrgather.c:367
+#: src/addrgather.c:375
 msgid "Folder Size :"
 msgstr "Tamany de carpeta :"
 
-#: src/addrgather.c:382
+#: src/addrgather.c:390
 msgid "Process these mail header fields"
 msgstr "Processar les següents capçaleres"
 
-#: src/addrgather.c:400
+#: src/addrgather.c:408
 msgid "Include sub-folders"
 msgstr "Incloure subcarpetes"
 
-#: src/addrgather.c:423
+#: src/addrgather.c:431
 msgid "Header Name"
 msgstr "Nom de capçalera"
 
-#: src/addrgather.c:424
+#: src/addrgather.c:432
 msgid "Address Count"
 msgstr "Comptador d'adreces"
 
 #. Create notebook pages
-#: src/addrgather.c:529 src/alertpanel.c:167 src/messageview.c:552
-#: src/messageview.c:564 src/plugins/pgpmime/sgpgme.c:353 src/textview.c:2208
+#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:3665
+#: src/messageview.c:553 src/messageview.c:566
+#: src/plugins/pgpcore/sgpgme.c:371
 msgid "Warning"
 msgstr "Avís"
 
-#: src/addrgather.c:530
+#: src/addrgather.c:538
 msgid "Header Fields"
 msgstr "Camps capçalera"
 
-#: src/addrgather.c:531 src/exphtmldlg.c:760 src/expldifdlg.c:781
+#: src/addrgather.c:539 src/exphtmldlg.c:761 src/expldifdlg.c:782
 #: src/importldif.c:1069
 msgid "Finish"
 msgstr "Finalitzar"
 
-#: src/addrgather.c:590
+#: src/addrgather.c:600
 msgid "Harvest E-Mail Addresses - from Selected Messages"
 msgstr "Recopilar adreces de correu - dels missatges seleccionats"
 
-#: src/addrgather.c:598
+#: src/addrgather.c:608
 msgid "Harvest E-Mail Addresses - from Folder"
 msgstr "Recopilar adreces de correu - de la carpeta"
 
@@ -779,22 +763,16 @@ msgstr "Adreça comú"
 msgid "Personal address"
 msgstr "Adreça personal"
 
-#: src/alertpanel.c:154 src/compose.c:6056
+#: src/alertpanel.c:140 src/compose.c:6096
 msgid "Notice"
 msgstr "Notificació"
 
-#: src/alertpanel.c:180 src/alertpanel.c:202 src/compose.c:3592 src/inc.c:599
-#: src/plugins/pgpmime/sgpgme.c:110 src/plugins/pgpmime/sgpgme.c:123
-#: src/plugins/pgpmime/sgpgme.c:149
+#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:3610 src/inc.c:600
+#: src/plugins/pgpcore/sgpgme.c:115 src/plugins/pgpcore/sgpgme.c:156
 msgid "Error"
 msgstr "Error"
 
-#: src/alertpanel.c:202 src/gtk/sslcertwindow.c:231
-#: src/plugins/trayicon/trayicon.c:343
-msgid "OK"
-msgstr "Acceptar"
-
-#: src/alertpanel.c:202
+#: src/alertpanel.c:189
 msgid "View log"
 msgstr "Veure traça"
 
@@ -844,15 +822,15 @@ msgstr "S'ha produït un error enviant el missatge\n"
 msgid "Error occurred while sending command\n"
 msgstr "S'ha produït un error enviant l'ordre\n"
 
-#: src/common/plugin.c:114
+#: src/common/plugin.c:202
 msgid "Plugin already loaded"
 msgstr "Modul ja carregat"
 
-#: src/common/plugin.c:120
+#: src/common/plugin.c:210
 msgid "Failed to allocate memory for Plugin"
 msgstr "Error en petició de memòria per al plug-in"
 
-#: src/common/plugin.c:142
+#: src/common/plugin.c:232
 msgid "This module is for Sylpheed-Claws GTK1."
 msgstr "Aquest mòdul es per a la versió GTK1 del Sylpheed Claws."
 
@@ -893,9 +871,9 @@ msgstr "Connexió SSL fallida (%s)\n"
 #: src/common/ssl_certificate.c:140 src/common/ssl_certificate.c:151
 #: src/common/ssl_certificate.c:157 src/common/ssl_certificate.c:164
 #: src/common/ssl_certificate.c:175 src/common/ssl_certificate.c:181
-#: src/gtk/sslcertwindow.c:64 src/gtk/sslcertwindow.c:75
-#: src/gtk/sslcertwindow.c:81 src/gtk/sslcertwindow.c:88
-#: src/gtk/sslcertwindow.c:99 src/gtk/sslcertwindow.c:105
+#: src/gtk/sslcertwindow.c:62 src/gtk/sslcertwindow.c:73
+#: src/gtk/sslcertwindow.c:79 src/gtk/sslcertwindow.c:86
+#: src/gtk/sslcertwindow.c:97 src/gtk/sslcertwindow.c:103
 msgid "<not in certificate>"
 msgstr "<no en el certificat>"
 
@@ -997,11 +975,11 @@ msgstr "/_Afegir..."
 msgid "/_Remove"
 msgstr "/_Treure"
 
-#: src/compose.c:535 src/folderview.c:244
+#: src/compose.c:535 src/folderview.c:290
 msgid "/_Properties..."
 msgstr "/_Propietats..."
 
-#: src/compose.c:540 src/mainwindow.c:661 src/messageview.c:270
+#: src/compose.c:540 src/mainwindow.c:665 src/messageview.c:271
 msgid "/_Message"
 msgstr "/_Missatge"
 
@@ -1013,10 +991,10 @@ msgstr "/_Missatge/_Enviar"
 msgid "/_Message/Send _later"
 msgstr "/_Missatge/Enviar _després"
 
-#: src/compose.c:545 src/compose.c:549 src/compose.c:552 src/mainwindow.c:671
-#: src/mainwindow.c:681 src/mainwindow.c:684 src/mainwindow.c:690
-#: src/mainwindow.c:699 src/messageview.c:273 src/messageview.c:281
-#: src/messageview.c:286
+#: src/compose.c:545 src/compose.c:549 src/compose.c:552 src/mainwindow.c:675
+#: src/mainwindow.c:685 src/mainwindow.c:688 src/mainwindow.c:694
+#: src/mainwindow.c:703 src/messageview.c:274 src/messageview.c:282
+#: src/messageview.c:287
 msgid "/_Message/---"
 msgstr "/_Missatge/---"
 
@@ -1056,7 +1034,7 @@ msgstr "/_Editar/_Tallar"
 msgid "/_Edit/Paste as _quotation"
 msgstr "/_Editar/Enganxar com a _cita"
 
-#: src/compose.c:564 src/mainwindow.c:465 src/messageview.c:162
+#: src/compose.c:564 src/mainwindow.c:468 src/messageview.c:163
 msgid "/_Edit/Select _all"
 msgstr "/_Editar/_Seleccionar tot"
 
@@ -1230,7 +1208,7 @@ msgstr "/_Opcions/Codificacio d_e caracters"
 
 #: src/compose.c:687
 msgid "/_Options/Character _encoding/_Automatic"
-msgstr "/_Opcions/Codificacio d_e caracters/_Autodetectar"
+msgstr "/_Opcions/Codificacio d_e caracters/_Automàtic"
 
 #: src/compose.c:689 src/compose.c:695 src/compose.c:701 src/compose.c:705
 #: src/compose.c:711 src/compose.c:715 src/compose.c:721 src/compose.c:725
@@ -1272,11 +1250,11 @@ msgstr "/_Opcions/Codificacio d_e caracters/Grec (ISO-8859-_7)"
 
 #: src/compose.c:717
 msgid "/_Options/Character _encoding/Hebrew (ISO-8859-_8)"
-msgstr "/_Opcions/Codificacio d_e caracters/Grec (ISO-8859-_7)"
+msgstr "/_Opcions/Codificacio d_e caracters/Hebreu (ISO-8859-_8)"
 
 #: src/compose.c:719
 msgid "/_Options/Character _encoding/Hebrew (Windows-1255)"
-msgstr "/_Opcions/Codificacio d_e caracter/Ciríl·lic (Windows-1251)"
+msgstr "/_Opcions/Codificacio d_e caracter/Hebreu (Windows-1255)"
 
 #: src/compose.c:723
 msgid "/_Options/Character _encoding/Turkish (ISO-8859-_9)"
@@ -1330,7 +1308,7 @@ msgstr "/_Opcions/Codificacio d_e caracters/Tailandès (TIS-620)"
 msgid "/_Options/Character _encoding/Thai (Windows-874)"
 msgstr "/_Opcions/Codificacio d_e caracters/Tailandès (Windows-874)"
 
-#: src/compose.c:760 src/mainwindow.c:702 src/messageview.c:289
+#: src/compose.c:760 src/mainwindow.c:706 src/messageview.c:290
 msgid "/_Tools"
 msgstr "/E_ines"
 
@@ -1338,7 +1316,7 @@ msgstr "/E_ines"
 msgid "/_Tools/Show _ruler"
 msgstr "/E_ines/Mostrar _regleta"
 
-#: src/compose.c:762 src/messageview.c:290
+#: src/compose.c:762 src/messageview.c:291
 msgid "/_Tools/_Address book"
 msgstr "/E_ines/_Agenda d'adreces"
 
@@ -1346,7 +1324,7 @@ msgstr "/E_ines/_Agenda d'adreces"
 msgid "/_Tools/_Template"
 msgstr "/E_ines/_Plantilles"
 
-#: src/compose.c:764 src/mainwindow.c:735 src/messageview.c:315
+#: src/compose.c:764 src/mainwindow.c:739 src/messageview.c:316
 msgid "/_Tools/Actio_ns"
 msgstr "/E_ines/Accio_ns"
 
@@ -1354,7 +1332,7 @@ msgstr "/E_ines/Accio_ns"
 msgid "Reply-To:"
 msgstr "Responder a:"
 
-#: src/compose.c:1564 src/compose.c:4394 src/compose.c:5106
+#: src/compose.c:1564 src/compose.c:4434 src/compose.c:5145
 #: src/headerview.c:54
 msgid "Newsgroups:"
 msgstr "Grups de notícies:"
@@ -1371,36 +1349,36 @@ msgstr "Marca de cita per error."
 msgid "Message reply/forward format error."
 msgstr "Respondre/reenviar per error."
 
-#: src/compose.c:2399
+#: src/compose.c:2405
 #, c-format
 msgid "File %s is empty."
 msgstr "L'arxiu %s està buit."
 
-#: src/compose.c:2403
+#: src/compose.c:2409
 #, c-format
 msgid "Can't read %s."
 msgstr "No es pot llegir %s."
 
-#: src/compose.c:2438
+#: src/compose.c:2444
 #, c-format
 msgid "Message: %s"
 msgstr "Missatge: %s"
 
-#: src/compose.c:3064
+#: src/compose.c:3078
 msgid " [Edited]"
 msgstr " [Editat]"
 
-#: src/compose.c:3066
+#: src/compose.c:3080
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Composar missatge%s"
 
-#: src/compose.c:3069
+#: src/compose.c:3083
 #, c-format
 msgid "Compose message%s"
 msgstr "Composar missatge%s"
 
-#: src/compose.c:3093 src/messageview.c:587
+#: src/compose.c:3107 src/messageview.c:589
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1408,25 +1386,35 @@ msgstr ""
 "No heu especificar cap compte per a enviar.\n"
 "Seleccioneu algun compte abans d'enviar."
 
-#: src/compose.c:3224
+#: src/compose.c:3238
 msgid "Recipient is not specified."
 msgstr "No heu especificat el destinatari."
 
-#: src/compose.c:3232 src/messageview.c:552 src/messageview.c:572
-#: src/prefs_account.c:974 src/prefs_send.c:322 src/toolbar.c:375
-#: src/toolbar.c:422
+#: src/compose.c:3246 src/messageview.c:554 src/messageview.c:574
+#: src/prefs_account.c:974 src/prefs_send.c:333 src/toolbar.c:378
+#: src/toolbar.c:426
 msgid "Send"
 msgstr "Enviar"
 
-#: src/compose.c:3233
+#: src/compose.c:3247
 msgid "Subject is empty. Send it anyway?"
 msgstr "L'assumpte està buit. Enviar de totes maneres?"
 
-#: src/compose.c:3258
-msgid "Could not queue message for sending."
-msgstr "No s'ha pogut encuar el missatge per enviar"
+#: src/compose.c:3273
+msgid ""
+"Could not queue message for sending:\n"
+"\n"
+"%s."
+msgstr ""
+"No s'ha pogut encuar el missatge per enviar\n"
+"\n"
+"%s."
 
-#: src/compose.c:3272 src/compose.c:3301
+#: src/compose.c:3275
+msgid "Could not queue message for sending."
+msgstr "No s'ha pogut encuar el missatge per enviar."
+
+#: src/compose.c:3290 src/compose.c:3319
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1434,7 +1422,7 @@ msgstr ""
 "El missatge està en cua per`no ha pogut ser enviat.\n"
 "Useu \"Enviar missatge(s) en cua\" en la finestra principal per enviar-lo"
 
-#: src/compose.c:3588
+#: src/compose.c:3607
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message from\n"
@@ -1445,59 +1433,72 @@ msgstr ""
 "de %s a %s.\n"
 "¿Enviar-lo de totes formes?"
 
-#: src/compose.c:3792
+#: src/compose.c:3661
+#, c-format
+msgid ""
+"Line %d exceeds the line length limit (998 bytes).\n"
+"The contents of the message might be broken on the way to the delivery.\n"
+"\n"
+"Send it anyway?"
+msgstr ""
+"La lína %d execedeix el límit de longitud (998 bytes).\n"
+"El contingut del missatge pot ser truncat en l'enviament.\n"
+"\n"
+"Vols enviar-lo de totes maneres?"
+
+#: src/compose.c:3832
 msgid "No account for sending mails available!"
 msgstr "No hi ha cap compte disponible per enviar correus!"
 
-#: src/compose.c:3802
+#: src/compose.c:3842
 msgid "No account for posting news available!"
 msgstr "No hi ha cap compte disponible per enviar noticies!"
 
-#: src/compose.c:4493 src/headerview.c:52 src/summary_search.c:211
+#: src/compose.c:4533 src/headerview.c:52 src/summary_search.c:211
 msgid "From:"
 msgstr "Des de:"
 
-#: src/compose.c:4620
+#: src/compose.c:4660
 msgid "Mime type"
 msgstr "Tipus MIME"
 
 #. S_COL_DATE
-#: src/compose.c:4626 src/compose.c:4796 src/mimeview.c:197
-#: src/plugins/pgpmime/select-keys.c:313 src/prefs_summary_column.c:85
-#: src/summaryview.c:462
+#: src/compose.c:4666 src/compose.c:4836 src/mimeview.c:197
+#: src/plugins/pgpcore/select-keys.c:317 src/prefs_summary_column.c:85
+#: src/summaryview.c:463
 msgid "Size"
 msgstr "Tamany"
 
 #. Save Message to folder
-#: src/compose.c:4686
+#: src/compose.c:4726
 msgid "Save Message to "
 msgstr "Guardar missatge a "
 
-#: src/compose.c:4708 src/prefs_filtering_action.c:435
+#: src/compose.c:4748 src/prefs_filtering_action.c:435
 msgid "Select ..."
 msgstr "Seleccionar ..."
 
-#: src/compose.c:4795 src/compose.c:5814
+#: src/compose.c:4835 src/compose.c:5853
 msgid "MIME type"
 msgstr "Tipus MIME"
 
 #. header labels and entries
-#: src/compose.c:4852 src/prefs_account.c:1568 src/prefs_customheader.c:201
+#: src/compose.c:4892 src/prefs_account.c:1568 src/prefs_customheader.c:201
 #: src/prefs_matcher.c:154
 msgid "Header"
 msgstr "Capçalera"
 
 #. attachment list
-#: src/compose.c:4854
+#: src/compose.c:4894
 msgid "Attachments"
 msgstr "Adjunts"
 
 #. Others Tab
-#: src/compose.c:4856
+#: src/compose.c:4896
 msgid "Others"
 msgstr "Altres"
 
-#: src/compose.c:4871 src/headerview.c:55 src/prefs_template.c:194
+#: src/compose.c:4911 src/headerview.c:55 src/prefs_template.c:194
 #: src/summary_search.c:225
 msgid "Subject:"
 msgstr "Assumpte:"
@@ -1506,13 +1507,13 @@ msgstr "Assumpte:"
 #. * index of label_colors[] as data parameter. for the None color we
 #. * pass an invalid (high) value. also we attach a data pointer so we
 #. * can always get back the SummaryView pointer.
-#: src/compose.c:5054 src/exphtmldlg.c:506 src/gtk/colorlabel.c:280
+#: src/compose.c:5093 src/exphtmldlg.c:507 src/gtk/colorlabel.c:280
 #: src/gtk/gtkaspell.c:1595 src/gtk/gtkaspell.c:2337 src/prefs_account.c:601
-#: src/summaryview.c:4204
+#: src/summaryview.c:4226
 msgid "None"
 msgstr "Cap"
 
-#: src/compose.c:5064
+#: src/compose.c:5103
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1521,31 +1522,31 @@ msgstr ""
 "No s'ha pogut iniciar el corrector ortogràfic.\n"
 "%s"
 
-#: src/compose.c:5705
+#: src/compose.c:5744
 msgid "Invalid MIME type."
 msgstr "Tipus MIME invàlid."
 
-#: src/compose.c:5723
+#: src/compose.c:5762
 msgid "File doesn't exist or is empty."
 msgstr "L'arxiu no existeix o està buit."
 
-#: src/compose.c:5796
+#: src/compose.c:5835
 msgid "Properties"
 msgstr "Propietats"
 
-#: src/compose.c:5841
+#: src/compose.c:5880
 msgid "Encoding"
 msgstr "Codificació"
 
-#: src/compose.c:5872
+#: src/compose.c:5911
 msgid "Path"
 msgstr "Ruta"
 
-#: src/compose.c:5873 src/prefs_toolbar.c:1058
+#: src/compose.c:5912 src/prefs_toolbar.c:1058
 msgid "File name"
 msgstr "Nom d'arxiu"
 
-#: src/compose.c:6053
+#: src/compose.c:6093
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1556,37 +1557,40 @@ msgstr ""
 "Voleu acabar el procés?\n"
 "Id. de procés: %d"
 
-#: src/compose.c:6350 src/imap_gtk.c:412 src/inc.c:177 src/inc.c:282
-#: src/inc.c:308 src/messageview.c:691 src/toolbar.c:1862
+#: src/compose.c:6135
+msgid "Compose: input from monitoring process\n"
+msgstr "Composar: entrada del procés de monitoritzat\n"
+
+#: src/compose.c:6383 src/imap_gtk.c:414 src/inc.c:177 src/inc.c:282
+#: src/inc.c:308 src/messageview.c:693 src/toolbar.c:1915
 msgid "Offline warning"
 msgstr "Notificació de connexió"
 
-#: src/compose.c:6351 src/inc.c:178 src/inc.c:283 src/inc.c:309
-#: src/messageview.c:692 src/toolbar.c:1863
+#: src/compose.c:6384 src/inc.c:178 src/inc.c:283 src/inc.c:309
+#: src/messageview.c:694 src/toolbar.c:1916
 msgid "You're working offline. Override?"
 msgstr "Esteu treballant sense connexió, Ignorar?"
 
-#: src/compose.c:6352 src/exphtmldlg.c:186 src/expldifdlg.c:193
-#: src/expldifdlg.c:251 src/folderview.c:1800 src/folderview.c:1885
-#: src/imap_gtk.c:414 src/inc.c:179 src/inc.c:284 src/inc.c:310
-#: src/messageview.c:693 src/news_gtk.c:310 src/prefs_actions.c:693
-#: src/prefs_actions.c:712 src/prefs_filtering.c:878
-#: src/prefs_filtering.c:1035 src/prefs_matcher.c:1605
-#: src/prefs_template.c:371 src/prefs_template.c:387 src/prefs_themes.c:434
-#: src/prefs_themes.c:489 src/prefs_themes.c:496 src/toolbar.c:1864
-msgid "No"
-msgstr "No"
+#: src/compose.c:6406
+msgid ""
+"Could not queue message:\n"
+"\n"
+"%s."
+msgstr ""
+"No s'ha pogut encuar el missatge:\n"
+"\n"
+"%s."
 
-#: src/compose.c:6503 src/compose.c:6526
+#: src/compose.c:6539 src/compose.c:6562
 msgid "Select file"
 msgstr "Seleccionar arxiu"
 
-#: src/compose.c:6539
+#: src/compose.c:6575
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "No s'ha pogut llegir l'arxiu '%s'."
 
-#: src/compose.c:6541
+#: src/compose.c:6577
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1595,38 +1599,37 @@ msgstr ""
 "L'arxiu '%s' contenia caràcters invàlids per a\n"
 "la codificació actual, la inserció pot ser incorrecta."
 
-#: src/compose.c:6587
+#: src/compose.c:6623
 msgid "Discard message"
 msgstr "Descartar missatge"
 
-#: src/compose.c:6588
+#: src/compose.c:6624
 msgid "This message has been modified. discard it?"
 msgstr "Aquest missatge s'ha modificat. Voleu descartar-lo?"
 
-#: src/compose.c:6589
+#: src/compose.c:6625
 msgid "Discard"
 msgstr "Descartar"
 
-#: src/compose.c:6589
+#: src/compose.c:6625
 msgid "to Draft"
 msgstr "a Borrador"
 
-#: src/compose.c:6633
-#, c-format
-msgid "Do you want to apply the template `%s' ?"
-msgstr "Voleu aplicar la plantilla `%s'?"
+#: src/compose.c:6669
+msgid "Do you want to apply the template '%s' ?"
+msgstr "Voleu aplicar la plantilla '%s'?"
 
-#: src/compose.c:6635
+#: src/compose.c:6671
 msgid "Apply template"
 msgstr "Aplicar plantilla"
 
-#: src/compose.c:6636
-msgid "Replace"
-msgstr "Reemplaçar"
+#: src/compose.c:6672
+msgid "_Replace"
+msgstr "_Reemplaçar"
 
-#: src/compose.c:6636 src/toolbar.c:426
-msgid "Insert"
-msgstr "Insertar"
+#: src/compose.c:6672
+msgid "_Insert"
+msgstr "_Insertar"
 
 #: src/crash.c:142
 #, c-format
@@ -1650,7 +1653,7 @@ msgstr ""
 msgid "Debug log"
 msgstr "Traça de depuració"
 
-#: src/crash.c:242 src/exphtmldlg.c:197 src/expldifdlg.c:204
+#: src/crash.c:242
 msgid "Close"
 msgstr "Tancar"
 
@@ -1687,7 +1690,7 @@ msgstr "S'ha d'especificar un Nom i un Valor"
 msgid "Edit Person Data"
 msgstr "Editar dades personals"
 
-#: src/editaddress.c:579 src/expldifdlg.c:552 src/exporthtml.c:790
+#: src/editaddress.c:579 src/expldifdlg.c:553 src/exporthtml.c:790
 #: src/ldif.c:826
 msgid "Display Name"
 msgstr "Nom mostrat"
@@ -1705,7 +1708,7 @@ msgid "Nickname"
 msgstr "Motiu (nick)"
 
 #: src/editaddress.c:628 src/editaddress.c:676 src/editaddress.c:886
-#: src/editgroup.c:261 src/expldifdlg.c:565 src/exporthtml.c:629
+#: src/editgroup.c:261 src/expldifdlg.c:566 src/exporthtml.c:629
 #: src/exporthtml.c:793 src/ldif.c:842
 msgid "E-Mail Address"
 msgstr "Adreça de correu"
@@ -1753,7 +1756,7 @@ msgstr "L'arxiu sembla correcte."
 msgid "File does not appear to be a valid address book format."
 msgstr "No sembla que l'arxiu estigui en el format de l'agenda."
 
-#: src/editbook.c:119 src/editjpilot.c:193 src/editvcard.c:99
+#: src/editbook.c:119 src/editjpilot.c:203 src/editvcard.c:107
 msgid "Could not read file."
 msgstr "No s'ha pogut llegir de l'arxiu."
 
@@ -1761,11 +1764,11 @@ msgstr "No s'ha pogut llegir de l'arxiu."
 msgid "Edit Addressbook"
 msgstr "Editar agenda"
 
-#: src/editbook.c:182 src/editjpilot.c:303 src/editvcard.c:218
+#: src/editbook.c:182 src/editjpilot.c:277 src/editvcard.c:190
 msgid " Check File "
 msgstr " Comprovar arxiu "
 
-#: src/editbook.c:187 src/editjpilot.c:308 src/editvcard.c:223
+#: src/editbook.c:187 src/editjpilot.c:282 src/editvcard.c:195
 #: src/importmutt.c:271 src/importpine.c:271 src/prefs_account.c:1788
 msgid "File"
 msgstr "Arxiu"
@@ -1822,38 +1825,38 @@ msgstr "Editar carpeta"
 msgid "Input the new name of folder:"
 msgstr "Nom de la nova carpeta:"
 
-#: src/editgroup.c:510 src/foldersel.c:499 src/imap_gtk.c:129 src/mh_gtk.c:118
+#: src/editgroup.c:510 src/foldersel.c:531 src/imap_gtk.c:129 src/mh_gtk.c:118
 msgid "New folder"
 msgstr "Nova carpeta"
 
-#: src/editgroup.c:511 src/foldersel.c:500 src/mh_gtk.c:119
+#: src/editgroup.c:511 src/foldersel.c:532 src/mh_gtk.c:119
 msgid "Input the name of new folder:"
 msgstr "Nom de la nova carpeta:"
 
-#: src/editjpilot.c:190
+#: src/editjpilot.c:200
 msgid "File does not appear to be JPilot format."
 msgstr "No sembla que aquest arxiu estigui en format JPilot."
 
-#: src/editjpilot.c:226
+#: src/editjpilot.c:212
 msgid "Select JPilot File"
 msgstr "Seleccionar arxiu JPilot"
 
-#: src/editjpilot.c:274 src/editjpilot.c:403
+#: src/editjpilot.c:248 src/editjpilot.c:378
 msgid "Edit JPilot Entry"
 msgstr "Editar entrada JPilot"
 
-#: src/editjpilot.c:315 src/editldap.c:479 src/editvcard.c:230
-#: src/exphtmldlg.c:447 src/expldifdlg.c:459 src/importldif.c:723
+#: src/editjpilot.c:289 src/editldap.c:479 src/editvcard.c:202
+#: src/exphtmldlg.c:448 src/expldifdlg.c:460 src/importldif.c:723
 #: src/importmutt.c:278 src/importpine.c:278 src/prefs_account.c:2304
 #: src/prefs_spelling.c:244
 msgid " ... "
 msgstr " ... "
 
-#: src/editjpilot.c:320
+#: src/editjpilot.c:294
 msgid "Additional e-Mail address item(s)"
 msgstr "Element(s) adicional(s) de l'adreça"
 
-#: src/editjpilot.c:410
+#: src/editjpilot.c:385
 msgid "Add New JPilot Entry"
 msgstr "Afegir nova entrada JPilot"
 
@@ -2098,19 +2101,19 @@ msgstr "Extès"
 msgid "Add New LDAP Server"
 msgstr "Afegir nou servidor LDAP"
 
-#: src/editvcard.c:96
+#: src/editvcard.c:104
 msgid "File does not appear to be vCard format."
 msgstr "No sembla que l'arxiu estigui en format vCard."
 
-#: src/editvcard.c:132
+#: src/editvcard.c:116
 msgid "Select vCard File"
 msgstr "Seleccionar arxiu vCard"
 
-#: src/editvcard.c:189 src/editvcard.c:293
+#: src/editvcard.c:161 src/editvcard.c:266
 msgid "Edit vCard Entry"
 msgstr "Editar entrada vCard"
 
-#: src/editvcard.c:298
+#: src/editvcard.c:271
 msgid "Add New vCard Entry"
 msgstr "Afegir nova entrada vCard"
 
@@ -2152,87 +2155,87 @@ msgstr ""
 msgid "Failed to Create Directory"
 msgstr "No s'ha pogut crear el directori"
 
-#: src/exphtmldlg.c:242
+#: src/exphtmldlg.c:243
 msgid "Error creating HTML file"
 msgstr "Error creant l'arxiu HTML"
 
-#: src/exphtmldlg.c:362
+#: src/exphtmldlg.c:363
 msgid "Select HTML Output File"
 msgstr "Seleccionar arxiu HTML de sortida"
 
-#: src/exphtmldlg.c:438
+#: src/exphtmldlg.c:439
 msgid "HTML Output File"
 msgstr "Arxiu HTML de sortida"
 
-#: src/exphtmldlg.c:499
+#: src/exphtmldlg.c:500
 msgid "Stylesheet"
 msgstr "Full d'estils"
 
-#: src/exphtmldlg.c:512 src/prefs_summaries.c:352 src/prefs_summaries.c:662
+#: src/exphtmldlg.c:513 src/prefs_summaries.c:352 src/prefs_summaries.c:662
 msgid "Default"
 msgstr "Per omissió"
 
-#: src/exphtmldlg.c:518 src/plugins/pgpmime/sgpgme.c:106
+#: src/exphtmldlg.c:519 src/plugins/pgpcore/sgpgme.c:111
 msgid "Full"
 msgstr "Complet"
 
-#: src/exphtmldlg.c:524
+#: src/exphtmldlg.c:525
 msgid "Custom"
 msgstr "Adequat"
 
-#: src/exphtmldlg.c:530
+#: src/exphtmldlg.c:531
 msgid "Custom-2"
 msgstr "Adequat-2"
 
-#: src/exphtmldlg.c:536
+#: src/exphtmldlg.c:537
 msgid "Custom-3"
 msgstr "Adequat-3"
 
-#: src/exphtmldlg.c:542
+#: src/exphtmldlg.c:543
 msgid "Custom-4"
 msgstr "Adequat-4"
 
-#: src/exphtmldlg.c:556
+#: src/exphtmldlg.c:557
 msgid "Full Name Format"
 msgstr "Format de nom complet"
 
-#: src/exphtmldlg.c:563
+#: src/exphtmldlg.c:564
 msgid "First Name, Last Name"
 msgstr "Nom, Cognoms"
 
-#: src/exphtmldlg.c:569
+#: src/exphtmldlg.c:570
 msgid "Last Name, First Name"
 msgstr "Cognoms, Nom"
 
-#: src/exphtmldlg.c:583
+#: src/exphtmldlg.c:584
 msgid "Color Banding"
 msgstr "Bandes de color"
 
-#: src/exphtmldlg.c:589
+#: src/exphtmldlg.c:590
 msgid "Format E-Mail Links"
 msgstr "Formatejar enllaços de correu electrònic"
 
-#: src/exphtmldlg.c:595
+#: src/exphtmldlg.c:596
 msgid "Format User Attributes"
 msgstr "Formatejar atributs de l'usuari"
 
-#: src/exphtmldlg.c:650 src/expldifdlg.c:680 src/importldif.c:960
+#: src/exphtmldlg.c:651 src/expldifdlg.c:681 src/importldif.c:960
 msgid "File Name :"
 msgstr "Nom d'arxiu :"
 
-#: src/exphtmldlg.c:660
+#: src/exphtmldlg.c:661
 msgid "Open with Web Browser"
 msgstr "Obrir amb el navegador web"
 
-#: src/exphtmldlg.c:692
+#: src/exphtmldlg.c:693
 msgid "Export Address Book to HTML File"
 msgstr "Exportar agenda a un arxiu HTML"
 
-#: src/exphtmldlg.c:758 src/expldifdlg.c:779 src/importldif.c:1067
+#: src/exphtmldlg.c:759 src/expldifdlg.c:780 src/importldif.c:1067
 msgid "File Info"
 msgstr "Informació d'arxiu"
 
-#: src/exphtmldlg.c:759
+#: src/exphtmldlg.c:760
 msgid "Format"
 msgstr "Format"
 
@@ -2262,11 +2265,11 @@ msgstr ""
 "No s'ha pogut crear el directori de sortida per a l'arxiu LDIF:\n"
 "%s"
 
-#: src/expldifdlg.c:245
+#: src/expldifdlg.c:246
 msgid "Suffix was not supplied"
 msgstr "No s'ha proporcionat un sufixe"
 
-#: src/expldifdlg.c:247
+#: src/expldifdlg.c:248
 msgid ""
 "A suffix is required if data is to be used for an LDAP server. Are you sure "
 "you wish to proceed without a suffix?"
@@ -2274,23 +2277,23 @@ msgstr ""
 "Es necessari un sufixe si les dades s'han d'usar en un servidor LDAP. Esteu "
 "segur de que voleu continuar sense un sufixe?"
 
-#: src/expldifdlg.c:265
+#: src/expldifdlg.c:266
 msgid "Error creating LDIF file"
 msgstr "Error creant l'arxiu LDIF"
 
-#: src/expldifdlg.c:374
+#: src/expldifdlg.c:375
 msgid "Select LDIF Output File"
 msgstr "Seleccioneu l'arxiu LDIF de sortida"
 
-#: src/expldifdlg.c:450
+#: src/expldifdlg.c:451
 msgid "LDIF Output File"
 msgstr "Arxiu LDIF de sortida"
 
-#: src/expldifdlg.c:511
+#: src/expldifdlg.c:512
 msgid "Suffix"
 msgstr "Sufixe"
 
-#: src/expldifdlg.c:523
+#: src/expldifdlg.c:524
 msgid ""
 "The suffix is used to create a \"Distinguished Name\" (or DN) for an LDAP "
 "entry. Examples include:\n"
@@ -2304,15 +2307,15 @@ msgstr ""
 "  ou=gent,dc=nomdomini,dc=com\n"
 "  o=Nom Organització,c=País\n"
 
-#: src/expldifdlg.c:532
+#: src/expldifdlg.c:533
 msgid "Relative DN"
 msgstr "DN relatiu"
 
-#: src/expldifdlg.c:539
+#: src/expldifdlg.c:540
 msgid "Unique ID"
 msgstr "ID únic"
 
-#: src/expldifdlg.c:547
+#: src/expldifdlg.c:548
 msgid ""
 "The address book Unique ID is used to create a DN that is formatted similar "
 "to:\n"
@@ -2321,7 +2324,7 @@ msgstr ""
 "El ID únic de l'agenda és usat per crear un DN amb format de l'estil de:\n"
 "  uid=102376,ou=gent,dc=sylpheed,dc=org"
 
-#: src/expldifdlg.c:560
+#: src/expldifdlg.c:561
 msgid ""
 "The address book Display Name is used to create a DN that is formatted "
 "similar to:\n"
@@ -2330,7 +2333,7 @@ msgstr ""
 "El nom mostrat de l'agenda s'usa per crear un DN amb format de l'estil de:\n"
 "  cn=Joan Tal,ou=gent,dc=sylpheed,dc=org"
 
-#: src/expldifdlg.c:573
+#: src/expldifdlg.c:574
 msgid ""
 "The first E-Mail Address belonging to a person is used to create a DN that "
 "is formatted similar to:\n"
@@ -2340,7 +2343,7 @@ msgstr ""
 "de l'estil de:\n"
 "  mail=joan.tal@domini.com,ou=gent,dc=sylpheed,dc=org"
 
-#: src/expldifdlg.c:587
+#: src/expldifdlg.c:588
 msgid ""
 "The LDIF file contains several data records that are usually loaded into an "
 "LDAP server. Each data record in the LDIF file is uniquely identified by a "
@@ -2354,11 +2357,11 @@ msgstr ""
 "Relatiu\" (o RDN) per crear el DN. Per favor, seleccioneu una de les opcions "
 "de RDN disponibles per usar-la en la creació del DN."
 
-#: src/expldifdlg.c:600
+#: src/expldifdlg.c:601
 msgid "Use DN attribute if present in data"
 msgstr "Useu l'atribut DN si està present en les dades"
 
-#: src/expldifdlg.c:607
+#: src/expldifdlg.c:608
 msgid ""
 "The addressbook may contain entries that were previously imported from an "
 "LDIF file. The \"Distinguished Name\" (DN) user attribute, if present in the "
@@ -2370,11 +2373,11 @@ msgstr ""
 "dades de l'agenda, es pot usar en l'arxiu LDIF exportat. S'usarà el RDN "
 "seleccionat adalt si no es troba l'atribut DN."
 
-#: src/expldifdlg.c:618
+#: src/expldifdlg.c:619
 msgid "Exclude record if no E-Mail Address"
 msgstr "Excloure el registre si no té adreça de correu"
 
-#: src/expldifdlg.c:625
+#: src/expldifdlg.c:626
 msgid ""
 "An addressbook may contain entries without E-Mail Addresses. Check this "
 "option to ignore these records."
@@ -2382,11 +2385,11 @@ msgstr ""
 "Una agenda pot contenir entrades sense adreces de correu electrònic. Marqueu "
 "aquesta opció per ignorar aquests registres."
 
-#: src/expldifdlg.c:713
+#: src/expldifdlg.c:714
 msgid "Export Address Book to LDIF File"
 msgstr "Exportar agenda a un arxiu LDIF"
 
-#: src/expldifdlg.c:780
+#: src/expldifdlg.c:781
 msgid "Distguished Name"
 msgstr "Nom distingit"
 
@@ -2438,173 +2441,174 @@ msgstr "El nom és massa llarg."
 msgid "Not specified."
 msgstr "Sense especificar."
 
-#: src/folder.c:1183 src/foldersel.c:339
+#: src/folder.c:1193 src/foldersel.c:350
 msgid "Inbox"
 msgstr "Entrada"
 
-#: src/folder.c:1187 src/foldersel.c:343
+#: src/folder.c:1197 src/foldersel.c:354
 msgid "Sent"
 msgstr "Enviat"
 
-#: src/folder.c:1191 src/foldersel.c:347
+#: src/folder.c:1201 src/foldersel.c:358
 msgid "Queue"
 msgstr "Cua"
 
-#: src/folder.c:1195 src/foldersel.c:351
+#: src/folder.c:1205 src/foldersel.c:362
 msgid "Trash"
 msgstr "Paperera"
 
-#: src/folder.c:1199 src/foldersel.c:355
+#: src/folder.c:1209 src/foldersel.c:366
 msgid "Drafts"
 msgstr "Esborranys"
 
 #. Processing
-#: src/folder.c:1453
+#: src/folder.c:1463
 #, c-format
 msgid "Processing (%s)...\n"
 msgstr "Processant (%s)...\n"
 
-#: src/folder.c:2223
+#: src/folder.c:1789 src/inc.c:640
+msgid "Filtering messages...\n"
+msgstr "Filtrant missatge...\n"
+
+#: src/folder.c:2252
 msgid "Fetching all messages in %s ...\n"
-msgstr "Seleccionant tots els missatges a %s...\n"
+msgstr "Seleccionant tots els missatges a %s ...\n"
 
 #. move messages
-#: src/folder.c:2519
+#: src/folder.c:2538
 #, c-format
 msgid "Moving %s to %s...\n"
 msgstr "Movent %s a %s...\n"
 
-#: src/folder.c:3403
+#: src/folder.c:3419
 msgid "Processing messages..."
 msgstr "Processant missatges..."
 
-#: src/foldersel.c:217
+#: src/foldersel.c:218
 msgid "Select folder"
 msgstr "Seleccionar carpeta"
 
-#: src/foldersel.c:501 src/imap_gtk.c:133 src/mh_gtk.c:120
+#: src/foldersel.c:533 src/imap_gtk.c:133 src/mh_gtk.c:120
 msgid "NewFolder"
 msgstr "NovaCarpeta"
 
-#: src/foldersel.c:509 src/imap_gtk.c:139 src/mh_gtk.c:126 src/mh_gtk.c:228
-#, c-format
-msgid "`%c' can't be included in folder name."
-msgstr "No s'ha pogut usar `%c' en el nom de la carpeta."
+#: src/foldersel.c:541 src/imap_gtk.c:139 src/mh_gtk.c:126 src/mh_gtk.c:229
+msgid "'%c' can't be included in folder name."
+msgstr "No s'ha pogut incloure '%c' en el nom de la carpeta."
 
-#: src/foldersel.c:519 src/imap_gtk.c:149 src/imap_gtk.c:198 src/mh_gtk.c:136
-#: src/mh_gtk.c:235
-#, c-format
-msgid "The folder `%s' already exists."
-msgstr "La carpeta `%s' ja existeix."
+#: src/foldersel.c:551 src/imap_gtk.c:149 src/imap_gtk.c:198 src/mh_gtk.c:136
+#: src/mh_gtk.c:236
+msgid "The folder '%s' already exists."
+msgstr "La carpeta '%s' ja existeix."
 
-#: src/foldersel.c:526 src/imap_gtk.c:155 src/mh_gtk.c:142
-#, c-format
-msgid "Can't create the folder `%s'."
-msgstr "No s'ha pogut crear la carpeta `%s'."
+#: src/foldersel.c:558 src/imap_gtk.c:155 src/mh_gtk.c:142
+msgid "Can't create the folder '%s'."
+msgstr "No s'ha pogut crear la carpeta '%s'."
 
-#: src/folderview.c:242
+#: src/folderview.c:288
 msgid "/Mark all re_ad"
 msgstr "/Marcar tot com _llegit"
 
-#: src/folderview.c:243
+#: src/folderview.c:289
 msgid "/_Search folder..."
 msgstr "/_Buscar en carpeta..."
 
-#: src/folderview.c:245
+#: src/folderview.c:291
 msgid "/Process_ing..."
 msgstr "/Pr_ocessant..."
 
-#: src/folderview.c:249
+#: src/folderview.c:295
 msgid "/------"
 msgstr "/-----"
 
-#: src/folderview.c:250
+#: src/folderview.c:296
 msgid "/Empty _trash..."
 msgstr "/Buidar _paperera..."
 
-#: src/folderview.c:330 src/prefs_actions.c:416
+#: src/folderview.c:376 src/prefs_actions.c:416
 #: src/prefs_filtering_action.c:552 src/prefs_matcher.c:698
 msgid "New"
 msgstr "Nous"
 
-#: src/folderview.c:331
+#: src/folderview.c:377
 msgid "Unread"
 msgstr "No llegits"
 
-#: src/folderview.c:332
+#: src/folderview.c:378
 msgid "#"
 msgstr "Nº"
 
-#: src/folderview.c:548
+#: src/folderview.c:617
 msgid "Setting folder info..."
 msgstr "Establint informació de carpeta..."
 
-#: src/folderview.c:771 src/mainwindow.c:3105 src/setup.c:90
+#: src/folderview.c:840 src/mainwindow.c:3120 src/setup.c:90
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Revisant carpeta %s%c%s ..."
 
-#: src/folderview.c:775 src/mainwindow.c:3110 src/setup.c:95
+#: src/folderview.c:844 src/mainwindow.c:3125 src/setup.c:95
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Revisant carpeta %s ..."
 
-#: src/folderview.c:816
+#: src/folderview.c:885
 msgid "Rebuilding folder tree..."
 msgstr "Reconstruint l'arbre de carpetes..."
 
-#: src/folderview.c:902
+#: src/folderview.c:971
 msgid "Checking for new messages in all folders..."
 msgstr "Comprovar missatges nous en totes les carpetes..."
 
 #. Open Folder
-#: src/folderview.c:1641
+#: src/folderview.c:1712
 #, c-format
 msgid "Opening Folder %s..."
 msgstr "Obrint carpeta %s ..."
 
-#: src/folderview.c:1653
+#: src/folderview.c:1724
 msgid "Folder could not be opened."
 msgstr "No s'ha pogut obrir la carpeta."
 
-#: src/folderview.c:1798 src/mainwindow.c:1636
+#: src/folderview.c:1869 src/mainwindow.c:1640
 msgid "Empty trash"
 msgstr "Buidar paperera"
 
-#: src/folderview.c:1799 src/mainwindow.c:1637
+#: src/folderview.c:1870 src/mainwindow.c:1641
 msgid "Empty all messages in trash?"
-msgstr "Buidar tots els missatges de la paperra?"
+msgstr "¿Vaciar todos los mensajes de la papelera?"
 
-#: src/folderview.c:1881
-msgid "Do you really want to move folder `%s' to a sub-folder of `%s' ?"
-msgstr "Voleu realment moure la carpeta `%s' a la sub-carpeta de `%s' ?"
+#: src/folderview.c:1952
+msgid "Do you really want to make folder '%s' a sub-folder of '%s' ?"
+msgstr "Voleu realment fer que la carpeta '%s' sigui sub-carpeta de '%s' ?"
 
-#: src/folderview.c:1884
+#: src/folderview.c:1955
 msgid "Move folder"
 msgstr "Moure carpeta"
 
-#: src/folderview.c:1895
+#: src/folderview.c:1967
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Movent %s a %s..."
 
-#: src/folderview.c:1924
+#: src/folderview.c:1996
 msgid "Source and destination are the same."
 msgstr "La destinació i l'origen són el mateix."
 
-#: src/folderview.c:1927
+#: src/folderview.c:1999
 msgid "Can't move a folder to one of its children."
 msgstr "No es pot moure la carpeta a una de les seves subcarpetes."
 
-#: src/folderview.c:1930
+#: src/folderview.c:2002
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr "No es poden moure carpetes entre busties diferents."
 
-#: src/folderview.c:1933
+#: src/folderview.c:2005
 msgid "Move failed!"
 msgstr "Moure ha fallat!"
 
-#: src/folderview.c:1968 src/summaryview.c:4008
+#: src/folderview.c:2040 src/summaryview.c:4030
 msgid "Processing configuration"
 msgstr "Configuració de procesament"
 
@@ -2652,7 +2656,7 @@ msgstr "desconegut"
 msgid "Can't retrieve newsgroup list."
 msgstr "No es pot obtenir la llista de grups."
 
-#: src/grouplistdialog.c:446 src/summaryview.c:1043
+#: src/grouplistdialog.c:446 src/summaryview.c:1039
 msgid "Done."
 msgstr "Fet."
 
@@ -2717,6 +2721,18 @@ msgstr ""
 "juntament amb aquest programa; en cas contrari, escrigui a la Free Software "
 "Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
+#: src/gtk/about.c:244
+msgid ""
+"\n"
+"\n"
+"This product includes software developed by the OpenSSL Project for use in "
+"the OpenSSL Toolkit (http://www.openssl.org/)"
+msgstr ""
+"\n"
+"\n"
+"Aquest producte inclou software desenvolupat per el projecte OpenSSL per usar dins "
+"les eines d'OpenSSL (http://www.openssl.org/)"
+
 #: src/gtk/colorlabel.c:46
 msgid "Orange"
 msgstr "Taronja"
@@ -2745,11 +2761,11 @@ msgstr "Verd"
 msgid "Brown"
 msgstr "Marró"
 
-#: src/gtk/foldersort.c:143
+#: src/gtk/foldersort.c:141
 msgid "Set folder sortorder"
 msgstr "Establir l'ordre de la carpeta"
 
-#: src/gtk/foldersort.c:155
+#: src/gtk/foldersort.c:153
 msgid ""
 "Move folders up or down to change\n"
 "the sort order in the folderview"
@@ -2757,16 +2773,7 @@ msgstr ""
 "Moure les carpetes amunt o avall per canviar\n"
 "la posició a la vista de carpetes"
 
-#: src/gtk/foldersort.c:175
-msgid "Ok"
-msgstr "Acceptar"
-
-#: src/gtk/foldersort.c:180 src/plugins/trayicon/trayicon.c:343
-#: src/prefs_themes.c:434 src/prefs_themes.c:489 src/prefs_themes.c:496
-msgid "Cancel"
-msgstr "Cancel·lar"
-
-#: src/gtk/foldersort.c:223
+#: src/gtk/foldersort.c:213
 msgid "Folders"
 msgstr "Carpetes"
 
@@ -2797,7 +2804,7 @@ msgstr "Substituïr paraula desconeguda"
 #: src/gtk/gtkaspell.c:1479
 #, c-format
 msgid "<span weight=\"bold\" size=\"larger\">Replace \"%s\" with: </span>"
-msgstr "<span weight=\"bold\" size=\"larger\">Substitueix \"%s\" amb: </span>"
+msgstr "<span weight=\"bold\" size=\"larger\">Reemplaçar \"%s\" amb: </span>"
 
 #: src/gtk/gtkaspell.c:1524
 msgid ""
@@ -2881,23 +2888,27 @@ msgstr "Introduiu contrasenya"
 msgid "Protocol log"
 msgstr "Traça del protocol"
 
-#: src/gtk/pluginwindow.c:154
+#: src/gtk/pluginwindow.c:156
 msgid "Select Plugin to load"
 msgstr "Seleccionar mòdul a carregar"
 
-#: src/gtk/pluginwindow.c:221 src/gtk/pluginwindow.c:355
+#: src/gtk/pluginwindow.c:225 src/gtk/pluginwindow.c:359
+#: src/plugins/clamav/clamav_plugin_gtk.c:249
+#: src/plugins/dillo_viewer/dillo_prefs.c:74
+#: src/plugins/pgpcore/prefs_gpg.c:503
+#: src/plugins/spamassassin/spamassassin_gtk.c:463
 msgid "Plugins"
 msgstr "Mòduls"
 
-#: src/gtk/pluginwindow.c:252 src/prefs_summaries.c:210
+#: src/gtk/pluginwindow.c:256 src/prefs_summaries.c:210
 msgid "Description"
 msgstr "Descripció"
 
-#: src/gtk/pluginwindow.c:276
+#: src/gtk/pluginwindow.c:280
 msgid "Load Plugin"
 msgstr "Carregar mòdul"
 
-#: src/gtk/pluginwindow.c:281
+#: src/gtk/pluginwindow.c:285
 msgid "Unload Plugin"
 msgstr "Descarregar mòdul"
 
@@ -2911,7 +2922,7 @@ msgid "Account"
 msgstr "Compte"
 
 #. S_COL_MARK
-#: src/gtk/progressdialog.c:148 src/gtk/sslcertwindow.c:122
+#: src/gtk/progressdialog.c:148 src/gtk/sslcertwindow.c:120
 #: src/prefs_summary_column.c:80
 msgid "Status"
 msgstr "Estat"
@@ -3091,7 +3102,7 @@ msgstr "Símbols de cerca extesa"
 #. S_COL_MIME
 #: src/gtk/quicksearch.c:297 src/prefs_filtering_action.c:1042
 #: src/prefs_matcher.c:150 src/prefs_matcher.c:1651
-#: src/prefs_summary_column.c:82 src/quote_fmt.c:47 src/summaryview.c:459
+#: src/prefs_summary_column.c:82 src/quote_fmt.c:47 src/summaryview.c:460
 msgid "Subject"
 msgstr "Assumpte"
 
@@ -3100,7 +3111,7 @@ msgstr "Assumpte"
 #. S_COL_SUBJECT
 #: src/gtk/quicksearch.c:301 src/prefs_filtering_action.c:1043
 #: src/prefs_matcher.c:151 src/prefs_matcher.c:1652
-#: src/prefs_summary_column.c:83 src/quote_fmt.c:42 src/summaryview.c:460
+#: src/prefs_summary_column.c:83 src/quote_fmt.c:42 src/summaryview.c:461
 msgid "From"
 msgstr "Des de"
 
@@ -3118,287 +3129,207 @@ msgstr "Recursiu"
 msgid "Extended Symbols"
 msgstr "Símbols extesos"
 
-#: src/gtk/sslcertwindow.c:115 src/gtk/sslcertwindow.c:269
-#: src/gtk/sslcertwindow.c:322
+#: src/gtk/sslcertwindow.c:113 src/gtk/sslcertwindow.c:253
+#: src/gtk/sslcertwindow.c:307
 msgid "correct"
 msgstr "correcte"
 
-#: src/gtk/sslcertwindow.c:120
+#: src/gtk/sslcertwindow.c:118
 msgid "Owner"
 msgstr "Propietari"
 
-#: src/gtk/sslcertwindow.c:121
+#: src/gtk/sslcertwindow.c:119
 msgid "Signer"
 msgstr "Signant"
 
-#: src/gtk/sslcertwindow.c:128 src/gtk/sslcertwindow.c:149
+#: src/gtk/sslcertwindow.c:126 src/gtk/sslcertwindow.c:147
 #: src/prefs_themes.c:886
 msgid "Name: "
 msgstr "Nom: "
 
-#: src/gtk/sslcertwindow.c:135 src/gtk/sslcertwindow.c:156
+#: src/gtk/sslcertwindow.c:133 src/gtk/sslcertwindow.c:154
 msgid "Organization: "
 msgstr "Organització: "
 
-#: src/gtk/sslcertwindow.c:142 src/gtk/sslcertwindow.c:163
+#: src/gtk/sslcertwindow.c:140 src/gtk/sslcertwindow.c:161
 msgid "Location: "
 msgstr "Localització: "
 
-#: src/gtk/sslcertwindow.c:170
+#: src/gtk/sslcertwindow.c:168
 msgid "Fingerprint: "
 msgstr "Empremta digital: "
 
-#: src/gtk/sslcertwindow.c:176
+#: src/gtk/sslcertwindow.c:174
 msgid "Signature status: "
 msgstr "Estat de la signatura: "
 
-#: src/gtk/sslcertwindow.c:230
+#: src/gtk/sslcertwindow.c:228
 #, c-format
 msgid "SSL certificate for %s"
 msgstr "Certificat SSL per a %s"
 
-#: src/gtk/sslcertwindow.c:260
-#, c-format
-msgid "Certificate for %s is unknown. Do you want to accept it?"
-msgstr "El certificat de %s és desconegut. Voleu acceptar-lo?"
+#: src/gtk/sslcertwindow.c:244
+msgid ""
+"Certificate for %s is unknown.\n"
+"Do you want to accept it?"
+msgstr ""
+"Certificat per %s és desconegut.\n"
+"Voleu acceptar-lo?"
 
-#: src/gtk/sslcertwindow.c:271 src/gtk/sslcertwindow.c:324
+#: src/gtk/sslcertwindow.c:255 src/gtk/sslcertwindow.c:309
 #, c-format
 msgid "Signature status: %s"
 msgstr "Estat de la signatura: %s"
 
-#: src/gtk/sslcertwindow.c:278
-msgid "View certificate"
-msgstr "Mostrar certificat"
+#: src/gtk/sslcertwindow.c:262
+msgid "_View certificate"
+msgstr "_Veure certificat"
 
-#: src/gtk/sslcertwindow.c:284
+#: src/gtk/sslcertwindow.c:267
 msgid "Unknown SSL Certificate"
 msgstr "Certificat SSL desconegut"
 
-#: src/gtk/sslcertwindow.c:284 src/gtk/sslcertwindow.c:336
+#: src/gtk/sslcertwindow.c:268 src/gtk/sslcertwindow.c:321
 msgid "Accept and save"
 msgstr "Acceptar i guardar"
 
-#: src/gtk/sslcertwindow.c:284 src/gtk/sslcertwindow.c:336
+#: src/gtk/sslcertwindow.c:268 src/gtk/sslcertwindow.c:321
 msgid "Cancel connection"
 msgstr "Cancel·lar connexió"
 
-#: src/gtk/sslcertwindow.c:301
+#: src/gtk/sslcertwindow.c:286
 msgid "New certificate:"
 msgstr "Certificat nou:"
 
-#: src/gtk/sslcertwindow.c:306
+#: src/gtk/sslcertwindow.c:291
 msgid "Known certificate:"
 msgstr "Certificat conegut:"
 
-#: src/gtk/sslcertwindow.c:313
+#: src/gtk/sslcertwindow.c:298
 #, c-format
 msgid "Certificate for %s has changed. Do you want to accept it?"
 msgstr "El certificat de %s ha canviat. Voleu aceptar-lo?"
 
-#: src/gtk/sslcertwindow.c:331
-msgid "View certificates"
-msgstr "Mostrar certificats"
+#: src/gtk/sslcertwindow.c:316
+msgid "_View certificates"
+msgstr "_Veure certificats"
 
-#: src/gtk/sslcertwindow.c:336
+#: src/gtk/sslcertwindow.c:320
 msgid "Changed SSL Certificate"
 msgstr "Certificat SSL canviat"
 
-#: src/headerview.c:176 src/summaryview.c:2313
+#: src/headerview.c:176 src/summaryview.c:2310
 msgid "(No From)"
 msgstr "(Sense remitent)"
 
-#: src/headerview.c:191 src/summaryview.c:2358 src/summaryview.c:2361
+#: src/headerview.c:191 src/summaryview.c:2355 src/summaryview.c:2358
 msgid "(No Subject)"
 msgstr "(Sense assumpte)"
 
-#: src/image_viewer.c:284
+#: src/image_viewer.c:288
 msgid "Filename:"
 msgstr "Nomb:"
 
-#: src/image_viewer.c:291
+#: src/image_viewer.c:295
 msgid "Filesize:"
 msgstr "Tamany:"
 
-#: src/image_viewer.c:312
+#: src/image_viewer.c:316
 msgid "Load Image"
 msgstr "Carregar imatge"
 
-#: src/image_viewer.c:318
+#: src/image_viewer.c:322
 msgid "Content-Type:"
 msgstr "Content-Type:"
 
-#: src/imap.c:840
+#: src/imap.c:595
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "Connexió amb %s fallida"
 
-#: src/imap.c:845 src/imap.c:848
+#: src/imap.c:600 src/imap.c:603
 #, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "La connexió IMAP4 amb %s s'ha desconnectat. Reconnectant...\n"
 
-#: src/imap.c:887
-msgid "creating tunneled IMAP4 connection\n"
-msgstr "creant connexió IMAP4 encapsulada\n"
+#: src/imap.c:644
+msgid "Connecting to IMAP4 server: %s..."
+msgstr "Connectant al servidor IMAP4: %s ..."
 
-#: src/imap.c:900
-#, c-format
-msgid "creating IMAP4 connection to %s:%d ...\n"
-msgstr "creant connexió IMAP4 amb %s:%d ...\n"
+#: src/imap.c:676
+msgid "Can't connect to IMAP4 server: %s:%d"
+msgstr "No s'ha pogut connectar al servidor IMAP4: %s:%d"
 
-#: src/imap.c:939
+#: src/imap.c:705
 msgid "Can't start TLS session.\n"
 msgstr "No s'ha pogut iniciar la sessió TLS.\n"
 
-#: src/imap.c:982
+#: src/imap.c:738
 msgid "Connecting to IMAP4 server %s...\n"
 msgstr "Connectant al servidor IMAP4 %s...\n"
 
-#: src/imap.c:1367
+#: src/imap.c:1111
 msgid "can't set deleted flags\n"
 msgstr "no s'han pogut establir els flags esborrats\n"
 
-#: src/imap.c:1373 src/imap.c:4847
+#: src/imap.c:1116 src/imap.c:3180
 msgid "can't expunge\n"
-msgstr "no s'ha pogut purgar\n"
+msgstr "no s'ha pogut ampliar\n"
 
-#: src/imap.c:1438
-msgid "can't close folder\n"
-msgstr "no s'ha pogut tancar la carpeta\n"
-
-#: src/imap.c:1494
-#, c-format
-msgid "root folder %s does not exist\n"
-msgstr "la carpeta arrel %s no existeix\n"
-
-#: src/imap.c:1676 src/imap.c:1684
-msgid "error occurred while getting LIST.\n"
-msgstr "S'ha produït un error obtenint LIST.\n"
-
-#: src/imap.c:1922
+#: src/imap.c:1541
 msgid "can't create mailbox: LIST failed\n"
 msgstr "no s'ha pogut crear la bústia: LIST ha fallat\n"
 
-#: src/imap.c:1945
+#: src/imap.c:1555
 msgid "can't create mailbox\n"
 msgstr "no s'ha pogut crear la bústia\n"
 
-#: src/imap.c:1992
+#: src/imap.c:1598
 msgid "New folder name must not contain the namespace path separator"
-msgstr "El nou nom de la carpeta no ha de contenir el separador de l'espai de noms"
+msgstr ""
+"El nou nom de la carpeta no ha de contenir el separador de l'espai de noms"
 
-#: src/imap.c:2028
+#: src/imap.c:1631
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "no s'ha pogut Reanomenar la bústia: %s a %s\n"
 
-#: src/imap.c:2097
+#: src/imap.c:1694
 msgid "can't delete mailbox\n"
 msgstr "no s'ha pogut esborrar la bústia\n"
 
-# FIXME: s/envoltorio/.../
-#: src/imap.c:2179
-msgid "can't get envelope\n"
-msgstr "no s'ha pogut obtenir l'envoltori\n"
+#: src/imap.c:1940
+msgid "LIST failed\n"
+msgstr "LIST fallida\n"
 
-#: src/imap.c:2187
-msgid "error occurred while getting envelope.\n"
-msgstr "S'ha produït un error obtenint l'envoltori.\n"
-
-#: src/imap.c:2212
-#, c-format
-msgid "can't parse envelope: %s\n"
-msgstr "no s'ha pogut interpretar l'envoltori: %s\n"
-
-#: src/imap.c:2274
-msgid "IMAP4 Fetching uncached short headers..."
-msgstr "IMAP4 Seleccionant capçaleres curtes no presents en memòria cau..."
-
-#: src/imap.c:2338
-#, c-format
-msgid "Can't establish IMAP4 session with: %s\n"
-msgstr "No s'ha pogut establir la sessió IMAP4 amb: %s\n"
-
-#: src/imap.c:2354
-#, c-format
-msgid "Can't connect to IMAP4 server: %s:%d\n"
-msgstr "No s'ha pogut connectar al servidor IMAP4: %s:%d\n"
-
-#: src/imap.c:2384
-msgid "Connecting to IMAP4 server: %s..."
-msgstr "Connectant al servidor IMAP4: %s..."
-
-#: src/imap.c:2406
-#, c-format
-msgid "Can't establish IMAP4 session with: %s:%d\n"
-msgstr "No s'ha pogut establir la sessió IMAP4 amb: %s:%d\n"
-
-#: src/imap.c:2420
-msgid "Can't connect to IMAP4 server: %s:%d"
-msgstr "No s'ha pogut connectar al servidor IMAP4: %s:%d"
-
-#: src/imap.c:2508
-msgid "can't get namespace\n"
-msgstr "no s'ha pogut obtenir l'espai de noms\n"
-
-#: src/imap.c:3008
+#: src/imap.c:2044
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "No s'ha pogut seleccionar la carpeta: %s\n"
 
-#: src/imap.c:3148
+#: src/imap.c:2170
 msgid "IMAP4 authentication failed.\n"
 msgstr "La autentificació IMAP4 ha fallat.\n"
 
-# FIXME
-#: src/imap.c:3177
-msgid "IMAP4 login failed.\n"
-msgstr "Ha fallat el login IMAP4.\n"
+#: src/imap.c:2187
+msgid "Connection to %s failed: login refused."
+msgstr "Ha fallat la connexió amb %s: login refusat."
 
-#: src/imap.c:3572
-#, c-format
-msgid "can't append %s to %s\n"
-msgstr "no s'ha pogut afegir %s a %s\n"
-
-#: src/imap.c:3621
-#, c-format
-msgid "can't append message to %s\n"
-msgstr "no s'ha pogut afegir el missatge a %s\n"
-
-#: src/imap.c:3702
-#, c-format
-msgid "can't copy %s to %s\n"
-msgstr "no s'ha pogut copiar %s a %s\n"
-
-#: src/imap.c:3727
-#, c-format
-msgid "error while imap command: STORE %s %s\n"
-msgstr "error durant l'ordre IMAP: STORE %s %s\n"
-
-#: src/imap.c:3754
-msgid "error while imap command: EXPUNGE\n"
-msgstr "error durant l'ordre IMAP: EXPUNGE\n"
-
-#: src/imap.c:3810
-msgid "error while imap command: CLOSE\n"
-msgstr "error durant l'ordre IMAP: CLOSE\n"
-
-#: src/imap.c:4069
+#: src/imap.c:2522
 #, c-format
 msgid "iconv cannot convert UTF-7 to %s\n"
 msgstr "iconv no pot convertir UTF-7 a %s\n"
 
-#: src/imap.c:4099
+#: src/imap.c:2552
 #, c-format
 msgid "iconv cannot convert %s to UTF-7\n"
 msgstr "iconv no pot convertir %s a UTF-7\n"
 
-#: src/imap.c:4143
+#: src/imap.c:2596
 msgid "iconv cannot convert UTF-8 to UTF-7\n"
 msgstr "iconv no pot convertir UTF-8 a UTF-7\n"
 
-#: src/imap.c:4833
+#: src/imap.c:3166
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "no s'han pogut establir els flags esborrats: %d\n"
@@ -3443,22 +3374,21 @@ msgstr "/Eliminar compte _IMAP4"
 msgid ""
 "Input the name of new folder:\n"
 "(if you want to create a folder to store subfolders,\n"
-" append `/' at the end of the name)"
+" append '/' at the end of the name)"
 msgstr ""
 "Introduiu el nom de la nova carpeta:\n"
 "(si voleu crear una carpeta per emmagatzemar subcarpetes,\n"
 " afegiu `/' al final del nom)"
 
-#: src/imap_gtk.c:179 src/mh_gtk.c:218
-#, c-format
-msgid "Input new name for `%s':"
-msgstr "Introdueixi el nou nom per a `%s':"
+#: src/imap_gtk.c:179 src/mh_gtk.c:219
+msgid "Input new name for '%s':"
+msgstr "Introdueixi el nou nom per a '%s':"
 
-#: src/imap_gtk.c:181 src/mh_gtk.c:220
+#: src/imap_gtk.c:181 src/mh_gtk.c:221
 msgid "Rename folder"
 msgstr "Reanomenar carpeta"
 
-#: src/imap_gtk.c:208 src/mh_gtk.c:245
+#: src/imap_gtk.c:208 src/mh_gtk.c:246
 msgid ""
 "The folder could not be renamed.\n"
 "The new folder name is not allowed."
@@ -3467,40 +3397,36 @@ msgstr ""
 "El nou nom no està permès."
 
 #: src/imap_gtk.c:269
-#, c-format
-msgid "Really delete IMAP4 account `%s'?"
-msgstr "Esborrar realment el compte IMAP `%s'?"
+msgid "Really delete IMAP4 account '%s'?"
+msgstr "Esborrar deinitivament el compte IMAP4 '%s'?"
 
 #: src/imap_gtk.c:270
 msgid "Delete IMAP4 account"
 msgstr "Esborrar compte IMAP4"
 
-#: src/imap_gtk.c:316
-#, c-format
+#: src/imap_gtk.c:316 src/mh_gtk.c:167
 msgid ""
-"All folders and messages under `%s' will be deleted.\n"
+"All folders and messages under '%s' will be permanently deleted. Recovery "
+"will not be possible.\n"
+"\n"
 "Do you really want to delete?"
 msgstr ""
-"S'esborraran totes les carpetes i missatges sota `%s'.\n"
-"Voleu realment eliminar-los?"
+"S'esborraran totes les carpetes i missatges que penjen de '%s'. Recuperar-los "
+"serà impossible.\n"
+"\n"
+"Voleu eliminar-los definitivament?"
 
-#: src/imap_gtk.c:318 src/mh_gtk.c:170
-msgid "Delete folder"
-msgstr "Esborrar carpeta"
+#: src/imap_gtk.c:338 src/mh_gtk.c:189
+msgid "Can't remove the folder '%s'."
+msgstr "No es pot eliminar la carpeta '%s'."
 
-#: src/imap_gtk.c:336 src/mh_gtk.c:188
-#, c-format
-msgid "Can't remove the folder `%s'."
-msgstr "No es pot eliminar la carpeta `%s'."
-
-#: src/imap_gtk.c:389 src/news_gtk.c:326
-#, c-format
-msgid "Error occurred while downloading messages in `%s'."
+#: src/imap_gtk.c:391 src/news_gtk.c:328
+msgid "Error occurred while downloading messages in '%s'."
 msgstr "S'ha produït algun error al descarregar els missatges a `%s'."
 
-#: src/imap_gtk.c:413
+#: src/imap_gtk.c:415
 msgid "You're working offline. Override during 10 minutes?"
-msgstr "Esteu treballant sense connexió. Anul·lar durant 10 minuts?"
+msgstr "Esteu treballant sense connexió. Ignorar durant 10 minuts?"
 
 #: src/import.c:142
 msgid "Import"
@@ -3579,7 +3505,7 @@ msgid "R"
 msgstr "R"
 
 #. S_COL_MARK
-#: src/importldif.c:767 src/summaryview.c:457
+#: src/importldif.c:767 src/summaryview.c:458
 msgid "S"
 msgstr "E"
 
@@ -3639,7 +3565,8 @@ msgstr " Modificar "
 
 #: src/importldif.c:897
 msgid "This button will update the list above with the data supplied."
-msgstr "Aquest botó actualitzarà la llista superior amb les dades proporcionades."
+msgstr ""
+"Aquest botó actualitzarà la llista superior amb les dades proporcionades."
 
 #: src/importldif.c:970
 msgid "Records Imported :"
@@ -3654,7 +3581,7 @@ msgstr "Importar arxiu LDIF a l'agenda"
 msgid "Prev"
 msgstr "Anterior"
 
-#: src/importldif.c:1035 src/toolbar.c:385 src/toolbar.c:477
+#: src/importldif.c:1035 src/toolbar.c:389 src/toolbar.c:481
 msgid "Next"
 msgstr "Següent"
 
@@ -3695,137 +3622,137 @@ msgstr "Obtenint nous missatges"
 msgid "Standby"
 msgstr "En espera"
 
-#: src/inc.c:555 src/inc.c:605
+#: src/inc.c:556 src/inc.c:606
 msgid "Cancelled"
 msgstr "Cancel·lat"
 
-#: src/inc.c:566
+#: src/inc.c:567
 msgid "Retrieving"
 msgstr "Recuperant"
 
-#: src/inc.c:575
+#: src/inc.c:576
 #, c-format
 msgid "Done (%d message (%s) received)"
 msgid_plural "Done (%d messages (%s) received)"
 msgstr[0] "Fet (%d missatge (%s) rebut)"
 msgstr[1] "Fet (%d missatge(s) (%s) rebut(s))"
 
-#: src/inc.c:581
+#: src/inc.c:582
 msgid "Done (no new messages)"
 msgstr "Fet (no hi ha missatges nous)"
 
-#: src/inc.c:586
+#: src/inc.c:587
 msgid "Connection failed"
 msgstr "Connexió fallida"
 
-#: src/inc.c:589
+#: src/inc.c:590
 msgid "Auth failed"
 msgstr "Authorización fallida"
 
 #. S_COL_SCORE
-#: src/inc.c:592 src/prefs_summary_column.c:88
+#: src/inc.c:593 src/prefs_summary_column.c:88
 msgid "Locked"
 msgstr "Bloquejat"
 
-#: src/inc.c:602 src/plugins/spamassassin/spamassassin_gtk.c:245
+#: src/inc.c:603 src/plugins/spamassassin/spamassassin_gtk.c:245
 msgid "Timeout"
 msgstr "Temps límit"
 
-#: src/inc.c:687
+#: src/inc.c:701
 #, c-format
 msgid "Finished (%d new message)"
 msgid_plural "Finished (%d new messages)"
 msgstr[0] "Finalitzat (%d missatge nou)"
 msgstr[1] "Finalitzat (%d missatge(s) nou(s))"
 
-#: src/inc.c:691
+#: src/inc.c:705
 msgid "Finished (no new messages)"
 msgstr "Finalitzat (no hi ha missatges nous)"
 
-#: src/inc.c:700
+#: src/inc.c:714
 msgid "Some errors occurred while getting mail."
 msgstr "S'han produït alguns error obtenint el correu."
 
-#: src/inc.c:741
+#: src/inc.c:755
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: Recuperant nous missatges"
 
-#: src/inc.c:760
+#: src/inc.c:774
 #, c-format
 msgid "Connecting to POP3 server: %s..."
 msgstr "Conectant al servidor POP3: %s..."
 
-#: src/inc.c:770
+#: src/inc.c:784
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "No s'ha pogut connectar amb el servidor POP3: %s:%d\n"
 
-#: src/inc.c:777
+#: src/inc.c:791
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "No s'ha pogut connectar amb el servidor POP3: %s:%d"
 
-#: src/inc.c:858 src/send_message.c:408
+#: src/inc.c:872 src/send_message.c:408
 msgid "Authenticating..."
 msgstr "Autentificant..."
 
-#: src/inc.c:859
+#: src/inc.c:873
 #, c-format
 msgid "Retrieving messages from %s (%s) ..."
 msgstr "Obtenint missatges de %s (%s) ..."
 
-#: src/inc.c:865
+#: src/inc.c:879
 msgid "Getting the number of new messages (STAT)..."
 msgstr "Obtenint el número de nous missatges (STAT)..."
 
-#: src/inc.c:869
+#: src/inc.c:883
 msgid "Getting the number of new messages (LAST)..."
 msgstr "Obtenint el número de nous missatges (LAST)..."
 
-#: src/inc.c:873
+#: src/inc.c:887
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "Obtenint el número de nous missatges (UIDL)..."
 
-#: src/inc.c:877
+#: src/inc.c:891
 msgid "Getting the size of messages (LIST)..."
 msgstr "Obtenint el tamany dels nous missatges (LIST)..."
 
-#: src/inc.c:887
+#: src/inc.c:901
 #, c-format
 msgid "Deleting message %d"
 msgstr "Esborrant missatge %d"
 
-#: src/inc.c:894 src/send_message.c:426
+#: src/inc.c:908 src/send_message.c:426
 msgid "Quitting"
 msgstr "Sortint"
 
-#: src/inc.c:919
+#: src/inc.c:933
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Recuperant missatge (%d / %d) (%s / %s)"
 
-#: src/inc.c:938
+#: src/inc.c:952
 #, c-format
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
 msgstr[0] "Recuperant (%d missatge (%s) rebut)"
 msgstr[1] "Recuperant (%d missatge(s) (%s) rebut(s))"
 
-#: src/inc.c:1094
+#: src/inc.c:1108
 msgid "Connection failed."
 msgstr "La connexió ha fallat."
 
-#: src/inc.c:1097
+#: src/inc.c:1111
 #, c-format
 msgid "Connection to %s:%d failed."
 msgstr "Ha fallat la connexió amb %s:%d."
 
-#: src/inc.c:1102
+#: src/inc.c:1116
 msgid "Error occurred while processing mail."
 msgstr "S'ha produït un error mentre es processava el correu."
 
-#: src/inc.c:1107
+#: src/inc.c:1121
 #, c-format
 msgid ""
 "Error occurred while processing mail:\n"
@@ -3834,38 +3761,38 @@ msgstr ""
 "S'ha produït un error mentre es processava el correu:\n"
 "%s"
 
-#: src/inc.c:1113
+#: src/inc.c:1127
 msgid "No disk space left."
 msgstr "No hi ha espai liure en disc."
 
-#: src/inc.c:1118
+#: src/inc.c:1132
 msgid "Can't write file."
 msgstr "No es pot escriure l'arxiu."
 
-#: src/inc.c:1123
+#: src/inc.c:1137
 msgid "Socket error."
 msgstr "Error de socket."
 
-#: src/inc.c:1126
+#: src/inc.c:1140
 #, c-format
 msgid "Socket error on connection to %s:%d."
 msgstr "Error de socket connectant amb %s:%d."
 
 #. consider EOF right after QUIT successful
-#: src/inc.c:1131 src/send_message.c:339 src/send_message.c:551
+#: src/inc.c:1145 src/send_message.c:339 src/send_message.c:551
 msgid "Connection closed by the remote host."
 msgstr "Connexió tancada per la màquina remota."
 
-#: src/inc.c:1134
+#: src/inc.c:1148
 #, c-format
 msgid "Connection to %s:%d closed by the remote host."
 msgstr "Connexió amb %s:%d tancada per la màquina remota."
 
-#: src/inc.c:1139
+#: src/inc.c:1153
 msgid "Mailbox is locked."
 msgstr "La bústia està bloquejada."
 
-#: src/inc.c:1143
+#: src/inc.c:1157
 #, c-format
 msgid ""
 "Mailbox is locked:\n"
@@ -3874,11 +3801,11 @@ msgstr ""
 "La bústia està bloquejada:\n"
 "%s"
 
-#: src/inc.c:1149 src/send_message.c:536
+#: src/inc.c:1163 src/send_message.c:536
 msgid "Authentication failed."
 msgstr "Autentificació fallida."
 
-#: src/inc.c:1154 src/send_message.c:539
+#: src/inc.c:1168 src/send_message.c:539
 #, c-format
 msgid ""
 "Authentication failed:\n"
@@ -3887,16 +3814,16 @@ msgstr ""
 "La autentificació ha fallat:\n"
 "%s"
 
-#: src/inc.c:1159 src/send_message.c:555
+#: src/inc.c:1173 src/send_message.c:555
 msgid "Session timed out."
 msgstr "Excedit el temps límit de la sessió."
 
-#: src/inc.c:1162
+#: src/inc.c:1176
 #, c-format
 msgid "Connection to %s:%d timed out."
 msgstr "La connexió amb %s:%d ha excedit el límit de temps."
 
-#: src/inc.c:1197
+#: src/inc.c:1211
 msgid "Incorporation cancelled\n"
 msgstr "Incorporació cancel·lada\n"
 
@@ -3904,29 +3831,28 @@ msgstr "Incorporació cancel·lada\n"
 msgid "Nick Name"
 msgstr "Motiu (nick)"
 
-#: src/main.c:165
-#, c-format
+#: src/main.c:169
 msgid ""
-"File `%s' already exists.\n"
+"File '%s' already exists.\n"
 "Can't create folder."
 msgstr ""
-"L'arxiu `%s' ja existeix.\n"
+"L'arxiu '%s' ja existeix.\n"
 "No s'ha pogut crear la carpeta."
 
-#: src/main.c:280
+#: src/main.c:285
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread no està soportat per glib.\n"
 
-#: src/main.c:615
+#: src/main.c:629
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Ús: %s [OPCIÓ]...\n"
 
-#: src/main.c:617
+#: src/main.c:631
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adreça]  obre la finestra d'edició"
 
-#: src/main.c:618
+#: src/main.c:632
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -3936,23 +3862,23 @@ msgstr ""
 "                         obre la finestra de composició amb els arxius\n"
 "                         especificats com a adjunts"
 
-#: src/main.c:621
+#: src/main.c:635
 msgid "  --receive              receive new messages"
 msgstr "  --receive              rep els missatges nous"
 
-#: src/main.c:622
+#: src/main.c:636
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          rep nous missatges per tots els comptes"
 
-#: src/main.c:623
+#: src/main.c:637
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 enviar tots els missatges encuats"
 
-#: src/main.c:624
+#: src/main.c:638
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [carpeta]...  mostra el número total de missatges"
 
-#: src/main.c:625
+#: src/main.c:639
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -3960,810 +3886,814 @@ msgstr ""
 "  --status-full [carpeta]...\n"
 "                         mostra l'estat de cada carpeta"
 
-#: src/main.c:627
+#: src/main.c:641
 msgid "  --online               switch to online mode"
 msgstr "  --online               canviar a mode de treball amb connexió"
 
-#: src/main.c:628
+#: src/main.c:642
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline               canviar a mode de treball sense connexió"
 
-#: src/main.c:629
+#: src/main.c:643
 msgid "  --debug                debug mode"
 msgstr "  --debug                mode de depuració"
 
-#: src/main.c:630
+#: src/main.c:644
 msgid "  --help                 display this help and exit"
 msgstr "  --help                 presenta aquesta ajuda i finalitza"
 
-#: src/main.c:631
+#: src/main.c:645
 msgid "  --version              output version information and exit"
 msgstr "  --version              dona la informació de la versió i finalitza"
 
-#: src/main.c:632
+#: src/main.c:646
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           mostra el directori de la configuració"
 
-#: src/main.c:670 src/summaryview.c:5189
+#: src/main.c:684 src/summaryview.c:5212
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Processant (%s)..."
 
-#: src/main.c:673
+#: src/main.c:687
 msgid "top level folder"
 msgstr "carpeta superior"
 
-#: src/main.c:731
+#: src/main.c:745
 msgid "Really quit?"
 msgstr "Sortir realment?"
 
-#: src/main.c:732
+#: src/main.c:746
 msgid "Composing message exists."
 msgstr "Existeixen missatges en composició."
 
-#: src/main.c:733
+#: src/main.c:747
 msgid "Draft them"
 msgstr "A esborrany"
 
-#: src/main.c:733
+#: src/main.c:747
 msgid "Discard them"
 msgstr "Descartar-los"
 
-#: src/main.c:733
+#: src/main.c:747
 msgid "Don't quit"
 msgstr "No sortir"
 
-#: src/main.c:747
+#: src/main.c:761
 msgid "Queued messages"
 msgstr "Missatges en cua"
 
-#: src/main.c:748
+#: src/main.c:762
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Hi ha missatges sense enviar a la cua. Sortir ara?"
 
-#: src/main.c:994 src/toolbar.c:1873
+#: src/main.c:1008 src/toolbar.c:1947
 msgid "Some errors occurred while sending queued messages."
 msgstr "S'han peoduït alguns errors enviant els missatges encuats."
 
-#: src/mainwindow.c:443
+#: src/mainwindow.c:446
 msgid "/_File/_Add mailbox"
 msgstr "/_Arxiu/_Afegir bústia"
 
-#: src/mainwindow.c:444
+#: src/mainwindow.c:447
 msgid "/_File/_Add mailbox/MH..."
 msgstr "/_Arxiu/_Afegir bústia/MH..."
 
-#: src/mainwindow.c:446
+#: src/mainwindow.c:449
 msgid "/_File/Change folder order"
 msgstr "/_Arxiu/Canviar l'ordre de les carpetes"
 
-#: src/mainwindow.c:448
+#: src/mainwindow.c:451
 msgid "/_File/_Import mbox file..."
 msgstr "/_Arxiu/_Importar arxiu mbox..."
 
-#: src/mainwindow.c:449
+#: src/mainwindow.c:452
 msgid "/_File/_Export to mbox file..."
 msgstr "/_Arxiu/_Exportar a arxiu mbox..."
 
-#: src/mainwindow.c:450
+#: src/mainwindow.c:453
 msgid "/_File/Exp_ort selected to mbox file..."
 msgstr "/_Arxiu/E_xportar seleccionats a arxiu mbox..."
 
-#: src/mainwindow.c:453
+#: src/mainwindow.c:456
 msgid "/_File/Empty all _Trash folders"
 msgstr "/_Arxiu/_Buidar totes les papereres"
 
-#: src/mainwindow.c:455 src/messageview.c:155
+#: src/mainwindow.c:458 src/messageview.c:156
 msgid "/_File/_Save as..."
 msgstr "/_Arxiu/_Guardar com..."
 
-#: src/mainwindow.c:456 src/messageview.c:156
+#: src/mainwindow.c:459 src/messageview.c:157
 msgid "/_File/_Print..."
 msgstr "/_Arxiu/Im_primir"
 
-#: src/mainwindow.c:458
+#: src/mainwindow.c:461
 msgid "/_File/_Work offline"
 msgstr "/_Arxiu/_Treballar sense connexió"
 
 #. {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL},
-#: src/mainwindow.c:461
+#: src/mainwindow.c:464
 msgid "/_File/E_xit"
 msgstr "/_Arxiu/_Sortir"
 
-#: src/mainwindow.c:466
+#: src/mainwindow.c:469
 msgid "/_Edit/Select _thread"
 msgstr "/_Editar/Seleccionar _fil"
 
-#: src/mainwindow.c:468 src/messageview.c:164
+#: src/mainwindow.c:471 src/messageview.c:165
 msgid "/_Edit/_Find in current message..."
 msgstr "/_Edició/_Buscar en el missatge actual..."
 
-#: src/mainwindow.c:470
+#: src/mainwindow.c:473
 msgid "/_Edit/_Search folder..."
 msgstr "/_Edició/Buscar a la _carpeta..."
 
-#: src/mainwindow.c:471 src/messageview.c:167 src/summaryview.c:448
+#: src/mainwindow.c:474
+msgid "/_Edit/_Quick search"
+msgstr "/_Editar/_Busqueda ràpida"
+
+#: src/mainwindow.c:475 src/messageview.c:168 src/summaryview.c:449
 msgid "/_View"
 msgstr "/_Veure"
 
-#: src/mainwindow.c:472
+#: src/mainwindow.c:476
 msgid "/_View/Show or hi_de"
 msgstr "/_Veure/_Mostrar o ocultar"
 
-#: src/mainwindow.c:473
+#: src/mainwindow.c:477
 msgid "/_View/Show or hi_de/_Folder tree"
 msgstr "/_Veure/_Mostrar o ocultar/_Arbre de carpetes"
 
-#: src/mainwindow.c:475
+#: src/mainwindow.c:479
 msgid "/_View/Show or hi_de/_Message view"
 msgstr "/_Veure/_Mostrar o ocultar/_Vista de missatge"
 
-#: src/mainwindow.c:477
+#: src/mainwindow.c:481
 msgid "/_View/Show or hi_de/_Toolbar"
 msgstr "/_Veure/_Mostrar o ocultar/_Eines"
 
-#: src/mainwindow.c:479
+#: src/mainwindow.c:483
 msgid "/_View/Show or hi_de/_Toolbar/Icon _and text"
 msgstr "/_Veure/_Mostrar o ocultar/_Eines/Icones _i texte"
 
-#: src/mainwindow.c:481
+#: src/mainwindow.c:485
 msgid "/_View/Show or hi_de/_Toolbar/_Icon"
 msgstr "/_Veure/_Mostrar o ocultar/__Eines/_Icones"
 
-#: src/mainwindow.c:483
+#: src/mainwindow.c:487
 msgid "/_View/Show or hi_de/_Toolbar/_Text"
 msgstr "/_Veure/_Mostrar o ocultar/__Eines/_Texte"
 
-#: src/mainwindow.c:485
+#: src/mainwindow.c:489
 msgid "/_View/Show or hi_de/_Toolbar/_None"
 msgstr "/_Veure/_Mostrar o ocultar/__Eines/_Ocultar"
 
-#: src/mainwindow.c:487
+#: src/mainwindow.c:491
 msgid "/_View/Show or hi_de/Status _bar"
 msgstr "/_Veure/_Mostrar o ocultar/_Barra d'estat"
 
-#: src/mainwindow.c:489 src/mainwindow.c:492 src/mainwindow.c:521
-#: src/mainwindow.c:545 src/mainwindow.c:654 src/mainwindow.c:658
-#: src/messageview.c:266
+#: src/mainwindow.c:493 src/mainwindow.c:496 src/mainwindow.c:525
+#: src/mainwindow.c:549 src/mainwindow.c:658 src/mainwindow.c:662
+#: src/messageview.c:267
 msgid "/_View/---"
 msgstr "/_Veure/---"
 
-#: src/mainwindow.c:490
+#: src/mainwindow.c:494
 msgid "/_View/Separate f_older tree"
 msgstr "/_Veure/_Separar l'arbre de carpetes"
 
-#: src/mainwindow.c:491
+#: src/mainwindow.c:495
 msgid "/_View/Separate _message view"
 msgstr "/_Veure/Vista de missatges separada"
 
-#: src/mainwindow.c:493
+#: src/mainwindow.c:497
 msgid "/_View/_Sort"
 msgstr "/_Veure/_Ordenar"
 
-#: src/mainwindow.c:494
+#: src/mainwindow.c:498
 msgid "/_View/_Sort/by _number"
 msgstr "/_Veure/_Ordenar/per _número"
 
-#: src/mainwindow.c:495
+#: src/mainwindow.c:499
 msgid "/_View/_Sort/by s_ize"
 msgstr "/_Veure/_Ordenar/per _tamany"
 
-#: src/mainwindow.c:496
+#: src/mainwindow.c:500
 msgid "/_View/_Sort/by _date"
 msgstr "/_Veure/_Ordenar/per _data"
 
-#: src/mainwindow.c:497
+#: src/mainwindow.c:501
 msgid "/_View/_Sort/by _from"
 msgstr "/_Veure/_Ordenar/per _remitent"
 
-#: src/mainwindow.c:498
+#: src/mainwindow.c:502
 msgid "/_View/_Sort/by _recipient"
 msgstr "/_Veure/_Ordenar/per _destinatari"
 
-#: src/mainwindow.c:499
+#: src/mainwindow.c:503
 msgid "/_View/_Sort/by _subject"
 msgstr "/_Veure/_Ordenar/per ass_umpte"
 
-#: src/mainwindow.c:500
+#: src/mainwindow.c:504
 msgid "/_View/_Sort/by _color label"
 msgstr "/_Veure/_Ordenar/per color d' _etiqueta"
 
-#: src/mainwindow.c:502
+#: src/mainwindow.c:506
 msgid "/_View/_Sort/by _mark"
 msgstr "/_Veure/_Ordenar/per _marca"
 
-#: src/mainwindow.c:503
+#: src/mainwindow.c:507
 msgid "/_View/_Sort/by _status"
 msgstr "/_Veure/_Ordenar/per e_stat"
 
-#: src/mainwindow.c:504
+#: src/mainwindow.c:508
 msgid "/_View/_Sort/by a_ttachment"
 msgstr "/_Veure/_Ordenar/per _adjunt"
 
-#: src/mainwindow.c:506
+#: src/mainwindow.c:510
 msgid "/_View/_Sort/by score"
 msgstr "/_Veure/_Ordenar/per tamany"
 
-#: src/mainwindow.c:507
+#: src/mainwindow.c:511
 msgid "/_View/_Sort/by locked"
 msgstr "/_Veure/_Ordenar/per bloquejat"
 
-#: src/mainwindow.c:508
+#: src/mainwindow.c:512
 msgid "/_View/_Sort/D_on't sort"
 msgstr "/_Veure/_Ordenar/N_o ordenar"
 
-#: src/mainwindow.c:509 src/mainwindow.c:512
+#: src/mainwindow.c:513 src/mainwindow.c:516
 msgid "/_View/_Sort/---"
 msgstr "/_Veure/_Ordenar/---"
 
-#: src/mainwindow.c:510
+#: src/mainwindow.c:514
 msgid "/_View/_Sort/Ascending"
 msgstr "/_Veure/_Ordenar/Ascendent"
 
-#: src/mainwindow.c:511
+#: src/mainwindow.c:515
 msgid "/_View/_Sort/Descending"
 msgstr "/_Veure/_Ordenar/Descendent"
 
-#: src/mainwindow.c:513
+#: src/mainwindow.c:517
 msgid "/_View/_Sort/_Attract by subject"
 msgstr "/_Veure/_Ordenar/Atraure _por asunto"
 
-#: src/mainwindow.c:515
+#: src/mainwindow.c:519
 msgid "/_View/Th_read view"
 msgstr "/_Veure/_Vista jeràrquica"
 
-#: src/mainwindow.c:516
+#: src/mainwindow.c:520
 msgid "/_View/E_xpand all threads"
 msgstr "/_Veure/E_xpandir tots els fils"
 
-#: src/mainwindow.c:517
+#: src/mainwindow.c:521
 msgid "/_View/Co_llapse all threads"
 msgstr "/_Veure/Co_l·lapsar tots els fils"
 
-#: src/mainwindow.c:518
+#: src/mainwindow.c:522
 msgid "/_View/_Hide read messages"
 msgstr "/_Veure/Ama_gar els missatges llegits"
 
-#: src/mainwindow.c:519
+#: src/mainwindow.c:523
 msgid "/_View/Set displayed _items..."
 msgstr "/_Veure/Elements v_isibles..."
 
-#: src/mainwindow.c:522
+#: src/mainwindow.c:526
 msgid "/_View/_Go to"
 msgstr "/_Veure/_Anar a"
 
-#: src/mainwindow.c:523
+#: src/mainwindow.c:527
 msgid "/_View/_Go to/_Prev message"
 msgstr "/_Veure/_Anar a/Missatge a_nterior"
 
-#: src/mainwindow.c:524
+#: src/mainwindow.c:528
 msgid "/_View/_Go to/_Next message"
 msgstr "/_Veure/_Anar a/Missatge s_egüent"
 
-#: src/mainwindow.c:525 src/mainwindow.c:530 src/mainwindow.c:533
-#: src/mainwindow.c:538 src/mainwindow.c:543
+#: src/mainwindow.c:529 src/mainwindow.c:534 src/mainwindow.c:537
+#: src/mainwindow.c:542 src/mainwindow.c:547
 msgid "/_View/_Go to/---"
 msgstr "/_Veure/_Anar a/---"
 
-#: src/mainwindow.c:526
+#: src/mainwindow.c:530
 msgid "/_View/_Go to/P_rev unread message"
 msgstr "/_Veure/_Anar a/_Anterior sense llegir"
 
-#: src/mainwindow.c:528
+#: src/mainwindow.c:532
 msgid "/_View/_Go to/N_ext unread message"
 msgstr "/_Veure/_Anar a/_Següent sense llegir"
 
-#: src/mainwindow.c:531
+#: src/mainwindow.c:535
 msgid "/_View/_Go to/Prev ne_w message"
 msgstr "/_Veure/_Anar a/Missatge no_u anterior"
 
-#: src/mainwindow.c:532
+#: src/mainwindow.c:536
 msgid "/_View/_Go to/Ne_xt new message"
 msgstr "/_Veure/_Anar a/Missatge no_u següent"
 
-#: src/mainwindow.c:534
+#: src/mainwindow.c:538
 msgid "/_View/_Go to/Prev _marked message"
 msgstr "/_Veure/_Anar a/Missatge marcat a_nterior"
 
-#: src/mainwindow.c:536
+#: src/mainwindow.c:540
 msgid "/_View/_Go to/Next m_arked message"
 msgstr "/_Veure/_Anar a/Següent missatge marcat"
 
-#: src/mainwindow.c:539
+#: src/mainwindow.c:543
 msgid "/_View/_Go to/Prev _labeled message"
 msgstr "/_Veure/_Anar a/Missatge etiquetat anterior"
 
-#: src/mainwindow.c:541
+#: src/mainwindow.c:545
 msgid "/_View/_Go to/Next la_beled message"
 msgstr "/_Veure/_Anar a/Següent missatge etiquetat"
 
-#: src/mainwindow.c:544
+#: src/mainwindow.c:548
 msgid "/_View/_Go to/Other _folder..."
 msgstr "/_Veure/_Anar a/_Anar a una altra carpeta"
 
-#: src/mainwindow.c:548 src/mainwindow.c:555 src/messageview.c:170
+#: src/mainwindow.c:552 src/mainwindow.c:559 src/messageview.c:171
 msgid "/_View/Character _encoding/---"
 msgstr "/_Veure/Codificacio d_e caracters/---"
 
-#: src/mainwindow.c:552 src/messageview.c:174
+#: src/mainwindow.c:556 src/messageview.c:175
 msgid "/_View/Character _encoding"
 msgstr "/_Veure/Codificacio d_e caracters"
 
-#: src/mainwindow.c:553 src/messageview.c:175
+#: src/mainwindow.c:557 src/messageview.c:176
 msgid "/_View/Character _encoding/_Auto detect"
 msgstr "/_Veure/Codificacio d_e caracters/_Autodetectar"
 
-#: src/mainwindow.c:556 src/messageview.c:178
+#: src/mainwindow.c:560 src/messageview.c:179
 msgid "/_View/Character _encoding/7bit ascii (US-ASC_II)"
 msgstr "/_Veure/Codificacio d_e caracters/ASCII de 7 bits (US-ASC_II)"
 
-#: src/mainwindow.c:558 src/messageview.c:181
+#: src/mainwindow.c:562 src/messageview.c:182
 msgid "/_View/Character _encoding/Unicode (_UTF-8)"
 msgstr "/_Veure/Codificacio d_e caracters/Unicode (_UTF-8)"
 
-#: src/mainwindow.c:562 src/messageview.c:184
+#: src/mainwindow.c:566 src/messageview.c:185
 msgid "/_View/Character _encoding/Western European (ISO-8859-_1)"
 msgstr "/_Veure/Codificacio d_e caracters/Europeu Occidental (ISO-8859-_1)"
 
-#: src/mainwindow.c:564 src/messageview.c:186
+#: src/mainwindow.c:568 src/messageview.c:187
 msgid "/_View/Character _encoding/Western European (ISO-8859-15)"
 msgstr "/_Veure/Codificacio d_e caracters/Europeu Occidental (ISO-8859-_15)"
 
-#: src/mainwindow.c:568 src/messageview.c:189
+#: src/mainwindow.c:572 src/messageview.c:190
 msgid "/_View/Character _encoding/Central European (ISO-8859-_2)"
 msgstr "/_Veure/Codificacio d_e caracters/Centreeuropeu (ISO-8859-_2)"
 
-#: src/mainwindow.c:572 src/messageview.c:192
+#: src/mainwindow.c:576 src/messageview.c:193
 msgid "/_View/Character _encoding/_Baltic (ISO-8859-13)"
 msgstr "/_Veure/Codificacio d_e caracters/Bàltic (ISO-8859-13)"
 
-#: src/mainwindow.c:574 src/messageview.c:194
+#: src/mainwindow.c:578 src/messageview.c:195
 msgid "/_View/Character _encoding/Baltic (ISO-8859-_4)"
 msgstr "/_Veure/Codificacio d_e caracters/Bàltic (ISO-8859-_4)"
 
-#: src/mainwindow.c:578 src/messageview.c:197
+#: src/mainwindow.c:582 src/messageview.c:198
 msgid "/_View/Character _encoding/Greek (ISO-8859-_7)"
 msgstr "/_Veure/Codificacio d_e caracters/Grec (ISO-8859-_7)"
 
-#: src/mainwindow.c:582 src/messageview.c:200
+#: src/mainwindow.c:586 src/messageview.c:201
 msgid "/_View/Character _encoding/Hebrew (ISO-8859-_8)"
 msgstr "/_Veure/Codificacio d_e caracters/Hebreu (ISO-8859-_8)"
 
-#: src/mainwindow.c:584 src/messageview.c:202
+#: src/mainwindow.c:588 src/messageview.c:203
 msgid "/_View/Character _encoding/Hebrew (Windows-1255)"
 msgstr "/_Veure/Codificacio d_e caracter/Hebreu (Windows-1255)"
 
-#: src/mainwindow.c:588 src/messageview.c:205
+#: src/mainwindow.c:592 src/messageview.c:206
 msgid "/_View/Character _encoding/Turkish (ISO-8859-_9)"
 msgstr "/_Veure/Codificacio d_e caracters/Turc (ISO-8859-_9)"
 
-#: src/mainwindow.c:592 src/messageview.c:208
+#: src/mainwindow.c:596 src/messageview.c:209
 msgid "/_View/Character _encoding/Cyrillic (ISO-8859-_5)"
 msgstr "/_Veure/Codificacio d_e caracters/Ciríl·lic (ISO-8859-_5)"
 
-#: src/mainwindow.c:594 src/messageview.c:210
+#: src/mainwindow.c:598 src/messageview.c:211
 msgid "/_View/Character _encoding/Cyrillic (KOI8-_R)"
 msgstr "/_Veure/Codificacio d_e caracters/Ciríl·lic (KOI8-_R)"
 
-#: src/mainwindow.c:596 src/messageview.c:212
+#: src/mainwindow.c:600 src/messageview.c:213
 msgid "/_View/Character _encoding/Cyrillic (KOI8-U)"
 msgstr "/_Veure/Codificacio d_e caracters/Ciríl·lic (KOI8-U)"
 
-#: src/mainwindow.c:598 src/messageview.c:214
+#: src/mainwindow.c:602 src/messageview.c:215
 msgid "/_View/Character _encoding/Cyrillic (Windows-1251)"
 msgstr "/_Veure/Codificacio d_e caracter/Ciríl·lic (Windows-1251)"
 
-#: src/mainwindow.c:602 src/messageview.c:217
+#: src/mainwindow.c:606 src/messageview.c:218
 msgid "/_View/Character _encoding/Japanese (ISO-2022-_JP)"
 msgstr "/_Veure/Codificacio d_e caracters/Japonès (ISO-2022-_JP)"
 
-#: src/mainwindow.c:604 src/messageview.c:219
+#: src/mainwindow.c:608 src/messageview.c:220
 msgid "/_View/Character _encoding/Japanese (ISO-2022-JP-2)"
 msgstr "/_Veure/Codificacio d_e caracters/Japonès (ISO-2022-JP-2)"
 
-#: src/mainwindow.c:606 src/messageview.c:221
+#: src/mainwindow.c:610 src/messageview.c:222
 msgid "/_View/Character _encoding/Japanese (_EUC-JP)"
 msgstr "/_Veure/Codificacio d_e caracters/Japonès (_EUC-JP)"
 
-#: src/mainwindow.c:608 src/messageview.c:223
+#: src/mainwindow.c:612 src/messageview.c:224
 msgid "/_View/Character _encoding/Japanese (_Shift__JIS)"
 msgstr "/_Veure/Codificacio d_e caracters/Japonès (_Shift__JIS)"
 
-#: src/mainwindow.c:612 src/messageview.c:226
+#: src/mainwindow.c:616 src/messageview.c:227
 msgid "/_View/Character _encoding/Simplified Chinese (_GB2312)"
 msgstr "/_Veure/Codificacio d_e caracters/Chinès simplificat (_GB2312)"
 
-#: src/mainwindow.c:614 src/messageview.c:228
+#: src/mainwindow.c:618 src/messageview.c:229
 msgid "/_View/Character _encoding/Simplified Chinese (GBK)"
 msgstr "/_Veure/Codificacio d_e caracters/Chinès simplificat (_GB2312)"
 
-#: src/mainwindow.c:616 src/messageview.c:230
+#: src/mainwindow.c:620 src/messageview.c:231
 msgid "/_View/Character _encoding/Traditional Chinese (_Big5)"
 msgstr "/_Veure/Codificacio d_e caracters/Chinès tradicional (_Big5)"
 
-#: src/mainwindow.c:618 src/messageview.c:232
+#: src/mainwindow.c:622 src/messageview.c:233
 msgid "/_View/Character _encoding/Traditional Chinese (EUC-_TW)"
 msgstr "/_Veure/Codificacio d_e caracters/Chinès tradicional (EUC-_TW)"
 
-#: src/mainwindow.c:620 src/messageview.c:234
+#: src/mainwindow.c:624 src/messageview.c:235
 msgid "/_View/Character _encoding/Chinese (ISO-2022-_CN)"
 msgstr "/_Veure/Codificacio d_e caracters/Chinès (ISO-2022-_CN)"
 
-#: src/mainwindow.c:624 src/messageview.c:237
+#: src/mainwindow.c:628 src/messageview.c:238
 msgid "/_View/Character _encoding/Korean (EUC-_KR)"
 msgstr "/_Veure/Codificacio d_e caracters/Coreà (EUC-_KR)"
 
-#: src/mainwindow.c:626 src/messageview.c:239
+#: src/mainwindow.c:630 src/messageview.c:240
 msgid "/_View/Character _encoding/Korean (ISO-2022-KR)"
 msgstr "/_Veure/Codificacio d_e caracters/Coreà (ISO-2022-KR)"
 
-#: src/mainwindow.c:630 src/messageview.c:242
+#: src/mainwindow.c:634 src/messageview.c:243
 msgid "/_View/Character _encoding/Thai (TIS-620)"
 msgstr "/_Veure/Codificacio d_e caracters/Tailandès (TIS-620)"
 
-#: src/mainwindow.c:632 src/messageview.c:244
+#: src/mainwindow.c:636 src/messageview.c:245
 msgid "/_View/Character _encoding/Thai (Windows-874)"
 msgstr "/_Veure/Codificacio d_e caracters/Tailandès (Windows-874)"
 
-#: src/mainwindow.c:639 src/mainwindow.c:645 src/messageview.c:251
-#: src/messageview.c:257
+#: src/mainwindow.c:643 src/mainwindow.c:649 src/messageview.c:252
+#: src/messageview.c:258
 msgid "/_View/Decode/---"
 msgstr "/_Veure/Decodificar/---"
 
-#: src/mainwindow.c:642 src/messageview.c:254
+#: src/mainwindow.c:646 src/messageview.c:255
 msgid "/_View/Decode"
 msgstr "/_Veure/Decodificar"
 
-#: src/mainwindow.c:643 src/messageview.c:255
+#: src/mainwindow.c:647 src/messageview.c:256
 msgid "/_View/Decode/_Auto detect"
 msgstr "/_Veure/Decodificar/_Autodetectar"
 
-#: src/mainwindow.c:646 src/messageview.c:258
+#: src/mainwindow.c:650 src/messageview.c:259
 msgid "/_View/Decode/_8bit"
 msgstr "/_Veure/Decodificar/_8bit"
 
-#: src/mainwindow.c:647 src/messageview.c:259
+#: src/mainwindow.c:651 src/messageview.c:260
 msgid "/_View/Decode/_Quoted printable"
 msgstr "/_Veure/Decodificar/_Marca d'impressió"
 
-#: src/mainwindow.c:648 src/messageview.c:260
+#: src/mainwindow.c:652 src/messageview.c:261
 msgid "/_View/Decode/_Base64"
 msgstr "/_Veure/Decodificar/_Base64"
 
-#: src/mainwindow.c:649 src/messageview.c:261
+#: src/mainwindow.c:653 src/messageview.c:262
 msgid "/_View/Decode/_Uuencode"
 msgstr "/_Veure/Decodificar/_Uuencode"
 
-#: src/mainwindow.c:655 src/summaryview.c:449
+#: src/mainwindow.c:659 src/summaryview.c:450
 msgid "/_View/Open in new _window"
 msgstr "/_Veure/Obrir en finestra _nova"
 
-#: src/mainwindow.c:656 src/messageview.c:267
+#: src/mainwindow.c:660 src/messageview.c:268
 msgid "/_View/Mess_age source"
 msgstr "/_Veure/Fon_t del missatge"
 
-#: src/mainwindow.c:657
+#: src/mainwindow.c:661
 msgid "/_View/Show all headers"
 msgstr "/_Veure/Mostrar totes les ca_pçaleres"
 
-#: src/mainwindow.c:659
+#: src/mainwindow.c:663
 msgid "/_View/_Update summary"
 msgstr "/_Veure/Act_ualitzar resum"
 
-#: src/mainwindow.c:662
+#: src/mainwindow.c:666
 msgid "/_Message/Recei_ve"
 msgstr "/_Missatge/Re_bre"
 
-#: src/mainwindow.c:663
+#: src/mainwindow.c:667
 msgid "/_Message/Recei_ve/Get from _current account"
 msgstr "/_Missatge/Re_bre/Del compte _actual"
 
-#: src/mainwindow.c:665
+#: src/mainwindow.c:669
 msgid "/_Message/Recei_ve/Get from _all accounts"
 msgstr "/_Missatge/Re_bre/De _tots els comptes"
 
-#: src/mainwindow.c:667
+#: src/mainwindow.c:671
 msgid "/_Message/Recei_ve/Cancel receivin_g"
 msgstr "/_Missatge/Re_bre/_Cancel·lar la recepció"
 
-#: src/mainwindow.c:669
+#: src/mainwindow.c:673
 msgid "/_Message/Recei_ve/---"
 msgstr "/_Missatge/Re_bre/---"
 
-#: src/mainwindow.c:670
+#: src/mainwindow.c:674
 msgid "/_Message/_Send queued messages"
 msgstr "/_Missatge/_Enviar missatges en cua"
 
-#: src/mainwindow.c:672
+#: src/mainwindow.c:676
 msgid "/_Message/Compose a_n email message"
 msgstr "/_Missatge/Composar _nou missatge"
 
-#: src/mainwindow.c:673
+#: src/mainwindow.c:677
 msgid "/_Message/Compose a news message"
 msgstr "/_Missatge/Composar una notícia"
 
-#: src/mainwindow.c:674 src/messageview.c:274
+#: src/mainwindow.c:678 src/messageview.c:275
 msgid "/_Message/_Reply"
 msgstr "/_Missatge/_Respondre"
 
-#: src/mainwindow.c:675
+#: src/mainwindow.c:679
 msgid "/_Message/Repl_y to"
 msgstr "/_Missatge/Respon_dre a"
 
-#: src/mainwindow.c:676 src/messageview.c:275
+#: src/mainwindow.c:680 src/messageview.c:276
 msgid "/_Message/Repl_y to/_all"
 msgstr "/_Missatge/Respon_dre a/A _tots"
 
-#: src/mainwindow.c:677 src/messageview.c:277
+#: src/mainwindow.c:681 src/messageview.c:278
 msgid "/_Message/Repl_y to/_sender"
 msgstr "/_Missatge/Respon_dre a/Al _remitent"
 
-#: src/mainwindow.c:678 src/messageview.c:279
+#: src/mainwindow.c:682 src/messageview.c:280
 msgid "/_Message/Repl_y to/mailing _list"
 msgstr "/_Missatge/Respon_dre a/A la _llista de correu"
 
-#: src/mainwindow.c:680
+#: src/mainwindow.c:684
 msgid "/_Message/Follow-up and reply to"
 msgstr "/_Missatge/_Reenviar i respondre a"
 
-#: src/mainwindow.c:682 src/messageview.c:282
+#: src/mainwindow.c:686 src/messageview.c:283
 msgid "/_Message/_Forward"
 msgstr "/_Missatge/Ree_nviar"
 
-#: src/mainwindow.c:683
+#: src/mainwindow.c:687
 msgid "/_Message/Redirect"
 msgstr "/_Missatge/Redirigir"
 
-#: src/mainwindow.c:685
+#: src/mainwindow.c:689
 msgid "/_Message/M_ove..."
 msgstr "/_Missatge/M_oure..."
 
-#: src/mainwindow.c:686
+#: src/mainwindow.c:690
 msgid "/_Message/_Copy..."
 msgstr "/_Missatge/_Copiar..."
 
-#: src/mainwindow.c:687
+#: src/mainwindow.c:691
 msgid "/_Message/Move to _trash"
-msgstr "/_Missatge/M_oure a la papelera"
+msgstr "/_Missatge/M_oure a les ecombraries"
 
-#: src/mainwindow.c:688
+#: src/mainwindow.c:692
 msgid "/_Message/_Delete..."
 msgstr "/_Missatge/Es_borrar..."
 
-#: src/mainwindow.c:689
+#: src/mainwindow.c:693
 msgid "/_Message/Cancel a news message"
 msgstr "/_Missatge/Cancel·lar una notícia"
 
-#: src/mainwindow.c:691
+#: src/mainwindow.c:695
 msgid "/_Message/_Mark"
 msgstr "/_Missatge/_Marcar"
 
-#: src/mainwindow.c:692
+#: src/mainwindow.c:696
 msgid "/_Message/_Mark/_Mark"
 msgstr "/_Missatge/_Marcar/_Marcar"
 
-#: src/mainwindow.c:693
+#: src/mainwindow.c:697
 msgid "/_Message/_Mark/_Unmark"
 msgstr "/_Missatge/_Marcar/_Desmarcar"
 
-#: src/mainwindow.c:694
+#: src/mainwindow.c:698
 msgid "/_Message/_Mark/---"
 msgstr "/_Missatge/_Marcar/---"
 
-#: src/mainwindow.c:695
+#: src/mainwindow.c:699
 msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/_Missatge/_Marcar/Marcar com a no llegit"
 
-#: src/mainwindow.c:696
+#: src/mainwindow.c:700
 msgid "/_Message/_Mark/Mark as rea_d"
 msgstr "/_Missatge/_Marcar/Marcar como a llegit"
 
-#: src/mainwindow.c:698
+#: src/mainwindow.c:702
 msgid "/_Message/_Mark/Mark all _read"
 msgstr "/_Missatge/_Marcar/Marcar tot com a llegit"
 
-#: src/mainwindow.c:700 src/messageview.c:287
+#: src/mainwindow.c:704 src/messageview.c:288
 msgid "/_Message/Re-_edit"
 msgstr "/_Missatge/Re_editar"
 
-#: src/mainwindow.c:703
+#: src/mainwindow.c:707
 msgid "/_Tools/_Address book..."
 msgstr "/E_ines/_Agenda d'adreces..."
 
-#: src/mainwindow.c:704 src/messageview.c:291
+#: src/mainwindow.c:708 src/messageview.c:292
 msgid "/_Tools/Add sender to address boo_k"
 msgstr "/E_ines/Afegir _remitent a l'agenda"
 
-#: src/mainwindow.c:706
+#: src/mainwindow.c:710
 msgid "/_Tools/_Harvest addresses"
 msgstr "/E_ines/_Recopilar adreces"
 
-#: src/mainwindow.c:707
+#: src/mainwindow.c:711
 msgid "/_Tools/_Harvest addresses/from _Folder..."
 msgstr "/E_ines/_Recopilar adreces/De la _carpeta..."
 
-#: src/mainwindow.c:709
+#: src/mainwindow.c:713
 msgid "/_Tools/_Harvest addresses/from _Messages..."
 msgstr "/E_ines/_Recopilar adreces/Dels _missatges..."
 
-#: src/mainwindow.c:712
+#: src/mainwindow.c:716
 msgid "/_Tools/_Filter all messages in folder"
 msgstr "/E_ines/_Filtrar tots els missatges a la carpeta"
 
-#: src/mainwindow.c:714
+#: src/mainwindow.c:718
 msgid "/_Tools/Filter _selected messages"
 msgstr "/E_ines/_Filtrar els missatges seleccionats"
 
-#: src/mainwindow.c:716 src/messageview.c:294
+#: src/mainwindow.c:720 src/messageview.c:295
 msgid "/_Tools/_Create filter rule"
 msgstr "/E_ines/_Crear regla de filtrat"
 
-#: src/mainwindow.c:717 src/messageview.c:296
+#: src/mainwindow.c:721 src/messageview.c:297
 msgid "/_Tools/_Create filter rule/_Automatically"
 msgstr "/E_ines/_Crear regla de filtrat/_Automàticament"
 
-#: src/mainwindow.c:719 src/messageview.c:298
+#: src/mainwindow.c:723 src/messageview.c:299
 msgid "/_Tools/_Create filter rule/by _From"
 msgstr "/E_ines/_Crear regla de filtrat/Basada en _Desde"
 
-#: src/mainwindow.c:721 src/messageview.c:300
+#: src/mainwindow.c:725 src/messageview.c:301
 msgid "/_Tools/_Create filter rule/by _To"
 msgstr "/E_ines/_Crear regla de filtrat/Basada en _Per a"
 
-#: src/mainwindow.c:723 src/messageview.c:302
+#: src/mainwindow.c:727 src/messageview.c:303
 msgid "/_Tools/_Create filter rule/by _Subject"
 msgstr "/E_ines/_Crear regla de filtrat/Basada en el _Assumpte"
 
-#: src/mainwindow.c:725
+#: src/mainwindow.c:729
 msgid "/_Tools/C_reate processing rule"
 msgstr "/E_ines/Crear regla de processament"
 
-#: src/mainwindow.c:726
+#: src/mainwindow.c:730
 msgid "/_Tools/C_reate processing rule/_Automatically"
 msgstr "/E_ines/Crear regla de processament/_Automàticament"
 
-#: src/mainwindow.c:728
+#: src/mainwindow.c:732
 msgid "/_Tools/C_reate processing rule/by _From"
 msgstr "/E_ines/Crear regla de processament/Basada en _Desde"
 
-#: src/mainwindow.c:730
+#: src/mainwindow.c:734
 msgid "/_Tools/C_reate processing rule/by _To"
 msgstr "/E_ines/Crear regla de processament/Basada en _Per a"
 
-#: src/mainwindow.c:732
+#: src/mainwindow.c:736
 msgid "/_Tools/C_reate processing rule/by _Subject"
 msgstr "/E_ines/Crear regla de processament/Basada en el _Asumpte"
 
-#: src/mainwindow.c:737
+#: src/mainwindow.c:741
 msgid "/_Tools/Ch_eck for new messages in all folders"
 msgstr "/E_ines/_Comprovar missatges nous en totes les carpetes"
 
-#: src/mainwindow.c:739
+#: src/mainwindow.c:743
 msgid "/_Tools/Delete du_plicated messages"
 msgstr "/E_ines/Es_borrar els missatges repetits"
 
-#: src/mainwindow.c:741
+#: src/mainwindow.c:745
 msgid "/_Tools/Delete du_plicated messages/In selected folder"
 msgstr "/E_ines/Es_borrar els missatges repetits/A la carpeta seleccionada"
 
-#: src/mainwindow.c:743
+#: src/mainwindow.c:747
 msgid "/_Tools/Delete du_plicated messages/In all folders"
 msgstr "/E_ines/Es_borrar els missatges repetits/En totes les carpetes"
 
-#: src/mainwindow.c:746
+#: src/mainwindow.c:750
 msgid "/_Tools/E_xecute"
 msgstr "/E_ines/E_xecutar"
 
-#: src/mainwindow.c:749
+#: src/mainwindow.c:753
 msgid "/_Tools/SSL cer_tificates..."
 msgstr "/E_ines/Certi_ficats SSL..."
 
-#: src/mainwindow.c:753
+#: src/mainwindow.c:757
 msgid "/_Tools/_Log window"
 msgstr "/E_ines/_Finestra de traça"
 
-#: src/mainwindow.c:755
+#: src/mainwindow.c:759
 msgid "/_Configuration"
 msgstr "/_Configuració"
 
-#: src/mainwindow.c:756
+#: src/mainwindow.c:760
 msgid "/_Configuration/C_hange current account"
 msgstr "/_Configuració/_Canviar compte actual"
 
-#: src/mainwindow.c:758
+#: src/mainwindow.c:762
 msgid "/_Configuration/_Preferences for current account..."
 msgstr "/_Configuració/_Preferències del compte actual..."
 
-#: src/mainwindow.c:760
+#: src/mainwindow.c:764
 msgid "/_Configuration/Create _new account..."
 msgstr "/_Configuració/Crear _nou compte..."
 
-#: src/mainwindow.c:762
+#: src/mainwindow.c:766
 msgid "/_Configuration/_Edit accounts..."
 msgstr "/_Configuració/_Editar comptes..."
 
-#: src/mainwindow.c:764
+#: src/mainwindow.c:768
 msgid "/_Configuration/---"
 msgstr "/_Configuració/---"
 
-#: src/mainwindow.c:765
+#: src/mainwindow.c:769
 msgid "/_Configuration/P_references..."
 msgstr "/_Configuració/_Preferències..."
 
-#: src/mainwindow.c:767
+#: src/mainwindow.c:771
 msgid "/_Configuration/Pre-pr_ocessing..."
 msgstr "/_Configuració/Pre-processament..."
 
-#: src/mainwindow.c:769
+#: src/mainwindow.c:773
 msgid "/_Configuration/Post-pro_cessing..."
 msgstr "/_Configuració/Post-processament..."
 
-#: src/mainwindow.c:771
+#: src/mainwindow.c:775
 msgid "/_Configuration/_Filtering..."
 msgstr "/_Configuració/_Filtrat..."
 
-#: src/mainwindow.c:773
+#: src/mainwindow.c:777
 msgid "/_Configuration/_Templates..."
 msgstr "/_Configuració/_Plantilles..."
 
-#: src/mainwindow.c:774
+#: src/mainwindow.c:778
 msgid "/_Configuration/_Actions..."
 msgstr "/_Configuració/_Accions..."
 
-#: src/mainwindow.c:775
+#: src/mainwindow.c:779
 msgid "/_Configuration/Plu_gins..."
 msgstr "/_Configuració/Mòduls..."
 
-#: src/mainwindow.c:778
+#: src/mainwindow.c:782
 msgid "/_Help/_Manual (Local)"
 msgstr "/A_juda/_Manual (Local)"
 
-#: src/mainwindow.c:779
+#: src/mainwindow.c:783
 msgid "/_Help/Ma_nual (Sylpheed Doc Homepage)"
 msgstr "A_juda/_Manual (Pàgina de Sylpheed Doc)"
 
-#: src/mainwindow.c:781
+#: src/mainwindow.c:785
 msgid "/_Help/_FAQ (Local)"
 msgstr "/A_juda/_FAQ (Local)"
 
-#: src/mainwindow.c:782
+#: src/mainwindow.c:786
 msgid "/_Help/FA_Q (Sylpheed Doc Homepage)"
 msgstr "/A_juda/_FAQ (Pàgina de Sylpheed Doc)"
 
-#: src/mainwindow.c:784
+#: src/mainwindow.c:788
 msgid "/_Help/_Claws FAQ (Claws Documentation)"
 msgstr "/A_juda/_Claws FAQ (Documentació de Claws)"
 
-#: src/mainwindow.c:786
+#: src/mainwindow.c:790
 msgid "/_Help/---"
 msgstr "/A_juda/---"
 
-#: src/mainwindow.c:927
+#: src/mainwindow.c:931
 msgid "You are online. Click the icon to go offline"
 msgstr "Esteu connectat. Polseu en la icona per desconectar-se"
 
-#: src/mainwindow.c:931
+#: src/mainwindow.c:935
 msgid "You are offline. Click the icon to go online"
 msgstr "Este desconnectat. Polseu en la icona per conectarse"
 
-#: src/mainwindow.c:948
+#: src/mainwindow.c:952
 msgid "Select account"
 msgstr "Seleccionar compte"
 
-#: src/mainwindow.c:1292 src/mainwindow.c:1333 src/mainwindow.c:1361
+#: src/mainwindow.c:1296 src/mainwindow.c:1337 src/mainwindow.c:1365
 #: src/prefs_folder_item.c:539
 msgid "Untitled"
 msgstr "Sense títol"
 
-#: src/mainwindow.c:1362
+#: src/mainwindow.c:1366
 msgid "none"
 msgstr "cap"
 
-#: src/mainwindow.c:1656
+#: src/mainwindow.c:1660
 msgid "Add mailbox"
 msgstr "Afegir bústia"
 
-#: src/mainwindow.c:1657
+#: src/mainwindow.c:1661
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -4773,16 +4703,15 @@ msgstr ""
 "Si la bústia especificada ja existeix serà\n"
 "escaneajada automàticament."
 
-#: src/mainwindow.c:1663
-#, c-format
-msgid "The mailbox `%s' already exists."
-msgstr "La bústia `%s' ja existeix."
+#: src/mainwindow.c:1667
+msgid "The mailbox '%s' already exists."
+msgstr "La bústia '%s' ja existeix."
 
-#: src/mainwindow.c:1668 src/setup.c:51
+#: src/mainwindow.c:1672 src/setup.c:51
 msgid "Mailbox"
 msgstr "Correu"
 
-#: src/mainwindow.c:1673 src/setup.c:54
+#: src/mainwindow.c:1677 src/setup.c:54
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -4792,42 +4721,42 @@ msgstr ""
 "Pot ser que ja existeixin els arxius o no tingueu prous permisos per a "
 "escriure en el directori."
 
-#: src/mainwindow.c:2026
+#: src/mainwindow.c:2035
 msgid "Sylpheed - Folder View"
 msgstr "Sylpheed - Arbre de carpetes"
 
-#: src/mainwindow.c:2062 src/messageview.c:432
+#: src/mainwindow.c:2071 src/messageview.c:433
 msgid "Sylpheed - Message View"
 msgstr "Sylpheed - Vista de missatge"
 
-#: src/mainwindow.c:2465 src/plugins/trayicon/trayicon.c:342
+#: src/mainwindow.c:2474 src/plugins/trayicon/trayicon.c:342
 msgid "Exit"
 msgstr "Sortir"
 
-#: src/mainwindow.c:2465 src/plugins/trayicon/trayicon.c:342
+#: src/mainwindow.c:2474 src/plugins/trayicon/trayicon.c:342
 msgid "Exit this program?"
 msgstr "Sortir del programa?"
 
-#: src/mainwindow.c:2839
+#: src/mainwindow.c:2854
 msgid "Deleting duplicated messages..."
 msgstr "Esborrant missatges duplicats..."
 
-#: src/mainwindow.c:2873
+#: src/mainwindow.c:2888
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "Esborrant %d missatge duplicat a les %d carpetes.\n"
 msgstr[1] "Esborrant %d missatges duplicats a les %d carpetes.\n"
 
-#: src/mainwindow.c:3014 src/summaryview.c:4004
+#: src/mainwindow.c:3029 src/summaryview.c:4026
 msgid "Processing rules to apply before folder rules"
 msgstr "Regles de processament a aplicar abans de les de les carpetes"
 
-#: src/mainwindow.c:3022
+#: src/mainwindow.c:3037
 msgid "Processing rules to apply after folder rules"
 msgstr "Regles de processament a aplicar després de les de les carpetes"
 
-#: src/mainwindow.c:3030 src/summaryview.c:4013
+#: src/mainwindow.c:3045 src/summaryview.c:4035
 msgid "Filtering configuration"
 msgstr "Configuració de filtrat"
 
@@ -4848,67 +4777,67 @@ msgstr "Cercar texte:"
 msgid "Case sensitive"
 msgstr "Majús./minús."
 
-#: src/message_search.c:201 src/summary_search.c:378
+#: src/message_search.c:200 src/summary_search.c:377
 msgid "Search failed"
 msgstr "Cerca errònia"
 
-#: src/message_search.c:202 src/summary_search.c:379
+#: src/message_search.c:201 src/summary_search.c:378
 msgid "Search string not found."
 msgstr "Cadena no trobada."
 
-#: src/message_search.c:211
+#: src/message_search.c:210
 msgid "Beginning of message reached; continue from end?"
 msgstr "S'ha arribat a l'inici del missatge. Voleu seguir desde el final?"
 
-#: src/message_search.c:214
+#: src/message_search.c:213
 msgid "End of message reached; continue from beginning?"
 msgstr "S'ha arribat al final del missatge. Voleu seguir desde l'inici?"
 
-#: src/message_search.c:217 src/summary_search.c:390
+#: src/message_search.c:216 src/summary_search.c:389
 msgid "Search finished"
 msgstr "Cerca finalitzada"
 
-#: src/messageview.c:268
+#: src/messageview.c:269
 msgid "/_View/Show all _headers"
 msgstr "/_Veure/Mostrar totes les ca_pçaleres"
 
-#: src/messageview.c:271
+#: src/messageview.c:272
 msgid "/_Message/Compose _new message"
 msgstr "/_Missatge/Composar un missatge _nou"
 
-#: src/messageview.c:283
+#: src/messageview.c:284
 msgid "/_Message/For_ward as attachment"
 msgstr "/_Missatge/Reenviar com a a_djunt"
 
-#: src/messageview.c:285
+#: src/messageview.c:286
 msgid "/_Message/Redirec_t"
 msgstr "/_Missatge/Redirigi_r"
 
-#: src/messageview.c:304
+#: src/messageview.c:305
 msgid "/_Tools/Create processing rule"
 msgstr "/E_ines/Crear regla de processament"
 
-#: src/messageview.c:306
+#: src/messageview.c:307
 msgid "/_Tools/Create processing rule/_Automatically"
 msgstr "/E_ines/Crear regla de processament/_Automàticament"
 
-#: src/messageview.c:308
+#: src/messageview.c:309
 msgid "/_Tools/Create processing rule/by _From"
 msgstr "/E_ines/Crear regla de processament/Basada en _Desde"
 
-#: src/messageview.c:310
+#: src/messageview.c:311
 msgid "/_Tools/Create processing rule/by _To"
 msgstr "/E_ines/Crear regla de processament/Basada en _Per a"
 
-#: src/messageview.c:312
+#: src/messageview.c:313
 msgid "/_Tools/Create processing rule/by _Subject"
 msgstr "/E_ines/Crear regla de processament/Basada en el _Asumpte"
 
-#: src/messageview.c:537
+#: src/messageview.c:538
 msgid "<No Return-Path found>"
 msgstr "<No s'ha trobat Return-Path>"
 
-#: src/messageview.c:545
+#: src/messageview.c:546
 #, c-format
 msgid ""
 "The notification address to which the return receipt is to be sent\n"
@@ -4923,11 +4852,11 @@ msgstr ""
 "Adreça de retorn: %s\n"
 "Es recomana no enviar el justificant de recepció."
 
-#: src/messageview.c:553 src/messageview.c:572
+#: src/messageview.c:554 src/messageview.c:574
 msgid "+Don't Send"
 msgstr "+No enviar"
 
-#: src/messageview.c:565
+#: src/messageview.c:567
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -4935,39 +4864,38 @@ msgid ""
 "It is advised to not to send the return .receipt."
 msgstr ""
 "Aquest missatge sol·licita una notificació de justificant de recepció\n"
-"però d'acord amb les capçaleres 'Des de:' y 'Cc:' no fou\n"
+"però d'acord amb les capçaleres 'Des de:' i 'Cc:' no fou\n"
 "oficialment dirigit a vostè.\n"
-"Notificació de justificant de recepció cancel·lada."
+"És un avís per no enviar el justificant de recepció."
 
-#: src/messageview.c:1017 src/mimeview.c:1160 src/summaryview.c:3416
-#: src/summaryview.c:3419 src/textview.c:2282
+#: src/messageview.c:1019 src/mimeview.c:1160 src/summaryview.c:3406
+#: src/summaryview.c:3409 src/textview.c:2290
 msgid "Save as"
 msgstr "Guardar com"
 
-#: src/messageview.c:1022 src/mimeview.c:1033 src/summaryview.c:3425
-#: src/textview.c:2294
+#: src/messageview.c:1024 src/mimeview.c:1033 src/summaryview.c:3415
+#: src/textview.c:2302
 msgid "Overwrite"
 msgstr "Sobreescriure"
 
-#: src/messageview.c:1023
+#: src/messageview.c:1025
 msgid "Overwrite existing file?"
 msgstr "Sobreescriure l'arxiu existent?"
 
-#: src/messageview.c:1031 src/summaryview.c:3436 src/summaryview.c:3439
-#: src/summaryview.c:3454
-#, c-format
-msgid "Can't save the file `%s'."
-msgstr "No es pot guardar l'arxiu `%s'."
+#: src/messageview.c:1033 src/summaryview.c:3426 src/summaryview.c:3429
+#: src/summaryview.c:3444
+msgid "Can't save the file '%s'."
+msgstr "No es pot guardar l'arxiu '%s'."
 
-#: src/messageview.c:1102
+#: src/messageview.c:1104
 msgid "This message asks for a return receipt."
 msgstr "Aquest missatge sol·licita justificant de recepció."
 
-#: src/messageview.c:1103
+#: src/messageview.c:1105
 msgid "Send receipt"
 msgstr "Enviar justificant de recepció"
 
-#: src/messageview.c:1143
+#: src/messageview.c:1145
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -4975,7 +4903,7 @@ msgstr ""
 "Aquest missatge s'ha descarregat parcialment,\n"
 "i ha estat eliminat del servidor."
 
-#: src/messageview.c:1149
+#: src/messageview.c:1151
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -4984,15 +4912,15 @@ msgstr ""
 "Aquest missatge s'ha descarregat parcialment;\n"
 "es de %s."
 
-#: src/messageview.c:1153 src/messageview.c:1175
+#: src/messageview.c:1155 src/messageview.c:1177
 msgid "Mark for download"
 msgstr "Marcar per a descarregar"
 
-#: src/messageview.c:1154 src/messageview.c:1166
+#: src/messageview.c:1156 src/messageview.c:1168
 msgid "Mark for deletion"
 msgstr "Marcar per a eliminar"
 
-#: src/messageview.c:1159
+#: src/messageview.c:1161
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -5002,12 +4930,12 @@ msgstr ""
 "es de %s i serà descarregat."
 
 # RML To be consistent with previous one.
-#: src/messageview.c:1164 src/messageview.c:1177
+#: src/messageview.c:1166 src/messageview.c:1179
 #: src/prefs_filtering_action.c:153
 msgid "Unmark"
 msgstr "Desmarca"
 
-#: src/messageview.c:1170
+#: src/messageview.c:1172
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -5016,11 +4944,11 @@ msgstr ""
 "Aquest missatge s'ha descarregat parcialment;\n"
 "es de %s i serà eliminat."
 
-#: src/messageview.c:1246
+#: src/messageview.c:1248
 msgid "Return Receipt Notification"
 msgstr "Notificació de justificant de recepció"
 
-#: src/messageview.c:1247
+#: src/messageview.c:1249
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -5030,35 +4958,37 @@ msgstr ""
 "Per favor, escolliu el compte que desitjeu usar per enviar la notificació de "
 "justificant de recepció:"
 
-#: src/messageview.c:1251
+#: src/messageview.c:1253
 msgid "Send Notification"
 msgstr "Enviar notificació"
 
-#: src/messageview.c:1251
+#: src/messageview.c:1253
 msgid "+Cancel"
 msgstr "+Cancel·lar"
 
-#: src/messageview.c:1311 src/summaryview.c:3473 src/toolbar.c:169
+#: src/messageview.c:1315 src/summaryview.c:3468 src/toolbar.c:172
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/messageview.c:1312 src/summaryview.c:3474
-#, c-format
+#: src/messageview.c:1316 src/summaryview.c:3469
 msgid ""
 "Enter the print command line:\n"
-"(`%s' will be replaced with file name)"
+"('%s' will be replaced with file name)"
 msgstr ""
 "Tecleji l'ordre per a imprimir:\n"
-"(`%s' serà substituït per l'arxiu)"
+"('%s' serà substituït per el nom de l'arxiu)"
 
-#: src/messageview.c:1318 src/summaryview.c:3480
-#, c-format
+#: src/messageview.c:1322 src/summaryview.c:3475
 msgid ""
 "Print command line is invalid:\n"
-"`%s'"
+"'%s'"
 msgstr ""
 "La comanda d'impressió no es vàlida:\n"
-"`%s'"
+"'%s'"
+
+#: src/messageview.c:1333 src/summaryview.c:3497
+msgid "Cannot print: the message doesn't contain text."
+msgstr "No es pot imprimit: el missatge no conté text."
 
 #: src/mh.c:390
 #, c-format
@@ -5069,28 +4999,15 @@ msgstr "no s'ha pogut copiar el missatge %s a %s\n"
 msgid "/Remove _mailbox"
 msgstr "/Eliminar _bústia"
 
-#: src/mh_gtk.c:167
+#: src/mh_gtk.c:312
 msgid ""
-"All folders and messages under `%s' will be permanently deleted.\n"
-"Recovery will not be possible.\n"
-"\n"
-"Do you really want to delete?"
-msgstr ""
-"S'esborraran permanentment totes les carpetes i missatges sota `%s'.\n"
-"Recuperar-les més tard no serà possible.\n"
-"\n"
-"Voleu realment eliminar-los?"
-
-#: src/mh_gtk.c:311
-#, c-format
-msgid ""
-"Really remove the mailbox `%s' ?\n"
+"Really remove the mailbox '%s' ?\n"
 "(The messages are NOT deleted from the disk)"
 msgstr ""
-"Eliminar realment la bústia `%s'?\n"
+"Eliminar realment la bústia '%s'?\n"
 "(Els missatges NO seran esborrats del disc)"
 
-#: src/mh_gtk.c:313
+#: src/mh_gtk.c:314
 msgid "Remove mailbox"
 msgstr "Eliminar bústia"
 
@@ -5135,7 +5052,7 @@ msgstr "Verificar de nou"
 msgid "Can't save the part of multipart message."
 msgstr "No es pot guardar la part del missatge multiparts."
 
-#: src/mimeview.c:1031 src/textview.c:2292
+#: src/mimeview.c:1031 src/textview.c:2300
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "Sobreescriure l'arxiu existent '%s'?"
@@ -5145,22 +5062,20 @@ msgid "Select destination folder"
 msgstr "Seleccionar carpeta destinació"
 
 #: src/mimeview.c:1075
-#, c-format
-msgid "`%s' is not a directory."
-msgstr "`%s' no és un directori."
+msgid "'%s' is not a directory."
+msgstr "'%s' no és un directori."
 
 #: src/mimeview.c:1260
 msgid "Open with"
 msgstr "Obrir amb"
 
 #: src/mimeview.c:1261
-#, c-format
 msgid ""
 "Enter the command line to open file:\n"
-"(`%s' will be replaced with file name)"
+"('%s' will be replaced with file name)"
 msgstr ""
 "Teclejeu l'ordre per a obrir l'arxiu:\n"
-"(`%s' serà substituït per l'arxiu)"
+"('%s' serà substituït per el nom de l'arxiu)"
 
 #: src/news.c:204
 #, c-format
@@ -5257,41 +5172,47 @@ msgid "/Remove _news account"
 msgstr "/Eliminar compte de _notícies"
 
 #: src/news_gtk.c:204
-#, c-format
-msgid "Really unsubscribe newsgroup `%s'?"
-msgstr "¿Desubscriure's realment del grup `%s'?"
+msgid "Really unsubscribe newsgroup '%s'?"
+msgstr "¿Desubscriure's realment del grup de notícies '%s'?"
 
 #: src/news_gtk.c:205
 msgid "Unsubscribe newsgroup"
 msgstr "Desubscriure's grup de notícies"
 
-#: src/news_gtk.c:253
-#, c-format
-msgid "Really delete news account `%s'?"
-msgstr "Esborrar realment el compte de notícies `%s'?"
-
 #: src/news_gtk.c:254
+msgid "Really delete news account '%s'?"
+msgstr "Esborrar realment el compte de notícies '%s'?"
+
+#: src/news_gtk.c:255
 msgid "Delete news account"
 msgstr "Esborrar compte de notícies"
 
-#: src/news_gtk.c:308
+#: src/news_gtk.c:310
 msgid "Offline"
 msgstr "Desconnectat"
 
-#: src/news_gtk.c:309
+#: src/news_gtk.c:311
 msgid "You are offline. Go online?"
 msgstr "Està desconnectat. Connectar?"
+
+#: src/news_gtk.c:312
+msgid "Yes"
+msgstr "Si"
+
+#: src/news_gtk.c:312
+msgid "No"
+msgstr "No"
 
 #: src/plugins/clamav/clamav_plugin.c:118
 msgid "ClamAV: scanning message..."
 msgstr "ClamAV: inspeccionant missatge..."
 
-#: src/plugins/clamav/clamav_plugin.c:237
+#: src/plugins/clamav/clamav_plugin.c:236
 #: src/plugins/clamav/clamav_plugin_gtk.c:250
 msgid "Clam AntiVirus"
 msgstr "Antivirus Clam"
 
-#: src/plugins/clamav/clamav_plugin.c:242
+#: src/plugins/clamav/clamav_plugin.c:241
 msgid ""
 "This plugin uses Clam AntiVirus to scan all messages that are received from "
 "an IMAP, LOCAL or POP account.\n"
@@ -5342,11 +5263,6 @@ msgstr "Carpeta per guardar-los"
 msgid "Leave empty to use the default trash folder"
 msgstr "Deixar buit per usar la Paperera primària"
 
-#: src/plugins/clamav/clamav_plugin_gtk.c:249
-#: src/plugins/spamassassin/spamassassin_gtk.c:463
-msgid "Filtering"
-msgstr "Filtrant"
-
 #: src/plugins/clamav/clamav_plugin_gtk.c:276
 msgid "Clam AntiVirus GTK"
 msgstr "Antivirus Clam GTK"
@@ -5393,12 +5309,6 @@ msgstr ""
 "\n"
 "No és realment útil"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:74 src/prefs_ext_prog.c:266
-#: src/prefs_image_viewer.c:145 src/prefs_message.c:285
-#: src/prefs_msg_colors.c:394
-msgid "Message View"
-msgstr "Vista de missatge"
-
 #: src/plugins/dillo_viewer/dillo_prefs.c:75
 msgid "Dillo Browser"
 msgstr "Navegador Dillo"
@@ -5443,15 +5353,15 @@ msgstr ""
 "Aquest mòdul usa el contenidor GtkMathView per mostrar adjunts MathML "
 "(Content-Type: text/mathml)"
 
-#: src/plugins/pgpmime/passphrase.c:88
+#: src/plugins/pgpcore/passphrase.c:89
 msgid "Passphrase"
 msgstr "Frase de pas"
 
-#: src/plugins/pgpmime/passphrase.c:244
+#: src/plugins/pgpcore/passphrase.c:249
 msgid "[no user id]"
 msgstr "[sense id d'usuari]"
 
-#: src/plugins/pgpmime/passphrase.c:248
+#: src/plugins/pgpcore/passphrase.c:257
 #, c-format
 msgid ""
 "%sPlease enter the passphrase for:\n"
@@ -5464,7 +5374,7 @@ msgstr ""
 "  %.*s  \n"
 "(%.*s)\n"
 
-#: src/plugins/pgpmime/passphrase.c:252
+#: src/plugins/pgpcore/passphrase.c:261
 msgid ""
 "Bad passphrase! Try again...\n"
 "\n"
@@ -5472,11 +5382,210 @@ msgstr ""
 "Frase de pas errònia! Intenteu-ho de nou...\n"
 "\n"
 
-#: src/plugins/pgpmime/plugin.c:62
+#: src/plugins/pgpcore/prefs_gpg.c:122
+msgid "Store passphrase in memory"
+msgstr "Emmagatzemeu la frase de pas en memòria"
+
+#: src/plugins/pgpcore/prefs_gpg.c:129
+msgid "Automatically check signatures"
+msgstr "Verificar signatures automàticament"
+
+#: src/plugins/pgpcore/prefs_gpg.c:137
+msgid "Grab input while entering a passphrase"
+msgstr "Capturar l'entrada al introduïr la frase de pas"
+
+#: src/plugins/pgpcore/prefs_gpg.c:146
+msgid "Display warning on startup if GnuPG doesn't work"
+msgstr "Mostrar un avís a l'inici si GnuPG no funciona"
+
+#: src/plugins/pgpcore/prefs_gpg.c:159
+msgid "Expire after"
+msgstr "Caduca després de"
+
+#: src/plugins/pgpcore/prefs_gpg.c:174
+msgid "Setting to '0' will store the passphrase for the whole session"
+msgstr "Establint-lo a '0' guarda la frase de pas durant tota la sessió"
+
+#: src/plugins/pgpcore/prefs_gpg.c:179 src/prefs_receive.c:169
+msgid "minute(s)"
+msgstr "minut(s)"
+
+#: src/plugins/pgpcore/prefs_gpg.c:275
+msgid "Sign key"
+msgstr "Clau per signar"
+
+#: src/plugins/pgpcore/prefs_gpg.c:308
+msgid "Use default GnuPG key"
+msgstr "Useu la clau GnuPG per omissió"
+
+#: src/plugins/pgpcore/prefs_gpg.c:315
+msgid "Select key by your email address"
+msgstr "Seleccioneu la clau en base a l'adreça de correu"
+
+#: src/plugins/pgpcore/prefs_gpg.c:322
+msgid "Specify key manually"
+msgstr "Especifiqueu la clau manualment"
+
+#: src/plugins/pgpcore/prefs_gpg.c:329
+msgid "User or key ID:"
+msgstr "Usuari o ID de clau:"
+
+#: src/plugins/pgpcore/prefs_gpg.c:504
+msgid "GPG"
+msgstr "GPG"
+
+#: src/plugins/pgpcore/select-keys.c:105
+msgid "Please select key for '%s'"
+msgstr "Seleccioneu clau per '%s'"
+
+#: src/plugins/pgpcore/select-keys.c:108
+msgid "Collecting info for '%s' ... %c"
+msgstr "Recollint info per '%s' ... %c"
+
+#: src/plugins/pgpcore/select-keys.c:291
+msgid "Select Keys"
+msgstr "Seleccioneu tecles"
+
+#: src/plugins/pgpcore/select-keys.c:318
+msgid "Key ID"
+msgstr "ID tecla"
+
+#: src/plugins/pgpcore/select-keys.c:321
+msgid "Val"
+msgstr "Val"
+
+#: src/plugins/pgpcore/select-keys.c:342
+msgid "Select"
+msgstr "Seleccionar"
+
+#: src/plugins/pgpcore/select-keys.c:344 src/prefs_other.c:261
+msgid "Other"
+msgstr "Altres"
+
+#: src/plugins/pgpcore/select-keys.c:468
+msgid "Add key"
+msgstr "Afegir clau"
+
+#: src/plugins/pgpcore/select-keys.c:469
+msgid "Enter another user or key ID:"
+msgstr "Entreu un altre usuari o clau ID:"
+
+#: src/plugins/pgpcore/select-keys.c:485
+msgid "Trust key"
+msgstr "Clau de confiança"
+
+#: src/plugins/pgpcore/select-keys.c:486
+msgid ""
+"The selected key is not fully trusted.\n"
+"If you choose to encrypt the message with this key you don't\n"
+"know for sure that it will go to the person you mean it to.\n"
+"Do you trust it enough to use it anyway?"
+msgstr ""
+"La clau seleccionada no es confiable totalment.\n"
+"Si escolliu d'encriptar el missatge amb aquesta clau no podreu\n"
+"assegurar-vos de que anirà a la persona que creieu que va.\n"
+"Hi confieu lo suficient com per usar-la de totes maneres?"
+
+#: src/plugins/pgpcore/sgpgme.c:105
+msgid "Undefined"
+msgstr "Indefinida"
+
+#: src/plugins/pgpcore/sgpgme.c:107 src/prefs_receive.c:201
+#: src/prefs_send.c:163
+msgid "Never"
+msgstr "Mai"
+
+#: src/plugins/pgpcore/sgpgme.c:109
+msgid "Marginal"
+msgstr "Marginal"
+
+#: src/plugins/pgpcore/sgpgme.c:113
+msgid "Ultimate"
+msgstr "Màxima"
+
+#: src/plugins/pgpcore/sgpgme.c:127 src/plugins/pgpcore/sgpgme.c:131
+#: src/plugins/pgpcore/sgpgme.c:154
+msgid "The signature has not been checked."
+msgstr "La signatura no ha estat comprovada"
+
+#: src/plugins/pgpcore/sgpgme.c:142
+msgid "Good signature from %s (Trust: %s)."
+msgstr "Signatura vàlida de %s (Confiança: %s)."
+
+#: src/plugins/pgpcore/sgpgme.c:146
+msgid "Expired signature from %s."
+msgstr "Signatura caducada de %s"
+
+#: src/plugins/pgpcore/sgpgme.c:148
+msgid "Expired key from %s."
+msgstr "Signatura caducada de %s."
+
+#: src/plugins/pgpcore/sgpgme.c:150
+msgid "Bad signature from %s."
+msgstr "Signatura errònia de %s."
+
+#: src/plugins/pgpcore/sgpgme.c:152
+msgid "No key available to verify this signature."
+msgstr "No teniu clau per verificar aquesta signatura."
+
+#: src/plugins/pgpcore/sgpgme.c:179
+msgid "Signature made using %s key ID %s\n"
+msgstr "Signatura realitzada usant %s ID de clau %s\n"
+
+#: src/plugins/pgpcore/sgpgme.c:187
+#, c-format
+msgid "Good signature from \"%s\"\n"
+msgstr "Signatura vàlida de \"%s\"\n"
+
+#: src/plugins/pgpcore/sgpgme.c:192
+#, c-format
+msgid "Expired signature from \"%s\"\n"
+msgstr "Signatura caducada de \"%s\"\n"
+
+#: src/plugins/pgpcore/sgpgme.c:197
+#, c-format
+msgid "BAD signature from \"%s\"\n"
+msgstr "Signatura INVÀLIDA de \"%s\"\n"
+
+#: src/plugins/pgpcore/sgpgme.c:208
+#, c-format
+msgid "                aka \"%s\"\n"
+msgstr "               alies \"%s\"\n"
+
+#: src/plugins/pgpcore/sgpgme.c:214
+#, c-format
+msgid "Primary key fingerprint: %s\n"
+msgstr "Empremta digital de clau primària: %s\n"
+
+#: src/plugins/pgpcore/sgpgme.c:372
+msgid ""
+"GnuPG is not installed properly, or needs to be upgraded.\n"
+"OpenPGP support disabled."
+msgstr ""
+"GnuPG no està adecuadament instal·lat o necessita actualitzar-se.\n"
+"Soport de OpenPGP deshabilitat."
+
+#: src/plugins/pgpinline/plugin.c:57
+msgid "PGP/inline"
+msgstr "PGP/inline"
+
+#: src/plugins/pgpinline/plugin.c:62
+msgid ""
+"This plugin enables signature verification of digitally signed messages, and "
+"decryption of encrypted messages. \n"
+"\n"
+"It also lets you send signed and encrypted messages."
+msgstr ""
+"Aquest plugin activa la verificació de missatges signats digitalment, i "
+"encriptar i desencriptar missatges. \n"
+"\n"
+"També et permet enviar missatges signats i encriptats."
+
+#: src/plugins/pgpmime/plugin.c:56
 msgid "PGP/MIME"
 msgstr "PGP/MIME"
 
-#: src/plugins/pgpmime/plugin.c:67
+#: src/plugins/pgpmime/plugin.c:61
 msgid ""
 "This plugin handles PGP/MIME signed and/or encrypted mails. You can decrypt "
 "mails, verify signatures or sign and encrypt your own mails.\n"
@@ -5492,206 +5601,6 @@ msgstr ""
 "El mòdul usa la llibreria GPGME com a encapsulació de GnuPG.\n"
 "\n"
 "GPGME és copyright 2001 per Werner Koch <dd9jn@gnu.org>\n"
-
-#: src/plugins/pgpmime/prefs_gpg.c:122
-msgid "Store passphrase in memory"
-msgstr "Emmagatzemeu la frase de pas en memòria"
-
-#: src/plugins/pgpmime/prefs_gpg.c:129
-msgid "Automatically check signatures"
-msgstr "Verificar signatures automàticament"
-
-#: src/plugins/pgpmime/prefs_gpg.c:137
-msgid "Grab input while entering a passphrase"
-msgstr "Capturar l'entrada al introduïr la frase de pas"
-
-#: src/plugins/pgpmime/prefs_gpg.c:146
-msgid "Display warning on startup if GnuPG doesn't work"
-msgstr "Mostrar un avís a l'inici si GnuPG no funciona"
-
-#: src/plugins/pgpmime/prefs_gpg.c:159
-msgid "Expire after"
-msgstr "Caduca després de"
-
-#: src/plugins/pgpmime/prefs_gpg.c:174
-msgid "Setting to '0' will store the passphrase for the whole session"
-msgstr "Establint-lo a '0' guarda la frase de pas durant tota la sessió"
-
-#: src/plugins/pgpmime/prefs_gpg.c:179 src/prefs_receive.c:169
-msgid "minute(s)"
-msgstr "minut(s)"
-
-#: src/plugins/pgpmime/prefs_gpg.c:275
-msgid "Sign key"
-msgstr "Clau per signar"
-
-#: src/plugins/pgpmime/prefs_gpg.c:308
-msgid "Use default GnuPG key"
-msgstr "Useu la clau GnuPG per omissió"
-
-#: src/plugins/pgpmime/prefs_gpg.c:315
-msgid "Select key by your email address"
-msgstr "Seleccioneu la clau en base a l'adreça de correu"
-
-#: src/plugins/pgpmime/prefs_gpg.c:322
-msgid "Specify key manually"
-msgstr "Especifiqueu la clau manualment"
-
-#: src/plugins/pgpmime/prefs_gpg.c:329
-msgid "User or key ID:"
-msgstr "Usuari o ID de clau:"
-
-#: src/plugins/pgpmime/prefs_gpg.c:503 src/prefs_account.c:978
-msgid "Privacy"
-msgstr "Privacitat"
-
-#: src/plugins/pgpmime/prefs_gpg.c:504
-msgid "GPG"
-msgstr "GPG"
-
-#: src/plugins/pgpmime/select-keys.c:103
-#, c-format
-msgid "Please select key for `%s'"
-msgstr "Seleccioneu clau per `%s'"
-
-#: src/plugins/pgpmime/select-keys.c:106
-#, c-format
-msgid "Collecting info for `%s' ... %c"
-msgstr "Recollint info per `%s' ... %c"
-
-#: src/plugins/pgpmime/select-keys.c:287
-msgid "Select Keys"
-msgstr "Seleccioneu tecles"
-
-#: src/plugins/pgpmime/select-keys.c:314
-msgid "Key ID"
-msgstr "ID tecla"
-
-#: src/plugins/pgpmime/select-keys.c:317
-msgid "Val"
-msgstr "Val"
-
-#: src/plugins/pgpmime/select-keys.c:337
-msgid " List all keys "
-msgstr " Llistar totes les claus "
-
-#: src/plugins/pgpmime/select-keys.c:345
-msgid "Select"
-msgstr "Seleccionar"
-
-#: src/plugins/pgpmime/select-keys.c:347 src/prefs_other.c:255
-msgid "Other"
-msgstr "Altres"
-
-#: src/plugins/pgpmime/select-keys.c:468
-msgid "Add key"
-msgstr "Afegir clau"
-
-#: src/plugins/pgpmime/select-keys.c:469
-msgid "Enter another user or key ID:"
-msgstr "Entreu un altre usuari o clau ID:"
-
-#: src/plugins/pgpmime/sgpgme.c:100
-msgid "Undefined"
-msgstr "Indefinida"
-
-#: src/plugins/pgpmime/sgpgme.c:102 src/prefs_receive.c:201
-#: src/prefs_send.c:157
-msgid "Never"
-msgstr "Mai"
-
-#: src/plugins/pgpmime/sgpgme.c:104
-msgid "Marginal"
-msgstr "Marginal"
-
-#: src/plugins/pgpmime/sgpgme.c:108
-msgid "Ultimate"
-msgstr "Màxima"
-
-#: src/plugins/pgpmime/sgpgme.c:128
-#, c-format
-msgid "Valid signature by %s (Trust: %s)"
-msgstr "Signatura vàlida de %s (Confiança: %s)"
-
-#: src/plugins/pgpmime/sgpgme.c:133
-msgid "The signature has expired"
-msgstr "La signatura ha caducat"
-
-#: src/plugins/pgpmime/sgpgme.c:135
-msgid "The key that was used to sign this part has expired"
-msgstr "La clau usada per signar aquesta part ha caducat"
-
-#: src/plugins/pgpmime/sgpgme.c:137
-msgid "Not all signatures are valid"
-msgstr "No totes les signatures són vàlides"
-
-#: src/plugins/pgpmime/sgpgme.c:139
-msgid "This signature is invalid"
-msgstr "Aquesta signatura no es vàlida"
-
-#: src/plugins/pgpmime/sgpgme.c:141
-msgid "You have no key to verify this signature"
-msgstr "No teniu clau per verificar aquesta signatura"
-
-#: src/plugins/pgpmime/sgpgme.c:143 src/privacy.c:150 src/privacy.c:169
-msgid "No signature found"
-msgstr "No s'ha trobat signatura"
-
-#: src/plugins/pgpmime/sgpgme.c:145
-msgid "An error occured"
-msgstr "Hi ha hagut algun error"
-
-#: src/plugins/pgpmime/sgpgme.c:147
-msgid "The signature has not been checked"
-msgstr "La signatura no ha estat comprovada"
-
-#: src/plugins/pgpmime/sgpgme.c:171
-#, c-format
-msgid "Signature made %s using %s key ID %s\n"
-msgstr "Signatura realitzada el %s usant %s ID de clau %s\n"
-
-#: src/plugins/pgpmime/sgpgme.c:180
-#, c-format
-msgid "Good signature from \"%s\"\n"
-msgstr "Signatura vàlida de \"%s\"\n"
-
-#: src/plugins/pgpmime/sgpgme.c:185
-#, c-format
-msgid "Expired signature from \"%s\"\n"
-msgstr "Signatura caducada de \"%s\"\n"
-
-#: src/plugins/pgpmime/sgpgme.c:190
-#, c-format
-msgid "BAD signature from \"%s\"\n"
-msgstr "Signatura INVÀLIDA de \"%s\"\n"
-
-#: src/plugins/pgpmime/sgpgme.c:201
-#, c-format
-msgid "                aka \"%s\"\n"
-msgstr "               alies \"%s\"\n"
-
-#: src/plugins/pgpmime/sgpgme.c:206
-#, c-format
-msgid "Primary key fingerprint: %s\n"
-msgstr "Empremta digital de clau primària: %s\n"
-
-#: src/plugins/pgpmime/sgpgme.c:217
-#, c-format
-msgid "Signature expires %s\n"
-msgstr "La signatura caduca el %s\n"
-
-#: src/plugins/pgpmime/sgpgme.c:219
-#, c-format
-msgid "Signature expired %s\n"
-msgstr "La signatura va caducar el %s\n"
-
-#: src/plugins/pgpmime/sgpgme.c:354
-msgid ""
-"GnuPG is not installed properly, or needs to be upgraded.\n"
-"OpenPGP support disabled."
-msgstr ""
-"GnuPG no està adecuadament instal·lat o necessita actualitzar-se.\n"
-"Soport de OpenPGP deshabilitat."
 
 #: src/plugins/spamassassin/spamassassin.c:183
 msgid "SpamAssassin: filtering message..."
@@ -5886,6 +5795,14 @@ msgstr ""
 "La bústia apareix buida si no teniu correu sense llegir, sinó mostrarà una "
 "carta. Un consel flotant mostra el nº de correus nous, sense llegir i total."
 
+#: src/plugins/trayicon/trayicon.c:343
+msgid "OK"
+msgstr "Acceptar"
+
+#: src/plugins/trayicon/trayicon.c:343
+msgid "Cancel"
+msgstr "Cancel·lar"
+
 #: src/pop.c:150
 msgid "Required APOP timestamp not found in greeting\n"
 msgstr "No s'ha trobat en la salutació la marca de temps APOP necessària\n"
@@ -5956,6 +5873,10 @@ msgstr "Rebre"
 #: src/prefs_wrapping.c:155
 msgid "Compose"
 msgstr "Composar"
+
+#: src/prefs_account.c:978
+msgid "Privacy"
+msgstr "Privacitat"
 
 #: src/prefs_account.c:981
 msgid "SSL"
@@ -6112,7 +6033,7 @@ msgstr "sense límit si s'especifica 0"
 msgid "Authentication method"
 msgstr "Mètode d'autentificació"
 
-#: src/prefs_account.c:1504 src/prefs_account.c:1628 src/prefs_send.c:258
+#: src/prefs_account.c:1504 src/prefs_account.c:1628 src/prefs_send.c:264
 msgid "Automatic"
 msgstr "Automàtic"
 
@@ -6121,8 +6042,8 @@ msgid "Filter messages on receiving"
 msgstr "Filtrar missatges al rebre"
 
 #: src/prefs_account.c:1515
-msgid "`Get all' checks for new messages on this account"
-msgstr "`Rebre tot' comprova si hi ha nous missatges en aquest compte"
+msgid "'Get all' checks for new messages on this account"
+msgstr "'Rebre tot' comprova si hi ha nous missatges en aquest compte"
 
 #: src/prefs_account.c:1575
 msgid "Add Date"
@@ -6136,7 +6057,7 @@ msgstr "Generar Message-ID"
 msgid "Add user-defined header"
 msgstr "Afegir capçaleres d'usuari"
 
-#: src/prefs_account.c:1585 src/prefs_message.c:119
+#: src/prefs_account.c:1585 src/prefs_message.c:117
 msgid " Edit... "
 msgstr " Editar... "
 
@@ -6168,7 +6089,7 @@ msgstr "Temps límit per autentificació POP: "
 msgid "minutes"
 msgstr "minuts"
 
-#: src/prefs_account.c:1761 src/prefs_account.c:1808 src/toolbar.c:428
+#: src/prefs_account.c:1761 src/prefs_account.c:1808 src/toolbar.c:432
 msgid "Signature"
 msgstr "Signatura"
 
@@ -6212,7 +6133,7 @@ msgstr "Encriptar el missatge per omissió"
 
 #: src/prefs_account.c:1913
 msgid "Encrypt message by default when replying to an encrypted message"
-msgstr "Encriptar missatge per defecte quan respongui a un missatge encriptat"
+msgstr "Encriptar missatges per defecte quan contenstem a un missatge encriptat"
 
 #: src/prefs_account.c:1916
 msgid "Sign message by default"
@@ -6383,19 +6304,19 @@ msgstr "No s'ha establert el nom del menú."
 msgid "Colon ':' is not allowed in the menu name."
 msgstr "No es permet ':' (dos punts) en el nom del menú."
 
-#: src/prefs_actions.c:496
+#: src/prefs_actions.c:505
 msgid "Menu name is too long."
 msgstr "El nom del menú és masssa llarg."
 
-#: src/prefs_actions.c:505
+#: src/prefs_actions.c:514
 msgid "Command line not set."
 msgstr "No s'ha especificat l'ordre a executar."
 
-#: src/prefs_actions.c:510
+#: src/prefs_actions.c:519
 msgid "Menu name and command are too long."
 msgstr "El nom del menú i la comanda són massa llargs."
 
-#: src/prefs_actions.c:515
+#: src/prefs_actions.c:524
 #, c-format
 msgid ""
 "The command\n"
@@ -6406,108 +6327,108 @@ msgstr ""
 "%s\n"
 "té errors sintàctics."
 
-#: src/prefs_actions.c:575
+#: src/prefs_actions.c:584
 msgid "Delete action"
 msgstr "Esborrar acció"
 
-#: src/prefs_actions.c:576
+#: src/prefs_actions.c:585
 msgid "Do you really want to delete this action?"
 msgstr "Voleu realment esborrar aquesta acció?"
 
-#: src/prefs_actions.c:691 src/prefs_actions.c:710 src/prefs_filtering.c:1033
-#: src/prefs_matcher.c:1603 src/prefs_template.c:369 src/prefs_template.c:385
+#: src/prefs_actions.c:700 src/prefs_actions.c:719 src/prefs_filtering.c:1033
+#: src/prefs_matcher.c:1603 src/prefs_template.c:371 src/prefs_template.c:387
 msgid "Entry not saved"
 msgstr "Entrada no guardada"
 
-#: src/prefs_actions.c:692 src/prefs_actions.c:711 src/prefs_filtering.c:1034
-#: src/prefs_template.c:370 src/prefs_template.c:386
+#: src/prefs_actions.c:701 src/prefs_actions.c:720 src/prefs_filtering.c:1034
+#: src/prefs_template.c:372 src/prefs_template.c:388
 msgid "The entry was not saved. Close anyway?"
 msgstr "L'entrada no fou guardada. Tancar igualment?"
 
-#: src/prefs_actions.c:745
+#: src/prefs_actions.c:754
 msgid "MENU NAME:"
 msgstr "NOM DE MENÚ:"
 
-#: src/prefs_actions.c:746
+#: src/prefs_actions.c:755
 msgid "Use / in menu name to make submenus."
 msgstr "Useu / en el nom de menú per crear submenús."
 
-#: src/prefs_actions.c:748
+#: src/prefs_actions.c:757
 msgid "COMMAND LINE:"
 msgstr "LÍNIA D'ORDRES:"
 
-#: src/prefs_actions.c:749
+#: src/prefs_actions.c:758
 msgid "Begin with:"
 msgstr "Començar amb:"
 
-#: src/prefs_actions.c:750
+#: src/prefs_actions.c:759
 msgid "to send message body or selection to command's standard input"
 msgstr "per enviar el missatge o la selecció a l'entrada stàndard de l'ordre"
 
-#: src/prefs_actions.c:751
+#: src/prefs_actions.c:760
 msgid "to send user provided text to command's standard input"
 msgstr "per enviar el texte d'usuari a l'entrada estàndard de l'ordre"
 
-#: src/prefs_actions.c:752
+#: src/prefs_actions.c:761
 msgid "to send user provided hidden text to command's standard input"
 msgstr "per enviar el texte d'usuari ocult a l'entrada estàndard de l'ordre"
 
-#: src/prefs_actions.c:753
+#: src/prefs_actions.c:762
 msgid "End with:"
 msgstr "Finalitzar amb:"
 
-#: src/prefs_actions.c:754
+#: src/prefs_actions.c:763
 msgid "to replace message body or selection with command's standard output"
 msgstr "per reemplaçar el missatge o selecció amb la sortida estàndard de l'ordre"
 
-#: src/prefs_actions.c:755
+#: src/prefs_actions.c:764
 msgid "to insert command's standard output without replacing old text"
 msgstr "per insertar la sortida estàndard de l'ordre sense reemplaçar el texte"
 
-#: src/prefs_actions.c:756
+#: src/prefs_actions.c:765
 msgid "to run command asynchronously"
 msgstr "per executar l'ordre de manera asíncrona"
 
-#: src/prefs_actions.c:757
+#: src/prefs_actions.c:766
 msgid "Use:"
 msgstr "Useu:"
 
-#: src/prefs_actions.c:758
+#: src/prefs_actions.c:767
 msgid "for the file of the selected message in RFC822/2822 format "
 msgstr "per a l'arxiu del missatge seleccionat en format RFC822/2822 "
 
-#: src/prefs_actions.c:759
+#: src/prefs_actions.c:768
 msgid ""
 "for the list of the files of the selected messages in RFC822/2822 format"
 msgstr ""
 "per a la llista de noms dels missatges seleccionats en format RFC822/2822"
 
-#: src/prefs_actions.c:760
+#: src/prefs_actions.c:769
 msgid "for the file of the selected decoded message MIME part"
 msgstr "per a l'arxiu de la part MIME seleccionada del missatge decodificat"
 
-#: src/prefs_actions.c:761
+#: src/prefs_actions.c:770
 msgid "for a user provided argument"
 msgstr "per a un paràmetre introduït per l'usuari"
 
-#: src/prefs_actions.c:762
+#: src/prefs_actions.c:771
 msgid "for a user provided hidden argument (e.g. password)"
 msgstr "per a un paràmetre introduït per l'usuari i ocult (p.ex. contrasenya)"
 
-#: src/prefs_actions.c:763
+#: src/prefs_actions.c:772
 msgid "for the text selection"
 msgstr "per la part seleccionada del texte"
 
-#: src/prefs_actions.c:764
+#: src/prefs_actions.c:773
 msgid "apply filtering actions between {} to selected messages"
 msgstr "aplicar accions de filtrat entre {} als missatges seleccionats"
 
-#: src/prefs_actions.c:772 src/prefs_filtering_action.c:1060
+#: src/prefs_actions.c:781 src/prefs_filtering_action.c:1060
 #: src/quote_fmt.c:76
 msgid "Description of symbols"
 msgstr "Descripció de símbols"
 
-#: src/prefs_actions.c:854
+#: src/prefs_actions.c:863
 msgid "Current actions"
 msgstr "Accions actuals"
 
@@ -6635,6 +6556,11 @@ msgstr "Visor d'imatges"
 msgid "Audio player"
 msgstr "Reproductor de so"
 
+#: src/prefs_ext_prog.c:266 src/prefs_image_viewer.c:145
+#: src/prefs_message.c:275 src/prefs_msg_colors.c:394
+msgid "Message View"
+msgstr "Vista de missatge"
+
 #: src/prefs_ext_prog.c:267
 msgid "External Programs"
 msgstr "Programes externs"
@@ -6670,7 +6596,7 @@ msgstr "Marcar com a llegit"
 msgid "Mark as unread"
 msgstr "Marcar com a no llegit"
 
-#: src/prefs_filtering_action.c:158 src/toolbar.c:381 src/toolbar.c:474
+#: src/prefs_filtering_action.c:158 src/toolbar.c:384 src/toolbar.c:478
 msgid "Forward"
 msgstr "Reenviar"
 
@@ -6679,7 +6605,7 @@ msgid "Redirect"
 msgstr "Redirigir"
 
 #: src/prefs_filtering_action.c:161 src/prefs_filtering_action.c:410
-#: src/toolbar.c:166 src/toolbar.c:384 src/toolbar.c:1461
+#: src/toolbar.c:168 src/toolbar.c:387 src/toolbar.c:1504
 msgid "Execute"
 msgstr "Executar"
 
@@ -6721,7 +6647,7 @@ msgstr "Destinatari"
 
 #. S_COL_NUMBER
 #: src/prefs_filtering_action.c:420 src/prefs_summary_column.c:87
-#: src/summaryview.c:464
+#: src/summaryview.c:465
 msgid "Score"
 msgstr "Punts"
 
@@ -6730,7 +6656,7 @@ msgid "Info ..."
 msgstr "Informació ..."
 
 #: src/prefs_filtering_action.c:470 src/prefs_filtering.c:317
-#: src/prefs_matcher.c:583 src/prefs_template.c:239 src/prefs_toolbar.c:788
+#: src/prefs_matcher.c:583 src/prefs_template.c:241 src/prefs_toolbar.c:788
 msgid "  Replace  "
 msgstr " Substituïr "
 
@@ -6762,7 +6688,7 @@ msgstr "No s'ha definit cap acció."
 #. date expression
 #. S_COL_FROM
 #: src/prefs_filtering_action.c:1046 src/prefs_matcher.c:1655
-#: src/prefs_summary_column.c:84 src/quote_fmt.c:41 src/summaryview.c:461
+#: src/prefs_summary_column.c:84 src/quote_fmt.c:41 src/summaryview.c:462
 msgid "Date"
 msgstr "Data"
 
@@ -6819,7 +6745,7 @@ msgstr "Definiu ..."
 #. FIXME: this strcmp() is bogus: "(New)" should never
 #. * be inserted in the storage
 #: src/prefs_filtering.c:620 src/prefs_filtering.c:679
-#: src/prefs_template.c:319
+#: src/prefs_template.c:321
 msgid "(New)"
 msgstr "(Nova)"
 
@@ -7038,7 +6964,7 @@ msgstr "Marca `Bloquejat`"
 msgid "Color label"
 msgstr "Etiqueta de color"
 
-#: src/prefs_matcher.c:161 src/toolbar.c:168
+#: src/prefs_matcher.c:161 src/toolbar.c:171
 msgid "Ignore thread"
 msgstr "Ignorar fil"
 
@@ -7156,7 +7082,7 @@ msgstr "Tipus de coincidència: 'Provar'"
 msgid "Current condition rules"
 msgstr "Regles de condició actuals"
 
-#: src/prefs_message.c:104
+#: src/prefs_message.c:102
 msgid ""
 "Display multi-byte alphanumeric as\n"
 "ASCII character (Japanese only)"
@@ -7164,53 +7090,49 @@ msgstr ""
 "Mostrar alfanumèrics multi-byte con\n"
 "caràcters ASCII (només Japonès)"
 
-#: src/prefs_message.c:110
+#: src/prefs_message.c:108
 msgid "Display header pane above message view"
 msgstr "Mostrar panell de capçaleres sobre el missatge"
 
-#: src/prefs_message.c:117
+#: src/prefs_message.c:115
 msgid "Display short headers on message view"
 msgstr "Capçaleres breus en la vista del missatge"
 
-#: src/prefs_message.c:130
+#: src/prefs_message.c:128
 msgid "Render HTML messages as text"
 msgstr "Renderitzar missatges HTML com si fos text"
 
-#: src/prefs_message.c:133
-msgid "Display cursor in message view"
-msgstr "Mostra el cursor a la vista del missatge"
-
-#: src/prefs_message.c:145
+#: src/prefs_message.c:140
 msgid "Line space"
 msgstr "Interlineat"
 
-#: src/prefs_message.c:159 src/prefs_message.c:197
+#: src/prefs_message.c:154 src/prefs_message.c:192
 msgid "pixel(s)"
 msgstr "píxel(s)"
 
-#: src/prefs_message.c:164
+#: src/prefs_message.c:159
 msgid "Scroll"
 msgstr "Desplaçament"
 
-#: src/prefs_message.c:171
+#: src/prefs_message.c:166
 msgid "Half page"
 msgstr "Mitja pàgina"
 
-#: src/prefs_message.c:177
+#: src/prefs_message.c:172
 msgid "Smooth scroll"
 msgstr "Desplaçament suau"
 
-#: src/prefs_message.c:183
+#: src/prefs_message.c:178
 msgid "Step"
 msgstr "Pas"
 
-#: src/prefs_message.c:208
+#: src/prefs_message.c:203
 msgid "Show attachment descriptions (rather than names)"
 msgstr "Mostrar descripcions dels adjunts (enlloc de noms)"
 
-#: src/prefs_message.c:286
+#: src/prefs_message.c:276
 msgid "Text options"
-msgstr "Opcions de texte"
+msgstr "Opcions de text"
 
 #: src/prefs_msg_colors.c:98
 msgid "Enable coloration of message"
@@ -7272,53 +7194,53 @@ msgstr "Escollir color per a les firmes"
 msgid "Colors"
 msgstr "Colors"
 
-#: src/prefs_other.c:103
+#: src/prefs_other.c:106
 msgid "Add address to destination when double-clicked"
 msgstr "Afegir adreça a la destinació amb doble click"
 
 #. Clip Log
-#: src/prefs_other.c:106
+#: src/prefs_other.c:109
 msgid "Log Size"
 msgstr "Tamany de traça"
 
-#: src/prefs_other.c:113
+#: src/prefs_other.c:116
 msgid "Clip the log size"
 msgstr "Retallar tamany de traça"
 
-#: src/prefs_other.c:118
+#: src/prefs_other.c:121
 msgid "Log window length"
 msgstr "Longitud finestra de traça"
 
-#: src/prefs_other.c:131
+#: src/prefs_other.c:134
 msgid "0 to stop logging in the log window"
 msgstr "0 per deixar de registrar a la finestra de traça"
 
 #. On Exit
-#: src/prefs_other.c:136
+#: src/prefs_other.c:139
 msgid "On exit"
 msgstr "Al sortir"
 
-#: src/prefs_other.c:144
+#: src/prefs_other.c:147
 msgid "Confirm on exit"
 msgstr "Confirmar al sortir"
 
-#: src/prefs_other.c:151
+#: src/prefs_other.c:154
 msgid "Empty trash on exit"
 msgstr "Buidar paperera al sortir"
 
-#: src/prefs_other.c:153
+#: src/prefs_other.c:156
 msgid "Ask before emptying"
 msgstr "Preguntar abans de buidar"
 
-#: src/prefs_other.c:157
+#: src/prefs_other.c:160
 msgid "Warn if there are queued messages"
 msgstr "Avisar si existeixen missatges en cua"
 
-#: src/prefs_other.c:163
+#: src/prefs_other.c:166
 msgid "Socket I/O timeout:"
 msgstr "Temps límit E/S socket:"
 
-#: src/prefs_other.c:176
+#: src/prefs_other.c:179
 msgid "seconds"
 msgstr "segons"
 
@@ -7389,7 +7311,7 @@ msgstr "Actualitzar totes les carpetes locals després d'incorporar"
 msgid "Show receive dialog"
 msgstr "Mostrar diàleg de recepció"
 
-#: src/prefs_receive.c:198 src/prefs_send.c:156 src/prefs_summaries.c:875
+#: src/prefs_receive.c:198 src/prefs_send.c:162 src/prefs_summaries.c:875
 msgid "Always"
 msgstr "Sempre"
 
@@ -7422,143 +7344,147 @@ msgstr ""
 "Orden a ejecutar:\n"
 "(usar %d com a nº de missatges nous)"
 
-#: src/prefs_receive.c:352 src/prefs_send.c:321
+#: src/prefs_receive.c:352 src/prefs_send.c:332
 msgid "Mail Handling"
-msgstr "Entrega de correu"
+msgstr "Recollinda de correu"
 
-#: src/prefs_send.c:141
+#: src/prefs_send.c:143
 msgid "Save sent messages to Sent folder"
 msgstr "Guardar missatges enviats a la carpeta Enviat"
 
 #: src/prefs_send.c:147
+msgid "Confirm before sending queued messages"
+msgstr "Confirmar abans d'enviar els missatges encuats."
+
+#: src/prefs_send.c:153
 msgid "Show send dialog"
 msgstr "Mostrar diàleg d'enviament"
 
-#: src/prefs_send.c:165
+#: src/prefs_send.c:171
 msgid "Outgoing encoding"
 msgstr "Conjunt de codis per enviar"
 
-#: src/prefs_send.c:174
+#: src/prefs_send.c:180
 msgid ""
-"If `Automatic' is selected, the optimal encoding for the current locale will "
+"If 'Automatic' is selected, the optimal encoding for the current locale will "
 "be used"
 msgstr ""
-"Si seleccioneu `Automàtic' s'usarà la codificació òptima para a la "
+"Si seleccioneu 'Automàtic' s'usarà la codificació òptima para a la "
 "localització actual."
 
-#: src/prefs_send.c:186
+#: src/prefs_send.c:192
 msgid "Automatic (Recommended)"
 msgstr "Automàtic (Recomanat)"
 
-#: src/prefs_send.c:188
+#: src/prefs_send.c:194
 msgid "7bit ascii (US-ASCII)"
 msgstr "ASCII de 7 bits (US-ASC_II)"
 
-#: src/prefs_send.c:190
+#: src/prefs_send.c:196
 msgid "Unicode (UTF-8)"
 msgstr "Unicode (UTF-8)"
 
-#: src/prefs_send.c:192
+#: src/prefs_send.c:198
 msgid "Western European (ISO-8859-1)"
 msgstr "Europeu Occidental (ISO-8859-1)"
 
-#: src/prefs_send.c:193
+#: src/prefs_send.c:199
 msgid "Western European (ISO-8859-15)"
 msgstr "Europeu Occidental (ISO-8859-15)"
 
-#: src/prefs_send.c:195
+#: src/prefs_send.c:201
 msgid "Central European (ISO-8859-2)"
 msgstr "Centreeuropeu (ISO-8859-2)"
 
-#: src/prefs_send.c:197
+#: src/prefs_send.c:203
 msgid "Baltic (ISO-8859-13)"
 msgstr "Bàltic (ISO-8859-13)"
 
-#: src/prefs_send.c:198
+#: src/prefs_send.c:204
 msgid "Baltic (ISO-8859-4)"
 msgstr "Bàltic (ISO-8859-4)"
 
-#: src/prefs_send.c:200
+#: src/prefs_send.c:206
 msgid "Greek (ISO-8859-7)"
 msgstr "Grec (ISO-8859-7)"
 
-#: src/prefs_send.c:202
+#: src/prefs_send.c:208
 msgid "Hebrew (ISO-8859-8)"
-msgstr "Hrebreu (ISO-8859-8)"
+msgstr "Hebreu (ISO-8859-8)"
 
-#: src/prefs_send.c:203
+#: src/prefs_send.c:209
 msgid "Hebrew (Windows-1255)"
 msgstr "Hebreu (Windows-1255)"
 
-#: src/prefs_send.c:205
+#: src/prefs_send.c:211
 msgid "Turkish (ISO-8859-9)"
 msgstr "Turc (ISO-8859-9)"
 
-#: src/prefs_send.c:207
+#: src/prefs_send.c:213
 msgid "Cyrillic (ISO-8859-5)"
 msgstr "Ciríl·lic (ISO-8859-5)"
 
-#: src/prefs_send.c:208
+#: src/prefs_send.c:214
 msgid "Cyrillic (KOI8-R)"
 msgstr "Ciríl·lic (KOI8-R)"
 
-#: src/prefs_send.c:209
+#: src/prefs_send.c:215
 msgid "Cyrillic (KOI8-U)"
 msgstr "Ciríl·lic (KOI8-U)"
 
-#: src/prefs_send.c:210
+#: src/prefs_send.c:216
 msgid "Cyrillic (Windows-1251)"
 msgstr "Ciríl·lic (Windows-1251)"
 
-#: src/prefs_send.c:212
+#: src/prefs_send.c:218
 msgid "Japanese (ISO-2022-JP)"
 msgstr "Japonès (ISO-2022-JP)"
 
-#: src/prefs_send.c:214
+#: src/prefs_send.c:220
 msgid "Japanese (EUC-JP)"
 msgstr "Japonès (EUC-JP)"
 
-#: src/prefs_send.c:215
+#: src/prefs_send.c:221
 msgid "Japanese (Shift_JIS)"
 msgstr "Japonès (Shift_JIS)"
 
-#: src/prefs_send.c:218
+#: src/prefs_send.c:224
 msgid "Simplified Chinese (GB2312)"
 msgstr "Chinès simplificado (GB2312)"
 
-#: src/prefs_send.c:219
+#: src/prefs_send.c:225
 msgid "Simplified Chinese (GBK)"
 msgstr "Chinès simplificat (GBK)"
 
-#: src/prefs_send.c:220
+#: src/prefs_send.c:226
 msgid "Traditional Chinese (Big5)"
 msgstr "Chinès tradicional (Big5)"
 
-#: src/prefs_send.c:222
+#: src/prefs_send.c:228
 msgid "Traditional Chinese (EUC-TW)"
 msgstr "Chinès tradicional (EUC-TW)"
 
-#: src/prefs_send.c:223
+#: src/prefs_send.c:229
 msgid "Chinese (ISO-2022-CN)"
 msgstr "Chinès (ISO-2022-CN)"
 
-#: src/prefs_send.c:226
+#: src/prefs_send.c:232
 msgid "Korean (EUC-KR)"
 msgstr "Coreà (EUC-KR)"
 
-#: src/prefs_send.c:228
+#: src/prefs_send.c:234
 msgid "Thai (TIS-620)"
 msgstr "Tailandès (TIS-620)"
 
-#: src/prefs_send.c:229
+#: src/prefs_send.c:235
 msgid "Thai (Windows-874)"
 msgstr "Tailandès (Windows-874)"
 
-#: src/prefs_send.c:242
+#: src/prefs_send.c:248
 msgid "Transfer encoding"
 msgstr "Codificació d'enviament"
 
-#: src/prefs_send.c:251
+#: src/prefs_send.c:257
 msgid ""
 "Specify Content-Transfer-Encoding used when message body contains non-ASCII "
 "characters"
@@ -7603,8 +7529,8 @@ msgid "Misspelled word color:"
 msgstr "Color de les faltes ortogràfiques:"
 
 #: src/prefs_spelling.c:362
-msgid "Spell Checker"
-msgstr "Corrector ortogràfic"
+msgid "Spell Checking"
+msgstr "Corregint ortogràficament"
 
 #: src/prefs_summaries.c:141
 msgid "the full abbreviated weekday name"
@@ -7716,8 +7642,8 @@ msgstr ""
 "alguna tecla al situar el punter sobre l'element."
 
 #: src/prefs_summaries.c:732
-msgid "Translate header name (such as `From:', `Subject:')"
-msgstr "Traduïr capçaleres (com `Desde:', `Assumpte:')"
+msgid "Translate header name (such as 'From:', 'Subject:')"
+msgstr "Traduïr capçaleres (com 'Desde:', 'Assumpte:')"
 
 #: src/prefs_summaries.c:735
 msgid "Display unread number next to folder name"
@@ -7737,8 +7663,8 @@ msgid "Summary View"
 msgstr "Vista resum"
 
 #: src/prefs_summaries.c:774
-msgid "Display recipient in `From' column if sender is yourself"
-msgstr "Veure destinatari en la columna `Desde' si el remitent és vostè"
+msgid "Display recipient in 'From' column if sender is yourself"
+msgstr "Veure destinatari en la columna 'Desde' si el remitent és vostè"
 
 #: src/prefs_summaries.c:777
 msgid "Display sender using address book"
@@ -7794,7 +7720,7 @@ msgstr " Establir dreceres de teclat..."
 
 #: src/prefs_summaries.c:995
 msgid "Summaries"
-msgstr "Vistes resum"
+msgstr "Sumaris"
 
 #. S_COL_STATUS
 #: src/prefs_summary_column.c:81
@@ -7842,31 +7768,31 @@ msgstr " Usar configuració inicial "
 msgid "Template name"
 msgstr "Nom de plantilla"
 
-#: src/prefs_template.c:252
+#: src/prefs_template.c:254
 msgid " Symbols "
 msgstr " Símbols "
 
-#: src/prefs_template.c:278
+#: src/prefs_template.c:280
 msgid "Template configuration"
 msgstr "Configuració de plantilla"
 
-#: src/prefs_template.c:476
+#: src/prefs_template.c:478
 msgid "Template format error."
 msgstr "Error de format en la plantilla."
 
-#: src/prefs_template.c:571
+#: src/prefs_template.c:573
 msgid "Delete template"
 msgstr "Esborrar plantilla"
 
-#: src/prefs_template.c:572
+#: src/prefs_template.c:574
 msgid "Do you really want to delete this template?"
 msgstr "Voleu realment esborrar aquesta plantilla?"
 
-#: src/prefs_template.c:648
+#: src/prefs_template.c:650
 msgid "Current templates"
 msgstr "Plantilles actuals"
 
-#: src/prefs_template.c:673
+#: src/prefs_template.c:675
 msgid "Template"
 msgstr "Plantilla"
 
@@ -8125,23 +8051,27 @@ msgid "Wrap messages at"
 msgstr "Retallar missatges als"
 
 #: src/prefs_wrapping.c:156
-msgid "Message Wrapping"
-msgstr "Retall de missatges"
+msgid "Wrapping"
+msgstr "Envolcallant"
 
-#: src/privacy.c:154 src/privacy.c:173
+#: src/privacy.c:174 src/privacy.c:178 src/privacy.c:195 src/privacy.c:199
+msgid "No signature found"
+msgstr "No s'ha trobat signatura"
+
+#: src/privacy.c:180 src/privacy.c:201
 msgid "No information available"
 msgstr "No hi ha informació disponible"
 
-#: src/procmsg.c:1414
+#: src/procmsg.c:1438
 msgid "Could not create temporary file for news sending."
 msgstr "No s'ha pogut crear l'arxiu temporal per enviar noticies."
 
-#: src/procmsg.c:1425
+#: src/procmsg.c:1449
 msgid "Error when writing temporary file for news sending."
 msgstr ""
 "S'ha produït un error al escriure l'arxiu temporal per enviar noticies."
 
-#: src/procmsg.c:1437
+#: src/procmsg.c:1461
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "S'ha produït un error enviant el missatge a %s ."
@@ -8237,15 +8167,15 @@ msgstr "Insertar la sortida del programa"
 
 #: src/send_message.c:132
 msgid "Sending message using command: %s\n"
-msgstr "Enviant missatge usant comanda: %s\n"
+msgstr "Enviant missatge usant l'ordre: %s\n"
 
 #: src/send_message.c:141
 msgid "Can't execute command: %s"
-msgstr "No s'ha pogut executar la comanda: %s"
+msgstr "No s'ha pogut executar l'ordre: %s"
 
 #: src/send_message.c:174
 msgid "Error occurred while executing command: %s"
-msgstr "S'ha produït un error executant la comanda: %s"
+msgstr "S'ha produït un error executant l'ordre: %s"
 
 #: src/send_message.c:267
 msgid "Connecting"
@@ -8351,15 +8281,15 @@ msgstr "Font del missatge"
 msgid "%s - Source"
 msgstr "%s - Font"
 
-#: src/ssl_manager.c:151
+#: src/ssl_manager.c:153
 msgid "Saved SSL Certificates"
 msgstr "Certificats SSL guardats"
 
-#: src/ssl_manager.c:371
+#: src/ssl_manager.c:373
 msgid "Delete certificate"
 msgstr "Eliminar certificat"
 
-#: src/ssl_manager.c:372
+#: src/ssl_manager.c:374
 msgid "Do you really want to delete this certificate?"
 msgstr "Voleu eliminar realment aquest certificat?"
 
@@ -8381,370 +8311,370 @@ msgstr "Cos:"
 
 #: src/summary_search.c:255
 msgid "Find all"
-msgstr "Buscar a tots"
+msgstr "Trobar a tots"
 
-#: src/summary_search.c:386
+#: src/summary_search.c:385
 msgid "Beginning of list reached; continue from end?"
 msgstr "S'ha arribat al principi de la llista, seguir desde el final?"
 
-#: src/summary_search.c:388
+#: src/summary_search.c:387
 msgid "End of list reached; continue from beginning?"
 msgstr "S'ha acabat la llista, continuar desde el principi?"
 
-#: src/summaryview.c:394
+#: src/summaryview.c:395
 msgid "/_Reply"
 msgstr "/_Respondre"
 
-#: src/summaryview.c:395
+#: src/summaryview.c:396
 msgid "/Repl_y to"
 msgstr "/Respon_dre a"
 
-#: src/summaryview.c:396
+#: src/summaryview.c:397
 msgid "/Repl_y to/_all"
 msgstr "/Respon_dre a/A _tots"
 
-#: src/summaryview.c:397
+#: src/summaryview.c:398
 msgid "/Repl_y to/_sender"
 msgstr "/Respon_dre a/Al _remitent"
 
-#: src/summaryview.c:398
+#: src/summaryview.c:399
 msgid "/Repl_y to/mailing _list"
 msgstr "/Respon_dre a/A la _llista de correu"
 
-#: src/summaryview.c:400
+#: src/summaryview.c:401
 msgid "/Follow-up and reply to"
 msgstr "/Redirigir i respondre a"
 
-#: src/summaryview.c:402 src/toolbar.c:224
+#: src/summaryview.c:403 src/toolbar.c:227
 msgid "/_Forward"
 msgstr "/Reen_viar"
 
-#: src/summaryview.c:403
+#: src/summaryview.c:404
 msgid "/Redirect"
 msgstr "/Redirigir"
 
-#: src/summaryview.c:405
+#: src/summaryview.c:406
 msgid "/M_ove..."
 msgstr "/_Moure..."
 
-#: src/summaryview.c:406
+#: src/summaryview.c:407
 msgid "/_Copy..."
 msgstr "/_Copiar..."
 
-#: src/summaryview.c:407
-msgid "/Move to _trash"
-msgstr "/_Moure a la paperera"
-
 #: src/summaryview.c:408
+msgid "/Move to _trash"
+msgstr "/Moure a les _escombraries"
+
+#: src/summaryview.c:409
 msgid "/_Delete..."
 msgstr "/_Esborrar..."
 
-#: src/summaryview.c:409
+#: src/summaryview.c:410
 msgid "/Cancel a news message"
 msgstr "/Cancel·lar una notícia"
 
-#: src/summaryview.c:411
+#: src/summaryview.c:412
 msgid "/_Mark"
 msgstr "/_Marcar"
 
-#: src/summaryview.c:412
+#: src/summaryview.c:413
 msgid "/_Mark/_Mark"
 msgstr "/_Marcar/_Marcar"
 
-#: src/summaryview.c:413
+#: src/summaryview.c:414
 msgid "/_Mark/_Unmark"
 msgstr "/_Marcar/_Desmarcar"
 
-#: src/summaryview.c:414
+#: src/summaryview.c:415
 msgid "/_Mark/---"
 msgstr "/_Marcar/---"
 
-#: src/summaryview.c:415
+#: src/summaryview.c:416
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/_Marcar/Marcar com a _no llegit"
 
-#: src/summaryview.c:416
+#: src/summaryview.c:417
 msgid "/_Mark/Mark as rea_d"
 msgstr "/_Marcar/Marcar com a _llegit"
 
-#: src/summaryview.c:417
+#: src/summaryview.c:418
 msgid "/_Mark/Mark all read"
 msgstr "/_Marcar/Marcar tots llegits"
 
-#: src/summaryview.c:418
+#: src/summaryview.c:419
 msgid "/_Mark/Ignore thread"
 msgstr "/_Marcar/_Ignorar fil"
 
-#: src/summaryview.c:419
+#: src/summaryview.c:420
 msgid "/_Mark/Unignore thread"
 msgstr "/_Marcar/_No ignorar fil"
 
-#: src/summaryview.c:420
+#: src/summaryview.c:421
 msgid "/_Mark/Lock"
 msgstr "/_Marcar/Bloquejat"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:422
 msgid "/_Mark/Unlock"
 msgstr "/_Marcar/Desbloquejat"
 
-#: src/summaryview.c:422
+#: src/summaryview.c:423
 msgid "/Color la_bel"
 msgstr "/E_tiquetar de color"
 
-#: src/summaryview.c:425
+#: src/summaryview.c:426
 msgid "/Re-_edit"
 msgstr "/Re_editar"
 
-#: src/summaryview.c:427
+#: src/summaryview.c:428
 msgid "/Add sender to address boo_k"
 msgstr "/Afegir _remitent a l'agenda"
 
-#: src/summaryview.c:429
+#: src/summaryview.c:430
 msgid "/Create f_ilter rule"
 msgstr "/Crear regla de f_iltrat"
 
-#: src/summaryview.c:430
+#: src/summaryview.c:431
 msgid "/Create f_ilter rule/_Automatically"
 msgstr "Crear regla de f_iltrat/_Automàticament"
 
-#: src/summaryview.c:432
+#: src/summaryview.c:433
 msgid "/Create f_ilter rule/by _From"
 msgstr "Crear regla de f_iltrat/Amb el _remitent"
 
-#: src/summaryview.c:434
+#: src/summaryview.c:435
 msgid "/Create f_ilter rule/by _To"
 msgstr "/Crear regla de f_iltrat/Amb el _destinatari"
 
-#: src/summaryview.c:436
+#: src/summaryview.c:437
 msgid "/Create f_ilter rule/by _Subject"
 msgstr "/Crear regla de f_iltrat/Amb l'_assumpte"
 
-#: src/summaryview.c:438
+#: src/summaryview.c:439
 msgid "/Create processing rule"
 msgstr "/Crear regla de processament"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:440
 msgid "/Create processing rule/_Automatically"
 msgstr "/Crear regla de processament/_Automàticament"
 
-#: src/summaryview.c:441
+#: src/summaryview.c:442
 msgid "/Create processing rule/by _From"
 msgstr "/Crear regla de processament/Amb el _remitent"
 
-#: src/summaryview.c:443
+#: src/summaryview.c:444
 msgid "/Create processing rule/by _To"
 msgstr "/Crear regla de processament/Amb el _destinatari"
 
-#: src/summaryview.c:445
+#: src/summaryview.c:446
 msgid "/Create processing rule/by _Subject"
 msgstr "/Crear regla de processament/Amb l'_assumpte"
 
-#: src/summaryview.c:451
+#: src/summaryview.c:452
 msgid "/_View/_Source"
 msgstr "/_Veure/_Font"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:453
 msgid "/_View/All _header"
 msgstr "/_Veure/Totes les capçaleres"
 
-#: src/summaryview.c:456
+#: src/summaryview.c:457
 msgid "M"
 msgstr "x"
 
 #. S_COL_SIZE
-#: src/summaryview.c:463
+#: src/summaryview.c:464
 msgid "No."
 msgstr "No."
 
 #. S_COL_SCORE
-#: src/summaryview.c:465
+#: src/summaryview.c:466
 msgid "L"
 msgstr "B"
 
-#: src/summaryview.c:522
+#: src/summaryview.c:523
 msgid "Toggle quick-search bar"
 msgstr "Barra de búsqueda ràpida"
 
-#: src/summaryview.c:830
+#: src/summaryview.c:831
 msgid "Process mark"
 msgstr "Processar marques"
 
-#: src/summaryview.c:831
+#: src/summaryview.c:832
 msgid "Some marks are left. Process it?"
 msgstr "Queda alguna marca. Processar-la?"
 
-#: src/summaryview.c:883
+#: src/summaryview.c:884
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Revisant carpeta (%s)..."
 
-#: src/summaryview.c:1288 src/summaryview.c:1341
+#: src/summaryview.c:1285 src/summaryview.c:1338
 msgid "No more unread messages"
 msgstr "No hi ha més missatges sense llegir"
 
-#: src/summaryview.c:1289
-msgid "No unread message found. Search from the end?"
-msgstr "No hi ha missatges sense llegir. Buscar desde el final?"
+#: src/summaryview.c:1286
+msgid "No unread message found. _Search from the end?"
+msgstr "No hi ha missatges sense llegir. _Buscar desde el final?"
 
-#: src/summaryview.c:1301 src/summaryview.c:1354
+#: src/summaryview.c:1298 src/summaryview.c:1351
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
 "Error intern: valor inesperat per prefs_common.next_unread_msg_dialog\n"
 
-#: src/summaryview.c:1309
+#: src/summaryview.c:1306
 msgid "No unread messages."
 msgstr "No hi ha missatges sense llegir."
 
-#: src/summaryview.c:1342
+#: src/summaryview.c:1339
 msgid "No unread message found. Go to next folder?"
 msgstr "No hi ha missatges sense llegir. Anar a la carpeta següent?"
 
-#: src/summaryview.c:1381 src/summaryview.c:1405
+#: src/summaryview.c:1378 src/summaryview.c:1402
 msgid "No more new messages"
 msgstr "No hi ha més missatges nous"
 
-#: src/summaryview.c:1382
-msgid "No new message found. Search from the end?"
-msgstr "No hi ha més missatges nous. Buscar desde el final?"
+#: src/summaryview.c:1379
+msgid "No new message found. _Search from the end?"
+msgstr "No hi ha més missatges nous. _Buscar desde el final?"
 
-#: src/summaryview.c:1391
+#: src/summaryview.c:1388
 msgid "No new messages."
 msgstr "No hi ha missatges nous."
 
-#: src/summaryview.c:1406
+#: src/summaryview.c:1403
 msgid "No new message found. Go to next folder?"
 msgstr "No hi ha més missatges nous. Anar a la cartea següent?"
 
-#: src/summaryview.c:1408
-msgid "Search again"
-msgstr "Buscar de nou"
+#: src/summaryview.c:1405
+msgid "_Search again"
+msgstr "_Buscar de nou"
 
-#: src/summaryview.c:1434 src/summaryview.c:1459
+#: src/summaryview.c:1431 src/summaryview.c:1456
 msgid "No more marked messages"
 msgstr "No hi ha més missatges marcats"
 
-#: src/summaryview.c:1435
-msgid "No marked message found. Search from the end?"
-msgstr "No hi ha missatges marcats. Buscar desde el final?"
+#: src/summaryview.c:1432
+msgid "No marked message found. _Search from the end?"
+msgstr "No hi ha missatges marcats. _Buscar desde el final?"
 
-#: src/summaryview.c:1444 src/summaryview.c:1469
+#: src/summaryview.c:1441 src/summaryview.c:1466
 msgid "No marked messages."
 msgstr "No hi ha missatges marcats."
 
-#: src/summaryview.c:1460
-msgid "No marked message found. Search from the beginning?"
-msgstr "No hi ha missatges marcats. ¿Buscar desde el principi?"
+#: src/summaryview.c:1457
+msgid "No marked message found. _Search from the beginning?"
+msgstr "No hi ha missatges marcats. _Buscar desde el principi?"
 
-#: src/summaryview.c:1484 src/summaryview.c:1509
+#: src/summaryview.c:1481 src/summaryview.c:1506
 msgid "No more labeled messages"
 msgstr "No hi ha més missatges etiquetats"
 
-#: src/summaryview.c:1485
-msgid "No labeled message found. Search from the end?"
-msgstr "No hi ha missatges etiquetats. Buscar desde el final?"
+#: src/summaryview.c:1482
+msgid "No labeled message found. _Search from the end?"
+msgstr "No hi ha missatges etiquetats. _Buscar desde el final?"
 
-#: src/summaryview.c:1494 src/summaryview.c:1519
+#: src/summaryview.c:1491 src/summaryview.c:1516
 msgid "No labeled messages."
 msgstr "No hi ha missatges etiquetats."
 
-#: src/summaryview.c:1510
-msgid "No labeled message found. Search from the beginning?"
-msgstr "No hi ha missatges etiquetats. Buscar desde el principi?"
+#: src/summaryview.c:1507
+msgid "No labeled message found. _Search from the beginning?"
+msgstr "No hi ha missatges etiquetats. _Buscar desde el principi?"
 
-#: src/summaryview.c:1725
+#: src/summaryview.c:1722
 msgid "Attracting messages by subject..."
 msgstr "Agrupant missatges per l'assumpte..."
 
-#: src/summaryview.c:1872
+#: src/summaryview.c:1869
 #, c-format
 msgid "%d deleted"
 msgstr "%d borrat(s)"
 
-#: src/summaryview.c:1876
+#: src/summaryview.c:1873
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d moguts"
 
-#: src/summaryview.c:1877 src/summaryview.c:1884
+#: src/summaryview.c:1874 src/summaryview.c:1881
 msgid ", "
 msgstr ", "
 
-#: src/summaryview.c:1882
+#: src/summaryview.c:1879
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d copiat"
 
-#: src/summaryview.c:1897
+#: src/summaryview.c:1894
 msgid " item selected"
 msgstr " element seleccionat"
 
-#: src/summaryview.c:1899
+#: src/summaryview.c:1896
 msgid " items selected"
 msgstr " elements seleccionats"
 
-#: src/summaryview.c:1915
+#: src/summaryview.c:1912
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d nou(s), %d no llegit(s), %d total(s) (%s)"
 
-#: src/summaryview.c:2089
+#: src/summaryview.c:2086
 msgid "Sorting summary..."
 msgstr "Ordenant el resum..."
 
-#: src/summaryview.c:2162
+#: src/summaryview.c:2159
 msgid "Setting summary from message data..."
 msgstr "Establint el resum dels missatges..."
 
-#: src/summaryview.c:2310
+#: src/summaryview.c:2307
 msgid "(No Date)"
 msgstr "(Sense data)"
 
-#: src/summaryview.c:2992
+#: src/summaryview.c:2987
 msgid "You're not the author of the article\n"
 msgstr "Vostè no es l'autor de l'article\n"
 
-#: src/summaryview.c:3080
+#: src/summaryview.c:3074
 msgid "Delete message(s)"
 msgstr "Esborrar missatge(s)"
 
-#: src/summaryview.c:3081
+#: src/summaryview.c:3075
 msgid "Do you really want to delete selected message(s)?"
-msgstr "Voleu realment esborrar el(s) missatge(s) seleccionat(s)?"
+msgstr "Voleu realment esborrar el(s) missatge(s) seleccionats?"
 
-#: src/summaryview.c:3221
+#: src/summaryview.c:3214
 msgid "Destination is same as current folder."
 msgstr "La destinació és la mateixa que la carpeta actual."
 
-#: src/summaryview.c:3301
+#: src/summaryview.c:3293
 msgid "Destination to copy is same as current folder."
 msgstr "La destinació de còpia és la carpeta actual."
 
-#: src/summaryview.c:3423
+#: src/summaryview.c:3413
 msgid "Append or Overwrite"
 msgstr "Afegir o Sobreescriure"
 
-#: src/summaryview.c:3424
+#: src/summaryview.c:3414
 msgid "Append or overwrite existing file?"
 msgstr "Afegir o sobreescriure l'arxiu existent?"
 
-#: src/summaryview.c:3425
+#: src/summaryview.c:3415
 msgid "Append"
 msgstr "Afegir"
 
-#: src/summaryview.c:3714
+#: src/summaryview.c:3736
 msgid "Building threads..."
 msgstr "Construïnt jerarquia..."
 
-#: src/summaryview.c:3802
+#: src/summaryview.c:3824
 msgid "Unthreading..."
 msgstr "Desfent jerarquia..."
 
-#: src/summaryview.c:3945
+#: src/summaryview.c:3967
 msgid "Filtering..."
 msgstr "Filtrant..."
 
-#: src/summaryview.c:5323
+#: src/summaryview.c:5346
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -8753,17 +8683,17 @@ msgstr ""
 "Error en l'expressió regular (regexp):\n"
 "%s"
 
-#: src/summaryview.c:5437
+#: src/summaryview.c:5460
 msgid "Export to mbox file"
 msgstr "Exportar a arxiu mbox"
 
 #: src/textview.c:214
 msgid "/_Open with Web browser"
-msgstr "/_Obrir amb el navegador web"
+msgstr "_Obrir amb el navegador web"
 
 #: src/textview.c:215
 msgid "/Copy this _link"
-msgstr "/_Copiar aquest enllaç"
+msgstr "_Copiar _localització de l'enllaç"
 
 #: src/textview.c:220
 msgid "/Compose _new message"
@@ -8771,11 +8701,11 @@ msgstr "/Composar un missatge _nou"
 
 #: src/textview.c:221
 msgid "/Add to _address book"
-msgstr "/Afegir a l'agenda"
+msgstr "Afegir a l'agenda"
 
 #: src/textview.c:222
 msgid "/Copy this add_ress"
-msgstr "/Copiar aquesta adreça"
+msgstr "Copiar aquesra ad_reça"
 
 #: src/textview.c:227
 msgid "/_Save this image..."
@@ -8825,200 +8755,225 @@ msgstr "central del ratolí),\n"
 msgid "    or 'Open with...' (Shortcut key: 'o')\n"
 msgstr "    o 'Obrir amb...' (Drecera: 'o')\n"
 
-#: src/textview.c:2204
-#, c-format
+#: src/textview.c:2211
 msgid ""
 "The real URL (%s) is different from\n"
 "the apparent URL (%s).\n"
+"\n"
 "Open it anyway?"
 msgstr ""
 "La URL real (%s) és diferent de la\n"
 "URL aparent (%s).\n"
+"\n"
 "Obrir-la de totes maneres?"
 
-#: src/toolbar.c:155 src/toolbar.c:1335
+#: src/textview.c:2216
+msgid "Fake URL warning"
+msgstr "Avís d'URL falsa"
+
+#: src/toolbar.c:157 src/toolbar.c:1378
 msgid "Receive Mail on all Accounts"
 msgstr "Rebre correu de tots els comptes"
 
-#: src/toolbar.c:156 src/toolbar.c:1341
+#: src/toolbar.c:158 src/toolbar.c:1384
 msgid "Receive Mail on current Account"
 msgstr "Rebre correu del compte actual"
 
-#: src/toolbar.c:157 src/toolbar.c:1347
+#: src/toolbar.c:159 src/toolbar.c:1390
 msgid "Send Queued Messages"
 msgstr "Enviar missatge(s) encuats"
 
-#: src/toolbar.c:158 src/toolbar.c:1360
+#: src/toolbar.c:160 src/toolbar.c:1403
 msgid "Compose Email"
 msgstr "Composar correu"
 
-#: src/toolbar.c:159 src/toolbar.c:1364
+#: src/toolbar.c:161 src/toolbar.c:1407
 msgid "Compose News"
 msgstr "Composar notícia"
 
-#: src/toolbar.c:160 src/toolbar.c:1370 src/toolbar.c:1380
+#: src/toolbar.c:162 src/toolbar.c:1413 src/toolbar.c:1423
 msgid "Reply to Message"
 msgstr "Respondre al missatge"
 
-#: src/toolbar.c:161 src/toolbar.c:1387 src/toolbar.c:1397
+#: src/toolbar.c:163 src/toolbar.c:1430 src/toolbar.c:1440
 msgid "Reply to Sender"
 msgstr "Respondre al remitent"
 
-#: src/toolbar.c:162 src/toolbar.c:1404 src/toolbar.c:1414
+#: src/toolbar.c:164 src/toolbar.c:1447 src/toolbar.c:1457
 msgid "Reply to All"
 msgstr "Respondre a tots"
 
-#: src/toolbar.c:163 src/toolbar.c:1421 src/toolbar.c:1431
+#: src/toolbar.c:165 src/toolbar.c:1464 src/toolbar.c:1474
 msgid "Reply to Mailing-list"
 msgstr "Respondre a la lista de correu"
 
-#: src/toolbar.c:164 src/toolbar.c:1438 src/toolbar.c:1448
+#: src/toolbar.c:166 src/toolbar.c:1481 src/toolbar.c:1491
 msgid "Forward Message"
 msgstr "Reenviar missatge"
 
-#: src/toolbar.c:165 src/toolbar.c:1455
+#: src/toolbar.c:167 src/toolbar.c:1498
 msgid "Delete Message"
 msgstr "Esborrar missatge"
 
-#: src/toolbar.c:167 src/toolbar.c:1467
-msgid "Goto Next Message"
-msgstr "Anar al missatge següent"
+#: src/toolbar.c:169 src/toolbar.c:1510
+msgid "Go to Previous Unread Message"
+msgstr "Anar a l'anterior Sense Llegir"
 
-#: src/toolbar.c:171 src/toolbar.c:1475
+#: src/toolbar.c:170 src/toolbar.c:1517
+msgid "Go to Next Unread Message"
+msgstr "Anar al Missatge Següent"
+
+#: src/toolbar.c:174 src/toolbar.c:1526
 msgid "Send Message"
 msgstr "Enviar missatge"
 
-#: src/toolbar.c:172 src/toolbar.c:1481
+#: src/toolbar.c:175 src/toolbar.c:1532
 msgid "Put into queue folder and send later"
 msgstr "Posar a la cua i enviar després"
 
-#: src/toolbar.c:173 src/toolbar.c:1487
+#: src/toolbar.c:176 src/toolbar.c:1538
 msgid "Save to draft folder"
 msgstr "Guardar com a esborrany"
 
-#: src/toolbar.c:174 src/toolbar.c:1493
+#: src/toolbar.c:177 src/toolbar.c:1544
 msgid "Insert file"
 msgstr "Insertar arxiu"
 
-#: src/toolbar.c:175 src/toolbar.c:1499
+#: src/toolbar.c:178 src/toolbar.c:1550
 msgid "Attach file"
 msgstr "Adjuntar arxiu"
 
-#: src/toolbar.c:176 src/toolbar.c:1505
+#: src/toolbar.c:179 src/toolbar.c:1556
 msgid "Insert signature"
 msgstr "Insertar signatura"
 
-#: src/toolbar.c:177 src/toolbar.c:1511
+#: src/toolbar.c:180 src/toolbar.c:1562
 msgid "Edit with external editor"
 msgstr "Editar amb un editor extern"
 
-#: src/toolbar.c:178 src/toolbar.c:1517
+#: src/toolbar.c:181 src/toolbar.c:1568
 msgid "Wrap long lines of current paragraph"
 msgstr "Tallar línies llargues del paràgraf actual"
 
-#: src/toolbar.c:179 src/toolbar.c:1523
+#: src/toolbar.c:182 src/toolbar.c:1574
 msgid "Wrap all long lines"
 msgstr "Tallar totes les línies llargues"
 
-#: src/toolbar.c:182 src/toolbar.c:1536
+#: src/toolbar.c:185 src/toolbar.c:1587
 msgid "Check spelling"
 msgstr "Verificar ortografia"
 
-#: src/toolbar.c:184
+#: src/toolbar.c:187
 msgid "Sylpheed Actions Feature"
 msgstr "Accions de Sylpheed"
 
-#: src/toolbar.c:204
+#: src/toolbar.c:207
 msgid "/Reply with _quote"
 msgstr "/Respondre amb _citació"
 
-#: src/toolbar.c:205
+#: src/toolbar.c:208
 msgid "/_Reply without quote"
 msgstr "/_Respondre sense citació"
 
-#: src/toolbar.c:209
+#: src/toolbar.c:212
 msgid "/Reply to all with _quote"
 msgstr "/Respondre a _tots amb citació"
 
-#: src/toolbar.c:210
+#: src/toolbar.c:213
 msgid "/_Reply to all without quote"
 msgstr "/Respondre a t_ots sense citació"
 
-#: src/toolbar.c:214
+#: src/toolbar.c:217
 msgid "/Reply to list with _quote"
 msgstr "/Respondre a la _llista amb citació"
 
-#: src/toolbar.c:215
+#: src/toolbar.c:218
 msgid "/_Reply to list without quote"
 msgstr "/Respondre a la l_lista sense citació"
 
-#: src/toolbar.c:219
+#: src/toolbar.c:222
 msgid "/Reply to sender with _quote"
 msgstr "/Respondre al remitent amb _citació"
 
-#: src/toolbar.c:220
+#: src/toolbar.c:223
 msgid "/_Reply to sender without quote"
 msgstr "/_Respondre al remitent sense citació"
 
-#: src/toolbar.c:225
+#: src/toolbar.c:228
 msgid "/For_ward as attachment"
 msgstr "/Reen_viar com a adjunt"
 
-#: src/toolbar.c:226
+#: src/toolbar.c:229
 msgid "/Redirec_t"
 msgstr "/Redirigi_r"
 
-#: src/toolbar.c:372
+#: src/toolbar.c:375
 msgid "Get"
 msgstr "Rebre"
 
-#: src/toolbar.c:373
-msgid "Get All"
-msgstr "Rebre todo"
-
 #: src/toolbar.c:376
+msgid "Get All"
+msgstr "Rebre tot"
+
+#: src/toolbar.c:379
 msgid "Email"
 msgstr "Correu"
 
-#: src/toolbar.c:378 src/toolbar.c:471
+#: src/toolbar.c:381 src/toolbar.c:475
 msgid "Reply"
 msgstr "Respondre"
 
-#: src/toolbar.c:379 src/toolbar.c:472
+#: src/toolbar.c:382 src/toolbar.c:476
 msgid "All"
 msgstr "Tot"
 
-#: src/toolbar.c:380 src/toolbar.c:473
+#: src/toolbar.c:383 src/toolbar.c:477
 msgid "Sender"
 msgstr "Remitent"
 
-#: src/toolbar.c:423
+#: src/toolbar.c:388
+msgid "Previous"
+msgstr "Previ"
+
+#: src/toolbar.c:427
 msgid "Send later"
 msgstr "Enviar després"
 
-#: src/toolbar.c:424
+#: src/toolbar.c:428
 msgid "Draft"
 msgstr "Esborrany"
 
-#: src/toolbar.c:427
+#: src/toolbar.c:430
+msgid "Insert"
+msgstr "Insertar"
+
+#: src/toolbar.c:431
 msgid "Attach"
 msgstr "Adjuntar"
 
-#: src/toolbar.c:430
+#: src/toolbar.c:434
 msgid "Editor"
 msgstr "Editor"
 
-#: src/toolbar.c:431
+#: src/toolbar.c:435
 msgid "Wrap paragraph"
 msgstr "Retallar paràgraf"
 
-#: src/toolbar.c:432
+#: src/toolbar.c:436
 msgid "Wrap all"
 msgstr "Retallar tot"
 
-#: src/toolbar.c:1352
+#: src/toolbar.c:1395
 msgid "News"
 msgstr "Notícies"
+
+#: src/toolbar.c:1934
+msgid "Send queued messages"
+msgstr "Enviar missatge(s) encuats"
+
+#: src/toolbar.c:1935
+msgid "Send all queued messages?"
+msgstr "Enviar tots els  missatges encuats?"
 
 #: src/wizard.c:272
 msgid "Your name:"
@@ -9118,6 +9073,15 @@ msgstr "Rebent correu"
 msgid "Security"
 msgstr "Seguretat"
 
+#~ msgid "Cloned %s"
+#~ msgstr "Còpia de %s"
+
+#~ msgid "+No"
+#~ msgstr "+No"
+
+#~ msgid "Addressbook conversion"
+#~ msgstr "Conversió de l'agenda"
+
 #~ msgid "Encrypted message"
 #~ msgstr "Missatge encriptat"
 
@@ -9128,14 +9092,100 @@ msgstr "Seguretat"
 #~ "No es pot reeditar un missatge encriptat. \n"
 #~ "Descartar la part encriptada?"
 
+#~ msgid "Ok"
+#~ msgstr "Acceptar"
+
 #~ msgid "Replace \"%s\" with: "
 #~ msgstr "Substituïr \"%s\" amb: "
+
+#~ msgid "creating tunneled IMAP4 connection\n"
+#~ msgstr "creant connexió IMAP4 encapsulada\n"
+
+#~ msgid "creating IMAP4 connection to %s:%d ...\n"
+#~ msgstr "creant connexió IMAP4 amb %s:%d ...\n"
 
 #~ msgid "can't set deleted flags: 1:*\n"
 #~ msgstr "no s'han pogut establir els flags esborrados: 1:*\n"
 
+#~ msgid "can't close folder\n"
+#~ msgstr "no s'ha pogut tancar la carpeta\n"
+
+#~ msgid "root folder %s does not exist\n"
+#~ msgstr "la carpeta arrel %s no existeix\n"
+
+#~ msgid "error occurred while getting LIST.\n"
+#~ msgstr "S'ha produït un error obtenint LIST.\n"
+
+# FIXME: s/envoltorio/.../
+#~ msgid "can't get envelope\n"
+#~ msgstr "no s'ha pogut obtenir l'envoltori\n"
+
+#~ msgid "error occurred while getting envelope.\n"
+#~ msgstr "S'ha produït un error obtenint l'envoltori.\n"
+
+#~ msgid "can't parse envelope: %s\n"
+#~ msgstr "no s'ha pogut interpretar l'envoltori: %s\n"
+
+#~ msgid "Can't establish IMAP4 session with: %s\n"
+#~ msgstr "No s'ha pogut establir la sessió IMAP4 amb: %s\n"
+
+#~ msgid "Can't establish IMAP4 session with: %s:%d\n"
+#~ msgstr "No s'ha pogut establir la sessió IMAP4 amb: %s:%d\n"
+
+#~ msgid "can't get namespace\n"
+#~ msgstr "no s'ha pogut obtenir l'espai de noms\n"
+
+# FIXME
+#~ msgid "IMAP4 login failed.\n"
+#~ msgstr "Ha fallat el login IMAP4.\n"
+
+#~ msgid "can't append %s to %s\n"
+#~ msgstr "no s'ha pogut afegir %s a %s\n"
+
+#~ msgid "can't append message to %s\n"
+#~ msgstr "no s'ha pogut afegir el missatge a %s\n"
+
+#~ msgid "can't copy %s to %s\n"
+#~ msgstr "no s'ha pogut copiar %s a %s\n"
+
+#~ msgid "error while imap command: STORE %s %s\n"
+#~ msgstr "error durant l'ordre IMAP: STORE %s %s\n"
+
+#~ msgid "error while imap command: EXPUNGE\n"
+#~ msgstr "error durant l'ordre IMAP: EXPUNGE\n"
+
+#~ msgid "error while imap command: CLOSE\n"
+#~ msgstr "error durant l'ordre IMAP: CLOSE\n"
+
 #~ msgid "Backward search"
 #~ msgstr "Cercar cap enrera"
+
+#~ msgid "Filtering"
+#~ msgstr "Filtrant"
+
+#~ msgid " List all keys "
+#~ msgstr " Llistar totes les claus "
+
+#~ msgid "The signature has expired"
+#~ msgstr "La signatura ha caducat"
+
+#~ msgid "The key that was used to sign this part has expired"
+#~ msgstr "La clau usada per signar aquesta part ha caducat"
+
+#~ msgid "Not all signatures are valid"
+#~ msgstr "No totes les signatures són vàlides"
+
+#~ msgid "This signature is invalid"
+#~ msgstr "Aquesta signatura no es vàlida"
+
+#~ msgid "An error occured"
+#~ msgstr "Hi ha hagut algun error"
+
+#~ msgid "Signature expires %s\n"
+#~ msgstr "La signatura caduca el %s\n"
+
+#~ msgid "Signature expired %s\n"
+#~ msgstr "La signatura va caducar el %s\n"
 
 #~ msgid "Common"
 #~ msgstr "Comuns"

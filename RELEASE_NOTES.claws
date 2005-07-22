@@ -1,10 +1,8 @@
-27th June 2005                                  Sylpheed-Claws 1.9.12
+22nd July 2005                                  Sylpheed-Claws 1.9.13
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
 		      
-		   the "Welcome back IMAP" release
-		     
 Sylpheed-Claws is an extended version of  Sylpheed, a GTK+ based,
 lightweight, and fast e-mail client
 
@@ -13,129 +11,98 @@ This is the GTK 2 version of Sylpheed-Claws.
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* IMAP support
-	Perhaps the most significant changes in this release have
-	happened in the IMAP code. Over the months we have received
-	several bug reports and complaints from IMAP users. The
-	changes to the IMAP implementation in this release are mostly
-	concerned with speedups in imap operation, and using non-
-	blocking I/O as much as possible. There have been far too
-	many changes to list them here in these release notes, so
-	interested users are pointed at ChangeLog-gtk2.claws. There
-	are more significant changes to the IMAP implemenation
-	planned, but IMAP users should already find this release is a
-	lot more comfortable for them.
+* GPGME 1.x
+  This release adds GPGME 1.x support. GPGME >= 0.4.5 is now needed
+  if you require GnuPG support.
 
-* Performance increases
-	Users will discover substantial performance increases when
-	re-sorting folders, when using 'Select all', and when using
-	'Mark all read'
+* A new PGP/Core plugin has been added, this alone does not add
+  anything new for the user, but provides core functions that are
+  used by the PGP/MIME and PGP/Inline plugins.  If you have PGP/Mime
+  or PGP/Inline configured for loading it will be loaded
+  automatically, due to the new Plugin Dependency system.
 
-* /Message/Delete and /Message/Move to trash
-	'/Message/Delete' has been renamed '/Message/Move to trash'
-	and '/Message/Delete' has been added. '/Message/Delete' will
-	now directly destroy the message, after asking for a
-	confirmation, instead of moving it to the Trash folder.
+* IMAP
+  This release brings further improvements to IMAP support and adds a
+  dependency. libEtPan! >= 0.38 is now required for IMAP support. It
+  is available from http://www.etpan.org.
+  Users not requiring IMAP support can use the configure option
+  '--disable-libetpan'
 
-* Common Preferences
-	All '/Configuration/Preferences/Common/...' options have been
-  	integrated into the new style options interface.
-
-* PGP MIME plugin
- 	The 'PGP/MIME' plugin has been renamed 'PGP MIME', users will
-	need to reselect 'PGP MIME' as their default privacy system
-	in their account's Privacy preferences. 
-
-* LDAP
-	The bind password is no longer visible onscreen.
+* Printing support
+  Optional extended printing support has been added. It relies upon
+  libgnomeprint2 and libgnomeprintui2 and will be built automatically
+  if you have the required libraries installed. Should you wish to
+  disable it you can use the configure option '--disable-gnomeprint'
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* An option to encrypt replies to encrypted messages by default
-  '/[Account Prefs]/Account/Privacy/Encrypt message by default when
-  replying to an encrypted message'
+* The cache/mark files are now platform-independent. Cache/mark files
+ will progressively switch to the little-endian format on big-endian
+ platforms such as Suns and Macs, as soon as a folder's content
+ changes
 
-* Filtering rules can be reordered by drag n drop
+* A plugin dependency system has been added.
 
-* '/Options/Character encoding/...' has been added to the Compose
-  window to enable temporarily changing the outgoing encoding
+* The PGP/Inline plugin has been added to the main package. (This
+  was previously available as an external plugin)
 
-* Hebrew encodings have been added
+* Folders which contain Marked messages are now indicated by a
+  Folder icon overlaid with a tick
 
-* The 'Show all headers' option is now sticky.
+* '/Edit/Quick search' menu item has been added to the main window
 
-* Return Receipts can now be sent from any account.
+* An option to 'Confirm before sending queued messages' has been
+  added to '/Configuration/Preferences/Mail Handling/Send' prefernces
+  page
 
-* A clip/signed icon has been added. This is displayed in the Status
-  column of the message list to indicate a signed message that has
-  one or more attachments.
+* The "Copy ..." menu items now copy to both the X and the gtk
+  clipboards in the Compose window
 
-* updated translations: Brazilian Portuguese, British English,
-  Catalan, Finnish, French, German, Italian, Korean, Simplified
-  Chinese, Slovak, and Spanish
+* The Template and Plugin lists are now sorted alphabetically
+
+* Plugins preferences are now grouped under their own 'Plugins'
+  heading
+
+* A 'Go to Prev' button has been added to the toolbar
+
+* Keyboard accelerators have been added to many buttons
+
+* The folder selection dialogue now displays folder names with
+  new/unread counts
+
+* The 'Display cursor in message view' option is now a hidden option,
+  'textview_cursor_visible'
+
+* Reordering of accounts by drag 'n' drop has been enabled in the
+  'Edit accounts' dialogue
+
+* New Sylpheed-Claws icons have been added, and the default
+  application icon is now set.
+
+* The SpamAssassin and Clam AntiVirus plugins have been optimised.
+
+* A Norwegian translation has been added.
+
+* updated translations: Catalan, Finnish, French, German, Italian,
+  Serbian, Simplified Chinese, Slovak, and Spanish
 
 * Bug fixes, including the following:
-	o bug 108, ' Uncollapse/collapse on double-click'
-	o bug 156, 'possible race condition?'
-	o bug 191, ' 	remove list of messages with one command'
-	o bug 245, 'Renaming Account with RemoteFolder breaks
-		    Filtering Rules'
-	o bug 421, 'incomplete implementation of undo'
-	o bug 477, 'sylpheed.spec.in is outdated'
-	o bug 481, 'extraneous imap commands slow down imap
-		    filtering'
-	o bug 506, 'No warning if action/template not saved'
-	o bug 522, 'Sylpheed downloads all messages when opening
-		    mailbox (IMAP)'
-	o bug 541, 'gtk warning when selecting "Themes" from Other
-		    preferences'
-	o bug 550, 'Not possible to "reply with quote" to gnupg
-		    encrypted messages'
-	o bug 557, '"Grab input while entering a passphrase" not
-		    working'
-	o bug 589, 'SC segfaults with wrong locale setting'
-	o bug 611, 'nntp authentication broken'
-	o bug 645, 'Problems with mails with multiple recipients and
-		    drafting'
-	o bug 646, 'newline-chars in email addresses'
-	o bug 651, 'Attract by Subject confused by minor differences
-		    in Subject'
-	o bug 670, 'multi user to: will corrupt message headers
-		    display'
-	o bug 677, 'IMAP fetch is soooooooooooooo slow'
-	o bug 679, '"open first unread message when entering a
-		    folder" is always on'
-	o bug 683, 'Crash in libspam at message_cleanup'
-	o bug 688, 'Issues with Summary View'
-	o bug 699, 'Setting folder color works/Unsetting doesn't
-		    (almost)'
-	o bug 707, 'Dash splits rows'
-	o bug 728, 'imap ssl segfault'
-	o bug 729, 'IMAP immediate expunge of deleted messages'
-	o bug 746, 'Reply function treats quoted commas as
-		    separators'
-	o bug 749, 'problem with show all headers'
-	o compilation errors with gcc 2.9x
-	o Use correct encoding when sending mails with attachments
-		that have accented characters in their name
-	o Forbid locked messages to be moved or deleted
-	o Eat GDK_Return so that the combo popup doesn't appear when
-		we press Enter to validate the combo input dialog (as
-		seen in the Open with... dialog)
-	o Fix automatic STARTTLS if login should be done and the
-	  server only allows it after starting TLS
-	o Add gtk_widget_realize to be sure toolbar pixmaps can get
-		created	
-	o src/compose.c: compose_entries_set(): don't interpret
-		Bcc header field (conform to RFC 2368)
-	o src/compose.c: Fix headers encoding
-	o src/procmime.c: liberalise the mime parser
-	o src/summaryview.c: don't let always_show_msg override
-		open_unread_on_enter when opening a new directory
-	o src/textview.c: textview_write_link(): also skip non-ascii
-		space at head of link strings (phishing check fix)
-	o src/common/template.c: fix Bcc
+	o bug 159, 'The index file, in the mailboxes, is hardware's
+		    depending'
+	o bug 759, 'only creates the INBOX folder when setting up
+		    new IMAP account'
+	o bug 760, 'Can't retrieve messages'
+	o bug 761, 'mark a bunch of unread messages as read takes
+		    forever'
+	o bug 763, 'Wrong links used in HTML mails'
+	o plugin unloading releated crashes
+	o problems decoding broken headers
+	o workarounds for old Courier IMAP servers
+	o src/addressbook.c : Fix dnd of multiple addresses
+	o Fix slow thread rebuilding in particular cases
+	o prevent '//' in Actions menu names
+	o link against libresolv if necessary
 
 For further details of the numbered bugs listed above consult
 www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi

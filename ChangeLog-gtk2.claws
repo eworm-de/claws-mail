@@ -1,3 +1,32 @@
+2005-07-22 [paul]	1.9.12cvs91
+
+	* AUTHORS
+	* INSTALL
+	* README.claws
+	* RELEASE_NOTES.claws
+		updated for release
+	* configure.ac
+	* po/nb.po
+	* tools/claws.i18n.status.pl
+		add Norwegian translation. submiited by
+		Geir Helland <pjallabais@users.sourceforge.net>
+	* po/ca.po
+	* po/de.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/it.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Miquel Oliete, Thomas Gilgin, Ricardo
+		Mones Lastra, Tommi Pirinen, Fabien Vantard,
+		Andrea Spadaccini, Andrej Kacian, Aleksandar Urosevic,
+		Yang Guilong
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		replace outdated description strings
+
 2005-07-21 [colin]	1.9.12cvs90
 
 	* src/folder.c

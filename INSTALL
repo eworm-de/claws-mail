@@ -22,55 +22,65 @@ Additional libraries
 ====================
 only needed if you require the additional functionality
 
-compface
-    for X-Face support
-    http://freshmeat.net/projects/compface/
-GnuPG (>= 1.2.1) and GPGME (>= 0.3.12 and < 0.4)
-    for GnuPG support
-    http://www.gnupg.org/
-    ftp://ftp.gnupg.org/gcrypt/gpgme/
-OpenSSL (>= 0.9.7)
-    for SSL support
-    http://www.openssl.org/
-OpenLDAP (>= 2.0.7)
-    for LDAP support
-    http://www.openldap.org/
 Aspell (>= 0.50) (and dictionaries)
     for spell-checker support
     http://aspell.sourceforge.net/
-J-Pilot
-    for J-Pilot support
-    http://www.jpilot.org/
-SpamAssassin
-    for SpamAssassin plugin support
-    http://spamassassin.org/
 Clam AntiVirus
     for Clam AntiVirus plugin support
     http://clamav.sourceforge.net/
+compface
+    for X-Face support
+    http://freshmeat.net/projects/compface/
 Dillo (>= 0.7.0)
     for Dillo HTML viewer plugin support
     http://www.dillo.org/
+GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
+    for GnuPG plugin support
+    http://www.gnupg.org/
+    ftp://ftp.gnupg.org/gcrypt/gpgme/
 GtkMathView (>= 0.4.2 and < 0.5)
     for MathML viewer plugin support
     http://helm.cs.unibo.it/mml-widget/
+J-Pilot
+    for J-Pilot support
+    http://www.jpilot.org/
+libEtPan! (>= 0.38)
+    for IMAP4 support
+    http://www.etpan.org
+libgnomeprint (>= 2.2)
+    for extended printing support
+    http://www.gnome.org
+OpenLDAP (>= 2.0.7)
+    for LDAP support
+    http://www.openldap.org/
+OpenSSL (>= 0.9.7)
+    for SSL support
+    http://www.openssl.org/
+SpamAssassin
+    for SpamAssassin plugin support
+    http://spamassassin.org/
   
 Options for configure script
 ============================
-  --with-config-dir=RCDIR      	    Local config dir (default: .sylpheed-gtk2)
+  --with-config-dir=RCDIR      	    local config dir (default: .sylpheed-gtk2)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
   --disable-openssl    		    disable OpenSSL support
+  --disable-libetpan		    disable IMAP4 support
+  --disable-gnomeprint		    disable libgnomeprint support
   --enable-aspell     		    GNU/aspell support
   --enable-ldap       		    LDAP support
   --enable-jpilot     		    JPilot support
   --enable-crash-dialog   	    enable crash dialog
   --disable-startup-notification    disable startup notification support
-  --disable-trayicon-plugin         Do not build System Tray Icon plugin
-  --enable-spamassassin-plugin      Build SpamAssassin plugin
-  --disable-pgpmime-plugin          Do not build PGP/MIME plugin
-  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin
-  --disable-dillo-viewer-plugin     Do not build Dillo plugin
-  --disable-clamav-plugin           Do not build Clam AntiVirus plugin
+  --disable-trayicon-plugin         do not build System Tray Icon plugin
+  --enable-spamassassin-plugin      build SpamAssassin plugin
+  --disable-pgpcore-plugin	    do not build PGP/Core plugin
+  --disable-pgpmime-plugin          do not build PGP/MIME plugin
+  --disable-pgpinline-plugin        do not build PGP/Inline plugin
+  --disable-mathml-viewer-plugin    do not build MathML-Viewer plugin
+  --disable-dillo-viewer-plugin     do not build Dillo plugin
+  --disable-clamav-plugin           do not build Clam AntiVirus plugin
  
 For other options, refer to ./configure --help .
 

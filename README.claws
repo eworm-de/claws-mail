@@ -1,6 +1,6 @@
 README.claws
 ------------
-[last revision: 2005-05-09]
+[last revision: 2005-07-22]
 
 Summary:
 
@@ -71,10 +71,20 @@ Select the plugin that you want and click 'OK'
     which is available from 
     http://helm.cs.unibo.it/mml-widget/
 
+  o PGP/Core
+    Handles core PGP functions and is required by the PGP/Inline
+    and PGP/MIME plugins.
+    Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+
+  o PGP/inline
+    Handles inline PGP signed and/or encrypted mails. You can
+    decrypt mails, verify signatures or sign and encrypt your
+    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+
   o PGP/MIME
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails.Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
 
   o SpamAssassin
     Enables the scanning of incoming mail received from a POP,
