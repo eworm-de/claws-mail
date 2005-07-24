@@ -6,6 +6,8 @@
 	* src/etpan/imap-thread.c
 		fix NetBSD openssl dependencies. patch by
 		George Michaelson <ggm@apnic.net>
+	* po/pt_BR.po
+		updated by Frederico Goncalves Guimaraes
 
 2005-07-22 [paul]	1.9.13
 
