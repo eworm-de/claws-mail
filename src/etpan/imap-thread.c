@@ -8,6 +8,9 @@
 #include <imap.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#if defined (__NetBSD__)
+#include <sys/socket.h>
+#endif
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/wait.h>

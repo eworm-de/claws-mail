@@ -1,3 +1,12 @@
+2005-07-24 [paul]	1.9.13cvs1
+
+	* doc/man/sylpheed.1
+		update man page, incorporating fix of
+		bug 769 'Typo in manpage'
+	* src/etpan/imap-thread.c
+		fix NetBSD openssl dependencies. patch by
+		George Michaelson <ggm@apnic.net>
+
 2005-07-22 [paul]	1.9.13
 
 	1.9.13 release
