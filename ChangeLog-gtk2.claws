@@ -1,3 +1,8 @@
+2005-07-25 [paul]	1.9.13cvs2
+
+	* src/summaryview.c
+		fix typos. spotted by Fabien Vantard
+
 2005-07-24 [paul]	1.9.13cvs1
 
 	* doc/man/sylpheed.1
