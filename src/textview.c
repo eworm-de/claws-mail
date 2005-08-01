@@ -328,7 +328,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 	GtkTextBuffer *buffer;
 	GtkTextTag *tag;
 	static PangoFontDescription *font_desc, *bold_font_desc;
-
+	
 	if (!font_desc)
 		font_desc = pango_font_description_from_string
 			(NORMAL_FONT);
@@ -376,8 +376,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				   "foreground-gdk", &uri_color,
 				   "underline", PANGO_UNDERLINE_SINGLE,
 				   NULL);
-
-       g_signal_connect(G_OBJECT(tag), "event",
+	g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
  }
 
@@ -394,9 +393,19 @@ void textview_init(TextView *textview)
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
-void textview_update_message_colors(void)
+#define CHANGE_TAG_COLOR(tagname, color) { \
+	tag = gtk_text_tag_table_lookup(tags, tagname); \
+	if (tag) \
+		g_object_set(G_OBJECT(tag), "foreground-gdk", color, NULL); \
+}
+
+static void textview_update_message_colors(TextView *textview)
 {
 	GdkColor black = {0, 0, 0, 0};
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+
+	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
+	GtkTextTag *tag = NULL;
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
@@ -414,11 +423,21 @@ void textview_update_message_colors(void)
 		quote_colors[0] = quote_colors[1] = quote_colors[2] = 
 			uri_color = emphasis_color = signature_color = black;
 	}
+	CHANGE_TAG_COLOR("quote0", &quote_colors[0]);
+	CHANGE_TAG_COLOR("quote1", &quote_colors[1]);
+	CHANGE_TAG_COLOR("quote2", &quote_colors[2]);
+	CHANGE_TAG_COLOR("emphasis", &emphasis_color);
+	CHANGE_TAG_COLOR("signature", &signature_color);
+	CHANGE_TAG_COLOR("link", &uri_color);
+	CHANGE_TAG_COLOR("link-hover", &uri_color);
+
 }
+#undef CHANGE_TAG_COLOR
 
 void textview_reflect_prefs(TextView *textview)
 {
-	textview_update_message_colors();
+	textview_set_font(textview, NULL);
+	textview_update_message_colors(textview);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview->text),
 					 prefs_common.textview_cursor_visible);
 }
@@ -426,18 +445,9 @@ void textview_reflect_prefs(TextView *textview)
 void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
-	FILE *fp;
-
-	if ((fp = fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return;
-	}
-
 	textview_clear(textview);
 
 	textview_add_parts(textview, mimeinfo);
-
-	fclose(fp);
 
 	textview_set_position(textview, 0);
 }
@@ -1328,10 +1338,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	if (prefs_common.enable_color)
-		textview_make_clickable_parts(textview, fg_color, "link", buf);
-  	else
-		textview_make_clickable_parts(textview, fg_color, NULL, buf);
+	textview_make_clickable_parts(textview, fg_color, "link", buf);
 }
 
 void textview_write_link(TextView *textview, const gchar *str,
@@ -1571,13 +1578,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, header->body, -1,
 				 "header", "emphasis", NULL);
-		} else if (prefs_common.enable_color) {
-			textview_make_clickable_parts(textview, "header", "link",
-						      header->body);
-		} else {
-			textview_make_clickable_parts(textview, "header", NULL,
-						      header->body);
 		}
+		textview_make_clickable_parts(textview, "header", "link",
+						      header->body);
 		gtk_text_buffer_get_end_iter (buffer, &iter);
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
 							 "header", NULL);

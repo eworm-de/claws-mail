@@ -2059,6 +2059,14 @@ void folderview_set_target_folder_color(gint color_op)
 
 void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
+}
+
+void folderview_reflect_prefs(void)
+{
+	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
+	normal_style = normal_color_style = bold_style = 
+		bold_color_style = bold_tgtfold_style = NULL;
+
 	folderview_init(folderview);
 	folderview_set_all();
 }

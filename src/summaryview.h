@@ -284,5 +284,5 @@ void summary_save_prefs_to_folderitem
 void summaryview_export_mbox_list (SummaryView *summaryview);
 void summaryview_lock(SummaryView *summaryview, FolderItem *item);
 void summaryview_unlock(SummaryView *summaryview, FolderItem *item);
-
+void summary_reflect_prefs(void);
 #endif /* __SUMMARY_H__ */

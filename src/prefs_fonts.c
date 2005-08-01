@@ -58,7 +58,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_boldfont;
 	GtkWidget *tmplabel;
 	GtkWidget *vbox;
-	GtkWidget *hint_label;
 
 	table = gtk_table_new(7, 2, FALSE);
 	gtk_widget_show(table);
@@ -123,15 +122,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	
-	hint_label = gtk_label_new (_("You will need to restart for the "
-				      "changes to take effect"));
-	gtk_label_set_justify (GTK_LABEL (hint_label), GTK_JUSTIFY_LEFT);
-	gtkut_widget_set_small_font_size (hint_label);
-	gtk_widget_show (hint_label);
-	gtk_box_pack_start (GTK_BOX (vbox), 
-			    hint_label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(hint_label), 0.5, 0.5);
-
 	prefs_fonts->window		   = GTK_WIDGET(window);
 	prefs_fonts->entry_folderviewfont  = entry_folderviewfont;
 	prefs_fonts->entry_messageviewfont = entry_messageviewfont;
@@ -159,6 +149,8 @@ void prefs_fonts_save(PrefsPage *_page)
 	g_free(prefs_common.boldfont);
 	prefs_common.boldfont   = g_strdup(gtk_font_button_get_font_name
 		(GTK_FONT_BUTTON(fonts->entry_boldfont)));
+		
+	main_window_reflect_prefs_all();
 }
 
 static void prefs_fonts_destroy_widget(PrefsPage *_page)

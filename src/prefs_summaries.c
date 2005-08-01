@@ -978,6 +978,7 @@ void prefs_summaries_save(PrefsPage *_page)
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_common.next_unread_msg_dialog = GPOINTER_TO_INT
 		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	main_window_reflect_prefs_all();
 }
 
 static void prefs_summaries_destroy_widget(PrefsPage *_page)

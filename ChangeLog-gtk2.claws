@@ -1,3 +1,21 @@
+2005-08-01 [colin]	1.9.13cvs4
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+	* src/prefs_fonts.c
+	* src/prefs_summaries.c
+	* src/prefs_themes.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/textview.h
+		Fix instant-apply of summary and folderview-related prefs
+		Fix erroneous g_free and alertpanels in prefs_theme
+		Add instant-apply for fonts
+		Defer applying of prefs a little bit so it's done only
+		once even if requested by multiples prefs pages
+
 2005-08-01 [paul]	1.9.13cvs3
 
 	* src/main.c

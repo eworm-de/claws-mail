@@ -630,11 +630,47 @@ SummaryView *summary_create(void)
 	return summaryview;
 }
 
+static void summary_set_fonts(SummaryView *summaryview)
+{
+	PangoFontDescription *font_desc;
+	gint size;
+
+	font_desc = pango_font_description_from_string(NORMAL_FONT);
+	gtk_widget_modify_font(summaryview->ctree, font_desc);
+	pango_font_description_free(font_desc);
+
+	if (!bold_style) {
+		bold_style = gtk_style_copy
+			(gtk_widget_get_style(summaryview->ctree));
+		font_desc = pango_font_description_from_string(BOLD_FONT);
+		if (font_desc) {
+			pango_font_description_free(bold_style->font_desc);
+			bold_style->font_desc = font_desc;
+		}
+		
+		pango_font_description_set_weight
+				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+		bold_marked_style = gtk_style_copy(bold_style);
+		bold_marked_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_marked;
+		bold_deleted_style = gtk_style_copy(bold_style);
+		bold_deleted_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_dim;
+	}
+
+	font_desc = pango_font_description_new();
+	size = pango_font_description_get_size
+		(summaryview->ctree->style->font_desc);
+	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
+	gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
+	gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
+	gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
+	pango_font_description_free(font_desc);
+}
+
 void summary_init(SummaryView *summaryview)
 {
 	GtkWidget *pixmap;
-	PangoFontDescription *font_desc;
-	gint size;
 
 	gtk_widget_realize(summaryview->ctree);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
@@ -664,37 +700,7 @@ void summary_init(SummaryView *summaryview)
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
 			 &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 
-	font_desc = pango_font_description_from_string(NORMAL_FONT);
-	gtk_widget_modify_font(summaryview->ctree, font_desc);
-	pango_font_description_free(font_desc);
-
-	if (!bold_style) {
-		bold_style = gtk_style_copy
-			(gtk_widget_get_style(summaryview->ctree));
-		font_desc = pango_font_description_from_string(BOLD_FONT);
-		if (font_desc) {
-			pango_font_description_free(bold_style->font_desc);
-			bold_style->font_desc = font_desc;
-		}
-		
-		pango_font_description_set_weight
-				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
-		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_marked;
-		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_dim;
-	}
-
-	font_desc = pango_font_description_new();
-	size = pango_font_description_get_size
-		(summaryview->statlabel_folder->style->font_desc);
-	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
-	gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
-	gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
-	gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
-	pango_font_description_free(font_desc);
+	summary_set_fonts(summaryview);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox_l, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox_l), pixmap, FALSE, FALSE, 4);
@@ -2016,6 +2022,16 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		gtk_widget_show_all(hbox);
 		gtk_clist_set_column_widget(clist, pos, hbox);
 	}
+}
+
+void summary_reflect_prefs(void)
+{
+	SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
+	bold_style = bold_marked_style = bold_deleted_style = 
+		small_style = small_marked_style = small_deleted_style = NULL;
+	summary_set_fonts(summaryview);
+	summary_set_column_titles(summaryview);
+	summary_show(summaryview, summaryview->folder_item);
 }
 
 void summary_sort(SummaryView *summaryview,

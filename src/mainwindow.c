@@ -1213,13 +1213,16 @@ static void main_window_menu_callback_unblock(MainWindow *mainwin)
 		mainwin->menu_lock_count--;
 }
 
+static guint prefs_tag = 0;
+
 void main_window_reflect_prefs_all(void)
 {
 	main_window_reflect_prefs_all_real(FALSE);
 }
 
-void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
+static gboolean reflect_prefs_timeout_cb(gboolean *data) 
 {
+	gboolean pixmap_theme_changed = *data;
 	GList *cur;
 	MainWindow *mainwin;
 	GtkWidget *pixmap;
@@ -1257,8 +1260,18 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 					  prefs_common.display_header_pane);
 
 		textview_reflect_prefs(mainwin->messageview->mimeview->textview);
-
+		folderview_reflect_prefs();
+		summary_reflect_prefs();
 		summary_redisplay_msg(mainwin->summaryview);
+	}
+	prefs_tag = 0;
+	return FALSE;
+}
+
+void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
+{
+	if (prefs_tag == 0 || pixmap_theme_changed) {
+		prefs_tag = g_timeout_add(500, reflect_prefs_timeout_cb, &pixmap_theme_changed);
 	}
 }
 

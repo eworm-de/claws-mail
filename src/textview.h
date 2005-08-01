@@ -65,7 +65,6 @@ struct _TextView
 
 TextView *textview_create		(void);
 void textview_init			(TextView	*textview);
-void textview_update_message_colors	(void);
 void textview_reflect_prefs		(TextView	*textview);
 
 void textview_show_message	(TextView	*textview,

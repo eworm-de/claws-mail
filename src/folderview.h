@@ -105,6 +105,7 @@ void folderview_set_target_folder_color (gint		color_op);
 
 void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
 
+void folderview_reflect_prefs		(void);
 void folderview_register_popup		(FolderViewPopup	*fpopup);
 void folderview_unregister_popup	(FolderViewPopup	*fpopup);
 void folderview_update_search_icon	(FolderItem 		*item, 	
