@@ -479,9 +479,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 	gchar *filename;
 
 	debug_print("shutting down\n");
-#ifdef HAVE_LIBETPAN
-	imap_main_done();
-#endif
 	inc_autocheck_timer_remove();
 
 	if (prefs_common.clean_on_exit)
@@ -516,6 +513,9 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	close_log_file();
 
+#ifdef HAVE_LIBETPAN
+	imap_main_done();
+#endif
 	/* delete crashfile */
 	if (!cmd.crash)
 		unlink(get_crashfile_name());

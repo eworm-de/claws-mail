@@ -2,6 +2,7 @@
 
 #define ETPAN_THREAD_MANAGER_TYPES_H
 
+#include <pthread.h>
 #include <libetpan/libetpan.h>
 
 struct etpan_thread_manager {

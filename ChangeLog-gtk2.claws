@@ -1,3 +1,12 @@
+2005-08-01 [paul]	1.9.13cvs3
+
+	* src/main.c
+		fix bug 776 'S.C. crashes on close'
+		thanks to Colin
+	* src/etpan/etpan-thread-manager-types.h
+		add missing include
+		thanks to Hoa
+
 2005-07-25 [paul]	1.9.13cvs2
 
 	* src/summaryview.c
