@@ -791,6 +791,7 @@ const PersistPrefs *folder_get_persist_prefs
 
 void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
 void folder_clean_cache_memory		(void);
+void folder_clean_cache_memory_force	(void);
 void folder_item_write_cache		(FolderItem *item);
 void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
