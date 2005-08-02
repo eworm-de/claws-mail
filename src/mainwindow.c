@@ -1220,9 +1220,9 @@ void main_window_reflect_prefs_all(void)
 	main_window_reflect_prefs_all_real(FALSE);
 }
 
-static gboolean reflect_prefs_timeout_cb(gboolean *data) 
+static gboolean reflect_prefs_timeout_cb(gpointer data) 
 {
-	gboolean pixmap_theme_changed = *data;
+	gboolean pixmap_theme_changed = GPOINTER_TO_INT(data);
 	GList *cur;
 	MainWindow *mainwin;
 	GtkWidget *pixmap;
@@ -1271,7 +1271,8 @@ static gboolean reflect_prefs_timeout_cb(gboolean *data)
 void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 {
 	if (prefs_tag == 0 || pixmap_theme_changed) {
-		prefs_tag = g_timeout_add(500, reflect_prefs_timeout_cb, &pixmap_theme_changed);
+		prefs_tag = g_timeout_add(500, reflect_prefs_timeout_cb, 
+						GINT_TO_POINTER(pixmap_theme_changed));
 	}
 }
 
