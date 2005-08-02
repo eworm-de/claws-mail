@@ -1919,6 +1919,8 @@ gint folder_item_syncronize_flags(FolderItem *item)
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur))
 		procmsg_msginfo_free((MsgInfo *) cur->data);
 	
+	g_slist_free(msglist);
+
 	return ret;
 }
 
