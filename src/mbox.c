@@ -429,7 +429,7 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 
 	export_list_to_mbox(mlist, mbox);
 
-	g_slist_free(mlist);
+	procmsg_msg_list_free(mlist);
 
 	return 0;
 }

@@ -1964,6 +1964,20 @@ void folder_item_free_cache(FolderItem *item)
 	item->cache = NULL;
 }
 
+void folder_clean_cache_memory_force(void)
+{
+	int old_cache_max_mem_usage = prefs_common.cache_max_mem_usage;
+	int old_cache_min_keep_time = prefs_common.cache_min_keep_time;
+
+	prefs_common.cache_max_mem_usage = 0;
+	prefs_common.cache_min_keep_time = 0;
+
+	folder_clean_cache_memory();
+
+	prefs_common.cache_max_mem_usage = old_cache_max_mem_usage;
+	prefs_common.cache_min_keep_time = old_cache_min_keep_time;
+}
+
 void folder_clean_cache_memory(void)
 {
 	gint memusage = 0;
@@ -2523,8 +2537,6 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	GNode *srcnode;
 	gchar *old_id, *new_id;
 
-	mlist = folder_item_get_msg_list(src);
-	
 	/* move messages */
 	debug_print("Moving %s to %s\n", src->path, dest->path);
 	new_item = folder_create_folder(dest, src->name);
@@ -2539,8 +2551,13 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	/* move messages */
 	log_message(_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
-	if (mlist != NULL)
+
+	mlist = folder_item_get_msg_list(src);
+	
+	if (mlist != NULL) {
 		folder_item_move_msgs(new_item, mlist);
+		procmsg_msg_list_free(mlist);
+	}
 	
 	/*copy prefs*/
 	folder_item_prefs_copy_prefs(src, new_item);
@@ -2562,8 +2579,9 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		if (srcnode && srcnode->data) {
 			next_item = (FolderItem*) srcnode->data;
 			srcnode = srcnode->next;
-			if (folder_item_move_recursive(next_item, new_item) == NULL)
+			if (folder_item_move_recursive(next_item, new_item) == NULL) {
 				return NULL;
+			}
 		}
 	}
 	old_id = folder_item_get_identifier(src);
@@ -2579,7 +2597,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		prefs_filtering_rename_path(old_id, new_id);
 	g_free(old_id);
 	g_free(new_id);
-
+	
 	return new_item;
 }
 

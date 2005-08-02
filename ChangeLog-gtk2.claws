@@ -1,3 +1,15 @@
+2005-08-02 [colin]	1.9.13cvs5
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/main.c
+	* src/mbox.c
+	* src/procmsg.c
+	* src/summaryview.c
+		Fix a number of folder_item_get_msg_list()-related
+		leaks (missing procmsg_msginfo_free()s)
+
 2005-08-01 [colin]	1.9.13cvs4
 
 	* src/folderview.c

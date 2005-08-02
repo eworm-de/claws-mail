@@ -5230,10 +5230,6 @@ static gboolean processing_apply_func(GNode *node, gpointer data)
 		STATUSBAR_PUSH(summaryview->mainwin, buf);
 		g_free(buf);
 
-/*
-		mlist = item->folder->get_msg_list(item->folder, item,
-						   TRUE);
-*/		
 		mlist = folder_item_get_msg_list(item);
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = cur->next) {
 			MsgInfo * msginfo;

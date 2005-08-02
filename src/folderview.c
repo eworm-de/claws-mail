@@ -1584,8 +1584,11 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", item->node->parent != NULL);
 	SET_SENS("/Processing...", item->node->parent != NULL);
-	if (item == folder->trash)
-		SET_SENS("/Empty trash...", folder_item_get_msg_list(item) != NULL);
+	if (item == folder->trash) {
+		GSList *msglist = folder_item_get_msg_list(item);
+		SET_SENS("/Empty trash...", msglist != NULL);
+		procmsg_msg_list_free(msglist);
+	}
 #undef SET_SENS
 
 	popup = gtk_item_factory_get_widget(fpopup_factory, fpopup->path);

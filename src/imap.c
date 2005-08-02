@@ -1148,7 +1148,7 @@ static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
 	GSList *list = folder_item_get_msg_list(item);
 	gint res = imap_remove_msgs(folder, item, list, NULL);
-	g_slist_free(list);
+	procmsg_msg_list_free(list);
 	return res;
 }
 

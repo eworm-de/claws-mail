@@ -659,7 +659,7 @@ void procmsg_empty_trash(FolderItem *trash)
 
 			procmsg_msginfo_free(msginfo);
 		}
-
+		g_slist_free(mlist);
 		folder_item_remove_all_msg(trash);
 	}
 }
@@ -878,14 +878,16 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 gboolean procmsg_queue_is_empty(FolderItem *queue)
 {
 	GSList *list;
-
+	gboolean res = FALSE;
 	if (!queue)
 		queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, TRUE);
 
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
-	return (list == NULL);
+	res = (list == NULL);
+	procmsg_msg_list_free(list);
+	return res;
 }
 
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
