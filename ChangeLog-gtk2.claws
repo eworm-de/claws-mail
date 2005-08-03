@@ -1,3 +1,8 @@
+2005-08-03 [colin]	1.9.13cvs12
+
+	* src/prefs_account.c
+		Fix bug #777 (Sylpheed crash in account configuration)
+
 2005-08-03 [colin]	1.9.13cvs11
 
 	* src/addressbook.c

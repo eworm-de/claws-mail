@@ -375,7 +375,7 @@ static PrefParam param[] = {
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 	{"signature_path", "~" G_DIR_SEPARATOR_S DEFAULT_SIGNATURE,
-	 &tmp_ac_prefs.sig_path, P_STRING,
+	 &tmp_ac_prefs.sig_path, P_STRING, &compose.entry_sigpath,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"auto_signature", "TRUE", &tmp_ac_prefs.auto_sig, P_BOOL,
