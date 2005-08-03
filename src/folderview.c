@@ -1023,7 +1023,12 @@ static gboolean folderview_have_unread_children_sub(FolderView *folderview,
 						    FolderItem *item, 
 						    gboolean in_sub)
 {
-	GNode *node = item->folder->node;
+	GNode *node = NULL;
+	
+	if (!item || !item->folder || !item->folder->node)
+		return FALSE;
+	
+	node = item->folder->node;
 	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
