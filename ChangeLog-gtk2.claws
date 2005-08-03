@@ -1,3 +1,12 @@
+2005-08-03 [colin]	1.9.13cvs11
+
+	* src/addressbook.c
+	* src/editaddress.c
+	* src/editgroup.c
+		Fixing addressbook, round 2
+	* src/textview.c
+		Fix emphasis color on rechecking 'Colorize messages'
+
 2005-08-03 [paul]	1.9.13cvs10
 
 	sync with main

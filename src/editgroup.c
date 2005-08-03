@@ -150,6 +150,7 @@ static gint edit_group_clist_add_email( GtkCList *clist, ItemEMail *email ) {
 	}
 	text[ GROUP_COL_EMAIL   ] = email->address;
 	text[ GROUP_COL_REMARKS ] = email->remarks;
+	
 	row = gtk_clist_append( clist, text );
 	gtk_clist_set_row_data( clist, row, email );
 	return row;
@@ -157,49 +158,66 @@ static gint edit_group_clist_add_email( GtkCList *clist, ItemEMail *email ) {
 
 static void edit_group_load_clist( GtkCList *clist, GList *listEMail ) {
 	GList *node = listEMail;
+	gtk_clist_freeze(clist);
 	while( node ) {
 		ItemEMail *email = node->data;
 		edit_group_clist_add_email( clist, email );
 		node = g_list_next( node );
 	}
+	gtk_clist_thaw(clist);
 }
 
 
-static gint edit_group_move_email( GtkCList *clist_from, GtkCList *clist_to, gint row ) {
-	ItemEMail *email = gtk_clist_get_row_data( clist_from, row );
-	gint rrow = -1;
+static void edit_group_move_email( GtkCList *clist_from, GtkCList *clist_to, GtkCTreeNode *node ) {
+	ItemEMail *email = gtk_ctree_node_get_row_data( GTK_CTREE(clist_from), node );
+	GtkCTreeNode *next = gtkut_ctree_node_next(GTK_CTREE(clist_from), node);
+	GtkCTreeNode *prev = gtkut_ctree_node_prev(GTK_CTREE(clist_from), node);
+	int rrow = 0;
 	if( email ) {
-		gtk_clist_remove( clist_from, row );
+		gtk_ctree_remove_node(GTK_CTREE(clist_from), node);
 		rrow = edit_group_clist_add_email( clist_to, email );
 		gtk_clist_select_row( clist_to, rrow, 0 );
+		if (next)
+			gtk_ctree_select(GTK_CTREE(clist_from), next);
+		else if (prev)
+			gtk_ctree_select(GTK_CTREE(clist_from), prev);
 	}
-	return rrow;
 }
 
 static void edit_group_to_group( GtkWidget *widget, gpointer data ) {
-	GList *selected = GTK_CLIST(groupeditdlg.clist_avail)->selection;
+	GList *selected = g_list_copy(GTK_CLIST(groupeditdlg.clist_avail)->selection);
 	/* Clear the selected rows on destination clist */
+	gtk_clist_freeze(groupeditdlg.clist_avail);
+	gtk_clist_freeze(groupeditdlg.clist_group);
 	gtk_clist_unselect_all(groupeditdlg.clist_group);
 	while (selected) {
 		edit_group_move_email( groupeditdlg.clist_avail,
-					groupeditdlg.clist_group, GPOINTER_TO_UINT(selected->data) );
-		/* cannot use g_list_next as the selection list will have changed */
-		selected = GTK_CLIST(groupeditdlg.clist_avail)->selection;
+					groupeditdlg.clist_group, GTK_CTREE_NODE(selected->data) );
+		selected = selected->next;
 	}
+	g_list_free(selected);
+	gtk_clist_thaw(groupeditdlg.clist_avail);
+	gtk_clist_thaw(groupeditdlg.clist_group);
 }
 
 static void edit_group_to_avail( GtkWidget *widget, gpointer data ) {
-	GList *selected = GTK_CLIST(groupeditdlg.clist_group)->selection;
+	GList *selected = g_list_copy(GTK_CLIST(groupeditdlg.clist_group)->selection);
+	gtk_clist_freeze(groupeditdlg.clist_avail);
+	gtk_clist_freeze(groupeditdlg.clist_group);
 	gtk_clist_unselect_all(groupeditdlg.clist_avail);
 	while (selected) {
 		edit_group_move_email( groupeditdlg.clist_group,
-					groupeditdlg.clist_avail, GPOINTER_TO_UINT(selected->data) );
-		selected = GTK_CLIST(groupeditdlg.clist_group)->selection;
+					groupeditdlg.clist_avail, GTK_CTREE_NODE(selected->data) );
+		selected = selected->next;
 	}
+	g_list_free(selected);
+	gtk_clist_thaw(groupeditdlg.clist_avail);
+	gtk_clist_thaw(groupeditdlg.clist_group);
 }
 
 static gboolean edit_group_list_group_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
+	
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_avail( NULL, NULL );
@@ -210,6 +228,7 @@ static gboolean edit_group_list_group_button( GtkCList *clist, GdkEventButton *e
 
 static gboolean edit_group_list_avail_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
+	
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_group( NULL, NULL );
@@ -322,7 +341,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_group = gtk_clist_new_with_titles( GROUP_N_COLS, titles );
+	clist_group = gtk_sctree_new_with_titles( GROUP_N_COLS, GROUP_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_group );
 	gtk_clist_set_selection_mode( GTK_CLIST(clist_group), GTK_SELECTION_EXTENDED );
 	gtk_clist_set_column_width( GTK_CLIST(clist_group), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
@@ -351,7 +370,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_avail = gtk_clist_new_with_titles( GROUP_N_COLS, titles );
+	clist_avail = gtk_sctree_new_with_titles( GROUP_N_COLS, GROUP_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_avail );
 	gtk_clist_set_selection_mode( GTK_CLIST(clist_avail), GTK_SELECTION_EXTENDED );
 	gtk_clist_set_column_width( GTK_CLIST(clist_avail), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );

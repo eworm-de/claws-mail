@@ -402,6 +402,7 @@ void textview_init(TextView *textview)
 static void textview_update_message_colors(TextView *textview)
 {
 	GdkColor black = {0, 0, 0, 0};
+	GdkColor colored_emphasis = {0, 0, 0, 0xcfff};
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
 	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
@@ -419,6 +420,7 @@ static void textview_update_message_colors(TextView *textview)
 					       &uri_color);
 		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
 					       &signature_color);
+		emphasis_color = colored_emphasis;
 	} else {
 		quote_colors[0] = quote_colors[1] = quote_colors[2] = 
 			uri_color = emphasis_color = signature_color = black;
@@ -1569,8 +1571,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		    procheader_headername_equal(header->name, "Cc"))
 			unfold_line(header->body);
 
-		if (prefs_common.enable_color &&
-		    (procheader_headername_equal(header->name, "X-Mailer") ||
+		if ((procheader_headername_equal(header->name, "X-Mailer") ||
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
 		    strstr(header->body, "Sylpheed") != NULL) {
@@ -1578,9 +1579,10 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, header->body, -1,
 				 "header", "emphasis", NULL);
-		}
-		textview_make_clickable_parts(textview, "header", "link",
+		} else {
+			textview_make_clickable_parts(textview, "header", "link",
 						      header->body);
+		}
 		gtk_text_buffer_get_end_iter (buffer, &iter);
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
 							 "header", NULL);

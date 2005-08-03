@@ -171,6 +171,8 @@ static void addressbook_to_clicked		(GtkButton	*button,
 						 gpointer	 data);
 static void addressbook_lup_clicked		(GtkButton	*button,
 						 gpointer	data);
+static void addressbook_close_clicked		(GtkButton	*button,
+						 gpointer	data);
 
 static gboolean addressbook_tree_selected	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
@@ -399,7 +401,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Book"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Book/New _Book"),	"<control>B",	addressbook_new_book_cb,        0, NULL},
 	{N_("/_Book/New _Folder"),	"<control>R",	addressbook_new_folder_cb,      0, NULL},
-	{N_("/_Book/New _vCard"),	"<control>D",	addressbook_new_vcard_cb,       0, NULL},
+	{N_("/_Book/New _vCard"),	"<control><shift>D",	addressbook_new_vcard_cb,       0, NULL},
 #ifdef USE_JPILOT
 	{N_("/_Book/New _JPilot"),	"<control>J",	addressbook_new_jpilot_cb,      0, NULL},
 #endif
@@ -418,7 +420,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/_Paste"),	"<control>V",	addressbook_clip_paste_cb,      0, NULL},
 	{N_("/_Address/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Address/_Edit"),		"<control>Return",addressbook_edit_address_cb,    0, NULL},
-	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
+	{N_("/_Address/_Delete"),	"<control>D",	addressbook_delete_address_cb,  0, NULL},
 	{N_("/_Address/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Address/New _Address"),	"<control>N",	addressbook_new_address_cb,     0, NULL},
 	{N_("/_Address/New _Group"),	"<control>G",	addressbook_new_group_cb,       0, NULL},
@@ -687,6 +689,7 @@ static void addressbook_create(void)
 	GtkWidget *to_btn;
 	GtkWidget *cc_btn;
 	GtkWidget *bcc_btn;
+	GtkWidget *close_btn;
 	GtkWidget *tree_popup;
 	GtkWidget *list_popup;
 	GtkItemFactory *tree_factory;
@@ -855,13 +858,15 @@ static void addressbook_create(void)
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 2);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
-	del_btn = gtk_button_new_with_label(_("Delete"));
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	GTK_WIDGET_SET_FLAGS(del_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), del_btn, TRUE, TRUE, 0);
-	reg_btn = gtk_button_new_with_label(_("Add"));
+	reg_btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
 	GTK_WIDGET_SET_FLAGS(reg_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), reg_btn, TRUE, TRUE, 0);
-	lup_btn = gtk_button_new_with_label(_("Lookup"));
+
+
+	lup_btn = gtk_button_new_from_stock(GTK_STOCK_FIND);
 	GTK_WIDGET_SET_FLAGS(lup_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbox), lup_btn, TRUE, TRUE, 0);
 
@@ -885,6 +890,10 @@ static void addressbook_create(void)
 	GTK_WIDGET_SET_FLAGS(bcc_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 
+	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
+	gtk_box_pack_start(GTK_BOX(hbbox), close_btn, TRUE, TRUE, 0);
+
 	g_signal_connect(G_OBJECT(to_btn), "clicked",
 			 G_CALLBACK(addressbook_to_clicked),
 			 GINT_TO_POINTER(COMPOSE_TO));
@@ -894,6 +903,8 @@ static void addressbook_create(void)
 	g_signal_connect(G_OBJECT(bcc_btn), "clicked",
 			 G_CALLBACK(addressbook_to_clicked),
 			 GINT_TO_POINTER(COMPOSE_BCC));
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
+			 G_CALLBACK(addressbook_close_clicked), NULL);
 
 	/* Build icons for interface */
 	stock_pixmap_gdk( window, STOCK_PIXMAP_INTERFACE,
@@ -3498,6 +3509,8 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 {
 	if (event && event->keyval == GDK_Escape)
 		addressbook_close();
+	else if (event && event->keyval == GDK_Delete)
+		addressbook_del_clicked(NULL, NULL);
 	return FALSE;
 }
 
@@ -3859,6 +3872,10 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	gtk_widget_grab_focus( addrbook.entry );
 
 	g_free( searchTerm );
+}
+
+static void addressbook_close_clicked( GtkButton *button, gpointer data ) {
+	addressbook_close();
 }
 
 #ifdef USE_LDAP

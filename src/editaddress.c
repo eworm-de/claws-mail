@@ -63,11 +63,19 @@ static struct _PersonEdit_dlg {
 	GtkWidget *entry_alias;
 	GtkWidget *entry_remarks;
 	GtkWidget *clist_email;
+	GtkWidget *email_up;
+	GtkWidget *email_down;
+	GtkWidget *email_del;
+	GtkWidget *email_mod;
+	GtkWidget *email_add;
 
 	/* Attribute data tab */
 	GtkWidget *entry_atname;
 	GtkWidget *entry_atvalue;
 	GtkWidget *clist_attrib;
+	GtkWidget *attrib_add;
+	GtkWidget *attrib_del;
+	GtkWidget *attrib_mod;
 
 	gint rowIndEMail;
 	gint rowIndAttrib;
@@ -216,6 +224,13 @@ static void edit_person_email_list_selected( GtkCList *clist, gint row, gint col
 			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_alias), ADDRITEM_NAME(email) );
 		if( email->remarks )
 			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_remarks), email->remarks );
+		gtk_widget_set_sensitive(personeditdlg.email_del, TRUE);
+		gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
+		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.email_del, FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
 	}
 	personeditdlg.rowIndEMail = row;
 	edit_person_status_show( NULL );
@@ -228,6 +243,11 @@ static void edit_person_email_move( gint dir ) {
 	if( email ) {
 		gtk_clist_row_move( clist, personeditdlg.rowIndEMail, row );
 		personeditdlg.rowIndEMail = row;
+		gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
+		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
 	}
 	edit_person_email_clear( NULL );
 	edit_person_status_show( NULL );
@@ -258,6 +278,9 @@ static void edit_person_email_delete( gpointer data ) {
 	if( ! email ) {
 		personeditdlg.rowIndEMail = -1 + row;
 	}
+	gtk_widget_set_sensitive(personeditdlg.email_del, gtk_clist_get_row_data(clist, 0) != NULL);
+	gtk_widget_set_sensitive(personeditdlg.email_up, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
+	gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
 	edit_person_status_show( NULL );
 }
 
@@ -348,6 +371,36 @@ static gint edit_person_attrib_compare_func(
 	return g_utf8_collate( name1, name2 );
 }
 
+static gboolean list_find_attribute(const gchar *attr)
+{
+	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	UserAttribute *attrib;
+	gint row = 0;
+	while( (attrib = gtk_clist_get_row_data( clist, row )) ) {
+		if (!g_ascii_strcasecmp(attrib->name, attr)) {
+			gtk_clist_select_row(clist, row, 0);
+			return TRUE;
+		}
+		row++;
+	}
+	return FALSE;
+}
+
+static gboolean list_find_email(const gchar *addr)
+{
+	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	ItemEMail *email;
+	gint row = 0;
+	while( (email = gtk_clist_get_row_data( clist, row )) ) {
+		if (!g_ascii_strcasecmp(email->address, addr)) {
+			gtk_clist_select_row(clist, row, 0);
+			return TRUE;
+		}
+		row++;
+	}
+	return FALSE;
+}
+
 /*
 * Load clist with a copy of person's email addresses.
 */
@@ -373,6 +426,9 @@ static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint co
 	if( attrib ) {
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, FALSE);
 	}
 	personeditdlg.rowIndAttrib = row;
 	edit_person_status_show( NULL );
@@ -394,7 +450,10 @@ static void edit_person_attrib_delete( gpointer data ) {
 	attrib = gtk_clist_get_row_data( clist, row );
 	if( ! attrib ) {
 		personeditdlg.rowIndAttrib = -1 + row;
-	}
+	} 
+	
+	gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
+	
 	edit_person_status_show( NULL );
 }
 
@@ -600,6 +659,41 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	personeditdlg.entry_nick  = entry_nn;
 }
 
+static gboolean email_adding = FALSE, email_saving = FALSE;
+
+static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
+{
+	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)) == NULL
+	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email))) == 0) {
+		gtk_widget_set_sensitive(personeditdlg.email_add,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_mod,FALSE);
+		email_adding = FALSE;
+		email_saving = FALSE;
+	} else if (list_find_email(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)))) {
+		gtk_widget_set_sensitive(personeditdlg.email_add,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_mod,TRUE);
+		email_adding = FALSE;
+		email_saving = TRUE;
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.email_add,TRUE);
+		gtk_widget_set_sensitive(personeditdlg.email_mod,FALSE);
+		email_adding = TRUE;
+		email_saving = FALSE;
+	}
+}
+
+static gboolean edit_person_entry_email_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Return) {
+		if (email_adding)
+			edit_person_email_add(NULL);
+		else if (email_saving)
+			edit_person_email_modify(NULL);
+	}
+	return FALSE;
+}
+
+
 static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
@@ -611,7 +705,6 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *buttonDel;
 	GtkWidget *buttonMod;
 	GtkWidget *buttonAdd;
-	GtkWidget *buttonClr;
 
 	GtkWidget *table;
 	GtkWidget *label;
@@ -709,23 +802,20 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonUp = gtk_button_new_with_label( _( "Move Up" ) );
+	buttonUp = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonUp );
 
-	buttonDown = gtk_button_new_with_label( _( "Move Down" ) );
+	buttonDown = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDown );
 
-	buttonDel = gtk_button_new_with_label( _( "Delete" ) );
+	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDel );
 
-	buttonMod = gtk_button_new_with_label( _( "Modify" ) );
+	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonMod );
 
-	buttonAdd = gtk_button_new_with_label( _( "Add" ) );
+	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonAdd );
-
-	buttonClr = gtk_button_new_with_label( _( "Clear" ) );
-	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonClr );
 
 	gtk_widget_show_all(vbox);
 
@@ -742,13 +832,58 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 			  G_CALLBACK( edit_person_email_modify ), NULL );
 	g_signal_connect( G_OBJECT(buttonAdd), "clicked",
 			  G_CALLBACK( edit_person_email_add ), NULL );
-	g_signal_connect( G_OBJECT(buttonClr), "clicked",
-			  G_CALLBACK( edit_person_email_clear ), NULL );
+	g_signal_connect(G_OBJECT(entry_email), "changed",
+			 G_CALLBACK(edit_person_entry_email_changed), NULL);
+	g_signal_connect(G_OBJECT(entry_email), "key_press_event",
+			 G_CALLBACK(edit_person_entry_email_pressed), NULL);
+	g_signal_connect(G_OBJECT(entry_alias), "key_press_event",
+			 G_CALLBACK(edit_person_entry_email_pressed), NULL);
+	g_signal_connect(G_OBJECT(entry_remarks), "key_press_event",
+			 G_CALLBACK(edit_person_entry_email_pressed), NULL);
 
 	personeditdlg.clist_email   = clist;
 	personeditdlg.entry_email   = entry_email;
 	personeditdlg.entry_alias   = entry_alias;
 	personeditdlg.entry_remarks = entry_remarks;
+	personeditdlg.email_up = buttonUp;
+	personeditdlg.email_down = buttonDown;
+	personeditdlg.email_del = buttonDel;
+	personeditdlg.email_mod = buttonMod;
+	personeditdlg.email_add = buttonAdd;
+}
+
+static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
+
+static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
+{
+	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
+	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname))) == 0) {
+		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.attrib_mod,FALSE);
+		attrib_adding = FALSE;
+		attrib_saving = FALSE;
+	} else if (list_find_attribute(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)))) {
+		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.attrib_mod,TRUE);
+		attrib_adding = FALSE;
+		attrib_saving = TRUE;
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.attrib_add,TRUE);
+		gtk_widget_set_sensitive(personeditdlg.attrib_mod,FALSE);
+		attrib_adding = TRUE;
+		attrib_saving = FALSE;
+	}
+}
+
+static gboolean edit_person_entry_att_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Return) {
+		if (attrib_adding)
+			edit_person_attrib_add(NULL);
+		else if (attrib_saving)
+			edit_person_attrib_modify(NULL);
+	}
+	return FALSE;
 }
 
 static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
@@ -760,7 +895,6 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *buttonDel;
 	GtkWidget *buttonMod;
 	GtkWidget *buttonAdd;
-	GtkWidget *buttonClr;
 
 	GtkWidget *table;
 	GtkWidget *label;
@@ -849,17 +983,18 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonDel = gtk_button_new_with_label( _( "Delete" ) );
+	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDel );
 
-	buttonMod = gtk_button_new_with_label( _( "Modify" ) );
+	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonMod );
 
-	buttonAdd = gtk_button_new_with_label( _( "Add" ) );
+	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonAdd );
-
-	buttonClr = gtk_button_new_with_label( _( "Clear" ) );
-	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonClr );
+	
+	gtk_widget_set_sensitive(buttonDel,FALSE);
+	gtk_widget_set_sensitive(buttonMod,FALSE);
+	gtk_widget_set_sensitive(buttonAdd,FALSE);
 
 	gtk_widget_show_all(vbox);
 
@@ -872,12 +1007,19 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 			  G_CALLBACK( edit_person_attrib_modify ), NULL );
 	g_signal_connect( G_OBJECT(buttonAdd), "clicked",
 			  G_CALLBACK( edit_person_attrib_add ), NULL );
-	g_signal_connect( G_OBJECT(buttonClr), "clicked",
-			  G_CALLBACK( edit_person_attrib_clear ), NULL );
+	g_signal_connect(G_OBJECT(entry_name), "changed",
+			 G_CALLBACK(edit_person_entry_att_changed), NULL);
+	g_signal_connect(G_OBJECT(entry_name), "key_press_event",
+			 G_CALLBACK(edit_person_entry_att_pressed), NULL);
+	g_signal_connect(G_OBJECT(entry_value), "key_press_event",
+			 G_CALLBACK(edit_person_entry_att_pressed), NULL);
 
 	personeditdlg.clist_attrib  = clist;
 	personeditdlg.entry_atname  = entry_name;
 	personeditdlg.entry_atvalue = entry_value;
+	personeditdlg.attrib_add = buttonAdd;
+	personeditdlg.attrib_del = buttonDel;
+	personeditdlg.attrib_mod = buttonMod;
 }
 
 static void addressbook_edit_person_create( gboolean *cancelled ) {
