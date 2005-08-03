@@ -880,11 +880,11 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 	(IS_ASCII(ch) && \
 	 (ch) > 32   && \
 	 (ch) != 127 && \
-	 !isspace(ch) && \
+	 !g_ascii_isspace(ch) && \
 	 !strchr("(),;<>\"", (ch)))
 
 /* alphabet and number within 7bit ASCII */
-#define IS_ASCII_ALNUM(ch)	(IS_ASCII(ch) && isalnum(ch))
+#define IS_ASCII_ALNUM(ch)	(IS_ASCII(ch) && g_ascii_isalnum(ch))
 #define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
 
 static GHashTable *create_domain_tab(void)

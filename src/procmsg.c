@@ -595,14 +595,14 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
 			extract_list_id_str(*key);
 		} else if (hentry[H_X_SEQUENCE].body != NULL) {
-			guchar *p;
+			gchar *p;
 
 			SET_FILTER_KEY("X-Sequence", H_X_SEQUENCE);
 			p = *key;
 			while (*p != '\0') {
-				while (*p != '\0' && !isspace(*p)) p++;
-				while (isspace(*p)) p++;
-				if (isdigit(*p)) {
+				while (*p != '\0' && !g_ascii_isspace(*p)) p++;
+				while (g_ascii_isspace(*p)) p++;
+				if (g_ascii_isdigit(*p)) {
 					*p = '\0';
 					break;
 				}

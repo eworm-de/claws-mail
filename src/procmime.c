@@ -1089,7 +1089,7 @@ GList *procmime_get_mime_type_list(void)
 	GList *list = NULL;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
-	guchar *p;
+	gchar *p;
 	gchar *delim;
 	MimeType *mime_type;
 	gboolean fp_is_glob_file = TRUE;
@@ -1117,9 +1117,9 @@ GList *procmime_get_mime_type_list(void)
 		p = buf;
 		
 		if (fp_is_glob_file) {
-			while (*p && !isspace(*p) && (*p!=':')) p++;
+			while (*p && !g_ascii_isspace(*p) && (*p!=':')) p++;
 		} else {
-			while (*p && !isspace(*p)) p++;
+			while (*p && !g_ascii_isspace(*p)) p++;
 		}
 
 		if (*p) {
@@ -1135,9 +1135,9 @@ GList *procmime_get_mime_type_list(void)
 		mime_type->sub_type = g_strdup(delim + 1);
 
 		if (fp_is_glob_file) {
-			while (*p && (isspace(*p)||(*p=='*')||(*p=='.'))) p++;
+			while (*p && (g_ascii_isspace(*p)||(*p=='*')||(*p=='.'))) p++;
 		} else {
-			while (*p && isspace(*p)) p++;
+			while (*p && g_ascii_isspace(*p)) p++;
 		}
 
 		if (*p)

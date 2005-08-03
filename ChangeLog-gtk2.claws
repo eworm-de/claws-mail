@@ -1,3 +1,28 @@
+2005-08-03 [paul]	1.9.13cvs10
+
+	sync with main
+
+	* src/addr_compl.c
+	* src/compose.c
+	* src/main.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/quote_fmt_parse.y
+	* src/textview.c
+	* src/common/quoted-printable.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/common/xml.c
+		replaced incorrect locale-independent
+		ctype functions with GLib's. Corrected
+		signedness mismatch.
+	* src/headerview.c
+		headerview_create(): added spacing for vbox.
+	* src/gtk/about.c
+		set focus to the OK button.
+
 2005-08-03 [colin]	1.9.13cvs9
 
 	* src/folderview.c

@@ -147,7 +147,7 @@ int quote_fmtwrap(void)
 
 static int isseparator(int ch)
 {
-	return isspace(ch) || ch == '.' || ch == '-';
+	return g_ascii_isspace(ch) || ch == '.' || ch == '-';
 }
 
 static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)

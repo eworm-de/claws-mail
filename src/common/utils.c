@@ -161,17 +161,17 @@ gboolean str_find_equal(const gchar *haystack, const gchar *needle)
 
 gboolean str_case_find_equal(const gchar *haystack, const gchar *needle)
 {
-	return strcasecmp(haystack, needle) == 0;
+	return g_ascii_strcasecmp(haystack, needle) == 0;
 }
 
 gint to_number(const gchar *nstr)
 {
-	register const guchar *p;
+	register const gchar *p;
 
 	if (*nstr == '\0') return -1;
 
 	for (p = nstr; *p != '\0'; p++)
-		if (!isdigit(*p)) return -1;
+		if (!g_ascii_isdigit(*p)) return -1;
 
 	return atoi(nstr);
 }
@@ -348,14 +348,14 @@ gchar *strncpy2(gchar *dest, const gchar *src, size_t n)
 #if !HAVE_ISWALNUM
 int iswalnum(wint_t wc)
 {
-	return isalnum((int)wc);
+	return g_ascii_isalnum((int)wc);
 }
 #endif
 
 #if !HAVE_ISWSPACE
 int iswspace(wint_t wc)
 {
-	return isspace((int)wc);
+	return g_ascii_isspace((int)wc);
 }
 #endif
 
@@ -551,26 +551,26 @@ gint get_mbs_len(const gchar *s)
 }
 
 /* Examine if next block is non-ASCII string */
-gboolean is_next_nonascii(const guchar *s)
+gboolean is_next_nonascii(const gchar *s)
 {
-	const guchar *p;
+	const gchar *p;
 
 	/* skip head space */
-	for (p = s; *p != '\0' && isspace(*p); p++)
+	for (p = s; *p != '\0' && g_ascii_isspace(*p); p++)
 		;
-	for (; *p != '\0' && !isspace(*p); p++) {
-		if (*p > 127 || *p < 32)
+	for (; *p != '\0' && !g_ascii_isspace(*p); p++) {
+		if (*(guchar *)p > 127 || *(guchar *)p < 32)
 			return TRUE;
 	}
 
 	return FALSE;
 }
 
-gint get_next_word_len(const guchar *s)
+gint get_next_word_len(const gchar *s)
 {
 	gint len = 0;
 
-	for (; *s != '\0' && !isspace(*s); s++, len++)
+	for (; *s != '\0' && !g_ascii_isspace(*s); s++, len++)
 		;
 
 	return len;
@@ -636,7 +636,7 @@ void trim_subject_for_sort(gchar *str)
 
 void trim_subject(gchar *str)
 {
-	register guchar *srcp;
+	register gchar *srcp;
 	gchar op, cl;
 	gint in_brace;
 	
@@ -666,13 +666,13 @@ void trim_subject(gchar *str)
 				break;
 		}
 	}
-	while (isspace(*srcp)) srcp++;
+	while (g_ascii_isspace(*srcp)) srcp++;
 	memmove(str, srcp, strlen(srcp) + 1);
 }
 
 void eliminate_parenthesis(gchar *str, gchar op, gchar cl)
 {
-	register guchar *srcp, *destp;
+	register gchar *srcp, *destp;
 	gint in_brace;
 
 	srcp = destp = str;
@@ -689,7 +689,7 @@ void eliminate_parenthesis(gchar *str, gchar op, gchar cl)
 			if (in_brace == 0)
 				break;
 		}
-		while (isspace(*srcp)) srcp++;
+		while (g_ascii_isspace(*srcp)) srcp++;
 		memmove(destp, srcp, strlen(srcp) + 1);
 	}
 }
@@ -754,14 +754,14 @@ void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 
 void eliminate_quote(gchar *str, gchar quote_chr)
 {
-	register guchar *srcp, *destp;
+	register gchar *srcp, *destp;
 
 	srcp = destp = str;
 
 	while ((destp = strchr(destp, quote_chr))) {
 		if ((srcp = strchr(destp + 1, quote_chr))) {
 			srcp++;
-			while (isspace(*srcp)) srcp++;
+			while (g_ascii_isspace(*srcp)) srcp++;
 			memmove(destp, srcp, strlen(srcp) + 1);
 		} else {
 			*destp = '\0';
@@ -789,7 +789,7 @@ void extract_quote(gchar *str, gchar quote_chr)
 
 void eliminate_address_comment(gchar *str)
 {
-	register guchar *srcp, *destp;
+	register gchar *srcp, *destp;
 	gint in_brace;
 
 	srcp = destp = str;
@@ -800,7 +800,7 @@ void eliminate_address_comment(gchar *str)
 			if (*srcp == '@') {
 				destp = srcp + 1;
 			} else {
-				while (isspace(*srcp)) srcp++;
+				while (g_ascii_isspace(*srcp)) srcp++;
 				memmove(destp, srcp, strlen(srcp) + 1);
 			}
 		} else {
@@ -823,7 +823,7 @@ void eliminate_address_comment(gchar *str)
 			if (in_brace == 0)
 				break;
 		}
-		while (isspace(*srcp)) srcp++;
+		while (g_ascii_isspace(*srcp)) srcp++;
 		memmove(destp, srcp, strlen(srcp) + 1);
 	}
 }
@@ -1032,12 +1032,12 @@ void remove_return(gchar *str)
 
 void remove_space(gchar *str)
 {
-	register guchar *p = str;
+	register gchar *p = str;
 	register gint spc;
 
 	while (*p) {
 		spc = 0;
-		while (isspace(*(p + spc)))
+		while (g_ascii_isspace(*(p + spc)))
 			spc++;
 		if (spc)
 			memmove(p, p + spc, strlen(p + spc) + 1);
@@ -1048,14 +1048,14 @@ void remove_space(gchar *str)
 
 void unfold_line(gchar *str)
 {
-	register guchar *p = str;
+	register gchar *p = str;
 	register gint spc;
 
 	while (*p) {
 		if (*p == '\n' || *p == '\r') {
 			*p++ = ' ';
 			spc = 0;
-			while (isspace(*(p + spc)))
+			while (g_ascii_isspace(*(p + spc)))
 				spc++;
 			if (spc)
 				memmove(p, p + spc, strlen(p + spc) + 1);
@@ -1114,16 +1114,16 @@ gboolean is_header_line(const gchar *str)
 	return FALSE;
 }
 
-gboolean is_ascii_str(const guchar *str)
+gboolean is_ascii_str(const gchar *str)
 {
-	g_return_val_if_fail(str, FALSE);
+	const guchar *p = (const guchar *)str;
 
-	while (*str != '\0') {
-		if (*str != '\t' && *str != ' ' &&
-		    *str != '\r' && *str != '\n' &&
-		    (*str < 32 || *str >= 127))
+	while (*p != '\0') {
+		if (*p != '\t' && *p != ' ' &&
+		    *p != '\r' && *p != '\n' &&
+		    (*p < 32 || *p >= 127))
 			return FALSE;
-		str++;
+		p++;
 	}
 
 	return TRUE;
@@ -1131,15 +1131,15 @@ gboolean is_ascii_str(const guchar *str)
 
 gint get_quote_level(const gchar *str, const gchar *quote_chars)
 {
-	const guchar *first_pos;
-	const guchar *last_pos;
-	const guchar *p = str;
+	const gchar *first_pos;
+	const gchar *last_pos;
+	const gchar *p = str;
 	gint quote_level = -1;
 
 	/* speed up line processing by only searching to the last '>' */
 	if ((first_pos = line_has_quote_char(str, quote_chars)) != NULL) {
 		/* skip a line if it contains a '<' before the initial '>' */
-		if (memchr(str, '<', first_pos - (const guchar *)str) != NULL)
+		if (memchr(str, '<', first_pos - str) != NULL)
 			return -1;
 		last_pos = line_has_quote_char_last(first_pos, quote_chars);
 	} else
@@ -1147,7 +1147,7 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 
 	while (p <= last_pos) {
 		while (p < last_pos) {
-			if (isspace(*p))
+			if (g_ascii_isspace(*p))
 				p++;
 			else
 				break;
@@ -1155,11 +1155,11 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 
 		if (strchr(quote_chars, *p))
 			quote_level++;
-		else if (*p != '-' && !isspace(*p) && p <= last_pos) {
+		else if (*p != '-' && !g_ascii_isspace(*p) && p <= last_pos) {
 			/* any characters are allowed except '-' and space */
 			while (*p != '-' 
 			       && !strchr(quote_chars, *p) 
-			       && !isspace(*p) 
+			       && !g_ascii_isspace(*p) 
 			       && p < last_pos)
 				p++;
 			if (strchr(quote_chars, *p))
@@ -1334,7 +1334,7 @@ gchar **strsplit_parenthesis(const gchar *str, gchar op, gchar cl,
 			n++;
 			str = s_cl + 1;
 
-			while (*str && isspace(*(guchar *)str)) str++;
+			while (*str && g_ascii_isspace(*str)) str++;
 			if (*str != op) {
 				string_list = g_slist_prepend(string_list,
 							      g_strdup(""));
@@ -1487,7 +1487,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 
 	while (p) {
 		if (*p != '#') {
-			while (isspace(*p)) p++;
+			while (g_ascii_isspace(*p)) p++;
 			if (!strncmp(p, "file:", 5)) {
 				q = p;
 				q += 5;
@@ -1496,7 +1496,8 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 				if (q > p) {
 					gchar *file, *locale_file = NULL;
 					q--;
-					while (q > p && isspace(*q)) q--;
+					while (q > p && g_ascii_isspace(*q))
+						q--;
 					Xalloca(escaped_utf8uri, q - p + 2,
 						return result);
 					Xalloca(file, q - p + 2,
@@ -3077,7 +3078,7 @@ gchar *file_read_to_str(const gchar *file)
 gchar *file_read_stream_to_str(FILE *fp)
 {
 	GByteArray *array;
-	gchar buf[BUFSIZ];
+	guchar buf[BUFSIZ];
 	gint n_read;
 	gchar *str;
 

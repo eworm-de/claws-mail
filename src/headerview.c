@@ -87,7 +87,7 @@ HeaderView *headerview_create(void)
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
 	hbox1 = gtk_hbox_new(FALSE, 4);
@@ -104,6 +104,16 @@ HeaderView *headerview_create(void)
 	subject_header_label = gtk_label_new(TR("Subject:"));
 	subject_body_label   = gtk_label_new("");
 
+	gtk_label_set_selectable(GTK_LABEL(from_body_label), TRUE);
+	gtk_label_set_selectable(GTK_LABEL(to_body_label), TRUE);
+	gtk_label_set_selectable(GTK_LABEL(ng_body_label), TRUE);
+	gtk_label_set_selectable(GTK_LABEL(subject_body_label), TRUE);
+
+	GTK_WIDGET_UNSET_FLAGS(from_body_label, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS(to_body_label, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS(ng_body_label, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS(subject_body_label, GTK_CAN_FOCUS);
+
 	gtk_box_pack_start(GTK_BOX(hbox1), from_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), from_body_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), to_header_label, FALSE, FALSE, 0);
@@ -116,7 +126,7 @@ HeaderView *headerview_create(void)
 	gtk_misc_set_alignment(GTK_MISC(to_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(ng_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(subject_body_label), 0, 0.5);
-#if (GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION >= 6))
+#if GTK_CHECK_VERSION(2, 6, 0)
 	gtk_label_set_ellipsize(GTK_LABEL(to_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(ng_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(subject_body_label), PANGO_ELLIPSIZE_END);

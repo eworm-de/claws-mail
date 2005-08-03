@@ -2737,7 +2737,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	gboolean can_break = FALSE;
 	gboolean do_break = FALSE;
 	gboolean was_white = FALSE;
-	gboolean prev_hyphen = FALSE;
+	gboolean prev_dont_break = FALSE;
 
 	gtk_text_iter_forward_to_line_end(&line_end);
 	str = gtk_text_buffer_get_text(buffer, &iter, &line_end, FALSE);
@@ -2771,7 +2771,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		gunichar wc;
 		gint uri_len;
 
-		if (attr->is_line_break && can_break && was_white && !prev_hyphen)
+		if (attr->is_line_break && can_break && was_white && !prev_dont_break)
 			pos = i;
 		
 		was_white = attr->is_white;
@@ -2792,7 +2792,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		wc = g_utf8_get_char(p);
 		if (g_unichar_iswide(wc)) {
 			col += 2;
-			if (prev_hyphen && can_break && attr->is_line_break)
+			if (prev_dont_break && can_break && attr->is_line_break)
 				pos = i;
 		} else if (*p == '\t')
 			col += 8;
@@ -2803,10 +2803,10 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 			break;
 		}
 
-		if (*p == '-')
-			prev_hyphen = TRUE;
+		if (*p == '-' || *p == '/')
+			prev_dont_break = TRUE;
 		else
-			prev_hyphen = FALSE;
+			prev_dont_break = FALSE;
 
 		p = g_utf8_next_char(p);
 		can_break = TRUE;

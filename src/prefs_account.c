@@ -374,8 +374,8 @@ static PrefParam param[] = {
 	 &compose.sigfile_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
-	{"signature_path", "~/"DEFAULT_SIGNATURE, &tmp_ac_prefs.sig_path, P_STRING,
-	 &compose.entry_sigpath,
+	{"signature_path", "~" G_DIR_SEPARATOR_S DEFAULT_SIGNATURE,
+	 &tmp_ac_prefs.sig_path, P_STRING,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"auto_signature", "TRUE", &tmp_ac_prefs.auto_sig, P_BOOL,
@@ -733,7 +733,7 @@ PrefsAccount *prefs_account_new(void)
 
 void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 {
-	const guchar *p = label;
+	const gchar *p = label;
 	gchar *rcpath;
 	gint id;
 	gchar **strv, **cur;
@@ -749,7 +749,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	g_free(rcpath);
 
 	*ac_prefs = tmp_ac_prefs;
-	while (*p && !isdigit(*p)) p++;
+	while (*p && !g_ascii_isdigit(*p)) p++;
 	id = atoi(p);
 	if (id < 0) g_warning("wrong account id: %d\n", id);
 	ac_prefs->account_id = id;
