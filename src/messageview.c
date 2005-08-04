@@ -905,7 +905,8 @@ static void messageview_update(MessageView *msgview)
 		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
 						      summaryview->selected);
-		g_return_if_fail(msginfo != NULL);
+		if (msginfo == NULL)
+			return;
 
 		messageview_show(msgview, msginfo, 
 				 msgview->all_headers);

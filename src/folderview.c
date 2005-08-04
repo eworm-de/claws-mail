@@ -989,7 +989,12 @@ static gboolean folderview_have_new_children_sub(FolderView *folderview,
 						 FolderItem *item,
 						 gboolean in_sub)
 {
-	GNode *node = item->folder->node;
+	GNode *node = NULL;
+	
+	if (!item || !item->folder || !item->folder->node)
+		return FALSE;
+		
+	node = item->folder->node;
 	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
@@ -1063,7 +1068,12 @@ static gboolean folderview_have_matching_children_sub(FolderView *folderview,
 						      FolderItem *item,
 						      gboolean in_sub)
 {
-	GNode *node = item->folder->node;
+	GNode *node = NULL;
+
+	if (!item || !item->folder || !item->folder->node)
+		return FALSE;
+
+	node = item->folder->node;
 	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
@@ -1819,7 +1829,10 @@ void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem 
 	GNode *srcnode;
 
 	folderview_create_folder_node(folderview, item);
-	
+
+	if (!item || !item->folder || !item->folder->node)
+		return;
+
 	srcnode = item->folder->node;	
 	srcnode = g_node_find(srcnode, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	srcnode = srcnode->children;

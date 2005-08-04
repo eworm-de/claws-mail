@@ -35,6 +35,8 @@
 #include "account.h"
 #include "alertpanel.h"
 #include "grouplistdialog.h"
+#include "prefs_common.h"
+#include "news_gtk.h"
 #include "common/hooks.h"
 #include "inc.h"
 
@@ -68,6 +70,30 @@ static FolderViewPopup news_popup =
 	NULL,
 	set_sensitivity
 };
+
+gboolean news_gtk_should_override(void)
+{
+	static time_t overridden_yes = 0;
+	static time_t overridden_no  = 0;
+	gboolean answer = TRUE;
+
+	if (prefs_common.work_offline) {
+		if (time(NULL) - overridden_yes < 600)
+			 return TRUE;
+		else if (time(NULL) - overridden_no < 3)
+			 return FALSE;
+		
+		answer = (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override during 10 minutes?"),
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) == G_ALERTDEFAULT);
+		
+		if (answer == TRUE)
+			overridden_yes = time(NULL);
+		else
+			overridden_no  = time(NULL);
+	}
+	return answer;
+}
 
 void news_gtk_init(void)
 {
@@ -305,16 +331,10 @@ static void download_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-#if 0
-	if (!prefs_common.online_mode) {
-		if (alertpanel(_("Offline"),
-			       _("You are offline. Go online?"),
-			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT)
-			main_window_toggle_online(folderview->mainwin, TRUE);
-		else
-			return;
-	}
-#endif
+
+	if (prefs_common.work_offline && !news_gtk_should_override())
+		return;
+
 	main_window_cursor_wait(mainwin);
 	inc_lock();
 	main_window_lock(mainwin);

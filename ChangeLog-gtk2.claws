@@ -1,3 +1,19 @@
+2005-08-04 [colin]	1.9.13cvs13
+
+	* src/compose.c
+		Remove dead code
+		Add colourisation of quotes and signatures
+	* src/folderview.c
+		Fix possible crashes
+	* src/messageview.c
+		Change an assert that is no problem
+	* src/news.c
+	* src/news_gtk.c
+	* src/news_gtk.h
+		Fix offline mode
+	* src/gtk/quicksearch.c
+		Fix a possible crash
+
 2005-08-03 [colin]	1.9.13cvs12
 
 	* src/prefs_account.c

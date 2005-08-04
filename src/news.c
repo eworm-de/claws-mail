@@ -33,6 +33,7 @@
 #include <time.h>
 
 #include "news.h"
+#include "news_gtk.h"
 #include "nntp.h"
 #include "socket.h"
 #include "recv.h"
@@ -259,8 +260,9 @@ static NNTPSession *news_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-	if (prefs_common.work_offline)
+	if (prefs_common.work_offline && !news_gtk_should_override()) {
 		return NULL;
+	}
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);

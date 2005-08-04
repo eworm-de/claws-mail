@@ -21,5 +21,6 @@
 #define NEWS_GTK_H
 
 void news_gtk_init(void);
+gboolean news_gtk_should_override(void);
 
 #endif /* NEWS_GTK_H */

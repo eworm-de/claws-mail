@@ -760,7 +760,8 @@ static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
 				    FolderItem *folder_item)
 {
 	FolderItem *cur = NULL;
-	GNode *node = folder_item->node->children;
+	GNode *node = (folder_item && folder_item->node) ? 
+			folder_item->node->children : NULL;
 	
 	for (; node != NULL; node = node->next) {
 		cur = FOLDER_ITEM(node->data);
