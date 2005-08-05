@@ -1,3 +1,13 @@
+2005-08-05 [paul]	1.9.13cvs14
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_summaries.c
+	* src/summaryview.c
+		replace 'open_unread_on_enter' option with
+		'select_on_entry' option. opening/not opening
+		is now exclusively controlled by 'always_show_msg'
+
 2005-08-04 [colin]	1.9.13cvs13
 
 	* src/compose.c

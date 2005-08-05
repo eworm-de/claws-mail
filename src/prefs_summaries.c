@@ -57,10 +57,10 @@ typedef struct _SummariesPage
 	GtkWidget *entry_datefmt;
 
 	GtkWidget *checkbtn_always_show_msg;
-	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+ 	GtkWidget *optmenu_select_on_entry;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
 } SummariesPage;
@@ -707,7 +707,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_dispitem;
 
 	GtkWidget *checkbtn_always_show_msg;
-	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
@@ -716,6 +715,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkWidget *button_keybind;
+	GtkWidget *hbox_select_on_entry;
+ 	GtkWidget *optmenu_select_on_entry;
 	GtkWidget *hbox_nextunreadmsgdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
@@ -829,10 +830,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		 _("Always open messages in summary when selected"));
 
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_openunread,
-		 _("Open first unread message when entering a folder"));
-
-	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_mark_as_read_on_newwin,
 		 _("Only mark message as read when opened in new window"));
 
@@ -858,7 +855,29 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
 
- 	/* Next Unread Message Dialog */
+	hbox_select_on_entry = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_select_on_entry);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_select_on_entry, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("When entering a folder"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox_select_on_entry), label, FALSE, FALSE, 8);
+
+ 	optmenu_select_on_entry = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_select_on_entry);
+	gtk_box_pack_start (GTK_BOX (hbox_select_on_entry),
+			    optmenu_select_on_entry, FALSE, FALSE, 8);
+	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Do nothing"), 0);
+	MENUITEM_ADD (menu, menuitem, _("Select first unread message"),
+		      SELECTONENTRY_UNREAD);
+	MENUITEM_ADD (menu, menuitem, _("Select first new message"),
+		      SELECTONENTRY_NEW);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
+ 	
+	/* Next Unread Message Dialog */
 	hbox_nextunreadmsgdialog = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_nextunreadmsgdialog);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_nextunreadmsgdialog, FALSE, FALSE, 0);
@@ -910,8 +929,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
 			prefs_common.always_show_msg);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openunread),
-			prefs_common.open_unread_on_enter);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
 			prefs_common.mark_as_read_on_new_window);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openinbox),
@@ -919,6 +936,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_immedexec),
 			prefs_common.immediate_exec);
 
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_select_on_entry),
+			prefs_common.select_on_entry);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
 
@@ -931,10 +950,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
-	prefs_summaries->checkbtn_openunread = checkbtn_openunread;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
 	prefs_summaries->checkbtn_openinbox = checkbtn_openinbox;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
+	prefs_summaries->optmenu_select_on_entry = optmenu_select_on_entry;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 
 	prefs_summaries->page.widget = vbox1;
@@ -965,8 +984,6 @@ void prefs_summaries_save(PrefsPage *_page)
 
 	prefs_common.always_show_msg = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));
-	prefs_common.open_unread_on_enter = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_openunread));
 	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_newwin));
 	prefs_common.open_inbox_on_inc = gtk_toggle_button_get_active(
@@ -974,6 +991,11 @@ void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.immediate_exec = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
 
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_select_on_entry));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	prefs_common.select_on_entry = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_nextunreadmsgdialog));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_common.next_unread_msg_dialog = GPOINTER_TO_INT

@@ -1014,26 +1014,31 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			summary_lock(summaryview);
 		}
 	} else {
-		/* select first unread message */
-		node = summary_find_next_flagged_msg(summaryview, NULL,
-						     MSG_UNREAD, FALSE);
+ 		switch (prefs_common.select_on_entry) {
+ 			case SELECTONENTRY_UNREAD:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				break;
+ 			case SELECTONENTRY_NEW:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+  				break;
+ 			default:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     0, FALSE);
+ 		}
+
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
 			node = gtk_ctree_node_nth
 				(ctree,
 				 item->sort_type == SORT_DESCENDING
 				 ? 0 : GTK_CLIST(ctree)->rows - 1);
 		}
-		if (prefs_common.open_unread_on_enter) {
-			summary_unlock(summaryview);
-			summary_select_node(summaryview, node, 
-					    messageview_is_visible(summaryview->messageview), 
-					    TRUE);
-			summary_lock(summaryview);
-		} else {
-			summary_unlock(summaryview);
-			summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
-			summary_lock(summaryview);
-		}
+		summary_unlock(summaryview);
+		summary_select_node(summaryview, node,
+				    prefs_common.always_show_msg,
+				    TRUE);
+		summary_lock(summaryview);
 	}
 
 	summary_set_column_titles(summaryview);

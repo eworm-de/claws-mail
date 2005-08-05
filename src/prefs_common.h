@@ -55,6 +55,12 @@ typedef enum {
 
 typedef enum
 {
+	SELECTONENTRY_UNREAD = 1 << 0,
+	SELECTONENTRY_NEW    = 1 << 1
+} SelectOnEntry;
+
+typedef enum
+{
 	NEXTUNREADMSGDIALOG_ALWAYS,
 	NEXTUNREADMSGDIALOG_ASSUME_YES,
 	NEXTUNREADMSGDIALOG_ASSUME_NO
@@ -267,11 +273,11 @@ struct _PrefsCommon
 	gboolean sep_msg;
 	gboolean emulate_emacs;
 	gboolean always_show_msg;
-	gboolean open_unread_on_enter;
 	gboolean mark_as_read_on_new_window;
 	gboolean mark_as_read_delay;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
+	SelectOnEntry select_on_entry;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
