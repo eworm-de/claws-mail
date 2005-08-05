@@ -399,7 +399,11 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
-	handlebox = gtk_handle_box_new();
+	if (prefs_common.toolbar_detachable) {
+		handlebox = gtk_handle_box_new();
+	} else {
+		handlebox = gtk_hbox_new(FALSE, 0);
+	}
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,

@@ -1,3 +1,15 @@
+2005-08-05 [colin]	1.9.13cvs17
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/mainwindow.c
+	* src/compose.c
+	* src/messageview.c
+		Add an hidden toolbar_detachable pref, so
+		that I can get rid of these painful handles
+		in the toolbars. Defaults to TRUE to avoid
+		changing the GUI on unsuspecting people...
+
 2005-08-05 [colin]	1.9.13cvs16
 
 	* src/Makefile.am

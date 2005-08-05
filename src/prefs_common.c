@@ -259,6 +259,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
+	{"toolbar_detachable", "TRUE", &prefs_common.toolbar_detachable, P_BOOL,
+	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
 	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,

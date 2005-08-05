@@ -897,14 +897,19 @@ MainWindow *main_window_create(SeparateType type)
 	menu_set_sensitive(ifactory, "/Help/Manual (Local)", manual_available(MANUAL_MANUAL_LOCAL));
 	menu_set_sensitive(ifactory, "/Help/FAQ (Local)", manual_available(MANUAL_FAQ_LOCAL));
 
-	handlebox = gtk_handle_box_new();
-	gtk_widget_show(handlebox);
-	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(handlebox), "child_attached",
-			 G_CALLBACK(toolbar_child_attached), mainwin);
-	g_signal_connect(G_OBJECT(handlebox), "child_detached",
-			 G_CALLBACK(toolbar_child_detached), mainwin);
-
+	if (prefs_common.toolbar_detachable) {
+		handlebox = gtk_handle_box_new();
+		gtk_widget_show(handlebox);
+		gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+		g_signal_connect(G_OBJECT(handlebox), "child_attached",
+				 G_CALLBACK(toolbar_child_attached), mainwin);
+		g_signal_connect(G_OBJECT(handlebox), "child_detached",
+				 G_CALLBACK(toolbar_child_detached), mainwin);
+	} else {
+		handlebox = gtk_hbox_new(FALSE, 0);
+		gtk_widget_show(handlebox);
+		gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+	}
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
 	

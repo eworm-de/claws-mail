@@ -167,6 +167,7 @@ struct _PrefsCommon
 					 *   by subject (days) */
 
 	ToolbarStyle toolbar_style;
+	gboolean toolbar_detachable;
 	gboolean show_statusbar;
 
 	gint folderview_vscrollbar_policy;
