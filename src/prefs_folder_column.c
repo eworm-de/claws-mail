@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 #include "prefs_gtk.h"
 #include "prefs_common.h"
-#include "prefs_summary_column.h"
+#include "prefs_folder_column.h"
 #include "manage_window.h"
-#include "summaryview.h"
+#include "folderview.h"
 #include "mainwindow.h"
 #include "inc.h"
 #include "gtkutils.h"
@@ -55,7 +55,7 @@ static const GtkTargetEntry row_targets[] = {
 };
 
 
-static struct _SummaryColumnDialog
+static struct _FolderColumnDialog
 {
 	GtkWidget *window;
 
@@ -73,71 +73,57 @@ static struct _SummaryColumnDialog
 	GtkWidget *cancel_btn;
 
 	gboolean finished;
-} summary_col;
+} folder_col;
 
-static const gchar *const col_name[N_SUMMARY_COLS] = {
-	N_("Mark"),		/* S_COL_MARK    */
-	N_("Status"),		/* S_COL_STATUS  */
-	N_("Attachment"),	/* S_COL_MIME    */
-	N_("Subject"),		/* S_COL_SUBJECT */
-	N_("From"),		/* S_COL_FROM    */
-	N_("To"),		/* S_COL_TO      */
-	N_("Date"),		/* S_COL_DATE    */
-	N_("Size"),		/* S_COL_SIZE    */
-	N_("Number"),		/* S_COL_NUMBER  */
-        N_("Score"),		/* S_COL_SCORE   */
-	N_("Locked"),		/* S_COL_LOCKED  */
+static const gchar *const col_name[N_FOLDER_COLS] = {
+	N_("Folder"),		/* F_COL_FOLDER  */
+	N_("New"),		/* F_COL_NEW     */
+	N_("Unread"),		/* F_COL_UNREAD  */
+	N_("Total"),		/* F_COL_TOTAL   */
 };
 
-static SummaryColumnState default_state[N_SUMMARY_COLS] = {
-	{ S_COL_MARK   , TRUE  },
-	{ S_COL_STATUS , TRUE  },
-	{ S_COL_MIME   , TRUE  },
-	{ S_COL_SUBJECT, TRUE  },
-	{ S_COL_FROM   , TRUE  },
-	{ S_COL_TO     , FALSE },
-	{ S_COL_DATE   , TRUE  },
-	{ S_COL_SIZE   , TRUE  },
-	{ S_COL_NUMBER , FALSE },
-        { S_COL_SCORE  , FALSE },
-	{ S_COL_LOCKED , FALSE },
+static FolderColumnState default_state[N_FOLDER_COLS] = {
+	{ F_COL_FOLDER   , TRUE  },
+	{ F_COL_NEW      , TRUE  },
+	{ F_COL_UNREAD   , TRUE  },
+	{ F_COL_TOTAL    , TRUE  },
 };
 
-static void prefs_summary_column_create	(void);
+static void prefs_folder_column_create	(void);
 
-static void prefs_summary_column_set_dialog	(SummaryColumnState *state);
-static void prefs_summary_column_set_view	(void);
+static void prefs_folder_column_set_dialog	(FolderColumnState *state);
+static void prefs_folder_column_set_view	(void);
 
 /* callback functions */
-static void prefs_summary_column_add	(void);
-static void prefs_summary_column_remove	(void);
+static void prefs_folder_column_add	(void);
+static void prefs_folder_column_remove	(void);
 
-static void prefs_summary_column_up	(void);
-static void prefs_summary_column_down	(void);
+static void prefs_folder_column_up	(void);
+static void prefs_folder_column_down	(void);
 
-static void prefs_summary_column_set_to_default	(void);
+static void prefs_folder_column_set_to_default	(void);
 
-static void prefs_summary_column_ok	(void);
-static void prefs_summary_column_cancel	(void);
+static void prefs_folder_column_ok	(void);
+static void prefs_folder_column_cancel	(void);
 
-static gint prefs_summary_column_delete_event	(GtkWidget	*widget,
+static gint prefs_folder_column_delete_event	(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
-static gboolean prefs_summary_column_key_pressed(GtkWidget	*widget,
+static gboolean prefs_folder_column_key_pressed(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 
-static GtkListStore *prefs_summary_column_create_store	(void);
+static GtkListStore *prefs_folder_column_create_store	(void);
 
-static void prefs_summary_column_insert_column	(GtkListStore *store,
+static void prefs_folder_column_insert_column	(GtkListStore *store,
 						 gint row,
 						 const gchar *name,
-						 SummaryColumnType type);
+						 FolderColumnType type);
 					       
-static SummaryColumnType prefs_summary_column_get_column	(GtkWidget *list, 
+static FolderColumnType prefs_folder_column_get_column	(GtkWidget *list, 
 								 gint row);
 
-static GtkWidget *prefs_summary_column_list_view_create	(const gchar *name);
+static GtkWidget *prefs_folder_column_list_view_create	(const gchar *name);
 
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view, 
 							 const gchar *name);
@@ -157,30 +143,30 @@ static void drag_data_received	(GtkTreeView *tree_view,
 				 guint time, 
 				 GtkTreeModel *model);
 
-void prefs_summary_column_open(void)
+void prefs_folder_column_open(void)
 {
 	inc_lock();
 
-	if (!summary_col.window)
-		prefs_summary_column_create();
+	if (!folder_col.window)
+		prefs_folder_column_create();
 
-	manage_window_set_transient(GTK_WINDOW(summary_col.window));
-	gtk_widget_grab_focus(summary_col.ok_btn);
+	manage_window_set_transient(GTK_WINDOW(folder_col.window));
+	gtk_widget_grab_focus(folder_col.ok_btn);
 
-	prefs_summary_column_set_dialog(NULL);
+	prefs_folder_column_set_dialog(NULL);
 
-	gtk_widget_show(summary_col.window);
+	gtk_widget_show(folder_col.window);
 
-	summary_col.finished = FALSE;
-	while (summary_col.finished == FALSE)
+	folder_col.finished = FALSE;
+	while (folder_col.finished == FALSE)
 		gtk_main_iteration();
 
-	gtk_widget_hide(summary_col.window);
+	gtk_widget_hide(folder_col.window);
 
 	inc_unlock();
 }
 
-static void prefs_summary_column_create(void)
+static void prefs_folder_column_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -209,7 +195,7 @@ static void prefs_summary_column_create(void)
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
-	debug_print("Creating summary column setting window...\n");
+	debug_print("Creating folder column setting window...\n");
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
@@ -219,10 +205,10 @@ static void prefs_summary_column_create(void)
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Displayed items configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
-			 G_CALLBACK(prefs_summary_column_delete_event),
+			 G_CALLBACK(prefs_folder_column_delete_event),
 			 NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
-			 G_CALLBACK(prefs_summary_column_key_pressed),
+			 G_CALLBACK(prefs_folder_column_key_pressed),
 			 NULL);
 
 	vbox = gtk_vbox_new(FALSE, 6);
@@ -234,7 +220,7 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label_hbox, FALSE, FALSE, 4);
 
 	label = gtk_label_new
-		(_("Select items to be displayed in the summary view. You can modify\n"
+		(_("Select items to be displayed in the folder view. You can modify\n"
 		   "the order by using the Up / Down buttons or by dragging the items."));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(label_hbox), label, FALSE, FALSE, 4);
@@ -262,7 +248,7 @@ static void prefs_summary_column_create(void)
 				       GTK_POLICY_AUTOMATIC);
 
 				       
-	stock_list_view = prefs_summary_column_list_view_create
+	stock_list_view = prefs_folder_column_list_view_create
 				(_("Available items"));
 	gtk_widget_show(stock_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), stock_list_view);
@@ -285,9 +271,9 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), remove_btn, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(add_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_add), NULL);
+			 G_CALLBACK(prefs_folder_column_add), NULL);
 	g_signal_connect(G_OBJECT(remove_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_remove), NULL);
+			 G_CALLBACK(prefs_folder_column_remove), NULL);
 
 	clist_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(clist_hbox);
@@ -301,7 +287,7 @@ static void prefs_summary_column_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	shown_list_view = prefs_summary_column_list_view_create
+	shown_list_view = prefs_folder_column_list_view_create
 				(_("Displayed items"));
 	gtk_widget_show(shown_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), shown_list_view);
@@ -324,9 +310,9 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), down_btn, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_up), NULL);
+			 G_CALLBACK(prefs_folder_column_up), NULL);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_down), NULL);
+			 G_CALLBACK(prefs_folder_column_down), NULL);
 
 	btn_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(btn_hbox);
@@ -340,7 +326,7 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(default_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), default_btn, TRUE, FALSE, 0);
 	g_signal_connect(G_OBJECT(default_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_set_to_default),
+			 G_CALLBACK(prefs_folder_column_set_to_default),
 			 NULL);
 
 	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
@@ -351,151 +337,151 @@ static void prefs_summary_column_create(void)
 	gtk_widget_grab_default(ok_btn);
 
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_ok), NULL);
+			 G_CALLBACK(prefs_folder_column_ok), NULL);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_cancel), NULL);
+			 G_CALLBACK(prefs_folder_column_cancel), NULL);
 
 
-	summary_col.window      = window;
-	summary_col.add_btn     = add_btn;
-	summary_col.remove_btn  = remove_btn;
-	summary_col.up_btn      = up_btn;
-	summary_col.down_btn    = down_btn;
-	summary_col.ok_btn      = ok_btn;
-	summary_col.cancel_btn  = cancel_btn;
-	summary_col.stock_list_view = stock_list_view;
-	summary_col.shown_list_view = shown_list_view;
+	folder_col.window      = window;
+	folder_col.add_btn     = add_btn;
+	folder_col.remove_btn  = remove_btn;
+	folder_col.up_btn      = up_btn;
+	folder_col.down_btn    = down_btn;
+	folder_col.ok_btn      = ok_btn;
+	folder_col.cancel_btn  = cancel_btn;
+	folder_col.stock_list_view = stock_list_view;
+	folder_col.shown_list_view = shown_list_view;
 }
 
-SummaryColumnState *prefs_summary_column_get_config(void)
+FolderColumnState *prefs_folder_column_get_config(void)
 {
-	static SummaryColumnState state[N_SUMMARY_COLS];
-	SummaryColumnType type;
+	static FolderColumnState state[N_FOLDER_COLS];
+	FolderColumnType type;
 	gint pos;
 
-	for (pos = 0; pos < N_SUMMARY_COLS; pos++)
+	for (pos = 0; pos < N_FOLDER_COLS; pos++)
 		state[pos].type = -1;
 
-	for (type = 0; type < N_SUMMARY_COLS; type++) {
-		pos = prefs_common.summary_col_pos[type];
-		if (pos < 0 || pos >= N_SUMMARY_COLS ||
+	for (type = 0; type < N_FOLDER_COLS; type++) {
+		pos = prefs_common.folder_col_pos[type];
+		if (pos < 0 || pos >= N_FOLDER_COLS ||
 		    state[pos].type != -1) {
 			g_warning("Wrong column position\n");
-			prefs_summary_column_set_config(default_state);
+			prefs_folder_column_set_config(default_state);
 			return default_state;
 		}
 
 		state[pos].type = type;
-		state[pos].visible = prefs_common.summary_col_visible[type];
+		state[pos].visible = prefs_common.folder_col_visible[type];
 	}
 
 	return state;
 }
 
-void prefs_summary_column_set_config(SummaryColumnState *state)
+void prefs_folder_column_set_config(FolderColumnState *state)
 {
-	SummaryColumnType type;
+	FolderColumnType type;
 	gint pos;
 
-	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
+	for (pos = 0; pos < N_FOLDER_COLS; pos++) {
 		type = state[pos].type;
-		prefs_common.summary_col_visible[type] = state[pos].visible;
-		prefs_common.summary_col_pos[type] = pos;
+		prefs_common.folder_col_visible[type] = state[pos].visible;
+		prefs_common.folder_col_pos[type] = pos;
 	}
 }
 
-static void prefs_summary_column_set_dialog(SummaryColumnState *state)
+static void prefs_folder_column_set_dialog(FolderColumnState *state)
 {
 	GtkListStore *stock_store, *shown_store;
 	gint pos;
-	SummaryColumnType type;
+	FolderColumnType type;
 	gchar *name;
 
 	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
-			(GTK_TREE_VIEW(summary_col.stock_list_view)));
+			(GTK_TREE_VIEW(folder_col.stock_list_view)));
 	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
-			(GTK_TREE_VIEW(summary_col.shown_list_view)));
+			(GTK_TREE_VIEW(folder_col.shown_list_view)));
 
 	gtk_list_store_clear(stock_store);
 	gtk_list_store_clear(shown_store);
 
 	if (!state)
-		state = prefs_summary_column_get_config();
+		state = prefs_folder_column_get_config();
 
-	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
+	for (pos = 0; pos < N_FOLDER_COLS; pos++) {
 		type = state[pos].type;
 		name = gettext(col_name[type]);
 
 		if (state[pos].visible)
-			prefs_summary_column_insert_column(shown_store,
+			prefs_folder_column_insert_column(shown_store,
 							   -1, name,
 							   type);
 		else
-			prefs_summary_column_insert_column(stock_store,
+			prefs_folder_column_insert_column(stock_store,
 							    -1, name,
 							    type);
 	}
 }
 
-static void prefs_summary_column_set_view(void)
+static void prefs_folder_column_set_view(void)
 {
 	gint stock_n_rows, shown_n_rows;
-	SummaryColumnState state[N_SUMMARY_COLS];
-	SummaryColumnType type;
+	FolderColumnState state[N_FOLDER_COLS];
+	FolderColumnType type;
 	gint row, pos = 0;
 
 	stock_n_rows = gtk_tree_model_iter_n_children
 		(gtk_tree_view_get_model(GTK_TREE_VIEW
-			(summary_col.stock_list_view)), NULL);
+			(folder_col.stock_list_view)), NULL);
 	shown_n_rows = gtk_tree_model_iter_n_children
 		(gtk_tree_view_get_model(GTK_TREE_VIEW
-			(summary_col.shown_list_view)), NULL);
+			(folder_col.shown_list_view)), NULL);
 
 	g_return_if_fail
-		(stock_n_rows + shown_n_rows == N_SUMMARY_COLS);
+		(stock_n_rows + shown_n_rows == N_FOLDER_COLS);
 
 	for (row = 0; row < stock_n_rows; row++) {
-		type = prefs_summary_column_get_column
-			(summary_col.stock_list_view, row);
+		type = prefs_folder_column_get_column
+			(folder_col.stock_list_view, row);
 		state[row].type = type;
 		state[row].visible = FALSE;
 	}
 
 	pos = row;
 	for (row = 0; row < shown_n_rows; row++) {
-		type = prefs_summary_column_get_column
-			(summary_col.shown_list_view, row);
+		type = prefs_folder_column_get_column
+			(folder_col.shown_list_view, row);
 		state[pos + row].type = type;
 		state[pos + row].visible = TRUE;
 	}
 
-	prefs_summary_column_set_config(state);
-	main_window_set_summary_column();
+	prefs_folder_column_set_config(state);
+	main_window_set_folder_column();
 }
 
-static void prefs_summary_column_add(void)
+static void prefs_folder_column_add(void)
 {
 	GtkListStore *stock_store, *shown_store;
 	GtkTreeIter stock_sel, shown_sel, shown_add;
 	gboolean shown_sel_valid;
 	gchar *name;
-	SummaryColumnType type;
+	FolderColumnType type;
 	
 	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.stock_list_view)));
+		(GTK_TREE_VIEW(folder_col.stock_list_view)));
 	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+		(GTK_TREE_VIEW(folder_col.shown_list_view)));
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.stock_list_view)),
+			(GTK_TREE_VIEW(folder_col.stock_list_view)),
 		 NULL,
 		 &stock_sel))
 		return;
 
 	shown_sel_valid = gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+			(GTK_TREE_VIEW(folder_col.shown_list_view)),
 		 NULL,
 		 &shown_sel);
 			 
@@ -516,33 +502,33 @@ static void prefs_summary_column_add(void)
 			   -1);
 	
 	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
-		(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		(GTK_TREE_VIEW(folder_col.shown_list_view)),
 		 &shown_add);
 }
 
-static void prefs_summary_column_remove(void)
+static void prefs_folder_column_remove(void)
 {
 	GtkListStore *stock_store, *shown_store;
 	GtkTreeIter shown_sel, stock_sel, stock_add;
 	gboolean stock_sel_valid;
 	gchar *name;
-	SummaryColumnType type;
+	FolderColumnType type;
 	
 	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.stock_list_view)));
+		(GTK_TREE_VIEW(folder_col.stock_list_view)));
 	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+		(GTK_TREE_VIEW(folder_col.shown_list_view)));
 		
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+			(GTK_TREE_VIEW(folder_col.shown_list_view)),
 		 NULL,
 		 &shown_sel))
 		return;
 
 	stock_sel_valid = gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.stock_list_view)),
+			(GTK_TREE_VIEW(folder_col.stock_list_view)),
 		 NULL,
 		 &stock_sel);
 	
@@ -563,11 +549,11 @@ static void prefs_summary_column_remove(void)
 			   -1);
 	
 	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
-		(GTK_TREE_VIEW(summary_col.stock_list_view)),
+		(GTK_TREE_VIEW(folder_col.stock_list_view)),
 		&stock_add);
 }
 
-static void prefs_summary_column_up(void)
+static void prefs_folder_column_up(void)
 {
 	GtkTreePath *prev, *sel;
 	GtkTreeIter isel;
@@ -576,13 +562,13 @@ static void prefs_summary_column_up(void)
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+			(GTK_TREE_VIEW(folder_col.shown_list_view)),
 		 NULL,
 		 &isel))
 		return;
 
 	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+		(GTK_TREE_VIEW(folder_col.shown_list_view)));
 
 	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(shown_store), 
 				      &isel);
@@ -604,20 +590,20 @@ static void prefs_summary_column_up(void)
 	gtk_list_store_swap(shown_store, &iprev, &isel);
 }
 
-static void prefs_summary_column_down(void)
+static void prefs_folder_column_down(void)
 {
 	GtkListStore *shown_store;
 	GtkTreeIter next, sel;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+			(GTK_TREE_VIEW(folder_col.shown_list_view)),
 		 NULL,
 		 &sel))
 		return;
 
 	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
-		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+		(GTK_TREE_VIEW(folder_col.shown_list_view)));
 
 	next = sel;
 	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(shown_store), &next)) 
@@ -626,42 +612,42 @@ static void prefs_summary_column_down(void)
 	gtk_list_store_swap(shown_store, &next, &sel);
 }
 
-static void prefs_summary_column_set_to_default(void)
+static void prefs_folder_column_set_to_default(void)
 {
-	prefs_summary_column_set_dialog(default_state);
+	prefs_folder_column_set_dialog(default_state);
 }
 
-static void prefs_summary_column_ok(void)
+static void prefs_folder_column_ok(void)
 {
-	if (!summary_col.finished) {
-		summary_col.finished = TRUE;
-		prefs_summary_column_set_view();
+	if (!folder_col.finished) {
+		folder_col.finished = TRUE;
+		prefs_folder_column_set_view();
 	}
 }
 
-static void prefs_summary_column_cancel(void)
+static void prefs_folder_column_cancel(void)
 {
-	summary_col.finished = TRUE;
+	folder_col.finished = TRUE;
 }
 
-static gint prefs_summary_column_delete_event(GtkWidget *widget,
+static gint prefs_folder_column_delete_event(GtkWidget *widget,
 					      GdkEventAny *event,
 					      gpointer data)
 {
-	summary_col.finished = TRUE;
+	folder_col.finished = TRUE;
 	return TRUE;
 }
 
-static gboolean prefs_summary_column_key_pressed(GtkWidget *widget,
+static gboolean prefs_folder_column_key_pressed(GtkWidget *widget,
 						 GdkEventKey *event,
 						 gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		summary_col.finished = TRUE;
+		folder_col.finished = TRUE;
 	return FALSE;
 }
 
-static GtkListStore *prefs_summary_column_create_store(void)
+static GtkListStore *prefs_folder_column_create_store(void)
 {
 	return gtk_list_store_new(N_SUMCOL_COLUMNS,
 				  G_TYPE_STRING,
@@ -669,10 +655,10 @@ static GtkListStore *prefs_summary_column_create_store(void)
 				  -1);
 }
 
-static void prefs_summary_column_insert_column(GtkListStore *store,
+static void prefs_folder_column_insert_column(GtkListStore *store,
 					       gint row,
 					       const gchar *name,
-					       SummaryColumnType type)
+					       FolderColumnType type)
 {
 	GtkTreeIter iter;
 
@@ -701,12 +687,12 @@ static void prefs_summary_column_insert_column(GtkListStore *store,
 /*!
  *\brief	Return the columnn type for a row
  */
-static SummaryColumnType prefs_summary_column_get_column(GtkWidget *list, gint row)
+static FolderColumnType prefs_folder_column_get_column(GtkWidget *list, gint row)
 {	
 	GtkTreeView *list_view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
 	GtkTreeIter iter;
-	SummaryColumnType result;
+	FolderColumnType result;
 
 	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
 		return -1;
@@ -718,13 +704,13 @@ static SummaryColumnType prefs_summary_column_get_column(GtkWidget *list, gint r
 	return result;
 }
 
-static GtkWidget *prefs_summary_column_list_view_create(const gchar *name)
+static GtkWidget *prefs_folder_column_list_view_create(const gchar *name)
 {
 	GtkWidget *list_view;
 	GtkTreeSelection *selector;
 	GtkTreeModel *model;
 
-	model = GTK_TREE_MODEL(prefs_summary_column_create_store());
+	model = GTK_TREE_MODEL(prefs_folder_column_create_store());
 	list_view = gtk_tree_view_new_with_model(model);
 	g_object_unref(G_OBJECT(model));
 	
@@ -775,7 +761,7 @@ static void drag_data_get(GtkTreeView *tree_view, GdkDragContext *context,
 			  guint time, GtkTreeModel *model)
 {
 	GtkTreeIter iter;
-	SummaryColumnType type;
+	FolderColumnType type;
 	GtkTreeModel *source_model;
 
 	if (info != TARGET_INFO_SUMCOL) 
@@ -802,7 +788,7 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 	GtkTreePath *dst = NULL, *sel = NULL;
 	GtkTreeIter isel, idst;
 	GtkTreeViewDropPosition pos;
-	SummaryColumnType type;
+	FolderColumnType type;
 	GtkTreeModel *sel_model;
 	gchar *name;
 	
@@ -849,8 +835,8 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 		gtk_tree_path_free(sel);
 		gtk_drag_finish(context, TRUE, FALSE, time);
 		
-	} else if (source == summary_col.stock_list_view 
-	||	   source == summary_col.shown_list_view) {
+	} else if (source == folder_col.stock_list_view 
+	||	   source == folder_col.shown_list_view) {
 	
 		/*
 		 * Other widget: change and update

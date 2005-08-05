@@ -65,6 +65,7 @@
 #include "prefs_filtering.h"
 #include "prefs_account.h"
 #include "prefs_summary_column.h"
+#include "prefs_folder_column.h"
 #include "prefs_template.h"
 #include "action.h"
 #include "account.h"
@@ -284,7 +285,10 @@ static void collapse_threads_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
-static void set_display_item_cb	 (MainWindow	*mainwin,
+static void set_summary_display_item_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void set_folder_display_item_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void sort_summary_cb	 (MainWindow	*mainwin,
@@ -520,7 +524,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set displayed _items..."),	NULL, set_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _items"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Set displayed _items/ in _Summary view..."),NULL, set_summary_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _items/ in _Folder view..."),	NULL, set_folder_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
@@ -1284,6 +1290,17 @@ void main_window_set_summary_column(void)
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
 		summary_set_column_order(mainwin->summaryview);
+	}
+}
+
+void main_window_set_folder_column(void)
+{
+	GList *cur;
+	MainWindow *mainwin;
+
+	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
+		mainwin = (MainWindow *)cur->data;
+		folderview_set_column_order(mainwin->folderview);
 	}
 }
 
@@ -2815,10 +2832,16 @@ static void collapse_threads_cb(MainWindow *mainwin, guint action,
 	summary_collapse_threads(mainwin->summaryview);
 }
 
-static void set_display_item_cb(MainWindow *mainwin, guint action,
+static void set_summary_display_item_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
 	prefs_summary_column_open();
+}
+
+static void set_folder_display_item_cb(MainWindow *mainwin, guint action,
+				GtkWidget *widget)
+{
+	prefs_folder_column_open();
 }
 
 static void sort_summary_cb(MainWindow *mainwin, guint action,

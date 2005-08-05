@@ -42,6 +42,7 @@ typedef enum
 	S_COL_MIME,
 	S_COL_SUBJECT,
 	S_COL_FROM,
+	S_COL_TO,
 	S_COL_DATE,
 	S_COL_SIZE,
 	S_COL_NUMBER,
@@ -49,7 +50,7 @@ typedef enum
 	S_COL_LOCKED
 } SummaryColumnType;
 
-#define N_SUMMARY_COLS	10
+#define N_SUMMARY_COLS	11
 
 typedef enum
 {

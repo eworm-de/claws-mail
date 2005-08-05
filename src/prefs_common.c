@@ -40,8 +40,10 @@
 #include "prefs_common.h"
 #include "prefs_display_header.h"
 #include "prefs_summary_column.h"
+#include "prefs_folder_column.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "folderview.h"
 #include "messageview.h"
 #include "manage_window.h"
 #include "inc.h"
@@ -237,8 +239,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Display: Summary View */
-	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
-	 NULL, NULL, NULL},
 	{"use_address_book", "FALSE", &prefs_common.use_addr_book, P_BOOL,
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
@@ -278,6 +278,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_visible[S_COL_SUBJECT], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_from", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_FROM], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_to", "FALSE",
+	 &prefs_common.summary_col_visible[S_COL_TO], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_date", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_DATE], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_size", "TRUE",
@@ -309,6 +311,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_pos[S_COL_SCORE], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_locked", "9",
 	 &prefs_common.summary_col_pos[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_to", "10",
+	  &prefs_common.summary_col_pos[S_COL_TO], P_INT, NULL, NULL, NULL},
 
 	{"summary_col_size_mark", "10",
 	 &prefs_common.summary_col_size[S_COL_MARK], P_INT, NULL, NULL, NULL},
@@ -320,6 +324,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_from", "120",
 	 &prefs_common.summary_col_size[S_COL_FROM], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_to", "120",
+	 &prefs_common.summary_col_size[S_COL_TO], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_date", "118",
 	 &prefs_common.summary_col_size[S_COL_DATE], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_size", "45",
@@ -343,14 +349,32 @@ static PrefParam param[] = {
 	{"folderview_visible", "TRUE", &prefs_common.folderview_visible, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"folder_col_folder", "150", &prefs_common.folder_col_folder, P_INT,
-	 NULL, NULL, NULL},
-	{"folder_col_new", "32", &prefs_common.folder_col_new, P_INT,
-	 NULL, NULL, NULL},
-	{"folder_col_unread", "32", &prefs_common.folder_col_unread, P_INT,
-	 NULL, NULL, NULL},
-	{"folder_col_total", "32", &prefs_common.folder_col_total, P_INT,
-	 NULL, NULL, NULL},
+	{"folder_col_show_folder", "TRUE",
+	 &prefs_common.folder_col_visible[F_COL_FOLDER], P_BOOL, NULL, NULL, NULL},
+	{"folder_col_show_new", "TRUE",
+	 &prefs_common.folder_col_visible[F_COL_NEW], P_BOOL, NULL, NULL, NULL},
+	{"folder_col_show_unread", "TRUE",
+	 &prefs_common.folder_col_visible[F_COL_UNREAD], P_BOOL, NULL, NULL, NULL},
+	{"folder_col_show_total", "TRUE",
+	 &prefs_common.folder_col_visible[F_COL_TOTAL], P_BOOL, NULL, NULL, NULL},
+
+	{"folder_col_pos_folder", "0",
+	 &prefs_common.folder_col_pos[F_COL_FOLDER], P_INT, NULL, NULL, NULL},
+	{"folder_col_pos_new", "1",
+	 &prefs_common.folder_col_pos[F_COL_NEW], P_INT, NULL, NULL, NULL},
+	{"folder_col_pos_unread", "2",
+	 &prefs_common.folder_col_pos[F_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	{"folder_col_pos_total", "3",
+	 &prefs_common.folder_col_pos[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
+
+	{"folder_col_size_folder", "150",
+	 &prefs_common.folder_col_size[F_COL_FOLDER], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_new", "32",
+	 &prefs_common.folder_col_size[F_COL_NEW], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_unread", "32",
+	 &prefs_common.folder_col_size[F_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_total", "32",
+	 &prefs_common.folder_col_size[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
 
 	{"summaryview_width", "600", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},

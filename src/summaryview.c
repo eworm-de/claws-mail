@@ -312,6 +312,8 @@ static void summary_date_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_from_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
+static void summary_to_clicked		(GtkWidget		*button,
+					 SummaryView		*summaryview);
 static void summary_subject_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_score_clicked	(GtkWidget		*button,
@@ -459,6 +461,7 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	"",		/* S_COL_MIME    */
 	N_("Subject"),	/* S_COL_SUBJECT */
 	N_("From"),	/* S_COL_FROM    */
+	N_("To"),	/* S_COL_TO      */
 	N_("Date"),	/* S_COL_DATE    */
 	N_("Size"),	/* S_COL_SIZE    */
 	N_("No."),	/* S_COL_NUMBER  */
@@ -1948,6 +1951,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		SORT_BY_MIME,
 		SORT_BY_SUBJECT,
 		SORT_BY_FROM,
+		SORT_BY_TO,
 		SORT_BY_DATE,
 		SORT_BY_SIZE,
 		SORT_BY_NUMBER,
@@ -1966,6 +1970,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		switch (type) {
 		case S_COL_SUBJECT:
 		case S_COL_FROM:
+		case S_COL_TO:
 		case S_COL_DATE:
 		case S_COL_NUMBER:
 			if (prefs_common.trans_hdr)
@@ -2045,6 +2050,9 @@ void summary_sort(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCListCompareFunc cmp_func = NULL;
+	g_signal_handlers_block_by_func(G_OBJECT(summaryview->ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
 	switch (sort_key) {
 	case SORT_BY_MARK:
@@ -2089,7 +2097,7 @@ void summary_sort(SummaryView *summaryview,
 	case SORT_BY_NONE:
 		break;
 	default:
-		return;
+		goto unlock;
 	}
 
 	summaryview->sort_key = sort_key;
@@ -2100,7 +2108,7 @@ void summary_sort(SummaryView *summaryview,
 
 	/* allow fallback to don't sort */
 	if (summaryview->sort_key == SORT_BY_NONE)
-		return;
+		goto unlock;
 
 	if (cmp_func != NULL) {
 		debug_print("Sorting summary...");
@@ -2123,6 +2131,10 @@ void summary_sort(SummaryView *summaryview,
 		debug_print("done.\n");
 		STATUSBAR_POP(summaryview->mainwin);
 	}
+unlock:
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
 }
 
 gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
@@ -2149,6 +2161,7 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	SET_TEXT(S_COL_SIZE);
 	SET_TEXT(S_COL_DATE);
 	SET_TEXT(S_COL_FROM);
+	SET_TEXT(S_COL_TO);
 	SET_TEXT(S_COL_SUBJECT);
 
 #undef SET_TEXT
@@ -2275,35 +2288,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	END_TIMING();
 }
 
-static gchar *summary_complete_address(const gchar *addr)
-{
-	gint count;
-	gchar *res, *tmp, *email_addr;
-
-	Xstrdup_a(email_addr, addr, return NULL);
-	extract_address(email_addr);
-	g_return_val_if_fail(*email_addr, NULL);
-
-	/*
-	 * completion stuff must be already initialized
-	 */
-	res = NULL;
-	if (1 < (count = complete_address(email_addr))) {
-		tmp = get_complete_address(1);
-/*	tmp = addressbook_lookup_name( email_addr );
-	if( tmp ) { */
-		res = procheader_get_fromname(tmp);
-		g_free(tmp);
-	}
-
-	return res;
-}
-
 static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			       MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
-	static gchar *to = NULL;
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
@@ -2329,46 +2317,12 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
+	text[col_pos[S_COL_TO]] = msginfo->to ? msginfo->to :
+		_("(No Recipient)");
 	
 	if (msginfo->folder && msginfo->folder->folder)
 		ftype = msginfo->folder->folder->klass->type; 
 		
-	if (ftype != F_NEWS && prefs_common.swap_from && msginfo->from && msginfo->to) {
-		gchar *addr = NULL;
-
-		Xstrdup_a(addr, msginfo->from, return);
-		extract_address(addr);
-		if (prefs_common.use_addr_book) {
-			if (account_find_from_address(addr)) {
-				addr = summary_complete_address(msginfo->to);
-				g_free(to);
-				to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
-				text[col_pos[S_COL_FROM]] = to;
-				g_free(addr);
-			}
-		} else {
-			if (account_find_from_address(addr)) {
-				g_free(to);
-				to = g_strconcat("-->", msginfo->to, NULL);
-				text[col_pos[S_COL_FROM]] = to;
-			}
-		}
-	}
-
-	/*
-	 * CLAWS: note that the "text[col_pos[S_COL_FROM]] != to" is really a hack, 
-	 * checking whether the above block (which handles the special case of
-	 * the --> in sent boxes) was executed.
-	 */
-	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
-		gchar *from = summary_complete_address(msginfo->from);
-		if (from) {
-			g_free(to);
-			to = from;
-			text[col_pos[S_COL_FROM]] = to;
-		}			
-	}
-
 	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
@@ -4322,6 +4276,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				   prefs_common.summary_col_size[S_COL_SUBJECT]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_FROM],
 				   prefs_common.summary_col_size[S_COL_FROM]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_TO],
+				   prefs_common.summary_col_size[S_COL_TO]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_DATE],
 				   prefs_common.summary_col_size[S_COL_DATE]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
@@ -4363,6 +4319,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TO     , summary_to_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED,  summary_locked_clicked);
@@ -4803,19 +4760,12 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 {
 	GtkCTreeNode *node = NULL;
 	START_TIMING("summary_sort_by_column_click");
-	g_signal_handlers_block_by_func(G_OBJECT(summaryview->ctree),
-				       G_CALLBACK(summary_tree_expanded), summaryview);
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 	if (summaryview->sort_key == sort_key)
 		summary_sort(summaryview, sort_key,
 			     summaryview->sort_type == SORT_ASCENDING
 			     ? SORT_DESCENDING : SORT_ASCENDING);
 	else
 		summary_sort(summaryview, sort_key, SORT_ASCENDING);
-
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-	g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
-				       G_CALLBACK(summary_tree_expanded), summaryview);
 
 	node = GTK_CTREE_NODE(GTK_CLIST(summaryview->ctree)->row_list);
 
@@ -4861,6 +4811,11 @@ static void summary_date_clicked(GtkWidget *button, SummaryView *summaryview)
 static void summary_from_clicked(GtkWidget *button, SummaryView *summaryview)
 {
 	summary_sort_by_column_click(summaryview, SORT_BY_FROM);
+}
+
+static void summary_to_clicked(GtkWidget *button, SummaryView *summaryview)
+{
+	summary_sort_by_column_click(summaryview, SORT_BY_TO);
 }
 
 static void summary_subject_clicked(GtkWidget *button,
@@ -4975,24 +4930,6 @@ CMP_FUNC_DEF(summary_cmp_by_size, msginfo1->size - msginfo2->size)
 CMP_FUNC_DEF(summary_cmp_by_date, msginfo1->date_t - msginfo2->date_t)
 
 #undef CMP_FUNC_DEF
-#define CMP_FUNC_DEF(func_name, var_name)				 \
-static gint func_name(GtkCList *clist,					 \
-		      gconstpointer ptr1, gconstpointer ptr2)		 \
-{									 \
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
-									 \
-	if (!msginfo1->var_name)					 \
-		return (msginfo2->var_name != NULL);			 \
-	if (!msginfo2->var_name)					 \
-		return -1;						 \
-									 \
-	return g_utf8_collate(msginfo1->var_name, msginfo2->var_name);	 \
-}
-
-CMP_FUNC_DEF(summary_cmp_by_to, to);
-
-#undef CMP_FUNC_DEF
 
 static gint summary_cmp_by_subject(GtkCList *clist,
 				   gconstpointer ptr1,
@@ -5022,6 +4959,28 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_FROM]])->text;
 	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_FROM]])->text;
+
+	if (!str1)
+		return str2 != NULL;
+ 
+	if (!str2)
+ 		return -1;
+ 
+	return g_utf8_collate(str1, str2);
+}
+ 
+static gint summary_cmp_by_to(GtkCList *clist, gconstpointer ptr1,
+				gconstpointer ptr2)
+{
+	const gchar *str1, *str2;
+	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
+	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
+	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
+	
+	g_return_val_if_fail(sv, -1);
+	
+	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_TO]])->text;
+	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_TO]])->text;
 
 	if (!str1)
 		return str2 != NULL;

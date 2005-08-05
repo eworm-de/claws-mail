@@ -239,7 +239,8 @@ static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 
 static void compose_wrap_paragraph		(Compose	*compose,
-						 GtkTextIter	*par_iter);
+						 GtkTextIter	*par_iter,
+						 gboolean	 force);
 static void compose_wrap_all			(Compose	*compose);
 static void compose_wrap_all_full		(Compose	*compose,
 						 gboolean	 autowrap);
@@ -768,6 +769,13 @@ static GdkColor signature_color = {
 	(gushort)0x7fff
 };
 
+static GdkColor uri_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
 static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
@@ -781,8 +789,10 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					       &quote_color);
 		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
 					       &signature_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+					       &uri_color);
 	} else {
-		signature_color = quote_color = black;
+		signature_color = quote_color = uri_color = black;
 	}
 
 	gtk_text_buffer_create_tag(buffer, "quote",
@@ -791,6 +801,9 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
  	gtk_text_buffer_create_tag(buffer, "signature",
 				   "foreground-gdk", &signature_color,
 				   NULL);
+ 	gtk_text_buffer_create_tag(buffer, "link",
+					 "foreground-gdk", &uri_color,
+					 NULL);
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -1658,10 +1671,10 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
 	case A_LINEWRAP_CURRENT:
-		compose_wrap_paragraph(compose, NULL);
+		compose_wrap_paragraph(compose, NULL, TRUE);
 		break;
 	case A_LINEWRAP_ALL:
-		compose_wrap_all(compose);
+		compose_wrap_all_full(compose, TRUE);
 		break;
 	case A_ADDRBOOK:
 		compose_address_cb(compose, 0, NULL);
@@ -2933,16 +2946,27 @@ static gboolean compose_join_next_line(Compose *compose,
 	return TRUE;
 }
 
-static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
+#define ADD_TXT_POS(bp_, ep_, pti_) \
+	if ((last->next = alloca(sizeof(struct txtpos))) != NULL) { \
+		last = last->next; \
+		last->bp = (bp_); last->ep = (ep_); last->pti = (pti_); \
+		last->next = NULL; \
+	} else { \
+		g_warning("alloc error scanning URIs\n"); \
+	}
+
+static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer;
-	GtkTextIter iter, break_pos;
+	GtkTextIter iter, break_pos, end_of_line;
 	gchar *quote_str = NULL;
 	gint quote_len;
 	gboolean wrap_quote = prefs_common.linewrap_quote;
 	gboolean prev_autowrap = compose->autowrap;
 	gint startq_offset = -1, noq_offset = -1;
+	gint uri_start = -1, uri_stop = -1;
+	gint nouri_start = -1, nouri_stop = -1;
 
 	compose->autowrap = FALSE;
 
@@ -2975,14 +2999,46 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 
 	/* go until paragraph end (empty line) */
 	while (!gtk_text_iter_ends_line(&iter)) {
+		gchar *scanpos = NULL;
+		/* parse table - in order of priority */
+		struct table {
+			const gchar *needle; /* token */
+
+			/* token search function */
+			gchar    *(*search)	(const gchar *haystack,
+						 const gchar *needle);
+			/* part parsing function */
+			gboolean  (*parse)	(const gchar *start,
+						 const gchar *scanpos,
+						 const gchar **bp_,
+						 const gchar **ep_);
+			/* part to URI function */
+			gchar    *(*build_uri)	(const gchar *bp,
+						 const gchar *ep);
+		};
+
+		static struct table parser[] = {
+			{"http://",  strcasestr, get_uri_part,   make_uri_string},
+			{"https://", strcasestr, get_uri_part,   make_uri_string},
+			{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
+			{"www.",     strcasestr, get_uri_part,   make_http_string},
+			{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
+			{"@",        strcasestr, get_email_part, make_email_string}
+		};
+		const gint PARSE_ELEMS = sizeof parser / sizeof parser[0];
+		gint last_index = PARSE_ELEMS;
+		gint  n;
+		gchar *o_walk, *walk, *bp, *ep;
+		gint walk_pos;
+
+		uri_start = uri_stop = -1;
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
+
 		if (quote_str) {
 			if (!wrap_quote) {
 				if (startq_offset == -1) {
 					startq_offset = gtk_text_iter_get_offset(&iter);
 				}
-				gtk_text_iter_forward_line(&iter);
- 				g_free(quote_str);
 				goto colorize;
 			}
 			debug_print("compose_wrap_paragraph(): quote_str = '%s'\n", quote_str);
@@ -2992,9 +3048,7 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 				noq_offset = gtk_text_iter_get_offset(&iter);
 		}
 
-		if (prev_autowrap == FALSE) {
-			gtk_text_iter_forward_line(&iter);
- 			g_free(quote_str);
+		if (prev_autowrap == FALSE && !force) {
 			goto colorize;
 		}
 		if (compose_get_line_break_pos(buffer, &iter, &break_pos,
@@ -3032,14 +3086,53 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 
 			/* move iter to current line start */
 			gtk_text_iter_set_line_offset(&iter, 0);
+			continue;
 		} else {
 			/* move iter to next line start */
 			iter = break_pos;
-			gtk_text_iter_forward_line(&iter);
 		}
 
-		g_free(quote_str);
 colorize:
+		end_of_line = iter;
+		while (!gtk_text_iter_ends_line(&end_of_line)) {
+			gtk_text_iter_forward_char(&end_of_line);
+		}
+		o_walk = walk = gtk_text_buffer_get_text(buffer, &iter, &end_of_line, FALSE);
+
+		nouri_start = gtk_text_iter_get_offset(&iter);
+		nouri_stop = gtk_text_iter_get_offset(&end_of_line);
+
+		walk_pos = gtk_text_iter_get_offset(&iter);
+		/* FIXME: this looks phony. scanning for anything in the parse table */
+		for (n = 0; n < PARSE_ELEMS; n++) {
+			gchar *tmp;
+
+			tmp = parser[n].search(walk, parser[n].needle);
+			if (tmp) {
+				if (scanpos == NULL || tmp < scanpos) {
+					scanpos = tmp;
+					last_index = n;
+				}
+			}					
+		}
+
+		bp = ep = 0;
+		if (scanpos) {
+			/* check if URI can be parsed */
+			if (parser[last_index].parse(walk, scanpos, (const gchar **)&bp,(const gchar **)&ep)
+			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
+					walk = ep;
+			} else
+				walk = scanpos +
+					strlen(parser[last_index].needle);
+		} 
+		if (bp && ep) {
+			uri_start = walk_pos + (bp - o_walk);
+			uri_stop  = walk_pos + (ep - o_walk);
+		}
+		g_free(o_walk);
+		gtk_text_iter_forward_line(&iter);
+		g_free(quote_str);
 		if (startq_offset != -1) {
 			GtkTextIter startquote, endquote;
 			gtk_text_buffer_get_iter_at_offset(
@@ -3057,6 +3150,25 @@ colorize:
 				buffer, "quote", &startnoquote, &endnoquote);
 			noq_offset = -1;
 		}
+		
+		/* always */ {
+			GtkTextIter nouri_start_iter, nouri_end_iter;
+			gtk_text_buffer_get_iter_at_offset(
+				buffer, &nouri_start_iter, nouri_start);
+			gtk_text_buffer_get_iter_at_offset(
+				buffer, &nouri_end_iter, nouri_stop);
+			gtk_text_buffer_remove_tag_by_name(
+				buffer, "link", &nouri_start_iter, &nouri_end_iter);
+		}
+		if (uri_start > 0 && uri_stop > 0) {
+			GtkTextIter uri_start_iter, uri_end_iter;
+			gtk_text_buffer_get_iter_at_offset(
+				buffer, &uri_start_iter, uri_start);
+			gtk_text_buffer_get_iter_at_offset(
+				buffer, &uri_end_iter, uri_stop);
+			gtk_text_buffer_apply_tag_by_name(
+				buffer, "link", &uri_start_iter, &uri_end_iter);
+		}
 	}
 
 	if (par_iter)
@@ -3071,7 +3183,7 @@ static void compose_wrap_all(Compose *compose)
 	compose_wrap_all_full(compose, FALSE);
 }
 
-static void compose_wrap_all_full(Compose *compose, gboolean autowrap)
+static void compose_wrap_all_full(Compose *compose, gboolean force)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer;
@@ -3083,7 +3195,7 @@ static void compose_wrap_all_full(Compose *compose, gboolean autowrap)
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	while (!gtk_text_iter_is_end(&iter))
-		compose_wrap_paragraph(compose, &iter);
+		compose_wrap_paragraph(compose, &iter, force);
 
 	undo_unblock(compose->undostruct);
 }
@@ -6986,9 +7098,9 @@ static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)
 	Compose *compose = (Compose *)data;
 
 	if (action == 1)
-		compose_wrap_all(compose);
+		compose_wrap_all_full(compose, TRUE);
 	else
-		compose_wrap_paragraph(compose, NULL);
+		compose_wrap_paragraph(compose, NULL, TRUE);
 }
 
 static void compose_toggle_autowrap_cb(gpointer data, guint action,
@@ -7262,7 +7374,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_insert(buffer, iter, text, len);
 
 	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
-	compose_wrap_all_full(compose, TRUE);
+	compose_wrap_all_full(compose, FALSE);
 	gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 	gtk_text_buffer_delete_mark(buffer, mark);
 

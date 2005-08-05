@@ -1,3 +1,32 @@
+2005-08-05 [colin]	1.9.13cvs16
+
+	* src/Makefile.am
+	* src/prefs_folder_column.c
+	* src/prefs_folder_column.h
+		Add prefs for folder columns
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_summaries.c
+		Use them
+	* src/prefs_summary_column.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Add a To column
+	* src/textview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Move uri colourisation functions
+		to utils
+	* src/compose.c
+		Colourise URIs
+	* src/imap.c
+		Fix bug with LIST where we'd try
+		to get Folder//////[...]/// 
+
 2005-08-05 [paul]	1.9.13cvs15
 
 	* src/prefs_summaries.c

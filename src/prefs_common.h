@@ -28,6 +28,7 @@
 
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "folderview.h"
 #include "codeconv.h"
 #include "textview.h"
 #include "procmime.h"
@@ -153,7 +154,6 @@ struct _PrefsCommon
 	gint ng_abbrev_len;
 
 	gboolean show_searchbar;
-	gboolean swap_from;
 	gboolean expand_thread;
 	gboolean use_addr_book;
 	gchar *date_format;
@@ -185,17 +185,16 @@ struct _PrefsCommon
 	gint summary_col_pos[N_SUMMARY_COLS];
 	gint summary_col_size[N_SUMMARY_COLS];
 
+	gboolean folder_col_visible[N_FOLDER_COLS];
+	gint folder_col_pos[N_FOLDER_COLS];
+	gint folder_col_size[N_FOLDER_COLS];
+
 	/* Widget visibility, position and size */
 	gint folderwin_x;
 	gint folderwin_y;
 	gint folderview_width;
 	gint folderview_height;
 	gboolean folderview_visible;
-
-	gint folder_col_folder;
-	gint folder_col_new;
-	gint folder_col_unread;
-	gint folder_col_total;
 
 	gint summaryview_width;
 	gint summaryview_height;

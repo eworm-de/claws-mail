@@ -150,6 +150,7 @@ void main_window_unlock			(MainWindow	*mainwin);
 void main_window_reflect_prefs_all_real		(gboolean pixmap_theme_changed);
 void main_window_reflect_prefs_all	(void);
 void main_window_set_summary_column	(void);
+void main_window_set_folder_column	(void);
 void main_window_set_account_menu	(GList		*account_list);
 
 GtkWidget *main_window_get_folder_window	(MainWindow	*mainwin);

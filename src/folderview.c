@@ -63,16 +63,8 @@
 #include "hooks.h"
 #include "folderutils.h"
 #include "partial_download.h"
+#include "prefs_folder_column.h"
 
-typedef enum
-{
-	COL_FOLDER	= 0,
-	COL_NEW		= 1,
-	COL_UNREAD	= 2,
-	COL_TOTAL	= 3
-} FolderColumnPos;
-
-#define N_FOLDER_COLS		4
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
 
@@ -361,64 +353,109 @@ static void create_ifactories(gpointer key, gpointer value, gpointer data)
 	g_hash_table_insert(folderview->popups, fpopup->klass, factory);
 }
 
-FolderView *folderview_create(void)
+static void folderview_column_set_titles(FolderView *folderview)
 {
-	FolderView *folderview;
-	GtkWidget *scrolledwin;
+	GtkWidget *ctree = folderview->ctree;
+	GtkWidget *label_new;
+	GtkWidget *label_unread;
+	GtkWidget *label_total;
+	GtkWidget *hbox_new;
+	GtkWidget *hbox_unread;
+	GtkWidget *hbox_total;
+	gint *col_pos = folderview->col_pos;
+	
+	gtk_widget_realize(folderview->ctree);
+	gtk_widget_show_all(folderview->scrolledwin);
+	
+	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
+	 * instead text (text overflows making them unreadable and ugly) */
+        stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW,
+			 &newxpm, &newxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD,
+			 &unreadxpm, &unreadxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_READ,
+			 &readxpm, &readxpmmask);
+		
+	label_new = gtk_pixmap_new(newxpm, newxpmmask);
+	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
+	label_total = gtk_pixmap_new(readxpm, readxpmmask);
+
+	hbox_new = gtk_hbox_new(FALSE, 4);
+	hbox_unread = gtk_hbox_new(FALSE, 4);
+	hbox_total = gtk_hbox_new(FALSE, 4);
+
+	/* left justified */
+	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
+
+	gtk_widget_show_all(hbox_new);
+	gtk_widget_show_all(hbox_unread);
+	gtk_widget_show_all(hbox_total);
+
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_NEW],hbox_new);
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_UNREAD],hbox_unread);
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_TOTAL],hbox_total);
+}
+
+GtkWidget *folderview_ctree_create(FolderView *folderview)
+{
 	GtkWidget *ctree;
+	gint *col_pos;
+	FolderColumnState *col_state;
+	FolderColumnType type;
 	gchar *titles[N_FOLDER_COLS];
 	gint i;
+	GtkWidget *scrolledwin = folderview->scrolledwin;
 
-	debug_print("Creating folder view...\n");
-	folderview = g_new0(FolderView, 1);
+	memset(titles, 0, sizeof(titles));
 
-	titles[COL_FOLDER] = _("Folder");
-	titles[COL_NEW]    = _("New");
-	titles[COL_UNREAD] = _("Unread");
-	titles[COL_TOTAL]  = _("#");
+	col_state = prefs_folder_column_get_config();
+	memset(titles, 0, sizeof(titles));
 
-	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW(scrolledwin),
-		 GTK_POLICY_AUTOMATIC,
-		 prefs_common.folderview_vscrollbar_policy);
-	gtk_widget_set_size_request(scrolledwin,
-			     prefs_common.folderview_width,
-			     prefs_common.folderview_height);
+	col_pos = folderview->col_pos;
 
-	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, COL_FOLDER, titles);
+	for (i = 0; i < N_FOLDER_COLS; i++) {
+		folderview->col_state[i] = col_state[i];
+		type = col_state[i].type;
+		col_pos[type] = i;
+	}
+
+	titles[col_pos[F_COL_FOLDER]] = _("Folder");
+	titles[col_pos[F_COL_NEW]]    = _("New");
+	titles[col_pos[F_COL_UNREAD]] = _("Unread");
+	titles[col_pos[F_COL_TOTAL]]  = _("#");
+
+	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],
+					   titles);
 	
-	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_NEW,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[F_COL_NEW],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_UNREAD,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree),
+					   col_pos[F_COL_UNREAD],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_TOTAL,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), 
+					   col_pos[F_COL_TOTAL],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_FOLDER,
-				   prefs_common.folder_col_folder);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_NEW,
-				   prefs_common.folder_col_new);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_UNREAD,	
-				   prefs_common.folder_col_unread);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_TOTAL,
-				   prefs_common.folder_col_total);
 	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	gtk_clist_set_compare_func(GTK_CLIST(ctree), folderview_clist_compare);
 
-	/* create popup factories */
-	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
-	g_hash_table_foreach(folderview_popups, create_ifactories, folderview);
-
 	/* don't let title buttons take key focus */
-	for (i = 0; i < N_FOLDER_COLS; i++)
+	for (i = 0; i < N_FOLDER_COLS; i++) {
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[i].button,
 				       GTK_CAN_FOCUS);
-
+		gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[i],
+				   prefs_common.folder_col_size[i]);
+		gtk_clist_set_column_visibility
+			(GTK_CLIST(ctree), i, col_state[i].visible);
+	}
 
 	g_signal_connect(G_OBJECT(ctree), "key_press_event",
 			 G_CALLBACK(folderview_key_pressed),
@@ -465,7 +502,57 @@ FolderView *folderview_create(void)
 			 G_CALLBACK(folderview_drag_end_cb),
 			 folderview);
 
+	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
+
+	return ctree;
+}
+
+void folderview_set_column_order(FolderView *folderview)
+{
+	GtkWidget *ctree;
+	FolderItem *item = folderview_get_selected_item(folderview);
+	GtkWidget *scrolledwin = folderview->scrolledwin;
+
+	gtk_widget_destroy(folderview->ctree);
+
+	folderview->ctree = ctree = folderview_ctree_create(folderview);
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->hadjustment);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->vadjustment);
+	gtk_widget_show(ctree);
+	
+	folderview_set(folderview);
+	folderview_column_set_titles(folderview);
+
+	folderview_select(folderview,item);
+}
+
+FolderView *folderview_create(void)
+{
+	FolderView *folderview;
+	GtkWidget *scrolledwin;
+	GtkWidget *ctree;
+
+	debug_print("Creating folder view...\n");
+	folderview = g_new0(FolderView, 1);
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW(scrolledwin),
+		 GTK_POLICY_AUTOMATIC,
+		 prefs_common.folderview_vscrollbar_policy);
+	gtk_widget_set_size_request(scrolledwin,
+			     prefs_common.folderview_width,
+			     prefs_common.folderview_height);
+
 	folderview->scrolledwin  = scrolledwin;
+	ctree = folderview_ctree_create(folderview);
+	
+	/* create popup factories */
+	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
+	g_hash_table_foreach(folderview_popups, create_ifactories, folderview);
+
 	folderview->ctree        = ctree;
 
 	folderview->folder_update_callback_id =
@@ -474,7 +561,7 @@ FolderView *folderview_create(void)
 		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item_claws, (gpointer) folderview);
 
 	gtk_widget_show_all(scrolledwin);
-
+	
 	folderview->target_list = gtk_target_list_new(folderview_drag_types, 1);
 	folderview_list = g_list_append(folderview_list, folderview);
 
@@ -484,14 +571,7 @@ FolderView *folderview_create(void)
 void folderview_init(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
-	GtkWidget *label_new;
-	GtkWidget *label_unread;
-	GtkWidget *label_total;
-	GtkWidget *hbox_new;
-	GtkWidget *hbox_unread;
-	GtkWidget *hbox_total;
-		
-	gtk_widget_realize(ctree);
+
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm, &inboxopenxpmmask);
@@ -538,39 +618,6 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm, &m_queueopenhrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm, &m_draftsxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm, &m_draftsopenxpmmask);
-
-	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
-	 * instead text (text overflows making them unreadable and ugly) */
-        stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW,
-			 &newxpm, &newxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD,
-			 &unreadxpm, &unreadxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_READ,
-			 &readxpm, &readxpmmask);
-		
-	label_new = gtk_pixmap_new(newxpm, newxpmmask);
-	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
-	label_total = gtk_pixmap_new(readxpm, readxpmmask);
-
-	hbox_new = gtk_hbox_new(FALSE, 4);
-	hbox_unread = gtk_hbox_new(FALSE, 4);
-	hbox_total = gtk_hbox_new(FALSE, 4);
-
-	/* left justified */
-	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
-
-	gtk_widget_show_all(hbox_new);
-	gtk_widget_show_all(hbox_unread);
-	gtk_widget_show_all(hbox_total);
-
-	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
-	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
-	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_TOTAL,hbox_total);
 			
 	if (!normal_style) {
 		PangoFontDescription *font_desc;
@@ -756,15 +803,16 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
 	FolderItem *item;
 	gint new, unread, total;
 	gchar *new_str, *unread_str, *total_str;
+	gint *col_pos = folderview->col_pos;
 
 	if (!row) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, row);
 	if (!item) return;
 
-	gtk_ctree_node_get_text(ctree, row, COL_NEW, &new_str);
-	gtk_ctree_node_get_text(ctree, row, COL_UNREAD, &unread_str);
-	gtk_ctree_node_get_text(ctree, row, COL_TOTAL, &total_str);
+	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_NEW], &new_str);
+	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_UNREAD], &unread_str);
+	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_TOTAL], &total_str);
 	new = atoi(new_str);
 	unread = atoi(unread_str);
 	total = atoi(total_str);
@@ -777,7 +825,7 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
 void folderview_append_item(FolderItem *item)
 {
 	GList *list;
-
+	
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 	if (folder_item_parent(item)) return;
@@ -786,6 +834,7 @@ void folderview_append_item(FolderItem *item)
 		FolderView *folderview = (FolderView *)list->data;
 		GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 		GtkCTreeNode *node, *child;
+		gint *col_pos = folderview->col_pos;
 
 		node = gtk_ctree_find_by_row_data(ctree, NULL, 
 						  folder_item_parent(item));
@@ -797,7 +846,7 @@ void folderview_append_item(FolderItem *item)
 
 				gtk_clist_freeze(GTK_CLIST(ctree));
 
-				text[COL_FOLDER] = item->name;
+				text[col_pos[F_COL_FOLDER]] = item->name;
 				child = gtk_ctree_insert_node
 					(ctree, node, NULL, text,
 					 FOLDER_SPACING,
@@ -1118,6 +1167,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gboolean add_unread_mark;
 	gboolean add_sub_match_mark;
 	gboolean use_bold, use_color;
+	gint *col_pos = folderview->col_pos;
 
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
@@ -1257,13 +1307,13 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	g_free(name);
 
 	if (!folder_item_parent(item)) {
-		gtk_ctree_node_set_text(ctree, node, COL_NEW,    "-");
-		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, "-");
-		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  "-");
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_NEW],    "-");
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_UNREAD], "-");
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  "-");
 	} else {
-		gtk_ctree_node_set_text(ctree, node, COL_NEW,    itos(item->new_msgs));
-		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, itos(item->unread_msgs));
-		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total_msgs));
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_NEW],    itos(item->new_msgs));
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_UNREAD], itos(item->unread_msgs));
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  itos(item->total_msgs));
 	}
 
 	if (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
@@ -1806,22 +1856,9 @@ static void folderview_popup_close(GtkMenuShell *menu_shell,
 static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 				   FolderView *folderview)
 {
-	switch (column) {
-	case COL_FOLDER:
-		prefs_common.folder_col_folder = width;
-		break;
-	case COL_NEW:
-		prefs_common.folder_col_new = width;
-		break;
-	case COL_UNREAD:
-		prefs_common.folder_col_unread = width;
-		break;
-	case COL_TOTAL:
-		prefs_common.folder_col_total = width;
-		break;
-	default:
-		break;
-	}
+	FolderColumnType type = folderview->col_state[column].type;
+
+	prefs_common.folder_col_size[type] = width;
 }
 
 void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem *item)
@@ -1850,14 +1887,15 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
 	GtkCTreeNode *node, *parent_node;
-	
+	gint *col_pos = folderview->col_pos;
+
 	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, folder_item_parent(item));
 	if (parent_node == NULL)
 		return;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
-	text[COL_FOLDER] = item->name;
+	text[col_pos[F_COL_FOLDER]] = item->name;
 	node = gtk_ctree_insert_node(ctree, parent_node, NULL, text,
 				     FOLDER_SPACING,
 				     folderxpm, folderxpmmask,
@@ -2087,9 +2125,12 @@ void folderview_reflect_prefs(void)
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
 	normal_style = normal_color_style = bold_style = 
 		bold_color_style = bold_tgtfold_style = NULL;
-
+	FolderItem *item = folderview_get_selected_item(folderview);
 	folderview_init(folderview);
+	folderview_column_set_titles(folderview);
 	folderview_set_all();
+	if (item)
+		folderview_select(folderview, item);
 }
 
 static void drag_state_stop(FolderView *folderview)

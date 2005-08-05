@@ -34,6 +34,7 @@
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_summary_column.h"
+#include "prefs_folder_column.h"
 
 #include "gtk/menu.h"
 #include "gtk/gtkutils.h"
@@ -50,7 +51,6 @@ typedef struct _SummariesPage
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *spinbtn_ng_abbrev_len;
-	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_threadsubj;
 	GtkWidget *button_datefmt;
@@ -695,9 +695,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_ng_abbrev;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkObject *spinbtn_ng_abbrev_len_adj;
-	GtkWidget *frame_summary;
 	GtkWidget *vbox2;
-	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_threadsubj;
 	GtkWidget *vbox3;
@@ -756,23 +754,17 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_ng_abbrev_len),
 				     TRUE);
 
-	label_ng_abbrev = gtk_label_new
-		(_("letters"));
+	label_ng_abbrev = gtk_label_new (_("letters"));
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
 	/* ---- Summary ---- */
 
-	PACK_FRAME(vbox1, frame_summary, _("Summary View"));
-
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_summary), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	gtk_container_add (GTK_CONTAINER (vbox1), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 0);
 
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_swapfrom,
-		 _("Display recipient in 'From' column if sender is yourself"));
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
@@ -813,6 +805,14 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_summary_column_open),
+			  NULL);
+
+	button_dispitem = gtk_button_new_with_label
+		(_(" Set displayed items in folder view... "));
+	gtk_widget_show (button_dispitem);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
+			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -916,8 +916,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.trans_hdr);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_folder_unread),
 			prefs_common.display_folder_unread);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_swapfrom),
-			prefs_common.swap_from);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_useaddrbook),
 			prefs_common.use_addr_book);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_threadsubj),
@@ -944,7 +942,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->chkbtn_transhdr = chkbtn_transhdr;
 	prefs_summaries->chkbtn_folder_unread = chkbtn_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
-	prefs_summaries->chkbtn_swapfrom = chkbtn_swapfrom;
 	prefs_summaries->chkbtn_useaddrbook = chkbtn_useaddrbook;
 	prefs_summaries->chkbtn_threadsubj = chkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
@@ -969,8 +966,6 @@ void prefs_summaries_save(PrefsPage *_page)
 			GTK_TOGGLE_BUTTON(page->chkbtn_transhdr));
 	prefs_common.display_folder_unread = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->chkbtn_folder_unread));
-	prefs_common.swap_from = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->chkbtn_swapfrom));
 	prefs_common.use_addr_book = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->chkbtn_useaddrbook));
 	prefs_common.thread_by_subject = gtk_toggle_button_get_active(

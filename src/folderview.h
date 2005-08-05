@@ -22,6 +22,7 @@
 
 typedef struct _FolderView	FolderView;
 typedef struct _FolderViewPopup	FolderViewPopup;
+typedef struct _FolderColumnState	FolderColumnState;
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
@@ -30,6 +31,22 @@ typedef struct _FolderViewPopup	FolderViewPopup;
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "folder.h"
+
+typedef enum
+{
+	F_COL_FOLDER,
+	F_COL_NEW,
+	F_COL_UNREAD,
+	F_COL_TOTAL
+} FolderColumnType;
+
+#define N_FOLDER_COLS	4
+
+struct _FolderColumnState
+{
+	FolderColumnType type;
+	gboolean visible;
+};
 
 struct _FolderView
 {
@@ -59,6 +76,8 @@ struct _FolderView
 	GtkCTreeNode *drag_node;	/* drag node */
 	
 	GtkTargetList *target_list; /* DnD */
+	FolderColumnState col_state[N_FOLDER_COLS];
+	gint col_pos[N_FOLDER_COLS];
 };
 
 struct _FolderViewPopup
@@ -110,5 +129,6 @@ void folderview_register_popup		(FolderViewPopup	*fpopup);
 void folderview_unregister_popup	(FolderViewPopup	*fpopup);
 void folderview_update_search_icon	(FolderItem 		*item, 	
 					 gboolean 		 matches);
+void folderview_set_column_order	(FolderView		*folderview);
 
 #endif /* __FOLDERVIEW_H__ */
