@@ -1,3 +1,11 @@
+2005-08-05 [paul]	1.9.13cvs15
+
+	* src/prefs_summaries.c
+		improve the English usage
+	* src/summaryview.c
+		set font on column change
+		thanks to Colin
+
 2005-08-05 [paul]	1.9.13cvs14
 
 	* src/prefs_common.c

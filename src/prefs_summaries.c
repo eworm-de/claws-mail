@@ -827,7 +827,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_always_show_msg,
-		 _("Always open messages in summary when selected"));
+		 _("Always open message when selected"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_mark_as_read_on_newwin,

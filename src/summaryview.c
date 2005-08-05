@@ -4416,6 +4416,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_widget_destroy(summaryview->ctree);
 
 	summaryview->ctree = ctree = summary_ctree_create(summaryview);
+	summary_set_fonts(summaryview);
 	pixmap = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),
 				    summaryview->col_pos[S_COL_MIME], pixmap);
