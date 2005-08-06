@@ -524,9 +524,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set displayed columns"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Set displayed columns/in Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
-	{N_("/_View/Set displayed columns/in Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
@@ -848,7 +848,6 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *menuitem;
 	gint i;
 	guint n_menu_entries;
-	gboolean hide_messageview = FALSE;
 
 	static GdkGeometry geometry;
 
@@ -1049,8 +1048,7 @@ MainWindow *main_window_create(SeparateType type)
 	debug_print("done.\n");
 
 	messageview->visible = prefs_common.msgview_visible;
-	hide_messageview = !messageview->visible;
-	
+
 	main_window_set_widgets(mainwin, type);
 
 	g_signal_connect(G_OBJECT(window), "size_allocate",
@@ -1145,9 +1143,6 @@ MainWindow *main_window_create(SeparateType type)
 	/* init work_offline */
 	if (prefs_common.work_offline)
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
-
-	if (mainwin->type == SEPARATE_NONE && hide_messageview)
-		main_window_toggle_message_view(mainwin);
 
 	return mainwin;
 }

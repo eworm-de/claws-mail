@@ -1,3 +1,10 @@
+2005-08-06 [paul]	1.9.13cvs19
+
+	* src/mainwindow.c
+		add mnemonics to Set displayed columns
+		fix bug where msgview_visible option was
+		overwritten as TRUE on startup
+
 2005-08-06 [paul]	1.9.13cvs18
 
 	* src/mainwindow.c
