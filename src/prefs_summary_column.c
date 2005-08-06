@@ -197,7 +197,6 @@ static void prefs_summary_column_create(void)
 	GtkWidget *shown_list_view;
 
 	GtkWidget *btn_vbox;
-	GtkWidget *btn_vbox1;
 	GtkWidget *add_btn;
 	GtkWidget *remove_btn;
 	GtkWidget *up_btn;
@@ -217,7 +216,7 @@ static void prefs_summary_column_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Displayed items configuration"));
+			     _("Message list columns configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_summary_column_delete_event),
 			 NULL);
@@ -234,7 +233,7 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label_hbox, FALSE, FALSE, 4);
 
 	label = gtk_label_new
-		(_("Select items to be displayed in the summary view. You can modify\n"
+		(_("Select columns to be displayed in the message list. You can modify\n"
 		   "the order by using the Up / Down buttons or by dragging the items."));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(label_hbox), label, FALSE, FALSE, 4);
@@ -263,31 +262,21 @@ static void prefs_summary_column_create(void)
 
 				       
 	stock_list_view = prefs_summary_column_list_view_create
-				(_("Available items"));
+				(_("Hidden columns"));
 	gtk_widget_show(stock_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), stock_list_view);
 
 	/* add/remove button */
-	btn_vbox = gtk_vbox_new(FALSE, 0);
+	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	btn_vbox1 = gtk_vbox_new(FALSE, 8);
-	gtk_widget_show(btn_vbox1);
-	gtk_box_pack_start(GTK_BOX(btn_vbox), btn_vbox1, TRUE, FALSE, 0);
-
-	add_btn = gtk_button_new_with_label(_("  ->  "));
+	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_widget_show(add_btn);
-	gtk_box_pack_start(GTK_BOX(btn_vbox1), add_btn, FALSE, FALSE, 0);
-
-	remove_btn = gtk_button_new_with_label(_("  <-  "));
-	gtk_widget_show(remove_btn);
-	gtk_box_pack_start(GTK_BOX(btn_vbox1), remove_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), add_btn, FALSE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(add_btn), "clicked",
 			 G_CALLBACK(prefs_summary_column_add), NULL);
-	g_signal_connect(G_OBJECT(remove_btn), "clicked",
-			 G_CALLBACK(prefs_summary_column_remove), NULL);
 
 	clist_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(clist_hbox);
@@ -302,27 +291,29 @@ static void prefs_summary_column_create(void)
 				       GTK_POLICY_AUTOMATIC);
 
 	shown_list_view = prefs_summary_column_list_view_create
-				(_("Displayed items"));
+				(_("Displayed columns"));
 	gtk_widget_show(shown_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), shown_list_view);
 
 	/* up/down button */
-	btn_vbox = gtk_vbox_new(FALSE, 0);
+	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	btn_vbox1 = gtk_vbox_new(FALSE, 8);
-	gtk_widget_show(btn_vbox1);
-	gtk_box_pack_start(GTK_BOX(btn_vbox), btn_vbox1, TRUE, FALSE, 0);
+	remove_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	gtk_widget_show(remove_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), remove_btn, FALSE, TRUE, 0);
 
 	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
-	gtk_box_pack_start(GTK_BOX(btn_vbox1), up_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, TRUE, 0);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
-	gtk_box_pack_start(GTK_BOX(btn_vbox1), down_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, TRUE, 0);
 
+	g_signal_connect(G_OBJECT(remove_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_remove), NULL);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_summary_column_up), NULL);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",

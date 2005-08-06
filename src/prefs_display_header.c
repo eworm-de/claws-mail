@@ -310,7 +310,7 @@ static void prefs_display_header_create(void)
 	g_signal_connect (G_OBJECT (reg_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(FALSE));
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	del_btn = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (del_btn), "clicked",

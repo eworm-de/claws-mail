@@ -524,9 +524,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set displayed _items"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Set displayed _items/ in _Summary view..."),NULL, set_summary_display_item_cb, 0, NULL},
-	{N_("/_View/Set displayed _items/ in _Folder view..."),	NULL, set_folder_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed columns"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Set displayed columns/in Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed columns/in Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},

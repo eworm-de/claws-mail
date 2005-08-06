@@ -702,6 +702,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
+	GtkWidget *hbox_dispitem;
+	GtkWidget *frame_dispitem;
 	GtkWidget *button_dispitem;
 
 	GtkWidget *checkbtn_always_show_msg;
@@ -795,24 +797,27 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+	PACK_FRAME(vbox2, frame_dispitem, _("Set displayed columns"));
+
+	hbox_dispitem = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_dispitem);
+	gtk_container_add (GTK_CONTAINER (frame_dispitem), hbox_dispitem);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox_dispitem), 8);
 
 	button_dispitem = gtk_button_new_with_label
-		(_(" Set displayed items in summary... "));
+		(_(" Folder list... "));
 	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
-			  G_CALLBACK (prefs_summary_column_open),
-			  NULL);
-
-	button_dispitem = gtk_button_new_with_label
-		(_(" Set displayed items in folder view... "));
-	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_folder_column_open),
+			  NULL);
+	
+	button_dispitem = gtk_button_new_with_label
+		(_(" Message list... "));
+	gtk_widget_show (button_dispitem);
+	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
+			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);

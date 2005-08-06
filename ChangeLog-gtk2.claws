@@ -1,3 +1,24 @@
+2005-08-06 [paul]	1.9.13cvs18
+
+	* src/mainwindow.c
+		refer to 'displayed columns in folder/message
+		list' not 'displayed items in summary/message view'
+	* src/prefs_display_header.c
+		replace GTK_STOCK_DELETE with GTK_STOCK_REMOVE to
+		be consistent with similar dialogues
+	* src/prefs_folder_column.c
+	* src/prefs_summary_column.c
+		'columns' not 'items', and folder and message lists,
+		instead of folder and summary views;
+		Use 'Hidden columns' as list heading not 'Available
+		items';
+		move the 'Remove' button to the right hand side;
+		top-align the buttons;
+		remove unneeded vbox
+	* src/prefs_summaries.c
+		put the 2 column prefs buttons in a frame to reduce
+		overall width; refer to columns not items &c.
+
 2005-08-05 [colin]	1.9.13cvs17
 
 	* src/prefs_common.c
