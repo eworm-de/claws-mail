@@ -1464,9 +1464,10 @@ static void reedit_cb(gpointer data, guint action, GtkWidget *widget)
 	if (!messageview->msginfo) return;
 	msginfo = messageview->msginfo;
 	if (!msginfo->folder) return;
-	if (msginfo->folder->stype != F_OUTBOX &&
-	    msginfo->folder->stype != F_DRAFT &&
-	    msginfo->folder->stype != F_QUEUE) return;
+	if (!folder_has_parent_of_type(msginfo->folder, F_DRAFT) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE)) 
+		return;
 
 	compose_reedit(msginfo);
 }

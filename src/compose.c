@@ -1336,7 +1336,8 @@ void compose_reedit(MsgInfo *msginfo)
 	if (compose_put_existing_to_front(msginfo)) 
 		return;
 
-        if (msginfo->folder->stype == F_QUEUE || msginfo->folder->stype == F_DRAFT) {
+        if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
+	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
 		gchar queueheader_buf[BUFFSIZE];
 		gint id, param;
 
@@ -1399,8 +1400,8 @@ void compose_reedit(MsgInfo *msginfo)
 	compose_use_encryption(compose, use_encryption);
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
-        if (msginfo->folder->stype == F_QUEUE
-	||  msginfo->folder->stype == F_DRAFT) {
+        if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
+	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
@@ -3852,7 +3853,8 @@ static gint compose_remove_reedit_target(Compose *compose)
 	g_return_val_if_fail(item != NULL, -1);
 
 	if (procmsg_msg_exist(msginfo) &&
-	    (item->stype == F_DRAFT || item->stype == F_QUEUE 
+	    (folder_has_parent_of_type(item, F_QUEUE) ||
+	     folder_has_parent_of_type(item, F_DRAFT) 
 	     || msginfo == compose->autosaved_draft)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
 			g_warning("can't remove the old message\n");

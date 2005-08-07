@@ -438,14 +438,16 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	
 
 	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
-	&&  dest->stype != F_QUEUE && dest->stype != F_DRAFT) {
+	&& !folder_has_parent_of_type(dest, F_QUEUE)
+	&& !folder_has_parent_of_type(dest, F_DRAFT)) {
 		if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
 			g_free(srcfile);
 			g_free(destfile);
 			return -1;
 		}
 	} else if (!(MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
-	&& (dest->stype == F_QUEUE || dest->stype == F_DRAFT)) {
+	&& (folder_has_parent_of_type(dest, F_QUEUE)
+	 || folder_has_parent_of_type(dest, F_DRAFT))) {
 		g_free(srcfile);
 		g_free(destfile);
 		return -1;
@@ -770,9 +772,9 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	flags.perm_flags = MSG_NEW|MSG_UNREAD;
 	flags.tmp_flags = 0;
 
-	if (item->stype == F_QUEUE) {
+	if (folder_has_parent_of_type(item, F_QUEUE)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
-	} else if (item->stype == F_DRAFT) {
+	} else if (folder_has_parent_of_type(item, F_DRAFT)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 

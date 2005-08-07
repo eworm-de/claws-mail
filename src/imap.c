@@ -908,10 +908,10 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				iflags |= IMAP_FLAG_SEEN;
 		}
 
-		if (dest->stype == F_OUTBOX ||
-		    dest->stype == F_QUEUE  ||
-		    dest->stype == F_DRAFT  ||
-		    dest->stype == F_TRASH)
+		if (folder_has_parent_of_type(dest, F_QUEUE) ||
+		    folder_has_parent_of_type(dest, F_OUTBOX) ||
+		    folder_has_parent_of_type(dest, F_DRAFT) ||
+		    folder_has_parent_of_type(dest, F_TRASH))
 			iflags |= IMAP_FLAG_SEEN;
 
 		ok = imap_cmd_append(session, destdir, fileinfo->file, iflags, 
@@ -2902,9 +2902,9 @@ static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item)
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(file != NULL, NULL);
 
-	if (item->stype == F_QUEUE) {
+	if (folder_has_parent_of_type(item, F_QUEUE)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
-	} else if (item->stype == F_DRAFT) {
+	} else if (folder_has_parent_of_type(item, F_DRAFT)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 
@@ -2939,7 +2939,8 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 	if (ok != IMAP_SUCCESS)
 		return NULL;
 
-	if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
+	if (!(folder_has_parent_of_type(item, F_DRAFT) || 
+	      folder_has_parent_of_type(item, F_QUEUE))) {
 		ret = g_slist_concat(ret,
 			imap_get_uncached_messages(session, item,
 						   msgnum_list));
@@ -3715,9 +3716,9 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 	MsgFlags flags = {0, 0};
 	
 	MSG_SET_TMP_FLAGS(flags, MSG_IMAP);
-	if (item->stype == F_QUEUE) {
+	if (folder_has_parent_of_type(item, F_QUEUE)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
-	} else if (item->stype == F_DRAFT) {
+	} else if (folder_has_parent_of_type(item, F_DRAFT)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 	flags.perm_flags = info->flags;

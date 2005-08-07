@@ -67,7 +67,7 @@ gint folderutils_delete_duplicates(FolderItem *item,
 		case DELETE_DUPLICATES_REMOVE: {
 			FolderItem *trash = item->folder->trash;
 
-			if (item->stype == F_TRASH || trash == NULL)
+			if (folder_has_parent_of_type(item, F_TRASH) || trash == NULL)
 				folder_item_remove_msgs(item, duplist);
 			else 			
 				folder_item_move_msgs(trash, duplist);

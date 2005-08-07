@@ -2493,9 +2493,10 @@ void summary_reedit(SummaryView *summaryview)
 
 	if (!summaryview->selected) return;
 	if (!summaryview->folder_item) return;
-	if (summaryview->folder_item->stype != F_OUTBOX &&
-	    summaryview->folder_item->stype != F_DRAFT  &&
-	    summaryview->folder_item->stype != F_QUEUE) return;
+	if (!folder_has_parent_of_type(summaryview->folder_item, F_OUTBOX)
+	&&  !folder_has_parent_of_type(summaryview->folder_item, F_DRAFT)
+	&&  !folder_has_parent_of_type(summaryview->folder_item, F_QUEUE))
+		return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -2992,7 +2993,7 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec && 
-	    summaryview->folder_item->stype != F_TRASH)
+	    !folder_has_parent_of_type(summaryview->folder_item, F_TRASH))
 		summary_set_row_marks(summaryview, row);
 
 	debug_print("Message %s/%d is set to delete\n",
@@ -3079,7 +3080,7 @@ void summary_delete(SummaryView *summaryview)
 
 	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 	
-	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
+	if (prefs_common.immediate_exec || folder_has_parent_of_type(item, F_TRASH)) {
 		summary_execute(summaryview);
 		/* after deleting, the anchor may be at an invalid row
 		 * so reset it to the node we found earlier */
@@ -4561,9 +4562,9 @@ static void tog_searchbar_cb(GtkWidget *w, gpointer data)
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
-	if (summaryview->folder_item->stype == F_OUTBOX ||
-	    summaryview->folder_item->stype == F_DRAFT  ||
-	    summaryview->folder_item->stype == F_QUEUE)
+	if (folder_has_parent_of_type(summaryview->folder_item, F_OUTBOX)
+	||  folder_has_parent_of_type(summaryview->folder_item, F_DRAFT)
+	||  folder_has_parent_of_type(summaryview->folder_item, F_QUEUE))
 		summary_reedit(summaryview);
 	else
 		summary_open_msg(summaryview);

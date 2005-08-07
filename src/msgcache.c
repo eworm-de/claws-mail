@@ -449,9 +449,9 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 
 	debug_print("\tReading %sswapped message cache from %s...\n", swapping?"":"un", cache_file);
 
-	if (item->stype == F_QUEUE) {
+	if (folder_has_parent_of_type(item, F_QUEUE)) {
 		tmp_flags |= MSG_QUEUED;
-	} else if (item->stype == F_DRAFT) {
+	} else if (folder_has_parent_of_type(item, F_DRAFT)) {
 		tmp_flags |= MSG_DRAFT;
 	}
 

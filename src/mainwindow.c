@@ -1759,8 +1759,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_NOT_NEWS;
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (item &&
-	     (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
-	      item->stype == F_QUEUE)))
+	     (folder_has_parent_of_type(item, F_DRAFT) ||
+	      folder_has_parent_of_type(item, F_OUTBOX) ||
+	      folder_has_parent_of_type(item, F_QUEUE))))
 		state |= M_ALLOW_REEDIT;
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;

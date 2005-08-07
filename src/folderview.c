@@ -1053,7 +1053,7 @@ static gboolean folderview_have_new_children_sub(FolderView *folderview,
 
 	if (in_sub &&
 	    (item->new_msgs > 0 ||
-	    (item->stype == F_QUEUE && item->total_msgs > 0))) {
+	    (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0))) {
 		return TRUE;
 	}
 
@@ -1092,7 +1092,7 @@ static gboolean folderview_have_unread_children_sub(FolderView *folderview,
 
 	if (in_sub &&
 	    (item->unread_msgs > 0 ||
-	    (item->stype == F_QUEUE && item->total_msgs > 0))) {
+	    (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0))) {
 		return TRUE;
 	}
 
@@ -1276,7 +1276,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		mask = openmask = searchmask;
 	}
 
-	if (item->stype == F_QUEUE && item->total_msgs > 0 &&
+	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0 &&
 	    prefs_common.display_folder_unread) {
 		str = g_strdup_printf("%s (%d%s)", name, item->total_msgs,
 				      add_unread_mark ? "+" : "");
@@ -1319,10 +1319,11 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  itos(item->total_msgs));
 	}
 
-	if (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
-	    item->stype == F_TRASH) {
+	if (folder_has_parent_of_type(item, F_OUTBOX) ||
+	    folder_has_parent_of_type(item, F_DRAFT) ||
+	    folder_has_parent_of_type(item, F_TRASH)) {
 		use_bold = use_color = FALSE;
-	} else if (item->stype == F_QUEUE) {
+	} else if (folder_has_parent_of_type(item, F_QUEUE)) {
 		/* highlight queue folder if there are any messages */
 		use_bold = use_color = (item->total_msgs > 0);
 	} else {

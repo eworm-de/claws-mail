@@ -804,4 +804,5 @@ void folder_item_update_recursive	(FolderItem *item,
 void folder_item_update_freeze		(void);
 void folder_item_update_thaw		(void);
 void folder_item_set_batch		(FolderItem *item, gboolean batch);
+gboolean folder_has_parent_of_type	(FolderItem *item, SpecialFolderItemType type);
 #endif /* __FOLDER_H__ */

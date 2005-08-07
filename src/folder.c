@@ -1415,18 +1415,18 @@ gchar *folder_item_get_path(FolderItem *item)
 
 void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
 {
-	if (!(dest->stype == F_OUTBOX ||
-	      dest->stype == F_QUEUE  ||
-	      dest->stype == F_DRAFT  ||
-	      dest->stype == F_TRASH)) {
+	if (!(folder_has_parent_of_type(dest, F_OUTBOX) ||
+	      folder_has_parent_of_type(dest, F_QUEUE)  ||
+	      folder_has_parent_of_type(dest, F_DRAFT) ||
+	      folder_has_parent_of_type(dest, F_TRASH))) {
 		flags->perm_flags = MSG_NEW|MSG_UNREAD;
 	} else {
 		flags->perm_flags = 0;
 	}
 	if (FOLDER_TYPE(dest->folder) == F_MH) {
-		if (dest->stype == F_QUEUE) {
+		if (folder_has_parent_of_type(dest, F_QUEUE)) {
 			MSG_SET_TMP_FLAGS(*flags, MSG_QUEUED);
-		} else if (dest->stype == F_DRAFT) {
+		} else if (folder_has_parent_of_type(dest, F_DRAFT)) {
 			MSG_SET_TMP_FLAGS(*flags, MSG_DRAFT);
 		}
 	}
@@ -1821,10 +1821,10 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 		}
-		if ((item->stype == F_OUTBOX ||
-		     item->stype == F_QUEUE  ||
-		     item->stype == F_DRAFT  ||
-		     item->stype == F_TRASH) &&
+		if ((folder_has_parent_of_type(item, F_OUTBOX) ||
+		     folder_has_parent_of_type(item, F_QUEUE)  ||
+		     folder_has_parent_of_type(item, F_DRAFT)  ||
+		     folder_has_parent_of_type(item, F_TRASH)) &&
 		    (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		if (MSG_IS_NEW(msginfo->flags))
@@ -2194,8 +2194,8 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
 			MimeInfo *mimeinfo;
 
-			if (msginfo->folder->stype != F_QUEUE && 
-			    msginfo->folder->stype != F_DRAFT)
+			if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) && 
+			    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
 				mimeinfo = procmime_scan_file(msgfile);
 			else
 				mimeinfo = procmime_scan_queue_file(msgfile);
@@ -2235,8 +2235,8 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
 			MimeInfo *mimeinfo;
 
-			if (msginfo->folder->stype != F_QUEUE && 
-			    msginfo->folder->stype != F_DRAFT)
+			if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+			    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
 				mimeinfo = procmime_scan_file(msgfile);
 			else
 				mimeinfo = procmime_scan_queue_file(msgfile);
@@ -2320,7 +2320,8 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 	if ((fp = fopen(file, "rb")) == NULL)
 		return 0;
 
-	if ((dest->stype == F_QUEUE) || (dest->stype == F_DRAFT))
+	if ((folder_has_parent_of_type(dest, F_QUEUE)) || 
+	    (folder_has_parent_of_type(msginfo->folder, F_DRAFT)))
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
 
@@ -2359,10 +2360,10 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	}
 
 	/* remove new, unread and deleted in special folders */
-	if (dest->folder->stype == F_OUTBOX ||
-	    dest->folder->stype == F_QUEUE  ||
-	    dest->folder->stype == F_DRAFT  ||
-	    dest->folder->stype == F_TRASH)
+	if (folder_has_parent_of_type(dest, F_OUTBOX) || 
+	    folder_has_parent_of_type(dest, F_QUEUE) || 
+	    folder_has_parent_of_type(dest, F_DRAFT) || 
+	    folder_has_parent_of_type(dest, F_TRASH))
 		perm_flags &= ~(MSG_NEW | MSG_UNREAD | MSG_DELETED);
 
 	/* set ignore flag of ignored parent exists */
@@ -3552,6 +3553,18 @@ void folder_item_set_batch (FolderItem *item, gboolean batch)
 	if (item->folder->klass->set_batch) {
 		item->folder->klass->set_batch(item->folder, item, batch);
 	}
+}
+
+gboolean folder_has_parent_of_type(FolderItem *item, 
+					  SpecialFolderItemType type) 
+{
+	FolderItem *cur = item;
+	while (cur) {
+		if (cur->stype == type)
+			return TRUE;
+		cur = folder_item_parent(cur);
+	}
+	return FALSE;
 }
 
 #undef PUT_ESCAPE_STR

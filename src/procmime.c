@@ -237,8 +237,8 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 	if (!filename || !is_file_exist(filename)) 
 		return NULL;
 
-	if (msginfo->folder->stype != F_QUEUE && 
-	    msginfo->folder->stype != F_DRAFT)
+	if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
 		mimeinfo = procmime_scan_file(filename);
 	else
 		mimeinfo = procmime_scan_queue_file(filename);

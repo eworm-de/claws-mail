@@ -386,7 +386,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	}
 #endif        
 
-	if (item->stype == F_QUEUE && item->total_msgs > 0) {
+	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0) {
 		name = g_strdup_printf("%s (%d)", name, item->total_msgs);
 	} else if (item->unread_msgs > 0) {
 		name = g_strdup_printf("%s (%d)", name, item->unread_msgs);
@@ -397,10 +397,11 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	pixbuf_open =
 		item->no_select ? foldernoselect_pixbuf : folderopen_pixbuf;
 
-	if (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
-	    item->stype == F_TRASH) {
+	if (folder_has_parent_of_type(item, F_DRAFT) ||
+	    folder_has_parent_of_type(item, F_OUTBOX) ||
+	    folder_has_parent_of_type(item, F_TRASH)) {
 		use_bold = use_color = FALSE;
-	} else if (item->stype == F_QUEUE) {
+	} else if (folder_has_parent_of_type(item, F_QUEUE)) {
 		use_bold = use_color = (item->total_msgs > 0);
 	} else {
 		use_bold = (item->unread_msgs > 0);
