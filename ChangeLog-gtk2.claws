@@ -1,3 +1,9 @@
+2005-08-07 [colin]	1.9.13cvs24
+
+	* src/folder.c
+		Fix big mistake (passing MsgInfo instead 
+		of FolderItem)
+
 2005-08-07 [colin]	1.9.13cvs23
 
 	* src/compose.c

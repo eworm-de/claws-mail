@@ -2360,10 +2360,10 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	}
 
 	/* remove new, unread and deleted in special folders */
-	if (folder_has_parent_of_type(dest, F_OUTBOX) || 
-	    folder_has_parent_of_type(dest, F_QUEUE) || 
-	    folder_has_parent_of_type(dest, F_DRAFT) || 
-	    folder_has_parent_of_type(dest, F_TRASH))
+	if (folder_has_parent_of_type(dest->folder, F_OUTBOX) || 
+	    folder_has_parent_of_type(dest->folder, F_QUEUE) || 
+	    folder_has_parent_of_type(dest->folder, F_DRAFT) || 
+	    folder_has_parent_of_type(dest->folder, F_TRASH))
 		perm_flags &= ~(MSG_NEW | MSG_UNREAD | MSG_DELETED);
 
 	/* set ignore flag of ignored parent exists */
