@@ -707,3 +707,4 @@
 ( cvs diff -u -r 1.274.2.51 -r 1.274.2.52 src/mainwindow.c;  ) > 1.9.13cvs19.patchset
 ( cvs diff -u -r 1.207.2.52 -r 1.207.2.53 src/folderview.c;  cvs diff -u -r 1.395.2.103 -r 1.395.2.104 src/summaryview.c;  ) > 1.9.13cvs20.patchset
 ( cvs diff -u -r 1.395.2.104 -r 1.395.2.105 src/summaryview.c;  ) > 1.9.13cvs21.patchset
+( cvs diff -u -r 1.60.2.23 -r 1.60.2.24 src/addressbook.c;  ) > 1.9.13cvs22.patchset

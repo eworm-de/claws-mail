@@ -4759,7 +4759,6 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 			    ds->type == ADDR_IF_LDAP) 
 			    	goto free_list;		
 			afolder = addrindex_ds_get_root_folder( ds );
-			
 		} else {
 			goto free_list;
 		}
@@ -4770,9 +4769,16 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 			AddressBookFile *obook = dragged_ab;
 			AddressBookFile *abook = addressbook_get_book_file_for_node(node);
 			for (cur = dragged_persons; cur; cur = cur->next) {
+				AddrBookBase *adbase = ( AddrBookBase * ) ds ? ds->rawDataSource : NULL;
+				AddressCache *cache = (adbase) ? adbase->addressCache : NULL;
+
 				person = (ItemPerson *)cur->data;
 				addritem_folder_remove_person(ofolder, person);
-				addritem_folder_add_person(afolder, person);
+				if (cache) {
+					addrcache_folder_add_person(cache, afolder, person);
+				} else {
+					addritem_folder_add_person(afolder, person);
+				}
 			}
 			addressbook_list_select_clear();
 			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened);

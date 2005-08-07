@@ -1,3 +1,8 @@
+2005-08-07 [colin]	1.9.13cvs22
+
+	* src/addressbook.c
+		Fix bug #771 (Dragged contacts not saved)
+
 2005-08-07 [paul]	1.9.13cvs21
 
 	* src/summaryview.c
