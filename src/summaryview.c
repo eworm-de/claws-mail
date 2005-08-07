@@ -899,7 +899,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	mlist = folder_item_get_msg_list(item);
 
-	if (summaryview->folder_item->hide_read_msgs) {
+	if (summaryview->folder_item->hide_read_msgs &&
+	    quicksearch_is_active(summaryview->quicksearch) == FALSE) {
 		GSList *not_killed;
 		
 		summary_set_hide_read_msgs_menu(summaryview, TRUE);
@@ -907,11 +908,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 			
-			if ((MSG_IS_UNREAD(msginfo->flags)
-			     || MSG_IS_MARKED(msginfo->flags)
-			     || MSG_IS_LOCKED(msginfo->flags)
-			     || CURRENTLY_DISPLAYED(msginfo))
-			     && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+			if (MSG_IS_UNREAD(msginfo->flags) &&
+			    !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);

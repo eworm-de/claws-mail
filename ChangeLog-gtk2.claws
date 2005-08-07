@@ -1,3 +1,11 @@
+2005-08-07 [paul]	1.9.13cvs21
+
+	* src/summaryview.c
+		fix bug 32 'Search Doesn't display results
+		if "Hide Read Messages" is chosen'
+		be more literal in interpreting 'Hide read
+		messages'
+
 2005-08-07 [colin]	1.9.13cvs20
 
 	* src/folderview.c
