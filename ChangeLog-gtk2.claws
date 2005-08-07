@@ -1,3 +1,10 @@
+2005-08-07 [colin]	1.9.13cvs20
+
+	* src/folderview.c
+		Add debug
+	* src/summaryview.c
+		Faster 'unthread_for_execution'
+
 2005-08-06 [paul]	1.9.13cvs19
 
 	* src/mainwindow.c

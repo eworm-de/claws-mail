@@ -3836,22 +3836,18 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	summary_lock(summaryview);
-
 	debug_print("Unthreading for execution...");
 
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	START_LONG_OPERATION(summaryview);
 
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	     node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
 		summary_unthread_for_exec_func(ctree, node, NULL);
 	}
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	END_LONG_OPERATION(summaryview);
 
 	debug_print("done.\n");
-
-	summary_unlock(summaryview);
 }
 
 static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,

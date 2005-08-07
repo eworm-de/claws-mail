@@ -364,6 +364,7 @@ static void folderview_column_set_titles(FolderView *folderview)
 	GtkWidget *hbox_total;
 	gint *col_pos = folderview->col_pos;
 	
+	debug_print("setting titles...\n");
 	gtk_widget_realize(folderview->ctree);
 	gtk_widget_show_all(folderview->scrolledwin);
 	
@@ -411,6 +412,7 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 	gint i;
 	GtkWidget *scrolledwin = folderview->scrolledwin;
 
+	debug_print("creating tree...\n");
 	memset(titles, 0, sizeof(titles));
 
 	col_state = prefs_folder_column_get_config();
@@ -513,6 +515,7 @@ void folderview_set_column_order(FolderView *folderview)
 	FolderItem *item = folderview_get_selected_item(folderview);
 	GtkWidget *scrolledwin = folderview->scrolledwin;
 
+	debug_print("recreating tree...\n");
 	gtk_widget_destroy(folderview->ctree);
 
 	folderview->ctree = ctree = folderview_ctree_create(folderview);
