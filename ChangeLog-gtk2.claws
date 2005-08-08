@@ -1,3 +1,8 @@
+2005-08-08 [colin]	1.9.13cvs26
+
+	* src/folder.c
+		Fix shameful bugs (and bug #779)
+
 2005-08-08 [colin]	1.9.13cvs25
 
 	* src/folder.c

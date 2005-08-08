@@ -2321,7 +2321,7 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 		return 0;
 
 	if ((folder_has_parent_of_type(dest, F_QUEUE)) || 
-	    (folder_has_parent_of_type(msginfo->folder, F_DRAFT)))
+	    (folder_has_parent_of_type(dest, F_DRAFT)))
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
 
@@ -3561,7 +3561,7 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 	FolderItem *cur = item;
 	while (cur) {
 		if (cur->stype == type || cur->parent_stype == type) {
-			item->parent_stype == type;
+			item->parent_stype = type;
 			return TRUE;
 		}
 		cur = folder_item_parent(cur);
