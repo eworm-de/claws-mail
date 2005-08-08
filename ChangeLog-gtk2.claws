@@ -1,3 +1,10 @@
+2005-08-08 [colin]	1.9.13cvs27
+
+	* src/summaryview.c
+		If "select first new" is selected and there only
+		are unread messages, fallback to "select first
+		unread".
+
 2005-08-08 [colin]	1.9.13cvs26
 
 	* src/folder.c

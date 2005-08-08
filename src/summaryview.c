@@ -1016,14 +1016,16 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 	} else {
  		switch (prefs_common.select_on_entry) {
- 			case SELECTONENTRY_UNREAD:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				break;
  			case SELECTONENTRY_NEW:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_NEW, FALSE);
-  				break;
+  				/* don't break, passthrough to first unread if no
+				 * new is found */
+ 			case SELECTONENTRY_UNREAD:
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				break;
  			default:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
 								     0, FALSE);

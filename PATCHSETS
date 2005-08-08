@@ -712,3 +712,4 @@
 ( cvs diff -u -r 1.213.2.46 -r 1.213.2.47 src/folder.c;  ) > 1.9.13cvs24.patchset
 ( cvs diff -u -r 1.213.2.47 -r 1.213.2.48 src/folder.c;  cvs diff -u -r 1.87.2.15 -r 1.87.2.16 src/folder.h;  cvs diff -u -r 1.207.2.54 -r 1.207.2.55 src/folderview.c;  cvs diff -u -r 1.150.2.33 -r 1.150.2.34 src/procmsg.c;  cvs diff -u -r 1.60.2.13 -r 1.60.2.14 src/procmsg.h;  cvs diff -u -r 1.395.2.106 -r 1.395.2.107 src/summaryview.c;  cvs diff -u -r 1.8.2.4 -r 1.8.2.5 src/plugins/Makefile.am;  ) > 1.9.13cvs25.patchset
 ( cvs diff -u -r 1.213.2.48 -r 1.213.2.49 src/folder.c;  ) > 1.9.13cvs26.patchset
+( cvs diff -u -r 1.395.2.107 -r 1.395.2.108 src/summaryview.c;  ) > 1.9.13cvs27.patchset
