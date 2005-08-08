@@ -1019,16 +1019,19 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
  			case SELECTONENTRY_NEW:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_NEW, FALSE);
-  				/* don't break, passthrough to first unread if no
-				 * new is found */
- 			case SELECTONENTRY_UNREAD:
 				if (node == NULL)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_UNREAD, FALSE);
 				break;
- 			default:
+ 			case SELECTONENTRY_UNREAD:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     0, FALSE);
+								     MSG_UNREAD, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+				break;
+ 			default:
+				node = NULL;
  		}
 
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {

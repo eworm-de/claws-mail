@@ -1,3 +1,10 @@
+2005-08-08 [colin]	1.9.13cvs28
+
+	* src/summaryview.c
+	* src/prefs_summaries.c
+		Make "Select first unread|new" more flexible
+		(just prioritize new or unread)
+
 2005-08-08 [colin]	1.9.13cvs27
 
 	* src/summaryview.c
