@@ -3560,8 +3560,10 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 {
 	FolderItem *cur = item;
 	while (cur) {
-		if (cur->stype == type)
+		if (cur->stype == type || cur->parent_stype == type) {
+			item->parent_stype == type;
 			return TRUE;
+		}
 		cur = folder_item_parent(cur);
 	}
 	return FALSE;

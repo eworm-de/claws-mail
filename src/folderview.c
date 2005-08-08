@@ -2376,6 +2376,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	} else {
 		/* comes from folderview */
 		char *source;
+		gboolean folder_is_normal = TRUE;
 		
 		source = data->data + 17;
 		if (gtk_clist_get_selection_info
@@ -2388,7 +2389,15 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folder_find_item_from_identifier(source);
 
-		if (!item || item->no_select || !src_item || src_item->stype != F_NORMAL) {
+		folder_is_normal = 
+			src_item != NULL &&
+			src_item->stype == F_NORMAL &&
+			!folder_has_parent_of_type(src_item, F_OUTBOX) &&
+			!folder_has_parent_of_type(src_item, F_DRAFT) &&
+			!folder_has_parent_of_type(src_item, F_QUEUE) &&
+			!folder_has_parent_of_type(src_item, F_TRASH);
+		if (!item || item->no_select || !src_item 
+		||  !folder_is_normal) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		}

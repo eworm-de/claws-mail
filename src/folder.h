@@ -623,6 +623,9 @@ struct _FolderItem
 	gpointer data;
 
 	FolderItemPrefs * prefs;
+	
+	/* for faster search of special parents */
+	SpecialFolderItemType parent_stype;
 };
 
 struct _PersistPrefs

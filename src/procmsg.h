@@ -147,6 +147,7 @@ typedef guint32 MsgTmpFlags;
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
+#define MAIL_POSTFILTERING_HOOKLIST "mail_postfiltering_hooklist"
 
 typedef enum {
 	MSGINFO_UPDATE_FLAGS = 1 << 0,

@@ -1856,6 +1856,8 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 	if((filtering_rules != NULL) &&
 	   filter_message_by_msginfo(filtering_rules, msginfo))
 		return TRUE;
+		
+	hooks_invoke(MAIL_POSTFILTERING_HOOKLIST, msginfo);
 
 	return FALSE;
 }

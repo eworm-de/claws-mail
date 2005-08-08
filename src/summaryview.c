@@ -2286,6 +2286,31 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	END_TIMING();
 }
 
+static gchar *summary_complete_address(const gchar *addr)
+{
+	gint count;
+	gchar *res, *tmp, *email_addr;
+	
+	if (addr == NULL)
+		return NULL;
+
+	Xstrdup_a(email_addr, addr, return NULL);
+	extract_address(email_addr);
+	g_return_val_if_fail(*email_addr, NULL);
+
+	/*
+	 * completion stuff must be already initialized
+	 */
+	res = NULL;
+	if (1 < (count = complete_address(email_addr))) {
+		tmp = get_complete_address(1);
+		res = procheader_get_fromname(tmp);
+		g_free(tmp);
+	}
+
+	return res;
+}
+
 static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			       MsgInfo *msginfo)
 {
@@ -2313,9 +2338,17 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
-	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
-		_("(No From)");
-	text[col_pos[S_COL_TO]] = msginfo->to ? msginfo->to :
+	if (!prefs_common.use_addr_book) {
+		text[col_pos[S_COL_FROM]] = msginfo->fromname ? 
+						msginfo->fromname :
+						_("(No From)");
+	} else {
+		gchar *tmp = summary_complete_address(msginfo->fromname);
+		text[col_pos[S_COL_FROM]] = tmp ? tmp : (msginfo->fromname ?
+							 msginfo->fromname: 
+							 	_("(No From)"));
+	}
+	text[col_pos[S_COL_TO]] = msginfo->to ? msginfo->to : 
 		_("(No Recipient)");
 	
 	if (msginfo->folder && msginfo->folder->folder)

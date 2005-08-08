@@ -1,3 +1,18 @@
+2005-08-08 [colin]	1.9.13cvs25
+
+	* src/folder.c
+	* src/folder.h
+		Cache parents' type to make folder_has_parent_of_type
+		faster
+	* src/folderview.c
+		Forbid DnD of special sub-folders
+	* src/procmsg.c
+	* src/procmsg.h
+		Add MAIL_POSTFILTERING_HOOK
+	* src/summaryview.c
+		Revert over-zealous deletion of the use_addr_book 
+		code
+
 2005-08-07 [colin]	1.9.13cvs24
 
 	* src/folder.c
