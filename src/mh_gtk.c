@@ -83,12 +83,19 @@ void mh_gtk_init(void)
 
 static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 {
+	gboolean folder_is_normal = 
+			item != NULL &&
+			item->stype == F_NORMAL &&
+			!folder_has_parent_of_type(item, F_OUTBOX) &&
+			!folder_has_parent_of_type(item, F_DRAFT) &&
+			!folder_has_parent_of_type(item, F_QUEUE) &&
+			!folder_has_parent_of_type(item, F_TRASH);
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(factory, name, sens)
 
 	SET_SENS("/Create new folder...",   TRUE);
 	SET_SENS("/Rename folder...",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
-	SET_SENS("/Move folder...", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("/Move folder...", 	    folder_is_normal && folder_item_parent(item) != NULL);
 	SET_SENS("/Delete folder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);

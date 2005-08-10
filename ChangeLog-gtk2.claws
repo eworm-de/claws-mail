@@ -1,3 +1,20 @@
+2005-08-10 [colin]	1.9.13cvs29
+
+	* src/folder.c
+	* src/folderutils.c
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/mainwindow.c
+	* src/mh_gtk.c
+	* src/procmsg.c
+	* src/summaryview.c
+		Optimize folder_has_parent_of_type
+		Prevent moving special sub-folders from contextual menus
+		Rework message a bit ("Empty all messages" -> "Delete all
+		messages")
+		Fix bug #780 (MSexchange IMAP - using IMAP "Sent Items" 
+		and "Deleted Items" folders)
+
 2005-08-08 [colin]	1.9.13cvs28
 
 	* src/summaryview.c

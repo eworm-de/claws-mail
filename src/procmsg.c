@@ -670,8 +670,13 @@ void procmsg_empty_all_trash(void)
 	GList *cur;
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
-		trash = FOLDER(cur->data)->trash;
+		Folder *folder = FOLDER(cur->data);
+		trash = folder->trash;
 		procmsg_empty_trash(trash);
+		if (folder->account && folder->account->set_trash_folder && 
+		    folder_find_item_from_identifier(folder->account->trash_folder))
+		    	procmsg_empty_trash(
+				folder_find_item_from_identifier(folder->account->trash_folder));
 	}
 }
 

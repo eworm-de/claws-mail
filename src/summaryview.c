@@ -3131,12 +3131,16 @@ void summary_delete(SummaryView *summaryview)
 
 void summary_delete_trash(SummaryView *summaryview)
 {
-	FolderItem *to_folder;
-
+	FolderItem *to_folder = NULL;
+	PrefsAccount *ac;
 	if (!summaryview->folder_item ||
 	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
+	
+	if (NULL != (ac = account_find_from_item(summaryview->folder_item)))
+		to_folder = account_get_special_folder(ac, F_TRASH);
 
-	to_folder = summaryview->folder_item->folder->trash;
+	if (to_folder == NULL)
+		to_folder = summaryview->folder_item->folder->trash;
 	
 	if (to_folder == NULL || to_folder == summaryview->folder_item)
 		summary_delete(summaryview);

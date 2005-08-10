@@ -1663,13 +1663,16 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 		folder = FOLDER(list->data);
 		if (folder && folder->trash && folder->trash->total_msgs > 0)
 			has_trash++;
+		if (folder->account && folder->account->set_trash_folder && 
+		    folder_find_item_from_identifier(folder->account->trash_folder))
+		    	has_trash++;
 	}
 
 	if (!has_trash) return;
 	
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
-			       _("Empty all messages in trash?"),
+			       _("Delete all messages in trash folders?"),
 			       GTK_STOCK_YES, GTK_STOCK_NO, NULL)
 		    != G_ALERTDEFAULT)
 			return;

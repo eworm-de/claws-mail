@@ -295,6 +295,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->apply_sub = FALSE;
 	item->mark_queue = NULL;
 	item->data = NULL;
+	item->parent_stype = -1;
 
 	item->prefs = folder_item_prefs_new();
 
@@ -3559,12 +3560,67 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 					  SpecialFolderItemType type) 
 {
 	FolderItem *cur = item;
+
+	/* if we already know it, make it short */
+	if (item->parent_stype != -1) {
+		return (item->parent_stype == type);
+	}
+	
+	/* if we don't, find the type from the first possible parent,
+	 * and set our parent type to be faster next time */
 	while (cur) {
 		if (cur->stype == type || cur->parent_stype == type) {
 			item->parent_stype = type;
 			return TRUE;
 		}
 		cur = folder_item_parent(cur);
+	}
+	
+	/* if we didn't match what was asked, we didn't return. If our
+	 * parent type is unknown, we may as well find it now to be faster
+	 * later. */
+	if (item->parent_stype == -1) {
+		cur = item;
+		while (cur) {
+			/* here's an exception: Inbox subfolders are normal. */
+			if (item->parent_stype == -1 && cur->stype == F_INBOX 
+			&& item != cur) {
+				debug_print("set item %s parent type to %d "
+					"even if %s is F_INBOX\n",
+					item->path, 0, cur->path);
+				item->parent_stype = F_NORMAL;
+				break;
+			}
+			/* ah, we know this parent's parent's type, we may as 
+			 * well copy it instead of going up the full way */
+			if (cur->parent_stype != -1) {
+				item->parent_stype = cur->parent_stype;
+				debug_print("set item %s parent type to %d "
+					"from %s's parent type\n",
+					item->path, cur->parent_stype, 
+					cur->path);
+				break;
+			}
+			/* we found a parent that has a special type. That's 
+			 * our parent type. */
+			if (cur->stype != F_NORMAL) {
+				debug_print("set item %s parent type to %d "
+					"from %s's type\n",
+					item->path, cur->stype, cur->path);
+				cur->parent_stype = cur->stype;
+				item->parent_stype = cur->stype;
+				break;
+			}
+			/* if we didn't find anything, go up once more */
+			cur = folder_item_parent(cur);
+		}
+		/* as we still didn't find anything, our parents must all be 
+		 * normal. */
+		if (item->parent_stype == -1) {
+			debug_print("set item %s to 0 from default\n", 
+				item->path);
+			item->parent_stype = F_NORMAL;
+		}
 	}
 	return FALSE;
 }

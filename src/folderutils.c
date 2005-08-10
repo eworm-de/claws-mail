@@ -22,6 +22,8 @@
 #include "utils.h"
 #include "prefs_common.h"
 #include "folderutils.h"
+#include "prefs_account.h"
+#include "account.h"
 
 gint folderutils_delete_duplicates(FolderItem *item,
 				   DeleteDuplicatesMode mode)
@@ -65,9 +67,18 @@ gint folderutils_delete_duplicates(FolderItem *item,
 	if (duplist) {
 		switch (mode) {
 		case DELETE_DUPLICATES_REMOVE: {
-			FolderItem *trash = item->folder->trash;
+			FolderItem *trash = NULL;
+			gboolean in_trash = FALSE;
+			PrefsAccount *ac;
 
-			if (folder_has_parent_of_type(item, F_TRASH) || trash == NULL)
+			if (NULL != (ac = account_find_from_item(item))) {
+				trash = account_get_special_folder(ac, F_TRASH);
+				in_trash = (trash != NULL && trash == item);
+			}
+			if (trash == NULL)
+				trash = item->folder->trash;
+
+			if (folder_has_parent_of_type(item, F_TRASH) || trash == NULL || in_trash)
 				folder_item_remove_msgs(item, duplist);
 			else 			
 				folder_item_move_msgs(trash, duplist);

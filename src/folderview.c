@@ -1572,6 +1572,8 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	FolderViewPopup *fpopup;
 	GtkItemFactory *fpopup_factory;
 	GtkWidget *popup;
+	FolderItem *special_trash = NULL;
+	PrefsAccount *ac;
 
 	if (!event) return FALSE;
 
@@ -1636,11 +1638,14 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (fpopup->set_sensitivity != NULL)
 		fpopup->set_sensitivity(fpopup_factory, item);
 
-	if (item == folder->trash &&
+	if (NULL != (ac = account_find_from_item(item)))
+		special_trash = account_get_special_folder(ac, F_TRASH);
+
+	if ((item == folder->trash || item == special_trash) &&
 	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[0], folderview, 1);
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[1], folderview, 1);
-	} else if (item != folder->trash) {
+	} else if (item != folder->trash && (special_trash == NULL || item != special_trash)) {
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
 	}
@@ -1653,7 +1658,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", item->node->parent != NULL);
 	SET_SENS("/Processing...", item->node->parent != NULL);
-	if (item == folder->trash) {
+	if (item == folder->trash || item == special_trash) {
 		GSList *msglist = folder_item_get_msg_list(item);
 		SET_SENS("/Empty trash...", msglist != NULL);
 		procmsg_msg_list_free(msglist);
@@ -1922,15 +1927,21 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	GSList *mlist = NULL;
 	GSList *cur = NULL;
 	if (!folderview->selected) return;
-	
+	FolderItem *special_trash = NULL;
+	PrefsAccount *ac;
+
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	if (item != item->folder->trash) return;
+
+	if (NULL != (ac = account_find_from_item(item)))
+		special_trash = account_get_special_folder(ac, F_TRASH);
+
+	if (item != item->folder->trash && item != special_trash) return;
 	
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
-			       _("Empty all messages in trash?"),
+			       _("Delete all messages in trash?"),
 			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 			return;
 	}
