@@ -3125,7 +3125,23 @@ static void new_account_cb(MainWindow *mainwin, guint action,
 static void account_selector_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	cur_account = (PrefsAccount *)data;
-	main_window_reflect_prefs_all();
+	FolderItem *item = NULL;
+	
+	if (!mainwindow_get_mainwindow())
+		return;
+	main_window_show_cur_account(mainwindow_get_mainwindow());
+	toolbar_update(TOOLBAR_MAIN, mainwindow_get_mainwindow());
+	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	
+	item = folderview_get_selected_item(
+			mainwindow_get_mainwindow()->folderview);
+	if (item) {
+		toolbar_set_compose_button
+			(mainwindow_get_mainwindow()->toolbar,
+			 FOLDER_TYPE(item->folder) == F_NEWS ? 
+			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
+	}
 }
 
 static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)

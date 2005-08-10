@@ -1,3 +1,8 @@
+2005-08-10 [colin]	1.9.13cvs30
+
+	* src/mainwindow.c
+		Fix slowness in account changing
+
 2005-08-10 [colin]	1.9.13cvs29
 
 	* src/folder.c
