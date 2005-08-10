@@ -1,3 +1,10 @@
+2005-08-10 [colin]	1.9.13cvs31
+
+	* src/procmsg.c
+		Fix procmsg_msginfo_new_from_mimeinfo() when
+		the MimeInfo isn't stored in memory. This fixes
+		replying to an attached message.
+
 2005-08-10 [colin]	1.9.13cvs30
 
 	* src/mainwindow.c

@@ -1886,16 +1886,31 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 		mimeinfo->content = MIMECONTENT_FILE;
 		mimeinfo->data.filename = g_strdup(tmpfile);
 		g_free(tmpfile);
-	}
-
-	tmp_msginfo = procheader_parse_file(mimeinfo->data.filename,
-				flags, TRUE, FALSE);
-
-	if (tmp_msginfo != NULL) {
-		tmp_msginfo->folder = src_msginfo->folder;
-		tmp_msginfo->plaintext_file = g_strdup(mimeinfo->data.filename);
+		tmp_msginfo = procheader_parse_file(mimeinfo->data.filename,
+					flags, TRUE, FALSE);
+		if (tmp_msginfo != NULL) {
+			tmp_msginfo->folder = src_msginfo->folder;
+			tmp_msginfo->plaintext_file = g_strdup(mimeinfo->data.filename);
+		} else {
+			g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+		}
 	} else {
-		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+		gchar *tmpfile = get_tmp_file();
+		FILE *fp = fopen(tmpfile, "wb");
+		if (fp && procmime_write_message_rfc822(mimeinfo, fp) >= 0) {
+			tmp_msginfo = procheader_parse_file(
+				tmpfile, flags, TRUE, FALSE);
+		}
+		if (fp)
+			fclose(fp);
+		if (tmp_msginfo != NULL) {
+			tmp_msginfo->folder = src_msginfo->folder;
+			tmp_msginfo->plaintext_file = g_strdup(tmpfile);
+		} else {
+			g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+		}
+		g_free(tmpfile);
+		
 	}
 	
 	return tmp_msginfo;
