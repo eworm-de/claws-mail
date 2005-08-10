@@ -1878,7 +1878,8 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 		g_warning("procmsg_msginfo_new_from_mimeinfo(): unsuitable mimeinfo");
 		return NULL;
 	}
-		    
+	
+	
 	if (mimeinfo->content == MIMECONTENT_MEM) {
 		gchar *tmpfile = get_tmp_file();
 		str_write_to_file(mimeinfo->data.mem, tmpfile);
@@ -1897,12 +1898,17 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 	} else {
 		gchar *tmpfile = get_tmp_file();
 		FILE *fp = fopen(tmpfile, "wb");
-		if (fp && procmime_write_message_rfc822(mimeinfo, fp) >= 0) {
+		if (fp && procmime_write_mimeinfo(mimeinfo, fp) >= 0) {
+			if (fp)
+				fclose(fp);
+			fp = NULL;
 			tmp_msginfo = procheader_parse_file(
-				tmpfile, flags, TRUE, FALSE);
+				tmpfile, flags, 
+				TRUE, FALSE);
 		}
 		if (fp)
 			fclose(fp);
+
 		if (tmp_msginfo != NULL) {
 			tmp_msginfo->folder = src_msginfo->folder;
 			tmp_msginfo->plaintext_file = g_strdup(tmpfile);
