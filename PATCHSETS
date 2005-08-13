@@ -718,3 +718,4 @@
 ( cvs diff -u -r 1.274.2.54 -r 1.274.2.55 src/mainwindow.c;  ) > 1.9.13cvs30.patchset
 ( cvs diff -u -r 1.150.2.35 -r 1.150.2.36 src/procmsg.c;  ) > 1.9.13cvs31.patchset
 ( cvs diff -u -r 1.150.2.36 -r 1.150.2.37 src/procmsg.c;  ) > 1.9.13cvs32.patchset
+( cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/etpan/imap-thread.c;  ) > 1.9.13cvs33.patchset

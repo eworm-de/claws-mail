@@ -2125,33 +2125,54 @@ int imap_threaded_store(Folder * folder, struct mailimap_set * set,
 }
 
 
+#define ENV_BUFFER_SIZE 512
 
 static void do_exec_command(int fd, const char * command,
 			    const char * servername, uint16_t port)
 {
 	int i, maxopen;
-  
+#ifdef SOLARIS
+	char env_buffer[ENV_BUFFER_SIZE];
+#endif
+	
 	if (fork() > 0) {
 		/* Fork again to become a child of init rather than
 		   the etpan client. */
 		exit(0);
 	}
   
+#ifdef SOLARIS
+	if (servername)
+		snprintf(env_buffer, ENV_BUFFER_SIZE,
+			 "ETPANSERVER=%s", servername);
+	else
+		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANSERVER=");
+	putenv(env_buffer);
+#else
 	if (servername)
 		setenv("ETPANSERVER", servername, 1);
 	else
 		unsetenv("ETPANSERVER");
+#endif
   
+#ifdef SOLARIS
+	if (port)
+		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANPORT=%d", port);
+	else
+		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANPORT=");
+	putenv(env_buffer);
+#else
 	if (port) {
 		char porttext[20];
-    
+		
 		snprintf(porttext, sizeof(porttext), "%d", port);
 		setenv("ETPANPORT", porttext, 1);
 	}
 	else {
 		unsetenv("ETPANPORT");
 	}
-  
+#endif
+		
 	/* Not a lot we can do if there's an error other than bail. */
 	if (dup2(fd, 0) == -1)
 		exit(1);

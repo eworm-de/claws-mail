@@ -1,3 +1,8 @@
+2005-08-13 [hoa]	1.9.13cvs33
+
+	* src/etpan/imap-thread.c
+		fixed build on Solaris.
+
 2005-08-10 [colin]	1.9.13cvs32
 
 	* src/procmsg.c
