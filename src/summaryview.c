@@ -4637,7 +4637,8 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	MsgInfo *msginfo;
 	gboolean marked_unread = FALSE;
 
-	if (summary_is_locked(summaryview)) {
+	if (summary_is_locked(summaryview)
+	||  GTK_SCTREE(ctree)->selecting_range) {
 		return;
 	}
 

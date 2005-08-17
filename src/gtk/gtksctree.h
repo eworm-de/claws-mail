@@ -33,6 +33,7 @@ struct _GtkSCTree {
 	gint dnd_select_pending;
 	guint dnd_select_pending_state;
 	gint dnd_select_pending_row;
+	gboolean selecting_range;
 };
 
 struct _GtkSCTreeClass {

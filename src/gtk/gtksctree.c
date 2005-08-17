@@ -214,8 +214,12 @@ select_range (GtkSCTree *sctree, gint row)
 		min = prev_row;
 		max = row;
 	}
-	for (i = min; i <= max; i++)
+	sctree->selecting_range = TRUE;
+	for (i = min; i < max; i++)
 		gtk_clist_select_row (GTK_CLIST (sctree), i, -1);
+
+	sctree->selecting_range = FALSE;
+	gtk_clist_select_row (GTK_CLIST (sctree), max, -1);
 }
 
 /* Handles row selection according to the specified modifier state */

@@ -1,3 +1,13 @@
+2005-08-17 [paul]	1.9.13cvs35
+
+	* src/account.c
+	* src/addressbook.c
+		use new GTK_STOCK_ icons if available
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		faster range select. patch by Colin
+
 2005-08-17 [paul]	1.9.13cvs34
 
 	patches by colin:

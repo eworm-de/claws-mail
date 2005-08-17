@@ -676,7 +676,7 @@ static void account_edit_create(void)
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
 
-#ifdef GTK_STOCK_EDIT
+#if GTK_CHECK_VERSION(2, 6, 0)
 	edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
 #else
 	edit_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
