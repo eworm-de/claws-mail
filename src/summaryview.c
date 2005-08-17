@@ -3581,8 +3581,7 @@ gboolean summary_execute(SummaryView *summaryview)
 		summary_unlock(summaryview);
 		gtk_sctree_select
 			(GTK_SCTREE(ctree),
-			 summaryview->displayed ? summaryview->displayed
-			 : new_selected);
+			 new_selected);
 		summary_lock(summaryview);
 	}
 

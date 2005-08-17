@@ -719,3 +719,4 @@
 ( cvs diff -u -r 1.150.2.35 -r 1.150.2.36 src/procmsg.c;  ) > 1.9.13cvs31.patchset
 ( cvs diff -u -r 1.150.2.36 -r 1.150.2.37 src/procmsg.c;  ) > 1.9.13cvs32.patchset
 ( cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/etpan/imap-thread.c;  ) > 1.9.13cvs33.patchset
+( cvs diff -u -r 1.60.2.24 -r 1.60.2.25 src/addressbook.c;  cvs diff -u -r 1.5.2.2 -r 1.5.2.3 src/addressitem.h;  cvs diff -u -r 1.14.2.7 -r 1.14.2.8 src/editaddress.c;  cvs diff -u -r 1.207.2.56 -r 1.207.2.57 src/folderview.c;  cvs diff -u -r 1.395.2.110 -r 1.395.2.111 src/summaryview.c;  cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/gtk/progressdialog.c;  ) > 1.9.13cvs34.patchset

@@ -1914,7 +1914,7 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	gtk_ctree_node_set_row_data(ctree, node, item);
 	if (normal_style)
 		gtk_ctree_node_set_row_style(ctree, node, normal_style);
-	folderview_sort_folders(folderview, folderview->selected, item->folder);
+	folderview_sort_folders(folderview, parent_node, item->folder);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 }
@@ -2058,7 +2058,7 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 
 		folderview_sort_folders(folderview, 
 			gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), 
-				NULL, folder_item_parent(new_folder)), new_folder->folder);
+				NULL, to_folder), new_folder->folder);
 		folderview_select(folderview, new_folder);
 	} else {
 		statusbar_verbosity_set(FALSE);		

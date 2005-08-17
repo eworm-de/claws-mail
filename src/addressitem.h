@@ -68,6 +68,7 @@ struct _AddressBook_win
 	GtkWidget *label;
 	GtkWidget *statusbar;
 
+	GtkWidget *edit_btn;
 	GtkWidget *del_btn;
 	GtkWidget *reg_btn;
 	GtkWidget *lup_btn;

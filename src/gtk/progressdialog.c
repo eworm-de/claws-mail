@@ -118,7 +118,8 @@ ProgressDialog *progress_dialog_create(void)
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(G_OBJECT(store));
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), TRUE);
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview), TRUE);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview),
+				     prefs_common.enable_rules_hint);
 	gtk_widget_show(treeview);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), treeview);
 	gtk_widget_set_size_request(treeview, -1, 120);
@@ -281,7 +282,7 @@ static gint progress_dialog_insert_account(ProgressDialog *progress,
 		gtk_list_store_set(store, &iter,
 				   PROGRESS_STATE, status,
 				   -1);
-	if (image)
+	if (image) 
 		gtk_list_store_set(store, &iter,
 				   PROGRESS_IMAGE, image,
 				   -1);

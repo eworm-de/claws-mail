@@ -52,7 +52,7 @@ static struct _PersonEdit_dlg {
 	GtkWidget *statusbar;
 	gint status_cid;
 
-	/* Basic data tab */
+	/* User data tab */
 	GtkWidget *entry_name;
 	GtkWidget *entry_first;
 	GtkWidget *entry_last;
@@ -663,6 +663,8 @@ static gboolean email_adding = FALSE, email_saving = FALSE;
 
 static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 {
+	gboolean non_empty = gtk_clist_get_row_data(personeditdlg.clist_email, 0) != NULL;
+
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email))) == 0) {
 		gtk_widget_set_sensitive(personeditdlg.email_add,FALSE);
@@ -671,24 +673,24 @@ static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 		email_saving = FALSE;
 	} else if (list_find_email(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)))) {
 		gtk_widget_set_sensitive(personeditdlg.email_add,FALSE);
-		gtk_widget_set_sensitive(personeditdlg.email_mod,TRUE);
+		gtk_widget_set_sensitive(personeditdlg.email_mod,non_empty);
 		email_adding = FALSE;
-		email_saving = TRUE;
+		email_saving = non_empty;
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.email_add,TRUE);
-		gtk_widget_set_sensitive(personeditdlg.email_mod,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_mod,non_empty);
 		email_adding = TRUE;
-		email_saving = FALSE;
+		email_saving = non_empty;
 	}
 }
 
 static gboolean edit_person_entry_email_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Return) {
-		if (email_adding)
+		if (email_saving)
+			edit_person_email_modify(NULL);		
+		else if (email_adding)
 			edit_person_email_add(NULL);
-		else if (email_saving)
-			edit_person_email_modify(NULL);
 	}
 	return FALSE;
 }
@@ -856,6 +858,8 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
+	gboolean non_empty = gtk_clist_get_row_data(personeditdlg.clist_attrib, 0) != NULL;
+
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname))) == 0) {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
@@ -864,24 +868,24 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 		attrib_saving = FALSE;
 	} else if (list_find_attribute(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)))) {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
-		gtk_widget_set_sensitive(personeditdlg.attrib_mod,TRUE);
+		gtk_widget_set_sensitive(personeditdlg.attrib_mod,non_empty);
 		attrib_adding = FALSE;
-		attrib_saving = TRUE;
+		attrib_saving = non_empty;
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,TRUE);
-		gtk_widget_set_sensitive(personeditdlg.attrib_mod,FALSE);
+		gtk_widget_set_sensitive(personeditdlg.attrib_mod,non_empty);
 		attrib_adding = TRUE;
-		attrib_saving = FALSE;
+		attrib_saving = non_empty;
 	}
 }
 
 static gboolean edit_person_entry_att_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Return) {
-		if (attrib_adding)
-			edit_person_attrib_add(NULL);
-		else if (attrib_saving)
+		if (attrib_saving)
 			edit_person_attrib_modify(NULL);
+		else if (attrib_adding)
+			edit_person_attrib_add(NULL);
 	}
 	return FALSE;
 }
@@ -1024,9 +1028,9 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 static void addressbook_edit_person_create( gboolean *cancelled ) {
 	addressbook_edit_person_dialog_create( cancelled );
-	addressbook_edit_person_page_basic( PAGE_BASIC, _( "Basic Data" ) );
-	addressbook_edit_person_page_email( PAGE_EMAIL, _( "E-Mail Address" ) );
-	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "User Attributes" ) );
+	addressbook_edit_person_page_basic( PAGE_BASIC, _( "User Data" ) );
+	addressbook_edit_person_page_email( PAGE_EMAIL, _( "E-Mail Addresses" ) );
+	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "Other Attributes" ) );
 	gtk_widget_show_all( personeditdlg.window );
 }
 
