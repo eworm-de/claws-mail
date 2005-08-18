@@ -486,8 +486,6 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	g_free(srccharset);
 
 	cache = msgcache_new();
-	g_hash_table_freeze(cache->msgnum_table);
-	g_hash_table_freeze(cache->msgid_table);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
 		if (swapping)
@@ -539,8 +537,6 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
 	}
 	fclose(fp);
-	g_hash_table_thaw(cache->msgnum_table);
-	g_hash_table_thaw(cache->msgid_table);
 
 	if (conv != NULL) {
 		if (conv->free != NULL)

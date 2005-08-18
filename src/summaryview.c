@@ -5091,7 +5091,7 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 
 	if (mff->account->mark_crosspost_read) {
 		line = g_string_sized_new(128);
-		g_string_sprintf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
+		g_string_printf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
 		debug_print("nfcp: checking <%s>", line->str);
 		if (mff->newsart && 
 		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {

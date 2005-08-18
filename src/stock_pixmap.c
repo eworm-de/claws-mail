@@ -604,7 +604,7 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 		gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
 				   data->overlay_width, data->overlay_height);
 	}
-	gdk_gc_destroy(gc_pix);
+	g_object_unref(gc_pix);
 	
 	return TRUE;
 }

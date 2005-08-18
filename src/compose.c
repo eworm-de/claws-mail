@@ -4992,7 +4992,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 
 	color[0] = quote_color;
-	cmap = gdk_window_get_colormap(window->window);
+	cmap = gdk_drawable_get_colormap(window->window);
 	gdk_colormap_alloc_colors(cmap, color, 1, FALSE, TRUE, success);
 	if (success[0] == FALSE) {
 		GtkStyle *style;

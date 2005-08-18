@@ -96,9 +96,7 @@ void pine_free( PineFile *pineFile ) {
 	g_free( pineFile->path );
 
 	/* Free unique address table */
-	g_hash_table_freeze( pineFile->uniqTable );
 	g_hash_table_foreach_remove( pineFile->uniqTable, pine_free_table_vis, NULL );
-	g_hash_table_thaw( pineFile->uniqTable );
 	g_hash_table_destroy( pineFile->uniqTable );
 
 	/* Clear pointers */

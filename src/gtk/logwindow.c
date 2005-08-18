@@ -109,7 +109,7 @@ void log_window_init(LogWindow *logwin)
 	logwin->warn_color  = color[1];
 	logwin->error_color = color[2];
 
-	colormap = gdk_window_get_colormap(logwin->window->window);
+	colormap = gdk_drawable_get_colormap(logwin->window->window);
 	gdk_colormap_alloc_colors(colormap, color, 3, FALSE, TRUE, success);
 
 	for (i = 0; i < 3; i++) {

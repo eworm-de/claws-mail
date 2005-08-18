@@ -1,3 +1,27 @@
+2005-08-18 [martin]	1.9.13cvs36
+
+	* commitHelper
+	    added my login
+	* src/addrcache.c
+	* src/addrharvest.c
+	* src/addrindex.c
+	* src/compose.c
+	* src/grouplistdialog.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/msgcache.c
+	* src/mutt.c
+	* src/pine.c
+	* src/prefs_account.c
+	* src/prefs_themes.c
+	* src/stock_pixmap.c
+	* src/summaryview.c
+	* src/gtk/about.c
+	* src/gtk/logwindow.c
+	    removed deprecated glib and gdk stuff
+	* src/plugins/pgpcore/select-keys.c
+	    convert attributes from locale to utf8
+
 2005-08-17 [paul]	1.9.13cvs35
 
 	* src/account.c

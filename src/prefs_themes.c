@@ -856,7 +856,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	for (i = 0; buf[i] != '\0'; buf[i++] = '_');
 	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(btn_more)->child), buf);
 	g_free(buf);
-	cmap = gdk_window_get_colormap((mainwindow_get_mainwindow())->window->window);
+	cmap = gdk_drawable_get_colormap((mainwindow_get_mainwindow())->window->window);
 	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
 	if (success[0] == TRUE && success[1] == TRUE) {
 		gtk_widget_ensure_style(GTK_BIN(btn_more)->child);

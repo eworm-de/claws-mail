@@ -54,6 +54,9 @@ fi;
 if [ "$name" == "f" -o "$name" == "darkok" ]; then
 	name="darko";
 fi;
+if [ "$name" == "msp" ]; then
+	name="martin";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do

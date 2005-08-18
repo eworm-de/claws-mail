@@ -183,9 +183,7 @@ static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data
 */
 static void addrcache_free_item_hash( GHashTable *table ) {
 	g_return_if_fail( table != NULL );
-	g_hash_table_freeze( table );
 	g_hash_table_foreach_remove( table, addrcache_free_item_vis, NULL );
-	g_hash_table_thaw( table );
 }
 
 /*

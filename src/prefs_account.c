@@ -795,7 +795,7 @@ static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_da
 
 	encvalue = g_malloc0(B64LEN(strlen(value)) + 1);
 	base64_encode(encvalue, (gchar *) value, strlen(value));
-	g_string_sprintfa(str, "%s=%s", (gchar *) key, encvalue);
+	g_string_append_printf(str, "%s=%s", (gchar *) key, encvalue);
 	g_free(encvalue);
 }
 

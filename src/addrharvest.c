@@ -113,9 +113,7 @@ static void addrharvest_free_table( AddressHarvester* harvester ) {
 	harvester->headerTable = NULL;
 
 	/* Free duplicate table */
-	g_hash_table_freeze( harvester->dupTable );
 	g_hash_table_foreach_remove( harvester->dupTable, addrharvest_free_table_vis, NULL );
-	g_hash_table_thaw( harvester->dupTable );
 	g_hash_table_destroy( harvester->dupTable );
 	harvester->dupTable = NULL;
 }

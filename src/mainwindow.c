@@ -1038,7 +1038,7 @@ MainWindow *main_window_create(SeparateType type)
 	color[2] = folderview->color_new;
 	color[3] = folderview->color_op;
 
-	colormap = gdk_window_get_colormap(window->window);
+	colormap = gdk_drawable_get_colormap(window->window);
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)

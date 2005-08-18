@@ -168,6 +168,8 @@ set_row (GtkCList *clist, gpgme_key_t key)
     const char *text[N_COL_TITLES];
     char *algo_buf;
     int row;
+    gssize by_read = 0, by_written = 0;
+    gchar *ret_str;
 
     /* first check whether the key is capable of encryption which is not
      * the case for revoked, expired or sign-only keys */
@@ -184,9 +186,17 @@ set_row (GtkCList *clist, gpgme_key_t key)
     text[COL_KEYID] = s;
 
     s = key->uids->name;
+    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
+    if (ret_str && by_written) {
+        s = ret_str;
+    }
     text[COL_NAME] = s;
 
     s = key->uids->email;
+    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
+    if (ret_str && by_written) {
+        s = ret_str;
+    }
     text[COL_EMAIL] = s;
 
     switch (key->uids->validity)

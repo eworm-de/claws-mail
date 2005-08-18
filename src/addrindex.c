@@ -579,9 +579,7 @@ static gboolean addrindex_free_cache_cb( gpointer key, gpointer value, gpointer 
  * Free hash table of address cache items.
  */
 static void addrindex_free_cache_hash( GHashTable *table ) {
-	g_hash_table_freeze( table );
 	g_hash_table_foreach_remove( table, addrindex_free_cache_cb, NULL );
-	g_hash_table_thaw( table );
 	g_hash_table_destroy( table );
 }
 

@@ -93,9 +93,7 @@ void mutt_free( MuttFile *muttFile ) {
 	g_free( muttFile->path );
 
 	/* Free unique address table */
-	g_hash_table_freeze( muttFile->uniqTable );
 	g_hash_table_foreach_remove( muttFile->uniqTable, mutt_free_table_vis, NULL );
-	g_hash_table_thaw( muttFile->uniqTable );
 	g_hash_table_destroy( muttFile->uniqTable );
 
 	/* Clear pointers */
