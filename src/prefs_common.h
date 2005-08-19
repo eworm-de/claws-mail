@@ -273,6 +273,7 @@ struct _PrefsCommon
 	/* Interface */
 	gboolean sep_folder;
 	gboolean sep_msg;
+	gint statusbar_update_step;
 	gboolean emulate_emacs;
 	gboolean always_show_msg;
 	gboolean mark_as_read_on_new_window;

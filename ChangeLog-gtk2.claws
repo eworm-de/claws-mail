@@ -1,3 +1,12 @@
+2005-08-19 [colin]	1.9.13cvs43
+
+	* src/inc.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add an hidden pref to allow modifying the
+		update stepping in incorporation.
+		Patch by wwp.
+
 2005-08-19 [colin]	1.9.13cvs42
 
 	* src/compose.c

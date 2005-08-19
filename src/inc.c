@@ -641,7 +641,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			g_free(filename);
 
 			if (pop3_session->ac_prefs->filter_on_recv)
-				statusbar_progress_all(cur++,total, 10);
+				statusbar_progress_all(cur++,total, prefs_common.statusbar_update_step);
 
 			if (!pop3_session->ac_prefs->filter_on_recv || 
 			    !procmsg_msginfo_filter(msginfo))

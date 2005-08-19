@@ -492,6 +492,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"separate_message", "FALSE", &prefs_common.sep_msg, P_BOOL,
 	 NULL, NULL, NULL},
+	{"statusbar_update_step", "10", &prefs_common.statusbar_update_step, P_INT,
+	 NULL, NULL, NULL},
 
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
