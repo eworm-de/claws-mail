@@ -663,7 +663,7 @@ static gboolean email_adding = FALSE, email_saving = FALSE;
 
 static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_clist_get_row_data(personeditdlg.clist_email, 0) != NULL;
+	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_email), 0) != NULL;
 
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email))) == 0) {
@@ -858,7 +858,7 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_clist_get_row_data(personeditdlg.clist_attrib, 0) != NULL;
+	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_attrib), 0) != NULL;
 
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname))) == 0) {

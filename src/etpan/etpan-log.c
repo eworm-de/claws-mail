@@ -159,7 +159,6 @@ extern char **backtrace_symbols (void *__const *__array, int __size) __THROW;
 void etpan_log_stack(void)
 {
   void * buffer[256];
-  char ** table;
   int num_frames;
   int i;
   char output[1024];

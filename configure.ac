@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=13
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=38
+EXTRA_VERSION=39
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -128,6 +128,10 @@ case "$target" in
 *-darwin*)
 	CFLAGS="$CFLAGS -no-cpp-precomp -fno-common"
 	;;
+*-*-mingw*)
+	CFLAGS="$CFLAGS -mms-bitfields"
+	LIBS="$LIBS -lws2_32"
+	;;
 esac
   
 dnl Checks for iconv
@@ -151,11 +155,21 @@ AM_GLIB_GNU_GETTEXT
 dnl AM_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
+AC_ARG_WITH(localedir,
+	[  --with-localedir=DIR    Locale directory],
+	[localedir="$withval"])
 AC_SUBST(localedir)
 
 manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
+AC_ARG_WITH(manualdir,
+	[  --with-manualdir=DIR    Manual directory],
+	[manualdir="$withval"])
 AC_SUBST(manualdir)
+
 faqdir='${prefix}/${DATADIRNAME}/${PACKAGE}/faq'
+AC_ARG_WITH(faqdir,
+	[  --with-faqdir=DIR       FAQ directory],
+	[faqdir="$withval"])
 AC_SUBST(faqdir)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
@@ -209,7 +223,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
-		 wchar.h wctype.h locale.h)
+		 wchar.h wctype.h locale.h netdb.h)
 
 dnl alf - Check for apache installation f*ck up. apache may also install an 
 dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined
@@ -251,7 +265,7 @@ AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
 	       wcsstr wcswcs iswalnum iswspace towlower \
 	       wcslen wcscpy wcsncpy \
 	       uname flock lockf inet_aton inet_addr \
-	       fchmod mkstemp)
+	       fchmod mkstemp truncate getuid regcomp)
 
 dnl *****************
 dnl ** common code **

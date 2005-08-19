@@ -26,6 +26,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "utils.h"
 #include "mgutils.h"
 #include "mutt.h"
 #include "addritem.h"

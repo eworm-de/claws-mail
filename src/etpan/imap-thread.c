@@ -1489,7 +1489,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		
 		r = fclose(f);
 		if (r == EOF) {
-			unlink(param->filename);
+			g_unlink(param->filename);
 			goto close;
 		}
 		goto free;
@@ -1500,7 +1500,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 	close:
 		close(fd);
 	unlink:
-		unlink(param->filename);
+		g_unlink(param->filename);
 	
 	free:
 		if (mmap_string_unref(content) != 0)
