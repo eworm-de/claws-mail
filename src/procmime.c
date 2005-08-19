@@ -1846,24 +1846,26 @@ typedef enum {
     ENC_AS_TOKEN,
     ENC_AS_QUOTED_STRING,
     ENC_AS_EXTENDED,
+    ENC_TO_ASCII,
 } EncodeAs;
 
 typedef struct _ParametersData {
 	FILE *fp;
 	guint len;
+	guint ascii_only;
 } ParametersData;
 
 static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 {
 	gchar *param = key;
-	gchar *val = value, *valpos;
+	gchar *val = value, *valpos, *tmp;
 	ParametersData *pdata = (ParametersData *)user_data;
 	GString *buf = g_string_new("");
 
 	EncodeAs encas = ENC_AS_TOKEN;
 
 	for (valpos = val; *valpos != 0; valpos++) {
-		if (!IS_ASCII(*valpos)) {
+		if (!IS_ASCII(*valpos) || *valpos == '"') {
 			encas = ENC_AS_EXTENDED;
 			break;
 		}
@@ -1886,7 +1888,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		case ';':
 		case ':':
 		case '\\':
-		case '"':
+		case '\'':
         	case '/':
 		case '[':
 		case ']':
@@ -1896,10 +1898,24 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 			continue;
 		}
 	}
+	
+	if (encas == ENC_AS_EXTENDED && pdata->ascii_only == TRUE) 
+		encas = ENC_TO_ASCII;
 
 	switch (encas) {
 	case ENC_AS_TOKEN:
 		g_string_append_printf(buf, "%s=%s", param, val);
+		break;
+
+	case ENC_TO_ASCII:
+		tmp = g_strdup(val);
+		g_strcanon(tmp, 
+			" ()<>@,';:\\/[]?=.0123456789"
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			"abcdefghijklmnopqrstuvwxyz",
+			'_');
+		g_string_append_printf(buf, "%s=\"%s\"", param, tmp);
+		g_free(tmp);
 		break;
 
 	case ENC_AS_QUOTED_STRING:
@@ -1922,7 +1938,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 				g_string_append_printf(buf, "%%%s", hexstr);
 			}
 		}
-		break;
+		break;		
 	}
 	
 	if (buf->str && strlen(buf->str)) {
@@ -1944,6 +1960,7 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 	debug_print("procmime_write_mime_header\n");
 	
 	pdata->fp = fp;
+	pdata->ascii_only = FALSE;
 
 	for (type_table = mime_type_table; type_table->str != NULL; type_table++)
 		if (mimeinfo->type == type_table->type) {
@@ -1951,6 +1968,7 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 				"Content-Type: %s/%s", type_table->str, mimeinfo->subtype);
 			fprintf(fp, "%s", buf);
 			pdata->len = strlen(buf);
+			pdata->ascii_only = TRUE;
 			g_free(buf);
 			break;
 		}
@@ -1983,6 +2001,8 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 		g_free(buf);
 
 		pdata->fp = fp;
+		pdata->ascii_only = FALSE;
+
 		g_hash_table_foreach(mimeinfo->dispositionparameters, write_parameters, pdata);
 		g_free(pdata);
 		fprintf(fp, "\n");

@@ -2603,7 +2603,9 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			gchar *content_type;
 
 			content_type = procmime_get_content_type_str(child->type, child->subtype);
-			partname = procmime_mimeinfo_get_parameter(child, "name");
+			partname = procmime_mimeinfo_get_parameter(child, "filename");
+			if (partname == NULL)
+				partname = procmime_mimeinfo_get_parameter(child, "name");
 			if (partname == NULL)
 				partname = "";
 			compose_attach_append(compose, outfile, 

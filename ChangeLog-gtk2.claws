@@ -1,3 +1,15 @@
+2005-08-19 [colin]	1.9.13cvs42
+
+	* src/compose.c
+	* src/procmime.c
+		Workaround for broken MUAs: encode 
+		Content-type: name: as ASCII and 
+		Content-Disposition: filename: as
+		per rfc2231
+	* src/prefs_account.c
+		Fix invisible-ness of SMTP SSL prefs
+		in NNTP accounts
+
 2005-08-19 [paul]	1.9.13cvs41
 
 	* src/compose.c

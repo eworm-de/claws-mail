@@ -2749,7 +2749,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(ssl.pop_frame);
 		gtk_widget_hide(ssl.imap_frame);
 		gtk_widget_show(ssl.nntp_frame);
-		gtk_widget_hide(ssl.send_frame);
+		gtk_widget_show(ssl.send_frame);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
