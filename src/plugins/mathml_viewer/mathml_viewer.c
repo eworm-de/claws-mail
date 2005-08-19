@@ -63,7 +63,7 @@ static void mathml_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeI
 	debug_print("mathml_show_mimepart\n");
 
 	if (viewer->filename != NULL) {
-		unlink(viewer->filename);
+		g_unlink(viewer->filename);
 		g_free(viewer->filename);
 	}
 
@@ -94,7 +94,7 @@ static void mathml_destroy_viewer(MimeViewer *_viewer)
 	debug_print("mathml_destroy_viewer\n");
 
 	gtk_widget_unref(GTK_WIDGET(viewer->scrollwin));
-	unlink(viewer->filename);
+	g_unlink(viewer->filename);
 	g_free(viewer->filename);
     	g_free(viewer);
 }

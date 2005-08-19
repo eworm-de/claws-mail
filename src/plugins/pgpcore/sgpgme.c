@@ -229,7 +229,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 {
 	gpgme_data_t data = NULL;
 	gpgme_error_t err;
-	FILE *fp = fopen(mimeinfo->data.filename, "rb");
+	FILE *fp = g_fopen(mimeinfo->data.filename, "rb");
 	gchar *tmp_file = NULL;
 
 	if (!fp) 
@@ -238,13 +238,13 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	tmp_file = get_tmp_file();
 	copy_file_part(fp, mimeinfo->offset, mimeinfo->length, tmp_file);
 	fclose(fp);
-	fp = fopen(tmp_file, "rb");
+	fp = g_fopen(tmp_file, "rb");
 	debug_print("tmp file %s\n", tmp_file);
 	if (!fp) 
 		return NULL;
 	
 	err = gpgme_data_new_from_file(&data, tmp_file, 1);
-	unlink(tmp_file);
+	g_unlink(tmp_file);
 	g_free(tmp_file);
 
 	debug_print("data %p (%d %d)\n", data, mimeinfo->offset, mimeinfo->length);

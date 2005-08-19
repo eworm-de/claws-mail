@@ -172,7 +172,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	debug_print("Checking PGP/MIME signature\n");
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
-	fp = fopen(parent->data.filename, "rb");
+	fp = g_fopen(parent->data.filename, "rb");
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
@@ -303,7 +303,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
     	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = fopen(fname, "wb")) == NULL) {
+    	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
         	FILE_OP_ERROR(fname, "fopen");
         	g_free(fname);
         	gpgme_data_release(plain);

@@ -304,7 +304,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
     	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = fopen(fname, "wb")) == NULL) {
+    	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
         	FILE_OP_ERROR(fname, "fopen");
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -439,7 +439,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (msgcontent->content == MIMECONTENT_FILE &&
 	    msgcontent->data.filename != NULL) {
-		unlink(msgcontent->data.filename);
+		g_unlink(msgcontent->data.filename);
 		g_free(msgcontent->data.filename);
 	}
 	msgcontent->data.mem = g_strdup(tmp);
@@ -539,7 +539,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	if (msgcontent->content == MIMECONTENT_FILE &&
 	    msgcontent->data.filename != NULL) {
-		unlink(msgcontent->data.filename);
+		g_unlink(msgcontent->data.filename);
 		g_free(msgcontent->data.filename);
 	}
 	msgcontent->data.mem = g_strdup(tmp);

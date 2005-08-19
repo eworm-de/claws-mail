@@ -155,6 +155,7 @@ struct _PrefsCommon
 
 	gboolean show_searchbar;
 	gboolean expand_thread;
+	gboolean swap_from;
 	gboolean use_addr_book;
 	gchar *date_format;
 

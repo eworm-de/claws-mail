@@ -2324,6 +2324,8 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
 	FolderType ftype = F_UNKNOWN;
+	gchar *from_text = NULL, *to_text = NULL;
+	gboolean should_swap = FALSE;
 
 	text[col_pos[S_COL_MARK]]   = NULL;
 	text[col_pos[S_COL_STATUS]] = NULL;
@@ -2343,18 +2345,47 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
+	if (ftype != F_NEWS && prefs_common.swap_from && msginfo->from && msginfo->to) {
+		gchar *addr = NULL;
+		
+		addr = g_strdup(msginfo->from);
+
+		if (addr) {
+			extract_address(addr);
+			if (account_find_from_address(addr)) {
+				should_swap = TRUE;
+			}
+			g_free(addr);
+		}
+	}
+
 	if (!prefs_common.use_addr_book) {
-		text[col_pos[S_COL_FROM]] = msginfo->fromname ? 
-						msginfo->fromname :
-						_("(No From)");
+		from_text = msginfo->fromname ? 
+				msginfo->fromname :
+				_("(No From)");
 	} else {
 		gchar *tmp = summary_complete_address(msginfo->fromname);
-		text[col_pos[S_COL_FROM]] = tmp ? tmp : (msginfo->fromname ?
-							 msginfo->fromname: 
-							 	_("(No From)"));
+		from_text = tmp ? tmp : (msginfo->fromname ?
+					 msginfo->fromname: 
+					 	_("(No From)"));
 	}
-	text[col_pos[S_COL_TO]] = msginfo->to ? msginfo->to : 
-		_("(No Recipient)");
+	
+	to_text = msginfo->to ? msginfo->to : 
+		   (msginfo->cc ? msginfo->cc :
+		     (msginfo->newsgroups ? msginfo->newsgroups : _("(No Recipient)")
+		     )
+		   );
+
+	if (!should_swap) {
+		text[col_pos[S_COL_FROM]] = from_text;
+		text[col_pos[S_COL_TO]] = to_text;
+	} else {
+		gchar *tmp = NULL;
+		tmp = g_strconcat("-->", to_text, NULL);
+		text[col_pos[S_COL_FROM]] = tmp;
+		tmp = g_strconcat("<--", from_text, NULL);
+		text[col_pos[S_COL_TO]] = tmp;
+	}
 	
 	if (msginfo->folder && msginfo->folder->folder)
 		ftype = msginfo->folder->folder->klass->type; 

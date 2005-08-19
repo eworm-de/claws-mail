@@ -93,7 +93,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 				debug_print("Error: %s\n", cl_strerror(ret));
     		}
 
-		unlink(outfile);
+		g_unlink(outfile);
 	}
 
 	return params->is_infected;

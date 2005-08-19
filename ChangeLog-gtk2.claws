@@ -1,3 +1,19 @@
+2005-08-19 [paul]	1.9.13cvs40
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+		reintroduce enable_swap_from as a
+		hidden pref. patch by Colin
+	* src/quote_fmt_parse.y
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		tidy up. patch by Colin
+
 2005-08-19 [paul]	1.9.13cvs39
 
 	* configure.ac

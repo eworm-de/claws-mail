@@ -239,6 +239,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Display: Summary View */
+	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
+	 NULL, NULL, NULL},
 	{"use_address_book", "FALSE", &prefs_common.use_addr_book, P_BOOL,
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,

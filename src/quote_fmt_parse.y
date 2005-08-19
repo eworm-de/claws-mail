@@ -361,7 +361,7 @@ static void quote_fmt_insert_file(const gchar *filename)
 	FILE *file;
 	char buffer[256];
 	
-	if ((file = fopen(filename, "rb")) != NULL) {
+	if ((file = g_fopen(filename, "rb")) != NULL) {
 		while (fgets(buffer, sizeof(buffer), file)) {
 			INSERT(buffer);
 		}
