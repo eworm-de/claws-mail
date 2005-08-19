@@ -505,7 +505,7 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 			return NULL;
 	}
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		g_free(file);
 		return NULL;
@@ -702,7 +702,7 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 	
 	g_return_val_if_fail(file != NULL, NULL);
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
@@ -900,11 +900,11 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	FILE *fp, *outfp;
 	gchar buf[BUFFSIZE];
 	
-	if ((fp = fopen(in, "rb")) == NULL) {
+	if ((fp = g_fopen(in, "rb")) == NULL) {
 		FILE_OP_ERROR(in, "fopen");
 		return -1;
 	}
-	if ((outfp = fopen(out, "wb")) == NULL) {
+	if ((outfp = g_fopen(out, "wb")) == NULL) {
 		FILE_OP_ERROR(out, "fopen");
 		fclose(fp);
 		return -1;
@@ -944,7 +944,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
 			g_warning("can't save message\n");
-			unlink(tmp);
+			g_unlink(tmp);
 			return -1;
 		}
 	} else {
@@ -995,7 +995,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	prtmp = g_strdup_printf("%s%cprinttmp.%08x",
 				get_mime_tmp_dir(), G_DIR_SEPARATOR, id++);
 
-	if ((prfp = fopen(prtmp, "wb")) == NULL) {
+	if ((prfp = g_fopen(prtmp, "wb")) == NULL) {
 		FILE_OP_ERROR(prtmp, "fopen");
 		g_free(prtmp);
 		fclose(tmpfp);
@@ -1286,7 +1286,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 
 	g_return_val_if_fail(file != NULL, -1);
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -1439,7 +1439,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
     		/* write to temporary file */
     		tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
                     	    G_DIR_SEPARATOR, (gint)file);
-    		if ((tmpfp = fopen(tmp, "wb")) == NULL) {
+    		if ((tmpfp = g_fopen(tmp, "wb")) == NULL) {
             		FILE_OP_ERROR(tmp, "fopen");
             		newsval = -1;
 			alertpanel_error(_("Could not create temporary file for news sending."));
@@ -1469,7 +1469,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
                             			 newsac->nntp_server);
     				}
 			}
-			unlink(tmp);
+			g_unlink(tmp);
 		}
 		g_free(tmp);
 	}
@@ -1494,7 +1494,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	}
 
 	if (tmp_enc_file != NULL) {
-		unlink(tmp_enc_file);
+		g_unlink(tmp_enc_file);
 		free(tmp_enc_file);
 		tmp_enc_file = NULL;
 	}
@@ -1940,7 +1940,7 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 		}
 	} else {
 		gchar *tmpfile = get_tmp_file();
-		FILE *fp = fopen(tmpfile, "wb");
+		FILE *fp = g_fopen(tmpfile, "wb");
 		if (fp && procmime_write_mimeinfo(mimeinfo, fp) >= 0) {
 			if (fp)
 				fclose(fp);

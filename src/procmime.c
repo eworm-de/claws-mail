@@ -102,7 +102,7 @@ static gboolean free_func(GNode *node, gpointer data)
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
 		if (mimeinfo->tmp)
-			unlink(mimeinfo->data.filename);
+			g_unlink(mimeinfo->data.filename);
 		g_free(mimeinfo->data.filename);
 		break;
 
@@ -289,7 +289,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	    encoding == ENC_BINARY)
 		return TRUE;
 
-	infp = fopen(mimeinfo->data.filename, "rb");
+	infp = g_fopen(mimeinfo->data.filename, "rb");
 	if (!infp) {
 		perror("fopen");
 		return FALSE;
@@ -387,7 +387,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	stat(tmpfilename, &statbuf);
 	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-		unlink(mimeinfo->data.filename);
+		g_unlink(mimeinfo->data.filename);
 	if (mimeinfo->data.filename != NULL)
 		g_free(mimeinfo->data.filename);
 	mimeinfo->data.filename = tmpfilename;
@@ -423,7 +423,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	}
 
 	if (mimeinfo->content == MIMECONTENT_FILE) {
-		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 			g_warning("Can't open file %s\n", mimeinfo->data.filename);
 			return FALSE;
 		}
@@ -447,9 +447,9 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 					fclose(infp);
 					return FALSE;
 				}
-				if ((tmp_fp = fopen(tmp_file, "rb")) == NULL) {
+				if ((tmp_fp = g_fopen(tmp_file, "rb")) == NULL) {
 					FILE_OP_ERROR(tmp_file, "fopen");
-					unlink(tmp_file);
+					g_unlink(tmp_file);
 					g_free(tmp_file);
 					fclose(infp);
 					return FALSE;
@@ -480,7 +480,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 		if (tmp_file) {
 			fclose(tmp_fp);
-			unlink(tmp_file);
+			g_unlink(tmp_file);
 			g_free(tmp_file);
 		}
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
@@ -513,7 +513,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (mimeinfo->content == MIMECONTENT_FILE) {
 		if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-			unlink(mimeinfo->data.filename);
+			g_unlink(mimeinfo->data.filename);
 		g_free(mimeinfo->data.filename);
 	} else if (mimeinfo->content == MIMECONTENT_MEM) {
 		if (mimeinfo->tmp && (mimeinfo->data.mem != NULL))
@@ -543,7 +543,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	if (mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
 		return -1;
 
-	if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+	if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return -1;
 	}
@@ -552,7 +552,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		fclose(infp);
 		return -1;
 	}
-	if ((outfp = fopen(outfile, "wb")) == NULL) {
+	if ((outfp = g_fopen(outfile, "wb")) == NULL) {
 		FILE_OP_ERROR(outfile, "fopen");
 		fclose(infp);
 		return -1;
@@ -568,7 +568,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	fclose(infp);
 	if (fclose(outfp) == EOF) {
 		FILE_OP_ERROR(outfile, "fclose");
-		unlink(outfile);
+		g_unlink(outfile);
 		return -1;
 	}
 
@@ -614,7 +614,7 @@ void renderer_read_config(void)
 	renderer_list = NULL;
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
-	f = fopen(rcpath, "rb");
+	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 	
 	if (f == NULL)
@@ -694,7 +694,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		return NULL;
 	}
 
-	tmpfp = fopen(tmpfile, "rb");
+	tmpfp = g_fopen(tmpfile, "rb");
 	if (tmpfp == NULL) {
 		g_free(tmpfile);
 		return NULL;
@@ -787,7 +787,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 
 	fclose(tmpfp);
 	rewind(outfp);
-	unlink(tmpfile);
+	g_unlink(tmpfile);
 	g_free(tmpfile);
 
 	return outfp;
@@ -1097,10 +1097,10 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 	
-	if ((fp = fopen("/usr/share/mime/globs", "rb")) == NULL) {
+	if ((fp = g_fopen("/usr/share/mime/globs", "rb")) == NULL) {
 		fp_is_glob_file = FALSE;
-		if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
-			if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) 
+		if ((fp = g_fopen("/etc/mime.types", "rb")) == NULL) {
+			if ((fp = g_fopen(SYSCONFDIR "/mime.types", "rb")) 
 				== NULL) {
 				FILE_OP_ERROR(SYSCONFDIR "/mime.types", 
 					"fopen");
@@ -1182,7 +1182,7 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file)
 	size_t total_len = 0;
 	gfloat octet_percentage;
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return ENC_UNKNOWN;
 	}
@@ -1333,7 +1333,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	fp = fopen(mimeinfo->data.filename, "rb");
+	fp = g_fopen(mimeinfo->data.filename, "rb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
@@ -1397,7 +1397,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	fp = fopen(mimeinfo->data.filename, "rb");
+	fp = g_fopen(mimeinfo->data.filename, "rb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
@@ -1829,7 +1829,7 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 	g_return_val_if_fail(filename != NULL, NULL);
 
 	/* Open file */
-	if ((fp = fopen(filename, "rb")) == NULL)
+	if ((fp = g_fopen(filename, "rb")) == NULL)
 		return NULL;
 	/* Skip queue header */
 	while (fgets(buf, sizeof(buf), fp) != NULL)
@@ -2004,7 +2004,7 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	/* write header */
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
-		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
@@ -2064,7 +2064,7 @@ gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
-		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
@@ -2121,7 +2121,7 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 	if (G_NODE_IS_LEAF(mimeinfo->node)) {
 		switch (mimeinfo->content) {
 		case MIMECONTENT_FILE:
-			if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+			if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 				FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 				return -1;
 			}

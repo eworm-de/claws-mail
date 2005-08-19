@@ -84,13 +84,13 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, msginfo->account_server,
 			   "-", msginfo->account_login, NULL);
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", msginfo->account_server,
 				   "-", sanitized_uid, NULL);
-		if ((fp = fopen(path, "rb")) == NULL) {
+		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(sanitized_uid);
 			g_free(path);
@@ -162,14 +162,14 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
 			   "-", sanitized_uid, NULL);
 
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		perror("fopen1");
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", tinfo->account_server,
 				   "-", tinfo->account_login, NULL);
-		if ((fp = fopen(path, "rb")) == NULL) {
+		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
 		}
@@ -182,7 +182,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	
 	g_free(sanitized_uid);
 
-	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
+	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
 		perror("fopen2");
 		fclose(fp);
 		g_free(pathnew);
@@ -234,12 +234,12 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	g_free(path);
 	g_free(pathnew);
 	
-	if ((fp = fopen(filename,"rb")) == NULL) {
+	if ((fp = g_fopen(filename,"rb")) == NULL) {
 		perror("fopen3");
 		goto bail;
 	}
 	pathnew = g_strdup_printf("%s.new", filename);
-	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
+	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
 		perror("fopen4");
 		fclose(fp);
 		g_free(pathnew);
@@ -265,7 +265,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	}
 	fclose(fpnew);
 	fclose(fp);
-	unlink(filename);
+	g_unlink(filename);
 	rename(pathnew, filename);
 	g_free(pathnew);
 	msginfo->planned_download = download;
@@ -341,13 +341,13 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, 
 			   server, "-", sanitized_uid, NULL);
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", server,
 				   "-", sanitized_uid, NULL);
-		if ((fp = fopen(path, "rb")) == NULL) {
+		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(sanitized_uid);
 			g_free(path);

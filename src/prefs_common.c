@@ -589,7 +589,7 @@ GList *prefs_common_read_history(const gchar *history)
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return NULL;
@@ -632,7 +632,7 @@ void prefs_common_save_history(const gchar *history, GList *list)
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
-	if ((fp = fopen(path, "wb")) == NULL) {
+	if ((fp = g_fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return;

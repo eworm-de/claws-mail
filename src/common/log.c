@@ -56,7 +56,7 @@ void set_log_file(const gchar *filename)
 		g_free(backupname);
 	}
 
-	log_fp = fopen(filename, "wb");
+	log_fp = g_fopen(filename, "wb");
 	if (!log_fp)
 		FILE_OP_ERROR(filename, "fopen");
 }

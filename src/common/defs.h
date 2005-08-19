@@ -24,6 +24,12 @@
 #  include "config.h"
 #endif
 
+#include <glibconfig.h>
+
+#ifdef G_OS_WIN32
+#  include <glib/gwin32.h>
+#endif
+
 #if HAVE_PATHS_H
 #  include <paths.h>
 #endif
@@ -37,11 +43,7 @@
 #define QUEUE_DIR		"queue"
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
-#ifndef CLAWS /* easier to sync */
-#define RC_DIR			".sylpheed"
-#else
-#define RC_DIR			CFG_RC_DIR	
-#endif /* CLAWS */
+#define RC_DIR			CFG_RC_DIR
 #define NEWS_CACHE_DIR		"newscache"
 #define IMAP_CACHE_DIR		"imapcache"
 #define MBOX_CACHE_DIR		"mboxcache"
@@ -80,7 +82,11 @@
 #define CACHE_VERSION		24
 #define MARK_VERSION		2
 
-#define DEFAULT_SIGNATURE	".signature"
+#ifdef G_OS_WIN32
+#  define DEFAULT_SIGNATURE	"signature.txt"
+#else
+#  define DEFAULT_SIGNATURE	".signature"
+#endif
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"
 #define DEFAULT_INC_PROGRAM	"inc"
 /* #define DEFAULT_INC_PATH	"/usr/bin/imget" */

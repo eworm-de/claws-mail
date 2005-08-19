@@ -599,7 +599,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
 
-	if ((fp = fopen(tmp, "wb")) == NULL) {
+	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		return -1;
 	}
@@ -674,7 +674,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
-		unlink(tmp);
+		g_unlink(tmp);
 		return -1;
 	}
 
@@ -683,13 +683,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (!queue) queue = folder_get_default_queue();
 	if (!queue) {
 		g_warning("can't find queue folder\n");
-		unlink(tmp);
+		g_unlink(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
 		g_warning("can't queue the message\n");
-		unlink(tmp);
+		g_unlink(tmp);
 		return -1;
 	}
 		

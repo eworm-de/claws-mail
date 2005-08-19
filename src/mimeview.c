@@ -459,7 +459,7 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 	fname = mimeview->file;
 	if (!fname) return;
 
-	if ((fp = fopen(fname, "rb")) == NULL) {
+	if ((fp = g_fopen(fname, "rb")) == NULL) {
 		FILE_OP_ERROR(fname, "fopen");
 		return;
 	}

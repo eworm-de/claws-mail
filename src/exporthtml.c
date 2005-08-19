@@ -284,12 +284,12 @@ void exporthtml_set_attributes( ExportHtmlCtl *ctl, const gboolean value ) {
 static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 	FILE *cssFile;
 
-	cssFile = fopen( fileSpec, "rb" );
+	cssFile = g_fopen( fileSpec, "rb" );
 	if( cssFile ) {
 		fclose( cssFile );
 		return MGU_SUCCESS;
 	}
-	cssFile = fopen( fileSpec, "wb" );
+	cssFile = g_fopen( fileSpec, "wb" );
 	if( ! cssFile ) {
 		return MGU_OPEN_FILE;
 	}
@@ -342,12 +342,12 @@ static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 static gint exporthtml_create_css_full( const gchar *fileSpec ) {
 	FILE *cssFile;
 
-	cssFile = fopen( fileSpec, "rb" );
+	cssFile = g_fopen( fileSpec, "rb" );
 	if( cssFile ) {
 		fclose( cssFile );
 		return MGU_SUCCESS;
 	}
-	cssFile = fopen( fileSpec, "wb" );
+	cssFile = g_fopen( fileSpec, "wb" );
 	if( ! cssFile ) {
 		return MGU_OPEN_FILE;
 	}
@@ -990,7 +990,7 @@ void exporthtml_process(
 	gchar *dsName;
 	static gchar *title;
 
-	htmlFile = fopen( ctl->path, "wb" );
+	htmlFile = g_fopen( ctl->path, "wb" );
 	if( ! htmlFile ) {
 		/* Cannot open file */
 		printf( "Cannot open file for write\n" );

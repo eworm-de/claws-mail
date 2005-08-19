@@ -386,7 +386,7 @@ GSList *news_get_group_list(Folder *folder)
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
 	g_free(path);
 
-	if ((fp = fopen(filename, "rb")) == NULL) {
+	if ((fp = g_fopen(filename, "rb")) == NULL) {
 		NNTPSession *session;
 		gint ok;
 
@@ -413,7 +413,7 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 
-		if ((fp = fopen(filename, "rb")) == NULL) {
+		if ((fp = g_fopen(filename, "rb")) == NULL) {
 			FILE_OP_ERROR(filename, "fopen");
 			g_free(filename);
 			return NULL;
@@ -493,7 +493,7 @@ gint news_post(Folder *folder, const gchar *file)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
 	g_return_val_if_fail(file != NULL, -1);
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -733,7 +733,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	if (tmp == NULL)
 		return -1;
 
-	if ((tmpfp = fopen(tmp, "wb")) == NULL) {
+	if ((tmpfp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		return -1;
 	}

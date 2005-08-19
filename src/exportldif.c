@@ -501,7 +501,7 @@ void exportldif_process( ExportLdifCtl *ctl, AddressCache *cache )
 	ItemFolder *rootFolder;
 	FILE *ldifFile;
 
-	ldifFile = fopen( ctl->path, "wb" );
+	ldifFile = g_fopen( ctl->path, "wb" );
 	if( ! ldifFile ) {
 		/* Cannot open file */
 		ctl->retVal = MGU_OPEN_FILE;

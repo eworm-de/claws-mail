@@ -184,7 +184,7 @@ void account_read_config_all(void)
 	debug_print("Reading all config for each account...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
-	if ((fp = fopen(rcpath, "rb")) == NULL) {
+	if ((fp = g_fopen(rcpath, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
 		return;

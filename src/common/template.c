@@ -1,7 +1,7 @@
 /*
  * Sylpheed templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2001-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <ctype.h>
 
@@ -40,7 +39,7 @@ static Template *template_load(gchar *filename)
 	gchar buf[BUFFSIZE];
 	gint bytes_read;
 
-	if ((fp = fopen(filename, "rb")) == NULL) {
+	if ((fp = g_fopen(filename, "rb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		return NULL;
 	}
@@ -125,8 +124,8 @@ GSList *template_read_config(void)
 {
 	const gchar *path;
 	gchar *filename;
-	DIR *dp;
-	struct dirent *de;
+	GDir *dir;
+	const gchar *dir_name;
 	struct stat s;
 	Template *tmpl;
 	GSList *tmpl_list = NULL;
@@ -140,18 +139,16 @@ GSList *template_read_config(void)
 			return NULL;
 	}
 
-	if ((dp = opendir(path)) == NULL) {
-		FILE_OP_ERROR(path, "opendir");
+	if ((dir = g_dir_open(path, 0, NULL)) == NULL) {
+		g_warning("failed to open directory: %s\n", path);
 		return NULL;
 	}
 
-	while ((de = readdir(dp)) != NULL) {
-		if (*de->d_name == '.') continue;
-
+	while ((dir_name = g_dir_read_name(dir)) != NULL) {
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S,
-				       de->d_name, NULL);
+				       dir_name, NULL);
 
-		if (stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
+		if (g_stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
 			debug_print("%s:%d %s is not an ordinary file\n",
 				    __FILE__, __LINE__, filename);
 			continue;
@@ -164,7 +161,7 @@ GSList *template_read_config(void)
 		g_free(filename);
 	}
 
-	closedir(dp);
+	g_dir_close(dir);
 
 	return tmpl_list;
 }
@@ -201,7 +198,7 @@ void template_write_config(GSList *tmpl_list)
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 				       itos(tmpl_num), NULL);
 
-		if ((fp = fopen(filename, "wb")) == NULL) {
+		if ((fp = g_fopen(filename, "wb")) == NULL) {
 			FILE_OP_ERROR(filename, "fopen");
 			g_free(filename);
 			return;

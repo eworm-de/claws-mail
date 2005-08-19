@@ -129,7 +129,7 @@ void pine_print_file( PineFile *pineFile, FILE *stream ) {
  */
 static gint pine_open_file( PineFile* pineFile ) {
 	if( pineFile->path ) {
-		pineFile->file = fopen( pineFile->path, "rb" );
+		pineFile->file = g_fopen( pineFile->path, "rb" );
 		if( ! pineFile->file ) {
 			pineFile->retVal = MGU_OPEN_FILE;
 			return pineFile->retVal;
@@ -677,7 +677,7 @@ gchar *pine_find_file( void ) {
 	strcat( str, PINE_HOME_FILE );
 
 	/* Attempt to open */
-	if( ( fp = fopen( str, "rb" ) ) != NULL ) {
+	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {

@@ -233,7 +233,7 @@ GSList *procheader_get_header_list_from_file(const gchar *file)
 	FILE *fp;
 	GSList *hlist;
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
@@ -472,7 +472,7 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 	if (!S_ISREG(s.st_mode))
 		return NULL;
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
@@ -995,7 +995,7 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
        
 	g_return_val_if_fail(msginfo != NULL, -1);
 	file = procmsg_get_message_file_path(msginfo);
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
                FILE_OP_ERROR(file, "fopen");
                g_free(file);
                return -1;
@@ -1003,7 +1003,7 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
 	val = procheader_get_one_field(buf,len, fp, hentry);
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
-		unlink(file);
+		g_unlink(file);
 		g_free(file);
 		return -1;
 	}

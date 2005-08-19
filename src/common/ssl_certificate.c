@@ -111,7 +111,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 			  cert->host, ".", port, ".cert", NULL);
 
 	g_free(port);
-	fp = fopen(file, "wb");
+	fp = g_fopen(file, "wb");
 	if (fp == NULL) {
 		g_free(file);
 		debug_print("Can't save certificate !\n");
@@ -233,7 +233,7 @@ void ssl_certificate_delete_from_disk(SSLCertificate *cert)
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
 			  cert->host, ".", buf, ".cert", NULL);
-	unlink (file);
+	g_unlink (file);
 	g_free(buf);
 	g_free(file);
 }
@@ -263,7 +263,7 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean
 			  fqdn_host, ".", buf, ".cert", NULL);
 
 	g_free(buf);
-	fp = fopen(file, "rb");
+	fp = g_fopen(file, "rb");
 	if (fp == NULL) {
 		g_free(file);
 		g_free(fqdn_host);

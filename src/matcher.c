@@ -849,7 +849,7 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 	if (file == NULL)
 		return FALSE;
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		g_free(file);
 		return result;
@@ -1514,7 +1514,7 @@ void prefs_matcher_read_config(void)
 	prefs_filtering_clear();
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, NULL);
-	f = fopen(rcpath, "rb");
+	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 
 	if (f != NULL) {
@@ -1527,7 +1527,7 @@ void prefs_matcher_read_config(void)
 		/* printf("reading filtering\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     FILTERING_RC, NULL);
-		f = fopen(rcpath, "rb");
+		f = g_fopen(rcpath, "rb");
 		g_free(rcpath);
 		
 		if (f != NULL) {
@@ -1538,7 +1538,7 @@ void prefs_matcher_read_config(void)
 		/* printf("reading scoring\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     SCORING_RC, NULL);
-		f = fopen(rcpath, "rb");
+		f = g_fopen(rcpath, "rb");
 		g_free(rcpath);
 		
 		if (f != NULL) {

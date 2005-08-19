@@ -25,7 +25,9 @@
 #endif
 
 #include <glib.h>
-#include <netdb.h>
+#if HAVE_NETDB_H
+#  include <netdb.h>
+#endif
 
 typedef struct _SockInfo	SockInfo;
 
@@ -67,6 +69,9 @@ struct _SockInfo
 	GIOCondition condition;
 };
 
+gint sock_init				(void);
+gint sock_cleanup			(void);
+
 gint sock_set_io_timeout		(guint sec);
 
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
@@ -79,9 +84,11 @@ struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
+#ifdef G_OS_UNIX
 gint sock_connect_async			(const gchar *hostname, gushort port,
 					 SockConnectFunc func, gpointer data);
 gint sock_connect_async_cancel		(gint id);
+#endif
 
 /* Basic I/O functions */
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)

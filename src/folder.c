@@ -2316,7 +2316,7 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 	gint msgnum = 0;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = fopen(file, "rb")) == NULL)
+	if ((fp = g_fopen(file, "rb")) == NULL)
 		return 0;
 
 	if ((folder_has_parent_of_type(dest, F_QUEUE)) || 
@@ -2507,7 +2507,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 				lastnum = num;
 
 			if (num >= 0 && remove_source) {
-				if (unlink(fileinfo->file) < 0)
+				if (g_unlink(fileinfo->file) < 0)
 					FILE_OP_ERROR(fileinfo->file, "unlink");
 			}
 

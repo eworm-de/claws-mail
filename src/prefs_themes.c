@@ -188,7 +188,7 @@ static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 		if (!((base[0] == '.') || (base[0] == '.' && base[1] == '.')))
 			g_warning("prefs_themes_file_remove(): subdir in theme dir skipped.\n");
 	}
-	else if (0 != unlink(filename)) {
+	else if (0 != g_unlink(filename)) {
 		(*status) = g_strdup(filename);
 	}
 	g_free(base);
@@ -686,7 +686,7 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 	}
 	else {
 		sinfo = g_strconcat(path, G_DIR_SEPARATOR_S, THEMEINFO_FILE, NULL);
-		finfo = fopen(sinfo, "r");
+		finfo = g_fopen(sinfo, "r");
 		if (finfo == NULL) {
 			info->name = g_strdup(_("No info file available for this theme"));
 			info->author = g_strdup(_("Unknown"));

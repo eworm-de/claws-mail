@@ -638,7 +638,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	*buf_size=0;
 
 	if( pilotFile->path ) {
-		in = fopen( pilotFile->path, "rb" );
+		in = g_fopen( pilotFile->path, "rb" );
 		if( !in ) {
 			return MGU_OPEN_FILE;
 		}
@@ -833,8 +833,8 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 		return MGU_BAD_ARGS;
 	}
 
-	in = fopen( pilotFile->path, "rb" );
-	if( ! in ) {
+	in = g_fopen( pilotFile->path, "rb" );
+	if (!in) {
 		return MGU_OPEN_FILE;
 	}
 
@@ -963,7 +963,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	/* Read the PC3 file, if present */
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return MGU_SUCCESS;
-	pc_in = fopen( pcFile, "rb" );
+	pc_in = g_fopen( pcFile, "rb");
 	g_free( pcFile );
 
 	if( pc_in == NULL ) {
@@ -1781,7 +1781,7 @@ gchar *jpilot_find_pilotdb( void ) {
 	strcat( str, JPILOT_DBHOME_FILE );
 
 	/* Attempt to open */
-	if( ( fp = fopen( str, "rb" ) ) != NULL ) {
+	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {

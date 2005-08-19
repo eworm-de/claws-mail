@@ -291,7 +291,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 	g_return_val_if_fail(file != NULL, NULL);
 
 	if (mode == DATA_WRITE) {
-		if ((fp = fopen(file, "wb")) == NULL) {
+		if ((fp = g_fopen(file, "wb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
 			return NULL;
 		}
@@ -303,7 +303,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 	}
 
 	/* check version */
-	if ((fp = fopen(file, "rb")) == NULL)
+	if ((fp = g_fopen(file, "rb")) == NULL)
 		debug_print("Mark/Cache file '%s' not found\n", file);
 	else {
 		if (buf && buf_size > 0)
@@ -324,7 +324,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 	if (fp) {
 		/* reopen with append mode */
 		fclose(fp);
-		if ((fp = fopen(file, "ab")) == NULL)
+		if ((fp = g_fopen(file, "ab")) == NULL)
 			FILE_OP_ERROR(file, "fopen");
 	} else {
 		/* open with overwrite mode if mark file doesn't exist or

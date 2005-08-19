@@ -146,7 +146,7 @@ load_domain( const char *filename )
     size_t to_read;
     char *read_ptr;
 
-    fp = fopen( filename, "rb" );
+    fp = g_fopen( filename, "rb" );
     if( !fp )
        return NULL; /* can't open the file */
     /* we must know about the size of the file */

@@ -1,3 +1,71 @@
+2005-08-19 [paul]	1.9.13cvs38
+
+	sync with main:
+
+	* src/account.c
+	* src/action.c
+	* src/addrbook.c
+	* src/addrcache.c
+	* src/addrharvest.c
+	* src/addrindex.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/crash.c
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/folder.c
+	* src/image_viewer.c
+	* src/inc.c
+	* src/inc.h
+	* src/jpilot.c
+	* src/ldif.c
+	* src/main.c
+	* src/matcher.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/mh.c
+	* src/mimeview.c
+	* src/msgcache.c
+	* src/mutt.c
+	* src/news.c
+	* src/partial_download.c
+	* src/pine.c
+	* src/pop.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_gtk.c
+	* src/prefs_themes.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/recv.c
+	* src/send_message.c
+	* src/simple-gettext.c
+	* src/sourcewindow.c
+	* src/textview.c
+	* src/vcard.c
+	* src/common/defs.h
+	* src/common/log.c
+	* src/common/plugin.c
+	* src/common/prefs.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/ssl_certificate.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/common/xml.c
+	* src/gtk/about.c
+	added wrappers for C library function that
+		take pathname arguments.
+		enabled compilation with MinGW.
+		use GDir instead of directly using opendir().
+		added rename_force().
+
 2005-08-19 [paul]	1.9.13cvs37
 	
 	patches by Colin:

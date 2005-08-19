@@ -42,7 +42,7 @@ PrefFile *prefs_read_open(const gchar *path)
 
 	g_return_val_if_fail(path != NULL, NULL);
 
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		return NULL;
 	}
@@ -79,7 +79,7 @@ PrefFile *prefs_write_open(const gchar *path)
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
-	if ((fp = fopen(tmppath, "wb")) == NULL) {
+	if ((fp = g_fopen(tmppath, "wb")) == NULL) {
 		FILE_OP_ERROR(tmppath, "fopen");
 		g_free(tmppath);
 		return NULL;
@@ -164,7 +164,7 @@ gint prefs_file_close(PrefFile *pfile)
 	tmppath = g_strconcat(path, ".tmp", NULL);
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmppath, "fclose");
-		unlink(tmppath);
+		g_unlink(tmppath);
 		g_free(path);
 		g_free(tmppath);
 		return -1;
@@ -174,7 +174,7 @@ gint prefs_file_close(PrefFile *pfile)
 		bakpath = g_strconcat(path, ".bak", NULL);
 		if (rename(path, bakpath) < 0) {
 			FILE_OP_ERROR(path, "rename");
-			unlink(tmppath);
+			g_unlink(tmppath);
 			g_free(path);
 			g_free(tmppath);
 			g_free(bakpath);
@@ -184,7 +184,7 @@ gint prefs_file_close(PrefFile *pfile)
 
 	if (rename(tmppath, path) < 0) {
 		FILE_OP_ERROR(tmppath, "rename");
-		unlink(tmppath);
+		g_unlink(tmppath);
 		g_free(path);
 		g_free(tmppath);
 		g_free(bakpath);
@@ -216,7 +216,7 @@ gint prefs_file_close_revert(PrefFile *pfile)
 		tmppath = g_strconcat(pfile->path, ".tmp", NULL);
 	fclose(pfile->fp);
 	if (pfile->writing) {
-		if (unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
+		if (g_unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
 		g_free(tmppath);
 	}
 	g_free(pfile->path);
@@ -279,7 +279,7 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 			}
 		}
 	} else {
-		if ((pfile->orig_fp = fopen(pfile->path, "rb")) != NULL) {
+		if ((pfile->orig_fp = g_fopen(pfile->path, "rb")) != NULL) {
 			gboolean block_matched = FALSE;
 
 			while (fgets(buf, sizeof(buf), pfile->orig_fp) != NULL) {

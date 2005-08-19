@@ -32,13 +32,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <time.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <errno.h>
 
 #include "main.h"
 #include "inc.h"
@@ -400,8 +393,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	}
 
 	dialog->dialog = progress;
-	gettimeofday(&dialog->progress_tv, NULL);
-	gettimeofday(&dialog->folder_tv, NULL);
+	g_get_current_time(&dialog->progress_tv);
+	g_get_current_time(&dialog->folder_tv);
 	dialog->queue_list = NULL;
 	dialog->cur_row = 0;
 
@@ -964,17 +957,17 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 						IncSession *inc_session)
 {
-	struct timeval tv_cur;
-	struct timeval tv_result;
+	GTimeVal tv_cur;
+	GTimeVal tv_result;
 	gint msec;
 
-	gettimeofday(&tv_cur, NULL);
+	g_get_current_time(&tv_cur);
 
 	tv_result.tv_sec = tv_cur.tv_sec - inc_dialog->progress_tv.tv_sec;
 	tv_result.tv_usec = tv_cur.tv_usec - inc_dialog->progress_tv.tv_usec;
 	if (tv_result.tv_usec < 0) {
 		tv_result.tv_sec--;
-		tv_result.tv_usec += 1000000;
+		tv_result.tv_usec += G_USEC_PER_SEC;
 	}
 
 	msec = tv_result.tv_sec * 1000 + tv_result.tv_usec / 1000;
@@ -1080,7 +1073,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	} else
 		inbox = folder_get_default_inbox();
 	if (!inbox) {
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 
@@ -1090,7 +1083,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(
 			dropfolder, file, NULL, TRUE)) < 0) {
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 
@@ -1326,7 +1319,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 
 	msgs = proc_mbox(dest, tmp_mbox, TRUE);
 
-	unlink(tmp_mbox);
+	g_unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 

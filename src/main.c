@@ -36,7 +36,9 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <signal.h>
+#ifdef G_OS_UNIX
+#  include <signal.h>
+#endif
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
 # define SN_API_NOT_YET_FROZEN
@@ -254,8 +256,10 @@ int main(int argc, char *argv[])
 	crash_install_handlers();
 #endif
 	install_basic_sighandlers();
+	sock_init();
 
-	/* check and create unix domain socket */
+	/* check and create unix domain socket for remote operation */
+#ifdef G_OS_UNIX
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -270,7 +274,7 @@ int main(int argc, char *argv[])
 		lock_socket_remove();
 		return 0;
 	}
-
+#endif
 	g_thread_init(NULL);
 	/* gdk_threads_init(); */
 
@@ -318,12 +322,13 @@ int main(int argc, char *argv[])
 	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
 
-	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
-		if (rename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
-			   RC_DIR G_DIR_SEPARATOR_S "sylpheed.log.bak") < 0)
+	if (is_file_exist("sylpheed.log")) {
+		if (rename_force("sylpheed.log", "sylpheed.log.bak") < 0)
 			FILE_OP_ERROR("sylpheed.log", "rename");
 	}
-	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
+	set_log_file("sylpheed.log");
+
+	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
 	folder_system_init();
 	prefs_common_read_config();
@@ -371,10 +376,12 @@ int main(int argc, char *argv[])
 	folderview = mainwin->folderview;
 
 	/* register the callback of unix domain socket input */
+#ifdef G_OS_UNIX
 	lock_socket_tag = gdk_input_add(lock_socket,
 					GDK_INPUT_READ | GDK_INPUT_EXCEPTION,
 					lock_socket_input_cb,
 					mainwin);
+#endif
 
 	prefs_account_init();
 	account_read_config_all();
@@ -421,8 +428,9 @@ int main(int argc, char *argv[])
 	inc_autocheck_timer_init(mainwin);
 
 	/* ignore SIGPIPE signal for preventing sudden death of program */
+#ifdef G_OS_UNIX
 	signal(SIGPIPE, SIG_IGN);
-
+#endif
 	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
 		main_window_toggle_work_offline(mainwin, TRUE);
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
@@ -528,7 +536,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 #endif
 	/* delete crashfile */
 	if (!cmd.crash)
-		unlink(get_crashfile_name());
+		g_unlink(get_crashfile_name());
 
 	lock_socket_remove();
 
@@ -775,6 +783,9 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
+
+	sock_cleanup();
+
 	gtk_main_quit();
 }
 
@@ -792,7 +803,11 @@ gchar *get_socket_name(void)
 	if (filename == NULL) {
 		filename = g_strdup_printf("%s%csylpheed-%d",
 					   g_get_tmp_dir(), G_DIR_SEPARATOR,
+#if HAVE_GETUID
 					   getuid());
+#else
+					   0);						
+#endif
 	}
 
 	return filename;
@@ -818,7 +833,7 @@ static gint prohibit_duplicate_launch(void)
 	path = get_socket_name();
 	uxsock = fd_connect_unix(path);
 	if (uxsock < 0) {
-		unlink(path);
+		g_unlink(path);
 		return fd_open_unix(path);
 	}
 
@@ -899,6 +914,7 @@ static gint prohibit_duplicate_launch(void)
 
 static gint lock_socket_remove(void)
 {
+#ifdef G_OS_UNIX
 	gchar *filename;
 
 	if (lock_socket < 0) return -1;
@@ -907,7 +923,8 @@ static gint lock_socket_remove(void)
 		gdk_input_remove(lock_socket_tag);
 	fd_close(lock_socket);
 	filename = get_socket_name();
-	unlink(filename);
+	g_unlink(filename);
+#endif
 
 	return 0;
 }

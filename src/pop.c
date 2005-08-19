@@ -575,13 +575,13 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 			   "-", sanitized_uid, NULL);
 			   
 	g_free(sanitized_uid);
-	if ((fp = fopen(path, "rb")) == NULL) {
+	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", ac_prefs->recv_server,
 				   "-", ac_prefs->userid, NULL);
-		if ((fp = fopen(path, "rb")) == NULL) {
+		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
 			session->uidl_table = table;
@@ -652,7 +652,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 	
 	g_free(sanitized_uid);
 
-	if ((fp = fopen(path, "wb")) == NULL) {
+	if ((fp = g_fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return -1;
@@ -680,7 +680,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 
 	g_return_val_if_fail(file != NULL, -1);
 
-	if ((fp = fopen(file, "wb")) == NULL) {
+	if ((fp = g_fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -704,7 +704,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 			FILE_OP_ERROR(file, "fwrite");
 			g_warning("can't write to file: %s\n", file);
 			fclose(fp);
-			unlink(file);
+			g_unlink(file);
 			return -1;
 		}
 
@@ -730,7 +730,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 		FILE_OP_ERROR(file, "fwrite");
 		g_warning("can't write to file: %s\n", file);
 		fclose(fp);
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 	if (data[len - 1] != '\r' && data[len - 1] != '\n') {
@@ -738,14 +738,14 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 			FILE_OP_ERROR(file, "fputc");
 			g_warning("can't write to file: %s\n", file);
 			fclose(fp);
-			unlink(file);
+			g_unlink(file);
 			return -1;
 		}
 	}
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 

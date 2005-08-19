@@ -33,6 +33,7 @@
 #include "addrcache.h"
 
 #include "base64.h"
+#include "utils.h"
 
 #define	LDIF_SEP_TAG    ':'
 #define	LDIF_LANG_TAG   ';'
@@ -267,7 +268,7 @@ void ldif_print_file( LdifFile *ldifFile, FILE *stream ) {
 static gint ldif_open_file( LdifFile* ldifFile ) {
 	/* printf( "Opening file\n" ); */
 	if( ldifFile->path ) {
-		ldifFile->file = fopen( ldifFile->path, "rb" );
+		ldifFile->file = g_fopen( ldifFile->path, "rb" );
 		if( ! ldifFile->file ) {
 			/* printf( "can't open %s\n", ldifFile->path ); */
 			ldifFile->retVal = MGU_OPEN_FILE;

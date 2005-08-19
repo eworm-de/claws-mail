@@ -38,6 +38,7 @@
 #include "xml.h"
 #include "addrquery.h"
 #include "addr_compl.h"
+#include "utils.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
@@ -1711,7 +1712,7 @@ gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, newFile, NULL );
 	addrIndex->retVal = MGU_OPEN_FILE;
 #ifdef DEV_STANDALONE
-	fp = fopen( fileSpec, "wb" );
+	fp = g_fopen( fileSpec, "wb" );
 	g_free( fileSpec );
 	if( fp ) {
 		fputs( "<?xml version=\"1.0\" ?>\n", fp );

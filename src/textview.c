@@ -500,7 +500,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
 
-		fp = fopen(mimeinfo->data.filename, "rb");
+		fp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(fp, mimeinfo->offset, SEEK_SET);
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
@@ -538,7 +538,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			gchar *uri_str;
 			FILE *fp;
 
-			fp = fopen(mimeinfo->data.filename, "rb");
+			fp = g_fopen(mimeinfo->data.filename, "rb");
 			fseek(fp, mimeinfo->offset, SEEK_SET);
 
 			filename = procmime_get_tmp_file_name(mimeinfo);
@@ -751,10 +751,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);
 		if (procmime_get_part(filename, mimeinfo) == 0) {
-			tmpfp = fopen(filename, "rb");
+			tmpfp = g_fopen(filename, "rb");
 			textview_show_html(textview, tmpfp, conv);
 			fclose(tmpfp);
-			unlink(filename);
+			g_unlink(filename);
 		}
 		g_free(filename);
 	} else if (!g_ascii_strcasecmp(mimeinfo->subtype, "enriched")) {
@@ -762,14 +762,14 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);
 		if (procmime_get_part(filename, mimeinfo) == 0) {
-			tmpfp = fopen(filename, "rb");
+			tmpfp = g_fopen(filename, "rb");
 			textview_show_ertf(textview, tmpfp, conv);
 			fclose(tmpfp);
-			unlink(filename);
+			g_unlink(filename);
 		}
 		g_free(filename);
 	} else {
-		tmpfp = fopen(mimeinfo->data.filename, "rb");
+		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((fgets(buf, sizeof(buf), tmpfp) != NULL) && 

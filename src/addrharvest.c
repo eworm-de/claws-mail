@@ -679,7 +679,7 @@ static gint addrharvest_readfile(
 	GSList *list;
 	gboolean done;
 
-	msgFile = fopen( fileName, "rb" );
+	msgFile = g_fopen( fileName, "rb" );
 	if( ! msgFile ) {
 		/* Cannot open file */
 		retVal = MGU_OPEN_FILE;

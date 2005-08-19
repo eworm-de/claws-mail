@@ -27,6 +27,7 @@
 
 #include "mgutils.h"
 #include "addrcache.h"
+#include "utils.h"
 
 #define ID_TIME_OFFSET             998000000
 #define ADDRCACHE_MAX_SEARCH_COUNT 1000
@@ -268,7 +269,7 @@ gboolean addrcache_check_file( AddressCache *cache, gchar *path ) {
 	struct stat filestat;
 	retVal = TRUE;
 	if( path ) {
-		if( 0 == stat( path, &filestat ) ) {
+		if( 0 == g_stat( path, &filestat ) ) {
 			if( filestat.st_mtime == cache->modifyTime ) retVal = FALSE;
 		}
 	}
@@ -283,7 +284,7 @@ gboolean addrcache_mark_file( AddressCache *cache, gchar *path ) {
 	gboolean retVal = FALSE;
 	struct stat filestat;
 	if( path ) {
-		if( 0 == stat( path, &filestat ) ) {
+		if( 0 == g_stat( path, &filestat ) ) {
 			cache->modifyTime = filestat.st_mtime;
 			retVal = TRUE;
 		}

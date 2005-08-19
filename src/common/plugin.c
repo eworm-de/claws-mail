@@ -128,7 +128,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 	deps_file = g_strconcat(tmp, ".deps", NULL);
 	g_free(tmp);
 	
-	fp = fopen(deps_file, "rb");
+	fp = g_fopen(deps_file, "rb");
 	g_free(deps_file);
 	
 	if (!fp)

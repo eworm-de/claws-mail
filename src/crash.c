@@ -544,7 +544,7 @@ static void crash_cleanup_exit(void)
 {
 	extern gchar *get_socket_name(void);
 	const char *filename = get_socket_name();
-	unlink(filename);
+	g_unlink(filename);
 }
 
 #endif

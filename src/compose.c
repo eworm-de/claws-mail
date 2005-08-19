@@ -66,9 +66,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-/* #include <sys/utsname.h> */
 #include <stdlib.h>
-#include <sys/wait.h>
+#if HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
 #include <signal.h>
 #include <errno.h>
 #include <libgen.h>
@@ -298,6 +299,7 @@ static gboolean attach_property_key_pressed	(GtkWidget	*widget,
 						 gboolean	*cancelled);
 
 static void compose_exec_ext_editor		(Compose	*compose);
+#ifdef G_OS_UNIX
 static gint compose_exec_ext_editor_real	(const gchar	*file);
 static gboolean compose_ext_editor_kill		(Compose	*compose);
 static gboolean compose_input_cb		(GIOChannel	*source,
@@ -305,6 +307,7 @@ static gboolean compose_input_cb		(GIOChannel	*source,
 						 gpointer	 data);
 static void compose_set_ext_editor_sensitive	(Compose	*compose,
 						 gboolean	 sensitive);
+#endif /* G_OS_UNIX */
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
@@ -2337,7 +2340,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 	g_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return COMPOSE_INSERT_READ_ERROR;
 	}
@@ -2419,7 +2422,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		alertpanel_notice(_("File %s is empty."), filename);
 		return;
 	}
-	if ((fp = fopen(file, "rb")) == NULL) {
+	if ((fp = g_fopen(file, "rb")) == NULL) {
 		alertpanel_error(_("Can't read %s."), filename);
 		return;
 	}
@@ -3566,7 +3569,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 	size_t len;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = fopen(compose->redirect_filename, "rb")) == NULL) {
+	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(compose->redirect_filename, "fopen");
 		return -1;
 	}
@@ -3804,7 +3807,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	size_t len;
 	gchar *chars, *tmp;
 
-	if ((fp = fopen(file, "wb")) == NULL) {
+	if ((fp = g_fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -3832,7 +3835,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 		FILE_OP_ERROR(file, "fwrite");
 		g_free(chars);
 		fclose(fp);
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 
@@ -3840,7 +3843,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
-		unlink(file);
+		g_unlink(file);
 		return -1;
 	}
 	return 0;
@@ -3940,7 +3943,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	/* write queue header */
 	tmp = g_strdup_printf("%s%cqueue.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
-	if ((fp = fopen(tmp, "wb")) == NULL) {
+	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
 		return -2;
@@ -4042,7 +4045,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		if (compose_redirect_write_to_file(compose, fp) < 0) {
 			lock = FALSE;
 			fclose(fp);
-			unlink(tmp);
+			g_unlink(tmp);
 			g_free(tmp);
 			return -2;
 		}
@@ -4050,7 +4053,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND) < 0) {
 			lock = FALSE;
 			fclose(fp);
-			unlink(tmp);
+			g_unlink(tmp);
 			g_free(tmp);
 			return -2;
 		}
@@ -4058,7 +4061,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
-		unlink(tmp);
+		g_unlink(tmp);
 		g_free(tmp);
 		return -2;
 	}
@@ -4066,18 +4069,18 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	queue = account_get_special_folder(compose->account, F_QUEUE);
 	if (!queue) {
 		g_warning("can't find queue folder\n");
-		unlink(tmp);
+		g_unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
 		g_warning("can't queue the message\n");
-		unlink(tmp);
+		g_unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
-	unlink(tmp);
+	g_unlink(tmp);
 	g_free(tmp);
 
 	if (compose->mode == COMPOSE_REEDIT) {
@@ -4253,8 +4256,6 @@ static gchar *compose_get_header(Compose *compose)
 	gchar *std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
 	GString *header;
 
-	/* struct utsname utsbuf; */
-
 	g_return_val_if_fail(compose->account != NULL, NULL);
 	g_return_val_if_fail(compose->account->address != NULL, NULL);
 
@@ -4335,21 +4336,18 @@ static gchar *compose_get_header(Compose *compose)
 	}
 
 	/* Program version and system info */
-	/* uname(&utsbuf); */
 	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
 	    !compose->newsgroup_list) {
 		g_string_append_printf(header, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			TARGET_ALIAS);
-			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 	if (g_slist_length(compose->newsgroup_list) && !IS_IN_CUSTOM_HEADER("X-Newsreader")) {
 		g_string_append_printf(header, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			TARGET_ALIAS);
-			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 
 	/* custom headers */
@@ -5967,6 +5965,7 @@ static gboolean attach_property_key_pressed(GtkWidget *widget,
 
 static void compose_exec_ext_editor(Compose *compose)
 {
+#ifdef G_OS_UNIX
 	gchar *tmp;
 	pid_t pid;
 	gint pipe_fds[2];
@@ -6030,8 +6029,10 @@ static void compose_exec_ext_editor(Compose *compose)
 	}
 
 	g_free(tmp);
+#endif /* G_OS_UNIX */
 }
 
+#ifdef G_OS_UNIX
 static gint compose_exec_ext_editor_real(const gchar *file)
 {
 	static gchar *def_cmd = "emacs %s";
@@ -6145,11 +6146,11 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
 
-		if (unlink(compose->exteditor_file) < 0)
+		if (g_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
 	} else if (buf[0] == '1') {	/* failed */
 		g_warning("Couldn't exec external editor\n");
-		if (unlink(compose->exteditor_file) < 0)
+		if (g_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
 	} else if (buf[0] == '2') {
 		g_warning("Couldn't write to file\n");
@@ -6194,6 +6195,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn,  sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn,  sensitive);
 }
+#endif /* G_OS_UNIX */
 
 /**
  * compose_undo_state_changed:
@@ -6428,7 +6430,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
-	if ((fp = fopen(tmp, "wb")) == NULL) {
+	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		return;
 	}
@@ -6458,7 +6460,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE) < 0) {
 		fclose(fp);
-		unlink(tmp);
+		g_unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;
 		return;
@@ -6467,7 +6469,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	folder_item_scan(draft);
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
-		unlink(tmp);
+		g_unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;
 		return;
@@ -6502,7 +6504,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 		path = folder_item_fetch_msg(draft, msgnum);
 		g_return_if_fail(path != NULL);
-		if (stat(path, &s) < 0) {
+		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
 			g_free(path);
 			lock = FALSE;
@@ -6610,10 +6612,12 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	Compose *compose = (Compose *)data;
 	AlertValue val;
 
+#ifdef G_OS_UNIX
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;
 	}
+#endif
 
 	if (compose->modified) {
 		val = alertpanel(_("Discard message"),
@@ -7228,7 +7232,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		gchar *tmpfile = get_tmp_file();
 		str_write_to_file((const gchar *)data->data, tmpfile);
 		compose_insert_file(compose, tmpfile);
-		unlink(tmpfile);
+		g_unlink(tmpfile);
 		g_free(tmpfile);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		return;

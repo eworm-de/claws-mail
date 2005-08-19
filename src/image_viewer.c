@@ -145,7 +145,7 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		return;
 	}
 	image_viewer_load_file(imageviewer, imgfile);
-	unlink(imgfile);
+	g_unlink(imgfile);
 	g_free(imgfile);
 }
 

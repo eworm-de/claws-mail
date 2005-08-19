@@ -123,7 +123,7 @@ void mutt_print_file( MuttFile *muttFile, FILE *stream ) {
 */
 static gint mutt_open_file( MuttFile* muttFile ) {
 	if( muttFile->path ) {
-		muttFile->file = fopen( muttFile->path, "rb" );
+		muttFile->file = g_fopen( muttFile->path, "rb" );
 		if( ! muttFile->file ) {
 			muttFile->retVal = MGU_OPEN_FILE;
 			return muttFile->retVal;
@@ -578,7 +578,7 @@ gchar *mutt_find_file( void ) {
 	strcat( str, MUTT_HOME_FILE );
 
 	/* Attempt to open */
-	if( ( fp = fopen( str, "rb" ) ) != NULL ) {
+	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {
