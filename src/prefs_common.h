@@ -96,6 +96,7 @@ struct _PrefsCommon
 	gint undolevels;
 	gint linewrap_len;
 	gboolean linewrap_quote;
+	gboolean linewrap_pastes;
 	gboolean autowrap;
 	gboolean linewrap_at_send;
 	gboolean auto_exteditor;

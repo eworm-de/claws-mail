@@ -1,3 +1,12 @@
+2005-08-19 [paul]	1.9.13cvs41
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_wrapping.c
+		paste with or without wrapping.
+		patch by Colin
+
 2005-08-19 [paul]	1.9.13cvs40
 
 	* src/prefs_common.c

@@ -47,6 +47,7 @@ typedef struct _WrappingPage
 
 	GtkWidget *spinbtn_linewrap;
 	GtkWidget *checkbtn_wrapquote;
+	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 } WrappingPage;
@@ -61,11 +62,12 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *spinbtn_linewrap;
 	GtkWidget *checkbtn_wrapquote;
+	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 	GtkWidget *hbox1;
 
-	table = gtk_table_new(8, 3, FALSE);
+	table = gtk_table_new(10, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -89,9 +91,15 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
+  	checkbtn_wrappastes = gtk_check_button_new_with_label(_("Wrap pasted text"));
+	gtk_widget_show (checkbtn_wrappastes);
+  	gtk_table_attach (GTK_TABLE (table), checkbtn_wrappastes, 0, 1, 5, 6,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
+
   	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
-  	gtk_table_attach (GTK_TABLE (table), hbox1, 0, 1, 5, 6,
+  	gtk_table_attach (GTK_TABLE (table), hbox1, 0, 1, 7, 8,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -115,12 +123,15 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 				     prefs_common.linewrap_at_send);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrapquote),
 				     prefs_common.linewrap_quote);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrappastes),
+				     prefs_common.linewrap_pastes);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_linewrap),
 				  prefs_common.linewrap_len);
 
 	prefs_wrapping->window			= GTK_WIDGET(window);
 	prefs_wrapping->spinbtn_linewrap	= spinbtn_linewrap;
 	prefs_wrapping->checkbtn_wrapquote	= checkbtn_wrapquote;
+	prefs_wrapping->checkbtn_wrappastes	= checkbtn_wrappastes;
 	prefs_wrapping->checkbtn_autowrap	= checkbtn_autowrap;
 	prefs_wrapping->checkbtn_wrapatsend	= checkbtn_wrapatsend;
 
@@ -135,6 +146,8 @@ void prefs_wrapping_save(PrefsPage *_page)
 		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->spinbtn_linewrap));
 	prefs_common.linewrap_quote = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrapquote));
+	prefs_common.linewrap_pastes = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrappastes));
 	prefs_common.autowrap =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autowrap));
 	prefs_common.linewrap_at_send = 

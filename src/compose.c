@@ -388,6 +388,8 @@ static void compose_cut_cb		(Compose	*compose);
 static void compose_copy_cb		(Compose	*compose);
 static void compose_paste_cb		(Compose	*compose);
 static void compose_paste_as_quote_cb	(Compose	*compose);
+static void compose_paste_no_wrap_cb	(Compose	*compose);
+static void compose_paste_wrap_cb	(Compose	*compose);
 static void compose_allsel_cb		(Compose	*compose);
 
 static void compose_advanced_action_cb	(Compose		   *compose,
@@ -525,8 +527,12 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Cu_t"),		"<control>X", compose_cut_cb,    0, NULL},
 	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
 	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
-	{N_("/_Edit/Paste as _quotation"),
+	{N_("/_Edit/Special paste/as _quotation"),
 					NULL, compose_paste_as_quote_cb, 0, NULL},
+	{N_("/_Edit/Special paste/_wrapped"),
+					NULL, compose_paste_wrap_cb, 0, NULL},
+	{N_("/_Edit/Special paste/_unwrapped"),
+					NULL, compose_paste_no_wrap_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
 	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/A_dvanced/Move a character backward"),
@@ -779,6 +785,8 @@ static GdkColor uri_color = {
 	(gushort)0
 };
 
+static GtkTextTag *no_wrap_tag = NULL;
+
 static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
@@ -807,6 +815,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
  	gtk_text_buffer_create_tag(buffer, "link",
 					 "foreground-gdk", &uri_color,
 					 NULL);
+	no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -3039,6 +3048,9 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter, gboo
 		gint  n;
 		gchar *o_walk, *walk, *bp, *ep;
 		gint walk_pos;
+		
+		if (gtk_text_iter_has_tag(&iter, no_wrap_tag) && !force)
+			goto colorize;
 
 		uri_start = uri_stop = -1;
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
@@ -6725,15 +6737,36 @@ static void entry_copy_clipboard(GtkWidget *entry)
 			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
-static void entry_paste_clipboard(GtkWidget *entry)
+static void entry_paste_clipboard(GtkWidget *entry, gboolean wrap)
 {
 	if (GTK_IS_EDITABLE(entry))
 		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
-	else if (GTK_IS_TEXT_VIEW(entry))
-		gtk_text_buffer_paste_clipboard(
-			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
-			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
-			NULL, TRUE);
+	else if (GTK_IS_TEXT_VIEW(entry)) {
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry));
+		GtkTextMark *mark_start = gtk_text_buffer_get_insert(buffer);
+		GtkTextIter start_iter, end_iter;
+		gint start, end;
+		
+		gchar *contents = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+
+		if (contents == NULL)
+			return;
+
+		gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
+		
+		start = gtk_text_iter_get_offset(&start_iter);
+
+		gtk_text_buffer_insert(buffer, &start_iter, contents, strlen(contents));
+		
+		if (!wrap) {
+			end = start + strlen(contents);
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
+			gtk_text_buffer_apply_tag_by_name(buffer, "no_wrap", &start_iter, &end_iter);
+		}
+		
+	}
 }
 
 static void entry_allsel(GtkWidget *entry)
@@ -6769,15 +6802,46 @@ static void compose_copy_cb(Compose *compose)
 		entry_copy_clipboard(compose->focused_editable);
 }
 
+#define BLOCK_WRAP() {							\
+	prev_autowrap = compose->autowrap;				\
+	buffer = gtk_text_view_get_buffer(				\
+					GTK_TEXT_VIEW(compose->text));	\
+	compose->autowrap = FALSE;					\
+									\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+#define UNBLOCK_WRAP() {						\
+	compose->autowrap = prev_autowrap;				\
+	if (compose->autowrap)						\
+		compose_wrap_all(compose);				\
+									\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+
 static void compose_paste_cb(Compose *compose)
 {
+	gint prev_autowrap;
+	GtkTextBuffer *buffer;
+	BLOCK_WRAP();
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		entry_paste_clipboard(compose->focused_editable);
+		entry_paste_clipboard(compose->focused_editable, prefs_common.linewrap_pastes);
+	UNBLOCK_WRAP();
 }
 
 static void compose_paste_as_quote_cb(Compose *compose)
 {
+	gint wrap_quote = prefs_common.linewrap_quote;
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable)) {
 		/* let text_insert() (called directly or at a later time
@@ -6790,8 +6854,32 @@ static void compose_paste_as_quote_cb(Compose *compose)
 		g_object_set_data(G_OBJECT(compose->focused_editable),
 				    "paste_as_quotation",
 				    GINT_TO_POINTER(paste_as_quotation + 1));
-		entry_paste_clipboard(compose->focused_editable);
+		prefs_common.linewrap_quote = prefs_common.linewrap_pastes;
+		entry_paste_clipboard(compose->focused_editable, prefs_common.linewrap_pastes);
+		prefs_common.linewrap_quote = wrap_quote;
 	}
+}
+
+static void compose_paste_no_wrap_cb(Compose *compose)
+{
+	gint prev_autowrap;
+	GtkTextBuffer *buffer;
+	BLOCK_WRAP();
+	if (compose->focused_editable &&
+	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+		entry_paste_clipboard(compose->focused_editable, FALSE);
+	UNBLOCK_WRAP();
+}
+
+static void compose_paste_wrap_cb(Compose *compose)
+{
+	gint prev_autowrap;
+	GtkTextBuffer *buffer;
+	BLOCK_WRAP();
+	if (compose->focused_editable &&
+	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+		entry_paste_clipboard(compose->focused_editable, TRUE);
+	UNBLOCK_WRAP();
 }
 
 static void compose_allsel_cb(Compose *compose)
@@ -7380,11 +7468,16 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 			qmark = prefs_common.quotemark;
 		else
 			qmark = "> ";
+
+		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 		gtk_text_buffer_place_cursor(buffer, iter);
+
 		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text);
 		g_free(new_text);
 		g_object_set_data(G_OBJECT(compose->text), "paste_as_quotation",
 				  GINT_TO_POINTER(paste_as_quotation - 1));
+				  
+		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 	} else
 		gtk_text_buffer_insert(buffer, iter, text, len);
 

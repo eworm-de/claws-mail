@@ -135,6 +135,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"linewrap_quotation", "TRUE", &prefs_common.linewrap_quote, P_BOOL,
 	 NULL, NULL, NULL},
+	{"linewrap_pastes", "TRUE", &prefs_common.linewrap_pastes, P_BOOL,
+	 NULL, NULL, NULL},
 	{"linewrap_auto", "TRUE", &prefs_common.autowrap, P_BOOL,
 	 NULL, NULL, NULL},
 	{"linewrap_before_sending", "FALSE", &prefs_common.linewrap_at_send, P_BOOL, 
