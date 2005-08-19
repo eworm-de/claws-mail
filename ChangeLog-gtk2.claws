@@ -1,3 +1,17 @@
+2005-08-19 [paul]	1.9.13cvs37
+	
+	patches by Colin:
+	* src/compose.c
+		fix privacy settings on re-editing
+		a sent message
+	* src/jpilot.c
+		fix encoding bug
+	* src/folder.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+		flag changing optimisation
+
 2005-08-18 [martin]	1.9.13cvs36
 
 	* commitHelper

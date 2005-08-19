@@ -299,6 +299,11 @@ void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
 					 MsgTmpFlags tmp_flags);
+void procmsg_msginfo_change_flags	(MsgInfo *msginfo, 
+					 MsgPermFlags add_perm_flags, 
+					 MsgTmpFlags add_tmp_flags,
+					 MsgPermFlags rem_perm_flags, 
+					 MsgTmpFlags rem_tmp_flags);
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 

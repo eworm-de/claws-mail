@@ -1395,9 +1395,14 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account, COMPOSE_REEDIT);
-	compose->privacy_system = privacy_system;
-	compose_use_signing(compose, use_signing);
-	compose_use_encryption(compose, use_encryption);
+	if (privacy_system != NULL) {
+		compose->privacy_system = privacy_system;
+		compose_use_signing(compose, use_signing);
+		compose_use_encryption(compose, use_encryption);
+		compose_update_privacy_system_menu_item(compose);
+	} else {
+		activate_privacy_system(compose, account);
+	}
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||

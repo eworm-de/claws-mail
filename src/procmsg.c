@@ -1680,6 +1680,49 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	}
 }
 
+void procmsg_msginfo_change_flags(MsgInfo *msginfo, 
+				MsgPermFlags add_perm_flags, MsgTmpFlags add_tmp_flags,
+				MsgPermFlags rem_perm_flags, MsgTmpFlags rem_tmp_flags)
+{
+	FolderItem *item;
+	MsgInfoUpdate msginfo_update;
+	MsgPermFlags perm_flags_new, perm_flags_old;
+	MsgTmpFlags tmp_flags_old;
+
+	g_return_if_fail(msginfo != NULL);
+	item = msginfo->folder;
+	g_return_if_fail(item != NULL);
+	
+	debug_print("Changing flags for message %d in folder %s\n", msginfo->msgnum, item->path);
+
+	/* Perm Flags handling */
+	perm_flags_old = msginfo->flags.perm_flags;
+	perm_flags_new = (msginfo->flags.perm_flags | add_perm_flags) & ~rem_perm_flags;
+	if ((add_perm_flags & MSG_IGNORE_THREAD) || (perm_flags_old & MSG_IGNORE_THREAD)) {
+		perm_flags_new &= ~(MSG_NEW | MSG_UNREAD);
+	}
+
+	if (perm_flags_old != perm_flags_new) {
+		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
+
+		update_folder_msg_counts(item, msginfo, perm_flags_old);
+
+	}
+
+	/* Tmp flags handling */
+	tmp_flags_old = msginfo->flags.tmp_flags;
+	msginfo->flags.tmp_flags |= add_tmp_flags;
+	msginfo->flags.tmp_flags &= ~rem_tmp_flags;
+
+	/* update notification */
+	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {
+		msginfo_update.msginfo = msginfo;
+		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
+		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
+	}
+}
+
 /*!
  *\brief	check for flags (e.g. mark) in prior msgs of current thread
  *

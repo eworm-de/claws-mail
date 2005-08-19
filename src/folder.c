@@ -1585,9 +1585,8 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 				continue;
 			
 			if (msginfo->flags.perm_flags != permflags) {
-				procmsg_msginfo_set_flags(msginfo,
-					permflags & ~msginfo->flags.perm_flags, 0);
-				procmsg_msginfo_unset_flags(msginfo,
+				procmsg_msginfo_change_flags(msginfo,
+					permflags & ~msginfo->flags.perm_flags, 0,
 					~permflags & msginfo->flags.perm_flags, 0);
 			}
 		}
@@ -1819,8 +1818,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		if (MSG_IS_IGNORE_THREAD(msginfo->flags) && (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
-			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+			procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 		}
 		if ((folder_has_parent_of_type(item, F_OUTBOX) ||
 		     folder_has_parent_of_type(item, F_QUEUE)  ||
@@ -2375,13 +2373,12 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	tmp_flags &= ~(MSG_MOVE | MSG_COPY);
 
 	/* unset flags that are set but should not */
-	procmsg_msginfo_unset_flags(dest,
-				    dest->flags.perm_flags & ~perm_flags,
-				    dest->flags.tmp_flags  & ~tmp_flags);
-	/* set new flags */
-	procmsg_msginfo_set_flags(dest,
+	/* and set new flags */
+	procmsg_msginfo_change_flags(dest,
 				  ~dest->flags.perm_flags & perm_flags,
-				  ~dest->flags.tmp_flags  & tmp_flags);
+				  ~dest->flags.tmp_flags  & tmp_flags,
+				   dest->flags.perm_flags & ~perm_flags,
+				   dest->flags.tmp_flags  & ~tmp_flags);
 }
 
 static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo *flagsource)
