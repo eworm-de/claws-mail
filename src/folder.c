@@ -313,11 +313,32 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	g_node_append(parent->node, item->node);
 }
 
-static gboolean folder_item_remove_func(GNode *node, gpointer data)
+void folder_item_remove(FolderItem *item)
 {
-	FolderItem *item = FOLDER_ITEM(node->data);
+	GNode *node, *start_node;
 	FolderUpdateData hookdata;
 
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->folder->node != NULL);
+
+	start_node = node = item->node;
+	
+	node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+
+	/* remove my children */
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *sub_item = (FolderItem*) node->data;
+			node = node->next;
+			folder_item_remove(sub_item);
+		}
+	}
+	
+	/* remove myself */
 	if (item->cache != NULL) {
 		msgcache_destroy(item->cache);
 		item->cache = NULL;
@@ -328,25 +349,13 @@ static gboolean folder_item_remove_func(GNode *node, gpointer data)
 	hookdata.item = item;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
-	folder_item_destroy(item);
-
-	return FALSE;
-}
-
-void folder_item_remove(FolderItem *item)
-{
-	GNode *node;
-
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->node != NULL);
-	node = item->node;
+	node = start_node;
 
 	if (item->folder->node == node)
 		item->folder->node = NULL;
 
-	g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
-			folder_item_remove_func, NULL);
+	folder_item_destroy(item);
+
 	g_node_destroy(node);
 }
 

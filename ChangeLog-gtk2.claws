@@ -1,3 +1,8 @@
+2005-08-20 [colin]	1.9.13cvs44
+
+	* src/folder.c
+		Fix buf #787 (multilevel delete causes SIGSEGV)
+
 2005-08-19 [colin]	1.9.13cvs43
 
 	* src/inc.c
