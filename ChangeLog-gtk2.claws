@@ -1,3 +1,8 @@
+2005-08-21 [colin]	1.9.13cvs45
+
+	* src/summaryview.c
+		Fix bug #788 (Bogus "From" address displayed)
+
 2005-08-20 [colin]	1.9.13cvs44
 
 	* src/folder.c

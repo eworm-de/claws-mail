@@ -730,3 +730,4 @@
 ( cvs diff -u -r 1.382.2.153 -r 1.382.2.154 src/compose.c;  cvs diff -u -r 1.49.2.54 -r 1.49.2.55 src/procmime.c;  cvs diff -u -r 1.105.2.31 -r 1.105.2.32 src/prefs_account.c;  ) > 1.9.13cvs42.patchset
 ( cvs diff -u -r 1.149.2.31 -r 1.149.2.32 src/inc.c;  cvs diff -u -r 1.204.2.53 -r 1.204.2.54 src/prefs_common.c;  cvs diff -u -r 1.103.2.26 -r 1.103.2.27 src/prefs_common.h;  ) > 1.9.13cvs43.patchset
 ( cvs diff -u -r 1.213.2.52 -r 1.213.2.53 src/folder.c;  ) > 1.9.13cvs44.patchset
+( cvs diff -u -r 1.395.2.115 -r 1.395.2.116 src/summaryview.c;  ) > 1.9.13cvs45.patchset
