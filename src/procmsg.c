@@ -1697,7 +1697,7 @@ void procmsg_msginfo_change_flags(MsgInfo *msginfo,
 
 	/* Perm Flags handling */
 	perm_flags_old = msginfo->flags.perm_flags;
-	perm_flags_new = (msginfo->flags.perm_flags | add_perm_flags) & ~rem_perm_flags;
+	perm_flags_new = (msginfo->flags.perm_flags & ~rem_perm_flags) | add_perm_flags;
 	if ((add_perm_flags & MSG_IGNORE_THREAD) || (perm_flags_old & MSG_IGNORE_THREAD)) {
 		perm_flags_new &= ~(MSG_NEW | MSG_UNREAD);
 	}
@@ -1711,8 +1711,8 @@ void procmsg_msginfo_change_flags(MsgInfo *msginfo,
 
 	/* Tmp flags handling */
 	tmp_flags_old = msginfo->flags.tmp_flags;
-	msginfo->flags.tmp_flags |= add_tmp_flags;
 	msginfo->flags.tmp_flags &= ~rem_tmp_flags;
+	msginfo->flags.tmp_flags |= add_tmp_flags;
 
 	/* update notification */
 	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {

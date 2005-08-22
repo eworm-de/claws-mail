@@ -1,3 +1,9 @@
+2005-08-22 [paul]	1.9.13cvs49
+
+	* src/procmsg.c
+		fix colour labelling
+		Patch by Colin
+
 2005-08-22 [paul]	1.9.13cvs48
 
 	* src/textview.c
