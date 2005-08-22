@@ -1,3 +1,8 @@
+2005-08-22 [paul]	1.9.13cvs48
+
+	* src/textview.c
+		fix open_image_cb()
+
 2005-08-22 [paul]	1.9.13cvs47
 
 	* src/imap.c

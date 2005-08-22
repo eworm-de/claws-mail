@@ -733,3 +733,4 @@
 ( cvs diff -u -r 1.395.2.115 -r 1.395.2.116 src/summaryview.c;  ) > 1.9.13cvs45.patchset
 ( cvs diff -u -r 1.83.2.36 -r 1.83.2.37 src/mimeview.c;  cvs diff -u -r 1.204.2.54 -r 1.204.2.55 src/prefs_common.c;  cvs diff -u -r 1.96.2.70 -r 1.96.2.71 src/textview.c;  cvs diff -u -r 1.9.2.13 -r 1.9.2.14 src/common/defs.h;  ) > 1.9.13cvs46.patchset
 ( cvs diff -u -r 1.179.2.58 -r 1.179.2.59 src/imap.c;  ) > 1.9.13cvs47.patchset
+( cvs diff -u -r 1.96.2.71 -r 1.96.2.72 src/textview.c;  ) > 1.9.13cvs48.patchset

@@ -1957,6 +1957,7 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 	const gchar *def_cmd;
 	const gchar *p;
 	gchar *filename = NULL;
+	gchar *tmp_filename = NULL;
 
 	if (uri == NULL)
 		return;
@@ -1973,6 +1974,10 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 	}
 
 	subst_for_filename(filename);
+
+	tmp_filename = g_filename_from_uri(uri->uri, NULL, NULL);
+	copy_file(tmp_filename, filename, FALSE);
+	g_free(tmp_filename);
 
 	cmd = prefs_common.mime_image_viewer;
 	def_cmd = default_cmdline;
