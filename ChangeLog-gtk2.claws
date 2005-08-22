@@ -1,3 +1,16 @@
+2005-08-22 [paul]	1.9.13cvs50
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/matcher.c
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+		add Filtering/Processing rule names feature.
+		(the incompatible old matcherrc is saved as
+		matcherrc.pre_names).
+		Patch by Colin
+
 2005-08-22 [paul]	1.9.13cvs49
 
 	* src/procmsg.c

@@ -36,6 +36,7 @@ struct _FilteringAction {
 typedef struct _FilteringAction FilteringAction;
 
 struct _FilteringProp {
+	gchar *name;
 	MatcherList * matchers;
 	GSList * action_list;
 };
@@ -52,7 +53,8 @@ void filteringaction_free(FilteringAction *action);
 FilteringAction * filteringaction_parse(gchar **str);
 gboolean filteringaction_apply_action_list (GSList *action_list, MsgInfo *info);
 
-FilteringProp * filteringprop_new(MatcherList *matchers,
+FilteringProp * filteringprop_new(const gchar *name,
+				  MatcherList *matchers,
 				  GSList *action_list);
 void filteringprop_free(FilteringProp *prop);
 

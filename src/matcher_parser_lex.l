@@ -24,8 +24,9 @@
 #include "codeconv.h"
 #include "matcher.h"
 #include "matcher_parser_lex.h"
+#ifndef YYSTYPE
 #include "matcher_parser_parse.h"
-
+#endif
 #define MAX_STR_CONST 512
 #define YY_NO_UNPUT 1
 
@@ -108,6 +109,9 @@ void matcher_parser_init(void)
 [-+]?[0-9]+	{
 		yylval.str = yytext;
 		return MATCHER_INTEGER;
+		}
+rulename	{
+		return MATCHER_RULENAME;
 		}
 
 %%

@@ -1384,6 +1384,7 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 
 	for (cur = prefs_filtering; cur != NULL; cur = cur->next) {
 		gchar *filtering_str;
+		gchar *tmp_name = NULL;
 		FilteringProp *prop;
 
 		if (NULL == (prop = (FilteringProp *) cur->data))
@@ -1391,8 +1392,32 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		
 		if (NULL == (filtering_str = filteringprop_to_string(prop)))
 			continue;
-		
-		if (fputs(filtering_str, fp) == EOF ||
+				
+		if (fputs("rulename \"", fp) == EOF) {
+			FILE_OP_ERROR("filtering config", "fputs || fputc");
+			g_free(filtering_str);
+			return;
+		}
+		tmp_name = prop->name;
+		while (tmp_name && *tmp_name != '\0') {
+			if (*tmp_name != '"') {
+				if (fputc(*tmp_name, fp) == EOF) {
+					FILE_OP_ERROR("filtering config", "fputc");
+					g_free(filtering_str);
+					return;
+				}
+			} else if (*tmp_name == '"') {
+				if (fputc('\\', fp) == EOF ||
+				    fputc('"', fp) == EOF) {
+					FILE_OP_ERROR("filtering config", "fputc");
+					g_free(filtering_str);
+					return;
+				}
+			}
+			tmp_name ++;
+		}
+		if(fputs("\" ", fp) == EOF ||
+		    fputs(filtering_str, fp) == EOF ||
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs || fputc");
 			g_free(filtering_str);
@@ -1502,18 +1527,56 @@ void prefs_matcher_write_config(void)
 
 /* ******************************************************************* */
 
+void matcher_add_rulenames(const gchar *rcpath)
+{
+	gchar *newpath = g_strconcat(rcpath, ".new", NULL);
+	FILE *src = g_fopen(rcpath, "rb");
+	FILE *dst = g_fopen(newpath, "wb");
+	gchar buf[BUFFSIZE];
+
+	if (dst == NULL) {
+		perror("fopen");
+		g_free(newpath);
+		return;
+	}
+
+	while (fgets (buf, sizeof(buf), src) != NULL) {
+		if (strlen(buf) > 2 && buf[0] != '['
+		&& strncmp(buf, "rulename \"", 10)) {
+			fwrite("rulename \"\" ",
+				strlen("rulename \"\" "), 1, dst);
+		}
+		fwrite(buf, strlen(buf), 1, dst);
+	}
+	fclose(dst);
+	fclose(src);
+	move_file(newpath, rcpath, TRUE);
+	g_free(newpath);
+}
+
 /*!
  *\brief	Read matcher configuration
  */
 void prefs_matcher_read_config(void)
 {
 	gchar *rcpath;
+	gchar *rc_old_format;
 	FILE *f;
 
 	create_matchparser_hashtab();
 	prefs_filtering_clear();
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, NULL);
+	rc_old_format = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, 
+				".pre_names", NULL);
+	
+	if (!is_file_exist(rc_old_format) && is_file_exist(rcpath)) {
+		/* backup file with no rules names, in case 
+		 * anything goes wrong */
+		copy_file(rcpath, rc_old_format, FALSE);
+		/* now hack the file in order to have it to the new format */
+		matcher_add_rulenames(rcpath);
+	}
 	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 

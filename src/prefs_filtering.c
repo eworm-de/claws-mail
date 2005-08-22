@@ -55,6 +55,7 @@
 #include "prefs_filtering_action.h"
 
 enum {
+	PREFS_FILTERING_NAME,
 	PREFS_FILTERING_RULE,
 	PREFS_FILTERING_PROP,
 	N_PREFS_FILTERING_COLUMNS
@@ -64,6 +65,7 @@ static struct Filtering {
 	GtkWidget *window;
 
 	GtkWidget *ok_btn;
+	GtkWidget *name_entry;
 	GtkWidget *cond_entry;
 	GtkWidget *action_entry;
 
@@ -110,9 +112,12 @@ static void delete_path(GSList ** p_filters, const gchar * path);
 static GtkListStore* prefs_filtering_create_data_store	(void);
 static gint prefs_filtering_list_view_insert_rule	(GtkListStore *list_store,
 							 gint row,
+							 const gchar *name, 
 							 const gchar *rule, 
 							 gboolean prop);
 static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list, 
+							 gint row);
+static gchar *prefs_filtering_list_view_get_rule_name	(GtkWidget *list, 
 							 gint row);
 
 static GtkWidget *prefs_filtering_list_view_create	(void);
@@ -185,11 +190,12 @@ static void prefs_filtering_create(void)
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
-	GtkWidget *hbox1;
 	GtkWidget *reg_hbox;
 	GtkWidget *arrow;
 	GtkWidget *btn_hbox;
 
+	GtkWidget *name_label;
+	GtkWidget *name_entry;
 	GtkWidget *cond_label;
 	GtkWidget *cond_entry;
 	GtkWidget *cond_btn;
@@ -211,6 +217,7 @@ static void prefs_filtering_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 	GtkWidget *bottom_btn;
+	GtkWidget *table;
 	static GdkGeometry geometry;
 
 	debug_print("Creating filtering configuration window...\n");
@@ -248,53 +255,72 @@ static void prefs_filtering_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), vbox1, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	cond_label = gtk_label_new (_("Condition"));
+	table = gtk_table_new(3, 3, FALSE);
+	gtk_widget_show(table);
+	gtk_box_pack_start (GTK_BOX (vbox1), table, TRUE, TRUE, 0);
+	
+
+	name_label = gtk_label_new (_("Name: "));
+	gtk_widget_show (name_label);
+	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
+
+	name_entry = gtk_entry_new ();
+	gtk_widget_show (name_entry);
+  	gtk_table_attach (GTK_TABLE (table), name_entry, 1, 2, 0, 1,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
+
+	cond_label = gtk_label_new (_("Condition: "));
 	gtk_widget_show (cond_label);
-	gtk_misc_set_alignment (GTK_MISC (cond_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox1), cond_label, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
+	gtk_misc_set_alignment (GTK_MISC (cond_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
 	cond_entry = gtk_entry_new ();
 	gtk_widget_show (cond_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), cond_entry, TRUE, TRUE, 0);
+  	gtk_table_attach (GTK_TABLE (table), cond_entry, 1, 2, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
 	cond_btn = gtk_button_new_with_label (_("Define ..."));
 	gtk_widget_show (cond_btn);
-	gtk_box_pack_start (GTK_BOX (hbox1), cond_btn, FALSE, FALSE, 0);
+  	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 2, 2);
 	g_signal_connect(G_OBJECT (cond_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_condition_define),
 			 NULL);
 
-	action_label = gtk_label_new (_("Action"));
+	action_label = gtk_label_new (_("Action: "));
 	gtk_widget_show (action_label);
-	gtk_misc_set_alignment (GTK_MISC (action_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox1), action_label, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
+	gtk_misc_set_alignment (GTK_MISC (action_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 2, 3,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
 	action_entry = gtk_entry_new ();
 	gtk_widget_show (action_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), action_entry, TRUE, TRUE, 0);
+  	gtk_table_attach (GTK_TABLE (table), action_entry, 1, 2, 2, 3,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
 	action_btn = gtk_button_new_with_label (_("Define ..."));
 	gtk_widget_show (action_btn);
-	gtk_box_pack_start (GTK_BOX (hbox1), action_btn, FALSE, FALSE, 0);
+  	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 2, 3,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 2, 2);
 	g_signal_connect(G_OBJECT (action_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_define),
 			 NULL);
-
+			 
 	/* register / substitute / delete */
-
 	reg_hbox = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (reg_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), reg_hbox, FALSE, FALSE, 0);
@@ -329,7 +355,7 @@ static void prefs_filtering_create(void)
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), cond_hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), cond_hbox, TRUE, TRUE, 0);
 
 	cond_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (cond_scrolledwin);
@@ -391,6 +417,7 @@ static void prefs_filtering_create(void)
 	filtering.window    = window;
 	filtering.ok_btn = ok_btn;
 
+	filtering.name_entry     = name_entry;
 	filtering.cond_entry     = cond_entry;
 	filtering.action_entry   = action_entry;
 	filtering.cond_list_view = cond_list_view;
@@ -618,6 +645,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	/* add the place holder (New) at row 0 */
 	prefs_filtering_list_view_insert_rule(list_store, -1, 
 					      _("(New)"),
+					      _("(New)"),
 					      FALSE);
 
         prefs_filtering = *p_processing_list;
@@ -629,6 +657,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 		subst_char(cond_str, '\t', ':');
 
 		prefs_filtering_list_view_insert_rule(list_store, -1, 
+						      prop->name,
 						      cond_str, TRUE);
 		
 		g_free(cond_str);
@@ -653,6 +682,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 
 static void prefs_filtering_reset_dialog(void)
 {
+	gtk_entry_set_text(GTK_ENTRY(filtering.name_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), "");
 }
@@ -677,11 +707,14 @@ static void prefs_filtering_set_list(void)
 		/* FIXME: this strcmp() is bogus: "(New)" should never
 		 * be inserted in the storage */
 		if (strcmp(filtering_str, _("(New)")) != 0) {
+			gchar *name = prefs_filtering_list_view_get_rule_name(filtering.cond_list_view, row);
 			prop = matcher_parser_get_filtering(filtering_str);
 			g_free(filtering_str);
-			if (prop) 
+			if (prop) {
+				prop->name = name;
 				prefs_filtering = 
 					g_slist_append(prefs_filtering, prop);
+			}
 		}
 		
 		row++;
@@ -695,14 +728,18 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	GtkTreeView *list_view = GTK_TREE_VIEW(filtering.cond_list_view);
 	gchar *str;
 	GtkListStore *list_store;
-
+	gchar *name = NULL;
+	
 	str = filteringprop_to_string(prop);
 	if (str == NULL)
 		return -1;
+	
+	if (prop && prop->name)
+		name = prop->name;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(list_view));
 
-	row = prefs_filtering_list_view_insert_rule(list_store, row, str, prop != NULL);
+	row = prefs_filtering_list_view_insert_rule(list_store, row, name, str, prop != NULL);
 
 	g_free(str);
 
@@ -793,11 +830,14 @@ static void prefs_filtering_action_define(void)
 static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
+	gchar * name = NULL;
 	gchar * cond_str = NULL;
 	gchar * action_str = NULL;
 	FilteringProp * prop = NULL;
 	GSList * action_list;
 
+	name = gtk_editable_get_chars(GTK_EDITABLE(filtering.name_entry), 0, -1);
+	
 	cond_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
 	if (*cond_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
@@ -825,9 +865,10 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 		goto fail;
 	}
 
-	prop = filteringprop_new(cond, action_list);
+	prop = filteringprop_new(name, cond, action_list);
 
 fail:
+	g_free(name);
 	g_free(cond_str);
 	g_free(action_str);
 	return prop;
@@ -978,6 +1019,9 @@ static void prefs_filtering_select_set(FilteringProp *prop)
 	if (matcher_str == NULL) {
 		return;
 	}
+	
+	if (prop->name != NULL)
+		gtk_entry_set_text(GTK_ENTRY(filtering.name_entry), prop->name);
 
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), matcher_str);
 
@@ -1060,6 +1104,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
 {
 	return gtk_list_store_new(N_PREFS_FILTERING_COLUMNS,
 				  G_TYPE_STRING,
+				  G_TYPE_STRING,
 				  G_TYPE_BOOLEAN,
 				 -1);
 }
@@ -1080,6 +1125,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
  */
 static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 						  gint row,
+						  const gchar *name,
 						  const gchar *rule,
 						  gboolean prop) 
 {
@@ -1096,6 +1142,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter, 
+				   PREFS_FILTERING_NAME, name,
 				   PREFS_FILTERING_RULE, rule,
 				   PREFS_FILTERING_PROP, prop,
 				   -1);
@@ -1104,6 +1151,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 	} else {
 		/* change existing */
 		gtk_list_store_set(list_store, &iter, 
+				   PREFS_FILTERING_NAME, name,
 				   PREFS_FILTERING_RULE, rule,
 				   -1);
 		return row;				   
@@ -1125,6 +1173,23 @@ static gchar *prefs_filtering_list_view_get_rule(GtkWidget *list, gint row)
 	
 	gtk_tree_model_get(model, &iter, 
 			   PREFS_FILTERING_RULE, &result,
+			   -1);
+	
+	return result;
+}
+
+static gchar *prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row)
+{	
+	GtkTreeView *list_view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeIter iter;
+	gchar *result = NULL;
+
+	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
+		return NULL;
+	
+	gtk_tree_model_get(model, &iter, 
+			   PREFS_FILTERING_NAME, &result,
 			   -1);
 	
 	return result;
@@ -1162,7 +1227,16 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
-		(_("Current filtering/processing rules"),
+		(_("Name"),
+		 renderer,
+		 "text", PREFS_FILTERING_NAME,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+		
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Rule"),
 		 renderer,
 		 "text", PREFS_FILTERING_RULE,
 		 NULL);
@@ -1259,17 +1333,22 @@ static gboolean prefs_filtering_selected(GtkTreeSelection *selector,
 		if (has_prop) {
 			FilteringProp *prop;
 			gchar *filtering_str = NULL;
-			
+			gchar *name = NULL;
+
 			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_RULE, &filtering_str,
+					   -1);
+			gtk_tree_model_get(model, &iter,
+					   PREFS_FILTERING_NAME, &name,
 					   -1);
 
 			prop = matcher_parser_get_filtering(filtering_str);
 			if (prop) { 
+				prop->name = g_strdup(name);
 				prefs_filtering_select_set(prop);
 				filteringprop_free(prop);
 			}				
-			
+			g_free(name);
 			g_free(filtering_str);
 		} else
 			prefs_filtering_reset_dialog();

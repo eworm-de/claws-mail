@@ -43,6 +43,7 @@ static MatcherProp *prop;
 
 static GSList *matchers_list = NULL;
 
+static gchar *name = NULL;
 static MatcherList *cond;
 static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
@@ -55,6 +56,7 @@ static int enable_compatibility = 0;
 enum {
         MATCHER_PARSE_FILE,
         MATCHER_PARSE_NO_EOL,
+	MATCHER_PARSE_NAME,
         MATCHER_PARSE_CONDITION,
         MATCHER_PARSE_FILTERING_ACTION,
 };
@@ -76,6 +78,13 @@ void * matcher_parser_scan_string(const char * str);
 FilteringProp *matcher_parser_get_filtering(gchar *str)
 {
 	void *bufstate;
+	void *tmp_str = NULL;
+	
+	/* little hack to allow passing rules with no names */
+	if (!strncmp(str, "rulename ", 9))
+		tmp_str = g_strdup(str);
+	else 
+		tmp_str = g_strconcat("rulename \"\" ", str, NULL);
 
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
@@ -83,12 +92,13 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
 	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
-	bufstate = matcher_parser_scan_string((const char *) str);
+	bufstate = matcher_parser_scan_string((const char *) tmp_str);
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
 	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
+	g_free(tmp_str);
 	return filtering;
 }
 
@@ -109,6 +119,28 @@ static gboolean check_quote_symetry(gchar *str)
 		}
 	}
 	return !(ret % 2);
+}
+
+MatcherList *matcher_parser_get_name(gchar *str)
+{
+	void *bufstate;
+
+	if (!check_quote_symetry(str)) {
+		cond = NULL;
+		return cond;
+	}
+	
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
+	matcher_parserlineno = 1;
+	matcher_parse_op = MATCHER_PARSE_NAME;
+	matcher_parserrestart(NULL);
+        matcher_parser_init();
+	bufstate = matcher_parser_scan_string(str);
+	matcher_parserparse();
+	matcher_parse_op = MATCHER_PARSE_FILE;
+	matcher_parser_delete_buffer(bufstate);
+	return cond;
 }
 
 MatcherList *matcher_parser_get_cond(gchar *str)
@@ -208,7 +240,6 @@ int matcher_parserwrap(void)
 	char *str;
 	int value;
 }
-
 %token MATCHER_ALL MATCHER_UNREAD  MATCHER_NOT_UNREAD 
 %token MATCHER_NEW  MATCHER_NOT_NEW  MATCHER_MARKED
 %token MATCHER_NOT_MARKED  MATCHER_DELETED  MATCHER_NOT_DELETED
@@ -242,6 +273,7 @@ int matcher_parserwrap(void)
 
 %start file
 
+%token MATCHER_RULENAME
 %token <str> MATCHER_STRING
 %token <str> MATCHER_SECTION
 %token <str> MATCHER_INTEGER
@@ -306,13 +338,22 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-condition filtering MATCHER_EOL
-| condition filtering
+name condition filtering MATCHER_EOL
+| name condition filtering
 {
 	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error");
+		matcher_parsererror("parse error a");
+		YYERROR;
+	}
+}
+| name
+{
+	if (matcher_parse_op == MATCHER_PARSE_NAME)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error b");
 		YYERROR;
 	}
 }
@@ -321,7 +362,7 @@ condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_CONDITION)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error");
+		matcher_parsererror("parse error c");
 		YYERROR;
 	}
 }
@@ -330,18 +371,25 @@ condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_FILTERING_ACTION)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error");
+		matcher_parsererror("parse error d");
 		YYERROR;
 	}
 }
 | MATCHER_EOL
 ;
 
+name:
+MATCHER_RULENAME MATCHER_STRING
+{
+	name = g_strdup($2);
+}
+
 filtering:
 filtering_action_list
 {
-	filtering = filteringprop_new(cond, action_list);
-        
+	filtering = filteringprop_new(name, cond, action_list);
+        g_free(name);
+	name = NULL;
         if (enable_compatibility) {
                 prefs_filtering = &filtering_rules;
                 if (action_list != NULL) {

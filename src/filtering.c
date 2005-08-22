@@ -83,12 +83,14 @@ void filteringaction_free(FilteringAction * action)
 	g_free(action);
 }
 
-FilteringProp * filteringprop_new(MatcherList * matchers,
+FilteringProp * filteringprop_new(const gchar *name,
+				  MatcherList * matchers,
 				  GSList * action_list)
 {
 	FilteringProp * filtering;
 
 	filtering = g_new0(FilteringProp, 1);
+	filtering->name = name ? g_strdup(name): NULL;
 	filtering->matchers = matchers;
 	filtering->action_list = action_list;
 
@@ -142,6 +144,8 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
                     filteringaction_copy(filtering_action));
         }
 
+	new->name = g_strdup(src->name);
+
 	return new;
 }
 
@@ -155,6 +159,7 @@ void filteringprop_free(FilteringProp * prop)
         for (tmp = prop->action_list ; tmp != NULL ; tmp = tmp->next) {
                 filteringaction_free(tmp->data);
         }
+	g_free(prop->name);
 	g_free(prop);
 }
 
