@@ -812,9 +812,11 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		MsgInfo *msginfo = imap_parse_msg(filename, item);
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
 		guint have_size = get_size_with_lfs(msginfo);
-		debug_print("message %d has been already %scached (%d/%d).\n", uid,
+
+		if (cached)
+			debug_print("message %d has been already %scached (%d/%d).\n", uid,
 				have_size == cached->size ? "fully ":"",
-				have_size, cached? (int)cached->size : -1);
+				have_size, cached->size);
 		
 		if (cached && (cached->size == have_size || !body)) {
 			procmsg_msginfo_free(cached);

@@ -1,3 +1,9 @@
+2005-08-22 [paul]	1.9.13cvs47
+
+	* src/imap.c
+		fix bug 789, 'SC crashes with imap (CVS ver)'
+		Patch by Colin
+
 2005-08-22 [paul]	1.9.13cvs46
 
 	* src/mimeview.c
