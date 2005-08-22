@@ -809,7 +809,7 @@ void prefs_folder_item_open(FolderItem *item)
 	}
 
 	id = folder_item_get_identifier (item);
-	title = g_strdup_printf (_("%s - Settings for folder"), id);
+	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
 	prefswindow_open(title, prefs_pages, item);
 	g_free (title);

@@ -2103,6 +2103,7 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
+	gchar *id, *title;
 
 	if (!folderview->selected) return;
 
@@ -2110,8 +2111,12 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_filtering_open(&item->prefs->processing,
-			     _("Processing configuration"), NULL, NULL);
+	id = folder_item_get_identifier(item);
+	title = g_strdup_printf (_("Processing configuration for folder %s"), id);
+	g_free (id);
+
+	prefs_filtering_open(&item->prefs->processing, title, NULL, NULL);
+	g_free (title);
 }
 
 void folderview_set_target_folder_color(gint color_op) 

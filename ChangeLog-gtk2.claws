@@ -1,3 +1,11 @@
+2005-08-22 [paul]	1.9.13cvs51
+
+	* src/folderview.c
+		put name of folder in processing dialog
+		title
+	* src/prefs_folder_item.c
+		improve english usage
+
 2005-08-22 [paul]	1.9.13cvs50
 
 	* src/filtering.c
