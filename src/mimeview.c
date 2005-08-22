@@ -1277,10 +1277,10 @@ static void mimeview_open_with(MimeView *mimeview)
 static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			       const gchar *cmdline)
 {
-	static gchar *default_image_cmdline = "display '%s'";
-	static gchar *default_audio_cmdline = "play '%s'";
+	static gchar *default_image_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
+	static gchar *default_audio_cmdline = DEFAULT_AUDIO_PLAYER_CMD;
 	static gchar *default_html_cmdline = DEFAULT_BROWSER_CMD;
-	static gchar *mime_cmdline = "metamail -d -b -x -c %s '%s'";
+	static gchar *mime_cmdline = DEFAULT_MIME_CMD;
 	gchar buf[1024];
 	gchar m_buf[1024];
 	const gchar *cmd;

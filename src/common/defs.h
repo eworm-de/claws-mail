@@ -93,6 +93,9 @@
 /* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t -i"
 #define DEFAULT_BROWSER_CMD	"mozilla-firefox -remote 'openURL(%s,new-window)'"
+#define DEFAULT_MIME_CMD	"metamail -d -b -x -c %s '%s'"
+#define DEFAULT_IMAGE_VIEWER_CMD "display '%s'"
+#define DEFAULT_AUDIO_PLAYER_CMD "play '%s'"
 
 #ifdef _PATH_MAILDIR
 #  define DEFAULT_SPOOL_PATH	_PATH_MAILDIR

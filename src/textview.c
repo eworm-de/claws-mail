@@ -208,6 +208,9 @@ static void copy_mail_to_uri_cb			(TextView 	*textview,
 static void save_file_cb			(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
+static void open_image_cb			(TextView 	*textview,
+						 guint		 action,
+						 void		*data);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -224,7 +227,8 @@ static GtkItemFactoryEntry textview_mail_popup_entries[] =
 
 static GtkItemFactoryEntry textview_file_popup_entries[] = 
 {
-	{N_("/_Save this image..."),		NULL, save_file_cb, 0, NULL},
+	{N_("/_Open image"),		NULL, open_image_cb, 0, NULL},
+	{N_("/_Save image..."),		NULL, save_file_cb, 0, NULL},
 };
 
 
@@ -1939,6 +1943,57 @@ static void open_uri_cb (TextView *textview, guint action, void *data)
 		open_uri(uri->uri,
 			 prefs_common.uri_cmd);
 	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
+			  NULL);
+}
+
+static void open_image_cb (TextView *textview, guint action, void *data)
+{
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
+					   "menu_button");
+
+	static gchar *default_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
+	gchar buf[1024];
+	const gchar *cmd;
+	const gchar *def_cmd;
+	const gchar *p;
+	gchar *filename = NULL;
+
+	if (uri == NULL)
+		return;
+
+	if (uri->filename == NULL)
+		return;
+	
+	filename = g_strdup(uri->filename);
+	
+	if (!g_utf8_validate(filename, -1, NULL)) {
+		gchar *tmp = conv_filename_to_utf8(filename);
+		g_free(filename);
+		filename = tmp;
+	}
+
+	subst_for_filename(filename);
+
+	cmd = prefs_common.mime_image_viewer;
+	def_cmd = default_cmdline;
+	
+	if (cmd && (p = strchr(cmd, '%')) && *(p + 1) == 's' &&
+	    !strchr(p + 2, '%'))
+		g_snprintf(buf, sizeof(buf), cmd, filename);
+	else {
+		if (cmd)
+			g_warning("Image viewer command line is invalid: '%s'", cmd);
+		if (def_cmd)
+			g_snprintf(buf, sizeof(buf), def_cmd, filename);
+		else
+			return;
+	}
+
+	execute_command_line(buf, TRUE);
+
+	g_free(filename);
+
+	g_object_set_data(G_OBJECT(textview->file_popup_menu), "menu_button",
 			  NULL);
 }
 

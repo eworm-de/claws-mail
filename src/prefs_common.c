@@ -480,9 +480,9 @@ static PrefParam param[] = {
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
-	{"mime_image_viewer", "display '%s'",
+	{"mime_image_viewer", DEFAULT_IMAGE_VIEWER_CMD,
 	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
-	{"mime_audio_player", "play '%s'",
+	{"mime_audio_player", DEFAULT_AUDIO_PLAYER_CMD,
 	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
 	{"mime_open_command", "gedit '%s'",
 	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
