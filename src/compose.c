@@ -3048,7 +3048,7 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter, gboo
 		const gint PARSE_ELEMS = sizeof parser / sizeof parser[0];
 		gint last_index = PARSE_ELEMS;
 		gint  n;
-		gchar *o_walk, *walk, *bp, *ep;
+		gchar *o_walk = NULL, *walk = NULL, *bp = NULL, *ep = NULL;
 		gint walk_pos;
 		
 		if (gtk_text_iter_has_tag(&iter, no_wrap_tag) && !force)
@@ -3154,8 +3154,10 @@ colorize:
 			uri_stop  = walk_pos + (ep - o_walk);
 		}
 		g_free(o_walk);
+		o_walk = NULL;
 		gtk_text_iter_forward_line(&iter);
 		g_free(quote_str);
+		quote_str = NULL;
 		if (startq_offset != -1) {
 			GtkTextIter startquote, endquote;
 			gtk_text_buffer_get_iter_at_offset(
