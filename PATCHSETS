@@ -739,3 +739,4 @@
 ( cvs diff -u -r 1.207.2.57 -r 1.207.2.58 src/folderview.c;  cvs diff -u -r 1.52.2.11 -r 1.52.2.12 src/prefs_folder_item.c;  ) > 1.9.13cvs51.patchset
 ( cvs diff -u -r 1.60.2.26 -r 1.60.2.27 src/addressbook.c;  ) > 1.9.13cvs52.patchset
 ( cvs diff -u -r 1.60.2.27 -r 1.60.2.28 src/addressbook.c;  cvs diff -u -r 1.14.2.9 -r 1.14.2.10 src/editaddress.c;  ) > 1.9.13cvs53.patchset
+( cvs diff -u -r 1.115.2.50 -r 1.115.2.51 src/main.c;  ) > 1.9.13cvs54.patchset

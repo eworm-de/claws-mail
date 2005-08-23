@@ -234,6 +234,7 @@ int main(int argc, char *argv[])
 	MainWindow *mainwin;
 	FolderView *folderview;
 	GdkPixbuf *icon;
+	gboolean crash_file_present = FALSE;
 
 	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
@@ -318,6 +319,7 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_tmp_dir());
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
 
+	crash_file_present = is_file_exist(get_crashfile_name());
 	/* remove temporary files */
 	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
@@ -415,7 +417,7 @@ int main(int argc, char *argv[])
 	main_window_cursor_normal(mainwin);
 
 	/* if Sylpheed crashed, rebuild caches */
-	if (!cmd.crash && is_file_exist(get_crashfile_name())) {
+	if (!cmd.crash && crash_file_present) {
 		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
 		folderview_check_new(NULL);
 		folder_clean_cache_memory_force();
