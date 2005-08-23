@@ -196,7 +196,6 @@ static void addressbook_person_expand_node	(GtkCTree	*ctree,
 static void addressbook_person_collapse_node	(GtkCTree	*ctree,
 						 GList		*node,
 						 gpointer	*data );
-static void addressbook_entry_gotfocus		(GtkWidget	*widget);
 
 #if 0
 static void addressbook_entry_changed		(GtkWidget	*widget);
@@ -298,7 +297,7 @@ static void addressbook_move_nodes_up		(GtkCTree	*ctree,
 						GtkCTreeNode	*node);
 static GtkCTreeNode *addressbook_find_group_node (GtkCTreeNode	*parent,
 						   ItemGroup	*group);
-static gboolean key_pressed			(GtkWidget	*widget,
+static gboolean addressbook_entry_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static gint addressbook_treenode_compare_func	(GtkCList	*clist,
@@ -653,6 +652,15 @@ void addressbook_refresh( void )
 	addressbook_export_to_file();
 }
 
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		addressbook_close();
+	else if (event && event->keyval == GDK_Delete)
+		addressbook_del_clicked(NULL, NULL);
+	return FALSE;
+}
+
 /*
 * Create the address book widgets. The address book contains two CTree widgets: the
 * address index tree on the left and the address list on the right.
@@ -837,9 +845,10 @@ static void addressbook_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
-	g_signal_connect(G_OBJECT(entry), "focus_in_event",
-			 G_CALLBACK(addressbook_entry_gotfocus), NULL);
 
+	g_signal_connect(G_OBJECT(entry), "key_press_event",
+			 G_CALLBACK(addressbook_entry_key_pressed),
+			 NULL);
 #if 0
 	g_signal_connect(G_OBJECT(entry), "changed",
 			 G_CALLBACK(addressbook_entry_changed), NULL);
@@ -1987,10 +1996,6 @@ static void addressbook_list_row_unselected( GtkCTree *ctree,
 		/* printf( "list unselect: %d : '%s'\n", aio->type, aio->name ); */
 		addressbook_list_select_remove( aio );
 	}
-}
-
-static void addressbook_entry_gotfocus( GtkWidget *widget ) {
-	gtk_editable_select_region( GTK_EDITABLE(addrbook.entry), 0, -1 );
 }
 
 /* from gdkevents.c */
@@ -3528,12 +3533,10 @@ void addressbook_export_to_file( void ) {
 	}
 }
 
-static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean addressbook_entry_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
-		addressbook_close();
-	else if (event && event->keyval == GDK_Delete)
-		addressbook_del_clicked(NULL, NULL);
+	if (event && event->keyval == GDK_Return)
+		addressbook_lup_clicked(NULL, NULL);
 	return FALSE;
 }
 
