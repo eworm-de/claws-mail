@@ -1,3 +1,10 @@
+2005-08-23 [paul]	1.9.13cvs53
+
+	* src/addressbook.c
+	* src/editaddress.c
+		view all data of LDAP contacts
+		Patch by Colin
+
 2005-08-23 [paul]	1.9.13cvs52
 
 	* src/addressbook.c

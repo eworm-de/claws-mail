@@ -80,6 +80,7 @@ static struct _PersonEdit_dlg {
 	gint rowIndEMail;
 	gint rowIndAttrib;
 	gboolean editNew;
+	gboolean read_only;
 
 } personeditdlg;
 
@@ -224,9 +225,11 @@ static void edit_person_email_list_selected( GtkCList *clist, gint row, gint col
 			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_alias), ADDRITEM_NAME(email) );
 		if( email->remarks )
 			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_remarks), email->remarks );
-		gtk_widget_set_sensitive(personeditdlg.email_del, TRUE);
-		gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+		if (!personeditdlg.read_only) {
+			gtk_widget_set_sensitive(personeditdlg.email_del, TRUE);
+			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
+			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+		}
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.email_del, FALSE);
 		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
@@ -243,8 +246,10 @@ static void edit_person_email_move( gint dir ) {
 	if( email ) {
 		gtk_clist_row_move( clist, personeditdlg.rowIndEMail, row );
 		personeditdlg.rowIndEMail = row;
-		gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+		if (!personeditdlg.read_only) {
+			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
+			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+		}
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
 		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
@@ -278,9 +283,11 @@ static void edit_person_email_delete( gpointer data ) {
 	if( ! email ) {
 		personeditdlg.rowIndEMail = -1 + row;
 	}
-	gtk_widget_set_sensitive(personeditdlg.email_del, gtk_clist_get_row_data(clist, 0) != NULL);
-	gtk_widget_set_sensitive(personeditdlg.email_up, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
-	gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
+	if (!personeditdlg.read_only) {
+		gtk_widget_set_sensitive(personeditdlg.email_del, gtk_clist_get_row_data(clist, 0) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.email_up, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
+	}
 	edit_person_status_show( NULL );
 }
 
@@ -423,7 +430,7 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 
 static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
 	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
-	if( attrib ) {
+	if( attrib && !personeditdlg.read_only) {
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
 		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
@@ -452,7 +459,8 @@ static void edit_person_attrib_delete( gpointer data ) {
 		personeditdlg.rowIndAttrib = -1 + row;
 	} 
 	
-	gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
+	if (!personeditdlg.read_only)
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
 	
 	edit_person_status_show( NULL );
 }
@@ -665,6 +673,9 @@ static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 {
 	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_email), 0) != NULL;
 
+	if (personeditdlg.read_only)
+		return;
+
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_email))) == 0) {
 		gtk_widget_set_sensitive(personeditdlg.email_add,FALSE);
@@ -859,6 +870,9 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
 	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_attrib), 0) != NULL;
+
+	if (personeditdlg.read_only)
+		return;
 
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
 	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname))) == 0) {
@@ -1064,6 +1078,27 @@ static GList *edit_person_build_attrib_list() {
 	return listAttrib;
 }
 
+static void update_sensitivity(void)
+{
+	gtk_widget_set_sensitive(personeditdlg.entry_name,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_first,   !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_last,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_nick,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_email,   !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_alias,   !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_remarks, !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.email_up,      !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.email_down,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.email_del,     !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.email_mod,     !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.email_add,     !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_atname,  !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_atvalue, !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_add,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_del,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only);
+}
+
 /*
 * Edit person.
 * Enter: abf    Address book.
@@ -1083,6 +1118,10 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 		addressbook_edit_person_create(&cancelled);
 	gtk_widget_grab_focus(personeditdlg.ok_btn);
 	gtk_widget_grab_focus(personeditdlg.entry_name);
+	
+	personeditdlg.read_only = (abf == NULL);
+	update_sensitivity();
+
 	gtk_widget_show(personeditdlg.window);
 	manage_window_set_transient(GTK_WINDOW(personeditdlg.window));
 
@@ -1144,7 +1183,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 	}
 
 	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
-	if( person ) {
+	if( person && abf ) {
 		/* Update email/attribute list for existing person */
 		addrbook_update_address_list( abf, person, listEMail );
 		addrbook_update_attrib_list( abf, person, listAttrib );
@@ -1155,7 +1194,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 			/* Wasting our time */
 			if( listEMail == NULL && listAttrib == NULL ) cancelled = TRUE;
 		}
-		if( ! cancelled ) {
+		if( ! cancelled && abf ) {
 			person = addrbook_add_address_list( abf, parent, listEMail );
 			addrbook_add_attrib_list( abf, person, listAttrib );
 		}
