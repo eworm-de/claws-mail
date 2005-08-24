@@ -743,3 +743,4 @@
 ( cvs diff -u -r 1.382.2.154 -r 1.382.2.155 src/compose.c;  ) > 1.9.13cvs55.patchset
 ( cvs diff -u -r 1.179.2.59 -r 1.179.2.60 src/imap.c;  cvs diff -u -r 1.1.4.16 -r 1.1.4.17 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/etpan/imap-thread.h;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/gtk/sylpheed-marshal.c;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/gtk/sylpheed-marshal.h;  cvs diff -u -r 1.2.2.5 -r 1.2.2.6 tools/kdeservicemenu/README;  cvs diff -u -r 1.2.2.2 -r 1.2.2.3 tools/kdeservicemenu/install.sh;  cvs diff -u -r 1.3.2.4 -r 1.3.2.5 tools/kdeservicemenu/template_sylpheed-attach-files.desktop;  cvs diff -u -r 1.3.2.4 -r 1.3.2.5 tools/kdeservicemenu/template_sylpheed-compress-attach.desktop;  ) > 1.9.13cvs56.patchset
 ( cvs diff -u -r 1.115.2.51 -r 1.115.2.52 src/main.c;  cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/common/defs.h;  ) > 1.9.13cvs57.patchset
+( cvs diff -u -r 1.382.2.155 -r 1.382.2.156 src/compose.c;  ) > 1.9.13cvs58.patchset

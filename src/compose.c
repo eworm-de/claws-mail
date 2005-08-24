@@ -3377,7 +3377,10 @@ gint compose_send(Compose *compose)
 	val = compose_queue(compose, &msgnum, &folder);
 
 	if (val) {
-		if (val == -2) {
+		if (val == -3) {
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+					   "Signature failed."));
+		} else if (val == -2) {
 			alertpanel_error(_("Could not queue message for sending:\n\n%s."), strerror(errno));
 		} else {
 			alertpanel_error(_("Could not queue message for sending."));
@@ -3806,7 +3809,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
 	    privacy_system_can_sign(compose->privacy_system))
 		if (!privacy_sign(compose->privacy_system, mimemsg, compose->account))
-			return -1;
+			return -2;
 
 	procmime_write_mimeinfo(mimemsg, fp);
 	
@@ -4066,12 +4069,13 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			return -2;
 		}
 	} else {
-		if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND) < 0) {
+		gint result = 0;
+		if ((result = compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND)) < 0) {
 			lock = FALSE;
 			fclose(fp);
 			g_unlink(tmp);
 			g_free(tmp);
-			return -2;
+			return result - 1; /* -2 for a generic error, -3 for signing error */
 		}
 	}
 

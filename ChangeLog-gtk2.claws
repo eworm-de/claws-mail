@@ -1,3 +1,10 @@
+2005-08-24 [paul]	1.9.13cvs58
+
+	* src/compose.c
+		don't claim success when clicking
+		Cancel on the passphrase box.
+		Patch by Colin
+
 2005-08-24 [paul]	1.9.13cvs57
 
 	* src/main.c
