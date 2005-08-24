@@ -1,3 +1,10 @@
+2005-08-24 [paul]	1.9.13cvs57
+
+	* src/main.c
+		fix misplaced sylpheed.log
+	* src/common/defs.h
+		define UIDL_DIR
+
 2005-08-24 [paul]	1.9.13cvs56
 
 	* src/imap.c

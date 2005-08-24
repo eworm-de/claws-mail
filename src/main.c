@@ -313,11 +313,14 @@ int main(int argc, char *argv[])
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
+
+	CHDIR_RETURN_VAL_IF_FAIL(get_rc_dir(), 1);
+
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_tmp_dir());
-	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
+	MAKE_DIR_IF_NOT_EXIST(UIDL_DIR);
 
 	crash_file_present = is_file_exist(get_crashfile_name());
 	/* remove temporary files */

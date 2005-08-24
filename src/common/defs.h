@@ -64,6 +64,7 @@
 #define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"
+#define UIDL_DIR		"uidl"
 #define NEWSGROUP_LIST		".newsgroup_list"
 #define ADDRESS_BOOK		"addressbook.xml"
 #define MANUAL_HTML_INDEX	"sylpheed.html"
