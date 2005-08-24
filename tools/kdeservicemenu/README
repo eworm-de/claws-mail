@@ -1,6 +1,6 @@
 sylpheed-kdeservicemenu.pl 
-Version: 1.2
-Sylpheed servicemenu for Konqueror
+Version: 1.3
+Sylpheed-Claws servicemenu for Konqueror
 
 FILES
 o README			You're reading it
@@ -16,14 +16,15 @@ or compression of files/directories and then attaching of
 the archive to a new compose window.
 
 Adds the following right-click menu item to Konqueror:
-/Sylpheed/Attach file(s)
-/Sylpheed/Attach as GZip File(s)
-/Sylpheed/Attach as BZip File(s)
-/Sylpheed/Attach as Tar Archive
-/Sylpheed/Attach as Bzipped Tar Archive
-/Sylpheed/Attach as Gzipped Tar Archive
-/Sylpheed/Attach as Zip Archive
+/Sylpheed-Claws/Attach file(s)
+/Sylpheed-Claws/Attach as GZip File(s)
+/Sylpheed-Claws/Attach as BZip File(s)
+/Sylpheed-Claws/Attach as Tar Archive
+/Sylpheed-Claws/Attach as Bzipped Tar Archive
+/Sylpheed-Claws/Attach as Gzipped Tar Archive
+/Sylpheed-Claws/Attach as Zip Archive
 
+OPERATION
 All outputted files are created in /tmp
 Original files are preserved when creating [FILE].gz and [FILE].bz2
 
@@ -32,12 +33,16 @@ Perl 5.x.x
 
 INSTALL
 o cd sylpheed-claws/tools/kdeservicemenu
+o ./install.sh (for kdialog prompt)
+ -or-
 o ./install.sh --global
   ./install.sh --local
   	(systemwide or home directory installation)
 		
 UNINSTALL
 o cd sylpheed-claws/tools/kdeservicemenu
+o ./install.sh (for kdialog prompt)
+ -or-
 o ./install.sh --uninstall-global
   ./install.sh --uninstall-local
   	(systemwide or home directory uninstallation)
@@ -47,11 +52,11 @@ LICENSE
 GNU GENERAL PUBLIC LICENSE
 		
 THANKS
-install.sh was written by Dylan Schrader <dschrader@conception.edu> 
-and is released under the GPL. It was originally part of his
-'Attach to email' service Menu for Konqueror, version 0.6.13 
-<http://themes.kde.org/content/show.php?content=11234> and has been
-adapted for Sylpheed servicemenu for Konqueror
+install.sh was originally based on the install.sh script written by Dylan
+Schrader <dschrader@conception.edu>, and released under the GPL, as part
+of his 'Attach to email' service Menu for Konqueror, version 0.6.13
+<http://themes.kde.org/content/show.php?content=11234>, it has since been
+heavily adapted.
 
 Translators:
 [de] Thomas Gilgin <thg@karate-muellheim.de>
@@ -62,7 +67,7 @@ Translators:
 [sk] Andrej Kacian <andrej@kacian.sk>
 
 LINKS
-Sylpheed-Claws <http://sylpheed-claws.sourceforge.net/>
+Sylpheed-Claws <http://claws.sylpheed.org/>
 Perl <http://www.perl.org>
 KDE <http://www.kde.org>
 

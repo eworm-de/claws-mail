@@ -3,7 +3,7 @@ Actions=AttachFiles;GZipAndAttach;BZipAndAttach;
 Encoding=UTF8
 Name=Sylpheed compress and attach files
 Comment=kde service menu for compressing and attaching files to Sylpheed
-X-KDE-Submenu=Sylpheed
+X-KDE-Submenu=Sylpheed-Claws
 X-KDE-Priority=TopLevel
 ServiceTypes=all/allfiles
 
@@ -14,8 +14,8 @@ Name[es]=Adjuntar fichero(s)
 Name[fr]=Joindre le(s) Fichier(s)
 Name[it]=Allega file
 Name[pt_BR]=Anexar arquivo(s)
-Name[sk]=Pripojiť súbor(y)
-Icon=sylpheed
+Name[sk]=Pripoji» súbor(y)
+Icon=sylpheed-claws
 Exec=SCRIPT_PATH attachfile %F
 
 [Desktop Action GZipAndAttach]
@@ -25,8 +25,8 @@ Name[es]=Adjuntar como fichero(s) comprimido(s) con GZip
 Name[fr]=Joindre comme Fichier(s) GZip
 Name[it]=Allega come file .gz
 Name[pt_BR]=Anexar como arquivo(s) GZip
-Name[sk]=Pripojiť ako súbor(y) GZip
-Icon=sylpheed
+Name[sk]=Pripoji» ako súbor(y) GZip
+Icon=sylpheed-claws
 Exec=SCRIPT_PATH gz %F
 
 [Desktop Action BZipAndAttach]
@@ -36,6 +36,6 @@ Name[es]=Adjuntar como fichero(s) comprimido(s) con BZip
 Name[fr]=Joindre comme Fichier(s) Bzip
 Name[it]=Allega come file .bz
 Name[pt_BR]=Anexar como arquivo(s) BZip
-Name[sk]=Pripojiť ako súbor(y) Bzip
-Icon=sylpheed
+Name[sk]=Pripoji» ako súbor(y) Bzip
+Icon=sylpheed-claws
 Exec=SCRIPT_PATH bz2 %F

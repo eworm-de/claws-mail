@@ -438,6 +438,7 @@ struct login_param {
 	mailimap * imap;
 	const char * login;
 	const char * password;
+	const char * type;
 };
 
 struct login_result {
@@ -459,10 +460,14 @@ static void login_run(struct etpan_thread_op * op)
 	old_debug = mailstream_debug;
 	mailstream_debug = 0;
 #endif
-	
-	r = mailimap_login(param->imap,
+	if (!strcmp(param->type, "LOGIN"))
+		r = mailimap_login(param->imap,
 			   param->login, param->password);
-	
+	else 
+		r = mailimap_authenticate(param->imap,
+			param->type, NULL, NULL, NULL,
+			param->login, param->login,
+			param->password, NULL);
 #ifdef DISABLE_LOG_DURING_LOGIN
 	mailstream_debug = old_debug;
 #endif
@@ -473,7 +478,8 @@ static void login_run(struct etpan_thread_op * op)
 }
 
 int imap_threaded_login(Folder * folder,
-			const char * login, const char * password)
+			const char * login, const char * password,
+			const char * type)
 {
 	struct login_param param;
 	struct login_result result;
@@ -483,7 +489,8 @@ int imap_threaded_login(Folder * folder,
 	param.imap = get_imap(folder);
 	param.login = login;
 	param.password = password;
-	
+	param.type = type;
+
 	threaded_run(folder, &param, &result, login_run);
 	
 	debug_print("imap login - end\n");

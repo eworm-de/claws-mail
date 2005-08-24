@@ -25,7 +25,8 @@ int imap_threaded_list(Folder * folder, const char * base,
 		       const char * wildcard,
 		       clist ** p_result);
 int imap_threaded_login(Folder * folder,
-			const char * login, const char * password);
+			const char * login, const char * password,
+			const char * type);
 int imap_threaded_status(Folder * folder, const char * mb,
 		struct mailimap_mailbox_data_status ** data_status);
 

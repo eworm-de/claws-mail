@@ -289,7 +289,8 @@ static void imap_free_capabilities	(IMAPSession 	*session);
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_login	(IMAPSession	*session,
 				 const gchar	*user,
-				 const gchar	*pass);
+				 const gchar	*pass,
+				 const gchar 	*type);
 static gint imap_cmd_logout	(IMAPSession	*session);
 static gint imap_cmd_noop	(IMAPSession	*session);
 #if USE_OPENSSL
@@ -530,9 +531,18 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		      IMAPAuthType type)
 {
 	gint ok;
-
-	ok = imap_cmd_login(session, user, pass);
 	
+	/* TODO: implement Automatic mode */
+
+	switch(type) {
+	case IMAP_AUTH_CRAM_MD5:
+		ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
+		break;
+	case IMAP_AUTH_LOGIN:
+	default:
+		ok = imap_cmd_login(session, user, pass, "LOGIN");
+		break;
+	}
 	if (ok == IMAP_SUCCESS)
 		session->authenticated = TRUE;
 
@@ -2176,18 +2186,29 @@ static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
 #endif
 
 static gint imap_cmd_login(IMAPSession *session,
-			   const gchar *user, const gchar *pass)
+			   const gchar *user, const gchar *pass,
+			   const gchar *type)
 {
 	int r;
 	gint ok;
 	static time_t last_login_err = 0;
 
 	log_print("IMAP4> Logging in to %s\n", SESSION(session)->server);
-	r = imap_threaded_login(session->folder, user, pass);
+	r = imap_threaded_login(session->folder, user, pass, type);
 	if (r != MAILIMAP_NO_ERROR) {
+		gchar *ext_info = NULL;
+		
+		if (strcmp(type, "CRAM-MD5") == 0) {
+			ext_info = _("\n\nCRAM-MD5 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "CRAM-MD5 SASL plugin is installed.");
+		} else {
+			ext_info = "";
+		}
+		
 		if (time(NULL) - last_login_err > 10) {
-			alertpanel_error(_("Connection to %s failed: login refused."),
-					SESSION(session)->server);
+			alertpanel_error(_("Connection to %s failed: login refused.%s"),
+					SESSION(session)->server, ext_info);
 		}
 		last_login_err = time(NULL);
 		log_error("IMAP4< Error logging in to %s\n",
