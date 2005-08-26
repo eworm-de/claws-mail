@@ -1914,53 +1914,36 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 {
 	MsgInfo *tmp_msginfo = NULL;
 	MsgFlags flags = {0, 0};
-	
+	gchar *tmpfile = get_tmp_file();
+	FILE *fp = g_fopen(tmpfile, "wb");
 	
 	if (!mimeinfo || mimeinfo->type != MIMETYPE_MESSAGE ||
 	    g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		g_warning("procmsg_msginfo_new_from_mimeinfo(): unsuitable mimeinfo");
+		if (fp) 
+			fclose(fp);
+		g_free(tmpfile);
 		return NULL;
 	}
 	
-	
-	if (mimeinfo->content == MIMECONTENT_MEM) {
-		gchar *tmpfile = get_tmp_file();
-		str_write_to_file(mimeinfo->data.mem, tmpfile);
-		g_free(mimeinfo->data.mem);
-		mimeinfo->content = MIMECONTENT_FILE;
-		mimeinfo->data.filename = g_strdup(tmpfile);
-		g_free(tmpfile);
-		tmp_msginfo = procheader_parse_file(mimeinfo->data.filename,
-					flags, TRUE, FALSE);
-		if (tmp_msginfo != NULL) {
-			tmp_msginfo->folder = src_msginfo->folder;
-			tmp_msginfo->plaintext_file = g_strdup(mimeinfo->data.filename);
-		} else {
-			g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
-		}
-	} else {
-		gchar *tmpfile = get_tmp_file();
-		FILE *fp = g_fopen(tmpfile, "wb");
-		if (fp && procmime_write_mimeinfo(mimeinfo, fp) >= 0) {
-			if (fp)
-				fclose(fp);
-			fp = NULL;
-			tmp_msginfo = procheader_parse_file(
-				tmpfile, flags, 
-				TRUE, FALSE);
-		}
-		if (fp)
-			fclose(fp);
-
-		if (tmp_msginfo != NULL) {
-			tmp_msginfo->folder = src_msginfo->folder;
-			tmp_msginfo->plaintext_file = g_strdup(tmpfile);
-		} else {
-			g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
-		}
-		g_free(tmpfile);
-		
+	if (fp && procmime_write_mimeinfo(mimeinfo, fp) >= 0) {
+		fclose(fp);
+		fp = NULL;
+		tmp_msginfo = procheader_parse_file(
+			tmpfile, flags, 
+			TRUE, FALSE);
 	}
-	
+	if (fp)
+		fclose(fp);
+
+	if (tmp_msginfo != NULL) {
+		tmp_msginfo->folder = src_msginfo->folder;
+		tmp_msginfo->plaintext_file = g_strdup(tmpfile);
+	} else {
+		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+	}
+
+	g_free(tmpfile);
+
 	return tmp_msginfo;
 }

@@ -951,6 +951,26 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	}
 }	
 
+static void compose_force_signing(Compose *compose, PrefsAccount *account)
+{
+	gchar *privacy = NULL;
+
+	if (account->default_privacy_system
+	&&  strlen(account->default_privacy_system)) {
+		privacy = account->default_privacy_system;
+	} else {
+		GSList *privacy_avail = privacy_get_system_ids();
+		if (privacy_avail && g_slist_length(privacy_avail)) {
+			privacy = (gchar *)(privacy_avail->data);
+		}
+	}
+	if (privacy != NULL) {
+		compose->privacy_system = g_strdup(privacy);
+		compose_update_privacy_system_menu_item(compose);
+		compose_use_signing(compose, TRUE);
+	}
+}	
+
 void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 {
 	MsgInfo *msginfo;
@@ -1328,6 +1348,49 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	return compose;
 }
 
+static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
+{
+	GtkTextIter start = *iter;
+	GtkTextIter end_iter;
+	int start_pos = gtk_text_iter_get_offset(&start);
+
+	if (!compose->account->sig_sep)
+		return FALSE;
+	
+	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+		start_pos+strlen(compose->account->sig_sep));
+
+	/* check sig separator */
+	if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),
+			compose->account->sig_sep)) {
+		/* check end of line (\n) */
+		gtk_text_buffer_get_iter_at_offset(textbuf, &start,
+			start_pos+strlen(compose->account->sig_sep));
+		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+			start_pos+strlen(compose->account->sig_sep)+1);
+
+		if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),"\n"));
+			return TRUE;
+		
+
+	}
+
+	return FALSE;
+}
+
+static void compose_colorize_signature(Compose *compose)
+{
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+	GtkTextIter iter;
+	GtkTextIter end_iter;
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	while (gtk_text_iter_forward_line(&iter))
+		if (compose_is_sig_separator(compose, buffer, &iter)) {
+			gtk_text_buffer_get_end_iter(buffer, &end_iter);
+			gtk_text_buffer_apply_tag_by_name(buffer,"signature",&iter, &end_iter);
+		}
+}
+
 void compose_reedit(MsgInfo *msginfo)
 {
 	Compose *compose = NULL;
@@ -1468,6 +1531,8 @@ void compose_reedit(MsgInfo *msginfo)
 	
 	compose_attach_parts(compose, msginfo);
 
+	compose_colorize_signature(compose);
+
 	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
@@ -1528,6 +1593,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
+
+	compose_colorize_signature(compose);
 
 	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
 	menu_set_sensitive(ifactory, "/Add...", FALSE);
@@ -2603,13 +2670,20 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			gchar *content_type;
 
 			content_type = procmime_get_content_type_str(child->type, child->subtype);
-			partname = procmime_mimeinfo_get_parameter(child, "filename");
-			if (partname == NULL)
-				partname = procmime_mimeinfo_get_parameter(child, "name");
-			if (partname == NULL)
-				partname = "";
-			compose_attach_append(compose, outfile, 
-					      partname, content_type);
+
+			/* if we meet a pgp signature, we don't attach it, but
+			 * we force signing. */
+			if (strcmp(content_type, "application/pgp-signature")) {
+				partname = procmime_mimeinfo_get_parameter(child, "filename");
+				if (partname == NULL)
+					partname = procmime_mimeinfo_get_parameter(child, "name");
+				if (partname == NULL)
+					partname = "";
+				compose_attach_append(compose, outfile, 
+						      partname, content_type);
+			} else {
+				compose_force_signing(compose, compose->account);
+			}
 			g_free(content_type);
 		}
 		g_free(outfile);
@@ -2841,36 +2915,6 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	gtk_text_iter_set_line_offset(break_pos, pos);
 
 	return do_break;
-}
-
-static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
-{
-	GtkTextIter start = *iter;
-	GtkTextIter end_iter;
-	int start_pos = gtk_text_iter_get_offset(&start);
-
-	if (!compose->account->sig_sep)
-		return FALSE;
-	
-	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
-		start_pos+strlen(compose->account->sig_sep));
-
-	/* check sig separator */
-	if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),
-			compose->account->sig_sep)) {
-		/* check end of line (\n) */
-		gtk_text_buffer_get_iter_at_offset(textbuf, &start,
-			start_pos+strlen(compose->account->sig_sep));
-		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
-			start_pos+strlen(compose->account->sig_sep)+1);
-
-		if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),"\n"));
-			return TRUE;
-		
-
-	}
-
-	return FALSE;
 }
 
 static gboolean compose_join_next_line(Compose *compose,
@@ -7490,7 +7534,10 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_insert(buffer, iter, text, len);
 
 	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
-	compose_wrap_all_full(compose, FALSE);
+	
+/*	compose_wrap_all_full(compose, FALSE); */
+	compose_wrap_paragraph(compose, iter, FALSE);
+
 	gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 	gtk_text_buffer_delete_mark(buffer, mark);
 

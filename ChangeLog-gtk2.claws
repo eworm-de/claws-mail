@@ -1,3 +1,16 @@
+2005-08-26 [colin]	1.9.13cvs59
+
+	* src/procmime.c
+		Fix "Problem with replies". This happened only
+		on IMAP...
+	* src/procmsg.c
+		Factorize code a bit
+	* src/compose.c
+		Speed improvement on very long messages (wrapping)
+		Fix signature color on Reedit and Redirect
+		On Reedit, don't attach pgp-signatures parts, but
+		set signing to On.
+
 2005-08-24 [paul]	1.9.13cvs58
 
 	* src/compose.c
