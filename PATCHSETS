@@ -745,3 +745,4 @@
 ( cvs diff -u -r 1.115.2.51 -r 1.115.2.52 src/main.c;  cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/common/defs.h;  ) > 1.9.13cvs57.patchset
 ( cvs diff -u -r 1.382.2.155 -r 1.382.2.156 src/compose.c;  ) > 1.9.13cvs58.patchset
 ( cvs diff -u -r 1.49.2.55 -r 1.49.2.56 src/procmime.c;  cvs diff -u -r 1.150.2.40 -r 1.150.2.41 src/procmsg.c;  cvs diff -u -r 1.382.2.156 -r 1.382.2.157 src/compose.c;  ) > 1.9.13cvs59.patchset
+( cvs diff -u -r 1.49.2.56 -r 1.49.2.57 src/procmime.c;  ) > 1.9.13cvs60.patchset

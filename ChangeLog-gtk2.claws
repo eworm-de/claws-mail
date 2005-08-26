@@ -1,3 +1,9 @@
+2005-08-26 [colin]	1.9.13cvs60
+
+	* src/procmime.c
+		Previous "Problem with replies" fix brought other
+		problems, fixing them
+
 2005-08-26 [colin]	1.9.13cvs59
 
 	* src/procmime.c

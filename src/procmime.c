@@ -2141,10 +2141,6 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 
 	debug_print("procmime_write_mimeinfo\n");
 
-	if (mimeinfo->encoding_type == ENC_UNKNOWN
-	&&  mimeinfo->content != MIMECONTENT_EMPTY)
-		procmime_encode_content(mimeinfo, ENC_BINARY);
-
 	if (G_NODE_IS_LEAF(mimeinfo->node)) {
 		switch (mimeinfo->content) {
 		case MIMECONTENT_FILE:
@@ -2170,8 +2166,13 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 		/* Call writer for mime type */
 		switch (mimeinfo->type) {
 		case MIMETYPE_MESSAGE:
-			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0)
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
+				if (mimeinfo->encoding_type == ENC_UNKNOWN
+				&&  mimeinfo->content != MIMECONTENT_EMPTY)
+					procmime_encode_content(mimeinfo, ENC_BINARY);
+
 				return procmime_write_message_rfc822(mimeinfo, fp);
+			}
 			break;
 			
 		case MIMETYPE_MULTIPART:
