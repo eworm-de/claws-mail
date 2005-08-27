@@ -91,6 +91,8 @@ static void toolbar_reply			(gpointer 	 data,
 						 guint 		 action);
 static void toolbar_delete_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
+static void toolbar_trash_cb			(GtkWidget	*widget,
+					 	 gpointer        data);
 
 static void toolbar_compose_cb			(GtkWidget	*widget,
 					    	 gpointer	 data);
@@ -164,7 +166,8 @@ struct {
 	{ "A_REPLY_ALL",     	N_("Reply to All")                         },
 	{ "A_REPLY_ML",      	N_("Reply to Mailing-list")                },
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
-	{ "A_DELETE",        	N_("Delete Message")                       },
+	{ "A_TRASH",        	N_("Trash Message")   	                   },
+	{ "A_DELETE_REAL",    	N_("Delete Message")                       },
 	{ "A_EXECUTE",       	N_("Execute")                              },
 	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
@@ -257,7 +260,7 @@ static gint toolbar_ret_val_from_text(const gchar *text)
 		if (g_utf8_collate(toolbar_text[i].index_str, text) == 0)
 				return i;
 	}
-	
+
 	return -1;
 }
 
@@ -297,7 +300,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 		gint main_items[]   = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
 					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
-					A_DELETE,        A_EXECUTE,       A_GOTO_PREV, 
+					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_PRINT,
 					A_ADDRBOOK, 	 A_SYL_ACTIONS };
 
@@ -326,7 +329,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 	else if (source == TOOLBAR_MSGVIEW) {
 		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
-				        A_DELETE,        A_GOTO_PREV,	  A_GOTO_NEXT,
+				        A_TRASH, A_DELETE_REAL,       A_GOTO_PREV,	  A_GOTO_NEXT,
 					A_ADDRBOOK,	 A_SYL_ACTIONS };	
 
 		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
@@ -341,6 +344,7 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 	GList *attr;
 	gchar *name, *value;
 	ToolbarItem *item = NULL;
+	gboolean rewrite = FALSE;
 
 	attr = xml_get_current_tag_attr(file);
 	item = g_new0(ToolbarItem, 1);
@@ -354,7 +358,15 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 			item->text = g_strdup (value);
 		else if (g_utf8_collate(name, TOOLBAR_ICON_ACTION) == 0)
 			item->index = toolbar_ret_val_from_text(value);
-
+		if (item->index == -1 && !strcmp(value, "A_DELETE")) {
+			/* switch button */
+			item->index = A_TRASH;
+			g_free(item->file);
+			item->file = g_strdup("trash_open");
+			g_free(item->text);
+			item->text = g_strdup(_("Trash"));
+			rewrite = TRUE;
+		}
 		attr = g_list_next(attr);
 	}
 	if (item->index != -1) {
@@ -362,6 +374,9 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 		if (!toolbar_is_duplicate(item->index, source)) 
 			toolbar_config[source].item_list = g_slist_append(toolbar_config[source].item_list,
 									 item);
+	}
+	if (rewrite) {
+		toolbar_save_config_file(source);
 	}
 }
 
@@ -383,7 +398,7 @@ static void toolbar_set_default_main(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_DELETE,        STOCK_PIXMAP_CLOSE,                _("Delete")  },
+		{ A_TRASH,         STOCK_PIXMAP_TRASH_OPEN,           _("Trash")   },
 		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
 		{ A_GOTO_PREV,     STOCK_PIXMAP_UP_ARROW,             _("Previous")},
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
@@ -477,7 +492,7 @@ static void toolbar_set_default_msgview(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_DELETE,        STOCK_PIXMAP_CLOSE,                _("Delete")  },
+		{ A_TRASH,         STOCK_PIXMAP_TRASH_OPEN,           _("Trash")   },
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 	};
 	
@@ -888,7 +903,7 @@ static void toolbar_exec_cb(GtkWidget	*widget,
 /*
  * Delete current/selected(s) message(s)
  */
-static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
+static void toolbar_trash_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
@@ -903,6 +918,31 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow *)toolbar_item->parent;
         	summary_delete_trash(mainwin->summaryview);
+        	break;
+        default: 
+        	debug_print("toolbar event not supported\n");
+        	break;
+	}
+}
+
+/*
+ * Delete current/selected(s) message(s)
+ */
+static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	g_return_if_fail(toolbar_item != NULL);
+	g_return_if_fail(toolbar_item->parent);
+	
+	switch (toolbar_item->type) {
+	case TOOLBAR_MSGVIEW:
+		messageview_delete((MessageView *)toolbar_item->parent);
+        	break;
+        case TOOLBAR_MAIN:
+		mainwin = (MainWindow *)toolbar_item->parent;
+        	summary_delete(mainwin->summaryview);
         	break;
         default: 
         	debug_print("toolbar event not supported\n");
@@ -1265,7 +1305,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_REPLY_ALL,		toolbar_reply_to_all_cb		},
 		{ A_REPLY_ML,		toolbar_reply_to_list_cb	},
 		{ A_FORWARD,		toolbar_forward_cb		},
-		{ A_DELETE,         	toolbar_delete_cb		},
+		{ A_TRASH,       	toolbar_trash_cb		},
+		{ A_DELETE_REAL,       	toolbar_delete_cb		},
 		{ A_EXECUTE,        	toolbar_exec_cb			},
 		{ A_GOTO_PREV,      	toolbar_prev_unread_cb		},
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
@@ -1491,7 +1532,13 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				 		  _("Forward Message"), "Fwd");
 			toolbar_data->fwd_combo = fwd_combo;
 			break;
-		case A_DELETE:
+		case A_TRASH:
+			toolbar_data->trash_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->trash_btn,
+					     _("Trash Message"), NULL);
+			break;
+		case A_DELETE_REAL:
 			toolbar_data->delete_btn = item;
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->delete_btn,
@@ -1744,6 +1791,8 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(toolbar->next_btn, 0);
 	}
 
+	SET_WIDGET_COND(toolbar->trash_btn,
+			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
@@ -1833,6 +1882,7 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->replyall_btn     	= NULL;
 	toolbar->replylist_btn    	= NULL;
 	toolbar->fwd_btn          	= NULL;
+	toolbar->trash_btn       	= NULL;
 	toolbar->delete_btn       	= NULL;
 	toolbar->prev_btn         	= NULL;
 	toolbar->next_btn         	= NULL;

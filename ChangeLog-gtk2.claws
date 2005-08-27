@@ -1,3 +1,13 @@
+2005-08-27 [colin]	1.9.13cvs61
+
+	* src/toolbar.c
+	* src/toolbar.h
+		Remove A_DELETE, replace it with 
+		A_TRASH and A_DELETE_REAL. Automatically
+		rewrite config files to replace A_DELETE
+		with A_TRASH (no functionality change).
+		Fixes half of #794
+
 2005-08-26 [colin]	1.9.13cvs60
 
 	* src/procmime.c

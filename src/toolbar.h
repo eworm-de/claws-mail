@@ -62,6 +62,7 @@ struct _Toolbar {
 	GtkWidget *fwd_btn;
 	ComboButton *fwd_combo;
 	
+	GtkWidget *trash_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *prev_btn;
 	GtkWidget *next_btn;
@@ -146,7 +147,8 @@ enum {
 	A_REPLY_ALL,
 	A_REPLY_ML,
 	A_FORWARD,
-	A_DELETE,
+	A_TRASH,
+	A_DELETE_REAL,
 	A_EXECUTE,
 	A_GOTO_PREV,
 	A_GOTO_NEXT,
