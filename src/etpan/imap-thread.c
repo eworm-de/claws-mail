@@ -324,6 +324,50 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	return result.error;
 }
+
+struct capa_param {
+	mailimap * imap;
+};
+
+struct capa_result {
+	int error;
+	struct mailimap_capability_data *caps;
+};
+
+static void capability_run(struct etpan_thread_op * op)
+{
+	int r;
+	struct capa_param * param;
+	struct capa_result * result;
+	struct mailimap_capability_data *caps;
+
+	param = op->param;
+	result = op->result;
+	
+	r = mailimap_capability(param->imap, &caps);
+	
+	result->error = r;
+	result->caps = caps;
+}
+
+
+struct mailimap_capability_data * imap_threaded_capability(Folder *folder)
+{
+	struct capa_param param;
+	struct capa_result result;
+	mailimap *imap;
+	
+	imap = get_imap(folder);
+	
+	param.imap = imap;
+	
+	threaded_run(folder, &param, &result, capability_run);
+	
+	debug_print("capa ok\n");
+	
+	return result.caps;
+	
+}
 	
 struct disconnect_param {
 	mailimap * imap;

@@ -1,3 +1,13 @@
+2005-08-27 [colin]	1.9.13cvs63
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Implement automatic choosing of login method
+		Fixes bug #791
+	* src/gtk/.cvsignore
+		Add sylpheed-marshal.[ch]
+
 2005-08-27 [colin]	1.9.13cvs62
 
 	* src/common/utils.c

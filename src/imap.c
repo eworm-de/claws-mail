@@ -96,7 +96,7 @@ struct _IMAPSession
 
 	gboolean authenticated;
 
-	gchar **capability;
+	GSList *capability;
 	gboolean uidplus;
 
 	gchar *mbox;
@@ -527,25 +527,84 @@ static void imap_reset_uid_lists(Folder *folder)
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
 
+void imap_get_capabilities(IMAPSession *session)
+{
+	struct mailimap_capability_data *capabilities = NULL;
+	clistiter *cur;
+
+	if (session->capability != NULL)
+		return;
+
+	capabilities = imap_threaded_capability(session->folder);
+	for(cur = clist_begin(capabilities->cap_list) ; cur != NULL ;
+	    cur = clist_next(cur)) {
+		struct mailimap_capability * cap = 
+			clist_content(cur);
+		if (cap->cap_data.cap_name == NULL)
+			continue;
+		session->capability = g_slist_append
+				(session->capability,
+				 g_strdup(cap->cap_data.cap_name));
+		debug_print("got capa %s\n", cap->cap_data.cap_name);
+	}
+	mailimap_capability_data_free(capabilities);
+}
+
+gboolean imap_has_capability(IMAPSession *session, const gchar *cap) 
+{
+	GSList *cur;
+	for (cur = session->capability; cur; cur = cur->next) {
+		if (!g_ascii_strcasecmp(cur->data, cap))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass,
 		      IMAPAuthType type)
 {
-	gint ok;
+	gint ok = IMAP_ERROR;
+	static time_t last_login_err = 0;
 	
-	/* TODO: implement Automatic mode */
+	imap_get_capabilities(session);
 
 	switch(type) {
 	case IMAP_AUTH_CRAM_MD5:
 		ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
 		break;
 	case IMAP_AUTH_LOGIN:
-	default:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
+	default:
+		debug_print("capabilities:\n"
+				"\t CRAM-MD5 %d\n"
+				"\t LOGIN %d\n", 
+			imap_has_capability(session, "CRAM-MD5"),
+			imap_has_capability(session, "LOGIN"));
+		if (imap_has_capability(session, "CRAM-MD5"))
+			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
+		if (ok == IMAP_ERROR) /* we always try LOGIN before giving up */
+			ok = imap_cmd_login(session, user, pass, "LOGIN");
 	}
 	if (ok == IMAP_SUCCESS)
 		session->authenticated = TRUE;
-
+	else {
+		gchar *ext_info = NULL;
+		
+		if (type == IMAP_AUTH_CRAM_MD5) {
+			ext_info = _("\n\nCRAM-MD5 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "CRAM-MD5 SASL plugin is installed.");
+		} else {
+			ext_info = "";
+		}
+		
+		if (time(NULL) - last_login_err > 10) {
+			alertpanel_error(_("Connection to %s failed: login refused.%s"),
+					SESSION(session)->server, ext_info);
+		}
+		last_login_err = time(NULL);
+	}
 	return ok;
 }
 
@@ -826,7 +885,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		if (cached)
 			debug_print("message %d has been already %scached (%d/%d).\n", uid,
 				have_size == cached->size ? "fully ":"",
-				have_size, cached->size);
+				have_size, (int)cached->size);
 		
 		if (cached && (cached->size == have_size || !body)) {
 			procmsg_msginfo_free(cached);
@@ -2135,7 +2194,8 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 
 static void imap_free_capabilities(IMAPSession *session)
 {
-	g_strfreev(session->capability);
+	slist_free_strings(session->capability);
+	g_slist_free(session->capability);
 	session->capability = NULL;
 }
 
@@ -2191,26 +2251,13 @@ static gint imap_cmd_login(IMAPSession *session,
 {
 	int r;
 	gint ok;
-	static time_t last_login_err = 0;
 
-	log_print("IMAP4> Logging in to %s\n", SESSION(session)->server);
+	log_print("IMAP4> Logging %s to %s using %s\n", 
+			user,
+			SESSION(session)->server,
+			type);
 	r = imap_threaded_login(session->folder, user, pass, type);
 	if (r != MAILIMAP_NO_ERROR) {
-		gchar *ext_info = NULL;
-		
-		if (strcmp(type, "CRAM-MD5") == 0) {
-			ext_info = _("\n\nCRAM-MD5 logins only work if libetpan has been "
-				     "compiled with SASL support and the "
-				     "CRAM-MD5 SASL plugin is installed.");
-		} else {
-			ext_info = "";
-		}
-		
-		if (time(NULL) - last_login_err > 10) {
-			alertpanel_error(_("Connection to %s failed: login refused.%s"),
-					SESSION(session)->server, ext_info);
-		}
-		last_login_err = time(NULL);
 		log_error("IMAP4< Error logging in to %s\n",
 				SESSION(session)->server);
 		ok = IMAP_ERROR;

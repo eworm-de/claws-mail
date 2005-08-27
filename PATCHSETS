@@ -748,3 +748,4 @@
 ( cvs diff -u -r 1.49.2.56 -r 1.49.2.57 src/procmime.c;  ) > 1.9.13cvs60.patchset
 ( cvs diff -u -r 1.43.2.21 -r 1.43.2.22 src/toolbar.c;  cvs diff -u -r 1.19.2.4 -r 1.19.2.5 src/toolbar.h;  ) > 1.9.13cvs61.patchset
 ( cvs diff -u -r 1.36.2.40 -r 1.36.2.41 src/common/utils.c;  ) > 1.9.13cvs62.patchset
+( cvs diff -u -r 1.179.2.60 -r 1.179.2.61 src/imap.c;  cvs diff -u -r 1.1.4.17 -r 1.1.4.18 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/etpan/imap-thread.h;  cvs diff -u -r 1.1 -r 1.2 src/gtk/.cvsignore;  ) > 1.9.13cvs63.patchset
