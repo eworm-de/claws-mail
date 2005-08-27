@@ -855,6 +855,37 @@ static guint get_size_with_lfs(MsgInfo *info)
 	return cnt;
 }
 
+static void strip_crs(const gchar *file) 
+{
+	FILE *fp = NULL, *outfp = NULL;
+	gchar buf[4096];
+	gchar *out = get_tmp_file();
+	if (file == NULL)
+		return;
+	
+	fp = fopen(file, "rb");
+	if (!fp)
+		return;
+
+	outfp = fopen(out, "wb");
+	if (!outfp)
+		return;
+	
+	while (fgets(buf, sizeof (buf), fp) != NULL) {
+		while (strstr(buf, "\r")) {
+			gchar *cr = strstr(buf, "\r") ;
+			*cr = '\n';
+			cr++;
+			*cr = '\0';
+		}
+		fputs(buf, outfp);
+	}
+	
+	fclose(fp);
+	fclose(outfp);
+	rename_force(out, file);
+}
+
 static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 				  gboolean headers, gboolean body)
 {
@@ -890,6 +921,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		if (cached && (cached->size == have_size || !body)) {
 			procmsg_msginfo_free(cached);
 			procmsg_msginfo_free(msginfo);
+			strip_crs(filename);
 			return filename;
 		} else {
 			procmsg_msginfo_free(cached);
@@ -921,6 +953,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		return NULL;
 	}
 
+	strip_crs(filename);
 	return filename;
 }
 

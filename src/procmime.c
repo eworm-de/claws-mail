@@ -2167,10 +2167,6 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 		switch (mimeinfo->type) {
 		case MIMETYPE_MESSAGE:
 			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
-				if (mimeinfo->encoding_type == ENC_UNKNOWN
-				&&  mimeinfo->content != MIMECONTENT_EMPTY)
-					procmime_encode_content(mimeinfo, ENC_BINARY);
-
 				return procmime_write_message_rfc822(mimeinfo, fp);
 			}
 			break;
