@@ -1,3 +1,10 @@
+2005-08-27 [colin]	1.9.13cvs64
+
+	* tools/Makefile.am
+	* tools/asus_mailled.sh
+		Add a script to blink ASUS laptops' mail LED where there
+		is unread mail.
+
 2005-08-27 [colin]	1.9.13cvs63
 
 	* src/imap.c
