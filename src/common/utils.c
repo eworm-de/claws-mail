@@ -1928,7 +1928,7 @@ const gchar *get_domain_name(void)
 		struct utsname uts;
 
 		if (uname(&uts) < 0) {
-			perror("gethostname");
+			perror("uname");
 			domain_name = "unknown";
 		} else {
 			if ((hp = my_gethostbyname(uts.nodename)) == NULL) {
