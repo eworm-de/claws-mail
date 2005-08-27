@@ -2818,7 +2818,11 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	}
 
 	g_relation_destroy(relation);
-	return lastnum;
+	if (not_moved != NULL) {
+		g_slist_free(not_moved);
+		return -1;
+	} else
+		return lastnum;
 }
 
 /**

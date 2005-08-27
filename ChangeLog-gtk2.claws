@@ -1,3 +1,12 @@
+2005-08-27 [colin]	1.9.13cvs65
+
+	* src/folder.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+		Fix bug #517 (messages removed from summaryview 
+		when moving fails)
+
 2005-08-27 [colin]	1.9.13cvs64
 
 	* tools/Makefile.am

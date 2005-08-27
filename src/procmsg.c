@@ -332,13 +332,14 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	return root;
 }
 
-void procmsg_move_messages(GSList *mlist)
+gint procmsg_move_messages(GSList *mlist)
 {
 	GSList *cur, *movelist = NULL;
 	MsgInfo *msginfo;
 	FolderItem *dest = NULL;
+	gint retval = 0;
 
-	if (!mlist) return;
+	if (!mlist) return 0;
 
 	folder_item_update_freeze();
 
@@ -360,11 +361,12 @@ void procmsg_move_messages(GSList *mlist)
 	}
 
 	if (movelist) {
-		folder_item_move_msgs(dest, movelist);
+		retval = folder_item_move_msgs(dest, movelist);
 		g_slist_free(movelist);
 	}
 
 	folder_item_update_thaw();
+	return retval;
 }
 
 void procmsg_copy_messages(GSList *mlist)

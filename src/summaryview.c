@@ -208,7 +208,7 @@ static void summary_copy_row_to		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
 					 FolderItem		*to_folder);
 
-static void summary_execute_move	(SummaryView		*summaryview);
+static gint summary_execute_move	(SummaryView		*summaryview);
 static void summary_execute_move_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
@@ -3565,6 +3565,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node, *next;
 	GtkCTreeNode *new_selected = NULL;
+	gint move_val = -1;
 
 	if (!summaryview->folder_item) return FALSE;
 
@@ -3577,7 +3578,7 @@ gboolean summary_execute(SummaryView *summaryview)
 		summary_unthread_for_exec(summaryview);
 
 	folder_item_update_freeze();
-	summary_execute_move(summaryview);
+	move_val = summary_execute_move(summaryview);
 	summary_execute_copy(summaryview);
 	summary_execute_delete(summaryview);
 	
@@ -3641,26 +3642,30 @@ gboolean summary_execute(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 	summary_unlock(summaryview);
+	
+	if (move_val < 0) 
+		summary_show(summaryview, summaryview->folder_item);
 	return TRUE;
 }
 
-static void summary_execute_move(SummaryView *summaryview)
+static gint summary_execute_move(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GSList *cur;
-
+	gint val = -1;
 	/* search moving messages and execute */
 	gtk_ctree_pre_recursive(ctree, NULL, summary_execute_move_func,
 				summaryview);
 
 	if (summaryview->mlist) {
-		procmsg_move_messages(summaryview->mlist);
+		val = procmsg_move_messages(summaryview->mlist);
 
 		for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
 			procmsg_msginfo_free((MsgInfo *)cur->data);
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
 	}
+	return val;
 }
 
 static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
