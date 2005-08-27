@@ -3,8 +3,7 @@
 	* src/imap.c
 	* src/procmime.c
 		Correctly fix "Problem with replies", fixes
-		pgpmime encryption too. pgpinline seems to 
-		have a problem
+		pgpmime encryption too. 
 
 2005-08-27 [colin]	1.9.13cvs65
 
