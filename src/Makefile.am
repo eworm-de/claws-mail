@@ -367,6 +367,7 @@ EXTRA_DIST = \
 	pixmaps/sylpheed.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
+	pixmaps/trash_btn.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/read.xpm \
 	pixmaps/up_arrow.xpm \

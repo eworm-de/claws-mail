@@ -362,7 +362,7 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 			/* switch button */
 			item->index = A_TRASH;
 			g_free(item->file);
-			item->file = g_strdup("trash_open");
+			item->file = g_strdup("trash_btn");
 			g_free(item->text);
 			item->text = g_strdup(_("Trash"));
 			rewrite = TRUE;
@@ -398,7 +398,7 @@ static void toolbar_set_default_main(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_TRASH,         STOCK_PIXMAP_TRASH_OPEN,           _("Trash")   },
+		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
 		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
 		{ A_GOTO_PREV,     STOCK_PIXMAP_UP_ARROW,             _("Previous")},
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
@@ -492,7 +492,7 @@ static void toolbar_set_default_msgview(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_TRASH,         STOCK_PIXMAP_TRASH_OPEN,           _("Trash")   },
+		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 	};
 	

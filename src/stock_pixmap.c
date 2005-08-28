@@ -116,6 +116,7 @@
 #include "pixmaps/outbox.xpm"
 #include "pixmaps/outbox_hrm.xpm"
 #include "pixmaps/trash.xpm"
+#include "pixmaps/trash_btn.xpm"
 #include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
@@ -289,6 +290,7 @@ static StockPixmapData pixmaps[] =
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
 	{sylpheed_icon_xpm			, NULL, NULL, "sylpheed_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
+	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
         {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL}
 };
