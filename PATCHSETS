@@ -752,3 +752,4 @@
 ( cvs diff -u -r 1.25.2.5 -r 1.25.2.6 tools/Makefile.am;  diff -u /dev/null tools/asus_mailled.sh;  ) > 1.9.13cvs64.patchset
 ( cvs diff -u -r 1.213.2.53 -r 1.213.2.54 src/folder.c;  cvs diff -u -r 1.150.2.41 -r 1.150.2.42 src/procmsg.c;  cvs diff -u -r 1.60.2.15 -r 1.60.2.16 src/procmsg.h;  cvs diff -u -r 1.395.2.116 -r 1.395.2.117 src/summaryview.c;  ) > 1.9.13cvs65.patchset
 ( cvs diff -u -r 1.179.2.61 -r 1.179.2.62 src/imap.c;  cvs diff -u -r 1.49.2.57 -r 1.49.2.58 src/procmime.c;  ) > 1.9.13cvs66.patchset
+( cvs diff -u -r 1.179.2.62 -r 1.179.2.63 src/imap.c;  ) > 1.9.13cvs67.patchset

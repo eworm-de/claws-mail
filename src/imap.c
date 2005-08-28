@@ -861,16 +861,18 @@ static void strip_crs(const gchar *file)
 	gchar buf[4096];
 	gchar *out = get_tmp_file();
 	if (file == NULL)
-		return;
+		goto freeout;
 	
 	fp = fopen(file, "rb");
 	if (!fp)
-		return;
+		goto freeout;
 
 	outfp = fopen(out, "wb");
-	if (!outfp)
-		return;
-	
+	if (!outfp) {
+		fclose(fp);
+		goto freeout;
+	}
+
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
 		while (strstr(buf, "\r")) {
 			gchar *cr = strstr(buf, "\r") ;
@@ -884,6 +886,8 @@ static void strip_crs(const gchar *file)
 	fclose(fp);
 	fclose(outfp);
 	rename_force(out, file);
+freeout:
+	g_free(out);
 }
 
 static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,

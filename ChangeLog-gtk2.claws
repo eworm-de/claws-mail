@@ -1,3 +1,8 @@
+2005-08-28 [colin]	1.9.13cvs67
+
+	* src/imap.c
+		Fix leak
+
 2005-08-27 [colin]	1.9.13cvs66
 
 	* src/imap.c
