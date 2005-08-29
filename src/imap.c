@@ -832,7 +832,7 @@ static gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	return imap_fetch_msg_full(folder, item, uid, TRUE, TRUE);
 }
 
-static guint get_size_with_lfs(MsgInfo *info) 
+static guint get_size_with_crs(MsgInfo *info) 
 {
 	FILE *fp = NULL;
 	guint cnt = 0;
@@ -853,41 +853,6 @@ static guint get_size_with_lfs(MsgInfo *info)
 	
 	fclose(fp);
 	return cnt;
-}
-
-static void strip_crs(const gchar *file) 
-{
-	FILE *fp = NULL, *outfp = NULL;
-	gchar buf[4096];
-	gchar *out = get_tmp_file();
-	if (file == NULL)
-		goto freeout;
-	
-	fp = fopen(file, "rb");
-	if (!fp)
-		goto freeout;
-
-	outfp = fopen(out, "wb");
-	if (!outfp) {
-		fclose(fp);
-		goto freeout;
-	}
-
-	while (fgets(buf, sizeof (buf), fp) != NULL) {
-		while (strstr(buf, "\r")) {
-			gchar *cr = strstr(buf, "\r") ;
-			*cr = '\n';
-			cr++;
-			*cr = '\0';
-		}
-		fputs(buf, outfp);
-	}
-	
-	fclose(fp);
-	fclose(outfp);
-	rename_force(out, file);
-freeout:
-	g_free(out);
 }
 
 static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
@@ -915,7 +880,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		 * we have to update the local file (UNIX \n only) size */
 		MsgInfo *msginfo = imap_parse_msg(filename, item);
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
-		guint have_size = get_size_with_lfs(msginfo);
+		guint have_size = get_size_with_crs(msginfo);
 
 		if (cached)
 			debug_print("message %d has been already %scached (%d/%d).\n", uid,
@@ -925,7 +890,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		if (cached && (cached->size == have_size || !body)) {
 			procmsg_msginfo_free(cached);
 			procmsg_msginfo_free(msginfo);
-			strip_crs(filename);
+			file_strip_crs(filename);
 			return filename;
 		} else {
 			procmsg_msginfo_free(cached);
@@ -957,7 +922,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		return NULL;
 	}
 
-	strip_crs(filename);
+	file_strip_crs(filename);
 	return filename;
 }
 

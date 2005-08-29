@@ -384,6 +384,36 @@ gchar *strcrchomp(gchar *str)
 	return str;
 }
 
+void file_strip_crs(const gchar *file) 
+{
+	FILE *fp = NULL, *outfp = NULL;
+	gchar buf[4096];
+	gchar *out = get_tmp_file();
+	if (file == NULL)
+		goto freeout;
+	
+	fp = fopen(file, "rb");
+	if (!fp)
+		goto freeout;
+
+	outfp = fopen(out, "wb");
+	if (!outfp) {
+		fclose(fp);
+		goto freeout;
+	}
+
+	while (fgets(buf, sizeof (buf), fp) != NULL) {
+		strcrchomp(buf);
+		fputs(buf, outfp);
+	}
+	
+	fclose(fp);
+	fclose(outfp);
+	rename_force(out, file);
+freeout:
+	g_free(out);
+}
+
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
 {

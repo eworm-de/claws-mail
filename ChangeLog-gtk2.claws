@@ -1,3 +1,16 @@
+2005-08-29 [paul]	1.9.13cvs69
+	
+	Patches by Colin:
+
+	* src/imap.c
+	* src/common.utils.c
+	* src/common/utils.h
+		optimisation
+	* src/stock_pixmap.h
+		fix wrong icon reference
+	* src/pixmaps/trash_btn.xpm
+		replace with nicer image
+
 2005-08-28 [colin]	1.9.13cvs68
 
 	* src/Makefile.am
