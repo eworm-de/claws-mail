@@ -1,3 +1,11 @@
+2005-08-29 [paul]	1.9.13cvs71
+
+	* AUTHORS
+	* src/matcher_parser_parse.y
+	* src/etpan/imap-thread.c
+		fix building on FreeBSD
+		Patch by Daniel Gustafson <daniel@hobbit.se>
+
 2005-08-29 [paul]	1.9.13cvs70
 
 	* src/plugins/pgpinline/pgpinline.c

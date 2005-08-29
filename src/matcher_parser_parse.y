@@ -383,6 +383,7 @@ MATCHER_RULENAME MATCHER_STRING
 {
 	name = g_strdup($2);
 }
+;
 
 filtering:
 filtering_action_list
