@@ -1,3 +1,9 @@
+2005-08-29 [paul]	1.9.13cvs70
+
+	* src/plugins/pgpinline/pgpinline.c
+		only initialise sig result if it's been handled
+		Patch by Colin
+
 2005-08-29 [paul]	1.9.13cvs69
 	
 	Patches by Colin:

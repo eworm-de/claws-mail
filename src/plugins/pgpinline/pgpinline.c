@@ -116,13 +116,6 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 	if (!textdata)
 		return FALSE;
 	
-	if (data == NULL) {
-		data = pgpinline_new_privacydata();
-		mimeinfo->privacy = (PrivacyData *) data;
-	}
-	data->done_sigtest = TRUE;
-	data->is_signed = FALSE;
-
 	if ((sigpos = strstr(textdata, sig_indicator)) == NULL) {
 		g_free(textdata);
 		return FALSE;
@@ -135,6 +128,11 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 
 	g_free(textdata);
 
+	if (data == NULL) {
+		data = pgpinline_new_privacydata();
+		mimeinfo->privacy = (PrivacyData *) data;
+	}
+	data->done_sigtest = TRUE;
 	data->is_signed = TRUE;
 
 	return TRUE;

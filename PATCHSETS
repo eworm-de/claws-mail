@@ -755,3 +755,4 @@
 ( cvs diff -u -r 1.179.2.62 -r 1.179.2.63 src/imap.c;  ) > 1.9.13cvs67.patchset
 ( cvs diff -u -r 1.155.2.30 -r 1.155.2.31 src/Makefile.am;  cvs diff -u -r 1.25.2.16 -r 1.25.2.17 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.9 -r 1.18.2.10 src/stock_pixmap.h;  cvs diff -u -r 1.43.2.22 -r 1.43.2.23 src/toolbar.c;  diff -u /dev/null src/pixmaps/trash_btn.xpm;  ) > 1.9.13cvs68.patchset
 ( cvs diff -u -r 1.179.2.63 -r 1.179.2.64 src/imap.c;  cvs diff -u -r 1.18.2.10 -r 1.18.2.11 src/stock_pixmap.h;  cvs diff -u -r 1.36.2.41 -r 1.36.2.42 src/common/utils.c;  cvs diff -u -r 1.20.2.22 -r 1.20.2.23 src/common/utils.h;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/pixmaps/trash_btn.xpm;  ) > 1.9.13cvs69.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpinline/pgpinline.c;  ) > 1.9.13cvs70.patchset
