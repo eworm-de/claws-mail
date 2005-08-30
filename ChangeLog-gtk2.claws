@@ -1,3 +1,12 @@
+2005-08-30 [colin]	1.9.13cvs73
+
+	* src/summaryview.c
+		When Hide read messages is selected and we
+		refresh the summaryview, don't remove the 
+		currently displayed message. Fixes bug #797
+		(Summary view reloads when new mail is 
+		downloaded in 1.9.14 rc)
+
 2005-08-30 [colin]	1.9.13cvs72
 
 	* src/folderview.c

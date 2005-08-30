@@ -824,6 +824,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	/* STATUSBAR_POP(summaryview->mainwin); */
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
+
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,
 						     summaryview->selected);
@@ -910,6 +911,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			
 			if (MSG_IS_UNREAD(msginfo->flags) &&
 			    !MSG_IS_IGNORE_THREAD(msginfo->flags))
+				not_killed = g_slist_prepend(not_killed, msginfo);
+			else if (is_refresh &&
+				(msginfo->msgnum == selected_msgnum ||
+				 msginfo->msgnum == displayed_msgnum))
 				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
