@@ -27,6 +27,7 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 					    const gchar *filter);
 gchar *filesel_select_file_save(const gchar *title, const gchar *path);
 gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path);
+gchar *filesel_select_file_save_folder(const gchar *title, const gchar *path);
 
 GList *filesel_select_multiple_files_open(const gchar *title);
 

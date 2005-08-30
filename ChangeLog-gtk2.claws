@@ -1,3 +1,14 @@
+2005-08-30 [colin]	1.9.13cvs72
+
+	* src/folderview.c
+		Fix flickering
+	* src/mainwindow.c
+		Remove useless callback
+	* src/mimeview.c
+	* src/gtk/filesel.c
+	* src/gtk/filesel.h
+		Add a filesel_select_file_save_folder() - used by Save All
+
 2005-08-29 [paul]	1.9.13cvs71
 
 	* AUTHORS

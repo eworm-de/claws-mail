@@ -53,12 +53,13 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	gint action = (open == TRUE) ? 
 			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
 					       GTK_FILE_CHOOSER_ACTION_OPEN):
-			GTK_FILE_CHOOSER_ACTION_SAVE;
+			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
+					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
 	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
 	GtkWidget *chooser = gtk_file_chooser_dialog_new (title, NULL, action, 
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				action_btn, GTK_RESPONSE_OK, 
+				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);
 	if (filter != NULL) {
 		GtkFileFilter *file_filter = gtk_file_filter_new();
@@ -96,7 +97,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), last_selected_dir);
 	}
 
-	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) 
+	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
 		slist = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (chooser));
 	
 	manage_window_focus_out(chooser, NULL, NULL);
@@ -174,5 +175,10 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 {
 	return filesel_select_file (title, path, TRUE, TRUE, NULL);
+}
+
+gchar *filesel_select_file_save_folder(const gchar *title, const gchar *path)
+{
+	return filesel_select_file (title, path, FALSE, TRUE, NULL);
 }
 

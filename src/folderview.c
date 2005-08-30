@@ -1857,8 +1857,6 @@ static void folderview_popup_close(GtkMenuShell *menu_shell,
 {
 	if (!folderview->opened) return;
 
-	gtkut_ctree_set_focus_row(GTK_CTREE(folderview->ctree),
-				  folderview->opened);
 	gtk_ctree_select(GTK_CTREE(folderview->ctree), folderview->opened);
 }
 

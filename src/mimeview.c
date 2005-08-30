@@ -1065,7 +1065,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		startdir = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, NULL);
 
-	dirname = filesel_select_file_open_folder(_("Select destination folder"), startdir);
+	dirname = filesel_select_file_save_folder(_("Select destination folder"), startdir);
 	if (!dirname) {
 		if (startdir) g_free(startdir);
 		return;

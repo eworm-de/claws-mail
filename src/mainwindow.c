@@ -123,8 +123,6 @@ static void toolbar_child_detached		(GtkWidget	*widget,
 static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
-static void ac_menu_popup_closed		(GtkMenuShell	*menu_shell,
-						 gpointer	 data);
 
 static gint main_window_close_cb		(GtkWidget	*widget,
 						 GdkEventAny	*event,
@@ -1088,8 +1086,6 @@ MainWindow *main_window_create(SeparateType type)
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
-	g_signal_connect(G_OBJECT(ac_menu), "selection_done",
-			 G_CALLBACK(ac_menu_popup_closed), mainwin);
 	mainwin->ac_menu = ac_menu;
 
 	toolbar_main_set_sensitive(mainwin);
@@ -2371,18 +2367,6 @@ static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event
 	return TRUE;
 }
 
-static void ac_menu_popup_closed(GtkMenuShell *menu_shell, gpointer data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-	GtkWidget *button;
-
-	button = g_object_get_data(G_OBJECT(menu_shell), "menu_button");
-	if (!button) return;
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button", NULL);
-	manage_window_focus_in(mainwin->window, NULL, NULL);
-}
-
 static gint main_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
@@ -3133,7 +3117,7 @@ static void account_selector_menu_cb(GtkMenuItem *menuitem, gpointer data)
 	toolbar_update(TOOLBAR_MAIN, mainwindow_get_mainwindow());
 	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
-	
+	gtk_button_set_relief(GTK_BUTTON(mainwindow_get_mainwindow()->ac_button), GTK_RELIEF_NONE);
 	item = folderview_get_selected_item(
 			mainwindow_get_mainwindow()->folderview);
 	if (item) {

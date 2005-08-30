@@ -757,3 +757,4 @@
 ( cvs diff -u -r 1.179.2.63 -r 1.179.2.64 src/imap.c;  cvs diff -u -r 1.18.2.10 -r 1.18.2.11 src/stock_pixmap.h;  cvs diff -u -r 1.36.2.41 -r 1.36.2.42 src/common/utils.c;  cvs diff -u -r 1.20.2.22 -r 1.20.2.23 src/common/utils.h;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/pixmaps/trash_btn.xpm;  ) > 1.9.13cvs69.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpinline/pgpinline.c;  ) > 1.9.13cvs70.patchset
 ( cvs diff -u -r 1.100.2.23 -r 1.100.2.24 AUTHORS;  cvs diff -u -r 1.25.2.9 -r 1.25.2.10 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/etpan/imap-thread.c;  ) > 1.9.13cvs71.patchset
+( cvs diff -u -r 1.207.2.58 -r 1.207.2.59 src/folderview.c;  cvs diff -u -r 1.274.2.56 -r 1.274.2.57 src/mainwindow.c;  cvs diff -u -r 1.83.2.37 -r 1.83.2.38 src/mimeview.c;  cvs diff -u -r 1.2.2.14 -r 1.2.2.15 src/gtk/filesel.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/filesel.h;  ) > 1.9.13cvs72.patchset
