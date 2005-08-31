@@ -875,10 +875,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Do nothing"), 0);
-	MENUITEM_ADD (menu, menuitem, _("Select first new (or unread) message"),
-		      SELECTONENTRY_NEW);
 	MENUITEM_ADD (menu, menuitem, _("Select first unread (or new) message"),
 		      SELECTONENTRY_UNREAD);
+	MENUITEM_ADD (menu, menuitem, _("Select first new (or unread) message"),
+		      SELECTONENTRY_NEW);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
  	
@@ -887,7 +887,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox_nextunreadmsgdialog);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_nextunreadmsgdialog, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Show no-unread-message dialog"));
+	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), label, FALSE, FALSE, 8);
 

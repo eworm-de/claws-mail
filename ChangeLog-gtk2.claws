@@ -1,3 +1,12 @@
+2005-08-31 [colin]	1.9.13cvs75
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/prefs_summaries.c
+	* src/summaryview.c
+		Fix "go to next new", fix preference
+		(Open unread/next swapped)
+
 2005-08-31 [paul]	1.9.13cvs74
 
 	* src/compose.c
