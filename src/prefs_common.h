@@ -141,7 +141,6 @@ struct _PrefsCommon
 	gchar *widgetfont;
 	gchar *textfont;
 	gchar *normalfont;
-	gchar *boldfont;
 	gchar *smallfont;
 	gchar *titlefont;
 

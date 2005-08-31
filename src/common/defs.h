@@ -128,7 +128,6 @@
 #define MAX_HISTORY_SIZE		16
 
 #define NORMAL_FONT prefs_common.normalfont
-#define BOLD_FONT   prefs_common.boldfont
 #define SMALL_FONT	prefs_common.smallfont
 
 #define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"

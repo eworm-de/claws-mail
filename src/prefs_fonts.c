@@ -44,7 +44,6 @@ typedef struct _FontsPage
 
 	GtkWidget *entry_folderviewfont;
 	GtkWidget *entry_messageviewfont;
-	GtkWidget *entry_boldfont;
 } FontsPage;
 
 void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -55,7 +54,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *table;
 	GtkWidget *entry_folderviewfont;
 	GtkWidget *entry_messageviewfont;
-	GtkWidget *entry_boldfont;
 	GtkWidget *tmplabel;
 	GtkWidget *vbox;
 
@@ -99,23 +97,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	tmplabel = gtk_label_new (_("Bold"));
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 3, 4,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
-
-	entry_boldfont = gtk_font_button_new_with_font (prefs_common.boldfont);
-	g_object_set(G_OBJECT(entry_boldfont), 
-			      "use-font", TRUE, 
-			      NULL);
-	gtk_widget_show (entry_boldfont);
-	gtk_table_attach (GTK_TABLE (table), entry_boldfont, 1, 2, 3, 4,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
 	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
 	gtk_widget_show(vbox);
 	gtk_table_attach (GTK_TABLE (table), vbox, 0, 4, 4, 5,
@@ -125,7 +106,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_fonts->window		   = GTK_WIDGET(window);
 	prefs_fonts->entry_folderviewfont  = entry_folderviewfont;
 	prefs_fonts->entry_messageviewfont = entry_messageviewfont;
-	prefs_fonts->entry_boldfont	   = entry_boldfont;
 
 	prefs_fonts->page.widget = table;
 }
@@ -146,10 +126,6 @@ void prefs_fonts_save(PrefsPage *_page)
 	prefs_common.textfont   = g_strdup(gtk_font_button_get_font_name
 		(GTK_FONT_BUTTON(fonts->entry_messageviewfont)));
 
-	g_free(prefs_common.boldfont);
-	prefs_common.boldfont   = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_boldfont)));
-		
 	main_window_reflect_prefs_all();
 }
 

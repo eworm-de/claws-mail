@@ -51,5 +51,5 @@ void headerview_clear		(HeaderView	*headerview);
 void headerview_set_visibility	(HeaderView	*headerview,
 				 gboolean	 visibility);
 void headerview_destroy		(HeaderView	*headerview);
-
+void headerview_set_font	(HeaderView 	*headerview);
 #endif /* __HEADERVIEW_H__ */

@@ -1710,15 +1710,8 @@ void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 					(prefs_common.color_new, &bold_color);
 				bold_style = gtk_style_copy(gtk_widget_get_style
 					(GTK_WIDGET(entry)));
-				if (BOLD_FONT)
-					font_desc = pango_font_description_from_string
-							(BOLD_FONT);
-				if (font_desc) {
-					if (bold_style->font_desc)
-						pango_font_description_free
-							(bold_style->font_desc);
-					bold_style->font_desc = font_desc;
-				}
+				pango_font_description_set_weight
+					(bold_style->font_desc, PANGO_WEIGHT_BOLD);
 				bold_style->fg[GTK_STATE_NORMAL] = bold_color;
 			}
 			gtk_widget_set_style(GTK_WIDGET(entry), bold_style);

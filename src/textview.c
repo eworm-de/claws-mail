@@ -339,7 +339,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 
 	if (!bold_font_desc) {
 		bold_font_desc = pango_font_description_from_string
-			(BOLD_FONT);
+			(NORMAL_FONT);
 		pango_font_description_set_weight
 			(bold_font_desc, PANGO_WEIGHT_BOLD);
 	}
@@ -1111,10 +1111,39 @@ void textview_set_all_headers(TextView *textview, gboolean all_headers)
 	textview->show_all_headers = all_headers;
 }
 
+#define CHANGE_TAG_FONT(tagname, font) { \
+	tag = gtk_text_tag_table_lookup(tags, tagname); \
+	if (tag) \
+		g_object_set(G_OBJECT(tag), "font-desc", font, NULL); \
+}
+
 void textview_set_font(TextView *textview, const gchar *codeset)
 {
+	GtkTextTag *tag;
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
+	
+	if (NORMAL_FONT) {
+		PangoFontDescription *font_desc, *bold_font_desc;
+		font_desc = pango_font_description_from_string
+						(NORMAL_FONT);
+		bold_font_desc = pango_font_description_from_string
+						(NORMAL_FONT);
+		if (font_desc) {
+			gtk_widget_modify_font(textview->text, font_desc);
+			pango_font_description_free(font_desc);
+			CHANGE_TAG_FONT("header", font_desc);
+		}
+		if (bold_font_desc) {
+			pango_font_description_set_weight
+				(bold_font_desc, PANGO_WEIGHT_BOLD);
+			CHANGE_TAG_FONT("header_title", bold_font_desc);
+			pango_font_description_free(bold_font_desc);
+		}
+	}
+
 	if (prefs_common.textfont) {
-		PangoFontDescription *font_desc = NULL;
+		PangoFontDescription *font_desc;
 
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);

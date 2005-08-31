@@ -645,7 +645,7 @@ static void summary_set_fonts(SummaryView *summaryview)
 	if (!bold_style) {
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
-		font_desc = pango_font_description_from_string(BOLD_FONT);
+		font_desc = pango_font_description_from_string(NORMAL_FONT);
 		if (font_desc) {
 			pango_font_description_free(bold_style->font_desc);
 			bold_style->font_desc = font_desc;

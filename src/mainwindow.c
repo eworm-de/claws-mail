@@ -1258,9 +1258,9 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			mainwin->offline_pixmap = pixmap;
 		}
 		
+		headerview_set_font(mainwin->messageview->headerview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
-
 		textview_reflect_prefs(mainwin->messageview->mimeview->textview);
 		folderview_reflect_prefs();
 		summary_reflect_prefs();

@@ -1,3 +1,21 @@
+2005-08-31 [paul]	1.9.13cvs74
+
+	* src/compose.c
+	* src/folderview.c
+	* src/headerview.c
+	* src/headerview.h
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_fonts.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/defs.h
+		remove obsolete BOLD_FONT setting
+		fix font update in headerview and textview
+		headers after prefs change
+		Patch By Colin
+
 2005-08-31 [paul]
 
 	1.9.14-rc4 released
