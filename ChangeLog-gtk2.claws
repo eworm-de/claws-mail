@@ -1,3 +1,12 @@
+2005-09-01 [colin]	1.9.13cvs77
+
+	* src/imap.c
+		Maybe fix bug #795 (Connection lost IMAP)
+		Don't try to send logout when we're disconnected.
+	* src/summaryview.c
+		Include locked and marked emails in HRM
+		view
+
 2005-09-01 [paul]	1.9.13cvs76
 
 	* src/prefs_common.c

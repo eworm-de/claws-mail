@@ -672,6 +672,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 				statusbar_print_all(_("IMAP4 connection to %s has been"
 					    " disconnected. Reconnecting...\n"),
 					    folder->account->recv_server);
+				SESSION(session)->state = SESSION_DISCONNECTED;
 				session_destroy(SESSION(session));
 				/* Clear folders session to make imap_session_get create
 				   a new session, because of rfolder->session == NULL
@@ -819,7 +820,8 @@ static void imap_session_authenticate(IMAPSession *session,
 
 static void imap_session_destroy(Session *session)
 {
-	imap_threaded_disconnect(IMAP_SESSION(session)->folder);
+	if (session->state != SESSION_DISCONNECTED)
+		imap_threaded_disconnect(IMAP_SESSION(session)->folder);
 	
 	imap_free_capabilities(IMAP_SESSION(session));
 	g_free(IMAP_SESSION(session)->mbox);
