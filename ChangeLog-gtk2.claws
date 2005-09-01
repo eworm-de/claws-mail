@@ -5,7 +5,8 @@
 		Don't try to send logout when we're disconnected.
 	* src/summaryview.c
 		Include locked and marked emails in HRM
-		view
+		view. Fixes bug #800 (Locked messages no longer 
+		show up when hide read messages is used)
 
 2005-09-01 [paul]	1.9.13cvs76
 
