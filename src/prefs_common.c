@@ -217,7 +217,7 @@ static PrefParam param[] = {
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
 	{"small_font_gtk2",	"Sans 9",
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
-	{"bold_font_gtk2",	"Sans Bold 9",
+	{"normal_font_gtk2",	"Sans 9",
 	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
 
 	/* image viewer */

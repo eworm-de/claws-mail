@@ -1,3 +1,8 @@
+2005-09-01 [paul]	1.9.13cvs76
+
+	* src/prefs_common.c
+		fix bad cutting
+
 2005-08-31 [colin]	1.9.13cvs75
 
 	* src/folderview.c
