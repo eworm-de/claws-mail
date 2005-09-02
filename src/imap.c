@@ -608,6 +608,38 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	return ok;
 }
 
+static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *session)
+{
+	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
+	/* Check if this is the first try to establish a
+	   connection, if yes we don't try to reconnect */
+	debug_print("reconnecting\n");
+	if (rfolder->session == NULL) {
+		log_warning(_("Connecting to %s failed"),
+			    folder->account->recv_server);
+		session_destroy(SESSION(session));
+		session = NULL;
+	} else {
+		log_warning(_("IMAP4 connection to %s has been"
+			    " disconnected. Reconnecting...\n"),
+			    folder->account->recv_server);
+		statusbar_print_all(_("IMAP4 connection to %s has been"
+			    " disconnected. Reconnecting...\n"),
+			    folder->account->recv_server);
+		SESSION(session)->state = SESSION_DISCONNECTED;
+		session_destroy(SESSION(session));
+		/* Clear folders session to make imap_session_get create
+		   a new session, because of rfolder->session == NULL
+		   it will not try to reconnect again and so avoid an
+		   endless loop */
+		rfolder->session = NULL;
+		session = imap_session_get(folder);
+		rfolder->session = SESSION(session);
+		statusbar_pop_all();
+	}
+	return session;
+}
+
 static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
@@ -658,30 +690,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 	if (time(NULL) - SESSION(session)->last_access_time > SESSION_TIMEOUT_INTERVAL) {
 		/* verify that the session is still alive */
 		if (imap_cmd_noop(session) != IMAP_SUCCESS) {
-			/* Check if this is the first try to establish a
-			   connection, if yes we don't try to reconnect */
-			if (rfolder->session == NULL) {
-				log_warning(_("Connecting to %s failed"),
-					    folder->account->recv_server);
-				session_destroy(SESSION(session));
-				session = NULL;
-			} else {
-				log_warning(_("IMAP4 connection to %s has been"
-					    " disconnected. Reconnecting...\n"),
-					    folder->account->recv_server);
-				statusbar_print_all(_("IMAP4 connection to %s has been"
-					    " disconnected. Reconnecting...\n"),
-					    folder->account->recv_server);
-				SESSION(session)->state = SESSION_DISCONNECTED;
-				session_destroy(SESSION(session));
-				/* Clear folders session to make imap_session_get create
-				   a new session, because of rfolder->session == NULL
-				   it will not try to reconnect again and so avoid an
-				   endless loop */
-				rfolder->session = NULL;
-				session = imap_session_get(folder);
-				statusbar_pop_all();
-			}
+			debug_print("disconnected!\n");
+			session = imap_reconnect_if_possible(folder, session);
 		}
 	}
 
@@ -745,7 +755,10 @@ static IMAPSession *imap_session_new(Folder * folder,
 		if(!prefs_common.no_recv_err_panel) {
 			alertpanel_error(_("Can't connect to IMAP4 server: %s:%d"),
 					 account->recv_server, port);
-		}
+		} else {
+			log_error(_("Can't connect to IMAP4 server: %s:%d"),
+					 account->recv_server, port);
+		} 
 		
 		return NULL;
 	}
@@ -2430,8 +2443,9 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 		g_free(data);
 		return -1;
 	}
-
+	statusbar_print_all(_("Fetching message..."));
 	result = GPOINTER_TO_INT(imap_cmd_fetch_thread(data));
+	statusbar_pop_all();
 	g_free(data);
 	return result;
 }
@@ -2447,9 +2461,10 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	flag_list = imap_flag_to_lep(flags);
+	statusbar_print_all(_("Adding messages..."));
 	r = imap_threaded_append(session->folder, destfolder,
 			 file, flag_list);
-	
+	statusbar_pop_all();
 	if (new_uid != NULL)
 		*new_uid = 0;
 
@@ -2469,7 +2484,9 @@ static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
 	g_return_val_if_fail(set != NULL, IMAP_ERROR);
 	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
 
+	statusbar_print_all(_("Copying messages..."));
 	r = imap_threaded_copy(session->folder, set, destfolder);
+	statusbar_pop_all();
 	if (r != MAILIMAP_NO_ERROR) {
 		
 		return IMAP_ERROR;
@@ -2764,7 +2781,7 @@ static void *get_list_of_uids_thread(void *data)
 	struct mailimap_set * set;
 	clist * lep_uidlist;
 	int r;
-	
+
 	session = imap_session_get(folder);
 	if (session == NULL) {
 		stuff->done = TRUE;
@@ -2857,6 +2874,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	gboolean selected_folder;
 	
 	debug_print("get_num_list\n");
+	statusbar_print_all("Scanning %s...\n", FOLDER_ITEM(item)->path 
+				? FOLDER_ITEM(item)->path:"");
 	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -2872,8 +2891,12 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	if (selected_folder) {
 		ok = imap_cmd_noop(session);
 		if (ok != IMAP_SUCCESS) {
-			
-			return -1;
+			debug_print("disconnected!\n");
+			session = imap_reconnect_if_possible(folder, session);
+			if (session == NULL) {
+				statusbar_pop_all();
+				return -1;
+			}
 		}
 		exists = session->exists;
 
@@ -2882,7 +2905,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
 				 &exists, &recent, &uid_next, &uid_val, &unseen, FALSE);
 		if (ok != IMAP_SUCCESS) {
-			
+			statusbar_pop_all();
 			return -1;
 		}
 		if(item->item.mtime == uid_val)
@@ -2917,6 +2940,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		   out which numbers have been removed */
 		if (exists == nummsgs) {
 			*msgnum_list = g_slist_copy(item->uid_list);
+			statusbar_pop_all();
 			return nummsgs;
 		} else if (exists < nummsgs) {
 			debug_print("Freeing imap uid cache");
@@ -2928,13 +2952,14 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	if (exists == 0) {
 		*msgnum_list = NULL;
+		statusbar_pop_all();
 		return 0;
 	}
 
 	nummsgs = get_list_of_uids(folder, item, &uidlist);
 
 	if (nummsgs < 0) {
-		
+		statusbar_pop_all();
 		return -1;
 	}
 
@@ -2961,7 +2986,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	g_free(dir);
 	
 	debug_print("get_num_list - ok - %i\n", nummsgs);
-	
+	statusbar_pop_all();
 	return nummsgs;
 }
 
@@ -3103,8 +3128,12 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 			  (!strcmp(session->mbox, item->item.path));
 	if (selected_folder) {
 		ok = imap_cmd_noop(session);
-		if (ok != IMAP_SUCCESS)
-			return FALSE;
+		if (ok != IMAP_SUCCESS) {
+			debug_print("disconnected!\n");
+			session = imap_reconnect_if_possible(folder, session);
+			if (session == NULL)
+				return FALSE;
+		}
 
 		if (session->folder_content_changed
 		||  session->exists != item->item.total_msgs)
