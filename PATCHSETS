@@ -763,3 +763,4 @@
 ( cvs diff -u -r 1.207.2.60 -r 1.207.2.61 src/folderview.c;  cvs diff -u -r 1.20.2.6 -r 1.20.2.7 src/folderview.h;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_summaries.c;  cvs diff -u -r 1.395.2.119 -r 1.395.2.120 src/summaryview.c;  ) > 1.9.13cvs75.patchset
 ( cvs diff -u -r 1.204.2.56 -r 1.204.2.57 src/prefs_common.c;  ) > 1.9.13cvs76.patchset
 ( cvs diff -u -r 1.179.2.64 -r 1.179.2.65 src/imap.c;  cvs diff -u -r 1.395.2.120 -r 1.395.2.121 src/summaryview.c;  ) > 1.9.13cvs77.patchset
+( cvs diff -u -r 1.207.2.61 -r 1.207.2.62 src/folderview.c;  ) > 1.9.13cvs78.patchset

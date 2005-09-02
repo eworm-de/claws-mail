@@ -1359,7 +1359,8 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		use_bold = use_color = (item->total_msgs > 0);
 	} else {
 		/* if unread messages exist, print with bold font */
-		use_bold = (item->unread_msgs > 0) || add_unread_mark;
+		use_bold = (item->unread_msgs > 0|| item->new_msgs > 0) 
+				|| add_unread_mark;
 		/* if new messages exist, print with colored letter */
 		use_color =
 			(item->new_msgs > 0) ||
