@@ -239,7 +239,7 @@ static void compose_attach_append		(Compose	*compose,
 static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 
-static void compose_wrap_paragraph		(Compose	*compose,
+static void compose_beautify_paragraph		(Compose	*compose,
 						 GtkTextIter	*par_iter,
 						 gboolean	 force);
 static void compose_wrap_all			(Compose	*compose);
@@ -1749,7 +1749,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
 	case A_LINEWRAP_CURRENT:
-		compose_wrap_paragraph(compose, NULL, TRUE);
+		compose_beautify_paragraph(compose, NULL, TRUE);
 		break;
 	case A_LINEWRAP_ALL:
 		compose_wrap_all_full(compose, TRUE);
@@ -3012,7 +3012,7 @@ static gboolean compose_join_next_line(Compose *compose,
 		g_warning("alloc error scanning URIs\n"); \
 	}
 
-static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
+static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer;
@@ -3101,7 +3101,7 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter, gboo
 				}
 				goto colorize;
 			}
-			debug_print("compose_wrap_paragraph(): quote_str = '%s'\n", quote_str);
+			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
 			startq_offset = gtk_text_iter_get_offset(&iter);
 		} else {
 			if (startq_offset == -1)
@@ -3257,7 +3257,7 @@ static void compose_wrap_all_full(Compose *compose, gboolean force)
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	while (!gtk_text_iter_is_end(&iter))
-		compose_wrap_paragraph(compose, &iter, force);
+		compose_beautify_paragraph(compose, &iter, force);
 
 	undo_unblock(compose->undostruct);
 }
@@ -7248,7 +7248,7 @@ static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)
 	if (action == 1)
 		compose_wrap_all_full(compose, TRUE);
 	else
-		compose_wrap_paragraph(compose, NULL, TRUE);
+		compose_beautify_paragraph(compose, NULL, TRUE);
 }
 
 static void compose_toggle_autowrap_cb(gpointer data, guint action,
@@ -7528,8 +7528,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 
 	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 	
-/*	compose_wrap_all_full(compose, FALSE); */
-	compose_wrap_paragraph(compose, iter, FALSE);
+	compose_beautify_paragraph(compose, iter, FALSE);
 
 	gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 	gtk_text_buffer_delete_mark(buffer, mark);
