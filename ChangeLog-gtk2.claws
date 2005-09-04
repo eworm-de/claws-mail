@@ -1,3 +1,8 @@
+2005-09-04 [paul]	1.9.13cvs81
+
+	* src/compose.c
+		fix crash in 'line length exceeded' dialogue
+
 2005-09-02 [paul]	1.9.13cvs80
 
 	* src/imap.c

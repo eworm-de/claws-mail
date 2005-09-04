@@ -3811,10 +3811,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			   "\n"
 			   "Send it anyway?"), line + 1);
 		aval = alertpanel(_("Warning"), msg, GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL);
+		g_free(msg);
 		if (aval != G_ALERTDEFAULT) {
-			g_free(msg);
-			fclose(fp);
-			g_free(buf);
 			return -1;
 		}
 	}
