@@ -3800,7 +3800,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	}
 	
 	/* check for line length limit */
-	if (encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
+	if (action == COMPOSE_WRITE_FOR_SEND &&
+	    encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
 	    check_line_length(buf, 1000, &line) < 0) {
 		AlertValue aval;
 		gchar *msg;

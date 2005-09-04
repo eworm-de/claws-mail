@@ -1,3 +1,9 @@
+2005-09-04 [paul]	1.9.13cvs82
+
+	* src/compose.c
+		only warn about exceeded line length limit
+		on send
+
 2005-09-04 [paul]	1.9.13cvs81
 
 	* src/compose.c
