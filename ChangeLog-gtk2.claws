@@ -1,3 +1,16 @@
+2005-09-05 [paul]	1.9.13cvs83
+
+	* po/de.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/nb.po
+	* po/pt_BR.po
+	* po/sr.po
+		updated translations by Thomas Gilgin, Ricardo Mones
+		Lastra, Tommi Pirinen, Fabien Vantard, Geir Helland,
+		Frederico Goncalves Guimaraes, Aleksandar Urosevic
+
 2005-09-04 [paul]	1.9.13cvs82
 
 	* src/compose.c
