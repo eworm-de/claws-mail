@@ -1,3 +1,11 @@
+2005-09-07 [colin]	1.9.14cvs3
+
+	* doc/faq/en/sylpheed-faq-1.html
+	* doc/faq/en/sylpheed-faq-2.html
+	* doc/faq/en/sylpheed-faq-3.html
+	* doc/faq/en/sylpheed-faq.html
+		Update FAQ
+
 2005-09-07 [colin]	1.9.14cvs2
 
 	* src/folderview.c

@@ -1,132 +1,273 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed FAQ</TITLE>
- <LINK HREF="sylpheed-faq-1.html" REL=next>
-
-
-</HEAD>
-<BODY>
-<A HREF="sylpheed-faq-1.html">Next</A>
+<html>
+<head>
+  <meta name="GENERATOR" content="SGML-Tools 1.0.9">
+  <title>Sylpheed FAQ</title>
+  <link href="sylpheed-faq-1.html" rel="next">
+</head>
+<body>
+<a href="sylpheed-faq-1.html">Next</a>
 Previous
 Contents
-<HR>
-<H1>Sylpheed FAQ</H1>
-
-    
-<H2>Paul Kater (paul@nlpagan.net)
-    and Jens Oberender (j.obi@troja.net)
-         Maintained by François Barrière (barriere.francois@libertysurf.fr)
-    </H2>
-<P><HR>
-<EM>       Sylpheed FAQ (for version 0.8.0)
-    </EM>
-<HR>
-<P>Copyright (c)  2002 François Barrière.
+<hr>
+<h1>Sylpheed-Claws FAQ</h1>
+<h2>Paul Kater (paul@nlpagan.net) and Jens Oberender (j.obi@troja.net)
+Maintained by Fran&ccedil;ois Barri&egrave;re
+(barriere.francois@libertysurf.fr), Colin Leroy (colin@colino.net) </h2>
+<p></p>
+<hr><em> Sylpheed-Claws FAQ (for version 1.9.15) </em>
+<hr>
+<p>Copyright (c) 2002-2005 Fran&ccedil;ois Barri&egrave;re and
+contributors.
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1
 or any later version published by the Free Software Foundation;
-with no Invariant Sections, with no Front-Cover Texts, and no Back-Cover Texts.
+with no Invariant Sections, with no Front-Cover Texts, and no
+Back-Cover Texts.
 A copy of the license is included in the section entitled "GNU
 Free Documentation License".
-<P>This FAQ consists of the following sections:
-<P>
-<H2><A NAME="toc1">1.</A> <A HREF="sylpheed-faq-1.html">Sylpheed FAQ - General information</A></H2>
-
-<UL>
-<LI><A HREF="sylpheed-faq-1.html#ss1.1">1.1 Q01 Are there FAQ's in other languages?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.2">1.2 Q02 What is Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.3">1.3 Q03 Where can I get Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.4">1.4 Q04 Who writes Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.5">1.5 Q05 What does the name Sylpheed mean?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.6">1.6 Q06 How does Sylpheed store mails?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.7">1.7 Q07 Why does the auto collection of mail not work?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.8">1.8 Q08 Does Sylpheed have mail filtering?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.9">1.9 Q09 Can Sylpheed handle IMAP mail?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.10">1.10 Q10 Can Sylpheed handle local unix mailboxes?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.11">1.11 Q11 Can Sylpheed handle IPv6?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.12">1.12 Q12 Does Sylpheed support encryption like GPG?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.13">1.13 Q13 How does Sylpheed check for MIME types?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.14">1.14 Q14 Does Sylpheed allow me to write HTML styled messages?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.15">1.15 Q15  Does Sylpheed have name completion in the address fields?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.16">1.16 Q16  Fine, but when I hit the TAB key I get an error message.</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.17">1.17 Q17  Why is Sylpheed so fast?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.18">1.18 Q18  Where can I get the current patches for Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.19">1.19 Q19  How can I send in patches, report bugs, talk about Sylpheed with others?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.20">1.20 Q20  When I send mail, the Content-Type header says the mail is in US-ASCII, even when I specified ISO-8859-1?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.21">1.21 Q21  Why does it look like word wrap is not working?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.22">1.22 Q22 Where can I find the latest FAQ on Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.23">1.23 Q23  Can I import a mbox into Sylpheed's MH mailfolders?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.24">1.24 Q24  Can I use procmail to sort my mails with the MH mail handling?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.25">1.25 Q25  When I upgrade Sylpheed, are there things I should be aware of?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.26">1.26 Q26  How can I quickly update the views in Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-1.html#ss1.27">1.27 Q27  Why can't I use gvim as external editor?</A>
-</UL>
-<P>
-<H2><A NAME="toc2">2.</A> <A HREF="sylpheed-faq-2.html">Sylpheed FAQ - Installation and Configuration</A></H2>
-
-<UL>
-<LI><A HREF="sylpheed-faq-2.html#ss2.1">2.1 Q01  What does it take to compile Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.2">2.2 Q02 How do I set up Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.3">2.3 Q03 Why did the creation of the mailbox fail?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.4">2.4 Q04  How do I set up an account?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.5">2.5 Q05  How many accounts can I set up in Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.6">2.6 Q06 Why does Sylpheed not delete my mails when I press "delete"? I set a filter, and Sylpheed does not filter. I moved a mail to a different mailbox and it did not move.</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.7">2.7 Q07  Can I set up special addresses/ports for my mailserver / newsserver?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.8">2.8 Q08  Does Sylpheed have options for threading messages?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.9">2.9 Q09  Can I create multiple levels of subfolders to store mail?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.10">2.10 Q10  Why isn't Sylpheed sending my mail out?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.11">2.11 Q11  How do I apply a patch after downloading it?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.12">2.12 Q12  How do I compile in support for compface pictures?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.13">2.13 Q13  How do I make my own compface image?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.14">2.14 Q14 How can I tell my browser/newsclient/other program to use Sylpheed as e-mail program?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.15">2.15 Q15 How do I enable GPG support in Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.16">2.16 Q16 Mutt does not recognize Sylpheed's MH structure</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.17">2.17 Q17 Viewing a GIF file within Sylpheed causes a segmentation fault.</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.18">2.18 Q18 How can I make Sylpheed notify me when new mail arrives?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.19">2.19 Q19 Can I use a spell checker with Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-2.html#ss2.20">2.20 Q20 How can I make Sylpheed send my compface image in the mails?</A>
-</UL>
-<P>
-<H2><A NAME="toc3">3.</A> <A HREF="sylpheed-faq-3.html">Sylpheed FAQ - Interface</A></H2>
-
-<UL>
-<LI><A HREF="sylpheed-faq-3.html#ss3.1">3.1 Q01  How do I make Sylpheed display my language?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.2">3.2 Q02  I don't like the default font. Can I change that?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.3">3.3 Q03  There are too many columns in the message list!!</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.4">3.4 Q04  Can I use a different editor to write my mails?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.5">3.5 Q05  How to change the font size in the Sylpheed interface?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.6">3.6 Q06  Sylpheed saves my outgoing mail (in Outbox). Can I make it stop doing that?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.7">3.7 Q07  How can I change the key-bindings (hot-keys) in Sylpheed?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.8">3.8 Q08  Can I close windows without the mouse?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.9">3.9 Q09  Can I change the way the date is displayed in the message summary?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.10">3.10 Q10  Why can't I see the compface pictures?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.11">3.11 Q11  I still can't see the pictures. Why not?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.12">3.12 Q12  Why does the URL Launcher not launch my webbrowser?</A>
-<LI><A HREF="sylpheed-faq-3.html#ss3.13">3.13 Q13 Attachments with spaces in the name won't open!</A>
-</UL>
-<H2>Appendix</H2>
-<P>
-<H2><A NAME="toc4">4.</A> <A HREF="sylpheed-faq-4.html">GNU Free Documentation License</A></H2>
-
-<UL>
-<LI><A HREF="sylpheed-faq-4.html#ss4.1">4.1 PREAMBLE</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.2">4.2 APPLICABILITY AND DEFINITIONS</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.3">4.3 VERBATIM COPYING</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.4">4.4 COPYING IN QUANTITY</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.5">4.5 MODIFICATIONS</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.6">4.6 COMBINING DOCUMENTS</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.7">4.7 COLLECTIONS OF DOCUMENTS</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.8">4.8 AGGREGATION WITH INDEPENDENT WORKS</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.9">4.9 TRANSLATION</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.10">4.10 TERMINATION</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.11">4.11 FUTURE REVISIONS OF THIS LICENSE</A>
-<LI><A HREF="sylpheed-faq-4.html#ss4.12">4.12 How to use this License for your documents</A>
-</UL>
-<HR>
-<A HREF="sylpheed-faq-1.html">Next</A>
+</p>
+<p>This FAQ consists of the following sections:
+</p>
+<p></p>
+<h2><a name="toc1">1.</a> <a href="sylpheed-faq-1.html">Sylpheed-Claws
+FAQ - General information</a></h2>
+<ul>
+  <li><a href="sylpheed-faq-1.html#ss1.1">1.1 Q01 Are there FAQ's in
+other languages?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.2">1.2 Q02 What is
+Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.3">1.3 Q03 Where can I get
+Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.4">1.4 Q04 Who writes
+Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.5">1.5 Q05 What does the name
+Sylpheed-Claws mean?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.6">1.6 Q06 How does
+Sylpheed-Claws store mails?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.7">1.7 Q07 Why does the auto
+collection of mail not work?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.8">1.8 Q08 Does Sylpheed-Claws
+have mail filtering?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.9">1.9 Q09 Can Sylpheed-Claws
+handle IMAP mail?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.10">1.10 Q10 Can Sylpheed-Claws
+handle local unix mailboxes?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.11">1.11 Q11 Can Sylpheed-Claws
+handle IPv6?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.12">1.12 Q12 Does Sylpheed-Claws
+support encryption like GPG?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.13">1.13 Q13 How does
+Sylpheed-Claws check for MIME types?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.14">1.14 Q14 Does Sylpheed-Claws
+allow me to write HTML styled messages?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.15">1.15 Q15 Does Sylpheed-Claws
+have name completion in the address fields?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.16">1.16 Q16 Fine, but when I
+hit the TAB key I get an error message.</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.17">1.17 Q17 Why is
+Sylpheed-Claws so fast?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.18">1.18 Q18 Where can I get the
+current patches for Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.19">1.19 Q19 How can I send in
+patches, report bugs, talk about Sylpheed-Claws with others?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.20">1.20 Q20 When I send mail,
+the Content-Type header says the mail is in US-ASCII, even when I
+specified ISO-8859-1?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.21">1.21 Q21 Why does it look
+like word wrap is not working?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.22">1.22 Q22 Where can I find
+the latest FAQ on Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.23">1.23 Q23 Can I import a mbox
+into Sylpheed-Claws's MH mailfolders?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.24">1.24 Q24 Can I use procmail
+to sort my mails with the MH mail handling?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.25">1.25 Q25 When I upgrade
+Sylpheed-Claws, are there things I should be aware of?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.26">1.26 Q26 How can I quickly
+update the views in Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-1.html#ss1.27">1.27 Q27 Why can't I use
+gvim as external editor?</a>
+  </li>
+</ul>
+<p>
+</p>
+<h2><a name="toc2">2.</a> <a href="sylpheed-faq-2.html">Sylpheed-Claws
+FAQ - Installation and Configuration</a></h2>
+<ul>
+  <li><a href="sylpheed-faq-2.html#ss2.1">2.1 Q01 What does it take to
+compile Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.2">2.2 Q02 How do I set up
+Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.3">2.3 Q03 Why did the creation
+of the mailbox fail?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.4">2.4 Q04 How do I set up an
+account?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.5">2.5 Q05 How many accounts can
+I set up in Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.6">2.6 Q06 Why does
+Sylpheed-Claws not delete my mails when I press "delete"? I set a
+filter, and Sylpheed-Claws does not filter. I moved a mail to a
+different mailbox and it did not move.</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.7">2.7 Q07 Can I set up special
+addresses/ports for my mailserver / newsserver?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.8">2.8 Q08 Does Sylpheed-Claws
+have options for threading messages?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.9">2.9 Q09 Can I create multiple
+levels of subfolders to store mail?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.10">2.10 Q10 Why isn't
+Sylpheed-Claws sending my mail out?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.11">2.11 Q11 How do I apply a
+patch after downloading it?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.12">2.12 Q12 How do I compile in
+support for compface pictures?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.13">2.13 Q13 How do I make my
+own compface image?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.14">2.14 Q14 How can I tell my
+browser/newsclient/other program to use Sylpheed-Claws as e-mail
+program?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.15">2.15 Q15 How do I enable GPG
+support in Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.16">2.16 Q16 Mutt does not
+recognize Sylpheed-Claws's MH structure</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.17">2.17 Q17 Viewing a GIF file
+within Sylpheed-Claws causes a segmentation fault.</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.18">2.18 Q18 How can I make
+Sylpheed-Claws notify me when new mail arrives?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.19">2.19 Q19 Can I use a spell
+checker with Sylpheed-Claws?</a>
+  </li>
+  <li><a href="sylpheed-faq-2.html#ss2.20">2.20 Q20 How can I make
+Sylpheed-Claws send my compface image in the mails?</a>
+  </li>
+</ul>
+<p>
+</p>
+<h2><a name="toc3">3.</a> <a href="sylpheed-faq-3.html">Sylpheed-Claws
+FAQ - Interface</a></h2>
+<ul>
+  <li><a href="sylpheed-faq-3.html#ss3.1">3.1 Q01 How do I make
+Sylpheed display my language?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.2">3.2 Q02 I don't like the
+default font. Can I change that?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.3">3.3 Q03 There are too many
+columns in the message list!!</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.4">3.4 Q04 Can I use a different
+editor to write my mails?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.5">3.5 Q05 How to change the
+font size in the Sylpheed interface?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.6">3.6 Q06 Sylpheed saves my
+outgoing mail (in Outbox). Can I make it stop doing that?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.7">3.7 Q07 How can I change the
+key-bindings (hot-keys) in Sylpheed?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.8">3.8 Q08 Can I close windows
+without the mouse?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.9">3.9 Q09 Can I change the way
+the date is displayed in the message summary?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.10">3.10 Q10 Why can't I see the
+compface pictures?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.11">3.11 Q11 I still can't see
+the pictures. Why not?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.12">3.12 Q12 Why does the URL
+Launcher not launch my webbrowser?</a>
+  </li>
+  <li><a href="sylpheed-faq-3.html#ss3.13">3.13 Q13 Attachments with
+spaces in the name won't open!</a>
+  </li>
+</ul>
+<h2>Appendix</h2>
+<p>
+</p>
+<h2><a name="toc4">4.</a> <a href="sylpheed-faq-4.html">GNU Free
+Documentation License</a></h2>
+<ul>
+  <li><a href="sylpheed-faq-4.html#ss4.1">4.1 PREAMBLE</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.2">4.2 APPLICABILITY AND
+DEFINITIONS</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.3">4.3 VERBATIM COPYING</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.4">4.4 COPYING IN QUANTITY</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.5">4.5 MODIFICATIONS</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.6">4.6 COMBINING DOCUMENTS</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.7">4.7 COLLECTIONS OF DOCUMENTS</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.8">4.8 AGGREGATION WITH
+INDEPENDENT WORKS</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.9">4.9 TRANSLATION</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.10">4.10 TERMINATION</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.11">4.11 FUTURE REVISIONS OF
+THIS LICENSE</a>
+  </li>
+  <li><a href="sylpheed-faq-4.html#ss4.12">4.12 How to use this License
+for your documents</a>
+  </li>
+</ul>
+<hr>
+<a href="sylpheed-faq-1.html">Next</a>
 Previous
 Contents
-</BODY>
-</HTML>
+</body>
+</html>
