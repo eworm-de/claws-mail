@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
-  <title>Sylpheed User's Manual: Handling MIME types</title>
+  <title>Sylpheed-Claws User's Manual: Handling MIME types</title>
   <link href="sylpheed-15.html" rel="next">
   <link href="sylpheed-13.html" rel="previous">
   <link href="sylpheed.html#toc14" rel="contents">
@@ -20,7 +20,7 @@ Sylpheed-Claws checks for Mime types</a>
 <p>When attaching a file to a message (composing a new message), the
 MIME type of the attached file is choosen based on the file extension
 from the mapping list defined in the <i>mime.types</i> file(s).
-Sylpheed defines its MIME type mapping table by loading the
+Sylpheed-Claws defines its MIME type mapping table by loading the
 system wide MIME types file, then the user file.
 The systeme file is <span style="font-style: italic;">/usr/share/mime/globs
 </span>or, if this doesn't exist, <span style="font-style: italic;">SYSCONFDIR/</span><i>mime.types</i>
@@ -38,7 +38,7 @@ character and close at line's end.</p>
 </p>
 <pre># This file controls what Internet media types are sent to the client for<br># given file extension(s).  Sending the correct media type to the client<br># is important so they know how to handle the content of the file.<br># The Internet media type registry is at <br># &lt;ftp://ftp.iana.org/in-notes/iana/assignments/media-types/&gt;.<br><br># MIME type                     Extension<br>application/mac-binhex40        hqx<br>application/mac-compactpro      cpt<br>application/msword              doc<br>application/pdf                 pdf<br>application/postscript          ai eps ps<br>application/rtf                 rtf<br>application/x-bcpio             bcpio<br>application/x-bzip2             bz2<br>application/x-csh               csh<br>application/x-gtar              gtar<br>application/x-gzip              gz tgz<br>application/x-kword             kwd kwt<br>application/x-kspread           ksp<br>application/x-kpresenter        kpr kpt<br>application/x-kchart            chrt<br>application/x-latex             latex<br>application/x-sh                sh<br>application/x-shar              shar<br>application/x-shockwave-flash   swf<br>application/x-tar               tar<br>application/x-tcl               tcl<br>application/x-tex               tex<br>application/x-texinfo           texinfo texi<br>application/x-troff             t tr roff<br>application/x-troff-man         man<br>application/zip                 zip<br>audio/mpeg                      mpga mp2 mp3<br>audio/x-aiff                    aif aiff aifc<br>audio/x-wav                     wav<br>image/gif                       gif<br>image/ief                       ief<br>image/jpeg                      jpeg jpg jpe<br>image/png                       png<br>image/tiff                      tiff tif<br>text/plain                      asc txt<br>text/rtf                        rtf<br>text/sgml                       sgml sgm<br>text/xml                        xml<br>video/mpeg                      mpeg mpg mpe<br>video/x-msvideo                 avi<br>text/html                       html htm<br></pre>
 <p></p>
-<p>If the file can be found or has the wrong format, Sylpheed will
+<p>If the file can be found or has the wrong format, Sylpheed-Claws will
 assume
 the default MIME type for all the attachments: <i>application/octet-stream</i>.
 In such a case, the recipients mail client may not know what
@@ -48,7 +48,7 @@ Sylpheed-Claws handles attachments (reception)</a>
 </h2>
 <p>When opening an attachment (select the attachment, right click and
 select
-<i>Open</i>) Sylpheed uses one of the following methods to determine
+<i>Open</i>) Sylpheed-Claws uses one of the following methods to determine
 the application to launch:</p>
 <p>
 </p>
@@ -77,9 +77,9 @@ the
     <i>Common preferences</i>, by changing the <i>Web browser</i>
 defined
 in the <i>Other</i> tab.</li>
-  <li>Any other attachment type: Sylpheed relies on <i>metamail</i> to
+  <li>Any other attachment type: Sylpheed-Claws relies on <i>metamail</i> to
 use
-the correct application (Sylpheed starts <i>metamail</i> giving it
+the correct application (Sylpheed-Claws starts <i>metamail</i> giving it
 the attachment file and the MIME type taken from the mail).</li>
 </ul>
 <p></p>

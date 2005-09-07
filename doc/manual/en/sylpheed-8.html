@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
-  <title>Sylpheed User's Manual: Sylpheed configuration</title>
+  <title>Sylpheed-Claws User's Manual: Sylpheed-Claws configuration</title>
   <link href="sylpheed-9.html" rel="next">
   <link href="sylpheed-7.html" rel="previous">
   <link href="sylpheed.html#toc8" rel="contents">
@@ -14,7 +14,7 @@
 <hr>
 <h2><a name="s8">8.</a> <a href="sylpheed.html#toc8">Sylpheed-Claws
 configuration</a></h2>
-<p>All the configuration settings of Sylpheed are accessible from
+<p>All the configuration settings of Sylpheed-Claws are accessible from
 the <i>Configuration</i> menu and consist of common settings <i>(Preferences</i>,
 <i>Filtering</i>, <i>Template</i>s, <span style="font-style: italic;">Actions,
 </span>and <span style="font-style: italic;">Plugins</span>) and
@@ -46,7 +46,7 @@ the sections covering the optional features they control (like the
 default unix mailbox. Usually this is not used.</li>
   <li><i>Autocheck new mail</i>. When you check this option, Sylpheed
 will check if there is new mail on the set interval.</li>
-  <li><i>Check new mail on startup</i> means that Sylpheed will
+  <li><i>Check new mail on startup</i> means that Sylpheed-Claws will
 immediately look for new mail on all the selected accounts when it
 loads.</li>
   <li><i>Update all local folders after incorporation</i> is used to
@@ -82,7 +82,7 @@ hide the <span style="font-style: italic;">send dialog.</span></li>
   <li>The outgoing codeset selection can be changed to force
 the definition of the character set used in sent mails.
 The default and recommended value is <i>automatic</i>,
-so Sylpheed determines the codeset when sending each
+so Sylpheed-Claws determines the codeset when sending each
 message. This can be overriden in each message.</li>
   <li>You can also force the transfer encoding, in case you use an SMTP
 server known for breaking plain text emails...</li>
@@ -181,7 +181,7 @@ click it or hit space).</li>
 when opened in new window</span> allows you to sneak through unread
 mails while leaving them unread, in order to handle them later.</li>
     <li><span style="font-style: italic;">Go to inbox after receiving
-new mail</span> puts Sylpheed back in Inbox after you got mail, leaving
+new mail</span> puts Sylpheed-Claws back in Inbox after you got mail, leaving
 the current folder.</li>
     <li><span style="font-style: italic;">Execute immediately</span>
 allows you to perform moves and copies immediately, or later when you
@@ -231,10 +231,10 @@ previous categories.</p>
 double clicking an e-mail address (in the address book,
 when the composition window is opened) can be used to add this address
 to the <i>To:</i> field.</li>
-  <li>Confirming if you want to exit Sylpheed (or just exit quietly).</li>
+  <li>Confirming if you want to exit Sylpheed-Claws (or just exit quietly).</li>
   <li>Cleaning the trash when exiting Sylpheed.</li>
-  <li>Have Sylpheed ask you to clean the trash before it is done.</li>
-  <li>Warn you when exiting Sylpheed when there are still messages
+  <li>Have Sylpheed-Claws ask you to clean the trash before it is done.</li>
+  <li>Warn you when exiting Sylpheed-Claws when there are still messages
 queued to be sent.</li>
 </ul>
 <p></p>
@@ -262,7 +262,7 @@ this account to be the default account ("Set as default").
 The default account can also be defined from the <i>Edit accounts</i>
 window (toggle the <i>D</i> column next to the account name).</p>
 <p>Enter your name and e-mail address, and if you have one, the
-organization that you use Sylpheed for.
+organization that you use Sylpheed-Claws for.
 In the Protocol box you select the type of service that this account
 will be using. The flavors you can choose are: <i>POP3</i><i></i>, <i>IMAP4</i>,
 <span style="font-style: italic;">News (NNTP)</span><i></i> , <span
@@ -283,7 +283,7 @@ standard. If in doubt, contact the helpdesk of your ISP.</p>
 <h3>Passwords:</h3>
 <p>The password is not printed in the entry field (replaced by stars)
 and
-is stored with a little obfuscation in the Sylpheed configuration
+is stored with a little obfuscation in the Sylpheed-Claws configuration
 files. The
 Sylpheed
 configuration directory (&nbsp;/.sylpheed) is only readable by 'owner',
@@ -298,7 +298,7 @@ accounts. <br>
 </p>
 <p>For POP3, you
 specify if the mails that were successfully retrieved should be removed
-from the server. You can also tell Sylpheed to get all the messages
+from the server. You can also tell Sylpheed-Claws to get all the messages
 there, not only the ones you already received (in case you leave your
 messages on the server).
 You can choose to leave the messages on the server during a selectable
@@ -346,13 +346,13 @@ choose to always copy someone when sending mails (you can
 choose to always copy your boss, or yourself), and define the
 Reply-To field for the current account.</p>
 <h3><a name="Privacy"></a> Privacy tab</h3>
-<p>This tab is only available when Sylpheed has been compiled
+<p>This tab is only available when Sylpheed-Claws has been compiled
 with GPGME and GNUPG (for signature and encryption).</p>
 <p>With this tab you can choose the keys to use when signing
 or encrypting mails for this account, whether you want your messages to
 be signed by default, etc.</p>
 <h3><a name="SSL"></a> SSL tab</h3>
-<p>This tab is only available when Sylpheed has been compiled
+<p>This tab is only available when Sylpheed-Claws has been compiled
 with openSSL.</p>
 <p>With this tab you can choose whether to use SSL on the receiving and
 sending servers. STARTTLS is used to connect to the normal, unencrypted

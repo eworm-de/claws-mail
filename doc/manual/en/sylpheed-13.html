@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
-  <title>Sylpheed User's Manual: Filters, actions and templates</title>
+  <title>Sylpheed-Claws User's Manual: Filters, actions and templates</title>
   <link href="sylpheed-14.html" rel="next">
   <link href="sylpheed-12.html" rel="previous">
   <link href="sylpheed.html#toc13" rel="contents">
@@ -42,7 +42,7 @@ Grommet Company, and you want all e-mail from your co-workers to be
 placed in one mailbox. To accomplish this, you would set up a filter
 that would place all mail whose "From" header includes the phrase
 "acmegrommet.com" into a specific mailbox.</p>
-<p>Sylpheed allows you much more control than just that simple setup;
+<p>Sylpheed-Claws allows you much more control than just that simple setup;
 you may create filters based on several variables, including an "If
 this AND that" or "If the message contains this OR does NOT contain
 that"
@@ -109,7 +109,7 @@ grommet collection' (case insensitive).</li>
 <p></p>
 <h3>Message Processing</h3>
 <p>Once you've established the Condition(s) that will define which
-messages will be processed, it's time to tell Sylpheed what to do with
+messages will be processed, it's time to tell Sylpheed-Claws what to do with
 messages that match the condition(s). You may choose between a few
 operations such as Move, Copy, Mark, ...</p>
 <p>Selecting <span style="font-style: italic;">Actions </span>will
@@ -118,7 +118,7 @@ the value for the action (Destination, Score, Recipient, depending of
 the type of the action).</p>
 <h3>Filter Registration</h3>
 <p>Now that you have set the Name, Condition(s) and the Action, all
-that's left to do is tell Sylpheed to save the entire Filter Rule. <b>If
+that's left to do is tell Sylpheed-Claws to save the entire Filter Rule. <b>If
 you skip this step, the filter won't work</b>.</p>
 <p>The <i>Register Rules</i> configuration has three options: <span
  style="font-style: italic;">Add, Replace</span> and <i>Delete</i>. </p>
@@ -131,8 +131,8 @@ you skip this step, the filter won't work</b>.</p>
 </ul>
 <p></p>
 <p>Example of adding a filter rule: Create a Filter Rule that moves all
-mail with the subject of "Sylpheed Manual" into the (previously
-created) mail folder "Sylpheed Manual Mail".</p>
+mail with the subject of "Sylpheed-Claws Manual" into the (previously
+created) mail folder "Sylpheed-Claws Manual Mail".</p>
 <p>
 </p>
 <ul>
@@ -146,7 +146,7 @@ box, select <i>Subject</i>.</li>
   <li>Step 4. Click Add.</li>
   <li>Step 5. Click OK.</li>
   <li>Step 6. Click the Action's Define button; select Move and
-"Sylpheed Manual Mail" folder.</li>
+"Sylpheed-Claws Manual Mail" folder.</li>
   <li>Step 7. Click Add.</li>
   <li>Step 8. Click <i>OK</i>.</li>
   <li>Step 9. Click Add.</li>
@@ -160,7 +160,7 @@ needs to consider this when creating or updating Filter Rules. </p>
 to Mailbox X" listed above another Filter Rule saying "Move anything
 containing 'ABCDEF' to Mailbox Y" will cause the latter of these
 filters not to process. </p>
-<p>Think about the way Sylpheed goes down its list: first, it would
+<p>Think about the way Sylpheed-Claws goes down its list: first, it would
 say..
 "Hmm, any messages with ABC? Ah, there's one! Move it". Then it would
 think, "Okay, any messages with ABCDEF?" To which the answer would be
@@ -180,7 +180,7 @@ Filter Messages</a>
 <p>
 </p>
 <ul>
-  <li>Sylpheed automatically filters incoming mail if the checkbox <span
+  <li>Sylpheed-Claws automatically filters incoming mail if the checkbox <span
  style="font-style: italic;">Filter messages on receiving </span>is
 checked in the account's preferences Receive tab..</li>
   <li>You can also select the option <i>Filter messages</i> from the
@@ -211,7 +211,7 @@ and body or just one of its parts. It allows also the use of an
 external command to filter the whole text or just a selected part in
 the message window or in the compose window. This is a generic tool
 that allows to do any uncommon actions on the messages, and thus
-extends the possibilities of Sylpheed. For example, Sylpheed does not
+extends the possibilities of Sylpheed. For example, Sylpheed-Claws does not
 include the rot13 cyphering algorithm popular in some newsgroups. It
 does not support natively armored encryption or clear signing. It does
 not support uuencoded messages. As all these features can be handled by
@@ -249,7 +249,7 @@ command's standard input a text that you will enter in a dialog window.
 But in contrast to prepending <i>&gt;</i>, the entered text is hidden
 (useful when entering passwords).</li>
   <li>Appending an ampersand <i>&amp;</i>: this will run the command
-asynchronously. That means "fire and forget". Sylpheed won't wait for
+asynchronously. That means "fire and forget". Sylpheed-Claws won't wait for
 the command to finish, nor will it catch its output or its error
 messages.</li>
   <li>Prepending the vertical bar <i>|</i> (pipe-in): this will send
@@ -280,7 +280,7 @@ command output is separated from the outputs of the others.</p>
 <h3>Examples</h3>
 <p>Here are some examples that are listed in the same syntax as used
 for storing the actions list. You can copy and past the definition in
-your <i>&nbsp;/.sylpheed/actionsrc</i> file (exit Sylpheed before).
+your <i>&nbsp;/.sylpheed/actionsrc</i> file (exit Sylpheed-Claws before).
 The syntax is very simple: one line per action, each action contains
 the menu name and the command line separated by a colon and a space ":
 ". Alternatively, you can use <i>Configuration -&gt; Actions...</i>
@@ -442,7 +442,7 @@ The script is well commented. You need to have the tnef package already
 installed.</p>
 <h2><a name="ss13.5">11.5</a> <a href="sylpheed.html#toc13.5">Templates</a>
 </h2>
-<p>With Sylpheed you can define mail templates to use when replying
+<p>With Sylpheed-Claws you can define mail templates to use when replying
 to messages. A template can contain raw text (that will be inserted
 in the composed mail without any change), and placeholders that are
 replaced at composition time by the actual value of the selected
