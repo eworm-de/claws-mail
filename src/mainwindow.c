@@ -783,9 +783,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/Plu_gins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual (Local)"),		NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
-	{N_("/_Help/_FAQ (Local)"),		NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
-	{N_("/_Help/_User-contributed FAQ (Online)"),	
+	{N_("/_Help/_Manual"),			NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
+	{N_("/_Help/_FAQ"),			NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
+	{N_("/_Help/_Online User-contributed FAQ"),	
 						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}

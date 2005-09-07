@@ -1,3 +1,8 @@
+2005-09-07 [colin]	1.9.14cvs5
+
+	* src/mainwindow.c
+		Make labels more to-the-point
+
 2005-09-07 [colin]	1.9.14cvs4
 
 	* doc/manual/en/sylpheed-1.html
