@@ -1705,7 +1705,6 @@ void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
 			gtk_widget_ensure_style(GTK_WIDGET(entry));
 			if (!bold_style) {
-				PangoFontDescription *font_desc = NULL;
 				gtkut_convert_int_to_gdk_color
 					(prefs_common.color_new, &bold_color);
 				bold_style = gtk_style_copy(gtk_widget_get_style
@@ -6579,6 +6578,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		if (action == COMPOSE_AUTO_SAVE) {
 			compose->autosaved_draft = compose->targetinfo;
 		}
+		compose->modified = FALSE;
+		compose_set_title(compose);
 	}
 }
 

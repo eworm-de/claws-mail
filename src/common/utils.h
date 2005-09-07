@@ -546,6 +546,7 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			       const gchar **bp, const gchar **ep);
 gchar *make_email_string(const gchar *bp, const gchar *ep);
 gchar *make_http_string(const gchar *bp, const gchar *ep);
+gchar *mailcap_get_command_for_type(const gchar *type);
 
 #ifdef __cplusplus
 }

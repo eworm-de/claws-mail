@@ -4386,3 +4386,50 @@ gchar *make_http_string(const gchar *bp, const gchar *ep)
 	return result;
 }
 
+static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
+{
+	FILE *fp = fopen(path, "rb");
+	gchar buf[BUFFSIZE];
+	gchar *result = NULL;
+	if (!fp)
+		return NULL;
+	while (fgets(buf, sizeof (buf), fp) != NULL) {
+		gchar **parts = g_strsplit(buf, ";", -1);
+		gchar *trimmed = parts[0];
+		while (trimmed[0] == ' ')
+			trimmed++;
+		while (trimmed[strlen(trimmed)-1] == ' ') 
+			trimmed[strlen(trimmed)-1] = '\0';
+			
+		if (!strcmp(trimmed, type)) {
+			trimmed = parts[1];
+			while (trimmed[0] == ' ')
+				trimmed++;
+			while (trimmed[strlen(trimmed)-1] == ' ') 
+				trimmed[strlen(trimmed)-1] = '\0';
+			while (trimmed[strlen(trimmed)-1] == '\n') 
+				trimmed[strlen(trimmed)-1] = '\0';
+			while (trimmed[strlen(trimmed)-1] == '\r') 
+				trimmed[strlen(trimmed)-1] = '\0';
+			result = g_strdup(trimmed);
+			g_strfreev(parts);
+			fclose(fp);
+			return result;
+		}
+		g_strfreev(parts);
+	}
+	fclose(fp);
+	return NULL;
+}
+gchar *mailcap_get_command_for_type(const gchar *type) 
+{
+	gchar *result = NULL;
+	gchar *path = NULL;
+	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
+	result = mailcap_get_command_in_file(path, type);
+	g_free(path);
+	if (result)
+		return result;
+	result = mailcap_get_command_in_file("/etc/mailcap", type);
+	return result;
+}

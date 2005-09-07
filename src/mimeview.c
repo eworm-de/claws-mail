@@ -1229,6 +1229,8 @@ static void mimeview_open_with(MimeView *mimeview)
 	MimeInfo *partinfo;
 	gchar *filename;
 	gchar *cmd;
+	gchar *mime_command = NULL;
+	gchar *content_type = NULL;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1256,13 +1258,18 @@ static void mimeview_open_with(MimeView *mimeview)
 		prefs_common.mime_open_cmd_history =
 			add_history(NULL, prefs_common.mime_open_cmd);
 
+	content_type = procmime_get_content_type_str(partinfo->type,
+			partinfo->subtype);
+	mime_command = mailcap_get_command_for_type(content_type);
+	g_free(content_type);
 	cmd = input_dialog_combo
 		(_("Open with"),
 		 _("Enter the command line to open file:\n"
 		   "('%s' will be replaced with file name)"),
-		 prefs_common.mime_open_cmd,
+		 mime_command ? mime_command : prefs_common.mime_open_cmd,
 		 prefs_common.mime_open_cmd_history,
 		 TRUE);
+	g_free(mime_command);
 	if (cmd) {
 		mimeview_view_file(filename, partinfo, cmd);
 		g_free(prefs_common.mime_open_cmd);

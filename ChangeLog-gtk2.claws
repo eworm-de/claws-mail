@@ -1,3 +1,14 @@
+2005-09-07 [colin]	1.9.14cvs1
+
+	* src/compose.c
+		After saving draft, set modified to FALSE
+	* src/mimeview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Try to open mime parts using what is 
+		indicated in ~/.mailcap or /etc/mailcap,
+		if possible.
+
 2005-09-05 [paul]	1.9.14
 
 	1.9.14 released
