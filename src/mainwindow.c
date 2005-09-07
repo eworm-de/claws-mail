@@ -784,12 +784,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual (Local)"),		NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
-	{N_("/_Help/Ma_nual (Sylpheed Doc Homepage)"),
-						NULL, manual_open_cb, MANUAL_MANUAL_SYLDOC, NULL},
 	{N_("/_Help/_FAQ (Local)"),		NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
-	{N_("/_Help/FA_Q (Sylpheed Doc Homepage)"),
-						NULL, manual_open_cb, MANUAL_FAQ_SYLDOC, NULL},
-	{N_("/_Help/_Claws FAQ (Claws Documentation)"),
+	{N_("/_Help/_User-contributed FAQ (Online)"),	
 						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
@@ -1651,21 +1647,6 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
-	GList *list;
-	guint has_trash;
-	Folder *folder;
-
-	for (has_trash = 0, list = folder_get_list(); list != NULL; list = list->next) {
-		folder = FOLDER(list->data);
-		if (folder && folder->trash && folder->trash->total_msgs > 0)
-			has_trash++;
-		if (folder->account && folder->account->set_trash_folder && 
-		    folder_find_item_from_identifier(folder->account->trash_folder))
-		    	has_trash++;
-	}
-
-	if (!has_trash) return;
-	
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),

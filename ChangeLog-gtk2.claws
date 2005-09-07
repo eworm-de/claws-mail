@@ -1,3 +1,18 @@
+2005-09-07 [colin]	1.9.14cvs2
+
+	* src/folderview.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/toolbar.c
+		Fix special subfolders:
+		- Inherit parent's icon
+		- sent contents of queues subfolders
+		- empty subfolders of trashes
+	* src/mainwindow.c
+		Remove outdated manual and faq entries
+	* src/common/utils.c
+		Add quotes around %s coming from mailcap
+
 2005-09-07 [colin]	1.9.14cvs1
 
 	* src/compose.c

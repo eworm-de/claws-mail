@@ -648,6 +648,13 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 
 void procmsg_empty_trash(FolderItem *trash)
 {
+	GNode *node, *next;
+
+	if (!trash || 
+	    (trash->stype != F_TRASH && 
+	     !folder_has_parent_of_type(trash, F_TRASH)))
+		return;
+
 	if (trash && trash->total_msgs > 0) {
 		GSList *mlist = folder_item_get_msg_list(trash);
 		GSList *cur;
@@ -663,6 +670,16 @@ void procmsg_empty_trash(FolderItem *trash)
 		}
 		g_slist_free(mlist);
 		folder_item_remove_all_msg(trash);
+	}
+
+	if (!trash->node || !trash->node->children)
+		return;
+
+	node = trash->node->children;
+	while (node != NULL) {
+		next = node->next;
+		procmsg_empty_trash(FOLDER_ITEM(node->data));
+		node = next;
 	}
 }
 
@@ -748,9 +765,10 @@ parse_again:
 	cur = orig;
 	while (cur) {
 		gchar *file = NULL;
-		PrefsAccount *ac = procmsg_get_account_from_file(file);
+		PrefsAccount *ac = NULL;
 		msg = (MsgInfo *)cur->data;
 		file = folder_item_fetch_msg(queue, msg->msgnum);
+		ac = procmsg_get_account_from_file(file);
 		g_free(file);
 
 		if (last_account == NULL || (ac != NULL && ac == last_account)) {
@@ -823,6 +841,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	gint sent = 0, err = 0;
 	GSList *list, *elem;
 	GSList *sorted_list = NULL;
+	GNode *node, *next;
 
 	if (!queue)
 		queue = folder_get_default_queue();
@@ -871,6 +890,21 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	}
 
 	g_slist_free(sorted_list);
+	folder_item_scan(queue);
+
+	if (queue->node && queue->node->children) {
+		node = queue->node->children;
+		while (node != NULL) {
+			int res = 0;
+			next = node->next;
+			res = procmsg_send_queue(FOLDER_ITEM(node->data), save_msgs);
+			if (res < 0) 
+				err = -res;
+			else
+				sent += res;
+			node = next;
+		}
+	}
 
 	return (err != 0 ? -err : sent);
 }
@@ -894,6 +928,19 @@ gboolean procmsg_queue_is_empty(FolderItem *queue)
 	list = folder_item_get_msg_list(queue);
 	res = (list == NULL);
 	procmsg_msg_list_free(list);
+
+	if (res == TRUE) {
+		GNode *node, *next;
+		if (queue->node && queue->node->children) {
+			node = queue->node->children;
+			while (node != NULL) {
+				next = node->next;
+				if (!procmsg_queue_is_empty(FOLDER_ITEM(node->data)))
+					return FALSE;
+				node = next;
+			}
+		}
+	}
 	return res;
 }
 

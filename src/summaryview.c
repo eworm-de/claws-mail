@@ -1336,7 +1336,6 @@ void summary_select_prev_unread(SummaryView *summaryview)
 void summary_select_next_unread(SummaryView *summaryview)
 {
 	GtkCTreeNode *node = summaryview->selected;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	gboolean skip_cur = FALSE;
 	
 	if (summaryview->displayed 
@@ -1436,7 +1435,6 @@ void summary_select_prev_new(SummaryView *summaryview)
 void summary_select_next_new(SummaryView *summaryview)
 {
 	GtkCTreeNode *node = summaryview->selected;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	gboolean skip_cur = FALSE;
 	
 	if (summaryview->displayed 
@@ -3224,7 +3222,8 @@ void summary_delete_trash(SummaryView *summaryview)
 	if (to_folder == NULL)
 		to_folder = summaryview->folder_item->folder->trash;
 	
-	if (to_folder == NULL || to_folder == summaryview->folder_item)
+	if (to_folder == NULL || to_folder == summaryview->folder_item
+	    || folder_has_parent_of_type(summaryview->folder_item, F_TRASH))
 		summary_delete(summaryview);
 	else
 		summary_move_selected_to(summaryview, to_folder);

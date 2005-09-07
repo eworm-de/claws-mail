@@ -639,7 +639,6 @@ void folderview_init(FolderView *folderview)
 	}
 
 	if (!bold_style) {
-		PangoFontDescription *font_desc;
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		pango_font_description_set_weight
 			(bold_style->font_desc, PANGO_WEIGHT_BOLD);
@@ -1202,13 +1201,25 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gboolean add_sub_match_mark;
 	gboolean use_bold, use_color;
 	gint *col_pos = folderview->col_pos;
-
+	SpecialFolderItemType stype;
+	
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
 
 	mark = (item->marked_msgs != 0);
 
-	switch (item->stype) {
+	stype = item->stype;
+	if (stype == F_NORMAL) {
+		if (folder_has_parent_of_type(item, F_TRASH))
+			stype = F_TRASH;
+		else if (folder_has_parent_of_type(item, F_DRAFT))
+			stype = F_DRAFT;
+		else if (folder_has_parent_of_type(item, F_OUTBOX))
+			stype = F_OUTBOX;
+		else if (folder_has_parent_of_type(item, F_QUEUE))
+			stype = F_QUEUE;
+	}
+	switch (stype) {
 	case F_INBOX:
 		if (item->hide_read_msgs) {
 			xpm = mark?m_inboxhrmxpm:inboxhrmxpm;
@@ -1673,11 +1684,13 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (NULL != (ac = account_find_from_item(item)))
 		special_trash = account_get_special_folder(ac, F_TRASH);
 
-	if ((item == folder->trash || item == special_trash) &&
+	if ((item == folder->trash || item == special_trash
+	     || folder_has_parent_of_type(item, F_TRASH)) &&
 	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[0], folderview, 1);
 		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[1], folderview, 1);
-	} else if (item != folder->trash && (special_trash == NULL || item != special_trash)) {
+	} else if (item != folder->trash && (special_trash == NULL || item != special_trash)
+	        && !folder_has_parent_of_type(item, F_TRASH)) {
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
 	}
@@ -1690,7 +1703,8 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", item->node->parent != NULL);
 	SET_SENS("/Processing...", item->node->parent != NULL);
-	if (item == folder->trash || item == special_trash) {
+	if (item == folder->trash || item == special_trash
+	    || folder_has_parent_of_type(item, F_TRASH)) {
 		GSList *msglist = folder_item_get_msg_list(item);
 		SET_SENS("/Empty trash...", msglist != NULL);
 		procmsg_msg_list_free(msglist);
@@ -1927,6 +1941,7 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
 	GtkCTreeNode *node, *parent_node;
 	gint *col_pos = folderview->col_pos;
+	FolderItemUpdateData hookdata;
 
 	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, folder_item_parent(item));
 	if (parent_node == NULL)
@@ -1945,6 +1960,11 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	if (normal_style)
 		gtk_ctree_node_set_row_style(ctree, node, normal_style);
 	folderview_sort_folders(folderview, parent_node, item->folder);
+
+	hookdata.item = item;
+	hookdata.update_flags = F_ITEM_UPDATE_NAME;
+	hookdata.msg = NULL;
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &hookdata);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 }
@@ -1967,7 +1987,8 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	if (NULL != (ac = account_find_from_item(item)))
 		special_trash = account_get_special_folder(ac, F_TRASH);
 
-	if (item != item->folder->trash && item != special_trash) return;
+	if (item != item->folder->trash && item != special_trash
+	&&  !folder_has_parent_of_type(item, F_TRASH)) return;
 	
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
