@@ -1,140 +1,103 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
- <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
- <TITLE>Sylpheed User's Manual: Handling MIME types</TITLE>
- <LINK HREF="sylpheed-15.html" REL=next>
- <LINK HREF="sylpheed-13.html" REL=previous>
- <LINK HREF="sylpheed.html#toc14" REL=contents>
-</HEAD>
-<BODY>
-<A HREF="sylpheed-15.html">Next</A>
-<A HREF="sylpheed-13.html">Previous</A>
-<A HREF="sylpheed.html#toc14">Contents</A>
-<HR>
-<H2><A NAME="s14">14.</A> <A HREF="sylpheed.html#toc14">Handling MIME types</A></H2>
-
-<H2><A NAME="ss14.1">14.1</A> <A HREF="sylpheed.html#toc14.1">How Sylpheed checks for Mime types</A>
-</H2>
-
-<P>When attaching a file to a message (composing a new message), the
+<html>
+<head>
+  <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
+  <title>Sylpheed User's Manual: Handling MIME types</title>
+  <link href="sylpheed-15.html" rel="next">
+  <link href="sylpheed-13.html" rel="previous">
+  <link href="sylpheed.html#toc14" rel="contents">
+</head>
+<body>
+<a href="sylpheed-15.html">Next</a>
+<a href="sylpheed-13.html">Previous</a>
+<a href="sylpheed.html#toc14">Contents</a>
+<hr>
+<h2><a name="s14">12.</a> <a href="sylpheed.html#toc14">Handling MIME
+types</a></h2>
+<h2><a name="ss14.1">12.1</a> <a href="sylpheed.html#toc14.1">How
+Sylpheed-Claws checks for Mime types</a>
+</h2>
+<p>When attaching a file to a message (composing a new message), the
 MIME type of the attached file is choosen based on the file extension
-from the mapping list defined in the <I>mime.types</I> file(s).
+from the mapping list defined in the <i>mime.types</i> file(s).
 Sylpheed defines its MIME type mapping table by loading the
 system wide MIME types file, then the user file.
-The systeme file is <I>SYSCONFDIR/mime.types</I> (SYSCONFDIR can
-be defined a compile time), or if it does not exist, <I>/etc/mime.types</I>.
-The user file is <I>$HOME/.sylpheed/mime.types</I>.</P>
-<P>A <I>mime.types</I> file consist of one MIME type definition per line,
-each definition line starting with the name of the MIME type, followed by
+The systeme file is <span style="font-style: italic;">/usr/share/mime/globs
+</span>or, if this doesn't exist, <span style="font-style: italic;">SYSCONFDIR/</span><i>mime.types</i>
+(SYSCONFDIR can
+be defined at compile time), or if it does not exist, <i>/etc/mime.types</i>.&nbsp;</p>
+<p>A <i>mime.types</i> file consist of one MIME type definition per
+line,
+each definition line starting with the name of the MIME type, followed
+by
 a space separated list of the corresponding file extensions.
-The file can contain empty lines, and comments start with the <CODE>#</CODE>
-character and close at line's end.</P>
-<P>Following is a typical <I>mime.types</I> file (an extract of mine):</P>
-<P>
-<PRE>
-# This file controls what Internet media types are sent to the client for
-# given file extension(s).  Sending the correct media type to the client
-# is important so they know how to handle the content of the file.
-# The Internet media type registry is at 
-# &lt;ftp://ftp.iana.org/in-notes/iana/assignments/media-types/>.
-
-# MIME type                     Extension
-application/mac-binhex40        hqx
-application/mac-compactpro      cpt
-application/msword              doc
-application/pdf                 pdf
-application/postscript          ai eps ps
-application/rtf                 rtf
-application/x-bcpio             bcpio
-application/x-bzip2             bz2
-application/x-csh               csh
-application/x-gtar              gtar
-application/x-gzip              gz tgz
-application/x-kword             kwd kwt
-application/x-kspread           ksp
-application/x-kpresenter        kpr kpt
-application/x-kchart            chrt
-application/x-latex             latex
-application/x-sh                sh
-application/x-shar              shar
-application/x-shockwave-flash   swf
-application/x-tar               tar
-application/x-tcl               tcl
-application/x-tex               tex
-application/x-texinfo           texinfo texi
-application/x-troff             t tr roff
-application/x-troff-man         man
-application/zip                 zip
-audio/mpeg                      mpga mp2 mp3
-audio/x-aiff                    aif aiff aifc
-audio/x-wav                     wav
-image/gif                       gif
-image/ief                       ief
-image/jpeg                      jpeg jpg jpe
-image/png                       png
-image/tiff                      tiff tif
-text/plain                      asc txt
-text/rtf                        rtf
-text/sgml                       sgml sgm
-text/xml                        xml
-video/mpeg                      mpeg mpg mpe
-video/x-msvideo                 avi
-text/html                       html htm
-</PRE>
-</P>
-
-<P>If the file can be found or has the wrong format, Sylpheed will assume
-the default MIME type for all the attachments: <I>application/octet-stream</I>.
-In such a case, the recipients mail client may not know what application 
-to use to view the attachment.</P>
-
-<H2><A NAME="ss14.2">14.2</A> <A HREF="sylpheed.html#toc14.2">How Sylpheed handles attachments (reception)</A>
-</H2>
-
-<P>When opening an attachment (select the attachment, right click and select
-<I>Open</I>) Sylpheed uses one of the following methods to determine
-the application to launch:</P>
-<P>
-<UL>
-<LI>The attachment is an image: the application is the one defined by the
-<I>mime_image_viewer</I> variable of the common preferences configuration
-file (<I>$HOME/.sylpheed/sylpheedrc</I>). If no application is defined, or
+The file can contain empty lines, and comments start with the <code>#</code>
+character and close at line's end.</p>
+<p>Following is a typical <i>mime.types</i> file (an extract of mine):</p>
+<p>
+</p>
+<pre># This file controls what Internet media types are sent to the client for<br># given file extension(s).  Sending the correct media type to the client<br># is important so they know how to handle the content of the file.<br># The Internet media type registry is at <br># &lt;ftp://ftp.iana.org/in-notes/iana/assignments/media-types/&gt;.<br><br># MIME type                     Extension<br>application/mac-binhex40        hqx<br>application/mac-compactpro      cpt<br>application/msword              doc<br>application/pdf                 pdf<br>application/postscript          ai eps ps<br>application/rtf                 rtf<br>application/x-bcpio             bcpio<br>application/x-bzip2             bz2<br>application/x-csh               csh<br>application/x-gtar              gtar<br>application/x-gzip              gz tgz<br>application/x-kword             kwd kwt<br>application/x-kspread           ksp<br>application/x-kpresenter        kpr kpt<br>application/x-kchart            chrt<br>application/x-latex             latex<br>application/x-sh                sh<br>application/x-shar              shar<br>application/x-shockwave-flash   swf<br>application/x-tar               tar<br>application/x-tcl               tcl<br>application/x-tex               tex<br>application/x-texinfo           texinfo texi<br>application/x-troff             t tr roff<br>application/x-troff-man         man<br>application/zip                 zip<br>audio/mpeg                      mpga mp2 mp3<br>audio/x-aiff                    aif aiff aifc<br>audio/x-wav                     wav<br>image/gif                       gif<br>image/ief                       ief<br>image/jpeg                      jpeg jpg jpe<br>image/png                       png<br>image/tiff                      tiff tif<br>text/plain                      asc txt<br>text/rtf                        rtf<br>text/sgml                       sgml sgm<br>text/xml                        xml<br>video/mpeg                      mpeg mpg mpe<br>video/x-msvideo                 avi<br>text/html                       html htm<br></pre>
+<p></p>
+<p>If the file can be found or has the wrong format, Sylpheed will
+assume
+the default MIME type for all the attachments: <i>application/octet-stream</i>.
+In such a case, the recipients mail client may not know what
+application to use to view the attachment.</p>
+<h2><a name="ss14.2">12.2</a> <a href="sylpheed.html#toc14.2">How
+Sylpheed-Claws handles attachments (reception)</a>
+</h2>
+<p>When opening an attachment (select the attachment, right click and
+select
+<i>Open</i>) Sylpheed uses one of the following methods to determine
+the application to launch:</p>
+<p>
+</p>
+<ul>
+  <li>The attachment is an image: the application is the one defined by
+the
+    <i>mime_image_viewer</i> variable of the common preferences
+configuration
+file (<i>$HOME/.sylpheed/sylpheedrc</i>). If no application is defined,
+or
 if the format of the definition is not valid, the default application
-command is <I>display</I> (ImageMagick viewer).</LI>
-<LI>The attachment is a sound file: the application is the one defined by the
-<I>mime_audio_player</I> variable of the common preferences configuration
-file (<I>$HOME/.sylpheed/sylpheedrc</I>). If no application is defined, or
+command is <i>display</i> (ImageMagick viewer).</li>
+  <li>The attachment is a sound file: the application is the one
+defined by the
+    <i>mime_audio_player</i> variable of the common preferences
+configuration
+file (<i>$HOME/.sylpheed/sylpheedrc</i>). If no application is defined,
+or
 if the format of the definition is not valid, the default application
-command is <I>play</I>.</LI>
-<LI>The attachment is a HTML file: the application is the one defined by the
-<I>uri_cmd</I> variable of the common preferences configuration
-file (<I>$HOME/.sylpheed/sylpheedrc</I>). This can also be changed in the
-<I>Common preferences</I>, by changing the <I>Web browser</I> defined
-in the <I>Other</I> tab.</LI>
-<LI>Any other attachment type: Sylpheed relies on <I>metamail</I> to use
-the correct application (Sylpheed starts <I>metamail</I> giving it
-the attachment file and the MIME type taken from the mail).</LI>
-</UL>
-</P>
-
-<P>The binding of the applications to each MIME type is defined in the
-<I>mailcap</I> file. The systeme wide file is <I>/etc/mailcap</I>, 
-while the user file is <I>$HOME/.mailcap</I>.</P>
-
-<P>In the mailcap file, there is one definition per line, big lines
-can be broken by escaping the newline with a <I>\</I> character,
+command is <i>play</i>.</li>
+  <li>The attachment is a HTML file: the application is the one defined
+by the
+    <i>uri_cmd</i> variable of the common preferences configuration
+file (<i>$HOME/.sylpheed/sylpheedrc</i>). This can also be changed in
+the
+    <i>Common preferences</i>, by changing the <i>Web browser</i>
+defined
+in the <i>Other</i> tab.</li>
+  <li>Any other attachment type: Sylpheed relies on <i>metamail</i> to
+use
+the correct application (Sylpheed starts <i>metamail</i> giving it
+the attachment file and the MIME type taken from the mail).</li>
+</ul>
+<p></p>
+<p>The binding of the applications to each MIME type is defined in the
+<i>mailcap</i> file. The systeme wide file is <i>/etc/mailcap</i>,
+while the user file is <i>$HOME/.mailcap</i>.</p>
+<p>In the mailcap file, there is one definition per line, big lines
+can be broken by escaping the newline with a <i>\</i> character,
 the first element of the line is the MIME type, then a semi-colon,
-(<I>;</I>), and finally the application to launch.
+(<i>;</i>), and finally the application to launch.
 The application part (right side of the semi-colon) can contain several
-shell commands separated by an escaped semi-colon (<I>\;</I>) and
-the <I>%s</I> string is replaced by the name of the file when
-launching the command.</P>
-
-<P>Following is a typical <I>mailcap</I> file (an extract of mine):</P>
-<P>
-<PRE>
-
+shell commands separated by an escaped semi-colon (<i>\;</i>) and
+the <i>%s</i> string is replaced by the name of the file when
+launching the command.</p>
+<p>Following is a typical <i>mailcap</i> file (an extract of mine):</p>
+<p>
+</p>
+<pre>
 image/*; ee %s
 
 video/mpeg; gtv %s
@@ -143,13 +106,11 @@ video/*; xanim %s
 application/pdf; xpdf %s
 
 text/html; dillo %s
-</PRE>
-</P>
-
-
-<HR>
-<A HREF="sylpheed-15.html">Next</A>
-<A HREF="sylpheed-13.html">Previous</A>
-<A HREF="sylpheed.html#toc14">Contents</A>
-</BODY>
-</HTML>
+</pre>
+<p></p>
+<hr>
+<a href="sylpheed-15.html">Next</a>
+<a href="sylpheed-13.html">Previous</a>
+<a href="sylpheed.html#toc14">Contents</a>
+</body>
+</html>

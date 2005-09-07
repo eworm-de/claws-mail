@@ -1,276 +1,290 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
- <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
- <TITLE>Sylpheed User's Manual: Installation.</TITLE>
- <LINK HREF="sylpheed-5.html" REL=next>
- <LINK HREF="sylpheed-3.html" REL=previous>
- <LINK HREF="sylpheed.html#toc4" REL=contents>
-</HEAD>
-<BODY>
-<A HREF="sylpheed-5.html">Next</A>
-<A HREF="sylpheed-3.html">Previous</A>
-<A HREF="sylpheed.html#toc4">Contents</A>
-<HR>
-<H2><A NAME="s4">4.</A> <A HREF="sylpheed.html#toc4">Installation.</A></H2>
-
-<H2><A NAME="ss4.1">4.1</A> <A HREF="sylpheed.html#toc4.1">Required environment</A>
-</H2>
-
-<P>To succesfully compile Sylpheed, you need at least:
-<UL>
-<LI>Any POSIX compliant UNIX or similar OS eg. Linux, FreeBSD, Solaris</LI>
-<LI>
-<A HREF="http://www.gtk.org/">GTK+</A>
-1.2.6 or later</LI>
-<LI>A recent ANSI C compiler 
-(
-<A HREF="http://gcc.gnu.org/">gcc</A> 2.7.2.3 should also work) 
-Note: it is reported that Sun C will not compile Sylpheed.</LI>
-</UL>
-
+<html>
+<head>
+  <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
+  <title>Sylpheed User's Manual: Installation.</title>
+  <link href="sylpheed-5.html" rel="next">
+  <link href="sylpheed-3.html" rel="previous">
+  <link href="sylpheed.html#toc4" rel="contents">
+</head>
+<body>
+<a href="sylpheed-5.html">Next</a>
+<a href="sylpheed-3.html">Previous</a>
+<a href="sylpheed.html#toc4">Contents</a>
+<hr>
+<h2><a name="s4">4.</a> <a href="sylpheed.html#toc4">Installation.</a></h2>
+<h2><a name="ss4.1">4.1</a> <a href="sylpheed.html#toc4.1">Required
+environment</a>
+</h2>
+<p>To succesfully compile Sylpheed, you need at least:
+</p>
+<ul>
+  <li>Any POSIX compliant UNIX or similar OS eg. Linux, FreeBSD, Solaris</li>
+  <li>
+    <a href="http://www.gtk.org/">GTK+</a> 2.4.x or later</li>
+  <li>A recent ANSI C compiler (
+    <a href="http://gcc.gnu.org/">gcc</a> 2.95 should also work).</li>
+</ul>
 Optionally you need:
-<A NAME="option_libraries"></A> 
-<UL>
-<LI>
-<A HREF="http://sourceforge.net/project/showfiles.php?group_id=2">Imlib</A>
-or
-<A HREF="http://ftp.gnome.org/pub/GNOME/unstable/sources/gdk-pixbuf/">gdk-pixbuf</A>
-(for built-in image view)</LI>
-<LI>
-<A HREF="ftp://ftp.cs.indiana.edu/pub/faces/compface/">libcompface</A>
-(for X-Face)</LI>
-<LI>
-<A HREF="http://www.kondara.org/libjconv/">libjconv</A>
-(for non latin character sets)</LI>
-<LI>
-<A HREF="http://www.gnupg.org/gpgme.html">GPGME</A>
+<a name="option_libraries"></a>
+<ul>
+  <li><a href="ftp://ftp.cs.indiana.edu/pub/faces/compface/">libcompface</a>
+(for X-Face)</li>
+  <li><a href="http://www.gnupg.org/gpgme.html">GPGME</a>
 and
-<A HREF="http://www.gnupg.org/">GNUPG</A>
-(for encryption and signature)</LI>
-<LI>
-<A HREF="http://www.openssl.org/">OpenSSL</A>
-(for SSL support)</LI>
-<LI>
-<A HREF="http://www.openldap.org/">OpenLDAP</A>
-(for LDAP connection)</LI>
-<LI>IPv6 support can be turned on (if your system supports it)</LI>
-<LI>
-<A HREF="http://www.jpilot.org/">Jpilot</A>
-(for Palm addressbook use)</LI>
-<LI>the equivalent of GTK+-devel and Xfree86-devel. (Otherwise ./configure will fail.)</LI>
-</UL>
-</P>
-<P>Notice: Sylpheed may be unstable depending on the environment. Please use the newest version of libraries if possible.</P>
-<H2><A NAME="ss4.2">4.2</A> <A HREF="sylpheed.html#toc4.2">Environments known as valid for Sylpheed</A>
-</H2>
-
-<P>
-<UL>
-<LI>Debian GNU/Linux unstable (sid) (glibc 2.2.5) (development environment) </LI>
-<LI>Debian GNU/Linux testing (woody) (glibc 2.2.5)</LI>
-<LI>Debian GNU/Linux 2.2 (potato) (glibc 2.1.3) </LI>
-<LI>Kondara MNU/Linux (glibc 2.1.x) </LI>
-<LI>Kondara MNU/Linux 1.2</LI>
-<LI>Kondara MNU/Linux 2.0</LI>
-<LI>Vine Linux 1.1 (glibc 2.0.x + libwcsmbs) </LI>
-<LI>Vine Linux 2.0 (glibc 2.1.x) (Intel, PPC) </LI>
-<LI>Vine Linux 2.1 </LI>
-<LI>Vine Linux 2.1.5</LI>
-<LI>Laser5 Linux 6.0 (glibc 2.1.x)</LI>
-<LI>Laser5 Linux 6.2 (glibc 2.1.x)</LI>
-<LI>Laser5 Linux 6.4 (glibc 2.1.x)</LI>
-<LI>TurboLinux 4.0 (glibc 2.0.7 + libwcsmbs) </LI>
-<LI>TurboLinux 6.0 (glibc 2.1.2) </LI>
-<LI>TurboLinux 7.0 (glibc 2.2.x) </LI>
-<LI>Miracle Linux Standard Edition Version1.0 </LI>
-<LI>Miracle Linux for PostgreSQL Version1.0 </LI>
-<LI>Miracle Linux for Samba Version1.0 </LI>
-<LI>RedHat Linux 5.2 (glibc 2.0.7) </LI>
-<LI>RedHat Linux 6.0 </LI>
-<LI>RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x) </LI>
-<LI>RedHat Linux 6.2 / 6.2J (glibc 2.1.x) </LI>
-<LI>RedHat Linux 7.0 / 7.0J </LI>
-<LI>RedHat Linux 7.1</LI>
-<LI>RedHat Linux 7.2</LI>
-<LI>LinuxPPC2000 + Yukikaze(Japanization kit) </LI>
-<LI>Linux2000G (Intel, PowerPC) </LI>
-<LI>HOLON Linux 2.0 (Intel / PPC) </LI>
-<LI>Linux for PPC Japanese Edition 2.0 (glibc 2.1.x) </LI>
-<LI>Linux for PPC Japanese Edition 3.0 (glibc 2.1.x) </LI>
-<LI>Linux MLD4</LI>
-<LI>Linux MLD5 </LI>
-<LI>Plamo Linux 2.0 </LI>
-<LI>Plamo Linux 2.1</LI>
-<LI>Slackware 7.0 </LI>
-<LI>Slackware 7.1 </LI>
-<LI>Slackware 8.0 </LI>
-<LI>Linux Mandrake 7.0</LI>
-<LI>Linux Mandrake 7.1</LI>
-<LI>Linux Mandrake 7.2</LI>
-<LI>Linux Mandrake 8.0</LI>
-<LI>Linux Mandrake 8.1</LI>
-<LI>SuSE Linux 6.3 (glibc 2.1.2) </LI>
-<LI>SuSE Linux 6.4</LI>
-<LI>SuSE Linux 7.0</LI>
-<LI>SuSE Linux 7.1</LI>
-<LI>SuSE Linux 7.2</LI>
-<LI>SuSE Linux 7.3</LI>
-<LI>OpenLinux 2.3 (glibc 2.1.1 -> 2.1.3) </LI>
-<LI>Caldera OpenDesktop 2.4 </LI>
-<LI>Caldera Workstation 3.1</LI>
-<LI>Conectiva Linux 4.0</LI>
-<LI>Conectiva Linux 5.0</LI>
-<LI>Conectiva Linux 7.0</LI>
-<LI>Vector Linux 1.5 </LI>
-<LI>Yellow Dog Linux 2.0 (glibc 2.2.1)</LI>
-<LI>Yellow Dog Linux 2.1 (PowerPC)</LI>
-<LI>ASP Linux 7.2 (glibc 2.2.4)</LI>
-<LI>Redmond Linux (Lycoris)</LI>
-</UL>
-</P>
-<P>
-<UL>
-<LI>FreeBSD release 3.2</LI>
-<LI>FreeBSD release 3.4</LI>
-<LI>FreeBSD release 4.0</LI>
-<LI>FreeBSD release 4.1</LI>
-<LI>FreeBSD release 4.2</LI>
-<LI>FreeBSD release 4.3</LI>
-<LI>FreeBSD release 4.4</LI>
-<LI>FreeBSD release 4.5</LI>
-<LI>FreeBSD release 5.0</LI>
-<LI>NetBSD 1.4.2 </LI>
-<LI>NetBSD 1.5 + XPG4DL </LI>
-<LI>NetBSD 1.5.1</LI>
-<LI>NetBSD 1.5.2</LI>
-<LI>OpenBSD 2.7 </LI>
-<LI>OpenBSD 2.8 (i386) </LI>
-<LI>OpenBSD 2.9</LI>
-<LI>OpenBSD 3.0</LI>
-<LI>BSD/OS 4.0.1 </LI>
-</UL>
-</P>
-<P>
-<UL>
-<LI>Solaris 2.5</LI>
-<LI>Solaris 2.5.1</LI>
-<LI>Solaris 2.6</LI>
-<LI>Solaris 7</LI>
-<LI>Solaris 8</LI>
-<LI>IRIX 6.3</LI>
-<LI>IRIX 6.4</LI>
-<LI>IRIX 6.5, 6.5.8m</LI>
-<LI>HP-UX 10.20 </LI>
-<LI>HP-UX 11.00</LI>
-<LI>HP-UX 11i</LI>
-<LI>Tru64 Unix 5.0 (OSF1 v5.0)</LI>
-<LI>SCO UnixWare 7</LI>
-<LI>Mac OS X 10.1.3 (Darwin 5.3) + XDarwin (without XLocale support) + libxpg4 </LI>
-</UL>
-</P>
-<P>
-<UL>
-<LI>Windows (MSVC + GTK+ for win32), in progress</LI>
-</UL>
-</P>
-<H2><A NAME="ss4.3">4.3</A> <A HREF="sylpheed.html#toc4.3">Nuts and bolts of installation</A>
-</H2>
-
-<P>
-<UL>
-<LI>Download the latest version of the Sylpheed package from
-<A HREF="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</A></LI>
-<LI>Untar the sourcefiles to a new directory</LI>
-<LI>tar -xvfz sylpheed-.tar.gz (for tar.gz)</LI>
-<LI>tar -xvfI sylpheed-.tar.bz2 (for tar.bz2) </LI>
-<LI>cd to the new sylpheed- directory </LI>
-<LI>Run ./configure to check your environment and create the installation make files </LI>
-<LI>Run the 'make' program which will compile the sources. Do not proceed with this step if there are fatal errors in the previous step. Fatal errors indicate that things are missing in order to compile Sylpheed properly. </LI>
-</UL>
-</P>
-<P>If the make process has completed, run "make install" (as root), to install the program and the supportfiles</P>
-
-<H3><A NAME="compile_sylpheed"></A> Compiling Sylpheed with options</H3>
-
-<P>You can choose to compile Sylpheed with some optional features enabled.
-Use <I>./configure --help</I> to list configuration syntax and options.</P>
-<P>The following optional features can be enabled:</P>
-<P>
-<UL>
-<LI><I>Jpilot</I>: to use you PDA addressbook with Sylpheed. You will
-need the <I>Jpilot</I> library (and <I>pilot-link</I>, too).
-Enable this option with the <I>--enable-jpilot</I> configure switch.</LI>
-<LI><I>GnuPG</I>: Sylpheed can encrypt and sign your messages (also decrypt
+    <a href="http://www.gnupg.org/">GNUPG</a>
+(for encryption and signature)</li>
+  <li>
+    <a href="http://www.openssl.org/">OpenSSL</a>
+(for SSL support)</li>
+  <li>
+    <a href="http://www.openldap.org/">OpenLDAP</a>
+(for LDAP connection)</li>
+  <li>IPv6 support can be turned on (if your system supports it)</li>
+  <li>
+    <a href="http://www.jpilot.org/">Jpilot</a>
+(for Palm addressbook use)</li>
+  <li><a href="http://libetpan.sourceforge.net">Libetpan</a> (for IMAP4
+support)</li>
+  <li>libgnomeprint(ui) (for real printing support)</li>
+  <li>the equivalent of GTK+-devel and Xfree86-devel. (Otherwise
+./configure will fail.)</li>
+</ul>
+<p></p>
+<p>Notice: Sylpheed may be unstable depending on the environment.
+Please use the newest version of libraries if possible.</p>
+<h2><a name="ss4.2">4.2</a> <a href="sylpheed.html#toc4.2">Environments
+known as valid for Sylpheed</a>
+</h2>
+<p>
+</p>
+<ul>
+  <li>Debian GNU/Linux unstable (sid) (glibc 2.2.5) (development
+environment) </li>
+  <li>Debian GNU/Linux testing (woody) (glibc 2.2.5)</li>
+  <li>Debian GNU/Linux 2.2 (potato) (glibc 2.1.3) </li>
+  <li>Kondara MNU/Linux (glibc 2.1.x) </li>
+  <li>Kondara MNU/Linux 1.2</li>
+  <li>Kondara MNU/Linux 2.0</li>
+  <li>Vine Linux 1.1 (glibc 2.0.x + libwcsmbs) </li>
+  <li>Vine Linux 2.0 (glibc 2.1.x) (Intel, PPC) </li>
+  <li>Vine Linux 2.1 </li>
+  <li>Vine Linux 2.1.5</li>
+  <li>Laser5 Linux 6.0 (glibc 2.1.x)</li>
+  <li>Laser5 Linux 6.2 (glibc 2.1.x)</li>
+  <li>Laser5 Linux 6.4 (glibc 2.1.x)</li>
+  <li>TurboLinux 4.0 (glibc 2.0.7 + libwcsmbs) </li>
+  <li>TurboLinux 6.0 (glibc 2.1.2) </li>
+  <li>TurboLinux 7.0 (glibc 2.2.x) </li>
+  <li>Miracle Linux Standard Edition Version1.0 </li>
+  <li>Miracle Linux for PostgreSQL Version1.0 </li>
+  <li>Miracle Linux for Samba Version1.0 </li>
+  <li>RedHat Linux 5.2 (glibc 2.0.7) </li>
+  <li>RedHat Linux 6.0 </li>
+  <li>RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x) </li>
+  <li>RedHat Linux 6.2 / 6.2J (glibc 2.1.x) </li>
+  <li>RedHat Linux 7.0 / 7.0J </li>
+  <li>RedHat Linux 7.1</li>
+  <li>RedHat Linux 7.2</li>
+  <li>LinuxPPC2000 + Yukikaze(Japanization kit) </li>
+  <li>Linux2000G (Intel, PowerPC) </li>
+  <li>HOLON Linux 2.0 (Intel / PPC) </li>
+  <li>Linux for PPC Japanese Edition 2.0 (glibc 2.1.x) </li>
+  <li>Linux for PPC Japanese Edition 3.0 (glibc 2.1.x) </li>
+  <li>Linux MLD4</li>
+  <li>Linux MLD5 </li>
+  <li>Plamo Linux 2.0 </li>
+  <li>Plamo Linux 2.1</li>
+  <li>Slackware 7.0 </li>
+  <li>Slackware 7.1 </li>
+  <li>Slackware 8.0 </li>
+  <li>Linux Mandrake 7.0</li>
+  <li>Linux Mandrake 7.1</li>
+  <li>Linux Mandrake 7.2</li>
+  <li>Linux Mandrake 8.0</li>
+  <li>Linux Mandrake 8.1</li>
+  <li>SuSE Linux 6.3 (glibc 2.1.2) </li>
+  <li>SuSE Linux 6.4</li>
+  <li>SuSE Linux 7.0</li>
+  <li>SuSE Linux 7.1</li>
+  <li>SuSE Linux 7.2</li>
+  <li>SuSE Linux 7.3</li>
+  <li>OpenLinux 2.3 (glibc 2.1.1 -&gt; 2.1.3) </li>
+  <li>Caldera OpenDesktop 2.4 </li>
+  <li>Caldera Workstation 3.1</li>
+  <li>Conectiva Linux 4.0</li>
+  <li>Conectiva Linux 5.0</li>
+  <li>Conectiva Linux 7.0</li>
+  <li>Vector Linux 1.5 </li>
+  <li>Yellow Dog Linux 2.0 (glibc 2.2.1)</li>
+  <li>Yellow Dog Linux 2.1 (PowerPC)</li>
+  <li>ASP Linux 7.2 (glibc 2.2.4)</li>
+  <li>Redmond Linux (Lycoris)</li>
+</ul>
+<p></p>
+<p>
+</p>
+<ul>
+  <li>FreeBSD release 3.2</li>
+  <li>FreeBSD release 3.4</li>
+  <li>FreeBSD release 4.0</li>
+  <li>FreeBSD release 4.1</li>
+  <li>FreeBSD release 4.2</li>
+  <li>FreeBSD release 4.3</li>
+  <li>FreeBSD release 4.4</li>
+  <li>FreeBSD release 4.5</li>
+  <li>FreeBSD release 5.0</li>
+  <li>NetBSD 1.4.2 </li>
+  <li>NetBSD 1.5 + XPG4DL </li>
+  <li>NetBSD 1.5.1</li>
+  <li>NetBSD 1.5.2</li>
+  <li>OpenBSD 2.7 </li>
+  <li>OpenBSD 2.8 (i386) </li>
+  <li>OpenBSD 2.9</li>
+  <li>OpenBSD 3.0</li>
+  <li>BSD/OS 4.0.1 </li>
+</ul>
+<p></p>
+<p>
+</p>
+<ul>
+  <li>Solaris 2.5</li>
+  <li>Solaris 2.5.1</li>
+  <li>Solaris 2.6</li>
+  <li>Solaris 7</li>
+  <li>Solaris 8</li>
+  <li>IRIX 6.3</li>
+  <li>IRIX 6.4</li>
+  <li>IRIX 6.5, 6.5.8m</li>
+  <li>HP-UX 10.20 </li>
+  <li>HP-UX 11.00</li>
+  <li>HP-UX 11i</li>
+  <li>Tru64 Unix 5.0 (OSF1 v5.0)</li>
+  <li>SCO UnixWare 7</li>
+  <li>Mac OS X 10.1.3 (Darwin 5.3) + XDarwin (without XLocale support)
++ libxpg4 </li>
+</ul>
+<p></p>
+<p>
+</p>
+<ul>
+  <li>Windows (MSVC + GTK+ for win32), in progress</li>
+</ul>
+<p></p>
+<h2><a name="ss4.3">4.3</a> <a href="sylpheed.html#toc4.3">Nuts and
+bolts of installation</a>
+</h2>
+<p>
+</p>
+<ul>
+  <li>Download the latest version of the Sylpheed-Claws package from
+    <a href="http://claws.sylpheed.org/">http://claws.sylpheed.org/</a></li>
+  <li>Untar the sourcefiles to a new directory</li>
+  <li>tar -zxf sylpheed-claws-x.x.x.tar.gz (for tar.gz)</li>
+  <li>tar -jxf sylpheed-claws-x.x.x.tar.bz2 (for tar.bz2) </li>
+  <li>cd to the new sylpheed-claws-x.x.x directory </li>
+  <li>Run ./configure to check your environment and create the
+installation make files </li>
+  <li>Run the 'make' program which will compile the sources. Do not
+proceed with this step if there are fatal errors in the previous step.
+Fatal errors indicate that things are missing in order to compile
+Sylpheed properly. </li>
+</ul>
+<p></p>
+<p>If the make process has completed, run "make install" (as root), to
+install the program and the supportfiles.</p>
+<h3><a name="compile_sylpheed"></a> Compiling Sylpheed-Claws with
+options</h3>
+<p>You can choose to compile Sylpheed-Claws with some optional features
+enabled.
+Use <i>./configure --help</i> to list configuration syntax and options.</p>
+<p>The following optional features can be enabled:</p>
+<p>
+</p>
+<ul>
+  <li><i>Jpilot</i>: to use you PDA addressbook with Sylpheed. You will
+need the <i>Jpilot</i> library (and <i>pilot-link</i>, too).
+Enable this option with the <i>--enable-jpilot</i> configure switch.</li>
+  <li><i>GnuPG</i>: Sylpheed can encrypt and sign your messages (also
+decrypt
 and verify the signatures of the incoming messages) using GnuPG.
 GnuPG follows the OpenPGP standard and is compatible with PGP.
 To enable this feature, you need to install GnuPG and GPGME (interface
-library to GnuPG).
-Enable this option with the <I>--enable-gpgme</I> configure switch.</LI>
-<LI><I>LDAP</I>: Sylpheed can connect to a LDAP server in order to
+library to GnuPG). This is automatically enabled if possible.</li>
+  <li><i>LDAP</i>: Sylpheed can connect to a LDAP server in order to
 query mail addresses. To enable this feature you will need the
 OpenLDAP library.
-Enable this option with the <I>--enable-ldap</I> configure switch.</LI>
-<LI><I>X-Faces</I>: you can create a small picture (of your face, or
+Enable this option with the <i>--enable-ldap</i> configure switch.</li>
+  <li><i>X-Faces</i>: you can create a small picture (of your face, or
 of anything else) that will be sent in the header of your mails.
 This option is enabled if the compface library is found and
-can be disabled using the <I>--disable-compface</I> configure switch.</LI>
-<LI>Images can appear "inline" (embedded in the message window, without
-the need of an external viewer) if Sylpheed is compiled
-with either the <I>gdk-pixbuf</I> or the <I>imlib</I> library.
-You can choose the library (if both are installed) by using the
-<I>--disable-gdk-pixbuf</I> or <I>--disable-imlib</I> configure switch.</LI>
-</UL>
-</P>
-<P>All these features require additional libraries and tools that may not be part
-of your distribution. You can find them at the addresses listed at the beginning
-of this chapter, 
-<A HREF="#option_libraries">here</A>.</P>
-
-<H2><A NAME="ss4.4">4.4</A> <A HREF="sylpheed.html#toc4.4">Installation on Linux using RPM</A>
-</H2>
-
-<P>As root, run the "rpm -ivh " command on the RPM file you downloaded. As soon as this process is complete you can run Sylpheed as user. </P>
-<H2><A NAME="ss4.5">4.5</A> <A HREF="sylpheed.html#toc4.5">Installation on Debian Linux</A>
-</H2>
-
-<P>With an internet connection :</P>
-<P>apt-get install sylpheed (to install it with a internet connection)</P>
-<P>Without internet connection, fetch the debian package for example on
-<A HREF="http://packages.debian.org/unstable/mail/sylpheed.html">http://packages.debian.org/unstable/mail/sylpheed.html</A></P>
-<P>dpkg -i sylpheedx.x.x-1i386.deb</P>
-<P>dpkg --install sylpheedx.x.x-1i386.deb</P>
-<H2><A NAME="ss4.6">4.6</A> <A HREF="sylpheed.html#toc4.6">Installation on FreeBSD</A>
-</H2>
-
-<P>using the /stand/sysinstall tool (it is a menu-based interface) :</P>
-<P>run "/stand/sysinstall" as root</P>
-<P>in the main menu choose "Configure" -> "Packages" -> "mail", then "sylpheed" then, back to the "Packages" list, choose "Install"</P>
-<P>Using the ports</P>
-<P>Get the sylpheed port on :</P>
-<P>
-<A HREF="ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail">ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail</A></P>
-<P>then, as root: pkg-add sylpheed-0.x.x.tgz</P>
-<P>using the ports with compiling:</P>
-<P>first, update your port, fetch it on 
-<A HREF="http://www.freebsd.org/ports/mail.html">http://www.freebsd.org/ports/mail.html</A></P>
-<P>cd /usr/ports/mail/sylpheed</P>
-<P>make</P>
-<P>If it succeeds, type "make install"</P>
-<P>In case it fails, fetch the required package if necessary
+can be disabled using the <i>--disable-compface</i> configure switch.</li>
+  <li><span style="font-style: italic;">SSL</span>: OpenSSL support
+will be automatically built if openssl is available with its
+development files.</li>
+  <li><span style="font-style: italic;">libetpan</span>: libetpan is
+required to build IMAP4 support. As this is important, if libetpan
+isn't present, configure will fail. You can force a build with no IMAP4
+support by using <span style="font-style: italic;">--disable-libetpan</span>.</li>
+</ul>
+<p></p>
+<p>All these features require additional libraries and tools that may
+not be part
+of your distribution. You can find them at the addresses listed at the
+beginning
+of this chapter, <a href="#option_libraries">here</a>.</p>
+<h2><a name="ss4.4">4.4</a> <a href="sylpheed.html#toc4.4">Installation
+on Linux using RPM</a>
+</h2>
+<p>As root, run the "rpm -Uvh " command on the RPM file you downloaded.
+As soon as this process is complete you can run Sylpheed-Claws as user.
+</p>
+<h2><a name="ss4.5">4.5</a> <a href="sylpheed.html#toc4.5">Installation
+on Debian Linux</a>
+</h2>
+<p>With an internet connection :</p>
+<p>apt-get install sylpheed-claws (to install it with a internet
+connection)</p>
+<p>Without internet connection, fetch the debian package for example on
+<a href="http://packages.debian.org/unstable/mail/sylpheed.html">http://packages.debian.org/unstable/mail/sylpheed-claws.html</a></p>
+<p>dpkg -i sylpheed-claws_x.x.x-1i386.deb</p>
+<p>dpkg --install sylpheed-claws_x.x.x-1i386.deb</p>
+<h2><a name="ss4.6">4.6</a> <a href="sylpheed.html#toc4.6">Installation
+on FreeBSD</a>
+</h2>
+<p>using the /stand/sysinstall tool (it is a menu-based interface) :</p>
+<p>run "/stand/sysinstall" as root</p>
+<p>in the main menu choose "Configure" -&gt; "Packages" -&gt; "mail",
+then "sylpheed-claws" then, back to the "Packages" list, choose
+"Install"</p>
+<p>Using the ports</p>
+<p>Get the sylpheed port on :</p>
+<p>
+<a
+ href="ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail">ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail</a></p>
+<p>then, as root: pkg-add sylpheed-claws-x.x.x.tgz</p>
+<p>using the ports with compiling:</p>
+<p>first, update your port, fetch it on <a
+ href="http://www.freebsd.org/ports/mail.html">http://www.freebsd.org/ports/mail.html</a></p>
+<p>cd /usr/ports/mail/sylpheed-claws</p>
+<p>make</p>
+<p>If it succeeds, type "make install"</p>
+<p>In case it fails, fetch the required package if necessary
 (on the same page), put the package file in /usr/ports/distfiles/
 then :
-<UL>
-<LI>cd /usr/ports/mail/sylpheed</LI>
-<LI>make</LI>
-<LI>make install</LI>
-</UL>
-</P>
-<P>Need a more up-to-date version ?</P>
-<P>Just use the Unix standard method (see "Nuts and bolts of installation")</P>
-<HR>
-<A HREF="sylpheed-5.html">Next</A>
-<A HREF="sylpheed-3.html">Previous</A>
-<A HREF="sylpheed.html#toc4">Contents</A>
-</BODY>
-</HTML>
+</p>
+<ul>
+  <li>cd /usr/ports/mail/sylpheed-claws</li>
+  <li>make</li>
+  <li>make install</li>
+</ul>
+<p></p>
+<p>Need a more up-to-date version ?</p>
+<p>Just use the Unix standard method (see "Nuts and bolts of
+installation")</p>
+<hr>
+<a href="sylpheed-5.html">Next</a>
+<a href="sylpheed-3.html">Previous</a>
+<a href="sylpheed.html#toc4">Contents</a>
+</body>
+</html>

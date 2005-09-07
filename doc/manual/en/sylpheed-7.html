@@ -1,121 +1,140 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
- <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
- <TITLE>Sylpheed User's Manual: Dialogs and views</TITLE>
- <LINK HREF="sylpheed-8.html" REL=next>
- <LINK HREF="sylpheed-6.html" REL=previous>
- <LINK HREF="sylpheed.html#toc7" REL=contents>
-</HEAD>
-<BODY>
-<A HREF="sylpheed-8.html">Next</A>
-<A HREF="sylpheed-6.html">Previous</A>
-<A HREF="sylpheed.html#toc7">Contents</A>
-<HR>
-<H2><A NAME="s7">7.</A> <A HREF="sylpheed.html#toc7">Dialogs and views</A></H2>
-
-
-
-
-
-
-<P>The appearance of the Sylpheed windows is controlled by
+<html>
+<head>
+  <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
+  <title>Sylpheed User's Manual: Dialogs and views</title>
+  <link href="sylpheed-8.html" rel="next">
+  <link href="sylpheed-6.html" rel="previous">
+  <link href="sylpheed.html#toc7" rel="contents">
+</head>
+<body>
+<a href="sylpheed-8.html">Next</a>
+<a href="sylpheed-6.html">Previous</a>
+<a href="sylpheed.html#toc7">Contents</a>
+<hr>
+<h2><a name="s7">7.</a> <a href="sylpheed.html#toc7">Dialogs and views</a></h2>
+<p>The appearance of the Sylpheed windows is controlled by
 a Gtk+ theme (as Sylpheed is based on the Gtk+ toolkit).
 Read the Gtk+ or your distribution documentation to find
-how to change the Gtk+ theme.</P>
-
-<H2><A NAME="ss7.1">7.1</A> <A HREF="sylpheed.html#toc7.1">Folder view</A>
-</H2>
-
-<P>The folder view shows you all the mail folders that you have created, 
-in a tree-like structure. If you want to see the headers of the messages 
-in a specific folder, just click the name of the folder once, and in the 
-summary view (2)  you can see the messages in the selected mail folder.</P>
-<P>When you see a + sign in front of a folder name, that means the folder 
-branch of that part of the tree is 'collapsed'. You can expand that 
-part by clicking the + sign. In that same manner you can also collapse 
-the - sign in front of an expanded branch of the folder tree.</P>
-<P>The folder pane can be resized be dragging (left mouse button down)
-the handle found on the left of the folder view.</P>
-<P>The folder window can be detached from the main Sylpheed window
-by selecting the menu action: <CODE>View -> Separate folder tree</CODE>.
-When exiting the current state of the folder window (attached or 
+how to change the Gtk+ theme.</p>
+<h2><a name="ss7.1">7.1</a> <a href="sylpheed.html#toc7.1">Folder view</a>
+</h2>
+<p>The folder view shows you all the mail folders that you have
+created, in a tree-like structure. If you want to see the messages in a
+specific folder, just click the name of the folder once, and in the
+summary view (2) you can see the messages in the selected mail folder.</p>
+<p>When you see a + sign in front of a folder name, that means the
+folder branch of that part of the tree is 'collapsed'. You can expand
+that part by clicking the + sign. In that same manner you can also
+collapse the - sign in front of an expanded branch of the folder tree.</p>
+<p>The folder pane can be resized be dragging (left mouse button down)
+the handle found on the right of the folder view.</p>
+<p>The folder window can be detached from the main Sylpheed window
+by selecting the menu action: <code>View -&gt; Separate folder tree</code>.
+When exiting the current state of the folder window (attached or
 detached) is saved to be restored when re-starting Sylpheed.
-To re-attach the folder window, de-select the menu entry.</P>
-
-<H3>Special folders:</H3>
-
-<P><I>Draft:</I> here you store messages that you want to send out more often, 
-or you want to work on some more. Using the 'reedit' option from the 
-message menu, you can edit the message further.</P>
-<P><I>Trash:</I> in here all your deleted messages go. Depending on the common 
-preferences setting, this box is or is not emptied when you end Sylpheed.</P>
-<P><I>Sent:</I> in here are saved the messages you send (enabled by a
+To re-attach the folder window, de-select the menu entry.</p>
+<p>The folder view's columns are the name of the folder, count of new
+messages, count of unread messages, total count of messages. If some of
+these columns are useless to you, you can disable them via the <span
+ style="font-style: italic;">View/Set displayed columns/in Folder list</span>
+menu.</p>
+<h3>Special folders:</h3>
+<p><i>Draft:</i> here you store messages that you want to send out more
+often, or you want to work on some more. Using the 'reedit' option from
+the message menu, you can edit the message further.</p>
+<p><i>Trash:</i> in here all your deleted messages go. Depending on the
+common preferences setting, this box is or is not emptied when you end
+Sylpheed.</p>
+<p><i>Sent:</i> in here are saved the messages you send (enabled by a
 common preference setting and the folder can be changed by an account
-preference setting).</P>
-<P><I>Queue:</I> this folder contains the composed messaged waiting to
-be sent (with Sylpheed message sending can be delayed).</P>
-
-<H2><A NAME="ss7.2">7.2</A> <A HREF="sylpheed.html#toc7.2">Summary view</A>
-</H2>
-
-<P>The summary pane can show you many things. You can select what you 
-want to see from the Summary menu, selecting the option 
-"Set display item". A list of all options is:
-<UL>
-<LI>Mark: shows if the message is marked.</LI>
-<LI>Unread: shows if the message is read or not</LI>
-<LI>MIME: shows MIME attachments</LI>
-<LI>Number: shows the MH number of the message</LI>
-<LI>Size: the size of the entire message including attachments</LI>
-<LI>Date: the date of sending by the sender</LI>
-<LI>From: who sent the message</LI>
-<LI>Subject: what the message is about</LI>
-</UL>
-</P>
-<P>You can sort the summary view in many ways, by clicking the button 
-that is above the column. Click once to sort going up (a-z), click 
-once more to sort going down (z-a).</P>
-<P>If you think the size of a column is not right, you can adjust that 
-by placing the mouse cursor next to the button of the column you 
-want to adjust, press mousebutton1 (left button) and drag the 
-column to the width you want it to have.</P>
-<P>Select a message by clicking on it with the mouse. Once the summary 
-pane has the focus of the program, you can also move up and down 
-in the list through the cursor keys, or pressing "p"(revious) and 
-"n"(ext) as in Pine.</P>
-<H2><A NAME="ss7.3">7.3</A> <A HREF="sylpheed.html#toc7.3">Message view</A>
-</H2>
-
-<P>In the message view you can read the message that you selected in 
-the summary pane. If you entered the summary pane without selecting 
-a message, the message view will be empty. At the top of the 
-message view some info is presented about the message you are 
-reading, as well as some statistics on the selected folder.</P>
-<P>You can scroll up and down in the message by using the arrow keys 
-(after clicking inside the message), or by using the scrollbar.</P>
-<P>The size of the message and summary views can be adjusted by dragging
+preference setting).</p>
+<p><i>Queue:</i> this folder contains the composed messaged waiting to
+be sent (with Sylpheed message sending can be delayed).</p>
+<h2><a name="ss7.2">7.2</a> <a href="sylpheed.html#toc7.2">Summary view</a>
+</h2>
+<p>The summary pane can show you many things. You can select what you
+want to see from the View menu, selecting the option "Set displayed
+columns/in Message list". A list of all options is:
+</p>
+<ul>
+  <li>Number: shows the MH number of the message</li>
+  <li>Score: the score of the message, as set by filtering rules</li>
+  <li>Locked: shows if the message is locked</li>
+  <li>Mark: shows if the message is marked.</li>
+  <li>Status: shows if the message is read or not</li>
+  <li>Attachment: shows MIME attachments</li>
+  <li>From: who sent the message</li>
+  <li>To: who received the message</li>
+  <li>Subject: what the message is about</li>
+  <li>Date: the date of sending by the sender</li>
+  <li>Size: the size of the entire message including attachments</li>
+</ul>
+<p></p>
+<p>You can sort the summary view in many ways, by clicking the button
+that is above the column. Click once to sort going up (a-z), click once
+more to sort going down (z-a).</p>
+<p>If you think the size of a column is not right, you can adjust that
+by placing the mouse cursor next to the button of the column you want
+to adjust, press mousebutton1 (left button) and drag the column to the
+width you want it to have.</p>
+<p>Select a message by clicking on it with the mouse. Once the summary
+pane has the focus of the program, you can also move up and down in the
+list through the cursor keys, or pressing "p"(revious) and "n"(ext) as
+in Pine, and more: you can define shortcuts in the <span
+ style="font-style: italic;">View/Go to/</span> menu.</p>
+<h2><a name="ss7.3">7.3</a> <a href="sylpheed.html#toc7.3">Message view</a>
+</h2>
+<p>In the message view you can read the message that you selected in
+the summary pane. If you entered the summary pane without selecting a
+message, the message view will be empty. At the top of the message view
+some info is presented about the message you are reading, as well as
+some statistics on the selected folder.</p>
+<p>You can scroll up and down in the message by using the arrow keys
+(after clicking inside the message), or by using the scrollbar.</p>
+<p>The size of the message and summary views can be adjusted by
+dragging
 (with the left mouse button down) the handle that appears between
-the two panes.</P>
-<P>The small arrow located just below the summary pane scrollbar can
+the two panes.</p>
+<p>The small arrow located just below the summary pane scrollbar can
 be used to detach the message view. When clicked, the summary view
 is extended down to the bottom of the Sylpheed window, and the messages
 are displayed is a separate window (when you double click them in the
-summary pane). This state is not saved on exit, and the message window
-can be restored below the summary one by clicking again the small arrow.</P>
-<P>When the current message contains attachments, two tabs
-are displayed in the message window. Selecting the first one makes
-the message window display the text body of the message, while selecting
-the second tab makes the message window display the attachment part
-of the message. In the latter case, the message window is splitted
-in two parts, the top one contains the attachments as a tree
-with the MIME type, size and file name of each part, while the bottom
-part contains the content of the selected attachment (if the attachment
-is an image and Sylpheed has been compiled with the gdk-pixbuf or
-the imlib library).</P>
-<HR>
-<A HREF="sylpheed-8.html">Next</A>
-<A HREF="sylpheed-6.html">Previous</A>
-<A HREF="sylpheed.html#toc7">Contents</A>
-</BODY>
-</HTML>
+summary pane). The message window
+can be restored below the summary one by clicking again the small arrow.</p>
+<p>At the right of the message, you can see the differents parts of it
+- the message, the body, and if applicable, the attachments it has.
+Clicking on the various parts show them; if there's an attachment
+Sylpheed can't handle, you'll be able to open it using an external
+application.
+</p>
+<h2><a name="ss7.4">7.4</a> <a href="sylpheed.html#toc7.4">Quick search</a>
+</h2>
+The quick search is located between the Summary view and the message
+view. You can show it, or hide it, using the magnifying glass button at
+the left of the status. You can then use the quicksearch in various
+ways:<br>
+Using the selector at the left, you can choose between Subject, From,
+To, and Extended. <span style="font-style: italic;">Subject, From and
+To</span> searches in the relevant field, while <span
+ style="font-style: italic;">Extended </span>is more powerful,
+allowing all kinds of searches, like 's blah' to match blah in the
+subject, 'C john' to match mails sent to john, but can also match on
+message age, size, status, and much more. All the possible symbols are
+listed when clicking on the <span style="font-style: italic;">Extended
+symbols</span> button. Finally, the selector lets you specify if you
+want to search only in the current folder or recursively: sub-folders
+of the current folders can be searched too. <br>
+When you hit Enter in the search field, the summary view will be
+trimmed to display only matching messages. <br>
+As the quicksearch doesn't reset itself when you change folders, you
+can sometimes get the impression of an empty folder which shouldn't be
+that empty. In this case, don't forget to click on the Quicksearch's <span
+ style="font-style: italic;">Clear </span>button.<br>
+<br>
+<hr>
+<a href="sylpheed-8.html">Next</a>
+<a href="sylpheed-6.html">Previous</a>
+<a href="sylpheed.html#toc7">Contents</a>
+</body>
+</html>

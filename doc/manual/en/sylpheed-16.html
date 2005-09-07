@@ -1,68 +1,119 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
- <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
- <TITLE>Sylpheed User's Manual: NetNews</TITLE>
- <LINK HREF="sylpheed-17.html" REL=next>
- <LINK HREF="sylpheed-15.html" REL=previous>
- <LINK HREF="sylpheed.html#toc16" REL=contents>
-</HEAD>
-<BODY>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
-<HR>
-<H2><A NAME="s16">16.</A> <A HREF="sylpheed.html#toc16">NetNews</A></H2>
-
-<P>What is netnews?</P>
-<P>Netnews, also called Usenet, is a collection of "news servers" that contain a great deal of information. News, as it is called in short, can be about anything. About making your own wine, about old cars or radios. You name it, and there probably is a newsgroup about it.</P>
-<P>This is what we will set up here. Accessing newsgroups. Note that this is different from e-mails. You can almost compare it to a mailing list, but yet the concept is a bit different.</P>
-<H2><A NAME="ss16.1">16.1</A> <A HREF="sylpheed.html#toc16.1">Adding and Deleting Servers</A>
-</H2>
-
-
-<H3>Adding a news server</H3>
-
-<P>To add a news server, go to the configuration menu and select the "create new account" option.
-There you can name the news-account to anything of your liking. This is important, so you can identify the account later.</P>
-<P>In the BASIC tab, in the block 'personal information' you also can enter your own name, your e-mail address (so you can reply to news message by e-mail), optionally your organization (if you are organized at all).</P>
-<P>In the block 'Server information' you select the "News (NNTP)" protocol. Forget about "Inbox", that does not matter in this setup. Next you enter the name of the newsserver you want to connect to. You can get that name from your ISP, if you don't already have that.</P>
-<P>If you need to log into the news server, check the box next to "This server requires authentication", and then fill the fields for User ID and Password.</P>
-<P>Next step is to go to the Send tab. Since Receive is only there for e-mail, there is no need to do anything there. You can't even do anything in the Receive tab, for that matter. So, in Send you can select a few options:
-<UL>
-<LI>If you want a date header field added to posts</LI>
-<LI>If Sylpheed should generate a Message-ID</LI>
-<LI>If you want to add user-defined headers</LI>
-</UL>
-
-The next items only apply to when you reply to a news message through e-mail. You can set an automatic CC, BCC or Reply-To address here. In case your ISP requires SMTP authentication, you can select the checkbox here below.</P>
-<P>The next tab, Compose, allows you to select a default signature file. This will be added to each post to the newsgroups you do.</P>
-<P>Finally, in the "Advanced" tab, you can specify the port on which Sylpheed has to connect to the news server. The default is 119, and only in rare cases you should have to do something about that.</P>
-<P>Now you click "OK" and the account is created! You can verify this by checking the folder pane in Sylpheed. There you will see a new folder created with the name of the account you entered, and (news) behind it.</P>
-
-<H3>Deleting a news-server.</H3>
-
-<P>If you want to delete a news-account, right-click the news-folder and select "Remove news account". After confirming that you want this to be done, the account and all files related will be removed.</P>
-<H2><A NAME="ss16.2">16.2</A> <A HREF="sylpheed.html#toc16.2">Subscribing and Unsubscribing to NewsGroups</A>
-</H2>
-
-<P>Okay. Here the real stuff begins. First you have to let Sylpheed load the list of news groups that is on the news system. Right-click the new NEWS folder and select "Subscribe to newsgroups". Sylpheed will tell you that the groups need to be downloaded, so sit back and wait a while. Of course, during time, new groups are added, and dead groups are removed. For this you can click the "refresh" button in the newsgroup dialog, so a new list is downloaded and you are up to date</P>
-<P>After a while the groups are loaded and displayed in a window. Now you can look up a group that is interesting, for example comp.os.linux.networking. Click the name once and then select OK. The group will be added to the news folder as a subfolder. When you now click the name of the new subfolder, Sylpheed will connect to the news server and download the headers (subject lines, in e-mail talk), to your computer. Some groups have -large- amounts of articles, so this may take a while!!</P>
-
-<H2><A NAME="ss16.3">16.3</A> <A HREF="sylpheed.html#toc16.3">Reading News</A>
-</H2>
-
-<P>When the articles are displayed, in the summary view, you can click one of them to be downloaded so you can read it. This will usually go very quickly on discussion groups.</P>
-<P>If you want to respond to a message, press Alt-R (or press "Reply") and a message window will pop up, with the name of the newsgroup already in the "To" field. Depending on whether or not you selected quoting of the message, the original message will be in the body of the message already. Write away, then send, and soon the entire world will be able to read what you wrote on the subject.</P>
-<P>Starting a new message in a newsgroup is equally simple: press Alt-N (or click "New"), the name of the newsgroup is in the "To" field, and you can write your question or reply.</P>
-<H3>A note about binary files</H3>
-
-<P>In newsgroups you can download binary files. These are programs, images etc. Often these are posted as so called UUencoded files. Sylpheed will as upto version 0.5.1 not decode UUencoded files. You need to save these articles to disk as separate files, and use a separate decoder program, like juju, to decode the garble of text. A UUencoded file usually looks something like this:</P>
-<P>begin 666 sundown.jpg</P>
-<P>after which you will find nicely formatted blocks of characters that don't seem to mean anything.</P>
-<HR>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
-</BODY>
-</HTML>
+<html>
+<head>
+  <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
+  <title>Sylpheed User's Manual: NetNews</title>
+  <link href="sylpheed-17.html" rel="next">
+  <link href="sylpheed-15.html" rel="previous">
+  <link href="sylpheed.html#toc16" rel="contents">
+</head>
+<body>
+<a href="sylpheed-17.html">Next</a>
+<a href="sylpheed-15.html">Previous</a>
+<a href="sylpheed.html#toc16">Contents</a>
+<hr>
+<h2><a name="s16">14.</a> <a href="sylpheed.html#toc16">NetNews</a></h2>
+<p>What is netnews?</p>
+<p>Netnews, also called Usenet, is a collection of "news servers" that
+contain a great deal of information. News, as it is called in short,
+can be about anything. About making your own wine, about old cars or
+radios. You name it, and there probably is a newsgroup about it.</p>
+<p>This is what we will set up here. Accessing newsgroups. Note that
+this is different from e-mails. You can almost compare it to a mailing
+list, but yet the concept is a bit different.</p>
+<h2><a name="ss16.1">14.1</a> <a href="sylpheed.html#toc16.1">Adding
+and Deleting Servers</a>
+</h2>
+<h3>Adding a news server</h3>
+<p>To add a news server, go to the configuration menu and select the
+"Create new account" option.
+There you can name the news-account to anything of your liking. This is
+important, so you can identify the account later.</p>
+<p>In the BASIC tab, in the block 'personal information' you also can
+enter your own name, your e-mail address (so you can reply to news
+message by e-mail), optionally your organization (if you are organized
+at all).</p>
+<p>In the block 'Server information' you select the "News (NNTP)"
+protocol. Forget about "Inbox", that does not matter in this setup.
+Next you enter the name of the newsserver you want to connect to. You
+can get that name from your ISP, if you don't already have that.</p>
+<p>If you need to log into the news server, check the box next to "This
+server requires authentication", and then fill the fields for User ID
+and Password.</p>
+<p>Next step is to go to the Send tab. Since Receive is only there for
+e-mail, there is no need to do anything there. You can't even do
+anything in the Receive tab, for that matter. So, in Send you can
+select a few options:
+</p>
+<ul>
+  <li>If you want a date header field added to posts</li>
+  <li>If Sylpheed should generate a Message-ID</li>
+  <li>If you want to add user-defined headers</li>
+</ul>
+The next items only apply to when you reply to a news message through
+e-mail. You can set an automatic CC, BCC or Reply-To address here. In
+case your ISP requires SMTP authentication, you can select the checkbox
+here below.
+<p></p>
+<p>The next tab, Compose, allows you to select a default signature
+file. This will be added to each post to the newsgroups you do.</p>
+<p>Finally, in the "Advanced" tab, you can specify the port on which
+Sylpheed has to connect to the news server. The default is 119, and
+only in rare cases you should have to do something about that.</p>
+<p>Now you click "OK" and the account is created! You can verify this
+by checking the folder pane in Sylpheed. There you will see a new
+folder created with the name of the account you entered, and (news)
+behind it.</p>
+<h3>Deleting a news-server.</h3>
+<p>If you want to delete a news-account, right-click the news-folder
+and select "Remove news account". After confirming that you want this
+to be done, the account and all files related will be removed.</p>
+<h2><a name="ss16.2">14.2</a> <a href="sylpheed.html#toc16.2">Subscribing
+and Unsubscribing to NewsGroups</a>
+</h2>
+<p>Okay. Here the real stuff begins. First you have to let Sylpheed
+load the list of news groups that is on the news system. Right-click
+the new NEWS folder and select "Subscribe to newsgroups". Sylpheed will
+tell you that the groups need to be downloaded, so sit back and wait a
+while. Of course, during time, new groups are added, and dead groups
+are removed. For this you can click the "refresh" button in the
+newsgroup dialog, so a new list is downloaded and you are up to date</p>
+<p>After a while the groups are loaded and displayed in a window. Now
+you can look up a group that is interesting, for example
+comp.os.linux.networking. Click the name once and then select OK. The
+group will be added to the news folder as a subfolder. When you now
+click the name of the new subfolder, Sylpheed will connect to the news
+server and download the headers (subject lines, in e-mail talk), to
+your computer. Some groups have -large- amounts of articles, so this
+may take a while!!</p>
+<h2><a name="ss16.3">14.3</a> <a href="sylpheed.html#toc16.3">Reading
+News</a>
+</h2>
+<p>When the articles are displayed, in the summary view, you can click
+one of them to be downloaded so you can read it. This will usually go
+very quickly on discussion groups.</p>
+<p>If you want to respond to a message, press Alt-R (or press "Reply")
+and a message window will pop up, with the name of the newsgroup
+already in the "To" field. Depending on whether or not you selected
+quoting of the message, the original message will be in the body of the
+message already. Write away, then send, and soon the entire world will
+be able to read what you wrote on the subject.</p>
+<p>Starting a new message in a newsgroup is equally simple: press Alt-N
+(or click "New"), the name of the newsgroup is in the "To" field, and
+you can write your question or reply.</p>
+<h3>A note about binary files</h3>
+<p>In newsgroups you can download binary files. These are programs,
+images etc. Often these are posted as so called UUencoded files.
+Sylpheed will as upto version 0.5.1 not decode UUencoded files. You
+need to save these articles to disk as separate files, and use a
+separate decoder program, like juju, to decode the garble of text. A
+UUencoded file usually looks something like this:</p>
+<p>begin 666 sundown.jpg</p>
+<p>after which you will find nicely formatted blocks of characters that
+don't seem to mean anything.</p>
+<hr>
+<a href="sylpheed-17.html">Next</a>
+<a href="sylpheed-15.html">Previous</a>
+<a href="sylpheed.html#toc16">Contents</a>
+</body>
+</html>
