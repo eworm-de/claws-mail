@@ -1131,8 +1131,8 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 						(NORMAL_FONT);
 		if (font_desc) {
 			gtk_widget_modify_font(textview->text, font_desc);
-			pango_font_description_free(font_desc);
 			CHANGE_TAG_FONT("header", font_desc);
+			pango_font_description_free(font_desc);
 		}
 		if (bold_font_desc) {
 			pango_font_description_set_weight

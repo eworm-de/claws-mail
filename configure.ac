@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=14
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=7
+EXTRA_VERSION=8
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -367,8 +367,8 @@ AC_SUBST(GTK_LIBS)
 
 dnl GNU/Aspell is used for spell checking
 AC_ARG_ENABLE(aspell,
-	[  --enable-aspell         Enable GNU/aspell support [default=no]],
-	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=no])
+	[  --disable-aspell         Disable GNU/aspell support [default=yes]],
+	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=yes])
 AC_MSG_CHECKING([whether to use GNU/aspell])
 if test $ac_cv_enable_aspell = yes; then
 	AC_MSG_RESULT(yes)
@@ -459,8 +459,8 @@ LIBS="$LIBS $LIBRESOLV"
 dnl for LDAP support in addressbook
 dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
-	[  --enable-ldap           Enable LDAP support [default=no]],
-	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
+	[  --disable-ldap         Do not build LDAP support [default=yes]],
+	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=yes])
 AC_MSG_CHECKING([whether to use LDAP])
 if test x"$ac_cv_enable_ldap" = xno; then
 	AC_MSG_RESULT(no)
@@ -501,9 +501,8 @@ else
 	AC_MSG_RESULT($ac_cv_have_tls)
 
 	if test "$ac_cv_enable_ldap" = yes; then
-		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
-		LDAP_LIBS="$LDAP_LIBS -lldap `$GLIB_CONFIG --libs gthread`"
 		AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
+		LDAP_LIBS="$LDAP_LIBS -lldap"
 		AC_SUBST(LDAP_LIBS)
 		if test "$ac_cv_have_tls" = yes; then
 			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
@@ -514,8 +513,8 @@ fi
 dnl for JPilot support in addressbook
 dnl no check for libraries; these are dynamically loaded
 AC_ARG_ENABLE(jpilot,
-	[  --enable-jpilot         Enable JPilot support [default=no]],
-	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=no])
+	[  --disable-jpilot         Enable JPilot support [default=yes]],
+	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=yes])
 AC_MSG_CHECKING([whether to use JPilot])
 if test "$ac_cv_enable_jpilot" = yes; then
 	AC_MSG_RESULT(yes)

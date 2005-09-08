@@ -1,3 +1,10 @@
+2005-09-08 [colin]	1.9.14cvs8
+
+	* configure.ac
+		Build LDAP and JPilot by default if available
+	* src/textview.c
+		Fix use after free
+
 2005-09-08 [paul]	1.9.14cvs7
 
 	* doc/manual/en/sylpheed-1.html
