@@ -191,7 +191,8 @@ void toolbar_set_compose_button               (Toolbar		 *toolbar,
 void main_window_destroy_all                  (void);
 
 void main_window_toggle_work_offline          (MainWindow        *mainwin, 
-                                               gboolean           offline);
+                                               gboolean           offline,
+					       gboolean		  ask_sync);
 
 /* public so it can be disabled from summaryview */
 gboolean mainwindow_key_pressed		      (GtkWidget 	 *widget, 

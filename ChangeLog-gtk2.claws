@@ -1,3 +1,26 @@
+2005-09-08 [colin]	1.9.14cvs9
+
+	* src/compose.c
+        	Alert when we can't save draft
+        	Fix various wrap/color issues
+        	Add mid-click pasting respecting wrap_paste option
+	* src/folder.c
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/imap_gtk.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/news.c
+	* src/news_gtk.c
+	* src/news_gtk.h
+	* src/prefs_folder_item.c
+        	Fix the impossibility to synchronise folders for
+        	offline use (IMAP and NNTP are concerned)
+
 2005-09-08 [colin]	1.9.14cvs8
 
 	* configure.ac

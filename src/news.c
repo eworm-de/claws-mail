@@ -131,6 +131,7 @@ gint news_post_stream			 (Folder 	*folder,
 static gchar *news_folder_get_path	 (Folder	*folder);
 gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
+static void news_synchronise		 (FolderItem	*item);
 
 static FolderClass news_class;
 
@@ -154,6 +155,7 @@ FolderClass *news_get_class(void)
 		news_class.get_msginfo = news_get_msginfo;
 		news_class.get_msginfos = news_get_msginfos;
 		news_class.fetch_msg = news_fetch_msg;
+		news_class.synchronise = news_synchronise;
 	};
 
 	return &news_class;
@@ -1123,4 +1125,9 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 gboolean news_scan_required(Folder *folder, FolderItem *item)
 {
 	return TRUE;
+}
+
+void news_synchronise(FolderItem *item) 
+{
+	news_gtk_synchronise(item);
 }

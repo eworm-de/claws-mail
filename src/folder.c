@@ -3559,6 +3559,50 @@ void folder_item_update_thaw(void)
 	}
 }
 
+static void folder_item_synchronise_func(FolderItem *item, gpointer data)
+{
+	Folder *folder = (Folder *)data;
+	if (folder == NULL || item->folder == folder) {
+		if(item->prefs->offlinesync && item->folder->klass->synchronise)
+			item->folder->klass->synchronise(item);
+	}
+}
+
+void folder_synchronise(Folder *folder)
+{
+	folder_func_to_all_folders(folder_item_synchronise_func, folder);
+}
+
+typedef struct _WantSyncData {
+	Folder *folder;
+	gboolean want_sync;
+} WantSyncData;
+
+static void folder_item_want_synchronise_func(FolderItem *item, gpointer data)
+{
+	WantSyncData *want_sync_data = (WantSyncData *)data;
+	
+	if (want_sync_data->folder == NULL || item->folder == want_sync_data->folder) {
+		if(item->prefs->offlinesync && item->folder->klass->synchronise)
+			want_sync_data->want_sync = TRUE;
+		else
+			want_sync_data->want_sync = FALSE;
+	}
+}
+
+gboolean folder_want_synchronise(Folder *folder)
+{
+	WantSyncData *want_sync_data = g_new0(WantSyncData, 1);
+	gboolean result;
+	want_sync_data->folder = folder;
+	
+	folder_func_to_all_folders(folder_item_want_synchronise_func, want_sync_data);
+	result = want_sync_data->want_sync;
+	g_free(want_sync_data);
+	debug_print("Folder %s wants sync: %d\n", folder->name, result);
+	return result;
+}
+
 void folder_item_set_batch (FolderItem *item, gboolean batch)
 {
 	if (item->folder->klass->set_batch) {

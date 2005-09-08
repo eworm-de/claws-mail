@@ -97,6 +97,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"newmailcheck", "TRUE", &tmp_prefs.newmailcheck, P_BOOL,
 	 NULL, NULL, NULL},
+	{"offlinesync", "FALSE", &tmp_prefs.offlinesync, P_BOOL,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -195,6 +197,7 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->processing = NULL;
 
 	prefs->newmailcheck = TRUE;
+	prefs->offlinesync = FALSE;
 
 	return prefs;
 }
@@ -250,6 +253,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
         tmp_prefs.enable_processing             = src->prefs->enable_processing;
 	tmp_prefs.newmailcheck                  = src->prefs->newmailcheck;
+	tmp_prefs.offlinesync                  = src->prefs->offlinesync;
 
 	prefs_matcher_read_config();
 

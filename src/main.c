@@ -437,9 +437,9 @@ int main(int argc, char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 #endif
 	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
-		main_window_toggle_work_offline(mainwin, TRUE);
+		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
-		main_window_toggle_work_offline(mainwin, FALSE);
+		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
 
 	if (cmd.status_folders) {
 		g_ptr_array_free(cmd.status_folders, TRUE);
@@ -993,9 +993,9 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "send", 4)) {
 		send_queue();
 	} else if (!strncmp(buf, "online", 6)) {
-		main_window_toggle_work_offline(mainwin, FALSE);
+		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
 	} else if (!strncmp(buf, "offline", 7)) {
-		main_window_toggle_work_offline(mainwin, TRUE);
+		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
  	} else if (!strncmp(buf, "status-full", 11) ||
  		   !strncmp(buf, "status", 6)) {
  		gchar *status;

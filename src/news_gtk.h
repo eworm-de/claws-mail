@@ -20,7 +20,13 @@
 #ifndef NEWS_GTK_H
 #define NEWS_GTK_H
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include "folder.h"
+
 void news_gtk_init(void);
 gboolean news_gtk_should_override(void);
-
+void news_gtk_synchronise(FolderItem *item);
 #endif /* NEWS_GTK_H */

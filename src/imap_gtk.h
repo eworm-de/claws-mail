@@ -20,9 +20,16 @@
 #ifndef IMAP_GTK_H
 #define IMAP_GTK_H
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+
 #include <glib.h>
+#include "folder.h"
 
 void imap_gtk_init(void);
+void imap_gtk_synchronise(FolderItem *item);
 gboolean imap_gtk_should_override(void);
 
 #endif /* IMAP_GTK_H */

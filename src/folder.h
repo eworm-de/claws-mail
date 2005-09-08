@@ -572,6 +572,7 @@ struct _FolderClass
 	void		(*set_batch)		(Folder		*folder,
 						 FolderItem	*item,
 						 gboolean	 batch);
+	void		(*synchronise)		(FolderItem	*item);
 };
 
 struct _FolderItem
@@ -808,4 +809,7 @@ void folder_item_update_freeze		(void);
 void folder_item_update_thaw		(void);
 void folder_item_set_batch		(FolderItem *item, gboolean batch);
 gboolean folder_has_parent_of_type	(FolderItem *item, SpecialFolderItemType type);
+void folder_synchronise			(Folder *folder);
+gboolean folder_want_synchronise	(Folder *folder);
+
 #endif /* __FOLDER_H__ */

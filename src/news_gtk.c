@@ -46,13 +46,15 @@ static void news_settings_cb(FolderView *folderview, guint action, GtkWidget *wi
 static void remove_news_server_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void sync_cb(FolderView *folderview, guint action, GtkWidget *widget);
 
 static GtkItemFactoryEntry news_popup_entries[] =
 {
 	{N_("/_Subscribe to newsgroup..."),	NULL, subscribe_newsgroup_cb,    0, NULL},
 	{N_("/_Unsubscribe newsgroup"),		NULL, unsubscribe_newsgroup_cb,  0, NULL},
 	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
-	{N_("/Down_load"),			NULL, download_cb,               0, NULL},
+	{N_("/Synchronise"),			NULL, sync_cb,      	0, NULL},
+	{N_("/Down_load messages"),		NULL, download_cb,               0, NULL},
 	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
 	{N_("/_Check for new messages"),	NULL, update_tree_cb,            0, NULL},
 	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
@@ -319,21 +321,23 @@ static void update_tree_cb(FolderView *folderview, guint action,
 	folderview_check_new(item->folder);
 }
 
-static void download_cb(FolderView *folderview, guint action,
-			GtkWidget *widget)
+static void sync_cb(FolderView *folderview, guint action,
+			   GtkWidget *widget)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	MainWindow *mainwin = folderview->mainwin;
 	FolderItem *item;
 
-	if (!folderview->selected) return;
+	item = folderview_get_selected_item(folderview);
+	g_return_if_fail(item != NULL);
+	folder_synchronise(item->folder);
+}
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+void news_gtk_synchronise(FolderItem *item)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	FolderView *folderview = mainwin->folderview;
+	
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-
-	if (prefs_common.work_offline && !news_gtk_should_override())
-		return;
 
 	main_window_cursor_wait(mainwin);
 	inc_lock();
@@ -354,4 +358,16 @@ static void download_cb(FolderView *folderview, guint action,
 	main_window_unlock(mainwin);
 	inc_unlock();
 	main_window_cursor_normal(mainwin);
+}
+
+static void download_cb(FolderView *folderview, guint action,
+			GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	news_gtk_synchronise(item);
 }

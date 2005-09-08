@@ -1525,6 +1525,7 @@ void compose_reedit(MsgInfo *msginfo)
 			strcrchomp(buf);
 			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
 		}
+		compose_wrap_all_full(compose, FALSE);
 		compose->autowrap = prev_autowrap;
 		fclose(fp);
 	}
@@ -3101,22 +3102,27 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 				goto colorize;
 			}
 			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
-			startq_offset = gtk_text_iter_get_offset(&iter);
+			if (startq_offset == -1) 
+				startq_offset = gtk_text_iter_get_offset(&iter);
 		} else {
 			if (startq_offset == -1)
 				noq_offset = gtk_text_iter_get_offset(&iter);
 		}
 
-		if (prev_autowrap == FALSE && !force) {
+		if (prev_autowrap == FALSE && !force && !wrap_quote) {
 			goto colorize;
 		}
 		if (compose_get_line_break_pos(buffer, &iter, &break_pos,
 					       prefs_common.linewrap_len,
 					       quote_len)) {
 			GtkTextIter prev, next, cur;
-
-			gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 			
+			if (prev_autowrap != FALSE || force)
+				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
+			else if (quote_str && wrap_quote)
+				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
+			else 
+				goto colorize;
 			/* remove trailing spaces */
 			cur = break_pos;
 			gtk_text_iter_backward_char(&cur);
@@ -4831,6 +4837,20 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 	g_free(path);
 }
 
+static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, gboolean wrap,
+				  GdkAtom clip);
+static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
+                                       Compose *compose)
+{
+	if (event->button == 2) {
+		entry_paste_clipboard(compose, compose->focused_editable, 
+				prefs_common.linewrap_pastes,
+				GDK_SELECTION_PRIMARY);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 {
 	Compose   *compose;
@@ -5016,6 +5036,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	g_signal_connect(G_OBJECT(buffer), "insert_text",
 			 G_CALLBACK(text_inserted), compose);
+	g_signal_connect(G_OBJECT(text), "button_press_event",
+			 G_CALLBACK(text_clicked), compose);
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 
@@ -6527,6 +6549,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		g_unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;
+		if (action != COMPOSE_AUTO_SAVE)
+			alertpanel_error(_("Could not save draft."));
 		return;
 	}
 	g_free(tmp);
@@ -6782,17 +6806,16 @@ static void entry_copy_clipboard(GtkWidget *entry)
 			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
-static void entry_paste_clipboard(GtkWidget *entry, gboolean wrap)
+static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, 
+				  gboolean wrap, GdkAtom clip)
 {
-	if (GTK_IS_EDITABLE(entry))
-		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
-	else if (GTK_IS_TEXT_VIEW(entry)) {
+	if (GTK_IS_TEXT_VIEW(entry)) {
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry));
 		GtkTextMark *mark_start = gtk_text_buffer_get_insert(buffer);
 		GtkTextIter start_iter, end_iter;
 		gint start, end;
 		
-		gchar *contents = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+		gchar *contents = gtk_clipboard_wait_for_text(gtk_clipboard_get(clip));
 
 		if (contents == NULL)
 			return;
@@ -6809,9 +6832,16 @@ static void entry_paste_clipboard(GtkWidget *entry, gboolean wrap)
 			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
 			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
 			gtk_text_buffer_apply_tag_by_name(buffer, "no_wrap", &start_iter, &end_iter);
+		} else if (wrap && clip == GDK_SELECTION_PRIMARY) {
+			mark_start = gtk_text_buffer_get_insert(buffer);
+			gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
+			gtk_text_iter_backward_char(&start_iter);
+			compose_beautify_paragraph(compose, &start_iter, TRUE);
 		}
 		
-	}
+	} else if (GTK_IS_EDITABLE(entry))
+		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
+	
 }
 
 static void entry_allsel(GtkWidget *entry)
@@ -6880,7 +6910,9 @@ static void compose_paste_cb(Compose *compose)
 	BLOCK_WRAP();
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		entry_paste_clipboard(compose->focused_editable, prefs_common.linewrap_pastes);
+		entry_paste_clipboard(compose, compose->focused_editable, 
+				prefs_common.linewrap_pastes,
+				GDK_SELECTION_CLIPBOARD);
 	UNBLOCK_WRAP();
 }
 
@@ -6900,7 +6932,9 @@ static void compose_paste_as_quote_cb(Compose *compose)
 				    "paste_as_quotation",
 				    GINT_TO_POINTER(paste_as_quotation + 1));
 		prefs_common.linewrap_quote = prefs_common.linewrap_pastes;
-		entry_paste_clipboard(compose->focused_editable, prefs_common.linewrap_pastes);
+		entry_paste_clipboard(compose, compose->focused_editable, 
+				prefs_common.linewrap_pastes,
+				GDK_SELECTION_CLIPBOARD);
 		prefs_common.linewrap_quote = wrap_quote;
 	}
 }
@@ -6912,7 +6946,8 @@ static void compose_paste_no_wrap_cb(Compose *compose)
 	BLOCK_WRAP();
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		entry_paste_clipboard(compose->focused_editable, FALSE);
+		entry_paste_clipboard(compose, compose->focused_editable, FALSE,
+			GDK_SELECTION_CLIPBOARD);
 	UNBLOCK_WRAP();
 }
 
@@ -6923,7 +6958,8 @@ static void compose_paste_wrap_cb(Compose *compose)
 	BLOCK_WRAP();
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		entry_paste_clipboard(compose->focused_editable, TRUE);
+		entry_paste_clipboard(compose, compose->focused_editable, TRUE,
+			GDK_SELECTION_CLIPBOARD);
 	UNBLOCK_WRAP();
 }
 

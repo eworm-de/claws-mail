@@ -428,6 +428,9 @@ static void addr_harvest_cb	 ( MainWindow  *mainwin,
 static void addr_harvest_msg_cb	 ( MainWindow  *mainwin,
 				   guint       action,
 				   GtkWidget   *widget );
+static void sync_cb		 ( MainWindow *mainwin, 
+				   guint action, 
+				   GtkWidget *widget );
 
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
@@ -676,6 +679,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, inc_cancel_cb, 0, NULL},
 	{N_("/_Message/Recei_ve/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Send queued messages"), NULL, send_queue_cb, 0, NULL},
+	{N_("/_Message/Synchronise folders"),   "<control><shift>S", sync_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
@@ -791,6 +795,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
 
+static gboolean offline_ask_sync = TRUE;
+
 static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
                                             GObject *arg1,
                                             guint value,
@@ -887,8 +893,8 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	ifactory = gtk_item_factory_from_widget(menubar);
 
-	menu_set_sensitive(ifactory, "/Help/Manual (Local)", manual_available(MANUAL_MANUAL_LOCAL));
-	menu_set_sensitive(ifactory, "/Help/FAQ (Local)", manual_available(MANUAL_FAQ_LOCAL));
+	menu_set_sensitive(ifactory, "/Help/Manual", manual_available(MANUAL_MANUAL_LOCAL));
+	menu_set_sensitive(ifactory, "/Help/FAQ", manual_available(MANUAL_FAQ_LOCAL));
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
@@ -2590,17 +2596,45 @@ static void separate_widget_cb(MainWindow *mainwin, guint action,
 	prefs_common.sep_msg    = (type & SEPARATE_MESSAGE) != 0;
 }
 
-void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline)
+void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline,
+					gboolean ask_sync)
 {
+	offline_ask_sync = ask_sync;
 	if (offline)
 		online_switch_clicked (GTK_BUTTON(mainwin->online_switch), mainwin);
 	else
 		online_switch_clicked (GTK_BUTTON(mainwin->offline_switch), mainwin);
+	offline_ask_sync = TRUE;
 }
 
 static void toggle_work_offline_cb (MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	main_window_toggle_work_offline(mainwin, GTK_CHECK_MENU_ITEM(widget)->active);
+	main_window_toggle_work_offline(mainwin, GTK_CHECK_MENU_ITEM(widget)->active, TRUE);
+}
+
+static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
+{
+	GList *folderlist = folder_get_list();
+	gboolean found = FALSE;
+
+	/* see if there are synchronised folders */
+	for (; folderlist; folderlist = folderlist->next) {
+		Folder *folder = (Folder *)folderlist->data;
+		if (folder_want_synchronise(folder)) {
+			found = TRUE;
+			break;
+		}
+	}
+	
+	if (!found)
+		return;
+		
+	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
+			_("Do you want to synchronise your folders now?"),
+			GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+		return;
+
+	folder_synchronise(NULL);
 }
 
 static void online_switch_clicked (GtkButton *btn, gpointer data) 
@@ -2619,6 +2653,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
 		/* go offline */
+		mainwindow_check_synchronise(mainwin, TRUE);
 		gtk_widget_hide (mainwin->online_switch);
 		gtk_widget_show (mainwin->offline_switch);
 		menuitem->active = TRUE;
@@ -3258,6 +3293,11 @@ gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 	while (gtk_events_pending()) gtk_main_iteration ();
 
 	return FALSE;
+}
+
+static void sync_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	mainwindow_check_synchronise(mainwin, FALSE);
 }
 
 /*

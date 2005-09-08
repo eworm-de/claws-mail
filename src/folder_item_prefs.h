@@ -45,6 +45,7 @@ struct _FolderItemPrefs {
 	GSList * processing;
 
 	int newmailcheck;
+	int offlinesync;
 
 	gboolean request_return_receipt;
 	gboolean enable_default_to;

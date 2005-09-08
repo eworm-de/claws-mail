@@ -72,6 +72,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_newmailcheck;
+	GtkWidget *checkbtn_offlinesync;
 
 	/* appy to sub folders */
 	GtkWidget *simplify_subject_rec_checkbtn;
@@ -79,6 +80,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
+	GtkWidget *offlinesync_rec_checkbtn;
 
 	gint	   folder_color;
 };
@@ -150,17 +152,19 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_newmailcheck;
+	GtkWidget *checkbtn_offlinesync;
 
 	GtkWidget *simplify_subject_rec_checkbtn;
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
-	
+	GtkWidget *offlinesync_rec_checkbtn;
+
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(5, 2, FALSE);
+	table = gtk_table_new(6, 2, FALSE);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
@@ -273,6 +277,28 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
+	/* Synchronise folder for offline use */
+	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
+	gtk_table_attach(GTK_TABLE(table), checkbtn_offlinesync, 0, 2,
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	
+	offlinesync_rec_checkbtn = gtk_check_button_new();
+	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+	if (item->folder && (item->folder->klass->type != F_IMAP && 
+	    item->folder->klass->type != F_NEWS)) {
+		 item->prefs->offlinesync = TRUE;
+		gtk_widget_set_sensitive(GTK_WIDGET(checkbtn_offlinesync),
+								 FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(offlinesync_rec_checkbtn),
+								 FALSE);
+	
+	}
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_offlinesync),
+								 item->prefs->offlinesync);
+	rowcount++;
+
 	gtk_widget_show_all(table);
 
 	page->table = table;
@@ -283,12 +309,14 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->folder_color_btn = folder_color_btn;
 	page->checkbtn_enable_processing = checkbtn_enable_processing;
 	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
+	page->checkbtn_offlinesync = checkbtn_offlinesync;
 
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
 	page->folder_chmod_rec_checkbtn	     = folder_chmod_rec_checkbtn;
 	page->folder_color_rec_checkbtn	     = folder_color_rec_checkbtn;
 	page->enable_processing_rec_checkbtn = enable_processing_rec_checkbtn;
 	page->newmailcheck_rec_checkbtn	     = newmailcheck_rec_checkbtn;
+	page->offlinesync_rec_checkbtn	     = offlinesync_rec_checkbtn;
 
 	page->page.widget = table;
 }
@@ -348,6 +376,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck));
 	}
 
+	if (all ||  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))) {
+		prefs->offlinesync = 
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_offlinesync));
+	}
+
 	folder_item_prefs_save_config(folder);
 }	
 
@@ -369,7 +402,8 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_chmod_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn))))
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))))
 		return TRUE;
 	else 
 		return FALSE;

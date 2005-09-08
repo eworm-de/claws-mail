@@ -283,6 +283,7 @@ static gchar imap_get_path_separator		(IMAPFolder	*folder,
 						 const gchar	*path);
 static gchar *imap_get_real_path		(IMAPFolder	*folder,
 						 const gchar	*path);
+static void imap_synchronise		(FolderItem	*item);
 
 static void imap_free_capabilities	(IMAPSession 	*session);
 
@@ -443,6 +444,7 @@ FolderClass *imap_get_class(void)
 		imap_class.change_flags = imap_change_flags;
 		imap_class.get_flags = imap_get_flags;
 		imap_class.set_batch = imap_set_batch;
+		imap_class.synchronise = imap_synchronise;
 #ifdef USE_PTREAD
 		pthread_mutex_init(&imap_mutex, NULL);
 #endif
@@ -3935,3 +3937,8 @@ FolderClass *imap_get_class(void)
 	return &imap_class;
 }
 #endif
+
+void imap_synchronise(FolderItem *item) 
+{
+	imap_gtk_synchronise(item);
+}
