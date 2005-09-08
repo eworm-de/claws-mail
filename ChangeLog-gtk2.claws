@@ -1,3 +1,16 @@
+2005-09-08 [paul]	1.9.14cvs7
+
+	* doc/manual/en/sylpheed-1.html
+	* doc/manual/en/sylpheed-18.html
+	* doc/manual/en/sylpheed-19.html
+	* doc/manual/en/sylpheed-4.html
+	* doc/manual/en/sylpheed-6.html
+	* doc/manual/en/sylpheed.html
+		a few minor updates, plus include some
+		details about plugins and their requirements
+	* src/mainwindow.c
+		minor changes to English in /View/Sort
+
 2005-09-07 [colin]	1.9.14cvs6
 
 	* doc/manual/en/sylpheed-1.html

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="GENERATOR" content="LinuxDoc-Tools 0.9.21">
-  <title>Sylpheed-Claws User's Manual: What is Sylpheed?</title>
+  <title>Sylpheed-Claws User's Manual: What is Sylpheed-Claws?</title>
   <link href="sylpheed-2.html" rel="next">
   <link href="sylpheed.html#toc1" rel="contents">
 </head>
@@ -11,7 +11,7 @@
 Previous
 <a href="sylpheed.html#toc1">Contents</a>
 <hr>
-<h2><a name="s1">1.</a> <a href="sylpheed.html#toc1">What is Sylpheed?</a></h2>
+<h2><a name="s1">1.</a> <a href="sylpheed.html#toc1">What is Sylpheed-Claws?</a></h2>
 <h2><a name="ss1.1">1.1</a> <a href="sylpheed.html#toc1.1">Introduction
 to Sylpheed-Claws.</a>
 </h2>
@@ -57,7 +57,7 @@ features</a>
   <li>Clickable URI </li>
   <li>XML-based addressbook </li>
   <li>LDAP addressbook </li>
-  <li>Jpilot addressbook (for Palm types handhelds)</li>
+  <li>Jpilot addressbook (for Palm type handhelds)</li>
   <li>Newly arrived and unread message management </li>
   <li>Multiple MH folder support </li>
   <li>Mew/Wanderlust compatible key bindings </li>
@@ -78,7 +78,78 @@ libjconv </li>
 This list is not complete, but this will at least show you the most
 common features in Sylpheed-Claws.
 <p></p>
-<h2><a name="ss1.4">1.4</a> <a href="sylpheed.html#toc1.4">Methods for
+<h2><a name="ss1.4">1.4</a> <a href="sylpheed.html#toc1.4">Plugins</a></h2>
+<ul>
+<dl>
+  <dt>Clam AntiVirus</dt>
+    <dd>Enables the scanning of message attachments in mail
+    received from a POP, IMAP or LOCAL account using Clam 
+    AntiVirus. It can optionally delete the mail or save it 
+    to a designated folder. Preferences can be found in 
+    '/Configuration/Preferences/Filtering/Clam AntiVirus'.
+    Clam AntiVirus is available from
+    <a href=http://clamav.sourceforge.net/>http://clamav.sourceforge.net/</a></dd>
+
+  <dt>Dillo HTML Viewer</dt>
+    <dd>Enables the viewing of html messages using the Dillo web
+    browser, version 0.7.0 or newer. It uses Dillo's --local
+    option by default for safe browsing. Preferences can be 
+    found in '/Configuration/Preferences/Message View/Dillo Browser'.
+    Dillo is available from
+    <a href=http://www.dillo.org/>http://www.dillo.org/<a/></dd>
+	
+  <dt>MathML Viewer</dt>
+    <dd>Enables the viewing of attachments that have the 
+    Content-Type 'text/mathml' using the GtkMathView widget
+    which is available from 
+    <a href=http://helm.cs.unibo.it/mml-widget/>http://helm.cs.unibo.it/mml-widget/</a></dd>
+
+  <dt>PGP/Core</dt>
+    <dd>Handles core PGP functions and is required by the PGP/Inline
+    and PGP/MIME plugins.
+    Uses GnuPG/GPGME, <a href=ftp://ftp.gnupg.org/gcrypt/gpgme/>ftp://ftp.gnupg.org/gcrypt/gpgme/</a></dd>
+
+  <dt>PGP/inline</dt>
+    <dd>Handles inline PGP signed and/or encrypted mails. You can
+    decrypt mails, verify signatures or sign and encrypt your
+    own mails. Uses GnuPG/GPGME, <a href=ftp://ftp.gnupg.org/gcrypt/gpgme/>ftp://ftp.gnupg.org/gcrypt/gpgme/</a></dd>
+
+  <dt>PGP/MIME</dt>
+    <dd>Handles PGP/MIME signed and/or encrypted mails. You can
+    decrypt mails, verify signatures or sign and encrypt your
+    own mails. Uses GnuPG/GPGME, <a href=ftp://ftp.gnupg.org/gcrypt/gpgme/>ftp://ftp.gnupg.org/gcrypt/gpgme/</a></dd>
+
+  <dt>SpamAssassin</dt>
+    <dd>Enables the scanning of incoming mail received from a POP,
+    IMAP or LOCAL account using SpamAssassin. It can optionally 
+    delete mail identified as spam or save it to a designated 
+    folder. Preferences can be found in '/Configuration/
+    Preferences/Filtering/SpamAssassin'.
+    SpamAssassin is available from <a href=http://spamassassin.org>http://spamassassin.org</a><br>
+    Configure option:
+    	--enable-spamassassin-plugin</dd>
+	
+  <dt>Trayicon</dt>
+    <dd>Places an icon in the system tray that indicates whether
+    you have any new mail. A tooltip also shows the current
+    new, unread and total number of messages</dd>
+</dl>
+</ul>
+
+<p>All plugins, except SpamAssassin, are built automatically
+if the required libraries are present.</p>
+
+<p>Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/
+and have a suffix of '.so'<br>
+To load a plugin go to '/Configuration/Plugins' and click
+the 'Load Plugin' button.<br>
+Select the plugin that you want and click 'OK'
+</p> 
+<p>More plugins can be found here:
+<a href=http://claws.sylpheed.org/plugins.php>http://claws.sylpheed.org/plugins.php</a></p>
+
+<p></p>
+<h2><a name="ss1.5">1.5</a> <a href="sylpheed.html#toc1.5">Methods for
 managing messages</a>
 </h2>
 <p>There are several ways to manage messages. The best known is <code>not
@@ -127,7 +198,7 @@ mailboxes and mailboxes within mailboxes.</p>
 <p>Of course, you should observe some common sense when you start
 creating mailboxes. To keep all mail in one place is not a good idea,
 but to create a maze of mailboxes is not a good idea either!</p>
-<h2><a name="ss1.5">1.5</a> <a href="sylpheed.html#toc1.5">Features
+<h2><a name="ss1.6">1.6</a> <a href="sylpheed.html#toc1.6">Features
 for the future</a>
 </h2>
 <p>This is a special chapter. As with all open source programs, many
