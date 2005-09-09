@@ -1,3 +1,11 @@
+2005-09-09 [paul]	1.9.14cvs12
+
+	* AUTHORS
+	* configure.ac
+	* po/zh_TW.Big5.po	** REMOVED **
+	* po/zh_TW.po		** ADDED **
+		updated by Wei-Lun Chao
+
 2005-09-09 [paul]	1.9.14cvs11
 
 	* src/mainwindow.c
