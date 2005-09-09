@@ -1,3 +1,8 @@
+2005-09-09 [cleroy]	1.9.14cvs10
+
+	* src/imap.c
+		Add guards
+
 2005-09-08 [colin]	1.9.14cvs9
 
 	* src/compose.c

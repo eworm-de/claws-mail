@@ -538,11 +538,15 @@ void imap_get_capabilities(IMAPSession *session)
 		return;
 
 	capabilities = imap_threaded_capability(session->folder);
+
+	if (capabilities == NULL)
+		return;
+
 	for(cur = clist_begin(capabilities->cap_list) ; cur != NULL ;
 	    cur = clist_next(cur)) {
 		struct mailimap_capability * cap = 
 			clist_content(cur);
-		if (cap->cap_data.cap_name == NULL)
+		if (!cap || cap->cap_data.cap_name == NULL)
 			continue;
 		session->capability = g_slist_append
 				(session->capability,
