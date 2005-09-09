@@ -1762,6 +1762,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (inc_is_active())
 		state |= M_INC_ACTIVE;
 
+	if (mainwin->summaryview->deleted > 0)
+		state |= M_DELAYED_FLAGS;
+
 	return state;
 }
 
@@ -1848,6 +1851,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
+		{"/Tools/Execute"                      , M_DELAYED_FLAGS},
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},

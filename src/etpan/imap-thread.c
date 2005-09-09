@@ -347,7 +347,7 @@ static void capability_run(struct etpan_thread_op * op)
 	r = mailimap_capability(param->imap, &caps);
 	
 	result->error = r;
-	result->caps = caps;
+	result->caps = (r == 0 ? caps : NULL);
 }
 
 
@@ -1024,6 +1024,14 @@ static void search_run(struct etpan_thread_op * op)
 		
 	case IMAP_SEARCH_TYPE_FLAGGED:
 		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_FLAGGED,
+							  NULL, NULL, NULL, NULL, NULL,
+							  NULL, NULL, NULL, NULL, NULL,
+							  NULL, NULL, NULL, NULL, 0,
+							  NULL, NULL, NULL, NULL, NULL,
+							  NULL, 0, NULL, NULL, NULL);
+		break;
+	case IMAP_SEARCH_TYPE_DELETED:
+		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_DELETED,
 							  NULL, NULL, NULL, NULL, NULL,
 							  NULL, NULL, NULL, NULL, NULL,
 							  NULL, NULL, NULL, NULL, 0,

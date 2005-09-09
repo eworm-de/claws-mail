@@ -990,7 +990,8 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	for (cur = file_list; cur != NULL; cur = cur->next) {
 		IMAPFlags iflags = 0;
 		guint32 new_uid = 0;
-
+		gchar *real_file = NULL;
+		gboolean file_is_tmp = FALSE;
 		fileinfo = (MsgFileInfo *)cur->data;
 
 		if (fileinfo->flags) {
@@ -1001,18 +1002,34 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			if (!MSG_IS_UNREAD(*fileinfo->flags))
 				iflags |= IMAP_FLAG_SEEN;
 		}
-
+		
+		if ((MSG_IS_QUEUED(*fileinfo->flags) || MSG_IS_DRAFT(*fileinfo->flags))
+		&& !folder_has_parent_of_type(dest, F_QUEUE)
+		&& !folder_has_parent_of_type(dest, F_DRAFT)) {
+			real_file = get_tmp_file();
+			file_is_tmp = TRUE;
+			if (procmsg_remove_special_headers(fileinfo->file, real_file) !=0) {
+				g_free(real_file);
+				g_free(destdir);
+				return -1;
+			}
+		} else 
+			real_file = g_strdup(fileinfo->file);
+		
 		if (folder_has_parent_of_type(dest, F_QUEUE) ||
 		    folder_has_parent_of_type(dest, F_OUTBOX) ||
 		    folder_has_parent_of_type(dest, F_DRAFT) ||
 		    folder_has_parent_of_type(dest, F_TRASH))
 			iflags |= IMAP_FLAG_SEEN;
 
-		ok = imap_cmd_append(session, destdir, fileinfo->file, iflags, 
+		ok = imap_cmd_append(session, destdir, real_file, iflags, 
 				     &new_uid);
 
 		if (ok != IMAP_SUCCESS) {
-			g_warning("can't append message %s\n", fileinfo->file);
+			g_warning("can't append message %s\n", real_file);
+			if (file_is_tmp)
+				g_unlink(real_file);
+			g_free(real_file);
 			g_free(destdir);
 			return -1;
 		}
@@ -1023,6 +1040,8 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 					  GINT_TO_POINTER(dest->last_num + 1));
 		if (last_uid < new_uid)
 			last_uid = new_uid;
+		if (file_is_tmp)
+			g_unlink(real_file);
 	}
 
 	g_free(destdir);
@@ -1147,7 +1166,9 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
-	if (folder == msginfo->folder->folder) {
+	if (folder == msginfo->folder->folder &&
+	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE)) {
 		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
 		return ret;
 	}
@@ -3194,7 +3215,12 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if (!MSG_IS_REPLIED(msginfo->flags) &&  (newflags & MSG_REPLIED))
 		flags_set |= IMAP_FLAG_ANSWERED;
 	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
-		flags_set |= IMAP_FLAG_ANSWERED;
+		flags_unset |= IMAP_FLAG_ANSWERED;
+
+	if (!MSG_IS_DELETED(msginfo->flags) &&  (newflags & MSG_DELETED))
+		flags_set |= IMAP_FLAG_DELETED;
+	if ( MSG_IS_DELETED(msginfo->flags) && !(newflags & MSG_DELETED))
+		flags_unset |= IMAP_FLAG_DELETED;
 
 	numlist.next = NULL;
 	numlist.data = GINT_TO_POINTER(msginfo->msgnum);
@@ -3345,8 +3371,8 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	GRelation *msgflags = stuff->msgflags;
 	IMAPSession *session;
 	GSList *sorted_list;
-	GSList *unseen = NULL, *answered = NULL, *flagged = NULL;
-	GSList *p_unseen, *p_answered, *p_flagged;
+	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL;
+	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted;
 	GSList *elem;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
@@ -3443,11 +3469,23 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			
 			flagged = g_slist_concat(flagged, uidlist);
 		}
+		
+		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
+					 imapset, &lep_uidlist);
+		if (r == MAILIMAP_NO_ERROR) {
+			GSList * uidlist;
+			
+			uidlist = imap_uid_list_from_lep(lep_uidlist);
+			mailimap_search_result_free(lep_uidlist);
+			
+			deleted = g_slist_concat(deleted, uidlist);
+		}
 	}
 
 	p_unseen = unseen;
 	p_answered = answered;
 	p_flagged = flagged;
+	p_deleted = deleted;
 
 	for (elem = sorted_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
@@ -3469,13 +3507,22 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		}
 		if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
 			flags |= MSG_REPLIED;
+		else
+			flags &= ~MSG_REPLIED;
 		if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
 			flags |= MSG_MARKED;
+		else
+			flags &= ~MSG_MARKED;
+		if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
+			flags |= MSG_DELETED;
+		else
+			flags &= ~MSG_DELETED;
 		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
 
 	imap_lep_set_free(seq_list);
 	g_slist_free(flagged);
+	g_slist_free(deleted);
 	g_slist_free(answered);
 	g_slist_free(unseen);
 	g_slist_free(sorted_list);

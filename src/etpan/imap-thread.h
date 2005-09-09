@@ -50,6 +50,7 @@ enum {
 	IMAP_SEARCH_TYPE_UNSEEN,
 	IMAP_SEARCH_TYPE_ANSWERED,
 	IMAP_SEARCH_TYPE_FLAGGED,
+	IMAP_SEARCH_TYPE_DELETED,
 };
 
 int imap_threaded_search(Folder * folder, int search_type,

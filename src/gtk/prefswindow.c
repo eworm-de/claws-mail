@@ -50,6 +50,7 @@ struct _PrefsWindow
 	GtkWidget *window;
 	GtkWidget *table1;
 	GtkWidget *scrolledwindow1;
+	GtkWidget *scrolledwindow2;
 	GtkWidget *tree_view;
 	GtkWidget *table2;
 	GtkWidget *pagelabel;
@@ -334,6 +335,8 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)
 {
 	PrefsWindow *prefswindow;
+	gint x = gdk_screen_width();
+	gint y = gdk_screen_height();
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -343,7 +346,12 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
-	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 440);
+
+	if (x < 800 && y < 600)
+		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 440);
+	else
+		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 700, 550);
+
 	gtk_window_set_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
 	gtk_window_set_resizable (GTK_WINDOW(prefswindow->window), TRUE);
@@ -383,12 +391,18 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_misc_set_alignment(GTK_MISC(prefswindow->pagelabel), 0, 0.0);
 	gtk_container_add(GTK_CONTAINER(prefswindow->labelframe), prefswindow->pagelabel);
 
+	prefswindow->scrolledwindow2 = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(prefswindow->scrolledwindow2);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
 	prefswindow->notebook = gtk_notebook_new();
 	gtk_widget_show(prefswindow->notebook);
 	gtk_notebook_set_scrollable(GTK_NOTEBOOK(prefswindow->notebook), TRUE);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->notebook, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
+					prefswindow->notebook);
+	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->scrolledwindow2, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
 
 	prefswindow->empty_page = gtk_label_new("");
 	gtk_widget_show(prefswindow->empty_page);

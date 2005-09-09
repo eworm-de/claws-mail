@@ -357,7 +357,8 @@ void prefs_spelling_init(void)
 {
 	SpellingPage *page;
 	static gchar *path[3];
-
+	const gchar* language = NULL;
+	
 	path[0] = _("Compose");
 	path[1] = _("Spell Checking");
 	path[2] = NULL;
@@ -372,15 +373,19 @@ void prefs_spelling_init(void)
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_spelling = page;
 	
+	language = g_getenv("LANG");
+	if (!strcmp(language, "POSIX") || !strcmp(language, "C"))
+		language = "en";
+	
 	if (!prefs_common.dictionary)
 		prefs_common.dictionary = g_strdup_printf("%s%s",
 						prefs_common.aspell_path,
-						g_getenv("LANG"));
+						language);
 	if (!strlen(prefs_common.dictionary)
 	||  !strcmp(prefs_common.dictionary,"(None"))
 		prefs_common.dictionary = g_strdup_printf("%s%s",
 						prefs_common.aspell_path,
-						g_getenv("LANG"));
+						language);
 	if (strcasestr(prefs_common.dictionary,".utf"))
 		*(strcasestr(prefs_common.dictionary,".utf")) = '\0';
 	if (strstr(prefs_common.dictionary,"@"))

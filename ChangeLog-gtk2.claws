@@ -1,3 +1,27 @@
+2005-09-09 [colin]	1.9.14cvs13
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Fix moving from queue or drafts to normal folders
+		Fix bug #794 (No way to delete without expunging)
+		Take flags unset by other mailers into account
+		Take deleted flag set by other mailers into account
+		Fix unsetting REPLIED flag
+		Fix crash when capabilities can't be retrieved
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Add M_DELAYED_FLAGS condition, and let the user use
+		Execute in order to be able to expunge deleted mails,
+		even if he's not in delayed execute mode
+	* src/prefs_spelling.c
+		Use 'en' dictionary by default if LANG is POSIX or C
+	* src/gtk/prefswindow.c
+		Fix bug #767 (Preferences windows expanding) by making
+		the window a bit larger when the resolution is greater
+		than 640x480, and by putting the prefs in a
+		GtkScrolledWindow.
+
 2005-09-09 [paul]	1.9.14cvs12
 
 	* AUTHORS
