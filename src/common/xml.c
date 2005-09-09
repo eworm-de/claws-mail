@@ -69,8 +69,6 @@ XMLFile *xml_open_file(const gchar *path)
 
 	g_return_val_if_fail(path != NULL, NULL);
 
-	XML_STRING_TABLE_CREATE();
-
 	newfile = g_new(XMLFile, 1);
 
 	newfile->fp = g_fopen(path, "rb");
@@ -78,6 +76,8 @@ XMLFile *xml_open_file(const gchar *path)
 		g_free(newfile);
 		return NULL;
 	}
+
+	XML_STRING_TABLE_CREATE();
 
 	newfile->buf = g_string_new(NULL);
 	newfile->bufp = newfile->buf->str;

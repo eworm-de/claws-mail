@@ -1896,15 +1896,15 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	case SORT_BY_NUMBER:
 		menu_path = "/View/Sort/by number"; break;
 	case SORT_BY_SIZE:
-		menu_path = "/View/Sort/by size"; break;
+		menu_path = "/View/Sort/by Size"; break;
 	case SORT_BY_DATE:
-		menu_path = "/View/Sort/by date"; break;
+		menu_path = "/View/Sort/by Date"; break;
 	case SORT_BY_FROM:
-		menu_path = "/View/Sort/by from"; break;
+		menu_path = "/View/Sort/by From"; break;
 	case SORT_BY_TO:
-		menu_path = "/View/Sort/by recipient"; break;
+		menu_path = "/View/Sort/by To"; break;
 	case SORT_BY_SUBJECT:
-		menu_path = "/View/Sort/by subject"; break;
+		menu_path = "/View/Sort/by Subject"; break;
 	case SORT_BY_LABEL:
 		menu_path = "/View/Sort/by color label"; break;
 	case SORT_BY_MARK:

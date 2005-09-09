@@ -1,3 +1,12 @@
+2005-09-09 [paul]	1.9.14cvs11
+
+	* src/mainwindow.c
+		fix asserts
+	* src/common/xml.c
+		delay memory allocation until file is
+		opened successfully
+		Patch by Daniel Gustafson
+
 2005-09-09 [cleroy]	1.9.14cvs10
 
 	* src/imap.c
