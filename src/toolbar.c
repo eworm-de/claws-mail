@@ -306,11 +306,6 @@ GList *toolbar_get_action_items(ToolbarType source)
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
-			if (main_items[i] == A_PRINT) {
-				g_print("$$$ descr %s, trans %s\n",
-					toolbar_text[main_items[i]].descr,
-					gettext(toolbar_text[main_items[i]].descr));
-			}
 		}	
 	}
 	else if (source == TOOLBAR_COMPOSE) {
