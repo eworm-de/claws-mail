@@ -5561,7 +5561,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	GtkTextIter iter;
 	gchar *qmark;
 	gchar *parsed_str;
-
+	gint cursor_pos = 0;
 	if (!tmpl || !tmpl->value) return;
 
 	text = GTK_TEXT_VIEW(compose->text);
@@ -5608,6 +5608,13 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 	if (replace && parsed_str) {
 		gtk_text_buffer_get_start_iter(buffer, &iter);
+		gtk_text_buffer_place_cursor(buffer, &iter);
+	}
+	
+	if (parsed_str) {
+		cursor_pos = quote_fmt_get_cursor_pos();
+		gtk_text_buffer_get_start_iter(buffer, &iter);
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 		gtk_text_buffer_place_cursor(buffer, &iter);
 	}
 
