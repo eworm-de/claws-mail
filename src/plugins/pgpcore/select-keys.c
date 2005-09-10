@@ -353,13 +353,13 @@ create_dialog (struct select_keys_s *sk)
 
     gtkut_stock_button_set_create (&bbox, 
                                    &select_btn, _("Select"),
-                                   &cancel_btn, GTK_STOCK_CANCEL,
+		   		   &other_btn, _("Other"),
 		    		   &dont_encrypt_btn, _("Don't encrypt"));
     
-    other_btn = gtk_button_new_from_stock(_("Other"));
-    GTK_WIDGET_SET_FLAGS(other_btn, GTK_CAN_DEFAULT);
-    gtk_box_pack_start(GTK_BOX(bbox), other_btn, TRUE, TRUE, 0);
-    gtk_widget_show(other_btn);
+    cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+    GTK_WIDGET_SET_FLAGS(cancel_btn, GTK_CAN_DEFAULT);
+    gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
+    gtk_widget_show(cancel_btn);
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
     gtk_widget_grab_default (select_btn);
 

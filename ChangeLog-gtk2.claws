@@ -1,3 +1,8 @@
+2005-09-10 [colin]	1.9.14cvs18
+
+	* src/plugins/pgpcore/select-keys.c
+		Better order for the buttons
+
 2005-09-10 [colin]	1.9.14cvs17
 
 	* src/compose.c
