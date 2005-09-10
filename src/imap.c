@@ -1003,17 +1003,23 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				iflags |= IMAP_FLAG_SEEN;
 		}
 		
-		if ((MSG_IS_QUEUED(*fileinfo->flags) || MSG_IS_DRAFT(*fileinfo->flags))
-		&& !folder_has_parent_of_type(dest, F_QUEUE)
-		&& !folder_has_parent_of_type(dest, F_DRAFT)) {
-			real_file = get_tmp_file();
-			file_is_tmp = TRUE;
-			if (procmsg_remove_special_headers(fileinfo->file, real_file) !=0) {
-				g_free(real_file);
-				g_free(destdir);
-				return -1;
-			}
-		} else 
+		if (fileinfo->flags) {
+			if ((MSG_IS_QUEUED(*fileinfo->flags) 
+			     || MSG_IS_DRAFT(*fileinfo->flags))
+			&& !folder_has_parent_of_type(dest, F_QUEUE)
+			&& !folder_has_parent_of_type(dest, F_DRAFT)) {
+				real_file = get_tmp_file();
+				file_is_tmp = TRUE;
+				if (procmsg_remove_special_headers(
+						fileinfo->file, 
+						real_file) !=0) {
+					g_free(real_file);
+					g_free(destdir);
+					return -1;
+				}
+			} 
+		}
+		if (real_file == NULL)
 			real_file = g_strdup(fileinfo->file);
 		
 		if (folder_has_parent_of_type(dest, F_QUEUE) ||

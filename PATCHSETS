@@ -782,3 +782,4 @@
 ( cvs diff -u -r 1.274.2.62 -r 1.274.2.63 src/mainwindow.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/common/xml.c;  ) > 1.9.14cvs11.patchset
 ( cvs diff -u -r 1.100.2.24 -r 1.100.2.25 AUTHORS;  cvs diff -u -r 1.654.2.822 -r 1.654.2.823 configure.ac;  cvs diff -u -r -1.11.2.2 -r -1.11.2.3 po/zh_TW.Big5.po;  diff -u /dev/null po/zh_TW.po;  ) > 1.9.14cvs12.patchset
 ( cvs diff -u -r 1.179.2.68 -r 1.179.2.69 src/imap.c;  cvs diff -u -r 1.274.2.63 -r 1.274.2.64 src/mainwindow.c;  cvs diff -u -r 1.39.2.5 -r 1.39.2.6 src/mainwindow.h;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/prefs_spelling.c;  cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/etpan/imap-thread.h;  cvs diff -u -r 1.12.2.20 -r 1.12.2.21 src/gtk/prefswindow.c;  ) > 1.9.14cvs13.patchset
+( cvs diff -u -r 1.179.2.69 -r 1.179.2.70 src/imap.c;  ) > 1.9.14cvs14.patchset
