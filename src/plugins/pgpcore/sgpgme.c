@@ -295,13 +295,17 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 
 gchar *sgpgme_get_encrypt_data(GSList *recp_names)
 {
-	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names);
+	SelectionResult result = KEY_SELECTION_CANCEL;
+	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names, &result);
 	gchar *ret = NULL;
 	int i = 0;
 
-	if (!keys)
-		return NULL;
-
+	if (!keys) {
+		if (result == KEY_SELECTION_DONT)
+			return g_strdup("_DONT_ENCRYPT_");
+		else
+			return NULL;
+	}
 	while (keys[i]) {
 		gpgme_subkey_t skey = keys[i]->subkeys;
 		gchar *fpr = skey->fpr;

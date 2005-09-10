@@ -73,7 +73,7 @@ struct select_keys_s {
 
     GtkSortType sort_type;
     enum col_titles sort_column;
-    
+    SelectionResult result;
 };
 
 
@@ -88,6 +88,7 @@ static gboolean key_pressed_cb (GtkWidget *widget,
                                 GdkEventKey *event, gpointer data);
 static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
+static void dont_encrypt_btn_cb (GtkWidget *widget, gpointer data);
 static void other_btn_cb (GtkWidget *widget, gpointer data);
 static void sort_keys (struct select_keys_s *sk, enum col_titles column);
 static void sort_keys_name (GtkWidget *widget, gpointer data);
@@ -124,7 +125,7 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
  * Return value: NULL on error or a list of list of recipients.
  **/
 gpgme_key_t *
-gpgmegtk_recipient_selection (GSList *recp_names)
+gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result)
 {
     struct select_keys_s sk;
 
@@ -151,6 +152,8 @@ gpgmegtk_recipient_selection (GSList *recp_names)
         sk.kset = g_realloc(sk.kset, sizeof(gpgme_key_t) * (sk.num_keys + 1));
         sk.kset[sk.num_keys] = NULL;
     }
+    if (result)
+	    *result = sk.result;
     return sk.kset;
 } 
 
@@ -291,7 +294,7 @@ create_dialog (struct select_keys_s *sk)
     GtkWidget *scrolledwin;
     GtkWidget *clist;
     GtkWidget *label;
-    GtkWidget *select_btn, *cancel_btn, *other_btn;
+    GtkWidget *select_btn, *cancel_btn, *dont_encrypt_btn, *other_btn;
     const char *titles[N_COL_TITLES];
 
     g_assert (!sk->window);
@@ -351,7 +354,12 @@ create_dialog (struct select_keys_s *sk)
     gtkut_stock_button_set_create (&bbox, 
                                    &select_btn, _("Select"),
                                    &cancel_btn, GTK_STOCK_CANCEL,
-                                   &other_btn,  _("Other"));
+		    		   &dont_encrypt_btn, _("Don't encrypt"));
+    
+    other_btn = gtk_button_new_from_stock(_("Other"));
+    GTK_WIDGET_SET_FLAGS(other_btn, GTK_CAN_DEFAULT);
+    gtk_box_pack_start(GTK_BOX(bbox), other_btn, TRUE, TRUE, 0);
+    gtk_widget_show(other_btn);
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
     gtk_widget_grab_default (select_btn);
 
@@ -359,6 +367,8 @@ create_dialog (struct select_keys_s *sk)
                       G_CALLBACK (select_btn_cb), sk);
     g_signal_connect (G_OBJECT(cancel_btn), "clicked",
                       G_CALLBACK (cancel_btn_cb), sk);
+    g_signal_connect (G_OBJECT(dont_encrypt_btn), "clicked",
+                      G_CALLBACK (dont_encrypt_btn_cb), sk);
     g_signal_connect (G_OBJECT (other_btn), "clicked",
                       G_CALLBACK (other_btn_cb), sk);
 
@@ -449,8 +459,9 @@ select_btn_cb (GtkWidget *widget, gpointer data)
         gpgme_key_ref(key);
         sk->kset[sk->num_keys] = key;
         sk->num_keys++;
-            sk->okay = 1;
-            gtk_main_quit ();
+        sk->okay = 1;
+	sk->result = KEY_SELECTION_OK;
+        gtk_main_quit ();
     }
 }
 
@@ -462,11 +473,24 @@ cancel_btn_cb (GtkWidget *widget, gpointer data)
 
     g_return_if_fail (sk);
     sk->okay = 0;
+    sk->result = KEY_SELECTION_CANCEL;
     if (sk->select_ctx)
         gpgme_cancel (sk->select_ctx);
     gtk_main_quit ();
 }
 
+static void 
+dont_encrypt_btn_cb (GtkWidget *widget, gpointer data)
+{
+    struct select_keys_s *sk = data;
+
+    g_return_if_fail (sk);
+    sk->okay = 0;
+    sk->result = KEY_SELECTION_DONT;
+    if (sk->select_ctx)
+        gpgme_cancel (sk->select_ctx);
+    gtk_main_quit ();
+}
 
 static void
 other_btn_cb (GtkWidget *widget, gpointer data)

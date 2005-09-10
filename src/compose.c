@@ -4063,14 +4063,21 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (compose->privacy_system != NULL) {
 		fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
 		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
-		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
 		if (compose->use_encryption) {
 			gchar *encdata;
 
 			encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
-			if (encdata != NULL)
-				fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", 
-					encdata);
+			if (encdata != NULL) {
+				if (strcmp(encdata, "_DONT_ENCRYPT_")) {
+					fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+					fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", 
+						encdata);
+				} /* else we finally dont want to encrypt */
+			} else {
+				fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+				/* and if encdata was null, it means there's been a problem in 
+				 * key selection */
+			}
 			g_free(encdata);
 		}
 	}

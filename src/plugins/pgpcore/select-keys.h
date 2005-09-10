@@ -22,8 +22,13 @@
 #include <glib.h>
 #include <gpgme.h>
 
-
-gpgme_key_t *gpgmegtk_recipient_selection (GSList *recp_names);
+typedef enum {
+	KEY_SELECTION_OK,
+	KEY_SELECTION_CANCEL,
+	KEY_SELECTION_DONT,
+} SelectionResult;
+	
+gpgme_key_t *gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result);
 
 
 #endif /* GPGMEGTK_SELECT_KEYS_H */

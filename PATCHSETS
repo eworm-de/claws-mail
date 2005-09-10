@@ -785,3 +785,4 @@
 ( cvs diff -u -r 1.179.2.69 -r 1.179.2.70 src/imap.c;  ) > 1.9.14cvs14.patchset
 ( cvs diff -u -r 1.43.2.24 -r 1.43.2.25 src/toolbar.c;  ) > 1.9.14cvs15.patchset
 ( cvs diff -u -r 1.382.2.163 -r 1.382.2.164 src/compose.c;  ) > 1.9.14cvs16.patchset
+( cvs diff -u -r 1.382.2.164 -r 1.382.2.165 src/compose.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/select-keys.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpcore/select-keys.h;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.14cvs17.patchset
