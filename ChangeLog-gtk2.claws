@@ -1,3 +1,17 @@
+2005-09-12 [paul]	1.9.14cvs19
+
+	* src/prefs_themes.c
+		make theme info selectable
+	* src/gtk/description_window.c
+		make window non-modal
+	* tools/README
+		add details of asus_mailed.sh
+	* tools/claws.i18n.status.pl
+		update for new zh_TW translator
+		widen the output
+		create alternate coloured lines
+		improve readability
+
 2005-09-10 [colin]	1.9.14cvs18
 
 	* src/plugins/pgpcore/select-keys.c

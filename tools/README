@@ -27,6 +27,8 @@ Mailbox conversion:
 
 Other tools:
   acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
+  asus_mailed.sh		makes the mail LED blink on new or unread mail
+				for ASUS laptops
   filter_conv.pl                Convert old-style filters to new filtering
   nautilus2sylpheed.sh		Send files from Nautilus
   OOo2sylpheed.pl               Send documents from OpenOffice.org
@@ -385,6 +387,23 @@ Other tools
 	the PDF attached.
   
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
+
+* asus_mailed.sh
+
+  WHAT IT DOES
+	When used as the new mail notification command, this script makes
+	the mail LED blink on new or unread mail for ASUS laptops with
+	asus_acpi compiled in the kernel or loaded as module.
+
+  HOW TO USE IT
+  	Make sure that the script is executable (chmod +x asus_mailed.sh)
+	Go to /Preferences/Mail Handling/Receive/
+	In the 'Run command when new mail arrives' frame select one or
+	both of the checkboxes, the enter the path to this script in the
+	'Command to execute' box.
+
+  Contact: Colin Leroy <colin@colino.net>
 
 
 * filter_conv.pl

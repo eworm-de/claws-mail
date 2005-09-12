@@ -592,6 +592,7 @@ static void prefs_themes_update_buttons(const ThemesData *tdata)
 		tmpstr = g_strdup(text);				\
 									\
 	gtk_label_set_text(GTK_LABEL(label), tmpstr);			\
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);		\
 	g_free(tmpstr);							\
 }
 static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *info)

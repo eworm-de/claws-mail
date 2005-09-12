@@ -31,7 +31,7 @@
 	'sr.po' => 'Serbian',
 	'sv.po' => 'Swedish',
 	'zh_CN.po' => 'Simpilified Chinese',
-	'zh_TW.Big5.po' => 'Taiwanese',
+	'zh_TW.po' => 'Taiwanese',
 );
 
 %lasttranslator = (
@@ -58,7 +58,7 @@
 	'sr.po' => 'urke <urke@users.sourceforge.net>',
 	'sv.po' => 'Joakim Andreasson <joakim.andreasson@gmx.net>',
 	'zh_CN.po' => 'Hansom Young <glyoung@users.sourceforge.net>',
-	'zh_TW.Big5.po' => 'Tsu-Fan Cheng <tscheng@ic.sunysb.edu>',
+	'zh_TW.po' => 'Wei-Lun Chao <chaoweilun@pcmail.com.tw>',
 );
 
 %barcolornorm = (
@@ -79,10 +79,11 @@
 	completed => 'red',
 );
 
-$barwidth = 300; # pixels
+$barwidth = 500; # pixels
 $barheight = 12; # pixels
 
-$transolddays = 90;	# days to consider a translation is old, so probably unmaintained. 
+$transolddays = 90;	# days to consider a translation is old, so probably unmaintained.
+$transoldmonths = $transolddays / 30;
 $transneedthresold = 0.75; # percent/100
 
 $msgfmt = '/usr/bin/msgfmt';
@@ -113,7 +114,7 @@ $cage = get_trans_age($year,$mon,$mday); # get current "age"
 
 # drawing a language status row
 sub print_lang {
-	my ($lang, $person, $trans, $fuzzy, $untrans, $tage) = @_;
+	my ($lang, $person, $trans, $fuzzy, $untrans, $tage, $oddeven) = @_;
 	$total = $trans + $fuzzy + $untrans;
 	if ($tage == 0) { $tage = $cage; } # hack for average translation
 	print STDERR $cage, " ",  $tage, "\n";
@@ -124,7 +125,9 @@ sub print_lang {
 	}
 	$_ = $person;
 	if (/(.+)\s+\<(.+)\>/) { $pname = $1; $pemail = $2; } else { $pname = $pemail = $contactaddress; }
-	print "<tr>\n<td>\n";
+	print "<tr";
+	if ($oddeven > 0) { print " bgcolor=#EFEFEF"; }
+	print ">\n<td>\n";
 	if ($lang eq $averagestr) {
 		print "<b>$lang</b>";
 	} else {
@@ -165,10 +168,18 @@ $numlang = keys(%langname);
 #ENDOFHEAD
 
 # start
-print "<div class=indent>\n<b>Translation Status (on $datetimenow for $genversion)</b>\n<div class=indent>\n<table cellspacing=0 cellpadding=2>\n";
+print qq ~<div class=indent>
+          <b>Translation Status (on $datetimenow for $genversion)</b>
+	  <div class=indent>
+	  	<table cellspacing=0 cellpadding=2>~;
 
 # table header
-print "<tr bgcolor=#cccccc>\n<th align=left>Language</th>\n<th>Translated|Fuzzy|Untranslated</th>\n<th>Percent</th>\n<th>\n</th>\n</tr>\n";
+print qq ~<tr bgcolor=#cccccc>
+	  <th align=left>Language</th>
+	  <th>Translated|Fuzzy|Untranslated</th>
+	  <th>Percent</th>
+	  <th></th>
+	  </tr>~;
 
 # get files
 opendir(PODIR, ".") || die("Error: can't open current directory\n");
@@ -177,7 +188,7 @@ closedir(PODIR);
 
 @sorted_pofiles = sort(@pofiles);
 # iterate them
-$alang = $atran = $afuzz = $auntr = 0;
+$alang = $atran = $afuzz = $auntr = $oddeven = 0;
 foreach $pofile (@sorted_pofiles) {
 	$_ = $pofile;
 	if (/.+\.po$/) {
@@ -202,23 +213,34 @@ foreach $pofile (@sorted_pofiles) {
 		if (/\s+(\d+)\-(\d+)\-(\d+)/) { 
 			$transage = get_trans_age($1,$2,$3); 
 		}
-		print_lang($langname{$pofile},$lasttranslator{$pofile},$tran,$fuzz,$untr,$transage);
+		print_lang($langname{$pofile},$lasttranslator{$pofile},$tran,$fuzz,$untr,$transage, $oddeven);
+		if ($oddeven == 1) { $oddeven = 0 } else { $oddeven++; } 
 	}
 }
 
 # average results for the project
 print "<tr>\n<td colspan=3 height=8></td>\n<tr>";
-print_lang($averagestr,'',$atran,$afuzz,$auntr,0);
+print_lang($averagestr,'',$atran,$afuzz,$auntr,0,0);
 	
 # table footer
 print "</table>\n";
 
 # end
 # print "<br>Number of languages supported: $alang <br>";
-print "<p>\nLanguages marked with <font size=\"+1\" color=\"red\"> *</font> really need your help to be completed.<br>";
-print "<p>The ones with grey bars are <i>probably unmaintained</i> because translation is more than ", $transolddays / 30, " months old, anyway, trying to contact current translator first is usually a good idea before submitting an updated one.<p><b>NOTE</b>: if you are the translator of one of them and don't want to see your language bar in grey you should manually update the <tt>PO-Revision-Date</tt> field in the .po file header (or, alternatively, use a tool which does it for you).<br>";
-# print "If you want to help those or contribute any new language please contact <a href=\"mailto:$contactaddress\">us</a>.";
-print "</div></div>";
+print qq ~<p>
+	  Languages marked with <font size="+1" color="red"> *</font>
+	  really need your help to be completed.
+          <p>
+	  The ones with grey bars are <i>probably unmaintained</i> because
+          translation is more than $transoldmonths months old, anyway, trying
+	  to contact current translator first is usually a good idea before
+	  submitting an updated one.<p><b>NOTE</b>: if you are the translator
+	  of one of them and don't want to see your language bar in grey you
+	  should manually update the <tt>PO-Revision-Date</tt> field in the .po
+	  file header (or, alternatively, use a tool which does it for you).
+	  <br>
+	  </div>
+	  </div>~;
 
 # print `cat $pagetail`;
 #
