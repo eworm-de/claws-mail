@@ -6420,10 +6420,26 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				      gpointer data)
 {
 	Compose *compose = (Compose *)data;
-
+	GtkTreeSelection *attach_selection;
+	gint attach_nr_selected;
+	GtkItemFactory *ifactory;
+	
 	if (!event) return FALSE;
 
 	if (event->button == 3) {
+		attach_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
+		attach_nr_selected = gtk_tree_selection_count_selected_rows(attach_selection);
+		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
+			
+		if (attach_nr_selected > 0)
+		{
+			menu_set_sensitive(ifactory, "/Remove", TRUE);
+			menu_set_sensitive(ifactory, "/Properties...", TRUE);
+		} else {
+			menu_set_sensitive(ifactory, "/Remove", FALSE);
+			menu_set_sensitive(ifactory, "/Properties...", FALSE);
+		}
+			
 		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 		return TRUE;			       

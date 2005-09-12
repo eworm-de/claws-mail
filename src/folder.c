@@ -3182,7 +3182,7 @@ static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 	else
 		tag = folder_item_get_xml(item->folder, item);
 
-	return xml_node_new(tag, NULL);;
+	return xml_node_new(tag, NULL);
 }
 
 static GNode *folder_get_xml_node(Folder *folder)

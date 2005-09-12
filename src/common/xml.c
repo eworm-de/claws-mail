@@ -583,6 +583,7 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 gint xml_file_put_xml_decl(FILE *fp)
 {
 	g_return_val_if_fail(fp != NULL, -1);
+	XML_STRING_TABLE_CREATE();
 
 	fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
 	return 0;
@@ -649,10 +650,10 @@ void xml_free_tag(XMLTag *tag)
 	XML_STRING_FREE(tag->tag);
 	while (tag->attr != NULL) {
 		XMLAttr *attr = (XMLAttr *)tag->attr->data;
-		XML_STRING_FREE(attr->name);
-		g_free(attr->value);
-		g_free(attr);
 		tag->attr = g_list_remove(tag->attr, tag->attr->data);
+		XML_STRING_FREE(attr->name);
+		XML_STRING_FREE(attr->value);
+		g_free(attr);
 	}
 	g_free(tag);
 }

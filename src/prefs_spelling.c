@@ -374,7 +374,9 @@ void prefs_spelling_init(void)
 	prefs_spelling = page;
 	
 	language = g_getenv("LANG");
-	if (!strcmp(language, "POSIX") || !strcmp(language, "C"))
+	if (language == NULL)
+		language = "en";
+	else if (!strcmp(language, "POSIX") || !strcmp(language, "C"))
 		language = "en";
 	
 	if (!prefs_common.dictionary)

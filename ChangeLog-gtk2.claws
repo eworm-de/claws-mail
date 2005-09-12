@@ -1,3 +1,18 @@
+2005-09-12 [paul]	1.9.14cvs20
+
+	* src/compose.c
+		set correct sensitivity on attachments
+		popup menu
+	* src/folder.c
+		fix typo
+	* src/prefs_spelling.c
+		fix crash when no LANG env is set
+	* src/common/xml.c
+		fix crash in wizard
+		don't use memeory after free
+
+	All patches by Daniel Gustafson
+
 2005-09-12 [paul]	1.9.14cvs19
 
 	* src/prefs_themes.c
