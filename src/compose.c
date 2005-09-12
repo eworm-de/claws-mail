@@ -7293,6 +7293,28 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 		gtk_editable_set_position(GTK_EDITABLE(widget), 
 			strlen(str));
 		g_free(str);
+		if (widget->parent && widget->parent->parent
+		 && widget->parent->parent->parent) {
+			if (GTK_IS_SCROLLED_WINDOW(widget->parent->parent->parent)) {
+				gint y = widget->allocation.y;
+				gint height = widget->allocation.height;
+				GtkAdjustment *shown = gtk_scrolled_window_get_vadjustment
+					(GTK_SCROLLED_WINDOW(widget->parent->parent->parent));
+
+				if (y < (int)shown->value) {
+					gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), y - 1);
+				}
+				if (y + height > (int)shown->value + (int)shown->page_size) {
+					if (y - height - 1 < (int)shown->upper - (int)shown->page_size) {
+						gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), 
+							y + height - (int)shown->page_size - 1);
+					} else {
+						gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), 
+							(int)shown->upper - (int)shown->page_size - 1);
+					}
+				}
+			}
+		}
 	}
 
 	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))

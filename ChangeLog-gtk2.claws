@@ -1,3 +1,15 @@
+2005-09-12 [colin]	1.9.14cvs22
+
+	* src/compose.c
+		Fix bug #448 (Scrolling/Redraw issue with 
+		address-fields in Header)
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Fix loss of MSG_MARKED on move/copy
+		Fix bug #804 (Quicksearch togglebutton doesn't 
+		get depressed after '/' key is pressed)
+
 2005-09-12 [paul]	1.9.14cvs21
 
 	* AUTHORS

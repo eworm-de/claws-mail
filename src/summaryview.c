@@ -3285,10 +3285,10 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->copied--;
 	}
 	if (!MSG_IS_MOVE(msginfo->flags)) {
-		procmsg_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_MARKED | MSG_DELETED, MSG_COPY);
+		procmsg_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_DELETED, MSG_COPY);
 		summaryview->moved++;
 	} else {
-		procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
+		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_COPY);
 	}
 	
 	if (!prefs_common.immediate_exec) {
@@ -3367,10 +3367,10 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	
 	if (!MSG_IS_COPY(msginfo->flags)) {
-		procmsg_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_MARKED | MSG_DELETED, MSG_MOVE);
+		procmsg_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_DELETED, MSG_MOVE);
 		summaryview->copied++;
 	} else {
-		procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE);
+		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE);
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
@@ -4689,6 +4689,14 @@ static void tog_searchbar_cb(GtkWidget *w, gpointer data)
 		prefs_common.show_searchbar = FALSE;
  		quicksearch_hide(summaryview->quicksearch);
 	}
+}
+
+void summaryview_activate_quicksearch(SummaryView *summaryview) 
+{
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(summaryview->toggle_search), 
+		TRUE);
+	quicksearch_show(summaryview->quicksearch);
 }
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
