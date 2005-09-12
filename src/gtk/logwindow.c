@@ -30,6 +30,8 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkstyle.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkseparatormenuitem.h>
 
 #include "logwindow.h"
 #include "utils.h"
@@ -37,16 +39,21 @@
 #include "log.h"
 #include "hooks.h"
 
-static void hide_cb			(GtkWidget	*widget,
-					 LogWindow	*logwin);
-static gboolean key_pressed		(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 LogWindow	*logwin);
-static gboolean log_window_append	(gpointer 	 source,
-					 gpointer   	 data);
-static void log_window_clip		(GtkWidget 	*text,
-					 guint		 glip_length);
-
+static void hide_cb				(GtkWidget	*widget,
+						 LogWindow	*logwin);
+static gboolean key_pressed			(GtkWidget	*widget,
+						 GdkEventKey	*event,
+						 LogWindow	*logwin);
+static gboolean log_window_append		(gpointer 	 source,
+						 gpointer   	 data);
+static void log_window_clip			(GtkWidget 	*text,
+						 guint		 glip_length);
+static void log_window_clear			(GtkWidget	*widget,
+						 LogWindow	*logwin);
+static void log_window_popup_menu_extend	(GtkTextView	*textview,
+						 GtkMenu	*menu,
+						 LogWindow	*logwin);
+					 
 LogWindow *log_window_create(void)
 {
 	LogWindow *logwin;
@@ -85,6 +92,8 @@ LogWindow *log_window_create(void)
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
+	g_signal_connect(G_OBJECT(text), "populate-popup",
+			 G_CALLBACK(log_window_popup_menu_extend), logwin);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
 
@@ -226,6 +235,9 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(logwin->window);
+	else if (event && event->keyval == GDK_Delete) 
+		log_window_clear(NULL, logwin);
+
 	return FALSE;
 }
 
@@ -251,3 +263,34 @@ static void log_window_clip(GtkWidget *textw, guint clip_length)
 		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 	}
 }
+
+static void log_window_clear(GtkWidget *widget, LogWindow *logwin)
+{
+	GtkTextView *textview = GTK_TEXT_VIEW(logwin->text);
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
+	GtkTextIter start_iter, end_iter;
+	
+	gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+	gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+	gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
+}
+
+static void log_window_popup_menu_extend(GtkTextView *textview,
+   			GtkMenu *menu, LogWindow *logwin)
+{
+	GtkWidget *menuitem;
+	
+	g_return_if_fail(menu != NULL);
+	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
+
+	menuitem = gtk_separator_menu_item_new();
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+	
+	menuitem = gtk_menu_item_new_with_mnemonic("Clear _Log");
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(log_window_clear), logwin);
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+}
+

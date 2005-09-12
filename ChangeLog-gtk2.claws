@@ -1,3 +1,10 @@
+2005-09-12 [paul]	1.9.14cvs21
+
+	* AUTHORS
+	* src/gtk/logwindow.c
+		add 'Clear Log' to popup menu
+		Patch by Anders Hammar <anders.hammar@telia.com>
+
 2005-09-12 [paul]	1.9.14cvs20
 
 	* src/compose.c
