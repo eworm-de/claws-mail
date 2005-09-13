@@ -736,7 +736,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		oldout = dup(1);
 		
 		dup2(fileno(outfp), 1);
-		
+
 		p = popen(renderer->renderer, "w");
 		if (p != NULL) {
 			size_t count;
@@ -1614,7 +1614,7 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 				       "charset") == NULL)
 			g_hash_table_insert(mimeinfo->typeparameters,
 					    g_strdup("charset"),
-					    g_strdup("us-ascii"));
+					    g_strdup(conv_get_locale_charset_str()));
 	} else {
 		gchar *type, *subtype, *params;
 
@@ -1716,7 +1716,8 @@ int procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->subtype = g_strdup("plain");
 		if (g_hash_table_lookup(mimeinfo->typeparameters,
 				       "charset") == NULL)
-			g_hash_table_insert(mimeinfo->typeparameters, g_strdup("charset"), g_strdup("us-ascii"));
+			g_hash_table_insert(mimeinfo->typeparameters, g_strdup("charset"), 
+				g_strdup(conv_get_locale_charset_str()));
 	}
 
 	if (content_encoding != NULL) {

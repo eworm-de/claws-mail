@@ -549,6 +549,8 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 				       {"X-Mailing-list:", NULL, TRUE},
 				       {"List-Id:",        NULL, TRUE},
 				       {"X-Sequence:",	   NULL, TRUE},
+				       {"Sender:",	   NULL, TRUE},
+				       {"List-Post:",	   NULL, TRUE},
 				       {NULL,		   NULL, FALSE}};
 	enum
 	{
@@ -557,7 +559,9 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 		H_X_LIST         = 2,
 		H_X_MAILING_LIST = 3,
 		H_LIST_ID	 = 4,
-		H_X_SEQUENCE	 = 5
+		H_X_SEQUENCE	 = 5,
+		H_SENDER	 = 6,
+		H_LIST_POST	 = 7
 	};
 
 	FILE *fp;
@@ -610,6 +614,13 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 				}
 			}
 			g_strstrip(*key);
+		} else if (hentry[H_SENDER].body != NULL) {
+			SET_FILTER_KEY("header \"Sender\"", H_SENDER);
+		} else if (hentry[H_LIST_POST].body != NULL) {
+			SET_FILTER_KEY("header \"Sender\"", H_LIST_POST);
+		} else if (msginfo->to) {
+			*header = g_strdup("to");
+			*key = g_strdup(msginfo->to);
 		} else if (msginfo->subject) {
 			*header = g_strdup("subject");
 			*key = g_strdup(msginfo->subject);
@@ -627,6 +638,10 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 		hentry[H_X_MAILING_LIST].body = NULL;
 		g_free(hentry[H_LIST_ID].body);
 		hentry[H_LIST_ID].body = NULL;
+		g_free(hentry[H_SENDER].body);
+		hentry[H_SENDER].body = NULL;
+		g_free(hentry[H_LIST_POST].body);
+		hentry[H_LIST_POST].body = NULL;
 
 		break;
 	case FILTER_BY_FROM:

@@ -2078,7 +2078,19 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		lastp = strchr(p, '\n');
 		len = lastp ? lastp - p + 1 : -1;
 
-		gtk_text_buffer_insert(buffer, &iter, p, len);
+		if (g_utf8_validate(p, -1, NULL)) { 
+			gtk_text_buffer_insert(buffer, &iter, p, len);
+		} else {
+			gchar *tmpin = g_strdup(p);
+			gchar *tmpout = NULL;
+			tmpin[len] = '\0';
+			tmpout = conv_codeset_strdup
+				(tmpin, conv_get_locale_charset_str(),
+				 CS_INTERNAL);
+			gtk_text_buffer_insert(buffer, &iter, tmpout, -1);
+			g_free(tmpin);
+			g_free(tmpout);
+		}
 
 		if (lastp)
 			p = lastp + 1;

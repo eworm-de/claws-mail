@@ -808,9 +808,11 @@ static void set_sug_mode_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
 {
 	char *themode;
 	
-	gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar **) &themode);
+	themode = (char *) gtk_label_get_text(GTK_LABEL(GTK_BIN(w)->child));
+	themode = g_strdup(themode);
 	
 	set_real_sug_mode(gtkaspell, themode);
+	g_free(themode);
 
 	if (gtkaspell->config_menu)
 		populate_submenu(gtkaspell, gtkaspell->config_menu);
@@ -1258,7 +1260,8 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 
-	gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar**) &newword);
+	newword = (unsigned char *) gtk_label_get_text(GTK_LABEL(GTK_BIN(w)->child));
+	newword = g_strdup(newword);
 
 	replace_real_word(gtkaspell, newword);
 
@@ -1275,6 +1278,7 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
 
 	set_point_continue(gtkaspell);
+	g_free(newword);
 }
 
 static void replace_real_word(GtkAspell *gtkaspell, gchar *newword)

@@ -852,7 +852,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GTK_WIDGET_SET_FLAGS (btn_more, GTK_CAN_DEFAULT);
 	/* make it look like an uri */
 	gtk_button_set_relief(GTK_BUTTON(btn_more), GTK_RELIEF_NONE);
-	gtk_label_get(GTK_LABEL(GTK_BIN(btn_more)->child), &buf);
+	buf = gtk_label_get_text(GTK_LABEL(GTK_BIN(btn_more)->child));
 	buf = g_strdup(buf);
 	for (i = 0; buf[i] != '\0'; buf[i++] = '_');
 	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(btn_more)->child), buf);

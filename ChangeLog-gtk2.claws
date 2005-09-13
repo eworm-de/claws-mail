@@ -1,3 +1,20 @@
+2005-09-13 [colin]	1.9.14cvs23
+
+	* src/compose.c
+		Test utf8 compliance before inserting to 
+		buffer, and try to convert if necessary
+	* src/procmime.c
+		If no charset is present, use the locale 
+		one instead of us-ascii
+	* src/procmsg.c
+		Add Sender, List-Post and To in the checked 
+		headers for automatic rules creation 
+		(thanks to wwp)
+	* src/prefs_themes.c
+	* src/gtk/gtkaspell.c
+		Remove deprecated functions. 
+		patch by Daniel Gustafson
+
 2005-09-12 [colin]	1.9.14cvs22
 
 	* src/compose.c
