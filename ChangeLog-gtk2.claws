@@ -1,3 +1,10 @@
+2005-09-13 [colin]	1.9.14cvs24
+
+	* src/gtk/gtkaspell.c
+		Fix non-utf8 in menu
+		Fix little leaks
+		Nullify struct members after free()s
+
 2005-09-13 [colin]	1.9.14cvs23
 
 	* src/compose.c

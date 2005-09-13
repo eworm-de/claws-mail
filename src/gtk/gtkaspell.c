@@ -325,6 +325,7 @@ void gtkaspell_checkers_quit(void)
 
 		g_slist_foreach(checkers, free_checkers, NULL);
 		g_slist_free(checkers);
+		gtkaspellcheckers->checkers = NULL;
 	}
 
 	if ((dict_list = gtkaspellcheckers->dictionary_list)) {
@@ -336,7 +337,7 @@ void gtkaspell_checkers_quit(void)
 	}
 
 	g_free(gtkaspellcheckers->error_message);
-
+	gtkaspellcheckers->error_message = NULL;
 	return;
 }
 
@@ -470,6 +471,7 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 		free_suggestions_list(gtkaspell);
 
 	g_free((gchar *)gtkaspell->dictionary_path);
+	gtkaspell->dictionary_path = NULL;
 
 	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 
@@ -1924,10 +1926,14 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	g_signal_connect(G_OBJECT(menu), "cancel",
 			 G_CALLBACK(cancel_menu_cb), gtkaspell);
 
+	utf8buf  = conv_codeset_strdup((unsigned char*)l->data,
+				conv_get_locale_charset_str(),
+				CS_UTF_8);
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
-				  (unsigned char*) l->data, 
+				  utf8buf, 
 				  gtkaspell->gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(caption);
+	g_free(utf8buf);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(item)->child), 0.5, 0.5);
@@ -2016,6 +2022,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 							conv_get_locale_charset_str(),
 							CS_UTF_8);
 			item = gtk_menu_item_new_with_label(utf8buf);
+			g_free(utf8buf);
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			g_signal_connect(G_OBJECT(item), "activate",
@@ -2299,6 +2306,7 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 	    dict == gtkaspell->alternate_speller->dictionary) {
 		use_alternate_dict(gtkaspell);
 		dictionary_delete(dict);
+		gtkaspell->alternate_speller->dictionary = NULL;
 		return TRUE;
 	}
 	
@@ -2480,7 +2488,7 @@ static void free_suggestions_list(GtkAspell *gtkaspell)
 	     list = list->next)
 		g_free(list->data);
 
-	g_list_free(list);
+	g_list_free(gtkaspell->suggestions_list);
 	
 	gtkaspell->max_sug          = -1;
 	gtkaspell->suggestions_list = NULL;
