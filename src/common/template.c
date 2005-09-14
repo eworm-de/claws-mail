@@ -109,15 +109,16 @@ void template_clear_config(GSList *tmpl_list)
 	g_slist_free(tmpl_list);
 }
 
-int tmpl_compare(Template *tmpl1, Template *tmpl2)
+gint tmpl_compare(gconstpointer tmpl1, gconstpointer tmpl2)
 {
-	if (tmpl1 == NULL || tmpl2 == NULL)
+	if ((Template *)tmpl1 == NULL || (Template *)tmpl2 == NULL)
 		return 0;
 
-	if (tmpl1->name == NULL || tmpl2->name == NULL)
+	if (((Template *)tmpl1)->name == NULL || ((Template *)tmpl2)->name == NULL)
 		return 0;
 
-	return strcmp(tmpl1->name, tmpl2->name);
+	return (gint) strcmp((char *)((Template *)tmpl1)->name, 
+			     (char *)((Template *)tmpl2)->name);
 }
 
 GSList *template_read_config(void)

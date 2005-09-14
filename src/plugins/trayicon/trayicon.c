@@ -76,7 +76,7 @@ typedef enum
 	TRAYICON_NEWMARKED,
 	TRAYICON_UNREAD,
 	TRAYICON_UNREADMARKED,
-	TRAYICON_NOTHING,
+	TRAYICON_NOTHING
 } TrayIconType;
 
 static void trayicon_get_cb	    (gpointer data, guint action, GtkWidget *widget);
@@ -136,7 +136,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 
 static void update(void)
 {
-	gint new, unread, unreadmarked, marked, total;
+	guint new, unread, unreadmarked, marked, total;
 	gchar *buf;
 	TrayIconType icontype = TRAYICON_NOTHING;
 

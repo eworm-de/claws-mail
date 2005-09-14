@@ -95,7 +95,7 @@ typedef enum
 	F_MOVE_FAILED_DEST_IS_PARENT = -1,
 	F_MOVE_FAILED_DEST_IS_CHILD = -2,
 	F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX = -3,
-	F_MOVE_FAILED = -4,
+	F_MOVE_FAILED = -4
 } FolderItemMoveResult;
 
 typedef enum
@@ -104,7 +104,7 @@ typedef enum
 	FOLDER_REMOVE_FOLDER 		= 1 << 1,
 	FOLDER_TREE_CHANGED 		= 1 << 2,
 	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
-	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
+	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4
 } FolderUpdateFlags;
 
 typedef enum
@@ -113,7 +113,7 @@ typedef enum
 	F_ITEM_UPDATE_CONTENT = 1 << 1,
 	F_ITEM_UPDATE_ADDMSG = 1 << 2,
 	F_ITEM_UPDATE_REMOVEMSG = 1 << 3,
-	F_ITEM_UPDATE_NAME = 1 << 4,
+	F_ITEM_UPDATE_NAME = 1 << 4
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,

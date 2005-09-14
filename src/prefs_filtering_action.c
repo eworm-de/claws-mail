@@ -898,13 +898,13 @@ static void prefs_filtering_action_up(void)
 {
 	GtkTreePath *prev, *sel, *try;
 	GtkTreeIter isel;
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter iprev;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(filtering_action.action_list_view)),
-		 (GtkTreeModel **) &store,	
+		 (GtkTreeModel **)(GtkListStore *) store,	
 		 &isel))
 		return;
 
@@ -939,14 +939,14 @@ static void prefs_filtering_action_up(void)
  */
 static void prefs_filtering_action_down(void)
 {
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter next, sel;
 	GtkTreePath *try;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(filtering_action.action_list_view)),
-		 (GtkTreeModel **) &store,
+		 (GtkTreeModel **)(GtkListStore *) store,
 		 &sel))
 		return;
 

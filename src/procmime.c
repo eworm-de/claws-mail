@@ -1571,7 +1571,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		gchar *charset, *lang, *oldvalue, *newvalue;
 
 		attribute = (gchar *) cur->data;
-		if (!g_hash_table_lookup_extended(table, attribute, (gpointer *) &key, (gpointer *) &value))
+		if (!g_hash_table_lookup_extended(
+			table, attribute, (gpointer *)(gchar *) &key, (gpointer *)(gchar *) &value))
 			continue;
 
 		charset = value;

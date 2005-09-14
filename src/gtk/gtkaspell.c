@@ -437,19 +437,19 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	return gtkaspell;
 }
 
-void gtkaspell_delete(GtkAspell * gtkaspell) 
+void gtkaspell_delete(GtkAspell *gtkaspell) 
 {
 	GtkTextView *gtktext = gtkaspell->gtktext;
 	
         g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
 					     G_CALLBACK(entry_insert_cb),
-				      gtkaspell);
+					     gtkaspell);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
 					     G_CALLBACK(entry_delete_cb),
-				      	     gtkaspell);
+					     gtkaspell);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
-                                      	     G_CALLBACK(button_press_intercept_cb),
-				      	     gtkaspell);
+					     G_CALLBACK(button_press_intercept_cb),
+					     gtkaspell);
 
 	gtkaspell_uncheck_all(gtkaspell);
 	
@@ -898,7 +898,7 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, guchar *word)
 		elements    = aspell_word_list_elements(suggestions);
 		list        = g_list_append(list, g_strdup(word)); 
 		
-		while (newword = aspell_string_enumeration_next(elements))
+		while ((newword = aspell_string_enumeration_next(elements)) != NULL)
 			list = g_list_append(list, g_strdup(newword));
 
 		gtkaspell->max_sug          = g_list_length(list) - 1;

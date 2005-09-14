@@ -171,7 +171,7 @@ set_row (GtkCList *clist, gpgme_key_t key)
     const char *text[N_COL_TITLES];
     char *algo_buf;
     int row;
-    gssize by_read = 0, by_written = 0;
+    gsize by_read = 0, by_written = 0;
     gchar *ret_str;
 
     /* first check whether the key is capable of encryption which is not

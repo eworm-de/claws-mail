@@ -875,7 +875,7 @@ void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *ne
 {
 	gchar *orig_key = NULL, *value;
 
-	if (g_hash_table_lookup_extended(account->privacy_prefs, id, (gpointer *) &orig_key, (gpointer *) &value)) {
+	if (g_hash_table_lookup_extended(account->privacy_prefs, id, (gpointer *)(gchar *) &orig_key, (gpointer *)(gchar *) &value)) {
 		g_hash_table_remove(account->privacy_prefs, id);
 
 		g_free(orig_key);

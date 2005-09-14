@@ -28,7 +28,7 @@ typedef enum {
 	SIGNATURE_OK,
 	SIGNATURE_WARN,
 	SIGNATURE_INVALID,
-	SIGNATURE_CHECK_FAILED,
+	SIGNATURE_CHECK_FAILED
 } SignatureStatus;
 
 #include <glib.h>

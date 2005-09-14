@@ -561,13 +561,13 @@ static void prefs_custom_header_up(void)
 {
 	GtkTreePath *prev, *sel;
 	GtkTreeIter isel;
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter iprev;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(customhdr.list_view)),
-		 (GtkTreeModel **) &store,
+		 (GtkTreeModel **)(GtkListStore *) store,
 		 &isel))
 		return;
 
@@ -594,13 +594,13 @@ static void prefs_custom_header_up(void)
 
 static void prefs_custom_header_down(void)
 {
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter next, sel;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(customhdr.list_view)),
-		 (GtkTreeModel **) &store,
+		 (GtkTreeModel **)(GtkListStore *) store,
 		 &sel))
 		return;
 

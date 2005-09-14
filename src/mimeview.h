@@ -38,7 +38,7 @@ typedef struct _MimeViewer 		MimeViewer;
 typedef enum
 {
 	MIMEVIEW_TEXT,
-	MIMEVIEW_VIEWER,
+	MIMEVIEW_VIEWER
 } MimeViewType;
 
 struct _MimeView

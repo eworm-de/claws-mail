@@ -33,7 +33,7 @@ typedef enum {
 	A_IMAP4,
 	A_NNTP,
 	A_LOCAL,
-	A_NONE,		/* SMTP only */
+	A_NONE		/* SMTP only */
 } RecvProtocol;
 
 typedef enum {

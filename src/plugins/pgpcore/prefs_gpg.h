@@ -23,7 +23,7 @@ typedef struct GPGAccountConfig GPGAccountConfig;
 typedef enum {
 	SIGN_KEY_DEFAULT,
 	SIGN_KEY_BY_FROM,
-	SIGN_KEY_CUSTOM,
+	SIGN_KEY_CUSTOM
 } SignKeyType;
 
 #include "prefs_account.h"

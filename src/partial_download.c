@@ -108,7 +108,8 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, tmp) < 2) {
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, 
+			   tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {
@@ -197,7 +198,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		sprintf(partial_recv,"0");
 		
 		if (sscanf(buf, "%s\t%ld\t%s", 
-			   uidl, &recv_time, partial_recv) < 2) {
+			   uidl, (long int *) &recv_time, partial_recv) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {
@@ -206,7 +207,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		}
 		if (strcmp(tinfo->partial_recv, uidl)) {
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, recv_time, partial_recv);
+				uidl, (long int) recv_time, partial_recv);
 		} else {
 			gchar *stat = NULL;
 			if (download == POP3_PARTIAL_DLOAD_DLOAD) {
@@ -222,7 +223,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 				stat = g_strdup("0");
 			
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, recv_time, stat);
+				uidl, (long int) recv_time, stat);
 			g_free(stat);
 		}
 	}
@@ -365,7 +366,8 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, tmp) < 2) {
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, 
+			   tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {

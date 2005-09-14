@@ -1,3 +1,45 @@
+2005-09-14 [paul]	1.9.14cvs26
+
+	* src/addrcache.c
+	* src/codeconv.h
+	* src/folder.h
+	* src/mainwindow.h
+	* src/mh.c
+	* src/mimeview.h
+	* src/partial_download.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_toolbar.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.h
+	* src/textview.c
+	* src/undo.h
+	* src/common/plugin.c
+	* src/common/session.h
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/template.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/quicksearch.h
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/prefs_gpg.h
+	* src/plugins/pgpcore/select-keys.c
+	* src/plugins/pgpcore/select-keys.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/trayicon/trayicon.c
+		fix compilation warnings
+		Patch by Daniel Gustafson
+
 2005-09-14 [paul]	1.9.14cvs25
 
 	* src/addressbook.c

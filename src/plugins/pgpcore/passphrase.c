@@ -320,7 +320,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
 
 void gpgmegtk_free_passphrase()
 {
-    (void)free_passphrase(NULL); // could be inline
+    (void)free_passphrase(NULL); /* could be inline */
 }
 
 #endif /* USE_GPGME */

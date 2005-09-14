@@ -42,7 +42,7 @@ typedef enum
 	CONN_ESTABLISHED,
 	CONN_LOOKUPFAILED,
 	CONN_FAILED,
-	CONN_DISCONNECTED,
+	CONN_DISCONNECTED
 } ConnectionState;
 
 typedef gint (*SockConnectFunc)		(SockInfo	*sock,

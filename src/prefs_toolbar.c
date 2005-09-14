@@ -574,13 +574,13 @@ static void prefs_toolbar_up(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
 	GtkTreePath *prev, *sel;
 	GtkTreeIter isel;
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter iprev;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(prefs_toolbar->list_view_set)),
-		 (GtkTreeModel **) &store,	
+		 (GtkTreeModel **)(GtkListStore *) store,	
 		 &isel))
 		return;
 
@@ -606,13 +606,13 @@ static void prefs_toolbar_up(GtkButton *button, ToolbarPage *prefs_toolbar)
 
 static void prefs_toolbar_down(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkListStore *store;
+	GtkListStore *store = NULL;
 	GtkTreeIter next, sel;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(prefs_toolbar->list_view_set)),
-		 (GtkTreeModel **) &store,
+		 (GtkTreeModel **)(GtkListStore *) store,
 		 &sel))
 		return;
 

@@ -671,7 +671,6 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 #else
 	gint sock;
 #endif
-	SockInfo *sockinfo;
 
 #ifdef INET6
 	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0)

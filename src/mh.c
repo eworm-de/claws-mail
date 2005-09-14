@@ -189,16 +189,16 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 		(s.st_mtime - 3600 != item->mtime)) {
 		debug_print("MH scan required, folder updated: %s (%ld > %ld)\n",
 			    path,
-			    s.st_mtime,
-			    item->mtime);
+			    (long int) s.st_mtime,
+			    (long int) item->mtime);
 		g_free(path);
 		return TRUE;
 	}
 
 	debug_print("MH scan not required: %s (%ld <= %ld)\n",
 		    path,
-		    s.st_mtime,
-		    item->mtime);
+		    (long int) s.st_mtime,
+		    (long int) item->mtime);
 	g_free(path);
 	return FALSE;
 }

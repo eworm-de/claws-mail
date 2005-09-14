@@ -50,21 +50,21 @@ typedef enum
 	MIMETYPE_APPLICATION,
 	MIMETYPE_MESSAGE,
 	MIMETYPE_MULTIPART,
-	MIMETYPE_UNKNOWN,
+	MIMETYPE_UNKNOWN
 } MimeMediaType;
 
 typedef enum
 {
 	DISPOSITIONTYPE_INLINE,
 	DISPOSITIONTYPE_ATTACHMENT,
-	DISPOSITIONTYPE_UNKNOWN,
+	DISPOSITIONTYPE_UNKNOWN
 } DispositionType;
 
 typedef enum
 {
 	MIMECONTENT_EMPTY,
 	MIMECONTENT_FILE,		/* the file contains all content including sub parts */
-	MIMECONTENT_MEM,
+	MIMECONTENT_MEM
 } MimeContent;
 
 #include <glib.h>

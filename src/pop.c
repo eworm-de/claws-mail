@@ -599,8 +599,8 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, tmp) < 3) {
-			if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, tmp) < 3) {
+			if (sscanf(buf, "%s\t%ld", uidl, (long int *) &recv_time) != 2) {
 				if (sscanf(buf, "%s", uidl) != 1)
 					continue;
 				else {
@@ -663,7 +663,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 		if (msg->uidl && msg->received &&
 		    (!msg->deleted || session->state != POP3_DONE))
 			fprintf(fp, "%s\t%ld\t%d\n", 
-				msg->uidl, msg->recv_time, msg->partial_recv);
+				msg->uidl, (long int) msg->recv_time, msg->partial_recv);
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");

@@ -119,7 +119,6 @@ static const gchar *get_validity_str(unsigned long validity)
 gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gpgme_signature_t sig = NULL;
-	gpgme_user_id_t user = NULL;
 	gchar *uname = NULL;
 	gpgme_key_t key;
 
@@ -247,10 +246,10 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	g_unlink(tmp_file);
 	g_free(tmp_file);
 
-	debug_print("data %p (%d %d)\n", data, mimeinfo->offset, mimeinfo->length);
+	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
 	if (err) {
 		debug_print ("gpgme_data_new_from_file failed: %s\n",
-                   gpgme_strerror (err));
+			     gpgme_strerror (err));
 		return NULL;
 	}
 	return data;

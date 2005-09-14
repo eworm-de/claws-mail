@@ -280,7 +280,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	PrivacyDataPGP *data = NULL;
 	gpgme_ctx_t ctx;
 	gchar *chars;
-	int len;
+	size_t len;
 
 	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
 		return NULL;

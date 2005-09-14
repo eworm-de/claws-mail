@@ -342,7 +342,7 @@ void addrcache_print( AddressCache *cache, FILE *stream ) {
 	fprintf( stream, "cache id : %s\n",  cache->cacheID );
 	fprintf( stream, "next id  : %d\n",  cache->nextID );
 	fprintf( stream, "name     : %s\n",  cache->name );
-	fprintf( stream, "mod time : %ld\n", cache->modifyTime );
+	fprintf( stream, "mod time : %ld\n", (long int)cache->modifyTime );
 	fprintf( stream, "modified : %s\n",  cache->modified ? "yes" : "no" );
 	fprintf( stream, "data read: %s\n",  cache->dataRead ? "yes" : "no" );
 }
