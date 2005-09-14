@@ -1,3 +1,10 @@
+2005-09-14 [paul]	1.9.14cvs29
+
+	* src/prefs_account.c
+		disable 'Filter messages on receiving' for
+		SMTP-only accounts
+		Patch  by Anders Hammar
+
 2005-09-14 [paul]	1.9.14cvs28
 
 	* po/sk.po

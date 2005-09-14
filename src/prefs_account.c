@@ -2732,6 +2732,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_show(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
@@ -2740,6 +2741,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 		
 		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				TRUE);
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
 				 FALSE);
@@ -2806,6 +2810,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
@@ -2817,6 +2822,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				TRUE);
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
 				 TRUE);
@@ -2886,6 +2894,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_show(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
@@ -2897,6 +2906,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				TRUE);
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
 				 FALSE);
@@ -2967,6 +2979,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, FALSE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
 
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
@@ -2975,7 +2988,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		/* update pop_before_smtp sensitivity */
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
-		
+	
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), FALSE);
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn), FALSE);
 
@@ -3045,6 +3060,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
@@ -3055,6 +3071,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 		
 		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				TRUE);
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
 				 TRUE);
