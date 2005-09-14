@@ -1,3 +1,18 @@
+2005-09-14 [paul]	1.9.14cvs27
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+	* src/compose.c
+	* src/compose.h
+		associate no_wrap_tags to Compose windows
+		instead of using a static one
+		Patch by Colin
+	* src/mbox.c
+		fix proc_mbox()
+		Patch by wwp
+	* src/textview.c
+		remove unneeded printf()
+
 2005-09-14 [paul]	1.9.14cvs26
 
 	* src/addrcache.c

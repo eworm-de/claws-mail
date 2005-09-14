@@ -785,8 +785,6 @@ static GdkColor uri_color = {
 	(gushort)0
 };
 
-static GtkTextTag *no_wrap_tag = NULL;
-
 static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
@@ -815,7 +813,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
  	gtk_text_buffer_create_tag(buffer, "link",
 					 "foreground-gdk", &uri_color,
 					 NULL);
-	no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
+	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -3100,7 +3098,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		gchar *o_walk = NULL, *walk = NULL, *bp = NULL, *ep = NULL;
 		gint walk_pos;
 		
-		if (gtk_text_iter_has_tag(&iter, no_wrap_tag) && !force)
+		if (gtk_text_iter_has_tag(&iter, compose->no_wrap_tag) && !force)
 			goto colorize;
 
 		uri_start = uri_stop = -1;

@@ -214,6 +214,8 @@ struct _Compose
 	gboolean remove_references;
 
 	guint draft_timeout_tag;
+	
+	GtkTextTag *no_wrap_tag;
 };
 
 struct _AttachInfo

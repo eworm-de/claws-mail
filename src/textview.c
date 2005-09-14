@@ -738,7 +738,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		charset = textview->messageview->forced_charset;
 	else
 		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-printf("charset %s\n", charset);
+
 	textview_set_font(textview, charset);
 
 	conv = conv_code_converter_new(charset);

@@ -129,9 +129,10 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		g_snprintf(from_line, sizeof(from_line),
 			   "Return-Path: %s\n", rpath);
 		g_free(rpath);
-		*/
 
 		FPUTS_TO_TMP_ABORT_IF_FAIL(from_line);
+		*/
+
 		FPUTS_TO_TMP_ABORT_IF_FAIL(buf);
 		from_line[0] = '\0';
 
