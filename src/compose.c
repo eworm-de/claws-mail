@@ -4856,13 +4856,45 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, gboolean wrap,
 				  GdkAtom clip);
+
+#define BLOCK_WRAP() {							\
+	prev_autowrap = compose->autowrap;				\
+	buffer = gtk_text_view_get_buffer(				\
+					GTK_TEXT_VIEW(compose->text));	\
+	compose->autowrap = FALSE;					\
+									\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+#define UNBLOCK_WRAP() {						\
+	compose->autowrap = prev_autowrap;				\
+	if (compose->autowrap)						\
+		compose_wrap_all(compose);				\
+									\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+
+
 static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
                                        Compose *compose)
 {
+	gint prev_autowrap;
+	GtkTextBuffer *buffer;
 	if (event->button == 2) {
+		BLOCK_WRAP();
 		entry_paste_clipboard(compose, compose->focused_editable, 
 				prefs_common.linewrap_pastes,
 				GDK_SELECTION_PRIMARY);
+		UNBLOCK_WRAP();
 		return TRUE;
 	}
 	return FALSE;
@@ -4934,6 +4966,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		geometry.max_width = gdk_screen_width();
 		geometry.max_height = gdk_screen_height();
 	}
+
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MAX_SIZE);
 	if (!geometry.min_width) {
@@ -6915,32 +6948,6 @@ static void compose_copy_cb(Compose *compose)
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
 		entry_copy_clipboard(compose->focused_editable);
-}
-
-#define BLOCK_WRAP() {							\
-	prev_autowrap = compose->autowrap;				\
-	buffer = gtk_text_view_get_buffer(				\
-					GTK_TEXT_VIEW(compose->text));	\
-	compose->autowrap = FALSE;					\
-									\
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(compose_changed_cb),		\
-				compose);				\
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(text_inserted),		\
-				compose);				\
-}
-#define UNBLOCK_WRAP() {						\
-	compose->autowrap = prev_autowrap;				\
-	if (compose->autowrap)						\
-		compose_wrap_all(compose);				\
-									\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(compose_changed_cb),		\
-				compose);				\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(text_inserted),		\
-				compose);				\
 }
 
 static void compose_paste_cb(Compose *compose)

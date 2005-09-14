@@ -798,3 +798,4 @@
 ( cvs diff -u -r 1.60.2.13 -r 1.60.2.14 po/es.po;  cvs diff -u -r 1.382.2.168 -r 1.382.2.169 src/compose.c;  cvs diff -u -r 1.50.2.10 -r 1.50.2.11 src/compose.h;  cvs diff -u -r 1.28.2.7 -r 1.28.2.8 src/mbox.c;  cvs diff -u -r 1.96.2.75 -r 1.96.2.76 src/textview.c;  ) > 1.9.14cvs27.patchset
 ( cvs diff -u -r 1.2.2.14 -r 1.2.2.15 po/sk.po;  ) > 1.9.14cvs28.patchset
 ( cvs diff -u -r 1.105.2.33 -r 1.105.2.34 src/prefs_account.c;  ) > 1.9.14cvs29.patchset
+( cvs diff -u -r 1.382.2.169 -r 1.382.2.170 src/compose.c;  ) > 1.9.14cvs30.patchset
