@@ -102,12 +102,18 @@
 
 typedef enum
 {
+	COL_SOURCES	= 0,
+	N_INDEX_COLS	= 1
+} AddressIndexColumns;
+
+typedef enum
+{
 	COL_NAME	= 0,
 	COL_ADDRESS	= 1,
-	COL_REMARKS	= 2
-} AddressBookColumnPos;
+	COL_REMARKS	= 2,
+	N_LIST_COLS	= 3
+} AddressListColumns;
 
-#define N_COLS	3
 #define COL_NAME_WIDTH		164
 #define COL_ADDRESS_WIDTH	156
 
@@ -420,14 +426,14 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/New _Group"),	"<control>G",	addressbook_new_group_cb,       0, NULL},
 	{N_("/_Address/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Address/_Mail To"),	NULL,		addressbook_mail_to_cb,         0, NULL},
-	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
+	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Tools/Import _LDIF file..."), NULL,	addressbook_import_ldif_cb,	0, NULL},
 	{N_("/_Tools/Import M_utt file..."), NULL,	addressbook_import_mutt_cb,	0, NULL},
 	{N_("/_Tools/Import _Pine file..."), NULL,	addressbook_import_pine_cb,	0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Tools/Export _HTML..."), NULL,           addressbook_export_html_cb,	0, NULL},
 	{N_("/_Tools/Export LDI_F..."), NULL,           addressbook_export_ldif_cb,	0, NULL},
-	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
+	{N_("/_Help"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
 
@@ -704,18 +710,19 @@ static void addressbook_create(void)
 	gint n_entries;
 	GList *nodeIf;
 
-	gchar *titles[N_COLS];
-	gchar *dummy_titles[1];
+	gchar *index_titles[N_INDEX_COLS];
+	gchar *list_titles[N_LIST_COLS];
 	gchar *text;
 	gint i;
 
 	debug_print("Creating addressbook window...\n");
 
-	titles[COL_NAME]    = _("Name");
-	titles[COL_ADDRESS] = _("E-Mail address");
-	titles[COL_REMARKS] = _("Remarks");
-	dummy_titles[0]     = "";
+	index_titles[COL_SOURCES] = _("Sources");
+	list_titles[COL_NAME]    = _("Name");
+	list_titles[COL_ADDRESS] = _("E-Mail address");
+	list_titles[COL_REMARKS] = _("Remarks");
 
+	/* Address book window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_widget_set_size_request(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
@@ -728,9 +735,10 @@ static void addressbook_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
+	/* Menu bar */
 	n_entries = sizeof(addressbook_entries) /
 		sizeof(addressbook_entries[0]);
 	menubar = menubar_create(window, addressbook_entries, n_entries,
@@ -738,8 +746,8 @@ static void addressbook_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	menu_factory = gtk_item_factory_from_widget(menubar);
 
-	vbox2 = gtk_vbox_new(FALSE, 4);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+	vbox2 = gtk_vbox_new(FALSE, BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 
 	ctree_swin = gtk_scrolled_window_new(NULL, NULL);
@@ -749,7 +757,7 @@ static void addressbook_create(void)
 	gtk_widget_set_size_request(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
 
 	/* Address index */
-	ctree = gtk_sctree_new_with_titles(1, 0, dummy_titles);
+	ctree = gtk_sctree_new_with_titles(N_INDEX_COLS, 0, index_titles);
 	gtk_container_add(GTK_CONTAINER(ctree_swin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), 0, COL_FOLDER_WIDTH);
@@ -794,7 +802,7 @@ static void addressbook_create(void)
 	gtk_box_pack_start(GTK_BOX(clist_vbox), clist_swin, TRUE, TRUE, 0);
 
 	/* Address list */
-	clist = gtk_sctree_new_with_titles(N_COLS, 0, titles);
+	clist = gtk_sctree_new_with_titles(N_LIST_COLS, 0, list_titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
 	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_EXTENDED);
 	gtk_ctree_set_line_style(GTK_CTREE(clist), GTK_CTREE_LINES_NONE);
@@ -807,7 +815,7 @@ static void addressbook_create(void)
 	gtk_clist_set_compare_func(GTK_CLIST(clist),
 				   addressbook_list_compare_func);
 
-	for (i = 0; i < N_COLS; i++)
+	for (i = 0; i < N_LIST_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button,
 				       GTK_CAN_FOCUS);
 
@@ -2772,7 +2780,7 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 	AddressTypeControlItem *atci = addrbookctl_lookup( ADDR_ITEM_EMAIL );
 	for( ; items != NULL; items = g_list_next( items ) ) {
 		GtkCTreeNode *nodeEMail = NULL;
-		gchar *text[N_COLS];
+		gchar *text[N_LIST_COLS];
 		ItemEMail *email = items->data;
 		ItemPerson *person;
 		gchar *str = NULL;
@@ -2808,7 +2816,7 @@ static void addressbook_folder_load_one_person(
 {
 	GtkCTreeNode *nodePerson = NULL;
 	GtkCTreeNode *nodeEMail = NULL;
-	gchar *text[N_COLS];
+	gchar *text[N_LIST_COLS];
 	gboolean flgFirst = TRUE, haveAddr = FALSE;
 	GList *node;
 
@@ -2945,7 +2953,7 @@ static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFold
 	items = addritem_folder_get_group_list( itemFolder );
 	for( ; items != NULL; items = g_list_next( items ) ) {
 		GtkCTreeNode *nodeGroup = NULL;
-		gchar *text[N_COLS];
+		gchar *text[N_LIST_COLS];
 		ItemGroup *group = items->data;
 		if( group == NULL ) continue;
 		text[COL_NAME] = ADDRITEM_NAME(group);

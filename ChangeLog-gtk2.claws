@@ -1,3 +1,10 @@
+2005-09-14 [paul]	1.9.14cvs25
+
+	* src/addressbook.c
+		add missing column header, and other small
+		bug fixes
+		Patch by Anders Hammar
+
 2005-09-13 [colin]	1.9.14cvs24
 
 	* src/gtk/gtkaspell.c
