@@ -1,3 +1,17 @@
+2005-09-15 [paul]	1.9.14cvs31
+
+	* src/prefs_actions.c
+	* src/prefs_filtering_action.c
+	* src/prefs_quote.c
+	* src/quote_fmt.c
+	* src/summaryview.c
+	* src/gtk/description_window.c
+	* src/gtk/description_window.h
+	* src/gtk/quicksearch.c
+		allow interaction with the called
+		description window
+		Patch by Anders Hammar
+
 2005-09-14 [paul]	1.9.14cvs30
 
 	* src/compose.c

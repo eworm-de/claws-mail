@@ -71,15 +71,17 @@ static gchar *quote_desc_strings[] = {
 };
 
 static DescriptionWindow quote_desc_win = { 
-        NULL, 
+        NULL,
+	NULL,
         2,
         N_("Description of symbols"),
         quote_desc_strings
 };
 
 
-void quote_fmt_quote_description(void)
+void quote_fmt_quote_description(GtkWidget *widget, GtkWidget *pref_window)
 {
+	quote_desc_win.parent = pref_window;
 	description_window_create(&quote_desc_win);
 }
 

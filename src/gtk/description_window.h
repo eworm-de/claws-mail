@@ -25,6 +25,7 @@ typedef struct _DescriptionWindow DescriptionWindow;
 struct _DescriptionWindow
 {
 	GtkWidget 	* window;
+	GtkWidget	* parent;
 	/** Number of columns for each line of data **/
 	int		  columns;
 	/** title of the window **/

@@ -30,20 +30,31 @@
 #include "description_window.h"
 #include "gtkutils.h"
 
-static void description_create			(DescriptionWindow *dwindow);
-static gboolean description_window_key_pressed	(GtkWidget *widget,
-						 GdkEventKey *event,
-						 gpointer data);
+static void description_create				(DescriptionWindow *dwindow);
+static gboolean description_window_key_pressed		(GtkWidget *widget,
+						 	 GdkEventKey *event,
+							 gpointer data);
+static gboolean description_window_focus_in_event	(GtkWidget *widget,
+							 GdkEventFocus *event,
+							 gpointer data);
+static gboolean description_window_focus_out_event	(GtkWidget *widget,
+							 GdkEventFocus *event,
+							 gpointer data);
+
 
 void description_window_create(DescriptionWindow *dwindow)
 {
-	if (!dwindow->window)
+	if (!dwindow->window) {
 		description_create(dwindow);
-
-	manage_window_set_transient(GTK_WINDOW(dwindow->window));
-	gtk_widget_show(dwindow->window);
-	gtk_main();
-	gtk_widget_hide(dwindow->window);
+	
+		gtk_window_set_transient_for(GTK_WINDOW(dwindow->window), GTK_WINDOW(dwindow->parent));
+	
+		gtk_widget_show(dwindow->window);
+		gtk_main();
+		gtk_widget_hide(dwindow->window);
+		gtk_widget_destroy(dwindow->window);
+		dwindow->window = NULL; 
+	} else printf("windows exist\n");
 }
 
 static void description_create(DescriptionWindow * dwindow)
@@ -137,6 +148,10 @@ static void description_create(DescriptionWindow * dwindow)
 			 G_CALLBACK(gtk_main_quit), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",
 		 	 G_CALLBACK(description_window_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(dwindow->window), "focus_in_event",
+			 G_CALLBACK(description_window_focus_in_event), NULL);
+	g_signal_connect(G_OBJECT(dwindow->window), "focus_out_event",
+			 G_CALLBACK(description_window_focus_out_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "delete_event",
 			 G_CALLBACK(gtk_main_quit), NULL);
 
@@ -144,11 +159,32 @@ static void description_create(DescriptionWindow * dwindow)
 }
 
 static gboolean description_window_key_pressed(GtkWidget *widget,
-					   GdkEventKey *event,
-					   gpointer data)
+				 	       GdkEventKey *event,
+					       gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_main_quit();
 	return FALSE;
 }
+
+static gboolean description_window_focus_in_event (GtkWidget *widget,
+						   GdkEventFocus *event,
+						   gpointer data)
+{
+	if (gtk_grab_get_current != widget)
+		gtk_grab_add(GTK_WINDOW(widget));
+
+	return FALSE;
+}
+
+static gboolean description_window_focus_out_event (GtkWidget *widget,
+						   GdkEventFocus *event,
+						   gpointer data)
+{
+	gtk_grab_remove(GTK_WINDOW(widget));
+		
+	return FALSE;
+}
+
+
 

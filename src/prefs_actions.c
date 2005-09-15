@@ -77,7 +77,7 @@ static gint prefs_actions_clist_set_row	(GtkTreeIter *row);
 
 /* callback functions */
 static void prefs_actions_help_cb	(GtkWidget	*w,
-					 gpointer	 data);
+					 GtkWidget	*window);
 static void prefs_actions_register_cb	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_substitute_cb	(GtkWidget	*w,
@@ -261,7 +261,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(help_button);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(help_button), "clicked",
-			 G_CALLBACK(prefs_actions_help_cb), NULL);
+			 G_CALLBACK(prefs_actions_help_cb), GTK_WINDOW(window));
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -776,15 +776,17 @@ static gchar *actions_desc_strings[] = {
 
 
 static DescriptionWindow actions_desc_win = { 
-        NULL, 
-        2,
-        N_("Description of symbols"),
+	NULL,
+	NULL,
+	2,
+	N_("Description of symbols"),
         actions_desc_strings
 };
 
 
-static void prefs_actions_help_cb(GtkWidget *w, gpointer data)
+static void prefs_actions_help_cb(GtkWidget *w, GtkWidget *window)
 {
+	actions_desc_win.parent = window;
 	description_window_create(&actions_desc_win);
 }
 

@@ -1055,6 +1055,7 @@ static gchar *exec_desc_strings[] = {
 };
 
 static DescriptionWindow exec_desc_win = { 
+	NULL,
         NULL, 
         2,
         N_("Description of symbols"),

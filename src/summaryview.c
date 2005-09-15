@@ -1630,9 +1630,12 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 
 static guint summary_get_msgnum(SummaryView *summaryview, GtkCTreeNode *node)
 {
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTree *ctree =NULL;
 	MsgInfo *msginfo;
 
+	if (!summaryview)
+		return 0;
+	ctree = GTK_CTREE(summaryview->ctree);
 	if (!node)
 		return 0;
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
@@ -2090,7 +2093,10 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 void summary_reflect_prefs(void)
 {
-	SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
+	SummaryView *summaryview = NULL;
+	if (!mainwindow_get_mainwindow())
+		return;
+	summaryview = mainwindow_get_mainwindow()->summaryview;
 	bold_style = bold_marked_style = bold_deleted_style = 
 		small_style = small_marked_style = small_deleted_style = NULL;
 	summary_set_fonts(summaryview);

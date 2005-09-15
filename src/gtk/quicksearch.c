@@ -251,6 +251,7 @@ static gchar *search_descr_strings[] = {
 };
  
 static DescriptionWindow search_descr = {
+	NULL,
 	NULL, 
 	2,
 	N_("Extended Search symbols"),
