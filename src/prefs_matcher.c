@@ -1664,6 +1664,7 @@ static gchar *test_desc_strings[] = {
 };
 
 static DescriptionWindow test_desc_win = { 
+	NULL,
         NULL, 
         2,
         N_("Match Type: 'Test'"),

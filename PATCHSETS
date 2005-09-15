@@ -800,3 +800,4 @@
 ( cvs diff -u -r 1.105.2.33 -r 1.105.2.34 src/prefs_account.c;  ) > 1.9.14cvs29.patchset
 ( cvs diff -u -r 1.382.2.169 -r 1.382.2.170 src/compose.c;  ) > 1.9.14cvs30.patchset
 ( cvs diff -u -r 1.60.2.21 -r 1.60.2.22 src/prefs_actions.c;  cvs diff -u -r 1.1.4.17 -r 1.1.4.18 src/prefs_filtering_action.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_quote.c;  cvs diff -u -r 1.8.2.2 -r 1.8.2.3 src/quote_fmt.c;  cvs diff -u -r 1.395.2.123 -r 1.395.2.124 src/summaryview.c;  cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/gtk/description_window.c;  cvs diff -u -r 1.1 -r 1.2 src/gtk/description_window.h;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/gtk/quicksearch.c;  ) > 1.9.14cvs31.patchset
+( cvs diff -u -r 1.43.2.22 -r 1.43.2.23 src/prefs_matcher.c;  ) > 1.9.14cvs32.patchset

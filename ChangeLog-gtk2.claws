@@ -1,3 +1,8 @@
+2005-09-15 [paul]	1.9.14cvs32
+
+	* src/prefs_matcher.c
+		forgotten in last commit
+
 2005-09-15 [paul]	1.9.14cvs31
 
 	* src/prefs_actions.c
