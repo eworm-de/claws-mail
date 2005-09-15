@@ -1330,7 +1330,17 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 		}
 		else if( aio->type == ADDR_ITEM_GROUP ) {
 			ItemGroup *group = ( ItemGroup * ) aio;
+			AddressDataSource *ds = NULL;
+			AddressBookFile *abf = NULL;
 			GList *nodeMail = group->listEMail;
+			if (nodeMail == NULL) {
+				if(addrbook.treeSelected ) {
+					ds = addressbook_find_datasource( addrbook.treeSelected );
+					abf = ds->rawDataSource;
+					if( abf != NULL )
+						nodeMail = addrbook_get_available_email_list( abf, group );
+				}
+			}
 			while( nodeMail ) {
 				ItemEMail *email = nodeMail->data;
 

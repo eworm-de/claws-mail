@@ -1,3 +1,13 @@
+2005-09-15 [colin]	1.9.14cvs33
+
+	* src/addressbook.c
+		Fix bug where sometimes a group's email list is empty,
+		force its refresh (probably fixes "Re: how to create a 
+		distribution list")
+	* src/ldapquery.c
+		Don't return to the callback in the main thread from the
+		fetch thread (or face segs!)
+
 2005-09-15 [paul]	1.9.14cvs32
 
 	* src/prefs_matcher.c

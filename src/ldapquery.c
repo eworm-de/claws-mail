@@ -47,6 +47,14 @@
 static pthread_key_t _queryThreadKey_;
 static gboolean _queryThreadInit_ = FALSE;
 
+gboolean callbackend (gpointer data)
+{
+	LdapQuery *qry = (LdapQuery *)data;
+	qry->callBackEnd( qry, ADDRQUERY_ID(qry), ADDRQUERY_RETVAL(qry), qry->data );
+	return FALSE;
+}
+
+
 /**
  * Create new LDAP query object.
  * \return Initialized query object.
@@ -994,7 +1002,7 @@ gint ldapqry_search( LdapQuery *qry ) {
 
 	/* Process callback */	
 	if( qry->callBackEnd ) {
-		qry->callBackEnd( qry, ADDRQUERY_ID(qry), ADDRQUERY_RETVAL(qry), qry->data );
+		g_timeout_add(0, callbackend, qry);
 	}
 
 	return ADDRQUERY_RETVAL(qry);
@@ -1357,7 +1365,7 @@ gint ldapqry_perform_locate( LdapQuery *qry ) {
 
 	/* Process callback */	
 	if( qry->callBackEnd ) {
-		qry->callBackEnd( qry, ADDRQUERY_ID(qry), ADDRQUERY_RETVAL(qry), qry->data );
+		g_timeout_add(0, callbackend, qry);
 	}
 
 	return ADDRQUERY_RETVAL(qry);
