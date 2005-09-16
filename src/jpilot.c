@@ -1097,7 +1097,6 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 		strcpy( buffer, labelEntry );
 		node = list = jpilot_parse_email( buffer );
 		while( node ) {
-			gchar convertBuff[JPILOT_LEN_LABEL];
 			email = addritem_create_item_email();
 			addritem_email_set_address( email, node->data );
 			if (convert_charcode) {
