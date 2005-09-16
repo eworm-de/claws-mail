@@ -65,6 +65,12 @@ static int matcher_parse_op = MATCHER_PARSE_FILE;
 
 
 /* ******************************************************************** */
+/* redeclarations to avoid warnings */
+void matcher_parserrestart(FILE *input_file);
+void matcher_parser_init(void);
+void matcher_parser_switch_to_buffer(void * new_buffer);
+void matcher_parser_delete_buffer(void * b);
+int matcher_parserlex(void);
 
 void matcher_parser_start_parsing(FILE *f)
 {

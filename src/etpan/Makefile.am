@@ -19,7 +19,7 @@ AM_CPPFLAGS = \
 	-I../common \
 	-I.. \
 	$(GTK_CFLAGS) \
-	$(LIBETPAN_CFLAGS)
+	$(LIBETPAN_CFLAGS) 
 
 libsylpheedetpan_la_LIBADD = \
 	../common/libsylpheedcommon.la \

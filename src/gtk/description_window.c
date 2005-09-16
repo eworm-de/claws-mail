@@ -171,8 +171,8 @@ static gboolean description_window_focus_in_event (GtkWidget *widget,
 						   GdkEventFocus *event,
 						   gpointer data)
 {
-	if (gtk_grab_get_current != widget)
-		gtk_grab_add(GTK_WINDOW(widget));
+	if (gtk_grab_get_current() != widget)
+		gtk_grab_add(GTK_WIDGET(widget));
 
 	return FALSE;
 }
@@ -181,7 +181,7 @@ static gboolean description_window_focus_out_event (GtkWidget *widget,
 						   GdkEventFocus *event,
 						   gpointer data)
 {
-	gtk_grab_remove(GTK_WINDOW(widget));
+	gtk_grab_remove(GTK_WIDGET(widget));
 		
 	return FALSE;
 }

@@ -207,16 +207,6 @@ void ldapsvr_set_control( LdapServer *server, LdapControl *ctl ) {
 }
 
 /**
- * Release LDAP control object.
- * \param server Server object.
- */
-static void ldapsvr_release_control( LdapServer *server ) {
-	g_return_if_fail( server != NULL );
-	ldapctl_free( server->control );
-	server->control = NULL;
-}
-
-/**
  * Free all queries.
  * \param server Server object.
  */
@@ -437,7 +427,7 @@ static LdapQuery *ldapsvr_locate_query(
 {
 	LdapQuery *incomplete = NULL;
 	GList *node;	
-	g_return_if_fail( server != NULL );
+	g_return_val_if_fail( server != NULL, NULL );
 
 	node = server->listQuery;
 	node = g_list_last( node );

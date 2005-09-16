@@ -137,7 +137,7 @@ static void edit_ldap_status_show( gchar *msg ) {
 static gboolean edit_ldap_validate( void ) {
 	gchar *str;
 	gboolean errorFlag;
-	gint page;
+	gint page = 0;
 
 	errorFlag = FALSE;
 	str = gtk_editable_get_chars(

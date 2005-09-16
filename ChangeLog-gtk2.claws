@@ -1,3 +1,32 @@
+2005-09-16 [colin]	1.9.14cvs34
+
+	* configure.ac
+	* src/Makefile.am
+	* src/addr_compl.c
+	* src/addrindex.c
+	* src/browseldap.c
+	* src/editldap.c
+	* src/ldaplocate.c
+	* src/ldapquery.c
+	* src/ldapquery.h
+	* src/ldapserver.c
+	* src/ldapserver.h
+	* src/main.c
+	* src/matcher_parser_parse.y
+	* src/prefs_themes.c
+	* src/etpan/Makefile.am
+	* src/gtk/description_window.c
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		Fix 100% cpu usage in address completion list
+		Fix little bugs (return with no values etc)
+		Fix all warnings (with common CFLAGS)
+
 2005-09-15 [colin]	1.9.14cvs33
 
 	* src/addressbook.c

@@ -32,6 +32,8 @@
 #include "ldapserver.h"
 #include "ldapquery.h"
 
+void ldapsvr_add_query( LdapServer *server, LdapQuery *qry );
+void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry );
 /**
  * Setup the search that will be performed and registered with the query
  * manager.
@@ -122,7 +124,6 @@ void ldaplocate_search_stop( const gint queryID ) {
 	QueryRequest *req;
 	AddrQueryObject *aqo;
 	LdapQuery *qry;
-	gint queryType;
 
 	req = qrymgr_find_request( queryID );
 	if( req == NULL ) {

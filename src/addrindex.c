@@ -55,6 +55,7 @@
 #include "ldapserver.h"
 #include "ldapctrl.h"
 #include "ldapquery.h"
+#include "ldaputil.h"
 #endif
 
 #define TAG_ADDRESS_INDEX    "addressbook"
@@ -1336,6 +1337,7 @@ static void addrindex_parse_ldap_attrlist( XMLFile *file, LdapControl *ctl ) {
 
 }
 
+void ldapsvr_set_control( LdapServer *server, LdapControl *ctl );
 /**
  * Parse LDAP control data from XML file.
  * \param  file Index file.
@@ -2541,6 +2543,7 @@ LdapQuery *ldapsvr_new_explicit_search(
 
 #endif
 
+void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry );
 /**
  * Execute the previously registered dynamic search.
  *

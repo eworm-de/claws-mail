@@ -423,6 +423,12 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
 	$(LIBETPAN_CPPFLAGS) \
-	$(STARTUP_NOTIFICATION_CFLAGS)
+	$(STARTUP_NOTIFICATION_CFLAGS) \
+	-Wno-unused-function
+	 
+#no-unused-function is there because of bison stuff
+#no-deprecated-declarations because of gpgme_data_rewind, which we have
+#to call inside gpgme due to our lack of LARGEFILE support
 
+	
 AM_YFLAGS = -d

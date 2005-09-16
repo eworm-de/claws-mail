@@ -183,6 +183,8 @@ void clamav_set_message_callback(MessageCallback callback)
 	message_callback = callback;
 }
 
+void cl_buildtrie(struct cl_node *root);
+void cl_freetrie(struct cl_node *root);
 gint plugin_init(gchar **error)
 {
 	gchar *rcpath;

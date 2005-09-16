@@ -100,7 +100,8 @@ void ldapqry_cancel		( LdapQuery *qry );
 void ldapqry_age		( LdapQuery *qry, gint maxAge );
 void ldapqry_delete_folder	( LdapQuery *qry );
 gboolean ldapquery_remove_results( LdapQuery *qry );
-
+void ldapqry_free_list_name_value( GList *list );
+void ldapqry_free_name_value( NameValuePair *nvp );
 #endif	/* USE_LDAP */
 
 #endif /* __LDAPQUERY_H__ */

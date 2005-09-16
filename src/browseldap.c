@@ -145,6 +145,7 @@ static gint browse_callback_end(
 		LdapQuery *qry, gint queryID, gint status, gpointer data )
 {
 	_searchComplete_ = TRUE;
+	return 0;
 }
 
 /**

@@ -26,7 +26,7 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) 
 
 EXTRA_DIST = \
 	README clamav_plugin_gtk.deps

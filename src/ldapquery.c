@@ -254,7 +254,7 @@ void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
  */
 gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
 	gboolean value;
-	g_return_if_fail( qry != NULL );
+	g_return_val_if_fail( qry != NULL, TRUE );
 
 	pthread_mutex_lock( qry->mutexStop );
 	value = qry->stopFlag;
@@ -283,7 +283,7 @@ void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
  */
 gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
 	gboolean value;
-	g_return_if_fail( qry != NULL );
+	g_return_val_if_fail( qry != NULL, FALSE );
 
 	pthread_mutex_lock( qry->mutexBusy );
 	value = qry->busyFlag;
@@ -307,7 +307,7 @@ void ldapqry_set_aged_flag( LdapQuery *qry, const gboolean value ) {
  * \return <i>TRUE</i> if query has been marked as aged (and can be retired).
  */
 gboolean ldapqry_get_aged_flag( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
+	g_return_val_if_fail( qry != NULL, TRUE );
 	return qry->agedFlag;
 }
 
@@ -327,7 +327,7 @@ void ldapqry_set_data( LdapQuery *qry, const gpointer value ) {
  * \return Data.
  */
 gpointer ldapqry_get_data( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
+	g_return_val_if_fail( qry != NULL, NULL );
 	return qry->data;
 }
 
@@ -807,7 +807,7 @@ static gint ldapqry_disconnect( LdapQuery *qry ) {
 static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld;
-	LDAPMessage *result, *e;
+	LDAPMessage *result, *e = NULL;
 	char **attribs;
 	gchar *criteria;
 	gboolean searchFlag;
@@ -950,6 +950,8 @@ static gint ldapqry_perform_search( LdapQuery *qry ) {
 
 	return ADDRQUERY_RETVAL(qry);
 }
+
+static gint ldapqry_perform_locate( LdapQuery *qry );
 
 /**
  * Wrapper around search.
@@ -1253,7 +1255,7 @@ static GList *ldapqry_fetch_attribs( LDAP *ld, LDAPMessage *e )
 static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld;
-	LDAPMessage *result, *e;
+	LDAPMessage *result, *e = NULL;
 	gboolean entriesFound;
 	gboolean first;
 	struct timeval timeout;
@@ -1351,7 +1353,7 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
  * \param  qry Query object to process.
  * \return Error/status code.
  */
-gint ldapqry_perform_locate( LdapQuery *qry ) {
+static gint ldapqry_perform_locate( LdapQuery *qry ) {
 	/* Connect */
 	qry->ldap = NULL;
 	ldapqry_connect( qry );

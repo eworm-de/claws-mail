@@ -27,4 +27,5 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(GPGME_CFLAGS)
+	$(GPGME_CFLAGS) \
+	-Wno-deprecated-declarations

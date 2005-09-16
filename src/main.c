@@ -226,6 +226,7 @@ void sylpheed_gtk_idle(void)
 {
 	while(gtk_events_pending())
 		gtk_main_iteration();
+	usleep(50000);
 }
 
 int main(int argc, char *argv[])

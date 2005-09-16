@@ -46,6 +46,7 @@
 #include "addr_compl.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "sylpheed.h"
 #include <pthread.h>
 
 /*!
@@ -826,6 +827,7 @@ static gboolean addrcompl_idle( gpointer data ) {
 		_displayQueue_ = NULL;
 	}
 	pthread_mutex_unlock( & _completionMutex_ );
+	sylpheed_do_idle();
 
 	return TRUE;
 }
