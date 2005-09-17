@@ -562,15 +562,16 @@ static void prefs_custom_header_up(void)
 	GtkTreePath *prev, *sel;
 	GtkTreeIter isel;
 	GtkListStore *store = NULL;
+	GtkTreeModel *model = NULL;
 	GtkTreeIter iprev;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(customhdr.list_view)),
-		 (GtkTreeModel **)(GtkListStore *) store,
+		 &model,
 		 &isel))
 		return;
-
+	store = (GtkListStore *)model;
 	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
 	if (!sel)
 		return;
@@ -595,15 +596,16 @@ static void prefs_custom_header_up(void)
 static void prefs_custom_header_down(void)
 {
 	GtkListStore *store = NULL;
+	GtkTreeModel *model = NULL;
 	GtkTreeIter next, sel;
 	
 	if (!gtk_tree_selection_get_selected
 		(gtk_tree_view_get_selection
 			(GTK_TREE_VIEW(customhdr.list_view)),
-		 (GtkTreeModel **)(GtkListStore *) store,
+		 &model,
 		 &sel))
 		return;
-
+	store = (GtkListStore *)model;
 	next = sel;
 	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next)) 
 		return;

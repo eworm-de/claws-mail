@@ -1,3 +1,14 @@
+2005-09-17 [colin]	1.9.14cvs36
+
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_toolbar.c
+		Fix strange casts (less elegant but
+		works better)
+
 2005-09-16 [colin]	1.9.14cvs35
 
 	* src/jpilot.c
