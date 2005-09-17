@@ -1,3 +1,9 @@
+2005-09-17 [colin]	1.9.14cvs37
+
+	* src/addrindex.c
+		bugfix for NO-USE LDAP compilation, patch 
+		by Fabien Vantard
+
 2005-09-17 [colin]	1.9.14cvs36
 
 	* src/prefs_actions.c

@@ -2540,10 +2540,10 @@ LdapQuery *ldapsvr_new_dynamic_search(
 		LdapServer *server, QueryRequest *req );
 LdapQuery *ldapsvr_new_explicit_search(
 		LdapServer *server, QueryRequest *req, ItemFolder *folder );
+void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry );
 
 #endif
 
-void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry );
 /**
  * Execute the previously registered dynamic search.
  *
