@@ -1976,10 +1976,10 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	GSList *mlist = NULL;
 	GSList *cur = NULL;
-	if (!folderview->selected) return;
 	FolderItem *special_trash = NULL;
 	PrefsAccount *ac;
 
+	if (!folderview->selected) return;
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -2194,9 +2194,10 @@ void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 void folderview_reflect_prefs(void)
 {
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
+	FolderItem *item = folderview_get_selected_item(folderview);	
 	normal_style = normal_color_style = bold_style = 
 		bold_color_style = bold_tgtfold_style = NULL;
-	FolderItem *item = folderview_get_selected_item(folderview);
+
 	folderview_init(folderview);
 	folderview_column_set_titles(folderview);
 	folderview_set_all();

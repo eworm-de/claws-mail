@@ -3128,8 +3128,8 @@ static void new_account_cb(MainWindow *mainwin, guint action,
 
 static void account_selector_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
-	cur_account = (PrefsAccount *)data;
 	FolderItem *item = NULL;
+	cur_account = (PrefsAccount *)data;
 	
 	if (!mainwindow_get_mainwindow())
 		return;

@@ -1,3 +1,10 @@
+2005-09-17 [paul]	1.9.14cvs38
+
+	* src/folderview.c
+	* src/mainwindow.c
+		fix gcc-2.95 issues
+		Patch by Pawel Pekala
+
 2005-09-17 [colin]	1.9.14cvs37
 
 	* src/addrindex.c
