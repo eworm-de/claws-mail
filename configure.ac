@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=14
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=39
+EXTRA_VERSION=40
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -735,7 +735,7 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   LIBETPAN_LIBS="`$libetpanconfig --libs`"
 	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
 	   if test "$LIBETPAN_VERSION" -lt "038"; then
-		AC_MSG_ERROR([Sylpheed requires libetpan 0.38 or newer. See http://www.etpan.org/])
+		AC_MSG_ERROR([Sylpheed requires libetpan 0.39 or newer. See http://www.etpan.org/])
 		AC_MSG_ERROR([You can use --disable-libetpan if you don't need IMAP4 support.])
 	   fi
 	   AC_SUBST(LIBETPAN_FLAGS)
