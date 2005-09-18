@@ -734,7 +734,7 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
 	   LIBETPAN_LIBS="`$libetpanconfig --libs`"
 	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
-	   if test "$LIBETPAN_VERSION" -lt "038"; then
+	   if test "$LIBETPAN_VERSION" -lt "039"; then
 		AC_MSG_ERROR([Sylpheed requires libetpan 0.39 or newer. See http://www.etpan.org/])
 		AC_MSG_ERROR([You can use --disable-libetpan if you don't need IMAP4 support.])
 	   fi
