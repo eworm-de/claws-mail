@@ -672,9 +672,12 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 	tmpstr = conv_iconv_strdup(inbuf, conv_get_locale_charset_str(),
 				   CS_INTERNAL);
-	if (tmpstr) {
+	if (tmpstr && g_utf8_validate(tmpstr, -1, NULL)) {
 		strncpy2(outbuf, tmpstr, outlen);
 		g_free(tmpstr);
+	} else if (tmpstr && !g_utf8_validate(tmpstr, -1, NULL)) {
+		g_free(tmpstr);
+		conv_utf8todisp(outbuf, outlen, inbuf);
 	} else
 		conv_utf8todisp(outbuf, outlen, inbuf);
 }

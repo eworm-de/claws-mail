@@ -1612,10 +1612,16 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 		mimeinfo->type = MIMETYPE_TEXT;
 		mimeinfo->subtype = g_strdup("plain");
 		if (g_hash_table_lookup(mimeinfo->typeparameters,
-				       "charset") == NULL)
-			g_hash_table_insert(mimeinfo->typeparameters,
+				       "charset") == NULL) {
+			if (strcmp(conv_get_locale_charset_str(), CS_UTF_8))
+				g_hash_table_insert(mimeinfo->typeparameters,
 					    g_strdup("charset"),
 					    g_strdup(conv_get_locale_charset_str()));
+			else
+				g_hash_table_insert(mimeinfo->typeparameters,
+					    g_strdup("charset"),
+					    g_strdup(CS_ISO_8859_1));
+		}
 	} else {
 		gchar *type, *subtype, *params;
 
@@ -1716,9 +1722,16 @@ int procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->type = MIMETYPE_TEXT;
 		mimeinfo->subtype = g_strdup("plain");
 		if (g_hash_table_lookup(mimeinfo->typeparameters,
-				       "charset") == NULL)
-			g_hash_table_insert(mimeinfo->typeparameters, g_strdup("charset"), 
-				g_strdup(conv_get_locale_charset_str()));
+				       "charset") == NULL) {
+			if (strcmp(conv_get_locale_charset_str(), CS_UTF_8))
+				g_hash_table_insert(mimeinfo->typeparameters,
+					    g_strdup("charset"),
+					    g_strdup(conv_get_locale_charset_str()));
+			else
+				g_hash_table_insert(mimeinfo->typeparameters,
+					    g_strdup("charset"),
+					    g_strdup(CS_ISO_8859_1));
+		}
 	}
 
 	if (content_encoding != NULL) {

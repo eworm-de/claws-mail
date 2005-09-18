@@ -4370,6 +4370,7 @@ static gchar *compose_get_header(Compose *compose)
 
 	/* Subject */
 	str = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
+
 	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
 		g_strstrip(str);
 		if (*str != '\0') {
@@ -4550,6 +4551,12 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 	subst_char(tmpstr, '\r', ' ');
 	g_strchomp(tmpstr);
 
+	if (!g_utf8_validate(tmpstr, -1, NULL)) {
+		gchar *mybuf = g_malloc(strlen(tmpstr)*2 +1);
+		conv_localetodisp(mybuf, strlen(tmpstr)*2 +1, tmpstr);
+		g_free(tmpstr);
+		tmpstr = mybuf;
+	}
 	conv_encode_header_full(dest, len, tmpstr, header_len, addr_field, 
 		conv_get_charset_str(compose->out_encoding));
 	g_free(tmpstr);

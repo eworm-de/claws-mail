@@ -807,3 +807,4 @@
 ( cvs diff -u -r 1.60.2.22 -r 1.60.2.23 src/prefs_actions.c;  cvs diff -u -r 1.16.2.13 -r 1.16.2.14 src/prefs_customheader.c;  cvs diff -u -r 1.16.2.13 -r 1.16.2.14 src/prefs_display_header.c;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.23 -r 1.43.2.24 src/prefs_matcher.c;  cvs diff -u -r 1.30.2.16 -r 1.30.2.17 src/prefs_toolbar.c;  ) > 1.9.14cvs36.patchset
 ( cvs diff -u -r 1.28.2.9 -r 1.28.2.10 src/addrindex.c;  ) > 1.9.14cvs37.patchset
 ( cvs diff -u -r 1.207.2.63 -r 1.207.2.64 src/folderview.c;  cvs diff -u -r 1.274.2.65 -r 1.274.2.66 src/mainwindow.c;  ) > 1.9.14cvs38.patchset
+( cvs diff -u -r 1.65.2.35 -r 1.65.2.36 src/codeconv.c;  cvs diff -u -r 1.382.2.170 -r 1.382.2.171 src/compose.c;  cvs diff -u -r 1.49.2.60 -r 1.49.2.61 src/procmime.c;  ) > 1.9.14cvs39.patchset
