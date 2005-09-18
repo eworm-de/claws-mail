@@ -201,6 +201,7 @@ const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);
 CharSet conv_get_locale_charset			(void);
 const gchar *conv_get_locale_charset_str	(void);
+const gchar *conv_get_locale_charset_str_no_utf8(void);
 CharSet conv_get_internal_charset		(void);
 const gchar *conv_get_internal_charset_str	(void);
 CharSet conv_get_outgoing_charset		(void);
