@@ -922,7 +922,7 @@ static int misspelled_test(GtkAspell *gtkaspell, unsigned char *word)
 
 static gboolean iswordsep(unsigned char c) 
 {
-	return !isalpha(c) && c != '\'';
+	return (isspace(c) || ispunct(c)) && c != '\'';
 }
 
 static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos) 
@@ -982,7 +982,11 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 		c = get_text_index_whar(gtkaspell, start);
 		if (c == '\'') {
 			if (start > 0) {
-				if (!isalpha(get_text_index_whar(gtkaspell,
+				if (isspace(get_text_index_whar(gtkaspell,
+								 start - 1))
+				||  ispunct(get_text_index_whar(gtkaspell,
+								 start - 1))
+				||  isdigit(get_text_index_whar(gtkaspell,
 								 start - 1))) {
 					/* start_quote = TRUE; */
 					break;
@@ -993,7 +997,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 				break;
 			}
 		}
-		else if (!isalpha(c))
+		else if (isspace(c) || ispunct(c) || isdigit(c))
 				break;
 	}
 
@@ -1003,7 +1007,11 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 		c = get_text_index_whar(gtkaspell, end); 
 		if (c == '\'') {
 			if (end < get_textview_buffer_charcount(gtktext)) {
-				if (!isalpha(get_text_index_whar(gtkaspell,
+				if (isspace(get_text_index_whar(gtkaspell,
+								 end + 1))
+				||  ispunct(get_text_index_whar(gtkaspell,
+								 end + 1))
+				||  isdigit(get_text_index_whar(gtkaspell,
 								 end + 1))) {
 					/* end_quote = TRUE; */
 					break;
@@ -1014,7 +1022,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 				break;
 			}
 		}
-		else if(!isalpha(c))
+		else if (isspace(c) || ispunct(c) || isdigit(c))
 				break;
 	}
 						
@@ -1025,11 +1033,18 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 
 	if (buf) {
 		if (end - start < buflen) {
-			for (pos = start; pos < end; pos++) {
-				buf[pos - start] =
-					get_text_index_whar(gtkaspell, pos);
-			}
-			buf[pos - start] = 0;
+			GtkTextIter iterstart, iterend;
+			gchar *tmp, *conv;
+			GtkTextBuffer *buffer = gtk_text_view_get_buffer(gtktext);
+			gtk_text_buffer_get_iter_at_offset(buffer, &iterstart, start);
+			gtk_text_buffer_get_iter_at_offset(buffer, &iterend, end);
+			tmp = gtk_text_buffer_get_text(buffer, &iterstart, &iterend, FALSE);
+			conv = conv_iconv_strdup(tmp, CS_UTF_8, 
+				gtkaspell->gtkaspeller->dictionary->encoding);
+			g_free(tmp);
+			strncpy(buf, conv, buflen-1);
+			buf[buflen]='\0';
+			g_free(conv);
 		} else
 			return FALSE;
 	}
@@ -1050,7 +1065,6 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 	if (!get_word_from_pos(gtkaspell, from_pos, buf, sizeof(buf), 
 			       &start, &end))
 		return FALSE;
-
 	if (misspelled_test(gtkaspell, buf)) {
 		strncpy(gtkaspell->theword, buf, GTKASPELLWORDSIZE - 1);
 		gtkaspell->theword[GTKASPELLWORDSIZE - 1] = 0;
@@ -2400,7 +2414,8 @@ static void change_color(GtkAspell * gtkaspell,
 	GtkTextBuffer *buffer;
 	GtkTextIter startiter, enditer;
 
-	g_return_if_fail(start < end);
+	if (start < end)
+		return;
     
 	gtktext = gtkaspell->gtktext;
     

@@ -166,10 +166,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 	if (inc_lock_count) return;
 
-	if (prefs_common.work_offline)
-		if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+	if (prefs_common.work_offline && !inc_offline_should_override())
 		return;
 
 	inc_lock();
@@ -271,11 +268,8 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 
 	if (inc_lock_count) return 0;
 
-	if (prefs_common.work_offline)
-		if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
-			return 0;
+	if (prefs_common.work_offline && !inc_offline_should_override())
+		return 0;
 
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
@@ -297,10 +291,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	gint new_msgs = 0;
 	gint account_new_msgs = 0;
 	
-	if (prefs_common.work_offline)
-		if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+	if (prefs_common.work_offline && !inc_offline_should_override())
 		return;
 
 	if (inc_lock_count) return;
@@ -760,6 +751,20 @@ static IncState inc_pop3_session_do(IncSession *session)
 		SESSION(pop3_session)->nonblocking =
 			pop3_session->ac_prefs->use_nonblocking_ssl;
 #else
+	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE) {
+		if (alertpanel_full(_("Insecure connection"),
+			_("This connection is configured to be secured "
+			  "using SSL, but SSL is not available in this "
+			  "build of Sylpheed-Claws. \n\n"
+			  "Do you want to continue connecting to this "
+			  "server? The communication would not be "
+			  "secure."),
+			  _("Continue connecting"), 
+			  GTK_STOCK_CANCEL, NULL,
+			  FALSE, NULL, ALERT_WARNING,
+			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+			return INC_CONNECT_ERROR;
+	}
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport : 110;
 #endif
@@ -1417,4 +1422,35 @@ static gint inc_autocheck_func(gpointer data)
  	inc_all_account_mail(mainwin, TRUE, prefs_common.newmail_notify_auto);
 
 	return FALSE;
+}
+
+gboolean inc_offline_should_override(void)
+{
+	static time_t overridden_yes = 0;
+	static time_t overridden_no  = 0;
+	int length = 600;
+	gboolean answer = TRUE;
+	
+	if (prefs_common.autochk_newmail)
+		length = prefs_common.autochk_itv;
+
+	if (prefs_common.work_offline) {
+		gchar *tmp = g_strdup_printf(
+				_("You're working offline. Override during %d minutes?"),
+				length);
+		if (time(NULL) - overridden_yes < length * 10)
+			 return TRUE;
+		else if (time(NULL) - overridden_no < length * 10)
+			 return FALSE;
+		
+		answer = (alertpanel(_("Offline warning"), 
+			       tmp,
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) == G_ALERTDEFAULT);
+		g_free(tmp);
+		if (answer == TRUE)
+			overridden_yes = time(NULL);
+		else
+			overridden_no  = time(NULL);
+	}
+	return answer;
 }

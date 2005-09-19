@@ -73,30 +73,6 @@ static FolderViewPopup news_popup =
 	set_sensitivity
 };
 
-gboolean news_gtk_should_override(void)
-{
-	static time_t overridden_yes = 0;
-	static time_t overridden_no  = 0;
-	gboolean answer = TRUE;
-
-	if (prefs_common.work_offline) {
-		if (time(NULL) - overridden_yes < 600)
-			 return TRUE;
-		else if (time(NULL) - overridden_no < 3)
-			 return FALSE;
-		
-		answer = (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override during 10 minutes?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) == G_ALERTDEFAULT);
-		
-		if (answer == TRUE)
-			overridden_yes = time(NULL);
-		else
-			overridden_no  = time(NULL);
-	}
-	return answer;
-}
-
 void news_gtk_init(void)
 {
 	guint i, n_entries;

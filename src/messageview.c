@@ -62,6 +62,7 @@
 #include "filtering.h"
 #include "partial_download.h"
 #include "gedit-print.h"
+#include "inc.h"
 
 static GList *messageview_list = NULL;
 
@@ -693,11 +694,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		return -1;
 	}
 		
-	if (prefs_common.work_offline)
-		if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
-			return 0;
+	if (prefs_common.work_offline && !inc_offline_should_override())
+		return 0;
 
 	/* send it */
 	path = folder_item_fetch_msg(queue, num);

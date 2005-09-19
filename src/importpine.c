@@ -45,6 +45,7 @@
 #include "manage_window.h"
 #include "mgutils.h"
 #include "pine.h"
+#include "filesel.h"
 
 #define IMPORTPINE_GUESS_NAME "Pine Import"
 
@@ -154,56 +155,20 @@ static void imp_pine_cancel( GtkWidget *widget, gboolean *cancelled ) {
 	gtk_main_quit();
 }
 
-static void imp_pine_file_ok( GtkWidget *widget, gpointer data ) {
-	const gchar *sFile;
-	AddressFileSelection *afs;
-	GtkWidget *fileSel;
-
-	afs = ( AddressFileSelection * ) data;
-	fileSel = afs->fileSelector;
-	sFile = gtk_file_selection_get_filename( GTK_FILE_SELECTION(fileSel) );
-
-	afs->cancelled = FALSE;
-	gtk_entry_set_text( GTK_ENTRY(imppine_dlg.file_entry), sFile );
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( imppine_dlg.file_entry );
-	imp_pine_status_show( _( "Please select a file to import." ) );
-}
-
-static void imp_pine_file_cancel( GtkWidget *widget, gpointer data ) {
-	AddressFileSelection *afs = ( AddressFileSelection * ) data;
-	afs->cancelled = TRUE;
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( imppine_dlg.file_entry );
-}
-
 static void imp_pine_file_select_create( AddressFileSelection *afs ) {
-	GtkWidget *fileSelector;
-
-	fileSelector = gtk_file_selection_new( _("Select Pine File") );
-	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->ok_button),
-                         "clicked", 
-			 G_CALLBACK(imp_pine_file_ok), (gpointer)afs);
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->cancel_button),
-                         "clicked", 
-			 G_CALLBACK(imp_pine_file_cancel), (gpointer)afs);
-	afs->fileSelector = fileSelector;
-	afs->cancelled = TRUE;
+	gchar *file = filesel_select_file_open(_("Select Pine File"), NULL);
+	
+	if (file == NULL)
+		afs->cancelled = TRUE;
+	else {
+		afs->cancelled = FALSE;
+		gtk_entry_set_text( GTK_ENTRY(imppine_dlg.file_entry), file );
+		g_free(file);
+	}
 }
 
 static void imp_pine_file_select( void ) {
-	gchar *sFile;
-	if (! _imp_pine_file_selector_.fileSelector )
-		imp_pine_file_select_create( & _imp_pine_file_selector_ );
-
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(imppine_dlg.file_entry), 0, -1 );
-	gtk_file_selection_set_filename( GTK_FILE_SELECTION( _imp_pine_file_selector_.fileSelector ), sFile );
-	g_free( sFile );
-	gtk_widget_show( _imp_pine_file_selector_.fileSelector );
-	gtk_grab_add( _imp_pine_file_selector_.fileSelector );
+	imp_pine_file_select_create( & _imp_pine_file_selector_ );
 }
 
 static gint imp_pine_delete_event( GtkWidget *widget, GdkEventAny *event, gboolean *cancelled ) {

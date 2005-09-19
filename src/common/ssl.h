@@ -24,6 +24,12 @@
 #  include "config.h"
 #endif
 
+typedef enum {
+	SSL_NONE,
+	SSL_TUNNEL,
+	SSL_STARTTLS
+} SSLType;
+
 #if USE_OPENSSL
 
 #include <glib.h>
@@ -40,12 +46,6 @@ typedef enum {
 	SSL_METHOD_SSLv23,
 	SSL_METHOD_TLSv1
 } SSLMethod;
-
-typedef enum {
-	SSL_NONE,
-	SSL_TUNNEL,
-	SSL_STARTTLS
-} SSLType;
 
 void ssl_init				(void);
 void ssl_done				(void);

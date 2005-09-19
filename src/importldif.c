@@ -47,6 +47,7 @@
 #include "mgutils.h"
 #include "ldif.h"
 #include "utils.h"
+#include "filesel.h"
 
 #define IMPORTLDIF_GUESS_NAME      "LDIF Import"
 
@@ -542,6 +543,8 @@ static void imp_ldif_next( GtkWidget *widget ) {
 		if( imp_ldif_field_move() ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
+			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
+					     GTK_STOCK_CLOSE);
 			imp_ldif_finish_show();
 		}
 	}
@@ -562,72 +565,28 @@ static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_main_quit();
 }
 
-/**
- * Callback function to accept LDIF file selection.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void imp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
-	const gchar *sFile;
-	AddressFileSelection *afs;
-	GtkWidget *fileSel;
-
-	afs = ( AddressFileSelection * ) data;
-	fileSel = afs->fileSelector;
-	sFile = gtk_file_selection_get_filename( GTK_FILE_SELECTION(fileSel) );
-
-	afs->cancelled = FALSE;
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), sFile );
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( impldif_dlg.entryFile );
-}
-
-/**
- * Callback function to cancel LDIF file selection dialog.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void imp_ldif_file_cancel( GtkWidget *widget, gpointer data ) {
-	AddressFileSelection *afs = ( AddressFileSelection * ) data;
-	afs->cancelled = TRUE;
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( impldif_dlg.entryFile );
-}
 
 /**
  * Create LDIF file selection dialog.
  * \param afs Address file selection data.
  */
 static void imp_ldif_file_select_create( AddressFileSelection *afs ) {
-	GtkWidget *fileSelector;
-
-	fileSelector = gtk_file_selection_new( _("Select LDIF File") );
-	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
-			  "clicked", G_CALLBACK (imp_ldif_file_ok), ( gpointer ) afs );
-	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
-			  "clicked", G_CALLBACK (imp_ldif_file_cancel), ( gpointer ) afs );
-	afs->fileSelector = fileSelector;
-	afs->cancelled = TRUE;
+	gchar *file = filesel_select_file_open(_("Select LDIF File"), NULL);
+	
+	if (file == NULL)
+		afs->cancelled = TRUE;
+	else {
+		afs->cancelled = FALSE;
+		gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), file );
+		g_free(file);
+	}
 }
 
 /**
  * Callback function to display LDIF file selection dialog.
  */
 static void imp_ldif_file_select( void ) {
-	gchar *sFile;
-	if( ! _imp_ldif_file_selector_.fileSelector )
-		imp_ldif_file_select_create( & _imp_ldif_file_selector_ );
-
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryFile), 0, -1 );
-	gtk_file_selection_set_filename(
-		GTK_FILE_SELECTION( _imp_ldif_file_selector_.fileSelector ),
-		sFile );
-	g_free( sFile );
-	gtk_widget_show( _imp_ldif_file_selector_.fileSelector );
-	gtk_grab_add( _imp_ldif_file_selector_.fileSelector );
+	imp_ldif_file_select_create( & _imp_ldif_file_selector_ );
 }
 
 /**
@@ -1031,8 +990,8 @@ static void imp_ldif_dialog_create() {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &btnPrev, _("Prev"),
-				      &btnNext, _("Next"),
+	gtkut_stock_button_set_create(&hbbox, &btnPrev, GTK_STOCK_GO_BACK,
+				      &btnNext, GTK_STOCK_GO_FORWARD,
 				      &btnCancel, GTK_STOCK_CANCEL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
@@ -1082,6 +1041,10 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 
 	if( ! impldif_dlg.window )
 		imp_ldif_create();
+		
+	gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
+			     GTK_STOCK_CANCEL);
+
 	impldif_dlg.cancelled = FALSE;
 	gtk_widget_show(impldif_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(impldif_dlg.window));

@@ -27,6 +27,5 @@
 #include "folder.h"
 
 void news_gtk_init(void);
-gboolean news_gtk_should_override(void);
 void news_gtk_synchronise(FolderItem *item);
 #endif /* NEWS_GTK_H */

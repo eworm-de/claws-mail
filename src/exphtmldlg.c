@@ -46,6 +46,7 @@
 #include "exporthtml.h"
 #include "utils.h"
 #include "manage_window.h"
+#include "filesel.h"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_FORMAT                1
@@ -299,6 +300,8 @@ static void export_html_next( GtkWidget *widget ) {
 		if( exp_html_move_format() ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FINISH );
+			gtk_button_set_label(GTK_BUTTON(exphtml_dlg.btnCancel),
+				GTK_STOCK_CLOSE);
 			exp_html_finish_show();
 			exporthtml_save_settings( _exportCtl_ );
 			export_html_message();
@@ -320,74 +323,26 @@ static void export_html_browse( GtkWidget *widget, gpointer data ) {
 }
 
 /**
- * Callback function to accept HTML file selection.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void exp_html_file_ok( GtkWidget *widget, gpointer data ) {
-	const gchar *sFile;
-	AddressFileSelection *afs;
-	GtkWidget *fileSel;
-
-	afs = ( AddressFileSelection * ) data;
-	fileSel = afs->fileSelector;
-	sFile = gtk_file_selection_get_filename( GTK_FILE_SELECTION(fileSel) );
-
-	afs->cancelled = FALSE;
-	gtk_entry_set_text( GTK_ENTRY(exphtml_dlg.entryHtml), sFile );
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( exphtml_dlg.entryHtml );
-}
-
-/**
- * Callback function to cancel HTML file selection dialog.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void exp_html_file_cancel( GtkWidget *widget, gpointer data ) {
-	AddressFileSelection *afs = ( AddressFileSelection * ) data;
-	afs->cancelled = TRUE;
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( exphtml_dlg.entryHtml );
-}
-
-/**
  * Create HTML file selection dialog.
  * \param afs Address file selection data.
  */
 static void exp_html_file_select_create( AddressFileSelection *afs ) {
-	GtkWidget *fileSelector;
-
-	fileSelector = gtk_file_selection_new( _("Select HTML Output File") );
-	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	gtk_file_selection_complete( GTK_FILE_SELECTION(fileSelector), "*.html" );
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->ok_button),
-			 "clicked", 
-			 G_CALLBACK(exp_html_file_ok), (gpointer)afs);
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->cancel_button),
-			 "clicked", 
-			 G_CALLBACK(exp_html_file_cancel), (gpointer)afs);
-	afs->fileSelector = fileSelector;
-	afs->cancelled = TRUE;
+	gchar *file = filesel_select_file_save(_("Select HTML output file"), NULL);
+	
+	if (file == NULL)
+		afs->cancelled = TRUE;
+	else {
+		afs->cancelled = FALSE;
+		gtk_entry_set_text( GTK_ENTRY(exphtml_dlg.entryHtml), file );
+		g_free(file);
+	}
 }
 
 /**
  * Callback function to display HTML file selection dialog.
  */
 static void exp_html_file_select( void ) {
-	gchar *sFile;
-	if( ! _exp_html_file_selector_.fileSelector )
-		exp_html_file_select_create( & _exp_html_file_selector_ );
-
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(exphtml_dlg.entryHtml), 0, -1 );
-	gtk_file_selection_set_filename(
-		GTK_FILE_SELECTION( _exp_html_file_selector_.fileSelector ),
-		sFile );
-	g_free( sFile );
-	gtk_widget_show( _exp_html_file_selector_.fileSelector );
-	gtk_grab_add( _exp_html_file_selector_.fileSelector );
+	exp_html_file_select_create( & _exp_html_file_selector_ );
 }
 
 /**
@@ -799,6 +754,9 @@ void addressbook_exp_html( AddressCache *cache ) {
 	/* Setup GUI */
 	if( ! exphtml_dlg.window )
 		export_html_create();
+
+	gtk_button_set_label(GTK_BUTTON(exphtml_dlg.btnCancel),
+			     GTK_STOCK_CANCEL);
 	exphtml_dlg.cancelled = FALSE;
 	gtk_widget_show(exphtml_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(exphtml_dlg.window));

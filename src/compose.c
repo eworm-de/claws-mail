@@ -116,7 +116,7 @@
 #include "undo.h"
 #include "foldersel.h"
 #include "toolbar.h"
-
+#include "inc.h"
 enum
 {
 	COL_MIMETYPE = 0,
@@ -419,9 +419,10 @@ static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 GtkWidget	*widget);
 static void compose_set_privacy_system_cb(GtkWidget      *widget,
 					  gpointer        data);
-static void compose_update_privacy_system_menu_item(Compose * compose);
+static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn);
 static void activate_privacy_system     (Compose *compose, 
-                                         PrefsAccount *account);
+                                         PrefsAccount *account,
+					 gboolean warn);
 static void compose_use_signing(Compose *compose, gboolean use_signing);
 static void compose_use_encryption(Compose *compose, gboolean use_encryption);
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
@@ -944,7 +945,7 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	}
 	if (privacy != NULL) {
 		compose->privacy_system = g_strdup(privacy);
-		compose_update_privacy_system_menu_item(compose);
+		compose_update_privacy_system_menu_item(compose, FALSE);
 		compose_use_encryption(compose, TRUE);
 	}
 }	
@@ -964,7 +965,7 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account)
 	}
 	if (privacy != NULL) {
 		compose->privacy_system = g_strdup(privacy);
-		compose_update_privacy_system_menu_item(compose);
+		compose_update_privacy_system_menu_item(compose, FALSE);
 		compose_use_signing(compose, TRUE);
 	}
 }	
@@ -1472,9 +1473,9 @@ void compose_reedit(MsgInfo *msginfo)
 		compose->privacy_system = privacy_system;
 		compose_use_signing(compose, use_signing);
 		compose_use_encryption(compose, use_encryption);
-		compose_update_privacy_system_menu_item(compose);
+		compose_update_privacy_system_menu_item(compose, FALSE);
 	} else {
-		activate_privacy_system(compose, account);
+		activate_privacy_system(compose, account, FALSE);
 	}
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
@@ -2270,7 +2271,7 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
 
 	compose_update_priority_menu_item(compose);
-	compose_update_privacy_system_menu_item(compose);
+	compose_update_privacy_system_menu_item(compose, FALSE);
 	compose_show_first_last_header(compose, TRUE);
 }
 
@@ -3341,7 +3342,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	else
 		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 				       
-	activate_privacy_system(compose, account);
+	activate_privacy_system(compose, account, FALSE);
 
 	if (!init && compose->mode != COMPOSE_REDIRECT)
 		compose_insert_sig(compose, TRUE);
@@ -5308,7 +5309,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Privacy Systems menu */
 	compose_update_privacy_systems_menu(compose);
 
-	activate_privacy_system(compose, account);
+	activate_privacy_system(compose, account, TRUE);
 	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
 	gtk_widget_show(window);
 	
@@ -5427,13 +5428,14 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
 }
 
-static void compose_update_privacy_system_menu_item(Compose * compose)
+static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn)
 {
 	static gchar *branch_path = "/Options/Privacy System";
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem = NULL;
 	GList *amenu;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
+	gboolean found = FALSE;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
@@ -5455,7 +5457,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose)
 
 					can_sign = privacy_system_can_sign(systemid);
 					can_encrypt = privacy_system_can_encrypt(systemid);
-
+					found = TRUE;
 					break;
 				}
 
@@ -5463,6 +5465,15 @@ static void compose_update_privacy_system_menu_item(Compose * compose)
 		}
 		if (menuitem != NULL)
 			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		
+		if (warn && !found && strlen(compose->privacy_system)) {
+			gchar *tmp = g_strdup_printf(
+				_("The privacy system '%s' cannot be loaded. You "
+				  "will not be able to sign or encrypt this message."),
+				  compose->privacy_system);
+			alertpanel_warning(tmp);
+			g_free(tmp);
+		}
 	}
 
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
@@ -6534,11 +6545,8 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	
-	if (prefs_common.work_offline)
-		if (alertpanel(_("Offline warning"), 
-			       _("You're working offline. Override?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
-			return;
+	if (prefs_common.work_offline && !inc_offline_should_override())
+		return;
 	
 	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
 		gtk_timeout_remove(compose->draft_timeout_tag);
@@ -7394,11 +7402,11 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 		compose->use_encryption = FALSE;
 }
 
-static void activate_privacy_system(Compose *compose, PrefsAccount *account) 
+static void activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
 {
 	g_free(compose->privacy_system);
 	compose->privacy_system = g_strdup(account->default_privacy_system);
-	compose_update_privacy_system_menu_item(compose);
+	compose_update_privacy_system_menu_item(compose, warn);
 }
 
 static void compose_toggle_ruler_cb(gpointer data, guint action,

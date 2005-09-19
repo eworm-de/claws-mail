@@ -46,6 +46,7 @@
 #include "exportldif.h"
 #include "utils.h"
 #include "manage_window.h"
+#include "filesel.h"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_DN                    1
@@ -324,6 +325,8 @@ static void export_ldif_next( GtkWidget *widget ) {
 		if( exp_ldif_move_dn() ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(expldif_dlg.notebook), PAGE_FINISH );
+			gtk_button_set_label(GTK_BUTTON(expldif_dlg.btnCancel),
+				GTK_STOCK_CLOSE);
 			exp_ldif_finish_show();
 			exportldif_save_settings( _exportCtl_ );
 			export_ldif_message();
@@ -332,74 +335,26 @@ static void export_ldif_next( GtkWidget *widget ) {
 }
 
 /**
- * Callback function to accept LDIF file selection.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void exp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
-	const gchar *sFile;
-	AddressFileSelection *afs;
-	GtkWidget *fileSel;
-
-	afs = ( AddressFileSelection * ) data;
-	fileSel = afs->fileSelector;
-	sFile = gtk_file_selection_get_filename( GTK_FILE_SELECTION(fileSel) );
-
-	afs->cancelled = FALSE;
-	gtk_entry_set_text( GTK_ENTRY(expldif_dlg.entryLdif), sFile );
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( expldif_dlg.entryLdif );
-}
-
-/**
- * Callback function to cancel LDIF file selection dialog.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void exp_ldif_file_cancel( GtkWidget *widget, gpointer data ) {
-	AddressFileSelection *afs = ( AddressFileSelection * ) data;
-	afs->cancelled = TRUE;
-	gtk_widget_hide( afs->fileSelector );
-	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( expldif_dlg.entryLdif );
-}
-
-/**
  * Create LDIF file selection dialog.
  * \param afs Address file selection data.
  */
 static void exp_ldif_file_select_create( AddressFileSelection *afs ) {
-	GtkWidget *fileSelector;
-
-	fileSelector = gtk_file_selection_new( _("Select LDIF Output File") );
-	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	gtk_file_selection_complete( GTK_FILE_SELECTION(fileSelector), "*.html" );
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->ok_button),
-			 "clicked", 
-			 G_CALLBACK(exp_ldif_file_ok), (gpointer)afs);
-	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->cancel_button),
-			 "clicked", 
-			 G_CALLBACK(exp_ldif_file_cancel), (gpointer)afs);
-	afs->fileSelector = fileSelector;
-	afs->cancelled = TRUE;
+	gchar *file = filesel_select_file_save(_("Select LDIF output file"), NULL);
+	
+	if (file == NULL)
+		afs->cancelled = TRUE;
+	else {
+		afs->cancelled = FALSE;
+		gtk_entry_set_text( GTK_ENTRY(expldif_dlg.entryLdif), file );
+		g_free(file);
+	}
 }
 
 /**
  * Callback function to display LDIF file selection dialog.
  */
 static void exp_ldif_file_select( void ) {
-	gchar *sFile;
-	if( ! _exp_ldif_file_selector_.fileSelector )
-		exp_ldif_file_select_create( & _exp_ldif_file_selector_ );
-
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(expldif_dlg.entryLdif), 0, -1 );
-	gtk_file_selection_set_filename(
-		GTK_FILE_SELECTION( _exp_ldif_file_selector_.fileSelector ),
-		sFile );
-	g_free( sFile );
-	gtk_widget_show( _exp_ldif_file_selector_.fileSelector );
-	gtk_grab_add( _exp_ldif_file_selector_.fileSelector );
+	exp_ldif_file_select_create( & _exp_ldif_file_selector_ );
 }
 
 /**
@@ -821,6 +776,9 @@ void addressbook_exp_ldif( AddressCache *cache ) {
 	/* Setup GUI */
 	if( ! expldif_dlg.window )
 		export_ldif_create();
+
+	gtk_button_set_label(GTK_BUTTON(expldif_dlg.btnCancel),
+			     GTK_STOCK_CANCEL);
 	expldif_dlg.cancelled = FALSE;
 	gtk_widget_show(expldif_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(expldif_dlg.window));

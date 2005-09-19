@@ -29,6 +29,7 @@
 #include <string.h>
 #include "imap.h"
 #include "imap_gtk.h"
+#include "inc.h"
 
 #ifdef HAVE_LIBETPAN
 
@@ -655,7 +656,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	
-	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		return NULL;
 	}
 
@@ -722,6 +723,20 @@ static IMAPSession *imap_session_new(Folder * folder,
 		: account->ssl_imap == SSL_TUNNEL ? IMAPS_PORT : IMAP4_PORT;
 	ssl_type = account->ssl_imap;	
 #else
+	if (account->ssl_imap != SSL_NONE) {
+		if (alertpanel_full(_("Insecure connection"),
+			_("This connection is configured to be secured "
+			  "using SSL, but SSL is not available in this "
+			  "build of Sylpheed-Claws. \n\n"
+			  "Do you want to continue connecting to this "
+			  "server? The communication would not be "
+			  "secure."),
+			  _("Continue connecting"), 
+			  GTK_STOCK_CANCEL, NULL,
+			  FALSE, NULL, ALERT_WARNING,
+			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+			return NULL;
+	}
 	port = account->set_imapport ? account->imapport
 		: IMAP4_PORT;
 #endif
@@ -1967,7 +1982,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		data->numlist = newlist;
 		data->cur += count;
 		
-		if (prefs_common.work_offline && !imap_gtk_should_override()) {
+		if (prefs_common.work_offline && !inc_offline_should_override()) {
 			g_free(data);
 			return NULL;
 		}
@@ -2472,7 +2487,7 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	data->headers = headers;
 	data->body = body;
 
-	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		g_free(data);
 		return -1;
 	}
@@ -2557,7 +2572,7 @@ static gint imap_cmd_expunge(IMAPSession *session)
 {
 	int r;
 	
-	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		return -1;
 	}
 
@@ -2886,7 +2901,7 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	data->item = item;
 	data->msgnum_list = msgnum_list;
 
-	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		g_free(data);
 		return -1;
 	}
@@ -2907,8 +2922,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	gboolean selected_folder;
 	
 	debug_print("get_num_list\n");
-	statusbar_print_all("Scanning %s...\n", FOLDER_ITEM(item)->path 
-				? FOLDER_ITEM(item)->path:"");
 	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -2918,6 +2931,9 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
+
+	statusbar_print_all("Scanning %s...\n", FOLDER_ITEM(item)->path 
+				? FOLDER_ITEM(item)->path:"");
 
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->item.path));
@@ -3549,7 +3565,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	data->msginfo_list = msginfo_list;
 	data->msgflags = msgflags;
 
-	if (prefs_common.work_offline && !imap_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		g_free(data);
 		return -1;
 	}

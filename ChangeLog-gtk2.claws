@@ -1,3 +1,43 @@
+2005-09-19 [colin]	1.9.14cvs43
+
+	* src/addressbook.c
+		Fix sensitivity of Delete button
+	* src/compose.c
+		Warn if the requested Privacy system
+		is not available
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/importldif.c
+	* src/importmutt.c
+	* src/importpine.c
+		Fix crappy UI
+	* src/
+	* src/ssl.h
+	* src/prefs_account.h
+	* src/prefs_account.c
+		Save SSL prefs even in builds that have
+		SSL support disable
+	* src/imap.c
+	* src/inc.c
+	* src/news.c
+	* src/send_message.c
+		Warn if connection should be secure, but
+		SSL support isn't compiled in
+	* src/gtkaspell.c
+		Fix word separation on UTF-8 systems
+	* src/compose.c
+		Warn if the requested Privacy system
+		is not available
+		Factorize offline warning
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/imap_gtk.h
+	* src/inc.h
+	* src/news_gtk.c
+	* src/news_gtk.h
+	* src/messageview.c
+		Factorize offline warning
+
 2005-09-19 [paul]
 
 	1.9.15-rc2 released

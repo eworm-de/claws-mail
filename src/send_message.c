@@ -255,6 +255,20 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		if (ac_prefs->ssl_smtp != SSL_NONE)
 			session->nonblocking = ac_prefs->use_nonblocking_ssl;
 	#else
+		if (ac_prefs->ssl_smtp != SSL_NONE) {
+			if (alertpanel_full(_("Insecure connection"),
+				_("This connection is configured to be secured "
+				  "using SSL, but SSL is not available in this "
+				  "build of Sylpheed-Claws. \n\n"
+				  "Do you want to continue connecting to this "
+				  "server? The communication would not be "
+				  "secure."),
+				  _("Continue connecting"), 
+				  GTK_STOCK_CANCEL, NULL,
+				  FALSE, NULL, ALERT_WARNING,
+				  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+				return -1;
+		}
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 	#endif
 

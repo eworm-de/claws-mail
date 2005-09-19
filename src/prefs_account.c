@@ -450,6 +450,19 @@ static PrefParam param[] = {
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
 	 &ssl.use_nonblocking_ssl_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+#else
+	/* SSL */
+	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
+	 NULL, NULL, NULL},
+	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
+	 NULL, NULL, NULL},
+	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
+	 NULL, NULL, NULL},
+	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
+	 NULL, NULL, NULL},
 #endif /* USE_OPENSSL */
 
 	/* Advanced */

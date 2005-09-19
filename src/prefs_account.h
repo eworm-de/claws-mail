@@ -23,7 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
-
+#include "ssl.h"
 typedef struct _PrefsAccount	PrefsAccount;
 
 typedef enum {
@@ -71,13 +71,11 @@ struct _PrefsAccount
 	gboolean use_mail_command;
 	gchar * mail_command;
 
-#if USE_OPENSSL
 	SSLType ssl_pop;
 	SSLType ssl_imap;
 	SSLType ssl_nntp;
 	SSLType ssl_smtp;
 	gboolean use_nonblocking_ssl;
-#endif /* USE_OPENSSL */
 
 	/* Temporarily preserved password */
 	gchar *tmp_pass;

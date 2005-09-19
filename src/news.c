@@ -51,6 +51,8 @@
 #include "progressindicator.h"
 #include "remotefolder.h"
 #include "alertpanel.h"
+#include "inc.h"
+
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -243,6 +245,20 @@ static Session *news_session_new_for_folder(Folder *folder)
 	session = news_session_new(ac->nntp_server, port, userid, passwd,
 				   ac->ssl_nntp);
 #else
+	if (ac->ssl_nntp != SSL_NONE) {
+		if (alertpanel_full(_("Insecure connection"),
+			_("This connection is configured to be secured "
+			  "using SSL, but SSL is not available in this "
+			  "build of Sylpheed-Claws. \n\n"
+			  "Do you want to continue connecting to this "
+			  "server? The communication would not be "
+			  "secure."),
+			  _("Continue connecting"), 
+			  GTK_STOCK_CANCEL, NULL,
+			  FALSE, NULL, ALERT_WARNING,
+			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+			return NULL;
+	}
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
 	session = news_session_new(ac->nntp_server, port, userid, passwd);
 #endif
@@ -262,7 +278,7 @@ static NNTPSession *news_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-	if (prefs_common.work_offline && !news_gtk_should_override()) {
+	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		return NULL;
 	}
 

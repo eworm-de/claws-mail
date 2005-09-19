@@ -387,6 +387,7 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 					guint             info,
 					guint             time,
 					void             *pdata);
+static void addressbook_list_menu_setup( void );
 
 static GtkTargetEntry addressbook_drag_types[] =
 {
@@ -1208,6 +1209,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			gtk_sctree_select( GTK_SCTREE(ctree), addrbook.opened);
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
+		addressbook_list_menu_setup();
 		return;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
@@ -1232,6 +1234,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		gtk_sctree_select( GTK_SCTREE(ctree), addrbook.opened);
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
+		addressbook_list_menu_setup();
 		return;
 	}
 
@@ -1441,7 +1444,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 
 	/* Enable edit */
 	menu_set_sensitive( addrbook.menu_factory, "/Address/Edit",   canEdit );
-	menu_set_sensitive( addrbook.menu_factory, "/Address/Delete", canEdit );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Delete", canDelete );
 	gtk_widget_set_sensitive( addrbook.edit_btn, canEdit );
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
 
@@ -1534,7 +1537,7 @@ static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	addressbook_menuitem_set_sensitive( obj, node );
 
 	addressbook_list_select_clear();
-	
+	addressbook_list_menu_setup();
 	return FALSE;
 }
 
@@ -1612,7 +1615,6 @@ static void addressbook_list_menu_setup( void ) {
 	if( GTK_CLIST(clist)->selection && GTK_CLIST(clist)->selection->next ) {
 		canEdit = FALSE;
 		canBrowse = FALSE;
-		canDelete = canEdit;
 	}
 
 	/* Now go finalize menu items */
