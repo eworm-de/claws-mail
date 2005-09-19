@@ -25,6 +25,7 @@
 		SSL support isn't compiled in
 	* src/gtkaspell.c
 		Fix word separation on UTF-8 systems
+		Fixes bug #812 (Strange inline spellchecking)
 	* src/compose.c
 		Warn if the requested Privacy system
 		is not available
