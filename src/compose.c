@@ -6790,8 +6790,8 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 
 	if (compose->modified) {
 		val = alertpanel(_("Discard message"),
-				 _("This message has been modified. discard it?"),
-				 _("Discard"), _("to Draft"), GTK_STOCK_CANCEL);
+				 _("This message has been modified. Discard it?"),
+				 _("Discard"), _("Save to Drafts"), GTK_STOCK_CANCEL);
 
 		switch (val) {
 		case G_ALERTDEFAULT:

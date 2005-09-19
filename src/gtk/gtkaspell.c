@@ -2414,7 +2414,7 @@ static void change_color(GtkAspell * gtkaspell,
 	GtkTextBuffer *buffer;
 	GtkTextIter startiter, enditer;
 
-	if (start < end)
+	if (start > end)
 		return;
     
 	gtktext = gtkaspell->gtktext;
