@@ -154,17 +154,17 @@ static GList *msgview_list = NULL;
 static GtkItemFactoryEntry msgview_entries[] =
 {
 	{N_("/_File"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Save as..."),	NULL, save_as_cb, 0, NULL},
-	{N_("/_File/_Print..."),	NULL, print_cb, 0, NULL},
+	{N_("/_File/_Save as..."),	"<control>S", save_as_cb, 0, NULL},
+	{N_("/_File/_Print..."),	"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),		NULL, close_cb, 0, NULL},
+	{N_("/_File/_Close"),		"<control>W", close_cb, 0, NULL},
 
 	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/_Copy"),		NULL, copy_cb, 0, NULL},
-	{N_("/_Edit/Select _all"),	NULL, allsel_cb, 0, NULL},
+	{N_("/_Edit/_Copy"),		"<control>C", copy_cb, 0, NULL},
+	{N_("/_Edit/Select _all"),	"<control>A", allsel_cb, 0, NULL},
 	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Find in current message..."),
-					NULL, search_cb, 0, NULL},
+					"<control>F", search_cb, 0, NULL},
 
 	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
 
@@ -266,22 +266,22 @@ static GtkItemFactoryEntry msgview_entries[] =
 #undef DEC_ACTION
 
 	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
-	{N_("/_View/Show all _headers"),NULL, show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Mess_age source"),	"<control>U", view_source_cb, 0, NULL},
+	{N_("/_View/Show all _headers"),"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/Compose _new message"),
-					NULL, compose_cb, 0, NULL},
+					"<control>M", compose_cb, 0, NULL},
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Reply"),	NULL, reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/_Reply"),	"<control>R", reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to/_all"),
-					NULL, reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
+					"<control><shift>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Message/Repl_y to/_sender"),
 					NULL, reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Repl_y to/mailing _list"),
-					NULL, reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
+					"<control>L", reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),	NULL, reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/_Forward"),	"<control><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/For_ward as attachment"),
 					NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/Redirec_t"),	NULL, reply_cb, COMPOSE_REDIRECT, NULL},
@@ -289,7 +289,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 	{N_("/_Message/Re-_edit"),	NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Address book"),	NULL, addressbook_open_cb, 0, NULL},
+	{N_("/_Tools/_Address book"),	"<control><shift>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tools/Add sender to address boo_k"),
 					NULL, add_address_cb, 0, NULL},
 	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
@@ -739,7 +739,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 {
 	gchar *file;
 	MimeInfo *mimeinfo, *encinfo;
-
+	gchar *subject = NULL;
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	mimeinfo = procmime_scan_message(msginfo);
@@ -774,6 +774,24 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			messageview->all_headers);
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
+	
+	if (messageview->window)
+		gtk_window_set_title(GTK_WINDOW(messageview->window), 
+				_("Sylpheed - Message View"));
+	if (messageview->window && msginfo->subject) {
+		subject = g_strdup(msginfo->subject);
+		if (!g_utf8_validate(subject, -1, NULL)) {
+			g_free(subject);
+			subject = g_malloc(strlen(msginfo->subject)*2 +1);
+			conv_localetodisp(subject, strlen(msginfo->subject)*2 +1, 
+				msginfo->subject);
+		}
+		if (g_utf8_validate(subject, -1, NULL))
+			gtk_window_set_title(GTK_WINDOW(messageview->window), 
+				subject);
+		g_free(subject);
+	}
+
 	messageview_set_position(messageview, 0);
 
 	if (messageview->msginfo->partial_recv)

@@ -2401,8 +2401,13 @@ static void allocate_color(GtkAspell *gtkaspell, gint rgbvalue)
 	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0)
 			* 65535.0);
 
-	gtk_text_buffer_create_tag(buffer, "misspelled",
+	if (rgbvalue != 0)
+		gtk_text_buffer_create_tag(buffer, "misspelled",
 				   "foreground-gdk", color, NULL);
+	else
+		gtk_text_buffer_create_tag(buffer, "misspelled",
+				   "underline", PANGO_UNDERLINE_ERROR, NULL);
+
 }
 
 static void change_color(GtkAspell * gtkaspell, 

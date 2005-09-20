@@ -461,7 +461,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
-	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
+	{N_("/_File/_Print..."),		"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},

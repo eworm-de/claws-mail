@@ -152,6 +152,8 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *hbox1;
 	GtkWidget *misspelled_btn;
 	GtkTooltips *tooltips;
+	PangoFontDescription *font_desc;
+	gint size;
 
 	tooltips = gtk_tooltips_new ();
 
@@ -258,6 +260,18 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE,
 			   0);
 	gtk_widget_set_size_request(misspelled_btn, 30, 20);
+	label5 = gtk_label_new(_("(Black to use underline)"));
+	gtk_misc_set_alignment(GTK_MISC(label5), 0, 0.5);
+	gtk_label_set_justify(GTK_LABEL(label4), GTK_JUSTIFY_LEFT);
+	gtk_widget_show(label5);
+	font_desc = pango_font_description_new();
+	size = pango_font_description_get_size
+		(label5->style->font_desc);
+	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
+	gtk_widget_modify_font(label5, font_desc);
+	pango_font_description_free(font_desc);
+	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE,
+			   4);
 	/* END GLADE CODE */
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_aspell),

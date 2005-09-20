@@ -1,3 +1,14 @@
+2005-09-20 [colin]	1.9.14cvs45
+
+	* src/mainwindow.c
+	* src/messageview.c
+		GUI fixups: add accels, set message
+		view title to displayed mail's subject
+	* src/prefs_spelling.c
+	* src/gtk/gtkaspell.c
+		GUI fixups: allow underlining misspelled
+		words instead of coloring them (a11y!)
+
 2005-09-19 [colin]
 
 	1.9.15rc3 released
