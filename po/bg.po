@@ -2468,7 +2468,7 @@ msgid ""
 msgstr ""
 "Вие би трябвало да сте получили копие на GNU General Public License заедно с "
 "програмата; в случай, че не сте, обърнете се към Free Software Foundation, "
-"Inc.,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+"Inc.,51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: src/gtk/colorlabel.c:46
 msgid "Orange"

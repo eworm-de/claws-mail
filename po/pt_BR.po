@@ -2905,8 +2905,8 @@ msgstr ""
 "\n"
 
 #: src/gtk/about.c:253
-msgid "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "Você deve ter recebido uma cópia da Licença Pública GNU juntamente com este programa; caso não, escreva para Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgid "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr "Você deve ter recebido uma cópia da Licença Pública GNU juntamente com este programa; caso não, escreva para Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: src/gtk/about.c:259
 msgid ""

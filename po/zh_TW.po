@@ -2714,7 +2714,7 @@ msgid ""
 "Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 "您應該已經隨軟體收到一份 GPL；若沒有，請寫信到自由軟體基金會，地址是:\n"
-"59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: src/gtk/about.c:259
 msgid ""

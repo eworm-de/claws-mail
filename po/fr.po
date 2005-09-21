@@ -2749,7 +2749,7 @@ msgid ""
 msgstr ""
 "Vous devez avoir reçu une copie de la GNU General Public License avec ce "
 "programme. Si ce n'est pas le cas, écrivez à la Free Software Foundation, "
-"Inc.,, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+"Inc.,, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 # FIXME
 #: src/gtk/about.c:259

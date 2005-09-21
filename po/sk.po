@@ -2753,7 +2753,7 @@ msgid ""
 msgstr ""
 "Kópiu GNU General Public License by ste mali získať spoločne s týmto "
 "programom. Ak to tak nie je, napíšte na adresu Free Software Foundation, "
-"Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+"Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: src/gtk/about.c:259
 msgid ""

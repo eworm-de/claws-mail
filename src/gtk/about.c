@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -252,8 +252,8 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		_("You should have received a copy of the GNU General Public License "
 		  "along with this program; if not, write to the Free Software "
-		  "Foundation, Inc., 59 Temple Place - Suite 330, Boston, "
-		  "MA 02111-1307, USA."), -1);
+		  "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
+		  "MA 02110-1301, USA."), -1);
 #ifdef USE_OPENSSL
 	gtk_text_buffer_insert(buffer, &iter,
 		_("\n\nThis product includes software developed by the OpenSSL Project "
