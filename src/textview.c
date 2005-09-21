@@ -105,14 +105,14 @@ static GdkColor error_color = {
 static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
 
-#define TEXTVIEW_STATUSBAR_PUSH(textview, str)					    \
-{									    \
+#define TEXTVIEW_STATUSBAR_PUSH(textview, str)				    \
+{	if (textview->messageview->statusbar)				    \
 	gtk_statusbar_push(GTK_STATUSBAR(textview->messageview->statusbar), \
 			   textview->messageview->statusbar_cid, str);	    \
 }
 
-#define TEXTVIEW_STATUSBAR_POP(textview)						   \
-{									   \
+#define TEXTVIEW_STATUSBAR_POP(textview)				   \
+{	if (textview->messageview->statusbar)				   \
 	gtk_statusbar_pop(GTK_STATUSBAR(textview->messageview->statusbar), \
 			  textview->messageview->statusbar_cid);	   \
 }

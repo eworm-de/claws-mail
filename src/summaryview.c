@@ -809,6 +809,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	guint displayed_msgnum = 0;
 	GSList *cur;
         GSList *not_killed;
+	gboolean hidden_removed = FALSE;
 
 	if (summary_is_locked(summaryview)) return FALSE;
 
@@ -909,19 +910,23 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 			
-			if (MSG_IS_UNREAD(msginfo->flags) &&
-			    !MSG_IS_IGNORE_THREAD(msginfo->flags))
-				not_killed = g_slist_prepend(not_killed, msginfo);
-			else if (MSG_IS_MARKED(msginfo->flags) ||
-				 MSG_IS_LOCKED(msginfo->flags))
-				not_killed = g_slist_prepend(not_killed, msginfo);
-			else if (is_refresh &&
-				(msginfo->msgnum == selected_msgnum ||
-				 msginfo->msgnum == displayed_msgnum))
-				not_killed = g_slist_prepend(not_killed, msginfo);
-			else
-				procmsg_msginfo_free(msginfo);
+			if (!msginfo->hidden) {
+				if (MSG_IS_UNREAD(msginfo->flags) &&
+				    !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					not_killed = g_slist_prepend(not_killed, msginfo);
+				else if (MSG_IS_MARKED(msginfo->flags) ||
+					 MSG_IS_LOCKED(msginfo->flags))
+					not_killed = g_slist_prepend(not_killed, msginfo);
+				else if (is_refresh &&
+					(msginfo->msgnum == selected_msgnum ||
+					 msginfo->msgnum == displayed_msgnum))
+					not_killed = g_slist_prepend(not_killed, msginfo);
+				else
+					procmsg_msginfo_free(msginfo);
+			 } else
+			 	procmsg_msginfo_free(msginfo);
 		}
+		hidden_removed = TRUE;
 		g_slist_free(mlist);
 		mlist = not_killed;
 	} else {
@@ -935,12 +940,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 
-			if (quicksearch_match(summaryview->quicksearch, msginfo))
+			if (!msginfo->hidden && quicksearch_match(summaryview->quicksearch, msginfo))
 				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
-		
+		hidden_removed = TRUE;
 		if (quicksearch_is_running(summaryview->quicksearch)) {
 			/* only scan subfolders when quicksearch changed,
 			 * not when search is the same and folder changed */
@@ -956,38 +961,19 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		mlist = not_killed;
 	}
 
-#if 0	
-	if ((global_scoring || item->prefs->scoring)) {
-		GSList *not_killed;
-		gint kill_score;
+	if (!hidden_removed) {
+        	not_killed = NULL;
+        	for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
+                	MsgInfo * msginfo = (MsgInfo *) cur->data;
 
-		not_killed = NULL;
-		kill_score = prefs_common.kill_score;
-		if (item->prefs->kill_score > kill_score)
-			kill_score = item->prefs->kill_score;
-		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
-			MsgInfo * msginfo = (MsgInfo *) cur->data;
-
-			if (msginfo->score > kill_score)
-				not_killed = g_slist_prepend(not_killed, msginfo);
-			else
-				procmsg_msginfo_free(msginfo);
-		}
+                	if (!msginfo->hidden)
+                        	not_killed = g_slist_prepend(not_killed, msginfo);
+                	else
+                        	procmsg_msginfo_free(msginfo);
+        	}
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
-#endif
-        not_killed = NULL;
-        for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
-                MsgInfo * msginfo = (MsgInfo *) cur->data;
-                
-                if (!msginfo->hidden)
-                        not_killed = g_slist_prepend(not_killed, msginfo);
-                else
-                        procmsg_msginfo_free(msginfo);
-        }
-        g_slist_free(mlist);
-        mlist = not_killed;
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -2264,11 +2250,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	if (prefs_common.use_addr_book)
 		start_address_completion();
 	
-	for (cur = mlist ; cur != NULL && cur->data != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-		msginfo->threadscore = msginfo->score;
-	}
-
 	if (summaryview->threaded) {
 		GNode *root, *gnode;
 
@@ -3556,6 +3537,19 @@ void summary_save_as(SummaryView *summaryview)
 	g_free(tmp);
 }
 
+#ifdef USE_GNOMEPRINT
+static void print_mimeview(MimeView *mimeview) 
+{
+	if (!mimeview 
+	||  !mimeview->textview
+	||  !mimeview->textview->text)
+		alertpanel_warning(_("Cannot print: the message doesn't "
+				     "contain text."));
+	else
+		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
+}
+#endif
+
 void summary_print(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
@@ -3564,9 +3558,6 @@ void summary_print(SummaryView *summaryview)
 	MsgInfo *msginfo;
 	gchar *cmdline = NULL;
 	gchar *p;
-#else
-	gboolean first = TRUE;
-	GList *tmplist;
 #endif
 	GList *cur;
 
@@ -3584,36 +3575,39 @@ void summary_print(SummaryView *summaryview)
 		g_free(cmdline);
 		return;
 	}
-	for (cur = clist->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
+	for (cur = clist->selection; 
+	     cur != NULL && cur->data != NULL; 
+	     cur = cur->next) {
 		msginfo = gtk_ctree_node_get_row_data
 			(ctree, GTK_CTREE_NODE(cur->data));
-		if (msginfo) procmsg_print_message(msginfo, cmdline);
+		if (msginfo) 
+			procmsg_print_message(msginfo, cmdline);
 	}
 
 	g_free(cmdline);
-	
 #else
-	tmplist = g_list_copy(clist->selection);
-	summary_unselect_all(summaryview);
-	for (cur = tmplist; cur != NULL && cur->data != NULL; cur = cur->next) {
+	for (cur = clist->selection; 
+	     cur != NULL && cur->data != NULL; 
+	     cur = cur->next) {
 		GtkCTreeNode *node = GTK_CTREE_NODE(cur->data);
-		summary_select_node(summaryview, node, TRUE, TRUE);
-		if (!summaryview->messageview->mimeview 
-		||  !summaryview->messageview->mimeview->textview
-		||  !summaryview->messageview->mimeview->textview->text)
-			alertpanel_warning(_("Cannot print: the message doesn't "
-					     "contain text."));
-		gedit_print(
-			GTK_TEXT_VIEW(summaryview->messageview->mimeview
-					->textview->text));
+		if (node != summaryview->displayed) {
+			MessageView *tmpview = messageview_create(
+						summaryview->mainwin);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(
+						GTK_CTREE(summaryview->ctree),
+						node);
+
+			messageview_init(tmpview);
+			tmpview->all_headers = summaryview->messageview->all_headers;
+			if (msginfo && messageview_show(tmpview, msginfo, 
+				tmpview->all_headers) >= 0) {
+					print_mimeview(tmpview->mimeview);
+			}
+			messageview_destroy(tmpview);
+		} else {
+			print_mimeview(summaryview->messageview->mimeview);
+		}
 	}
-	for (cur = tmplist; cur != NULL && cur->data != NULL; cur = cur->next) {
-		GtkCTreeNode *node = GTK_CTREE_NODE(cur->data);
-		gtk_sctree_select_with_state(
-			GTK_SCTREE(clist), node, first ? 0:GDK_CONTROL_MASK);
-		first = FALSE;
-	}
-	g_list_free(tmplist);
 #endif
 }
 
@@ -5173,7 +5167,7 @@ static gint summary_cmp_by_score(GtkCList *clist,
 
 	/* if score are equal, sort by date */
 
-	diff = msginfo1->threadscore - msginfo2->threadscore;
+	diff = msginfo1->score - msginfo2->score;
 	if (diff != 0)
 		return diff;
 	else

@@ -1164,7 +1164,6 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
         newmsginfo->references = g_slist_reverse(newmsginfo->references);
 
 	MEMBCOPY(score);
-	MEMBCOPY(threadscore);
 	MEMBDUP(plaintext_file);
 
 	return newmsginfo;

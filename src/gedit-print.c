@@ -54,6 +54,7 @@
 
 #include "gedit-print.h"
 #include "gtk/gtksourceprintjob.h"
+#include "mainwindow.h"
 
 #ifdef DEBUG
 #  define DEBUG_PRINT "DEBUG_PRINT: %s"
@@ -333,6 +334,7 @@ gedit_print (GtkTextView *view)
 {
 	GeditPrintJobInfo *pji;
 	GtkWidget *dialog;
+	GtkWidget *parent;
 
 	gedit_debug (DEBUG_PRINT, "");
 
@@ -340,8 +342,12 @@ gedit_print (GtkTextView *view)
 
 	pji = gedit_print_job_info_new (view);
 	pji->preview = PREVIEW_NO;
+	
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (view));
+	if (parent == NULL || !GTK_IS_WINDOW(parent))
+		parent = mainwindow_get_mainwindow()->window;
 
-	dialog = get_print_dialog (pji, GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))));
+	dialog = get_print_dialog (pji, GTK_WINDOW (parent));
 	
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (gedit_print_dialog_response),

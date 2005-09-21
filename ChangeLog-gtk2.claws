@@ -1,3 +1,16 @@
+2005-09-21 [colin]	1.9.14cvs46
+
+	* src/gedit-print.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/textview.c
+	* src/summaryview.c
+		Remove some printing hacks (deselection/reselection),
+		which by the way fix printing the currently 
+		displayed mime part (still only text)
+		Plus a little optimisation of summary_show
+
+
 2005-09-20 [colin]	1.9.14cvs45
 
 	* src/mainwindow.c
