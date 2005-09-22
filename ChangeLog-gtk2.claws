@@ -1,3 +1,25 @@
+2005-09-22 [colin]	1.9.14cvs49
+
+	* src/codeconv.c
+	* src/codeconv.h
+		Add a strict mode that doesn't replace with _
+	* src/compose.c
+	* src/compose.h
+		Use strict conversion while sending
+		Fix race when drafting while sending (happens
+		on IMAP)
+		Fix d'n'd of messages from summaryview
+	* src/prefs_common.c
+	* src/prefs_common.h
+		add hidden utf8_instead_of_locale_for_broken_mail 
+		pref for people that preferred the default charset 
+		to be utf8 for broken mails
+	* src/quote_fmt_parse.y
+		fix bug #815 (No quote insert if "From:" fied 
+		contained Russian letters)
+	* src/summaryview.c
+		Fix d'n'd of messages to compose
+
 2005-09-22 [paul]	1.9.14cvs48
 
 	* src/compose.c

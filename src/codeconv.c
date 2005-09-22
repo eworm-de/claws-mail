@@ -126,6 +126,13 @@ static void conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf);
 
+static gboolean strict_mode = FALSE;
+
+void codeconv_set_strict(gboolean mode)
+{
+	strict_mode = mode;
+}
+
 static void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	const guchar *in = inbuf;
@@ -907,6 +914,10 @@ gchar *conv_iconv_strdup_with_cd(const gchar *inbuf, iconv_t cd)
 	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
 			       &outbuf_p, &out_left)) == (size_t)-1) {
 		if (EILSEQ == errno) {
+			if (strict_mode) {
+				g_free(outbuf);
+				return NULL;
+			}
 			//g_print("iconv(): at %d: %s\n", in_size - in_left, g_strerror(errno));
 			inbuf_p++;
 			in_left--;

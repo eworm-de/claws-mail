@@ -5028,7 +5028,8 @@ static void summary_drag_data_get(GtkWidget        *widget,
 		if (GTK_CLIST(summaryview->ctree)->selection)
 			gtk_selection_data_set(selection_data,
 					       selection_data->target, 8,
-					       "Dummy", 6);
+					       "Dummy-Summaryview", 
+					       strlen("Dummy-Summaryview")+1);
 	}
 }
 

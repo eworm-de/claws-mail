@@ -216,6 +216,7 @@ struct _Compose
 	guint draft_timeout_tag;
 	
 	GtkTextTag *no_wrap_tag;
+	GMutex *mutex;
 };
 
 struct _AttachInfo

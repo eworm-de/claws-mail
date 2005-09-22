@@ -79,6 +79,7 @@
 #  include <wctype.h>
 #endif
 
+#include "sylpheed.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
@@ -494,7 +495,7 @@ static void compose_check_forwards_go	   (Compose *compose);
 static gint compose_defer_auto_save_draft	(Compose	*compose);
 static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
 
-static void compose_close	(Compose *compose);
+static gboolean compose_close	(Compose *compose);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -3430,7 +3431,10 @@ gint compose_send(Compose *compose)
 	val = compose_queue(compose, &msgnum, &folder);
 
 	if (val) {
-		if (val == -3) {
+		if (val == -4) {
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+					   "Charset conversion failed."));
+		} else if (val == -3) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Signature failed."));
 		} else if (val == -2) {
@@ -3762,8 +3766,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
 
 		if (action == COMPOSE_WRITE_FOR_SEND) {
+			codeconv_set_strict(TRUE);
 			buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
-			
+			codeconv_set_strict(FALSE);
+
 			if (!buf) {
 				AlertValue aval;
 				gchar *msg;
@@ -3777,7 +3783,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 
 				if (aval != G_ALERTDEFAULT) {
 					g_free(chars);
-					return -1;
+					return -3;
 				} else {
 					buf = chars;
 					out_codeset = src_codeset;
@@ -4134,7 +4140,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			fclose(fp);
 			g_unlink(tmp);
 			g_free(tmp);
-			return result - 1; /* -2 for a generic error, -3 for signing error */
+			return result - 1; /* -2 for a generic error, -3 for signing error, -4 for encoding */
 		}
 	}
 
@@ -4965,7 +4971,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	titles[COL_NAME]     = _("Name");
 
 	compose->account = account;
-
+	
+	compose->mutex = g_mutex_new();
+	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
@@ -5751,6 +5759,7 @@ static void compose_destroy(Compose *compose)
 	gtk_widget_destroy(compose->window);
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
+	g_mutex_free(compose->mutex);
 	g_free(compose);
 }
 
@@ -6590,14 +6599,23 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	draft = account_get_special_folder(compose->account, F_DRAFT);
 	g_return_if_fail(draft != NULL);
-
+	
+	if (!g_mutex_trylock(compose->mutex)) {
+		/* we don't want to lock the mutex once it's available,
+		 * because as the only other part of compose.c locking
+		 * it is compose_close - which means once unlocked,
+		 * the compose struct will be freed */
+		debug_print("couldn't lock mutex, probably sending\n");
+		return;
+	}
+	
 	lock = TRUE;
 
 	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
 	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
-		return;
+		goto unlock;
 	}
 
 	/* chmod for security */
@@ -6627,8 +6645,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		fclose(fp);
 		g_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
-		return;
+		goto unlock;
 	}
 	fclose(fp);
 
@@ -6636,10 +6653,9 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
 		g_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
 		if (action != COMPOSE_AUTO_SAVE)
 			alertpanel_error(_("Could not save draft."));
-		return;
+		goto unlock;
 	}
 	g_free(tmp);
 	draft->mtime = 0;	/* force updating */
@@ -6661,11 +6677,12 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	folder_item_scan(draft);
 	
-	lock = FALSE;
-
-	if (action == COMPOSE_QUIT_EDITING)
+	if (action == COMPOSE_QUIT_EDITING) {
+		lock = FALSE;
+		g_mutex_unlock(compose->mutex); /* must be done before closing */
 		compose_close(compose);
-	else {
+		return;
+	} else {
 		struct stat s;
 		gchar *path;
 
@@ -6674,8 +6691,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
 			g_free(path);
-			lock = FALSE;
-			return;
+			goto unlock;
 		}
 		g_free(path);
 
@@ -6693,6 +6709,9 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->modified = FALSE;
 		compose_set_title(compose);
 	}
+unlock:
+	lock = FALSE;
+	g_mutex_unlock(compose->mutex);
 }
 
 static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
@@ -7435,8 +7454,9 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
-	
-	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+
+	if (gdk_atom_name(data->type) && 
+	    !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next)
 			compose_attach_append
@@ -7445,6 +7465,32 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 		if (list) compose_changed_cb(NULL, compose);
 		list_free_strings(list);
 		g_list_free(list);
+	} else if (gdk_atom_name(data->type) && 
+		   !strcmp(gdk_atom_name(data->type), "text/plain") &&
+		   data->data && !strcmp(data->data, "Dummy-Summaryview")) {
+		/* comes from our summaryview */
+		SummaryView * summaryview = NULL;
+		GSList * list = NULL, *cur = NULL;
+		
+		if (mainwindow_get_mainwindow())
+			summaryview = mainwindow_get_mainwindow()->summaryview;
+		
+		if (summaryview)
+			list = summary_get_selected_msg_list(summaryview);
+		
+		for (cur = list; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			gchar *file = NULL;
+			if (msginfo)
+				file = procmsg_get_message_file_full(msginfo, 
+					TRUE, TRUE);
+			if (file) {
+				compose_attach_append(compose, (const gchar *)file, 
+					(const gchar *)file, "message/rfc822");
+				g_free(file);
+			}
+		}
+		g_slist_free(list);
 	}
 }
 
@@ -7745,15 +7791,25 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 	return account;
 }
 
-static void compose_close(Compose *compose)
+static gboolean compose_close(Compose *compose)
 {
 	gint x, y;
 
-	g_return_if_fail(compose);
+	if (!g_mutex_trylock(compose->mutex)) {
+		/* we have to wait for the (possibly deferred by auto-save)
+		 * drafting to be done, before destroying the compose under
+		 * it. */
+		debug_print("waiting for drafting to finish...\n");
+		g_timeout_add (500, (GSourceFunc) compose_close, compose);
+		return FALSE;
+	}
+	g_return_val_if_fail(compose, FALSE);
 	gtkut_widget_get_uposition(compose->window, &x, &y);
 	prefs_common.compose_x = x;
 	prefs_common.compose_y = y;
+	g_mutex_unlock(compose->mutex);
 	compose_destroy(compose);
+	return FALSE;
 }
 
 /**

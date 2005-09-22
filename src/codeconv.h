@@ -227,5 +227,5 @@ void conv_encode_header_full		(gchar		*dest,
 
 gchar *conv_filename_from_utf8		(const gchar	*utf8_file);
 gchar *conv_filename_to_utf8		(const gchar	*fs_file);
-
+void codeconv_set_strict		(gboolean	 mode);
 #endif /* __CODECONV_H__ */

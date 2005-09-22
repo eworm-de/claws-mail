@@ -324,6 +324,7 @@ struct _PrefsCommon
 	gint filteringwin_width;
 	gint filteringwin_height;
 	gint warn_dnd;
+	gint broken_are_utf8;
 };
 
 extern PrefsCommon prefs_common;

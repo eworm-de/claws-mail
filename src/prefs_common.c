@@ -239,8 +239,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Display: Summary View */
-	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
-	 NULL, NULL, NULL},
 	{"use_address_book", "FALSE", &prefs_common.use_addr_book, P_BOOL,
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
@@ -248,14 +246,8 @@ static PrefParam param[] = {
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, NULL, NULL, NULL},
 
-	{"enable_rules_hint", "TRUE", &prefs_common.enable_rules_hint, P_BOOL,
-	 NULL, NULL, NULL},
-	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
-	 NULL, NULL, NULL},
 	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
 	 NULL, NULL, NULL},
-	{"thread_by_subject_max_age", "10", &prefs_common.thread_by_subject_max_age,
-	P_INT, NULL, NULL, NULL },
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
@@ -268,9 +260,6 @@ static PrefParam param[] = {
 	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"folderview_vscrollbar_policy", "0",
-	 &prefs_common.folderview_vscrollbar_policy, P_ENUM,
-	 NULL, NULL, NULL},
 
 	{"summary_col_show_mark", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_MARK], P_BOOL, NULL, NULL, NULL},
@@ -455,9 +444,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"render_html", "TRUE", &prefs_common.render_html, P_BOOL,
 	 NULL, NULL, NULL},
-	{"textview_cursor_visible", "FALSE",
-	 &prefs_common.textview_cursor_visible, P_BOOL,
-	 NULL, NULL, NULL},
 	{"line_space", "2", &prefs_common.line_space, P_INT,
 	 NULL, NULL, NULL},
 
@@ -490,8 +476,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"separate_message", "FALSE", &prefs_common.sep_msg, P_BOOL,
 	 NULL, NULL, NULL},
-	{"statusbar_update_step", "10", &prefs_common.statusbar_update_step, P_INT,
-	 NULL, NULL, NULL},
 
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
@@ -517,9 +501,6 @@ static PrefParam param[] = {
 	 &prefs_common.pixmap_theme_path, P_STRING,
 	 NULL, NULL, NULL},
 
-	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
-	 NULL, NULL, NULL},
-	
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
@@ -542,8 +523,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
-	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
-	 NULL, NULL, NULL},
 	{"summary_quicksearch_recurse", "1", &prefs_common.summary_quicksearch_recurse, P_INT,
 	 NULL, NULL, NULL},
 
@@ -558,11 +537,6 @@ static PrefParam param[] = {
 	{"log_length", "500", &prefs_common.loglength, P_INT,
 	 NULL, NULL, NULL},
 
-	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
-	 NULL, NULL, NULL},
-	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
-	 NULL, NULL, NULL},
-
 	{"color_new", "179", &prefs_common.color_new, P_COLOR,
 	 NULL, NULL, NULL},
 
@@ -570,7 +544,36 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"filteringwin_height", "-1", &prefs_common.filteringwin_height, P_INT,
 	 NULL, NULL, NULL},
+
+	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
+	 NULL, NULL, NULL},
+	{"utf8_instead_of_locale_for_broken_mail", "0", 
+	 &prefs_common.broken_are_utf8, P_INT,
+	 NULL, NULL, NULL},
+	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
+	 NULL, NULL, NULL},
+	{"enable_rules_hint", "TRUE", &prefs_common.enable_rules_hint, P_BOOL,
+	 NULL, NULL, NULL},
+	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folderview_vscrollbar_policy", "0",
+	 &prefs_common.folderview_vscrollbar_policy, P_ENUM,
+	 NULL, NULL, NULL},
+	{"textview_cursor_visible", "FALSE",
+	 &prefs_common.textview_cursor_visible, P_BOOL,
+	 NULL, NULL, NULL},
+	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
+	 NULL, NULL, NULL},
+	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
+	 NULL, NULL, NULL},
+	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
+	 NULL, NULL, NULL},
+	{"thread_by_subject_max_age", "10", &prefs_common.thread_by_subject_max_age,
+	P_INT, NULL, NULL, NULL },
+	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
+	 NULL, NULL, NULL},
+	{"statusbar_update_step", "10", &prefs_common.statusbar_update_step, P_INT,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}

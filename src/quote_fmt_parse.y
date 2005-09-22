@@ -304,7 +304,7 @@ static void quote_fmt_show_sender_initial(const MsgInfo *msginfo)
 	p = msginfo->fromname;
 	cur = tmp;
 	while (*p) {
-		if (*p && isalnum(*p)) {
+		if (*p && g_utf8_validate(p, 1, NULL)) {
 			*cur = toupper(*p);
 				cur++;
 			len++;
