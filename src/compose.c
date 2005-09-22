@@ -5940,7 +5940,7 @@ static void compose_attach_property(Compose *compose)
 		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
 				   COL_MIMETYPE, ainfo->content_type,
 				   COL_SIZE, text,
-				   COL_NAME, ainfo->file,
+				   COL_NAME, ainfo->name,
 				   -1);
 		
 		break;
