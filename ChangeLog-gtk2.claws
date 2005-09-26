@@ -1,3 +1,8 @@
+2005-09-26 [colin]	1.9.14cvs54
+
+	* src/gtk/gtkaspell.c
+		Unmark space if possible
+
 2005-09-26 [colin]	1.9.14cvs53
 
 	* src/imap.c

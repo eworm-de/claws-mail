@@ -2427,6 +2427,7 @@ static void change_color(GtkAspell * gtkaspell,
 	buffer = gtk_text_view_get_buffer(gtktext);
 	gtk_text_buffer_get_iter_at_offset(buffer, &startiter, start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &enditer, end);
+	gtk_text_iter_forward_char(&enditer);
 	if (color)
 		gtk_text_buffer_apply_tag_by_name(buffer, "misspelled",
 						  &startiter, &enditer);
