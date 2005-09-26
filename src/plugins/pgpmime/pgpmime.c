@@ -49,6 +49,7 @@ struct _PrivacyDataPGP
 	gboolean	is_signed;
 	gpgme_verify_result_t	sigstatus;
 	gpgme_ctx_t 	ctx;
+	gboolean	is_pkcs7;
 };
 
 static PrivacySystem pgpmime_system;
@@ -98,7 +99,10 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	    g_ascii_strcasecmp(parent->subtype, "signed"))
 		return FALSE;
 	protocol = procmime_mimeinfo_get_parameter(parent, "protocol");
-	if ((protocol == NULL) || g_ascii_strcasecmp(protocol, "application/pgp-signature"))
+	if ((protocol == NULL) || 
+	    (g_ascii_strcasecmp(protocol, "application/pgp-signature") &&
+	     g_ascii_strcasecmp(protocol, "application/pkcs7-signature") &&
+	     g_ascii_strcasecmp(protocol, "application/x-pkcs7-signature")))
 		return FALSE;
 
 	/* check if mimeinfo is the first child */
@@ -111,13 +115,22 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	if (signature == NULL)
 		return FALSE;
 	if ((signature->type != MIMETYPE_APPLICATION) ||
-	    g_ascii_strcasecmp(signature->subtype, "pgp-signature"))
+	    (g_ascii_strcasecmp(signature->subtype, "pgp-signature") &&
+	     g_ascii_strcasecmp(signature->subtype, "pkcs7-signature") &&
+	     g_ascii_strcasecmp(signature->subtype, "x-pkcs7-signature")))
 		return FALSE;
 
 	if (data == NULL) {
 		data = pgpmime_new_privacydata();
 		mimeinfo->privacy = (PrivacyData *) data;
 	}
+	
+	if (!g_ascii_strcasecmp(signature->subtype, "pkcs7-signature") ||
+	    !g_ascii_strcasecmp(signature->subtype, "x-pkcs7-signature"))
+		data->is_pkcs7 = TRUE;
+	else
+		data->is_pkcs7 = FALSE;
+
 	data->done_sigtest = TRUE;
 	data->is_signed = TRUE;
 
@@ -169,7 +182,17 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
 	gpgme_new(&data->ctx);
 	
-	debug_print("Checking PGP/MIME signature\n");
+	debug_print("Checking %s/MIME signature\n", data->is_pkcs7?"S":"PGP");
+
+	if (data->is_pkcs7) {
+		err = gpgme_set_protocol(data->ctx, GPGME_PROTOCOL_CMS);
+	} else
+		err = gpgme_set_protocol(data->ctx, GPGME_PROTOCOL_OpenPGP);
+
+	if (err) {
+		debug_print ("gpgme_set_protocol failed: %s\n",
+                   gpgme_strerror (err));
+	}
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
 	fp = g_fopen(parent->data.filename, "rb");
@@ -188,6 +211,16 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	}
 	signature = (MimeInfo *) mimeinfo->node->next->data;
 	sigdata = sgpgme_data_from_mimeinfo(signature);
+
+	err = 0;
+	if (signature->encoding_type == ENC_BASE64) {
+		err = gpgme_data_set_encoding (sigdata, GPGME_DATA_ENCODING_BASE64);
+	}
+	
+	if (err) {
+		debug_print ("gpgme_data_set_encoding failed: %s\n",
+			gpgme_strerror (err));
+	}
 
 	data->sigstatus =
 		sgpgme_verify_signature	(data->ctx, sigdata, textdata, NULL);

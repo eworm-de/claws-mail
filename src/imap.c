@@ -607,8 +607,15 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		}
 		
 		if (time(NULL) - last_login_err > 10) {
-			alertpanel_error(_("Connection to %s failed: login refused.%s"),
+			if (!prefs_common.no_recv_err_panel) {
+				alertpanel_error(_("Connection to %s failed: "
+					"login refused.%s"),
 					SESSION(session)->server, ext_info);
+			} else {
+				log_error(_("Connection to %s failed: "
+					"login refused.%s\n"),
+					SESSION(session)->server, ext_info);
+			}
 		}
 		last_login_err = time(NULL);
 	}
@@ -777,7 +784,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 			alertpanel_error(_("Can't connect to IMAP4 server: %s:%d"),
 					 account->recv_server, port);
 		} else {
-			log_error(_("Can't connect to IMAP4 server: %s:%d"),
+			log_error(_("Can't connect to IMAP4 server: %s:%d\n"),
 					 account->recv_server, port);
 		} 
 		

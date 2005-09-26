@@ -1,3 +1,14 @@
+2005-09-26 [colin]	1.9.14cvs53
+
+	* src/imap.c
+		log_error instead of alertpanel according to the pref
+	* src/etpan/imap-thread.c
+		Print connect status, copy only necessary size to 
+		logger
+	* src/plugins/pgpmime/pgpmime.c
+		Handle S/Mime signatures (verification only). Patch based
+		on a patch for Sylpheed Main by Thomas White <taw27@cam.ac.uk>
+
 2005-09-26 [paul]	1.9.14cvs52
 
 	* src/common/passcrypt.c

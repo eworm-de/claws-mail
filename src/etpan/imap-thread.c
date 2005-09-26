@@ -42,7 +42,7 @@ static gboolean thread_manager_event(GIOChannel * source,
 void imap_logger(int direction, const char * str, size_t size) 
 {
 	gchar buf[512];
-	strncpy(buf, str, 511);
+	strncpy(buf, str, size > 510 ? 510:size);
 	buf[511] = '\0';
 	if (size < 511)
 		buf[size] = '\0';
@@ -320,7 +320,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	threaded_run(folder, &param, &result, connect_ssl_run);
 	
-	debug_print("connect ok\n");
+	debug_print("connect %d\n", result.error);
 	
 	return result.error;
 }
