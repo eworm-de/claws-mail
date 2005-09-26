@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#if (defined (__NetBSD__) || defined (__FreeBSD__))
+#if defined (__FreeBSD__)
 #include <rpc/des_crypt.h>
 #endif
 
@@ -58,7 +58,7 @@ void passcrypt_decrypt(gchar *password, guint len)
 unsigned char crypt_cfb_iv[64];
 int crypt_cfb_blocksize = 8;	/* 8 for DES */
 
-#if (defined (__NetBSD__) || defined (__FreeBSD__))
+#if defined (__FreeBSD__)
 void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)

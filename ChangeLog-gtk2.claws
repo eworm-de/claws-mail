@@ -1,3 +1,9 @@
+2005-09-26 [paul]	1.9.14cvs52
+
+	* src/common/passcrypt.c
+		this 'workaround' not necessary on NetBSD.
+		Thanks to Daniel Gustafson
+
 2005-09-26 [paul]
 
 	1.9.15-rc4 released
