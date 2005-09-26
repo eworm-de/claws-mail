@@ -26,6 +26,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#if (defined (__NetBSD__) || defined (__FreeBSD__))
+#include <rpc/des_crypt.h>
+#endif
+
 #include <glib.h>
 
 #include "passcrypt.h"
@@ -54,6 +58,21 @@ void passcrypt_decrypt(gchar *password, guint len)
 unsigned char crypt_cfb_iv[64];
 int crypt_cfb_blocksize = 8;	/* 8 for DES */
 
+#if (defined (__NetBSD__) || defined (__FreeBSD__))
+void
+crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
+	      unsigned chunksize, int decrypt)
+{
+	char des_key[8];
+	
+	strncpy(des_key, PASSCRYPT_KEY, 8);
+	des_setparity(des_key);
+	if (decrypt)
+		ecb_crypt(des_key, buf, len, DES_DECRYPT);
+	else
+		ecb_crypt(des_key, buf, len, DES_ENCRYPT);
+}
+#else
 void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
@@ -84,6 +103,7 @@ crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		buf += chunksize;
 	}
 }
+#endif
 
 /*
 * Shift len bytes from end of to buffer to beginning, then put len

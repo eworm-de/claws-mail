@@ -1288,7 +1288,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 	node = summary_find_prev_flagged_msg
 		(summaryview, summaryview->selected, MSG_UNREAD, skip_cur);
 
-	if (!node) {
+	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
 
  		switch (prefs_common.next_unread_msg_dialog) {
@@ -1340,7 +1340,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 	else {
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_UNREAD, FALSE);
-		if (node == NULL) {
+		if (node == NULL || node == summaryview->selected) {
 			AlertValue val = 0;
 
  			switch (prefs_common.next_unread_msg_dialog) {
@@ -1387,7 +1387,7 @@ void summary_select_prev_new(SummaryView *summaryview)
 	node = summary_find_prev_flagged_msg
 		(summaryview, summaryview->selected, MSG_NEW, skip_cur);
 
-	if (!node) {
+	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
 
  		switch (prefs_common.next_unread_msg_dialog) {
@@ -1439,7 +1439,7 @@ void summary_select_next_new(SummaryView *summaryview)
 	else {
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_NEW, FALSE);
-		if (node == NULL) {
+		if (node == NULL || node == summaryview->selected) {
 			AlertValue val = 0;
 
  			switch (prefs_common.next_unread_msg_dialog) {

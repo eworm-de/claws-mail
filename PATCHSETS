@@ -819,3 +819,4 @@
 ( cvs diff -u -r 1.382.2.174 -r 1.382.2.175 src/compose.c;  ) > 1.9.14cvs48.patchset
 ( cvs diff -u -r 1.65.2.38 -r 1.65.2.39 src/codeconv.c;  cvs diff -u -r 1.15.2.12 -r 1.15.2.13 src/codeconv.h;  cvs diff -u -r 1.382.2.175 -r 1.382.2.176 src/compose.c;  cvs diff -u -r 1.50.2.12 -r 1.50.2.13 src/compose.h;  cvs diff -u -r 1.204.2.58 -r 1.204.2.59 src/prefs_common.c;  cvs diff -u -r 1.103.2.29 -r 1.103.2.30 src/prefs_common.h;  cvs diff -u -r 1.22.2.13 -r 1.22.2.14 src/quote_fmt_parse.y;  cvs diff -u -r 1.395.2.126 -r 1.395.2.127 src/summaryview.c;  ) > 1.9.14cvs49.patchset
 ( cvs diff -u -r 1.150.2.46 -r 1.150.2.47 src/procmsg.c;  ) > 1.9.14cvs50.patchset
+( cvs diff -u -r 1.395.2.127 -r 1.395.2.128 src/summaryview.c;  cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/common/passcrypt.c;  ) > 1.9.14cvs51.patchset

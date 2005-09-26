@@ -1,3 +1,13 @@
+2005-09-26 [paul]	1.9.14cvs51
+
+	* src/summaryview.c
+		Skip currently selected message when
+		looking for next new or unread message
+		in current folder. Patch by Colin
+	* src/common/passcrypt.c
+		eliminate warnings on *BSD. Patch by
+		Daniel Gustafson
+
 2005-09-26 [colin]	1.9.14cvs50
 
 	* src/procmsg.c
