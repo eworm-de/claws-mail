@@ -1,3 +1,8 @@
+2005-09-26 [colin]	1.9.14cvs50
+
+	* src/procmsg.c
+		Call postfiltering hook anyway
+
 2005-09-22 [colin]	1.9.14cvs49
 
 	* src/codeconv.c
