@@ -2427,13 +2427,14 @@ static void change_color(GtkAspell * gtkaspell,
 	buffer = gtk_text_view_get_buffer(gtktext);
 	gtk_text_buffer_get_iter_at_offset(buffer, &startiter, start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &enditer, end);
-	gtk_text_iter_forward_char(&enditer);
 	if (color)
 		gtk_text_buffer_apply_tag_by_name(buffer, "misspelled",
 						  &startiter, &enditer);
-	else
+	else {
+		gtk_text_iter_forward_char(&enditer);
 		gtk_text_buffer_remove_tag_by_name(buffer, "misspelled",
 						   &startiter, &enditer);
+	}
 }
 
 /* convert_to_aspell_encoding () - converts ISO-8859-* strings to iso8859-* 

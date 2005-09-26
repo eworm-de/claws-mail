@@ -1,3 +1,9 @@
+2005-09-26 [colin]	1.9.14cvs55
+
+	* src/gtk/gtkaspell.c
+		Fix previous patch - don't color the space,
+		just uncolor it :)
+
 2005-09-26 [colin]	1.9.14cvs54
 
 	* src/gtk/gtkaspell.c
