@@ -924,6 +924,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 
+	compose_set_title(compose);
         return compose;
 }
 
@@ -1073,6 +1074,30 @@ void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 			      to_sender, TRUE, body);
 }
 
+static void compose_extract_original_charset(Compose *compose)
+{
+	MsgInfo *info = NULL;
+	if (compose->replyinfo) {
+		info = compose->replyinfo;
+	} else if (compose->fwdinfo) {
+		info = compose->fwdinfo;
+	} else if (compose->targetinfo) {
+		info = compose->targetinfo;
+	}
+	if (info) {
+		MimeInfo *mimeinfo = procmime_scan_message(info);
+		MimeInfo *partinfo = mimeinfo;
+		while (partinfo && partinfo->type != MIMETYPE_TEXT)
+			partinfo = procmime_mimeinfo_next(partinfo);
+		if (partinfo) {
+			compose->orig_charset = 
+				g_strdup(procmime_mimeinfo_get_parameter(
+						partinfo, "charset"));
+		}
+		procmime_mimeinfo_free_all(mimeinfo);
+	}
+}
+
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
 				  gboolean to_sender,
@@ -1116,6 +1141,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (!compose->replyinfo)
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
 
+	compose_extract_original_charset(compose);
+	
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
 		menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
 
@@ -1180,6 +1207,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+		
+	compose_set_title(compose);
 }
 
 #define INSERT_FW_HEADER(var, hdr) \
@@ -1211,6 +1240,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->fwdinfo)
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
+
+	compose_extract_original_charset(compose);
 
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
@@ -1286,6 +1317,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		g_free(folderidentifier);
 	}
 
+	compose_set_title(compose);
         return compose;
 }
 
@@ -1345,6 +1377,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 	
+	compose_set_title(compose);
 	return compose;
 }
 
@@ -1480,6 +1513,8 @@ void compose_reedit(MsgInfo *msginfo)
 	}
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
+	compose_extract_original_charset(compose);
+
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
 	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
 		gchar queueheader_buf[BUFFSIZE];
@@ -1542,6 +1577,7 @@ void compose_reedit(MsgInfo *msginfo)
 
         if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+	compose_set_title(compose);
 }
 
 Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
@@ -1620,6 +1656,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
 
+	compose_set_title(compose);
         return compose;
 }
 
@@ -3283,15 +3320,24 @@ static void compose_set_title(Compose *compose)
 {
 	gchar *str;
 	gchar *edited;
-
+	gchar *subject;
+	
 	edited = compose->modified ? _(" [Edited]") : "";
-	if (compose->account && compose->account->address)
+	
+	subject = gtk_editable_get_chars(
+			GTK_EDITABLE(compose->subject_entry), 0, -1);
+
+	if (subject && strlen(subject))
+		str = g_strdup_printf(_("%s - Compose message%s"),
+				      subject, edited);	
+	else if (compose->account && compose->account->address)
 		str = g_strdup_printf(_("%s - Compose message%s"),
 				      compose->account->address, edited);
 	else
 		str = g_strdup_printf(_("Compose message%s"), edited);
 	gtk_window_set_title(GTK_WINDOW(compose->window), str);
 	g_free(str);
+	g_free(subject);
 }
 
 /**
@@ -3738,11 +3784,38 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		out_codeset = CS_US_ASCII;
 		encoding = ENC_7BIT;
 	} else {
-		const gchar *src_codeset;
+		const gchar *src_codeset = CS_INTERNAL;
 
 		out_codeset = conv_get_charset_str(compose->out_encoding);
-		if (!out_codeset)
+
+		if (!out_codeset) {
+			gchar *test_conv_global_out = NULL;
+			gchar *test_conv_reply = NULL;
+
+			/* automatic mode. be automatic. */
+			codeconv_set_strict(TRUE);
+			
 			out_codeset = conv_get_outgoing_charset_str();
+			if (out_codeset) {
+				debug_print("trying to convert to %s\n", out_codeset);
+				test_conv_global_out = conv_codeset_strdup(chars, src_codeset, out_codeset);
+			}
+			
+			if (!test_conv_global_out && compose->orig_charset) {
+				out_codeset = compose->orig_charset;
+				debug_print("failure; trying to convert to %s\n", out_codeset);
+				test_conv_reply = conv_codeset_strdup(chars, src_codeset, out_codeset);
+			}
+			
+			if (!test_conv_global_out && !test_conv_reply) {
+				/* we're lost */
+				out_codeset = CS_INTERNAL;
+				debug_print("finally using %s\n", out_codeset);
+			}
+			g_free(test_conv_global_out);
+			g_free(test_conv_reply);
+			codeconv_set_strict(FALSE);
+		}
 
 		if (!g_ascii_strcasecmp(out_codeset, CS_US_ASCII))
 			out_codeset = CS_ISO_8859_1;
@@ -3756,12 +3829,6 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		else
 			encoding = procmime_get_encoding_for_charset(out_codeset);
 
-		src_codeset = CS_INTERNAL;
-		/* if current encoding is US-ASCII, set it the same as
-		   outgoing one to prevent code conversion failure */
-		if (!g_ascii_strcasecmp(src_codeset, CS_US_ASCII))
-			src_codeset = out_codeset;
-
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
 
@@ -3774,12 +3841,12 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 				AlertValue aval;
 				gchar *msg;
 
-				msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
-							"%s to %s.\n"
-							"Send it anyway?"), src_codeset, out_codeset);
+				msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
+							"to the specified %s charset.\n"
+							"Send it as %s?"), out_codeset, src_codeset);
 				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
 						      NULL, ALERT_ERROR, G_ALERTALTERNATE);
-	g_free(msg);
+				g_free(msg);
 
 				if (aval != G_ALERTDEFAULT) {
 					g_free(chars);
@@ -4546,7 +4613,8 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 				   gint header_len, gboolean addr_field)
 {
 	gchar *tmpstr = NULL;
-	
+	const gchar *out_codeset = NULL;
+
 	g_return_if_fail(src != NULL);
 	g_return_if_fail(dest != NULL);
 
@@ -4564,8 +4632,42 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 		g_free(tmpstr);
 		tmpstr = mybuf;
 	}
+
+	codeconv_set_strict(TRUE);
 	conv_encode_header_full(dest, len, tmpstr, header_len, addr_field, 
 		conv_get_charset_str(compose->out_encoding));
+	codeconv_set_strict(FALSE);
+	
+	if (!dest || *dest == '\0') {
+		gchar *test_conv_global_out = NULL;
+		gchar *test_conv_reply = NULL;
+
+		/* automatic mode. be automatic. */
+		codeconv_set_strict(TRUE);
+
+		out_codeset = conv_get_outgoing_charset_str();
+		if (out_codeset) {
+			debug_print("trying to convert to %s\n", out_codeset);
+			test_conv_global_out = conv_codeset_strdup(src, CS_INTERNAL, out_codeset);
+		}
+
+		if (!test_conv_global_out && compose->orig_charset) {
+			out_codeset = compose->orig_charset;
+			debug_print("failure; trying to convert to %s\n", out_codeset);
+			test_conv_reply = conv_codeset_strdup(src, CS_INTERNAL, out_codeset);
+		}
+
+		if (!test_conv_global_out && !test_conv_reply) {
+			/* we're lost */
+			out_codeset = CS_INTERNAL;
+			debug_print("finally using %s\n", out_codeset);
+		}
+		g_free(test_conv_global_out);
+		g_free(test_conv_reply);
+		conv_encode_header_full(dest, len, tmpstr, header_len, addr_field, 
+					out_codeset);
+		codeconv_set_strict(FALSE);
+	}
 	g_free(tmpstr);
 }
 
@@ -5739,6 +5841,7 @@ static void compose_destroy(Compose *compose)
 
 	g_free(compose->exteditor_file);
 
+	g_free(compose->orig_charset);
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 
@@ -7374,10 +7477,8 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
-	if (compose->modified == FALSE) {
-		compose->modified = TRUE;
-		compose_set_title(compose);
-	}
+	compose->modified = TRUE;
+	compose_set_title(compose);
 }
 
 static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)

@@ -1668,9 +1668,14 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 				out_str = conv_codeset_strdup
 					(part_str, cur_encoding, out_encoding);
 				if (!out_str) {
-					g_warning("conv_encode_header(): code conversion failed\n");
-					conv_unreadable_8bit(part_str);
-					out_str = g_strdup(part_str);
+					if (strict_mode) {
+						*dest = '\0';
+						return;
+					} else {
+						g_warning("conv_encode_header(): code conversion failed\n");
+						conv_unreadable_8bit(part_str);
+						out_str = g_strdup(part_str);
+					}
 				}
 				out_str_len = strlen(out_str);
 

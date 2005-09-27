@@ -217,6 +217,7 @@ struct _Compose
 	
 	GtkTextTag *no_wrap_tag;
 	GMutex *mutex;
+	gchar *orig_charset;
 };
 
 struct _AttachInfo

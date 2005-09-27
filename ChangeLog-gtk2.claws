@@ -1,3 +1,14 @@
+2005-09-27 [colin]	1.9.14cvs56
+
+	* src/codeconv.c
+	* src/compose.c
+	* src/compose.h
+		Put subject in compose's title
+		Fix Automatic encoding so that it's really automatic:
+		first try default locale's charset, then charset of the replied mail, 
+		then utf-8
+		Fix encoding of headers (must be in strict mode too)
+
 2005-09-26 [colin]	1.9.14cvs55
 
 	* src/gtk/gtkaspell.c
