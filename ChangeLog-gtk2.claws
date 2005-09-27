@@ -1,3 +1,9 @@
+2005-09-27 [colin]	1.9.14cvs58
+
+	* src/plugins/pgpcore/sgpgme.c
+		Report error when there's one, instead of
+		"Signature unchecked" 
+
 2005-09-27 [colin]	1.9.14cvs57
 
 	* src/prefs_quote.c

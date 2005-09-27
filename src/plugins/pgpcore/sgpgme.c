@@ -54,7 +54,8 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 
 	if ((err = gpgme_op_verify(ctx, sig, plain, dummy)) != GPG_ERR_NO_ERROR) {
 		debug_print("op_verify err %s\n", gpgme_strerror(err));
-		return NULL;
+		return GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR);
+		
 	}
 	status = gpgme_op_verify_result(ctx);
 
@@ -66,16 +67,24 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 	unsigned long validity = 0;
 	gpgme_signature_t sig = NULL;
 	
-	if (status == NULL)
-		return SIGNATURE_UNCHECKED;
+	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
+		debug_print("system error\n");
+		return SIGNATURE_CHECK_FAILED;
+	}
 
+	if (status == NULL) {
+		debug_print("status == NULL\n");
+		return SIGNATURE_UNCHECKED;
+	}
 	sig = status->signatures;
 
-	if (sig == NULL)
+	if (sig == NULL) {
+		debug_print("sig == NULL\n");
 		return SIGNATURE_UNCHECKED;
-
+	}
 	validity = sig->validity;
 
+	debug_print("err code %d\n", gpg_err_code(sig->status));
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
 		if ((validity != GPGME_VALIDITY_MARGINAL) &&
@@ -121,6 +130,10 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	gpgme_signature_t sig = NULL;
 	gchar *uname = NULL;
 	gpgme_key_t key;
+
+	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
+		return g_strdup(_("The signature can't be checked - GPG error."));
+	}
 
 	if (status == NULL) {
 		return g_strdup(_("The signature has not been checked."));
