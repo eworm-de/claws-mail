@@ -263,6 +263,8 @@ void prefs_quote_save(PrefsPage *_page)
 			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
 	prefs_common.reply_with_quote = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_quote));
+
+	remove_space(prefs_common.quote_chars);
 }
 
 static void prefs_quote_destroy_widget(PrefsPage *_page)
