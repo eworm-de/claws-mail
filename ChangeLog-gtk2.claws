@@ -1,3 +1,8 @@
+2005-09-28 [paul]	1.9.14cvs59
+
+	* src/gtk/gtkaspell.c
+		fix off-by-one typo
+
 2005-09-27 [colin]	1.9.14cvs58
 
 	* src/plugins/pgpcore/sgpgme.c

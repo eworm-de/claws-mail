@@ -827,3 +827,4 @@
 ( cvs diff -u -r 1.65.2.39 -r 1.65.2.40 src/codeconv.c;  cvs diff -u -r 1.382.2.176 -r 1.382.2.177 src/compose.c;  cvs diff -u -r 1.50.2.13 -r 1.50.2.14 src/compose.h;  ) > 1.9.14cvs56.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/prefs_quote.c;  ) > 1.9.14cvs57.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.14cvs58.patchset
+( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/gtk/gtkaspell.c;  ) > 1.9.14cvs59.patchset

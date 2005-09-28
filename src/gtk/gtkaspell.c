@@ -1043,7 +1043,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 				gtkaspell->gtkaspeller->dictionary->encoding);
 			g_free(tmp);
 			strncpy(buf, conv, buflen-1);
-			buf[buflen]='\0';
+			buf[buflen-1]='\0';
 			g_free(conv);
 		} else
 			return FALSE;
