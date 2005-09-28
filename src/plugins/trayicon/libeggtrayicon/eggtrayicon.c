@@ -153,8 +153,12 @@ egg_tray_icon_get_orientation_property (EggTrayIcon *icon)
   int error, result;
 
   g_assert (icon->manager_window != None);
-  
+ 
+#ifndef GDK_MULTIHEAD_SAFE
+  xdisplay = gdk_display;
+#else
   xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
+#endif
 
   gdk_error_trap_push ();
   type = None;
@@ -228,8 +232,12 @@ egg_tray_icon_unrealize (GtkWidget *widget)
     {
       GdkWindow *gdkwin;
 
+#ifndef GDK_MULTIHEAD_SAFE
+      gdkwin = gdk_window_lookup (icon->manager_window);
+#else
       gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (widget),
-                                              icon->manager_window);
+					      icon->manager_window);
+#endif
 
       gdk_window_remove_filter (gdkwin, egg_tray_icon_manager_filter, icon);
     }
@@ -263,8 +271,12 @@ egg_tray_icon_send_manager_message (EggTrayIcon *icon,
   ev.data.l[3] = data2;
   ev.data.l[4] = data3;
 
+#ifndef GDK_MULTIHEAD_SAFE
+  display = gdk_display;
+#else
   display = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
-  
+#endif
+
   gdk_error_trap_push ();
   XSendEvent (display,
 	      icon->manager_window, False, NoEventMask, (XEvent *)&ev);
@@ -287,14 +299,22 @@ egg_tray_icon_update_manager_window (EggTrayIcon *icon)
 {
   Display *xdisplay;
   
+#ifndef GDK_MULTIHEAD_SAFE
+  xdisplay = gdk_display;
+#else
   xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
-  
+#endif
+
   if (icon->manager_window != None)
     {
       GdkWindow *gdkwin;
 
+#ifndef GDK_MULTIHEAD_SAFE
+      gdkwin = gdk_window_lookup (icon->manager_window);
+#else
       gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (GTK_WIDGET (icon)),
 					      icon->manager_window);
+#endif
       
       gdk_window_remove_filter (gdkwin, egg_tray_icon_manager_filter, icon);
     }
@@ -315,9 +335,13 @@ egg_tray_icon_update_manager_window (EggTrayIcon *icon)
     {
       GdkWindow *gdkwin;
 
+#ifndef GDK_MULTIHEAD_SAFE
+      gdkwin = gdk_window_lookup (icon->manager_window);
+#else
       gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (GTK_WIDGET (icon)),
 					      icon->manager_window);
-      
+#endif
+ 
       gdk_window_add_filter (gdkwin, egg_tray_icon_manager_filter, icon);
 
       /* Send a request that we'd like to dock */
@@ -428,7 +452,11 @@ egg_tray_icon_send_message (EggTrayIcon *icon,
       XClientMessageEvent ev;
       Display *xdisplay;
 
+#ifndef GDK_MULTIHEAD_SAFE
+      xdisplay = gdk_display;
+#else
       xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
+#endif
       
       ev.type = ClientMessage;
       ev.window = (Window)gtk_plug_get_id (GTK_PLUG (icon));

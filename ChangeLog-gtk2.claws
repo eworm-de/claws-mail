@@ -1,3 +1,8 @@
+2005-09-28 [martin]	1.9.14cvs60
+
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+		fix bug #790 (Crash when restarting window manager (fluxbox))
+
 2005-09-28 [paul]	1.9.14cvs59
 
 	* src/gtk/gtkaspell.c

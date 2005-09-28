@@ -828,3 +828,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/prefs_quote.c;  ) > 1.9.14cvs57.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.14cvs58.patchset
 ( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/gtk/gtkaspell.c;  ) > 1.9.14cvs59.patchset
+( cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c;  ) > 1.9.14cvs60.patchset
