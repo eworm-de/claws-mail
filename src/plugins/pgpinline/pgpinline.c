@@ -165,7 +165,19 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	/* gtk2: convert back from utf8 */
 	tmp = conv_codeset_strdup(textdata, CS_UTF_8,
 			procmime_mimeinfo_get_parameter(mimeinfo, "charset"));
+	if (!tmp) {
+		tmp = conv_codeset_strdup(textdata, CS_UTF_8,
+			conv_get_locale_charset_str_no_utf8());
+	}
+	if (!tmp) {
+		g_warning("Can't convert charset to anything sane\n");
+		tmp = conv_codeset_strdup(textdata, CS_UTF_8, CS_US_ASCII);
+	}
 	g_free(textdata);
+
+	if (!tmp)
+		return 0;
+
 	textdata = g_strdup(tmp);
 	g_free(tmp);
 	
