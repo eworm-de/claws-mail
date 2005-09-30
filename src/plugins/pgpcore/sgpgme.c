@@ -125,11 +125,30 @@ static const gchar *get_validity_str(unsigned long validity)
 	}
 }
 
+static gchar *extract_name(const char *uid)
+{
+	if (uid == NULL)
+		return NULL;
+	if (!strncmp(uid, "CN=", 3)) {
+		gchar *result = g_strdup(uid+3);
+		if (strstr(result, ","))
+			*(strstr(result, ",")) = '\0';
+		return result;
+	} else if (strstr(uid, ",CN=")) {
+		gchar *result = g_strdup(strstr(uid, ",CN=")+4);
+		if (strstr(result, ","))
+			*(strstr(result, ",")) = '\0';
+		return result;
+	} else {
+		return g_strdup(uid);
+	}
+}
 gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gpgme_signature_t sig = NULL;
 	gchar *uname = NULL;
 	gpgme_key_t key;
+	gchar *result = NULL;
 
 	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
 		return g_strdup(_("The signature can't be checked - GPG error."));
@@ -145,27 +164,34 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 
 	gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (key)
-		uname = key->uids->uid;
+		uname = extract_name(key->uids->uid);
 	else
-		uname = "<?>";
+		uname = g_strdup("<?>");
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-	{
-		return g_strdup_printf(_("Good signature from %s (Trust: %s)."),
+		result = g_strdup_printf(_("Good signature from %s (Trust: %s)."),
 			uname, get_validity_str(sig->validity));
-	}
+		break;
 	case GPG_ERR_SIG_EXPIRED:
-		return g_strdup_printf(_("Expired signature from %s."), uname);
+		result = g_strdup_printf(_("Expired signature from %s."), uname);
+		break;
 	case GPG_ERR_KEY_EXPIRED:
-		return g_strdup_printf(_("Expired key from %s."), uname);
+		result = g_strdup_printf(_("Expired key from %s."), uname);
+		break;
 	case GPG_ERR_BAD_SIGNATURE:
-		return g_strdup_printf(_("Bad signature from %s."), uname);
+		result = g_strdup_printf(_("Bad signature from %s."), uname);
+		break;
 	case GPG_ERR_NO_PUBKEY:
-		return g_strdup(_("No key available to verify this signature."));
+		result = g_strdup(_("No key available to verify this signature."));
+		break;
 	default:
-		return g_strdup(_("The signature has not been checked."));
+		result = g_strdup(_("The signature has not been checked."));
+		break;
 	}
-	return g_strdup(_("Error"));
+	if (result == NULL)
+		result = g_strdup(_("Error"));
+	g_free(uname);
+	return result;
 }
 
 gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
@@ -183,15 +209,22 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		const gchar *keytype, *keyid, *uid;
 		
 		gpgme_get_key(ctx, sig->fpr, &key, 0);
-		user = key->uids;
 
-		keytype = gpgme_pubkey_algo_name(key->subkeys->pubkey_algo);
-		keyid = key->subkeys->keyid;
+		if (key) {
+			user = key->uids;
+			keytype = gpgme_pubkey_algo_name(
+					key->subkeys->pubkey_algo);
+			keyid = key->subkeys->keyid;
+			uid = user->uid;
+		} else {
+			keytype = "?";
+			keyid = "?";
+			uid = "?";
+		}
 		g_string_append_printf(siginfo,
 			_("Signature made using %s key ID %s\n"),
 			keytype, keyid);
 		
-		uid = user->uid;
 		switch (gpg_err_code(sig->status)) {
 		case GPG_ERR_NO_ERROR:
 		case GPG_ERR_KEY_EXPIRED:
@@ -214,7 +247,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		}
 		if (sig->status != GPG_ERR_BAD_SIGNATURE) {
 			gint j = 1;
-			user = user->next;
+			user = user ? user->next : NULL;
 			while (user != NULL) {
 				g_string_append_printf(siginfo,
 					_("                aka \"%s\"\n"),
@@ -224,7 +257,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			}
 			g_string_append_printf(siginfo,
 				_("Primary key fingerprint: %s\n"), 
-				sig->fpr);
+				sig ? sig->fpr: "?");
 		}
 		
 		g_string_append(siginfo, "\n");

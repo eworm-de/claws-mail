@@ -1324,6 +1324,9 @@ static CharSet conv_get_locale_charset_no_utf8(void)
 	gchar *tmp;
 	gint i;
 
+	if (prefs_common.broken_are_utf8)
+		return conv_get_locale_charset();
+
 	if (cur_charset != -1)
 		return cur_charset;
 

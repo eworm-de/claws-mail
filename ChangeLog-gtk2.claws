@@ -1,3 +1,17 @@
+2005-09-30 [paul]	1.9.14cvs63
+
+	* src/addressbook.c
+		Fix sensitivity of a menu
+	* src/codeconv.c
+		Respect hidden pref for mails with no encoding
+	* src/common/xml.c
+		Fix memory corruption
+	* src/plugins/pgpcore/sgpgme.c
+		Fix segfault on incomplete sigs, and display
+		of S/Mime UIDs
+
+	Patches by Colin
+
 2005-09-30 [colin]	1.9.14cvs62
 
 	* src/partial_download.c

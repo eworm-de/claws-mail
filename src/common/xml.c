@@ -207,7 +207,7 @@ gint xml_parse_next_tag(XMLFile *file)
 	/* end-tag */
 	if (buf[0] == '/') {
 		if (strcmp(xml_get_current_tag(file)->tag, buf + 1) != 0) {
-			g_warning("xml_parse_next_tag(): Tag name mismatch: %s\n", buf);
+			g_warning("xml_parse_next_tag(): Tag name mismatch: %s (%s)\n", buf, xml_get_current_tag(file)->tag);
 			return -1;
 		}
 		xml_pop_tag(file);
@@ -652,7 +652,7 @@ void xml_free_tag(XMLTag *tag)
 		XMLAttr *attr = (XMLAttr *)tag->attr->data;
 		tag->attr = g_list_remove(tag->attr, tag->attr->data);
 		XML_STRING_FREE(attr->name);
-		XML_STRING_FREE(attr->value);
+		g_free(attr->value); /* __not__ XML_STRING_FREE */
 		g_free(attr);
 	}
 	g_free(tag);

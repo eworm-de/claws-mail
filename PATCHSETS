@@ -831,3 +831,4 @@
 ( cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c;  ) > 1.9.14cvs60.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpinline/pgpinline.c;  ) > 1.9.14cvs61.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/partial_download.c;  cvs diff -u -r 1.56.2.40 -r 1.56.2.41 src/pop.c;  ) > 1.9.14cvs62.patchset
+( cvs diff -u -r 1.60.2.32 -r 1.60.2.33 src/addressbook.c;  cvs diff -u -r 1.65.2.40 -r 1.65.2.41 src/codeconv.c;  cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/common/xml.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.14cvs63.patchset

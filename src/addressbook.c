@@ -2135,7 +2135,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		if( ! iface->readOnly ) {
 			canEdit = TRUE;
 			canDelete = TRUE;
-			menu_set_sensitive( addrbook.tree_factory, "/New Address", TRUE );
+			menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 	}
