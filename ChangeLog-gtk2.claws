@@ -1,3 +1,10 @@
+2005-09-30 [colin]	1.9.14cvs62
+
+	* src/partial_download.c
+		Little logic fix in almost-dead code
+	* src/pop.c
+		Fix partial download when there's no new mail
+
 2005-09-29 [paul]	1.9.14cvs61
 
 	* src/plugins/pgpinline/pgpinline.c

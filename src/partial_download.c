@@ -173,8 +173,8 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
+			goto bail;
 		}
-		goto bail;
 	}
 
 	pathnew = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
