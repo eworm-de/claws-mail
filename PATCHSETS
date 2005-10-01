@@ -833,3 +833,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/partial_download.c;  cvs diff -u -r 1.56.2.40 -r 1.56.2.41 src/pop.c;  ) > 1.9.14cvs62.patchset
 ( cvs diff -u -r 1.60.2.32 -r 1.60.2.33 src/addressbook.c;  cvs diff -u -r 1.65.2.40 -r 1.65.2.41 src/codeconv.c;  cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/common/xml.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.14cvs63.patchset
 ( cvs diff -u -r 1.8.2.9 -r 1.8.2.10 src/export.c;  cvs diff -u -r 1.13.2.9 -r 1.13.2.10 src/import.c;  cvs diff -u -r 1.28.2.9 -r 1.28.2.10 src/mbox.c;  ) > 1.9.14cvs64.patchset
+( cvs diff -u -r 1.149.2.34 -r 1.149.2.35 src/inc.c;  ) > 1.9.14cvs65.patchset

@@ -1,3 +1,8 @@
+2005-10-01 [paul]	1.9.14cvs65
+
+	* src/inc.c
+		fix engrish
+
 2005-10-01 [paul]	1.9.14cvs64
         * src/export.c
 	* src/import.c

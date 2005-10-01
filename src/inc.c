@@ -1436,7 +1436,7 @@ gboolean inc_offline_should_override(void)
 
 	if (prefs_common.work_offline) {
 		gchar *tmp = g_strdup_printf(
-				_("You're working offline. Override during %d minutes?"),
+				_("You're working offline. Override for %d minutes?"),
 				length);
 		if (time(NULL) - overridden_yes < length * 10)
 			 return TRUE;
