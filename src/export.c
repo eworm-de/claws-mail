@@ -72,21 +72,25 @@ gint export_mbox(FolderItem *default_src)
 	gint ok = 0;
 	gchar *src_id = NULL;
 
-	if (!window)
+	if (!window) {
 		export_create();
-	else
+	}
+	else {
 		gtk_widget_show(window);
+	}
 
 	change_dir(sylpheed_get_startup_dir());
 
-	if (default_src && default_src->path)
+	if (default_src && default_src->path) {
 		src_id = folder_item_get_identifier(default_src);
+	}
 
 	if (src_id) {
 		gtk_entry_set_text(GTK_ENTRY(src_entry), src_id);
 		g_free(src_id);
-	} else
+	} else {
 		gtk_entry_set_text(GTK_ENTRY(src_entry), "");
+	}
 	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
 	gtk_widget_grab_focus(file_entry);
 
@@ -101,21 +105,20 @@ gint export_mbox(FolderItem *default_src)
 		srcdir = gtk_entry_get_text(GTK_ENTRY(src_entry));
 		utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		if (utf8mbox && *utf8mbox) {
-			const gchar *src_codeset = CS_UTF_8;
-			const gchar *dest_codeset = conv_get_locale_charset_str();
 			gchar *mbox;
 
-			mbox = conv_codeset_strdup(utf8mbox, src_codeset, dest_codeset);
+			mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
 			if (!mbox) {
-				g_warning("faild to convert character set\n");
+				g_warning("Failed to convert character set.\n");
 				mbox = g_strdup(utf8mbox);
 			}
 
 			src = folder_find_item_from_identifier(srcdir);
-			if (!src)
+			if (!src) {
 				g_warning("Can't find the folder.\n");
-			else
+			} else {
 				ok = export_to_mbox(src, mbox);
+			}
 
 			g_free(mbox);
 		}

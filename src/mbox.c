@@ -41,6 +41,7 @@
 #include "account.h"
 #include "utils.h"
 #include "filtering.h"
+#include "alertpanel.h"
 
 #define MSGBUFSIZE	8192
 
@@ -71,6 +72,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 
 	if ((mbox_fp = g_fopen(mbox, "rb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
+		alertpanel_error(_("Could not open mbox file:\n%s\n"), mbox);
 		return -1;
 	}
 
@@ -378,8 +380,18 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	FILE *mbox_fp;
 	gchar buf[BUFFSIZE];
 
+	if (g_file_test(mbox, G_FILE_TEST_EXISTS) == TRUE) {
+		if (alertpanel_full(_("Overwrite mbox file"),
+							_("This file already exists. Do you want to overwrite it?"),
+							_("Overwrite"), GTK_STOCK_CANCEL, NULL, FALSE,
+							NULL, ALERT_WARNING, G_ALERTALTERNATE)
+			== G_ALERTALTERNATE)
+		return -1;
+	}
+
 	if ((mbox_fp = g_fopen(mbox, "wb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
+		alertpanel_error(_("Could not create mbox file:\n%s\n"), mbox);
 		return -1;
 	}
 

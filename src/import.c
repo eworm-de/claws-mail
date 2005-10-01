@@ -38,6 +38,7 @@
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtksignal.h>
 
+#include "sylpheed.h"
 #include "main.h"
 #include "inc.h"
 #include "mbox.h"
@@ -71,20 +72,26 @@ gint import_mbox(FolderItem *default_dest)
 	gint ok = 0;
 	gchar *dest_id = NULL;
 
-	if (!window)
+	if (!window) {
 		import_create();
-	else
+	}
+	else {
 		gtk_widget_show(window);
+	}
 
-	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
-	if (default_dest && default_dest->path)
+	change_dir(sylpheed_get_startup_dir());
+
+	if (default_dest && default_dest->path) {
 		dest_id = folder_item_get_identifier(default_dest);
+	}
 
 	if (dest_id) {
 		gtk_entry_set_text(GTK_ENTRY(dest_entry), dest_id);
 		g_free(dest_id);
-	} else
+	} else {
 		gtk_entry_set_text(GTK_ENTRY(dest_entry), "");
+	}
+	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
 	gtk_widget_grab_focus(file_entry);
 
 	manage_window_set_transient(GTK_WINDOW(window));
@@ -92,34 +99,34 @@ gint import_mbox(FolderItem *default_dest)
 	gtk_main();
 
 	if (import_ack) {
-		const gchar *utf8filename, *destdir;
+		const gchar *utf8mbox, *destdir;
 		FolderItem *dest;
 
-		utf8filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
+		utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
-		if (utf8filename && *utf8filename) {
-			gchar *filename;
+		if (utf8mbox && *utf8mbox) {
+			gchar *mbox;
 
-			filename = g_filename_from_utf8
-				(utf8filename, -1, NULL, NULL, NULL);
-			if (!filename) {
-				g_warning("faild to convert character set\n");
-				filename = g_strdup(utf8filename);
+			mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
+			if (!mbox) {
+				g_warning("Failed to convert character set.\n");
+				mbox = g_strdup(utf8mbox);
 			}
 
 			if (!destdir || !*destdir) {
 				dest = folder_find_item_from_path(INBOX_DIR);
-			} else
+			} else {
 				dest = folder_find_item_from_identifier
 					(destdir);
+			}
 
 			if (!dest) {
 				g_warning("Can't find the folder.\n");
 			} else {
-				ok = proc_mbox(dest, filename, FALSE);
+				ok = proc_mbox(dest, mbox, FALSE);
 			}
 
-			g_free(filename);
+			g_free(mbox);
 		}
 	}
 

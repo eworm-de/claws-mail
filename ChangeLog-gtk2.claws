@@ -1,3 +1,16 @@
+2005-10-01 [paul]	1.9.14cvs64
+        * src/export.c
+	* src/import.c
+		synchronise import_mbox() and export_mbox()
+	* src/mbox.c
+		proc_mbox(): add alert if file cannot be opened
+		export_list_to_mbox(): test if dest file exists,
+		prompt user to overwrite if it does. add alert
+		if file cannot be created
+							        
+	Patch by wwp
+														
+
 2005-09-30 [paul]	1.9.14cvs63
 
 	* src/addressbook.c
