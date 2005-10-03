@@ -841,3 +841,4 @@
 ( cvs diff -u -r 1.213.2.57 -r 1.213.2.58 src/folder.c;  ) > 1.9.15cvs2.patchset
 ( cvs diff -u -r 1.17.2.20 -r 1.17.2.21 src/send_message.c;  ) > 1.9.15cvs3.patchset
 ( cvs diff -u -r 1.149.2.36 -r 1.149.2.37 src/inc.c;  cvs diff -u -r 1.105.2.36 -r 1.105.2.37 src/prefs_account.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/wizard.c;  ) > 1.9.15cvs4.patchset
+( cvs diff -u -r 1.213.2.58 -r 1.213.2.59 src/folder.c;  ) > 1.9.15cvs5.patchset

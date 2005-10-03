@@ -298,6 +298,9 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->data = NULL;
 	item->parent_stype = -1;
 
+	item->sort_key = SORT_BY_DATE;
+	item->sort_type = SORT_ASCENDING;
+
 	item->prefs = folder_item_prefs_new();
 
 	return item;
