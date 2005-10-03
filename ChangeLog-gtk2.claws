@@ -1,3 +1,8 @@
+2005-10-03 [colin]	1.9.15cvs3
+
+	* src/send_message.c
+		Forgot this one in cvs1
+
 2005-10-03 [colin]	1.9.15cvs2
 
 	* src/folder.c
