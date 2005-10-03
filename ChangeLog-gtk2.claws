@@ -1,3 +1,17 @@
+2005-10-03 [colin]	1.9.15cvs1
+
+	* src/compose.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/messageview.c
+	* src/news.c
+	* src/summaryview.c
+	* src/gtk/sslcertwindow.c
+	* src/plugins/trayicon/trayicon.c
+		Add accels to every AlertPanel. Patch by Fabien 
+		Vantard
+
 2005-10-03 [paul]	1.9.15
 
 	1.9.15 released

@@ -253,7 +253,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  _("Continue connecting"), 
+			  _("Con_tinue connecting"), 
 			  GTK_STOCK_CANCEL, NULL,
 			  FALSE, NULL, ALERT_WARNING,
 			  G_ALERTALTERNATE) != G_ALERTDEFAULT)

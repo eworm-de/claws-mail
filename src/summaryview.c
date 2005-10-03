@@ -3500,7 +3500,7 @@ void summary_save_as(SummaryView *summaryview)
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
 				  _("Append or overwrite existing file?"),
-				  _("Append"), _("Overwrite"),
+				  _("_Append"), _("_Overwrite"),
 				  GTK_STOCK_CANCEL);
 		if (aval != 0 && aval != 1)
 			return;
@@ -5517,6 +5517,9 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 
 	g_return_val_if_fail(msginfo_update != NULL, TRUE);
 	g_return_val_if_fail(summaryview != NULL, FALSE);
+
+	if (summary_is_locked(summaryview))
+		return FALSE;
 
 	if (msginfo_update->flags & MSGINFO_UPDATE_FLAGS) {
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);

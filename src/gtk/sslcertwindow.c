@@ -265,7 +265,7 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
 	val = alertpanel_full(_("Unknown SSL Certificate"), NULL,
-	 		      _("Accept and save"), _("Cancel connection"), NULL,
+	 		      _("_Accept and save"), _("_Cancel connection"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
 	return (val == G_ALERTDEFAULT);
@@ -318,7 +318,7 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	gtk_container_add(GTK_CONTAINER(button), vbox);
 
 	val = alertpanel_full(_("Changed SSL Certificate"), NULL,
-	 		      _("Accept and save"), _("Cancel connection"), NULL,
+	 		      _("_Accept and save"), _("_Cancel connection"), NULL,
 	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);
 	
 	return (val == G_ALERTDEFAULT);

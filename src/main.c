@@ -779,11 +779,11 @@ gboolean clean_quit(gpointer data)
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
-	
+
 	if (compose_get_compose_list()) {
 		gint val = alertpanel(_("Really quit?"),
 			       _("Composing message exists."),
-			       _("Draft them"), _("Discard them"), _("Don't quit"));
+			       _("_Save to Draft"), _("_Discard them"), _("Do_n't quit"));
 		switch (val) {
 			case G_ALERTOTHER:
 				return;
@@ -792,7 +792,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			default:
 				draft_all_messages();
 		}
-		
+
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 

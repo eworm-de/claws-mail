@@ -340,7 +340,7 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit this program?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL) != G_ALERTDEFAULT)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}

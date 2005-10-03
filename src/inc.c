@@ -759,7 +759,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  _("Continue connecting"), 
+			  _("Con_tinue connecting"), 
 			  GTK_STOCK_CANCEL, NULL,
 			  FALSE, NULL, ALERT_WARNING,
 			  G_ALERTALTERNATE) != G_ALERTDEFAULT)

@@ -548,15 +548,14 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		AlertValue val;
 		gchar *message;
 		message = g_strdup_printf(
-				 _("The notification address to which the "
-				   "return receipt is to be sent\n"
-				   "does not correspond to the return path:\n"
-				   "Notification address: %s\n"
-				   "Return path: %s\n"
-				   "It is advised to not to send the return "
-				   "receipt."), to, buf);
-		val = alertpanel_full(_("Warning"), message,
-				       	_("Send"), _("+Don't Send"), NULL, FALSE,
+		  _("The notification address to which the return receipt is\n"
+		    "to be sent does not correspond to the return path:\n"
+		    "Notification address: %s\n"
+		    "Return path: %s\n"
+		    "It is advised to not to send the return receipt."),
+		  to, buf);
+		val = alertpanel_full(_("Warning"), message, _("_Send"),
+					_("+_Don't Send"), NULL, FALSE,
 				       	NULL, ALERT_WARNING, G_ALERTALTERNATE);
 		g_free(message);				
 		if (val != G_ALERTDEFAULT)
@@ -569,21 +568,20 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (ac_list == NULL) {
 		AlertValue val = 
 		alertpanel_full(_("Warning"),
-				_("This message is asking for a return "
-				"receipt notification\n"
-				"but according to its 'To:' and 'CC:' "
-				"headers it was not\nofficially addressed "
-				"to you.\n"
-				"It is advised to not to send the return ."
-				"receipt."),
-				_("Send"), _("+Don't Send"),NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		  _("This message is asking for a return receipt notification\n"
+		    "but according to its 'To:' and 'CC:' headers it was not\n"
+		    "officially addressed to you.\n"
+		    "It is advised to not to send the return receipt."),
+		  _("_Send"), _("+_Don't Send"),NULL, FALSE,
+		  NULL, ALERT_WARNING, G_ALERTALTERNATE);
 		if (val != G_ALERTDEFAULT)
 			return -1;
 	}
 
-	if (g_list_length(ac_list) > 1)
-		account = select_account_from_list(ac_list);
+	if (g_list_length(ac_list) > 1) {
+		if ((account = select_account_from_list(ac_list)) == NULL)
+			return -1;
+	}
 	else if (ac_list != NULL)
 		account = (PrefsAccount *) ac_list->data;
 	g_list_free(ac_list);
@@ -1271,7 +1269,7 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 				  "accounts.\n"
 				  "Please choose which account do you want to "
 				  "use for sending the receipt notification:"),
-			        _("Send Notification"), _("+Cancel"), NULL,
+			        _("_Send Notification"), _("+_Cancel"), NULL,
 			        optmenu) != G_ALERTDEFAULT)
 		return NULL;
 	return account_find_from_id(account_id);
