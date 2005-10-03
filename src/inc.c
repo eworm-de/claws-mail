@@ -1429,7 +1429,7 @@ gboolean inc_offline_should_override(void)
 	static time_t overridden_yes = 0;
 	static time_t overridden_no  = 0;
 	int length = 600;
-	gboolean answer = TRUE;
+	gint answer = G_ALERTDEFAULT;
 	
 	if (prefs_common.autochk_newmail)
 		length = prefs_common.autochk_itv;
@@ -1443,14 +1443,21 @@ gboolean inc_offline_should_override(void)
 		else if (time(NULL) - overridden_no < length * 10)
 			 return FALSE;
 		
-		answer = (alertpanel(_("Offline warning"), 
+		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) == G_ALERTDEFAULT);
+			       GTK_STOCK_YES, GTK_STOCK_NO, _("On_ly once"));
 		g_free(tmp);
-		if (answer == TRUE)
+		if (answer == G_ALERTDEFAULT) {
 			overridden_yes = time(NULL);
-		else
+			return TRUE;
+		} else if (answer == G_ALERTALTERNATE) {
 			overridden_no  = time(NULL);
+			return FALSE;
+		} else {
+			overridden_yes = (time_t)0;
+			overridden_no  = (time_t)0;
+			return TRUE;
+		}
 	}
-	return answer;
+	return TRUE;
 }

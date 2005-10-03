@@ -1,3 +1,15 @@
+2005-10-03 [colin]	1.9.15cvs4
+
+	* src/inc.c
+		Add a 'Only once' button for overriding offline mode
+	* src/prefs_account.c
+	* src/wizard.c
+		Add Local mbox to the wizard
+		Add IMAP subdir to the wizard (or the wizard is useless
+		for such accounts, or even worse than useless)
+		Move IMAP subdir from Advanced to Receive tab, as it's
+		not that uncommon
+
 2005-10-03 [colin]	1.9.15cvs3
 
 	* src/send_message.c

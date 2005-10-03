@@ -109,6 +109,8 @@ static struct Receive {
 	
 	GtkWidget *imap_frame;
 	GtkWidget *imap_auth_type_optmenu;
+	GtkWidget *imapdir_label;
+	GtkWidget *imapdir_entry;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *label_maxarticle;
@@ -193,8 +195,6 @@ static struct Advanced {
 
 	GtkWidget *tunnelcmd_chkbtn;
 	GtkWidget *tunnelcmd_entry;
-	GtkWidget *imapdir_label;
-	GtkWidget *imapdir_entry;
 
 	GtkWidget *sent_folder_chkbtn;
 	GtkWidget *sent_folder_entry;
@@ -524,7 +524,7 @@ static PrefParam param[] = {
 	 prefs_account_crosspost_set_colormenu},
 
 	{"imap_directory", NULL, &tmp_ac_prefs.imap_dir, P_STRING,
-	 &advanced.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &receive.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
 	 &advanced.sent_folder_chkbtn,
@@ -1342,6 +1342,9 @@ static void prefs_account_receive_create(void)
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
 	GtkWidget *imap_frame;
+ 	GtkWidget *imapdir_label;
+	GtkWidget *imapdir_entry;
+
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
@@ -1520,6 +1523,18 @@ static void prefs_account_receive_create(void)
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
+
+	imapdir_label = gtk_label_new (_("IMAP server directory (usually empty)"));
+	gtk_widget_show (imapdir_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_label, FALSE, FALSE, 0);
+
+	imapdir_entry = gtk_entry_new();
+	gtk_widget_show (imapdir_entry);
+	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_entry, FALSE, FALSE, 0);
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1541,6 +1556,9 @@ static void prefs_account_receive_create(void)
 
 	receive.imap_frame               = imap_frame;
 	receive.imap_auth_type_optmenu   = optmenu;
+
+	receive.imapdir_label		= imapdir_label;
+	receive.imapdir_entry           = imapdir_entry;
 
 	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
 
@@ -2178,8 +2196,6 @@ static void prefs_account_advanced_create(void)
  	GtkWidget *menu;
 	GtkWidget *checkbtn_tunnelcmd;
 	GtkWidget *entry_tunnelcmd;
- 	GtkWidget *imapdir_label;
-	GtkWidget *imapdir_entry;
 	GtkWidget *folder_frame;
 	GtkWidget *vbox3;
 	GtkWidget *table;
@@ -2273,14 +2289,6 @@ static void prefs_account_advanced_create(void)
 	SET_TOGGLE_SENSITIVITY(checkbtn_crosspost, colormenu_crosspost);
 
 	PACK_HBOX (hbox1);
-	imapdir_label = gtk_label_new (_("IMAP server directory"));
-	gtk_widget_show (imapdir_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_label, FALSE, FALSE, 0);
-
-	imapdir_entry = gtk_entry_new();
-	gtk_widget_show (imapdir_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_entry, TRUE, TRUE, 0);
-
 #undef PACK_HBOX
 #undef PACK_PORT_ENTRY
 
@@ -2354,8 +2362,6 @@ static void prefs_account_advanced_create(void)
 
 	advanced.tunnelcmd_chkbtn	= checkbtn_tunnelcmd;
 	advanced.tunnelcmd_entry	= entry_tunnelcmd;
-	advanced.imapdir_label		= imapdir_label;
-	advanced.imapdir_entry          = imapdir_entry;
 
 	advanced.sent_folder_chkbtn  = sent_folder_chkbtn;
 	advanced.sent_folder_entry   = sent_folder_entry;
@@ -2775,8 +2781,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(advanced.crosspost_colormenu);
 		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(advanced.imapdir_label);
-		gtk_widget_hide(advanced.imapdir_entry);
+		gtk_widget_hide(receive.imapdir_label);
+		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -2856,8 +2862,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.crosspost_colormenu);
 		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(advanced.imapdir_label);
-		gtk_widget_hide(advanced.imapdir_entry);
+		gtk_widget_hide(receive.imapdir_label);
+		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	case A_IMAP4:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -2940,8 +2946,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.crosspost_colormenu);
 		gtk_widget_show(advanced.tunnelcmd_chkbtn);
 		gtk_widget_show(advanced.tunnelcmd_entry);
-		gtk_widget_show(advanced.imapdir_label);
-		gtk_widget_show(advanced.imapdir_entry);
+		gtk_widget_show(receive.imapdir_label);
+		gtk_widget_show(receive.imapdir_entry);
 		break;
 	case A_NONE:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -3020,8 +3026,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.crosspost_colormenu);
 		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(advanced.imapdir_label);
-		gtk_widget_hide(advanced.imapdir_entry);
+		gtk_widget_hide(receive.imapdir_label);
+		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	case A_POP3:
 	default:
@@ -3105,8 +3111,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.crosspost_colormenu);
 		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(advanced.imapdir_label);
-		gtk_widget_hide(advanced.imapdir_entry);
+		gtk_widget_hide(receive.imapdir_label);
+		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	}
 
