@@ -229,6 +229,23 @@ void sylpheed_gtk_idle(void)
 	usleep(50000);
 }
 
+gboolean defer_check_all(void *data)
+{
+	gboolean autochk = GPOINTER_TO_INT(data);
+
+	inc_all_account_mail(static_mainwindow, autochk, 
+			prefs_common.newmail_notify_manu);
+
+	return FALSE;
+}
+
+gboolean defer_check(void *data)
+{
+	inc_mail(static_mainwindow, prefs_common.newmail_notify_manu);
+
+	return FALSE;
+}
+
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -464,13 +481,11 @@ int main(int argc, char *argv[])
 #endif
 
 	if (cmd.receive_all)
-		inc_all_account_mail(mainwin, FALSE, 
-				     prefs_common.newmail_notify_manu);
+		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
 	else if (prefs_common.chk_on_startup)
-		inc_all_account_mail(mainwin, TRUE, 
-				     prefs_common.newmail_notify_manu);
+		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(TRUE));
 	else if (cmd.receive)
-		inc_mail(mainwin, prefs_common.newmail_notify_manu);
+		g_timeout_add(1000, defer_check, NULL);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
 
