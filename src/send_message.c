@@ -374,7 +374,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	if (!keep_session || ret != 0) {
 		if (session_is_connected(session))
 			smtp_quit(smtp_session);
-		while (session_is_connected(session))
+		while (session_is_connected(session) && !dialog->cancelled)
 			gtk_main_iteration();
 		session_destroy(session);
 		ac_prefs->session = NULL;

@@ -835,3 +835,4 @@
 ( cvs diff -u -r 1.8.2.9 -r 1.8.2.10 src/export.c;  cvs diff -u -r 1.13.2.9 -r 1.13.2.10 src/import.c;  cvs diff -u -r 1.28.2.9 -r 1.28.2.10 src/mbox.c;  ) > 1.9.14cvs64.patchset
 ( cvs diff -u -r 1.149.2.34 -r 1.149.2.35 src/inc.c;  ) > 1.9.14cvs65.patchset
 ( cvs diff -u -r 1.115.2.55 -r 1.115.2.56 src/main.c;  ) > 1.9.14cvs66.patchset
+( cvs diff -u -r 1.17.2.19 -r 1.17.2.20 src/send_message.c;  ) > 1.9.14cvs67.patchset

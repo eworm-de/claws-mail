@@ -1,3 +1,9 @@
+2005-10-03 [paul]	1.9.14cvs67
+
+	* src/send_message.c
+		prevent hang on Cancel
+		patch by Colin
+
 2005-10-03 [paul]	1.9.14cvs66
 
 	* src/main.c
