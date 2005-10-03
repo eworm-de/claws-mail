@@ -1,3 +1,17 @@
+2005-10-03 [paul]	1.9.14cvs68
+
+	* po/ca.po
+	* po/de.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Miquel Oliete, Thomas Gilgin, Ricardo
+		Mones Lastra, Tommi Pirinen, Fabien vantard,
+		Andrej Kacian, Aleksander Urosevic, Yang Guilong
+
 2005-10-03 [paul]	1.9.14cvs67
 
 	* src/send_message.c

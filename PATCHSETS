@@ -836,3 +836,4 @@
 ( cvs diff -u -r 1.149.2.34 -r 1.149.2.35 src/inc.c;  ) > 1.9.14cvs65.patchset
 ( cvs diff -u -r 1.115.2.55 -r 1.115.2.56 src/main.c;  ) > 1.9.14cvs66.patchset
 ( cvs diff -u -r 1.17.2.19 -r 1.17.2.20 src/send_message.c;  ) > 1.9.14cvs67.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 po/ca.po;  cvs diff -u -r 1.58.2.13 -r 1.58.2.14 po/de.po;  cvs diff -u -r 1.60.2.15 -r 1.60.2.16 po/es.po;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 po/fi.po;  cvs diff -u -r 1.42.2.15 -r 1.42.2.16 po/fr.po;  cvs diff -u -r 1.2.2.16 -r 1.2.2.17 po/sk.po;  cvs diff -u -r 1.17.2.13 -r 1.17.2.14 po/sr.po;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 po/zh_CN.po;  ) > 1.9.14cvs68.patchset
