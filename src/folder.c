@@ -51,6 +51,7 @@
 #include "remotefolder.h"
 #include "partial_download.h"
 #include "statusbar.h"
+#include "summaryview.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -1492,6 +1493,8 @@ gint folder_item_close(FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->no_select == FALSE, -1);
 
+	summary_lock(mainwindow_get_mainwindow()->summaryview);
+
 	if (item->new_msgs) {
 		folder_item_update_freeze();
 		mlist = folder_item_get_msg_list(item);
@@ -1511,6 +1514,8 @@ gint folder_item_close(FolderItem *item)
 	
 	folder_item_update(item, F_ITEM_UPDATE_MSGCNT);
 
+	summary_unlock(mainwindow_get_mainwindow()->summaryview);
+	
 	item->opened = FALSE;
 	folder = item->folder;
 

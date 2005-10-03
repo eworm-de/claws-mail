@@ -1,3 +1,9 @@
+2005-10-03 [colin]	1.9.15cvs2
+
+	* src/folder.c
+		Faster close when leaving a folder with lots
+		of new mails. Idea by David Relson.
+
 2005-10-03 [colin]	1.9.15cvs1
 
 	* src/compose.c
