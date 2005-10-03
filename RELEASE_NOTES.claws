@@ -1,4 +1,4 @@
-5th September 2005                              Sylpheed-Claws 1.9.14
+3rd October 2005                                Sylpheed-Claws 1.9.15
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
@@ -6,127 +6,108 @@
 Sylpheed-Claws is an extended version of  Sylpheed, a GTK+ based,
 lightweight, and fast e-mail client
 
-This is the GTK 2 version of Sylpheed-Claws.
-
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* The 'Open first unread message when entering a folder' option has
-  been replaced with 'When entering a folder select...', allowing the
-  user to 'Do Nothing','Select first new (or unread) message',
-  (falling back to first unread message if there are no new
-  messages), or 'Select first unread (or new) message', (falling back
-  to first new message if there are no unread messages).
+* etpan >= 0.39 is now required for IMAP support
 
-  Whether or not the selected message is opened is now exclusively
-  controlled by the 'Always open message when selected' option.
-
-* Filtering and Processing rules can now be given a name. The
-  configuration file is converted to the new format automatically and
-  the old file is backed up to ~/.sylpheed-gtk2/matcherrc.pre_names.
-
-* A new icon for the Trash button has been added.
-
-* The 'Bold font' option has been removed. A displayed bold font is
-  now derived from the normal font.
-
-* The option 'Display recipient in 'From' column if sender is yourself'
-  has been removed from the GUI. It still exists as a hidden option,
-  available in ~/.sylpheed-gtk2/sylpheedrc as 'enable_swap_from'.
+* LDAP and JPilot support is now built by default if the dependencies
+  are available. Use './configure --disable-ldap --disable-jpilot' if
+  you don't want them.
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Many improvements to the Address book including a generally more
-  consistent and intuitive GUI, better labels and reworked and more
-  logical menu items, context sensitive buttons depending on how
-  the address book is called and allowing only relevant actions.
-  Icons have been added to the buttons, fixes to LDAP support, and
-  fixes to drag 'n' drop.
+* ~/.mailcap or /etc/mailcap is now used to open attachments
 
-* It is now possible to paste wrapped or unwrapped text into the
-  Compose window. A '/Special paste/' menu item has been added with
-  sub-items 'as quotation', 'wrapped', and 'unwrapped'.
+* middle-click pasting that respects the 'Wrap pasted text' option
+  has been added
 
-* Colourisation of quotes, signatures, and URIs has been added to the
-  Compose window.
+* during composition the user is alerted if the message can't be
+  drafted
 
-* A 'To' column has been added to the message list pane.
+* the description windows are now non-modal
 
-* The displayed columns in the folder list are now configurable,
-  '/View/Set displayed columns/Folder list'
+* a 'Clear Log' button has been added to the log window popup menu
 
-* A hidden option has been added, 'toolbar_detachable', that enables
-  the removal of the toolbar handles.
+* Sender, List-Post and To have been added to the headers that are
+  checked during automatic Filtering and Processing rules creation
 
-* A hidden option has been added, 'statusbar_update_step', that
-  enables changing the sensitivity of the progress bar stepping.
+* the current locale's charset is used for display of broken mails
+  and a hidden option, 'utf8_instead_of_locale_for_broken_mail', has
+  been added allowing the user to use UTF-8 for broken mails
 
-* Changes to the Fonts options are now applied immediately.
+* GNU/aspell support: if black is chosen as the misspelled word
+  colour, misspelled words will be underlined.
 
-* Subfolders of Drafts, Queue, Sent, and Trash now behave like their
-  parents.
+* the Message View and Compose windows now display the message
+  subject as the window title.
 
-* An 'Open image' menu item has been added to image popup menu in the
-  message view.
+* libgnomeprint support: currently selected text attachments can be
+  printed
 
-* Several optimisations and speed-ups have been added throughout.
+* drag'n'drop of messages from the Message List to a Compose window's
+  Attachment pane is now possible
 
-* The localedir, manualdir, and faqdir are now user-configurable.
+* PGP/MIME plugin: it is now possible to verify S/MIME signatures
 
-* tools/asus_mailled.sh
-  A new script to blink an ASUS laptop's mail LED when there is
-  unread mail.
+* PGP/Core plugin: A "Don't encrypt" button has been added to the key
+  selection dialog, and the buttons have been reordered.
 
-* tools/kdeservicemenu/*
-  Use Sylpheed-Claws icon and the text 'Sylpheed-Claws' in the menu,
-  use kdialog during installation
+* the user is warned if the requested Privacy system is not available
+  when composing a message
 
-* updated translations: Brazilian Portuguese, Finnish, French, German, 
-  Serbian, Slovak, and Spanish
+* updated translations: Catalan, Finnish, French, German, Serbian,
+  Simplified Chinese, Slovak, Spanish, and Taiwanese
 
 * Bug fixes, including the following:
-	o bug 32,  'Search Doesn't display results if "Hide Read
-                    Messages" is chosen'
-	o bug 517, 'messages removed from summaryview when moving
-		    fails'
-	o bug 686, 'Message view on Drafts/Sent should be the same on
-                    Subfolders'
-	o bug 769, 'Typo in manpage'
-	o bug 771, 'Dragged contacts not saved'
-	o bug 776, 'S.C. crashes on close'
-	o bug 777, 'Sylpheed crash in account configuration'
-	o bug 780, 'MSexchange IMAP - using IMAP "Sent Items" and
-		    "Deleted Items" folders'
-	o bug 787, 'multilevel delete causes SIGSEGV'
-	o bug 788, 'Bogus "From" address displayed'
-	o bug 789, 'SC crashes with imap (CVS ver)'
-	o bug 791, 'IMAP Automatic auth mode always defaults to
-		    LOGIN'
-	o bug 795, 'Connection lost IMAP'
-	o bug 797, 'Summary view reloads when new mail is downloaded
-		    in 1.9.14 rc'
-	o bug 800, 'Locked messages no longer show up when hide read
-		    messages is used'
-	o fix building on NetBSD and FreeBSD
-	o fix building on Solaris
-	o fix instant-apply of summary and folderview-related prefs
-	o fix emphasis color on rechecking 'Colorize messages'
-	o fix offline mode for NNTP
-	o IMAP: Fix bug with LIST where we'd try to get
-	  Folder//////[...]///
-	o fix bug where msgview_visible option was overwritten as
-	  TRUE on startup
-	o fix replying to an attached message
-	o fix privacy settings on re-editing a sent message
-	o fix invisibility of SMTP SSL prefs in NNTP accounts
-	o workaround for broken MUAs: encode Content-type: name: as
-	  ASCII and Content-Disposition: filename: as per rfc2231
-	o fix colour labelling
-	o fix pgp plugin loading adn signature verification
-	o fix flickering in folder list
-	o fix crash in 'line length exceeded' dialogue
-	
+	o bug 177, 'There should be a 'Don't Encrypt' button in the
+		   'Select Keys' dialog'
+	o bug 448, 'Scrolling/Redraw issue with address-fields in
+		    Header'
+	o bug 572, '%X option does not work with templates'
+	o bug 767, 'Preferences window expanding'
+	o bug 790, 'Crash when restarting window manager (fluxbox)'
+	o bug 794, 'No way to delete without expunging'
+	o bug 803, 'IMAP/SSL support breaks with GnuTLS libetpan 0.38'
+	o bug 804, 'Quicksearch togglebutton doesn't get depressed
+		    after '/' key is pressed'
+	o bug 815, 'No quote insert if "From:" fied contained Russian
+		    letters'
+	o bug 816, 'Weird quotation with spaces'
+	o bug 819, 'crash accessing sign message'
+	o special subfolders: inherit parent's icon, send contents of
+	  queue's subfolders, empty subfolders of trash folders
+	o fix crash in wizard
+	o fix loss of message Mark on move/copy
+	o fix 100% cpu usage in address completion list
+	o fix gcc-2.95 issues
+	o eliminate warnings on FreeBSD
+	o skip currently selected message when looking for next new
+ 		or unread message in current folder
+	o fix bug in partial download when there's no new mail
+	o send dialog: prevent hang on Cancel
+	o fix Automatic encoding, first try default locale's charset,
+	  then charset of the replied mail, then utf-8
+	o IMAP: fix crash caused by discrepancy between
+		check_at_startup and offline mode
+	o IMAP: fix race when drafting while sending
+	o fixes to  Mbox importing/exporting
+	o src/addressbook.c
+		fix bug where sometimes a group's email list is empty
+	o src/compose.c
+		fix various wrap/color issues
+		fix bug where attachments Name entry showed Path
+		set correct sensitivity on attachments popup menu
+	o src/ldapquery.c
+		fix segfault
+	o src/prefs_spelling.c
+		use 'en' dictionary by default if LANG is POSIX or C
+		fix crash when no LANG env is set
+	o src/plugins/pgpcore/sgpgme.c
+		Report error when there's one, instead of "Signature
+		unchecked"
+
 
 For further details of the numbered bugs listed above consult
 www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
