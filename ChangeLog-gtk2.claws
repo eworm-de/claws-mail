@@ -1,3 +1,9 @@
+2005-10-04 [colin]	1.9.15cvs10
+
+	* src/toolbar.c
+		Use Compose instead of Email by default.
+		Spotted by wwp.
+
 2005-10-04 [colin]	1.9.15cvs9
 
 	* src/folder.c
