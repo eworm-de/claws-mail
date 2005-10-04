@@ -1803,6 +1803,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		if (olditem) {
 			/* will be null if we just moved the previously opened folder */
 			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
+			summary_show(folderview->summaryview, NULL);
 			folder_item_close(olditem);
 		}
 	}

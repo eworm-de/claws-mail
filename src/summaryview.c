@@ -5518,11 +5518,10 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 	g_return_val_if_fail(msginfo_update != NULL, TRUE);
 	g_return_val_if_fail(summaryview != NULL, FALSE);
 
-	if (summary_is_locked(summaryview))
-		return FALSE;
-
 	if (msginfo_update->flags & MSGINFO_UPDATE_FLAGS) {
-		node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);
+		node = gtk_ctree_find_by_row_data(
+				GTK_CTREE(summaryview->ctree), NULL, 
+				msginfo_update->msginfo);
 
 		if (node) 
 			summary_set_row_marks(summaryview, node);

@@ -1,3 +1,10 @@
+2005-10-04 [colin]	1.9.15cvs6
+
+	* src/folder.c
+	* src/folderview.c
+	* src/summaryview.c
+		Better fix (don't break mark all read) for cvs2
+
 2005-10-03 [colin]	1.9.15cvs5
 
 	* src/folder.c
