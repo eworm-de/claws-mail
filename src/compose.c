@@ -990,10 +990,12 @@ void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 		    	      FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, body);
+		compose_reply(msginfo, TRUE, 
+			FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
+		compose_reply(msginfo, FALSE, 
+			FALSE, prefs_common.default_reply_list, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
@@ -1005,30 +1007,36 @@ void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 					      FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, body);
+		compose_reply(msginfo, TRUE, 
+			FALSE, FALSE, TRUE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
+		compose_reply(msginfo, FALSE, 
+			FALSE, FALSE, TRUE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE, FALSE, body);
+			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, body);
+		compose_reply(msginfo, TRUE, 
+			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
+		compose_reply(msginfo, FALSE, 
+			TRUE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_LIST:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE, FALSE, body);
+			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, body);
+		compose_reply(msginfo, TRUE, 
+			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		compose_reply(msginfo, FALSE, 
+			FALSE, TRUE, FALSE, NULL);
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {
@@ -2165,11 +2173,25 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(msginfo != NULL);
 
 	if (compose->account->protocol != A_NNTP) {
-		if (!compose->replyto && to_ml && compose->ml_post
-		    && !(msginfo->folder && msginfo->folder->prefs->enable_default_reply_to))
+		if (to_ml && compose->ml_post
+		    && !(msginfo->folder && 
+			 msginfo->folder->prefs->enable_default_reply_to)) {
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
+			if (compose->replyto) {
+				gchar *tmp1 = NULL, *tmp2 = NULL;
+				Xstrdup_a(tmp1, compose->replyto, return);
+				if (compose->ml_post)
+					Xstrdup_a(tmp2, compose->ml_post, return);
+				extract_address(tmp1);
+				extract_address(tmp2);
+				if (tmp1 && tmp2 && strcmp(tmp1, tmp2))
+					compose_entry_append(compose,
+							compose->replyto,
+							COMPOSE_CC);
+			}
+		}
 		else if (!(to_all || to_sender)
 			 && msginfo->folder
 			 && msginfo->folder->prefs->enable_default_reply_to) {

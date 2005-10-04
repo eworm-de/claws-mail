@@ -1,3 +1,13 @@
+2005-10-04 [colin]	1.9.15cvs12
+
+	* src/compose.c
+		When replying to an ML post with Reply-To set
+		to the poster's email, honor it (as before),
+		but also honor our user's request to reply to
+		the mailing list: set the ML address in the To
+		field and the Reply-To address in the Cc: 
+		field.
+
 2005-10-04 [colin]	1.9.15cvs11
 
 	* src/plugins/trayicon/trayicon.c
