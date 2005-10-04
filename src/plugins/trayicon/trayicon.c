@@ -91,15 +91,15 @@ static void resize_cb		    (GtkWidget *widget, GtkRequisition *req, gpointer use
 
 static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 {
-	{N_("/_Get"),				NULL, trayicon_get_cb,				0, NULL},
-	{N_("/Get _All"),			NULL, trayicon_get_all_cb,			0, NULL},
-	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
-	{N_("/_Email"),				NULL, trayicon_compose_cb,			0, NULL},
+	{N_("/_Get"),			NULL, trayicon_get_cb,			0, NULL},
+	{N_("/Get _All"),		NULL, trayicon_get_all_cb,		0, NULL},
+	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
+	{N_("/_Email"),			NULL, trayicon_compose_cb,		0, NULL},
 	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb,		0, NULL},
-	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
-	{N_("/_Offline"),			NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
-	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
-	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,				0, NULL}
+	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
+	{N_("/_Work Offline"),		NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
+	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
+	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,			0, NULL}
 };
 
 static void set_trayicon_pixmap(TrayIconType icontype)

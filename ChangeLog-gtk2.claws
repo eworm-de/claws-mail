@@ -1,3 +1,8 @@
+2005-10-04 [colin]	1.9.15cvs8
+
+	* src/plugins/trayicon/trayicon.c
+		Relabel "Offline" to "Work offline"
+
 2005-10-04 [colin]	1.9.15cvs7
 
 	* src/export.c

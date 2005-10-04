@@ -844,3 +844,4 @@
 ( cvs diff -u -r 1.213.2.58 -r 1.213.2.59 src/folder.c;  ) > 1.9.15cvs5.patchset
 ( cvs diff -u -r 1.213.2.59 -r 1.213.2.60 src/folder.c;  cvs diff -u -r 1.207.2.65 -r 1.207.2.66 src/folderview.c;  cvs diff -u -r 1.395.2.129 -r 1.395.2.130 src/summaryview.c;  ) > 1.9.15cvs6.patchset
 ( cvs diff -u -r 1.8.2.10 -r 1.8.2.11 src/export.c;  cvs diff -u -r 1.13.2.10 -r 1.13.2.11 src/import.c;  cvs diff -u -r 1.28.2.10 -r 1.28.2.11 src/mbox.c;  cvs diff -u -r 1.14.2.21 -r 1.14.2.22 src/plugins/trayicon/trayicon.c;  ) > 1.9.15cvs7.patchset
+( cvs diff -u -r 1.14.2.22 -r 1.14.2.23 src/plugins/trayicon/trayicon.c;  ) > 1.9.15cvs8.patchset
