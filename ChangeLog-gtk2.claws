@@ -1,3 +1,8 @@
+2005-10-04 [colin]	1.9.15cvs11
+
+	* src/plugins/trayicon/trayicon.c
+		Finish cosmetic change - thanks to wwp
+
 2005-10-04 [colin]	1.9.15cvs10
 
 	* src/toolbar.c

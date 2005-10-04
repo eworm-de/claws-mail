@@ -203,7 +203,7 @@ static gboolean click_cb(GtkWidget * widget,
 		/* initialize checkitem according to current offline state */
 		gtk_check_menu_item_set_active(
 			GTK_CHECK_MENU_ITEM(gtk_item_factory_get_item(traymenu_factory,
-			_("/Offline"))), prefs_common.work_offline);
+			_("/Work Offline"))), prefs_common.work_offline);
 		updating_menu = FALSE;
 
 		gtk_menu_popup( GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
