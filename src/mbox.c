@@ -47,6 +47,7 @@
 
 #define FPUTS_TO_TMP_ABORT_IF_FAIL(s) \
 { \
+	lines++; \
 	if (fputs(s, tmp_fp) == EOF) { \
 		g_warning("can't write to temporary file\n"); \
 		fclose(tmp_fp); \
@@ -60,10 +61,12 @@
 gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 {
 	FILE *mbox_fp;
-	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
+	gchar buf[MSGBUFSIZE];
 	gchar *tmp_file;
 	gint msgs = 0;
+	gint lines;
 	MsgInfo *msginfo;
+	gboolean more;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -91,13 +94,6 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		return -1;
 	}
 
-	strcpy(from_line, buf);
-	if (fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-		g_warning("malformed mbox: %s\n", mbox);
-		fclose(mbox_fp);
-		return -1;
-	}
-
 	tmp_file = get_tmp_file();
 
 	folder_item_update_freeze();
@@ -105,8 +101,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 	do {
 		FILE *tmp_fp;
 		FolderItem *dropfolder;
-		gint empty_line;
-		gboolean is_next_msg = FALSE;
+		gint empty_lines;
 		gint msgnum;
 
 		if ((tmp_fp = g_fopen(tmp_file, "wb")) == NULL) {
@@ -116,86 +111,84 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 			g_free(tmp_file);
 			return -1;
 		}
-		if (change_file_mode_rw(tmp_fp, tmp_file) < 0)
+		if (change_file_mode_rw(tmp_fp, tmp_file) < 0) {
 			FILE_OP_ERROR(tmp_file, "chmod");
+		}
 
-		/* convert unix From into Return-Path */
-		/*
-		startp = from_line + 5;
-		endp = strchr(startp, ' ');
-		if (endp == NULL)
-			rpath = g_strdup(startp);
-		else
-			rpath = g_strndup(startp, endp - startp);
-		g_strstrip(rpath);
-		g_snprintf(from_line, sizeof(from_line),
-			   "Return-Path: %s\n", rpath);
-		g_free(rpath);
+		empty_lines = 0;
+		lines = 0;
+		more = FALSE;
 
-		FPUTS_TO_TMP_ABORT_IF_FAIL(from_line);
-		*/
-
-		FPUTS_TO_TMP_ABORT_IF_FAIL(buf);
-		from_line[0] = '\0';
-
-		empty_line = 0;
-
+		/* process all lines from mboxrc file */
 		while (fgets(buf, sizeof(buf), mbox_fp) != NULL) {
+			int offset;
+
+			/* eof not reached, expect more lines */
+			more = TRUE;
+
+			/* eat empty lines */
 			if (buf[0] == '\n' || buf[0] == '\r') {
-				empty_line++;
-				buf[0] = '\0';
+				empty_lines++;
 				continue;
 			}
 
-			/* From separator */
-			while (!strncmp(buf, "From ", 5)) {
-				strcpy(from_line, buf);
-				if (fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-					buf[0] = '\0';
-					break;
-				}
-
-				if (is_header_line(buf)) {
-					is_next_msg = TRUE;
-					break;
-				} else if (!strncmp(buf, "From ", 5)) {
-					continue;
-				} else if (!strncmp(buf, ">From ", 6)) {
-					g_memmove(buf, buf + 1, strlen(buf));
-					is_next_msg = TRUE;
-					break;
-				} else {
-					g_warning("unescaped From found:\n%s",
-						  from_line);
-					break;
-				}
+			/* From separator or quoted From */
+			offset = 0;
+			/* detect leading '>' char(s) */
+			while ((buf[offset] == '>')) {
+				offset++;
 			}
-			if (is_next_msg) break;
+			if (!strncmp(buf+offset, "From ", 5)) {
+				/* From separator: */
+				if (offset == 0) {
+					/* expect next mbox item */
+					break;
+				}
 
-			if (empty_line > 0) {
-				while (empty_line--)
+				/* quoted From: */
+				/* flush any eaten empty line */
+				if (empty_lines > 0) {
+					while (empty_lines-- > 0) {
+						FPUTS_TO_TMP_ABORT_IF_FAIL("\n");
+				}
+					empty_lines = 0;
+				}
+				/* store the unquoted line */
+				FPUTS_TO_TMP_ABORT_IF_FAIL(buf + 1);
+				continue;
+			}
+
+			/* other line */
+			/* flush any eaten empty line */
+			if (empty_lines > 0) {			
+				while (empty_lines-- > 0) {
 					FPUTS_TO_TMP_ABORT_IF_FAIL("\n");
-				empty_line = 0;
 			}
-
-			if (from_line[0] != '\0') {
-				FPUTS_TO_TMP_ABORT_IF_FAIL(from_line);
-				from_line[0] = '\0';
+				empty_lines = 0;
 			}
-
-			if (buf[0] != '\0') {
-				if (!strncmp(buf, ">From ", 6)) {
-					FPUTS_TO_TMP_ABORT_IF_FAIL(buf + 1);
-				} else
+			/* store the line itself */
 					FPUTS_TO_TMP_ABORT_IF_FAIL(buf);
+		}
+		/* end of mbox item or end of mbox */
 
-				buf[0] = '\0';
+		/* flush any eaten empty line (but the last one) */
+		if (empty_lines > 0) {
+			while (--empty_lines > 0) {
+				FPUTS_TO_TMP_ABORT_IF_FAIL("\n");
 			}
 		}
 
-		if (empty_line > 0) {
-			while (--empty_line)
-				FPUTS_TO_TMP_ABORT_IF_FAIL("\n");
+		/* more emails to expect? */
+		more = !feof(mbox_fp);
+
+		/* warn if email part is empty (it's the minimum check 
+		   we can do */
+		if (lines == 0) {
+			g_warning("malformed mbox: %s: message %d is empty\n", mbox, msgs);
+			fclose(tmp_fp);
+			fclose(mbox_fp);
+			g_unlink(tmp_file);
+			return -1;
 		}
 
 		if (fclose(tmp_fp) == EOF) {
@@ -222,7 +215,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		procmsg_msginfo_free(msginfo);
 
 		msgs++;
-	} while (from_line[0] != '\0');
+	} while (more);
 
 	folder_item_update_thaw();
 	
@@ -385,8 +378,9 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 							_("This file already exists. Do you want to overwrite it?"),
 							_("Overwrite"), GTK_STOCK_CANCEL, NULL, FALSE,
 							NULL, ALERT_WARNING, G_ALERTALTERNATE)
-			== G_ALERTALTERNATE)
+			== G_ALERTALTERNATE) {
 		return -1;
+	}
 	}
 
 	if ((mbox_fp = g_fopen(mbox, "wb")) == NULL) {
@@ -397,6 +391,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
+		int len;
 
 		msg_fp = procmsg_open_message(msginfo);
 		if (!msg_fp) {
@@ -414,11 +409,32 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		fprintf(mbox_fp, "From %s %s",
 			buf, ctime(&msginfo->date_t));
 
+		buf[0] = '\0';
+		
+		/* write email to mboxrc */
 		while (fgets(buf, sizeof(buf), msg_fp) != NULL) {
-			if (!strncmp(buf, "From ", 5))
+			/* quote any From, >From, >>From, etc., according to mbox format specs */
+			int offset;
+
+			offset = 0;
+			/* detect leading '>' char(s) */
+			while ((buf[offset] == '>')) {
+				offset++;
+			}
+			if (!strncmp(buf+offset, "From ", 5))
 				fputc('>', mbox_fp);
 			fputs(buf, mbox_fp);
 		}
+
+		/* force last line to end w/ a newline */
+		len = strlen(buf);
+		if (len > 0) {
+			len--;
+			if ((buf[len] != '\n') && (buf[len] != '\r'))
+				fputc('\n', mbox_fp);
+		}
+
+		/* add a trailing empty line */
 		fputc('\n', mbox_fp);
 
 		fclose(msg_fp);

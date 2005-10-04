@@ -1,3 +1,14 @@
+2005-10-04 [colin]	1.9.15cvs7
+
+	* src/export.c
+	* src/import.c
+	* src/mbox.c
+		Fix mbox import/export buglets
+		Patch by wwp
+	* src/plugins/trayicon/trayicon.c
+		Add offline swithc
+		Patch by wwp
+
 2005-10-04 [colin]	1.9.15cvs6
 
 	* src/folder.c

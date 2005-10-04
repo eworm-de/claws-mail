@@ -138,6 +138,7 @@ static void export_create(void)
 	GtkWidget *file_label;
 	GtkWidget *src_label;
 	GtkWidget *confirm_area;
+	GtkWidget *image;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Export"));
@@ -187,13 +188,18 @@ static void export_create(void)
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	src_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+	/* XXX GTK 2.6: GTK_STOCK_DIRECTORY */
+	src_button = gtk_button_new_with_mnemonic(_("_Browse"));
+	gtk_button_set_image((GtkButton*)src_button,
+		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
 	gtk_table_attach(GTK_TABLE(table), src_button, 2, 3, 0, 1,
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT(src_button), "clicked",
 			 G_CALLBACK(export_srcsel_cb), NULL);
 
-	file_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+	file_button = gtk_button_new_with_mnemonic(_("B_rowse"));
+	gtk_button_set_image((GtkButton*)file_button,
+		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
 	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 1, 2,
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT(file_button), "clicked",

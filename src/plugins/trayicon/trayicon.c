@@ -67,6 +67,8 @@ static GtkWidget *eventbox;
 static GtkWidget *image;
 static GtkTooltips *tooltips;
 static GtkWidget *traymenu_popup;
+static GtkItemFactory *traymenu_factory;
+static gboolean updating_menu = FALSE;
 
 guint destroy_signal_id;
 
@@ -84,17 +86,20 @@ static void trayicon_get_all_cb	    (gpointer data, guint action, GtkWidget *wid
 static void trayicon_compose_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_addressbook_cb (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_exit_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_toggle_offline_cb	(gpointer data, guint action, GtkWidget *widget);
 static void resize_cb		    (GtkWidget *widget, GtkRequisition *req, gpointer user_data);
 
 static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 {
-	{N_("/_Get"),			NULL, trayicon_get_cb, 		0, NULL},
-	{N_("/Get _All"),		NULL, trayicon_get_all_cb, 	0, NULL},
-	{N_("/---"),			NULL, NULL, 			0, "<Separator>"},
-	{N_("/_Email"),			NULL, trayicon_compose_cb,   	0, NULL},
-	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb, 	0, NULL},
-	{N_("/---"),			NULL, NULL, 			0, "<Separator>"},
-	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,     	0, NULL}
+	{N_("/_Get"),				NULL, trayicon_get_cb,				0, NULL},
+	{N_("/Get _All"),			NULL, trayicon_get_all_cb,			0, NULL},
+	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
+	{N_("/_Email"),				NULL, trayicon_compose_cb,			0, NULL},
+	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb,		0, NULL},
+	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
+	{N_("/_Offline"),			NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
+	{N_("/---"),				NULL, NULL,							0, "<Separator>"},
+	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,				0, NULL}
 };
 
 static void set_trayicon_pixmap(TrayIconType icontype)
@@ -126,8 +131,9 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 		break;
 	}
 
-	if (pixmap == last_pixmap)
+	if (pixmap == last_pixmap) {
 		return;
+	}
 
 	gtk_image_set_from_pixmap(GTK_IMAGE(image), pixmap, bitmap);
 
@@ -145,15 +151,16 @@ static void update(void)
 
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
 	g_free(buf);
-	
-	if (new > 0 && unreadmarked > 0)
+
+	if (new > 0 && unreadmarked > 0) {
 		icontype = TRAYICON_NEWMARKED;
-	else if (new > 0)
+	} else if (new > 0) {
 		icontype = TRAYICON_NEW;
-	else if (unreadmarked > 0)
+	} else if (unreadmarked > 0) {
 		icontype = TRAYICON_UNREADMARKED;
-	else if (unread > 0)
+	} else if (unread > 0) {
 		icontype = TRAYICON_UNREAD;
+	}
 
 	set_trayicon_pixmap(icontype);
 }
@@ -176,20 +183,29 @@ static gboolean click_cb(GtkWidget * widget,
 {
 	MainWindow *mainwin;
 
-	if (event == NULL)
+	if (event == NULL) {
 		return TRUE;
+	}
 
 	mainwin = mainwindow_get_mainwindow();
-	
+
 	switch (event->button) {
 	case 1:
 		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
 			main_window_hide(mainwin);
 		} else {
 			main_window_show(mainwin);
-        	}
+        }
 		break;
 	case 3:
+		/* tell callbacks to skip any event */
+		updating_menu = TRUE;
+		/* initialize checkitem according to current offline state */
+		gtk_check_menu_item_set_active(
+			GTK_CHECK_MENU_ITEM(gtk_item_factory_get_item(traymenu_factory,
+			_("/Offline"))), prefs_common.work_offline);
+		updating_menu = FALSE;
+
 		gtk_menu_popup( GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time );
 		break;
@@ -211,49 +227,47 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 static void create_trayicon()
 {
 	gint n_entries = 0;
-	GtkItemFactory *traymenu_factory;
 #if 0
 	GtkPacker *packer;
 #endif
 
-        trayicon = egg_tray_icon_new("Sylpheed-Claws");
+	trayicon = egg_tray_icon_new("Sylpheed-Claws");
 	gtk_widget_realize(GTK_WIDGET(trayicon));
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
-        gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
+	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
-        PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
-        PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
-        PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
-        PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap, unreadmarkedmail_bitmap, unreadmarkedmail_xpm);
-        PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap, newmarkedmail_bitmap, newmarkedmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap, unreadmarkedmail_bitmap, unreadmarkedmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap, newmarkedmail_bitmap, newmarkedmail_xpm);
 
-        eventbox = gtk_event_box_new();
-        gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
-        gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
+	eventbox = gtk_event_box_new();
+	gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
+	gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
-        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
-        gtk_container_add(GTK_CONTAINER(eventbox), image);
+	image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
+	gtk_container_add(GTK_CONTAINER(eventbox), image);
 
 	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "destroy",
-                     	 G_CALLBACK(destroy_cb), NULL);
+		G_CALLBACK(destroy_cb), NULL);
 	g_signal_connect(GTK_OBJECT(trayicon), "size-request",
-		    	 G_CALLBACK(resize_cb), NULL);
+		G_CALLBACK(resize_cb), NULL);
 	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
-		    	 G_CALLBACK(click_cb), NULL);
+		G_CALLBACK(click_cb), NULL);
 
-        tooltips = gtk_tooltips_new();
-        gtk_tooltips_set_delay(tooltips, 1000);
-        gtk_tooltips_enable(tooltips);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_delay(tooltips, 1000);
+	gtk_tooltips_enable(tooltips);
 
 	n_entries = sizeof(trayicon_popup_menu_entries) /
-		sizeof(trayicon_popup_menu_entries[0]);
+	sizeof(trayicon_popup_menu_entries[0]);
 	traymenu_popup = menu_create_items(trayicon_popup_menu_entries,
-				       n_entries,
-				       "<TrayiconMenu>", &traymenu_factory,
-				       NULL);
+						n_entries, "<TrayiconMenu>", &traymenu_factory,
+						NULL);
 
-        gtk_widget_show_all(GTK_WIDGET(trayicon));
+	gtk_widget_show_all(GTK_WIDGET(trayicon));
 
 	update();
 }
@@ -278,7 +292,7 @@ int plugin_init(gchar **error)
 
 	create_trayicon();
 
-        return 0;
+	return 0;
 }
 
 void plugin_done(void)
@@ -288,8 +302,9 @@ void plugin_done(void)
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
 
-	while (gtk_events_pending())
-		gtk_main_iteration();		
+	while (gtk_events_pending()) {
+		gtk_main_iteration();
+	}
 }
 
 const gchar *plugin_name(void)
@@ -336,12 +351,22 @@ static void trayicon_addressbook_cb( gpointer data, guint action, GtkWidget *wid
 	addressbook_open(NULL);
 }
 
+static void trayicon_toggle_offline_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	/* toggle offline mode if menu checkitem has been clicked */
+	if (!updating_menu) {
+		MainWindow *mainwin = mainwindow_get_mainwindow();
+		main_window_toggle_work_offline(mainwin, !prefs_common.work_offline, FALSE);
+	}
+}
+
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit this program?"),
-			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL) != G_ALERTDEFAULT) {
 			return;
+		}
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
@@ -352,6 +377,7 @@ static void trayicon_exit_cb( gpointer data, guint action, GtkWidget *widget )
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
-	if (mainwin->lock_count == 0)
+	if (mainwin->lock_count == 0) {
 		app_exit_cb(mainwin, 0, NULL);
+	}
 }
