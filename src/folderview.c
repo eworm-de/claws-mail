@@ -1766,6 +1766,29 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+gboolean folderview_process_open(gpointer data)
+{
+	FolderView *folderview = (FolderView *)data;
+	FolderItem *item = NULL;
+	
+	if (!folderview || !folderview->opened) {
+		debug_print("opened NULL\n");
+		return FALSE;
+	}
+	item = gtk_ctree_node_get_row_data(
+		GTK_CTREE(folderview->ctree), 
+		folderview->opened);
+	
+	if (!item)
+		return FALSE;
+
+	folder_item_update_freeze();
+	folder_item_process_open(item);
+	folder_item_update_thaw();
+	
+	return FALSE;	
+}
+
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {
@@ -1852,6 +1875,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 		return;
         }
+	
 
 	main_window_cursor_normal(folderview->mainwin);
 
@@ -1870,6 +1894,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    != GTK_VISIBILITY_FULL)
 			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
 	}
+
+	g_timeout_add(0, folderview_process_open, folderview);
 
 	STATUSBAR_POP(folderview->mainwin);
 

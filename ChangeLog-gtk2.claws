@@ -1,3 +1,20 @@
+2005-10-04 [colin]	1.9.15cvs9
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Try to make IMAP faster, by simplifying SEARCH
+		commands, avoiding sending two STATUS in a row,
+		and deferring flags sync and processing just
+		after displaying the folder. 
+		This will update the SummaryView in certain
+		cases (new mails not already fetched, flags
+		changed from another client) but in a non-
+		blocking manner.
+
 2005-10-04 [colin]	1.9.15cvs8
 
 	* src/plugins/trayicon/trayicon.c

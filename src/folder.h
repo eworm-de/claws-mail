@@ -811,5 +811,5 @@ void folder_item_set_batch		(FolderItem *item, gboolean batch);
 gboolean folder_has_parent_of_type	(FolderItem *item, SpecialFolderItemType type);
 void folder_synchronise			(Folder *folder);
 gboolean folder_want_synchronise	(Folder *folder);
-
+void folder_item_process_open		(FolderItem *item);
 #endif /* __FOLDER_H__ */

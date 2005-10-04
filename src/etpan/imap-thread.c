@@ -572,7 +572,8 @@ static void status_run(struct etpan_thread_op * op)
 }
 
 int imap_threaded_status(Folder * folder, const char * mb,
-			 struct mailimap_mailbox_data_status ** data_status)
+			 struct mailimap_mailbox_data_status ** data_status,
+			 guint mask)
 {
 	struct status_param param;
 	struct status_result result;
@@ -581,17 +582,26 @@ int imap_threaded_status(Folder * folder, const char * mb,
 	debug_print("imap status - begin\n");
 	
 	status_att_list = mailimap_status_att_list_new_empty();
-	mailimap_status_att_list_add(status_att_list,
+	if (mask & 1 << 0) {
+		mailimap_status_att_list_add(status_att_list,
 				     MAILIMAP_STATUS_ATT_MESSAGES);
-	mailimap_status_att_list_add(status_att_list,
+	}
+	if (mask & 1 << 1) {
+		mailimap_status_att_list_add(status_att_list,
 				     MAILIMAP_STATUS_ATT_RECENT);
-	mailimap_status_att_list_add(status_att_list,
+	}
+	if (mask & 1 << 2) {
+		mailimap_status_att_list_add(status_att_list,
 				     MAILIMAP_STATUS_ATT_UIDNEXT);
-	mailimap_status_att_list_add(status_att_list,
+	}
+	if (mask & 1 << 3) {
+		mailimap_status_att_list_add(status_att_list,
 				     MAILIMAP_STATUS_ATT_UIDVALIDITY);
-	mailimap_status_att_list_add(status_att_list,
+	}
+	if (mask & 1 << 4) {
+		mailimap_status_att_list_add(status_att_list,
 				     MAILIMAP_STATUS_ATT_UNSEEN);
-	
+	}
 	param.imap = get_imap(folder);
 	param.mb = mb;
 	param.status_att_list = status_att_list;
@@ -1065,7 +1075,7 @@ int imap_threaded_search(Folder * folder, int search_type,
 	mailimap * imap;
 	
 	debug_print("imap search - begin\n");
-	
+
 	imap = get_imap(folder);
 	param.imap = imap;
 	param.set = set;

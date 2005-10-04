@@ -1461,16 +1461,17 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 	return (gint_a - gint_b);
 }
 
-gint folder_item_open(FolderItem *item)
+void folder_item_process_open(FolderItem *item)
 {
 	gchar *buf;
-	g_return_val_if_fail(item->no_select == FALSE, -1);
-
+	if (item == NULL)
+		return;
 	if((item->folder->klass->scan_required != NULL) &&
 	   (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
+	} else {
+		folder_item_syncronize_flags(item);
 	}
-	folder_item_syncronize_flags(item);
 	
 	/* Processing */
 	buf = g_strdup_printf(_("Processing (%s)...\n"), 
@@ -1480,9 +1481,15 @@ gint folder_item_open(FolderItem *item)
 	
 	folder_item_apply_processing(item);
 
-	item->opened = TRUE;
-
 	debug_print("done.\n");
+	return;	
+}
+
+gint folder_item_open(FolderItem *item)
+{
+	g_return_val_if_fail(item->no_select == FALSE, -1);
+
+	item->opened = TRUE;
 
 	return 0;
 }
@@ -1783,11 +1790,15 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	g_slist_free(folder_list);
 
 	if (new_list != NULL) {
+		GSList *tmp_list = NULL;
 		newmsg_list = get_msginfos(item, new_list);
 		g_slist_free(new_list);
+		tmp_list = g_slist_concat(g_slist_copy(exists_list), g_slist_copy(newmsg_list));
+		syncronize_flags(item, tmp_list);
+		g_slist_free(tmp_list);
+	} else {
+		syncronize_flags(item, exists_list);
 	}
-
-	syncronize_flags(item, exists_list);
 
 	folder_item_update_freeze();
 	if (newmsg_list != NULL) {

@@ -156,6 +156,12 @@ struct _IMAPFolderItem
 	guint uid_next;
 	GSList *uid_list;
 	gboolean batching;
+
+	time_t use_cache;
+	gint c_messages;
+	guint32 c_uid_next;
+	guint32 c_uid_validity;
+	gint c_unseen;
 };
 
 static void imap_folder_init		(Folder		*folder,
@@ -271,8 +277,8 @@ static gint imap_select			(IMAPSession	*session,
 static gint imap_status			(IMAPSession	*session,
 					 IMAPFolder	*folder,
 					 const gchar	*path,
+					 IMAPFolderItem *item,
 					 gint		*messages,
-					 gint		*recent,
 					 guint32	*uid_next,
 					 guint32	*uid_validity,
 					 gint		*unseen,
@@ -997,6 +1003,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	GSList *cur;
 	MsgFileInfo *fileinfo;
 	gint ok;
+	gint curnum = 0, total = 0;
 
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -1009,12 +1016,17 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	}
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
+	statusbar_print_all(_("Adding messages..."));
+	total = g_slist_length(file_list);
 	for (cur = file_list; cur != NULL; cur = cur->next) {
 		IMAPFlags iflags = 0;
 		guint32 new_uid = 0;
 		gchar *real_file = NULL;
 		gboolean file_is_tmp = FALSE;
 		fileinfo = (MsgFileInfo *)cur->data;
+
+		statusbar_progress_all(curnum, total, 1);
+		curnum++;
 
 		if (fileinfo->flags) {
 			if (MSG_IS_MARKED(*fileinfo->flags))
@@ -1071,6 +1083,8 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		if (file_is_tmp)
 			g_unlink(real_file);
 	}
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
 
 	g_free(destdir);
 
@@ -1088,7 +1102,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	gint ok = IMAP_SUCCESS;
 	GRelation *uid_mapping;
 	gint last_num = 0;
-	
+
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -1117,11 +1131,11 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	uid_mapping = g_relation_new(2);
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
 	
+	statusbar_print_all(_("Copying messages..."));
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
 		struct mailimap_set * seq_set;
-		
 		seq_set = cur->data;
-		
+
 		debug_print("Copying messages from %s to %s ...\n",
 			    src->path, destdir);
 
@@ -1151,6 +1165,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 					  GPOINTER_TO_INT(0));
 		g_tuples_destroy(tuples);
 	}
+	statusbar_pop_all();
 
 	g_relation_destroy(uid_mapping);
 	imap_lep_set_free(seq_list);
@@ -2195,8 +2210,8 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 }
 
 static gint imap_status(IMAPSession *session, IMAPFolder *folder,
-			const gchar *path,
-			gint *messages, gint *recent,
+			const gchar *path, IMAPFolderItem *item,
+			gint *messages,
 			guint32 *uid_next, guint32 *uid_validity,
 			gint *unseen, gboolean block)
 {
@@ -2205,10 +2220,64 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	struct mailimap_mailbox_data_status * data_status;
 	int got_values;
 	gchar *real_path;
-
+	guint mask = 0;
+	
 	real_path = imap_get_real_path(folder, path);
 
-	r = imap_threaded_status(FOLDER(folder), real_path, &data_status);
+#if 0
+	if (time(NULL) - item->last_update >= 5 && item->last_update != 1) {
+		/* do the full stuff */
+		item->last_update = 1; /* force update */
+		debug_print("updating everything\n");
+		r = imap_status(session, folder, path, item,
+		&item->c_messages, &item->c_uid_next,
+		&item->c_uid_validity, &item->c_unseen, block);
+		if (r != MAILIMAP_NO_ERROR) {
+			debug_print("status err %d\n", r);
+			return IMAP_ERROR;
+		}
+		item->last_update = time(NULL);
+		if (messages) 
+			*messages = item->c_messages;
+		if (uid_next)
+			*uid_next = item->c_uid_next;
+		if (uid_validity)
+			*uid_validity = item->c_uid_validity;
+		if (unseen)
+			*unseen = item->c_unseen;
+		return 0;
+	} else if (time(NULL) - item->last_update < 5) {
+		/* return cached stuff */
+		debug_print("using cache\n");
+		if (messages) 
+			*messages = item->c_messages;
+		if (uid_next)
+			*uid_next = item->c_uid_next;
+		if (uid_validity)
+			*uid_validity = item->c_uid_validity;
+		if (unseen)
+			*unseen = item->c_unseen;
+		return 0;
+	}
+#endif
+
+	/* if we get there, we're updating cache */
+
+	if (messages) {
+		mask |= 1 << 0;
+	}
+	if (uid_next) {
+		mask |= 1 << 2;
+	}
+	if (uid_validity) {
+		mask |= 1 << 3;
+	}
+	if (unseen) {
+		mask |= 1 << 4;
+	}
+	r = imap_threaded_status(FOLDER(folder), real_path, 
+		&data_status, mask);
+
 	g_free(real_path);
 	if (r != MAILIMAP_NO_ERROR) {
 		debug_print("status err %d\n", r);
@@ -2233,11 +2302,6 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 			got_values |= 1 << 0;
 			break;
 			
-		case MAILIMAP_STATUS_ATT_RECENT:
-			* recent = info->st_value;
-			got_values |= 1 << 1;
-			break;
-			
 		case MAILIMAP_STATUS_ATT_UIDNEXT:
 			* uid_next = info->st_value;
 			got_values |= 1 << 2;
@@ -2256,8 +2320,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	}
 	mailimap_mailbox_data_status_free(data_status);
 	
-	if (got_values != ((1 << 4) + (1 << 3) +
-			   (1 << 2) + (1 << 1) + (1 << 0))) {
+	if (got_values != mask) {
 		debug_print("status: incomplete values received (%d)\n", got_values);
 		return IMAP_ERROR;
 	}
@@ -2516,10 +2579,8 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	flag_list = imap_flag_to_lep(flags);
-	statusbar_print_all(_("Adding messages..."));
 	r = imap_threaded_append(session->folder, destfolder,
 			 file, flag_list);
-	statusbar_pop_all();
 	if (new_uid != NULL)
 		*new_uid = 0;
 
@@ -2539,9 +2600,7 @@ static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
 	g_return_val_if_fail(set != NULL, IMAP_ERROR);
 	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
 
-	statusbar_print_all(_("Copying messages..."));
 	r = imap_threaded_copy(session->folder, set, destfolder);
-	statusbar_pop_all();
 	if (r != MAILIMAP_NO_ERROR) {
 		
 		return IMAP_ERROR;
@@ -2853,6 +2912,7 @@ static void *get_list_of_uids_thread(void *data)
 	uidlist = NULL;
 	
 	set = mailimap_set_new_interval(item->lastuid + 1, 0);
+
 	r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, set,
 				 &lep_uidlist);
 	if (r == MAILIMAP_NO_ERROR) {
@@ -2923,7 +2983,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, nummsgs = 0, exists, recent, uid_val, uid_next, unseen;
+	gint ok, nummsgs = 0, exists, uid_val, uid_next;
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
@@ -2958,8 +3018,17 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 		*old_uids_valid = TRUE;
 	} else {
-		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-				 &exists, &recent, &uid_next, &uid_val, &unseen, FALSE);
+		if (item->use_cache && time(NULL) - item->use_cache < 2) {
+			exists = item->c_messages;
+			uid_next = item->c_uid_next;
+			uid_val = item->c_uid_validity;
+			ok = IMAP_SUCCESS;
+			debug_print("using cache %d %d %d\n", exists, uid_next, uid_val);
+		} else {
+			ok = imap_status(session, IMAP_FOLDER(folder), item->item.path, item,
+				 &exists, &uid_next, &uid_val, NULL, FALSE);
+		}
+		item->use_cache = (time_t)0;
 		if (ok != IMAP_SUCCESS) {
 			statusbar_pop_all();
 			return -1;
@@ -3165,8 +3234,8 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 {
 	IMAPSession *session;
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
-	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_next, uid_val = 0;
+	gint ok, exists = 0, unseen = 0;
+	guint32 uid_next, uid_val;
 	gboolean selected_folder;
 	
 	g_return_val_if_fail(folder != NULL, FALSE);
@@ -3195,10 +3264,16 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		||  session->exists != item->item.total_msgs)
 			return TRUE;
 	} else {
-		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-				 &exists, &recent, &uid_next, &uid_val, &unseen, FALSE);
+		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path, IMAP_FOLDER_ITEM(item),
+				 &exists, &uid_next, &uid_val, &unseen, FALSE);
 		if (ok != IMAP_SUCCESS)
 			return FALSE;
+
+		item->use_cache = time(NULL);
+		item->c_messages = exists;
+		item->c_uid_next = uid_next;
+		item->c_uid_validity = uid_val;
+		item->c_unseen = unseen;
 
 		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs))
 			return TRUE;
@@ -3388,6 +3463,7 @@ typedef struct _get_flags_data {
 	FolderItem *item;
 	MsgInfoList *msginfo_list;
 	GRelation *msgflags;
+	gboolean full_search;
 	gboolean done;
 } get_flags_data;
 
@@ -3398,8 +3474,9 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	FolderItem *item = stuff->item;
 	MsgInfoList *msginfo_list = stuff->msginfo_list;
 	GRelation *msgflags = stuff->msgflags;
+	gboolean full_search = stuff->full_search;
 	IMAPSession *session;
-	GSList *sorted_list;
+	GSList *sorted_list = NULL;
 	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL;
 	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted;
 	GSList *elem;
@@ -3407,17 +3484,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	gboolean reverse_seen = FALSE;
 	GString *cmd_buf;
 	gint ok;
-	gint exists_cnt, recent_cnt, unseen_cnt, uid_next;
-	guint32 uidvalidity;
+	gint exists_cnt, unseen_cnt;
 	gboolean selected_folder;
 	
 	if (folder == NULL || item == NULL) {
 		stuff->done = TRUE;
 		return GINT_TO_POINTER(-1);
-	}
-	if (msginfo_list == NULL) {
-		stuff->done = TRUE;
-		return GINT_TO_POINTER(0);
 	}
 
 	session = imap_session_get(folder);
@@ -3430,8 +3502,8 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			  (!strcmp(session->mbox, item->path));
 
 	if (!selected_folder) {
-		ok = imap_status(session, IMAP_FOLDER(folder), item->path,
-			 &exists_cnt, &recent_cnt, &uid_next, &uidvalidity, &unseen_cnt, TRUE);
+		ok = imap_status(session, IMAP_FOLDER(folder), item->path, IMAP_FOLDER_ITEM(item),
+			 &exists_cnt, NULL, NULL, &unseen_cnt, TRUE);
 		ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			NULL, NULL, NULL, NULL, TRUE);
 		if (ok != IMAP_SUCCESS) {
@@ -3450,8 +3522,13 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	cmd_buf = g_string_new(NULL);
 
 	sorted_list = g_slist_sort(g_slist_copy(msginfo_list), compare_msginfo);
-
-	seq_list = imap_get_lep_set_from_msglist(msginfo_list);
+	if (!full_search) {
+		seq_list = imap_get_lep_set_from_msglist(msginfo_list);
+	} else {
+		struct mailimap_set * set;
+		set = mailimap_set_new_interval(1, 0);
+		seq_list = g_slist_append(NULL, set);
+	}
 
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
 		struct mailimap_set * imapset;
@@ -3571,11 +3648,24 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	data->item = item;
 	data->msginfo_list = msginfo_list;
 	data->msgflags = msgflags;
+	data->full_search = FALSE;
 
+	GSList *tmp = NULL, *cur;
+	
 	if (prefs_common.work_offline && !inc_offline_should_override()) {
 		g_free(data);
 		return -1;
 	}
+
+	tmp = folder_item_get_msg_list(item);
+
+	if (g_slist_length(tmp) == g_slist_length(msginfo_list))
+		data->full_search = TRUE;
+	
+	for (cur = tmp; cur; cur = cur->next)
+		procmsg_msginfo_free((MsgInfo *)cur->data);
+	
+	g_slist_free(tmp);
 
 	result = GPOINTER_TO_INT(imap_get_flags_thread(data));
 	
