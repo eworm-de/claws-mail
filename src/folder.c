@@ -768,7 +768,7 @@ gboolean folder_scan_tree_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-void folder_scan_tree(Folder *folder)
+void folder_scan_tree(Folder *folder, gboolean rebuild)
 {
 	GHashTable *pptable;
 	FolderUpdateData hookdata;
@@ -778,11 +778,9 @@ void folder_scan_tree(Folder *folder)
 	
 	pptable = folder_persist_prefs_new(folder);
 
-	/*
-	 * should be changed and tree update should be done without 
-	 * destroying the tree first
-	 */
-	folder_tree_destroy(folder);
+	if (rebuild)
+		folder_tree_destroy(folder);
+
 	folder->klass->scan_tree(folder);
 
 	hookdata.folder = folder;
@@ -2741,6 +2739,42 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		}
 	}
 
+	if (remove_source) {
+		MsgInfo *msginfo = (MsgInfo *) msglist->data;
+		FolderItem *item = msginfo->folder;
+		/*
+		 * Remove source messages from their folders if
+		 * copying was successfull and update folder
+		 * message counts
+		 */
+		if (item->folder->klass->remove_msgs) {
+			item->folder->klass->remove_msgs(item->folder,
+					    		        msginfo->folder,
+						    		msglist,
+								relation);
+		}
+		for (l = msglist; l != NULL; l = g_slist_next(l)) {
+            	        GTuples *tuples;
+			msginfo = (MsgInfo *) l->data;
+			item = msginfo->folder;
+
+            		tuples = g_relation_select(relation, msginfo, 0);
+            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+            		g_tuples_destroy(tuples);
+
+			if (g_slist_find(not_moved, msginfo))
+				continue;
+
+			if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
+				if (!item->folder->klass->remove_msgs)
+					item->folder->klass->remove_msg(item->folder,
+					    		        msginfo->folder,
+						    		msginfo->msgnum);
+				remove_msginfo_from_cache(item, msginfo);
+			}
+		}
+	}
+
 	/* Read cache for dest folder */
 	if (!dest->cache) folder_item_read_cache(dest);
 
@@ -2792,42 +2826,6 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 			if (num > lastnum)
 				lastnum = num;
-		}
-	}
-
-	if (remove_source) {
-		MsgInfo *msginfo = (MsgInfo *) msglist->data;
-		FolderItem *item = msginfo->folder;
-		/*
-		 * Remove source messages from their folders if
-		 * copying was successfull and update folder
-		 * message counts
-		 */
-		if (item->folder->klass->remove_msgs) {
-			item->folder->klass->remove_msgs(item->folder,
-					    		        msginfo->folder,
-						    		msglist,
-								relation);
-		}
-		for (l = msglist; l != NULL; l = g_slist_next(l)) {
-            	        GTuples *tuples;
-			msginfo = (MsgInfo *) l->data;
-			item = msginfo->folder;
-
-            		tuples = g_relation_select(relation, msginfo, 0);
-            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-            		g_tuples_destroy(tuples);
-
-			if (g_slist_find(not_moved, msginfo))
-				continue;
-
-			if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
-				if (!item->folder->klass->remove_msgs)
-					item->folder->klass->remove_msg(item->folder,
-					    		        msginfo->folder,
-						    		msginfo->msgnum);
-				remove_msginfo_from_cache(item, msginfo);
-			}
 		}
 	}
 

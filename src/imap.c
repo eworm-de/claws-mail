@@ -1231,7 +1231,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 			        MsgInfoList *msglist, GRelation *relation)
 {
 	gchar *destdir;
-	GSList *seq_list = NULL, *cur;
+	GSList *numlist = NULL, *cur;
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = IMAP_SUCCESS;
@@ -1256,7 +1256,8 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	for (cur = msglist; cur; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
-		seq_list = g_slist_append(seq_list, GINT_TO_POINTER(msginfo->msgnum));
+		if (!MSG_IS_DELETED(msginfo->flags))
+			numlist = g_slist_append(numlist, GINT_TO_POINTER(msginfo->msgnum));
 	}
 
 	uid_mapping = g_relation_new(2);
@@ -1264,7 +1265,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 
 	ok = imap_set_message_flags
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
-		seq_list, IMAP_FLAG_DELETED, TRUE);
+		numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags\n"));
 		return ok;
@@ -1276,7 +1277,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	}
 	
 	g_relation_destroy(uid_mapping);
-	g_slist_free(seq_list);
+	g_slist_free(numlist);
 
 	g_free(destdir);
 
@@ -3894,7 +3895,7 @@ static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist)
 			continue;
 		
 		item_count ++;
-		
+
 		last = GPOINTER_TO_INT(cur->data);
 		if (cur->next)
 			next = GPOINTER_TO_INT(cur->next->data);

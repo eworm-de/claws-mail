@@ -108,7 +108,8 @@ void folderview_update_msg_num		(FolderView	*folderview,
 
 void folderview_append_item		(FolderItem	*item);
 
-void folderview_rescan_tree		(Folder		*folder);
+void folderview_rescan_tree		(Folder		*folder,
+					 gboolean	 rebuild);
 void folderview_rescan_all		(void);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);

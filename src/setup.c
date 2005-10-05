@@ -60,7 +60,7 @@ gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
 
 	folder_add(folder);
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
-	folder_scan_tree(folder);
+	folder_scan_tree(folder, TRUE);
 	folder_set_ui_func(folder, NULL, NULL);
 	g_free(base);
 	return TRUE;

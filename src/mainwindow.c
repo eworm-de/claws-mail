@@ -464,6 +464,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Print..."),		"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
+	{N_("/_File/Synchronise folders"),   	"<control><shift>S", sync_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
 	{N_("/_File/E_xit"),			"<control>Q", app_exit_cb, 0, NULL},
@@ -679,7 +680,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, inc_cancel_cb, 0, NULL},
 	{N_("/_Message/Recei_ve/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Send queued messages"), NULL, send_queue_cb, 0, NULL},
-	{N_("/_Message/Synchronise folders"),   "<control><shift>S", sync_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
@@ -1699,7 +1699,7 @@ void main_window_add_mailbox(MainWindow *mainwin)
 
 	folder_add(folder);
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
-	folder_scan_tree(folder);
+	folder_scan_tree(folder, TRUE);
 	folder_set_ui_func(folder, NULL, NULL);
 }
 

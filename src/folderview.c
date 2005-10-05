@@ -955,7 +955,7 @@ static GtkWidget *label_window_create(const gchar *str)
 	return window;
 }
 
-void folderview_rescan_tree(Folder *folder)
+void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 {
 	GtkWidget *window;
 
@@ -963,11 +963,24 @@ void folderview_rescan_tree(Folder *folder)
 
 	if (!folder->klass->scan_tree) return;
 
+	if (rebuild && 
+	    alertpanel_full(_("Rebuild folder tree"), 
+	    		 _("Rebuilding the folder tree will remove "
+			   "local caches. Do you want to continue?"),
+		       	 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
+		       	 NULL, ALERT_WARNING, G_ALERTALTERNATE) 
+		!= G_ALERTDEFAULT) {
+		return;
+	}
+
 	inc_lock();
-	window = label_window_create(_("Rebuilding folder tree..."));
+	if (rebuild)
+		window = label_window_create(_("Rebuilding folder tree..."));
+	else 
+		window = label_window_create(_("Scanning folder tree..."));
 
 	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
-	folder_scan_tree(folder);
+	folder_scan_tree(folder, rebuild);
 	folder_set_ui_func(folder, NULL, NULL);
 
 	folderview_set_all();
@@ -999,7 +1012,6 @@ gint folderview_check_new(Folder *folder)
 
 		inc_lock();
 		main_window_lock(folderview->mainwin);
-		gtk_widget_set_sensitive(folderview->ctree, FALSE);
 
 		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
@@ -1024,7 +1036,6 @@ gint folderview_check_new(Folder *folder)
 			former_new_msgs += former_new;
 		}
 
-		gtk_widget_set_sensitive(folderview->ctree, TRUE);
 		main_window_unlock(folderview->mainwin);
 		inc_unlock();
 	}

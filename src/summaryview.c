@@ -3168,16 +3168,14 @@ void summary_delete(SummaryView *summaryview)
 
 	/* next code sets current row focus right. We need to find a row
 	 * that is not deleted. */
-	summary_lock(summaryview);
-	folder_item_update_freeze();
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree)); 
+	START_LONG_OPERATION(summaryview);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		sel_last = GTK_CTREE_NODE(cur->data);
 		summary_delete_row(summaryview, sel_last);
 	}
-	folder_item_update_thaw();
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-	summary_unlock(summaryview);
+	folder_item_set_batch(summaryview->folder_item, FALSE);
+	END_LONG_OPERATION(summaryview);
 
 	node = summary_find_next_msg(summaryview, sel_last);
 	if (!node)
@@ -3192,6 +3190,7 @@ void summary_delete(SummaryView *summaryview)
 		gtk_sctree_set_anchor_row(GTK_SCTREE(ctree), node);
 	} else
 		summary_status_show(summaryview);
+
 		
 	main_window_cursor_normal(summaryview->mainwin);
 }

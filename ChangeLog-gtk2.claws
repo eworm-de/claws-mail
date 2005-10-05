@@ -1,3 +1,21 @@
+2005-10-05 [colin]	1.9.15cvs14
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/mainwindow.c
+	* src/setup.c
+		add a way to rescan without rebuilding
+		make moving a bit faster (less folders changes)
+		don't lock the tree on Get 
+	* src/imap.c
+		Don't re-delete deleted messages before expunging
+	* src/summaryview.c
+		Set batch mode when deleting mails
+
 2005-10-05 [paul]	1.9.15cvs13
 
 	* src/mainwindow.c
