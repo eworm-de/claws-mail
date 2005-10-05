@@ -1,3 +1,12 @@
+2005-10-05 [paul]	1.9.15cvs13
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+		fix disabled Execute menu item
+	* src/toolbar.c
+		match the change in 1.9.15cvs10: use Compose
+		instead of News by default
+
 2005-10-04 [colin]	1.9.15cvs12
 
 	* src/compose.c

@@ -849,3 +849,4 @@
 ( cvs diff -u -r 1.43.2.26 -r 1.43.2.27 src/toolbar.c;  ) > 1.9.15cvs10.patchset
 ( cvs diff -u -r 1.14.2.23 -r 1.14.2.24 src/plugins/trayicon/trayicon.c;  ) > 1.9.15cvs11.patchset
 ( cvs diff -u -r 1.382.2.178 -r 1.382.2.179 src/compose.c;  ) > 1.9.15cvs12.patchset
+( cvs diff -u -r 1.274.2.68 -r 1.274.2.69 src/mainwindow.c;  cvs diff -u -r 1.39.2.8 -r 1.39.2.9 src/mainwindow.h;  cvs diff -u -r 1.43.2.27 -r 1.43.2.28 src/toolbar.c;  ) > 1.9.15cvs13.patchset

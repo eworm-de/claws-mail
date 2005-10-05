@@ -1428,7 +1428,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		case A_COMPOSE_EMAIL:
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
 			item_news = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-							    _("News"),
+							    _("Compose"),
 							    (""),
 							    (""),
 							    icon_news, G_CALLBACK(toolbar_buttons_cb), 
