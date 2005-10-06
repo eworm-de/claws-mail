@@ -861,7 +861,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	summary_clear_list(summaryview);
-	summary_set_column_titles(summaryview);
 
 	buf = NULL;
 	if (!item || !item->path || !folder_item_parent(item) || item->no_select) {
@@ -1041,7 +1040,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_lock(summaryview);
 	}
 
-	summary_set_column_titles(summaryview);
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
@@ -1847,10 +1845,6 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 	    msginfo->folder->folder->klass->type == F_NEWS)
  		news_flag_crosspost(msginfo);
 
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
-	&& procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked++;
-
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
 
@@ -1872,9 +1866,6 @@ static void summary_update_status(SummaryView *summaryview)
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
-		&& procmsg_msg_has_marked_parent(msginfo))
-			summaryview->unreadmarked++;
 		if (MSG_IS_DELETED(msginfo->flags))
 			summaryview->deleted++;
 		if (MSG_IS_MOVE(msginfo->flags))
@@ -2035,8 +2026,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
 			continue;
-		}
-		if (single_char) {
+		} else if (single_char) {
 			gtk_clist_set_column_title(clist, pos, title);
 			continue;
 		}
@@ -2208,7 +2198,7 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	SET_TEXT(S_COL_DATE);
 	SET_TEXT(S_COL_FROM);
 	SET_TEXT(S_COL_TO);
-	SET_TEXT(S_COL_SUBJECT);
+	/* SET_TEXT(S_COL_SUBJECT);  already set by node info */
 
 #undef SET_TEXT
 
@@ -2317,11 +2307,13 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-	while (prefs_common.bold_unread && node) {
-		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
-		if (GTK_CTREE_ROW(node)->children)
-			summary_set_row_marks(summaryview, node);
-		node = next;
+	if (prefs_common.bold_unread) {
+		while (node) {
+			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+			if (GTK_CTREE_ROW(node)->children)
+				summary_set_row_marks(summaryview, node);
+			node = next;
+		}
 	}
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
@@ -2361,14 +2353,17 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
-	FolderType ftype = F_UNKNOWN;
 	gchar *from_text = NULL, *to_text = NULL;
 	gboolean should_swap = FALSE;
 
-	text[col_pos[S_COL_MARK]]   = NULL;
-	text[col_pos[S_COL_STATUS]] = NULL;
-	text[col_pos[S_COL_MIME]]   = NULL;
-	text[col_pos[S_COL_LOCKED]] = NULL;
+	text[col_pos[S_COL_FROM]]   = "";
+	text[col_pos[S_COL_TO]]     = "";
+	text[col_pos[S_COL_SUBJECT]]= "";
+	text[col_pos[S_COL_MARK]]   = "";
+	text[col_pos[S_COL_STATUS]] = "";
+	text[col_pos[S_COL_MIME]]   = "";
+	text[col_pos[S_COL_LOCKED]] = "";
+	text[col_pos[S_COL_DATE]]   = "";
 	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
 	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
@@ -2383,7 +2378,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
-	if (ftype != F_NEWS && prefs_common.swap_from && msginfo->from && msginfo->to) {
+	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
 		gchar *addr = NULL;
 		
 		addr = g_strdup(msginfo->from);
@@ -2425,9 +2420,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_TO]] = tmp;
 	}
 	
-	if (msginfo->folder && msginfo->folder->folder)
-		ftype = msginfo->folder->folder->klass->type; 
-		
 	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
@@ -2450,9 +2442,6 @@ static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(row != NULL);
 
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
-	&& procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked--;
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 		procmsg_msginfo_unset_flags
 			(msginfo, MSG_NEW | MSG_UNREAD, 0);
@@ -2726,7 +2715,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 					  forwardedxpm, forwardedxpmmask);
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_STATUS],
-					NULL);
+					"");
 	}
 
 	if (prefs_common.bold_unread &&
@@ -2778,7 +2767,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 					      &summaryview->color_important);
 #endif
 	} else {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "");
 	}
 
 	if (MSG_IS_LOCKED(flags)) {
@@ -2786,7 +2775,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 					  lockedxpm, lockedxpmmask);
 	}
 	else {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], "");
 	}
 
 	if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_SIGNED(flags)) {
@@ -2805,7 +2794,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipxpm, clipxpmmask);
 	} else {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MIME], NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MIME], "");
 	}
 	if (!style)
 		style = small_style;
@@ -2814,16 +2803,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	if (MSG_GET_COLORLABEL(flags))
 		summary_set_colorlabel_color(ctree, row, MSG_GET_COLORLABEL_VALUE(flags));
-}
-
-void summary_set_marks_selected(SummaryView *summaryview)
-{
-	GList *cur;
-	summary_lock(summaryview);
-	for (cur = GTK_CLIST(summaryview->ctree)->selection; cur != NULL && cur->data != NULL;
-	     cur = cur->next)
-		summary_set_row_marks(summaryview, GTK_CTREE_NODE(cur->data));
-	summary_unlock(summaryview);
 }
 
 static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
@@ -2909,10 +2888,6 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	if(!(MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 		return;
 
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
-	&& procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked--;
-
 	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is marked as read\n",
@@ -2996,10 +2971,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
-
-	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
-	&& procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked++;
 
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
 	debug_print("Message %d is marked as unread\n",
@@ -4368,6 +4339,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 		summaryview->col_state[pos] = col_state[pos];
 		type = col_state[pos].type;
 		col_pos[type] = pos;
+		titles[pos] = "dummy";
 	}
 	col_state = summaryview->col_state;
 
@@ -4714,11 +4686,13 @@ static void summary_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,
 				  SummaryView *summaryview)
 {
 	summary_set_row_marks(summaryview, node);
-	while (prefs_common.bold_unread && node) {
-		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
-		if (GTK_CTREE_ROW(node)->children)
-			summary_set_row_marks(summaryview, node);
-		node = next;
+	if (prefs_common.bold_unread) {
+		while (node) {
+			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+			if (GTK_CTREE_ROW(node)->children)
+				summary_set_row_marks(summaryview, node);
+			node = next;
+		}
 	}
 }
 
@@ -4903,11 +4877,13 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 
 	node = GTK_CTREE_NODE(GTK_CLIST(summaryview->ctree)->row_list);
 
-	while (prefs_common.bold_unread && node) {
-		GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
-		if (GTK_CTREE_ROW(node)->children)
-			summary_set_row_marks(summaryview, node);
-		node = next;
+	if (prefs_common.bold_unread) {
+		while (node) {
+			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
+			if (GTK_CTREE_ROW(node)->children)
+				summary_set_row_marks(summaryview, node);
+			node = next;
+		}
 	}
 	END_TIMING();
 }
@@ -5213,9 +5189,6 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked--;
-
 	procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
@@ -5245,9 +5218,6 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-
-	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-		summaryview->unreadmarked++;
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
@@ -5363,10 +5333,15 @@ void processing_apply(SummaryView * summaryview)
 
 void summary_toggle_show_read_messages(SummaryView *summaryview)
 {
- 	if (summaryview->folder_item->hide_read_msgs)
+	FolderItemUpdateData source;
+	if (summaryview->folder_item->hide_read_msgs)
  		summaryview->folder_item->hide_read_msgs = 0;
  	else
  		summaryview->folder_item->hide_read_msgs = 1;
+
+	source.item = summaryview->folder_item;
+	source.update_flags = F_ITEM_UPDATE_NAME;
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
  	summary_show(summaryview, summaryview->folder_item);
 }
  

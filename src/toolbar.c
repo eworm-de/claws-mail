@@ -394,7 +394,7 @@ static void toolbar_set_default_main(void)
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
-		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
+		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_GOTO_PREV,     STOCK_PIXMAP_UP_ARROW,             _("Previous")},
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 	};
@@ -439,11 +439,6 @@ static void toolbar_set_default_compose(void)
 		{ A_SEPARATOR, 		0,                               ("")           	}, 
 		{ A_INSERT,    		STOCK_PIXMAP_INSERT_FILE,       _("Insert")     	},
 		{ A_ATTACH,    		STOCK_PIXMAP_MAIL_ATTACH,       _("Attach")     	},
-		{ A_SIG,       		STOCK_PIXMAP_MAIL_SIGN,         _("Signature")  	},
-		{ A_SEPARATOR, 		0,                               ("")           	},
-		{ A_EXTEDITOR, 		STOCK_PIXMAP_EDIT_EXTERN,       _("Editor")     	},
-		{ A_LINEWRAP_CURRENT,	STOCK_PIXMAP_LINEWRAP_CURRENT,  _("Wrap paragraph")   	},
-		{ A_LINEWRAP_ALL,  	STOCK_PIXMAP_LINEWRAP_ALL,      _("Wrap all")   	},
 		{ A_SEPARATOR, 		0,                               ("")           	},
 		{ A_ADDRBOOK,  		STOCK_PIXMAP_ADDRESS_BOOK,      _("Address")    	}
 	};

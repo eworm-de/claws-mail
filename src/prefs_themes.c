@@ -318,6 +318,9 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 		name->item = tpaths;
 			
 		tdata->names = g_list_append(tdata->names, name);
+		if (!strcmp2(tpaths->data, prefs_common.pixmap_theme_path)) {
+			tdata->displayed = (gchar *)tpaths->data;
+		}
 		tpaths = g_list_next(tpaths);
 		g_free(sname);	
 	}
@@ -353,7 +356,8 @@ void prefs_themes_init(void)
 	tdata->page = page;
 
 	tpaths = g_list_first(tdata->themes);
-	tdata->displayed = (gchar *)(tpaths->data);
+	if (tdata->displayed == NULL)
+		tdata->displayed = (gchar *)(tpaths->data);
 }
 
 static void prefs_themes_free_names(ThemesData *tdata)

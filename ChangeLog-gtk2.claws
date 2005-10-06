@@ -1,3 +1,15 @@
+2005-10-06 [colin]	1.9.15cvs17
+
+	* src/summaryview.c
+		Little optimisations + bugfix
+	* src/toolbar.c
+		Remove default useless items - useless being defined
+                by the default relevant prefs
+	* src/wizard.c
+		include config.h to make gettext work
+	* src/prefs_themes.c
+		Fix selection of current theme in prefs
+
 2005-10-06 [colin]	1.9.15cvs16
 
 	* src/prefs_common.c
