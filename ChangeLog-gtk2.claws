@@ -1,3 +1,10 @@
+2005-10-06 [paul]	1.9.15cvs15
+
+	* po/nb.po
+	* po/pt_BR.po
+		updated by Geir Helland and Frederico
+		Goncalves Guimaraes
+
 2005-10-05 [colin]	1.9.15cvs14
 
 	* src/folder.c
