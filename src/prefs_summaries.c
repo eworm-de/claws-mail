@@ -60,6 +60,7 @@ typedef struct _SummariesPage
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+	GtkWidget *checkbtn_ask_mark_all_read;
  	GtkWidget *optmenu_select_on_entry;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
@@ -710,6 +711,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+	GtkWidget *checkbtn_ask_mark_all_read;
 	GtkTooltips *immedexec_tooltip;
 	GtkWidget *label;
 	GtkWidget *menu;
@@ -856,6 +858,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		   	       " if this is turned off"),
 			     NULL);
 
+	PACK_CHECK_BUTTON
+		(vbox3, checkbtn_ask_mark_all_read,
+		 _("Confirm before marking all mails in a folder as read"));
+
 	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
@@ -938,6 +944,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.open_inbox_on_inc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_immedexec),
 			prefs_common.immediate_exec);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
+			prefs_common.ask_mark_all_read);
 
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_select_on_entry),
 			prefs_common.select_on_entry);
@@ -955,6 +963,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
 	prefs_summaries->checkbtn_openinbox = checkbtn_openinbox;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
+	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
 	prefs_summaries->optmenu_select_on_entry = optmenu_select_on_entry;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 
@@ -990,6 +999,8 @@ void prefs_summaries_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_openinbox));
 	prefs_common.immediate_exec = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
+	prefs_common.ask_mark_all_read = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_ask_mark_all_read));
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_select_on_entry));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));

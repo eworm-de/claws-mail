@@ -501,6 +501,9 @@ static PrefParam param[] = {
 	 &prefs_common.pixmap_theme_path, P_STRING,
 	 NULL, NULL, NULL},
 
+	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
+	 NULL, NULL, NULL},
+
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},

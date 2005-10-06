@@ -284,6 +284,7 @@ struct _PrefsCommon
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
 	int hover_timeout; /* msecs mouse hover timeout */
+	gboolean ask_mark_all_read;
 
 	/* Other */
 	gchar *uri_cmd;

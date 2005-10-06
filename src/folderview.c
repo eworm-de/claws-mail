@@ -702,11 +702,25 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
                              GtkWidget *widget)
 {
 	FolderItem *item;
-
+	AlertValue val;
+	
 	item = folderview_get_selected_item(folderview);
 	if (item == NULL)
 		return;
 
+	if (prefs_common.ask_mark_all_read) {
+		val = alertpanel_full(_("Mark all as read"),
+			_("Do you really want to mark all mails in this "
+			  "folder as read ?"), GTK_STOCK_YES, GTK_STOCK_NO, NULL,
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+
+		if (val == G_ALERTALTERNATE ||
+		    val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+			return;
+		else if (val == (G_ALERTDEFAULT|G_ALERTDISABLE)) 
+			prefs_common.ask_mark_all_read = FALSE;
+	}
+	
 	summary_lock(folderview->summaryview);
 	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item == item)
