@@ -1,3 +1,67 @@
+2005-10-06 [colin]	1.9.15cvs18
+
+	* src/pixmaps/address.xpm
+	* src/pixmaps/address_book.xpm
+	* src/pixmaps/book.xpm
+	* src/pixmaps/check_spelling.xpm
+	* src/pixmaps/checkbox_off.xpm
+	* src/pixmaps/checkbox_on.xpm
+	* src/pixmaps/close.xpm
+	* src/pixmaps/complete.xpm
+	* src/pixmaps/continue.xpm
+	* src/pixmaps/deleted.xpm
+	* src/pixmaps/down_arrow.xpm
+	* src/pixmaps/exec.xpm
+	* src/pixmaps/forwarded.xpm
+	* src/pixmaps/group.xpm
+	* src/pixmaps/ignorethread.xpm
+	* src/pixmaps/interface.xpm
+	* src/pixmaps/jpilot.xpm
+	* src/pixmaps/ldap.xpm
+	* src/pixmaps/linewrap.xpm
+	* src/pixmaps/linewrapcurrent.xpm
+	* src/pixmaps/mail.xpm
+	* src/pixmaps/mail_attach.xpm
+	* src/pixmaps/mail_compose.xpm
+	* src/pixmaps/mail_forward.xpm
+	* src/pixmaps/mail_receive.xpm
+	* src/pixmaps/mail_receive_all.xpm
+	* src/pixmaps/mail_reply.xpm
+	* src/pixmaps/mail_reply_to_all.xpm
+	* src/pixmaps/mail_reply_to_author.xpm
+	* src/pixmaps/mail_send.xpm
+	* src/pixmaps/mail_send_queue.xpm
+	* src/pixmaps/mime_application.xpm
+	* src/pixmaps/mime_audio.xpm
+	* src/pixmaps/mime_image.xpm
+	* src/pixmaps/mime_message.xpm
+	* src/pixmaps/mime_text_enriched.xpm
+	* src/pixmaps/mime_text_html.xpm
+	* src/pixmaps/mime_text_plain.xpm
+	* src/pixmaps/mime_unknown.xpm
+	* src/pixmaps/new.xpm
+	* src/pixmaps/news_compose.xpm
+	* src/pixmaps/offline.xpm
+	* src/pixmaps/online.xpm
+	* src/pixmaps/paste.xpm
+	* src/pixmaps/preferences.xpm
+	* src/pixmaps/privacy_emblem_encrypted.xpm
+	* src/pixmaps/privacy_expired.xpm
+	* src/pixmaps/privacy_failed.xpm
+	* src/pixmaps/privacy_passed.xpm
+	* src/pixmaps/privacy_signed.xpm
+	* src/pixmaps/privacy_unknown.xpm
+	* src/pixmaps/privacy_warn.xpm
+	* src/pixmaps/properties.xpm
+	* src/pixmaps/replied.xpm
+	* src/pixmaps/search.xpm
+	* src/pixmaps/unread.xpm
+	* src/pixmaps/up_arrow.xpm
+	* src/pixmaps/vcard.xpm
+		Modernize internal theme, with icons from the 
+		Gnomaws theme. Keep some of the old ones where
+		they were better.
+
 2005-10-06 [colin]	1.9.15cvs17
 
 	* src/summaryview.c
