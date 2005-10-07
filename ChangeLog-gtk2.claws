@@ -1,3 +1,9 @@
+2005-10-07 [paul]	1.9.15cvs19
+
+	* src/compose.c
+		fix compose_entries[]
+		patch by Fabien Vantard
+
 2005-10-06 [colin]	1.9.15cvs18
 
 	* src/pixmaps/address.xpm

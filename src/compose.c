@@ -529,6 +529,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Cu_t"),		"<control>X", compose_cut_cb,    0, NULL},
 	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
 	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
+	{N_("/_Edit/Special paste"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/Special paste/as _quotation"),
 					NULL, compose_paste_as_quote_cb, 0, NULL},
 	{N_("/_Edit/Special paste/_wrapped"),
