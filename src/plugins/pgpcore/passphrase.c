@@ -50,6 +50,8 @@
 #include "prefs_gpg.h"
 #include "manage_window.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "summaryview.h"
 
 static gboolean grab_all = FALSE;
 
@@ -84,6 +86,10 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     GtkWidget *pass_entry;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
+
+    SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
+    
+    gtk_menu_popdown(GTK_MENU(summaryview->popupmenu));
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Passphrase"));

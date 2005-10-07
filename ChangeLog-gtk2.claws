@@ -1,3 +1,9 @@
+2005-10-07 [colin]	1.9.15cvs20
+
+	* src/plugins/pgpcore/passphrase.c
+		Fix bug #826 (X-Server hangs when 
+		right-clicking a PGP encrypted message)
+
 2005-10-07 [paul]	1.9.15cvs19
 
 	* src/compose.c
