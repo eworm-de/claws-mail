@@ -1,3 +1,9 @@
+2005-10-08 [colin]	1.9.15cvs24
+
+	* src/wizard.c
+		Fix bug #827 ("Welcome" setup wizard after a 
+		permission error gives up & forgets itself.)
+
 2005-10-08 [colin]	1.9.15cvs23
 
 	* src/procmime.c

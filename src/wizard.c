@@ -103,7 +103,7 @@ typedef struct
 
 } WizardWindow;
 
-static void wizard_write_config(WizardWindow *wizard)
+static gboolean wizard_write_config(WizardWindow *wizard)
 {
 	gboolean mailbox_ok = FALSE;
 	PrefsAccount *prefs_account = prefs_account_new();
@@ -118,8 +118,16 @@ static void wizard_write_config(WizardWindow *wizard)
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
 		mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
 				gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
-	}
+	} else
+		mailbox_ok = TRUE;
 
+	if (!mailbox_ok) {
+		gtk_notebook_set_current_page (
+			GTK_NOTEBOOK(wizard->notebook), 
+			4);
+		return FALSE;
+	}
+	
 	if (prefs_account->protocol != A_LOCAL)
 		prefs_account->account_name = g_strdup_printf("%s@%s",
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)),
@@ -172,6 +180,8 @@ static void wizard_write_config(WizardWindow *wizard)
 	prefs_account_write_config_all(account_list);
 	prefs_account_free(prefs_account);
 	account_read_config_all();
+	
+	return TRUE;
 }
 
 static GtkWidget* create_page (WizardWindow *wizard, const char * title)
@@ -519,6 +529,7 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 	}
 	
 	num_pages = g_slist_length(wizard->pages);
+
  	current_page = gtk_notebook_get_current_page (
 				GTK_NOTEBOOK(wizard->notebook));
 	if (response == CANCEL)
@@ -529,7 +540,11 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 	}
 	else if (response == FINISHED)
 	{
-		wizard_write_config(wizard);
+		if (!wizard_write_config(wizard)) {
+ 			current_page = gtk_notebook_get_current_page (
+					GTK_NOTEBOOK(wizard->notebook));
+			goto set_sens;
+		}
 		wizard->finished = TRUE;
 		wizard->result = TRUE;
 		gtk_widget_destroy (GTK_WIDGET(dialog));
@@ -562,7 +577,7 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 					current_page);
 			}
 		}
-
+set_sens:
 		gtk_dialog_set_response_sensitive (dialog, GO_BACK, 
 				current_page > 0);
 		gtk_dialog_set_response_sensitive (dialog, GO_FORWARD, 
