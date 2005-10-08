@@ -1,3 +1,8 @@
+2005-10-08 [colin]	1.9.15cvs23
+
+	* src/procmime.c
+		Fix bug #828 (Ignoring headers with spaces around = sign)
+
 2005-10-08 [colin]	1.9.15cvs22
 
 	* src/export.c

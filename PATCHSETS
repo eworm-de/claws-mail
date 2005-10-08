@@ -859,3 +859,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpcore/passphrase.c;  ) > 1.9.15cvs20.patchset
 ( cvs diff -u -r 1.213.2.62 -r 1.213.2.63 src/folder.c;  cvs diff -u -r 1.87.2.21 -r 1.87.2.22 src/folder.h;  cvs diff -u -r 1.207.2.69 -r 1.207.2.70 src/folderview.c;  cvs diff -u -r 1.395.2.132 -r 1.395.2.133 src/summaryview.c;  ) > 1.9.15cvs21.patchset
 ( cvs diff -u -r 1.8.2.11 -r 1.8.2.12 src/export.c;  ) > 1.9.15cvs22.patchset
+( cvs diff -u -r 1.49.2.63 -r 1.49.2.64 src/procmime.c;  ) > 1.9.15cvs23.patchset

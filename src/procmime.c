@@ -1482,6 +1482,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 
 		value[0] = '\0';
 		value++;
+		while (value[0] == ' ')
+			value++;
 
 		g_strdown(attribute);
 
@@ -1518,6 +1520,18 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 				*tmp = '\0';
 		}
 
+		if (attribute) {
+			while (attribute[0] == ' ')
+				attribute++;
+			while (attribute[strlen(attribute)-1] == ' ') 
+				attribute[strlen(attribute)-1] = '\0';
+		} 
+		if (value) {
+			while (value[0] == ' ')
+				value++;
+			while (value[strlen(value)-1] == ' ') 
+				value[strlen(value)-1] = '\0';
+		}		
 		if (strrchr(attribute, '*') != NULL) {
 			gchar *tmpattr;
 
