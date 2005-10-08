@@ -138,7 +138,6 @@ static void export_create(void)
 	GtkWidget *file_label;
 	GtkWidget *src_label;
 	GtkWidget *confirm_area;
-	GtkWidget *image;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Export"));
