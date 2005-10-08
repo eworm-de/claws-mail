@@ -627,6 +627,7 @@ struct _FolderItem
 	
 	/* for faster search of special parents */
 	SpecialFolderItemType parent_stype;
+	gboolean processing_pending;
 };
 
 struct _PersistPrefs
@@ -811,5 +812,8 @@ void folder_item_set_batch		(FolderItem *item, gboolean batch);
 gboolean folder_has_parent_of_type	(FolderItem *item, SpecialFolderItemType type);
 void folder_synchronise			(Folder *folder);
 gboolean folder_want_synchronise	(Folder *folder);
-void folder_item_process_open		(FolderItem *item);
+void folder_item_process_open		(FolderItem *item,
+					 void (*before_proc_func)(gpointer data),
+					 void (*after_proc_func)(gpointer data),
+					 gpointer data);
 #endif /* __FOLDER_H__ */

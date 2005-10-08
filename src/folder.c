@@ -1459,7 +1459,10 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 	return (gint_a - gint_b);
 }
 
-void folder_item_process_open(FolderItem *item)
+void folder_item_process_open (FolderItem *item,
+				 void (*before_proc_func)(gpointer data),
+				 void (*after_proc_func)(gpointer data),
+				 gpointer data)
 {
 	gchar *buf;
 	if (item == NULL)
@@ -1476,10 +1479,17 @@ void folder_item_process_open(FolderItem *item)
 			      item->path ? item->path : item->name);
 	debug_print("%s\n", buf);
 	g_free(buf);
-	
+
+	if (before_proc_func)
+		before_proc_func(data);
+
 	folder_item_apply_processing(item);
 
+	if (after_proc_func)
+		after_proc_func(data);
+
 	debug_print("done.\n");
+	item->processing_pending = FALSE;
 	return;	
 }
 
@@ -1487,6 +1497,10 @@ gint folder_item_open(FolderItem *item)
 {
 	g_return_val_if_fail(item->no_select == FALSE, -1);
 
+	/* caller of folder_item_open *must* call 
+	 * folder_item_process_open after ! */
+	item->processing_pending = TRUE;
+	
 	item->opened = TRUE;
 
 	return 0;

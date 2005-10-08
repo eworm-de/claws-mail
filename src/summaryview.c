@@ -2435,6 +2435,96 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row)
 	summary_display_msg_full(summaryview, row, FALSE, FALSE);
 }
 
+static gboolean defer_change(gpointer data);
+typedef struct _ChangeData {
+	MsgInfo *info;
+	gint op; /* 0, 1, 2 for unset, set, change */
+	MsgPermFlags set_flags;
+	MsgTmpFlags  set_tmp_flags;
+	MsgPermFlags unset_flags;
+	MsgTmpFlags  unset_tmp_flags;
+} ChangeData;
+
+static void summary_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags flags, MsgTmpFlags tmp_flags)
+{
+	if (!msginfo->folder || !msginfo->folder->processing_pending) {
+		debug_print("flags: doing unset now\n");
+		procmsg_msginfo_unset_flags(msginfo, flags, tmp_flags);
+	} else {
+		ChangeData *unset_data = g_new0(ChangeData, 1);
+		unset_data->info = msginfo;
+		unset_data->op = 0;
+		unset_data->unset_flags = flags;
+		unset_data->unset_tmp_flags = tmp_flags;
+		debug_print("flags: deferring unset\n");
+		g_timeout_add(100, defer_change, unset_data);
+	}
+}
+
+static void summary_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags flags, MsgTmpFlags tmp_flags)
+{
+	if (!msginfo->folder || !msginfo->folder->processing_pending) {
+		debug_print("flags: doing set now\n");
+		procmsg_msginfo_set_flags(msginfo, flags, tmp_flags);
+	} else {
+		ChangeData *set_data = g_new0(ChangeData, 1);
+		set_data->info = msginfo;
+		set_data->op = 1;
+		set_data->set_flags = flags;
+		set_data->set_tmp_flags = tmp_flags;
+		debug_print("flags: deferring set\n");
+		g_timeout_add(100, defer_change, set_data);
+	}
+}
+
+static void summary_msginfo_change_flags(MsgInfo *msginfo, 
+		MsgPermFlags add_flags, MsgTmpFlags add_tmp_flags,
+		MsgPermFlags rem_flags, MsgTmpFlags rem_tmp_flags)
+{
+	if (!msginfo->folder || !msginfo->folder->processing_pending) {
+		debug_print("flags: doing change now\n");
+		procmsg_msginfo_change_flags(msginfo, add_flags, add_tmp_flags,
+			rem_flags, rem_tmp_flags);
+	} else {
+		ChangeData *change_data = g_new0(ChangeData, 1);
+		change_data->info = msginfo;
+		change_data->op = 2;
+		change_data->set_flags = add_flags;
+		change_data->set_tmp_flags = add_tmp_flags;
+		change_data->unset_flags = rem_flags;
+		change_data->unset_tmp_flags = rem_tmp_flags;
+		debug_print("flags: deferring change\n");
+		g_timeout_add(100, defer_change, change_data);
+	}
+}
+
+gboolean defer_change(gpointer data)
+{
+	ChangeData *chg = (ChangeData *)data;
+	if (chg->info->folder && chg->info->folder->processing_pending) {
+		debug_print("flags: trying later\n");
+		return TRUE; /* try again */
+	} else {
+		debug_print("flags: finally doing it\n");
+		switch(chg->op) {
+		case 0:
+			procmsg_msginfo_unset_flags(chg->info, chg->unset_flags, chg->unset_tmp_flags);
+			break;
+		case 1:
+			procmsg_msginfo_set_flags(chg->info, chg->set_flags, chg->set_tmp_flags);
+			break;
+		case 2:
+			procmsg_msginfo_change_flags(chg->info, chg->set_flags, chg->set_tmp_flags,
+				chg->unset_flags, chg->unset_tmp_flags);
+			break;
+		default:
+			g_warning("shouldn't happen\n");
+		}
+		g_free(chg);
+	}
+	return FALSE;
+}
+
 static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
 				      GtkCTreeNode *row)
 {
@@ -2443,7 +2533,7 @@ static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
 	g_return_if_fail(row != NULL);
 
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		procmsg_msginfo_unset_flags
+		summary_msginfo_unset_flags
 			(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		summary_set_row_marks(summaryview, row);
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
@@ -2819,7 +2909,7 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	procmsg_msginfo_change_flags(msginfo, MSG_MARKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_MARKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %s/%d is marked\n", msginfo->folder->path, msginfo->msgnum);
 }
@@ -2842,7 +2932,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 		changed = TRUE;
 	}
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	procmsg_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is locked\n", msginfo->msgnum);
@@ -2857,7 +2947,7 @@ static void summary_unlock_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (!MSG_IS_LOCKED(msginfo->flags))
 		return;
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	procmsg_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
+	summary_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is unlocked\n", msginfo->msgnum);
 }
@@ -2888,7 +2978,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	if(!(MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 		return;
 
-	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+	summary_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is marked as read\n",
 		msginfo->msgnum);
@@ -2968,11 +3058,11 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags)) {
 		procmsg_msginfo_set_to_folder(msginfo, NULL);
-		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
+		summary_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
 
-	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
+	summary_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
 	debug_print("Message %d is marked as unread\n",
 		msginfo->msgnum);
 
@@ -3065,7 +3155,7 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	procmsg_msginfo_change_flags(msginfo, MSG_DELETED, 0, MSG_MARKED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_DELETED, 0, MSG_MARKED, MSG_MOVE | MSG_COPY);
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec && 
@@ -3201,7 +3291,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 
 	debug_print("Message %s/%d is unmarked\n",
@@ -3242,10 +3332,10 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->copied--;
 	}
 	if (!MSG_IS_MOVE(msginfo->flags)) {
-		procmsg_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_DELETED, MSG_COPY);
+		summary_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_DELETED, MSG_COPY);
 		summaryview->moved++;
 	} else {
-		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_COPY);
+		summary_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_COPY);
 	}
 	
 	if (!prefs_common.immediate_exec) {
@@ -3324,10 +3414,10 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	
 	if (!MSG_IS_COPY(msginfo->flags)) {
-		procmsg_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_DELETED, MSG_MOVE);
+		summary_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_DELETED, MSG_MOVE);
 		summaryview->copied++;
 	} else {
-		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE);
+		summary_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE);
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
@@ -3740,7 +3830,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 		summaryview->mlist =
 			g_slist_prepend(summaryview->mlist, msginfo);
 
-		procmsg_msginfo_unset_flags(msginfo, 0, MSG_COPY);
+		summary_msginfo_unset_flags(msginfo, 0, MSG_COPY);
 		summary_set_row_marks(summaryview, node);
 	}
 }
@@ -4195,7 +4285,7 @@ static void summary_set_row_colorlabel(SummaryView *summaryview, GtkCTreeNode *r
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	procmsg_msginfo_change_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0, 
+	summary_msginfo_change_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0, 
 					MSG_CLABEL_FLAG_MASK, 0);
 }
 
@@ -4754,7 +4844,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		break;
 	case S_COL_LOCKED:
 		if (MSG_IS_LOCKED(msginfo->flags)) {
-			procmsg_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
+			summary_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
 			summary_set_row_marks(summaryview, row);
 		}
 		else
@@ -5171,7 +5261,7 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {
 			debug_print(" <%s>", (gchar *)value);
 			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-				procmsg_msginfo_change_flags(msginfo, 
+				summary_msginfo_change_flags(msginfo, 
 					mff->account->crosspost_col, 0, MSG_NEW | MSG_UNREAD, 0);
 			}
 			g_hash_table_remove(mff->newsart, key);
@@ -5189,7 +5279,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
+	summary_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is marked as ignore thread\n",
@@ -5219,7 +5309,7 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
+	summary_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is marked as unignore thread\n",

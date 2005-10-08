@@ -1,3 +1,19 @@
+2005-10-08 [colin]	1.9.15cvs21
+
+	* src/folder.c
+	* src/folder.h
+		Add a processing_pending indicator, set on 
+		folder_item_open and cleared after 
+		folder_item_process_open
+	* src/folderview.c
+	* src/summaryview.c
+		wrap procmsg_msginfo_*_flags, and in the
+		wrapper check that there's no folder processing 
+		pending. If there is, defer the flags change until 
+		processing is done to avoid stepping over each
+		other's toes.
+		Freeze during processing, but not during scanning.
+
 2005-10-07 [colin]	1.9.15cvs20
 
 	* src/plugins/pgpcore/passphrase.c
