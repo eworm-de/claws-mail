@@ -1,3 +1,10 @@
+2005-10-09 [colin]	1.9.15cvs25
+
+	* src/compose.c
+	* src/compose.h
+		Fix bug #829 (Non-working "Encrypt message by 
+		default when replying to an encrypted message")
+
 2005-10-08 [colin]	1.9.15cvs24
 
 	* src/wizard.c

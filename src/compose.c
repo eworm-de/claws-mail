@@ -469,7 +469,7 @@ static void text_inserted		(GtkTextBuffer	*buffer,
 					 const gchar	*text,
 					 gint		 len,
 					 Compose	*compose);
-static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
+static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
 				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
@@ -934,6 +934,9 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 {
 	gchar *privacy = NULL;
 
+	g_return_if_fail(compose != NULL);
+	g_return_if_fail(account != NULL);
+
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
 
@@ -973,113 +976,114 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account)
 	}
 }	
 
-void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
+Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 {
 	MsgInfo *msginfo;
 	guint list_len;
-
-	g_return_if_fail(msginfo_list != NULL);
+	Compose *compose = NULL;
+	g_return_val_if_fail(msginfo_list != NULL, NULL);
 
 	msginfo = (MsgInfo*)g_slist_nth_data(msginfo_list, 0);
-	g_return_if_fail(msginfo != NULL);
+	g_return_val_if_fail(msginfo != NULL, NULL);
 
 	list_len = g_slist_length(msginfo_list);
 
 	switch (mode) {
 	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
 		    	      FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, TRUE, 
 			FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, FALSE, 
 			FALSE, prefs_common.default_reply_list, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
 			      FALSE, FALSE, TRUE, body);
 		break;
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
+		compose = compose_followup_and_reply_to(msginfo,
 					      prefs_common.reply_with_quote,
 					      FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, TRUE, 
 			FALSE, FALSE, TRUE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, FALSE, 
 			FALSE, FALSE, TRUE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
 			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, TRUE, 
 			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, FALSE, 
 			TRUE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_LIST:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
 			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, TRUE, 
 			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, FALSE, 
 			FALSE, TRUE, FALSE, NULL);
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {
-			compose_reply_mode(COMPOSE_FORWARD_AS_ATTACH, msginfo_list, body);
-			return;
+			compose = compose_reply_mode(COMPOSE_FORWARD_AS_ATTACH, msginfo_list, body);
+			return compose;
 		} else {
-			compose_reply_mode(COMPOSE_FORWARD_INLINE, msginfo_list, body);
-			return;
+			compose = compose_reply_mode(COMPOSE_FORWARD_INLINE, msginfo_list, body);
+			return compose;
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
 		/* check if we reply to more than one Message */
 		if (list_len == 1) {
-			compose_forward(NULL, msginfo, FALSE, body, FALSE);
+			compose = compose_forward(NULL, msginfo, FALSE, body, FALSE);
 			break;
 		} 
 		/* more messages FALL THROUGH */
 	case COMPOSE_FORWARD_AS_ATTACH:
-		compose_forward_multiple(NULL, msginfo_list);
+		compose = compose_forward_multiple(NULL, msginfo_list);
 		break;
 	case COMPOSE_REDIRECT:
-		compose_redirect(NULL, msginfo);
+		compose = compose_redirect(NULL, msginfo);
 		break;
 	default:
 		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
 	}
+	return compose;
 }
 
-void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
+Compose *compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		   gboolean to_ml, gboolean to_sender, 
 		   const gchar *body)
 {
-	compose_generic_reply(msginfo, quote, to_all, to_ml, 
+	return compose_generic_reply(msginfo, quote, to_all, to_ml, 
 			      to_sender, FALSE, body);
 }
 
-void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
+Compose *compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
 				   gboolean to_sender,
 				   const gchar *body)
 {
-	compose_generic_reply(msginfo, quote, to_all, FALSE, 
+	return compose_generic_reply(msginfo, quote, to_all, FALSE, 
 			      to_sender, TRUE, body);
 }
 
@@ -1107,7 +1111,7 @@ static void compose_extract_original_charset(Compose *compose)
 	}
 }
 
-static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
+static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
 				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
@@ -1122,12 +1126,12 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	GtkTextIter iter;
 	int cursor_pos;
 
-	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(msginfo->folder != NULL);
+	g_return_val_if_fail(msginfo != NULL, NULL);
+	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
 	
-	g_return_if_fail(account != NULL);
+	g_return_val_if_fail(account != NULL, NULL);
 
 	if (to_sender && account->protocol == A_NNTP &&
 	    !followup_and_reply_to) {
@@ -1136,7 +1140,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		if (!reply_account)
 			reply_account = compose_current_mail_account();
 		if (!reply_account)
-			return;
+			return NULL;
 	} else
 		reply_account = account;
 
@@ -1147,9 +1151,10 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	menu_set_sensitive(ifactory, "/Options/Remove references", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
+
 	if (!compose->replyinfo)
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
-
+	
 	compose_extract_original_charset(compose);
 	
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
@@ -1165,7 +1170,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		g_free(folderidentifier);
 	}
 
-	if (compose_parse_header(compose, msginfo) < 0) return;
+	if (compose_parse_header(compose, msginfo) < 0) return NULL;
 	compose_reply_set_entry(compose, msginfo, to_all, to_ml, 
 				to_sender, followup_and_reply_to);
 	compose_show_first_last_header(compose, TRUE);
@@ -1218,6 +1223,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_exec_ext_editor(compose);
 		
 	compose_set_title(compose);
+	return compose;
 }
 
 #define INSERT_FW_HEADER(var, hdr) \
@@ -7958,7 +7964,9 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 	gchar *body;
 	GSList *new_msglist = NULL;
 	MsgInfo *tmp_msginfo = NULL;
-	
+	gboolean originally_enc = FALSE;
+	Compose *compose = NULL;
+
 	g_return_if_fail(msgview != NULL);
 
 	g_return_if_fail(msginfo_list != NULL);
@@ -7969,11 +7977,13 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 		
 		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
 		    !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
-	    		
 			tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
 						orig_msginfo, mimeinfo);
 			if (tmp_msginfo != NULL) {
 				new_msglist = g_slist_append(NULL, tmp_msginfo);
+				if (procmime_msginfo_is_encrypted(orig_msginfo)) {
+					originally_enc = TRUE;
+				}
 			} 
 		}
 	}
@@ -7981,11 +7991,15 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 	body = messageview_get_selection(msgview);
 
 	if (new_msglist) {
-		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		compose = compose_reply_mode((ComposeMode)action, new_msglist, body);
 		procmsg_msginfo_free(tmp_msginfo);
 		g_slist_free(new_msglist);
 	} else
-		compose_reply_mode((ComposeMode)action, msginfo_list, body);
+		compose = compose_reply_mode((ComposeMode)action, msginfo_list, body);
+
+	if (originally_enc) {
+		compose_force_encryption(compose, compose->account, FALSE);
+	}
 
 	g_free(body);
 }

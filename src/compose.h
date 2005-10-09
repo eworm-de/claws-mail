@@ -241,16 +241,16 @@ Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 Compose *compose_new_with_list		(PrefsAccount	*account,
 					 GList          *listAddress);
 
-void compose_reply_mode			(ComposeMode 	 mode, 
+Compose *compose_reply_mode		(ComposeMode 	 mode, 
 					 GSList 	*msginfo_list, 
 					 gchar 		*body);
 /* remove */
-void compose_followup_and_reply_to	(MsgInfo	*msginfo,
+Compose *compose_followup_and_reply_to	(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
 					 gboolean	 to_sender,
 					 const gchar	*body);
-void compose_reply			(MsgInfo	*msginfo,
+Compose *compose_reply			(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
 					 gboolean	 to_ml,

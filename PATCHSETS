@@ -861,3 +861,4 @@
 ( cvs diff -u -r 1.8.2.11 -r 1.8.2.12 src/export.c;  ) > 1.9.15cvs22.patchset
 ( cvs diff -u -r 1.49.2.63 -r 1.49.2.64 src/procmime.c;  ) > 1.9.15cvs23.patchset
 ( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/wizard.c;  ) > 1.9.15cvs24.patchset
+( cvs diff -u -r 1.382.2.180 -r 1.382.2.181 src/compose.c;  cvs diff -u -r 1.50.2.14 -r 1.50.2.15 src/compose.h;  ) > 1.9.15cvs25.patchset
