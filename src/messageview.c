@@ -281,7 +281,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 	{N_("/_Message/Repl_y to/mailing _list"),
 					"<control>L", reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),	"<control><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/_Forward"),	"<control><alt>F", reply_cb, COMPOSE_FORWARD_INLINE, NULL},
 	{N_("/_Message/For_ward as attachment"),
 					NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/Redirec_t"),	NULL, reply_cb, COMPOSE_REDIRECT, NULL},

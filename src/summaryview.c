@@ -402,7 +402,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					"<control>L", summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
 	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
+	{N_("/For_ward as attachment"),	NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
@@ -1216,6 +1217,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Follow-up and reply to"	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 
 		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Forward as attachment"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Redirect"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 
 		{"/Re-edit"			, M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
