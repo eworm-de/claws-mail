@@ -1,3 +1,26 @@
+2005-10-10 [colin]	1.9.15cvs28
+
+	* src/mainwindow.c
+		Add Windows-1252 encoding
+	* src/prefs_common.c
+		Rework some defaults:
+		- autosave to draft by default
+		- don't show header pane (it's already in the textview)
+		- Select first new or unread mail on entry
+		- Assume 'Yes' to change folder when there's no more
+		  unread message
+	* src/prefs_matcher.c
+		Fix a gtk assertion failure
+	* src/gtk/colorlabel.c
+		Workaround bad repainting on selection
+	* src/main.c
+		Freeze/thaw (a bit faster on ssh -X)
+	* src/msgcache.c
+		Get rid of StrdupConverter that just adds an
+		extra strdup/free 
+	* src/etpan/imap_thread.c
+		memset buf to 0
+
 2005-10-10 [colin]	1.9.15cvs27
 
 	* src/export.c

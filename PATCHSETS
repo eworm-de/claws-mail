@@ -864,3 +864,4 @@
 ( cvs diff -u -r 1.382.2.180 -r 1.382.2.181 src/compose.c;  cvs diff -u -r 1.50.2.14 -r 1.50.2.15 src/compose.h;  ) > 1.9.15cvs25.patchset
 ( cvs diff -u -r 1.274.2.70 -r 1.274.2.71 src/mainwindow.c;  cvs diff -u -r 1.94.2.66 -r 1.94.2.67 src/messageview.c;  cvs diff -u -r 1.395.2.133 -r 1.395.2.134 src/summaryview.c;  ) > 1.9.15cvs26.patchset
 ( cvs diff -u -r 1.8.2.12 -r 1.8.2.13 src/export.c;  cvs diff -u -r 1.13.2.11 -r 1.13.2.12 src/import.c;  ) > 1.9.15cvs27.patchset
+( cvs diff -u -r 1.115.2.57 -r 1.115.2.58 src/main.c;  cvs diff -u -r 1.274.2.71 -r 1.274.2.72 src/mainwindow.c;  cvs diff -u -r 1.16.2.27 -r 1.16.2.28 src/msgcache.c;  cvs diff -u -r 1.204.2.60 -r 1.204.2.61 src/prefs_common.c;  cvs diff -u -r 1.43.2.25 -r 1.43.2.26 src/prefs_matcher.c;  cvs diff -u -r 1.1.4.22 -r 1.1.4.23 src/etpan/imap-thread.c;  cvs diff -u -r 1.2.2.8 -r 1.2.2.9 src/gtk/colorlabel.c;  ) > 1.9.15cvs28.patchset

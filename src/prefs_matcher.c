@@ -1396,7 +1396,10 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	old_value = matcher.selected_criteria;
 	matcher.selected_criteria = value = get_sel_from_list
 		(GTK_LIST(matcher.criteria_list));
-	
+
+	if (old_value == matcher.selected_criteria)
+		return;
+
 	/* CLAWS: the value widget is currently either the color label combo box,
 	 * or a GtkEntry, so kiss for now */
 	if (matcher.selected_criteria == CRITERIA_COLORLABEL) { 

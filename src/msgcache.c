@@ -461,15 +461,9 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	if (srccharset == NULL || dstcharset == NULL) {
 		conv = NULL;
 	} else if (strcmp(srccharset, dstcharset) == 0) {
-		StrdupConverter *strdupconv;
+		debug_print("using Noop Converter\n");
 
-		debug_print("using StrdupConverter\n");
-
-		strdupconv = g_new0(StrdupConverter, 1);
-		strdupconv->converter.convert = strconv_strdup_convert;
-		strdupconv->converter.free = NULL;
-
-		conv = (StringConverter *) strdupconv;
+		conv = NULL;
 	} else {
 		CharsetConverter *charsetconv;
 

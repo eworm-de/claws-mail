@@ -42,6 +42,8 @@ static gboolean thread_manager_event(GIOChannel * source,
 void imap_logger(int direction, const char * str, size_t size) 
 {
 	gchar buf[512];
+
+	memset(buf, 0, 512);
 	strncpy(buf, str, size > 510 ? 510:size);
 	buf[511] = '\0';
 	if (size < 511)

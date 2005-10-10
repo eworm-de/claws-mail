@@ -390,6 +390,7 @@ int main(int argc, char *argv[])
 	gtk_window_set_default_icon(icon);
 
 	folderview_initialize();
+
 	mh_gtk_init();
 	imap_gtk_init();
 	news_gtk_init();
@@ -397,6 +398,9 @@ int main(int argc, char *argv[])
 	mainwin = main_window_create
 		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
 	folderview = mainwin->folderview;
+
+	gtk_clist_freeze(GTK_CLIST(mainwin->folderview->ctree));
+	folder_item_update_freeze();
 
 	/* register the callback of unix domain socket input */
 #ifdef G_OS_UNIX
@@ -435,7 +439,6 @@ int main(int argc, char *argv[])
 	/* make one all-folder processing before using sylpheed */
 	main_window_cursor_wait(mainwin);
 	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
-	main_window_cursor_normal(mainwin);
 
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
@@ -479,6 +482,9 @@ int main(int argc, char *argv[])
 #ifdef HAVE_STARTUP_NOTIFICATION
 	startup_notification_complete(FALSE);
 #endif
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
+	main_window_cursor_normal(mainwin);
 
 	if (cmd.receive_all)
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
