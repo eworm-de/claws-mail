@@ -187,18 +187,25 @@ static void export_create(void)
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	/* XXX GTK 2.6: GTK_STOCK_DIRECTORY */
+#if GTK_CHECK_VERSION(2, 6, 0)
 	src_button = gtk_button_new_with_mnemonic(_("_Browse"));
 	gtk_button_set_image((GtkButton*)src_button,
-		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
+#else
+	src_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+#endif
 	gtk_table_attach(GTK_TABLE(table), src_button, 2, 3, 0, 1,
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT(src_button), "clicked",
 			 G_CALLBACK(export_srcsel_cb), NULL);
 
+#if GTK_CHECK_VERSION(2, 6, 0)
 	file_button = gtk_button_new_with_mnemonic(_("B_rowse"));
 	gtk_button_set_image((GtkButton*)file_button,
 		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
+#else
+	file_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+#endif
 	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 1, 2,
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT(file_button), "clicked",

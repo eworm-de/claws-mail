@@ -1,3 +1,9 @@
+2005-10-10 [colin]	1.9.15cvs27
+
+	* src/export.c
+	* src/import.c
+		Fix compile on gtk 2.4. Patch by wwp
+
 2005-10-09 [colin]	1.9.15cvs26
 
 	* src/mainwindow.c
