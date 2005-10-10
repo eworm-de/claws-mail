@@ -5590,7 +5590,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 		        GList *alist = amenu->next;
 
 			systemid = g_object_get_data(G_OBJECT(amenu->data), "privacy_system");
-			if (systemid != NULL)
+			if (systemid != NULL) {
 				if (strcmp(systemid, compose->privacy_system) == 0) {
 					menuitem = GTK_WIDGET(amenu->data);
 
@@ -5598,7 +5598,15 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 					can_encrypt = privacy_system_can_encrypt(systemid);
 					found = TRUE;
 					break;
-				}
+				} 
+			} else if (strlen(compose->privacy_system) == 0) {
+					menuitem = GTK_WIDGET(amenu->data);
+
+					can_sign = FALSE;
+					can_encrypt = FALSE;
+					found = TRUE;
+					break;
+			}
 
 			amenu = alist;
 		}
@@ -5613,7 +5621,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 			alertpanel_warning(tmp);
 			g_free(tmp);
 		}
-	}
+	} 
 
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
@@ -7554,6 +7562,7 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 static void activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
 {
 	g_free(compose->privacy_system);
+
 	compose->privacy_system = g_strdup(account->default_privacy_system);
 	compose_update_privacy_system_menu_item(compose, warn);
 }

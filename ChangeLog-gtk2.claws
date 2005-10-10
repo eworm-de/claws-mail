@@ -1,3 +1,9 @@
+2005-10-10 [colin]	1.9.15cvs29
+
+	* src/compose.c
+		Reselect "None" Privacy system when selecting an
+		account with no privacy system defined
+
 2005-10-10 [colin]	1.9.15cvs28
 
 	* src/mainwindow.c
