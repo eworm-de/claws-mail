@@ -105,7 +105,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(factory, name, sens)
 
-	SET_SENS("/Create new folder...",   TRUE);
+	SET_SENS("/Create new folder...",   item->no_sub == FALSE);
 	SET_SENS("/Rename folder...",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("/Move folder...", 	    folder_is_normal && folder_item_parent(item) != NULL);
 	SET_SENS("/Delete folder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
@@ -139,8 +139,8 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	new_folder = input_dialog
 		(_("New folder"),
 		 _("Input the name of new folder:\n"
-		   "(if you want to create a folder to store subfolders,\n"
-		   " append '/' at the end of the name)"),
+		   "(if you want to create a folder to store subfolders\n"
+		   "and no mails, append '/' at the end of the name)"),
 		 _("NewFolder"));
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});

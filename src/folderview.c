@@ -64,6 +64,7 @@
 #include "folderutils.h"
 #include "partial_download.h"
 #include "prefs_folder_column.h"
+#include "filtering.h"
 
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
@@ -1805,7 +1806,22 @@ static void summary_thaw_for_proc(gpointer data)
 	gtk_clist_thaw(GTK_CLIST(folderview->summaryview->ctree));
 }
 
-gboolean folderview_process_open(gpointer data)
+void folderview_process_open(FolderView *folderview, FolderItem *item)
+{
+	if (!item)
+		return;
+
+	folder_item_update_freeze();
+	folder_item_process_open(item, 
+		summary_freeze_for_proc,
+		summary_thaw_for_proc,
+		folderview);
+	folder_item_update_thaw();
+	
+	return;	
+}
+
+gboolean folderview_process_open_cb(gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *item = NULL;
@@ -1821,12 +1837,7 @@ gboolean folderview_process_open(gpointer data)
 	if (!item)
 		return FALSE;
 
-	folder_item_update_freeze();
-	folder_item_process_open(item, 
-		summary_freeze_for_proc,
-		summary_thaw_for_proc,
-		folderview);
-	folder_item_update_thaw();
+	folderview_process_open(folderview, item);
 	
 	return FALSE;	
 }
@@ -1918,6 +1929,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
         }
 	
+	if (pre_global_processing || item->prefs->processing 
+	    || post_global_processing)
+		folderview_process_open(folderview, item);
 
 	main_window_cursor_normal(folderview->mainwin);
 
@@ -1937,7 +1951,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
 	}
 
-	g_timeout_add(0, folderview_process_open, folderview);
+	if (!pre_global_processing && !item->prefs->processing 
+	    && !post_global_processing)
+		g_timeout_add(0, folderview_process_open_cb, folderview);
 
 	STATUSBAR_POP(folderview->mainwin);
 

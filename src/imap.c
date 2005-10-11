@@ -381,7 +381,7 @@ static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item);
 
 /* data types conversion libetpan <-> sylpheed */
 static GSList * imap_list_from_lep(IMAPFolder * folder,
-				   clist * list, const gchar * real_path);
+				   clist * list, const gchar * real_path, gboolean all);
 static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist);
 static GSList * imap_get_lep_set_from_msglist(MsgInfoList *msglist);
 static GSList * imap_uid_list_from_lep(clist * list);
@@ -692,12 +692,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 		rfolder->session = NULL;
 		return NULL;
 	}
-
-#if 0
-	/* Make sure we have parsed the IMAP namespace */
-	imap_parse_namespace(IMAP_SESSION(session),
-			     IMAP_FOLDER(folder));
-#endif
 
 	/* I think the point of this code is to avoid sending a
 	 * keepalive if we've used the session recently and therefore
@@ -1371,7 +1365,6 @@ static gint imap_scan_tree(Folder *folder)
 			}
 			return -1;
 		}
-		
 		mailimap_list_result_free(lep_list);
 		
 		g_free(real_path);
@@ -1439,7 +1432,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	}
 	else {
 		item_list = imap_list_from_lep(imapfolder,
-					       lep_list, real_path);
+					       lep_list, real_path, FALSE);
 		mailimap_list_result_free(lep_list);
 	}
 	
@@ -1479,6 +1472,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	for (cur = item_list; cur != NULL; cur = cur->next) {
 		FolderItem *cur_item = FOLDER_ITEM(cur->data);
 		new_item = NULL;
+
 		for (node = item->node->children; node != NULL;
 		     node = node->next) {
 			if (!strcmp2(FOLDER_ITEM(node->data)->path,
@@ -1649,7 +1643,8 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	gchar *new_name;
 	const gchar *p;
 	gint ok;
-
+	gboolean no_select = FALSE, no_sub = FALSE;
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	g_return_val_if_fail(parent != NULL, NULL);
@@ -1660,9 +1655,9 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		return NULL;
 	}
 
-	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0)
+	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0) {
 		dirpath = g_strdup(name);
-	else if (parent->path)
+	}else if (parent->path)
 		dirpath = g_strconcat(parent->path, "/", name, NULL);
 	else if ((p = strchr(name, '/')) != NULL && *(p + 1) != '\0')
 		dirpath = g_strdup(name);
@@ -1674,21 +1669,24 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		dirpath = g_strconcat(imap_dir, "/", name, NULL);
 	} else
 		dirpath = g_strdup(name);
+		
+	
 
 	/* keep trailing directory separator to create a folder that contains
 	   sub folder */
 	imap_path = imap_utf8_to_modified_utf7(dirpath);
+
 	strtailchomp(dirpath, '/');
 	Xstrdup_a(new_name, name, {
 		g_free(dirpath); 		
 		return NULL;});
 
-	strtailchomp(new_name, '/');
 	separator = imap_get_path_separator(IMAP_FOLDER(folder), imap_path);
 	imap_path_separator_subst(imap_path, separator);
-	subst_char(new_name, '/', separator);
+	/* remove trailing / for display */
+	strtailchomp(new_name, '/');
 
-	if (strcmp(name, "INBOX") != 0) {
+	if (strcmp(dirpath, "INBOX") != 0) {
 		GPtrArray *argbuf;
 		gboolean exist = FALSE;
 		int r;
@@ -1707,7 +1705,8 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		
 		if (clist_count(lep_list) > 0)
 			exist = TRUE;
-		
+		mailimap_list_result_free(lep_list);
+		lep_list = NULL;
 		if (!exist) {
 			ok = imap_cmd_create(session, imap_path);
 			if (ok != IMAP_SUCCESS) {
@@ -1716,10 +1715,41 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 				g_free(dirpath);
 				return NULL;
 			}
+			r = imap_threaded_list(folder, "", imap_path, &lep_list);
+			if (r == MAILIMAP_NO_ERROR) {
+				GSList *item_list = imap_list_from_lep(IMAP_FOLDER(folder),
+					       lep_list, dirpath, TRUE);
+				if (item_list) {
+					FolderItem *cur_item = FOLDER_ITEM(item_list->data);
+					no_select = cur_item->no_select;
+					no_sub = cur_item->no_sub;
+					g_slist_free(item_list);
+				} 
+				mailimap_list_result_free(lep_list);
+			}
+
+		}
+	} else {
+		clist *lep_list;
+		int r;
+		/* just get flags */
+		r = imap_threaded_list(folder, "", "INBOX", &lep_list);
+		if (r == MAILIMAP_NO_ERROR) {
+			GSList *item_list = imap_list_from_lep(IMAP_FOLDER(folder),
+				       lep_list, dirpath, TRUE);
+			if (item_list) {
+				FolderItem *cur_item = FOLDER_ITEM(item_list->data);
+				no_select = cur_item->no_select;
+				no_sub = cur_item->no_sub;
+				g_slist_free(item_list);
+			} 
+			mailimap_list_result_free(lep_list);
 		}
 	}
 
 	new_item = folder_item_new(folder, new_name, dirpath);
+	new_item->no_select = no_select;
+	new_item->no_sub = no_sub;
 	folder_item_append(parent, new_item);
 	g_free(imap_path);
 	g_free(dirpath);
@@ -1849,6 +1879,14 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	}
 
 	ok = imap_cmd_delete(session, path);
+	if (ok != IMAP_SUCCESS) {
+		gchar *tmp = g_strdup_printf("%s%c", path, 
+				imap_get_path_separator(IMAP_FOLDER(folder), path));
+		g_free(path);
+		path = tmp;
+		ok = imap_cmd_delete(session, path);
+	}
+
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't delete mailbox\n"));
 		g_free(path);
@@ -3503,10 +3541,8 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			  (!strcmp(session->mbox, item->path));
 
 	if (!selected_folder) {
-		ok = imap_status(session, IMAP_FOLDER(folder), item->path, IMAP_FOLDER_ITEM(item),
-			 &exists_cnt, NULL, NULL, &unseen_cnt, TRUE);
 		ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			NULL, NULL, NULL, NULL, TRUE);
+			&exists_cnt, NULL, &unseen_cnt, NULL, TRUE);
 		if (ok != IMAP_SUCCESS) {
 			stuff->done = TRUE;
 			return GINT_TO_POINTER(-1);
@@ -3795,7 +3831,7 @@ static int imap_flags_to_flags(struct mailimap_mbx_list_flags * imap_flags)
 }
 
 static GSList * imap_list_from_lep(IMAPFolder * folder,
-				   clist * list, const gchar * real_path)
+				   clist * list, const gchar * real_path, gboolean all)
 {
 	clistiter * iter;
 	GSList * item_list;
@@ -3815,7 +3851,10 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 		FolderItem *new_item;
 		
 		mb = clist_content(iter);
-		
+
+		if (mb == NULL)
+			continue;
+
 		flags = 0;
 		if (mb->mb_flag != NULL)
 			flags = imap_flags_to_flags(mb->mb_flag);
@@ -3834,13 +3873,13 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 			continue;
 		}
 		
-		if (strcmp(dup_name, real_path) == 0) {
+		if (!all && strcmp(dup_name, real_path) == 0) {
 			g_free(base);
 			free(dup_name);
 			continue;
 		}
 
-		if (dup_name[strlen(dup_name)-1] == '/') {
+		if (!all && dup_name[strlen(dup_name)-1] == '/') {
 			g_free(base);
 			free(dup_name);
 			continue;
