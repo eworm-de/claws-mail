@@ -686,6 +686,14 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	icon_list_create(mimeview, mimeview->mimeinfo);
 }
 
+static void redisplay_email(GtkWidget *widget, gpointer user_data)
+{
+	MimeView *mimeview = (MimeView *) user_data;
+	GtkCTreeNode *node = mimeview->opened;
+	mimeview->opened = NULL;
+	mimeview_selected(GTK_CTREE(mimeview->ctree), node, 0, mimeview);
+}
+
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 {
 	MimeView *mimeview = (MimeView *) user_data;
@@ -694,7 +702,11 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 	siginfo = privacy_mimeinfo_sig_info_full(mimeview->siginfo);
 	textview_set_text(mimeview->textview, siginfo);
 	g_free(siginfo);
-	noticeview_set_button_text(mimeview->siginfoview, NULL);
+	noticeview_set_button_text(mimeview->siginfoview, _("Back to email"));
+	noticeview_set_button_press_callback(
+		mimeview->siginfoview,
+		G_CALLBACK(redisplay_email),
+		(gpointer) mimeview);
 }
 
 static void update_signature_info(MimeView *mimeview, MimeInfo *selected)

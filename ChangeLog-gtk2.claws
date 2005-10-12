@@ -1,3 +1,9 @@
+2005-10-12 [colin]	1.9.15cvs33
+
+	* src/mimeview.c
+		Provide a quick way to go back from a
+		signature's full info to the email part
+
 2005-10-12 [colin]	1.9.15cvs32
 
 	* src/compose.c
