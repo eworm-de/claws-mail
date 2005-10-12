@@ -58,6 +58,14 @@ struct GPGPage
         GtkWidget *checkbtn_gpg_warning;
 };
 
+static void store_passphrase_toggled(GtkWidget *widget, gpointer data)
+{
+	struct GPGPage *page = (struct GPGPage *)data;
+	gtk_widget_set_sensitive(page->spinbtn_store_passphrase,
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_store_passphrase)));
+}
+
 static void prefs_gpg_create_widget_func(PrefsPage *_page,
 					 GtkWindow *window,
 					 gpointer data)
@@ -74,16 +82,13 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *checkbtn_store_passphrase;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_warning;
-	GtkWidget *label7;
-	GtkWidget *label6;
-	GtkWidget *label9;
-	GtkWidget *label10;
 	GtkWidget *hbox1;
 	GtkWidget *label11;
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label12;
 	GtkTooltips *tooltips;
+	gchar *tmp;
 
 	tooltips = gtk_tooltips_new();
 
@@ -93,70 +98,42 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	checkbtn_passphrase_grab = gtk_check_button_new_with_label("");
+	checkbtn_passphrase_grab = gtk_check_button_new_with_label(_("Grab input while entering a passphrase"));
 	gtk_widget_show(checkbtn_passphrase_grab);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_passphrase_grab, 0, 1,
 			 3, 4, (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
-	checkbtn_store_passphrase = gtk_check_button_new_with_label("");
+	checkbtn_store_passphrase = gtk_check_button_new_with_label(_("Store passphrase in memory"));
 	gtk_widget_show(checkbtn_store_passphrase);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_store_passphrase, 0, 1,
 			 1, 2, (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
 	checkbtn_auto_check_signatures =
-	    gtk_check_button_new_with_label("");
+	    gtk_check_button_new_with_label(_("Automatically check signatures"));
 	gtk_widget_show(checkbtn_auto_check_signatures);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_auto_check_signatures,
 			 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
-	checkbtn_gpg_warning = gtk_check_button_new_with_label("");
+	checkbtn_gpg_warning = gtk_check_button_new_with_label(_
+			  ("Display warning on startup if GnuPG doesn't work"));
 	gtk_widget_show(checkbtn_gpg_warning);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_gpg_warning, 0, 1, 4,
 			 5, (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
-	label7 = gtk_label_new(_("Store passphrase in memory"));
-	gtk_widget_show(label7);
-	gtk_table_attach(GTK_TABLE(table), label7, 1, 2, 1, 2,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label7), 0, 0.5);
-
-	label6 = gtk_label_new(_("Automatically check signatures"));
-	gtk_widget_show(label6);
-	gtk_table_attach(GTK_TABLE(table), label6, 1, 2, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
-
-	label9 =
-	    gtk_label_new(_("Grab input while entering a passphrase"));
-	gtk_widget_show(label9);
-	gtk_table_attach(GTK_TABLE(table), label9, 1, 2, 3, 4,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label9), 0, 0.5);
-
-	label10 =
-	    gtk_label_new(_
-			  ("Display warning on startup if GnuPG doesn't work"));
-	gtk_widget_show(label10);
-	gtk_table_attach(GTK_TABLE(table), label10, 1, 2, 4, 5,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label10), 0, 0.5);
-
 	hbox1 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox1);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), hbox1, 0, 1, 2, 3,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
 
-	label11 = gtk_label_new(_("Expire after"));
+	tmp = g_strdup_printf("        %s", _("Expire after"));
+	label11 = gtk_label_new(tmp);
+	g_free(tmp);
 	gtk_widget_show(label11);
 	gtk_box_pack_start(GTK_BOX(hbox1), label11, FALSE, FALSE, 0);
 
@@ -168,7 +145,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(spinbtn_store_passphrase);
 	gtk_box_pack_start(GTK_BOX(hbox1), spinbtn_store_passphrase, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_size_request(spinbtn_store_passphrase, 64, -2);
+	gtk_widget_set_size_request(spinbtn_store_passphrase, 64, -1);
 	gtk_tooltips_set_tip(tooltips, spinbtn_store_passphrase,
 			     _
 			     ("Setting to '0' will store the passphrase for the whole session"),
@@ -191,6 +168,12 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_store_passphrase), (float) config->store_passphrase_timeout);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_passphrase_grab), config->passphrase_grab);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gpg_warning), config->gpg_warning);
+
+	gtk_widget_set_sensitive(spinbtn_store_passphrase,
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(checkbtn_store_passphrase)));
+	g_signal_connect(G_OBJECT(checkbtn_store_passphrase), "toggled", 
+			 G_CALLBACK(store_passphrase_toggled), page);
 
 	page->checkbtn_auto_check_signatures = checkbtn_auto_check_signatures;
 	page->checkbtn_store_passphrase = checkbtn_store_passphrase;

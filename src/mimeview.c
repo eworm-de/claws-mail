@@ -700,10 +700,24 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 {
 	MimeInfo *siginfo;
-
+	MimeInfo *first_text;
+	
 	g_return_if_fail(mimeview != NULL);
 	g_return_if_fail(selected != NULL);
 	
+	if (selected->type == MIMETYPE_MESSAGE 
+	&&  !g_ascii_strcasecmp(selected->subtype, "rfc822")) {
+		/* if the first text part is signed, check that */
+		first_text = selected;
+		while (first_text && first_text->type != MIMETYPE_TEXT) {
+			first_text = procmime_mimeinfo_next(first_text);
+		}
+		if (first_text) {
+			update_signature_info(mimeview, first_text);
+			return;
+		}	
+	}
+
 	siginfo = selected;
 	while (siginfo != NULL) {
 		if (privacy_mimeinfo_is_signed(siginfo))

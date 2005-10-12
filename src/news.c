@@ -134,7 +134,9 @@ static gchar *news_folder_get_path	 (Folder	*folder);
 gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
 static void news_synchronise		 (FolderItem	*item);
-
+static int news_dummy_remove		 (Folder 	*folder, 
+					  FolderItem 	*item, 
+					  gint 		 msgnum);
 static FolderClass news_class;
 
 FolderClass *news_get_class(void)
@@ -158,9 +160,18 @@ FolderClass *news_get_class(void)
 		news_class.get_msginfos = news_get_msginfos;
 		news_class.fetch_msg = news_fetch_msg;
 		news_class.synchronise = news_synchronise;
+		news_class.remove_msg = news_dummy_remove;
 	};
 
 	return &news_class;
+}
+
+static int news_dummy_remove		 (Folder 	*folder, 
+					  FolderItem 	*item, 
+					  gint 		 msgnum)
+{
+	debug_print("doing nothing on purpose\n");
+	return 0;
 }
 
 static Folder *news_folder_new(const gchar *name, const gchar *path)

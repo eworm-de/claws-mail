@@ -2221,14 +2221,18 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	gint exists_, recent_, unseen_;
 	guint32 uid_validity_;
 	
-	if (!exists || !recent || !unseen || !uid_validity) {
+	if (!exists && !recent && !unseen && !uid_validity) {
 		if (session->mbox && strcmp(session->mbox, path) == 0)
 			return IMAP_SUCCESS;
-		exists = &exists_;
-		recent = &recent_;
-		unseen = &unseen_;
-		uid_validity = &uid_validity_;
 	}
+	if (!exists)
+		exists = &exists_;
+	if (!recent)
+		recent = &recent_;
+	if (!unseen)
+		unseen = &unseen_;
+	if (!uid_validity)
+		uid_validity = &uid_validity_;
 
 	g_free(session->mbox);
 	session->mbox = NULL;

@@ -53,54 +53,31 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	ImageViewerPage *prefs_imageviewer = (ImageViewerPage *) _page;
 
 	GtkWidget *table;
-	GtkWidget *label;
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
 	GtkWidget *inline_img;
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(3, 1, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	label =
-	    gtk_label_new(_("Automatically display attached images"));
-	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
-	label = gtk_label_new(_("Resize attached images by default\n(Clicking image toggles scaling)"));
-	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
-	label = gtk_label_new(_("Display images inline"));
-	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	
-	autoload_img = gtk_check_button_new_with_label("");
+	autoload_img = gtk_check_button_new_with_label(_("Automatically display attached images"));
 	gtk_widget_show(autoload_img);
-	gtk_table_attach(GTK_TABLE(table), autoload_img, 1, 2, 0, 1,
+	gtk_table_attach(GTK_TABLE(table), autoload_img, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	resize_img = gtk_check_button_new_with_label("");
+	resize_img = gtk_check_button_new_with_label(_("Resize attached images by default\n(Clicking image toggles scaling)"));
 	gtk_widget_show(resize_img);
-	gtk_table_attach(GTK_TABLE(table), resize_img, 1, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), resize_img, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	inline_img = gtk_check_button_new_with_label("");
+	inline_img = gtk_check_button_new_with_label(_("Display images inline"));
 	gtk_widget_show(inline_img);
-	gtk_table_attach(GTK_TABLE(table), inline_img, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), inline_img, 0, 1, 2, 3,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	

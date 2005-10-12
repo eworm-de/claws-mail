@@ -534,8 +534,8 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 				GTK_NOTEBOOK(wizard->notebook));
 	if (response == CANCEL)
 	{
-		wizard->finished = TRUE;
 		wizard->result = FALSE;
+		wizard->finished = TRUE;
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else if (response == FINISHED)
@@ -545,8 +545,8 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 					GTK_NOTEBOOK(wizard->notebook));
 			goto set_sens;
 		}
-		wizard->finished = TRUE;
 		wizard->result = TRUE;
+		wizard->finished = TRUE;
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else
@@ -589,6 +589,13 @@ set_sens:
 	}
 }
 
+static gint wizard_close_cb(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+	WizardWindow *wizard = (WizardWindow *)data;
+	wizard->result = FALSE;
+	wizard->finished = TRUE;
+}
 
 gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	WizardWindow *wizard = g_new0(WizardWindow, 1);
@@ -701,7 +708,10 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 					  GTK_WIDGET(cur->data), NULL);
 	}
 	
+	g_signal_connect(G_OBJECT(wizard->window), "delete_event",
+			 G_CALLBACK(wizard_close_cb), wizard);
 	gtk_widget_show_all (wizard->window);
+
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
 

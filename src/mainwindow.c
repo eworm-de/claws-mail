@@ -1840,7 +1840,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
-		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},

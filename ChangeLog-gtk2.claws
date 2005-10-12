@@ -1,3 +1,24 @@
+2005-10-12 [colin]	1.9.15cvs31
+
+	* src/crash.c
+		Replace deprecated GtkText with GtkTextView
+	* src/imap.c
+		Fix a logic bug about counts in imap_select
+		(previously un-triggered)
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/news.c
+		Allow local deletion of news posts
+	* src/mimeview.c
+		Show GPG noticeview on the message/rfc822 part
+		in addition to the text/plain one
+	* src/prefs_image_viewer.c
+	  src/plugins/pgpcore/prefs_gpg.c
+		Polish (set the label as part of the checkbox)
+	* src/wizard.c
+		Don't sit there doing nothing after destroying
+		the window - return err
+
 2005-10-11 [colin]	1.9.15cvs30
 
 	* src/folderview.c

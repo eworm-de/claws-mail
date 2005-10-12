@@ -1225,7 +1225,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
-		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 
 		{"/Mark"			, M_TARGET_EXIST},
@@ -3127,7 +3127,7 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 		}
 
 		if (!found) {
-			alertpanel_error(_("You're not the author of the article\n"));
+			alertpanel_error(_("You're not the author of the article.\n"));
 		}
 		
 		return found;
@@ -3143,9 +3143,6 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-
-	if (!check_permission(summaryview, msginfo))
-		return;
 
 	if (MSG_IS_LOCKED(msginfo->flags)) return;
 
@@ -3210,8 +3207,7 @@ void summary_delete(SummaryView *summaryview)
 
 	if (summary_is_locked(summaryview)) return;
 
-	if (!summaryview->folder_item ||
-	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
+	if (!summaryview->folder_item) return;
 
 	aval = alertpanel(_("Delete message(s)"),
 			  _("Do you really want to delete selected message(s)?"),
