@@ -1,3 +1,9 @@
+2005-10-12 [colin]	1.9.15cvs32
+
+	* src/compose.c
+		Remove old hack of encoding signed mails with base64.
+		QP works equally well.
+
 2005-10-12 [colin]	1.9.15cvs31
 
 	* src/crash.c
