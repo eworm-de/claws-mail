@@ -873,3 +873,4 @@
 ( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/export.c;  cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/import.c;  cvs diff -u -r 1.105.2.37 -r 1.105.2.38 src/prefs_account.c;  ) > 1.9.15cvs34.patchset
 ( cvs diff -u -r 1.2.2.9 -r 1.2.2.10 src/folder_item_prefs.c;  ) > 1.9.15cvs35.patchset
 ( cvs diff -u -r 1.213.2.63 -r 1.213.2.64 src/folder.c;  cvs diff -u -r 1.207.2.71 -r 1.207.2.72 src/folderview.c;  ) > 1.9.15cvs36.patchset
+( cvs diff -u -r 1.83.2.42 -r 1.83.2.43 src/mimeview.c;  cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/noticeview.c;  cvs diff -u -r 1.3.8.3 -r 1.3.8.4 src/noticeview.h;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.15cvs37.patchset

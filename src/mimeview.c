@@ -271,6 +271,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_widget_show(vbox);
 	siginfoview = noticeview_create(mainwin);
 	noticeview_hide(siginfoview);
+	noticeview_set_icon_clickable(siginfoview, TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), mime_notebook, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), GTK_WIDGET_PTR(siginfoview), FALSE, FALSE, 0);
 

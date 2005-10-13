@@ -39,6 +39,7 @@ struct _NoticeView
 	gpointer	 user_data2;
 	void		(*press) (NoticeView *, gpointer user_data);
 	void		(*press2) (NoticeView *, gpointer user_data);
+	gboolean	 icon_clickable;
 };
 
 NoticeView	*noticeview_create	(MainWindow 	*mainwin);
@@ -66,5 +67,7 @@ void		 noticeview_set_2ndbutton_press_callback
 					(NoticeView	*noticeview,
 					 GtkSignalFunc   callback,
 					 gpointer	*user_data);
-					
+void		 noticeview_set_icon_clickable
+					(NoticeView	*noticeview,
+					 gboolean	 setting);			
 #endif /* NOTICEVIEW_H__ */

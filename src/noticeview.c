@@ -47,6 +47,8 @@
 
 static void noticeview_button_pressed	(GtkButton *button, NoticeView *noticeview);
 static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview);
+static gboolean noticeview_icon_pressed	(GtkWidget *widget, GdkEventButton *evt,
+					 NoticeView *noticeview);
 
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
@@ -58,6 +60,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	GtkWidget  *text;
 	GtkWidget  *widget;
 	GtkWidget  *widget2;
+	GtkWidget  *evtbox;
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
@@ -73,14 +76,19 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 1);
 
+	evtbox = gtk_event_box_new();
+	gtk_event_box_set_visible_window(GTK_EVENT_BOX(evtbox), FALSE);
+	gtk_widget_show(evtbox);
+
 	icon = stock_pixmap_widget(noticeview->window, STOCK_PIXMAP_NOTICE_WARN); 
-#if 0
-	/* also possible... */
-	icon = gtk_pixmap_new(NULL, NULL);
-#endif
+
 	gtk_widget_show(icon);
+	g_signal_connect(G_OBJECT(evtbox), "button-press-event", 
+			 G_CALLBACK(noticeview_icon_pressed),
+			 (gpointer) noticeview);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(evtbox), icon);
+	gtk_box_pack_start(GTK_BOX(hbox), evtbox, FALSE, TRUE, 0);
 	
 	text = gtk_label_new("");
 	gtk_widget_show(text);
@@ -178,6 +186,15 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 	}
 }
 
+static gboolean noticeview_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
+				    NoticeView *noticeview)
+{
+	if (evt && evt->button == 1 && noticeview->icon_clickable) {
+		noticeview_button_pressed(NULL, noticeview);
+	}
+	return FALSE;
+}
+
 void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
 {
 	g_return_if_fail(noticeview);
@@ -215,3 +232,8 @@ void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
 	
 	gtk_image_set_from_pixmap(GTK_IMAGE(noticeview->icon), pixmap, bitmap);
 }
+
+void noticeview_set_icon_clickable(NoticeView *noticeview, gboolean setting)
+{
+	noticeview->icon_clickable = setting;
+}		

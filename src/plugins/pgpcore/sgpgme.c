@@ -87,10 +87,6 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 	debug_print("err code %d\n", gpg_err_code(sig->status));
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		if ((validity != GPGME_VALIDITY_MARGINAL) &&
-		    (validity != GPGME_VALIDITY_FULL) &&
-		    (validity != GPGME_VALIDITY_ULTIMATE))
-			return SIGNATURE_WARN;
 		return SIGNATURE_OK;
 	case GPG_ERR_SIG_EXPIRED:
 	case GPG_ERR_KEY_EXPIRED:
@@ -169,8 +165,8 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		uname = g_strdup("<?>");
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		result = g_strdup_printf(_("Good signature from %s (Trust: %s)."),
-			uname, get_validity_str(sig->validity));
+		result = g_strdup_printf(_("Good signature from %s."),
+			uname);
 		break;
 	case GPG_ERR_SIG_EXPIRED:
 		result = g_strdup_printf(_("Expired signature from %s."), uname);
@@ -229,8 +225,8 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_NO_ERROR:
 		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
-				_("Good signature from \"%s\"\n"),
-				uid);
+				_("Good signature from \"%s\" (Trust: %s)\n"),
+				uid, get_validity_str(sig->validity));
 			break;
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
