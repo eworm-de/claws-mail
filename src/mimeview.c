@@ -639,22 +639,22 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	
 	switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
 	case SIGNATURE_UNCHECKED:
-		button_text = _("Check");
+		button_text = _("Check signature");
 		func = check_signature_cb;
 		icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 		break;
 	case SIGNATURE_OK:
-		button_text = _("Full info");
+		button_text = _("View full information");
 		func = display_full_info_cb;
 		icon = STOCK_PIXMAP_PRIVACY_PASSED;
 		break;
 	case SIGNATURE_WARN:
-		button_text = _("Full info");
+		button_text = _("View full information");
 		func = display_full_info_cb;
 		icon = STOCK_PIXMAP_PRIVACY_WARN;
 		break;
 	case SIGNATURE_INVALID:
-		button_text = _("Full info");
+		button_text = _("View full information");
 		func = display_full_info_cb;
 		icon = STOCK_PIXMAP_PRIVACY_FAILED;
 		break;
@@ -668,12 +668,13 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	text = privacy_mimeinfo_sig_info_short(mimeinfo);
 	noticeview_set_text(mimeview->siginfoview, text);
 	g_free(text);
-	noticeview_set_button_text(mimeview->siginfoview, button_text);
+	noticeview_set_button_text(mimeview->siginfoview, NULL);
 	noticeview_set_button_press_callback(
 		mimeview->siginfoview,
 		G_CALLBACK(func),
 		(gpointer) mimeview);
 	noticeview_set_icon(mimeview->siginfoview, icon);
+	noticeview_set_tooltip(mimeview->siginfoview, button_text);
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data)
@@ -703,11 +704,12 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 	siginfo = privacy_mimeinfo_sig_info_full(mimeview->siginfo);
 	textview_set_text(mimeview->textview, siginfo);
 	g_free(siginfo);
-	noticeview_set_button_text(mimeview->siginfoview, _("Back to email"));
+	noticeview_set_button_text(mimeview->siginfoview, NULL);
 	noticeview_set_button_press_callback(
 		mimeview->siginfoview,
 		G_CALLBACK(redisplay_email),
 		(gpointer) mimeview);
+	noticeview_set_tooltip(mimeview->siginfoview, _("Go back to email"));
 }
 
 static void update_signature_info(MimeView *mimeview, MimeInfo *selected)

@@ -41,6 +41,7 @@ struct _NoticeView
 	void		(*press2) (NoticeView *, gpointer user_data);
 	gboolean	 icon_clickable;
 	GtkWidget 	*evtbox;
+	GtkTooltips	*tooltips;
 };
 
 NoticeView	*noticeview_create	(MainWindow 	*mainwin);
@@ -71,4 +72,7 @@ void		 noticeview_set_2ndbutton_press_callback
 void		 noticeview_set_icon_clickable
 					(NoticeView	*noticeview,
 					 gboolean	 setting);			
+void		 noticeview_set_tooltip
+					(NoticeView	*noticeview,
+					 const gchar	*text);			
 #endif /* NOTICEVIEW_H__ */

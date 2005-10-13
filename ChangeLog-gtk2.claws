@@ -1,3 +1,12 @@
+2005-10-13 [colin]	1.9.15cvs44
+
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/noticeview.h
+		Add a tooltip on the icon (optional) 
+		Get rid of the signature buttons and only
+		use the icon+tooltip
+
 2005-10-13 [colin]	1.9.15cvs43
 
 	* src/noticeview.c
