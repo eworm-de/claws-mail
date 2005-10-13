@@ -1,3 +1,9 @@
+2005-10-13 [colin]	1.9.15cvs39
+
+	* src/gtk/quicksearch.c
+		Reset quicksearch when hiding it
+		Make sticky a real pref
+
 2005-10-13 [colin]	1.9.15cvs38
 
 	* src/summaryview.c

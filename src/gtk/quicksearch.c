@@ -199,6 +199,20 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 	return TRUE;
 }
 
+static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+	
+	prefs_common.summary_quicksearch_sticky = checked; 
+
+	/* reselect the search type */
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+				    prefs_common.summary_quicksearch_type);
+
+	return TRUE;
+}
+
 /*
  * Strings describing how to use Extended Search
  * 
@@ -324,6 +338,16 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_recursive_changed),
 			 quicksearch);
 
+	menuitem = gtk_check_menu_item_new_with_label(_("Sticky"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+	
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					prefs_common.summary_quicksearch_sticky);
+	
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_sticky_changed),
+			 quicksearch);
+
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 	
 	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
@@ -346,15 +370,13 @@ QuickSearch *quicksearch_new()
 
 	gtk_box_set_spacing(GTK_BOX(search_hbbox), 5);
 		
-	if (prefs_common.summary_quicksearch_sticky) {
-		clear_search = gtk_button_new_with_label(_("Clear"));
-		gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search,
-				   FALSE, FALSE, 0);
-		gtk_widget_set_size_request(clear_search, 120, -1);
-		g_signal_connect(G_OBJECT(clear_search), "clicked",
-				 G_CALLBACK(clear_search_cb), quicksearch);
-		gtk_widget_show(clear_search);
-	}
+	clear_search = gtk_button_new_with_label(_("Clear"));
+	gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search,
+			   FALSE, FALSE, 0);
+	gtk_widget_set_size_request(clear_search, 120, -1);
+	g_signal_connect(G_OBJECT(clear_search), "clicked",
+			 G_CALLBACK(clear_search_cb), quicksearch);
+	gtk_widget_show(clear_search);
 
 	search_description = gtk_button_new_with_label(_("Extended Symbols"));
 	gtk_box_pack_start(GTK_BOX(search_hbbox), search_description,
@@ -418,6 +440,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 
 void quicksearch_hide(QuickSearch *quicksearch)
 {
+	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
 	quicksearch_set_active(quicksearch, FALSE);
 	gtk_widget_hide(quicksearch->hbox_search);
 }
