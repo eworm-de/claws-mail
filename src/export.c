@@ -253,7 +253,7 @@ static void export_filesel_cb(GtkWidget *widget, gpointer data)
 						conv_get_locale_charset_str(),
 						CS_UTF_8);
 		if (!filename) {
-			g_warning("export_filesel_cb(): faild to convert character set.");
+			g_warning("export_filesel_cb(): failed to convert character set.");
 			filename = g_strdup(oldstr);
 		}
 		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);

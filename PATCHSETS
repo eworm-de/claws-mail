@@ -870,3 +870,4 @@
 ( cvs diff -u -r 1.23.2.13 -r 1.23.2.14 src/crash.c;  cvs diff -u -r 1.179.2.77 -r 1.179.2.78 src/imap.c;  cvs diff -u -r 1.274.2.72 -r 1.274.2.73 src/mainwindow.c;  cvs diff -u -r 1.83.2.40 -r 1.83.2.41 src/mimeview.c;  cvs diff -u -r 1.101.2.17 -r 1.101.2.18 src/news.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_image_viewer.c;  cvs diff -u -r 1.395.2.134 -r 1.395.2.135 src/summaryview.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/wizard.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/prefs_gpg.c;  ) > 1.9.15cvs31.patchset
 ( cvs diff -u -r 1.382.2.182 -r 1.382.2.183 src/compose.c;  ) > 1.9.15cvs32.patchset
 ( cvs diff -u -r 1.83.2.41 -r 1.83.2.42 src/mimeview.c;  ) > 1.9.15cvs33.patchset
+( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/export.c;  cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/import.c;  cvs diff -u -r 1.105.2.37 -r 1.105.2.38 src/prefs_account.c;  ) > 1.9.15cvs34.patchset

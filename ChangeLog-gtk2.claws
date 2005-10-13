@@ -1,3 +1,13 @@
+2005-10-13 [paul]	1.9.15cvs34
+
+	* src/export.c
+	* src/import.c
+		fix typos in g_warnings
+	* src/prefs_account.c
+		add a file selector for Signature file
+
+	Patches by wwp
+
 2005-10-12 [colin]	1.9.15cvs33
 
 	* src/mimeview.c

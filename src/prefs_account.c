@@ -27,6 +27,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/filesel.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -59,6 +60,10 @@ static gboolean new_account;
 static PrefsAccount tmp_ac_prefs;
 
 static GtkWidget *notebook;
+static GtkWidget *sigfile_radiobtn;
+static GtkWidget *sigcmd_radiobtn;
+static GtkWidget *entry_sigpath;
+static GtkWidget *signature_browse_button;
 
 static GSList *prefs_pages = NULL;
 
@@ -571,6 +576,15 @@ static void prefs_account_ssl_create		(void);
 static void prefs_account_advanced_create	(void);
 
 static void prefs_account_select_folder_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_sigfile_radiobtn_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_sigcmd_radiobtn_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_signature_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
@@ -1769,12 +1783,9 @@ static void prefs_account_compose_create(void)
 	GtkWidget *frame_sig;
 	GtkWidget *vbox_sig;
 	GtkWidget *label_sigpath;
-	GtkWidget *entry_sigpath;
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
-	GtkWidget *sigfile_radiobtn;
-	GtkWidget *sigcmd_radiobtn;
 	GtkWidget *frame;
 	GtkWidget *table;
 	GtkWidget *autocc_chkbtn;
@@ -1823,6 +1834,8 @@ static void prefs_account_compose_create(void)
 	g_object_set_data (G_OBJECT (sigfile_radiobtn),
 			   MENU_VAL_ID,
 			   GINT_TO_POINTER (SIG_FILE));
+	g_signal_connect(G_OBJECT(sigfile_radiobtn), "clicked",
+			 G_CALLBACK(prefs_account_sigfile_radiobtn_cb), NULL);
 
 	sigcmd_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON(sigfile_radiobtn), _("Command output"));
@@ -1832,6 +1845,8 @@ static void prefs_account_compose_create(void)
 	g_object_set_data (G_OBJECT (sigcmd_radiobtn),
 			   MENU_VAL_ID,
 			   GINT_TO_POINTER (SIG_COMMAND));
+	g_signal_connect(G_OBJECT(sigcmd_radiobtn), "clicked",
+			 G_CALLBACK(prefs_account_sigcmd_radiobtn_cb), NULL);
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
@@ -1843,6 +1858,18 @@ static void prefs_account_compose_create(void)
 	entry_sigpath = gtk_entry_new ();
 	gtk_widget_show (entry_sigpath);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_sigpath, TRUE, TRUE, 0);
+
+#if GTK_CHECK_VERSION(2, 6, 0)
+	signature_browse_button = gtk_button_new_with_mnemonic(_("_Browse"));
+	gtk_button_set_image((GtkButton*)signature_browse_button,
+		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
+#else
+	signature_browse_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+#endif
+	gtk_widget_show (signature_browse_button);
+	gtk_box_pack_start (GTK_BOX (hbox2), signature_browse_button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",
+			 G_CALLBACK(prefs_account_signature_browse_cb), NULL);
 
 	PACK_FRAME (vbox1, frame, _("Automatically set the following addresses"));
 
@@ -2472,6 +2499,33 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 			g_free(id);
 		}
 	}
+}
+
+static void prefs_account_sigfile_radiobtn_cb(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_set_sensitive(GTK_WIDGET(signature_browse_button), TRUE);
+}
+
+static void prefs_account_sigcmd_radiobtn_cb(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_set_sensitive(GTK_WIDGET(signature_browse_button), FALSE);
+}
+
+static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
+{
+	gchar *filename;
+	gchar *utf8_filename;
+
+	filename = filesel_select_file_open(_("Select signature file"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("prefs_account_signature_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry_sigpath), utf8_filename);
+	g_free(utf8_filename);
 }
 
 static void prefs_account_edit_custom_header(void)
