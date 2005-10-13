@@ -814,6 +814,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (summary_is_locked(summaryview)) return FALSE;
 
+	if (!summaryview->mainwin)
+		return;
+
 	inc_lock();
 	summary_lock(summaryview);
 

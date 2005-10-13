@@ -878,3 +878,4 @@
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/gtk/quicksearch.c;  ) > 1.9.15cvs39.patchset
 ( cvs diff -u -r 1.179.2.78 -r 1.179.2.79 src/imap.c;  ) > 1.9.15cvs40.patchset
 ( cvs diff -u -r 1.382.2.183 -r 1.382.2.184 src/compose.c;  ) > 1.9.15cvs41.patchset
+( cvs diff -u -r 1.395.2.136 -r 1.395.2.137 src/summaryview.c;  ) > 1.9.15cvs42.patchset
