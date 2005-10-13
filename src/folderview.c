@@ -1821,6 +1821,7 @@ void folderview_process_open(FolderView *folderview, FolderItem *item)
 	return;	
 }
 
+#if 0
 gboolean folderview_process_open_cb(gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
@@ -1841,6 +1842,7 @@ gboolean folderview_process_open_cb(gpointer data)
 	
 	return FALSE;	
 }
+#endif
 
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
@@ -1929,9 +1931,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
         }
 	
-	if (pre_global_processing || item->prefs->processing 
-	    || post_global_processing)
-		folderview_process_open(folderview, item);
+	folderview_process_open(folderview, item);
 
 	main_window_cursor_normal(folderview->mainwin);
 
@@ -1950,10 +1950,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    != GTK_VISIBILITY_FULL)
 			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
 	}
-
-	if (!pre_global_processing && !item->prefs->processing 
-	    && !post_global_processing)
-		g_timeout_add(0, folderview_process_open_cb, folderview);
 
 	STATUSBAR_POP(folderview->mainwin);
 
@@ -2278,16 +2274,47 @@ void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 
 void folderview_reflect_prefs(void)
 {
+	static gchar *last_font = NULL;
+	gboolean update_font = TRUE;
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
-	FolderItem *item = folderview_get_selected_item(folderview);	
-	normal_style = normal_color_style = bold_style = 
-		bold_color_style = bold_tgtfold_style = NULL;
+	FolderItem *item = folderview_get_selected_item(folderview);
+	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+	gint height = pos->value;
 
-	folderview_init(folderview);
+	if (last_font && !strcmp(last_font, NORMAL_FONT))
+		update_font = FALSE;
+
+	if (last_font)
+		g_free(last_font);
+	
+	last_font = g_strdup(NORMAL_FONT);
+
+	if (update_font) {		
+		normal_style = normal_color_style = bold_style = 
+			bold_color_style = bold_tgtfold_style = NULL;
+
+		folderview_init(folderview);
+	}
+	gtk_clist_freeze(GTK_CLIST(folderview->ctree));
 	folderview_column_set_titles(folderview);
 	folderview_set_all();
+
+	g_signal_handlers_block_by_func
+		(G_OBJECT(folderview->ctree),
+		 G_CALLBACK(folderview_selected), folderview);
+
 	if (item)
 		folderview_select(folderview, item);
+
+	g_signal_handlers_unblock_by_func
+		(G_OBJECT(folderview->ctree),
+		 G_CALLBACK(folderview_selected), folderview);
+
+	pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+	gtk_adjustment_set_value(pos, height);
+	gtk_clist_thaw(GTK_CLIST(folderview->ctree));
 }
 
 static void drag_state_stop(FolderView *folderview)

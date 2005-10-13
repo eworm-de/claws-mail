@@ -1597,6 +1597,7 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 
 	relation = g_relation_new(2);
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	folder_item_set_batch(item, TRUE);
 	if ((ret = item->folder->klass->get_flags(
 	    item->folder, item, msglist, relation)) == 0) {
 		GTuples *tuples;
@@ -1622,6 +1623,7 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 			}
 		}
 	}
+	folder_item_set_batch(item, FALSE);
 	g_relation_destroy(relation);	
 
 	return ret;

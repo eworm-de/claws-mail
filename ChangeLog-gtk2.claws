@@ -1,3 +1,11 @@
+2005-10-13 [colin]	1.9.15cvs36
+
+	* src/folder.c
+		Batch on flags sync
+	* src/folderview.c
+		Revert speed hack which is dangerous in fact
+		Apply prefs faster
+
 2005-10-13 [colin]	1.9.15cvs35
 
 	* src/folder_item_prefs.c
