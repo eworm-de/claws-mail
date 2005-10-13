@@ -983,8 +983,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
-
 	if (is_refresh) {
 		summaryview->displayed =
 			summary_find_msg_by_msgnum(summaryview,
@@ -1044,6 +1042,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
+	
+	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
@@ -2071,13 +2071,28 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 void summary_reflect_prefs(void)
 {
+	static gchar *last_font = NULL;
+	gboolean update_font = TRUE;
 	SummaryView *summaryview = NULL;
+
 	if (!mainwindow_get_mainwindow())
 		return;
 	summaryview = mainwindow_get_mainwindow()->summaryview;
-	bold_style = bold_marked_style = bold_deleted_style = 
-		small_style = small_marked_style = small_deleted_style = NULL;
-	summary_set_fonts(summaryview);
+
+	if (last_font && !strcmp(last_font, NORMAL_FONT))
+		update_font = FALSE;
+
+	if (last_font)
+		g_free(last_font);
+	
+	last_font = g_strdup(NORMAL_FONT);
+
+	if (update_font) {	
+		bold_style = bold_marked_style = bold_deleted_style = 
+			small_style = small_marked_style = small_deleted_style = NULL;
+		summary_set_fonts(summaryview);
+	}
+
 	summary_set_column_titles(summaryview);
 	summary_show(summaryview, summaryview->folder_item);
 }

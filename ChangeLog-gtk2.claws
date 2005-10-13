@@ -1,3 +1,8 @@
+2005-10-13 [colin]	1.9.15cvs38
+
+	* src/summaryview.c
+		Faster prefs apply
+
 2005-10-13 [colin]	1.9.15cvs37
 
 	* src/mimeview.c
