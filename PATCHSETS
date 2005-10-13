@@ -871,3 +871,4 @@
 ( cvs diff -u -r 1.382.2.182 -r 1.382.2.183 src/compose.c;  ) > 1.9.15cvs32.patchset
 ( cvs diff -u -r 1.83.2.41 -r 1.83.2.42 src/mimeview.c;  ) > 1.9.15cvs33.patchset
 ( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/export.c;  cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/import.c;  cvs diff -u -r 1.105.2.37 -r 1.105.2.38 src/prefs_account.c;  ) > 1.9.15cvs34.patchset
+( cvs diff -u -r 1.2.2.9 -r 1.2.2.10 src/folder_item_prefs.c;  ) > 1.9.15cvs35.patchset

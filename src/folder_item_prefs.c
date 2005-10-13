@@ -270,7 +270,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_default_to		= src->prefs->enable_default_to;
 	tmp_prefs.default_to			= g_strdup(src->prefs->default_to);
 	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;
-	tmp_prefs.default_reply_to		= src->prefs->default_reply_to;
+	tmp_prefs.default_reply_to		= g_strdup(src->prefs->default_reply_to);
 	tmp_prefs.enable_simplify_subject	= src->prefs->enable_simplify_subject;
 	tmp_prefs.simplify_subject_regexp	= g_strdup(src->prefs->simplify_subject_regexp);
 	tmp_prefs.enable_folder_chmod		= src->prefs->enable_folder_chmod;
