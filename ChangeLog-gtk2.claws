@@ -1,3 +1,9 @@
+2005-10-13 [colin]	1.9.15cvs40
+
+	* src/imap.c
+		Batch per-folder
+		Introduce locking, but don't use it yet
+
 2005-10-13 [colin]	1.9.15cvs39
 
 	* src/gtk/quicksearch.c
