@@ -1,3 +1,10 @@
+2005-10-13 [colin]	1.9.15cvs41
+
+	* src/compose.c
+		Set subject when forwarding multiple mails
+		Check that other recipient than the default Cc or Bcc
+		have been set before sending.
+
 2005-10-13 [colin]	1.9.15cvs40
 
 	* src/imap.c

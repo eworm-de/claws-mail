@@ -1346,8 +1346,12 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	GtkTextIter iter;
 	GSList *msginfo;
 	gchar *msgfile;
-
+	gboolean single_mail = TRUE;
+	
 	g_return_val_if_fail(msginfo_list != NULL, NULL);
+
+	if (g_slist_length(msginfo_list) > 1)
+		single_mail = FALSE;
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next)
 		if (((MsgInfo *)msginfo->data)->folder == NULL)
@@ -1380,6 +1384,26 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 			compose_attach_append(compose, msgfile, msgfile,
 				"message/rfc822");
 		g_free(msgfile);
+	}
+	
+	if (single_mail) {
+		MsgInfo *info = (MsgInfo *)msginfo_list->data;
+		if (info->subject && *info->subject) {
+			gchar *buf, *buf2, *p;
+
+			buf = p = g_strdup(info->subject);
+			p += subject_get_prefix_length(p);
+			memmove(buf, p, strlen(p) + 1);
+
+			buf2 = g_strdup_printf("Fw: %s", buf);
+			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
+
+			g_free(buf);
+			g_free(buf2);
+		}
+	} else {
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
+			_("Fw: multiple emails"));
 	}
 
 	if (account->auto_sig)
@@ -3467,12 +3491,77 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	return recipient_found;
 }
 
+static gboolean compose_check_for_set_recipients(Compose *compose)
+{
+	if (compose->account->set_autocc && compose->account->auto_cc) {
+		gboolean found_other = FALSE;
+		GSList *list;
+		/* search header entries for to and newsgroup entries */
+		for (list = compose->header_list; list; list = list->next) {
+			gchar *entry;
+			gchar *header;
+			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
+			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
+			g_strstrip(entry);
+			if (strcmp(entry, compose->account->auto_cc)
+			||  strcmp(header, (prefs_common.trans_hdr ? gettext("Cc:") : "Cc:"))) {
+				found_other = TRUE;
+				g_free(entry);
+				break;
+			}
+			g_free(entry);
+			g_free(header);
+		}
+		if (!found_other) {
+			AlertValue aval;
+			aval = alertpanel(_("Send"),
+					  _("The only recipient is the default CC address. Send anyway?"),
+					  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+			if (aval != G_ALERTDEFAULT)
+				return FALSE;
+		}
+	}
+	if (compose->account->set_autobcc && compose->account->auto_bcc) {
+		gboolean found_other = FALSE;
+		GSList *list;
+		/* search header entries for to and newsgroup entries */
+		for (list = compose->header_list; list; list = list->next) {
+			gchar *entry;
+			gchar *header;
+			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
+			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
+			g_strstrip(entry);
+			if (strcmp(entry, compose->account->auto_cc)
+			||  strcmp(header, (prefs_common.trans_hdr ? gettext("Bcc:") : "Bcc:"))) {
+				found_other = TRUE;
+				g_free(entry);
+				break;
+			}
+			g_free(entry);
+			g_free(header);
+		}
+		if (!found_other) {
+			AlertValue aval;
+			aval = alertpanel(_("Send"),
+					  _("The only recipient is the default BCC address. Send anyway?"),
+					  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+			if (aval != G_ALERTDEFAULT)
+				return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 {
 	const gchar *str;
 
 	if (compose_check_for_valid_recipient(compose) == FALSE) {
 		alertpanel_error(_("Recipient is not specified."));
+		return FALSE;
+	}
+
+	if (compose_check_for_set_recipients(compose) == FALSE) {
 		return FALSE;
 	}
 
