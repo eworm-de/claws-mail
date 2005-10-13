@@ -40,6 +40,7 @@ struct _NoticeView
 	void		(*press) (NoticeView *, gpointer user_data);
 	void		(*press2) (NoticeView *, gpointer user_data);
 	gboolean	 icon_clickable;
+	GtkWidget 	*evtbox;
 };
 
 NoticeView	*noticeview_create	(MainWindow 	*mainwin);

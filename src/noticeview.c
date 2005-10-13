@@ -49,6 +49,20 @@ static void noticeview_button_pressed	(GtkButton *button, NoticeView *noticeview
 static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview);
 static gboolean noticeview_icon_pressed	(GtkWidget *widget, GdkEventButton *evt,
 					 NoticeView *noticeview);
+static gboolean noticeview_visi_notify(GtkWidget *widget,
+				       GdkEventVisibility *event,
+				       NoticeView *noticeview);
+static gboolean noticeview_motion_notify(GtkWidget *widget,
+				       GdkEventMotion *event,
+				       NoticeView *noticeview);
+static gboolean noticeview_leave_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      NoticeView *textview);
+static gboolean noticeview_enter_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      NoticeView *textview);
+
+static GdkCursor *hand_cursor = NULL;
 
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
@@ -64,6 +78,9 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
+
+	if (!hand_cursor)
+		hand_cursor = gdk_cursor_new(GDK_HAND2);
 
 	noticeview->window = mainwin->window;
 	
@@ -86,6 +103,14 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(evtbox), "button-press-event", 
 			 G_CALLBACK(noticeview_icon_pressed),
 			 (gpointer) noticeview);
+	g_signal_connect(G_OBJECT(evtbox), "visibility-notify-event",
+			 G_CALLBACK(noticeview_visi_notify), noticeview);
+	g_signal_connect(G_OBJECT(evtbox), "motion-notify-event",
+			 G_CALLBACK(noticeview_visi_notify), noticeview);
+	g_signal_connect(G_OBJECT(evtbox), "leave-notify-event",
+			 G_CALLBACK(noticeview_leave_notify), noticeview);
+	g_signal_connect(G_OBJECT(evtbox), "enter-notify-event",
+			 G_CALLBACK(noticeview_enter_notify), noticeview);
 	
 	gtk_container_add(GTK_CONTAINER(evtbox), icon);
 	gtk_box_pack_start(GTK_BOX(hbox), evtbox, FALSE, TRUE, 0);
@@ -114,9 +139,9 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview->icon   = icon;
 	noticeview->text   = text;
 	noticeview->button = widget;
-	noticeview->button2 = widget2;
-
-	noticeview->visible = TRUE;
+	noticeview->button2= widget2;
+	noticeview->evtbox = evtbox;
+	noticeview->visible= TRUE;
 
 	return noticeview;
 }
@@ -192,6 +217,41 @@ static gboolean noticeview_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
 	if (evt && evt->button == 1 && noticeview->icon_clickable) {
 		noticeview_button_pressed(NULL, noticeview);
 	}
+	return FALSE;
+}
+
+static gboolean noticeview_visi_notify(GtkWidget *widget,
+				       GdkEventVisibility *event,
+				       NoticeView *noticeview)
+{
+	if (noticeview->icon_clickable)
+		gdk_window_set_cursor(noticeview->evtbox->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean noticeview_motion_notify(GtkWidget *widget,
+				       GdkEventMotion *event,
+				       NoticeView *noticeview)
+{
+	if (noticeview->icon_clickable)
+		gdk_window_set_cursor(noticeview->evtbox->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean noticeview_leave_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      NoticeView *noticeview)
+{
+	gdk_window_set_cursor(noticeview->evtbox->window, NULL);
+	return FALSE;
+}
+
+static gboolean noticeview_enter_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      NoticeView *noticeview)
+{
+	if (noticeview->icon_clickable)
+		gdk_window_set_cursor(noticeview->evtbox->window, hand_cursor);
 	return FALSE;
 }
 
