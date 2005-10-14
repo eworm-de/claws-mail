@@ -106,6 +106,18 @@ void prefs_template_open(void)
 	gtk_widget_show(templates.window);
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void prefs_template_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.templateswin_width = allocation->width;
+	prefs_common.templateswin_height = allocation->height;
+}
+
 #define ADD_ENTRY(entry, str, row) \
 { \
 	label1 = gtk_label_new(str); \
@@ -149,13 +161,15 @@ static void prefs_template_window_create(void)
 	GtkWidget       *confirm_area;
 	GtkWidget         *ok_btn;
 	GtkWidget         *cancel_btn;
+	static GdkGeometry geometry;
+
+	debug_print("Creating templates configuration window...\n");
 
 	/* main window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
 
 	/* vpaned to separate template settings from templates list */
 	vpaned = gtk_vpaned_new();
@@ -281,6 +295,8 @@ static void prefs_template_window_create(void)
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_template_deleted_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(prefs_template_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(prefs_template_key_pressed_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -290,6 +306,16 @@ static void prefs_template_window_create(void)
 			 G_CALLBACK(prefs_template_cancel_cb), NULL);
 
 	address_completion_start(window);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 440;
+		geometry.min_height = 500;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.templateswin_width,
+				    prefs_common.templateswin_height);
 
 	templates.window = window;
 	templates.ok_btn = ok_btn;

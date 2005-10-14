@@ -1,3 +1,16 @@
+2005-10-14 [paul]	1.9.15cvs45
+
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+		remember window sizes
+		fix Info button size
+
+	Patches by wwp
+
 2005-10-13 [colin]	1.9.15cvs44
 
 	* src/mimeview.c

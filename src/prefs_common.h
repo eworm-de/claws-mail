@@ -324,6 +324,14 @@ struct _PrefsCommon
 	
 	gint filteringwin_width;
 	gint filteringwin_height;
+	gint filteringactionwin_width;
+	gint filteringactionwin_height;
+	gint matcherwin_width;
+	gint matcherwin_height;
+	gint templateswin_width;
+	gint templateswin_height;
+	gint actionswin_width;
+	gint actionswin_height;
 	gint warn_dnd;
 	gint broken_are_utf8;
 };

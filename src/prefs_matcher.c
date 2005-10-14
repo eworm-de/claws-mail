@@ -316,6 +316,18 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 }
 
 /*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void prefs_matcher_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.matcherwin_width = allocation->width;
+	prefs_common.matcherwin_height = allocation->height;
+}
+
+/*!
  *\brief	Create the matcher dialog
  */
 static void prefs_matcher_create(void)
@@ -374,6 +386,7 @@ static void prefs_matcher_create(void)
 
 	GList *combo_items;
 	gint i;
+	static GdkGeometry geometry;
 
 	debug_print("Creating matcher configuration window...\n");
 
@@ -397,6 +410,8 @@ static void prefs_matcher_create(void)
 			     _("Condition configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_matcher_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(prefs_matcher_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(prefs_matcher_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -487,7 +502,7 @@ static void prefs_matcher_create(void)
 	test_btn = gtk_button_new_with_label(_("Info ..."));
 	gtk_widget_show(test_btn);
 	gtk_table_attach(GTK_TABLE (criteria_table), test_btn, 3, 4, 1, 2,
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),
 			 NULL);
@@ -653,6 +668,16 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_down), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 520;
+		geometry.min_height = 368;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.matcherwin_width,
+				    prefs_common.matcherwin_height);
 
 	gtk_widget_show_all(window);
 

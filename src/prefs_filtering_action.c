@@ -225,6 +225,18 @@ void prefs_filtering_action_open(GSList *action_list,
 }
 
 /*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void prefs_filtering_action_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.filteringactionwin_width = allocation->width;
+	prefs_common.filteringactionwin_height = allocation->height;
+}
+
+/*!
  *\brief	Create the matcher dialog
  */
 static void prefs_filtering_action_create(void)
@@ -275,6 +287,7 @@ static void prefs_filtering_action_create(void)
 
 	GList *combo_items;
 	gint i;
+	static GdkGeometry geometry;
 
         GList * accounts;
 
@@ -300,6 +313,8 @@ static void prefs_filtering_action_create(void)
 			     _("Filtering action configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_filtering_action_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(prefs_filtering_action_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(prefs_filtering_action_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -512,6 +527,16 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_down), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 490;
+		geometry.min_height = 328;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.filteringactionwin_width,
+				    prefs_common.filteringactionwin_height);
 
 	gtk_widget_show_all(window);
 

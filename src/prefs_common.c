@@ -543,9 +543,30 @@ static PrefParam param[] = {
 	{"color_new", "179", &prefs_common.color_new, P_COLOR,
 	 NULL, NULL, NULL},
 
+	/* Some windows' sizes */
 	{"filteringwin_width", "500", &prefs_common.filteringwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"filteringwin_height", "-1", &prefs_common.filteringwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"filteringactionwin_width", "490", &prefs_common.filteringactionwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"filteringactionwin_height", "-1", &prefs_common.filteringactionwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"matcherwin_width", "520", &prefs_common.matcherwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"matcherwin_height", "-1", &prefs_common.matcherwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"templateswin_width", "440", &prefs_common.templateswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"templateswin_height", "-1", &prefs_common.templateswin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"actionswin_width", "486", &prefs_common.actionswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"actionswin_height", "-1", &prefs_common.actionswin_height, P_INT,
 	 NULL, NULL, NULL},
 
 	/* Hidden */

@@ -129,6 +129,18 @@ void prefs_actions_open(MainWindow *mainwin)
 	gtk_widget_show(actions.window);
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void prefs_actions_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.actionswin_width = allocation->width;
+	prefs_common.actionswin_height = allocation->height;
+}
+
 static void prefs_actions_create(MainWindow *mainwin)
 {
 	GtkWidget *window;
@@ -162,6 +174,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+	static GdkGeometry geometry;
 
 	debug_print("Creating actions configuration window...\n");
 
@@ -171,7 +184,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_widget_show(vbox);
@@ -187,6 +199,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_window_set_title(GTK_WINDOW(window), _("Actions configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_actions_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(prefs_actions_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(prefs_actions_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -295,6 +309,16 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_actions_down), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 486;
+		geometry.min_height = 322;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.actionswin_width,
+				    prefs_common.actionswin_height);
 
 	gtk_widget_show(window);
 
