@@ -1210,6 +1210,43 @@ static gboolean folderview_have_matching_children(FolderView *folderview,
 	return folderview_have_matching_children_sub(folderview, item, FALSE);
 }
 
+static gboolean folderview_have_marked_children_sub(FolderView *folderview,
+						    FolderItem *item,
+						    gboolean in_sub)
+{
+	GNode *node = NULL;
+	
+	if (!item || !item->folder || !item->folder->node)
+		return FALSE;
+		
+	node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+
+	if (item->marked_msgs != 0) {
+		return TRUE;
+	}
+
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_marked_children_sub(folderview,
+							        next_item, TRUE))
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_have_marked_children(FolderView *folderview,
+					     FolderItem *item)
+{
+	return folderview_have_marked_children_sub(folderview, item, FALSE);
+}
+
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
@@ -1232,7 +1269,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
 
-	mark = (item->marked_msgs != 0);
+	if (!GTK_CTREE_ROW(node)->expanded)
+		mark = folderview_have_marked_children(folderview, item);
+	else
+		mark = (item->marked_msgs != 0);
 
 	stype = item->stype;
 	if (stype == F_NORMAL) {

@@ -1,3 +1,9 @@
+2005-10-14 [paul]	1.9.15cvs46
+
+	* src/folderview.c
+		indicate presense of marked msgs in
+		unexpanded subfolders
+
 2005-10-14 [paul]	1.9.15cvs45
 
 	* src/prefs_actions.c
