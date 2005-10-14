@@ -65,7 +65,7 @@ static GtkWidget *entry;
 static GtkWidget *combo;
 static GtkWidget *ok_button;
 
-static void input_dialog_create	(void);
+static void input_dialog_create	(gboolean is_password);
 static gchar *input_dialog_open	(const gchar	*title,
 				 const gchar	*message,
 				 const gchar	*default_string);
@@ -93,7 +93,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
 	if (!dialog)
-		input_dialog_create();
+		input_dialog_create(FALSE);
 
 	type = INPUT_DIALOG_NORMAL;
 	gtk_widget_hide(combo);
@@ -109,7 +109,7 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
 	if (!dialog)
-		input_dialog_create();
+		input_dialog_create(TRUE);
 
 	type = INPUT_DIALOG_INVISIBLE;
 	gtk_widget_hide(combo);
@@ -126,7 +126,7 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
 	if (!dialog)
-		input_dialog_create();
+		input_dialog_create(FALSE);
 
 	type = INPUT_DIALOG_COMBO;
 	gtk_widget_hide(entry);
@@ -160,7 +160,7 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 	return pass;
 }
 
-static void input_dialog_create(void)
+static void input_dialog_create(gboolean is_password)
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *w_hbox;
@@ -192,7 +192,11 @@ static void input_dialog_create(void)
 	/* for title label */
 	w_hbox = gtk_hbox_new(FALSE, 0);
 	
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+	if (!is_password)
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+        				GTK_ICON_SIZE_DIALOG); 
+	else
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
         				GTK_ICON_SIZE_DIALOG); 
 	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
@@ -266,7 +270,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
 	if (!dialog)
-		input_dialog_create();
+		input_dialog_create(FALSE);
 
 	input_dialog_set(title, message, default_string);
 	gtk_widget_show(dialog);

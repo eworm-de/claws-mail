@@ -704,6 +704,9 @@ static void prefs_matcher_create(void)
 	matcher.criteria_table = criteria_table;
 
 	matcher.cond_list_view = cond_list_view;
+
+	matcher.selected_criteria = -1;
+	prefs_matcher_criteria_select(GTK_LIST(criteria_list), NULL, NULL);
 }
 
 /*!
@@ -1631,7 +1634,7 @@ static void prefs_matcher_ok(void)
 
 				if (!matcher_str || strcmp(matcher_str, str) != 0) {
 	                        	val = alertpanel(_("Entry not saved"),
-       		                        	 _("The entry was not saved\nHave you really finished?"),
+       		                        	 _("The entry was not saved.\nHave you really finished?"),
                		                	 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 					if (G_ALERTDEFAULT != val) {
 						g_free(matcher_str);						 

@@ -1,3 +1,18 @@
+2005-10-14 [colin]	1.9.15cvs47
+
+	* src/mainwindow.c
+		set relief on the account switcher so that people see it
+		grey out Create processing rules when no message is selected
+	* src/prefs_filtering.c
+		ask before closing if the rule has not been modified, even if
+		it's not valid
+	* src/prefs_matcher.c
+		fix sensitivity when entering the dialog
+	* src/gtk/inputdialog.c
+		display a better icon on password ask
+	* src/plugins/pgpcore/passphrase.c
+		make the dialog look better
+
 2005-10-14 [paul]	1.9.15cvs46
 
 	* src/folderview.c

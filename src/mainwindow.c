@@ -963,7 +963,6 @@ MainWindow *main_window_create(SeparateType type)
 	ac_button = gtk_button_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(sel_ac_tip),
 			     ac_button, _("Select account"), NULL);
-	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request(ac_button, -1, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);
@@ -1855,6 +1854,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
@@ -3142,7 +3142,6 @@ static void account_selector_menu_cb(GtkMenuItem *menuitem, gpointer data)
 	toolbar_update(TOOLBAR_MAIN, mainwindow_get_mainwindow());
 	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
-	gtk_button_set_relief(GTK_BUTTON(mainwindow_get_mainwindow()->ac_button), GTK_RELIEF_NONE);
 	item = folderview_get_selected_item(
 			mainwindow_get_mainwindow()->folderview);
 	if (item) {

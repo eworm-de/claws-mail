@@ -1088,6 +1088,27 @@ static void prefs_filtering_ok(void)
 		g_free(filtering_str);
 		g_free(str);
 		filteringprop_free(prop); /* fixed a leak: huzzah! */
+	} else {
+		gchar *name, *condition, *action;
+		name = gtk_editable_get_chars(GTK_EDITABLE(filtering.name_entry), 0, -1);
+		condition = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
+		action = gtk_editable_get_chars(GTK_EDITABLE(filtering.action_entry), 0, -1);
+		if (strlen(name) || 
+		    strlen(condition) || 
+		    strlen(action)) {
+			val = alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+			if (G_ALERTDEFAULT != val) {
+				g_free(name);
+				g_free(condition);
+				g_free(action);
+				return;
+			}
+		}
+		g_free(name);
+		g_free(condition);
+		g_free(action);
 	}
 	prefs_filtering_set_list();
 	prefs_matcher_write_config();

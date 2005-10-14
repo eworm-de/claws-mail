@@ -80,7 +80,7 @@ static gchar*
 passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 {
     gchar *the_passphrase = NULL;
-    GtkWidget *vbox;
+    GtkWidget *vbox, *hbox;
     GtkWidget *confirm_box;
     GtkWidget *window;
     GtkWidget *pass_entry;
@@ -109,9 +109,17 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
     if (uid_hint || pass_hint) {
-        GtkWidget *label;
+        GtkWidget *label, *icon;
         label = create_description (uid_hint, pass_hint, prev_bad);
-        gtk_box_pack_start (GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+        			GTK_ICON_SIZE_DIALOG); 
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_widget_show (hbox);
+        gtk_box_pack_start (GTK_BOX(hbox), icon, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     }
 
     pass_entry = gtk_entry_new();
@@ -250,7 +258,7 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     const gchar *uid = NULL, *info = NULL;
     gchar *buf;
     GtkWidget *label;
-
+    gchar *my_uid = NULL;
     if (!uid_hint)
         uid = _("[no user id]");
     else
@@ -260,14 +268,20 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     else
         info = pass_hint;
 
-    buf = g_strdup_printf (_("%sPlease enter the passphrase for:\n\n"
-                           "  %.*s  \n"
-                           "(%.*s)\n"),
-                           prev_bad ?
-                           _("Bad passphrase! Try again...\n\n") : "",
-                           linelen (uid), uid, linelen (info), info);
+    my_uid = g_strdup(uid);
+    while (strchr(my_uid, '<')) 
+    	*(strchr(my_uid, '<')) = '(';
+    while (strchr(my_uid, '>')) 
+    	*(strchr(my_uid, '>')) = ')';
 
+    buf = g_strdup_printf (_("<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for:</span>\n\n"
+                           "%.*s\n"),
+                           prev_bad ?
+                           _("Bad passphrase.\n") : "",
+                           linelen (my_uid), my_uid);
+    g_free(my_uid);
     label = gtk_label_new (buf);
+    gtk_label_set_use_markup(GTK_LABEL (label), TRUE);
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     g_free (buf);
 
