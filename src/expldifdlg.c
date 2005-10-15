@@ -412,7 +412,7 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entryLdif, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	btnFile = gtk_button_new_with_label( _(" ... "));
+	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
 	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
 

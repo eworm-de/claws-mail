@@ -476,7 +476,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		),
 		NULL );
 
-	lookdn_btn = gtk_button_new_with_label( _(" ... "));
+	lookdn_btn = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_table_attach(GTK_TABLE(table), lookdn_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
 	toolTip = gtk_tooltips_new();

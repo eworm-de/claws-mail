@@ -181,4 +181,8 @@ void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
 
 void gtkut_widget_set_small_font_size(GtkWidget *widget);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
+
+GtkWidget *gtkut_get_browse_file_btn(const gchar *label);
+GtkWidget *gtkut_get_browse_directory_btn(const gchar *label);
+
 #endif /* __GTKUTILS_H__ */

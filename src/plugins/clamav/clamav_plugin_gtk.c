@@ -170,7 +170,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 			     _("Leave empty to use the default trash folder"),
 			     NULL);
 
-  	save_folder_select = gtk_button_new_with_label (" ... ");
+	save_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_folder_select);
   	gtk_table_attach (GTK_TABLE (table), save_folder_select, 2, 3, 6, 7,
                     	  (GtkAttachOptions) (0),

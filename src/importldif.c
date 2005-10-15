@@ -679,7 +679,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 		_( "The full file specification of the LDIF file to import." ),
 		NULL );
 
-	btnFile = gtk_button_new_with_label( _(" ... "));
+	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
 	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
 

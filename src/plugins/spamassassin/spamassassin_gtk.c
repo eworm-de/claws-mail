@@ -332,7 +332,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			     ("Folder that will be used to save spam. Leave empty to use the default trash folder"),
 			     NULL);
 
-	button4 = gtk_button_new_with_label(_("..."));
+	button4 = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show(button4);
 	gtk_table_attach(GTK_TABLE(table), button4, 2, 3, 3, 4,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),

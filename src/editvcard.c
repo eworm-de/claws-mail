@@ -199,7 +199,7 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	file_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	file_btn = gtk_button_new_with_label( _(" ... "));
+	file_btn = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
 	/* Status line */

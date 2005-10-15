@@ -1859,13 +1859,7 @@ static void prefs_account_compose_create(void)
 	gtk_widget_show (entry_sigpath);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_sigpath, TRUE, TRUE, 0);
 
-#if GTK_CHECK_VERSION(2, 6, 0)
-	signature_browse_button = gtk_button_new_with_mnemonic(_("_Browse"));
-	gtk_button_set_image((GtkButton*)signature_browse_button,
-		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
-#else
-	signature_browse_button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
-#endif
+	signature_browse_button = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_widget_show (signature_browse_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), signature_browse_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",

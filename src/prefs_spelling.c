@@ -243,7 +243,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_label_set_justify(GTK_LABEL(label5), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label5), 1, 0.5);
 
-	btn_aspell_path = gtk_button_new_with_label(_(" ... "));
+	btn_aspell_path = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show(btn_aspell_path);
 	gtk_table_attach(GTK_TABLE(table), btn_aspell_path, 2, 3, 4, 5,
 			 (GtkAttachOptions) (GTK_FILL),
