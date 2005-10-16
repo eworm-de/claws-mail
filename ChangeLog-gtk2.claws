@@ -1,3 +1,15 @@
+2005-10-16 [colin]	1.9.15cvs58
+
+	* src/toolbar.c
+	* src/prefs_common.c
+		Change some defaults
+
+2005-10-16 [colin]	1.9.15cvs57
+
+	* src/toolbar.c
+	* src/prefs_common.c
+		Change some defaults
+
 2005-10-16 [colin]	1.9.15cvs56
 
 	* src/wizard.c

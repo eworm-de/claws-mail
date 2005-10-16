@@ -382,7 +382,6 @@ static void toolbar_set_default_main(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		{ A_RECEIVE_CUR,   STOCK_PIXMAP_MAIL_RECEIVE,         _("Get")     },
 		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get All") },
 		{ A_SEPARATOR,     0,                                 ("")         }, 
 		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
@@ -395,7 +394,6 @@ static void toolbar_set_default_main(void)
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_GOTO_PREV,     STOCK_PIXMAP_UP_ARROW,             _("Previous")},
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 	};
 	
