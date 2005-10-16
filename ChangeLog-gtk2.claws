@@ -1,3 +1,10 @@
+2005-10-16 [colin]	1.9.15cvs62
+
+	* src/toolbar.c
+		s/Get All/Get Mail/
+	* src/wizard.c
+		Real welcome mail text, thanks Paul
+
 2005-10-16 [colin]	1.9.15cvs61
 
 	* src/editldap.c

@@ -382,7 +382,7 @@ static void toolbar_set_default_main(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get All") },
+		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get Mail") },
 		{ A_SEPARATOR,     0,                                 ("")         }, 
 		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
 		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Compose") },
