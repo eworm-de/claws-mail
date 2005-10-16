@@ -400,7 +400,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Repl_y to/_sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/Repl_y to/mailing _list"),
 					"<control>L", summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
-	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
 	{N_("/For_ward as attachment"),	NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
@@ -410,7 +409,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
 	{N_("/Move to _trash"),		"<control>D", summary_delete_trash,	0, NULL},
 	{N_("/_Delete..."),		NULL, summary_delete, 0, NULL},
-	{N_("/Cancel a news message"),	NULL, summary_cancel,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_Mark/_Mark"),		NULL, summary_mark,	0, NULL},
@@ -425,8 +423,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Unlock"),		NULL, summary_msgs_unlock, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address boo_k"),
 					NULL, summary_add_address_cb, 0, NULL},
@@ -454,6 +450,9 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					"<control><alt>N", summary_open_msg,	0, NULL},
 	{N_("/_View/_Source"),		"<control>U", summary_view_source, 0, NULL},
 	{N_("/_View/All _header"),	"<control>H", summary_show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
+	{N_("/_Save as..."),		"<control>S", summary_save_as,   0, NULL},
+	{N_("/_Print..."),		"<control>P", summary_print,   0, NULL},
 };  /* see also list in menu_connect_identical_items() in menu.c if this changes */
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
@@ -815,7 +814,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	if (summary_is_locked(summaryview)) return FALSE;
 
 	if (!summaryview->mainwin)
-		return;
+		return FALSE;
 
 	inc_lock();
 	summary_lock(summaryview);
@@ -1217,19 +1216,15 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Follow-up and reply to"	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 
 		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Forward as attachment"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Redirect"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 
-		{"/Re-edit"			, M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
-
-		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
-		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
-		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
-		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
+		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"/Copy..."			, M_TARGET_EXIST|M_EXEC},
+		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE},
 
 		{"/Mark"			, M_TARGET_EXIST},
 		{"/Mark/Mark"   		, M_TARGET_EXIST},
@@ -1249,13 +1244,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
 		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
 		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
-#if 0
-		{"/Save as..."			, M_TARGET_EXIST|M_UNLOCKED},
-		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
-
-		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
-		{"/Select all"			, M_TARGET_EXIST},
-#endif
+		{"/Save as..."			, M_TARGET_EXIST},
+		{"/Print..."			, M_TARGET_EXIST},
 		{NULL, 0}
 	};
 

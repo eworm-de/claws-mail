@@ -1790,17 +1790,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Add mailbox"                          , M_UNLOCKED},
-
-                {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
-		{"/File/Change folder order"	      	      , M_UNLOCKED},
-		{"/File/Export to mbox file..."               , M_UNLOCKED},
-		{"/File/Empty all Trash folders"              , M_UNLOCKED},
-		{"/File/Work offline"	       		      , M_UNLOCKED},
-
-		{"/File/Save as...", M_TARGET_EXIST|M_UNLOCKED},
-		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-		/* {"/File/Close"  , M_UNLOCKED}, */
+		{"/File/Save as...", M_TARGET_EXIST},
+		{"/File/Print..."  , M_TARGET_EXIST},
 		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
@@ -1836,28 +1827,26 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
-		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
-		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
-		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
+		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC},
+		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
 		{"/Tools/Harvest addresses/from Folder..."       
-						       , M_UNLOCKED|M_MSG_EXIST},
+						       , M_MSG_EXIST},
 		{"/Tools/Harvest addresses/from Messages..."
-						       , M_UNLOCKED|M_MSG_EXIST|M_TARGET_EXIST},
-		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
-		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+						       , M_MSG_EXIST|M_TARGET_EXIST},
+		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
+		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                      , M_TARGET_EXIST},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
 		{"/Configuration", M_UNLOCKED},
 

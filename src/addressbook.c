@@ -872,6 +872,7 @@ static void addressbook_create(void)
 	hbbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 4);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
 #if GTK_CHECK_VERSION(2, 6, 0)
