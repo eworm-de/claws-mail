@@ -549,10 +549,6 @@ static void initialize_fonts(WizardWindow *wizard)
 		prefs_common.normalfont = new;
 	}
 	g_free(tmp);
-	
-	
-	printf("size %d\n", size);
-	
 }
 
 static void

@@ -895,3 +895,4 @@
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/wizard.c;  ) > 1.9.15cvs56.patchset
 ( cvs diff -u -r 1.43.2.29 -r 1.43.2.30 src/toolbar.c;  cvs diff -u -r 1.204.2.63 -r 1.204.2.64 src/prefs_common.c;  ) > 1.9.15cvs57.patchset
 ( cvs diff -u -r 1.43.2.29 -r 1.43.2.30 src/toolbar.c;  cvs diff -u -r 1.204.2.63 -r 1.204.2.64 src/prefs_common.c;  ) > 1.9.15cvs58.patchset
+( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/wizard.c;  ) > 1.9.15cvs59.patchset

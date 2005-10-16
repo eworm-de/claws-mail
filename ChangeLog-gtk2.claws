@@ -1,3 +1,8 @@
+2005-10-16 [colin]	1.9.15cvs59
+
+	* src/wizard.c
+		Remove printf
+
 2005-10-16 [colin]	1.9.15cvs58
 
 	* src/toolbar.c
