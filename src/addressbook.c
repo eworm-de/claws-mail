@@ -273,7 +273,8 @@ static void addressbook_new_ldap_cb		(gpointer	 data,
 						 GtkWidget	*widget);
 #endif
 
-static void addressbook_set_clist		(AddressObject	*obj);
+static void addressbook_set_clist		(AddressObject	*obj,
+						 gboolean 	 refresh);
 
 static void addressbook_load_tree		(void);
 void addressbook_read_file			(void);
@@ -1508,10 +1509,11 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	addressbook_status_show( "" );
 	if( addrbook.entry != NULL ) gtk_entry_set_text(GTK_ENTRY(addrbook.entry), "");
 
-	if( addrbook.clist ) gtk_clist_clear( GTK_CLIST(addrbook.clist) );
 	if( node ) obj = gtk_ctree_node_get_row_data( ctree, node );
-	if( obj == NULL ) return;
-
+	if( obj == NULL ) {
+		addressbook_set_clist(NULL, TRUE);
+		return;
+	}
 	addrbook.opened = node;
 
 	if( obj->type == ADDR_DATASOURCE ) {
@@ -1559,7 +1561,7 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	g_signal_handlers_block_by_func
 		(G_OBJECT(ctree),
 		 G_CALLBACK(addressbook_tree_selected), NULL);
-	addressbook_set_clist( obj );
+	addressbook_set_clist( obj, FALSE );
 	g_signal_handlers_unblock_by_func
 		(G_OBJECT(ctree),
 		 G_CALLBACK(addressbook_tree_selected), NULL);
@@ -2246,7 +2248,7 @@ static void addressbook_new_folder_cb(gpointer data, guint action,
 			addrbook.treeSelected, ds, folder, ADDR_ITEM_FOLDER );
 		gtk_ctree_expand( ctree, addrbook.treeSelected );
 		if( addrbook.treeSelected == addrbook.opened )
-			addressbook_set_clist(obj);
+			addressbook_set_clist(obj, TRUE);
 	}
 
 }
@@ -2285,7 +2287,7 @@ static void addressbook_new_group_cb(gpointer data, guint action,
 		nn = addressbook_node_add_group( addrbook.treeSelected, ds, group );
 		gtk_ctree_expand( ctree, addrbook.treeSelected );
 		if( addrbook.treeSelected == addrbook.opened )
-			addressbook_set_clist(obj);
+			addressbook_set_clist(obj, TRUE);
 	}
 
 }
@@ -3132,12 +3134,17 @@ static AddressDataSource *addressbook_find_datasource( GtkCTreeNode *node ) {
  * Load address list widget with children of specified object.
  * \param obj Parent object to be loaded.
  */
-static void addressbook_set_clist( AddressObject *obj ) {
+static void addressbook_set_clist( AddressObject *obj, gboolean refresh ) {
 	GtkCTree *ctreelist = GTK_CTREE(addrbook.clist);
 	GtkCList *clist = GTK_CLIST(addrbook.clist);
 	AddressDataSource *ds = NULL;
 	AdapterDSource *ads = NULL;
+	static AddressObject *last_obj = NULL;
 
+	if (obj == last_obj && !refresh)
+		return;
+
+	last_obj = obj;
 	if( obj == NULL ) {
 		gtk_clist_clear(clist);
 		return;
@@ -3745,7 +3752,7 @@ static void addressbook_refresh_current( void ) {
 	ctree = GTK_CTREE(addrbook.ctree);
 	obj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
 	if( obj == NULL ) return;
-	addressbook_set_clist( obj );
+	addressbook_set_clist( obj, TRUE );
 }
 
 /**
