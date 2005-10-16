@@ -569,6 +569,16 @@ static PrefParam param[] = {
 	{"actionswin_height", "-1", &prefs_common.actionswin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"addressbookwin_width", "520", &prefs_common.addressbookwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addressbookwin_height", "-1", &prefs_common.addressbookwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"addressbookeditpersonwin_width", "640", &prefs_common.addressbookeditpersonwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addressbookeditpersonwin_height", "-1", &prefs_common.addressbookeditpersonwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},

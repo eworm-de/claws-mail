@@ -1,3 +1,11 @@
+2005-10-16 [wwp]	1.9.15cvs52
+
+	* src/addressbook.c
+	* src/editaddress.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Remember window sizes (address book)
+
 2005-10-16 [wwp]	1.9.15cvs51
 
 	* src/plugins/clamav/clamav_plugin_gtk.c

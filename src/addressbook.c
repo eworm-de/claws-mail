@@ -662,6 +662,18 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 	return FALSE;
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void addressbook_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.addressbookwin_width = allocation->width;
+	prefs_common.addressbookwin_height = allocation->height;
+}
+
 /*
 * Create the address book widgets. The address book contains two CTree widgets: the
 * address index tree on the left and the address list on the right.
@@ -716,6 +728,8 @@ static void addressbook_create(void)
 	gchar *text;
 	gint i;
 
+	static GdkGeometry geometry;
+
 	debug_print("Creating addressbook window...\n");
 
 	index_titles[COL_SOURCES] = _("Sources");
@@ -726,12 +740,13 @@ static void addressbook_create(void)
 	/* Address book window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
-	gtk_widget_set_size_request(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_realize(window);
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(addressbook_close), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(addressbook_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -1006,6 +1021,17 @@ static void addressbook_create(void)
 
 	addrbook.listSelected = NULL;
 	address_completion_start(window);
+
+	if (!geometry.min_height) {
+		geometry.min_width = ADDRESSBOOK_WIDTH;
+		geometry.min_height = ADDRESSBOOK_HEIGHT;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.addressbookwin_width,
+				    prefs_common.addressbookwin_height);
+
 	gtk_widget_show_all(window);
 }
 

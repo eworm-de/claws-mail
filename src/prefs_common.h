@@ -332,6 +332,10 @@ struct _PrefsCommon
 	gint templateswin_height;
 	gint actionswin_width;
 	gint actionswin_height;
+	gint addressbookwin_width;
+	gint addressbookwin_height;
+	gint addressbookeditpersonwin_width;
+	gint addressbookeditpersonwin_height;
 	gint warn_dnd;
 	gint broken_are_utf8;
 };

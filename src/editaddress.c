@@ -531,6 +531,18 @@ static void edit_person_attrib_add( gpointer data ) {
 	}
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void edit_person_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.addressbookeditpersonwin_width = allocation->width;
+	prefs_common.addressbookeditpersonwin_height = allocation->height;
+}
+
 static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -541,9 +553,9 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	GtkWidget *cancel_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
+	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request(window, EDITPERSON_WIDTH, EDITPERSON_HEIGHT );
 	/* gtk_container_set_border_width(GTK_CONTAINER(window), 0); */
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Person Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -551,6 +563,9 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_person_delete_event),
 			 cancelled);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(edit_person_size_allocate_cb),
+			cancelled);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(edit_person_key_pressed),
 			 cancelled);
@@ -592,6 +607,16 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_person_switch_page), NULL );
 
 	gtk_widget_show_all(vbox);
+
+	if (!geometry.min_height) {
+		geometry.min_width = EDITPERSON_WIDTH;
+		geometry.min_height = EDITPERSON_HEIGHT;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.addressbookeditpersonwin_width,
+				    prefs_common.addressbookeditpersonwin_height);
 
 	personeditdlg.window     = window;
 	personeditdlg.notebook   = notebook;
