@@ -892,3 +892,4 @@
 ( cvs diff -u -r 1.60.2.35 -r 1.60.2.36 src/addressbook.c;  ) > 1.9.15cvs53.patchset
 ( cvs diff -u -r 1.60.2.36 -r 1.60.2.37 src/addressbook.c;  ) > 1.9.15cvs54.patchset
 ( cvs diff -u -r 1.83.2.45 -r 1.83.2.46 src/mimeview.c;  ) > 1.9.15cvs55.patchset
+( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/wizard.c;  ) > 1.9.15cvs56.patchset

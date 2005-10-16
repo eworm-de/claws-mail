@@ -58,6 +58,8 @@
 #ifdef USE_OPENSSL			
 #include "ssl.h"
 #endif
+#include "prefs_common.h"
+
 typedef enum
 {
 	GO_BACK,
@@ -513,6 +515,46 @@ static GtkWidget* ssl_page (WizardWindow * wizard)
 }
 #endif
 
+static void initialize_fonts(WizardWindow *wizard)
+{
+	GtkWidget *widget = wizard->email;
+	gint size = pango_font_description_get_size(
+			widget->style->font_desc)
+		      /PANGO_SCALE;
+	gchar *tmp, *new;
+	
+	tmp = g_strdup(prefs_common.textfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.textfont);
+		prefs_common.textfont = new;
+	}
+	g_free(tmp);
+	
+	tmp = g_strdup(prefs_common.smallfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.smallfont);
+		prefs_common.smallfont = new;
+	}
+	g_free(tmp);
+	
+	tmp = g_strdup(prefs_common.normalfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.normalfont);
+		prefs_common.normalfont = new;
+	}
+	g_free(tmp);
+	
+	
+	printf("size %d\n", size);
+	
+}
+
 static void
 wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 {
@@ -547,6 +589,7 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 		}
 		wizard->result = TRUE;
 		wizard->finished = TRUE;
+		initialize_fonts(wizard);
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else
@@ -595,6 +638,8 @@ static gint wizard_close_cb(GtkWidget *widget, GdkEventAny *event,
 	WizardWindow *wizard = (WizardWindow *)data;
 	wizard->result = FALSE;
 	wizard->finished = TRUE;
+	
+	return FALSE;
 }
 
 gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {

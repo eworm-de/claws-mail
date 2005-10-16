@@ -1,3 +1,9 @@
+2005-10-16 [colin]	1.9.15cvs56
+
+	* src/wizard.c
+		By default, initialize fonts to have
+		the same size as normal GtkWidgets
+
 2005-10-16 [colin]	1.9.15cvs55
 
 	* src/mimeview.c
