@@ -1,3 +1,11 @@
+2005-10-16 [colin]	1.9.15cvs50
+
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/textview.c
+		Make 'c' check signature, and forward
+		c, l, y, t from summaryview to mimeview
+
 2005-10-16 [colin]	1.9.15cvs49
 
 	* src/addressbook.c

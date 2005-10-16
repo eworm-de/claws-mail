@@ -626,6 +626,7 @@ void mimeview_clear(MimeView *mimeview)
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data);
+void mimeview_check_signature(MimeView *mimeview);
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
 static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
@@ -665,7 +666,13 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	default:
 		break;
 	}
-	text = privacy_mimeinfo_sig_info_short(mimeinfo);
+	if (privacy_mimeinfo_get_sig_status(mimeinfo) == SIGNATURE_UNCHECKED) {
+		gchar *tmp = privacy_mimeinfo_sig_info_short(mimeinfo);
+		text = g_strdup_printf("%s %s",
+			tmp, _("Click the icon to check it."));
+		g_free(tmp);
+	} else
+		text = privacy_mimeinfo_sig_info_short(mimeinfo);
 	noticeview_set_text(mimeview->siginfoview, text);
 	g_free(text);
 	noticeview_set_button_text(mimeview->siginfoview, NULL);
@@ -682,10 +689,18 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	MimeView *mimeview = (MimeView *) user_data;
 	MimeInfo *mimeinfo = mimeview->siginfo;
 	
+	if (mimeinfo == NULL)
+		return;
+
 	privacy_mimeinfo_check_signature(mimeinfo);
 	update_signature_noticeview(mimeview, mimeview->siginfo);
 	icon_list_clear(mimeview);
 	icon_list_create(mimeview, mimeview->mimeinfo);
+}
+
+void mimeview_check_signature(MimeView *mimeview)
+{
+	check_signature_cb(NULL, mimeview);	
 }
 
 static void redisplay_email(GtkWidget *widget, gpointer user_data)
@@ -956,6 +971,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_open_with(mimeview);
+		return TRUE;
+	case GDK_c:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_check_signature(mimeview);
 		return TRUE;
 	default:
 		break;
@@ -1516,6 +1536,11 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_open_with(mimeview);
+		return TRUE;
+	case GDK_c:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_check_signature(mimeview);
 		return TRUE;
 	default:
 		break;
