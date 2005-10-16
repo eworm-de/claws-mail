@@ -57,6 +57,9 @@ fi;
 if [ "$name" == "msp" ]; then
 	name="martin";
 fi;
+if [ "$name" == "devel" ]; then
+	name="mones";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
