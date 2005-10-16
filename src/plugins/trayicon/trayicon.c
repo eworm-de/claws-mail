@@ -99,7 +99,7 @@ static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/_Work Offline"),		NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
-	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,			0, NULL}
+	{N_("/E_xit Sylpheed-Claws"),	NULL, trayicon_exit_cb,			0, NULL}
 };
 
 static void set_trayicon_pixmap(TrayIconType icontype)

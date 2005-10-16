@@ -998,7 +998,7 @@ void exporthtml_process(
 		return;
 	}
 
-	title = _( "Sylpheed Address Book" );
+	title = _( "Sylpheed-Claws Address Book" );
 	rootFolder = cache->rootFolder;
 	dsName = cache->name;
 

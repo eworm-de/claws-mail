@@ -424,7 +424,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"\"ldap.mydomain.com\" may be appropriate for the " \
 		"\"mydomain.com\" organization. An IP address may also be " \
 		"used. You may specify \"localhost\" if running an LDAP " \
-		"server on the same computer as Sylpheed." ),
+		"server on the same computer as Sylpheed-Claws." ),
 		NULL );
 
 	/* Next row */

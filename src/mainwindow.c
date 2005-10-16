@@ -2048,7 +2048,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		
 		folderwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(folderwin),
-				     _("Sylpheed - Folder View"));
+				     _("Sylpheed-Claws - Folder View"));
 
 		gtk_window_move(GTK_WINDOW(folderwin),
 				prefs_common.folderwin_x,
@@ -2084,7 +2084,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(messagewin),
-				     _("Sylpheed - Message View"));
+				     _("Sylpheed-Claws - Message View"));
 				     
 		gtk_window_move(GTK_WINDOW(messagewin), 
 				prefs_common.main_msgwin_x,
@@ -2475,7 +2475,7 @@ static void print_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
-		if (alertpanel(_("Exit"), _("Exit this program?"),
+		if (alertpanel(_("Exit"), _("Exit Sylpheed-Claws?"),
 			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
 		    != G_ALERTDEFAULT)
 			return;

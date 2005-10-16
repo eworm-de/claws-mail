@@ -443,8 +443,13 @@ int main(int argc, char *argv[])
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
 		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
+		folder_item_update_thaw();
+		gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 		folderview_check_new(NULL);
 		folder_clean_cache_memory_force();
+		folder_item_update_freeze();
+		gtk_clist_freeze(GTK_CLIST(mainwin->folderview->ctree));
+
 	}
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());

@@ -638,7 +638,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	if (g_utf8_collate(cur_entry, actions_entry) == 0) {
 		gtk_widget_hide(prefs_toolbar->entry_icon_text);
 		gtk_widget_show(prefs_toolbar->combo_syl_action);
-		gtk_label_set_text(GTK_LABEL(prefs_toolbar->label_icon_text), _("Sylpheed Action"));
+		gtk_label_set_text(GTK_LABEL(prefs_toolbar->label_icon_text), _("Sylpheed-Claws Action"));
 
 		if (prefs_common.actions_list == NULL) {
 		    gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, FALSE);

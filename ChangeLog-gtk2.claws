@@ -1,3 +1,15 @@
+2005-10-16 [colin]	1.9.15cvs61
+
+	* src/editldap.c
+	* src/exporthtml.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/plugins/demo/demo.c
+	* src/plugins/trayicon/trayicon.c
+		s/Sylpheed/Sylpheed-Claws/
+
 2005-10-16 [colin]	1.9.15cvs60
 
 	* src/wizard.c
