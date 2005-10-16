@@ -193,7 +193,8 @@ static void write_welcome_email(WizardWindow *wizard)
 		"DONATIONS\n"
 		"---------\n"
 		"If you wish to donate to the Sylpheed-Claws project you can do\n"
-		"so at <https://sourceforge.net/donate/index.php?group_id=25528>.",		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
+		"so at <https://sourceforge.net/donate/index.php?group_id=25528>.",		
+		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
 		buf_date);
 	
