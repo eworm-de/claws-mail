@@ -180,7 +180,7 @@ static void addressbook_lup_clicked		(GtkButton	*button,
 static void addressbook_close_clicked		(GtkButton	*button,
 						 gpointer	data);
 
-static gboolean addressbook_tree_selected	(GtkCTree	*ctree,
+static void addressbook_tree_selected	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gint		 column,
 						 gpointer	 data);
@@ -1494,7 +1494,7 @@ static void addressbook_list_menu_setup( void );
  * \param column Column number where selected occurred.
  * \param data   Pointer to user data.
  */
-static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
+static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 				      gint column, gpointer data)
 {
 	AddressObject *obj = NULL;
@@ -1510,7 +1510,7 @@ static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if( addrbook.clist ) gtk_clist_clear( GTK_CLIST(addrbook.clist) );
 	if( node ) obj = gtk_ctree_node_get_row_data( ctree, node );
-	if( obj == NULL ) return FALSE;
+	if( obj == NULL ) return;
 
 	addrbook.opened = node;
 
@@ -1519,9 +1519,9 @@ static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 		static gboolean tVal = TRUE;
 
 		ads = ADAPTER_DSOURCE(obj);
-		if( ads == NULL ) return FALSE;
+		if( ads == NULL ) return;
 		ds = ads->dataSource;
-		if( ds == NULL ) return FALSE;		
+		if( ds == NULL ) return;		
 
 		if( addrindex_ds_get_modify_flag( ds ) ) {
 			addrindex_ds_read_data( ds );
@@ -1556,7 +1556,13 @@ static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	}
 
 	/* Update address list */
+	g_signal_handlers_block_by_func
+		(G_OBJECT(ctree),
+		 G_CALLBACK(addressbook_tree_selected), NULL);
 	addressbook_set_clist( obj );
+	g_signal_handlers_unblock_by_func
+		(G_OBJECT(ctree),
+		 G_CALLBACK(addressbook_tree_selected), NULL);
 
 	/* Setup main menu selections */
 	addressbook_menubar_set_sensitive( FALSE );
@@ -1565,7 +1571,7 @@ static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 
 	addressbook_list_select_clear();
 	addressbook_list_menu_setup();
-	return FALSE;
+	return;
 }
 
 /**
@@ -2105,8 +2111,6 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	addressbook_menubar_set_sensitive( FALSE );
 
 	if( gtk_clist_get_selection_info( clist, event->x, event->y, &row, &column ) ) {
-		gtk_clist_select_row( clist, row, column );
-		
 		gtkut_clist_set_focus_row(clist, row);
 		obj = gtk_clist_get_row_data( clist, row );
 	}
@@ -2203,8 +2207,6 @@ static gboolean addressbook_tree_button_released(GtkWidget *ctree,
 						 GdkEventButton *event,
 						 gpointer data)
 {
-	gtk_sctree_select( GTK_SCTREE(addrbook.ctree), addrbook.opened);
-	
 	gtkut_ctree_set_focus_row(GTK_CTREE(addrbook.ctree), addrbook.opened);
 	return FALSE;
 }
