@@ -669,7 +669,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	if (privacy_mimeinfo_get_sig_status(mimeinfo) == SIGNATURE_UNCHECKED) {
 		gchar *tmp = privacy_mimeinfo_sig_info_short(mimeinfo);
 		text = g_strdup_printf("%s %s",
-			tmp, _("Click the icon to check it."));
+			tmp, _("Click the icon or hit 'C' to check it."));
 		g_free(tmp);
 	} else
 		text = privacy_mimeinfo_sig_info_short(mimeinfo);
