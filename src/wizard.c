@@ -105,6 +105,72 @@ typedef struct
 
 } WizardWindow;
 
+static void initialize_fonts(WizardWindow *wizard)
+{
+	GtkWidget *widget = wizard->email;
+	gint size = pango_font_description_get_size(
+			widget->style->font_desc)
+		      /PANGO_SCALE;
+	gchar *tmp, *new;
+	
+	tmp = g_strdup(prefs_common.textfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.textfont);
+		prefs_common.textfont = new;
+	}
+	g_free(tmp);
+	
+	tmp = g_strdup(prefs_common.smallfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.smallfont);
+		prefs_common.smallfont = new;
+	}
+	g_free(tmp);
+	
+	tmp = g_strdup(prefs_common.normalfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.normalfont);
+		prefs_common.normalfont = new;
+	}
+	g_free(tmp);
+}
+
+static void write_welcome_email(WizardWindow *wizard)
+{
+	gchar buf_date[64];
+	gchar *body=NULL;
+	const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name));
+	Folder *folder = folder_find_from_path(mailbox);
+	FolderItem *inbox = folder ? folder->inbox:NULL;
+	gchar *file = get_tmp_file();
+	
+	get_rfc822_date(buf_date, sizeof(buf_date));
+
+	body = g_strdup_printf(
+		"From: Sylpheed-Claws Team <sylpheed-claws-users@lists.sf.net>\n"
+		"To: %s <%s>\n"
+		"Date: %s\n"
+		"Subject: Welcome to Sylpheed-Claws.\n"
+		"\n"
+		"Welcome!\n", 
+		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
+		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
+		buf_date);
+	
+	if (inbox && inbox->total_msgs == 0
+	 && str_write_to_file(body, file) >= 0) {
+		MsgFlags flags = { MSG_UNREAD|MSG_NEW, 0};
+		folder_item_add_msg(inbox, file, &flags, FALSE);
+	}
+	g_free(body);
+	g_unlink(file);	
+}
 static gboolean wizard_write_config(WizardWindow *wizard)
 {
 	gboolean mailbox_ok = FALSE;
@@ -116,7 +182,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_account->protocol = GPOINTER_TO_INT
 			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
-
+	
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
 		mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
 				gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
@@ -182,6 +248,10 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	prefs_account_write_config_all(account_list);
 	prefs_account_free(prefs_account);
 	account_read_config_all();
+
+	initialize_fonts(wizard);
+	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4)
+		write_welcome_email(wizard);
 	
 	return TRUE;
 }
@@ -515,42 +585,6 @@ static GtkWidget* ssl_page (WizardWindow * wizard)
 }
 #endif
 
-static void initialize_fonts(WizardWindow *wizard)
-{
-	GtkWidget *widget = wizard->email;
-	gint size = pango_font_description_get_size(
-			widget->style->font_desc)
-		      /PANGO_SCALE;
-	gchar *tmp, *new;
-	
-	tmp = g_strdup(prefs_common.textfont);
-	if (strrchr(tmp, ' ')) {
-		*(strrchr(tmp, ' ')) = '\0';
-		new = g_strdup_printf("%s %d", tmp, size);
-		g_free(prefs_common.textfont);
-		prefs_common.textfont = new;
-	}
-	g_free(tmp);
-	
-	tmp = g_strdup(prefs_common.smallfont);
-	if (strrchr(tmp, ' ')) {
-		*(strrchr(tmp, ' ')) = '\0';
-		new = g_strdup_printf("%s %d", tmp, size);
-		g_free(prefs_common.smallfont);
-		prefs_common.smallfont = new;
-	}
-	g_free(tmp);
-	
-	tmp = g_strdup(prefs_common.normalfont);
-	if (strrchr(tmp, ' ')) {
-		*(strrchr(tmp, ' ')) = '\0';
-		new = g_strdup_printf("%s %d", tmp, size);
-		g_free(prefs_common.normalfont);
-		prefs_common.normalfont = new;
-	}
-	g_free(tmp);
-}
-
 static void
 wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 {
@@ -585,7 +619,6 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 		}
 		wizard->result = TRUE;
 		wizard->finished = TRUE;
-		initialize_fonts(wizard);
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else

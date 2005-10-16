@@ -228,7 +228,7 @@ static PrefParam param[] = {
 	{"inline_image", "TRUE", &prefs_common.inline_img, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"display_folder_unread_num", "TRUE",
+	{"display_folder_unread_num", "FALSE",
 	 &prefs_common.display_folder_unread, P_BOOL,
 	 NULL, NULL, NULL},
 	{"newsgroup_abbrev_len", "16",
