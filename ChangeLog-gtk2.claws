@@ -1,3 +1,8 @@
+2005-10-17 [colin]	1.9.15cvs70
+
+	* src/main.c
+		Keep the folder list frozen while checking caches...
+
 2005-10-17 [colin]	1.9.15cvs69
 
 	* src/addr_compl.c
