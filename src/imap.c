@@ -1090,6 +1090,8 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			g_free(real_file);
 			g_free(destdir);
 			unlock_session();
+			statusbar_progress_all(0,0,0);
+			statusbar_pop_all();
 			return -1;
 		}
 

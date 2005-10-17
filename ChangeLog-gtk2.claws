@@ -1,3 +1,12 @@
+2005-10-17 [colin]	1.9.15cvs69
+
+	* src/addr_compl.c
+		Fi bug #833 (Autocompleting from addressbook 
+		fails with extended chars)
+	* src/imap.c
+		Fix 'adding messages' staying in statusbar
+		after an error
+
 2005-10-17 [wwp]	1.9.15cvs68
 
 	* src/ssl_manager.c

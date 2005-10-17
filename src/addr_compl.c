@@ -211,9 +211,8 @@ static void add_address1(const char *str, address_entry *ae)
 {
 	completion_entry *ce1;
 	ce1 = g_new0(completion_entry, 1),
-	ce1->string = g_utf8_strdown(str, -1);
 	/* GCompletion list is case sensitive */
-	g_strdown(ce1->string);
+	ce1->string = g_utf8_strdown(str, -1);
 	ce1->ref = ae;
 
 	g_completion_list = g_list_prepend(g_completion_list, ce1);
@@ -711,37 +710,6 @@ static void completion_window_advance_selection(GtkTreeView *list_view, gboolean
 	}
 }
 
-#if 0
-/* completion_window_accept_selection() - accepts the current selection in the
- * clist, and destroys the window */
-static void completion_window_accept_selection(GtkWidget **window,
-					       GtkCList *clist,
-					       GtkEntry *entry)
-{
-	gchar *address = NULL, *text = NULL;
-	gint   cursor_pos, row;
-
-	g_return_if_fail(window != NULL);
-	g_return_if_fail(*window != NULL);
-	g_return_if_fail(clist != NULL);
-	g_return_if_fail(entry != NULL);
-	g_return_if_fail(clist->selection != NULL);
-
-	/* FIXME: I believe it's acceptable to access the selection member directly  */
-	row = GPOINTER_TO_INT(clist->selection->data);
-
-	/* we just need the cursor position */
-	address = get_address_from_edit(entry, &cursor_pos);
-	g_free(address);
-	gtk_clist_get_text(clist, row, 0, &text);
-	replace_address_in_edit(entry, text, cursor_pos);
-
-	clear_completion_cache();
-	gtk_widget_destroy(*window);
-	*window = NULL;
-}
-#endif
-
 /**
  * Resize window to accommodate maximum number of address entries.
  * \param cw Completion window.
@@ -1146,6 +1114,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		g_free( new );
 	}
 
+#ifndef USE_LDAP
 	/* Select the address if there is only one match */
 	if (ncount == 2) {
 		/* Display selected address in entry field */		
@@ -1160,7 +1129,9 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		clear_completion_cache();
 	}
 	/* Make sure that drop-down appears uniform! */
-	else if( ncount == 0 ) {
+	else 
+#endif
+	if( ncount == 0 ) {
 		addrcompl_add_queue( g_strdup( searchTerm ) );
 	}
 	g_free( searchTerm );
