@@ -144,7 +144,10 @@ static void initialize_fonts(WizardWindow *wizard)
 static void write_welcome_email(WizardWindow *wizard)
 {
 	gchar buf_date[64];
+	gchar *head=NULL;
 	gchar *body=NULL;
+	gchar *msg=NULL;
+	gchar *subj=NULL;
 	const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name));
 	Folder *folder = folder_find_from_path(mailbox);
 	FolderItem *inbox = folder ? folder->inbox:NULL;
@@ -152,17 +155,23 @@ static void write_welcome_email(WizardWindow *wizard)
 	
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
-	body = g_strdup_printf(
+	subj = g_strdup_printf(_("Welcome to Sylpheed-Claws"));
+
+	head = g_strdup_printf(
 		"From: Sylpheed-Claws Team <sylpheed-claws-users@lists.sf.net>\n"
 		"To: %s <%s>\n"
 		"Date: %s\n"
-		"Subject: Welcome to Sylpheed-Claws.\n"
-		"\n"
+		"Subject: %s\n",
+		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
+		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
+		buf_date, subj);
+	body = g_strdup_printf(
+		_("\n"
 		"Welcome to Sylpheed-Claws\n"
 		"-------------------------\n"
 		"\n"
 		"Now that you have set up your account you can fetch your\n"
-		"mail by clicking the 'Get All' button at the left of the\n"
+		"mail by clicking the 'Get Mail' button at the left of the\n"
 		"toolbar.\n"
 		"\n"
 		"You can change your Account Preferences by using the menu\n"
@@ -176,11 +185,11 @@ static void write_welcome_email(WizardWindow *wizard)
 		"\n"
 		"Useful URLs\n"
 		"-----------\n"
-		"Homepage:      <http://claws.sylpheed.org>\n"
-		"Manual:        <http://claws.sylpheed.org/manual/>\n"
-		"FAQ:	       <http://claws.sylpheed.org/faq.php>\n"
-		"Themes:        <http://claws.sylpheed.org/themes.php>\n"
-		"Mailing Lists: <http://claws.sylpheed.org/MLs.php>\n"
+		"Homepage:      <%s>\n"
+		"Manual:        <%s>\n"
+		"FAQ:	       <%s>\n"
+		"Themes:        <%s>\n"
+		"Mailing Lists: <%s>\n"
 		"\n"
 		"LICENSE\n"
 		"-------\n"
@@ -188,23 +197,27 @@ static void write_welcome_email(WizardWindow *wizard)
 		"of the GNU General Public License, version 2 or later, as\n"
 		"published by the Free Software Foundation, 51 Franklin Street,\n"
 		"Fifth Floor, Boston, MA 02110-1301, USA. The license can be\n"
-		"found at <http://www.gnu.org/licenses/gpl.html>.\n"
+		"found at <%s>.\n"
 		"\n"
 		"DONATIONS\n"
 		"---------\n"
 		"If you wish to donate to the Sylpheed-Claws project you can do\n"
-		"so at <https://sourceforge.net/donate/index.php?group_id=25528>.",		
-		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
-		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
-		buf_date);
+		"so at <%s>.\n\n"),
+		HOMEPAGE_URI, MANUAL_URI, FAQ_URI, THEMES_URI, MAILING_LIST_URI,
+		GPL_URI, DONATE_URI);
 	
+	msg = g_strconcat(head, body, NULL);
+
 	if (inbox && inbox->total_msgs == 0
-	 && str_write_to_file(body, file) >= 0) {
+	 && str_write_to_file(msg, file) >= 0) {
 		MsgFlags flags = { MSG_UNREAD|MSG_NEW, 0};
 		folder_item_add_msg(inbox, file, &flags, FALSE);
 	}
+	g_free(subj);
+	g_free(head);
 	g_free(body);
-	g_unlink(file);	
+	g_free(msg);
+	g_unlink(file);
 }
 static gboolean wizard_write_config(WizardWindow *wizard)
 {
@@ -691,8 +704,6 @@ set_sens:
 				current_page < (num_pages - 1));
 		gtk_dialog_set_response_sensitive (dialog, FINISHED, 
 				current_page == (num_pages - 1));
-		gtk_dialog_set_response_sensitive (dialog, CANCEL, 
-				current_page != (num_pages - 1));
 	}
 }
 
@@ -719,12 +730,12 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	gtk_widget_hide(mainwin->window);
 	
-	wizard->window = gtk_dialog_new_with_buttons (_("New User"),
+	wizard->window = gtk_dialog_new_with_buttons (_("Sylpheed-Claws Setup Wizard"),
 			NULL, 0, 
 			GTK_STOCK_GO_BACK, GO_BACK,
 			GTK_STOCK_GO_FORWARD, GO_FORWARD,
 			GTK_STOCK_SAVE, FINISHED,
-			GTK_STOCK_QUIT, CANCEL,
+			GTK_STOCK_CANCEL, CANCEL,
 			NULL);
 
 	g_signal_connect(wizard->window, "response", 
@@ -750,7 +761,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	wizard->pages = NULL;
 	
 /*welcome page: 0 */
-	page = create_page(wizard, _("Welcome to Sylpheed-Claws."));
+	page = create_page(wizard, _("Welcome to Sylpheed-Claws"));
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
@@ -758,13 +769,13 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
-	text = g_strdup(_("Welcome to Sylpheed-Claws.\n\n"
-			  "It looks like it's the first time you use \n"
-			  "Sylpheed-Claws. So, we'll now define some basic\n"
-			  "information about yourself and your most common\n"
-			  "mail parameters; so that you can begin to use\n"
+	text = g_strdup(_("Welcome to the Sylpheed-Claws setup wizard.\n\n"
+			  "We will begin by defining some basic "
+			  "information about you and your most common "
+			  "mail options so that you can start to use "
 			  "Sylpheed-Claws in less than five minutes."));
 	widget = gtk_label_new(text);
+	gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	g_free(text);
 
@@ -797,7 +808,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 #endif
 
 /* done page: 6 */
-	page = create_page(wizard, _("Configuration finished."));
+	page = create_page(wizard, _("Configuration finished"));
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
@@ -805,7 +816,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
-	text = g_strdup(_("Sylpheed-Claws is now ready to run.\n\n"
+	text = g_strdup(_("Sylpheed-Claws is now ready.\n\n"
 			  "Click Save to start."));
 	widget = gtk_label_new(text);
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);

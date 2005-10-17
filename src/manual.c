@@ -153,7 +153,7 @@ void manual_open(ManualType type)
 			break;
 
 		case MANUAL_FAQ_CLAWS:
-			uri = g_strconcat(CLAWS_FAQ_URI, NULL);
+			uri = g_strconcat(FAQ_URI, NULL);
 			break;
 
 		default:

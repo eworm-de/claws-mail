@@ -556,7 +556,7 @@ end_inst:
 
 static void prefs_themes_btn_more_clicked_cb(GtkWidget *widget, gpointer data)
 {
-	open_uri(CLAWS_THEMES_URI, prefs_common.uri_cmd);
+	open_uri(THEMES_URI, prefs_common.uri_cmd);
 }
 
 static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data)

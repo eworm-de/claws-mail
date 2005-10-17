@@ -1,3 +1,22 @@
+2005-10-17 [paul]	1.9.15cvs66
+
+	* configure.ac
+		fix missing libetpan message
+	* po/en_GB.po
+		updated
+	* src/crash.c
+	* src/manual.c
+	* src/prefs_themes.c
+	* src/common/defs.h
+		add some new URI defines, change some
+		others
+	* src/wizard.c
+		make welcome message translatable
+		small improvements to english
+		other tweaks
+	* src/gtk/menu.c
+		fix warnings
+
 2005-10-17 [paul]	1.9.15cvs65
 
 	* src/summaryview.c
