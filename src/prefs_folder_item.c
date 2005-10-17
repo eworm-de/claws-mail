@@ -845,7 +845,8 @@ void prefs_folder_item_open(FolderItem *item)
 	id = folder_item_get_identifier (item);
 	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
-	prefswindow_open(title, prefs_pages, item);
+	prefswindow_open(title, prefs_pages, item,
+			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height);
 	g_free (title);
 }
 

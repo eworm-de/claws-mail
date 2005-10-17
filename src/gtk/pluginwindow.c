@@ -198,6 +198,19 @@ static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void pluginwindow_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.pluginswin_width = allocation->width;
+	prefs_common.pluginswin_height = allocation->height;
+}
+
+
 void pluginwindow_create()
 {
 	PluginWindow *pluginwindow;
@@ -216,12 +229,14 @@ void pluginwindow_create()
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
+	static GdkGeometry geometry;
 	
+	debug_print("Creating plugins window...\n");
+
 	pluginwindow = g_new0(PluginWindow, 1);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_default_size(GTK_WINDOW(window), 480, 300);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
@@ -303,6 +318,8 @@ void pluginwindow_create()
 			 G_CALLBACK(unload_cb), pluginwindow);
 	g_signal_connect(G_OBJECT(close_btn), "released",
 			 G_CALLBACK(close_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(pluginwindow_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			   G_CALLBACK(pluginwindow_key_pressed), pluginwindow);
 
@@ -315,6 +332,17 @@ void pluginwindow_create()
 	set_plugin_list(pluginwindow);
 
 	inc_lock();
+
+	if (!geometry.min_height) {
+		geometry.min_width = 480;
+		geometry.min_height = 300;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.pluginswin_width,
+				    prefs_common.pluginswin_height);
+
 	gtk_widget_show(window);
 }
 

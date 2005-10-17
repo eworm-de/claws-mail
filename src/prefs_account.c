@@ -38,6 +38,7 @@
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
+#include "prefs_common.h"
 #include "prefs_customheader.h"
 #include "account.h"
 #include "mainwindow.h"
@@ -963,7 +964,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 		title = g_strdup_printf (_("%s - Account preferences"),
 				ac_prefs->account_name);
 
-	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog);
+	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog,
+			&prefs_common.editaccountwin_width, &prefs_common.editaccountwin_height);
 	g_free(title);
 	gtk_main();
 

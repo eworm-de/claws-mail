@@ -33,6 +33,7 @@
 #include "main.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
+#include "prefs_common.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "passcrypt.h"
@@ -845,7 +846,8 @@ static GSList *prefs_pages = NULL;
 
 void prefs_gtk_open(void)
 {
-	prefswindow_open(_("Preferences"), prefs_pages, NULL);
+	prefswindow_open(_("Preferences"), prefs_pages, NULL,
+			&prefs_common.prefswin_width, &prefs_common.prefswin_height);
 }
 
 void prefs_gtk_register_page(PrefsPage *page)

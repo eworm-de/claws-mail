@@ -61,6 +61,8 @@ struct _PrefsWindow
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *apply_btn;
+	gint *save_width;
+	gint *save_height;
 
 	GtkWidget *empty_page;
 
@@ -75,6 +77,8 @@ struct _PrefsTreeNode
 	gfloat     treeweight; /* GTK2: not used */
 };
 
+static void prefs_size_allocate_cb(GtkWidget *widget,
+							 GtkAllocation *allocation, gpointer *user_data);
 static GtkTreeStore *prefswindow_create_data_store	(void);
 static GtkWidget *prefswindow_tree_view_create		(PrefsWindow* prefswindow);
 static void prefs_filtering_create_tree_view_columns	(GtkWidget *tree_view);
@@ -332,25 +336,24 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 		gtk_tree_selection_select_iter(selection, &iter);
 }
 
-void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)
+void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func,
+							 gint *save_width, gint *save_height)
 {
 	PrefsWindow *prefswindow;
 	gint x = gdk_screen_width();
 	gint y = gdk_screen_height();
+	static GdkGeometry geometry;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
 	prefswindow->data = data;
 	prefswindow->func = func;
 	prefswindow->prefs_pages = g_slist_copy(prefs_pages);
+	prefswindow->save_width = save_width;
+	prefswindow->save_height = save_height;
 
 	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
-
-	if (x < 800 && y < 600)
-		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 440);
-	else
-		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 700, 550);
 
 	gtk_window_set_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
@@ -431,13 +434,54 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 			 G_CALLBACK(window_closed), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->window), "key_press_event",
 			   G_CALLBACK(prefswindow_key_pressed), &(prefswindow->window));
+	/* connect to callback only if we hhave non-NULL pointers to store size to */
+	if (prefswindow->save_width && prefswindow->save_height) {
+		g_signal_connect(G_OBJECT(prefswindow->window), "size_allocate",
+				 G_CALLBACK(prefs_size_allocate_cb), prefswindow);
+	}
+
+	if (!geometry.min_height) {
+		
+		if (x < 800 && y < 600) {
+			geometry.min_width = 600;
+			geometry.min_height = 440;
+		} else {
+			geometry.min_width = 700;
+			geometry.min_height = 550;
+		}
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	if (prefswindow->save_width && prefswindow->save_height) {
+		gtk_widget_set_size_request(prefswindow->window, *(prefswindow->save_width),
+					    *(prefswindow->save_height));
+	}
 
 	gtk_widget_show(prefswindow->window);
 }
 
-void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
+void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
+					 gint *save_width, gint *save_height)
 {
-	prefswindow_open_full(title, prefs_pages, data, NULL);
+	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height);
+}
+
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void prefs_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation, gpointer *user_data)
+{
+	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+
+	g_return_if_fail(allocation != NULL);
+
+	/* don't try to save size to NULL pointers */
+	if (prefswindow && prefswindow->save_width && prefswindow->save_height) {
+		*(prefswindow->save_width) = allocation->width;
+		*(prefswindow->save_height) = allocation->height;
+	}
 }
 
 static GtkTreeStore *prefswindow_create_data_store(void)

@@ -102,6 +102,8 @@ static void account_edit_close		(GtkWidget *widget, gpointer data);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
+static void account_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation);
 static gboolean account_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -598,6 +600,17 @@ void account_destroy(PrefsAccount *ac_prefs)
 	}
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void account_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.accountswin_width = allocation->width;
+	prefs_common.accountswin_height = allocation->height;
+}
 
 static void account_edit_create(void)
 {
@@ -621,10 +634,11 @@ static void account_edit_create(void)
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 
+	static GdkGeometry geometry;
+
 	debug_print("Creating account edit window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request (window, 500, 350);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -741,6 +755,19 @@ static void account_edit_create(void)
 			  NULL);
 
 	account_create_list_view_images(list_view);
+
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(account_size_allocate_cb), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 500;
+		geometry.min_height = 350;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.accountswin_width,
+				    prefs_common.accountswin_height);
 
 	edit_account.window    = window;
 	edit_account.list_view = list_view;

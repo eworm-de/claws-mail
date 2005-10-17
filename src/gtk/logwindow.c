@@ -38,12 +38,15 @@
 #include "gtkutils.h"
 #include "log.h"
 #include "hooks.h"
+#include "prefs_common.h"
 
 static void hide_cb				(GtkWidget	*widget,
 						 LogWindow	*logwin);
 static gboolean key_pressed			(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 LogWindow	*logwin);
+static void size_allocate_cb	(GtkWidget *widget,
+					 GtkAllocation *allocation);
 static gboolean log_window_append		(gpointer 	 source,
 						 gpointer   	 data);
 static void log_window_clip			(GtkWidget 	*text,
@@ -54,6 +57,18 @@ static void log_window_popup_menu_extend	(GtkTextView	*textview,
 						 GtkMenu	*menu,
 						 LogWindow	*logwin);
 					 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.logwin_width = allocation->width;
+	prefs_common.logwin_height = allocation->height;
+}
+
 LogWindow *log_window_create(void)
 {
 	LogWindow *logwin;
@@ -62,14 +77,15 @@ LogWindow *log_window_create(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	static GdkGeometry geometry;
 
 	debug_print("Creating log window...\n");
+
 	logwin = g_new0(LogWindow, 1);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Protocol log"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_widget_set_size_request(window, 520, 400);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -96,6 +112,19 @@ LogWindow *log_window_create(void)
 			 G_CALLBACK(log_window_popup_menu_extend), logwin);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
+
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(size_allocate_cb), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 520;
+		geometry.min_height = 400;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.logwin_width,
+				    prefs_common.logwin_height);
 
 	logwin->window = window;
 	logwin->scrolledwin = scrolledwin;

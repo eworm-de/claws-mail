@@ -321,7 +321,7 @@ struct _PrefsCommon
 	gulong color_new;
 	
 	GList *summary_quicksearch_history;
-	
+
 	gint filteringwin_width;
 	gint filteringwin_height;
 	gint filteringactionwin_width;
@@ -336,6 +336,19 @@ struct _PrefsCommon
 	gint addressbookwin_height;
 	gint addressbookeditpersonwin_width;
 	gint addressbookeditpersonwin_height;
+	gint pluginswin_width;
+	gint pluginswin_height;
+	gint prefswin_width;
+	gint prefswin_height;
+	gint folderitemwin_width;
+	gint folderitemwin_height;
+	gint editaccountwin_width;
+	gint editaccountwin_height;
+	gint accountswin_width;
+	gint accountswin_height;
+	gint logwin_width;
+	gint logwin_height;
+
 	gint warn_dnd;
 	gint broken_are_utf8;
 };

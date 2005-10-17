@@ -579,6 +579,36 @@ static PrefParam param[] = {
 	{"addressbookeditpersonwin_height", "-1", &prefs_common.addressbookeditpersonwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"pluginswin_width", "480", &prefs_common.pluginswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"pluginswin_height", "-1", &prefs_common.pluginswin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"prefswin_width", "600", &prefs_common.prefswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"prefswin_height", "-1", &prefs_common.prefswin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"folderitemwin_width", "500", &prefs_common.folderitemwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"folderitemwin_height", "-1", &prefs_common.folderitemwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"editaccountwin_width", "500", &prefs_common.editaccountwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"editaccountwin_height", "-1", &prefs_common.editaccountwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"accountswin_width", "500", &prefs_common.accountswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"accountswin_height", "-1", &prefs_common.accountswin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"logwin_width", "520", &prefs_common.logwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"logwin_height", "-1", &prefs_common.logwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},
