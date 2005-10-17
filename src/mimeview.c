@@ -692,6 +692,8 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	if (mimeinfo == NULL)
 		return;
 
+	noticeview_set_text(mimeview->siginfoview, _("Checking signature..."));
+	GTK_EVENTS_FLUSH();
 	privacy_mimeinfo_check_signature(mimeinfo);
 	update_signature_noticeview(mimeview, mimeview->siginfo);
 	icon_list_clear(mimeview);

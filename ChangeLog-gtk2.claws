@@ -1,3 +1,9 @@
+2005-10-17 [colin]	1.9.15cvs71
+
+	* src/mimeview.c
+		Provide visual feedback when checking
+		signature
+
 2005-10-17 [colin]	1.9.15cvs70
 
 	* src/main.c
