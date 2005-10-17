@@ -1,3 +1,8 @@
+2005-10-17 [paul]	1.9.15cvs65
+
+	* src/summaryview.c
+		fix column titles
+
 2005-10-16 [mones]	1.9.15cvs64
 
 	* po/es.po

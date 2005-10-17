@@ -456,7 +456,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 };  /* see also list in menu_connect_identical_items() in menu.c if this changes */
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
-	N_("M"),	/* S_COL_MARK    */
+	"",		/* S_COL_MARK    */
 	N_("S"),	/* S_COL_STATUS  */
 	"",		/* S_COL_MIME    */
 	N_("Subject"),	/* S_COL_SUBJECT */
@@ -464,9 +464,9 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("To"),	/* S_COL_TO      */
 	N_("Date"),	/* S_COL_DATE    */
 	N_("Size"),	/* S_COL_SIZE    */
-	N_("No."),	/* S_COL_NUMBER  */
+	N_("#"),	/* S_COL_NUMBER  */
 	N_("Score"),	/* S_COL_SCORE   */
-	N_("L")		/* S_COL_LOCKED	 */
+	"",		/* S_COL_LOCKED	 */
 };
 
 #define START_LONG_OPERATION(summaryview) {			\
@@ -1971,7 +1971,6 @@ static void summary_set_column_titles(SummaryView *summaryview)
 	gint pos;
 	const gchar *title;
 	SummaryColumnType type;
-	gboolean single_char;
 	GtkJustification justify;
 
 	static FolderSortKey sort_by[N_SUMMARY_COLS] = {
@@ -1992,7 +1991,6 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		type = summaryview->col_state[pos].type;
 
 		/* CLAWS: mime and unread are single char headers */
-		single_char = (type == S_COL_MIME || type == S_COL_STATUS);
 		justify = (type == S_COL_NUMBER || type == S_COL_SIZE)
 			? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT;
 
@@ -2007,11 +2005,6 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			else
 				title = col_label[type];
 			break;
-		/* CLAWS: dummies for mark and locked headers */	
-		case S_COL_MARK:	
-		case S_COL_LOCKED:
-			title = "";
-			break;
 		default:
 			title = gettext(col_label[type]);
 		}
@@ -2021,22 +2014,24 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
 			continue;
-		} else if (single_char) {
+		} else if (type == S_COL_MARK) {
+			label = gtk_image_new_from_pixmap(markxpm, markxpmmask);
+			gtk_widget_show(label);
+			gtk_clist_set_column_widget(clist, pos, label);
+			continue;
+		} else if (type == S_COL_LOCKED) {
+			label = gtk_image_new_from_pixmap(lockedxpm, lockedxpmmask);
+			gtk_widget_show(label);
+			gtk_clist_set_column_widget(clist, pos, label);
+			continue;
+		} else if (type == S_COL_STATUS) {
 			gtk_clist_set_column_title(clist, pos, title);
 			continue;
 		}
 
-		/* CLAWS: changed so that locked and mark headers
-		 * show a pixmap instead of single character */
 		hbox  = gtk_hbox_new(FALSE, 4);
-		
-		if (type == S_COL_LOCKED)
-			label = gtk_pixmap_new(lockedxpm, lockedxpmmask);
-		else if (type == S_COL_MARK) 
-			label = gtk_pixmap_new(markxpm, markxpmmask);
-		else 
-			label = gtk_label_new(title);
-		
+		label = gtk_label_new(title);
+
 		if (justify == GTK_JUSTIFY_RIGHT)
 			gtk_box_pack_end(GTK_BOX(hbox), label,
 					 FALSE, FALSE, 0);
@@ -4555,7 +4550,6 @@ void summary_set_column_order(SummaryView *summaryview)
 {
 	GtkWidget *ctree;
 	GtkWidget *scrolledwin = summaryview->scrolledwin;
-	GtkWidget *pixmap;
 	FolderItem *item;
 	guint selected_msgnum = summary_get_msgnum(summaryview, summaryview->selected);
 	guint displayed_msgnum = summary_get_msgnum(summaryview, summaryview->displayed);
@@ -4567,10 +4561,7 @@ void summary_set_column_order(SummaryView *summaryview)
 
 	summaryview->ctree = ctree = summary_ctree_create(summaryview);
 	summary_set_fonts(summaryview);
-	pixmap = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
-	gtk_clist_set_column_widget(GTK_CLIST(ctree),
-				    summaryview->col_pos[S_COL_MIME], pixmap);
-	gtk_widget_show(pixmap);
+	summary_set_column_titles(summaryview);
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_CLIST(ctree)->hadjustment);
 	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),

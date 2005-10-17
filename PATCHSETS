@@ -901,3 +901,4 @@
 ( cvs diff -u -r 1.43.2.30 -r 1.43.2.31 src/toolbar.c;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/wizard.c;  ) > 1.9.15cvs62.patchset
 ( cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/wizard.c;  ) > 1.9.15cvs63.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 commitHelper;  cvs diff -u -r 1.60.2.16 -r 1.60.2.17 po/es.po;  ) > 1.9.15cvs64.patchset
+( cvs diff -u -r 1.395.2.139 -r 1.395.2.140 src/summaryview.c;  ) > 1.9.15cvs65.patchset
