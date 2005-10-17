@@ -39,9 +39,6 @@ name=`whoami`
 if [ "$name" == "claws" ]; then
 	name="paul";
 fi;
-if [ "$name" == "reboot" ]; then
-	name="christoph";
-fi;
 if [ "$name" == "leroyc" ]; then
 	name="colin";
 fi;
