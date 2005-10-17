@@ -1,3 +1,8 @@
+2005-10-17 [wwp]	1.9.15cvs68
+
+	* src/ssl_manager.c
+		Fix buttons' layout resizing when window size changes
+
 2005-10-17 [wwp]	1.9.15cvs67
 
 	* src/account.c

@@ -177,7 +177,7 @@ void ssl_manager_create(void)
 	certlist = ssl_manager_list_view_create();
 	
 	gtk_box_pack_start(GTK_BOX(hbox1), certlist, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 4);
 	gtk_box_pack_end(GTK_BOX(vbox1), close_btn, FALSE, FALSE, 4);
