@@ -150,23 +150,20 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
         int err = 0, cnt = 0;
         /* make sure that window is viewable */
         gtk_widget_show_now(window);
+	gdk_window_process_updates(window->window, TRUE);
 	gdk_flush();
-	while(gtk_events_pending())
+	while(gtk_events_pending()) {
 		gtk_main_iteration();
-#ifdef GDK_WINDOWING_X11
-	gdk_x11_display_grab(gdk_display_get_default());
-#endif /* GDK_WINDOWING_X11 */
+	}
 try_again:
         if ((err = gdk_pointer_grab(window->window, TRUE, 0,
                              window->window, NULL, GDK_CURRENT_TIME))) {
 	    if (err == GDK_GRAB_NOT_VIEWABLE && cnt < 10) {
 	        cnt++;
 		g_warning("trying to grab mouse again\n");
+		gtk_main_iteration();
 		goto try_again;
             } else {
-#ifdef GDK_WINDOWING_X11
-                gdk_x11_display_ungrab(gdk_display_get_default());
-#endif /* GDK_WINDOWING_X11 */
                 g_warning("OOPS: Could not grab mouse\n");
                 gtk_widget_destroy(window);
                 return NULL;
@@ -175,9 +172,6 @@ try_again:
         if (gdk_keyboard_grab(window->window, FALSE, GDK_CURRENT_TIME)) {
             gdk_display_pointer_ungrab(gdk_display_get_default(),
 			 	       GDK_CURRENT_TIME);
-#ifdef GDK_WINDOWING_X11
-            gdk_x11_display_ungrab(gdk_display_get_default());
-#endif /* GDK_WINDOWING_X11 */
             g_warning("OOPS: Could not grab keyboard\n");
             gtk_widget_destroy(window);
             return NULL;
@@ -190,9 +184,6 @@ try_again:
         gdk_display_keyboard_ungrab(gdk_display_get_default(),
 				    GDK_CURRENT_TIME);
         gdk_display_pointer_ungrab(gdk_display_get_default(), GDK_CURRENT_TIME);
-#ifdef GDK_WINDOWING_X11
-        gdk_x11_display_ungrab(gdk_display_get_default());
-#endif /* GDK_WINDOWING_X11 */
         gdk_flush();
     }
 
