@@ -968,7 +968,7 @@ static void addressbook_create(void)
 			AddressTypeControlItem *atci = adapter->atci;
 			text = atci->displayName;
 			adapter->treeNode =
-				gtk_ctree_insert_node( GTK_CTREE(ctree),
+				gtk_sctree_insert_node( GTK_CTREE(ctree),
 					NULL, NULL, &text, FOLDER_SPACING,
 					interfacexpm, interfacexpmmask,
 					interfacexpm, interfacexpmmask,
@@ -2304,7 +2304,7 @@ static void addressbook_change_node_name(GtkCTreeNode *node, const gchar *name)
 	gtk_ctree_get_node_info(ctree, node, text, &spacing,
 				&pix_cl, &mask_cl, &pix_op, &mask_op,
 				&is_leaf, &expanded);
-	gtk_ctree_set_node_info(ctree, node, name, spacing,
+	gtk_sctree_set_node_info(ctree, node, name, spacing,
 				pix_cl, mask_cl, pix_op, mask_op,
 				is_leaf, expanded);
 }
@@ -2840,7 +2840,7 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 		}
 		text[COL_ADDRESS] = email->address;
 		text[COL_REMARKS] = email->remarks;
-		nodeEMail = gtk_ctree_insert_node(
+		nodeEMail = gtk_sctree_insert_node(
 				clist, NULL, NULL,
 				text, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm,
@@ -2885,7 +2885,7 @@ static void addressbook_folder_load_one_person(
 			else {
 				text[COL_NAME] = ADDRITEM_NAME(person);
 			}
-			nodePerson = gtk_ctree_insert_node(
+			nodePerson = gtk_sctree_insert_node(
 					clist, NULL, NULL,
 					text, FOLDER_SPACING,
 					atci->iconXpm, atci->maskXpm,
@@ -2898,7 +2898,7 @@ static void addressbook_folder_load_one_person(
 		else {
 			/* Subsequent email is a child node of person */
 			text[COL_NAME] = ADDRITEM_NAME(email);
-			nodeEMail = gtk_ctree_insert_node(
+			nodeEMail = gtk_sctree_insert_node(
 					clist, nodePerson, NULL,
 					text, FOLDER_SPACING,
 					atciMail->iconXpm, atciMail->maskXpm,
@@ -2914,7 +2914,7 @@ static void addressbook_folder_load_one_person(
 		text[COL_NAME] = ADDRITEM_NAME(person);
 		text[COL_ADDRESS] = NULL;
 		text[COL_REMARKS] = NULL;
-		nodePerson = gtk_ctree_insert_node(
+		nodePerson = gtk_sctree_insert_node(
 				clist, NULL, NULL,
 				text, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm,
@@ -3002,7 +3002,7 @@ static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFold
 		text[COL_NAME] = ADDRITEM_NAME(group);
 		text[COL_ADDRESS] = NULL;
 		text[COL_REMARKS] = NULL;
-		nodeGroup = gtk_ctree_insert_node(clist, NULL, NULL,
+		nodeGroup = gtk_sctree_insert_node(clist, NULL, NULL,
 				      text, FOLDER_SPACING,
 				      atci->iconXpm, atci->maskXpm,
 				      atci->iconXpmOpen, atci->maskXpmOpen,
@@ -3444,7 +3444,7 @@ static GtkCTreeNode *addressbook_add_object(GtkCTreeNode *node,
 			/* Add object to tree */
 			gchar **name;
 			name = &obj->name;
-			added = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
+			added = gtk_sctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpmOpen, atci->maskXpmOpen,
 				atci->treeLeaf, atci->treeExpand );
 			gtk_ctree_node_set_row_data_full( ctree, added, obj,
@@ -3486,7 +3486,7 @@ static GtkCTreeNode *addressbook_node_add_group(
 	ADDRESS_OBJECT_NAME(adapter) = g_strdup( ADDRITEM_NAME(itemGroup) );
 	adapter->itemGroup = itemGroup;
 
-	newNode = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
+	newNode = gtk_sctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 			atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 			atci->treeLeaf, atci->treeExpand );
 	gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
@@ -3539,7 +3539,7 @@ static GtkCTreeNode *addressbook_node_add_folder(
 		adapter->itemFolder = itemFolder;
 
 		name = ADDRITEM_NAME(itemFolder);
-		newNode = gtk_ctree_insert_node( ctree, node, NULL, &name, FOLDER_SPACING,
+		newNode = gtk_sctree_insert_node( ctree, node, NULL, &name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 				atci->treeLeaf, atci->treeExpand );
 		if( newNode ) {

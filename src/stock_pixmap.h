@@ -151,8 +151,8 @@ typedef enum
 	STOCK_PIXMAP_READ,
 	STOCK_PIXMAP_TRASH,
 	STOCK_PIXMAP_SYLPHEED_LOGO,
-	STOCK_PIXMAP_DIR_NOSELECT,              /* last entry */
-	
+	STOCK_PIXMAP_DIR_NOSELECT, 
+	STOCK_PIXMAP_EMPTY,              /* last entry */
 	N_STOCK_PIXMAPS
 } StockPixmap;
 

@@ -382,7 +382,8 @@ EXTRA_DIST = \
 	pixmaps/outbox_hrm_mark.xpm \
 	pixmaps/outbox_mark.xpm \
 	pixmaps/trash_hrm_mark.xpm \
-	pixmaps/trash_mark.xpm
+	pixmaps/trash_mark.xpm \
+	pixmaps/empty.xpm
 
 
 INCLUDES = \

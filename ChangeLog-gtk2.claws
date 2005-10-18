@@ -1,3 +1,25 @@
+2005-10-18 [colin]	1.9.15cvs72
+
+	* src/Makefile.am
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/mimeview.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+	* src/pixmaps/empty.xpm
+		Implement a wrapper call for gtk_ctree_set_node_info
+		and gtk_ctree_insert_node, that uses a 1x1 transparent
+		pixmap instead of a NULL one. This works around some
+		memory problems deep inside gtk, revealed by valgrind,
+		and fixes bug #834 (Pressing CTRl-D on a message marked 
+		as locked crashes sylpheed.), as well as, probably, 
+		wwp's 4th dimension problems that happen in gtk_ctree_*.
+
 2005-10-17 [colin]	1.9.15cvs71
 
 	* src/mimeview.c

@@ -2190,7 +2190,7 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 
 	summary_set_header(summaryview, text, msginfo);
 
-	gtk_ctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
+	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, NULL, NULL, FALSE,
 				gnode->parent->parent ? TRUE : FALSE);
 #define SET_TEXT(col) \
@@ -2268,9 +2268,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 			summary_set_header(summaryview, text, msginfo);
 
-			node = gtk_ctree_insert_node
+			node = gtk_sctree_insert_node
 				(ctree, NULL, node, text, 2,
-				 NULL, NULL, NULL, NULL, FALSE, FALSE);
+				 NULL, NULL, NULL, NULL,
+				 FALSE, FALSE);
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
 

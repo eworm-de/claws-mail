@@ -6,7 +6,7 @@
 
 #include "gtksctree.h"
 #include "sylpheed-marshal.h"
-
+#include "stock_pixmap.h"
 
 enum {
 	ROW_POPUP_MENU,
@@ -16,6 +16,8 @@ enum {
 	LAST_SIGNAL
 };
 
+static GdkPixmap *emptyxpm = NULL;
+static GdkBitmap *emptyxpmmask = NULL;
 
 static void gtk_sctree_class_init (GtkSCTreeClass *class);
 static void gtk_sctree_init (GtkSCTree *sctree);
@@ -1083,4 +1085,72 @@ gtk_ctree_last_visible (GtkCTree     *ctree,
 		work = GTK_CTREE_ROW (work)->sibling;
 
 	return gtk_ctree_last_visible (ctree, work);
+}
+
+/* this wrapper simply replaces NULL pixmaps 
+ * with a transparent, 1x1 pixmap. This works
+ * around a memory problem deep inside gtk, 
+ * revealed by valgrind. 
+ */
+GtkCTreeNode* gtk_sctree_insert_node        (GtkCTree *ctree,
+                                             GtkCTreeNode *parent,
+                                             GtkCTreeNode *sibling,
+                                             gchar *text[],
+                                             guint8 spacing,
+                                             GdkPixmap *pixmap_closed,
+                                             GdkBitmap *mask_closed,
+                                             GdkPixmap *pixmap_opened,
+                                             GdkBitmap *mask_opened,
+                                             gboolean is_leaf,
+                                             gboolean expanded)
+{
+	if (!emptyxpm) {
+		stock_pixmap_gdk(ctree, STOCK_PIXMAP_EMPTY,
+			 &emptyxpm, &emptyxpmmask);
+	}
+	if (!pixmap_closed) {
+		pixmap_closed = emptyxpm;
+		mask_closed = emptyxpmmask;
+	}
+	if (!pixmap_opened) {
+		pixmap_opened = emptyxpm;
+		mask_opened = emptyxpmmask;
+	}
+	return gtk_ctree_insert_node(ctree, parent, sibling, text,spacing,
+		pixmap_closed, mask_closed, pixmap_opened, mask_opened,
+		is_leaf, expanded);
+}
+
+/* this wrapper simply replaces NULL pixmaps 
+ * with a transparent, 1x1 pixmap. This works
+ * around a memory problem deep inside gtk, 
+ * revealed by valgrind. 
+ */
+void        gtk_sctree_set_node_info        (GtkCTree *ctree,
+                                             GtkCTreeNode *node,
+                                             const gchar *text,
+                                             guint8 spacing,
+                                             GdkPixmap *pixmap_closed,
+                                             GdkBitmap *mask_closed,
+                                             GdkPixmap *pixmap_opened,
+                                             GdkBitmap *mask_opened,
+                                             gboolean is_leaf,
+                                             gboolean expanded)
+{
+	if (!emptyxpm) {
+		stock_pixmap_gdk(ctree, STOCK_PIXMAP_EMPTY,
+			 &emptyxpm, &emptyxpmmask);
+	}
+	if (!pixmap_closed) {
+		pixmap_closed = emptyxpm;
+		mask_closed = emptyxpmmask;
+	}
+	if (!pixmap_opened) {
+		pixmap_opened = emptyxpm;
+		mask_opened = emptyxpmmask;
+	}
+	gtk_ctree_set_node_info(ctree, node, text, spacing,
+		pixmap_closed, mask_closed, pixmap_opened, mask_opened,
+		is_leaf, expanded);
+
 }

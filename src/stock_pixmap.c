@@ -132,6 +132,7 @@
 #include "pixmaps/drafts_close_mark.xpm"
 #include "pixmaps/drafts_open_mark.xpm"
 #include "pixmaps/dir_noselect.xpm"
+#include "pixmaps/empty.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -292,7 +293,8 @@ static StockPixmapData pixmaps[] =
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
-        {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL}
+        {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL},
+        {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

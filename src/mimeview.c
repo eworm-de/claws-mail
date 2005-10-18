@@ -442,7 +442,7 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	else
 		str[COL_NAME] = (gchar *) get_part_name(partinfo);
 
-	node = gtk_ctree_insert_node(ctree, parent, NULL, str, 0,
+	node = gtk_sctree_insert_node(ctree, parent, NULL, str, 0,
 				     NULL, NULL, NULL, NULL,
 				     FALSE, TRUE);
 	gtk_ctree_node_set_row_data(ctree, node, partinfo);

@@ -76,4 +76,26 @@ void gtk_sctree_sort_node (GtkCTree *ctree, GtkCTreeNode *node);
 
 void gtk_sctree_sort_recursive (GtkCTree *ctree, GtkCTreeNode *node);
 
+GtkCTreeNode* gtk_sctree_insert_node        (GtkCTree *ctree,
+                                             GtkCTreeNode *parent,
+                                             GtkCTreeNode *sibling,
+                                             gchar *text[],
+                                             guint8 spacing,
+                                             GdkPixmap *pixmap_closed,
+                                             GdkBitmap *mask_closed,
+                                             GdkPixmap *pixmap_opened,
+                                             GdkBitmap *mask_opened,
+                                             gboolean is_leaf,
+                                             gboolean expanded);
+void        gtk_sctree_set_node_info        (GtkCTree *ctree,
+                                             GtkCTreeNode *node,
+                                             const gchar *text,
+                                             guint8 spacing,
+                                             GdkPixmap *pixmap_closed,
+                                             GdkBitmap *mask_closed,
+                                             GdkPixmap *pixmap_opened,
+                                             GdkBitmap *mask_opened,
+                                             gboolean is_leaf,
+                                             gboolean expanded);
+
 #endif /* __GTK_SCTREE_H__ */

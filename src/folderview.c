@@ -895,7 +895,7 @@ void folderview_append_item(FolderItem *item)
 				gtk_clist_freeze(GTK_CLIST(ctree));
 
 				text[col_pos[F_COL_FOLDER]] = item->name;
-				child = gtk_ctree_insert_node
+				child = gtk_sctree_insert_node
 					(ctree, node, NULL, text,
 					 FOLDER_SPACING,
 					 folderxpm, folderxpmmask,
@@ -1388,7 +1388,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	    prefs_common.display_folder_unread) {
 		str = g_strdup_printf("%s (%d%s)", name, item->total_msgs,
 				      add_unread_mark ? "+" : "");
-		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
@@ -1402,7 +1402,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 				              item->unreadmarked_msgs > 0 ? "!":"");
 		else
 			str = g_strdup_printf("%s (+)", name);
-		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
@@ -1410,7 +1410,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		str = g_strdup_printf("%s%s", name, 
 			              item->unreadmarked_msgs > 0 ? " (!)":"");
 	
-		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
@@ -2071,7 +2071,7 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	text[col_pos[F_COL_FOLDER]] = item->name;
-	node = gtk_ctree_insert_node(ctree, parent_node, NULL, text,
+	node = gtk_sctree_insert_node(ctree, parent_node, NULL, text,
 				     FOLDER_SPACING,
 				     folderxpm, folderxpmmask,
 				     folderopenxpm, folderopenxpmmask,
