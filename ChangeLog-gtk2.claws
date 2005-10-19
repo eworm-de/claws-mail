@@ -1,3 +1,8 @@
+2005-10-19 [colin]	1.9.15cvs78
+
+	* src/plugins/pgpmime/pgpmime.c
+		Oops, no need to double-check though
+
 2005-10-19 [colin]	1.9.15cvs77
 
 	* src/plugins/pgpinline/pgpinline.c

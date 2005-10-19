@@ -914,3 +914,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 sylpheed-claws.desktop;  cvs diff -u -r 1.155.2.33 -r 1.155.2.34 src/Makefile.am;  cvs diff -u -r 1.207.2.75 -r 1.207.2.76 src/folderview.c;  cvs diff -u -r 1.115.2.60 -r 1.115.2.61 src/main.c;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/wizard.c;  ) > 1.9.15cvs75.patchset
 ( cvs diff -u -r 1.382.2.184 -r 1.382.2.185 src/compose.c;  cvs diff -u -r 1.36.2.45 -r 1.36.2.46 src/common/utils.c;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs76.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs77.patchset
+( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs78.patchset

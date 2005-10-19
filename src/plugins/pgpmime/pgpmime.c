@@ -196,10 +196,6 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
 	fp = g_fopen(parent->data.filename, "rb");
-	if (fp == NULL) {
-		perror("my_tmpfile");
-		return 0;
-	}
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
