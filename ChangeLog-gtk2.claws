@@ -1,3 +1,15 @@
+2005-10-19 [colin]	1.9.15cvs76
+
+	* src/common/utils.c
+		Use shorter mime boundaries to avoid having
+		MTAs rewrapping our headers, breaking the
+		PGP signature in the process 
+	* src/compose.c
+	* src/plugins/pgpmime/pgpmime.c
+		Check for boundary uniqueness to be sure
+		it won't happen, instead of hoping for the
+		best
+
 2005-10-19 [colin]	1.9.15cvs75
 
 	* sylpheed-claws.desktop

@@ -4028,13 +4028,20 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	/* append attachment parts */
 	if (compose_use_attach(compose)) {
 		MimeInfo *mimempart;
-
+		gchar *boundary = NULL;
 		mimempart = procmime_mimeinfo_new();
     		mimempart->content = MIMECONTENT_EMPTY;
     		mimempart->type = MIMETYPE_MULTIPART;
 	        mimempart->subtype = g_strdup("mixed");
+
+		do {
+			if (boundary)
+				g_free(boundary);
+			boundary = generate_mime_boundary(NULL);
+		} while (strstr(buf, boundary) != NULL);
+
     		g_hash_table_insert(mimempart->typeparameters, g_strdup("boundary"),
-				    generate_mime_boundary(NULL));
+				    boundary);
 
 		mimetext->disposition = DISPOSITIONTYPE_INLINE;
 

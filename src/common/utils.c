@@ -3035,8 +3035,7 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
  * uniqueness if everything is either quoted-printable or base64
  * encoded (note that conversion is allowed), but because MIME bodies
  * may be nested, it may happen that the same boundary has already
- * been used. We avoid scanning the message for conflicts and hope the
- * best.
+ * been used. 
  *
  *   boundary := 0*69<bchars> bcharsnospace
  *   bchars := bcharsnospace / " "
@@ -3052,21 +3051,15 @@ gchar *generate_mime_boundary(const gchar *prefix)
 	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			     "abcdefghijklmnopqrstuvwxyz"
 			     "1234567890+_./=";
-	gchar buf_uniq[17];
-	gchar buf_date[64];
+	gchar buf_uniq[24];
 	gint i;
 
 	for (i = 0; i < sizeof(buf_uniq) - 1; i++)
 		buf_uniq[i] = tbl[g_random_int_range(0, sizeof(tbl) - 1)];
 	buf_uniq[i] = '\0';
 
-	get_rfc822_date(buf_date, sizeof(buf_date));
-	subst_char(buf_date, ' ', '_');
-	subst_char(buf_date, ',', '_');
-	subst_char(buf_date, ':', '_');
-
-	return g_strdup_printf("%s_%s_%s", prefix ? prefix : "Multipart",
-			       buf_date, buf_uniq);
+	return g_strdup_printf("%s_%s", prefix ? prefix : "MP",
+			       buf_uniq);
 }
 
 gint change_file_mode_rw(FILE *fp, const gchar *file)

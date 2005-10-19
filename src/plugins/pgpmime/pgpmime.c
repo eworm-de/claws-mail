@@ -394,13 +394,23 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
 	gchar *textstr, *micalg;
 	FILE *fp;
-	gchar *boundary, *sigcontent;
+	gchar *boundary = NULL;
+	gchar *sigcontent;
 	gpgme_ctx_t ctx;
 	gpgme_data_t gpgtext, gpgsig;
 	size_t len;
 	struct passphrase_cb_info_s info;
 	gpgme_sign_result_t result = NULL;
+	gchar *test_msg;
+	
+	fp = my_tmpfile();
+	procmime_write_mimeinfo(mimeinfo, fp);
+	rewind(fp);
 
+	/* read temporary file into memory */
+	test_msg = file_read_stream_to_str(fp);
+	fclose(fp);
+	
 	memset (&info, 0, sizeof info);
 
 	/* remove content node from message */
@@ -411,7 +421,15 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	sigmultipart = procmime_mimeinfo_new();
 	sigmultipart->type = MIMETYPE_MULTIPART;
 	sigmultipart->subtype = g_strdup("signed");
-	boundary = generate_mime_boundary("Signature");
+	
+	do {
+		if (boundary)
+			g_free(boundary);
+		boundary = generate_mime_boundary("Sig");
+	} while (strstr(test_msg, boundary) != NULL);
+	
+	g_free(test_msg);
+
 	g_hash_table_insert(sigmultipart->typeparameters, g_strdup("boundary"),
                             g_strdup(boundary));
 	g_hash_table_insert(sigmultipart->typeparameters, g_strdup("protocol"),
