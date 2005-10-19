@@ -1,3 +1,10 @@
+2005-10-19 [paul]	1.9.15cvs74
+
+	* src/folder.c
+	* src/folderview.c
+		fix summaryview update
+		Patch by Colin
+
 2005-10-18 [colin]	1.9.15cvs73
 
 	* src/plugins/pgpcore/passphrase.c

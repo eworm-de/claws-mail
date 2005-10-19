@@ -1497,9 +1497,8 @@ gint folder_item_open(FolderItem *item)
 {
 	g_return_val_if_fail(item->no_select == FALSE, -1);
 
-	/* caller of folder_item_open *must* call 
-	 * folder_item_process_open after ! */
 	item->processing_pending = TRUE;
+	folder_item_process_open (item, NULL, NULL, NULL);
 	
 	item->opened = TRUE;
 

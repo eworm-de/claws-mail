@@ -1846,44 +1846,6 @@ static void summary_thaw_for_proc(gpointer data)
 	gtk_clist_thaw(GTK_CLIST(folderview->summaryview->ctree));
 }
 
-void folderview_process_open(FolderView *folderview, FolderItem *item)
-{
-	if (!item)
-		return;
-
-	folder_item_update_freeze();
-	folder_item_process_open(item, 
-		summary_freeze_for_proc,
-		summary_thaw_for_proc,
-		folderview);
-	folder_item_update_thaw();
-	
-	return;	
-}
-
-#if 0
-gboolean folderview_process_open_cb(gpointer data)
-{
-	FolderView *folderview = (FolderView *)data;
-	FolderItem *item = NULL;
-	
-	if (!folderview || !folderview->opened) {
-		debug_print("opened NULL\n");
-		return FALSE;
-	}
-	item = gtk_ctree_node_get_row_data(
-		GTK_CTREE(folderview->ctree), 
-		folderview->opened);
-	
-	if (!item)
-		return FALSE;
-
-	folderview_process_open(folderview, item);
-	
-	return FALSE;	
-}
-#endif
-
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {
@@ -1971,8 +1933,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
         }
 	
-	folderview_process_open(folderview, item);
-
 	main_window_cursor_normal(folderview->mainwin);
 
 	/* Show messages */
