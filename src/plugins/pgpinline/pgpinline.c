@@ -401,6 +401,10 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	procmime_decode_content(msgcontent);
 
 	fp = my_tmpfile();
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return FALSE;
+	}
 	procmime_write_mimeinfo(msgcontent, fp);
 	rewind(fp);
 
@@ -514,6 +518,10 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	procmime_decode_content(msgcontent);
 
 	fp = my_tmpfile();
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return FALSE;
+	}
 	procmime_write_mimeinfo(msgcontent, fp);
 	rewind(fp);
 

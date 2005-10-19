@@ -1,3 +1,10 @@
+2005-10-19 [colin]	1.9.15cvs77
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Check that my_tmpfile() doesn't 
+		return NULL
+
 2005-10-19 [colin]	1.9.15cvs76
 
 	* src/common/utils.c

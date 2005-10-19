@@ -196,6 +196,10 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
 	fp = g_fopen(parent->data.filename, "rb");
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return 0;
+	}
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
@@ -404,6 +408,10 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gchar *test_msg;
 	
 	fp = my_tmpfile();
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return FALSE;
+	}
 	procmime_write_mimeinfo(mimeinfo, fp);
 	rewind(fp);
 
@@ -439,6 +447,10 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	/* write message content to temporary file */
 	fp = my_tmpfile();
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return FALSE;
+	}
 	procmime_write_mimeinfo(sigmultipart, fp);
 	rewind(fp);
 
@@ -561,6 +573,10 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	/* write message content to temporary file */
 	fp = my_tmpfile();
+	if (fp == NULL) {
+		perror("my_tmpfile");
+		return FALSE;
+	}
 	procmime_write_mimeinfo(encmultipart, fp);
 	rewind(fp);
 
