@@ -158,10 +158,12 @@ static void write_welcome_email(WizardWindow *wizard)
 	subj = g_strdup_printf(_("Welcome to Sylpheed-Claws"));
 
 	head = g_strdup_printf(
-		"From: Sylpheed-Claws Team <sylpheed-claws-users@lists.sf.net>\n"
+		"From: %s <sylpheed-claws-users@lists.sf.net>\n"
 		"To: %s <%s>\n"
 		"Date: %s\n"
-		"Subject: %s\n",
+		"Subject: %s\n"
+		"Content-Type: text/plain; charset=UTF-8\n",
+		_("Sylpheed-Claws Team"),
 		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
 		buf_date, subj);

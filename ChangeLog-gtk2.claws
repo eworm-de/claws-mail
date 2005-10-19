@@ -1,3 +1,17 @@
+2005-10-19 [colin]	1.9.15cvs75
+
+	* sylpheed-claws.desktop
+	* src/Makefile.am
+	* src/main.c
+		Ship a sylpheed-claws binary instead
+		of a sylpheed one. Change the socket
+		name, too
+	* src/folderview.c
+		Update folder only if it changed
+	* src/wizard.c
+		Fix i18n in welcome mail, patch by
+		Fabien Vantard
+
 2005-10-19 [paul]
 
 	1.9.99-rc2 released

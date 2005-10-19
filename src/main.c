@@ -830,7 +830,7 @@ gchar *get_socket_name(void)
 	static gchar *filename = NULL;
 
 	if (filename == NULL) {
-		filename = g_strdup_printf("%s%csylpheed-%d",
+		filename = g_strdup_printf("%s%csylpheed-claws-%d",
 					   g_get_tmp_dir(), G_DIR_SEPARATOR,
 #if HAVE_GETUID
 					   getuid());

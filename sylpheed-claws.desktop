@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Sylpheed-Claws
-Exec=sylpheed
+Exec=sylpheed-claws
 Icon=sylpheed-claws.png
 Info="Sylpheed-Claws"
 Categories=Application;Network;

@@ -1019,7 +1019,7 @@ gint folderview_check_new(Folder *folder)
 	GtkCTreeNode *node;
 	gint new_msgs = 0;
 	gint former_new_msgs = 0;
-	gint former_new = 0;
+	gint former_new = 0, former_unread = 0, former_total;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
@@ -1038,7 +1038,9 @@ gint folderview_check_new(Folder *folder)
 			if (!item->prefs->newmailcheck) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
-			former_new = item->new_msgs;
+			former_new    = item->new_msgs;
+			former_unread = item->unread_msgs;
+			former_total  = item->total_msgs;
 
 			if (folder_item_scan(item) < 0) {
 				summaryview_unlock(folderview->summaryview, item);
@@ -1046,7 +1048,11 @@ gint folderview_check_new(Folder *folder)
 					break;
 			}
 
-			folderview_update_node(folderview, node);
+			if (former_new    != item->new_msgs ||
+			    former_unread != item->unread_msgs ||
+			    former_total  != item->total_msgs)
+				folderview_update_node(folderview, node);
+
 			new_msgs += item->new_msgs;
 			former_new_msgs += former_new;
 		}

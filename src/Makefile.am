@@ -1,8 +1,8 @@
 SUBDIRS = common gtk plugins etpan
 
-bin_PROGRAMS = sylpheed
+bin_PROGRAMS = sylpheed-claws
 
-sylpheed_SOURCES = \
+sylpheed_claws_SOURCES = \
 	account.c \
 	action.c \
 	addrbook.c \
@@ -136,8 +136,8 @@ sylpheed_SOURCES = \
 	vcard.c \
 	wizard.c
 
-sylpheedincludedir = $(pkgincludedir)
-sylpheedinclude_HEADERS = \
+sylpheed_clawsincludedir = $(pkgincludedir)
+sylpheed_clawsinclude_HEADERS = \
 	account.h \
 	action.h \
 	adbookbase.h \
@@ -391,10 +391,10 @@ INCLUDES = \
 	-Igtk \
 	-Ietpan
 
-sylpheed_LDFLAGS = \
+sylpheed_claws_LDFLAGS = \
 	-export-dynamic
 
-sylpheed_LDADD = \
+sylpheed_claws_LDADD = \
 	etpan/libsylpheedetpan.la \
 	gtk/libsylpheedgtk.la \
 	$(ASPELL_LIBS) \
@@ -412,7 +412,7 @@ sylpheed_LDADD = \
 	$(LIBETPAN_LIBS)
 
 AM_CPPFLAGS = \
-	-DG_LOG_DOMAIN=\"Sylpheed\" \
+	-DG_LOG_DOMAIN=\"Sylpheed-Claws\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
