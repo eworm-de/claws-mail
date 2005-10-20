@@ -442,6 +442,8 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
 	{"display_header", "TRUE", &prefs_common.display_header, P_BOOL,
 	 NULL, NULL, NULL},
+	{"display_xface", "TRUE", &prefs_common.display_xface,
+	 P_BOOL, NULL, NULL, NULL},
 	{"render_html", "TRUE", &prefs_common.render_html, P_BOOL,
 	 NULL, NULL, NULL},
 	{"line_space", "2", &prefs_common.line_space, P_INT,

@@ -246,6 +246,29 @@ gboolean defer_check(void *data)
 	return FALSE;
 }
 
+static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cfg_dir)
+{
+	gchar *message = g_strdup_printf(_("Configuration for Sylpheed-Claws %s found.\n"
+			 "Do you want to migrate this configuration?"),
+			 !strcmp(old_cfg_dir, OLD_GTK1_RC_DIR)?
+			 	_("1.0.5 or previous"):_("1.9.15 or previous"));
+	gint r = 0;
+	GtkWidget *window = NULL;
+	if (alertpanel(_("Migration of configuration"),
+		       message,
+		       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+		return FALSE;
+	
+	window = label_window_create(_("Copying configuration..."));
+	GTK_EVENTS_FLUSH();
+	r = copy_dir(old_cfg_dir, new_cfg_dir);
+	gtk_widget_destroy(window);
+	if (r != 0) {
+		alertpanel_error(_("Migration failed!"));
+	}
+	return (r == 0);
+}
+
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -316,6 +339,18 @@ int main(int argc, char *argv[])
 			     G_DIR_SEPARATOR_S, "gtkrc-2.0", NULL);
 	gtk_rc_parse(userrc);
 	g_free(userrc);
+
+	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
+	if (!is_dir_exist(RC_DIR)) {
+		gboolean r = FALSE;
+		if (is_dir_exist(OLD_GTK2_RC_DIR))
+			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR);
+		else if (is_dir_exist(OLD_GTK1_RC_DIR))
+			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR);
+		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0)
+			exit(1);
+	}
+
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "gtkrc-2.0", NULL);
 	gtk_rc_parse(userrc);
 	g_free(userrc);
@@ -327,10 +362,6 @@ int main(int argc, char *argv[])
 	gtk_settings_set_long_property(gtk_settings_get_default(), 
 				       "gtk-can-change-accels",
 				       (glong)TRUE, "XProperty");
-
-	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
-
-	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_rc_dir(), 1);
 

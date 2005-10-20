@@ -442,6 +442,8 @@ gint copy_file			(const gchar	*src,
 gint move_file			(const gchar	*src,
 				 const gchar	*dest,
 				 gboolean	 overwrite);
+gint copy_dir			(const gchar	*src,
+				 const gchar	*dest);
 gint copy_file_part_to_fp	(FILE		*fp,
 				 off_t		 offset,
 				 size_t		 length,

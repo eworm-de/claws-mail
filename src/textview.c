@@ -34,6 +34,13 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#if HAVE_LIBCOMPFACE
+#  include <compface.h>
+#endif
+
+#if HAVE_LIBCOMPFACE
+#define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
+#endif
 
 #include "main.h"
 #include "summaryview.h"
@@ -231,6 +238,19 @@ static GtkItemFactoryEntry textview_file_popup_entries[] =
 	{N_("/_Save image..."),		NULL, save_file_cb, 0, NULL},
 };
 
+static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
+{
+#if HAVE_LIBCOMPFACE
+	if (textview->image) {
+		gint x, y;
+		gtk_text_view_buffer_to_window_coords(
+			GTK_TEXT_VIEW(textview->text),
+			GTK_TEXT_WINDOW_RIGHT, 5, 5, &x, &y);
+		gtk_text_view_move_child(GTK_TEXT_VIEW(textview->text), 
+			textview->image, 5, y);
+	}
+#endif
+}
 
 TextView *textview_create(void)
 {
@@ -242,6 +262,7 @@ TextView *textview_create(void)
 	GtkClipboard *clipboard;
 	GtkItemFactory *link_popupfactory, *mail_popupfactory, *file_popupfactory;
 	GtkWidget *link_popupmenu, *mail_popupmenu, *file_popupmenu;
+	GtkAdjustment *adj;
 	gint n_entries;
 
 	debug_print("Creating text view...\n");
@@ -284,6 +305,10 @@ TextView *textview_create(void)
 			 G_CALLBACK(textview_leave_notify), textview);
 	g_signal_connect(G_OBJECT(text), "visibility-notify-event",
 			 G_CALLBACK(textview_visibility_notify), textview);
+	adj = gtk_scrolled_window_get_vadjustment(
+		GTK_SCROLLED_WINDOW(scrolledwin));
+	g_signal_connect(G_OBJECT(adj), "value-changed",
+			 G_CALLBACK(scrolled_cb), textview);
 
 	gtk_widget_show(scrolledwin);
 
@@ -1257,6 +1282,75 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	return sorted_headers;
 }
 
+#if HAVE_LIBCOMPFACE
+static void textview_show_xface(TextView *textview)
+{
+	gchar xface[2048];
+	MsgInfo *msginfo = textview->messageview->msginfo;
+	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
+	static gboolean xpm_xface_init = TRUE;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	
+	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 0);
+
+	if (prefs_common.display_header_pane
+	||  !prefs_common.display_xface)
+		goto bail;
+	
+	if (!msginfo)
+		goto bail;
+
+	if (!msginfo->xface || strlen(msginfo->xface) < 5) {
+		goto bail;
+	}
+
+	strncpy(xface, msginfo->xface, sizeof(xface));
+
+	if (uncompface(xface) < 0) {
+		g_warning("uncompface failed\n");
+		goto bail;
+	}
+
+	if (xpm_xface_init) {
+		gint i;
+
+		for (i = 0; i < XPM_XFACE_HEIGHT; i++) {
+			xpm_xface[i] = g_malloc(WIDTH + 1);
+			*xpm_xface[i] = '\0';
+		}
+		xpm_xface_init = FALSE;
+	}
+
+	create_xpm_from_xface(xpm_xface, xface);
+
+	pixmap = gdk_pixmap_create_from_xpm_d
+		(textview->text->window, &mask, 
+		 &textview->text->style->white, xpm_xface);
+	
+	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 
+		WIDTH+10);
+
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	
+	textview->image = gtk_image_new_from_pixmap(pixmap, mask);
+	gtk_widget_show(textview->image);
+	gtk_text_view_add_child_in_window(text, textview->image, 
+		GTK_TEXT_WINDOW_RIGHT, 5, 5);
+
+	gtk_widget_show_all(textview->text);
+	
+	return;
+bail:
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	textview->image = NULL;
+	
+}
+#endif
+
 static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
@@ -1302,6 +1396,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
 							 "header", NULL);
 	}
+#if HAVE_LIBCOMPFACE
+	textview_show_xface(textview);
+#endif
 }
 
 gboolean textview_search_string(TextView *textview, const gchar *str,

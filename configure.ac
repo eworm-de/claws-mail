@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=15
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=83
+EXTRA_VERSION=84
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -343,10 +343,10 @@ AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode pa
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
 
 dnl RC dir (will be default at a certain point in time)
-AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed-gtk2)],
-	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed-gtk2")
+AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed-claws)],
+	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed-claws")
 if test x"$ac_cv_with_config_dir" = x""; then
-	ac_cv_with_config_dir=".sylpheed-gtk2"
+	ac_cv_with_config_dir=".sylpheed-claws"
 fi 
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 

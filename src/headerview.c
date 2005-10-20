@@ -62,8 +62,6 @@ static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 
 static void headerview_show_xface	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
-static gint create_xpm_from_xface	(gchar		*xpm[],
-					 const gchar	*xface);
 #endif
 
 HeaderView *headerview_create(void)
@@ -295,75 +293,3 @@ void headerview_destroy(HeaderView *headerview)
 {
 	g_free(headerview);
 }
-
-#if HAVE_LIBCOMPFACE
-static gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
-{
-	static gchar *bit_pattern[] = {
-		"....",
-		"...#",
-		"..#.",
-		"..##",
-		".#..",
-		".#.#",
-		".##.",
-		".###",
-		"#...",
-		"#..#",
-		"#.#.",
-		"#.##",
-		"##..",
-		"##.#",
-		"###.",
-		"####"
-	};
-
-	static gchar *xface_header = "48 48 2 1";
-	static gchar *xface_black  = "# c #000000";
-	static gchar *xface_white  = ". c #ffffff";
-
-	gint i, line = 0;
-	const guchar *p;
-	gchar buf[WIDTH * 4 + 1];  /* 4 = strlen("0x0000") */
-
-	p = xface;
-
-	strcpy(xpm[line++], xface_header);
-	strcpy(xpm[line++], xface_black);
-	strcpy(xpm[line++], xface_white);
-
-	for (i = 0; i < HEIGHT; i++) {
-		gint col;
-
-		buf[0] = '\0';
-     
-		for (col = 0; col < 3; col++) {
-			gint figure;
-
-			p += 2;  /* skip '0x' */
-
-			for (figure = 0; figure < 4; figure++) {
-				gint n = 0;
-
-				if ('0' <= *p && *p <= '9') {
-					n = *p - '0';
-				} else if ('a' <= *p && *p <= 'f') {
-					n = *p - 'a' + 10;
-				} else if ('A' <= *p && *p <= 'F') {
-					n = *p - 'A' + 10;
-				}
-
-				strcat(buf, bit_pattern[n]);
-				p++;  /* skip ',' */
-			}
-
-			p++;  /* skip '\n' */
-		}
-
-		strcpy(xpm[line++], buf);
-		p++;
-	}
-
-	return 0;
-}
-#endif

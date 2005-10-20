@@ -49,6 +49,7 @@ typedef struct _MessagePage
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
+	GtkWidget *chkbtn_dispxface;
 	GtkWidget *chkbtn_html;
 	GtkWidget *spinbtn_linespc;
 
@@ -58,6 +59,16 @@ typedef struct _MessagePage
 
 	GtkWidget *chkbtn_attach_desc;
 } MessagePage;
+
+static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active(toggle_btn);
+
+	gtk_widget_set_sensitive(widget, !is_active);
+}
+
 
 void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
@@ -71,6 +82,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
+	GtkWidget *chkbtn_dispxface;
 	GtkWidget *button_edit_disphdr;
 	GtkWidget *chkbtn_html;
 	GtkWidget *hbox_linespc;
@@ -106,6 +118,16 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
+
+#if HAVE_LIBCOMPFACE
+	PACK_CHECK_BUTTON(vbox2, chkbtn_dispxface,
+			  _("Display X-Face in message view"));
+#endif
+	gtk_widget_set_sensitive(chkbtn_dispxface, 
+		!prefs_common.display_header_pane);
+	
+	g_signal_connect(G_OBJECT(chkbtn_disphdrpane), "toggled",
+			 G_CALLBACK(disphdr_pane_toggled), chkbtn_dispxface);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -206,6 +228,8 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.conv_mb_alnum);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
 		prefs_common.display_header_pane);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_dispxface),
+		prefs_common.display_xface);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdr),
 		prefs_common.display_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_html),
@@ -224,6 +248,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->window = GTK_WIDGET(window);
 	prefs_message->chkbtn_mbalnum = chkbtn_mbalnum;
 	prefs_message->chkbtn_disphdrpane = chkbtn_disphdrpane;
+	prefs_message->chkbtn_dispxface = chkbtn_dispxface;
 	prefs_message->chkbtn_disphdr = chkbtn_disphdr;
 	prefs_message->chkbtn_html = chkbtn_html;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
@@ -243,6 +268,8 @@ void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->chkbtn_mbalnum));
 	prefs_common.display_header_pane = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdrpane));
+	prefs_common.display_xface = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->chkbtn_dispxface));
 	prefs_common.display_header = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdr));
 	prefs_common.render_html = gtk_toggle_button_get_active(

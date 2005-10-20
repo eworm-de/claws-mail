@@ -160,7 +160,7 @@ gboolean gtkut_text_buffer_find_backward(GtkTextBuffer		*buffer,
 					 GtkTextIter		*match_pos);
 
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
-
+GtkWidget *label_window_create(const gchar *str);
 void gtkut_window_popup			(GtkWidget	*window);
 
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
@@ -184,5 +184,7 @@ GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 
 GtkWidget *gtkut_get_browse_file_btn(const gchar *label);
 GtkWidget *gtkut_get_browse_directory_btn(const gchar *label);
-
+#if HAVE_LIBCOMPFACE
+gint create_xpm_from_xface(gchar *xpm[], const gchar *xface);
+#endif
 #endif /* __GTKUTILS_H__ */

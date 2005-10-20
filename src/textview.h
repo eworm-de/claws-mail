@@ -61,6 +61,7 @@ struct _TextView
 	RemoteURI *uri_hover;
 	GtkTextIter uri_hover_start_iter;
 	GtkTextIter uri_hover_end_iter;
+	GtkWidget *image;
 };
 
 TextView *textview_create		(void);

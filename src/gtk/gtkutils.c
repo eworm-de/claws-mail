@@ -36,6 +36,10 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
+#if HAVE_LIBCOMPFACE
+#  include <compface.h>
+#endif
+
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
 #  include <wctype.h>
@@ -50,6 +54,7 @@
 #include "menu.h"
 #include "prefs_account.h"
 #include "prefs_common.h"
+#include "manage_window.h"
 
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)
@@ -692,6 +697,29 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
 }
 
+GtkWidget *label_window_create(const gchar *str)
+{
+	GtkWidget *window;
+	GtkWidget *label;
+
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, 380, 60);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_title(GTK_WINDOW(window), str);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+	manage_window_set_transient(GTK_WINDOW(window));
+
+	label = gtk_label_new(str);
+	gtk_container_add(GTK_CONTAINER(window), label);
+	gtk_widget_show(label);
+
+	gtk_widget_show_now(window);
+
+	return window;
+}
+
 GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 				  GCallback		 callback,
 				  gpointer		 data)
@@ -858,3 +886,75 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 #endif
 	return button;
 }
+
+#if HAVE_LIBCOMPFACE
+gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
+{
+	static gchar *bit_pattern[] = {
+		"....",
+		"...#",
+		"..#.",
+		"..##",
+		".#..",
+		".#.#",
+		".##.",
+		".###",
+		"#...",
+		"#..#",
+		"#.#.",
+		"#.##",
+		"##..",
+		"##.#",
+		"###.",
+		"####"
+	};
+
+	static gchar *xface_header = "48 48 2 1";
+	static gchar *xface_black  = "# c #000000";
+	static gchar *xface_white  = ". c #ffffff";
+
+	gint i, line = 0;
+	const guchar *p;
+	gchar buf[WIDTH * 4 + 1];  /* 4 = strlen("0x0000") */
+
+	p = xface;
+
+	strcpy(xpm[line++], xface_header);
+	strcpy(xpm[line++], xface_black);
+	strcpy(xpm[line++], xface_white);
+
+	for (i = 0; i < HEIGHT; i++) {
+		gint col;
+
+		buf[0] = '\0';
+     
+		for (col = 0; col < 3; col++) {
+			gint figure;
+
+			p += 2;  /* skip '0x' */
+
+			for (figure = 0; figure < 4; figure++) {
+				gint n = 0;
+
+				if ('0' <= *p && *p <= '9') {
+					n = *p - '0';
+				} else if ('a' <= *p && *p <= 'f') {
+					n = *p - 'a' + 10;
+				} else if ('A' <= *p && *p <= 'F') {
+					n = *p - 'A' + 10;
+				}
+
+				strcat(buf, bit_pattern[n]);
+				p++;  /* skip ',' */
+			}
+
+			p++;  /* skip '\n' */
+		}
+
+		strcpy(xpm[line++], buf);
+		p++;
+	}
+
+	return 0;
+}
+#endif

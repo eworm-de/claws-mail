@@ -239,6 +239,7 @@ struct _PrefsCommon
 	gboolean conv_mb_alnum;
 	gboolean display_header_pane;
 	gboolean display_header;
+	gboolean display_xface;
 	gint line_space;
 	gboolean render_html;
 	gboolean textview_cursor_visible;

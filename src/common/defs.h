@@ -44,6 +44,8 @@
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
 #define RC_DIR			CFG_RC_DIR
+#define OLD_GTK2_RC_DIR		".sylpheed-gtk2"
+#define OLD_GTK1_RC_DIR		".sylpheed"
 #define NEWS_CACHE_DIR		"newscache"
 #define IMAP_CACHE_DIR		"imapcache"
 #define MBOX_CACHE_DIR		"mboxcache"

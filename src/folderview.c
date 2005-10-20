@@ -947,29 +947,6 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 	}
 }
 
-static GtkWidget *label_window_create(const gchar *str)
-{
-	GtkWidget *window;
-	GtkWidget *label;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request(window, 380, 60);
-	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_title(GTK_WINDOW(window), str);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-	manage_window_set_transient(GTK_WINDOW(window));
-
-	label = gtk_label_new(str);
-	gtk_container_add(GTK_CONTAINER(window), label);
-	gtk_widget_show(label);
-
-	gtk_widget_show_now(window);
-
-	return window;
-}
-
 void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 {
 	GtkWidget *window;

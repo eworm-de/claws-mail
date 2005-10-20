@@ -1,3 +1,22 @@
+2005-10-20 [colin]	1.9.15cvs84
+
+	* configure.ac
+	* src/folderview.c
+	* src/headerview.c
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_message.c
+	* src/textview.c
+	* src/textview.h
+	* src/common/defs.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Migrate config to .sylpheed-claws (Automatically)
+		Add a way to get the Xface in the TextView
+
 2005-10-20 [colin]	1.9.15cvs83
 
 	* src/gtk/Makefile.am

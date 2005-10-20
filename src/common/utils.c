@@ -4437,3 +4437,34 @@ gchar *mailcap_get_command_for_type(const gchar *type)
 	result = mailcap_get_command_in_file("/etc/mailcap", type);
 	return result;
 }
+
+gint copy_dir(const gchar *src, const gchar *dst)
+{
+	GDir *dir;
+	const gchar *name;
+	
+	if ((dir = g_dir_open(src, 0, NULL)) == NULL) {
+		g_warning("failed to open directory: %s\n", src);
+		return -1;
+	}
+
+	if (make_dir(dst) < 0)
+		return -1;
+	
+	while ((name = g_dir_read_name(dir)) != NULL) {
+		gchar *old_file, *new_file;
+		old_file = g_strconcat(src, G_DIR_SEPARATOR_S, name, NULL);
+		new_file = g_strconcat(dst, G_DIR_SEPARATOR_S, name, NULL);
+		debug_print("copying: %s -> %s\n", old_file, new_file);
+		if (g_file_test(old_file, G_FILE_TEST_IS_REGULAR)) {
+			gint r = copy_file(old_file, new_file, TRUE);
+			if (r < 0)
+				return r;
+		} else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
+			gint r = copy_dir(old_file, new_file);
+			if (r < 0)
+				return r;
+		}
+	}
+	return 0;
+}
