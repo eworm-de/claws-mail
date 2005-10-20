@@ -1121,6 +1121,11 @@ void textview_clear(TextView *textview)
 	textview->uri_list = NULL;
 
 	textview->body_pos = 0;
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	textview->image = NULL;
+	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 
+		0);
 }
 
 void textview_destroy(TextView *textview)

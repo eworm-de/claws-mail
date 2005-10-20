@@ -1,3 +1,8 @@
+2005-10-20 [colin]	1.9.15cvs85
+
+	* src/textview.c
+		Clear xface when clearing textview
+
 2005-10-20 [colin]	1.9.15cvs84
 
 	* configure.ac
