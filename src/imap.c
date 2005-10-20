@@ -2027,6 +2027,8 @@ static void *imap_get_uncached_messages_thread(void *data)
 			
 			info = carray_get(env_list, i);
 			msginfo = imap_envelope_from_lep(info, item);
+			if (msginfo == NULL)
+				continue;
 			msginfo->folder = item;
 			if (!newlist)
 				llast = newlist = g_slist_append(newlist, msginfo);
@@ -4117,6 +4119,9 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 	size_t size = 0;
 	MsgFlags flags = {0, 0};
 	
+	if (info->headers == NULL)
+		return NULL;
+
 	MSG_SET_TMP_FLAGS(flags, MSG_IMAP);
 	if (folder_has_parent_of_type(item, F_QUEUE)) {
 		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);

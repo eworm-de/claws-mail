@@ -1723,6 +1723,8 @@ fetch_to_env_info(struct mailimap_msg_att * msg_att)
 	imap_get_msg_att_info(msg_att, &uid, &headers, &size,
 			      &att_dyn);
 	
+	if (!headers)
+		return NULL;
 	info = malloc(sizeof(* info));
 	info->uid = uid;
 	info->headers = strdup(headers);
@@ -1739,7 +1741,6 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 	clistiter * cur;
 	unsigned int i;
 	carray * env_list;
-  
 	i = 0;
   
 	env_list = carray_new(16);
@@ -1752,6 +1753,8 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 		msg_att = clist_content(cur);
 
 		env_info = fetch_to_env_info(msg_att);
+		if (!env_info)
+			return MAILIMAP_ERROR_MEMORY;
 		carray_add(env_list, env_info, NULL);
 	}
   

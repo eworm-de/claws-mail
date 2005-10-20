@@ -917,3 +917,4 @@
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs78.patchset
 ( cvs diff -u -r 1.100.2.27 -r 1.100.2.28 AUTHORS;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs79.patchset
 ( cvs diff -u -r 1.213.2.65 -r 1.213.2.66 src/folder.c;  ) > 1.9.15cvs80.patchset
+( cvs diff -u -r 1.179.2.80 -r 1.179.2.81 src/imap.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/etpan/imap-thread.c;  ) > 1.9.15cvs81.patchset
