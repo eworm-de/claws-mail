@@ -118,7 +118,8 @@ static void mimeview_launch		(MimeView	*mimeview);
 static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
-					 const gchar	*cmdline);
+					 const gchar	*cmdline,
+					 MimeView  	*mimeview);
 static gboolean icon_clicked_cb		(GtkWidget 	*button, 
 					 GdkEventButton	*event, 
 					 MimeView 	*mimeview);
@@ -1270,7 +1271,7 @@ static void mimeview_launch(MimeView *mimeview)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 	else
-		mimeview_view_file(filename, partinfo, NULL);
+		mimeview_view_file(filename, partinfo, NULL, mimeview);
 
 	g_free(filename);
 }
@@ -1283,6 +1284,7 @@ static void mimeview_open_with(MimeView *mimeview)
 	gchar *mime_command = NULL;
 	gchar *content_type = NULL;
 
+	if (!mimeview) return;
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
@@ -1322,7 +1324,7 @@ static void mimeview_open_with(MimeView *mimeview)
 		 TRUE);
 	g_free(mime_command);
 	if (cmd) {
-		mimeview_view_file(filename, partinfo, cmd);
+		mimeview_view_file(filename, partinfo, cmd, mimeview);
 		g_free(prefs_common.mime_open_cmd);
 		prefs_common.mime_open_cmd = cmd;
 		prefs_common.mime_open_cmd_history =
@@ -1333,7 +1335,7 @@ static void mimeview_open_with(MimeView *mimeview)
 }
 
 static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
-			       const gchar *cmdline)
+			       const gchar *cmdline, MimeView *mimeview)
 {
 	static gchar *default_image_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
 	static gchar *default_audio_cmdline = DEFAULT_AUDIO_PLAYER_CMD;
@@ -1350,6 +1352,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		def_cmd = NULL;
 	} else if (MIMETYPE_APPLICATION == partinfo->type &&
 		   !g_ascii_strcasecmp(partinfo->subtype, "octet-stream")) {
+		mimeview_open_with(mimeview);
 		return;
 	} else if (MIMETYPE_IMAGE == partinfo->type) {
 		cmd = prefs_common.mime_image_viewer;
@@ -1379,11 +1382,14 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			g_warning("MIME viewer command line is invalid: '%s'", cmd);
 		if (def_cmd)
 			g_snprintf(buf, sizeof(buf), def_cmd, filename);
-		else
+		else {
+			mimeview_open_with(mimeview);
 			return;
+		}
 	}
 
-	execute_command_line(buf, TRUE);
+	if (execute_command_line(buf, TRUE) != 0)
+		mimeview_open_with(mimeview);
 }
 
 void mimeview_register_viewer_factory(MimeViewerFactory *factory)
