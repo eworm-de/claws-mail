@@ -502,7 +502,12 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	newinfo = procmime_mimeinfo_new();
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("pgp-signature");
+	g_hash_table_insert(newinfo->typeparameters, g_strdup("name"),
+			     g_strdup("signature.asc"));
 	newinfo->content = MIMECONTENT_MEM;
+	newinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
+	g_hash_table_insert(newinfo->dispositionparameters, g_strdup("filename"),
+			    g_strdup("signature.asc"));
 	newinfo->data.mem = g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';

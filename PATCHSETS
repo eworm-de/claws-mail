@@ -915,3 +915,4 @@
 ( cvs diff -u -r 1.382.2.184 -r 1.382.2.185 src/compose.c;  cvs diff -u -r 1.36.2.45 -r 1.36.2.46 src/common/utils.c;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs76.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs77.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs78.patchset
+( cvs diff -u -r 1.100.2.27 -r 1.100.2.28 AUTHORS;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.15cvs79.patchset
