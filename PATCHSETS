@@ -919,3 +919,4 @@
 ( cvs diff -u -r 1.213.2.65 -r 1.213.2.66 src/folder.c;  ) > 1.9.15cvs80.patchset
 ( cvs diff -u -r 1.179.2.80 -r 1.179.2.81 src/imap.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/etpan/imap-thread.c;  ) > 1.9.15cvs81.patchset
 ( cvs diff -u -r 1.83.2.48 -r 1.83.2.49 src/mimeview.c;  ) > 1.9.15cvs82.patchset
+( cvs diff -u -r 1.20.2.5 -r 1.20.2.6 src/gtk/Makefile.am;  cvs diff -u -r 1.4.2.18 -r 1.4.2.19 src/gtk/about.c;  diff -u /dev/null src/gtk/authors.h;  ) > 1.9.15cvs83.patchset

@@ -3,7 +3,8 @@ PLUGINDIR = $(pkglibdir)/plugins/
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 EXTRA_DIST = \
-	sylpheed-marshal.list
+	sylpheed-marshal.list \
+	authors.h
 
 libsylpheedgtk_la_SOURCES = \
 	about.c \
@@ -72,7 +73,7 @@ libsylpheedgtk_la_LIBADD = \
 	$(ASPELL_LIBS) \
 	$(GNOMEPRINT_LIBS)
 
-BUILT_SOURCES=sylpheed-marshal.c sylpheed-marshal.h
+BUILT_SOURCES=sylpheed-marshal.c sylpheed-marshal.h authors.h
 
 sylpheed-marshal.h: sylpheed-marshal.list
 	$(GLIB_GENMARSHAL) $< --header --prefix=sylpheed_marshal > $@

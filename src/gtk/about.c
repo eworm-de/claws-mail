@@ -46,19 +46,38 @@
 #include "prefs_common.h"
 #include "utils.h"
 #include "version.h"
+#include "authors.h"
+#include "codeconv.h"
 
 static GtkWidget *window;
+static GtkWidget *scrolledwin;
 
 static void about_create(void);
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event);
 static void about_uri_clicked(GtkButton *button, gpointer data);
+static gboolean scrollme = FALSE;
+
+static gboolean scroller(gpointer data)
+{
+	GtkAdjustment *adj = (GtkAdjustment *)data;
+	if (adj->value != adj->upper)
+		gtk_adjustment_set_value(adj, adj->value + 1);
+	else
+		gtk_adjustment_set_value(adj, 0);
+	return scrollme;
+}
 
 void about_show(void)
 {
+	GtkAdjustment *adj = NULL;
 	if (!window)
 		about_create();
 	else
 		gtk_window_present(GTK_WINDOW(window));
+	scrollme = TRUE;
+	adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin));
+	gtk_adjustment_set_value(adj, 0);
+	g_timeout_add(30, scroller, adj);
 }
 
 static void about_create(void)
@@ -69,7 +88,6 @@ static void about_create(void)
  	GtkWidget *vbox2;
 	GtkWidget *label;
 	GtkWidget *button;
-	GtkWidget *scrolledwin;
 	GtkStyle *style;
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
@@ -80,6 +98,7 @@ static void about_create(void)
 	GtkWidget *close_button;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	GdkColor color = {0, 0, 0, 0};
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -221,11 +240,12 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), label, TRUE, TRUE, 0);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_size_request(scrolledwin, -1, 80);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_SHADOW_IN);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
+					    GTK_SHADOW_NONE);
+	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, FALSE, FALSE, 0);
 
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
@@ -236,6 +256,12 @@ static void about_create(void)
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
+
+	color = gtk_widget_get_style(label)->bg[GTK_STATE_NORMAL];
+	gtk_widget_modify_base (text, GTK_STATE_NORMAL, &color);
+
+
+	gtk_text_buffer_insert(buffer, &iter, "\n\n\n\n\n\n\n\n", -1);
 
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This program is free software; you can redistribute it and/or modify "
@@ -259,6 +285,19 @@ static void about_create(void)
 		_("\n\nThis product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit (http://www.openssl.org/)"), -1);
 #endif
+	gtk_text_buffer_insert(buffer, &iter,
+		_("\n\n\nSylpheed-Claws is "
+		  "proudly brought to you by:\n\n"), -1);
+		
+	if (g_utf8_validate(AUTHORS_LIST, -1, NULL))
+		gtk_text_buffer_insert(buffer, &iter, AUTHORS_LIST, -1);
+	else {
+		gchar *conv = conv_codeset_strdup(AUTHORS_LIST, CS_ISO_8859_1, CS_UTF_8);
+		if (conv)
+			gtk_text_buffer_insert(buffer, &iter, conv, -1);
+		g_free(conv);
+	}
+		 
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 4);
@@ -274,8 +313,10 @@ static void about_create(void)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_Escape) {
+		scrollme = FALSE;
 		gtk_widget_hide(window);
+	}
 	return FALSE;
 }
 
