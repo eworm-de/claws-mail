@@ -2183,7 +2183,8 @@ void msginfo_set_mime_flags(GNode *node, gpointer data)
 	MsgInfo *msginfo = data;
 	MimeInfo *mimeinfo = node->data;
 	
-	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT
+	 && (!mimeinfo->subtype ||  strcmp(mimeinfo->subtype, "pgp-signature"))) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
 		 mimeinfo->type != MIMETYPE_TEXT &&

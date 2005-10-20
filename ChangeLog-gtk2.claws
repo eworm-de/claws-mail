@@ -1,3 +1,10 @@
+2005-10-20 [paul]	1.9.15cvs80
+
+	* src/folder.c
+		don't show clipkey icon if the only
+		attachment is the signature
+		Patch by Colin
+
 2005-10-20 [paul]	1.9.15cvs79
 
 	* AUTHORS
