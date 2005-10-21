@@ -242,14 +242,22 @@ static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
 {
 #if HAVE_LIBCOMPFACE
 	if (textview->image) {
-		gint x, y;
+		gint x, y, x1;
+		x1 = textview->text->allocation.width - WIDTH - 5;
 		gtk_text_view_buffer_to_window_coords(
 			GTK_TEXT_VIEW(textview->text),
-			GTK_TEXT_WINDOW_RIGHT, 5, 5, &x, &y);
+			GTK_TEXT_WINDOW_TEXT, x1, 5, &x, &y);
 		gtk_text_view_move_child(GTK_TEXT_VIEW(textview->text), 
-			textview->image, 5, y);
+			textview->image, x1, y);
 	}
 #endif
+}
+
+static void textview_size_allocate_cb	(GtkWidget	*widget,
+					 GtkAllocation	*allocation,
+					 gpointer	 data)
+{
+	scrolled_cb(NULL, (TextView *)data);
 }
 
 TextView *textview_create(void)
@@ -309,6 +317,10 @@ TextView *textview_create(void)
 		GTK_SCROLLED_WINDOW(scrolledwin));
 	g_signal_connect(G_OBJECT(adj), "value-changed",
 			 G_CALLBACK(scrolled_cb), textview);
+	g_signal_connect(G_OBJECT(text), "size_allocate",
+			 G_CALLBACK(textview_size_allocate_cb),
+			 textview);
+
 
 	gtk_widget_show(scrolledwin);
 
@@ -504,7 +516,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview_add_parts(textview, mimeinfo);
 	else
 		textview_write_body(textview, mimeinfo);
-
 }
 
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
@@ -1124,8 +1135,6 @@ void textview_clear(TextView *textview)
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
-	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 
-		0);
 }
 
 void textview_destroy(TextView *textview)
@@ -1297,9 +1306,7 @@ static void textview_show_xface(TextView *textview)
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	
-	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 0);
-
+	int x = 0;
 	if (prefs_common.display_header_pane
 	||  !prefs_common.display_xface)
 		goto bail;
@@ -1334,16 +1341,16 @@ static void textview_show_xface(TextView *textview)
 		(textview->text->window, &mask, 
 		 &textview->text->style->white, xpm_xface);
 	
-	gtk_text_view_set_border_window_size(text, GTK_TEXT_WINDOW_RIGHT, 
-		WIDTH+10);
-
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
 	textview->image = gtk_image_new_from_pixmap(pixmap, mask);
 	gtk_widget_show(textview->image);
+	
+	x = textview->text->allocation.width - WIDTH -5;
+
 	gtk_text_view_add_child_in_window(text, textview->image, 
-		GTK_TEXT_WINDOW_RIGHT, 5, 5);
+		GTK_TEXT_WINDOW_TEXT, x, 5);
 
 	gtk_widget_show_all(textview->text);
 	

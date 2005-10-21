@@ -884,6 +884,8 @@ static void prefs_filtering_register_cb(void)
 	prefs_filtering_list_view_set_row(-1, prop);
 	
 	filteringprop_free(prop);
+
+	prefs_filtering_reset_dialog();
 }
 
 static void prefs_filtering_substitute_cb(void)
@@ -901,6 +903,8 @@ static void prefs_filtering_substitute_cb(void)
 	prefs_filtering_list_view_set_row(selected_row, prop);
 
 	filteringprop_free(prop);
+
+	prefs_filtering_reset_dialog();
 }
 
 static void prefs_filtering_delete_cb(void)

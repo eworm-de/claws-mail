@@ -1,3 +1,12 @@
+2005-10-21 [colin]	1.9.15cvs89
+
+	* src/prefs_filtering.c
+		Clear fields after add and replace
+	* src/textview.c
+		Display xface differently (better)
+	* src/plugins/pgpinline/pgpinline.c
+		Fix crappy encodings/recodings
+
 2005-10-21 [paul]	1.9.15cvs88
 
 	* src/compose.c

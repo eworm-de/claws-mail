@@ -78,6 +78,37 @@ static void pgpinline_free_privacydata(PrivacyData *_data)
 	g_free(data);
 }
 
+static gchar *fp_read_noconv(FILE *fp)
+{
+	GByteArray *array;
+	guchar buf[BUFSIZ];
+	gint n_read;
+	gchar *result = NULL;
+
+	if (!fp)
+		return NULL;
+	array = g_byte_array_new();
+
+	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (n_read < sizeof(buf) && ferror(fp))
+			break;
+		g_byte_array_append(array, buf, n_read);
+	}
+
+	if (ferror(fp)) {
+		FILE_OP_ERROR("file stream", "fread");
+		g_byte_array_free(array, TRUE);
+		return NULL;
+	}
+
+	buf[0] = '\0';
+	g_byte_array_append(array, buf, 1);
+	result = (gchar *)array->data;
+	g_byte_array_free(array, FALSE);
+	
+	return result;
+}
+
 static gchar *get_part_as_string(MimeInfo *mimeinfo)
 {
 	gchar *textdata = NULL;
@@ -86,8 +117,39 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 	procmime_decode_content(mimeinfo);
 	if (mimeinfo->content == MIMECONTENT_MEM)
 		textdata = g_strdup(mimeinfo->data.mem);
-	else
-		textdata = file_read_to_str(mimeinfo->data.filename);
+	else {
+		/* equals file_read_to_str but without conversion */
+		FILE *fp = fopen(mimeinfo->data.filename, "r");
+		if (!fp)
+			return NULL;
+		textdata = fp_read_noconv(fp);
+		fclose(fp);
+	}
+
+	if (!g_utf8_validate(textdata, -1, NULL)) {
+		gchar *tmp = NULL;
+		codeconv_set_strict(TRUE);
+		if (procmime_mimeinfo_get_parameter(mimeinfo, "charset")) {
+			tmp = conv_codeset_strdup(textdata,
+				procmime_mimeinfo_get_parameter(mimeinfo, "charset"),
+				CS_UTF_8);
+		}
+		if (!tmp) {
+			tmp = conv_codeset_strdup(textdata,
+				conv_get_locale_charset_str_no_utf8(), 
+				CS_UTF_8);
+		}
+		codeconv_set_strict(FALSE);
+		if (!tmp) {
+			tmp = conv_codeset_strdup(textdata,
+				conv_get_locale_charset_str_no_utf8(), 
+				CS_UTF_8);
+		}
+		if (tmp) {
+			g_free(textdata);
+			textdata = tmp;
+		}
+	}
 
 	return textdata;	
 }
@@ -409,15 +471,8 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	rewind(fp);
 
 	/* read temporary file into memory */
-	textstr = file_read_stream_to_str(fp);
+	textstr = fp_read_noconv(fp);
 	
-	/* gtk2: convert back from utf8 */
-	tmp = conv_codeset_strdup(textstr, CS_UTF_8, 
-			procmime_mimeinfo_get_parameter(msgcontent, "charset"));
-	g_free(textstr);
-	textstr = g_strdup(tmp);
-	g_free(tmp);
-
 	fclose(fp);
 		
 	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
@@ -526,14 +581,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	rewind(fp);
 
 	/* read temporary file into memory */
-	textstr = file_read_stream_to_str(fp);
+	textstr = fp_read_noconv(fp);
 	
-	/* gtk2: convert back from utf8 */
-	tmp = conv_codeset_strdup(textstr, CS_UTF_8, 
-			procmime_mimeinfo_get_parameter(msgcontent, "charset"));
-	g_free(textstr);
-	textstr = g_strdup(tmp);
-	g_free(tmp);
 	fclose(fp);
 
 	/* encrypt data */
