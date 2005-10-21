@@ -887,6 +887,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	} else {
 		if (mailto) {
 			compose_entry_append(compose, mailto, COMPOSE_NEWSGROUPS);
+		} else if (item) {
+			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS);
 		}
 		/*
 		 * CLAWS: just don't allow return receipt request, even if the user

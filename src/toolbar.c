@@ -1995,7 +1995,7 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *item = mainwin->summaryview->folder_item;	
         GList * list;
         GList * cur;
-
+	
 	if (item) {
 		ac = account_find_from_item(item);
 		if (ac && ac->protocol != A_NNTP) {
@@ -2035,9 +2035,8 @@ void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
 	if (mainwin->summaryview->folder_item) {
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol == A_NNTP) {
-			compose_new(ac,
-				    mainwin->summaryview->folder_item->path,
-				    NULL);
+			compose_new_with_folderitem(ac,
+				    mainwin->summaryview->folder_item);
 			return;
 		}
 	}
@@ -2046,7 +2045,8 @@ void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol == A_NNTP) {
-			compose_new(ac, NULL, NULL);
+			compose_new_with_folderitem(ac,
+				    mainwin->summaryview->folder_item);
 			return;
 		}
 	}

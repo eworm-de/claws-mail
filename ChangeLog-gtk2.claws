@@ -1,3 +1,15 @@
+2005-10-21 [paul]	1.9.15cvs88
+
+	* src/compose.c
+	* src/prefs_folder_item.c
+	* src/toolbar.c
+		fix news folder Folder Properties
+		(thanks to Colin)
+	* src/folderview.c
+		update folderview after Themes change
+		keep selected folder selected
+		(thanks to Colin)
+
 2005-10-21 [paul]	1.9.15cvs87
 
 	* tools/Makefile.am

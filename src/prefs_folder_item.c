@@ -418,6 +418,16 @@ void prefs_folder_item_general_save_func(PrefsPage *page_)
 
 }
 
+static RecvProtocol item_protocol(FolderItem *item)
+{
+	if (!item)
+		return A_NONE;
+	if (!item->folder)
+		return A_NONE;
+	if (!item->folder->account)
+		return A_NONE;
+	return item->folder->account->protocol;
+}
 void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
@@ -429,27 +439,27 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *table;
 	GtkWidget *label;
 	
-	GtkWidget *checkbtn_request_return_receipt;
-	GtkWidget *checkbtn_save_copy_to_folder;
-	GtkWidget *checkbtn_default_to;
-	GtkWidget *entry_default_to;
-	GtkWidget *checkbtn_default_reply_to;
-	GtkWidget *entry_default_reply_to;
-	GtkWidget *checkbtn_enable_default_account;
-	GtkWidget *optmenu_default_account;
-	GtkWidget *optmenu_default_account_menu;
-	GtkWidget *optmenu_default_account_menuitem;
+	GtkWidget *checkbtn_request_return_receipt = NULL;
+	GtkWidget *checkbtn_save_copy_to_folder = NULL;
+	GtkWidget *checkbtn_default_to = NULL;
+	GtkWidget *entry_default_to = NULL;
+	GtkWidget *checkbtn_default_reply_to = NULL;
+	GtkWidget *entry_default_reply_to = NULL;
+	GtkWidget *checkbtn_enable_default_account = NULL;
+	GtkWidget *optmenu_default_account = NULL;
+	GtkWidget *optmenu_default_account_menu = NULL;
+	GtkWidget *optmenu_default_account_menuitem = NULL;
 #if USE_ASPELL
-	GtkWidget *checkbtn_enable_default_dictionary;
-	GtkWidget *optmenu_default_dictionary;
+	GtkWidget *checkbtn_enable_default_dictionary = NULL;
+	GtkWidget *optmenu_default_dictionary = NULL;
 #endif
-	GtkWidget *request_return_receipt_rec_checkbtn;
-	GtkWidget *save_copy_to_folder_rec_checkbtn;
-	GtkWidget *default_to_rec_checkbtn;
-	GtkWidget *default_reply_to_rec_checkbtn;
-	GtkWidget *default_account_rec_checkbtn;
+	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
+	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
+	GtkWidget *default_to_rec_checkbtn = NULL;
+	GtkWidget *default_reply_to_rec_checkbtn = NULL;
+	GtkWidget *default_account_rec_checkbtn = NULL;
 #if USE_ASPELL
-	GtkWidget *default_dictionary_rec_checkbtn;
+	GtkWidget *default_dictionary_rec_checkbtn = NULL;
 #endif
 
 	GList *cur_ac;
@@ -483,75 +493,76 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	rowcount++;
 
-	/* Request Return Receipt */
-	checkbtn_request_return_receipt = gtk_check_button_new_with_label
-		(_("Request Return Receipt"));
-	gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 
-			 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
-			 GTK_FILL, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
-				     item->ret_rcpt ? TRUE : FALSE);
+	if (item_protocol(item) != A_NNTP) {
+		/* Request Return Receipt */
+		checkbtn_request_return_receipt = gtk_check_button_new_with_label
+			(_("Request Return Receipt"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 
+				 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
+				 GTK_FILL, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
+					     item->ret_rcpt ? TRUE : FALSE);
 
-	request_return_receipt_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), request_return_receipt_rec_checkbtn, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	
-	rowcount++;
+		request_return_receipt_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), request_return_receipt_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
-	/* Save Copy to Folder */
-	checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
-		(_("Save copy of outgoing messages to this folder instead of Sent"));
-	gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
-				     item->prefs->save_copy_to_folder ? TRUE : FALSE);
+		rowcount++;
 
-	save_copy_to_folder_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), save_copy_to_folder_rec_checkbtn, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	
-	rowcount++;
+		/* Save Copy to Folder */
+		checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
+			(_("Save copy of outgoing messages to this folder instead of Sent"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
+					     item->prefs->save_copy_to_folder ? TRUE : FALSE);
 
-	/* Default To */
-	checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
-	gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
-				     item->prefs->enable_default_to);
+		save_copy_to_folder_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), save_copy_to_folder_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
-	entry_default_to = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_default_to, 1, 2,
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
-	address_completion_register_entry(GTK_ENTRY(entry_default_to));
+		rowcount++;
 
-	default_to_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), default_to_rec_checkbtn, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	
-	rowcount++;
+		/* Default To */
+		checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
+					     item->prefs->enable_default_to);
 
-	/* Default address to reply to */
-	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Send replies to: "));
-	gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
-				     item->prefs->enable_default_reply_to);
+		entry_default_to = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_to, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
+		address_completion_register_entry(GTK_ENTRY(entry_default_to));
 
-	entry_default_reply_to = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_default_reply_to, 1, 2,
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
-	address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
+		default_to_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_to_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
-	default_reply_to_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), default_reply_to_rec_checkbtn, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	
-	rowcount++;
+		rowcount++;
 
+		/* Default address to reply to */
+		checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default To for replies: "));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
+					     item->prefs->enable_default_reply_to);
+
+		entry_default_reply_to = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_reply_to, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
+		address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
+
+		default_reply_to_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_reply_to_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+	}
 	/* Default account */
 	checkbtn_enable_default_account = gtk_check_button_new_with_label(_("Default account: "));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_account, 0, 1, 
@@ -569,6 +580,14 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	index = 0;
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
+		if (item->folder->account &&
+	    	    ( (item_protocol(item) == A_NNTP && ac_prefs->protocol != A_NNTP)
+		    ||(item_protocol(item) != A_NNTP && ac_prefs->protocol == A_NNTP))) 
+			continue;
+
+		if (item->folder->klass->type != F_NEWS && ac_prefs->protocol == A_NNTP)
+			continue;
+
 	 	MENUITEM_ADD (optmenu_default_account_menu, optmenu_default_account_menuitem,
 					ac_prefs->account_name?ac_prefs->account_name : _("Untitled"),
 					ac_prefs->account_id);
@@ -592,7 +611,6 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	default_account_rec_checkbtn = gtk_check_button_new();
 	gtk_table_attach(GTK_TABLE(table), default_account_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	
 	rowcount++;
 
 #if USE_ASPELL
@@ -665,8 +683,10 @@ void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 {
 	FolderItemComposePage *page = (FolderItemComposePage *) page_;
 
-	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
-	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
+	if (page->entry_default_to)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
+	if (page->entry_default_reply_to)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
 	address_completion_end(page->window);
 }
 
@@ -687,33 +707,39 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 
 	g_return_if_fail(prefs != NULL);
 
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn))) {
-		prefs->request_return_receipt = 
-			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_return_receipt));
-		/* MIGRATION */    
-		folder->ret_rcpt = prefs->request_return_receipt;
+	if (item_protocol(folder) != A_NNTP) {
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn))) {
+			prefs->request_return_receipt = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_return_receipt));
+			/* MIGRATION */    
+			folder->ret_rcpt = prefs->request_return_receipt;
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn))) {
+			prefs->save_copy_to_folder = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_save_copy_to_folder));
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn))) {
+
+			prefs->enable_default_to = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_to));
+			ASSIGN_STRING(prefs->default_to,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_to), 0, -1));
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))) {
+			prefs->enable_default_reply_to = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_to));
+			ASSIGN_STRING(prefs->default_reply_to,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1));
+		}
+	} else {
+		prefs->request_return_receipt = FALSE;
+		prefs->save_copy_to_folder = FALSE;
+		prefs->enable_default_to = FALSE;
+		prefs->enable_default_reply_to = FALSE;
 	}
-
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn))) {
-		prefs->save_copy_to_folder = 
-			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_save_copy_to_folder));
-	}
-
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn))) {
-
-		prefs->enable_default_to = 
-			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_to));
-		ASSIGN_STRING(prefs->default_to,
-			      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_to), 0, -1));
-	}
-
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))) {
-		prefs->enable_default_reply_to = 
-			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_to));
-		ASSIGN_STRING(prefs->default_reply_to,
-			      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1));
-	}
-
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn))) {
 		prefs->enable_default_account = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
@@ -748,12 +774,15 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	/* optimise by not continuing if none of the 'apply to sub folders'
 	   check boxes are selected - and optimise the checking by only doing
 	   it once */
-	if ((node == page->item->node) &&
+	if ((node == page->item->node) && item_protocol(item) != A_NNTP &&
 	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) 
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))))
+		return TRUE;
+
+	if ((node == page->item->node) &&
+	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) 
 #if USE_ASPELL
 	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn))
 #endif

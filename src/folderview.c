@@ -2251,13 +2251,18 @@ void folderview_set_target_folder_color(gint color_op)
 	}
 }
 
+static gchar *last_font = NULL;
 void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
+	/* force reinit */
+	if (last_font) 
+		g_free(last_font);
+	last_font = NULL;
+	
 }
 
 void folderview_reflect_prefs(void)
 {
-	static gchar *last_font = NULL;
 	gboolean update_font = TRUE;
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
 	FolderItem *item = folderview_get_selected_item(folderview);
@@ -2287,8 +2292,13 @@ void folderview_reflect_prefs(void)
 		(G_OBJECT(folderview->ctree),
 		 G_CALLBACK(folderview_selected), folderview);
 
-	if (item)
+	if (item) {
+		GtkCTreeNode *node = gtk_ctree_find_by_row_data(
+			GTK_CTREE(folderview->ctree), NULL, item);
+
 		folderview_select(folderview, item);
+		folderview->selected = node;
+	}
 
 	g_signal_handlers_unblock_by_func
 		(G_OBJECT(folderview->ctree),
