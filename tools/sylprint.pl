@@ -41,7 +41,7 @@ else {
 	$spp = join('/',@spp);  
 	$rcf="$spp$rc"; 
 	if (-x $rcf) { do $rcf; }
-	$rcf="$ENV{'HOME'}/.sylpheed/$rc";
+	$rcf="$ENV{'HOME'}/.sylpheed-claws/$rc";
 	if (-x $rcf) { do $rcf; }
 }
 @forens = ();
@@ -315,7 +315,7 @@ else { # no enscript, try lpr
 		system(@vcmd);
 	}
 	if ($preview < 2) {
-		@lprcmd = ($LPR,'-T','Sylpheed Mail',
+		@lprcmd = ($LPR,'-T','Sylpheed-Claws Mail',
 			($headerformat eq '')? '-l': '-p','-P',$printer,@forens,			$tmpfn);
 		die "trying lpr: $! \n" unless (system(@lprcmd) != -1);
 	}

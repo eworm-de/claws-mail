@@ -50,5 +50,5 @@ done
 echo "-----------"
 echo ${ATTACHMENTS}
 
-eval "sylpheed --compose --attach ${ATTACHMENTS}"
+eval "sylpheed-claws --compose --attach ${ATTACHMENTS}"
 

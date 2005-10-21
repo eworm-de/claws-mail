@@ -17,7 +17,7 @@
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # OOo2sylpheed.pl	helper script to send documents from OpenOffice.org
-#			to sylpheed
+#			to Sylpheed-Claws
 
 use strict;
 
@@ -26,7 +26,7 @@ my $input = <>;
 $ARGV =~ s/^"attachment='file:\/\///;
 $ARGV =~ s/'"$//;
 $ARGV =~ s/%20/ /g;
-exec "sylpheed --attach \"$ARGV\"";
+exec "sylpheed-claws --attach \"$ARGV\"";
 ## change the line above to point to your sylpheed executable
 
 exit;

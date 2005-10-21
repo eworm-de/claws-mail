@@ -5,7 +5,6 @@ Contents of the tools directory:
 
 Action scripts:
   freshmeat_search.pl		Search freshmeat.net for selected text
-  gpg-sign-syl                  Clear-sign current selection
   google_msgid.pl               Search groups.google.com for selected message-id
   google_search.pl		Search google.com for selected text
   multiwebsearch.pl		Search any search engine for the selected text
@@ -27,12 +26,9 @@ Mailbox conversion:
 
 Other tools:
   acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
-  asus_mailed.sh		makes the mail LED blink on new or unread mail
-				for ASUS laptops
   filter_conv.pl                Convert old-style filters to new filtering
   nautilus2sylpheed.sh		Send files from Nautilus
   OOo2sylpheed.pl               Send documents from OpenOffice.org
-  sylpheed-switcher             Run either sylpheed or claws (separate configs)
   sylprint.pl                   Printing engine, explained in README.sylprint
   update-po                     Update the .po files named on the command line.
 
@@ -49,7 +45,7 @@ Action scripts
 * freshmeat_search.pl
   WORKS ON: selection
   COMMAND: |freshmeat_search.pl
-  Search freshmeat.net for selected text using the default Sylpheed browser
+  Search freshmeat.net for selected text using the default Sylpheed-Claws browser
 
 * google_msgid.pl
   WORKS ON: selection
@@ -60,12 +56,7 @@ Action scripts
 * google_search.pl
   WORKS ON: selection
   COMMAND: |google_search.pl
-  Search google.com for selected text using the default Sylpheed browser
-
-* gpg-sign-syl
-  WORKS ON: selection, whole message
-  COMMAND: |gpg-sign-syl|
-  Clear-sign current selection using gpg.
+  Search google.com for selected text using the default Sylpheed-Claws browser
 
 * multiwebsearch.pl
   WORKS ON: selection
@@ -89,9 +80,9 @@ Action scripts
   WHAT IT DOES
 	This is an Actions script that allows you to search
 	websites for the selected text. It uses the default
-	Sylpheed browser as configured through Sylpheed's
-	GUI and specified in ~/.sylpheed/sylpheedrc, and a
-	configuration file called multiwebsearch.conf.
+	Sylpheed-Claws browser as configured through Sylpheed
+	-Claws' GUI and specified in ~/.sylpheed-claws/sylpheedrc,
+	and a configuration file called multiwebsearch.conf.
 	
   CONFIGURATION
   	The configuration file takes the following format:
@@ -105,7 +96,7 @@ Action scripts
 	is included.
 	
   HOW TO USE IT
-	Copy 'multiwebsearch.conf' to ~/.sylpheed/
+	Copy 'multiwebsearch.conf' to ~/.sylpheed-claws/
 	
 	Configure an Action:
 	a) pre-configured website 
@@ -148,24 +139,24 @@ Address book conversion
 
   WHAT IT DOES
 	This perl script will convert an exported Kmail addressbook into a
-  	Sylpheed addressbook. If your version of Kmail is 1.37 or greater
-  	and/or your version of KAddressBook is 3.1beta1 or greater, or
-  	this script mixes up your definitions and their related data, use
+  	Sylpheed-Claws addressbook. If your version of Kmail is 1.37 or
+	greater and/or your version of KAddressBook is 3.1beta1 or greater,
+	or this script mixes up your definitions and their related data, use
   	'kmail2sylpheed_v2.pl' instead.
 
   HOW TO USE IT
-	(You must run sylpheed at least once before running this script.)
+	(You must run sylpheed-claws at least once before running this script.)
 
 	In Kmail's Address book choose '/File/Export List'. This will export
   	your Kmail address book data to a *.csv file.
 
-  	If Sylpheed is running, close it.
+  	If Sylpheed-Claws is running, close it.
 
   	From the command line, execute the following:
  
 		perl kmail2sylpheed.pl --kmailfile=/path/to/addressbook.csv
 
-  	Your Kmail address book data will now be contained in Sylpheed's
+  	Your Kmail address book data will now be contained in Sylpheed-Claws'
   	address book, under the name 'Kmail Address Book'.
 
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
@@ -177,16 +168,16 @@ Address book conversion
 
   WHAT IT DOES
 	This perl script will convert a Kmail address book that has been
-  	exported in csv format into a Sylpheed address book.
+  	exported in csv format into a Sylpheed-Claws address book.
 
   HOW TO USE IT
-	(You must run sylpheed at least once before running this script.)
+	(You must run sylpheed-claws at least once before running this script.)
   
   	Open Kmail's Addressbook, /File/Address Book
   	In Kmail's Addressbook choose '/File/Export/Export List...'. This 
   	will allow you to export your Kmail addressbook data to a *.csv file.
 
-  	If Sylpheed is running, close it.
+  	If Sylpheed-Claws is running, close it.
 
   	From the command line, execute the following:
  
@@ -194,7 +185,7 @@ Address book conversion
 	
   	You can also use --help to see usage instructions.
 
-  	Your Kmail addressbook data will now be contained in Sylpheed's
+  	Your Kmail addressbook data will now be contained in Sylpheed-Claws'
   	addressbook, under the name 'Kmail address book'.
 
   Contact: Paul Mangan <claws@thewildbeast.co.uk>  
@@ -204,7 +195,7 @@ Address book conversion
 
   WHAT IT DOES
   	This perl script converts an Outlook generated contact list into a 
-  	Sylpheed XML address book.
+  	Sylpheed-Claws XML address book.
 
   HOW TO USE IT
   	For text files:
@@ -212,7 +203,7 @@ Address book conversion
   	You must export Outlook Express contact list as TXT file, choosing
   	only "Name" and "Address" fields to export.
 
-  	You must exit Sylpheed before converting the contact list.
+  	You must exit Sylpheed-Claws before converting the contact list.
 
   	From the command line, execute the following:
 
@@ -223,7 +214,7 @@ Address book conversion
 	You must export Outlook contact list as CSV file, choosing ALL the
 	fields available for exporting.
 
-	You must exit Sylpheed before converting the contact list.
+	You must exit Sylpheed-Claws before converting the contact list.
 
 	From the command line, execute the following:
 
@@ -235,8 +226,8 @@ Address book conversion
 	script.
 
 	For csv files you must export all fields (but only non empty fields
-	are added to the created Sylpheed address book) and the number of
-	fields expected is harcoded. Look for the $nboffields variable in
+	are added to the created Sylpheed-Claws address book) and the number
+	of fields expected is harcoded. Look for the $nboffields variable in
 	the script and change its value if you are sure you exported all
 	fields and script gives the 'unknown csv file format' error.
 
@@ -247,19 +238,19 @@ Address book conversion
 
   WHAT IT DOES
   	This perl script will convert an address book exported from The Bat! 
-	into a Sylpheed address book.
+	into a Sylpheed-Claws address book.
 
   HOW TO USE IT
-	(You must run sylpheed at least once before running this script.)
+	(You must run sylpheed-claws at least once before running this script.)
 
-  	If Sylpheed is running, close it.
+  	If Sylpheed-Claws is running, close it.
 
   	Export The Bat! Address Book to CSV file format with all fields 
   	selected to YES and then start:
 
   		tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
  
-  	The Bat! addressbook data will now be contained in Sylpheed's
+  	The Bat! addressbook data will now be contained in Sylpheed-Claws'
   	addressbook, under the name 'The Bat! Address Book'.
 
   Contact: Urke MMI <urke@gmx.net>  
@@ -268,13 +259,13 @@ Address book conversion
 * vcard2xml.py
 
   WHAT IT DOES
-  	This python script will convert an Evolution vCard into a Sylpheed
+  	This python script will convert an Evolution vCard into a Sylpheed-Claws
 	address book.
 
   HOW TO USE IT
-	(You must run sylpheed at least once before running this script.)
+	(You must run sylpheed-claws at least once before running this script.)
 
-  	If Sylpheed is running, close it.
+  	If Sylpheed-Claws is running, close it.
 	From the command line, execute the following:
 
   		vcard2xml.py source_file [destination_file]
@@ -324,7 +315,7 @@ Mailbox conversion
 
   WHAT IT DOES
 	This perl script converts an mbox directory's contents into 
-	Sylpheed's MH format.
+	Sylpheed-Claws' MH format.
   
   HOW TO USE IT
   
@@ -332,9 +323,9 @@ Mailbox conversion
 	 
     		perl convert_mbox.pl MBOX MH_DIR
 		
-	Move the outputted MH_DIR and its contents into your Sylpheed
-	Mail folder; in Sylpheed right-click the top-level folder
-	and choose 'Rebuild folder tree' from the popup menu.	
+	Move the outputted MH_DIR and its contents into your Sylpheed-Claws
+	Mail folder; in Sylpheed-Claws right-click the top-level folder and
+	choose 'Rebuild folder tree' from the popup menu.
 
   Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
 
@@ -342,17 +333,17 @@ Mailbox conversion
 
   WHAT IT DOES
 	This perl script converts a mailbox in maildir format into
-	Sylpheed's MH format.
+	Sylpheed-Claws' MH format.
   
   HOW TO USE IT
   
-  	Exit Sylpheed if running.
+  	Exit Sylpheed-Claws if running.
 	
 	Run the script using:
 	 
     		perl maildir2sylpheed.pl --kmaildir=mail_folder_name
 		
-	Start Sylpheed and right-click the toplevel mailbox, i.e
+	Start Sylpheed-Claws and right-click the toplevel mailbox, i.e
 	"Mailbox (MH)", and select 'Rebuild folder tree'.
 	You may also need to run '/File/Folder/Check for new messages
 	in all folders'
@@ -372,8 +363,8 @@ Other tools
 * acroread2sylpheed.pl
 
   WHAT IT DOES
-  	This perl script enables Adobe Reader 7 to send documents to sylpheed
-  	as attachments.
+  	This perl script enables Adobe Reader 7 to send documents to
+	Sylpheed-Claws as attachments.
 
   HOW TO USE IT
   	Make sure that the script is executable (chmod +x acroread2sylpheed.pl)
@@ -383,27 +374,10 @@ Other tools
 	Enter the path to this script in the alternate location box  
 
   	You can then use 'File/Email' or the Email toolbar button to launch
-	sylpheed (if not already launched) and open a new compose window with
-	the PDF attached.
+	sylpheed-claws (if not already launched) and open a new compose window
+	with the PDF attached.
   
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
-
-
-* asus_mailed.sh
-
-  WHAT IT DOES
-	When used as the new mail notification command, this script makes
-	the mail LED blink on new or unread mail for ASUS laptops with
-	asus_acpi compiled in the kernel or loaded as module.
-
-  HOW TO USE IT
-  	Make sure that the script is executable (chmod +x asus_mailed.sh)
-	Go to /Preferences/Mail Handling/Receive/
-	In the 'Run command when new mail arrives' frame select one or
-	both of the checkboxes, the enter the path to this script in the
-	'Command to execute' box.
-
-  Contact: Colin Leroy <colin@colino.net>
 
 
 * filter_conv.pl
@@ -412,7 +386,7 @@ Other tools
 	This perl script provides easy conversion of your filtering rules
   	form sylpheed's old filter system (pre version 0.9.99) to the new
 	filtering system used in sylpheed-claws.
-	It reads '~/.sylpheed/filterrc' and outputs '~/.sylpheed/matcherrc'.
+	It reads '~/.sylpheed/filterrc' and outputs '~/.sylpheed-claws/matcherrc'.
   
   HOW TO USE IT
 	Issue the following command from the 'tools' directory:
@@ -442,8 +416,8 @@ Other tools
 * OOo2sylpheed.pl
 
   WHAT IT DOES
-  	This perl script enables OpenOffice.org to send documents to sylpheed
-  	as attachments.
+  	This perl script enables OpenOffice.org to send documents to
+	Sylpheed-Claws as attachments.
 
   HOW TO USE IT
     OpenOffice.org Version 1.0
@@ -462,58 +436,12 @@ Other tools
   	Enter the path to OOo2sylpheed.pl in the 'Path' box
   	or select it by clicking on the '...' button.
     
-  	You can then use 'File/Send/Document as email' to launch sylpheed
-  	(if not already launched) and open a new compose window with the
-  	document attached.
+  	You can then use 'File/Send/Document as email' to launch
+	sylpheed-claws (if not already launched) and open a new compose
+	window with the document attached.
 
   	Tested with OpenOffice.org versions 1.0, 1.1.0
   
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
-
-
-* sylpheed-switcher
-
-  WHAT IT DOES
-  	This perl script is for users who like to move between the main
-  	sylpheed branch and the claws branch. Because of some differences
-  	between the stored options it is better IMO to use two separate
-  	'.sylpheed' directory trees. Doing that manually could prove to
-  	be tiresome, and so I've written this script to automate the task.
-
-  	The first time you run this script you enter the full paths,
-  	including the executable itself, to both the main version of
-  	sylpheed and the claws version. This information is then stored
-  	in a file in your $HOME directory called '.sylpheed-switcher'
-
-  	During this initial set-up, your '~/.sylpheed' directory
-  	is copied to '~/.sylpheed-main' and '~/.sylpheed-claws'.
-  
-  	When you run sylpheed via this script, your '~/.sylpheed' directory
-  	is deleted and replaced with a symbolic link to either 
-	~/.sylpheed-main' or '~/sylpheed-claws', depending on the option you 
-	choose. (On subsequent usage the symbolic link is deleted and replaced 
-	with a new symbolic link).
-
-  HOW TO USE IT
-  	Initial set-up
-  	Enter the full paths to the executable, including the executable itself,
-  	example:
-  
- 		./sylpheed-switcher --claws-path=/usr/local/bin/sylpheed 
-		--main-path=/usr/bin/sylpheed
-        
-  	After the initial set-up, use the following:
-  
-  		./sylpheed-switcher --claws	(to run sylpheed-claws)
-        	./sylpheed-switcher --main	(to run sylpheed main)
-        
-  	Additionally you can append --debug to run in debug mode.
-  	Use --help for more info.  	
- 
-  	This script uses the File::Path and Getopt::Long modules, if you don't
-	already have them installed, you can find them at the CPAN search site 
-  	<http://search.cpan.org>
-
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 
 
@@ -546,8 +474,9 @@ Extra tools
   WHAT IT DOES
 	This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
   	into an X-Face graphic suitable for inclusion into custom headers of
-  	Sylpheed. An X-Face allows to quickly identify (or be identified as)
-  	the sender of a mail message in a xface-capable MUA (like sylpheed).
+  	Sylpheed-Claws. An X-Face allows to quickly identify (or be identified
+	as) the sender of a mail message in a xface-capable MUA (like sylpheed
+	-claws).
 
   HOW TO USE IT
 	After obtaining the desired image for your X-Face you should:
@@ -562,11 +491,11 @@ Extra tools
       		./gif2xface < filename.gif > filename.xface
 
   	In filename.xface will be the X-Face header ready to use.
-  	You can add a custom header in Sylpheed through Configuration->
+  	You can add a custom header in Sylpheed-Claws through Configuration->
   	Preferences per account, "Send" tab, check "Add user-defined header"
-  	then "Edit..." if you want to add it via Sylpheed interface, or do
+  	then "Edit..." if you want to add it via Sylpheed -Claws interface, or do
 
-      		echo "0:" `cat filename.xface` > ~/.sylpheed/customheaderrc
+      		echo "0:" `cat filename.xface` > ~/.sylpheed-claws/customheaderrc
 
   	if you want to create the custom headers file yourself (Warning: this
   	method is valid only if you don't have any other custom header set or

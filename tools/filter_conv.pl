@@ -21,7 +21,7 @@ use strict;
 #  *
 
 my $old_config_dir = "$ENV{HOME}/.sylpheed";
-my $config_dir = `sylpheed --config-dir`;
+my $config_dir = `sylpheed-claws --config-dir`;
 chomp $config_dir;
 
 chdir($ENV{ HOME } . "/$config_dir")

@@ -20,7 +20,7 @@
 use File::Path;
 
 chdir;
-chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
+chdir '.sylpheed-claws' || die("You don't appear to have Sylpheed-Claws installed\n");
 
 open(ACCOUNTRC, "<accountrc") || die("Can't find accountrc\n");
 	@accountrc = <ACCOUNTRC>;
@@ -84,5 +84,5 @@ foreach $folderlist (@folderlist) { ## remove old newsgroups directory trees
                 }        
         }
 }
-print "Finished cleaning Sylpheed's newscache\n";
+print "Finished cleaning Sylpheed-Claws' newscache\n";
 exit;

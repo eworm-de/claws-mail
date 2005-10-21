@@ -32,9 +32,8 @@ $sylph_addr = "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
 $sylph_addr .= "<address-book name=\"Kmail Address Book\" >\n";
 
 chdir;
-#chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
 
-opendir(SYLPHEED, ".sylpheed") || die("Can't open .sylpheed directory\n");
+opendir(SYLPHEED, ".sylpheed-claws") || die("Can't open .sylpheed-claws directory\n");
 	push(@cached,(readdir(SYLPHEED)));
 closedir(SYLPHEED);
 
@@ -187,11 +186,11 @@ foreach $kmailline (@kmaillines) {
 }
 $sylph_addr .= "</address-book>\n";
 
-open (NEWADDR, ">.sylpheed/$new_addrbk");
+open (NEWADDR, ">.sylpheed-claws/$new_addrbk");
 print NEWADDR $sylph_addr;
 close NEWADDR;
 
-open (ADDRIN, "<.sylpheed/addrbook--index.xml") || die("can't open addrbook--index.xml");
+open (ADDRIN, "<.sylpheed-claws/addrbook--index.xml") || die("can't open addrbook--index.xml");
 	@addrindex_file = <ADDRIN>;
 close ADDRIN;
 
@@ -204,7 +203,7 @@ foreach $addrindex_line (@addrindex_file) {
 	}
 }
 
-open (NEWADDRIN, ">.sylpheed/addrbook--index.xml");
+open (NEWADDRIN, ">.sylpheed-claws/addrbook--index.xml");
 print NEWADDRIN "$rewrite_addrin";
 close NEWADDRIN;
 

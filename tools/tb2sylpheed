@@ -43,7 +43,7 @@ $total_addresses = 0;
 chdir;
 
 # check is Sylpheed instrtalled
-opendir(SYLPHEED, ".sylpheed") || die("Can't open Sylpheed directory! Conversion abroted\n");
+opendir(SYLPHEED, ".sylpheed-claws") || die("Can't open Sylpheed-Claws directory! Conversion abroted\n");
     push(@cached, (readdir(SYLPHEED)));
 closedir(SYLPHEED);
 
@@ -251,12 +251,12 @@ foreach $tbline (@tblines) {
 $sylph_addr .= "</address-book>\n";
 
 # print new addressbook to file
-open (NEWADDR, ">.sylpheed/$new_addrbk");
+open (NEWADDR, ">.sylpheed-claws/$new_addrbk");
     print NEWADDR $sylph_addr;
 close NEWADDR;
 
 # add new addressbook to index
-open (ADDRIN, "<.sylpheed/addrbook--index.xml") || die("Can't open addrbook--index.xml");
+open (ADDRIN, "<.sylpheed-claws/addrbook--index.xml") || die("Can't open addrbook--index.xml");
     @addrindex_file = <ADDRIN>;
 close ADDRIN;
 
@@ -269,7 +269,7 @@ foreach $addrindex_line (@addrindex_file) {
     }
 }
 
-open (NEWADDRIN, ">.sylpheed/addrbook--index.xml");
+open (NEWADDRIN, ">.sylpheed-claws/addrbook--index.xml");
     print NEWADDRIN "$rewrite_addrin";
 close NEWADDRIN;
 print "You have sucessfully converted your The Bat! addressbook\n";

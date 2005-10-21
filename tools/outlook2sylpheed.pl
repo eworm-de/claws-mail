@@ -41,7 +41,7 @@ else {
 	$outl_file = $ARGV[0];
 }
 # some init
-$sylconf = ".sylpheed";
+$sylconf = ".sylpheed-claws";
 $indexname = "$sylconf/addrbook--index.xml";
 
 # the next is mostly Paul's code

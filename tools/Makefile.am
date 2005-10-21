@@ -1,14 +1,12 @@
 EXTRA_TOOLS = \
 	OOo2sylpheed.pl \
 	acroread2sylpheed.pl \
-	asus_mailled.sh \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \
 	filter_conv.pl \
 	freshmeat_search.pl \
 	gif2xface.pl \
-	gpg-sign-syl \
 	google_msgid.pl \
 	google_search.pl \
 	kmail2sylpheed.pl \
@@ -17,7 +15,6 @@ EXTRA_TOOLS = \
 	multiwebsearch.pl \
 	nautilus2sylpheed.sh \
 	outlook2sylpheed.pl \
-	sylpheed-switcher \
 	sylprint.pl \
 	sylprint.rc \
 	tb2sylpheed \

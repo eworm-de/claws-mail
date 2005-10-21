@@ -151,12 +151,12 @@ def execute () :
 	if len(sys.argv) <> 3 and len(sys.argv) <> 2 :
 		print str("\nUsage: vcard2xml.py  source_file [destination_file]\n\n" +
 		'\tWhen only <source_file> is specified will overwrite the existing addressbook.\n'+
-		'\tWhen both arguments are suplied will create a new additional addressbook named \n\tas the destination file.'+'\n\tNOTE: in both cases the sylpheed must be closed and ran at least once.\n\n')
+		'\tWhen both arguments are suplied will create a new additional addressbook named \n\tas the destination file.'+'\n\tNOTE: in both cases the Sylpheed-Claws must be closed and ran at least once.\n\n')
 		sys.exit(1)
 
 	in_file = None
 	out_file = None
-	path_to_out = os.environ['HOME']+'/.sylpheed/'
+	path_to_out = os.environ['HOME']+'/.sylpheed-claws/'
 	adr_idx = 'addrbook--index.xml'
 	adr_idx_file = None
 	tmp_adr_idx_file= None
@@ -189,7 +189,7 @@ def execute () :
 			tmp_adr_idx_file = open(path_to_out+adr_idx+'.tmp')
 			adr_idx_file = open(path_to_out+adr_idx,'w')
 		except Exception, e :
-			print 'Could not open <', path_to_out+adr_idx,'> file. Make sure you started sylpheed at least once.'
+			print 'Could not open <', path_to_out+adr_idx,'> file. Make sure you started Sylpheed-Claws at least once.'
 			sys.exit(1)
 		try :
 			out_file = open(path_to_out+sys.argv[2],'w')

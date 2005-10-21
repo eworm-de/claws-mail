@@ -20,7 +20,7 @@
 my $google = "http://www.google.com/search?q";
 $_ = <>;
 
-chdir($ENV{HOME} . "/.sylpheed") || die("Can't find your .sylpheed directory\n");
+chdir($ENV{HOME} . "/.sylpheed-claws") || die("Can't find your .sylpheed-claws directory\n");
 
 open (SYLRC, "<sylpheedrc") || die("Can't open the sylpheedrc file\n");
 	@rclines = <SYLRC>;

@@ -1,3 +1,30 @@
+2005-10-21 [paul]	1.9.15cvs87
+
+	* tools/Makefile.am
+	* tools/OOo2sylpheed.pl
+	* tools/README
+	* tools/README.sylprint
+	* tools/asus_mailled.sh		** REMOVED **
+	* tools/filter_conv.pl
+	* tools/freshmeat_search.pl
+	* tools/google_search.pl
+	* tools/gpg-sign-syl		** REMOVED **
+	* tools/kmail2sylpheed.pl
+	* tools/kmail2sylpheed_v2.pl
+	* tools/multiwebsearch.pl
+	* tools/nautilus2sylpheed.sh
+	* tools/newscache_clean.pl
+	* tools/outlook2sylpheed.pl
+	* tools/sylpheed-switcher	** REMOVED **
+	* tools/sylprint.pl
+	* tools/sylprint.rc
+	* tools/tb2sylpheed
+	* tools/vcard2xml.py
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+		update default config dir
+		update binary name (thanks to Fabien Vantard)
+		remove obsolete scripts
+
 2005-10-21 [cleroy]	1.9.15cvs86
 
 	* src/inc.c
