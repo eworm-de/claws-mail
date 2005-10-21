@@ -1428,21 +1428,24 @@ gboolean inc_offline_should_override(void)
 {
 	static time_t overridden_yes = 0;
 	static time_t overridden_no  = 0;
-	int length = 600;
+	int length = 10; /* minutes */
 	gint answer = G_ALERTDEFAULT;
 	
 	if (prefs_common.autochk_newmail)
-		length = prefs_common.autochk_itv;
+		length = prefs_common.autochk_itv; /* minutes */
 
 	if (prefs_common.work_offline) {
-		gchar *tmp = g_strdup_printf(
+		gchar *tmp = NULL;
+		
+		if (time(NULL) - overridden_yes < length * 60) /* seconds */
+			 return TRUE;
+		else if (time(NULL) - overridden_no < length * 60) /* seconds */
+			 return FALSE;
+
+		tmp = g_strdup_printf(
 				_("You're working offline. Override for %d minutes?"),
 				length);
-		if (time(NULL) - overridden_yes < length * 10)
-			 return TRUE;
-		else if (time(NULL) - overridden_no < length * 10)
-			 return FALSE;
-		
+
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
 			       GTK_STOCK_YES, GTK_STOCK_NO, _("On_ly once"));
