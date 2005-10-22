@@ -927,3 +927,4 @@
 ( cvs diff -u -r 1.382.2.185 -r 1.382.2.186 src/compose.c;  cvs diff -u -r 1.207.2.77 -r 1.207.2.78 src/folderview.c;  cvs diff -u -r 1.52.2.15 -r 1.52.2.16 src/prefs_folder_item.c;  cvs diff -u -r 1.43.2.31 -r 1.43.2.32 src/toolbar.c;  ) > 1.9.15cvs88.patchset
 ( cvs diff -u -r 1.59.2.25 -r 1.59.2.26 src/prefs_filtering.c;  cvs diff -u -r 1.96.2.81 -r 1.96.2.82 src/textview.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/pgpinline/pgpinline.c;  ) > 1.9.15cvs89.patchset
 ( cvs diff -u -r 1.382.2.186 -r 1.382.2.187 src/compose.c;  ) > 1.9.15cvs90.patchset
+( cvs diff -u -r 1.2.16.1 -r 1.2.16.2 src/pixmaps/new.xpm;  cvs diff -u -r 1.2.16.2 -r 1.2.16.3 src/pixmaps/unread.xpm;  ) > 1.9.15cvs91.patchset

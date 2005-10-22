@@ -1,3 +1,10 @@
+2005-10-22 [colin]	1.9.15cvs91
+
+	* src/pixmaps/new.xpm
+	* src/pixmaps/unread.xpm
+		Make the unread envelope blue again and
+		saturate the new one a bit more.
+
 2005-10-22 [colin]	1.9.15cvs90
 
 	* src/compose.c
