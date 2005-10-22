@@ -1,3 +1,8 @@
+2005-10-22 [colin]	1.9.15cvs92
+
+	* src/codeconv.c
+		try to convert using locale (apart utf8) if necessary
+
 2005-10-22 [colin]	1.9.15cvs91
 
 	* src/pixmaps/new.xpm
