@@ -1,3 +1,10 @@
+2005-10-22 [colin]	1.9.15cvs90
+
+	* src/compose.c
+		When replying to a mail sent by one of our accounts,
+		use the original list of recipients. Let 'Reply All'
+		and 'Reply to sender' work like previously.
+
 2005-10-21 [colin]	1.9.15cvs89
 
 	* src/prefs_filtering.c

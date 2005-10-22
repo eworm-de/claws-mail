@@ -2231,12 +2231,27 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append(compose,
 			    msginfo->folder->prefs->default_reply_to,
 			    COMPOSE_TO);
-		} else
-			compose_entry_append(compose,
+		} else {
+			gchar *tmp1 = NULL;
+			Xstrdup_a(tmp1, msginfo->from, return);
+			extract_address(tmp1);
+			if (to_all || to_sender ||
+			    !account_find_from_address(tmp1))
+				compose_entry_append(compose,
 				 (compose->replyto && !to_sender)
-				  ? compose->replyto :
-				  msginfo->from ? msginfo->from : "",
-				  COMPOSE_TO);
+					  ? compose->replyto :
+					  msginfo->from ? msginfo->from : "",
+					  COMPOSE_TO);
+			else if (!to_all && !to_sender) {
+				/* reply to the last list of recipients */
+				compose_entry_append(compose,
+					  msginfo->to ? msginfo->to : "",
+					  COMPOSE_TO);
+				compose_entry_append(compose,
+					  msginfo->cc ? msginfo->cc : "",
+					  COMPOSE_CC);
+			}
+		}
 	} else {
 		if (to_sender || (compose->followup_to && 
 			!strncmp(compose->followup_to, "poster", 6)))
