@@ -1,3 +1,8 @@
+2005-10-22 [colin]	1.9.15cvs93
+
+	* src/codeconv.c
+		Fix leak
+
 2005-10-22 [colin]	1.9.15cvs92
 
 	* src/codeconv.c

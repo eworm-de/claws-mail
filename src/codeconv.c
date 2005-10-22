@@ -696,8 +696,12 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 	if (tmpstr && g_utf8_validate(tmpstr, -1, NULL)) {
 		strncpy2(outbuf, tmpstr, outlen);
 		g_free(tmpstr);
-	} else
+		return;
+	} else {
+		if (tmpstr)
+			g_free(tmpstr);
 		conv_utf8todisp(outbuf, outlen, inbuf);
+	}
 }
 
 static void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
