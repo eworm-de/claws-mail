@@ -1,7 +1,7 @@
 Makefile
 .deps
 .libs
-sylpheed
+sylpheed-claws
 Makefile.in
 tags
 *.swp
