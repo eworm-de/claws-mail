@@ -1,3 +1,11 @@
+2005-10-23 [paul]	1.9.15cvs94
+
+	* src/compose.c
+		when using Folder Pref 'Default To for
+		replies' make the entry in the Compose
+		window bold
+		Patch by Fabien Vantard
+
 2005-10-22 [colin]	1.9.15cvs93
 
 	* src/codeconv.c

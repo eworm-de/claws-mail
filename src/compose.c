@@ -2231,6 +2231,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append(compose,
 			    msginfo->folder->prefs->default_reply_to,
 			    COMPOSE_TO);
+			compose_entry_mark_default_to(compose,
+				msginfo->folder->prefs->default_reply_to);
 		} else {
 			gchar *tmp1 = NULL;
 			Xstrdup_a(tmp1, msginfo->from, return);
