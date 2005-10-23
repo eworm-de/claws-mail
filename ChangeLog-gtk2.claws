@@ -1,3 +1,10 @@
+2005-10-23 [wwp]	1.9.15cvs96
+
+	* src/gtk/about.c
+	* src/gtk/authors.h
+		rework of the about window (main work by Paul), also featuring a few
+		fixes for typos and duplicate names
+
 2005-10-23 [wwp]	1.9.15cvs95
 
 	* src/.cvsignore

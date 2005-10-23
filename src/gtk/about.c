@@ -50,44 +50,30 @@
 #include "codeconv.h"
 
 static GtkWidget *window;
-static GtkWidget *scrolledwin;
 
 static void about_create(void);
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event);
 static void about_uri_clicked(GtkButton *button, gpointer data);
-static gboolean scrollme = FALSE;
-
-static gboolean scroller(gpointer data)
-{
-	GtkAdjustment *adj = (GtkAdjustment *)data;
-	if (adj->value != adj->upper)
-		gtk_adjustment_set_value(adj, adj->value + 1);
-	else
-		gtk_adjustment_set_value(adj, 0);
-	return scrollme;
-}
 
 void about_show(void)
 {
-	GtkAdjustment *adj = NULL;
 	if (!window)
 		about_create();
 	else
 		gtk_window_present(GTK_WINDOW(window));
-	scrollme = TRUE;
-	adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin));
-	gtk_adjustment_set_value(adj, 0);
-	g_timeout_add(30, scroller, adj);
 }
 
 static void about_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *table;
+	GtkWidget *table2;
 	GtkWidget *image;	
  	GtkWidget *vbox2;
 	GtkWidget *label;
 	GtkWidget *button;
+	GtkWidget *scrolledwin;
+	GtkWidget *notebook;
 	GtkStyle *style;
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
@@ -97,8 +83,8 @@ static void about_create(void)
 	GtkWidget *confirm_area;
 	GtkWidget *close_button;
 	GtkTextBuffer *buffer;
-	GtkTextIter iter;
-	GdkColor color = {0, 0, 0, 0};
+	GtkTextIter iter, start_iter;
+	GtkTextMark *mark;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -107,9 +93,9 @@ static void about_create(void)
 	gint i;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("About"));
+	gtk_window_set_title(GTK_WINDOW(window), _("About Sylpheed-Claws"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_widget_set_size_request(window, 518, 358);
+	gtk_widget_set_size_request(window, -1, 458);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -125,19 +111,19 @@ static void about_create(void)
 	image = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
 	gtk_table_attach(GTK_TABLE(table), image, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_SHRINK),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
+			 (GtkAttachOptions) (GTK_SHRINK), 8, 0);
 
 	vbox2 = gtk_vbox_new (TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), vbox2, 1, 2, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 0);
+			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
 	label = gtk_label_new("");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 	markup = g_markup_printf_escaped
-		("<span weight=\"bold\" size=\"x-large\">Sylpheed-Claws</span>\nversion %s",
+		("<span weight=\"bold\" size=\"xx-large\">Sylpheed-Claws</span>\nversion %s",
 		 VERSION);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
@@ -194,7 +180,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	g_snprintf(buf, sizeof(buf),
-		   _("Compiled-in features:%s"),
+		   _("Compiled-in features:\n%s"),
 #if USE_THREADS
 		   " gthread"
 #endif
@@ -229,39 +215,260 @@ static void about_create(void)
 
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
+
+	table2 = gtk_table_new (2, 3, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox1), table2, FALSE, FALSE, 0);
 
 	label = gtk_label_new
 		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Sylpheed-Claws team");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_box_pack_start(GTK_BOX(vbox1), label, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table2), label, 0, 1, 0, 1,
+			 (GtkAttachOptions) (GTK_EXPAND),
+			 (GtkAttachOptions) (GTK_SHRINK), 0, 6);
+
+	notebook = gtk_notebook_new();
+	gtk_widget_set_size_request(notebook, -1, 200);
+	gtk_widget_show(notebook);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_size_request(scrolledwin, -1, 80);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_SHADOW_NONE);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, FALSE, FALSE, 0);
+					    GTK_SHADOW_IN);
 
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
-	color = gtk_widget_get_style(label)->bg[GTK_STATE_NORMAL];
-	gtk_widget_modify_base (text, GTK_STATE_NORMAL, &color);
+	/* textview link style (based upon main prefs) */
+	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+				       (GdkColor*)&uri_color);
+ 	gtk_text_buffer_create_tag(buffer, "link",
+				"foreground-gdk", &uri_color,
+				NULL);
 
+	gtk_text_buffer_insert(buffer, &iter, _("Sylpheed-Claws is a lightweight, fast and "
+				"highly-configurable e-mail client.\n\n"
+				"For further information visit the Sypheed-"
+				"Claws website, "), -1);
+	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
+	gtk_text_buffer_insert(buffer, &iter, HOMEPAGE_URI, -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"
+				"Sylpheed-Claws is free software released "
+				"under the GPL license. If you wish to donate "
+				"to the Sylpheed-Claws project you can do "
+				"so at "), -1);
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, DONATE_URI, -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"), -1);
 
-	gtk_text_buffer_insert(buffer, &iter, "\n\n\n\n\n\n\n\n", -1);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new(_("Info")));
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_IN);
+
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
+
+	/* init formatting tag: indentation  for list items */
+	gtk_text_buffer_create_tag(buffer, "indented-list-item",
+				"indent", 24,
+				NULL);
+	gtk_text_buffer_create_tag(buffer, "underlined-list-title",
+				"underline", PANGO_UNDERLINE_SINGLE,
+				NULL);
+
+	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
+	gtk_text_buffer_insert(buffer, &iter, (_("The Sylpheed-Claws Team\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; TEAM_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(TEAM_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, TEAM_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nPrevious team members\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; EX_TEAM_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(EX_TEAM_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, EX_TEAM_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(EX_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nThe translation team\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; TRANS_TEAM_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(TRANS_TEAM_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, TRANS_TEAM_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(TRANS_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nDocumentation team\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; DOC_TEAM_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(DOC_TEAM_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, DOC_TEAM_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(DOC_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nLogo\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; LOGO_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(LOGO_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, LOGO_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(LOGO_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nIcons\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; ICONS_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(ICONS_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, ICONS_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(ICONS_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_move_mark(buffer, mark, &iter);
+	gtk_text_buffer_insert(buffer, &iter, (_("\nContributors\n")), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+
+	for (i = 0; CONTRIBS_LIST[i] != NULL; i++) {
+		gtk_text_buffer_move_mark(buffer, mark, &iter);
+		if (g_utf8_validate(CONTRIBS_LIST[i], -1, NULL))
+			gtk_text_buffer_insert(buffer, &iter, CONTRIBS_LIST[i], -1);
+		else {
+			gchar *conv = conv_codeset_strdup(CONTRIBS_LIST[i], CS_ISO_8859_1, CS_UTF_8);
+			if (conv)
+				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+			g_free(conv);
+		}
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	}
+
+	gtk_text_buffer_delete_mark(buffer, mark);	
+
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				 scrolledwin,
+				 gtk_label_new(_("Authors")));
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_IN);
+
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This program is free software; you can redistribute it and/or modify "
@@ -279,25 +486,28 @@ static void about_create(void)
 		_("You should have received a copy of the GNU General Public License "
 		  "along with this program; if not, write to the Free Software "
 		  "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
-		  "MA 02110-1301, USA."), -1);
+		  "MA 02110-1301, USA.\n\n"), -1);
 #ifdef USE_OPENSSL
+ 	gtk_text_buffer_create_tag(buffer, "link",
+				"foreground-gdk", &uri_color,
+				NULL);
+
 	gtk_text_buffer_insert(buffer, &iter,
-		_("\n\nThis product includes software developed by the OpenSSL Project "
-		  "for use in the OpenSSL Toolkit (http://www.openssl.org/)"), -1);
+		_("This product includes software developed by the OpenSSL Project "
+		  "for use in the OpenSSL Toolkit ("), -1);
+	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
+	gtk_text_buffer_insert(buffer, &iter, _("http://www.openssl.org/"), -1);
+	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert(buffer, &iter, _(").\n\n"), -1);
 #endif
-	gtk_text_buffer_insert(buffer, &iter,
-		_("\n\n\nSylpheed-Claws is "
-		  "proudly brought to you by:\n\n"), -1);
-		
-	if (g_utf8_validate(AUTHORS_LIST, -1, NULL))
-		gtk_text_buffer_insert(buffer, &iter, AUTHORS_LIST, -1);
-	else {
-		gchar *conv = conv_codeset_strdup(AUTHORS_LIST, CS_ISO_8859_1, CS_UTF_8);
-		if (conv)
-			gtk_text_buffer_insert(buffer, &iter, conv, -1);
-		g_free(conv);
-	}
-		 
+
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				 scrolledwin,
+				 gtk_label_new(_("License")));
+
+	gtk_box_pack_start(GTK_BOX(vbox1), notebook, TRUE, TRUE, 0);
+
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 4);
@@ -313,10 +523,8 @@ static void about_create(void)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 {
-	if (event && event->keyval == GDK_Escape) {
-		scrollme = FALSE;
+	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(window);
-	}
 	return FALSE;
 }
 

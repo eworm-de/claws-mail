@@ -1,197 +1,221 @@
-static char *AUTHORS_LIST =
-"Hiroyuki Yamamoto\n"
-"Hoa viet Dinh\n"
-"Keith Edmunds \n"
-"Match Grun\n"
-"Melvin Hadasht\n"
-"Oliver Haertel \n"
-"Christoph Hohmann\n"
-"Alfons Hoogervorst\n"
-"Darko Koruga\n"
-"Colin Leroy\n"
-"Paul Mangan\n"
-"Leandro A. F. Pereira \n"
-"Luke Plant \n"
-"Martin Schaaf\n"
-"Carsten Schurig\n"
-"Sergey Vlasov\n"
-"Werner Koch\n"
-"Thorsten Maerz\n"
-"George Danchev \n"
-"Miquel Oliete \n"
-"Thomas Gilgin \n"
-"Ricardo Mones Lastra \n"
-"Flammie Pirinen \n"
-"Fabien Vantard \n"
-"Dragan \n"
-"Andrea Spadaccini \n"
-"Rui Hirokawa \n"
-"SungHyun Nam \n"
-"Geir Helland \n"
-"Emilian Nowak\n"
-"Frederico Goncalves Guimaraes \n"
-"Pavlo Bohmat \n"
-"Andrej Kacian \n"
-"Urke MMI \n"
-"Hansom Young \n"
-"Wei-Lun Chao \n"
-"François Barriere \n"
-"Martin Bretschneider\n"
-"Paul Kater\n"
-"Jens Oberender\n"
-"Marcelo Ramos \n"
-"Guido Rudolphi\n"
-"Nick Selby\n"
-"Yoichi Imai (Japanese)\n"
-"Paul Kater (English)\n"
-"WAKAI Kazunao\n"
-"Jakub 'jimmac' Steiner\n"
-"Aleksandar Urosevic\n"
-"Jesper Schultz\n"
-"Alte\n"
-"Pierric Descamps\n"
-"Ohmasa\n"
-"Stephen Anthony\n"
-"HIRAMATSU Masami\n"
-"Jorge Van Hemelryck\n"
-"TAKANO\n"
-"Masahiro Tomita\n"
-"Mathias Intemann\n"
-"Chideok Hwang\n"
-"Marc Hoper\n"
-"David Mehrmann\n"
-"Setoh\n"
-"Yuuki NINOMIYA\n"
-"Suzuki Mio\n"
-"Ishihara\n"
-"Jason McCarver\n"
-"Sakamoto\n"
-"Hiramatu\n"
-"John E.P. Hynes\n"
-"Maki\n"
-"Takahashi\n"
-"Nishimura\n"
-"Yoichi Imai\n"
-"Tsutsui\n"
-"Yanase\n"
-"TOGAWA\n"
-"Higuchi\n"
-"Paul Rolland\n"
-"KUROSAWA\n"
-"NAKAGAWA\n"
-"HIROSHIMA\n"
-"Tanaka\n"
-"Hashimoto\n"
-"T. Yamamoto\n"
-"YAMAGUCHI\n"
-"Tomita\n"
-"Nishiyama\n"
-"Michihide Hotta\n"
-"Nishika\n"
-"shigeri\n"
-"Tajiri\n"
-"Rodrigo Dias Arruda Senra\n"
-"Fabio Junior Beneditto\n"
-"Satoshi Nagayasu\n"
-"Henrik Carlqvist\n"
-"Don Quijote\n"
-"David Looney\n"
-"Eric Limpens\n"
-"Paul Evans\n"
-"wwp\n"
-"Jeroen Versteeg\n"
-"Ravemax\n"
-"Jens Jahnke\n"
-"Thierry Godefroy\n"
-"Matthieu Dazy\n"
-"Jonathan Ware\n"
-"Yasumatsu\n"
-"Stefaan A Eeckels\n"
-"OSHIRO Naoki\n"
-"KAJIWARA\n"
-"Hironori IWANE\n"
-"Manrat Chobchuen\n"
-"Shimamoto 'Neko' Tatsuya\n"
-"Jesse Skinner\n"
-"Willem van Engen\n"
-"Tobias Sandhaas\n"
-"Thomas Link\n"
-"Martin Pool\n"
-"Fredrik Olofssen\n"
-"Gustavo Noronha Silva\n"
-"Simon 'corecode' Schubert\n"
-"Dale P. Smith\n"
-"Yukihiro Nakai\n"
-"Watanabe\n"
-"Masaaki Noro\n"
-"Motonobu Ichimura\n"
-"Luca Rosellini\n"
-"Yasuzaki Masayoshi\n"
-"Stoyan Genov\n"
-"Jeremy Andrews\n"
-"Shawn Houston\n"
-"Alessandro Maestri\n"
-"Neill Miller\n"
-"Oliver Haertel\n"
-"Bob Forsman\n"
-"Ville Skyttä\n"
-"Wilbert Berendsen\n"
-"Bob Woodside\n"
-"Stefaan Eeckels\n"
-"Pascal Jermini\n"
-"Thorsten Thielen\n"
-"Eugene Brevdo\n"
-"Mitko Haralanov\n"
-"Bram Metsch\n"
-"Stanislav Karchebny\n"
-"Torsten Schoenfeld\n"
-"Xavier FACQ\n"
-"Botalov Vyacheslav\n"
-"Urosevic Aleksandar\n"
-"Martin Kluge\n"
-"George Danchev\n"
-"Ruslan N. Balkin\n"
-"Nicolas Kaiser\n"
-"Ivan Francolin Martinez\n"
-"Topia\n"
-"Gál Zoltán\n"
-"Mohammed Sameer\n"
-"Kim Schulz\n"
-"Christian Mertes\n"
-"Jens Rantil\n"
-"Florian Mickler\n"
-"André Filipe de Assunção e Brito\n"
-"Sergei Astanin\n"
-"Kevin Vigor\n"
-"James Noyes\n"
-"Radek Vybiral\n"
-"Tsu-Fan Cheng\n"
-"Martin Zwickel\n"
-"Martin Wicke\n"
-"Pawel Pêkala\n"
-"Bogdan Sumanariu\n"
-"David Relson\n"
-"Matthias Förste\n"
-"David Chalmers\n"
-"Chad Robinson\n"
-"Edgar Toernig\n"
-"Fabien Vantard\n"
-"Reza Pakdel\n"
-"Stephan Sachse\n"
-"Thomas Gilgin\n"
-"Guy Rouillier\n"
-"Jean-Yves Lefort\n"
-"George Michaelson\n"
-"IWAMOTO Kouichi\n"
-"Alex S Moore\n"
-"Felix Eckhofer\n"
-"Rich Coe\n"
-"Ivan Rayner\n"
-"Markus Schwarzenberg\n"
-"Luca Cavalli\n"
-"Tim Mann\n"
-"M. Benkmann\n"
-"Yang Guilong\n"
-"Daniel Gustafson\n"
-"Anders Hammar\n"
-"Andrew Nelson\n";
+static char *TEAM_LIST[] = {
+"Holger Berndt <berndth@users.sourceforge.net>",
+"Hoà Viêt Dinh <hoa@users.sourceforge.net>",
+"Darko Koruga <darko@users.sourceforge.net>",
+"Ricardo Mones Lastra <mones@users.sourceforge.net>",
+"Colin Leroy <colinleroy@users.sourceforge.net>",
+"Thorsten Maerz <netztorte@users.sourceforge.net>",
+"Paul Mangan <twb@users.sourceforge.net>",
+"Martin Schaaf <mascha1@users.sourceforge.net>",
+"wwp <wwp@users.sourceforge.net>",
+NULL
+};
+
+static char *EX_TEAM_LIST[] = {
+"Keith Edmunds",
+"Match Grun",
+"Melvin Hadasht",
+"Oliver Haertel",
+"Christoph Hohmann",
+"Alfons Hoogervorst",
+"Leandro A. F. Pereira",
+"Luke Plant",
+"Martin Schaaf",
+"Carsten Schurig",
+"Sergey Vlasov",
+"Hiroyuki Yamamoto",
+NULL
+};
+
+static char *TRANS_TEAM_LIST[] = {
+"[bg] George Danchev <danchev@spnet.net>",
+"[ca] Miquel Oliete <miqueloliete@softhome.net>",
+"[de] Thomas Gilgin <thg1@karate-muellheim.de>",
+"[en_GB] Paul Mangan <claws@thewildbeast.co.uk>",
+"[es] Ricardo Mones Lastra <mones@aic.uniovi.es>",
+"[fi] Flammie Pirinen <flammie@iki.fi>",
+"[fr] Fabien Vantard <fzzzzz@gmail.com>",
+"[hr] Dragan <drleskov@inet.hr>",
+"[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
+"[ja] Rui Hirokawa <rui_hirokawa@ybb.ne.jp>",
+"[ko] SungHyun Nam <namsh@kldp.org>",
+"[nb] Geir Helland <pjallabais@users.sourceforge.net>",
+"[pl] Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>",
+"[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",
+"[ru] Pavlo Bohmat <bohm@ukr.net>",
+"[sk] Andrej Kacian <andrej@kacian.sk>",
+"[sr] Urke MMI <urke@users.sourceforge.net>",
+"[zh_CN] Hansom Young <hyoung@operamail.com>",
+"[zh_TW] Wei-Lun Chao <chaoweilun@pcmail.com.tw>",
+NULL
+};
+
+static char *DOC_TEAM_LIST[] = {
+"Ricardo Mones Lastra <mones@users.sourceforge.net>",
+"Paul Mangan <twb@users.sourceforge.net>",
+NULL
+};
+
+static char *LOGO_LIST[] = {
+"Jesper Schultz <jesper@schultz-net.dk>",
+NULL
+};
+
+static char *ICONS_LIST[] = {
+"Jakub 'jimmac' Steiner <jimmac@ximian.com>",
+"Aleksandar Urosevic <urke@users.sf.net>",
+NULL
+};
+
+static char *CONTRIBS_LIST[] = {
+"Alte",
+"Jeremy Andrews",
+"Stephen Anthony",
+"Sergei Astanin",
+"Ruslan N. Balkin",
+"Fabio Junior Beneditto",
+"M. Benkmann",
+"Wilbert Berendsen",
+"Eugene Brevdo",
+"André Filipe de Assunção e Brito",
+"Henrik Carlqvist",
+"Luca Cavalli",
+"David Chalmers",
+"Tsu-Fan Cheng",
+"Manrat Chobchuen",
+"Rich Coe",
+"George Danchev",
+"Matthieu Dazy",
+"Pierric Descamps",
+"Felix Eckhofer",
+"Stefaan A Eeckels",
+"Stefaan Eeckels",
+"Willem van Engen",
+"Paul Evans",
+"Xavier FACQ",
+"Bob Forsman",
+"Matthias Förste",
+"Stoyan Genov",
+"Thomas Gilgin",
+"Thierry Godefroy",
+"Yang Guilong",
+"Daniel Gustafson",
+"HIROSHIMA",
+"Oliver Haertel",
+"Anders Hammar",
+"Mitko Haralanov",
+"Hashimoto",
+"Jorge Van Hemelryck",
+"Higuchi",
+"Hiramatu",
+"Marc Hoper",
+"Michihide Hotta",
+"Shawn Houston",
+"Chideok Hwang",
+"John E.P. Hynes",
+"Hironori IWANE",
+"Motonobu Ichimura",
+"Yoichi Imai",
+"Mathias Intemann",
+"Ishihara",
+"Jens Jahnke",
+"Pascal Jermini",
+"KAJIWARA",
+"KUROSAWA",
+"Nicolas Kaiser",
+"Stanislav Karchebny",
+"WAKAI Kazunao",
+"Martin Kluge",
+"IWAMOTO Kouichi",
+"Ricardo Mones Lastra",
+"Jean-Yves Lefort",
+"Eric Limpens",
+"Thomas Link",
+"David Looney",
+"Alessandro Maestri",
+"Maki",
+"Tim Mann",
+"Ivan Francolin Martinez",
+"HIRAMATSU Masami",
+"Yasuzaki Masayoshi",
+"Jason McCarver",
+"David Mehrmann",
+"Christian Mertes",
+"Bram Metsch",
+"George Michaelson",
+"Florian Mickler",
+"Neill Miller",
+"Suzuki Mio",
+"Alex S Moore",
+"NAKAGAWA",
+"Yuuki NINOMIYA",
+"Satoshi Nagayasu",
+"Yukihiro Nakai",
+"OSHIRO Naoki",
+"Andrew Nelson",
+"Nishika",
+"Nishimura",
+"Nishiyama",
+"Masaaki Noro",
+"James Noyes",
+"Jens Oberender",
+"Ohmasa",
+"Fredrik Olofssen",
+"Reza Pakdel",
+"Martin Pool",
+"Pawel Pêkala",
+"Don Quijote",
+"Jens Rantil",
+"Ravemax",
+"Ivan Rayner",
+"David Relson",
+"Chad Robinson",
+"Paul Rolland",
+"Luca Rosellini",
+"Guy Rouillier",
+"Stephan Sachse",
+"Sakamoto",
+"Mohammed Sameer",
+"Tobias Sandhaas",
+"Torsten Schoenfeld",
+"Simon 'corecode' Schubert",
+"Kim Schulz",
+"Markus Schwarzenberg",
+"Rodrigo Dias Arruda Senra",
+"Setoh",
+"Gustavo Noronha Silva",
+"Jesse Skinner",
+"Ville Skyttä",
+"Dale P. Smith",
+"Bogdan Sumanariu",
+"TAKANO",
+"TOGAWA",
+"Tajiri",
+"Takahashi",
+"Tanaka",
+"shigeri",
+"Shimamoto \"Neko\"Tatsuya",
+"Thorsten Thielen",
+"Edgar Toernig",
+"Masahiro Tomita",
+"Tomita",
+"Topia",
+"Tsutsui",
+"Aleksandar Urosevic",
+"Fabien Vantard",
+"Jeroen Versteeg",
+"Kevin Vigor",
+"Botalov Vyacheslav",
+"Radek Vybiral",
+"Jonathan Ware",
+"Watanabe",
+"Martin Wicke",
+"Bob Woodside",
+"YAMAGUCHI",
+"T. Yamamoto",
+"Yanase",
+"Yasumatsu",
+"Gál Zoltán",
+"Martin Zwickel",
+NULL
+};
