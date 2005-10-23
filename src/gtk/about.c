@@ -261,7 +261,7 @@ static void about_create(void)
 
 	gtk_text_buffer_insert(buffer, &iter, _("Sylpheed-Claws is a lightweight, fast and "
 				"highly-configurable e-mail client.\n\n"
-				"For further information visit the Sypheed-"
+				"For further information visit the Sylpheed-"
 				"Claws website, "), -1);
 	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
 	gtk_text_buffer_insert(buffer, &iter, HOMEPAGE_URI, -1);
