@@ -1,3 +1,8 @@
+2005-10-24 [paul]	1.9.15cvs101
+
+	* src/gtk/about.c
+		fix window sizing
+
 2005-10-24 [paul]	1.9.15cvs100
 
 	* src/pixmaps/offline.xpm

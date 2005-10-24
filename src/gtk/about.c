@@ -95,7 +95,8 @@ static void about_create(void)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("About Sylpheed-Claws"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_widget_set_size_request(window, -1, 458);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+	gtk_widget_set_size_request(window, -1, -1);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
