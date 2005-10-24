@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appendix id="ap_faq">
+<title>The Sylpheed-Claws FAQ</title>
+
+  <section id="faq_general">
+    <title>General information</title>
+
+    <section>
+      <title>What is Sylpheed? What is Sylpheed-Claws?</title>
+      <para>
+         Sylpheed is an e-mail client (and news reader) based on GTK+, running on the X Window System, and aiming for:
+      </para>
+      <itemizedlist>
+        <listitem>
+	  <para>
+	    Quick response
+	  </para>
+	</listitem>
+        <listitem>
+	  <para>
+	    Graceful, and sophisticated interface
+	  </para>
+	</listitem>
+        <listitem>
+	  <para>
+	    Easy configuration, intuitive operation
+	  </para>
+	</listitem>
+        <listitem>
+	  <para>
+	    Abundant features
+	  </para>
+	</listitem>
+      </itemizedlist>
+      <para>
+        Sylpheed-Claws is the extended version of Sylpheed.
+      </para>
+    </section>
+
+    <section>
+      <title>What are the differences between Sylpheed and Sylpheed-Claws?</title>
+      <para>
+        For a list of features, and differences between Sylpheed and Sylpheed-Claws, see <ulink url="http://sylpheed-claws.sourceforge.net/features.php">the online features page</ulink>.
+      </para>
+    </section>
+
+    <section>
+      <title>Where can I get Sylpheed-Claws?</title>
+      <para>
+        See the <ulink url="http://sylpheed-claws.sourceforge.net/downloads.php">Downloads page</ulink>.
+      </para>
+    </section>
+
+    <section>
+      <title>Who writes Sylpheed-Claws?</title>
+      <para>
+        Sylpheed-Claws is developed by the Sylpheed-Claws Team. Sylpheed-Claws is also regularly syncronised with the original version of Sylpheed written by Hiroyuki Yamamoto.
+      </para>
+    </section>
+
+    <section>
+      <title>What does the name Sylpheed mean?</title>
+      <para>
+        It means 'light weight', like air. This comes from the name of the wind spirits, the Sylphs.
+      </para>
+    </section>
+
+    <section>
+      <title>How does Sylpheed-Claws store mails?</title>
+      <para>
+        Mails are stored in the MH mailfile format as used by MH and EMH. Maildir and mbox formats are supported via two plugins available on the <ulink url="http://sylpheed-claws.sourceforge.net/plugins.php">Plugins page</ulink>.
+      </para>
+    </section>
+
+    <section>
+      <title>Why does the auto collection of mail not work?</title>
+      <para>
+        Auto collection works since version 0.5.1. If you need it or want it, you should upgrade.
+      </para>
+    </section>
+
+    <section>
+      <title>Does Sylpheed-Claws have mail filtering?</title>
+      <para>
+        Yes. You can find it in <quote>Configuration</quote> menu, <quote>Filtering...</quote> option.
+      </para>
+    </section>
+
+    <section>
+      <title>Can Sylpheed-Claws handle IMAP mail?</title>
+      <para>
+        Yes. As of version 0.4.99 IMAP is supported.
+      </para>
+    </section>
+
+    <section>
+      <title>Can Sylpheed-Claws handle local unix mailboxes?</title>
+      <para>
+        Yes.
+      </para>
+    </section>
+
+    <section>
+      <title>Can Sylpheed-Claws handle IPv6?</title>
+      <para>
+        Yes, IPv6 is fully supported in Sylpheed-Claws.
+      </para>
+    </section>
+
+    <section>
+      <title>How many POP3, News or IMAP accounts can I set up in Sylpheed-Claws?</title>
+      <para>
+        The number is not limited. The limit is reached when your computer stops responding.
+      </para>
+    </section>
+
+    <section>
+      <title>Does Sylpheed-Claws support encryption like GPG?</title>
+      <para>
+        Yes. GPG is implemented and works fine. For activating it in Sylpheed-Claws, see Installation And Configuration section in this FAQ or the appropiate chapter in this manual.
+      </para>
+    </section>
+
+    <section>
+      <title>How does Sylpheed-Claws check for MIME types?</title>
+      <para>
+        Sylpheed-Claws uses the Mutt type of mime checking.
+      </para>
+    </section>
+
+    <section>
+      <title>Does Sylpheed-Claws allow me to write HTML styled messages?</title>
+      <para>
+        No. A discussion has gone around over this topic, and the outcome was that HTML mail is not wanted. If you really need to send HTML, you can of course attach a webpage to an e-mail. Several patches have been made to facilitate better HTML handling in Sylpheed. You can find these patches at the Sylpheed Patch Page (see further down in the document).
+      </para>
+    </section>
+
+    <section>
+      <title>Does Sylpheed-Claws have name completion in the address fields?</title>
+      <para>
+        Yes. When you search for a name that starts with "don", type "don" (without the quotes) and press the TAB key. This will show you the correct name (when only one "don" exists in your addressbook. Otherwise a dropdown list appears, which allows you to select the name you want. E.g. Donald Duck, Don Johnson. But also e-mail addresses starting with "don" will appear in the list (like "don.giovanni@maffia.org").
+      </para>
+    </section>
+
+    <section>
+      <title>Fine, but when I hit the TAB key I get an error message.</title>
+      <para>
+        When you want to use name completion, make sure that there are names in your address book. If there are no names, even Sylpheed-Claws has a hard time completing something.
+      </para>
+    </section>
+
+    <section>
+      <title>Why is Sylpheed-Claws so fast?</title>
+      <para>
+        That's what it is designed for!
+      </para>
+    </section>
+
+    <section>
+      <title>How can I send in patches, report bugs, talk about Sylpheed-Claws with others?</title>
+      <para>
+        To talk to others, you should join the Sylpheed-Claws users' mailing list at <ulink url="http http://sylpheed-claws.sourceforge.net/MLs.php">SourceForge</ulink>.
+      </para>
+    </section>
+
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+
+  </section>
+
+  <section id="faq_instconf">
+    <title>Installation and configuration</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="faq_interface">
+    <title>Interface</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="faq_compose">
+    <title>Composing mails or news</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="faq_filtering">
+    <title>Filtering and processing of messages</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="faq_actions">
+    <title>Actions</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="faq_plugins">
+    <title>Plugins</title>
+    <para>
+    </para>
+  </section>
+
+</appendix>
+

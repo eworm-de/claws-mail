@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_addrbook">
+<title>Address book</title>
+
+  <section id="addrbk_basic">
+    <title>Basic management</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="addrbk_expimp">
+    <title>Exporting and importing addresses</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="addrbk_advanced">
+    <title>Advanced features</title>
+
+    <section id="addrbk_adv_ldap">
+      <title>Using LDAP servers</title>
+      <para>
+      </para>
+    </section>
+
+    <section id="addrbk_adv_jpilot">
+      <title>Integration with JPilot</title>
+      <para>
+      </para>
+    </section>
+
+    <section id="addrbk_adv_vcard">
+      <title>VCard support</title>
+      <para>
+      </para>
+    </section>
+    
+  </section>
+
+</section>
+

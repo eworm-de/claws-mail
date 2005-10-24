@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_plugins">
+<title>Extending Sylpheed-Claws</title>
+
+  <section id="plugins_default">
+    <title>Provided plugins</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="plugins_external">
+    <title>More plugins</title>
+    <para>
+    </para>
+  </section>
+
+</section>
+

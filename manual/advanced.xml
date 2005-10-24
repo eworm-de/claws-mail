@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_advanced">
+<title>Advanced features</title>
+
+  <section id="adv_actions">
+    <title>Actions</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="adv_templates">
+    <title>Templates</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="adv_processing">
+    <title>Processing</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="adv_plugins">
+    <title>Plugins</title>
+    <para>
+      Plugins are the mechanism of extending Sylpheed-Claws capabilities. Imagine you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of it. With Sylpheed-Claws you can simply write a plugin to achieve the task.
+    </para>
+    <para>This is only an example of the possibilities. Already exist a good number of plugins developed for Sylpheed-Claws, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> is devoted to all of them.
+    </para>
+  </section>
+
+  <section id="adv_hidden">
+    <title>Hidden preferences</title>
+    <para>
+    </para>
+  </section>
+  
+</section>
+

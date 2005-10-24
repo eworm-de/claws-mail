@@ -1,3 +1,22 @@
+2005-10-24 [mones]	1.9.15cvs98
+
+	* manual/Makefile
+	* manual/account.xml
+	* manual/ack.xml
+	* manual/addrbook.xml
+	* manual/advanced.xml
+	* manual/faq.xml
+	* manual/glossary.xml
+	* manual/gpl.xml
+	* manual/handling.xml
+	* manual/intro.xml
+	* manual/keyboard.xml
+	* manual/manual.xml
+	* manual/plugins.xml
+	* manual/starting.xml
+	* manual/dtd/sdocbook.dtd
+		Initial manual structure and some content.
+
 2005-10-23 [wwp]	1.9.15cvs97
 
 	* src/gtk/about.c

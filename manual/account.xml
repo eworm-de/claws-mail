@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_account">
+<title>Account customisation</title>
+
+  <section id="account_basic">
+    <title>Basic preferences</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="account_prefs">
+    <title>Preferences for writting</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="account_types">
+    <title>Account types</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="account_multiple">
+    <title>Multiple accounts</title>
+    <para>
+    </para>
+  </section>
+
+  <section id="account_morefilt">
+    <title>More filtering</title>
+    <para>
+    </para>
+  </section>
+
+</section>
+
