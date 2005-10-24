@@ -1,3 +1,9 @@
+2005-10-24 [paul]	1.9.15cvs100
+
+	* src/pixmaps/offline.xpm
+	* src/pixmaps/online.xpm
+		replace with last default versions
+
 2005-10-24 [colin]	1.9.15cvs99
 
 	* src/imap.c
