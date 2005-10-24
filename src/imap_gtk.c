@@ -57,7 +57,7 @@ static GtkItemFactoryEntry imap_popup_entries[] =
 	{N_("/Create _new folder..."),	 NULL, new_folder_cb,    0, NULL},
 	{N_("/_Rename folder..."),	 NULL, rename_folder_cb, 0, NULL},
 	{N_("/M_ove folder..."),	 NULL, move_folder_cb,   0, NULL},
-	{N_("/_Delete folder"),		 NULL, delete_folder_cb, 0, NULL},
+	{N_("/_Delete folder..."),	 NULL, delete_folder_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL,             0, "<Separator>"},
 	{N_("/Synchronise"),		 NULL, sync_cb,      	0, NULL},
 	{N_("/Down_load messages"),	 NULL, download_cb,      0, NULL},
@@ -108,7 +108,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Create new folder...",   item->no_sub == FALSE);
 	SET_SENS("/Rename folder...",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("/Move folder...", 	    folder_is_normal && folder_item_parent(item) != NULL);
-	SET_SENS("/Delete folder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("/Delete folder...", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);

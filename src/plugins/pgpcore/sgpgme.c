@@ -30,6 +30,9 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <errno.h>
+#if HAVE_LOCALE_H
+#  include <locale.h>
+#endif
 
 #include "sgpgme.h"
 #include "privacy.h"

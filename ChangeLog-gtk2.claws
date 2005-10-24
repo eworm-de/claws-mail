@@ -1,3 +1,14 @@
+2005-10-24 [colin]	1.9.15cvs99
+
+	* src/imap.c
+		Fix bug when moving a folder
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		"Delete folder" pops up a window, so it 
+		should be suffixed with "..."
+	* src/plugins/pgpcore/sgpgme.c
+		Include locale.h
+
 2005-10-24 [mones]	1.9.15cvs98
 
 	* manual/Makefile

@@ -1828,17 +1828,19 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item->path != NULL, -1);
 	g_return_val_if_fail(name != NULL, -1);
 
-	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
-		g_warning(_("New folder name must not contain the namespace "
-			    "path separator"));
-		return -1;
-	}
-
 	session = imap_session_get(folder);
 	if (!session) {
 		return -1;
 	}
 	lock_session();
+
+	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
+		g_warning(_("New folder name must not contain the namespace "
+			    "path separator"));
+		unlock_session();
+		return -1;
+	}
+
 	real_oldpath = imap_get_real_path(IMAP_FOLDER(folder), item->path);
 
 	g_free(session->mbox);
@@ -1919,14 +1921,6 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	}
 	lock_session();
 	path = imap_get_real_path(IMAP_FOLDER(folder), item->path);
-
-	ok = imap_cmd_examine(session, "INBOX",
-			      &exists, &recent, &unseen, &uid_validity, FALSE);
-	if (ok != IMAP_SUCCESS) {
-		g_free(path);
-		unlock_session();
-		return -1;
-	}
 
 	ok = imap_cmd_delete(session, path);
 	if (ok != IMAP_SUCCESS) {
