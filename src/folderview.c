@@ -1815,20 +1815,6 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
-static void summary_freeze_for_proc(gpointer data)
-{
-	FolderView *folderview = (FolderView *)data;
-	debug_print("freezing during processing...\n");
-	gtk_clist_freeze(GTK_CLIST(folderview->summaryview->ctree));
-}
-
-static void summary_thaw_for_proc(gpointer data)
-{
-	FolderView *folderview = (FolderView *)data;
-	debug_print("thawing after processing\n");
-	gtk_clist_thaw(GTK_CLIST(folderview->summaryview->ctree));
-}
-
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {

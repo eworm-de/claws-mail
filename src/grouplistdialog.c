@@ -39,6 +39,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
+#include <gtk/gtksctree.h>
 #include <gtk/gtkstock.h>
 #include <string.h>
 

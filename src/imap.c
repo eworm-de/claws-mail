@@ -1908,8 +1908,6 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	IMAPSession *session;
 	gchar *path;
 	gchar *cache_dir;
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);

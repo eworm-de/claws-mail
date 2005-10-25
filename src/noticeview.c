@@ -52,9 +52,6 @@ static gboolean noticeview_icon_pressed	(GtkWidget *widget, GdkEventButton *evt,
 static gboolean noticeview_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
 				       NoticeView *noticeview);
-static gboolean noticeview_motion_notify(GtkWidget *widget,
-				       GdkEventMotion *event,
-				       NoticeView *noticeview);
 static gboolean noticeview_leave_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      NoticeView *textview);
@@ -226,15 +223,6 @@ static gboolean noticeview_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
 
 static gboolean noticeview_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
-				       NoticeView *noticeview)
-{
-	if (noticeview->icon_clickable)
-		gdk_window_set_cursor(noticeview->evtbox->window, hand_cursor);
-	return FALSE;
-}
-
-static gboolean noticeview_motion_notify(GtkWidget *widget,
-				       GdkEventMotion *event,
 				       NoticeView *noticeview)
 {
 	if (noticeview->icon_clickable)
