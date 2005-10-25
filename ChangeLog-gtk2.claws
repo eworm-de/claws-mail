@@ -1,3 +1,9 @@
+2005-10-25 [cleroy]	1.9.15cvs105
+
+	* src/common/socket.c
+		Fix a leak - Thanks to Christopher Aillon
+		(http://christopher.aillon.org/blog/dev/gnome/20051025-gsource.html)
+
 2005-10-25 [paul]	1.9.15cvs104
 
 	* src/wizard.c

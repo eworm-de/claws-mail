@@ -424,6 +424,7 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 		g_source_set_priority(source, G_PRIORITY_DEFAULT);
 		g_source_set_can_recurse(source, FALSE);
 		sock->g_source = g_source_attach(source, NULL);
+		g_source_unref (source); /* Refcount back down to 1 */
 		return sock->g_source;
 	}
 #endif
