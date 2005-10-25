@@ -141,6 +141,8 @@ static void initialize_fonts(WizardWindow *wizard)
 	g_free(tmp);
 }
 
+#define XFACE "+}Axz@~a,-Yx?0Ysa|q}CLRH=89Y]\"')DSX^<6p\"d)'81yx5%G#u^o*7JG&[aPU0h1Ux.vb2yIjH83{5`/bVo|~nn/i83vE^E)qk-4W)_E.4Y=D*qvf/,Ci_=P<iY<M6"
+
 static void write_welcome_email(WizardWindow *wizard)
 {
 	gchar buf_date[64];
@@ -162,11 +164,12 @@ static void write_welcome_email(WizardWindow *wizard)
 		"To: %s <%s>\n"
 		"Date: %s\n"
 		"Subject: %s\n"
+		"X-Face: %s\n"
 		"Content-Type: text/plain; charset=UTF-8\n",
 		_("Sylpheed-Claws Team"),
 		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
-		buf_date, subj);
+		buf_date, subj, XFACE);
 	body = g_strdup_printf(
 		_("\n"
 		"Welcome to Sylpheed-Claws\n"
@@ -221,6 +224,8 @@ static void write_welcome_email(WizardWindow *wizard)
 	g_free(msg);
 	g_unlink(file);
 }
+#undef XFACE
+
 static gboolean wizard_write_config(WizardWindow *wizard)
 {
 	gboolean mailbox_ok = FALSE;
@@ -371,28 +376,34 @@ static gchar *get_default_email_addr(void)
 
 static gchar *get_default_server(WizardWindow * wizard, const gchar *type)
 {
-	gchar *domain_name = g_strdup(get_domain_name());
+	gchar *domain_name = NULL;
+	gchar *tmp = gtk_editable_get_chars(
+			GTK_EDITABLE(wizard->email), 0, -1);
 	gchar *result;
 	
-	if (strchr(domain_name, '.') != strrchr(domain_name, '.')
-	&& strlen(strchr(domain_name, '.')) > 6) {
-		gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
-		g_free(domain_name);
-		domain_name = tmp;
-	} else if (strchr(domain_name, '.') == NULL) {
-		/* only hostname found, use email suffix */
-		gchar *mail;
-		mail = gtk_editable_get_chars(GTK_EDITABLE(wizard->email), 0, -1);
-
-		if (strlen (mail) && strstr(mail, "@")) {
-			g_free(domain_name);
-			domain_name = g_strdup(strstr(mail, "@")+1);
-		}
-		g_free(mail);
+	if (strstr(tmp, "@")) {
+		domain_name = g_strdup(strstr(tmp,"@")+1);
+	} else {
+		domain_name = g_strdup(get_domain_name());
 	}
+	
+	g_free(tmp);
+
 	result = g_strdup_printf("%s.%s",
 				type, domain_name);
 	g_free(domain_name);
+	return result;
+}
+
+static gchar *get_default_account(WizardWindow * wizard)
+{
+	gchar *result = gtk_editable_get_chars(
+			GTK_EDITABLE(wizard->email), 0, -1);
+	
+	if (strstr(result, "@")) {
+		*(strstr(result,"@")) = '\0';
+	} 
+
 	return result;
 }
 
@@ -408,6 +419,10 @@ static void wizard_email_changed(GtkWidget *widget, gpointer data)
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
 	g_free(text);
 
+	text = get_default_account(wizard);
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_username), text);
+	g_free(text);
+
 	if (protocol == A_POP3) {
 		text = get_default_server(wizard, "pop");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
@@ -421,6 +436,7 @@ static void wizard_email_changed(GtkWidget *widget, gpointer data)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), mbox);
 		g_free(mbox);
 	}
+	
 }
 
 static GtkWidget* user_page (WizardWindow * wizard)
@@ -586,6 +602,10 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 	i++;
 	
+	text = get_default_account(wizard);
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_username), text);
+	g_free(text);
+
 	wizard->recv_password = gtk_entry_new();
 	wizard->recv_password_label = gtk_label_new(_("Password:"));
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_password_label, 			      

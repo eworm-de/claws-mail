@@ -1,3 +1,11 @@
+2005-10-25 [paul]	1.9.15cvs104
+
+	* src/wizard.c
+		Always guess servers from the right-hand
+		email part and guess username from the
+		left-hand part. (Thanks to Colin)
+		add an X-Face to the welcome message
+
 2005-10-25 [paul]	1.9.15cvs103
 
 	* manual/handling.xml
