@@ -1058,7 +1058,9 @@ gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 		 ? &filename[1] : filename, NULL);
 
 	g_free(filename);
-	return fullname;
+	filename = conv_filename_from_utf8(fullname);
+	g_free(fullname);
+	return filename;
 }
 
 /**
@@ -1079,9 +1081,16 @@ static gboolean mimeview_write_part(const gchar *filename,
 	if (is_file_exist(filename)) {
 		AlertValue aval;
 		gchar *res;
+		gchar *tmp;
+		
+		if (!g_utf8_validate(filename, -1, NULL))
+			tmp = conv_filename_to_utf8(filename);
+		else 
+			tmp = g_strdup(filename);
 		
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-				      filename);
+				      tmp);
+		g_free(tmp);
 		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_OK, 
 				  GTK_STOCK_CANCEL, NULL);
 		g_free(res);					  

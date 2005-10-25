@@ -942,3 +942,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/handling.xml;  ) > 1.9.15cvs103.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/wizard.c;  ) > 1.9.15cvs104.patchset
 ( cvs diff -u -r 1.13.2.16 -r 1.13.2.17 src/common/socket.c;  ) > 1.9.15cvs105.patchset
+( cvs diff -u -r 1.83.2.49 -r 1.83.2.50 src/mimeview.c;  ) > 1.9.15cvs106.patchset

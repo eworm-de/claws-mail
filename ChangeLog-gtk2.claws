@@ -1,3 +1,9 @@
+2005-10-25 [colin]	1.9.15cvs106
+
+	* src/mimeview.c
+		Fix encoding issue in Save all and in 
+		overwrite-confirmation alertpanel
+
 2005-10-25 [cleroy]	1.9.15cvs105
 
 	* src/common/socket.c
