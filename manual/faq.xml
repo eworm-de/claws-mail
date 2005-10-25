@@ -73,13 +73,6 @@
     </section>
 
     <section>
-      <title>Why does the auto collection of mail not work?</title>
-      <para>
-        Auto collection works since version 0.5.1. If you need it or want it, you should upgrade.
-      </para>
-    </section>
-
-    <section>
       <title>Does Sylpheed-Claws have mail filtering?</title>
       <para>
         Yes. You can find it in <quote>Configuration</quote> menu, <quote>Filtering...</quote> option.
@@ -89,7 +82,7 @@
     <section>
       <title>Can Sylpheed-Claws handle IMAP mail?</title>
       <para>
-        Yes. As of version 0.4.99 IMAP is supported.
+        Yes.
       </para>
     </section>
 
@@ -164,32 +157,59 @@
     </section>
 
     <section>
-      <title></title>
+      <title>Can I import a mbox into Sylpheed-Claws' MH mailfolders?</title>
       <para>
+        Yes, just create or select the folder you want your mails in, and select <quote>Import mbox file...</quote> in the <quote>File</quote> menu.
       </para>
     </section>
 
     <section>
-      <title></title>
+      <title>Can I use procmail to sort my mails with the MH mail handling?</title>
       <para>
+        Yes. Just make sure that you add <quote>/.</quote> to the end of a rule so procmail knows you are filtering into an MH mail folder. Example:
+      </para>
+      <literallayout>
+        <computeroutput>
+0:
+
+* ^Subject:.*sylpheed
+
+sylpheedmail/.
+        </computeroutput>
+      </literallayout>
+      <para>
+        Check <command>man procmail</command> for details.
       </para>
     </section>
 
     <section>
-      <title></title>
+      <title>When I upgrade Sylpheed-Claws, are there things I should be aware of?</title>
       <para>
+        Yes. Anything you should be aware of is included in the Release Notes. Click the version number <ulink url="http http://sourceforge.net/project/showfiles.php?group_id=25528&amp;package_id=17401">on this page</ulink> to see them.
       </para>
     </section>
 
     <section>
-      <title></title>
+      <title>How can I quickly update the views in Sylpheed-Claws?</title>
       <para>
+        Just press <quote>Ctrl+Alt+U</quote> or select <quote>Update summary</quote> from the <quote>View</quote> menu.
       </para>
     </section>
 
     <section>
-      <title></title>
+      <title>Are there any plans to port Sylpheed-Claws to GTK2?</title>
       <para>
+        Sylpheed-Claws already has a port to GTK2. The first release of this version was 1.9.6.
+      </para>
+      <para>
+        If you want to test the GTK2 CVS versions, you have to checkout the corresponding branch: <command>cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws co -r gtk2 sylpheed-claws</command>.
+      </para>
+    </section>
+
+    <section>
+      <title>Why does sylpheed allow me to open more than one instance at the same time for the same user on a network?</title>
+      <para>
+        Sylpheed opens a Unix-domain socket using a name built from your TMPDIR path plus your UID. This socket is used to arbitrate multiple instances on a given machine. In Linux, at least, named Unix-domain sockets are known only locally, to the creating machine. Pointing your TMPDIR environment variable to /home/yours/tmp doesn't have the desired effect, as the socket definition would need to be propagated across the LAN and isn't.
       </para>
     </section>
 

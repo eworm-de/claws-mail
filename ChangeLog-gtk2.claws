@@ -1,3 +1,14 @@
+2005-10-25 [mones]	1.9.15cvs109
+
+	* manual/faq.xml
+		General information subsection completed. 
+		Removed archaic references.
+		
+	* manual/Makefile
+	* manual/dtd/manual.dsl
+		Added customization stylesheet for getting paragraphs
+		fully justified in PDF output (as suggested by Colin).
+
 2005-10-25 [colin]	1.9.15cvs108
 
 	* src/compose.c

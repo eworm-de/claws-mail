@@ -17,7 +17,7 @@ $(OUT):
 	mkdir -p $(OUT)
 
 $(MAIN).pdf: $(XMLS)
-	docbook2pdf -o $(OUT)/pdf $(MAIN).xml
+	docbook2pdf -d dtd/manual.dsl -o $(OUT)/pdf $(MAIN).xml
 
 $(MAIN).ps: $(XMLS)
 	docbook2ps -o $(OUT)/ps $(MAIN).xml
