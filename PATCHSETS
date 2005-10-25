@@ -939,3 +939,4 @@
 ( cvs diff -u -r 1.1.4.2 -r 1.1.4.3 src/pixmaps/offline.xpm;  cvs diff -u -r 1.1.4.2 -r 1.1.4.3 src/pixmaps/online.xpm;  ) > 1.9.15cvs100.patchset
 ( cvs diff -u -r 1.4.2.21 -r 1.4.2.22 src/gtk/about.c;  ) > 1.9.15cvs101.patchset
 ( cvs diff -u -r 1.207.2.78 -r 1.207.2.79 src/folderview.c;  cvs diff -u -r 1.14.2.12 -r 1.14.2.13 src/grouplistdialog.c;  cvs diff -u -r 1.179.2.82 -r 1.179.2.83 src/imap.c;  cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/noticeview.c;  ) > 1.9.15cvs102.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/handling.xml;  ) > 1.9.15cvs103.patchset
