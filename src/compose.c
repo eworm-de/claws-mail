@@ -1427,7 +1427,7 @@ static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbu
 	GtkTextIter start = *iter;
 	GtkTextIter end_iter;
 	int start_pos = gtk_text_iter_get_offset(&start);
-
+	gchar *str = NULL;
 	if (!compose->account->sig_sep)
 		return FALSE;
 	
@@ -1435,8 +1435,8 @@ static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbu
 		start_pos+strlen(compose->account->sig_sep));
 
 	/* check sig separator */
-	if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),
-			compose->account->sig_sep)) {
+	str = gtk_text_iter_get_text(&start, &end_iter);
+	if (!strcmp(str, compose->account->sig_sep)) {
 		gchar *tmp = NULL;
 		/* check end of line (\n) */
 		gtk_text_buffer_get_iter_at_offset(textbuf, &start,
@@ -1445,12 +1445,13 @@ static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbu
 			start_pos+strlen(compose->account->sig_sep)+1);
 		tmp = gtk_text_iter_get_text(&start, &end_iter);
 		if (!strcmp(tmp,"\n")) {
+			g_free(str);
 			g_free(tmp);
 			return TRUE;
 		}
 		g_free(tmp);	
-
 	}
+	g_free(str);
 
 	return FALSE;
 }
