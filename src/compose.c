@@ -1437,15 +1437,18 @@ static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbu
 	/* check sig separator */
 	if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),
 			compose->account->sig_sep)) {
+		gchar *tmp = NULL;
 		/* check end of line (\n) */
 		gtk_text_buffer_get_iter_at_offset(textbuf, &start,
 			start_pos+strlen(compose->account->sig_sep));
 		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
 			start_pos+strlen(compose->account->sig_sep)+1);
-
-		if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),"\n"));
+		tmp = gtk_text_iter_get_text(&start, &end_iter);
+		if (!strcmp(tmp,"\n")) {
+			g_free(tmp);
 			return TRUE;
-		
+		}
+		g_free(tmp);	
 
 	}
 
@@ -5991,6 +5994,9 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->exteditor_file);
 
 	g_free(compose->orig_charset);
+
+	g_free(compose->privacy_system);
+
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 

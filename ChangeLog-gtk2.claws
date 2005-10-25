@@ -1,3 +1,13 @@
+2005-10-25 [colin]	1.9.15cvs107
+
+	* src/addrbook.c
+	* src/addrindex.c
+		Fix leak (xml_get_element() allocates memory)
+	* src/compose.c
+		Fix leak + dead code (shame!)
+	* src/procmime.c
+		Fix leak
+
 2005-10-25 [colin]	1.9.15cvs106
 
 	* src/mimeview.c

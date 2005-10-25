@@ -1852,6 +1852,7 @@ static AddressCvtNode *addrindex_parse_item( XMLFile *file ) {
 		if( xml_compare_tag( file, ELTAG_IF_OLD_REMARKS ) ) {
 			nn->remarks = g_strdup( element );
 		}
+		g_free(element);
 		xml_parse_next_tag(file);
 	}
 }

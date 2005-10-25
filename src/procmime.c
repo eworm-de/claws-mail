@@ -980,8 +980,10 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
 		basetmp = g_path_get_basename(basetmp);
-		if (*basetmp == '\0') basetmp = g_strdup("mimetmp");
+		if (*basetmp == '\0') 
+			basetmp = g_strdup("mimetmp");
 		base = conv_filename_from_utf8(basetmp);
+		g_free(basetmp);
 		subst_for_shellsafe_filename(base);
 	}
 

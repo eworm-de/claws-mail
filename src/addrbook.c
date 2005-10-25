@@ -508,6 +508,7 @@ static void addrbook_parse_attribute(XMLFile *file, ItemPerson *person)
 
 	element = xml_get_element(file);
 	addritem_attrib_set_value(uAttr, element);
+	g_free(element);
 
 	if (uAttr) {
 		if (person) {
