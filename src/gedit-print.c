@@ -55,6 +55,7 @@
 #include "gedit-print.h"
 #include "gtk/gtksourceprintjob.h"
 #include "mainwindow.h"
+#include "prefs_common.h"
 
 #ifdef DEBUG
 #  define DEBUG_PRINT "DEBUG_PRINT: %s"
@@ -449,7 +450,7 @@ gedit_print_job_info_new (GtkTextView* view)
 	gtk_source_print_job_set_footer_format (pjob,
 						_("Page %N of %Q"), 
 						NULL, 
-						_("%A %D, %I:%M %p"), 
+						prefs_common.date_format, 
 						TRUE);
 
 	gtk_source_print_job_set_print_header (pjob, FALSE);

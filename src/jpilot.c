@@ -1101,7 +1101,9 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 			addritem_email_set_address( email, node->data );
 			if (convert_charcode) {
 				gchar *convertBuff;
-				convertBuff = conv_codeset_strdup( labelEntry, conv_get_locale_charset_str(), CS_INTERNAL );
+				convertBuff = conv_codeset_strdup( labelEntry, 
+						conv_get_locale_charset_str_no_utf8(), 
+						CS_INTERNAL );
 				addritem_email_set_remarks( email, convertBuff );
 				g_free( convertBuff );
 			}
@@ -1183,7 +1185,9 @@ static void jpilot_load_address(
 
 		if( convert_charcode ) {
 			gchar *nameConv;
-			nameConv = conv_codeset_strdup( fullName, conv_get_locale_charset_str(), CS_INTERNAL );
+			nameConv = conv_codeset_strdup( fullName, 
+					conv_get_locale_charset_str_no_utf8(), 
+					CS_INTERNAL );
 			strncpy2( fullName, nameConv, FULLNAME_BUFSIZE );
 			g_free( nameConv );
 		}
@@ -1350,7 +1354,9 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 				gchar convertBuff[ JPILOT_LEN_LABEL ];
 
 				if( convert_charcode ) {
-					labelName = conv_codeset_strdup( labelName, conv_get_locale_charset_str(), CS_INTERNAL );
+					labelName = conv_codeset_strdup( labelName, 
+							conv_get_locale_charset_str_no_utf8(), 
+							CS_INTERNAL );
 					strncpy2( convertBuff, labelName, JPILOT_LEN_LABEL );
 					g_free( labelName );
 					labelName = convertBuff;
@@ -1388,7 +1394,9 @@ GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 
 			if( labelName ) {
 				if( convert_charcode ) {
-					labelName = conv_codeset_strdup( labelName, conv_get_locale_charset_str(), CS_INTERNAL );
+					labelName = conv_codeset_strdup( labelName, 
+							conv_get_locale_charset_str_no_utf8(), 
+							CS_INTERNAL );
 				}
 				else {
 					labelName = g_strdup( labelName );
@@ -1478,7 +1486,9 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 				g_strchug( labelName );
 				if( *labelName != '\0' ) {
 					if( convert_charcode ) {
-						labelName = conv_codeset_strdup( labelName, conv_get_locale_charset_str(), CS_INTERNAL );
+						labelName = conv_codeset_strdup( labelName, 
+								conv_get_locale_charset_str_no_utf8(), 
+								CS_INTERNAL );
 					}
 					else {
 						labelName = g_strdup( labelName );
@@ -1534,7 +1544,9 @@ static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 
 		if( convert_charcode ) {
 			gchar *catName;
-			catName = conv_codeset_strdup( cat->name[i], conv_get_locale_charset_str(), CS_INTERNAL );
+			catName = conv_codeset_strdup( cat->name[i], 
+					conv_get_locale_charset_str_no_utf8(), 
+					CS_INTERNAL );
 			addritem_folder_set_name( folder, catName );
 			g_free( catName );
 		}

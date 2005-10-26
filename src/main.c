@@ -219,6 +219,8 @@ static void startup_notification_complete(gboolean with_window)
 		sn_launchee_context_unref(sn_context);
 		sn_display_unref(sn_display);
 	}
+	if (with_window)
+		gtk_widget_destroy(hack);
 }
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
@@ -457,6 +459,8 @@ int main(int argc, char *argv[])
 		if(!account_get_list())
 			exit_sylpheed(mainwin);
 	}
+
+	gtk_window_deiconify(mainwin->window);
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init();

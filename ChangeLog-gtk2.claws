@@ -1,3 +1,16 @@
+2005-10-26 [colin]	1.9.15cvs111
+
+	* src/gedit-print.c
+		Fix date format
+	* src/imap_gtk.c
+	* src/news_gtk.c
+		Remove context menu items that should not be there
+	* src/jpilot.c
+		Fix encoding
+	* src/main.c
+	* src/mainwindow.c
+		Don't show the mainwindow too soon
+
 2005-10-26 [wwp]	1.9.15cvs110
 
 	* src/folder.c

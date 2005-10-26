@@ -45,8 +45,6 @@
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void rename_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void imap_settings_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void remove_server_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void delete_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -65,9 +63,6 @@ static GtkItemFactoryEntry imap_popup_entries[] =
 	{N_("/_Check for new messages"), NULL, update_tree_cb,   0, NULL},
 	{N_("/C_heck for new folders"),	 NULL, update_tree_cb,   1, NULL},
 	{N_("/R_ebuild folder tree"),	 NULL, update_tree_cb,   2, NULL},
-	{N_("/---"),			 NULL, NULL, 		 0, "<Separator>"},
-	{N_("/IMAP4 _account settings"), NULL, imap_settings_cb, 0, NULL},
-	{N_("/Remove _IMAP4 account"),	 NULL, remove_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 		 0, "<Separator>"},
 };
 
@@ -113,8 +108,6 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);
 	SET_SENS("/Rebuild folder tree",    folder_item_parent(item) == NULL);
-
-	SET_SENS("/Remove IMAP4 account",   folder_item_parent(item) == NULL);
 
 #undef SET_SENS
 }
@@ -247,61 +240,6 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 		return;
 	
 	folderview_move_folder(folderview, from_folder, to_folder);
-}
-
-static void imap_settings_cb(FolderView *folderview, guint action, GtkWidget *widget)
-{
-	FolderItem *item;
-
-	item = folderview_get_selected_item(folderview);
-	if (item == NULL)
-		return;
-
-	account_open(item->folder->account);
-}
-
-static void remove_server_cb(FolderView *folderview, guint action, GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-	PrefsAccount *account;
-	gchar *name;
-	gchar *message;
-	AlertValue avalue;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->account != NULL);
-
-	name = trim_string(item->folder->name, 32);
-	message = g_strdup_printf(_("Really delete IMAP4 account '%s'?"), name);
-	avalue = alertpanel_full(_("Delete IMAP4 account"), message,
-		 		 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTALTERNATE);
-	g_free(message);
-	g_free(name);
-
-	if (avalue != G_ALERTDEFAULT) return;
-
-	if (folderview->opened == folderview->selected ||
-	    gtk_ctree_is_ancestor(ctree,
-				  folderview->selected,
-				  folderview->opened)) {
-		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
-	}
-
-	account = item->folder->account;
-	folderview_unselect(folderview);
-	summary_clear_all(folderview->summaryview);
-	folder_destroy(item->folder);
-	account_destroy(account);
-	account_set_menu();
-	main_window_reflect_prefs_all();
-	folder_write_list();
 }
 
 static void delete_folder_cb(FolderView *folderview, guint action,
