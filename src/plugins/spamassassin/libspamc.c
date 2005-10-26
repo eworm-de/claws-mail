@@ -1091,7 +1091,7 @@ void message_cleanup(struct message *m)
 	free(m->out);
     if (m->raw != NULL && m->raw != m->out)
 	free(m->raw);
-    if (m->priv != NULL && m->priv != m->out && m->priv != m->raw)
+    if (m->priv != NULL && (char*)m->priv != m->out && (char*)m->priv != m->raw)
 	free(m->priv);
     _clear_message(m);
 }

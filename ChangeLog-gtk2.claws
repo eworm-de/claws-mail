@@ -1,3 +1,11 @@
+2005-10-26 [wwp]	1.9.15cvs114
+
+	* src/procmime.c
+	* src/gtk/gtksctree.c
+	* src/plugins/spamassassin/libspamc.c
+	* src/plugins/spamassassin/spamassassin.c
+		fix some compilation warnings more
+
 2005-10-26 [mones]	1.9.15cvs113
 
 	* po/es.po
