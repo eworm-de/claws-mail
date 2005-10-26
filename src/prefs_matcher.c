@@ -618,7 +618,7 @@ static void prefs_matcher_create(void)
 
 	bool_op_combo = gtk_combo_new();
 	gtk_widget_show(bool_op_combo);
-	gtk_widget_set_size_request(bool_op_combo, 50, -1);
+	gtk_widget_set_size_request(bool_op_combo, 60, -1);
 	bool_op_list = GTK_COMBO(bool_op_combo)->list;
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(bool_op_combo)->entry),
 			       FALSE);

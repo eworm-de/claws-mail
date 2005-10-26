@@ -1,3 +1,8 @@
+2005-10-26 [wwp]	1.9.15cvs115
+
+	* src/prefs_matcher.c
+		enlarge boolean op widget width a bit (wasn't always showing text contents)
+
 2005-10-26 [wwp]	1.9.15cvs114
 
 	* src/procmime.c
