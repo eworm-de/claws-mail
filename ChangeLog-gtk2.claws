@@ -1,3 +1,8 @@
+2005-10-26 [mones]	1.9.15cvs113
+
+	* po/es.po
+		Updated translation
+
 2005-10-26 [paul]	1.9.15cvs112
 
 	* src/prefs_message.c
