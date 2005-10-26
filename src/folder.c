@@ -3572,6 +3572,7 @@ static void folder_item_update_func(FolderItem *item, gpointer data)
 	if (item->update_flags) {
 		source.item = item;
 		source.update_flags = item->update_flags;
+		source.msg = NULL;
 		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);				
 		item->update_flags = 0;
 	}

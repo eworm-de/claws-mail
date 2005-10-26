@@ -1,3 +1,11 @@
+2005-10-26 [wwp]	1.9.15cvs110
+
+	* src/folder.c
+	* src/manual.c
+	* src/summaryview.c
+		fix uninitialized pointers in the folder updating hook
+		(thanks to Colin)
+
 2005-10-25 [mones]	1.9.15cvs109
 
 	* manual/faq.xml

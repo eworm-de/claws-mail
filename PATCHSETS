@@ -946,3 +946,4 @@
 ( cvs diff -u -r 1.22.2.5 -r 1.22.2.6 src/addrbook.c;  cvs diff -u -r 1.28.2.11 -r 1.28.2.12 src/addrindex.c;  cvs diff -u -r 1.382.2.188 -r 1.382.2.189 src/compose.c;  cvs diff -u -r 1.49.2.64 -r 1.49.2.65 src/procmime.c;  ) > 1.9.15cvs107.patchset
 ( cvs diff -u -r 1.382.2.189 -r 1.382.2.190 src/compose.c;  ) > 1.9.15cvs108.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/Makefile;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/faq.xml;  diff -u /dev/null manual/dtd/manual.dsl;  ) > 1.9.15cvs109.patchset
+( cvs diff -u -r 1.213.2.66 -r 1.213.2.67 src/folder.c;  cvs diff -u -r 1.11.2.2 -r 1.11.2.3 src/manual.c;  cvs diff -u -r 1.395.2.141 -r 1.395.2.142 src/summaryview.c;  ) > 1.9.15cvs110.patchset

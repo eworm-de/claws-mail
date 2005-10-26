@@ -5438,6 +5438,7 @@ void summary_toggle_show_read_messages(SummaryView *summaryview)
 
 	source.item = summaryview->folder_item;
 	source.update_flags = F_ITEM_UPDATE_NAME;
+	source.msg = NULL;
 	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
  	summary_show(summaryview, summaryview->folder_item);
 }
