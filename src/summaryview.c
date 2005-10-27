@@ -275,6 +275,10 @@ static void summary_selected		(GtkCTree		*ctree,
 					 GtkCTreeNode		*row,
 					 gint			 column,
 					 SummaryView		*summaryview);
+static void summary_unselected		(GtkCTree		*ctree,
+					 GtkCTreeNode		*row,
+					 gint			 column,
+					 SummaryView		*summaryview);
 static void summary_col_resized		(GtkCList		*clist,
 					 gint			 column,
 					 gint			 width,
@@ -4517,6 +4521,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
 			 G_CALLBACK(summary_selected), summaryview);
+	g_signal_connect(G_OBJECT(ctree), "tree_unselect_row",
+			 G_CALLBACK(summary_unselected), summaryview);
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(summary_button_pressed),
 			 summaryview);
@@ -4797,6 +4803,12 @@ static void summary_tree_collapsed(GtkCTree *ctree, GtkCTreeNode *node,
 				   SummaryView *summaryview)
 {
 	summary_set_row_marks(summaryview, node);
+}
+
+static void summary_unselected(GtkCTree *ctree, GtkCTreeNode *row,
+			       gint column, SummaryView *summaryview)
+{
+	summary_status_show(summaryview);
 }
 
 static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,

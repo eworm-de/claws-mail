@@ -1,3 +1,11 @@
+2005-10-27 [paul]	1.9.15cvs120
+
+	* src/mainwindow.c
+		fix a compilation warning
+	* src/summaryview.c
+		fix updating of 'n items selected' count
+		when deselecting
+
 2005-10-27 [martin]	1.9.15cvs119
 
 	* src/action.c

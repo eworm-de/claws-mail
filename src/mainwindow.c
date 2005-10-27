@@ -1114,7 +1114,7 @@ MainWindow *main_window_create(SeparateType type)
 	menu_connect_identical_items();
 
 
-	gtk_window_iconify(mainwin->window);
+	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 
 	gtk_widget_show(mainwin->window);
 

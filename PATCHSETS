@@ -956,3 +956,4 @@
 ( cvs diff -u -r 1.49.2.66 -r 1.49.2.67 src/procmime.c;  ) > 1.9.15cvs117.patchset
 ( cvs diff -u -r 1.115.2.63 -r 1.115.2.64 src/main.c;  ) > 1.9.15cvs118.patchset
 ( cvs diff -u -r 1.12.2.26 -r 1.12.2.27 src/action.c;  cvs diff -u -r 1.60.2.25 -r 1.60.2.26 src/prefs_actions.c;  ) > 1.9.15cvs119.patchset
+( cvs diff -u -r 1.274.2.77 -r 1.274.2.78 src/mainwindow.c;  cvs diff -u -r 1.395.2.142 -r 1.395.2.143 src/summaryview.c;  ) > 1.9.15cvs120.patchset
