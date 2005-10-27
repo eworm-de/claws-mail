@@ -190,12 +190,12 @@ gint plugin_init(gchar **error)
 	gchar *rcpath;
 	int no, ret;
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the ClamAV plugin was built with");
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your sylpheed version is too old");
+		*error = g_strdup("Your version of Sylpheed-Claws is too old for the ClamAV plugin");
 		return -1;
 	}
 

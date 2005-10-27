@@ -1,3 +1,16 @@
+2005-10-27 [paul]	1.9.15cvs116
+
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		plugin_init() : make error messages more
+		informative
+
 2005-10-26 [wwp]	1.9.15cvs115
 
 	* src/prefs_matcher.c
