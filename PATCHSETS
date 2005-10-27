@@ -954,3 +954,4 @@
 ( cvs diff -u -r 1.43.2.28 -r 1.43.2.29 src/prefs_matcher.c;  ) > 1.9.15cvs115.patchset
 ( cvs diff -u -r 1.13.2.10 -r 1.13.2.11 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.12.2.6 -r 1.12.2.7 src/plugins/dillo_viewer/dillo_viewer.c;  cvs diff -u -r 1.9.2.5 -r 1.9.2.6 src/plugins/mathml_viewer/mathml_viewer.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpcore/plugin.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpinline/plugin.c;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/pgpmime/plugin.c;  cvs diff -u -r 1.18.2.10 -r 1.18.2.11 src/plugins/spamassassin/spamassassin.c;  cvs diff -u -r 1.14.2.25 -r 1.14.2.26 src/plugins/trayicon/trayicon.c;  ) > 1.9.15cvs116.patchset
 ( cvs diff -u -r 1.49.2.66 -r 1.49.2.67 src/procmime.c;  ) > 1.9.15cvs117.patchset
+( cvs diff -u -r 1.115.2.63 -r 1.115.2.64 src/main.c;  ) > 1.9.15cvs118.patchset
