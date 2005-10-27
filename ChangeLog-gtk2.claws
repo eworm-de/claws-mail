@@ -1,3 +1,9 @@
+2005-10-27 [colin]	1.9.15cvs124
+
+	* src/summaryview.c
+		Add a hack to avoid segfaulting when hammering 
+		on gtk's events
+
 2005-10-27 [wwp]	1.9.15cvs123
 
 	* src/prefs_themes.c

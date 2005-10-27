@@ -1594,11 +1594,22 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
+	if (!summaryview->folder_item)
+		return;
 	if (node) {
 		gtkut_ctree_expand_parent_all(ctree, node);
 		if (do_refresh) {
 			GTK_EVENTS_FLUSH();
 			gtk_widget_grab_focus(GTK_WIDGET(ctree));
+			if (GTK_CTREE_ROW(node) == NULL) {
+				g_warning("crash avoidance hack 1\n");
+				return;
+			}
+			if (((GtkCListRow *)(GTK_CTREE_ROW(node)))->state < GTK_STATE_NORMAL
+			||  ((GtkCListRow *)(GTK_CTREE_ROW(node)))->state > GTK_STATE_INSENSITIVE) {
+				g_warning("crash avoidance hack 2\n");
+				return;
+			}
 			gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
 		}
 		summary_unselect_all(summaryview);
