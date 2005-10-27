@@ -2460,7 +2460,7 @@ static gint prefs_account_apply(void)
 	if (protocol == A_IMAP4 || protocol == A_NNTP) 
 		old_id = g_strdup_printf("#%s/%s",
 				protocol == A_IMAP4 ? "imap":"nntp",
-				tmp_ac_prefs.account_name);
+				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
 	prefs_set_data_from_dialog(param);
 	

@@ -1,3 +1,10 @@
+2005-10-27 [paul]	1.9.15cvs122
+
+	* src/folder.c
+	* src/prefs_account.c
+		fix building on Solaris
+		Patch by Alex Moore
+
 2005-10-27 [wwp]	1.9.15cvs121
 
 	* src/summaryview.c
