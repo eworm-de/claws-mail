@@ -245,8 +245,11 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 
 	GTK_CLIST_GET_CLASS(sctree)->refresh(GTK_CLIST(sctree));
 
-	if (!additive)
+	if (!additive) {
+		sctree->selecting_range = TRUE;
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
+		sctree->selecting_range = FALSE;
+	}
 
 	if (!range) {
 		GtkCTreeNode *node;
@@ -330,8 +333,11 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 					sctree->dnd_select_pending_row = row;
 				} else
 					select_row (sctree, row, col, event->state);
-			} else
+			} else {
+				sctree->selecting_range = TRUE;
 				gtk_clist_unselect_all (clist);
+				sctree->selecting_range = FALSE;
+			}
 
 			retval = TRUE;
 		} else if (event->button == 3) {
@@ -343,7 +349,9 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 						 sctree_signals[ROW_POPUP_MENU],
 						 0, event);
 			} else {
+				sctree->selecting_range = TRUE;
 				gtk_clist_unselect_all(clist);
+				sctree->selecting_range = FALSE;
 				g_signal_emit (G_OBJECT (sctree),
 						 sctree_signals[EMPTY_POPUP_MENU],
 						 0, event);
@@ -606,7 +614,9 @@ void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int st
 
 void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
+	sctree->selecting_range = TRUE;
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
+	sctree->selecting_range = FALSE;
 	sctree->anchor_row = NULL;
 }
 

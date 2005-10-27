@@ -1,3 +1,9 @@
+2005-10-27 [wwp]	1.9.15cvs121
+
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+		speed up unselecting messages in summary view (thanks to Colin)
+
 2005-10-27 [paul]	1.9.15cvs120
 
 	* src/mainwindow.c

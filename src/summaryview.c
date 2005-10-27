@@ -4808,6 +4808,11 @@ static void summary_tree_collapsed(GtkCTree *ctree, GtkCTreeNode *node,
 static void summary_unselected(GtkCTree *ctree, GtkCTreeNode *row,
 			       gint column, SummaryView *summaryview)
 {
+	if (summary_is_locked(summaryview)
+	||  GTK_SCTREE(ctree)->selecting_range) {
+		return;
+	}
+
 	summary_status_show(summaryview);
 }
 
