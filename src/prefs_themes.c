@@ -139,6 +139,7 @@ static void prefs_themes_display_global_stats	(const ThemesData *tdata);
 static void prefs_themes_get_theme_info         (ThemesData *tdata);
 static void prefs_themes_display_theme_info     (ThemesData *tdata, const ThemeInfo *info);
 static void prefs_themes_get_themes_and_names	(ThemesData *tdata);
+static int prefs_themes_cmp_name(gconstpointer a, gconstpointer b);
 static void prefs_themes_free_names		(ThemesData *tdata);
 
 static void prefs_themes_set_themes_menu	(GtkOptionMenu *opmenu, const ThemesData *tdata);
@@ -265,16 +266,29 @@ static void prefs_themes_set_themes_menu(GtkOptionMenu *opmenu, const ThemesData
 	GtkWidget *menu;
 	GtkWidget *item;
 	gint       i = 0, active = 0;
+	GList     *sorted_list = NULL;
 
 	g_return_if_fail(opmenu != NULL);
-	
+
 	gtk_option_menu_remove_menu(opmenu);
-	
+
+	/* sort theme data list by data name */
 	menu = gtk_menu_new ();
 	while (themes != NULL) {
 		ThemeName *tname = (ThemeName *)(themes->data);
+
+		sorted_list = g_list_insert_sorted(sorted_list, (gpointer)(tname),
+										(GCompareFunc)prefs_themes_cmp_name);
+
+		themes = g_list_next(themes);
+	}
+
+	/* feed gtk_menu w/ sorted themes names */
+	themes = sorted_list;
+	while (themes != NULL) {
+		ThemeName *tname = (ThemeName *)(themes->data);
 		gchar     *tpath = (gchar *)(tname->item->data);
-		
+
 		item = gtk_menu_item_new_with_label(tname->name);
 		gtk_widget_show(item);
 		g_signal_connect(G_OBJECT(item), "activate",
@@ -284,13 +298,22 @@ static void prefs_themes_set_themes_menu(GtkOptionMenu *opmenu, const ThemesData
 
 		if (tdata->displayed != NULL && tdata->displayed == tpath)
 			active = i;
+		++i;
 
 		themes = g_list_next(themes);
-		++i;
 	}
-	
+
+	g_list_free(sorted_list);
+
 	gtk_menu_set_active(GTK_MENU(menu), active);
 	gtk_option_menu_set_menu (opmenu, menu);
+}
+
+static int prefs_themes_cmp_name(gconstpointer a_p, gconstpointer b_p)
+{
+	/* compare two ThemeData structures by their name attribute */
+	return strcmp2((gchar *)(((ThemeName*)a_p)->name),
+					(gchar *)(((ThemeName*)b_p)->name));
 }
 
 static void prefs_themes_get_themes_and_names(ThemesData *tdata)

@@ -1,3 +1,8 @@
+2005-10-27 [wwp]	1.9.15cvs123
+
+	* src/prefs_themes.c
+		sort list of themes names in themes prefs
+
 2005-10-27 [paul]	1.9.15cvs122
 
 	* src/folder.c
