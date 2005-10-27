@@ -506,13 +506,18 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 		return -1;
 	}
 
+	if (entry_text[0] == '/') {
+		alertpanel_error(_("A leading '/' is not allowed in the menu name."));
+		return -1;
+	}
+
 	if (strchr(entry_text, ':')) {
 		alertpanel_error(_("Colon ':' is not allowed in the menu name."));
 		return -1;
 	}
 
 	strncpy(action, entry_text, PREFSBUFSIZE - 1);
-	
+
 	while (strstr(action, "//")) {
 		char *to_move = strstr(action, "//")+1;
 		char *where = strstr(action, "//");

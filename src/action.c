@@ -473,7 +473,8 @@ static void action_update_menu(GtkItemFactory *ifactory,
 		action   = g_strdup((gchar *)cur->data);
 		action_p = strstr(action, ": ");
 		if (action_p && action_p[2] &&
-		    action_get_type(&action_p[2]) != ACTION_ERROR) {
+		    (action_get_type(&action_p[2]) != ACTION_ERROR) &&
+		    (action[0] != '/')) {
 			action_p[0] = '\0';
 			menu_path = g_strdup_printf("%s/%s", branch_path,
 						    action);

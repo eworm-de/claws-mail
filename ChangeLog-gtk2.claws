@@ -1,3 +1,11 @@
+2005-10-27 [martin]	1.9.15cvs119
+
+	* src/action.c
+		ignore actions with a leading '/' in the action menu name
+		fixes a crash on menu creation
+	* src/prefs_actions.c
+		do not allow a leading '/' in the action menu name
+
 2005-10-27 [paul]	1.9.15cvs118
 
 	* src/main.c
