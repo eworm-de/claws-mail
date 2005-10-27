@@ -1,3 +1,8 @@
+2005-10-27 [paul]	1.9.15cvs117
+
+	* src/procmime.c
+		add #if HAVE_LOCALE_H
+
 2005-10-27 [paul]	1.9.15cvs116
 
 	* src/plugins/clamav/clamav_plugin.c
