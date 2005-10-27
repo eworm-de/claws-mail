@@ -170,7 +170,7 @@ gint plugin_init(gchar **error)
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your vesion of Sylpheed-Claws is too old for the Dillo plugin");
+		*error = g_strdup("Your version of Sylpheed-Claws is too old for the Dillo plugin");
 		return -1;
 	}
 
