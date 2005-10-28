@@ -1079,6 +1079,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		messageview_destroy(messageview);
 		return TRUE;
 	}
+	mimeview_pass_key_press_event(messageview->mimeview, event);
 	return FALSE;
 }
 
