@@ -187,7 +187,7 @@ struct {
 #ifdef USE_ASPELL
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_SYL_ACTIONS",   	N_("Sylpheed Actions Feature")             }, 
+	{ "A_SYL_ACTIONS",   	N_("Sylpheed-Claws Actions Feature")	   }, 
 	{ "A_SEPARATOR",     	"Separator"				}
 };
 

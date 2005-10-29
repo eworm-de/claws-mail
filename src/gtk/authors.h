@@ -1,13 +1,13 @@
 static char *TEAM_LIST[] = {
-"Holger Berndt <berndth@users.sourceforge.net>",
-"Hoà Viêt Dinh <hoa@users.sourceforge.net>",
-"Darko Koruga <darko@users.sourceforge.net>",
-"Ricardo Mones Lastra <mones@users.sourceforge.net>",
-"Colin Leroy <colinleroy@users.sourceforge.net>",
-"Thorsten Maerz <netztorte@users.sourceforge.net>",
-"Paul Mangan <twb@users.sourceforge.net>",
-"Martin Schaaf <mascha1@users.sourceforge.net>",
-"wwp <wwp@users.sourceforge.net>",
+"Holger Berndt <berndth@users.sf.net>",
+"Hoà Viêt Dinh <hoa@users.sf.net>",
+"Darko Koruga <darko@users.sf.net>",
+"Ricardo Mones Lastra <mones@users.sf.net>",
+"Colin Leroy <colinleroy@users.sf.net>",
+"Thorsten Maerz <netztorte@users.sf.net>",
+"Paul Mangan <twb@users.sf.net>",
+"Martin Schaaf <mascha1@users.sf.net>",
+"wwp <wwp@users.sf.net>",
 NULL
 };
 
@@ -31,28 +31,29 @@ static char *TRANS_TEAM_LIST[] = {
 "[bg] George Danchev <danchev@spnet.net>",
 "[ca] Miquel Oliete <miqueloliete@softhome.net>",
 "[de] Thomas Gilgin <thg1@karate-muellheim.de>",
-"[en_GB] Paul Mangan <claws@thewildbeast.co.uk>",
-"[es] Ricardo Mones Lastra <mones@aic.uniovi.es>",
+"[en_GB] Paul Mangan <twb@users.sf.net>",
+"[es] Ricardo Mones Lastra <mones@users.sf.net>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",
 "[fr] Fabien Vantard <fzzzzz@gmail.com>",
 "[hr] Dragan <drleskov@inet.hr>",
 "[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
 "[ja] Rui Hirokawa <rui_hirokawa@ybb.ne.jp>",
 "[ko] SungHyun Nam <namsh@kldp.org>",
-"[nb] Geir Helland <pjallabais@users.sourceforge.net>",
+"[nb] Geir Helland <pjallabais@users.sf.net>",
 "[pl] Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>",
 "[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",
 "[ru] Pavlo Bohmat <bohm@ukr.net>",
 "[sk] Andrej Kacian <andrej@kacian.sk>",
-"[sr] Urke MMI <urke@users.sourceforge.net>",
+"[sr] Aleksandar Urosevic <urke@users.sf.net>",
 "[zh_CN] Hansom Young <hyoung@operamail.com>",
 "[zh_TW] Wei-Lun Chao <chaoweilun@pcmail.com.tw>",
 NULL
 };
 
 static char *DOC_TEAM_LIST[] = {
-"Ricardo Mones Lastra <mones@users.sourceforge.net>",
-"Paul Mangan <twb@users.sourceforge.net>",
+"Ricardo Mones Lastra <mones@users.sf.net>",
+"Colin Leroy <colinleroy@users.sf.net>",
+"Paul Mangan <twb@users.sf.net>",
 NULL
 };
 
@@ -194,7 +195,7 @@ static char *CONTRIBS_LIST[] = {
 "Takahashi",
 "Tanaka",
 "shigeri",
-"Shimamoto \"Neko\"Tatsuya",
+"Shimamoto \"Neko\" Tatsuya",
 "Thorsten Thielen",
 "Edgar Toernig",
 "Masahiro Tomita",

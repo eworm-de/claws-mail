@@ -675,7 +675,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9)) {
-			puts("Sylpheed version " VERSION);
+			puts("Sylpheed-Claws version " VERSION);
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
  			const gchar *p = argv[i + 1];

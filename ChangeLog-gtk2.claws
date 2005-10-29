@@ -1,3 +1,13 @@
+2005-10-29 [paul]	1.9.15cvs126
+
+	* src/crash.c
+	* src/foldersel.c
+	* src/main.c
+	* src/messageview.c
+	* src/toolbar.c
+	* src/gtk/authors.h
+		corrections to text items
+
 2005-10-28 [colin]	1.9.15cvs125
 
 	* src/messageview.c

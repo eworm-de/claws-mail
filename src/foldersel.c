@@ -221,7 +221,7 @@ static void foldersel_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_window_set_wmclass
-		(GTK_WINDOW(window), "folder_selection", "Sylpheed");
+		(GTK_WINDOW(window), "folder_selection", "Sylpheed-Claws");
 	gtk_widget_realize(window);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(delete_event), NULL);

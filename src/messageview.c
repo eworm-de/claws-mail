@@ -775,7 +775,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	
 	if (messageview->window)
 		gtk_window_set_title(GTK_WINDOW(messageview->window), 
-				_("Sylpheed - Message View"));
+				_("Sylpheed-Claws - Message View"));
 	if (messageview->window && msginfo->subject) {
 		subject = g_strdup(msginfo->subject);
 		if (!g_utf8_validate(subject, -1, NULL)) {

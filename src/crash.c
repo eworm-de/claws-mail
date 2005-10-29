@@ -139,7 +139,7 @@ void crash_main(const char *arg)
 	tokens = g_strsplit(arg, ",", 0);
 
 	pid = atol(tokens[0]);
-	text = g_strdup_printf(_("Sylpheed process (%ld) received signal %ld"),
+	text = g_strdup_printf(_("Sylpheed-Claws process (%ld) received signal %ld"),
 			       pid, atol(tokens[1]));
 
 	output = g_string_new("");     
@@ -185,7 +185,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 
 	window1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
-	gtk_window_set_title(GTK_WINDOW(window1), _("Sylpheed has crashed"));
+	gtk_window_set_title(GTK_WINDOW(window1), _("Sylpheed-Claws has crashed"));
 	gtk_window_set_position(GTK_WINDOW(window1), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window1), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window1), 460, 272);
@@ -223,7 +223,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
 	crash_report = g_strdup_printf(
-		"Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s",
+		"Sylpheed-Claws version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s",
 		VERSION,
 		gtk_major_version, gtk_minor_version, gtk_micro_version,
 		get_compiled_in_features(),
