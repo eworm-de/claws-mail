@@ -1125,8 +1125,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	PrefsAccount *reply_account;
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
-	GtkTextIter iter;
-	int cursor_pos;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1210,11 +1208,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
-	cursor_pos = quote_fmt_get_cursor_pos();
-	gtk_text_buffer_get_start_iter(textbuf, &iter);
-	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, cursor_pos);
-	gtk_text_buffer_place_cursor(textbuf, &iter);
-	
 	compose_wrap_all(compose);
 
 	gtk_widget_grab_focus(compose->text);
@@ -2105,8 +2098,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gint len;
 	gboolean prev_autowrap;
 	const gchar *trimmed_body = body;
+	gint cursor_pos = 0;
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
 	
 	if (!msginfo)
 		msginfo = &dummyinfo;
@@ -2151,8 +2146,6 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				compose);
 	for (p = buf; *p != '\0'; ) {
 		GtkTextMark *mark;
-		GtkTextIter iter;
-
 		
 		mark = gtk_text_buffer_get_insert(buffer);
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
@@ -2179,6 +2172,12 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		else
 			break;
 	}
+
+	cursor_pos = quote_fmt_get_cursor_pos();
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
+	gtk_text_buffer_place_cursor(buffer, &iter);
+	
 
 	compose->autowrap = prev_autowrap;
 	if (compose->autowrap)
