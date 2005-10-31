@@ -155,7 +155,7 @@ sub tens {
 get_current_date();
 
 # get project version from changelog (project dependent code :-/ )
-$_ = `head -1 ../ChangeLog-gtk2.claws`;
+$_ = `head -1 ../ChangeLog`;
 if (/\S+\s+\S+\s+(\S+)/) { $genversion = $1; } else { $genversion = 'Unknown'; }
 
 $numlang = keys(%langname);
