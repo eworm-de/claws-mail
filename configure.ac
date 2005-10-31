@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=15
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=130
+EXTRA_VERSION=131
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -778,7 +778,6 @@ dnl ****************************
 
 AC_OUTPUT([
 Makefile
-sylpheed.spec
 m4/Makefile
 po/Makefile.in
 src/common/version.h

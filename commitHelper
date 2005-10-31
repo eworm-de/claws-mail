@@ -92,14 +92,9 @@ grep -v "^#" /tmp/logentry > /tmp/log.tmp.$$ \
 echo >> /tmp/logentry
 cat /tmp/logentry
 
+chlog="ChangeLog"
+
 echo "--8<----------"
-if [ -f ChangeLog-gtk2.claws ]; then
-	chlog="ChangeLog-gtk2.claws"
-elif [ -f ChangeLog.claws ]; then
-	chlog="ChangeLog.claws"
-else
-	chlog="ChangeLog"
-fi
 echo -n "Is it ok (write to $chlog and update configure.ac) [y/N]?"
 read ans
 if [ "$ans" == "y" ]; then

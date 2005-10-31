@@ -16,7 +16,6 @@ Makefile.in
 stamp-h
 stamp-h.in
 stamp-h1
-sylpheed.spec
 tags
 TAGS
 *.swp

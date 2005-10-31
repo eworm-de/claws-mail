@@ -1,17 +1,14 @@
 SUBDIRS = m4 po src tools config doc
 
 EXTRA_DIST = \
-	ChangeLog.claws \
-	ChangeLog-gtk2.claws \
-	README.claws \
-	RELEASE_NOTES.claws \
+	ChangeLog \
+	ChangeLog.gtk1 \
+	RELEASE_NOTES \
 	sylpheed-claws-128x128.png \
 	sylpheed-claws-64x64.png \
 	sylpheed-claws.pc.in \
 	sylpheed-claws.desktop \
 	sylpheed-claws.png \
-	sylpheed.spec \
-	sylpheed.spec.in \
 	autogen.sh
 
 if SYLPHEED_GNOME2
@@ -39,9 +36,6 @@ BZIP2_ENV =
 release: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
-	rm -f $(distdir)/sylpheed.spec
-	sed '/^Source:/s/\.tar\.gz$$/\.tar\.bz2/' sylpheed.spec \
-	  > $(distdir)/sylpheed.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
 

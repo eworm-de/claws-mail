@@ -18,6 +18,10 @@ To compile and install, just type:
 Password: [Enter password]
 # make install
 
+To run, just type:
+
+% sylpheed-claws
+
 Additional libraries
 ====================
 only needed if you require the additional functionality
@@ -44,7 +48,7 @@ GtkMathView (>= 0.4.2 and < 0.5)
 J-Pilot
     for J-Pilot support
     http://www.jpilot.org/
-libEtPan! (>= 0.38)
+libEtPan! (>= 0.39)
     for IMAP4 support
     http://www.etpan.org
 libgnomeprint (>= 2.2)
@@ -62,15 +66,18 @@ SpamAssassin
   
 Options for configure script
 ============================
-  --with-config-dir=RCDIR      	    local config dir (default: .sylpheed-gtk2)
+Most options are automatically enabled if the dependencies
+are matched.
+
+  --with-config-dir=RCDIR      	    local config dir (default: ~/.sylpheed-claws)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
   --disable-openssl    		    disable OpenSSL support
   --disable-libetpan		    disable IMAP4 support
   --disable-gnomeprint		    disable libgnomeprint support
-  --enable-aspell     		    GNU/aspell support
-  --enable-ldap       		    LDAP support
-  --enable-jpilot     		    JPilot support
+  --disable-aspell     		    disable GNU/aspell support
+  --disable-ldap       		    disable LDAP support
+  --disable-jpilot     		    disable JPilot support
   --enable-crash-dialog   	    enable crash dialog
   --disable-startup-notification    disable startup notification support
   --disable-trayicon-plugin         do not build System Tray Icon plugin

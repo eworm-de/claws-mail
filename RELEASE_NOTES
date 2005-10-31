@@ -1,0 +1,152 @@
+31st October 2005                               Sylpheed-Claws 1.9.99
+
+		    SYLPHEED-CLAWS  RELEASE NOTES
+                      http://claws.sylpheed.org
+		      
+Sylpheed-Claws is an extended version of  Sylpheed, a GTK+ based,
+lightweight, and fast e-mail client
+
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* The binary is now 'sylpheed-claws' and not 'sylpheed'
+
+* The default config dir is now '~/.sylpheed-claws'. The user will
+  be prompted to perform an automatic migration of configuration
+  options to this new directory.
+
+* A new default internal icon theme has been added, based on the
+  Gnomaws theme.
+
+New in this release:
+~~~~~~~~~~~~~~~~~~~~
+
+* Every Alert Panel now has keyboard accelerators.
+
+* An 'Only once' button has been added for overriding Offline mode
+
+* Installation Wizard:
+  Added Local mbox.
+  Added IMAP subdir.
+  Moved IMAP subdir from Advanced to Receive tab.
+  A welcome message has been added.
+
+* Messages are now sorted by Date by default
+
+* An offline switch has been added to the Trayicon plugin
+
+* Speed improvements to IMAP have been added.
+
+* When replying to an ML post with a Reply-To set on the poster's
+  email, set the ML address in the To field and the Reply-To address
+  in the Cc: field.
+
+* A warning dialog has been added on Mark all read, with a pref to
+  prohibit it from re-asking.
+
+* GnuPG support:
+  The noticeview is now shown on the message/rfc822 part in addition
+  to the text/plain part.
+  The privacy icon in the noticeview is now clickable and also uses
+  key C to perform the signature check.
+  The Trust field has been moved into Full info display.
+  When trust is less than full, don't display a warning icon.
+  Visual feedback is provided in the statusbar when checking
+  signature.
+  The PGP/MIME signature file is now named 'signature.asc'.
+  The dialog for entering a passphrase has been improved.
+
+* Local deletion of news posts has been added.
+
+* A file selector has been added for selecting an account's Signature
+  file
+
+* Many window sizes are now remembered.
+
+* The presense of marked msgs in unexpanded subfolders is now indicated
+  by the icon of the parent folder.
+
+* QuickSearch:
+  The message list is reset when the dialog is hidden.
+  The 'Sticky' option, for keeping the search activated across folders.
+
+* The Subject is now set when forwarding multiple mails.
+
+* When a default Cc or Bcc is used, a check is performed to make sure
+  the To header has also been set.
+
+* In the filtering dialog a warning dialog is shown if the rule was
+  not saved.
+
+* The file and directory Browse buttons, ("...") have been improved.
+
+* When double-clicking an attachment the "Open with" dialog is
+  presented if no command was found for the file type.
+
+* The X-Face has been added to the message view and can be toggled by
+  '/Configuration/Preferences/Message View/Text options/Display
+  X-Face in messageview'.
+
+* The message list context menu has been reworked.
+
+* When replying to a mail sent by yourself, Reply excludes your own
+  address from the list of recipients. 'Reply All' and 'Reply to
+  sender' still work like before.
+
+* When the Folder Preference 'Default To for replies' the entry in
+  the Compose window is presented in bold text.
+
+* The About window has been reworked.
+
+* In the Themes preferences the list of themes is now alphabetically
+  sorted.
+
+* updated translations: British English, Catalan, French, German,
+  Italian, Norwegian, Serbian, Simplified Chinese, Slovak, and Spanish.
+
+* Bug fixes, including the following:
+	o bug 826, 'X-Server hangs when right-clicking a PGP
+		    encrypted message'
+	o bug 827, 'sylpheed-claws-gtk2: "Welcome" setup wizard after
+		    a permission error gives up & forgets itself.'
+	o bug 828, 'Ignoring headers with spaces around = sign'
+	o bug 829, 'Non-working "Encrypt message by default when
+		    replying to an encrypted message"'
+	o bug 833, 'Autocompleting from addressbook fails with
+		    extended chars'
+	o bug 834, 'Pressing CTRl-D on a message marked as locked
+		    crashes sylpheed.'
+	o Fix mbox import/export buglets
+	o fix disabled Execute menu item
+	o Fix selection of current theme in prefs
+	o Reselect "None" Privacy system when selecting an account
+          with no privacy system defined
+	o IMAP: Fixes related to mail subdir, creation and deletion
+          of folders
+	o IMAP: Don't allow creation of folders in NoInferior folders
+	o IMAP: Fix bug when moving a folder
+	o Fix pref corruption on folder move.
+	o Fix corruption of column titles in summaryview
+	o Fix SSL manager buttons' layout resizing when window size
+	  changes
+	o fix news folder Folder Properties
+	o Fix encoding issue in Save all and in overwrite-
+	  confirmation alertpanel
+	o jPilot: Fix encoding
+	o gnomeprint: Fix date format
+	o Actions: fix crash on menu creation due to '/' in the
+	   action menu name
+	o Fix updating of 'n items selected' count in summaryview
+	  when deselecting
+	o Fix building on Solaris
+	o Fix cursor position if quotation gets rewrapped.
+
+For further details of the numbered bugs listed above consult
+www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
+
+* and other code reorganisation, cleanups, and more.
+
+---------------------------------------------------------------------
+See ChangeLog and README for full information regarding changes in
+this release.
+
