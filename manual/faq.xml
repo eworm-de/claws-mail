@@ -209,7 +209,7 @@ sylpheedmail/.
     <section>
       <title>Why does sylpheed allow me to open more than one instance at the same time for the same user on a network?</title>
       <para>
-        Sylpheed opens a Unix-domain socket using a name built from your TMPDIR path plus your UID. This socket is used to arbitrate multiple instances on a given machine. In Linux, at least, named Unix-domain sockets are known only locally, to the creating machine. Pointing your TMPDIR environment variable to /home/yours/tmp doesn't have the desired effect, as the socket definition would need to be propagated across the LAN and isn't.
+        Sylpheed-Claws opens a Unix-domain socket using a name built from your TMPDIR path plus your UID. This socket is used to arbitrate multiple instances on a given machine. In Linux, at least, named Unix-domain sockets are known only locally, to the creating machine. Pointing your TMPDIR environment variable to /home/yours/tmp doesn't have the desired effect, as the socket definition would need to be propagated across the LAN and isn't.
       </para>
     </section>
 
@@ -217,8 +217,210 @@ sylpheedmail/.
 
   <section id="faq_instconf">
     <title>Installation and configuration</title>
-    <para>
-    </para>
+
+    <section>
+      <title>What does it take to compile Sylpheed-Claws?</title>
+      <para>
+         Any <acronym>POSIX</acronym> compliant UNIX or similar Operating System (eg. Linux, FreeBSD, Solaris), GTK+ 2.4 or later, a recent ANSI C compiler (gcc 2.7.2.3 should also work) otherwise <command>./configure</command> will fail.        </para>
+      <itemizedlist>
+        <title>Optionally:</title>
+	<listitem>
+	  <para>
+	    gdk-pixbuf (for built-in image view)
+	  </para>
+        </listitem>
+	<listitem>
+	  <para>
+	    libcompface (for X-Face)
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    GPGME (for GnuPG)
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+            GNU/aspell
+	  </para>
+        </listitem>
+	<listitem>
+	  <para>
+            OpenSSL
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+            LDAP
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    iconv
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    libEtPan! (for IMAP support)
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    libpisock (for JPilot support in addressbook)
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </section>
+    
+    <section>
+      <title>How do I set up Sylpheed-Claws?</title>
+      <para>
+        When you run Sylpheed-Claws for the first time, it will ask you where you want to store your mailboxes. The default is <filename class="directory">~/Mail</filename>. You can change this to anything you like as long as it is a valid directory name.
+      </para>
+      <para>
+        Please note: When Sylpheed-Claws is executed for the first time, it automatically creates the configuration files in the directory specified by the <command>./configure</command> option <command>--with-config-dir=XXX</command> (default is <filename class="directory">$HOME/.sylpheed-claws/</filename>), and asks you the location of mailbox. The default is <filename class="directory">$HOME/Mail</filename>.
+      </para>
+    </section>
+    
+    <section>
+      <title>Why did the creation of the mailbox fail?</title>
+      <para>
+        Sylpheed-Claws reports such an error if it can't create the default mailboxes (inbox, outbox, etc ...). This can be because <filename class="directory">~/Mail</filename> already contains files with the same names. This occurs when switching from Kmail to Sylpheed-Claws, in this case backup and remove the existing Mail directory or use another name for the Sylpheed-Claws mail directory.
+      </para>
+    </section>
+    
+    <section>
+      <title>How do I set up an account?</title>
+      <para>
+        After loading Sylpheed-Claws for the first time, you will be prompted to add an e-mail account. Simply fill in the appropriate fields, (name, email address, server details, etc). You can add more accounts by using the menu item <quote>/Configuration/Create new account</quote>.
+      </para>
+    </section>
+    
+    <section>
+      <title>Why does Sylpheed not delete my mails when I press <quote>delete</quote>? I set a filter, and Sylpheed does not filter? I moved a mail to a different mailbox and it did not move?</title>
+      <para>
+If you want immediate execution be sure to set the configuration option <quote>Execute immediately when moving or deleting messages</quote> available in the <quote>/Configuration/Preferences</quote> menu option, <quote>Common Interface</quote> tab.
+      </para>
+    </section>
+    
+    <section>
+      <title>Can I set up special addresses/ports for my mailserver/newsserver?</title>
+      <para>
+        Yes, you can. In the <quote>Account preferences</quote> menu option, on the <quote>Advanced</quote> tab you can specify the port addresses that you want to use.
+      </para>
+    </section>
+    
+    <section>
+      <title>Does Sylpheed-Claws have options for threading messages?</title>
+      <para>
+        Yes. You can switch it on and off in the <quote>View</quote> menu, just select <quote>Thread view</quote> or press <quote>Ctrl+T</quote>. (This only affects the currently selected folder; i.e. it is a folder property.)
+      </para>
+    </section>
+    
+    <section>
+      <title>Can I create multiple levels of subfolders to store mail?</title>
+      <para>
+        Absolutely. This is not a problem. The only limitations are underlying filesystem capabilities.
+      </para>
+    </section>
+    
+    <section>
+      <title>Why isn't Sylpheed sending my mail out?</title>
+      <para>
+        You need to create at least one account in order to send. (This is a wonderful gotcha on LAN installs with only a local mailbox feed).
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
+    <section>
+      <title></title>
+      <para>
+      </para>
+    </section>
+    
   </section>
 
   <section id="faq_interface">
