@@ -356,6 +356,26 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	}
 }
 
+#ifdef USE_PTHREAD
+static void mimeview_check_sig_cancel_now(MimeView *mimeview);
+#endif
+
+static void mimeview_free_mimeinfo(MimeView *mimeview)
+{
+	gboolean defer = FALSE;
+#ifdef USE_PTHREAD
+	defer = (mimeview->check_data != NULL);
+	if (defer)
+		mimeview->check_data->free_after_use = TRUE;
+#endif
+	if (mimeview->mimeinfo != NULL && !defer)
+		procmime_mimeinfo_free_all(mimeview->mimeinfo);
+	else if (defer) {
+		debug_print("deferring free(mimeinfo) and cancelling check\n");
+		mimeview_check_sig_cancel_now(mimeview);
+	}
+}
+
 void mimeview_destroy(MimeView *mimeview)
 {
 	GSList *cur;
@@ -369,11 +389,18 @@ void mimeview_destroy(MimeView *mimeview)
 	g_slist_free(mimeview->viewers);
 	gtk_target_list_unref(mimeview->target_list);
 
-	procmime_mimeinfo_free_all(mimeview->mimeinfo);
-	g_free(mimeview->file);
-	g_free(mimeview);
-
-	mimeviews = g_slist_remove(mimeviews, mimeview);
+	mimeview_free_mimeinfo(mimeview);
+#ifdef USE_PTHREAD
+	if (mimeview->check_data) {
+		mimeview->check_data->destroy_mimeview = TRUE;
+		debug_print("deferring destroy\n");
+	} else 
+#endif
+	{
+		g_free(mimeview->file);
+		g_free(mimeview);
+		mimeviews = g_slist_remove(mimeviews, mimeview);
+	}
 	
 }
 
@@ -606,7 +633,7 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 void mimeview_clear(MimeView *mimeview)
 {
 	GtkCList *clist = GTK_CLIST(mimeview->ctree);
-
+	
 	noticeview_hide(mimeview->siginfoview);
 
 	gtk_clist_clear(clist);
@@ -614,8 +641,8 @@ void mimeview_clear(MimeView *mimeview)
 	if (mimeview->mimeviewer != NULL)
 		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
 
-	if (mimeview->mimeinfo != NULL)
-		procmime_mimeinfo_free_all(mimeview->mimeinfo);
+	mimeview_free_mimeinfo(mimeview);
+
 	mimeview->mimeinfo = NULL;
 
 	mimeview->opened = NULL;
@@ -630,16 +657,23 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data);
 void mimeview_check_signature(MimeView *mimeview);
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
-static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
+static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo, 
+					gboolean special, SignatureStatus code)
 {
 	gchar *text = NULL, *button_text = NULL;
 	void  *func = NULL;
 	StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
-
+	SignatureStatus mycode = SIGNATURE_UNCHECKED;
+	
 	g_return_if_fail(mimeview != NULL);
 	g_return_if_fail(mimeinfo != NULL);
 	
-	switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
+	if (special)
+		mycode = code;
+	else 
+		mycode = privacy_mimeinfo_get_sig_status(mimeinfo);
+
+	switch (mycode) {
 	case SIGNATURE_UNCHECKED:
 		button_text = _("Check signature");
 		func = check_signature_cb;
@@ -664,16 +698,24 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 		button_text = _("Check again");
 		func = check_signature_cb;
 		icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
+	case SIGNATURE_CHECK_TIMEOUT:
+		button_text = _("Check again");
+		func = check_signature_cb;
+		icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
 	default:
 		break;
 	}
-	if (privacy_mimeinfo_get_sig_status(mimeinfo) == SIGNATURE_UNCHECKED) {
+	if (mycode == SIGNATURE_UNCHECKED) {
 		gchar *tmp = privacy_mimeinfo_sig_info_short(mimeinfo);
 		text = g_strdup_printf("%s %s",
 			tmp, _("Click the icon or hit 'C' to check it."));
 		g_free(tmp);
-	} else
+	} else if (mycode != SIGNATURE_CHECK_TIMEOUT) {
 		text = privacy_mimeinfo_sig_info_short(mimeinfo);
+	} else if (mycode == SIGNATURE_CHECK_TIMEOUT) {
+		text = g_strdup(_("Timeout checking the signature. Click the icon or hit 'C' to try again."));
+	}
+
 	noticeview_set_text(mimeview->siginfoview, text);
 	g_free(text);
 	noticeview_set_button_text(mimeview->siginfoview, NULL);
@@ -685,6 +727,189 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	noticeview_set_tooltip(mimeview->siginfoview, button_text);
 }
 
+#ifdef USE_PTHREAD
+
+/* reset all thread stuff, and do the cleanups we've been left to do */
+static void mimeview_check_data_reset(MimeView *mimeview)
+{
+	if (!mimeview->check_data)
+		return;
+
+	if (mimeview->check_data->free_after_use) {
+		debug_print("freeing deferred mimeinfo\n");
+		procmime_mimeinfo_free_all(mimeview->check_data->siginfo);
+	}
+	if (mimeview->check_data->destroy_mimeview) {
+		debug_print("freeing deferred mimeview\n");
+		g_free(mimeview->file);
+		g_free(mimeview);
+		mimeviews = g_slist_remove(mimeviews, mimeview);
+	}
+
+	g_free(mimeview->check_data);
+	mimeview->check_data = NULL;
+}
+
+/* GUI update once the checker thread is done or killed */
+static gboolean mimeview_check_sig_thread_cb(void *data)
+{
+	MimeView *mimeview = (MimeView *) data;
+	MimeInfo *mimeinfo = mimeview->siginfo;
+
+	debug_print("mimeview_check_sig_thread_cb\n");
+	
+	if (mimeinfo == NULL) {
+		/* message changed !? */
+		g_warning("no more siginfo!\n");
+		goto end;
+	}
+	
+	if (!mimeview->check_data) {
+		g_warning("nothing to check\n");
+		return FALSE;
+	}
+
+	if (mimeview->check_data->siginfo != mimeinfo) {
+		/* message changed !? */
+		g_warning("different siginfo!\n");
+		goto end;
+	}
+
+	if (mimeview->check_data->destroy_mimeview ||
+	    mimeview->check_data->free_after_use) {
+	    	debug_print("not bothering, we're changing message\n"); 
+		goto end;
+	}
+	
+	/* update status */
+	if (mimeview->check_data->timeout) 
+		update_signature_noticeview(mimeview, mimeview->siginfo, 
+			TRUE, SIGNATURE_CHECK_TIMEOUT);
+	else
+		update_signature_noticeview(mimeview, mimeview->siginfo, 
+			FALSE, 0);
+	icon_list_clear(mimeview);
+	icon_list_create(mimeview, mimeview->mimeinfo);
+	
+end:
+	mimeview_check_data_reset(mimeview);
+	return FALSE;
+}
+
+/* sig checker thread */
+static void *mimeview_check_sig_worker_thread(void *data)
+{
+	MimeView *mimeview = (MimeView *)data;
+	MimeInfo *mimeinfo = mimeview->siginfo;
+	
+	debug_print("checking...\n");
+
+	if (!mimeview->check_data)
+		return NULL;
+
+	if (mimeinfo && mimeinfo == mimeview->check_data->siginfo)
+		privacy_mimeinfo_check_signature(mimeinfo);
+	else {
+		/* that's strange! we changed message without 
+		 * getting killed. */
+		g_warning("different siginfo!\n");
+		mimeview_check_data_reset(mimeview);
+		return NULL;
+	}
+
+	/* use g_timeout so that GUI updates is done from the
+	 * correct thread */
+	g_timeout_add(0,mimeview_check_sig_thread_cb,mimeview);
+	
+	return NULL;
+}
+
+/* killer thread - acts when the checker didn't work fast
+ * enough. */
+static void *mimeview_check_sig_cancel_thread(void *data)
+{
+	MimeView *mimeview = (MimeView *)data;
+	
+	if (!mimeview->check_data)
+		return NULL; /* nothing to kill ! */
+
+	/* wait for a few seconds... */
+	debug_print("waiting a while\n");
+
+	sleep(5);
+	
+	if (!mimeview->check_data)
+		return NULL; /* nothing to kill, it's done in time :) */
+	
+	/* too late, go away checker thread */
+	debug_print("killing checker thread\n");
+	pthread_cancel(mimeview->check_data->th);
+	
+	/* tell upstream it was a timeout */
+	mimeview->check_data->timeout = TRUE;
+	/* use g_timeout so that GUI updates is done from the
+	 * correct thread */
+	g_timeout_add(0,mimeview_check_sig_thread_cb,mimeview);
+
+	return NULL;
+}
+
+/* get rid of the checker thread right now - used when changing the
+ * displayed message for example. */
+static void mimeview_check_sig_cancel_now(MimeView *mimeview)
+{
+	if (!mimeview->check_data)
+		return;
+	debug_print("killing checker thread NOW\n");
+	pthread_cancel(mimeview->check_data->th);
+
+	/* tell upstream it was a timeout */
+	mimeview->check_data->timeout = TRUE;
+	mimeview_check_sig_thread_cb(mimeview);
+	return;
+}
+
+/* creates a thread to check the signature, and a second one
+ * to kill the first one after a timeout */
+static void mimeview_check_sig_in_thread(MimeView *mimeview)
+{
+	pthread_t th, th2;
+	pthread_attr_t detach, detach2;
+	
+	if (mimeview->check_data) {
+		g_warning("already checking it");
+		return;
+	}
+	
+	mimeview->check_data = g_new0(SigCheckData, 1);
+	mimeview->check_data->siginfo = mimeview->siginfo;
+	debug_print("creating thread\n");
+
+	pthread_attr_init(&detach);
+	pthread_attr_setdetachstate(&detach, TRUE);
+
+	pthread_attr_init(&detach2);
+	pthread_attr_setdetachstate(&detach2, TRUE);
+
+	/* create the checker thread */
+	if (pthread_create(&th, &detach, 
+			mimeview_check_sig_worker_thread, 
+			mimeview) != 0) {
+		/* arh. We'll do it synchronously. */
+		g_warning("can't create thread");
+		g_free(mimeview->check_data);
+		mimeview->check_data = NULL;
+		return;
+	} else 
+		mimeview->check_data->th = th;
+
+	/* create the killer thread */
+	pthread_create(&th2, &detach2, 
+			mimeview_check_sig_cancel_thread, 
+			mimeview);
+}
+#endif
+
 static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 {
 	MimeView *mimeview = (MimeView *) user_data;
@@ -692,13 +917,24 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	
 	if (mimeinfo == NULL)
 		return;
-
+#ifdef USE_PTHREAD
+	if (mimeview->check_data)
+		return;
+#endif
 	noticeview_set_text(mimeview->siginfoview, _("Checking signature..."));
 	GTK_EVENTS_FLUSH();
-	privacy_mimeinfo_check_signature(mimeinfo);
-	update_signature_noticeview(mimeview, mimeview->siginfo);
-	icon_list_clear(mimeview);
-	icon_list_create(mimeview, mimeview->mimeinfo);
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	/* let's do it non-blocking */
+	mimeview_check_sig_in_thread(mimeview);
+	if (!mimeview->check_data) /* let's check syncronously */
+#endif
+	{
+		debug_print("checking without thread\n");
+		privacy_mimeinfo_check_signature(mimeinfo);
+		update_signature_noticeview(mimeview, mimeview->siginfo, FALSE, 0);
+		icon_list_clear(mimeview);
+		icon_list_create(mimeview, mimeview->mimeinfo);
+	}
 }
 
 void mimeview_check_signature(MimeView *mimeview)
@@ -764,7 +1000,7 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 		return;
 	}
 	
-	update_signature_noticeview(mimeview, siginfo);
+	update_signature_noticeview(mimeview, siginfo, FALSE, 0);
 	noticeview_show(mimeview->siginfoview);
 }
 
@@ -1652,6 +1888,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		switch (privacy_mimeinfo_get_sig_status(siginfo)) {
 		case SIGNATURE_UNCHECKED:
 		case SIGNATURE_CHECK_FAILED:
+		case SIGNATURE_CHECK_TIMEOUT:
 			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;

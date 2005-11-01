@@ -1,3 +1,14 @@
+2005-11-01 [colin]	1.9.99cvs2
+
+	* src/compose.c
+		Fix replying to ml wen confirming subscription
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/privacy.h
+	* src/summaryview.c
+		Make key check non blocking
+
 2005-10-31 [paul]	1.9.99cvs1
 
 	* tools/claws.i18n.status.pl

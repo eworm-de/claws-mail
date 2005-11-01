@@ -1079,6 +1079,8 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		messageview_destroy(messageview);
 		return TRUE;
 	}
+	g_signal_stop_emission_by_name(G_OBJECT(widget),
+					"key_press_event");
 	mimeview_pass_key_press_event(messageview->mimeview, event);
 	return FALSE;
 }

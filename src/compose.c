@@ -2194,6 +2194,59 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	return buf;
 }
 
+/* if ml_post is of type addr@host and from is of type
+ * addr-anything@host, return TRUE
+ */
+static gboolean is_subscription(const gchar *ml_post, const gchar *from)
+{
+	gchar *left_ml = NULL;
+	gchar *right_ml = NULL;
+	gchar *left_from = NULL;
+	gchar *right_from = NULL;
+	gboolean result = FALSE;
+	
+	if (!ml_post || !from)
+		return FALSE;
+	
+	left_ml = g_strdup(ml_post);
+	if (strstr(left_ml, "@")) {
+		right_ml = strstr(left_ml, "@")+1;
+		*(strstr(left_ml, "@")) = '\0';
+	}
+	
+	left_from = g_strdup(from);
+	if (strstr(left_from, "@")) {
+		right_from = strstr(left_from, "@")+1;
+		*(strstr(left_from, "@")) = '\0';
+	}
+	
+	if (left_ml && left_from && right_ml && right_from
+	&&  !strncmp(left_from, left_ml, strlen(left_ml))
+	&&  !strcmp(right_from, right_ml)) {
+		result = TRUE;
+	}
+	g_free(left_ml);
+	g_free(left_from);
+	
+	return result;
+}
+
+static gboolean same_address(const gchar *addr1, const gchar *addr2)
+{
+	gchar *my_addr1, *my_addr2;
+	
+	if (!addr1 || !addr2)
+		return FALSE;
+
+	Xstrdup_a(my_addr1, addr1, return FALSE);
+	Xstrdup_a(my_addr2, addr2, return FALSE);
+	
+	extract_address(my_addr1);
+	extract_address(my_addr2);
+	
+	return !strcmp(my_addr1, my_addr2);
+}
+
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_ml,
 				    gboolean to_sender,
@@ -2205,32 +2258,45 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	gchar *replyto = NULL;
 	GHashTable *to_table;
 
+	gboolean reply_to_ml = FALSE;
+	gboolean default_reply_to = FALSE;
+
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
+	reply_to_ml = to_ml && compose->ml_post;
+
+	default_reply_to = msginfo->folder && 
+		msginfo->folder->prefs->enable_default_reply_to;
+
 	if (compose->account->protocol != A_NNTP) {
-		if (to_ml && compose->ml_post
-		    && !(msginfo->folder && 
-			 msginfo->folder->prefs->enable_default_reply_to)) {
-			compose_entry_append(compose,
+		if (reply_to_ml && !default_reply_to) {
+			
+			gboolean is_subscr = is_subscription(compose->ml_post,
+							     msginfo->from);
+			if (!is_subscr) {
+				/* normal answer to ml post with a reply-to */
+				compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
-			if (compose->replyto) {
-				gchar *tmp1 = NULL, *tmp2 = NULL;
-				Xstrdup_a(tmp1, compose->replyto, return);
-				if (compose->ml_post)
-					Xstrdup_a(tmp2, compose->ml_post, return);
-				extract_address(tmp1);
-				extract_address(tmp2);
-				if (tmp1 && tmp2 && strcmp(tmp1, tmp2))
+				if (compose->replyto
+				&&  !same_address(compose->ml_post, compose->replyto))
 					compose_entry_append(compose,
-							compose->replyto,
-							COMPOSE_CC);
+						compose->replyto,
+						COMPOSE_CC);
+			} else {
+				/* answer to subscription confirmation */
+				if (compose->replyto)
+					compose_entry_append(compose,
+						compose->replyto,
+						COMPOSE_TO);
+				else if (msginfo->from)
+					compose_entry_append(compose,
+						msginfo->from,
+						COMPOSE_TO);
 			}
 		}
-		else if (!(to_all || to_sender)
-			 && msginfo->folder
-			 && msginfo->folder->prefs->enable_default_reply_to) {
+		else if (!(to_all || to_sender) && default_reply_to) {
 			compose_entry_append(compose,
 			    msginfo->folder->prefs->default_reply_to,
 			    COMPOSE_TO);

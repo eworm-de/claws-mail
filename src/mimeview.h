@@ -29,6 +29,9 @@ typedef struct _MimeViewer 		MimeViewer;
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtktooltips.h>
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
 
 #include "textview.h"
 #include "messageview.h"
@@ -40,6 +43,18 @@ typedef enum
 	MIMEVIEW_TEXT,
 	MIMEVIEW_VIEWER
 } MimeViewType;
+
+#ifdef USE_PTHREAD
+typedef struct _SigCheckData SigCheckData;
+struct _SigCheckData
+{
+	pthread_t th;
+	MimeInfo *siginfo;
+	gboolean free_after_use;
+	gboolean destroy_mimeview;
+	gboolean timeout;
+};
+#endif
 
 struct _MimeView
 {
@@ -81,6 +96,9 @@ struct _MimeView
 
 	NoticeView *siginfoview;
 	MimeInfo *siginfo;
+#ifdef USE_PTHREAD
+	SigCheckData *check_data;
+#endif
 };
 
 struct _MimeViewerFactory
