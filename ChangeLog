@@ -1,3 +1,9 @@
+2005-11-02 [wwp]	1.9.99cvs5
+
+	* src/prefs_themes.c
+		fix directory name checking (theme installation/removal),
+		made related error a bit more verbose
+
 2005-11-02 [cleroy]	1.9.99cvs4
 
 	* src/summaryview.c
