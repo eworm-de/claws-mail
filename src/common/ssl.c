@@ -59,8 +59,10 @@ void ssl_init(void)
 	SSL_library_init();
 	SSL_load_error_strings();
 
+#ifdef HAVE_LIBETPAN
 	mailstream_ssl_init_not_required();
-	
+#endif	
+
 	/* Create our context*/
 	meth = SSLv23_client_method();
 	ssl_ctx = SSL_CTX_new(meth);
