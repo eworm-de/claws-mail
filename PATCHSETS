@@ -970,3 +970,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 tools/claws.i18n.status.pl;  ) > 1.9.99cvs1.patchset
 ( cvs diff -u -r 1.382.2.191 -r 1.382.2.192 src/compose.c;  cvs diff -u -r 1.94.2.69 -r 1.94.2.70 src/messageview.c;  cvs diff -u -r 1.83.2.50 -r 1.83.2.51 src/mimeview.c;  cvs diff -u -r 1.20.2.5 -r 1.20.2.6 src/mimeview.h;  cvs diff -u -r 1.10.2.5 -r 1.10.2.6 src/privacy.h;  cvs diff -u -r 1.395.2.145 -r 1.395.2.146 src/summaryview.c;  ) > 1.9.99cvs2.patchset
 ( cvs diff -u -r 1.8.2.4 -r 1.8.2.5 po/ko.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 po/nb.po;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/wizard.c;  ) > 1.9.99cvs3.patchset
+( cvs diff -u -r 1.395.2.146 -r 1.395.2.147 src/summaryview.c;  ) > 1.9.99cvs4.patchset

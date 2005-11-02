@@ -1,3 +1,9 @@
+2005-11-02 [cleroy]	1.9.99cvs4
+
+	* src/summaryview.c
+		Fix typo (probably fixes bug #841 (Sort by the From 
+		field doesn't work)
+
 2005-11-02 [paul]	1.9.99cvs3
 
 	* po/ko.po

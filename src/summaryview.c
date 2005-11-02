@@ -4499,7 +4499,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				     GTK_CTREE_EXPANDER_TRIANGLE);
 #endif
 	gtk_ctree_set_indent(GTK_CTREE(ctree), 12);
-	g_object_set_data(G_OBJECT(ctree), "user_data", summaryview);
+	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
