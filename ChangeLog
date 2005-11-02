@@ -1,3 +1,8 @@
+2005-11-02 [colin]	1.9.99cvs7
+
+	* po/POTFILES.in
+		Add missing files (thanks to Fabien Vantard)
+
 2005-11-02 [cleroy]	1.9.99cvs6
 
 	* src/summaryview.c

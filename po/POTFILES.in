@@ -31,11 +31,13 @@ src/exportldif.c
 src/folder.c
 src/foldersel.c
 src/folderview.c
+src/gedit-print.c
 src/grouplistdialog.c
 src/gtk/about.c
 src/gtk/colorlabel.c
 src/gtk/description_window.c
 src/gtk/foldersort.c
+src/gtk/gtksourceprintjob.c
 src/gtk/gtkaspell.c
 src/gtk/gtkutils.c
 src/gtk/inputdialog.c
@@ -75,6 +77,7 @@ src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/prefs_gpg.c
 src/plugins/pgpcore/select-keys.c
 src/plugins/pgpcore/sgpgme.c
+src/plugins/pgpcore/plugin.c
 src/plugins/pgpinline/pgpinline.c
 src/plugins/pgpinline/plugin.c
 src/plugins/pgpmime/plugin.c
@@ -82,6 +85,7 @@ src/plugins/pgpmime/pgpmime.c
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/trayicon/trayicon.c
+src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
 src/pop.c
 src/prefs_account.c
 src/prefs_actions.c
@@ -92,6 +96,7 @@ src/prefs_display_header.c
 src/prefs_ext_prog.c
 src/prefs_filtering_action.c
 src/prefs_filtering.c
+src/prefs_folder_column.c
 src/prefs_folder_item.c
 src/prefs_fonts.c
 src/prefs_gtk.c
@@ -111,6 +116,7 @@ src/prefs_themes.c
 src/prefs_toolbar.c
 src/prefs_wrapping.c
 src/privacy.c
+src/procmime.c
 src/procmsg.c
 src/quote_fmt.c
 src/send_message.c
