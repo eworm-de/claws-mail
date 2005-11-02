@@ -184,7 +184,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"and change the general Preferences by using\n"
 		"'/Configuration/Preferences'.\n"
 		"\n"
-		"You can find futher information in the Sylpheed-Claws manual,\n"
+		"You can find further information in the Sylpheed-Claws manual,\n"
 		"which can be accessed by using the menu entry '/Help/Manual'\n"
 		"or online at the URL given below.\n"
 		"\n"
