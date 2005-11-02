@@ -1,3 +1,11 @@
+2005-11-02 [colin]	1.9.99cvs8
+
+	* configure.ac
+		Require libetpan-0.40 due to upstream fix
+	* src/common/ssl.c
+		Tell libetpan not to call SSL_Library_Init,
+		as we do it ourselves.
+
 2005-11-02 [colin]	1.9.99cvs7
 
 	* po/POTFILES.in

@@ -33,6 +33,10 @@
 #include "ssl.h"
 #include "ssl_certificate.h"
 
+#ifdef HAVE_LIBETPAN
+#include <libetpan/mailstream_ssl.h>
+#endif
+
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
@@ -54,6 +58,8 @@ void ssl_init(void)
 	/* Global system initialization*/
 	SSL_library_init();
 	SSL_load_error_strings();
+
+	mailstream_ssl_init_not_required();
 	
 	/* Create our context*/
 	meth = SSLv23_client_method();
