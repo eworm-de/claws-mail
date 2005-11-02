@@ -1,3 +1,16 @@
+2005-11-02 [cleroy]	1.9.99cvs6
+
+	* src/summaryview.c
+		Fix totals when read messages are hidden or quicksearch
+		is on
+	* src/ssl_manager.c
+	* src/ssl_manager.h
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.h
+		Fix copyright on my stuff
+
 2005-11-02 [wwp]	1.9.99cvs5
 
 	* src/prefs_themes.c

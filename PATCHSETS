@@ -972,3 +972,4 @@
 ( cvs diff -u -r 1.8.2.4 -r 1.8.2.5 po/ko.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 po/nb.po;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/wizard.c;  ) > 1.9.99cvs3.patchset
 ( cvs diff -u -r 1.395.2.146 -r 1.395.2.147 src/summaryview.c;  ) > 1.9.99cvs4.patchset
 ( cvs diff -u -r 1.3.2.32 -r 1.3.2.33 src/prefs_themes.c;  ) > 1.9.99cvs5.patchset
+( cvs diff -u -r 1.3.2.15 -r 1.3.2.16 src/ssl_manager.c;  cvs diff -u -r 1.2.2.1 -r 1.2.2.2 src/ssl_manager.h;  cvs diff -u -r 1.395.2.147 -r 1.395.2.148 src/summaryview.c;  cvs diff -u -r 1.4.2.3 -r 1.4.2.4 src/common/ssl_certificate.c;  cvs diff -u -r 1.1.4.1 -r 1.1.4.2 src/common/ssl_certificate.h;  cvs diff -u -r 1.9.2.7 -r 1.9.2.8 src/gtk/sslcertwindow.c;  cvs diff -u -r 1.6.2.1 -r 1.6.2.2 src/gtk/sslcertwindow.h;  ) > 1.9.99cvs6.patchset

@@ -1894,8 +1894,8 @@ static void summary_status_show(SummaryView *summaryview)
 	gchar *spc;
 	gchar *itstr;
 	GList *rowlist, *cur;
-	guint n_selected = 0;
-	off_t sel_size = 0;
+	guint n_selected = 0, n_new = 0, n_unread = 0, n_total = 0;
+	off_t sel_size = 0, n_size = 0;
 	MsgInfo *msginfo;
 	gchar *name;
 	
@@ -1916,7 +1916,33 @@ static void summary_status_show(SummaryView *summaryview)
 		else {
 			sel_size += msginfo->size;
 			n_selected++;
+			
 		}
+	}
+	
+	if (summaryview->folder_item->hide_read_msgs 
+	|| quicksearch_is_active(summaryview->quicksearch)) {
+		rowlist = GTK_CLIST(summaryview->ctree)->row_list;
+		for (cur = rowlist; cur != NULL && cur->data != NULL; cur = cur->next) {
+			msginfo = gtk_ctree_node_get_row_data
+				(GTK_CTREE(summaryview->ctree),
+				 GTK_CTREE_NODE(cur));
+			if (!msginfo)
+				g_warning("summary_status_show(): msginfo == NULL\n");
+			else {
+				n_size += msginfo->size;
+				n_total++;
+				if (MSG_IS_NEW(msginfo->flags))
+					n_new++;
+				if (MSG_IS_UNREAD(msginfo->flags))
+					n_unread++;
+			}
+		}
+	} else {
+		n_new = summaryview->folder_item->new_msgs;
+		n_unread = summaryview->folder_item->unread_msgs;
+		n_total = summaryview->folder_item->total_msgs;
+		n_size = summaryview->total_size;
 	}
 
 	name = folder_item_get_name(summaryview->folder_item);
@@ -1969,10 +1995,8 @@ static void summary_status_show(SummaryView *summaryview)
 
 	str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
 
-				      summaryview->folder_item->new_msgs,
-				      summaryview->folder_item->unread_msgs,
-				      summaryview->folder_item->total_msgs,
-				      to_human_readable(summaryview->total_size));
+				      n_new, n_unread, n_total,
+				      to_human_readable(n_size));
 	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
 }
