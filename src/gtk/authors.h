@@ -45,7 +45,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[ru] Pavlo Bohmat <bohm@ukr.net>",
 "[sk] Andrej Kacian <andrej@kacian.sk>",
 "[sr] Aleksandar Urosevic <urke@users.sf.net>",
-"[zh_CN] Hansom Young <hyoung@operamail.com>",
+"[zh_CN] Ralgh Young <bamanzi@gmail.com>",
 "[zh_TW] Wei-Lun Chao <chaoweilun@pcmail.com.tw>",
 NULL
 };
