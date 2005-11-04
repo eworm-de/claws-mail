@@ -84,7 +84,6 @@ static void about_create(void)
 	GtkWidget *close_button;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter, start_iter;
-	GtkTextMark *mark;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -258,25 +257,23 @@ static void about_create(void)
 				       (GdkColor*)&uri_color);
  	gtk_text_buffer_create_tag(buffer, "link",
 				"foreground-gdk", &uri_color,
+				"wrap-mode", GTK_WRAP_NONE,
+				"wrap-mode-set", TRUE,
 				NULL);
 
 	gtk_text_buffer_insert(buffer, &iter, _("Sylpheed-Claws is a lightweight, fast and "
 				"highly-configurable e-mail client.\n\n"
 				"For further information visit the Sylpheed-"
 				"Claws website, "), -1);
-	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
-	gtk_text_buffer_insert(buffer, &iter, HOMEPAGE_URI, -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, HOMEPAGE_URI, -1,
+				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"
 				"Sylpheed-Claws is free software released "
 				"under the GPL license. If you wish to donate "
 				"to the Sylpheed-Claws project you can do "
 				"so at "), -1);
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, DONATE_URI, -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DONATE_URI, -1,
+				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"), -1);
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
@@ -308,147 +305,124 @@ static void about_create(void)
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
 
-	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
-	gtk_text_buffer_insert(buffer, &iter, (_("The Sylpheed-Claws Team\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The Sylpheed-Claws Team\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; TEAM_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(TEAM_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, TEAM_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, TEAM_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nPrevious team members\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nPrevious team members\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; EX_TEAM_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(EX_TEAM_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, EX_TEAM_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, EX_TEAM_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(EX_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nThe translation team\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nThe translation team\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; TRANS_TEAM_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(TRANS_TEAM_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, TRANS_TEAM_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, TRANS_TEAM_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(TRANS_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nDocumentation team\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nDocumentation team\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; DOC_TEAM_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(DOC_TEAM_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, DOC_TEAM_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DOC_TEAM_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(DOC_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"undeindented-list-itemitle", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nLogo\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nLogo\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; LOGO_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(LOGO_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, LOGO_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, LOGO_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(LOGO_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nIcons\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nIcons\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; ICONS_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(ICONS_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, ICONS_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, ICONS_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(ICONS_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_move_mark(buffer, mark, &iter);
-	gtk_text_buffer_insert(buffer, &iter, (_("\nContributors\n")), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "underlined-list-title", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nContributors\n")), -1,
+			"underlined-list-title", NULL);
 
 	for (i = 0; CONTRIBS_LIST[i] != NULL; i++) {
-		gtk_text_buffer_move_mark(buffer, mark, &iter);
 		if (g_utf8_validate(CONTRIBS_LIST[i], -1, NULL))
-			gtk_text_buffer_insert(buffer, &iter, CONTRIBS_LIST[i], -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, CONTRIBS_LIST[i], -1,
+					"indented-list-item", NULL);
 		else {
 			gchar *conv = conv_codeset_strdup(CONTRIBS_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
-				gtk_text_buffer_insert(buffer, &iter, conv, -1);
+				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-		gtk_text_buffer_apply_tag_by_name(buffer, "indented-list-item", &start_iter, &iter);
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
-
-	gtk_text_buffer_delete_mark(buffer, mark);	
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				 scrolledwin,
@@ -496,10 +470,8 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit ("), -1);
-	mark = gtk_text_buffer_create_mark(buffer, "mark", &iter, TRUE);
-	gtk_text_buffer_insert(buffer, &iter, _("http://www.openssl.org/"), -1);
-	gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-	gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, _("http://www.openssl.org/"), -1,
+			"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(").\n\n"), -1);
 #endif
 
