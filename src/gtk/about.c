@@ -258,23 +258,23 @@ static void about_create(void)
  	gtk_text_buffer_create_tag(buffer, "link",
 				"foreground-gdk", &uri_color,
 				"wrap-mode", GTK_WRAP_NONE,
-				"wrap-mode-set", TRUE,
 				NULL);
 
-	gtk_text_buffer_insert(buffer, &iter, _("Sylpheed-Claws is a lightweight, fast and "
+	gtk_text_buffer_insert(buffer, &iter, _(
+				"Sylpheed-Claws is a lightweight, fast and "
 				"highly-configurable e-mail client.\n\n"
 				"For further information visit the Sylpheed-"
-				"Claws website, "), -1);
+				"Claws website:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, HOMEPAGE_URI, -1,
 				"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"
+	gtk_text_buffer_insert(buffer, &iter, _("\n\n"
 				"Sylpheed-Claws is free software released "
 				"under the GPL license. If you wish to donate "
 				"to the Sylpheed-Claws project you can do "
-				"so at "), -1);
+				"so at:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DONATE_URI, -1,
 				"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(".\n\n"), -1);
+	gtk_text_buffer_insert(buffer, &iter, _("\n"), -1);
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				scrolledwin,
@@ -470,9 +470,9 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit ("), -1);
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, _("http://www.openssl.org/"), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "http://www.openssl.org/", -1,
 			"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(").\n\n"), -1);
+	gtk_text_buffer_insert(buffer, &iter, _(").\n"), -1);
 #endif
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
