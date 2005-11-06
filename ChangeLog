@@ -1,3 +1,12 @@
+2005-11-06 [wwp]	1.9.99cvs12
+
+	* src/textview.c
+	* src/gtk/about.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		fix a compilation warning,
+		make links sensitive in the about dialog
+
 2005-11-04 [wwp]	1.9.99cvs11
 
 	* src/gtk/about.c

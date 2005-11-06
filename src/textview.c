@@ -1845,24 +1845,7 @@ static gboolean textview_get_uri_range(TextView *textview,
 				       GtkTextIter *start_iter,
 				       GtkTextIter *end_iter)
 {
-	GtkTextIter _start_iter, _end_iter;
-
-	_end_iter = *iter;
-	if (!gtk_text_iter_forward_to_tag_toggle(&_end_iter, tag)) {
-		debug_print("Can't find end");
-		return FALSE;
-	}
-
-	_start_iter = _end_iter;
-	if (!gtk_text_iter_backward_to_tag_toggle(&_start_iter, tag)) {
-		debug_print("Can't find start.");
-		return FALSE;
-	}
-
-	*start_iter = _start_iter;
-	*end_iter = _end_iter;
-
-	return TRUE;
+	return get_tag_range(iter, tag, start_iter, end_iter);
 }
 
 static RemoteURI *textview_get_uri_from_range(TextView *textview,

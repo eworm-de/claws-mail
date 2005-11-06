@@ -48,12 +48,43 @@
 #include "version.h"
 #include "authors.h"
 #include "codeconv.h"
+#include "menu.h"
+#include "textview.h"
 
 static GtkWidget *window;
+static gchar* uri_hover = NULL;
+static GtkTextIter uri_hover_start_iter;
+static GtkTextIter uri_hover_end_iter;
+static GdkCursor *hand_cursor = NULL;
+static GdkCursor *text_cursor = NULL;
 
 static void about_create(void);
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event);
 static void about_uri_clicked(GtkButton *button, gpointer data);
+static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
+					GdkEvent *event, GtkTextIter *iter,
+					GtkWidget *textview);
+static void about_open_link_cb(GtkWidget *widget, guint action, void *data);
+static void about_copy_link_cb(GtkWidget *widget, guint action, void *data);
+static gboolean about_textview_motion_notify(GtkWidget *widget,
+					GdkEventMotion *event,
+					GtkWidget *textview);
+static gboolean about_textview_leave_notify(GtkWidget *widget,
+					GdkEventCrossing *event,
+					GtkWidget *textview);
+static gboolean about_textview_visibility_notify(GtkWidget *widget,
+					GdkEventVisibility *event,
+					GtkWidget *textview);
+static void about_textview_uri_update(GtkWidget *textview, gint x, gint y);
+
+static GtkItemFactoryEntry textview_link_popup_entries[] = 
+{
+	{N_("/_Open with Web browser"),	NULL, about_open_link_cb, 0, NULL},
+	{N_("/Copy this _link"),	NULL, about_copy_link_cb, 0, NULL},
+};
+
+static GtkWidget *link_popupmenu;
+
 
 void about_show(void)
 {
@@ -83,7 +114,8 @@ static void about_create(void)
 	GtkWidget *confirm_area;
 	GtkWidget *close_button;
 	GtkTextBuffer *buffer;
-	GtkTextIter iter, start_iter;
+	GtkTextIter iter;
+	GtkTextTag *tag;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -248,16 +280,21 @@ static void about_create(void)
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+	gtk_widget_add_events(text, GDK_LEAVE_NOTIFY_MASK);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
 	/* textview link style (based upon main prefs) */
 	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
-				       (GdkColor*)&uri_color);
- 	gtk_text_buffer_create_tag(buffer, "link",
+				(GdkColor*)&uri_color);
+	tag = gtk_text_buffer_create_tag(buffer, "link",
 				"foreground-gdk", &uri_color,
 				"wrap-mode", GTK_WRAP_NONE,
+				NULL);
+	gtk_text_buffer_create_tag(buffer, "link-hover",
+				"foreground-gdk", &uri_color,
+				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
 
 	gtk_text_buffer_insert(buffer, &iter, _(
@@ -276,6 +313,13 @@ static void about_create(void)
 				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _("\n"), -1);
 
+	g_signal_connect(G_OBJECT(tag), "event",
+				G_CALLBACK(about_textview_uri_clicked), text);
+	g_signal_connect(G_OBJECT(text), "motion-notify-event",
+				G_CALLBACK(about_textview_motion_notify), text);
+	g_signal_connect(G_OBJECT(text), "leave-notify-event",
+				G_CALLBACK(about_textview_leave_notify), text);
+
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				scrolledwin,
 				gtk_label_new(_("Info")));
@@ -293,6 +337,7 @@ static void about_create(void)
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+	gtk_widget_add_events(text, GDK_LEAVE_NOTIFY_MASK);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
@@ -463,16 +508,27 @@ static void about_create(void)
 		  "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
 		  "MA 02110-1301, USA.\n\n"), -1);
 #ifdef USE_OPENSSL
- 	gtk_text_buffer_create_tag(buffer, "link",
-				"foreground-gdk", &uri_color,
-				NULL);
+	tag = gtk_text_buffer_create_tag(buffer, "link",
+		"foreground-gdk", &uri_color,
+		NULL);
+	gtk_text_buffer_create_tag(buffer, "link-hover",
+		"foreground-gdk", &uri_color,
+		"underline", PANGO_UNDERLINE_SINGLE,
+		NULL);
 
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit ("), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "http://www.openssl.org/", -1,
-			"link", NULL);
+		"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(").\n"), -1);
+
+	g_signal_connect(G_OBJECT(tag), "event",
+				G_CALLBACK(about_textview_uri_clicked), text);
+	g_signal_connect(G_OBJECT(text), "motion-notify-event",
+			 G_CALLBACK(about_textview_motion_notify), text);
+	g_signal_connect(G_OBJECT(text), "leave-notify-event",
+				G_CALLBACK(about_textview_leave_notify), text);
 #endif
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
@@ -504,4 +560,215 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 static void about_uri_clicked(GtkButton *button, gpointer data)
 {
 	open_uri(HOMEPAGE_URI, prefs_common.uri_cmd);
+}
+
+static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
+					GdkEvent *event, GtkTextIter *iter,
+					GtkWidget *textview)
+{
+	GtkTextIter start_iter, end_iter;
+	GdkEventButton *bevent;
+	gchar *link = NULL;
+
+	if (!event || !tag) {
+		return FALSE;
+	}
+
+	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS
+		&& event->type != GDK_BUTTON_RELEASE) {
+		return FALSE;
+	}
+
+	/* get link text from tag */
+	if (get_tag_range(iter, tag, &start_iter,
+				   &end_iter) == FALSE) {
+		return FALSE;
+	}
+	link = gtk_text_iter_get_text(&start_iter, &end_iter);
+	if (link == NULL) {
+		return FALSE;
+	}
+
+	bevent = (GdkEventButton *) event;
+	if (bevent->button == 1 && event->type == GDK_BUTTON_RELEASE) {
+		GtkTextBuffer *buffer;
+
+		/* we shouldn't follow a link if the user has selected something */
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+		gtk_text_buffer_get_selection_bounds(buffer, &start_iter, &end_iter);
+		if (gtk_text_iter_get_offset(&start_iter) != gtk_text_iter_get_offset(&end_iter)) {
+			return FALSE;
+		}
+		/* open link and do *not* return TRUE so that
+		   further gtk processing of the signal is done */
+		open_uri(link, prefs_common.uri_cmd);
+
+	} else {
+		if (bevent->button == 3 && event->type == GDK_BUTTON_PRESS) {
+			GtkItemFactory *link_popupfactory;
+			gint n_entries;
+
+			n_entries = sizeof(textview_link_popup_entries) /
+					sizeof(textview_link_popup_entries[0]);
+			link_popupmenu = menu_create_items(
+							textview_link_popup_entries, n_entries,
+				    		"<UriPopupMenu>", &link_popupfactory,
+				    		textview);
+
+			g_object_set_data(
+					G_OBJECT(link_popupmenu),
+					"menu_button", link);
+			gtk_menu_popup(GTK_MENU(link_popupmenu), 
+					NULL, NULL, NULL, NULL, 
+					bevent->button, bevent->time);
+
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static void about_open_link_cb(GtkWidget *widget, guint action, void *data)
+{
+	gchar *link = g_object_get_data(G_OBJECT(link_popupmenu),
+					   "menu_button");
+
+	if (link == NULL) {
+		return;
+	}
+
+	open_uri(link, prefs_common.uri_cmd);
+	g_object_set_data(G_OBJECT(link_popupmenu), "menu_button",
+			  NULL);
+}
+
+static void about_copy_link_cb(GtkWidget *widget, guint action, void *data)
+{
+	gchar *link = g_object_get_data(G_OBJECT(link_popupmenu),
+					   "menu_button");
+
+	if (link == NULL) {
+		return;
+	}
+
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), link, -1);
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), link, -1);
+	g_object_set_data(G_OBJECT(link_popupmenu), "menu_button", NULL);
+}
+
+static gboolean about_textview_motion_notify(GtkWidget *widget,
+					GdkEventMotion *event,
+					GtkWidget *textview)
+{
+	about_textview_uri_update(textview, event->x, event->y);
+	gdk_window_get_pointer(widget->window, NULL, NULL, NULL);
+
+	return FALSE;
+}
+
+static gboolean about_textview_leave_notify(GtkWidget *widget,
+					GdkEventCrossing *event,
+					GtkWidget *textview)
+{
+	about_textview_uri_update(textview, -1, -1);
+
+	return FALSE;
+}
+
+static gboolean about_textview_visibility_notify(GtkWidget *widget,
+					GdkEventVisibility *event,
+					GtkWidget *textview)
+{
+	gint wx, wy;
+	GdkWindow *window;
+
+	window = gtk_text_view_get_window(GTK_TEXT_VIEW(widget),
+				GTK_TEXT_WINDOW_TEXT);
+
+	/* check if occurred for the text window part */
+	if (window != event->window) {
+		return FALSE;
+	}
+	
+	gdk_window_get_pointer(widget->window, &wx, &wy, NULL);
+	about_textview_uri_update(textview, wx, wy);
+
+	return FALSE;
+}
+
+static void about_textview_uri_update(GtkWidget *textview, gint x, gint y)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter start_iter, end_iter;
+	gchar *uri = NULL;
+	gboolean same;
+	
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+
+	if (x != -1 && y != -1) {
+		gint bx, by;
+		GtkTextIter iter;
+		GSList *tags;
+		GSList *cur;
+	    
+		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(textview), 
+				GTK_TEXT_WINDOW_WIDGET,
+				x, y, &bx, &by);
+		gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(textview),
+				&iter, bx, by);
+
+		tags = gtk_text_iter_get_tags(&iter);
+		for (cur = tags; cur != NULL; cur = cur->next) {
+			GtkTextTag *tag = cur->data;
+			char *name;
+
+			g_object_get(G_OBJECT(tag), "name", &name, NULL);
+			if (strcmp(name, "link") == 0
+			    && get_tag_range(&iter, tag, &start_iter, &end_iter)) {
+				uri = gtk_text_iter_get_text(&start_iter, &end_iter);
+			}
+			g_free(name);
+
+			if (uri) {
+				break;
+			}
+		}
+		g_slist_free(tags);
+	}
+
+	/* compare previous hovered link and this one
+	   (here links must be unique in text buffer otherwise RemoteURI structures should be
+	   used as in textview.c) */
+	same = (uri != NULL && uri_hover != NULL
+		&& strcmp((char*)uri, (char*)uri_hover) == 0);
+
+	if (same == FALSE) {
+		GdkWindow *window;
+
+		if (uri_hover) {
+			gtk_text_buffer_remove_tag_by_name(buffer,
+					"link-hover",
+					&uri_hover_start_iter,
+					&uri_hover_end_iter);
+		}
+		    
+		uri_hover = uri;
+		if (uri) {
+			uri_hover_start_iter = start_iter;
+			uri_hover_end_iter = end_iter;
+
+			gtk_text_buffer_apply_tag_by_name(buffer,
+					"link-hover",
+					&start_iter,
+					&end_iter);
+		}
+		
+		window = gtk_text_view_get_window(GTK_TEXT_VIEW(textview),
+						GTK_TEXT_WINDOW_TEXT);
+		if (!hand_cursor)
+			hand_cursor = gdk_cursor_new(GDK_HAND2);
+		if (!text_cursor)
+			text_cursor = gdk_cursor_new(GDK_XTERM);
+		gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
+	}
 }

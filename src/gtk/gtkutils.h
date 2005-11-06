@@ -187,4 +187,8 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *label);
 #if HAVE_LIBCOMPFACE
 gint create_xpm_from_xface(gchar *xpm[], const gchar *xface);
 #endif
+gboolean get_tag_range(GtkTextIter *iter,
+				       GtkTextTag *tag,
+				       GtkTextIter *start_iter,
+				       GtkTextIter *end_iter);
 #endif /* __GTKUTILS_H__ */

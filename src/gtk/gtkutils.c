@@ -958,3 +958,28 @@ gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
 	return 0;
 }
 #endif
+
+gboolean get_tag_range(GtkTextIter *iter,
+				       GtkTextTag *tag,
+				       GtkTextIter *start_iter,
+				       GtkTextIter *end_iter)
+{
+	GtkTextIter _start_iter, _end_iter;
+
+	_end_iter = *iter;
+	if (!gtk_text_iter_forward_to_tag_toggle(&_end_iter, tag)) {
+		debug_print("Can't find end");
+		return FALSE;
+	}
+
+	_start_iter = _end_iter;
+	if (!gtk_text_iter_backward_to_tag_toggle(&_start_iter, tag)) {
+		debug_print("Can't find start.");
+		return FALSE;
+	}
+
+	*start_iter = _start_iter;
+	*end_iter = _end_iter;
+
+	return TRUE;
+}
