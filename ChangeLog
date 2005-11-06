@@ -1,3 +1,10 @@
+2005-11-06 [colin]	1.9.99cvs13
+
+	* src/ldif.c
+		Fix ldif_get_line() that returned empty strings
+		(Didn't understand why). Also fix a possible
+		buffer overflow.
+
 2005-11-06 [wwp]	1.9.99cvs12
 
 	* src/textview.c
