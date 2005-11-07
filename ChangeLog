@@ -1,3 +1,10 @@
+2005-11-07 [paul]	1.9.99cvs15
+
+	* src/mutt.c
+	* src/pine.c
+		fix buffer overflows
+		Thanks to Colin
+
 2005-11-07 [paul]	1.9.99cvs14
 
 	* doc/man/Makefile.am

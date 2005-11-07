@@ -163,31 +163,32 @@ static void pine_close_file( PineFile *pineFile ) {
  */
 static gchar *pine_read_line( PineFile *pineFile ) {
 	gchar buf[ PINEBUFSIZE ];
-	int c;
+	int c, i = 0;
 	gchar ch;
-	gchar *ptr;
 
-	if( feof( pineFile->file ) ) return NULL;
+	if( feof( pineFile->file ) ) 
+		return NULL;
 
-	ptr = buf;
-	while( TRUE ) {
-		*ptr = '\0';
+	while( i < PINEBUFSIZE-1 ) {
 		c = fgetc( pineFile->file );
 		if( c == EOF ) {
-			if( *buf == '\0' ) return NULL;
+			if( i == 0 ) 
+				return NULL;
 			break;
 		}
 		ch = (gchar) c;
 		if( ch == '\0' ) {
-			if( *buf == '\0' ) return NULL;
+			if( i == 0 ) 
+				return NULL;
 			break;
 		}
 		if( ch == '\n' ) {
 			break;
 		}
-		*ptr = ch;
-		ptr++;
+		buf[i] = ch;
+		i++;
 	}
+	buf[i] = '\0';
 
 	/* Copy into private buffer */
 	return g_strdup( buf );

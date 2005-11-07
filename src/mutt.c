@@ -159,34 +159,37 @@ static void mutt_close_file( MuttFile *muttFile ) {
 static gchar *mutt_get_line( MuttFile *muttFile, gboolean *flagCont ) {
 	gchar buf[ MUTTBUFSIZE ];
 	int ch, lch;
-	gchar *ptr, *lptr;
+	int i = 0, li = 0;
 
 	*flagCont = FALSE;
-	if( feof( muttFile->file ) ) return NULL;
+	if( feof( muttFile->file ) ) 
+		return NULL;
 
-	ptr = buf;
+	memset(buf, 0, MUTTBUFSIZE);
+
 	lch = '\0';
-	lptr = NULL;
-	while( TRUE ) {
-		*ptr = '\0';
+	while( i < MUTTBUFSIZE-1 ) {
 		ch = fgetc( muttFile->file );
 		if( ch == '\0' || ch == EOF ) {
-			if( *buf == '\0' ) return NULL;
+			if( i == 0 ) 
+				return NULL;
 			break;
 		}
 		if( ch == '\n' ) {
 			if( lch == '\\' ) {
 				/* Replace backslash with NULL */
-				if( lptr ) *lptr = '\0';
+				if( li != 0 ) 
+					buf[li] = '\0';
 				*flagCont = TRUE;
 			}
 			break;
 		}
-		*ptr = ch;
-		lptr = ptr;
+		buf[i] = ch;
+		li = i;
 		lch = ch;
-		ptr++;
+		i++;
 	}
+	buf[i]='\0';
 
 	/* Copy into private buffer */
 	return g_strdup( buf );
