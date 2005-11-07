@@ -1,3 +1,9 @@
+2005-11-07 [cleroy]	1.9.99cvs16
+
+	* src/send_message.c
+		Fix bug #314 (Queue does not empty under certain 
+		circumstances)
+
 2005-11-07 [paul]	1.9.99cvs15
 
 	* src/mutt.c

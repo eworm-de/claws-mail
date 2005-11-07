@@ -96,15 +96,18 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		return -1;
 	}
 
+	inc_lock();
 	if (ac_prefs->use_mail_command && ac_prefs->mail_command &&
 	    (*ac_prefs->mail_command)) {
 		val = send_message_local(ac_prefs->mail_command, fp);
 		fclose(fp);
+		inc_unlock();
 		return val;
 	} else {
 		val = send_message_smtp(ac_prefs, to_list, fp);
 		
 		fclose(fp);
+		inc_unlock();
 		return val;
 	}
 }
