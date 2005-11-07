@@ -28,6 +28,7 @@
 #include "utils.h"
 #include "addritem.h"
 #include "mgutils.h"
+#include "codeconv.h"
 
 /**
  * Create new email address item.
@@ -270,7 +271,16 @@ void addritem_person_set_id( ItemPerson *person, const gchar *value ) {
  * \param value Name.
  */
 void addritem_person_set_first_name( ItemPerson *person, const gchar *value ) {
-	person->firstName = mgu_replace_string( person->firstName, value );
+	if (!value || g_utf8_validate(value, -1, NULL))
+		person->firstName = mgu_replace_string( person->firstName, value );
+	else {
+		gchar *out = conv_codeset_strdup(value, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+		if (out)
+			person->firstName = mgu_replace_string( person->firstName, out );
+		g_free(out);
+	}
 }
 
 /**
@@ -279,7 +289,16 @@ void addritem_person_set_first_name( ItemPerson *person, const gchar *value ) {
  * \param value name.
  */
 void addritem_person_set_last_name( ItemPerson *person, const gchar *value ) {
-	person->lastName = mgu_replace_string( person->lastName, value );
+	if (!value || g_utf8_validate(value, -1, NULL))
+		person->lastName = mgu_replace_string( person->lastName, value );
+	else {
+		gchar *out = conv_codeset_strdup(value, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+		if (out)
+			person->lastName = mgu_replace_string( person->lastName, out );
+		g_free(out);
+	}
 }
 
 /**
@@ -288,7 +307,16 @@ void addritem_person_set_last_name( ItemPerson *person, const gchar *value ) {
  * \param value name.
  */
 void addritem_person_set_nick_name( ItemPerson *person, const gchar *value ) {
-	person->nickName = mgu_replace_string( person->nickName, value );
+	if (!value || g_utf8_validate(value, -1, NULL))
+		person->nickName = mgu_replace_string( person->nickName, value );
+	else {
+		gchar *out = conv_codeset_strdup(value, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+		if (out)
+			person->nickName = mgu_replace_string( person->nickName, out );
+		g_free(out);
+	}
 }
 
 /**
@@ -297,7 +325,16 @@ void addritem_person_set_nick_name( ItemPerson *person, const gchar *value ) {
  * \param value name.
  */
 void addritem_person_set_common_name( ItemPerson *person, const gchar *value ) {
-	ADDRITEM_NAME(person) = mgu_replace_string( ADDRITEM_NAME(person), value );
+	if (!value || g_utf8_validate(value, -1, NULL))
+		ADDRITEM_NAME(person) = mgu_replace_string( ADDRITEM_NAME(person), value );
+	else {
+		gchar *out = conv_codeset_strdup(value, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+		if (out)
+			ADDRITEM_NAME(person) = mgu_replace_string( ADDRITEM_NAME(person), out );
+		g_free(out);
+	}
 }
 
 /**

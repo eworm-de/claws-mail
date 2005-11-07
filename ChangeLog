@@ -1,3 +1,9 @@
+2005-11-07 [colin]	1.9.99cvs17
+
+	* src/addritem.c
+	* src/ldif.c
+		Fix import of base-64 encoded items
+
 2005-11-07 [cleroy]	1.9.99cvs16
 
 	* src/send_message.c

@@ -485,6 +485,14 @@ static void ldif_build_items(
 			fullName = g_strdup_printf( "%s", lastName );
 		}
 	}
+	
+	if (!fullName || strlen(fullName) == 0) {
+		g_free(fullName);
+		fullName = NULL;
+		if (rec->listCName)
+			fullName = g_strdup(rec->listCName->data);
+	}
+	
 	if( fullName ) {
 		g_strchug( fullName ); g_strchomp( fullName );
 	}
@@ -725,7 +733,17 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 			if( lastTag ) {
 				/* Save record */
 				fullValue = mgu_list_coalesce( listValue );
-
+				if (fullValue && last64) {
+					gchar *out = g_malloc(strlen(fullValue));
+					int len = 0;
+					if ((len = base64_decode(out, fullValue,
+							strlen(fullValue))) >= 0) {
+						g_free(fullValue);
+						fullValue = out;
+						fullValue[len] = '\0';
+					} else
+						g_free(out);
+				}
 				/* Base-64 encoded data */
 				/*
 				if( last64 ) {
@@ -766,6 +784,17 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 							/* Save data */
 							fullValue =
 								mgu_list_coalesce( listValue );
+							if (fullValue && last64) {
+								gchar *out = g_malloc(strlen(fullValue));
+								int len = 0;
+								if ((len = base64_decode(out, fullValue,
+										strlen(fullValue))) >= 0) {
+									g_free(fullValue);
+									fullValue = out;
+									fullValue[len] = '\0';
+								} else
+									g_free(out);
+							}
 							/* Base-64 encoded data */
 							/*
 							if( last64 ) {
