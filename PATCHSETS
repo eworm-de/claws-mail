@@ -984,3 +984,4 @@
 ( cvs diff -u -r 1.6.10.5 -r 1.6.10.6 src/mutt.c;  cvs diff -u -r 1.6.2.4 -r 1.6.2.5 src/pine.c;  ) > 1.9.99cvs15.patchset
 ( cvs diff -u -r 1.17.2.21 -r 1.17.2.22 src/send_message.c;  ) > 1.9.99cvs16.patchset
 ( cvs diff -u -r 1.13.2.3 -r 1.13.2.4 src/addritem.c;  cvs diff -u -r 1.12.2.5 -r 1.12.2.6 src/ldif.c;  ) > 1.9.99cvs17.patchset
+( cvs diff -u -r 1.115.2.65 -r 1.115.2.66 src/main.c;  ) > 1.9.100cvs1.patchset

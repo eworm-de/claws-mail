@@ -138,6 +138,7 @@ static struct RemoteCmd {
 	gboolean crash;
 	int online_mode;
 	gchar   *crash_params;
+	gboolean exit;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -722,6 +723,7 @@ static void parse_cmd_opt(int argc, char *argv[])
  			       "                         show the status of each folder"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
+			g_print("%s\n", _("  --exit                 exit Sylpheed-Claws"));
 			g_print("%s\n", _("  --debug                debug mode"));
 			g_print("%s\n", _("  --help                 display this help and exit"));
 			g_print("%s\n", _("  --version              output version information and exit"));
@@ -736,6 +738,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
 			puts(RC_DIR);
 			exit(0);
+		} else if (!strncmp(argv[i], "--exit", 6)) {
+			cmd.exit = TRUE;
 		}
 		
 	}
@@ -969,6 +973,8 @@ static gint prohibit_duplicate_launch(void)
  			if (!strncmp(buf, ".\n", 2)) break;
  			fputs(buf, stdout);
  		}
+	} else if (cmd.exit) {
+		fd_write_all(uxsock, "exit\n", 5);
 	} else
 		fd_write_all(uxsock, "popup\n", 6);
 
@@ -1067,6 +1073,8 @@ static void lock_socket_input_cb(gpointer data,
  		fd_write_all(sock, ".\n", 2);
  		g_free(status);
  		if (folders) g_ptr_array_free(folders, TRUE);
+	} else if (!strncmp(buf, "exit", 4)) {
+		app_will_exit(NULL, mainwin);
 	}
 
 	fd_close(sock);

@@ -1,3 +1,8 @@
+2005-11-08 [wwp]	1.9.100cvs1
+
+	* src/main.c
+		allow exiting Sylpheed-Claws from command-line
+
 2005-11-08 [paul]	1.9.100
 
 	1.9.100 released
