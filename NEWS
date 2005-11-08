@@ -1,9 +1,88 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 1.9.100
+---------
+
+  * etpan >= 0.40 is now required for IMAP support
+    0.40 fixes the SSL connection errors that some users experienced.
+
+  * Buffer overflows in the address book 'Import LDIF/ Mutt/Pine file'
+    functions were fixed.
+
+  * GnuPG support:
+    Signature checking is now non-blocking
+
+  * The URLs in the About window are now clickable
+
+  * the man page has been updated and renamed 'sylpheed-claws'
+
 * 1.9.99
 --------
 
+  * The binary is now 'sylpheed-claws' and not 'sylpheed'
 
+  * The default config dir is now '~/.sylpheed-claws'. The user will
+    be prompted to perform an automatic migration of configuration
+    options to this new directory.
+
+  * A new default internal icon theme has been added, based on the
+    Gnomaws theme.
+
+  * Messages are now sorted by Date by default
+
+  * GnuPG support:
+    The noticeview is now shown on the message/rfc822 part in addition
+    to the text/plain part.
+    The privacy icon in the noticeview is now clickable and also uses
+    key C to perform the signature check.
+    The Trust field has been moved into Full info display.
+    When trust is less than full, don't display a warning icon.
+    Visual feedback is provided in the statusbar when checking
+    signature.
+    The PGP/MIME signature file is now named 'signature.asc'.
+    The dialog for entering a passphrase has been improved.
+
+  * Local deletion of news posts has been added.
+
+  * A file selector has been added for selecting an account's Signature
+    file
+
+  * Many window sizes are now remembered.
+
+  * The presense of marked msgs in unexpanded subfolders is now indicated
+    by the icon of the parent folder.
+
+* QuickSearch:
+  The message list is reset when the dialog is hidden.
+  The 'Sticky' option, for keeping the search activated across folders.
+
+  * The Subject is now set when forwarding multiple mails.
+
+  * When a default Cc or Bcc is used, a check is performed to make sure
+    the To header has also been set.
+
+  * In the filtering dialog a warning dialog is shown if the rule was
+    not saved.
+
+  * The file and directory Browse buttons, ("...") have been improved.
+
+  * When double-clicking an attachment the "Open with" dialog is
+    presented if no command was found for the file type.
+
+  * The X-Face has been added to the message view and can be toggled by
+    '/Configuration/Preferences/Message View/Text options/Display
+    X-Face in messageview'.
+
+  * The message list context menu has been reworked.
+
+  * When replying to a mail sent by yourself, Reply excludes your own
+    address from the list of recipients. 'Reply All' and 'Reply to
+    sender' still work like before.
+
+  * When the Folder Preference 'Default To for replies' the entry in
+    the Compose window is presented in bold text.
+
+  * The About window has been reworked.
 
 * 1.9.15
 --------
