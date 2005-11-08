@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (cmd.status || cmd.status_full) {
-		puts("0 Sylpheed not running.");
+		puts("0 Sylpheed-Claws not running.");
 		lock_socket_remove();
 		return 0;
 	}
@@ -478,7 +478,7 @@ int main(int argc, char *argv[])
 
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
-		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
+		debug_print("Sylpheed-Claws crashed, checking for new messages in local folders\n");
 		folder_item_update_thaw();
 		folderview_check_new(NULL);
 		folder_clean_cache_memory_force();
@@ -907,7 +907,7 @@ static gint prohibit_duplicate_launch(void)
 
 	/* remote command mode */
 
-	debug_print("another Sylpheed is already running.\n");
+	debug_print("another Sylpheed-Claws instance is already running.\n");
 
 	if (cmd.receive_all)
 		fd_write_all(uxsock, "receive_all\n", 12);

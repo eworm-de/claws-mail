@@ -1,3 +1,8 @@
+2005-11-08 [wwp]	1.9.100cvs2
+
+	* src/main.c
+		renamed some occurrences of "Sylpheed" to "Sylpheed-Claws"
+
 2005-11-08 [wwp]	1.9.100cvs1
 
 	* src/main.c
