@@ -3258,7 +3258,8 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 			gboolean  (*parse)	(const gchar *start,
 						 const gchar *scanpos,
 						 const gchar **bp_,
-						 const gchar **ep_);
+						 const gchar **ep_,
+						 gboolean hdr);
 			/* part to URI function */
 			gchar    *(*build_uri)	(const gchar *bp,
 						 const gchar *ep);
@@ -3374,7 +3375,8 @@ colorize:
 		bp = ep = 0;
 		if (scanpos) {
 			/* check if URI can be parsed */
-			if (parser[last_index].parse(walk, scanpos, (const gchar **)&bp,(const gchar **)&ep)
+			if (parser[last_index].parse(walk, scanpos, (const gchar **)&bp,
+					(const gchar **)&ep, FALSE)
 			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
 					walk = ep;
 			} else

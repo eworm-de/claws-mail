@@ -1,3 +1,11 @@
+2005-11-08 [colin]	1.9.100cvs4
+
+	* src/compose.c
+	* src/textview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Enhance the email parser
+
 2005-11-08 [colin]	1.9.100cvs3
 
 	* src/procmime.c

@@ -4064,7 +4064,7 @@ void replace_returns(gchar *str)
 /* get_uri_part() - retrieves a URI starting from scanpos.
 		    Returns TRUE if succesful */
 gboolean get_uri_part(const gchar *start, const gchar *scanpos,
-			     const gchar **bp, const gchar **ep)
+			     const gchar **bp, const gchar **ep, gboolean hdr)
 {
 	const gchar *ep_;
 
@@ -4179,7 +4179,7 @@ static gboolean is_toplvl_domain(GHashTable *tab, const gchar *first, const gcha
 
 /* get_email_part() - retrieves an email address. Returns TRUE if succesful */
 gboolean get_email_part(const gchar *start, const gchar *scanpos,
-			       const gchar **bp, const gchar **ep)
+			       const gchar **bp, const gchar **ep, gboolean hdr)
 {
 	/* more complex than the uri part because we need to scan back and forward starting from
 	 * the scan position. */
@@ -4201,6 +4201,40 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	g_return_val_if_fail(scanpos != NULL, FALSE);
 	g_return_val_if_fail(bp != NULL, FALSE);
 	g_return_val_if_fail(ep != NULL, FALSE);
+
+	if (hdr) {
+search_again:
+		/* go to the real start */
+		if (start[0] == ',')
+			start++;
+		if (start[0] == ';')
+			start++;
+		while (start[0] == ' ' || start[0] == '\t')
+			start++;
+
+		*bp = start;
+		
+		/* find end (either , or ; or end of line) */
+		if (strstr(start, ",") && strstr(start, ";"))
+			*ep = strstr(start,",") < strstr(start, ";")
+				? strstr(start, ",") : strstr(start, ";");
+		else if (strstr(start, ","))
+			*ep = strstr(start, ",");
+		else if (strstr(start, ";"))
+			*ep = strstr(start, ";");
+		else
+			*ep = start+strlen(start);
+		
+		/* check there's still an @ in that, or search 
+		 * further if possible */
+		if (strstr(start, "@") && strstr(start, "@") < *ep)
+			return TRUE;
+		else if (*ep < start+strlen(start)) {
+			start = *ep;
+			goto search_again;
+		} else
+			return FALSE;
+	}
 
 	if (!dom_tab)
 		dom_tab = create_domain_tab();
@@ -4321,7 +4355,7 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			&& (((bp_ + 1) < ep_)    && isalnum(*(bp_ + 1)))) {
 				/* hyphens are allowed, but only in
 				   between alnums */
-			} else if (!strchr(",;:=?./+<>!&\r\n\t", *bp_)) {
+			} else if (strchr(" \"'", *bp_)) {
 				/* but anything not being a punctiation
 				   is ok */
 			} else {
@@ -4332,18 +4366,18 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	bp_++;
 
+	/* scan forward (should start with an alnum) */
+	for (; *bp_ != '<' && isspace(*bp_) && *bp_ != '"'; bp_++)
+		;
 #undef PEEK_STACK
 #undef PUSH_STACK
 #undef POP_STACK
 #undef IN_STACK
 #undef FULL_STACK
 
-	/* scan forward (should start with an alnum) */
-	for (; *bp_ != '<' && isspace(*bp_) && *bp_ != '"'; bp_++)
-		;
 
-	*ep = ep_;
 	*bp = bp_;
+	*ep = ep_;
 	
 	return result;
 }

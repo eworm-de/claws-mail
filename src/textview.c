@@ -887,7 +887,8 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 static void textview_make_clickable_parts(TextView *textview,
 					  const gchar *fg_tag,
 					  const gchar *uri_tag,
-					  const gchar *linebuf)
+					  const gchar *linebuf,
+					  gboolean hdr)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
@@ -905,7 +906,8 @@ static void textview_make_clickable_parts(TextView *textview,
 		gboolean  (*parse)	(const gchar *start,
 					 const gchar *scanpos,
 					 const gchar **bp_,
-					 const gchar **ep_);
+					 const gchar **ep_,
+					 gboolean hdr);
 		/* part to URI function */
 		gchar    *(*build_uri)	(const gchar *bp,
 					 const gchar *ep);
@@ -957,7 +959,7 @@ static void textview_make_clickable_parts(TextView *textview,
 
 		if (scanpos) {
 			/* check if URI can be parsed */
-			if (parser[last_index].parse(walk, scanpos, &bp, &ep)
+			if (parser[last_index].parse(walk, scanpos, &bp, &ep, hdr)
 			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
 					ADD_TXT_POS(bp, ep, last_index);
 					walk = ep;
@@ -1062,7 +1064,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	textview_make_clickable_parts(textview, fg_color, "link", buf);
+	textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
 }
 
 void textview_write_link(TextView *textview, const gchar *str,
@@ -1401,8 +1403,14 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 				(buffer, &iter, header->body, -1,
 				 "header", "emphasis", NULL);
 		} else {
-			textview_make_clickable_parts(textview, "header", "link",
-						      header->body);
+			gboolean hdr = 
+			  procheader_headername_equal(header->name, "From") ||
+			  procheader_headername_equal(header->name, "To") ||
+			  procheader_headername_equal(header->name, "Cc") ||
+			  procheader_headername_equal(header->name, "Bcc");
+			textview_make_clickable_parts(textview, "header", 
+						      "link", header->body, 
+						      hdr);
 		}
 		gtk_text_buffer_get_end_iter (buffer, &iter);
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
