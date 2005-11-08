@@ -1421,7 +1421,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, 
 							mimeinfo->data.filename, lastoffset,
-							(ftell(fp) - strlen(buf)) - lastoffset - 1);
+							(ftell(fp) - strlen(buf)) - lastoffset);
 			}
 			
 			if (buf[2 + boundary_len]     == '-' &&

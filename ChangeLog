@@ -1,3 +1,9 @@
+2005-11-08 [colin]	1.9.100cvs3
+
+	* src/procmime.c
+		Fix what looks like an off-by-one (fixes 
+		attachments from the Bat)
+
 2005-11-08 [wwp]	1.9.100cvs2
 
 	* src/main.c
