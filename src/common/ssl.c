@@ -60,7 +60,7 @@ void ssl_init(void)
 	SSL_load_error_strings();
 
 #ifdef HAVE_LIBETPAN
-	mailstream_ssl_init_not_required();
+	mailstream_openssl_init_not_required();
 #endif	
 
 	/* Create our context*/

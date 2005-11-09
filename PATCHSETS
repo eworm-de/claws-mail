@@ -988,3 +988,4 @@
 ( cvs diff -u -r 1.115.2.66 -r 1.115.2.67 src/main.c;  ) > 1.9.100cvs2.patchset
 ( cvs diff -u -r 1.49.2.67 -r 1.49.2.68 src/procmime.c;  ) > 1.9.100cvs3.patchset
 ( cvs diff -u -r 1.382.2.192 -r 1.382.2.193 src/compose.c;  cvs diff -u -r 1.96.2.83 -r 1.96.2.84 src/textview.c;  cvs diff -u -r 1.36.2.47 -r 1.36.2.48 src/common/utils.c;  cvs diff -u -r 1.20.2.26 -r 1.20.2.27 src/common/utils.h;  ) > 1.9.100cvs4.patchset
+( cvs diff -u -r 1.9.2.10 -r 1.9.2.11 src/common/ssl.c;  ) > 1.9.100cvs5.patchset

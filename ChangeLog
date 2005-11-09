@@ -1,3 +1,9 @@
+2005-11-09 [colin]	1.9.100cvs5
+
+	* src/common/ssl.c
+		Update libetpan call to follow upstream
+		(yes, this requires libetpan-0.40cvs3)
+
 2005-11-08 [colin]	1.9.100cvs4
 
 	* src/compose.c
