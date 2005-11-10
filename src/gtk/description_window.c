@@ -48,12 +48,20 @@ void description_window_create(DescriptionWindow *dwindow)
 		description_create(dwindow);
 	
 		gtk_window_set_transient_for(GTK_WINDOW(dwindow->window), GTK_WINDOW(dwindow->parent));
-	
+
 		gtk_widget_show(dwindow->window);
+
+		/* in case the description window is closed using the WM's [X] button */
+		g_signal_connect(G_OBJECT(dwindow->window), "destroy",
+				GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dwindow->window);
+
 		gtk_main();
-		gtk_widget_hide(dwindow->window);
-		gtk_widget_destroy(dwindow->window);
-		dwindow->window = NULL; 
+
+		if (dwindow->window) {
+			gtk_widget_hide(dwindow->window);
+			gtk_widget_destroy(dwindow->window);
+			dwindow->window = NULL; 
+		}
 	} else printf("windows exist\n");
 }
 
