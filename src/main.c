@@ -461,7 +461,7 @@ int main(int argc, char *argv[])
 			exit_sylpheed(mainwin);
 	}
 
-	gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+	main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init();

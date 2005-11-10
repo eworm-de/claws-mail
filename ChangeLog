@@ -1,3 +1,9 @@
+2005-11-10 [colin]	1.9.100cvs7
+
+	* src/main.c
+		Fix bug #845 (sylpheed-claws 1.9.99+ start in 
+		minimised state)
+
 2005-11-10 [wwp]	1.9.100cvs6
 
 	* src/gtk/description_window.c
