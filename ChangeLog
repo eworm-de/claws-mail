@@ -1,3 +1,8 @@
+2005-11-12 [colin]	1.9.100cvs9
+
+	* src/etpan/imap-thread.c
+		Fix gcc warning
+
 2005-11-12 [colin]	1.9.100cvs8
 
 	* src/procmime.c

@@ -1820,7 +1820,7 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 	int res;
 	clist * fetch_result;
 	int r;
-	carray * env_list;
+	carray * env_list = NULL;
 	chashdatum key;
 	chashdatum value;
 	
