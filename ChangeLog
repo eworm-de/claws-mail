@@ -1,3 +1,8 @@
+2005-11-12 [colin]	1.9.100cvs8
+
+	* src/procmime.c
+		Revert 1.9.100cvs3 - it breaks PGP sign+encrypt
+
 2005-11-10 [colin]	1.9.100cvs7
 
 	* src/main.c
