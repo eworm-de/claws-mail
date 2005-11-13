@@ -447,20 +447,10 @@ static void gtk_message_callback(gchar *message)
 
 static struct SpamAssassinPage spamassassin_page;
 
-gint plugin_init(gchar **error)
+gint spamassassin_gtk_init(void)
 {
 	static gchar *path[3];
 
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
-		return -1;
-	}
-
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your sylpheed version is too old");
-		return -1;
-	}
-    
 	path[0] = _("Plugins");
 	path[1] = _("SpamAssassin");
 	path[2] = NULL;
@@ -476,38 +466,4 @@ gint plugin_init(gchar **error)
 
 	debug_print("SpamAssassin GTK plugin loaded\n");
 	return 0;	
-}
-
-void plugin_done(void)
-{
-	spamassassin_set_message_callback(NULL);
-	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
-
-	debug_print("SpamAssassin GTK plugin unloaded\n");
-}
-
-const gchar *plugin_name(void)
-{
-	return _("SpamAssassin GTK");
-}
-
-const gchar *plugin_desc(void)
-{
-	return _("This plugin provides a Preferences page for the SpamAssassin "
-	         "plugin.\n"
-	         "\n"
-	         "You will find the options in the Preferences window "
-	         "under Plugins/SpamAssassin.\n"
-	         "\n"
-	         "With this plugin you can enable the filtering, change the "
-	         "SpamAssassin server host and port, set the maximum size of "
-	         "messages to be checked, (if the message is larger it will "
-	         "not be checked), configure whether spam mail should be received "
-	         "(default: Yes) and select the folder where spam mail will be "
-	         "saved.\n");
-}
-
-const gchar *plugin_type(void)
-{
-	return "GTK2";
 }

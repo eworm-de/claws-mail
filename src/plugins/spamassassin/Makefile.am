@@ -1,24 +1,16 @@
 plugindir = $(pkglibdir)/plugins
-plugin_DATA=spamassassin_gtk.deps
 
-plugin_LTLIBRARIES = spamassassin.la spamassassin_gtk.la
+plugin_LTLIBRARIES = spamassassin.la
 
 spamassassin_la_SOURCES = \
 	spamassassin.c spamassassin.h \
+	spamassassin_gtk.c spamassassin.h \
 	libspamc.c libspamc.h \
 	utils.c utils.h
 
 spamassassin_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS)
-
-spamassassin_gtk_la_SOURCES = \
-	spamassassin_gtk.c spamassassin.h
-
-spamassassin_gtk_la_LDFLAGS = \
-	-avoid-version -module \
-	$(GTK_LIBS) \
-	$(OPENSSL_LIBS)
 
 INCLUDES = \
 	-I../.. \
@@ -32,4 +24,4 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS)
 
 EXTRA_DIST = \
-	README spamassassin_gtk.deps
+	README

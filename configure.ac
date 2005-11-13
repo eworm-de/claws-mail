@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=9
+EXTRA_VERSION=10
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -581,8 +581,8 @@ AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xy
 dnl --- SpamAssassin ---
 AC_MSG_CHECKING([whether to build SpamAssassin plugin])
 AC_ARG_ENABLE(spamassassin-plugin,
-	[  --enable-spamassassin-plugin      Build SpamAssassin plugin [default=no]],
-	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
+	[  --disable-spamassassin-plugin      Build SpamAssassin plugin [default=yes]],
+	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=yes])
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_SPAMASSASSIN

@@ -307,6 +307,7 @@ gint plugin_init(gchar **error)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "SpamAssassin", rcpath, NULL);
 	g_free(rcpath);
+	spamassassin_gtk_init();
 
 	debug_print("Spamassassin plugin loaded\n");
 
@@ -337,11 +338,7 @@ const gchar *plugin_desc(void)
 	         "\n"
 	         "When a message is identified as spam it can be deleted or "
 	         "saved into a special folder.\n"
-	         "\n"
-	         "This plugin only contains the actual function for filtering "
-	         "and deleting or moving the message. You probably want to load "
-	         "a User Interface plugin too, otherwise you will have to "
-	         "manually write the plugin configuration.\n");
+	         "\n");
 }
 
 const gchar *plugin_type(void)

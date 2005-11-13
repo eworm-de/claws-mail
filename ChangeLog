@@ -1,3 +1,13 @@
+2005-11-13 [colin]	1.9.100cvs10
+
+	* configure.ac
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Merge spamassassin and spamassassin_gtk plugins,
+		and build it by default.
+
 2005-11-12 [colin]	1.9.100cvs9
 
 	* src/etpan/imap-thread.c
