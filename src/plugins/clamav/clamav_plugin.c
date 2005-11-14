@@ -252,5 +252,5 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "Common";
+	return "GTK2";
 }
