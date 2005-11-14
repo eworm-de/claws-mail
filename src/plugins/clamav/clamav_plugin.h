@@ -38,5 +38,6 @@ struct _ClamAvConfig
 ClamAvConfig *clamav_get_config		  (void);
 void	      clamav_save_config	  (void);
 void 	      clamav_set_message_callback (MessageCallback callback);
+gint	      clamav_gtk_init(void);
 
 #endif

@@ -210,6 +210,8 @@ gint plugin_init(gchar **error)
 	prefs_read_config(param, "ClamAV", rcpath, NULL);
 	g_free(rcpath);
 
+	clamav_gtk_init();
+
     	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no)) != 0) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
 		return -1;
@@ -245,11 +247,7 @@ const gchar *plugin_desc(void)
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
 	       "deleted or saved in a specially designated folder.\n"
-	       "\n"
-	       "This plugin only contains the actual function for scanning "
-	       "and deleting or moving the message. You probably want to load "
-	       "the Gtk+ User Interface plugin too, otherwise you will have to "
-	       "manually write the plugin configuration.\n");
+	       "\n");
 }
 
 const gchar *plugin_type(void)

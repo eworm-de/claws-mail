@@ -994,3 +994,4 @@
 ( cvs diff -u -r 1.49.2.68 -r 1.49.2.69 src/procmime.c;  ) > 1.9.100cvs8.patchset
 ( cvs diff -u -r 1.1.4.24 -r 1.1.4.25 src/etpan/imap-thread.c;  ) > 1.9.100cvs9.patchset
 ( cvs diff -u -r 1.654.2.1039 -r 1.654.2.1040 configure.ac;  cvs diff -u -r 1.5.2.2 -r 1.5.2.3 src/plugins/spamassassin/Makefile.am;  cvs diff -u -r 1.18.2.11 -r 1.18.2.12 src/plugins/spamassassin/spamassassin.c;  cvs diff -u -r 1.4.2.3 -r 1.4.2.4 src/plugins/spamassassin/spamassassin.h;  cvs diff -u -r 1.23.2.14 -r 1.23.2.15 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 1.9.100cvs10.patchset
+( cvs diff -u -r 1.4.2.3 -r 1.4.2.4 src/plugins/clamav/Makefile.am;  cvs diff -u -r 1.13.2.11 -r 1.13.2.12 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.3.2.2 -r 1.3.2.3 src/plugins/clamav/clamav_plugin.h;  cvs diff -u -r 1.9.2.11 -r 1.9.2.12 src/plugins/clamav/clamav_plugin_gtk.c;  ) > 1.9.100cvs11.patchset

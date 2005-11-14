@@ -233,19 +233,9 @@ static void gtk_message_callback(gchar *message)
 	statusbar_print_all(message);
 }
 
-gint plugin_init(gchar **error)
+gint clamav_gtk_init(void)
 {
 	static gchar *path[3];
-
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
-		return -1;
-	}
-
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your sylpheed version is too old");
-		return -1;
-	}
 
 	path[0] = _("Plugins");
 	path[1] = _("Clam AntiVirus");
@@ -262,37 +252,4 @@ gint plugin_init(gchar **error)
 
 	debug_print("ClamAV GTK plugin loaded\n");
 	return 0;	
-}
-
-void plugin_done(void)
-{
-	clamav_set_message_callback(NULL);
-	prefs_gtk_unregister_page((PrefsPage *) &clamav_page);
-
-	debug_print("ClamAV GTK plugin unloaded\n");
-}
-
-const gchar *plugin_name(void)
-{
-	return _("Clam AntiVirus GTK");
-}
-
-const gchar *plugin_desc(void)
-{
-	return _("This plugin provides a Preferences page for the Clam AntiVirus "
-	       "plugin.\n"
-	       "\n"
-	       "You will find the options in the Preferences window "
-	       "under Plugins/Clam AntiVirus.\n"
-	       "\n"
-	       "With this plugin you can enable the scanning, enable archive "
-	       "content scanning, set the maximum size of an attachment to be "
-	       "checked, (if the attachment is larger it will not be checked), "
-	       "configure whether infected mail should be received (default: Yes) "
-	       "and select the folder where infected mail will be saved.\n");
-}
-
-const gchar *plugin_type(void)
-{
-	return "GTK2";
 }
