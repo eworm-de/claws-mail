@@ -2744,8 +2744,20 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			return -1;
 		}
 	} else {
-		for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
-			MsgInfo * msginfo = (MsgInfo *) l->data;
+		MsgInfo * msginfo;
+		l = msglist;
+
+		/* immediately stop if src and dest folders are identical */
+		if (l != NULL) {
+			msginfo = (MsgInfo *) l->data;
+			if (msginfo != NULL && msginfo->folder == dest) {
+				g_relation_destroy(relation);
+				return -1;
+			}
+		}
+
+		for (; l != NULL ; l = g_slist_next(l)) {
+			msginfo = (MsgInfo *) l->data;
 
 			num = folder->klass->copy_msg(folder, dest, msginfo);
 			if (num > 0)

@@ -1,3 +1,9 @@
+2005-11-14 [wwp]	1.9.100cvs12
+
+	* src/folder.c
+		prevent from crashing when copying/moving message(s) from and
+		to the same folder
+
 2005-11-14 [paul]	1.9.100cvs11
 
 	* src/plugins/clamav/Makefile.am
