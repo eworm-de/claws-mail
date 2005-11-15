@@ -358,6 +358,7 @@ QuickSearch *quicksearch_new()
 	GtkWidget *clear_search;
 	GtkWidget *search_condition_expression;
 	GtkWidget *menuitem;
+	GtkTooltips *search_cond_expr_tip;
 
 	quicksearch = g_new0(QuickSearch, 1);
 
@@ -432,6 +433,10 @@ QuickSearch *quicksearch_new()
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
 			 G_CALLBACK(search_condition_expr),
 			 quicksearch);
+	search_cond_expr_tip = gtk_tooltips_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_cond_expr_tip),
+			     search_condition_expression,
+			     _("Quicksearch: edit filtering condition"), NULL);
 	gtk_widget_show(search_condition_expression);
 
 	clear_search = gtk_button_new_with_label(_(" Clear "));

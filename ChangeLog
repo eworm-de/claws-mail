@@ -1,3 +1,8 @@
+2005-11-15 [wwp]	1.9.100cvs15
+
+	* src/gtk/quicksearch.c
+		added a tooltip to that obscure ... quicksearch button
+
 2005-11-15 [wwp]	1.9.100cvs14
 
 	* src/gtk/quicksearch.c
