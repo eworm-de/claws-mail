@@ -1,3 +1,10 @@
+2005-11-15 [wwp]	1.9.100cvs14
+
+	* src/gtk/quicksearch.c
+		add a quicksearch helper to filtering expression users: the ... button
+		raises the condition expr window. condition expressions set up w/ this
+		window are used by the quicksearch if the user closes it pressing OK.
+
 2005-11-14 [paul]	1.9.100cvs13
 
 	* src/plugins/clamav/clamav_plugin.c
