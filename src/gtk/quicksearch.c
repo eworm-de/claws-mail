@@ -114,7 +114,6 @@ static void update_extended_buttons (QuickSearch *quicksearch)
 		gtk_widget_hide(expr_btn);
 		gtk_widget_hide(ext_btn);
 	}
-	
 }
 
 static gboolean searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
@@ -456,25 +455,15 @@ QuickSearch *quicksearch_new()
 
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbox);
-	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED) {
-		gtk_widget_show(search_condition_expression);
-		gtk_widget_show(search_description);
-	} else {
-		gtk_widget_hide(search_condition_expression);
-		gtk_widget_hide(search_description);
-	}
 	
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry), 
 			   "key_press_event",
 			   G_CALLBACK(searchbar_pressed),
 			   quicksearch);
-
-	
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
 			 "focus_in_event",
 			 G_CALLBACK(searchbar_focus_evt),
 			 quicksearch);
-
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
 			 "focus_out_event",
 			 G_CALLBACK(searchbar_focus_evt),
