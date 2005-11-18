@@ -1,3 +1,8 @@
+2005-11-18 [cleroy]	1.9.100cvs17
+
+	* src/gtk/inputdialog.c
+		Fix icon staying the first one
+
 2005-11-17 [wwp]	1.9.100cvs16
 		fix possible problem showing some quicksearch buttons, and a bad
 		call to g_return_if_fail in a function that returns a value (both

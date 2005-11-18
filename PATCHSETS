@@ -1000,3 +1000,4 @@
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/gtk/quicksearch.c;  ) > 1.9.100cvs14.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/quicksearch.c;  ) > 1.9.100cvs15.patchset
 ( ) > 1.9.100cvs16.patchset
+( cvs diff -u -r 1.2.2.12 -r 1.2.2.13 src/gtk/inputdialog.c;  ) > 1.9.100cvs17.patchset

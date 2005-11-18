@@ -64,6 +64,7 @@ static GtkWidget *msg_label;
 static GtkWidget *entry;
 static GtkWidget *combo;
 static GtkWidget *ok_button;
+static GtkWidget *icon_q, *icon_p;
 
 static void input_dialog_create	(gboolean is_password);
 static gchar *input_dialog_open	(const gchar	*title,
@@ -98,6 +99,9 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_NORMAL;
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
+
+	gtk_widget_show(icon_q);
+	gtk_widget_hide(icon_p);
 	gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
 
 	return input_dialog_open(title, message, default_string);
@@ -114,6 +118,9 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_INVISIBLE;
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
+
+	gtk_widget_hide(icon_q);
+	gtk_widget_show(icon_p);
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 
 	return input_dialog_open(title, message, default_string);
@@ -131,6 +138,9 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_COMBO;
 	gtk_widget_hide(entry);
 	gtk_widget_show(combo);
+
+	gtk_widget_show(icon_q);
+	gtk_widget_hide(icon_p);
 
 	if (!list) {
 		GList empty_list;
@@ -168,7 +178,6 @@ static void input_dialog_create(gboolean is_password)
 	GtkWidget *vbox;
 	GtkWidget *cancel_button;
 	GtkWidget *confirm_area;
-	GtkWidget *icon;
 
 	dialog = gtk_dialog_new();
 
@@ -192,14 +201,14 @@ static void input_dialog_create(gboolean is_password)
 	/* for title label */
 	w_hbox = gtk_hbox_new(FALSE, 0);
 	
-	if (!is_password)
-		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
-        				GTK_ICON_SIZE_DIALOG); 
-	else
-		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
-        				GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
-	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
+	icon_q = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+        			GTK_ICON_SIZE_DIALOG); 
+	gtk_misc_set_alignment (GTK_MISC (icon_q), 0.5, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon_q, FALSE, FALSE, 0);
+	icon_p = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+        			GTK_ICON_SIZE_DIALOG); 
+	gtk_misc_set_alignment (GTK_MISC (icon_p), 0.5, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon_p, FALSE, FALSE, 0);
 	
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
@@ -254,6 +263,11 @@ static void input_dialog_create(gboolean is_password)
 
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 	
+	if (is_password)
+		gtk_widget_hide(icon_q);
+	else
+		gtk_widget_hide(icon_p);
+
 	gtk_widget_grab_default(ok_button);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
@@ -274,6 +288,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 
 	input_dialog_set(title, message, default_string);
 	gtk_widget_show(dialog);
+
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));
 
