@@ -1610,7 +1610,7 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 				g_warning("crash avoidance hack 2\n");
 				return;
 			}
-			gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
+			gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
 		}
 		summary_unselect_all(summaryview);
 		if (display_msg && summaryview->displayed == node)
@@ -1824,7 +1824,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 
 	g_hash_table_destroy(subject_table);
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 	gtk_clist_thaw(clist);
 
@@ -2203,7 +2203,7 @@ void summary_sort(SummaryView *summaryview,
 
 		gtk_sctree_sort_recursive(ctree, NULL);
 
-		gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+		gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 		main_window_cursor_normal(summaryview->mainwin);
                 gtk_clist_thaw(clist);
@@ -3792,7 +3792,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	summary_update_status(summaryview);
 	summary_status_show(summaryview);
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 	summary_unlock(summaryview);
 	
@@ -4136,7 +4136,7 @@ void summary_expand_threads(SummaryView *summaryview)
 
 	summaryview->thread_collapsed = FALSE;
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 }
 
 void summary_collapse_threads(SummaryView *summaryview)
@@ -4156,7 +4156,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	
 	summaryview->thread_collapsed = TRUE;
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 }
 
 void summary_filter(SummaryView *summaryview, gboolean selected_only)

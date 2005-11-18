@@ -1,3 +1,10 @@
+2005-11-18 [cleroy]	1.9.100cvs18
+
+	* src/summaryview.c
+		Use column 0 instead of -1 in 
+		gtk_ctree_node_moveto, in a naive
+		hope it'll fix the gtk-related crashes
+
 2005-11-18 [cleroy]	1.9.100cvs17
 
 	* src/gtk/inputdialog.c
