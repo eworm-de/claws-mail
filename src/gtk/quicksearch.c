@@ -325,8 +325,9 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 	const gchar * cond_str;
 	MatcherList * matchers = NULL;
 
-	g_return_if_fail(
-			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL);
+	g_return_val_if_fail(
+			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL,
+			FALSE);
 
 	/* re-use it the current quicksearch value if it's a condition expression,
 	   otherwise ignore it silently */
@@ -449,10 +450,9 @@ QuickSearch *quicksearch_new()
 	search_description = gtk_button_new_with_label(_("Extended Symbols"));
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_description,
 			   FALSE, FALSE, 0);
-	gtk_widget_show(search_description);
-		
 	g_signal_connect(G_OBJECT(search_description), "clicked",
 			 G_CALLBACK(search_description_cb), NULL);
+	gtk_widget_show(search_description);
 
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbox);
@@ -479,7 +479,6 @@ QuickSearch *quicksearch_new()
 			 "focus_out_event",
 			 G_CALLBACK(searchbar_focus_evt),
 			 quicksearch);
-	
 
 	quicksearch->hbox_search = hbox_search;
 	quicksearch->search_type = search_type;

@@ -1,3 +1,8 @@
+2005-11-17 [wwp]	1.9.100cvs16
+		fix possible problem showing some quicksearch buttons, and a bad
+		call to g_return_if_fail in a function that returns a value (both
+		fixes by Fabien Vantard)
+
 2005-11-15 [wwp]	1.9.100cvs15
 
 	* src/gtk/quicksearch.c

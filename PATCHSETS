@@ -999,3 +999,4 @@
 ( cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.18.2.12 -r 1.18.2.13 src/plugins/spamassassin/spamassassin.c;  ) > 1.9.100cvs13.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/gtk/quicksearch.c;  ) > 1.9.100cvs14.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/quicksearch.c;  ) > 1.9.100cvs15.patchset
+( ) > 1.9.100cvs16.patchset
