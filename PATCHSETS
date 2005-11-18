@@ -1003,3 +1003,4 @@
 ( cvs diff -u -r 1.2.2.12 -r 1.2.2.13 src/gtk/inputdialog.c;  ) > 1.9.100cvs17.patchset
 ( cvs diff -u -r 1.395.2.148 -r 1.395.2.149 src/summaryview.c;  ) > 1.9.100cvs18.patchset
 ( cvs diff -u -r 1.382.2.193 -r 1.382.2.194 src/compose.c;  cvs diff -u -r 1.96.2.84 -r 1.96.2.85 src/textview.c;  ) > 1.9.100cvs19.patchset
+( cvs diff -u -r 1.96.2.85 -r 1.96.2.86 src/textview.c;  ) > 1.9.100cvs20.patchset

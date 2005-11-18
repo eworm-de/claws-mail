@@ -639,7 +639,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			g_object_unref(pixbuf);
 			g_free(filename);
 		}
-	} else if (mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT) {
 		if (prefs_common.display_header && (charcount > 0))
 			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 

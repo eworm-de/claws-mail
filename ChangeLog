@@ -1,3 +1,8 @@
+2005-11-18 [paul]	1.9.100cvs20
+
+	* src/textview.c
+		complete 1.9.100cvs19
+
 2005-11-18 [paul]	1.9.100cvs19
 
 	* src/compose.c
