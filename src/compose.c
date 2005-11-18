@@ -3473,11 +3473,8 @@ static void compose_set_title(Compose *compose)
 	if (subject && strlen(subject))
 		str = g_strdup_printf(_("%s - Compose message%s"),
 				      subject, edited);	
-	else if (compose->account && compose->account->address)
-		str = g_strdup_printf(_("%s - Compose message%s"),
-				      compose->account->address, edited);
 	else
-		str = g_strdup_printf(_("Compose message%s"), edited);
+		str = g_strdup_printf(_("[no subject] - Compose message%s"), edited);
 	gtk_window_set_title(GTK_WINDOW(compose->window), str);
 	g_free(str);
 	g_free(subject);
@@ -5336,7 +5333,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	vbox2 = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 0);
 	
 	/* Notebook */
 	notebook = gtk_notebook_new();
@@ -5355,20 +5352,20 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_widget_show(subject_hbox);
 
 	subject_frame = gtk_frame_new(NULL);
-	gtk_frame_set_shadow_type(GTK_FRAME(subject_frame), GTK_SHADOW_OUT);
-	gtk_box_pack_start(GTK_BOX(subject_hbox), subject_frame, TRUE, TRUE, BORDER_WIDTH+1);
+	gtk_frame_set_shadow_type(GTK_FRAME(subject_frame), GTK_SHADOW_NONE);
+	gtk_box_pack_start(GTK_BOX(subject_hbox), subject_frame, TRUE, TRUE, 0);
 	gtk_widget_show(subject_frame);
 
 	subject = gtk_hbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(subject), BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(subject), 0);
 	gtk_widget_show(subject);
 
 	label = gtk_label_new(_("Subject:"));
-	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
 	subject_entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 0);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(subject_entry);
