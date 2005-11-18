@@ -1199,14 +1199,14 @@ static void prefs_account_basic_create(void)
 		(_("This server requires authentication"));
 	gtk_widget_show (nntpauth_chkbtn);
 	
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 2, 1, 2,
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 2, 6, 7,
 			  GTK_FILL, 0, 0, 0);
 
 	nntpauth_onconnect_chkbtn = gtk_check_button_new_with_label
 		(_("Authenticate on connect"));
 	gtk_widget_show (nntpauth_onconnect_chkbtn);
 
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_onconnect_chkbtn, 2, 4, 1, 2,
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_onconnect_chkbtn, 2, 4, 6, 7,
 			  GTK_FILL, 0, 0, 0);
 
 	recvserv_entry = gtk_entry_new ();

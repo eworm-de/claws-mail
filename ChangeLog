@@ -1,3 +1,11 @@
+2005-11-18 [colin]	1.9.100cvs22
+
+	* src/prefs_account.c
+		Fix layout in news and mbox accounts
+	* manual/account.xml
+	* manual/advanced.xml
+		New contents for Paul to check :)
+
 2005-11-18 [wwp]	1.9.100cvs21
 
 	* src/gtk/quicksearch.c

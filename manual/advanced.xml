@@ -5,18 +5,24 @@
   <section id="adv_actions">
     <title>Actions</title>
     <para>
+    Actions allow you to use all the power of the Unix command-line with your emails. You can define various commands, taking parameters such as the current email file, a list of emails, the currently selected text, and so on. In this way, you'll be able to perform various tasks such as editing a raw mail in your text editor, "hide" what you mean using ROT-13, apply patches contained in emails directly, and so on. The only limit is your imagination. You can configure Actions via the Tools menu.
     </para>
   </section>
 
   <section id="adv_templates">
     <title>Templates</title>
     <para>
+    Templates are used in Composition windows, and are a sort of "model" letters. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, ... When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
     </para>
   </section>
 
   <section id="adv_processing">
     <title>Processing</title>
     <para>
+    Processing rules are the same as Filtering rules, except that they are applied when entering a folder and apply only to this folder. You can use them to automatically move old mails into an archive folder, or for further dispatching of emails. You can set each folder's Processing rules by right-clicking on it.
+    </para>
+    <para>
+    Processing rules are accompanied by Preprocessing and Postprocessing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu.
     </para>
   </section>
 
@@ -25,13 +31,63 @@
     <para>
       Plugins are the mechanism of extending Sylpheed-Claws capabilities. Imagine you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of it. With Sylpheed-Claws you can simply write a plugin to achieve the task.
     </para>
-    <para>This is only an example of the possibilities. Already exist a good number of plugins developed for Sylpheed-Claws, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> is devoted to all of them.
+    <para>
+      This is only an example of the possibilities. Already exist a good number of plugins developed for Sylpheed-Claws, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> is devoted to all of them.
     </para>
   </section>
 
   <section id="adv_hidden">
     <title>Hidden preferences</title>
     <para>
+    There are a number of hidden preferences in Sylpheed-Claws, preferences that some users we wanted to please couldn't live without, but which did not had a place in the GUI in our opinions. You can find the following, and change them while Sylpheed-Claws is not running in ~/.sylpheed-claws/sylpheedrc.
+    <itemizedlist>
+      <listitem><para>bold_unread
+      show unread messages using bold font in summary view
+      </para></listitem>
+      <listitem><para>color_new
+      color (as hex triplet) of folder name when indicating new messages
+      </para></listitem>
+      <listitem><para>cache_max_mem_usage
+      the maximum amount of memory to use to cache messages, in kB.
+      </para></listitem>
+      <listitem><para>cache_min_keep_time
+      the minimum time to keep a cache in memory, in minutes. Caches more recent than this time will not be freed, even if the memory usage is too high.
+      </para></listitem>
+      <listitem><para>enable_hscrollbar
+      enables horizontal scrollbar in summaryview
+      </para></listitem>
+      <listitem><para>enable_rules_hint
+      enable alternate lines in GtkTreeViews
+      </para></listitem>
+      <listitem><para>enable_swap_from
+      display sender's email address in To column in Sent folder instead of recipient's
+      </para></listitem>
+      <listitem><para>folderview_vscrollbar_policy
+      specify the policy of vertical scroll bar of folder view
+      </para></listitem>
+      <listitem><para>hover_timeout
+      time in milliseconds that will cause a folder tree to expand during drag n drop when the mouse cover is held over it
+      </para></listitem>
+      <listitem><para>statusbar_update_step
+      update stepping in progress bars
+      </para></listitem>
+      <listitem><para>textview_cursor_visible
+      display the cursor in the message view
+      </para></listitem>
+      <listitem><para>thread_by_subject_max_age
+      number of days to include a message in a thread when using 'Thread using subject in addition to standard headers'
+      </para></listitem>
+      <listitem><para>toolbar_detachable
+      hide handles in the toolbars
+      </para></listitem>
+      <listitem><para>utf8_instead_of_locale_for_broken_mail
+      use UTF-8 encoding for broken mails instead of current locale
+      </para></listitem>
+      <listitem><para>warn_dnd
+      display a confirmation dialog on drag n drop of folders
+      </para></listitem>
+    </itemizedlist>
+    
     </para>
   </section>
   
