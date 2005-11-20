@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <section id="ch_advanced">
-<title>Advanced features</title>
-
+  <title>Advanced features</title>
   <section id="adv_actions">
     <title>Actions</title>
     <para>
     Actions allow you to use all the power of the Unix command-line with your emails. You can define various commands, taking parameters such as the current email file, a list of emails, the currently selected text, and so on. In this way, you'll be able to perform various tasks such as editing a raw mail in your text editor, "hide" what you mean using ROT-13, apply patches contained in emails directly, and so on. The only limit is your imagination. You can configure Actions via the Tools menu.
     </para>
   </section>
-
   <section id="adv_templates">
     <title>Templates</title>
     <para>
     Templates are used in Composition windows, and are a sort of "model" letters. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, ... When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
     </para>
   </section>
-
   <section id="adv_processing">
     <title>Processing</title>
     <para>
@@ -25,7 +22,6 @@
     Processing rules are accompanied by Preprocessing and Postprocessing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu.
     </para>
   </section>
-
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
@@ -35,61 +31,57 @@
       This is only an example of the possibilities. Already exist a good number of plugins developed for Sylpheed-Claws, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> is devoted to all of them.
     </para>
   </section>
-
   <section id="adv_hidden">
     <title>Hidden preferences</title>
     <para>
     There are a number of hidden preferences in Sylpheed-Claws, preferences that some users we wanted to please couldn't live without, but which did not had a place in the GUI in our opinions. You can find the following, and change them while Sylpheed-Claws is not running in ~/.sylpheed-claws/sylpheedrc.
-    <itemizedlist>
-      <listitem><para>bold_unread
-      show unread messages using bold font in summary view
-      </para></listitem>
-      <listitem><para>color_new
-      color (as hex triplet) of folder name when indicating new messages
-      </para></listitem>
-      <listitem><para>cache_max_mem_usage
-      the maximum amount of memory to use to cache messages, in kB.
-      </para></listitem>
-      <listitem><para>cache_min_keep_time
-      the minimum time to keep a cache in memory, in minutes. Caches more recent than this time will not be freed, even if the memory usage is too high.
-      </para></listitem>
-      <listitem><para>enable_hscrollbar
-      enables horizontal scrollbar in summaryview
-      </para></listitem>
-      <listitem><para>enable_rules_hint
-      enable alternate lines in GtkTreeViews
-      </para></listitem>
-      <listitem><para>enable_swap_from
-      display sender's email address in To column in Sent folder instead of recipient's
-      </para></listitem>
-      <listitem><para>folderview_vscrollbar_policy
-      specify the policy of vertical scroll bar of folder view
-      </para></listitem>
-      <listitem><para>hover_timeout
-      time in milliseconds that will cause a folder tree to expand during drag n drop when the mouse cover is held over it
-      </para></listitem>
-      <listitem><para>statusbar_update_step
-      update stepping in progress bars
-      </para></listitem>
-      <listitem><para>textview_cursor_visible
-      display the cursor in the message view
-      </para></listitem>
-      <listitem><para>thread_by_subject_max_age
-      number of days to include a message in a thread when using 'Thread using subject in addition to standard headers'
-      </para></listitem>
-      <listitem><para>toolbar_detachable
-      hide handles in the toolbars
-      </para></listitem>
-      <listitem><para>utf8_instead_of_locale_for_broken_mail
-      use UTF-8 encoding for broken mails instead of current locale
-      </para></listitem>
-      <listitem><para>warn_dnd
-      display a confirmation dialog on drag n drop of folders
-      </para></listitem>
-    </itemizedlist>
-    
     </para>
+    <variablelist>
+	    <varlistentry><term>bold_unread</term>
+		    <listitem><para>show unread messages using bold font in summary view</para></listitem>
+            </varlistentry>
+	    <varlistentry><term>color_new</term>
+		    <listitem><para>color (as hex triplet) of folder name when indicating new messages</para></listitem>
+            </varlistentry>
+	    <varlistentry><term>cache_max_mem_usage</term>
+		    <listitem><para>the maximum amount of memory to use to cache messages, in kB.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>cache_min_keep_time</term>
+		    <listitem><para>the minimum time to keep a cache in memory, in minutes. Caches more recent than this time will not be freed, even if the memory usage is too high.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_hscrollbar</term>
+		    <listitem><para>enables horizontal scrollbar in summaryview</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_rules_hint</term>
+		    <listitem><para>enable alternate lines in GtkTreeViews</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_swap_from</term>
+		    <listitem><para>display sender's email address in To column in Sent folder instead of recipient's</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>folderview_vscrollbar_policy</term>
+		    <listitem><para>specify the policy of vertical scroll bar of folder view</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>hover_timeout</term>
+		    <listitem><para>time in milliseconds that will cause a folder tree to expand during drag n drop when the mouse cover is held over it</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>statusbar_update_step</term>
+		    <listitem><para>update stepping in progress bars</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>textview_cursor_visible</term>
+		    <listitem><para>display the cursor in the message view</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>thread_by_subject_max_age</term>
+		    <listitem><para>number of days to include a message in a thread when using 'Thread using subject in addition to standard headers'</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>toolbar_detachable</term>
+		    <listitem><para>hide handles in the toolbars</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>utf8_instead_of_locale_for_broken_mail</term>
+		    <listitem><para>use UTF-8 encoding for broken mails instead of current locale</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>warn_dnd</term>
+		    <listitem><para>display a confirmation dialog on drag n drop of folders</para></listitem>
+	    </varlistentry>
+    </variablelist>
   </section>
-  
 </section>
-

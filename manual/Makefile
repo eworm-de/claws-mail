@@ -4,7 +4,7 @@
 # This is distributed according to the General Public License.
 #
 
-MAIN=manual
+MAIN=sylpheed-claws-manual
 XMLS=$(glob *.xml)
 OUT=dist
 
@@ -23,7 +23,7 @@ $(MAIN).ps: $(XMLS)
 	docbook2ps -o $(OUT)/ps $(MAIN).xml
 
 $(MAIN).html: $(XMLS)
-	docbook2html -o $(OUT)/html $(MAIN).xml
+	docbook2html -u -o $(OUT)/html $(MAIN).xml
 
 $(MAIN).txt: $(XMLS)
 	docbook2txt -o $(OUT)/txt $(MAIN).xml
