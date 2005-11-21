@@ -83,9 +83,6 @@ void 		gtkaspell_check_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
-void 		gtkaspell_populate_submenu	(GtkAspell *gtkaspell, 
-						 GtkWidget *menuitem);
-
 GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);
 
 gchar*		gtkaspell_get_dictionary_menu_active_item

@@ -632,9 +632,6 @@ static GtkItemFactoryEntry compose_entries[] =
 					NULL, compose_check_backwards , 0, NULL},
 	{N_("/_Spelling/_Forward to next misspelled word"),
 					NULL, compose_check_forwards_go, 0, NULL},
-	{N_("/_Spelling/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Spelling/_Spelling Configuration"),
-					NULL, NULL, 0, "<Branch>"},
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
@@ -5570,9 +5567,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 					gtkaspell_checkers_reset_error();
 				}
 
-				menuitem = gtk_item_factory_get_item(ifactory,
-					"/Spelling/Spelling Configuration");
-				gtkaspell_populate_submenu(gtkaspell, menuitem);
 				menu_set_sensitive(ifactory, "/Spelling", TRUE);
 			}
         	}

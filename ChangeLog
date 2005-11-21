@@ -1,3 +1,13 @@
+2005-11-21 [colin]	1.9.100cvs25
+
+	* src/addressbook.c
+		Fix some addressbook suckage (dnd, select all)
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Make the spellchecker menu work with the 
+		GtkTextView one instead of overriding it
+
 2005-11-20 [paul]	1.9.100cvs24
 
 	* manual/handling.xml
