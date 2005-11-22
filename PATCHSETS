@@ -1009,3 +1009,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/Makefile;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/advanced.xml;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 manual/manual.xml;  diff -u /dev/null manual/sylpheed-claws-manual.xml;  ) > 1.9.100cvs23.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/handling.xml;  ) > 1.9.100cvs24.patchset
 ( cvs diff -u -r 1.60.2.38 -r 1.60.2.39 src/addressbook.c;  cvs diff -u -r 1.382.2.194 -r 1.382.2.195 src/compose.c;  cvs diff -u -r 1.9.2.30 -r 1.9.2.31 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.3 -r 1.5.2.4 src/gtk/gtkaspell.h;  ) > 1.9.100cvs25.patchset
+( cvs diff -u -r 1.12.2.16 -r 1.12.2.17 src/prefs_template.c;  ) > 1.9.100cvs26.patchset

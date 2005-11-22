@@ -85,7 +85,8 @@ static GtkListStore* prefs_template_create_data_store	(void);
 static void prefs_template_list_view_insert_template	(GtkWidget *list_view,
 							 GtkTreeIter *row_iter,
 							 const gchar *template,
-							 Template *data);
+							 Template *data,
+							 gboolean sorted);
 static GtkWidget *prefs_template_list_view_create	(void);
 static void prefs_template_create_list_view_columns	(GtkWidget *list_view);
 static gboolean prefs_template_selected			(GtkTreeSelection *selector,
@@ -345,7 +346,7 @@ static void prefs_template_window_setup(void)
 
 	prefs_template_list_view_insert_template(templates.list_view,
 						 NULL, _("(New)"),
-						 NULL);
+						 NULL, FALSE);
 	
 	tmpl_list = template_read_config();
 
@@ -353,7 +354,7 @@ static void prefs_template_window_setup(void)
 		tmpl = (Template *)cur->data;
 		prefs_template_list_view_insert_template(templates.list_view,
 							 NULL, tmpl->name, 
-							 tmpl);
+							 tmpl, FALSE);
 	}
 
 	g_slist_free(tmpl_list);
@@ -471,7 +472,8 @@ static GSList *prefs_template_get_list(void)
 	return tmpl_list;
 }
 
-static void prefs_template_list_view_set_row(GtkTreeIter *row)
+static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
+/* return TRUE if the row could be modified */
 {
 	Template *tmpl;
 	gchar *name;
@@ -503,12 +505,16 @@ static void prefs_template_list_view_set_row(GtkTreeIter *row)
 		if (!parsed_buf) {
 			alertpanel_error(_("Template format error."));
 			g_free(value);
-			return;
+			return FALSE;
 		}
 	}
 
 	name = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_name),
 				      0, -1);
+	if (name[0] == '\0') {
+		alertpanel_error(_("Template name is not set."));
+		return FALSE;
+	}
 	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
 					 0, -1);
 	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
@@ -544,13 +550,13 @@ static void prefs_template_list_view_set_row(GtkTreeIter *row)
 	tmpl->value = value;
 
 	prefs_template_list_view_insert_template(templates.list_view,
-						 row, tmpl->name, tmpl);
+						 row, tmpl->name, tmpl, TRUE);
+	return TRUE;
 }
 
 static void prefs_template_register_cb(void)
 {
-	prefs_template_list_view_set_row(NULL);
-	modified = FALSE;
+	modified = !prefs_template_list_view_set_row(NULL);
 }
 
 static void prefs_template_substitute_cb(void)
@@ -572,8 +578,7 @@ static void prefs_template_substitute_cb(void)
 
 	if (!tmpl) return;
 
-	prefs_template_list_view_set_row(&row);
-	modified = FALSE;
+	modified = !prefs_template_list_view_set_row(&row);
 }
 
 static void prefs_template_delete_cb(void)
@@ -613,23 +618,83 @@ static GtkListStore* prefs_template_create_data_store(void)
 				  -1);
 }
 
+static gboolean prefs_template_list_view_find_insertion_point(GtkTreeModel* model,
+							const gchar* template,
+							GtkTreeIter* iter)
+{
+	GtkTreeIter i;
+	gchar *text = NULL;
+
+	if ((gtk_tree_model_get_iter_first(model, &i))) {
+		for ( ; gtk_tree_model_iter_next(model, &i); ) {
+			gtk_tree_model_get(model, &i, TEMPL_TEXT, &text, -1);
+			if (strcmp(text, template) >= 0) {
+				g_free(text);
+				*iter = i;
+				return TRUE;
+			}
+			g_free(text);
+		}
+	}
+	/* cannot add before (need to append) */
+	return FALSE;
+}
+
 static void prefs_template_list_view_insert_template(GtkWidget *list_view,
 						     GtkTreeIter *row_iter,
 						     const gchar *template,
-						     Template *data)
+						     Template *data,
+							 gboolean sorted)
 {
 	GtkTreeIter iter;
-	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
-					(GTK_TREE_VIEW(list_view)));
+	GtkTreeModel *model = gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view));
+	GtkListStore *list_store = GTK_LIST_STORE(model);
 	GAuto *auto_data;					
 
 	if (row_iter == NULL) {
-		/* append new */
-		gtk_list_store_append(list_store, &iter);
-	} else {
-		iter = *row_iter;
-	}
+		if (sorted) {
+			GtkTreeIter insertion_point;
 
+			/* insert sorted */
+			if (prefs_template_list_view_find_insertion_point(model,
+					template, &insertion_point)) {
+				gtk_list_store_insert_before(list_store, &iter,
+						&insertion_point);
+			} else {
+				gtk_list_store_append(list_store, &iter);
+			}
+		} else {
+			/* append new */
+			gtk_list_store_append(list_store, &iter);
+		}
+	} else {
+		/* modify the existing */
+		iter = *row_iter;
+
+		if (sorted) {
+			GtkTreeIter insertion_point;
+			gchar *text = NULL;
+
+			/* force re-sorting if template's name changed */
+			gtk_tree_model_get(model, row_iter, TEMPL_TEXT, &text, -1);
+			if (strcmp(text, template) != 0) {
+
+				/* move the modified template */
+				if (prefs_template_list_view_find_insertion_point(model,
+						template, &insertion_point)) {
+					gtk_list_store_move_before(list_store, row_iter,
+							&insertion_point);
+				} else {
+					/* move to the end */
+					gtk_list_store_move_before(list_store, row_iter,
+							NULL);
+				}
+			}
+			g_free(text);
+		}
+	}
+		
 	auto_data = g_auto_pointer_new_with_free(data, (GFreeFunc) template_free);  
 
 	/* if replacing data in an existing row, the auto pointer takes care
@@ -729,5 +794,3 @@ static gboolean prefs_template_selected(GtkTreeSelection *selector,
 
 	return TRUE;
 }
-
-
