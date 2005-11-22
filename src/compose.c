@@ -5211,6 +5211,21 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 {
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
+#if USE_ASPELL
+	if (event->button == 3) {
+		GtkTextIter iter;
+		gint x, y;
+		/* move the cursor to allow GtkAspell to check the word
+		 * under the mouse */
+		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text),
+			GTK_TEXT_WINDOW_TEXT, event->x, event->y,
+			&x, &y);
+		gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW(text),
+			&iter, x, y);
+		gtk_text_buffer_place_cursor (GTK_TEXT_VIEW(text)->buffer, &iter);
+		return FALSE; /* pass the event so that the right-click goes through */
+	}
+#endif
 	if (event->button == 2) {
 		BLOCK_WRAP();
 		entry_paste_clipboard(compose, compose->focused_editable, 
@@ -5556,9 +5571,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 						gtkaspell_checkers_strerror());
 				gtkaspell_checkers_reset_error();
 			} else {
-
-				GtkWidget *menuitem;
-
 				if (!gtkaspell_set_sug_mode(gtkaspell,
 						prefs_common.aspell_sugmode)) {
 					debug_print("Aspell: could not set "

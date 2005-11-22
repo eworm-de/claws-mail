@@ -1992,7 +1992,11 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 			item = gtk_menu_item_new_with_label(utf8buf);
 			g_free(utf8buf);
 			gtk_widget_show(item);
-			list = g_slist_append(list, item);
+			if (curmenu == NULL) {
+				list = g_slist_append(list, item);
+			} else {
+				gtk_menu_append(GTK_MENU(curmenu), item);
+			}
 			g_signal_connect(G_OBJECT(item), "activate",
 					 G_CALLBACK(replace_word_cb),
 					 gtkaspell);

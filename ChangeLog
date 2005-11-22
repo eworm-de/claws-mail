@@ -1,3 +1,10 @@
+2005-11-22 [colin]	1.9.100cvs27
+
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+		Fix right-clicking on a misspelled word
+		Fix More... in suggestions menu
+
 2005-11-22 [wwp]	1.9.100cvs26
 
 	* src/prefs_template.c
