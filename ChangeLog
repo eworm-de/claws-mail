@@ -1,3 +1,12 @@
+2005-11-23 [cleroy]	1.9.100cvs28
+
+	* src/mimeview.c
+		Fix possible crash at exit. After the call to
+		gtk_container_remove(), the Viewer's widget has no
+		more parent so gtk+ automatically frees it and its
+		sons. If destroy_viewer() then try to access it,
+		problems ensue.
+
 2005-11-22 [colin]	1.9.100cvs27
 
 	* src/compose.c

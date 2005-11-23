@@ -382,8 +382,6 @@ void mimeview_destroy(MimeView *mimeview)
 	
 	for (cur = mimeview->viewers; cur != NULL; cur = g_slist_next(cur)) {
 		MimeViewer *viewer = (MimeViewer *) cur->data;
-		gtk_container_remove(GTK_CONTAINER(mimeview->mime_notebook),
-			GTK_WIDGET(viewer->get_widget(viewer)));
 		viewer->destroy_viewer(viewer);
 	}
 	g_slist_free(mimeview->viewers);
