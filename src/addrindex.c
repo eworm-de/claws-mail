@@ -116,8 +116,8 @@ N_("Common address")
 N_("Personal address")
 #endif
 
-#define DISP_NEW_COMMON       _("Common address")
-#define DISP_NEW_PERSONAL     _("Personal address")
+#define DISP_NEW_COMMON       _("Common addresses")
+#define DISP_NEW_PERSONAL     _("Personal addresses")
 
 /* Old address book */
 #define TAG_IF_OLD_COMMON     "common_address"
@@ -2655,12 +2655,21 @@ gint addrindex_setup_explicit_search(
 	QueryRequest *req;
 	gint queryID;
 	gchar *name;
+	gchar *mySearch;
 
 	/* Name the query */
 	name = g_strdup_printf( "Search '%s'", searchTerm );
 
 	/* Set up query request */
-	req = qrymgr_add_request( searchTerm, callBackEnd, callBackEntry );
+	if (!strcmp(searchTerm, "*"))
+		mySearch = g_strdup("*@");
+	else
+		mySearch = g_strdup(searchTerm);
+	
+	req = qrymgr_add_request( mySearch, callBackEnd, callBackEntry );
+
+	g_free(mySearch);
+
 	qryreq_set_search_type( req, ADDRSEARCH_EXPLICIT );
 	queryID = req->queryID;
 

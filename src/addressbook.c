@@ -409,7 +409,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Book/New _JPilot"),	"<control>J",	addressbook_new_jpilot_cb,      0, NULL},
 #endif
 #ifdef USE_LDAP
-	{N_("/_Book/New _Server"),	"<control><shift>S",	addressbook_new_ldap_cb,        0, NULL},
+	{N_("/_Book/New LDAP _Server"),	"<control><shift>S",	addressbook_new_ldap_cb,        0, NULL},
 #endif
 	{N_("/_Book/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Book/_Edit book"),	NULL,		addressbook_treenode_edit_cb,   0, NULL},
@@ -2163,7 +2163,11 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	if (obj->type == ADDR_DATASOURCE) {
 		ads = ADAPTER_DSOURCE(obj);
 		ds = ads->dataSource;
+		if (!ds)
+			goto just_set_sens;
 		iface = ds->interface;
+		if (!iface)
+			goto just_set_sens;
 		canEdit = TRUE;
 		canDelete = TRUE;
 		if( iface->readOnly ) {
@@ -2178,7 +2182,11 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	}
 	else if (obj->type == ADDR_ITEM_FOLDER) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
+		if (!ds)
+			goto just_set_sens;
 		iface = ds->interface;
+		if (!iface)
+			goto just_set_sens;
 		if( iface->readOnly ) {
 			canTreePaste = FALSE;
 		}
@@ -2190,7 +2198,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 		canTreeCopy = TRUE;
-		iface = ds->interface;
+
 		if( iface->externalQuery ) {
 			/* Enable deletion of LDAP folder */
 			canLookup = TRUE;
@@ -2199,7 +2207,11 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	}
 	else if (obj->type == ADDR_ITEM_GROUP) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
+		if (!ds)
+			goto just_set_sens;
 		iface = ds->interface;
+		if (!iface)
+			goto just_set_sens;
 		if( ! iface->readOnly ) {
 			canEdit = TRUE;
 			canDelete = TRUE;
@@ -2217,6 +2229,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	if( ! addrselect_test_empty( _addressSelect_ ) ) canCopy = TRUE;
 	if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
 
+just_set_sens:
 	/* Enable edit */
 	menu_set_sensitive( addrbook.tree_factory, "/Edit",   canEdit );
 	menu_set_sensitive( addrbook.tree_factory, "/Delete", canDelete );
@@ -4243,7 +4256,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	atci->maskXpm = ldapxpmmask;
 	atci->iconXpmOpen = ldapxpm;
 	atci->maskXpmOpen = ldapxpmmask;
-	atci->menuCommand = "/Book/New Server";
+	atci->menuCommand = "/Book/New LDAP Server";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 

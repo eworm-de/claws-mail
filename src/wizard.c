@@ -228,7 +228,7 @@ static void write_welcome_email(WizardWindow *wizard)
 
 static gboolean wizard_write_config(WizardWindow *wizard)
 {
-	gboolean mailbox_ok = FALSE;
+	static gboolean mailbox_ok = FALSE;
 	PrefsAccount *prefs_account = prefs_account_new();
 	GList *account_list = NULL;
 	GtkWidget *menu, *menuitem;
@@ -238,19 +238,67 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	prefs_account->protocol = GPOINTER_TO_INT
 			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 	
-	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
-		mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
-				gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
-	} else
-		mailbox_ok = TRUE;
+	
+	if (!mailbox_ok) {
+		if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
+			mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
+					gtk_entry_get_text(
+						GTK_ENTRY(wizard->mailbox_name)));
+		} else
+			mailbox_ok = TRUE;
+	}
 
 	if (!mailbox_ok) {
+		/* alertpanel done by setup_write_mailbox_path */
+		g_free(prefs_account);
 		gtk_notebook_set_current_page (
 			GTK_NOTEBOOK(wizard->notebook), 
 			4);
 		return FALSE;
 	}
 	
+	if (!strlen(gtk_entry_get_text(GTK_ENTRY(wizard->full_name)))
+	||  !strlen(gtk_entry_get_text(GTK_ENTRY(wizard->email)))) {
+		alertpanel_error(_("Please fill in your name and email address."));
+		g_free(prefs_account);
+		gtk_notebook_set_current_page (
+			GTK_NOTEBOOK(wizard->notebook), 
+			1);
+		return FALSE;
+	}
+	
+	if (prefs_account->protocol != A_LOCAL) {
+		if (!strlen(gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)))
+		||  !strlen(gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)))) {
+			alertpanel_error(_("Please fill in your reception server "
+					   "and username."));
+			g_free(prefs_account);
+			gtk_notebook_set_current_page (
+				GTK_NOTEBOOK(wizard->notebook), 
+				3);
+			return FALSE;
+		}
+	} else {
+		if (!strlen(gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)))) {
+			alertpanel_error(_("Please fill in your username."));
+			g_free(prefs_account);
+			gtk_notebook_set_current_page (
+				GTK_NOTEBOOK(wizard->notebook), 
+				3);
+			return FALSE;
+		}
+	}
+
+	if (!strlen(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_server)))) {
+		alertpanel_error(_("Please fill in your SMTP server."));
+		g_free(prefs_account);
+		gtk_notebook_set_current_page (
+			GTK_NOTEBOOK(wizard->notebook), 
+			2);
+		return FALSE;
+
+	}
+
 	if (prefs_account->protocol != A_LOCAL)
 		prefs_account->account_name = g_strdup_printf("%s@%s",
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)),

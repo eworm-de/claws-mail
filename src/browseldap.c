@@ -71,8 +71,6 @@ static struct _LDAPEntry_dlg {
 	GtkWidget *label_address;
 	GtkWidget *list_entry;
 	GtkWidget *close_btn;
-	GtkWidget *statusbar;
-	gint status_cid;
 } browseldap_dlg;
 
 /**
@@ -163,22 +161,6 @@ static void browse_clear_queue( void ) {
 }
 
 /**
- * Clear message in status bar.
- * \param msg Message.
- */
-static void browse_status_show( gchar *msg ) {
-	if( browseldap_dlg.statusbar != NULL ) {
-		gtk_statusbar_pop( GTK_STATUSBAR(browseldap_dlg.statusbar),
-			browseldap_dlg.status_cid );
-		if( msg ) {
-			gtk_statusbar_push(
-				GTK_STATUSBAR(browseldap_dlg.statusbar),
-				browseldap_dlg.status_cid, msg );
-		}
-	}
-}
-
-/**
  * Close window callback.
  * \param widget    Widget.
  * \param event     Event.
@@ -230,7 +212,6 @@ static void browse_create( void ) {
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 	GtkWidget *hsbox;
-	GtkWidget *statusbar;
 	gint top;
 
 	window = gtk_dialog_new();
@@ -245,7 +226,7 @@ static void browse_create( void ) {
 			 G_CALLBACK(browse_key_pressed), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(window)->vbox), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
 	table = gtk_table_new(2, 2, FALSE);
@@ -298,12 +279,6 @@ static void browse_create( void ) {
 		COL_NAME, COL_WIDTH_NAME );
 	gtk_clist_set_auto_sort( GTK_CLIST(list_entry), TRUE );
 
-	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
-	statusbar = gtk_statusbar_new();
-	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
-
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
@@ -321,10 +296,6 @@ static void browse_create( void ) {
 	browseldap_dlg.label_address = label_addr;
 	browseldap_dlg.list_entry    = list_entry;
 	browseldap_dlg.close_btn     = close_btn;
-	browseldap_dlg.statusbar     = statusbar;
-	browseldap_dlg.status_cid    =
-		gtk_statusbar_get_context_id(
-			GTK_STATUSBAR(statusbar), "Browse LDAP" );
 
 	gtk_widget_show_all( window );
 
@@ -397,7 +368,6 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	gtk_widget_show(browseldap_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(browseldap_dlg.window));
 
-	browse_status_show( "" );
 	gtk_clist_select_row( GTK_CLIST( browseldap_dlg.list_entry ), 0, 0 );
 	gtk_widget_show(browseldap_dlg.window);
 

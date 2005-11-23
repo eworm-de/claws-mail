@@ -1013,3 +1013,4 @@
 ( cvs diff -u -r 1.382.2.195 -r 1.382.2.196 src/compose.c;  cvs diff -u -r 1.9.2.31 -r 1.9.2.32 src/gtk/gtkaspell.c;  ) > 1.9.100cvs27.patchset
 ( cvs diff -u -r 1.83.2.51 -r 1.83.2.52 src/mimeview.c;  ) > 1.9.100cvs28.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/advanced.xml;  ) > 1.9.100cvs29.patchset
+( cvs diff -u -r 1.60.2.39 -r 1.60.2.40 src/addressbook.c;  cvs diff -u -r 1.28.2.12 -r 1.28.2.13 src/addrindex.c;  cvs diff -u -r 1.2.4.9 -r 1.2.4.10 src/browseldap.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/wizard.c;  ) > 1.9.100cvs30.patchset

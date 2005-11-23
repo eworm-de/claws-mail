@@ -1,3 +1,15 @@
+2005-11-23 [colin]	1.9.100cvs30
+
+	* src/addressbook.c
+		Rename menu item, fix possible crash after
+		deletion of books
+	* src/addrindex.c
+		Allow searching for '*' in ldap
+	* src/browseldap.c
+		Fix "Browse Entry" (did anyone use it?)
+	* src/wizard.c
+		Add guards for mandatory information
+
 2005-11-23 [paul]	1.9.100cvs29
 
 	* manual/advanced.xml
