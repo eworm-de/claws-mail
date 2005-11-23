@@ -10,7 +10,7 @@
   <section id="adv_templates">
     <title>Templates</title>
     <para>
-    Templates are used in Composition windows, and are a sort of "model" letters. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, ... When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
+    Templates are used in Composition windows, and act as a model for emails. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, ... When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
     </para>
   </section>
   <section id="adv_processing">
@@ -19,29 +19,29 @@
     Processing rules are the same as Filtering rules, except that they are applied when entering a folder and apply only to this folder. You can use them to automatically move old mails into an archive folder, or for further dispatching of emails. You can set each folder's Processing rules by right-clicking on it.
     </para>
     <para>
-    Processing rules are accompanied by Preprocessing and Postprocessing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu.
+    Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu.
     </para>
   </section>
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
-      Plugins are the mechanism of extending Sylpheed-Claws capabilities. Imagine you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of it. With Sylpheed-Claws you can simply write a plugin to achieve the task.
+      Plugins are the mechanism of extending Sylpheed-Claws' capabilities. Imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
     </para>
     <para>
-      This is only an example of the possibilities. Already exist a good number of plugins developed for Sylpheed-Claws, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> is devoted to all of them.
+	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws  already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.
     </para>
   </section>
   <section id="adv_hidden">
     <title>Hidden preferences</title>
     <para>
-    There are a number of hidden preferences in Sylpheed-Claws, preferences that some users we wanted to please couldn't live without, but which did not had a place in the GUI in our opinions. You can find the following, and change them while Sylpheed-Claws is not running in ~/.sylpheed-claws/sylpheedrc.
+    There are a number of hidden preferences in Sylpheed-Claws, preferences that some users who we wanted to please couldn't live without, but which did not have a place in the GUI in our opinion. You can find the following, and change them while Sylpheed-Claws is not running in ~/.sylpheed-claws/sylpheedrc.
     </para>
     <variablelist>
 	    <varlistentry><term>bold_unread</term>
 		    <listitem><para>show unread messages using bold font in summary view</para></listitem>
             </varlistentry>
 	    <varlistentry><term>color_new</term>
-		    <listitem><para>color (as hex triplet) of folder name when indicating new messages</para></listitem>
+		    <listitem><para>colour (as hex triplet) of folder name when indicating new messages</para></listitem>
             </varlistentry>
 	    <varlistentry><term>cache_max_mem_usage</term>
 		    <listitem><para>the maximum amount of memory to use to cache messages, in kB.</para></listitem>
@@ -62,7 +62,7 @@
 		    <listitem><para>specify the policy of vertical scroll bar of folder view</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>hover_timeout</term>
-		    <listitem><para>time in milliseconds that will cause a folder tree to expand during drag n drop when the mouse cover is held over it</para></listitem>
+		    <listitem><para>time in milliseconds that will cause a folder tree to expand during drag 'n' drop when the mouse cover is held over it</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>statusbar_update_step</term>
 		    <listitem><para>update stepping in progress bars</para></listitem>
@@ -80,7 +80,7 @@
 		    <listitem><para>use UTF-8 encoding for broken mails instead of current locale</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>warn_dnd</term>
-		    <listitem><para>display a confirmation dialog on drag n drop of folders</para></listitem>
+		    <listitem><para>display a confirmation dialog on drag 'n' drop of folders</para></listitem>
 	    </varlistentry>
     </variablelist>
   </section>
