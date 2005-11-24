@@ -1,3 +1,17 @@
+2005-11-24 [paul]	1.9.100cvs31
+
+	* manual/addrbook.xml
+	* manual/starting.xml
+		written by Colin, proofread, edited, adapted by me
+	* manual/advanced.xml
+		add some Actions examples
+	* src/importldif.c
+		use a Save button instead of a Close button
+	* src/wizard.c
+		indicate mandatory fields
+		fix page display
+		Thanks to Colin
+
 2005-11-23 [colin]	1.9.100cvs30
 
 	* src/addressbook.c

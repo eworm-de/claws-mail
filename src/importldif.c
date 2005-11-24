@@ -544,7 +544,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-					     GTK_STOCK_CLOSE);
+					     GTK_STOCK_SAVE);
 			imp_ldif_finish_show();
 		}
 	}

@@ -6,6 +6,36 @@
     <para>
     Actions allow you to use all the power of the Unix command-line with your emails. You can define various commands, taking parameters such as the current email file, a list of emails, the currently selected text, and so on. In this way, you'll be able to perform various tasks such as editing a raw mail in your text editor, "hide" what you mean using ROT-13, apply patches contained in emails directly, and so on. The only limit is your imagination. You can configure Actions via the Tools menu.
     </para>
+    <blockquote>
+    	<example><title>Simple <quote>Open With...</quote></title>
+	 	<variablelist>
+			<varlistentry><term>Menu name: <emphasis>Open with/kate</emphasis> Command Line: <emphasis>kate%p</emphasis></term>
+				<listitem><para>Opens the file of the selected decoded MIME part (<emphasis>%p</emphasis>) with the <emphasis>kate</emphasis> text editor.
+				    </para></listitem>
+		    </varlistentry>
+	    	</variablelist>
+    	</example>
+   	<example><title>Spam management using <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
+		<variablelist>
+			<varlistentry><term>Menu name: <emphasis>Bogofilter/Mark as Ham</emphasis> Command Line: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
+				<listitem><para>Marks the currently selected mails (<emphasis>%f</emphasis>) as 'not spam' using <emphasis>Bogofilter</emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+		    <varlistentry><term>Menu name: <emphasis>Bogofilter/Mark as Spam</emphasis> Command Line: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
+			    <listitem><para>Marks the currently selected mails (<emphasis>%f</emphasis>) as 'spam' using <emphasis>Bogofilter</emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+    		</variablelist>
+    </example>
+    <example><title>Search google using an external script</title>
+	    <variablelist>
+		    <varlistentry><term>Menu name: <emphasis>Search/Google</emphasis> Command Line: <emphasis>|/path/to/google_search.pl</emphasis></term>
+			    <listitem><para>Searches google for the currently selected text (<emphasis>|</emphasis>) using the external script <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+	    </variablelist>
+    </example>
+    </blockquote>
   </section>
   <section id="adv_templates">
     <title>Templates</title>

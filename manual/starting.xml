@@ -5,32 +5,66 @@
   <section id="start_wizard">
     <title>The initial wizard</title>
     <para>
+	The first time that you start Sylpheed-Claws, you will be asked a few questions in order to set up an account. These questions are easy to answer and grouped in several short pages.
+    </para><para>
+	    First you will be asked to fill in your name, (<emphasis>usually guessed from the operating system</emphasis>), your email address, and the name of your organisation, (<emphasis>optional</emphasis>).
+    </para><para>
+	    On the next page you will enter the address of your SMTP server, (<emphasis>sometimes referred to as <quote>Outgoing server</quote></emphasis>).
+    </para><para>The following page will allow you to enter details of how to retrieve your mail. The format of the page will be determined by the <quote>Server type</quote>:
+    </para>
+    <blockquote><variablelist>
+	    <varlistentry><term>POP3</term>
+		    <listitem><para>If you choose POP3, you will need to enter the server address, username, and password. The password is optional, if you don't provide it here then you will be prompted for it each time it is needed.
+		    </para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>IMAP</term>
+		    <listitem><para>If you choose IMAP, you will need to enter the server address, username, password, and IMAP server directory. The password is optional, if you don't provide it here then you will be prompted for it each time it is needed. The IMAP server directory is also optional, often it is not needed and can be left empty.
+			    </para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>Local mbox file</term>
+		    <listitem><para>If you choose Local mbox file, you will need to enter the location of your local mailbox file.
+			    </para></listitem>
+	    </varlistentry>
+    </variablelist></blockquote>
+<para>If you chose either POP3 or Local mbox file, the next page  will ask you where to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
+    </para><para>If Sylpheed-Claws is built with support for OpenSSL, you will next see the <quote>Security</quote> page, here you will be able to choose to use SSL encryption to send and receive your emails. Most ISPs do not enable this, but many companies do; if you're unsure about it, you can leave them unselected.
+    </para><para>
+	You can now click on the Save button, and start enjoying Sylpheed-Claws.
     </para>
   </section>
 
   <section id="start_getting">
     <title>Getting mail</title>
     <para>
+	Retrieving your email can be done from the toolbar button named <quote>Get mail</quote> or from the <quote>Receive</quote> submenu of the <quote>Message</quote> menu.
+    </para><para>
+	If you want Sylpheed-Claws to check your mail automatically at regular intervals, you can ask it to do so from the <quote>Mail handling: Receive</quote> preference page which you'll find in the <quote>Configuration/Preferences...</quote> menu. Just click the <quote>Auto-check new mail every [...] minutes</quote> checkbox, and set the interval to your liking.
     </para>
   </section>
 
   <section id="start_reading">
-    <title>Reading mail</title>
+    <title>Reading your mail</title>
     <para>
+	Once you have retrieved your emails, the Inbox folder will contain them. The total number of emails in a folder is shown at the right of the folder's name, along with the number of unread and new emails in it. To see them, click on the folder row in the folder list, and the list of emails in that folder will be displayed in the message list pane. You can then select an email using the mouse, or by using the Up and Down keys to navigate through the list, and the Space bar to display and scroll emails. You can use other keys to navigate through emails, like P and N (previous and next).
     </para>
   </section>
 
-  <section id="start_writting">
-    <title>Writting first mail</title>
+  <section id="start_writing">
+    <title>Writing your first mail</title>
     <para>
+	When clicking on the <quote>Compose</quote> button of the toolbar, a composition window will open. This window contains different fields which you should be able to recognise easily: the From field can be used to select which account you want to use with this email, in the case that you have multiple accounts; the To field is for recipient of the email. When you fill it up, a second To field will appear, so that you can send the email to multiple recipients. You can also change the To field to a Cc field or other types of fields, by using its dropdown menu. After that, you will be able to set the subject of your email, then type its body.
+    </para><para>
+	A little note about an email's subject: Sylpheed-Claws will ask you for confirmation if you attempt to send an email with an empty subject. This is because it can be annoying for the recipient to receive emails with no subjects, as it doesn't help him to quickly handle his emails.
     </para>
   </section>
 
   <section id="start_sending">
-    <title>Send first mail</title>
+    <title>Sending the first mail</title>
     <para>
+	When you have finished writing your first email, you can either click the <quote>Send</quote> button to send your email immediately, or use the <quote>Send later</quote> button. When using <quote>Send</quote>, the composition window will close itself when the mail has been sent; it will stay open if there is an error. When using <quote>Send later</quote>, the composition window will immediately close, and your email will be stored in your Queue folder. It will then be sent when you click the <quote>Send</quote> button in the main window's toolbar.
+    </para><para>
+	The emails you send are saved in the Sent folder of your mailbox, so that you can remember what you wrote to whom, or use an already sent email as a template to write another one.
     </para>
   </section>
-
 </section>
 
