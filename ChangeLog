@@ -1,3 +1,9 @@
+2005-11-24 [cleroy]	1.9.100cvs32
+
+	* src/compose.c
+		Fix bug #856 (reediting messages forgets Request
+		Return Receipt)
+
 2005-11-24 [paul]	1.9.100cvs31
 
 	* manual/addrbook.xml

@@ -1562,6 +1562,14 @@ void compose_reedit(MsgInfo *msginfo)
 			gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
 			gtk_editable_insert_text(GTK_EDITABLE(compose->savemsg_entry), &queueheader_buf[4], strlen(&queueheader_buf[4]), &startpos);
 		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "RRCPT:")) {
+			gint active = atoi(&queueheader_buf[strlen("RRCPT:")]);
+			if (active) {
+				GtkItemFactory *ifactory;
+				ifactory = gtk_item_factory_from_widget(compose->menubar);
+				menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
+			}
+		}
 	}
 	
 	if (compose_parse_header(compose, msginfo) < 0) return;
@@ -4380,6 +4388,10 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "SCF:%s\n", savefolderid);
 		g_free(savefolderid);
 	}
+	/* Save copy folder */
+	if (compose->return_receipt) {
+		fprintf(fp, "RRCPT:1\n");
+	}
 	/* Message-ID of message replying to */
 	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
 		gchar *folderid;
@@ -6962,6 +6974,9 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
 		fprintf(fp, "SCF:%s\n", savefolderid);
 		g_free(savefolderid);
+	}
+	if (compose->return_receipt) {
+		fprintf(fp, "RRCPT:1\n");
 	}
 	if (compose->privacy_system) {
 		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
