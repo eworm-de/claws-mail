@@ -1,3 +1,8 @@
+2005-11-25 [paul]	1.9.100cvs34
+
+	* src/plugins/clamav/clamav_plugin.c
+		reflect upstream changes
+
 2005-11-25 [paul]	1.9.100cvs33
 
 	* manual/ack.xml

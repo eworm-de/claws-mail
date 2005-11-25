@@ -123,6 +123,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
     	params.limits.maxfiles = 1000; /* max files */
     	params.limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
     	params.limits.maxreclevel = 8; /* maximum recursion level */
+	params.limits.maxratio = 200; /* maximal compression ratio */
+	params.limits.archivememlim = 0; /* disable memory limit for bzip2 scanner */
 
 	if (config.clamav_enable_arc)
 		params.scan_archive = TRUE;
@@ -212,14 +214,17 @@ gint plugin_init(gchar **error)
 
 	clamav_gtk_init();
 
-    	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no)) != 0) {
+    	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
 		return -1;
     	}
 
     	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
-    	cl_buildtrie(cl_database);
+    	if((ret = cl_build(cl_database))) {
+		debug_print("Database initialization error: %s\n", cl_strerror(ret));
+		return -1;
+    	}
 
 	debug_print("ClamAV plugin loaded\n");
 
@@ -231,7 +236,7 @@ void plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);
-	cl_freetrie(cl_database);
+	cl_free(cl_database);
 	debug_print("ClamAV plugin unloaded\n");
 }
 
