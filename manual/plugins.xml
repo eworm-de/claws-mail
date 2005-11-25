@@ -5,14 +5,74 @@
   <section id="plugins_default">
     <title>Provided plugins</title>
     <para>
+	Sylpheed-Claws' capabilities are extended by plugins. It comes with the following plugins included, all of which are built automatically if the required libraries are present.
+    </para><para>
+	Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/ and have a suffix of <quote>.so</quote> To load a plugin go to <quote>Configuration/Plugins</quote> and click the <quote>Load Plugin</quote> button. Select the plugin that you want and click OK.
+    </para><para>
+	If you don't find the plugin you're looking for, it is possible that your GNU/Linux distribution provides it in a separate package. In this case, search for the plugin in your package manager.
     </para>
+    <variablelist>
+	    <varlistentry><term>Clam Antivirus</term>
+	    <listitem><para>Enables the scanning of message attachments in mail received from a POP, IMAP or LOCAL account using Clam AntiVirus. It can optionally delete the mail or save it to a designated folder. Preferences can be found in <quote>Configuration/Preferences/Plugins/Clam AntiVirus</quote>. Clam AntiVirus is available from <ulink url="http://clamav.sourceforge.net/">http://clamav.sourceforge.net/</ulink>.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>Dillo HTML Viewer</term>
+	    <listitem><para>Enables the viewing of html messages using the Dillo web browser, version 0.7.0 or newer. It uses Dillo's --local option by default for safe browsing. Preferences can be found in <quote>/Configuration/Preferences/Plugins/Dillo Browser</quote>. Dillo is available from <ulink url="http://www.dillo.org/">http://www.dillo.org/</ulink>.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>MathML Viewer</term>
+	    <listitem><para>Enables the viewing of attachments that have the Content-Type 'text/mathml' using the GtkMathView widget which is available from <ulink url="http://helm.cs.unibo.it/mml-widget/">http://helm.cs.unibo.it/mml-widget/</ulink>.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>PGP/Core, PGP/Inline and PGP/MIME</term>
+	    <listitem><para>Handles PGP signed and/or encrypted mails. You can decrypt mails, verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>SpamAssassin</term>
+	    <listitem><para>Enables the scanning of incoming mail received from a POP, IMAP or LOCAL account using SpamAssassin. It can optionally delete mail identified as spam or save it to a designated folder. Preferences can be found in <quote>Configuration/Preferences/Plugins/SpamAssassin</quote>. SpamAssassin is available from <ulink url="http://spamassassin.org/">http://spamassassin.org/</ulink>.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>Trayicon</term>
+	    <listitem><para>Places an icon in the system tray that indicates whether you have any new mail. A tooltip also shows the current new, unread and total number of messages.</para></listitem>
+    </varlistentry>
+    </variablelist>
   </section>
 
   <section id="plugins_external">
     <title>More plugins</title>
     <para>
+	Other plugins have been written too, which are available as separate downloads. At the time of this writing, there are a number of plugins available at <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>:
+    </para>
+    <variablelist>
+    <varlistentry><term>Acpi Notifier</term>
+	    <listitem><para>Enables new mail notification via the LEDs found on some laptops like Acer, Asus and IBM laptops.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>AttRemover</term>
+	    <listitem><para> This plugin lets you remove attachments from emails.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>CacheSaver</term>
+	    <listitem><para>Saves the caches every 60 seconds (or user-defined period). It helps avoiding the loss of metadata if your computer (<emphasis>or Sylpheed-Claws!</emphasis>) crashes.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>etpan! Privacy</term>
+	    <listitem><para>Handles signature verification and decryption of encrypted messages in S/MIME, OpenPGP, and ascii-armored PGP formats.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>Fetchinfo</term>
+	    <listitem><para>Inserts headers containing some download information, like UIDL, Sylpheeds account name, POP server, user ID and retrieval time.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>Maildir</term>
+	    <listitem><para>Provides direct support for Maildir++ mailboxes. With this plugin you can share your Maildir++ mailbox with other mailers or IMAP servers.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>mailMBOX</term>
+	    <listitem><para>Handles mailboxes in mbox format. </para></listitem>
+    </varlistentry>
+    <varlistentry><term>Perl</term>
+	    <listitem><para>Intended to extend the filtering possibilities of Sylpheed-Claws. It provides a Perl interface to Sylpheed-Claws' filtering mechanism, allowing the use of full Perl power in email filters.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>SynCE</term>
+	    <listitem><para>Assists in keeping the addressbook of a Windows CE device (Pocket PC/ iPAQ, Smartphone etc) in sync with Claws' addressbook, with respect to email addresses.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>vCalendar</term>
+	    <listitem><para>Enables vCalendar message handling like that produced by Evolution or Outlook, and Webcal subscriptions.</para></listitem>
+    </varlistentry>
+    </variablelist>
+    <para>
+	If you're a developer, writing a plugin to extend Sylpheed-Claws' capabilities is probably the best and easiest solution. We will provide hosting to your code, and will be glad to answer your questions in the mailing-list or the IRC channel, #sylpheed on IRCnet.
     </para>
   </section>
 
 </section>
-

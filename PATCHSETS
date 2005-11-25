@@ -1016,3 +1016,4 @@
 ( cvs diff -u -r 1.60.2.39 -r 1.60.2.40 src/addressbook.c;  cvs diff -u -r 1.28.2.12 -r 1.28.2.13 src/addrindex.c;  cvs diff -u -r 1.2.4.9 -r 1.2.4.10 src/browseldap.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/wizard.c;  ) > 1.9.100cvs30.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/addrbook.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/advanced.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/starting.xml;  cvs diff -u -r 1.14.2.7 -r 1.14.2.8 src/importldif.c;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/wizard.c;  ) > 1.9.100cvs31.patchset
 ( cvs diff -u -r 1.382.2.196 -r 1.382.2.197 src/compose.c;  ) > 1.9.100cvs32.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/ack.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/plugins.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/sylpheed-claws-manual.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 tools/acroread2sylpheed.pl;  ) > 1.9.100cvs33.patchset

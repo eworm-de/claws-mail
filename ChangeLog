@@ -1,3 +1,12 @@
+2005-11-25 [paul]	1.9.100cvs33
+
+	* manual/ack.xml
+	* manual/plugins.xml
+	* manual/sylpheed-claws-manual.xml
+		written/updated by Colin, edited by me
+	* tools/acroread2sylpheed.pl
+		update binary name
+
 2005-11-24 [cleroy]	1.9.100cvs32
 
 	* src/compose.c

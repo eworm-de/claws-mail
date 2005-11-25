@@ -17,7 +17,7 @@
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # acroread2sylpheed.pl	helper script to send documents from
-#				Adobe Reader 7 to sylpheed
+#			Adobe Reader 7 to sylpheed-claws
 
 use strict;
 
@@ -40,8 +40,8 @@ if ($ARGV =~ m/^\//) {
 	$pdf = $ENV{HOME}."/".$output;
 }
 
-exec "sylpheed --attach \"$pdf\"";
+exec "sylpheed-claws --attach \"$pdf\"";
 ## if necessary, change the line above to point to
-## your sylpheed executable
+## your sylpheed-claws executable
 
 exit;

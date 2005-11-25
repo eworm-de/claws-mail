@@ -19,18 +19,6 @@
     <corpauthor>
       <ulink url="http://claws.sylpheed.org">The Sylpheed Claws Team</ulink>
     </corpauthor>
-    <author><firstname>Abhay</firstname><surname>S. Kushwaha</surname>
-    </author>
-    <author><firstname>Colin</firstname><surname>Leroy</surname>
-    </author>
-    <author><firstname>Paul</firstname><surname>Mangan</surname>
-    </author>
-    <author><firstname>Ricardo</firstname><surname>Mones</surname>
-    </author>
-    <author><firstname>Sebastian</firstname><surname>Borkenkaefer</surname>
-    </author>
-    <author><firstname>Subash</firstname><surname>Jeyan</surname>
-    </author>
     <copyright>
       <year>2005</year>
       <holder>The Sylpheed Claws Team.</holder>
@@ -51,9 +39,9 @@
   &ch_starting;
   &ch_handling;
   &ch_account;
+  &ch_addrbook;
   &ch_advanced;
   &ch_plugins;
-  &ch_addrbook;
   &ap_faq;
   &ap_keyboard;
   &ap_ack;
