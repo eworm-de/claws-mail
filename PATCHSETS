@@ -1018,3 +1018,4 @@
 ( cvs diff -u -r 1.382.2.196 -r 1.382.2.197 src/compose.c;  ) > 1.9.100cvs32.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/ack.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/plugins.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/sylpheed-claws-manual.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 tools/acroread2sylpheed.pl;  ) > 1.9.100cvs33.patchset
 ( cvs diff -u -r 1.13.2.13 -r 1.13.2.14 src/plugins/clamav/clamav_plugin.c;  ) > 1.9.100cvs34.patchset
+( cvs diff -u -r 1.13.2.14 -r 1.13.2.15 src/plugins/clamav/clamav_plugin.c;  ) > 1.9.100cvs35.patchset
