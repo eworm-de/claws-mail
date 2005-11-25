@@ -116,8 +116,6 @@ Select the plugin that you want and click 'OK'
     folder. Preferences can be found in '/Configuration/
     Preferences/Plugins/SpamAssassin'.
     SpamAssassin is available from http://spamassassin.org
-    Configure option:
-    	--enable-spamassassin-plugin
 	
   o Trayicon 
     Places an icon in the system tray that indicates whether
@@ -137,8 +135,7 @@ http://claws.sylpheed.org/plugins.php
   the compose window. This is a generic tool that allows to do any uncommon 
   actions on the messages, and thus extends the possibilities of Sylpheed-Claws. 
   For example, Sylpheed-Claws does not include the rot13 cyphering algorithm 
-  popular in some newsgroups. It does not support natively armored 
-  encryption or clear signing. It does not support uuencoded messages. As 
+  popular in some newsgroups. It does not support uuencoded messages. As 
   all these features can be handled by external programs, the actions 
   provide a convenient way to use them from the menu bar.
 
