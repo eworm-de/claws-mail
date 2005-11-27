@@ -56,7 +56,7 @@ static GtkItemFactoryEntry mh_popup_entries[] =
 	{N_("/C_heck for new folders"),	 NULL, update_tree_cb,    1, NULL},
 	{N_("/R_ebuild folder tree"),	 NULL, update_tree_cb,    2, NULL},
 	{N_("/---"),			 NULL, NULL, 		  0, "<Separator>"},
-	{N_("/Remove _mailbox"),	 NULL, remove_mailbox_cb, 0, NULL},
+	{N_("/Remove _mailbox..."),	 NULL, remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 		  0, "<Separator>"},
 };
 
@@ -103,7 +103,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);
 	SET_SENS("/Rebuild folder tree",    folder_item_parent(item) == NULL);
 
-	SET_SENS("/Remove mailbox",         folder_item_parent(item) == NULL);
+	SET_SENS("/Remove mailbox...",         folder_item_parent(item) == NULL);
 
 #undef SET_SENS
 }
