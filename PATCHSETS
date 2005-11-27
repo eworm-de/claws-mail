@@ -1020,3 +1020,4 @@
 ( cvs diff -u -r 1.13.2.13 -r 1.13.2.14 src/plugins/clamav/clamav_plugin.c;  ) > 1.9.100cvs34.patchset
 ( cvs diff -u -r 1.13.2.14 -r 1.13.2.15 src/plugins/clamav/clamav_plugin.c;  ) > 1.9.100cvs35.patchset
 ( cvs diff -u -r 1.58.2.15 -r 1.58.2.16 po/de.po;  ) > 1.9.100cvs36.patchset
+( cvs diff -u -r 1.204.2.67 -r 1.204.2.68 src/prefs_common.c;  cvs diff -u -r 1.103.2.35 -r 1.103.2.36 src/prefs_common.h;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_receive.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/prefs_summaries.c;  ) > 1.9.100cvs37.patchset

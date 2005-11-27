@@ -52,6 +52,7 @@ typedef struct _ReceivePage
 	GtkWidget *checkbtn_autochk;
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *checkbtn_chkonstartup;
+	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_scan_after_inc;
 	GtkWidget *checkbtn_newmail_auto;
 	GtkWidget *checkbtn_newmail_manu;
@@ -96,8 +97,8 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *label_autochk2;
 	GtkWidget *checkbtn_chkonstartup;
+	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_scan_after_inc;
-
 
 	GtkWidget *frame_newmail;
 	GtkWidget *hbox_newmail_notify;
@@ -176,9 +177,10 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
 			   _("Check new mail on startup"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox,
+		 	   _("Go to inbox after receiving new mail"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
 			   _("Update all local folders after incorporation"));
-
 
 	/* receive dialog */
 	hbox_recvdialog = gtk_hbox_new (FALSE, 8);
@@ -254,6 +256,8 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.close_recv_dialog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_chkonstartup),
 		prefs_common.chk_on_startup);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openinbox),
+		prefs_common.open_inbox_on_inc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_scan_after_inc),
 		prefs_common.scan_all_after_inc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmail_auto),
@@ -278,6 +282,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_receive->checkbtn_autochk = checkbtn_autochk;
 	prefs_receive->spinbtn_autochk = spinbtn_autochk;
 	prefs_receive->checkbtn_chkonstartup = checkbtn_chkonstartup;
+	prefs_receive->checkbtn_openinbox = checkbtn_openinbox;
 	prefs_receive->checkbtn_scan_after_inc = checkbtn_scan_after_inc;
 	prefs_receive->checkbtn_newmail_auto = checkbtn_newmail_auto;
 	prefs_receive->checkbtn_newmail_manu = checkbtn_newmail_manu;
@@ -312,6 +317,8 @@ void prefs_receive_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_close_recv_dialog));
 	prefs_common.chk_on_startup = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_chkonstartup));
+	prefs_common.open_inbox_on_inc = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_openinbox));
 	prefs_common.scan_all_after_inc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_scan_after_inc));
 	prefs_common.newmail_notify_auto = gtk_toggle_button_get_active(

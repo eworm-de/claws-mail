@@ -58,7 +58,6 @@ typedef struct _SummariesPage
 
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
-	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
  	GtkWidget *optmenu_select_on_entry;
@@ -707,9 +706,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *frame_dispitem;
 	GtkWidget *button_dispitem;
 
+	GtkWidget *vbox4;
+	GtkWidget *hbox2;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
-	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
 	GtkTooltips *immedexec_tooltip;
@@ -737,7 +737,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
 
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+	PACK_VSPACER(vbox1, vbox2, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -764,23 +764,23 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	/* ---- Summary ---- */
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (vbox1), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 0);
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (vbox2), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 0);
 
 	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_useaddrbook,
+		(vbox3, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
 	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_threadsubj,
+		(vbox3, chkbtn_threadsubj,
 		 _("Thread using subject in addition to standard headers"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, TRUE, 0);
 
 	label_datefmt = gtk_label_new (_("Date format"));
 	gtk_widget_show (label_datefmt);
@@ -799,7 +799,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
-	PACK_FRAME(vbox2, frame_dispitem, _("Set displayed columns"));
+	PACK_FRAME(vbox3, frame_dispitem, _("Set displayed columns"));
 
 	hbox_dispitem = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_dispitem);
@@ -822,9 +822,9 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+	vbox4 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox4);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox4, FALSE, FALSE, 0);
 
 	/* PACK_CHECK_BUTTON (vbox2, checkbtn_emacs,
 			   _("Emulate the behavior of mouse operation of\n"
@@ -832,26 +832,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify (GTK_LABEL (GTK_BIN (checkbtn_emacs)->child),
 			       GTK_JUSTIFY_LEFT);   */
 
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_always_show_msg,
-		 _("Always open message when selected"));
-
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_mark_as_read_on_newwin,
-		 _("Only mark message as read when opened in new window"));
-
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_openinbox,
-		 _("Go to inbox after receiving new mail"));
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
-
 	immedexec_tooltip = gtk_tooltips_new();
 
 	PACK_CHECK_BUTTON
-		(vbox3, checkbtn_immedexec,
+		(vbox4, checkbtn_immedexec,
 		 _("Execute immediately when moving or deleting messages"));
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(immedexec_tooltip), checkbtn_immedexec,
 			     _("Messages will be marked until execution"
@@ -859,12 +843,20 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			     NULL);
 
 	PACK_CHECK_BUTTON
-		(vbox3, checkbtn_ask_mark_all_read,
+		(vbox4, checkbtn_ask_mark_all_read,
 		 _("Confirm before marking all mails in a folder as read"));
+
+	PACK_CHECK_BUTTON
+		(vbox4, checkbtn_always_show_msg,
+		 _("Always open message when selected"));
+
+	PACK_CHECK_BUTTON
+		(vbox4, checkbtn_mark_as_read_on_newwin,
+		 _("Only mark message as read when opened in a new window"));
 
 	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox1, FALSE, FALSE, 0);
 
 	hbox_select_on_entry = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_select_on_entry);
@@ -910,13 +902,13 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog), menu);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
 
 	button_keybind = gtk_button_new_with_label (_(" Set key bindings... "));
 	gtk_widget_show (button_keybind);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), button_keybind, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_keybind), "clicked",
 			  G_CALLBACK (prefs_keybind_select), NULL);
 
@@ -940,8 +932,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.always_show_msg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
 			prefs_common.mark_as_read_on_new_window);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_openinbox),
-			prefs_common.open_inbox_on_inc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_immedexec),
 			prefs_common.immediate_exec);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
@@ -961,7 +951,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
-	prefs_summaries->checkbtn_openinbox = checkbtn_openinbox;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
 	prefs_summaries->optmenu_select_on_entry = optmenu_select_on_entry;
@@ -995,8 +984,6 @@ void prefs_summaries_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));
 	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_newwin));
-	prefs_common.open_inbox_on_inc = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_openinbox));
 	prefs_common.immediate_exec = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
 	prefs_common.ask_mark_all_read = gtk_toggle_button_get_active(

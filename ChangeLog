@@ -1,3 +1,14 @@
+2005-11-27 [paul]	1.9.100cvs37
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_receive.c
+	* src/prefs_summaries.c
+		move 'go to inbox after receiving new mail'
+		option from display/sumamaries to mail
+		handling/receive, and rework prefs_summaries
+		dialog a little
+
 2005-11-25 [martin]	1.9.100cvs36
 
 	* po/de.po

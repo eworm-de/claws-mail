@@ -76,6 +76,7 @@ struct _PrefsCommon
 	gboolean autochk_newmail;
 	gint autochk_itv;
 	gboolean chk_on_startup;
+	gboolean open_inbox_on_inc;
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
@@ -278,7 +279,6 @@ struct _PrefsCommon
 	gboolean always_show_msg;
 	gboolean mark_as_read_on_new_window;
 	gboolean mark_as_read_delay;
-	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	SelectOnEntry select_on_entry;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
