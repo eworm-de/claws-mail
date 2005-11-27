@@ -30,7 +30,7 @@ NULL
 static char *TRANS_TEAM_LIST[] = {
 "[bg] George Danchev <danchev@spnet.net>",
 "[ca] Miquel Oliete <miqueloliete@softhome.net>",
-"[de] Thomas Gilgin <thg1@karate-muellheim.de>",
+"[de] Stephan Sachse <white@dev-zero.com>",
 "[en_GB] Paul Mangan <twb@users.sf.net>",
 "[es] Ricardo Mones Lastra <mones@users.sf.net>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",

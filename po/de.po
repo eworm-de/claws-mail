@@ -1,5 +1,6 @@
 # German translation of Sylpheed.
 # Copyright (C) 2000 Free Software Foundation, Inc.
+# Stephan Sachse <white@dev-zero.com>, 2005
 # Thomas Gilgin <thg1@karate-muellheim.de>, 2004, 2005
 # Hubert Gilgin, 2004
 # Jens Oberender <j.obi@troja.net>, 2003, 2004
@@ -9,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2005-11-25 15:30+0100\n"
-"PO-Revision-Date: 2005-10-29 00:20+0200\n"
+"POT-Creation-Date: 2005-11-26 16:49+0100\n"
+"PO-Revision-Date: 2005-11-26 17:33+0100\n"
 "Last-Translator: Stephan Sachse <white@dev-zero.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +25,7 @@ msgid ""
 "Please close all the composing windows before editing the accounts."
 msgstr ""
 "Es sind einige Fenster zum Verfassen von Nachrichten geöffnet.\n"
-"Bitte schließen Sie diese Fenster vor dem Bearbeiten der Accounts."
+"Bitte schließen Sie diese Fenster vor dem Bearbeiten der Konten."
 
 #: src/account.c:418
 msgid "Can't create folder."
@@ -71,7 +72,7 @@ msgid "Delete account"
 msgstr "Konto löschen"
 
 #: src/account.c:1415 src/addressadd.c:185 src/addressbook.c:747
-#: src/compose.c:5068 src/compose.c:5294 src/editaddress.c:953
+#: src/compose.c:5080 src/compose.c:5306 src/editaddress.c:953
 #: src/editaddress.c:1002 src/editbook.c:175 src/editgroup.c:279
 #: src/editjpilot.c:270 src/editldap.c:398 src/editvcard.c:183
 #: src/importmutt.c:227 src/importpine.c:227 src/mimeview.c:199
@@ -246,7 +247,7 @@ msgstr "/_Adresse"
 
 #: src/addressbook.c:421
 msgid "/_Address/_Select all"
-msgstr "/_Adresse/Alle au_swählen"
+msgstr "/_Adresse/_Löschen/_Adresse/all_e auswählen"
 
 #: src/addressbook.c:422 src/addressbook.c:426 src/addressbook.c:429
 #: src/addressbook.c:432
@@ -292,15 +293,15 @@ msgstr "/E_xtras"
 
 #: src/addressbook.c:435
 msgid "/_Tools/Import _LDIF file..."
-msgstr "/E_xtras/_LDIF Datei importieren..."
+msgstr "/E_xtras/_LDIF-Datei importieren..."
 
 #: src/addressbook.c:436
 msgid "/_Tools/Import M_utt file..."
-msgstr "/E_xtras/M_utt Datei importieren..."
+msgstr "/E_xtras/M_utt-Datei importieren..."
 
 #: src/addressbook.c:437
 msgid "/_Tools/Import _Pine file..."
-msgstr "/E_xtras/_Pine Datei importieren..."
+msgstr "/E_xtras/_Pine-Datei importieren..."
 
 #: src/addressbook.c:438 src/mainwindow.c:726 src/mainwindow.c:749
 #: src/mainwindow.c:751 src/mainwindow.c:760 src/mainwindow.c:763
@@ -364,7 +365,7 @@ msgstr "/_Einfügen"
 
 #: src/addressbook.c:459
 msgid "/_Select all"
-msgstr "/Alles au_swählen"
+msgstr "All_e auswählen"
 
 #: src/addressbook.c:464
 msgid "/New _Address"
@@ -439,7 +440,7 @@ msgstr "Fehler beim Verbinden mit dem LDAP-Server"
 
 #: src/addressbook.c:515
 msgid "Error initializing LDAP"
-msgstr "Fehler beim LDAP Start"
+msgstr "Fehler beim LDAP-Start"
 
 #: src/addressbook.c:516
 msgid "Error binding to LDAP server"
@@ -486,18 +487,18 @@ msgstr "Adressbuch"
 msgid "Lookup name:"
 msgstr "Suchname:"
 
-#: src/addressbook.c:933 src/compose.c:1729 src/compose.c:3777
-#: src/compose.c:4925 src/compose.c:5603 src/headerview.c:53
+#: src/addressbook.c:933 src/compose.c:1737 src/compose.c:3785
+#: src/compose.c:4937 src/compose.c:5615 src/headerview.c:53
 #: src/prefs_template.c:205 src/summary_search.c:218
 msgid "To:"
 msgstr "An:"
 
-#: src/addressbook.c:937 src/compose.c:1713 src/compose.c:3591
-#: src/compose.c:3776 src/prefs_template.c:207
+#: src/addressbook.c:937 src/compose.c:1721 src/compose.c:3599
+#: src/compose.c:3784 src/prefs_template.c:207
 msgid "Cc:"
 msgstr "Cc:"
 
-#: src/addressbook.c:941 src/compose.c:1716 src/compose.c:3619
+#: src/addressbook.c:941 src/compose.c:1724 src/compose.c:3627
 #: src/prefs_template.c:208
 msgid "Bcc:"
 msgstr "Bcc:"
@@ -521,7 +522,7 @@ msgstr "Einfügen nicht möglich, da das Zieladressbuch nur lesbar ist."
 
 #: src/addressbook.c:1800
 msgid "Cannot paste into an address group."
-msgstr "Einfügen in die Adressgruppe nicht möglich."
+msgstr "Einfügen in eine Adressgruppe nicht möglich."
 
 #: src/addressbook.c:2527
 #, c-format
@@ -610,7 +611,7 @@ msgstr "Adressbuch-Konvertierungsfehler"
 
 #: src/addressbook.c:3454
 msgid "Addressbook Error"
-msgstr "Adressbuch Fehler"
+msgstr "Adressbuch-Fehler"
 
 #: src/addressbook.c:3455
 msgid "Could not read address index"
@@ -622,7 +623,7 @@ msgstr "Adressindex konnte nicht gelesen werden."
 #.
 #: src/addressbook.c:3814
 msgid "Busy searching..."
-msgstr "Beschäftigt beim Suchen..."
+msgstr "Beschäftigt mit Suchen..."
 
 #. *
 #. * Label (a format string) that is used to name each folder.
@@ -647,7 +648,7 @@ msgstr "Person"
 
 #: src/addressbook.c:4158
 msgid "EMail Address"
-msgstr "E-Mail Adresse"
+msgstr "E-Mail-Adresse"
 
 #: src/addressbook.c:4174
 msgid "Group"
@@ -669,11 +670,11 @@ msgstr "JPilot"
 
 #: src/addressbook.c:4254
 msgid "LDAP Server"
-msgstr "LDAP Server"
+msgstr "LDAP-Server"
 
 #: src/addressbook.c:4270
 msgid "LDAP Query"
-msgstr "LDAP Anfrage"
+msgstr "LDAP-Anfrage"
 
 #: src/addrgather.c:158
 msgid "Please specify name for address book."
@@ -681,7 +682,7 @@ msgstr "Bitte Namen für das Adressbuch angeben."
 
 #: src/addrgather.c:178
 msgid "Please select the mail headers to search."
-msgstr "Bitte Kopfzeilen zum Suchen angeben."
+msgstr "Bitte zu suchende Kopfzeilen angeben."
 
 #. Go fer it
 #: src/addrgather.c:185
@@ -736,7 +737,7 @@ msgid "Address Count"
 msgstr "Adresszahl"
 
 #. Create notebook pages
-#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:4102
+#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:4110
 #: src/messageview.c:557 src/messageview.c:570
 #: src/plugins/pgpcore/sgpgme.c:419
 msgid "Warning"
@@ -753,11 +754,11 @@ msgstr "Ende"
 
 #: src/addrgather.c:600
 msgid "Harvest E-Mail Addresses - from Selected Messages"
-msgstr "E-Mail Adressen sammeln - aus gewählten Nachrichten"
+msgstr "E-Mail-Adressen sammeln - aus gewählten Nachrichten"
 
 #: src/addrgather.c:608
 msgid "Harvest E-Mail Addresses - from Folder"
-msgstr "E-Mail Adressen sammeln - aus Ordner"
+msgstr "E-Mail-Adressen sammeln - aus Ordner"
 
 #: src/addrindex.c:115 src/addrindex.c:126
 msgid "Common address"
@@ -775,11 +776,11 @@ msgstr "Allgemeine Adressen"
 msgid "Personal addresses"
 msgstr "Persönliche Adressen"
 
-#: src/alertpanel.c:140 src/compose.c:6583
+#: src/alertpanel.c:140 src/compose.c:6595
 msgid "Notice"
 msgstr "Notiz"
 
-#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:4049 src/inc.c:584
+#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:4057 src/inc.c:584
 #: src/plugins/pgpcore/sgpgme.c:123 src/plugins/pgpcore/sgpgme.c:191
 msgid "Error"
 msgstr "Fehler"
@@ -860,7 +861,7 @@ msgstr "Fehler bei der SMTP-Sitzung\n"
 
 #: src/common/smtp.c:533 src/pop.c:841
 msgid "error occurred on authentication\n"
-msgstr "Fehler bei der Autorisierung\n"
+msgstr "Fehler bei der Anmeldung\n"
 
 #: src/common/smtp.c:588
 #, c-format
@@ -900,7 +901,7 @@ msgstr ""
 "  Besitzer: %s (%s) in %s\n"
 "  Signiert von: %s (%s) in %s\n"
 "  Fingerabdruck: %s\n"
-"  Signatur Status: %s"
+"  Signaturstatus: %s"
 
 #: src/common/ssl_certificate.c:309
 msgid "Can't load X509 default paths"
@@ -912,7 +913,7 @@ msgid ""
 "%s presented an unknown SSL certificate:\n"
 "%s"
 msgstr ""
-"%s legte ein unbekanntes SSL Zertifikate vor:\n"
+"%s legte ein unbekanntes SSL Zertifikat vor:\n"
 "%s"
 
 #: src/common/ssl_certificate.c:371 src/common/ssl_certificate.c:409
@@ -925,7 +926,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Es werden von diesem Konto keine Mails abgerufen bis das Zertifikat "
+"Es werden von diesem Konto keine Mails abgerufen, bis das Zertifikat "
 "gespeichert ist.\n"
 "('%s' Einstellung abwählen).\n"
 
@@ -953,7 +954,7 @@ msgstr ""
 "Jetzt ist es:\n"
 "%s\n"
 "\n"
-"Das könnte heißen, dass der Server, der antwortet, nicht der Bekannte ist."
+"Das könnte heißen, dass der Server, der antwortet, nicht der bekannte ist."
 
 #: src/common/string_match.c:74
 msgid "(Subject cleared by RegExp)"
@@ -1357,57 +1358,57 @@ msgstr "/E_xtras/A_ktionen"
 msgid "Fw: multiple emails"
 msgstr "Fw: mehrere E-Mails"
 
-#: src/compose.c:1719
+#: src/compose.c:1727
 msgid "Reply-To:"
 msgstr "Antwort an:"
 
-#: src/compose.c:1722 src/compose.c:4922 src/compose.c:5605
+#: src/compose.c:1730 src/compose.c:4934 src/compose.c:5617
 #: src/headerview.c:54
 msgid "Newsgroups:"
 msgstr "Newsgroups:"
 
-#: src/compose.c:1725
+#: src/compose.c:1733
 msgid "Followup-To:"
 msgstr "Followup an:"
 
-#: src/compose.c:2113
+#: src/compose.c:2121
 msgid "Quote mark format error."
 msgstr "Zitatzeichen-Formatfehler."
 
-#: src/compose.c:2129
+#: src/compose.c:2137
 msgid "Message reply/forward format error."
 msgstr "Antwort-/Weiterleitungs-Formatfehler."
 
-#: src/compose.c:2678
+#: src/compose.c:2686
 #, c-format
 msgid "File %s is empty."
 msgstr "Datei %s ist leer."
 
-#: src/compose.c:2682
+#: src/compose.c:2690
 #, c-format
 msgid "Can't read %s."
 msgstr "%s konnte nicht gelesen werden."
 
-#: src/compose.c:2709
+#: src/compose.c:2717
 #, c-format
 msgid "Message: %s"
 msgstr "Nachricht: %s"
 
-#: src/compose.c:3465
+#: src/compose.c:3473
 msgid " [Edited]"
 msgstr " [Bearbeitet]"
 
-#: src/compose.c:3471
+#: src/compose.c:3479
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Nachricht verfassen%s"
 
-#: src/compose.c:3474
+#: src/compose.c:3482
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[kein Betreff] - Nachricht verfassen%s"
 
-#: src/compose.c:3499 src/messageview.c:592
+#: src/compose.c:3507 src/messageview.c:592
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1415,29 +1416,29 @@ msgstr ""
 "Kein Konto zum Versenden von E-Mails angegeben.\n"
 "Bitte wählen Sie einen E-Mail-Konto vor dem Senden."
 
-#: src/compose.c:3601 src/compose.c:3629 src/compose.c:3656
+#: src/compose.c:3609 src/compose.c:3637 src/compose.c:3664
 #: src/prefs_account.c:1003 src/prefs_send.c:333 src/toolbar.c:387
 #: src/toolbar.c:434
 msgid "Send"
 msgstr "Senden"
 
-#: src/compose.c:3602
+#: src/compose.c:3610
 msgid "The only recipient is the default CC address. Send anyway?"
-msgstr "Der einzigste Empfänger ist die Standard Cc Adresse. Trotzdem senden?"
+msgstr "Der einzige Empfänger ist die Standard Cc Adresse. Trotzdem senden?"
 
-#: src/compose.c:3630
+#: src/compose.c:3638
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "Der einzigste Empfänger ist die Standard Bcc Adresse. Trotzdem senden?"
 
-#: src/compose.c:3644
+#: src/compose.c:3652
 msgid "Recipient is not specified."
 msgstr "Kein Empfänger angegeben"
 
-#: src/compose.c:3657
+#: src/compose.c:3665
 msgid "Subject is empty. Send it anyway?"
 msgstr "Betreff ist leer. Trotzdem senden?"
 
-#: src/compose.c:3683
+#: src/compose.c:3691
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1447,7 +1448,7 @@ msgstr ""
 "\n"
 "Zeichensatz-Konvertierung fehlgeschlagen."
 
-#: src/compose.c:3686
+#: src/compose.c:3694
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1455,9 +1456,9 @@ msgid ""
 msgstr ""
 "Nachricht konnte nicht für das Senden zwischengespeichert werden:\n"
 "\n"
-"Signierung fehlgeschlagen."
+"Signieren fehlgeschlagen."
 
-#: src/compose.c:3689
+#: src/compose.c:3697
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1468,11 +1469,11 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:3691
+#: src/compose.c:3699
 msgid "Could not queue message for sending."
 msgstr "Nachricht konnte nicht für das Senden zwischengespeichert werden"
 
-#: src/compose.c:3706 src/compose.c:3735
+#: src/compose.c:3714 src/compose.c:3743
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1481,7 +1482,7 @@ msgstr ""
 "gesendet werden. Benutzen Sie 'Wartende Nachrichten senden'\n"
 "aus dem Hauptmenu zum Wiederholen."
 
-#: src/compose.c:4046
+#: src/compose.c:4054
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -1492,7 +1493,7 @@ msgstr ""
 "spezifizierten Zeichensatz %s konvertiert werden.\n"
 "Als %s senden?"
 
-#: src/compose.c:4098
+#: src/compose.c:4106
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -1505,59 +1506,59 @@ msgstr ""
 "\n"
 "Trotzdem senden?"
 
-#: src/compose.c:4275
+#: src/compose.c:4283
 msgid "No account for sending mails available!"
 msgstr "Kein Konto zum Versenden von E-Mails vorhanden!"
 
-#: src/compose.c:4285
+#: src/compose.c:4293
 msgid "No account for posting news available!"
 msgstr "Kein Konto zum Versenden von News vorhanden!"
 
-#: src/compose.c:5005 src/headerview.c:52 src/summary_search.c:211
+#: src/compose.c:5017 src/headerview.c:52 src/summary_search.c:211
 msgid "From:"
 msgstr "Von:"
 
-#: src/compose.c:5056
+#: src/compose.c:5068
 msgid "Mime type"
-msgstr "Mime-Typ"
+msgstr "MIME-Typ"
 
 #. S_COL_DATE
-#: src/compose.c:5062 src/compose.c:5293 src/mimeview.c:198
+#: src/compose.c:5074 src/compose.c:5305 src/mimeview.c:198
 #: src/plugins/pgpcore/select-keys.c:330 src/prefs_summary_column.c:86
 #: src/summaryview.c:470
 msgid "Size"
 msgstr "Größe"
 
 #. Save Message to folder
-#: src/compose.c:5122
+#: src/compose.c:5134
 msgid "Save Message to "
 msgstr "Nachricht speichern unter "
 
-#: src/compose.c:5144 src/prefs_filtering_action.c:450
+#: src/compose.c:5156 src/prefs_filtering_action.c:450
 msgid "Select ..."
 msgstr "Auswählen ..."
 
-#: src/compose.c:5292 src/compose.c:6343
+#: src/compose.c:5304 src/compose.c:6355
 msgid "MIME type"
 msgstr "MIME-Typ"
 
 #. header labels and entries
-#: src/compose.c:5356 src/prefs_account.c:1615 src/prefs_customheader.c:201
+#: src/compose.c:5368 src/prefs_account.c:1615 src/prefs_customheader.c:201
 #: src/prefs_matcher.c:154
 msgid "Header"
 msgstr "Kopfzeile"
 
 #. attachment list
-#: src/compose.c:5358
+#: src/compose.c:5370
 msgid "Attachments"
 msgstr "Anhänge"
 
 #. Others Tab
-#: src/compose.c:5360
+#: src/compose.c:5372
 msgid "Others"
 msgstr "Weitere"
 
-#: src/compose.c:5375 src/headerview.c:55 src/prefs_template.c:209
+#: src/compose.c:5387 src/headerview.c:55 src/prefs_template.c:209
 #: src/summary_search.c:225
 msgid "Subject:"
 msgstr "Betreff:"
@@ -1566,13 +1567,13 @@ msgstr "Betreff:"
 #. * index of label_colors[] as data parameter. for the None color we
 #. * pass an invalid (high) value. also we attach a data pointer so we
 #. * can always get back the SummaryView pointer.
-#: src/compose.c:5559 src/exphtmldlg.c:462 src/gtk/colorlabel.c:294
+#: src/compose.c:5571 src/exphtmldlg.c:462 src/gtk/colorlabel.c:294
 #: src/gtk/gtkaspell.c:1613 src/gtk/gtkaspell.c:2276 src/prefs_account.c:629
 #: src/summaryview.c:4428
 msgid "None"
 msgstr "Keine"
 
-#: src/compose.c:5569
+#: src/compose.c:5581
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1581,7 +1582,7 @@ msgstr ""
 "Die Rechtschreibprüfung konnte nicht gestartet werden.\n"
 "%s"
 
-#: src/compose.c:5804
+#: src/compose.c:5816
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -1590,31 +1591,31 @@ msgstr ""
 "Das Verschlüsselungssystem '%s' kann nicht geladen werden. Es wird nicht "
 "möglich sein, diese Nachricht zu signieren oder zu verschlüsseln."
 
-#: src/compose.c:6234
+#: src/compose.c:6246
 msgid "Invalid MIME type."
-msgstr "Ungültiger MIME Typ"
+msgstr "Ungültiger MIME-Typ"
 
-#: src/compose.c:6252
+#: src/compose.c:6264
 msgid "File doesn't exist or is empty."
 msgstr "Datei existiert nicht oder ist leer."
 
-#: src/compose.c:6325
+#: src/compose.c:6337
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: src/compose.c:6370
+#: src/compose.c:6382
 msgid "Encoding"
 msgstr "Zeichensatzkodierung"
 
-#: src/compose.c:6395
+#: src/compose.c:6407
 msgid "Path"
 msgstr "Pfad"
 
-#: src/compose.c:6396 src/prefs_toolbar.c:1062
+#: src/compose.c:6408 src/prefs_toolbar.c:1062
 msgid "File name"
 msgstr "Dateiname"
 
-#: src/compose.c:6580
+#: src/compose.c:6592
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1625,11 +1626,11 @@ msgstr ""
 "Prozess beenden?\n"
 "Prozessgruppen-ID: %d"
 
-#: src/compose.c:6622
+#: src/compose.c:6634
 msgid "Compose: input from monitoring process\n"
-msgstr "Compose: input from monitoring process\n"
+msgstr "Verfassen: Eingabe vom übergeordneten Prozess\n"
 
-#: src/compose.c:6907
+#: src/compose.c:6919
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -1639,20 +1640,20 @@ msgstr ""
 "Nachricht konnte nicht zwischengespeichert werden\n"
 "%s."
 
-#: src/compose.c:6986
+#: src/compose.c:7001
 msgid "Could not save draft."
 msgstr "Entwurf konnte nicht gespeichert werden."
 
-#: src/compose.c:7054 src/compose.c:7077
+#: src/compose.c:7069 src/compose.c:7092
 msgid "Select file"
 msgstr "Datei auswählen"
 
-#: src/compose.c:7090
+#: src/compose.c:7105
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Datei '%s' konnte nicht gelesen werden."
 
-#: src/compose.c:7092
+#: src/compose.c:7107
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1661,36 +1662,36 @@ msgstr ""
 "Die Datei '%s' enthält ungültige Zeichen\n"
 "für die aktuelle Kodierung, Einfügung kann fehlerhaft sein."
 
-#: src/compose.c:7140
+#: src/compose.c:7155
 msgid "Discard message"
 msgstr "Nachricht verwerfen"
 
-#: src/compose.c:7141
+#: src/compose.c:7156
 msgid "This message has been modified. Discard it?"
 msgstr "Diese Nachricht wurde geändert. Verwerfen?"
 
-#: src/compose.c:7142
+#: src/compose.c:7157
 msgid "_Discard"
 msgstr "_Verwerfen"
 
-#: src/compose.c:7142
+#: src/compose.c:7157
 msgid "_Save to Drafts"
 msgstr "Entwurf _speichern"
 
-#: src/compose.c:7186
+#: src/compose.c:7201
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "Soll die Vorlage '%s' angewendet werden?"
 
-#: src/compose.c:7188
+#: src/compose.c:7203
 msgid "Apply template"
 msgstr "Vorlage anwenden"
 
-#: src/compose.c:7189
+#: src/compose.c:7204
 msgid "_Replace"
 msgstr "Ersetzen"
 
-#: src/compose.c:7189
+#: src/compose.c:7204
 msgid "_Insert"
 msgstr "Einfügen"
 
@@ -1742,11 +1743,11 @@ msgstr "Personendetails bearbeiten"
 
 #: src/editaddress.c:316
 msgid "An E-Mail address must be supplied."
-msgstr "Eine E-Mail-Adresse muss angegeben werden."
+msgstr "Es muss eine E-Mail-Adresse angegeben werden."
 
 #: src/editaddress.c:490
 msgid "A Name and Value must be supplied."
-msgstr "Ein Name und ein Wert müssen angegeben werden."
+msgstr "Es müssen ein Name und ein Wert angegeben werden."
 
 #. gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 #: src/editaddress.c:560
@@ -1943,11 +1944,11 @@ msgstr "Verbindung zum Server fehlgeschlagen"
 
 #: src/editldap.c:148
 msgid "A Name must be supplied."
-msgstr "Ein Name muss angegeben werden."
+msgstr "Es muss ein Name angegeben werden."
 
 #: src/editldap.c:160
 msgid "A Hostname must be supplied for the server."
-msgstr "Ein Rechnername muss angegeben werden."
+msgstr "Es muss ein Rechnername angegeben werden."
 
 #: src/editldap.c:173
 msgid "At least one LDAP search attribute should be supplied."
@@ -1979,7 +1980,7 @@ msgstr ""
 
 #: src/editldap.c:447
 msgid "The port number that the server listens on. Port 389 is the default."
-msgstr "Die Portnummer auf der der Server horcht. Port 389 ist Standard."
+msgstr "Die Portnummer auf der der Server lauscht. Port 389 ist Standard."
 
 #: src/editldap.c:451
 msgid " Check Server "
@@ -2033,7 +2034,7 @@ msgid ""
 "names and addresses during a name or address search process."
 msgstr ""
 "Dies setzt die Attributnamen auf die Standardwerte zurück, welche die "
-"meisten Names und Adressen bei einer Suche finden sollten."
+"meisten Namen und Adressen bei einer Suche finden sollten."
 
 #: src/editldap.c:561
 msgid "Max Query Age (secs)"
@@ -2052,13 +2053,13 @@ msgid ""
 "This is useful for servers that have slow response times at the expense of "
 "more memory to cache results."
 msgstr ""
-"Dies definiert die maximale Zeit (in Sekunden) für die das Ergebniss einer "
+"Dies definiert die maximale Zeit (in Sekunden) für die das Ergebnis einer "
 "Adresssuche, für die Vervollständigung gültig sein soll. Suchergebnisse "
 "werden für diese Zeit in einem Cache gehalten und dann entfernt. Dies "
 "verbessert die Antwortzeit bei der Suche nach gleichen Namen oder Adressen "
 "in aufeinanderfolgenden Anfragen zur Adressvervollständigung. Der Cache wird "
 "vorrangig vor Anfragen an den Server zur Suche verwendet. Der Standardwert "
-"ist 600 Sekunden (10 Minuten), was für die meisten Server genug sein solle. "
+"ist 600 Sekunden (10 Minuten), was für die meisten Server genug sein sollte. "
 "Ein größerer Wert reduziert die Suchzeit für aufeinanderfolgende Anfragen. "
 "Dies ist nützlich bei Servern mit langsamer Antwortzeit auf Kosten von mehr "
 "Speicher zum Cachen von Ergebnissen."
@@ -2089,10 +2090,9 @@ msgid ""
 msgstr ""
 "Die Suche nach Namen und Adressen kann entweder mit 'beginnt-mit' oder "
 "'enthält' durchgeführt werden. Diesen Option wählen, um eine 'enthält' Suche "
-"durchzuführen; diese Art der Suche dauert normalerweise länger zum "
-"fertigstellen. Aus Performanzgründen wird deshalb für die "
-"Adressvervollständigung eine 'beginnt-mit' Suche für alle anderen "
-"Adressinterfaces verwendet."
+"durchzuführen; diese Art der Suche dauert normalerweise länger. Aus "
+"Geschwindigkeitsgründen wird deshalb für die Adressvervollständigung eine "
+"'beginnt mit'-Suche für alle anderen Adressinterfaces verwendet."
 
 #: src/editldap.c:669
 msgid "Bind DN"
@@ -2640,8 +2640,8 @@ msgstr "/_Ordnerbaum erneuern"
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
-"Das Neuerzeugen des Ordnerbaumes wird den lokalen Zwischenspeicher "
-"entfernen. Möchten Sie fortfahren?"
+"Neuerstellen des Ordnerbaumes löscht den lokalen Zwischenspeicher. Möchten "
+"Sie fortfahren?"
 
 #: src/folderview.c:970
 msgid "Rebuilding folder tree..."
@@ -2689,7 +2689,7 @@ msgstr "%s wird nach %s verschoben..."
 
 #: src/folderview.c:2171
 msgid "Source and destination are the same."
-msgstr "Ursprung und Ziel sind gleich."
+msgstr "Ursprung und Ziel sind identisch."
 
 #: src/folderview.c:2174
 msgid "Can't move a folder to one of its children."
@@ -2717,17 +2717,17 @@ msgstr "Drucken"
 
 #: src/gedit-print.c:244
 msgid "Preparing pages..."
-msgstr "Seiten vorbereiten..."
+msgstr "vorbereiten der Seiten..."
 
 #: src/gedit-print.c:271
 #, c-format
 msgid "Rendering page %d of %d..."
-msgstr "Seiten ausgeben %d von %d..."
+msgstr "Erzeuge Seite %d von %d"
 
 #: src/gedit-print.c:273
 #, c-format
 msgid "Printing page %d of %d..."
-msgstr "Seiten drucken %d von %d..."
+msgstr "Drucke Seite %d von %d..."
 
 #: src/gedit-print.c:295
 msgid "Print preview"
@@ -2735,7 +2735,7 @@ msgstr "Druckvorschau"
 
 #: src/gedit-print.c:451
 msgid "Page %N of %Q"
-msgstr ""
+msgstr "Seite %N von %Q"
 
 #: src/grouplistdialog.c:173
 msgid "Newsgroup subscription"
@@ -2759,7 +2759,7 @@ msgstr "Newsgruppenname"
 
 #: src/grouplistdialog.c:216
 msgid "Messages"
-msgstr "Nachricht"
+msgstr "Nachrichten"
 
 #: src/grouplistdialog.c:217
 msgid "Type"
@@ -2865,7 +2865,7 @@ msgstr ""
 
 #: src/gtk/about.c:314
 msgid "\n"
-msgstr ""
+msgstr "\n"
 
 #: src/gtk/about.c:325
 msgid "Info"
@@ -2881,7 +2881,7 @@ msgid ""
 "Previous team members\n"
 msgstr ""
 "\n"
-"frühere Teammitglieder\n"
+"Frühere Teammitglieder\n"
 
 #: src/gtk/about.c:387
 msgid ""
@@ -2935,10 +2935,10 @@ msgid ""
 "version.\n"
 "\n"
 msgstr ""
-"Dieses Programm ist freie Software; Sie können es weiterreichen und/oder "
+"Dieses Programm ist freie Software; Sie können es weitergeben und/oder "
 "modifizieren im Sinne der GNU General Public License wie sie von der Free "
-"Software Foundation veröffentlicht wird; entweder Version 2, oder (nach "
-"ihrer Wahl) jede neuere Version.\n"
+"Software Foundation veröffentlicht wird; entweder Version 2, oder "
+"(wahlweise) jede neuere Version.\n"
 "\n"
 
 #: src/gtk/about.c:500
@@ -2949,10 +2949,10 @@ msgid ""
 "more details.\n"
 "\n"
 msgstr ""
-"Dieses Programm wird in der Hoffnung weitergereicht, dass es nützlich ist, "
-"aber OHNE JEDE GARANTIE; ohne die implizierte Garantie der MARKTGÄNGIGKEIT "
-"oder der EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Lesen Sie die GNU General "
-"Public License für weitere Details.\n"
+"Dieses Programm wird in der Hoffnung vertrieben, dass es nützlich ist, "
+"jedoch OHNE JEDE GARANTIE; selbst ohne die implizite Garantie der "
+"TAUGLICHKEIT oder der EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Lesen Sie die GNU "
+"General Public License für weitere Details.\n"
 "\n"
 
 #: src/gtk/about.c:506
@@ -3033,7 +3033,7 @@ msgstr "Konfiguration"
 
 #: src/gtk/gtksourceprintjob.c:271
 msgid "Configuration options for the print job"
-msgstr "Konfigurationseinstellungen für den Druckauftrag"
+msgstr "Einstellungen für den Druckauftrag"
 
 #: src/gtk/gtksourceprintjob.c:278
 msgid "Source Buffer"
@@ -3041,15 +3041,15 @@ msgstr "Quellpuffer"
 
 #: src/gtk/gtksourceprintjob.c:279
 msgid "GtkTextBuffer object to print"
-msgstr "GtkTextBuffer Objekt zum drucken"
+msgstr "GtkTextBuffer Objekt zum Drucken"
 
 #: src/gtk/gtksourceprintjob.c:285
 msgid "Tabs Width"
-msgstr ""
+msgstr "Tabulatorbreite"
 
 #: src/gtk/gtksourceprintjob.c:286
 msgid "Width in equivalent space characters of tabs"
-msgstr ""
+msgstr "Breite eines TABS in Freizeichen"
 
 #: src/gtk/gtksourceprintjob.c:293
 msgid "Wrap Mode"
@@ -3057,23 +3057,25 @@ msgstr "Umbruch Modus"
 
 #: src/gtk/gtksourceprintjob.c:294
 msgid "Word wrapping mode"
-msgstr "Wortumbruch Modus"
+msgstr "Zeilenumbruch-Modus"
 
 #: src/gtk/gtksourceprintjob.c:301
 msgid "Highlight"
-msgstr "Hervorheben"
+msgstr "hervorheben"
 
 #: src/gtk/gtksourceprintjob.c:302
 msgid "Whether to print the document with highlighted syntax"
-msgstr "Soll das Dokument mit hervorgehobener Syntax gedruckt werden"
+msgstr "Das Dokument mit Syntaxhervorhebung drucken"
 
 #: src/gtk/gtksourceprintjob.c:310
 msgid "Font"
-msgstr "Schrift"
+msgstr "Schriftart"
 
 #: src/gtk/gtksourceprintjob.c:311
 msgid "GnomeFont name to use for the document text (deprecated)"
 msgstr ""
+"Name der Gnome-Schriftart die den Text des Dokumentes verwendet wird "
+"(missbilligt)"
 
 #: src/gtk/gtksourceprintjob.c:318
 msgid "Font Description"
@@ -3081,19 +3083,20 @@ msgstr "Schriftbeschreibung"
 
 #: src/gtk/gtksourceprintjob.c:319
 msgid "Font to use for the document text (e.g. \"Monospace 10\")"
-msgstr ""
+msgstr "Schriftart für den Text des Dokumentes (z.B. \"Monospace 10\")"
 
 #: src/gtk/gtksourceprintjob.c:326 src/gtk/gtksourceprintjob.c:334
 msgid "Numbers Font"
-msgstr "Schrift für Zahlen"
+msgstr "Zahlen-Font"
 
 #: src/gtk/gtksourceprintjob.c:327
 msgid "GnomeFont name to use for the line numbers (deprecated)"
 msgstr ""
+"Name der Gnome-Schriftart die für Zeilennummern verwendet wird (missbilligt)"
 
 #: src/gtk/gtksourceprintjob.c:335
 msgid "Font description to use for the line numbers"
-msgstr "Schriftbeschreibungung für die Zeilennummern"
+msgstr "Beschreibung der Schriftart die für die Zeilennummern verwendet wird"
 
 #: src/gtk/gtksourceprintjob.c:342
 msgid "Print Line Numbers"
@@ -3101,7 +3104,7 @@ msgstr "Zeilennummern drucken"
 
 #: src/gtk/gtksourceprintjob.c:343
 msgid "Interval of printed line numbers (0 means no numbers)"
-msgstr ""
+msgstr "Abstand der gedruckten Zeilennummbern (0 bedeutet keinen Nummern)"
 
 #: src/gtk/gtksourceprintjob.c:350
 msgid "Print Header"
@@ -3109,31 +3112,33 @@ msgstr "Kopfzeile drucken"
 
 #: src/gtk/gtksourceprintjob.c:351
 msgid "Whether to print a header in each page"
-msgstr ""
+msgstr "Soll eine Kopfzeile auf jeder Seite gedruckt werden"
 
 #: src/gtk/gtksourceprintjob.c:358
 msgid "Print Footer"
-msgstr ""
+msgstr "Fußzeile drucken"
 
 #: src/gtk/gtksourceprintjob.c:359
 msgid "Whether to print a footer in each page"
-msgstr ""
+msgstr "Soll eine Fußzeile auf jeder Seite gedruckt werden"
 
 #: src/gtk/gtksourceprintjob.c:366
 msgid "Header and Footer Font"
-msgstr ""
+msgstr "Schriftart für Kopf und Fußzeile"
 
 #: src/gtk/gtksourceprintjob.c:367
 msgid "GnomeFont name to use for the header and footer (deprecated)"
 msgstr ""
+"Gnome-Schriftartname die füer die Kopf und Fußzeile verwendet wird "
+"(missbilligt)"
 
 #: src/gtk/gtksourceprintjob.c:374
 msgid "Header and Footer Font Description"
-msgstr ""
+msgstr "Schriftartebeschreibung für Kopf und Fußzeile"
 
 #: src/gtk/gtksourceprintjob.c:375
 msgid "Font to use for headers and footers (e.g. \"Monospace 10\")"
-msgstr ""
+msgstr "Schriftart für Kopf und Fußzeile (zB \"Monospace 10\")"
 
 #: src/gtk/gtkaspell.c:593
 msgid "No dictionary selected."
@@ -3230,7 +3235,7 @@ msgid ""
 "The spell checker could not change dictionary.\n"
 "%s"
 msgstr ""
-"Die Rechtschreibprüfung konnte das Wörterbuch nicht ändern.\n"
+"Das Rechtschreibprüfprogramm konnte das Wörterbuch nicht ändern.\n"
 "%s"
 
 #: src/gtk/inputdialog.c:165
@@ -3307,7 +3312,7 @@ msgstr "Nachrichten, die S im Nachrichtenkörper enthalten"
 
 #: src/gtk/quicksearch.c:237
 msgid "messages which contain S in the whole message"
-msgstr "Nachrichten, die S in den ganzen Nachrichten enthalten"
+msgstr "Nachrichten, die S in der ganzen Nachricht enthalten"
 
 #: src/gtk/quicksearch.c:238
 msgid "messages carbon-copied to S"
@@ -3497,11 +3502,11 @@ msgstr " ... "
 
 #: src/gtk/quicksearch.c:439
 msgid "Quicksearch: edit filtering condition"
-msgstr ""
+msgstr "Schnellsuche: Filterbedingungen editieren"
 
 #: src/gtk/quicksearch.c:442
 msgid " Clear "
-msgstr " Leeren "
+msgstr "Leeren"
 
 #: src/gtk/quicksearch.c:449
 msgid "Extended Symbols"
@@ -4361,7 +4366,7 @@ msgstr "  --offline              schaltet in den Offlinemodus"
 
 #: src/main.c:726
 msgid "  --exit                 exit Sylpheed-Claws"
-msgstr "  --send                 beendet Sylpheed-Claws"
+msgstr "  --exit                 beende Sylpheed-Claws"
 
 #: src/main.c:727
 msgid "  --debug                debug mode"
@@ -5235,7 +5240,7 @@ msgstr "Beenden"
 
 #: src/mainwindow.c:2478
 msgid "Exit Sylpheed-Claws?"
-msgstr "Sylpheed-Claws _beenden"
+msgstr "Sylpheed-Claws beenden?"
 
 #: src/mainwindow.c:2630
 msgid "Folder synchronisation"
@@ -5570,6 +5575,8 @@ msgstr ""
 #: src/mimeview.c:714
 msgid "Timeout checking the signature. Click the icon or hit 'C' to try again."
 msgstr ""
+"Zeitüberschreitung beim prüfen der Signatur. Symbol klicken oder 'C' drücken "
+"um es nocheinmal zu versuchen"
 
 #: src/mimeview.c:922
 msgid "Checking signature..."
@@ -5706,12 +5713,12 @@ msgstr "Newsgroup kündigen"
 msgid "ClamAV: scanning message..."
 msgstr "ClamAV: Nachricht wird gescannt..."
 
-#: src/plugins/clamav/clamav_plugin.c:240
+#: src/plugins/clamav/clamav_plugin.c:245
 #: src/plugins/clamav/clamav_plugin_gtk.c:241
 msgid "Clam AntiVirus"
 msgstr "Clam AntiVirus"
 
-#: src/plugins/clamav/clamav_plugin.c:245
+#: src/plugins/clamav/clamav_plugin.c:250
 msgid ""
 "This plugin uses Clam AntiVirus to scan all messages that are received from "
 "an IMAP, LOCAL or POP account.\n"
@@ -6042,7 +6049,7 @@ msgstr ""
 
 #: src/plugins/pgpcore/plugin.c:59
 msgid "PGP/Core"
-msgstr ""
+msgstr "PGP/Core"
 
 #: src/plugins/pgpcore/plugin.c:64
 msgid ""
@@ -6051,8 +6058,8 @@ msgid ""
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
 msgstr ""
-"Dieses Plugin verarbeitet PGP Grundfunktionen. Es wird von anderen\n"
-"Plugins verwendet, wie PGP/Mime.\n"
+"Diese Plugin stellt PGP Grundfunktionen zur Verfügung. Es wird\n"
+"von anderen Plugins, wie zum Beispiel PGP/Mime, verwendet.\n"
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
 
@@ -6267,7 +6274,7 @@ msgstr "Ausrichtung"
 
 #: src/plugins/trayicon/libeggtrayicon/eggtrayicon.c:116
 msgid "The orientation of the tray."
-msgstr "Die Ausrichtung des Tray."
+msgstr "Die Ausrichtung im System Tray."
 
 #: src/pop.c:150
 msgid "Required APOP timestamp not found in greeting\n"
@@ -6501,7 +6508,7 @@ msgstr "Beglaubigungsmethode"
 
 #: src/prefs_account.c:1536 src/prefs_account.c:1675 src/prefs_send.c:264
 msgid "Automatic"
-msgstr "Autormatisch"
+msgstr "Automatisch"
 
 #: src/prefs_account.c:1546
 msgid "IMAP server directory (usually empty)"
@@ -7263,21 +7270,20 @@ msgstr "Regel"
 #. F_COL_UNREAD
 #: src/prefs_folder_column.c:82
 msgid "Total"
-msgstr ""
+msgstr "Gesamt"
 
 #: src/prefs_folder_column.c:205
 msgid "Folder list columns configuration"
-msgstr "Spaltenkonfiguration der Ablagenliste"
+msgstr "Spaltenkonfiguration für den Ordnerbaum"
 
 #: src/prefs_folder_column.c:222
-#, fuzzy
 msgid ""
 "Select columns to be displayed in the folder list. You can modify\n"
 "the order by using the Up / Down buttons or by dragging the items."
 msgstr ""
-"Eigenschaften wählen, die in der Nachrichtenliste angezeigt werden sollen.\n"
-"Die Reihenfolge kann mit den Auf- und Ab-Schaltflächen oder durch Ziehen\n"
-"der Eigenschaften geändert werden."
+"Auswahl der Spalten die im Ordnerbaum angezeigt werden sollen.\n"
+"Die Reihenfolge kann mit den Auf- und Ab-Schaltflächen oder\n"
+" durch Ziehen der Spalte geändert werden."
 
 #: src/prefs_folder_column.c:251 src/prefs_summary_column.c:265
 msgid "Hidden columns"
@@ -8303,9 +8309,8 @@ msgid "Template format error."
 msgstr "Vorlagen-Formatfehler."
 
 #: src/prefs_template.c:515
-#, fuzzy
 msgid "Template name is not set."
-msgstr "Kopfzeilenname ist nicht gesetzt."
+msgstr "Vorlagenname ist nicht gesetzt."
 
 #: src/prefs_template.c:604
 msgid "Delete template"
@@ -8595,7 +8600,7 @@ msgstr "Keine Informationen verfügbar"
 
 #: src/procmime.c:339 src/procmime.c:341
 msgid "[Error decoding BASE64]\n"
-msgstr ""
+msgstr "[Fehler BASE64-Entschlüsselung]\n"
 
 #: src/procmsg.c:1508
 msgid "Could not create temporary file for news sending."
@@ -9293,7 +9298,7 @@ msgstr ""
 
 #: src/textview.c:2037
 msgid "Fake URL warning"
-msgstr "Warning: Verschleierte URL"
+msgstr "Warnung: Verschleierte URL"
 
 #: src/toolbar.c:159 src/toolbar.c:1407
 msgid "Receive Mail on all Accounts"
@@ -9488,7 +9493,7 @@ msgid "Sylpheed-Claws Team"
 msgstr "Sylpheed-Claws Team"
 
 #: src/wizard.c:183
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Welcome to Sylpheed-Claws\n"
@@ -9569,75 +9574,64 @@ msgstr ""
 "\n"
 
 #: src/wizard.c:253
-#, fuzzy
 msgid "Please enter the mailbox name."
-msgstr "Bitte Datei wählen"
+msgstr "Bitten den Namen des Postfachs eingeben."
 
 #: src/wizard.c:281
-#, fuzzy
 msgid "Please enter your name and email address."
-msgstr "Schlüssel nach E-Mail Adresse wählen"
+msgstr "Bitten geben Sie ihren Namen und ihre E-Mail-Adresse ein."
 
 #: src/wizard.c:292
 msgid "Please enter your receiving server and username."
-msgstr ""
+msgstr "Bitte geben Sie Posteingangsserver und Benutzernamen an."
 
 #: src/wizard.c:302
 msgid "Please enter your username."
-msgstr ""
+msgstr "Bitte geben Sie ihren Benutzernamen ein."
 
 #: src/wizard.c:312
-#, fuzzy
 msgid "Please enter your SMTP server."
-msgstr "SSL bei Verbindungen zum SMTP-Server verwenden"
+msgstr "Bitte geben Sie ihren Postausgangsserver (SMTP) ein."
 
 #: src/wizard.c:521
-#, fuzzy
 msgid "<span weight=\"bold\">Your name:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Ihr Name:</span>"
 
 #: src/wizard.c:528
-#, fuzzy
 msgid "<span weight=\"bold\">Your email address:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Ihre E-Mail-Adresse:</span>"
 
 #: src/wizard.c:532
 msgid "Your organization:"
 msgstr "Organisation: "
 
 #: src/wizard.c:551
-#, fuzzy
 msgid "<span weight=\"bold\">Mailbox name:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Postfach-Name:</span>"
 
 #: src/wizard.c:570
-#, fuzzy
 msgid "<span weight=\"bold\">SMTP server address:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Adresse des Posteingangsservers (SMTP):</span>"
 
 #: src/wizard.c:592 src/wizard.c:604 src/wizard.c:657
-#, fuzzy
 msgid "<span weight=\"bold\">Server address:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Server-Adresse:</span>"
 
 #: src/wizard.c:611
-#, fuzzy
 msgid "<span weight=\"bold\">Local mailbox:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">loales Postfach:</span>"
 
 #: src/wizard.c:639
 msgid "IMAP"
 msgstr "IMAP"
 
 #: src/wizard.c:649
-#, fuzzy
 msgid "<span weight=\"bold\">Server type:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Servertype:</span>"
 
 #: src/wizard.c:668
-#, fuzzy
 msgid "<span weight=\"bold\">Username:</span>"
-msgstr "<span weight=\"bold\" size=\"larger\">\"%s\" ersetzen durch: </span>"
+msgstr "<span weight=\"bold\">Benutzername:</span>"
 
 #: src/wizard.c:683
 msgid "Password:"
@@ -9681,9 +9675,8 @@ msgstr "Über Sie"
 
 #: src/wizard.c:890 src/wizard.c:899 src/wizard.c:908 src/wizard.c:918
 #: src/wizard.c:928
-#, fuzzy
 msgid "Bold fields must be completed"
-msgstr "Ordner konnte nicht geöffnet werden."
+msgstr "Fette Felder müssen ausgefüllt werden"
 
 #: src/wizard.c:897
 msgid "Sending mail"
@@ -9720,6 +9713,30 @@ msgstr ""
 
 #~ msgid "/_Spelling/_Spelling Configuration"
 #~ msgstr "/_Rechtschreibung/Rechtschreibung konfigurieren"
+
+#~ msgid "Your name:"
+#~ msgstr "Name:"
+
+#~ msgid "Your email address:"
+#~ msgstr "E-Mail-Adresse:"
+
+#~ msgid "Mailbox name:"
+#~ msgstr "Mailboxname:"
+
+#~ msgid "SMTP server address:"
+#~ msgstr "SMTP-Server:"
+
+#~ msgid "Server address:"
+#~ msgstr "Serveradresse:"
+
+#~ msgid "Local mailbox:"
+#~ msgstr "Lokale Mailbox:"
+
+#~ msgid "Server type:"
+#~ msgstr "Servertyp:"
+
+#~ msgid "Username:"
+#~ msgstr "Benutzername:"
 
 #~ msgid "Compose message%s"
 #~ msgstr "Nachricht verfassen%s"
@@ -9790,30 +9807,6 @@ msgstr ""
 #~ "Nachrichten festlegen, (wenn der Anhang größer ist, wird er nicht "
 #~ "überprüft), einstellen, ob Spam-Mails empfangen werden sollen (Standard: "
 #~ "Ja) und den Ordner wählen, in dem Spam-Mails abgelegt werden.\n"
-
-#~ msgid "Your name:"
-#~ msgstr "Name:"
-
-#~ msgid "Your email address:"
-#~ msgstr "E-Mail-Adresse:"
-
-#~ msgid "Mailbox name:"
-#~ msgstr "Mailboxname:"
-
-#~ msgid "SMTP server address:"
-#~ msgstr "SMTP-Server:"
-
-#~ msgid "Server address:"
-#~ msgstr "Serveradresse:"
-
-#~ msgid "Local mailbox:"
-#~ msgstr "Lokale Mailbox:"
-
-#~ msgid "Server type:"
-#~ msgstr "Servertyp:"
-
-#~ msgid "Username:"
-#~ msgstr "Benutzername:"
 
 #~ msgid "About"
 #~ msgstr "Über"
