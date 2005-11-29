@@ -1,3 +1,9 @@
+2005-11-29 [colin]	1.9.100cvs44
+
+	* src/matcher.c
+		Skip headers unconditionnaly in match_body if the
+		rule is not message or ~message
+
 2005-11-29 [colin]	1.9.100cvs43
 
 	* src/matcher.c

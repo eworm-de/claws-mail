@@ -766,7 +766,7 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
  *
  *\return	gboolean TRUE if succesful match
  */
-static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp, gboolean read_headers)
+static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 {
 	GSList *l;
 	gchar buf[BUFFSIZE];
@@ -774,7 +774,8 @@ static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp, gboolean
 	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp *matcher = (MatcherProp *) l->data;
 		
-		if (!read_headers)
+		rewind(fp);
+		if (!matcherprop_criteria_message(matcher))
 			matcherlist_skip_headers(fp);
 
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -806,9 +807,6 @@ static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp, gboolean
 			if (!matchers->bool_and)
 				return TRUE;
 		}
-
-		/* restart at beginning */
-		rewind(fp);
 	}
 	return FALSE;
 }
@@ -871,7 +869,7 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 
 	/* read the body */
 	if (read_body) {
-		matcherlist_match_body(matchers, fp, read_headers);
+		matcherlist_match_body(matchers, fp);
 	}
 	
 	for (l = matchers->matchers; l != NULL; l = g_slist_next(l)) {
