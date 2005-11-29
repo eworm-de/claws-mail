@@ -670,6 +670,8 @@ static GtkItemFactoryEntry compose_entries[] =
 	 ENC_ACTION(C_ISO_8859_1)},
 	{N_("/_Options/Character _encoding/Western European (ISO-8859-15)"),
 	 ENC_ACTION(C_ISO_8859_15)},
+	{N_("/_Options/Character _encoding/Western European (Windows-1252)"),
+	 ENC_ACTION(C_WINDOWS_1252)},
 	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
 
 	{N_("/_Options/Character _encoding/Central European (ISO-8859-_2)"),
@@ -7864,19 +7866,23 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
-				compose_insert_file(compose, (const gchar *)tmp->data);
+			compose_insert_file(compose, (const gchar *)tmp->data);
 		}
 		list_free_strings(list);
 		g_list_free(list);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		return;
 	} else {
+#if GTK_CHECK_VERSION(2, 8, 0)
+		/* do nothing, handled by GTK */
+#else
 		gchar *tmpfile = get_tmp_file();
 		str_write_to_file((const gchar *)data->data, tmpfile);
 		compose_insert_file(compose, tmpfile);
 		g_unlink(tmpfile);
 		g_free(tmpfile);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+#endif
 		return;
 	}
 	gtk_drag_finish(drag_context, TRUE, FALSE, time);

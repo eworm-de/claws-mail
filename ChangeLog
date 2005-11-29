@@ -1,3 +1,17 @@
+2005-11-29 [colin]	1.9.100cvs42
+
+	* src/compose.c
+		Add Windows-1252 (Closes bug #863, windows-1252 encoding 
+		option missing from message view window)
+		Fix double text D'n'D with gtk-2.8
+	* src/matcher.c
+		Fix ~message, ~headers_part, ~body_part	rules
+	* src/messageview.c
+		Add Windows-1252 (Closes bug #863)
+		Fix accels
+	* src/gtk/gtkaspell.c
+		Properly destroy accels in all menus
+
 2005-11-29 [mones]	1.9.100cvs41
 
 	* po/es.po

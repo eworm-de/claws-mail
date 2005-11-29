@@ -569,6 +569,9 @@ static void button_press_intercept_cb(GtkTextView *gtktext,
 	}
 	g_slist_free(spell_menu);
 	
+	g_signal_connect(G_OBJECT(menu), "deactivate",
+				 G_CALLBACK(destroy_menu), 
+				 gtkaspell);
 	if (suggest)
 		g_signal_connect(G_OBJECT(menu),
 			"key_press_event",

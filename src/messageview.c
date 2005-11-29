@@ -187,6 +187,8 @@ static GtkItemFactoryEntry msgview_entries[] =
 	 ENC_ACTION(C_ISO_8859_1)},
 	{N_("/_View/Character _encoding/Western European (ISO-8859-15)"),
 	 ENC_ACTION(C_ISO_8859_15)},
+	{N_("/_View/Character _encoding/Western European (Windows-1252)"),
+	 ENC_ACTION(C_WINDOWS_1252)},
 	ENC_SEPARATOR,
 	{N_("/_View/Character _encoding/Central European (ISO-8859-_2)"),
 	 ENC_ACTION(C_ISO_8859_2)},
@@ -1079,6 +1081,10 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		messageview_destroy(messageview);
 		return TRUE;
 	}
+
+	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0)
+		return FALSE;
+
 	g_signal_stop_emission_by_name(G_OBJECT(widget),
 					"key_press_event");
 	mimeview_pass_key_press_event(messageview->mimeview, event);

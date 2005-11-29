@@ -661,41 +661,6 @@ static gboolean matcherprop_criteria_message(MatcherProp *matcher)
 }
 
 /*!
- *\brief	Check if a list of conditions match a header
- *
- *\param	matchers One set of conditions
- *\param	buf Name of header
- *
- *\return	gboolean TRUE if matching should stop
- */
-static gboolean matcherlist_match_one_header(MatcherList *matchers,
-					     gchar *buf)
-{
-	GSList *l;
-
-	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp *matcher = (MatcherProp *) l->data;
-		
-		/* see if a single condition matches */
-		if (matcherprop_criteria_headers(matcher) ||
-		    matcherprop_criteria_message(matcher)) {
-			if (matcherprop_match_one_header(matcher, buf)) {
-				matcher->result = TRUE;
-			}
-		}
-
-		if (matcherprop_criteria_headers(matcher)) {
-			if (matcher->result) {
-				if (!matchers->bool_and)
-					return TRUE;
-			}
-		}
-	}
-
-	return FALSE;
-}
-
-/*!
  *\brief	Check if a list of conditions matches one header in
  *		a message file.
  *
@@ -707,12 +672,48 @@ static gboolean matcherlist_match_one_header(MatcherList *matchers,
  */
 static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 {
+	GSList *l;
 	gchar buf[BUFFSIZE];
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1)
-		if (matcherlist_match_one_header(matchers, buf))
-			return TRUE;
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
+		while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+
+			/* if the criteria is ~headers_part or ~message, ZERO lines
+			 * must NOT match for the rule to match. */
+			if (matcher->criteria == MATCHCRITERIA_NOT_HEADERS_PART ||
+			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+				if (matcherprop_match_one_header(matcher, buf)) {
+					matcher->result = TRUE;
+					continue; /* must check all lines */
+				} else {
+					matcher->result = FALSE;
+					break; /* no need to check more */
+				}
+			/* else, just one line matching is enough for the rule to match
+			 */
+			} else if (matcherprop_criteria_headers(matcher) ||
+			           matcherprop_criteria_message(matcher)){
+				if (matcherprop_match_one_header(matcher, buf)) {
+					matcher->result = TRUE;
+					break; /* no need to check more */
+				}
+			}
+		}
+
+		/* if the rule matched and the matchers are OR, no need to
+		 * check the others */
+		if (matcherprop_criteria_headers(matcher)) {
+			if (matcher->result) {
+				if (!matchers->bool_and)
+					return TRUE;
+			}
+		}
+
+		/* go back to beginning of file */
+		rewind(fp);
+	}
 	return FALSE;
 }
 
@@ -757,36 +758,6 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
 }
 
 /*!
- *\brief	Check if a list of conditions matches a (line) string
- *
- *\param	matchers List of matchers
- *\param	line String to match
- *
- *\return	gboolean TRUE if string matches list of criteria
- */
-static gboolean matcherlist_match_line(MatcherList *matchers, const gchar *line)
-{
-	GSList *l;
-
-	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp *matcher = (MatcherProp *) l->data;
-
-		if (matcherprop_criteria_body(matcher) ||
-		    matcherprop_criteria_message(matcher)) {
-			if (matcherprop_match_line(matcher, line)) {
-				matcher->result = TRUE;
-			}
-		}
-			
-		if (matcher->result) {
-			if (!matchers->bool_and)
-				return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-/*!
  *\brief	Check if a line in a message file's body matches
  *		the criteria
  *
@@ -797,12 +768,44 @@ static gboolean matcherlist_match_line(MatcherList *matchers, const gchar *line)
  */
 static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 {
+	GSList *l;
 	gchar buf[BUFFSIZE];
+	
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			
+			/* if the criteria is ~body_part or ~message, ZERO lines
+			 * must NOT match for the rule to match. */
+			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+				if (matcherprop_match_line(matcher, buf)) {
+					matcher->result = TRUE;
+					continue; /* must check all lines */
+				} else {
+					matcher->result = FALSE;
+					break; /* no need to check more */
+				}
+			/* else, just one line has to match */
+			} else if (matcherprop_criteria_body(matcher) ||
+			           matcherprop_criteria_message(matcher)) {
+				if (matcherprop_match_line(matcher, buf)) {
+					matcher->result = TRUE;
+					break; /* no need to check more */
+				}
+			}
+		}
 
-	while (fgets(buf, sizeof(buf), fp) != NULL)
-		if (matcherlist_match_line(matchers, buf))
-			return TRUE;
+		/* if the matchers are OR'ed and the rule matched,
+		 * no need to check the others. */
+		if (matcher->result) {
+			if (!matchers->bool_and)
+				return TRUE;
+		}
 
+		/* restart at beginning */
+		rewind(fp);
+	}
 	return FALSE;
 }
 
