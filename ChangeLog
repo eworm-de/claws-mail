@@ -1,3 +1,9 @@
+2005-11-30 [colin]	1.9.100cvs46
+
+	* src/matcher.c
+	* src/matcher.h
+		Optimize back yesterday's fix.
+
 2005-11-30 [paul]	1.9.100cvs45
 
 	* manual/faq.xml

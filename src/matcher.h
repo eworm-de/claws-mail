@@ -40,6 +40,7 @@ struct _MatcherProp {
 	regex_t *preg;
 	int error;
 	gboolean result;
+	gboolean done;
 };
 
 typedef struct _MatcherProp MatcherProp;

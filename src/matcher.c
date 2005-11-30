@@ -675,10 +675,12 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 	GSList *l;
 	gchar buf[BUFFSIZE];
 
-	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp *matcher = (MatcherProp *) l->data;
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+			MatcherProp *matcher = (MatcherProp *) l->data;
 
-		while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+			if (matcher->done)
+				continue;
 
 			/* if the criteria is ~headers_part or ~message, ZERO lines
 			 * must NOT match for the rule to match. */
@@ -686,10 +688,9 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
 				if (matcherprop_match_one_header(matcher, buf)) {
 					matcher->result = TRUE;
-					continue; /* must check all lines */
 				} else {
 					matcher->result = FALSE;
-					break; /* no need to check more */
+					matcher->done = TRUE;
 				}
 			/* else, just one line matching is enough for the rule to match
 			 */
@@ -697,22 +698,17 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 			           matcherprop_criteria_message(matcher)){
 				if (matcherprop_match_one_header(matcher, buf)) {
 					matcher->result = TRUE;
-					break; /* no need to check more */
+					matcher->done = TRUE;
 				}
 			}
-		}
-
-		/* if the rule matched and the matchers are OR, no need to
-		 * check the others */
-		if (matcherprop_criteria_headers(matcher)) {
-			if (matcher->result) {
+			
+			/* if the rule matched and the matchers are OR, no need to
+			 * check the others */
+			if (matcher->result && matcher->done) {
 				if (!matchers->bool_and)
 					return TRUE;
 			}
 		}
-
-		/* go back to beginning of file */
-		rewind(fp);
 	}
 	return FALSE;
 }
@@ -771,41 +767,38 @@ static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 	GSList *l;
 	gchar buf[BUFFSIZE];
 	
-	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp *matcher = (MatcherProp *) l->data;
-		
-		rewind(fp);
-		if (!matcherprop_criteria_message(matcher))
-			matcherlist_skip_headers(fp);
-
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+			MatcherProp *matcher = (MatcherProp *) l->data;
 			
+			if (matcher->done) 
+				continue;
+
 			/* if the criteria is ~body_part or ~message, ZERO lines
 			 * must NOT match for the rule to match. */
 			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
 			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
 				if (matcherprop_match_line(matcher, buf)) {
 					matcher->result = TRUE;
-					continue; /* must check all lines */
 				} else {
 					matcher->result = FALSE;
-					break; /* no need to check more */
+					matcher->done = TRUE;
 				}
 			/* else, just one line has to match */
 			} else if (matcherprop_criteria_body(matcher) ||
 			           matcherprop_criteria_message(matcher)) {
 				if (matcherprop_match_line(matcher, buf)) {
 					matcher->result = TRUE;
-					break; /* no need to check more */
+					matcher->done = TRUE;
 				}
 			}
-		}
 
-		/* if the matchers are OR'ed and the rule matched,
-		 * no need to check the others. */
-		if (matcher->result) {
-			if (!matchers->bool_and)
-				return TRUE;
+			/* if the matchers are OR'ed and the rule matched,
+			 * no need to check the others. */
+			if (matcher->result && matcher->done) {
+				if (!matchers->bool_and)
+					return TRUE;
+			}
 		}
 	}
 	return FALSE;
@@ -845,6 +838,7 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 			read_body = TRUE;
 		}
 		matcher->result = FALSE;
+		matcher->done = FALSE;
 	}
 
 	if (!read_headers && !read_body)
@@ -865,6 +859,8 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 	if (read_headers) {
 		if (matcherlist_match_headers(matchers, fp))
 			read_body = FALSE;
+	} else {
+		matcherlist_skip_headers(fp);
 	}
 
 	/* read the body */
