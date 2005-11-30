@@ -1028,3 +1028,4 @@
 ( cvs diff -u -r 1.382.2.197 -r 1.382.2.198 src/compose.c;  cvs diff -u -r 1.75.2.10 -r 1.75.2.11 src/matcher.c;  cvs diff -u -r 1.94.2.70 -r 1.94.2.71 src/messageview.c;  cvs diff -u -r 1.9.2.32 -r 1.9.2.33 src/gtk/gtkaspell.c;  ) > 1.9.100cvs42.patchset
 ( cvs diff -u -r 1.75.2.11 -r 1.75.2.12 src/matcher.c;  ) > 1.9.100cvs43.patchset
 ( cvs diff -u -r 1.75.2.12 -r 1.75.2.13 src/matcher.c;  ) > 1.9.100cvs44.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/faq.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/intro.xml;  ) > 1.9.100cvs45.patchset
