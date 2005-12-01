@@ -48,8 +48,8 @@ static HTMLSymbol symbol_list[] = {
 	{"&rdquo;",  "\""},
 	{"&nbsp;"  , " "},
 	{"&trade;" , "(TM)"},
-
 	{"&#153;", "(TM)"},
+	{"&hellip;", "..."},
 };
 
 static HTMLSymbol ascii_symbol_list[] = {
