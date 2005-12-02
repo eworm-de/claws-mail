@@ -79,103 +79,79 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkObject *max_size_adj;
   	GtkWidget *max_size;
 	GtkWidget *hbox1;
-  	GtkWidget *label4;
-  	GtkWidget *label5;
+	GtkWidget *hbox2;
   	GtkWidget *recv_infected;
-  	GtkWidget *label6;
   	GtkWidget *save_folder;
   	GtkWidget *save_folder_select;
 	GtkTooltips *save_folder_tip;
 
-  	table = gtk_table_new (6, 3, FALSE);
+  	table = gtk_table_new (8, 3, FALSE);
 	gtk_widget_show(table);
+	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-  	label1 = gtk_label_new(_("Enable virus scanning"));
-  	gtk_widget_show (label1);
-  	gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 4);
-	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-  	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
-
-  	enable_clamav = gtk_check_button_new();
+  	enable_clamav = gtk_check_button_new_with_label(_("Enable virus scanning"));
 	gtk_widget_show (enable_clamav);
-  	gtk_table_attach (GTK_TABLE (table), enable_clamav, 1, 2, 0, 1,
+  	gtk_table_attach (GTK_TABLE (table), enable_clamav, 0, 1, 0, 1,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	label2 = gtk_label_new(_("Scan archive contents"));
-	gtk_widget_show (label2);
-  	gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
-
-  	enable_arc = gtk_check_button_new();
+  	enable_arc = gtk_check_button_new_with_label(_("Scan archive contents"));
 	gtk_widget_show (enable_arc);
-  	gtk_table_attach (GTK_TABLE (table), enable_arc, 1, 2, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), enable_arc, 0, 1, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	label3 = gtk_label_new(_("Maximum attachment size"));
-  	gtk_widget_show (label3);
-  	gtk_table_attach (GTK_TABLE (table), label3, 0, 1, 4, 5,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
-
-  	hbox1 = gtk_hbox_new (FALSE, 0);
+  	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-  	gtk_table_attach (GTK_TABLE (table), hbox1, 1, 2, 4, 5,
+  	gtk_table_attach (GTK_TABLE (table), hbox1, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	SET_TOGGLE_SENSITIVITY (enable_arc, hbox1);
+
+  	label1 = gtk_label_new(_("Maximum attachment size"));
+  	gtk_widget_show (label1);
+  	gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, FALSE, 0);
 
   	max_size_adj = gtk_adjustment_new (1, 1, 1024, 1, 10, 10);
   	max_size = gtk_spin_button_new (GTK_ADJUSTMENT (max_size_adj), 1, 0);
 	gtk_widget_show (max_size);
   	gtk_box_pack_start (GTK_BOX (hbox1), max_size, FALSE, FALSE, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (max_size), TRUE);
 
-  	label4 = gtk_label_new(_("MB"));
-	gtk_widget_show (label4);
-  	gtk_box_pack_start (GTK_BOX (hbox1), label4, FALSE, FALSE, 0);
+  	label2 = gtk_label_new(_("MB"));
+	gtk_widget_show (label2);
+  	gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, FALSE, 0);
 
-  	label5 = gtk_label_new(_("Save infected messages"));
-	gtk_widget_show (label5);
- 	gtk_table_attach (GTK_TABLE (table), label5, 0, 1, 5, 6,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label5), 0, 0.5);
-
-  	recv_infected = gtk_check_button_new();
+  	recv_infected = gtk_check_button_new_with_label(_("Save infected messages"));
 	gtk_widget_show (recv_infected);
-  	gtk_table_attach (GTK_TABLE (table), recv_infected, 1, 2, 5, 6,
+  	gtk_table_attach (GTK_TABLE (table), recv_infected, 0, 1, 4, 5,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	label6 = gtk_label_new (_("Save folder"));
-	gtk_widget_show (label6);
-  	gtk_table_attach (GTK_TABLE (table), label6, 0, 1, 6, 7,
+  	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 5, 6,
                     	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 4);
-  	gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
+                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	SET_TOGGLE_SENSITIVITY (recv_infected, hbox2);
+
+  	label3 = gtk_label_new (_("Save folder"));
+	gtk_widget_show (label3);
+  	gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 0);
 
 	save_folder_tip = gtk_tooltips_new();
   	save_folder = gtk_entry_new ();
 	gtk_widget_show (save_folder);
-  	gtk_table_attach (GTK_TABLE (table), save_folder, 1, 2, 6, 7,
-                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), save_folder, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(save_folder_tip, save_folder,
 			     _("Leave empty to use the default trash folder"),
 			     NULL);
 
 	save_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_folder_select);
-  	gtk_table_attach (GTK_TABLE (table), save_folder_select, 2, 3, 6, 7,
-                    	  (GtkAttachOptions) (0),
-                    	  (GtkAttachOptions) (0), 0, 0);
+  	gtk_box_pack_start (GTK_BOX (hbox2), save_folder_select, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(save_folder_tip, save_folder_select,
 			     _("Leave empty to use the default trash folder"),
 			     NULL);

@@ -190,7 +190,9 @@ void cl_free(struct cl_node *root);
 gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
-	int no, ret;
+	int ret;
+	unsigned int no;
+
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the ClamAV plugin was built with");
 		return -1;
