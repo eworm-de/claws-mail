@@ -186,15 +186,15 @@ static PrefParam param[] = {
 	/* Quote */
 	{"reply_quote_mark", "> ", &prefs_common.quotemark, P_STRING,
 	 NULL, NULL, NULL},
-	{"reply_quote_format", "On %d\\n%f wrote:\\n\\n%q",
+	{"reply_quote_format", N_("On %d\\n%f wrote:\\n\\n%q"),
 	 &prefs_common.quotefmt, P_STRING, NULL, NULL, NULL},
 
 	{"forward_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
 	 NULL, NULL, NULL},
 	{"forward_quote_format",
-	 "\\n\\nBegin forwarded message:\\n\\n"
+	 N_("\\n\\nBegin forwarded message:\\n\\n"
 	 "?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t\\n}?c{Cc: %c\\n}"
-	 "?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M",
+	 "?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"),
 	 &prefs_common.fw_quotefmt, P_STRING, NULL, NULL, NULL},
 	{"quote_chars", ">", &prefs_common.quote_chars, P_STRING,
 	 NULL, NULL, NULL},
@@ -245,7 +245,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
 	 NULL, NULL, NULL},
-	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
+	{"date_format", N_("%y/%m/%d(%a) %H:%M"), &prefs_common.date_format,
 	 P_STRING, NULL, NULL, NULL},
 
 	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
@@ -681,11 +681,15 @@ GList *prefs_common_read_history(const gchar *history)
 void prefs_common_read_config(void)
 {
 	gchar *rcpath;
-	
+
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "Common", rcpath, NULL);
 	g_free(rcpath);
-	
+
+	prefs_common.quotefmt = gettext(prefs_common.quotefmt);
+	prefs_common.fw_quotefmt = gettext(prefs_common.fw_quotefmt);
+	prefs_common.date_format = gettext(prefs_common.date_format);
+
 	prefs_common.mime_open_cmd_history =
 		prefs_common_read_history(COMMAND_HISTORY);
 	prefs_common.summary_quicksearch_history =
