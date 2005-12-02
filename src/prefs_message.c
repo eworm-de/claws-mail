@@ -46,7 +46,6 @@ typedef struct _MessagePage
 
 	GtkWidget *window;
 
-	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
 #if HAVE_LIBCOMPFACE
@@ -81,7 +80,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
-	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
 #if HAVE_LIBCOMPFACE
@@ -112,13 +110,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_mbalnum,
-		 _("Display multi-byte alphanumeric as\n"
-		   "ASCII character (Japanese only)"));
-	gtk_label_set_justify (GTK_LABEL (GTK_BIN(chkbtn_mbalnum)->child),
-			       GTK_JUSTIFY_LEFT);
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
@@ -223,8 +214,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_mbalnum),
-		prefs_common.conv_mb_alnum);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
 		prefs_common.display_header_pane);
 #if HAVE_LIBCOMPFACE
@@ -247,7 +236,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.scroll_step);
 		
 	prefs_message->window = GTK_WIDGET(window);
-	prefs_message->chkbtn_mbalnum = chkbtn_mbalnum;
 	prefs_message->chkbtn_disphdrpane = chkbtn_disphdrpane;
 #if HAVE_LIBCOMPFACE
 	prefs_message->chkbtn_dispxface = chkbtn_dispxface;
@@ -267,8 +255,6 @@ void prefs_message_save(PrefsPage *_page)
 {
 	MessagePage *page = (MessagePage *) _page;
 
-	prefs_common.conv_mb_alnum = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_mbalnum));
 	prefs_common.display_header_pane = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdrpane));
 #if HAVE_LIBCOMPFACE

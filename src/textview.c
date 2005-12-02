@@ -1030,7 +1030,6 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		conv_localetodisp(buf, sizeof(buf), str);
 		
 	strcrchomp(buf);
-	//if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
 	fg_color = NULL;
 
 	/* change color of quotation

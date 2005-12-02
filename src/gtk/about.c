@@ -72,9 +72,6 @@ static gboolean about_textview_motion_notify(GtkWidget *widget,
 static gboolean about_textview_leave_notify(GtkWidget *widget,
 					GdkEventCrossing *event,
 					GtkWidget *textview);
-static gboolean about_textview_visibility_notify(GtkWidget *widget,
-					GdkEventVisibility *event,
-					GtkWidget *textview);
 static void about_textview_uri_update(GtkWidget *textview, gint x, gint y);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
@@ -671,27 +668,6 @@ static gboolean about_textview_leave_notify(GtkWidget *widget,
 					GtkWidget *textview)
 {
 	about_textview_uri_update(textview, -1, -1);
-
-	return FALSE;
-}
-
-static gboolean about_textview_visibility_notify(GtkWidget *widget,
-					GdkEventVisibility *event,
-					GtkWidget *textview)
-{
-	gint wx, wy;
-	GdkWindow *window;
-
-	window = gtk_text_view_get_window(GTK_TEXT_VIEW(widget),
-				GTK_TEXT_WINDOW_TEXT);
-
-	/* check if occurred for the text window part */
-	if (window != event->window) {
-		return FALSE;
-	}
-	
-	gdk_window_get_pointer(widget->window, &wx, &wy, NULL);
-	about_textview_uri_update(textview, wx, wy);
 
 	return FALSE;
 }

@@ -438,8 +438,6 @@ static PrefParam param[] = {
 	{"recycle_quote_colors", "FALSE", &prefs_common.recycle_quote_colors,
 	 P_BOOL, NULL, NULL, NULL},
 
-	{"convert_mb_alnum", "FALSE", &prefs_common.conv_mb_alnum, P_BOOL,
-	 NULL, NULL, NULL},
 	{"display_header_pane", "FALSE", &prefs_common.display_header_pane,
 	 P_BOOL, NULL, NULL, NULL},
 	{"display_header", "TRUE", &prefs_common.display_header, P_BOOL,

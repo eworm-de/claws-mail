@@ -1,3 +1,16 @@
+2005-12-02 [paul]	1.9.100cvs50
+
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_message.c
+	* src/textview.c
+		remove obsolete 'convert_mb_alnum' option
+		and related stuff
+	* src/gtk/about.c
+		remove unused 'about_textview_visibility_notify'
+
 2005-12-02 [paul]	1.9.100cvs49
 
 	* src/prefs_account.c

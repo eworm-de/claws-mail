@@ -170,8 +170,6 @@ struct _CodeConverter
 #define C_INTERNAL		C_UTF_8
 #define CS_INTERNAL		CS_UTF_8
 
-/* void conv_mb_alnum(gchar *str); */
-
 CharSet conv_guess_ja_encoding(const gchar *str);
 
 void conv_utf8todisp	(gchar *outbuf, gint outlen, const gchar *inbuf);

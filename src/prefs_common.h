@@ -237,7 +237,6 @@ struct _PrefsCommon
 	gulong tgt_folder_col;
 	gulong signature_col;
 	gboolean recycle_quote_colors;
-	gboolean conv_mb_alnum;
 	gboolean display_header_pane;
 	gboolean display_header;
 	gboolean display_xface;
