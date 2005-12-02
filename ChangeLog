@@ -1,3 +1,13 @@
+2005-12-02 [wwp]	1.9.100cvs52
+
+	* src/compose.c
+	* src/prefs_template.c
+	* src/quote_fmt.h
+	* src/quote_fmt_parse.y
+		prevent from executing |p and |p templates commands when
+		adding or replacing templates in prefs (avoids annoying and
+		potentially dangerous behaviours)
+
 2005-12-02 [paul]	1.9.100cvs51
 
 	* src/prefs_common.c

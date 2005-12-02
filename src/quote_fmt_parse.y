@@ -42,6 +42,7 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static gboolean *visible = NULL;
+static gboolean *dry_run = NULL;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
@@ -116,11 +117,12 @@ gint quote_fmt_get_cursor_pos(void)
 	}
 
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
-		    const gchar *my_body)
+		    const gchar *my_body, gboolean* my_dry_run)
 {
 	quote_str = my_quote_str;
 	body = my_body;
 	msginfo = info;
+	dry_run = my_dry_run;
 	stacksize = 0;
 	add_visibility(TRUE);
 	if (buffer != NULL)
@@ -647,9 +649,13 @@ query:
 insert:
 	INSERT_FILE OPARENT string CPARENT
 	{
-		quote_fmt_insert_file($3);
+		if (!dry_run) {
+			quote_fmt_insert_file($3);
+		}
 	}
 	| INSERT_PROGRAMOUTPUT OPARENT string CPARENT
 	{
-		quote_fmt_insert_program_output($3);
+		if (!dry_run) {
+			quote_fmt_insert_program_output($3);
+		}
 	};

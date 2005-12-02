@@ -2114,7 +2114,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		msginfo = &dummyinfo;
 
 	if (qmark != NULL) {
-		quote_fmt_init(msginfo, NULL, NULL);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE);
 		quote_fmt_scan_string(qmark);
 		quote_fmt_parse();
 
@@ -2130,7 +2130,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 			&& trimmed_body[0]=='\n')
 			*trimmed_body++;
 
-		quote_fmt_init(msginfo, quote_str, trimmed_body);
+		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
