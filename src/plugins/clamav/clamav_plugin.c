@@ -239,6 +239,8 @@ void plugin_done(void)
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);
 	cl_free(cl_database);
+	clamav_gtk_done();
+
 	debug_print("ClamAV plugin unloaded\n");
 }
 

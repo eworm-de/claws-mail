@@ -1,3 +1,15 @@
+2005-12-02 [paul]	1.9.100cvs55
+
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/clamav/clamav_plugin.h
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		unregister prefs pages on unloading, thus
+		preventing a crash
+		(thanks to Colin for the hint)
+
 2005-12-02 [wwp]	1.9.100cvs54
 
 	* src/quote_fmt.h

@@ -229,3 +229,8 @@ gint clamav_gtk_init(void)
 	debug_print("ClamAV GTK plugin loaded\n");
 	return 0;	
 }
+
+void clamav_gtk_done(void)
+{
+        prefs_gtk_unregister_page((PrefsPage *) &clamav_page);
+}

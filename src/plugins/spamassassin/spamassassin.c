@@ -320,6 +320,7 @@ void plugin_done(void)
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.hostname);
 	g_free(config.save_folder);
+	spamassassin_gtk_done();
 
 	debug_print("Spamassassin plugin unloaded\n");
 }

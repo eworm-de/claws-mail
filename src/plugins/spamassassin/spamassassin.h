@@ -49,5 +49,6 @@ SpamAssassinConfig *spamassassin_get_config	      (void);
 void		    spamassassin_save_config	      (void);
 void 	            spamassassin_set_message_callback (MessageCallback callback);
 gint spamassassin_gtk_init(void);
+void spamassassin_gtk_done(void);
 
 #endif

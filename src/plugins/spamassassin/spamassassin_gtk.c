@@ -467,3 +467,8 @@ gint spamassassin_gtk_init(void)
 	debug_print("SpamAssassin GTK plugin loaded\n");
 	return 0;	
 }
+
+void spamassassin_gtk_done(void)
+{
+        prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
+}
