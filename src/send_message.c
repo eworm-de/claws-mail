@@ -327,6 +327,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	if (!was_inited && session_connect(session, ac_prefs->smtp_server, port) < 0) {
 		session_destroy(session);
 		send_progress_dialog_destroy(dialog);
+		ac_prefs->session = NULL;
 		return -1;
 	}
 

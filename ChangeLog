@@ -1,3 +1,12 @@
+2005-12-02 [paul]	1.9.100cvs48
+
+	* src/main.c
+		--exit means exit
+	* src/send_message.c
+		fix crash on send when connection fails
+
+	Thanks to Colin
+
 2005-12-01 [colin]	1.9.100cvs47
 
 	* src/html.c

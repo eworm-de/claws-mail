@@ -319,6 +319,9 @@ int main(int argc, char *argv[])
 		lock_socket_remove();
 		return 0;
 	}
+	
+	if (cmd.exit)
+		return 0;
 #endif
 	g_thread_init(NULL);
 	/* gdk_threads_init(); */

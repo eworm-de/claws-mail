@@ -1031,3 +1031,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/faq.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/intro.xml;  ) > 1.9.100cvs45.patchset
 ( cvs diff -u -r 1.75.2.13 -r 1.75.2.14 src/matcher.c;  cvs diff -u -r 1.39.2.5 -r 1.39.2.6 src/matcher.h;  ) > 1.9.100cvs46.patchset
 ( cvs diff -u -r 1.12.2.10 -r 1.12.2.11 src/html.c;  ) > 1.9.100cvs47.patchset
+( cvs diff -u -r 1.115.2.68 -r 1.115.2.69 src/main.c;  cvs diff -u -r 1.17.2.22 -r 1.17.2.23 src/send_message.c;  ) > 1.9.100cvs48.patchset
