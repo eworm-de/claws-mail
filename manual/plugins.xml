@@ -69,6 +69,9 @@
     <varlistentry><term>vCalendar</term>
 	    <listitem><para>Enables vCalendar message handling like that produced by Evolution or Outlook, and Webcal subscriptions.</para></listitem>
     </varlistentry>
+    <varlistentry><term>RSSyl</term>
+	    <listitem><para>Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and Atom feeds are currently supported.</para></listitem>
+    </varlistentry>
     </variablelist>
     <para>
 	If you're a developer, writing a plugin to extend Sylpheed-Claws' capabilities is probably the best and easiest solution. We will provide hosting to your code, and will be glad to answer your questions in the mailing-list or the IRC channel, #sylpheed on IRCnet.
