@@ -42,7 +42,7 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static gboolean *visible = NULL;
-static gboolean *dry_run = NULL;
+static gboolean dry_run = FALSE;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
@@ -117,7 +117,7 @@ gint quote_fmt_get_cursor_pos(void)
 	}
 
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
-		    const gchar *my_body, gboolean* my_dry_run)
+		    const gchar *my_body, gboolean my_dry_run)
 {
 	quote_str = my_quote_str;
 	body = my_body;

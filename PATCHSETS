@@ -1037,3 +1037,4 @@
 ( cvs diff -u -r 1.204.2.69 -r 1.204.2.70 src/prefs_common.c;  ) > 1.9.100cvs51.patchset
 ( cvs diff -u -r 1.382.2.198 -r 1.382.2.199 src/compose.c;  cvs diff -u -r 1.12.2.17 -r 1.12.2.18 src/prefs_template.c;  cvs diff -u -r 1.5.12.2 -r 1.5.12.3 src/quote_fmt.h;  cvs diff -u -r 1.22.2.14 -r 1.22.2.15 src/quote_fmt_parse.y;  ) > 1.9.100cvs52.patchset
 ( cvs diff -u -r 1.13.2.15 -r 1.13.2.16 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.9.2.12 -r 1.9.2.13 src/plugins/clamav/clamav_plugin_gtk.c;  ) > 1.9.100cvs53.patchset
+( cvs diff -u -r 1.5.12.3 -r 1.5.12.4 src/quote_fmt.h;  cvs diff -u -r 1.22.2.15 -r 1.22.2.16 src/quote_fmt_parse.y;  ) > 1.9.100cvs54.patchset

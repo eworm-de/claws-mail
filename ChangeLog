@@ -1,3 +1,10 @@
+2005-12-02 [wwp]	1.9.100cvs54
+
+	* src/quote_fmt.h
+	* src/quote_fmt_parse.y
+		fix misuse of gboolean*, use gboolean instead
+		(thanks to Paul, Colin, for pointing out that scaring one)
+
 2005-12-02 [paul]	1.9.100cvs53
 
 	* src/plugins/clamav/clamav_plugin.c
