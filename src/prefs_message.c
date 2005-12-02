@@ -80,7 +80,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *vbox3;
 	GtkWidget *hbox1;
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
@@ -144,7 +143,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	button_edit_disphdr = gtk_button_new_with_label (_(" Edit... "));
 	gtk_widget_show (button_edit_disphdr);
-	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_disphdr,
+	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_disphdr,
 			  FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (button_edit_disphdr), "clicked",
 			  G_CALLBACK (prefs_display_header_open),
@@ -155,7 +154,8 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox2, chkbtn_html,
 			  _("Render HTML messages as text"));
 
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+	PACK_CHECK_BUTTON(vbox2, chkbtn_attach_desc,
+			  _("Show attachment descriptions (rather than names)"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -222,13 +222,6 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_scr), label_scr, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox3, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON(vbox3, chkbtn_attach_desc,
-			  _("Show attachment descriptions (rather than names)"));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_mbalnum),
 		prefs_common.conv_mb_alnum);

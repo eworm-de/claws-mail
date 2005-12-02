@@ -115,7 +115,6 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *hbox1;
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *label_outcharset;
 	GtkWidget *optmenu_charset;
@@ -128,8 +127,8 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_senddialog;
 	GtkWidget *menu;
 	GtkWidget *optmenu_senddialog;
-	GtkWidget *hbox_senddialog;
 	GtkWidget *checkbtn_confirm_send_queued_messages;
+	GtkWidget *table;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -140,37 +139,45 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
-			   _("Save sent messages to Sent folder"));
+			_("Save sent messages to Sent folder"));
 
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_confirm_send_queued_messages,
-		 _("Confirm before sending queued messages"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_confirm_send_queued_messages,
+			_("Confirm before sending queued messages"));
 
-	hbox_senddialog = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show(hbox_senddialog);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_senddialog, FALSE, FALSE, 0);
+	table = gtk_table_new(3, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_container_add (GTK_CONTAINER (vbox1), table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	label_senddialog = gtk_label_new (_("Show send dialog"));
 	gtk_widget_show (label_senddialog);
-	gtk_box_pack_start (GTK_BOX (hbox_senddialog), label_senddialog, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label_senddialog, 0, 1, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label_senddialog), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label_senddialog), 1, 0.5);
 
+	/* FIXME : Is it good to change this menu into a checkbtn ? */
 	optmenu_senddialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_senddialog);
-	gtk_box_pack_start (GTK_BOX (hbox_senddialog), optmenu_senddialog, FALSE, FALSE, 0);
-	
+	gtk_table_attach(GTK_TABLE(table), optmenu_senddialog, 1, 2, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), SEND_DIALOG_ALWAYS);
 	MENUITEM_ADD (menu, menuitem, _("Never"), SEND_DIALOG_NEVER);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_senddialog), menu);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
 	label_outcharset = gtk_label_new (_("Outgoing encoding"));
 	gtk_widget_show (label_outcharset);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_outcharset, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label_outcharset, 0, 1, 1, 2,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label_outcharset), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label_outcharset), 1, 0.5);
 
 	charset_tooltip = gtk_tooltips_new();
 
@@ -180,7 +187,9 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			     _("If 'Automatic' is selected, the optimal encoding"
 		   	       " for the current locale will be used"),
 			     NULL);
- 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_charset, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), optmenu_charset, 1, 2, 1, 2,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
@@ -237,17 +246,13 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_charset),
 				  optmenu_menu);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
 	label_encoding = gtk_label_new (_("Transfer encoding"));
 	gtk_widget_show (label_encoding);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_encoding, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label_encoding, 0, 1, 2, 3,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label_encoding), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label_encoding), 1, 0.5);
 
 	encoding_tooltip = gtk_tooltips_new();
 
@@ -257,7 +262,9 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			     _("Specify Content-Transfer-Encoding used when"
 		   	       " message body contains non-ASCII characters"),
 			     NULL);
- 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_encoding, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), optmenu_encoding, 1, 2, 2, 3,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
@@ -268,10 +275,6 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_encoding),
 				  optmenu_menu);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_savemsg),
 		prefs_common.savemsg);

@@ -39,7 +39,7 @@ typedef struct _PrefsDialog	PrefsDialog;
 #define VSPACING		10
 #define VSPACING_NARROW		4
 #define VSPACING_NARROW_2	2
-#define VBOX_BORDER		16
+#define VBOX_BORDER		8
 #define DEFAULT_ENTRY_WIDTH	80
 #define PREFSBUFSIZE		1024
 

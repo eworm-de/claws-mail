@@ -54,7 +54,7 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
         GtkWidget *checkbtn_cliplog;
-        GtkWidget *loglength_entry;
+	GtkWidget *spinbtn_loglength;
 	GtkWidget *spinbtn_iotimeout;
 } OtherPage;
 
@@ -75,7 +75,8 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox_cliplog;
 	GtkWidget *checkbtn_cliplog;
 	GtkWidget *loglength_label;
-	GtkWidget *loglength_entry;
+	GtkWidget *spinbtn_loglength;
+	GtkObject *spinbtn_loglength_adj;
 	GtkTooltips *loglength_tooltip;
 
 	GtkWidget *frame_exit;
@@ -88,7 +89,6 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
 	GtkObject *spinbtn_iotimeout_adj;
-	gchar *tmp;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -124,16 +124,21 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (GTK_WIDGET (loglength_label));
 	
 	loglength_tooltip = gtk_tooltips_new();
-	
-	loglength_entry = gtk_entry_new ();
-	gtk_widget_set_size_request (GTK_WIDGET (loglength_entry), 64, -1);
-	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_entry,
-			    FALSE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (loglength_entry));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), loglength_entry,
+
+	spinbtn_loglength_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
+	spinbtn_loglength = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_loglength_adj), 1, 0);
+	gtk_widget_show (spinbtn_loglength);
+	gtk_box_pack_start (GTK_BOX (hbox_cliplog), spinbtn_loglength,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_loglength), 64, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_loglength), TRUE);
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), spinbtn_loglength,
 			     _("0 to stop logging in the log window"),
 			     NULL);
-	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
+	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_label);
+	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, spinbtn_loglength);
 
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
@@ -193,10 +198,8 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cliplog), 
 		prefs_common.cliplog);
 	
-	tmp = g_strdup_printf("%d", prefs_common.loglength);
-	gtk_entry_set_text(GTK_ENTRY(loglength_entry), tmp);
-	g_free(tmp);
-
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_loglength),
+		prefs_common.loglength);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
 
@@ -206,7 +209,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_askonclean = checkbtn_askonclean;
 	prefs_other->checkbtn_warnqueued = checkbtn_warnqueued;
 	prefs_other->checkbtn_cliplog = checkbtn_cliplog;
-	prefs_other->loglength_entry = loglength_entry;
+	prefs_other->spinbtn_loglength = spinbtn_loglength;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 
 	prefs_other->page.widget = vbox1;
@@ -216,13 +219,7 @@ void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
 	MainWindow *mainwindow;
-	
-	gchar *tmp = gtk_editable_get_chars(GTK_EDITABLE(page->loglength_entry), 0, -1);
-	
-	if (tmp && atoi(tmp)) {
-		prefs_common.loglength = atoi(tmp);
-	}
-	
+
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_addaddrbyclick));
 	prefs_common.confirm_on_exit = gtk_toggle_button_get_active(
@@ -235,6 +232,8 @@ void prefs_other_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_warnqueued)); 
 	prefs_common.cliplog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_cliplog));
+	prefs_common.loglength = gtk_spin_button_get_value_as_int(
+		GTK_SPIN_BUTTON(page->spinbtn_loglength));
 	prefs_common.io_timeout_secs = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_iotimeout));
 	sock_set_io_timeout(prefs_common.io_timeout_secs);

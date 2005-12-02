@@ -59,7 +59,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	table = gtk_table_new(7, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 

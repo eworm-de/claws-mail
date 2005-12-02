@@ -717,10 +717,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkWidget *button_keybind;
-	GtkWidget *hbox_select_on_entry;
  	GtkWidget *optmenu_select_on_entry;
-	GtkWidget *hbox_nextunreadmsgdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
+	GtkWidget *table;
+	GtkWidget *vbox5;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -736,8 +736,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
-
-	PACK_VSPACER(vbox1, vbox2, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -775,8 +773,6 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON
 		(vbox3, chkbtn_threadsubj,
 		 _("Thread using subject in addition to standard headers"));
-
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -854,23 +850,32 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox4, checkbtn_mark_as_read_on_newwin,
 		 _("Only mark message as read when opened in a new window"));
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox4), hbox1, FALSE, FALSE, 0);
 
-	hbox_select_on_entry = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_select_on_entry);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_select_on_entry, FALSE, FALSE, 0);
+	vbox5 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox5);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox5, FALSE, FALSE, 0);
+
+	table = gtk_table_new(1, 1, FALSE);
+	gtk_widget_show(table);
+	gtk_container_add (GTK_CONTAINER (vbox5), table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	label = gtk_label_new (_("When entering a folder"));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox_select_on_entry), label, FALSE, FALSE, 8);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
  	optmenu_select_on_entry = gtk_option_menu_new ();
  	gtk_widget_show (optmenu_select_on_entry);
-	gtk_box_pack_start (GTK_BOX (hbox_select_on_entry),
-			    optmenu_select_on_entry, FALSE, FALSE, 8);
-	
+
+	gtk_table_attach(GTK_TABLE(table), optmenu_select_on_entry, 1, 2, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Do nothing"), 0);
 	MENUITEM_ADD (menu, menuitem, _("Select first unread (or new) message"),
@@ -879,20 +884,29 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		      SELECTONENTRY_NEW);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
- 	
+
 	/* Next Unread Message Dialog */
-	hbox_nextunreadmsgdialog = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_nextunreadmsgdialog);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_nextunreadmsgdialog, FALSE, FALSE, 0);
+	table = gtk_table_new(1, 1, FALSE);
+	gtk_widget_show(table);
+	gtk_container_add (GTK_CONTAINER (vbox5), table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), label, FALSE, FALSE, 8);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
  	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
  	gtk_widget_show (optmenu_nextunreadmsgdialog);
-	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), optmenu_nextunreadmsgdialog, FALSE, FALSE, 8);
-	
+
+	gtk_table_attach(GTK_TABLE(table), optmenu_nextunreadmsgdialog, 1, 2, 1, 2,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
+
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
 	MENUITEM_ADD (menu, menuitem, _("Assume 'Yes'"), 

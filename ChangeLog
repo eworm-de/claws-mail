@@ -1,3 +1,22 @@
+2005-12-02 [paul]	1.9.100cvs49
+
+	* src/prefs_account.c
+	* src/prefs_compose_writing.c
+	* src/prefs_fonts.c
+	* src/prefs_gtk.h
+	* src/prefs_image_viewer.c
+	* src/prefs_message.c
+	* src/prefs_other.c
+	* src/prefs_receive.c
+	* src/prefs_send.c
+	* src/prefs_spelling.c
+	* src/prefs_summaries.c
+	* src/prefs_wrapping.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/pgpcore/prefs_gpg.c
+		several cleanups to the prefs dialogs
+		(slightly modified) patch by Fabien Vantard
+
 2005-12-02 [paul]	1.9.100cvs48
 
 	* src/main.c

@@ -107,7 +107,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
 
-	GtkWidget *hbox_recvdialog;
+	GtkWidget *table;
 	GtkWidget *label_recvdialog;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -183,18 +183,24 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Update all local folders after incorporation"));
 
 	/* receive dialog */
-	hbox_recvdialog = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_recvdialog);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox_recvdialog, FALSE, FALSE, 0);
+	table = gtk_table_new(1, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_container_add (GTK_CONTAINER (vbox2), table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	label_recvdialog = gtk_label_new (_("Show receive dialog"));
 	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
 	gtk_widget_show (label_recvdialog);
-	gtk_box_pack_start (GTK_BOX (hbox_recvdialog), label_recvdialog, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label_recvdialog, 0, 1, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
 
 	optmenu_recvdialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_recvdialog);
-	gtk_box_pack_start (GTK_BOX (hbox_recvdialog), optmenu_recvdialog, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), optmenu_recvdialog, 1, 2, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (0), 0, 0);
 
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);

@@ -79,8 +79,6 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
 
-	GtkWidget *hbox5;
-
 	GtkWidget *checkbtn_default_reply_list;
 
 	GtkWidget *checkbtn_forward_as_attachment;
@@ -121,23 +119,18 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
 
-	hbox5 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox5);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox5, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox5, checkbtn_forward_as_attachment,
+	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
 
-	
 	hbox_autosave = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autosave);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
-	
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
+
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave to Drafts folder every "));
+			   _("Autosave to Drafts folder every"));
 
 	spinbtn_autosave_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 10);
 	spinbtn_autosave_length = gtk_spin_button_new
@@ -153,7 +146,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_undolevel, FALSE, FALSE, 0);
 
 	label_undolevel = gtk_label_new (_("Undo level"));
 	gtk_widget_show (label_undolevel);
@@ -166,6 +159,9 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
+
+	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
+	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 

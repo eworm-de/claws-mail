@@ -107,7 +107,7 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	GtkTooltips *full_tooltip;
 
         vbox = gtk_vbox_new(FALSE, 3);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
         gtk_widget_show(vbox);
         
 	local_tooltip = gtk_tooltips_new();

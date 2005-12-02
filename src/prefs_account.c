@@ -1959,7 +1959,7 @@ static void prefs_account_privacy_create(void)
 
 	default_privacy_system = gtk_option_menu_new();
 	gtk_widget_show (default_privacy_system);
-	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, FALSE, TRUE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
 			   _("Encrypt message by default"));

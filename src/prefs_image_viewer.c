@@ -56,10 +56,11 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
 	GtkWidget *inline_img;
+	GtkTooltips *resize_tooltip;
 
 	table = gtk_table_new(3, 1, FALSE);
 	gtk_widget_show(table);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
@@ -69,8 +70,13 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	resize_img = gtk_check_button_new_with_label(_("Resize attached images by default\n(Clicking image toggles scaling)"));
+	resize_tooltip = gtk_tooltips_new();
+
+	resize_img = gtk_check_button_new_with_label(_("Resize attached images by default"));
 	gtk_widget_show(resize_img);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(resize_tooltip), resize_img,
+			     _("Clicking image toggles scaling"),
+			     NULL);
 	gtk_table_attach(GTK_TABLE(table), resize_img, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
