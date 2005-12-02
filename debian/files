@@ -1,0 +1,10 @@
+sylpheed-claws_2.0.0-rc1-1_i386.deb mail optional
+libsylpheed-claws-dev_2.0.0-rc1-1_i386.deb devel optional
+sylpheed-claws-plugins_2.0.0-rc1-1_all.deb mail optional
+sylpheed-claws-clamav_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-dillo-viewer_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-spamassassin_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-trayicon_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-pgpmime_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-pgpinline_2.0.0-rc1-1_i386.deb mail optional
+sylpheed-claws-i18n_2.0.0-rc1-1_all.deb mail optional

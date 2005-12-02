@@ -1,0 +1,103 @@
+Source: sylpheed-claws
+Section: mail
+Priority: optional
+Maintainer: Ricardo Mones <mones@aic.uniovi.es>
+Uploaders: Paul Mangan <claws@thewildbeast.co.uk>, Gustavo Noronha Silva <kov@debian.org>
+Build-Depends: debhelper (>= 4.0.0), libcompfaceg1-dev, libglib2.0-dev, libgtk2.0-dev, xlibs-dev, libgdk-pixbuf-dev, libgpgme11-dev (>= 0.4.5), libssl-dev, libaspell-dev, aspell-bin, libpisock-dev, libldap2-dev, flex | flex-old, bison, gettext, libltdl3-dev, autotools-dev, libtool, libaspell-dev (>= 0.50.3), libreadline4-dev, libclamav1-dev, libt1-dev, libgtkmathview-dev, libgnomeprintui2.2-dev, libetpan-dev (>= 0.38)
+Standards-Version: 3.6.2
+
+Package: sylpheed-claws
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: sylpheed-claws-i18n
+Suggests: sylpheed-doc (>= 20020420-3)
+Replaces: sylpheed-claws-image-viewer (<= 1.9.6cvs1)
+Provides: mail-reader, news-reader
+Description: Extended GTK2 version of the Sylpheed mail client
+ Sylpheed Claws GTK2 is the GTK2 version of the Sylpheed Claws
+ mail client, which is itself the extended version of the 
+ Sylpheed mail client. It aims to have the features that Sylpheed
+ Claws has and more, with a GTK2 interface.
+
+Package: libsylpheed-claws-dev
+Architecture: any
+Section: devel
+Depends: libssl-dev
+Description: Development files for Sylpheed Claws GTK2 plugins
+ This package provides the development headers needed to build
+ plugins for Sylpheed Claws GTK2, the bleeding edge version of 
+ the Sylpheed Claws mail client, which is itself the bleeding 
+ edge version of the Sylpheed mail client.
+
+Package: sylpheed-claws-plugins
+Architecture: all
+Depends: sylpheed-claws-clamav, sylpheed-claws-dillo-viewer, sylpheed-claws-spamassassin, sylpheed-claws-trayicon, sylpheed-claws-pgpmime, sylpheed-claws-pgpinline
+Description: Installs plugins for the Sylpheed Claws GTK2 mail client
+ This is a dummy package to install all plugin packages for the
+ Sylpheed Claws GTK2 mailer.
+
+Package: sylpheed-claws-clamav
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version}), clamav
+Description: Clam AntiVirus plugin for the Sylpheed Claws GTK2 mail client
+ This plugin will allow you to filter the incoming messages through the 
+ Clam AntiVirus and process them acordingly.
+
+Package: sylpheed-claws-dillo-viewer
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version}), dillo (>= 0.7.2)
+Description: HTML viewer plugin for Sylpheed Claws GTK2 using Dillo 
+ This is an HTML viewer plugin that uses the Dillo browser to render the 
+ pages in Sylpheed Claws GTK2 message view window.
+ 
+Package: sylpheed-claws-spamassassin
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version}), spamassassin
+Description: SpamAssassin plugin for Sylpheed Claws GTK2
+ This plugin will filter all received email through a spamassassin daemon
+ to decide if it is spam or not and process them acordingly.
+ 
+Package: sylpheed-claws-trayicon
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version})
+Description: Notification area plugin for Sylpheed Claws GTK2
+ This plugin will display an icon on the desktop's notification area with 
+ stats about read and unread emails.
+
+Package: sylpheed-claws-pgpmime
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version})
+Replaces: sylpheed-claws (<< 0.9.12a-1)
+Description: PGP/MIME plugin for Sylpheed Claws GTK2
+ This plugin for Sylpheed Claws GTK2 verifies signatures and decrypts 
+ messages. It does also provide the PGP/core plugin for use with other
+ privacy plugins.
+ NOTE: This plugin is not required for signing or encryption.
+
+Package: sylpheed-claws-pgpinline
+Architecture: any
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version}), sylpheed-claws-pgpmime (= ${Source-Version})
+Description: PGP/inline plugin for Sylpheed Claws GTK2
+ This plugin for Sylpheed Claws GTK2 verifies signatures of digitally
+ signed messages, and decrypts encrypted messages. It's also required
+ to send signed and encripted messages using inline method (deprecated).
+
+Package: sylpheed-claws-i18n
+Architecture: all
+Depends: ${shlibs:Depends}, sylpheed-claws (= ${Source-Version})
+Description: Locale data for Sylpheed Claws (i18n support)
+ This package provides support for non-English interfaces in
+ Sylpheed Claws.
+ Current supported locales are:
+  bg (Bulgarian)                 cs (Czech)
+  de (German)                    el (Greek)
+  en_GB (British English)        es (Spanish)
+  fr (French)                    hr (Croatian)
+  hu (Hungarian)                 it (Italian)
+  ja (Japanese)                  ko (Korean)
+  nb (Norwegian Bokmal)          nl (Dutch) 
+  pl (Polish)                    pt_BR (Brazilian Portuguese)
+  ru (Russian)                   sk (Slovak) 
+  sr (Serbian)                   sv (Swedish)
+  zh_CN (Chinese)                zh_TW.Big5 (Taiwanese)
+

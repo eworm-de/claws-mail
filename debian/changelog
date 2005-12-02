@@ -1,0 +1,134 @@
+sylpheed-claws (2.0.0-rc1-1) unstable; urgency=low
+
+  * New upstream release 
+
+ -- Colin Leroy <colin@colino.net>  Tue,  8 Nov 2005 08:37:53 +0200
+
+sylpheed-claws (1.9.100-1) unstable; urgency=low
+
+  * New upstream release 
+
+ -- Colin Leroy <colin@colino.net>  Tue,  8 Nov 2005 08:37:53 +0200
+
+sylpheed-claws (1.9.99-1) unstable; urgency=low
+
+  * New upstream release (Closes: #311456)
+  * patches/90fix-pt_BR-view.menu.patch, patches/00configure.patch
+  - Removed temporary fix.
+  - Try to make configure patch minimal.
+  * debian/rules
+  - Reenabled building with LDAP and JPilot (Closes: #325248)
+  - Added --with-{manual,faq}dir options (removed from patch).
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Thu,  8 Sep 2005 18:37:53 +0200
+
+sylpheed-claws (1.9.13-2) unstable; urgency=low
+
+  * debian/rules
+  - Fixed docs (removed) (Closes: #324541)
+  - Make desktop entry visible also for KDE. 
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Tue, 23 Aug 2005 09:09:49 +0200
+
+sylpheed-claws (1.9.13-1) unstable; urgency=low
+
+  * New upstream release. First for unstable.
+  * Rebuilt with newer libaspell (Closes: #318889)
+  * debian/control, patches/00configure.patch
+  - Added new Norwegian Bokmal translation.
+  * debian/rules
+  - Added pgpcore.so to the pgpmime deb, fixed icon names.
+  * debian/control, debian/rules
+  - Added new pgpinline plugin, now in upstream source tree.
+  * debian/README.Debian
+  - Updated and rationale for not having a new ppgcore package.
+  * 10get_xface_from_file.patch, 11mark_trashed_as_read.patch
+  - Added feature patches.
+  * debian/sylpheed-claws.desktop
+  - Added [es] comment.
+  * debian/docs
+  - Fixed, added RELEASE_NOTES.claws.
+  * debian/control, debian/copyright
+  - Fixed package description, copyright and Debian policy version.
+  * 90fix-pt_BR-view.menu.patch
+  - Temporary fix (segfault clicking View menu on pt_BR locale).
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Fri, 19 Aug 2005 19:59:31 +0200
+
+sylpheed-claws (1.9.6cvs41-1) experimental; urgency=low
+
+  * New CVS snapshot
+  * debian/control, debian/rules
+  - Removed image-viewer plugin, now is builtin. Added to Replaces.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Mon, 18 Apr 2005 18:37:53 +0200
+ 
+sylpheed-claws (1.9.6cvs1-1) experimental; urgency=low
+
+  * New CVS snapshot.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Sat, 19 Mar 2005 12:49:24 +0100
+
+sylpheed-claws (1.0.1cvs7.3-1) experimental; urgency=low
+
+  * New CVS snapshot (Closes: #290638, #292488)
+  * patches/00configure
+  - Fixed gettext package name.
+  * debian/control
+  - Fixed image-viewer depends cut'n'paste typo.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Tue, 15 Feb 2005 15:42:15 +0100
+
+sylpheed-claws (0.9.12cvs187.1-1) experimental; urgency=low
+
+  * New CVS snapshot.
+  * debian/patches/00configure.patch, debian/docs
+  - Regenerated (README.jp and others absent now).
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Wed,  8 Dec 2004 14:04:36 +0100
+
+sylpheed-claws (0.9.12cvs122.1-1) experimental; urgency=low
+
+  * New CVS snapshot (Closes: #267764)
+  - Thanks Stephen Kitt <steve@sk2.org> for notifying.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Wed,  6 Oct 2004 18:34:43 +0200
+
+sylpheed-claws (0.9.12cvs114.1-1) experimental; urgency=low
+
+  * New CVS snapshot.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Thu, 30 Sep 2004 00:36:27 +0200
+
+sylpheed-claws (0.9.12cvs102.3-1) experimental; urgency=low
+
+  * New CVS snapshot.
+  * debian/control
+  - Fixed -i18n long description.
+  - Fixed -pgpmime dependencies (Closes: #271459)
+  * debian/rules, sylpheed-claws.menu, sylpheed-claws-gtk2.desktop
+  - Enabled menu entry; added images and desktop entry.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Tue, 14 Sep 2004 10:07:19 +0200
+
+sylpheed-claws (0.9.12cvs93.1-1) experimental; urgency=low
+
+  * New CVS snapshot.
+  * debian/control, debian/rules
+  - Fixed -plugins Dependends (Closes: #267764)
+  - Added upstream -pgpmime plugin.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Fri, 27 Aug 2004 11:14:32 +0200
+
+sylpheed-claws (0.9.12cvs65.1-1) experimental; urgency=low
+
+  * New CVS snapshot.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Wed, 18 Aug 2004 12:20:51 +0200
+
+sylpheed-claws (0.9.12cvs39.7-1) experimental; urgency=low
+
+  * New CVS snapshot.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>  Fri, 30 Jul 2004 10:48:58 +0200
+

@@ -1,0 +1,14 @@
+sylpheed-claws-gtk2 for Debian
+------------------------------
+
+Compiled with IPv6, OpenSSL, GNU/Aspell, LibGNOMEPrint, libEtPan, 
+GPGME, OpenLDAP and JPilot support.
+
+The PGP/core plugin is provided by the pgpmime package. This plugin 
+provides core functions to both PGP/MIME and PGP/inline privacy plugins.
+Has not been created a new package for it because there is little chance 
+an user wants only inline and not MIME support, and even in that case 
+he/she doesn't need to load the PGP/MIME plugin, just leave it resting on 
+disk. On the other hand, creating a new package will affect all users.
+
+ -- Ricardo Mones <mones@aic.uniovi.es>, Thu, 24 Jul 2005 00:54:21 +0200
