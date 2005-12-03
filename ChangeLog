@@ -1,3 +1,11 @@
+2005-12-03 [paul]	1.9.100cvs57
+
+	* AUTHORS
+	* po/sv.po
+	* src/gtk/authors.h
+		new (partially complete) Swedish translation
+		by Anders Troback <sylpheed@troback.com>
+
 2005-12-02 [paul]	1.9.100cvs56
 
 	* configure.ac
