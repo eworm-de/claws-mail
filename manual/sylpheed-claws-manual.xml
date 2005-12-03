@@ -11,6 +11,7 @@
   <!ENTITY ap_keyboard SYSTEM "keyboard.xml">
   <!ENTITY ap_glossary SYSTEM "glossary.xml">
   <!ENTITY ap_ack      SYSTEM "ack.xml">
+  <!ENTITY ap_gpl      SYSTEM "gpl.xml">
 ]>
 <article>
   <title>The Sylpheed-Claws User Manual</title>
@@ -46,5 +47,6 @@
   &ap_keyboard;
   &ap_ack;
   &ap_glossary;
+  &ap_gpl;
 </article>
 
