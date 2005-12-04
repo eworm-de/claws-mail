@@ -5,6 +5,8 @@
 	* src/prefs_account.h
 		allow a Local account to specify a
 		default inbox
+		(closes bug 843 'Inbox cannot be changed for local
+		 mailboxes')
 
 2005-12-04 [colin]	1.9.100cvs59
 
