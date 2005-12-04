@@ -1,3 +1,9 @@
+2005-12-04 [colin]	1.9.100cvs59
+
+	* src/plugins/trayicon/trayicon.c
+		Remove Get, rename Get All to Get Mail in order to
+		be consistent with the default main toolbar
+
 2005-12-03 [colin]	1.9.100cvs58
 
 	* manual/gpl.xml
