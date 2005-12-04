@@ -92,6 +92,7 @@ struct _PrefsAccount
 	gint size_limit;
 	gboolean filter_on_recv;
 	gchar *inbox;
+	gchar *local_inbox;
 	gint max_articles;
 
 	gint imap_auth_type;

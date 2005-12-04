@@ -110,6 +110,11 @@ static struct Receive {
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
 
+	GtkWidget *local_frame;
+	GtkWidget *local_inbox_label;
+	GtkWidget *local_inbox_entry;
+	GtkWidget *local_inbox_btn;
+
 	GtkWidget *filter_on_recv_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 	
@@ -298,6 +303,9 @@ static PrefParam param[] = {
 
 	{"inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.inbox, P_STRING,
 	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"local_inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.local_inbox, P_STRING,
+	 &receive.local_inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
 	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
@@ -1360,6 +1368,12 @@ static void prefs_account_receive_create(void)
 	GtkWidget *imap_frame;
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
+	GtkWidget *local_frame;
+	GtkWidget *local_vbox;
+	GtkWidget *local_hbox;
+	GtkWidget *local_inbox_label;
+	GtkWidget *local_inbox_entry;
+	GtkWidget *local_inbox_btn;
 
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
@@ -1377,12 +1391,39 @@ static void prefs_account_receive_create(void)
 	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
+	PACK_FRAME (vbox1, local_frame, _("Local"));
+
+	local_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (local_vbox);
+	gtk_container_add (GTK_CONTAINER (local_frame), local_vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (local_vbox), VBOX_BORDER);
+
+	local_hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (local_hbox);
+	gtk_box_pack_start (GTK_BOX (local_vbox), local_hbox, FALSE, FALSE, 0);
+
+	local_inbox_label = gtk_label_new (_("Default inbox"));
+	gtk_widget_show (local_inbox_label);
+	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_label, FALSE, FALSE, 0);
+
+	local_inbox_entry = gtk_entry_new ();
+	gtk_widget_show (local_inbox_entry);
+	gtk_widget_set_size_request (local_inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_entry, TRUE, TRUE, 0);
+
+	local_inbox_btn = gtk_button_new_with_label (_(" Select... "));
+	gtk_widget_show (local_inbox_btn);
+	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_btn, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (local_inbox_btn), "clicked",
+			  G_CALLBACK (prefs_account_select_folder_cb),
+			  local_inbox_entry);
+
 	PACK_FRAME (vbox1, frame1, _("POP3"));
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 	PACK_CHECK_BUTTON (vbox2, use_apop_chkbtn,
 			   _("Use secure authentication (APOP)"));
@@ -1517,7 +1558,7 @@ static void prefs_account_receive_create(void)
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (imap_frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1575,6 +1616,11 @@ static void prefs_account_receive_create(void)
 
 	receive.imapdir_label		= imapdir_label;
 	receive.imapdir_entry           = imapdir_entry;
+
+	receive.local_frame		= local_frame;
+	receive.local_inbox_label	= local_inbox_label;
+	receive.local_inbox_entry	= local_inbox_entry;
+	receive.local_inbox_btn		= local_inbox_btn;
 
 	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
 
@@ -2800,6 +2846,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
+		gtk_widget_hide(receive.local_frame);
 		gtk_widget_show(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
@@ -2878,6 +2925,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
+		gtk_widget_show(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
@@ -2962,6 +3010,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_show(receive.imap_frame);
+		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
@@ -3047,6 +3096,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
+		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, FALSE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
@@ -3128,6 +3178,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
 		gtk_widget_show(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
+		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);

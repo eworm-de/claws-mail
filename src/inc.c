@@ -1244,8 +1244,8 @@ static gint inc_spool_account(PrefsAccount *account)
 	gchar *mbox;
 	gint result;
 
-	if (account->inbox) {
-		inbox = folder_find_item_from_path(account->inbox);
+	if (account->local_inbox) {
+		inbox = folder_find_item_from_identifier(account->local_inbox);
 		if (!inbox)
 			inbox = folder_get_default_inbox();
 	} else
