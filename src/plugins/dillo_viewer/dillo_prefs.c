@@ -33,6 +33,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "gtkutils.h"
 #include "utils.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
