@@ -3411,6 +3411,8 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 	END_LONG_OPERATION(summaryview);
 
+	summaryview->display_msg = prefs_common.always_show_msg;
+	
 	if (prefs_common.immediate_exec) {
 		summary_execute(summaryview);
 	} else {

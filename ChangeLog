@@ -1,3 +1,10 @@
+2005-12-05 [paul]	1.9.100cvs62
+
+	* src/summaryview.c
+		obey prefs_common.always_show_msg when
+		moving a msg
+		Thanks to Colin
+
 2005-12-05 [paul]	1.9.100cvs61
 
 	* src/compose.c
