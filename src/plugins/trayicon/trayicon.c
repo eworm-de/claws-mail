@@ -81,7 +81,6 @@ typedef enum
 	TRAYICON_NOTHING
 } TrayIconType;
 
-static void trayicon_get_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_get_all_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_compose_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_addressbook_cb (gpointer data, guint action, GtkWidget *widget);
@@ -327,12 +326,6 @@ const gchar *plugin_type(void)
 }
 
 /* popup menu callbacks */
-static void trayicon_get_cb( gpointer data, guint action, GtkWidget *widget )
-{
-	MainWindow *mainwin = mainwindow_get_mainwindow();
-	inc_mail_cb(mainwin, 0, NULL);
-}
-
 static void trayicon_get_all_cb( gpointer data, guint action, GtkWidget *widget )
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();

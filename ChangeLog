@@ -1,3 +1,9 @@
+2005-12-05 [paul]	1.9.100cvs65
+
+	* src/prefs_spelling.c
+	* src/plugins/trayicon/trayicon.c
+		cleanups - remove unused stuff
+
 2005-12-05 [paul]	1.9.100cvs64
 
 	* README

@@ -152,8 +152,6 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *hbox1;
 	GtkWidget *misspelled_btn;
 	GtkTooltips *tooltips;
-	PangoFontDescription *font_desc;
-	gint size;
 
 	tooltips = gtk_tooltips_new ();
 
