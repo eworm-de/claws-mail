@@ -72,7 +72,6 @@ src/plugins/clamav/clamav_plugin_gtk.c
 src/plugins/demo/demo.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/dillo_viewer/dillo_viewer.c
-src/plugins/mathml_viewer/mathml_viewer.c
 src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/prefs_gpg.c
 src/plugins/pgpcore/select-keys.c
