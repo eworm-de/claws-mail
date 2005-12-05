@@ -2184,7 +2184,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 	gtk_text_buffer_place_cursor(buffer, &iter);
-	
+	compose->set_cursor_pos = cursor_pos;
 
 	compose->autowrap = prev_autowrap;
 	if (compose->autowrap)
@@ -2527,9 +2527,15 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	if (cur_pos > gtk_text_buffer_get_char_count (buffer))
 		cur_pos = gtk_text_buffer_get_char_count (buffer);
 
-	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
+	/* put the cursor where it should be 
+	 * either where the quote_fmt says, either before the signature */
+	if (compose->set_cursor_pos <= 0)
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
+	else
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, 
+			compose->set_cursor_pos);
+		
 	gtk_text_buffer_place_cursor(buffer, &iter);
-
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
 					compose);
@@ -5310,7 +5316,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->account = account;
 	
 	compose->mutex = g_mutex_new();
-	
+	compose->set_cursor_pos = -1;
+
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
@@ -6031,6 +6038,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		gtk_text_buffer_get_start_iter(buffer, &iter);
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 		gtk_text_buffer_place_cursor(buffer, &iter);
+		compose->set_cursor_pos = cursor_pos;
 	}
 
 	if (parsed_str)
