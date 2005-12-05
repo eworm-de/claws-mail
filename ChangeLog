@@ -1,3 +1,9 @@
+2005-12-05 [paul]	1.9.100cvs64
+
+	* README
+	* manual/plugins.xml
+		remove info about removed mathml_viewer plugin
+
 2005-12-05 [paul]	1.9.100cvs63
 
 	* configure.ac

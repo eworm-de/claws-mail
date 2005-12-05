@@ -18,9 +18,6 @@
     <varlistentry><term>Dillo HTML Viewer</term>
 	    <listitem><para>Enables the viewing of html messages using the Dillo web browser, version 0.7.0 or newer. It uses Dillo's --local option by default for safe browsing. Preferences can be found in <quote>/Configuration/Preferences/Plugins/Dillo Browser</quote>. Dillo is available from <ulink url="http://www.dillo.org/">http://www.dillo.org/</ulink>.</para></listitem>
     </varlistentry>
-    <varlistentry><term>MathML Viewer</term>
-	    <listitem><para>Enables the viewing of attachments that have the Content-Type 'text/mathml' using the GtkMathView widget which is available from <ulink url="http://helm.cs.unibo.it/mml-widget/">http://helm.cs.unibo.it/mml-widget/</ulink>.</para></listitem>
-    </varlistentry>
     <varlistentry><term>PGP/Core, PGP/Inline and PGP/MIME</term>
 	    <listitem><para>Handles PGP signed and/or encrypted mails. You can decrypt mails, verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
     </varlistentry>

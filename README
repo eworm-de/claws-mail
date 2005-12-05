@@ -88,12 +88,6 @@ Select the plugin that you want and click 'OK'
     found in '/Configuration/Preferences/Plugins/Dillo Browser'.
     Dillo is available from http://www.dillo.org/
 	
-  o MathML Viewer
-    Enables the viewing of attachments that have the 
-    Content-Type 'text/mathml' using the GtkMathView widget
-    which is available from 
-    http://helm.cs.unibo.it/mml-widget/
-
   o PGP/Core
     Handles core PGP functions and is required by the PGP/Inline
     and PGP/MIME plugins.
