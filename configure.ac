@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=62
+EXTRA_VERSION=63
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -645,29 +645,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN, test x"$ac_cv_enable_pgpinline_plugin" = xyes)
 
-dnl --- MathML Viewer ---
-AC_MSG_CHECKING([whether to build MathML-Viewer plugin])
-AC_ARG_ENABLE(mathml-viewer-plugin,
-	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
-	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
-if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
-
-	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-
-		PLUGINS="mathml-viewer $PLUGINS"
-	else
-		AC_MSG_RESULT(not found)
-		AC_MSG_WARN([*** MathML-Viewer plugin will not be built ***])
-	fi
-else
-	AC_MSG_RESULT(no)
-fi
-AC_SUBST(GTK_MATH_VIEW_CFLAGS)
-AC_SUBST(GTK_MATH_VIEW_LIBS)
-AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
-
 dnl --- Dillo Viewer ---
 AC_MSG_CHECKING([whether to build Dillo plugin])
 AC_ARG_ENABLE(dillo-viewer-plugin,
@@ -789,7 +766,6 @@ src/etpan/Makefile
 src/plugins/Makefile
 src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
-src/plugins/mathml_viewer/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile

@@ -1,3 +1,12 @@
+2005-12-05 [paul]	1.9.100cvs63
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/mathml_viewer/.cvsignore
+	* src/plugins/mathml_viewer/Makefile.am
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		remove unmaintained mathml_viewer plugin
+
 2005-12-05 [paul]	1.9.100cvs62
 
 	* src/summaryview.c
