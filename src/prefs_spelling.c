@@ -260,16 +260,9 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE,
 			   0);
 	gtk_widget_set_size_request(misspelled_btn, 30, 20);
-	label5 = gtk_label_new(_("(Black to use underline)"));
-	gtk_misc_set_alignment(GTK_MISC(label5), 0, 0.5);
-	gtk_label_set_justify(GTK_LABEL(label4), GTK_JUSTIFY_LEFT);
+	label5 = gtk_label_new(_("Use black to underline"));
+	gtkut_widget_set_small_font_size (label5);
 	gtk_widget_show(label5);
-	font_desc = pango_font_description_new();
-	size = pango_font_description_get_size
-		(label5->style->font_desc);
-	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
-	gtk_widget_modify_font(label5, font_desc);
-	pango_font_description_free(font_desc);
 	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE,
 			   4);
 	/* END GLADE CODE */

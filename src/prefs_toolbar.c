@@ -801,7 +801,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_delete), 
 			  prefs_toolbar);
 
-	default_btn = gtk_button_new_with_label(_(" Default "));
+	default_btn = gtk_button_new_with_label(_(" Use default "));
 	gtk_box_pack_end(GTK_BOX(reg_hbox), default_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(default_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_default), 

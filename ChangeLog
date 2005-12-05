@@ -1,3 +1,17 @@
+2005-12-05 [paul]	1.9.100cvs61
+
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_filtering.c
+	* src/prefs_quote.c
+	* src/prefs_spelling.c
+	* src/prefs_toolbar.c
+	* src/summaryview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/quicksearch.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		dialog cleanups
+
 2005-12-04 [paul]	1.9.100cvs60
 
 	* src/inc.c

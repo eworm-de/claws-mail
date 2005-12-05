@@ -527,7 +527,7 @@ SummaryView *summary_create(void)
 
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_tip),
 			     toggle_search,
-			     _("Toggle quick-search bar"), NULL);
+			     _("Toggle quick search bar"), NULL);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
 

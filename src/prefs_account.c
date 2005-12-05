@@ -124,9 +124,9 @@ static struct Receive {
 	GtkWidget *imapdir_entry;
 
 	GtkWidget *frame_maxarticle;
-	GtkWidget *label_maxarticle;
-	GtkWidget *spinbtn_maxarticle;
-	GtkObject *spinbtn_maxarticle_adj;
+	GtkWidget *maxarticle_label;
+	GtkWidget *maxarticle_spinbtn;
+	GtkObject *maxarticle_spinbtn_adj;
 } receive;
 
 static struct Send {
@@ -345,7 +345,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"max_news_articles", "300", &tmp_ac_prefs.max_articles, P_INT,
-	 &receive.spinbtn_maxarticle,
+	 &receive.maxarticle_spinbtn,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	/* Send */
@@ -1353,6 +1353,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *use_apop_chkbtn;
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *hbox_spc;
+	GtkTooltips *leave_time_tooltip;
 	GtkWidget *leave_time_label;
 	GtkWidget *leave_time_entry;
 	GtkWidget *getall_chkbtn;
@@ -1365,6 +1366,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
+	GtkTooltips *inbox_tooltip;
 	GtkWidget *imap_frame;
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
@@ -1382,9 +1384,12 @@ static void prefs_account_receive_create(void)
 
 	GtkWidget *hbox2;
 	GtkWidget *frame2;
-	GtkWidget *label_maxarticle;
-	GtkWidget *spinbtn_maxarticle;
-	GtkObject *spinbtn_maxarticle_adj;
+	GtkWidget *maxarticle_label;
+	GtkWidget *maxarticle_spinbtn;
+	GtkObject *maxarticle_spinbtn_adj;
+	GtkTooltips *maxarticle_tool_tip;
+
+	inbox_tooltip = gtk_tooltips_new();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1408,11 +1413,17 @@ static void prefs_account_receive_create(void)
 
 	local_inbox_entry = gtk_entry_new ();
 	gtk_widget_show (local_inbox_entry);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), local_inbox_entry,
+			     _("Unfiltered messages will be stored in this folder"),
+			     NULL);
 	gtk_widget_set_size_request (local_inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_entry, TRUE, TRUE, 0);
 
-	local_inbox_btn = gtk_button_new_with_label (_(" Select... "));
+	local_inbox_btn = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_widget_show (local_inbox_btn);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), local_inbox_btn,
+			     _("Unfiltered messages will be stored in this folder"),
+			     NULL);
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (local_inbox_btn), "clicked",
 			  G_CALLBACK (prefs_account_select_folder_cb),
@@ -1444,31 +1455,16 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
+	leave_time_tooltip = gtk_tooltips_new();
+
 	leave_time_entry = gtk_entry_new ();
 	gtk_widget_show (leave_time_entry);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(leave_time_tooltip), leave_time_entry,
+			     _("0 days: remove immediately"), NULL);
 	gtk_widget_set_size_request (leave_time_entry, 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_entry, FALSE, FALSE, 0);
 
 	leave_time_label = gtk_label_new (_("days"));
-	gtk_widget_show (leave_time_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
-
-	SET_TOGGLE_SENSITIVITY (rmmail_chkbtn, hbox1);
-
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
-	hbox_spc = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox_spc);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (hbox_spc, 12, -1);
-
-	leave_time_label = gtk_label_new (_("(0 days: remove immediately)"));
-	gtk_label_set_justify (GTK_LABEL (leave_time_label), GTK_JUSTIFY_LEFT);
-	gtkut_widget_set_small_font_size (leave_time_label);
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
@@ -1506,52 +1502,52 @@ static void prefs_account_receive_create(void)
 
 	inbox_entry = gtk_entry_new ();
 	gtk_widget_show (inbox_entry);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), inbox_entry,
+			     _("Unfiltered messages will be stored in this folder"),
+			     NULL);
 	gtk_widget_set_size_request (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
 
-	inbox_btn = gtk_button_new_with_label (_(" Select... "));
+	inbox_btn = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_widget_show (inbox_btn);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), inbox_btn,
+			     _("Unfiltered messages will be stored in this folder"),
+			     NULL);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (inbox_btn), "clicked",
 			  G_CALLBACK (prefs_account_select_folder_cb),
 			  inbox_entry);
 
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+	PACK_FRAME(vbox1, frame2, _("NNTP"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
-	label = gtk_label_new
-		(_("(Unfiltered messages will be stored in this folder)"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtkut_widget_set_small_font_size (label);
-
-	PACK_FRAME(vbox1, frame2, _("Maximum number of articles to download"));
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame2), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
-	gtk_container_add (GTK_CONTAINER (frame2), hbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox2), 8);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
 
-	spinbtn_maxarticle_adj =
+	maxarticle_label = gtk_label_new
+		(_("Maximum number of articles to download"));
+	gtk_widget_show (maxarticle_label);
+	gtk_box_pack_start (GTK_BOX (hbox2), maxarticle_label, FALSE, FALSE, 0);
+
+	maxarticle_tool_tip = gtk_tooltips_new();
+
+	maxarticle_spinbtn_adj =
 		gtk_adjustment_new (300, 0, 10000, 10, 100, 100);
-	spinbtn_maxarticle = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_maxarticle_adj), 10, 0);
-	gtk_widget_show (spinbtn_maxarticle);
-	gtk_box_pack_start (GTK_BOX (hbox2), spinbtn_maxarticle,
+	maxarticle_spinbtn = gtk_spin_button_new
+		(GTK_ADJUSTMENT (maxarticle_spinbtn_adj), 10, 0);
+	gtk_widget_show (maxarticle_spinbtn);
+	gtk_tooltips_set_tip(maxarticle_tool_tip, maxarticle_spinbtn,
+			     _("unlimited if 0 is specified"), NULL);
+	gtk_box_pack_start (GTK_BOX (hbox2), maxarticle_spinbtn,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_maxarticle, 64, -1);
+	gtk_widget_set_size_request (maxarticle_spinbtn, 64, -1);
 	gtk_spin_button_set_numeric
-		(GTK_SPIN_BUTTON (spinbtn_maxarticle), TRUE);
-
-	label_maxarticle = gtk_label_new
-		(_("unlimited if 0 is specified"));
-	gtk_widget_show (label_maxarticle);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_maxarticle, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_maxarticle), GTK_JUSTIFY_LEFT);
+		(GTK_SPIN_BUTTON (maxarticle_spinbtn), TRUE);
 
 	PACK_FRAME (vbox1, imap_frame, _("IMAP4"));
 
@@ -1584,8 +1580,13 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
-	imapdir_label = gtk_label_new (_("IMAP server directory (usually empty)"));
+	imapdir_label = gtk_label_new (_("IMAP server directory"));
 	gtk_widget_show (imapdir_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_label, FALSE, FALSE, 0);
+
+	imapdir_label = gtk_label_new(_("(usually empty)"));
+	gtk_widget_show (imapdir_label);
+	gtkut_widget_set_small_font_size (imapdir_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_label, FALSE, FALSE, 0);
 
 	imapdir_entry = gtk_entry_new();
@@ -1625,8 +1626,8 @@ static void prefs_account_receive_create(void)
 	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
 
 	receive.frame_maxarticle	= frame2;
-	receive.spinbtn_maxarticle     	= spinbtn_maxarticle;
-	receive.spinbtn_maxarticle_adj 	= spinbtn_maxarticle_adj;
+	receive.maxarticle_spinbtn     	= maxarticle_spinbtn;
+	receive.maxarticle_spinbtn_adj 	= maxarticle_spinbtn_adj;
 }
 
 static void prefs_account_send_create(void)
@@ -2177,7 +2178,7 @@ static void prefs_account_ssl_create(void)
 	gtk_widget_set_size_request (hbox_spc, 16, -1);
 
 	label = gtk_label_new
-		(_("(Turn this off if you have SSL connection problems)"));
+		(_("Turn this off if you have SSL connection problems"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtkut_widget_set_small_font_size (label);
@@ -2391,7 +2392,7 @@ static void prefs_account_advanced_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,		\
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);	\
 									\
-	button = gtk_button_new_with_label (_(" ... "));		\
+	button = gtkut_get_browse_file_btn(_("Browse"));		\
 	gtk_widget_show (button);					\
 	gtk_table_attach (GTK_TABLE (table), button,			\
 			  2, 3, n, n + 1, GTK_FILL, 0, 0, 0);		\

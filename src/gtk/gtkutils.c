@@ -829,7 +829,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 #if GTK_CHECK_VERSION(2, 6, 0)
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image((GtkButton*)button,
-		gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
 #else
 	GtkWidget* image;
 	GtkWidget* box;

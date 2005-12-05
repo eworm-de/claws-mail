@@ -427,6 +427,13 @@ QuickSearch *quicksearch_new()
 
 	search_hbox = gtk_hbox_new(FALSE, 5);
 
+	clear_search = gtk_button_new_with_label(_(" Clear "));
+	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
+			   FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(clear_search), "clicked",
+			 G_CALLBACK(clear_search_cb), quicksearch);
+	gtk_widget_show(clear_search);
+
 	search_condition_expression = gtk_button_new_with_label (_(" ... "));
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_condition_expression,
 			   FALSE, FALSE, 0);
@@ -436,17 +443,10 @@ QuickSearch *quicksearch_new()
 	search_cond_expr_tip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_cond_expr_tip),
 			     search_condition_expression,
-			     _("Quicksearch: edit filtering condition"), NULL);
+			     _("Quick search: edit filtering condition"), NULL);
 	gtk_widget_show(search_condition_expression);
 
-	clear_search = gtk_button_new_with_label(_(" Clear "));
-	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
-			   FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(clear_search), "clicked",
-			 G_CALLBACK(clear_search_cb), quicksearch);
-	gtk_widget_show(clear_search);
-
-	search_description = gtk_button_new_with_label(_("Extended Symbols"));
+	search_description = gtk_button_new_with_label(_(" Extended Symbols... "));
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_description,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",

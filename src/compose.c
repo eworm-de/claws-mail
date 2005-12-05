@@ -5155,7 +5155,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 		g_free(folderidentifier);
 	}
 
-	savemsg_select = gtk_button_new_with_label (_("Select ..."));
+	savemsg_select = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_widget_show(savemsg_select);
 	gtk_table_attach(GTK_TABLE(table), savemsg_select, 2, 3, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	g_signal_connect(G_OBJECT(savemsg_select), "clicked",
