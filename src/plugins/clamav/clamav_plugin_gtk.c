@@ -81,6 +81,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
   	GtkWidget *recv_infected;
+  	GtkTooltips *recv_infected_tip;
   	GtkWidget *save_folder;
   	GtkWidget *save_folder_select;
 	GtkTooltips *save_folder_tip;
@@ -124,11 +125,15 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (label2);
   	gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, FALSE, 0);
 
-  	recv_infected = gtk_check_button_new_with_label(_("Save infected messages"));
+ 	recv_infected_tip = gtk_tooltips_new();
+ 	recv_infected = gtk_check_button_new_with_label(_("Save infected messages"));
 	gtk_widget_show (recv_infected);
   	gtk_table_attach (GTK_TABLE (table), recv_infected, 0, 1, 4, 5,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(recv_infected_tip, recv_infected,
+			     _("Save mails that contain viruses"),
+			     NULL);
 
   	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);

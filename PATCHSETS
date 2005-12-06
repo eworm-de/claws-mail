@@ -1052,3 +1052,4 @@
 ( cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/plugins/dillo_viewer/dillo_prefs.c;  ) > 1.9.100cvs66.patchset
 ( cvs diff -u -r 1.382.2.200 -r 1.382.2.201 src/compose.c;  cvs diff -u -r 1.50.2.15 -r 1.50.2.16 src/compose.h;  ) > 1.9.100cvs67.patchset
 ( cvs diff -u -r 1.53.2.14 -r 1.53.2.15 po/POTFILES.in;  ) > 1.9.100cvs68.patchset
+( cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/plugins/clamav/clamav_plugin_gtk.c;  cvs diff -u -r 1.23.2.16 -r 1.23.2.17 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 1.9.100cvs69.patchset
