@@ -1,1 +1,1 @@
-SUBDIRS = faq man manual
+SUBDIRS = man

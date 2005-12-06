@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=70
+EXTRA_VERSION=71
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -774,19 +774,7 @@ src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 doc/Makefile
-doc/faq/Makefile
-doc/faq/de/Makefile
-doc/faq/en/Makefile
-doc/faq/es/Makefile
-doc/faq/fr/Makefile
-doc/faq/it/Makefile
 doc/man/Makefile
-doc/manual/Makefile
-doc/manual/de/Makefile
-doc/manual/en/Makefile
-doc/manual/es/Makefile
-doc/manual/fr/Makefile
-doc/manual/ja/Makefile
 tools/Makefile
 config/Makefile
 sylpheed-claws.pc
