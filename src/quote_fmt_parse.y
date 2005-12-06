@@ -53,7 +53,7 @@ static const gchar *quote_str = NULL;
 static const gchar *body = NULL;
 static gint error = 0;
 
-static gint cursor_pos  = 0;
+static gint cursor_pos  = -1;
 
 extern int quote_fmt_firsttime;
 
@@ -133,7 +133,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
          * force LEX initialization
          */
 	quote_fmt_firsttime = 1;
-	cursor_pos = 0;
+	cursor_pos = -1;
 }
 
 void quote_fmterror(char *str)

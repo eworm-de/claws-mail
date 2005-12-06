@@ -63,6 +63,7 @@ struct _UndoMain
 	gboolean redo_state : 1;
 
 	gint paste;
+	gint wrap;
 };
 
 UndoMain *undo_init		(GtkWidget		*text);
@@ -76,5 +77,6 @@ void undo_undo			(UndoMain		*undostruct);
 void undo_redo			(UndoMain		*undostruct); 
 void undo_block			(UndoMain 		*undostruct);
 void undo_unblock		(UndoMain 		*undostruct);
-
+void undo_wrapping		(UndoMain		*undostruct, 
+				 gboolean 		 wrap);
 #endif /* __UNDO_H__ */

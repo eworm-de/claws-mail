@@ -215,7 +215,8 @@ static gchar *compose_quote_fmt			(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 const gchar	*fmt,
 						 const gchar	*qmark,
-						 const gchar	*body);
+						 const gchar	*body,
+						 gboolean	 rewrap);
 
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
@@ -926,6 +927,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 
+	compose->modified = FALSE;
 	compose_set_title(compose);
         return compose;
 }
@@ -1198,7 +1200,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 		compose_quote_fmt(compose, compose->replyinfo,
 			          prefs_common.quotefmt,
-			          qmark, body);
+			          qmark, body, FALSE);
 	}
 	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
 		compose_force_encryption(compose, account, FALSE);
@@ -1216,6 +1218,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 		
+	compose->modified = FALSE;
 	compose_set_title(compose);
 	return compose;
 }
@@ -1269,7 +1272,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
 	compose_create_tags(textview, compose);
-
+	
+	undo_block(compose->undostruct);
 	if (as_attach) {
 		gchar *msgfile;
 
@@ -1297,7 +1301,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		compose_quote_fmt(compose, full_msginfo,
 			          prefs_common.fw_quotefmt,
-			          qmark, body);
+			          qmark, body, FALSE);
 		compose_attach_parts(compose, msginfo);
 
 		procmsg_msginfo_free(full_msginfo);
@@ -1326,6 +1330,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		g_free(folderidentifier);
 	}
 
+	undo_unblock(compose->undostruct);
+	
+	compose->modified = FALSE;
 	compose_set_title(compose);
         return compose;
 }
@@ -1369,7 +1376,8 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
 	compose_create_tags(textview, compose);
-
+	
+	undo_block(compose->undostruct);
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
 		if (!is_file_exist(msgfile))
@@ -1409,7 +1417,8 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	gtk_text_buffer_place_cursor(textbuf, &iter);
 
 	gtk_widget_grab_focus(compose->header_last->entry);
-	
+	undo_unblock(compose->undostruct);
+	compose->modified = FALSE;
 	compose_set_title(compose);
 	return compose;
 }
@@ -1622,6 +1631,7 @@ void compose_reedit(MsgInfo *msginfo)
 
         if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+	compose->modified = FALSE;
 	compose_set_title(compose);
 }
 
@@ -1673,7 +1683,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 				   msginfo->subject);
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
-	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL);
+	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
 
 	compose_colorize_signature(compose);
@@ -1701,6 +1711,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
 
+	compose->modified = FALSE;
 	compose_set_title(compose);
         return compose;
 }
@@ -2096,19 +2107,18 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 
 static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				const gchar *fmt, const gchar *qmark,
-				const gchar *body)
+				const gchar *body, gboolean rewrap)
 {
 	static MsgInfo dummyinfo;
 	gchar *quote_str = NULL;
 	gchar *buf;
-	gchar *p, *lastp;
-	gint len;
 	gboolean prev_autowrap;
 	const gchar *trimmed_body = body;
-	gint cursor_pos = 0;
+	gint cursor_pos = -1;
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextIter iter;
+	GtkTextMark *mark;
 	
 	if (!msginfo)
 		msginfo = &dummyinfo;
@@ -2151,43 +2161,36 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	g_signal_handlers_block_by_func(G_OBJECT(buffer),
 				G_CALLBACK(text_inserted),
 				compose);
-	for (p = buf; *p != '\0'; ) {
-		GtkTextMark *mark;
-		
-		mark = gtk_text_buffer_get_insert(buffer);
-		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
-		lastp = strchr(p, '\n');
-		len = lastp ? lastp - p + 1 : -1;
-
-		if (g_utf8_validate(p, -1, NULL)) { 
-			gtk_text_buffer_insert(buffer, &iter, p, len);
-		} else {
-			gchar *tmpin = g_strdup(p);
-			gchar *tmpout = NULL;
-			tmpin[len] = '\0';
-			tmpout = conv_codeset_strdup
-				(tmpin, conv_get_locale_charset_str(),
-				 CS_INTERNAL);
-			gtk_text_buffer_insert(buffer, &iter, tmpout, -1);
-			g_free(tmpin);
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+	if (g_utf8_validate(buf, -1, NULL)) { 
+		gtk_text_buffer_insert(buffer, &iter, buf, -1);
+	} else {
+		gchar *tmpout = NULL;
+		tmpout = conv_codeset_strdup
+			(buf, conv_get_locale_charset_str(),
+			 CS_INTERNAL);
+		if (!tmpout || !g_utf8_validate(tmpout, -1, NULL)) {
 			g_free(tmpout);
+			tmpout = g_malloc(strlen(buf)*2+1);
+			conv_localetodisp(tmpout, strlen(buf)*2+1, buf);
 		}
-
-		if (lastp)
-			p = lastp + 1;
-		else
-			break;
+		gtk_text_buffer_insert(buffer, &iter, tmpout, -1);
+		g_free(tmpout);
 	}
 
 	cursor_pos = quote_fmt_get_cursor_pos();
+	compose->set_cursor_pos = cursor_pos;
+	if (cursor_pos == -1) {
+		cursor_pos = 0;
+	}
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 	gtk_text_buffer_place_cursor(buffer, &iter);
-	compose->set_cursor_pos = cursor_pos;
 
 	compose->autowrap = prev_autowrap;
-	if (compose->autowrap)
+	if (compose->autowrap && rewrap)
 		compose_wrap_all(compose);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
@@ -2529,7 +2532,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	/* put the cursor where it should be 
 	 * either where the quote_fmt says, either before the signature */
-	if (compose->set_cursor_pos <= 0)
+	if (compose->set_cursor_pos < 0)
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
 	else
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, 
@@ -3231,9 +3234,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 	compose->autowrap = FALSE;
 
 	buffer = gtk_text_view_get_buffer(text);
-
-	undo_block(compose->undostruct);
-	
+	undo_wrapping(compose->undostruct, TRUE);
 	if (par_iter) {
 		iter = *par_iter;
 	} else {
@@ -3445,8 +3446,7 @@ colorize:
 
 	if (par_iter)
 		*par_iter = iter;
-
-	undo_unblock(compose->undostruct);
+	undo_wrapping(compose->undostruct, FALSE);
 	compose->autowrap = prev_autowrap;
 }
 
@@ -3463,13 +3463,10 @@ static void compose_wrap_all_full(Compose *compose, gboolean force)
 
 	buffer = gtk_text_view_get_buffer(text);
 
-	undo_block(compose->undostruct);
-
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	while (!gtk_text_iter_is_end(&iter))
 		compose_beautify_paragraph(compose, &iter, force);
 
-	undo_unblock(compose->undostruct);
 }
 
 static void compose_set_title(Compose *compose)
@@ -6008,7 +6005,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 	if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
 		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
-					       NULL, NULL);
+					       NULL, NULL, FALSE);
 	} else {
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
@@ -6017,10 +6014,10 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 		if (compose->replyinfo != NULL)
 			parsed_str = compose_quote_fmt(compose, compose->replyinfo,
-						       tmpl->value, qmark, NULL);
+						       tmpl->value, qmark, NULL, FALSE);
 		else if (compose->fwdinfo != NULL)
 			parsed_str = compose_quote_fmt(compose, compose->fwdinfo,
-						       tmpl->value, qmark, NULL);
+						       tmpl->value, qmark, NULL, FALSE);
 		else
 			parsed_str = NULL;
 	}
@@ -6035,10 +6032,12 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	
 	if (parsed_str) {
 		cursor_pos = quote_fmt_get_cursor_pos();
+		compose->set_cursor_pos = cursor_pos;
+		if (cursor_pos == -1)
+			cursor_pos = 0;
 		gtk_text_buffer_get_start_iter(buffer, &iter);
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 		gtk_text_buffer_place_cursor(buffer, &iter);
-		compose->set_cursor_pos = cursor_pos;
 	}
 
 	if (parsed_str)
@@ -8040,12 +8039,13 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 		gtk_text_buffer_place_cursor(buffer, iter);
 
-		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text);
+		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE);
 		g_free(new_text);
 		g_object_set_data(G_OBJECT(compose->text), "paste_as_quotation",
 				  GINT_TO_POINTER(paste_as_quotation - 1));
 				  
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
+		gtk_text_buffer_place_cursor(buffer, iter);
 	} else
 		gtk_text_buffer_insert(buffer, iter, text, len);
 
