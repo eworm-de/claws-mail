@@ -689,7 +689,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
- 
+
 	debug_print("Creating custom toolbar window...\n");
 
 	main_vbox = gtk_vbox_new(FALSE, 0);
@@ -704,14 +704,15 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	vbox_frame = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(compose_frame), vbox_frame);
-	
+
 	/* available icons */
 	scrolledwindow_list_view_icons = gtk_scrolled_window_new(NULL, NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_icons), 5);
-	gtk_container_add(GTK_CONTAINER(vbox_frame), scrolledwindow_list_view_icons);
+	gtk_box_pack_start(GTK_BOX(vbox_frame), scrolledwindow_list_view_icons,
+			   TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons), 
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	
+
 	list_view_icons = create_icon_list_view(prefs_toolbar);
 	gtk_widget_show(list_view_icons);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_icons), list_view_icons);
@@ -719,7 +720,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_widget_set_size_request(list_view_icons, 225, 108);
 
 	table = gtk_table_new (2, 3, FALSE);
-	gtk_container_add (GTK_CONTAINER (vbox_frame), table);
+	gtk_box_pack_start(GTK_BOX(vbox_frame), table,
+			   FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
@@ -818,7 +820,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	scrolledwindow_list_view_set = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_bottom), scrolledwindow_list_view_set, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_set), 1);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons), 
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	list_view_set = create_set_list_view(prefs_toolbar); 
