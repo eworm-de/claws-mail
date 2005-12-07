@@ -99,6 +99,8 @@ struct _ChildInfo
 	gint		 new_out;
 
 	GString		*output;
+	void (*callback)(void *data);
+	void *data;
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
@@ -125,7 +127,9 @@ static gboolean execute_actions		(gchar		*action,
 					 GSList		*msg_list, 
 					 GtkWidget	*text,
 					 gint		 body_pos,
-					 MimeInfo	*partinfo);
+					 MimeInfo	*partinfo, 
+					 void (*callback)(void *data),
+					 void *data);
 
 static gchar *parse_action_cmd		(gchar		*action,
 					 MsgInfo	*msginfo,
@@ -512,7 +516,8 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 		return;
 	}
 
-	execute_actions(action, NULL, compose->text, 0, NULL);
+	execute_actions(action, NULL, compose->text, 0, NULL, 
+		compose_action_cb, compose);
 }
 
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
@@ -574,7 +579,8 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 		 * filtering */
 		execute_filtering_actions(action, msg_list);
 	else
-		execute_actions(action, msg_list, text, body_pos, partinfo);
+		execute_actions(action, msg_list, text, body_pos, partinfo,
+			NULL, NULL);
 }
 
 static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
@@ -606,7 +612,8 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 
 static gboolean execute_actions(gchar *action, GSList *msg_list,
 				GtkWidget *text,
-				gint body_pos, MimeInfo *partinfo)
+				gint body_pos, MimeInfo *partinfo,
+				void (*callback)(void *data), void *data)
 {
 	GSList *children_list = NULL;
 	gint is_ok  = TRUE;
@@ -752,6 +759,8 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 		for (cur = children_list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
+			child_info->callback = callback;
+			child_info->data = data;
 			child_info->tag_status = 
 				gdk_input_add(child_info->chld_status,
 					      GDK_INPUT_READ,
@@ -760,7 +769,6 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 		create_io_dialog(children);
 	}
-
 	return is_ok;
 }
 
@@ -1062,6 +1070,8 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 static void free_children(Children *children)
 {
 	ChildInfo *child_info;
+	void (*callback)(void *data) = NULL;
+	void *data = NULL;
 
 	debug_print("Freeing children data %p\n", children);
 
@@ -1071,8 +1081,14 @@ static void free_children(Children *children)
 		g_free(child_info->cmd);
 		g_string_free(child_info->output, TRUE);
 		children->list = g_slist_remove(children->list, child_info);
+		callback = child_info->callback;
+		data = child_info->data;
 		g_free(child_info);
 	}
+
+	if (callback)
+		callback(data);
+	
 	g_free(children);
 }
 

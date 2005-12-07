@@ -86,3 +86,9 @@ const gchar *plugin_type(void)
 {
 	return "Common";
 }
+
+const gchar *plugin_licence(void)
+{
+return "GPL";
+}
+

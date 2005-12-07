@@ -3450,6 +3450,12 @@ colorize:
 	compose->autowrap = prev_autowrap;
 }
 
+void compose_action_cb(void *data)
+{
+	Compose *compose = (Compose *)data;
+	compose_wrap_all(compose);
+}
+
 static void compose_wrap_all(Compose *compose)
 {
 	compose_wrap_all_full(compose, FALSE);

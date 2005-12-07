@@ -1,3 +1,24 @@
+2005-12-07 [colin]	1.9.100cvs73
+
+	* src/action.c
+	* src/compose.c
+	* src/compose.h
+		Fix bug #839 (Quoted text isn't colored after 
+		executing an action)
+	* src/common/plugin.c
+		Require plugins to declare their licence in plugin_licence()
+		Refuse to load non-GPL plugins as they'd be illegal (as 
+		derived works of Sylpheed-Claws, they must be GPL).
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		Add plugin_licence()
+
 2005-12-07 [paul]	1.9.100cvs72
 
 	* configure.ac

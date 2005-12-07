@@ -35,6 +35,7 @@ struct _Plugin
 	const gchar *(*name) (void);
 	const gchar *(*desc) (void);
 	const gchar *(*type) (void);
+	const gchar *(*licence) (void);
 	GSList *rdeps;
 };
 
@@ -192,6 +193,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	gint (*plugin_init) (gchar **error);
 	gpointer plugin_name, plugin_desc;
 	const gchar *(*plugin_type)(void);
+	const gchar *(*plugin_licence)(void);
 	gint ok;
 
 	g_return_val_if_fail(filename != NULL, NULL);
@@ -221,6 +223,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
 	    !g_module_symbol(plugin->module, "plugin_desc", &plugin_desc) ||
 	    !g_module_symbol(plugin->module, "plugin_type", (gpointer)&plugin_type) ||
+	    !g_module_symbol(plugin->module, "plugin_licence", (gpointer)&plugin_licence) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer)&plugin_init)) {
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
@@ -228,6 +231,13 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 	
+	if (strcmp(plugin_licence(), "GPL")) {
+		*error = g_strdup(_("This module is not licenced under the GPL."));
+		g_module_close(plugin->module);
+		g_free(plugin);
+		return NULL;
+	}
+
 	if (!strcmp(plugin_type(), "GTK")) {
 		*error = g_strdup(_("This module is for Sylpheed-Claws GTK1."));
 		g_module_close(plugin->module);
@@ -244,6 +254,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	plugin->name = plugin_name;
 	plugin->desc = plugin_desc;
 	plugin->type = plugin_type;
+	plugin->licence = plugin_licence;
 	plugin->filename = g_strdup(filename);
 
 	plugins = g_slist_append(plugins, plugin);

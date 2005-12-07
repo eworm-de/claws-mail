@@ -325,6 +325,12 @@ const gchar *plugin_type(void)
 	return "GTK2";
 }
 
+const gchar *plugin_licence(void)
+{
+	return "GPL";
+}
+
+
 /* popup menu callbacks */
 static void trayicon_get_all_cb( gpointer data, guint action, GtkWidget *widget )
 {

@@ -293,5 +293,6 @@ void compose_toolbar_cb			(gint 		action,
 void compose_reply_from_messageview	(MessageView 	*msgview, 
 					 GSList 	*msginfo_list, 
 					 guint 		 action);
+void compose_action_cb			(void 		*data);
 
 #endif /* __COMPOSE_H__ */
