@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=71
+EXTRA_VERSION=72
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -160,17 +160,12 @@ AC_ARG_WITH(localedir,
 	[localedir="$withval"])
 AC_SUBST(localedir)
 
-manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
-AC_ARG_WITH(manualdir,
-	[  --with-manualdir=DIR    Manual directory],
-	[manualdir="$withval"])
-AC_SUBST(manualdir)
-
-faqdir='${prefix}/${DATADIRNAME}/${PACKAGE}/faq'
-AC_ARG_WITH(faqdir,
-	[  --with-faqdir=DIR       FAQ directory],
-	[faqdir="$withval"])
-AC_SUBST(faqdir)
+dnl waiting for the new manual to be finished
+dnl manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
+dnl AC_ARG_WITH(manualdir,
+dnl	[  --with-manualdir=DIR    Manual directory],
+dnl	[manualdir="$withval"])
+dnl AC_SUBST(manualdir)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then

@@ -1,3 +1,13 @@
+2005-12-07 [paul]	1.9.100cvs72
+
+	* configure.ac
+	* src/mainwindow.c
+	* src/manual.c
+	* src/manual.h
+	* src/common/defs.h
+		clean up after local FAQ removal and
+		temporary manual removal
+
 2005-12-06 [colin]	1.9.100cvs71
 
 	* configure.ac

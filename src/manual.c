@@ -35,14 +35,6 @@
 #include "manual.h"
 #include "utils.h"
 
-static gchar *sylpheeddoc_manuals[] =
-{
-    "en",
-    "es", 
-    "fr", 
-    "de",
-};
-
 static gchar *get_language()
 {
 	gchar *language;
@@ -91,34 +83,11 @@ gboolean manual_available(ManualType type)
 				ret = TRUE;
 			}
 			break;
-		case MANUAL_FAQ_LOCAL:
-			dir = get_local_path_with_locale(FAQDIR);
-			if (dir != NULL) {
-				g_free(dir);
-				ret = TRUE;
-			}
-			break;
 		default:
 			ret = FALSE;
 	}
 
 	return ret;
-}
-
-static gchar *get_syldoc_language()
-{
-	gchar *language;
-	int i;
-	
-	language = get_language();
-	for (i = 0; i < sizeof(sylpheeddoc_manuals) / sizeof(sylpheeddoc_manuals[0]); i++) {
-		if (strcmp(language, sylpheeddoc_manuals[i]) == 0) {
-			return language;
-		}
-	}
-	g_free(language);
-	
-	return g_strdup("en");
 }
 
 void manual_open(ManualType type)
@@ -135,27 +104,6 @@ void manual_open(ManualType type)
 				g_free(dir);
 			}
 			break;
-
-		case MANUAL_FAQ_LOCAL:
-			dir = get_local_path_with_locale(FAQDIR);
-			if (dir != NULL) {
-				uri = g_strconcat("file://", dir, G_DIR_SEPARATOR_S, FAQ_HTML_INDEX, NULL);
-				g_free(dir);
-			}
-			break;
-
-		case MANUAL_MANUAL_SYLDOC:
-			lang_str = get_syldoc_language();
-			uri = g_strconcat(SYLDOC_URI, lang_str, SYLDOC_MANUAL_HTML_INDEX, NULL);
-			g_free(lang_str);
-			break;
-
-		case MANUAL_FAQ_SYLDOC:
-			lang_str = get_syldoc_language();
-			uri = g_strconcat(SYLDOC_URI, lang_str, SYLDOC_FAQ_HTML_INDEX, NULL);
-			g_free(lang_str);
-			break;
-
 		case MANUAL_FAQ_CLAWS:
 			uri = g_strconcat(FAQ_URI, NULL);
 			break;

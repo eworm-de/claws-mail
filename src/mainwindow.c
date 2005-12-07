@@ -897,8 +897,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	ifactory = gtk_item_factory_from_widget(menubar);
 
+#if 0 /* waiting for the new manual to be finished */
 	menu_set_sensitive(ifactory, "/Help/Manual", manual_available(MANUAL_MANUAL_LOCAL));
-	menu_set_sensitive(ifactory, "/Help/FAQ", manual_available(MANUAL_FAQ_LOCAL));
+#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
