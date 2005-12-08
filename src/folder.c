@@ -2432,6 +2432,10 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 	item->total_msgs++;
 
 	folder_item_update_freeze();
+
+	if (!item->cache)
+		folder_item_read_cache(item);
+
 	msgcache_add_msg(item->cache, newmsginfo);
 	copy_msginfo_flags(flagsource, newmsginfo);
 	folder_item_update_with_msg(item,  F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_ADDMSG, newmsginfo);
