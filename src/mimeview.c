@@ -715,6 +715,8 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 	}
 
 	noticeview_set_text(mimeview->siginfoview, text);
+	gtk_label_set_selectable(mimeview->siginfoview->text, TRUE);
+
 	g_free(text);
 	noticeview_set_button_text(mimeview->siginfoview, NULL);
 	noticeview_set_button_press_callback(

@@ -180,9 +180,12 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	case GPG_ERR_BAD_SIGNATURE:
 		result = g_strdup_printf(_("Bad signature from %s."), uname);
 		break;
-	case GPG_ERR_NO_PUBKEY:
-		result = g_strdup(_("No key available to verify this signature."));
+	case GPG_ERR_NO_PUBKEY: {
+		gchar *id = g_strdup(sig->fpr + strlen(sig->fpr)-8);
+		result = g_strdup_printf(_("Key 0x%s not available to verify this signature."), id);
+		g_free(id);
 		break;
+		}
 	default:
 		result = g_strdup(_("The signature has not been checked."));
 		break;
