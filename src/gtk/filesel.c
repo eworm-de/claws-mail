@@ -40,15 +40,16 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "prefs_common.h"
 
-static gchar *last_selected_dir = NULL;
-static GList *filesel_create(const gchar *title, const gchar *path, 
+static GList *filesel_create(const gchar *title, const gchar *path,
 			     gboolean multiple_files,
 			     gboolean open, gboolean folder_mode,
 			     const gchar *filter)
 {
 	GSList *slist = NULL, *slist_orig = NULL;
 	GList *list = NULL;
+	gchar *last_selected_dir = prefs_common.attach_load_dir;
 
 	gint action = (open == TRUE) ? 
 			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
@@ -113,6 +114,12 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		if (strrchr(tmp, G_DIR_SEPARATOR))
 			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
 		last_selected_dir = g_strdup(tmp);
+
+		if (prefs_common.attach_load_dir)
+			g_free(prefs_common.attach_load_dir);
+
+		prefs_common.attach_load_dir = last_selected_dir;
+
 		g_free(tmp);
 	}
 

@@ -464,6 +464,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"attach_save_directory", NULL,
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
+	{"attach_load_directory", NULL,
+	 &prefs_common.attach_load_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
 	{"mime_image_viewer", DEFAULT_IMAGE_VIEWER_CMD,

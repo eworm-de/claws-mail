@@ -257,6 +257,7 @@ struct _PrefsCommon
 	gchar *mime_audio_player;
 	gchar *mime_open_cmd;
 	gchar *attach_save_dir;
+	gchar *attach_load_dir;
 
 	GList *mime_open_cmd_history;
 
