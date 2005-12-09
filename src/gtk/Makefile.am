@@ -20,8 +20,9 @@ libsylpheedgtk_la_SOURCES = \
 	gtksourceprintjob.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
-	logwindow.c \
+	icon_legend.c \
 	inputdialog.c \
+	logwindow.c \
 	manage_window.c \
 	menu.c \
 	pluginwindow.c \
@@ -46,6 +47,7 @@ sylpheedgtkinclude_HEADERS = \
 	gtksourceprintjob.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
+	icon_legend.h \
 	inputdialog.h \
 	logwindow.h \
 	manage_window.h \

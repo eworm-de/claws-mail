@@ -94,7 +94,6 @@ void manual_open(ManualType type)
 {
 	gchar *uri = NULL;
 	gchar *dir;
-	gchar *lang_str;
 
 	switch (type) {
 		case MANUAL_MANUAL_LOCAL:

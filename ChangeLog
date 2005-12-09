@@ -1,3 +1,14 @@
+2005-12-09 [paul]	1.9.100cvs81
+
+	* po/POTFILES.in
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/icon_legend.c
+	* src/gtk/icon_legend.h
+		add icon legend
+	* src/manual.c
+		cleanup
+
 2005-12-09 [paul]	1.9.100cvs80
 
 	* src/plugins/pgpcore/passphrase.c

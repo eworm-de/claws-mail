@@ -91,6 +91,7 @@
 #include "filtering.h"
 #include "folderutils.h"
 #include "foldersort.h"
+#include "icon_legend.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -414,6 +415,9 @@ static void online_switch_clicked(GtkButton     *btn,
 static void manual_open_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+
+static void legend_open_cb	 (GtkMenuItem	*menuitem,
+				  gpointer 	 data);
 
 static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
@@ -795,6 +799,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #endif
 	{N_("/_Help/_Online User-contributed FAQ"),	
 						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
+	{N_("/_Help/Icon _Legend"),		NULL, legend_open_cb, 0, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
@@ -3165,6 +3170,11 @@ static void manual_open_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	manual_open((ManualType)action);
+}
+
+static void legend_open_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	legend_show();
 }
 
 static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
