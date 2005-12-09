@@ -274,6 +274,7 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     label = gtk_label_new (buf);
     gtk_label_set_use_markup(GTK_LABEL (label), TRUE);
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+    gtk_label_set_line_wrap(GTK_LABEL (label), TRUE);
     g_free (buf);
 
     return label;
