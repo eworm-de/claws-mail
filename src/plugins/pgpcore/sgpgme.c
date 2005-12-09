@@ -90,7 +90,18 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 	debug_print("err code %d\n", gpg_err_code(sig->status));
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		return SIGNATURE_OK;
+		switch (gpg_err_code(sig->validity)) {
+		case GPGME_VALIDITY_NEVER:
+			return SIGNATURE_INVALID;
+		case GPGME_VALIDITY_UNKNOWN:
+		case GPGME_VALIDITY_UNDEFINED:
+		case GPGME_VALIDITY_MARGINAL:
+		case GPGME_VALIDITY_FULL:
+		case GPGME_VALIDITY_ULTIMATE:
+			return SIGNATURE_OK;
+		default:
+			return SIGNATURE_CHECK_FAILED;
+		}
 	case GPG_ERR_SIG_EXPIRED:
 	case GPG_ERR_KEY_EXPIRED:
 		return SIGNATURE_WARN;
@@ -168,8 +179,19 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		uname = g_strdup("<?>");
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		result = g_strdup_printf(_("Good signature from %s."),
-			uname);
+		switch (gpg_err_code(sig->validity)) {
+		case GPGME_VALIDITY_MARGINAL:
+		case GPGME_VALIDITY_FULL:
+		case GPGME_VALIDITY_ULTIMATE:
+			result = g_strdup_printf(_("Good signature from %s."), uname);
+			break;
+		case GPGME_VALIDITY_UNKNOWN:
+		case GPGME_VALIDITY_UNDEFINED:
+		case GPGME_VALIDITY_NEVER:
+		default:
+			result = g_strdup_printf(_("Good signature (untrusted) from %s."), uname);
+			break;
+		}
 		break;
 	case GPG_ERR_SIG_EXPIRED:
 		result = g_strdup_printf(_("Expired signature from %s."), uname);

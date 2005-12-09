@@ -1,3 +1,10 @@
+2005-12-09 [cleroy]	1.9.100cvs79
+
+	* src/plugins/pgpcore/sgpgme.c
+		Display (untrusted) on not trusted signatures
+		Patch by Michal Èihaø <michal@cihar.com>
+		Closes bug #867 (Report also key trust)
+
 2005-12-09 [cleroy]	1.9.100cvs78
 
 	* src/common/plugin.c
