@@ -1,3 +1,8 @@
+2005-12-09 [cleroy]	1.9.100cvs78
+
+	* src/common/plugin.c
+		Update licence check, following Eben Moglen's advice
+
 2005-12-08 [colin]	1.9.100cvs77
 
 	* src/folder.c

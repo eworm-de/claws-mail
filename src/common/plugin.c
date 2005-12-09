@@ -231,8 +231,9 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 	
-	if (strcmp(plugin_licence(), "GPL")) {
-		*error = g_strdup(_("This module is not licenced under the GPL."));
+	if (strcmp(plugin_licence(), "GPL")
+	&&  strncmp(plugin_licence(), "GPL-compatible", strlen("GPL-compatible"))) {
+		*error = g_strdup(_("This module is not licenced under a GPL compatible licence."));
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
