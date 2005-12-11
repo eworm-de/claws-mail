@@ -49,7 +49,6 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 {
 	GSList *slist = NULL, *slist_orig = NULL;
 	GList *list = NULL;
-	gchar *last_selected_dir = prefs_common.attach_load_dir;
 
 	gint action = (open == TRUE) ? 
 			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
@@ -92,10 +91,10 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
 		free(realpath);
 	} else {
-		if (!last_selected_dir)
-			last_selected_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
+		if (!prefs_common.attach_load_dir)
+			prefs_common.attach_load_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
 
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), last_selected_dir);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), prefs_common.attach_load_dir);
 	}
 
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
@@ -108,17 +107,14 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	
 	if (slist) {
 		gchar *tmp = strdup(slist->data);
-		if (last_selected_dir)
-			g_free(last_selected_dir);
-		
-		if (strrchr(tmp, G_DIR_SEPARATOR))
-			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
-		last_selected_dir = g_strdup(tmp);
 
 		if (prefs_common.attach_load_dir)
 			g_free(prefs_common.attach_load_dir);
+		
+		if (strrchr(tmp, G_DIR_SEPARATOR))
+			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
 
-		prefs_common.attach_load_dir = last_selected_dir;
+		prefs_common.attach_load_dir = g_strdup(tmp);
 
 		g_free(tmp);
 	}

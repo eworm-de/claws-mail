@@ -1065,3 +1065,4 @@
 ( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/pgpcore/sgpgme.c;  ) > 1.9.100cvs79.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/pgpcore/passphrase.c;  ) > 1.9.100cvs80.patchset
 ( cvs diff -u -r 1.53.2.15 -r 1.53.2.16 po/POTFILES.in;  cvs diff -u -r 1.274.2.80 -r 1.274.2.81 src/mainwindow.c;  cvs diff -u -r 1.11.2.4 -r 1.11.2.5 src/manual.c;  cvs diff -u -r 1.20.2.6 -r 1.20.2.7 src/gtk/Makefile.am;  diff -u /dev/null src/gtk/icon_legend.c;  diff -u /dev/null src/gtk/icon_legend.h;  ) > 1.9.100cvs81.patchset
+( cvs diff -u -r 1.2.2.17 -r 1.2.2.18 src/gtk/filesel.c;  ) > 1.9.100cvs82.patchset
