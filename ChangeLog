@@ -1,3 +1,9 @@
+2005-12-12 [wwp]	1.9.100cvs84
+
+	* src/gtk/icon_legend.c
+		fix misbehaviour and crash when closing the legend window
+        using the Esc key (patch by Fabien Vantard).
+
 2005-12-12 [paul]	1.9.100cvs83
 
 	* src/browseldap.c

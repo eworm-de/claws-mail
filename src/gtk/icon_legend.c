@@ -151,8 +151,9 @@ static void legend_create(void)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 {
-	if (event && event->keyval == GDK_Escape)
-		gtk_widget_destroy(legend.window);
+	if (event && event->keyval == GDK_Escape) {
+		legend_close();
+	}
 	return FALSE;
 }
 
