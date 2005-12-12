@@ -1575,6 +1575,9 @@ void prefs_matcher_read_config(void)
 		/* now hack the file in order to have it to the new format */
 		matcher_add_rulenames(rcpath);
 	}
+	
+	g_free(rc_old_format);
+
 	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 

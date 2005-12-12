@@ -1,3 +1,8 @@
+2005-12-12 [colin]	1.9.100cvs85
+
+	* src/matcher.c
+		Fix a leak
+
 2005-12-12 [wwp]	1.9.100cvs84
 
 	* src/gtk/icon_legend.c
