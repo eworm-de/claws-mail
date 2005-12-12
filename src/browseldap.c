@@ -211,7 +211,6 @@ static void browse_create( void ) {
 	GtkWidget *tree_win;
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
-	GtkWidget *hsbox;
 	gint top;
 
 	window = gtk_dialog_new();

@@ -292,7 +292,7 @@ void pluginwindow_create()
 				  GTK_BUTTONBOX_END);
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbuttonbox1), 6);
 
-	load_btn = gtk_button_new_with_label(_("Load Plugin"));
+	load_btn = gtk_button_new_with_label(_("Load Plugin..."));
 	gtk_widget_show(load_btn);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox1), load_btn);
 	GTK_WIDGET_SET_FLAGS(load_btn, GTK_CAN_DEFAULT);

@@ -302,9 +302,9 @@ static void foldersel_create(void)
 			 G_CALLBACK(foldersel_entry_activated), NULL);
 
 	gtkut_stock_button_set_create(&confirm_area,
+				      &new_button,    GTK_STOCK_NEW,
 				      &ok_button,     GTK_STOCK_OK,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &new_button,    GTK_STOCK_NEW);
+				      &cancel_button, GTK_STOCK_CANCEL);
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);

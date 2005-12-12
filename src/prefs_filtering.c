@@ -289,7 +289,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-	cond_btn = gtk_button_new_with_label (_("Define..."));
+	cond_btn = gtk_button_new_with_label (_(" Define... "));
 	gtk_widget_show (cond_btn);
   	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
@@ -311,7 +311,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-	action_btn = gtk_button_new_with_label (_("Define..."));
+	action_btn = gtk_button_new_with_label (_(" Define... "));
 	gtk_widget_show (action_btn);
   	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),

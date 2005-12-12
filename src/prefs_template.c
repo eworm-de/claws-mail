@@ -266,7 +266,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_template_delete_cb), NULL);
 
-	desc_btn = gtk_button_new_with_label(_(" Symbols "));
+	desc_btn = gtk_button_new_with_label(_(" Symbols... "));
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",

@@ -271,7 +271,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 
-	help_button = gtk_button_new_with_label(_(" Syntax help "));
+	help_button = gtk_button_new_with_label(_(" Syntax help... "));
 	gtk_widget_show(help_button);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(help_button), "clicked",

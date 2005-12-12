@@ -1,3 +1,18 @@
+2005-12-12 [paul]	1.9.100cvs83
+
+	* src/browseldap.c
+	* src/foldersel.c
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_spelling.glade 	** REMOVED **
+	* src/prefs_template.c
+	* src/gtk/foldersort.glade	** REMOVED **
+	* src/gtk/pluginwindow.c
+	* src/gtk/pluginwindow.glade	** REMOVED **
+	* src/plugins/spamassassin/spamassassin_gtk.glade	** REMOVED **
+		cleanups
+
 2005-12-11 [paul]	1.9.100cvs82
 
 	* src/gtk/filesel.c
