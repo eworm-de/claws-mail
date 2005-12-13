@@ -1,3 +1,9 @@
+2005-12-13 [colin]	1.9.100cvs87
+
+	* src/compose.c
+		Uniq-ify and sort the mimetypes list
+		Patch by Fabien Vantard
+
 2005-12-13 [colin]	1.9.100cvs86
 
 	* src/imap.c

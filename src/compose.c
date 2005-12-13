@@ -6380,11 +6380,17 @@ static void compose_attach_property_create(gboolean *cancelled)
 	strlist = NULL;
 	for (; mime_type_list != NULL; mime_type_list = mime_type_list->next) {
 		MimeType *type = (MimeType *) mime_type_list->data;
-		strlist = g_list_append(strlist, 
-				g_strdup_printf("%s/%s",
-					type->type, type->sub_type));
+		gchar *tmp;
+
+		tmp = g_strdup_printf("%s/%s", type->type, type->sub_type);
+
+		if (g_list_find_custom(strlist, tmp, (GCompareFunc)strcmp2))
+			g_free(tmp);
+		else
+			strlist = g_list_insert_sorted(strlist, (gpointer)tmp,
+					(GCompareFunc)strcmp2);
 	}
-	
+
 	gtk_combo_set_popdown_strings(GTK_COMBO(mimetype_entry), strlist);
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 
