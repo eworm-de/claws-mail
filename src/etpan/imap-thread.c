@@ -614,6 +614,8 @@ int imap_threaded_status(Folder * folder, const char * mb,
 	
 	* data_status = result.data_status;
 	
+	mailimap_status_att_list_free(status_att_list);
+	
 	return result.error;
 }
 

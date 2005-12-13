@@ -149,6 +149,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 				return -1;
 			}
 		}
+		g_free(path);
 		if (!g_slist_find_custom(dep_plugin->rdeps, 
 				(gpointer) filename, list_find_by_string)) {
 			debug_print("adding %s to %s rdeps\n",

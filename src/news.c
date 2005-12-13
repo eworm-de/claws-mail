@@ -701,7 +701,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 		while (ref_tokens[i]) {
 			gchar *cur_ref = ref_tokens[i];
 			msginfo->references = references_list_append(msginfo->references, 
-					g_strdup(cur_ref));
+					cur_ref);
 			i++;
 		}
 		g_strfreev(ref_tokens);

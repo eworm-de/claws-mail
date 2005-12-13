@@ -2034,6 +2034,13 @@ static void *imap_get_uncached_messages_thread(void *data)
 		imap_fetch_env_free(env_list);
 	}
 	
+	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
+		struct mailimap_set * imapset;
+		
+		imapset = cur->data;
+		mailimap_set_free(imapset);
+	}
+	
 	session_set_access_time(SESSION(session));
 	stuff->done = TRUE;
 	return newlist;
@@ -2669,6 +2676,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	flag_list = imap_flag_to_lep(flags);
 	r = imap_threaded_append(session->folder, destfolder,
 			 file, flag_list);
+	mailimap_flag_list_free(flag_list);
 	if (new_uid != NULL)
 		*new_uid = 0;
 
@@ -2714,6 +2722,7 @@ static gint imap_cmd_store(IMAPSession *session, struct mailimap_set * set,
 			mailimap_store_att_flags_new_remove_flags_silent(flag_list);
 	
 	r = imap_threaded_store(session->folder, set, store_att_flags);
+	mailimap_store_att_flags_free(store_att_flags);
 	if (r != MAILIMAP_NO_ERROR) {
 		
 		return IMAP_ERROR;
@@ -3004,11 +3013,15 @@ static void *get_list_of_uids_thread(void *data)
 
 	r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, set,
 				 &lep_uidlist);
+	mailimap_set_free(set);
+	
 	if (r == MAILIMAP_NO_ERROR) {
 		GSList * fetchuid_list;
 		
 		fetchuid_list =
 			imap_uid_list_from_lep(lep_uidlist);
+		mailimap_search_result_free(lep_uidlist);
+		
 		uidlist = g_slist_concat(fetchuid_list, uidlist);
 	}
 	else {
@@ -3020,6 +3033,7 @@ static void *get_list_of_uids_thread(void *data)
 		if (r == MAILIMAP_NO_ERROR) {
 			fetchuid_list =
 				imap_uid_list_from_lep_tab(lep_uidtab);
+			imap_fetch_uid_list_free(lep_uidtab);
 			uidlist = g_slist_concat(fetchuid_list, uidlist);
 		}
 	}
@@ -3828,12 +3842,12 @@ static void process_hashtable(IMAPFolderItem *item)
 {
 	if (item->flags_set_table) {
 		g_hash_table_foreach_remove(item->flags_set_table, process_flags, GINT_TO_POINTER(TRUE));
-		g_free(item->flags_set_table);
+		g_hash_table_destroy(item->flags_set_table);
 		item->flags_set_table = NULL;
 	}
 	if (item->flags_unset_table) {
 		g_hash_table_foreach_remove(item->flags_unset_table, process_flags, GINT_TO_POINTER(FALSE));
-		g_free(item->flags_unset_table);
+		g_hash_table_destroy(item->flags_unset_table);
 		item->flags_unset_table = NULL;
 	}
 }
