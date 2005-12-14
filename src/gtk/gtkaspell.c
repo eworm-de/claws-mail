@@ -916,7 +916,7 @@ static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos)
 	GtkTextView *view = gtkaspell->gtktext;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
 	GtkTextIter start, end;
-	const gchar *utf8chars;
+	gchar *utf8chars;
 	guchar a = '\0';
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &start, pos);
@@ -933,6 +933,7 @@ static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos)
 			g_free(tr);
 		}
 	}
+	g_free(utf8chars);
 
 	return a;
 }

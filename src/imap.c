@@ -1103,6 +1103,8 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			last_uid = new_uid;
 		if (file_is_tmp)
 			g_unlink(real_file);
+
+		g_free(real_file);
 	}
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();

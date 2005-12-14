@@ -3362,6 +3362,10 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 
 			/* move iter to current line start */
 			gtk_text_iter_set_line_offset(&iter, 0);
+			if (quote_str) {
+				g_free(quote_str);
+				quote_str = NULL;
+			}
 			continue;
 		} else {
 			/* move iter to next line start */
@@ -3997,6 +4001,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
         mimemsg->type = MIMETYPE_MESSAGE;
         mimemsg->subtype = g_strdup("rfc822");
 	mimemsg->content = MIMECONTENT_MEM;
+	mimemsg->tmp = TRUE; /* must free content later */
 	mimemsg->data.mem = compose_get_header(compose);
 
 	/* Create text part MimeInfo */
@@ -4101,6 +4106,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 
 	mimetext = procmime_mimeinfo_new();
 	mimetext->content = MIMECONTENT_MEM;
+	mimetext->tmp = TRUE; /* must free content later */
 	mimetext->data.mem = buf;
 	mimetext->type = MIMETYPE_TEXT;
 	mimetext->subtype = g_strdup("plain");
@@ -4504,6 +4510,7 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
 		mimepart->data.filename = g_strdup(ainfo->file);
+		mimepart->tmp = FALSE; /* or we destroy our attachment */
 		mimepart->offset = 0;
 
 		stat(ainfo->file, &statbuf);

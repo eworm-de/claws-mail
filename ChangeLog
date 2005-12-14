@@ -1,3 +1,14 @@
+2005-12-14 [colin]	1.9.100cvs89
+
+	* src/compose.c
+	* src/imap.c
+	* src/summaryview.c
+	* src/gtk/gtkaspell.c
+		More leaks fixed
+	* src/prefs_folder_item.c
+		Fix recursive prefs apply
+
+
 2005-12-14 [cleroy]	1.9.100cvs88
 
 	* src/compose.c
