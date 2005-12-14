@@ -1,3 +1,12 @@
+2005-12-14 [mones]	1.9.100cvs90
+
+	* manual/ack.xml
+	* manual/keyboard.xml
+		Initial draft and some shortcuts added
+		
+	* po/es.po
+		Updated translation
+
 2005-12-14 [colin]	1.9.100cvs89
 
 	* src/compose.c

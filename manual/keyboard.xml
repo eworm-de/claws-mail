@@ -2,10 +2,39 @@
 <appendix id="ap_keyboard">
 <title>Default keyboard shortcuts</title>
 
+  <section id="keyb_general">
+    <title>Motivations and general conventions</title>
+    <para>Although Sylpheed-Claws is a graphical application and can be mainly commanded with your preferred point-and-click device, it also requires to use the keyboard frequently. Composing mail is the most common of this keyboard requiring tasks, and there's people who writes lots of mails. Moving hands appart from keyboard greatly reduces productivity for these people, so Sylpheed-Claws tries to provide keyboard shortcuts to allow faster operation.
+    </para>
+    <para>This not only benefits power users: providing keyboard alternatives and keyboard navigation also enables people with disabilities (who may not be able to properly control a pointing device) to use Sylpheed-Claws.
+    </para>
+    <para>The most general convention is the <option>Escape</option> key. Dialogs or windows opened on top of Sylpheed-Claws' main window can be closed by hitting <option>Esc</option> key.
+    </para>
+    <para>There are other key combinations who are assigned by default to options on menus. We won't list these here, as they are already shown on the right side of the menus themselves, so you can easly learn them with the usage. Furthermore, if you don't like them, these shortcuts can be changed on the fly, just by positioning the focus on the menu option and pressing the desired key combination (but only for combinations of keys and Alt, Ctrl and Shift mofifier keys, single keys cannot be assigned)<footnote label="1"><para>This is a standard behaviour of GTK2 library based programs like Sylpheed-Claws. Notice that this behaviour may also appear disabled by default on some desktops.</para></footnote>.
+    </para>
+    <para>Appart from these shortcuts there are others which vary from window to window, which are sumarized in the following sections.
+    </para>
+  </section>
+
   <section id="keyb_mail">
     <title>Main window</title>
-    <para>
-    </para>
+    <informaltable frame="topbot">
+      <tgroup cols="2">
+        <colspec colwidth="*" />
+        <colspec colwidth="7*" />
+	<thead>
+          <row><entry>Shortcut</entry><entry></entry></row>
+	</thead>
+        <tbody>
+          <row><entry><option>n</option></entry><entry>Goes to next mail in summaryview. The <option>Up</option> arrow does the same.</entry></row>
+          <row><entry><option>p</option></entry><entry>Goes to previous mail. The <option>Down</option> arrow is a synonym.</entry></row>
+	  <row><entry><option>Shift+n</option></entry><entry>Goes to next unread mail.</entry></row>
+          <row><entry><option>Shift+p</option></entry><entry>Goes to previous unread mail.</entry></row>
+	  <row><entry><option>v</option></entry><entry>Toggles the message view panel visibility. When invisible, summary view expands itself to fill the full window height and more summary lines are displayed.</entry></row>
+	  <row><entry><option>/</option></entry><entry>Positions the cursor on the Quicksearch field, also opening the Quicksearch panel if needed.</entry></row>
+        </tbody>
+      </tgroup>
+    </informaltable>
   </section>
 
   <section id="keyb_compose">
