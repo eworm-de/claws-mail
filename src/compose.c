@@ -2120,6 +2120,14 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	GtkTextIter iter;
 	GtkTextMark *mark;
 	
+
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+				G_CALLBACK(compose_changed_cb),
+				compose);
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+				G_CALLBACK(text_inserted),
+				compose);
+
 	if (!msginfo)
 		msginfo = &dummyinfo;
 
@@ -2132,7 +2140,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		if (buf == NULL)
 			alertpanel_error(_("Quote mark format error."));
 		else
-			Xstrdup_a(quote_str, buf, return NULL)
+			Xstrdup_a(quote_str, buf, goto error)
 	}
 
 	if (fmt && *fmt != '\0') {
@@ -2147,20 +2155,13 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
 			alertpanel_error(_("Message reply/forward format error."));
-			return NULL;
+			goto error;
 		}
 	} else
 		buf = "";
 
 	prev_autowrap = compose->autowrap;
 	compose->autowrap = FALSE;
-
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),
-				G_CALLBACK(compose_changed_cb),
-				compose);
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),
-				G_CALLBACK(text_inserted),
-				compose);
 
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
@@ -2193,6 +2194,11 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	if (compose->autowrap && rewrap)
 		compose_wrap_all(compose);
 
+	goto ok;
+
+error:
+	buf = NULL;
+ok:
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 				G_CALLBACK(compose_changed_cb),
 				compose);

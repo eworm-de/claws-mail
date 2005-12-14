@@ -1071,3 +1071,4 @@
 ( cvs diff -u -r 1.75.2.14 -r 1.75.2.15 src/matcher.c;  ) > 1.9.100cvs85.patchset
 ( cvs diff -u -r 1.179.2.83 -r 1.179.2.84 src/imap.c;  cvs diff -u -r 1.101.2.18 -r 1.101.2.19 src/news.c;  cvs diff -u -r 1.13.2.10 -r 1.13.2.11 src/common/plugin.c;  cvs diff -u -r 1.1.4.25 -r 1.1.4.26 src/etpan/imap-thread.c;  ) > 1.9.100cvs86.patchset
 ( cvs diff -u -r 1.382.2.203 -r 1.382.2.204 src/compose.c;  ) > 1.9.100cvs87.patchset
+( cvs diff -u -r 1.382.2.204 -r 1.382.2.205 src/compose.c;  ) > 1.9.100cvs88.patchset
