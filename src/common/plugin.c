@@ -34,6 +34,7 @@ struct _Plugin
 	GModule	*module;
 	const gchar *(*name) (void);
 	const gchar *(*desc) (void);
+	const gchar *(*version) (void);
 	const gchar *(*type) (void);
 	const gchar *(*licence) (void);
 	GSList *rdeps;
@@ -192,7 +193,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 {
 	Plugin *plugin;
 	gint (*plugin_init) (gchar **error);
-	gpointer plugin_name, plugin_desc;
+	gpointer plugin_name, plugin_desc, plugin_version;
 	const gchar *(*plugin_type)(void);
 	const gchar *(*plugin_licence)(void);
 	gint ok;
@@ -223,6 +224,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 
 	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
 	    !g_module_symbol(plugin->module, "plugin_desc", &plugin_desc) ||
+	    !g_module_symbol(plugin->module, "plugin_version", &plugin_version) ||
 	    !g_module_symbol(plugin->module, "plugin_type", (gpointer)&plugin_type) ||
 	    !g_module_symbol(plugin->module, "plugin_licence", (gpointer)&plugin_licence) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer)&plugin_init)) {
@@ -255,6 +257,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 
 	plugin->name = plugin_name;
 	plugin->desc = plugin_desc;
+	plugin->version = plugin_version;
 	plugin->type = plugin_type;
 	plugin->licence = plugin_licence;
 	plugin->filename = g_strdup(filename);
@@ -350,4 +353,9 @@ const gchar *plugin_get_name(Plugin *plugin)
 const gchar *plugin_get_desc(Plugin *plugin)
 {
 	return plugin->desc();
+}
+
+const gchar *plugin_get_version(Plugin *plugin)
+{
+	return plugin->version();
 }

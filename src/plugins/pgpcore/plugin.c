@@ -76,3 +76,8 @@ const gchar *plugin_licence(void)
 	return "GPL";
 }
 
+const gchar *plugin_version(void)
+{
+	return VERSION;
+}
+

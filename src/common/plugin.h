@@ -29,6 +29,7 @@ gint plugin_init		(gchar		**error);
 void plugin_done		(void);
 const gchar *plugin_name	(void);
 const gchar *plugin_desc	(void);
+const gchar *plugin_version	(void);
 
 /* Functions by the sylpheed plugin system */
 Plugin *plugin_load		(const gchar	 *filename,
@@ -41,5 +42,6 @@ void plugin_save_list		(void);
 GSList *plugin_get_list		(void);
 const gchar *plugin_get_name	(Plugin		 *plugin);
 const gchar *plugin_get_desc	(Plugin		 *plugin);
+const gchar *plugin_get_version	(Plugin		 *plugin);
 
 #endif

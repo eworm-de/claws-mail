@@ -1,3 +1,18 @@
+2005-12-15 [paul]	1.9.100cvs93
+
+	* src/common/plugin.c
+	* src/common/plugin.h
+	* src/gtk/pluginwindow.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		add plugin_version()
+
 2005-12-15 [cleroy]	1.9.100cvs92
 
 	* src/compose.c

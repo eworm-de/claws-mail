@@ -330,6 +330,11 @@ const gchar *plugin_licence(void)
 	return "GPL";
 }
 
+const gchar *plugin_version(void)
+{
+	return VERSION;
+}
+
 
 /* popup menu callbacks */
 static void trayicon_get_all_cb( gpointer data, guint action, GtkWidget *widget )

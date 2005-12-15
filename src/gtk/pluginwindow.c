@@ -126,7 +126,8 @@ static void select_row_cb(Plugin *plugin, PluginWindow *pluginwindow)
 		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
 		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
 		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
-		text = plugin_get_desc(plugin);
+		text = g_strconcat(plugin_get_desc(plugin), _("\n\nVersion: "),
+				   plugin_get_version(plugin), "\n", NULL);
 		gtk_text_buffer_insert(textbuf, &start_iter, text, strlen(text));
 		gtk_widget_set_sensitive(pluginwindow->unload_btn, TRUE);
 	} else {
