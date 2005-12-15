@@ -1,3 +1,9 @@
+2005-12-15 [paul]	1.9.100cvs91
+
+	* src/gtk/filesel.c
+		fix attach_load_dir getting set to
+		PLUGINDIR on plugin load
+
 2005-12-14 [mones]	1.9.100cvs90
 
 	* manual/ack.xml

@@ -108,13 +108,14 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	if (slist) {
 		gchar *tmp = strdup(slist->data);
 
-		if (prefs_common.attach_load_dir)
+		if (!path && prefs_common.attach_load_dir)
 			g_free(prefs_common.attach_load_dir);
 		
 		if (strrchr(tmp, G_DIR_SEPARATOR))
 			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
 
-		prefs_common.attach_load_dir = g_strdup(tmp);
+		if (!path)
+			prefs_common.attach_load_dir = g_strdup(tmp);
 
 		g_free(tmp);
 	}
