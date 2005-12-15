@@ -1,3 +1,8 @@
+2005-12-15 [cleroy]	1.9.100cvs92
+
+	* src/compose.c
+		Further fix bug #875
+
 2005-12-15 [paul]	1.9.100cvs91
 
 	* src/gtk/filesel.c

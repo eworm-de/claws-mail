@@ -1114,6 +1114,24 @@ static void compose_extract_original_charset(Compose *compose)
 	}
 }
 
+#define SIGNAL_BLOCK(buffer) {					\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),	\
+				G_CALLBACK(compose_changed_cb),	\
+				compose);			\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),	\
+				G_CALLBACK(text_inserted),	\
+				compose);			\
+}
+
+#define SIGNAL_UNBLOCK(buffer) {				\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),	\
+				G_CALLBACK(compose_changed_cb),	\
+				compose);			\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),	\
+				G_CALLBACK(text_inserted),	\
+				compose);			\
+}
+
 static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
 				  gboolean to_sender,
@@ -1206,11 +1224,15 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_force_encryption(compose, account, FALSE);
 	}
 
+	SIGNAL_BLOCK(textbuf);
+	
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
 	compose_wrap_all(compose);
 
+	SIGNAL_UNBLOCK(textbuf);
+	
 	gtk_widget_grab_focus(compose->text);
 
 	undo_unblock(compose->undostruct);
@@ -1307,11 +1329,15 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		procmsg_msginfo_free(full_msginfo);
 	}
 
+	SIGNAL_BLOCK(textbuf);
+
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
 	compose_wrap_all(compose);
 
+	SIGNAL_UNBLOCK(textbuf);
+	
 	gtk_text_buffer_get_start_iter(textbuf, &iter);
 	gtk_text_buffer_place_cursor(textbuf, &iter);
 
@@ -1408,11 +1434,15 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 			_("Fw: multiple emails"));
 	}
 
+	SIGNAL_BLOCK(textbuf);
+	
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
 	compose_wrap_all(compose);
 
+	SIGNAL_UNBLOCK(textbuf);
+	
 	gtk_text_buffer_get_start_iter(textbuf, &iter);
 	gtk_text_buffer_place_cursor(textbuf, &iter);
 
@@ -2121,12 +2151,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	GtkTextMark *mark;
 	
 
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),
-				G_CALLBACK(compose_changed_cb),
-				compose);
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),
-				G_CALLBACK(text_inserted),
-				compose);
+	SIGNAL_BLOCK(buffer);
 
 	if (!msginfo)
 		msginfo = &dummyinfo;
@@ -2199,12 +2224,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 error:
 	buf = NULL;
 ok:
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
-				G_CALLBACK(compose_changed_cb),
-				compose);
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
-				G_CALLBACK(text_inserted),
-				compose);
+	SIGNAL_UNBLOCK(buffer);
 
 
 	return buf;

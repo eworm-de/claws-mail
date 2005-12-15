@@ -1075,3 +1075,4 @@
 ( cvs diff -u -r 1.382.2.205 -r 1.382.2.206 src/compose.c;  cvs diff -u -r 1.179.2.84 -r 1.179.2.85 src/imap.c;  cvs diff -u -r 1.52.2.16 -r 1.52.2.17 src/prefs_folder_item.c;  cvs diff -u -r 1.395.2.151 -r 1.395.2.152 src/summaryview.c;  cvs diff -u -r 1.9.2.33 -r 1.9.2.34 src/gtk/gtkaspell.c;  ) > 1.9.100cvs89.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/ack.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/keyboard.xml;  cvs diff -u -r 1.60.2.20 -r 1.60.2.21 po/es.po;  ) > 1.9.100cvs90.patchset
 ( cvs diff -u -r 1.2.2.18 -r 1.2.2.19 src/gtk/filesel.c;  ) > 1.9.100cvs91.patchset
+( cvs diff -u -r 1.382.2.206 -r 1.382.2.207 src/compose.c;  ) > 1.9.100cvs92.patchset
