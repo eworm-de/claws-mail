@@ -420,12 +420,12 @@ Other tools
 	Sylpheed-Claws as attachments.
 
   HOW TO USE IT
-    OpenOffice.org Version 1.0
-    --------------------------
-  	Start up OpenOffice.org.
-  	Go to 'Tools/Options/OpenOffice.org/External Programs'
-  	Enter the path to OOo2sylpheed.pl in the 'Program' box
-  	or select it by clicking on the '...' button.
+    OpenOffice.org Version 2.0
+    ----------------------------
+	This script is not needed for OOo version 2, which can work
+	directly with Sylpheed-Claws.
+	Go to 'Tools/Options/Internet/E-mail' and enter 'sylpheed-claws'
+	in the box.
 
     OpenOffice.org Version 1.1.0
     ----------------------------
@@ -440,8 +440,14 @@ Other tools
 	sylpheed-claws (if not already launched) and open a new compose
 	window with the document attached.
 
-  	Tested with OpenOffice.org versions 1.0, 1.1.0
-  
+    OpenOffice.org Version 1.0
+    --------------------------
+  	Start up OpenOffice.org.
+  	Go to 'Tools/Options/OpenOffice.org/External Programs'
+  	Enter the path to OOo2sylpheed.pl in the 'Program' box
+  	or select it by clicking on the '...' button.
+
+
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 
 
