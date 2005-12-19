@@ -216,6 +216,7 @@ struct _Compose
 	guint draft_timeout_tag;
 	
 	GtkTextTag *no_wrap_tag;
+	GtkTextTag *no_join_tag;
 	GMutex *mutex;
 	gchar *orig_charset;
 	gint set_cursor_pos;

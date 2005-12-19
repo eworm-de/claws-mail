@@ -1,3 +1,10 @@
+2005-12-19 [cleroy]	1.9.100cvs95
+
+	* src/compose.c
+	* src/compose.h
+		Don't automatically join lines when they've 
+		been separated by the user and not automatically
+
 2005-12-19 [paul]	1.9.100cvs94
 
 	* src/gtk/pluginwindow.c

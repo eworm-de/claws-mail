@@ -817,6 +817,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					 "foreground-gdk", &uri_color,
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
+	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -3187,8 +3188,14 @@ static gboolean compose_join_next_line(Compose *compose,
 	if (quote_len > 0)
 		gtk_text_buffer_delete(buffer, &iter_, &end);
 
-	/* delete linebreak and extra spaces */
+	/* don't join line breaks put by the user */
 	prev = cur = iter_;
+	gtk_text_iter_backward_char(&cur);
+	if (gtk_text_iter_has_tag(&cur, compose->no_join_tag)) {
+		return FALSE;
+	}
+	gtk_text_iter_forward_char(&cur);
+	/* delete linebreak and extra spaces */
 	while (gtk_text_iter_backward_char(&cur)) {
 		wc1 = gtk_text_iter_get_char(&cur);
 		if (!g_unichar_isspace(wc1))
@@ -8091,9 +8098,14 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 				  
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 		gtk_text_buffer_place_cursor(buffer, iter);
-	} else
-		gtk_text_buffer_insert(buffer, iter, text, len);
-
+	} else {
+		if (strcmp(text, "\n"))
+			gtk_text_buffer_insert(buffer, iter, text, len);
+		else
+			gtk_text_buffer_insert_with_tags_by_name(buffer, 
+				iter, text, len, "no_join", NULL);
+	}
+	
 	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 	
 	compose_beautify_paragraph(compose, iter, FALSE);
