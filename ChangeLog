@@ -1,3 +1,9 @@
+2005-12-19 [paul]	1.9.100cvs94
+
+	* src/gtk/pluginwindow.c
+		i18n fix.
+		Patch by Fabien Vantard
+
 2005-12-15 [paul]	1.9.100cvs93
 
 	* src/common/plugin.c

@@ -162,7 +162,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 
 	plugin_load(file, &error);
 	if (error != NULL) {
-		alertpanel_error("The following error occured while loading the plugin:\n%s\n", error);
+		alertpanel_error(_("The following error occured while loading the plugin:\n%s\n"), error);
 		g_free(error);
 	}
 
