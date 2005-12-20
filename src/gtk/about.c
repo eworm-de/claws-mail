@@ -252,8 +252,8 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), table2, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-		 "and the Sylpheed-Claws team");
+		(_("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		 "and the Sylpheed-Claws team"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_table_attach(GTK_TABLE(table2), label, 0, 1, 0, 1,

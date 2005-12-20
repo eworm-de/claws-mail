@@ -1345,6 +1345,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *item_news;
 
 	guint n_menu_entries;
+	ComboButton *getall_combo;
 	ComboButton *reply_combo;
 	ComboButton *replyall_combo;
 	ComboButton *replylist_combo;
@@ -1405,6 +1406,14 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->getall_btn, 
 					   _("Receive Mail on all Accounts"), NULL);
+			getall_combo = gtkut_combo_button_create(toolbar_data->getall_btn, NULL, 0,
+					"<GetAll>", (gpointer)toolbar_item);
+			gtk_button_set_relief(GTK_BUTTON(getall_combo->arrow),
+					      GTK_RELIEF_NONE);
+			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
+				  		  GTK_WIDGET_PTR(getall_combo),
+				 		  _("Receive Mail on selected Account"), "Reply");
+			toolbar_data->getall_combo = getall_combo;
 			break;
 		case A_RECEIVE_CUR:
 			toolbar_data->get_btn = item;
@@ -1713,8 +1722,10 @@ void toolbar_update(ToolbarType type, gpointer data)
 
 	toolbar_style(type, prefs_common.toolbar_style, data);
 
-	if (type == TOOLBAR_MAIN)
+	if (type == TOOLBAR_MAIN) {
 		toolbar_main_set_sensitive((MainWindow*)data);
+		account_set_menu_only_toolbar();
+	}
 }
 
 void toolbar_main_set_sensitive(gpointer data)
@@ -1743,6 +1754,9 @@ void toolbar_main_set_sensitive(gpointer data)
 
 	SET_WIDGET_COND(toolbar->get_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->getall_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
+	if (toolbar->getall_btn)
+		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->getall_combo),
+			M_HAVE_ACCOUNT|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->compose_news_btn, M_HAVE_ACCOUNT);
 	SET_WIDGET_COND(toolbar->reply_btn,
 			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
@@ -1862,6 +1876,7 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->toolbar          	= NULL;
 	toolbar->get_btn          	= NULL;
 	toolbar->getall_btn       	= NULL;
+	toolbar->getall_combo       	= NULL;
 	toolbar->send_btn         	= NULL;
 	toolbar->compose_mail_btn 	= NULL;
 	toolbar->compose_news_btn 	= NULL;

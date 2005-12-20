@@ -1,3 +1,18 @@
+2005-12-20 [paul]	1.9.100cvs96
+
+	* src/account.c
+	* src/account.h
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/toolbar.c
+	* src/toolbar.h
+		add a combo to the Get All button, allowing
+		quick retrieval from any account
+		Patch by Fabien Vantard, slightly modified
+		by Colin
+	* src/gtk/about.c
+		i18n fix. Patch by Fabien Vantard
+
 2005-12-19 [cleroy]	1.9.100cvs95
 
 	* src/compose.c

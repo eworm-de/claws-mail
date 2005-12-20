@@ -152,6 +152,7 @@ void main_window_reflect_prefs_all	(void);
 void main_window_set_summary_column	(void);
 void main_window_set_folder_column	(void);
 void main_window_set_account_menu	(GList		*account_list);
+void main_window_set_account_menu_only_toolbar	(GList		*account_list);
 
 GtkWidget *main_window_get_folder_window	(MainWindow	*mainwin);
 GtkWidget *main_window_get_message_window	(MainWindow	*mainwin);

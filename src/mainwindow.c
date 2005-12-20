@@ -1381,6 +1381,42 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 	}
 }
 
+static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
+						       GList *account_list)
+{
+	GList *cur_ac, *cur_item;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+	GtkWidget *menu = NULL;
+
+	if (mainwin->toolbar->getall_btn == NULL
+	||  mainwin->toolbar->getall_combo == NULL) /* button doesn't exist */
+		return;
+
+	menu = mainwin->toolbar->getall_combo->menu;
+
+	/* destroy all previous menu item */
+	cur_item = GTK_MENU_SHELL(menu)->children;
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_receive_menu_cb),
+				 ac_prefs);
+	}
+}
+
 void main_window_set_account_menu(GList *account_list)
 {
 	GList *cur;
@@ -1390,6 +1426,18 @@ void main_window_set_account_menu(GList *account_list)
 		mainwin = (MainWindow *)cur->data;
 		main_window_set_account_selector_menu(mainwin, account_list);
 		main_window_set_account_receive_menu(mainwin, account_list);
+		main_window_set_toolbar_combo_receive_menu(mainwin, account_list);
+	}
+}
+
+void main_window_set_account_menu_only_toolbar(GList *account_list)
+{
+	GList *cur;
+	MainWindow *mainwin;
+
+	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
+		mainwin = (MainWindow *)cur->data;
+		main_window_set_toolbar_combo_receive_menu(mainwin, account_list);
 	}
 }
 

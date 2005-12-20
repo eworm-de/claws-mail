@@ -43,6 +43,7 @@ PrefsAccount *account_find_from_id		(gint		 id);
 PrefsAccount *account_find_from_item		(FolderItem	*item);
 
 void	      account_set_menu		(void);
+void	      account_set_menu_only_toolbar	(void);
 
 void	      account_foreach		(AccountFunc	 func,
 					 gpointer	 user_data);

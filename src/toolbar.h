@@ -45,6 +45,7 @@ struct _Toolbar {
 
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
+	ComboButton *getall_combo;
 	GtkWidget *send_btn;
 
 	GtkWidget *compose_mail_btn;

@@ -349,6 +349,11 @@ void account_set_menu(void)
 	main_window_set_account_menu(account_list);
 }
 
+void account_set_menu_only_toolbar(void)
+{
+	main_window_set_account_menu_only_toolbar(account_list);
+}
+
 void account_foreach(AccountFunc func, gpointer user_data)
 {
 	GList *cur;
