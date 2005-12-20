@@ -371,8 +371,10 @@ static void mimeview_free_mimeinfo(MimeView *mimeview)
 	if (mimeview->mimeinfo != NULL && !defer)
 		procmime_mimeinfo_free_all(mimeview->mimeinfo);
 	else if (defer) {
+#ifdef USE_PTHREAD
 		debug_print("deferring free(mimeinfo) and cancelling check\n");
 		mimeview_check_sig_cancel_now(mimeview);
+#endif
 	}
 }
 

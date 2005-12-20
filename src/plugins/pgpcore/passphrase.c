@@ -43,7 +43,11 @@
 #include <gtk/gtksignal.h>
 #include <string.h>
 #include <sys/types.h>
+#ifdef G_OS_WIN32
+#include <windows.h>
+#else
 #include <sys/mman.h>
+#endif
 
 #include "passphrase.h"
 #include "prefs_common.h"
@@ -283,7 +287,9 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 static int free_passphrase(gpointer _unused)
 {
     if (last_pass != NULL) {
+#ifndef G_OS_WIN32
         munlock(last_pass, strlen(last_pass));
+#endif
         g_free(last_pass);
         last_pass = NULL;
         debug_print("%% passphrase removed");
@@ -298,11 +304,9 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
 {
     const char *pass;
 
-    if (prefs_gpg_get_config()->store_passphrase && last_pass != NULL && !prev_bad) {
-        write(fd, last_pass, strlen(last_pass));
-        write(fd, "\n", 1);
-        return GPG_ERR_NO_ERROR;
-    }
+    if (prefs_gpg_get_config()->store_passphrase && last_pass && !prev_bad)
+        pass = last_pass;
+    else {
     gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
     debug_print ("%% requesting passphrase for '%s': ", uid_hint);
     pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad);
@@ -315,18 +319,31 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
     else {
         if (prefs_gpg_get_config()->store_passphrase) {
             last_pass = g_strdup(pass);
+#ifndef G_OS_WIN32
             if (mlock(last_pass, strlen(last_pass)) == -1)
                 debug_print("%% locking passphrase failed");
-
+#endif
             if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
-                gtk_timeout_add(prefs_gpg_get_config()->store_passphrase_timeout*60*1000,
+                    gtk_timeout_add(prefs_gpg_get_config()
+                                    ->store_passphrase_timeout*60*1000,
                                 free_passphrase, NULL);
             }
         }
         debug_print ("%% sending passphrase");
     }
+    }
+
+#ifdef G_OS_WIN32
+    {
+        /* Under Windows FD is actually a System handle. */
+        DWORD nwritten;
+        WriteFile ((HANDLE)fd, pass, strlen (pass), &nwritten, NULL);
+        WriteFile ((HANDLE)fd, "\n", 1, &nwritten, NULL);
+    }
+#else
     write(fd, pass, strlen(pass));
     write(fd, "\n", 1);
+#endif
     return GPG_ERR_NO_ERROR;
 }
 

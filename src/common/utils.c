@@ -24,7 +24,12 @@
 #include "defs.h"
 
 #include <glib.h>
+#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -45,11 +50,15 @@
 #include <dirent.h>
 #include <time.h>
 #include <regex.h>
+
+#ifdef G_OS_UNIX
 #include <sys/utsname.h>
+#endif
 
 #ifdef G_OS_WIN32
 #  include <direct.h>
 #  include <io.h>
+#  include <fcntl.h>
 #endif
 
 #include "utils.h"
@@ -59,6 +68,9 @@
 #define BUFFSIZE	8192
 
 static gboolean debug_mode = FALSE;
+#ifdef G_OS_WIN32
+static GSList *tempfiles=NULL;
+#endif
 
 
 #if !GLIB_CHECK_VERSION(2, 7, 0) && !defined(G_OS_UNIX)
@@ -152,6 +164,38 @@ gint g_chmod(const gchar *path, gint mode)
 #endif
 }
 #endif /* GLIB_CHECK_VERSION && G_OS_UNIX */
+
+
+#ifdef G_OS_WIN32
+gint mkstemp_name(const gchar *template, gchar **name_used)
+{
+	static gulong count=0; /* W32-_mktemp only supports up to 27
+                                  tempfiles... */
+	int tmpfd;
+
+	*name_used = g_strdup_printf("%s.%ld",_mktemp(template),count++);
+	tmpfd = open (*name_used, (O_CREAT | O_RDWR | O_BINARY
+                                    | S_IREAD | S_IWRITE));
+
+	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
+	if (tmpfd<0) {
+		perror(g_strdup_printf("cant create %s",*name_used));
+		return -1;
+	}
+	else
+		return tmpfd;
+}
+#endif /* G_OS_WIN32 */
+
+#ifdef G_OS_WIN32
+gint mkstemp(const gchar *template)
+{
+	gchar *dummyname;
+	gint res = mkstemp_name(template, &dummyname);
+	g_free(dummyname);
+	return res;
+}
+#endif /* G_OS_WIN32 */
 
 void list_free_strings(GList *list)
 {
@@ -326,9 +370,22 @@ gchar *strstr2(const gchar *s1, const gchar *s2)
 gint path_cmp(const gchar *s1, const gchar *s2)
 {
 	gint len1, len2;
+        int rc;
+#ifdef G_OS_WIN32
+        gchar *s1buf, *s2buf;
+#endif
 
 	if (s1 == NULL || s2 == NULL) return -1;
 	if (*s1 == '\0' || *s2 == '\0') return -1;
+
+#ifdef G_OS_WIN32
+        s1buf = g_strdup (s1);
+        s2buf = g_strdup (s2);
+        subst_char (s1buf, '/', G_DIR_SEPARATOR);
+        subst_char (s2buf, '/', G_DIR_SEPARATOR);
+        s1 = s1buf;
+        s2 = s2buf;
+#endif /* !G_OS_WIN32 */
 
 	len1 = strlen(s1);
 	len2 = strlen(s2);
@@ -336,7 +393,12 @@ gint path_cmp(const gchar *s1, const gchar *s2)
 	if (s1[len1 - 1] == G_DIR_SEPARATOR) len1--;
 	if (s2[len2 - 1] == G_DIR_SEPARATOR) len2--;
 
-	return strncmp(s1, s2, MAX(len1, len2));
+	rc = strncmp(s1, s2, MAX(len1, len2));
+#ifdef G_OS_WIN32
+        g_free (s1buf);
+        g_free (s2buf);
+#endif /* !G_OS_WIN32 */
+        return rc;
 }
 
 /* remove trailing return code */
@@ -1218,7 +1280,11 @@ void subst_for_filename(gchar *str)
 {
 	if (!str)
 		return;
+#ifdef G_OS_WIN32
+	subst_chars(str, "\t\r\n\\/*:", '_');
+#else
 	subst_chars(str, "\t\r\n\\/*", '_');
+#endif
 }
 
 void subst_for_shellsafe_filename(gchar *str)
@@ -1811,17 +1877,122 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 	return 0;
 }
 
+
+#ifdef G_OS_WIN32
+#include <windows.h> 
+#ifndef CSIDL_APPDATA
+#define CSIDL_APPDATA 0x001a
+#endif
+#ifndef CSIDL_LOCAL_APPDATA
+#define CSIDL_LOCAL_APPDATA 0x001c
+#endif
+#ifndef CSIDL_FLAG_CREATE
+#define CSIDL_FLAG_CREATE 0x8000
+#endif
+#define DIM(v)		     (sizeof(v)/sizeof((v)[0]))
+
+#define RTLD_LAZY 0
+const char *
+w32_strerror (int w32_errno)
+{
+  static char strerr[256];
+  int ec = (int)GetLastError ();
+
+  if (w32_errno == 0)
+    w32_errno = ec;
+  FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM, NULL, w32_errno,
+                 MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                 strerr, DIM (strerr)-1, NULL);
+  return strerr;
+}
+
+static __inline__ void *
+dlopen (const char * name, int flag)
+{
+  void * hd = LoadLibrary (name);
+  return hd;
+}
+
+static __inline__ void *
+dlsym (void * hd, const char * sym)
+{
+  if (hd && sym)
+    {
+      void * fnc = GetProcAddress (hd, sym);
+      if (!fnc)
+        return NULL;
+      return fnc;
+    }
+  return NULL;
+}
+
+
+static __inline__ const char *
+dlerror (void)
+{
+  return w32_strerror (0);
+}
+
+
+static __inline__ int
+dlclose (void * hd)
+{
+  if (hd)
+    {
+      FreeLibrary (hd);
+      return 0;
+    }
+  return -1;
+}  
+
+static HRESULT
+w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d, LPSTR e)
+{
+  static int initialized;
+  static HRESULT (WINAPI * func)(HWND,int,HANDLE,DWORD,LPSTR);
+
+  if (!initialized)
+    {
+      static char *dllnames[] = { "shell32.dll", "shfolder.dll", NULL };
+      void *handle;
+      int i;
+
+      initialized = 1;
+
+      for (i=0, handle = NULL; !handle && dllnames[i]; i++)
+        {
+          handle = dlopen (dllnames[i], RTLD_LAZY);
+          if (handle)
+            {
+              func = dlsym (handle, "SHGetFolderPathA");
+              if (!func)
+                {
+                  dlclose (handle);
+                  handle = NULL;
+                }
+            }
+        }
+    }
+
+  if (func)
+    return func (a,b,c,d,e);
+  else
+    return -1;
+}
+#endif
+
 const gchar *get_home_dir(void)
 {
 #ifdef G_OS_WIN32
-	static const gchar *home_dir = NULL;
+	static char home_dir[MAX_PATH] = "";
 
-	if (!home_dir) {
-		home_dir = g_get_home_dir();
-		if (!home_dir)
-			home_dir = "C:\\Sylpheed";
+	if (home_dir[0] == '\0')
+		{
+			if (w32_shgetfolderpath
+			    (NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE,
+			     NULL, 0, home_dir) < 0)
+				strcpy (home_dir, "C:\\Sylpheed");
 	}
-
 	return home_dir;
 #else
 	return g_get_home_dir();
@@ -1833,14 +2004,8 @@ const gchar *get_rc_dir(void)
 	static gchar *rc_dir = NULL;
 
 	if (!rc_dir)
-#ifdef G_OS_WIN32
-		rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				     "Application Data", G_DIR_SEPARATOR_S,
-				     RC_DIR, NULL);
-#else
 		rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				     RC_DIR, NULL);
-#endif
 
 	return rc_dir;
 }
@@ -3073,7 +3238,7 @@ gint change_file_mode_rw(FILE *fp, const gchar *file)
 
 FILE *my_tmpfile(void)
 {
-#if HAVE_MKSTEMP
+#if HAVE_MKSTEMP || defined(G_OS_WIN32)
 	const gchar suffix[] = ".XXXXXX";
 	const gchar *tmpdir;
 	guint tmplen;
@@ -3101,14 +3266,16 @@ FILE *my_tmpfile(void)
 	if (fd < 0)
 		return tmpfile();
 
+#ifndef G_OS_WIN32
 	g_unlink(fname);
+#endif
 
 	fp = fdopen(fd, "w+b");
 	if (!fp)
 		close(fd);
 	else
 		return fp;
-#endif /* HAVE_MKSTEMP */
+#endif /* HAVE_MKSTEMP || G_OS_WIN32 */
 
 	return tmpfile();
 }
@@ -3116,10 +3283,15 @@ FILE *my_tmpfile(void)
 FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 {
 	int fd;
-	
+#ifdef G_OS_WIN32
+	char *template = g_strdup_printf ("%s%csylpheed.XXXXXX",
+                                          dir, G_DIR_SEPARATOR);
+	fd = mkstemp_name(template, filename);
+	g_free(template);
+#else
 	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
 	fd = mkstemp(*filename);
-
+#endif
 	return fdopen(fd, "w+");
 }
 
@@ -3557,6 +3729,14 @@ void debug_print_real(const gchar *format, ...)
 
 	g_print("%s", buf);
 }
+
+
+const char * debug_srcname(const char *file)
+{
+        const char *s = strrchr (file, '/');
+        return s? s+1:file;
+}
+
 
 void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
 {

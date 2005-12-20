@@ -196,6 +196,7 @@ gint sock_set_io_timeout(guint sec)
 
 void refresh_resolvers(void)
 {
+#ifdef G_OS_UNIX
 	static time_t resolv_conf_changed = (time_t)NULL;
 	struct stat s;
 
@@ -211,6 +212,7 @@ void refresh_resolvers(void)
 		}
 	} /* else
 		we'll have bigger problems. */
+#endif /*G_OS_UNIX*/
 }
 
 gint fd_connect_unix(const gchar *path)
@@ -643,6 +645,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 /* TODO: Recreate this for sock_connect_thread() */
 SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 {
+#ifdef G_OS_UNIX
 	gint fd[2];
 	int r;
 		     
@@ -662,6 +665,10 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 
 	close(fd[1]);
 	return sockinfo_from_fd(hostname, 0, fd[0]);
+#else
+        /* We would need a special implementaion for W32. */
+        return NULL;
+#endif
 }
 
 
@@ -679,7 +686,7 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 #else
 #ifdef G_OS_WIN32
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
-		g_warning("socket() failed: %ld\n", WSAGetLastError());
+		g_warning("socket() failed: %d\n", WSAGetLastError());
 #else
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
@@ -1244,7 +1251,9 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
 	while (len) {
 		if (fd_check_io(fd, G_IO_OUT) < 0)
 			return -1;
+#ifndef G_OS_WIN32
 		signal(SIGPIPE, SIG_IGN);
+#endif
 		n = write(fd, buf, len);
 		if (n <= 0) {
 			log_error("write on fd%d: %s\n", fd, strerror(errno));

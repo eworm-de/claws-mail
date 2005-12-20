@@ -61,8 +61,8 @@ sylpheedgtkinclude_HEADERS = \
 	sylpheed-marshal.h
 
 AM_CPPFLAGS = \
-	-I../common \
-	-I.. \
+	-I$(srcdir)/../common \
+	-I$(srcdir)/.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	$(ASPELL_CFLAGS) \

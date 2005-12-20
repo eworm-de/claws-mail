@@ -31,6 +31,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#ifdef WIN32
+#include <w32lib.h>
+#endif
 
 #include "folder.h"
 #include "session.h"
@@ -55,6 +58,18 @@
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
 #include "prefs_account.h"
+
+/* Define possible missing constants for Windows. */
+#ifdef G_OS_WIN32
+# ifndef S_IRGRP
+# define S_IRGRP 0
+# define S_IWGRP 0
+# endif
+# ifndef S_IROTH
+# define S_IROTH 0
+# define S_IWOTH 0
+# endif
+#endif
 
 static GList *folder_list = NULL;
 static GSList *class_list = NULL;

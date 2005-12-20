@@ -1,4 +1,13 @@
-SUBDIRS = common gtk plugins etpan
+
+if SYLPHEED_LIBETPAN
+etpan_dir = etpan
+etpan_library = etpan/libsylpheedetpan.la
+else
+etpan_dir =
+etpan_library = 
+endif
+
+SUBDIRS = common gtk plugins $(etpan_dir)
 
 bin_PROGRAMS = sylpheed-claws
 
@@ -387,15 +396,21 @@ EXTRA_DIST = \
 
 
 INCLUDES = \
-	-Icommon \
-	-Igtk \
-	-Ietpan
+	-I$(srcdir)/common \
+	-I$(srcdir)/gtk \
+	-I$(srcdir)/etpan
+
+if PLATFORM_WIN32
+arch_ldflags := -export-all-symbols
+else
+arch_ldflags :=
+endif
 
 sylpheed_claws_LDFLAGS = \
-	-export-dynamic
+	$(arch_ldflags) -export-dynamic
 
 sylpheed_claws_LDADD = \
-	etpan/libsylpheedetpan.la \
+	$(etpan_library) \
 	gtk/libsylpheedgtk.la \
 	$(ASPELL_LIBS) \
 	$(INTLLIBS) \
@@ -431,5 +446,4 @@ AM_CPPFLAGS = \
 #no-deprecated-declarations because of gpgme_data_rewind, which we have
 #to call inside gpgme due to our lack of LARGEFILE support
 
-	
 AM_YFLAGS = -d

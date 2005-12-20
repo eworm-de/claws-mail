@@ -72,7 +72,9 @@
 #endif
 #include <signal.h>
 #include <errno.h>
+#ifndef G_OS_WIN32  /* fixme we should have a configure test. */
 #include <libgen.h>
+#endif
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>

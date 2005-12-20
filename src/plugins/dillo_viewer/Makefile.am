@@ -11,9 +11,9 @@ dillo_viewer_la_LDFLAGS = \
 	$(GTK_LIBS)
 
 INCLUDES = \
-	-I../.. \
-	-I../../common \
-	-I../../gtk
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \

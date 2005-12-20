@@ -30,17 +30,33 @@
 #  include <locale.h>
 #endif
 
+#if !defined(LC_MESSAGES) && defined(G_OS_WIN32)
+#include <libintl.h>
+#endif
+
 
 #include "prefs_common.h"
 #include "manual.h"
 #include "utils.h"
+
 
 static gchar *get_language()
 {
 	gchar *language;
 	gchar *c;
 
+#ifdef G_OS_WIN32
+	language = g_strdup(gtk_set_locale());
+#else
+        /* FIXME: Why not using gtk_set_locale here too? -wk */
 	language = g_strdup(setlocale(LC_MESSAGES, NULL));
+#endif
+        /* At least under W32 it is possible that gtk_set_locate
+           returns NULL.  This is not documented but well, it happens
+           and g_strdup is happy with a NULL argument.  We return a
+           standard language string in this case. */
+        if (!language)
+                return g_strdup("en");
 	if((c = strchr(language, ',')) != NULL)
 		*c = '\0';
 	if((c = strchr(language, '_')) != NULL)

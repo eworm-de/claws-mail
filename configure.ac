@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=96
+EXTRA_VERSION=97
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -82,14 +82,19 @@ AC_PROG_CPP
 dnl AC_PROG_RANLIB
 AM_PROG_LEX
 AC_PROG_YACC
+AC_LIB_PREFIX
+AC_LIBTOOL_WIN32_DLL
+AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
 
 SYLPHEED_ACLOCAL_INCLUDE(m4)
   
 dnl ******************************
 dnl Checks for host
+dnl Not needed anymore because we 
+dnl do AC_CANONICAL_SYSTEM above
 dnl ******************************
-AC_CANONICAL_HOST
+dnl AC_CANONICAL_HOST
 
 dnl Copied from the official gtk+-2 configure.in
 AC_MSG_CHECKING([for some Win32 platform])
@@ -105,11 +110,6 @@ esac
 AC_MSG_RESULT([$platform_win32])
 AM_CONDITIONAL(PLATFORM_WIN32, test x"$platform_win32" = x"yes")
 
-if test x"$platform_win32" = x"yes"; then
-    WINDRES=windres
-    AC_SUBST(WINDRES)
-fi
-
 AC_MSG_CHECKING([for native Win32])
 case "$host" in
   *-*-mingw*)
@@ -124,13 +124,18 @@ AM_CONDITIONAL(OS_WIN32, test x"$os_win32" = x"yes")
 
 CFLAGS="$CFLAGS -Wall"
 
+pthread_name=
 case "$target" in
 *-darwin*)
 	CFLAGS="$CFLAGS -no-cpp-precomp -fno-common"
 	;;
 *-*-mingw*)
+        # Note that we need to link to pthreadGC2 in all cases. This
+        # is because some locking is used even when pthread support is
+        # disabled.
+        pthread_name=pthreadGC2
 	CFLAGS="$CFLAGS -mms-bitfields"
-	LIBS="$LIBS -lws2_32"
+	LIBS="$LIBS -l${pthread_name} -lws2_32 -lregex"
 	;;
 esac
   
@@ -151,9 +156,9 @@ GETTEXT_PACKAGE=sylpheed-claws
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 
-AM_GLIB_GNU_GETTEXT
-dnl AM_GNU_GETTEXT
-dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
+AM_GNU_GETTEXT_VERSION([0.14.5])
+AM_GNU_GETTEXT([external])
+
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_ARG_WITH(localedir,
 	[  --with-localedir=DIR    Locale directory],
@@ -211,6 +216,9 @@ if test $ac_cv_dirent_d_type = yes; then
 	AC_DEFINE(HAVE_DIRENT_D_TYPE, 1,
 		  Define if `struct dirent' has `d_type' member.)
 fi
+
+# Check whether mkdir does not take the permission argument.
+GNUPG_FUNC_MKDIR_TAKES_ONE_ARG
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -417,35 +425,51 @@ if test x$ac_cv_enable_pthread = xno; then
 else
 	AC_MSG_RESULT(yes)
 
+        # For W32 we need to use a special ptrhead lib. In this case we can't
+        # use AC_CHECK_LIB because it has no means of checking for a
+        # library installed under a different name.  Checking for the
+        # header is okay.
+        if test -n "${pthread_name}" ; then
+           ac_cv_enable_pthread=yes
+        else
 	AC_CHECK_LIB(pthread, pthread_create, :, ac_cv_enable_pthread=no)
+        fi
 	AC_CHECK_HEADERS(pthread.h, :, ac_cv_enable_pthread=no)
 
 	if test x$ac_cv_enable_pthread = xyes; then
 		AC_DEFINE(USE_PTHREAD, 1, Define if you have pthread)
+                if test -z "${pthread_name}" ; then
 		PTHREAD_LIBS="-lpthread"
+	fi
 	fi
 
 fi
 AC_SUBST(PTHREAD_LIBS)
 
-t_oldLibs="$LIBS"
-LIBS="$LIBS"
-ac_cv_var__res_options=no
-AC_TRY_LINK([#include <sys/types.h>
+dnl
+dnl Check whether we need to pass -lresolv
+dnl We know that we don't need it for W32.
+dnl
+if test x$os_win32 = xno; then
+  t_oldLibs="$LIBS"
+  LIBS="$LIBS"
+  ac_cv_var__res_options=no
+  AC_TRY_LINK([#include <sys/types.h>
  	     #include <sys/socket.h>
 	     #include <netinet/in.h>
  	     #include <arpa/nameser.h>
 	     #include <resolv.h>],
  	  	[_res.options = RES_INIT;],
  	 	ac_cv_var__res_options=yes);
-if test "$ac_cv_var__res_options" != "yes"; then
+  if test "$ac_cv_var__res_options" != "yes"; then
 	LIBRESOLV="-lresolv"
-fi
-LIBS="$t_oldLibs"
+  fi
+  LIBS="$t_oldLibs"
 
-if test "x$LIBRESOLV" = "x"; then
+  if test "x$LIBRESOLV" = "x"; then
 	AC_CHECK_LIB(resolv, res_query, [LIBRESOLV=-lresolv])
 	LIBS="$t_oldLibs"
+  fi
 fi
 AC_SUBST(LIBRESOLV)
 
@@ -594,7 +618,7 @@ AC_ARG_ENABLE(pgpcore-plugin,
 	[ac_cv_enable_pgpcore_plugin=$enableval], [ac_cv_enable_pgpcore_plugin=yes])
 if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
-	AM_PATH_GPGME(0.4.5, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+	AM_PATH_GPGME(1.0.0, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
 		      [ac_cv_enable_pgpcore_plugin=no])
 	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 		PLUGINS="pgpcore $PLUGINS"
@@ -722,6 +746,8 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 else
 	AC_MSG_RESULT(no)
 fi
+AM_CONDITIONAL(SYLPHEED_LIBETPAN, test "x$libetpan_result" = "xyes")
+
 
 dnl Libgnomeprint
 AC_MSG_CHECKING([whether to use libgnomeprint])

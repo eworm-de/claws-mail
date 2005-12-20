@@ -20,6 +20,9 @@
 /*
  * Export address book to LDIF file.
  */
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
 #include <sys/stat.h>
 #include <dirent.h>
@@ -34,6 +37,12 @@
 #include "exportldif.h"
 #include "xmlprops.h"
 #include "ldif.h"
+
+
+#ifdef MKDIR_TAKES_ONE_ARG
+#undef mkdir
+#define mkdir(a,b) mkdir(a)
+#endif
 
 #define DFL_DIR_SYLPHEED_OUT  "sylpheed-out"
 #define DFL_FILE_SYLPHEED_OUT "addressbook.ldif"

@@ -9,7 +9,8 @@ demo_la_LDFLAGS = \
 	-avoid-version -module
 
 INCLUDES = \
-	-I../../common
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common 
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)

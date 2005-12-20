@@ -22,7 +22,12 @@
 #endif
 
 #include <glib.h>
+#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
 #include <stdio.h>
 #include <string.h>
 

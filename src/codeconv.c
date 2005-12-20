@@ -34,14 +34,18 @@
 #  include <locale.h>
 #endif
 
-#include <iconv.h>
-
 #include "codeconv.h"
 #include "unmime.h"
 #include "base64.h"
 #include "quoted-printable.h"
 #include "utils.h"
 #include "prefs_common.h"
+
+/* For unknown reasons the inconv.m4 macro undefs that macro if no
+   const is needed.  This would break the code below so we define it. */
+#ifndef ICONV_CONST
+#define ICONV_CONST
+#endif
 
 typedef enum
 {

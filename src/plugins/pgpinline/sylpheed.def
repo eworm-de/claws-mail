@@ -1,0 +1,27 @@
+LIBRARY SYLPHEED-CLAWS.EXE
+EXPORTS
+codeconv_set_strict
+conv_codeset_strdup
+conv_get_locale_charset_str_no_utf8
+debug_print_real
+get_mime_tmp_dir
+gpgmegtk_passphrase_cb
+my_tmpfile
+prefs_gpg_get_config
+privacy_register_system
+privacy_unregister_system
+procmime_decode_content
+procmime_encode_content
+procmime_mimeinfo_free_all
+procmime_mimeinfo_get_parameter
+procmime_mimeinfo_parent
+procmime_scan_file
+procmime_write_mimeinfo
+sgpgme_decrypt_verify
+sgpgme_get_encrypt_data
+sgpgme_setup_signers
+sgpgme_sigstat_gpgme_to_privacy
+sgpgme_sigstat_info_full
+sgpgme_sigstat_info_short
+sgpgme_verify_signature
+sylpheed_get_version

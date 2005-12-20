@@ -1,7 +1,18 @@
 PLUGINDIR = $(pkglibdir)/plugins/
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
-libsylpheedcommon_la_SOURCES = \
+if PLATFORM_WIN32
+arch_sources = fnmatch.c \
+               w32_dirent.c w32_reg.c w32_signal.c w32_stat.c \
+               w32_stdio.c w32_stdlib.c w32_string.c w32_time.c \
+               w32_unistd.c w32_wait.c
+arch_headers = fnmatch.h w32lib.h
+else
+arch_files = 
+arch_header = 
+endif
+
+libsylpheedcommon_la_SOURCES = $(arch_sources) \
 	base64.c \
 	hooks.c \
 	log.c \
@@ -28,7 +39,7 @@ libsylpheedcommon_la_SOURCES = \
 	xmlprops.c
 
 sylpheedcommonincludedir = $(pkgincludedir)/common
-sylpheedcommoninclude_HEADERS = \
+sylpheedcommoninclude_HEADERS = $(arch_headers) \
 	base64.h \
 	defs.h \
 	hooks.h \
@@ -73,4 +84,5 @@ libsylpheedcommon_la_LIBADD = \
 	$(PTHREAD_LIBS)
 
 EXTRA_DIST = \
-	version.h.in
+	version.h.in fnmatch_loop.c
+

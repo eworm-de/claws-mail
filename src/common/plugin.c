@@ -21,7 +21,12 @@
 
 #include "defs.h"
 #include <glib.h>
+#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
 #include <gmodule.h>
 
 #include "utils.h"
@@ -121,11 +126,28 @@ static Plugin *plugin_get_by_filename(const gchar *filename)
  */
 static gint plugin_load_deps(const gchar *filename, gchar **error)
 {
-	gchar *tmp = g_strdup(filename);
+	gchar *tmp;
 	gchar *deps_file = NULL;
 	FILE *fp = NULL;
 	gchar buf[BUFFSIZE];
+#ifdef G_OS_WIN32
+        char *fnamebuf;
+        const char *s;
+        
+        s = strchr (filename, '/');
+        if (s)
+          s++;
+        else   
+          s = filename;
+        fnamebuf = g_strconcat(sylpheed_get_startup_dir(),
+                               "\\lib\\sylpheed-claws\\plugins\\",
+                               s,
+                               NULL);
+        filename = fnamebuf;
 	
+#endif
+
+        tmp = g_strdup(filename);
 	*strrchr(tmp, '.') = '\0';
 	deps_file = g_strconcat(tmp, ".deps", NULL);
 	g_free(tmp);
@@ -162,6 +184,9 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 		}
 	}
 	fclose(fp);
+#ifdef G_OS_WIN32
+        g_free (fnamebuf);
+#endif
 	return 0;
 }
 
@@ -215,6 +240,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
+        debug_print("trying to load `%s'\n", filename);
 	plugin->module = g_module_open(filename, 0);
 	if (plugin->module == NULL) {
 		*error = g_strdup(g_module_error());

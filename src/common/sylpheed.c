@@ -24,7 +24,12 @@
 #include "defs.h"
 #include <stdlib.h>
 #include <glib.h>
+#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
@@ -94,9 +99,11 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	debug_print("Starting sylpheed version %08x\n", VERSION_NUMERIC);
 
 	setlocale(LC_ALL, "");
+#ifdef ENABLE_NLS
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (PACKAGE, "UTF-8");
 	textdomain(PACKAGE);
+#endif /*ENABLE_NLS*/
 	putenv("G_BROKEN_FILENAMES=1");
 
 	/* backup if old rc file exists */

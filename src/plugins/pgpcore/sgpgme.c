@@ -423,9 +423,13 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 void sgpgme_init()
 {
 	gpgme_engine_info_t engineInfo;
-	if (gpgme_check_version("0.4.5")) {
+	if (gpgme_check_version("1.0.0")) {
+#ifdef LC_CTYPE
 		gpgme_set_locale(NULL, LC_CTYPE, setlocale(LC_CTYPE, NULL));
+#endif
+#ifdef LC_MESSAGES
 		gpgme_set_locale(NULL, LC_MESSAGES, setlocale(LC_MESSAGES, NULL));
+#endif
 		if (!gpgme_get_engine_info(&engineInfo)) {
 			while (engineInfo) {
 				debug_print("GpgME Protocol: %s\n      Version: %s\n",

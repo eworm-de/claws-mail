@@ -16,8 +16,8 @@ sylpheedetpaninclude_HEADERS = \
 	imap-thread.h
 
 AM_CPPFLAGS = \
-	-I../common \
-	-I.. \
+	-I$(top_srcdir)/src/common \
+	-I$(top_srcdir)/src \
 	$(GTK_CFLAGS) \
 	$(LIBETPAN_CFLAGS) 
 

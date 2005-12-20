@@ -23,7 +23,12 @@
 #endif
 
 #include <glib.h>
+#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
 #include <string.h>
 
 #include "string_match.h"

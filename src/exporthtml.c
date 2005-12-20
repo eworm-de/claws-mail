@@ -21,6 +21,10 @@
  * Export address book to HTML file.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>
@@ -33,6 +37,11 @@
 #include "utils.h"
 #include "exporthtml.h"
 #include "xmlprops.h"
+
+#ifdef MKDIR_TAKES_ONE_ARG
+#undef mkdir
+#define mkdir(a,b) mkdir(a)
+#endif
 
 #define DFL_DIR_SYLPHEED_OUT  "sylpheed-out"
 #define DFL_FILE_SYLPHEED_OUT "addressbook.html"

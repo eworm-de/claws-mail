@@ -44,6 +44,19 @@
 #include "utils.h"
 #include "codeconv.h"
 
+/* Define possible missing constants for Windows. */
+#ifdef G_OS_WIN32
+# ifndef S_IRGRP
+# define S_IRGRP 0
+# define S_IWGRP 0
+# endif
+# ifndef S_IROTH
+# define S_IROTH 0
+# define S_IWOTH 0
+# endif
+#endif
+
+
 static void	mh_folder_init		(Folder		*folder,
 					 const gchar	*name,
 					 const gchar	*path);

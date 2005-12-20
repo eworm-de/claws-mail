@@ -229,7 +229,7 @@ void sylpheed_gtk_idle(void)
 {
 	while(gtk_events_pending())
 		gtk_main_iteration();
-	usleep(50000);
+	g_usleep(50000);
 }
 
 gboolean defer_check_all(void *data)
@@ -371,6 +371,7 @@ int main(int argc, char *argv[])
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_rc_dir(), 1);
 
+	MAKE_DIR_IF_NOT_EXIST(get_mail_base_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
@@ -1123,6 +1124,7 @@ static void quit_signal_handler(int sig)
 
 static void install_basic_sighandlers()
 {
+#ifndef G_OS_WIN32
 	sigset_t    mask;
 	struct sigaction act;
 
@@ -1153,4 +1155,5 @@ static void install_basic_sighandlers()
 #endif	
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
+#endif /* !G_OS_WIN32 */
 }
