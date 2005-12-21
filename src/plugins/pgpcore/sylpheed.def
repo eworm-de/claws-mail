@@ -28,3 +28,5 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 sylpheed_get_version
+prefs_button_toggled
+debug_srcname

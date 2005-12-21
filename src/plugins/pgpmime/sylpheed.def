@@ -15,3 +15,4 @@ procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mimeinfo
 sylpheed_get_version
+debug_srcname

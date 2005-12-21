@@ -3766,6 +3766,7 @@ gint compose_send(Compose *compose)
 				   "the main window to retry."));
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
 			compose->sending = FALSE;
+			compose->modified = TRUE; 
 			compose_allow_user_actions (compose, TRUE);
 		}
 		return 0;
@@ -3795,6 +3796,7 @@ gint compose_send(Compose *compose)
 				   "the main window to retry."));
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
 			compose_allow_user_actions (compose, TRUE);
+			compose->modified = TRUE; 
 			compose->sending = FALSE;		
 		}
 		return -1;
@@ -3805,6 +3807,7 @@ gint compose_send(Compose *compose)
 bail:
 	compose_allow_user_actions (compose, TRUE);
 	compose->sending = FALSE;
+	compose->modified = TRUE; 
 
 	return -1;
 }

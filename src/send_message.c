@@ -232,8 +232,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						input_dialog_query_password
 							(ac_prefs->smtp_server,
 							 smtp_session->user);
-					if (!smtp_session->pass)
-						smtp_session->pass = g_strdup("");
+					if (!smtp_session->pass) {
+						session_destroy(session);
+						return -1;
+					}
 					ac_prefs->tmp_smtp_pass =
 						g_strdup(smtp_session->pass);
 				}
@@ -249,8 +251,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						input_dialog_query_password
 							(ac_prefs->smtp_server,
 							 smtp_session->user);
-					if (!smtp_session->pass)
-						smtp_session->pass = g_strdup("");
+					if (!smtp_session->pass) {
+						session_destroy(session);
+						return -1;
+					}
 					ac_prefs->tmp_pass =
 						g_strdup(smtp_session->pass);
 				}
@@ -278,8 +282,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				  _("Con_tinue connecting"), 
 				  GTK_STOCK_CANCEL, NULL,
 				  FALSE, NULL, ALERT_WARNING,
-				  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+				  G_ALERTALTERNATE) != G_ALERTDEFAULT) {
+				session_destroy(session);
 				return -1;
+			}
 		}
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 	#endif
@@ -355,6 +361,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		if (ac_prefs->smtp_userid && ac_prefs->tmp_smtp_pass) {
 			g_free(ac_prefs->tmp_smtp_pass);
 			ac_prefs->tmp_smtp_pass = NULL;
+		} else if (ac_prefs->tmp_pass) {
+			g_free(ac_prefs->tmp_pass);
+			ac_prefs->tmp_pass = NULL;
 		}
 		ret = -1;
 	} else if (SMTP_SESSION(session)->state == SMTP_MAIL_SENT_OK) {

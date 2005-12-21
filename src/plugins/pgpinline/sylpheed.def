@@ -25,3 +25,4 @@ sgpgme_sigstat_info_full
 sgpgme_sigstat_info_short
 sgpgme_verify_signature
 sylpheed_get_version
+debug_srcname

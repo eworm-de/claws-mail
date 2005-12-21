@@ -1,3 +1,22 @@
+2005-12-21 [colin]	1.9.100cvs101
+
+	* configure.ac
+		Fix DATADIRNAME
+	* COPYING
+		Fix missing section and explicit the exception better
+	* src/compose.c
+		Prevent mail from being lost without notice when an
+		SMTP error happens on trying to send an unmodified
+		drafted mail.
+	* src/send_message.c
+	* src/common/smtp.c
+		Fix password remembering when wrong, and add return
+		value checks where they should have been
+	* src/plugins/pgpcore/sylpheed.def
+	* src/plugins/pgpinline/sylpheed.def
+	* src/plugins/pgpmime/sylpheed.def
+		Add a few symbols needed
+
 2005-12-21 [paul]	1.9.100cvs100
 
 	* m4/codeset.m4
