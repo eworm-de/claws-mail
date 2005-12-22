@@ -636,10 +636,12 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
 			 wizard);
+#ifdef HAVE_LIBETPAN
 	MENUITEM_ADD (menu, menuitem, _("IMAP"), A_IMAP4);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
 			 wizard);
+#endif
 	MENUITEM_ADD (menu, menuitem, _("Local mbox file"), A_LOCAL);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
