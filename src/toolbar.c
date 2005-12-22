@@ -780,6 +780,10 @@ void toolbar_set_style(GtkWidget *toolbar_wid, GtkWidget *handlebox_wid, guint a
 		gtk_toolbar_set_style(GTK_TOOLBAR(toolbar_wid),
 				      GTK_TOOLBAR_BOTH);
 		break;
+	case TOOLBAR_BOTH_HORIZ:
+		gtk_toolbar_set_style(GTK_TOOLBAR(toolbar_wid),
+				      GTK_TOOLBAR_BOTH_HORIZ);
+		break;
 	default:
 		return;
 	}

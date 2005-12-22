@@ -490,14 +490,16 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						"V", toggle_message_cb, 0, "<ToggleItem>"},
 	{N_("/_View/Show or hi_de/_Toolbar"),
 						NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Show or hi_de/_Toolbar/Icon _and text"),
+	{N_("/_View/Show or hi_de/_Toolbar/Text _below icons"),
 						NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
-	{N_("/_View/Show or hi_de/_Toolbar/_Icon"),
-						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Icon and text"},
-	{N_("/_View/Show or hi_de/_Toolbar/_Text"),
-						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Icon and text"},
-	{N_("/_View/Show or hi_de/_Toolbar/_None"),
-						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Icon and text"},
+	{N_("/_View/Show or hi_de/_Toolbar/Text be_side icons"),
+						NULL, toggle_toolbar_cb, TOOLBAR_BOTH_HORIZ, "/View/Show or hide/Toolbar/Text below icons"},
+	{N_("/_View/Show or hi_de/_Toolbar/_Icons only"),
+						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Text below icons"},
+	{N_("/_View/Show or hi_de/_Toolbar/_Text only"),
+						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Text below icons"},
+	{N_("/_View/Show or hi_de/_Toolbar/_Hide"),
+						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
@@ -1072,19 +1074,23 @@ MainWindow *main_window_create(SeparateType type)
 	switch (prefs_common.toolbar_style) {
 	case TOOLBAR_NONE:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/None");
+			(ifactory, "/View/Show or hide/Toolbar/Hide");
 		break;
 	case TOOLBAR_ICON:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Icon");
+			(ifactory, "/View/Show or hide/Toolbar/Icons only");
 		break;
 	case TOOLBAR_TEXT:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Text");
+			(ifactory, "/View/Show or hide/Toolbar/Text only");
 		break;
 	case TOOLBAR_BOTH:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Icon and text");
+			(ifactory, "/View/Show or hide/Toolbar/Text below icons");
+	case TOOLBAR_BOTH_HORIZ:
+		menuitem = gtk_item_factory_get_item
+			(ifactory,
+			 "/View/Show or hide/Toolbar/Text beside icons");
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 

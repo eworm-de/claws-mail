@@ -218,6 +218,7 @@ static char *CONTRIBS_LIST[] = {
 "Yanase",
 "Yasumatsu",
 "Gál Zoltán",
+"Marien Zwart",
 "Martin Zwickel",
 NULL
 };

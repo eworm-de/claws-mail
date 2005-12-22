@@ -61,10 +61,11 @@ typedef enum
 
 typedef enum
 {
-	TOOLBAR_NONE	= 0,
-	TOOLBAR_ICON	= 1,
-	TOOLBAR_TEXT	= 2,
-	TOOLBAR_BOTH	= 3
+	TOOLBAR_NONE		= 0,
+	TOOLBAR_ICON		= 1,
+	TOOLBAR_TEXT		= 2,
+	TOOLBAR_BOTH		= 3,
+	TOOLBAR_BOTH_HORIZ	= 4
 } ToolbarStyle;
 
 struct _MainWindow

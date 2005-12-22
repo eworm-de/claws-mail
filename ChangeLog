@@ -1,3 +1,15 @@
+2005-12-22 [paul]	1.9.100cvs102
+
+	* AUTHORS
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/toolbar.c
+	* src/gtk/authors.h
+		support GTK_TOOLBAR_BOTH_HORIZ (text
+		next to icon) Patch by Marien Zwart
+		marienz@users.sf.net
+		Also reword the text
+
 2005-12-21 [colin]	1.9.100cvs101
 
 	* configure.ac
