@@ -1087,6 +1087,7 @@ MainWindow *main_window_create(SeparateType type)
 	case TOOLBAR_BOTH:
 		menuitem = gtk_item_factory_get_item
 			(ifactory, "/View/Show or hide/Toolbar/Text below icons");
+		break;
 	case TOOLBAR_BOTH_HORIZ:
 		menuitem = gtk_item_factory_get_item
 			(ifactory,

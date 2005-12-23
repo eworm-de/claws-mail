@@ -1,3 +1,8 @@
+2005-12-23 [cleroy]	1.9.100cvs105
+
+	* src/mainwindow.c
+		Fix missing break
+
 2005-12-23 [cleroy]	1.9.100cvs104
 
 	* autogen.sh
