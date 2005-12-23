@@ -84,11 +84,9 @@ struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
-#ifdef G_OS_UNIX
 gint sock_connect_async			(const gchar *hostname, gushort port,
 					 SockConnectFunc func, gpointer data);
 gint sock_connect_async_cancel		(gint id);
-#endif
 
 /* Basic I/O functions */
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)

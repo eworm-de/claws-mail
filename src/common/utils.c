@@ -2091,6 +2091,22 @@ const gchar *get_header_cache_dir(void)
 	return header_dir;
 }
 
+/* Return the default directory for Plugins. */
+const gchar *get_plugin_dir(void)
+{
+#ifdef G_OS_WIN32        
+	static gchar *plugin_dir = NULL;
+
+	if (!plugin_dir)
+                plugin_dir = g_strconcat(sylpheed_get_startup_dir(),
+                                         "\\lib\\sylpheed-claws\\plugins\\",
+                                         NULL);
+	return plugin_dir;
+#else
+        return PLUGINDIR;
+#endif
+}
+
 const gchar *get_tmp_dir(void)
 {
 	static gchar *tmp_dir = NULL;
@@ -2225,6 +2241,30 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
 
 	return FALSE;
 }
+
+
+/* Test on whether FILE is a relative file name. This is
+ * straightforward for Unix but more complex for Windows. */
+gboolean is_relative_filename(const gchar *file) 
+{
+        if (!file)
+                return TRUE;
+#ifdef G_OS_WIN32
+        if ( *file == '\\' && file[1] == '\\' && strchr (file+2, '\\') )
+                return FALSE; /* Prefixed with a hostname - this can't
+                               * be a relative name. */
+
+        if ( ((*file >= 'a' && *file <= 'z')
+              || (*file >= 'A' && *file <= 'Z'))
+             && file[1] == ':')
+                file += 2;  /* Skip drive letter. */
+
+        return !(*file == '\\' || *file == '/');
+#else
+        return !(*file == G_DIR_SEPARATOR);
+#endif        
+}
+
 
 gboolean is_dir_exist(const gchar *dir)
 {

@@ -3365,7 +3365,10 @@ static void folder_create_processing_folder(void)
 	g_assert(processing_folder != NULL);
 
 	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(processing_folder)->rootpath);
-	if (LOCAL_FOLDER(processing_folder)->rootpath[0] == '/')
+        /* FIXME: [W32] The code below does not correctly merge
+           relative filenames; there should be a function to handle
+           this.  */
+	if (!is_relative_filename(LOCAL_FOLDER(processing_folder)->rootpath))
 		tmpname = g_strconcat(LOCAL_FOLDER(processing_folder)->rootpath,
 				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER_ITEM,
 				      NULL);

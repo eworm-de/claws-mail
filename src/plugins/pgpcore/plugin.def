@@ -1,9 +1,11 @@
 EXPORTS
-        plugin_desc
-        plugin_done
         plugin_init
+        plugin_done
         plugin_name
+        plugin_desc
         plugin_type
+        plugin_licence
+        plugin_version
 
         sgpgme_data_from_mimeinfo
         sgpgme_decrypt_verify

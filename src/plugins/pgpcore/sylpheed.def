@@ -4,6 +4,7 @@ alertpanel
 alertpanel_full
 copy_file_part
 debug_print_real
+debug_srcname
 get_rc_dir
 get_tmp_file
 gtkut_stock_button_set_create
@@ -18,6 +19,7 @@ prefs_account_get_privacy_prefs
 prefs_account_register_page
 prefs_account_set_privacy_prefs
 prefs_account_unregister_page
+prefs_button_toggled
 prefs_file_close
 prefs_file_close_revert
 prefs_gtk_register_page
@@ -28,5 +30,3 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 sylpheed_get_version
-prefs_button_toggled
-debug_srcname

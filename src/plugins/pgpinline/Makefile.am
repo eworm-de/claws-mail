@@ -1,4 +1,4 @@
-EXTRA_DIST = version.rc plugin.def sylpheed.def pgpinline.deps
+EXTRA_DIST = version.rc plugin.def sylpheed.def mypgpcore.def pgpinline.deps
 
 
 if PLATFORM_WIN32
@@ -16,12 +16,15 @@ plugin_res_ldflag = -Wl,.libs/version.o
 no_undefined = -no-undefined
 export_symbols = -export-symbols $(srcdir)/plugin.def
 
-plugin_deps = libsylpheed.a $(plugin_res) plugin.def
+plugin_deps = libsylpheed.a libmypgpcore.a $(plugin_res) plugin.def
 
 libsylpheed.a: sylpheed.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L . -lsylpheed
+libmypgpcore.a: mypgpcore.def
+	$(DLLTOOL) --output-lib $@ --def $<
+
+plugin_ldadd = -L . -lsylpheed  -lmypgpcore
 
 else
 plugin_res =

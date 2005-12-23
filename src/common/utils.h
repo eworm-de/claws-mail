@@ -399,6 +399,7 @@ const gchar *get_mbox_cache_dir		(void);
 const gchar *get_mime_tmp_dir		(void);
 const gchar *get_template_dir		(void);
 const gchar *get_header_cache_dir	(void);
+const gchar *get_plugin_dir             (void);
 const gchar *get_tmp_dir		(void);
 gchar *get_tmp_file			(void);
 const gchar *get_domain_name		(void);
@@ -410,6 +411,7 @@ off_t get_left_file_size	(FILE		*fp);
 
 gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
+gboolean is_relative_filename   (const gchar *file);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
 gboolean dirent_is_regular_file	(struct dirent	*d);

@@ -26,6 +26,9 @@
 #include <sys/types.h>
 #ifdef G_OS_WIN32
 #  include <winsock2.h>
+#  ifndef EINPROGRESS
+#    define EINPROGRESS WSAEINPROGRESS
+#  endif
 #else
 #  if HAVE_SYS_WAIT_H
 #    include <sys/wait.h>
@@ -61,7 +64,12 @@
 #error USE_GIO is currently not supported
 #endif
 
+#if G_IO_WIN32
+#define BUFFSIZE	8191
+#else
 #define BUFFSIZE	8192
+#endif
+
 
 typedef gint (*SockAddrFunc)	(GList		*addr_list,
 				 gpointer	 data);
@@ -91,6 +99,8 @@ struct _SockLookupData {
 	guint io_tag;
 	SockAddrFunc func;
 	gpointer data;
+	gushort port;
+        gint pipe_fds[2];
 };
 
 struct _SockAddrData {
@@ -141,7 +151,6 @@ static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 static SockInfo *sockinfo_from_fd(const gchar *hostname,
 				  gushort port,
 				  gint sock);
-#ifdef G_OS_UNIX
 static void sock_address_list_free		(GList		*addr_list);
 
 static gboolean sock_connect_async_cb		(GIOChannel	*source,
@@ -162,7 +171,6 @@ static SockLookupData *sock_get_address_info_async
 						 SockAddrFunc	 func,
 						 gpointer	 data);
 static gint sock_get_address_info_async_cancel	(SockLookupData	*lookup_data);
-#endif /* G_OS_UNIX */
 
 
 gint sock_init(void)
@@ -214,6 +222,24 @@ void refresh_resolvers(void)
 		we'll have bigger problems. */
 #endif /*G_OS_UNIX*/
 }
+
+
+/* Due to the fact that socket under Windows are not represented by
+   standard file descriptors, we sometimes need to check whether a
+   given file descriptor is actually a socket.  This is done by
+   testing for an error.  Returns true under W32 if FD is a socket. */
+static int fd_is_w32_socket(gint fd)
+{
+#ifdef G_OS_WIN32
+        gint optval;
+        gint retval = sizeof(optval);
+        
+        return !getsockopt(fd, SOL_SOCKET, SO_TYPE, (char*)&optval, &retval);
+#else
+        return 0;
+#endif 
+}
+
 
 gint fd_connect_unix(const gchar *path)
 {
@@ -279,15 +305,11 @@ gint fd_open_unix(const gchar *path)
 
 gint fd_accept(gint sock)
 {
-#ifdef G_OS_UNIX
 	struct sockaddr_in caddr;
 	guint caddr_len;
 
 	caddr_len = sizeof(caddr);
 	return accept(sock, (struct sockaddr *)&caddr, &caddr_len);
-#else
-	return -1;
-#endif
 }
 
 
@@ -357,7 +379,7 @@ static gboolean sock_check(GSource *source)
 	struct timeval timeout = {0, 0};
 	fd_set fds;
 	GIOCondition condition = sock->condition;
-
+        
 	if (!sock || !sock->sock)
 		return FALSE;
 
@@ -471,7 +493,7 @@ static void timeout_handler(gint sig)
 {
 	siglongjmp(jmpenv, 1);
 }
-#endif
+#endif /*G_OS_UNIX*/
 
 static gint sock_connect_with_timeout(gint sock,
 				      const struct sockaddr *serv_addr,
@@ -666,7 +688,7 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 	close(fd[1]);
 	return sockinfo_from_fd(hostname, 0, fd[0]);
 #else
-        /* We would need a special implementaion for W32. */
+        /* We would need a special implementation for W32. */
         return NULL;
 #endif
 }
@@ -704,7 +726,7 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 	return sockinfo_from_fd(hostname, port, sock);
 }
 
-#ifdef G_OS_UNIX
+
 static void sock_address_list_free(GList *addr_list)
 {
 	GList *cur;
@@ -954,8 +976,12 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	g_io_channel_close(source);
 	g_io_channel_unref(source);
 
+#ifdef G_OS_WIN32
+        /* FIXME: We would need to cancel the thread. */
+#else
 	kill(lookup_data->child_pid, SIGKILL);
 	waitpid(lookup_data->child_pid, NULL, 0);
+#endif
 
 	lookup_data->func(addr_list, lookup_data->data);
 
@@ -965,121 +991,163 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	return FALSE;
 }
 
+
+/* For better readability we use a separate function to implement the
+   child code of sock_get_address_info_async.  Note, that under W32
+   this is actually not a child but a thread and this is the reason
+   why we pass only a void pointer. */
+static void address_info_async_child(void *opaque)
+{
+        SockLookupData *parm = opaque;
+#ifdef INET6
+        gint gai_err;
+        struct addrinfo hints, *res, *ai;
+        gchar port_str[6];
+#else /* !INET6 */
+        struct hostent *hp;
+        gchar **addr_list_p;
+        struct sockaddr_in ad;
+#endif /* INET6 */
+        gint ai_member[4] = {AF_UNSPEC, 0, 0, 0};
+
+#ifndef G_OS_WIN32
+        close(parm->pipe_fds[0]);
+        parm->pipe_fds[0] = -1;
+#endif
+
+#ifdef INET6
+        memset(&hints, 0, sizeof(hints));
+        /* hints.ai_flags = AI_CANONNAME; */
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
+
+        g_snprintf(port_str, sizeof(port_str), "%d", parm->port);
+
+        gai_err = getaddrinfo(parm->hostname, port_str, &hints, &res);
+        if (gai_err != 0) {
+                g_warning("getaddrinfo for %s:%s failed: %s\n",
+                          parm->hostname, port_str, gai_strerror(gai_err));
+                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
+                             sizeof(ai_member));
+                close(parm->pipe_fds[1]);
+                parm->pipe_fds[1] = -1;
+#ifdef G_OS_WIN32
+                _endthread();
+#else
+                _exit(1);
+#endif
+        }
+
+        for (ai = res; ai != NULL; ai = ai->ai_next) {
+                ai_member[0] = ai->ai_family;
+                ai_member[1] = ai->ai_socktype;
+                ai_member[2] = ai->ai_protocol;
+                ai_member[3] = ai->ai_addrlen;
+
+                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
+                             sizeof(ai_member));
+                fd_write_all(parm->pipe_fds[1], (gchar *)ai->ai_addr,
+                             ai->ai_addrlen);
+        }
+
+        if (res != NULL)
+                freeaddrinfo(res);
+#else /* !INET6 */
+        hp = my_gethostbyname(parm->hostname);
+        if (hp == NULL || hp->h_addrtype != AF_INET) {
+                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
+                             sizeof(ai_member));
+                close(parm->pipe_fds[1]);
+                parm->pipe_fds[1] = -1;
+#ifdef G_OS_WIN32
+                _endthread();
+#else
+                _exit(1);
+#endif
+        }
+
+        ai_member[0] = AF_INET;
+        ai_member[1] = SOCK_STREAM;
+        ai_member[2] = IPPROTO_TCP;
+        ai_member[3] = sizeof(ad);
+
+        memset(&ad, 0, sizeof(ad));
+        ad.sin_family = AF_INET;
+        ad.sin_port = htons(parm->port);
+
+        for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
+             addr_list_p++) {
+                memcpy(&ad.sin_addr, *addr_list_p, hp->h_length);
+                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
+                             sizeof(ai_member));
+                fd_write_all(parm->pipe_fds[1], (gchar *)&ad, sizeof(ad));
+        }
+#endif /* INET6 */
+
+        close(parm->pipe_fds[1]);
+        parm->pipe_fds[1] = -1;
+
+#ifdef G_OS_WIN32
+        _endthread();
+#else
+        _exit(0);
+#endif
+}
+
 static SockLookupData *sock_get_address_info_async(const gchar *hostname,
 						   gushort port,
 						   SockAddrFunc func,
 						   gpointer data)
 {
 	SockLookupData *lookup_data = NULL;
-	gint pipe_fds[2];
-	pid_t pid;
 	
 	refresh_resolvers();
 
-	if (pipe(pipe_fds) < 0) {
+        lookup_data = g_new0(SockLookupData, 1);
+        lookup_data->hostname = g_strdup(hostname);
+        lookup_data->func = func;
+        lookup_data->data = data;
+        lookup_data->port = port;
+        lookup_data->child_pid = (pid_t)(-1);
+        lookup_data->pipe_fds[0] = -1;
+        lookup_data->pipe_fds[1] = -1;
+
+	if (pipe(lookup_data->pipe_fds) < 0) {
 		perror("pipe");
 		func(NULL, data);
+                g_free (lookup_data->hostname);
+                g_free (lookup_data);
 		return NULL;
 	}
 
-	if ((pid = fork()) < 0) {
+#ifndef G_OS_WIN32
+	if ((lookup_data->child_pid = fork()) < 0) {
 		perror("fork");
 		func(NULL, data);
+                g_free (lookup_data->hostname);
+                g_free (lookup_data);
 		return NULL;
 	}
 
-	/* child process */
-	if (pid == 0) {
-#ifdef INET6
-		gint gai_err;
-		struct addrinfo hints, *res, *ai;
-		gchar port_str[6];
-#else /* !INET6 */
-		struct hostent *hp;
-		gchar **addr_list_p;
-		struct sockaddr_in ad;
-#endif /* INET6 */
-		gint ai_member[4] = {AF_UNSPEC, 0, 0, 0};
-
-		close(pipe_fds[0]);
-
-#ifdef INET6
-		memset(&hints, 0, sizeof(hints));
-		/* hints.ai_flags = AI_CANONNAME; */
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_protocol = IPPROTO_TCP;
-
-		g_snprintf(port_str, sizeof(port_str), "%d", port);
-
-		gai_err = getaddrinfo(hostname, port_str, &hints, &res);
-		if (gai_err != 0) {
-			g_warning("getaddrinfo for %s:%s failed: %s\n",
-				  hostname, port_str, gai_strerror(gai_err));
-			fd_write_all(pipe_fds[1], (gchar *)ai_member,
-				     sizeof(ai_member));
-			close(pipe_fds[1]);
-			_exit(1);
-		}
-
-		for (ai = res; ai != NULL; ai = ai->ai_next) {
-			ai_member[0] = ai->ai_family;
-			ai_member[1] = ai->ai_socktype;
-			ai_member[2] = ai->ai_protocol;
-			ai_member[3] = ai->ai_addrlen;
-
-			fd_write_all(pipe_fds[1], (gchar *)ai_member,
-				     sizeof(ai_member));
-			fd_write_all(pipe_fds[1], (gchar *)ai->ai_addr,
-				     ai->ai_addrlen);
-		}
-
-		if (res != NULL)
-			freeaddrinfo(res);
-#else /* !INET6 */
-		hp = my_gethostbyname(hostname);
-		if (hp == NULL || hp->h_addrtype != AF_INET) {
-			fd_write_all(pipe_fds[1], (gchar *)ai_member,
-				     sizeof(ai_member));
-			close(pipe_fds[1]);
-			_exit(1);
-		}
-
-		ai_member[0] = AF_INET;
-		ai_member[1] = SOCK_STREAM;
-		ai_member[2] = IPPROTO_TCP;
-		ai_member[3] = sizeof(ad);
-
-		memset(&ad, 0, sizeof(ad));
-		ad.sin_family = AF_INET;
-		ad.sin_port = htons(port);
-
-		for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
-		     addr_list_p++) {
-			memcpy(&ad.sin_addr, *addr_list_p, hp->h_length);
-			fd_write_all(pipe_fds[1], (gchar *)ai_member,
-				     sizeof(ai_member));
-			fd_write_all(pipe_fds[1], (gchar *)&ad, sizeof(ad));
-		}
-#endif /* INET6 */
-
-		close(pipe_fds[1]);
-
-		_exit(0);
-	} else {
-		close(pipe_fds[1]);
-
-		lookup_data = g_new0(SockLookupData, 1);
-		lookup_data->hostname = g_strdup(hostname);
-		lookup_data->child_pid = pid;
-		lookup_data->func = func;
-		lookup_data->data = data;
-
-		lookup_data->channel = g_io_channel_unix_new(pipe_fds[0]);
-		lookup_data->io_tag = g_io_add_watch
-			(lookup_data->channel, G_IO_IN,
-			 sock_get_address_info_async_cb, lookup_data);
+	if (lookup_data->child_pid == 0) {
+                /* Child process. */
+                address_info_async_child (lookup_data);
+                g_assert_not_reached ();
 	}
+        /* Parent process. */
+        close(lookup_data->pipe_fds[1]);
+        lookup_data->pipe_fds[1] = -1;
+#endif  /*!G_OS_WIN32 */
+        
+        lookup_data->channel = g_io_channel_unix_new(lookup_data->pipe_fds[0]);
+        lookup_data->io_tag = g_io_add_watch(lookup_data->channel, G_IO_IN,
+                                             sock_get_address_info_async_cb,
+                                             lookup_data);
+#ifdef G_OS_WIN32
+	lookup_data->child_pid = _beginthread(
+		address_info_async_child, 0, lookup_data);
+#endif
 
 	return lookup_data;
 }
@@ -1094,8 +1162,12 @@ static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
 	}
 
 	if (lookup_data->child_pid > 0) {
+#ifdef G_OS_WIN32
+                /* FIXME: Need a way to cancel the thread. */
+#else
 		kill(lookup_data->child_pid, SIGKILL);
 		waitpid(lookup_data->child_pid, NULL, 0);
+#endif
 	}
 
 	g_free(lookup_data->hostname);
@@ -1103,7 +1175,6 @@ static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
 
 	return 0;
 }
-#endif /* G_OS_UNIX */
 
 
 static SockInfo *sockinfo_from_fd(const gchar *hostname,
@@ -1139,11 +1210,9 @@ gint fd_read(gint fd, gchar *buf, gint len)
 	if (fd_check_io(fd, G_IO_IN) < 0)
 		return -1;
 
-#ifdef G_OS_WIN32
-	return recv(fd, buf, len, 0);
-#else
+        if (fd_is_w32_socket(fd))
+                return recv(fd, buf, len, 0);
 	return read(fd, buf, len);
-#endif
 }
 
 #if USE_OPENSSL
@@ -1199,11 +1268,9 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	if (fd_check_io(fd, G_IO_OUT) < 0)
 		return -1;
 
-#ifdef G_OS_WIN32
-	return send(fd, buf, len, 0);
-#else
+        if (fd_is_w32_socket (fd))
+                return send(fd, buf, len, 0);
 	return write(fd, buf, len);
-#endif
 }
 
 #if USE_OPENSSL
@@ -1254,7 +1321,11 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
 #ifndef G_OS_WIN32
 		signal(SIGPIPE, SIG_IGN);
 #endif
-		n = write(fd, buf, len);
+		if (fd_is_w32_socket(fd))
+			n = send(fd, buf, len, 0);
+		else
+                        n = write(fd, buf, len);
+
 		if (n <= 0) {
 			log_error("write on fd%d: %s\n", fd, strerror(errno));
 			return -1;
@@ -1318,6 +1389,30 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 
 	if (--len < 1)
 		return -1;
+
+#ifdef G_OS_WIN32
+	do {
+/*
+XXX:tm try nonblock
+MSKB Article ID: Q147714 
+Windows Sockets 2 Service Provider Interface Limitations
+Polling with recv(MSG_PEEK) to determine when a complete message 
+has arrived.
+    Reason and Workaround not available.
+
+Single-byte send() and recv(). 
+    Reason: Couple one-byte sends with Nagle disabled.
+    Workaround: Send modest amounts and receive as much as possible.
+(still unused)
+*/
+		if (recv(fd, bp, 1, 0) <= 0)
+			return -1;
+		if (*bp == '\n')
+			break;
+		bp++;
+		len--;
+	} while (0 < len);
+#else /*!G_OS_WIN32*/
 	do {
 		if ((n = fd_recv(fd, bp, len, MSG_PEEK)) <= 0)
 			return -1;
@@ -1328,6 +1423,7 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 		bp += n;
 		len -= n;
 	} while (!newline && len);
+#endif /*!G_OS_WIN32*/
 
 	*bp = '\0';
 	return bp - buf;
@@ -1389,7 +1485,11 @@ gint fd_getline(gint fd, gchar **str)
 			*str = g_realloc(*str, size);
 			strcat(*str, buf);
 		}
-		if (buf[len - 1] == '\n')
+		if (buf[len - 1] == '\n'
+#ifdef G_OS_WIN32  /* FIXME This does not seem to be correct. */
+                    || buf[len - 1] == '\r'
+#endif
+                    )
 			break;
 	}
 	if (len == -1 && *str)
@@ -1513,7 +1613,13 @@ gint sock_close(SockInfo *sock)
 		g_source_remove(sock->g_source);
 	sock->g_source = 0;
 #endif
+#ifdef G_OS_WIN32
+	shutdown(sock->sock, 1); /* complete transfer before close */
+	ret = closesocket(sock->sock);
+#else
 	ret = fd_close(sock->sock); 
+#endif
+
 	g_free(sock->hostname);
 	g_free(sock);
 

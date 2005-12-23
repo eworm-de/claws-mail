@@ -625,7 +625,10 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 	folder_path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
 	g_return_val_if_fail(folder_path != NULL, NULL);
 
-        if (folder_path[0] == G_DIR_SEPARATOR) {
+        /* FIXME: [W32] The code below does not correctly merge
+           relative filenames; there should be a function to handle
+           this.  */
+        if ( !is_relative_filename (folder_path) ) {
                 if (item->path)
                         path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
                                            item->path, NULL);

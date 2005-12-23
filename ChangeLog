@@ -1,3 +1,23 @@
+2005-12-23 [cleroy]	1.9.100cvs104
+
+	* autogen.sh
+	* src/folder.c
+	* src/mh.c
+	* src/common/plugin.c
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/pluginwindow.c
+	* src/plugins/pgpcore/plugin.def
+	* src/plugins/pgpcore/sylpheed.def
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpinline/plugin.def
+	* src/plugins/pgpinline/sylpheed.def
+	* src/plugins/pgpmime/plugin.def
+	* src/plugins/pgpmime/sylpheed.def
+		Various w32 fixes by Werner Koch
+
 2005-12-22 [paul]	1.9.100cvs103
 
 	* src/wizard.c

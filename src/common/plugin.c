@@ -119,7 +119,7 @@ static Plugin *plugin_get_by_filename(const gchar *filename)
  * Loads a plugin dependancies
  * 
  * Plugin dependancies are, optionnaly, listed in a file in
- * PLUGINDIR/$pluginname.deps.
+ * get_plugin_dir()/$pluginname.deps.
  * \param filename The filename of the plugin for which we have to load deps
  * \param error The location where an error string can be stored
  * \return 0 on success, -1 otherwise
@@ -130,22 +130,6 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 	gchar *deps_file = NULL;
 	FILE *fp = NULL;
 	gchar buf[BUFFSIZE];
-#ifdef G_OS_WIN32
-        char *fnamebuf;
-        const char *s;
-        
-        s = strchr (filename, '/');
-        if (s)
-          s++;
-        else   
-          s = filename;
-        fnamebuf = g_strconcat(sylpheed_get_startup_dir(),
-                               "\\lib\\sylpheed-claws\\plugins\\",
-                               s,
-                               NULL);
-        filename = fnamebuf;
-	
-#endif
 
         tmp = g_strdup(filename);
 	*strrchr(tmp, '.') = '\0';
@@ -162,7 +146,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 		Plugin *dep_plugin = NULL;
 		gchar *path = NULL;
 		buf[strlen(buf)-1]='\0'; /* chop off \n */
-		path = g_strconcat(PLUGINDIR, buf,
+		path = g_strconcat(get_plugin_dir(), buf,
 				".", G_MODULE_SUFFIX, NULL);
 		if ((dep_plugin = plugin_get_by_filename(path)) == NULL) {
 			debug_print("trying to load %s\n", path);
@@ -184,9 +168,6 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 		}
 	}
 	fclose(fp);
-#ifdef G_OS_WIN32
-        g_free (fnamebuf);
-#endif
 	return 0;
 }
 

@@ -2,6 +2,7 @@ LIBRARY SYLPHEED-CLAWS.EXE
 EXPORTS
 canonicalize_str
 debug_print_real
+debug_srcname
 file_read_stream_to_str
 generate_mime_boundary
 get_mime_tmp_dir
@@ -15,4 +16,3 @@ procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mimeinfo
 sylpheed_get_version
-debug_srcname
