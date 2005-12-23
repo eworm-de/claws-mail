@@ -1,0 +1,14 @@
+LIBRARY PGPCORE.DLL
+EXPORTS
+        sgpgme_data_from_mimeinfo
+        sgpgme_decrypt_verify
+        sgpgme_get_encrypt_data
+        sgpgme_setup_signers
+        sgpgme_sigstat_gpgme_to_privacy
+        sgpgme_sigstat_info_full
+        sgpgme_sigstat_info_short
+        sgpgme_verify_signature
+        gpgmegtk_passphrase_cb
+        prefs_gpg_get_config
+
+
