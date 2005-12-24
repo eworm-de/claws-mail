@@ -1091,3 +1091,4 @@
 ( cvs diff -u -r 1.274.2.83 -r 1.274.2.84 src/mainwindow.c;  ) > 1.9.100cvs105.patchset
 ( diff -u /dev/null src/plugins/pgpinline/mypgpcore.def;  ) > 1.9.100cvs106.patchset
 ( cvs diff -u -r 1.150.2.47 -r 1.150.2.48 src/procmsg.c;  ) > 1.9.100cvs107.patchset
+( cvs diff -u -r 1.100.2.31 -r 1.100.2.32 AUTHORS;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/authors.h;  ) > 1.9.100cvs108.patchset

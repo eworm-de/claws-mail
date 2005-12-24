@@ -4,10 +4,10 @@ static char *TEAM_LIST[] = {
 "Darko Koruga <darko@users.sf.net>",
 "Ricardo Mones Lastra <mones@users.sf.net>",
 "Colin Leroy <colinleroy@users.sf.net>",
-"Thorsten Maerz <netztorte@users.sf.net>",
 "Paul Mangan <twb@users.sf.net>",
 "Martin Schaaf <mascha1@users.sf.net>",
 "wwp <wwp@users.sf.net>",
+"Werner Koch <wk@gnupg.org>",
 NULL
 };
 
@@ -24,6 +24,7 @@ static char *EX_TEAM_LIST[] = {
 "Carsten Schurig",
 "Sergey Vlasov",
 "Hiroyuki Yamamoto",
+"Thorsten Maerz",
 NULL
 };
 

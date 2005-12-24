@@ -1,3 +1,9 @@
+2005-12-24 [colin]	1.9.100cvs108
+
+	* AUTHORS
+	* src/gtk/authors.h
+		Update for Werner
+
 2005-12-24 [colin]	1.9.100cvs107
 
 	* src/procmsg.c
