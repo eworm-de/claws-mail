@@ -38,7 +38,7 @@
 	'bg.po' => 'George Danchev <danchev@spnet.net>',
 	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
 	'cs.po' => 'Radek Vybíral <Radek.Vybiral@vsb.cz>',
-	'de.po' => 'Thomas Gilgin <thg1@karate-muellheim.de>',
+	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'el.po' => 'Michalis Kabrianis <Michalis@bigfoot.com>',
 	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
 	'es.po' => 'Ricardo Mones Lastra <mones@aic.uniovi.es>',
@@ -56,8 +56,8 @@
 	'ru.po' => 'Pavlo Bohmat <bohm@ukr.net>',
 	'sk.po' => 'Andrej Kacian <andrej@kacian.sk>',
 	'sr.po' => 'urke <urke@users.sourceforge.net>',
-	'sv.po' => 'Joakim Andreasson <joakim.andreasson@gmx.net>',
-	'zh_CN.po' => 'Hansom Young <glyoung@users.sourceforge.net>',
+	'sv.po' => 'Anders Trobäck <sylpheed@troback.com>',
+	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
 	'zh_TW.po' => 'Wei-Lun Chao <chaoweilun@pcmail.com.tw>',
 );
 
