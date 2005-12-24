@@ -36,7 +36,7 @@
 
 %lasttranslator = (
 	'bg.po' => 'George Danchev <danchev@spnet.net>',
-	'ca.po'	=> 'Miquel Oliete <miqueloliete@softhome.net>',
+	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
 	'cs.po' => 'Radek Vybíral <Radek.Vybiral@vsb.cz>',
 	'de.po' => 'Thomas Gilgin <thg1@karate-muellheim.de>',
 	'el.po' => 'Michalis Kabrianis <Michalis@bigfoot.com>',
