@@ -1,3 +1,9 @@
+2005-12-24 [colin]	1.9.100cvs107
+
+	* src/procmsg.c
+		Allow NULL src_msginfo in 
+		procmsg_msginfo_new_from_mimeinfo
+
 2005-12-23 [paul]	1.9.100cvs106
 
 	* src/plugins/pgpinline/mypgpcore.def

@@ -2003,7 +2003,8 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 		fclose(fp);
 
 	if (tmp_msginfo != NULL) {
-		tmp_msginfo->folder = src_msginfo->folder;
+		if (src_msginfo)
+			tmp_msginfo->folder = src_msginfo->folder;
 		tmp_msginfo->plaintext_file = g_strdup(tmpfile);
 	} else {
 		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
