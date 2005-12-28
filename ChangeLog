@@ -1,3 +1,20 @@
+2005-12-28 [wwp]	1.9.100cvs111
+
+	* doc/faq/.cvsignore
+	* doc/faq/de/.cvsignore
+	* doc/faq/en/.cvsignore
+	* doc/faq/es/.cvsignore
+	* doc/faq/fr/.cvsignore
+	* doc/faq/it/.cvsignore
+	* doc/manual/.cvsignore
+	* doc/manual/de/.cvsignore
+	* doc/manual/en/.cvsignore
+	* doc/manual/es/.cvsignore
+	* doc/manual/fr/.cvsignore
+	* doc/manual/ja/.cvsignore
+	* src/plugins/mathml_viewer/.cvsignore
+		rollback revival of those files (my bad, sorry for the noise).
+
 2005-12-28 [wwp]	1.9.100cvs110
 
 	* src/compose.c
