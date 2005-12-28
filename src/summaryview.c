@@ -2475,14 +2475,14 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (!should_swap) {
 		text[col_pos[S_COL_FROM]] = from_text;
 		text[col_pos[S_COL_TO]] = to_text;
-		free_from_to = FALSE;
+		*free_from_to = FALSE;
 	} else {
 		gchar *tmp = NULL;
 		tmp = g_strconcat("-->", to_text, NULL);
 		text[col_pos[S_COL_FROM]] = tmp;
 		tmp = g_strconcat("<--", from_text, NULL);
 		text[col_pos[S_COL_TO]] = tmp;
-		free_from_to = TRUE;
+		*free_from_to = TRUE;
 	}
 	
 	if (summaryview->simplify_subject_preg != NULL)
