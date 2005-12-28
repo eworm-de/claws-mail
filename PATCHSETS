@@ -1093,3 +1093,4 @@
 ( cvs diff -u -r 1.150.2.47 -r 1.150.2.48 src/procmsg.c;  ) > 1.9.100cvs107.patchset
 ( cvs diff -u -r 1.100.2.31 -r 1.100.2.32 AUTHORS;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/authors.h;  ) > 1.9.100cvs108.patchset
 ( diff -u /dev/null doc/faq/.cvsignore;  diff -u /dev/null doc/faq/de/.cvsignore;  diff -u /dev/null doc/faq/en/.cvsignore;  diff -u /dev/null doc/faq/es/.cvsignore;  diff -u /dev/null doc/faq/fr/.cvsignore;  diff -u /dev/null doc/faq/it/.cvsignore;  diff -u /dev/null doc/manual/.cvsignore;  diff -u /dev/null doc/manual/de/.cvsignore;  diff -u /dev/null doc/manual/en/.cvsignore;  diff -u /dev/null doc/manual/es/.cvsignore;  diff -u /dev/null doc/manual/fr/.cvsignore;  diff -u /dev/null doc/manual/ja/.cvsignore;  diff -u /dev/null src/plugins/mathml_viewer/.cvsignore;  cvs diff -u -r 1.1.16.1 -r 1.1.16.2 po/.cvsignore;  ) > 1.9.100cvs109.patchset
+( cvs diff -u -r 1.382.2.210 -r 1.382.2.211 src/compose.c;  ) > 1.9.100cvs110.patchset

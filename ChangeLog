@@ -1,3 +1,8 @@
+2005-12-28 [wwp]	1.9.100cvs110
+
+	* src/compose.c
+		fix a minor wrapping issue w/ autowrap disabled (patch by Colin).
+
 2005-12-28 [wwp]	1.9.100cvs109
 
 	* doc/faq/.cvsignore
