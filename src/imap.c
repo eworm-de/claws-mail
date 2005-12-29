@@ -2321,45 +2321,6 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	
 	real_path = imap_get_real_path(folder, path);
 
-#if 0
-	if (time(NULL) - item->last_update >= 5 && item->last_update != 1) {
-		/* do the full stuff */
-		item->last_update = 1; /* force update */
-		debug_print("updating everything\n");
-		r = imap_status(session, folder, path, item,
-		&item->c_messages, &item->c_uid_next,
-		&item->c_uid_validity, &item->c_unseen, block);
-		if (r != MAILIMAP_NO_ERROR) {
-			debug_print("status err %d\n", r);
-			return IMAP_ERROR;
-		}
-		item->last_update = time(NULL);
-		if (messages) 
-			*messages = item->c_messages;
-		if (uid_next)
-			*uid_next = item->c_uid_next;
-		if (uid_validity)
-			*uid_validity = item->c_uid_validity;
-		if (unseen)
-			*unseen = item->c_unseen;
-		return 0;
-	} else if (time(NULL) - item->last_update < 5) {
-		/* return cached stuff */
-		debug_print("using cache\n");
-		if (messages) 
-			*messages = item->c_messages;
-		if (uid_next)
-			*uid_next = item->c_uid_next;
-		if (uid_validity)
-			*uid_validity = item->c_uid_validity;
-		if (unseen)
-			*unseen = item->c_unseen;
-		return 0;
-	}
-#endif
-
-	/* if we get there, we're updating cache */
-
 	if (messages) {
 		mask |= 1 << 0;
 	}
@@ -3108,7 +3069,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->item.path));
-	if (selected_folder) {
+	if (selected_folder && time(NULL) - item->use_cache < 2) {
 		ok = imap_cmd_noop(session);
 		if (ok != IMAP_SUCCESS) {
 			debug_print("disconnected!\n");
@@ -3155,9 +3116,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		}
 	}
 
-	if (!selected_folder)
-		item->uid_next = uid_next;
-
 	/* If old uid_next matches new uid_next we can be sure no message
 	   was added to the folder */
 	if (( selected_folder && !session->folder_content_changed) ||
@@ -3170,6 +3128,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		   we discard our cache to start a new scan to find
 		   out which numbers have been removed */
 		if (exists == nummsgs) {
+			debug_print("exists == nummsgs\n");
 			*msgnum_list = g_slist_copy(item->uid_list);
 			statusbar_pop_all();
 			unlock_session();
@@ -3218,6 +3177,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	debug_print("removing old messages from %s\n", dir);
 	remove_numbered_files_not_in_list(dir, *msgnum_list);
 	g_free(dir);
+	
+	item->uid_next = uid_next;
 	
 	debug_print("get_num_list - ok - %i\n", nummsgs);
 	statusbar_pop_all();
@@ -3362,7 +3323,7 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 	lock_session();
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->item.path));
-	if (selected_folder) {
+	if (selected_folder && time(NULL) - item->use_cache < 2) {
 		ok = imap_cmd_noop(session);
 		if (ok != IMAP_SUCCESS) {
 			debug_print("disconnected!\n");
@@ -3390,7 +3351,8 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		item->c_uid_next = uid_next;
 		item->c_uid_validity = uid_val;
 		item->c_unseen = unseen;
-
+		debug_print("uidnext %d, item->uid_next %d, exists %d, item->item.total_msgs %d\n", 
+			uid_next, item->uid_next, exists, item->item.total_msgs);
 		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)) {
 			unlock_session();
 			return TRUE;
