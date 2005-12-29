@@ -266,7 +266,8 @@ static gint compose_write_to_file		(Compose	*compose,
 						 gint 		 action);
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
-static gint compose_remove_reedit_target	(Compose	*compose);
+static gint compose_remove_reedit_target	(Compose	*compose,
+						 gboolean	 force);
 void compose_remove_draft			(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 gint		*msgnum,
@@ -4272,13 +4273,16 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	return 0;
 }
 
-static gint compose_remove_reedit_target(Compose *compose)
+static gint compose_remove_reedit_target(Compose *compose, gboolean force)
 {
 	FolderItem *item;
 	MsgInfo *msginfo = compose->targetinfo;
 
 	g_return_val_if_fail(compose->mode == COMPOSE_REEDIT, -1);
 	if (!msginfo) return -1;
+
+	if (!force && MSG_IS_LOCKED(msginfo->flags))
+		return 0;
 
 	item = msginfo->folder;
 	g_return_val_if_fail(item != NULL, -1);
@@ -4519,7 +4523,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	g_free(tmp);
 
 	if (compose->mode == COMPOSE_REEDIT) {
-		compose_remove_reedit_target(compose);
+		compose_remove_reedit_target(compose, FALSE);
 	}
 
 	if ((msgnum != NULL) && (item != NULL)) {
@@ -7011,6 +7015,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	static gboolean lock = FALSE;
 	MsgInfo *newmsginfo;
 	FILE *fp;
+	gboolean target_locked = FALSE;
 	
 	if (lock) return;
 
@@ -7068,6 +7073,11 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		goto unlock;
 	}
 	fclose(fp);
+	
+	if (compose->targetinfo) {
+		target_locked = MSG_IS_LOCKED(compose->targetinfo->flags);
+		flag.perm_flags = target_locked?MSG_LOCKED:0;
+	}
 
 	folder_item_scan(draft);
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
@@ -7081,13 +7091,16 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	draft->mtime = 0;	/* force updating */
 
 	if (compose->mode == COMPOSE_REEDIT) {
-		compose_remove_reedit_target(compose);
+		compose_remove_reedit_target(compose, TRUE);
 	}
 
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
-		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
+		if (target_locked)
+			procmsg_msginfo_set_flags(newmsginfo, MSG_LOCKED, MSG_DRAFT);
+		else
+			procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
 		if (compose_use_attach(compose))
 			procmsg_msginfo_set_flags(newmsginfo, 0,
 						  MSG_HAS_ATTACHMENT);
@@ -7121,6 +7134,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->targetinfo->size = s.st_size;
 		compose->targetinfo->mtime = s.st_mtime;
 		compose->targetinfo->folder = draft;
+		if (target_locked)
+			procmsg_msginfo_set_flags(compose->targetinfo, MSG_LOCKED, 0);
 		compose->mode = COMPOSE_REEDIT;
 		
 		if (action == COMPOSE_AUTO_SAVE) {

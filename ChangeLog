@@ -1,3 +1,9 @@
+2005-12-29 [cleroy]	1.9.100cvs113
+
+	* src/compose.c
+		Don't remove a draft when sending it, if it is 
+		locked.
+
 2005-12-28 [colin]	1.9.100cvs112
 
 	* src/summaryview.c
