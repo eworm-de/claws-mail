@@ -49,7 +49,7 @@
     Processing rules are the same as Filtering rules, except that they are applied when entering a folder and apply only to this folder. You can use them to automatically move old mails into an archive folder, or for further dispatching of emails. You can set each folder's Processing rules by right-clicking on it.
     </para>
     <para>
-    Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu.
+    Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu. Pre-processing rules are executed before the folder's specific Processing rules, while Post-processing ones are executed after.
     </para>
   </section>
   <section id="adv_plugins">
