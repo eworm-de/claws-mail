@@ -1098,3 +1098,4 @@
 ( cvs diff -u -r 1.395.2.152 -r 1.395.2.153 src/summaryview.c;  ) > 1.9.100cvs112.patchset
 ( cvs diff -u -r 1.382.2.211 -r 1.382.2.212 src/compose.c;  ) > 1.9.100cvs113.patchset
 ( cvs diff -u -r 1.179.2.85 -r 1.179.2.86 src/imap.c;  ) > 1.9.100cvs114.patchset
+( cvs diff -u -r 1.79.2.21 -r 1.79.2.22 src/mh.c;  cvs diff -u -r 1.179.2.86 -r 1.179.2.87 src/imap.c;  ) > 1.9.100cvs115.patchset

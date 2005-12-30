@@ -3118,8 +3118,9 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	/* If old uid_next matches new uid_next we can be sure no message
 	   was added to the folder */
-	if (( selected_folder && !session->folder_content_changed) ||
-	    (!selected_folder && uid_next == item->uid_next)) {
+	debug_print("uid_next is %d and item->uid_next %d \n", 
+		uid_next, item->uid_next);
+	if (uid_next == item->uid_next) {
 		nummsgs = g_slist_length(item->uid_list);
 
 		/* If number of messages is still the same we

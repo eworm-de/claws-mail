@@ -81,6 +81,10 @@ static gint     mh_add_msgs		(Folder		*folder,
 static gint     mh_copy_msg		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfo	*msginfo);
+static gint	mh_copy_msgs		(Folder 	*folder, 
+					 FolderItem 	*dest, 
+					 MsgInfoList 	*msglist, 
+			 		 GRelation 	*relation);
 static gint     mh_remove_msg		(Folder		*folder,
 					 FolderItem	*item,
 					 gint 		 num);
@@ -154,6 +158,7 @@ FolderClass *mh_get_class(void)
 		mh_class.add_msg = mh_add_msg;
 		mh_class.add_msgs = mh_add_msgs;
 		mh_class.copy_msg = mh_copy_msg;
+		mh_class.copy_msgs = mh_copy_msgs;
 		mh_class.remove_msg = mh_remove_msg;
 		mh_class.remove_all_msg = mh_remove_all_msg;
 		mh_class.is_msg_changed = mh_is_msg_changed;
@@ -422,13 +427,32 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
+	GSList msglist;
+
+	g_return_val_if_fail(msginfo != NULL, -1);
+
+	msglist.data = msginfo;
+	msglist.next = NULL;
+
+	return mh_copy_msgs(folder, dest, &msglist, NULL);	
+}
+
+static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist, 
+			 GRelation *relation)
+{
 	gboolean dest_need_scan = FALSE;
 	gchar *srcfile;
 	gchar *destfile;
 	gint filemode = 0;
 	FolderItemPrefs *prefs;
-
+	MsgInfo *msginfo = NULL;
+	gboolean remove_special_headers = FALSE;
+	MsgInfoList *cur = NULL;
 	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+	
+	msginfo = (MsgInfo *)msglist->data;
+
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
@@ -441,59 +465,68 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		if (dest->last_num < 0) return -1;
 	}
 
-	prefs = dest->prefs;
-
-	srcfile = procmsg_get_message_file(msginfo);
-	destfile = mh_get_new_msg_filename(dest);
-	if (!destfile) {
-		g_free(srcfile);
-		return -1;
-	}
-	
-	debug_print("Copying message %s%c%d to %s ...\n",
-		    msginfo->folder->path, G_DIR_SEPARATOR,
-		    msginfo->msgnum, dest->path);
-	
-
 	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
 	&& !folder_has_parent_of_type(dest, F_QUEUE)
 	&& !folder_has_parent_of_type(dest, F_DRAFT)) {
-		if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
-			g_free(srcfile);
-			g_free(destfile);
-			return -1;
-		}
+		/* as every msginfo comes from the same folder, it is supposed they
+		 * will either match the preceding condition either all or none.
+		 */
+		remove_special_headers = TRUE;
 	} else if (!(MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
 	&& (folder_has_parent_of_type(dest, F_QUEUE)
 	 || folder_has_parent_of_type(dest, F_DRAFT))) {
+		return -1;
+	} 
+
+	prefs = dest->prefs;
+
+	for (cur = msglist; cur; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		if (!msginfo)
+			continue;
+		srcfile = procmsg_get_message_file(msginfo);
+		destfile = mh_get_new_msg_filename(dest);
+		if (!destfile) {
+			g_free(srcfile);
+			continue;
+		}
+
+		debug_print("Copying message %s%c%d to %s ...\n",
+			    msginfo->folder->path, G_DIR_SEPARATOR,
+			    msginfo->msgnum, dest->path);
+
+
+		if (remove_special_headers) {
+			if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
+				g_free(srcfile);
+				g_free(destfile);
+				continue;
+			}
+		} else if (copy_file(srcfile, destfile, TRUE) < 0) {
+			FILE_OP_ERROR(srcfile, "copy");
+			g_free(srcfile);
+			g_free(destfile);
+			continue;
+		}
+		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+			if (chmod(destfile, prefs->folder_chmod) < 0)
+				FILE_OP_ERROR(destfile, "chmod");
+
+			/* for mark file */
+			filemode = prefs->folder_chmod;
+			if (filemode & S_IRGRP) filemode |= S_IWGRP;
+			if (filemode & S_IROTH) filemode |= S_IWOTH;
+		}
+		if (relation)
+			g_relation_insert(relation, msginfo, GINT_TO_POINTER(dest->last_num+1));
 		g_free(srcfile);
 		g_free(destfile);
-		return -1;
-	} else if (copy_file(srcfile, destfile, TRUE) < 0) {
-		FILE_OP_ERROR(srcfile, "copy");
-		g_free(srcfile);
-		g_free(destfile);
-		return -1;
+		dest->last_num++;
 	}
 
 	dest_need_scan = mh_scan_required(dest->folder, dest);
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
-
-
-	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
-		if (chmod(destfile, prefs->folder_chmod) < 0)
-			FILE_OP_ERROR(destfile, "chmod");
-
-		/* for mark file */
-		filemode = prefs->folder_chmod;
-		if (filemode & S_IRGRP) filemode |= S_IWGRP;
-		if (filemode & S_IROTH) filemode |= S_IWOTH;
-	}
-
-	g_free(srcfile);
-	g_free(destfile);
-	dest->last_num++;
 
 	return dest->last_num;
 }
