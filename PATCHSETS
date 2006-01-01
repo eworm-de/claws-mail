@@ -1100,3 +1100,4 @@
 ( cvs diff -u -r 1.179.2.85 -r 1.179.2.86 src/imap.c;  ) > 1.9.100cvs114.patchset
 ( cvs diff -u -r 1.79.2.21 -r 1.79.2.22 src/mh.c;  cvs diff -u -r 1.179.2.86 -r 1.179.2.87 src/imap.c;  ) > 1.9.100cvs115.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/advanced.xml;  ) > 1.9.100cvs116.patchset
+( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/gtk/authors.h;  ) > 1.9.100cvs117.patchset

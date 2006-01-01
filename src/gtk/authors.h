@@ -1,13 +1,13 @@
 static char *TEAM_LIST[] = {
 "Holger Berndt <berndth@users.sf.net>",
 "Hoà Viêt Dinh <hoa@users.sf.net>",
+"Werner Koch <wk@gnupg.org>",
 "Darko Koruga <darko@users.sf.net>",
 "Ricardo Mones Lastra <mones@users.sf.net>",
 "Colin Leroy <colinleroy@users.sf.net>",
 "Paul Mangan <twb@users.sf.net>",
 "Martin Schaaf <mascha1@users.sf.net>",
 "wwp <wwp@users.sf.net>",
-"Werner Koch <wk@gnupg.org>",
 NULL
 };
 
@@ -18,13 +18,13 @@ static char *EX_TEAM_LIST[] = {
 "Oliver Haertel",
 "Christoph Hohmann",
 "Alfons Hoogervorst",
+"Thorsten Maerz",
 "Leandro A. F. Pereira",
 "Luke Plant",
 "Martin Schaaf",
 "Carsten Schurig",
 "Sergey Vlasov",
 "Hiroyuki Yamamoto",
-"Thorsten Maerz",
 NULL
 };
 
