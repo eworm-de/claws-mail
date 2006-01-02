@@ -1099,6 +1099,9 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			g_relation_insert(relation, fileinfo->msginfo != NULL ? 
 					  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
 					  GINT_TO_POINTER(dest->last_num + 1));
+		if (new_uid == 0) {
+			new_uid = dest->last_num+1;
+		}
 		if (last_uid < new_uid)
 			last_uid = new_uid;
 		if (file_is_tmp)
@@ -3094,6 +3097,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 			ok = imap_status(session, IMAP_FOLDER(folder), item->item.path, item,
 				 &exists, &uid_next, &uid_val, NULL, FALSE);
 		}
+		item->item.last_num = uid_next - 1;
+		
 		item->use_cache = (time_t)0;
 		if (ok != IMAP_SUCCESS) {
 			statusbar_pop_all();
@@ -3352,6 +3357,7 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		item->c_uid_next = uid_next;
 		item->c_uid_validity = uid_val;
 		item->c_unseen = unseen;
+		item->item.last_num = uid_next - 1;
 		debug_print("uidnext %d, item->uid_next %d, exists %d, item->item.total_msgs %d\n", 
 			uid_next, item->uid_next, exists, item->item.total_msgs);
 		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)) {

@@ -7120,7 +7120,10 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		gchar *path;
 
 		path = folder_item_fetch_msg(draft, msgnum);
-		g_return_if_fail(path != NULL);
+		if (path == NULL) {
+			debug_print("can't fetch %s:%d\n",draft->path, msgnum);
+			goto unlock;
+		}
 		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
 			g_free(path);

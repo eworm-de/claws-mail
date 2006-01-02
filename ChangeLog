@@ -1,3 +1,10 @@
+2006-01-02 [colin]	1.9.100cvs119
+
+	* src/compose.c
+	* src/imap.c
+		Fix autosave on IMAP and more generally try to
+		return the correct ID on a newly added IMAP message
+
 2006-01-02 [paul]	1.9.100cvs118
 
 	* manual/keyboard.xml

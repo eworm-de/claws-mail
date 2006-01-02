@@ -1102,3 +1102,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/advanced.xml;  ) > 1.9.100cvs116.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/gtk/authors.h;  ) > 1.9.100cvs117.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/keyboard.xml;  ) > 1.9.100cvs118.patchset
+( cvs diff -u -r 1.382.2.212 -r 1.382.2.213 src/compose.c;  cvs diff -u -r 1.179.2.87 -r 1.179.2.88 src/imap.c;  ) > 1.9.100cvs119.patchset
