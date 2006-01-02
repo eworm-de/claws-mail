@@ -4,15 +4,15 @@
 
   <section id="keyb_general">
     <title>Motivations and general conventions</title>
-    <para>Although Sylpheed-Claws is a graphical application and can be mainly commanded with your preferred point-and-click device, it also requires to use the keyboard frequently. Composing mail is the most common of this keyboard requiring tasks, and there's people who writes lots of mails. Moving hands appart from keyboard greatly reduces productivity for these people, so Sylpheed-Claws tries to provide keyboard shortcuts to allow faster operation.
+    <para>Although Sylpheed-Claws is a graphical application and can mainly be commanded with your mouse, it also requires the frequent use of the keyboard. Composing a mail is the most common of the tasks that require the use of the keyboard. For people who write a lot of mails, having to move hands from keyboard to mouse greatly reduces productivity, so Sylpheed-Claws provides keyboard shortcuts to allow faster operation.
     </para>
-    <para>This not only benefits power users: providing keyboard alternatives and keyboard navigation also enables people with disabilities (who may not be able to properly control a pointing device) to use Sylpheed-Claws.
+    <para>This not only benefits power users by providing keyboard alternatives and keyboard navigation, it also enables people with disabilities, (who may not be able to properly control a pointing device), to use Sylpheed-Claws.
     </para>
-    <para>The most general convention is the <option>Escape</option> key. Dialogs or windows opened on top of Sylpheed-Claws' main window can be closed by hitting <option>Esc</option> key.
+    <para>The most general convention is the <option>Escape</option> key. Focused dialogues or windows can be closed by hitting the <option>Esc</option> key.
     </para>
-    <para>There are other key combinations who are assigned by default to options on menus. We won't list these here, as they are already shown on the right side of the menus themselves, so you can easly learn them with the usage. Furthermore, if you don't like them, these shortcuts can be changed on the fly, just by positioning the focus on the menu option and pressing the desired key combination (but only for combinations of keys and Alt, Ctrl and Shift mofifier keys, single keys cannot be assigned)<footnote label="1"><para>This is a standard behaviour of GTK2 library based programs like Sylpheed-Claws. Notice that this behaviour may also appear disabled by default on some desktops.</para></footnote>.
+    <para>There are other key combinations which are assigned by default to menu items. We won't list these here, as they are already shown on the righthand side of the menus themselves, so you can easily learn them with usage. Furthermore, if you don't like them, these shortcuts can be changed on the fly by focusing on the menu item and pressing the desired key combination, but only for key combinations that include the <option>Alt</option>, <option>Ctrl</option> and/or <option>Shift</option> modifier keys; single keys cannot be assigned. (This is a standard behaviour of GTK2 library based programs like Sylpheed-Claws. Note that this behaviour may be disabled by default on some desktops.)
     </para>
-    <para>Appart from these shortcuts there are others which vary from window to window, which are sumarized in the following sections.
+    <para>In addition to these shortcuts there are others which vary from window to window, which are summarised in the following sections.
     </para>
   </section>
 
