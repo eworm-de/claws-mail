@@ -1,3 +1,11 @@
+2006-01-03 [colin]	1.9.100cvs122
+
+	* configure.ac
+		We need to recheck for gpgme 1.0.0 after checking
+		for 1.1.1, because if 1.1.1 isn't available, 
+		GPGME_LIBS and friends are blanked out by the 
+		second check.
+
 2006-01-03 [colin]	1.9.100cvs121
 
 	* src/common/prefs.c

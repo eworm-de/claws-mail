@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=121
+EXTRA_VERSION=122
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -630,6 +630,9 @@ if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
                 AM_PATH_GPGME(1.1.1,
                               AC_DEFINE(HAVE_GPGME_PKA_TRUST, 1,
                                         [Define if GPGME supports PKA.]))
+		#needed to get GPGME_LIBS and al correctly
+		AM_PATH_GPGME(1.0.0, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+		    	  [ac_cv_enable_pgpcore_plugin=no])
 	else
 		AC_MSG_WARN([*** PGP/CORE plugin will not be built ***])
 	fi
