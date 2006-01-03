@@ -1,3 +1,9 @@
+2006-01-03 [paul]	1.9.100cvs120
+
+	* src/messageview.c
+		fix bug 884, 'Send receipt' button visible in queue
+		Thanks to Colin
+
 2006-01-02 [colin]	1.9.100cvs119
 
 	* src/compose.c

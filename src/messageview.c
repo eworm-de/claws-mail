@@ -1129,6 +1129,11 @@ void messageview_toggle_view_real(MessageView *messageview)
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
+	if (msginfo->folder 
+		&& (folder_has_parent_of_type(msginfo->folder, F_QUEUE)
+		 || folder_has_parent_of_type(msginfo->folder, F_DRAFT)))
+		return;
+
 	noticeview_set_text(noticeview, _("This message asks for a return receipt."));
 	noticeview_set_button_text(noticeview, _("Send receipt"));
 	noticeview_set_button_press_callback(noticeview,
