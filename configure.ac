@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=120
+EXTRA_VERSION=121
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -627,6 +627,9 @@ if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 		      [ac_cv_enable_pgpcore_plugin=no])
 	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 		PLUGINS="pgpcore $PLUGINS"
+                AM_PATH_GPGME(1.1.1,
+                              AC_DEFINE(HAVE_GPGME_PKA_TRUST, 1,
+                                        [Define if GPGME supports PKA.]))
 	else
 		AC_MSG_WARN([*** PGP/CORE plugin will not be built ***])
 	fi

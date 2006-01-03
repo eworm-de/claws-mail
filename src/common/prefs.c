@@ -172,6 +172,9 @@ gint prefs_file_close(PrefFile *pfile)
 
 	if (is_file_exist(path)) {
 		bakpath = g_strconcat(path, ".bak", NULL);
+#ifdef G_OS_WIN32
+                g_unlink(bakpath);
+#endif
 		if (rename(path, bakpath) < 0) {
 			FILE_OP_ERROR(path, "rename");
 			g_unlink(tmppath);
@@ -182,6 +185,9 @@ gint prefs_file_close(PrefFile *pfile)
 		}
 	}
 
+#ifdef G_OS_WIN32
+        g_unlink(path);
+#endif
 	if (rename(tmppath, path) < 0) {
 		FILE_OP_ERROR(tmppath, "rename");
 		g_unlink(tmppath);

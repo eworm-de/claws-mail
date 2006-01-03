@@ -1,3 +1,11 @@
+2006-01-03 [colin]	1.9.100cvs121
+
+	* src/common/prefs.c
+		Windows unlink-before rename fix
+	* src/plugins/pgpcore/sgpgme.c
+		Add support for PKA info if available
+		Both patches by Werner Koch
+
 2006-01-03 [paul]	1.9.100cvs120
 
 	* src/messageview.c
