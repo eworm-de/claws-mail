@@ -398,6 +398,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gchar *sigcontent;
 	gpgme_ctx_t ctx;
 	gpgme_data_t gpgtext, gpgsig;
+	gpgme_error_t err;
 	size_t len;
 	struct passphrase_cb_info_s info;
 	gpgme_sign_result_t result = NULL;
@@ -467,12 +468,16 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	if (!getenv("GPG_AGENT_INFO")) {
-    		info.c = ctx;
+	if (getenv("GPG_AGENT_INFO")) {
+		debug_print("GPG_AGENT_INFO environment defined, running without passphrase callback\n");
+	} else {
+   		info.c = ctx;
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
 	}
 
-	if (gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH) != GPG_ERR_NO_ERROR) {
+	err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH);
+	if (err != GPG_ERR_NO_ERROR) {
+		debug_print("gpgme_op_sign error : %x\n", err);
 		gpgme_release(ctx);
 		return FALSE;
 	}
@@ -487,6 +492,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	    }
 	} else {
 	    /* can't get result (maybe no signing key?) */
+	    debug_print("gpgme_op_sign_result error\n");
 	    return FALSE;
 	}
 
