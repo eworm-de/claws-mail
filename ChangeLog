@@ -1,3 +1,9 @@
+2006-01-04 [paul]	1.9.100cvs124
+
+	* src/folderview.c
+		fix bug 882, 'quick scroll in folder list
+		displays wrong folder contents'
+
 2006-01-04 [paul]	1.9.100cvs123
 
 	* src/plugins/pgpmime/pgpmime.c

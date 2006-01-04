@@ -1669,7 +1669,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 
 	if (!event) return FALSE;
 
-	if (event->button == 1) {
+	if (event->button == 1 || event->button == 2) {
 		folderview->open_folder = TRUE;
 
 	        if (event->type == GDK_2BUTTON_PRESS) {
