@@ -1,3 +1,9 @@
+2006-01-06 [colin]	1.9.100cvs125
+
+	* src/compose.c
+		Just make completely sure we don't insert "manual line breaks" 
+		when wrapping... 
+
 2006-01-04 [paul]
 
 	* 2.0.0-rc3 released

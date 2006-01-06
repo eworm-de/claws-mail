@@ -1108,3 +1108,4 @@
 ( cvs diff -u -r 1.654.2.1151 -r 1.654.2.1152 configure.ac;  ) > 1.9.100cvs122.patchset
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpmime/pgpmime.c;  ) > 1.9.100cvs123.patchset
 ( cvs diff -u -r 1.207.2.79 -r 1.207.2.80 src/folderview.c;  ) > 1.9.100cvs124.patchset
+( cvs diff -u -r 1.382.2.213 -r 1.382.2.214 src/compose.c;  ) > 1.9.100cvs125.patchset

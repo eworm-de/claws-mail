@@ -3254,6 +3254,7 @@ static gboolean compose_join_next_line(Compose *compose,
 		g_warning("alloc error scanning URIs\n"); \
 	}
 
+static gboolean automatic_break = FALSE;
 static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
@@ -3364,11 +3365,15 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 					       quote_len)) {
 			GtkTextIter prev, next, cur;
 			
-			if (prev_autowrap != FALSE || force)
+			if (prev_autowrap != FALSE || force) {
+				automatic_break = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
-			else if (quote_str && wrap_quote)
+				automatic_break = FALSE;
+			} else if (quote_str && wrap_quote) {
+				automatic_break = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
-			else 
+				automatic_break = FALSE;
+			} else 
 				goto colorize;
 			/* remove trailing spaces */
 			cur = break_pos;
@@ -8132,11 +8137,13 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 		gtk_text_buffer_place_cursor(buffer, iter);
 	} else {
-		if (strcmp(text, "\n"))
+		if (strcmp(text, "\n") || automatic_break)
 			gtk_text_buffer_insert(buffer, iter, text, len);
-		else
+		else {
+			debug_print("insert nowrap \\n\n");
 			gtk_text_buffer_insert_with_tags_by_name(buffer, 
 				iter, text, len, "no_join", NULL);
+		}
 	}
 	
 	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
