@@ -848,12 +848,14 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkWidget *btn_use;
 	GtkWidget *btn_remove;
 
-	vbox1 = gtk_vbox_new (FALSE, 0);
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_widget_show (vbox1);
 
 	PACK_FRAME (vbox1, frame1, _("Selector"));
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 

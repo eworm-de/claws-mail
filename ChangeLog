@@ -1,3 +1,9 @@
+2006-01-09 [wwp]	1.9.100cvs127
+
+	* src/prefs_themes.c
+		made the prefs/display/themes layouts spacing less condensed
+		(and so they match other prefs/pages' look).
+
 2006-01-09 [paul]	1.9.100cvs126
 
 	* src/compose.c
