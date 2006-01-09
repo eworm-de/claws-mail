@@ -167,7 +167,7 @@ void noticeview_show(NoticeView *noticeview)
 
 void noticeview_hide(NoticeView *noticeview)
 {
-	if (noticeview->visible) {
+	if (noticeview && noticeview->visible) {
 		gtk_widget_hide(GTK_WIDGET_PTR(noticeview));
 		noticeview->visible = FALSE;
 	}	

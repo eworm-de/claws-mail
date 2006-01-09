@@ -1997,7 +1997,10 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_set_sensitive(ifactory, "/View/Sort/Descending", FALSE);
 	}
 
-	SET_CHECK_MENU_ACTIVE("/View/Show all headers",
+	if (mainwin->messageview 
+	&&  mainwin->messageview->mimeview
+	&&  mainwin->messageview->mimeview->textview)
+		SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 

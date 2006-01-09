@@ -1021,6 +1021,8 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 
 gboolean messageview_is_visible(MessageView *messageview)
 {
+	if (messageview == NULL)
+		return FALSE;
 	return messageview->visible;
 }
 

@@ -967,6 +967,8 @@ static void addressbook_create(void)
 	addrbookctl_build_iflist();
 	addrbookctl_build_ifselect();
 
+	addrbook.clist   = NULL;
+
 	/* Add each interface into the tree as a root level folder */
 	nodeIf = _addressInterfaceList_;
 	while( nodeIf ) {
@@ -3193,6 +3195,9 @@ static void addressbook_set_clist( AddressObject *obj, gboolean refresh ) {
 	AdapterDSource *ads = NULL;
 	static AddressObject *last_obj = NULL;
 
+	if (addrbook.clist == NULL) {
+		return;
+	}
 	if (obj == last_obj && !refresh)
 		return;
 

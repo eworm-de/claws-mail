@@ -368,9 +368,10 @@ static void mimeview_free_mimeinfo(MimeView *mimeview)
 	if (defer)
 		mimeview->check_data->free_after_use = TRUE;
 #endif
-	if (mimeview->mimeinfo != NULL && !defer)
+	if (mimeview->mimeinfo != NULL && !defer) {
 		procmime_mimeinfo_free_all(mimeview->mimeinfo);
-	else if (defer) {
+		mimeview->mimeinfo = NULL;
+	} else if (defer) {
 #ifdef USE_PTHREAD
 		debug_print("deferring free(mimeinfo) and cancelling check\n");
 		mimeview_check_sig_cancel_now(mimeview);
@@ -632,7 +633,15 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 
 void mimeview_clear(MimeView *mimeview)
 {
-	GtkCList *clist = GTK_CLIST(mimeview->ctree);
+	GtkCList *clist = NULL;
+	
+	if (!mimeview)
+		return;
+
+	if (g_slist_find(mimeviews, mimeview) == NULL)
+		return;
+	
+	clist = GTK_CLIST(mimeview->ctree);
 	
 	noticeview_hide(mimeview->siginfoview);
 

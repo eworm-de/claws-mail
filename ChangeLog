@@ -1,3 +1,14 @@
+2006-01-09 [colin]	1.9.100cvs130
+
+	* src/addressbook.c
+	* src/headerview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/summaryview.c
+		Fix possible crashes on exit and in addressbook
+
 2006-01-09 [paul]	1.9.100cvs129
 
 	* src/prefs_msg_colors.c

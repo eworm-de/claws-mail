@@ -1266,9 +1266,12 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All header");
-	gtk_check_menu_item_set_active
-		(GTK_CHECK_MENU_ITEM(menuitem),
-		 summaryview->messageview->mimeview->textview->show_all_headers);
+	if (summaryview->messageview 
+	&&  summaryview->messageview->mimeview
+	&&  summaryview->messageview->mimeview->textview)
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem),
+			 summaryview->messageview->mimeview->textview->show_all_headers);
 	summary_unlock(summaryview);
 }
 

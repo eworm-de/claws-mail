@@ -266,6 +266,9 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 
 void headerview_clear(HeaderView *headerview)
 {
+	if (headerview == NULL)
+		return;
+
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label), "");
 	gtk_label_set_text(GTK_LABEL(headerview->to_body_label), "");
 	gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), "");
