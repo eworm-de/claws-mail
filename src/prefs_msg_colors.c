@@ -145,7 +145,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.quote_level3_btn = gtk_button_new_with_label ("");
+	color_buttons.quote_level3_btn = gtk_button_new();
 	gtk_widget_show(color_buttons.quote_level3_btn);
 	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level3_btn, 
@@ -167,7 +167,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.uri_btn = gtk_button_new_with_label ("");
+	color_buttons.uri_btn = gtk_button_new();
 	gtk_widget_show(color_buttons.uri_btn);
 	gtk_widget_set_size_request (color_buttons.uri_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.uri_btn, 
@@ -181,7 +181,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.signature_btn = gtk_button_new_with_label ("");
+	color_buttons.signature_btn = gtk_button_new();
 	gtk_widget_show(color_buttons.signature_btn);
 	gtk_widget_set_size_request (color_buttons.signature_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.signature_btn, 
@@ -202,7 +202,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
+	color_buttons.tgt_folder_btn = gtk_button_new();
 	gtk_widget_show(color_buttons.tgt_folder_btn);
 	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.tgt_folder_btn, 
@@ -216,7 +216,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	color_buttons.color_new_btn = gtk_button_new_with_label ("");
+	color_buttons.color_new_btn = gtk_button_new();
 	gtk_widget_show (color_buttons.color_new_btn);
 	gtk_widget_set_size_request (color_buttons.color_new_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.color_new_btn,
