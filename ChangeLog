@@ -1,3 +1,13 @@
+2006-01-09 [paul]	1.9.100cvs128
+
+	* README
+	* src/folderview.c
+	* src/prefs_msg_colors.c
+		add previously hidden option, color_new, to
+		the gui
+		move the page to Display/
+		rework the gui
+
 2006-01-09 [wwp]	1.9.100cvs127
 
 	* src/prefs_themes.c

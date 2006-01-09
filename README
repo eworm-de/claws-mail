@@ -480,10 +480,6 @@ http://claws.sylpheed.org/plugins.php
 	show unread messages using bold font in summary view
 	0: off  1: on
 
-    color_new			(default: 0000b3 (blue))
-	color (as hex triplet) of folder name when indicating
-	presence of new messages
-
     cache_max_mem_usage		(default: 4096)
 	the maximum kB of memory sylpheed should use.
 	It will try to keep the memory usage below this

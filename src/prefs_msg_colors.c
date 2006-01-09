@@ -46,6 +46,7 @@ static struct MessageColorButtons {
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
 	GtkWidget *signature_btn;
+	GtkWidget *color_new_btn;
 } color_buttons;
 
 typedef struct _MsgColorsPage
@@ -77,7 +78,8 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 {
 	MsgColorsPage *prefs_msg_colors = (MsgColorsPage *) _page;
 	
-	GtkWidget *table;
+	GtkWidget *vbox1;
+	GtkWidget *vbox2;
 	GtkWidget *chkbtn_enablecol;
 	GtkWidget *quotelevel1_label;
 	GtkWidget *quotelevel2_label;
@@ -87,101 +89,142 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *tgt_folder_label;
 	GtkWidget *chkbtn_recycle_colors;
 	GtkWidget *hbox;
+	GtkWidget *color_new_label;
+	GtkWidget *msg_frame;
+	GtkWidget *folder_frame;
 
-	table = gtk_table_new(8, 3, FALSE);
-	gtk_widget_show(table);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	vbox1 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-  	chkbtn_enablecol = 
-		gtk_check_button_new_with_label(_("Enable coloration of message"));
-  	gtk_table_attach (GTK_TABLE (table), chkbtn_enablecol, 0, 1, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	PACK_FRAME(vbox1, msg_frame, _("Message view"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (msg_frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 2, 3,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+
+	PACK_CHECK_BUTTON (hbox, chkbtn_enablecol,
+			   _("Enable coloration of message text"));
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	color_buttons.quote_level1_btn = gtk_button_new();
+	gtk_widget_show(color_buttons.quote_level1_btn);
 	gtk_widget_set_size_request (color_buttons.quote_level1_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level1_btn, 
 			    FALSE, FALSE, 0);
 
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
+	gtk_widget_show(quotelevel1_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel1_label, 
 			    FALSE, FALSE, 0);
 		
 	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 3, 4,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	color_buttons.quote_level2_btn = gtk_button_new();
+	gtk_widget_show(color_buttons.quote_level2_btn);
 	gtk_widget_set_size_request (color_buttons.quote_level2_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level2_btn, 
 			    FALSE, FALSE, 0);
 
 	quotelevel2_label = gtk_label_new (_("Quoted Text - Second Level"));
+	gtk_widget_show(quotelevel2_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel2_label, 
 			    FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 4, 5,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	color_buttons.quote_level3_btn = gtk_button_new_with_label ("");
+	gtk_widget_show(color_buttons.quote_level3_btn);
 	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level3_btn, 
 			    FALSE, FALSE, 0);
 
 	quotelevel3_label = gtk_label_new (_("Quoted Text - Third Level"));
+	gtk_widget_show(quotelevel3_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel3_label, 
 			    FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 5, 6,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+
+	PACK_CHECK_BUTTON (hbox, chkbtn_recycle_colors,
+			   _("Cycle quote colors"));
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	color_buttons.uri_btn = gtk_button_new_with_label ("");
+	gtk_widget_show(color_buttons.uri_btn);
 	gtk_widget_set_size_request (color_buttons.uri_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.uri_btn, 
 			    FALSE, FALSE, 0);
 
 	uri_label = gtk_label_new (_("URI link"));
+	gtk_widget_show(uri_label);
   	gtk_box_pack_start (GTK_BOX(hbox), uri_label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 6, 7,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
-	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.tgt_folder_btn, 
-			    FALSE, FALSE, 0);
-
-	tgt_folder_label = gtk_label_new (_("Target folder"));
-  	gtk_box_pack_start (GTK_BOX(hbox), tgt_folder_label, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_table_attach (GTK_TABLE (table), hbox, 0, 1, 7, 8,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	color_buttons.signature_btn = gtk_button_new_with_label ("");
+	gtk_widget_show(color_buttons.signature_btn);
 	gtk_widget_set_size_request (color_buttons.signature_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.signature_btn, 
 			    FALSE, FALSE, 0);
 
 	signature_label = gtk_label_new (_("Signatures"));
+	gtk_widget_show(signature_label);
   	gtk_box_pack_start (GTK_BOX(hbox), signature_label, FALSE, FALSE, 0);
 
-  	chkbtn_recycle_colors = 
-		gtk_check_button_new_with_label(_("Recycle quote colors"));
-  	gtk_table_attach (GTK_TABLE (table), chkbtn_recycle_colors, 0, 1, 8, 9,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
-			  
-	gtk_widget_show_all(table);
+	PACK_FRAME(vbox1, folder_frame, _("Folder list"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (folder_frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+
+	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
+	gtk_widget_show(color_buttons.tgt_folder_btn);
+	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.tgt_folder_btn, 
+			    FALSE, FALSE, 0);
+
+	tgt_folder_label = gtk_label_new (_("Target folder"));
+	gtk_widget_show(tgt_folder_label);
+  	gtk_box_pack_start (GTK_BOX(hbox), tgt_folder_label, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+
+	color_buttons.color_new_btn = gtk_button_new_with_label ("");
+	gtk_widget_show (color_buttons.color_new_btn);
+	gtk_widget_set_size_request (color_buttons.color_new_btn, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.color_new_btn,
+			    FALSE, FALSE, 0);
+
+	color_new_label = gtk_label_new (_("Folder containing new messages"));
+ 	gtk_widget_show(color_new_label);
+ 	gtk_box_pack_start (GTK_BOX(hbox), color_new_label, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(color_buttons.quote_level1_btn), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL1");
@@ -195,6 +238,8 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			 G_CALLBACK(quote_color_set_dialog), "TGTFLD");
 	g_signal_connect(G_OBJECT(color_buttons.signature_btn), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "SIGNATURE");
+	g_signal_connect(G_OBJECT(color_buttons.color_new_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "NEW");
 
 	set_button_bg_color(color_buttons.quote_level1_btn,
 			    prefs_common.quote_level1_col);
@@ -208,17 +253,18 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    prefs_common.tgt_folder_col);
 	set_button_bg_color(color_buttons.signature_btn,
 			    prefs_common.signature_col);
+	set_button_bg_color(color_buttons.color_new_btn,
+			    prefs_common.color_new);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enablecol),
 				     prefs_common.enable_color);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_recycle_colors),
 				     prefs_common.recycle_quote_colors);
 
-	prefs_msg_colors->window 		= GTK_WIDGET(window);
 	prefs_msg_colors->chkbtn_enablecol 	= chkbtn_enablecol;
 	prefs_msg_colors->chkbtn_recycle_colors	= chkbtn_recycle_colors;
 
-	prefs_msg_colors->page.widget = table;
+	prefs_msg_colors->page.widget = vbox1;
 }
 
 static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
@@ -247,6 +293,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
 		title = _("Pick color for signatures");
 		rgbvalue = prefs_common.signature_col;
+	} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
+		title = _("Pick color for folder");
+		rgbvalue = prefs_common.color_new;
 	} else {   /* Should never be called */
 		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
@@ -316,6 +365,9 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	} else if (g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
 		prefs_common.signature_col = rgbvalue;
 		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
+	} else if (g_ascii_strcasecmp(type, "NEW") == 0) {
+		prefs_common.color_new = rgbvalue;
+		set_button_bg_color(color_buttons.color_new_btn, rgbvalue);
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 
@@ -378,6 +430,8 @@ void prefs_msg_colors_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enablecol));
 	prefs_common.recycle_quote_colors =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_recycle_colors));
+
+	main_window_reflect_prefs_all();
 }
 
 static void prefs_msg_colors_destroy_widget(PrefsPage *_page)
@@ -391,7 +445,7 @@ void prefs_msg_colors_init(void)
 	MsgColorsPage *page;
 	static gchar *path[3];
 
-	path[0] = _("Message View");
+	path[0] = _("Display");
 	path[1] = _("Colors");
 	path[2] = NULL;
 

@@ -575,6 +575,7 @@ FolderView *folderview_create(void)
 void folderview_init(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
+	GdkColor gdk_color;
 
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
@@ -633,18 +634,20 @@ void folderview_init(FolderView *folderview)
 					(normal_style->font_desc);
 			normal_style->font_desc = font_desc;
 		}
+		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
 		normal_color_style = gtk_style_copy(normal_style);
-		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+		normal_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 
 		gtk_widget_set_style(ctree, normal_style);
 	}
 
 	if (!bold_style) {
+		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		pango_font_description_set_weight
 			(bold_style->font_desc, PANGO_WEIGHT_BOLD);
 		bold_color_style = gtk_style_copy(bold_style);
-		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+		bold_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 
 		bold_tgtfold_style = gtk_style_copy(bold_style);
 		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
@@ -1431,22 +1434,29 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
 	if (use_bold) {
-		if (item->prefs->color > 0 && !use_color) {
-			GdkColor gdk_color;
+		GdkColor gdk_color;
 
+		if (item->prefs->color > 0 && !use_color) {
 			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 			color_style = gtk_style_copy(bold_style);
 			color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 			style = color_style;
-		} else if (use_color)
+		} else if (use_color) {
+			gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+			bold_color_style = gtk_style_copy(bold_style);
+			bold_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 			style = bold_color_style;
-		else
+		} else
 			style = bold_style;
 		if (item->op_count > 0) {
 			style = bold_tgtfold_style;
 		}
 	} else if (use_color) {
-		style = normal_color_style;
+		GdkColor gdk_color;
+
+		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+		style = gtk_style_copy(normal_color_style);
+		style->fg[GTK_STATE_NORMAL] = gdk_color;
 		gtk_ctree_node_set_foreground(ctree, node,
 					      &folderview->color_new);
 	} else if (item->op_count > 0) {
