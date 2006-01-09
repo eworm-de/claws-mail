@@ -4369,9 +4369,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		}			
 	}
 
-        if (prefs_common.linewrap_at_send)
-    		compose_wrap_all(compose);
-
 	/* write queue header */
 	tmp = g_strdup_printf("%s%cqueue.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);

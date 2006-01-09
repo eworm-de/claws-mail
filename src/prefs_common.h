@@ -99,7 +99,6 @@ struct _PrefsCommon
 	gboolean linewrap_quote;
 	gboolean linewrap_pastes;
 	gboolean autowrap;
-	gboolean linewrap_at_send;
 	gboolean auto_exteditor;
 	gboolean reply_account_autosel;
 	gboolean default_reply_list;

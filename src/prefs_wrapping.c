@@ -49,7 +49,6 @@ typedef struct _WrappingPage
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 } WrappingPage;
 
 void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -65,7 +64,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 	GtkWidget *hbox1;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -77,7 +75,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autowrap, _("Wrap on input"));
-  	PACK_CHECK_BUTTON (vbox2, checkbtn_wrapatsend, _("Wrap before sending"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrapquote, _("Wrap quotation"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrappastes, _("Wrap pasted text"));
 
@@ -103,8 +100,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autowrap),
 				     prefs_common.autowrap);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrapatsend),
-				     prefs_common.linewrap_at_send);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrapquote),
 				     prefs_common.linewrap_quote);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrappastes),
@@ -117,7 +112,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_wrapping->checkbtn_wrapquote	= checkbtn_wrapquote;
 	prefs_wrapping->checkbtn_wrappastes	= checkbtn_wrappastes;
 	prefs_wrapping->checkbtn_autowrap	= checkbtn_autowrap;
-	prefs_wrapping->checkbtn_wrapatsend	= checkbtn_wrapatsend;
 
 	prefs_wrapping->page.widget = vbox1;
 }
@@ -134,8 +128,6 @@ void prefs_wrapping_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrappastes));
 	prefs_common.autowrap =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autowrap));
-	prefs_common.linewrap_at_send = 
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrapatsend));
 }
 
 static void prefs_wrapping_destroy_widget(PrefsPage *_page)
