@@ -1114,3 +1114,4 @@
 ( cvs diff -u -r 1.8.2.7 -r 1.8.2.8 README;  cvs diff -u -r 1.207.2.80 -r 1.207.2.81 src/folderview.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_msg_colors.c;  ) > 1.9.100cvs128.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_msg_colors.c;  ) > 1.9.100cvs129.patchset
 ( cvs diff -u -r 1.60.2.40 -r 1.60.2.41 src/addressbook.c;  cvs diff -u -r 1.8.2.11 -r 1.8.2.12 src/headerview.c;  cvs diff -u -r 1.274.2.84 -r 1.274.2.85 src/mainwindow.c;  cvs diff -u -r 1.94.2.72 -r 1.94.2.73 src/messageview.c;  cvs diff -u -r 1.83.2.54 -r 1.83.2.55 src/mimeview.c;  cvs diff -u -r 1.5.2.12 -r 1.5.2.13 src/noticeview.c;  cvs diff -u -r 1.395.2.153 -r 1.395.2.154 src/summaryview.c;  ) > 1.9.100cvs130.patchset
+( cvs diff -u -r 1.382.2.215 -r 1.382.2.216 src/compose.c;  ) > 1.9.100cvs131.patchset

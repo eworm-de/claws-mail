@@ -5512,6 +5512,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			 G_CALLBACK(text_inserted), compose);
 	g_signal_connect(G_OBJECT(text), "button_press_event",
 			 G_CALLBACK(text_clicked), compose);
+	g_signal_connect(G_OBJECT(subject_entry), "changed",
+			 G_CALLBACK(compose_changed_cb), compose);
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 

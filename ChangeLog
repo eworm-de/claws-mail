@@ -1,3 +1,9 @@
+2006-01-10 [paul]	1.9.100cvs131
+
+	* src/compose.c
+		change Subject in window title
+		instantaneously
+
 2006-01-09 [colin]	1.9.100cvs130
 
 	* src/addressbook.c
