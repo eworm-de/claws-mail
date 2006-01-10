@@ -1,3 +1,11 @@
+2006-01-10 [paul]	1.9.100cvs135
+
+	* tools/Makefile.am
+	* tools/filter_conv_new.pl
+		add script to convert new style Sylpheed
+		filter rules (Sylpheed >= 0.9.99) to
+		Claws filtering rules
+
 2006-01-10 [colin]	1.9.100cvs134
 
 	* src/compose.c

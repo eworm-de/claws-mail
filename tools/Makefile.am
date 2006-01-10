@@ -5,6 +5,7 @@ EXTRA_TOOLS = \
 	convert_mbox.pl \
 	eud2gc.py \
 	filter_conv.pl \
+	filter_conv_new.pl \
 	freshmeat_search.pl \
 	gif2xface.pl \
 	google_msgid.pl \
