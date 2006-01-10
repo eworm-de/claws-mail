@@ -1117,3 +1117,4 @@
 ( cvs diff -u -r 1.382.2.215 -r 1.382.2.216 src/compose.c;  ) > 1.9.100cvs131.patchset
 ( cvs diff -u -r 1.83.2.55 -r 1.83.2.56 src/mimeview.c;  ) > 1.9.100cvs132.patchset
 ( cvs diff -u -r 1.382.2.216 -r 1.382.2.217 src/compose.c;  cvs diff -u -r 1.36.2.50 -r 1.36.2.51 src/common/utils.c;  ) > 1.9.100cvs133.patchset
+( cvs diff -u -r 1.382.2.217 -r 1.382.2.218 src/compose.c;  ) > 1.9.100cvs134.patchset

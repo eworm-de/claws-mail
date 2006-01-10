@@ -8136,7 +8136,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 		gtk_text_buffer_place_cursor(buffer, iter);
 	} else {
-		if (strcmp(text, "\n") || automatic_break)
+		if (strcmp(text, "\n") || automatic_break
+		|| gtk_text_iter_starts_line(iter))
 			gtk_text_buffer_insert(buffer, iter, text, len);
 		else {
 			debug_print("insert nowrap \\n\n");

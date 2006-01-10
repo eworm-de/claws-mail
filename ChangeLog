@@ -1,3 +1,11 @@
+2006-01-10 [colin]	1.9.100cvs134
+
+	* src/compose.c
+		Fix broken line joins in certain conditions
+		(between two quoted lines: <enter><enter><up>
+		 <type a wrapped sentence><go in the first line>
+		 <insert more text><watch as line joining failed>)
+
 2006-01-10 [paul]	1.9.100cvs133
 
 	* src/compose.c
