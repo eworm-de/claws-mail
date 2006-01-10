@@ -3759,7 +3759,7 @@ gint compose_send(Compose *compose)
 		} else if (val == -3) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Signature failed."));
-		} else if (val == -2) {
+		} else if (val == -2 && errno != 0) {
 			alertpanel_error(_("Could not queue message for sending:\n\n%s."), strerror(errno));
 		} else {
 			alertpanel_error(_("Could not queue message for sending."));
