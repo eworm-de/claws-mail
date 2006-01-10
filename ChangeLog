@@ -1,3 +1,9 @@
+2006-01-10 [paul]	1.9.100cvs132
+
+	* src/mimeview.c
+		fix incompatible pointer type
+		warning
+
 2006-01-10 [paul]	1.9.100cvs131
 
 	* src/compose.c
