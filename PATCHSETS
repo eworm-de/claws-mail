@@ -1121,3 +1121,4 @@
 ( cvs diff -u -r 1.25.2.7 -r 1.25.2.8 tools/Makefile.am;  diff -u /dev/null tools/filter_conv_new.pl;  ) > 1.9.100cvs135.patchset
 ( cvs diff -u -r 1.96.2.87 -r 1.96.2.88 src/textview.c;  ) > 1.9.100cvs136.patchset
 ( cvs diff -u -r 1.30.2.7 -r 1.30.2.8 tools/README;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/filter_conv_new.pl;  ) > 1.9.100cvs137.patchset
+( cvs diff -u -r 1.382.2.218 -r 1.382.2.219 src/compose.c;  ) > 1.9.100cvs138.patchset

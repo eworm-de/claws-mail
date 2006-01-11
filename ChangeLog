@@ -1,3 +1,8 @@
+2006-01-11 [colin]	1.9.100cvs138
+
+	* src/compose.c
+		Allow templates without text
+
 2006-01-11 [paul]	1.9.100cvs137
 
 	* tools/README

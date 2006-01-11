@@ -6048,9 +6048,9 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	GtkTextMark *mark;
 	GtkTextIter iter;
 	gchar *qmark;
-	gchar *parsed_str;
+	gchar *parsed_str = NULL;
 	gint cursor_pos = 0;
-	if (!tmpl || !tmpl->value) return;
+	if (!tmpl) return;
 
 	text = GTK_TEXT_VIEW(compose->text);
 	buffer = gtk_text_view_get_buffer(text);
@@ -6072,25 +6072,26 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
-	if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
-		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
-					       NULL, NULL, FALSE);
-	} else {
-		if (prefs_common.quotemark && *prefs_common.quotemark)
-			qmark = prefs_common.quotemark;
-		else
-			qmark = "> ";
+	if (tmpl->value) {
+		if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
+			parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
+						       NULL, NULL, FALSE);
+		} else {
+			if (prefs_common.quotemark && *prefs_common.quotemark)
+				qmark = prefs_common.quotemark;
+			else
+				qmark = "> ";
 
-		if (compose->replyinfo != NULL)
-			parsed_str = compose_quote_fmt(compose, compose->replyinfo,
-						       tmpl->value, qmark, NULL, FALSE);
-		else if (compose->fwdinfo != NULL)
-			parsed_str = compose_quote_fmt(compose, compose->fwdinfo,
-						       tmpl->value, qmark, NULL, FALSE);
-		else
-			parsed_str = NULL;
+			if (compose->replyinfo != NULL)
+				parsed_str = compose_quote_fmt(compose, compose->replyinfo,
+							       tmpl->value, qmark, NULL, FALSE);
+			else if (compose->fwdinfo != NULL)
+				parsed_str = compose_quote_fmt(compose, compose->fwdinfo,
+							       tmpl->value, qmark, NULL, FALSE);
+			else
+				parsed_str = NULL;
+		}
 	}
-
 	if (replace && parsed_str && compose->account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
@@ -6109,8 +6110,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		gtk_text_buffer_place_cursor(buffer, &iter);
 	}
 
-	if (parsed_str)
-		compose_changed_cb(NULL, compose);
+	compose_changed_cb(NULL, compose);
 }
 
 static void compose_destroy(Compose *compose)
