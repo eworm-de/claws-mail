@@ -567,7 +567,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	g_free(content_type);			   
 
-	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT
+	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
+	    mimeinfo->type != MIMETYPE_TEXT)) {
 		gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {

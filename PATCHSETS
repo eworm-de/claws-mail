@@ -1119,3 +1119,4 @@
 ( cvs diff -u -r 1.382.2.216 -r 1.382.2.217 src/compose.c;  cvs diff -u -r 1.36.2.50 -r 1.36.2.51 src/common/utils.c;  ) > 1.9.100cvs133.patchset
 ( cvs diff -u -r 1.382.2.217 -r 1.382.2.218 src/compose.c;  ) > 1.9.100cvs134.patchset
 ( cvs diff -u -r 1.25.2.7 -r 1.25.2.8 tools/Makefile.am;  diff -u /dev/null tools/filter_conv_new.pl;  ) > 1.9.100cvs135.patchset
+( cvs diff -u -r 1.96.2.87 -r 1.96.2.88 src/textview.c;  ) > 1.9.100cvs136.patchset
