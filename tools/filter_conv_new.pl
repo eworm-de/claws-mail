@@ -78,16 +78,28 @@ use strict;
 use XML::SimpleObject;
 
 my $old_config = "$ENV{HOME}/.sylpheed-2.0/filter.xml";
-my $config_dir = `sylpheed-claws --config-dir`;
+my $older_config = "$ENV{HOME}/.sylpheed/filter.xml";
+my $old_filters;
+
+my $config_dir = `sylpheed-claws --config-dir` or die("ERROR:
+	You don't appear to have Sylpheed-Claws installed\n");
 chomp $config_dir;
 
-chdir($ENV{ HOME } . "/$config_dir")
-	or die("You don't appear to have Sylpheed-Claws installed\n");
+chdir($ENV{HOME} . "/$config_dir") or die("ERROR:
+	Sylpheed-Claws config directory not found [~/$config_dir]
+	You need to run Sylpheed-Claws once, quit it, and then rerun this script\n");
 
--e $old_config or die("Can't find old filters [$old_config]\n");
+if (-e $old_config) {
+	$old_filters = $old_config;
+} elsif (-e $older_config) {
+	$old_filters = $older_config;
+} else {
+	print "ERROR:\n\tSylpheed filter not found\n\t[$old_config]\n\t[$older_config]\n";
+	exit;
+}
 
 my $parser = XML::Parser->new(ErrorContext => 2, Style => "Tree");
-my $xmlobj = XML::SimpleObject->new($parser->parsefile($old_config));
+my $xmlobj = XML::SimpleObject->new($parser->parsefile($old_filters));
 
 my @conditions = ('match-header','match-to-or-cc','match-any-header',
 		  'match-body-text','command-test','size','age');
@@ -102,6 +114,7 @@ my $exact_matches = qr/^(?:move|copy|delete|mark)$/;
 
 my @new_filters = ("[filtering]");
 
+my $disabled = 0;
 my $bool;
 
 ## rules list
@@ -114,6 +127,7 @@ foreach my $element ($xmlobj->child("filter")->children("rule")) {
     	}
 	if ($element->attribute("enabled")) {
 		if ($element->attribute("enabled") eq "false") {
+			$disabled++;
 			next;	# skip disabled rules
 		}
     	}
@@ -177,8 +191,7 @@ foreach my $element ($xmlobj->child("filter")->children("rule")) {
 							$new_filter .= "matchcase ";
 						}
 					}
-					my $value = $sibling->value;
-					$value = clean_me($value);
+					my $value = clean_me($sibling->value);
 					if ($condition =~ m/$numeric_matches/) {
 						$new_filter .= "$value";
 					} else {
@@ -209,8 +222,7 @@ foreach my $element ($xmlobj->child("filter")->children("rule")) {
 						$new_filter .= " stop";
 					}
 					if ($sibling->value) {
-						my $value = $sibling->value;
-						$value = clean_me($value);
+						my $value = clean_me($sibling->value);
 						if ($action eq "color-label") {
 							$new_filter .= " $value";
 						} else {
@@ -233,6 +245,9 @@ open(MATCHERRC, ">>matcherrc");
 close(MATCHERRC);
 
 print "Converted ". ($#new_filters-1) . " filters\n";
+if ($disabled) {
+	print "[$disabled disabled filter(s) not converted]\n";
+}
 
 exit;
 

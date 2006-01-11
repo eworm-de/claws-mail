@@ -26,7 +26,8 @@ Mailbox conversion:
 
 Other tools:
   acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
-  filter_conv.pl                Convert old-style filters to new filtering
+  filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
+  filter_conv.pl                Convert old-style Sylpheed filters to filtering
   nautilus2sylpheed.sh		Send files from Nautilus
   OOo2sylpheed.pl               Send documents from OpenOffice.org
   sylprint.pl                   Printing engine, explained in README.sylprint
@@ -380,13 +381,36 @@ Other tools
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 
 
+* filter_conv_new.pl
+
+  WHAT IT DOES
+	This perl script provides easy conversion of your filtering rules from
+	sylpheed's new filter system (>= 0.9.99) to the filtering system used in
+	sylpheed-claws. (Disabled rules are ignored)
+	It reads '~/.sylpheed-2.0/filter.xml' or '~/.sylpheed/filter.xml' and
+	writes '~/[CLAWS CONFIG DIR]/matcherrc'
+  
+  HOW TO USE IT
+	Issue the following command from the 'tools' directory:
+
+        perl filter_conv_new.pl
+
+  	That's it, the claws' filtering system is now implemented with your
+  	previous rules applied.
+
+  REQUIREMENTS
+	XML::SimpleObject
+
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  
+
 * filter_conv.pl
 
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules
-  	form sylpheed's old filter system (pre version 0.9.99) to the new
-	filtering system used in sylpheed-claws.
-	It reads '~/.sylpheed/filterrc' and outputs '~/.sylpheed-claws/matcherrc'.
+  	from sylpheed's old filter system (< 0.9.99) to the filtering system
+	used in sylpheed-claws.
+	It reads '~/.sylpheed/filterrc' and writes '~/.sylpheed-claws/matcherrc'
   
   HOW TO USE IT
 	Issue the following command from the 'tools' directory:
