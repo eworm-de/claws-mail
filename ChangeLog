@@ -1,7 +1,7 @@
 2006-01-12 [paul]	1.9.100cvs139
 
 	* src/mainwindow.c
-		prepend 'Change folder order' label with '...'
+		append 'Change folder order' label with '...'
 	* src/prefs_actions.c
 		allow reordering of actions list by dnd
 	* src/gtk/foldersort.c
