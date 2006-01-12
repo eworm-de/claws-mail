@@ -3746,4 +3746,18 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 	return FALSE;
 }
 
+gboolean folder_subscribe (const gchar *uri)
+{
+	GList *cur;
+	for (cur = folder_get_list(); cur != NULL; cur = g_list_next(cur)) {
+		Folder *folder = (Folder *) cur->data;
+
+		if (folder->klass->subscribe
+		&&  folder->klass->subscribe(folder, uri)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+
+}
 #undef PUT_ESCAPE_STR

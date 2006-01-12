@@ -1123,3 +1123,4 @@
 ( cvs diff -u -r 1.30.2.7 -r 1.30.2.8 tools/README;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/filter_conv_new.pl;  ) > 1.9.100cvs137.patchset
 ( cvs diff -u -r 1.382.2.218 -r 1.382.2.219 src/compose.c;  ) > 1.9.100cvs138.patchset
 ( cvs diff -u -r 1.274.2.85 -r 1.274.2.86 src/mainwindow.c;  cvs diff -u -r 1.60.2.27 -r 1.60.2.28 src/prefs_actions.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/foldersort.c;  ) > 1.9.100cvs139.patchset
+( cvs diff -u -r 1.213.2.72 -r 1.213.2.73 src/folder.c;  cvs diff -u -r 1.87.2.22 -r 1.87.2.23 src/folder.h;  cvs diff -u -r 1.115.2.70 -r 1.115.2.71 src/main.c;  ) > 1.9.100cvs140.patchset

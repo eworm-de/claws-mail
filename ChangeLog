@@ -1,3 +1,12 @@
+2006-01-12 [colin]	1.9.100cvs140
+
+	* src/folder.c
+	* src/folder.h
+	* src/main.c
+		Add --subscribe option
+		Let sylpheed-claws email@domain.com equivalent to --compose
+		Let sylpheed-claws proto://blah.com equivalent to --subscribe
+
 2006-01-12 [paul]	1.9.100cvs139
 
 	* src/mainwindow.c

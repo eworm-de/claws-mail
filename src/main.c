@@ -139,6 +139,8 @@ static struct RemoteCmd {
 	int online_mode;
 	gchar   *crash_params;
 	gboolean exit;
+	gboolean subscribe;
+	const gchar *subscribe_uri;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -544,6 +546,9 @@ int main(int argc, char *argv[])
 		g_ptr_array_free(cmd.attach_files, TRUE);
 		cmd.attach_files = NULL;
 	}
+	if (cmd.subscribe)
+		folder_subscribe(cmd.subscribe_uri);
+
 	if (cmd.send)
 		send_queue();
 	
@@ -660,6 +665,12 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.compose_mailto = p;
 				i++;
 			}
+		} else if (!strncmp(argv[i], "--subscribe", 11)) {
+			const gchar *p = argv[i + 1];
+			if (p && *p != '\0' && *p != '-') {
+				cmd.subscribe = TRUE;
+				cmd.subscribe_uri = p;
+			}
 		} else if (!strncmp(argv[i], "--attach", 8)) {
 			const gchar *p = argv[i + 1];
 			gchar *file;
@@ -716,6 +727,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print(_("Usage: %s [OPTION]...\n"), base);
 
 			g_print("%s\n", _("  --compose [address]    open composition window"));
+			g_print("%s\n", _("  --subscribe [uri]      subscribe to the given URI if possible"));
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
 			          "                         open composition window with specified files\n"
 			          "                         attached"));
@@ -744,6 +756,26 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(0);
 		} else if (!strncmp(argv[i], "--exit", 6)) {
 			cmd.exit = TRUE;
+		} else if (i == 1 && argc == 2) {
+			/* only one parameter. Do something intelligent about it */
+			if (strstr(argv[i], "@") && !strstr(argv[i], "://")) {
+				const gchar *p = argv[i];
+
+				cmd.compose = TRUE;
+				cmd.compose_mailto = NULL;
+				if (p && *p != '\0' && *p != '-') {
+					if (!strncmp(p, "mailto:", 7))
+						cmd.compose_mailto = p + 7;
+					else
+						cmd.compose_mailto = p;
+				}
+			} else if (strstr(argv[i], "://")) {
+				const gchar *p = argv[i];
+				if (p && *p != '\0' && *p != '-') {
+					cmd.subscribe = TRUE;
+					cmd.subscribe_uri = p;
+				}
+			}
 		}
 		
 	}
@@ -948,6 +980,10 @@ static gint prohibit_duplicate_launch(void)
 
 		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
+	} else if (cmd.subscribe) {
+		gchar *str = g_strdup_printf("subscribe %s\n", cmd.subscribe_uri);
+		fd_write_all(uxsock, str, strlen(str));
+		g_free(str);
 	} else if (cmd.send) {
 		fd_write_all(uxsock, "send\n", 5);
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
@@ -1059,6 +1095,9 @@ static void lock_socket_input_cb(gpointer data,
 		g_free(mailto);
 	} else if (!strncmp(buf, "compose", 7)) {
 		open_compose_new(buf + strlen("compose") + 1, NULL);
+	} else if (!strncmp(buf, "subscribe", 9)) {
+		main_window_popup(mainwin);
+		folder_subscribe(buf + strlen("subscribe") + 1);
 	} else if (!strncmp(buf, "send", 4)) {
 		send_queue();
 	} else if (!strncmp(buf, "online", 6)) {
