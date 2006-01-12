@@ -1,3 +1,12 @@
+2006-01-12 [paul]	1.9.100cvs139
+
+	* src/mainwindow.c
+		prepend 'Change folder order' label with '...'
+	* src/prefs_actions.c
+		allow reordering of actions list by dnd
+	* src/gtk/foldersort.c
+		make the dialog nicer
+
 2006-01-11 [colin]	1.9.100cvs138
 
 	* src/compose.c

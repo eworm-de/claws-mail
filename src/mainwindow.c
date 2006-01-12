@@ -455,7 +455,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
+	{N_("/_File/Change folder order..."),	NULL, foldersort_cb,  0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},

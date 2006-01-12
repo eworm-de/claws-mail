@@ -119,88 +119,71 @@ void foldersort_open()
 	FolderSortDialog *dialog = g_new0(FolderSortDialog, 1);
 	GList *flist;
 
-	/* BEGIN GLADE CODE */
-
 	GtkWidget *window;
-	GtkWidget *table1;
+	GtkWidget *vbox;
+	GtkWidget *vbox1;
 	GtkWidget *label1;
-	GtkWidget *hbuttonbox1;
+	GtkWidget *hbox;
+	GtkWidget *hbox2;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *vbox1;
+	GtkWidget *confirm_area;
 	GtkWidget *moveup_btn;
 	GtkWidget *movedown_btn;
+	GtkWidget *btn_vbox;
 	GtkWidget *scrolledwindow1;
 	GtkWidget *folderlist;
 	GtkWidget *label2;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(window), "window", window);
-	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Set folder sortorder"));
+			     _("Set folder order"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
 
-	table1 = gtk_table_new(3, 2, FALSE);
-	gtk_widget_show(table1);
-	gtk_container_add(GTK_CONTAINER(window), table1);
-	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table1), 4);
+	vbox = gtk_vbox_new(FALSE, 6);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	label1 =
-	    gtk_label_new(_
-			  ("Move folders up or down to change\nthe sort order in the folderview"));
-	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table1), label1, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
+	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL,
+				      NULL, NULL);
+	gtk_widget_show(confirm_area);
+	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_focus(ok_btn);
 
-	hbuttonbox1 = gtk_hbutton_box_new();
-	gtk_widget_show(hbuttonbox1);
-	gtk_table_attach(GTK_TABLE(table1), hbuttonbox1, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox1),
-				  GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbuttonbox1), 0);
-	gtk_button_box_set_child_size(GTK_BUTTON_BOX(hbuttonbox1), 0, 0);
-	gtk_button_box_set_child_ipadding(GTK_BUTTON_BOX(hbuttonbox1), 0,
-					  0);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+                         G_CALLBACK(ok_clicked), dialog);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+                         G_CALLBACK(cancel_clicked), dialog);
 
-	ok_btn = gtk_button_new_from_stock(GTK_STOCK_OK);
-	gtk_widget_show(ok_btn);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), ok_btn);
-	GTK_WIDGET_SET_FLAGS(ok_btn, GTK_CAN_DEFAULT);
-
-	cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_widget_show(cancel_btn);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), cancel_btn);
-	GTK_WIDGET_SET_FLAGS(cancel_btn, GTK_CAN_DEFAULT);
-
-	vbox1 = gtk_vbox_new(FALSE, 0);
+	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(vbox1);
-	gtk_table_attach(GTK_TABLE(table1), vbox1, 1, 2, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);
 
-	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
-	gtk_widget_show(moveup_btn);
-	gtk_box_pack_start(GTK_BOX(vbox1), moveup_btn, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
-	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
-	gtk_widget_show(movedown_btn);
-	gtk_box_pack_start(GTK_BOX(vbox1), movedown_btn, FALSE, FALSE, 0);
+	label1 = gtk_label_new(_
+		("Move folders up or down to change the sort order in the folder list."));
+	gtk_widget_show(label1);
+	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox), label1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox2);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
 	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow1);
-	gtk_table_attach(GTK_TABLE(table1), scrolledwindow1, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
-				       (scrolledwindow1),
+	gtk_widget_set_size_request(scrolledwindow1, -1, 150);
+	gtk_box_pack_start(GTK_BOX(hbox2), scrolledwindow1,
+			   TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolledwindow1),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
@@ -216,7 +199,17 @@ void foldersort_open()
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
 
-	/* END GLADE CODE */
+	btn_vbox = gtk_vbox_new(FALSE, 8);
+	gtk_widget_show(btn_vbox);
+	gtk_box_pack_start(GTK_BOX(hbox2), btn_vbox, FALSE, FALSE, 0);
+
+	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	gtk_widget_show(moveup_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), moveup_btn, FALSE, FALSE, 0);
+
+	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	gtk_widget_show(movedown_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
 
 	dialog->window = window;
 	dialog->moveup_btn = moveup_btn;
@@ -228,10 +221,6 @@ void foldersort_open()
 	gtk_widget_set_sensitive(movedown_btn, FALSE);
 	gtk_clist_set_reorderable(GTK_CLIST(folderlist), TRUE);
 
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-                         G_CALLBACK(ok_clicked), dialog);
-	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
-                         G_CALLBACK(cancel_clicked), dialog);
 	g_signal_connect(G_OBJECT(moveup_btn), "clicked",
                          G_CALLBACK(moveup_clicked), dialog);
 	g_signal_connect(G_OBJECT(movedown_btn), "clicked",

@@ -753,6 +753,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 		return;
 	}
 	modified = FALSE;
+	prefs_actions_set_list();
 	prefs_actions_write_config();
 
 	/* Update mainwindow actions menu */
@@ -874,7 +875,8 @@ static GtkWidget *prefs_actions_list_view_create(void)
 	g_object_unref(model);	
 	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
-	
+	gtk_tree_view_set_reorderable(list_view, TRUE);
+
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 	gtk_tree_selection_set_select_function(selector, prefs_actions_selected,
