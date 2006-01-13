@@ -1,3 +1,10 @@
+2006-01-13 [paul]	1.9.100cvs146
+
+	* AUTHORS
+	* ChangeLog
+	* src/gtk/authors.h
+		add Joshua M. Kwan to contributors list
+
 2006-01-13 [colin]	1.9.100cvs145
 
 	* src/gtk/quicksearch.c
@@ -10,7 +17,7 @@
 
 	* src/plugins/pgpinline/pgpinline.c
 		support Content-Type 'application/pgp'
-		patch by joshuak@users.sf.net
+		patch by Joshua M. Kwan <joshuak@users.sf.net>
 
 2006-01-13 [paul]	1.9.100cvs143
 

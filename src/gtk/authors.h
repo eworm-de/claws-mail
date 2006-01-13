@@ -130,6 +130,7 @@ static char *CONTRIBS_LIST[] = {
 "WAKAI Kazunao",
 "Martin Kluge",
 "IWAMOTO Kouichi",
+"Joshua M. Kwan",
 "Ricardo Mones Lastra",
 "Jean-Yves Lefort",
 "Eric Limpens",
