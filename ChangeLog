@@ -1,3 +1,11 @@
+2006-01-13 [colin]	1.9.100cvs145
+
+	* src/gtk/quicksearch.c
+		Don't refocus quick search after executing (Esc or Enter)
+		Allows to '/'search something then move up/down in 
+		summaryview, and to Esc a search and be back in the 
+		summaryview
+
 2006-01-13 [paul]	1.9.100cvs144
 
 	* src/plugins/pgpinline/pgpinline.c

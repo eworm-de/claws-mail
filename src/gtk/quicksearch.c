@@ -153,7 +153,6 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event != NULL && event->keyval == GDK_Escape) {
 		quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
-		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
 		return TRUE;
 	}
 
@@ -162,8 +161,6 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		searchbar_run(quicksearch);
 
 		g_signal_stop_emission_by_name(G_OBJECT(widget), "key_press_event");
-		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(
-			quicksearch->search_string_entry)->entry));
 		return TRUE;
 	}
 
