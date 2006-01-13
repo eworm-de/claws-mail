@@ -1,3 +1,9 @@
+2006-01-13 [paul]	1.9.100cvs144
+
+	* src/plugins/pgpinline/pgpinline.c
+		support Content-Type 'application/pgp'
+		patch by joshuak@users.sf.net
+
 2006-01-13 [paul]	1.9.100cvs143
 
 	* manual/account.xml

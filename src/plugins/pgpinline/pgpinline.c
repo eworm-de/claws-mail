@@ -164,10 +164,20 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 	
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
 		return FALSE; /* not parent */
-
-	if (mimeinfo->type != MIMETYPE_TEXT)
-		return FALSE;
 	
+	if (mimeinfo->type != MIMETYPE_TEXT &&
+		(mimeinfo->type != MIMETYPE_APPLICATION ||
+		 g_ascii_strcasecmp(mimeinfo->subtype, "pgp")))
+		return FALSE;
+
+	/* Seal the deal. This has to be text/plain through and through. */
+	if (mimeinfo->type == MIMETYPE_APPLICATION)
+	{
+		mimeinfo->type = MIMETYPE_TEXT;
+		g_free(mimeinfo->subtype);
+		mimeinfo->subtype = g_strdup("plain");
+	}
+
 	if (mimeinfo->privacy != NULL) {
 		data = (PrivacyDataPGP *) mimeinfo->privacy;
 		if (data->done_sigtest)
@@ -307,8 +317,18 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
 		return FALSE; /* not parent */
 	
-	if (mimeinfo->type != MIMETYPE_TEXT)
+	if (mimeinfo->type != MIMETYPE_TEXT &&
+		(mimeinfo->type != MIMETYPE_APPLICATION ||
+		 g_ascii_strcasecmp(mimeinfo->subtype, "pgp")))
 		return FALSE;
+	
+	/* Seal the deal. This has to be text/plain through and through. */
+	if (mimeinfo->type == MIMETYPE_APPLICATION)
+	{
+		mimeinfo->type = MIMETYPE_TEXT;
+		g_free(mimeinfo->subtype);
+		mimeinfo->subtype = g_strdup("plain");
+	}
 	
 	textdata = get_part_as_string(mimeinfo);
 	if (!textdata)
