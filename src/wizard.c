@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
  * This file (C) 2004 Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
