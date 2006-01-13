@@ -1,3 +1,9 @@
+2006-01-13 [paul]	1.9.100cvs143
+
+	* manual/account.xml
+		make mention of partial retrieval
+		thanks to Colin
+
 2006-01-13 [paul]	1.9.100cvs142
 
 	* src/account.c
