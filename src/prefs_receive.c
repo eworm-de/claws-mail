@@ -153,7 +153,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
-			   _("Auto-check new mail"));
+			   _("Automatically check for new mail"));
 
 	label_autochk1 = gtk_label_new (_("every"));
 	gtk_widget_show (label_autochk1);
@@ -176,7 +176,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk2);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
-			   _("Check new mail on startup"));
+			   _("Check for new mail on startup"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox,
 		 	   _("Go to inbox after receiving new mail"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,

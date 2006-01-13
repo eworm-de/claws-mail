@@ -859,7 +859,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 
-	hbox3 = gtk_hbox_new (FALSE, 0);
+	hbox3 = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox3), 5);

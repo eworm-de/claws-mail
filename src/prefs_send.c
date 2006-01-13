@@ -201,7 +201,6 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_MENUITEM(_("Automatic (Recommended)"),	 CS_AUTO);
 	SET_MENUITEM(NULL, NULL);
 	SET_MENUITEM(_("7bit ascii (US-ASCII)"),	 CS_US_ASCII);
-	SET_MENUITEM(NULL, NULL);
 	SET_MENUITEM(_("Unicode (UTF-8)"),		 CS_UTF_8);
 	SET_MENUITEM(NULL, NULL);
 	SET_MENUITEM(_("Western European (ISO-8859-1)"),  CS_ISO_8859_1);

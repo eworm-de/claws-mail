@@ -1360,6 +1360,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_chkbtn;
 	GtkWidget *size_limit_entry;
+	GtkTooltips *size_limit_tooltip;
 	GtkWidget *label;
 	GtkWidget *filter_on_recv_chkbtn;
 	GtkWidget *vbox3;
@@ -1390,6 +1391,7 @@ static void prefs_account_receive_create(void)
 	GtkTooltips *maxarticle_tool_tip;
 
 	inbox_tooltip = gtk_tooltips_new();
+	size_limit_tooltip = gtk_tooltips_new();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1478,6 +1480,12 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox1, size_limit_chkbtn, _("Receive size limit"));
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(size_limit_tooltip), size_limit_chkbtn,
+			     _("Messages over this limit will be partially retrieved. "
+		   	       "When selecting them you will be able to download them fully "
+			       "or delete them."),
+			     NULL);
 
 	size_limit_entry = gtk_entry_new ();
 	gtk_widget_show (size_limit_entry);
@@ -1598,7 +1606,7 @@ static void prefs_account_receive_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox1, recvatgetall_chkbtn,
-		 _("'Get all' checks for new messages on this account"));
+		 _("'Get Mail' checks for new messages on this account"));
 
 	receive.pop3_frame               = frame1;
 	receive.use_apop_chkbtn          = use_apop_chkbtn;
@@ -2304,30 +2312,30 @@ static void prefs_account_advanced_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_HBOX (hbox1);
-	PACK_CHECK_BUTTON (hbox1, checkbtn_smtpport, _("Specify SMTP port"));
+	PACK_CHECK_BUTTON (hbox1, checkbtn_smtpport, _("SMTP port"));
 	PACK_PORT_ENTRY (hbox1, entry_smtpport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, entry_smtpport);
 
 	PACK_HBOX (hbox_popport);
 	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
-			   _("Specify POP3 port"));
+			   _("POP3 port"));
 	PACK_PORT_ENTRY (hbox_popport, entry_popport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_popport, entry_popport);
 
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
-			   _("Specify IMAP4 port"));
+			   _("IMAP4 port"));
 	PACK_PORT_ENTRY (hbox_imapport, entry_imapport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, entry_imapport);
 
 	PACK_HBOX (hbox_nntpport);
 	PACK_CHECK_BUTTON (hbox_nntpport, checkbtn_nntpport,
-			   _("Specify NNTP port"));
+			   _("NNTP port"));
 	PACK_PORT_ENTRY (hbox_nntpport, entry_nntpport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_nntpport, entry_nntpport);
 
 	PACK_HBOX (hbox1);
-	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Specify domain name"));
+	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
 
 	entry_domain = gtk_entry_new ();
 	gtk_widget_show (entry_domain);

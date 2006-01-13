@@ -712,6 +712,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			   TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons), 
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons),
+					    GTK_SHADOW_IN);
 
 	list_view_icons = create_icon_list_view(prefs_toolbar);
 	gtk_widget_show(list_view_icons);
@@ -822,6 +824,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_set), 1);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set),
+					    GTK_SHADOW_IN);
 
 	list_view_set = create_set_list_view(prefs_toolbar); 
 	gtk_widget_show(list_view_set);

@@ -325,7 +325,7 @@ static void prefs_keybind_select(void)
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_set_title (GTK_WINDOW (window), _("Key bindings"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Select key bindings"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
@@ -343,9 +343,6 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
 	combo = gtk_combo_new ();
 	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
 	gtkut_combo_set_items (GTK_COMBO (combo),
@@ -361,9 +358,11 @@ static void prefs_keybind_select(void)
 
 	label = gtk_label_new
 		(_("You can also modify each menu shortcut by pressing\n"
-		   "any key(s) when placing the mouse pointer on the item."));
+		   "any key(s) when focusing the mouse pointer on the item."));
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (label);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
@@ -372,7 +371,7 @@ static void prefs_keybind_select(void)
 				       &cancel_btn, GTK_STOCK_CANCEL,
 				       NULL, NULL);
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default (ok_btn);
+	gtk_widget_grab_focus (ok_btn);
 
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	g_signal_connect (G_OBJECT (window), "delete_event",
@@ -454,9 +453,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Main>/View/Show or hide/Message View",	"V"},
 		{"<Main>/View/Thread view",			"<control>T"},
-		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Previous message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
-		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Previous unread message",	"<shift>P"},
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
@@ -508,9 +507,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Main>/View/Show or hide/Message View",	""},
 		{"<Main>/View/Thread view",			"<shift>T"},
-		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Previous message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
-		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Previous unread message",	"<shift>P"},
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
@@ -562,9 +561,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Main>/View/Show or hide/Message view",	"V"},
 		{"<Main>/View/Thread view",			"<control>T"},
-		{"<Main>/View/Go to/Prev message",		""},
+		{"<Main>/View/Go to/Previous message",		""},
 		{"<Main>/View/Go to/Next message",		""},
-		{"<Main>/View/Go to/Prev unread message",	""},
+		{"<Main>/View/Go to/Previous unread message",	""},
 		{"<Main>/View/Go to/Next unread message",	""},
 		{"<Main>/View/Go to/Other folder...",		"C"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
@@ -616,9 +615,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Main>/View/Show or hide/Message View",	""},
 		{"<Main>/View/Thread view",			"<control>T"},
-		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Previous message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
-		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Previous unread message",	"<shift>P"},
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"<alt>G"},
 		{"<Main>/View/Open in new window",		"<shift><control>N"},

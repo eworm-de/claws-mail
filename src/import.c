@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ static void import_create(void)
 	GtkWidget *confirm_area;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("Import"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Import mbox file"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
@@ -165,7 +165,8 @@ static void import_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 
 	desc_label = gtk_label_new
-		(_("Specify target mbox file and destination folder."));
+		(_("Locate the mbox file and specify the destination folder."));
+	gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 0);
 
 	table = gtk_table_new(2, 3, FALSE);
@@ -175,19 +176,22 @@ static void import_create(void)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 	gtk_widget_set_size_request(table, 420, -1);
 
-	file_label = gtk_label_new(_("Importing file:"));
+	file_label = gtk_label_new(_("Mbox file:"));
 	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 0, 1,
-			 GTK_FILL, GTK_EXPAND|GTK_FILL, 0, 0);
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(file_label), 1, 0.5);
 
-	dest_label = gtk_label_new(_("Destination dir:"));
+	dest_label = gtk_label_new(_("Destination folder:"));
 	gtk_table_attach(GTK_TABLE(table), dest_label, 0, 1, 1, 2,
-			 GTK_FILL, GTK_EXPAND|GTK_FILL, 0, 0);
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(dest_label), 1, 0.5);
 
 	file_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 0, 1,
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+			 (GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
 
 	dest_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), dest_entry, 1, 2, 1, 2,
@@ -195,13 +199,15 @@ static void import_create(void)
 
 	file_button = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 0, 1,
-			 0, 0, 0, 0);
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
 	g_signal_connect(G_OBJECT(file_button), "clicked",
 			 G_CALLBACK(import_filesel_cb), NULL);
 
 	dest_button = gtkut_get_browse_directory_btn(_("B_rowse"));
 	gtk_table_attach(GTK_TABLE(table), dest_button, 2, 3, 1, 2,
-			 0, 0, 0, 0);
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
 	g_signal_connect(G_OBJECT(dest_button), "clicked",
 			 G_CALLBACK(import_destsel_cb), NULL);
 

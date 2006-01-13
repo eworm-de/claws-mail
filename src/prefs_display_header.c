@@ -279,6 +279,8 @@ static void prefs_display_header_create(void)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(list_view_scrolledwin),
+					    GTK_SHADOW_IN);
 
 	headers_list_view = prefs_display_header_list_view_create
 				(_("Displayed Headers"));
@@ -343,6 +345,8 @@ static void prefs_display_header_create(void)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(list_view_scrolledwin),
+					    GTK_SHADOW_IN);
 
 	hidden_headers_list_view = prefs_display_header_list_view_create
 					(_("Hidden headers"));
@@ -368,7 +372,9 @@ static void prefs_display_header_create(void)
 			    G_CALLBACK (prefs_display_header_delete_cb),
 			    hidden_headers_list_view);
 
-	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
+	
+
+	PACK_CHECK_BUTTON (vbox, checkbtn_other_headers,
 			   _("Show all unspecified headers"));
 	SET_TOGGLE_SENSITIVITY (checkbtn_other_headers, list_view_hbox2);
 

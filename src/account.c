@@ -664,7 +664,7 @@ static void account_edit_create(void)
 
 	label = gtk_label_new
 		(_("New messages will be checked in this order. Check the boxes\n"
-		   "on the 'G' column to enable message retrieval by 'Get all'."));
+		   "on the 'G' column to enable message retrieval by 'Get Mail'."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
