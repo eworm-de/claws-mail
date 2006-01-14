@@ -521,8 +521,8 @@ use_untrusted (gpgme_key_t key)
 	       "If you choose to encrypt the message with this key you don't\n"
 	       "know for sure that it will go to the person you mean it to.\n"
 	       "Do you trust it enough to use it anyway?"),
-	     GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-    if (aval == G_ALERTDEFAULT)
+	     GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+    if (aval == G_ALERTALTERNATE)
 	return TRUE;
     else
 	return FALSE;

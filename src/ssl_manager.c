@@ -373,11 +373,11 @@ static void ssl_manager_delete_cb(GtkWidget *widget,
 
 	val = alertpanel_full(_("Delete certificate"),
 			      _("Do you really want to delete this certificate?"),
-		 	      GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-			      NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		 	      GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+			      NULL, ALERT_WARNING, G_ALERTDEFAULT);
 
 			     
-	if (val != G_ALERTDEFAULT)
+	if (val != G_ALERTALTERNATE)
 		return;
 	
 	ssl_certificate_delete_from_disk(cert);

@@ -214,8 +214,8 @@ static void message_search_execute(gboolean backward)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (G_ALERTDEFAULT == val) {
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);
 			messageview_set_position(messageview,

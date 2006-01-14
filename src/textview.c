@@ -2036,10 +2036,10 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 					"Open it anyway?"),
 				      uri->uri, visible_str);
 		aval = alertpanel_full(_("Fake URL warning"), msg,
-				       GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-				       NULL, ALERT_WARNING, G_ALERTALTERNATE);
+				       GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+				       NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(msg);
-		if (aval == G_ALERTDEFAULT)
+		if (aval == G_ALERTALTERNATE)
 			retval = TRUE;
 	}
 
@@ -2177,10 +2177,10 @@ static void save_file_cb (TextView *textview, guint action, void *data)
 		
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      filename);
-		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_OK, 
-				  GTK_STOCK_CANCEL, NULL);
+		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL, 
+				  GTK_STOCK_OK, NULL);
 		g_free(res);					  
-		if (G_ALERTDEFAULT != aval) 
+		if (G_ALERTALTERNATE != aval)
 			return;
 	}
 

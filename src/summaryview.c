@@ -849,13 +849,13 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		val = alertpanel(_("Process mark"),
 				 _("Some marks are left. Process it?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, GTK_STOCK_CANCEL);
-		if (G_ALERTDEFAULT == val) {
+				 GTK_STOCK_NO, GTK_STOCK_YES, GTK_STOCK_CANCEL);
+		if (G_ALERTALTERNATE == val) {
 			summary_unlock(summaryview);
 			summary_execute(summaryview);
 			summary_lock(summaryview);
 			changed = TRUE;
-		} else if (G_ALERTALTERNATE == val) {
+		} else if (G_ALERTDEFAULT == val) {
 			/* DO NOTHING */
 		} else {
 			summary_unlock(summaryview);
@@ -1297,19 +1297,19 @@ void summary_select_prev_unread(SummaryView *summaryview)
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
 						   "Search from the end?"),
-						 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 				val = G_ALERTDEFAULT;
+ 				val = G_ALERTALTERNATE;
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 				val = !G_ALERTDEFAULT;
+ 				val = !G_ALERTALTERNATE;
  				break;
  			default:
  				debug_print(
  					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  		}
-		if (val != G_ALERTDEFAULT) return;
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_UNREAD, FALSE);
 	}
@@ -1349,10 +1349,10 @@ void summary_select_next_unread(SummaryView *summaryview)
 					val = alertpanel(_("No more unread messages"),
 							 _("No unread message found. "
 							   "Go to next folder?"),
-							 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+							 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
  					break;
  				case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 					val = G_ALERTDEFAULT;
+ 					val = G_ALERTALTERNATE;
  					break;
  				case NEXTUNREADMSGDIALOG_ASSUME_NO:
  					val = G_ALERTOTHER;
@@ -1362,7 +1362,7 @@ void summary_select_next_unread(SummaryView *summaryview)
  						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  			}
 
-			if (val == G_ALERTDEFAULT) {
+			if (val == G_ALERTALTERNATE) {
 				folderview_select_next_unread(summaryview->folderview);
 				return;
 			} 
@@ -1396,19 +1396,19 @@ void summary_select_prev_new(SummaryView *summaryview)
 				val = alertpanel(_("No more new messages"),
 						 _("No new message found. "
 						   "Search from the end?"),
-						 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 				val = G_ALERTDEFAULT;
+ 				val = G_ALERTALTERNATE;
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 				val = !G_ALERTDEFAULT;
+ 				val = !G_ALERTALTERNATE;
  				break;
  			default:
  				debug_print(
  					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  		}
-		if (val != G_ALERTDEFAULT) return;
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_NEW, FALSE);
 	}
@@ -1448,10 +1448,10 @@ void summary_select_next_new(SummaryView *summaryview)
 					val = alertpanel(_("No more new messages"),
 							 _("No new message found. "
 							   "Go to next folder?"),
-							 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+							 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
  					break;
  				case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 					val = G_ALERTDEFAULT;
+ 					val = G_ALERTALTERNATE;
  					break;
  				case NEXTUNREADMSGDIALOG_ASSUME_NO:
  					val = G_ALERTOTHER;
@@ -1461,7 +1461,7 @@ void summary_select_next_new(SummaryView *summaryview)
  						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  			}
 
-			if (val == G_ALERTDEFAULT) {
+			if (val == G_ALERTALTERNATE) {
 				folderview_select_next_new(summaryview->folderview);
 				return;
 			} 
@@ -1486,8 +1486,8 @@ void summary_select_prev_marked(SummaryView *summaryview)
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
 				   "Search from the end?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (val != G_ALERTDEFAULT) return;
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_MARKED, TRUE);
 	}
@@ -1511,8 +1511,8 @@ void summary_select_next_marked(SummaryView *summaryview)
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
 				   "Search from the beginning?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (val != G_ALERTDEFAULT) return;
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_next_flagged_msg(summaryview, NULL,
 						     MSG_MARKED, TRUE);
 	}
@@ -1536,8 +1536,8 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the end?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (val != G_ALERTDEFAULT) return;
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_CLABEL_FLAG_MASK, TRUE);
 	}
@@ -1561,8 +1561,8 @@ void summary_select_next_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the beginning?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (val != G_ALERTDEFAULT) return;
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_next_flagged_msg(summaryview, NULL,
 						     MSG_CLABEL_FLAG_MASK, TRUE);
 	}
@@ -3277,8 +3277,8 @@ void summary_delete(SummaryView *summaryview)
 
 	aval = alertpanel(_("Delete message(s)"),
 			  _("Do you really want to delete selected message(s)?"),
-			  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-	if (aval != G_ALERTDEFAULT) return;
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+	if (aval != G_ALERTALTERNATE) return;
 
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
 	     cur = cur->next) {

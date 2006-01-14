@@ -191,9 +191,9 @@ static gboolean exp_ldif_move_file( void ) {
 		"does not exist. OK to create new directory?" ),
 		_exportCtl_->dirOutput );
 	aval = alertpanel( _("Create Directory" ),
-		msg, GTK_STOCK_YES, GTK_STOCK_NO, NULL );
+		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL );
 	g_free( msg );
-	if( aval != G_ALERTDEFAULT ) return FALSE;
+	if( aval != G_ALERTALTERNATE ) return FALSE;
 
 	/* Create directory */
 	if( ! exportldif_create_dir( _exportCtl_ ) ) {
@@ -250,8 +250,8 @@ static gboolean exp_ldif_move_dn( void ) {
 				"for an LDAP server. Are you sure you wish " \
 				"to proceed without a suffix?"
 			 ),
-			GTK_STOCK_YES, GTK_STOCK_NO, NULL );
-		if( aval != G_ALERTDEFAULT ) {
+			GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+		if( aval != G_ALERTALTERNATE ) {
 			gtk_widget_grab_focus( expldif_dlg.entrySuffix );
 			errFlag = TRUE;
 		}

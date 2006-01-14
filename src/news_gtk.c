@@ -200,11 +200,11 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really unsubscribe newsgroup '%s'?"), name);
 	avalue = alertpanel_full(_("Unsubscribe newsgroup"), message,
-		 	         GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-			         NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		 	         GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+			         NULL, ALERT_WARNING, G_ALERTDEFAULT);
 	g_free(message);
 	g_free(name);
-	if (avalue != G_ALERTDEFAULT) return;
+	if (avalue != G_ALERTALTERNATE) return;
 
 	if (folderview->opened == folderview->selected) {
 		summary_clear_all(folderview->summaryview);

@@ -261,7 +261,7 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	GtkWidget *window = NULL;
 	if (alertpanel(_("Migration of configuration"),
 		       message,
-		       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
 		return FALSE;
 	
 	window = label_window_create(_("Copying configuration..."));
@@ -882,8 +882,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.warn_queued_on_exit && get_queued_message_num() > 0) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
-			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
-		    != G_ALERTDEFAULT)
+			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL)
+		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}

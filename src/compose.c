@@ -3674,8 +3674,8 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			AlertValue aval;
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default CC address. Send anyway?"),
-					  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-			if (aval != G_ALERTDEFAULT)
+					  GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
 	}
@@ -3702,8 +3702,8 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			AlertValue aval;
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default BCC address. Send anyway?"),
-					  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-			if (aval != G_ALERTDEFAULT)
+					  GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
 	}
@@ -3729,8 +3729,8 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 
 		aval = alertpanel(_("Send"),
 				  _("Subject is empty. Send it anyway?"),
-				  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
-		if (aval != G_ALERTDEFAULT)
+				  GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		if (aval != G_ALERTALTERNATE)
 			return FALSE;
 	}
 
@@ -4124,11 +4124,11 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 				msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
 							"to the specified %s charset.\n"
 							"Send it as %s?"), out_codeset, src_codeset);
-				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-						      NULL, ALERT_ERROR, G_ALERTALTERNATE);
+				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+						      NULL, ALERT_ERROR, G_ALERTDEFAULT);
 				g_free(msg);
 
-				if (aval != G_ALERTDEFAULT) {
+				if (aval != G_ALERTALTERNATE) {
 					g_free(chars);
 					return -3;
 				} else {
@@ -4178,9 +4178,9 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			   "The contents of the message might be broken on the way to the delivery.\n"
 			   "\n"
 			   "Send it anyway?"), line + 1);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL);
 		g_free(msg);
-		if (aval != G_ALERTDEFAULT) {
+		if (aval != G_ALERTALTERNATE) {
 			return -1;
 		}
 	}
@@ -6491,8 +6491,8 @@ static void compose_attach_property_create(gboolean *cancelled)
 	SET_LABEL_AND_ENTRY(_("Path"),      path_entry,     2);
 	SET_LABEL_AND_ENTRY(_("File name"), filename_entry, 3);
 
-	gtkut_stock_button_set_create(&hbbox, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -6676,12 +6676,12 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
 			   "process group id: %d"), -pgid);
-		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_YES, GTK_STOCK_NO,
-		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_NO, GTK_STOCK_YES,
+		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
 			
 		g_free(msg);
 
-		if (val == G_ALERTDEFAULT) {
+		if (val == G_ALERTALTERNATE) {
 			g_source_remove(compose->exteditor_tag);
 			g_io_channel_shutdown(compose->exteditor_ch,
 					      FALSE, NULL);

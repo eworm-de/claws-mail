@@ -1448,12 +1448,12 @@ gboolean inc_offline_should_override(void)
 
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       GTK_STOCK_YES, GTK_STOCK_NO, _("On_ly once"));
+			       GTK_STOCK_NO, GTK_STOCK_YES, _("On_ly once"));
 		g_free(tmp);
-		if (answer == G_ALERTDEFAULT) {
+		if (answer == G_ALERTALTERNATE) {
 			overridden_yes = time(NULL);
 			return TRUE;
-		} else if (answer == G_ALERTALTERNATE) {
+		} else if (answer == G_ALERTDEFAULT) {
 			overridden_no  = time(NULL);
 			return FALSE;
 		} else {

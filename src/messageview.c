@@ -1046,8 +1046,8 @@ void messageview_save_as(MessageView *messageview)
 
 		aval = alertpanel(_("Overwrite"),
 				  _("Overwrite existing file?"),
-				  GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL);
-		if (G_ALERTDEFAULT != aval) return;
+				  GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL);
+		if (G_ALERTALTERNATE != aval) return;
 	}
 
 	src = procmsg_get_message_file(msginfo);

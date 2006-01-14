@@ -1338,10 +1338,10 @@ static gboolean mimeview_write_part(const gchar *filename,
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      tmp);
 		g_free(tmp);
-		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_OK, 
-				  GTK_STOCK_CANCEL, NULL);
+		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL, 
+				  GTK_STOCK_OK, NULL);
 		g_free(res);					  
-		if (G_ALERTDEFAULT != aval) return FALSE;
+		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
 
 	if (procmime_get_part(filename, partinfo) < 0) {

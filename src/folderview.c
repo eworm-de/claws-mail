@@ -715,13 +715,13 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
 			_("Do you really want to mark all mails in this "
-			  "folder as read ?"), GTK_STOCK_YES, GTK_STOCK_NO, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
 
-		if (val == G_ALERTALTERNATE ||
-		    val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+		if (val == G_ALERTDEFAULT ||
+		    val == (G_ALERTDEFAULT|G_ALERTDISABLE))
 			return;
-		else if (val == (G_ALERTDEFAULT|G_ALERTDISABLE)) 
+		else if (val == (G_ALERTALTERNATE|G_ALERTDISABLE))
 			prefs_common.ask_mark_all_read = FALSE;
 	}
 	
@@ -962,9 +962,9 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	    alertpanel_full(_("Rebuild folder tree"), 
 	    		 _("Rebuilding the folder tree will remove "
 			   "local caches. Do you want to continue?"),
-		       	 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-		       	 NULL, ALERT_WARNING, G_ALERTALTERNATE) 
-		!= G_ALERTDEFAULT) {
+		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+		       	 NULL, ALERT_WARNING, G_ALERTDEFAULT) 
+		!= G_ALERTALTERNATE) {
 		return;
 	}
 
@@ -2053,7 +2053,7 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
 			return;
 	}
 	
@@ -2138,12 +2138,12 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 					"sub-folder of '%s' ?"), from_folder->name,
 					to_folder->name);
 		status = alertpanel_full(_("Move folder"), buf,
-				       	 GTK_STOCK_YES, GTK_STOCK_NO, NULL, TRUE,
-				       	 NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,
+				       	 NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 		g_free(buf);
 
-		if (status != G_ALERTDEFAULT
-		 && status != (G_ALERTDEFAULT | G_ALERTDISABLE))
+		if (status != G_ALERTALTERNATE
+		 && status != (G_ALERTALTERNATE | G_ALERTDISABLE))
 			return;
 		if (status & G_ALERTDISABLE)
 			prefs_common.warn_dnd = FALSE;

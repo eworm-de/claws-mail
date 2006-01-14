@@ -184,9 +184,9 @@ static gboolean exp_html_move_file( void ) {
 		"does not exist. OK to create new directory?" ),
 		_exportCtl_->dirOutput );
 	aval = alertpanel( _("Create Directory" ),
-		msg, GTK_STOCK_YES, GTK_STOCK_NO, NULL );
+		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL );
 	g_free( msg );
-	if( aval != G_ALERTDEFAULT ) return FALSE;
+	if( aval != G_ALERTALTERNATE ) return FALSE;
 
 	/* Create directory */
 	if( ! exporthtml_create_dir( _exportCtl_ ) ) {

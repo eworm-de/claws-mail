@@ -253,8 +253,8 @@ static void input_dialog_create(gboolean is_password)
 	hbox = gtk_hbox_new(TRUE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &ok_button, GTK_STOCK_OK,
 				      &cancel_button, GTK_STOCK_CANCEL,
+				      &ok_button, GTK_STOCK_OK,
 				      NULL, NULL);
 
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),

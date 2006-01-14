@@ -237,9 +237,9 @@ static void grouplist_dialog_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), status_label, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &ok_button, GTK_STOCK_OK,
+				      &refresh_button, GTK_STOCK_REFRESH,
 				      &cancel_button, GTK_STOCK_CANCEL,
-				      &refresh_button, GTK_STOCK_REFRESH);
+				      &ok_button, GTK_STOCK_OK);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  confirm_area);
 	gtk_widget_grab_default(ok_button);

@@ -977,8 +977,8 @@ static void account_delete(GtkWidget *widget, gpointer data)
 		   ac_prefs->account_name ? ac_prefs->account_name :
 		   _("(Untitled)"));
 	if (alertpanel_full(_("Delete account"), buf,
-		 	    GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-			    NULL, ALERT_WARNING, G_ALERTALTERNATE) != G_ALERTDEFAULT)
+		 	    GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+			    NULL, ALERT_WARNING, G_ALERTDEFAULT) != G_ALERTALTERNATE)
 		return;
 
 	if (ac_prefs->folder) {

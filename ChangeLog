@@ -1,3 +1,49 @@
+2006-01-14 [paul]	1.9.100cvs148
+
+	* src/account.c
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/editaddress.c
+	* src/editbook.c
+	* src/editgroup.c
+	* src/editjpilot.c
+	* src/editldap.c
+	* src/editvcard.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/imap_gtk.c
+	* src/importmutt.c
+	* src/importpine.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/mimeview.c
+	* src/news_gtk.c
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/prefs_themes.c
+	* src/ssl_manager.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/toolbar.c
+	* src/gtk/foldersort.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/inputdialog.c
+	* src/gtk/prefswindow.c
+	* src/plugins/pgpcore/select-keys.c
+	* src/plugins/trayicon/trayicon.c
+		HIG compliant button order
+
 2006-01-14 [mones]	1.9.100cvs147
 
 	* po/es.po

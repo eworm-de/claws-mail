@@ -1197,8 +1197,8 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	/* Confirm deletion */
 	aval = alertpanel( _("Delete address(es)"),
 			_("Really delete the address(es)?"),
-			GTK_STOCK_YES, GTK_STOCK_NO, NULL );
-	if( aval != G_ALERTDEFAULT ) return;
+			GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+	if( aval != G_ALERTALTERNATE ) return;
 
 	/* Process deletions */
 	if( pobj->type == ADDR_DATASOURCE || pobj->type == ADDR_ITEM_FOLDER ) {
@@ -2530,9 +2530,9 @@ static void addressbook_treenode_delete_cb(
 				"results and addresses in '%s' ?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				GTK_STOCK_YES, GTK_STOCK_NO, NULL );
+				GTK_STOCK_NO, GTK_STOCK_YES, NULL );
 			g_free(message);
-			if( aval == G_ALERTDEFAULT ) {
+			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
 			}
 		}
@@ -2555,9 +2555,9 @@ static void addressbook_treenode_delete_cb(
 	}
 	else {
 		message = g_strdup_printf(_("Really delete '%s' ?"), obj->name);
-		aval = alertpanel(_("Delete"), message, GTK_STOCK_YES, GTK_STOCK_NO, NULL);
+		aval = alertpanel(_("Delete"), message, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
 		g_free(message);
-		if( aval == G_ALERTDEFAULT ) delType = ADDRTREE_DEL_DATA;
+		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}
 	if( delType == ADDRTREE_DEL_NONE ) return;
 

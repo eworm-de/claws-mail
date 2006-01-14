@@ -286,8 +286,8 @@ static void prefs_template_window_create(void)
 	gtk_container_add(GTK_CONTAINER(scroll1), list_view);
 
 	/* ok | cancel */
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				&cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox2), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -397,7 +397,8 @@ static void prefs_template_ok_cb(void)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_NO, GTK_STOCK_YES,
+				 NULL) != G_ALERTALTERNATE) {
 		return;
 	}
 	modified = FALSE;
@@ -413,7 +414,8 @@ static void prefs_template_cancel_cb(void)
 {
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_NO, GTK_STOCK_YES,
+				 NULL) != G_ALERTALTERNATE) {
 		return;
 	}
 	modified = FALSE;
@@ -603,7 +605,8 @@ static void prefs_template_delete_cb(void)
 
 	if (alertpanel(_("Delete template"),
 		       _("Do you really want to delete this template?"),
-		       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+		       GTK_STOCK_NO, GTK_STOCK_YES,
+		       NULL) != G_ALERTALTERNATE)
 		return;
 
 	gtk_list_store_remove(GTK_LIST_STORE(model), &row);		

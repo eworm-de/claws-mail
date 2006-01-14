@@ -266,10 +266,10 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-		 		 GTK_STOCK_YES, GTK_STOCK_NO, NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		 		 GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+				 NULL, ALERT_WARNING, G_ALERTDEFAULT);
 	g_free(message);
-	if (avalue != G_ALERTDEFAULT) return;
+	if (avalue != G_ALERTALTERNATE) return;
 
 	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);

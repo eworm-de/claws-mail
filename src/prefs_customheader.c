@@ -166,8 +166,8 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL,
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
@@ -544,7 +544,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
+		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
 		return;
 
 	gtk_tree_model_get(model, &sel,
