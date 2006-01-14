@@ -1991,7 +1991,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (found && !prefs_common.work_offline) {
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
-			    	   GTK_STOCK_NO, GTK_STOCK_YES,
+			    	   GTK_STOCK_CANCEL, _("_Send"),
 				   NULL) != G_ALERTALTERNATE)
 				return;
 		}

@@ -2053,7 +2053,7 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
+			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL) != G_ALERTALTERNATE)
 			return;
 	}
 	

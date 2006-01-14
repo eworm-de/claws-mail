@@ -920,7 +920,7 @@ static void prefs_filtering_delete_cb(void)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) == G_ALERTDEFAULT)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1080,8 +1080,8 @@ static void prefs_filtering_ok(void)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
-			if (G_ALERTALTERNATE != val) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL);
+			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
 				filteringprop_free(prop);
@@ -1102,8 +1102,8 @@ static void prefs_filtering_ok(void)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
-			if (G_ALERTALTERNATE != val) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL);
+			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);
 				g_free(action);

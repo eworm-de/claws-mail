@@ -544,7 +544,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
 		return;
 
 	gtk_tree_model_get(model, &sel,

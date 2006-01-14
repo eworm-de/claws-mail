@@ -612,7 +612,7 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
 		return;
 
 	/* XXX: Here's the reason why we need to store the original 
@@ -730,8 +730,8 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES,
-				 NULL) != G_ALERTALTERNATE) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"),
+				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;
@@ -750,8 +750,8 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES,
-				 NULL) != G_ALERTALTERNATE) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"),
+				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;

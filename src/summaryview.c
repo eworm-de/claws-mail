@@ -848,7 +848,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gboolean changed = FALSE;
 
 		val = alertpanel(_("Process mark"),
-				 _("Some marks are left. Process it?"),
+				 _("Some marks are left. Process them?"),
 				 GTK_STOCK_NO, GTK_STOCK_YES, GTK_STOCK_CANCEL);
 		if (G_ALERTALTERNATE == val) {
 			summary_unlock(summaryview);
@@ -3277,7 +3277,7 @@ void summary_delete(SummaryView *summaryview)
 
 	aval = alertpanel(_("Delete message(s)"),
 			  _("Do you really want to delete selected message(s)?"),
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL);
 	if (aval != G_ALERTALTERNATE) return;
 
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 

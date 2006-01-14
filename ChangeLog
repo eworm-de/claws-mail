@@ -1,3 +1,30 @@
+2006-01-14 [colin]	1.9.100cvs149
+
+	* src/account.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/mainwindow.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/ssl_manager.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/toolbar.c
+		All deletion confirmations are now "Cancel, Delete" 
+		instead of "No, Yes"
+		Clarified most of the other "No, Yes" to 
+		"Cancel, Descriptive_action"
+		Rechanged the "Entry not saved" alerts to have 
+		"Close, Continue editing"
+
+
 2006-01-14 [paul]
 
 	* 2.0.0-rc4 released

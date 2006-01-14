@@ -177,7 +177,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
 				 NULL, ALERT_WARNING, G_ALERTDEFAULT);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;

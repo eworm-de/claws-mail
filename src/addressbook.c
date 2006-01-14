@@ -1197,7 +1197,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	/* Confirm deletion */
 	aval = alertpanel( _("Delete address(es)"),
 			_("Really delete the address(es)?"),
-			GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+			GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL );
 	if( aval != G_ALERTALTERNATE ) return;
 
 	/* Process deletions */
@@ -2530,7 +2530,7 @@ static void addressbook_treenode_delete_cb(
 				"results and addresses in '%s' ?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL );
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
@@ -2555,7 +2555,8 @@ static void addressbook_treenode_delete_cb(
 	}
 	else {
 		message = g_strdup_printf(_("Really delete '%s' ?"), obj->name);
-		aval = alertpanel(_("Delete"), message, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
+				GTK_STOCK_DELETE, NULL);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}
