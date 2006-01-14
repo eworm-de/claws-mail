@@ -303,8 +303,10 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area,
+				      &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK,
+				      NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
