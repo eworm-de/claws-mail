@@ -1130,3 +1130,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpinline/pgpinline.c;  ) > 1.9.100cvs144.patchset
 ( cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/gtk/quicksearch.c;  ) > 1.9.100cvs145.patchset
 ( cvs diff -u -r 1.100.2.32 -r 1.100.2.33 AUTHORS;  cvs diff -u -r 1.396.2.193 -r 1.396.2.194 ChangeLog;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/authors.h;  ) > 1.9.100cvs146.patchset
+( cvs diff -u -r 1.60.2.22 -r 1.60.2.23 po/es.po;  ) > 1.9.100cvs147.patchset
