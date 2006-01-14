@@ -2538,23 +2538,23 @@ static void addressbook_treenode_delete_cb(
 		}
 		else {
 			message = g_strdup_printf
-				( _( "Do you want to delete the folder AND all addresses in '%s' ?\n"
-			    	     "If deleting the folder only, addresses will be moved into parent folder." ),
+				( _( "Do you want to delete '%s' ?"
+			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
-				_("_Folder only"), _("Folder and _addresses"),
-				GTK_STOCK_CANCEL );
+				GTK_STOCK_CANCEL, _("Delete _folder only"), _("Delete folder and _addresses"));
 			g_free(message);
-			if( aval == G_ALERTDEFAULT ) {
+			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ONLY;
 			}
-			else if( aval == G_ALERTALTERNATE ) {
+			else if( aval == G_ALERTOTHER ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
 			}
 		}
 	}
 	else {
-		message = g_strdup_printf(_("Really delete '%s' ?"), obj->name);
+		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
+					    "The addresses it contains will be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
 				GTK_STOCK_DELETE, NULL);
 		g_free(message);

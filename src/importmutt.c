@@ -193,7 +193,6 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	GtkWidget *file_entry;
 	GtkWidget *name_entry;
 	GtkWidget *hbbox;
-	GtkWidget *hsep;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *file_btn;
@@ -254,11 +253,8 @@ static void imp_mutt_create( gboolean *cancelled ) {
 				      &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
+	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 5);
 	gtk_widget_grab_default(ok_btn);
-
-	hsep = gtk_hseparator_new();
-	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",
 			 G_CALLBACK(imp_mutt_ok), cancelled);

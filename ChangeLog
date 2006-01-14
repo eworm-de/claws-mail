@@ -1,3 +1,13 @@
+2006-01-14 [colin]	1.9.100cvs151
+
+	* src/addressbook.c
+	* src/expldifdlg.c
+	* src/importldif.c
+	* src/importmutt.c
+	* src/importpine.c
+	* src/mh_gtk.c
+		More HIG compliance and fixes
+
 2006-01-14 [colin]	1.9.100cvs150
 
 	* src/prefs_filtering_action.c
