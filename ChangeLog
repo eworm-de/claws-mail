@@ -1,3 +1,11 @@
+2006-01-15 [colin]	1.9.100cvs153
+
+	* src/folder.c
+	* src/folder.h
+	* src/main.c
+		Check if a mailbox is loaded after all
+		plugins are loaded.
+
 2006-01-15 [colin]	1.9.100cvs152
 
 	* src/folder.c

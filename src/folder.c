@@ -1268,6 +1268,17 @@ Folder *folder_get_default_folder(void)
 	return folder_list ? FOLDER(folder_list->data) : NULL;
 }
 
+gboolean folder_have_mailbox (void)
+{
+	GList *cur;
+	for (cur = folder_list; cur != NULL; cur = g_list_next(cur)) {
+		Folder *folder = FOLDER(cur->data);
+		if (folder->inbox && folder->outbox)
+			return TRUE;
+	}
+	return FALSE;
+}
+
 FolderItem *folder_get_default_inbox(void)
 {
 	GList *flist;

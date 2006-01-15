@@ -521,6 +521,15 @@ int main(int argc, char *argv[])
 
 	plugin_load_all("GTK2");
 	
+	if (!folder_have_mailbox()) {
+		alertpanel_error(_("Sylpheed-Claws has detected a configured "
+				   "mailbox, but could not load it. It is "
+				   "probably provided by an out-of-date "
+				   "external plugin. Please reinstall the "
+				   "plugin and try again."));
+		exit(1);
+	}
+	
 	static_mainwindow = mainwin;
 
 #ifdef HAVE_STARTUP_NOTIFICATION

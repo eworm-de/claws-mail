@@ -819,4 +819,6 @@ void folder_item_process_open		(FolderItem *item,
 					 void (*after_proc_func)(gpointer data),
 					 gpointer data);
 gboolean folder_subscribe		(const gchar *uri);
+gboolean folder_have_mailbox 		(void);
+
 #endif /* __FOLDER_H__ */
