@@ -1,5 +1,7 @@
 TODO
 ====
+Before 2.0
+manual: glossary.xml, proofreading, autotoolize the Makefile, install the stuff, put back link in Help
 
 o addressbook improvements
 o virtual folders
