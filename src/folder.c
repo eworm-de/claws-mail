@@ -722,7 +722,7 @@ gint folder_read_list(void)
 	}
 
 	xml_free_tree(node);
-	if (folder_list)
+	if (folder_list || folder_unloaded_list)
 		return 0;
 	else
 		return -1;
