@@ -3277,7 +3277,7 @@ void summary_delete(SummaryView *summaryview)
 
 	aval = alertpanel(_("Delete message(s)"),
 			  _("Do you really want to delete selected message(s)?"),
-			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL);
+			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
 	if (aval != G_ALERTALTERNATE) return;
 
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 

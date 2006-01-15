@@ -1137,3 +1137,4 @@
 ( cvs diff -u -r 1.60.2.44 -r 1.60.2.45 src/addressbook.c;  cvs diff -u -r 1.1.4.17 -r 1.1.4.18 src/expldifdlg.c;  cvs diff -u -r 1.14.2.9 -r 1.14.2.10 src/importldif.c;  cvs diff -u -r 1.4.12.11 -r 1.4.12.12 src/importmutt.c;  cvs diff -u -r 1.1.14.11 -r 1.1.14.12 src/importpine.c;  cvs diff -u -r 1.2.2.18 -r 1.2.2.19 src/mh_gtk.c;  ) > 1.9.100cvs151.patchset
 ( cvs diff -u -r 1.213.2.74 -r 1.213.2.75 src/folder.c;  ) > 1.9.100cvs152.patchset
 ( cvs diff -u -r 1.213.2.75 -r 1.213.2.76 src/folder.c;  cvs diff -u -r 1.87.2.24 -r 1.87.2.25 src/folder.h;  cvs diff -u -r 1.115.2.73 -r 1.115.2.74 src/main.c;  ) > 1.9.100cvs153.patchset
+( cvs diff -u -r 1.395.2.157 -r 1.395.2.158 src/summaryview.c;  ) > 1.9.100cvs154.patchset
