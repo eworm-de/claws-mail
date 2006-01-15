@@ -1720,7 +1720,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL)
+			       GTK_STOCK_CANCEL, _("+_Empty trash"), NULL)
 		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);

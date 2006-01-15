@@ -1,3 +1,9 @@
+2006-01-15 [colin]	1.9.100cvs156
+
+	* src/folderview.c
+	* src/mainwindow.c
+		Same for "Empty trash"
+
 2006-01-15 [colin]	1.9.100cvs155
 
 	* src/inc.c
