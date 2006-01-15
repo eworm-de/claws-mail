@@ -1448,7 +1448,7 @@ gboolean inc_offline_should_override(void)
 
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       GTK_STOCK_NO, GTK_STOCK_YES, _("On_ly once"));
+			       GTK_STOCK_NO, "+" GTK_STOCK_YES, _("On_ly once"));
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {
 			overridden_yes = time(NULL);

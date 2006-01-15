@@ -1138,3 +1138,4 @@
 ( cvs diff -u -r 1.213.2.74 -r 1.213.2.75 src/folder.c;  ) > 1.9.100cvs152.patchset
 ( cvs diff -u -r 1.213.2.75 -r 1.213.2.76 src/folder.c;  cvs diff -u -r 1.87.2.24 -r 1.87.2.25 src/folder.h;  cvs diff -u -r 1.115.2.73 -r 1.115.2.74 src/main.c;  ) > 1.9.100cvs153.patchset
 ( cvs diff -u -r 1.395.2.157 -r 1.395.2.158 src/summaryview.c;  ) > 1.9.100cvs154.patchset
+( cvs diff -u -r 1.149.2.41 -r 1.149.2.42 src/inc.c;  ) > 1.9.100cvs155.patchset
