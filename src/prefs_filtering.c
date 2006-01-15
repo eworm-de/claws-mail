@@ -920,7 +920,7 @@ static void prefs_filtering_delete_cb(void)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+		       GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
