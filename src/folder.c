@@ -2661,8 +2661,10 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		src->folder->klass->remove_folder(src->folder, src);
 	folder_write_list();
 
-	if (old_id != NULL && new_id != NULL)
+	if (old_id != NULL && new_id != NULL) {
 		prefs_filtering_rename_path(old_id, new_id);
+		account_rename_path(old_id, new_id);
+	}
 	g_free(old_id);
 	g_free(new_id);
 	

@@ -516,6 +516,37 @@ void account_set_missing_folder(void)
 	}
 }
 
+#define CHECK_CHANGE_FOLDER(folder) {						\
+	if (folder && !strncmp(folder, old_id, strlen(old_id))) {		\
+		if (strlen(folder) == strlen(old_id)) {				\
+			g_free(folder);						\
+			folder = g_strdup(new_id);				\
+		} else if (strlen(folder) > strlen(old_id)			\
+		  && folder[strlen(old_id)] == G_DIR_SEPARATOR) {		\
+			gchar *new_path = g_strdup_printf("%s%s",		\
+					new_id, (folder + strlen(old_id)));	\
+			g_free(folder);						\
+			folder = new_path;					\
+		} 								\
+	}									\
+}
+
+void account_rename_path(const gchar *old_id, const gchar *new_id)
+{
+	GList *cur = account_list;
+	for (; cur != NULL; cur = g_list_next(cur)) {
+		PrefsAccount *ap = (PrefsAccount *)cur->data;
+		CHECK_CHANGE_FOLDER(ap->inbox);
+		CHECK_CHANGE_FOLDER(ap->local_inbox);
+		CHECK_CHANGE_FOLDER(ap->queue_folder);
+		CHECK_CHANGE_FOLDER(ap->sent_folder);
+		CHECK_CHANGE_FOLDER(ap->draft_folder);
+		CHECK_CHANGE_FOLDER(ap->trash_folder);
+	}
+}
+
+#undef CHECK_CHANGE_FOLDER
+
 FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 				       SpecialFolderItemType type)
 {

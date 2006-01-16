@@ -63,5 +63,7 @@ FolderItem   *account_get_special_folder(PrefsAccount		*ac_prefs,
 void	      account_destroy		(PrefsAccount	*ac_prefs);
 PrefsAccount *account_get_reply_account	(MsgInfo 	*msginfo, 
 					 gboolean	 reply_autosel);
+void 	      account_rename_path	(const gchar 	*old_id, 
+					 const gchar 	*new_id);
 
 #endif /* __ACCOUNT_H__ */

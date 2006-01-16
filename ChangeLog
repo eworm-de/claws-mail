@@ -1,3 +1,12 @@
+2006-01-16 [colin]	1.9.100cvs160
+
+	* src/account.c
+	* src/account.h
+	* src/folder.c
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Fix bug #883 (default inbox does not track folder move)
+
 2006-01-16 [colin]	1.9.100cvs159
 
 	* src/compose.c
