@@ -3340,6 +3340,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 			goto colorize;
 
 		uri_start = uri_stop = -1;
+		quote_len = 0;
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
 
 		if (quote_str) {

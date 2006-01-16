@@ -1,3 +1,8 @@
+2006-01-16 [colin]	1.9.100cvs161
+
+	* src/compose.c
+		reset quote_len before getting quote_str
+
 2006-01-16 [colin]	1.9.100cvs160
 
 	* src/account.c
