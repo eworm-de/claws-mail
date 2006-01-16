@@ -7838,6 +7838,7 @@ static void compose_toggle_autowrap_cb(gpointer data, guint action,
 	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
 	if (compose->autowrap)
 		compose_wrap_all_full(compose, TRUE);
+	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
 }
 
 static void compose_toggle_sign_cb(gpointer data, guint action,
