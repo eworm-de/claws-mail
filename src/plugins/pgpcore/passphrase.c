@@ -131,8 +131,9 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     gtk_entry_set_visibility(GTK_ENTRY(pass_entry), FALSE);
     gtk_widget_grab_focus(pass_entry);
 
-    gtkut_stock_button_set_create(&confirm_box, &ok_button, GTK_STOCK_OK,
+    gtkut_stock_button_set_create(&confirm_box, 
 				  &cancel_button, GTK_STOCK_CANCEL,
+		    		  &ok_button, GTK_STOCK_OK,
 				  NULL, NULL);
     gtk_box_pack_end(GTK_BOX(vbox), confirm_box, FALSE, FALSE, 0);
     gtk_widget_grab_default(ok_button);

@@ -3674,7 +3674,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			AlertValue aval;
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default CC address. Send anyway?"),
-					  GTK_STOCK_CANCEL, _("_Send"), NULL);
+					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
@@ -3702,7 +3702,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			AlertValue aval;
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default BCC address. Send anyway?"),
-					  GTK_STOCK_CANCEL, _("_Send"), NULL);
+					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
@@ -3729,7 +3729,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 
 		aval = alertpanel(_("Send"),
 				  _("Subject is empty. Send it anyway?"),
-				  GTK_STOCK_CANCEL, _("_Send"), NULL);
+				  GTK_STOCK_CANCEL, _("+_Send"), NULL);
 		if (aval != G_ALERTALTERNATE)
 			return FALSE;
 	}
@@ -4124,7 +4124,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 				msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
 							"to the specified %s charset.\n"
 							"Send it as %s?"), out_codeset, src_codeset);
-				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL, _("_Send"), NULL, FALSE,
+				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL, _("+_Send"), NULL, FALSE,
 						      NULL, ALERT_ERROR, G_ALERTDEFAULT);
 				g_free(msg);
 
