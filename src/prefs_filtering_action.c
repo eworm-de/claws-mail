@@ -1067,7 +1067,7 @@ static gint prefs_filtering_action_deleted(GtkWidget *widget,
  * When adding new lines, remember to put 2 strings for each line
  */
 static gchar *exec_desc_strings[] = {
-	"%%",	"%",
+	"%%",	N_("literal %"),
 	"%s",	N_("Subject"),
 	"%f",	N_("From"),
 	"%t",	N_("To"),
@@ -1076,10 +1076,10 @@ static gchar *exec_desc_strings[] = {
 	"%i",	N_("Message-ID"),
 	"%n",	N_("Newsgroups"),
 	"%r",	N_("References"),
-	"%F",	N_("Filename - should not be modified"),
+	"%F",	N_("filename (should not be modified)"),
 	"\\n",	N_("new line"),
 	"\\",	N_("escape character for quotes"),
-	"\\\"",N_("quote character"),
+	"\\\"", N_("quote character"),
 	NULL, NULL
 };
 
@@ -1087,8 +1087,11 @@ static DescriptionWindow exec_desc_win = {
 	NULL,
         NULL, 
         2,
-        N_("Description of symbols"),
-        exec_desc_strings
+        N_("Filtering Action: 'Execute'"),
+	N_("'Execute' allows you to send a message or message element "
+	   "to an external program or script.\n\n"
+	   "The following symbols can be used:"),
+       exec_desc_strings
 };
 
 /*!

@@ -30,6 +30,8 @@ struct _DescriptionWindow
 	int		  columns;
 	/** title of the window **/
 	gchar		* title;
+	/** description **/
+	gchar		* description;
 	/** points to the table of strings to be show in the window */
 	gchar 		** symbol_table;
 };

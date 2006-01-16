@@ -29,6 +29,7 @@
 #include "manage_window.h"
 #include "description_window.h"
 #include "gtkutils.h"
+#include "prefs_gtk.h"
 
 static void description_create				(DescriptionWindow *dwindow);
 static gboolean description_window_key_pressed		(GtkWidget *widget,
@@ -67,6 +68,8 @@ void description_window_create(DescriptionWindow *dwindow)
 
 static void description_create(DescriptionWindow * dwindow)
 {
+	GtkWidget *hbox;
+	GtkWidget *label;
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *hbbox;
@@ -93,13 +96,14 @@ static void description_create(DescriptionWindow * dwindow)
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
 	table = gtk_table_new(sz, dwindow->columns, FALSE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin), table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
 
-	gtk_table_set_col_spacings(GTK_TABLE(table), 10);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	line = 0;
 	for(i = 0; dwindow->symbol_table[i] != NULL; i = i + dwindow->columns) {
@@ -117,11 +121,13 @@ static void description_create(DescriptionWindow * dwindow)
 				}
 				label = gtk_label_new(gettext(dwindow->symbol_table[i+col]));
 				gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+				gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+				gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 				gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
 				gtk_table_attach(GTK_TABLE(table), label,
 						 col, colend, line, line+1,
-						 GTK_EXPAND | GTK_FILL, 0,
-						 0, 0);
+						 (GtkAttachOptions) (GTK_FILL),
+						 (GtkAttachOptions) (0), 0, 2);
 			}
 		} else {
 			GtkWidget *separator;
@@ -129,8 +135,8 @@ static void description_create(DescriptionWindow * dwindow)
 			separator = gtk_hseparator_new();
 			gtk_table_attach(GTK_TABLE(table), separator,
 					 0, dwindow->columns, line, line+1,
-					 GTK_EXPAND | GTK_FILL, 0,
-					 0, 4);
+					 (GtkAttachOptions) (GTK_FILL),
+					 (GtkAttachOptions) (0), 0, 4);
 		}
 		line++;
 	}
@@ -139,19 +145,27 @@ static void description_create(DescriptionWindow * dwindow)
 				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(dwindow->window), vbox);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new(gettext(dwindow->description));
+	gtk_widget_show(label);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(scrolledwin),
 			   TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(hbbox),
 			   FALSE, FALSE, 3);
 			   
-/* OLD CODE
-	gtk_table_attach_defaults(GTK_TABLE(table), hbbox,
-				  1, 2, i, i+1);
-*/
 	gtk_widget_grab_default(close_btn);
+
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(gtk_main_quit), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",

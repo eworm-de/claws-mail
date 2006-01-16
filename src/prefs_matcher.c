@@ -1676,11 +1676,7 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
  * When adding new lines, remember to put 2 strings for each line
  */
 static gchar *test_desc_strings[] = {
-	N_("'Test' allows you to test a message or message element"), NULL,
-	N_("using an external program or script. The program will"), NULL,
-	N_("return either 0 or 1"), NULL,
-	N_("The following symbols can be used:"), NULL,
-	"%%",	"%",
+	"%%",	N_("literal %"),
 	"%s",	N_("Subject"),
 	"%f",	N_("From"),
 	"%t",	N_("To"),
@@ -1689,7 +1685,7 @@ static gchar *test_desc_strings[] = {
 	"%i",	N_("Message-ID"),
 	"%n",	N_("Newsgroups"),
 	"%r",	N_("References"),
-	"%F",	N_("Filename - should not be modified"),
+	"%F",	N_("filename (should not be modified)"),
 	"\\n",	N_("new line"),
 	"\\",	N_("escape character for quotes"),
 	"\\\"", N_("quote character"),
@@ -1701,6 +1697,10 @@ static DescriptionWindow test_desc_win = {
         NULL, 
         2,
         N_("Match Type: 'Test'"),
+	N_("'Test' allows you to test a message or message element "
+	   "using an external program or script. The program will "
+	   "return either 0 or 1.\n\n"
+	   "The following symbols can be used:"),
         test_desc_strings
 };
 

@@ -271,7 +271,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 
-	help_button = gtk_button_new_with_label(_(" Syntax help... "));
+	help_button = gtk_button_new_from_stock(GTK_STOCK_HELP);
 	gtk_widget_show(help_button);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(help_button), "clicked",
@@ -785,19 +785,19 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
  * When adding new lines, remember to put one string for each line
  */
 static gchar *actions_desc_strings[] = {
-	N_("MENU NAME:"), NULL,
-	"      ",   N_("Use / in menu name to make submenus."),
+	N_("<span weight=\"bold\" underline=\"single\">Menu name:</span>"), NULL,
+	N_("Use / in menu name to make submenus."), NULL,
 	"", NULL,
-	N_("COMMAND LINE:"), NULL,
-	N_("Begin with:"), NULL,
+	N_("<span weight=\"bold\" underline=\"single\">Command line:</span>"), NULL,
+	N_("<span weight=\"bold\">Begin with:</span>"), NULL,
 	"     |",   N_("to send message body or selection to command's standard input"),
-	"     >",   N_("to send user provided text to command's standard input"),
+	"     &gt;",   N_("to send user provided text to command's standard input"),
 	"     *",   N_("to send user provided hidden text to command's standard input"),
-	N_("End with:"), NULL, 
+	N_("<span weight=\"bold\">End with:</span>"), NULL,
 	"     |",   N_("to replace message body or selection with command's standard output"),
-	"     >",   N_("to insert command's standard output without replacing old text"),
-	"     &",   N_("to run command asynchronously"),
-	N_("Use:"), NULL, 
+	"     &gt;",   N_("to insert command's standard output without replacing old text"),
+	"     &amp;",   N_("to run command asynchronously"),
+	N_("<span weight=\"bold\">Use:</span>"), NULL, 
 	"     %f",  N_("for the file of the selected message in RFC822/2822 format "),
 	"     %F",  N_("for the list of the files of the selected messages in RFC822/2822 format"),
 	"     %p",  N_("for the file of the selected decoded message MIME part"),
@@ -805,7 +805,7 @@ static gchar *actions_desc_strings[] = {
 	"     %h",  N_("for a user provided hidden argument (e.g. password)"),
 	"     %s",  N_("for the text selection"),
 	"  %as{}",  N_("apply filtering actions between {} to selected messages"),
-	NULL
+	NULL, NULL
 };
 
 
@@ -813,7 +813,10 @@ static DescriptionWindow actions_desc_win = {
 	NULL,
 	NULL,
 	2,
-	N_("Description of symbols"),
+	N_("Actions"),
+  	N_("The Actions feature is a way for the user to launch "
+	   "external commands to process a complete message file or just "
+	   "one of its parts."),
         actions_desc_strings
 };
 

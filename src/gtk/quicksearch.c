@@ -263,7 +263,7 @@ static gchar *search_descr_strings[] = {
 	"X cmd", N_("messages returning 0 when passed to command"),
 	"y S",	 N_("messages which contain S in X-Label header"),
 	"",	 "" ,
-	"&",	 N_("logical AND operator"),
+	"&amp;",	 N_("logical AND operator"),
 	"|",	 N_("logical OR operator"),
 	"! or ~",	N_("logical NOT operator"),
 	"%",	 N_("case sensitive search"),
@@ -276,7 +276,10 @@ static DescriptionWindow search_descr = {
 	NULL,
 	NULL, 
 	2,
-	N_("Extended Search symbols"),
+	N_("Extended Search"),
+	N_("Extended Search allows the user to define criteria that messages must "
+           "have in order to match and be displayed in the message list.\n\n"
+	   "The following symbols can be used:"),
 	search_descr_strings
 };
 	

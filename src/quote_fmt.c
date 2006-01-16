@@ -37,36 +37,36 @@
  * When adding new lines, remember to put 2 strings for each line
  */
 static gchar *quote_desc_strings[] = {
-	"%D{fmt}",	N_("Customize date format (see man strftime)"), /* date expression */
+	"%D{fmt}",	N_("customized date format (see man strftime)"), /* date expression */
 	"%d",		N_("Date"), /* date */
 	"%f",		N_("From"), /* from */
-	"%N",		N_("Full Name of Sender"), /* full name */
-	"%F",		N_("First Name of Sender"), /* first name */
-	"%L",		N_("Last Name of Sender"), /* last name */
-	"%I",		N_("Initials of Sender"), /* initial of sender */
+	"%N",		N_("full name of sender"), /* full name */
+	"%F",		N_("first name of sender"), /* first name */
+	"%L",		N_("last name of sender"), /* last name */
+	"%I",		N_("initials of sender"), /* initial of sender */
 	"%s",		N_("Subject"), /* subject */ 
 	"%t",		N_("To"), /* to */ 
 	"%c",		N_("Cc"), /* cc */ 
 	"%n",		N_("Newsgroups"), /* newsgroups */ 
 	"%r",		N_("References"), /* references */ 
 	"%i",		N_("Message-ID"), /* message-id */ 
-	"%M",		N_("Message body"), /* message */ 
-	"%Q",		N_("Quoted message body"), /* quoted message */ 
-	"%m",		N_("Message body without signature"), /* message with no signature */ 
-	"%q",		N_("Quoted message body without signature"), /* quoted message with no signature */ 
-	"%X",		N_("Cursor position"), /* X marks the cursor spot */
+	"%M",		N_("message body"), /* message */
+	"%Q",		N_("quoted message body"), /* quoted message */
+	"%m",		N_("message body without signature"), /* message with no signature */
+	"%q",		N_("quoted message body without signature"), /* quoted message with no signature */
+	"%X",		N_("cursor position"), /* X marks the cursor spot */
 	"",		NULL,
-	"?x{expr}",	N_("Insert expr if x is set\nx is one of the characters above after %"),
+	"?x{expr}",	N_("insert expr if x is set\nx is one of the characters above after %"),
 	"",		NULL,
-	"\\%", 		N_("Literal %"),
-	"\\\\",		N_("Literal backslash"),
-	"\\?",		N_("Literal question mark"),
-	"\\|",		N_("Literal pipe"),
-	"\\{",		N_("Literal opening curly brace"),
-	"\\}",		N_("Literal closing curly brace"),
+	"\\%", 		N_("literal %"),
+	"\\\\",		N_("literal backslash"),
+	"\\?",		N_("literal question mark"),
+	"\\|",		N_("literal pipe"),
+	"\\{",		N_("literal opening curly brace"),
+	"\\}",		N_("literal closing curly brace"),
 	"",		NULL,
-	"|f{file}",	N_("Insert File"),
-	"|p{command}",  N_("Insert program output"), /* insert program output */ 
+	"|f{file}",	N_("insert file"),
+	"|p{command}",  N_("insert program output"), /* insert program output */
 	NULL,NULL
 };
 
@@ -75,6 +75,7 @@ static DescriptionWindow quote_desc_win = {
 	NULL,
         2,
         N_("Description of symbols"),
+	N_("The following symbols can be used:"),
         quote_desc_strings
 };
 
