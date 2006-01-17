@@ -3195,6 +3195,8 @@ static gboolean compose_join_next_line(Compose *compose,
 	prev = cur = iter_;
 	gtk_text_iter_backward_char(&cur);
 	if (gtk_text_iter_has_tag(&cur, compose->no_join_tag)) {
+		gtk_text_iter_forward_char(&cur);
+		*iter = cur;
 		return FALSE;
 	}
 	gtk_text_iter_forward_char(&cur);
