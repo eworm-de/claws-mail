@@ -1,3 +1,9 @@
+2006-01-17 [colin]	1.9.100cvs163
+
+	* src/mimeview.c
+		Fix crash when the image disappears under the
+		image viewer
+
 2006-01-16 [colin]	1.9.100cvs162
 
 	* src/compose.c

@@ -660,6 +660,7 @@ void mimeview_clear(MimeView *mimeview)
 	mimeview->file = NULL;
 
 	icon_list_clear(mimeview);
+	mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data);
