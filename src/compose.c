@@ -1822,26 +1822,26 @@ void compose_entry_append(Compose *compose, const gchar *address,
 
 void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
-	static GtkStyle *bold_style = NULL;
-	static GdkColor bold_color;
+	static GdkColor yellow;
+	static gboolean yellow_initialised = FALSE;
 	GSList *h_list;
 	GtkEntry *entry;
 		
+	if (!yellow_initialised) {
+		gdk_color_parse("#f5f6be", &yellow);
+		yellow_initialised = gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
+		
+	}
+
 	for (h_list = compose->header_list; h_list != NULL; h_list = h_list->next) {
 		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
 		if (gtk_entry_get_text(entry) && 
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
-			gtk_widget_ensure_style(GTK_WIDGET(entry));
-			if (!bold_style) {
-				gtkut_convert_int_to_gdk_color
-					(prefs_common.color_new, &bold_color);
-				bold_style = gtk_style_copy(gtk_widget_get_style
-					(GTK_WIDGET(entry)));
-				pango_font_description_set_weight
-					(bold_style->font_desc, PANGO_WEIGHT_BOLD);
-				bold_style->fg[GTK_STATE_NORMAL] = bold_color;
-			}
-			gtk_widget_set_style(GTK_WIDGET(entry), bold_style);
+			if (yellow_initialised)
+				gtk_widget_modify_base(
+					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
+					GTK_STATE_NORMAL, &yellow);
 		}
 	}
 }

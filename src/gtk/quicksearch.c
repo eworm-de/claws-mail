@@ -47,6 +47,7 @@ struct _QuickSearch
 	GtkWidget			*search_string_entry;
 	GtkWidget			*search_condition_expression;
 	GtkWidget			*search_description;
+	GtkWidget			*clear_search;
 
 	gboolean			 active;
 	gchar				*search_string;
@@ -478,7 +479,8 @@ QuickSearch *quicksearch_new()
 	quicksearch->matcher_list = NULL;
 	quicksearch->active = FALSE;
 	quicksearch->running = FALSE;
-	
+	quicksearch->clear_search = clear_search;
+
 	update_extended_buttons(quicksearch);
 	
 	return quicksearch;
@@ -529,7 +531,31 @@ gboolean quicksearch_is_active(QuickSearch *quicksearch)
 
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 {
+	static GdkColor yellow;
+	static gboolean yellow_initialised = FALSE;
+
+	if (!yellow_initialised) {
+		gdk_color_parse("#f5f6be", &yellow);
+		yellow_initialised = gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
+		
+	}
 	quicksearch->active = active;
+
+	if (active) {
+		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
+		if (yellow_initialised)
+			gtk_widget_modify_base(
+				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_STATE_NORMAL, &yellow);
+	} else {
+		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
+		if (yellow_initialised)
+			gtk_widget_modify_base(
+				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_STATE_NORMAL, NULL);
+	}
+	
 	if (!active) {
 		quicksearch_reset_cur_folder_item(quicksearch);
 	}
