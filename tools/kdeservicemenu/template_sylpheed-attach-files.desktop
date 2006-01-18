@@ -16,7 +16,7 @@ Name[it]=Allega file
 Name[pt_BR]=Anexar arquivo(s)
 Name[sk]=Pripoji» súbor(y)
 Icon=sylpheed-claws
-Exec=SCRIPT_PATH attachfile %F
+Exec=SCRIPT_PATH attachfile %U
 
 [Desktop Action GZipAndAttach]
 Name=Attach as GZip File(s)
@@ -27,7 +27,7 @@ Name[it]=Allega come file .gz
 Name[pt_BR]=Anexar como arquivo(s) GZip
 Name[sk]=Pripoji» ako súbor(y) GZip
 Icon=sylpheed-claws
-Exec=SCRIPT_PATH gz %F
+Exec=SCRIPT_PATH gz %U
 
 [Desktop Action BZipAndAttach]
 Name=Attach as BZip File(s)
@@ -38,4 +38,4 @@ Name[it]=Allega come file .bz
 Name[pt_BR]=Anexar como arquivo(s) BZip
 Name[sk]=Pripoji» ako súbor(y) Bzip
 Icon=sylpheed-claws
-Exec=SCRIPT_PATH bz2 %F
+Exec=SCRIPT_PATH bz2 %U
