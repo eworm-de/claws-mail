@@ -1,3 +1,8 @@
+2006-01-18 [cleroy]	1.9.100cvs165
+
+	* src/summaryview.c
+		Default to Yes in "No more * messages" dialogs
+
 2006-01-17 [colin]	1.9.100cvs164
 
 	* src/compose.c
