@@ -25,7 +25,7 @@
 		use %U instead of %F (%F is broken for user installed
 		files in kde 3.5)
 
-2006-01-18 [cleroy]	1.9.100cvs165
+2006-01-18 [colin]	1.9.100cvs165
 
 	* src/summaryview.c
 		Default to Yes in "No more * messages" dialogs
@@ -784,7 +784,7 @@
 		Fix occasional failure in fetching a mail over
 		IMAP
 
-2005-12-29 [cleroy]	1.9.100cvs113
+2005-12-29 [colin]	1.9.100cvs113
 
 	* src/compose.c
 		Don't remove a draft when sending it, if it is 
@@ -852,12 +852,12 @@
 	* src/plugins/pgpinline/mypgpcore.def
 		add this forgotten file
 
-2005-12-23 [cleroy]	1.9.100cvs105
+2005-12-23 [colin]	1.9.100cvs105
 
 	* src/mainwindow.c
 		Fix missing break
 
-2005-12-23 [cleroy]	1.9.100cvs104
+2005-12-23 [colin]	1.9.100cvs104
 
 	* autogen.sh
 	* src/folder.c
@@ -1061,7 +1061,7 @@
 	* src/gtk/about.c
 		i18n fix. Patch by Fabien Vantard
 
-2005-12-19 [cleroy]	1.9.100cvs95
+2005-12-19 [colin]	1.9.100cvs95
 
 	* src/compose.c
 	* src/compose.h
@@ -1089,7 +1089,7 @@
 	* src/plugins/trayicon/trayicon.c
 		add plugin_version()
 
-2005-12-15 [cleroy]	1.9.100cvs92
+2005-12-15 [colin]	1.9.100cvs92
 
 	* src/compose.c
 		Further fix bug #875
@@ -1120,7 +1120,7 @@
 		Fix recursive prefs apply
 
 
-2005-12-14 [cleroy]	1.9.100cvs88
+2005-12-14 [colin]	1.9.100cvs88
 
 	* src/compose.c
 		Fix bug #875 (Freeze On Inline Forward of 
@@ -1192,14 +1192,14 @@
 	* src/plugins/pgpcore/passphrase.c
 		wrap the label in the dialog
 
-2005-12-09 [cleroy]	1.9.100cvs79
+2005-12-09 [colin]	1.9.100cvs79
 
 	* src/plugins/pgpcore/sgpgme.c
 		Display (untrusted) on not trusted signatures
 		Patch by Michal Èihaø <michal@cihar.com>
 		Closes bug #867 (Report also key trust)
 
-2005-12-09 [cleroy]	1.9.100cvs78
+2005-12-09 [colin]	1.9.100cvs78
 
 	* src/common/plugin.c
 		Update licence check, following Eben Moglen's advice
@@ -1720,7 +1720,7 @@
 	* tools/acroread2sylpheed.pl
 		update binary name
 
-2005-11-24 [cleroy]	1.9.100cvs32
+2005-11-24 [colin]	1.9.100cvs32
 
 	* src/compose.c
 		Fix bug #856 (reediting messages forgets Request
@@ -1757,7 +1757,7 @@
 	* manual/advanced.xml
 		corrections to the English
 
-2005-11-23 [cleroy]	1.9.100cvs28
+2005-11-23 [colin]	1.9.100cvs28
 
 	* src/mimeview.c
 		Fix possible crash at exit. After the call to
@@ -1830,14 +1830,14 @@
 	* src/textview.c
 		also list text/* attachments
 
-2005-11-18 [cleroy]	1.9.100cvs18
+2005-11-18 [colin]	1.9.100cvs18
 
 	* src/summaryview.c
 		Use column 0 instead of -1 in 
 		gtk_ctree_node_moveto, in a naive
 		hope it'll fix the gtk-related crashes
 
-2005-11-18 [cleroy]	1.9.100cvs17
+2005-11-18 [colin]	1.9.100cvs17
 
 	* src/gtk/inputdialog.c
 		Fix icon staying the first one
@@ -1950,7 +1950,7 @@
 	* src/ldif.c
 		Fix import of base-64 encoded items
 
-2005-11-07 [cleroy]	1.9.99cvs16
+2005-11-07 [colin]	1.9.99cvs16
 
 	* src/send_message.c
 		Fix bug #314 (Queue does not empty under certain 
@@ -2015,7 +2015,7 @@
 	* po/POTFILES.in
 		Add missing files (thanks to Fabien Vantard)
 
-2005-11-02 [cleroy]	1.9.99cvs6
+2005-11-02 [colin]	1.9.99cvs6
 
 	* src/summaryview.c
 		Fix totals when read messages are hidden or quicksearch
@@ -2034,7 +2034,7 @@
 		fix directory name checking (theme installation/removal),
 		made related error a bit more verbose
 
-2005-11-02 [cleroy]	1.9.99cvs4
+2005-11-02 [colin]	1.9.99cvs4
 
 	* src/summaryview.c
 		Fix typo (probably fixes bug #841 (Sort by the From 
@@ -2287,7 +2287,7 @@
 		Fix encoding issue in Save all and in 
 		overwrite-confirmation alertpanel
 
-2005-10-25 [cleroy]	1.9.15cvs105
+2005-10-25 [colin]	1.9.15cvs105
 
 	* src/common/socket.c
 		Fix a leak - Thanks to Christopher Aillon
@@ -2456,7 +2456,7 @@
 		update binary name (thanks to Fabien Vantard)
 		remove obsolete scripts
 
-2005-10-21 [cleroy]	1.9.15cvs86
+2005-10-21 [colin]	1.9.15cvs86
 
 	* src/inc.c
 		Fix possible leak and units. Based on a patch by
@@ -4280,7 +4280,7 @@
 		opened successfully
 		Patch by Daniel Gustafson
 
-2005-09-09 [cleroy]	1.9.14cvs10
+2005-09-09 [colin]	1.9.14cvs10
 
 	* src/imap.c
 		Add guards
@@ -4463,7 +4463,7 @@
 		compose_beautify_paragraph()
 		Patch by Colin
 
-2005-09-02 [cleroy]	1.9.13cvs78
+2005-09-02 [colin]	1.9.13cvs78
 
 	* src/folderview.c
 		Micro-fix
