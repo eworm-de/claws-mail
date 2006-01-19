@@ -1152,3 +1152,4 @@
 ( cvs diff -u -r 1.3.2.5 -r 1.3.2.6 tools/kdeservicemenu/template_sylpheed-attach-files.desktop;  cvs diff -u -r 1.3.2.5 -r 1.3.2.6 tools/kdeservicemenu/template_sylpheed-compress-attach.desktop;  ) > 1.9.100cvs166.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 doc/man/sylpheed-claws.1;  ) > 1.9.100cvs167.patchset
 ( cvs diff -u -r 1.382.2.226 -r 1.382.2.227 src/compose.c;  cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/gtk/quicksearch.c;  ) > 1.9.100cvs168.patchset
+( cvs diff -u -r 1.14.2.32 -r 1.14.2.33 src/plugins/trayicon/trayicon.c;  ) > 1.9.100cvs169.patchset

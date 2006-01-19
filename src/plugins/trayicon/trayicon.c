@@ -202,6 +202,9 @@ static gboolean click_cb(GtkWidget * widget,
 		gtk_check_menu_item_set_active(
 			GTK_CHECK_MENU_ITEM(gtk_item_factory_get_item(traymenu_factory,
 			_("/Work Offline"))), prefs_common.work_offline);
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(gtk_item_factory_get_item(traymenu_factory,
+			_("/Get Mail"))), mainwin->lock_count == 0);
 		updating_menu = FALSE;
 
 		gtk_menu_popup( GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
