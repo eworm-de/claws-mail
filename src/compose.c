@@ -1823,25 +1823,32 @@ void compose_entry_append(Compose *compose, const gchar *address,
 void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
 	static GdkColor yellow;
+	static GdkColor black;
 	static gboolean yellow_initialised = FALSE;
 	GSList *h_list;
 	GtkEntry *entry;
 		
 	if (!yellow_initialised) {
 		gdk_color_parse("#f5f6be", &yellow);
+		gdk_color_parse("#000000", &black);
 		yellow_initialised = gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
-		
+		yellow_initialised &= gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &black, FALSE, TRUE);
 	}
 
 	for (h_list = compose->header_list; h_list != NULL; h_list = h_list->next) {
 		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
 		if (gtk_entry_get_text(entry) && 
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
-			if (yellow_initialised)
+			if (yellow_initialised) {
 				gtk_widget_modify_base(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
 					GTK_STATE_NORMAL, &yellow);
+				gtk_widget_modify_text(
+					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
+					GTK_STATE_NORMAL, &black);
+			}
 		}
 	}
 }

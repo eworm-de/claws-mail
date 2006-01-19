@@ -1,3 +1,9 @@
+2006-01-19 [wwp]	1.9.100cvs170
+
+	* src/gtk/quicksearch.c
+	* src/compose.c
+		force text color to black when yellow background is set
+
 2006-01-19 [colin]	1.9.100cvs169
 
 	* src/plugins/trayicon/trayicon.c

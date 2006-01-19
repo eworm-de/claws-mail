@@ -532,12 +532,16 @@ gboolean quicksearch_is_active(QuickSearch *quicksearch)
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 {
 	static GdkColor yellow;
+	static GdkColor black;
 	static gboolean yellow_initialised = FALSE;
 
 	if (!yellow_initialised) {
 		gdk_color_parse("#f5f6be", &yellow);
+		gdk_color_parse("#000000", &black);
 		yellow_initialised = gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
+		yellow_initialised &= gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &black, FALSE, TRUE);
 		
 	}
 	quicksearch->active = active;
@@ -548,10 +552,16 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 			gtk_widget_modify_base(
 				GTK_COMBO(quicksearch->search_string_entry)->entry, 
 				GTK_STATE_NORMAL, &yellow);
+			gtk_widget_modify_text(
+				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_STATE_NORMAL, &black);
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
 		if (yellow_initialised)
 			gtk_widget_modify_base(
+				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_STATE_NORMAL, NULL);
+			gtk_widget_modify_text(
 				GTK_COMBO(quicksearch->search_string_entry)->entry, 
 				GTK_STATE_NORMAL, NULL);
 	}
