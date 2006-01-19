@@ -1154,3 +1154,4 @@
 ( cvs diff -u -r 1.382.2.226 -r 1.382.2.227 src/compose.c;  cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/gtk/quicksearch.c;  ) > 1.9.100cvs168.patchset
 ( cvs diff -u -r 1.14.2.32 -r 1.14.2.33 src/plugins/trayicon/trayicon.c;  ) > 1.9.100cvs169.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/gtk/quicksearch.c;  cvs diff -u -r 1.382.2.227 -r 1.382.2.228 src/compose.c;  ) > 1.9.100cvs170.patchset
+( cvs diff -u -r 1.43.2.38 -r 1.43.2.39 src/toolbar.c;  ) > 1.9.100cvs171.patchset

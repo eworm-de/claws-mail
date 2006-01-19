@@ -1798,9 +1798,9 @@ void toolbar_main_set_sensitive(gpointer data)
 	}
 
 	SET_WIDGET_COND(toolbar->trash_btn,
-			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
+			M_TARGET_EXIST|M_ALLOW_DELETE);
 	SET_WIDGET_COND(toolbar->delete_btn,
-			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
+			M_TARGET_EXIST|M_ALLOW_DELETE);
 	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
 
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
