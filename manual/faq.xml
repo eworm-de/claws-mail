@@ -7,7 +7,7 @@
 	    Sylpheed-Claws is the <emphasis>extended</emphasis> version of Sylpheed, therefore you will find that it has all the features that Sylpheed has and a lot more besides. It also includes some modified dialogues to enhance usability. Further information can be found at <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
     </para></section>
     <section>
-    <title>What does the <quote>Sylpheed</quote> mean?</title>
+    <title>What does the word <quote>Sylpheed</quote> mean?</title>
     <para>
 	<quote>Sylpheed</quote> is a corruption of the word <emphasis>Sylph</emphasis>. Sylphs are invisible beings (spirits) of the air.
     </para></section>
@@ -17,10 +17,17 @@
 	No. A discussion has gone on around this topic, and the outcome was that HTML mail is not wanted. If you really need to send HTML, you can of course attach a webpage to an email.
     </para></section>
     <section>
-    <title>How can I send in patches, report bugs, and talk about Sylpheed-Claws with others?</title>
+    <title>How can I submit patches, report bugs, and talk about Sylpheed-Claws with others?</title>
+    <para>
+        Patches should be submitted via the SourceForge project Patch Tracker at <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, but please follow the patch guidelines at <ulink url="http://claws.sylpheed.org/devel.php">http://claws.sylpheed.org/devel.php</ulink>.
+    </para>
+    <para>
+	 Bug reports should be submitted at our Bugzilla, <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>.
+    </para>
     <para>
 	To talk to others, you should join the Sylpheed-Claws users' mailing list at <ulink url="http://claws.sylpheed.org/MLs.php">http://claws.sylpheed.org/MLs.php</ulink>.
-    </para></section>
+    </para>
+    </section>
     <section>
     <title>Does Sylpheed-Claws have an anti-spam feature?</title>
     <para>

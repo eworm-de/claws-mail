@@ -5,7 +5,7 @@
   <section id="plugins_default">
     <title>Provided plugins</title>
     <para>
-	Sylpheed-Claws' capabilities are extended by plugins. It comes with the following plugins included, all of which are built automatically if the required libraries are present.
+	Sylpheed-Claws' capabilities are extended by plugins. It comes with the plugins listed below included, all of which are built automatically if the required libraries are present.
     </para><para>
 	Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/ and have a suffix of <quote>.so</quote> To load a plugin go to <quote>Configuration/Plugins</quote> and click the <quote>Load Plugin</quote> button. Select the plugin that you want and click OK.
     </para><para>

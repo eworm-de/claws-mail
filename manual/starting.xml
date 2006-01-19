@@ -22,11 +22,11 @@
 			    </para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>Local mbox file</term>
-		    <listitem><para>If you choose Local mbox file, you will need to enter the location of your local mailbox file.
+		    <listitem><para>If you choose Local mbox file, you will need to enter the location of your local mailbox spool file.
 			    </para></listitem>
 	    </varlistentry>
     </variablelist></blockquote>
-<para>If you chose either POP3 or Local mbox file, the next page  will ask you where to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
+<para>If you chose either POP3 or Local mbox file, the next page  will ask you where you want to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
     </para><para>If Sylpheed-Claws is built with support for OpenSSL, you will next see the <quote>Security</quote> page, here you will be able to choose to use SSL encryption to send and receive your emails. Most ISPs do not enable this, but many companies do; if you're unsure about it, you can leave them unselected.
     </para><para>
 	You can now click on the Save button, and start enjoying Sylpheed-Claws.
@@ -52,18 +52,18 @@
   <section id="start_writing">
     <title>Writing your first mail</title>
     <para>
-	When clicking on the <quote>Compose</quote> button of the toolbar, a composition window will open. This window contains different fields which you should be able to recognise easily: the From field can be used to select which account you want to use with this email, in the case that you have multiple accounts; the To field is for recipient of the email. When you fill it up, a second To field will appear, so that you can send the email to multiple recipients. You can also change the To field to a Cc field or other types of fields, by using its dropdown menu. After that, you will be able to set the subject of your email, then type its body.
+	When clicking on the <quote>Compose</quote> button of the toolbar, a composition window will open. This window contains different fields which you should be able to recognise easily: if you have mulitple accounts, the From field can be used to select which account you want to use for this email; the To field is for recipient of the email. When you fill it in, a second To field will appear, so that you can send the email to multiple recipients. You can also change the To field to a Cc field or other types of fields, by using its dropdown menu, or by typing in the field that you require. After that, you will be able to set the subject of your email, then type its body.
     </para><para>
-	A little note about an email's subject: Sylpheed-Claws will ask you for confirmation if you attempt to send an email with an empty subject. This is because it can be annoying for the recipient to receive emails with no subjects, as it doesn't help him to quickly handle his emails.
+	A little note about an email's subject: Sylpheed-Claws will ask you for confirmation if you attempt to send an email with an empty subject. This is because it can be annoying for the recipient to receive emails without a subject, as it doesn't help in handling email.
     </para>
   </section>
 
   <section id="start_sending">
     <title>Sending the first mail</title>
     <para>
-	When you have finished writing your first email, you can either click the <quote>Send</quote> button to send your email immediately, or use the <quote>Send later</quote> button. When using <quote>Send</quote>, the composition window will close itself when the mail has been sent; it will stay open if there is an error. When using <quote>Send later</quote>, the composition window will immediately close, and your email will be stored in your Queue folder. It will then be sent when you click the <quote>Send</quote> button in the main window's toolbar.
+	When you have finished writing your first email, you can either click the <quote>Send</quote> button to send your email immediately, or use the <quote>Send later</quote> button to queue the message for later sending. When using <quote>Send</quote>, the composition window will close itself when the mail has been sent; it will stay open if there is an error. When using <quote>Send later</quote>, the composition window will immediately close, and your email will be stored in your Queue folder. It will then be sent when you click the <quote>Send</quote> button in the main window's toolbar.
     </para><para>
-	The emails you send are saved in the Sent folder of your mailbox, so that you can remember what you wrote to whom, or use an already sent email as a template to write another one.
+	The emails that you send are saved in the Sent folder of your mailbox, so that you can recall what you wrote to whom, or use an already sent email as a template to write another.
     </para>
   </section>
 </section>

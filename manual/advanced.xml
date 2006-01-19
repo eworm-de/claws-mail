@@ -40,22 +40,22 @@
   <section id="adv_templates">
     <title>Templates</title>
     <para>
-    Templates are used in Composition windows, and act as a model for emails. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, ... When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
+    Templates are used in composition windows, and act as a model for emails. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, etc. When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
     </para>
   </section>
   <section id="adv_processing">
     <title>Processing</title>
     <para>
-    Processing rules are the same as Filtering rules, except that they are applied when entering a folder and apply only to this folder. You can use them to automatically move old mails into an archive folder, or for further dispatching of emails. You can set each folder's Processing rules by right-clicking on it.
+    Processing rules are the same as Filtering rules, except that they are applied when entering a folder and apply only to this folder. You can use them to automatically move old mails into an archive folder, or for further dispatching of emails, and more. You can set each folder's Processing rules by right-clicking on it.
     </para>
     <para>
-    Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu. Pre-processing rules are executed before the folder's specific Processing rules, while Post-processing ones are executed after.
+    Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu. Pre-processing rules are executed before the folder's specific Processing rules, while Post-processing rules are executed afterwards.
     </para>
   </section>
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
-      Plugins are the mechanism of extending Sylpheed-Claws' capabilities. Imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
+      Plugins are the mechanism for extending Sylpheed-Claws' capabilities. For eample, imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
     </para>
     <para>
 	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws  already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.
@@ -69,9 +69,6 @@
     <variablelist>
 	    <varlistentry><term>bold_unread</term>
 		    <listitem><para>show unread messages using bold font in summary view</para></listitem>
-            </varlistentry>
-	    <varlistentry><term>color_new</term>
-		    <listitem><para>colour (as hex triplet) of folder name when indicating new messages</para></listitem>
             </varlistentry>
 	    <varlistentry><term>cache_max_mem_usage</term>
 		    <listitem><para>the maximum amount of memory to use to cache messages, in kB.</para></listitem>
