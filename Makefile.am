@@ -7,7 +7,7 @@ else
 tools = tools
 endif
 
-SUBDIRS = m4 po src $(tools) config doc
+SUBDIRS = m4 po src $(tools) config doc manual
 
 EXTRA_DIST = \
 	ChangeLog \
