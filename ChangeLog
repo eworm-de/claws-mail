@@ -1,3 +1,9 @@
+2006-01-20 [wwp]	1.9.100cvs173
+
+	* src/export.c
+	* src/import.c
+		touched mbox import/export buttons for HIG-compliance
+
 2006-01-19 [paul]	1.9.100cvs172
 
 	* manual/account.xml
