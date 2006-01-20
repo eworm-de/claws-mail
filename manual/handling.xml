@@ -27,7 +27,7 @@
   </section>
 
   <section id="handling_filters">
-    <title>Simple mail filters</title>
+    <title>Filtering</title>
     <para>
 	Once you have a nice folder hierarchy in place, you'll probably want Sylpheed-Claws to sort your incoming emails automatically, in order to avoid having to move messages manually each time they arrive. For this you can use the Filtering feature.
     </para>
@@ -43,7 +43,7 @@
   </section>
 
   <section id="handling_searching">
-    <title>Searching for mails</title>
+    <title>Searching</title>
     <para>
 	There are several methods for searching your emails.
     </para>

@@ -1,3 +1,12 @@
+2006-01-20 [paul]	1.9.100cvs175
+
+	* manual/handling.xml
+		make Filtering and Searching entries easier to find
+	* manual/keyboard.xml
+		add the remaining default keybinds
+	* src/prefs_summaries.c
+		update the default keybinds
+
 2006-01-20 [paul]	1.9.100cvs174
 
 	* src/addressbook.c
