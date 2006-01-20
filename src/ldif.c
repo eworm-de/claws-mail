@@ -871,7 +871,7 @@ static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 			}
 			else if( g_utf8_collate( tag, LDIF_TAG_EMAIL ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
-				rec->userName = g_strdup( _( "E-Mail Address" ) );
+				rec->userName = g_strdup( _( "Email Address" ) );
 			}
 			g_hash_table_insert( table, key, rec );
 		}

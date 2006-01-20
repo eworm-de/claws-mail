@@ -745,7 +745,7 @@ static void addressbook_create(void)
 
 	index_titles[COL_SOURCES] = _("Sources");
 	list_titles[COL_NAME]    = _("Name");
-	list_titles[COL_ADDRESS] = _("E-Mail address");
+	list_titles[COL_ADDRESS] = _("Email Address");
 	list_titles[COL_REMARKS] = _("Remarks");
 
 	/* Address book window */

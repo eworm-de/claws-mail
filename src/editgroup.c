@@ -277,7 +277,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gint i;
 
 	titles[ GROUP_COL_NAME    ] = _( "Name" );
-	titles[ GROUP_COL_EMAIL   ] = _("E-Mail Address");
+	titles[ GROUP_COL_EMAIL   ] = _("Email Address");
 	titles[ GROUP_COL_REMARKS ] = _("Remarks");
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -422,7 +422,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	groupeditdlg.clist_avail = GTK_CLIST( clist_avail );
 
 	if( ! _edit_group_dfl_message_ ) {
-		_edit_group_dfl_message_ = _( "Move E-Mail Addresses to or from Group with arrow buttons" );
+		_edit_group_dfl_message_ = _( "Move Email Addresses to or from Group with arrow buttons" );
 	}
 }
 

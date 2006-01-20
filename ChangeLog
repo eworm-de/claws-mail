@@ -1,3 +1,19 @@
+2006-01-20 [paul]	1.9.100cvs174
+
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/addrharvest.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/ldif.c
+		replace 'e-mail' with 'email'
+	* src/summary_search.c
+		add mnemonic to "Find all" button
+
 2006-01-20 [wwp]	1.9.100cvs173
 
 	* src/export.c

@@ -46,8 +46,8 @@ static gchar *_headerTo_       = HEADER_TO;
 #define DFL_FOLDER_SIZE  20
 
 /* Noise strings included by some other E-Mail clients */
-#define REM_NAME_STRING  "(E-mail)"
-#define REM_NAME_STRING2 "(E-mail 2)"
+#define REM_NAME_STRING  "(Email)"
+#define REM_NAME_STRING2 "(Email 2)"
 
 /* Directories to ignore */
 #define DIR_IGNORE ".\t..\t.sylpheed_mark\t.sylpheed_cache"

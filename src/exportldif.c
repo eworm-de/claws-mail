@@ -181,7 +181,7 @@ void exportldif_set_suffix( ExportLdifCtl *ctl, const char *value ) {
  * <ul>
  * <li><code>EXPORT_LDIF_ID_UID</code> - Use Sylpheed UID.</li>
  * <li><code>EXPORT_LDIF_ID_DNAME</code> - Use Sylpheed display name.</li>
- * <li><code>EXPORT_LDIF_ID_EMAIL</code> - Use first E-Mail address.</li>
+ * <li><code>EXPORT_LDIF_ID_EMAIL</code> - Use first Email address.</li>
  * </ul>
  */
 void exportldif_set_rdn( ExportLdifCtl *ctl, const gint value ) {

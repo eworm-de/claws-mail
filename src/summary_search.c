@@ -252,7 +252,7 @@ static void summary_search_create(void)
 				  GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(confirm_area), 5);
 
-	all_btn = gtk_button_new_from_stock(_("Find all"));
+	all_btn = gtk_button_new_with_mnemonic(_("Find _all"));
 	GTK_WIDGET_SET_FLAGS(all_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(confirm_area), all_btn, TRUE, TRUE, 0);
 	gtk_widget_show(all_btn);

@@ -635,7 +635,7 @@ static gboolean exporthtml_fmt_group(
 	fprintf( stream, "%s", _( "Group Name" ) );
 	fprintf( stream, "</th>\n" );
 	fprintf( stream, "  <th width=\"300\">" );
-	fprintf( stream, "%s", _( "E-Mail Address" ) );
+	fprintf( stream, "%s", _( "Email Address" ) );
 	fprintf( stream, "</th>\n" );
 	fprintf( stream, "</tr>\n" );
 	list = exporthtml_sort_name( folder->listGroup );
@@ -799,7 +799,7 @@ static gboolean exporthtml_fmt_person(
 	fprintf( stream, "%s", _( "Display Name" ) );
 	fprintf( stream, "</th>\n" );
 	fprintf( stream, "  <th width=\"300\">" );
-	fprintf( stream, "%s", _( "E-Mail Address" ) );
+	fprintf( stream, "%s", _( "Email Address" ) );
 	fprintf( stream, "</th>\n" );
 	fprintf( stream, "  <th width=\"200\">" );
 	fprintf( stream, "%s", _( "Full Name" ) );

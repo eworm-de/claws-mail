@@ -313,7 +313,7 @@ static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
 		*error = FALSE;
 	}
 	else {
-		edit_person_status_show( _( "An E-Mail address must be supplied." ) );
+		edit_person_status_show( _( "An Email address must be supplied." ) );
 	}
 
 	g_free( sEmail );
@@ -756,7 +756,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gchar *titles[ EMAIL_N_COLS ];
 	gint i;
 
-	titles[ EMAIL_COL_EMAIL   ] = _("E-Mail Address");
+	titles[ EMAIL_COL_EMAIL   ] = _("Email Address");
 	titles[ EMAIL_COL_ALIAS   ] = _("Alias");
 	titles[ EMAIL_COL_REMARKS ] = _("Remarks");
 
@@ -804,7 +804,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new(_("E-Mail Address"));
+	label = gtk_label_new(_("Email Address"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
@@ -1068,7 +1068,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 static void addressbook_edit_person_create( gboolean *cancelled ) {
 	addressbook_edit_person_dialog_create( cancelled );
 	addressbook_edit_person_page_basic( PAGE_BASIC, _( "User Data" ) );
-	addressbook_edit_person_page_email( PAGE_EMAIL, _( "E-Mail Addresses" ) );
+	addressbook_edit_person_page_email( PAGE_EMAIL, _( "Email Addresses" ) );
 	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "Other Attributes" ) );
 	gtk_widget_show_all( personeditdlg.window );
 }

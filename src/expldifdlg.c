@@ -518,7 +518,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"  cn=John Doe,ou=people,dc=sylpheed,dc=org"
 		), NULL );
 
-	menuItem = gtk_menu_item_new_with_label( _( "E-Mail Address" ) );
+	menuItem = gtk_menu_item_new_with_label( _( "Email Address" ) );
 	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
 			GINT_TO_POINTER( EXPORT_LDIF_ID_EMAIL ) );
 	gtk_menu_append( GTK_MENU(menu), menuItem );
@@ -526,7 +526,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	toolTip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(
 		GTK_TOOLTIPS(toolTip), menuItem, _(
-		"The first E-Mail Address belonging to a person is used to " \
+		"The first Email Address belonging to a person is used to " \
 		"create a DN that is formatted similar to:\n" \
 		"  mail=john.doe@domain.com,ou=people,dc=sylpheed,dc=org"
 		), NULL );
@@ -571,7 +571,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	/* Fourth row */
 	top++;
 	checkEMail = gtk_check_button_new_with_label(
-			_( "Exclude record if no E-Mail Address" ) );
+			_( "Exclude record if no Email Address" ) );
 	gtk_table_attach(GTK_TABLE(table), checkEMail, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
@@ -579,7 +579,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	gtk_tooltips_set_tip(
 		GTK_TOOLTIPS(toolTip), checkEMail, _(
 		"An addressbook may contain entries without " \
-		"E-Mail Addresses. Check this option to ignore " \
+		"Email Addresses. Check this option to ignore " \
 		"these records."
 		), NULL );
 

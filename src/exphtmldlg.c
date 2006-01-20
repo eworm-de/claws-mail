@@ -542,7 +542,7 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 
 	/* Fourth row */
 	top++;
-	checkLinkEMail = gtk_check_button_new_with_label( _( "Format E-Mail Links" ) );
+	checkLinkEMail = gtk_check_button_new_with_label( _( "Format Email Links" ) );
 	gtk_table_attach(GTK_TABLE(table), checkLinkEMail, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 

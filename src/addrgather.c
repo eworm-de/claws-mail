@@ -531,7 +531,7 @@ static void addrgather_dlg_create( void ) {
 	addrgather_dlg.btnCancel  = btnCancel;
 	addrgather_dlg.statusbar  = statusbar;
 	addrgather_dlg.status_cid = gtk_statusbar_get_context_id(
-		GTK_STATUSBAR(statusbar), "Harvest E-Mail Address Dialog" );
+		GTK_STATUSBAR(statusbar), "Harvest Email Address Dialog" );
 
 	/* Create notebook pages */
 	addrgather_page_warning( PAGE_WARNING, _( "Warning" ) );
@@ -597,7 +597,7 @@ AddressBookFile *addrgather_dlg_execute(
 	/* Apply window title */
 	if( sourceInd ) {
 		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
-			_("Harvest E-Mail Addresses - from Selected Messages") );
+			_("Harvest Email Addresses - from Selected Messages") );
 		gtk_widget_set_sensitive( addrgather_dlg.checkRecurse, FALSE );
 		if( msgList == NULL ) {
 			errFlag = TRUE;
@@ -605,7 +605,7 @@ AddressBookFile *addrgather_dlg_execute(
 	}
 	else {
 		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
-			_("Harvest E-Mail Addresses - from Folder") );
+			_("Harvest Email Addresses - from Folder") );
 		gtk_widget_set_sensitive( addrgather_dlg.checkRecurse, TRUE );
 	}
 	gtk_toggle_button_set_active(
