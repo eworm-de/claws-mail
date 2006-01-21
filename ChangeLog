@@ -1,3 +1,8 @@
+2006-01-21 [colin]	1.9.100cvs177
+
+	* po/fr.po
+		In French "Composition" puts the Compose toolbar's prefs in the wrong place
+
 2006-01-20 [colin]	1.9.100cvs176
 
 	* configure.ac
