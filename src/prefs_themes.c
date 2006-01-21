@@ -805,9 +805,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 {
 	ThemesPage *prefs_themes = (ThemesPage *)page;
 	ThemesData *tdata = prefs_themes_data;
-	gchar *buf;
-	const gchar *tmp;
-	gint   i;
 	/* from gtk/about.c */
 	GtkStyle *style;
 	GdkColormap *cmap;
@@ -878,17 +875,14 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_install, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (btn_install, GTK_CAN_DEFAULT);
 
-	btn_more = gtk_button_new_with_label (_("Get more..."));
+	btn_more = gtk_button_new_with_label (_("<u>Get more...</u>"));
 	gtk_widget_show (btn_more);
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_more, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (btn_more, GTK_CAN_DEFAULT);
 	/* make it look like an uri */
 	gtk_button_set_relief(GTK_BUTTON(btn_more), GTK_RELIEF_NONE);
-	tmp = gtk_label_get_text(GTK_LABEL(GTK_BIN(btn_more)->child));
-	buf = g_strdup(tmp);
-	for (i = 0; buf[i] != '\0'; buf[i++] = '_');
-	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(btn_more)->child), buf);
-	g_free(buf);
+	gtk_label_set_use_markup(GTK_LABEL(GTK_BIN(btn_more)->child), TRUE);
+
 	cmap = gdk_drawable_get_colormap((mainwindow_get_mainwindow())->window->window);
 	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
 	if (success[0] == TRUE && success[1] == TRUE) {

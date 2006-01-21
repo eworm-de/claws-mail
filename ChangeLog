@@ -1,3 +1,9 @@
+2006-01-21 [paul]	1.9.100cvs178
+
+	* src/prefs_themes.c
+		fix broken underlining of label text
+		with some translations
+
 2006-01-21 [colin]	1.9.100cvs177
 
 	* po/fr.po
