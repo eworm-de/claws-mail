@@ -1,3 +1,11 @@
+2006-01-22 [colin]	1.9.100cvs180
+
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+		Don't deselect stuff before right-clicking, with aspell.
+		(This prevented right-click Copy, for example).
+		Thanks to Clo!
+
 2006-01-22 [paul]	1.9.100cvs179
 
 	* src/summary_search.c

@@ -1163,3 +1163,4 @@
 ( cvs diff -u -r 1.42.2.18 -r 1.42.2.19 po/fr.po;  ) > 1.9.100cvs177.patchset
 ( cvs diff -u -r 1.3.2.37 -r 1.3.2.38 src/prefs_themes.c;  ) > 1.9.100cvs178.patchset
 ( cvs diff -u -r 1.15.2.21 -r 1.15.2.22 src/summary_search.c;  ) > 1.9.100cvs179.patchset
+( cvs diff -u -r 1.382.2.228 -r 1.382.2.229 src/compose.c;  cvs diff -u -r 1.9.2.35 -r 1.9.2.36 src/gtk/gtkaspell.c;  ) > 1.9.100cvs180.patchset

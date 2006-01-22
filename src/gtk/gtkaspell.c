@@ -548,15 +548,11 @@ static void button_press_intercept_cb(GtkTextView *gtktext,
 
 	if (check_at(gtkaspell, gtkaspell->orig_pos)) {
 
-		set_textview_buffer_offset(gtktext, gtkaspell->orig_pos);
-
 		if (misspelled_suggest(gtkaspell, gtkaspell->theword)) {
 			spell_menu = make_sug_menu(gtkaspell);
 			suggest = TRUE;
 		}
-	} else
-		set_textview_buffer_offset(gtktext, gtkaspell->orig_pos);
-
+	} 
 	if (!spell_menu) 
 		spell_menu = make_config_menu(gtkaspell);
 	

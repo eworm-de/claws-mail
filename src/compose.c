@@ -5308,6 +5308,8 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 #if USE_ASPELL
 	if (event->button == 3) {
 		GtkTextIter iter;
+		GtkTextIter sel_start, sel_end;
+		gboolean stuff_selected;
 		gint x, y;
 		/* move the cursor to allow GtkAspell to check the word
 		 * under the mouse */
@@ -5316,7 +5318,18 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 			&x, &y);
 		gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW(text),
 			&iter, x, y);
+		/* get selection */
+		stuff_selected = gtk_text_buffer_get_selection_bounds(
+				GTK_TEXT_VIEW(text)->buffer,
+				&sel_start, &sel_end);
+
 		gtk_text_buffer_place_cursor (GTK_TEXT_VIEW(text)->buffer, &iter);
+		/* reselect stuff */
+		if (stuff_selected 
+		&& gtk_text_iter_in_range(&iter, &sel_start, &sel_end)) {
+			gtk_text_buffer_select_range(GTK_TEXT_VIEW(text)->buffer,
+				&sel_start, &sel_end);
+		}
 		return FALSE; /* pass the event so that the right-click goes through */
 	}
 #endif
