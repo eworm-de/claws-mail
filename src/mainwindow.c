@@ -796,9 +796,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/Plu_gins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-#if 0 /* waiting for the new manual to be finished */
 	{N_("/_Help/_Manual"),			NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
-#endif
 	{N_("/_Help/_Online User-contributed FAQ"),	
 						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/Icon _Legend"),		NULL, legend_open_cb, 0, NULL},
@@ -904,9 +902,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	ifactory = gtk_item_factory_from_widget(menubar);
 
-#if 0 /* waiting for the new manual to be finished */
 	menu_set_sensitive(ifactory, "/Help/Manual", manual_available(MANUAL_MANUAL_LOCAL));
-#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
