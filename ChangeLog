@@ -1,3 +1,14 @@
+2006-01-24 [paul]	1.9.100cvs183
+
+	* manual/glossary.xml
+		fix id name
+	* manual/dist/html/Makefile.am
+	* manual/dist/pdf/Makefile.am
+	* manual/dist/ps/Makefile.am
+	* manual/dist/txt/Makefile.am
+		fix make deps
+		Thanks to Colin
+
 2006-01-24 [mones]	1.9.100cvs182
 
 	* manual/glossary.xml

@@ -184,7 +184,7 @@ Sent a received mail to other recipient which is not the sender.
 -->    
 <variablelist>
   <title>H</title>
-  <varlistentry id="gt_headers_message">
+  <varlistentry id="gt_headers">
     <term>
 Headers (message)
     </term>

@@ -1166,3 +1166,4 @@
 ( cvs diff -u -r 1.382.2.228 -r 1.382.2.229 src/compose.c;  cvs diff -u -r 1.9.2.35 -r 1.9.2.36 src/gtk/gtkaspell.c;  ) > 1.9.100cvs180.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/ps/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/txt/Makefile.am;  cvs diff -u -r 1.274.2.91 -r 1.274.2.92 src/mainwindow.c;  ) > 1.9.100cvs181.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/glossary.xml;  ) > 1.9.100cvs182.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/glossary.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/ps/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/txt/Makefile.am;  ) > 1.9.100cvs183.patchset
