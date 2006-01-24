@@ -21,7 +21,7 @@
     <informaltable frame="topbot">
       <tgroup cols="2">
         <colspec colwidth="*" />
-        <colspec colwidth="7*" />
+        <colspec colwidth="4*" />
 	<thead>
           <row><entry>Shortcut</entry><entry></entry></row>
 	</thead>
@@ -75,7 +75,7 @@
     <informaltable frame="topbot">
      <tgroup cols="2">
      <colspec colwidth="*" />
-     <colspec colwidth="7*" />
+     <colspec colwidth="4*" />
      <thead>
 	<row><entry>Shortcut</entry><entry></entry></row>
      </thead>

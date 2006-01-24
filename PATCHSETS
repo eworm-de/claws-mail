@@ -1167,3 +1167,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/ps/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dist/txt/Makefile.am;  cvs diff -u -r 1.274.2.91 -r 1.274.2.92 src/mainwindow.c;  ) > 1.9.100cvs181.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/glossary.xml;  ) > 1.9.100cvs182.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/glossary.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/ps/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/dist/txt/Makefile.am;  ) > 1.9.100cvs183.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/glossary.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/keyboard.xml;  cvs diff -u -r 1.60.2.23 -r 1.60.2.24 po/es.po;  ) > 1.9.100cvs184.patchset

@@ -19,7 +19,7 @@ Action (rules)
     </term>
     <listitem>
       <para>
-An action is something to be performed when a message matches the filtering rule conditions. Most simple action is to move the matching message to a preset folder.
+An action is something to be performed when a message matches the filtering rule conditions. Most common action is to move the matching message to a preset folder.
       </para>
     </listitem>
   </varlistentry>
@@ -85,7 +85,7 @@ Character encoding
     </term>
     <listitem>
       <para>
-A map between writting symbols (like letters and other symbols) and the numbers used to represent them inside the computer. Most famous character encoding is probably <xref linkend="gt_ascii" />, but it has been superseded by others like UTF-8. 
+A map between writting symbols (like letters and other symbols) and the numbers used to represent them inside the computer. Most famous character encoding is probably <xref linkend="gt_ascii" />, but it has been superseded by others like <xref linkend="gt_utf8" />. 
       </para>
     </listitem>
   </varlistentry>
@@ -105,7 +105,7 @@ Condition (rules)
     </term>
     <listitem>
       <para>
-The prerequisites a mail message must fulfill so the       
+The prerequisites a mail message must fulfill so the rule's action is executed. See also <xref linkend="gt_action_rules" />.
       </para>
     </listitem>
   </varlistentry>
@@ -115,10 +115,11 @@ The prerequisites a mail message must fulfill so the
   <title>D</title>
   <varlistentry id="gt_digital_signature">
     <term>
-Digital signature (GPG)
+Digital signature (<acronym>GPG</acronym>)
     </term>
     <listitem>
       <para>
+A piece of data obtained from merging a message and a cryptographic key which allows ensuring message authorship, more or less the same way a hand-written signature in a document does. This piece of data is sent with the message so the recipient can verify its validity.
       </para>
     </listitem>
   </varlistentry>
@@ -132,6 +133,7 @@ Encryption (GPG)
     </term>
     <listitem>
       <para>
+Scrambling a message with a cryptographic key so that only the recipient and ownwer of the key password can unscramble it for reading.
       </para>
     </listitem>
   </varlistentry>
@@ -145,6 +147,7 @@ Filtering rule
     </term>
     <listitem>
       <para>
+A <xref linkend="gt_rule" /> applied to incoming messages. Filtering rules can be also applied manually to the contents of any selected folder.
       </para>
     </listitem>
   </varlistentry>
@@ -186,7 +189,7 @@ Sent a received mail to other recipient which is not the sender.
   <title>H</title>
   <varlistentry id="gt_headers">
     <term>
-Headers (message)
+Headers
     </term>
     <listitem>
       <para>
@@ -356,7 +359,7 @@ A mailbox format in which all mail is kept in separate files. This is the defaul
     </term>
     <listitem>
       <para>
-Multipurpose Internet Mail Extensions. Internet standards for representing binary data in <xref linkend="gt_ascii" /> text format, <xref linkend="gt_headers" /> encoding and
+Multipurpose Internet Mail Extensions. Internet standards for representing binary data in <xref linkend="gt_ascii" /> text format, <xref linkend="gt_headers" /> encoding and <xref linkend="gt_attachment" />s.
       </para>
     </listitem>
   </varlistentry>
@@ -426,7 +429,7 @@ Digital signing method which includes the signature data in the message body.
     </term>
     <listitem>
       <para>
-Digital signing method which includes the signature data as a separate <xref linkend="gt_mime" /> attachment.
+Digital signing method which includes the signature data as a separate <xref linkend="gt_mime" /> <xref linkend="gt_attachment" />.
       </para>
     </listitem>
   </varlistentry>
@@ -456,6 +459,7 @@ Privacy (<acronym>GPG</acronym>)
     </term>
     <listitem>
       <para>
+Privacy provides methods for both signing and encrypting mail messages you send and also for decrypting and verifying signed and encrypted messages. 
       </para>
     </listitem>
   </varlistentry>
@@ -479,7 +483,7 @@ Queue
     </term>
     <listitem>
       <para>
-Temporary storage for messages which are waiting to be sent.
+Temporary storage for messages which are waiting to be sent, either because they couldn't be sent due a network failure or because user requested them to be sent later.
       </para>
     </listitem>
   </varlistentry>
@@ -489,24 +493,7 @@ Quick Search
     </term>
     <listitem>
       <para>
-      </para>
-    </listitem>
-  </varlistentry>
-  <varlistentry id="gt_quick_search_recursive">
-    <term>
-Quick Search (Recursive)
-    </term>
-    <listitem>
-      <para>
-      </para>
-    </listitem>
-  </varlistentry>
-  <varlistentry id="gt_quick_search_sticky">
-    <term>
-Quick Search (Sticky)
-    </term>
-    <listitem>
-      <para>
+A dynamic filtering feature which allows viewing only a subset of the mails in a folder, those matching some filtering condition.
       </para>
     </listitem>
   </varlistentry>
@@ -524,6 +511,16 @@ Mentioning relevant parts of the received message within the reply in order to k
     
 <variablelist>
   <title>R</title>
+  <varlistentry id="gt_recursive_quick_search">
+    <term>
+Recursive (Quick search)
+    </term>
+    <listitem>
+      <para>
+Mode of the <xref linkend="gt_quick_search" /> where filtering applies also in all child folders of the folder being searched.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_redirect">
     <term>
 Redirect
@@ -584,7 +581,7 @@ Source (message)
     </term>
     <listitem>
       <para>
-The full text of a message as is transmited over the network. This includes all headers, message body and possible attachments.
+The full text of a message as is transmited over the network. This includes all headers, message body and encoded attachments if present.
       </para>
     </listitem>
   </varlistentry>
@@ -638,6 +635,16 @@ Command STARTTLS (Start Transport Layer Security) is used to initiate a secure c
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_sticky_quick_search">
+    <term>
+Sticky (Quick Search)
+    </term>
+    <listitem>
+      <para>
+Usually <xref linkend="gt_quick_search" /> condition is reset to all messages when another folder is selected. To avoid this sticky mode can be enabled, so the existing filter remains on folder change and is applied to the new folder.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_summary">
     <term>
 Summary
@@ -654,6 +661,7 @@ Synchronisation (folder)
     </term>
     <listitem>
       <para>
+Making local folder contents be the same that the contents of the remote folder in the associated mail server.
       </para>
     </listitem>
   </varlistentry>

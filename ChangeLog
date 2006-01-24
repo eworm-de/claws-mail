@@ -1,3 +1,12 @@
+2006-01-24 [mones]	1.9.100cvs184
+
+	* manual/glossary.xml
+		All current terms finished. Reviewers welcome ;-)
+	* manual/keyboard.xml
+		Fixed column width for pdf output.
+	* po/es.po
+		Updated
+
 2006-01-24 [paul]	1.9.100cvs183
 
 	* manual/glossary.xml
