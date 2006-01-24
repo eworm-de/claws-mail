@@ -1,7 +1,797 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appendix id="ap_glossary">
 <title>Glossary</title>
-<para>
-</para>
+<variablelist>
+  <title>A</title>
+  <varlistentry id="gt_account">
+    <term> 
+Account
+    </term>
+    <listitem>
+      <para>
+An account represents an identity within Sylpheed-Claws. As such only one email address is associated with an account. You can setup an unlimited number of accounts though.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_action_rules">
+    <term>
+Action (rules)
+    </term>
+    <listitem>
+      <para>
+An action is something to be performed when a message matches the filtering rule conditions. Most simple action is to move the matching message to a preset folder.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_actions">
+    <term>
+Actions 
+    </term>
+    <listitem>
+      <para>
+User defined commands arranged in a customisable menu. Message(s) or part of a message can be passed to them using a special syntax.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_addressbook">
+    <term>
+Addressbook
+    </term>
+    <listitem>
+      <para>
+Storage for names, mail addresses and custom user attributes. Also provides access to <xref linkend="gt_ldap" /> servers and <xref linkend="gt_vcard" /> files.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_ascii">
+    <term>
+<acronym>ASCII</acronym>
+    </term>
+    <listitem>
+      <para>
+American Standard Code for Information Interchange. A standard <xref linkend="gt_character_encoding" /> using 7 bit. It's defined as an Internet standard in <ulink url="http://www.ietf.org/rfc/rfc20.txt">RFC 20</ulink>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_attachment">
+    <term>
+Attachment
+    </term>
+    <listitem>
+      <para>
+Aditional file bundled with a mail message. Some attachments can be displayed inside Sylpheed-Claws, others require external programs. <xref linkend="gt_plugins" /> can provide additional functions for attachments.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+<!--
+<variablelist>
+  <title>B</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+-->    
+<variablelist>
+  <title>C</title>
+  <varlistentry id="gt_character_encoding">
+    <term>
+Character encoding
+    </term>
+    <listitem>
+      <para>
+A map between writting symbols (like letters and other symbols) and the numbers used to represent them inside the computer. Most famous character encoding is probably <xref linkend="gt_ascii" />, but it has been superseded by others like UTF-8. 
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_compose">
+    <term>
+Compose
+    </term>
+    <listitem>
+      <para>
+Create new a message text or a reply to a received mail in the so called compose window.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_condition_rules">
+    <term>
+Condition (rules)
+    </term>
+    <listitem>
+      <para>
+The prerequisites a mail message must fulfill so the       
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>D</title>
+  <varlistentry id="gt_digital_signature">
+    <term>
+Digital signature (GPG)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>E</title>
+  <varlistentry id="gt_encryption">
+    <term>
+Encryption (GPG)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>F</title>
+  <varlistentry id="gt_filtering_rule">
+    <term>
+Filtering rule
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_folder">
+    <term>
+Folder
+    </term>
+    <listitem>
+      <para>
+A folder is the primary message container. Folders can be local or remote, but they are managed in an uniform way by Sylpheed-Claws. Plugins can provide aditional folder types when loaded.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_forward">
+    <term>
+Forward
+    </term>
+    <listitem>
+      <para>
+Sent a received mail to other recipient which is not the sender.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+<!--    
+<variablelist>
+  <title>G</title>
+  <varlistentry>
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+-->    
+<variablelist>
+  <title>H</title>
+  <varlistentry id="gt_headers_message">
+    <term>
+Headers (message)
+    </term>
+    <listitem>
+      <para>
+Machine readable lines which are the first part of a mail message. Purpose of headers varies. Typical headers are the From and To which state the sender and recipient of the message. Others are just needed for the mail system to work. And there is other group which are optional but may provide aditional information, like <xref linkend="gt_xface" />.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_html">
+    <term>
+<acronym>HTML</acronym>
+    </term>
+    <listitem>
+      <para>
+Acronym for Hyper-Text Markup Language and was the standard language to encode web pages on the beginning of the <xref linkend="gt_www" />. Some mail clients use this language to encode the textual body of mails in order to craft special effects to text at the cost of multiplying the message size even several times. Unfortunately HTML mail is also widely used by spammers to send <xref linkend="gt_spam" />.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>I</title>
+  <varlistentry id="gt_imap">
+    <term>
+<acronym>IMAP4</acronym>
+    </term>
+    <listitem>
+      <para>
+Internet Messaging Access Protocol (version 4). A protocol for accessing email on a remote server from a local client. All messages are stored in the remote server.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_immediate_execution">
+    <term>
+Immediate execution
+    </term>
+    <listitem>
+      <para>
+When immediate execution is turned on operations performed on summary view items (like deletions or movements) are executed without delay. If turned off elements are only marked and operations are executed when the execute button is pressed.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+<!-- 
+<variablelist>
+  <title>J</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>K</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+-->    
+<variablelist>
+  <title>L</title>
+  <varlistentry id="gt_ldap"> 
+    <term>
+<acronym>LDAP</acronym>
+    </term>
+    <listitem>
+      <para>
+Lightweight Directory Access Protocol. A protocol for accessing information directories such as organizations, individuals, phone numbers, and addresses.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_local_mbox_file">
+    <term>
+Local mbox file
+    </term>
+    <listitem>
+      <para>
+A local file in <xref linkend="gt_mbox" /> format.      
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_log_window">
+    <term>
+Log window
+    </term>
+    <listitem>
+      <para>
+A special window which records protocol operations performed by Sylpheed-Claws in detail. It's an useful tool for debugging.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>M</title>
+  <varlistentry id="gt_mailbox">
+    <term>
+Mailbox
+    </term>
+    <listitem>
+      <para>
+The root of a folder hierarchy.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_maildir">
+    <term>
+Maildir
+    </term>
+    <listitem>
+      <para>
+A mailbox format in which all mail is kept in separate files.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_mark_message">
+    <term>
+Mark (message)
+    </term>
+    <listitem>
+      <para>
+Some bit set on a message to indicate some special status.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_mbox">
+    <term>
+MBOX
+    </term>
+    <listitem>
+      <para>
+A mailbox format in which all mail is concatenated and stored in a single file.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_message">
+    <term>
+Message
+    </term>
+    <listitem>
+      <para>
+A message is the basic piece of information handled by Sylpheed-Claws. A message is usually an email message, which is stored in <xref linkend="gt_mh" /> format on disk. Other kinds of messages (and storage formats) can be handled through <xref linkend="gt_plugins" />.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_mh">
+    <term>
+MH
+    </term>
+    <listitem>
+      <para>
+A mailbox format in which all mail is kept in separate files. This is the default mailbox format used by Sylpheed-Claws.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_mime">
+    <term>
+<acronym>MIME</acronym>
+    </term>
+    <listitem>
+      <para>
+Multipurpose Internet Mail Extensions. Internet standards for representing binary data in <xref linkend="gt_ascii" /> text format, <xref linkend="gt_headers" /> encoding and
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>N</title>
+  <varlistentry id="gt_nntp">
+    <term>
+<acronym>NNTP</acronym>
+    </term>
+    <listitem>
+      <para>
+Network News Transfer Protocol, the protocol used to post, distribute, and retrieve <xref linkend="gt_usenet" /> messages, also called news articles or simply news for short.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_newsgroups">
+    <term>
+Newsgroups
+    </term>
+    <listitem>
+      <para>
+A set of hierarchycal partitions of the news messages in a <xref linkend="gt_news_server" />. The <xref linkend="gt_nntp" /> protocol allows subscribing to one or more newsgroups, so the messages posted to the subscribed groups since the last update are automatically downloaded by the client on the next connection.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_news_server">
+    <term>
+News server    
+    </term>
+    <listitem>
+      <para>
+Server which provides access to USENET messages in <xref linkend="gt_newsgroups" /> through the <xref linkend="gt_nntp" /> protocol.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+<!--    
+<variablelist>
+  <title>O</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+-->    
+<variablelist>
+  <title>P</title>
+  <varlistentry id="gt_pgp_inline">
+    <term>
+<acronym>PGP</acronym> Inline
+    </term>
+    <listitem>
+      <para>
+Digital signing method which includes the signature data in the message body.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_pgp_mime">
+    <term>
+<acronym>PGP</acronym> <acronym>MIME</acronym>
+    </term>
+    <listitem>
+      <para>
+Digital signing method which includes the signature data as a separate <xref linkend="gt_mime" /> attachment.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_plugins">
+    <term>
+Plugins
+    </term>
+    <listitem>
+      <para>
+External modules which can be loaded and used by Sylpheed-Claws to extend its functionality.  
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_pop3">
+    <term>
+<acronym>POP3</acronym>
+    </term>
+    <listitem>
+      <para>
+Post Office Protocol (version 3). A protocol for retrieving email from a remote server. Messages can be automatically removed from server after downloading.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_privacy_gpg">
+    <term>
+Privacy (<acronym>GPG</acronym>)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_processing_rule">
+    <term>
+Processing rule
+    </term>
+    <listitem>
+      <para>
+A <xref linkend="gt_rule" /> which affects only a folder.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>Q</title>
+  <varlistentry id="gt_queue">
+    <term>
+Queue
+    </term>
+    <listitem>
+      <para>
+Temporary storage for messages which are waiting to be sent.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_quick_search">
+    <term>
+Quick Search
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_quick_search_recursive">
+    <term>
+Quick Search (Recursive)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_quick_search_sticky">
+    <term>
+Quick Search (Sticky)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_quotation">
+    <term>
+Quotation
+    </term>
+    <listitem>
+      <para>
+Mentioning relevant parts of the received message within the reply in order to keep the answer in context. These parts are marked by prepending some common character.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>R</title>
+  <varlistentry id="gt_redirect">
+    <term>
+Redirect
+    </term>
+    <listitem>
+      <para>
+Sent a received mail to a third recipient.      
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_reply">
+    <term>
+Reply
+    </term>
+    <listitem>
+      <para>
+Answer to a received message. As verb also the act of answering a message. 
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_rule">
+    <term>
+Rule
+    </term>
+    <listitem>
+      <para>
+Logical structure comprised of one or more conditions (see <xref linkend="gt_condition_rules" />) and one or more associated actions (see <xref linkend="gt_action_rules" />). Rules are used for filtering mail messages.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>S</title>
+  <varlistentry id="gt_smtp">
+    <term>
+<acronym>SMTP</acronym>
+    </term>
+    <listitem>
+      <para>
+Simple Mail Transfer Protocol. A protocol for sending email to servers.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_smtp_server">
+    <term>
+<acronym>SMTP</acronym> server.
+    </term>
+    <listitem>
+      <para>
+A server which receives mail messages from other hosts and/or sents mail messages to other hosts using the <xref linkend="gt_smtp" /> protocol.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_source_message">
+    <term>
+Source (message)
+    </term>
+    <listitem>
+      <para>
+The full text of a message as is transmited over the network. This includes all headers, message body and possible attachments.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_spam">
+    <term>
+Spam
+    </term>
+    <listitem>
+      <para>
+Junk mail, unsolicited commercial emails.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_spell_checking">
+    <term>
+Spell checking
+    </term>
+    <listitem>
+      <para>
+Automatic verification of words' spelling while typing or after composition has finished. Sylphee-Claws support both operating modes.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_ssl">
+    <term>
+<acronym>SSL</acronym>
+    </term>
+    <listitem>
+      <para>
+Secure Sockets Layer. A protocol used to encrypt and protect data sent over a network.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_ssl_certificate">
+    <term>
+<acronym>SSL</acronym> certificate
+    </term>
+    <listitem>
+      <para>
+A certificate installed on a secure server that is used for identification.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_starttls">
+    <term>
+<command>STARTTLS</command>
+    </term>
+    <listitem>
+      <para>
+Command STARTTLS (Start Transport Layer Security) is used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_summary">
+    <term>
+Summary
+    </term>
+    <listitem>
+      <para>
+Top right panel where important message <xref linkend="gt_headers" /> like sender or subject are displayed to provide a quick overview of <xref linkend="gt_folder" /> contents.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_synchronisation">
+    <term>
+Synchronisation (folder)
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>T</title>
+  <varlistentry id="gt_themes">
+    <term>
+Themes
+    </term>
+    <listitem>
+      <para>
+Image sets for changing the appearance of buttons, folders and other graphic elements in Sylpheed-Claws interface.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_thread">
+    <term>
+Thread (messages)
+    </term>
+    <listitem>
+      <para>
+Set of messages and its replies, usually around a common subject. 
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_toolbars">
+    <term>
+Toolbars
+    </term>
+    <listitem>
+      <para>
+Sets of buttons arranged horizontally which provide access to all commonly used functions. Toolbars in Sylpheed-Claws are user customisable.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+  
+<variablelist>
+  <title>U</title>
+  <varlistentry id="gt_usenet">
+    <term>
+USENET
+    </term>
+    <listitem>
+      <para>
+User's Network. A bulletin board system of discussion groups, often called <xref linkend="gt_newsgroups" />.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_utf8">
+    <term>
+<acronym>UTF-8</acronym>    
+    </term>
+    <listitem>
+      <para>
+8-bit Unicode Transformation Format. A variable length character encoding capable of representing any universal character. It's an Internet standard defined in <ulink url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>V</title>
+  <varlistentry id="gt_vcard">
+    <term>
+vCard
+    </term>
+    <listitem>
+      <para>
+File format standard for Personal Data Interchange, it can hold information such as address, phone numbers, etc., much like the information usually found in a bussines card. They are commonly found attached to mail messages.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>W</title>
+  <varlistentry id="gt_wrapping">
+    <term>
+Wrapping
+    </term>
+    <listitem>
+      <para>
+Restructuring the text paragraphs (quoted and unquoted) to fit them nicely to a preset width.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_www">
+    <term>
+<acronym>WWW</acronym>
+    </term>
+    <listitem>
+      <para>
+World Wide Web, the hyperlinked network of web pages accross the Internet.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>X</title>
+  <varlistentry id="gt_xface">
+    <term>
+X-Face
+    </term>
+    <listitem>
+      <para>
+Specially coded black and white image (48x48 pixels) included in the message headers. Capable mailers like Sylpheed-Claws and others can decode and show it along the message text. Although they are not unique, they can help to quickly identify the mensage sender.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+<!--    
+<variablelist>
+  <title>Y</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+    
+<variablelist>
+  <title>Z</title>
+  <varlistentry id="">
+    <term>
+    </term>
+    <listitem>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+-->
 </appendix>
 
