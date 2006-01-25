@@ -3,7 +3,7 @@ Section: mail
 Priority: optional
 Maintainer: Ricardo Mones <mones@aic.uniovi.es>
 Uploaders: Paul Mangan <claws@thewildbeast.co.uk>, Gustavo Noronha Silva <kov@debian.org>
-Build-Depends: debhelper (>= 4.0.0), libcompfaceg1-dev, libglib2.0-dev, libgtk2.0-dev, xlibs-dev, libgdk-pixbuf-dev, libgpgme11-dev (>= 0.4.5), libssl-dev, libaspell-dev, aspell-bin, libpisock-dev, libldap2-dev, flex | flex-old, bison, gettext, libltdl3-dev, autotools-dev, libtool, libaspell-dev (>= 0.50.3), libreadline4-dev, libclamav1-dev, libt1-dev, libgtkmathview-dev, libgnomeprintui2.2-dev, libetpan-dev (>= 0.38)
+Build-Depends: debhelper (>= 4.0.0), libcompfaceg1-dev, libglib2.0-dev, libgtk2.0-dev, xlibs-dev, libgpgme11-dev (>= 0.4.5), libssl-dev, libaspell-dev, aspell-bin, libpisock-dev, libldap2-dev, flex | flex-old, bison, gettext, libltdl3-dev, autotools-dev, libtool, libaspell-dev (>= 0.50.3), libclamav1-dev, libt1-dev, libgtkmathview-dev, libgnomeprintui2.2-dev, libetpan-dev (>= 0.41)
 Standards-Version: 3.6.2
 
 Package: sylpheed-claws

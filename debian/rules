@@ -32,8 +32,8 @@ config.status: configure
 		--prefix=/usr \
 		--mandir=\$${prefix}/share/man \
 		--infodir=\$${prefix}/share/info \
-		--with-manualdir=\$${prefix}/share/doc/sylpheed-doc/manual \
-		--with-faqdir=\$${prefix}/share/doc/sylpheed-doc/faq \
+		--with-manualdir=\$${prefix}/share/doc/sylpheed-claws/manual \
+		--with-faqdir=\$${prefix}/share/doc/sylpheed-claws/faq \
 		--enable-openssl \
 		--enable-gpgme \
 		--enable-ipv6 \
@@ -79,7 +79,6 @@ install: build
 
 	# Add here commands to install the package into debian/sylpheed-claws.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/sylpheed-claws
-	rm -rf $(CURDIR)/debian/sylpheed-claws/usr/share/doc/sylpheed-doc
 	rm -f $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/*.a
 	rm -f $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/*.la
 	#________________________________________[libsylpheed-claws-dev]__
