@@ -1,3 +1,12 @@
+2006-01-25 [colin]	1.9.100cvs186
+
+	* src/folder.c
+	* src/mainwindow.c
+		Fix subscribed folders not found
+	* src/compose.c
+		Don't try to encode as original mail's charset
+		if it's ascii 
+
 2006-01-25 [paul]	1.9.100cvs185
 
 	* AUTHORS

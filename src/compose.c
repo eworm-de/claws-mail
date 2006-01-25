@@ -4091,7 +4091,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 				test_conv_global_out = conv_codeset_strdup(chars, src_codeset, out_codeset);
 			}
 			
-			if (!test_conv_global_out && compose->orig_charset) {
+			if (!test_conv_global_out && compose->orig_charset
+			&&  strcmp(compose->orig_charset, CS_US_ASCII)) {
 				out_codeset = compose->orig_charset;
 				debug_print("failure; trying to convert to %s\n", out_codeset);
 				test_conv_reply = conv_codeset_strdup(chars, src_codeset, out_codeset);
@@ -4100,7 +4101,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			if (!test_conv_global_out && !test_conv_reply) {
 				/* we're lost */
 				out_codeset = CS_INTERNAL;
-				debug_print("finally using %s\n", out_codeset);
+				debug_print("failure; finally using %s\n", out_codeset);
 			}
 			g_free(test_conv_global_out);
 			g_free(test_conv_reply);

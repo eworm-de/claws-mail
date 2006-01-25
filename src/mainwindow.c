@@ -2690,7 +2690,7 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 		
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
-			GTK_STOCK_CANCEL, _("_Synchronise"), NULL) != G_ALERTALTERNATE)
+			GTK_STOCK_CANCEL, _("+_Synchronise"), NULL) != G_ALERTALTERNATE)
 		return;
 
 	folder_synchronise(NULL);

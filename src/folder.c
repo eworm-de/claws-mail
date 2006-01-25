@@ -3659,10 +3659,8 @@ static void folder_item_want_synchronise_func(FolderItem *item, gpointer data)
 	WantSyncData *want_sync_data = (WantSyncData *)data;
 	
 	if (want_sync_data->folder == NULL || item->folder == want_sync_data->folder) {
-		if(item->prefs->offlinesync && item->folder->klass->synchronise)
-			want_sync_data->want_sync = TRUE;
-		else
-			want_sync_data->want_sync = FALSE;
+		if (item->prefs->offlinesync && item->folder->klass->synchronise)
+			want_sync_data->want_sync |= TRUE;
 	}
 }
 
@@ -3671,6 +3669,7 @@ gboolean folder_want_synchronise(Folder *folder)
 	WantSyncData *want_sync_data = g_new0(WantSyncData, 1);
 	gboolean result;
 	want_sync_data->folder = folder;
+	want_sync_data->want_sync = FALSE;
 	
 	folder_func_to_all_folders(folder_item_want_synchronise_func, want_sync_data);
 	result = want_sync_data->want_sync;
