@@ -10,6 +10,7 @@
 		updates submitted by Stephan Sachse, Emilian Nowak
 		and Quar, Frederico Goncalves Guimaraes, and
 		Aleksandar Urosevic
+		Fix Bug 896, 'PT_BR locale broken'.
 	* src/gtk/authors.h
 		updated
 
