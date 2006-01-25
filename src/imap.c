@@ -1069,6 +1069,11 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 					unlock_session();
 					return -1;
 				}
+			}  else if (!(MSG_IS_QUEUED(*fileinfo->flags) 
+				      || MSG_IS_DRAFT(*fileinfo->flags))
+				    && (folder_has_parent_of_type(dest, F_QUEUE)
+				    || folder_has_parent_of_type(dest, F_DRAFT))) {
+				return -1;
 			} 
 		}
 		if (real_file == NULL)
@@ -1242,18 +1247,28 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
+	/* if from/to are the same "type" (with or without extra headers),
+	 * copy them via imap */
 	if (folder == msginfo->folder->folder &&
 	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT) &&
-	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE)) {
+	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+	    !folder_has_parent_of_type(dest, F_DRAFT) &&
+	    !folder_has_parent_of_type(dest, F_QUEUE)) {
+		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
+		return ret;
+	} else if (folder == msginfo->folder->folder &&
+	    (folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
+	     folder_has_parent_of_type(msginfo->folder, F_QUEUE)) && 
+	    (folder_has_parent_of_type(dest, F_DRAFT) ||
+	     folder_has_parent_of_type(dest, F_QUEUE))) {
 		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
 		return ret;
 	}
-
+	/* else reupload them */
 	file_list = procmsg_get_message_file_list(msglist);
 	g_return_val_if_fail(file_list != NULL, -1);
 
 	ret = imap_add_msgs(folder, dest, file_list, relation);
-
 	procmsg_message_file_list_free(file_list);
 
 	return ret;

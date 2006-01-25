@@ -1,3 +1,11 @@
+2006-01-25 [colin]	1.9.100cvs187
+
+	* src/imap.c
+		Don't allow moving/copying mails between
+		queue/drafts and non-queue/drafts folders
+		Fixes bug #897 (message header is resetted 
+		if one is copied to Drafts)
+
 2006-01-25 [colin]	1.9.100cvs186
 
 	* src/folder.c
