@@ -1,3 +1,18 @@
+2006-01-25 [paul]	1.9.100cvs185
+
+	* AUTHORS
+	* po/Makevars
+		updated
+	* po/de.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sr.po
+		updates submitted by Stephan Sachse, Emilian Nowak
+		and Quar, Frederico Goncalves Guimaraes, and
+		Aleksandar Urosevic
+	* src/gtk/authors.h
+		updated
+
 2006-01-24 [mones]	1.9.100cvs184
 
 	* manual/glossary.xml
