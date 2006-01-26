@@ -1,3 +1,11 @@
+2006-01-26 [paul]	1.9.100cvs189
+
+	* manual/glossary.xml
+	* manual/plugins.xml
+		edited
+	* po/en_GB.po
+		updated
+
 2006-01-26 [paul]	1.9.100cvs188
 
 	* src/prefs_display_header.c

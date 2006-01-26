@@ -61,7 +61,7 @@
 	    <listitem><para>Intended to extend the filtering possibilities of Sylpheed-Claws. It provides a Perl interface to Sylpheed-Claws' filtering mechanism, allowing the use of full Perl power in email filters.</para></listitem>
     </varlistentry>
     <varlistentry><term>SynCE</term>
-	    <listitem><para>Assists in keeping the addressbook of a Windows CE device (Pocket PC/ iPAQ, Smartphone etc) in sync with Claws' addressbook, with respect to email addresses.</para></listitem>
+	    <listitem><para>Assists in keeping the address book of a Windows CE device (Pocket PC/ iPAQ, Smartphone etc) in sync with Sylpheed-Claws' address book, with respect to email addresses.</para></listitem>
     </varlistentry>
     <varlistentry><term>vCalendar</term>
 	    <listitem><para>Enables vCalendar message handling like that produced by Evolution or Outlook, and Webcal subscriptions.</para></listitem>

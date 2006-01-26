@@ -9,17 +9,17 @@ Account
     </term>
     <listitem>
       <para>
-An account represents an identity within Sylpheed-Claws. As such only one email address is associated with an account. You can setup an unlimited number of accounts though.
+An account represents an identity within Sylpheed-Claws. As such only one email address is associated with each account. However, the number of accounts you can setup is unlimited.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_action_rules">
     <term>
-Action (rules)
+Action (filtering/processing rules)
     </term>
     <listitem>
       <para>
-An action is something to be performed when a message matches the filtering rule conditions. Most common action is to move the matching message to a preset folder.
+	      An action is something that is performed on a message when it matches the rule conditions. A typical action is moving the message to a particular folder.  See also <xref linkend="gt_condition_rules" />.
       </para>
     </listitem>
   </varlistentry>
@@ -29,13 +29,13 @@ Actions
     </term>
     <listitem>
       <para>
-User defined commands arranged in a customisable menu. Message(s) or part of a message can be passed to them using a special syntax.
+Actions are user-defined commands that can be applied to a message, or part of a message, using a special syntax. They are presented to the user in a customisable menu.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_addressbook">
     <term>
-Addressbook
+Address book
     </term>
     <listitem>
       <para>
@@ -59,7 +59,7 @@ Attachment
     </term>
     <listitem>
       <para>
-Aditional file bundled with a mail message. Some attachments can be displayed inside Sylpheed-Claws, others require external programs. <xref linkend="gt_plugins" /> can provide additional functions for attachments.
+Additional file(s) included with a mail message. Some attachments can be displayed by Sylpheed-Claws, others require external programs. <xref linkend="gt_plugins" /> can provide additional functions for attachments.
       </para>
     </listitem>
   </varlistentry>
@@ -85,7 +85,7 @@ Character encoding
     </term>
     <listitem>
       <para>
-A map between writting symbols (like letters and other symbols) and the numbers used to represent them inside the computer. Most famous character encoding is probably <xref linkend="gt_ascii" />, but it has been superseded by others like <xref linkend="gt_utf8" />. 
+A map between written symbols, like letters and other symbols, and the numbers used to represent them inside the computer. The most well-known character encoding is probably <xref linkend="gt_ascii" />, but it has been superseded by others, such as <xref linkend="gt_utf8" />.
       </para>
     </listitem>
   </varlistentry>
@@ -95,17 +95,17 @@ Compose
     </term>
     <listitem>
       <para>
-Create new a message text or a reply to a received mail in the so called compose window.
+Create new a message text or a reply to a received mail in the Compose window.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_condition_rules">
     <term>
-Condition (rules)
+Condition (filtering/processing rules)
     </term>
     <listitem>
       <para>
-The prerequisites a mail message must fulfill so the rule's action is executed. See also <xref linkend="gt_action_rules" />.
+The prerequisites that a mail message must fulfil in order for the rule's action to be executed. See also <xref linkend="gt_action_rules" />.
       </para>
     </listitem>
   </varlistentry>
@@ -119,7 +119,7 @@ Digital signature (<acronym>GPG</acronym>)
     </term>
     <listitem>
       <para>
-A piece of data obtained from merging a message and a cryptographic key which allows ensuring message authorship, more or less the same way a hand-written signature in a document does. This piece of data is sent with the message so the recipient can verify its validity.
+A piece of data obtained from merging a message and a cryptographic key which ensures message authorship, in a similar way that a hand-written signature does in a document. This piece of data is sent with the message so the recipient can verify its validity.
       </para>
     </listitem>
   </varlistentry>
@@ -147,7 +147,7 @@ Filtering rule
     </term>
     <listitem>
       <para>
-A <xref linkend="gt_rule" /> applied to incoming messages. Filtering rules can be also applied manually to the contents of any selected folder.
+A <xref linkend="gt_rule" /> applied to incoming messages. Filtering rules can be also applied manually to the contents of any folder.
       </para>
     </listitem>
   </varlistentry>
@@ -157,7 +157,7 @@ Folder
     </term>
     <listitem>
       <para>
-A folder is the primary message container. Folders can be local or remote, but they are managed in an uniform way by Sylpheed-Claws. Plugins can provide aditional folder types when loaded.
+A folder is the primary message container. Folders can be local or remote, but they are managed in a uniform way by Sylpheed-Claws.
       </para>
     </listitem>
   </varlistentry>
@@ -167,7 +167,7 @@ Forward
     </term>
     <listitem>
       <para>
-Sent a received mail to other recipient which is not the sender.
+To send a copy of a received mail to another recipient, optionally adding your own message.
       </para>
     </listitem>
   </varlistentry>
@@ -193,7 +193,7 @@ Headers
     </term>
     <listitem>
       <para>
-Machine readable lines which are the first part of a mail message. Purpose of headers varies. Typical headers are the From and To which state the sender and recipient of the message. Others are just needed for the mail system to work. And there is other group which are optional but may provide aditional information, like <xref linkend="gt_xface" />.
+Machine readable lines which form the first part of a mail message. The purpose of headers varies; Typical headers are From and To which state the sender and recipient of the message, others are used by the mail system. Some headers are optional and are used to provide additional information, such as <xref linkend="gt_xface" />.
       </para>
     </listitem>
   </varlistentry>
@@ -203,7 +203,7 @@ Machine readable lines which are the first part of a mail message. Purpose of he
     </term>
     <listitem>
       <para>
-Acronym for Hyper-Text Markup Language and was the standard language to encode web pages on the beginning of the <xref linkend="gt_www" />. Some mail clients use this language to encode the textual body of mails in order to craft special effects to text at the cost of multiplying the message size even several times. Unfortunately HTML mail is also widely used by spammers to send <xref linkend="gt_spam" />.
+Hyper-Text Markup Language and was the standard language to encode web pages in the beginning of the <xref linkend="gt_www" />. Some mail clients use this language to encode the textual body of mails in order to craft special effects to text at the cost of multiplying the message size several times. HTML mail is also widely used by spammers to send <xref linkend="gt_spam" />.
       </para>
     </listitem>
   </varlistentry>
@@ -227,7 +227,7 @@ Immediate execution
     </term>
     <listitem>
       <para>
-When immediate execution is turned on operations performed on summary view items (like deletions or movements) are executed without delay. If turned off elements are only marked and operations are executed when the execute button is pressed.
+	      When the <quote>immediate execution</quote> option is used, operations performed on messages, (like deletions or movements), are performed immediately. If the option is turned off, all operations performed on messages by the user are only carried out when the <quote>Execute</quote> button is pressed.
       </para>
     </listitem>
   </varlistentry>
@@ -265,7 +265,7 @@ When immediate execution is turned on operations performed on summary view items
     </term>
     <listitem>
       <para>
-Lightweight Directory Access Protocol. A protocol for accessing information directories such as organizations, individuals, phone numbers, and addresses.
+Lightweight Directory Access Protocol. A protocol for accessing information directories such as organisations, individuals, phone numbers, and addresses.
       </para>
     </listitem>
   </varlistentry>
@@ -275,7 +275,7 @@ Local mbox file
     </term>
     <listitem>
       <para>
-A local file in <xref linkend="gt_mbox" /> format.      
+A local mailbox spool file in <xref linkend="gt_mbox" /> format.      
       </para>
     </listitem>
   </varlistentry>
@@ -285,7 +285,7 @@ Log window
     </term>
     <listitem>
       <para>
-A special window which records protocol operations performed by Sylpheed-Claws in detail. It's an useful tool for debugging.
+A special window which records protocol operations in detail that are performed by Sylpheed-Claws. It's a useful tool for debugging.
       </para>
     </listitem>
   </varlistentry>
@@ -299,7 +299,7 @@ Mailbox
     </term>
     <listitem>
       <para>
-The root of a folder hierarchy.
+The root folder of the folder hierarchy.
       </para>
     </listitem>
   </varlistentry>
@@ -319,7 +319,7 @@ Mark (message)
     </term>
     <listitem>
       <para>
-Some bit set on a message to indicate some special status.
+A tag that can be set on a message by the user in order to draw attention to the message. Marks are shown in the Mark column of the Message List.
       </para>
     </listitem>
   </varlistentry>
@@ -373,7 +373,7 @@ Multipurpose Internet Mail Extensions. Internet standards for representing binar
     </term>
     <listitem>
       <para>
-Network News Transfer Protocol, the protocol used to post, distribute, and retrieve <xref linkend="gt_usenet" /> messages, also called news articles or simply news for short.
+Network News Transfer Protocol. The protocol used to post, distribute, and retrieve <xref linkend="gt_usenet" /> messages, also called news articles or simply news for short.
       </para>
     </listitem>
   </varlistentry>
@@ -383,7 +383,7 @@ Newsgroups
     </term>
     <listitem>
       <para>
-A set of hierarchycal partitions of the news messages in a <xref linkend="gt_news_server" />. The <xref linkend="gt_nntp" /> protocol allows subscribing to one or more newsgroups, so the messages posted to the subscribed groups since the last update are automatically downloaded by the client on the next connection.
+A set of hierarchical partitions of <xref linkend="gt_usenet" /> messages on a <xref linkend="gt_news_server" />. The <xref linkend="gt_nntp" /> protocol allows the user to subscribe to one or more newsgroups. New messages posted to the subscribed groups are automatically downloaded on connection.
       </para>
     </listitem>
   </varlistentry>
@@ -393,7 +393,7 @@ News server
     </term>
     <listitem>
       <para>
-Server which provides access to USENET messages in <xref linkend="gt_newsgroups" /> through the <xref linkend="gt_nntp" /> protocol.
+Server which provides access to <xref linkend="gt_usenet" /> messages in <xref linkend="gt_newsgroups" /> through the <xref linkend="gt_nntp" /> protocol.
       </para>
     </listitem>
   </varlistentry>
@@ -459,7 +459,7 @@ Privacy (<acronym>GPG</acronym>)
     </term>
     <listitem>
       <para>
-Privacy provides methods for both signing and encrypting mail messages you send and also for decrypting and verifying signed and encrypted messages. 
+Privacy provides methods for both signing and encrypting mail messages you send and also for verifying and decrypting signed and encrypted messages that you receive.
       </para>
     </listitem>
   </varlistentry>
@@ -469,7 +469,7 @@ Processing rule
     </term>
     <listitem>
       <para>
-A <xref linkend="gt_rule" /> which affects only a folder.
+A <xref linkend="gt_rule" /> or set of rules belonging to a folder which are executed on entering the folder.
       </para>
     </listitem>
   </varlistentry>
@@ -483,7 +483,7 @@ Queue
     </term>
     <listitem>
       <para>
-Temporary storage for messages which are waiting to be sent, either because they couldn't be sent due a network failure or because user requested them to be sent later.
+Temporary storage for messages which are waiting to be sent, either because they couldn't be sent due a network failure or because the user requested them to be sent later.
       </para>
     </listitem>
   </varlistentry>
@@ -493,7 +493,7 @@ Quick Search
     </term>
     <listitem>
       <para>
-A dynamic filtering feature which allows viewing only a subset of the mails in a folder, those matching some filtering condition.
+A powerful way to search for messages using almost any criteria that you can think of.
       </para>
     </listitem>
   </varlistentry>
@@ -503,7 +503,7 @@ Quotation
     </term>
     <listitem>
       <para>
-Mentioning relevant parts of the received message within the reply in order to keep the answer in context. These parts are marked by prepending some common character.
+When replying to a message the user will often include a quoted section of that message to provide the context. The quoted section is shown by the prepending of a common character, usually '>'.
       </para>
     </listitem>
   </varlistentry>
@@ -513,11 +513,11 @@ Mentioning relevant parts of the received message within the reply in order to k
   <title>R</title>
   <varlistentry id="gt_recursive_quick_search">
     <term>
-Recursive (Quick search)
+Recursive (Quick Search)
     </term>
     <listitem>
       <para>
-Mode of the <xref linkend="gt_quick_search" /> where filtering applies also in all child folders of the folder being searched.
+A recursive <xref linkend="gt_quick_search" /> will also search in all subfolders of the selected folder.
       </para>
     </listitem>
   </varlistentry>
@@ -527,7 +527,7 @@ Redirect
     </term>
     <listitem>
       <para>
-Sent a received mail to a third recipient.      
+To send a copy of a received mail in its original form to another recipient.
       </para>
     </listitem>
   </varlistentry>
@@ -537,7 +537,7 @@ Reply
     </term>
     <listitem>
       <para>
-Answer to a received message. As verb also the act of answering a message. 
+Answer to a received message. As verb also the act of answering a message.
       </para>
     </listitem>
   </varlistentry>
@@ -571,7 +571,7 @@ Simple Mail Transfer Protocol. A protocol for sending email to servers.
     </term>
     <listitem>
       <para>
-A server which receives mail messages from other hosts and/or sents mail messages to other hosts using the <xref linkend="gt_smtp" /> protocol.
+A server which receives mail messages from other hosts and/or sends mail messages to other hosts using the <xref linkend="gt_smtp" /> protocol.
       </para>
     </listitem>
   </varlistentry>
@@ -581,7 +581,7 @@ Source (message)
     </term>
     <listitem>
       <para>
-The full text of a message as is transmited over the network. This includes all headers, message body and encoded attachments if present.
+The full text of a message as it is transmitted over the network. This includes all headers, message body and encoded attachments if present.
       </para>
     </listitem>
   </varlistentry>
@@ -601,7 +601,7 @@ Spell checking
     </term>
     <listitem>
       <para>
-Automatic verification of words' spelling while typing or after composition has finished. Sylphee-Claws support both operating modes.
+Automatic verification of spelling while typing or after composition has finished.
       </para>
     </listitem>
   </varlistentry>
@@ -627,11 +627,11 @@ A certificate installed on a secure server that is used for identification.
   </varlistentry>
   <varlistentry id="gt_starttls">
     <term>
-<command>STARTTLS</command>
+STARTTLS
     </term>
     <listitem>
       <para>
-Command STARTTLS (Start Transport Layer Security) is used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
+STARTTLS, (start transport layer security), is a commnd used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
       </para>
     </listitem>
   </varlistentry>
@@ -641,17 +641,7 @@ Sticky (Quick Search)
     </term>
     <listitem>
       <para>
-Usually <xref linkend="gt_quick_search" /> condition is reset to all messages when another folder is selected. To avoid this sticky mode can be enabled, so the existing filter remains on folder change and is applied to the new folder.
-      </para>
-    </listitem>
-  </varlistentry>
-  <varlistentry id="gt_summary">
-    <term>
-Summary
-    </term>
-    <listitem>
-      <para>
-Top right panel where important message <xref linkend="gt_headers" /> like sender or subject are displayed to provide a quick overview of <xref linkend="gt_folder" /> contents.
+When the sticky option is set on <xref linkend="gt_quick_search" /> the search terms are not cleared when changing folders.
       </para>
     </listitem>
   </varlistentry>
@@ -661,7 +651,7 @@ Synchronisation (folder)
     </term>
     <listitem>
       <para>
-Making local folder contents be the same that the contents of the remote folder in the associated mail server.
+Making the contents of a local folder mirror those of an equivalent remote folder in the associated mail server.
       </para>
     </listitem>
   </varlistentry>
@@ -675,7 +665,7 @@ Themes
     </term>
     <listitem>
       <para>
-Image sets for changing the appearance of buttons, folders and other graphic elements in Sylpheed-Claws interface.
+Image sets for changing the appearance of buttons, folders and other graphical elements of Sylpheed-Claws.
       </para>
     </listitem>
   </varlistentry>
@@ -685,7 +675,7 @@ Thread (messages)
     </term>
     <listitem>
       <para>
-Set of messages and its replies, usually around a common subject. 
+A set of messages loosely relating to each other. 
       </para>
     </listitem>
   </varlistentry>
@@ -695,7 +685,7 @@ Toolbars
     </term>
     <listitem>
       <para>
-Sets of buttons arranged horizontally which provide access to all commonly used functions. Toolbars in Sylpheed-Claws are user customisable.
+Sets of buttons arranged horizontally which provide access to all commonly used functions. Toolbars in Sylpheed-Claws can be customised.
       </para>
     </listitem>
   </varlistentry>
@@ -719,7 +709,7 @@ User's Network. A bulletin board system of discussion groups, often called <xref
     </term>
     <listitem>
       <para>
-8-bit Unicode Transformation Format. A variable length character encoding capable of representing any universal character. It's an Internet standard defined in <ulink url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
+8-bit Unicode Transformation Format. A variable length character encoding capable of representing any universal character. An Internet standard defined in <ulink url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
       </para>
     </listitem>
   </varlistentry>
@@ -733,7 +723,7 @@ vCard
     </term>
     <listitem>
       <para>
-File format standard for Personal Data Interchange, it can hold information such as address, phone numbers, etc., much like the information usually found in a bussines card. They are commonly found attached to mail messages.
+File format standard for Personal Data Interchange, it can hold information such as address, phone numbers, etc., much like the information usually found in a business card. They are commonly found attached to mail messages.
       </para>
     </listitem>
   </varlistentry>
@@ -747,7 +737,7 @@ Wrapping
     </term>
     <listitem>
       <para>
-Restructuring the text paragraphs (quoted and unquoted) to fit them nicely to a preset width.
+Restructuring of the message text based on a user-defined maximum number of characters per line.
       </para>
     </listitem>
   </varlistentry>
@@ -771,7 +761,7 @@ X-Face
     </term>
     <listitem>
       <para>
-Specially coded black and white image (48x48 pixels) included in the message headers. Capable mailers like Sylpheed-Claws and others can decode and show it along the message text. Although they are not unique, they can help to quickly identify the mensage sender.
+Specially coded black and white image (48x48 pixels) included in the message headers. Capable mailers like Sylpheed-Claws and others can decode and show it alongside the message text. Although they are not unique, they can help to quickly identify the mensage sender.
       </para>
     </listitem>
   </varlistentry>
