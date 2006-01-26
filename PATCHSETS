@@ -1173,3 +1173,4 @@
 ( cvs diff -u -r 1.179.2.89 -r 1.179.2.90 src/imap.c;  ) > 1.9.100cvs187.patchset
 ( cvs diff -u -r 1.16.2.17 -r 1.16.2.18 src/prefs_display_header.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/prefs_folder_column.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/prefs_msg_colors.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/prefs_summaries.c;  cvs diff -u -r 1.10.2.12 -r 1.10.2.13 src/prefs_summary_column.c;  ) > 1.9.100cvs188.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/glossary.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/plugins.xml;  cvs diff -u -r 1.12.2.8 -r 1.12.2.9 po/en_GB.po;  ) > 1.9.100cvs189.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/Makefile.am;  cvs diff -u -r 1.654.2.1219 -r 1.654.2.1220 configure.ac;  ) > 1.9.100cvs190.patchset

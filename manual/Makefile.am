@@ -1,4 +1,6 @@
+if BUILD_MANUAL
 SUBDIRS=dtd dist
+endif
 
 EXTRA_DIST = \
 	account.xml \

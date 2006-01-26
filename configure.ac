@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=100
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=189
+EXTRA_VERSION=190
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -175,6 +175,12 @@ AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
 	[manualdir="$withval"])
 AC_SUBST(manualdir)
+
+AC_ARG_ENABLE(manual,
+	[  --disable-manual           Disable manual support],
+	[ac_cv_enable_manual=$enableval], [ac_cv_enable_manual=yes])
+
+AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
@@ -831,7 +837,8 @@ echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "IMAP4         : $ac_cv_enable_libetpan"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
-echo "libgnomeprint : $ac_cv_enable_gnomeprint"
+echo "Libgnomeprint : $ac_cv_enable_gnomeprint"
+echo "Manual        : $ac_cv_enable_manual"
 echo "Plugins       : $PLUGINS"
 echo "Config dir    : $ac_cv_with_config_dir"
 echo ""

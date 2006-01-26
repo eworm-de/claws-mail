@@ -1,3 +1,10 @@
+2006-01-26 [colin]	1.9.100cvs190
+
+	* manual/Makefile.am
+	* configure.ac
+		Make building the manual optional 
+		(--disable-manual)
+
 2006-01-26 [paul]	1.9.100cvs189
 
 	* manual/glossary.xml
