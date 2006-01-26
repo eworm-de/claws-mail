@@ -320,8 +320,9 @@ static void prefs_folder_column_create(void)
 			 G_CALLBACK(prefs_folder_column_set_to_default),
 			 NULL);
 
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&confirm_area,
 				      &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);

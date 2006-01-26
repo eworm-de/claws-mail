@@ -257,8 +257,8 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
 
-	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				&cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_show(confirm_area);
@@ -367,8 +367,8 @@ static void prefs_keybind_select(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create (&confirm_area, &ok_btn, GTK_STOCK_OK,
-				       &cancel_btn, GTK_STOCK_CANCEL,
+	gtkut_stock_button_set_create (&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
+				       &ok_btn, GTK_STOCK_OK,
 				       NULL, NULL);
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_focus (ok_btn);

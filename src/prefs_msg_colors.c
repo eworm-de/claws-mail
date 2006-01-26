@@ -307,10 +307,10 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gtk_window_set_resizable(GTK_WINDOW(color_dialog), FALSE);
 	manage_window_set_transient(GTK_WINDOW(color_dialog));
 
-	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
-			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
 	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
 			 "clicked", G_CALLBACK(quote_colors_set_dialog_cancel), data);
+	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
+			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
 	g_signal_connect(G_OBJECT(color_dialog), "key_press_event",
 			 G_CALLBACK(quote_colors_set_dialog_key_pressed),data);
 
