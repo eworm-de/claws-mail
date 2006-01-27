@@ -1,3 +1,10 @@
+2006-01-27 [cleroy]	1.9.100cvs192
+
+	* src/summaryview.c
+	* src/gtk/gtksourceprintjob.c
+		Add image printing 
+		(libgnomeprint only, of course)
+
 2006-01-27 [paul]	1.9.100cvs191
 
 	* po/fr.po

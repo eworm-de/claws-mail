@@ -3671,8 +3671,10 @@ static void print_mimeview(MimeView *mimeview)
 	||  !mimeview->textview->text)
 		alertpanel_warning(_("Cannot print: the message doesn't "
 				     "contain text."));
-	else
+	else {
+		gtk_widget_realize(mimeview->textview->text);
 		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
+	}
 }
 #endif
 

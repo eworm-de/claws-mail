@@ -36,6 +36,7 @@
 #include <time.h>
 
 #include "gtksourceprintjob.h"
+#include "image_viewer.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtkmain.h>
@@ -79,6 +80,7 @@ struct _TextSegment
 	TextSegment             *next;
 	TextStyle               *style;
 	gchar                   *text;
+	GdkPixbuf		*image;
 };
 
 /* a printable line */
@@ -1116,6 +1118,7 @@ get_text_with_style (GtkSourcePrintJob *job,
 {
 	GtkTextIter limit, next_toggle;
 	gboolean have_toggle;
+	GdkPixbuf *image = NULL;
 	
 	/* make sure the region to print is highlighted */
 	/*_gtk_source_buffer_highlight_region (job->priv->buffer, start, end, TRUE); */
@@ -1158,11 +1161,13 @@ get_text_with_style (GtkSourcePrintJob *job,
 			if (style != seg->style)
 			{
 				TextSegment *new_seg;
-				
 				/* style has changed, thus we need to
 				 * create a new segment */
 				/* close the current segment */
 				seg->text = gtk_text_iter_get_slice (start, &next_toggle);
+				if ((image = gtk_text_iter_get_pixbuf(start)) != NULL)
+					seg->image = image;
+				
 				*start = next_toggle;
 				
 				new_seg = g_new0 (TextSegment, 1);
@@ -1177,6 +1182,8 @@ get_text_with_style (GtkSourcePrintJob *job,
 		/* close the line */
 		seg->next = NULL;
 		seg->text = gtk_text_iter_get_slice (start, &limit);
+		if ((image = gtk_text_iter_get_pixbuf(start)) != NULL)
+			seg->image = image;
 
 		/* add the line of text to the job */
 		job->priv->paragraphs = g_slist_prepend (job->priv->paragraphs, para);
@@ -1266,16 +1273,17 @@ add_attribute_to_list (PangoAttribute *attr,
 	pango_attr_list_insert (list, attr);
 }
 
-static PangoLayout *
+static void *
 create_layout_for_para (GtkSourcePrintJob *job,
-			Paragraph         *para)
+			Paragraph         *para,
+			gboolean	  *is_image)
 {
 	GString *text;
 	PangoLayout *layout;
 	PangoAttrList *attrs;
 	TextSegment *seg;
 	gint index;
-
+	GdkPixbuf *image = NULL;
 	text = g_string_new (NULL);
 	attrs = pango_attr_list_new ();
 	
@@ -1329,14 +1337,17 @@ create_layout_for_para (GtkSourcePrintJob *job,
 			}
 		}
 
+		if (seg->image) {
+			image = seg->image;
+		}
+
 		index += seg_len;
 		seg = seg->next;
 	}
 
 	layout = pango_layout_new (job->priv->pango_context);
 	
-/*	if (job->priv->wrap_mode != GTK_WRAP_NONE)*/
-		pango_layout_set_width (layout, job->priv->text_width * PANGO_SCALE);
+	pango_layout_set_width (layout, job->priv->text_width * PANGO_SCALE);
 	
 	switch (job->priv->wrap_mode)	{
 	case GTK_WRAP_CHAR:
@@ -1369,8 +1380,18 @@ create_layout_for_para (GtkSourcePrintJob *job,
 	if (job->priv->tab_array)
 		pango_layout_set_tabs (layout, job->priv->tab_array);
 	
-	pango_layout_set_text (layout, text->str, text->len);
-	pango_layout_set_attributes (layout, attrs);
+	if (image == NULL) {
+		pango_layout_set_text (layout, text->str, text->len);
+		pango_layout_set_attributes (layout, attrs);
+		*is_image = FALSE;
+	} else {
+		pango_layout_set_text(layout, "IMAGE\n", 6);
+		*is_image = TRUE;
+		pango_attr_list_unref(attrs);
+		g_string_free(text, TRUE);
+		g_free(layout);
+		return image;
+	}
 
 	/* FIXME: <horrible-hack> 
 	 * For empty paragraphs, pango_layout_iter_get_baseline() returns 0,
@@ -1410,34 +1431,64 @@ paginate_paragraph (GtkSourcePrintJob *job,
 	PangoRectangle logical_rect;
 	gdouble max;
 	gdouble page_skip;
+	GdkPixbuf *image;
+	void *tmp;
+	gboolean is_image = FALSE;
+	
+	tmp = create_layout_for_para (job, para, &is_image);
+	if (!is_image) {
+		layout = (PangoLayout *)tmp;
+		image  = NULL;
+	} else {
+		image  = (GdkPixbuf *)tmp;
+		layout = NULL;
+	}
 
-	layout = create_layout_for_para (job, para);
+	if (image == NULL) {
+		iter = pango_layout_get_iter (layout);
 
-	iter = pango_layout_get_iter (layout);
+		max = 0;
+		page_skip = 0;
 
-	max = 0;
-	page_skip = 0;
-
-	do
-	{
-		pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
-		max = (gdouble) (logical_rect.y + logical_rect.height) / PANGO_SCALE;
-		
-		if (max - page_skip > job->priv->available_height)
+		do
 		{
-			/* "create" a new page */
+			pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
+			max = (gdouble) (logical_rect.y + logical_rect.height) / PANGO_SCALE;
+
+			if (max - page_skip > job->priv->available_height)
+			{
+				/* "create" a new page */
+				job->priv->page_count++;
+				job->priv->available_height = job->priv->text_height;
+				page_skip = (gdouble) logical_rect.y / PANGO_SCALE;
+			}
+
+		}
+		while (pango_layout_iter_next_line (iter));
+
+		job->priv->available_height -= max - page_skip;
+
+		pango_layout_iter_free (iter);
+		g_object_unref (layout);
+	} else {
+		gint max_height = job->priv->available_height;
+		gint image_height = gdk_pixbuf_get_height(image);
+		gint image_width = gdk_pixbuf_get_width(image);
+		gint scaled_height = 0, scaled_width = 0;
+		image_viewer_get_resized_size(image_width,
+					 image_height,
+					 job->priv->text_width, 
+					 job->priv->text_height,
+					 &scaled_width, &scaled_height);
+
+		if (scaled_height > max_height) {
 			job->priv->page_count++;
 			job->priv->available_height = job->priv->text_height;
-			page_skip = (gdouble) logical_rect.y / PANGO_SCALE;
+		} else {
+			job->priv->available_height -= scaled_height;
 		}
-
 	}
-	while (pango_layout_iter_next_line (iter));
 
-	job->priv->available_height -= max - page_skip;
-	
-	pango_layout_iter_free (iter);
-	g_object_unref (layout);
 }
 
 static gboolean 
@@ -1528,53 +1579,113 @@ print_paragraph (GtkSourcePrintJob *job,
 	gdouble page_skip;
 	gdouble baseline;
 	int result = -1;
-	
-	layout = create_layout_for_para (job, para);
+	GdkPixbuf *image;
+	void *tmp;
+	gboolean is_image;
 
-	iter = pango_layout_get_iter (layout);
-
-	/* Skip over lines already printed on previous page(s) */
-	for (current_line = 0; current_line < start_line; current_line++)
-		pango_layout_iter_next_line (iter);
-
-	max = 0;
-	page_skip = 0;
-	
-	do
-	{
-		pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
-		max = (gdouble) (logical_rect.y + logical_rect.height) / PANGO_SCALE;
-		
-		if (current_line == start_line)
-			page_skip = (gdouble) logical_rect.y / PANGO_SCALE;
-
-		if (max - page_skip > job->priv->available_height)
-		{
-			result = current_line; /* Save position for next page */
-			break;
-		}
-
-		baseline = (gdouble) pango_layout_iter_get_baseline (iter) / PANGO_SCALE;
-		baseline = *y + page_skip - baseline; /* Adjust to global coordinates */
-		if (current_line == 0)
-			*baseline_out = baseline;
-		
-		gnome_print_moveto (job->priv->print_ctxt,
-				    x + (gdouble) logical_rect.x / PANGO_SCALE,
-				    baseline);
-		gnome_print_pango_layout_line (job->priv->print_ctxt,
-					       pango_layout_iter_get_line (iter));
-
-		current_line++;
+	tmp = create_layout_for_para (job, para, &is_image);
+	if (!is_image) {
+		layout = (PangoLayout *)tmp;
+		image  = NULL;
+	} else {
+		image  = (GdkPixbuf *)tmp;
+		layout = NULL;
 	}
-	while (pango_layout_iter_next_line (iter));
 
-	job->priv->available_height -= max - page_skip;
-	*y -= max - page_skip;
+	if (!is_image) {
+		iter = pango_layout_get_iter (layout);
 
-	pango_layout_iter_free (iter);
-	g_object_unref (layout);
-	
+		/* Skip over lines already printed on previous page(s) */
+		for (current_line = 0; current_line < start_line; current_line++)
+			pango_layout_iter_next_line (iter);
+
+		max = 0;
+		page_skip = 0;
+
+		do
+		{
+			pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
+			max = (gdouble) (logical_rect.y + logical_rect.height) / PANGO_SCALE;
+
+			if (current_line == start_line)
+				page_skip = (gdouble) logical_rect.y / PANGO_SCALE;
+
+			if (max - page_skip > job->priv->available_height)
+			{
+				result = current_line; /* Save position for next page */
+				break;
+			}
+
+			baseline = (gdouble) pango_layout_iter_get_baseline (iter) / PANGO_SCALE;
+			baseline = *y + page_skip - baseline; /* Adjust to global coordinates */
+			if (current_line == 0)
+				*baseline_out = baseline;
+
+			gnome_print_moveto (job->priv->print_ctxt,
+					    x + (gdouble) logical_rect.x / PANGO_SCALE,
+					    baseline);
+			gnome_print_pango_layout_line (job->priv->print_ctxt,
+						       pango_layout_iter_get_line (iter));
+
+			current_line++;
+		}
+		while (pango_layout_iter_next_line (iter));
+
+		job->priv->available_height -= max - page_skip;
+		*y -= max - page_skip;
+
+		pango_layout_iter_free (iter);
+		g_object_unref (layout);
+	} else {
+		gint max_height = job->priv->available_height;
+		gint image_height = gdk_pixbuf_get_height(image);
+		gint image_width = gdk_pixbuf_get_width(image);
+		gint scaled_height = 0, scaled_width = 0;
+		GdkPixbuf *scaled_image = NULL;
+		image_viewer_get_resized_size(image_width,
+					 image_height,
+					 job->priv->text_width, 
+					 job->priv->text_height,
+					 &scaled_width, &scaled_height);
+
+		if (scaled_height > max_height) {
+		    	/* next page */
+			return 0;
+		} else {
+			scaled_image = gdk_pixbuf_scale_simple
+					(image, scaled_width, scaled_height, 
+					 GDK_INTERP_BILINEAR);
+
+			gnome_print_moveto(job->priv->print_ctxt,
+					    x, (gdouble)*y);
+			gnome_print_gsave(job->priv->print_ctxt);
+			gnome_print_translate(job->priv->print_ctxt, 
+					      x, *y - scaled_height);
+			gnome_print_scale(job->priv->print_ctxt, 
+					  scaled_width,
+					  scaled_height);
+
+			if (gdk_pixbuf_get_has_alpha(image))
+				gnome_print_rgbaimage  (job->priv->print_ctxt,
+							gdk_pixbuf_get_pixels    (scaled_image),
+							gdk_pixbuf_get_width     (scaled_image),
+							gdk_pixbuf_get_height    (scaled_image),
+							gdk_pixbuf_get_rowstride (scaled_image));
+			else
+				gnome_print_rgbimage  (job->priv->print_ctxt,
+						       gdk_pixbuf_get_pixels    (scaled_image),
+						       gdk_pixbuf_get_width     (scaled_image),
+						       gdk_pixbuf_get_height    (scaled_image),
+						       gdk_pixbuf_get_rowstride (scaled_image));
+			g_object_unref(scaled_image);
+			gnome_print_grestore(job->priv->print_ctxt);
+
+			job->priv->available_height -= scaled_height;
+			*y -= scaled_height;
+			return -1;
+
+		}
+	}
 	return result;
 }
 
