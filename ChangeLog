@@ -1,3 +1,13 @@
+2006-01-28 [paul]	1.9.100cvs193
+
+	* AUTHORS
+	* po/el.po
+	* po/zh_CN.po
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		updated translations submitted by Stavros Giannouris
+		and Ralgh Young
+
 2006-01-27 [cleroy]	1.9.100cvs192
 
 	* src/summaryview.c

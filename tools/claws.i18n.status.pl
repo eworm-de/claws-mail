@@ -39,7 +39,7 @@
 	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
 	'cs.po' => 'Radek Vybíral <Radek.Vybiral@vsb.cz>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
-	'el.po' => 'Michalis Kabrianis <Michalis@bigfoot.com>',
+	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
 	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
 	'es.po' => 'Ricardo Mones Lastra <mones@aic.uniovi.es>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
