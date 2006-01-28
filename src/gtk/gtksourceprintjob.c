@@ -1345,6 +1345,11 @@ create_layout_for_para (GtkSourcePrintJob *job,
 		seg = seg->next;
 	}
 
+	if (image != NULL) {
+		*is_image = TRUE;
+		return image;
+	}
+
 	layout = pango_layout_new (job->priv->pango_context);
 	
 	pango_layout_set_width (layout, job->priv->text_width * PANGO_SCALE);
@@ -1380,18 +1385,9 @@ create_layout_for_para (GtkSourcePrintJob *job,
 	if (job->priv->tab_array)
 		pango_layout_set_tabs (layout, job->priv->tab_array);
 	
-	if (image == NULL) {
-		pango_layout_set_text (layout, text->str, text->len);
-		pango_layout_set_attributes (layout, attrs);
-		*is_image = FALSE;
-	} else {
-		pango_layout_set_text(layout, "IMAGE\n", 6);
-		*is_image = TRUE;
-		pango_attr_list_unref(attrs);
-		g_string_free(text, TRUE);
-		g_free(layout);
-		return image;
-	}
+	pango_layout_set_text (layout, text->str, text->len);
+	pango_layout_set_attributes (layout, attrs);
+	*is_image = FALSE;
 
 	/* FIXME: <horrible-hack> 
 	 * For empty paragraphs, pango_layout_iter_get_baseline() returns 0,
