@@ -1,3 +1,11 @@
+2006-01-29 [paul]	1.9.100cvs196
+
+	* AUTHORS
+	* po/nl.po
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		nl translation updated by Tim Dijkstra
+
 2006-01-29 [paul]	1.9.100cvs195
 
 	* po/sr.po

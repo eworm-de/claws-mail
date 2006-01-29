@@ -42,6 +42,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[ja] Rui Hirokawa <rui_hirokawa@ybb.ne.jp>",
 "[ko] SungHyun Nam <namsh@kldp.org>",
 "[nb] Geir Helland <pjallabais@users.sf.net>",
+"[nl] Tim Dijkstra <tim@famdijkstra.org>",
 "[pl] Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>",
 "[pl] Quar <Quar@sylpheed.quar.org>",
 "[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",

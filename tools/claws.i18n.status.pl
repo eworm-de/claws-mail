@@ -50,7 +50,7 @@
 	'ja.po' => 'Rui Hirokawa <rui_hirokawa@ybb.ne.jp>',
 	'ko.po' => 'ChiDeok, Hwang <hwang@mizi.co.kr>',
 	'nb.po' => 'Geir Helland <pjallabais@users.sourceforge.net>',
-	'nl.po' => 'Wilbert Berendsen <wbsoft@xs4all.nl>',
+	'nl.po' => 'Tim Dijkstra <tim@famdijkstra.org>',
 	'pl.po' => 'Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
 	'ru.po' => 'Pavlo Bohmat <bohm@ukr.net>',
