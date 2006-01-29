@@ -20,7 +20,7 @@
     In the Privacy tab you can choose the default level of paranoia for your account. You might want all outgoing emails to be digitally signed and/or encrypted. Signing all outgoing emails, not only important ones, will for example allow you to protect yourself from faked mails sent on your behalf to coworkers. This can help solve embarrassing situations.
     </para>
     <para>
-    The SSL tab is also security related, although this time its settings apply to the transport of your emails and not their content.  Basically, using SSL encrypts the connection between you and the server, which prevents people from snooping on your connection and being able to read your mails and your password. SSL should be used if it is available.
+    The SSL tab is also security related, although this time its settings apply to the transport of your emails and not their content. Basically, using SSL encrypts the connection between you and the server, which prevents people from snooping on your connection and being able to read your mails and your password. SSL should be used if it is available.
     </para>
     <para>
     Finally, the Advanced tab allows you to specify ports and domains if the defaults are not used. Normally you can leave these empty. You can also specify folders for sent, queued, draft, and deleted messages here.

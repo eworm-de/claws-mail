@@ -269,6 +269,16 @@ Lightweight Directory Access Protocol. A protocol for accessing information dire
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_ldif">
+    <term>
+<acronym>LDIF</acronym>
+    </term>
+    <listitem>
+      <para>
+LDAP Data Interchange Format. A text file format widely used for moving data between <xref linkend="gt_ldap" /> servers and/or other programs.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_local_mbox_file">
     <term>
 Local mbox file
@@ -631,7 +641,7 @@ STARTTLS
     </term>
     <listitem>
       <para>
-STARTTLS, (start transport layer security), is a commnd used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
+STARTTLS, (start transport layer security), is a command used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
       </para>
     </listitem>
   </varlistentry>

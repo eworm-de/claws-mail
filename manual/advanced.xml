@@ -9,7 +9,7 @@
     <blockquote>
     	<example><title>Simple <quote>Open With...</quote></title>
 	 	<variablelist>
-			<varlistentry><term>Menu name: <emphasis>Open with/kate</emphasis> Command Line: <emphasis>kate%p</emphasis></term>
+			<varlistentry><term>Menu name: <emphasis>Open with/kate</emphasis> Command Line: <emphasis>kate %p</emphasis></term>
 				<listitem><para>Opens the file of the selected decoded MIME part (<emphasis>%p</emphasis>) with the <emphasis>kate</emphasis> text editor.
 				    </para></listitem>
 		    </varlistentry>
@@ -27,10 +27,10 @@
 		    </varlistentry>
     		</variablelist>
     </example>
-    <example><title>Search google using an external script</title>
+    <example><title>Search Google using an external script</title>
 	    <variablelist>
 		    <varlistentry><term>Menu name: <emphasis>Search/Google</emphasis> Command Line: <emphasis>|/path/to/google_search.pl</emphasis></term>
-			    <listitem><para>Searches google for the currently selected text (<emphasis>|</emphasis>) using the external script <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Searches Google for the currently selected text (<emphasis>|</emphasis>) using the external script <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -58,7 +58,7 @@
       Plugins are the mechanism for extending Sylpheed-Claws' capabilities. For eample, imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
     </para>
     <para>
-	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws  already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.
+	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.
     </para>
   </section>
   <section id="adv_hidden">

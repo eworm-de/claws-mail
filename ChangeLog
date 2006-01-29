@@ -1,3 +1,12 @@
+2006-01-29 [mones]	1.9.100cvs199
+
+	* manual/account.xml
+	* manual/advanced.xml
+	* manual/glossary.xml
+		Some typos fixed, added LDIF term to glossary
+	* po/es.po
+		Fixed leading plus symbol
+
 2006-01-29 [paul]	1.9.100cvs198
 
 	* po/fi.po

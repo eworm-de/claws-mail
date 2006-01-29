@@ -1182,3 +1182,4 @@
 ( cvs diff -u -r 1.100.2.35 -r 1.100.2.36 AUTHORS;  cvs diff -u -r 1.28.2.3 -r 1.28.2.4 po/nl.po;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/gtk/authors.h;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 tools/claws.i18n.status.pl;  ) > 1.9.100cvs196.patchset
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/gtk/authors.h;  ) > 1.9.100cvs197.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 po/fi.po;  cvs diff -u -r 1.2.2.19 -r 1.2.2.20 po/sk.po;  ) > 1.9.100cvs198.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/account.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/advanced.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/glossary.xml;  cvs diff -u -r 1.60.2.24 -r 1.60.2.25 po/es.po;  ) > 1.9.100cvs199.patchset

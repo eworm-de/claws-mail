@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
-"Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2006-01-24 23:58+0100\n"
-"PO-Revision-Date: 2006-01-25 00:05+0100\n"
+"Report-Msgid-Bugs-To: paul@sylpheed.org\n"
+"POT-Creation-Date: 2006-01-29 20:38+0100\n"
+"PO-Revision-Date: 2006-01-29 20:44+0100\n"
 "Last-Translator: Ricardo Mones <mones@aic.uniovi.es>\n"
 "Language-Team: Ricardo Mones <mones@aic.uniovi.es>\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgid "Delete account"
 msgstr "Borrar cuenta"
 
 #: src/account.c:1451 src/addressadd.c:185 src/addressbook.c:747
-#: src/compose.c:5162 src/compose.c:5401 src/editaddress.c:953
+#: src/compose.c:5163 src/compose.c:5402 src/editaddress.c:953
 #: src/editaddress.c:1002 src/editbook.c:175 src/editgroup.c:279
 #: src/editjpilot.c:270 src/editldap.c:398 src/editvcard.c:183
 #: src/importmutt.c:226 src/importpine.c:226 src/mimeview.c:199
@@ -482,7 +482,7 @@ msgid "Lookup name:"
 msgstr "Buscar nombre:"
 
 #: src/addressbook.c:933 src/compose.c:1784 src/compose.c:3864
-#: src/compose.c:5019 src/compose.c:5713 src/headerview.c:53
+#: src/compose.c:5020 src/compose.c:5714 src/headerview.c:53
 #: src/prefs_template.c:205 src/summary_search.c:217
 msgid "To:"
 msgstr "Para:"
@@ -723,7 +723,7 @@ msgstr "Nombre cabecera"
 msgid "Address Count"
 msgstr "Nº direcciones"
 
-#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:4191
+#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:4192
 #: src/messageview.c:559 src/messageview.c:572
 #: src/plugins/pgpcore/sgpgme.c:463
 msgid "Warning"
@@ -762,11 +762,11 @@ msgstr "Direcciones comunes"
 msgid "Personal addresses"
 msgstr "Direcciones personales"
 
-#: src/alertpanel.c:140 src/compose.c:6702
+#: src/alertpanel.c:140 src/compose.c:6703
 msgid "Notice"
 msgstr "Notificación"
 
-#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:4137 src/inc.c:584
+#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:4138 src/inc.c:584
 #: src/plugins/pgpcore/sgpgme.c:134 src/plugins/pgpcore/sgpgme.c:216
 msgid "Error"
 msgstr "Error"
@@ -1357,7 +1357,7 @@ msgstr "Fw: múltiples correos"
 msgid "Reply-To:"
 msgstr "Responder a:"
 
-#: src/compose.c:1777 src/compose.c:5016 src/compose.c:5715
+#: src/compose.c:1777 src/compose.c:5017 src/compose.c:5716
 #: src/headerview.c:54
 msgid "Newsgroups:"
 msgstr "Grupos de noticias:"
@@ -1423,7 +1423,7 @@ msgstr ""
 "El único destinatario es la dirección CC por omisión. ¿Enviar de todas "
 "formas?"
 
-#: src/compose.c:3687 src/compose.c:3715 src/compose.c:3742 src/compose.c:4137
+#: src/compose.c:3687 src/compose.c:3715 src/compose.c:3742 src/compose.c:4138
 msgid "+_Send"
 msgstr "+_Enviar"
 
@@ -1484,7 +1484,7 @@ msgstr ""
 "El mensaje está en la cola pero no se pudo enviar.\n"
 "Utilize «Enviar mensaje(s) en cola» en la ventana principal para enviarlo"
 
-#: src/compose.c:4134
+#: src/compose.c:4135
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -1495,7 +1495,7 @@ msgstr ""
 "al conjunto de caracteres %s especificado.\n"
 "¿Enviarlo como %s?"
 
-#: src/compose.c:4187
+#: src/compose.c:4188
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -1508,33 +1508,33 @@ msgstr ""
 "\n"
 "¿Enviarlo de todas formas?"
 
-#: src/compose.c:4367
+#: src/compose.c:4368
 msgid "No account for sending mails available!"
 msgstr "No hay ninguna cuenta disponible para enviar correos!"
 
-#: src/compose.c:4377
+#: src/compose.c:4378
 msgid "No account for posting news available!"
 msgstr "No hay ninguna cuenta disponible para enviar noticias!"
 
-#: src/compose.c:5099 src/headerview.c:52 src/summary_search.c:210
+#: src/compose.c:5100 src/headerview.c:52 src/summary_search.c:210
 msgid "From:"
 msgstr "Desde:"
 
-#: src/compose.c:5150
+#: src/compose.c:5151
 msgid "Mime type"
 msgstr "Tipo MIME"
 
-#: src/compose.c:5156 src/compose.c:5400 src/mimeview.c:198
+#: src/compose.c:5157 src/compose.c:5401 src/mimeview.c:198
 #: src/plugins/pgpcore/select-keys.c:330 src/prefs_summary_column.c:86
 #: src/summaryview.c:471
 msgid "Size"
 msgstr "Tamaño"
 
-#: src/compose.c:5216
+#: src/compose.c:5217
 msgid "Save Message to "
 msgstr "Guardar mensaje en "
 
-#: src/compose.c:5238 src/editjpilot.c:289 src/editldap.c:479
+#: src/compose.c:5239 src/editjpilot.c:289 src/editldap.c:479
 #: src/editvcard.c:202 src/export.c:195 src/import.c:200 src/importmutt.c:242
 #: src/importpine.c:242 src/plugins/clamav/clamav_plugin_gtk.c:157
 #: src/plugins/spamassassin/spamassassin_gtk.c:347 src/prefs_account.c:1424
@@ -1542,35 +1542,35 @@ msgstr "Guardar mensaje en "
 msgid "_Browse"
 msgstr "_Explorar"
 
-#: src/compose.c:5399 src/compose.c:6456
+#: src/compose.c:5400 src/compose.c:6457
 msgid "MIME type"
 msgstr "Tipo MIME"
 
-#: src/compose.c:5464 src/prefs_account.c:1670 src/prefs_customheader.c:201
+#: src/compose.c:5465 src/prefs_account.c:1670 src/prefs_customheader.c:201
 #: src/prefs_matcher.c:154
 msgid "Header"
 msgstr "Cabecera"
 
-#: src/compose.c:5466
+#: src/compose.c:5467
 msgid "Attachments"
 msgstr "Adjuntos"
 
-#: src/compose.c:5468
+#: src/compose.c:5469
 msgid "Others"
 msgstr "Otros"
 
-#: src/compose.c:5483 src/headerview.c:55 src/prefs_template.c:209
+#: src/compose.c:5484 src/headerview.c:55 src/prefs_template.c:209
 #: src/summary_search.c:224
 msgid "Subject:"
 msgstr "Asunto:"
 
-#: src/compose.c:5669 src/exphtmldlg.c:462 src/gtk/colorlabel.c:294
+#: src/compose.c:5670 src/exphtmldlg.c:462 src/gtk/colorlabel.c:294
 #: src/gtk/gtkaspell.c:1613 src/gtk/gtkaspell.c:2276 src/prefs_account.c:637
-#: src/summaryview.c:4453
+#: src/summaryview.c:4455
 msgid "None"
 msgstr "Ninguno"
 
-#: src/compose.c:5679
+#: src/compose.c:5680
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1579,7 +1579,7 @@ msgstr ""
 "No se puede iniciar el corrector ortográfico.\n"
 "%s"
 
-#: src/compose.c:5914
+#: src/compose.c:5915
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -1588,31 +1588,31 @@ msgstr ""
 "No se ha podido cargar el sistema de privacidad «%s». No será posible firmar "
 "o cifrar este mensaje."
 
-#: src/compose.c:6347
+#: src/compose.c:6348
 msgid "Invalid MIME type."
 msgstr "Tipo MIME inválido."
 
-#: src/compose.c:6365
+#: src/compose.c:6366
 msgid "File doesn't exist or is empty."
 msgstr "El fichero no existe o está vacío."
 
-#: src/compose.c:6438
+#: src/compose.c:6439
 msgid "Properties"
 msgstr "Propiedades"
 
-#: src/compose.c:6489
+#: src/compose.c:6490
 msgid "Encoding"
 msgstr "Codificación"
 
-#: src/compose.c:6514
+#: src/compose.c:6515
 msgid "Path"
 msgstr "Ruta"
 
-#: src/compose.c:6515 src/prefs_toolbar.c:1068
+#: src/compose.c:6516 src/prefs_toolbar.c:1068
 msgid "File name"
 msgstr "Nombre de fichero"
 
-#: src/compose.c:6699
+#: src/compose.c:6700
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1623,11 +1623,11 @@ msgstr ""
 "¿Desea terminar el proceso?\n"
 "Id. de proceso: %d"
 
-#: src/compose.c:6741
+#: src/compose.c:6742
 msgid "Compose: input from monitoring process\n"
 msgstr "Componer: entrada del proceso monitorizador\n"
 
-#: src/compose.c:7026
+#: src/compose.c:7027
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -1638,20 +1638,20 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:7114
+#: src/compose.c:7115
 msgid "Could not save draft."
 msgstr "No se puede guardar el borrador."
 
-#: src/compose.c:7190 src/compose.c:7213
+#: src/compose.c:7191 src/compose.c:7214
 msgid "Select file"
 msgstr "Seleccionar fichero"
 
-#: src/compose.c:7226
+#: src/compose.c:7227
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "No se puede leer el fichero «%s»."
 
-#: src/compose.c:7228
+#: src/compose.c:7229
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1660,36 +1660,36 @@ msgstr ""
 "El fichero «%s» contenía caracteres inválidos para\n"
 "la codificación actual, la inserción puede ser incorrecta."
 
-#: src/compose.c:7276
+#: src/compose.c:7277
 msgid "Discard message"
 msgstr "Descartar mensaje"
 
-#: src/compose.c:7277
+#: src/compose.c:7278
 msgid "This message has been modified. Discard it?"
 msgstr "Este mensaje se ha modificado. ¿Desea descartarlo?"
 
-#: src/compose.c:7278
+#: src/compose.c:7279
 msgid "_Discard"
 msgstr "_Descartar"
 
-#: src/compose.c:7278
+#: src/compose.c:7279
 msgid "_Save to Drafts"
 msgstr "Guardar en _Borradores"
 
-#: src/compose.c:7322
+#: src/compose.c:7323
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "¿Quiere aplicar la plantilla «%s»?"
 
-#: src/compose.c:7324
+#: src/compose.c:7325
 msgid "Apply template"
 msgstr "Aplicar plantilla"
 
-#: src/compose.c:7325
+#: src/compose.c:7326
 msgid "_Replace"
 msgstr "_Reemplazar"
 
-#: src/compose.c:7325
+#: src/compose.c:7326
 msgid "_Insert"
 msgstr "_Insertar"
 
@@ -2437,7 +2437,7 @@ msgstr "Exportar agenda a un fichero LDIF"
 msgid "Distguished Name"
 msgstr "Nombre distinguido"
 
-#: src/export.c:143 src/summaryview.c:5725
+#: src/export.c:143 src/summaryview.c:5727
 msgid "Export to mbox file"
 msgstr "Exportar a fichero mbox"
 
@@ -2687,7 +2687,7 @@ msgstr "¡Mover falló!"
 msgid "Processing configuration for folder %s"
 msgstr "Configuración de procesamiento para la carpeta «%s»"
 
-#: src/gedit-print.c:146 src/messageview.c:1350 src/summaryview.c:3692
+#: src/gedit-print.c:146 src/messageview.c:1350 src/summaryview.c:3694
 #: src/toolbar.c:175
 msgid "Print"
 msgstr "Imprimir"
@@ -3008,111 +3008,111 @@ msgstr ""
 msgid "Folders"
 msgstr "Carpetas"
 
-#: src/gtk/gtksourceprintjob.c:270
+#: src/gtk/gtksourceprintjob.c:272
 msgid "Configuration"
 msgstr "Configuración"
 
-#: src/gtk/gtksourceprintjob.c:271
+#: src/gtk/gtksourceprintjob.c:273
 msgid "Configuration options for the print job"
 msgstr "Opciones de configuración para la impresión"
 
-#: src/gtk/gtksourceprintjob.c:278
+#: src/gtk/gtksourceprintjob.c:280
 msgid "Source Buffer"
 msgstr "Buffer de origen"
 
-#: src/gtk/gtksourceprintjob.c:279
+#: src/gtk/gtksourceprintjob.c:281
 msgid "GtkTextBuffer object to print"
 msgstr "Objeto GtkTextBuffer a imprimir"
 
-#: src/gtk/gtksourceprintjob.c:285
+#: src/gtk/gtksourceprintjob.c:287
 msgid "Tabs Width"
 msgstr "Anchura del tabulador"
 
-#: src/gtk/gtksourceprintjob.c:286
+#: src/gtk/gtksourceprintjob.c:288
 msgid "Width in equivalent space characters of tabs"
 msgstr "Anchura equivalente al tabulador en espacios"
 
-#: src/gtk/gtksourceprintjob.c:293
+#: src/gtk/gtksourceprintjob.c:295
 msgid "Wrap Mode"
 msgstr "Modo recorte"
 
-#: src/gtk/gtksourceprintjob.c:294
+#: src/gtk/gtksourceprintjob.c:296
 msgid "Word wrapping mode"
 msgstr "Modo de recorte de líneas"
 
-#: src/gtk/gtksourceprintjob.c:301
+#: src/gtk/gtksourceprintjob.c:303
 msgid "Highlight"
 msgstr "Resaltar"
 
-#: src/gtk/gtksourceprintjob.c:302
+#: src/gtk/gtksourceprintjob.c:304
 msgid "Whether to print the document with highlighted syntax"
 msgstr "Si hay que imprimir el documento con sintaxis resaltada"
 
-#: src/gtk/gtksourceprintjob.c:310
+#: src/gtk/gtksourceprintjob.c:312
 msgid "Font"
 msgstr "Tipografía"
 
-#: src/gtk/gtksourceprintjob.c:311
+#: src/gtk/gtksourceprintjob.c:313
 msgid "GnomeFont name to use for the document text (deprecated)"
 msgstr "Nombre GnomeFont para usar con el texto del documento (no recomendado)"
 
-#: src/gtk/gtksourceprintjob.c:318
+#: src/gtk/gtksourceprintjob.c:320
 msgid "Font Description"
 msgstr "Descripción de la tipografía"
 
-#: src/gtk/gtksourceprintjob.c:319
+#: src/gtk/gtksourceprintjob.c:321
 msgid "Font to use for the document text (e.g. \"Monospace 10\")"
 msgstr "Tipografía a usar para el texto del documento (p.ej. «Monospace 10»)"
 
-#: src/gtk/gtksourceprintjob.c:326 src/gtk/gtksourceprintjob.c:334
+#: src/gtk/gtksourceprintjob.c:328 src/gtk/gtksourceprintjob.c:336
 msgid "Numbers Font"
 msgstr "Tipografía para números"
 
-#: src/gtk/gtksourceprintjob.c:327
+#: src/gtk/gtksourceprintjob.c:329
 msgid "GnomeFont name to use for the line numbers (deprecated)"
 msgstr "Nombre GnomeFont para usar con los números de línea (no recomendado)"
 
-#: src/gtk/gtksourceprintjob.c:335
+#: src/gtk/gtksourceprintjob.c:337
 msgid "Font description to use for the line numbers"
 msgstr "Descripción de la tipografía a usar con los números de línea"
 
-#: src/gtk/gtksourceprintjob.c:342
+#: src/gtk/gtksourceprintjob.c:344
 msgid "Print Line Numbers"
 msgstr "Imprimir números de línea"
 
-#: src/gtk/gtksourceprintjob.c:343
+#: src/gtk/gtksourceprintjob.c:345
 msgid "Interval of printed line numbers (0 means no numbers)"
 msgstr "Intervalo entre números de línea (0 significa sin números)"
 
-#: src/gtk/gtksourceprintjob.c:350
+#: src/gtk/gtksourceprintjob.c:352
 msgid "Print Header"
 msgstr "Imprimir cabecera"
 
-#: src/gtk/gtksourceprintjob.c:351
+#: src/gtk/gtksourceprintjob.c:353
 msgid "Whether to print a header in each page"
 msgstr "Si hay que imprimir una cabecera en cada página"
 
-#: src/gtk/gtksourceprintjob.c:358
+#: src/gtk/gtksourceprintjob.c:360
 msgid "Print Footer"
 msgstr "Imprimir pie de página"
 
-#: src/gtk/gtksourceprintjob.c:359
+#: src/gtk/gtksourceprintjob.c:361
 msgid "Whether to print a footer in each page"
 msgstr "Si hay que imprimir un pie de página en cada página"
 
-#: src/gtk/gtksourceprintjob.c:366
+#: src/gtk/gtksourceprintjob.c:368
 msgid "Header and Footer Font"
 msgstr "Tipografía de la cabecera y el pie"
 
-#: src/gtk/gtksourceprintjob.c:367
+#: src/gtk/gtksourceprintjob.c:369
 msgid "GnomeFont name to use for the header and footer (deprecated)"
 msgstr "Nombre GnomeFont a usar para la cabecera y el pie (no recomendado)"
 
-#: src/gtk/gtksourceprintjob.c:374
+#: src/gtk/gtksourceprintjob.c:376
 msgid "Header and Footer Font Description"
 msgstr "Descripción de la tipografía de la cabecera y el pie de página"
 
-#: src/gtk/gtksourceprintjob.c:375
+#: src/gtk/gtksourceprintjob.c:377
 msgid "Font to use for headers and footers (e.g. \"Monospace 10\")"
 msgstr "Tipografía a usar para las cabeceras y los pies (p.ej. «Monospace 10»)"
 
@@ -3753,73 +3753,73 @@ msgstr "Conectando al servidor IMAP4 %s...\n"
 msgid "Adding messages..."
 msgstr "Añadiendo mensajes..."
 
-#: src/imap.c:1165
+#: src/imap.c:1170
 msgid "Copying messages..."
 msgstr "Copiando mensajes..."
 
-#: src/imap.c:1305
+#: src/imap.c:1320
 msgid "can't set deleted flags\n"
 msgstr "no se pueden establecer los flags 'borrado'\n"
 
-#: src/imap.c:1311 src/imap.c:3520
+#: src/imap.c:1326 src/imap.c:3535
 msgid "can't expunge\n"
 msgstr "no puedo purgar\n"
 
-#: src/imap.c:1746
+#: src/imap.c:1761
 msgid "can't create mailbox: LIST failed\n"
 msgstr "no puedo crear el buzón: LIST falló\n"
 
-#: src/imap.c:1762
+#: src/imap.c:1777
 msgid "can't create mailbox\n"
 msgstr "no puedo crear el buzón\n"
 
-#: src/imap.c:1843
+#: src/imap.c:1858
 msgid "New folder name must not contain the namespace path separator"
 msgstr ""
 "El nuevo nombre de la carpeta no debe contener el separador del espacio de "
 "nombres"
 
-#: src/imap.c:1874
+#: src/imap.c:1889
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "no puedo renombrar el buzón: %s a %s\n"
 
-#: src/imap.c:1938
+#: src/imap.c:1953
 msgid "can't delete mailbox\n"
 msgstr "no se puede borrar el buzón\n"
 
-#: src/imap.c:2194
+#: src/imap.c:2209
 msgid "LIST failed\n"
 msgstr "LIST fallido\n"
 
-#: src/imap.c:2302
+#: src/imap.c:2317
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "no se puede seleccionar la carpeta: %s\n"
 
-#: src/imap.c:2438
+#: src/imap.c:2453
 msgid "IMAP4 authentication failed.\n"
 msgstr "La autentificación IMAP4 ha fallado.\n"
 
-#: src/imap.c:2625
+#: src/imap.c:2640
 msgid "Fetching message..."
 msgstr "Recuperando mensaje..."
 
-#: src/imap.c:2790
+#: src/imap.c:2805
 #, c-format
 msgid "iconv cannot convert UTF-7 to %s\n"
 msgstr "iconv no puede convertir UTF-7 a %s\n"
 
-#: src/imap.c:2820
+#: src/imap.c:2835
 #, c-format
 msgid "iconv cannot convert %s to UTF-7\n"
 msgstr "iconv no puede convertir %s a UTF-7\n"
 
-#: src/imap.c:2864
+#: src/imap.c:2879
 msgid "iconv cannot convert UTF-8 to UTF-7\n"
 msgstr "iconv no puede convertir UTF-8 a UTF-7\n"
 
-#: src/imap.c:3505
+#: src/imap.c:3520
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "no se pueden establecer los flags borrados: %d\n"
@@ -4431,7 +4431,7 @@ msgstr "  --version              da la información de la versión y finaliza"
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           muestra el directorio del configuración"
 
-#: src/main.c:815 src/summaryview.c:5473
+#: src/main.c:815 src/summaryview.c:5475
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Procesando (%s)..."
@@ -5298,8 +5298,8 @@ msgid "Do you want to synchronise your folders now?"
 msgstr "¿Quiere sincronizar sus carpetas ahora?"
 
 #: src/mainwindow.c:2693
-msgid "_Synchronise"
-msgstr "_Sincronizar"
+msgid "+_Synchronise"
+msgstr "+_Sincronizar"
 
 #: src/mainwindow.c:2954
 msgid "Deleting duplicated messages..."
@@ -5312,7 +5312,7 @@ msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "Borrado %d mensaje repetido en %d carpetas.\n"
 msgstr[1] "Borrados %d mensajes repetidos en %d carpetas.\n"
 
-#: src/mainwindow.c:3129 src/summaryview.c:4253
+#: src/mainwindow.c:3129 src/summaryview.c:4255
 msgid "Processing rules to apply before folder rules"
 msgstr "Reglas de procesamiento a aplicar antes de las de las carpetas"
 
@@ -5320,7 +5320,7 @@ msgstr "Reglas de procesamiento a aplicar antes de las de las carpetas"
 msgid "Processing rules to apply after folder rules"
 msgstr "Reglas de procesamiento a aplicar después de las de las carpetas"
 
-#: src/mainwindow.c:3145 src/summaryview.c:4262
+#: src/mainwindow.c:3145 src/summaryview.c:4264
 msgid "Filtering configuration"
 msgstr "Configuración de filtrado"
 
@@ -5538,7 +5538,7 @@ msgstr "_Enviar notificación"
 msgid "+_Cancel"
 msgstr "+_Cancelar"
 
-#: src/messageview.c:1351 src/summaryview.c:3693
+#: src/messageview.c:1351 src/summaryview.c:3695
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -5547,7 +5547,7 @@ msgstr ""
 "Teclee la orden para imprimir:\n"
 "(«%s» será sustituido por el fichero)"
 
-#: src/messageview.c:1357 src/summaryview.c:3699
+#: src/messageview.c:1357 src/summaryview.c:3701
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -9254,23 +9254,23 @@ msgstr "_Añadir"
 msgid "_Overwrite"
 msgstr "S_obreescribir"
 
-#: src/summaryview.c:3967
+#: src/summaryview.c:3969
 msgid "Building threads..."
 msgstr "Construyendo jerarquía..."
 
-#: src/summaryview.c:4055
+#: src/summaryview.c:4057
 msgid "Unthreading..."
 msgstr "Deshaciendo jerarquía..."
 
-#: src/summaryview.c:4194
+#: src/summaryview.c:4196
 msgid "Filtering..."
 msgstr "Filtrando..."
 
-#: src/summaryview.c:4257
+#: src/summaryview.c:4259
 msgid "Processing configuration"
 msgstr "Configuración de procesamiento"
 
-#: src/summaryview.c:5609
+#: src/summaryview.c:5611
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -9773,4 +9773,3 @@ msgstr ""
 "Sylpheed-Claws está ahora preparado.\n"
 "\n"
 "Pulse «Guardar» para empezar."
-
