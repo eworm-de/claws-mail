@@ -1,3 +1,9 @@
+2006-01-29 [paul]	1.9.100cvs198
+
+	* po/fi.po
+	* po/sk.po
+		updated by Tommi Pirinen and Andrej Kacian
+
 2006-01-29 [paul]	1.9.100cvs197
 
 	* src/gtk/authors.h
