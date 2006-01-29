@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: 2.0.0\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
 "POT-Creation-Date: 2006-01-21 15:34+0000\n"
-"PO-Revision-Date: 2006-01-22 13:26+0100\n"
+"PO-Revision-Date: 2006-01-28 12:50+0100\n"
 "Last-Translator: Александар Урошевић <urke@users.sf.net>\n"
 "Language-Team: Serbian (sr) <gnome@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 
 #: src/account.c:423
 msgid "Can't create folder."
-msgstr "Не могу да направим директоријум."
+msgstr "Није могуће направити директоријум."
 
 #: src/account.c:679
 msgid "Edit accounts"
@@ -49,7 +49,7 @@ msgstr " _Постави као подразумевани налог "
 
 #: src/account.c:862
 msgid "Accounts with remote folders cannot be copied."
-msgstr "Налози са удаљеним директоријумима не могу да се умножавају."
+msgstr "Налози са удаљеним директоријумима се не могу умножавати."
 
 #: src/account.c:868
 #, c-format
@@ -89,15 +89,15 @@ msgstr "Сервер"
 #: src/action.c:352
 #, c-format
 msgid "Could not get message file %d"
-msgstr "Не могу да пронађем датотеку поруке %d"
+msgstr "Није могуће пронаћи датотеку поруке %d"
 
 #: src/action.c:383
 msgid "Could not get message part."
-msgstr "Не могу да пронађем део поруке."
+msgstr "Није могуће пронаћи део поруке."
 
 #: src/action.c:400
 msgid "Can't get part of multipart message"
-msgstr "Не могу да пронађем део вишеделне поруке"
+msgstr "Није могуће пронаћи део вишеделне поруке"
 
 #: src/action.c:514
 #, c-format
@@ -124,7 +124,7 @@ msgid ""
 "%s\n"
 "%s"
 msgstr ""
-"Не могу да извршим поделу за извршавање наредбе:\n"
+"Није могућа подела за извршавање наредбе:\n"
 "%s\n"
 "%s"
 
@@ -557,16 +557,17 @@ msgstr "Уклони директоријум и _адресе"
 msgid ""
 "Do you want to delete '%s'?\n"
 "The addresses it contains will be lost."
-msgstr "Желите ли да уклоните „%s“?\n"
+msgstr ""
+"Желите ли да уклоните „%s“?\n"
 "Биће уклоњене и адресе које садржи."
 
 #: src/addressbook.c:3366
 msgid "New user, could not save index file."
-msgstr "Ви сте нов корисник, не могу да сачувам индексну датотеку."
+msgstr "Ви сте нови корисник, није могуће сачиувати индексну датотеку."
 
 #: src/addressbook.c:3370
 msgid "New user, could not save address book files."
-msgstr "Ви сте нов корисник, не могу да сачувам адресар."
+msgstr "Ви сте нови корисник, није могуће сачувати адресар."
 
 #: src/addressbook.c:3380
 msgid "Old address book converted successfully."
@@ -578,14 +579,14 @@ msgid ""
 "could not save new address index file"
 msgstr ""
 "Стари адресар је конвертован,\n"
-"не могу да сачувам нову датотеку за индексе"
+"није могуће сачувати нову датотеку за индексе"
 
 #: src/addressbook.c:3398
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
 msgstr ""
-"Не могу да конвертујем адресар,\n"
+"Није могуће конвертовати адресар,\n"
 "али је направљена нова празна датотека за адресар."
 
 #: src/addressbook.c:3404
@@ -593,16 +594,16 @@ msgid ""
 "Could not convert address book,\n"
 "could not create new address book files."
 msgstr ""
-"Не могу да претворим адресар,\n"
-"не могу да направим нову датотеку за адресар."
+"Није могуће конвертовати адресар,\n"
+"јер не може да се направи нова датотека за адресар."
 
 #: src/addressbook.c:3409
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
 msgstr ""
-"Не могу да конвертујем адресар,\n"
-"и не могу да направим нову датотеку за адресар."
+"Није могуће конвертовати адресар,\n"
+"и неје могуће направити нову датотеку за адресар."
 
 #: src/addressbook.c:3416 src/addressbook.c:3422
 msgid "Addressbook conversion error"
@@ -614,11 +615,11 @@ msgstr "Грешка у адресару"
 
 #: src/addressbook.c:3461
 msgid "Could not read address index"
-msgstr "Не могу да прочитам датотеку за индексе"
+msgstr "Није могуће читање датотеке за индексе"
 
 #: src/addressbook.c:3820
 msgid "Busy searching..."
-msgstr "Претражујемс..."
+msgstr "Претрага у току..."
 
 #: src/addressbook.c:3891
 #, c-format
@@ -805,7 +806,7 @@ msgstr "Вредност особине"
 #: src/common/nntp.c:73
 #, c-format
 msgid "Can't connect to NNTP server: %s:%d\n"
-msgstr "Не могу да се повежем на NNTP сервер: %s:%d\n"
+msgstr "Није могуће повезивање на NNTP сервер: %s:%d\n"
 
 #: src/common/nntp.c:181 src/common/nntp.c:244
 #, c-format
@@ -863,7 +864,7 @@ msgstr "Порука је превелика (максимална величи�
 
 #: src/common/smtp.c:631 src/pop.c:834
 msgid "can't start TLS session\n"
-msgstr "не могу да покренем TLS сесију\n"
+msgstr "није могуће започињање TLS сесије\n"
 
 #: src/common/ssl.c:144
 msgid "Error creating ssl context\n"
@@ -898,7 +899,7 @@ msgstr ""
 
 #: src/common/ssl_certificate.c:309
 msgid "Can't load X509 default paths"
-msgstr "Не могу да учитам подразумевану путању до X509"
+msgstr "Није могуће учитавање подразумеване путање до X509"
 
 #: src/common/ssl_certificate.c:364
 #, c-format
@@ -1383,7 +1384,7 @@ msgstr "Датотека %s је празна."
 #: src/compose.c:2738
 #, c-format
 msgid "Can't read %s."
-msgstr "Не могу да прочитам датотеку %s."
+msgstr "Није могуће читање датотеке %s."
 
 #: src/compose.c:2765
 #, c-format
@@ -1444,7 +1445,7 @@ msgid ""
 "\n"
 "Charset conversion failed."
 msgstr ""
-"Не могу да ставим поруку у ред за слање:\n"
+"Није могуће стављање поруке у ред за слање:\n"
 "\n"
 "Неуспела конверзија скупа знакова."
 
@@ -1454,7 +1455,7 @@ msgid ""
 "\n"
 "Signature failed."
 msgstr ""
-"Не могу да ставим поруку у ред за слање:\n"
+"Није могуће стављање поруке у ред за слање:\n"
 "\n"
 "Неуспело потписивање."
 
@@ -1465,20 +1466,20 @@ msgid ""
 "\n"
 "%s."
 msgstr ""
-"Не могу да ставим поруку у ред за слање:\n"
+"Није могуће стављање поруке у ред за слање:\n"
 "\n"
 "%s."
 
 #: src/compose.c:3775
 msgid "Could not queue message for sending."
-msgstr "Не могу да ставим поруку у ред за слање."
+msgstr "Није могуће стављање поруке у ред за слање."
 
 #: src/compose.c:3790 src/compose.c:3820
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
 msgstr ""
-"Порука је припремљена али нисам могао да је пошаљем.\n"
+"Порука је припремљена али није послата.\n"
 "Покрените опцију \"Пошаљи припремљене поруке\" за поновно слање."
 
 #: src/compose.c:4134
@@ -1488,9 +1489,9 @@ msgid ""
 "to the specified %s charset.\n"
 "Send it as %s?"
 msgstr ""
-"Не могу да конвертујем скуп знакова поруке\n"
+"Није могуће конвертовање скупа знакова поруке\n"
 "у одређени %s скуп знакова.\n"
-"Да пошаљем поруку са %s скупом знакова?"
+"Слање поруке са %s скупом знакова?"
 
 #: src/compose.c:4187
 #, c-format
@@ -1503,7 +1504,7 @@ msgstr ""
 "Линија %d прелази границу дужине линије (998 бајтова).\n"
 "Садржај поруке може да буде оштећен на путу до места испоруке.\n"
 "\n"
-"Да ипак пошаљем поруку?"
+"Наставак слања поруке?"
 
 #: src/compose.c:4367
 msgid "No account for sending mails available!"
@@ -1573,7 +1574,7 @@ msgid ""
 "Spell checker could not be started.\n"
 "%s"
 msgstr ""
-"Не могу да покренем правописну проверу.\n"
+"Није могуће покретање правописне провере.\n"
 "%s"
 
 #: src/compose.c:5901
@@ -1631,13 +1632,13 @@ msgid ""
 "\n"
 "%s."
 msgstr ""
-"Не могу да ставим поруку у ред за слање:\n"
+"Није могуће стављање поруке у ред за слање:\n"
 "\n"
 "%s."
 
 #: src/compose.c:7101
 msgid "Could not save draft."
-msgstr "Не могу да сачувам поруку као недовршену."
+msgstr "Није могуће чување поруке као недовршене."
 
 #: src/compose.c:7177 src/compose.c:7200
 msgid "Select file"
@@ -1646,7 +1647,7 @@ msgstr "Одаберите датотеку"
 #: src/compose.c:7213
 #, c-format
 msgid "File '%s' could not be read."
-msgstr "Не могу да читам датотеку „%s“."
+msgstr "Није могуће читање датотеке „%s“."
 
 #: src/compose.c:7215
 #, c-format
@@ -1663,7 +1664,7 @@ msgstr "Одбаци поруку"
 
 #: src/compose.c:7264
 msgid "This message has been modified. Discard it?"
-msgstr "Ова порука је измењена. Желите ли да је одбацим?"
+msgstr "Ова порука је измењена. Желите ли да буде одбачена?"
 
 #: src/compose.c:7265
 msgid "_Discard"
@@ -1693,7 +1694,7 @@ msgstr "_Уметни"
 #: src/crash.c:142
 #, c-format
 msgid "Sylpheed-Claws process (%ld) received signal %ld"
-msgstr "Sylpheed-Claws процес (%ld) је добио сигнала %ld"
+msgstr "Sylpheed-Claws процес (%ld) је добио сигнал %ld"
 
 #: src/crash.c:188
 msgid "Sylpheed-Claws has crashed"
@@ -1776,7 +1777,7 @@ msgstr "Вредност"
 
 #: src/editaddress.c:1070
 msgid "User Data"
-msgstr "Основни податци"
+msgstr "Основни подаци"
 
 #: src/editaddress.c:1071
 msgid "Email Addresses"
@@ -1784,7 +1785,7 @@ msgstr "Адресе е-поште"
 
 #: src/editaddress.c:1072
 msgid "Other Attributes"
-msgstr "Додатни податци"
+msgstr "Додатни подаци"
 
 #: src/editbook.c:113
 msgid "File appears to be Ok."
@@ -1796,7 +1797,7 @@ msgstr "Датотека није у важећем формату адреса�
 
 #: src/editbook.c:119 src/editjpilot.c:203 src/editvcard.c:107
 msgid "Could not read file."
-msgstr "Не могу да прочитам датотеку."
+msgstr "Нијее могуће читање датотеке."
 
 #: src/editbook.c:153 src/editbook.c:266
 msgid "Edit Addressbook"
@@ -1913,11 +1914,11 @@ msgstr "Доступне базе за претрагу"
 
 #: src/editldap_basedn.c:294
 msgid "Could not read Search Base(s) from server - please set manually"
-msgstr "Не могу да прочитам базе за претрагу са сервера - одаберите ручно"
+msgstr "Није могуће читање базе за претрагу са сервера - одаберите ручно"
 
 #: src/editldap_basedn.c:298 src/editldap.c:267
 msgid "Could not connect to server"
-msgstr "Не могу да се повежем на сервер"
+msgstr "Није могуће повезивање на сервер"
 
 #: src/editldap.c:148
 msgid "A Name must be supplied."
@@ -2173,7 +2174,7 @@ msgid ""
 "Could not create output directory for HTML file:\n"
 "%s"
 msgstr ""
-"Не могу да направим излазни директоријум за HTML фајл:\n"
+"Није могуће направити излазни директоријум за HTML фајл:\n"
 "%s"
 
 #: src/exphtmldlg.c:197 src/expldifdlg.c:204
@@ -2292,7 +2293,7 @@ msgid ""
 "Could not create output directory for LDIF file:\n"
 "%s"
 msgstr ""
-"Не могу да направим излазни директоријум за LDIF датотеку:\n"
+"Није могуће направити излазни директоријум за LDIF датотеку:\n"
 "%s"
 
 #: src/expldifdlg.c:247
@@ -2304,7 +2305,7 @@ msgid ""
 "A suffix is required if data is to be used for an LDAP server. Are you sure "
 "you wish to proceed without a suffix?"
 msgstr ""
-"Додатак је неопходан уколико ће се податци користити за LDAP сервер. Да ли "
+"Додатак је неопходан уколико ће се подаци користити за LDAP сервер. Да ли "
 "сте сигурни да желите да наставите без уноса додатка?"
 
 #: src/expldifdlg.c:267
@@ -2391,7 +2392,7 @@ msgstr ""
 
 #: src/expldifdlg.c:556
 msgid "Use DN attribute if present in data"
-msgstr "Користи ОН атрибуте ако се налазе у податцима"
+msgstr "Користи ОН атрибуте ако се налазе у податима"
 
 #: src/expldifdlg.c:563
 msgid ""
@@ -2401,7 +2402,7 @@ msgid ""
 "above will be used if the DN user attribute is not found."
 msgstr ""
 "Адресар може да садржи записе који су раније увежени из неке LDIF датотеке. "
-"Атрибут корисника „Одличан Назив“ (ОН), уколико се налази у податцима "
+"Атрибут корисника „Одличан Назив“ (ОН), уколико се налази у подацима "
 "адресара, може да се корсити у извеженој LDIF датотеци. Ниже одабрани РОН ће "
 "се корситити уколико не постоји ОН адтрибут."
 
@@ -2539,7 +2540,7 @@ msgstr "Директоријум „%s“ већ псотоји."
 #: src/foldersel.c:559 src/imap_gtk.c:159 src/mh_gtk.c:151
 #, c-format
 msgid "Can't create the folder '%s'."
-msgstr "Не могу да направим директоријум „%s“."
+msgstr "Није могуће направити директоријум „%s“."
 
 #: src/folderview.c:281
 msgid "/Mark all re_ad"
@@ -2628,7 +2629,7 @@ msgstr "Отварам директоријум %s ..."
 
 #: src/folderview.c:1907
 msgid "Folder could not be opened."
-msgstr "Не могу да отворим директоријум."
+msgstr "Није могуће отворити директоријум."
 
 #: src/folderview.c:2054 src/mainwindow.c:1721
 msgid "Empty trash"
@@ -2640,7 +2641,7 @@ msgstr "Да ли заиста желите да уклоним све пору�
 
 #: src/folderview.c:2056 src/mainwindow.c:1723
 msgid "+_Empty trash"
-msgstr "+_Пражњење смећа"
+msgstr "+_Испразни смеће"
 
 #: src/folderview.c:2137
 #, c-format
@@ -2663,7 +2664,7 @@ msgstr "Извор и одредиште су на истој локацији."
 
 #: src/folderview.c:2184
 msgid "Can't move a folder to one of its children."
-msgstr "Не могу да преместим директоријум у његов поддиректоријум."
+msgstr "Није могуће премештање директоријума у његов поддиректоријум."
 
 #: src/folderview.c:2187
 msgid "Folder moving cannot be done between different mailboxes."
@@ -2676,7 +2677,7 @@ msgstr "Неуспело премештање!"
 #: src/folderview.c:2226
 #, c-format
 msgid "Processing configuration for folder %s"
-msgstr "Постављам подешавања за директоријум %s"
+msgstr "Постављање подешавања за директоријум %s"
 
 #: src/gedit-print.c:146 src/messageview.c:1350 src/summaryview.c:3692
 #: src/toolbar.c:175
@@ -2685,17 +2686,17 @@ msgstr "Штампање"
 
 #: src/gedit-print.c:244
 msgid "Preparing pages..."
-msgstr "Припремам стране..."
+msgstr "Припремање стране..."
 
 #: src/gedit-print.c:271
 #, c-format
 msgid "Rendering page %d of %d..."
-msgstr "Правим страну %d од %d..."
+msgstr "Прављење стране %d од %d..."
 
 #: src/gedit-print.c:273
 #, c-format
 msgid "Printing page %d of %d..."
-msgstr "Штампам страну %d од %d..."
+msgstr "Штампање стране %d од %d..."
 
 #: src/gedit-print.c:295
 msgid "Print preview"
@@ -2747,7 +2748,7 @@ msgstr "непознато"
 
 #: src/grouplistdialog.c:412
 msgid "Can't retrieve newsgroup list."
-msgstr "Не могу да преузем листу дискусионих група."
+msgstr "Није могуће преузимање листе дискусионих група."
 
 #: src/grouplistdialog.c:447 src/summaryview.c:1056
 msgid "Done."
@@ -2991,7 +2992,8 @@ msgstr "Подешавање распореда директоријума"
 
 #: src/gtk/foldersort.c:172
 msgid "Move folders up or down to change the sort order in the folder list."
-msgstr "Преместите директоријуме горе или доле за промену поретка у стаблу налога."
+msgstr ""
+"Преместите директоријуме горе или доле за промену поретка у стаблу налога."
 
 #: src/gtk/foldersort.c:196
 msgid "Folders"
@@ -3301,7 +3303,7 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:463
 #: src/plugins/spamassassin/spamassassin_gtk.c:456
 msgid "Plugins"
-msgstr "Додатци"
+msgstr "Додаци"
 
 #: src/gtk/pluginwindow.c:272 src/prefs_summaries.c:210
 msgid "Description"
@@ -3718,26 +3720,26 @@ msgstr "_Настави повезивање"
 #: src/imap.c:768
 #, c-format
 msgid "Connecting to IMAP4 server: %s..."
-msgstr "Повезујем се на IMAP4 сервер: %s ..."
+msgstr "Повезивање на IMAP4 сервер: %s ..."
 
 #: src/imap.c:800
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d"
-msgstr "Не могу да се повежем на IMAP4 сервер: %s:%d"
+msgstr "Није могуће повезивање на IMAP4 сервер: %s:%d"
 
 #: src/imap.c:803
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
-msgstr "Не могу да се повежем на IMAP4 сервер: %s:%d\n"
+msgstr "Није могуће повезивање на IMAP4 сервер: %s:%d\n"
 
 #: src/imap.c:832
 msgid "Can't start TLS session.\n"
-msgstr "Не могу да покренем TLS сесију.\n"
+msgstr "Није могуће покретање TLS сесије.\n"
 
 #: src/imap.c:865
 #, c-format
 msgid "Connecting to IMAP4 server %s...\n"
-msgstr "Повезујем се на IMAP4 сервер %s...\n"
+msgstr "Повезивање на IMAP4 сервер %s...\n"
 
 #: src/imap.c:1036
 msgid "Adding messages..."
@@ -3749,45 +3751,45 @@ msgstr "Умножавање поруке..."
 
 #: src/imap.c:1305
 msgid "can't set deleted flags\n"
-msgstr "не могу да поставим ознаку „Обирсано“\n"
+msgstr "није могуће постављање ознаке „Обирсано“\n"
 
 #: src/imap.c:1311 src/imap.c:3520
 msgid "can't expunge\n"
-msgstr "не могу да избришем\n"
+msgstr "брисање није могуће\n"
 
 #: src/imap.c:1746
 msgid "can't create mailbox: LIST failed\n"
-msgstr "не могу да направим сандуче: неуспела команда LIST\n"
+msgstr "није могуће направити сандуче: неуспела команда LIST\n"
 
 #: src/imap.c:1762
 msgid "can't create mailbox\n"
-msgstr "не могу да направим сандуче\n"
+msgstr "није могуће направити сандуче\n"
 
 #: src/imap.c:1843
 msgid "New folder name must not contain the namespace path separator"
-msgstr "Назив ново9г сандучета не сме да садржи раздвојник путање (косу црту)"
+msgstr "Назив новог сандучета не сме садржати раздвојник путање (косу црту)"
 
 #: src/imap.c:1874
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
-msgstr "не могу да преименујем сандуче: %s у %s\n"
+msgstr "није могуће преименовање сандучета: %s у %s\n"
 
 #: src/imap.c:1938
 msgid "can't delete mailbox\n"
-msgstr "не могу да уклоним сандуче\n"
+msgstr "није могуће уклањање сандучета\n"
 
 #: src/imap.c:2194
 msgid "LIST failed\n"
-msgstr "Неуспешна наредба LIST\n"
+msgstr "Неуспела наредба LIST\n"
 
 #: src/imap.c:2302
 #, c-format
 msgid "can't select folder: %s\n"
-msgstr "не могу да одаберем директоријум: %s\n"
+msgstr "није могућ одабир директоријума: %s\n"
 
 #: src/imap.c:2438
 msgid "IMAP4 authentication failed.\n"
-msgstr "Неуспешна IMAP идентификација.\n"
+msgstr "Неуспела IMAP идентификација.\n"
 
 #: src/imap.c:2625
 msgid "Fetching message..."
@@ -3810,7 +3812,7 @@ msgstr "iconv не може да преведе UTF-8 у UTF-7\n"
 #: src/imap.c:3505
 #, c-format
 msgid "can't set deleted flags: %d\n"
-msgstr "не могу да поставим ознаку „Обирсано“: %d\n"
+msgstr "није могуће постављање ознаке „Обирсано“: %d\n"
 
 #: src/imap_gtk.c:55 src/mh_gtk.c:50
 msgid "/Create _new folder..."
@@ -3883,7 +3885,7 @@ msgid ""
 "\n"
 "Do you really want to delete?"
 msgstr ""
-"Сви директоријуми и поруке у „%s“ ће бити уклоњени.\n"
+"Биће уклоњени сви директоријуми и поруке у „%s“.\n"
 "Њихов накнадни повраћај није могућ.\n"
 "\n"
 "Да ли заиста желите да их уклоните?"
@@ -3891,7 +3893,7 @@ msgstr ""
 #: src/imap_gtk.c:288 src/mh_gtk.c:198
 #, c-format
 msgid "Can't remove the folder '%s'."
-msgstr "Не могу да уклоним директоријум „%s“."
+msgstr "Није могуће уклонити директоријум „%s“."
 
 #: src/imap_gtk.c:348 src/news_gtk.c:264
 #, c-format
@@ -4135,12 +4137,12 @@ msgstr "Повезивање на POP3 сервер: %s..."
 #: src/inc.c:782
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
-msgstr "Не могу да се повежем на POP3 сервер: %s:%d\n"
+msgstr "Није могуће повезивање на POP3 сервер: %s:%d\n"
 
 #: src/inc.c:789
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
-msgstr "Не могу да се повежем на POP3 сервер: %s:%d"
+msgstr "Није могуће повезивање на POP3 сервер: %s:%d"
 
 #: src/inc.c:870 src/send_message.c:444
 msgid "Authenticating..."
@@ -4149,45 +4151,45 @@ msgstr "Идентификација..."
 #: src/inc.c:871
 #, c-format
 msgid "Retrieving messages from %s (%s) ..."
-msgstr "Преузимам поруке са %s (%s) ..."
+msgstr "Преузимање порука са %s (%s) ..."
 
 #: src/inc.c:877
 msgid "Getting the number of new messages (STAT)..."
-msgstr "Преузимам број нових порука (STAT)..."
+msgstr "Преузимање броја нових порука (STAT)..."
 
 #: src/inc.c:881
 msgid "Getting the number of new messages (LAST)..."
-msgstr "Преузимам број нових порука (LAST)..."
+msgstr "Преузимање броја нових порука (LAST)..."
 
 #: src/inc.c:885
 msgid "Getting the number of new messages (UIDL)..."
-msgstr "Преузимам број нових порука (UIDL)..."
+msgstr "Преузимање броја нових порука (UIDL)..."
 
 #: src/inc.c:889
 msgid "Getting the size of messages (LIST)..."
-msgstr "Преузимам величину порука (LIST)..."
+msgstr "Преузимање величине порука (LIST)..."
 
 #: src/inc.c:899
 #, c-format
 msgid "Deleting message %d"
-msgstr "Уклањам поруку %d"
+msgstr "Уклањање поруке %d"
 
 #: src/inc.c:906 src/send_message.c:462
 msgid "Quitting"
-msgstr "Затварам везу са сервером"
+msgstr "Затварање везе са сервером"
 
 #: src/inc.c:931
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
-msgstr "Преузимам поруке (%d / %d) (%s / %s)"
+msgstr "Преузимање поруке (%d / %d) (%s / %s)"
 
 #: src/inc.c:950
 #, c-format
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
-msgstr[0] "Преузимам (%d порука (%s) преузета)"
-msgstr[1] "Преузимам (%d поруке (%s) преузете)"
-msgstr[2] "Преузимам (%d порука (%s) преузето)"
+msgstr[0] "Преузимање (%d порука (%s) преузета)"
+msgstr[1] "Преузимање (%d поруке (%s) преузете)"
+msgstr[2] "Преузимање (%d порука (%s) преузето)"
 
 #: src/inc.c:1106
 msgid "Connection failed."
@@ -4217,7 +4219,7 @@ msgstr "На диску више нема места."
 
 #: src/inc.c:1130
 msgid "Can't write file."
-msgstr "Не могу да запишем датотеку."
+msgstr "Није могуће записивање датотеке."
 
 #: src/inc.c:1135
 msgid "Socket error."
@@ -4281,7 +4283,7 @@ msgstr "Увоз је обустављен\n"
 msgid "You're working offline. Override for %d minutes?"
 msgstr ""
 "Активан је режим ван везе.\n"
-"Да ли желите да га заобиђем у наредних %d минута?"
+"Желите ли заобилажење у наредних %d минута?"
 
 #: src/inc.c:1449 src/toolbar.c:1972
 msgid "Offline warning"
@@ -4302,7 +4304,7 @@ msgid ""
 "Can't create folder."
 msgstr ""
 "Датотека „%s“ већ постоји.\n"
-"Не могу да направим директоријум."
+"Није могуће прављење директоријума."
 
 #: src/main.c:256
 #, c-format
@@ -4343,9 +4345,9 @@ msgid ""
 "is probably provided by an out-of-date external plugin. Please reinstall the "
 "plugin and try again."
 msgstr ""
-"Sylpheed-Claws је пронашао подешено сандуче али га не може учитати. Вероватно "
-"је застарела верзија спољног додатка. Инсталирајте новију верзију додатка и "
-"покушајте поново."
+"Sylpheed-Claws је пронашао подешено сандуче али га не може учитати. "
+"Вероватно је застарела верзија спољног додатка. Инсталирајте новију верзију "
+"додатка и покушајте поново."
 
 #: src/main.c:736
 #, c-format
@@ -4929,15 +4931,15 @@ msgstr "/_Порука/Преу_зимање"
 
 #: src/mainwindow.c:683
 msgid "/_Message/Recei_ve/Get from _current account"
-msgstr "/_Порука/Преу_зимање/Преузми са _активног налога"
+msgstr "/_Порука/Преу_зимање/Са _активног налога"
 
 #: src/mainwindow.c:685
 msgid "/_Message/Recei_ve/Get from _all accounts"
-msgstr "/_Порука/Преу_зимање/Преузми са _одабраних налога"
+msgstr "/_Порука/Преу_зимање/Са _одабраних налога"
 
 #: src/mainwindow.c:687
 msgid "/_Message/Recei_ve/Cancel receivin_g"
-msgstr "/_Порука/Преу_зимање/_Заустави преузимање"
+msgstr "/_Порука/Преу_зимање/_Заустављање преузимања"
 
 #: src/mainwindow.c:689
 msgid "/_Message/Recei_ve/---"
@@ -4945,7 +4947,7 @@ msgstr "/_Порука/Преу_зимање/---"
 
 #: src/mainwindow.c:690
 msgid "/_Message/_Send queued messages"
-msgstr "/_Порука/По_шаљи припремљене поруке"
+msgstr "/_Порука/Слање _припремљених порука"
 
 #: src/mainwindow.c:692
 msgid "/_Message/Compose a_n email message"
@@ -5189,7 +5191,7 @@ msgstr "/Подеша_вање/_Акције..."
 
 #: src/mainwindow.c:796
 msgid "/_Configuration/Plu_gins..."
-msgstr "/Подеша_вање/_Додатци..."
+msgstr "/Подеша_вање/_Додаци..."
 
 #: src/mainwindow.c:800
 msgid "/_Help/_Manual"
@@ -5449,7 +5451,7 @@ msgstr "Да ли желите да се препише постојећа да�
 #: src/summaryview.c:3658
 #, c-format
 msgid "Can't save the file '%s'."
-msgstr "Не могу да сачувам датотеку „%s“."
+msgstr "Није могуће сачувати датотеку „%s“."
 
 #: src/messageview.c:1139
 msgid "This message asks for a return receipt."
@@ -5457,7 +5459,7 @@ msgstr "У овој поруци се захтева потврда пријем
 
 #: src/messageview.c:1140
 msgid "Send receipt"
-msgstr "Пошаљи потврду"
+msgstr "Слање потврде"
 
 #: src/messageview.c:1180
 msgid ""
@@ -5478,11 +5480,11 @@ msgstr ""
 
 #: src/messageview.c:1190 src/messageview.c:1212
 msgid "Mark for download"
-msgstr "Преузми"
+msgstr "Преузимање"
 
 #: src/messageview.c:1191 src/messageview.c:1203
 msgid "Mark for deletion"
-msgstr "Обриши"
+msgstr "Уклањање"
 
 #: src/messageview.c:1196
 #, c-format
@@ -5496,7 +5498,7 @@ msgstr ""
 #: src/messageview.c:1201 src/messageview.c:1214
 #: src/prefs_filtering_action.c:153
 msgid "Unmark"
-msgstr "Уклони ознаку"
+msgstr "Уклањање ознаке"
 
 #: src/messageview.c:1207
 #, c-format
@@ -5509,7 +5511,7 @@ msgstr ""
 
 #: src/messageview.c:1283
 msgid "Return Receipt Notification"
-msgstr "Пошаљи обавештење о пријему поруке"
+msgstr "Слање обавештења о пријему поруке"
 
 #: src/messageview.c:1284
 msgid ""
@@ -5548,12 +5550,12 @@ msgstr ""
 
 #: src/messageview.c:1368 src/summaryview.c:3672
 msgid "Cannot print: the message doesn't contain text."
-msgstr "Не могу да штампам: порука не садржи текст."
+msgstr "Штампање није могуће: порука не садржи текст."
 
 #: src/mh.c:410
 #, c-format
 msgid "can't copy message %s to %s\n"
-msgstr "не могу да копирам поруку %s у %s\n"
+msgstr "није могуће копирати поруку %s у %s\n"
 
 #: src/mh_gtk.c:59
 msgid "/Remove _mailbox..."
@@ -5633,12 +5635,12 @@ msgstr "Назад на поруку"
 #: src/mimeview.c:1269 src/mimeview.c:1350 src/mimeview.c:1529
 #: src/mimeview.c:1562
 msgid "Can't save the part of multipart message."
-msgstr "Не могу да сачувам део комбиноване поруке."
+msgstr "Није могуће сачувати део комбиноване поруке."
 
 #: src/mimeview.c:1339 src/textview.c:2178
 #, c-format
 msgid "Overwrite existing file '%s'?"
-msgstr "Да ли да препишем постојећу датотеку „%s“?"
+msgstr "Да ли желите преписивање постојеће датотеке „%s“?"
 
 #: src/mimeview.c:1377
 msgid "Select destination folder"
@@ -5665,35 +5667,35 @@ msgstr ""
 #: src/news.c:220
 #, c-format
 msgid "creating NNTP connection to %s:%d ...\n"
-msgstr "Успостављам NNTP конекције са %s:%d ...\n"
+msgstr "Успостављање NNTP конекције са %s:%d ...\n"
 
 #: src/news.c:308
 #, c-format
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
-msgstr "NNTP веза са %s:%d је прекинута. Поново успостављам везу...\n"
+msgstr "NNTP веза са %s:%d је прекинута. Поново успостављање везе...\n"
 
 #: src/news.c:438
 msgid "can't retrieve newsgroup list\n"
-msgstr "не могу да преузем листу дискусионих група\n"
+msgstr "ниј емогуће преузимање листе дискусионих група\n"
 
 #: src/news.c:551
 msgid "can't post article.\n"
-msgstr "не могу да пошаљем чланак.\n"
+msgstr "није могуће слање чланка.\n"
 
 #: src/news.c:577
 #, c-format
 msgid "can't retrieve article %d\n"
-msgstr "не могу да преузмем чланак %d\n"
+msgstr "није могуће преузимање чланка %d\n"
 
 #: src/news.c:626
 #, c-format
 msgid "can't select group: %s\n"
-msgstr "не могу да одаберем групу: %s\n"
+msgstr "није могућ одабир групе: %s\n"
 
 #: src/news.c:854
 #, c-format
 msgid "can't set group: %s\n"
-msgstr "не могу да поставим групу: %s\n"
+msgstr "није могуће постављање групе: %s\n"
 
 #: src/news.c:862
 #, c-format
@@ -5708,11 +5710,11 @@ msgstr "настала је грешка при прузимању %s.\n"
 #: src/news.c:900
 #, c-format
 msgid "getting xover %d in %s...\n"
-msgstr "преузимам XOVER %d у %s...\n"
+msgstr "преузимање XOVER %d у %s...\n"
 
 #: src/news.c:904 src/news.c:989
 msgid "can't get xover\n"
-msgstr "не могу да преузмем XOVER одговор\n"
+msgstr "није могуће преузимање XOVER одговора\n"
 
 #: src/news.c:913 src/news.c:999
 msgid "error occurred while getting xover.\n"
@@ -5725,7 +5727,7 @@ msgstr "неисправна линија XOVER одговора: %s\n"
 
 #: src/news.c:934 src/news.c:953 src/news.c:1031 src/news.c:1066
 msgid "can't get xhdr\n"
-msgstr "не могу да преузмем XHDR одговор\n"
+msgstr "није могуће преузиимање XHDR одговора\n"
 
 #: src/news.c:943 src/news.c:962 src/news.c:1043 src/news.c:1078
 msgid "error occurred while getting xhdr.\n"
@@ -5734,7 +5736,7 @@ msgstr "настала је грешка при преузимању XHDR одг
 #: src/news.c:985
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
-msgstr "преузимам XOVER %d - %d у %s...\n"
+msgstr "преузимање XOVER %d - %d у %s...\n"
 
 #: src/news_gtk.c:51
 msgid "/_Subscribe to newsgroup..."
@@ -5784,11 +5786,11 @@ msgstr ""
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:95
 msgid "Enable virus scanning"
-msgstr "Омогући проверу на вирусе"
+msgstr "Омогућено откривање вируса"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:101
 msgid "Scan archive contents"
-msgstr "Провери садржај архива"
+msgstr "Провера садржаја архива"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:114
 msgid "Maximum attachment size"
@@ -5800,23 +5802,23 @@ msgstr "МБ"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:129
 msgid "Save infected messages"
-msgstr "Сачувај инфициране поруке"
+msgstr "Чување инфицираних порука"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:135
 msgid "Save mails that contain viruses"
-msgstr "Сачувај поруке које садрже вирусе"
+msgstr "Чување порука које садрже вирусе"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:145
 #: src/plugins/spamassassin/spamassassin_gtk.c:335
 msgid "Save folder"
-msgstr "Директоријум у коме ће се снимати инфициране поруке"
+msgstr "Директоријум за чување инфицираних порука"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:154
 #: src/plugins/clamav/clamav_plugin_gtk.c:161
 #: src/plugins/spamassassin/spamassassin_gtk.c:344
 #: src/plugins/spamassassin/spamassassin_gtk.c:351
 msgid "Leave empty to use the default trash folder"
-msgstr "Оставите празно да би се користио подразумевани директоријум за смеће"
+msgstr "Оставите празно за коришћење подразумеваног директоријума за смеће"
 
 #: src/plugins/demo/demo.c:74
 msgid "Demo"
@@ -5840,7 +5842,7 @@ msgstr "Дило прегледач Интернета"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:116
 msgid "Do not load remote links in mails"
-msgstr "Немој да учитаваш удаљене везе у порукама."
+msgstr "Без учитавања удаљених веза у порукама."
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:122
 msgid "Equivalent to Dillo's '--local' option"
@@ -5848,11 +5850,11 @@ msgstr "Еквивалент Дило опцији „--local“"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:124
 msgid "You can still load remote links by reloading the page"
-msgstr "Ипак можете учитати удаљене везе поновним учитавањем стране"
+msgstr "Удаљене везе се ипак могу учитати поновним учитавањем стране"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:133
 msgid "Full window mode (hide controls)"
-msgstr "Мод увећаног приказа (скривање контрола)"
+msgstr "Режим увећаног приказа (скривање контрола)"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:139
 msgid "Equivalent to Dillo's '--fullwindow' option"
@@ -5896,7 +5898,7 @@ msgstr "Аутоматска провера потписа"
 
 #: src/plugins/pgpcore/prefs_gpg.c:102
 msgid "Store passphrase in memory"
-msgstr "Сачувај помоћну фразу у меморији"
+msgstr "Чување помоћне фразе у меморији"
 
 #: src/plugins/pgpcore/prefs_gpg.c:108
 msgid "Expire after"
@@ -5912,11 +5914,11 @@ msgstr "минут(а)"
 
 #: src/plugins/pgpcore/prefs_gpg.c:138
 msgid "Grab input while entering a passphrase"
-msgstr "Ухвати улаз при уносу помоћне фразе"
+msgstr "Хватање улаза при уносу помоћне фразе"
 
 #: src/plugins/pgpcore/prefs_gpg.c:145
 msgid "Display warning on startup if GnuPG doesn't work"
-msgstr "Прикажи упозорење при покретању ако ГнуПГ није функционалан"
+msgstr "Приказ упозорења при покретању ако GnuPG није функционалан"
 
 #: src/plugins/pgpcore/prefs_gpg.c:235
 msgid "Sign key"
@@ -5924,7 +5926,7 @@ msgstr "Кључ за потпис"
 
 #: src/plugins/pgpcore/prefs_gpg.c:268
 msgid "Use default GnuPG key"
-msgstr "Користи подразумевани GnuPG кључ"
+msgstr "Употреба подразумеваног GnuPG кључа"
 
 #: src/plugins/pgpcore/prefs_gpg.c:275
 msgid "Select key by your email address"
@@ -5940,7 +5942,7 @@ msgstr "Корисник или ИД кључа:"
 
 #: src/plugins/pgpcore/prefs_gpg.c:464
 msgid "GPG"
-msgstr "ГПГ"
+msgstr "GPG"
 
 #: src/plugins/pgpcore/select-keys.c:106
 #, c-format
@@ -6019,7 +6021,7 @@ msgstr "Основно"
 
 #: src/plugins/pgpcore/sgpgme.c:164
 msgid "The signature can't be checked - GPG error."
-msgstr "Потпис не може да буде проверен — GPG грешка."
+msgstr "Потпис се не може проверити — GPG грешка."
 
 #: src/plugins/pgpcore/sgpgme.c:168 src/plugins/pgpcore/sgpgme.c:172
 #: src/plugins/pgpcore/sgpgme.c:212
@@ -6115,8 +6117,8 @@ msgid ""
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
 msgstr ""
-"Овај додатак омогућава комуникацију са ПГП системом. Користе га други "
-"додатци попут ПГП/МИМЕ-а\n"
+"Овај додатак омогућава комуникацију са ПГП системом. Користе га други додаци "
+"попут ПГП/МИМЕ-а\n"
 "\n"
 "GPGME је заштићен 2001. од стране Werner Koch <dd9jn@gnu.org>.\n"
 
@@ -6578,8 +6580,7 @@ msgstr "Примени филтер при преузимању порука"
 
 #: src/prefs_account.c:1609
 msgid "'Get Mail' checks for new messages on this account"
-msgstr ""
-"„Преузми пошту“ проверава да ли постоје нове поруке и на овом налогу"
+msgstr "„Преузми пошту“ проверава да ли постоје нове поруке и на овом налогу"
 
 #: src/prefs_account.c:1677
 msgid "Add Date"
@@ -6896,7 +6897,8 @@ msgstr "<span weight=\"bold\" underline=\"single\">Назив менија:</spa
 
 #: src/prefs_actions.c:789
 msgid "Use / in menu name to make submenus."
-msgstr "Користите обрнуту косу црту „/“ у називу менија за формирање подменија."
+msgstr ""
+"Користите обрнуту косу црту „/“ у називу менија за формирање подменија."
 
 #: src/prefs_actions.c:791
 msgid "<span weight=\"bold\" underline=\"single\">Command line:</span>"
@@ -7299,8 +7301,8 @@ msgid ""
 "\n"
 "The following symbols can be used:"
 msgstr ""
-"„Изршавање“ омогућава слање поруке или делова поруке спољном програму "
-"или скрипти.\n"
+"„Изршавање“ омогућава слање поруке или делова поруке спољном програму или "
+"скрипти.\n"
 "\n"
 "Могу да се користе следећи симболи:"
 
@@ -7667,8 +7669,8 @@ msgid ""
 "\n"
 "The following symbols can be used:"
 msgstr ""
-"„Тест“ омогућава испробавање поруке или дела поруке користећи спољни "
-"програм или скрипту. Програм ће вратити 0 или 1.\n"
+"„Тест“ омогућава испробавање поруке или дела поруке користећи спољни програм "
+"или скрипту. Програм ће вратити 0 или 1.\n"
 "\n"
 "Могу се користити следећи симболи:"
 
@@ -7778,7 +7780,7 @@ msgstr "Одаберите боју за цитат другог нивоа"
 
 #: src/prefs_msg_colors.c:285
 msgid "Pick color for quotation level 3"
-msgstr "Одаберите боју за цитат трећегг нивоа"
+msgstr "Одаберите боју за цитат трећег нивоа"
 
 #: src/prefs_msg_colors.c:288
 msgid "Pick color for URI"
@@ -8472,7 +8474,7 @@ msgstr ""
 
 #: src/prefs_themes.c:549
 msgid "Couldn't create destination directory"
-msgstr "Не могу да направим циљни директоријум"
+msgstr "Није могуће направити циљни директоријум"
 
 #: src/prefs_themes.c:562
 msgid "Theme installed succesfully"
@@ -8661,7 +8663,7 @@ msgstr "[Грешка при декодирању BASE64]\n"
 #: src/procmsg.c:1508
 msgid "Could not create temporary file for news sending."
 msgstr ""
-"Не могу да направим привремену датотеку за слање поруке на дискусиону групу."
+"Није могуће прављење привремене датотеке за слање поруке на дискусиону групу."
 
 #: src/procmsg.c:1519
 msgid "Error when writing temporary file for news sending."
@@ -8766,7 +8768,7 @@ msgstr "Шаљем поруку користећи наредбу %s\n"
 #: src/send_message.c:151
 #, c-format
 msgid "Can't execute command: %s"
-msgstr "Не могу да извршим наредбу: %s"
+msgstr "Није могуће извршење наредбе: %s"
 
 #: src/send_message.c:186
 #, c-format
@@ -8775,11 +8777,11 @@ msgstr "Настала је грешка при иазвршавању наре�
 
 #: src/send_message.c:299
 msgid "Connecting"
-msgstr "Повезујем се..."
+msgstr "Повезивање"
 
 #: src/send_message.c:304
 msgid "Doing POP before SMTP..."
-msgstr "Покрећем идентификацију POP пре SMTP..."
+msgstr "Покретеање идентификације POP пре SMTP..."
 
 #: src/send_message.c:307
 msgid "POP before SMTP"
@@ -8788,7 +8790,7 @@ msgstr "POP пре SMTP идентификација..."
 #: src/send_message.c:312
 #, c-format
 msgid "Connecting to SMTP server: %s ..."
-msgstr "Повезујем се на SMTP сервер: %s ..."
+msgstr "Повезивање на SMTP сервер: %s ..."
 
 #: src/send_message.c:370
 msgid "Mail sent successfully."
@@ -8796,7 +8798,7 @@ msgstr "Порука је успешно послата."
 
 #: src/send_message.c:434
 msgid "Sending HELO..."
-msgstr "Шаљем HELO..."
+msgstr "Слање HELO..."
 
 #: src/send_message.c:435 src/send_message.c:440 src/send_message.c:445
 msgid "Authenticating"
@@ -8808,11 +8810,11 @@ msgstr "Слање порука..."
 
 #: src/send_message.c:439
 msgid "Sending EHLO..."
-msgstr "Шаљем EHLO..."
+msgstr "Слање EHLO..."
 
 #: src/send_message.c:448
 msgid "Sending MAIL FROM..."
-msgstr "Шаљем MAIL FROM..."
+msgstr "Слање MAIL FROM..."
 
 #: src/send_message.c:449 src/send_message.c:453 src/send_message.c:458
 msgid "Sending"
@@ -8820,24 +8822,24 @@ msgstr "Слање порука у току..."
 
 #: src/send_message.c:452
 msgid "Sending RCPT TO..."
-msgstr "Шаљем RCPT TO..."
+msgstr "Слање RCPT TO..."
 
 #: src/send_message.c:457
 msgid "Sending DATA..."
-msgstr "Шаљем садржај поруке (DATA)..."
+msgstr "Слање садржаја поруке (DATA)..."
 
 #: src/send_message.c:461
 msgid "Quitting..."
-msgstr "Затварам конекцију..."
+msgstr "Затварање конекције..."
 
 #: src/send_message.c:489
 #, c-format
 msgid "Sending message (%d / %d bytes)"
-msgstr "Шаљем поруку (%d / %d бајтова)"
+msgstr "Слање поруке (%d / %d бајтова)"
 
 #: src/send_message.c:517
 msgid "Sending message"
-msgstr "Шаљем припремљене поруке"
+msgstr "Слање припремљене поруке"
 
 #: src/send_message.c:563 src/send_message.c:583
 msgid "Error occurred while sending the message."
@@ -9292,7 +9294,7 @@ msgstr "/_Сачувај слику"
 
 #: src/textview.c:733
 msgid "This message can't be displayed.\n"
-msgstr "Не могу да прикажем ову поруку.\n"
+msgstr "Није могућ приказ ове поруке.\n"
 
 #: src/textview.c:752
 msgid "The following can be performed on this part by "

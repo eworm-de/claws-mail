@@ -1178,3 +1178,4 @@
 ( cvs diff -u -r 1.395.2.159 -r 1.395.2.160 src/summaryview.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/gtksourceprintjob.c;  ) > 1.9.100cvs192.patchset
 ( cvs diff -u -r 1.100.2.34 -r 1.100.2.35 AUTHORS;  cvs diff -u -r 1.9.2.3 -r 1.9.2.4 po/el.po;  cvs diff -u -r 1.5.2.12 -r 1.5.2.13 po/zh_CN.po;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/gtk/authors.h;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 tools/claws.i18n.status.pl;  ) > 1.9.100cvs193.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/gtksourceprintjob.c;  ) > 1.9.100cvs194.patchset
+( cvs diff -u -r 1.17.2.17 -r 1.17.2.18 po/sr.po;  cvs diff -u -r 1.4.2.6 -r 1.4.2.7 po/sv.po;  ) > 1.9.100cvs195.patchset
