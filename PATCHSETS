@@ -1184,3 +1184,4 @@
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 po/fi.po;  cvs diff -u -r 1.2.2.19 -r 1.2.2.20 po/sk.po;  ) > 1.9.100cvs198.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/account.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/advanced.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/glossary.xml;  cvs diff -u -r 1.60.2.24 -r 1.60.2.25 po/es.po;  ) > 1.9.100cvs199.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/faq.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/gpl.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/intro.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/starting.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/sylpheed-claws-manual.xml;  ) > 1.9.100cvs200.patchset
+( cvs diff -u -r 1.11.2.7 -r 1.11.2.8 src/manual.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/icon_legend.c;  ) > 2.0.0cvs1.patchset

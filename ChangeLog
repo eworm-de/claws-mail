@@ -1,3 +1,12 @@
+2006-01-30 [colin]	2.0.0cvs1
+
+	* src/manual.c
+		Check for the file to be present before 
+		enabling the menu
+	* src/gtk/icon_legend.c
+		Add folders icons (not all of them, there
+		are too much, but the most intriguing ones)
+
 2006-01-30 [paul]	2.0.0
 
 	version 2.0.0 released

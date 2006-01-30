@@ -89,14 +89,19 @@ static gchar *get_local_path_with_locale(gchar *rootpath)
 gboolean manual_available(ManualType type)
 {
 	gboolean ret = FALSE;
-    	gchar *dir = NULL;
+    	gchar *dir = NULL, *uri = NULL;
 	
 	switch (type) {
 		case MANUAL_MANUAL_LOCAL:
 			dir = get_local_path_with_locale(MANUALDIR);
 			if (dir != NULL) {
+				uri = g_strconcat(dir, G_DIR_SEPARATOR_S, MANUAL_HTML_INDEX, NULL);
 				g_free(dir);
-				ret = TRUE;
+				if (is_file_exist(uri))
+					ret = TRUE;
+				else
+					ret = FALSE;
+				g_free(uri);
 			}
 			break;
 		default:

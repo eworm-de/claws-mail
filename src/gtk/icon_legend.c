@@ -53,6 +53,9 @@ StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_MARK,
 	STOCK_PIXMAP_LOCKED,
 	STOCK_PIXMAP_IGNORETHREAD,
+	STOCK_PIXMAP_DIR_OPEN, 
+	STOCK_PIXMAP_DIR_OPEN_HRM,
+	STOCK_PIXMAP_DIR_OPEN_MARK,
 };
 
 static gchar *legend_icon_desc[] = {
@@ -68,6 +71,9 @@ static gchar *legend_icon_desc[] = {
 	N_("Marked"),
 	N_("Locked"),
 	N_("In an ignored thread"),
+	N_("Folder (normal, opened)"),
+	N_("Folder with read messages hidden"),
+	N_("Folder contains marked emails"),
 };
 
 static struct LegendDialog {
