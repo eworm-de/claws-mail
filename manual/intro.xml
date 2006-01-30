@@ -32,5 +32,33 @@
     </para>
   </section>
 
+  <section id="intro_information">
+    <title>Useful URLs</title>
+    <para>
+	Website: <ulink url="http://claws.sylpheed.org/">http://claws.sylpheed.org/</ulink>
+    </para>
+    <para>
+	Latest News: <ulink url="http://claws.sylpheed.org/news.php">http://claws.sylpheed.org/news.php</ulink>
+    </para>
+    <para>
+	Extra Plugins: <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>
+    </para>
+    <para>
+	Icon Themes: <ulink url="http://claws.sylpheed.org/themes.php">http://claws.sylpheed.org/themes.php</ulink>
+    </para>
+    <para>
+	Tools: <ulink url="http://claws.sylpheed.org/tools.php">http://claws.sylpheed.org/tools.php</ulink>
+    </para>
+    <para>
+	Users' Mailing List: <ulink url="http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users">http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users</ulink>
+    </para>
+    <para>
+	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>
+    </para>
+    <para>
+	Project: <ulink url="http://sourceforge.net/projects/sylpheed-claws/">http://sourceforge.net/projects/sylpheed-claws/</ulink>
+    </para>
+  </section>
+
 </section>
 

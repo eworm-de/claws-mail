@@ -58,4 +58,10 @@
     <para>
 	Yes, select the section in the message view and choose <quote>Reply</quote>.
     </para></section>
+    <section>
+    <title>Where can I find the answers to more FAQs about Sylpheed-Claws?</title>
+    <para>
+	An enlarged, user-contributed FAQ can be found on the Sylpheed-Claws website, <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+    </para>
+    </section>
 </appendix>

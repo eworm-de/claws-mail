@@ -59,7 +59,7 @@
   </section>
 
   <section id="start_sending">
-    <title>Sending the first mail</title>
+    <title>Sending your first mail</title>
     <para>
 	When you have finished writing your first email, you can either click the <quote>Send</quote> button to send your email immediately, or use the <quote>Send later</quote> button to queue the message for later sending. When using <quote>Send</quote>, the composition window will close itself when the mail has been sent; it will stay open if there is an error. When using <quote>Send later</quote>, the composition window will immediately close, and your email will be stored in your Queue folder. It will then be sent when you click the <quote>Send</quote> button in the main window's toolbar.
     </para><para>
