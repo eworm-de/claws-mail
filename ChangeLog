@@ -1,3 +1,8 @@
+2006-01-30 [paul]	2.0.0cvs2
+
+	* src/gtk/icon_legend.c
+		show the new entries
+
 2006-01-30 [colin]	2.0.0cvs1
 
 	* src/manual.c

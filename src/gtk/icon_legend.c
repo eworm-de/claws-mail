@@ -38,7 +38,7 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 12
+#define ICONS 15
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
