@@ -197,7 +197,8 @@ try_again:
     if (pass_ack) {
         const gchar *entry_text;
         entry_text = gtk_entry_get_text(GTK_ENTRY(pass_entry));
-        if (entry_text) /* Hmmm: Do we really need this? */
+	the_passphrase = g_locale_from_utf8(entry_text, -1, NULL, NULL, NULL);
+        if (the_passphrase == NULL) 
             the_passphrase = g_strdup (entry_text);
     }
     gtk_widget_destroy (window);

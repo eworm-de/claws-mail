@@ -1,3 +1,11 @@
+2006-01-31 [cleroy]	2.0.0cvs3
+
+	* src/plugins/pgpcore/passphrase.c
+		Convert passphrase to locale encoding
+	* src/compose.c
+		Fix drafting on IMAP. Crappy bug sneaked in
+		the release :-/
+
 2006-01-30 [paul]	2.0.0cvs2
 
 	* src/gtk/icon_legend.c

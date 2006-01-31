@@ -7106,6 +7106,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		target_locked = MSG_IS_LOCKED(compose->targetinfo->flags);
 		flag.perm_flags = target_locked?MSG_LOCKED:0;
 	}
+	flag.tmp_flags = MSG_DRAFT;
 
 	folder_item_scan(draft);
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
