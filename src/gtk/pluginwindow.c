@@ -152,22 +152,35 @@ static void unload_cb(GtkButton *button, PluginWindow *pluginwindow)
 
 static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
-	gchar *file, *error = NULL;
+	GList *file_list;
 
-	file = filesel_select_file_open_with_filter(_("Select Plugin to load"), 
-						    get_plugin_dir(), 
-						    "*." G_MODULE_SUFFIX);
-	if (file == NULL)
-		return;
+	file_list = filesel_select_multiple_files_open_with_filter(
+			_("Select Plugin to load"), get_plugin_dir(), 
+			"*." G_MODULE_SUFFIX);
 
-	plugin_load(file, &error);
-	if (error != NULL) {
-		alertpanel_error(_("The following error occured while loading the plugin:\n%s\n"), error);
-		g_free(error);
-	}
+	if (file_list) {
+		GList *tmp;
 
-	set_plugin_list(pluginwindow);
-	g_free(file);
+		for ( tmp = file_list; tmp; tmp = tmp->next) {
+			gchar *file, *error = NULL;
+
+			file = (gchar *) tmp->data;
+			if (!file) continue;
+			plugin_load(file, &error);
+			if (error != NULL) {
+				alertpanel_error(
+				_("The following error occured while loading the plugin [%s] :\n%s\n"),
+				file, error);
+				g_free(error);
+			}
+
+			/* FIXME: globally or atom-ly : ? */
+			set_plugin_list(pluginwindow);
+			g_free(file);
+		}
+
+		g_list_free(file_list);
+	}		
 }
 
 static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -364,9 +377,10 @@ static GtkWidget *pluginwindow_list_view_create(PluginWindow *pluginwindow)
 	model = GTK_TREE_MODEL(pluginwindow_create_data_store());
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
-	
+
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
-	
+	gtk_tree_view_set_search_column (list_view, 0);
+
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 	gtk_tree_selection_set_select_function(selector, pluginwindow_selected,

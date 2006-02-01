@@ -1020,7 +1020,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			      MimeView *mimeview)
 {
 	MimeInfo *partinfo;
-
+	AlertValue val;
 	if (mimeview->opened == node) return;
 	mimeview->opened = node;
 	gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
@@ -1048,9 +1048,28 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 		
 			break;
 		default:
-			mimeview->textview->default_text = TRUE;	
+			mimeview->textview->default_text = TRUE;
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
-			textview_show_mime_part(mimeview->textview, partinfo);
+			textview_clear(mimeview->textview);
+			val = alertpanel_full(_("Unknown part type"), 
+					      _("The type of this part is unknown. What would you like "
+			        		"to do with it?"),
+					      GTK_STOCK_SAVE, GTK_STOCK_OPEN, _("Display as text"),
+					      FALSE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
+			switch (val) {
+				case G_ALERTDEFAULT:
+					mimeview_save_as(mimeview);
+					break;
+				case G_ALERTALTERNATE:
+					mimeview_open_with(mimeview);
+					break;
+				case G_ALERTOTHER:
+					mimeview_display_as_text(mimeview);
+					break;
+				default:
+					textview_show_mime_part(mimeview->textview, partinfo);
+			}
+			
 			break;
 		}
 	}
@@ -1568,8 +1587,15 @@ static void mimeview_open_with(MimeView *mimeview)
 		prefs_common.mime_open_cmd_history =
 			add_history(NULL, prefs_common.mime_open_cmd);
 
-	content_type = procmime_get_content_type_str(partinfo->type,
+	if ((partinfo->type == MIMETYPE_APPLICATION) &&
+            (!g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))) {
+	    	/* guess content-type from filename */
+	    	content_type = procmime_get_mime_type(filename);
+	} 
+	if (content_type == NULL) {
+		content_type = procmime_get_content_type_str(partinfo->type,
 			partinfo->subtype);
+	}
 	mime_command = mailcap_get_command_for_type(content_type);
 	g_free(content_type);
 	cmd = input_dialog_combo

@@ -1,3 +1,18 @@
+2006-02-01 [colin]	2.0.0cvs6
+
+	* src/mimeview.c
+		Try to get mime type by extension if it is
+		application/octet-stream
+		Display a window with possible choices when
+		encountering unknown mime types
+	* src/gtk/filesel.c
+	* src/gtk/filesel.h
+		Add preview
+		Allow multiple selection in filtered filesel
+		(patch by Fabien Vantard)
+	* src/gtk/pluginwindow.c
+		Use it (patch by Fabien Vantard)
+
 2006-02-01 [paul]	2.0.0cvs5
 
 	* src/jpilot.c

@@ -1189,3 +1189,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.382.2.230 -r 1.382.2.231 src/compose.c;  ) > 2.0.0cvs3.patchset
 ( cvs diff -u -r 1.382.2.231 -r 1.382.2.232 src/compose.c;  cvs diff -u -r 1.274.2.93 -r 1.274.2.94 src/mainwindow.c;  cvs diff -u -r 1.94.2.75 -r 1.94.2.76 src/messageview.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_send.c;  ) > 2.0.0cvs4.patchset
 ( cvs diff -u -r 1.18.2.15 -r 1.18.2.16 src/jpilot.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_summaries.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_wrapping.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/icon_legend.c;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/gtk/quicksearch.c;  ) > 2.0.0cvs5.patchset
+( cvs diff -u -r 1.83.2.59 -r 1.83.2.60 src/mimeview.c;  cvs diff -u -r 1.2.2.20 -r 1.2.2.21 src/gtk/filesel.c;  cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/filesel.h;  cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/gtk/pluginwindow.c;  ) > 2.0.0cvs6.patchset

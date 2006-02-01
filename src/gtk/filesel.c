@@ -42,6 +42,31 @@
 #include "codeconv.h"
 #include "prefs_common.h"
 
+static void
+update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
+{
+	GtkWidget *preview;
+	char *filename;
+	GdkPixbuf *pixbuf;
+	gboolean have_preview;
+
+	preview = GTK_WIDGET (data);
+	filename = gtk_file_chooser_get_preview_filename (file_chooser);
+
+	if (filename == NULL)
+		return;
+
+	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+	have_preview = (pixbuf != NULL);
+	g_free (filename);
+
+	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+	if (pixbuf)
+		gdk_pixbuf_unref (pixbuf);
+
+	gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+}
+	
 static GList *filesel_create(const gchar *title, const gchar *path,
 			     gboolean multiple_files,
 			     gboolean open, gboolean folder_mode,
@@ -66,6 +91,15 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		gtk_file_filter_add_pattern(file_filter, filter);
 		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser),
 					    file_filter);
+	}
+
+	if (action == GTK_FILE_CHOOSER_ACTION_OPEN) {
+		GtkImage *preview;
+		preview = gtk_image_new ();
+		gtk_file_chooser_set_preview_widget (chooser, preview);
+		g_signal_connect (chooser, "update-preview",
+			    G_CALLBACK (update_preview_cb), preview);
+
 	}
 
 	manage_window_set_transient (GTK_WINDOW(chooser));
@@ -139,6 +173,13 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 GList *filesel_select_multiple_files_open(const gchar *title)
 {
 	return filesel_create(title, NULL, TRUE, TRUE, FALSE, NULL);
+}
+
+GList *filesel_select_multiple_files_open_with_filter(	const gchar *title,
+							const gchar *path,
+							const gchar *filter)
+{
+	return filesel_create (title, path, TRUE, TRUE, FALSE, filter);
 }
 
 /**
