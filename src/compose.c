@@ -698,6 +698,12 @@ static GtkItemFactoryEntry compose_entries[] =
 	 ENC_ACTION(C_WINDOWS_1255)},
 	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
 
+	{N_("/_Options/Character _encoding/Arabic (ISO-8859-_6)"),
+	 ENC_ACTION(C_ISO_8859_6)},
+	{N_("/_Options/Character _encoding/Arabic (Windows-1256)"),
+	 ENC_ACTION(C_CP1256)},
+	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+
 	{N_("/_Options/Character _encoding/Turkish (ISO-8859-_9)"),
 	 ENC_ACTION(C_ISO_8859_9)},
 	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},

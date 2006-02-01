@@ -1187,3 +1187,4 @@
 ( cvs diff -u -r 1.11.2.7 -r 1.11.2.8 src/manual.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/icon_legend.c;  ) > 2.0.0cvs1.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/icon_legend.c;  ) > 2.0.0cvs2.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.382.2.230 -r 1.382.2.231 src/compose.c;  ) > 2.0.0cvs3.patchset
+( cvs diff -u -r 1.382.2.231 -r 1.382.2.232 src/compose.c;  cvs diff -u -r 1.274.2.93 -r 1.274.2.94 src/mainwindow.c;  cvs diff -u -r 1.94.2.75 -r 1.94.2.76 src/messageview.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_send.c;  ) > 2.0.0cvs4.patchset
