@@ -1,3 +1,16 @@
+2006-02-01 [colin]	2.0.0cvs7
+
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/common/defs.h
+	* src/common/utils.c
+	* src/common/utils.h
+		Add ability to edit the signature file
+		from the account preferences, and use
+		a default for the text editor.
+		Patch by Fabien Vantard
+
 2006-02-01 [colin]	2.0.0cvs6
 
 	* src/mimeview.c

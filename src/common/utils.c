@@ -3593,6 +3593,30 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	return 0;
 }
 
+gint open_txt_editor(const gchar *filepath, const gchar *cmdline)
+{
+	gchar buf[BUFFSIZE];
+	gchar *p;
+
+	g_return_val_if_fail(filepath != NULL, -1);
+
+	if (cmdline &&
+	    (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
+	    !strchr(p + 2, '%'))
+		g_snprintf(buf, sizeof(buf), cmdline, filepath);
+	else {
+		if (cmdline)
+			g_warning("Open Text Editor command line is invalid "
+				  "(there must be only one '%%s'): %s",
+				  cmdline);
+		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, filepath);
+	}
+
+	execute_command_line(buf, TRUE);
+
+	return 0;
+}
+
 time_t remote_tzoffset_sec(const gchar *zone)
 {
 	static gchar ustzstr[] = "PSTPDTMSTMDTCSTCDTESTEDT";

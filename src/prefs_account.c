@@ -65,6 +65,7 @@ static GtkWidget *sigfile_radiobtn;
 static GtkWidget *sigcmd_radiobtn;
 static GtkWidget *entry_sigpath;
 static GtkWidget *signature_browse_button;
+static GtkWidget *signature_edit_button;
 
 static GSList *prefs_pages = NULL;
 
@@ -594,6 +595,9 @@ static void prefs_account_sigcmd_radiobtn_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void prefs_account_signature_browse_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_signature_edit_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
@@ -1922,6 +1926,16 @@ static void prefs_account_compose_create(void)
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_signature_browse_cb), NULL);
 
+	#if GTK_CHECK_VERSION(2, 6, 0)
+	signature_edit_button = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	#else
+	signature_edit_button = gtk_button_new_with_label (_(" Edit... "));
+	#endif
+	gtk_widget_show (signature_edit_button);
+	gtk_box_pack_start (GTK_BOX (hbox2), signature_edit_button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(signature_edit_button), "clicked",
+			 G_CALLBACK(prefs_account_signature_edit_cb), entry_sigpath);
+
 	PACK_FRAME (vbox1, frame, _("Automatically set the following addresses"));
 
 	table =  gtk_table_new (3, 2, FALSE);
@@ -2555,11 +2569,13 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 static void prefs_account_sigfile_radiobtn_cb(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_set_sensitive(GTK_WIDGET(signature_browse_button), TRUE);
+	gtk_widget_set_sensitive(GTK_WIDGET(signature_edit_button), TRUE);
 }
 
 static void prefs_account_sigcmd_radiobtn_cb(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_set_sensitive(GTK_WIDGET(signature_browse_button), FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(signature_edit_button), FALSE);
 }
 
 static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
@@ -2577,6 +2593,12 @@ static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
 	}
 	gtk_entry_set_text(GTK_ENTRY(entry_sigpath), utf8_filename);
 	g_free(utf8_filename);
+}
+
+static void prefs_account_signature_edit_cb(GtkWidget *widget, gpointer data)
+{
+	const gchar *sigpath = gtk_entry_get_text(GTK_ENTRY(data));
+	open_txt_editor(sigpath, prefs_common.ext_editor_cmd);
 }
 
 static void prefs_account_edit_custom_header(void)

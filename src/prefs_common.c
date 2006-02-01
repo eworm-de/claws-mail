@@ -509,7 +509,7 @@ static PrefParam param[] = {
 	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
 	 NULL, NULL, NULL},
-	{"ext_editor_command", "gedit %s",
+	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,

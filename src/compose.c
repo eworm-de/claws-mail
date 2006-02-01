@@ -6651,7 +6651,6 @@ static void compose_exec_ext_editor(Compose *compose)
 #ifdef G_OS_UNIX
 static gint compose_exec_ext_editor_real(const gchar *file)
 {
-	static gchar *def_cmd = "emacs %s";
 	gchar buf[1024];
 	gchar *p;
 	gchar **cmdline;
@@ -6679,7 +6678,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		if (prefs_common.ext_editor_cmd)
 			g_warning("External editor command line is invalid: '%s'\n",
 				  prefs_common.ext_editor_cmd);
-		g_snprintf(buf, sizeof(buf), def_cmd, file);
+		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, file);
 	}
 
 	cmdline = strsplit_with_quote(buf, " ", 1024);

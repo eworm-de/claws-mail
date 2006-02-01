@@ -487,6 +487,8 @@ gchar *get_command_output	(const gchar	*cmdline);
 
 /* open URI with external browser */
 gint open_uri(const gchar *uri, const gchar *cmdline);
+/* open file with text editor */
+gint open_txt_editor(const gchar *filepath, const gchar *cmdline);
 
 /* time functions */
 time_t remote_tzoffset_sec	(const gchar	*zone);
