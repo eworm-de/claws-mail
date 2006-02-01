@@ -444,7 +444,7 @@ QuickSearch *quicksearch_new()
 	search_cond_expr_tip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_cond_expr_tip),
 			     search_condition_expression,
-			     _("Quick search: edit filtering condition"), NULL);
+			     _("Edit search criteria"), NULL);
 	gtk_widget_show(search_condition_expression);
 
 	search_description = gtk_button_new_with_label(_(" Extended Symbols... "));

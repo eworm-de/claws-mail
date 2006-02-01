@@ -74,7 +74,7 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_autowrap, _("Wrap on input"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_autowrap, _("Auto wrapping"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrapquote, _("Wrap quotation"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrappastes, _("Wrap pasted text"));
 

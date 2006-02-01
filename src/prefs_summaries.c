@@ -730,6 +730,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
+	GtkTooltips *tip_datefmt;
 	GtkWidget *hbox_dispitem;
 	GtkWidget *frame_dispitem;
 	GtkWidget *button_dispitem;
@@ -820,6 +821,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
 			  G_CALLBACK (date_format_create), NULL);
+	tip_datefmt = gtk_tooltips_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tip_datefmt),
+			     button_datefmt,
+			     _("Date format help"), NULL);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 

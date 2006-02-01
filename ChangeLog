@@ -1,3 +1,14 @@
+2006-02-01 [paul]	2.0.0cvs5
+
+	* src/jpilot.c
+		fix crash on creating jpilot address book
+		Thanks to Colin
+	* src/prefs_summaries.c
+	* src/prefs_wrapping.c
+	* src/gtk/icon_legend.c
+	* src/gtk/quicksearch.c
+		string fixes and additions
+
 2006-02-01 [paul]	2.0.0cvs4
 
 	* src/compose.c

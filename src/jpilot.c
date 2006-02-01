@@ -1257,10 +1257,9 @@ static void jpilot_load_address(
 			addritem_free_item_person( person );
 			person = NULL;
 		}
+		/* Free up pointer allocated inside address */
+		free_Address( & addr );
 	}
-
-	/* Free up pointer allocated inside address */
-	free_Address( & addr );
 }
 
 /**
