@@ -1,3 +1,9 @@
+2006-02-01 [colin]	2.0.0cvs8
+
+	* src/mimeview.c
+		Revert the alertpanel patch, it sucks (intrusive
+		and gets in the way of "open")
+
 2006-02-01 [colin]	2.0.0cvs7
 
 	* src/compose.c

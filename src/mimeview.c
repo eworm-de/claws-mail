@@ -1051,6 +1051,9 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			mimeview->textview->default_text = TRUE;
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 			textview_clear(mimeview->textview);
+			textview_show_mime_part(mimeview->textview, partinfo);
+			
+#if 0 /* this sucks. I'll do better. */
 			val = alertpanel_full(_("Unknown part type"), 
 					      _("The type of this part is unknown. What would you like "
 			        		"to do with it?"),
@@ -1067,9 +1070,8 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 					mimeview_display_as_text(mimeview);
 					break;
 				default:
-					textview_show_mime_part(mimeview->textview, partinfo);
 			}
-			
+#endif
 			break;
 		}
 	}
