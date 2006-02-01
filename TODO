@@ -1,8 +1,8 @@
 TODO
 ====
-Before 2.0
-manual: glossary.xml, proofreading, autotoolize the Makefile, install the stuff, put back link in Help
 
-o addressbook improvements
-o virtual folders
-o full-text search using Namazu
+* LDAPS
+* Better thingy for the "The following can be performed on this part":
+  Shiny stuff with buttons etc, but in the textview rather than as an
+  alertpanel
+o full-text search using Namazu (?)
