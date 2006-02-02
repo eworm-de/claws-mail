@@ -1,3 +1,10 @@
+2006-02-02 [paul]	2.0.0cvs9
+
+	* src/mainwindow.c
+		move global option 'Set displayed columns...' out
+		of folder option grouping.
+		fix sensitivity of 'harvest addresses'
+
 2006-02-01 [colin]	2.0.0cvs8
 
 	* src/mimeview.c

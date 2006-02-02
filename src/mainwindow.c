@@ -502,6 +502,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
+
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate _message view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
@@ -532,9 +536,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
-	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
@@ -1900,10 +1901,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses/from Folder..."       
-						       , M_MSG_EXIST},
+		{"/Tools/Harvest addresses"            , M_MSG_EXIST},
 		{"/Tools/Harvest addresses/from Messages..."
-						       , M_MSG_EXIST|M_TARGET_EXIST},
+						       , M_TARGET_EXIST},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
