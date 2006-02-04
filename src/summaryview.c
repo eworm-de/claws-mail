@@ -336,6 +336,14 @@ static void summary_drag_data_get       (GtkWidget        *widget,
 					 guint             info,
 					 guint             time,
 					 SummaryView      *summaryview);
+static void summary_drag_data_received(GtkWidget        *widget,
+					GdkDragContext   *drag_context,
+					gint              x,
+					gint              y,
+					GtkSelectionData *data,
+					guint             info,
+					guint             time,
+					SummaryView       *summaryview);
 
 /* custom compare functions for sorting */
 
@@ -392,8 +400,9 @@ static void summary_find_answers	(SummaryView 	*summaryview,
 
 static gboolean summary_update_msg	(gpointer source, gpointer data);
 
-GtkTargetEntry summary_drag_types[1] =
+GtkTargetEntry summary_drag_types[2] =
 {
+	{"text/uri-list", 0, TARGET_MAIL_URI_LIST},
 	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
 };
 
@@ -618,7 +627,7 @@ SummaryView *summary_create(void)
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
-	summaryview->target_list = gtk_target_list_new(summary_drag_types, 1);
+	summaryview->target_list = gtk_target_list_new(summary_drag_types, 2);
 
 	summaryview->quicksearch = quicksearch;
 
@@ -4612,6 +4621,14 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_data_get),
 			 summaryview);
 
+	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
+			  summary_drag_types, 2,
+			  GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_DEFAULT);
+
+	g_signal_connect(G_OBJECT(ctree), "drag_data_received",
+			 G_CALLBACK(summary_drag_data_received),
+			 summaryview);
+
 	return ctree;
 }
 
@@ -5158,13 +5175,28 @@ static void summary_drag_data_get(GtkWidget        *widget,
 				(ctree, GTK_CTREE_NODE(cur->data));
 			tmp2 = procmsg_get_message_file(msginfo);
 			if (!tmp2) continue;
+			if (msginfo->subject) {
+				gchar *san_subject = g_strdup(msginfo->subject);
+				gchar *dest = NULL;
+				subst_for_filename(san_subject);
+				dest = g_strdup_printf("%s%s%s.%d.txt",
+						get_tmp_dir(),
+						G_DIR_SEPARATOR_S,
+						san_subject, msginfo->msgnum);
+				g_free(san_subject);
+
+				if (copy_file(tmp2, dest, TRUE) == 0) {
+					g_free(tmp2);
+					tmp2 = dest;
+				}
+			} 
 			tmp1 = g_strconcat("file://", tmp2, NULL);
 			g_free(tmp2);
 
 			if (!mail_list) {
 				mail_list = tmp1;
 			} else {
-				tmp2 = g_strconcat(mail_list, tmp1, NULL);
+				tmp2 = g_strconcat(mail_list, "\n", tmp1, NULL);
 				g_free(mail_list);
 				g_free(tmp1);
 				mail_list = tmp2;
@@ -5183,6 +5215,53 @@ static void summary_drag_data_get(GtkWidget        *widget,
 					       selection_data->target, 8,
 					       "Dummy-Summaryview", 
 					       strlen("Dummy-Summaryview")+1);
+	}
+}
+
+static void free_info (gpointer stuff, gpointer data)
+{
+	g_free(stuff);
+}
+
+static void summary_drag_data_received(GtkWidget        *widget,
+					GdkDragContext   *drag_context,
+					gint              x,
+					gint              y,
+					GtkSelectionData *data,
+					guint             info,
+					guint             time,
+					SummaryView       *summaryview)
+{
+	if (info == TARGET_MAIL_URI_LIST) {
+		GList *list, *tmp;
+		GSList *msglist = NULL;
+		FolderItem *item = summaryview->folder_item;
+		if (!item) {
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+			return;
+		}
+		list = uri_list_extract_filenames((const gchar *)data->data);
+		if (!list) {
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+			return;
+		}
+		for (tmp = list; tmp != NULL; tmp = tmp->next) {
+			MsgFileInfo *info = g_new0(MsgFileInfo, 1);
+			info->msginfo = NULL;
+			info->file = (gchar *)tmp->data;
+			msglist = g_slist_prepend(msglist, info);
+		}
+		if (msglist) {
+			msglist = g_slist_reverse(msglist);
+			folder_item_add_msgs(item, msglist, FALSE);
+			g_slist_foreach(msglist, free_info, NULL);
+			g_slist_free(msglist);
+			gtk_drag_finish(drag_context, TRUE, FALSE, time);
+		} else {
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		}
+		list_free_strings(list);
+		g_list_free(list);
 	}
 }
 

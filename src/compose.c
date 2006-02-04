@@ -7916,7 +7916,7 @@ static void compose_toggle_ruler_cb(gpointer data, guint action,
 }
 
 static void compose_attach_drag_received_cb (GtkWidget		*widget,
-					     GdkDragContext	*drag_context,
+					     GdkDragContext	*context,
 					     gint		 x,
 					     gint		 y,
 					     GtkSelectionData	*data,
@@ -7928,7 +7928,8 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 	GList *list, *tmp;
 
 	if (gdk_atom_name(data->type) && 
-	    !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+	    !strcmp(gdk_atom_name(data->type), "text/uri-list")
+	    && gtk_drag_get_source_widget(context) == NULL) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next)
 			compose_attach_append
@@ -7937,9 +7938,8 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 		if (list) compose_changed_cb(NULL, compose);
 		list_free_strings(list);
 		g_list_free(list);
-	} else if (gdk_atom_name(data->type) && 
-		   !strcmp(gdk_atom_name(data->type), "text/plain") &&
-		   data->data && !strcmp(data->data, "Dummy-Summaryview")) {
+	} else if (gtk_drag_get_source_widget(context) 
+		   == mainwindow_get_mainwindow()->summaryview->ctree) {
 		/* comes from our summaryview */
 		SummaryView * summaryview = NULL;
 		GSList * list = NULL, *cur = NULL;

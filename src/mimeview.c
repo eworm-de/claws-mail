@@ -60,6 +60,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
+#include "procheader.h"
 #include "stock_pixmap.h"
 #include "gtk/gtkvscrollbutton.h"
 
@@ -1020,7 +1021,6 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			      MimeView *mimeview)
 {
 	MimeInfo *partinfo;
-	AlertValue val;
 	if (mimeview->opened == node) return;
 	mimeview->opened = node;
 	gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
@@ -1266,7 +1266,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 				   guint	     time,
 				   MimeView	    *mimeview)
 {
-	gchar *filename, *uriname, *tmp;
+	gchar *filename = NULL, *uriname, *tmp;
 	MimeInfo *partinfo;
 
 	if (!mimeview->opened) return;
@@ -1275,8 +1275,39 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
 
-	filename = g_path_get_basename(get_part_name(partinfo));
-	if (*filename == '\0') return;
+	if (strlen(get_part_name(partinfo)) > 0) {
+		filename = g_path_get_basename(get_part_name(partinfo));
+		if (*filename == '\0') return;
+	} else if (partinfo->type == MIMETYPE_MESSAGE 
+		   && !g_ascii_strcasecmp(partinfo->subtype, "rfc822")) {
+		gchar *name = NULL;
+		GPtrArray *headers = NULL;
+		FILE *fp;
+
+		fp = g_fopen(partinfo->data.filename, "rb");
+		fseek(fp, partinfo->offset, SEEK_SET);
+		headers = procheader_get_header_array_asis(fp);
+		if (headers) {
+			gint i;
+			for (i = 0; i < headers->len; i++) {
+				Header *header = g_ptr_array_index(headers, i);
+				if (procheader_headername_equal(header->name, "Subject")) {
+					unfold_line(header->body);
+					name = g_strconcat(header->body, ".txt", NULL);
+					subst_for_filename(name);
+				}
+			}
+			procheader_header_array_destroy(headers);
+		}
+		fclose(fp);
+		if (name)
+			filename = g_path_get_basename(name);
+		g_free(name);
+	}
+	if (filename == NULL)
+		filename = g_path_get_basename("Unnamed part");
+		
+
 
 	tmp = filename;
 	
@@ -1284,11 +1315,10 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 			       filename, NULL);
 
 	g_free(tmp);
-	
+
 	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
-
 	uriname = g_strconcat("file://", filename, NULL);
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
 			       uriname, strlen(uriname));
@@ -1990,10 +2020,14 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
 	gtk_widget_show_all(button);
+	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 
+			    mimeview_mime_types, 1, GDK_ACTION_COPY);
 	g_signal_connect(G_OBJECT(button), "button_release_event", 
 			 G_CALLBACK(icon_clicked_cb), mimeview);
 	g_signal_connect(G_OBJECT(button), "key_press_event", 
 			 G_CALLBACK(icon_key_pressed), mimeview);
+	g_signal_connect(G_OBJECT(button), "drag_data_get",
+			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 
 }

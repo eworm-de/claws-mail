@@ -76,7 +76,7 @@ typedef enum
 #include "prefs_filtering.h"
 #include "quicksearch.h"
 
-extern GtkTargetEntry summary_drag_types[1];
+extern GtkTargetEntry summary_drag_types[2];
 
 struct _SummaryColumnState
 {

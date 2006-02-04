@@ -1,3 +1,25 @@
+2006-02-04 [colin]	2.0.0cvs10
+
+	* src/compose.c
+	* src/folderview.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Added various drag and drop capas:
+		From			To
+		summaryview		other apps
+		mimeview icons		other apps
+		other apps		summaryview
+		other apps		folderview
+
+		This shouldn't have broken the existing:
+		From			To
+		summaryview		folderview
+		folderview		folderview
+		summaryview		compose's attachments
+
+	Tests welcomed.
+
 2006-02-02 [paul]	2.0.0cvs9
 
 	* src/mainwindow.c
