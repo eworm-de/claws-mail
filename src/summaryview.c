@@ -5184,7 +5184,9 @@ static void summary_drag_data_get(GtkWidget        *widget,
 						G_DIR_SEPARATOR_S,
 						san_subject, msginfo->msgnum);
 				g_free(san_subject);
-
+				san_subject = g_filename_from_utf8(dest, -1, NULL, NULL, NULL);
+				g_free(dest);
+				dest = san_subject;
 				if (copy_file(tmp2, dest, TRUE) == 0) {
 					g_free(tmp2);
 					tmp2 = dest;
