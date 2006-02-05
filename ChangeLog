@@ -1,3 +1,12 @@
+2006-02-05 [colin]	2.0.0cvs13
+
+	* src/headerview.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/textview.c
+		Show Face headers - patch partially by Klaus Flittner
+
 2006-02-05 [colin]	2.0.0cvs12
 
 	* src/folderview.c

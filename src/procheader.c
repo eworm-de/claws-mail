@@ -512,12 +512,13 @@ enum
 	H_FROM_SPACE	= 13,
 	H_SC_PLANNED_DOWNLOAD = 14,
 	H_SC_MESSAGE_SIZE = 15,
-	H_X_FACE	= 16,
-	H_DISPOSITION_NOTIFICATION_TO = 17,
-	H_RETURN_RECEIPT_TO = 18,
-	H_SC_PARTIALLY_RETRIEVED = 19,
-	H_SC_ACCOUNT_SERVER = 20,
-	H_SC_ACCOUNT_LOGIN = 21,
+	H_FACE		= 16,
+	H_X_FACE	= 17,
+	H_DISPOSITION_NOTIFICATION_TO = 18,
+	H_RETURN_RECEIPT_TO = 19,
+	H_SC_PARTIALLY_RETRIEVED = 20,
+	H_SC_ACCOUNT_SERVER = 21,
+	H_SC_ACCOUNT_LOGIN = 22,
 };
 
 static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
@@ -536,6 +537,7 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"From ",		NULL, FALSE},
 				   {"SC-Marked-For-Download:", NULL, FALSE},
 				   {"SC-Message-Size:", NULL, FALSE},
+				   {"Face:",		NULL, FALSE},
 				   {"X-Face:",		NULL, FALSE},
 				   {"Disposition-Notification-To:", NULL, FALSE},
 				   {"Return-Receipt-To:", NULL, FALSE},
@@ -691,6 +693,10 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
 			break;
 #endif			
+		case H_FACE:
+			if (msginfo->face) break;
+			msginfo->face = g_strdup(hp);
+			break;
 		case H_X_FACE:
 			if (msginfo->xface) break;
 			msginfo->xface = g_strdup(hp);

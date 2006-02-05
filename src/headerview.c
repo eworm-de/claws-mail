@@ -40,11 +40,14 @@
 #  include <compface.h>
 #endif
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #include "headerview.h"
 #include "prefs_common.h"
 #include "codeconv.h"
 #include "gtkutils.h"
 #include "utils.h"
+#include "base64.h"
 
 #define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
 
@@ -63,6 +66,9 @@ static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 static void headerview_show_xface	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
 #endif
+
+static gint headerview_show_face	(HeaderView	*headerview,
+					 MsgInfo	*msginfo);
 
 HeaderView *headerview_create(void)
 {
@@ -211,6 +217,9 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 			   msginfo->subject ? msginfo->subject :
 			   _("(No Subject)"));
 
+	if (!headerview_show_face(headerview, msginfo))
+		return;
+
 #if HAVE_LIBCOMPFACE
 	headerview_show_xface(headerview, msginfo);
 #endif
@@ -263,6 +272,68 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	g_object_unref(pixmap);
 }
 #endif
+
+static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
+{
+	gchar face[2048];
+	gchar face_png[2048];
+	gint pngsize;
+	GtkWidget *hbox = headerview->hbox;
+	GdkPixbuf *pixbuf;
+	GError *error = NULL;
+
+	if (!msginfo->face) {
+		if (headerview->image &&
+		    GTK_WIDGET_VISIBLE(headerview->image)) {
+			gtk_widget_hide(headerview->image);
+			gtk_widget_queue_resize(hbox);
+		}
+		return -1;
+	}
+	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
+
+	strncpy2(face, msginfo->face, sizeof(face));
+
+	unfold_line(face); /* strip all whitespace and linebreaks */
+	remove_space(face);
+
+	pngsize = base64_decode(face_png, face, strlen(face));
+
+	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
+	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
+	    !gdk_pixbuf_loader_close (loader, &error)) {
+		g_warning("loading face failed\n");
+		g_object_unref(loader);
+		if (headerview->image)
+			gtk_widget_hide(headerview->image);
+		return;
+	}
+
+	pixbuf = g_object_ref(gdk_pixbuf_loader_get_pixbuf(loader));
+
+	g_object_unref(loader);
+
+	if ((gdk_pixbuf_get_width(pixbuf) != 48) || (gdk_pixbuf_get_height(pixbuf) != 48)) {
+		g_object_unref(pixbuf);
+		return -1;
+	}
+
+	if (!headerview->image) {
+		GtkWidget *image;
+
+		image = gtk_image_new_from_pixbuf(pixbuf);
+		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
+		gtk_widget_show(image);
+		headerview->image = image;
+	} else {
+		gtk_image_set_from_pixbuf(GTK_IMAGE(headerview->image), pixbuf);
+		gtk_widget_show(headerview->image);
+	}
+
+	g_object_unref(pixbuf);
+
+	return 0;
+}
 
 void headerview_clear(HeaderView *headerview)
 {

@@ -1152,6 +1152,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBCOPY(folder);
 	MEMBCOPY(to_folder);
 
+	MEMBDUP(face);
 	MEMBDUP(xface);
 	MEMBDUP(dispositionnotificationto);
 	MEMBDUP(returnreceiptto);
@@ -1194,6 +1195,8 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	 * procheader.c::procheader_get_headernames() */
 	if (!msginfo->xface)
 		msginfo->xface = g_strdup(full_msginfo->xface);
+	if (!msginfo->face)
+		msginfo->face = g_strdup(full_msginfo->face);
 	if (!msginfo->dispositionnotificationto)
 		msginfo->dispositionnotificationto = 
 			g_strdup(full_msginfo->dispositionnotificationto);
@@ -1233,6 +1236,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->returnreceiptto);
 	g_free(msginfo->dispositionnotificationto);
 	g_free(msginfo->xface);
+	g_free(msginfo->face);
 
 	g_free(msginfo->fromname);
 
@@ -1284,6 +1288,8 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 		memusage += strlen(msginfo->inreplyto);
 	if (msginfo->xface)
 		memusage += strlen(msginfo->xface);
+	if (msginfo->face)
+		memusage += strlen(msginfo->face);
 	if (msginfo->dispositionnotificationto)
 		memusage += strlen(msginfo->dispositionnotificationto);
 	if (msginfo->returnreceiptto)

@@ -192,6 +192,7 @@ struct _MsgInfo
 	FolderItem *to_folder;
 
 	gchar *xface;
+	gchar *face;
 
 	gchar *dispositionnotificationto;
 	gchar *returnreceiptto;

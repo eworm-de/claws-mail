@@ -61,6 +61,7 @@
 #include "menu.h"
 #include "image_viewer.h"
 #include "filesel.h"
+#include "base64.h"
 
 struct _RemoteURI
 {
@@ -240,7 +241,6 @@ static GtkItemFactoryEntry textview_file_popup_entries[] =
 
 static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
 {
-#if HAVE_LIBCOMPFACE
 	if (textview->image) {
 		gint x, y, x1;
 		x1 = textview->text->allocation.width - WIDTH - 5;
@@ -250,7 +250,6 @@ static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
 		gtk_text_view_move_child(GTK_TEXT_VIEW(textview->text), 
 			textview->image, x1, y);
 	}
-#endif
 }
 
 static void textview_size_allocate_cb	(GtkWidget	*widget,
@@ -360,7 +359,7 @@ TextView *textview_create(void)
 	textview->mail_popup_factory = mail_popupfactory;
 	textview->file_popup_menu    = file_popupmenu;
 	textview->file_popup_factory = file_popupfactory;
-
+	textview->image		     = NULL;
 	return textview;
 }
 
@@ -1299,6 +1298,69 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	return sorted_headers;
 }
 
+static void textview_show_face(TextView *textview)
+{
+	gchar face[2048];
+	gchar face_png[2048];
+	gint pngsize;
+	GdkPixbuf *pixbuf;
+	GError *error = NULL;
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	MsgInfo *msginfo = textview->messageview->msginfo;
+	int x = 0;
+
+	if (!msginfo->face) {
+		goto bail;
+	}
+
+	strncpy2(face, msginfo->face, sizeof(face));
+
+	unfold_line(face); /* strip all whitespace and linebreaks */
+	remove_space(face);
+
+	pngsize = base64_decode(face_png, face, strlen(face));
+
+	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
+	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
+	    !gdk_pixbuf_loader_close (loader, &error)) {
+		g_warning("loading face failed\n");
+		g_object_unref(loader);
+		goto bail;
+	}
+
+	pixbuf = g_object_ref(gdk_pixbuf_loader_get_pixbuf(loader));
+
+	g_object_unref(loader);
+
+	if ((gdk_pixbuf_get_width(pixbuf) != 48) || (gdk_pixbuf_get_height(pixbuf) != 48)) {
+		g_object_unref(pixbuf);
+		g_warning("wrong_size");
+		goto bail;
+	}
+
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	
+	textview->image = gtk_image_new_from_pixbuf(pixbuf);
+	gtk_widget_show(textview->image);
+	
+	x = textview->text->allocation.width - WIDTH -5;
+
+	gtk_text_view_add_child_in_window(text, textview->image, 
+		GTK_TEXT_WINDOW_TEXT, x, 5);
+
+	g_object_unref(pixbuf);
+	
+	gtk_widget_show_all(textview->text);
+	
+
+	return;
+bail:
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	textview->image = NULL;	
+}
+
 #if HAVE_LIBCOMPFACE
 static void textview_show_xface(TextView *textview)
 {
@@ -1317,6 +1379,9 @@ static void textview_show_xface(TextView *textview)
 	if (!msginfo)
 		goto bail;
 
+	if (msginfo->face)
+		return;
+	
 	if (!msginfo->xface || strlen(msginfo->xface) < 5) {
 		goto bail;
 	}
@@ -1417,6 +1482,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
 							 "header", NULL);
 	}
+	
+	textview_show_face(textview);
 #if HAVE_LIBCOMPFACE
 	textview_show_xface(textview);
 #endif
