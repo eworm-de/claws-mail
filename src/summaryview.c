@@ -5248,10 +5248,14 @@ static void summary_drag_data_received(GtkWidget        *widget,
 			return;
 		}
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
-			MsgFileInfo *info = g_new0(MsgFileInfo, 1);
-			info->msginfo = NULL;
-			info->file = (gchar *)tmp->data;
-			msglist = g_slist_prepend(msglist, info);
+			MsgFileInfo *info = NULL;
+			
+			if (file_is_email((gchar *)tmp->data)) {
+				info = g_new0(MsgFileInfo, 1);
+				info->msginfo = NULL;
+				info->file = (gchar *)tmp->data;
+				msglist = g_slist_prepend(msglist, info);
+			}
 		}
 		if (msglist) {
 			msglist = g_slist_reverse(msglist);

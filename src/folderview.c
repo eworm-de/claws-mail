@@ -2466,7 +2466,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 			    FOLDER_CLASS(item->folder)->copy_msg != NULL &&
 			    FOLDER_CLASS(item->folder)->create_folder != NULL)
 				acceptable = TRUE;
-		} else if (srcwidget == NULL) {
+		} else {
 			/* comes from another app */
 			/* we are adding messages, so only accept folder items that are 
 			   no root items and can copy messages */
@@ -2615,10 +2615,14 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			return;
 		}
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
-			MsgFileInfo *info = g_new0(MsgFileInfo, 1);
-			info->msginfo = NULL;
-			info->file = (gchar *)tmp->data;
-			msglist = g_slist_prepend(msglist, info);
+			MsgFileInfo *info = NULL;
+			
+			if (file_is_email((gchar *)tmp->data)) {
+				info = g_new0(MsgFileInfo, 1);
+				info->msginfo = NULL;
+				info->file = (gchar *)tmp->data;
+				msglist = g_slist_prepend(msglist, info);
+			}
 		}
 		if (msglist) {
 			msglist = g_slist_reverse(msglist);

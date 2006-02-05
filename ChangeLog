@@ -1,3 +1,14 @@
+2006-02-05 [colin]	2.0.0cvs12
+
+	* src/folderview.c
+	* src/summaryview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Let dnd work from mime icons to summaryview
+		and to folderview too
+		Add a crude test to avoid trying to add files
+		drag'n'dropped when they're not mails
+
 2006-02-04 [colin]	2.0.0cvs11
 
 	* src/summaryview.c

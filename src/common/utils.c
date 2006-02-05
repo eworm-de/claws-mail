@@ -1199,7 +1199,7 @@ GList *add_history(GList *list, const gchar *str)
 		last = g_list_last(list);
 		if (last) {
 			g_free(last->data);
-			g_list_remove(list, last->data);
+			list = g_list_remove(list, last->data);
 		}
 	}
 
@@ -4745,4 +4745,31 @@ gint copy_dir(const gchar *src, const gchar *dst)
 		}
 	}
 	return 0;
+}
+
+/* crude test to see if a file is an email. */
+gboolean file_is_email (const gchar *filename)
+{
+	FILE *fp = NULL;
+	gchar buffer[2048];
+	gint i = 0;
+	gint score = 0;
+	if (filename == NULL)
+		return FALSE;
+	if ((fp = g_fopen(filename, "rb")) == NULL)
+		return FALSE;
+	while (i < 60 && score < 4
+	       && fgets(buffer, sizeof (buffer), fp) > 0) {
+		if (!strncmp(buffer, "Return-Path:", strlen("Return-Path:")))
+			score++;
+		if (!strncmp(buffer, "From:", strlen("From:")))
+			score++;
+		if (!strncmp(buffer, "To:", strlen("To:")))
+			score++;
+		if (!strncmp(buffer, "Subject:", strlen("Subject:")))
+			score++;
+		i++;
+	}
+	fclose(fp);
+	return (score >= 4);
 }
