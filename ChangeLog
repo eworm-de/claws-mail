@@ -1,3 +1,9 @@
+2006-02-05 [colin]	2.0.0cvs15
+
+	* src/textview.c
+		Don't try to display Face header in textview
+		when teh headerview's active
+
 2006-02-05 [colin]	2.0.0cvs14
 
 	* tools/tbird2syl.py

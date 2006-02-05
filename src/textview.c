@@ -1308,6 +1308,9 @@ static void textview_show_face(TextView *textview)
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	int x = 0;
+	
+	if (prefs_common.display_header_pane)
+		goto bail;
 
 	if (!msginfo->face) {
 		goto bail;
