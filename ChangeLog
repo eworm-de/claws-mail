@@ -1,3 +1,11 @@
+2006-02-05 [colin]	2.0.0cvs17
+
+	* src/imap.c
+		Add the f*cking missing expunge that caused imap_fetch_env
+		to fail after an add_msgs ! :-///
+	* src/etpan/imap-thread.c
+		Add a bit of debug
+
 2006-02-05 [colin]	2.0.0cvs16
 
 	* src/common/utils.c

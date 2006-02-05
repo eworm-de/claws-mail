@@ -1856,11 +1856,13 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 		break;
 	default:
 		mailimap_fetch_type_free(fetch_type);
+		debug_print("uid_fetch: %d\n", r);
 		return r;
 	}
 	
 	if (clist_begin(fetch_result) == NULL) {
 		res = MAILIMAP_ERROR_FETCH;
+		debug_print("clist_begin = NULL\n");
 		goto err;
 	}
 	
@@ -1870,6 +1872,7 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 	if (r != MAILIMAP_NO_ERROR) {
 		mailimap_fetch_type_free(fetch_type);
 		res = MAILIMAP_ERROR_MEMORY;
+		debug_print("fetch_result_to_envelop_list: %d\n", res);
 		goto err;
 	}
 	
