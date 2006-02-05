@@ -1,3 +1,9 @@
+2006-02-05 [colin]	2.0.0cvs16
+
+	* src/common/utils.c
+		Don't check for return-path (or we can't put
+		back non-sent mails)
+
 2006-02-05 [colin]	2.0.0cvs15
 
 	* src/textview.c

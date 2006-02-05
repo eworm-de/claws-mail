@@ -4758,10 +4758,8 @@ gboolean file_is_email (const gchar *filename)
 		return FALSE;
 	if ((fp = g_fopen(filename, "rb")) == NULL)
 		return FALSE;
-	while (i < 60 && score < 4
+	while (i < 60 && score < 3
 	       && fgets(buffer, sizeof (buffer), fp) > 0) {
-		if (!strncmp(buffer, "Return-Path:", strlen("Return-Path:")))
-			score++;
 		if (!strncmp(buffer, "From:", strlen("From:")))
 			score++;
 		if (!strncmp(buffer, "To:", strlen("To:")))
@@ -4771,5 +4769,5 @@ gboolean file_is_email (const gchar *filename)
 		i++;
 	}
 	fclose(fp);
-	return (score >= 4);
+	return (score >= 3);
 }

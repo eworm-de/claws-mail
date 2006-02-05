@@ -1199,3 +1199,4 @@
 ( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/headerview.c;  cvs diff -u -r 1.47.2.25 -r 1.47.2.26 src/procheader.c;  cvs diff -u -r 1.150.2.49 -r 1.150.2.50 src/procmsg.c;  cvs diff -u -r 1.60.2.20 -r 1.60.2.21 src/procmsg.h;  cvs diff -u -r 1.96.2.91 -r 1.96.2.92 src/textview.c;  ) > 2.0.0cvs13.patchset
 ( diff -u /dev/null tools/tbird2syl.py;  cvs diff -u -r 1.25.2.8 -r 1.25.2.9 tools/Makefile.am;  ) > 2.0.0cvs14.patchset
 ( cvs diff -u -r 1.96.2.92 -r 1.96.2.93 src/textview.c;  ) > 2.0.0cvs15.patchset
+( cvs diff -u -r 1.36.2.54 -r 1.36.2.55 src/common/utils.c;  ) > 2.0.0cvs16.patchset
