@@ -237,9 +237,7 @@ void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
 #if 0
 void summary_processing(SummaryView *summaryview, GSList * mlist);
 #endif
-static void summary_filter_func		(GtkCTree		*ctree,
-					 GtkCTreeNode		*node,
-					 gpointer		 data);
+static void summary_filter_func		(MsgInfo *msginfo);
 
 static void summary_colorlabel_menu_item_activate_cb
 					  (GtkWidget	*widget,
@@ -4203,6 +4201,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 
 void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
+	GSList *mlist = NULL, *cur_list;
 	summary_lock(summaryview);
 
 	folder_item_update_freeze();
@@ -4218,15 +4217,23 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 
 		for (cur = GTK_CLIST(summaryview->ctree)->selection;
 	     	     cur != NULL && cur->data != NULL; cur = cur->next) {
-			summary_filter_func(GTK_CTREE(summaryview->ctree),
-				    	    GTK_CTREE_NODE(cur->data),
-				    	    summaryview);
+			mlist = g_slist_prepend(mlist, 
+				 procmsg_msginfo_new_ref(
+				  GTKUT_CTREE_NODE_GET_ROW_DATA(cur)));
 		}
+		mlist = g_slist_reverse(mlist);
 	} else {
-		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-					GTK_CTREE_FUNC(summary_filter_func),
-					summaryview);
+		mlist = folder_item_get_msg_list(summaryview->folder_item);
 	}
+	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
+		summary_filter_func((MsgInfo *)cur_list->data);
+	}
+	filtering_move_and_copy_msgs(mlist);
+	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
+		procmsg_msginfo_free((MsgInfo *)cur_list->data);
+	}
+	g_slist_free(mlist);
+
 	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	folder_item_update_thaw();
@@ -4243,18 +4250,15 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	summary_show(summaryview, summaryview->folder_item);
 }
 
-static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
-				gpointer data)
+static void summary_filter_func(MsgInfo *msginfo)
 {
 	MailFilteringData mail_filtering_data;
-	MsgInfo *msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	mail_filtering_data.msginfo = msginfo;
 	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return;
 
 	filter_message_by_msginfo(filtering_rules, msginfo);
-	filtering_move_and_copy_msg(msginfo);
 }
 
 void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,

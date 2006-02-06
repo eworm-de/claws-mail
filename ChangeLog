@@ -1,3 +1,10 @@
+2006-02-06 [colin]	2.0.0cvs24
+
+	* src/folder.c
+	* src/summaryview.c
+		Batch filtering in summaryview (from Tools menu)
+		and pre/post//-processing too
+
 2006-02-06 [colin]	2.0.0cvs23
 
 	* src/procmsg.h

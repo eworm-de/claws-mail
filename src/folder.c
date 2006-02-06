@@ -3546,16 +3546,19 @@ void folder_item_apply_processing(FolderItem *item)
 
                 /* apply pre global rules */
 		filter_message_by_msginfo(pre_global_processing, msginfo);
-                filtering_move_and_copy_msg(msginfo);
 		
                 /* apply rules of the folder */
 		filter_message_by_msginfo(processing_list, msginfo);
-		filtering_move_and_copy_msg(msginfo);
 
                 /* apply post global rules */
 		filter_message_by_msginfo(post_global_processing, msginfo);
-		filtering_move_and_copy_msg(msginfo);
                 
+	}
+	if (pre_global_processing || processing_list
+	    || post_global_processing)
+		filtering_move_and_copy_msgs(mlist);
+	for (cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo;
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(mlist);
