@@ -190,6 +190,9 @@ struct _MsgInfo
 
 	FolderItem *folder;
 	FolderItem *to_folder;
+	
+	gboolean is_move;
+	gboolean is_copy;
 
 	gchar *xface;
 	gchar *face;
