@@ -67,6 +67,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 	gint lines;
 	MsgInfo *msginfo;
 	gboolean more;
+	GSList *to_filter = NULL, *cur;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -210,12 +211,20 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		}
 
 		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-                if (!apply_filter || !procmsg_msginfo_filter(msginfo))
+                if (!apply_filter || !procmsg_msginfo_filter(msginfo)) {
 			folder_item_move_msg(dest, msginfo);
-		procmsg_msginfo_free(msginfo);
+			procmsg_msginfo_free(msginfo);
+		} else
+			to_filter = g_slist_append(to_filter, msginfo);
 
 		msgs++;
 	} while (more);
+
+	filtering_move_and_copy_msgs(to_filter);
+	for (cur = to_filter; cur; cur = g_slist_next(cur)) {
+		MsgInfo *info = (MsgInfo *)cur->data;
+		procmsg_msginfo_free(info);
+	}
 
 	folder_item_update_thaw();
 	

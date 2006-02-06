@@ -1841,7 +1841,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 	folder_item_update_freeze();
 	if (newmsg_list != NULL) {
-		GSList *elem;
+		GSList *elem, *to_filter = NULL;
 		int total = g_slist_length(newmsg_list), cur = 0;
 		
 		if ((filtering == TRUE) &&
@@ -1861,10 +1861,17 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			    (item->folder->account != NULL) && 
 			    (item->folder->account->filter_on_recv) &&
 			    procmsg_msginfo_filter(msginfo))
-				procmsg_msginfo_free(msginfo);
+				to_filter = g_slist_append(to_filter, msginfo);
 			else
 				exists_list = g_slist_prepend(exists_list, msginfo);
 		}
+		filtering_move_and_copy_msgs(to_filter);
+		for (elem = to_filter; elem; elem = g_slist_next(elem)) {
+			MsgInfo *msginfo = (MsgInfo *)elem->data;
+			procmsg_msginfo_free(msginfo);
+		}
+
+		g_slist_free(to_filter);
 		g_slist_free(newmsg_list);
 
 		statusbar_progress_all(0,0,0);

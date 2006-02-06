@@ -74,7 +74,7 @@ void prefs_filtering_clear_folder(Folder *folder);
 void prefs_filtering_free(GSList *prefs_filtering);
 
 FilteringProp * filteringprop_copy(FilteringProp *src);
-
+void filtering_move_and_copy_msgs(GSList *msglist);
 extern GSList * filtering_rules;
 extern GSList * pre_global_processing;
 extern GSList * post_global_processing;

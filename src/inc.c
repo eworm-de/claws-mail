@@ -637,6 +637,11 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			if (!pop3_session->ac_prefs->filter_on_recv || 
 			    !procmsg_msginfo_filter(msginfo))
 				folder_item_move_msg(inbox, msginfo);
+		}
+		filtering_move_and_copy_msgs(msglist);
+		for(msglist_element = msglist; msglist_element != NULL; 
+		    msglist_element = msglist_element->next) {
+			MsgInfo *msginfo = (MsgInfo *)msglist_element->data;
 			procmsg_msginfo_free(msginfo);
 		}
 		folder_item_update_thaw();

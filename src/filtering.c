@@ -163,6 +163,72 @@ void filteringprop_free(FilteringProp * prop)
 	g_free(prop);
 }
 
+/* move and copy messages by batches to be faster on IMAP */
+void filtering_move_and_copy_msgs(GSList *msgs)
+{
+	GSList *messages = g_slist_copy(msgs);
+	FolderItem *last_item = NULL;
+	gboolean is_copy = FALSE, is_move = FALSE;
+	
+	while (messages) {
+		GSList *batch = NULL, *cur;
+		gint found = 0;
+		debug_print("%d messages to filter\n", g_slist_length(messages));
+		for (cur = messages; cur; cur = cur->next) {
+			MsgInfo *info = (MsgInfo *)cur->data;
+			if (last_item == NULL) {
+				last_item = info->to_folder;
+			}
+			if (last_item == NULL)
+				continue;
+			debug_print("for %s\n", folder_item_get_path(last_item));
+			if (!is_copy && !is_move) {
+				if (info->is_copy)
+					is_copy = TRUE;
+				else if (info->is_move)
+					is_move = TRUE;
+			}
+			found++;
+			if (info->to_folder == last_item 
+			&&  info->is_copy == is_copy
+			&&  info->is_move == is_move) {
+				batch = g_slist_append(batch, info);
+			}
+		}
+		if (found == 0) {
+			debug_print("no more messages to move/copy\n");
+			break;
+		}
+		for (cur = batch; cur; cur = cur->next) {
+			MsgInfo *info = (MsgInfo *)cur->data;
+			messages = g_slist_remove(messages, info);
+		}
+		if (g_slist_length(batch)) {
+			debug_print("%s %d messages to %s\n",
+				is_copy?"copying":"moving",
+				g_slist_length(batch),
+				folder_item_get_path(last_item));
+			if (is_copy) {
+				folder_item_copy_msgs(last_item, batch);
+			} else if (is_move) {
+				if (folder_item_move_msgs(last_item, batch) < 0)
+					folder_item_move_msgs(
+						folder_get_default_inbox(), 
+						batch);
+			}
+			/* we don't reference the msginfos, because caller will do */
+			g_slist_free(batch);
+			batch = NULL;
+		}
+		last_item = NULL;
+		is_copy = FALSE;
+		is_move = FALSE;
+		debug_print("%d messages remaining\n", g_slist_length(messages));
+	}
+	/* we don't reference the msginfos, because caller will do */
+	g_slist_free(messages);
+}
+
 /*
   fitleringaction_apply
   runs the action on one MsgInfo
@@ -187,11 +253,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 		
-		if (folder_item_move_msg(dest_folder, info) == -1) {
-			debug_print("*** could not move message\n");
-			return FALSE;
-		}	
-
+		/* mark message to be moved */		
+		info->is_move = TRUE;
+		info->to_folder = dest_folder;
+		debug_print("set to move to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
 	case MATCHACTION_COPY:
@@ -204,9 +269,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 
-		if (folder_item_copy_msg(dest_folder, info) == -1)
-			return FALSE;
-
+		/* mark message to be copied */		
+		info->is_copy = TRUE;
+		info->to_folder = dest_folder;
+		debug_print("set to copy to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
 	case MATCHACTION_DELETE:

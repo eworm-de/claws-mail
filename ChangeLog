@@ -1,3 +1,18 @@
+2006-02-06 [colin]	2.0.0cvs21
+
+	* src/imap.c
+		Put the added file directly to cache if possible (will work
+		with next libetpan)
+	* src/filtering.c
+	* src/filtering.h
+	* src/inc.c
+	* src/folder.c
+	* src/mbox.c
+		Move and copy filtered messages by batches instead of one
+		by one - faster on IMAP
+	* src/procmsg.c
+		Add a function that'll possibly be useful later
+
 2006-02-06 [colin]	2.0.0cvs20
 
 	* src/addressbook.c

@@ -980,8 +980,54 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	fclose(outfp);
 	fclose(fp);
 	return 0;
-
 }
+#if 0
+gchar *procmsg_add_special_headers(const gchar *in, FolderItem *item)
+{
+	gchar *out = get_tmp_file();
+	FILE *fp = NULL;
+	PrefsAccount *account = NULL;
+	if (out == NULL)
+		return NULL;
+
+	fp = fopen(out, "wb");
+	if (fp == NULL) {
+		g_free(out);
+		return NULL;
+	}
+
+	if (item && item->prefs && item->prefs->enable_default_account)
+		account = account_find_from_id(item->prefs->default_account);
+
+ 	if (!account) account = cur_account;
+
+	if (!account) {
+		fclose(fp);
+		g_free(out);
+		return NULL;
+	}
+
+	fprintf(fp, "X-Sylpheed-Account-Id:%d\n", account->account_id);
+	fprintf(fp, "S:%s\n", account->address);
+	if (item && item->prefs && item->prefs->save_copy_to_folder) {
+		gchar *folderidentifier;
+
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+		folderidentifier = folder_item_get_identifier(item);
+		fprintf(fp, "SCF:%s\n", folderidentifier);
+		g_free(folderidentifier);
+	} else if (account_get_special_folder(account, F_OUTBOX)) {
+		gchar *folderidentifier = folder_item_get_identifier(account_get_special_folder
+				  (compose->account, F_OUTBOX));
+		fprintf(fp, "SCF:%s\n", folderidentifier);
+		g_free(folderidentifier);
+	}
+
+	fprintf(fp, "\n");
+	fclose(fp);
+	return out;
+}
+#endif
 gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {

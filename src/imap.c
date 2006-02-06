@@ -932,7 +932,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		make_dir_hier(path);
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(uid), NULL);
 	g_free(path);
-
+	debug_print("trying to fetch cached %s\n", filename);
 	if (is_file_exist(filename)) {
 		/* see whether the local file represents the whole message
 		 * or not. As the IMAP server reports size with \r chars,
@@ -1098,6 +1098,24 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			statusbar_progress_all(0,0,0);
 			statusbar_pop_all();
 			return -1;
+		} else {
+			debug_print("appended new message as %d\n", new_uid);
+			/* put the local file in the imapcache, so that we don't
+			 * have to fetch it back later. */
+			if (new_uid > 0) {
+				gchar *cache_path = folder_item_get_path(dest);
+				if (!is_dir_exist(cache_path))
+					make_dir_hier(cache_path);
+				if (is_dir_exist(cache_path)) {
+					gchar *cache_file = g_strconcat(
+						cache_path, G_DIR_SEPARATOR_S, 
+						itos(new_uid), NULL);
+					copy_file(real_file, cache_file, TRUE);
+					debug_print("copied to cache: %s\n", cache_file);
+					g_free(cache_file);
+				}
+				g_free(cache_path);
+			}
 		}
 
 		if (relation != NULL)
