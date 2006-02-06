@@ -1201,3 +1201,4 @@
 ( cvs diff -u -r 1.96.2.92 -r 1.96.2.93 src/textview.c;  ) > 2.0.0cvs15.patchset
 ( cvs diff -u -r 1.36.2.54 -r 1.36.2.55 src/common/utils.c;  ) > 2.0.0cvs16.patchset
 ( cvs diff -u -r 1.179.2.90 -r 1.179.2.91 src/imap.c;  cvs diff -u -r 1.1.4.26 -r 1.1.4.27 src/etpan/imap-thread.c;  ) > 2.0.0cvs17.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/gtk/icon_legend.c;  ) > 2.0.0cvs18.patchset
