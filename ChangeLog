@@ -1,3 +1,10 @@
+2006-02-06 [colin]	2.0.0cvs23
+
+	* src/procmsg.h
+	* src/filtering.c
+		Use a special field for batch filtering instead
+		of stepping on deferred execution's toes
+
 2006-02-06 [colin]	2.0.0cvs22
 
 	* src/action.c

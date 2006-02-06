@@ -184,7 +184,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		for (cur = messages; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			if (last_item == NULL) {
-				last_item = info->to_folder;
+				last_item = info->to_filter_folder;
 			}
 			if (last_item == NULL)
 				continue;
@@ -196,7 +196,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 					is_move = TRUE;
 			}
 			found++;
-			if (info->to_folder == last_item 
+			if (info->to_filter_folder == last_item 
 			&&  info->is_copy == is_copy
 			&&  info->is_move == is_move) {
 				batch = g_slist_append(batch, info);
@@ -263,7 +263,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		
 		/* mark message to be moved */		
 		info->is_move = TRUE;
-		info->to_folder = dest_folder;
+		info->to_filter_folder = dest_folder;
 		debug_print("set to move to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
@@ -279,7 +279,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 		/* mark message to be copied */		
 		info->is_copy = TRUE;
-		info->to_folder = dest_folder;
+		info->to_filter_folder = dest_folder;
 		debug_print("set to copy to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
