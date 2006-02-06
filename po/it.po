@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
 "POT-Creation-Date: 2006-01-21 15:34+0000\n"
-"PO-Revision-Date: 2006-01-26 17:13+0100\n"
+"PO-Revision-Date: 2006-02-06 11:44+0100\n"
 "Last-Translator: Andrea Spadaccini <a.spadaccini@catania.linux.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -2676,7 +2676,7 @@ msgstr "Spostamento fallito!"
 #: src/folderview.c:2226
 #, c-format
 msgid "Processing configuration for folder %s"
-msgstr "Analisi della configurazione per la cartella %s"
+msgstr "Configurazione delle regole elaborazione per la cartella %s"
 
 #: src/gedit-print.c:146 src/messageview.c:1350 src/summaryview.c:3692
 #: src/toolbar.c:175
@@ -2836,7 +2836,7 @@ msgstr ""
 "\n"
 "\n"
 "Sylpheed-Claws è software libero, rilasciato sotto licenza GPL. Se siete "
-"interessati nell'elargire donazioni al progetto Sylpheed-Claws, potete farlo "
+"interessati ad elargire donazioni al progetto Sylpheed-Claws, potete farlo "
 "all'indirizzo:\n"
 
 #: src/gtk/about.c:311
@@ -5094,23 +5094,23 @@ msgstr "/St_rumenti/Crea _filtro/dall'_oggetto"
 
 #: src/mainwindow.c:746
 msgid "/_Tools/C_reate processing rule"
-msgstr "/St_rumenti/Crea re_gola filtro"
+msgstr "/St_rumenti/Crea re_gola elaborazione"
 
 #: src/mainwindow.c:747
 msgid "/_Tools/C_reate processing rule/_Automatically"
-msgstr "/St_rumenti/Crea re_gola filtro/_Automaticamente"
+msgstr "/St_rumenti/Crea re_gola elaborazione/_Automaticamente"
 
 #: src/mainwindow.c:749
 msgid "/_Tools/C_reate processing rule/by _From"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _mittente"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dal _mittente"
 
 #: src/mainwindow.c:751
 msgid "/_Tools/C_reate processing rule/by _To"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _destinatario"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dal _destinatario"
 
 #: src/mainwindow.c:753
 msgid "/_Tools/C_reate processing rule/by _Subject"
-msgstr "/St_rumenti/Crea re_gola filtro/dall'_oggetto"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dall'_oggetto"
 
 #: src/mainwindow.c:758
 msgid "/_Tools/Ch_eck for new messages in all folders"
@@ -5307,11 +5307,11 @@ msgstr[1] "Eliminati %d messaggi duplicati in %d cartelle.\n"
 
 #: src/mainwindow.c:3133 src/summaryview.c:4253
 msgid "Processing rules to apply before folder rules"
-msgstr "Regole filtro da applicare prima dei filtri di cartella"
+msgstr "Regole elaborazione da applicare prima dei filtri di cartella"
 
 #: src/mainwindow.c:3141
 msgid "Processing rules to apply after folder rules"
-msgstr "Regole filtro da applicare dopo i filtri di cartella"
+msgstr "Regole elaborazione da applicare dopo i filtri di cartella"
 
 #: src/mainwindow.c:3149 src/summaryview.c:4262
 msgid "Filtering configuration"
@@ -5372,23 +5372,23 @@ msgstr "/M_essaggio/Redire_ziona"
 
 #: src/messageview.c:308
 msgid "/_Tools/Create processing rule"
-msgstr "/St_rumenti/Crea re_gola filtro"
+msgstr "/St_rumenti/Crea re_gola elaborazione"
 
 #: src/messageview.c:310
 msgid "/_Tools/Create processing rule/_Automatically"
-msgstr "/St_rumenti/Crea re_gola filtro/_Automaticamente"
+msgstr "/St_rumenti/Crea re_gola elaborazione/_Automaticamente"
 
 #: src/messageview.c:312
 msgid "/_Tools/Create processing rule/by _From"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _mittente"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dal _mittente"
 
 #: src/messageview.c:314
 msgid "/_Tools/Create processing rule/by _To"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _destinatario"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dal _destinatario"
 
 #: src/messageview.c:316
 msgid "/_Tools/Create processing rule/by _Subject"
-msgstr "/St_rumenti/Crea re_gola filtro/dall'_oggetto"
+msgstr "/St_rumenti/Crea re_gola elaborazione/dall'_oggetto"
 
 #: src/messageview.c:440
 msgid "Sylpheed - Message View"
@@ -7315,7 +7315,7 @@ msgstr "Lista attuale delle azioni"
 
 #: src/prefs_filtering.c:155 src/prefs_filtering.c:242
 msgid "Filtering/Processing configuration"
-msgstr "Configurazione filtraggio/esecuzione"
+msgstr "Configurazione filtraggio/elaborazione"
 
 #: src/prefs_filtering.c:279
 msgid "Condition: "
@@ -9042,23 +9042,23 @@ msgstr "/Crea _filtro/dall'_oggetto"
 
 #: src/summaryview.c:443
 msgid "/Create processing rule"
-msgstr "/Crea re_gola filtro"
+msgstr "/Crea re_gola elaborazione"
 
 #: src/summaryview.c:444
 msgid "/Create processing rule/_Automatically"
-msgstr "/Crea re_gola filtro/_Automaticamente"
+msgstr "/Crea re_gola elaborazione/_Automaticamente"
 
 #: src/summaryview.c:446
 msgid "/Create processing rule/by _From"
-msgstr "/Crea re_gola filtro/dal _mittente"
+msgstr "/Crea re_gola elaborazione/dal _mittente"
 
 #: src/summaryview.c:448
 msgid "/Create processing rule/by _To"
-msgstr "/Crea re_gola filtro/dal _destinatario"
+msgstr "/Crea re_gola elaborazione/dal _destinatario"
 
 #: src/summaryview.c:450
 msgid "/Create processing rule/by _Subject"
-msgstr "/Crea re_gola filtro/dall'_oggetto"
+msgstr "/Crea re_gola elaborazione/dall'_oggetto"
 
 #: src/summaryview.c:456
 msgid "/_View/_Source"
@@ -9266,7 +9266,7 @@ msgstr "Filtro..."
 
 #: src/summaryview.c:4257
 msgid "Processing configuration"
-msgstr "Configurazione regole filtro"
+msgstr "Configurazione regole elaborazione"
 
 #: src/summaryview.c:5609
 #, c-format

@@ -1,3 +1,11 @@
+2006-02-06 [wwp]	2.0.0cvs19
+
+	* po/it.po
+		Italian translation fixes by Andrea Spadaccini (no more confusion
+		between filtering and processing, and few changes in the About
+		dialog).
+
+
 2006-02-06 [mones]	2.0.0cvs18
 
 	* src/gtk/icon_legend.c
