@@ -8,6 +8,7 @@
 	* src/inc.c
 	* src/folder.c
 	* src/mbox.c
+	* src/procmsg.h
 		Move and copy filtered messages by batches instead of one
 		by one - faster on IMAP
 	* src/procmsg.c
