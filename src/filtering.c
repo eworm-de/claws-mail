@@ -163,6 +163,13 @@ void filteringprop_free(FilteringProp * prop)
 	g_free(prop);
 }
 
+void filtering_move_and_copy_msg(MsgInfo *msginfo)
+{
+	GSList *list = g_slist_append(NULL, msginfo);
+	filtering_move_and_copy_msgs(list);
+	g_slist_free(list);
+}
+
 /* move and copy messages by batches to be faster on IMAP */
 void filtering_move_and_copy_msgs(GSList *msgs)
 {
@@ -204,13 +211,14 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 			messages = g_slist_remove(messages, info);
 		}
 		if (g_slist_length(batch)) {
+			MsgInfo *info = (MsgInfo *)batch->data;
 			debug_print("%s %d messages to %s\n",
 				is_copy?"copying":"moving",
 				g_slist_length(batch),
 				folder_item_get_path(last_item));
-			if (is_copy) {
+			if (is_copy && last_item != info->folder) {
 				folder_item_copy_msgs(last_item, batch);
-			} else if (is_move) {
+			} else if (is_move && last_item != info->folder) {
 				if (folder_item_move_msgs(last_item, batch) < 0)
 					folder_item_move_msgs(
 						folder_get_default_inbox(), 

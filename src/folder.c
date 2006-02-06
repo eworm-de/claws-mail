@@ -3546,12 +3546,15 @@ void folder_item_apply_processing(FolderItem *item)
 
                 /* apply pre global rules */
 		filter_message_by_msginfo(pre_global_processing, msginfo);
-                
+                filtering_move_and_copy_msg(msginfo);
+		
                 /* apply rules of the folder */
 		filter_message_by_msginfo(processing_list, msginfo);
+		filtering_move_and_copy_msg(msginfo);
 
                 /* apply post global rules */
 		filter_message_by_msginfo(post_global_processing, msginfo);
+		filtering_move_and_copy_msg(msginfo);
                 
 		procmsg_msginfo_free(msginfo);
 	}

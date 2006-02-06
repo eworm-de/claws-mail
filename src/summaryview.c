@@ -4254,6 +4254,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 		return;
 
 	filter_message_by_msginfo(filtering_rules, msginfo);
+	filtering_move_and_copy_msg(msginfo);
 }
 
 void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
@@ -5571,7 +5572,7 @@ static gboolean processing_apply_func(GNode *node, gpointer data)
 			filter_message_by_msginfo(processing, msginfo, NULL);
 			procmsg_msginfo_free(msginfo);
 		}
-
+		filtering_move_and_copy_msgs(mlist);
 		g_slist_free(mlist);
 		
 		STATUSBAR_POP(summaryview->mainwin);

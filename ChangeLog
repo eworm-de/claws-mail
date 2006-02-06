@@ -1,3 +1,12 @@
+2006-02-06 [colin]	2.0.0cvs22
+
+	* src/action.c
+	* src/filtering.c
+	* src/filtering.h
+	* src/folder.c
+	* src/summaryview.c
+		Fix filtering via menus and actions
+
 2006-02-06 [colin]	2.0.0cvs21
 
 	* src/imap.c

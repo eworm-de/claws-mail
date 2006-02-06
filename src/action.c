@@ -601,9 +601,11 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 	if (action_list == NULL) return FALSE;
 	
 	/* apply actions on each message info */
-	for (p = msglist; p && p->data; p = g_slist_next(p))
+	for (p = msglist; p && p->data; p = g_slist_next(p)) {
 		filteringaction_apply_action_list(action_list, (MsgInfo *) p->data);
 		
+	}
+	filtering_move_and_copy_msgs(msglist);
 	for (p = action_list; p; p = g_slist_next(p))
 		if (p->data) filteringaction_free(p->data);	
 	g_slist_free(action_list);		
