@@ -1861,7 +1861,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			    (item->folder->account != NULL) && 
 			    (item->folder->account->filter_on_recv) &&
 			    procmsg_msginfo_filter(msginfo))
-				to_filter = g_slist_append(to_filter, msginfo);
+				to_filter = g_slist_prepend(to_filter, msginfo);
 			else
 				exists_list = g_slist_prepend(exists_list, msginfo);
 		}
