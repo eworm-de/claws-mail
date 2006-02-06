@@ -1,3 +1,9 @@
+2006-02-06 [colin]	2.0.0cvs25
+
+	* src/folder.c
+		Completely skip processing if it doesn't 
+		exist (faster!)
+
 2006-02-06 [colin]	2.0.0cvs24
 
 	* src/folder.c

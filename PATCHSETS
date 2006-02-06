@@ -1208,3 +1208,4 @@
 ( cvs diff -u -r 1.12.2.29 -r 1.12.2.30 src/action.c;  cvs diff -u -r 1.60.2.10 -r 1.60.2.11 src/filtering.c;  cvs diff -u -r 1.21.2.5 -r 1.21.2.6 src/filtering.h;  cvs diff -u -r 1.213.2.79 -r 1.213.2.80 src/folder.c;  cvs diff -u -r 1.395.2.164 -r 1.395.2.165 src/summaryview.c;  ) > 2.0.0cvs22.patchset
 ( cvs diff -u -r 1.60.2.22 -r 1.60.2.23 src/procmsg.h;  cvs diff -u -r 1.60.2.11 -r 1.60.2.12 src/filtering.c;  ) > 2.0.0cvs23.patchset
 ( cvs diff -u -r 1.213.2.80 -r 1.213.2.81 src/folder.c;  cvs diff -u -r 1.395.2.165 -r 1.395.2.166 src/summaryview.c;  ) > 2.0.0cvs24.patchset
+( cvs diff -u -r 1.213.2.81 -r 1.213.2.82 src/folder.c;  ) > 2.0.0cvs25.patchset

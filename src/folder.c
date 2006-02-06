@@ -3528,6 +3528,10 @@ void folder_item_apply_processing(FolderItem *item)
 	g_return_if_fail(item->no_select == FALSE);	
 	processing_list = item->prefs->processing;
 
+	if (!pre_global_processing && !processing_list
+	&&  !post_global_processing)
+		return;
+
 	folder_item_update_freeze();
 
 	mlist = folder_item_get_msg_list(item);
