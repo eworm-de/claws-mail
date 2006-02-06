@@ -7929,7 +7929,8 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 
 	if (gdk_atom_name(data->type) && 
 	    !strcmp(gdk_atom_name(data->type), "text/uri-list")
-	    && gtk_drag_get_source_widget(context) == NULL) {
+	    && gtk_drag_get_source_widget(context) != 
+	        mainwindow_get_mainwindow()->summaryview->ctree) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next)
 			compose_attach_append

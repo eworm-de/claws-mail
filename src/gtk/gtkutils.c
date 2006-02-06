@@ -40,6 +40,10 @@
 #  include <compface.h>
 #endif
 
+#if HAVE_LIBCOMPFACE
+#define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
+#endif
+
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
 #  include <wctype.h>
@@ -55,6 +59,7 @@
 #include "prefs_account.h"
 #include "prefs_common.h"
 #include "manage_window.h"
+#include "base64.h"
 
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)
@@ -982,4 +987,78 @@ gboolean get_tag_range(GtkTextIter *iter,
 	*end_iter = _end_iter;
 
 	return TRUE;
+}
+
+#if HAVE_LIBCOMPFACE
+GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
+				 GdkWindow *window)
+{
+	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
+	static gboolean xpm_xface_init = TRUE;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	gchar xface[2048];
+	strncpy(xface, o_xface, sizeof(xface));
+
+	if (uncompface(xface) < 0) {
+		g_warning("uncompface failed\n");
+		return NULL;
+	}
+
+	if (xpm_xface_init) {
+		gint i;
+
+		for (i = 0; i < XPM_XFACE_HEIGHT; i++) {
+			xpm_xface[i] = g_malloc(WIDTH + 1);
+			*xpm_xface[i] = '\0';
+		}
+		xpm_xface_init = FALSE;
+	}
+
+	create_xpm_from_xface(xpm_xface, xface);
+
+	pixmap = gdk_pixmap_create_from_xpm_d
+		(window, &mask, 
+		 background, xpm_xface);
+	return gtk_image_new_from_pixmap(pixmap, mask);
+}
+#endif
+
+GtkWidget *face_get_from_header(const gchar *o_face)
+{
+	gchar face[2048];
+	gchar face_png[2048];
+	gint pngsize;
+	GdkPixbuf *pixbuf;
+	GError *error = NULL;
+	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
+	GtkWidget *image;
+	
+	strncpy2(face, o_face, sizeof(face));
+
+	unfold_line(face); /* strip all whitespace and linebreaks */
+	remove_space(face);
+
+	pngsize = base64_decode(face_png, face, strlen(face));
+
+	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
+	    !gdk_pixbuf_loader_close (loader, &error)) {
+		g_warning("loading face failed\n");
+		g_object_unref(loader);
+		return NULL;
+	}
+
+	pixbuf = g_object_ref(gdk_pixbuf_loader_get_pixbuf(loader));
+
+	g_object_unref(loader);
+
+	if ((gdk_pixbuf_get_width(pixbuf) != 48) || (gdk_pixbuf_get_height(pixbuf) != 48)) {
+		g_object_unref(pixbuf);
+		g_warning("wrong_size");
+		return NULL;
+	}
+
+	image = gtk_image_new_from_pixbuf(pixbuf);
+	g_object_unref(pixbuf);
+	return image;
 }

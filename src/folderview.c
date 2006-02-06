@@ -292,7 +292,7 @@ static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
 
 GtkTargetEntry folderview_drag_types[] =
 {
-	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY},
+	{"sylpheed-claws/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY},
 	{"text/uri-list", 0, TARGET_MAIL_URI_LIST}
 };
 
@@ -2491,7 +2491,8 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					(context->actions == GDK_ACTION_COPY ?
 					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);
 	} else {
-		gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
+		if (folderview->opened)
+			gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
 		gdk_drag_status(context, 0, time);
 	}
 
@@ -2510,6 +2511,45 @@ static void folderview_drag_leave_cb(GtkWidget      *widget,
 static void free_info (gpointer stuff, gpointer data)
 {
 	g_free(stuff);
+}
+
+void folderview_finish_dnd(const gchar *data, GdkDragContext *drag_context,
+			   guint time, FolderItem *item)
+{
+	GList *list, *tmp;
+	GSList *msglist = NULL;
+	list = uri_list_extract_filenames(data);
+	if (!(item && item->folder && folder_item_parent(item) != NULL
+		    && FOLDER_CLASS(item->folder)->add_msg != NULL))
+	{
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		return;
+	}	
+	if (!list) {
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		return;
+	}
+	for (tmp = list; tmp != NULL; tmp = tmp->next) {
+		MsgFileInfo *info = NULL;
+
+		if (file_is_email((gchar *)tmp->data)) {
+			info = g_new0(MsgFileInfo, 1);
+			info->msginfo = NULL;
+			info->file = (gchar *)tmp->data;
+			msglist = g_slist_prepend(msglist, info);
+		}
+	}
+	if (msglist) {
+		msglist = g_slist_reverse(msglist);
+		folder_item_add_msgs(item, msglist, FALSE);
+		g_slist_foreach(msglist, free_info, NULL);
+		g_slist_free(msglist);
+		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+	} else {
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+	}
+	list_free_strings(list);
+	g_list_free(list);
 }
 
 static void folderview_drag_received_cb(GtkWidget        *widget,
@@ -2593,8 +2633,6 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		}
 		folderview->nodes_to_recollapse = NULL;
 	} else if (info == TARGET_MAIL_URI_LIST) {
-		GList *list, *tmp;
-		GSList *msglist = NULL;
 		if (gtk_clist_get_selection_info
 			(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0)
 			return;
@@ -2609,32 +2647,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		}
-		list = uri_list_extract_filenames((const gchar *)data->data);
-		if (!list) {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
-			return;
-		}
-		for (tmp = list; tmp != NULL; tmp = tmp->next) {
-			MsgFileInfo *info = NULL;
-			
-			if (file_is_email((gchar *)tmp->data)) {
-				info = g_new0(MsgFileInfo, 1);
-				info->msginfo = NULL;
-				info->file = (gchar *)tmp->data;
-				msglist = g_slist_prepend(msglist, info);
-			}
-		}
-		if (msglist) {
-			msglist = g_slist_reverse(msglist);
-			folder_item_add_msgs(item, msglist, FALSE);
-			g_slist_foreach(msglist, free_info, NULL);
-			g_slist_free(msglist);
-			gtk_drag_finish(drag_context, TRUE, FALSE, time);
-		} else {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
-		}
-		list_free_strings(list);
-		g_list_free(list);
+		folderview_finish_dnd(data->data, drag_context, time, item);
 	}
 }
 

@@ -393,7 +393,7 @@ static void addressbook_list_menu_setup( void );
 
 static GtkTargetEntry addressbook_drag_types[] =
 {
-	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+	{"sylpheed-claws/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY}
 };
 
 static GtkTargetList *addressbook_target_list = NULL;

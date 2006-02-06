@@ -186,9 +186,13 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *label);
 GtkWidget *gtkut_get_browse_directory_btn(const gchar *label);
 #if HAVE_LIBCOMPFACE
 gint create_xpm_from_xface(gchar *xpm[], const gchar *xface);
+GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
+				 GdkWindow *window);
 #endif
 gboolean get_tag_range(GtkTextIter *iter,
 				       GtkTextTag *tag,
 				       GtkTextIter *start_iter,
 				       GtkTextIter *end_iter);
+
+GtkWidget *face_get_from_header(const gchar *o_face);
 #endif /* __GTKUTILS_H__ */

@@ -241,6 +241,10 @@ static GtkItemFactoryEntry textview_file_popup_entries[] =
 
 static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
 {
+#ifndef WIDTH
+#  define WIDTH 48
+#  define HEIGHT 48
+#endif
 	if (textview->image) {
 		gint x, y, x1;
 		x1 = textview->text->allocation.width - WIDTH - 5;
@@ -759,7 +763,6 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXT_INSERT(_("    (alternately double-click, or click the middle "));
 	TEXT_INSERT(_("mouse button),\n"));
 	TEXT_INSERT(_("    or 'Open with...' (Shortcut key: 'o')\n"));
-
 }
 
 #undef TEXT_INSERT
@@ -1300,51 +1303,23 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 static void textview_show_face(TextView *textview)
 {
-	gchar face[2048];
-	gchar face_png[2048];
-	gint pngsize;
-	GdkPixbuf *pixbuf;
-	GError *error = NULL;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	int x = 0;
 	
-	if (prefs_common.display_header_pane)
+	if (prefs_common.display_header_pane
+	||  !prefs_common.display_xface)
 		goto bail;
-
+	
 	if (!msginfo->face) {
-		goto bail;
-	}
-
-	strncpy2(face, msginfo->face, sizeof(face));
-
-	unfold_line(face); /* strip all whitespace and linebreaks */
-	remove_space(face);
-
-	pngsize = base64_decode(face_png, face, strlen(face));
-
-	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
-	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
-	    !gdk_pixbuf_loader_close (loader, &error)) {
-		g_warning("loading face failed\n");
-		g_object_unref(loader);
-		goto bail;
-	}
-
-	pixbuf = g_object_ref(gdk_pixbuf_loader_get_pixbuf(loader));
-
-	g_object_unref(loader);
-
-	if ((gdk_pixbuf_get_width(pixbuf) != 48) || (gdk_pixbuf_get_height(pixbuf) != 48)) {
-		g_object_unref(pixbuf);
-		g_warning("wrong_size");
 		goto bail;
 	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = gtk_image_new_from_pixbuf(pixbuf);
+	textview->image = face_get_from_header(msginfo->face);
+
 	gtk_widget_show(textview->image);
 	
 	x = textview->text->allocation.width - WIDTH -5;
@@ -1352,8 +1327,6 @@ static void textview_show_face(TextView *textview)
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
 
-	g_object_unref(pixbuf);
-	
 	gtk_widget_show_all(textview->text);
 	
 
@@ -1367,14 +1340,10 @@ bail:
 #if HAVE_LIBCOMPFACE
 static void textview_show_xface(TextView *textview)
 {
-	gchar xface[2048];
 	MsgInfo *msginfo = textview->messageview->msginfo;
-	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
-	static gboolean xpm_xface_init = TRUE;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
+
 	if (prefs_common.display_header_pane
 	||  !prefs_common.display_xface)
 		goto bail;
@@ -1389,33 +1358,13 @@ static void textview_show_xface(TextView *textview)
 		goto bail;
 	}
 
-	strncpy(xface, msginfo->xface, sizeof(xface));
-
-	if (uncompface(xface) < 0) {
-		g_warning("uncompface failed\n");
-		goto bail;
-	}
-
-	if (xpm_xface_init) {
-		gint i;
-
-		for (i = 0; i < XPM_XFACE_HEIGHT; i++) {
-			xpm_xface[i] = g_malloc(WIDTH + 1);
-			*xpm_xface[i] = '\0';
-		}
-		xpm_xface_init = FALSE;
-	}
-
-	create_xpm_from_xface(xpm_xface, xface);
-
-	pixmap = gdk_pixmap_create_from_xpm_d
-		(textview->text->window, &mask, 
-		 &textview->text->style->white, xpm_xface);
-	
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = gtk_image_new_from_pixmap(pixmap, mask);
+	textview->image = xface_get_from_header(msginfo->xface,
+				&textview->text->style->white,
+				textview->text->window);
+
 	gtk_widget_show(textview->image);
 	
 	x = textview->text->allocation.width - WIDTH -5;

@@ -1,3 +1,28 @@
+2006-02-06 [colin]	2.0.0cvs20
+
+	* src/addressbook.c
+		Use internal mime-type instead of text/plain for d'n'd
+	* src/compose.c
+		Allow attaching files from mimeview's icon list via d'n'd
+	* src/folderview.c
+	* src/folderview.h
+		Use internal mime-type instead of text/plain for d'n'd
+		Don't try to selected opened folder if none is
+		Factorize d'n'd from other apps code
+	* src/headerview.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Factorize Face/X-Face stuff
+	* src/mimeview.c
+		Fix d'n'd to other apps
+	* src/prefs_message.c
+		Let the XFace pref be usable without libcompface as it also
+		applies to Face
+	* src/summaryview.c
+		Fix d'n'd to other apps
+		Factorize d'n'd from other apps code
+
 2006-02-06 [wwp]	2.0.0cvs19
 
 	* po/it.po

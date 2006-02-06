@@ -48,9 +48,8 @@ typedef struct _MessagePage
 
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
-#if HAVE_LIBCOMPFACE
 	GtkWidget *chkbtn_dispxface;
-#endif
+
 	GtkWidget *chkbtn_html;
 	GtkWidget *spinbtn_linespc;
 
@@ -61,7 +60,6 @@ typedef struct _MessagePage
 	GtkWidget *chkbtn_attach_desc;
 } MessagePage;
 
-#if HAVE_LIBCOMPFACE
 static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
 {
 	gboolean is_active;
@@ -70,7 +68,6 @@ static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
 
 	gtk_widget_set_sensitive(widget, !is_active);
 }
-#endif
 
 void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
@@ -82,9 +79,8 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox1;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
-#if HAVE_LIBCOMPFACE
 	GtkWidget *chkbtn_dispxface;
-#endif
+
 	GtkWidget *button_edit_disphdr;
 	GtkWidget *chkbtn_html;
 	GtkWidget *hbox_linespc;
@@ -116,14 +112,17 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 #if HAVE_LIBCOMPFACE
 	PACK_CHECK_BUTTON(vbox2, chkbtn_dispxface,
-			  _("Display X-Face in message view"));
+			  _("Display (X-)Face in message view"));
+#else
+	PACK_CHECK_BUTTON(vbox2, chkbtn_dispxface,
+			  _("Display Face in message view"));
+#endif
 
 	gtk_widget_set_sensitive(chkbtn_dispxface, 
 		!prefs_common.display_header_pane);
 
 	g_signal_connect(G_OBJECT(chkbtn_disphdrpane), "toggled",
 			 G_CALLBACK(disphdr_pane_toggled), chkbtn_dispxface);
-#endif
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -216,10 +215,10 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
 		prefs_common.display_header_pane);
-#if HAVE_LIBCOMPFACE
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_dispxface),
 		prefs_common.display_xface);
-#endif
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdr),
 		prefs_common.display_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_html),
@@ -237,9 +236,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		
 	prefs_message->window = GTK_WIDGET(window);
 	prefs_message->chkbtn_disphdrpane = chkbtn_disphdrpane;
-#if HAVE_LIBCOMPFACE
 	prefs_message->chkbtn_dispxface = chkbtn_dispxface;
-#endif
 	prefs_message->chkbtn_disphdr = chkbtn_disphdr;
 	prefs_message->chkbtn_html = chkbtn_html;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
@@ -257,10 +254,8 @@ void prefs_message_save(PrefsPage *_page)
 
 	prefs_common.display_header_pane = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdrpane));
-#if HAVE_LIBCOMPFACE
 	prefs_common.display_xface = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_dispxface));
-#endif
 	prefs_common.display_header = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_disphdr));
 	prefs_common.render_html = gtk_toggle_button_get_active(

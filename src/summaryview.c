@@ -344,6 +344,12 @@ static void summary_drag_data_received(GtkWidget        *widget,
 					guint             info,
 					guint             time,
 					SummaryView       *summaryview);
+static gboolean summary_drag_motion_cb(GtkWidget      *widget,
+					  GdkDragContext *context,
+					  gint            x,
+					  gint            y,
+					  guint           time,
+					  SummaryView	 *summaryview);
 
 /* custom compare functions for sorting */
 
@@ -403,7 +409,7 @@ static gboolean summary_update_msg	(gpointer source, gpointer data);
 GtkTargetEntry summary_drag_types[2] =
 {
 	{"text/uri-list", 0, TARGET_MAIL_URI_LIST},
-	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+	{"sylpheed-claws/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY}
 };
 
 static GtkItemFactoryEntry summary_popup_entries[] =
@@ -4629,6 +4635,10 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_data_received),
 			 summaryview);
 
+	g_signal_connect(G_OBJECT(ctree), "drag_motion",
+			 G_CALLBACK(summary_drag_motion_cb),
+			 summaryview);
+
 	return ctree;
 }
 
@@ -5192,13 +5202,13 @@ static void summary_drag_data_get(GtkWidget        *widget,
 					tmp2 = dest;
 				}
 			} 
-			tmp1 = g_strconcat("file://", tmp2, NULL);
+			tmp1 = g_strconcat("file://", tmp2, "\r\n", NULL);
 			g_free(tmp2);
 
 			if (!mail_list) {
 				mail_list = tmp1;
 			} else {
-				tmp2 = g_strconcat(mail_list, "\n", tmp1, NULL);
+				tmp2 = g_strconcat(mail_list, tmp1, NULL);
 				g_free(mail_list);
 				g_free(tmp1);
 				mail_list = tmp2;
@@ -5220,9 +5230,26 @@ static void summary_drag_data_get(GtkWidget        *widget,
 	}
 }
 
-static void free_info (gpointer stuff, gpointer data)
+static gboolean summary_drag_motion_cb(GtkWidget      *widget,
+					  GdkDragContext *context,
+					  gint            x,
+					  gint            y,
+					  guint           time,
+					  SummaryView	 *summaryview)
 {
-	g_free(stuff);
+	FolderItem *item = summaryview->folder_item;
+	if (!(item && item->folder && folder_item_parent(item) != NULL
+		    && FOLDER_CLASS(item->folder)->add_msg != NULL)) {
+		gdk_drag_status(context, 0, time);
+		return FALSE;
+	} else if (gtk_drag_get_source_widget(context) ==
+		mainwindow_get_mainwindow()->folderview->ctree) {
+		gdk_drag_status(context, 0, time);
+		return FALSE;
+	} else {
+		gdk_drag_status(context, GDK_ACTION_COPY, time);
+		return TRUE;
+	}
 }
 
 static void summary_drag_data_received(GtkWidget        *widget,
@@ -5235,39 +5262,13 @@ static void summary_drag_data_received(GtkWidget        *widget,
 					SummaryView       *summaryview)
 {
 	if (info == TARGET_MAIL_URI_LIST) {
-		GList *list, *tmp;
-		GSList *msglist = NULL;
 		FolderItem *item = summaryview->folder_item;
 		if (!item) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
-		}
-		list = uri_list_extract_filenames((const gchar *)data->data);
-		if (!list) {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
-			return;
-		}
-		for (tmp = list; tmp != NULL; tmp = tmp->next) {
-			MsgFileInfo *info = NULL;
-			
-			if (file_is_email((gchar *)tmp->data)) {
-				info = g_new0(MsgFileInfo, 1);
-				info->msginfo = NULL;
-				info->file = (gchar *)tmp->data;
-				msglist = g_slist_prepend(msglist, info);
-			}
-		}
-		if (msglist) {
-			msglist = g_slist_reverse(msglist);
-			folder_item_add_msgs(item, msglist, FALSE);
-			g_slist_foreach(msglist, free_info, NULL);
-			g_slist_free(msglist);
-			gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		} else {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+			folderview_finish_dnd(data->data, drag_context, time, item);
 		}
-		list_free_strings(list);
-		g_list_free(list);
 	}
 }
 

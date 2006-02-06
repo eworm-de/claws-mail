@@ -132,5 +132,9 @@ void folderview_unregister_popup	(FolderViewPopup	*fpopup);
 void folderview_update_search_icon	(FolderItem 		*item, 	
 					 gboolean 		 matches);
 void folderview_set_column_order	(FolderView		*folderview);
+void folderview_finish_dnd		(const gchar 		*data, 
+					 GdkDragContext 	*drag_context,
+			   		 guint 			 time, 
+					 FolderItem 		*item);
 
 #endif /* __FOLDERVIEW_H__ */
