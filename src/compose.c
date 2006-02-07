@@ -3282,6 +3282,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 	gint startq_offset = -1, noq_offset = -1;
 	gint uri_start = -1, uri_stop = -1;
 	gint nouri_start = -1, nouri_stop = -1;
+	gint num_blocks = 0;
 
 	compose->autowrap = FALSE;
 
@@ -3346,11 +3347,12 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		gchar *o_walk = NULL, *walk = NULL, *bp = NULL, *ep = NULL;
 		gint walk_pos;
 		
-		if (!prev_autowrap)
+		if (!prev_autowrap && num_blocks == 0) {
+			num_blocks++;
 			g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
 					compose);
-		
+		}
 		if (gtk_text_iter_has_tag(&iter, compose->no_wrap_tag) && !force)
 			goto colorize;
 
@@ -3430,10 +3432,11 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		}
 
 colorize:
-		if (!prev_autowrap)
+		if (!prev_autowrap) {
 			g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
 					compose);
+		}
 		end_of_line = iter;
 		while (!gtk_text_iter_ends_line(&end_of_line)) {
 			gtk_text_iter_forward_char(&end_of_line);

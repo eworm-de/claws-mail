@@ -1,3 +1,12 @@
+2006-02-07 [colin]	2.0.0cvs28
+
+	* src/action.c
+		Freeze/thaw message list and folder list while
+		processing %as{} actions 
+	* src/compose.c
+		Fix auto-wrap disabling after a middle-click
+		paste
+
 2006-02-07 [paul]	2.0.0cvs27
 
 	* src/folder.c

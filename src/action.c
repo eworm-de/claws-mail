@@ -588,7 +588,14 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 	GSList *action_list, *p;
 	const gchar *sbegin, *send;
 	gchar *action_string;
-	
+	SummaryView *summaryview = NULL;
+	MainWindow *mainwin = NULL;
+
+	if (mainwindow_get_mainwindow()) {
+		summaryview = mainwindow_get_mainwindow()->summaryview;
+		mainwin = mainwindow_get_mainwindow();
+	}
+
 	if (NULL == (sbegin = strstr2(action, "%as{")))
 		return FALSE;
 	sbegin += sizeof "%as{" - 1;
@@ -605,7 +612,22 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 		filteringaction_apply_action_list(action_list, (MsgInfo *) p->data);
 		
 	}
+
+	if (summaryview) {
+		summary_lock(summaryview);				
+		main_window_cursor_wait(mainwin);		
+		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	
+		folder_item_update_freeze();				
+	}
+
 	filtering_move_and_copy_msgs(msglist);
+
+	if (summaryview) {
+		folder_item_update_thaw();				
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));		
+		main_window_cursor_normal(mainwin);	
+		summary_unlock(summaryview);				
+	}
 	for (p = action_list; p; p = g_slist_next(p))
 		if (p->data) filteringaction_free(p->data);	
 	g_slist_free(action_list);		
