@@ -1,3 +1,9 @@
+2006-02-07 [paul]	2.0.0cvs27
+
+	* src/folder.c
+		fix freeing of uninitialised pointers
+		Thanks to Colin
+
 2006-02-06 [colin]	2.0.0cvs26
 
 	* src/folder.c

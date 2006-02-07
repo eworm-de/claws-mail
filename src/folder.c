@@ -3562,7 +3562,7 @@ void folder_item_apply_processing(FolderItem *item)
 	    || post_global_processing)
 		filtering_move_and_copy_msgs(mlist);
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
-		MsgInfo * msginfo;
+		MsgInfo * msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(mlist);

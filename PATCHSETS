@@ -1210,3 +1210,4 @@
 ( cvs diff -u -r 1.213.2.80 -r 1.213.2.81 src/folder.c;  cvs diff -u -r 1.395.2.165 -r 1.395.2.166 src/summaryview.c;  ) > 2.0.0cvs24.patchset
 ( cvs diff -u -r 1.213.2.81 -r 1.213.2.82 src/folder.c;  ) > 2.0.0cvs25.patchset
 ( cvs diff -u -r 1.213.2.82 -r 1.213.2.83 src/folder.c;  ) > 2.0.0cvs26.patchset
+( cvs diff -u -r 1.213.2.83 -r 1.213.2.84 src/folder.c;  ) > 2.0.0cvs27.patchset
