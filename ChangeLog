@@ -1,3 +1,8 @@
+2006-02-07 [colin]	2.0.0cvs29
+
+	* src/action.c
+		Forgot to refresh summaryview
+
 2006-02-07 [colin]	2.0.0cvs28
 
 	* src/action.c

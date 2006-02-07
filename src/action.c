@@ -627,6 +627,7 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));		
 		main_window_cursor_normal(mainwin);	
 		summary_unlock(summaryview);				
+		summary_show(summaryview, summaryview->folder_item);
 	}
 	for (p = action_list; p; p = g_slist_next(p))
 		if (p->data) filteringaction_free(p->data);	
