@@ -128,6 +128,7 @@ enum {
 	MA_(SET_SCORE),
 	MA_(STOP),
 	MA_(HIDE),
+	MA_(IGNORE),
 	/* boolean operations */
 	MB_(OR),
 	MB_(AND)

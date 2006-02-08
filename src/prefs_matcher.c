@@ -158,7 +158,7 @@ static const gchar *criteria_text [] = {
 	N_("Replied flag"), N_("Forwarded flag"),
 	N_("Locked flag"),
 	N_("Color label"),
-	N_("Ignore thread"),
+	N_("Ignored thread"),
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
 	N_("Test"),

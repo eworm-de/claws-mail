@@ -137,6 +137,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_SET_SCORE, "set_score"},
 	{MATCHACTION_STOP, "stop"},
 	{MATCHACTION_HIDE, "hide"},
+	{MATCHACTION_IGNORE, "ignore"},
 };
 
 /*!

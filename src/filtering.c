@@ -370,6 +370,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
                 info->hidden = TRUE;
                 return TRUE;
 
+	case MATCHACTION_IGNORE:
+                procmsg_msginfo_set_flags(info, MSG_IGNORE_THREAD, 0);
+                return TRUE;
+
 	default:
 		break;
 	}
@@ -528,6 +532,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_MARK_AS_UNREAD:
 	case MATCHACTION_STOP:
 	case MATCHACTION_HIDE:
+	case MATCHACTION_IGNORE:
 		g_snprintf(dest, destlen, "%s", command_str);
 		return dest;
 

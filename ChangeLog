@@ -1,3 +1,14 @@
+2006-02-08 [colin]	2.0.0cvs35
+
+	* src/filtering.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		Add the "Ignore thread" filtering
+		action
+
 2006-02-08 [colin]	2.0.0cvs34
 
 	* src/compose.c

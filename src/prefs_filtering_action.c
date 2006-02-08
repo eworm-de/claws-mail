@@ -138,6 +138,7 @@ typedef enum Action_ {
 	ACTION_CHANGE_SCORE,
 	ACTION_SET_SCORE,
 	ACTION_HIDE,
+	ACTION_IGNORE,
 	ACTION_STOP,
 	/* add other action constants */
 } Action;
@@ -163,6 +164,7 @@ static struct {
 	{ N_("Change score"),		ACTION_CHANGE_SCORE},
 	{ N_("Set score"),		ACTION_SET_SCORE},
 	{ N_("Hide"),		        ACTION_HIDE	},
+	{ N_("Ignore thread"),	        ACTION_IGNORE	},
 	{ N_("Stop filter"),		ACTION_STOP	},
 };
 
@@ -739,6 +741,8 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_COLOR;
 	case ACTION_HIDE:
 		return MATCHACTION_HIDE;
+	case ACTION_IGNORE:
+		return MATCHACTION_IGNORE;
 	case ACTION_STOP:
 		return MATCHACTION_STOP;
 	case ACTION_CHANGE_SCORE:
@@ -820,6 +824,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
                 break;
 	case ACTION_STOP:
 	case ACTION_HIDE:
+	case ACTION_IGNORE:
         case ACTION_DELETE:
         case ACTION_MARK:
         case ACTION_UNMARK:
@@ -1206,6 +1211,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 	case ACTION_MARK_AS_UNREAD:
         case ACTION_STOP:
         case ACTION_HIDE:
+	case ACTION_IGNORE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
@@ -1527,6 +1533,10 @@ static gboolean prefs_filtering_actions_selected
 	case MATCHACTION_HIDE:
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
 				     ACTION_HIDE);
+		break;
+	case MATCHACTION_IGNORE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_IGNORE);
 		break;
 	}
 
