@@ -1,3 +1,8 @@
+2006-02-08 [colin]	2.0.0cvs30
+
+	* src/compose.c
+		Don't unblock if not blocked
+
 2006-02-07 [colin]	2.0.0cvs29
 
 	* src/action.c

@@ -3432,7 +3432,8 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		}
 
 colorize:
-		if (!prev_autowrap) {
+		if (!prev_autowrap && num_blocks > 0) {
+			num_blocks--;
 			g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
 					compose);
