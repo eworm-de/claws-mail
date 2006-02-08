@@ -60,9 +60,7 @@
 #define FILTERING_RC		"filteringrc"
 #define MATCHER_RC		"matcherrc"
 #define MENU_RC			"menurc"
-#define ACTIONS_RC		"actionsrc"
 #define RENDERER_RC		"rendererrc"
-#define COMMAND_HISTORY		"command_history"
 #define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"
@@ -86,10 +84,15 @@
 #define MARK_VERSION		2
 
 #ifdef G_OS_WIN32
+#  define ACTIONS_RC		"actionswinrc"
+#  define COMMAND_HISTORY	"command_history_win"
 #  define DEFAULT_SIGNATURE	"signature.txt"
 #else
+#  define ACTIONS_RC		"actionsrc"
+#  define COMMAND_HISTORY	"command_history"
 #  define DEFAULT_SIGNATURE	".signature"
 #endif
+
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"
 #define DEFAULT_INC_PROGRAM	"inc"
 /* #define DEFAULT_INC_PATH	"/usr/bin/imget" */

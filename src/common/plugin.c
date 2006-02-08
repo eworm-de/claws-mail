@@ -73,7 +73,11 @@ void plugin_save_list(void)
 
 	for (type_cur = plugin_types; type_cur != NULL; type_cur = g_slist_next(type_cur)) {
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+#ifdef G_OS_WIN32
+		block = g_strconcat("PluginsWin32_", type_cur->data, NULL);
+#else
 		block = g_strconcat("Plugins_", type_cur->data, NULL);
+#endif
 		if ((pfile = prefs_write_open(rcpath)) == NULL ||
 		    (prefs_set_block_label(pfile, block) < 0)) {
 			g_warning("failed to write plugin list\n");
@@ -302,7 +306,11 @@ void plugin_load_all(const gchar *type)
 	plugin_types = g_slist_append(plugin_types, g_strdup(type));
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
+#ifdef G_OS_WIN32
+	block = g_strconcat("PluginsWin32_", type, NULL);
+#else
 	block = g_strconcat("Plugins_", type, NULL);
+#endif
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
 	    (prefs_set_block_label(pfile, block) < 0)) {
 		g_free(rcpath);

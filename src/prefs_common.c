@@ -69,6 +69,68 @@ PrefsCommon prefs_common;
 
 GtkWidget *notebook;
 
+#ifdef G_OS_WIN32
+/*
+ * In the Windows version prefs_common contains
+ *   - the non-OS-specific settings of the "Common" section and
+ *   - the OS-specific settings of the "CommonWin32" section
+ * The OS-specific settings of the "Common" section are not used
+ * but saved in prefs_unix.
+ */
+
+#  define SPECIFIC_PREFS prefs_unix
+
+static PrefsCommon prefs_unix;
+
+static PrefParam param_os_specific[] = {
+	/* Receive */
+	{"ext_inc_path", "",
+	 &prefs_common.extinc_cmd, P_STRING, NULL, NULL, NULL},
+	{"newmail_notify_cmd", "",
+	 &prefs_common.newmail_notify_cmd, P_STRING, NULL, NULL, NULL},
+
+	/* new fonts */
+	{"widget_font_gtk2",	NULL,
+	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
+	{"message_font_gtk2",	"Monospace 9",
+	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
+	{"small_font_gtk2",	"Sans 9",
+	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
+	{"normal_font_gtk2",	"Sans 9",
+	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
+
+	/* Message */
+	{"attach_save_directory", NULL,
+	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
+	{"attach_load_directory", NULL,
+	 &prefs_common.attach_load_dir, P_STRING, NULL, NULL, NULL},
+
+	/* MIME viewer */
+	{"mime_image_viewer", NULL,
+	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
+	{"mime_audio_player", NULL,
+	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
+	{"mime_open_command", "notepad '%s'",
+	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
+
+	/* Interface */
+	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
+	 &prefs_common.pixmap_theme_path, P_STRING, NULL, NULL, NULL},
+
+	/* Other */
+	{"uri_open_command", NULL,
+	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
+	{"print_command", "notepad /p %s",
+	 &prefs_common.print_cmd, P_STRING, NULL, NULL, NULL},
+	{"ext_editor_command", "notepad %s",
+	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+#else
+#  define SPECIFIC_PREFS prefs_common
+#endif
+
 /*
    parameter name, default value, pointer to the prefs variable, data type,
    pointer to the widget pointer,
@@ -80,7 +142,7 @@ static PrefParam param[] = {
 	/* Receive */
 	{"use_ext_inc", "FALSE", &prefs_common.use_extinc, P_BOOL,
 	 NULL, NULL, NULL},
-	{"ext_inc_path", DEFAULT_INC_PATH, &prefs_common.extinc_cmd, P_STRING,
+	{"ext_inc_path", DEFAULT_INC_PATH, &SPECIFIC_PREFS.extinc_cmd, P_STRING,
 	 NULL, NULL, NULL},
 
 	{"autochk_newmail", "FALSE", &prefs_common.autochk_newmail, P_BOOL,
@@ -97,7 +159,7 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
  	{"newmail_notify_auto", "FALSE", &prefs_common.newmail_notify_auto,
 	P_BOOL, NULL, NULL, NULL},
- 	{"newmail_notify_cmd", "", &prefs_common.newmail_notify_cmd, P_STRING,
+ 	{"newmail_notify_cmd", "", &SPECIFIC_PREFS.newmail_notify_cmd, P_STRING,
  	 NULL, NULL, NULL},
 	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
@@ -212,13 +274,13 @@ static PrefParam param[] = {
 
 	/* new fonts */
 	{"widget_font_gtk2",	NULL,
-	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
+	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
-	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
 	{"small_font_gtk2",	"Sans 9",
-	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
+	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
-	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
+	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
 
 	/* image viewer */
 	{"display_image", "TRUE", &prefs_common.display_img, P_BOOL,
@@ -461,17 +523,17 @@ static PrefParam param[] = {
 	{"attach_desc", "TRUE", &prefs_common.attach_desc, P_BOOL,
 	 NULL, NULL, NULL},
 	{"attach_save_directory", NULL,
-	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.attach_save_dir, P_STRING, NULL, NULL, NULL},
 	{"attach_load_directory", NULL,
-	 &prefs_common.attach_load_dir, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.attach_load_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
 	{"mime_image_viewer", DEFAULT_IMAGE_VIEWER_CMD,
-	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.mime_image_viewer,	P_STRING, NULL, NULL, NULL},
 	{"mime_audio_player", DEFAULT_AUDIO_PLAYER_CMD,
-	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.mime_audio_player, P_STRING, NULL, NULL, NULL},
 	{"mime_open_command", "gedit '%s'",
-	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.mime_open_cmd, P_STRING, NULL, NULL, NULL},
 
 	/* Interface */
 	{"separate_folder", "FALSE", &prefs_common.sep_folder, P_BOOL,
@@ -498,7 +560,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
-	 &prefs_common.pixmap_theme_path, P_STRING,
+	 &SPECIFIC_PREFS.pixmap_theme_path, P_STRING,
 	 NULL, NULL, NULL},
 
 	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
@@ -506,11 +568,11 @@ static PrefParam param[] = {
 
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
-	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
-	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
-	 NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
+	{"print_command", "lpr %s",
+	 &SPECIFIC_PREFS.print_cmd, P_STRING, NULL, NULL, NULL},
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
-	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
+	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, NULL, NULL, NULL},
@@ -684,6 +746,10 @@ void prefs_common_read_config(void)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "Common", rcpath, NULL);
+#ifdef G_OS_WIN32
+	prefs_read_config(param_os_specific, "CommonWin32", rcpath, NULL);
+#endif
+
 	g_free(rcpath);
 
 	prefs_common.quotefmt = gettext(prefs_common.quotefmt);
@@ -725,6 +791,9 @@ void prefs_common_save_history(const gchar *history, GList *list)
 void prefs_common_write_config(void)
 {
 	prefs_write_config(param, "Common", COMMON_RC);
+#ifdef G_OS_WIN32
+	prefs_write_config(param_os_specific, "CommonWin32", COMMON_RC);
+#endif
 
 	prefs_common_save_history(COMMAND_HISTORY, 
 		prefs_common.mime_open_cmd_history);

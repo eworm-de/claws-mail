@@ -1219,3 +1219,4 @@
 ( cvs diff -u -r 1.395.2.166 -r 1.395.2.167 src/summaryview.c;  ) > 2.0.0cvs33.patchset
 ( cvs diff -u -r 1.382.2.238 -r 1.382.2.239 src/compose.c;  cvs diff -u -r 1.49.2.70 -r 1.49.2.71 src/procmime.c;  cvs diff -u -r 1.17.2.13 -r 1.17.2.14 src/procmime.h;  ) > 2.0.0cvs34.patchset
 ( cvs diff -u -r 1.60.2.12 -r 1.60.2.13 src/filtering.c;  cvs diff -u -r 1.75.2.15 -r 1.75.2.16 src/matcher.c;  cvs diff -u -r 1.39.2.6 -r 1.39.2.7 src/matcher.h;  cvs diff -u -r 1.25.2.12 -r 1.25.2.13 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.24 -r 1.1.4.25 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.34 -r 1.43.2.35 src/prefs_matcher.c;  ) > 2.0.0cvs35.patchset
+( cvs diff -u -r 1.204.2.74 -r 1.204.2.75 src/prefs_common.c;  cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/common/defs.h;  cvs diff -u -r 1.13.2.15 -r 1.13.2.16 src/common/plugin.c;  ) > 2.0.0cvs36.patchset
