@@ -207,7 +207,8 @@ gchar *procmime_get_mime_type		(const gchar	*filename);
 GList *procmime_get_mime_type_list	(void);
 
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
-EncodingType procmime_get_encoding_for_text_file(const gchar	*file);
+EncodingType procmime_get_encoding_for_text_file(const gchar	*file,
+						 gboolean	*has_binary);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 MimeInfo *procmime_scan_file			(const gchar	*filename);
 MimeInfo *procmime_scan_queue_file		(const gchar 	*filename);

@@ -1,3 +1,11 @@
+2006-02-08 [colin]	2.0.0cvs34
+
+	* src/compose.c
+	* src/procmime.c
+	* src/procmime.h
+		Fix bug #905 (damaged attachment)
+		text files with raw \0's aren't really text files
+
 2006-02-08 [colin]	2.0.0cvs33
 
 	* src/summaryview.c

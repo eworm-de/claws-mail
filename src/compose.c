@@ -2726,6 +2726,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gchar *size_text;
 	GtkListStore *store;
 	gchar *name;
+	gboolean has_binary = FALSE;
 
 	if (!is_file_exist(file)) {
 		g_warning("File %s doesn't exist\n", filename);
@@ -2756,7 +2757,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			MsgInfo *msginfo;
 			MsgFlags flags = {0, 0};
 
-			if (procmime_get_encoding_for_text_file(file) == ENC_7BIT)
+			if (procmime_get_encoding_for_text_file(file, &has_binary) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
 			else
 				ainfo->encoding = ENC_8BIT;
@@ -2772,7 +2773,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			procmsg_msginfo_free(msginfo);
 		} else {
 			if (!g_ascii_strncasecmp(content_type, "text", 4))
-				ainfo->encoding = procmime_get_encoding_for_text_file(file);
+				ainfo->encoding = procmime_get_encoding_for_text_file(file, &has_binary);
 			else
 				ainfo->encoding = ENC_BASE64;
 			name = g_path_get_basename(filename ? filename : file);
@@ -2787,7 +2788,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			ainfo->encoding = ENC_BASE64;
 		} else if (!g_ascii_strncasecmp(ainfo->content_type, "text", 4))
 			ainfo->encoding =
-				procmime_get_encoding_for_text_file(file);
+				procmime_get_encoding_for_text_file(file, &has_binary);
 		else
 			ainfo->encoding = ENC_BASE64;
 		name = g_path_get_basename(filename ? filename : file);
@@ -2795,7 +2796,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		g_free(name);
 	}
 
-	if (!strcmp(ainfo->content_type, "unknown")) {
+	if (!strcmp(ainfo->content_type, "unknown") || has_binary) {
 		g_free(ainfo->content_type);
 		ainfo->content_type = g_strdup("application/octet-stream");
 	}

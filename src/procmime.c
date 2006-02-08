@@ -1180,7 +1180,7 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 		return ENC_8BIT;
 }
 
-EncodingType procmime_get_encoding_for_text_file(const gchar *file)
+EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *has_binary)
 {
 	FILE *fp;
 	guchar buf[BUFFSIZE];
@@ -1188,6 +1188,7 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file)
 	size_t octet_chars = 0;
 	size_t total_len = 0;
 	gfloat octet_percentage;
+	gboolean force_b64 = FALSE;
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -1201,6 +1202,10 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file)
 		for (p = buf, i = 0; i < len; ++p, ++i) {
 			if (*p & 0x80)
 				++octet_chars;
+			if (*p == '\0') {
+				force_b64 = TRUE;
+				*has_binary = TRUE;
+			}
 		}
 		total_len += len;
 	}
@@ -1216,7 +1221,7 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file)
 		    "8bit chars: %d / %d (%f%%)\n", octet_chars, total_len,
 		    100.0 * octet_percentage);
 
-	if (octet_percentage > 0.20) {
+	if (octet_percentage > 0.20 || force_b64) {
 		debug_print("using BASE64\n");
 		return ENC_BASE64;
 	} else if (octet_chars > 0) {
