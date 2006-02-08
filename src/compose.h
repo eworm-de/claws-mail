@@ -35,6 +35,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "toolbar.h"
 #include "messageview.h"
 #include "codeconv.h"
+#include "template.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -272,6 +273,8 @@ Compose *compose_redirect		(PrefsAccount	*account,
 void compose_reedit			(MsgInfo	*msginfo);
 
 GList *compose_get_compose_list		(void);
+
+void compose_template_apply_fields(Compose *compose, Template *tmpl);
 
 void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,

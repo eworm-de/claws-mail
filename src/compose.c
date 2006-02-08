@@ -115,7 +115,6 @@
 #include "folder.h"
 #include "addr_compl.h"
 #include "quote_fmt.h"
-#include "template.h"
 #include "undo.h"
 #include "foldersel.h"
 #include "toolbar.h"
@@ -6086,19 +6085,10 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	gint cursor_pos = 0;
 	if (!tmpl) return;
 
+	/* process the body */
+
 	text = GTK_TEXT_VIEW(compose->text);
 	buffer = gtk_text_view_get_buffer(text);
-
-	if (tmpl->subject && *tmpl->subject != '\0')
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
-				   tmpl->subject);
-	if (tmpl->to && *tmpl->to != '\0')
-		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
-	if (tmpl->cc && *tmpl->cc != '\0')
-		compose_entry_append(compose, tmpl->cc, COMPOSE_CC);
-
-	if (tmpl->bcc && *tmpl->bcc != '\0')
-		compose_entry_append(compose, tmpl->bcc, COMPOSE_BCC);
 
 	if (replace)
 		gtk_text_buffer_set_text(buffer, "", -1);
@@ -6144,7 +6134,77 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		gtk_text_buffer_place_cursor(buffer, &iter);
 	}
 
+	/* process the other fields */
+	compose_template_apply_fields(compose, tmpl);
+	
 	compose_changed_cb(NULL, compose);
+}
+
+void compose_template_apply_fields(Compose *compose, Template *tmpl)
+{
+	static MsgInfo dummyinfo;
+	MsgInfo *msginfo = NULL;
+	gchar *buf = NULL;
+
+	if (compose->replyinfo != NULL)
+		msginfo = compose->replyinfo;
+	else if (compose->fwdinfo != NULL)
+		msginfo = compose->fwdinfo;
+	else
+		msginfo = &dummyinfo;
+
+	if (tmpl->to && *tmpl->to != '\0') {
+		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_scan_string(tmpl->to);
+		quote_fmt_parse();
+
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Message To format error."));
+		} else {
+			compose_entry_append(compose, buf, COMPOSE_TO);
+		}
+	}
+
+	if (tmpl->cc && *tmpl->cc != '\0') {
+		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_scan_string(tmpl->cc);
+		quote_fmt_parse();
+
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Message Cc format error."));
+		} else {
+			compose_entry_append(compose, buf, COMPOSE_CC);
+		}
+	}
+
+	if (tmpl->bcc && *tmpl->bcc != '\0') {
+		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_scan_string(tmpl->bcc);
+		quote_fmt_parse();
+
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Message Bcc format error."));
+		} else {
+			compose_entry_append(compose, buf, COMPOSE_BCC);
+		}
+	}
+
+	/* process the subject */
+	if (tmpl->subject && *tmpl->subject != '\0') {
+		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_scan_string(tmpl->subject);
+		quote_fmt_parse();
+
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Message subject format error."));
+		} else {
+			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
+		}
+	}
 }
 
 static void compose_destroy(Compose *compose)
