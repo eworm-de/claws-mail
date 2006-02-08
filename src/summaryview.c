@@ -4219,7 +4219,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	     	     cur != NULL && cur->data != NULL; cur = cur->next) {
 			mlist = g_slist_prepend(mlist, 
 				 procmsg_msginfo_new_ref(
-				  GTKUT_CTREE_NODE_GET_ROW_DATA(cur)));
+				  GTKUT_CTREE_NODE_GET_ROW_DATA(cur->data)));
 		}
 		mlist = g_slist_reverse(mlist);
 	} else {
@@ -5540,65 +5540,6 @@ void summary_toggle_ignore_thread(SummaryView *summaryview)
 	else 
 		summary_ignore_thread(summaryview);
 }
-
-#if 0 /* OLD PROCESSING */
-static gboolean processing_apply_func(GNode *node, gpointer data)
-{
-	FolderItem *item;
-	GSList * processing;
-	SummaryView * summaryview = (SummaryView *) data;
-	
-	if (node == NULL)
-		return FALSE;
-
-	item = node->data;
-	/* prevent from the warning */
-	if (item->path == NULL)
-		return FALSE;
-	processing = item->prefs->processing;
-
-
-	if (processing != NULL) {
-		gchar * buf;
-		GSList * mlist;
-		GSList * cur;
-
-		buf = g_strdup_printf(_("Processing (%s)..."), item->path);
-		debug_print(buf);
-		STATUSBAR_PUSH(summaryview->mainwin, buf);
-		g_free(buf);
-
-		mlist = folder_item_get_msg_list(item);
-		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = cur->next) {
-			MsgInfo * msginfo;
-			
-			msginfo = (MsgInfo *) cur->data;
-			filter_message_by_msginfo(processing, msginfo, NULL);
-			procmsg_msginfo_free(msginfo);
-		}
-		filtering_move_and_copy_msgs(mlist);
-		g_slist_free(mlist);
-		
-		STATUSBAR_POP(summaryview->mainwin);
-	}
-
-
-	return FALSE;
-}
-
-void processing_apply(SummaryView * summaryview)
-{
-	GList * cur;
-
-	for (cur = folder_get_list() ; cur != NULL && cur->data != NULL ; cur = g_list_next(cur)) {
-		Folder *folder;
-
-		folder = (Folder *) cur->data;
-		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-				processing_apply_func, summaryview);
-	}
-}
-#endif
 
 void summary_toggle_show_read_messages(SummaryView *summaryview)
 {

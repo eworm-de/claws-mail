@@ -1,3 +1,8 @@
+2006-02-08 [colin]	2.0.0cvs33
+
+	* src/summaryview.c
+		Fix crasher introduced yesterday
+
 2006-02-08 [wwp]	2.0.0cvs32
 
 	* src/compose.c
@@ -14,6 +19,7 @@
 
 	* src/compose.c
 		Don't unblock if not blocked
+	FOR_STABLE
 
 2006-02-07 [colin]	2.0.0cvs29
 
@@ -27,7 +33,7 @@
 		processing %as{} actions 
 	* src/compose.c
 		Fix auto-wrap disabling after a middle-click
-		paste
+		paste - FOR_STABLE
 
 2006-02-07 [paul]	2.0.0cvs27
 
@@ -130,6 +136,7 @@
 		to fail after an add_msgs ! :-///
 	* src/etpan/imap-thread.c
 		Add a bit of debug
+	FOR_STABLE
 
 2006-02-05 [colin]	2.0.0cvs16
 
@@ -203,6 +210,7 @@
 		move global option 'Set displayed columns...' out
 		of folder option grouping.
 		fix sensitivity of 'harvest addresses'
+	FOR_STABLE
 
 2006-02-01 [colin]	2.0.0cvs8
 
@@ -242,7 +250,7 @@
 
 	* src/jpilot.c
 		fix crash on creating jpilot address book
-		Thanks to Colin
+		Thanks to Colin - FOR_STABLE
 	* src/prefs_summaries.c
 	* src/prefs_wrapping.c
 	* src/gtk/icon_legend.c
@@ -265,6 +273,7 @@
 	* src/compose.c
 		Fix drafting on IMAP. Crappy bug sneaked in
 		the release :-/
+	FOR_STABLE
 
 2006-01-30 [paul]	2.0.0cvs2
 
@@ -275,7 +284,7 @@
 
 	* src/manual.c
 		Check for the file to be present before 
-		enabling the menu
+		enabling the menu - FOR_STABLE
 	* src/gtk/icon_legend.c
 		Add folders icons (not all of them, there
 		are too much, but the most intriguing ones)
