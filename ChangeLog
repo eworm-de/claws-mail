@@ -1,3 +1,9 @@
+2006-02-08 [wwp]	2.0.0cvs31
+
+	* src/prefs_template.c
+		templates enhancement: allow address completion for Cc and Bcc fields
+		(it was currently possible for the To field only)
+
 2006-02-08 [colin]	2.0.0cvs30
 
 	* src/compose.c

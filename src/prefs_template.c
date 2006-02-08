@@ -205,7 +205,9 @@ static void prefs_template_window_create(void)
 	ADD_ENTRY(entry_to, _("To:"), 0);
 	address_completion_register_entry(GTK_ENTRY(entry_to));
 	ADD_ENTRY(entry_cc, _("Cc:"), 1)
+	address_completion_register_entry(GTK_ENTRY(entry_cc));
 	ADD_ENTRY(entry_bcc, _("Bcc:"), 2)	
+	address_completion_register_entry(GTK_ENTRY(entry_bcc));
 	ADD_ENTRY(entry_subject, _("Subject:"), 3);
 
 #undef ADD_ENTRY

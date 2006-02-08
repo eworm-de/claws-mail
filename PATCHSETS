@@ -1214,3 +1214,4 @@
 ( cvs diff -u -r 1.12.2.30 -r 1.12.2.31 src/action.c;  cvs diff -u -r 1.382.2.235 -r 1.382.2.236 src/compose.c;  ) > 2.0.0cvs28.patchset
 ( cvs diff -u -r 1.12.2.31 -r 1.12.2.32 src/action.c;  ) > 2.0.0cvs29.patchset
 ( cvs diff -u -r 1.382.2.236 -r 1.382.2.237 src/compose.c;  ) > 2.0.0cvs30.patchset
+( cvs diff -u -r 1.12.2.22 -r 1.12.2.23 src/prefs_template.c;  ) > 2.0.0cvs31.patchset
