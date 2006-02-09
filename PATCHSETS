@@ -1222,3 +1222,4 @@
 ( cvs diff -u -r 1.204.2.74 -r 1.204.2.75 src/prefs_common.c;  cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/common/defs.h;  cvs diff -u -r 1.13.2.15 -r 1.13.2.16 src/common/plugin.c;  ) > 2.0.0cvs36.patchset
 ( cvs diff -u -r 1.42.2.20 -r 1.42.2.21 po/fr.po;  ) > 2.0.0cvs37.patchset
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/gtk/filesel.c;  ) > 2.0.0cvs38.patchset
+( cvs diff -u -r 1.75.2.16 -r 1.75.2.17 src/matcher.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/gtksourceprintjob.c;  ) > 2.0.0cvs39.patchset

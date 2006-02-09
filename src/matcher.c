@@ -910,6 +910,9 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	GSList *l;
 	gboolean result;
 
+	if (!matchers)
+		return FALSE;
+
 	if (matchers->bool_and)
 		result = TRUE;
 	else

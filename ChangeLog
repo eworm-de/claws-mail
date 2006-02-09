@@ -1,3 +1,10 @@
+2006-02-09 [colin]	2.0.0cvs39
+
+	* src/matcher.c
+		Check for pointer before using its members
+	* src/gtk/gtksourceprintjob.c
+		Fix a wrong warning
+
 2006-02-09 [wwp]	2.0.0cvs38
 
 	* src/gtk/filesel.c
