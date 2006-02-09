@@ -1,3 +1,8 @@
+2006-02-09 [wwp]	2.0.0cvs38
+
+	* src/gtk/filesel.c
+		fix few compiler warnings (type mismatch).
+
 2006-02-09 [paul]	2.0.0cvs37
 
 	* po/fr.po

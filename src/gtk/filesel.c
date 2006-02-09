@@ -95,8 +95,8 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 
 	if (action == GTK_FILE_CHOOSER_ACTION_OPEN) {
 		GtkImage *preview;
-		preview = gtk_image_new ();
-		gtk_file_chooser_set_preview_widget (chooser, preview);
+		preview = GTK_IMAGE(gtk_image_new ());
+		gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(chooser), GTK_WIDGET(preview));
 		g_signal_connect (chooser, "update-preview",
 			    G_CALLBACK (update_preview_cb), preview);
 
