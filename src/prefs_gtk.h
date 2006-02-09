@@ -83,7 +83,7 @@ struct _PrefsDialog
 	GtkWidget *label; \
 	gint i = page_num;	\
   \
-	label = gtk_label_new (str); \
+	label = gtk_label_new_with_mnemonic (str); \
 	gtk_widget_show (label); \
 	gtk_notebook_set_tab_label \
 		(GTK_NOTEBOOK (notebook), \

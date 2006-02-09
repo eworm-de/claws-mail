@@ -5472,11 +5472,17 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_widget_show(notebook);
 
 	/* header labels and entries */
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_header(compose), gtk_label_new(_("Header")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+			compose_create_header(compose),
+			gtk_label_new_with_mnemonic(_("Hea_der")));
 	/* attachment list */
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_attach(compose), gtk_label_new(_("Attachments")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+			compose_create_attach(compose),
+			gtk_label_new_with_mnemonic(_("_Attachments")));
 	/* Others Tab */
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_others(compose), gtk_label_new(_("Others")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+			compose_create_others(compose),
+			gtk_label_new_with_mnemonic(_("Othe_rs")));
 
 	/* Subject */
 	subject_hbox = gtk_hbox_new(FALSE, 0);

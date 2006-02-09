@@ -1008,21 +1008,21 @@ static void prefs_account_create(void)
 
 	/* create all widgets on notebook */
 	prefs_account_basic_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Basic"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("_Basic"), page++);
 	prefs_account_receive_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Receive"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("_Receive"), page++);
 	prefs_account_send_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Send"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("_Send"), page++);
 	prefs_account_compose_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Compose"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Co_mpose"), page++);
 	prefs_account_privacy_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Privacy"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("_Privacy"), page++);
 #if USE_OPENSSL
 	prefs_account_ssl_create();
-	SET_NOTEBOOK_LABEL(notebook, _("SSL"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("SS_L"), page++);
 #endif /* USE_OPENSSL */
 	prefs_account_advanced_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Advanced"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("A_dvanced"), page++);
 
 	prefs_account_fix_size();
 }
@@ -1425,7 +1425,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_set_size_request (local_inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_entry, TRUE, TRUE, 0);
 
-	local_inbox_btn = gtkut_get_browse_file_btn(_("_Browse"));
+	local_inbox_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (local_inbox_btn);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), local_inbox_btn,
 			     _("Unfiltered messages will be stored in this folder"),
@@ -1520,7 +1520,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_set_size_request (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
 
-	inbox_btn = gtkut_get_browse_file_btn(_("_Browse"));
+	inbox_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (inbox_btn);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), inbox_btn,
 			     _("Unfiltered messages will be stored in this folder"),
@@ -1920,7 +1920,7 @@ static void prefs_account_compose_create(void)
 	gtk_widget_show (entry_sigpath);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_sigpath, TRUE, TRUE, 0);
 
-	signature_browse_button = gtkut_get_browse_file_btn(_("_Browse"));
+	signature_browse_button = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (signature_browse_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), signature_browse_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",

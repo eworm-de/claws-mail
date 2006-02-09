@@ -643,7 +643,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
-	label = gtk_label_new( pageLbl );
+	label = gtk_label_new_with_mnemonic( pageLbl );
 	gtk_widget_show( label );
 	gtk_notebook_set_tab_label(
 		GTK_NOTEBOOK( personeditdlg.notebook ),
@@ -765,7 +765,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
-	label = gtk_label_new( pageLbl );
+	label = gtk_label_new_with_mnemonic( pageLbl );
 	gtk_widget_show( label );
 	gtk_notebook_set_tab_label(
 		GTK_NOTEBOOK( personeditdlg.notebook ),
@@ -958,7 +958,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
-	label = gtk_label_new( pageLbl );
+	label = gtk_label_new_with_mnemonic( pageLbl );
 	gtk_widget_show( label );
 	gtk_notebook_set_tab_label(
 		GTK_NOTEBOOK( personeditdlg.notebook ),
@@ -1067,9 +1067,9 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 static void addressbook_edit_person_create( gboolean *cancelled ) {
 	addressbook_edit_person_dialog_create( cancelled );
-	addressbook_edit_person_page_basic( PAGE_BASIC, _( "User Data" ) );
-	addressbook_edit_person_page_email( PAGE_EMAIL, _( "Email Addresses" ) );
-	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "Other Attributes" ) );
+	addressbook_edit_person_page_basic( PAGE_BASIC, _( "_User Data" ) );
+	addressbook_edit_person_page_email( PAGE_EMAIL, _( "_Email Addresses" ) );
+	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "O_ther Attributes" ) );
 	gtk_widget_show_all( personeditdlg.window );
 }
 

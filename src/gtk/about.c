@@ -319,7 +319,7 @@ static void about_create(void)
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				scrolledwin,
-				gtk_label_new(_("Info")));
+				gtk_label_new_with_mnemonic(_("_Info")));
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -468,7 +468,7 @@ static void about_create(void)
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				 scrolledwin,
-				 gtk_label_new(_("Authors")));
+				 gtk_label_new_with_mnemonic(_("_Authors")));
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -530,7 +530,7 @@ static void about_create(void)
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				 scrolledwin,
-				 gtk_label_new(_("License")));
+				 gtk_label_new_with_mnemonic(_("_License")));
 
 	gtk_box_pack_start(GTK_BOX(vbox1), notebook, TRUE, TRUE, 0);
 
