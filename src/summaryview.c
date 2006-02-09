@@ -1739,8 +1739,9 @@ static GtkCTreeNode *summary_find_next_flagged_msg(SummaryView *summaryview,
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 		/* Find msg with matching flags but ignore messages with
 		   ignore flags, if searching for new or unread messages */
-		if (!(((flags & (MSG_NEW | MSG_UNREAD)) != 0) && MSG_IS_IGNORE_THREAD(msginfo->flags)) && 
-			(msginfo && (msginfo->flags.perm_flags & flags) != 0))
+		if ((msginfo && (msginfo->flags.perm_flags & flags) != 0) &&
+		    !(((flags & (MSG_NEW | MSG_UNREAD)) != 0) && MSG_IS_IGNORE_THREAD(msginfo->flags)) 
+			)
 			break;
 	}
 
