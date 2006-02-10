@@ -26,18 +26,18 @@
 #include "codeconv.h"
 #include "utils.h"
 
-#define HTMLBUFSIZE	8192
+#define SC_HTMLBUFSIZE	8192
 #define HR_STR		"------------------------------------------------"
 
-typedef struct _HTMLSymbol	HTMLSymbol;
+typedef struct _SC_HTMLSymbol	SC_HTMLSymbol;
 
-struct _HTMLSymbol
+struct _SC_HTMLSymbol
 {
 	gchar *const key;
 	gchar *const val;
 };
 
-static HTMLSymbol symbol_list[] = {
+static SC_HTMLSymbol symbol_list[] = {
 	{"&lt;"    , "<"},
 	{"&gt;"    , ">"},
 	{"&amp;"   , "&"},
@@ -52,7 +52,7 @@ static HTMLSymbol symbol_list[] = {
 	{"&hellip;", "..."},
 };
 
-static HTMLSymbol ascii_symbol_list[] = {
+static SC_HTMLSymbol ascii_symbol_list[] = {
 	{"&iexcl;" , "^!"},
 	{"&brvbar;", "|"},
 	{"&copy;"  , "(C)"},
@@ -117,33 +117,33 @@ static HTMLSymbol ascii_symbol_list[] = {
 
 static GHashTable *default_symbol_table;
 
-static HTMLState html_read_line		(HTMLParser	*parser);
-static void html_append_char		(HTMLParser	*parser,
+static SC_HTMLState sc_html_read_line	(SC_HTMLParser	*parser);
+static void sc_html_append_char			(SC_HTMLParser	*parser,
 					 gchar		 ch);
-static void html_append_str		(HTMLParser	*parser,
+static void sc_html_append_str			(SC_HTMLParser	*parser,
 					 const gchar	*str,
 					 gint		 len);
-static HTMLState html_parse_tag		(HTMLParser	*parser);
-static void html_parse_special		(HTMLParser	*parser);
-static void html_get_parenthesis	(HTMLParser	*parser,
+static SC_HTMLState sc_html_parse_tag	(SC_HTMLParser	*parser);
+static void sc_html_parse_special		(SC_HTMLParser	*parser);
+static void sc_html_get_parenthesis		(SC_HTMLParser	*parser,
 					 gchar		*buf,
 					 gint		 len);
 
 
-HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
+SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 {
-	HTMLParser *parser;
+	SC_HTMLParser *parser;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 	g_return_val_if_fail(conv != NULL, NULL);
 
-	parser = g_new0(HTMLParser, 1);
+	parser = g_new0(SC_HTMLParser, 1);
 	parser->fp = fp;
 	parser->conv = conv;
 	parser->str = g_string_new(NULL);
 	parser->buf = g_string_new(NULL);
 	parser->bufp = parser->buf->str;
-	parser->state = HTML_NORMAL;
+	parser->state = SC_HTML_NORMAL;
 	parser->href = NULL;
 	parser->newline = TRUE;
 	parser->empty_line = TRUE;
@@ -172,7 +172,7 @@ HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
 	return parser;
 }
 
-void html_parser_destroy(HTMLParser *parser)
+void sc_html_parser_destroy(SC_HTMLParser *parser)
 {
 	g_string_free(parser->str, TRUE);
 	g_string_free(parser->buf, TRUE);
@@ -180,33 +180,33 @@ void html_parser_destroy(HTMLParser *parser)
 	g_free(parser);
 }
 
-gchar *html_parse(HTMLParser *parser)
+gchar *sc_html_parse(SC_HTMLParser *parser)
 {
-	parser->state = HTML_NORMAL;
+	parser->state = SC_HTML_NORMAL;
 	g_string_truncate(parser->str, 0);
 
 	if (*parser->bufp == '\0') {
 		g_string_truncate(parser->buf, 0);
 		parser->bufp = parser->buf->str;
-		if (html_read_line(parser) == HTML_EOF)
+		if (sc_html_read_line(parser) == SC_HTML_EOF)
 			return NULL;
 	}
 
 	while (*parser->bufp != '\0') {
 		switch (*parser->bufp) {
 		case '<': {
-			HTMLState st;
-			st = html_parse_tag(parser);
+			SC_HTMLState st;
+			st = sc_html_parse_tag(parser);
 			/* when we see an href, we need to flush the str
 			 * buffer.  Then collect all the chars until we
 			 * see the end anchor tag
 			 */
-			if (HTML_HREF_BEG == st || HTML_HREF == st)
+			if (SC_HTML_HREF_BEG == st || SC_HTML_HREF == st)
 				return parser->str->str;
 			} 
 			break;
 		case '&':
-			html_parse_special(parser);
+			sc_html_parse_special(parser);
 			break;
 		case ' ':
 		case '\t':
@@ -224,22 +224,22 @@ gchar *html_parse(HTMLParser *parser)
 			}
 			/* fallthrough */
 		default:
-			html_append_char(parser, *parser->bufp++);
+			sc_html_append_char(parser, *parser->bufp++);
 		}
 	}
 
 	return parser->str->str;
 }
 
-static HTMLState html_read_line(HTMLParser *parser)
+static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 {
-	gchar buf[HTMLBUFSIZE];
-	gchar buf2[HTMLBUFSIZE];
+	gchar buf[SC_HTMLBUFSIZE];
+	gchar buf2[SC_HTMLBUFSIZE];
 	gint index;
 
 	if (fgets(buf, sizeof(buf), parser->fp) == NULL) {
-		parser->state = HTML_EOF;
-		return HTML_EOF;
+		parser->state = SC_HTML_EOF;
+		return SC_HTML_EOF;
 	}
 
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
@@ -250,7 +250,7 @@ static HTMLState html_read_line(HTMLParser *parser)
 
 		parser->bufp = parser->buf->str + index;
 
-		return HTML_CONV_FAILED;
+		return SC_HTML_CONV_FAILED;
 	}
 
 	index = parser->bufp - parser->buf->str;
@@ -259,10 +259,10 @@ static HTMLState html_read_line(HTMLParser *parser)
 
 	parser->bufp = parser->buf->str + index;
 
-	return HTML_NORMAL;
+	return SC_HTML_NORMAL;
 }
 
-static void html_append_char(HTMLParser *parser, gchar ch)
+static void sc_html_append_char(SC_HTMLParser *parser, gchar ch)
 {
 	GString *str = parser->str;
 
@@ -282,7 +282,7 @@ static void html_append_char(HTMLParser *parser, gchar ch)
 		parser->newline = FALSE;
 }
 
-static void html_append_str(HTMLParser *parser, const gchar *str, gint len)
+static void sc_html_append_str(SC_HTMLParser *parser, const gchar *str, gint len)
 {
 	GString *string = parser->str;
 
@@ -309,9 +309,9 @@ static void html_append_str(HTMLParser *parser, const gchar *str, gint len)
 		parser->newline = FALSE;
 }
 
-static HTMLTag *html_get_tag(const gchar *str)
+static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 {
-	HTMLTag *tag;
+	SC_HTMLTag *tag;
 	gchar *tmp;
 	guchar *tmpp;
 
@@ -321,7 +321,7 @@ static HTMLTag *html_get_tag(const gchar *str)
 
 	Xstrdup_a(tmp, str, return NULL);
 
-	tag = g_new0(HTMLTag, 1);
+	tag = g_new0(SC_HTMLTag, 1);
 
 	for (tmpp = tmp; *tmpp != '\0' && !g_ascii_isspace(*tmpp); tmpp++)
 		;
@@ -337,7 +337,7 @@ static HTMLTag *html_get_tag(const gchar *str)
 	}
 
 	while (*tmpp != '\0') {
-		HTMLAttr *attr;
+		SC_HTMLAttr *attr;
 		gchar *attr_name;
 		gchar *attr_value;
 		gchar *p;
@@ -364,7 +364,7 @@ static HTMLTag *html_get_tag(const gchar *str)
 				tmpp++;
 				attr_value = tmpp;
 				if ((p = strchr(attr_value, quote)) == NULL) {
-					g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
+					g_warning("sc_html_get_tag(): syntax error in tag: '%s'\n", str);
 					return tag;
 				}
 				tmpp = p;
@@ -382,7 +382,7 @@ static HTMLTag *html_get_tag(const gchar *str)
 
 		g_strchomp(attr_name);
 		g_strdown(attr_name);
-		attr = g_new(HTMLAttr, 1);
+		attr = g_new(SC_HTMLAttr, 1);
 		attr->name = g_strdup(attr_name);
 		attr->value = g_strdup(attr_value);
 		tag->attr = g_list_append(tag->attr, attr);
@@ -391,13 +391,13 @@ static HTMLTag *html_get_tag(const gchar *str)
 	return tag;
 }
 
-static void html_free_tag(HTMLTag *tag)
+static void sc_html_free_tag(SC_HTMLTag *tag)
 {
 	if (!tag) return;
 
 	g_free(tag->name);
 	while (tag->attr != NULL) {
-		HTMLAttr *attr = (HTMLAttr *)tag->attr->data;
+		SC_HTMLAttr *attr = (SC_HTMLAttr *)tag->attr->data;
 		g_free(attr->name);
 		g_free(attr->value);
 		g_free(attr);
@@ -406,55 +406,55 @@ static void html_free_tag(HTMLTag *tag)
 	g_free(tag);
 }
 
-static HTMLState html_parse_tag(HTMLParser *parser)
+static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 {
-	gchar buf[HTMLBUFSIZE];
-	HTMLTag *tag;
+	gchar buf[SC_HTMLBUFSIZE];
+	SC_HTMLTag *tag;
 
-	html_get_parenthesis(parser, buf, sizeof(buf));
+	sc_html_get_parenthesis(parser, buf, sizeof(buf));
 
-	tag = html_get_tag(buf);
+	tag = sc_html_get_tag(buf);
 
-	parser->state = HTML_UNKNOWN;
-	if (!tag) return HTML_UNKNOWN;
+	parser->state = SC_HTML_UNKNOWN;
+	if (!tag) return SC_HTML_UNKNOWN;
 
 	if (!strcmp(tag->name, "br")) {
 		parser->space = FALSE;
-		html_append_char(parser, '\n');
-		parser->state = HTML_BR;
+		sc_html_append_char(parser, '\n');
+		parser->state = SC_HTML_BR;
 	} else if (!strcmp(tag->name, "a")) {
 		GList *cur;
 		for (cur = tag->attr; cur != NULL; cur = cur->next) {
-			if (cur->data && !strcmp(((HTMLAttr *)cur->data)->name, "href")) {
+			if (cur->data && !strcmp(((SC_HTMLAttr *)cur->data)->name, "href")) {
 				g_free(parser->href);
-				parser->href = g_strdup(((HTMLAttr *)cur->data)->value);
-				parser->state = HTML_HREF_BEG;
+				parser->href = g_strdup(((SC_HTMLAttr *)cur->data)->value);
+				parser->state = SC_HTML_HREF_BEG;
 				break;
 			}
 		}
 	} else if (!strcmp(tag->name, "/a")) {
-		parser->state = HTML_HREF;
+		parser->state = SC_HTML_HREF;
 	} else if (!strcmp(tag->name, "p")) {
 		parser->space = FALSE;
 		if (!parser->empty_line) {
 			parser->space = FALSE;
-			if (!parser->newline) html_append_char(parser, '\n');
-			html_append_char(parser, '\n');
+			if (!parser->newline) sc_html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
-		parser->state = HTML_PAR;
+		parser->state = SC_HTML_PAR;
 	} else if (!strcmp(tag->name, "pre")) {
 		parser->pre = TRUE;
-		parser->state = HTML_PRE;
+		parser->state = SC_HTML_PRE;
 	} else if (!strcmp(tag->name, "/pre")) {
 		parser->pre = FALSE;
-		parser->state = HTML_NORMAL;
+		parser->state = SC_HTML_NORMAL;
 	} else if (!strcmp(tag->name, "hr")) {
 		if (!parser->newline) {
 			parser->space = FALSE;
-			html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
-		html_append_str(parser, HR_STR "\n", -1);
-		parser->state = HTML_HR;
+		sc_html_append_str(parser, HR_STR "\n", -1);
+		parser->state = SC_HTML_HR;
 	} else if (!strcmp(tag->name, "div")    ||
 		   !strcmp(tag->name, "ul")     ||
 		   !strcmp(tag->name, "li")     ||
@@ -463,41 +463,41 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 		   (tag->name[0] == 'h' && g_ascii_isdigit(tag->name[1]))) {
 		if (!parser->newline) {
 			parser->space = FALSE;
-			html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
-		parser->state = HTML_NORMAL;
+		parser->state = SC_HTML_NORMAL;
 	} else if (!strcmp(tag->name, "/table") ||
 		   (tag->name[0] == '/' &&
 		    tag->name[1] == 'h' &&
 		    g_ascii_isdigit(tag->name[1]))) {
 		if (!parser->empty_line) {
 			parser->space = FALSE;
-			if (!parser->newline) html_append_char(parser, '\n');
-			html_append_char(parser, '\n');
+			if (!parser->newline) sc_html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
-		parser->state = HTML_NORMAL;
+		parser->state = SC_HTML_NORMAL;
 	} else if (!strcmp(tag->name, "/div")   ||
 		   !strcmp(tag->name, "/ul")    ||
 		   !strcmp(tag->name, "/li")) {
 		if (!parser->newline) {
 			parser->space = FALSE;
-			html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
-		parser->state = HTML_NORMAL;
+		parser->state = SC_HTML_NORMAL;
 			}
 
-	html_free_tag(tag);
+	sc_html_free_tag(tag);
 
 	return parser->state;
 }
 
-static void html_parse_special(HTMLParser *parser)
+static void sc_html_parse_special(SC_HTMLParser *parser)
 {
 	gchar symbol_name[9];
 	gint n;
 	const gchar *val;
 
-	parser->state = HTML_UNKNOWN;
+	parser->state = SC_HTML_UNKNOWN;
 	g_return_if_fail(*parser->bufp == '&');
 
 	/* &foo; */
@@ -505,8 +505,8 @@ static void html_parse_special(HTMLParser *parser)
 		;
 	if (n > 7 || parser->bufp[n] != ';') {
 		/* output literal `&' */
-		html_append_char(parser, *parser->bufp++);
-		parser->state = HTML_NORMAL;
+		sc_html_append_char(parser, *parser->bufp++);
+		parser->state = SC_HTML_NORMAL;
 		return;
 	}
 	strncpy2(symbol_name, parser->bufp, n + 2);
@@ -514,8 +514,8 @@ static void html_parse_special(HTMLParser *parser)
 
 	if ((val = g_hash_table_lookup(parser->symbol_table, symbol_name))
 	    != NULL) {
-		html_append_str(parser, val, -1);
-		parser->state = HTML_NORMAL;
+		sc_html_append_str(parser, val, -1);
+		parser->state = SC_HTML_NORMAL;
 		return;
 	} else if (symbol_name[1] == '#' && g_ascii_isdigit(symbol_name[2])) {
 		gint ch;
@@ -524,8 +524,8 @@ static void html_parse_special(HTMLParser *parser)
 		if ((ch > 0 && ch <= 127) ||
 		    (ch >= 128 && ch <= 255 &&
 		     parser->conv->charset == C_ISO_8859_1)) {
-			html_append_char(parser, ch);
-			parser->state = HTML_NORMAL;
+			sc_html_append_char(parser, ch);
+			parser->state = SC_HTML_NORMAL;
 			return;
 		} else {
 			char *symb = NULL;
@@ -605,17 +605,17 @@ static void html_parse_special(HTMLParser *parser)
 				break;
 			}
 			if (symb) {
-				html_append_str(parser, symb, -1);
-				parser->state = HTML_NORMAL;
+				sc_html_append_str(parser, symb, -1);
+				parser->state = SC_HTML_NORMAL;
 				return;
 			}
 		}
 	}
 
-	html_append_str(parser, symbol_name, -1);
+	sc_html_append_str(parser, symbol_name, -1);
 }
 
-static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
+static void sc_html_get_parenthesis(SC_HTMLParser *parser, gchar *buf, gint len)
 {
 	gchar *p;
 
@@ -626,28 +626,28 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 	if (!strncmp(parser->bufp, "<!--", 4)) {
 		parser->bufp += 4;
 		while ((p = strstr(parser->bufp, "-->")) == NULL)
-			if (html_read_line(parser) == HTML_EOF) return;
+			if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 		parser->bufp = p + 3;
 		return;
 	}
 	if (!g_ascii_strncasecmp(parser->bufp, "<style", 6)) {
 		parser->bufp += 6;
 		while ((p = strcasestr(parser->bufp, "</style>")) == NULL)
-			if (html_read_line(parser) == HTML_EOF) return;
+			if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 		parser->bufp = p + 8;
 		return;
 	}
 	if (!g_ascii_strncasecmp(parser->bufp, "<script", 7)) {
 		parser->bufp += 7;
 		while ((p = strcasestr(parser->bufp, "</script>")) == NULL)
-			if (html_read_line(parser) == HTML_EOF) return;
+			if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 		parser->bufp = p + 9;
 		return;
 	}
 
 	parser->bufp++;
 	while ((p = strchr(parser->bufp, '>')) == NULL)
-		if (html_read_line(parser) == HTML_EOF) return;
+		if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 
 	strncpy2(buf, parser->bufp, MIN(p - parser->bufp + 1, len));
 	g_strstrip(buf);

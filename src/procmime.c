@@ -753,15 +753,15 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		dup2(oldout, 1);
 /* CodeConverter seems to have no effect here */
 	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
-		HTMLParser *parser;
+		SC_HTMLParser *parser;
 		CodeConverter *conv;
 
 		conv = conv_code_converter_new(src_codeset);
-		parser = html_parser_new(tmpfp, conv);
-		while ((str = html_parse(parser)) != NULL) {
+		parser = sc_html_parser_new(tmpfp, conv);
+		while ((str = sc_html_parse(parser)) != NULL) {
 			fputs(str, outfp);
 		}
-		html_parser_destroy(parser);
+		sc_html_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
 	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "enriched")) {
 		ERTFParser *parser;

@@ -1,3 +1,15 @@
+2006-02-10 [wwp]	2.0.0cvs42
+
+	* src/exporthtml.c
+	* src/html.c
+	* src/html.h
+	* src/procmime.c
+	* src/textview.c
+		renamed html_ prefixed functions and data structures to avoid
+		namespace clashes w/ other software (gtkhtml2 for instance).
+		Closes bug #907.
+
+
 2006-02-09 [colin]	2.0.0cvs41
 
 	* src/summaryview.c

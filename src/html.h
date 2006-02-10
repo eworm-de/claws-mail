@@ -27,26 +27,26 @@
 
 typedef enum
 {
-	HTML_NORMAL,
-	HTML_PAR,
-	HTML_BR,
-	HTML_HR,
-	HTML_HREF,
-	HTML_IMG,
-	HTML_FONT,
-	HTML_PRE,
-	HTML_UNKNOWN,
-	HTML_CONV_FAILED,
-	HTML_ERR,
-	HTML_EOF,
-	HTML_HREF_BEG
-} HTMLState;
+	SC_HTML_NORMAL,
+	SC_HTML_PAR,
+	SC_HTML_BR,
+	SC_HTML_HR,
+	SC_HTML_HREF,
+	SC_HTML_IMG,
+	SC_HTML_FONT,
+	SC_HTML_PRE,
+	SC_HTML_UNKNOWN,
+	SC_HTML_CONV_FAILED,
+	SC_HTML_ERR,
+	SC_HTML_EOF,
+	SC_HTML_HREF_BEG
+} SC_HTMLState;
 
-typedef struct _HTMLParser	HTMLParser;
-typedef struct _HTMLAttr	HTMLAttr;
-typedef struct _HTMLTag		HTMLTag;
+typedef struct _SC_HTMLParser	SC_HTMLParser;
+typedef struct _SC_HTMLAttr		SC_HTMLAttr;
+typedef struct _SC_HTMLTag		SC_HTMLTag;
 
-struct _HTMLParser
+struct _SC_HTMLParser
 {
 	FILE *fp;
 	CodeConverter *conv;
@@ -58,7 +58,7 @@ struct _HTMLParser
 
 	gchar *bufp;
 
-	HTMLState state;
+	SC_HTMLState state;
 
 	gchar *href;
 
@@ -68,21 +68,21 @@ struct _HTMLParser
 	gboolean pre;
 };
 
-struct _HTMLAttr
+struct _SC_HTMLAttr
 {
 	gchar *name;
 	gchar *value;
 };
 
-struct _HTMLTag
+struct _SC_HTMLTag
 {
 	gchar *name;
 	GList *attr;
 };
 
-HTMLParser *html_parser_new	(FILE		*fp,
+SC_HTMLParser *sc_html_parser_new	(FILE		*fp,
 				 CodeConverter	*conv);
-void html_parser_destroy	(HTMLParser	*parser);
-gchar *html_parse		(HTMLParser	*parser);
+void sc_html_parser_destroy	(SC_HTMLParser	*parser);
+gchar *sc_html_parse		(SC_HTMLParser	*parser);
 
 #endif /* __HTML_H__ */

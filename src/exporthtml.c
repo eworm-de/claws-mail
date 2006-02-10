@@ -47,7 +47,7 @@
 #define DFL_FILE_SYLPHEED_OUT "addressbook.html"
 
 #define FMT_BUFSIZE         2048
-#define HTML_SPACE          "&nbsp;"
+#define SC_HTML_SPACE          "&nbsp;"
 #define BORDER_SIZE         2
 #define CELL_PADDING        2
 #define CELL_SPACING        2
@@ -559,7 +559,7 @@ static void exporthtml_fmt_email(
 	gchar *name;
 
 	if( listEMail == NULL ) {
-		fprintf( stream, HTML_SPACE );
+		fprintf( stream, SC_HTML_SPACE );
 		return;
 	}
 
@@ -690,7 +690,7 @@ static void exporthtml_fmt_attribs(
 	GList *list;
 
 	if( listAttr == NULL ) {
-		fprintf( stream, HTML_SPACE );
+		fprintf( stream, SC_HTML_SPACE );
 		return;
 	}
 
@@ -848,7 +848,7 @@ static gboolean exporthtml_fmt_person(
 				fprintf( stream, "%s", buf );
 			}
 			else {
-				fprintf( stream, "%s", HTML_SPACE );
+				fprintf( stream, "%s", SC_HTML_SPACE );
 			}
 			fprintf( stream, "</td>\n" );
 

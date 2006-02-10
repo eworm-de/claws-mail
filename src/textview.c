@@ -829,14 +829,14 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 static void textview_show_html(TextView *textview, FILE *fp,
 			       CodeConverter *conv)
 {
-	HTMLParser *parser;
+	SC_HTMLParser *parser;
 	gchar *str;
 
-	parser = html_parser_new(fp, conv);
+	parser = sc_html_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
 
-	while ((str = html_parse(parser)) != NULL) {
-	        if (parser->state == HTML_HREF) {
+	while ((str = sc_html_parse(parser)) != NULL) {
+	        if (parser->state == SC_HTML_HREF) {
 		        /* first time : get and copy the URL */
 		        if (parser->href == NULL) {
 				/* ALF - the sylpheed html parser returns an empty string,
@@ -855,7 +855,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 		        textview_write_line(textview, str, NULL);
 	}
 	textview_write_line(textview, "\n", NULL);
-	html_parser_destroy(parser);
+	sc_html_parser_destroy(parser);
 }
 
 static void textview_show_ertf(TextView *textview, FILE *fp,
