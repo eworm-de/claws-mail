@@ -5250,6 +5250,12 @@ static gboolean summary_drag_motion_cb(GtkWidget      *widget,
 		return FALSE;
 	} else if (gtk_drag_get_source_widget(context) ==
 		mainwindow_get_mainwindow()->folderview->ctree) {
+		/* no folders */
+		gdk_drag_status(context, 0, time);
+		return FALSE;
+	} else if (gtk_drag_get_source_widget(context) ==
+		summaryview->ctree) {
+		/* not from same folder */
 		gdk_drag_status(context, 0, time);
 		return FALSE;
 	} else {
