@@ -362,7 +362,7 @@ void prefs_themes_init(void)
 	path[1] = _("Themes");
 	path[2] = NULL;
 
-	debug_print("Creating prefereces for themes...\n");
+	debug_print("Creating preferences for themes...\n");
 	
 	tdata = g_new0(ThemesData, 1);
 	prefs_themes_data = tdata;
@@ -407,7 +407,7 @@ void prefs_themes_done(void)
 {
 	ThemesData *tdata = prefs_themes_data;
 
-	debug_print("Finished prefereces for themes.\n");
+	debug_print("Finished preferences for themes.\n");
 	
 	stock_pixmap_themes_list_free(tdata->themes);
 	prefs_themes_free_names(tdata);	

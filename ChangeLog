@@ -1,3 +1,8 @@
+2006-02-12 [wwp]	2.0.0cvs44
+
+	* src/prefs_themes.c
+		fix typos in debug messages.
+
 2006-02-11 [colin]	2.0.0cvs43
 
 	* src/summaryview.c
