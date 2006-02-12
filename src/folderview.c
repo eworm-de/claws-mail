@@ -660,6 +660,9 @@ void folderview_set(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	MainWindow *mainwin = folderview->mainwin;
 
+	if (!mainwin)
+		return;
+
 	debug_print("Setting folder info...\n");
 	STATUSBAR_PUSH(mainwin, _("Setting folder info..."));
 

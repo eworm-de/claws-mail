@@ -1,3 +1,10 @@
+2006-02-12 [colin]	2.0.0cvs45
+
+	* src/folderview.c
+	* src/main.c
+	* src/mainwindow.c
+		Fix "stuff" when quitting
+
 2006-02-12 [wwp]	2.0.0cvs44
 
 	* src/prefs_themes.c

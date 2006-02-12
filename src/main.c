@@ -623,7 +623,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	lock_socket_remove();
 
-	main_window_destroy(mainwin);
+	main_window_destroy_all();
 	
 	plugin_unload_all("GTK2");
 

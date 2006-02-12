@@ -2359,12 +2359,17 @@ void main_window_destroy_all(void)
 		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
 		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->item_list);
 
+		mainwin->folderview->mainwin = NULL;
+		mainwin->summaryview->mainwin = NULL;
+		mainwin->messageview->mainwin = NULL;
+
 		g_free(mainwin->toolbar);
 		g_free(mainwin);
 		
 		mainwin_list = g_list_remove(mainwin_list, mainwin);
 	}
 	g_list_free(mainwin_list);
+	mainwin_list = NULL;
 }
 
 #if 0
