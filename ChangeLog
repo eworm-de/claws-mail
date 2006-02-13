@@ -1,3 +1,8 @@
+2006-02-13 [cleroy]	2.0.0cvs47
+
+	* src/mainwindow.c
+		Fix exit crash
+
 2006-02-13 [wwp]	2.0.0cvs46
 
 	* src/plugins/pgpcore/prefs_gpg.c

@@ -1230,3 +1230,4 @@
 ( cvs diff -u -r 1.3.2.38 -r 1.3.2.39 src/prefs_themes.c;  ) > 2.0.0cvs44.patchset
 ( cvs diff -u -r 1.207.2.88 -r 1.207.2.89 src/folderview.c;  cvs diff -u -r 1.115.2.74 -r 1.115.2.75 src/main.c;  cvs diff -u -r 1.274.2.95 -r 1.274.2.96 src/mainwindow.c;  ) > 2.0.0cvs45.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.0.0cvs46.patchset
+( cvs diff -u -r 1.274.2.96 -r 1.274.2.97 src/mainwindow.c;  ) > 2.0.0cvs47.patchset

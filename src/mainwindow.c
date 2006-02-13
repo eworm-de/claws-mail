@@ -1617,7 +1617,7 @@ void main_window_get_size(MainWindow *mainwin)
 {
 	GtkAllocation *allocation;
 
-	if (mainwin->messageview == NULL) {
+	if (mainwin_list == NULL || mainwin->messageview == NULL) {
 		debug_print("called after messageview "
 			    "has been deallocated!\n");
 		return;
