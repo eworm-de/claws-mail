@@ -174,8 +174,8 @@ gint mkstemp_name(const gchar *template, gchar **name_used)
 	int tmpfd;
 
 	*name_used = g_strdup_printf("%s.%ld",_mktemp(template),count++);
-	tmpfd = open (*name_used, (O_CREAT | O_RDWR | O_BINARY
-                                    | S_IREAD | S_IWRITE));
+	tmpfd = open (*name_used, (O_CREAT | O_RDWR | O_BINARY),
+                                    (S_IRUSR | S_IWUSR));
 
 	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
 	if (tmpfd<0) {

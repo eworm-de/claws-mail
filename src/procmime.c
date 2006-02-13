@@ -301,6 +301,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	outfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	if (!outfp) {
 		perror("tmpfile");
+		fclose(infp);
 		return FALSE;
 	}
 	tmp_file = TRUE;
@@ -327,6 +328,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			if (!tmpfp) {
 				perror("tmpfile");
 				if (tmp_file) fclose(outfp);
+				fclose(infp);
 				return FALSE;
 			}
 		}

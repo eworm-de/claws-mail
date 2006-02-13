@@ -581,10 +581,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			gchar *filename;
 			RemoteURI *uri;
 			gchar *uri_str;
-			FILE *fp;
-
-			fp = g_fopen(mimeinfo->data.filename, "rb");
-			fseek(fp, mimeinfo->offset, SEEK_SET);
 
 			filename = procmime_get_tmp_file_name(mimeinfo);
 			if (procmime_get_part(filename, mimeinfo) < 0) {

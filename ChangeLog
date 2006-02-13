@@ -1,3 +1,13 @@
+2006-02-13 [colin]	2.0.0cvs48
+
+	* src/procmime.c
+		Add missing fclose()s on error
+	* src/textview.c
+		Remove unused code
+	* src/common/utils.c
+		Fix temp files not being deleted on windows
+	Patches by Thomas Gilgin
+
 2006-02-13 [cleroy]	2.0.0cvs47
 
 	* src/mainwindow.c
