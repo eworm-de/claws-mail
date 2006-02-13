@@ -215,18 +215,15 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	PrefsAccount *account = (PrefsAccount *) data;
 	GPGAccountConfig *config;
 
-	/*** BEGIN GLADE CODE ***/
 	GtkWidget *vbox;
 	GtkWidget *frame1;
 	GtkWidget *table1;
+	GtkWidget *table2;
 	GSList *key_group = NULL;
 	GtkWidget *key_default;
 	GtkWidget *key_by_from;
 	GtkWidget *key_custom;
-	GtkWidget *label13;
-	GtkWidget *label14;
-	GtkWidget *label15;
-	GtkWidget *label16;
+	GtkWidget *label1;
 	GtkWidget *keyid;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -244,61 +241,42 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table1), 4);
 
-	key_default = gtk_radio_button_new_with_label(key_group, "");
+	key_default = gtk_radio_button_new_with_label(key_group,
+			_("Use default GnuPG key"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_default));
 	gtk_widget_show(key_default);
-	gtk_table_attach(GTK_TABLE(table1), key_default, 0, 1, 0, 1,
+	gtk_table_attach(GTK_TABLE(table1), key_default, 0, 3, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	key_by_from = gtk_radio_button_new_with_label(key_group, "");
+	key_by_from = gtk_radio_button_new_with_label(key_group,
+		_("Select key by your email address"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_by_from));
 	gtk_widget_show(key_by_from);
-	gtk_table_attach(GTK_TABLE(table1), key_by_from, 0, 1, 1, 2,
+	gtk_table_attach(GTK_TABLE(table1), key_by_from, 0, 3, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	key_custom = gtk_radio_button_new_with_label(key_group, "");
+	key_custom = gtk_radio_button_new_with_label(key_group,
+		_("Specify key manually"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_custom));
 	gtk_widget_show(key_custom);
-	gtk_table_attach(GTK_TABLE(table1), key_custom, 0, 1, 2, 3,
+	gtk_table_attach(GTK_TABLE(table1), key_custom, 0, 3, 2, 3,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	label13 = gtk_label_new(_("Use default GnuPG key"));
-	gtk_widget_show(label13);
-	gtk_table_attach(GTK_TABLE(table1), label13, 1, 3, 0, 1,
+	label1 = gtk_label_new(_("User or key ID:"));
+	gtk_widget_show(label1);
+	gtk_table_attach(GTK_TABLE(table1), label1, 0, 2, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label13), 0, 0.5);
-
-	label14 = gtk_label_new(_("Select key by your email address"));
-	gtk_widget_show(label14);
-	gtk_table_attach(GTK_TABLE(table1), label14, 1, 3, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label14), 0, 0.5);
-
-	label15 = gtk_label_new(_("Specify key manually"));
-	gtk_widget_show(label15);
-	gtk_table_attach(GTK_TABLE(table1), label15, 1, 3, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label15), 0, 0.5);
-
-	label16 = gtk_label_new(_("User or key ID:"));
-	gtk_widget_show(label16);
-	gtk_table_attach(GTK_TABLE(table1), label16, 1, 2, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label16), GTK_JUSTIFY_LEFT);
+	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
 
 	keyid = gtk_entry_new();
 	gtk_widget_show(keyid);
 	gtk_table_attach(GTK_TABLE(table1), keyid, 2, 3, 3, 4,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	/*** END GLADE CODE ***/
 
 	config = prefs_gpg_account_get_config(account);
 	switch (config->sign_key) {
