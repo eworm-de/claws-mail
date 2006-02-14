@@ -1,3 +1,10 @@
+2006-02-14 [colin]	2.0.0cvs49
+
+	* src/pixmaps/address_book.xpm
+	* src/pixmaps/preferences.xpm
+	* src/pixmaps/properties.xpm
+		Fix pixmap size - patch by Fabien Vantard
+
 2006-02-13 [colin]	2.0.0cvs48
 
 	* src/procmime.c
