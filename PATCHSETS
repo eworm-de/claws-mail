@@ -1236,3 +1236,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/advanced.xml;  ) > 2.0.0cvs50.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.105.2.49 -r 1.105.2.50 src/prefs_account.c;  ) > 2.0.0cvs51.patchset
 ( cvs diff -u -r 1.15.2.22 -r 1.15.2.23 src/summary_search.c;  ) > 2.0.0cvs52.patchset
+( cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/prefs_gtk.h;  ) > 2.0.0cvs53.patchset
