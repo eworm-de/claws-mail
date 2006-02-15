@@ -1,3 +1,9 @@
+2006-02-15 [wwp]	2.0.0cvs54
+
+	* src/prefs_gtk.c
+		yet another one file was missing (fix for some widgets' sensitivity).
+		Thanks Colin!
+
 2006-02-15 [wwp]	2.0.0cvs53
 
 	* src/prefs_gtk.h

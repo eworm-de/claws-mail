@@ -537,6 +537,14 @@ void prefs_button_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
 	gtk_widget_set_sensitive(widget, is_active);
 }
 
+void prefs_button_toggled_reverse(GtkToggleButton *toggle_btn, GtkWidget *widget)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active(toggle_btn);
+	gtk_widget_set_sensitive(widget, !is_active);
+}
+
 void prefs_set_dialog(PrefParam *param)
 {
 	gint i;
