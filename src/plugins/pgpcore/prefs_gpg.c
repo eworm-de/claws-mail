@@ -192,6 +192,7 @@ struct GPGAccountPage
 	GtkWidget *key_by_from;
 	GtkWidget *key_custom;
 	GtkWidget *keyid;
+	GtkWidget *keyid_label;
 
 	PrefsAccount *account;
 };
@@ -202,6 +203,7 @@ void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 	gboolean active;
 
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom));
+	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid_label), active);
 	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid), active);
 	if (!active)
 		gtk_editable_delete_text(GTK_EDITABLE(page->keyid), 0, -1);
@@ -223,7 +225,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	GtkWidget *key_default;
 	GtkWidget *key_by_from;
 	GtkWidget *key_custom;
-	GtkWidget *label1;
+	GtkWidget *keyid_label;
 	GtkWidget *keyid;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -265,12 +267,12 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	label1 = gtk_label_new(_("User or key ID:"));
-	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table1), label1, 0, 2, 3, 4,
+	keyid_label = gtk_label_new(_("User or key ID:"));
+	gtk_widget_show(keyid_label);
+	gtk_table_attach(GTK_TABLE(table1), keyid_label, 0, 2, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
+	gtk_label_set_justify(GTK_LABEL(keyid_label), GTK_JUSTIFY_LEFT);
 
 	keyid = gtk_entry_new();
 	gtk_widget_show(keyid);
@@ -282,14 +284,17 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	switch (config->sign_key) {
 	case SIGN_KEY_DEFAULT:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_default), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid_label), FALSE);
 		gtk_widget_set_sensitive(GTK_WIDGET(keyid), FALSE);
 		break;
 	case SIGN_KEY_BY_FROM:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_by_from), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid_label), FALSE);
 		gtk_widget_set_sensitive(GTK_WIDGET(keyid), FALSE);
 		break;
 	case SIGN_KEY_CUSTOM:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_custom), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid_label), TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(keyid), TRUE);
 		break;
 	}
@@ -303,6 +308,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	page->key_by_from = key_by_from;
 	page->key_custom = key_custom;
 	page->keyid = keyid;
+	page->keyid_label = keyid_label;
 
 	page->page.widget = vbox;
 	page->account = account;

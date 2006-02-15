@@ -140,6 +140,8 @@ static struct Send {
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_chkbtn;
 	GtkWidget *pop_bfr_smtp_tm_entry;
+	GtkWidget *pop_auth_timeout_lbl;
+	GtkWidget *pop_auth_minutes_lbl;
 } p_send;
 
 static struct Compose {
@@ -1665,6 +1667,8 @@ static void prefs_account_send_create(void)
 	GtkWidget *vbox_spc;
 	GtkWidget *pop_bfr_smtp_chkbtn;
 	GtkWidget *pop_bfr_smtp_tm_entry;
+	GtkWidget *pop_auth_timeout_lbl;
+	GtkWidget *pop_auth_minutes_lbl;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1808,18 +1812,18 @@ static void prefs_account_send_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
-	label = gtk_label_new(_("POP authentication timeout: "));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	pop_auth_timeout_lbl = gtk_label_new(_("POP authentication timeout: "));
+	gtk_widget_show (pop_auth_timeout_lbl);
+	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_timeout_lbl, FALSE, FALSE, 0);
 
 	pop_bfr_smtp_tm_entry = gtk_entry_new ();
 	gtk_widget_show (pop_bfr_smtp_tm_entry);
 	gtk_widget_set_size_request (pop_bfr_smtp_tm_entry, 30, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_bfr_smtp_tm_entry, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("minutes"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	pop_auth_minutes_lbl = gtk_label_new(_("minutes"));
+	gtk_widget_show (pop_auth_minutes_lbl);
+	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_minutes_lbl, FALSE, FALSE, 0);
 
 
 	
@@ -1833,6 +1837,8 @@ static void prefs_account_send_create(void)
 	p_send.smtp_pass_entry        = smtp_pass_entry;
 	p_send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
 	p_send.pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
+	p_send.pop_auth_timeout_lbl   = pop_auth_timeout_lbl;
+	p_send.pop_auth_minutes_lbl   = pop_auth_minutes_lbl;
 }
 
 static void prefs_account_compose_create(void)
@@ -2548,6 +2554,10 @@ static gint prefs_account_apply(void)
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+	gtk_widget_set_sensitive(p_send.pop_auth_timeout_lbl, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+	gtk_widget_set_sensitive(p_send.pop_auth_minutes_lbl, 
 				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
 }
 
