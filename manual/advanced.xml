@@ -42,7 +42,22 @@
     <para>
     Templates are used in composition windows, and act as a model for emails. Templates can be filled with static text and dynamic parts, such as the original sender's name ("Dear %N, ..."), the date, etc. When applying a template, the dynamic fields will be replaced with the relevant values. You can configure templates via the Tools menu.
     </para>
-  </section>
+    <para>
+    When applying a template, you will be asked to <quote>Insert</quote> or <quote>Replace</quote>, the difference between replacing and inserting is only concerned with the message body. <quote>Replace</quote> will replace the current composition window message body with the body defined in the template, clearing it if the template body is empty. <quote>Insert</quote> will insert the template's body, if set, at the current cursor position.
+    </para>
+    <para>
+    Whether you choose to Insert or Replace, any To, Cc or Bcc field that is defined in the template will be appended to the compose window's recipients list. If it is defined, the template's Subject will always replace the compose window's Subject.
+    </para>
+    <para>
+    Symbols can be used in all parts of the templates and will be substituted with their respective dynamic value if possible, otherwise no value will be used. This often makes more sense if you apply a template when a replying or forwarding. There is no restriction on which symbols can be used in template parts, even if inserting the body (%M or %Q) may make no sense in common situations.
+    </para>
+    <para>
+    When applying a template, the body is processed first, then the To, Cc, Bcc and Subject fields follow.
+    </para>
+    <para>
+	    Further information and examples of usage can be found in the user-contributed FAQ on the Sylpheed-Claws website <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+    </para>
+   </section>
   <section id="adv_processing">
     <title>Processing</title>
     <para>
