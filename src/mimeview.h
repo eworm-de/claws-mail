@@ -116,11 +116,12 @@ struct _MimeViewerFactory
 struct _MimeViewer
 {
 	MimeViewerFactory *factory;
-    
+	
 	GtkWidget 	*(*get_widget)		(MimeViewer *);
 	void 	 	(*show_mimepart)	(MimeViewer *, const gchar *infile, MimeInfo *);
 	void		(*clear_viewer)		(MimeViewer *);
 	void		(*destroy_viewer)	(MimeViewer *);
+	MimeView	*mimeview;
 };
 
 #ifdef __cplusplus

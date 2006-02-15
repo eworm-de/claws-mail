@@ -602,6 +602,7 @@ gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 		mimeview->mimeviewer = viewer;
 		mimeview_change_view_type(mimeview, MIMEVIEW_VIEWER);
 	}
+	viewer->mimeview = mimeview;
 	viewer->show_mimepart(viewer, mimeview->file, partinfo);
 
 	return TRUE;

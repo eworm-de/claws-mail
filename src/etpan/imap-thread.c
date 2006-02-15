@@ -703,9 +703,9 @@ static void starttls_run(struct etpan_thread_op * op)
 			result->error = MAILIMAP_ERROR_STREAM;
 			return;
 		}
-		tls_low = mailstream_low_ssl_open(fd);
+		tls_low = mailstream_low_tls_open(fd);
 		if (tls_low == NULL) {
-			debug_print("imap starttls run - can't ssl_open\n");
+			debug_print("imap starttls run - can't tls_open\n");
 			result->error = MAILIMAP_ERROR_STREAM;
 			return;
 		}

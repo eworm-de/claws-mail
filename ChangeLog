@@ -1,3 +1,17 @@
+2006-02-15 [colin]	2.0.0cvs56
+
+	* src/mimeview.c
+	* src/mimeview.h
+		Let MimeViewers know which MimeView they
+		depend of.
+	* src/summaryview.c
+		Swap From/To columns in Sent/Queue/Drafts
+		folders
+	* src/etpan/imap-thread.c
+		Use mailstream_low_tls_open() for STARTTLS
+		instead of mailstream_low_ssl_open()
+		** REQUIRES libetpan 0.42cvs3 **
+
 2006-02-15 [wwp]	2.0.0cvs55
 
 	* src/compose.c

@@ -177,7 +177,7 @@ static void summary_set_ctree_from_list	(SummaryView		*summaryview,
 static void summary_set_header		(SummaryView		*summaryview,
 					 gchar			*text[],
 					 MsgInfo		*msginfo,
-					 gboolean		*free_from_to);
+					 gboolean		*free_from);
 static void summary_display_msg		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_display_msg_full	(SummaryView		*summaryview,
@@ -816,6 +816,66 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 ( (m->msgnum == displayed_msgnum) \
   && (!g_ascii_strcasecmp(m->folder->name,item->name)) )
 
+static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
+{
+	gboolean show_from = FALSE, show_to = FALSE;
+	gboolean showing_from = FALSE, showing_to = FALSE;
+	gint from_pos = 0, to_pos = 0;
+	SummaryColumnState *col_state = summaryview->col_state;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	
+	if (!item)
+		return;
+	if (folder_has_parent_of_type(item, F_OUTBOX)
+	||  folder_has_parent_of_type(item, F_DRAFT)
+	||  folder_has_parent_of_type(item, F_QUEUE))
+		show_to = TRUE;
+	else
+		show_from = TRUE;
+	
+	from_pos = summaryview->col_pos[S_COL_FROM];
+	to_pos = summaryview->col_pos[S_COL_TO];
+	showing_from = col_state[from_pos].visible;
+	showing_to = col_state[to_pos].visible;
+	
+	if (showing_from && showing_to) {
+		debug_print("showing both\n");
+		return;
+	}
+
+	if (!showing_from && !showing_to) {
+		debug_print("showing none\n");
+		return;
+	}
+
+	debug_print("showing %s %s, must show %s %s\n", 
+		showing_from?"From":"",
+		showing_to?"To":"",
+		show_from?"From":"",
+		show_to?"To":"");
+
+	if (showing_from == show_from && showing_to == show_to)
+		return;
+	/* else we'll switch both */
+
+	debug_print("switching columns\n");
+	col_state[from_pos].type = S_COL_TO;
+	col_state[from_pos].visible = show_to;
+
+	col_state[to_pos].type = S_COL_FROM;
+	col_state[to_pos].visible = show_from;
+
+	summaryview->col_pos[S_COL_TO] = from_pos;
+	summaryview->col_pos[S_COL_FROM] = to_pos;
+
+	gtk_clist_set_column_visibility
+		(GTK_CLIST(ctree), from_pos, col_state[from_pos].visible);
+	gtk_clist_set_column_visibility
+		(GTK_CLIST(ctree), to_pos, col_state[to_pos].visible);
+
+	summary_set_column_titles(summaryview);
+}
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -833,6 +893,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (!summaryview->mainwin)
 		return FALSE;
+
+	summary_switch_from_to(summaryview, item);
 
 	inc_lock();
 	summary_lock(summaryview);
@@ -2244,9 +2306,9 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	gint *col_pos = summaryview->col_pos;
 	const gchar *msgid = msginfo->msgid;
 	GHashTable *msgid_table = summaryview->msgid_table;
-	gboolean free_from_to = FALSE;
+	gboolean free_from = FALSE;
 	
-	summary_set_header(summaryview, text, msginfo, &free_from_to);
+	summary_set_header(summaryview, text, msginfo, &free_from);
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, NULL, NULL, FALSE,
@@ -2263,11 +2325,9 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	SET_TEXT(S_COL_TO);
 	/* SET_TEXT(S_COL_SUBJECT);  already set by node info */
 
-	if (free_from_to) {
+	if (free_from) {
 		g_free(text[col_pos[S_COL_FROM]]);
-		g_free(text[col_pos[S_COL_TO]]);
 		text[col_pos[S_COL_FROM]] = NULL;
-		text[col_pos[S_COL_TO]] = NULL;
 	}
 
 #undef SET_TEXT
@@ -2327,24 +2387,22 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-		gboolean free_from_to = FALSE;
+		gboolean free_from = FALSE;
 		gint *col_pos = summaryview->col_pos;
 
 		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
-			summary_set_header(summaryview, text, msginfo, &free_from_to);
+			summary_set_header(summaryview, text, msginfo, &free_from);
 
 			node = gtk_sctree_insert_node
 				(ctree, NULL, node, text, 2,
 				 NULL, NULL, NULL, NULL,
 				 FALSE, FALSE);
-			if (free_from_to) {
+			if (free_from) {
 				g_free(text[col_pos[S_COL_FROM]]);
-				g_free(text[col_pos[S_COL_TO]]);
 				text[col_pos[S_COL_FROM]] = NULL;
-				text[col_pos[S_COL_TO]] = NULL;
 			}
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
@@ -2427,7 +2485,7 @@ static gchar *summary_complete_address(const gchar *addr)
 }
 
 static void summary_set_header(SummaryView *summaryview, gchar *text[],
-			       MsgInfo *msginfo, gboolean *free_from_to)
+			       MsgInfo *msginfo, gboolean *free_from)
 {
 	static gchar date_modified[80];
 	static gchar col_score[11];
@@ -2458,7 +2516,8 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
-	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
+	if (prefs_common.swap_from && msginfo->from && msginfo->to
+	&&  !summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible) {
 		gchar *addr = NULL;
 		
 		addr = g_strdup(msginfo->from);
@@ -2489,17 +2548,15 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		     )
 		   );
 
+	text[col_pos[S_COL_TO]] = to_text;
 	if (!should_swap) {
 		text[col_pos[S_COL_FROM]] = from_text;
-		text[col_pos[S_COL_TO]] = to_text;
-		*free_from_to = FALSE;
+		*free_from = FALSE;
 	} else {
 		gchar *tmp = NULL;
 		tmp = g_strconcat("-->", to_text, NULL);
 		text[col_pos[S_COL_FROM]] = tmp;
-		tmp = g_strconcat("<--", from_text, NULL);
-		text[col_pos[S_COL_TO]] = tmp;
-		*free_from_to = TRUE;
+		*free_from = TRUE;
 	}
 	
 	if (summaryview->simplify_subject_preg != NULL)
@@ -5131,12 +5188,18 @@ static void summary_date_clicked(GtkWidget *button, SummaryView *summaryview)
 
 static void summary_from_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort_by_column_click(summaryview, SORT_BY_FROM);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_FROM]].visible)
+		summary_sort_by_column_click(summaryview, SORT_BY_FROM);
+	else
+		summary_sort_by_column_click(summaryview, SORT_BY_TO);
 }
 
 static void summary_to_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort_by_column_click(summaryview, SORT_BY_TO);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
+		summary_sort_by_column_click(summaryview, SORT_BY_TO);
+	else
+		summary_sort_by_column_click(summaryview, SORT_BY_FROM);
 }
 
 static void summary_subject_clicked(GtkWidget *button,
