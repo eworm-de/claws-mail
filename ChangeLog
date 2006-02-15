@@ -1,3 +1,9 @@
+2006-02-15 [wwp]	2.0.0cvs52
+
+	* src/summary_search.c
+		implemented advanced summary search options (added the ability
+		to use matcher conditions in an advanced search mode).
+
 2006-02-15 [wwp]	2.0.0cvs51
 
 	* src/plugins/pgpcore/prefs_gpg.c
