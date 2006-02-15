@@ -23,7 +23,9 @@
 #include <glib.h>
 
 #include "messageview.h"
+#include "compose.h"
 
 void message_search	(MessageView	*messageview);
+void message_search_compose	(Compose	*compose);
 
 #endif /* __MESSAGE_SEARCH_H__ */

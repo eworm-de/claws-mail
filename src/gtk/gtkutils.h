@@ -160,6 +160,12 @@ gboolean gtkut_text_buffer_find_backward(GtkTextBuffer		*buffer,
 					 GtkTextIter		*match_pos);
 
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
+void gtkut_text_view_set_position		(GtkTextView *text, gint pos);
+gboolean gtkut_text_view_search_string	(GtkTextView *text, const gchar *str,
+					gboolean case_sens);
+gboolean gtkut_text_view_search_string_backward	(GtkTextView *text, const gchar *str,
+					gboolean case_sens);
+
 GtkWidget *label_window_create(const gchar *str);
 void gtkut_window_popup			(GtkWidget	*window);
 
@@ -195,4 +201,5 @@ gboolean get_tag_range(GtkTextIter *iter,
 				       GtkTextIter *end_iter);
 
 GtkWidget *face_get_from_header(const gchar *o_face);
+
 #endif /* __GTKUTILS_H__ */

@@ -119,6 +119,8 @@
 #include "foldersel.h"
 #include "toolbar.h"
 #include "inc.h"
+#include "message_search.h"
+
 enum
 {
 	COL_MIMETYPE = 0,
@@ -408,6 +410,9 @@ static void compose_changed_cb		(GtkTextBuffer	*textbuf,
 static void compose_wrap_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void compose_find_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void compose_toggle_autowrap_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -542,12 +547,12 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
 	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/A_dvanced/Move a character backward"),
-					"<control>B",
+					"<shift><control>B",
 					compose_advanced_action_cb,
 					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move a character forward"),
-					"<control>F",
+					"<shift><control>F",
 					compose_advanced_action_cb,
 					COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER,
 					NULL},
@@ -617,6 +622,9 @@ static GtkItemFactoryEntry compose_entries[] =
 					COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END,
 					NULL},
 	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/_Find"),
+					"<control>F", compose_find_cb, 0, NULL},
+	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Wrap current paragraph"),
 					"<control>L", compose_wrap_cb, 0, NULL},
 	{N_("/_Edit/Wrap all long _lines"),
@@ -7931,6 +7939,13 @@ static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)
 		compose_beautify_paragraph(compose, NULL, TRUE);
 }
 
+static void compose_find_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	message_search_compose(compose);
+}
+
 static void compose_toggle_autowrap_cb(gpointer data, guint action,
 				       GtkWidget *widget)
 {
@@ -8429,6 +8444,29 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 	}
 
 	g_free(body);
+}
+
+void compose_set_position(Compose *compose, gint pos)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+
+	gtkut_text_view_set_position(text, pos);
+}
+
+gboolean compose_search_string(Compose *compose,
+				const gchar *str, gboolean case_sens)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+
+	return gtkut_text_view_search_string(text, str, case_sens);
+}
+
+gboolean compose_search_string_backward(Compose *compose,
+				const gchar *str, gboolean case_sens)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+
+	return gtkut_text_view_search_string_backward(text, str, case_sens);
 }
 
 /*

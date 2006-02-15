@@ -590,6 +590,86 @@ gchar *gtkut_text_view_get_selection(GtkTextView *textview)
 		return NULL;
 }
 
+
+void gtkut_text_view_set_position(GtkTextView *text, gint pos)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
+
+	g_return_val_if_fail(text != NULL, FALSE);
+
+	buffer = gtk_text_view_get_buffer(text);
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
+	gtk_text_buffer_place_cursor(buffer, &iter);
+	gtk_text_view_scroll_to_iter(text, &iter, 0.0, FALSE, 0.0, 0.0);
+}
+
+gboolean gtkut_text_view_search_string(GtkTextView *text, const gchar *str,
+					gboolean case_sens)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter iter, match_pos;
+	GtkTextMark *mark;
+	gint len;
+
+	g_return_val_if_fail(text != NULL, FALSE);
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	buffer = gtk_text_view_get_buffer(text);
+
+	len = g_utf8_strlen(str, -1);
+	g_return_val_if_fail(len >= 0, FALSE);
+
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+
+	if (gtkut_text_buffer_find(buffer, &iter, str, case_sens,
+				   &match_pos)) {
+		GtkTextIter end = match_pos;
+
+		gtk_text_iter_forward_chars(&end, len);
+		/* place "insert" at the last character */
+		gtk_text_buffer_select_range(buffer, &end, &match_pos);
+		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean gtkut_text_view_search_string_backward(GtkTextView *text, const gchar *str,
+					gboolean case_sens)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter iter, match_pos;
+	GtkTextMark *mark;
+	gint len;
+
+	g_return_val_if_fail(text != NULL, FALSE);
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	buffer = gtk_text_view_get_buffer(text);
+
+	len = g_utf8_strlen(str, -1);
+	g_return_val_if_fail(len >= 0, FALSE);
+
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+
+	if (gtkut_text_buffer_find_backward(buffer, &iter, str, case_sens,
+					    &match_pos)) {
+		GtkTextIter end = match_pos;
+
+		gtk_text_iter_forward_chars(&end, len);
+		gtk_text_buffer_select_range(buffer, &match_pos, &end);
+		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 void gtkut_window_popup(GtkWidget *window)
 {
 	gint x, y, sx, sy, new_x, new_y;

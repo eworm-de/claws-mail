@@ -36,6 +36,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "messageview.h"
 #include "codeconv.h"
 #include "template.h"
+#include "textview.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -298,5 +299,14 @@ void compose_reply_from_messageview	(MessageView 	*msgview,
 					 GSList 	*msginfo_list, 
 					 guint 		 action);
 void compose_action_cb			(void 		*data);
+
+void compose_set_position				(Compose	*compose,
+						 gint		 pos);
+gboolean compose_search_string			(Compose	*compose,
+						 const gchar	*str,
+						 gboolean	 case_sens);
+gboolean compose_search_string_backward	(Compose	*compose,
+						 const gchar	*str,
+						 gboolean	 case_sens);
 
 #endif /* __COMPOSE_H__ */

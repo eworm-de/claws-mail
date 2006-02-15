@@ -1232,12 +1232,8 @@ enum
 void textview_set_position(TextView *textview, gint pos)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
-	GtkTextIter iter;
 
-	gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
-	gtk_text_buffer_place_cursor(buffer, &iter);
-	gtk_text_view_scroll_to_iter(text, &iter, 0.0, FALSE, 0.0, 0.0);
+	gtkut_text_view_set_position(text, pos);
 }
 
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
@@ -1441,65 +1437,16 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkTextBuffer *buffer;
-	GtkTextIter iter, match_pos;
-	GtkTextMark *mark;
-	gint len;
 
-	g_return_val_if_fail(str != NULL, FALSE);
-
-	buffer = gtk_text_view_get_buffer(text);
-
-	len = g_utf8_strlen(str, -1);
-	g_return_val_if_fail(len >= 0, FALSE);
-
-	mark = gtk_text_buffer_get_insert(buffer);
-	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-
-	if (gtkut_text_buffer_find(buffer, &iter, str, case_sens,
-				   &match_pos)) {
-		GtkTextIter end = match_pos;
-
-		gtk_text_iter_forward_chars(&end, len);
-		/* place "insert" at the last character */
-		gtk_text_buffer_select_range(buffer, &end, &match_pos);
-		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
-		return TRUE;
-	}
-
-	return FALSE;
+	return gtkut_text_view_search_string(text, str, case_sens);
 }
 
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkTextBuffer *buffer;
-	GtkTextIter iter, match_pos;
-	GtkTextMark *mark;
-	gint len;
 
-	g_return_val_if_fail(str != NULL, FALSE);
-
-	buffer = gtk_text_view_get_buffer(text);
-
-	len = g_utf8_strlen(str, -1);
-	g_return_val_if_fail(len >= 0, FALSE);
-
-	mark = gtk_text_buffer_get_insert(buffer);
-	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-
-	if (gtkut_text_buffer_find_backward(buffer, &iter, str, case_sens,
-					    &match_pos)) {
-		GtkTextIter end = match_pos;
-
-		gtk_text_iter_forward_chars(&end, len);
-		gtk_text_buffer_select_range(buffer, &match_pos, &end);
-		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
-		return TRUE;
-	}
-
-	return FALSE;
+	return gtkut_text_view_search_string_backward(text, str, case_sens);
 }
 
 void textview_scroll_one_line(TextView *textview, gboolean up)

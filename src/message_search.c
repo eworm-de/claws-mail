@@ -44,6 +44,7 @@
 #include "main.h"
 #include "message_search.h"
 #include "messageview.h"
+#include "compose.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "manage_window.h"
@@ -58,6 +59,9 @@ static struct MessageSearchWindow {
 	GtkWidget *close_btn;
 
 	MessageView *messageview;
+
+	Compose *compose;
+	gboolean search_compose;
 } search_window;
 
 static void message_search_create	(void);
@@ -80,6 +84,22 @@ void message_search(MessageView *messageview)
 		gtk_widget_hide(search_window.window);
 
 	search_window.messageview = messageview;
+	search_window.search_compose = FALSE;
+
+	gtk_widget_grab_focus(search_window.next_btn);
+	gtk_widget_grab_focus(search_window.body_entry);
+	gtk_widget_show(search_window.window);
+}
+
+void message_search_compose(Compose *compose)
+{
+	if (!search_window.window)
+		message_search_create();
+	else
+		gtk_widget_hide(search_window.window);
+
+	search_window.compose = compose;
+	search_window.search_compose = TRUE;
 
 	gtk_widget_grab_focus(search_window.next_btn);
 	gtk_widget_grab_focus(search_window.body_entry);
@@ -172,6 +192,7 @@ static void message_search_create(void)
 static void message_search_execute(gboolean backward)
 {
 	MessageView *messageview = search_window.messageview;
+	Compose *compose = search_window.compose;
 	gboolean case_sens;
 	gboolean all_searched = FALSE;
 	const gchar *body_str;
@@ -187,13 +208,25 @@ static void message_search_execute(gboolean backward)
 		AlertValue val;
 
 		if (backward) {
-			if (messageview_search_string_backward
-				(messageview, body_str, case_sens) == TRUE)
-				break;
+			if (search_window.search_compose) {
+				if (compose_search_string_backward
+					(compose, body_str, case_sens) == TRUE)
+					break;
+			} else {
+				if (messageview_search_string_backward
+					(messageview, body_str, case_sens) == TRUE)
+					break;
+			}
 		} else {
-			if (messageview_search_string
-				(messageview, body_str, case_sens) == TRUE)
-				break;
+			if (search_window.search_compose) {
+				if (compose_search_string
+					(compose, body_str, case_sens) == TRUE)
+					break;
+			} else {
+				if (messageview_search_string
+					(messageview, body_str, case_sens) == TRUE)
+					break;
+			}
 		}
 
 		if (all_searched) {
@@ -218,8 +251,13 @@ static void message_search_execute(gboolean backward)
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);
-			messageview_set_position(messageview,
-						 backward ? -1 : 0);
+			if (search_window.search_compose) {
+				compose_set_position(compose,
+							 backward ? -1 : 0);
+			} else {
+				messageview_set_position(messageview,
+							 backward ? -1 : 0);
+			}
 		} else
 			break;
 	}
