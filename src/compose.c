@@ -5697,6 +5697,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 						  conv_get_locale_charset_str(),
 						  prefs_common.misspelled_col,
 						  prefs_common.check_while_typing,
+						  prefs_common.recheck_when_changing_dict,
 						  prefs_common.use_alternate,
 						  GTK_TEXT_VIEW(text),
 						  GTK_WINDOW(compose->window));

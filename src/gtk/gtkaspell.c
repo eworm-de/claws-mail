@@ -121,6 +121,7 @@ struct _GtkAspell
 	gint		 end_check_pos;
 	gboolean	 misspelled;
 	gboolean	 check_while_typing;
+	gboolean	 recheck_when_changing_dict;
 	gboolean	 use_alternate;
 
 	ContCheckFunc 	 continue_check; 
@@ -373,6 +374,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 			 const gchar *encoding,
 			 gint  misspelled_color,
 			 gboolean check_while_typing,
+			 gboolean recheck_when_changing_dict,
 			 gboolean use_alternate,
 			 GtkTextView *gtktext,
 			 GtkWindow *parent_win)
@@ -408,6 +410,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	gtkaspell->end_check_pos      = -1;
 	gtkaspell->misspelled	      = -1;
 	gtkaspell->check_while_typing = check_while_typing;
+	gtkaspell->recheck_when_changing_dict = recheck_when_changing_dict;
 	gtkaspell->continue_check     = NULL;
 	gtkaspell->replace_entry      = NULL;
 	gtkaspell->gtktext	      = gtktext;
@@ -2277,6 +2280,9 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 		return;
 
 	gtkaspell_change_dict(gtkaspell, fullname);
+	if (gtkaspell->recheck_when_changing_dict) {
+		gtkaspell_highlight_all(gtkaspell);
+	}
 }
 
 static void switch_to_alternate_cb(GtkWidget *w,

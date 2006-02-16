@@ -220,6 +220,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"check_while_typing", "TRUE", &prefs_common.check_while_typing, P_BOOL,
 	 NULL, NULL, NULL},
+	{"recheck_when_changing_dict", "TRUE", &prefs_common.recheck_when_changing_dict,
+	 P_BOOL, NULL, NULL, NULL},
 	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_COLOR,
 	 NULL, NULL, NULL},
 #endif

@@ -59,6 +59,7 @@ typedef struct _SpellingPage
 	GtkWidget *misspelled_btn;
 	GtkWidget *checkbtn_use_alternate;
 	GtkWidget *checkbtn_check_while_typing;
+	GtkWidget *checkbtn_recheck_when_changing_dict;
 
 	gint	   misspell_col;
 } SpellingPage;
@@ -72,6 +73,7 @@ static void prefs_spelling_enable(SpellingPage *spelling, gboolean enable)
 	gtk_widget_set_sensitive(spelling->misspelled_btn,      	enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_use_alternate,      enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_check_while_typing, enable);
+	gtk_widget_set_sensitive(spelling->checkbtn_recheck_when_changing_dict,	enable);
 }
 
 static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
@@ -134,10 +136,10 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 {
 	SpellingPage *prefs_spelling = (SpellingPage *) _page;
 
-	/* START GLADE CODE */
 	GtkWidget *table;
 	GtkWidget *checkbtn_enable_aspell;
 	GtkWidget *checkbtn_check_while_typing;
+	GtkWidget *checkbtn_recheck_when_changing_dict;
 	GtkWidget *checkbtn_use_alternate;
 	GtkWidget *label2;
 	GtkWidget *entry_aspell_path;
@@ -155,7 +157,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	tooltips = gtk_tooltips_new ();
 
-	table = gtk_table_new(8, 3, FALSE);
+	table = gtk_table_new(9, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -175,19 +177,26 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 			 3, 1, 2, (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
+	checkbtn_recheck_when_changing_dict = gtk_check_button_new_with_label(
+			_("Re-check message when changing dictionary"));
+	gtk_widget_show(checkbtn_recheck_when_changing_dict);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_recheck_when_changing_dict, 0,
+			 3, 2, 3, (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+
 	checkbtn_use_alternate =
 	    gtk_check_button_new_with_label(_
 					    ("Enable alternate dictionary"));
 	gtk_widget_show(checkbtn_use_alternate);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_use_alternate, 0, 3, 2,
-			 3, (GtkAttachOptions) (GTK_FILL),
+	gtk_table_attach(GTK_TABLE(table), checkbtn_use_alternate, 0, 3, 3,
+			 4, (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_tooltips_set_tip (tooltips, checkbtn_use_alternate, 
 			_("Faster switching with last used dictionary"), NULL);
 
 	label2 = gtk_label_new(_("Dictionaries path:"));
 	gtk_widget_show(label2);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 4, 5,
+	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 5, 6,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_RIGHT);
@@ -195,13 +204,19 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	entry_aspell_path = gtk_entry_new();
 	gtk_widget_show(entry_aspell_path);
-	gtk_table_attach(GTK_TABLE(table), entry_aspell_path, 1, 2, 4, 5,
+	gtk_table_attach(GTK_TABLE(table), entry_aspell_path, 1, 2, 5, 6,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+
+	btn_aspell_path = gtkut_get_browse_directory_btn(_("_Browse"));
+	gtk_widget_show(btn_aspell_path);
+	gtk_table_attach(GTK_TABLE(table), btn_aspell_path, 2, 3, 5, 6,
+			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
 	label3 = gtk_label_new(_("Default dictionary:"));
 	gtk_widget_show(label3);
-	gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 5, 6,
+	gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 6, 7,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_RIGHT);
@@ -209,7 +224,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	optmenu_dictionary = gtk_option_menu_new();
 	gtk_widget_show(optmenu_dictionary);
-	gtk_table_attach(GTK_TABLE(table), optmenu_dictionary, 1, 3, 5, 6,
+	gtk_table_attach(GTK_TABLE(table), optmenu_dictionary, 1, 3, 6, 7,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	optmenu_dictionary_menu = gtk_menu_new();
@@ -218,7 +233,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	label4 = gtk_label_new(_("Default suggestion mode:"));
 	gtk_widget_show(label4);
-	gtk_table_attach(GTK_TABLE(table), label4, 0, 1, 6, 7,
+	gtk_table_attach(GTK_TABLE(table), label4, 0, 1, 7, 8,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label4), GTK_JUSTIFY_RIGHT);
@@ -226,7 +241,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	optmenu_sugmode = gtk_option_menu_new();
 	gtk_widget_show(optmenu_sugmode);
-	gtk_table_attach(GTK_TABLE(table), optmenu_sugmode, 1, 3, 6, 7,
+	gtk_table_attach(GTK_TABLE(table), optmenu_sugmode, 1, 3, 7, 8,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	optmenu_sugmode_menu = gtk_menu_new();
@@ -235,40 +250,33 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	label5 = gtk_label_new(_("Misspelled word color:"));
 	gtk_widget_show(label5);
-	gtk_table_attach(GTK_TABLE(table), label5, 0, 1, 7, 8,
+	gtk_table_attach(GTK_TABLE(table), label5, 0, 1, 8, 9,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label5), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label5), 1, 0.5);
 
-	btn_aspell_path = gtkut_get_browse_directory_btn(_("_Browse"));
-	gtk_widget_show(btn_aspell_path);
-	gtk_table_attach(GTK_TABLE(table), btn_aspell_path, 2, 3, 4, 5,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox1);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 7, 8,
+	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 8, 9,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
 	misspelled_btn = gtk_button_new_with_label("");
 	gtk_widget_show(misspelled_btn);
-	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(misspelled_btn, 30, 20);
 	label5 = gtk_label_new(_("Use black to underline"));
 	gtkut_widget_set_small_font_size (label5);
 	gtk_widget_show(label5);
-	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE,
-			   4);
-	/* END GLADE CODE */
+	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE, 4);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_aspell),
 				     prefs_common.enable_aspell);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_check_while_typing),
 				     prefs_common.check_while_typing);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_recheck_when_changing_dict),
+				     prefs_common.recheck_when_changing_dict);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_alternate),
 				     prefs_common.use_alternate);
 	gtk_entry_set_text(GTK_ENTRY(entry_aspell_path), 
@@ -311,6 +319,8 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 		= checkbtn_use_alternate;
 	prefs_spelling->checkbtn_check_while_typing
 		= checkbtn_check_while_typing;
+	prefs_spelling->checkbtn_recheck_when_changing_dict
+		= checkbtn_recheck_when_changing_dict;
 	prefs_spelling->misspelled_btn
 		= misspelled_btn;
 
@@ -327,6 +337,8 @@ void prefs_spelling_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->checkbtn_enable_aspell));
 	prefs_common.check_while_typing =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->checkbtn_check_while_typing));
+	prefs_common.recheck_when_changing_dict =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->checkbtn_recheck_when_changing_dict));
 	prefs_common.use_alternate =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->checkbtn_use_alternate));
 
