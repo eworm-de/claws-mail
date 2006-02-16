@@ -40,8 +40,9 @@ void plugin_unload_all		(const gchar	 *type);
 void plugin_save_list		(void);
 
 GSList *plugin_get_list		(void);
+GSList *plugin_get_unloaded_list(void);
 const gchar *plugin_get_name	(Plugin		 *plugin);
 const gchar *plugin_get_desc	(Plugin		 *plugin);
 const gchar *plugin_get_version	(Plugin		 *plugin);
-
+const gchar *plugin_get_error	(Plugin		 *plugin);
 #endif

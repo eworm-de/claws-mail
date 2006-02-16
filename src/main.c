@@ -521,6 +521,12 @@ int main(int argc, char *argv[])
 
 	plugin_load_all("GTK2");
 	
+	if (plugin_get_unloaded_list() != NULL) {
+		alertpanel_warning(_("Some plugin(s) failed to load. "
+				     "Check the Plugins configuration "
+				     "for more information."));
+	}
+	
 	if (!folder_have_mailbox()) {
 		alertpanel_error(_("Sylpheed-Claws has detected a configured "
 				   "mailbox, but could not load it. It is "

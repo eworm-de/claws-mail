@@ -43,6 +43,7 @@ struct _Plugin
 	const gchar *(*type) (void);
 	const gchar *(*licence) (void);
 	GSList *rdeps;
+	gchar *error;
 };
 
 /**
@@ -50,6 +51,11 @@ struct _Plugin
  */
 GSList *plugins = NULL;
 GSList *plugin_types = NULL;
+
+/* 
+ * List of plugins unloaded for some fixable reason
+ */
+static GSList *unloaded_plugins = NULL;
 
 static gint list_find_by_string(gconstpointer data, gconstpointer str)
 {
@@ -87,6 +93,12 @@ void plugin_save_list(void)
 		g_free(block);
 
 		for (plugin_cur = plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
+			plugin = (Plugin *) plugin_cur->data;
+			
+			if (!strcmp(plugin->type(), type_cur->data))
+				fprintf(pfile->fp, "%s\n", plugin->filename);
+		}
+		for (plugin_cur = unloaded_plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
 			plugin = (Plugin *) plugin_cur->data;
 			
 			if (!strcmp(plugin->type(), type_cur->data))
@@ -192,6 +204,22 @@ static void plugin_unload_rdeps(Plugin *plugin)
 	g_slist_free(plugin->rdeps);
 	plugin->rdeps = NULL;
 }
+
+static void plugin_remove_from_unloaded_list (const gchar *filename)
+{
+	GSList *item = g_slist_find_custom(unloaded_plugins, 
+				(gpointer) filename, (GCompareFunc)list_find_by_plugin_filename);
+	Plugin *unloaded_plugin = item ? ((Plugin *)item->data):NULL;
+	if (unloaded_plugin != NULL) {
+		debug_print("removing %s from unloaded list\n", unloaded_plugin->filename);
+		unloaded_plugins = g_slist_remove(unloaded_plugins, unloaded_plugin);
+		g_module_close(unloaded_plugin->module);
+		g_free(unloaded_plugin->filename);
+		g_free(unloaded_plugin->error);
+		g_free(unloaded_plugin);
+	}
+}
+
 /**
  * Loads a plugin
  *
@@ -216,6 +244,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		*error = g_strdup(_("Plugin already loaded"));
 		return NULL;                
 	}                               
+	
+	plugin_remove_from_unloaded_list(filename);
 	
 	if (plugin_load_deps(filename, error) < 0)
 		return NULL;
@@ -260,18 +290,19 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
-	if ((ok = plugin_init(error)) < 0) {
-		g_module_close(plugin->module);
-		g_free(plugin);
-		return NULL;
-	}
-
 	plugin->name = plugin_name;
 	plugin->desc = plugin_desc;
 	plugin->version = plugin_version;
 	plugin->type = plugin_type;
 	plugin->licence = plugin_licence;
 	plugin->filename = g_strdup(filename);
+	plugin->error = NULL;
+	if ((ok = plugin_init(error)) < 0) {
+		if (*error)
+			plugin->error = g_strdup(*error);
+		unloaded_plugins = g_slist_append(unloaded_plugins, plugin);
+		return NULL;
+	}
 
 	plugins = g_slist_append(plugins, plugin);
 
@@ -286,6 +317,10 @@ void plugin_unload(Plugin *plugin)
 
 	plugin_unload_rdeps(plugin);
 
+	if (plugin->error) {
+		plugin_remove_from_unloaded_list(plugin->filename);
+		return;
+	}
 	if (g_module_symbol(plugin->module, "plugin_done", (gpointer) &plugin_done)) {
 		plugin_done();
 	}
@@ -351,13 +386,18 @@ void plugin_unload_all(const gchar *type)
 	cur = g_slist_find_custom(plugin_types, (gpointer) type, list_find_by_string);
 	if (cur) {
 		g_free(cur->data);
-		g_slist_remove(plugin_types, cur);
+		plugin_types = g_slist_remove(plugin_types, cur);
 	}
 }
 
 GSList *plugin_get_list(void)
 {
 	return g_slist_copy(plugins);
+}
+
+GSList *plugin_get_unloaded_list(void)
+{
+	return g_slist_copy(unloaded_plugins);
 }
 
 const gchar *plugin_get_name(Plugin *plugin)
@@ -373,4 +413,9 @@ const gchar *plugin_get_desc(Plugin *plugin)
 const gchar *plugin_get_version(Plugin *plugin)
 {
 	return plugin->version();
+}
+
+const gchar *plugin_get_error(Plugin *plugin)
+{
+	return plugin->error;
 }
