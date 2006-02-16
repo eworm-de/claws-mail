@@ -381,7 +381,7 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 		while (fgets(buffer, sizeof(buffer), file)) {
 			INSERT(buffer);
 		}
-		fclose(file);
+		pclose(file);
 	}
 }
 
