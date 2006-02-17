@@ -508,6 +508,8 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
 	{"render_html", "TRUE", &prefs_common.render_html, P_BOOL,
 	 NULL, NULL, NULL},
+	{"invoke_plugin_on_html", "FALSE", &prefs_common.invoke_plugin_on_html, P_BOOL,
+	 NULL, NULL, NULL},
 	{"line_space", "2", &prefs_common.line_space, P_INT,
 	 NULL, NULL, NULL},
 
