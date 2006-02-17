@@ -2525,7 +2525,8 @@ static gint imap_cmd_starttls(IMAPSession *session)
 {
 	int r;
 	
-	r = imap_threaded_starttls(session->folder);
+	r = imap_threaded_starttls(session->folder, 
+		SESSION(session)->server, SESSION(session)->port);
 	if (r != MAILIMAP_NO_ERROR) {
 		debug_print("starttls err %d\n", r);
 		return IMAP_ERROR;

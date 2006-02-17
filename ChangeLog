@@ -1,3 +1,12 @@
+2006-02-17 [colin]	2.0.0cvs61
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Check for IMAP certificates
+		** Requires libetpan-0.42-cvs4 
+		** http://claws.sylpheed.org/snapshots/libetpan-0.42cvs4.tar.gz
+
 2006-02-17 [cleroy]	2.0.0cvs60
 
 	* src/messageview.c

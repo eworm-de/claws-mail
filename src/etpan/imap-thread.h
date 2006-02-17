@@ -33,7 +33,7 @@ int imap_threaded_status(Folder * folder, const char * mb,
 		guint mask);
 
 int imap_threaded_noop(Folder * folder, unsigned int * p_exists);
-int imap_threaded_starttls(Folder * folder);
+int imap_threaded_starttls(Folder * folder, const gchar *host, int port);
 int imap_threaded_create(Folder * folder, const char * mb);
 int imap_threaded_rename(Folder * folder,
 			 const char * mb, const char * new_name);

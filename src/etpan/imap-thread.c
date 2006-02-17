@@ -19,6 +19,7 @@
 #include <log.h>
 #include "etpan-thread-manager.h"
 #include "utils.h"
+#include "ssl_certificate.h"
 
 #define DISABLE_LOG_DURING_LOGIN
 
@@ -284,6 +285,30 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	return result.error;
 }
 
+static int etpan_certificate_check(unsigned char *certificate, int len, void *data)
+{
+#ifdef USE_OPENSSL
+	struct connect_param *param = (struct connect_param *)data;
+	X509 *cert = NULL;
+
+	if (certificate == NULL || len < 0) {
+		g_warning("no cert presented.\n");
+		return 0;
+	}
+	cert = d2i_X509(NULL, &certificate, len);
+	if (cert == NULL) {
+		g_warning("can't get cert\n");
+		return 0;
+	} else if (ssl_certificate_check(cert, 
+		(gchar *)param->server, param->port) == TRUE) {
+		return 0;
+	} else {
+		return -1;
+	}
+#else
+	return 0;
+#endif
+}
 
 static void connect_ssl_run(struct etpan_thread_op * op)
 {
@@ -296,7 +321,6 @@ static void connect_ssl_run(struct etpan_thread_op * op)
 	
 	r = mailimap_ssl_connect(param->imap,
 				 param->server, param->port);
-	
 	result->error = r;
 }
 
@@ -307,7 +331,9 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	chashdatum key;
 	chashdatum value;
 	mailimap * imap;
-	
+	unsigned char *certificate;
+	int cert_len;
+
 	imap = mailimap_new(0, NULL);
 	
 	key.data = &folder;
@@ -322,6 +348,13 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	threaded_run(folder, &param, &result, connect_ssl_run);
 	
+	if (result.error >= 0) {
+		cert_len = mailstream_ssl_get_certificate(imap->imap_stream, &certificate);
+		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
+			return -1;
+		if (certificate) 
+			free(certificate); 
+	}
 	debug_print("connect %d\n", result.error);
 	
 	return result.error;
@@ -669,20 +702,16 @@ int imap_threaded_noop(Folder * folder, unsigned int * p_exists)
 }
 
 
-struct starttls_param {
-	mailimap * imap;
-};
-
 struct starttls_result {
 	int error;
 };
 
 static void starttls_run(struct etpan_thread_op * op)
 {
-	struct starttls_param * param;
+	struct connect_param * param;
 	struct starttls_result * result;
 	int r;
-	
+
 	param = op->param;
 	r = mailimap_starttls(param->imap);
 	
@@ -703,6 +732,7 @@ static void starttls_run(struct etpan_thread_op * op)
 			result->error = MAILIMAP_ERROR_STREAM;
 			return;
 		}
+
 		tls_low = mailstream_low_tls_open(fd);
 		if (tls_low == NULL) {
 			debug_print("imap starttls run - can't tls_open\n");
@@ -714,19 +744,30 @@ static void starttls_run(struct etpan_thread_op * op)
 	}
 }
 
-int imap_threaded_starttls(Folder * folder)
+int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 {
-	struct starttls_param param;
+	struct connect_param param;
 	struct starttls_result result;
+	int cert_len;
+	unsigned char *certificate;
 	
 	debug_print("imap starttls - begin\n");
 	
 	param.imap = get_imap(folder);
+	param.server = host;
+	param.port = port;
 	
 	threaded_run(folder, &param, &result, starttls_run);
 	
 	debug_print("imap starttls - end\n");
 	
+	if (result.error == 0) {
+		cert_len = mailstream_ssl_get_certificate(param.imap->imap_stream, &certificate);
+		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
+			result.error = MAILIMAP_ERROR_STREAM;
+		if (certificate) 
+			free(certificate); 
+	}	
 	return result.error;
 }
 
