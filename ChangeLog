@@ -1,3 +1,15 @@
+2006-02-19 [colin]	2.0.0cvs62
+
+	* src/compose.c
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		(Future) IMAP speed improvement on sending
+		Will require a libetpan update
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+		Make quicksearch clearable while running.
+
 2006-02-17 [colin]	2.0.0cvs61
 
 	* src/imap.c

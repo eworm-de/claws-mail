@@ -2026,6 +2026,7 @@ struct append_param {
 
 struct append_result {
 	int error;
+	int uid;
 };
 
 static void append_run(struct etpan_thread_op * op)
@@ -2036,7 +2037,7 @@ static void append_run(struct etpan_thread_op * op)
 	char * data;
 	size_t size;
 	struct stat stat_buf;
-	int fd;
+	int fd, uid = 0;
 	
 	param = op->param;
 	result = op->result;
@@ -2063,19 +2064,20 @@ static void append_run(struct etpan_thread_op * op)
 	
 	r = mailimap_append(param->imap, param->mailbox,
 			    param->flag_list, NULL,
-			    data, size);
+			    data, size/*, &uid */);
 	
 	munmap(data, size);
 	close(fd);
 	
 	result->error = r;
-	
-	debug_print("imap append run - end %i\n", r);
+	result->uid = uid;
+	debug_print("imap append run - end %i uid %d\n", r, uid);
 }
 
 int imap_threaded_append(Folder * folder, const char * mailbox,
 			 const char * filename,
-			 struct mailimap_flag_list * flag_list)
+			 struct mailimap_flag_list * flag_list,
+			 int *uid)
 {
 	struct append_param param;
 	struct append_result result;
@@ -2095,7 +2097,9 @@ int imap_threaded_append(Folder * folder, const char * mailbox,
 		return result.error;
 	
 	debug_print("imap append - end\n");
-	
+	if (uid != NULL)
+		*uid = result.uid;
+
 	return result.error;
 }
 

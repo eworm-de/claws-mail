@@ -951,6 +951,11 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
 			return filename;
+		} else if (!cached) {
+			debug_print("message not cached, considering file complete\n");
+			procmsg_msginfo_free(msginfo);
+			file_strip_crs(filename);
+			return filename;
 		} else {
 			procmsg_msginfo_free(cached);
 			procmsg_msginfo_free(msginfo);
@@ -2676,10 +2681,8 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 
 	flag_list = imap_flag_to_lep(flags);
 	r = imap_threaded_append(session->folder, destfolder,
-			 file, flag_list);
+			 file, flag_list, new_uid);
 	mailimap_flag_list_free(flag_list);
-	if (new_uid != NULL)
-		*new_uid = 0;
 
 	if (r != MAILIMAP_NO_ERROR) {
 		debug_print("append err %d\n", r);

@@ -845,6 +845,9 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 			break;
 		}
 		procmsg_msginfo_free(msg);
+		GTK_EVENTS_FLUSH();
+		if (!quicksearch_is_active(quicksearch))
+			break;
 	}
 
 	g_slist_free(msglist);
@@ -874,6 +877,8 @@ void quicksearch_search_subfolders(QuickSearch *quicksearch,
 						      cur);
 	}
 	quicksearch->root_folder_item = folder_item;
+	if (!quicksearch_is_active(quicksearch))
+		quicksearch_reset_cur_folder_item(quicksearch);
 }
 
 static void quicksearch_reset_folder_items(QuickSearch *quicksearch,

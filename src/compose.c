@@ -272,10 +272,12 @@ static gint compose_remove_reedit_target	(Compose	*compose,
 void compose_remove_draft			(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 gint		*msgnum,
-						 FolderItem	**item);
+						 FolderItem	**item,
+						 gchar		**msgpath);
 static gint compose_queue_sub			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item,
+						 gchar		**msgpath,
 						 gboolean	check_subject);
 static void compose_add_attachments		(Compose	*compose,
 						 MimeInfo	*parent);
@@ -3770,7 +3772,7 @@ gint compose_send(Compose *compose)
 	gint msgnum;
 	FolderItem *folder;
 	gint val = -1;
-	gchar *msgpath;
+	gchar *msgpath = NULL;
 
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
@@ -3778,7 +3780,7 @@ gint compose_send(Compose *compose)
 	if (compose_check_entries(compose, TRUE) == FALSE)
 		goto bail;
 
-	val = compose_queue(compose, &msgnum, &folder);
+	val = compose_queue(compose, &msgnum, &folder, &msgpath);
 
 	if (val) {
 		if (val == -4) {
@@ -3816,10 +3818,15 @@ gint compose_send(Compose *compose)
 		return 0;
 	}
 	
-	msgpath = folder_item_fetch_msg(folder, msgnum);
-	val = procmsg_send_message_queue(msgpath);
-	g_free(msgpath);
-
+	if (msgpath == NULL) {
+		msgpath = folder_item_fetch_msg(folder, msgnum);
+		val = procmsg_send_message_queue(msgpath);
+		g_free(msgpath);
+	} else {
+		val = procmsg_send_message_queue(msgpath);
+		g_unlink(msgpath);
+		g_free(msgpath);
+	}
 	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
 		compose->sending = FALSE;
 		compose_allow_user_actions (compose, TRUE);
@@ -4346,11 +4353,11 @@ void compose_remove_draft(Compose *compose)
 
 }
 
-static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
+static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item, gchar **msgpath)
 {
-	return compose_queue_sub (compose, msgnum, item, FALSE);
+	return compose_queue_sub (compose, msgnum, item, msgpath, FALSE);
 }
-static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, gboolean check_subject)
+static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, gchar **msgpath, gboolean check_subject)
 {
 	FolderItem *queue;
 	gchar *tmp;
@@ -4544,14 +4551,18 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		return -1;
 	}
 	folder_item_scan(queue);
-	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmp, NULL, FALSE)) < 0) {
 		g_warning("can't queue the message\n");
 		g_unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
-	g_unlink(tmp);
-	g_free(tmp);
+	
+	if (msgpath == NULL) {
+		g_unlink(tmp);
+		g_free(tmp);
+	} else
+		*msgpath = tmp;
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose, FALSE);
@@ -7105,7 +7116,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 	Compose *compose = (Compose *)data;
 	gint val;
 
-	val = compose_queue_sub(compose, NULL, NULL, TRUE);
+	val = compose_queue_sub(compose, NULL, NULL, NULL, TRUE);
 	if (!val) 
 		compose_close(compose);
 	else if (val == -2) {

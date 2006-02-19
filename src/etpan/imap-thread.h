@@ -80,7 +80,8 @@ void imap_fetch_env_free(carray * env_list);
 
 int imap_threaded_append(Folder * folder, const char * mailbox,
 			 const char * filename,
-			 struct mailimap_flag_list * flag_list);
+			 struct mailimap_flag_list * flag_list,
+			 int *uid);
 
 int imap_threaded_expunge(Folder * folder);
 

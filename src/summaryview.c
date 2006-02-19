@@ -1017,7 +1017,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
-		
+		int n = 0;
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -1026,6 +1026,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
+			GTK_EVENTS_FLUSH();
+			if (!quicksearch_is_active(summaryview->quicksearch)) {
+				break;
+			}
 		}
 		hidden_removed = TRUE;
 		if (quicksearch_is_running(summaryview->quicksearch)) {
@@ -1038,7 +1042,17 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					      summaryview->folder_item);
 			main_window_cursor_normal(summaryview->mainwin);
 		}
-		
+
+		if (!quicksearch_is_active(summaryview->quicksearch)) {
+			debug_print("search cancelled!\n");
+			gtk_clist_thaw(GTK_CLIST(ctree));
+			STATUSBAR_POP(summaryview->mainwin);
+			main_window_cursor_normal(summaryview->mainwin);
+			summary_unlock(summaryview);
+			inc_unlock();
+			summary_show(summaryview, summaryview->folder_item);
+			return FALSE;
+		}
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
@@ -1126,7 +1140,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	toolbar_main_set_sensitive(summaryview->mainwin);
 	
 	gtk_clist_thaw(GTK_CLIST(ctree));
-
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 	STATUSBAR_POP(summaryview->mainwin);
