@@ -80,8 +80,8 @@ gtk_shruler_class_init(GtkSHRulerClass * klass)
  	GtkWidgetClass * widget_class;
   	GtkRulerClass * hruler_class;
 
-  	widget_class = (GtkWidgetClass*) klass;
-  	hruler_class = (GtkRulerClass*) klass;
+  	widget_class = GTK_WIDGET_CLASS(klass);
+  	hruler_class = GTK_RULER_CLASS(klass);
 
 	/* just neglect motion notify events */
   	widget_class->motion_notify_event = NULL /* gtk_shruler_motion_notify */;

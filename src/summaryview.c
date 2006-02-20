@@ -3735,7 +3735,7 @@ void summary_save_as(SummaryView *summaryview)
 	if (GTK_CLIST(ctree)->selection->next) {
 		GList *item;
 		for (item = GTK_CLIST(ctree)->selection->next; item != NULL; item=item->next) {
-			msginfo = gtk_ctree_node_get_row_data(ctree, (GtkCTreeNode*)item->data);
+			msginfo = gtk_ctree_node_get_row_data(ctree, GTK_CTREE_NODE(item->data));
 			if (!msginfo) break;
 			src = procmsg_get_message_file(msginfo);
 			if (append_file(src, dest, TRUE) < 0)

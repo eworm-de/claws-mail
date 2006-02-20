@@ -1115,7 +1115,7 @@ GtkCTreeNode* gtk_sctree_insert_node        (GtkCTree *ctree,
                                              gboolean expanded)
 {
 	if (!emptyxpm) {
-		stock_pixmap_gdk((GtkWidget*)ctree, STOCK_PIXMAP_EMPTY,
+		stock_pixmap_gdk(GTK_WIDGET(ctree), STOCK_PIXMAP_EMPTY,
 			 &emptyxpm, &emptyxpmmask);
 	}
 	if (!pixmap_closed) {
@@ -1148,7 +1148,7 @@ void        gtk_sctree_set_node_info        (GtkCTree *ctree,
                                              gboolean expanded)
 {
 	if (!emptyxpm) {
-		stock_pixmap_gdk((GtkWidget*)ctree, STOCK_PIXMAP_EMPTY,
+		stock_pixmap_gdk(GTK_WIDGET(ctree), STOCK_PIXMAP_EMPTY,
 			 &emptyxpm, &emptyxpmmask);
 	}
 	if (!pixmap_closed) {

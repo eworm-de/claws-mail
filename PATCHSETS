@@ -1249,3 +1249,4 @@
 ( cvs diff -u -r 1.15.2.23 -r 1.15.2.24 src/summary_search.c;  ) > 2.0.0cvs63.patchset
 ( cvs diff -u -r 1.5.2.21 -r 1.5.2.22 src/gtk/gtkutils.c;  ) > 2.0.0cvs64.patchset
 ( cvs diff -u -r 1.15.2.24 -r 1.15.2.25 src/summary_search.c;  ) > 2.0.0cvs65.patchset
+( cvs diff -u -r 1.395.2.171 -r 1.395.2.172 src/summaryview.c;  cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/gtkshruler.c;  ) > 2.0.0cvs66.patchset
