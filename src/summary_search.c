@@ -477,7 +477,6 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			AlertValue val;
 
 			if (search_all) {
-				gtk_clist_thaw(GTK_CLIST(ctree));
 				break;
 			}
 
@@ -601,6 +600,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	gtk_widget_hide(search_window.stop_btn);
 	gtk_widget_show(search_window.close_btn);
 	main_window_cursor_normal(summaryview->mainwin);
+	if (search_all) {
+		gtk_clist_thaw(GTK_CLIST(ctree));
+	}
 	summary_unlock(summaryview);
 }
 

@@ -1,3 +1,8 @@
+2006-02-20 [wwp]	2.0.0cvs65
+
+	* src/summary_search.c
+		find all - summaryview refresh issue fixed, thanks to Colin.
+
 2006-02-20 [wwp]	2.0.0cvs64
 
 	* src/gtk/gtkutils.c
