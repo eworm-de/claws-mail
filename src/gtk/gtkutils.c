@@ -913,7 +913,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 
 #if GTK_CHECK_VERSION(2, 6, 0)
 	button = gtk_button_new_with_mnemonic(button_label);
-	gtk_button_set_image((GtkButton*)button,
+	gtk_button_set_image(GTK_BUTTON(button),
 		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
 #else
 	GtkWidget* image;
@@ -928,8 +928,8 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 	gtk_label_set_text_with_mnemonic(GTK_LABEL(label), button_label);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label), button);
 
-	gtk_box_pack_start((GtkBox*)box, image, FALSE, FALSE, 1);
-	gtk_box_pack_end((GtkBox*)box, label, FALSE, FALSE, 1);
+	gtk_box_pack_start(GTK_BOX(box), image, FALSE, FALSE, 1);
+	gtk_box_pack_end((GTK_BOX(box), label, FALSE, FALSE, 1);
 	gtk_widget_show(label);
 	gtk_widget_show(image);
 	gtk_widget_show(box);
@@ -947,7 +947,7 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 
 #if GTK_CHECK_VERSION(2, 6, 0)
 	button = gtk_button_new_with_mnemonic(button_label);
-	gtk_button_set_image((GtkButton*)button,
+	gtk_button_set_image(GTK_BUTTON(button),
 		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
 #else
 	GtkWidget* image;
@@ -962,8 +962,8 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 	gtk_label_set_text_with_mnemonic(GTK_LABEL(label), button_label);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label), button);
 
-	gtk_box_pack_start((GtkBox*)box, image, FALSE, FALSE, 1);
-	gtk_box_pack_end((GtkBox*)box, label, FALSE, FALSE, 1);
+	gtk_box_pack_start(GTK_BOX(box), image, FALSE, FALSE, 1);
+	gtk_box_pack_end(GTK_BOX(box), label, FALSE, FALSE, 1);
 	gtk_widget_show(label);
 	gtk_widget_show(image);
 	gtk_widget_show(box);
