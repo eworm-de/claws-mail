@@ -1,3 +1,13 @@
+2006-02-20 [wwp]	2.0.0cvs63
+
+	* src/summary_search.c
+		enhancements to the summary search:
+			- add the ability to stop the running search
+			  (upon ESC-key press, new Stop button or when Clear button is pressed)
+			- don't search if no criteria (From/To/Subject/Body) is set
+			- ensure that a busy mouse pointer is always shown when searching,
+			  show it even a bit earlier
+
 2006-02-19 [colin]	2.0.0cvs62
 
 	* src/compose.c

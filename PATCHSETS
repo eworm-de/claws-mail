@@ -1246,3 +1246,4 @@
 ( cvs diff -u -r 1.94.2.76 -r 1.94.2.77 src/messageview.c;  cvs diff -u -r 1.204.2.76 -r 1.204.2.77 src/prefs_common.c;  cvs diff -u -r 1.103.2.41 -r 1.103.2.42 src/prefs_common.h;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_message.c;  ) > 2.0.0cvs60.patchset
 ( cvs diff -u -r 1.179.2.92 -r 1.179.2.93 src/imap.c;  cvs diff -u -r 1.1.4.28 -r 1.1.4.29 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/etpan/imap-thread.h;  ) > 2.0.0cvs61.patchset
 ( cvs diff -u -r 1.382.2.242 -r 1.382.2.243 src/compose.c;  cvs diff -u -r 1.179.2.93 -r 1.179.2.94 src/imap.c;  cvs diff -u -r 1.395.2.170 -r 1.395.2.171 src/summaryview.c;  cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/etpan/imap-thread.h;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/gtk/quicksearch.c;  ) > 2.0.0cvs62.patchset
+( cvs diff -u -r 1.15.2.23 -r 1.15.2.24 src/summary_search.c;  ) > 2.0.0cvs63.patchset
