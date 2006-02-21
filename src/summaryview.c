@@ -1017,7 +1017,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
-		int n = 0;
+
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;

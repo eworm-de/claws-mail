@@ -1252,3 +1252,4 @@
 ( cvs diff -u -r 1.395.2.171 -r 1.395.2.172 src/summaryview.c;  cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/gtkshruler.c;  ) > 2.0.0cvs66.patchset
 ( cvs diff -u -r 1.274.2.97 -r 1.274.2.98 src/mainwindow.c;  ) > 2.0.0cvs67.patchset
 ( cvs diff -u -r 1.5.2.22 -r 1.5.2.23 src/gtk/gtkutils.c;  ) > 2.0.0cvs68.patchset
+( cvs diff -u -r 1.395.2.172 -r 1.395.2.173 src/summaryview.c;  cvs diff -u -r 1.5.2.27 -r 1.5.2.28 src/gtk/pluginwindow.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.0.0cvs69.patchset

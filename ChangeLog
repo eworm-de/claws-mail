@@ -1,3 +1,10 @@
+2006-02-21 [wwp]	2.0.0cvs69
+
+	* src/summaryview.c
+	* src/gtk/pluginwindow.c
+	* src/plugins/pgpcore/prefs_gpg.c
+		fix some compilation warnings (feat. remains of removed code).
+
 2006-02-21 [wwp]	2.0.0cvs68
 
 	* src/gtk/gtkutils.c

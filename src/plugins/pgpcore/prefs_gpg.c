@@ -220,7 +220,6 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	GtkWidget *vbox;
 	GtkWidget *frame1;
 	GtkWidget *table1;
-	GtkWidget *table2;
 	GSList *key_group = NULL;
 	GtkWidget *key_default;
 	GtkWidget *key_by_from;

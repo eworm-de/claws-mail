@@ -133,7 +133,7 @@ static void select_row_cb(Plugin *plugin, PluginWindow *pluginwindow)
 	GtkTextView *plugin_desc = GTK_TEXT_VIEW(pluginwindow->plugin_desc);
 	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(plugin_desc);
 	GtkTextIter start_iter, end_iter;
-	const gchar *text;
+	gchar *text;
 
 	pluginwindow->selected_plugin = plugin;
 
