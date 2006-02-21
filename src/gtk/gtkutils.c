@@ -596,7 +596,7 @@ void gtkut_text_view_set_position(GtkTextView *text, gint pos)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 
-	g_return_val_if_fail(text != NULL, FALSE);
+	g_return_if_fail(text != NULL);
 
 	buffer = gtk_text_view_get_buffer(text);
 
@@ -929,7 +929,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label), button);
 
 	gtk_box_pack_start(GTK_BOX(box), image, FALSE, FALSE, 1);
-	gtk_box_pack_end((GTK_BOX(box), label, FALSE, FALSE, 1);
+	gtk_box_pack_end(GTK_BOX(box), label, FALSE, FALSE, 1);
 	gtk_widget_show(label);
 	gtk_widget_show(image);
 	gtk_widget_show(box);
