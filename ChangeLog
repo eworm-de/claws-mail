@@ -1,3 +1,10 @@
+2006-02-22 [wwp]	2.0.0cvs70
+
+	* src/compose.c
+		fix a crash when redirecting (for instance) when compose window's
+		toolbar contents has been customized (when some buttons have been
+		removed in fact).
+
 2006-02-21 [wwp]	2.0.0cvs69
 
 	* src/summaryview.c

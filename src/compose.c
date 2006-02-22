@@ -1755,10 +1755,14 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
+	if (compose->toolbar->sig_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
+	if (compose->toolbar->exteditor_btn)
+		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, FALSE);
+	if (compose->toolbar->linewrap_current_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
+	if (compose->toolbar->linewrap_all_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
 
 	compose->modified = FALSE;
 	compose_set_title(compose);
@@ -6896,10 +6900,14 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->toolbar->sendl_btn,     sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->draft_btn,     sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->sig_btn,       sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn,  sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn,  sensitive);
+	if (compose->toolbar->sig_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn,   ensitive);
+	if (compose->toolbar->exteditor_btn)
+		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
+	if (compose->toolbar->linewrap_current_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, sensitive);
+	if (compose->toolbar->linewrap_all_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, sensitive);
 }
 #endif /* G_OS_UNIX */
 
