@@ -408,7 +408,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 		gtk_list_store_append(store_set, &iter);
 		gtk_list_store_set(store_set, &iter,
 				   SET_ICON, NULL,
-				   SET_FILENAME, NULL,
+				   SET_FILENAME, toolbar_ret_descr_from_val(A_SEPARATOR),
 				   SET_TEXT, NULL,
 				   SET_EVENT, toolbar_ret_descr_from_val(A_SEPARATOR),
 				   SET_ICON_TEXT, (const gchar *) SEPARATOR_PIXMAP,
@@ -1153,7 +1153,7 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 	gint item_num;
 	GtkTreeModel *model_ico;
 	
-	if (currently_selected ||!gtk_tree_model_get_iter(model, &iter, path))
+	if (currently_selected || !gtk_tree_model_get_iter(model, &iter, path))
 		return TRUE;
 	
 	gtk_tree_model_get(model, &iter,
@@ -1162,7 +1162,12 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 			   SET_EVENT, &descr,
 			   -1);
 
-	if (g_utf8_collate(descr, syl_act)) 
+	/* Separator */
+	if (icon_text == NULL) {
+		return TRUE;
+	}
+
+	if (g_utf8_collate(descr, syl_act))
 		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->entry_icon_text), 
 				   icon_text);
 	
