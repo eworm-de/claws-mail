@@ -1,3 +1,8 @@
+2006-02-22 [wwp]	2.0.0cvs72
+
+	* src/compose.c
+		fix a typo in my previous commit (sorry!).
+
 2006-02-22 [wwp]	2.0.0cvs71
 
 	* src/prefs_toolbar.c

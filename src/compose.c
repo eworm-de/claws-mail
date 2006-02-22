@@ -6901,7 +6901,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->toolbar->draft_btn,     sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
 	if (compose->toolbar->sig_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sig_btn,   ensitive);
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn,   sensitive);
 	if (compose->toolbar->exteditor_btn)
 		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
 	if (compose->toolbar->linewrap_current_btn)
