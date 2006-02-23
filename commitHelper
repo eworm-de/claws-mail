@@ -1,13 +1,14 @@
 #!/bin/bash
 args=`echo $@`
+tmpfile=${0##*/}.tmp
 
-head -n 16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
-source /tmp/commitTool.tmp
+head -n 16 configure.ac | grep VERSION= > $tmpfile
+source $tmpfile
 EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
 nextextra="$EXTRA_VERSION"
 nextextratype="head"
-rm /tmp/commitTool.tmp
+rm -f $tmpfile
 
 IFS='
 '
@@ -33,7 +34,17 @@ for file in $filelist; do
 done;
 patchset="("
 log=""
-files=`cvs diff -uN $@ 2>/dev/null |grep ^Index`
+files=`cvs diff -uN $@ 2>$tmpfile |grep ^Index`
+if [ "$files" == "" ]; then
+	echo Nothing to commit\!
+	if [ -s $tmpfile ]
+	then
+		echo See possible reason below:
+		cat $tmpfile
+	fi
+	exit
+fi
+rm -f $tmpfile
 name=`whoami`
 #change if your login isn't your name
 if [ "$name" == "claws" ]; then
