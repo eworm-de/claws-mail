@@ -37,8 +37,7 @@ log=""
 files=`cvs diff -uN $@ 2>$tmpfile |grep ^Index`
 if [ "$files" == "" ]; then
 	echo Nothing to commit\!
-	if [ -s $tmpfile ]
-	then
+	if [ -s $tmpfile ]; then
 		echo See possible reason below:
 		cat $tmpfile
 	fi
@@ -80,15 +79,19 @@ for line in $files; do
 	
 	log="$log\t* $file\n"
 	if [ "$version" != "0" ]; then
-	patchset="$patchset cvs diff -u -r $version -r $nextversion $file; "
+		patchset="$patchset cvs diff -u -r $version -r $nextversion $file; "
 	else
-	patchset="$patchset diff -u /dev/null $file; "
+		patchset="$patchset diff -u /dev/null $file; "
 	fi
 done;
 patchset="$patchset ) > $nextsversion.patchset"
 
 if [ "$EDITOR" == "" ]; then
-	EDITOR=vi
+	if [ "$VISUAL" != "" ]; then
+		EDITOR=$VISUAL
+	else
+		EDITOR=vi
+	fi;
 fi;
 
 
