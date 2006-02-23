@@ -185,8 +185,8 @@ void alertpanel_error_log(const gchar *format, ...)
 	mainwin = mainwindow_get_mainwindow();
 	
 	if (mainwin && mainwin->logwin) {
-		val = alertpanel_full(_("Error"), buf, GTK_STOCK_OK,
-				      _("View log"), NULL, FALSE, NULL,
+		val = alertpanel_full(_("Error"), buf, GTK_STOCK_CLOSE,
+				      _("_View log"), NULL, FALSE, NULL,
 				      ALERT_ERROR, G_ALERTDEFAULT);
 		if (val == G_ALERTALTERNATE)
 			log_window_show(mainwin->logwin);

@@ -1,3 +1,10 @@
+2006-02-23 [colin]	2.0.0cvs78
+
+	* src/alertpanel.c
+		Change OK to Close in alertpanel with View log
+		button; add accel to View log. Patch by Fabien
+		Vantard
+
 2006-02-23 [wwp]	2.0.0cvs77
 
 	* src/compose.c
