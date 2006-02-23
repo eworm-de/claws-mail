@@ -1,3 +1,13 @@
+2006-02-23 [wwp]	2.0.0cvs74
+
+	* src/prefs_toolbar.c
+		simplify and fix prefs/toolbars layouting. Combos' contents can
+		now be really displayed.
+
+2006-02-23 [wwp]	2.0.0cvs73
+	simplifies and fix prefs/toolbars layouting. Combos' contents can now
+	be really displayed.
+
 2006-02-22 [wwp]	2.0.0cvs72
 
 	* src/compose.c

@@ -674,7 +674,6 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *label_icon_text;
 	GtkWidget *entry_icon_text;
 	GtkWidget *label_action_sel;
-	GtkWidget *empty_label;
 	GtkWidget *combo_action;
 	GtkWidget *combo_entry;
 	GtkWidget *combo_list;
@@ -737,8 +736,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			  (GtkAttachOptions) (0), 0, 0);
 
 	entry_icon_text = gtk_entry_new();
-	gtk_table_attach (GTK_TABLE (table), entry_icon_text, 1, 2, 0, 1,
-			  (GtkAttachOptions) (/*GTK_EXPAND | */GTK_FILL),
+	gtk_table_attach (GTK_TABLE (table), entry_icon_text, 1, 3, 0, 1,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 
 	/* Sylpheed Action Combo Box */
@@ -746,14 +745,10 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	combo_syl_list = GTK_COMBO(combo_syl_action)->list;
 	combo_syl_entry = GTK_COMBO(combo_syl_action)->entry;
 	gtk_entry_set_editable(GTK_ENTRY(combo_syl_entry), FALSE);
-	gtk_table_attach (GTK_TABLE (table), combo_syl_action, 1, 2, 0, 1,
-			  (GtkAttachOptions) (/*GTK_EXPAND | */GTK_FILL),
+	gtk_table_attach (GTK_TABLE (table), combo_syl_action, 1, 3, 0, 1,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 
-	empty_label = gtk_label_new("");
-	gtk_table_attach (GTK_TABLE (table), empty_label, 2, 3, 0, 1,
-			  (GtkAttachOptions) (GTK_EXPAND),
-			  (GtkAttachOptions) (0), 0, 0);
 	/* available actions */
 	label_action_sel = gtk_label_new(_("Event executed on click"));
 	gtk_misc_set_alignment(GTK_MISC(label_action_sel), 0, 0.5);
@@ -762,7 +757,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			  (GtkAttachOptions) (0), 0, 0);
 
 	combo_action = gtk_combo_new();
-	gtk_table_attach (GTK_TABLE (table), combo_action, 1, 2, 1, 2,
+	gtk_table_attach (GTK_TABLE (table), combo_action, 1, 3, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 	
@@ -770,11 +765,6 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	combo_entry = GTK_COMBO(combo_action)->entry;
 	gtk_entry_set_editable(GTK_ENTRY(combo_entry), FALSE);
 	
-	empty_label = gtk_label_new("");
-	gtk_table_attach (GTK_TABLE (table), empty_label, 2, 3, 1, 2,
-			  (GtkAttachOptions) (GTK_EXPAND),
-			  (GtkAttachOptions) (0), 0, 0);
-
 	/* register / substitute / delete */
 	reg_hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(main_vbox), reg_hbox, FALSE, FALSE, 0);
