@@ -1,3 +1,9 @@
+2006-02-23 [wwp]	2.0.0cvs77
+
+	* src/compose.c
+		silly me, there were much more tests to perform, since toolbars can
+		really have down to 1 element only.
+
 2006-02-23 [wwp]	2.0.0cvs76
 
 	* commitHelper

@@ -1260,3 +1260,4 @@
 ( cvs diff -u -r 1.30.2.24 -r 1.30.2.25 src/prefs_toolbar.c;  ) > 2.0.0cvs74.patchset
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 commitHelper;  ) > 2.0.0cvs75.patchset
 ( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 commitHelper;  ) > 2.0.0cvs76.patchset
+( cvs diff -u -r 1.382.2.245 -r 1.382.2.246 src/compose.c;  ) > 2.0.0cvs77.patchset

@@ -1752,9 +1752,12 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
-	gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
+	if (compose->toolbar->draft_btn)
+		gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
+	if (compose->toolbar->insert_btn)
+		gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
+	if (compose->toolbar->attach_btn)
+		gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
 	if (compose->toolbar->sig_btn)
 		gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
 	if (compose->toolbar->exteditor_btn)
@@ -6895,13 +6898,17 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	menu_set_sensitive(ifactory, "/Edit/Edit with external editor",
 			   sensitive);
 
-	gtk_widget_set_sensitive(compose->text,                   sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->send_btn,      sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->sendl_btn,     sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->draft_btn,     sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
+	gtk_widget_set_sensitive(compose->text,                       sensitive);
+	if (compose->toolbar->send_btn)
+		gtk_widget_set_sensitive(compose->toolbar->send_btn,      sensitive);
+	if (compose->toolbar->sendl_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sendl_btn,     sensitive);
+	if (compose->toolbar->draft_btn)
+		gtk_widget_set_sensitive(compose->toolbar->draft_btn,     sensitive);
+	if (compose->toolbar->insert_btn)
+		gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
 	if (compose->toolbar->sig_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sig_btn,   sensitive);
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn,       sensitive);
 	if (compose->toolbar->exteditor_btn)
 		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
 	if (compose->toolbar->linewrap_current_btn)
