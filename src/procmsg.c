@@ -42,6 +42,8 @@
 #include "hooks.h"
 #include "msgcache.h"
 #include "partial_download.h"
+#include "mainwindow.h"
+#include "summaryview.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
 
@@ -2073,11 +2075,21 @@ void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *li
 {
 	if (!g_slist_find(spam_learners, learn_func))
 		spam_learners = g_slist_append(spam_learners, learn_func);
+	if (mainwindow_get_mainwindow()) {
+		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
+		summary_set_menu_sensitive(
+			mainwindow_get_mainwindow()->summaryview);
+	}
 }
 
 void procmsg_unregister_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam))
 {
 	spam_learners = g_slist_remove(spam_learners, learn_func);
+	if (mainwindow_get_mainwindow()) {
+		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
+		summary_set_menu_sensitive(
+			mainwindow_get_mainwindow()->summaryview);
+	}
 }
 
 gboolean procmsg_spam_can_learn(void)

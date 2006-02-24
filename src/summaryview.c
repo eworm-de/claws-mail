@@ -139,7 +139,7 @@ static void summary_set_marks_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
 
-static void summary_set_menu_sensitive	(SummaryView		*summaryview);
+void summary_set_menu_sensitive	(SummaryView		*summaryview);
 
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
 					     guint action);
@@ -1300,7 +1300,7 @@ GSList *summary_get_msg_list(SummaryView *summaryview)
 	return mlist;
 }
 
-static void summary_set_menu_sensitive(SummaryView *summaryview)
+void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	GtkItemFactory *ifactory = summaryview->popupfactory;
 	SensitiveCond state;

@@ -439,7 +439,16 @@ static void spamassassin_save_func(PrefsPage *_page)
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
 
-	procmsg_spam_set_folder(config->save_folder);
+	if (config->transport == SPAMASSASSIN_DISABLED ||
+	    config->transport == SPAMASSASSIN_TRANSPORT_TCP) {
+		procmsg_unregister_spam_learner(spamassassin_learn);
+		procmsg_spam_set_folder(NULL);
+		if (config->transport == SPAMASSASSIN_TRANSPORT_TCP)
+			debug_print("disabling learner as it only works locally\n");
+	} else {
+		procmsg_register_spam_learner(spamassassin_learn);
+		procmsg_spam_set_folder(config->save_folder);
+	}
 	spamassassin_save_config();
 }
 

@@ -1,3 +1,14 @@
+2006-02-24 [colin]	2.0.0cvs83
+
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Unregister learner when spamassassin is either
+		disabled or over tcp
+
 2006-02-24 [colin]	2.0.0cvs82
 
 	* src/Makefile.am

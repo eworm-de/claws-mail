@@ -360,15 +360,19 @@ gint plugin_init(gchar **error)
 	prefs_read_config(param, "SpamAssassin", rcpath, NULL);
 	g_free(rcpath);
 	spamassassin_gtk_init();
-	
-	procmsg_register_spam_learner(spamassassin_learn);
-	procmsg_spam_set_folder(config.save_folder);
-	
+		
 	debug_print("Spamassassin plugin loaded\n");
 
 	if (config.transport == SPAMASSASSIN_DISABLED) {
 		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
 	}
+	
+	if (config.transport != SPAMASSASSIN_DISABLED &&
+	    config.transport != SPAMASSASSIN_TRANSPORT_TCP) {
+		procmsg_register_spam_learner(spamassassin_learn);
+		procmsg_spam_set_folder(config.save_folder);
+	} else if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
+		debug_print("disabling learner as it only works locally\n");
 
 	return 0;
 	
