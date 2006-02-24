@@ -2548,7 +2548,7 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit Sylpheed-Claws?"),
-			       GTK_STOCK_CANCEL, GTK_STOCK_OK,  NULL)
+			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL)
 		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
