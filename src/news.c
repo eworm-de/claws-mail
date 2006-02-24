@@ -71,6 +71,7 @@ struct _NewsFolder
 	RemoteFolder rfolder;
 
 	gboolean use_auth;
+	gboolean lock_count;
 };
 
 static void news_folder_init		 (Folder	*folder,
@@ -172,6 +173,25 @@ static int news_dummy_remove		 (Folder 	*folder,
 {
 	debug_print("doing nothing on purpose\n");
 	return 0;
+}
+
+static void news_folder_lock(NewsFolder *folder)
+{
+	folder->lock_count++;
+}
+
+static void news_folder_unlock(NewsFolder *folder)
+{
+	if (folder->lock_count > 0)
+		folder->lock_count--;
+}
+
+int news_folder_locked(Folder *folder)
+{
+	if (folder == NULL)
+		return 0;
+
+	return NEWS_FOLDER(folder)->lock_count;
 }
 
 static Folder *news_folder_new(const gchar *name, const gchar *path)
@@ -368,7 +388,7 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		g_free(filename);
 		return NULL;
 	}
-
+	GTK_EVENTS_FLUSH();
 	return filename;
 }
 
@@ -848,10 +868,13 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, g
 	g_return_val_if_fail(session != NULL, -1);
 
 	*old_uids_valid = TRUE;
+	
+	news_folder_lock(NEWS_FOLDER(item->folder));
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return -1;
 	}
 
@@ -872,7 +895,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, g
 		remove_numbered_files(dir, 1, first - 1);
 	}
 	g_free(dir);
-
+	news_folder_unlock(NEWS_FOLDER(item->folder));
 	return nummsgs;
 }
 
@@ -900,17 +923,22 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	log_message(_("getting xover %d in %s...\n"),
 		    num, item->path);
 	ok = nntp_xover(session, num, num);
+	
+	news_folder_lock(NEWS_FOLDER(item->folder));
+	
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return NULL;
 	}
 	
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xover.\n"));
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return NULL;
 	}
 	
@@ -921,9 +949,11 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	READ_TO_LISTEND("xover");
 
-	if(!msginfo)
+	if(!msginfo) {
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return NULL;
-	
+	}
+
 	msginfo->folder = item;
 	msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
 	msginfo->flags.tmp_flags = MSG_NEWS;
@@ -936,11 +966,13 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
 
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
 
@@ -955,18 +987,20 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
 
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
 
 	msginfo->cc = news_parse_xhdr(buf, msginfo);
 
 	READ_TO_LISTEND("xhdr (cc)");
-
+	news_folder_unlock(NEWS_FOLDER(item->folder));
 	return msginfo;
 }
 
@@ -994,9 +1028,12 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		return NULL;
 	}
 
+	news_folder_lock(NEWS_FOLDER(item->folder));
+	
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xover.\n"));
+			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
 		count++;
@@ -1033,6 +1070,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return newlist;
 	}
 
@@ -1041,6 +1079,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
+			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
 		count++;
@@ -1068,6 +1107,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
+		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return newlist;
 	}
 
@@ -1076,6 +1116,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
+			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
 		count++;
@@ -1095,6 +1136,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 		llast = llast->next;
 	}
+	news_folder_unlock(NEWS_FOLDER(item->folder));
 
 	session_set_access_time(SESSION(session));
 
@@ -1125,6 +1167,9 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 
 	first = GPOINTER_TO_INT(tmp_msgnum_list->data);
 	last = first;
+	
+	news_folder_lock(NEWS_FOLDER(item->folder));
+	
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
@@ -1137,6 +1182,9 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 		}
 		last = next;
 	}
+	
+	news_folder_unlock(NEWS_FOLDER(item->folder));
+	
 	session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
 	session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
 	tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);

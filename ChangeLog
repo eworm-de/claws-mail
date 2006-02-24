@@ -1,3 +1,11 @@
+2006-02-24 [paul]	2.0.0cvs79
+
+	* src/news.c
+	* src/news.h
+	* src/news_gtk.c
+		fix bug 916, 'newsgroup unsubscribe segmentation fault'
+		Thanks to Colin
+
 2006-02-23 [colin]	2.0.0cvs78
 
 	* src/alertpanel.c

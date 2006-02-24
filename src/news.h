@@ -45,5 +45,6 @@ gint news_post				(Folder		*folder,
 					 const gchar	*file);
 gint news_cancel_article		(Folder 	*folder,
 					 MsgInfo 	*msginfo);
+int news_folder_locked			(Folder 	*folder);
 
 #endif /* __NEWS_H__ */

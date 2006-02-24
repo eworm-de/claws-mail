@@ -39,6 +39,7 @@
 #include "news_gtk.h"
 #include "common/hooks.h"
 #include "inc.h"
+#include "news.h"
 
 static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -82,12 +83,23 @@ void news_gtk_init(void)
 
 static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 {
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(factory, name, sens)
 
-	SET_SENS("/Subscribe to newsgroup...", folder_item_parent(item) == NULL);
-	SET_SENS("/Unsubscribe newsgroup",     folder_item_parent(item) != NULL);
-	SET_SENS("/Check for new messages",    folder_item_parent(item) == NULL);
+	SET_SENS("/Subscribe to newsgroup...", 
+		 folder_item_parent(item) == NULL 
+		 && mainwin->lock_count == 0
+		 && news_folder_locked(item->folder) == 0);
+	SET_SENS("/Unsubscribe newsgroup",     
+		 folder_item_parent(item) != NULL 
+		 && mainwin->lock_count == 0
+		 && news_folder_locked(item->folder) == 0);
+	SET_SENS("/Check for new messages",    
+		 folder_item_parent(item) == NULL 
+		 && mainwin->lock_count == 0
+		 && news_folder_locked(item->folder) == 0);
 
 #undef SET_SENS
 }
@@ -103,11 +115,16 @@ static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidg
 	GSList *new_subscr;
 	GSList *cur;
 	GNode *gnode;
-
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
+
+	if (mainwin->lock_count || news_folder_locked(item->folder))
+		return;
+
 	folder = item->folder;
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
@@ -186,11 +203,16 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 	gchar *message;
 	gchar *old_id;
 	AlertValue avalue;
-
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
+
+	if (mainwin->lock_count || news_folder_locked(item->folder))
+		return;
+
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
@@ -222,9 +244,13 @@ static void update_tree_cb(FolderView *folderview, guint action,
 			   GtkWidget *widget)
 {
 	FolderItem *item;
-
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
 	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
+
+	if (mainwin->lock_count || news_folder_locked(item->folder))
+		return;
 
 	summary_show(folderview->summaryview, NULL);
 
@@ -250,6 +276,9 @@ void news_gtk_synchronise(FolderItem *item)
 	
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
+
+	if (mainwin->lock_count || news_folder_locked(item->folder))
+		return;
 
 	main_window_cursor_wait(mainwin);
 	inc_lock();
