@@ -38,7 +38,7 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 15
+#define ICONS 16
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
@@ -53,6 +53,7 @@ StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_MARK,
 	STOCK_PIXMAP_LOCKED,
 	STOCK_PIXMAP_IGNORETHREAD,
+	STOCK_PIXMAP_SPAM,
 	STOCK_PIXMAP_DIR_OPEN, 
 	STOCK_PIXMAP_DIR_OPEN_HRM,
 	STOCK_PIXMAP_DIR_OPEN_MARK,
@@ -71,6 +72,7 @@ static gchar *legend_icon_desc[] = {
 	N_("Marked message"),
 	N_("Locked message"),
 	N_("Message is in an ignored thread"),
+	N_("Message is spam"),
 	N_("Folder (normal, opened)"),
 	N_("Folder with read messages hidden"),
 	N_("Folder contains marked emails"),

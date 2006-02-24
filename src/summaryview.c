@@ -118,6 +118,8 @@ static GdkPixmap *ignorethreadxpm;
 static GdkBitmap *ignorethreadxpmmask;
 static GdkPixmap *lockedxpm;
 static GdkBitmap *lockedxpmmask;
+static GdkPixmap *spamxpm;
+static GdkBitmap *spamxpmmask;
 
 static GdkPixmap *clipxpm;
 static GdkBitmap *clipxpmmask;
@@ -437,6 +439,10 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
+	{N_("/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Mark/Mark as _spam"),	NULL, summary_mark_as_spam, 1, NULL},
+	{N_("/_Mark/Mark as _ham"),	NULL, summary_mark_as_spam, 0, NULL},
+	{N_("/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Mark/Lock"),		NULL, summary_msgs_lock, 0, NULL},
 	{N_("/_Mark/Unlock"),		NULL, summary_msgs_unlock, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
@@ -720,6 +726,8 @@ void summary_init(SummaryView *summaryview)
 			 &gpgsignedxpm, &gpgsignedxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
 			 &clipgpgsignedxpm, &clipgpgsignedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_SPAM,
+			 &spamxpm, &spamxpmmask);
 
 	summary_set_fonts(summaryview);
 
@@ -1327,6 +1335,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Mark/Ignore thread"   	, M_TARGET_EXIST},
 		{"/Mark/Lock"   		, M_TARGET_EXIST},
 		{"/Mark/Unlock"   		, M_TARGET_EXIST},
+		{"/Mark/Mark as spam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"/Mark/Mark as ham" 		, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Color label"			, M_TARGET_EXIST},
 
 		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
@@ -2738,7 +2748,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GTK_EVENTS_FLUSH();
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-
+	
 	if (new_window) {
 		MessageView *msgview;
 
@@ -2978,6 +2988,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
+	} else if (MSG_IS_SPAM(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
+					  spamxpm, spamxpmmask);
 	} else if (MSG_IS_MARKED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
 					  markxpm, markxpmmask);
@@ -3200,6 +3213,45 @@ void summary_mark_all_read(SummaryView *summaryview)
 	
 	summary_status_show(summaryview);
 }
+
+void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gboolean is_spam = action;
+	GSList *msgs = NULL;
+	gboolean immediate_exec = prefs_common.immediate_exec;
+	
+	prefs_common.immediate_exec = FALSE;
+
+	START_LONG_OPERATION(summaryview);
+
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
+		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
+		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, row);
+		if (is_spam) {
+			summary_msginfo_change_flags(msginfo, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
+			summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
+		} else {
+			summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+		}
+		msgs = g_slist_prepend(msgs, msginfo);
+	}
+	
+	procmsg_spam_learner_learn(NULL, msgs, is_spam);
+	g_slist_free(msgs);
+
+	prefs_common.immediate_exec = immediate_exec;
+
+	END_LONG_OPERATION(summaryview);
+
+	if (prefs_common.immediate_exec) {
+		summary_execute(summaryview);
+	}
+
+	summary_status_show(summaryview);	
+}
+
 
 static void summary_mark_row_as_unread(SummaryView *summaryview,
 				       GtkCTreeNode *row)
@@ -5016,6 +5068,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    !MSG_IS_COPY(msginfo->flags)) {
 			if (MSG_IS_MARKED(msginfo->flags)) {
 				summary_unmark_row(summaryview, row);
+			} else if (MSG_IS_SPAM(msginfo->flags)) {
+				summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+				procmsg_spam_learner_learn(msginfo, NULL, FALSE);
 			} else {
 				summary_mark_row(summaryview, row);
 			}
@@ -5673,6 +5728,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm, &clipgpgsignedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm, &spamxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

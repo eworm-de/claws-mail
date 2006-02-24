@@ -253,6 +253,9 @@ static void mark_as_read_cb		(MainWindow	*mainwin,
 static void mark_all_read_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void mark_as_spam_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
 
 static void reedit_cb			(MainWindow	*mainwin,
 					 guint		 action,
@@ -721,9 +724,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/_Unmark"),		"U", unmark_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark/Mark as unr_ead"),	"<shift>exclam", mark_as_unread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Mark as rea_d"),
-						NULL, mark_as_read_cb, 0, NULL},
+	{N_("/_Message/_Mark/Mark as rea_d"),	NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
+	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Mark/Mark as _spam"),	NULL, mark_as_spam_cb, 1, NULL},
+	{N_("/_Message/_Mark/Mark as _ham"),	NULL, mark_as_spam_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
@@ -1825,6 +1830,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 			break;
 		}
 	}
+	
+	if (procmsg_spam_can_learn()) {
+		state |= M_CAN_LEARN_SPAM;
+	}
 
 	if (inc_is_active())
 		state |= M_INC_ACTIVE;
@@ -1898,6 +1907,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
+		{"/Message/Mark/Mark as spam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"/Message/Mark/Mark as ham" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
@@ -2828,6 +2839,12 @@ static void mark_all_read_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
 	summary_mark_all_read(mainwin->summaryview);
+}
+
+static void mark_as_spam_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_mark_as_spam(mainwin->summaryview, action, NULL);
 }
 
 static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

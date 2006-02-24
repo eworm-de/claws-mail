@@ -138,6 +138,7 @@ static gboolean msg_is_spam(FILE *fp)
 	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
+		log_error("Spamassassin plugin couldn't connect to spamd.\n");
 		debug_print("failed to setup transport\n");
 		return FALSE;
 	}
@@ -175,9 +176,10 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	int pid = 0;
 	int status;
 
-	if (config.transport == SPAMASSASSIN_DISABLED)
+	if (config.transport == SPAMASSASSIN_DISABLED) {
+		log_error("Spamassassin plugin is disabled by its preferences.\n");
 		return FALSE;
-
+	}
 	debug_print("Filtering message %d\n", msginfo->msgnum);
 	if (message_callback != NULL)
 		message_callback(_("SpamAssassin: filtering message..."));
@@ -222,7 +224,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	if (is_spam) {
 		debug_print("message is spam\n");
-			    
+		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 		if (config.receive_spam) {
 			FolderItem *save_folder;
 
@@ -232,20 +234,70 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				save_folder = folder_get_default_trash();
 
 			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 			folder_item_move_msg(save_folder, msginfo);
 		} else {
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		}
 
 		return TRUE;
+	} else {
+		debug_print("message is ham\n");
+		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 	}
-	
 	return FALSE;
 }
 
 SpamAssassinConfig *spamassassin_get_config(void)
 {
 	return &config;
+}
+
+void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
+{
+	gchar *cmd = NULL;
+	gchar *file = NULL;
+	gboolean async = FALSE;
+
+	if (msginfo == NULL && msglist == NULL)
+		return;
+
+	if (msginfo) {
+		file = procmsg_get_message_file(msginfo);
+		if (file == NULL)
+			return;
+		cmd = g_strdup_printf("sa-learn %s %s", 
+			spam?"--spam":"--ham", file);
+	}
+	if (msglist) {
+		GSList *cur;
+		MsgInfo *info;
+		cmd = g_strdup_printf("sa-learn %s", spam?"--spam":"--ham");
+		for (cur = msglist; cur; cur = cur->next) {
+			info = (MsgInfo *)cur->data;
+			gchar *tmpcmd = NULL;
+			gchar *tmpfile = get_tmp_file();
+			
+			if (tmpfile &&
+			    copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
+				tmpcmd = g_strconcat
+					(cmd, " ", tmpfile, NULL);
+				g_free(cmd);
+				cmd = tmpcmd;
+			}
+			if (tmpfile)
+				g_free(tmpfile);
+		}
+		async = TRUE;
+	}
+	if (cmd == NULL)
+		return;
+	debug_print("%s\n",cmd);
+	/* only run async if we have a list, or we could end up
+	 * forking lots of perl processes and bury the machine */
+	execute_command_line(cmd, async);
+	g_free(cmd);
+	
 }
 
 void spamassassin_save_config(void)
@@ -308,8 +360,15 @@ gint plugin_init(gchar **error)
 	prefs_read_config(param, "SpamAssassin", rcpath, NULL);
 	g_free(rcpath);
 	spamassassin_gtk_init();
-
+	
+	procmsg_register_spam_learner(spamassassin_learn);
+	procmsg_spam_set_folder(config.save_folder);
+	
 	debug_print("Spamassassin plugin loaded\n");
+
+	if (config.transport == SPAMASSASSIN_DISABLED) {
+		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
+	}
 
 	return 0;
 	
@@ -321,7 +380,8 @@ void plugin_done(void)
 	g_free(config.hostname);
 	g_free(config.save_folder);
 	spamassassin_gtk_done();
-
+	procmsg_unregister_spam_learner(spamassassin_learn);
+	procmsg_spam_set_folder(NULL);
 	debug_print("Spamassassin plugin unloaded\n");
 }
 

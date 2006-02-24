@@ -439,6 +439,7 @@ static void spamassassin_save_func(PrefsPage *_page)
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
 
+	procmsg_spam_set_folder(config->save_folder);
 	spamassassin_save_config();
 }
 

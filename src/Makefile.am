@@ -371,6 +371,7 @@ EXTRA_DIST = \
 	pixmaps/quicksearch.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
+	pixmaps/spam.xpm \
 	pixmaps/sylpheed_icon.xpm \
 	pixmaps/sylpheed_logo.xpm \
 	pixmaps/sylpheed.xpm \

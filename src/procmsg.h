@@ -74,6 +74,7 @@ typedef GSList MsgNumberList;
 #define MSG_IGNORE_THREAD	(1U << 10)   /* ignore threads */
 #define MSG_LOCKED		(1U << 11)   /* msg is locked  */
 #define MSG_RETRCPT_SENT	(1U << 12)   /* new one */ 
+#define MSG_SPAM		(1U << 13)   /* new one */ 
 					 	
 /* RESERVED */
 #define	MSG_RESERVED_CLAWS	(1U << 30)   /* for sylpheed-claws */
@@ -144,6 +145,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 #define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
+#define MSG_IS_SPAM(msg)		(((msg).perm_flags & MSG_SPAM) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
@@ -323,5 +325,12 @@ gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
 MsgInfo *procmsg_msginfo_new_from_mimeinfo
 					(MsgInfo 	*src_msginfo, 
 					 MimeInfo	*mimeinfo);
+
+void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
+void procmsg_unregister_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
+gboolean procmsg_spam_can_learn		(void);
+void procmsg_spam_set_folder		(const char *item_identifier);
+FolderItem *procmsg_spam_get_folder	(void);
+void procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 
 #endif /* __PROCMSG_H__ */

@@ -1,3 +1,21 @@
+2006-02-24 [colin]	2.0.0cvs82
+
+	* src/Makefile.am
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/icon_legend.c
+	* src/pixmaps/spam.xpm	** NEW FILE **
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Add spam learning interface (Mark/Mark as 
+		(spam|ham) menus)
+
 2006-02-24 [wwp]	2.0.0cvs81
 
 	* src/compose.c
