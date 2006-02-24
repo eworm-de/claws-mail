@@ -1,3 +1,13 @@
+2006-02-24 [wwp]	2.0.0cvs81
+
+	* src/compose.c
+	* src/compose.h
+	* src/filtering.c
+		hide compose window when sending message in batch mode
+		(filtering: forward and redirect). Also fixed a wrong
+		value returned when sending failed, neutral anyway.
+		(Colin, me) 
+
 2006-02-24 [wwp]	2.0.0cvs80
 
 	* src/mainwindow.c

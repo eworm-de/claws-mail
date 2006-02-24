@@ -196,7 +196,8 @@ Compose *compose_generic_new			(PrefsAccount	*account,
 						 GList          *listAddress );
 
 static Compose *compose_create			(PrefsAccount	*account,
-						 ComposeMode	 mode);
+						 ComposeMode	 mode,
+						 gboolean batch);
 
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
@@ -869,7 +870,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
  	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_NEW);
+	compose = compose_create(account, COMPOSE_NEW, FALSE);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
@@ -1076,7 +1077,7 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	case COMPOSE_FORWARD_INLINE:
 		/* check if we reply to more than one Message */
 		if (list_len == 1) {
-			compose = compose_forward(NULL, msginfo, FALSE, body, FALSE);
+			compose = compose_forward(NULL, msginfo, FALSE, body, FALSE, FALSE);
 			break;
 		} 
 		/* more messages FALL THROUGH */
@@ -1084,7 +1085,7 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 		compose = compose_forward_multiple(NULL, msginfo_list);
 		break;
 	case COMPOSE_REDIRECT:
-		compose = compose_redirect(NULL, msginfo);
+		compose = compose_redirect(NULL, msginfo, FALSE);
 		break;
 	default:
 		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
@@ -1182,7 +1183,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	} else
 		reply_account = account;
 
-	compose = compose_create(account, COMPOSE_REPLY);
+	compose = compose_create(account, COMPOSE_REPLY, FALSE);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	menu_set_active(ifactory, "/Options/Remove references", FALSE);
@@ -1273,7 +1274,8 @@ if (msginfo->var && *msginfo->var) { \
 
 Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			 gboolean as_attach, const gchar *body,
-			 gboolean no_extedit)
+			 gboolean no_extedit,
+			 gboolean batch)
 {
 	Compose *compose;
 	GtkTextView *textview;
@@ -1288,7 +1290,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 				(msginfo)))
 		account = cur_account;
 
-	compose = compose_create(account, COMPOSE_FORWARD);
+	compose = compose_create(account, COMPOSE_FORWARD, batch);
 
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->fwdinfo)
@@ -1416,7 +1418,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 		MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
 	}
 
-	compose = compose_create(account, COMPOSE_FORWARD);
+	compose = compose_create(account, COMPOSE_FORWARD, FALSE);
 
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
@@ -1597,7 +1599,7 @@ void compose_reedit(MsgInfo *msginfo)
         if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
-	compose = compose_create(account, COMPOSE_REEDIT);
+	compose = compose_create(account, COMPOSE_REEDIT, FALSE);
 	if (privacy_system != NULL) {
 		compose->privacy_system = privacy_system;
 		compose_use_signing(compose, use_signing);
@@ -1684,7 +1686,8 @@ void compose_reedit(MsgInfo *msginfo)
 	compose_set_title(compose);
 }
 
-Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
+Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
+						 gboolean batch)
 {
 	Compose *compose;
 	gchar *filename;
@@ -1698,7 +1701,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 					prefs_common.reply_account_autosel);
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_REDIRECT);
+	compose = compose_create(account, COMPOSE_REDIRECT, batch);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	compose_create_tags(GTK_TEXT_VIEW(compose->text), compose);
 	compose->replyinfo = NULL;
@@ -3760,15 +3763,17 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 		return FALSE;
 	}
 
-	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*str == '\0' && check_subject == TRUE) {
-		AlertValue aval;
+	if (!compose->batch) {
+		str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+		if (*str == '\0' && check_subject == TRUE) {
+			AlertValue aval;
 
-		aval = alertpanel(_("Send"),
-				  _("Subject is empty. Send it anyway?"),
-				  GTK_STOCK_CANCEL, _("+_Send"), NULL);
-		if (aval != G_ALERTALTERNATE)
-			return FALSE;
+			aval = alertpanel(_("Send"),
+					  _("Subject is empty. Send it anyway?"),
+					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
+			if (aval != G_ALERTALTERNATE)
+				return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -3780,16 +3785,28 @@ gint compose_send(Compose *compose)
 	FolderItem *folder;
 	gint val = -1;
 	gchar *msgpath = NULL;
+	gboolean discard_window = FALSE;
+
+	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS
+			|| compose->batch == TRUE)
+		discard_window = TRUE;
 
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
 
-	if (compose_check_entries(compose, TRUE) == FALSE)
+	if (compose_check_entries(compose, TRUE) == FALSE) {
+		if (compose->batch) {
+			gtk_widget_show_all(compose->window);
+		}
 		goto bail;
+	}
 
 	val = compose_queue(compose, &msgnum, &folder, &msgpath);
 
 	if (val) {
+		if (compose->batch) {
+			gtk_widget_show_all(compose->window);
+		}
 		if (val == -4) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Charset conversion failed."));
@@ -3804,8 +3821,7 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
-
-	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS) {
+	if (discard_window) {
 		compose->sending = FALSE;
 		compose_close(compose);
 		/* No more compose access in the normal codepath 
@@ -3814,15 +3830,13 @@ gint compose_send(Compose *compose)
 	}
 
 	if (msgnum == 0) {
+		if (!discard_window) {
+			goto bail;
+		}
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
-		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
-			compose->sending = FALSE;
-			compose->modified = TRUE; 
-			compose_allow_user_actions (compose, TRUE);
-		}
-		return 0;
+		return -1;
 	}
 	
 	if (msgpath == NULL) {
@@ -3834,7 +3848,7 @@ gint compose_send(Compose *compose)
 		g_unlink(msgpath);
 		g_free(msgpath);
 	}
-	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+	if (!discard_window) {
 		compose->sending = FALSE;
 		compose_allow_user_actions (compose, TRUE);
 		if (val != 0) {
@@ -3846,17 +3860,15 @@ gint compose_send(Compose *compose)
 	if (val == 0) {
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
-		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
+		if (!discard_window)
 			compose_close(compose);
 	} else {
+		if (!discard_window) {
+			goto bail;		
+		}
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
-		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
-			compose_allow_user_actions (compose, TRUE);
-			compose->modified = TRUE; 
-			compose->sending = FALSE;		
-		}
 		return -1;
  	}
 
@@ -5381,7 +5393,8 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 	return FALSE;
 }
 
-static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
+static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
+						 gboolean batch)
 {
 	Compose   *compose;
 	GtkWidget *window;
@@ -5437,6 +5450,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	titles[COL_SIZE]     = _("Size");
 	titles[COL_NAME]     = _("Name");
 
+	compose->batch = batch;
 	compose->account = account;
 	
 	compose->mutex = g_mutex_new();
@@ -5790,7 +5804,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	activate_privacy_system(compose, account, TRUE);
 	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
-	gtk_widget_show(window);
+	if (batch) {
+		gtk_widget_realize(window);
+	} else {
+		gtk_widget_show(window);
+	}
 	
 	return compose;
 }

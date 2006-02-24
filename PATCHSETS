@@ -1264,3 +1264,4 @@
 ( cvs diff -u -r 1.17.2.20 -r 1.17.2.21 src/alertpanel.c;  ) > 2.0.0cvs78.patchset
 ( cvs diff -u -r 1.101.2.20 -r 1.101.2.21 src/news.c;  cvs diff -u -r 1.21.2.3 -r 1.21.2.4 src/news.h;  cvs diff -u -r 1.2.2.15 -r 1.2.2.16 src/news_gtk.c;  ) > 2.0.0cvs79.patchset
 ( cvs diff -u -r 1.274.2.98 -r 1.274.2.99 src/mainwindow.c;  ) > 2.0.0cvs80.patchset
+( cvs diff -u -r 1.382.2.246 -r 1.382.2.247 src/compose.c;  cvs diff -u -r 1.50.2.21 -r 1.50.2.22 src/compose.h;  cvs diff -u -r 1.60.2.13 -r 1.60.2.14 src/filtering.c;  ) > 2.0.0cvs81.patchset

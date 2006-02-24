@@ -188,6 +188,8 @@ struct _Compose
 	
 	gboolean return_receipt;
 
+	gboolean batch;
+	
 	GSList *to_list;
 	GSList *newsgroup_list;
 
@@ -264,13 +266,15 @@ Compose *compose_forward		(PrefsAccount *account,
 					 MsgInfo	*msginfo,
 					 gboolean	 as_attach,
 					 const gchar	*body,
-					 gboolean	 no_extedit);
+					 gboolean	 no_extedit,
+					 gboolean	 batch);
 Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
 /* remove end */
 
 Compose *compose_redirect		(PrefsAccount	*account,
-					 MsgInfo	*msginfo);
+					 MsgInfo	*msginfo,
+					 gboolean	 batch);
 void compose_reedit			(MsgInfo	*msginfo);
 
 GList *compose_get_compose_list		(void);

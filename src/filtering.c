@@ -322,7 +322,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info,
 			action->type == MATCHACTION_FORWARD ? FALSE : TRUE,
-			NULL, TRUE);
+			NULL, TRUE, TRUE);
 		compose_entry_append(compose, action->destination,
 				     compose->account->protocol == A_NNTP
 					    ? COMPOSE_NEWSGROUPS
@@ -334,7 +334,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	case MATCHACTION_REDIRECT:
 		account = account_find_from_id(action->account_id);
-		compose = compose_redirect(account, info);
+		compose = compose_redirect(account, info, TRUE);
 		if (compose->account->protocol == A_NNTP)
 			break;
 		else
