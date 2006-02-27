@@ -1,4 +1,4 @@
-2006-02-27 [cleroy]	2.0.0cvs84
+2006-02-27 [colin]	2.0.0cvs84
 
 	* configure.ac
 	* src/Makefile.am
@@ -191,7 +191,7 @@
 		** Requires libetpan-0.42-cvs4 
 		** http://claws.sylpheed.org/snapshots/libetpan-0.42cvs4.tar.gz
 
-2006-02-17 [cleroy]	2.0.0cvs60
+2006-02-17 [colin]	2.0.0cvs60
 
 	* src/messageview.c
 	* src/prefs_common.c
@@ -200,7 +200,7 @@
 		Add pref to display HTML-only mails with plugin, 
 		if possible (defaulting to FALSE of course).
 
-2006-02-16 [cleroy]	2.0.0cvs59
+2006-02-16 [colin]	2.0.0cvs59
 
 	* src/main.c
 	* src/common/plugin.c
@@ -298,7 +298,7 @@
 		Fix temp files not being deleted on windows
 	Patches by Thomas Gilgin
 
-2006-02-13 [cleroy]	2.0.0cvs47
+2006-02-13 [colin]	2.0.0cvs47
 
 	* src/mainwindow.c
 		Fix exit crash
@@ -666,7 +666,7 @@
 		add Arabic encoding option
 		Patch submitted by  Mohammed Sameer <msameer@users.sf.net>
 
-2006-01-31 [cleroy]	2.0.0cvs3
+2006-01-31 [colin]	2.0.0cvs3
 
 	* src/plugins/pgpcore/passphrase.c
 		Convert passphrase to locale encoding
@@ -752,7 +752,7 @@
 		updated translations submitted by Stavros Giannouris
 		and Ralgh Young
 
-2006-01-27 [cleroy]	1.9.100cvs192
+2006-01-27 [colin]	1.9.100cvs192
 
 	* src/summaryview.c
 	* src/gtk/gtksourceprintjob.c
