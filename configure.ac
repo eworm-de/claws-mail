@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=83
+EXTRA_VERSION=84
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -616,6 +616,7 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_SPAMASSASSIN
 	PLUGINS="spamassassin $PLUGINS"
+	AC_DEFINE(USE_SPAMASSASSIN_PLUGIN, 1, Define if spamassassin plugin is being build.)
 else
 	AC_MSG_RESULT(no)
 fi

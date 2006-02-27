@@ -109,5 +109,7 @@ void messageview_reflect_prefs_pixmap_theme	(void);
 gchar *messageview_get_selection		(MessageView 	*msgview);
 
 void messageview_set_menu_sensitive		(MessageView	*msgview);
+void messageview_learn				(MessageView	*msgview,
+						 gboolean is_spam);
 
 #endif /* __MESSAGEVIEW_H__ */

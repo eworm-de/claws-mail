@@ -315,6 +315,7 @@ EXTRA_DIST = \
 	pixmaps/forwarded.xpm \
 	pixmaps/gpg_signed.xpm \
 	pixmaps/group.xpm \
+	pixmaps/ham_btn.xpm \
 	pixmaps/ignorethread.xpm \
 	pixmaps/inbox_hrm.xpm \
 	pixmaps/inbox.xpm \
@@ -372,6 +373,7 @@ EXTRA_DIST = \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
 	pixmaps/spam.xpm \
+	pixmaps/spam_btn.xpm \
 	pixmaps/sylpheed_icon.xpm \
 	pixmaps/sylpheed_logo.xpm \
 	pixmaps/sylpheed.xpm \

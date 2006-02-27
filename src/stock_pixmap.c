@@ -133,6 +133,8 @@
 #include "pixmaps/drafts_open_mark.xpm"
 #include "pixmaps/dir_noselect.xpm"
 #include "pixmaps/spam.xpm"
+#include "pixmaps/spam_btn.xpm"
+#include "pixmaps/ham_btn.xpm"
 #include "pixmaps/empty.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -296,6 +298,8 @@ static StockPixmapData pixmaps[] =
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
         {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL},
         {spam_xpm                               , NULL, NULL, "spam" , NULL},
+        {spam_btn_xpm                           , NULL, NULL, "spam_btn" , NULL},
+        {ham_btn_xpm                            , NULL, NULL, "ham_btn" , NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 

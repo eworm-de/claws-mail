@@ -747,6 +747,25 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	gchar *subject = NULL;
 	g_return_val_if_fail(msginfo != NULL, -1);
 
+	if (messageview->toolbar)
+		toolbar_set_learn_button
+			(messageview->toolbar,
+			 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
+	else
+		toolbar_set_learn_button
+			(messageview->mainwin->toolbar,
+			 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
+
+	if (messageview->toolbar) {
+		if (messageview->toolbar->learn_ham_btn)
+			gtk_widget_set_sensitive(
+				messageview->toolbar->learn_ham_btn, 
+				procmsg_spam_can_learn());
+		if (messageview->toolbar->learn_spam_btn)
+			gtk_widget_set_sensitive(
+				messageview->toolbar->learn_spam_btn, 
+				procmsg_spam_can_learn());
+	}
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) {
 		textview_show_error(messageview->mimeview->textview);
@@ -1591,4 +1610,23 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 			(GTK_CHECK_MENU_ITEM(menuitem),
 			 messageview->mimeview->textview->show_all_headers);
 	}
+}
+
+void messageview_learn (MessageView *msgview, gboolean is_spam)
+{
+	if (is_spam) {
+		procmsg_msginfo_set_flags(msgview->msginfo, MSG_SPAM, 0);
+		procmsg_spam_learner_learn(msgview->msginfo, NULL, TRUE);
+	} else {
+		procmsg_msginfo_unset_flags(msgview->msginfo, MSG_SPAM, 0);
+		procmsg_spam_learner_learn(msgview->msginfo, NULL, FALSE);
+	}
+	if (msgview->toolbar)
+		toolbar_set_learn_button
+			(msgview->toolbar,
+			 MSG_IS_SPAM(msgview->msginfo->flags)?LEARN_HAM:LEARN_SPAM);
+	else
+		toolbar_set_learn_button
+			(msgview->mainwin->toolbar,
+			 MSG_IS_SPAM(msgview->msginfo->flags)?LEARN_HAM:LEARN_SPAM);
 }

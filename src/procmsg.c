@@ -2079,6 +2079,7 @@ void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *li
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		summary_set_menu_sensitive(
 			mainwindow_get_mainwindow()->summaryview);
+		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	}
 }
 
@@ -2089,6 +2090,7 @@ void procmsg_unregister_spam_learner (void (*learn_func)(MsgInfo *info, GSList *
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		summary_set_menu_sensitive(
 			mainwindow_get_mainwindow()->summaryview);
+		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	}
 }
 

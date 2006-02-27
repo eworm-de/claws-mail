@@ -1,3 +1,26 @@
+2006-02-27 [cleroy]	2.0.0cvs84
+
+	* configure.ac
+	* src/Makefile.am
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/messageview.c
+	* src/messageview.h
+	* src/prefs_toolbar.c
+	* src/procmsg.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/toolbar.h
+	* src/pixmaps/ham_btn.xpm
+	* src/pixmaps/spam.xpm
+	* src/pixmaps/spam_btn.xpm
+	* src/plugins/spamassassin/spamassassin.c
+		Add button in toolbar for spam learning
+		Fix a few bugs from the last related commit
+		Revert 1.9.6cvs23 which messed up shift-selection
+
 2006-02-24 [colin]	2.0.0cvs83
 
 	* src/procmsg.c

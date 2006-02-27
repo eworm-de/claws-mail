@@ -40,6 +40,12 @@ typedef enum
  	COMPOSEBUTTON_NEWS
 } ComposeButtonType;
 
+typedef enum 
+{
+	LEARN_SPAM,
+ 	LEARN_HAM
+} LearnButtonType;
+
 struct _Toolbar {
 	GtkWidget *toolbar;
 
@@ -70,9 +76,11 @@ struct _Toolbar {
 	GtkWidget *exec_btn;
 
 	GtkWidget *separator;
+	GtkWidget *learn_spam_btn;
+	GtkWidget *learn_ham_btn;
 
-	
 	ComposeButtonType compose_btn_type;
+	LearnButtonType learn_btn_type;
 
 	/* compose buttons */
 	GtkWidget *sendl_btn;
@@ -155,6 +163,8 @@ enum {
 	A_GOTO_NEXT,
 	A_IGNORE_THREAD,
 	A_PRINT,
+	A_LEARN_SPAM,
+	A_LEARN_HAM,
 
 	/* compose toolbar */
 	A_SEND,
@@ -241,5 +251,7 @@ void	toolbar_set_style		(GtkWidget	*toolbar_wid,
 					 guint		 action);
 void 	toolbar_destroy			(Toolbar	*toolbar);
 void 	toolbar_init			(Toolbar	*toolbar);
+void toolbar_set_learn_button		(Toolbar	*toolbar, 
+					 LearnButtonType  learn_btn_type);
 
 #endif /* __CUSTOM_TOOLBAR_H__ */

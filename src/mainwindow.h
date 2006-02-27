@@ -202,4 +202,6 @@ gboolean mainwindow_key_pressed		      (GtkWidget 	 *widget,
 					       GdkEventKey 	 *event,
 				   	       gpointer 	  data);
 MainWindow *mainwindow_get_mainwindow 	      (void);
+void mainwindow_learn			      (MainWindow *mainwin,
+					       gboolean is_spam);
 #endif /* __MAINWINDOW_H__ */

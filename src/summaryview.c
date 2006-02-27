@@ -3221,7 +3221,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	gboolean is_spam = action;
 	GSList *msgs = NULL;
 	gboolean immediate_exec = prefs_common.immediate_exec;
-	
+	gboolean moved = FALSE;
 	prefs_common.immediate_exec = FALSE;
 
 	START_LONG_OPERATION(summaryview);
@@ -3231,7 +3231,10 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, row);
 		if (is_spam) {
 			summary_msginfo_change_flags(msginfo, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
-			summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
+			if (procmsg_spam_get_folder() != summaryview->folder_item) {
+				summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
+				moved = TRUE;
+			}
 		} else {
 			summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 		}
@@ -3245,7 +3248,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 
 	END_LONG_OPERATION(summaryview);
 
-	if (prefs_common.immediate_exec) {
+	if (prefs_common.immediate_exec && moved) {
 		summary_execute(summaryview);
 	}
 
@@ -4876,6 +4879,27 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return TRUE;
+	case GDK_Up:
+	case GDK_Down:
+		if ((node = summaryview->selected) != NULL) {
+			GtkCTreeNode *next = NULL;
+			do {
+				next = (event->keyval == GDK_Down)
+					? gtkut_ctree_node_next(ctree, next ? next:node)
+					: gtkut_ctree_node_prev(ctree, next ? next:node);
+			} while (next && !gtk_ctree_is_viewable(ctree, next));
+
+			if (next) {
+				gtk_sctree_select_with_state
+					(GTK_SCTREE(ctree), next, event->state);
+				
+				/* Deprecated - what are the non-deprecated equivalents? */
+				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
+					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
+				summaryview->selected = next;
+			}
+		}
+		return TRUE;
 	case GDK_Home:
 	case GDK_End:
 		if ((node = summaryview->selected) != NULL) {
@@ -5060,6 +5084,10 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	g_return_if_fail(msginfo != NULL);
+
+	toolbar_set_learn_button
+		(summaryview->mainwin->toolbar,
+		 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
 
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:

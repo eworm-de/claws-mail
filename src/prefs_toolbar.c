@@ -293,8 +293,10 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 		g_list_free(syl_actions);
 	}
 
-	for (i = 0; i < STOCK_PIXMAP_SYLPHEED_LOGO; i++) {
+	for (i = 0; i < STOCK_PIXMAP_EMPTY; i++) {
 		GdkPixbuf *pixbuf;
+		if (i == STOCK_PIXMAP_SYLPHEED_LOGO)
+			continue;/* that's too big */
 
 		stock_pixbuf_gdk(prefs_toolbar->window, i, &pixbuf);
 		

@@ -936,6 +936,9 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
 					  handlebox, 
 					  (gpointer)mainwin);
+	toolbar_set_learn_button
+		(mainwin->toolbar,
+		 LEARN_SPAM);
 
 	/* vbox that contains body */
 	vbox_body = gtk_vbox_new(FALSE, BORDER_WIDTH);
@@ -3389,7 +3392,7 @@ static void sync_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	mainwindow_check_synchronise(mainwin, FALSE);
 }
 
-/*
-* End of Source.
-*/
-
+void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)
+{
+	summary_mark_as_spam(mainwin->summaryview, is_spam, NULL);
+}

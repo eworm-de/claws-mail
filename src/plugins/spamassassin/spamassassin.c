@@ -45,6 +45,8 @@
 
 #include "libspamc.h"
 #include "spamassassin.h"
+#include "log.h"
+#include "prefs_common.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -266,7 +268,8 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		file = procmsg_get_message_file(msginfo);
 		if (file == NULL)
 			return;
-		cmd = g_strdup_printf("sa-learn %s %s", 
+		cmd = g_strdup_printf("sa-learn %s %s %s", 
+			prefs_common.work_offline?"-L":"",
 			spam?"--spam":"--ham", file);
 	}
 	if (msglist) {
