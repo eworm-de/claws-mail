@@ -45,13 +45,15 @@ struct SpamAssassinPage
 	PrefsPage page;
 	
 	GtkWidget *transport;
-	GtkWidget *transport_notebook;
+/*	GtkWidget *transport_notebook;*/
+	GtkWidget *username;
 	GtkWidget *hostname;
 	GtkWidget *colon;
 	GtkWidget *port;
 	GtkWidget *socket;
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
+	GtkWidget *save_folder_select;
 	GtkWidget *max_size;
 	GtkWidget *timeout;
 
@@ -108,28 +110,40 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 		gtk_widget_show(page->colon);
 		gtk_widget_show(page->port);
 		gtk_widget_hide(page->socket);
+		gtk_widget_set_sensitive(page->username, FALSE);
 		gtk_widget_set_sensitive(page->hostname, FALSE);
 		gtk_widget_set_sensitive(page->colon, FALSE);
 		gtk_widget_set_sensitive(page->port, FALSE);
 		gtk_widget_set_sensitive(page->max_size, FALSE);
 		gtk_widget_set_sensitive(page->timeout, FALSE);
+		gtk_widget_set_sensitive(page->receive_spam, FALSE);
+		gtk_widget_set_sensitive(page->save_folder, FALSE);
+		gtk_widget_set_sensitive(page->save_folder_select, FALSE);
 		break;
 	case PAGE_UNIX:
 		gtk_widget_hide(page->hostname);
 		gtk_widget_hide(page->colon);
 		gtk_widget_hide(page->port);
 		gtk_widget_show(page->socket);
+		gtk_widget_set_sensitive(page->username, TRUE);
 		gtk_widget_set_sensitive(page->socket, TRUE);
 		gtk_widget_set_sensitive(page->max_size, TRUE);
 		gtk_widget_set_sensitive(page->timeout, TRUE);
+		gtk_widget_set_sensitive(page->receive_spam, TRUE);
+		gtk_widget_set_sensitive(page->save_folder, TRUE);
+		gtk_widget_set_sensitive(page->save_folder_select, TRUE);
 		break;
 	case PAGE_NETWORK:
 		gtk_widget_show(page->hostname);
 		gtk_widget_show(page->colon);
 		gtk_widget_show(page->port);
 		gtk_widget_hide(page->socket);
+		gtk_widget_set_sensitive(page->username, TRUE);
 		gtk_widget_set_sensitive(page->max_size, TRUE);
 		gtk_widget_set_sensitive(page->timeout, TRUE);
+		gtk_widget_set_sensitive(page->receive_spam, TRUE);
+		gtk_widget_set_sensitive(page->save_folder, TRUE);
+		gtk_widget_set_sensitive(page->save_folder_select, TRUE);
 		if (transport->pageflags & NETWORK_HOSTNAME) {
 			gtk_widget_set_sensitive(page->hostname, TRUE);
 			gtk_widget_set_sensitive(page->colon, TRUE);
@@ -143,7 +157,7 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 	default:
 		break;
 	}
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(page->transport_notebook), transport->page);
+/*	gtk_notebook_set_current_page(GTK_NOTEBOOK(page->transport_notebook), transport->page);*/
 }
 
 static void transport_sel_cb(GtkMenuItem *menuitem, gpointer data)
@@ -164,14 +178,16 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	guint i, active;
 
 	GtkWidget *table;
+	GtkWidget *label2;
 	GtkWidget *label3;
 	GtkWidget *label4;
+	GtkWidget *hbox1;
 	GtkWidget *hbox4;
 	GtkWidget *transport;
 	GtkWidget *transport_menu;
-	GtkWidget *transport_notebook;
-	GtkWidget *hbox1;
+/*	GtkWidget *transport_notebook;*/
 	GtkWidget *spamd_hbox;
+	GtkWidget *username;
 	GtkWidget *hostname;
 	GtkWidget *colon;
 	GtkObject *port_adj;
@@ -195,7 +211,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	tooltips = gtk_tooltips_new();
 
-	table = gtk_table_new(8, 3, FALSE);
+	table = gtk_table_new(9, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -216,7 +232,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_end(GTK_BOX(hbox4), transport, FALSE, FALSE, 0);
 	transport_menu = gtk_menu_new();
 
-	transport_notebook = gtk_notebook_new();
+/*	transport_notebook = gtk_notebook_new();
 	gtk_widget_show(transport_notebook);
 	gtk_table_attach(GTK_TABLE(table), transport_notebook, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -226,14 +242,25 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 				   FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(transport_notebook),
 				     FALSE);
+*/
 
 	hbox1 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox1);
-	gtk_container_add(GTK_CONTAINER(transport_notebook), hbox1);
+	gtk_table_attach(GTK_TABLE(table), hbox1, 0, 1, 1, 2,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+	label2 = gtk_label_new(_("User"));
+	gtk_widget_show(label2);
+	gtk_box_pack_start(GTK_BOX(hbox1), label2, FALSE, FALSE, 0);
+
+	username = gtk_entry_new();
+	gtk_widget_show(username);
+	gtk_box_pack_end(GTK_BOX(hbox1), username, FALSE, FALSE, 0);
 
   	spamd_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (spamd_hbox);
-  	gtk_table_attach (GTK_TABLE (table), spamd_hbox, 0, 1, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), spamd_hbox, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -268,7 +295,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
   	hbox3 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox3);
-  	gtk_table_attach (GTK_TABLE (table), hbox3, 0, 1, 2, 3,
+  	gtk_table_attach (GTK_TABLE (table), hbox3, 0, 1, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -287,13 +314,13 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	label11 = gtk_label_new(_("kB"));
 	gtk_widget_show(label11);
-	gtk_table_attach(GTK_TABLE(table), label11, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), label11, 1, 2, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
 	hbox6 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox6);
-	gtk_table_attach(GTK_TABLE(table), hbox6, 0, 1, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), hbox6, 0, 1, 4, 5,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -312,13 +339,13 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	label16 = gtk_label_new(_("s"));
 	gtk_widget_show(label16);
-	gtk_table_attach(GTK_TABLE(table), label16, 1, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), label16, 1, 2, 4, 5,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
 	receive_spam = gtk_check_button_new_with_label(_("Save Spam"));
 	gtk_widget_show(receive_spam);
-	gtk_table_attach(GTK_TABLE(table), receive_spam, 0, 1, 4, 5,
+	gtk_table_attach(GTK_TABLE(table), receive_spam, 0, 1, 5, 6,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_tooltips_set_tip(tooltips, receive_spam,
@@ -327,7 +354,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
   	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
-  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 5, 6,
+  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 6, 7,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
 	SET_TOGGLE_SENSITIVITY (receive_spam, hbox2);
@@ -356,6 +383,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(save_folder_select), "released",
 			 G_CALLBACK(foldersel_cb), page);
 
+	if (config->username != NULL)
+		gtk_entry_set_text(GTK_ENTRY(username), config->username);
 	if (config->hostname != NULL)
 		gtk_entry_set_text(GTK_ENTRY(hostname), config->hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) config->port);
@@ -366,13 +395,15 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(timeout), (float) config->timeout);
 	
 	page->transport = transport;
-	page->transport_notebook = transport_notebook;
+/*	page->transport_notebook = transport_notebook;*/
+	page->username = username;
 	page->hostname = hostname;
 	page->colon = colon;
 	page->port = port;
 	page->socket = socket;
 	page->receive_spam = receive_spam;
 	page->save_folder = save_folder;
+	page->save_folder_select = save_folder_select;
 	page->max_size = max_size;
 	page->timeout = timeout;
 
@@ -415,6 +446,11 @@ static void spamassassin_save_func(PrefsPage *_page)
 	/* enable */
 	config->transport = page->trans;
 
+	/* username */
+	g_free(config->username);
+	config->username = gtk_editable_get_chars(GTK_EDITABLE(page->username), 0, -1);
+	spamassassin_check_username();
+
 	/* hostname */
 	g_free(config->hostname);
 	config->hostname = gtk_editable_get_chars(GTK_EDITABLE(page->hostname), 0, -1);
@@ -439,13 +475,12 @@ static void spamassassin_save_func(PrefsPage *_page)
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
 
-	if (config->transport == SPAMASSASSIN_DISABLED ||
-	    config->transport == SPAMASSASSIN_TRANSPORT_TCP) {
+	if (config->transport == SPAMASSASSIN_DISABLED) {
 		procmsg_unregister_spam_learner(spamassassin_learn);
 		procmsg_spam_set_folder(NULL);
-		if (config->transport == SPAMASSASSIN_TRANSPORT_TCP)
-			debug_print("disabling learner as it only works locally\n");
 	} else {
+		if (config->transport == SPAMASSASSIN_TRANSPORT_TCP)
+			debug_print("enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
 		procmsg_spam_set_folder(config->save_folder);
 	}

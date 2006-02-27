@@ -77,7 +77,6 @@ enum {
 
 static guint hook_id;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
-static gchar *username = NULL;
 static MessageCallback message_callback;
 
 static SpamAssassinConfig config;
@@ -98,6 +97,8 @@ static PrefParam param[] = {
 	{"max_size", "250", &config.max_size, P_INT,
 	 NULL, NULL, NULL},
 	{"timeout", "30", &config.timeout, P_INT,
+	 NULL, NULL, NULL},
+	{"username", "", &config.username, P_STRING,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -155,7 +156,7 @@ static gboolean msg_is_spam(FILE *fp)
 		return FALSE;
 	}
 
-	if (message_filter(&trans, username, flags, &m) != EX_OK) {
+	if (message_filter(&trans, config.username, flags, &m) != EX_OK) {
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
 		return FALSE;
@@ -268,41 +269,80 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		file = procmsg_get_message_file(msginfo);
 		if (file == NULL)
 			return;
-		cmd = g_strdup_printf("sa-learn %s %s %s", 
-			prefs_common.work_offline?"-L":"",
-			spam?"--spam":"--ham", file);
+		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
+			cmd = g_strdup_printf("sa-learn -u %s %s %s %s",
+							config.username,
+							prefs_common.work_offline?"-L":"",
+							spam?"--spam":"--ham", file);
+		} else {
+			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s < %s",
+							config.hostname, config.port, 
+							config.username, config.timeout,
+							config.max_size * 1024, spam?"spam":"ham", file);
+		}
 	}
 	if (msglist) {
-		GSList *cur;
+		GSList *cur = msglist;
 		MsgInfo *info;
-		cmd = g_strdup_printf("sa-learn %s %s", 
-				prefs_common.work_offline?"-L":"",
-				spam?"--spam":"--ham");
-		for (cur = msglist; cur; cur = cur->next) {
-			info = (MsgInfo *)cur->data;
-			gchar *tmpcmd = NULL;
-			gchar *tmpfile = get_tmp_file();
-			
-			if (tmpfile &&
-			    copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
-				tmpcmd = g_strconcat
-					(cmd, " ", tmpfile, NULL);
-				g_free(cmd);
-				cmd = tmpcmd;
+
+		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
+			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s",
+							config.hostname, config.port,
+							config.username, config.timeout,
+							config.max_size * 1024, spam?"spam":"ham");
+
+			/* execute n-times the spamc command */
+			for (; cur; cur = cur->next) {
+				info = (MsgInfo *)cur->data;
+				gchar *tmpcmd = NULL;
+				gchar *tmpfile = get_tmp_file();
+
+				if (tmpfile &&
+			    	copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
+					tmpcmd = g_strconcat(cmd, " < ", tmpfile, NULL);
+					debug_print("%s\n", tmpcmd);
+					execute_command_line(tmpcmd, FALSE);
+					g_free(tmpcmd);
+				}
+				if (tmpfile)
+					g_free(tmpfile);
 			}
-			if (tmpfile)
-				g_free(tmpfile);
+			async = TRUE;
+
+			g_free(cmd);
+			return;
+		} else {
+			cmd = g_strdup_printf("sa-learn -u %s %s %s",
+					config.username,
+					prefs_common.work_offline?"-L":"",
+					spam?"--spam":"--ham");
+
+			/* concatenate all message tmpfiles to the sa-learn command-line */
+			for (; cur; cur = cur->next) {
+				info = (MsgInfo *)cur->data;
+				gchar *tmpcmd = NULL;
+				gchar *tmpfile = get_tmp_file();
+
+				if (tmpfile &&
+			    	copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
+					tmpcmd = g_strconcat(cmd, " ", tmpfile, NULL);
+					g_free(cmd);
+					cmd = tmpcmd;
+				}
+				if (tmpfile)
+					g_free(tmpfile);
+			}
+			async = TRUE;
 		}
-		async = TRUE;
 	}
 	if (cmd == NULL)
 		return;
-	debug_print("%s\n",cmd);
+	debug_print("%s\n", cmd);
 	/* only run async if we have a list, or we could end up
 	 * forking lots of perl processes and bury the machine */
+	
 	execute_command_line(cmd, async);
 	g_free(cmd);
-	
 }
 
 void spamassassin_save_config(void)
@@ -326,6 +366,20 @@ void spamassassin_save_config(void)
 	fprintf(pfile->fp, "\n");
 
 	prefs_file_close(pfile);
+}
+
+gboolean spamassassin_check_username(void)
+{
+	if (config.username == NULL || config.username[0] == '\0') {
+		config.username = (gchar*)g_get_user_name();
+		if (config.username == NULL) {
+			hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+			procmsg_unregister_spam_learner(spamassassin_learn);
+			procmsg_spam_set_folder(NULL);
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 void spamassassin_set_message_callback(MessageCallback callback)
@@ -353,17 +407,14 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	username = (gchar*)g_get_user_name();
-	if (username == NULL) {
-		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
-		*error = g_strdup("Failed to get username");
-		return -1;
-	}
-
 	prefs_set_default(param);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "SpamAssassin", rcpath, NULL);
 	g_free(rcpath);
+	if (!spamassassin_check_username()) {
+		*error = g_strdup("Failed to get username");
+		return -1;
+	}
 	spamassassin_gtk_init();
 		
 	debug_print("Spamassassin plugin loaded\n");
@@ -371,13 +422,13 @@ gint plugin_init(gchar **error)
 	if (config.transport == SPAMASSASSIN_DISABLED) {
 		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
 	}
-	
-	if (config.transport != SPAMASSASSIN_DISABLED &&
-	    config.transport != SPAMASSASSIN_TRANSPORT_TCP) {
+
+	if (config.transport != SPAMASSASSIN_DISABLED) {
+		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
+			debug_print("enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
 		procmsg_spam_set_folder(config.save_folder);
-	} else if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
-		debug_print("disabling learner as it only works locally\n");
+	}
 
 	return 0;
 	
@@ -425,4 +476,3 @@ const gchar *plugin_version(void)
 {
 	return VERSION;
 }
-

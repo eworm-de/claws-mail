@@ -1,3 +1,18 @@
+2006-02-27 [wwp]	2.0.0cvs86
+
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		- added the ability to learn a remote spamassassin server (spamd),
+		using spamc.
+		- added the spamassassin option 'username', that applies to all
+		spamassassin operations (filtering, learning, local or remote).
+		The default username is the current unix user (if left blank
+		from gtk prefs or config file).
+		- commented out some unused code (notebook widget), removed unused
+		layout (hbox1).
+		- make more widgets sensitive to the transport type.
+
 2006-02-27 [colin]	2.0.0cvs85
 
 	* src/plugins/spamassassin/spamassassin.c

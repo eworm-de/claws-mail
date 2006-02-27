@@ -43,10 +43,12 @@ struct _SpamAssassinConfig
 	gchar 			*save_folder;
 	guint 			 max_size;
 	guint 			 timeout;
+	gchar			*username;
 };
 
 SpamAssassinConfig *spamassassin_get_config	      (void);
 void		    spamassassin_save_config	      (void);
+gint			spamassassin_check_username	      (void);  
 void 	            spamassassin_set_message_callback (MessageCallback callback);
 gint spamassassin_gtk_init(void);
 void spamassassin_gtk_done(void);
