@@ -1,3 +1,8 @@
+2006-02-27 [colin]	2.0.0cvs85
+
+	* src/plugins/spamassassin/spamassassin.c
+		Fix sa-learn call when offline
+
 2006-02-27 [colin]	2.0.0cvs84
 
 	* configure.ac

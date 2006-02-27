@@ -275,7 +275,9 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	if (msglist) {
 		GSList *cur;
 		MsgInfo *info;
-		cmd = g_strdup_printf("sa-learn %s", spam?"--spam":"--ham");
+		cmd = g_strdup_printf("sa-learn %s %s", 
+				prefs_common.work_offline?"-L":"",
+				spam?"--spam":"--ham");
 		for (cur = msglist; cur; cur = cur->next) {
 			info = (MsgInfo *)cur->data;
 			gchar *tmpcmd = NULL;
