@@ -301,14 +301,12 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			    	copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
 					tmpcmd = g_strconcat(cmd, " < ", tmpfile, NULL);
 					debug_print("%s\n", tmpcmd);
-					execute_command_line(tmpcmd, FALSE);
+					execute_command_line(tmpcmd, TRUE);
 					g_free(tmpcmd);
 				}
 				if (tmpfile)
 					g_free(tmpfile);
 			}
-			async = TRUE;
-
 			g_free(cmd);
 			return;
 		} else {

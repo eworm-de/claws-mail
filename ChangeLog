@@ -1,3 +1,9 @@
+2006-02-28 [wwp]	2.0.0cvs87
+
+	* src/plugins/spamassassin/spamassassin.c
+		fix async flag to spamc cmdline execution (batch exec should
+		be asynchronous).
+
 2006-02-27 [wwp]	2.0.0cvs86
 
 	* src/plugins/spamassassin/spamassassin.c
