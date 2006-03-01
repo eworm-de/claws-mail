@@ -1,3 +1,15 @@
+2006-03-01 [wwp]	2.0.0cvs88
+
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		made processing of emails w/ sa-plugin an option (default is TRUE),
+		fixed Engrish some tooltips, capitalization of some debug messages
+		and warnings. The spamassassin plugin now provides two separate
+		services: process emails upon incorporation and spamd training.
+		Both services (un)register independently but use some common
+		plugin settings (transport settings, spam storage location).
+
 2006-02-28 [wwp]	2.0.0cvs87
 
 	* src/plugins/spamassassin/spamassassin.c

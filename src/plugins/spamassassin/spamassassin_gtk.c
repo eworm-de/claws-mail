@@ -51,6 +51,7 @@ struct SpamAssassinPage
 	GtkWidget *colon;
 	GtkWidget *port;
 	GtkWidget *socket;
+	GtkWidget *process_emails;
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
 	GtkWidget *save_folder_select;
@@ -116,6 +117,7 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 		gtk_widget_set_sensitive(page->port, FALSE);
 		gtk_widget_set_sensitive(page->max_size, FALSE);
 		gtk_widget_set_sensitive(page->timeout, FALSE);
+		gtk_widget_set_sensitive(page->process_emails, FALSE);
 		gtk_widget_set_sensitive(page->receive_spam, FALSE);
 		gtk_widget_set_sensitive(page->save_folder, FALSE);
 		gtk_widget_set_sensitive(page->save_folder_select, FALSE);
@@ -129,6 +131,7 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 		gtk_widget_set_sensitive(page->socket, TRUE);
 		gtk_widget_set_sensitive(page->max_size, TRUE);
 		gtk_widget_set_sensitive(page->timeout, TRUE);
+		gtk_widget_set_sensitive(page->process_emails, TRUE);
 		gtk_widget_set_sensitive(page->receive_spam, TRUE);
 		gtk_widget_set_sensitive(page->save_folder, TRUE);
 		gtk_widget_set_sensitive(page->save_folder_select, TRUE);
@@ -141,6 +144,7 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 		gtk_widget_set_sensitive(page->username, TRUE);
 		gtk_widget_set_sensitive(page->max_size, TRUE);
 		gtk_widget_set_sensitive(page->timeout, TRUE);
+		gtk_widget_set_sensitive(page->process_emails, TRUE);
 		gtk_widget_set_sensitive(page->receive_spam, TRUE);
 		gtk_widget_set_sensitive(page->save_folder, TRUE);
 		gtk_widget_set_sensitive(page->save_folder_select, TRUE);
@@ -207,11 +211,13 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_folder;
 	GtkWidget *save_folder_select;
 	GtkWidget *label6;
+	GtkWidget *hbox5;
+	GtkWidget *process_emails;
 	GtkTooltips *tooltips;
 
 	tooltips = gtk_tooltips_new();
 
-	table = gtk_table_new(9, 3, FALSE);
+	table = gtk_table_new(10, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -257,6 +263,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	username = gtk_entry_new();
 	gtk_widget_show(username);
 	gtk_box_pack_end(GTK_BOX(hbox1), username, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, username, _("User to use with spamd server"),
+			     NULL);
 
   	spamd_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (spamd_hbox);
@@ -308,7 +316,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size);
 	gtk_box_pack_end(GTK_BOX(hbox3), max_size, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, max_size,
-			_("Maximum size a message is allowed to have to be checked"),
+			_("Don't check emails bigger than"),
 			NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size), TRUE);
 
@@ -343,18 +351,34 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
+	process_emails = gtk_check_button_new_with_label(_("Process emails"));
+	gtk_widget_show(process_emails);
+	gtk_table_attach(GTK_TABLE(table), process_emails, 0, 1, 5, 6,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(tooltips, process_emails,
+			     _("Process emails upon incorporation"),
+			     NULL);
+
+  	hbox5 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox5);
+  	gtk_table_attach (GTK_TABLE (table), hbox5, 0, 1, 6, 7,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	SET_TOGGLE_SENSITIVITY (process_emails, hbox5);
+
 	receive_spam = gtk_check_button_new_with_label(_("Save Spam"));
 	gtk_widget_show(receive_spam);
-	gtk_table_attach(GTK_TABLE(table), receive_spam, 0, 1, 5, 6,
+	gtk_table_attach(GTK_TABLE(table), receive_spam, 0, 1, 6, 7,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_tooltips_set_tip(tooltips, receive_spam,
-			     _("Save mails that where identified as spam"),
+			     _("Save identified spam"),
 			     NULL);
 
   	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
-  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 6, 7,
+  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 7, 8,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (GTK_FILL), 0, 0);
 	SET_TOGGLE_SENSITIVITY (receive_spam, hbox2);
@@ -368,14 +392,14 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_folder);
 	gtk_box_pack_start (GTK_BOX (hbox2), save_folder, TRUE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, save_folder,
-			     _("Leave empty to use the default trash folder"),
+			     _("Folder to store identified spam. Leave empty to use the default trash folder"),
 			     NULL);
 
 	save_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_folder_select);
   	gtk_box_pack_end (GTK_BOX (hbox2), save_folder_select, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, save_folder_select,
-			     _("Leave empty to use the default trash folder"),
+			     _("Click this button to select a folder to store spam in"),
 			     NULL);
 
 	config = spamassassin_get_config();
@@ -388,6 +412,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	if (config->hostname != NULL)
 		gtk_entry_set_text(GTK_ENTRY(hostname), config->hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) config->port);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(receive_spam), config->receive_spam);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_folder), config->save_folder);
@@ -401,6 +426,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->colon = colon;
 	page->port = port;
 	page->socket = socket;
+	page->process_emails = process_emails;
 	page->receive_spam = receive_spam;
 	page->save_folder = save_folder;
 	page->save_folder_select = save_folder_select;
@@ -462,6 +488,9 @@ static void spamassassin_save_func(PrefsPage *_page)
 	g_free(config->socket);
 	config->socket = gtk_editable_get_chars(GTK_EDITABLE(page->socket), 0, -1);
 
+	/* process_emails */
+	config->process_emails = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->process_emails));
+
 	/* receive_spam */
 	config->receive_spam = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->receive_spam));
 
@@ -474,6 +503,12 @@ static void spamassassin_save_func(PrefsPage *_page)
 
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
+
+	if (config->process_emails) {
+		spamassassin_register_hook();
+	} else {
+		spamassassin_unregister_hook();
+	}
 
 	if (config->transport == SPAMASSASSIN_DISABLED) {
 		procmsg_unregister_spam_learner(spamassassin_learn);

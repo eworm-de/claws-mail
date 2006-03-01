@@ -75,7 +75,7 @@ enum {
     TIMEOUT_RUNNING = 1 << 1,
 };
 
-static guint hook_id;
+static guint hook_id = -1;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static MessageCallback message_callback;
 
@@ -89,6 +89,8 @@ static PrefParam param[] = {
 	{"port", "783", &config.port, P_INT,
 	 NULL, NULL, NULL},
 	{"socket", "", &config.socket, P_STRING,
+	 NULL, NULL, NULL},
+	{"process_emails", "TRUE", &config.process_emails, P_BOOL,
 	 NULL, NULL, NULL},
 	{"receive_spam", "TRUE", &config.receive_spam, P_BOOL,
 	 NULL, NULL, NULL},
@@ -277,7 +279,7 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		} else {
 			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s < %s",
 							config.hostname, config.port, 
-							config.username, config.timeout,
+ 							config.username, config.timeout,
 							config.max_size * 1024, spam?"spam":"ham", file);
 		}
 	}
@@ -357,7 +359,7 @@ void spamassassin_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("failed to write SpamAssassin configuration to file\n");
+		g_warning("Failed to write SpamAssassin configuration to file\n");
 		prefs_file_close_revert(pfile);
 		return;
 	}
@@ -371,7 +373,9 @@ gboolean spamassassin_check_username(void)
 	if (config.username == NULL || config.username[0] == '\0') {
 		config.username = (gchar*)g_get_user_name();
 		if (config.username == NULL) {
-			hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+			if (hook_id != -1) {
+				spamassassin_unregister_hook();
+			}
 			procmsg_unregister_spam_learner(spamassassin_learn);
 			procmsg_spam_set_folder(NULL);
 			return FALSE;
@@ -389,6 +393,8 @@ gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
 
+	hook_id = -1;
+
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the SpamAssassin plugin was built with");
 		return -1;
@@ -396,12 +402,6 @@ gint plugin_init(gchar **error)
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
 		*error = g_strdup("Your version of Sylpheed-Claws is too old for the SpamAssassin plugin");
-		return -1;
-	}
-
-	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == -1) {
-		*error = g_strdup("Failed to register mail filtering hook");
 		return -1;
 	}
 
@@ -417,13 +417,17 @@ gint plugin_init(gchar **error)
 		
 	debug_print("Spamassassin plugin loaded\n");
 
+	if (config.process_emails) {
+		spamassassin_register_hook();
+	}
+
 	if (config.transport == SPAMASSASSIN_DISABLED) {
 		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
 	}
 
 	if (config.transport != SPAMASSASSIN_DISABLED) {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
-			debug_print("enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
+			debug_print("Enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
 		procmsg_spam_set_folder(config.save_folder);
 	}
@@ -434,7 +438,9 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
-	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+	if (hook_id != -1) {
+		spamassassin_unregister_hook();
+	}
 	g_free(config.hostname);
 	g_free(config.save_folder);
 	spamassassin_gtk_done();
@@ -473,4 +479,20 @@ const gchar *plugin_licence(void)
 const gchar *plugin_version(void)
 {
 	return VERSION;
+}
+
+void spamassassin_register_hook(void)
+{
+	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
+	if (hook_id == -1) {
+		g_warning("Failed to register mail filtering hook");
+		config.process_emails = FALSE;
+	}
+}
+
+void spamassassin_unregister_hook(void)
+{
+	if (hook_id != -1) {
+		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+	}
 }

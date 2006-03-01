@@ -39,6 +39,7 @@ struct _SpamAssassinConfig
 	gchar			*hostname;
 	guint 			 port;
 	gchar			*socket;
+	gboolean		 process_emails;
 	gboolean 		 receive_spam;
 	gchar 			*save_folder;
 	guint 			 max_size;
@@ -53,4 +54,6 @@ void 	            spamassassin_set_message_callback (MessageCallback callback);
 gint spamassassin_gtk_init(void);
 void spamassassin_gtk_done(void);
 void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam);
+void spamassassin_register_hook(void);
+void spamassassin_unregister_hook(void);
 #endif
