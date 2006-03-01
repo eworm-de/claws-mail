@@ -1,3 +1,10 @@
+2006-03-01 [wwp]	2.0.0cvs93
+
+	* src/plugins/spamassassin/spamassassin.c
+		fixed spamc invocation: use a tricky temporary mini shell wrapper
+		'cause it seems that calling `spamc ... < inputfile` with
+		g_spawn_(a)sync simply.. erm doesn't work :-).
+
 2006-03-01 [wwp]	2.0.0cvs92
 
 	* src/toolbar.c

@@ -259,29 +259,60 @@ SpamAssassinConfig *spamassassin_get_config(void)
 	return &config;
 }
 
+gchar* spamassassin_create_tmp_spamc_wrapper(gboolean spam)
+{
+	gchar *contents;
+	gchar *fname = get_tmp_file();
+	GError *err;
+
+	if (fname != NULL) {
+		contents = g_strdup_printf(
+						"spamc -d %s -p %u -u %s -t %u -s %u -L %s<\"$*\";exit $?",
+						config.hostname, config.port, 
+						config.username, config.timeout,
+						config.max_size * 1024, spam?"spam":"ham");
+		if (!g_file_set_contents(fname, contents,
+							strlen(contents), &err)) {
+			g_warning(err->message);
+			g_error_free(err);
+			g_free(fname);
+			fname = NULL;
+		}
+		g_free(contents);
+	}
+	/* returned pointer must be free'ed by caller */
+	return fname;
+}
+
 int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 {
 	gchar *cmd = NULL;
 	gchar *file = NULL;
 	gboolean async = FALSE;
+	const gchar *shell = g_getenv("SHELL");
+	gchar *spamc_wrapper = NULL;
 
-	if (msginfo == NULL && msglist == NULL)
+	if (msginfo == NULL && msglist == NULL) {
 		return -1;
+	}
 
 	if (config.transport == SPAMASSASSIN_TRANSPORT_TCP
 	&&  prefs_common.work_offline
-	&&  !inc_offline_should_override())
+	&&  !inc_offline_should_override()) {
 		return -1;
+	}
 
 	if (msginfo) {
 		file = procmsg_get_message_file(msginfo);
-		if (file == NULL)
+		if (file == NULL) {
 			return -1;
+		}
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
-			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s < %s",
-							config.hostname, config.port, 
- 							config.username, config.timeout,
-							config.max_size * 1024, spam?"spam":"ham", file);
+			spamc_wrapper = spamassassin_create_tmp_spamc_wrapper(spam);
+			if (spamc_wrapper != NULL) {
+				cmd = g_strconcat(shell?shell:"sh", " ",
+								spamc_wrapper, " ", file, NULL);
+			}
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s %s %s %s",
 							config.username,
@@ -294,28 +325,31 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		MsgInfo *info;
 
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
-			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s",
-							config.hostname, config.port,
-							config.username, config.timeout,
-							config.max_size * 1024, spam?"spam":"ham");
-
 			/* execute n-times the spamc command */
 			for (; cur; cur = cur->next) {
 				info = (MsgInfo *)cur->data;
 				gchar *tmpcmd = NULL;
 				gchar *tmpfile = get_tmp_file();
 
-				if (tmpfile &&
-			    	copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {			
-					tmpcmd = g_strconcat(cmd, " < ", tmpfile, NULL);
+				if (spamc_wrapper == NULL) {
+					spamc_wrapper = spamassassin_create_tmp_spamc_wrapper(spam);
+				}
+
+				if (spamc_wrapper && tmpfile &&
+			    	copy_file(procmsg_get_message_file(info), tmpfile, TRUE) == 0) {
+					tmpcmd = g_strconcat(shell?shell:"sh", " ", spamc_wrapper, " ",
+										tmpfile, NULL);
 					debug_print("%s\n", tmpcmd);
 					execute_command_line(tmpcmd, TRUE);
 					g_free(tmpcmd);
 				}
-				if (tmpfile)
+				if (tmpfile != NULL) {
 					g_free(tmpfile);
+				}
 			}
-			g_free(cmd);
+			if (spamc_wrapper != NULL) {
+				g_free(spamc_wrapper);
+			}
 			return 0;
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s %s %s",
@@ -335,20 +369,25 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					g_free(cmd);
 					cmd = tmpcmd;
 				}
-				if (tmpfile)
+				if (tmpfile != NULL) {
 					g_free(tmpfile);
+				}
 			}
 			async = TRUE;
 		}
 	}
-	if (cmd == NULL)
+	if (cmd == NULL) {
 		return -1;
+	}
 	debug_print("%s\n", cmd);
 	/* only run async if we have a list, or we could end up
 	 * forking lots of perl processes and bury the machine */
 	
 	execute_command_line(cmd, async);
 	g_free(cmd);
+	if (spamc_wrapper != NULL) {
+		g_free(spamc_wrapper);
+	}
 	return 0;
 }
 

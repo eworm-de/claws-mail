@@ -1276,3 +1276,4 @@
 ( cvs diff -u -r 1.382.2.247 -r 1.382.2.248 src/compose.c;  ) > 2.0.0cvs90.patchset
 ( cvs diff -u -r 1.94.2.78 -r 1.94.2.79 src/messageview.c;  cvs diff -u -r 1.150.2.54 -r 1.150.2.55 src/procmsg.c;  cvs diff -u -r 1.60.2.24 -r 1.60.2.25 src/procmsg.h;  cvs diff -u -r 1.395.2.176 -r 1.395.2.177 src/summaryview.c;  cvs diff -u -r 1.18.2.25 -r 1.18.2.26 src/plugins/spamassassin/spamassassin.c;  cvs diff -u -r 1.4.2.9 -r 1.4.2.10 src/plugins/spamassassin/spamassassin.h;  ) > 2.0.0cvs91.patchset
 ( cvs diff -u -r 1.43.2.40 -r 1.43.2.41 src/toolbar.c;  cvs diff -u -r 1.19.2.9 -r 1.19.2.10 src/toolbar.h;  ) > 2.0.0cvs92.patchset
+( cvs diff -u -r 1.18.2.26 -r 1.18.2.27 src/plugins/spamassassin/spamassassin.c;  ) > 2.0.0cvs93.patchset
