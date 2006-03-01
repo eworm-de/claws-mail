@@ -1431,7 +1431,7 @@ gboolean inc_offline_should_override(const gchar *msg)
 		
 		if (time(NULL) - overridden_yes < length * 60) /* seconds */
 			 return TRUE;
-		else if (time(NULL) - overridden_no < length * 60) /* seconds */
+		else if (time(NULL) - overridden_no < 3) /* seconds */
 			 return FALSE;
 
 		tmp = g_strdup_printf(

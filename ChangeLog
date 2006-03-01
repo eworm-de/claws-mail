@@ -1,3 +1,8 @@
+2006-03-01 [colin]	2.0.0cvs96
+
+	* src/inc.c
+		Offline overriding: let 'No' be cached only 3 seconds
+
 2006-03-01 [colin]	2.0.0cvs95
 
 	* src/addr_compl.c
