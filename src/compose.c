@@ -5816,7 +5816,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 static GtkWidget *compose_account_option_menu_create(Compose *compose)
 {
 	GList *accounts;
-	GtkWidget *hbox;
 	GtkWidget *optmenu;
 	GtkWidget *menu;
 	gint num = 0, def_menu = 0;
@@ -5824,9 +5823,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	accounts = account_get_list();
 	g_return_val_if_fail(accounts != NULL, NULL);
 
-	hbox = gtk_hbox_new(FALSE, 0);
 	optmenu = gtk_option_menu_new();
-	gtk_box_pack_start(GTK_BOX(hbox), optmenu, FALSE, FALSE, 0);
 	menu = gtk_menu_new();
 
 	for (; accounts != NULL; accounts = accounts->next, num++) {
@@ -5837,13 +5834,16 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 		if (ac == compose->account) def_menu = num;
 
 		if (ac->name)
-			name = g_strdup_printf("%s: %s <%s>",
+			name = g_strdup_printf("<i>%s</i> : %s &lt;<b>%s</b>&gt;",
 					       ac->account_name,
 					       ac->name, ac->address);
 		else
-			name = g_strdup_printf("%s: %s",
+			name = g_strdup_printf("<i>%s</i> : &lt;<b>%s</b>&gt;",
 					       ac->account_name, ac->address);
 		MENUITEM_ADD(menu, menuitem, name, ac->account_id);
+		gtk_label_set_use_markup (
+				GTK_LABEL (gtk_bin_get_child (GTK_BIN (menuitem))),
+				TRUE);
 		g_free(name);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_activated),
@@ -5853,7 +5853,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), def_menu);
 
-	return hbox;
+	return optmenu;
 }
 
 static void compose_set_priority_cb(gpointer data,

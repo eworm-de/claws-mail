@@ -1,3 +1,9 @@
+2006-03-01 [wwp]	2.0.0cvs90
+
+	* src/compose.c
+		some work around the compose window's account menu,
+		patch by Fabien Vantard.
+
 2006-03-01 [wwp]	2.0.0cvs89
 
 	* src/plugins/spamassassin/spamassassin.c
