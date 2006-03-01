@@ -176,8 +176,7 @@ struct {
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
 	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			   },
 	{ "A_PRINT",	     	N_("Print")				   },
-	{ "A_LEARN_SPAM",	N_("Learn Spam")			   },
-	{ "A_LEARN_HAM",	N_("Learn Ham")				   },
+	{ "A_LEARN_SPAM",	N_("Learn Spam or Ham")			   },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -1367,7 +1366,6 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
 		{ A_PRINT,		toolbar_print_cb		},
 		{ A_LEARN_SPAM,		toolbar_learn_cb		},
-		{ A_LEARN_HAM,		toolbar_learn_cb		},
 
 		{ A_SEND,		toolbar_send_cb       		},
 		{ A_SENDL,		toolbar_send_later_cb 		},

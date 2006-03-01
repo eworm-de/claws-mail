@@ -164,7 +164,6 @@ enum {
 	A_IGNORE_THREAD,
 	A_PRINT,
 	A_LEARN_SPAM,
-	A_LEARN_HAM,
 
 	/* compose toolbar */
 	A_SEND,

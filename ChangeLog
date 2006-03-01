@@ -1,3 +1,12 @@
+2006-03-01 [wwp]	2.0.0cvs92
+
+	* src/toolbar.c
+	* src/toolbar.h
+		simplify the adding of spam/ham button to the messageview toolbar
+		(it gets more clear now that the same button will be "Mark as spam"
+		or "Mark as ham" according to the current message status,
+		thanks to Colin).
+
 2006-03-01 [wwp]	2.0.0cvs91
 
 	* src/messageview.c
