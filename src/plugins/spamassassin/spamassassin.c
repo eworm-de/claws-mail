@@ -298,7 +298,9 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 
 	if (config.transport == SPAMASSASSIN_TRANSPORT_TCP
 	&&  prefs_common.work_offline
-	&&  !inc_offline_should_override()) {
+	&&  !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to feed this mail(s) to the remote learner."))) {
 		return -1;
 	}
 

@@ -7132,7 +7132,10 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	
-	if (prefs_common.work_offline && !inc_offline_should_override())
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to send this email.")))
 		return;
 	
 	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */

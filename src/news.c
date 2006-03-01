@@ -309,7 +309,10 @@ static NNTPSession *news_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the News server."))) {
 		return NULL;
 	}
 

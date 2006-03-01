@@ -98,6 +98,6 @@ void inc_unlock			(void);
 void inc_autocheck_timer_init	(MainWindow	*mainwin);
 void inc_autocheck_timer_set	(void);
 void inc_autocheck_timer_remove	(void);
-gboolean inc_offline_should_override(void);
+gboolean inc_offline_should_override(const gchar *msg);
 
 #endif /* __INC_H__ */

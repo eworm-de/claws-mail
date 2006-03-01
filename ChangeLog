@@ -1,3 +1,15 @@
+2006-03-01 [colin]	2.0.0cvs94
+
+	* src/compose.c
+	* src/imap.c
+	* src/inc.c
+	* src/inc.h
+	* src/messageview.c
+	* src/news.c
+	* src/plugins/spamassassin/spamassassin.c
+		Allow to add information in the "working offline"
+		window
+
 2006-03-01 [wwp]	2.0.0cvs93
 
 	* src/plugins/spamassassin/spamassassin.c

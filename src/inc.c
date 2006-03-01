@@ -166,7 +166,10 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 	if (inc_lock_count) return;
 
-	if (prefs_common.work_offline && !inc_offline_should_override())
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to get mails.")))
 		return;
 
 	inc_lock();
@@ -268,7 +271,10 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 
 	if (inc_lock_count) return 0;
 
-	if (prefs_common.work_offline && !inc_offline_should_override())
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to get mails.")))
 		return 0;
 
 	inc_autocheck_timer_remove();
@@ -291,7 +297,10 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	gint new_msgs = 0;
 	gint account_new_msgs = 0;
 	
-	if (prefs_common.work_offline && !inc_offline_should_override())
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to get mails.")))
 		return;
 
 	if (inc_lock_count) return;
@@ -1429,7 +1438,7 @@ static gint inc_autocheck_func(gpointer data)
 	return FALSE;
 }
 
-gboolean inc_offline_should_override(void)
+gboolean inc_offline_should_override(const gchar *msg)
 {
 	static time_t overridden_yes = 0;
 	static time_t overridden_no  = 0;
@@ -1448,7 +1457,9 @@ gboolean inc_offline_should_override(void)
 			 return FALSE;
 
 		tmp = g_strdup_printf(
-				_("You're working offline. Override for %d minutes?"),
+				_("%s%sYou're working offline. Override for %d minutes?"),
+				msg?msg:"", 
+				msg?"\n\n":"",
 				length);
 
 		answer = alertpanel(_("Offline warning"), 

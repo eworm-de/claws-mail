@@ -681,7 +681,10 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the IMAP server."))) {
 		return NULL;
 	}
 
@@ -2139,7 +2142,10 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		data->numlist = newlist;
 		data->cur += count;
 		
-		if (prefs_common.work_offline && !inc_offline_should_override()) {
+		if (prefs_common.work_offline && 
+		    !inc_offline_should_override(
+			_("Sylpheed-Claws needs network access in order "
+			  "to access the IMAP server."))) {
 			g_free(data);
 			return NULL;
 		}
@@ -2658,7 +2664,10 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 	data->headers = headers;
 	data->body = body;
 
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
 	}
@@ -2739,7 +2748,10 @@ static gint imap_cmd_expunge(IMAPSession *session)
 {
 	int r;
 	
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the IMAP server."))) {
 		return -1;
 	}
 
@@ -3074,7 +3086,10 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	data->item = item;
 	data->msgnum_list = msgnum_list;
 	data->session = session;
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
 	}
@@ -3791,7 +3806,10 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 
 	GSList *tmp = NULL, *cur;
 	
-	if (prefs_common.work_offline && !inc_offline_should_override()) {
+	if (prefs_common.work_offline && 
+	    !inc_offline_should_override(
+		_("Sylpheed-Claws needs network access in order "
+		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
 	}
