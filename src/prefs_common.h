@@ -303,12 +303,6 @@ struct _PrefsCommon
 
 	gint io_timeout_secs;
 	
-#if 0
-#ifdef USE_OPENSSL
-	gboolean ssl_ask_unknown_valid;
-#endif
-#endif
-
 	/* Memory cache*/
 	gint cache_max_mem_usage;
 	gint cache_min_keep_time;

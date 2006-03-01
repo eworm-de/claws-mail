@@ -704,18 +704,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 	progress_dialog_set_label(inc_dialog->dialog, fin_msg);
 
-#if 0
-	if (error_num && !prefs_common.no_recv_err_panel) {
-		if (inc_dialog->show_dialog)
-			manage_window_focus_in(inc_dialog->dialog->window,
-					       NULL, NULL);
-		alertpanel_error_log(_("Some errors occurred while getting mail."));
-		if (inc_dialog->show_dialog)
-			manage_window_focus_out(inc_dialog->dialog->window,
-						NULL, NULL);
-	}
-#endif
-
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
 		inc_session_destroy(session);
@@ -904,17 +892,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 		break;
 	case POP3_RETR:
 	case POP3_RETR_RECV:
-		break;
 	case POP3_DELETE:
-#if 0
-		if (session->msg[session->cur_msg].recv_time <
-			session->current_time) {
-			gchar buf[MSGBUFSIZE];
-			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
-				   session->cur_msg);
-			progress_dialog_set_label(dialog, buf);
-		}
-#endif
 		break;
 	case POP3_LOGOUT:
 		progress_dialog_set_label(dialog, _("Quitting"));

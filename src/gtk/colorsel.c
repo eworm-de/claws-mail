@@ -91,12 +91,6 @@ gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
 		blue         = (gint) (color[2] * 255.0);
 		rgbvalue_new = (gint) ((red * 0x10000) | (green * 0x100) | blue);
 		
-#if 0
-		fprintf(stderr, "redc = %f, greenc = %f, bluec = %f\n", color[0], color[1], color[2]);
-		fprintf(stderr, "red = %d, green = %d, blue = %d\n", red, green, blue);
-		fprintf(stderr, "Color is %x\n", rgbvalue);
-#endif
-
 		rgbvalue = rgbvalue_new;
 	}
 

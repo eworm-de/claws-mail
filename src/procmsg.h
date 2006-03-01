@@ -45,9 +45,6 @@ typedef GSList MsgNumberList;
 #define MSG_DELETED		(1U << 3)
 #define MSG_REPLIED		(1U << 4)
 #define MSG_FORWARDED		(1U << 5)
-#if 0
-#define MSG_REALLY_DELETED	(1U << 6)		/* mbox stuff */
-#endif
 
 #define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
 #define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \

@@ -52,14 +52,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"sort_descending", "FALSE", &tmp_prefs.sort_descending, P_BOOL,
 	 NULL, NULL, NULL},
-	/*{"enable_thread", "TRUE", &tmp_prefs.enable_thread, P_BOOL,
-	 NULL, NULL, NULL},*/
-#if 0
-	{"hide_score", "-9999", &tmp_prefs.kill_score, P_INT,
-	 NULL, NULL, NULL},
-	{"important_score", "1", &tmp_prefs.important_score, P_INT,
-	 NULL, NULL, NULL},
-#endif
 	/* MIGRATION */	 
 	{"request_return_receipt", "", &tmp_prefs.request_return_receipt, P_BOOL,
 	 NULL, NULL, NULL},

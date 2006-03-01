@@ -566,16 +566,6 @@ gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node)
 GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column, 
 				       gchar *titles[])
 {
-#if 0
-	GtkSCTree* sctree;
-
-	sctree = gtk_type_new (gtk_sctree_get_type ());
-	gtk_ctree_construct (GTK_CTREE (sctree), columns, tree_column, titles);
-	
-	gtk_clist_set_selection_mode(GTK_CLIST(sctree), GTK_SELECTION_EXTENDED);
-
-	return GTK_WIDGET (sctree);
-#else
 	GtkWidget *widget;
                                                                                                             
 	g_return_val_if_fail (columns > 0, NULL);
@@ -595,7 +585,6 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 	}
 
 	return widget;
-#endif
 }
 
 void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)

@@ -100,16 +100,6 @@ static GdkColor emphasis_color = {
 	(gushort)0xcfff
 };
 
-#if 0
-static GdkColor error_color = {
-	(gulong)0,
-	(gushort)0xefff,
-	(gushort)0,
-	(gushort)0
-};
-#endif
-
-
 static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
 

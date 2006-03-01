@@ -53,14 +53,6 @@ gchar *procheader_get_unfolded_line	(gchar		*buf,
 					 size_t		 len,
 					 FILE		*fp);
 
-#if 0
-GSList *procheader_get_header_list_from_file	(const gchar	*file);
-GSList *procheader_get_header_list		(FILE		*fp);
-void procheader_header_list_destroy		(GSList		*hlist);
-
-GPtrArray *procheader_get_header_array		(FILE		*fp);
-#endif
-
 GPtrArray *procheader_get_header_array_asis	(FILE		*fp);
 void procheader_header_array_destroy		(GPtrArray	*harray);
 void procheader_header_free			(Header		*header);

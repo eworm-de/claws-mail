@@ -237,9 +237,6 @@ static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
 void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
 			      GSList * mlist);
 
-#if 0
-void summary_processing(SummaryView *summaryview, GSList * mlist);
-#endif
 static void summary_filter_func		(MsgInfo *msginfo);
 
 static void summary_colorlabel_menu_item_activate_cb
@@ -756,70 +753,6 @@ void summary_init(SummaryView *summaryview)
 	summary_set_menu_sensitive(summaryview);
 
 }
-
-#if 0
-GtkCTreeNode * summary_find_next_important_score(SummaryView *summaryview,
-						 GtkCTreeNode *current_node)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-	gint best_score = MIN_SCORE;
-	GtkCTreeNode *best_node = NULL;
-
-	if (current_node)
-		/*node = current_node;*/
-		node = GTK_CTREE_NODE_NEXT(current_node);
-	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
-		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo->score >= summaryview->important_score)
-			break;
-		if (msginfo->score > best_score) {
-			best_score = msginfo->score;
-			best_node = node;
-		}
-	}
-
-	if (node != NULL)
-		return node;
-	else
-		return best_node;
-}
-
-GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
-						 GtkCTreeNode *current_node)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-	gint best_score = MIN_SCORE;
-	GtkCTreeNode *best_node = NULL;
-
-	if (current_node)
-		/*node = current_node;*/
-		node = GTK_CTREE_NODE_PREV(current_node);
-	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
-		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo->score >= summaryview->important_score)
-			break;
-		if (msginfo->score > best_score) {
-			best_score = msginfo->score;
-			best_node = node;
-		}
-	}
-
-	if (node != NULL)
-		return node;
-	else
-		return best_node;
-}
-#endif
 
 #define CURRENTLY_DISPLAYED(m) \
 ( (m->msgnum == displayed_msgnum) \
@@ -3013,15 +2946,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
                         	(ctree, row, &summaryview->color_marked);
-#if 0
-	} else if ((global_scoring ||
-		  summaryview->folder_item->prefs->scoring) &&
-		 (msginfo->score >= summaryview->important_score) &&
-		 (MSG_IS_MARKED(msginfo->flags) || MSG_IS_MOVE(msginfo->flags) || MSG_IS_COPY(msginfo->flags))) {
-		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
-		gtk_ctree_node_set_foreground(ctree, row,
-					      &summaryview->color_important);
-#endif
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "");
 	}
@@ -4699,11 +4623,6 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
-#if 0
-	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
-	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
-				     GTK_CTREE_EXPANDER_TRIANGLE);
-#endif
 	gtk_ctree_set_indent(GTK_CTREE(ctree), 12);
 	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
@@ -5850,15 +5769,6 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	summaryview->thread_collapsed = item->thread_collapsed;
 
 	/* Scoring */
-#if 0
-	if (global_scoring || item->prefs->scoring) {
-		summaryview->important_score = prefs_common.important_score;
-		if (item->prefs->important_score >
-		    summaryview->important_score)
-			summaryview->important_score =
-				item->prefs->important_score;
-	}
-#endif
 }
 
 void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)

@@ -841,32 +841,6 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	return msginfo;
 }
 
-#if 0
-static gboolean mh_is_maildir_one(const gchar *path, const gchar *dir)
-{
-	gchar *entry;
-	gboolean result;
-
-	entry = g_strconcat(path, G_DIR_SEPARATOR_S, dir, NULL);
-	result = is_dir_exist(entry);
-	g_free(entry);
-
-	return result;
-}
-
-/*
- * check whether PATH is a Maildir style mailbox.
- * This is the case if the 3 subdir: new, cur, tmp are existing.
- * This functon assumes that entry is an directory
- */
-static gboolean mh_is_maildir(const gchar *path)
-{
-	return mh_is_maildir_one(path, "new") &&
-	       mh_is_maildir_one(path, "cur") &&
-	       mh_is_maildir_one(path, "tmp");
-}
-#endif
-
 static gboolean mh_remove_missing_folder_items_func(GNode *node, gpointer data)
 {
 	FolderItem *item;
@@ -969,15 +943,6 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		   ) {
 			FolderItem *new_item = NULL;
 			GNode *node;
-
-#if 0
-			if (mh_is_maildir(entry)) {
-				g_free(entry);
-				g_free(utf8entry);
-				g_free(utf8name);
-				continue;
-			}
-#endif
 
 			node = item->node;
 			for (node = node->children; node != NULL; node = node->next) {

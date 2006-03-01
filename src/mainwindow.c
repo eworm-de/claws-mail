@@ -108,12 +108,6 @@ static void main_window_show_cur_account	(MainWindow	*mainwin);
 static void main_window_set_widgets		(MainWindow	*mainwin,
 						 SeparateType	 type);
 
-#if 0
-static gboolean toolbar_account_button_pressed	(GtkWidget	*widget,
-						 GdkEventButton	*event,
-						 gpointer	 data);
-#endif
-
 static void toolbar_child_attached		(GtkWidget	*widget,
 						 GtkWidget	*child,
 						 gpointer	 data);
@@ -2386,28 +2380,6 @@ void main_window_destroy_all(void)
 	mainwin_list = NULL;
 }
 
-#if 0
-static gboolean toolbar_account_button_pressed(GtkWidget *widget,
-					       GdkEventButton *event,
-					       gpointer data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-
-	if (!event) return FALSE;
-	if (event->button != 3) return FALSE;
-
-	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
-	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button",
-			  widget);
-
-	gtk_menu_popup(GTK_MENU(mainwin->ac_menu), NULL, NULL,
-		       menu_button_position, widget,
-		       event->button, event->time);
-
-	return FALSE;
-}
-#endif
-
 static void toolbar_child_attached(GtkWidget *widget, GtkWidget *child,
 				   gpointer data)
 {
@@ -2595,12 +2567,6 @@ static void toggle_folder_cb(MainWindow *mainwin, guint action,
 	switch (mainwin->type) {
 	case SEPARATE_NONE:
 	case SEPARATE_MESSAGE:
-#if 0
-		if (active)
-			gtk_widget_show(GTK_WIDGET_PTR(mainwin->folderview));
-		else
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->folderview));
-#endif
 		break;
 	case SEPARATE_FOLDER:
 		debug_print("separate folder\n");

@@ -1,3 +1,39 @@
+2006-03-01 [colin]	2.0.0cvs95
+
+	* src/addr_compl.c
+	* src/addrbook.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/folder_item_prefs.c
+	* src/headerview.c
+	* src/imap.c
+	* src/inc.c
+	* src/ldif.c
+	* src/mainwindow.c
+	* src/mh.c
+	* src/msgcache.c
+	* src/prefs_common.h
+	* src/prefs_msg_colors.c
+	* src/procheader.c
+	* src/procheader.h
+	* src/procmime.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/send_message.h
+	* src/simple-gettext.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/syldap.c
+	* src/textview.c
+	* src/undo.c
+	* src/common/ssl_certificate.c
+	* src/common/utils.c
+	* src/gtk/colorsel.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkshruler.c
+	* src/plugins/trayicon/trayicon.c
+		#if 0 goes to /dev/null
+
 2006-03-01 [colin]	2.0.0cvs94
 
 	* src/compose.c

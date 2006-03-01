@@ -147,53 +147,6 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 	g_node_destroy(node);
 }
 
-#if 0 /* UNUSED */
-MimeInfo *procmime_mimeinfo_insert(MimeInfo *parent, MimeInfo *mimeinfo)
-{
-	MimeInfo *child = parent->children;
-
-	if (!child)
-		parent->children = mimeinfo;
-	else {
-		while (child->next != NULL)
-			child = child->next;
-
-		child->next = mimeinfo;
-	}
-
-	mimeinfo->parent = parent;
-	mimeinfo->level = parent->level + 1;
-
-	return mimeinfo;
-}
-
-void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
-{
-	MimeInfo *parent = old->parent;
-	MimeInfo *child;
-
-	g_return_if_fail(parent != NULL);
-	g_return_if_fail(new->next == NULL);
-
-	for (child = parent->children; child && child != old;
-	     child = child->next)
-		;
-	if (!child) {
-		g_warning("oops: parent can't find it's own child");
-		return;
-	}
-	procmime_mimeinfo_free_all(old);
-
-	if (child == parent->children) {
-		new->next = parent->children->next;
-		parent->children = new;
-	} else {
-		new->next = child->next;
-		child = new;
-	}
-}
-#endif
-
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 {
 	g_return_val_if_fail(mimeinfo != NULL, NULL);

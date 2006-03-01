@@ -1723,29 +1723,6 @@ ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 	g_return_val_if_fail(book != NULL, NULL);
 	return addrcache_add_new_folder( book->addressCache, parent );
 }
-#if 0
-{
-	ItemFolder *folder = NULL;
-	ItemFolder *p = parent;
-
-	g_return_val_if_fail(book != NULL, NULL);
-
-	if (!p)
-		p = book->addressCache->rootFolder;
-	folder = addritem_create_item_folder();
-	addrcache_id_folder(book->addressCache, folder);
-	if (addrcache_hash_add_folder(book->addressCache, folder)) {
-		p->listFolder = g_list_append(p->listFolder, folder);
-		ADDRITEM_PARENT(folder) = ADDRITEM_OBJECT(p);
-		addrcache_set_dirty(book->addressCache, TRUE);
-	}
-	else {
-		addritem_free_item_folder(folder);
-		folder = NULL;
-	}
-	return folder;
-}
-#endif
 
 /**
  * Update address book attribute list for specified person. Note: The existing

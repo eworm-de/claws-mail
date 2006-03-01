@@ -340,12 +340,6 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	blue     = (gint) (color[2] * 255.0);
 	rgbvalue = (gint) ((red * 0x10000) | (green * 0x100) | blue);
 
-#if 0
-	fprintf(stderr, "redc = %f, greenc = %f, bluec = %f\n", color[0], color[1], color[2]);
-	fprintf(stderr, "red = %d, green = %d, blue = %d\n", red, green, blue);
-	fprintf(stderr, "Color is %x\n", rgbvalue);
-#endif
-
 	if (g_ascii_strcasecmp(type, "LEVEL1") == 0) {
 		prefs_common.quote_level1_col = rgbvalue;
 		set_button_bg_color(color_buttons.quote_level1_btn, rgbvalue);

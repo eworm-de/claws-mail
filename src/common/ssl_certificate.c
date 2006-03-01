@@ -343,20 +343,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		
 		sig_status = ssl_certificate_check_signer(x509_cert);
 
-#if 0 /* disabled pref for now */
-		if (sig_status == NULL && !prefs_common.ssl_ask_unknown_valid) {
-			/* trust and accept silently if hostnames match */
-			char *buf; /* don't free buf ! */
-			if (X509_NAME_get_text_by_NID(X509_get_subject_name(x509_cert), 
-				       NID_commonName, buf, 100) >= 0)
-				if (!strcmp(buf, current_cert->host)) {
-					g_free(sig_status);
-					ssl_certificate_save(current_cert);
-					ssl_certificate_destroy(current_cert);
-					return TRUE;		
-				}
-		}
-#endif
 		g_free(sig_status);
 
 		cur_cert_str = ssl_certificate_to_string(current_cert);
@@ -366,15 +352,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 					  cur_cert_str);
 		g_free (cur_cert_str);
 
-#if 0 /* disabled for now */
-		if (prefs_common.no_recv_err_panel) {
-			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
-					err_msg,
-					_("Don't popup error dialog on receive error"));
-			g_free(err_msg);
-			return FALSE;
-		}
-#endif
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = NULL;
 		cert_hook_data.accept = FALSE;
@@ -404,15 +381,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		g_free (cur_cert_str);
 		g_free (known_cert_str);
 
-#if 0
-		if (prefs_common.no_recv_err_panel) {
-			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
-					err_msg,
-					_("Don't popup error dialog on receive error"));
-			g_free(err_msg);
-			return FALSE;
-		}
-#endif
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = known_cert;
 		cert_hook_data.accept = FALSE;

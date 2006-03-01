@@ -203,10 +203,6 @@ static void addressbook_person_collapse_node	(GtkCTree	*ctree,
 						 GList		*node,
 						 gpointer	*data );
 
-#if 0
-static void addressbook_entry_changed		(GtkWidget	*widget);
-#endif
-
 static gboolean addressbook_list_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
@@ -878,11 +874,6 @@ static void addressbook_create(void)
 	g_signal_connect(G_OBJECT(entry), "key_press_event",
 			 G_CALLBACK(addressbook_entry_key_pressed),
 			 NULL);
-#if 0
-	g_signal_connect(G_OBJECT(entry), "changed",
-			 G_CALLBACK(addressbook_entry_changed), NULL);
-#endif
-
 	paned = gtk_hpaned_new();
 	gtk_box_pack_start(GTK_BOX(vbox2), paned, TRUE, TRUE, 0);
 	gtk_paned_add1(GTK_PANED(paned), ctree_swin);
@@ -1845,77 +1836,6 @@ static void addressbook_clip_paste_cb( void ) {
 	
 
 }
-
-#if 0
-/**
- * Paste clipboard email addresses only into address list widget.
- */
-static void addressbook_clip_paste_address_cb( void ) {
-	GtkCTree *clist = GTK_CTREE(addrbook.clist);
-	GtkCTree *ctree;
-	AddressObject *pobj = NULL;
-	AddressDataSource *ds = NULL;
-	AddressBookFile *abf = NULL;
-	ItemFolder *folder = NULL;
-	AddrItemObject *aio;
-	gint cnt;
-
-	if( addrbook.listSelected == NULL ) return;
-
-       	ctree = GTK_CTREE( addrbook.ctree );
-	ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
-	if( ds == NULL ) return;
-	if( addrindex_ds_get_readonly( ds ) ) {
-		addressbook_ds_status_message(
-			ds, _( "Cannot paste. Target address book is readonly." ) );
-		return;
-	}
-
-	pobj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
-	if( pobj ) {
-		if( pobj->type == ADDR_ITEM_FOLDER ) {
-			folder = ADAPTER_FOLDER(pobj)->itemFolder;
-		}
-	}
-
-	abf = addressbook_get_book_file();
-	if( abf == NULL ) return;
-
-	cnt = 0;
-	aio = gtk_ctree_node_get_row_data( clist, addrbook.listSelected );
-	if( aio->type == ADDR_ITEM_PERSON ) {
-		ItemPerson *person;
-
-		person = ( ItemPerson * ) aio;
-		if( _clipBoard_->cutFlag ) {
-			/* Paste/Cut */
-			cnt = addrclip_paste_person_cut( _clipBoard_, abf, person );
-
-			/* Remove all "cut" items */
-			addrclip_delete_address( _clipBoard_ );
-
-			/* Clear clipboard */
-			addrclip_clear( _clipBoard_ );
-		}
-		else {
-			/* Paste/Copy */
-			cnt = addrclip_paste_person_copy( _clipBoard_, abf, person );
-		}
-		if( cnt > 0 ) {
-			addritem_person_set_opened( person, TRUE );
-		}
-	}
-
-	/* Display items pasted */
-	if( cnt > 0 ) {
-		gtk_sctree_select( GTK_SCTREE(ctree), addrbook.opened );
-		addressbook_set_clist(
-			gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree),
-				addrbook.opened),
-			TRUE);
-	}
-}
-#endif
 
 /**
  * Add current treenode object to clipboard. Note that widget only allows
@@ -4377,18 +4297,6 @@ void addrbookctl_build_iflist( void ) {
 		list = g_list_next( list );
 	}
 }
-
-#if 0
-void addrbookctl_free_selection( GList *list ) {
-	GList *node = list;
-	while( node ) {
-		AdapterInterface *adapter = node->data;
-		adapter = NULL;
-		node = g_list_next( node );
-	}
-	g_list_free( list );
-}
-#endif
 
 /**
  * Find GUI interface type specified interface type.

@@ -111,11 +111,6 @@
 /* New attributes */
 #define ATTAG_LDAP_DEFAULT    "default"
 
-#if 0
-N_("Common address")
-N_("Personal address")
-#endif
-
 #define DISP_NEW_COMMON       _("Common addresses")
 #define DISP_NEW_PERSONAL     _("Personal addresses")
 
@@ -1079,37 +1074,6 @@ static void addrindex_write_fragment(
 		}
 	}
 }
-
-#if 0
-static void addrindex_print_fragment_r(
-		const AddressIfFragment *fragment, FILE *stream, gint lvl )
-{
-	GList *node;
-	gint i;
-
-	for( i = 0; i < lvl; i++ )
-		fprintf( stream, "  " );
-	fprintf( stream, "Element:%s:\n", fragment->name );
-	node = fragment->attributes;
-	while( node ) {
-		AddressIfAttrib *nv = node->data;
-		for( i = 0; i < lvl; i++ )
-			fprintf( stream, "  " );
-		fprintf( stream, "    %s : %s\n", nv->name, nv->value );
-		node = g_list_next( node );
-	}
-	node = fragment->children;
-	while( node ) {
-		AddressIfFragment *child = node->data;
-		addrindex_print_fragment_r( child, stream, 1+lvl );
-		node = g_list_next( node );
-	}
-}
-
-static void addrindex_print_fragment( const AddressIfFragment *fragment, FILE *stream ) {
-	addrindex_print_fragment_r( fragment, stream, 0 );
-}
-#endif
 
 /**
  * Read/parse address index file, creating a data source for a regular

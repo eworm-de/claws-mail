@@ -643,45 +643,6 @@ static void ldif_clear_rec( Ldif_ParsedRec *rec ) {
 	rec->listID = NULL;
 }
 
-#if 0
-/**
- * Print parsed data.
- * \param rec    LDIF field object.
- * \param stream Output stream.
- */
-static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
-	GSList *list;
-
-	fprintf( stream, "LDIF Parsed Record:\n" );
-	fprintf( stream, "common name:" );
-	mgu_print_list( rec->listCName, stream );
-	if( ! rec->listCName ) fprintf( stream, "\n" );
-	fprintf( stream, "first name:" );
-	mgu_print_list( rec->listFName, stream );
-	if( ! rec->listFName ) fprintf( stream, "\n" );
-	fprintf( stream, "last name:" );
-	mgu_print_list( rec->listLName, stream );
-	if( ! rec->listLName ) fprintf( stream, "\n" );
-	fprintf( stream, "nick name:" );
-	mgu_print_list( rec->listNName, stream );
-	if( ! rec->listNName ) fprintf( stream, "\n" );
-	fprintf( stream, "address:" );
-	mgu_print_list( rec->listAddress, stream );
-	if( ! rec->listAddress ) fprintf( stream, "\n" );
-	fprintf( stream, "id:" );
-	mgu_print_list( rec->listID, stream );
-	if( ! rec->listID ) fprintf( stream, "\n" );
-
-	list = rec->userAttr;
-	while( list ) {
-		Ldif_UserAttr *attr = list->data;
-		fprintf( stream, "n/v:\t%s:\t:%s:\n", attr->name, attr->value );
-		list = g_slist_next( list );
-	}
-	list = NULL;
-}
-#endif
-
 /**
  * Read file data into address cache.
  * Note that one LDIF record identifies one entity uniquely with the

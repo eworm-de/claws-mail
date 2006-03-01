@@ -422,12 +422,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	gchar *ref = NULL;
 	guint memusage = 0;
 	guint tmp_len = 0;
-#if 0
-	struct timeval start;
-	struct timeval end;
-	struct timeval diff;
-	gettimeofday(&start, NULL);
-#endif
+	
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
@@ -548,11 +543,6 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 
 	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
 	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
-#if 0
-	gettimeofday(&end, NULL);
-	timersub(&end, &start, &diff);
-	printf("spent %d seconds %d usages %d;%d\n", diff.tv_sec, diff.tv_usec, cache->memusage, memusage);
-#endif
 	return cache;
 }
 

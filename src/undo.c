@@ -612,10 +612,6 @@ void undo_delete_text_cb(GtkTextBuffer *textbuf, GtkTextIter *start,
 
 void undo_paste_clipboard_cb(GtkTextView *textview, UndoMain *undostruct)
 {
-#if 0
-	if (editable->clipboard_text == NULL) return;
-#endif
-
 	if (prefs_common.undolevels > 0)
 		if (undo_get_selection(textview, NULL, NULL))
 			undostruct->paste = TRUE;

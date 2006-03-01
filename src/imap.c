@@ -2442,50 +2442,6 @@ static void imap_free_capabilities(IMAPSession *session)
 
 /* low-level IMAP4rev1 commands */
 
-#if 0
-static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
-				  const gchar *pass, IMAPAuthType type)
-{
-	gchar *auth_type;
-	gint ok;
-	gchar *buf = NULL;
-	gchar *challenge;
-	gint challenge_len;
-	gchar hexdigest[33];
-	gchar *response;
-	gchar *response64;
-
-	auth_type = "CRAM-MD5";
-
-	imap_gen_send(session, "AUTHENTICATE %s", auth_type);
-	ok = imap_gen_recv(session, &buf);
-	if (ok != IMAP_SUCCESS || buf[0] != '+' || buf[1] != ' ') {
-		g_free(buf);
-		return IMAP_ERROR;
-	}
-
-	challenge = g_malloc(strlen(buf + 2) + 1);
-	challenge_len = base64_decode(challenge, buf + 2, -1);
-	challenge[challenge_len] = '\0';
-	g_free(buf);
-
-	md5_hex_hmac(hexdigest, challenge, challenge_len, pass, strlen(pass));
-	g_free(challenge);
-
-	response = g_strdup_printf("%s %s", user, hexdigest);
-	response64 = g_malloc((strlen(response) + 3) * 2 + 1);
-	base64_encode(response64, response, strlen(response));
-	g_free(response);
-
-	sock_puts(SESSION(session)->sock, response64);
-	ok = imap_cmd_ok(session, NULL);
-	if (ok != IMAP_SUCCESS)
-		log_warning(_("IMAP4 authentication failed.\n"));
-
-	return ok;
-}
-#endif
-
 static gint imap_cmd_login(IMAPSession *session,
 			   const gchar *user, const gchar *pass,
 			   const gchar *type)

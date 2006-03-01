@@ -228,9 +228,6 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 static void create_trayicon()
 {
 	gint n_entries = 0;
-#if 0
-	GtkPacker *packer;
-#endif
 
 	trayicon = egg_tray_icon_new("Sylpheed-Claws");
 	gtk_widget_realize(GTK_WIDGET(trayicon));

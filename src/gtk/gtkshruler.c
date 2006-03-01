@@ -44,9 +44,6 @@
 static void gtk_shruler_class_init   	(GtkSHRulerClass *klass);
 static void gtk_shruler_init         	(GtkSHRuler      *hruler);
 static void gtk_shruler_draw_ticks 	(GtkRuler        *ruler);
-#if 0
-static void gtk_shruler_draw_pos      	(GtkRuler        *ruler);
-#endif
 
 GType
 gtk_shruler_get_type(void)
@@ -147,14 +144,6 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 		       NULL, widget, "hruler",
 		       0, 0, 
 		       widget->allocation.width, widget->allocation.height);
-
-#if 0
-	gdk_draw_line (ruler->backing_store, gc,
-		       xthickness,
-		       height + ythickness,
-		       widget->allocation.width - xthickness,
-		       height + ythickness);
-#endif
 
 	/* assume ruler->max_size has the char width */
 	/* i is increment of char_width,  pos is label number

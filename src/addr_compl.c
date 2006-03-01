@@ -1296,21 +1296,6 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 		return FALSE;
 	}		
 
-#if 0	
-	/* also make tab / shift tab go to next previous completion entry. we're
-	 * changing the key value */
-	if (event->keyval == GDK_Tab || event->keyval == GDK_ISO_Left_Tab) {
-		event->keyval = (event->state & GDK_SHIFT_MASK)
-			? GDK_Up : GDK_Down;
-		/* need to reset shift state if going up */
-		if (event->state & GDK_SHIFT_MASK)
-			event->state &= ~GDK_SHIFT_MASK;
-		completion_window_advance_selection(GTK_CLIST(clist), 
-			event->keyval == GDK_Down ? TRUE : FALSE);
-		return FALSE;
-	}
-#endif
-
 	/* make tab move to next field */
 	if( event->keyval == GDK_Tab ) {
 		/* Reference to parent */

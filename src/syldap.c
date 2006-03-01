@@ -314,36 +314,6 @@ void syldap_print_short( SyldapServer *ldapServer, FILE *stream ) {
 	fprintf( stream, "  ret val: %d\n",   ldapServer->retVal );
 }
 
-#if 0
-/*
-* Build an address list entry and append to list of address items. Name is formatted
-* as it appears in the common name (cn) attribute.
-*/
-static void syldap_build_items_cn( SyldapServer *ldapServer, GSList *listName, GSList *listAddr ) {
-	ItemPerson *person;
-	ItemEMail *email;
-	GSList *nodeName = listName;
-
-	while( nodeName ) {
-		GSList *nodeAddress = listAddr;
-		person = addritem_create_item_person();
-		addritem_person_set_common_name( person, nodeName->data );
-		addrcache_id_person( ldapServer->addressCache, person );
-		addrcache_add_person( ldapServer->addressCache, person );
-
-		while( nodeAddress ) {
-			email = addritem_create_item_email();
-			addritem_email_set_address( email, nodeAddress->data );
-			addrcache_id_email( ldapServer->addressCache, email );
-			addrcache_person_add_email( ldapServer->addressCache, person, email );
-			nodeAddress = g_slist_next( nodeAddress );
-			ldapServer->entriesRead++;
-		}
-		nodeName = g_slist_next( nodeName );
-	}
-}
-#endif
-
 /*
 * Build an address list entry and append to list of address items. Name is formatted
 * as "<first-name> <last-name>".

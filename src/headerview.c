@@ -51,13 +51,6 @@
 
 #define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
 
-#if 0
-	_("From:");
-	_("To:");
-	_("Newsgroups:");
-	_("Subject:");
-#endif
-
 #if HAVE_LIBCOMPFACE
 #define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
 
