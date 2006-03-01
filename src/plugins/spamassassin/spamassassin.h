@@ -53,7 +53,7 @@ gint			spamassassin_check_username	      (void);
 void 	            spamassassin_set_message_callback (MessageCallback callback);
 gint spamassassin_gtk_init(void);
 void spamassassin_gtk_done(void);
-void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam);
+int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 void spamassassin_register_hook(void);
 void spamassassin_unregister_hook(void);
 #endif

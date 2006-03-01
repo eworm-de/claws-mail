@@ -326,11 +326,11 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo
 					(MsgInfo 	*src_msginfo, 
 					 MimeInfo	*mimeinfo);
 
-void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
-void procmsg_unregister_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
+void procmsg_register_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
+void procmsg_unregister_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
 gboolean procmsg_spam_can_learn		(void);
 void procmsg_spam_set_folder		(const char *item_identifier);
 FolderItem *procmsg_spam_get_folder	(void);
-void procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spam);
+int procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 
 #endif /* __PROCMSG_H__ */

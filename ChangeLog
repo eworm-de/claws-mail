@@ -1,3 +1,18 @@
+2006-03-01 [wwp]	2.0.0cvs91
+
+	* src/messageview.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+		make learner callbacks return a status (0 for ok),
+		handle it in main code to avoid setting flags when learning failed,
+		don't learn on TCP if offline in spamassassin,
+		thanks to Colin.
+
+		
+
 2006-03-01 [wwp]	2.0.0cvs90
 
 	* src/compose.c

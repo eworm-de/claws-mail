@@ -87,6 +87,7 @@
 #include "partial_download.h"
 #include "timing.h"
 #include "gedit-print.h"
+#include "log.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -3229,21 +3230,29 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
 		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, row);
-		if (is_spam) {
-			summary_msginfo_change_flags(msginfo, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
-			if (procmsg_spam_get_folder() != summaryview->folder_item) {
-				summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
-				moved = TRUE;
-			}
-		} else {
-			summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
-		}
 		msgs = g_slist_prepend(msgs, msginfo);
 	}
 	
-	procmsg_spam_learner_learn(NULL, msgs, is_spam);
-	g_slist_free(msgs);
+	if (procmsg_spam_learner_learn(NULL, msgs, is_spam) == 0) {
+		for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
+			GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, row);
+			if (is_spam) {
+				summary_msginfo_change_flags(msginfo, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
+				if (procmsg_spam_get_folder() != summaryview->folder_item) {
+					summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
+					moved = TRUE;
+				}
+			} else {
+				summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+			}
+		}
+	} else {
+		log_error(_("An error happened while learning.\n"));
+	}
 
+	g_slist_free(msgs);
+	
 	prefs_common.immediate_exec = immediate_exec;
 
 	END_LONG_OPERATION(summaryview);
@@ -5097,8 +5106,10 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			if (MSG_IS_MARKED(msginfo->flags)) {
 				summary_unmark_row(summaryview, row);
 			} else if (MSG_IS_SPAM(msginfo->flags)) {
-				summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
-				procmsg_spam_learner_learn(msginfo, NULL, FALSE);
+				if (procmsg_spam_learner_learn(msginfo, NULL, FALSE) == 0)
+					summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+				else
+					log_error(_("An error happened while learning.\n"));
 			} else {
 				summary_mark_row(summaryview, row);
 			}

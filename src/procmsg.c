@@ -2071,7 +2071,7 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 
 static GSList *spam_learners = NULL;
 
-void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam))
+void procmsg_register_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam))
 {
 	if (!g_slist_find(spam_learners, learn_func))
 		spam_learners = g_slist_append(spam_learners, learn_func);
@@ -2083,7 +2083,7 @@ void procmsg_register_spam_learner (void (*learn_func)(MsgInfo *info, GSList *li
 	}
 }
 
-void procmsg_unregister_spam_learner (void (*learn_func)(MsgInfo *info, GSList *list, gboolean spam))
+void procmsg_unregister_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam))
 {
 	spam_learners = g_slist_remove(spam_learners, learn_func);
 	if (mainwindow_get_mainwindow()) {
@@ -2099,13 +2099,15 @@ gboolean procmsg_spam_can_learn(void)
 	return g_slist_length(spam_learners) > 0;
 }
 
-void procmsg_spam_learner_learn (MsgInfo *info, GSList *list, gboolean spam)
+int procmsg_spam_learner_learn (MsgInfo *info, GSList *list, gboolean spam)
 {
 	GSList *cur = spam_learners;
+	int ret = 0;
 	for (; cur; cur = cur->next) {
-		void ((*func)(MsgInfo *info, GSList *list, gboolean spam)) = cur->data;
-		func(info, list, spam);
+		int ((*func)(MsgInfo *info, GSList *list, gboolean spam)) = cur->data;
+		ret |= func(info, list, spam);
 	}
+	return ret;
 }
 
 static gchar *spam_folder_item = NULL;

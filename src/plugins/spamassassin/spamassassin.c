@@ -45,6 +45,7 @@
 
 #include "libspamc.h"
 #include "spamassassin.h"
+#include "inc.h"
 #include "log.h"
 #include "prefs_common.h"
 
@@ -258,19 +259,24 @@ SpamAssassinConfig *spamassassin_get_config(void)
 	return &config;
 }
 
-void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
+int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 {
 	gchar *cmd = NULL;
 	gchar *file = NULL;
 	gboolean async = FALSE;
 
 	if (msginfo == NULL && msglist == NULL)
-		return;
+		return -1;
+
+	if (config.transport == SPAMASSASSIN_TRANSPORT_TCP
+	&&  prefs_common.work_offline
+	&&  !inc_offline_should_override())
+		return -1;
 
 	if (msginfo) {
 		file = procmsg_get_message_file(msginfo);
 		if (file == NULL)
-			return;
+			return -1;
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
 			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s < %s",
 							config.hostname, config.port, 
@@ -310,7 +316,7 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					g_free(tmpfile);
 			}
 			g_free(cmd);
-			return;
+			return 0;
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s %s %s",
 					config.username,
@@ -336,13 +342,14 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		}
 	}
 	if (cmd == NULL)
-		return;
+		return -1;
 	debug_print("%s\n", cmd);
 	/* only run async if we have a list, or we could end up
 	 * forking lots of perl processes and bury the machine */
 	
 	execute_command_line(cmd, async);
 	g_free(cmd);
+	return 0;
 }
 
 void spamassassin_save_config(void)

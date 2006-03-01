@@ -63,6 +63,7 @@
 #include "partial_download.h"
 #include "gedit-print.h"
 #include "inc.h"
+#include "log.h"
 
 static GList *messageview_list = NULL;
 
@@ -1615,11 +1616,16 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 void messageview_learn (MessageView *msgview, gboolean is_spam)
 {
 	if (is_spam) {
-		procmsg_msginfo_set_flags(msgview->msginfo, MSG_SPAM, 0);
-		procmsg_spam_learner_learn(msgview->msginfo, NULL, TRUE);
+		if (procmsg_spam_learner_learn(msgview->msginfo, NULL, TRUE) == 0)
+			procmsg_msginfo_set_flags(msgview->msginfo, MSG_SPAM, 0);
+		else
+			log_error(_("An error happened while learning.\n"));
+		
 	} else {
-		procmsg_msginfo_unset_flags(msgview->msginfo, MSG_SPAM, 0);
-		procmsg_spam_learner_learn(msgview->msginfo, NULL, FALSE);
+		if (procmsg_spam_learner_learn(msgview->msginfo, NULL, FALSE) == 0)
+			procmsg_msginfo_unset_flags(msgview->msginfo, MSG_SPAM, 0);
+		else
+			log_error(_("An error happened while learning.\n"));
 	}
 	if (msgview->toolbar)
 		toolbar_set_learn_button
