@@ -1,3 +1,10 @@
+2006-03-01 [colin]	2.0.0cvs97
+
+	* src/plugins/spamassassin/spamassassin.c
+		Fix segfault (g_file_set_contents fails for some 
+		reason and err==0x2f. Can't find out why with
+		valgrind, using working function :-)
+
 2006-03-01 [colin]	2.0.0cvs96
 
 	* src/inc.c

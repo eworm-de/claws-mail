@@ -263,7 +263,6 @@ gchar* spamassassin_create_tmp_spamc_wrapper(gboolean spam)
 {
 	gchar *contents;
 	gchar *fname = get_tmp_file();
-	GError *err;
 
 	if (fname != NULL) {
 		contents = g_strdup_printf(
@@ -271,10 +270,7 @@ gchar* spamassassin_create_tmp_spamc_wrapper(gboolean spam)
 						config.hostname, config.port, 
 						config.username, config.timeout,
 						config.max_size * 1024, spam?"spam":"ham");
-		if (!g_file_set_contents(fname, contents,
-							strlen(contents), &err)) {
-			g_warning(err->message);
-			g_error_free(err);
+		if (str_write_to_file(contents, fname) < 0) {
 			g_free(fname);
 			fname = NULL;
 		}
