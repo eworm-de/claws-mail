@@ -1,3 +1,9 @@
+2006-03-01 [wwp]	2.0.0cvs89
+
+	* src/plugins/spamassassin/spamassassin.c
+		fixed bad logics, was using spamc in local mode and sa-learn
+		in remote mode (thanks, Colin).
+
 2006-03-01 [wwp]	2.0.0cvs88
 
 	* src/plugins/spamassassin/spamassassin.c

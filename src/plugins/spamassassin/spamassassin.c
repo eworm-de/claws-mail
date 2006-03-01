@@ -272,15 +272,15 @@ void spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		if (file == NULL)
 			return;
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP) {
-			cmd = g_strdup_printf("sa-learn -u %s %s %s %s",
-							config.username,
-							prefs_common.work_offline?"-L":"",
-							spam?"--spam":"--ham", file);
-		} else {
 			cmd = g_strdup_printf("spamc -d %s -p %u -u %s -t %u -s %u -L %s < %s",
 							config.hostname, config.port, 
  							config.username, config.timeout,
 							config.max_size * 1024, spam?"spam":"ham", file);
+		} else {
+			cmd = g_strdup_printf("sa-learn -u %s %s %s %s",
+							config.username,
+							prefs_common.work_offline?"-L":"",
+							spam?"--spam":"--ham", file);
 		}
 	}
 	if (msglist) {
