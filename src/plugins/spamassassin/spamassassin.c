@@ -284,7 +284,6 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 {
 	gchar *cmd = NULL;
 	gchar *file = NULL;
-	gboolean async = FALSE;
 	const gchar *shell = g_getenv("SHELL");
 	gchar *spamc_wrapper = NULL;
 
@@ -338,7 +337,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					tmpcmd = g_strconcat(shell?shell:"sh", " ", spamc_wrapper, " ",
 										tmpfile, NULL);
 					debug_print("%s\n", tmpcmd);
-					execute_command_line(tmpcmd, TRUE);
+					execute_command_line(tmpcmd, FALSE);
 					g_free(tmpcmd);
 				}
 				if (tmpfile != NULL) {
@@ -371,17 +370,14 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					g_free(tmpfile);
 				}
 			}
-			async = TRUE;
 		}
 	}
 	if (cmd == NULL) {
 		return -1;
 	}
 	debug_print("%s\n", cmd);
-	/* only run async if we have a list, or we could end up
-	 * forking lots of perl processes and bury the machine */
-	
-	execute_command_line(cmd, async);
+	/* only run sync calls to sa-learn/spamc to prevent system lockdown */
+	execute_command_line(cmd, FALSE);
 	g_free(cmd);
 	if (spamc_wrapper != NULL) {
 		g_free(spamc_wrapper);
