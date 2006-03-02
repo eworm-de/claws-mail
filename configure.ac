@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=100
+EXTRA_VERSION=101
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -738,7 +738,7 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	  AC_CHECK_HEADER(libetpan/libetpan.h, [libetpan_result=yes])
 	  if test "x$libetpan_result" = "xyes"; then
 	    AC_MSG_CHECKING([whether libetpan-config hints compiles and links fine])
-	    LDFLAGS="$LDFLAGS `$libetpanconfig --libs 2>/dev/null`"
+	    LIBS="$LIBS `$libetpanconfig --libs 2>/dev/null`"
 	    AC_TRY_LINK([#include <libetpan/dbstorage.h>], [db_mailstorage_init(NULL, NULL);], [libetpan_result=yes], [libetpan_result=no])
 	    AC_MSG_RESULT([$libetpan_result])
 	  fi
