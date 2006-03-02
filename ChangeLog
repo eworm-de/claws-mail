@@ -1,3 +1,9 @@
+2006-03-02 [wwp]	2.0.0cvs100
+
+	* src/addressbook.c
+		fix some AB error messages: one for punctuation and
+		one wrongly duplicate (thanks, maxbritov).
+
 2006-03-02 [wwp]	2.0.0cvs99
 
 	* src/plugins/spamassassin/spamassassin.c

@@ -3303,7 +3303,7 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 			}
 			else {
 				msg = _("Old address book converted,\n"
-					"could not save new address index file" );
+					"could not save new address index file." );
 			}
 		}
 		else {
@@ -3322,7 +3322,7 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 				}
 				else {
 					msg = _("Could not convert address book,\n"
-						"could not create new address book files." );
+						"could not save new address index file." );
 				}
 			}
 			else {
