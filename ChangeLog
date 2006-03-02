@@ -1,3 +1,9 @@
+2006-03-02 [colin]	2.0.0cvs98
+
+	* src/summaryview.c
+		Put the spam icon in the status column instead of the
+		mark one
+
 2006-03-01 [colin]	2.0.0cvs97
 
 	* src/plugins/spamassassin/spamassassin.c

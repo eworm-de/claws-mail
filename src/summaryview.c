@@ -2887,6 +2887,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_IGNORE_THREAD(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  ignorethreadxpm, ignorethreadxpmmask);
+	} else if (MSG_IS_SPAM(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
+					  spamxpm, spamxpmmask);
 	} else if (MSG_IS_NEW(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  newxpm, newxpmmask);
@@ -2922,9 +2925,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
-	} else if (MSG_IS_SPAM(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  spamxpm, spamxpmmask);
 	} else if (MSG_IS_MARKED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
 					  markxpm, markxpmmask);
@@ -5024,11 +5024,6 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    !MSG_IS_COPY(msginfo->flags)) {
 			if (MSG_IS_MARKED(msginfo->flags)) {
 				summary_unmark_row(summaryview, row);
-			} else if (MSG_IS_SPAM(msginfo->flags)) {
-				if (procmsg_spam_learner_learn(msginfo, NULL, FALSE) == 0)
-					summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
-				else
-					log_error(_("An error happened while learning.\n"));
 			} else {
 				summary_mark_row(summaryview, row);
 			}
@@ -5038,6 +5033,11 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		if (MSG_IS_UNREAD(msginfo->flags)) {
 			summary_mark_row_as_read(summaryview, row);
 			summary_status_show(summaryview);
+		} else if (MSG_IS_SPAM(msginfo->flags)) {
+				if (procmsg_spam_learner_learn(msginfo, NULL, FALSE) == 0)
+					summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+				else
+					log_error(_("An error happened while learning.\n"));
 		} else if (!MSG_IS_REPLIED(msginfo->flags) &&
 			 !MSG_IS_FORWARDED(msginfo->flags)) {
 			marked_unread = TRUE;
