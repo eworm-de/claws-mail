@@ -336,7 +336,7 @@ void plugin_load_all(const gchar *type)
 	gchar *rcpath;
 	gchar buf[BUFFSIZE];
 	PrefFile *pfile;
-	gchar *error, *block;
+	gchar *error = NULL, *block;
 
 	plugin_types = g_slist_append(plugin_types, g_strdup(type));
 
