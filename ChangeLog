@@ -1,3 +1,8 @@
+2006-03-03 [colin]	2.0.0cvs104
+
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		Rework prefs page, patch by Fabien 
+
 2006-03-03 [colin]	2.0.0cvs103
 
 	* src/plugins/clamav/clamav_plugin.c

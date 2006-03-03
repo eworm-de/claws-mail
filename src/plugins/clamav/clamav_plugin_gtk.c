@@ -70,7 +70,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	struct ClamAvPage *page = (struct ClamAvPage *) _page;
 	ClamAvConfig *config;
  	 
-	GtkWidget *table;
+	GtkWidget *vbox1, *vbox2;
 	GtkWidget *enable_clamav;
   	GtkWidget *label1;
   	GtkWidget *enable_arc;
@@ -86,29 +86,20 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *save_folder_select;
 	GtkTooltips *save_folder_tip;
 
-  	table = gtk_table_new (8, 3, FALSE);
-	gtk_widget_show(table);
-	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-  	enable_clamav = gtk_check_button_new_with_label(_("Enable virus scanning"));
-	gtk_widget_show (enable_clamav);
-  	gtk_table_attach (GTK_TABLE (table), enable_clamav, 0, 1, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-  	enable_arc = gtk_check_button_new_with_label(_("Scan archive contents"));
-	gtk_widget_show (enable_arc);
-  	gtk_table_attach (GTK_TABLE (table), enable_arc, 0, 1, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	PACK_CHECK_BUTTON (vbox2, enable_clamav, _("Enable virus scanning"));
+	PACK_CHECK_BUTTON (vbox2, enable_arc, _("Scan archive contents"));
 
   	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-  	gtk_table_attach (GTK_TABLE (table), hbox1, 0, 1, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (enable_arc, hbox1);
 
   	label1 = gtk_label_new(_("Maximum attachment size"));
@@ -128,18 +119,14 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
  	recv_infected_tip = gtk_tooltips_new();
  	recv_infected = gtk_check_button_new_with_label(_("Save infected messages"));
 	gtk_widget_show (recv_infected);
-  	gtk_table_attach (GTK_TABLE (table), recv_infected, 0, 1, 4, 5,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), recv_infected, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(recv_infected_tip, recv_infected,
 			     _("Save mails that contain viruses"),
 			     NULL);
 
   	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
-  	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 1, 5, 6,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (recv_infected, hbox2);
 
   	label3 = gtk_label_new (_("Save folder"));
@@ -149,7 +136,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	save_folder_tip = gtk_tooltips_new();
   	save_folder = gtk_entry_new ();
 	gtk_widget_show (save_folder);
-	gtk_box_pack_start (GTK_BOX (hbox2), save_folder, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), save_folder, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(save_folder_tip, save_folder,
 			     _("Leave empty to use the default trash folder"),
 			     NULL);
@@ -179,7 +166,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	page->recv_infected = recv_infected;
 	page->save_folder = save_folder;
 
-	page->page.widget = table;
+	page->page.widget = vbox1;
 }
 
 static void clamav_destroy_widget_func(PrefsPage *_page)
