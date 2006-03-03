@@ -1286,3 +1286,4 @@
 ( cvs diff -u -r 1.60.2.49 -r 1.60.2.50 src/addressbook.c;  ) > 2.0.0cvs100.patchset
 ( cvs diff -u -r 1.654.2.1330 -r 1.654.2.1331 configure.ac;  ) > 2.0.0cvs101.patchset
 ( cvs diff -u -r 1.13.2.17 -r 1.13.2.18 src/common/plugin.c;  ) > 2.0.0cvs102.patchset
+( cvs diff -u -r 1.13.2.20 -r 1.13.2.21 src/plugins/clamav/clamav_plugin.c;  ) > 2.0.0cvs103.patchset

@@ -218,6 +218,7 @@ gint plugin_init(gchar **error)
 
     	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
+		*error = g_strdup_printf("cl_loaddbdir: %s\n", cl_strerror(ret));
 		return -1;
     	}
 
@@ -225,6 +226,7 @@ gint plugin_init(gchar **error)
 
     	if((ret = cl_build(cl_database))) {
 		debug_print("Database initialization error: %s\n", cl_strerror(ret));
+		*error = g_strdup_printf("Database initialization error: %s\n", cl_strerror(ret));
 		return -1;
     	}
 
