@@ -62,8 +62,8 @@ OpenSSL (>= 0.9.7)
     http://www.openssl.org/
 SpamAssassin
     for SpamAssassin plugin support
-    http://spamassassin.org/
-  
+    http://spamassassin.apache.org/
+
 Options for configure script
 ============================
 Most options are automatically enabled if the dependencies

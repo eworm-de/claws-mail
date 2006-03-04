@@ -109,7 +109,7 @@ Select the plugin that you want and click 'OK'
     delete mail identified as spam or save it to a designated 
     folder. Preferences can be found in '/Configuration/
     Preferences/Plugins/SpamAssassin'.
-    SpamAssassin is available from http://spamassassin.org
+    SpamAssassin is available from http://spamassassin.apache.org/.
 	
   o Trayicon 
     Places an icon in the system tray that indicates whether
