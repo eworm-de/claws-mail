@@ -70,7 +70,7 @@
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
-      Plugins are the mechanism for extending Sylpheed-Claws' capabilities. For eample, imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
+      Plugins are the mechanism for extending Sylpheed-Claws' capabilities. For example, imagine that you want to store your mails in a remote <acronym>SQL</acronym> database. In most mailers out there this is simply impossible without reworking the internals of the mailer. With Sylpheed-Claws you can simply write a plugin to achieve the task.
     </para>
     <para>
 	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.

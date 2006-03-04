@@ -1,3 +1,8 @@
+2006-03-04 [wwp]	2.0.0cvs105
+
+	* manual/advanced.xml
+		typo.
+
 2006-03-03 [colin]	2.0.0cvs104
 
 	* src/plugins/clamav/clamav_plugin_gtk.c
