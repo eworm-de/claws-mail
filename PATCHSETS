@@ -1292,3 +1292,4 @@
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_message.c;  ) > 2.0.0cvs106.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/plugins.xml;  cvs diff -u -r 1.3 -r 1.4 src/plugins/spamassassin/README;  ) > 2.0.0cvs107.patchset
 ( cvs diff -u -r 1.8.2.8 -r 1.8.2.9 README;  cvs diff -u -r 1.29.2.8 -r 1.29.2.9 INSTALL;  ) > 2.0.0cvs108.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/keyboard.xml;  ) > 2.0.0cvs109.patchset
