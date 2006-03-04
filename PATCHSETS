@@ -1289,3 +1289,4 @@
 ( cvs diff -u -r 1.13.2.20 -r 1.13.2.21 src/plugins/clamav/clamav_plugin.c;  ) > 2.0.0cvs103.patchset
 ( cvs diff -u -r 1.9.2.16 -r 1.9.2.17 src/plugins/clamav/clamav_plugin_gtk.c;  ) > 2.0.0cvs104.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/advanced.xml;  ) > 2.0.0cvs105.patchset
+( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_message.c;  ) > 2.0.0cvs106.patchset

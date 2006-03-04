@@ -296,7 +296,7 @@ void prefs_message_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Message View");
-	path[1] = _("Text options");
+	path[1] = _("Text Options");
 	path[2] = NULL;
 
 	page = g_new0(MessagePage, 1);
