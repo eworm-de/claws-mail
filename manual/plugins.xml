@@ -22,7 +22,13 @@
 	    <listitem><para>Handles PGP signed and/or encrypted mails. You can decrypt mails, verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
     </varlistentry>
     <varlistentry><term>SpamAssassin</term>
-	    <listitem><para>Enables the scanning of incoming mail received from a POP, IMAP or LOCAL account using SpamAssassin. It can optionally delete mail identified as spam or save it to a designated folder. Preferences can be found in <quote>Configuration/Preferences/Plugins/SpamAssassin</quote>. SpamAssassin is available from <ulink url="http://spamassassin.org/">http://spamassassin.org/</ulink>.</para></listitem>
+	    <listitem>
+			<para>The SpamAssassin plugin comes with two major features:</para>
+			<para>The ability to scan incoming mail received from a POP, IMAP or LOCAL account using SpamAssassin, this can be turned off. It can optionally delete mail identified as spam or save it to a designated folder.</para>
+			<para>The ability for users to teach SpamAssassin to recognise spam or ham. You can train SpamAssassin by marking messages as spam or ham from the message list contextual menu, or using the relevant toolbar button in the main window or the message window (see "Configuration/Preferences/Customize toolbars"). Messages marked as spam are optionally saved to a designated folder.</para>
+			<para>Plugin preferences can be found in "Configuration/Preferences/Plugins/SpamAssassin".</para>
+			<para>SpamAssassin is available from <ulink url="http://spamassassin.apache.org/">http://spamassassin.apache.org/</ulink>. Version 3.1.x or higher is required to use the learning feature in TCP mode.</para>
+		</listitem>
     </varlistentry>
     <varlistentry><term>Trayicon</term>
 	    <listitem><para>Places an icon in the system tray that indicates whether you have any new mail. A tooltip also shows the current new, unread and total number of messages.</para></listitem>

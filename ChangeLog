@@ -1,3 +1,10 @@
+2006-03-04 [wwp]	2.0.0cvs107
+
+	* manual/plugins.xml
+	* src/plugins/spamassassin/README
+		updated SpamAssassin plugin docs to reflect new functional additions
+		(also fix/update/documents few technical stuff more, see the README).
+
 2006-03-04 [wwp]	2.0.0cvs106
 
 	* src/prefs_message.c

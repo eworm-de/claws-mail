@@ -2,26 +2,34 @@ SpamAssassin Plugin
 -------------------
 
 This plugin will filter incoming messages using SpamAssassin. Like the
-spamc command from the SpamAssassin package the message is send to a
-spamd server that decides if the message is spam or not.
+spamc command from the SpamAssassin package, the message is sent to a
+spamd server that decides if the message is spam or not. Filtering of
+spam at incorporation time can be turned off.
 
-To build the plugin run configure with --enable-spamassassin-plugin
+The plugin also provides the ability to teach spamd to recognize spam and ham,
+using the external command sa-learn in local modes or spamc in TCP mode
+(this one requires SpamAssassin >=3.1.x). A toolbar button for marking
+messages as spam or ham can be added to the main window or the message
+window (see "Configuration/Preferences/Customize toolbars).
+
+To build the plugin run configure with --enable-spamassassin-plugin.
 
 Message that are classified as spam can be deleted or moved to a folder
 that can be specified in the configuration, if the folder is not
 specified or not found the default trash folder will be used.
 
-Please note that the spamassassin.so plugin only provides the actual
-filtering. By default it is not enabled. You probably want to load the
-spamassassin_gtk.so plugin too to get a configuration page under
-"Configuration/Other Preferences..." for the SpamAssassin plugin.
+Plugin preferences can be found under "Configuration/Preferences/Plugins
+/SpamAssassin". 
 
 The SpamAssassin plugin uses it's own block in the sylpheedrc file in your
-~/.sylpheed directory. If you really want to configure it without the GTK
-plugin you can specify the following options:
+~/.sylpheed-claws/ directory, and define the following options:
 
 [SpamAssassin]
-enable=1				enable filtering with SpamAssassin
+transport=0				transport type (to reach spamd)
+					0 is to disable all features
+					1 is using a local spamd
+					2 is using a TCP connection
+					3 is using a Unix socket
 					[default: 0]
 
 hostname=localhost			hostname of the spamd server
@@ -30,9 +38,16 @@ hostname=localhost			hostname of the spamd server
 port=783				port the spamd server uses
 					[default: 783]
 
+timeout=30				max time (in seconds) a transaction with spamd
+					should last
+					[default: 30]
+
 max_size=250				maximum size a mail can have (in kB)
 					larger mails will not be filtered
 					[default: 250]
+
+process_emails=1			enable to filter incoming emails (POP, IMAP, local)
+					[default: 1]
 
 receive_spam=1				enable to save spam to a mailfolder
 					if not enabled the mails will be deleted,
@@ -46,6 +61,9 @@ save_folder=#mh/Mail/trash/Spam		the folder that should be used to save
 					folder is used
 					[default: none, use default trash]
 
+username=<empty>			user the spamd server have to use
+					[default: user name of the current user]
+
 libspamc.[ch] and utils.[ch] are files from the SpamAssassin distribution.
 The copyright holders and license information can be found inside the files.
-The SpamAssassin distribution can be downloaded from http://www.spamassassin.org/
+The SpamAssassin distribution can be downloaded from http://spamassassin.apache.org/.
