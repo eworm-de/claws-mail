@@ -4,20 +4,27 @@ plugindir = $(pkglibdir)/plugins
 
 plugin_LTLIBRARIES = trayicon.la
 
+if CYGWIN
+cygwin_export_lib = -L$(top_builddir)/src -lsylpheed-claws
+else
+cygwin_export_lib = 
+endif 
+
 trayicon_la_SOURCES = \
 	trayicon.c
 
 trayicon_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -no-undefined
 
-trayicon_la_LIBADD = \
+trayicon_la_LIBADD = libeggtrayicon/libeggtrayicon.la \
+	$(cygwin_export_lib) \
 	$(GTK_LIBS) \
-	libeggtrayicon/libeggtrayicon.la
+	-L/usr/X11R6/lib -lX11
 
 INCLUDES = \
-	-I../../ \
-	-I../../common \
-	-I../../gtk \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_srcdir)/src/gtk \
 	-Ilibeggtrayicon
 
 AM_CPPFLAGS = \

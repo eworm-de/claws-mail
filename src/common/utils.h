@@ -188,9 +188,17 @@ typedef gpointer (*GNodeMapFunc)	(gpointer nodedata, gpointer data);
 /* debug functions */
 void debug_set_mode		(gboolean mode);
 gboolean debug_get_mode		(void);
+
+#ifndef __CYGWIN__
 #define debug_print \
 	debug_print_real("%s:%d:", debug_srcname(__FILE__), __LINE__), \
 	debug_print_real
+#else
+  /* FIXME: cygwin: why debug_srcname couldn't be resolved in library? */
+#define debug_print \
+	debug_print_real("%s:%d:", __FILE__, __LINE__), \
+	debug_print_real
+#endif
 
 /* for macro expansion */
 #define Str(x)	#x

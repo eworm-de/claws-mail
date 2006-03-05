@@ -1,7 +1,7 @@
 PLUGINDIR = $(pkglibdir)/plugins/
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
-if PLATFORM_WIN32
+if OS_WIN32
 arch_sources = fnmatch.c \
                w32_dirent.c w32_reg.c w32_signal.c w32_stat.c \
                w32_stdio.c w32_stdlib.c w32_string.c w32_time.c \

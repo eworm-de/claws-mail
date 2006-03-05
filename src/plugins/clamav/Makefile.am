@@ -7,7 +7,13 @@ clamav_plugin_la_SOURCES = \
 	clamav_plugin_gtk.c clamav_plugin.h
 
 clamav_plugin_la_LDFLAGS = \
-	-avoid-version -module \
+	-avoid-version -module -no-undefined
+if CYGWIN
+cygwin_export_lib = -L$(top_builddir)/src -lsylpheed-claws
+else
+cygwin_export_lib =
+endif
+clamav_plugin_la_LIBADD = $(cygwin_export_lib) \
 	$(GTK_LIBS) \
 	$(CLAMAV_LIBS)
 	

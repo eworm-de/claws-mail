@@ -220,6 +220,7 @@ static char *CONTRIBS_LIST[] = {
 "T. Yamamoto",
 "Yanase",
 "Yasumatsu",
+"Ralgh Young",
 "Gál Zoltán",
 "Marien Zwart",
 "Martin Zwickel",

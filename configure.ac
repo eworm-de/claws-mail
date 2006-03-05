@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=109
+EXTRA_VERSION=110
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -121,6 +121,18 @@ case "$host" in
 esac
 AC_MSG_RESULT([$os_win32])
 AM_CONDITIONAL(OS_WIN32, test x"$os_win32" = x"yes")
+
+AC_MSG_CHECKING([for Cygwin])
+case "$host" in
+  *-*-cygwin*)
+    env_cygwin=yes
+    ;;
+  *)
+    env_cygwin=no
+    ;;
+esac
+AC_MSG_RESULT([$env_cygwin])
+AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 
 CFLAGS="$CFLAGS -Wall"
 

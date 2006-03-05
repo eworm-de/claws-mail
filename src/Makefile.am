@@ -7,7 +7,7 @@ etpan_dir =
 etpan_library = 
 endif
 
-SUBDIRS = common gtk plugins $(etpan_dir)
+SUBDIRS = common gtk $(etpan_dir) . plugins
 
 bin_PROGRAMS = sylpheed-claws
 
@@ -450,3 +450,20 @@ AM_CPPFLAGS = \
 #to call inside gpgme due to our lack of LARGEFILE support
 
 AM_YFLAGS = -d
+
+if CYGWIN
+sylpheed-claws$(EXEEXT): $(sylpheed_claws_OBJECTS) $(sylpheed_claws_DEPENDENCIES) 
+	@rm -f sylpheed-claws$(EXEEXT)
+	@rm -f sylpheed-claws.def sylpheed-claws.base sylpheed-claws.exp libsylpheed-claws.a .libs/libsylpheed-claws.a
+	$(LINK) -shared $(sylpheed_clawsLDFLAGS) -Wl,--out-implib=libsylpheed-claws.a -Wl,--export-all-symbols,--exclude-symbols,main $(sylpheed_claws_OBJECTS) -Wl,--no-whole-archive $(sylpheed_claws_LDADD) $(LIBS)
+	dlltool --output-def sylpheed-claws.def --dllname sylpheed-claws$(EXEEXT) --export-all-symbols --exclude-symbols main $(sylpheed_claws_OBJECTS) gtk/.libs/libsylpheedgtk.a
+	$(LINK) $(sylpheed_claws_LDFLAGS) -Wl,--base-file,sylpheed-claws.base $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
+	sleep 5
+	dlltool --base-file sylpheed-claws.base --input-def sylpheed-claws.def --output-exp sylpheed-claws.exp
+	$(LINK) $(sylpheed_claws_LDFLAGS) -Wl,sylpheed-claws.exp $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
+	@cp libsylpheed-claws.a .libs/libsylpheed-claws.a
+else
+#sylpheed-claws$(EXEEXT): $(sylpheed_claws_OBJECTS) $(sylpheed_claws_DEPENDENCIES) 
+#	@rm -f sylpheed-claws$(EXEEXT)
+#	$(LINK) $(sylpheed_claws_LDFLAGS) $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
+endif

@@ -8,7 +8,7 @@
 #include <imap.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#if (defined (__NetBSD__) || defined (__FreeBSD__))
+#if (defined (__NetBSD__) || defined (__FreeBSD__) || defined (__CYGWIN__))
 #include <sys/socket.h>
 #endif
 #include <fcntl.h>

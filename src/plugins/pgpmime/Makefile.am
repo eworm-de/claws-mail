@@ -1,6 +1,6 @@
 EXTRA_DIST = version.rc plugin.def sylpheed.def mypgpcore.def pgpmime.deps
 
-if PLATFORM_WIN32
+if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile $(RC) \
      `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
@@ -12,7 +12,6 @@ LTRCCOMPILE = $(LIBTOOL) --mode=compile $(RC) \
 plugin_res = version.lo
 plugin_res_ldflag = -Wl,.libs/version.o
 
-no_undefined = -no-undefined
 export_symbols = -export-symbols $(srcdir)/plugin.def
 
 plugin_deps = libsylpheed.a libmypgpcore.a $(plugin_res) plugin.def
@@ -28,12 +27,23 @@ plugin_ldadd = -L . -lsylpheed -lmypgpcore
 else
 plugin_res =
 plugin_res_ldflag =
-no_undefined =
 export_symbols =
 plugin_deps =
 plugin_ldadd =
 endif
 
+if PLATFORM_WIN32
+no_undefined = -no-undefined
+else
+no_undefined =
+endif
+
+if CYGWIN
+cygwin_export_lib = -L$(top_builddir)/src -lsylpheed-claws
+pgpcore_lib = ../pgpcore/pgpcore.la
+else
+pgpcore_lib = 
+endif
 
 plugindir = $(pkglibdir)/plugins
 plugin_DATA=pgpmime.deps
@@ -51,11 +61,11 @@ plugininclude_HEADERS = \
 
 pgpmime_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
-	-avoid-version -module \
+	-avoid-version -module 
+pgpmime_la_DEPENDENCIES = $(plugin_deps)
+pgpmime_la_LIBADD = $(plugin_ldadd) $(pgpcore_lib) $(cygwin_export_lib) \
         $(GTK_LIBS) \
 	$(GPGME_LIBS)
-pgpmime_la_DEPENDENCIES = $(plugin_deps)
-pgpmime_la_LIBADD = $(plugin_ldadd)
 
 INCLUDES = \
 	-I$(top_srcdir)/src \

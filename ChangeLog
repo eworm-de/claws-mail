@@ -1,3 +1,24 @@
+2006-03-05 [paul]	2.0.0cvs110
+
+	* AUTHORS
+	* configure.ac
+	* src/Makefile.am
+	* src/common/Makefile.am
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+	* src/gtk/authors.h
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/demo/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		fix builiding on cygwin
+		Patch by Ralgh Young <bamanzi@gmail.com>
+
 2006-03-04 [wwp]	2.0.0cvs109
 
 	* manual/keyboard.xml

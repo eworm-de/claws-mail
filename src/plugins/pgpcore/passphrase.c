@@ -289,7 +289,7 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 static int free_passphrase(gpointer _unused)
 {
     if (last_pass != NULL) {
-#ifndef G_OS_WIN32
+#ifndef G_PLATFORM_WIN32
         munlock(last_pass, strlen(last_pass));
 #endif
         g_free(last_pass);
@@ -321,7 +321,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
     else {
         if (prefs_gpg_get_config()->store_passphrase) {
             last_pass = g_strdup(pass);
-#ifndef G_OS_WIN32
+#ifndef G_PLATFORM_WIN32
             if (mlock(last_pass, strlen(last_pass)) == -1)
                 debug_print("%% locking passphrase failed");
 #endif
