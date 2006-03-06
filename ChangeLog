@@ -1,3 +1,8 @@
+2006-03-06 [wwp]	2.0.0cvs111
+
+	* src/textview.c
+		don't crash if (x)face is bad.
+
 2006-03-05 [paul]	2.0.0cvs110
 
 	* AUTHORS

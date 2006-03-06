@@ -1301,6 +1301,7 @@ static void textview_show_face(TextView *textview)
 		gtk_widget_destroy(textview->image);
 	
 	textview->image = face_get_from_header(msginfo->face);
+	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
@@ -1346,6 +1347,7 @@ static void textview_show_xface(TextView *textview)
 	textview->image = xface_get_from_header(msginfo->xface,
 				&textview->text->style->white,
 				textview->text->window);
+	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
