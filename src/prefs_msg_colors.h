@@ -20,6 +20,24 @@
 #ifndef PREFS_MSG_COLORS_H
 #define PREFS_MSG_COLORS_H
 
+#include "colorlabel.h"
+
+typedef struct _ColorlabelPrefs			ColorlabelPrefs;
+typedef struct _ColorlabelPrefsWidgets	ColorlabelPrefsWidgets;
+
+struct _ColorlabelPrefs
+{
+	gulong	 color;
+	gchar	*label;
+
+};
+
+struct _ColorlabelPrefsWidgets
+{
+	GtkWidget* foo;
+	GtkWidget* bar;
+};
+
 void prefs_msg_colors_init	(void);
 void prefs_msg_colors_done	(void);
 
