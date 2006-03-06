@@ -2059,6 +2059,8 @@ static void *imap_get_uncached_messages_thread(void *data)
 		if (r != MAILIMAP_NO_ERROR)
 			continue;
 		
+		session_set_access_time(SESSION(session));
+
 		count = 0;
 		for(i = 0 ; i < carray_count(env_list) ; i ++) {
 			struct imap_fetch_env_info * info;
@@ -3283,6 +3285,7 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 						}
 						g_free(file);
 					}
+					session_set_access_time(SESSION(session));
 				}
 
 				if (elem == NULL)
