@@ -58,6 +58,7 @@
 #include "folderview.h"
 #include "stock_pixmap.h"
 #include "prefswindow.h"
+#include "colorlabel.h"
 
 enum {
 	DATEFMT_FMT,
@@ -283,6 +284,36 @@ static PrefParam param[] = {
 	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
 	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
+
+	/* custom colors */
+	{"custom_color1", "#ff9900", &prefs_common.custom_colorlabel[0].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel1", "Orange", &prefs_common.custom_colorlabel[0].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color2", "#ff0000", &prefs_common.custom_colorlabel[1].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel2", "Red", &prefs_common.custom_colorlabel[1].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color3", "#ff66ff", &prefs_common.custom_colorlabel[2].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel3", "Pink", &prefs_common.custom_colorlabel[2].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color4", "#00ccff", &prefs_common.custom_colorlabel[3].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel4", "Sky blue", &prefs_common.custom_colorlabel[3].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color5", "#0000ff", &prefs_common.custom_colorlabel[4].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel5", "Blue", &prefs_common.custom_colorlabel[4].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color6", "#009900", &prefs_common.custom_colorlabel[5].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel6", "Green", &prefs_common.custom_colorlabel[5].label, P_STRING,
+	 NULL, NULL, NULL},
+	{"custom_color7", "#663366", &prefs_common.custom_colorlabel[6].color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"custom_colorlabel7", "Brown", &prefs_common.custom_colorlabel[6].label, P_STRING,
+	 NULL, NULL, NULL},
 
 	/* image viewer */
 	{"display_image", "TRUE", &prefs_common.display_img, P_BOOL,
@@ -764,6 +795,8 @@ void prefs_common_read_config(void)
 		prefs_common_read_history(COMMAND_HISTORY);
 	prefs_common.summary_quicksearch_history =
 		prefs_common_read_history(QUICKSEARCH_HISTORY);
+
+	colorlabel_update_colortable_from_prefs();
 }
 
 /*

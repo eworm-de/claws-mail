@@ -275,7 +275,8 @@ void summary_toggle_view_real	  (SummaryView	*summaryview);
 
 void summary_reflect_prefs_pixmap_theme
                                   (SummaryView *summaryview);
-
+void summary_reflect_prefs_custom_colors
+                                  (SummaryView *summaryview);
 void summary_harvest_address      (SummaryView *summaryview);
 void summary_set_prefs_from_folderitem
                                   (SummaryView *summaryview, FolderItem *item);

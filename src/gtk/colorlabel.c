@@ -42,8 +42,9 @@
 #include "colorlabel.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "prefs_common.h"
 
-static gchar *labels[] = {
+static gchar *labels[COLORLABELS] = {
 	N_("Orange"),
 	N_("Red") ,
 	N_("Pink"),
@@ -53,6 +54,16 @@ static gchar *labels[] = {
 	N_("Brown")
 };
 
+static GdkColor default_colors[COLORLABELS] = {
+	{ 0, 0xffff, (0x99 << 8), 0x0 },
+	{ 0, 0xffff, 0, 0 },
+	{ 0, 0xffff, (0x66 << 8), 0xffff },
+	{ 0, 0x0, (0xcc << 8), 0xffff },
+	{ 0, 0x0, 0x0, 0xffff },
+	{ 0, 0x0, (0x99 << 8), 0x0 },
+	{ 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 }
+};
+	
 typedef enum LabelColorChangeFlags_ {
 	LCCF_COLOR = 1 << 0,
 	LCCF_LABEL = 1 << 1,
@@ -64,20 +75,21 @@ typedef enum LabelColorChangeFlags_ {
 static struct 
 {
 	LabelColorChangeFlags	changed; 
+	/* color here is initialized from default_colors[] at startup */
 	GdkColor		color;
 
 	/* XXX: note that the label member is supposed to be dynamically 
 	 * allocated and fffreed */
 	gchar			*label;
 	GtkWidget		*widget;
-} label_colors[] = {
-	{ LCCF_ALL, { 0, 0xffff, (0x99 << 8), 0x0 },		NULL, NULL },
-	{ LCCF_ALL, { 0, 0xffff, 0, 0 },			NULL, NULL },
-	{ LCCF_ALL, { 0, 0xffff, (0x66 << 8), 0xffff },		NULL, NULL },
-	{ LCCF_ALL, { 0, 0x0, (0xcc << 8), 0xffff },		NULL, NULL },
-	{ LCCF_ALL, { 0, 0x0, 0x0, 0xffff },			NULL, NULL },
-	{ LCCF_ALL, { 0, 0x0, 0x99 << 8, 0x0 },			NULL, NULL },
-	{ LCCF_ALL, { 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 },	NULL, NULL }
+} label_colors[COLORLABELS] = {
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL }
 };
 
 #define LABEL_COLOR_WIDTH	28
@@ -88,8 +100,30 @@ static struct
 #define G_RETURN_VAL_IF_INVALID_COLOR(color, val) \
 	g_return_val_if_fail((color) >= 0 && (color) < LABEL_COLORS_ELEMS, (val))
 
+#define INTCOLOR_TO_GDKCOLOR(intcolor, gdkcolor) \
+	gdkcolor.red   = ((intcolor >> 16UL) & 0xFFUL) << 8UL; \
+	gdkcolor.green = ((intcolor >>  8UL) & 0xFFUL) << 8UL; \
+	gdkcolor.blue  = ((intcolor)         & 0xFFUL) << 8UL;
+
 static void colorlabel_recreate        (gint);
 static void colorlabel_recreate_label  (gint);
+
+void colorlabel_update_colortable_from_prefs(void)
+{
+	gint c;
+
+/*	label_colors[index].changed = LCCF_ALL;*/
+	for (c = 0; c < COLORLABELS; c++) {
+		INTCOLOR_TO_GDKCOLOR(prefs_common.custom_colorlabel[c].color,
+				label_colors[c].color);
+		if (label_colors[c].label != NULL) {
+			g_free(label_colors[c].label);
+		}
+		label_colors[c].label =
+				g_strdup(prefs_common.custom_colorlabel[c].label);
+	}
+}
+
 
 gint colorlabel_get_color_count(void)
 {
@@ -105,12 +139,28 @@ GdkColor colorlabel_get_color(gint color_index)
 	return label_colors[color_index].color;
 }
 
+GdkColor colorlabel_get_default_color(gint color_index)
+{
+	GdkColor invalid = { 0 };
+
+	G_RETURN_VAL_IF_INVALID_COLOR(color_index, invalid);
+
+	return default_colors[color_index];
+}
+		
 gchar *colorlabel_get_color_text(gint color_index)
 {
 	G_RETURN_VAL_IF_INVALID_COLOR(color_index, NULL);
 
 	colorlabel_recreate_label(color_index);
 	return label_colors[color_index].label;
+}
+
+gchar *colorlabel_get_color_default_text(gint color_index)
+{
+	G_RETURN_VAL_IF_INVALID_COLOR(color_index, NULL);
+
+	return labels[color_index];
 }
 
 static gboolean colorlabel_drawing_area_expose_event_cb
@@ -121,9 +171,7 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 	GdkColor color;
 	GdkGC *gc;
 
-	color.red   = ((c >> 16UL) & 0xFFUL) << 8UL;
-	color.green = ((c >>  8UL) & 0xFFUL) << 8UL;
-	color.blue  = ((c)         & 0xFFUL) << 8UL;
+	INTCOLOR_TO_GDKCOLOR(c, color)
 
 	gdk_colormap_alloc_color(gtk_widget_get_colormap(widget), &color, FALSE, TRUE);
 
@@ -227,7 +275,7 @@ static void colorlabel_recreate_all(void)
 
 /* colorlabel_create_check_color_menu_item() - creates a color
  * menu item with a check box */
-GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
+GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean force)
 {
 	GtkWidget *label; 
 	GtkWidget *hbox; 
@@ -238,6 +286,10 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
 
 	item = gtk_check_menu_item_new();
 
+	if (force) {
+		label_colors[color_index].changed |= LCCF_COLOR;
+		label_colors[color_index].changed |= LCCF_LABEL;
+	}
 	colorlabel_recreate(color_index);
 
 	/* XXX: gnome-core::panel::menu.c is a great example of

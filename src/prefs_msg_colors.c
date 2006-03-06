@@ -39,6 +39,11 @@
 
 #include "manage_window.h"
 
+#include "colorlabel.h"
+
+#define SAFE_STRING(str) \
+	(str) ? (str) : ""
+
 static struct MessageColorButtons {
 	GtkWidget *quote_level1_btn;
 	GtkWidget *quote_level2_btn;
@@ -47,6 +52,8 @@ static struct MessageColorButtons {
 	GtkWidget *tgt_folder_btn;
 	GtkWidget *signature_btn;
 	GtkWidget *color_new_btn;
+	/* custom colors */
+	GtkWidget *custom_color[COLORLABELS];
 } color_buttons;
 
 typedef struct _MsgColorsPage
@@ -57,6 +64,9 @@ typedef struct _MsgColorsPage
 	
 	GtkWidget *chkbtn_enablecol;
 	GtkWidget *chkbtn_recycle_colors;
+
+	/* custom colors */
+	GtkWidget *custom_colorlabel_entry[COLORLABELS];
 } MsgColorsPage;
 
 static GtkWidget *color_dialog;
@@ -72,6 +82,8 @@ static gboolean quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
 						 gpointer	 data);
 static void set_button_bg_color			(GtkWidget	*widget,
 						 gint		 color);
+static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget,
+						 gpointer	 data);
 
 void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	    gpointer data)
@@ -92,6 +104,14 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *color_new_label;
 	GtkWidget *msg_frame;
 	GtkWidget *folder_frame;
+	/* custom colors */
+	GtkWidget *vbox_custom_colors;
+	GtkWidget *frame_custom_colors;
+	GtkWidget *hbox_reset_custom_colors;
+	GtkWidget *reset_custom_colors_btn;
+	GtkWidget *hbox_custom_color[COLORLABELS];
+	GtkWidget *custom_colorlabel_entry[COLORLABELS];
+	gint c;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox1);
@@ -226,6 +246,40 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
  	gtk_widget_show(color_new_label);
  	gtk_box_pack_start (GTK_BOX(hbox), color_new_label, FALSE, FALSE, 0);
 
+	/* custom colors */
+	PACK_FRAME (vbox1, frame_custom_colors, _("Color labels"));
+
+	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_custom_colors);
+	gtk_container_add (GTK_CONTAINER (frame_custom_colors), vbox_custom_colors);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_custom_colors), VBOX_BORDER);
+
+	for (c = 0; c < COLORLABELS; c++) {
+		hbox_custom_color[c] = gtk_hbox_new(FALSE, 8);
+		gtk_widget_show (hbox_custom_color[c]);
+		gtk_box_pack_start (GTK_BOX (vbox_custom_colors), hbox_custom_color[c],
+				FALSE, TRUE, 0);
+		color_buttons.custom_color[c] = gtk_button_new();
+		gtk_widget_show (color_buttons.custom_color[c]);
+		gtk_widget_set_size_request (color_buttons.custom_color[c], 30, 20);
+  		gtk_box_pack_start (GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
+				FALSE, FALSE, 0);
+		custom_colorlabel_entry[c] = gtk_entry_new();
+		gtk_widget_show (custom_colorlabel_entry[c]);
+  		gtk_box_pack_start (GTK_BOX (hbox_custom_color[c]), custom_colorlabel_entry[c],
+				FALSE, FALSE, 0);
+	}
+
+	hbox_reset_custom_colors = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox_reset_custom_colors);
+	gtk_box_pack_start (GTK_BOX (vbox_custom_colors), hbox_reset_custom_colors,
+		FALSE, TRUE, 0);
+
+	reset_custom_colors_btn = gtk_button_new_with_label (_(" Reset to defaults "));
+	gtk_widget_show (reset_custom_colors_btn);
+	gtk_box_pack_start (GTK_BOX (hbox_reset_custom_colors), reset_custom_colors_btn,
+		FALSE, FALSE, 0);
+
 	g_signal_connect(G_OBJECT(color_buttons.quote_level1_btn), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL1");
 	g_signal_connect(G_OBJECT(color_buttons.quote_level2_btn), "clicked",
@@ -240,6 +294,14 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			 G_CALLBACK(quote_color_set_dialog), "SIGNATURE");
 	g_signal_connect(G_OBJECT(color_buttons.color_new_btn), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "NEW");
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		g_signal_connect(G_OBJECT(color_buttons.custom_color[c]), "clicked",
+				 G_CALLBACK(quote_color_set_dialog), GINT_TO_POINTER(c));
+	}
+
+	g_signal_connect(G_OBJECT(reset_custom_colors_btn), "clicked",
+			 G_CALLBACK(prefs_msg_colors_reset_custom_colors), prefs_msg_colors);
 
 	set_button_bg_color(color_buttons.quote_level1_btn,
 			    prefs_common.quote_level1_col);
@@ -255,6 +317,13 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    prefs_common.signature_col);
 	set_button_bg_color(color_buttons.color_new_btn,
 			    prefs_common.color_new);
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		set_button_bg_color(color_buttons.custom_color[c],
+				    prefs_common.custom_colorlabel[c].color);
+		gtk_entry_set_text(GTK_ENTRY (custom_colorlabel_entry[c]), 
+				   SAFE_STRING (prefs_common.custom_colorlabel[c].label));
+	}
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enablecol),
 				     prefs_common.enable_color);
@@ -263,6 +332,10 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_msg_colors->chkbtn_enablecol 	= chkbtn_enablecol;
 	prefs_msg_colors->chkbtn_recycle_colors	= chkbtn_recycle_colors;
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		prefs_msg_colors->custom_colorlabel_entry[c] = custom_colorlabel_entry[c];
+	}
 
 	prefs_msg_colors->page.widget = vbox1;
 }
@@ -274,34 +347,48 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
 	gint rgbvalue = 0;
 	GtkColorSelectionDialog *dialog;
+	gint c;
 
-	if(g_ascii_strcasecmp(type, "LEVEL1") == 0) {
-		title = _("Pick color for quotation level 1");
-		rgbvalue = prefs_common.quote_level1_col;
-	} else if(g_ascii_strcasecmp(type, "LEVEL2") == 0) {
-		title = _("Pick color for quotation level 2");
-		rgbvalue = prefs_common.quote_level2_col;
-	} else if(g_ascii_strcasecmp(type, "LEVEL3") == 0) {
-		title = _("Pick color for quotation level 3");
-		rgbvalue = prefs_common.quote_level3_col;
-	} else if(g_ascii_strcasecmp(type, "URI") == 0) {
-		title = _("Pick color for URI");
-		rgbvalue = prefs_common.uri_col;
-	} else if(g_ascii_strcasecmp(type, "TGTFLD") == 0) {
-		title = _("Pick color for target folder");
-		rgbvalue = prefs_common.tgt_folder_col;
-	} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
-		title = _("Pick color for signatures");
-		rgbvalue = prefs_common.signature_col;
-	} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
-		title = _("Pick color for folder");
-		rgbvalue = prefs_common.color_new;
-	} else {   /* Should never be called */
-		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
-		return;
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		if (GPOINTER_TO_INT(type) == c) {
+			title = g_strdup_printf(_("Pick color for color #%d"), c+1);
+			rgbvalue = prefs_common.custom_colorlabel[c].color;
+			break;
+		}
+	}
+	/* other colors */
+	if (c == COLORLABELS) {
+		if(g_ascii_strcasecmp(type, "LEVEL1") == 0) {
+			title = g_strdup(_("Pick color for quotation level 1"));
+			rgbvalue = prefs_common.quote_level1_col;
+		} else if(g_ascii_strcasecmp(type, "LEVEL2") == 0) {
+			title = g_strdup(_("Pick color for quotation level 2"));
+			rgbvalue = prefs_common.quote_level2_col;
+		} else if(g_ascii_strcasecmp(type, "LEVEL3") == 0) {
+			title = g_strdup(_("Pick color for quotation level 3"));
+			rgbvalue = prefs_common.quote_level3_col;
+		} else if(g_ascii_strcasecmp(type, "URI") == 0) {
+			title = g_strdup(_("Pick color for URI"));
+			rgbvalue = prefs_common.uri_col;
+		} else if(g_ascii_strcasecmp(type, "TGTFLD") == 0) {
+			title = g_strdup(_("Pick color for target folder"));
+			rgbvalue = prefs_common.tgt_folder_col;
+		} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
+			title = g_strdup(_("Pick color for signatures"));
+			rgbvalue = prefs_common.signature_col;
+		} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
+			title = g_strdup(_("Pick color for folder"));
+			rgbvalue = prefs_common.color_new;
+		} else {
+			/* Should never be called */
+			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
+			return;
+		}
 	}
 
 	color_dialog = gtk_color_selection_dialog_new(title);
+	g_free(title);
 	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(color_dialog), FALSE);
@@ -332,6 +419,7 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	gdouble color[4];
 	gint red, green, blue, rgbvalue;
 	gchar *type = (gchar *)data;
+	gint c;
 
 	gtk_color_selection_get_color(colorsel, color);
 
@@ -340,30 +428,43 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	blue     = (gint) (color[2] * 255.0);
 	rgbvalue = (gint) ((red * 0x10000) | (green * 0x100) | blue);
 
-	if (g_ascii_strcasecmp(type, "LEVEL1") == 0) {
-		prefs_common.quote_level1_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level1_btn, rgbvalue);
-	} else if (g_ascii_strcasecmp(type, "LEVEL2") == 0) {
-		prefs_common.quote_level2_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level2_btn, rgbvalue);
-	} else if (g_ascii_strcasecmp(type, "LEVEL3") == 0) {
-		prefs_common.quote_level3_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level3_btn, rgbvalue);
-	} else if (g_ascii_strcasecmp(type, "URI") == 0) {
-		prefs_common.uri_col = rgbvalue;
-		set_button_bg_color(color_buttons.uri_btn, rgbvalue);
-	} else if (g_ascii_strcasecmp(type, "TGTFLD") == 0) {
-		prefs_common.tgt_folder_col = rgbvalue;
-		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
-		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
-	} else if (g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
-		prefs_common.signature_col = rgbvalue;
-		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
-	} else if (g_ascii_strcasecmp(type, "NEW") == 0) {
-		prefs_common.color_new = rgbvalue;
-		set_button_bg_color(color_buttons.color_new_btn, rgbvalue);
-	} else
-		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
+
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		if (GPOINTER_TO_INT(type) == c) {
+			prefs_common.custom_colorlabel[c].color = rgbvalue;
+			set_button_bg_color(color_buttons.custom_color[c], rgbvalue);
+			break;
+		}
+	}
+	/* other colors */
+	if (c == COLORLABELS) {
+		if (g_ascii_strcasecmp(type, "LEVEL1") == 0) {
+			prefs_common.quote_level1_col = rgbvalue;
+			set_button_bg_color(color_buttons.quote_level1_btn, rgbvalue);
+		} else if (g_ascii_strcasecmp(type, "LEVEL2") == 0) {
+			prefs_common.quote_level2_col = rgbvalue;
+			set_button_bg_color(color_buttons.quote_level2_btn, rgbvalue);
+		} else if (g_ascii_strcasecmp(type, "LEVEL3") == 0) {
+			prefs_common.quote_level3_col = rgbvalue;
+			set_button_bg_color(color_buttons.quote_level3_btn, rgbvalue);
+		} else if (g_ascii_strcasecmp(type, "URI") == 0) {
+			prefs_common.uri_col = rgbvalue;
+			set_button_bg_color(color_buttons.uri_btn, rgbvalue);
+		} else if (g_ascii_strcasecmp(type, "TGTFLD") == 0) {
+			prefs_common.tgt_folder_col = rgbvalue;
+			set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
+			folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+		} else if (g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
+			prefs_common.signature_col = rgbvalue;
+			set_button_bg_color(color_buttons.signature_btn, rgbvalue);
+		} else if (g_ascii_strcasecmp(type, "NEW") == 0) {
+			prefs_common.color_new = rgbvalue;
+			set_button_bg_color(color_buttons.color_new_btn, rgbvalue);
+		} else {
+			fprintf(stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type);
+		}
+	}
 
 	gtk_widget_destroy(color_dialog);
 }
@@ -419,13 +520,48 @@ static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
 void prefs_msg_colors_save(PrefsPage *_page)
 {
 	MsgColorsPage *page = (MsgColorsPage *) _page;
+	gint c;
 
 	prefs_common.enable_color = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enablecol));
 	prefs_common.recycle_quote_colors =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_recycle_colors));
 
+	/* custom colors */
+	for (c = 0; c < COLORLABELS; c++) {
+		if (prefs_common.custom_colorlabel[c].label)
+			g_free(prefs_common.custom_colorlabel[c].label);
+		prefs_common.custom_colorlabel[c].label =
+			gtk_editable_get_chars(GTK_EDITABLE(page->custom_colorlabel_entry[c]), 0, -1);
+	}
+	colorlabel_update_colortable_from_prefs();
+
 	main_window_reflect_prefs_all();
+	summary_reflect_prefs_custom_colors(mainwindow_get_mainwindow()->summaryview);
+}
+
+static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget, gpointer data)
+{
+#define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
+#define CR(r, g, b)	((CL(r) << (gulong) 16) | \
+			 (CL(g) << (gulong)  8) | \
+			 (CL(b)))
+	MsgColorsPage *page = (MsgColorsPage *) data;
+	GdkColor color;
+	gint c;
+
+	for (c = 0; c < COLORLABELS; c++) {
+		color = colorlabel_get_default_color(c);
+		prefs_common.custom_colorlabel[c].color =
+							(gint)CR(color.red, color.green, color.blue);
+		set_button_bg_color(color_buttons.custom_color[c],
+							prefs_common.custom_colorlabel[c].color);
+		gtk_entry_set_text(GTK_ENTRY (page->custom_colorlabel_entry[c]),
+							SAFE_STRING (colorlabel_get_color_default_text(c)));
+	}
+
+#undef CR
+#undef CL
 }
 
 static void prefs_msg_colors_destroy_widget(PrefsPage *_page)

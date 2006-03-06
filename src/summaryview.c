@@ -245,7 +245,8 @@ static void summary_colorlabel_menu_item_activate_cb
 static void summary_colorlabel_menu_item_activate_item_cb
 					  (GtkMenuItem	*label_menu_item,
 					   gpointer	 data);
-static void summary_colorlabel_menu_create(SummaryView	*summaryview);
+static void summary_colorlabel_menu_create(SummaryView	*summaryview,
+					   gboolean  refresh);
 
 static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 
@@ -749,7 +750,7 @@ void summary_init(SummaryView *summaryview)
 
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
-	summary_colorlabel_menu_create(summaryview);
+	summary_colorlabel_menu_create(summaryview, FALSE);
 	summary_set_menu_sensitive(summaryview);
 
 }
@@ -4510,7 +4511,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 			  GINT_TO_POINTER(0));
 }
 
-static void summary_colorlabel_menu_create(SummaryView *summaryview)
+static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean refresh)
 {
 	GtkWidget *label_menuitem;
 	GtkWidget *menu;
@@ -4545,7 +4546,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 
 	/* create pixmap/label menu items */
 	for (i = 0; i < N_COLOR_LABELS; i++) {
-		item = colorlabel_create_check_color_menu_item(i);
+		item = colorlabel_create_check_color_menu_item(i, refresh);
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		g_signal_connect(G_OBJECT(item), "activate",
 				 G_CALLBACK(summary_colorlabel_menu_item_activate_cb),
@@ -5704,6 +5705,22 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);
 	summary_set_column_titles(summaryview);
+}
+
+void summary_reflect_prefs_custom_colors(SummaryView *summaryview)
+{
+	GtkMenuShell *menu;
+	GList *cur;
+
+	/* re-create colorlabel submenu */
+	menu = GTK_MENU_SHELL(summaryview->colorlabel_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+	}
+	summary_colorlabel_menu_create(summaryview, TRUE);
 }
 
 /*

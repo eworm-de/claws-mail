@@ -1,3 +1,16 @@
+2006-03-06 [wwp]	2.0.0cvs112
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_msg_colors.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/colorlabel.c
+	* src/gtk/colorlabel.h
+		colors in messages list are now customizable. Color values and names can
+		be changed in "Configuration/Preferences/Display/Colors/Color labels".
+		Thanks to Paul and Colin for their help with this longstanding patch!
+
 2006-03-06 [wwp]	2.0.0cvs111
 
 	* src/textview.c

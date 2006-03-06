@@ -32,6 +32,7 @@
 #include "codeconv.h"
 #include "textview.h"
 #include "procmime.h"
+#include "prefs_msg_colors.h"
 
 typedef struct _PrefsCommon	PrefsCommon;
 
@@ -144,6 +145,9 @@ struct _PrefsCommon
 	gchar *normalfont;
 	gchar *smallfont;
 	gchar *titlefont;
+
+	/* custom colors */
+	ColorlabelPrefs custom_colorlabel[COLORLABELS];
 
 	/* image viewer */
 	gboolean display_img;
