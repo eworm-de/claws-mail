@@ -676,6 +676,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 	IMAPSession *session = NULL;
+	static time_t last_failure = 0;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
@@ -697,10 +698,14 @@ static IMAPSession *imap_session_get(Folder *folder)
 		} */
 	} else {
 		imap_reset_uid_lists(folder);
+		if (time(NULL) - last_failure <= 2)
+			return NULL;
 		session = imap_session_new(folder, folder->account);
 	}
-	if(session == NULL)
+	if(session == NULL) {
+		last_failure = time(NULL);
 		return NULL;
+	}
 
 	/* Make sure session is authenticated */
 	if (!IMAP_SESSION(session)->authenticated)

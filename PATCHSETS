@@ -1298,3 +1298,4 @@
 ( cvs diff -u -r 1.204.2.77 -r 1.204.2.78 src/prefs_common.c;  cvs diff -u -r 1.103.2.43 -r 1.103.2.44 src/prefs_common.h;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/prefs_msg_colors.c;  cvs diff -u -r 1.395.2.179 -r 1.395.2.180 src/summaryview.c;  cvs diff -u -r 1.68.2.18 -r 1.68.2.19 src/summaryview.h;  cvs diff -u -r 1.2.2.10 -r 1.2.2.11 src/gtk/colorlabel.c;  cvs diff -u -r 1.1.4.2 -r 1.1.4.3 src/gtk/colorlabel.h;  ) > 2.0.0cvs112.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_msg_colors.h;  ) > 2.0.0cvs113.patchset
 ( cvs diff -u -r 1.179.2.96 -r 1.179.2.97 src/imap.c;  ) > 2.0.0cvs114.patchset
+( cvs diff -u -r 1.179.2.97 -r 1.179.2.98 src/imap.c;  ) > 2.0.0cvs115.patchset
