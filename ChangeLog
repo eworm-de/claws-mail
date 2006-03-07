@@ -1,3 +1,9 @@
+2006-03-07 [paul]	2.0.0cvs117
+
+	* src/textview.c
+		fix wrong Fake URL Warning
+		Thanks to Hiro
+
 2006-03-07 [colin]	2.0.0cvs116
 
 	* src/imap.c

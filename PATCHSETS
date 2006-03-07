@@ -1300,3 +1300,4 @@
 ( cvs diff -u -r 1.179.2.96 -r 1.179.2.97 src/imap.c;  ) > 2.0.0cvs114.patchset
 ( cvs diff -u -r 1.179.2.97 -r 1.179.2.98 src/imap.c;  ) > 2.0.0cvs115.patchset
 ( cvs diff -u -r 1.179.2.98 -r 1.179.2.99 src/imap.c;  cvs diff -u -r 1.2.2.15 -r 1.2.2.16 src/gtk/inputdialog.c;  ) > 2.0.0cvs116.patchset
+( cvs diff -u -r 1.96.2.99 -r 1.96.2.100 src/textview.c;  ) > 2.0.0cvs117.patchset
