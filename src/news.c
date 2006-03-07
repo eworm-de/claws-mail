@@ -138,6 +138,8 @@ static void news_synchronise		 (FolderItem	*item);
 static int news_dummy_remove		 (Folder 	*folder, 
 					  FolderItem 	*item, 
 					  gint 		 msgnum);
+static gint news_remove_folder		 (Folder	*folder,
+					  FolderItem	*item);
 static FolderClass news_class;
 
 FolderClass *news_get_class(void)
@@ -155,6 +157,7 @@ FolderClass *news_get_class(void)
 		news_class.item_get_path = news_item_get_path;
 		news_class.get_num_list = news_get_num_list;
 		news_class.scan_required = news_scan_required;
+		news_class.remove_folder = news_remove_folder;
 
 		/* Message functions */
 		news_class.get_msginfo = news_get_msginfo;
@@ -1208,4 +1211,24 @@ gboolean news_scan_required(Folder *folder, FolderItem *item)
 void news_synchronise(FolderItem *item) 
 {
 	news_gtk_synchronise(item);
+}
+
+static gint news_remove_folder(Folder *folder, FolderItem *item)
+{
+	gchar *path;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->path != NULL, -1);
+
+	path = folder_item_get_path(item);
+	if (remove_dir_recursive(path) < 0) {
+		g_warning("can't remove directory `%s'\n", path);
+		g_free(path);
+		return -1;
+	}
+
+	g_free(path);
+	folder_item_remove(item);
+	return 0;
 }

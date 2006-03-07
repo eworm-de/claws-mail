@@ -1,3 +1,11 @@
+2006-03-07 [paul]	2.0.0cvs118
+
+	* src/news.c
+	* src/news_gtk.c
+		when unsubscribing a newsgroup, remove the
+		folder and msgs in .sylpheed-claws/newscache
+		Patch by Pawel Pekala <c0rn@gazeta.pl>
+
 2006-03-07 [paul]	2.0.0cvs117
 
 	* src/textview.c
