@@ -1,3 +1,12 @@
+2006-03-07 [colin]	2.0.0cvs116
+
+	* src/imap.c
+		Return immediately when password dialog was
+		cancelled
+	* src/gtk/inputdialog.c
+		Allow empty strings for passwords
+
+
 2006-03-06 [colin]	2.0.0cvs115
 
 	* src/imap.c

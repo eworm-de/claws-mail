@@ -65,7 +65,7 @@ static GtkWidget *entry;
 static GtkWidget *combo;
 static GtkWidget *ok_button;
 static GtkWidget *icon_q, *icon_p;
-
+static gboolean is_pass = FALSE;
 static void input_dialog_create	(gboolean is_password);
 static gchar *input_dialog_open	(const gchar	*title,
 				 const gchar	*message,
@@ -102,6 +102,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
+	is_pass = FALSE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
 
 	return input_dialog_open(title, message, default_string);
@@ -121,6 +122,7 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 
 	gtk_widget_hide(icon_q);
 	gtk_widget_show(icon_p);
+	is_pass = TRUE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 
 	return input_dialog_open(title, message, default_string);
@@ -141,6 +143,7 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
+	is_pass = FALSE;
 
 	if (!list) {
 		GList empty_list;
@@ -268,6 +271,8 @@ static void input_dialog_create(gboolean is_password)
 	else
 		gtk_widget_hide(icon_p);
 
+	is_pass = is_password;
+
 	gtk_widget_grab_default(ok_button);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
@@ -309,7 +314,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 			editable = GTK_EDITABLE(entry);
 
 		str = gtk_editable_get_chars(editable, 0, -1);
-		if (str && *str == '\0') {
+		if (str && *str == '\0' && !is_pass) {
 			g_free(str);
 			str = NULL;
 		}

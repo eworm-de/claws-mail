@@ -714,6 +714,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	if (!IMAP_SESSION(session)->authenticated) {
 		session_destroy(SESSION(session));
 		rfolder->session = NULL;
+		last_failure = time(NULL);
 		return NULL;
 	}
 
@@ -866,7 +867,7 @@ static void imap_session_authenticate(IMAPSession *session,
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
 		if (!tmp_pass)
-			tmp_pass = g_strdup(""); /* allow empty password */
+			return;
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
 		g_free(tmp_pass);
 	}
