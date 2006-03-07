@@ -104,7 +104,8 @@ typedef enum
 	FOLDER_REMOVE_FOLDER 		= 1 << 1,
 	FOLDER_TREE_CHANGED 		= 1 << 2,
 	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
-	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4
+	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
+	FOLDER_RENAME_FOLDERITEM	= 1 << 5
 } FolderUpdateFlags;
 
 typedef enum

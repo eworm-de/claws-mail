@@ -2410,7 +2410,11 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 
 	if (hookdata->update_flags & FOLDER_ADD_FOLDERITEM)
 		folderview_create_folder_node(folderview, hookdata->item);
-	else if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
+	else if (hookdata->update_flags & FOLDER_RENAME_FOLDERITEM) {
+		GtkCTreeNode *node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree),
+				NULL, folder_item_parent(hookdata->item));
+		folderview_sort_folders(folderview, node, hookdata->folder);
+	} else if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
 		GtkCTreeNode *node;
 
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);

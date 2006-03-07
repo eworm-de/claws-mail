@@ -841,11 +841,17 @@ gint folder_item_rename(FolderItem *item, gchar *newname)
 
 	if (retval >= 0) {
 		FolderItemUpdateData hookdata;
+		FolderUpdateData hookdata2;
 
 		hookdata.item = item;
 		hookdata.update_flags = F_ITEM_UPDATE_NAME;
 		hookdata.msg = NULL;
 		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &hookdata);
+
+		hookdata2.folder = item->folder;
+		hookdata2.item = item;
+		hookdata2.update_flags = FOLDER_RENAME_FOLDERITEM;
+		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata2);
 	}
 
 	return retval;
