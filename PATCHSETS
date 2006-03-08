@@ -1304,3 +1304,4 @@
 ( cvs diff -u -r 1.101.2.22 -r 1.101.2.23 src/news.c;  cvs diff -u -r 1.2.2.16 -r 1.2.2.17 src/news_gtk.c;  ) > 2.0.0cvs118.patchset
 ( cvs diff -u -r 1.213.2.84 -r 1.213.2.85 src/folder.c;  cvs diff -u -r 1.87.2.25 -r 1.87.2.26 src/folder.h;  cvs diff -u -r 1.207.2.89 -r 1.207.2.90 src/folderview.c;  ) > 2.0.0cvs119.patchset
 ( cvs diff -u -r 1.36.2.57 -r 1.36.2.58 src/common/utils.c;  ) > 2.0.0cvs120.patchset
+( cvs diff -u -r 1.150.2.56 -r 1.150.2.57 src/procmsg.c;  ) > 2.0.0cvs121.patchset

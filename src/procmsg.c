@@ -340,31 +340,38 @@ gint procmsg_move_messages(GSList *mlist)
 	MsgInfo *msginfo;
 	FolderItem *dest = NULL;
 	gint retval = 0;
-
+	gboolean finished = TRUE;
 	if (!mlist) return 0;
 
 	folder_item_update_freeze();
 
+next_folder:
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
+		if (!msginfo->to_folder) {
+			continue;
+		} else {
+			finished = FALSE;
+		}
 		if (!dest) {
 			dest = msginfo->to_folder;
 			movelist = g_slist_append(movelist, msginfo);
 		} else if (dest == msginfo->to_folder) {
 			movelist = g_slist_append(movelist, msginfo);
 		} else {
-			folder_item_move_msgs(dest, movelist);
-			g_slist_free(movelist);
-			movelist = NULL;
-			dest = msginfo->to_folder;
-			movelist = g_slist_append(movelist, msginfo);
+			continue;
 		}
 		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
-
 	if (movelist) {
-		retval = folder_item_move_msgs(dest, movelist);
+		retval |= folder_item_move_msgs(dest, movelist);
 		g_slist_free(movelist);
+		movelist = NULL;
+	}
+	if (finished == FALSE) {
+		finished = TRUE;
+		dest = NULL;
+		goto next_folder;
 	}
 
 	folder_item_update_thaw();
@@ -376,31 +383,38 @@ void procmsg_copy_messages(GSList *mlist)
 	GSList *cur, *copylist = NULL;
 	MsgInfo *msginfo;
 	FolderItem *dest = NULL;
-
+	gboolean finished = TRUE;
 	if (!mlist) return;
 
 	folder_item_update_freeze();
 
+next_folder:
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
+		if (!msginfo->to_folder) {
+			continue;
+		} else {
+			finished = FALSE;
+		}
 		if (!dest) {
 			dest = msginfo->to_folder;
 			copylist = g_slist_append(copylist, msginfo);
 		} else if (dest == msginfo->to_folder) {
 			copylist = g_slist_append(copylist, msginfo);
 		} else {
-			folder_item_copy_msgs(dest, copylist);
-			g_slist_free(copylist);
-			copylist = NULL;
-			dest = msginfo->to_folder;
-			copylist = g_slist_append(copylist, msginfo);
+			continue;
 		}
 		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
-
 	if (copylist) {
 		folder_item_copy_msgs(dest, copylist);
 		g_slist_free(copylist);
+		copylist = NULL;
+	}
+	if (finished == FALSE) {
+		finished = TRUE;
+		dest = NULL;
+		goto next_folder;
 	}
 
 	folder_item_update_thaw();

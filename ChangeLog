@@ -1,3 +1,9 @@
+2006-03-08 [colin]	2.0.0cvs121
+
+	* src/procmsg.c
+		Batch move and copies from summaryview with delayed execution
+		too
+
 2006-03-07 [paul]	2.0.0cvs120
 
 	* src/common/utils.c
