@@ -25,7 +25,7 @@ INCLUDES = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_srcdir)/src/gtk \
-	-Ilibeggtrayicon
+	-I$(srcdir)libeggtrayicon
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \

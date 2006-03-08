@@ -1,3 +1,9 @@
+2006-03-08 [colin]	2.0.0cvs122
+
+	* src/plugins/trayicon/Makefile.am
+		Fix build in separate dir 
+		Patch by Bamanzi <bamanzi@gmail.com>
+
 2006-03-08 [colin]	2.0.0cvs121
 
 	* src/procmsg.c
