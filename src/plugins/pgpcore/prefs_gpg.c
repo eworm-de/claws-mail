@@ -219,7 +219,8 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 
 	GtkWidget *vbox;
 	GtkWidget *frame1;
-	GtkWidget *table1;
+	GtkWidget *vbox2;
+	GtkWidget *hbox;
 	GSList *key_group = NULL;
 	GtkWidget *key_default;
 	GtkWidget *key_by_from;
@@ -227,57 +228,63 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	GtkWidget *keyid_label;
 	GtkWidget *keyid;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_vbox_new(FALSE, VSPACING);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
-	frame1 = gtk_frame_new(_("Sign key"));
-	gtk_widget_show(frame1);
-	gtk_box_pack_start(GTK_BOX(vbox), frame1, FALSE, FALSE, 0);
-	gtk_frame_set_label_align(GTK_FRAME(frame1), 0.0, 0.5);
+	PACK_FRAME (vbox, frame1, _("Sign key"));
 
-	table1 = gtk_table_new(4, 3, FALSE);
-	gtk_widget_show(table1);
-	gtk_container_add(GTK_CONTAINER(frame1), table1);
-	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table1), 4);
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
+
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
 
 	key_default = gtk_radio_button_new_with_label(key_group,
 			_("Use default GnuPG key"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_default));
 	gtk_widget_show(key_default);
-	gtk_table_attach(GTK_TABLE(table1), key_default, 0, 3, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), key_default, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
 
 	key_by_from = gtk_radio_button_new_with_label(key_group,
 		_("Select key by your email address"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_by_from));
 	gtk_widget_show(key_by_from);
-	gtk_table_attach(GTK_TABLE(table1), key_by_from, 0, 3, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), key_by_from, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
 
 	key_custom = gtk_radio_button_new_with_label(key_group,
 		_("Specify key manually"));
 	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_custom));
 	gtk_widget_show(key_custom);
-	gtk_table_attach(GTK_TABLE(table1), key_custom, 0, 3, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), key_custom, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
 
 	keyid_label = gtk_label_new(_("User or key ID:"));
 	gtk_widget_show(keyid_label);
-	gtk_table_attach(GTK_TABLE(table1), keyid_label, 0, 2, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(keyid_label), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start(GTK_BOX(hbox), keyid_label, FALSE, FALSE, 0);
 
 	keyid = gtk_entry_new();
 	gtk_widget_show(keyid);
-	gtk_table_attach(GTK_TABLE(table1), keyid, 2, 3, 3, 4,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), keyid, FALSE, FALSE, 0);
 
 	config = prefs_gpg_account_get_config(account);
 	switch (config->sign_key) {
