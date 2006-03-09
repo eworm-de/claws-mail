@@ -1312,3 +1312,4 @@
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/prefs_receive.c;  cvs diff -u -r 1.9.2.17 -r 1.9.2.18 src/plugins/clamav/clamav_plugin_gtk.c;  cvs diff -u -r 1.23.2.22 -r 1.23.2.23 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.0.0cvs126.patchset
 ( cvs diff -u -r 1.1370 -r 1.1371 configure.ac;  ) > 2.0.0cvs125.patchset
 ( cvs diff -u -r 1.654.2.1356 -r 1.654.2.1357 configure.ac;  ) > 2.0.0cvs127.patchset
+( cvs diff -u -r 1.60.2.25 -r 1.60.2.26 po/es.po;  ) > 2.0.0cvs128.patchset
