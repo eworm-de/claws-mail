@@ -1,3 +1,9 @@
+2006-03-09 [wwp]	2.0.0cvs127
+
+	* configure.ac
+		revert accidental commit (requirement for libetpan 0.43), this time
+		not in HEAD.
+
 2006-03-09 [wwp]	2.0.0cvs125
 
 	* configure.ac
