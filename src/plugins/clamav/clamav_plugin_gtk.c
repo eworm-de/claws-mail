@@ -75,16 +75,15 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *label1;
   	GtkWidget *enable_arc;
   	GtkWidget *label2;
-  	GtkWidget *label3;
   	GtkObject *max_size_adj;
   	GtkWidget *max_size;
 	GtkWidget *hbox1;
-	GtkWidget *hbox2;
   	GtkWidget *recv_infected;
-  	GtkTooltips *recv_infected_tip;
   	GtkWidget *save_folder;
   	GtkWidget *save_folder_select;
-	GtkTooltips *save_folder_tip;
+	GtkTooltips *tooltips;
+
+	tooltips = gtk_tooltips_new();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -97,7 +96,9 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	PACK_CHECK_BUTTON (vbox2, enable_clamav, _("Enable virus scanning"));
 	PACK_CHECK_BUTTON (vbox2, enable_arc, _("Scan archive contents"));
 
-  	hbox1 = gtk_hbox_new (FALSE, 8);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, enable_arc);
+
+ 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (enable_arc, hbox1);
@@ -105,48 +106,52 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	label1 = gtk_label_new(_("Maximum attachment size"));
   	gtk_widget_show (label1);
   	gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, FALSE, 0);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, label1);
 
   	max_size_adj = gtk_adjustment_new (1, 1, 1024, 1, 10, 10);
   	max_size = gtk_spin_button_new (GTK_ADJUSTMENT (max_size_adj), 1, 0);
 	gtk_widget_show (max_size);
   	gtk_box_pack_start (GTK_BOX (hbox1), max_size, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (max_size), TRUE);
+	gtk_tooltips_set_tip(tooltips, max_size,
+			     _("Message attachments larger than this will not be scanned"),
+			     NULL);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, max_size);
 
   	label2 = gtk_label_new(_("MB"));
 	gtk_widget_show (label2);
   	gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, FALSE, 0);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, label2);
 
- 	recv_infected_tip = gtk_tooltips_new();
- 	recv_infected = gtk_check_button_new_with_label(_("Save infected messages"));
+  	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+ 	recv_infected = gtk_check_button_new_with_label(_("Save infected mail in"));
 	gtk_widget_show (recv_infected);
-	gtk_box_pack_start (GTK_BOX (vbox2), recv_infected, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(recv_infected_tip, recv_infected,
-			     _("Save mails that contain viruses"),
+	gtk_box_pack_start (GTK_BOX (hbox1), recv_infected, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, recv_infected,
+			     _("Save mail that contains viruses"),
 			     NULL);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, recv_infected);
 
-  	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, TRUE, TRUE, 0);
-	SET_TOGGLE_SENSITIVITY (recv_infected, hbox2);
-
-  	label3 = gtk_label_new (_("Save folder"));
-	gtk_widget_show (label3);
-  	gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 0);
-
-	save_folder_tip = gtk_tooltips_new();
   	save_folder = gtk_entry_new ();
 	gtk_widget_show (save_folder);
-	gtk_box_pack_start (GTK_BOX (hbox2), save_folder, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(save_folder_tip, save_folder,
-			     _("Leave empty to use the default trash folder"),
+	gtk_box_pack_start (GTK_BOX (hbox1), save_folder, TRUE, TRUE, 0);
+	gtk_tooltips_set_tip(tooltips, save_folder,
+			     _("Folder for storing infected mail. Leave empty to use the default trash folder"),
 			     NULL);
+	SET_TOGGLE_SENSITIVITY (recv_infected, save_folder);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, save_folder);
 
 	save_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_folder_select);
-  	gtk_box_pack_start (GTK_BOX (hbox2), save_folder_select, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(save_folder_tip, save_folder_select,
-			     _("Leave empty to use the default trash folder"),
+  	gtk_box_pack_start (GTK_BOX (hbox1), save_folder_select, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, save_folder_select,
+			     _("Click this button to select a folder for storing infected mail"),
 			     NULL);
+	SET_TOGGLE_SENSITIVITY (recv_infected, save_folder_select);
+ 	SET_TOGGLE_SENSITIVITY (enable_clamav, save_folder_select);
 
 	config = clamav_get_config();
 

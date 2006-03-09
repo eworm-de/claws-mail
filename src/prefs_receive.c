@@ -84,7 +84,6 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *frame_incext;
 	GtkWidget *checkbtn_incext;
 	GtkWidget *hbox;
 	GtkWidget *label_incext;
@@ -119,16 +118,13 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_incext, _("External program"));
-
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_incext), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	/* Use of external incorporation program */
 	PACK_CHECK_BUTTON (vbox2, checkbtn_incext,
-			   _("Use external program for incorporation"));
+			   _("Use external program for receiving mail"));
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -180,7 +176,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox,
 		 	   _("Go to inbox after receiving new mail"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
-			   _("Update all local folders after incorporation"));
+			   _("Update all local folders after receiving mail"));
 
 	/* receive dialog */
 	table = gtk_table_new(1, 2, FALSE);
