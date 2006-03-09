@@ -1306,3 +1306,4 @@
 ( cvs diff -u -r 1.36.2.57 -r 1.36.2.58 src/common/utils.c;  ) > 2.0.0cvs120.patchset
 ( cvs diff -u -r 1.150.2.56 -r 1.150.2.57 src/procmsg.c;  ) > 2.0.0cvs121.patchset
 ( cvs diff -u -r 1.4.2.4 -r 1.4.2.5 src/plugins/trayicon/Makefile.am;  ) > 2.0.0cvs122.patchset
+( cvs diff -u -r 1.4.2.5 -r 1.4.2.6 src/plugins/trayicon/Makefile.am;  ) > 2.0.0cvs123.patchset
