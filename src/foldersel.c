@@ -205,6 +205,15 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 		return NULL;
 }
 
+static void foldersel_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.folderselwin_width = allocation->width;
+	prefs_common.folderselwin_height = allocation->height;
+}
+
 static void foldersel_create(void)
 {
 	GtkWidget *vbox;
@@ -213,6 +222,7 @@ static void foldersel_create(void)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
+	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select folder"));
@@ -227,13 +237,14 @@ static void foldersel_create(void)
 			 G_CALLBACK(delete_event), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(foldersel_size_allocate_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_size_request(scrolledwin, 300, 360);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -267,7 +278,6 @@ static void foldersel_create(void)
 
 	g_signal_connect(G_OBJECT(treeview), "row-activated",
 			 G_CALLBACK(foldersel_tree_activated), NULL);
-
 	gtk_container_add(GTK_CONTAINER(scrolledwin), treeview);
 
 	column = gtk_tree_view_column_new();
@@ -315,6 +325,16 @@ static void foldersel_create(void)
 			 G_CALLBACK(foldersel_cancel), NULL);
 	g_signal_connect(G_OBJECT(new_button), "clicked",
 			 G_CALLBACK(foldersel_new_folder), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 300;
+		geometry.min_height = 360;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.folderselwin_width,
+				    prefs_common.folderselwin_height);
 
 	gtk_widget_show_all(vbox);
 }

@@ -1,3 +1,12 @@
+2006-03-09 [wwp]	2.0.0cvs125
+
+	* src/addressadd.c
+	* src/foldersel.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		remember some more windows' sizes (add to addressbook and
+		select folder).
+
 2006-03-09 [paul]	2.0.0cvs124
 
 	* src/plugins/pgpcore/prefs_gpg.c

@@ -706,6 +706,16 @@ static PrefParam param[] = {
 	{"logwin_height", "-1", &prefs_common.logwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"folderselwin_width", "300", &prefs_common.folderselwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"folderselwin_height", "-1", &prefs_common.folderselwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"addressaddwin_width", "300", &prefs_common.addressaddwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addressaddwin_height", "-1", &prefs_common.addressaddwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},

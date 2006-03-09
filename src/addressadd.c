@@ -141,6 +141,15 @@ static gboolean addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, 
 	return FALSE;
 }
 
+static void addressadd_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.addressaddwin_width = allocation->width;
+	prefs_common.addressaddwin_height = allocation->height;
+}
+
 static void addressadd_create( void ) {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -158,9 +167,9 @@ static void addressadd_create( void ) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 	gint top;
+	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request( window, 300, 400 );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
@@ -169,6 +178,8 @@ static void addressadd_create( void ) {
 			  G_CALLBACK(addressadd_delete_event), NULL );
 	g_signal_connect( G_OBJECT(window), "key_press_event",
 			  G_CALLBACK(addressadd_key_pressed), NULL );
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(addressadd_size_allocate_cb), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -255,6 +266,16 @@ static void addressadd_create( void ) {
 			 G_CALLBACK(addressadd_folder_select), NULL);
 	g_signal_connect(G_OBJECT(tree_folder), "button_press_event",
 			 G_CALLBACK(addressadd_tree_button), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 300;
+		geometry.min_height = 400;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.addressaddwin_width,
+				    prefs_common.addressaddwin_height);
 
 	gtk_widget_show_all(vbox);
 

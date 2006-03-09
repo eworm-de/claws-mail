@@ -348,6 +348,10 @@ struct _PrefsCommon
 	gint accountswin_height;
 	gint logwin_width;
 	gint logwin_height;
+	gint folderselwin_width;
+	gint folderselwin_height;
+	gint addressaddwin_width;
+	gint addressaddwin_height;
 
 	gint warn_dnd;
 	gint broken_are_utf8;
