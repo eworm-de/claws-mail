@@ -27,7 +27,7 @@ typedef struct _SpamAssassinConfig SpamAssassinConfig;
 typedef void (*MessageCallback) (gchar *);
 
 typedef enum {
-	SPAMASSASSIN_DISABLED            = 0,
+	SPAMASSASSIN_DISABLED            = 0, /* unused, just for compatibility */
 	SPAMASSASSIN_TRANSPORT_LOCALHOST = 1,
 	SPAMASSASSIN_TRANSPORT_TCP       = 2,
 	SPAMASSASSIN_TRANSPORT_UNIX      = 3,
@@ -35,6 +35,7 @@ typedef enum {
 
 struct _SpamAssassinConfig
 {
+	gboolean		 enable;
 	SpamAssassinTransport	 transport;
 	gchar			*hostname;
 	guint 			 port;

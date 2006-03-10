@@ -83,6 +83,8 @@ static MessageCallback message_callback;
 static SpamAssassinConfig config;
 
 static PrefParam param[] = {
+	{"enable", "FALSE", &config.enable, P_BOOL,
+	NULL, NULL, NULL},
 	{"transport", "0", &config.transport, P_INT,
 	 NULL, NULL, NULL},
 	{"hostname", "localhost", &config.hostname, P_STRING,
@@ -123,6 +125,9 @@ static gboolean msg_is_spam(FILE *fp)
 	struct transport trans;
 	struct message m;
 	gboolean is_spam = FALSE;
+
+	if (!config.enable)
+		return FALSE;
 
 	transport_init(&trans);
 	switch (config.transport) {
@@ -182,7 +187,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	int pid = 0;
 	int status;
 
-	if (config.transport == SPAMASSASSIN_DISABLED) {
+	/* SPAMASSASSIN_DISABLED : keep test for compatibility purpose */
+	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
 		log_error("Spamassassin plugin is disabled by its preferences.\n");
 		return FALSE;
 	}
@@ -461,11 +467,10 @@ gint plugin_init(gchar **error)
 		spamassassin_register_hook();
 	}
 
-	if (config.transport == SPAMASSASSIN_DISABLED) {
+	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
 		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
 	}
-
-	if (config.transport != SPAMASSASSIN_DISABLED) {
+	else {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
 			debug_print("Enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
