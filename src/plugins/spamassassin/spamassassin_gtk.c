@@ -336,7 +336,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, max_size_spinbtn,
-			_("Don't check emails bigger than"), NULL);
+			_("Messages larger than this will not be checked"), NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size_spinbtn), TRUE);
 
 	max_size_kb_label = gtk_label_new(_("kB"));
@@ -375,7 +375,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(process_emails_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_process_emails), process_emails_checkbtn, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, process_emails_checkbtn,
-			_("Process emails upon incorporation"), NULL);
+			_("Process emails on receiving"), NULL);
 
 	hbox_save_spam = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_save_spam);
