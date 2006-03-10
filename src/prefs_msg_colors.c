@@ -140,11 +140,13 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.quote_level1_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level1_btn, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level1_btn);
 
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
 	gtk_widget_show(quotelevel1_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel1_label, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel1_label);
 		
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -155,11 +157,13 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.quote_level2_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level2_btn, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level2_btn);
 
 	quotelevel2_label = gtk_label_new (_("Quoted Text - Second Level"));
 	gtk_widget_show(quotelevel2_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel2_label, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel2_label);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -170,11 +174,13 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level3_btn, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level3_btn);
 
 	quotelevel3_label = gtk_label_new (_("Quoted Text - Third Level"));
 	gtk_widget_show(quotelevel3_label);
   	gtk_box_pack_start (GTK_BOX(hbox), quotelevel3_label, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel3_label);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -182,6 +188,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (hbox, chkbtn_recycle_colors,
 			   _("Cycle quote colors"));
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, chkbtn_recycle_colors);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -192,10 +199,12 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.uri_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.uri_btn, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.uri_btn);
 
 	uri_label = gtk_label_new (_("URI link"));
 	gtk_widget_show(uri_label);
   	gtk_box_pack_start (GTK_BOX(hbox), uri_label, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, uri_label);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -206,10 +215,12 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.signature_btn, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.signature_btn, 
 			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.signature_btn);
 
 	signature_label = gtk_label_new (_("Signatures"));
 	gtk_widget_show(signature_label);
   	gtk_box_pack_start (GTK_BOX(hbox), signature_label, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, signature_label);
 
 	PACK_FRAME(vbox1, folder_frame, _("Folder list"));
 

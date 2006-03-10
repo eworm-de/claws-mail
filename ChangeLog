@@ -1,3 +1,9 @@
+2006-03-10 [paul]	2.0.0cvs129
+
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+		widget sensitivity
+
 2006-03-09 [mones]	2.0.0cvs128
 
 	* po/es.po

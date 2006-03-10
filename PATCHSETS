@@ -1313,3 +1313,4 @@
 ( cvs diff -u -r 1.1370 -r 1.1371 configure.ac;  ) > 2.0.0cvs125.patchset
 ( cvs diff -u -r 1.654.2.1356 -r 1.654.2.1357 configure.ac;  ) > 2.0.0cvs127.patchset
 ( cvs diff -u -r 1.60.2.25 -r 1.60.2.26 po/es.po;  ) > 2.0.0cvs128.patchset
+( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/prefs_msg_colors.c;  cvs diff -u -r 1.5.2.19 -r 1.5.2.20 src/prefs_spelling.c;  ) > 2.0.0cvs129.patchset

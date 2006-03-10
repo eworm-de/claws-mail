@@ -17,10 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/*
- * General functions for accessing address book files.
- */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -60,6 +56,11 @@ typedef struct _SpellingPage
 	GtkWidget *checkbtn_use_alternate;
 	GtkWidget *checkbtn_check_while_typing;
 	GtkWidget *checkbtn_recheck_when_changing_dict;
+	GtkWidget *label2;
+	GtkWidget *label3;
+	GtkWidget *label4;
+	GtkWidget *label5;
+	GtkWidget *label6;
 
 	gint	   misspell_col;
 } SpellingPage;
@@ -74,6 +75,11 @@ static void prefs_spelling_enable(SpellingPage *spelling, gboolean enable)
 	gtk_widget_set_sensitive(spelling->checkbtn_use_alternate,      enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_check_while_typing, enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_recheck_when_changing_dict,	enable);
+	gtk_widget_set_sensitive(spelling->label2,			enable);
+	gtk_widget_set_sensitive(spelling->label3,			enable);
+	gtk_widget_set_sensitive(spelling->label4,			enable);
+	gtk_widget_set_sensitive(spelling->label5,			enable);
+	gtk_widget_set_sensitive(spelling->label6,			enable);
 }
 
 static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
@@ -153,6 +159,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *btn_aspell_path;
 	GtkWidget *hbox1;
 	GtkWidget *misspelled_btn;
+	GtkWidget *label6;
 	GtkTooltips *tooltips;
 
 	tooltips = gtk_tooltips_new ();
@@ -266,10 +273,11 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(misspelled_btn);
 	gtk_box_pack_start(GTK_BOX(hbox1), misspelled_btn, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(misspelled_btn, 30, 20);
-	label5 = gtk_label_new(_("Use black to underline"));
-	gtkut_widget_set_small_font_size (label5);
-	gtk_widget_show(label5);
-	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE, 4);
+
+	label6 = gtk_label_new(_("Use black to underline"));
+	gtkut_widget_set_small_font_size (label6);
+	gtk_widget_show(label6);
+	gtk_box_pack_start(GTK_BOX(hbox1), label6, FALSE, FALSE, 4);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_aspell),
 				     prefs_common.enable_aspell);
@@ -323,6 +331,11 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 		= checkbtn_recheck_when_changing_dict;
 	prefs_spelling->misspelled_btn
 		= misspelled_btn;
+	prefs_spelling->label2 = label2;
+	prefs_spelling->label3 = label3;
+	prefs_spelling->label4 = label4;
+	prefs_spelling->label5 = label5;
+	prefs_spelling->label6 = label6;
 
 	prefs_spelling->page.widget = table;
 
