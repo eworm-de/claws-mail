@@ -1,3 +1,10 @@
+2006-03-11 [colin]	2.0.0cvs132
+
+	* src/summaryview.c
+		Revert 2.0.0cvs84 which reverted 1.9.6cvs23 which
+		messed up shift-selection because is slows down
+		moving around summaryview. thanks -users
+
 2006-03-10 [colin]	2.0.0cvs131
 
 	* src/plugins/spamassassin/spamassassin_gtk.c
