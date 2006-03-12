@@ -501,14 +501,17 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin checks all messages that are received from an "
+	return _("This plugin can check all messages that are received from an "
 	         "IMAP, LOCAL or POP account for spam using a SpamAssassin "
 		 "server. You will need a SpamAssassin Server (spamd) running "
 		 "somewhere.\n"
 	         "\n"
+		 "It can also be used for marking messages as Ham or Spam.\n"
+	         "\n"
 	         "When a message is identified as spam it can be deleted or "
-	         "saved into a special folder.\n"
-	         "\n");
+	         "saved in a specially designated folder.\n"
+	         "\n"
+		 "Options can be found in /Configuration/Preferences/Plugins/SpamAssassin");
 }
 
 const gchar *plugin_type(void)

@@ -258,7 +258,8 @@ const gchar *plugin_desc(void)
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
 	       "deleted or saved in a specially designated folder.\n"
-	       "\n");
+	       "\n"
+	       "Options can be found in /Configuration/Preferences/Plugins/Clam AntiVirus");
 }
 
 const gchar *plugin_type(void)

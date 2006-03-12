@@ -212,7 +212,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *timeout_label;
 	GtkObject *timeout_spinbtn_adj;
 	GtkWidget *timeout_spinbtn;
-	GtkWidget *timeout_secondes_label;
+	GtkWidget *timeout_seconds_label;
 
 	GtkWidget *process_emails_checkbtn;
 
@@ -232,14 +232,10 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	enable_sa_checkbtn = gtk_check_button_new_with_label(_("Enable spam scanning"));
+	enable_sa_checkbtn = gtk_check_button_new_with_label(_("Enable SpamAssassin plugin"));
 	gtk_widget_show(enable_sa_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), enable_sa_checkbtn, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, enable_sa_checkbtn,
-			_("Enable spam scanning on message(s) receiving"), NULL);
-	/* FIXME : english should be better renamed  */
 
-	/* FIXME : 'Transport' frame : english should ? be better renamed */
 	PACK_FRAME(vbox2, frame_transport, _("Transport"));
 	vbox_transport = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_transport);
@@ -252,7 +248,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_table_set_row_spacings (GTK_TABLE (table_transport), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table_transport), 8);
 
-	/* FIXME : 'Type of transport' : english should be better renamed */
 	transport_label = gtk_label_new(_("Type of transport"));
 	gtk_widget_show(transport_label);
 	gtk_table_attach (GTK_TABLE (table_transport), transport_label, 0, 1, 0, 1,
@@ -327,7 +322,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_max_size);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_max_size, TRUE, TRUE, 0);
 
-	max_size_label = gtk_label_new(_("Maximum Size"));
+	max_size_label = gtk_label_new(_("Maximum size"));
 	gtk_widget_show(max_size_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_label, FALSE, FALSE, 0);
 
@@ -356,15 +351,14 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(timeout_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_spinbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, timeout_spinbtn,
-			_("Time allowed for checking. If the check takes longer "
-				"the check will be aborted and the message will "
-				"be handled as not spam."),
+			_("Maximum time allowed for checking. If the check takes longer "
+				"it will be aborted."),
 			NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout_spinbtn), TRUE);
 
-	timeout_secondes_label = gtk_label_new(_("seconds"));
-	gtk_widget_show(timeout_secondes_label);
-	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_secondes_label, FALSE, FALSE, 0);
+	timeout_seconds_label = gtk_label_new(_("seconds"));
+	gtk_widget_show(timeout_seconds_label);
+	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_seconds_label, FALSE, FALSE, 0);
 
 	hbox_process_emails = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_process_emails);
@@ -374,8 +368,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			_("Process messages on receiving"));
 	gtk_widget_show(process_emails_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_process_emails), process_emails_checkbtn, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, process_emails_checkbtn,
-			_("Process emails on receiving"), NULL);
 
 	hbox_save_spam = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_save_spam);
@@ -384,9 +376,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	save_spam_checkbtn = gtk_check_button_new_with_label(_("Save spam in"));
 	gtk_widget_show(save_spam_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_save_spam), save_spam_checkbtn, FALSE, FALSE, 0);
-
-	gtk_tooltips_set_tip(tooltips, save_spam_checkbtn,
-			_("Save identified spam"), NULL);
 
 	save_spam_folder_entry = gtk_entry_new();
 	gtk_widget_show (save_spam_folder_entry);

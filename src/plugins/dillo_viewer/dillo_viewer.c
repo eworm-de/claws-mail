@@ -196,7 +196,9 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
 	return _("This plugin renders HTML mail using the Dillo "
-		"web browser.");
+		"web browser.\n"
+	        "\n"
+	        "Options can be found in /Configuration/Preferences/Plugins/Dillo Browser");
 }
 
 const gchar *plugin_type(void)

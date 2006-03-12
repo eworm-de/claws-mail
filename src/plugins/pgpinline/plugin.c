@@ -59,12 +59,17 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin enables signature verification of "
-		 "digitally signed messages, and decryption of "
-		 "encrypted messages. \n"
+	return _("This plugin handles the deprecated Inline method of "
+	         "signing and/or encrypting mails. You can decrypt mails, "
+                 "verify signatures or sign and encrypt your own mails.\n"
 		 "\n"
-		 "It also lets you send signed and encrypted "
-		 "messages.");
+		 "It can be selected as the Default Privacy System in "
+		 "/Configuration/[Account Preferences]/Privacy and when "
+		 "composing a message from /Options/Privacy System\n"
+		 "\n"
+		 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
+		 "\n"
+		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>");
 }
 
 const gchar *plugin_type(void)
