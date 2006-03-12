@@ -453,7 +453,7 @@ static void prefs_matcher_create(void)
 
 	g_list_free(combo_items);
 
-	gtk_widget_set_size_request(criteria_combo, 120, -1);
+	gtk_widget_set_size_request(criteria_combo, 170, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
 	criteria_list = GTK_COMBO(criteria_combo)->list;
@@ -474,7 +474,7 @@ static void prefs_matcher_create(void)
 
 	header_combo = gtk_combo_new();
 	gtk_widget_show(header_combo);
-	gtk_widget_set_size_request(header_combo, 96, -1);
+	gtk_widget_set_size_request(header_combo, 120, -1);
 	gtkut_combo_set_items(GTK_COMBO (header_combo),
 			      "Subject", "From", "To", "Cc", "Reply-To",
 			      "Sender", "X-ML-Name", "X-List", "X-Sequence",

@@ -1382,9 +1382,20 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		g_return_if_fail(header->name != NULL);
 
 		gtk_text_buffer_get_end_iter (buffer, &iter);
-		gtk_text_buffer_insert_with_tags_by_name
-			(buffer, &iter, header->name, -1,
-			 "header_title", "header", NULL);
+		if(prefs_common.trans_hdr == TRUE) {
+			gchar *hdr = g_strndup(header->name, strlen(header->name) - 1);
+			gchar *trans_hdr = gettext(hdr);
+			gtk_text_buffer_insert_with_tags_by_name(buffer,
+				&iter, trans_hdr, -1,
+				"header_title", "header", NULL);
+			gtk_text_buffer_insert_with_tags_by_name(buffer,
+				&iter, ":", 1, "header_title", "header", NULL);
+			g_free(hdr);
+		} else {
+			gtk_text_buffer_insert_with_tags_by_name(buffer,
+				&iter, header->name,
+				-1, "header_title", "header", NULL);
+		}
 		if (header->name[strlen(header->name) - 1] != ' ')
 		gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, " ", 1,

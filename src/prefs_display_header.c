@@ -54,7 +54,6 @@ static struct DisplayHeader {
 	GtkWidget *cancel_btn;
 
 	GtkWidget *hdr_combo;
-	GtkWidget *hdr_entry;
 	GtkWidget *key_check;
 	GtkWidget *headers_list_view;
 	GtkWidget *hidden_headers_list_view;
@@ -117,16 +116,16 @@ static gchar *defaults[] =
 	"From",
 	"To",
 	"Cc",
+	"Subject",
+	"Date",	
 	"Reply-To",
+	"Sender",
+	"User-Agent",
+	"X-Mailer",	
 	"Newsgroups",
 	"Followup-To",
-	"Subject",
-	"Date",
-	"Sender",
 	"Organization",
-	"X-Mailer",
 	"X-Newsreader",
-	"User-Agent",
 	"-Received",
 	"-Message-ID",
 	"-In-Reply-To",
@@ -199,7 +198,8 @@ static void prefs_display_header_create(void)
 	GtkWidget *hidden_headers_list_view;
 
 	GtkWidget *checkbtn_other_headers;
-
+	gint i;
+	
 	debug_print("Creating display header setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -252,14 +252,14 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (hdr_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_label, FALSE, FALSE, 0);
 
-	hdr_combo = gtk_combo_new ();
+	hdr_combo = gtk_combo_box_new_text();
+	for(i=0; i < 9 ; i++)
+		gtk_combo_box_append_text(GTK_COMBO_BOX (hdr_combo),
+			prefs_common.trans_hdr ? gettext(defaults[i]) : defaults[i]);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(hdr_combo), 0);
 	gtk_widget_show (hdr_combo);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_combo, TRUE, TRUE, 0);
 	gtk_widget_set_size_request (hdr_combo, 150, -1);
-	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
-			       "From", "To", "Cc", "Subject", "Date",
-			       "Reply-To", "Sender", "User-Agent", "X-Mailer",
-			       NULL);
 
 	list_view_hbox = gtk_hbox_new (FALSE, 10);
 	gtk_widget_show (list_view_hbox);
@@ -385,7 +385,6 @@ static void prefs_display_header_create(void)
 	dispheader.cancel_btn    = cancel_btn;
 
 	dispheader.hdr_combo     = hdr_combo;
-	dispheader.hdr_entry     = GTK_COMBO (hdr_combo)->entry;
 
 	dispheader.headers_list_view        = headers_list_view;
 	dispheader.hidden_headers_list_view = hidden_headers_list_view;
@@ -561,7 +560,8 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 	const gchar *entry_text;
 	GtkTreeModel *model;
 
-	entry_text = gtk_entry_get_text(GTK_ENTRY(dispheader.hdr_entry));
+	entry_text = defaults[gtk_combo_box_get_active(
+						GTK_COMBO_BOX(dispheader.hdr_combo))];
 	if (entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
 		return;
@@ -725,7 +725,8 @@ static void prefs_display_header_insert_header(GtkListStore *store,
 	/* add new */
 	gtk_list_store_append(store, &iter);
 	gtk_list_store_set(store, &iter,
-			   PREFS_HDR_HEADER, name,
+			   PREFS_HDR_HEADER,
+			   prefs_common.trans_hdr ? gettext(name) : name,
 			   PREFS_HDR_DATA, dp,
 			   -1);
 }

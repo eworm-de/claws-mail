@@ -1,3 +1,14 @@
+2006-03-12 [paul]	2.0.0cvs135
+
+	* src/prefs_matcher.c
+		give a little more width to the combos
+	* src/prefs_display_header.c
+	* src/textview.c
+		translate headers if prefs_common.trans_hdr
+		is TRUE
+
+	Patches by Pawel Pekala
+
 2006-03-12 [paul]	2.0.0cvs134
 
 	* src/plugins/clamav/clamav_plugin.c
