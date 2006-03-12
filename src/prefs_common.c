@@ -330,7 +330,7 @@ static PrefParam param[] = {
 	 &prefs_common.ng_abbrev_len, P_INT,
 	 NULL, NULL, NULL},
 
-	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
+	{"translate_header", "FALSE", &prefs_common.trans_hdr, P_BOOL,
 	 NULL, NULL, NULL},
 
 	/* Display: Summary View */

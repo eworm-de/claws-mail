@@ -1,3 +1,11 @@
+2006-03-12 [paul]	2.0.0cvs136
+
+	* src/prefs_common.c
+		trans_hdr defaults to FALSE to be RFC-savvy
+	* src/prefs_summaries.c
+		add a tooltip to the trans_hdr option
+		
+
 2006-03-12 [paul]	2.0.0cvs135
 
 	* src/prefs_matcher.c

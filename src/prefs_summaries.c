@@ -750,6 +750,9 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *table;
 	GtkWidget *vbox5;
+	GtkTooltips *tooltips;
+
+	tooltips = gtk_tooltips_new();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -761,7 +764,10 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_transhdr,
-		 _("Translate header name (such as 'From:', 'Subject:')"));
+		 _("Translate header names"));
+	gtk_tooltips_set_tip(tooltips, chkbtn_transhdr,
+			     "The display of standard headers (such as 'From:', 'Subject:') "
+			     "will be translated into your language.", NULL);
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
