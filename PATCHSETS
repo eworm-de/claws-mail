@@ -1317,3 +1317,4 @@
 ( cvs diff -u -r 1.18.2.30 -r 1.18.2.31 src/plugins/spamassassin/spamassassin.c;  cvs diff -u -r 1.4.2.10 -r 1.4.2.11 src/plugins/spamassassin/spamassassin.h;  cvs diff -u -r 1.23.2.23 -r 1.23.2.24 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.0.0cvs130.patchset
 ( cvs diff -u -r 1.23.2.24 -r 1.23.2.25 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.0.0cvs131.patchset
 ( cvs diff -u -r 1.395.2.180 -r 1.395.2.181 src/summaryview.c;  ) > 2.0.0cvs132.patchset
+( cvs diff -u -r 1.382.2.249 -r 1.382.2.250 src/compose.c;  ) > 2.0.0cvs133.patchset

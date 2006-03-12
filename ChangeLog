@@ -1,3 +1,9 @@
+2006-03-12 [paul]	2.0.0cvs133
+
+	* src/compose.c
+		fix Bug 924, 'Account combo box shows up wrong 
+		if & is in account name'
+
 2006-03-11 [colin]	2.0.0cvs132
 
 	* src/summaryview.c
