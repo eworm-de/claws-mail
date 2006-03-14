@@ -1324,3 +1324,4 @@
 ( cvs diff -u -r 1.115.2.76 -r 1.115.2.77 src/main.c;  ) > 2.0.0cvs137.patchset
 ( cvs diff -u -r 1.115.2.76 -r 1.115.2.77 src/main.c;  ) > 2.0.0cvs137.patchset
 ( cvs diff -u -r 1.5.2.20 -r 1.5.2.21 src/prefs_spelling.c;  ) > 2.0.0cvs138.patchset
+( cvs diff -u -r 1.17.2.21 -r 1.17.2.22 src/alertpanel.c;  ) > 2.0.0cvs139.patchset

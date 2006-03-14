@@ -41,7 +41,7 @@
 #define TITLE_HEIGHT		72
 #define MESSAGE_HEIGHT		62
 
-static gboolean alertpanel_is_open = FALSE;
+gboolean alertpanel_is_open = FALSE;
 static AlertValue value;
 
 static GtkWidget *dialog;
