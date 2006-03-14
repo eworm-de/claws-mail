@@ -1,3 +1,13 @@
+2006-03-14 [wwp]	2.0.0cvs137
+
+	* src/main.c
+		code style normalization (curly braces, indentation).
+
+2006-03-14 [wwp]	2.0.0cvs137
+
+	* src/main.c
+		code style (braces, indentation)
+
 2006-03-12 [paul]	2.0.0cvs136
 
 	* src/prefs_common.c

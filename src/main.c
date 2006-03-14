@@ -216,21 +216,22 @@ static void startup_notification_complete(gboolean with_window)
 	sn_context = sn_launchee_context_new_from_environment(sn_display,
 						 DefaultScreen(xdisplay));
 
-	if (sn_context != NULL)
-	{
+	if (sn_context != NULL)	{
 		sn_launchee_context_complete(sn_context);
 		sn_launchee_context_unref(sn_context);
 		sn_display_unref(sn_display);
 	}
-	if (with_window)
+	if (with_window) {
 		gtk_widget_destroy(hack);
+	}
 }
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
 void sylpheed_gtk_idle(void) 
 {
-	while(gtk_events_pending())
+	while(gtk_events_pending()) {
 		gtk_main_iteration();
+	}
 	g_usleep(50000);
 }
 
@@ -261,8 +262,9 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	GtkWidget *window = NULL;
 	if (alertpanel(_("Migration of configuration"),
 		       message,
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE) {
 		return FALSE;
+	}
 	
 	window = label_window_create(_("Copying configuration..."));
 	GTK_EVENTS_FLUSH();
@@ -335,8 +337,9 @@ int main(int argc, char *argv[])
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
 	gtk_widget_set_default_visual(gdk_rgb_get_visual());
 
-	if (!g_thread_supported())
+	if (!g_thread_supported()) {
 		g_error(_("g_thread is not supported by glib.\n"));
+	}
 
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc-2.0",
@@ -501,10 +504,12 @@ int main(int argc, char *argv[])
 #ifdef G_OS_UNIX
 	signal(SIGPIPE, SIG_IGN);
 #endif
-	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
+	if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
 		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
-	if (cmd.online_mode == ONLINE_MODE_ONLINE)
+	}
+	if (cmd.online_mode == ONLINE_MODE_ONLINE) {
 		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
+	}
 
 	if (cmd.status_folders) {
 		g_ptr_array_free(cmd.status_folders, TRUE);
@@ -545,27 +550,31 @@ int main(int argc, char *argv[])
 	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
 
-	if (cmd.receive_all)
+	if (cmd.receive_all) {
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
-	else if (prefs_common.chk_on_startup)
+	} else if (prefs_common.chk_on_startup) {
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(TRUE));
-	else if (cmd.receive)
+	} else if (cmd.receive) {
 		g_timeout_add(1000, defer_check, NULL);
-	else
+	} else {
 		gtk_widget_grab_focus(folderview->ctree);
+	}
 
-	if (cmd.compose)
+	if (cmd.compose) {
 		open_compose_new(cmd.compose_mailto, cmd.attach_files);
+	}
 	if (cmd.attach_files) {
 		ptr_array_free_strings(cmd.attach_files);
 		g_ptr_array_free(cmd.attach_files, TRUE);
 		cmd.attach_files = NULL;
 	}
-	if (cmd.subscribe)
+	if (cmd.subscribe) {
 		folder_subscribe(cmd.subscribe_uri);
+	}
 
-	if (cmd.send)
+	if (cmd.send) {
 		send_queue();
+	}
 	
 	gtk_main();
 
@@ -576,8 +585,9 @@ int main(int argc, char *argv[])
 
 static void save_all_caches(FolderItem *item, gpointer data)
 {
-	if (!item->cache)
+	if (!item->cache) {
 		return;
+	}
 	folder_item_write_cache(item);
 }
 
@@ -588,12 +598,12 @@ static void exit_sylpheed(MainWindow *mainwin)
 	debug_print("shutting down\n");
 	inc_autocheck_timer_remove();
 
-	if (prefs_common.clean_on_exit)
+	if (prefs_common.clean_on_exit) {
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
+	}
 
 	/* save prefs for opened folder */
-	if(mainwin->folderview->opened)
-	{
+	if(mainwin->folderview->opened) {
 		FolderItem *item;
 
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
@@ -664,20 +674,21 @@ static void parse_cmd_opt(int argc, char *argv[])
 	gint i;
 
 	for (i = 1; i < argc; i++) {
-		if (!strncmp(argv[i], "--receive-all", 13))
+		if (!strncmp(argv[i], "--receive-all", 13)) {
 			cmd.receive_all = TRUE;
-		else if (!strncmp(argv[i], "--receive", 9))
+		} else if (!strncmp(argv[i], "--receive", 9)) {
 			cmd.receive = TRUE;
-		else if (!strncmp(argv[i], "--compose", 9)) {
+		} else if (!strncmp(argv[i], "--compose", 9)) {
 			const gchar *p = argv[i + 1];
 
 			cmd.compose = TRUE;
 			cmd.compose_mailto = NULL;
 			if (p && *p != '\0' && *p != '-') {
-				if (!strncmp(p, "mailto:", 7))
+				if (!strncmp(p, "mailto:", 7)) {
 					cmd.compose_mailto = p + 7;
-				else
+				} else {
 					cmd.compose_mailto = p;
+				}
 				i++;
 			}
 		} else if (!strncmp(argv[i], "--subscribe", 11)) {
@@ -691,14 +702,16 @@ static void parse_cmd_opt(int argc, char *argv[])
 			gchar *file;
 
 			while (p && *p != '\0' && *p != '-') {
-				if (!cmd.attach_files)
+				if (!cmd.attach_files) {
 					cmd.attach_files = g_ptr_array_new();
-				if (*p != G_DIR_SEPARATOR)
+				}
+				if (*p != G_DIR_SEPARATOR) {
 					file = g_strconcat(sylpheed_get_startup_dir(),
 							   G_DIR_SEPARATOR_S,
 							   p, NULL);
-				else
+				} else {
 					file = g_strdup(p);
+				}
 				g_ptr_array_add(cmd.attach_files, file);
 				i++;
 				p = argv[i + 1];
@@ -713,9 +726,10 @@ static void parse_cmd_opt(int argc, char *argv[])
  
  			cmd.status_full = TRUE;
  			while (p && *p != '\0' && *p != '-') {
- 				if (!cmd.status_full_folders)
+ 				if (!cmd.status_full_folders) {
  					cmd.status_full_folders =
  						g_ptr_array_new();
+				}
  				g_ptr_array_add(cmd.status_full_folders,
  						g_strdup(p));
  				i++;
@@ -779,10 +793,11 @@ static void parse_cmd_opt(int argc, char *argv[])
 				cmd.compose = TRUE;
 				cmd.compose_mailto = NULL;
 				if (p && *p != '\0' && *p != '-') {
-					if (!strncmp(p, "mailto:", 7))
+					if (!strncmp(p, "mailto:", 7)) {
 						cmd.compose_mailto = p + 7;
-					else
+					} else {
 						cmd.compose_mailto = p;
+					}
 				}
 			} else if (strstr(argv[i], "://")) {
 				const gchar *p = argv[i];
@@ -806,7 +821,9 @@ static gint get_queued_message_num(void)
 	FolderItem *queue;
 
 	queue = folder_get_default_queue();
-	if (!queue) return -1;
+	if (!queue) {
+		return -1;
+	}
 
 	folder_item_scan(queue);
 	return queue->total_msgs;
@@ -826,8 +843,9 @@ static void initial_processing(FolderItem *item, gpointer data)
 	g_free(buf);
 
 	
-        if (item->prefs->enable_processing)
-                folder_item_apply_processing(item);
+	if (item->prefs->enable_processing) {
+		folder_item_apply_processing(item);
+	}
 
 	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
@@ -847,8 +865,9 @@ gboolean clean_quit(gpointer data)
 {
 	static gboolean firstrun = TRUE;
 
-	if (!firstrun)
+	if (!firstrun) {
 		return FALSE;
+	}
 	firstrun = FALSE;
 
 	/*!< Good idea to have the main window stored in a 
@@ -863,8 +882,9 @@ gboolean clean_quit(gpointer data)
 	/* FIXME: Use something else to signal that we're
 	 * in the original spawner, and not in a spawned
 	 * child. */
-	if (!static_mainwindow) 
+	if (!static_mainwindow) {
 		return FALSE;
+	}
 		
 	draft_all_messages();
 
@@ -898,8 +918,9 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL)
-		    != G_ALERTALTERNATE)
+		    != G_ALERTALTERNATE) {
 			return;
+		}
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
@@ -960,19 +981,20 @@ static gint prohibit_duplicate_launch(void)
 
 	debug_print("another Sylpheed-Claws instance is already running.\n");
 
-	if (cmd.receive_all)
+	if (cmd.receive_all) {
 		fd_write_all(uxsock, "receive_all\n", 12);
-	else if (cmd.receive)
+	} else if (cmd.receive) {
 		fd_write_all(uxsock, "receive\n", 8);
-	else if (cmd.compose && cmd.attach_files) {
+	} else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 		gint i;
 
-		if (cmd.compose_mailto)
+		if (cmd.compose_mailto) {
 			compose_str = g_strdup_printf("compose_attach %s\n",
 						      cmd.compose_mailto);
-		else
+		} else {
 			compose_str = g_strdup("compose_attach\n");
+		}
 
 		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
@@ -987,11 +1009,12 @@ static gint prohibit_duplicate_launch(void)
 	} else if (cmd.compose) {
 		gchar *compose_str;
 
-		if (cmd.compose_mailto)
+		if (cmd.compose_mailto) {
 			compose_str = g_strdup_printf
 				("compose %s\n", cmd.compose_mailto);
-		else
+		} else {
 			compose_str = g_strdup("compose\n");
+		}
 
 		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
@@ -1042,10 +1065,13 @@ static gint lock_socket_remove(void)
 #ifdef G_OS_UNIX
 	gchar *filename;
 
-	if (lock_socket < 0) return -1;
+	if (lock_socket < 0) {
+		return -1;
+	}
 
-	if (lock_socket_tag > 0)
+	if (lock_socket_tag > 0) {
 		gdk_input_remove(lock_socket_tag);
+	}
 	fd_close(lock_socket);
 	filename = get_socket_name();
 	g_unlink(filename);
@@ -1062,14 +1088,19 @@ static GPtrArray *get_folder_item_list(gint sock)
 
 	for (;;) {
 		fd_gets(sock, buf, sizeof(buf));
-		if (!strncmp(buf, ".\n", 2)) break;
+		if (!strncmp(buf, ".\n", 2)) {
+			break;
+		}
 		strretchomp(buf);
-		if (!folders) folders = g_ptr_array_new();
+		if (!folders) {
+			folders = g_ptr_array_new();
+		}
 		item = folder_find_item_from_identifier(buf);
-		if (item)
+		if (item) {
 			g_ptr_array_add(folders, item);
-		else
+		} else {
 			g_warning("no such folder: %s\n", buf);
+		}
 	}
 
 	return folders;
@@ -1100,7 +1131,9 @@ static void lock_socket_input_cb(gpointer data,
 		mailto = g_strdup(buf + strlen("compose_attach") + 1);
 		files = g_ptr_array_new();
 		while (fd_gets(sock, buf, sizeof(buf)) > 0) {
-			if (buf[0] == '.' && buf[1] == '\n') break;
+			if (buf[0] == '.' && buf[1] == '\n') {
+				break;
+			}
 			strretchomp(buf);
 			g_ptr_array_add(files, g_strdup(buf));
 		}
@@ -1161,10 +1194,12 @@ static void send_queue(void)
 			gint res = procmsg_send_queue
 				(folder->queue, prefs_common.savemsg);
 
-			if (res < 0)	
+			if (res < 0) {
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			if (res) 	
+			}
+			if (res) {
 				folder_item_scan(folder->queue);
+			}
 		}
 	}
 }
