@@ -38,6 +38,8 @@
 #include "folderview.h"
 #include "folder.h"
 #include "prefs_matcher.h"
+#include "sylpheed.h"
+#include "statusbar.h"
 
 struct _QuickSearch
 {
@@ -57,6 +59,8 @@ struct _QuickSearch
 	gpointer			 callback_data;
 	gboolean			 running;
 	gboolean			 has_focus;
+	gboolean			 matching;
+	gboolean			 deferred_free;
 	FolderItem			*root_folder_item;
 };
 
@@ -68,13 +72,21 @@ static void prepare_matcher(QuickSearch *quicksearch)
 {
 	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
+	if (search_string == NULL || search_string[0] == '\0') {
+		quicksearch_set_active(quicksearch, FALSE);
+	}
+
 	if (quicksearch->matcher_list != NULL) {
+		if (quicksearch->matching) {
+			quicksearch->deferred_free = TRUE;
+			return;
+		}
+		quicksearch->deferred_free = FALSE;
 		matcherlist_free(quicksearch->matcher_list);
 		quicksearch->matcher_list = NULL;
 	}
 
 	if (search_string == NULL || search_string[0] == '\0') {
-		quicksearch_set_active(quicksearch, FALSE);
 		return;
 	}
 
@@ -292,7 +304,10 @@ static void search_description_cb(GtkWidget *widget)
 static gboolean clear_search_cb(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
-	
+
+	if (!quicksearch->active)
+		return TRUE;
+
 	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
 	
 	return TRUE;
@@ -582,6 +597,7 @@ void quicksearch_set_execute_callback(QuickSearch *quicksearch,
 gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 {
 	gchar *searched_header = NULL;
+	gboolean result = FALSE;
 
 	if (!quicksearch->active)
 		return TRUE;
@@ -602,16 +618,21 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		debug_print("unknown search type (%d)\n", prefs_common.summary_quicksearch_type);
 		break;
 	}
-
+	quicksearch->matching = TRUE;
 	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && 
 	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
-		return TRUE;
+		result = TRUE;
 	else if ((quicksearch->matcher_list != NULL) && 
-	         matcherlist_match(quicksearch->matcher_list, msginfo))
-		return TRUE;
+	         matcherlist_match(quicksearch->matcher_list, msginfo)) 
+		result = TRUE;
 
-	return FALSE;
+	quicksearch->matching = FALSE;
+	if (quicksearch->deferred_free) {
+		prepare_matcher(quicksearch);
+	}
+
+	return result;
 }
 
 /* allow Mutt-like patterns in quick search */
@@ -836,9 +857,12 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	GSList *msglist = folder_item_get_msg_list(src);
 	GSList *cur;
 	gboolean result = FALSE;
-	
+	gint num = 0, total = src->total_msgs;
+	statusbar_print_all(_("Searching in %s... \n"), 
+		src->path ? src->path : "(null)");
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		MsgInfo *msg = (MsgInfo *)cur->data;
+		statusbar_progress_all(num++,total, 50);
 		if (quicksearch_match(quicksearch, msg)) {
 			procmsg_msginfo_free(msg);
 			result = TRUE;
@@ -849,6 +873,8 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 		if (!quicksearch_is_active(quicksearch))
 			break;
 	}
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
 
 	g_slist_free(msglist);
 	return result;

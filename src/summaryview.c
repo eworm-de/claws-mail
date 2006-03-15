@@ -960,10 +960,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
-
+		gint num = 0, total = summaryview->folder_item->total_msgs;
+		statusbar_print_all(_("Searching in %s... \n"), 
+			summaryview->folder_item->path ? 
+			summaryview->folder_item->path : "(null)");
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
+
+			statusbar_progress_all(num++,total, 50);
 
 			if (!msginfo->hidden && quicksearch_match(summaryview->quicksearch, msginfo))
 				not_killed = g_slist_prepend(not_killed, msginfo);
@@ -974,6 +979,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				break;
 			}
 		}
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
+		
 		hidden_removed = TRUE;
 		if (quicksearch_is_running(summaryview->quicksearch)) {
 			/* only scan subfolders when quicksearch changed,

@@ -1,3 +1,36 @@
+2006-03-15 [colin]	2.0.0cvs140
+
+	* src/gtk/quicksearch.c
+		Fix a bitchy race we didn't think about when we
+		added quicksearch cancellation:
+		If the search is not on cached fields, for example
+		body_part matchcase "stuff"
+		the matcher code has to get the whole message. If
+		we're on IMAP, that can be slow, and in order to
+		be non-blocking, the IMAP code idle loop processes
+		gtk events too. So it is possible to cancel a
+		quicksearch while the matcher is getting the mail's
+		body. After matcher got its body, it will start to
+		iterate over the matcher list that the Quicksearch's
+		clear_search_cb() just freed via prepare_matcher().
+		SIGSEGV ensues.
+		The fix consists of guarding the matcherlist_match()
+		call with a boolean 'matching'. If we reset the
+		quicksearch while matching is TRUE, we don't free
+		the matcherlist anymore like we did, but we set
+		another new flag, deferred_free, to TRUE. Then,
+		in quicksearch_match(), just after returning from
+		matcherlist_match() and unsetting the matching flag,
+		we check the deferred_free flag and do the
+		prepare_matcher() (which does the matcherlist_free)
+		for real, so we free the matcherlist once it's not
+		used anymore.
+		As all of this runs via the glib main loop, we
+		luckily don't need a mutex.
+	* src/summaryview.c
+		Also, show progress while searching.
+
+
 2006-03-14 [colin]	2.0.0cvs139
 
 	* src/alertpanel.c
