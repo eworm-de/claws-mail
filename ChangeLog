@@ -1,3 +1,9 @@
+2006-03-16 [colin]	2.0.0cvs144
+
+	* src/sourcewindow.c
+	* src/sourcewindow.h
+		And the last one, in source window.
+
 2006-03-16 [colin]	2.0.0cvs143
 
 	* src/compose.c

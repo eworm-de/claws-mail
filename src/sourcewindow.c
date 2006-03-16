@@ -120,6 +120,11 @@ void source_window_show(SourceWindow *sourcewin)
 
 void source_window_destroy(SourceWindow *sourcewin)
 {
+	if (sourcewin->updating) {
+		debug_print("deferring destroy\n");
+		sourcewin->deferred_destroy = TRUE;
+		return;
+	}
 	gtk_widget_destroy(sourcewin->window);
 	g_free(sourcewin);
 }
@@ -133,7 +138,16 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 
 	g_return_if_fail(msginfo != NULL);
 
+	sourcewin->updating = TRUE;
 	file = procmsg_get_message_file(msginfo);
+	sourcewin->updating = FALSE;
+	
+	if (sourcewin->deferred_destroy) {
+		g_free(file);
+		source_window_destroy(sourcewin);
+		return;
+	}
+
 	g_return_if_fail(file != NULL);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
