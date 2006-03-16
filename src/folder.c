@@ -2894,6 +2894,11 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			    == POP3_PARTIAL_DLOAD_DLOAD) {
 				partial_mark_for_download(newmsginfo);
 			}
+			if (!MSG_IS_POSTFILTERED (msginfo->flags)) {
+			    procmsg_msginfo_set_flags (   msginfo, MSG_POSTFILTERED, 0);
+			    procmsg_msginfo_set_flags (newmsginfo, MSG_POSTFILTERED, 0);
+			    hooks_invoke (MAIL_POSTFILTERING_HOOKLIST, newmsginfo);
+			}
 			procmsg_msginfo_free(newmsginfo);
 
 

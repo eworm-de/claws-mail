@@ -118,6 +118,7 @@ static gboolean free_func(GNode *node, gpointer data)
 	g_free(mimeinfo->subtype);
 	g_free(mimeinfo->description);
 	g_free(mimeinfo->id);
+	g_free(mimeinfo->location);
 
 	g_hash_table_foreach_remove(mimeinfo->typeparameters,
 		procmime_mimeinfo_parameters_destroy, NULL);
@@ -1270,12 +1271,13 @@ gchar *procmime_get_content_type_str(MimeMediaType type,
 	return g_strdup_printf("%s/%s", type_str, subtype);
 }
 
-int procmime_parse_mimepart(MimeInfo *parent,
+static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_type,
 			     gchar *content_encoding,
 			     gchar *content_description,
 			     gchar *content_id,
 			     gchar *content_disposition,
+			     gchar *content_location,
 			     const gchar *filename,
 			     guint offset,
 			     guint length);
@@ -1291,6 +1293,8 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 						   NULL, TRUE},
 				{"Content-Disposition:",
 				                   NULL, TRUE},
+				{"Content-Location:",
+						   NULL, TRUE},
 				{"MIME-Version:",
 						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
@@ -1322,13 +1326,18 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
                 g_free(hentry[4].body);
                 hentry[4].body = tmp;
         }                
+	if (hentry[5].body != NULL) {
+                tmp = conv_unmime_header(hentry[5].body, NULL);
+                g_free(hentry[5].body);
+                hentry[5].body = tmp;
+        }                
 	content_start = ftell(fp);
 	fclose(fp);
 	
 	procmime_parse_mimepart(mimeinfo,
 				hentry[0].body, hentry[1].body,
 				hentry[2].body, hentry[3].body,
-				hentry[4].body,
+				hentry[4].body, hentry[5].body,
 				mimeinfo->data.filename, content_start,
 				mimeinfo->length - (content_start - mimeinfo->offset));
 	
@@ -1349,6 +1358,8 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 						   NULL, TRUE},
 				{"Content-Disposition:",
 				                   NULL, TRUE},
+				{"Content-Location:",
+						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	gchar *p, *tmp;
 	gchar *boundary;
@@ -1379,7 +1390,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				result = procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
-							hentry[4].body, 
+							hentry[4].body, hentry[5].body,
 							mimeinfo->data.filename, lastoffset,
 							(ftell(fp) - strlen(buf)) - lastoffset - 1);
 			}
@@ -1407,6 +1418,11 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
                                 tmp = conv_unmime_header(hentry[4].body, NULL);
                                 g_free(hentry[4].body);
                                 hentry[4].body = tmp;
+                        }                
+                        if (hentry[5].body != NULL) {
+                                tmp = conv_unmime_header(hentry[5].body, NULL);
+                                g_free(hentry[5].body);
+                                hentry[5].body = tmp;
                         }                
 			lastoffset = ftell(fp);
 		}
@@ -1660,12 +1676,13 @@ static void procmime_parse_content_encoding(const gchar *content_encoding, MimeI
 	return;
 }
 
-int procmime_parse_mimepart(MimeInfo *parent,
+static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_type,
 			     gchar *content_encoding,
 			     gchar *content_description,
 			     gchar *content_id,
 			     gchar *content_disposition,
+			     gchar *content_location,
 			     const gchar *filename,
 			     guint offset,
 			     guint length)
@@ -1719,6 +1736,11 @@ int procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->id = g_strdup(content_id);
 	else
 		mimeinfo->id = NULL;
+
+	if (content_location != NULL)
+		mimeinfo->location = g_strdup(content_location);
+	else
+		mimeinfo->location = NULL;
 
 	if (content_disposition != NULL) 
 		procmime_parse_content_disposition(content_disposition, mimeinfo);
@@ -1974,6 +1996,9 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->id != NULL)
 		fprintf(fp, "Content-ID: %s\n", mimeinfo->id);
 
+	if (mimeinfo->location != NULL)
+		fprintf(fp, "Content-Location: %s\n", mimeinfo->location);
+
 	if (mimeinfo->disposition != DISPOSITIONTYPE_UNKNOWN) {
 		ParametersData *pdata = g_new0(ParametersData, 1);
 		gchar *buf = NULL;
@@ -2027,6 +2052,7 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 			    g_ascii_strncasecmp(buf, "Content-Transfer-Encoding:", 26) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-Description:", 20) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-ID:", 11) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-Location:", 17) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-Disposition:", 20) == 0) {
 				skip = TRUE;
 				continue;

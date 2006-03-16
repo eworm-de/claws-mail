@@ -45,6 +45,7 @@ typedef GSList MsgNumberList;
 #define MSG_DELETED		(1U << 3)
 #define MSG_REPLIED		(1U << 4)
 #define MSG_FORWARDED		(1U << 5)
+#define MSG_POSTFILTERED	(1U << 14)
 
 #define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
 #define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \
@@ -115,6 +116,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_REPLIED(msg)		(((msg).perm_flags & MSG_REPLIED) != 0)
 #define MSG_IS_LOCKED(msg)		(((msg).perm_flags & MSG_LOCKED) != 0)
 #define MSG_IS_FORWARDED(msg)		(((msg).perm_flags & MSG_FORWARDED) != 0)
+#define MSG_IS_POSTFILTERED(msg)	(((msg).perm_flags & MSG_POSTFILTERED) != 0)
 
 #define MSG_GET_COLORLABEL(msg)		(((msg).perm_flags & MSG_CLABEL_FLAG_MASK))
 #define MSG_GET_COLORLABEL_VALUE(msg)	(MSG_GET_COLORLABEL(msg) >> MSG_CLABEL_SBIT)

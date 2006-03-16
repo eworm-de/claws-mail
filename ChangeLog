@@ -1,3 +1,22 @@
+2006-03-16 [colin]	2.0.0cvs141
+
+	* src/procmsg.h
+	* src/procmsg.c
+	* src/folder.c
+		Fix POSTPROCESSING hook
+		Patch by H. Merijn Brand
+
+	* src/procmime.c
+	* src/procmime.h
+		Parse Content-Location
+
+	* src/toolbar.c
+	* src/messageview.c
+	* src/messageview.h
+		Don't crash when a top-level MessageView has
+		been closed on us. Same problematic than
+		yesterday's quicksearch issue.
+
 2006-03-15 [colin]	2.0.0cvs140
 
 	* src/gtk/quicksearch.c

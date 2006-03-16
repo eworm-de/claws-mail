@@ -1128,7 +1128,15 @@ static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
 		
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
+		msgview->updating = TRUE;
 		summary_select_prev_unread(msgview->mainwin->summaryview);
+		msgview->updating = FALSE;
+
+		if (msgview->deferred_destroy) {
+			debug_print("messageview got away!\n");
+			messageview_destroy(msgview);
+			return;
+		}
 		
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
@@ -1167,8 +1175,16 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 		
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
+		msgview->updating = TRUE;
 		summary_select_next_unread(msgview->mainwin->summaryview);
-		
+		msgview->updating = FALSE;
+
+		if (msgview->deferred_destroy) {
+			debug_print("messageview got away!\n");
+			messageview_destroy(msgview);
+			return;
+		}
+
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
 			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);

@@ -1326,3 +1326,4 @@
 ( cvs diff -u -r 1.5.2.20 -r 1.5.2.21 src/prefs_spelling.c;  ) > 2.0.0cvs138.patchset
 ( cvs diff -u -r 1.17.2.21 -r 1.17.2.22 src/alertpanel.c;  ) > 2.0.0cvs139.patchset
 ( cvs diff -u -r 1.1.2.34 -r 1.1.2.35 src/gtk/quicksearch.c;  cvs diff -u -r 1.395.2.181 -r 1.395.2.182 src/summaryview.c;  ) > 2.0.0cvs140.patchset
+( cvs diff -u -r 1.150.2.57 -r 1.150.2.58 src/procmsg.c;  cvs diff -u -r 1.60.2.26 -r 1.60.2.27 src/procmsg.h;  cvs diff -u -r 1.213.2.85 -r 1.213.2.86 src/folder.c;  cvs diff -u -r 1.49.2.74 -r 1.49.2.75 src/procmime.c;  cvs diff -u -r 1.17.2.14 -r 1.17.2.15 src/procmime.h;  cvs diff -u -r 1.43.2.41 -r 1.43.2.42 src/toolbar.c;  cvs diff -u -r 1.94.2.80 -r 1.94.2.81 src/messageview.c;  cvs diff -u -r 1.19.2.7 -r 1.19.2.8 src/messageview.h;  ) > 2.0.0cvs141.patchset

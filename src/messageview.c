@@ -874,8 +874,17 @@ void messageview_destroy(MessageView *messageview)
 	debug_print("destroy messageview\n");
 	messageview_list = g_list_remove(messageview_list, messageview);
 
-	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
+	if (!messageview->deferred_destroy) {
+		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
 			      messageview->msginfo_update_callback_id);
+	}
+
+	if (messageview->updating) {
+		debug_print("uh oh, better not touch that now\n");
+		messageview->deferred_destroy = TRUE;
+		gtk_widget_hide(messageview->window);
+		return;
+	}
 
 	headerview_destroy(messageview->headerview);
 	mimeview_destroy(messageview->mimeview);

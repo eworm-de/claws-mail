@@ -68,6 +68,8 @@ struct _MessageView
 	gboolean all_headers;
     
 	gint msginfo_update_callback_id;
+	gboolean updating;
+	gboolean deferred_destroy;
 };
 
 MessageView *messageview_create			(MainWindow	*mainwin);

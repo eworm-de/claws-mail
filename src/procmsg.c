@@ -1983,18 +1983,15 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 			
 	mail_filtering_data.msginfo = msginfo;			
 	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
-		hooks_invoke(MAIL_POSTFILTERING_HOOKLIST, msginfo);
 		return TRUE;
 	}
 
 	/* filter if enabled in prefs or move to inbox if not */
 	if((filtering_rules != NULL) &&
 	   filter_message_by_msginfo(filtering_rules, msginfo)) {
-		hooks_invoke(MAIL_POSTFILTERING_HOOKLIST, msginfo);
 		return TRUE;
 	}
 		
-	hooks_invoke(MAIL_POSTFILTERING_HOOKLIST, msginfo);
 	return FALSE;
 }
 

@@ -130,6 +130,9 @@ struct _MimeInfo
 	/* Content-ID */
 	gchar		*id;
 
+	/* Content-Location */
+	gchar 		*location;
+
 	guint		 offset;
 	guint		 length;
 
