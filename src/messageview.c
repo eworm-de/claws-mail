@@ -770,7 +770,15 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				messageview->toolbar->learn_spam_btn, 
 				procmsg_spam_can_learn());
 	}
+	messageview->updating = TRUE;
 	mimeinfo = procmime_scan_message(msginfo);
+	messageview->updating = FALSE;
+	
+	if (messageview->deferred_destroy) {
+		messageview_destroy(messageview);
+		return 0;
+	}
+
 	if (!mimeinfo) {
 		textview_show_error(messageview->mimeview->textview);
 		return -1;
@@ -782,14 +790,23 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			break;
 	}
 	
+	messageview->updating = TRUE;
 	file = procmsg_get_message_file_path(msginfo);
+	messageview->updating = FALSE;
+	
+	if (messageview->deferred_destroy) {
+		g_free(file);
+		messageview_destroy(messageview);
+		return 0;
+	}
+
 	if (!file) {
 		g_warning("can't get message file path.\n");
 		procmime_mimeinfo_free_all(mimeinfo);
 		textview_show_error(messageview->mimeview->textview);
 		return -1;
 	}
-
+	
 	if (messageview->msginfo != msginfo) {
 		procmsg_msginfo_free(messageview->msginfo);
 		messageview->msginfo = procmsg_msginfo_get_full_info(msginfo);

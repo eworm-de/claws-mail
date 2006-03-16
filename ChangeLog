@@ -1,3 +1,8 @@
+2006-03-16 [colin]	2.0.0cvs142
+
+	* src/messageview.c
+		Complete the previous messageview crash fix
+
 2006-03-16 [colin]	2.0.0cvs141
 
 	* src/procmsg.h
