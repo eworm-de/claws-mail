@@ -224,6 +224,9 @@ struct _Compose
 	GMutex *mutex;
 	gchar *orig_charset;
 	gint set_cursor_pos;
+	
+	gboolean updating;
+	gboolean deferred_destroy;
 };
 
 struct _AttachInfo

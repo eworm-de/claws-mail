@@ -1,3 +1,9 @@
+2006-03-16 [colin]	2.0.0cvs143
+
+	* src/compose.c
+	* src/compose.h
+		Fix the same stuff in compose
+
 2006-03-16 [colin]	2.0.0cvs142
 
 	* src/messageview.c

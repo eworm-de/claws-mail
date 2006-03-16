@@ -1189,11 +1189,17 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	menu_set_active(ifactory, "/Options/Remove references", FALSE);
 	menu_set_sensitive(ifactory, "/Options/Remove references", TRUE);
 
+	compose->updating = TRUE;
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
-
 	if (!compose->replyinfo)
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
-	
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
+
 	compose_extract_original_charset(compose);
 	
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
@@ -1292,9 +1298,16 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose = compose_create(account, COMPOSE_FORWARD, batch);
 
+	compose->updating = TRUE;
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->fwdinfo)
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
 
 	compose_extract_original_charset(compose);
 
@@ -1332,9 +1345,16 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		gchar *qmark;
 		MsgInfo *full_msginfo;
 
+		compose->updating = TRUE;
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!full_msginfo)
 			full_msginfo = procmsg_msginfo_copy(msginfo);
+		compose->updating = FALSE;
+
+		if (compose->deferred_destroy) {
+			compose_destroy(compose);
+			return NULL;
+		}
 
 		if (prefs_common.fw_quotemark &&
 		    *prefs_common.fw_quotemark)
@@ -1426,7 +1446,14 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	
 	undo_block(compose->undostruct);
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
+		compose->updating = TRUE;
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
+		compose->updating = FALSE;
+		if (compose->deferred_destroy) {
+			compose_destroy(compose);
+			g_free(msgfile);
+			return NULL;
+		}
 		if (!is_file_exist(msgfile))
 			g_warning("%s: file not exist\n", msgfile);
 		else
@@ -1608,7 +1635,15 @@ void compose_reedit(MsgInfo *msginfo)
 	} else {
 		activate_privacy_system(compose, account, FALSE);
 	}
+
+	compose->updating = TRUE;
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
+	compose->updating = FALSE;
+	
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
 
 	compose_extract_original_charset(compose);
 
@@ -1711,7 +1746,16 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 
+	compose->updating = TRUE;
 	filename = procmsg_get_message_file_path(msginfo);
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		g_free(filename);
+		return NULL;
+	}
+
 	if (filename == NULL)
 		return NULL;
 
@@ -6263,6 +6307,11 @@ static void compose_destroy(Compose *compose)
 {
 	compose_list = g_list_remove(compose_list, compose);
 
+	if (compose->updating) {
+		debug_print("danger, not destroying anything now\n");
+		compose->deferred_destroy = TRUE;
+		return;
+	}
 	/* NOTE: address_completion_end() does nothing with the window
 	 * however this may change. */
 	address_completion_end(compose->window);
