@@ -92,6 +92,7 @@
 #include "folderutils.h"
 #include "foldersort.h"
 #include "icon_legend.h"
+#include "colorlabel.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -723,6 +724,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark/Mark as _spam"),	NULL, mark_as_spam_cb, 1, NULL},
 	{N_("/_Message/_Mark/Mark as _ham"),	NULL, mark_as_spam_cb, 0, NULL},
+	{N_("/_Message/Color la_bel"),		NULL, NULL, 	       0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
@@ -829,6 +831,146 @@ static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
 	}
 	return FALSE;
 }
+
+#define N_COLOR_LABELS colorlabel_get_color_count()
+
+static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
+							  gpointer data)
+{
+	MainWindow *mainwin;
+	GtkMenuShell *menu;
+	GtkCheckMenuItem **items;
+	gint n;
+	GList *cur, *sel;
+
+	mainwin = (MainWindow *)data;
+	g_return_if_fail(mainwin != NULL);
+
+	sel = GTK_CLIST(mainwin->summaryview->ctree)->selection;
+	if (!sel) return;
+
+	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
+	g_return_if_fail(menu != NULL);
+
+	Xalloca(items, (N_COLOR_LABELS + 1) * sizeof(GtkWidget *), return);
+
+	/* NOTE: don't return prematurely because we set the "dont_toggle"
+	 * state for check menu items */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(1));
+
+	/* clear items. get item pointers. */
+	for (n = 0, cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
+			items[n] = GTK_CHECK_MENU_ITEM(cur->data);
+			n++;
+		}
+	}
+
+	if (n == (N_COLOR_LABELS + 1)) {
+		/* iterate all messages and set the state of the appropriate
+		 * items */
+		for (; sel != NULL; sel = sel->next) {
+			MsgInfo *msginfo;
+			gint clabel;
+
+			msginfo = gtk_ctree_node_get_row_data
+				(GTK_CTREE(mainwin->summaryview->ctree),
+				 GTK_CTREE_NODE(sel->data));
+			if (msginfo) {
+				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
+				if (!items[clabel]->active)
+					gtk_check_menu_item_set_active
+						(items[clabel], TRUE);
+			}
+		}
+	} else
+		g_warning("invalid number of color elements (%d)\n", n);
+
+	/* reset "dont_toggle" state */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(0));
+}
+
+static void mainwindow_colorlabel_menu_item_activate_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	guint color = GPOINTER_TO_UINT(data);
+	MainWindow *mainwin;
+
+	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
+	g_return_if_fail(mainwin != NULL);
+
+	/* "dont_toggle" state set? */
+	if (g_object_get_data(G_OBJECT(mainwin->colorlabel_menu),
+				"dont_toggle"))
+		return;
+
+	summary_set_colorlabel(mainwin->summaryview, color, NULL);
+}
+
+static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refresh)
+{
+	GtkWidget *label_menuitem;
+	GtkWidget *menu;
+	GtkWidget *item;
+	gint i;
+
+	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
+						   "/Message/Color label");
+	g_signal_connect(G_OBJECT(label_menuitem), "activate",
+			 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_item_cb),
+			   mainwin);
+	gtk_widget_show(label_menuitem);
+
+	menu = gtk_menu_new();
+
+	/* create sub items. for the menu item activation callback we pass the
+	 * index of label_colors[] as data parameter. for the None color we
+	 * pass an invalid (high) value. also we attach a data pointer so we
+	 * can always get back the Mainwindow pointer. */
+
+	item = gtk_check_menu_item_new_with_label(_("None"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_cb),
+			   GUINT_TO_POINTER(0));
+	g_object_set_data(G_OBJECT(item), "mainwin", mainwin);
+	gtk_widget_show(item);
+
+	gtk_widget_add_accelerator(item, "activate", 
+				   mainwin->menu_factory->accel_group, 
+				   GDK_0, GDK_CONTROL_MASK,
+				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+
+	item = gtk_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	gtk_widget_show(item);
+
+	/* create pixmap/label menu items */
+	for (i = 0; i < N_COLOR_LABELS; i++) {
+		item = colorlabel_create_check_color_menu_item(
+			i, refresh, MAINWIN_COLORMENU);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_cb),
+				 GUINT_TO_POINTER(i + 1));
+		g_object_set_data(G_OBJECT(item), "mainwin",
+				  mainwin);
+		gtk_widget_show(item);
+		gtk_widget_add_accelerator(item, "activate", 
+				   mainwin->menu_factory->accel_group, 
+				   GDK_1+i, GDK_CONTROL_MASK,
+				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+	}
+
+	gtk_widget_show(menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
+	mainwin->colorlabel_menu = menu;
+}
+
 
 MainWindow *main_window_create(SeparateType type)
 {
@@ -1163,6 +1305,8 @@ MainWindow *main_window_create(SeparateType type)
 	if (prefs_common.work_offline)
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
 
+	mainwindow_colorlabel_menu_create(mainwin, FALSE);
+
 	return mainwin;
 }
 
@@ -1291,6 +1435,24 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 	}
 	prefs_tag = 0;
 	return FALSE;
+}
+
+void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
+{
+	GtkMenuShell *menu;
+	GList *cur;
+
+	/* re-create colorlabel submenu */
+	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+	}
+	mainwindow_colorlabel_menu_create(mainwin, TRUE);
+	summary_reflect_prefs_custom_colors(mainwin->summaryview);
+
 }
 
 void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
@@ -1906,6 +2068,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Mark/Mark as spam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Message/Mark/Mark as ham" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"/Message/Color label"		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},

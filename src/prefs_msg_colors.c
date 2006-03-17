@@ -38,7 +38,7 @@
 #include "gtk/prefswindow.h"
 
 #include "manage_window.h"
-
+#include "mainwindow.h"
 #include "colorlabel.h"
 
 #define SAFE_STRING(str) \
@@ -548,7 +548,7 @@ void prefs_msg_colors_save(PrefsPage *_page)
 	colorlabel_update_colortable_from_prefs();
 
 	main_window_reflect_prefs_all();
-	summary_reflect_prefs_custom_colors(mainwindow_get_mainwindow()->summaryview);
+	main_window_reflect_prefs_custom_colors(mainwindow_get_mainwindow());
 }
 
 static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget, gpointer data)

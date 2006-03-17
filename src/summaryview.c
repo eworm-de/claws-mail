@@ -4475,6 +4475,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 	if (!sel) return;
 
 	menu = GTK_MENU_SHELL(summaryview->colorlabel_menu);
+	
 	g_return_if_fail(menu != NULL);
 
 	Xalloca(items, (N_COLOR_LABELS + 1) * sizeof(GtkWidget *), return);
@@ -4548,13 +4549,19 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	g_object_set_data(G_OBJECT(item), "summaryview", summaryview);
 	gtk_widget_show(item);
 
+	gtk_widget_add_accelerator(item, "activate", 
+				   summaryview->popupfactory->accel_group, 
+				   GDK_0, GDK_CONTROL_MASK,
+				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
 
 	/* create pixmap/label menu items */
 	for (i = 0; i < N_COLOR_LABELS; i++) {
-		item = colorlabel_create_check_color_menu_item(i, refresh);
+		item = colorlabel_create_check_color_menu_item(
+			i, refresh, SUMMARY_COLORMENU);
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		g_signal_connect(G_OBJECT(item), "activate",
 				 G_CALLBACK(summary_colorlabel_menu_item_activate_cb),

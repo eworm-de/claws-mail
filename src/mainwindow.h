@@ -135,6 +135,8 @@ struct _MainWindow
 	LogWindow	*logwin;
 
 	gint	progressindicator_hook;
+	
+	GtkWidget 	*colorlabel_menu;
 };
 
 MainWindow *main_window_create		(SeparateType	 type);
@@ -149,8 +151,9 @@ void main_window_cursor_normal		(MainWindow	*mainwin);
 void main_window_lock			(MainWindow	*mainwin);
 void main_window_unlock			(MainWindow	*mainwin);
 
-void main_window_reflect_prefs_all_real		(gboolean pixmap_theme_changed);
+void main_window_reflect_prefs_all_real	(gboolean 	 pixmap_theme_changed);
 void main_window_reflect_prefs_all	(void);
+void main_window_reflect_prefs_custom_colors(MainWindow 	*mainwindow);
 void main_window_set_summary_column	(void);
 void main_window_set_folder_column	(void);
 void main_window_set_account_menu	(GList		*account_list);

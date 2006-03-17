@@ -1,3 +1,19 @@
+2006-03-17 [colin]	2.0.0cvs149
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/prefs_msg_colors.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/colorlabel.c
+	* src/gtk/colorlabel.h
+		Add a color label menu in the main menubar
+		Add (fixed) accels Ctrl-{0-7} to change the color
+		They have to be fixed because the menu's dynamic,
+		the items are complex widgets, hence we can't use
+		a GtkItemFactory.
+
+
 2006-03-17 [wwp]	2.0.0cvs148
 
 	* src/compose.c
