@@ -1,3 +1,10 @@
+2006-03-17 [paul]	2.0.0cvs145
+
+	* src/main.c
+		addressbook_read_file() was called twice
+	* src/textview.c
+		X-Mailer highlighting
+
 2006-03-16 [colin]	2.0.0cvs144
 
 	* src/sourcewindow.c

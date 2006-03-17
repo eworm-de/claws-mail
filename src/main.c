@@ -496,8 +496,6 @@ int main(int argc, char *argv[])
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());
 
-	addressbook_read_file();
-
 	inc_autocheck_timer_init(mainwin);
 
 	/* ignore SIGPIPE signal for preventing sudden death of program */
