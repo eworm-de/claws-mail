@@ -1,3 +1,9 @@
+2006-03-17 [wwp]	2.0.0cvs146
+
+	* src/procmsg.c
+	* src/compose.c
+		fix for bug #908: some IMAP servers dislike \x7f char in the RMID (thanks to Colin).
+
 2006-03-17 [paul]
 
 	2.1.0-rc1 released

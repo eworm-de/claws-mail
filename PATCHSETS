@@ -1331,3 +1331,4 @@
 ( cvs diff -u -r 1.382.2.250 -r 1.382.2.251 src/compose.c;  cvs diff -u -r 1.50.2.22 -r 1.50.2.23 src/compose.h;  ) > 2.0.0cvs143.patchset
 ( cvs diff -u -r 1.9.2.16 -r 1.9.2.17 src/sourcewindow.c;  cvs diff -u -r 1.1.1.1.16.2 -r 1.1.1.1.16.3 src/sourcewindow.h;  ) > 2.0.0cvs144.patchset
 ( cvs diff -u -r 1.115.2.77 -r 1.115.2.78 src/main.c;  cvs diff -u -r 1.96.2.101 -r 1.96.2.102 src/textview.c;  ) > 2.0.0cvs145.patchset
+( cvs diff -u -r 1.150.2.58 -r 1.150.2.59 src/procmsg.c;  cvs diff -u -r 1.382.2.251 -r 1.382.2.252 src/compose.c;  ) > 2.0.0cvs146.patchset

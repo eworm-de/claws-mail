@@ -1589,9 +1589,9 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 		FolderItem *item;
 		
 		if (replymessageid != NULL)
-			tokens = g_strsplit(replymessageid, "\x7f", 0);
+			tokens = g_strsplit(replymessageid, "\t", 0);
 		else
-			tokens = g_strsplit(fwdmessageid, "\x7f", 0);
+			tokens = g_strsplit(fwdmessageid, "\t", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
 
 		/* check if queued message has valid folder and message id */

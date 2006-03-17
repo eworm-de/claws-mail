@@ -4567,7 +4567,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->replyinfo->folder);
-		fprintf(fp, "RMID:%s\x7f%d\x7f%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
+		fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
 		g_free(folderid);
 	}
 	/* Message-ID of message forwarding to */
@@ -4575,7 +4575,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
-		fprintf(fp, "FMID:%s\x7f%d\x7f%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
 		g_free(folderid);
 	}
 	fprintf(fp, "\n");
