@@ -1,3 +1,9 @@
+2006-03-17 [wwp]	2.0.0cvs147
+
+	* src/compose.c
+		fix a compilation warning (wrong return type, introduced w/ cvs143), and
+		applied code style/indentation to the modified function.
+
 2006-03-17 [wwp]	2.0.0cvs146
 
 	* src/procmsg.c

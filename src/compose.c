@@ -960,6 +960,8 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	g_return_if_fail(compose != NULL);
 	g_return_if_fail(account != NULL);
 
+/*	if (!item->prefs->do_not_sign_or_encrypt)*/
+	{
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
 
@@ -971,6 +973,7 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		if (privacy_avail && g_slist_length(privacy_avail)) {
 			privacy = (gchar *)(privacy_avail->data);
 		}
+	}
 	}
 	if (privacy != NULL) {
 		compose->privacy_system = g_strdup(privacy);
@@ -1565,8 +1568,9 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	if (compose_put_existing_to_front(msginfo)) 
+	if (compose_put_existing_to_front(msginfo)) {
 		return;
+	}
 
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
 	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
@@ -1613,17 +1617,20 @@ void compose_reedit(MsgInfo *msginfo)
 			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
 			compose->priority = param;
 		}
-	} else 
+	} else {
 		account = msginfo->folder->folder->account;
+	}
 
 	if (!account && prefs_common.reedit_account_autosel) {
                	gchar from[BUFFSIZE];
-		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
+		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")) {
 		        extract_address(from);
 		        account = account_find_from_address(from);
                 }
 	}
-        if (!account) account = cur_account;
+        if (!account) {
+        	account = cur_account;
+        }
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account, COMPOSE_REEDIT, FALSE);
@@ -1642,7 +1649,7 @@ void compose_reedit(MsgInfo *msginfo)
 	
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
-		return NULL;
+		return;
 	}
 
 	compose_extract_original_charset(compose);
@@ -1669,7 +1676,9 @@ void compose_reedit(MsgInfo *msginfo)
 		}
 	}
 	
-	if (compose_parse_header(compose, msginfo) < 0) return;
+	if (compose_parse_header(compose, msginfo) < 0) {
+		return;
+	}
 	compose_reedit_set_entry(compose, msginfo);
 
 	textview = GTK_TEXT_VIEW(compose->text);
@@ -1685,12 +1694,15 @@ void compose_reedit(MsgInfo *msginfo)
 	
 	if (procmime_msginfo_is_encrypted(msginfo)) {
 		fp = procmime_get_first_encrypted_text_content(msginfo);
-		if (fp) 
+		if (fp) {
 			compose_force_encryption(compose, account, TRUE);
-	} else
+		}
+	} else {
 		fp = procmime_get_first_text_content(msginfo);
-	if (fp == NULL)
+	}
+	if (fp == NULL) {
 		g_warning("Can't get text part\n");
+	}
 
 	if (fp != NULL) {
 		gboolean prev_autowrap = compose->autowrap;
@@ -1715,8 +1727,9 @@ void compose_reedit(MsgInfo *msginfo)
 
 	gtk_widget_grab_focus(compose->text);
 
-        if (prefs_common.auto_exteditor)
+        if (prefs_common.auto_exteditor) {
 		compose_exec_ext_editor(compose);
+	}
 	compose->modified = FALSE;
 	compose_set_title(compose);
 }
