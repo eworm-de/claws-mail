@@ -1,3 +1,10 @@
+2006-03-17 [wwp]	2.0.0cvs148
+
+	* src/compose.c
+		rollback few lines from my previous commit (those lines come from
+		a pending patch, accidentally commited, even if neutral as they are
+		commented out).
+
 2006-03-17 [wwp]	2.0.0cvs147
 
 	* src/compose.c

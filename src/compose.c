@@ -960,8 +960,6 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	g_return_if_fail(compose != NULL);
 	g_return_if_fail(account != NULL);
 
-/*	if (!item->prefs->do_not_sign_or_encrypt)*/
-	{
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
 
@@ -973,7 +971,6 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		if (privacy_avail && g_slist_length(privacy_avail)) {
 			privacy = (gchar *)(privacy_avail->data);
 		}
-	}
 	}
 	if (privacy != NULL) {
 		compose->privacy_system = g_strdup(privacy);
