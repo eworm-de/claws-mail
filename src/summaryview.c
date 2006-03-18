@@ -3835,6 +3835,8 @@ gboolean summary_execute(SummaryView *summaryview)
 
 	gtk_clist_freeze(clist);
 
+	main_window_cursor_wait(summaryview->mainwin);
+
 	if (summaryview->threaded)
 		summary_unthread_for_exec(summaryview);
 
@@ -3903,7 +3905,9 @@ gboolean summary_execute(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 	summary_unlock(summaryview);
-	
+
+	main_window_cursor_normal(summaryview->mainwin);
+
 	if (move_val < 0) 
 		summary_show(summaryview, summaryview->folder_item);
 	return TRUE;

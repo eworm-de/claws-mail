@@ -40,15 +40,16 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "procmime.h"
 #include "prefs_common.h"
 
 static void
 update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 {
 	GtkWidget *preview;
-	char *filename;
-	GdkPixbuf *pixbuf;
-	gboolean have_preview;
+	char *filename = NULL, *type = NULL;
+	GdkPixbuf *pixbuf = NULL;
+	gboolean have_preview = FALSE;
 
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
@@ -56,13 +57,19 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 	if (filename == NULL)
 		return;
 
-	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
-	have_preview = (pixbuf != NULL);
+	type = procmime_get_mime_type(filename);
+	
+	if (type && !strncmp(type, "image/", 6)) 
+		pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+	
+	g_free(type);
 	g_free (filename);
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
-	if (pixbuf)
+	if (pixbuf) {
+		have_preview = TRUE;
+		gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
 		gdk_pixbuf_unref (pixbuf);
+	}
 
 	gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
 }
