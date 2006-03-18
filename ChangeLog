@@ -1,3 +1,11 @@
+2006-03-18 [colin]	2.0.0cvs151
+
+	* src/mainwindow.c
+	* src/textview.c
+	* src/textview.h
+		Put a watch cursor in textview too when the mainwindow's
+		cursor in a watch
+
 2006-03-18 [colin]	2.0.0cvs150
 
 	* src/folder.c

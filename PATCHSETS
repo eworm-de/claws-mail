@@ -1336,3 +1336,4 @@
 ( cvs diff -u -r 1.382.2.253 -r 1.382.2.254 src/compose.c;  ) > 2.0.0cvs148.patchset
 ( cvs diff -u -r 1.274.2.102 -r 1.274.2.103 src/mainwindow.c;  cvs diff -u -r 1.39.2.14 -r 1.39.2.15 src/mainwindow.h;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_msg_colors.c;  cvs diff -u -r 1.395.2.182 -r 1.395.2.183 src/summaryview.c;  cvs diff -u -r 1.68.2.19 -r 1.68.2.20 src/summaryview.h;  cvs diff -u -r 1.2.2.11 -r 1.2.2.12 src/gtk/colorlabel.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/gtk/colorlabel.h;  ) > 2.0.0cvs149.patchset
 ( cvs diff -u -r 1.213.2.86 -r 1.213.2.87 src/folder.c;  ) > 2.0.0cvs150.patchset
+( cvs diff -u -r 1.274.2.103 -r 1.274.2.104 src/mainwindow.c;  cvs diff -u -r 1.96.2.102 -r 1.96.2.103 src/textview.c;  cvs diff -u -r 1.12.2.10 -r 1.12.2.11 src/textview.h;  ) > 2.0.0cvs151.patchset

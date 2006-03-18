@@ -102,6 +102,7 @@ static GdkColor emphasis_color = {
 
 static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
+static GdkCursor *watch_cursor= NULL;
 
 #define TEXTVIEW_STATUSBAR_PUSH(textview, str)				    \
 {	if (textview->messageview->statusbar)				    \
@@ -420,6 +421,8 @@ void textview_init(TextView *textview)
 		hand_cursor = gdk_cursor_new(GDK_HAND2);
 	if (!text_cursor)
 		text_cursor = gdk_cursor_new(GDK_XTERM);
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new(GDK_WATCH);
 
 	textview_reflect_prefs(textview);
 	textview_set_all_headers(textview, FALSE);
@@ -1736,6 +1739,22 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 	return FALSE;
 }
 
+void textview_cursor_wait(TextView *textview)
+{
+	GdkWindow *window = gtk_text_view_get_window(
+			GTK_TEXT_VIEW(textview->text),
+			GTK_TEXT_WINDOW_TEXT);
+	gdk_window_set_cursor(window, watch_cursor);
+}
+
+void textview_cursor_normal(TextView *textview)
+{
+	GdkWindow *window = gtk_text_view_get_window(
+			GTK_TEXT_VIEW(textview->text),
+			GTK_TEXT_WINDOW_TEXT);
+	gdk_window_set_cursor(window, NULL);
+}
+
 static void textview_uri_update(TextView *textview, gint x, gint y)
 {
 	GtkTextBuffer *buffer;
@@ -1794,7 +1813,11 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		
 		window = gtk_text_view_get_window(GTK_TEXT_VIEW(textview->text),
 						  GTK_TEXT_WINDOW_TEXT);
-		gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
+		if (textview->messageview->mainwin->cursor_count == 0) {
+			gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
+		} else {
+			gdk_window_set_cursor(window, watch_cursor);
+		}
 
 		TEXTVIEW_STATUSBAR_POP(textview);
 

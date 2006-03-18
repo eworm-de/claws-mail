@@ -93,13 +93,14 @@
 #include "foldersort.h"
 #include "icon_legend.h"
 #include "colorlabel.h"
+#include "textview.h"
 
 #define AC_LABEL_WIDTH	240
 
 /* list of all instantiated MainWindow */
 static GList *mainwin_list = NULL;
 
-static GdkCursor *watch_cursor;
+static GdkCursor *watch_cursor = NULL;
 
 static void main_window_menu_callback_block	(MainWindow	*mainwin);
 static void main_window_menu_callback_unblock	(MainWindow	*mainwin);
@@ -1328,9 +1329,11 @@ void main_window_update_actions_menu(MainWindow *mainwin)
 void main_window_cursor_wait(MainWindow *mainwin)
 {
 
-	if (mainwin->cursor_count == 0)
+	if (mainwin->cursor_count == 0) {
 		gdk_window_set_cursor(mainwin->window->window, watch_cursor);
-
+		textview_cursor_wait(mainwin->messageview->mimeview->textview);
+	}
+	
 	mainwin->cursor_count++;
 
 	gdk_flush();
@@ -1341,9 +1344,10 @@ void main_window_cursor_normal(MainWindow *mainwin)
 	if (mainwin->cursor_count)
 		mainwin->cursor_count--;
 
-	if (mainwin->cursor_count == 0)
+	if (mainwin->cursor_count == 0) {
 		gdk_window_set_cursor(mainwin->window->window, NULL);
-
+		textview_cursor_normal(mainwin->messageview->mimeview->textview);
+	}
 	gdk_flush();
 }
 

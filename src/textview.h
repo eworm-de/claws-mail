@@ -98,5 +98,7 @@ gboolean textview_search_string			(TextView	*textview,
 gboolean textview_search_string_backward	(TextView	*textview,
 						 const gchar	*str,
 						 gboolean	 case_sens);
+void textview_cursor_wait(TextView *textview);
+void textview_cursor_normal(TextView *textview);
 
 #endif /* __TEXTVIEW_H__ */
