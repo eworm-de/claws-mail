@@ -1527,7 +1527,8 @@ void folder_item_process_open (FolderItem *item,
 
 gint folder_item_open(FolderItem *item)
 {
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+	if (item->no_select)
+		return -1;
 
 	item->processing_pending = TRUE;
 	folder_item_process_open (item, NULL, NULL, NULL);
@@ -1543,7 +1544,9 @@ gint folder_item_close(FolderItem *item)
 	Folder *folder;
 	
 	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+
+	if (item->no_select)
+		return -1;
 
 	if (item->new_msgs) {
 		folder_item_update_freeze();
@@ -1577,7 +1580,8 @@ static MsgInfoList *get_msginfos(FolderItem *item, MsgNumberList *numlist)
 {
 	MsgInfoList *msglist = NULL;
 	Folder *folder = item->folder;
-	g_return_val_if_fail(item->no_select == FALSE, NULL);
+	if (item->no_select)
+		return NULL;
 	
 	if (folder->klass->get_msginfos != NULL)
 		msglist = folder->klass->get_msginfos(folder, item, numlist);
@@ -1624,7 +1628,8 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 		return 0;
 	if(item->folder->klass->get_flags == NULL)
 		return 0;
-	g_return_val_if_fail(item->no_select == FALSE, 0);
+	if (item->no_select)
+		return 0;
 
 	relation = g_relation_new(2);
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
@@ -1981,7 +1986,8 @@ gint folder_item_syncronize_flags(FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
 	g_return_val_if_fail(item->folder->klass != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);	
+	if (item->no_select)
+		return -1;
 
 	if (item->cache == NULL)
 		folder_item_read_cache(item);
@@ -2168,7 +2174,8 @@ MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 	MsgInfo *msginfo = NULL;
 	
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->no_select == FALSE, NULL);	
+	if (item->no_select)
+		return NULL;
 	folder = item->folder;
 	if (!item->cache)
 		folder_item_read_cache(item);
@@ -2192,7 +2199,8 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 	
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(msgid != NULL, NULL);
-	g_return_val_if_fail(item->no_select == FALSE, FALSE);
+	if (item->no_select)
+		return FALSE;
 	
 	folder = item->folder;
 	if (!item->cache)
@@ -2207,7 +2215,8 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 GSList *folder_item_get_msg_list(FolderItem *item)
 {
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->no_select == FALSE, FALSE);
+	if (item->no_select)
+		return FALSE;
 	
 	if (item->cache == 0)
 		folder_item_read_cache(item);
@@ -2260,7 +2269,8 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	folder = item->folder;
 
 	g_return_val_if_fail(folder->klass->fetch_msg != NULL, NULL);
-	g_return_val_if_fail(item->no_select == FALSE, NULL);
+	if (item->no_select)
+		return NULL;
 
 	msgfile = folder->klass->fetch_msg(folder, item, num);
 
@@ -2295,7 +2305,8 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 	MsgInfo *msginfo;
 
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->no_select == FALSE, NULL);
+	if (item->no_select)
+		return NULL;
 	
 	folder = item->folder;
 
@@ -2339,7 +2350,8 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 	gint total = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+	if (item->no_select)
+		return -1;
 
 	debug_print("fetching all messages in %s ...\n", item->path ? item->path : "(null)");
 	statusbar_print_all(_("Fetching all messages in %s ...\n"), item->path ? item->path : "(null)");
@@ -2538,7 +2550,8 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
         g_return_val_if_fail(dest != NULL, -1);
         g_return_val_if_fail(file_list != NULL, -1);
         g_return_val_if_fail(dest->folder != NULL, -1);
-	g_return_val_if_fail(dest->no_select == FALSE, -1);
+	if (dest->no_select)
+		return -1;
 
         folder = dest->folder;
 
@@ -2762,7 +2775,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	folder = dest->folder;
 
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
-	g_return_val_if_fail(dest->no_select == FALSE, -1);
+	if (dest->no_select)
+		return -1;
 
 	relation = g_relation_new(2);
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
@@ -2998,7 +3012,8 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	g_return_val_if_fail(item != NULL, -1);
 	folder = item->folder;
 	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+	if (item->no_select)
+		return -1;
 
 	if (!item->cache) folder_item_read_cache(item);
 
@@ -3021,7 +3036,8 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	g_return_val_if_fail(item != NULL, -1);
 	folder = item->folder;
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+	if (item->no_select)
+		return -1;
 	inc_lock();
 	if (!item->cache) folder_item_read_cache(item);
 
@@ -3056,7 +3072,8 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	gint result;
 
 	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->no_select == FALSE, -1);
+	if (item->no_select)
+		return -1;
 
 	folder = item->folder;
 
@@ -3093,7 +3110,8 @@ void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFla
 {
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(item->no_select == FALSE);
+	if (item->no_select)
+		return;
 	
 	if (item->folder->klass->change_flags != NULL) {
 		item->folder->klass->change_flags(item->folder, item, msginfo, newflags);
@@ -3107,7 +3125,8 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 	Folder *folder;
 
 	g_return_val_if_fail(item != NULL, FALSE);
-	g_return_val_if_fail(item->no_select == FALSE, FALSE);
+	if (item->no_select)
+		return FALSE;
 
 	folder = item->folder;
 
@@ -3536,7 +3555,10 @@ void folder_item_apply_processing(FolderItem *item)
 	guint total = 0, curmsg = 0;
 
 	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->no_select == FALSE);	
+
+	if (item->no_select)
+	       return;
+
 	processing_list = item->prefs->processing;
 
 	if (!pre_global_processing && !processing_list
