@@ -1752,7 +1752,7 @@ void textview_cursor_normal(TextView *textview)
 	GdkWindow *window = gtk_text_view_get_window(
 			GTK_TEXT_VIEW(textview->text),
 			GTK_TEXT_WINDOW_TEXT);
-	gdk_window_set_cursor(window, NULL);
+	gdk_window_set_cursor(window, text_cursor);
 }
 
 static void textview_uri_update(TextView *textview, gint x, gint y)
