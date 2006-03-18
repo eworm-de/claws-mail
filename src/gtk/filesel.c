@@ -54,9 +54,10 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
 
-	if (filename == NULL)
+	if (filename == NULL) {
+		gtk_file_chooser_set_preview_widget_active (file_chooser, FALSE);
 		return;
-
+	}
 	type = procmime_get_mime_type(filename);
 	
 	if (type && !strncmp(type, "image/", 6)) 
