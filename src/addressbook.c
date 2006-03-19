@@ -682,18 +682,34 @@ static void addressbook_size_allocate_cb(GtkWidget *widget,
 	prefs_common.addressbookwin_height = allocation->height;
 }
 
+static gint sort_column_number = 0;
+
 static gint list_case_sort(
 	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
 {
-	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
-	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
+	GtkCListRow *row1 = (GtkCListRow *) ptr1;
+	GtkCListRow *row2 = (GtkCListRow *) ptr2;
 	gchar *name1 = NULL, *name2 = NULL;
+	AddrItemObject *aio1 = ((GtkCListRow *)ptr1)->data;
+	AddrItemObject *aio2 = ((GtkCListRow *)ptr2)->data;
 
-	if( cell1 ) name1 = cell1->u.text;
-	if( cell2 ) name2 = cell2->u.text;
-	if( ! name1 ) return ( name2 != NULL );
-	if( ! name2 ) return -1;
-	return strcasecmp( name1, name2 );
+	if( aio1->type == aio2->type ) {
+		if( row1 ) 
+			name1 = GTK_CELL_TEXT (row1->cell[sort_column_number])->text;
+		if( row2 ) 
+			name2 = GTK_CELL_TEXT (row2->cell[sort_column_number])->text;
+		if( ! name1 ) return ( name2 != NULL );
+		if( ! name2 ) return -1;
+		return strcasecmp( name1, name2 );
+	} else {
+		/* Order groups before person */
+		if( aio1->type == ITEMTYPE_GROUP ) {
+			return -1;
+		} else if( aio2->type == ITEMTYPE_GROUP ) {
+			return 1;
+		}
+		return 0;
+	}
 }
 
 static void addressbook_sort_list(GtkCList *clist, const gint col,
@@ -702,6 +718,7 @@ static void addressbook_sort_list(GtkCList *clist, const gint col,
 	gint pos;
 	GtkWidget *hbox, *label, *arrow;
 
+	sort_column_number = col;
 	gtk_clist_set_compare_func(clist, list_case_sort);
 	gtk_clist_set_sort_type(clist, sort_type);
 	gtk_clist_set_sort_column(clist, col);	
