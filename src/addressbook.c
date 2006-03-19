@@ -308,9 +308,6 @@ static gboolean addressbook_entry_key_pressed	(GtkWidget	*widget,
 static gint addressbook_treenode_compare_func	(GtkCList	*clist,
 						 gconstpointer	 ptr1,
 						 gconstpointer	 ptr2);
-static gint addressbook_list_compare_func	(GtkCList	*clist,
-						 gconstpointer	 ptr1,
-						 gconstpointer	 ptr2);
 static void addressbook_folder_load_one_person	(GtkCTree *clist, 
 						 ItemPerson *person,  
 						 AddressTypeControlItem *atci, 
@@ -685,13 +682,27 @@ static void addressbook_size_allocate_cb(GtkWidget *widget,
 	prefs_common.addressbookwin_height = allocation->height;
 }
 
+static gint list_case_sort(
+	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
+{
+	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
+	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
+	gchar *name1 = NULL, *name2 = NULL;
+
+	if( cell1 ) name1 = cell1->u.text;
+	if( cell2 ) name2 = cell2->u.text;
+	if( ! name1 ) return ( name2 != NULL );
+	if( ! name2 ) return -1;
+	return strcasecmp( name1, name2 );
+}
+
 static void addressbook_sort_list(GtkCList *clist, const gint col,
 		const GtkSortType sort_type)
 {
 	gint pos;
 	GtkWidget *hbox, *label, *arrow;
 
-	gtk_clist_set_compare_func(clist, NULL);
+	gtk_clist_set_compare_func(clist, list_case_sort);
 	gtk_clist_set_sort_type(clist, sort_type);
 	gtk_clist_set_sort_column(clist, col);	
 
@@ -893,9 +904,8 @@ static void addressbook_create(void)
 				   COL_NAME_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(clist), COL_ADDRESS,
 				   COL_ADDRESS_WIDTH);
-	gtk_clist_set_compare_func(GTK_CLIST(clist),
-				   addressbook_list_compare_func);
 
+	addressbook_sort_list(clist, COL_NAME, GTK_SORT_ASCENDING);
 	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
 		"clicked", G_CALLBACK(addressbook_name_clicked), clist);
 	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_ADDRESS].button),
@@ -3648,38 +3658,6 @@ static gint addressbook_treenode_compare_func(
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
 	return g_utf8_collate( name1, name2 );
-}
-
-/*
-* Comparison using object names and types.
-*/
-static gint addressbook_list_compare_func(
-	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
-{
-	AddrItemObject *aio1 = ((GtkCListRow *)ptr1)->data;
-	AddrItemObject *aio2 = ((GtkCListRow *)ptr2)->data;
-	gchar *name1 = NULL, *name2 = NULL;
-
-	/* Order by cell contents */
-	name1 = ADDRITEM_NAME( aio1 );
-	name2 = ADDRITEM_NAME( aio2 );
-
-	if( aio1->type == aio2->type ) {
-		/* Order by name */
-		if( ! name1 ) return ( name2 != NULL );
-		if( ! name2 ) return -1;
-		return g_utf8_collate( name1, name2 );
-	}
-	else {
-		/* Order groups before person */
-		if( aio1->type == ITEMTYPE_GROUP ) {
-			return -1;
-		}
-		else if( aio2->type == ITEMTYPE_GROUP ) {
-			return 1;
-		}
-		return 0;
-	}
 }
 
 static void addressbook_new_book_cb( gpointer data, guint action, GtkWidget *widget ) {

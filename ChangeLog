@@ -1,3 +1,9 @@
+2006-03-19 [colin]	2.0.0cvs156
+
+	* src/addressbook.c
+		- Sort case-unsensitive
+		- Put the sort arrow at opening too
+
 2006-03-19 [wwp]	2.0.0cvs155
 
 	* src/addressbook.c

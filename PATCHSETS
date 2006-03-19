@@ -1341,3 +1341,4 @@
 ( cvs diff -u -r 1.2.2.23 -r 1.2.2.24 src/gtk/filesel.c;  ) > 2.0.0cvs153.patchset
 ( cvs diff -u -r 1.96.2.103 -r 1.96.2.104 src/textview.c;  ) > 2.0.0cvs154.patchset
 ( cvs diff -u -r 1.60.2.50 -r 1.60.2.51 src/addressbook.c;  ) > 2.0.0cvs155.patchset
+( cvs diff -u -r 1.60.2.51 -r 1.60.2.52 src/addressbook.c;  ) > 2.0.0cvs156.patchset
