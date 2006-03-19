@@ -683,6 +683,7 @@ static void addressbook_size_allocate_cb(GtkWidget *widget,
 }
 
 static gint sort_column_number = 0;
+static GtkSortType sort_column_type = GTK_SORT_ASCENDING;
 
 static gint list_case_sort(
 	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
@@ -704,9 +705,9 @@ static gint list_case_sort(
 	} else {
 		/* Order groups before person */
 		if( aio1->type == ITEMTYPE_GROUP ) {
-			return -1;
+			return (sort_column_type==GTK_SORT_ASCENDING) ? -1:+1;
 		} else if( aio2->type == ITEMTYPE_GROUP ) {
-			return 1;
+			return (sort_column_type==GTK_SORT_ASCENDING) ? +1:-1;
 		}
 		return 0;
 	}
@@ -719,6 +720,7 @@ static void addressbook_sort_list(GtkCList *clist, const gint col,
 	GtkWidget *hbox, *label, *arrow;
 
 	sort_column_number = col;
+	sort_column_type = sort_type;
 	gtk_clist_set_compare_func(clist, list_case_sort);
 	gtk_clist_set_sort_type(clist, sort_type);
 	gtk_clist_set_sort_column(clist, col);	

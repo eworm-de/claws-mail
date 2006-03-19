@@ -1343,3 +1343,4 @@
 ( cvs diff -u -r 1.60.2.50 -r 1.60.2.51 src/addressbook.c;  ) > 2.0.0cvs155.patchset
 ( cvs diff -u -r 1.60.2.51 -r 1.60.2.52 src/addressbook.c;  ) > 2.0.0cvs156.patchset
 ( cvs diff -u -r 1.60.2.52 -r 1.60.2.53 src/addressbook.c;  ) > 2.0.0cvs157.patchset
+( cvs diff -u -r 1.60.2.53 -r 1.60.2.54 src/addressbook.c;  ) > 2.0.0cvs158.patchset
