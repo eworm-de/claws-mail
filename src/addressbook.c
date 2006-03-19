@@ -114,6 +114,10 @@ typedef enum
 	N_LIST_COLS	= 3
 } AddressListColumns;
 
+static gchar *list_titles[] = { N_("Name"),
+                                N_("Email Address"),
+                                N_("Remarks") };
+
 #define COL_NAME_WIDTH		164
 #define COL_ADDRESS_WIDTH	156
 
@@ -681,6 +685,64 @@ static void addressbook_size_allocate_cb(GtkWidget *widget,
 	prefs_common.addressbookwin_height = allocation->height;
 }
 
+static void addressbook_sort_list(GtkCList *clist, const gint col,
+		const GtkSortType sort_type)
+{
+	gint pos;
+	GtkWidget *hbox, *label, *arrow;
+
+	gtk_clist_set_compare_func(clist, NULL);
+	gtk_clist_set_sort_type(clist, sort_type);
+	gtk_clist_set_sort_column(clist, col);	
+
+	gtk_clist_freeze(clist);
+	gtk_clist_sort(clist);
+	
+	for(pos = 0 ; pos < N_LIST_COLS ; pos++) {
+		hbox = gtk_hbox_new(FALSE, 4);
+		label = gtk_label_new(list_titles[pos]);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+		
+		if(pos == col) {
+			arrow = gtk_arrow_new(sort_type == GTK_SORT_ASCENDING ?
+				GTK_ARROW_DOWN : GTK_ARROW_UP, GTK_SHADOW_IN);
+			gtk_box_pack_end(GTK_BOX(hbox), arrow, FALSE, FALSE, 0);
+		}
+		
+		gtk_widget_show_all(hbox);
+		gtk_clist_set_column_widget(clist, pos, hbox);
+	}
+	
+	gtk_clist_thaw(clist);	
+}
+
+static void addressbook_name_clicked(GtkWidget *button, GtkCList *clist)
+{
+	static GtkSortType sort_type = GTK_SORT_ASCENDING;
+	
+	sort_type = (sort_type == GTK_SORT_ASCENDING) ? GTK_SORT_DESCENDING :
+			GTK_SORT_ASCENDING;
+	addressbook_sort_list(clist, COL_NAME, sort_type);
+}
+
+static void addressbook_address_clicked(GtkWidget *button, GtkCList *clist)
+{
+	static GtkSortType sort_type = GTK_SORT_ASCENDING;
+
+	sort_type = (sort_type == GTK_SORT_ASCENDING) ? GTK_SORT_DESCENDING :
+			GTK_SORT_ASCENDING;
+	addressbook_sort_list(clist, COL_ADDRESS, sort_type);
+}
+
+static void addressbook_remarks_clicked(GtkWidget *button, GtkCList *clist)
+{
+	static GtkSortType sort_type = GTK_SORT_ASCENDING;
+
+	sort_type = (sort_type == GTK_SORT_ASCENDING) ? GTK_SORT_DESCENDING :
+			GTK_SORT_ASCENDING;
+	addressbook_sort_list(clist, COL_REMARKS, sort_type);
+}
+
 /*
 * Create the address book widgets. The address book contains two CTree widgets: the
 * address index tree on the left and the address list on the right.
@@ -731,7 +793,6 @@ static void addressbook_create(void)
 	GList *nodeIf;
 
 	gchar *index_titles[N_INDEX_COLS];
-	gchar *list_titles[N_LIST_COLS];
 	gchar *text;
 	gint i;
 
@@ -740,9 +801,6 @@ static void addressbook_create(void)
 	debug_print("Creating addressbook window...\n");
 
 	index_titles[COL_SOURCES] = _("Sources");
-	list_titles[COL_NAME]    = _("Name");
-	list_titles[COL_ADDRESS] = _("Email Address");
-	list_titles[COL_REMARKS] = _("Remarks");
 
 	/* Address book window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -838,6 +896,13 @@ static void addressbook_create(void)
 	gtk_clist_set_compare_func(GTK_CLIST(clist),
 				   addressbook_list_compare_func);
 
+	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
+		"clicked", G_CALLBACK(addressbook_name_clicked), clist);
+	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_ADDRESS].button),
+		"clicked", G_CALLBACK(addressbook_address_clicked), clist);
+	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_REMARKS].button),
+		"clicked", G_CALLBACK(addressbook_remarks_clicked), clist);
+	
 	for (i = 0; i < N_LIST_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button,
 				       GTK_CAN_FOCUS);
@@ -1569,6 +1634,8 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 			addrindex_ds_set_access_flag( ds, &tVal );
 			gtk_ctree_expand( ctree, node );
 		}
+	} else {
+		addressbook_set_clist(NULL, TRUE);
 	}
 
 	/* Update address list */
