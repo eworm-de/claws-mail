@@ -1,3 +1,9 @@
+2006-03-20 [colin]	2.0.0cvs159
+
+	* src/summaryview.c
+		Don't reload summaryview after an execute with no
+		move action
+
 2006-03-19 [colin]	2.0.0cvs158
 
 	* src/addressbook.c

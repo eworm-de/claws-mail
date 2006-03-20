@@ -3929,8 +3929,9 @@ static gint summary_execute_move(SummaryView *summaryview)
 			procmsg_msginfo_free((MsgInfo *)cur->data);
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
+		return val;
 	}
-	return val;
+	return 0;
 }
 
 static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
