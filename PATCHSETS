@@ -1345,3 +1345,4 @@
 ( cvs diff -u -r 1.60.2.52 -r 1.60.2.53 src/addressbook.c;  ) > 2.0.0cvs157.patchset
 ( cvs diff -u -r 1.60.2.53 -r 1.60.2.54 src/addressbook.c;  ) > 2.0.0cvs158.patchset
 ( cvs diff -u -r 1.395.2.184 -r 1.395.2.185 src/summaryview.c;  ) > 2.0.0cvs159.patchset
+( cvs diff -u -r 1.1.4.31 -r 1.1.4.32 src/etpan/imap-thread.c;  ) > 2.0.0cvs160.patchset

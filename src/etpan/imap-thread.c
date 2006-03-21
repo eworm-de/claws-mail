@@ -331,7 +331,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	chashdatum key;
 	chashdatum value;
 	mailimap * imap;
-	unsigned char *certificate;
+	unsigned char *certificate = NULL;
 	int cert_len;
 
 	imap = mailimap_new(0, NULL);
