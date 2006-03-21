@@ -5374,7 +5374,7 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 }
 
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, gboolean wrap,
-				  GdkAtom clip);
+				  GdkAtom clip, GtkTextIter *insert_place);
 
 #define BLOCK_WRAP() {							\
 	prev_autowrap = compose->autowrap;				\
@@ -5437,10 +5437,20 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 	}
 #endif
 	if (event->button == 2) {
+		GtkTextIter iter;
+		gint x, y;
 		BLOCK_WRAP();
-		entry_paste_clipboard(compose, compose->focused_editable, 
+		
+		/* get the middle-click position to paste at the correct place */
+		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text),
+			GTK_TEXT_WINDOW_TEXT, event->x, event->y,
+			&x, &y);
+		gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW(text),
+			&iter, x, y);
+		
+		entry_paste_clipboard(compose, text, 
 				prefs_common.linewrap_pastes,
-				GDK_SELECTION_PRIMARY);
+				GDK_SELECTION_PRIMARY, &iter);
 		UNBLOCK_WRAP();
 		return TRUE;
 	}
@@ -7572,7 +7582,7 @@ static void entry_copy_clipboard(GtkWidget *entry)
 }
 
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, 
-				  gboolean wrap, GdkAtom clip)
+				  gboolean wrap, GdkAtom clip, GtkTextIter *insert_place)
 {
 	if (GTK_IS_TEXT_VIEW(entry)) {
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry));
@@ -7585,19 +7595,32 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 		if (contents == NULL)
 			return;
 
-		gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
-		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
+		/* we shouldn't delete the selection when middle-click-pasting, or we
+		 * can't mid-click-paste our own selection */
+		if (clip != GDK_SELECTION_PRIMARY)
+			gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
 		
-		start = gtk_text_iter_get_offset(&start_iter);
-
-		gtk_text_buffer_insert(buffer, &start_iter, contents, strlen(contents));
+		if (insert_place == NULL) {
+			/* if insert_place isn't specified, insert at the cursor.
+			 * used for Ctrl-V pasting */
+			gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
+			start = gtk_text_iter_get_offset(&start_iter);
+			gtk_text_buffer_insert(buffer, &start_iter, contents, strlen(contents));
+		} else {
+			/* if insert_place is specified, paste here.
+			 * used for mid-click-pasting */
+			start = gtk_text_iter_get_offset(insert_place);
+			gtk_text_buffer_insert(buffer, insert_place, contents, strlen(contents));
+		}
 		
 		if (!wrap) {
+			/* paste unwrapped: mark the paste so it's not wrapped later */
 			end = start + strlen(contents);
 			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
 			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
 			gtk_text_buffer_apply_tag_by_name(buffer, "no_wrap", &start_iter, &end_iter);
 		} else if (wrap && clip == GDK_SELECTION_PRIMARY) {
+			/* rewrap paragraph now (after a mid-click-paste) */
 			mark_start = gtk_text_buffer_get_insert(buffer);
 			gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
 			gtk_text_iter_backward_char(&start_iter);
@@ -7651,7 +7674,7 @@ static void compose_paste_cb(Compose *compose)
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
 		entry_paste_clipboard(compose, compose->focused_editable, 
 				prefs_common.linewrap_pastes,
-				GDK_SELECTION_CLIPBOARD);
+				GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
 }
 
@@ -7673,7 +7696,7 @@ static void compose_paste_as_quote_cb(Compose *compose)
 		prefs_common.linewrap_quote = prefs_common.linewrap_pastes;
 		entry_paste_clipboard(compose, compose->focused_editable, 
 				prefs_common.linewrap_pastes,
-				GDK_SELECTION_CLIPBOARD);
+				GDK_SELECTION_CLIPBOARD, NULL);
 		prefs_common.linewrap_quote = wrap_quote;
 	}
 }
@@ -7686,7 +7709,7 @@ static void compose_paste_no_wrap_cb(Compose *compose)
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
 		entry_paste_clipboard(compose, compose->focused_editable, FALSE,
-			GDK_SELECTION_CLIPBOARD);
+			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
 }
 
@@ -7698,7 +7721,7 @@ static void compose_paste_wrap_cb(Compose *compose)
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
 		entry_paste_clipboard(compose, compose->focused_editable, TRUE,
-			GDK_SELECTION_CLIPBOARD);
+			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
 }
 

@@ -4241,7 +4241,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	atci->showInTree = TRUE;
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
-	atci->displayName = _( "LDAP Server" );
+	atci->displayName = _( "LDAP servers" );
 	atci->iconXpm = ldapxpm;
 	atci->maskXpm = ldapxpmmask;
 	atci->iconXpmOpen = ldapxpm;

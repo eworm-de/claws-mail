@@ -1,3 +1,13 @@
+2006-03-21 [colin]	2.0.0cvs161
+
+	* src/compose.c
+		Fix middle-click pasting (insert at click
+		position instead of cursor position, don't
+		remove existing selection and allow pasting
+		our own selection)
+	* src/addressbook.c
+		"LDAP Server" -> "LDAP servers"
+
 2006-03-21 [wwp]	2.0.0cvs160
 
 	* src/etpan/imap-thread.c
