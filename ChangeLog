@@ -1,3 +1,14 @@
+2006-03-22 [paul]	2.0.0cvs162
+
+	* src/editgroup.c
+		replace '<-' and '->' buttons with GTK_STOCK graphical
+		buttons
+	* src/summary_search.c
+		don't offer '...' for translation
+		add a tooltip to advanced search '...' button
+	* src/gtk/quicksearch.c
+		don't offer '...' for translation
+
 2006-03-21 [colin]	2.0.0cvs161
 
 	* src/compose.c

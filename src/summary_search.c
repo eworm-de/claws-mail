@@ -163,6 +163,7 @@ static void summary_search_create(void)
 	GtkWidget *next_btn;
 	GtkWidget *close_btn;
 	GtkWidget *stop_btn;
+	GtkTooltips *tooltip;
 
 	gboolean is_searching = FALSE;
 
@@ -239,12 +240,15 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(adv_condition_entry), "activate",
 			 G_CALLBACK(adv_condition_activated), NULL);
 
-	adv_condition_btn = gtk_button_new_with_label (_(" ... "));
+	adv_condition_btn = gtk_button_new_with_label(" ... ");
 	gtk_widget_show (adv_condition_btn);
 	gtk_table_attach (GTK_TABLE (table1), adv_condition_btn, 2, 3, 4, 5,
 			  GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT (adv_condition_btn), "clicked",
 			 G_CALLBACK(adv_condition_btn_clicked), search_window.window);
+	tooltip = gtk_tooltips_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltip), adv_condition_btn,
+			     _("Edit search criteria"), NULL);
 
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);
@@ -687,7 +691,7 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 	if (matchers != NULL)
 		matcherlist_free(matchers);
 };
-		
+
 static void from_activated(void)
 {
 	gtk_widget_grab_focus(search_window.to_entry);

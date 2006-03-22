@@ -104,7 +104,7 @@ static void edit_group_ok(GtkWidget *widget, gboolean *cancelled) {
 	}
 	g_free( sName );
 }
-	
+
 static void edit_group_cancel(GtkWidget *widget, gboolean *cancelled) {
 	*cancelled = TRUE;
 	gtk_main_quit();
@@ -150,7 +150,7 @@ static gint edit_group_clist_add_email( GtkCList *clist, ItemEMail *email ) {
 	}
 	text[ GROUP_COL_EMAIL   ] = email->address;
 	text[ GROUP_COL_REMARKS ] = email->remarks;
-	
+
 	row = gtk_clist_append( clist, text );
 	gtk_clist_set_row_data( clist, row, email );
 	return row;
@@ -217,7 +217,7 @@ static void edit_group_to_avail( GtkWidget *widget, gpointer data ) {
 
 static gboolean edit_group_list_group_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
-	
+
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_avail( NULL, NULL );
@@ -228,7 +228,7 @@ static gboolean edit_group_list_group_button( GtkCList *clist, GdkEventButton *e
 
 static gboolean edit_group_list_avail_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
-	
+
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_group( NULL, NULL );
@@ -285,7 +285,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Group Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_group_delete_event),
 			 cancelled);
@@ -332,7 +332,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Addresses in Group"));
 	gtk_box_pack_start(GTK_BOX(hboxh), label, TRUE, TRUE, 0);
-	buttonAvail = gtk_button_new_with_label( _( " -> " ) );
+	buttonAvail = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	gtk_box_pack_end(GTK_BOX(hboxh), buttonAvail, FALSE, FALSE, 0);
 
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
@@ -359,7 +359,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	hboxh = gtk_hbox_new( FALSE, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hboxh), 4 );
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
-	buttonGroup = gtk_button_new_with_label( _( " <- " ) );
+	buttonGroup = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_box_pack_start(GTK_BOX(hboxh), buttonGroup, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Available Addresses"));
 	gtk_box_pack_end(GTK_BOX(hboxh), label, TRUE, TRUE, 0);

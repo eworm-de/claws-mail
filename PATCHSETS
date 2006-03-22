@@ -1347,3 +1347,4 @@
 ( cvs diff -u -r 1.395.2.184 -r 1.395.2.185 src/summaryview.c;  ) > 2.0.0cvs159.patchset
 ( cvs diff -u -r 1.1.4.31 -r 1.1.4.32 src/etpan/imap-thread.c;  ) > 2.0.0cvs160.patchset
 ( cvs diff -u -r 1.382.2.254 -r 1.382.2.255 src/compose.c;  cvs diff -u -r 1.60.2.54 -r 1.60.2.55 src/addressbook.c;  ) > 2.0.0cvs161.patchset
+( cvs diff -u -r 1.11.2.11 -r 1.11.2.12 src/editgroup.c;  cvs diff -u -r 1.15.2.25 -r 1.15.2.26 src/summary_search.c;  cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/gtk/quicksearch.c;  ) > 2.0.0cvs162.patchset

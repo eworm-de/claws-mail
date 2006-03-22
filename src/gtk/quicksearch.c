@@ -116,10 +116,10 @@ static void update_extended_buttons (QuickSearch *quicksearch)
 {
 	GtkWidget *expr_btn = quicksearch->search_condition_expression;
 	GtkWidget *ext_btn = quicksearch->search_description;
-	
+
 	g_return_if_fail(expr_btn != NULL);
 	g_return_if_fail(ext_btn != NULL);
-		
+
 	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED) {
 		gtk_widget_show(expr_btn);
 		gtk_widget_show(ext_btn);
@@ -149,8 +149,8 @@ static void searchbar_run(QuickSearch *quicksearch)
 		prefs_common.summary_quicksearch_history =
 			add_history(prefs_common.summary_quicksearch_history,
 					search_string);
-		gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry), 
-			prefs_common.summary_quicksearch_history);			
+		gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry),
+			prefs_common.summary_quicksearch_history);
 	}
 
 	prepare_matcher(quicksearch);
@@ -177,7 +177,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	}
 
-	return FALSE; 		
+	return FALSE;
 }
 
 static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
@@ -204,11 +204,11 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-	
-	prefs_common.summary_quicksearch_recurse = checked; 
+
+	prefs_common.summary_quicksearch_recurse = checked;
 
 	/* reselect the search type */
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
 				    prefs_common.summary_quicksearch_type);
 
 	prepare_matcher(quicksearch);
@@ -224,11 +224,11 @@ static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-	
-	prefs_common.summary_quicksearch_sticky = checked; 
+
+	prefs_common.summary_quicksearch_sticky = checked;
 
 	/* reselect the search type */
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
 				    prefs_common.summary_quicksearch_type);
 
 	return TRUE;
@@ -236,7 +236,7 @@ static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
 
 /*
  * Strings describing how to use Extended Search
- * 
+ *
  * When adding new lines, remember to put 2 strings for each line
  */
 static gchar *search_descr_strings[] = {
@@ -282,12 +282,12 @@ static gchar *search_descr_strings[] = {
 	"%",	 N_("case sensitive search"),
 	"",	 "" ,
 	" ",	 N_("all filtering expressions are allowed"),
-	NULL,	 NULL 
+	NULL,	 NULL
 };
- 
+
 static DescriptionWindow search_descr = {
 	NULL,
-	NULL, 
+	NULL,
 	2,
 	N_("Extended Search"),
 	N_("Extended Search allows the user to define criteria that messages must "
@@ -295,7 +295,7 @@ static DescriptionWindow search_descr = {
 	   "The following symbols can be used:"),
 	search_descr_strings
 };
-	
+
 static void search_description_cb(GtkWidget *widget)
 {
 	description_window_create(&search_descr);
@@ -309,7 +309,7 @@ static gboolean clear_search_cb(GtkMenuItem *widget, gpointer data)
 		return TRUE;
 
 	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
-	
+
 	return TRUE;
 };
 
@@ -360,7 +360,7 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 
 	return TRUE;
 };
-		
+
 QuickSearch *quicksearch_new()
 {
 	QuickSearch *quicksearch;
@@ -404,39 +404,39 @@ QuickSearch *quicksearch_new()
 			 quicksearch);
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), gtk_separator_menu_item_new());
-	
+
 	menuitem = gtk_check_menu_item_new_with_label(_("Recursive"));
 	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
-	
+
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 					prefs_common.summary_quicksearch_recurse);
-	
+
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_recursive_changed),
 			 quicksearch);
 
 	menuitem = gtk_check_menu_item_new_with_label(_("Sticky"));
 	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
-	
+
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 					prefs_common.summary_quicksearch_sticky);
-	
+
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_sticky_changed),
 			 quicksearch);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
-	
+
 	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
-	
+
 	gtk_widget_show(search_type);
-	
+
 	search_string_entry = gtk_combo_new();
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string_entry, FALSE, FALSE, 2);
 	gtk_combo_set_value_in_list(GTK_COMBO(search_string_entry), FALSE, TRUE);
 	gtk_combo_set_case_sensitive(GTK_COMBO(search_string_entry), TRUE);
-	if (prefs_common.summary_quicksearch_history) 
-		gtk_combo_set_popdown_strings(GTK_COMBO(search_string_entry), 
+	if (prefs_common.summary_quicksearch_history)
+		gtk_combo_set_popdown_strings(GTK_COMBO(search_string_entry),
 			prefs_common.summary_quicksearch_history);
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(search_string_entry)->entry), "");
 	gtk_widget_show(search_string_entry);
@@ -450,7 +450,7 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(clear_search_cb), quicksearch);
 	gtk_widget_show(clear_search);
 
-	search_condition_expression = gtk_button_new_with_label (_(" ... "));
+	search_condition_expression = gtk_button_new_with_label(" ... ");
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_condition_expression,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
@@ -469,10 +469,10 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(search_description_cb), NULL);
 	gtk_widget_show(search_description);
 
-	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);				
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);
 	gtk_widget_show(search_hbox);
-	
-	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry), 
+
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
 			   "key_press_event",
 			   G_CALLBACK(searchbar_pressed),
 			   quicksearch);
@@ -497,7 +497,7 @@ QuickSearch *quicksearch_new()
 	quicksearch->clear_search = clear_search;
 
 	update_extended_buttons(quicksearch);
-	
+
 	return quicksearch;
 }
 
@@ -535,7 +535,7 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 
 	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
-		quicksearch->callback(quicksearch, quicksearch->callback_data);	
+		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
 }
 
@@ -557,7 +557,7 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
 		yellow_initialised &= gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &black, FALSE, TRUE);
-		
+
 	}
 	quicksearch->active = active;
 
@@ -565,22 +565,22 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
 		if (yellow_initialised)
 			gtk_widget_modify_base(
-				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_COMBO(quicksearch->search_string_entry)->entry,
 				GTK_STATE_NORMAL, &yellow);
 			gtk_widget_modify_text(
-				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_COMBO(quicksearch->search_string_entry)->entry,
 				GTK_STATE_NORMAL, &black);
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
 		if (yellow_initialised)
 			gtk_widget_modify_base(
-				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_COMBO(quicksearch->search_string_entry)->entry,
 				GTK_STATE_NORMAL, NULL);
 			gtk_widget_modify_text(
-				GTK_COMBO(quicksearch->search_string_entry)->entry, 
+				GTK_COMBO(quicksearch->search_string_entry)->entry,
 				GTK_STATE_NORMAL, NULL);
 	}
-	
+
 	if (!active) {
 		quicksearch_reset_cur_folder_item(quicksearch);
 	}
@@ -619,12 +619,12 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		break;
 	}
 	quicksearch->matching = TRUE;
-	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && 
+	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED &&
 	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
 		result = TRUE;
-	else if ((quicksearch->matcher_list != NULL) && 
-	         matcherlist_match(quicksearch->matcher_list, msginfo)) 
+	else if ((quicksearch->matcher_list != NULL) &&
+	         matcherlist_match(quicksearch->matcher_list, msginfo))
 		result = TRUE;
 
 	quicksearch->matching = FALSE;
@@ -648,7 +648,7 @@ gchar *expand_search_string(const gchar *search_string)
 	/* list of allowed pattern abbreviations */
 	struct {
 		gchar		*abbreviated;	/* abbreviation */
-		gchar		*command;	/* actual matcher command */ 
+		gchar		*command;	/* actual matcher command */
 		gint		numparams;	/* number of params for cmd */
 		gboolean	qualifier;	/* do we append regexpcase */
 		gboolean	quotes;		/* do we need quotes */
@@ -686,7 +686,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "T",	"marked",			0,	FALSE,	FALSE },
 		{ "U",	"unread",			0,	FALSE,	FALSE },
 		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
-		{ "X",  "test",				1,	FALSE,  FALSE }, 
+		{ "X",  "test",				1,	FALSE,  FALSE },
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
@@ -804,7 +804,7 @@ gchar *expand_search_string(const gchar *search_string)
 
 	g_free(copy_str);
 
-	/* return search string if no match is found to allow 
+	/* return search string if no match is found to allow
 	   all available filtering expressions in quicksearch */
 	if (matcherstr->len > 0) returnstr = matcherstr->str;
 	else returnstr = g_strdup(search_string);
@@ -818,7 +818,7 @@ static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run)
 	quicksearch->running = run;
 }
 
-gboolean quicksearch_is_running(QuickSearch *quicksearch) 
+gboolean quicksearch_is_running(QuickSearch *quicksearch)
 {
 	return quicksearch->running;
 }
@@ -831,10 +831,10 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 	char *begin = str;
 	char *end = NULL;
 	char *new = NULL;
-	
+
 	if (mod == GDK_SHIFT_MASK)
 		val = toupper(val);
-	
+
 	if (curpos < strlen(str)-1) {
 		end = g_strdup(str+curpos);
 		*(str+curpos) = '\0';
@@ -848,17 +848,17 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 	g_free(str);
 	g_free(new);
 	gtk_editable_set_position(GTK_EDITABLE(entry), curpos+1);
-	
+
 }
 
-static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch, 
+static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 				 FolderItem *src)
 {
 	GSList *msglist = folder_item_get_msg_list(src);
 	GSList *cur;
 	gboolean result = FALSE;
 	gint num = 0, total = src->total_msgs;
-	statusbar_print_all(_("Searching in %s... \n"), 
+	statusbar_print_all(_("Searching in %s... \n"),
 		src->path ? src->path : "(null)");
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		MsgInfo *msg = (MsgInfo *)cur->data;
@@ -880,13 +880,13 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	return result;
 }
 
-void quicksearch_search_subfolders(QuickSearch *quicksearch, 
+void quicksearch_search_subfolders(QuickSearch *quicksearch,
 				   FolderView *folderview,
 				   FolderItem *folder_item)
 {
 	FolderItem *cur = NULL;
 	GNode *node = folder_item->node->children;
-	
+
 	if (!prefs_common.summary_quicksearch_recurse)
 		return;
 
@@ -911,9 +911,9 @@ static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
 				    FolderItem *folder_item)
 {
 	FolderItem *cur = NULL;
-	GNode *node = (folder_item && folder_item->node) ? 
+	GNode *node = (folder_item && folder_item->node) ?
 			folder_item->node->children : NULL;
-	
+
 	for (; node != NULL; node = node->next) {
 		cur = FOLDER_ITEM(node->data);
 		folderview_update_search_icon(cur, FALSE);
@@ -926,8 +926,8 @@ static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
 void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
 {
 	if (quicksearch->root_folder_item)
-		quicksearch_reset_folder_items(quicksearch, 
+		quicksearch_reset_folder_items(quicksearch,
 					       quicksearch->root_folder_item);
-	
+
 	quicksearch->root_folder_item = NULL;
 }
