@@ -1,3 +1,9 @@
+2006-03-22 [colin]	2.0.0cvs163
+
+	* configure.ac
+		Require libetpan 0.45
+		http://prdownloads.sourceforge.net/libetpan/libetpan-0.45.tar.gz?download
+
 2006-03-22 [paul]	2.0.0cvs162
 
 	* src/editgroup.c
