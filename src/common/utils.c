@@ -221,7 +221,7 @@ GSList *slist_concat_unique (GSList *first, GSList *second)
 	if (first == NULL) {
 		if (second == NULL)
 			return NULL;
-		else 
+		else
 			return second;
 	} else if (second == NULL)
 		return first;
@@ -232,7 +232,7 @@ GSList *slist_concat_unique (GSList *first, GSList *second)
 	}
 	return ret;
 }
- 
+
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
 {
 	g_free(key);
@@ -446,14 +446,14 @@ gchar *strcrchomp(gchar *str)
 	return str;
 }
 
-void file_strip_crs(const gchar *file) 
+void file_strip_crs(const gchar *file)
 {
 	FILE *fp = NULL, *outfp = NULL;
 	gchar buf[4096];
 	gchar *out = get_tmp_file();
 	if (file == NULL)
 		goto freeout;
-	
+
 	fp = fopen(file, "rb");
 	if (!fp)
 		goto freeout;
@@ -468,7 +468,7 @@ void file_strip_crs(const gchar *file)
 		strcrchomp(buf);
 		fputs(buf, outfp);
 	}
-	
+
 	fclose(fp);
 	fclose(outfp);
 	rename_force(out, file);
@@ -820,7 +820,7 @@ void trim_subject_for_sort(gchar *str)
 	g_strstrip(str);
 
 	srcp = str + subject_get_prefix_length(str);
-	if (srcp != str)	
+	if (srcp != str)
 		memmove(str, srcp, strlen(srcp) + 1);
 }
 
@@ -829,7 +829,7 @@ void trim_subject(gchar *str)
 	register gchar *srcp;
 	gchar op, cl;
 	gint in_brace;
-	
+
 	g_strstrip(str);
 
 	srcp = str + subject_get_prefix_length(str);
@@ -1351,9 +1351,9 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 			quote_level++;
 		else if (*p != '-' && !g_ascii_isspace(*p) && p <= last_pos) {
 			/* any characters are allowed except '-' and space */
-			while (*p != '-' 
-			       && !strchr(quote_chars, *p) 
-			       && !g_ascii_isspace(*p) 
+			while (*p != '-'
+			       && !strchr(quote_chars, *p)
+			       && !g_ascii_isspace(*p)
 			       && p < last_pos)
 				p++;
 			if (strchr(quote_chars, *p))
@@ -1394,7 +1394,7 @@ gint check_line_length(const gchar *str, gint max_chars, gint *line)
 	return 0;
 }
 
-const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars) 
+const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars)
 {
 	gchar * position = NULL;
 	gchar * tmp_pos = NULL;
@@ -1402,17 +1402,17 @@ const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars)
 
 	if (quote_chars == NULL)
 		return FALSE;
-	
+
 	for (i = 0; i < strlen(quote_chars); i++) {
 		tmp_pos = strchr (str,	quote_chars[i]);
-		if(position == NULL 
+		if(position == NULL
 		   || (tmp_pos != NULL && position >= tmp_pos) )
 			position = tmp_pos;
 	}
-	return position; 
+	return position;
 }
 
-const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_chars) 
+const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_chars)
 {
 	gchar * position = NULL;
 	gchar * tmp_pos = NULL;
@@ -1420,14 +1420,14 @@ const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_cha
 
 	if (quote_chars == NULL)
 		return FALSE;
-	
+
 	for (i = 0; i < strlen(quote_chars); i++) {
 		tmp_pos = strrchr (str,	quote_chars[i]);
-		if(position == NULL 
+		if(position == NULL
 		   || (tmp_pos != NULL && position <= tmp_pos) )
 			position = tmp_pos;
 	}
-	return position; 
+	return position;
 }
 
 gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
@@ -1723,13 +1723,13 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 	return result;
 }
 
-/* Converts two-digit hexadecimal to decimal.  Used for unescaping escaped 
+/* Converts two-digit hexadecimal to decimal.  Used for unescaping escaped
  * characters
  */
 static gint axtoi(const gchar *hexstr)
 {
 	gint hi, lo, result;
-       
+
 	hi = hexstr[0];
 	if ('0' <= hi && hi <= '9') {
 		hi -= '0';
@@ -1877,9 +1877,9 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 	return 0;
 }
 
-
+
 #ifdef G_OS_WIN32
-#include <windows.h> 
+#include <windows.h>
 #ifndef CSIDL_APPDATA
 #define CSIDL_APPDATA 0x001a
 #endif
@@ -1943,7 +1943,7 @@ dlclose (void * hd)
       return 0;
     }
   return -1;
-}  
+}
 
 static HRESULT
 w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d, LPSTR e)
@@ -2094,7 +2094,7 @@ const gchar *get_header_cache_dir(void)
 /* Return the default directory for Plugins. */
 const gchar *get_plugin_dir(void)
 {
-#ifdef G_OS_WIN32        
+#ifdef G_OS_WIN32
 	static gchar *plugin_dir = NULL;
 
 	if (!plugin_dir)
@@ -2245,7 +2245,7 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
 
 /* Test on whether FILE is a relative file name. This is
  * straightforward for Unix but more complex for Windows. */
-gboolean is_relative_filename(const gchar *file) 
+gboolean is_relative_filename(const gchar *file)
 {
         if (!file)
                 return TRUE;
@@ -2262,7 +2262,7 @@ gboolean is_relative_filename(const gchar *file)
         return !(*file == '\\' || *file == '/');
 #else
         return !(*file == G_DIR_SEPARATOR);
-#endif        
+#endif
 }
 
 
@@ -2667,7 +2667,7 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 		FILE_OP_ERROR(src, "fopen");
 		return -1;
 	}
-	
+
 	if ((dest_fp = g_fopen(dest, "ab")) == NULL) {
 		FILE_OP_ERROR(dest, "fopen");
 		fclose(src_fp);
@@ -3161,7 +3161,7 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
  * uniqueness if everything is either quoted-printable or base64
  * encoded (note that conversion is allowed), but because MIME bodies
  * may be nested, it may happen that the same boundary has already
- * been used. 
+ * been used.
  *
  *   boundary := 0*69<bchars> bcharsnospace
  *   bchars := bcharsnospace / " "
@@ -3475,7 +3475,7 @@ void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 		}
 		else {
 			char * hexa = "0123456789ABCDEF";
-			
+
 			if (k + 4 >= bufsize)
 				break;
 			encoded_uri[k++] = '%';
@@ -3491,12 +3491,12 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
-	
+
 	g_return_val_if_fail(uri != NULL, -1);
 
 	/* an option to choose whether to use encode_uri or not ? */
 	encode_uri(encoded_uri, BUFFSIZE, uri);
-	
+
 	if (cmdline &&
 	    (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
 	    !strchr(p + 2, '%'))
@@ -3747,21 +3747,21 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	if (subject == NULL)
 		return;
 
-	subject += subject_get_prefix_length(subject);	
+	subject += subject_get_prefix_length(subject);
 	g_hash_table_remove(subject_table, subject);
 }
 
 /*!
- *\brief	Check if a string is prefixed with known (combinations) 
- *		of prefixes. The function assumes that each prefix 
+ *\brief	Check if a string is prefixed with known (combinations)
+ *		of prefixes. The function assumes that each prefix
  *		is terminated by zero or exactly _one_ space.
  *
  *\param	str String to check for a prefixes
  *
- *\return	int Number of chars in the prefix that should be skipped 
+ *\return	int Number of chars in the prefix that should be skipped
  *		for a "clean" subject line. If no prefix was found, 0
  *		is returned.
- */		
+ */
 int subject_get_prefix_length(const gchar *subject)
 {
 	/*!< Array with allowable reply prefixes regexps. */
@@ -3789,23 +3789,23 @@ int subject_get_prefix_length(const gchar *subject)
 
 	if (!init_) {
 		GString *s = g_string_new("");
-		
+
 		for (n = 0; n < PREFIXES; n++)
 			/* Terminate each prefix regexpression by a
 			 * "\ ?" (zero or ONE space), and OR them */
 			g_string_append_printf(s, "(%s\\ ?)%s",
 					  prefixes[n],
-					  n < PREFIXES - 1 ? 
+					  n < PREFIXES - 1 ?
 					  "|" : "");
-		
+
 		g_string_prepend(s, "(");
 		g_string_append(s, ")+");	/* match at least once */
 		g_string_prepend(s, "^\\ *");	/* from beginning of line */
-		
 
-		/* We now have something like "^\ *((PREFIX1\ ?)|(PREFIX2\ ?))+" 
+
+		/* We now have something like "^\ *((PREFIX1\ ?)|(PREFIX2\ ?))+"
 		 * TODO: Should this be       "^\ *(((PREFIX1)|(PREFIX2))\ ?)+" ??? */
-		if (regcomp(&regex, s->str, REG_EXTENDED | REG_ICASE)) { 
+		if (regcomp(&regex, s->str, REG_EXTENDED | REG_ICASE)) {
 			debug_print("Error compiling regexp %s\n", s->str);
 			g_string_free(s, TRUE);
 			return 0;
@@ -3814,7 +3814,7 @@ int subject_get_prefix_length(const gchar *subject)
 			g_string_free(s, TRUE);
 		}
 	}
-	
+
 	if (!regexec(&regex, subject, 1, &pos, 0) && pos.rm_so != -1)
 		return pos.rm_eo;
 	else
@@ -3870,9 +3870,9 @@ gchar *generate_msgid(gchar *buf, gint len)
 
 /*
    quote_cmd_argument()
-   
+
    return a quoted string safely usable in argument of a command.
-   
+
    code is extracted and adapted from etPan! project -- DINH V. Hoà.
 */
 
@@ -3891,7 +3891,7 @@ gint quote_cmd_argument(gchar * result, guint size,
 		if (isalnum((guchar)*p) || (* p == '/')) {
 			if (remaining > 0) {
 				* result_p = * p;
-				result_p ++; 
+				result_p ++;
 				remaining --;
 			}
 			else {
@@ -3899,12 +3899,12 @@ gint quote_cmd_argument(gchar * result, guint size,
 				return -1;
 			}
 		}
-		else { 
+		else {
 			if (remaining >= 2) {
 				* result_p = '\\';
-				result_p ++; 
+				result_p ++;
 				* result_p = * p;
-				result_p ++; 
+				result_p ++;
 				remaining -= 2;
 			}
 			else {
@@ -3920,11 +3920,11 @@ gint quote_cmd_argument(gchar * result, guint size,
 		result[size - 1] = '\0';
 		return -1;
 	}
-  
+
 	return 0;
 }
 
-typedef struct 
+typedef struct
 {
 	GNode 		*parent;
 	GNodeMapFunc	 func;
@@ -4028,7 +4028,7 @@ void get_hex_str(gchar *out, guchar ch)
  *\brief	Register ref counted pointer. It is based on GBoxed, so should
  *		work with anything that uses the GType system. The semantics
  *		are similar to a C++ auto pointer, with the exception that
- *		C doesn't have automatic closure (calling destructors) when 
+ *		C doesn't have automatic closure (calling destructors) when
  *		exiting a block scope.
  *		Use the \ref G_TYPE_AUTO_POINTER macro instead of calling this
  *		function directly.
@@ -4044,7 +4044,7 @@ GType g_auto_pointer_register(void)
 				("G_TYPE_AUTO_POINTER",
 				 (GBoxedCopyFunc) g_auto_pointer_copy,
 				 (GBoxedFreeFunc) g_auto_pointer_free);
-	return auto_pointer_type;						     
+	return auto_pointer_type;
 }
 
 /*!
@@ -4069,12 +4069,12 @@ typedef struct AutoPointer {
 /*!
  *\brief	Creates an auto pointer for a g_new()ed pointer. Example:
  *
- *\code	
+ *\code
  *
  *		... tell gtk_list_store it should use a G_TYPE_AUTO_POINTER
  *		... when assigning, copying and freeing storage elements
  *
- *		gtk_list_store_new(N_S_COLUMNS, 
+ *		gtk_list_store_new(N_S_COLUMNS,
  *				   G_TYPE_AUTO_POINTER,
  *				   -1);
  *
@@ -4086,16 +4086,16 @@ typedef struct AutoPointer {
  *				   S_DATA, protect,
  *				   -1);
  *
- *		... the gtk_list_store has copied the pointer and 
+ *		... the gtk_list_store has copied the pointer and
  *		... incremented its reference count, we should free
  *		... the auto pointer (in C++ a destructor would do
  *		... this for us when leaving block scope)
- * 
+ *
  *		g_auto_pointer_free(protect);
  *
  *		... gtk_list_store_set() now manages the data. When
- *		... *explicitly* requesting a pointer from the list 
- *		... store, don't forget you get a copy that should be 
+ *		... *explicitly* requesting a pointer from the list
+ *		... store, don't forget you get a copy that should be
  *		... freed with g_auto_pointer_free() eventually.
  *
  *\endcode
@@ -4109,8 +4109,8 @@ GAuto *g_auto_pointer_new(gpointer p)
 {
 	AutoPointerRef *ref;
 	AutoPointer    *ptr;
-	
-	if (p == NULL) 
+
+	if (p == NULL)
 		return NULL;
 
 	ref = g_new0(AutoPointerRef, 1);
@@ -4136,20 +4136,20 @@ GAuto *g_auto_pointer_new(gpointer p)
 GAuto *g_auto_pointer_new_with_free(gpointer p, GFreeFunc free_)
 {
 	AutoPointer *aptr;
-	
+
 	if (p == NULL)
 		return NULL;
 
 	aptr = g_auto_pointer_new(p);
 	aptr->ref->free = free_;
-	return aptr; 
+	return aptr;
 }
 
 gpointer g_auto_pointer_get_ptr(GAuto *auto_ptr)
 {
-	if (auto_ptr == NULL) 
+	if (auto_ptr == NULL)
 		return NULL;
-	return ((AutoPointer *) auto_ptr)->ptr; 
+	return ((AutoPointer *) auto_ptr)->ptr;
 }
 
 /*!
@@ -4157,7 +4157,7 @@ gpointer g_auto_pointer_get_ptr(GAuto *auto_ptr)
  *		to call this function directly, unless you copy/assign
  *		the guarded pointer.
  *
- *\param	auto_ptr Auto pointer returned by previous call to 
+ *\param	auto_ptr Auto pointer returned by previous call to
  *		g_auto_pointer_new_XXX()
  *
  *\return	gpointer An auto pointer
@@ -4168,7 +4168,7 @@ GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
 	AutoPointerRef	*ref;
 	AutoPointer	*newp;
 
-	if (auto_ptr == NULL) 
+	if (auto_ptr == NULL)
 		return NULL;
 
 	ptr = auto_ptr;
@@ -4178,7 +4178,7 @@ GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
 	newp->ref = ref;
 	newp->ptr = ref->pointer;
 	++(ref->cnt);
-	
+
 #ifdef REF_DEBUG
 	G_PRINT_REF ("XXXX COPY(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
 #endif
@@ -4192,7 +4192,7 @@ void g_auto_pointer_free(GAuto *auto_ptr)
 {
 	AutoPointer	*ptr;
 	AutoPointerRef	*ref;
-	
+
 	if (auto_ptr == NULL)
 		return;
 
@@ -4205,12 +4205,12 @@ void g_auto_pointer_free(GAuto *auto_ptr)
 #endif
 		ref->free(ref->pointer);
 		g_free(ref);
-	} 
+	}
 #ifdef REF_DEBUG
 	else
 		G_PRINT_REF ("XXXX DEREF(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
 #endif
-	g_free(ptr);		
+	g_free(ptr);
 }
 
 void replace_returns(gchar *str)
@@ -4244,7 +4244,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
 		if (!g_ascii_isgraph(*(const guchar *)ep_) ||
 		    !IS_ASCII(*(const guchar *)ep_) ||
-		    strchr("[]{}<>\"", *ep_))
+		    strchr("[]{}()<>\"", *ep_))
 			break;
 	}
 
@@ -4254,7 +4254,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	 * should pass some URI type to this function and decide on that whether
 	 * to perform punctuation stripping */
 
-#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=)", ch))
+#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=-", ch))
 
 	for (; ep_ - 1 > scanpos + 1 &&
 	       IS_REAL_PUNCT(*(ep_ - 1));
@@ -4265,7 +4265,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 
 	*ep = ep_;
 
-	return TRUE;		
+	return TRUE;
 }
 
 gchar *make_uri_string(const gchar *bp, const gchar *ep)
@@ -4314,13 +4314,13 @@ static GHashTable *create_domain_tab(void)
 	    "tc", "td", "tf", "tg", "th", "tj", "tk", "tm", "tn", "to",
 	    "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "um",
 	    "us", "uy", "uz", "va", "vc", "ve", "vg", "vi", "vn", "vu",
-            "wf", "ws", "ye", "yt", "yu", "za", "zm", "zw" 
+            "wf", "ws", "ye", "yt", "yu", "za", "zm", "zw"
 	};
 	gint n;
 	GHashTable *htab = g_hash_table_new(g_stricase_hash, g_stricase_equal);
-	
+
 	g_return_val_if_fail(htab, NULL);
-	for (n = 0; n < sizeof toplvl_domains / sizeof toplvl_domains[0]; n++) 
+	for (n = 0; n < sizeof toplvl_domains / sizeof toplvl_domains[0]; n++)
 		g_hash_table_insert(htab, (gpointer) toplvl_domains[n], (gpointer) toplvl_domains[n]);
 	return htab;
 }
@@ -4331,7 +4331,7 @@ static gboolean is_toplvl_domain(GHashTable *tab, const gchar *first, const gcha
 	gchar buf[MAX_LVL_DOM_NAME_LEN + 1];
 	const gchar *m = buf + MAX_LVL_DOM_NAME_LEN + 1;
 	register gchar *p;
-	
+
 	if (last - first > MAX_LVL_DOM_NAME_LEN || first > last)
 		return FALSE;
 
@@ -4355,7 +4355,7 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	const gchar *last_dot = NULL;
 	const gchar *prelast_dot = NULL;
 	const gchar *last_tld_char = NULL;
-	
+
 	/* the informative part of the email address (describing the name
 	 * of the email address owner) may contain quoted parts. the
 	 * closure stack stores the last encountered quotes. */
@@ -4378,7 +4378,7 @@ search_again:
 			start++;
 
 		*bp = start;
-		
+
 		/* find end (either , or ; or end of line) */
 		if (strstr(start, ",") && strstr(start, ";"))
 			*ep = strstr(start,",") < strstr(start, ";")
@@ -4389,8 +4389,8 @@ search_again:
 			*ep = strstr(start, ";");
 		else
 			*ep = start+strlen(start);
-		
-		/* check there's still an @ in that, or search 
+
+		/* check there's still an @ in that, or search
 		 * further if possible */
 		if (strstr(start, "@") && strstr(start, "@") < *ep)
 			return TRUE;
@@ -4403,7 +4403,7 @@ search_again:
 
 	if (!dom_tab)
 		dom_tab = create_domain_tab();
-	g_return_val_if_fail(dom_tab, FALSE);	
+	g_return_val_if_fail(dom_tab, FALSE);
 
 	/* scan start of address */
 	for (bp_ = scanpos - 1;
@@ -4457,21 +4457,21 @@ search_again:
 
 	if (!result) return FALSE;
 
-	if (*ep_ && *(bp_ - 1) == '"' && *(ep_) == '"' 
+	if (*ep_ && *(bp_ - 1) == '"' && *(ep_) == '"'
 	&& *(ep_ + 1) == ' ' && *(ep_ + 2) == '<'
 	&& IS_RFC822_CHAR(*(ep_ + 3))) {
-		/* this informative part with an @ in it is 
+		/* this informative part with an @ in it is
 		 * followed by the email address */
 		ep_ += 3;
-		
+
 		/* go to matching '>' (or next non-rfc822 char, like \n) */
 		for (; *ep_ != '>' && *ep != '\0' && IS_RFC822_CHAR(*ep_); ep_++)
 			;
-			
+
 		/* include the bracket */
 		if (*ep_ == '>') ep_++;
-		
-		/* include the leading quote */		
+
+		/* include the leading quote */
 		bp_--;
 
 		*ep = ep_;
@@ -4511,7 +4511,7 @@ search_again:
 		}
 
 		/* if nothing in the closure stack, do the special conditions
-		 * the following if..else expression simply checks whether 
+		 * the following if..else expression simply checks whether
 		 * a token is acceptable. if not acceptable, the clause
 		 * should terminate the loop with a 'break' */
 		if (!PEEK_STACK()) {
@@ -4543,7 +4543,7 @@ search_again:
 
 	*bp = bp_;
 	*ep = ep_;
-	
+
 	return result;
 }
 
@@ -4590,18 +4590,18 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 		gchar *trimmed = parts[0];
 		while (trimmed[0] == ' ')
 			trimmed++;
-		while (trimmed[strlen(trimmed)-1] == ' ') 
+		while (trimmed[strlen(trimmed)-1] == ' ')
 			trimmed[strlen(trimmed)-1] = '\0';
-			
+
 		if (!strcmp(trimmed, type)) {
 			trimmed = parts[1];
 			while (trimmed[0] == ' ')
 				trimmed++;
-			while (trimmed[strlen(trimmed)-1] == ' ') 
+			while (trimmed[strlen(trimmed)-1] == ' ')
 				trimmed[strlen(trimmed)-1] = '\0';
-			while (trimmed[strlen(trimmed)-1] == '\n') 
+			while (trimmed[strlen(trimmed)-1] == '\n')
 				trimmed[strlen(trimmed)-1] = '\0';
-			while (trimmed[strlen(trimmed)-1] == '\r') 
+			while (trimmed[strlen(trimmed)-1] == '\r')
 				trimmed[strlen(trimmed)-1] = '\0';
 			result = g_strdup(trimmed);
 			g_strfreev(parts);
@@ -4624,7 +4624,7 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 	fclose(fp);
 	return NULL;
 }
-gchar *mailcap_get_command_for_type(const gchar *type) 
+gchar *mailcap_get_command_for_type(const gchar *type)
 {
 	gchar *result = NULL;
 	gchar *path = NULL;
@@ -4641,7 +4641,7 @@ gint copy_dir(const gchar *src, const gchar *dst)
 {
 	GDir *dir;
 	const gchar *name;
-	
+
 	if ((dir = g_dir_open(src, 0, NULL)) == NULL) {
 		g_warning("failed to open directory: %s\n", src);
 		return -1;
@@ -4649,7 +4649,7 @@ gint copy_dir(const gchar *src, const gchar *dst)
 
 	if (make_dir(dst) < 0)
 		return -1;
-	
+
 	while ((name = g_dir_read_name(dir)) != NULL) {
 		gchar *old_file, *new_file;
 		old_file = g_strconcat(src, G_DIR_SEPARATOR_S, name, NULL);

@@ -1,3 +1,10 @@
+2006-03-23 [paul]	2.0.0cvs164
+
+	* src/common/utils.c
+		revert patch, (postponing a fix), at 2.0.0cvs120
+		as it breaks more URIs than it fixes.
+		Allow '-' to be a terminating character in a URI
+
 2006-03-22 [colin]	2.0.0cvs163
 
 	* configure.ac
