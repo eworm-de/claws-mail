@@ -3,6 +3,7 @@
 	* src/common/utils.c
 		fix highlighting of URIs containing "()"
 		(2.0.0cvs164's reversal fixed)
+		Thanks to Colin.
 
 2006-03-23 [paul]	2.0.0cvs164
 
