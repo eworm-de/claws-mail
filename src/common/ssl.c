@@ -87,7 +87,12 @@ void ssl_done(void)
 void *SSL_connect_thread(void *data)
 {
 	thread_data *td = (thread_data *)data;
-	int result = SSL_connect(td->ssl);
+	int result = -1;
+
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+	result = SSL_connect(td->ssl);
 	td->done = TRUE; /* let the caller thread join() */
 	return GINT_TO_POINTER(result);
 }
@@ -99,6 +104,8 @@ gint SSL_connect_nb(SSL *ssl)
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
 	void *res = NULL;
+	time_t start_time = time(NULL);
+	gboolean killed = FALSE;
 	
 	td->ssl  = ssl;
 	td->done = FALSE;
@@ -114,12 +121,20 @@ gint SSL_connect_nb(SSL *ssl)
 	while(!td->done) {
 		/* don't let the interface freeze while waiting */
 		sylpheed_do_idle();
+		if (time(NULL) - start_time > 30) {
+			pthread_cancel(pt);
+			td->done = TRUE;
+			killed = TRUE;
+		}
 	}
 
 	/* get the thread's return value and clean its resources */
 	pthread_join(pt, &res);
 	g_free(td);
-
+	
+	if (killed) {
+		res = GINT_TO_POINTER(-1);
+	}
 	debug_print("SSL_connect thread returned %d\n", 
 			GPOINTER_TO_INT(res));
 	

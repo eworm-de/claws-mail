@@ -1,3 +1,8 @@
+2006-03-23 [colin]	2.0.0cvs167
+
+	* src/common/ssl.c
+		Let 30 seconds to SSL_connect
+
 2006-03-23 [wwp]	2.0.0cvs166
 
 	* src/summaryview.c
