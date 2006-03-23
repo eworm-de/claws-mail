@@ -4232,6 +4232,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 			     const gchar **bp, const gchar **ep, gboolean hdr)
 {
 	const gchar *ep_;
+	gint parenthese_cnt = 0;
 
 	g_return_val_if_fail(start != NULL, FALSE);
 	g_return_val_if_fail(scanpos != NULL, FALSE);
@@ -4244,8 +4245,16 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
 		if (!g_ascii_isgraph(*(const guchar *)ep_) ||
 		    !IS_ASCII(*(const guchar *)ep_) ||
-		    strchr("[]{}()<>\"", *ep_))
+		    strchr("[]{}<>\"", *ep_)) {
 			break;
+		} else if (strchr("(", *ep_)) {
+			parenthese_cnt++;
+		} else if (strchr(")", *ep_)) {
+			if (parenthese_cnt > 0)
+				parenthese_cnt--;
+			else
+				break;
+		}
 	}
 
 	/* no punctuation at end of string */
@@ -4254,7 +4263,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	 * should pass some URI type to this function and decide on that whether
 	 * to perform punctuation stripping */
 
-#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=-", ch))
+#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=-)", ch))
 
 	for (; ep_ - 1 > scanpos + 1 &&
 	       IS_REAL_PUNCT(*(ep_ - 1));
