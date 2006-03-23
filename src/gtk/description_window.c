@@ -79,9 +79,10 @@ static void description_create(DescriptionWindow * dwindow)
 	int sz;
 	int line;
 	int j;
-
+	int max_width = 0;
+	GtkRequisition req;
+	
 	dwindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request(dwindow->window,400,450);
 	
 	gtk_window_set_title(GTK_WINDOW(dwindow->window),
 			     gettext(dwindow->title));
@@ -128,6 +129,10 @@ static void description_create(DescriptionWindow * dwindow)
 						 col, colend, line, line+1,
 						 (GtkAttachOptions) (GTK_FILL),
 						 (GtkAttachOptions) (0), 0, 2);
+
+				gtk_widget_size_request(label, &req);
+				if(req.width > max_width)
+					max_width = req.width;
 			}
 		} else {
 			GtkWidget *separator;
@@ -140,6 +145,8 @@ static void description_create(DescriptionWindow * dwindow)
 		}
 		line++;
 	}
+
+	max_width += 150;
 
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
@@ -157,6 +164,9 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_widget_show(label);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_widget_size_request(label, &req);
+	if(req.width > max_width)
+		max_width = req.width + 20;
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(scrolledwin),
@@ -178,6 +188,8 @@ static void description_create(DescriptionWindow * dwindow)
 			 G_CALLBACK(gtk_main_quit), NULL);
 
 	gtk_widget_show_all(table);
+	gtk_widget_set_size_request(dwindow->window,
+                               (max_width < 400) ? 400 : max_width, 450);	
 }
 
 static gboolean description_window_key_pressed(GtkWidget *widget,

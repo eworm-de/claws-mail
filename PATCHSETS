@@ -1351,3 +1351,4 @@
 ( cvs diff -u -r 1.654.2.1392 -r 1.654.2.1393 configure.ac;  ) > 2.0.0cvs163.patchset
 ( cvs diff -u -r 1.36.2.58 -r 1.36.2.59 src/common/utils.c;  ) > 2.0.0cvs164.patchset
 ( cvs diff -u -r 1.36.2.59 -r 1.36.2.60 src/common/utils.c;  ) > 2.0.0cvs165.patchset
+( cvs diff -u -r 1.395.2.185 -r 1.395.2.186 src/summaryview.c;  cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/gtk/description_window.c;  ) > 2.0.0cvs166.patchset

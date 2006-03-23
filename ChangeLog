@@ -1,3 +1,11 @@
+2006-03-23 [wwp]	2.0.0cvs166
+
+	* src/summaryview.c
+	* src/gtk/description_window.c
+		fix display of From/To column title when in appropriate folders (queue/sent/drafts)
+		and headers are translated; adjust description windows' width to fit their
+		contents. Patches by Pawel Pekala <c0rn@o2.pl>.
+
 2006-03-23 [paul]	2.0.0cvs165
 
 	* src/common/utils.c

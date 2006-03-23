@@ -759,6 +759,11 @@ void summary_init(SummaryView *summaryview)
 ( (m->msgnum == displayed_msgnum) \
   && (!g_ascii_strcasecmp(m->folder->name,item->name)) )
 
+#define FOLDER_SHOWS_TO_HDR(i) \
+( folder_has_parent_of_type(i, F_OUTBOX) \
+  ||  folder_has_parent_of_type(i, F_DRAFT) \
+  ||  folder_has_parent_of_type(i, F_QUEUE) )
+  
 static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 {
 	gboolean show_from = FALSE, show_to = FALSE;
@@ -769,9 +774,7 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	
 	if (!item)
 		return;
-	if (folder_has_parent_of_type(item, F_OUTBOX)
-	||  folder_has_parent_of_type(item, F_DRAFT)
-	||  folder_has_parent_of_type(item, F_QUEUE))
+	if(FOLDER_SHOWS_TO_HDR(item))
 		show_to = TRUE;
 	else
 		show_from = TRUE;
@@ -2050,6 +2053,7 @@ static void summary_status_show(SummaryView *summaryview)
 static void summary_set_column_titles(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+	FolderItem *item = summaryview->folder_item;
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *arrow;
@@ -2085,6 +2089,9 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		case S_COL_TO:
 		case S_COL_DATE:
 		case S_COL_NUMBER:
+			if(type == S_COL_FROM && item != NULL &&
+					FOLDER_SHOWS_TO_HDR(item))
+				type = S_COL_TO;
 			if (prefs_common.trans_hdr)
 				title = gettext(col_label[type]);
 			else
@@ -2784,9 +2791,7 @@ void summary_reedit(SummaryView *summaryview)
 
 	if (!summaryview->selected) return;
 	if (!summaryview->folder_item) return;
-	if (!folder_has_parent_of_type(summaryview->folder_item, F_OUTBOX)
-	&&  !folder_has_parent_of_type(summaryview->folder_item, F_DRAFT)
-	&&  !folder_has_parent_of_type(summaryview->folder_item, F_QUEUE))
+	if (!FOLDER_SHOWS_TO_HDR(summaryview->folder_item))
 		return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
@@ -4946,9 +4951,7 @@ void summaryview_activate_quicksearch(SummaryView *summaryview)
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
-	if (folder_has_parent_of_type(summaryview->folder_item, F_OUTBOX)
-	||  folder_has_parent_of_type(summaryview->folder_item, F_DRAFT)
-	||  folder_has_parent_of_type(summaryview->folder_item, F_QUEUE))
+	if (FOLDER_SHOWS_TO_HDR(summaryview->folder_item))
 		summary_reedit(summaryview);
 	else
 		summary_open_msg(summaryview);
