@@ -300,7 +300,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_tooltips_set_tip(tooltips, spamd_hostname_entry,
 			_("Hostname or IP address of spamd server"), NULL);
 
-	spamd_colon_label = gtk_label_new(_(":"));
+	spamd_colon_label = gtk_label_new(":");
 	gtk_widget_show(spamd_colon_label);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_colon_label, FALSE, FALSE, 0);
 

@@ -234,6 +234,8 @@ gboolean summary_step		  (SummaryView		*summaryview,
 				   GtkScrollType	 type);
 void summary_toggle_view	  (SummaryView		*summaryview);
 void summary_set_marks_selected	  (SummaryView		*summaryview);
+guint summary_get_msgnum	  (SummaryView		*summaryview,
+				   GtkCTreeNode		*node);
 
 void summary_move_selected_to	  (SummaryView		*summaryview,
 				   FolderItem		*to_folder);

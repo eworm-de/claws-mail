@@ -140,13 +140,13 @@ static void summary_set_marks_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
 
-void summary_set_menu_sensitive	(SummaryView		*summaryview);
+void  summary_set_menu_sensitive	(SummaryView		*summaryview);
+guint summary_get_msgnum		(SummaryView		*summaryview,
+					 GtkCTreeNode		*node);
+
 
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
 					     guint action);
-
-static guint summary_get_msgnum		(SummaryView		*summaryview,
-					 GtkCTreeNode		*node);
 
 static GtkCTreeNode *summary_find_prev_msg
 					(SummaryView		*summaryview,
@@ -1670,7 +1670,7 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 	}
 }
 
-static guint summary_get_msgnum(SummaryView *summaryview, GtkCTreeNode *node)
+guint summary_get_msgnum(SummaryView *summaryview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree =NULL;
 	MsgInfo *msginfo;

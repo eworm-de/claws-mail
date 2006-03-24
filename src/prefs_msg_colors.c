@@ -286,7 +286,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox_custom_colors), hbox_reset_custom_colors,
 		FALSE, TRUE, 0);
 
-	reset_custom_colors_btn = gtk_button_new_with_label (_(" Reset to defaults "));
+	reset_custom_colors_btn = gtk_button_new_with_label (_(" Use default "));
 	gtk_widget_show (reset_custom_colors_btn);
 	gtk_box_pack_start (GTK_BOX (hbox_reset_custom_colors), reset_custom_colors_btn,
 		FALSE, FALSE, 0);

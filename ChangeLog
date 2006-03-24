@@ -1,3 +1,17 @@
+2006-03-24 [colin]	2.0.0cvs168
+
+	* src/action.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Update message cache after action
+		Patch by H. Merijn Brand
+	* src/prefs_msg_colors.c
+		Factorize label 
+		Patch by Fabien Vantard
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Remove useless translation
+		Patch by Fabien Vantard
+
 2006-03-23 [colin]	2.0.0cvs167
 
 	* src/common/ssl.c

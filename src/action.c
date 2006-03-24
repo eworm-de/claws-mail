@@ -54,6 +54,7 @@
 #include "textview.h"
 #include "matcher_parser.h" /* CLAWS */
 #include "filtering.h"
+#include "procheader.h"
 
 typedef struct _Children		Children;
 typedef struct _ChildInfo		ChildInfo;
@@ -101,6 +102,8 @@ struct _ChildInfo
 	GString		*output;
 	void (*callback)(void *data);
 	void *data;
+
+	GSList		*msginfo_list;
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
@@ -749,6 +752,8 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 				break;
 			}
 			if ((child_info = fork_child(cmd, msg_str, children))) {
+				/* Pass msginfo to catch_status () */
+				child_info->msginfo_list = g_slist_append (NULL, msginfo);
 				children_list = g_slist_append(children_list,
 							       child_info);
 			}
@@ -759,8 +764,9 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 				       user_str, user_hidden_str, sel_str);
 		if (cmd) {
 			if ((child_info = fork_child(cmd, msg_str, children))) {
+				child_info->msginfo_list = g_slist_copy (msg_list);
 				children_list = g_slist_append(children_list,
-							       child_info);
+								child_info);
 			}
 			g_free(cmd);
 		} else
@@ -1329,6 +1335,49 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 #endif
 	childinfo_close_pipes(child_info);
 	child_info->pid = 0;
+
+	if (child_info->children->action_type & (ACTION_SINGLE | ACTION_MULTIPLE)
+	    && child_info->msginfo_list) {
+	/* Actions on message *files* might change size and
+	* time stamp, and thus invalidate the cache */
+	SummaryView *summaryview  = NULL;
+	GSList      *cur;
+	MsgInfo     *msginfo, *nmi;	/* newmsginfo */
+	char        *file;
+
+	if (mainwindow_get_mainwindow ())
+		summaryview = mainwindow_get_mainwindow ()->summaryview;
+	for (cur = child_info->msginfo_list; cur; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		if (!(msginfo && /* Stuff used valid? */
+		    msginfo->folder && msginfo->folder->cache)) 
+			continue;
+		file = procmsg_get_message_file_path (msginfo);
+		if (!file) 
+			continue;
+		nmi = procheader_parse_file (file, msginfo->flags, FALSE, FALSE);
+		if (!nmi) 
+			continue; /* Deleted? */
+		if (msginfo->mtime != nmi->mtime || msginfo->size != nmi->size) {
+			msginfo->mtime  = nmi->mtime;
+			msginfo->size   = nmi->size;
+			msgcache_update_msg (msginfo->folder->cache, msginfo);
+		}
+		procmsg_msginfo_free (nmi);
+
+		/* refresh the message display, but only if this message is still
+		* in focus */
+		if (summaryview
+		    && summaryview->displayed
+		    && summaryview->folder_item == msginfo->folder
+		    && summary_get_msgnum (summaryview, summaryview->displayed) == msginfo->msgnum) {
+			summary_show (summaryview, summaryview->folder_item);
+			summary_select_node (summaryview, summaryview->displayed, TRUE, TRUE);
+		}
+	}
+	g_slist_free (child_info->msginfo_list);
+	child_info->msginfo_list = NULL;
+	}
 
 	wait_for_children(child_info->children);
 }
