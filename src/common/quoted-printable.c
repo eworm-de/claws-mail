@@ -112,6 +112,35 @@ gint qp_decode_line(gchar *str)
 	return outp - str;
 }
 
+gint qp_decode_const(gchar *out, gint avail, const gchar *str)
+{
+	gchar *inp = str, *outp = out;
+
+	while (*inp != '\0' && avail > 0) {
+		if (*inp == '=') {
+			if (inp[1] && inp[2] &&
+			    get_hex_value((guchar *)outp, inp[1], inp[2])
+			    == TRUE) {
+				inp += 3;
+			} else if (inp[1] == '\0' || g_ascii_isspace(inp[1])) {
+				/* soft line break */
+				break;
+			} else {
+				/* broken QP string */
+				*outp = *inp++;
+			}
+		} else {
+			*outp = *inp++;
+		}
+		outp++;
+		avail--;
+	}
+
+	*outp = '\0';
+
+	return outp - out;
+}
+
 gint qp_decode_q_encoding(guchar *out, const gchar *in, gint inlen)
 {
 	const gchar *inp = in;

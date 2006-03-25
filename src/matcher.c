@@ -31,6 +31,8 @@
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
 #include "addr_compl.h"
+#include "codeconv.h"
+#include "quoted-printable.h"
 #include <ctype.h>
 
 /*!
@@ -368,6 +370,33 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 	}
 }
 
+static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str)
+{
+	gchar *utf = NULL;
+	gchar tmp[BUFFSIZE];
+	gboolean res = FALSE;
+
+	if (str == NULL)
+		return FALSE;
+
+	/* we try to decode QP first, because it's faster than base64 */
+	qp_decode_const(tmp, BUFFSIZE-1, str);
+	if (!g_utf8_validate(tmp, -1, NULL)) {
+		utf = conv_codeset_strdup
+			(tmp, conv_get_locale_charset_str_no_utf8(),
+			 CS_INTERNAL);
+		res = matcherprop_string_match(prop, utf);
+		g_free(utf);
+	} else {
+		res = matcherprop_string_match(prop, tmp);
+	}
+	
+	/* FIXME base64 decoding is too slow, especially since text can 
+	 * easily be handled as base64. Don't even try now. */
+
+	return res;
+}
+
 /*!
  *\brief	Execute a command defined in the matcher structure
  *
@@ -609,9 +638,11 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		}
 		break;
 	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_MESSAGE:
 		return matcherprop_string_match(matcher, buf);
+	case MATCHCRITERIA_MESSAGE:
+		return matcherprop_string_decode_match(matcher, buf);
 	case MATCHCRITERIA_NOT_MESSAGE:
+		return !matcherprop_string_decode_match(matcher, buf);
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
 	}
@@ -746,10 +777,10 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
-		return matcherprop_string_match(matcher, line);
+		return matcherprop_string_decode_match(matcher, line);
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
-		return !matcherprop_string_match(matcher, line);
+		return !matcherprop_string_decode_match(matcher, line);
 	}
 	return FALSE;
 }

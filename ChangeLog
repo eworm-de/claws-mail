@@ -1,3 +1,15 @@
+2006-03-25 [colin]	2.0.0cvs169
+
+	* src/matcher.c
+		Fix search in QP-encoded bodies
+		Fix utf-8 searches in bodies encoded in the
+		locale's encoding
+	* src/common/quoted-printable.c
+	* src/common/quoted-printable.h
+		Add a decode function that doesn't overwrite
+		the original pointer
+		
+
 2006-03-24 [colin]	2.0.0cvs168
 
 	* src/action.c

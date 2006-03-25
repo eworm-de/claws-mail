@@ -25,6 +25,9 @@
 void qp_encode_line		(gchar		*out,
 				 const guchar	*in);
 gint qp_decode_line		(gchar		*str);
+gint qp_decode_const		(gchar 		*out, 
+				 gint 		 avail, 
+				 const gchar 	*str);
 
 gint qp_decode_q_encoding	(guchar		*out,
 				 const gchar	*in,
