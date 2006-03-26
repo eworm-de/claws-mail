@@ -1642,12 +1642,16 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
+	if (summary_is_locked(summaryview))
+		return;
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
 		gtkut_ctree_expand_parent_all(ctree, node);
 		if (do_refresh) {
+			summary_lock(summaryview);
 			GTK_EVENTS_FLUSH();
+			summary_unlock(summaryview);
 			gtk_widget_grab_focus(GTK_WIDGET(ctree));
 			if (GTK_CTREE_ROW(node) == NULL) {
 				g_warning("crash avoidance hack 1\n");

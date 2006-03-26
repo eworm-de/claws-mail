@@ -1,3 +1,17 @@
+2006-03-26 [colin]	2.0.0cvs170
+
+	* src/summaryview.c
+		I think I killed the twilight zone bug!
+		summary_select_node() flushes GTK events in order
+		to be able to center the view. But this also 
+		flushes keypresses like Ctrl-Alt-U, so this can
+		call summary_show from summary_select_node (itself
+		called from summary_show, etc.). And the summaryview
+		has to be unlocked in this function. So just locking
+		while processing GTK events, and bailing if locked, 
+		should fix it.
+		Fixes bug #927 (SIGSEGV during Update Summary)
+
 2006-03-25 [colin]	2.0.0cvs169
 
 	* src/matcher.c
