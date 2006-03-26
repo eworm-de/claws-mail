@@ -1,3 +1,12 @@
+2006-03-26 [colin]	2.0.0cvs172
+
+	* src/procheader.c
+		Make sure the date is UTF8 valid, or try to make it
+		so. IncrediMail is really IncrediStupid.
+	* src/compose.c
+		Fix possible conversions. 
+		
+
 2006-03-26 [colin]	2.0.0cvs171
 
 	* src/matcher.c

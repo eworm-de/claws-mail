@@ -2285,7 +2285,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	} else {
 		gchar *tmpout = NULL;
 		tmpout = conv_codeset_strdup
-			(buf, conv_get_locale_charset_str(),
+			(buf, conv_get_locale_charset_str_no_utf8(),
 			 CS_INTERNAL);
 		if (!tmpout || !g_utf8_validate(tmpout, -1, NULL)) {
 			g_free(tmpout);
@@ -2707,7 +2707,7 @@ static gchar *compose_get_signature_str(Compose *compose)
 			utf8_sig_str = sig_str;
 		else {
 			utf8_sig_str = conv_codeset_strdup
-				(sig_str, conv_get_locale_charset_str(),
+				(sig_str, conv_get_locale_charset_str_no_utf8(),
 				 CS_INTERNAL);
 			g_free(sig_str);
 		}

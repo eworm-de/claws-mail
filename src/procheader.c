@@ -453,7 +453,22 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			if (msginfo->date) break;
 			msginfo->date_t =
 				procheader_date_parse(NULL, hp, 0);
-			msginfo->date = g_strdup(hp);
+			if (g_utf8_validate(hp, -1, NULL)) {
+				msginfo->date = g_strdup(hp);
+			} else {
+				gchar *utf = conv_codeset_strdup(
+					hp, 
+					conv_get_locale_charset_str_no_utf8(),
+					CS_INTERNAL);
+				if (utf == NULL || 
+				    !g_utf8_validate(utf, -1, NULL)) {
+					g_free(utf);
+					utf = g_malloc(strlen(buf)*2+1);
+					conv_localetodisp(utf, 
+						strlen(hp)*2+1, hp);
+				}
+				msginfo->date = utf;
+			}
 			break;
 		case H_FROM:
 			if (msginfo->from) break;
