@@ -1,3 +1,10 @@
+2006-03-26 [wwp]	2.0.0cvs175
+
+	* src/compose.c
+		use a unified border width ('other' tab in the compose window,
+		patch by Pawel Pekala).
+
+
 2006-03-26 [wwp]	2.0.0cvs174
 
 	* src/common/quoted-printable.c

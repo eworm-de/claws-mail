@@ -5192,7 +5192,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
-	gtk_container_set_border_width(GTK_CONTAINER(header_table), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(header_table), BORDER_WIDTH);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(GTK_BIN(header_scrolledwin)->child), GTK_SHADOW_ETCHED_IN);
 	count = 0;
@@ -5311,6 +5311,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 
 	/* Table for settings */
 	table = gtk_table_new(3, 1, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(table), BORDER_WIDTH);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
 	rowcount = 0;
