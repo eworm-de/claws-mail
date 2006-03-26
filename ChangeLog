@@ -1,3 +1,9 @@
+2006-03-26 [wwp]	2.0.0cvs174
+
+	* src/common/quoted-printable.c
+	* src/addressbook.c
+		fixed some compilation warnings (incl. one reported by Pawel Pekala).
+
 2006-03-26 [colin]	2.0.0cvs173
 
 	* src/quote_fmt_parse.y

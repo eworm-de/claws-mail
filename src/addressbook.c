@@ -924,7 +924,7 @@ static void addressbook_create(void)
 	gtk_clist_set_column_width(GTK_CLIST(clist), COL_ADDRESS,
 				   COL_ADDRESS_WIDTH);
 
-	addressbook_sort_list(clist, COL_NAME, GTK_SORT_ASCENDING);
+	addressbook_sort_list(GTK_CLIST(clist), COL_NAME, GTK_SORT_ASCENDING);
 	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
 		"clicked", G_CALLBACK(addressbook_name_clicked), clist);
 	g_signal_connect(G_OBJECT(GTK_CLIST(clist)->column[COL_ADDRESS].button),

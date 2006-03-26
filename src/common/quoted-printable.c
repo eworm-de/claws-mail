@@ -114,7 +114,8 @@ gint qp_decode_line(gchar *str)
 
 gint qp_decode_const(gchar *out, gint avail, const gchar *str)
 {
-	gchar *inp = str, *outp = out;
+	const gchar *inp = str;
+	gchar *outp = out;
 
 	while (*inp != '\0' && avail > 0) {
 		if (*inp == '=') {
