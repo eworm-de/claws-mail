@@ -27,6 +27,7 @@
 #include "procmsg.h"
 #include "procmime.h"
 #include "utils.h"
+#include "codeconv.h"
 #include "procheader.h"
 
 #include "quote_fmt.h"
@@ -211,7 +212,24 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 			}
 		}
 		
-		INSERT(result);
+		if (g_utf8_validate(result, -1, NULL)) {
+			INSERT(result);
+		} else {
+			gchar *utf = conv_codeset_strdup(result, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+			if (utf == NULL || 
+			    !g_utf8_validate(utf, -1, NULL)) {
+				g_free(utf);
+				utf = g_malloc(strlen(result)*2+1);
+				conv_localetodisp(utf, 
+					strlen(result)*2+1, result);
+			}
+			if (g_utf8_validate(utf, -1, NULL)) {
+				INSERT(utf);
+			}
+			g_free(utf);
+		}
 	}
 #undef STR_SIZE			
 #undef RLEFT			

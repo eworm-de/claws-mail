@@ -1,3 +1,8 @@
+2006-03-26 [colin]	2.0.0cvs173
+
+	* src/quote_fmt_parse.y
+		Fix non-UTF8 date formats fucking up the whole quote
+
 2006-03-26 [colin]	2.0.0cvs172
 
 	* src/procheader.c
