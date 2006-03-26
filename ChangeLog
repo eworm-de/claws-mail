@@ -1,3 +1,10 @@
+2006-03-26 [colin]	2.0.0cvs171
+
+	* src/matcher.c
+		Fix corner cases in body search. This is still a
+		hack... It seems impossible to make it good and 
+		reasonably fast at the same time.
+
 2006-03-26 [colin]	2.0.0cvs170
 
 	* src/summaryview.c

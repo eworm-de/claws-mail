@@ -370,6 +370,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 	}
 }
 
+/* FIXME body search is a hack. */
 static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str)
 {
 	gchar *utf = NULL;
@@ -391,6 +392,20 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 		res = matcherprop_string_match(prop, tmp);
 	}
 	
+	if (res == FALSE && strchr(prop->expr, '=')) {
+		/* if searching for something with an equal char, maybe 
+		 * we should try to match the non-decoded string. 
+		 * In case it was not qp-encoded. */
+		if (!g_utf8_validate(str, -1, NULL)) {
+			utf = conv_codeset_strdup
+				(str, conv_get_locale_charset_str_no_utf8(),
+				 CS_INTERNAL);
+			res = matcherprop_string_match(prop, utf);
+		} else {
+			res = matcherprop_string_match(prop, str);
+		}
+	}
+
 	/* FIXME base64 decoding is too slow, especially since text can 
 	 * easily be handled as base64. Don't even try now. */
 
