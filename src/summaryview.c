@@ -845,15 +845,16 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	inc_lock();
 	summary_lock(summaryview);
 
+	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
+
 	if (!prefs_common.summary_quicksearch_sticky
 	 && !prefs_common.summary_quicksearch_recurse
-	 && !quicksearch_is_running(summaryview->quicksearch)) {
+	 && !quicksearch_is_running(summaryview->quicksearch)
+	 && !is_refresh) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
 	}
 
 	/* STATUSBAR_POP(summaryview->mainwin); */
-
-	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,

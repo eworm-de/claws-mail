@@ -1,3 +1,9 @@
+2006-03-27 [wwp]	2.0.0cvs176
+
+	* src/summaryview.c
+		don't reset quicksearch when updating the message list.
+		Thanks to Colin.
+
 2006-03-26 [wwp]	2.0.0cvs175
 
 	* src/compose.c
