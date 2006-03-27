@@ -383,7 +383,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				   "pixels-below-lines", 0,
 				   "pixels-below-lines-set", TRUE,
 				   "font-desc", font_desc,
-				   "left-margin", 0,
+				   "left-margin", 3,
 				   "left-margin-set", TRUE,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "header_title",
