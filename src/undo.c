@@ -241,31 +241,16 @@ static gint undo_merge(GList *list, guint start_pos, guint end_pos,
 			return FALSE;
 		} else if (last_undo->start_pos == start_pos) {
 			/* Deleted with the delete key */
-			if (text[0] != ' ' && text[0] != '\t' &&
-			    (last_undo->text[last_undo->end_pos - last_undo->start_pos - 1] == ' ' ||
-			     last_undo->text[last_undo->end_pos - last_undo->start_pos - 1] == '\t'))
-				checkit = FALSE;
-
 			temp_string = g_strdup_printf("%s%s", last_undo->text, text);
 			last_undo->end_pos++;
 			g_free(last_undo->text);
 			last_undo->text = temp_string;
 		} else {
 			/* Deleted with the backspace key */
-			if (text[0] != ' ' && text[0] != '\t' &&
-			    (last_undo->text[0] == ' ' ||
-			     last_undo->text[0] == '\t'))
-				checkit = FALSE;
-
 			temp_string = g_strdup_printf("%s%s", text, last_undo->text);
 			last_undo->start_pos = start_pos;
 			g_free(last_undo->text);
 			last_undo->text = temp_string;
-		}
-
-		if (!checkit) {
-			last_undo->mergeable = FALSE;
-			return FALSE;
 		}
 	} else if (action == UNDO_ACTION_INSERT) {
 		if (last_undo->end_pos != start_pos) {
