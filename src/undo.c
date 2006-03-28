@@ -233,8 +233,6 @@ static gint undo_merge(GList *list, guint start_pos, guint end_pos,
 	}
 
 	if (action == UNDO_ACTION_DELETE) {
-		gboolean checkit = TRUE;
-
 		if (last_undo->start_pos != end_pos &&
 		    last_undo->start_pos != start_pos) {
 			last_undo->mergeable = FALSE;

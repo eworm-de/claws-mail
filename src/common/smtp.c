@@ -40,7 +40,9 @@
 static void smtp_session_destroy(Session *session);
 
 static gint smtp_auth(SMTPSession *session);
+#if USE_OPENSSL
 static gint smtp_starttls(SMTPSession *session);
+#endif
 static gint smtp_auth_cram_md5(SMTPSession *session);
 static gint smtp_auth_login(SMTPSession *session);
 static gint smtp_auth_plain(SMTPSession *session);
@@ -328,6 +330,7 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 	return SM_ERROR;
 }
 
+#if USE_OPENSSL
 static gint smtp_starttls(SMTPSession *session)
 {
 	session->state = SMTP_STARTTLS;
@@ -338,6 +341,7 @@ static gint smtp_starttls(SMTPSession *session)
 
 	return SM_OK;
 }
+#endif
 
 static gint smtp_auth_cram_md5(SMTPSession *session)
 {

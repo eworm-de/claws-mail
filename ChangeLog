@@ -1,3 +1,10 @@
+2006-03-28 [colin]	2.0.0cvs179
+
+	* src/common/smtp.c
+	* src/common/passcrypt.c
+	* src/undo.c
+		Warning fixes. Patch by Pawel Pekala
+
 2006-03-27 [colin]	2.0.0cvs178
 
 	* src/undo.c

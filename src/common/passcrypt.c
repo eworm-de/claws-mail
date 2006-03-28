@@ -36,11 +36,6 @@
 
 void crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		   unsigned chunksize, int decrypt);
-static void crypt_cfb_shift(unsigned char *to,
-			    const unsigned char *from, unsigned len);
-static void crypt_cfb_xor(unsigned char *to, const unsigned char *from,
-			  unsigned len);
-static void crypt_unpack(unsigned char *a);
 
 void passcrypt_encrypt(gchar *password, guint len)
 {
@@ -73,6 +68,12 @@ crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		ecb_crypt(des_key, buf, len, DES_ENCRYPT);
 }
 #else
+static void crypt_cfb_shift(unsigned char *to,
+			    const unsigned char *from, unsigned len);
+static void crypt_cfb_xor(unsigned char *to, const unsigned char *from,
+			  unsigned len);
+static void crypt_unpack(unsigned char *a);
+
 void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
@@ -103,7 +104,6 @@ crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		buf += chunksize;
 	}
 }
-#endif
 
 /*
 * Shift len bytes from end of to buffer to beginning, then put len
@@ -164,3 +164,4 @@ static void crypt_unpack(unsigned char *a)
 		for (j = 7; j >= 0; --j)
 			a[(i << 3) + j] = (a[i] & (0x80 >> j)) != 0;
 }
+#endif
