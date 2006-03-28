@@ -1,3 +1,16 @@
+2006-03-28 [colin]	2.0.0cvs180
+
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Add a gtkut_get_link_btn() function that
+		creates a button which acts like an URI
+	* src/prefs_themes.c
+	* src/gtk/about.c
+		Use this function (factorizes codes)
+	* src/common/defs.h
+	* src/gtk/pluginwindow.c
+		Add a "Get more..." in the plugins window
+
 2006-03-28 [colin]	2.0.0cvs179
 
 	* src/common/smtp.c

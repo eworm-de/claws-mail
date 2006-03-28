@@ -71,6 +71,7 @@
 #define HOMEPAGE_URI		"http://claws.sylpheed.org/"
 #define MANUAL_URI		"http://claws.sylpheed.org/manual/"
 #define FAQ_URI			"http://claws.sylpheed.org/faq.php"
+#define PLUGINS_URI		"http://claws.sylpheed.org/plugins.php"
 #define BUGZILLA_URI		"http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/enter_bug.cgi"
 #define THEMES_URI		"http://claws.sylpheed.org/themes.php"
 #define MAILING_LIST_URI	"http://claws.sylpheed.org/MLs.php"

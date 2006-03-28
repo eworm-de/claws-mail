@@ -1142,3 +1142,112 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	g_object_unref(pixbuf);
 	return image;
 }
+
+static GdkCursor *hand_cursor = NULL;
+
+static void link_btn_enter(GtkButton *button, gpointer data)
+{
+	GtkWidget *window = (GtkWidget *)data;
+
+	if (!hand_cursor)
+		hand_cursor = gdk_cursor_new(GDK_HAND2);
+	if (window && window->window)
+		gdk_window_set_cursor(window->window, hand_cursor);
+
+	gtk_button_set_relief(button, GTK_RELIEF_NONE);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	
+}
+
+static void link_btn_leave(GtkButton *button, gpointer data)
+{
+	GtkWidget *window = (GtkWidget *)data;
+
+	if (window && window->window)
+		gdk_window_set_cursor(window->window, NULL);
+
+	gtk_button_set_relief(button, GTK_RELIEF_NONE);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+}
+
+static void link_btn_pressed(GtkButton *button, gpointer data)
+{
+	gtk_button_set_relief(button, GTK_RELIEF_NONE);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+}
+
+static void link_btn_released(GtkButton *button, gpointer data)
+{
+	gtk_button_set_relief(button, GTK_RELIEF_NONE);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+}
+
+static void link_btn_clicked(GtkButton *button, gpointer data)
+{
+	gchar *url = (gchar *)data;
+	gtk_button_set_relief(button, GTK_RELIEF_NONE);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	open_uri(url, prefs_common.uri_cmd);
+}
+
+static void link_btn_unrealize(GtkButton *button, gpointer data)
+{
+	gchar *url = (gchar *)data;
+	g_signal_handlers_disconnect_by_func(G_OBJECT(button), 
+			 G_CALLBACK(link_btn_clicked), url);
+	g_free(url);
+}
+
+GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *label)
+{
+	GtkWidget *btn;
+	GtkWidget *btn_label;
+	GdkColormap *cmap;
+	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
+	gboolean success[2];
+	gchar *underlined = NULL;
+	gchar *local_url = NULL;
+	if (!url)
+		return NULL;
+
+	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+					       &uri_color[0]);
+	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+					       &uri_color[1]);
+
+	underlined = g_markup_printf_escaped("<u>%s</u>", label?label:url);
+	btn = gtk_button_new_with_label(underlined);
+	g_free(underlined);
+	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
+	btn_label = GTK_BIN(btn)->child;
+	gtk_label_set_use_markup(GTK_LABEL(btn_label), TRUE);
+	cmap = gdk_drawable_get_colormap(window->window);
+	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
+	if (success[0] == TRUE && success[1] == TRUE) {
+		GtkStyle *style;
+		gtk_widget_ensure_style(btn_label);
+		style = gtk_style_copy
+			(gtk_widget_get_style(btn_label));
+		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
+		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
+		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
+		gtk_widget_set_style(btn_label, style);
+	} else
+		g_warning("about_create(): color allocation failed.\n");
+
+	g_signal_connect(G_OBJECT(btn), "enter",
+			 G_CALLBACK(link_btn_enter), window);
+	g_signal_connect(G_OBJECT(btn), "leave",
+			 G_CALLBACK(link_btn_leave), window);
+	g_signal_connect(G_OBJECT(btn), "pressed",
+			 G_CALLBACK(link_btn_pressed), window);
+	g_signal_connect(G_OBJECT(btn), "released",
+			 G_CALLBACK(link_btn_released), window);
+			 
+	local_url = g_strdup(url);
+	g_signal_connect(G_OBJECT(btn), "clicked",
+			 G_CALLBACK(link_btn_clicked), local_url);
+	g_signal_connect(G_OBJECT(btn), "unrealize",
+			 G_CALLBACK(link_btn_unrealize), local_url);
+	return btn;
+}

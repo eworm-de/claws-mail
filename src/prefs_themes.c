@@ -579,11 +579,6 @@ end_inst:
 	g_free(themename);
 }
 
-static void prefs_themes_btn_more_clicked_cb(GtkWidget *widget, gpointer data)
-{
-	open_uri(THEMES_URI, prefs_common.uri_cmd);
-}
-
 static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data)
 {
 	ThemesData *tdata = prefs_themes_data;
@@ -805,11 +800,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 {
 	ThemesPage *prefs_themes = (ThemesPage *)page;
 	ThemesData *tdata = prefs_themes_data;
-	/* from gtk/about.c */
-	GtkStyle *style;
-	GdkColormap *cmap;
-	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
-	gboolean success[2];
 
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
@@ -875,27 +865,9 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_install, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (btn_install, GTK_CAN_DEFAULT);
 
-	btn_more = gtk_button_new_with_label (_("<u>Get more...</u>"));
+	btn_more = gtkut_get_link_btn(window, THEMES_URI, _("Get more..."));
 	gtk_widget_show (btn_more);
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_more, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (btn_more, GTK_CAN_DEFAULT);
-	/* make it look like an uri */
-	gtk_button_set_relief(GTK_BUTTON(btn_more), GTK_RELIEF_NONE);
-	gtk_label_set_use_markup(GTK_LABEL(GTK_BIN(btn_more)->child), TRUE);
-
-	cmap = gdk_drawable_get_colormap((mainwindow_get_mainwindow())->window->window);
-	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
-	if (success[0] == TRUE && success[1] == TRUE) {
-		gtk_widget_ensure_style(GTK_BIN(btn_more)->child);
-		style = gtk_style_copy
-			(gtk_widget_get_style(GTK_BIN(btn_more)->child));
-		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
-		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
-		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
-		gtk_widget_set_style(GTK_BIN(btn_more)->child, style);
-	} else
-		g_warning("prefs_themes_create_widget(): color allocation failed.\n");
-
 
 	label_global_status = gtk_label_new ("");
 	gtk_widget_show (label_global_status);
@@ -1037,9 +1009,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 			 NULL);
 	g_signal_connect(G_OBJECT(btn_install), "clicked",
 			 G_CALLBACK(prefs_themes_btn_install_clicked_cb),
-			 NULL);
-	g_signal_connect(G_OBJECT(btn_more), "clicked",
-			 G_CALLBACK(prefs_themes_btn_more_clicked_cb),
 			 NULL);
 
 	prefs_themes->window = GTK_WIDGET(window);

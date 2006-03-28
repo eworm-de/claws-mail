@@ -60,7 +60,6 @@ static GdkCursor *text_cursor = NULL;
 
 static void about_create(void);
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event);
-static void about_uri_clicked(GtkButton *button, gpointer data);
 static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 					GdkEvent *event, GtkTextIter *iter,
 					GtkWidget *textview);
@@ -102,10 +101,6 @@ static void about_create(void)
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
 	GtkWidget *notebook;
-	GtkStyle *style;
-	GdkColormap *cmap;
-	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
-	gboolean success[2];
 	char *markup;
 	GtkWidget *text;
 	GtkWidget *confirm_area;
@@ -113,7 +108,7 @@ static void about_create(void)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 	GtkTextTag *tag;
-
+	GdkColor uri_color;
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
 #endif
@@ -157,27 +152,8 @@ static void about_create(void)
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 
-	button = gtk_button_new_with_label(" "HOMEPAGE_URI" ");
+	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(about_uri_clicked), NULL);
-	buf[0] = ' ';
-	for (i = 1; i <= strlen(HOMEPAGE_URI); i++) buf[i] = '_';
-	strcpy(buf + i, " ");
-	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(button)->child), buf);
-	cmap = gdk_drawable_get_colormap(window->window);
-	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
-	if (success[0] == TRUE && success[1] == TRUE) {
-		gtk_widget_ensure_style(GTK_BIN(button)->child);
-		style = gtk_style_copy
-			(gtk_widget_get_style(GTK_BIN(button)->child));
-		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
-		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
-		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
-		gtk_widget_set_style(GTK_BIN(button)->child, style);
-	} else
-		g_warning("about_create(): color allocation failed.\n");
 
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
@@ -552,11 +528,6 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(window);
 	return FALSE;
-}
-
-static void about_uri_clicked(GtkButton *button, gpointer data)
-{
-	open_uri(HOMEPAGE_URI, prefs_common.uri_cmd);
 }
 
 static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,

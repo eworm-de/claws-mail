@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "defs.h"
 #include "plugin.h"
 
 #include "filesel.h"
@@ -264,10 +265,11 @@ void pluginwindow_create()
 	GtkWidget *label13;
 	GtkWidget *scrolledwindow3;
 	GtkWidget *plugin_desc;
-	GtkWidget *hbuttonbox1;
+	GtkWidget *hbuttonbox1, *hbox3;
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
+	GtkWidget *get_more_btn;
 	static GdkGeometry geometry;
 	
 	debug_print("Creating plugins window...\n");
@@ -324,9 +326,19 @@ void pluginwindow_create()
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
+	hbox3 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox3);
 	hbuttonbox1 = gtk_hbutton_box_new();
 	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox1, FALSE, FALSE, 0);
+
+	gtk_widget_realize(window);
+	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
+	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
+	gtk_widget_show(get_more_btn);
+
+	gtk_box_pack_start(GTK_BOX(hbox3), get_more_btn, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox3, FALSE, FALSE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox1),
 				  GTK_BUTTONBOX_END);
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbuttonbox1), 6);
