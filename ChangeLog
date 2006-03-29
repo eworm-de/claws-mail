@@ -1,3 +1,10 @@
+2006-03-29 [colin]	2.0.0cvs181
+
+	* src/folderview.c
+		Warn for disabled IMAP accounts (due to lack of
+		libetpan). Breaks string-freeze - sorry - but it
+		is kind of important ;)
+
 2006-03-28 [colin]	2.0.0cvs180
 
 	* src/gtk/gtkutils.c

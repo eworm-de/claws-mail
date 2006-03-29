@@ -923,11 +923,29 @@ void folderview_append_item(FolderItem *item)
 static void folderview_set_folders(FolderView *folderview)
 {
 	GList *list;
-
+	static gboolean missing_imap_warning = TRUE;
 	list = folder_get_list();
 
-	for (; list != NULL; list = list->next)
+	for (; list != NULL; list = list->next) {
+#ifndef HAVE_LIBETPAN
+		if ((FOLDER(list->data))
+		&&  (FOLDER(list->data))->klass
+		&&  (FOLDER(list->data))->klass->type == F_IMAP
+		&&  missing_imap_warning) {
+			missing_imap_warning = FALSE;
+			alertpanel_error(
+				_("You have one or more IMAP accounts "
+				  "defined. However this version of "
+				  "Sylpheed-Claws has been built without "
+				  "IMAP support; your IMAP account(s) are "
+				  "disabled.\n\n"
+				  "You probably need to "
+				  "install libetpan and recompile "
+				  "Sylpheed-Claws."));
+		}
+#endif
 		folderview_append_folder(folderview, FOLDER(list->data));
+	}
 }
 
 static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
