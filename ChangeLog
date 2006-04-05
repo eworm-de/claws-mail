@@ -1,3 +1,9 @@
+2006-04-05 [colin]	2.1.0cvs4
+
+	* src/wizard.c
+	* src/prefs_gtk.c
+		Allow wizard customization with pre-filled values
+
 2006-04-05 [colin]	2.1.0cvs3
 
 	* src/textview.c

@@ -92,6 +92,11 @@ typedef struct
 	GtkWidget *mailbox_name;
 	
 	GtkWidget *smtp_server;
+	GtkWidget *smtp_auth;
+	GtkWidget *smtp_username;
+	GtkWidget *smtp_password;
+	GtkWidget *smtp_username_label;
+	GtkWidget *smtp_password_label;
 
 	GtkWidget *recv_type;
 	GtkWidget *recv_label;
@@ -113,6 +118,278 @@ typedef struct
 	gboolean result;
 
 } WizardWindow;
+
+typedef struct _AccountTemplate {
+	gchar *name;
+	gchar *domain;
+	gchar *email;
+	gchar *organization;
+	gchar *smtpserver;
+	gboolean smtpauth;
+	gchar *smtpuser;
+	gchar *smtppass;
+	RecvProtocol recvtype;
+	gchar *recvserver;
+	gchar *recvuser;
+	gchar *recvpass;
+	gchar *imapdir;
+	gchar *mboxfile;
+	gchar *mailbox;
+	gboolean smtpssl;
+	gboolean recvssl;
+} AccountTemplate;
+
+static AccountTemplate tmpl;
+
+static PrefParam template_params[] = {
+	{"name", "$USERNAME",
+	 &tmpl.name, P_STRING, NULL, NULL, NULL},
+	{"domain", "$DEFAULTDOMAIN",
+	 &tmpl.domain, P_STRING, NULL, NULL, NULL},
+	{"email", "$NAME_MAIL@$DOMAIN",
+	 &tmpl.email, P_STRING, NULL, NULL, NULL},
+	{"organization", "",
+	 &tmpl.organization, P_STRING, NULL, NULL, NULL},
+	{"smtpserver", "smtp.$DOMAIN",
+	 &tmpl.smtpserver, P_STRING, NULL, NULL, NULL},
+	{"smtpauth", "FALSE",
+	 &tmpl.smtpauth, P_BOOL, NULL, NULL, NULL},
+	{"smtpuser", "",
+	 &tmpl.smtpuser, P_STRING, NULL, NULL, NULL},
+	{"smtppass", "",
+	 &tmpl.smtppass, P_STRING, NULL, NULL, NULL},
+	{"recvtype", A_POP3,
+	 &tmpl.recvtype, P_INT, NULL, NULL, NULL},
+	{"recvserver", "pop.$DOMAIN",
+	 &tmpl.recvserver, P_STRING, NULL, NULL, NULL},
+	{"recvuser", "$LOGIN",
+	 &tmpl.recvuser, P_STRING, NULL, NULL, NULL},
+	{"recvpass", "",
+	 &tmpl.recvpass, P_STRING, NULL, NULL, NULL},
+	{"imapdir", "",
+	 &tmpl.imapdir, P_STRING, NULL, NULL, NULL},
+	{"mboxfile", "/var/mail/$LOGIN",
+	 &tmpl.mboxfile, P_STRING, NULL, NULL, NULL},
+	{"mailbox", "Mail",
+	 &tmpl.mailbox, P_STRING, NULL, NULL, NULL},
+	{"smtpssl", "FALSE",
+	 &tmpl.smtpssl, P_BOOL, NULL, NULL, NULL},
+	{"recvssl", "FALSE",
+	 &tmpl.recvssl, P_BOOL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, P_INT, NULL, NULL, NULL}
+};
+
+
+static gchar *accountrc_tmpl =
+	"[AccountTemplate]\n"
+	"#you can use $DEFAULTDOMAIN here\n"
+	"#domain must be defined before the variables that use it\n"
+	"#by default, domain is extracted from the hostname\n"
+	"#domain=\n"
+	"\n"
+	"#you can use $USERNAME for name (this is the default)\n"
+	"#name=\n"
+	"\n"
+	"#you can use $LOGIN, $NAME_MAIL and $DOMAIN here \n"
+	"#$NAME_MAIL is the name without uppercase and with dots instead\n"
+	"#of spaces\n"
+	"#the default is $NAME_MAIL@$DOMAIN\n"
+	"#email=\n"
+	"\n"
+	"#you can use $DOMAIN here\n"
+	"#the default organization is empty\n"
+	"#organization=\n"
+	"\n"
+	"#you can use $DOMAIN here \n"
+	"#the default is stmp.$DOMAIN\n"
+	"#smtpserver=\n"
+	"\n"
+	"#Whether to use smtp authentication\n"
+	"#the default is 0 (no)\n"
+	"#smtpauth=\n"
+	"\n"
+	"#SMTP username\n"
+	"#you can use $LOGIN, $NAME_MAIL, $DOMAIN or $EMAIL here\n"
+	"#the default is empty (same as reception username)\n"
+	"#smtpuser=\n"
+	"\n"
+	"#SMTP password\n"
+	"#the default is empty (same as reception password)\n"
+	"#smtppass=\n"
+	"\n"
+	"#recvtype can be:\n"
+	"#0 for pop3\n"
+	"#3  for imap\n"
+	"#5  for a local mbox file\n"
+	"#recvtype=\n"
+	"\n"
+	"#you can use $DOMAIN here \n"
+	"#the default is {pop,imap}.$DOMAIN\n"
+	"#recvserver=\n"
+	"\n"
+	"#you can use $LOGIN, $NAME_MAIL, $DOMAIN or $EMAIL here\n"
+	"#default is $LOGIN\n"
+	"#recvuser=\n"
+	"\n"
+	"#default is empty\n"
+	"#recvpass=\n"
+	"\n"
+	"#imap dir if imap (relative to the home on the server\n"
+	"#default is empty\n"
+	"#imapdir=\n"
+	"\n"
+	"#mbox file if local\n"
+	"#you can use $LOGIN here\n"
+	"#default is /var/mail/$LOGIN\n"
+	"#mboxfile=\n"
+	"\n"
+	"#mailbox name if pop3 or local\n"
+	"#relative path from the user's home\n"
+	"#default is \"Mail\"\n"
+	"#mailbox=\n"
+	"\n"
+	"#whether to use ssl on STMP connections\n"
+	"#default is 0\n"
+	"#smtpssl=\n"
+	"\n"
+	"#whether to use ssl on pop or imap connections\n"
+	"#default is 0\n"
+	"#recvssl=\n";
+
+static gchar *wizard_get_default_domain_name(void)
+{
+	static gchar *domain_name = NULL;
+	
+	if (domain_name == NULL) {
+		domain_name = g_strdup(get_domain_name());
+		if (strchr(domain_name, '.') != strrchr(domain_name, '.')
+		&& strlen(strchr(domain_name, '.')) > 6) {
+			gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
+			g_free(domain_name);
+			domain_name = tmp;
+		}
+	}
+	return domain_name;
+}
+
+static gchar *get_name_for_mail(void)
+{
+	gchar *name = g_strdup(tmpl.name);
+	if (name == NULL)
+		return NULL;
+	g_strdown(name);
+	while(strstr(name, " "))
+		*strstr(name, " ")='.';
+	
+	return name;
+}
+
+#define PARSE_DEFAULT(str) {	\
+	gchar *tmp = NULL, *new = NULL;	\
+	if (str != NULL) {	\
+		tmp = g_strdup(str);	\
+		if (strstr(str, "$USERNAME")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$USERNAME") = '\0';	\
+			new = g_strconcat(tmp, g_get_real_name(), 	\
+				strstr(str, "$USERNAME")+strlen("$USERNAME"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+		if (strstr(str, "$LOGIN")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$LOGIN") = '\0';	\
+			new = g_strconcat(tmp, g_get_user_name(), 	\
+				strstr(str, "$LOGIN")+strlen("$LOGIN"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+		if (strstr(str, "$EMAIL")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$EMAIL") = '\0';	\
+			new = g_strconcat(tmp, tmpl.email, 	\
+				strstr(str, "$EMAIL")+strlen("$EMAIL"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+		if (strstr(str, "$NAME_MAIL")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$NAME_MAIL") = '\0';	\
+			new = g_strconcat(tmp, get_name_for_mail(), 	\
+				strstr(str, "$NAME_MAIL")+strlen("$NAME_MAIL"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+		if (strstr(str, "$DEFAULTDOMAIN")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$DEFAULTDOMAIN") = '\0';	\
+			new = g_strconcat(tmp, wizard_get_default_domain_name(), 	\
+				strstr(str, "$DEFAULTDOMAIN")+strlen("$DEFAULTDOMAIN"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+		if (strstr(str, "$DOMAIN")) {	\
+			tmp = g_strdup(str);	\
+			*strstr(tmp, "$DOMAIN") = '\0';	\
+			new = g_strconcat(tmp, tmpl.domain, 	\
+				strstr(str, "$DOMAIN")+strlen("$DOMAIN"), 	\
+				NULL);	\
+			g_free(tmp);	\
+			g_free(str);	\
+			str = new;	\
+			new = NULL;	\
+		}	\
+	}	\
+}
+static void wizard_read_defaults(void)
+{
+	gchar *rcpath;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "accountrc.tmpl", NULL);
+	if (!is_file_exist(rcpath)) {
+		str_write_to_file(accountrc_tmpl, rcpath);
+	}
+
+	prefs_read_config(template_params, "AccountTemplate", rcpath, NULL);
+
+	PARSE_DEFAULT(tmpl.domain);
+	PARSE_DEFAULT(tmpl.name);
+	PARSE_DEFAULT(tmpl.email);
+	PARSE_DEFAULT(tmpl.organization);
+	PARSE_DEFAULT(tmpl.smtpserver);
+	PARSE_DEFAULT(tmpl.smtpuser);
+	PARSE_DEFAULT(tmpl.smtppass);
+	PARSE_DEFAULT(tmpl.recvserver);
+	PARSE_DEFAULT(tmpl.recvuser);
+	PARSE_DEFAULT(tmpl.recvpass);
+	PARSE_DEFAULT(tmpl.imapdir);
+	PARSE_DEFAULT(tmpl.mboxfile);
+	PARSE_DEFAULT(tmpl.mailbox);
+/*
+	printf("defaults:"
+	"%s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s, %d, %d\n",
+	tmpl.name,tmpl.domain,tmpl.email,tmpl.organization,tmpl.smtpserver,
+	tmpl.recvtype,tmpl.recvserver,tmpl.recvuser,tmpl.recvpass,
+	tmpl.imapdir,tmpl.mboxfile,tmpl.mailbox,tmpl.smtpssl,tmpl.recvssl);
+*/
+	g_free(rcpath);
+}
+
 
 static void initialize_fonts(WizardWindow *wizard)
 {
@@ -307,7 +584,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 			return FALSE;
 		}
 	}
-
+	
 	if (!strlen(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_server)))) {
 		alertpanel_error(_("Please enter your SMTP server."));
 		g_free(prefs_account);
@@ -315,7 +592,18 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 			GTK_NOTEBOOK(wizard->notebook), 
 			SMTP_PAGE);
 		return FALSE;
+	}
 
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_auth))) {
+		if (prefs_account->protocol == A_LOCAL
+		&&  !strlen(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_username)))) {
+			alertpanel_error(_("Please enter your SMTP username."));
+			g_free(prefs_account);
+			gtk_notebook_set_current_page (
+				GTK_NOTEBOOK(wizard->notebook), 
+				SMTP_PAGE);
+			return FALSE;		
+		} /* if it's not local we'll use the reception server */
 	}
 
 	if (prefs_account->protocol != A_LOCAL)
@@ -346,6 +634,14 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)));
 	prefs_account->passwd = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)));
+
+	prefs_account->smtp_userid = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_username)));
+	prefs_account->smtp_passwd = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)));
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_auth))) {
+		prefs_account->use_smtp_auth = TRUE;
+	}
 
 #ifdef USE_OPENSSL			
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
@@ -425,53 +721,47 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      \
 }
 
-static gchar *get_default_email_addr(void)
-{
-	gchar *domain_name = g_strdup(get_domain_name());
-	gchar *result;
-	if (strchr(domain_name, '.') != strrchr(domain_name, '.')
-	&& strlen(strchr(domain_name, '.')) > 6) {
-		gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
-		g_free(domain_name);
-		domain_name = tmp;
-	}
-	result = g_strdup_printf("%s@%s",
-				g_get_user_name(),
-				domain_name);
-	g_free(domain_name);
-	return result;
-}
-
 static gchar *get_default_server(WizardWindow * wizard, const gchar *type)
 {
-	gchar *domain_name = NULL;
-	gchar *tmp = gtk_editable_get_chars(
-			GTK_EDITABLE(wizard->email), 0, -1);
-	gchar *result;
-	
-	if (strstr(tmp, "@")) {
-		domain_name = g_strdup(strstr(tmp,"@")+1);
+	if (!strcmp(type, "smtp")) {
+		if (!tmpl.smtpserver || !strlen(tmpl.smtpserver))
+			return g_strconcat(type, ".", tmpl.domain, NULL);
+		else 
+			return g_strdup(tmpl.smtpserver);
 	} else {
-		domain_name = g_strdup(get_domain_name());
+		if (!tmpl.recvserver || !strlen(tmpl.recvserver))
+			return g_strconcat(type, ".", tmpl.domain, NULL);
+		else 
+			return g_strdup(tmpl.recvserver);
 	}
-	
-	g_free(tmp);
-
-	result = g_strdup_printf("%s.%s",
-				type, domain_name);
-	g_free(domain_name);
-	return result;
 }
 
 static gchar *get_default_account(WizardWindow * wizard)
 {
-	gchar *result = gtk_editable_get_chars(
-			GTK_EDITABLE(wizard->email), 0, -1);
+	gchar *result = NULL;
 	
-	if (strstr(result, "@")) {
-		*(strstr(result,"@")) = '\0';
-	} 
+	if (!tmpl.recvuser || !strlen(tmpl.recvuser)) {
+		result = gtk_editable_get_chars(
+				GTK_EDITABLE(wizard->email), 0, -1);
 
+		if (strstr(result, "@")) {
+			*(strstr(result,"@")) = '\0';
+		} 
+	} else {
+		result = g_strdup(tmpl.recvuser);
+	}
+	return result;
+}
+
+static gchar *get_default_smtp_account(WizardWindow * wizard)
+{
+	gchar *result = NULL;
+	
+	if (!tmpl.smtpuser || !strlen(tmpl.smtpuser)) {
+		return g_strdup("");
+	} else {
+		result = g_strdup(tmpl.smtpuser);
+	}
 	return result;
 }
 
@@ -500,9 +790,7 @@ static void wizard_email_changed(GtkWidget *widget, gpointer data)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		g_free(text);
 	} else if (protocol == A_LOCAL) {
-		gchar *mbox = g_strdup_printf("/var/mail/%s", g_get_user_name());
-		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), mbox);
-		g_free(mbox);
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), tmpl.mboxfile?tmpl.mboxfile:"");
 	}
 	
 }
@@ -510,27 +798,25 @@ static void wizard_email_changed(GtkWidget *widget, gpointer data)
 static GtkWidget* user_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(3,2, FALSE);
-	gchar *text;
 	gint i = 0;
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	wizard->full_name = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(wizard->full_name), g_get_real_name());
+	gtk_entry_set_text(GTK_ENTRY(wizard->full_name), tmpl.name?tmpl.name:"");
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">Your name:</span>"), 
 			     wizard->full_name, i); i++;
 	
 	wizard->email = gtk_entry_new();
-	text = get_default_email_addr();
-	gtk_entry_set_text(GTK_ENTRY(wizard->email), text);
-	g_free(text);
+	gtk_entry_set_text(GTK_ENTRY(wizard->email), tmpl.email?tmpl.email:"");
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">Your email address:</span>"), 
 			     wizard->email, i); i++;
 	
 	wizard->organization = gtk_entry_new();
 	GTK_TABLE_ADD_ROW_AT(table, _("Your organization:"),
 			     wizard->organization, i); i++;
+	gtk_entry_set_text(GTK_ENTRY(wizard->organization), tmpl.organization?tmpl.organization:"");
 	
 	g_signal_connect(G_OBJECT(wizard->email), "changed",
 			 G_CALLBACK(wizard_email_changed),
@@ -547,16 +833,27 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	wizard->mailbox_name = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), "Mail");
+	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), tmpl.mailbox?tmpl.mailbox:"");
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">Mailbox name:</span>"), 
 			     wizard->mailbox_name, i); i++;
 	
 	return table;
 }
 
+static void smtp_auth_changed (GtkWidget *btn, gpointer data)
+{
+	WizardWindow *wizard = (WizardWindow *)data;
+	gboolean do_auth = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->smtp_auth));
+	gtk_widget_set_sensitive(wizard->smtp_username, do_auth);
+	gtk_widget_set_sensitive(wizard->smtp_username_label, do_auth);
+	gtk_widget_set_sensitive(wizard->smtp_password, do_auth);
+	gtk_widget_set_sensitive(wizard->smtp_password_label, do_auth);
+}
+
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
-	GtkWidget *table = gtk_table_new(1,2, FALSE);
+	GtkWidget *table = gtk_table_new(1,4, FALSE);
 	gchar *text;
 	gint i = 0;
 	
@@ -569,16 +866,51 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	g_free(text);
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">SMTP server address:</span>"), 
 			     wizard->smtp_server, i); i++;
+	wizard->smtp_auth = gtk_check_button_new_with_label(
+					_("Use authentication"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_auth),
+			tmpl.smtpauth);
+	g_signal_connect(G_OBJECT(wizard->smtp_auth), "toggled",
+			 G_CALLBACK(smtp_auth_changed),
+			 wizard);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_auth,      
+			 0,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); i++;
+
+	text = get_default_smtp_account(wizard);
+
+	wizard->smtp_username = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_username), text);
+	g_free(text);
+	wizard->smtp_username_label = gtk_label_new(_("SMTP username:\n"
+					"<span size=\"small\">(empty to use the same as reception)</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(wizard->smtp_username_label), TRUE);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_username_label, 			      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
+	if (GTK_IS_MISC(wizard->smtp_username_label))						      
+		gtk_misc_set_alignment(GTK_MISC(wizard->smtp_username_label), 1, 0.5);	      
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_username,	      
+			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
+	i++;
+	wizard->smtp_password = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_password), tmpl.smtppass?tmpl.smtppass:""); 
+	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_password), FALSE);
+	wizard->smtp_password_label = gtk_label_new(_("SMTP password:\n"
+					"<span size=\"small\">(empty to use the same as reception)</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(wizard->smtp_password_label), TRUE);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_password_label, 			      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
+	if (GTK_IS_MISC(wizard->smtp_password_label))						      
+		gtk_misc_set_alignment(GTK_MISC(wizard->smtp_password_label), 1, 0.5);	      
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_password,	      
+			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
+	i++;
+	smtp_auth_changed(NULL, wizard);
 	return table;
 }
 
-static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
+static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 {
-	WizardWindow *wizard = (WizardWindow *)data;
-	RecvProtocol protocol;
 	gchar *text;
-	protocol = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 	
 	if (protocol == A_POP3) {
 		text = get_default_server(wizard, "pop");
@@ -605,9 +937,7 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		g_free(text);
 	} else if (protocol == A_LOCAL) {
-		gchar *mbox = g_strdup_printf("/var/mail/%s", g_get_user_name());
-		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), mbox);
-		g_free(mbox);
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), tmpl.mboxfile?tmpl.mboxfile:"");
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Local mailbox:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_widget_hide(wizard->recv_imap_label);
@@ -619,6 +949,16 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 	}
 }
 
+static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
+{
+	WizardWindow *wizard = (WizardWindow *)data;
+	RecvProtocol protocol;
+	protocol = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+
+	wizard_protocol_change(wizard, protocol);	
+}
+
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(5,2, FALSE);
@@ -626,7 +966,8 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkWidget *menuitem;
 	gchar *text;
 	gint i = 0;
-	
+	gint index = 0;
+
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
@@ -648,6 +989,26 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			 wizard);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (wizard->recv_type), menu);
+	switch(tmpl.recvtype) {
+	case A_POP3: 
+		index = 0;
+		break;
+#ifdef HAVE_LIBETPAN
+	case A_IMAP4:
+		index = 1;
+		break;
+	case A_LOCAL:
+		index = 2;
+		break;
+#else
+	case A_LOCAL:
+		index = 1;
+		break;
+#endif
+	default:
+		index = 0;
+	}
+	gtk_option_menu_set_history(GTK_OPTION_MENU (wizard->recv_type), index);
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">Server type:</span>"), 
 			     wizard->recv_type, i); i++;
 
@@ -682,6 +1043,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	g_free(text);
 
 	wizard->recv_password = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_password), tmpl.recvpass?tmpl.recvpass:"");
 	wizard->recv_password_label = gtk_label_new(_("Password:"));
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_password_label, 			      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
@@ -693,6 +1055,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	i++;
 	
 	wizard->recv_imap_subdir = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_imap_subdir), tmpl.imapdir?tmpl.imapdir:"");
 	wizard->recv_imap_label = gtk_label_new(_("IMAP server directory:"));
 	
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_imap_label, 			      
@@ -718,11 +1081,15 @@ static GtkWidget* ssl_page (WizardWindow * wizard)
 
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to SMTP server"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
+			tmpl.smtpssl);
 	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); i++;
 	
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to receiving server"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl),
+			tmpl.recvssl);
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
@@ -834,6 +1201,8 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	gtk_widget_hide(mainwin->window);
 	
+	wizard_read_defaults();
+	
 	wizard->window = gtk_dialog_new_with_buttons (_("Sylpheed-Claws Setup Wizard"),
 			NULL, 0, 
 			GTK_STOCK_GO_BACK, GO_BACK,
@@ -893,20 +1262,20 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard->pages = g_slist_append(wizard->pages, widget);
 
-/*smtp page: 2 */
-	i++;
-	SMTP_PAGE = i;
-	widget = create_page (wizard, _("Sending mail"));
-	gtk_box_pack_start (GTK_BOX(widget), smtp_page(wizard), FALSE, FALSE, 0);
-	PACK_WARNING(_("Bold fields must be completed"));
-	
-	wizard->pages = g_slist_append(wizard->pages, widget);
-
-/* recv+auth page: 3 */
+/* recv+auth page: 2 */
 	i++;
 	RECV_PAGE = i;
 	widget = create_page (wizard, _("Receiving mail"));
 	gtk_box_pack_start (GTK_BOX(widget), recv_page(wizard), FALSE, FALSE, 0);
+	PACK_WARNING(_("Bold fields must be completed"));
+	
+	wizard->pages = g_slist_append(wizard->pages, widget);
+
+/*smtp page: 3 */
+	i++;
+	SMTP_PAGE = i;
+	widget = create_page (wizard, _("Sending mail"));
+	gtk_box_pack_start (GTK_BOX(widget), smtp_page(wizard), FALSE, FALSE, 0);
 	PACK_WARNING(_("Bold fields must be completed"));
 	
 	wizard->pages = g_slist_append(wizard->pages, widget);
@@ -961,6 +1330,8 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
+
+	wizard_protocol_change(wizard, tmpl.recvtype);
 
 	while (!wizard->finished)
 		gtk_main_iteration();

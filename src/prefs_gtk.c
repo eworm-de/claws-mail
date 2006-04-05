@@ -100,6 +100,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 		strretchomp(buf);
 		/* reached next block */
 		if (buf[0] == '[') break;
+		if (buf[0] == '#') continue;
 
 		if (encoding) {
 			gchar *conv_str;
