@@ -766,8 +766,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, chkbtn_transhdr,
 		 _("Translate header names"));
 	gtk_tooltips_set_tip(tooltips, chkbtn_transhdr,
-			     "The display of standard headers (such as 'From:', 'Subject:') "
-			     "will be translated into your language.", NULL);
+			     _("The display of standard headers (such as 'From:', 'Subject:') "
+			     "will be translated into your language."), NULL);
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));

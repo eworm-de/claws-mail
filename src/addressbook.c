@@ -730,7 +730,7 @@ static void addressbook_sort_list(GtkCList *clist, const gint col,
 	
 	for(pos = 0 ; pos < N_LIST_COLS ; pos++) {
 		hbox = gtk_hbox_new(FALSE, 4);
-		label = gtk_label_new(list_titles[pos]);
+		label = gtk_label_new(gettext(list_titles[pos]));
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		
 		if(pos == col) {
