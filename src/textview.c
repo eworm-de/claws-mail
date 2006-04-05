@@ -210,6 +210,7 @@ static void save_file_cb			(TextView 	*textview,
 static void open_image_cb			(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
+static void textview_show_icon(TextView *textview, const gchar *stock_id);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -707,7 +708,24 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 }
 
 #define TEXT_INSERT(str) \
-	gtk_text_buffer_insert(buffer, &iter, str, -1)
+	gtk_text_buffer_insert_with_tags_by_name \
+				(buffer, &iter, str, -1,\
+				 "header", NULL)
+
+#define TEXT_INSERT_LINK(str, fname) { 					\
+	RemoteURI *uri;							\
+	uri = g_new(RemoteURI, 1);					\
+	uri->uri = g_strdup("");					\
+	uri->start = gtk_text_iter_get_offset(&iter);			\
+	gtk_text_buffer_insert_with_tags_by_name 			\
+				(buffer, &iter, str, -1,		\
+				 "link", "header_title", "header", 	\
+				 NULL); 				\
+	uri->end = gtk_text_iter_get_offset(&iter);			\
+	uri->filename = g_strdup(fname);				\
+	textview->uri_list =						\
+		g_slist_append(textview->uri_list, uri);		\
+}
 
 void textview_show_error(TextView *textview)
 {
@@ -722,7 +740,14 @@ void textview_show_error(TextView *textview)
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
-	TEXT_INSERT(_("This message can't be displayed.\n"));
+	TEXT_INSERT(_("\n"
+		      "  This message can't be displayed.\n"
+		      "  This is probably due to a network error.\n"
+		      "\n"
+		      "  Use "));
+	TEXT_INSERT_LINK(_("'View Log'"), "sc://view_log");
+	TEXT_INSERT(_(" in the Tools menu for more information."));
+	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
 
 }
 
@@ -741,20 +766,29 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
-	TEXT_INSERT(_("The following can be performed on this part by "));
-	TEXT_INSERT(_("right-clicking the icon or list item:\n"));
+	TEXT_INSERT("\n");
+	TEXT_INSERT(_("  The following can be performed on this part by\n"));
+	TEXT_INSERT(_("  right-clicking the icon or list item:\n"));
 
-	TEXT_INSERT(_("    To save select 'Save as...' (Shortcut key: 'y')\n"));
-	TEXT_INSERT(_("    To display as text select 'Display as text' "));
-	TEXT_INSERT(_("(Shortcut key: 't')\n"));
-	TEXT_INSERT(_("    To open with an external program select 'Open' "));
-	TEXT_INSERT(_("(Shortcut key: 'l'),\n"));
-	TEXT_INSERT(_("    (alternately double-click, or click the middle "));
-	TEXT_INSERT(_("mouse button),\n"));
-	TEXT_INSERT(_("    or 'Open with...' (Shortcut key: 'o')\n"));
+	TEXT_INSERT(_("     - To save, select "));
+	TEXT_INSERT_LINK(_("'Save as...'"), "sc://save_as");
+	TEXT_INSERT(_(" (Shortcut key: 'y')\n"));
+	TEXT_INSERT(_("     - To display as text, select "));
+	TEXT_INSERT_LINK(_("'Display as text'"), "sc://display_as_text");
+	TEXT_INSERT(_(" (Shortcut key: 't')\n"));
+	TEXT_INSERT(_("     - To open with an external program, select "));
+	TEXT_INSERT_LINK(_("'Open'"), "sc://open");
+	TEXT_INSERT(_(" (Shortcut key: 'l')\n"));
+	TEXT_INSERT(_("       (alternately double-click, or click the middle "));
+	TEXT_INSERT(_("mouse button)\n"));
+	TEXT_INSERT(_("     - Or use "));
+	TEXT_INSERT_LINK(_("'Open with...'"), "sc://open_with");
+	TEXT_INSERT(_(" (Shortcut key: 'o')\n"));
+	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
 }
 
 #undef TEXT_INSERT
+#undef TEXT_INSERT_LINK
 
 static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 {
@@ -1117,6 +1151,8 @@ void textview_clear(TextView *textview)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer;
+	GdkWindow *window = gtk_text_view_get_window(text,
+				GTK_TEXT_WINDOW_TEXT);
 
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_set_text(buffer, "", -1);
@@ -1129,6 +1165,12 @@ void textview_clear(TextView *textview)
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
+
+	if (textview->messageview->mainwin->cursor_count == 0) {
+		gdk_window_set_cursor(window, text_cursor);
+	} else {
+		gdk_window_set_cursor(window, watch_cursor);
+	}
 }
 
 void textview_destroy(TextView *textview)
@@ -1321,6 +1363,30 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;	
+}
+
+static void textview_show_icon(TextView *textview, const gchar *stock_id)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	int x = 0;
+	
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	
+	textview->image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_DIALOG);
+	g_return_if_fail(textview->image != NULL);
+
+	gtk_widget_show(textview->image);
+	
+	x = textview->text->allocation.width - WIDTH -5;
+
+	gtk_text_view_add_child_in_window(text, textview->image, 
+		GTK_TEXT_WINDOW_TEXT, x, 5);
+
+	gtk_widget_show_all(textview->text);
+	
+
+	return;
 }
 
 #if HAVE_LIBCOMPFACE
@@ -1921,7 +1987,15 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	/* doubleclick: open compose / add address / browser */
 	if ((event->type == GDK_BUTTON_PRESS && bevent->button == 1) ||
 		bevent->button == 2 || bevent->button == 3) {
-		if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
+		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "sc://", 5)) {
+			if (bevent->button == 1) {
+				MimeView *mimeview = 
+					(textview->messageview)?
+						textview->messageview->mimeview:NULL;
+				mimeview_handle_cmd(mimeview, uri->filename);
+			}
+			return TRUE;
+		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
 				g_object_set_data(
 					G_OBJECT(textview->mail_popup_menu),

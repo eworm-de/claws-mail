@@ -148,6 +148,8 @@ void mimeview_pass_key_press_event	(MimeView	*mimeview,
 
 void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
 void mimeview_unregister_viewer_factory	(MimeViewerFactory *factory);
+void mimeview_handle_cmd		(MimeView 	*mimeview, 
+					 const gchar 	*cmd);
 
 
 #ifdef __cplusplus

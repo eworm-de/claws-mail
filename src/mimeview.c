@@ -63,6 +63,7 @@
 #include "procheader.h"
 #include "stock_pixmap.h"
 #include "gtk/gtkvscrollbutton.h"
+#include "gtk/logwindow.h"
 
 
 typedef enum
@@ -1053,26 +1054,6 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 			textview_clear(mimeview->textview);
 			textview_show_mime_part(mimeview->textview, partinfo);
-			
-#if 0 /* this sucks. I'll do better. */
-			val = alertpanel_full(_("Unknown part type"), 
-					      _("The type of this part is unknown. What would you like "
-			        		"to do with it?"),
-					      GTK_STOCK_SAVE, GTK_STOCK_OPEN, _("Display as text"),
-					      FALSE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
-			switch (val) {
-				case G_ALERTDEFAULT:
-					mimeview_save_as(mimeview);
-					break;
-				case G_ALERTALTERNATE:
-					mimeview_open_with(mimeview);
-					break;
-				case G_ALERTOTHER:
-					mimeview_display_as_text(mimeview);
-					break;
-				default:
-			}
-#endif
 			break;
 		}
 	}
@@ -2186,3 +2167,32 @@ void mimeview_update (MimeView *mimeview) {
 		icon_list_create(mimeview, mimeview->mimeinfo);
 	}
 }
+
+void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd)
+{
+	MessageView *msgview = NULL;
+	MainWindow *mainwin = NULL;
+	
+	if (!cmd)
+		return;
+	
+	msgview = mimeview->messageview;
+	if (!msgview)
+		return;
+		
+	mainwin = msgview->mainwin;
+	if (!mainwin)
+		return;
+		
+	else if (!strcmp(cmd, "sc://view_log"))
+		log_window_show(mainwin->logwin);
+	else if (!strcmp(cmd, "sc://save_as"))
+		mimeview_save_as(mimeview);
+	else if (!strcmp(cmd, "sc://display_as_text"))
+		mimeview_display_as_text(mimeview);
+	else if (!strcmp(cmd, "sc://open_with"))
+		mimeview_open_with(mimeview);
+	else if (!strcmp(cmd, "sc://open"))
+		mimeview_launch(mimeview);
+}
+
