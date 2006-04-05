@@ -35,9 +35,9 @@
 );
 
 %lasttranslator = (
-	'bg.po' => 'George Danchev <danchev@spnet.net>',
+	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
 	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
-	'cs.po' => 'Radek Vybíral <Radek.Vybiral@vsb.cz>',
+	'cs.po' => 'Tim <timbrain@post.cz>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
 	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
@@ -51,7 +51,7 @@
 	'ko.po' => 'ChiDeok, Hwang <hwang@mizi.co.kr>',
 	'nb.po' => 'Geir Helland <pjallabais@users.sourceforge.net>',
 	'nl.po' => 'Tim Dijkstra <tim@famdijkstra.org>',
-	'pl.po' => 'Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>',
+	'pl.po' => 'Quar <Quar@sylpheed.quar.org>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
 	'ru.po' => 'Pavlo Bohmat <bohm@ukr.net>',
 	'sk.po' => 'Andrej Kacian <andrej@kacian.sk>',

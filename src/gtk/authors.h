@@ -28,8 +28,9 @@ NULL
 };
 
 static char *TRANS_TEAM_LIST[] = {
-"[bg] George Danchev <danchev@spnet.net>",
+"[bg] Yasen Pramatarov <yasen@lindeas.com>",
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
+"[cs] Tim <timbrain@post.cz>",
 "[de] Stephan Sachse <white@dev-zero.com>",
 "[en_GB] Paul Mangan <twb@users.sf.net>",
 "[el] Stavros Giannouris <stavrosg2002@freemail.gr>",

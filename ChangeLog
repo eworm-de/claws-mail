@@ -1,3 +1,27 @@
+2006-04-05 [paul]	2.0.0cvs185
+
+	* po/bg.po
+	* po/cs.po
+	* po/de.po
+	* po/el.po
+	* po/en_GB.po
+	* po/fi.po
+	* po/fr.po
+	* po/it.po
+	* po/nl.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Yasen Pramatarov, Tim, Stephan Sachse, Stavros 
+		Giannouris, me, Tommi Pirinen, Fabien Vantard, Andrea 
+		Spadaccini, Tim Dijkstra, Quar, Frederico Goncalves 
+		Guimaraes, Aleksandar Urosevic, Ralgh Young
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		added new Bulgarian translator, Yasen Pramatarov <yasen@lindeas.com>
+		and new Czech translator, Tim <timbrain@post.cz>
+
 2006-04-05 [mones]	2.0.0cvs184
 
 	* po/es.po
