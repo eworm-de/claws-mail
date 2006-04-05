@@ -1,3 +1,8 @@
+2006-04-05 [colin]	2.0.0cvs183
+
+	* src/gtk/quicksearch.c
+		Fix bug #929 (unnecessary reload in quick search bar)
+
 2006-04-05 [colin]	2.0.0cvs182
 
 	* src/compose.c

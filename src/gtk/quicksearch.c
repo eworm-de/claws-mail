@@ -183,6 +183,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
+	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
 	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
 				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
@@ -190,6 +191,10 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 
 	/* Show extended search description button, only when Extended is selected */
 	update_extended_buttons(quicksearch);
+
+	if (!search_string || strlen(search_string) == 0) {
+		return TRUE;
+	}
 
 	prepare_matcher(quicksearch);
 
@@ -204,12 +209,17 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
 	prefs_common.summary_quicksearch_recurse = checked;
 
 	/* reselect the search type */
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
 				    prefs_common.summary_quicksearch_type);
+
+	if (!search_string || strlen(search_string) == 0) {
+		return TRUE;
+	}
 
 	prepare_matcher(quicksearch);
 
