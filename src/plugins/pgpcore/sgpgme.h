@@ -42,7 +42,8 @@ gpgme_data_t sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
 gpgme_data_t sgpgme_decrypt_verify	(gpgme_data_t cipher, 
 					 gpgme_verify_result_t *status,
 					 gpgme_ctx_t ctx);
-gchar *sgpgme_get_encrypt_data		(GSList *recp_names);
+gchar *sgpgme_get_encrypt_data		(GSList *recp_names,
+					 gpgme_protocol_t proto);
 gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account);
 
 #endif /* SGPGME_H */

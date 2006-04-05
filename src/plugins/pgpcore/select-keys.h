@@ -28,7 +28,9 @@ typedef enum {
 	KEY_SELECTION_DONT
 } SelectionResult;
 	
-gpgme_key_t *gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result);
+gpgme_key_t *gpgmegtk_recipient_selection (GSList *recp_names, 
+		SelectionResult *result,
+		gpgme_protocol_t proto);
 
 
 #endif /* GPGMEGTK_SELECT_KEYS_H */

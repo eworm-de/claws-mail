@@ -70,7 +70,7 @@ struct select_keys_s {
     unsigned int num_keys;
     gpgme_key_t *kset;
     gpgme_ctx_t select_ctx;
-
+    gpgme_protocol_t proto;
     GtkSortType sort_type;
     enum col_titles sort_column;
     SelectionResult result;
@@ -78,7 +78,8 @@ struct select_keys_s {
 
 
 static void set_row (GtkCList *clist, gpgme_key_t key);
-static void fill_clist (struct select_keys_s *sk, const char *pattern);
+static void fill_clist (struct select_keys_s *sk, const char *pattern,
+			gpgme_protocol_t proto);
 static void create_dialog (struct select_keys_s *sk);
 static void open_dialog (struct select_keys_s *sk);
 static void close_dialog (struct select_keys_s *sk);
@@ -125,7 +126,8 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
  * Return value: NULL on error or a list of list of recipients.
  **/
 gpgme_key_t *
-gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result)
+gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
+				gpgme_protocol_t proto)
 {
     struct select_keys_s sk;
 
@@ -135,8 +137,9 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result)
 
     do {
         sk.pattern = recp_names? recp_names->data:NULL;
+	sk.proto = proto;
         gtk_clist_clear (sk.clist);
-        fill_clist (&sk, sk.pattern);
+        fill_clist (&sk, sk.pattern, proto);
         update_progress (&sk, 0, sk.pattern);
         gtk_main ();
         if (recp_names)
@@ -189,6 +192,8 @@ set_row (GtkCList *clist, gpgme_key_t key)
     text[COL_KEYID] = s;
 
     s = key->uids->name;
+    if (!s || !strlen(s))
+        s = key->uids->uid;
     ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
     if (ret_str && by_written) {
         s = ret_str;
@@ -233,7 +238,7 @@ set_row (GtkCList *clist, gpgme_key_t key)
 }
 
 static void 
-fill_clist (struct select_keys_s *sk, const char *pattern)
+fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t proto)
 {
     GtkCList *clist;
     gpgme_ctx_t ctx;
@@ -245,12 +250,13 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
     clist = sk->clist;
     g_return_if_fail (clist);
 
-    debug_print ("select_keys:fill_clist:  pattern '%s'\n", pattern);
+    debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern, proto);
 
     /*gtk_clist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);
     g_assert (!err);
 
+    gpgme_set_protocol(ctx, proto);
     sk->select_ctx = ctx;
 
     update_progress (sk, ++running, pattern);
@@ -504,7 +510,7 @@ other_btn_cb (GtkWidget *widget, gpointer data)
                          NULL );
     if (!uid)
         return;
-    fill_clist (sk, uid);
+    fill_clist (sk, uid, sk->proto);
     update_progress (sk, 0, sk->pattern);
     g_free (uid);
 }

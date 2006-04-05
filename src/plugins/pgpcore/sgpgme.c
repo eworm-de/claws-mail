@@ -159,6 +159,8 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	gchar *uname = NULL;
 	gpgme_key_t key;
 	gchar *result = NULL;
+	gpgme_error_t err = 0;
+	static gboolean warned = FALSE;
 
 	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
 		return g_strdup(_("The signature can't be checked - GPG error."));
@@ -172,7 +174,14 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		return g_strdup(_("The signature has not been checked."));
 	}
 
-	gpgme_get_key(ctx, sig->fpr, &key, 0);
+	err = gpgme_get_key(ctx, sig->fpr, &key, 0);
+	if (gpg_err_code(err) == GPG_ERR_NO_AGENT) {
+		if (!warned)
+			alertpanel_error(_("PGP Core: Can't get key - no gpg-agent running."));
+		else
+			g_warning(_("PGP Core: Can't get key - no gpg-agent running."));
+		warned = TRUE;
+	}
 	if (key)
 		uname = extract_name(key->uids->uid);
 	else
@@ -353,34 +362,58 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 		return NULL;
 	}
 	
-    	if (!getenv("GPG_AGENT_INFO")) {
+	if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
+    		if (!getenv("GPG_AGENT_INFO")) {
+        		info.c = ctx;
+        		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
+    		}
+	} else {
         	info.c = ctx;
-        	gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
-    	}
-
-	err = gpgme_op_decrypt_verify(ctx, cipher, plain);
-	if (err != GPG_ERR_NO_ERROR) {
-		debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
-		gpgmegtk_free_passphrase();
-		gpgme_data_release(plain);
-		return NULL;
+        	gpgme_set_passphrase_cb (ctx, NULL, &info);
 	}
+	
+	
+	if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
+		err = gpgme_op_decrypt_verify(ctx, cipher, plain);
+		if (err != GPG_ERR_NO_ERROR) {
+			debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
+			gpgmegtk_free_passphrase();
+			gpgme_data_release(plain);
+			return NULL;
+		}
 
-	err = gpgme_data_rewind(plain);
-	if (err) {
-		debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+		err = gpgme_data_rewind(plain);
+		if (err) {
+			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+		}
+
+		debug_print("decrypted.\n");
+		*status = gpgme_op_verify_result (ctx);
+	} else {
+		err = gpgme_op_decrypt(ctx, cipher, plain);
+		if (err != GPG_ERR_NO_ERROR) {
+			debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
+			gpgmegtk_free_passphrase();
+			gpgme_data_release(plain);
+			return NULL;
+		}
+
+		err = gpgme_data_rewind(plain);
+		if (err) {
+			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+		}
+
+		debug_print("decrypted.\n");
+		*status = gpgme_op_verify_result (ctx);
 	}
-
-	debug_print("decrypted.\n");
-	*status = gpgme_op_verify_result (ctx);
-
 	return plain;
 }
 
-gchar *sgpgme_get_encrypt_data(GSList *recp_names)
+gchar *sgpgme_get_encrypt_data(GSList *recp_names, gpgme_protocol_t proto)
 {
 	SelectionResult result = KEY_SELECTION_CANCEL;
-	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names, &result);
+	gpgme_key_t *keys = gpgmegtk_recipient_selection(recp_names, &result,
+				proto);
 	gchar *ret = NULL;
 	int i = 0;
 
@@ -414,6 +447,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
 		gchar *keyid;
 		gpgme_key_t key;
+		gpgme_error_t err;
 
 		if (config->sign_key == SIGN_KEY_BY_FROM)
 			keyid = account->address;
@@ -422,12 +456,27 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		else
 			return FALSE;
 
-		gpgme_op_keylist_start(ctx, keyid, 1);
-		while (!gpgme_op_keylist_next(ctx, &key)) {
+		err = gpgme_op_keylist_start(ctx, keyid, 1);
+		if (err) {
+			g_warning("setup_signers start: %s",
+				gpg_strerror(err));
+			return FALSE;
+		}
+		while (!(err = gpgme_op_keylist_next(ctx, &key))) {
 			gpgme_signers_add(ctx, key);
 			gpgme_key_release(key);
 		}
-		gpgme_op_keylist_end(ctx);
+		if (err && gpg_err_code(err) != GPG_ERR_EOF) {
+			g_warning("setup_signers next: %s",
+				gpg_strerror(err));
+			return FALSE;
+		}
+		err = gpgme_op_keylist_end(ctx);
+		if (err) {
+			g_warning("setup_signers end: %s",
+				gpg_strerror(err));
+			return FALSE;
+		}
 	}
 
 	prefs_gpg_account_free_config(config);
