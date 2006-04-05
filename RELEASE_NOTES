@@ -1,198 +1,136 @@
-30th January 2006                                Sylpheed-Claws 2.0.0
+5th April 2006                                   Sylpheed-Claws 2.1.0
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
 		      
 Sylpheed-Claws is the extended version of Sylpheed, a GTK+ based,
-lightweight, and fast e-mail client
+user-friendly, lightweight, and fast email client.
 
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* libetpan >= 0.41 is now required for IMAP support
+* libetpan version 0.45 or newer is now required for IMAP support,
+  this allows checking for IMAP/SSL certificates.
+
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-Manual
-------
-* A new and completely rewritten manual has been added.
-  It is accessible using your browser by clicking '/Help/Manual' on
-  the main toolbar.
+* Support for the Face header has been added, 
+  see http://quimby.gnus.org/circus/face/
 
-Icon legend
------------
-* An icon legend window has been added to the Help menu, accessible
-  by clicking '/Help/Icon legend' on the main toolbar.
+* In the Templates dialog TAB address completion has been added for
+  Cc and Bcc fields, in addition to To. 
 
-Priting
--------
-* Attached images can now be printed along with the message when using
-  the optional libgnomeprintui support.
+* An account's signature file, (Account Preferences, Compose tab),
+  can now been edited in place using the configured text editor.
 
-Command line usage
-------------------
-* '--exit' has been added.
+* An advanced search is now possible in the '/Edit/Search folder' 
+  dialog.
 
-* '--subscribe' has been added.
-  Calling sylpheed-claws --subscribe '%s' will ask the loaded plugins
-  if they can handle the type of URL passed as a parameter. Thus, if
-  using the RSSyl or vCalendar plugins, for example, the user will be
-  able to subscribe RSS feeds or Webcals from the browser.
+* '/Edit/Find' has been added to the Compose window for text 
+  searching.
 
-* sylpheed-claws email@domain.com  is now equivalent to --compose
+* A progress bar is now shown in the status bar whilst doing a Quick 
+  Search.
 
-* sylpheed-claws proto://blah.com is equivalent to --subscribe
+* A long search can now be cancelled.
 
-GUI improvements
-----------------
-* HIG compliant button order has been implemented.
+* In a Sent mail folder the From column in the message list is now
+  automatically changed to the To column.
 
-* Several dialogues throughout have been improved.
+* '/Message/Colour Label' has been added to the main menu, enabling
+  (unmodifiable) shortcut keys, Ctrl+[0-7].
 
-Main Toolbar
-------------
-* Text can now also been displayed next to the icons.
+* The colour labels are now customisable from the 'Display/Colours'
+  page of the Preferences. It is now possible to choose any colours 
+  and to give them each a label.
 
-* Quick mail retrieval from any account is now possible due to the
-  account submenu which has been added to the 'Get All' button.
+* A Spell Checking option to 'Recheck message when changing 
+  dictionary' has been added.
 
-Compose window
---------------
-* The spellchecker context menu in the compose window has been added
-  to the standard GtkTextView menu instead of replacing it.
+* An option to 'Render HTML-only mail with plugin if possible' has
+  been added to the 'Message View/Text Options' preferences page.
 
-* The Subject in the window title now updates instantaneously.
+* Headers in the message view and the Custom headers dialog are now
+  translated if the option 'Translate header names' is activated.
 
-* The mimetypes list in the attachment pane is now alphabetically
-  ordered.
+* It is now possible to sort the columns in the Addressbook.
 
-Message View
-------------
-* The email and URI parsers have been enhanced.
+* More drag-n-drop capabilities have been added, from the message
+  list to other apps, from the mimeview to other apps, from other 
+  apps to message list, from other apps to folder list, from the 
+  mimeview to the message and folder lists and the Compose window's
+  attachments pane.
 
-Quick Search
-------------
-* In Extended mode, a '...' button has been added, this provides the
-  user with a dialogue enabling the quick formation of search
-  criteria.
+* "Ignore thread" has beed added as a filtering action.
 
-* Do not refocus quick search after executing (Esc or Enter). This
-  enables using the '/' shortcut key, search for something, then move
-  up/down in the message list, and then Esc a search and be back in
-  the folder list.
+* The Compose window is now hidden when sending mails via filtering.
 
-* When quick search is activated, the entry box is given a yellow
-  background for greater visibility.
+* An alphabetical resort is done immediately when a folder's name
+  is changed.
 
-Address book
-------------
-* The LDAP search in the address book now supports wildcard searching
-  using '*'.
+* Unsubscribing a newsgroup now removes the related folder and
+  articles from newscache/
 
-Preferences
------------
-* The option 'Go to inbox after receiving new mail' has been moved
-  from 'Display/Summaries' to 'Mail handling/Receive'.
+* A "Get more..." link has been added to the Plugins window. This
+  loads http://claws.sylpheed.org/plugins.php in your browser.
 
-* The 'Wrap at send' option has been removed.
+* The SpamAssassin plugin is now equipped with a spam learning 
+  interface, usable by right-clicking a message and choosing
+  'Mark as Spam' or 'Mark as Ham' in the Mark submenu. It is now also
+  possible to disable SpamAssasin filtering when receiving mail, so
+  that the plugin can be used for learning only.
 
-* Colour preferences have been moved from '/Message View/Colors' to
-  '/Display/Colors'.
+* Remote learning in the SpamAssassin plugin has been added. This 
+  requires SpamAssassin 3.1.x.
 
-* The previously hidden option, color_new, has been added to the GUI
-   as '/Display/Colors/Folder' containing new messages.
+* A new script has been added that integrates a Thunderbird folder 
+  tree into Sylpheed-Claws, tools/tbird2syl.py
 
-Plugins
--------
-* The spamassassin and spamassassin_gtk plugins have been merged into
-  one single plugin, and this plugin is now built by default if the
-  requirements are matched.
-
-* The clamav and clamav_gtk plugins have been merged into one single
-  plugin.
-
-* GnuPG support: Add support for PKA info if available
-
-* The PGP/Inline plugin now supports Content-Type 'application/pgp'.
-
-* A check to verify that plugins are licenced under a GPL-compatible
-  licence has been added.
-
-* The unmaintained mathml_viewer plugin has been removed.
-
-Tools
------
-* Add filter_conv_new.pl.
-  Converts the new style Sylpheed filter rules (Sylpheed >= 0.9.99)
-  to Claws filtering rules.
-
-Translations
-------------
-* new Greek and Swedish translations.
-
-* updated Brazilian Portuguese, British English, Dutch, Finnish,
-  French, German, Italian,  Norwegian, Polish, Slovak, Serbian,
-  Simplified Chinese, Spanish, and Traditional Chinese translations.
+* updated Brazilian Portuguese, British English, Bulgarian, Czech,
+  Dutch, Finnish, French, German, Greek, Italian, Polish, Serbian,
+  Simplified Chinese, and Spanish translations.
 
 * Bugfixes: 
-	o bug 843, 'Inbox cannot be changed for local mailboxes'
-	o bug 845, 'sylpheed-claws 1.9.99+ start in minimised state'
-	o bug 856, 'reediting messages forgets Request Return
-		    Receipt'
-	o bug 862, 'undo of wrapped, pasted text deletes part of
-		    message'
-	o bug 863, 'windows-1252 encoding option missing from message
-		    view window'
-	o bug 866, 'Show key id when missing'
-	o bug 867, 'Report also key trust'
-	o bug 875, 'Freeze On Inline Forward of Large Message'
-	o bug 882, 'quick scroll in folder list displays wrong folder
-		    contents'
-	o bug 883, 'default inbox does not track folder move'
-	o bug 884, ''Send receipt' button visible in queue'
-	o bug 888, '2.0.0rc3 not displaying image in message view'
-	o bug 896, 'PT_BR locale broken'
-	o bug 897, 'message header is resetted if one is copied to
-		    Drafts'
-	o crash when closing description windows using the WM's [X]
-	  button
-	o crash when copying/moving message(s) from and to the same
-	  folder
-	o missing listing of text/* attachments in the message view
-	o Filtering ~message, ~headers_part, ~body_part rules
-	o possible crash on connection failure when sending
-	o crashes in prefs after unloading Spamassassin or Clamav
-	  plugins
-	o spurious displaying on message when "Always open messages"
-	  isn't set
-	o last-used directory for loading attachments wasn't cached
-	o assertion failure in msgcache_add_msg
-	o cursor positioning not obeying %X
-	o don't deselect stuff in compose window before right-
-          clicking, with aspell.
-	o autosave on IMAP
-	o copying/moving between normal and draft/queue in IMAP
-	o occasional failure in fetching a mail over IMAP
-	o don't remove a draft when sending it, if it is locked
-	o wrapping issues
-	o prevent mail from being lost without notice when an SMTP
-	  error happens on trying to send an unmodified drafted mail
-	o forget SMTP password if wrong
-	o recursive prefs apply
-	o attach_load_dir set to PLUGINDIR on plugin load
-	o possible crashes on exit and in addressbook
-	o allow templates without text
-	o deselection of text when right-clicking in Compose windows
-	o automatic encoding in some corner-cases
-	o 'Get Mail' sensitivity in the Trayicon Plugin
-	o 'Trash' sensitivity when receiving
-	o don't start the wizard when folders exist, even if they are
-	  unloaded
-	o update the default keybinds
+
+	o bug 908, 'Flagging on IMAP-Server fails'
+	o bug 916, 'newsgroup unsubscribe segmentation fault'
+	o bug 924, 'Account combo box shows up wrong if & is in 
+		    account name'
+	o bug 927, 'SIGSEGV during Update Summary'
+	o bug 929, 'Unnecessary reload in quick search bar'
+	o fix a crash in JPilot
+	o fix drafting on IMAP
+	o prevent double-timeouts when connection IMAP fails
+	o return immediately when IMAP password dialog is cancelled
+	o fix missing expunge on IMAP, causing folder refresh 
+          problems in certain conditions
+	o fix crash on Reply with no From:
+	o fix undoing by blocks with spaces in Compose
+	o fix auto-wrap disabling itself after a middle-click paste
+	o convert passphrase to locale encoding
+	o fix GPG preferences items sensitivity
+	o fix some problems on heavily customized toolbars
+	o fix race conditions when big uncached mails are used in 
+          closable windows
+	o fix crashes on cancelling the Quick Search
+	o fix wrong Fake URL Warning
+	o fix the busy cursor not appearing in the textview
+	o fix a crash with the preview in file dialog, on Solaris
+	o fix useless reload of summaryview after execution (of copy 
+          or delete actions)
+	o fix update of caches after actions involving %f or %F
+	o fix search in quoted-printable bodies
+	o fix code conversion on reply when date format returns a 
+  	  non-UTF8 string
+	o fix some GUI issues and compilation warnings
+	o Empty strings for passwords are now allowed.
+	o disable Manual menu if the manual's not installed
+	o Allow URIs containing '(' and ')'
 
 For further details of the numbered bugs listed above consult
-www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
+http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
 
 * and other code reorganisation, cleanups, and more.
 
