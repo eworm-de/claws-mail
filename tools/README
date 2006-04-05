@@ -23,6 +23,7 @@ Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
   convert_mbox.pl		Import mbox files
   maildir2sylpheed.pl		Convert a maildir mailbox to MH format
+  tbird2syl.py			Integrate a Thunderbird folder tree into Claws
 
 Other tools:
   acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
@@ -356,6 +357,25 @@ Mailbox conversion
 		--help		brief usage info
 	
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
+* tbird2syl.py
+
+  WHAT IT DOES
+	This python script integrates a Thunderbird folder tree into 
+        Sylpheed-Claws.
+  
+  HOW TO USE IT
+  
+	The script receives two parameters from command-line:
+	<Thunderbird folder path> <Sylpheed folder path>
+
+	The best way to use it is to go to inside your Thunderbird
+	root mailfolder directory and invoke it as:
+
+		<path>\python2.4 <path>\tbird2syl.py . <path to sylpheed>\Mail
+
+  Contact: Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
+
 --------------------------------------------------------------------------------
 
 Other tools
