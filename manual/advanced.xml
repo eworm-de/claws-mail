@@ -67,6 +67,15 @@
     Processing rules are accompanied by Pre-processing and Post-processing rules. Like Processing rules, they apply only when opening a folder, but like Filtering rules, they are shared accross all folders. You can configure them from the Tools menu. Pre-processing rules are executed before the folder's specific Processing rules, while Post-processing rules are executed afterwards.
     </para>
   </section>
+  <section id="adv_colour_labels">
+  <title>Colour Labels</title>
+  <para>
+  Colour labels can be used to denote a message as having a particular significance. To set a colour label simply right-click a message in the Message List and use the <quote>Colour label</quote> submenu.
+  </para>
+  <para>
+  Colour labels are user-configurable. Both the colour and the label can be set by the user. Preferences can be found on the <quote>Configuration/Preferences/Display/Colours</quote> page.
+  </para>
+  </section>
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
