@@ -614,6 +614,13 @@ void gtk_sctree_set_anchor_row (GtkSCTree *sctree, GtkCTreeNode *node)
 	sctree->anchor_row = node;
 }
 
+void gtk_sctree_remove_node (GtkSCTree *sctree, GtkCTreeNode *node)
+{
+	if (sctree->anchor_row == node)
+		sctree->anchor_row = NULL;
+	gtk_ctree_remove_node(GTK_CTREE(sctree), node);
+}
+
 /***********************************************************
  *             Tree sorting functions                      *
  ***********************************************************/

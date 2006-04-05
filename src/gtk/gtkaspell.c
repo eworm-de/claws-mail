@@ -385,6 +385,11 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	GtkTextBuffer *buffer;
 
 	g_return_val_if_fail(gtktext, NULL);
+	g_return_val_if_fail(dictionary && strlen(dictionary) > 0, 
+			NULL);
+	g_return_val_if_fail(dictionary_path && strlen(dictionary_path) > 0, 
+			NULL);
+
 	buffer = gtk_text_view_get_buffer(gtktext);
 	
 	dict 	       = g_new0(Dictionary, 1);

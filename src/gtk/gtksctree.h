@@ -68,6 +68,9 @@ void gtk_sctree_unselect_all		(GtkSCTree	*sctree);
 void gtk_sctree_set_anchor_row		(GtkSCTree	*sctree,
 					 GtkCTreeNode	*node);
 
+void gtk_sctree_remove_node		(GtkSCTree	*sctree,
+					 GtkCTreeNode	*node);
+
 /***********************************************************
  *             Tree sorting functions                      *
  ***********************************************************/

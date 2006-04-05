@@ -2430,6 +2430,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				msginfo->folder->prefs->default_reply_to);
 		} else {
 			gchar *tmp1 = NULL;
+			if (!msginfo->from)
+				return;
 			Xstrdup_a(tmp1, msginfo->from, return);
 			extract_address(tmp1);
 			if (to_all || to_sender ||
@@ -5788,7 +5790,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
 	if (mode != COMPOSE_REDIRECT) {
         	if (prefs_common.enable_aspell && prefs_common.dictionary &&
-	    	    strcmp(prefs_common.dictionary, _("None"))) {
+	    	    strcmp(prefs_common.dictionary, "")) {
 			gtkaspell = gtkaspell_new(prefs_common.aspell_path,
 						  prefs_common.dictionary,
 						  conv_get_locale_charset_str(),
@@ -7227,6 +7229,12 @@ static void compose_send_later_cb(gpointer data, guint action,
 		compose_close(compose);
 	else if (val == -2) {
 		alertpanel_error(_("Could not queue message:\n\n%s."), strerror(errno));
+	} else if (val == -3) {
+		alertpanel_error(_("Could not queue message for sending:\n\n"
+				   "Signature failed."));
+	} else if (val == -4) {
+		alertpanel_error(_("Could not queue message for sending:\n\n"
+				   "Charset conversion failed."));
 	}
 }
 

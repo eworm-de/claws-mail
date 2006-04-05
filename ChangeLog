@@ -1,3 +1,21 @@
+2006-04-05 [colin]	2.0.0cvs182
+
+	* src/compose.c
+		Fix crash on Reply with no From:
+		Show signature and conversion error on queuing 
+		(but not sending)
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Factorize threading code and make sure msginfo 
+		is not null when it comes from a GtkCTreeRow's 
+		data
+	* src/gtk/gtkaspell.c
+		Check for necessary things
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		Reset anchor if necessary when removing node
+
 2006-03-29 [colin]	2.0.0cvs181
 
 	* src/folderview.c

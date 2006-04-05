@@ -192,7 +192,6 @@ void summary_select_node	  (SummaryView		*summaryview,
 				   gboolean		 do_refresh);
 
 void summary_thread_build	  (SummaryView		*summaryview);
-void summary_unthread		  (SummaryView		*summaryview);
 
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);

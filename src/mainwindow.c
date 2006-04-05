@@ -3035,16 +3035,18 @@ static void hide_read_messages (MainWindow *mainwin, guint action,
 
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
+	gboolean threaded = FALSE;
 	if (mainwin->menu_lock_count) return;
 	if (!mainwin->summaryview->folder_item) return;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		summary_thread_build(mainwin->summaryview);
-/*		mainwin->summaryview->folder_item->threaded = TRUE; */
-	} else {
-		summary_unthread(mainwin->summaryview);
-/*		mainwin->summaryview->folder_item->threaded = FALSE; */
-	}
+	threaded = GTK_CHECK_MENU_ITEM(widget)->active;
+
+	mainwin->summaryview->folder_item->threaded = threaded; 
+
+	mainwin->summaryview->threaded = threaded;
+
+	summary_show(mainwin->summaryview, 
+			mainwin->summaryview->folder_item);
 }
 
 static void expand_threads_cb(MainWindow *mainwin, guint action,
