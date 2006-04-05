@@ -1369,3 +1369,4 @@
 ( cvs diff -u -r 1.207.2.90 -r 1.207.2.91 src/folderview.c;  ) > 2.0.0cvs181.patchset
 ( cvs diff -u -r 1.382.2.257 -r 1.382.2.258 src/compose.c;  cvs diff -u -r 1.274.2.104 -r 1.274.2.105 src/mainwindow.c;  cvs diff -u -r 1.395.2.189 -r 1.395.2.190 src/summaryview.c;  cvs diff -u -r 1.68.2.21 -r 1.68.2.22 src/summaryview.h;  cvs diff -u -r 1.9.2.37 -r 1.9.2.38 src/gtk/gtkaspell.c;  cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/gtksctree.h;  ) > 2.0.0cvs182.patchset
 ( cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/gtk/quicksearch.c;  ) > 2.0.0cvs183.patchset
+( cvs diff -u -r 1.60.2.26 -r 1.60.2.27 po/es.po;  ) > 2.0.0cvs184.patchset
