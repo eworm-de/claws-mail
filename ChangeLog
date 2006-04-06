@@ -1,3 +1,11 @@
+2006-04-06 [colin]	2.1.0cvs1-stable
+
+	* src/addressbook.c
+		From 2.1.0cvs5
+		Fix crash with empty columns
+	* commitHelper
+		mod for stable branch
+
 2006-04-05 [paul]	2.1.0
 
 	2.1.0 released

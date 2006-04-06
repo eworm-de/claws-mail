@@ -5,7 +5,7 @@ tmpfile=${0##*/}.tmp
 head -n 16 configure.ac | grep VERSION= > $tmpfile
 source $tmpfile
 EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
 nextextra="$EXTRA_VERSION"
 nextextratype="head"
 rm -f $tmpfile
