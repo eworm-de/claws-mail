@@ -431,6 +431,7 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 	titles[col_pos[F_COL_FOLDER]] = _("Folder");
 	titles[col_pos[F_COL_NEW]]    = _("New");
 	titles[col_pos[F_COL_UNREAD]] = _("Unread");
+	/* TRANSLATORS: This in Number sign in American style */
 	titles[col_pos[F_COL_TOTAL]]  = _("#");
 
 	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],

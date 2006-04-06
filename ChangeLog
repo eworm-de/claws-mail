@@ -1,3 +1,9 @@
+2006-04-06 [colin]	2.1.0cvs9
+
+	* src/folderview.c
+		gettext patch to tell translators about _("#"),
+		by Maxim Britov
+
 2006-04-06 [colin]	2.1.0cvs8
 
 	* src/textview.c
