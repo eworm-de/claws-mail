@@ -1,3 +1,14 @@
+2006-04-06 [mones]	2.1.0cvs6
+
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Have a nice replace button. Patch by Pawel Pekala
+
 2006-04-06 [colin]	2.1.0cvs5
 
 	* src/addressbook.c

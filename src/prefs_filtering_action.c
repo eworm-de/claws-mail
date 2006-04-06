@@ -486,7 +486,7 @@ static void prefs_filtering_action_create(void)
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label(_("  Replace  "));
+	subst_btn = gtkut_get_replace_btn(_("Replace"));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
