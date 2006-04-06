@@ -115,7 +115,7 @@ gchar *mgu_list_coalesce( GSList *list ) {
 * Replace existing string with new string.
 */
 gchar *mgu_replace_string( gchar *str, const gchar *value ) {
-	if( str ) g_free( str );
+	g_free( str );
 	if( value ) {
 		str = g_strdup( value );
 		g_strstrip( str );

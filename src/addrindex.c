@@ -1333,7 +1333,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		gint ivalue = atoi( value );
 
 		if( strcmp( name, ATTAG_LDAP_NAME ) == 0 ) {
-			if( serverName ) g_free( serverName );
+			g_free( serverName );
 			serverName = g_strdup( value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_HOST ) == 0 ) {
@@ -1352,7 +1352,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 			ldapctl_set_bind_password( ctl, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_CRITERIA ) == 0 ) {
-			if( criteria ) g_free( criteria );
+			g_free( criteria );
 			criteria = g_strdup( value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_MAX_ENTRY ) == 0 ) {

@@ -1409,14 +1409,14 @@ static void mimeview_save_all(MimeView *mimeview)
 
 	dirname = filesel_select_file_save_folder(_("Select destination folder"), startdir);
 	if (!dirname) {
-		if (startdir) g_free(startdir);
+		g_free(startdir);
 		return;
 	}
 
 	if (!is_dir_exist (dirname)) {
 		alertpanel_error(_("'%s' is not a directory."),
 				 dirname);
-		if (startdir) g_free(startdir);
+		g_free(startdir);
 		return;
 	}
 
@@ -1445,12 +1445,9 @@ static void mimeview_save_all(MimeView *mimeview)
 		partinfo = procmime_mimeinfo_next(partinfo);
 	}
 
-	if (prefs_common.attach_save_dir)
-		g_free(prefs_common.attach_save_dir);
-
+	g_free(prefs_common.attach_save_dir);
+	g_free(startdir);
 	prefs_common.attach_save_dir = g_strdup(dirname);
-
-	if (startdir) g_free(startdir);
 }
 
 /**
@@ -1509,8 +1506,7 @@ static void mimeview_save_as(MimeView *mimeview)
 
 	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
-		if (prefs_common.attach_save_dir)
-			g_free(prefs_common.attach_save_dir);
+		g_free(prefs_common.attach_save_dir);
 		prefs_common.attach_save_dir = g_strdup(filedir);
 	}
 

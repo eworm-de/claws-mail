@@ -540,8 +540,7 @@ void prefs_msg_colors_save(PrefsPage *_page)
 
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
-		if (prefs_common.custom_colorlabel[c].label)
-			g_free(prefs_common.custom_colorlabel[c].label);
+		g_free(prefs_common.custom_colorlabel[c].label);
 		prefs_common.custom_colorlabel[c].label =
 			gtk_editable_get_chars(GTK_EDITABLE(page->custom_colorlabel_entry[c]), 0, -1);
 	}

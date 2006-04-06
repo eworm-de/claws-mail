@@ -350,7 +350,7 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 					if (err) g_error_free(err);
 				}					
 				if (pix) {
-					if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+					g_free(pix_d->icon_path);
 					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
 				}
 				g_free(icon_file_name);
@@ -366,7 +366,7 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 	if (!pix_d->pixbuf) {
 		pix_d->pixbuf = gdk_pixbuf_new_from_xpm_data((const gchar **) pix_d->data);
 		if (pix_d->pixbuf) {
-			if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+			g_free(pix_d->icon_path);
 			pix_d->icon_path = g_strdup(DEFAULT_PIXMAP_THEME);	
 		}
 	}
@@ -410,7 +410,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 				if (is_file_exist(icon_file_name))
 					PIXMAP_CREATE_FROM_FILE(window, pix, pix_d->mask, icon_file_name);
 				if (pix) {
-					if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+					g_free(pix_d->icon_path);
 					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
 				}
 				g_free(icon_file_name);
@@ -426,7 +426,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 	if (!pix_d->pixmap) {
 		PIXMAP_CREATE(window, pix_d->pixmap, pix_d->mask, pix_d->data);
 		if (pix_d->pixmap) {
-			if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+			g_free(pix_d->icon_path);
 			pix_d->icon_path = g_strdup(DEFAULT_PIXMAP_THEME);	
 		}
 	}
@@ -507,8 +507,7 @@ void stock_pixmap_themes_list_free(GList *list)
 	GList *ptr;
 
 	for (ptr = g_list_first(list); ptr != NULL; ptr = g_list_next(ptr)) 
-		if (ptr->data)
-			g_free(ptr->data);
+		g_free(ptr->data);
 	g_list_free(list);		
 }
 

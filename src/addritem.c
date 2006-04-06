@@ -1406,16 +1406,12 @@ void addritem_parse_first_last( ItemPerson *person ) {
 		}
 	}
 
-	if( person->firstName ) {
-		g_free( person->firstName );
-	}
+	g_free( person->firstName );
 	person->firstName = fName;
 	if( person->firstName )
 		g_strstrip( person->firstName );
 
-	if( person->lastName ) {
-		g_free( person->lastName );
-	}
+	g_free( person->lastName );
 	person->lastName = lName;
 	if( person->lastName )
 		g_strstrip( person->lastName );

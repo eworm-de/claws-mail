@@ -414,8 +414,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	sigmultipart->subtype = g_strdup("signed");
 	
 	do {
-		if (boundary)
-			g_free(boundary);
+		g_free(boundary);
 		boundary = generate_mime_boundary("Sig");
 	} while (strstr(test_msg, boundary) != NULL);
 	

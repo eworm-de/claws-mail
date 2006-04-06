@@ -4309,8 +4309,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	        mimempart->subtype = g_strdup("mixed");
 
 		do {
-			if (boundary)
-				g_free(boundary);
+			g_free(boundary);
 			boundary = generate_mime_boundary(NULL);
 		} while (strstr(buf, boundary) != NULL);
 
@@ -6363,8 +6362,7 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->msgid);
 	g_free(compose->boundary);
 
-	if (compose->redirect_filename)
-		g_free(compose->redirect_filename);
+	g_free(compose->redirect_filename);
 	if (compose->undostruct)
 		undo_destroy(compose->undostruct);
 

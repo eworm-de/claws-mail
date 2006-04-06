@@ -237,10 +237,8 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
  */
 void matcherprop_free(MatcherProp *prop)
 {
-	if (prop->expr) 
-		g_free(prop->expr);
-	if (prop->header)
-		g_free(prop->header);
+	g_free(prop->expr);
+	g_free(prop->header);
 	if (prop->preg != NULL) {
 		regfree(prop->preg);
 		g_free(prop->preg);

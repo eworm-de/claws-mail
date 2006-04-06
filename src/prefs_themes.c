@@ -422,7 +422,6 @@ static void prefs_themes_btn_use_clicked_cb(GtkWidget *widget, gpointer data)
 
 	theme_str = tdata->displayed;
 	
-	if (prefs_common.pixmap_theme_path != NULL)
 		g_free(prefs_common.pixmap_theme_path);
 	
         prefs_common.pixmap_theme_path = g_strdup(theme_str);
@@ -571,7 +570,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	else
 		alertpanel_error(_("File %s failed\nwhile installing theme."), cinfo->status);
 end_inst:
-	if (cinfo->dest != NULL) g_free(cinfo->dest);
+	g_free(cinfo->dest);
 	g_free(filename);
 	g_free(source);
 	g_free(themeinfo);

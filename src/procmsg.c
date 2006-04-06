@@ -2078,8 +2078,7 @@ int procmsg_spam_learner_learn (MsgInfo *info, GSList *list, gboolean spam)
 static gchar *spam_folder_item = NULL;
 void procmsg_spam_set_folder (const char *item_identifier)
 {
-	if (spam_folder_item)
-		g_free(spam_folder_item);
+	g_free(spam_folder_item);
 	if (item_identifier)
 		spam_folder_item = g_strdup(item_identifier);
 	else

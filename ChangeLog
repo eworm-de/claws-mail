@@ -1,3 +1,36 @@
+2006-04-06 [mones]	2.1.0cvs7
+
+	* src/addr_compl.c
+	* src/addrindex.c
+	* src/addritem.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/filtering.c
+	* src/folder.c
+	* src/folder_item_prefs.c
+	* src/folderview.c
+	* src/localfolder.c
+	* src/matcher.c
+	* src/mimeview.c
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/stock_pixmap.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/toolbar.c
+	* src/common/mgutils.c
+	* src/common/prefs.c
+	* src/common/ssl_certificate.c
+	* src/gtk/colorlabel.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/spamassassin/spamassassin.c
+		Removed redundant NULL checks for g_free() calls.
+		Patch by Pawel Pekala.
+
 2006-04-06 [mones]	2.1.0cvs6
 
 	* src/prefs_actions.c

@@ -346,13 +346,9 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					execute_command_line(tmpcmd, FALSE);
 					g_free(tmpcmd);
 				}
-				if (tmpfile != NULL) {
-					g_free(tmpfile);
-				}
+				g_free(tmpfile);
 			}
-			if (spamc_wrapper != NULL) {
-				g_free(spamc_wrapper);
-			}
+			g_free(spamc_wrapper);
 			return 0;
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s %s %s",
@@ -372,9 +368,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					g_free(cmd);
 					cmd = tmpcmd;
 				}
-				if (tmpfile != NULL) {
-					g_free(tmpfile);
-				}
+				g_free(tmpfile);
 			}
 		}
 	}
@@ -385,9 +379,8 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	/* only run sync calls to sa-learn/spamc to prevent system lockdown */
 	execute_command_line(cmd, FALSE);
 	g_free(cmd);
-	if (spamc_wrapper != NULL) {
-		g_free(spamc_wrapper);
-	}
+	g_free(spamc_wrapper);
+
 	return 0;
 }
 

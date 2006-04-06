@@ -653,10 +653,8 @@ void toolbar_clear_list(ToolbarType source)
 		toolbar_config[source].item_list = 
 			g_slist_remove(toolbar_config[source].item_list, item);
 
-		if (item->file)
-			g_free(item->file);
-		if (item->text)
-			g_free(item->text);
+		g_free(item->file);
+		g_free(item->text);
 		g_free(item);	
 	}
 	g_slist_free(toolbar_config[source].item_list);
@@ -1931,8 +1929,7 @@ void toolbar_main_set_sensitive(gpointer data)
 	while (entry_list != NULL) {
 		Entry *e = (Entry*) entry_list->data;
 
-		if (e)
-			g_free(e);
+		g_free(e);
 		entry_list = g_slist_remove(entry_list, e);
 	}
 

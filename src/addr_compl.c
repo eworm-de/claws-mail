@@ -282,8 +282,7 @@ static gboolean is_completion_pending(void)
 static void clear_completion_cache(void)
 {
 	if (is_completion_pending()) {
-		if (g_completion_prefix)
-			g_free(g_completion_prefix);
+		g_free(g_completion_prefix);
 
 		if (g_completion_addresses) {
 			g_slist_free(g_completion_addresses);
@@ -1102,9 +1101,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 	/* printf( "search for :::%s:::\n", searchTerm ); */
 
 	/* Clear any existing search */
-	if( _compWindow_->searchTerm ) {
-		g_free( _compWindow_->searchTerm );
-	}
+	g_free( _compWindow_->searchTerm );
 	_compWindow_->searchTerm = g_strdup( searchTerm );
 
 	/* Perform search on local completion index */

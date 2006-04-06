@@ -49,8 +49,7 @@ void folder_local_set_xml(Folder *_folder, XMLTag *tag)
 
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "path")) {
-			if (folder->rootpath != NULL)
-				g_free(folder->rootpath);
+			g_free(folder->rootpath);
 			folder->rootpath = g_strdup(attr->value);
 		}
 	}

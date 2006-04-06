@@ -346,8 +346,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	stat(tmpfilename, &statbuf);
 	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
 		g_unlink(mimeinfo->data.filename);
-	if (mimeinfo->data.filename != NULL)
-		g_free(mimeinfo->data.filename);
+	g_free(mimeinfo->data.filename);
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
 	mimeinfo->offset = 0;

@@ -104,8 +104,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 			return;
 		}
 	} else {
-		if (quicksearch->search_string != NULL)
-			g_free(quicksearch->search_string);
+		g_free(quicksearch->search_string);
 		quicksearch->search_string = g_strdup(search_string);
 	}
 

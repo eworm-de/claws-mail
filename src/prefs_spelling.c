@@ -368,13 +368,11 @@ void prefs_spelling_save(PrefsPage *_page)
 	prefs_common.use_alternate =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->use_alternate_checkbtn));
 
-	if (prefs_common.aspell_path)
-		g_free(prefs_common.aspell_path);
+	g_free(prefs_common.aspell_path);
 	prefs_common.aspell_path =
 		gtk_editable_get_chars(GTK_EDITABLE(spelling->aspell_path_entry), 0, -1);
 
-	if (prefs_common.dictionary != NULL)
-		g_free(prefs_common.dictionary);
+	g_free(prefs_common.dictionary);
 	prefs_common.dictionary = 
 		gtkaspell_get_dictionary_menu_active_item(
 			gtk_option_menu_get_menu(

@@ -225,12 +225,10 @@ void folder_set_xml(Folder *folder, XMLTag *tag)
 
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "name")) {
-			if (folder->name != NULL)
-				g_free(folder->name);
+			g_free(folder->name);
 			folder->name = g_strdup(attr->value);
 			if (rootitem != NULL) {
-				if (rootitem->name != NULL)
-					g_free(rootitem->name);
+				g_free(rootitem->name);
 				rootitem->name = g_strdup(attr->value);
 			}
 		} else if (!strcmp(attr->name, "account_id")) {
@@ -461,12 +459,10 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			else if (!g_ascii_strcasecmp(attr->value, "trash"))
 				item->stype = F_TRASH;
 		} else if (!strcmp(attr->name, "name")) {
-			if (item->name != NULL)
-				g_free(item->name);
+			g_free(item->name);
 			item->name = g_strdup(attr->value);
 		} else if (!strcmp(attr->name, "path")) {
-			if (item->path != NULL)
-				g_free(item->path);
+			g_free(item->path);
 			item->path = g_strdup(attr->value);
 		} else if (!strcmp(attr->name, "mtime"))
 			item->mtime = strtoul(attr->value, NULL, 10);
@@ -3541,10 +3537,8 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 
 static gboolean persist_prefs_free(gpointer key, gpointer val, gpointer data)
 {
-	if (key) 
-		g_free(key);
-	if (val) 
-		g_free(val);
+	g_free(key);
+	g_free(val);
 	return TRUE;	
 }
 

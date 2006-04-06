@@ -2252,8 +2252,7 @@ static void save_file_cb (TextView *textview, guint action, void *data)
 	
 	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
-		if (prefs_common.attach_save_dir)
-			g_free(prefs_common.attach_save_dir);
+		g_free(prefs_common.attach_save_dir);
 		prefs_common.attach_save_dir = g_strdup(filedir);
 	}
 

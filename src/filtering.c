@@ -78,8 +78,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 void filteringaction_free(FilteringAction * action)
 {
 	g_return_if_fail(action);
-	if (action->destination)
-		g_free(action->destination);
+	g_free(action->destination);
 	g_free(action);
 }
 

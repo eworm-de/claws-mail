@@ -125,9 +125,7 @@ void colorlabel_update_colortable_from_prefs(void)
 		for (c = 0; c < COLORLABELS; c++) {
 			INTCOLOR_TO_GDKCOLOR(prefs_common.custom_colorlabel[c].color,
 					label_colors[i][c].color);
-			if (label_colors[i][c].label != NULL) {
-				g_free(label_colors[i][c].label);
-			}
+			g_free(label_colors[i][c].label);
 			label_colors[i][c].label =
 					g_strdup(prefs_common.custom_colorlabel[c].label);
 		}

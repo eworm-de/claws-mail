@@ -109,10 +109,10 @@ PrefFile *prefs_write_open(const gchar *path)
  */
 #define PREFS_FILE_FREE() \
 { \
-  if (path)	g_free(path); \
-  if (tmppath)	g_free(tmppath); \
-  if (bakpath)	g_free(bakpath); \
-  if (pfile)	g_free(pfile); \
+  g_free(path); \
+  g_free(tmppath); \
+  g_free(bakpath); \
+  g_free(pfile); \
 }
 gint prefs_file_close(PrefFile *pfile)
 {

@@ -194,22 +194,14 @@ char* ssl_certificate_to_string(SSLCertificate *cert)
 				fingerprint,
 				(sig_status==NULL ? "correct":sig_status));
 
-	if (issuer_commonname)
-		g_free(issuer_commonname);
-	if (issuer_location)
-		g_free(issuer_location);
-	if (issuer_organization)
-		g_free(issuer_organization);
-	if (subject_commonname)
-		g_free(subject_commonname);
-	if (subject_location)
-		g_free(subject_location);
-	if (subject_organization)
-		g_free(subject_organization);
-	if (fingerprint)
-		g_free(fingerprint);
-	if (sig_status)
-		g_free(sig_status);
+	g_free(issuer_commonname);
+	g_free(issuer_location);
+	g_free(issuer_organization);
+	g_free(subject_commonname);
+	g_free(subject_location);
+	g_free(subject_organization);
+	g_free(fingerprint);
+	g_free(sig_status);
 	return ret;
 }
 	
@@ -220,8 +212,7 @@ void ssl_certificate_destroy(SSLCertificate *cert)
 
 	if (cert->x509_cert)
 		X509_free(cert->x509_cert);
-	if (cert->host)	
-		g_free(cert->host);
+	g_free(cert->host);
 	g_free(cert);
 	cert = NULL;
 }

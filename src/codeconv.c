@@ -636,8 +636,7 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 		g_free(tmpstr);
 		return;
 	} else {
-		if (tmpstr)
-			g_free(tmpstr);
+		g_free(tmpstr);
 		conv_utf8todisp(outbuf, outlen, inbuf);
 	}
 }

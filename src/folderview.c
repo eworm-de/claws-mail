@@ -2273,8 +2273,7 @@ static gchar *last_font = NULL;
 void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
 	/* force reinit */
-	if (last_font) 
-		g_free(last_font);
+	g_free(last_font);
 	last_font = NULL;
 	
 }
@@ -2291,9 +2290,7 @@ void folderview_reflect_prefs(void)
 	if (last_font && !strcmp(last_font, NORMAL_FONT))
 		update_font = FALSE;
 
-	if (last_font)
-		g_free(last_font);
-	
+	g_free(last_font);
 	last_font = g_strdup(NORMAL_FONT);
 
 	if (update_font) {		

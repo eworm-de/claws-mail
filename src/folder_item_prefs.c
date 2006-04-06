@@ -205,10 +205,8 @@ FolderItemPrefs * folder_item_prefs_new(void)
 
 void folder_item_prefs_free(FolderItemPrefs * prefs)
 {
-	if (prefs->default_to) 
-		g_free(prefs->default_to);
-	if (prefs->default_reply_to) 
-		g_free(prefs->default_reply_to);
+	g_free(prefs->default_to);
+	g_free(prefs->default_reply_to);
 	g_free(prefs);
 }
 
