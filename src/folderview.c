@@ -924,7 +924,9 @@ void folderview_append_item(FolderItem *item)
 static void folderview_set_folders(FolderView *folderview)
 {
 	GList *list;
+#ifndef HAVE_LIBETPAN
 	static gboolean missing_imap_warning = TRUE;
+#endif
 	list = folder_get_list();
 
 	for (; list != NULL; list = list->next) {

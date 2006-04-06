@@ -131,7 +131,6 @@ StockPixmap prefs_themes_icons[PREVIEW_ICONS] = {
 static void prefs_themes_btn_use_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_btn_remove_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_btn_install_clicked_cb	(GtkWidget *widget, gpointer data);
-static void prefs_themes_btn_more_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_menu_item_activated_cb	(GtkWidget *widget, gpointer data);
 
 static void prefs_themes_update_buttons		(const ThemesData *tdata);
@@ -864,7 +863,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_install, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (btn_install, GTK_CAN_DEFAULT);
 
-	btn_more = gtkut_get_link_btn(window, THEMES_URI, _("Get more..."));
+	btn_more = gtkut_get_link_btn((GtkWidget *)window, THEMES_URI, _("Get more..."));
 	gtk_widget_show (btn_more);
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_more, FALSE, FALSE, 0);
 

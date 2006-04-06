@@ -1,3 +1,10 @@
+2006-04-06 [wwp]	2.1.0cvs11
+
+	* src/folderview.c
+	* src/prefs_themes.c
+	* src/summaryview.c
+		Fixed some compilation warnings.
+
 2006-04-06 [colin]	2.1.0cvs10
 
 	* manual/advanced.xml

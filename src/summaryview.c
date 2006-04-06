@@ -3894,7 +3894,7 @@ gboolean summary_execute(SummaryView *summaryview)
 					(summaryview, node);
 		}
 
-		gtk_sctree_remove_node(ctree, node);
+		gtk_sctree_remove_node((GtkSCTree *)ctree, node);
 	}
 
 	folder_item_update_thaw();
