@@ -2936,7 +2936,7 @@ static void addressbook_folder_load_one_person(
 
 	if( person == NULL ) return;
 
-	text[COL_NAME] = NULL;
+	text[COL_NAME] = "";
 	node = person->listEMail;
 	while( node ) {
 		ItemEMail *email = node->data;
@@ -2983,8 +2983,8 @@ static void addressbook_folder_load_one_person(
 	if( ! haveAddr ) {
 		/* Have name without EMail */
 		text[COL_NAME] = ADDRITEM_NAME(person);
-		text[COL_ADDRESS] = NULL;
-		text[COL_REMARKS] = NULL;
+		text[COL_ADDRESS] = "";
+		text[COL_REMARKS] = "";
 		nodePerson = gtk_sctree_insert_node(
 				clist, NULL, NULL,
 				text, FOLDER_SPACING,
@@ -3071,8 +3071,8 @@ static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFold
 		ItemGroup *group = items->data;
 		if( group == NULL ) continue;
 		text[COL_NAME] = ADDRITEM_NAME(group);
-		text[COL_ADDRESS] = NULL;
-		text[COL_REMARKS] = NULL;
+		text[COL_ADDRESS] = "";
+		text[COL_REMARKS] = "";
 		nodeGroup = gtk_sctree_insert_node(clist, NULL, NULL,
 				      text, FOLDER_SPACING,
 				      atci->iconXpm, atci->maskXpm,
