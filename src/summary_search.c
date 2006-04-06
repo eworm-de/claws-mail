@@ -295,7 +295,7 @@ static void summary_search_create(void)
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
 
-	adv_search_checkbtn = gtk_check_button_new_with_label (_("Advanced search"));
+	adv_search_checkbtn = gtk_check_button_new_with_label (_("Extended Search"));
 	gtk_widget_show (adv_search_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), adv_search_checkbtn,
 			    FALSE, FALSE, 0);

@@ -1,3 +1,9 @@
+2006-04-06 [wwp]	2.1.0cvs12
+
+	* src/summary_search.c
+		Unify extended/advanced searches names (and thus factorize labels),
+		patch by Fabien Vantard <fzzzzz@gmail.com>.
+
 2006-04-06 [wwp]	2.1.0cvs11
 
 	* src/folderview.c
