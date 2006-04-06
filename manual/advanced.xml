@@ -85,6 +85,85 @@
 	    This is just an example of the possibilities. A good number of plugins developed for Sylpheed-Claws already exist, and more are to come. The <link linkend="ch_plugins">Extending Sylpheed-Claws section</link> gives details of them.
     </para>
   </section>
+  <section id="deploying">
+    <title>Deploying Sylpheed-Claws</title>
+    <para>
+    The initial configuration wizard tries to guess various fields using information gathered from the system, such as username, hostname, and more. As it is oriented towards general use, the default values often have to be fixed. However, this wizard is customisable, in a manner designed to allow system administrators to deploy Sylpheed-Claws easily over various users of one machine, or even over multiple machines installed via some replication tool.
+    </para>
+    <para>
+    The first part consists of creating a wizard configuration template and setting the various default parameters of a new Sylpheed-Claws installation.
+    </para>
+    <itemizedlist>
+      <listitem><para>Start with a new user who does not have a ~/.sylpheed-claws directory, ideally a new user.</para></listitem>
+      <listitem><para>Start Sylpheed-Claws and go through the wizard. The values you fill in will be of no use for the future deployment, so you can click next-next-next.</para></listitem>
+      <listitem><para>Once the wizard is finished and you have Sylpheed-Claws' main window opened, configure the various defaults you want to have in the master. You can load plugins, add people or LDAP servers in the addressbook, create filtering rules, and so on.</para></listitem>
+      <listitem><para>If needed, and if the deployed Sylpheed-Claws will use MH folders, you can create subdirectories in the mailbox.</para></listitem>
+      <listitem><para>Next, quit Sylpheed-Claws.</para></listitem>
+      <listitem><para>Now, edit the newly created wizard template file, ~/.sylpheed-claws/accountrc.tmpl. In this file, you will see different variables, corresponding to the wizard's fields. You can leave some commented, in which case the usual default will be used, or specify values or variables. Not all fields can contain variables; for example, smtpauth, smtpssl and recvssl are booleans, either 0 or 1, and recvtype is an integer value. The other fields, like name, email, or recvuser, are parsed by the wizard and the variables they contain are replaced by values. This allows you to specify everything as needed for your site, even if you have strange server names or server logins.</para></listitem>
+      <listitem><para>Save this file, and delete both ~/.sylpheed-claws/accountrc, (which contains your dummy account) and ~/.sylpheed-claws/folderlist.xml, (so that the folder tree will be correctly parsed for new users). Recursively copy .sylpheed-claws to /etc/skel/; if the deployed Sylpheed-Claws will use MH folders, also copy the created Mail directory. chown all of /etc/skel/.sylpheed-claws and /etc/skel/Mail to root:root for security reasons.</para></listitem>
+      <listitem><para>Test! Create a new user, login as that user, run Sylpheed-Claws. If you filled everything as you wanted, this user will just have to fill in his passwords.</para></listitem>
+      <listitem><para>Now, if you're creating a master for a site-wide deployment, you can continue with this process. If you were just doing it for one machine, you're done!</para></listitem>
+    </itemizedlist>
+    <para>
+    Here are the different variables of the accountrc.tmpl file:
+    </para>
+    <variablelist>
+     <varlistentry><term>domain</term>
+      <listitem><para>Your domain name (example.com). If not set, it'll be extracted from the hostname.</para></listitem></varlistentry>
+     <varlistentry><term>name</term>
+      <listitem><para>The user's name. If not set, it'll be extracted from Unix login information, which is usually ok.</para></listitem></varlistentry>
+     <varlistentry><term>email</term>
+      <listitem><para>The user's email. If not set, it'll be extracted from $name and $domain.</para></listitem></varlistentry>
+     <varlistentry><term>organization</term>
+      <listitem><para>Your organization. If not set, it'll be empty.</para></listitem></varlistentry>
+     <varlistentry><term>smtpserver</term>
+      <listitem><para>The smtp server to use. If not set, it'll be smtp.$domain</para></listitem></varlistentry>
+     <varlistentry><term>smtpauth</term>
+      <listitem><para>0 or 1. Whether to authenticate on the SMTP server. If not set, it'll be 0.</para></listitem></varlistentry>
+     <varlistentry><term>smtpuser</term>
+      <listitem><para>The login on the SMTP server. If not set, it'll be empty (same login as for reception)</para></listitem></varlistentry>
+     <varlistentry><term>smtppass</term>
+      <listitem><para>The password on the SMTP server. If not set, it'll be empty (if smtppass is empty but smtpuser is not, the user will be asked for the password).</para></listitem></varlistentry>
+     <varlistentry><term>recvtype</term>
+      <listitem><para>The type of server to receive from. 0 for POP3, 3 for IMAP4, 5 for a local MBOX file. If not set, it'll be 0 (POP3).</para></listitem></varlistentry>
+     <varlistentry><term>recvserver</term>
+      <listitem><para>The reception server. If not set, it'll be (pop|imap).$domain, depending on $recvtype.</para></listitem></varlistentry>
+     <varlistentry><term>recvuser</term>
+      <listitem><para>The login on the reception server. If not set, it'll be extracted from the Unix login information.</para></listitem></varlistentry>
+     <varlistentry><term>recvpass</term>
+      <listitem><para>The password on the reception server. If not set, it'll be empty (the user will be asked for it once per session).</para></listitem></varlistentry>
+     <varlistentry><term>imapdir</term>
+      <listitem><para>The IMAP subdirectory. If not set, it'll be empty, which is often sufficient.</para></listitem></varlistentry>
+     <varlistentry><term>mboxfile</term>
+      <listitem><para>The MBOX file to receive from if $recvtype is 5. If not set, /var/mail/$LOGIN.</para></listitem></varlistentry>
+     <varlistentry><term>mailbox</term>
+      <listitem><para>The MH mailbox to store mail in (for $recvtype 0 or 5). If not set, it'll be "Mail".</para></listitem></varlistentry>
+     <varlistentry><term>smtpssl</term>
+      <listitem><para>0 or 1. Whether to use SSL for sending mail. If not set, it'll be 0.</para></listitem></varlistentry>
+     <varlistentry><term>recvssl</term>
+      <listitem><para>0 or 1. Whether to use SSL for receiving mail. If not set, it'll be 0.</para></listitem></varlistentry>
+    </variablelist>
+    <para>
+    Here are the different variables you can use in the domain, name, email, organization, smtpserver, smtpuser, smtppass, recvserver, recvuser, recvpass, imapdir, mboxfile and mailbox fields:
+    </para>
+    <variablelist>
+     <varlistentry><term>$DEFAULTDOMAIN</term>
+      <listitem><para>The domain name as extracted from Unix hostname information. Often wrong.</para></listitem></varlistentry>
+     <varlistentry><term>$DOMAIN</term>
+      <listitem><para>The domain name as set in the domain variable, the first of the template file.</para></listitem></varlistentry>
+     <varlistentry><term>$USERNAME</term>
+      <listitem><para>The user's real name.</para></listitem></varlistentry>
+     <varlistentry><term>$LOGIN</term>
+      <listitem><para>The user's Unix login.</para></listitem></varlistentry>
+     <varlistentry><term>$NAME_MAIL</term>
+      <listitem><para>The user's real name as set in the name variable of the template field, in lowercase and with spaces replaced by dots. "Colin Leroy" becomes "colin.leroy".</para></listitem></varlistentry>
+     <varlistentry><term>$EMAIL</term>
+      <listitem><para>The email address as set in the email variable of the template field.</para></listitem></varlistentry>
+    </variablelist>
+    <para>
+    Be sure not to use a variable before defining it.
+    </para>
+  </section>
   <section id="adv_hidden">
     <title>Hidden preferences</title>
     <para>

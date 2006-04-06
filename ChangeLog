@@ -1,3 +1,9 @@
+2006-04-06 [colin]	2.1.0cvs10
+
+	* manual/advanced.xml
+		Document the wizard template and how to deploy
+		Sylpheed-Claws effectively
+
 2006-04-06 [colin]	2.1.0cvs9
 
 	* src/folderview.c
