@@ -1160,6 +1160,7 @@ void textview_clear(TextView *textview)
 	TEXTVIEW_STATUSBAR_POP(textview);
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
+	textview->uri_hover = NULL;
 
 	textview->body_pos = 0;
 	if (textview->image) 
