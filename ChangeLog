@@ -1,3 +1,11 @@
+2006-04-07 [wwp]	2.1.0cvs15
+
+	* src/summary_search.c
+	* .cvsignore
+		Bugfix: stop button was sticky when searching in an empty folder.
+		Applied curly brackets code style to the whole file (summary_search.c).
+		More files to ignore.
+
 2006-04-07 [wwp]	2.1.0cvs14
 
 	* src/message_search.c
