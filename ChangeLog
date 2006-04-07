@@ -1,3 +1,10 @@
+2006-04-07 [wwp]	2.1.0cvs14
+
+	* src/message_search.c
+	* src/summary_search.c
+		changed default button when search bumps at file/folder
+		beginning or end, for convenience (thanks to Colin).
+
 2006-04-07 [paul]	2.1.0cvs13
 
 	* src/plugins/dillo_viewer/dillo_prefs.c

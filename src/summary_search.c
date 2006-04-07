@@ -498,7 +498,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				str = _("End of list reached; continue from beginning?");
 
 			val = alertpanel(_("Search finished"), str,
-					 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+					 GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 			if (G_ALERTALTERNATE == val) {
 				if (backward)
 					node = GTK_CTREE_NODE
