@@ -543,6 +543,10 @@ http://claws.sylpheed.org/plugins.php
 	display a confirmation dialog on drag n drop of folders
 	0: off  1: on
 
+    compose_no_markup		(default: 0)
+	prevents italic and bold in the Compose' From header
+	0: normal (markup) 1: no markup
+
 10. Tools
 --------- 
   You will find all of these tools in the 'tools' directory:

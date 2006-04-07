@@ -5899,13 +5899,23 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		if (ac->name)
-			name = g_markup_printf_escaped("<i>%s</i> : %s &lt;<b>%s</b>&gt;",
-					       ac->account_name,
-					       ac->name, ac->address);
-		else
-			name = g_markup_printf_escaped("<i>%s</i> : &lt;<b>%s</b>&gt;",
-					       ac->account_name, ac->address);
+		if (prefs_common.compose_no_markup) {
+			if (ac->name)
+				name = g_markup_printf_escaped("%s : %s &lt;%s&gt;",
+						       ac->account_name,
+						       ac->name, ac->address);
+			else
+				name = g_markup_printf_escaped("%s : &lt;%s&gt;",
+						       ac->account_name, ac->address);
+		} else {
+			if (ac->name)
+				name = g_markup_printf_escaped("<i>%s</i> : %s &lt;<b>%s</b>&gt;",
+						       ac->account_name,
+						       ac->name, ac->address);
+			else
+				name = g_markup_printf_escaped("<i>%s</i> : &lt;<b>%s</b>&gt;",
+						       ac->account_name, ac->address);
+		}
 		MENUITEM_ADD(menu, menuitem, name, ac->account_id);
 		gtk_label_set_use_markup (
 				GTK_LABEL (gtk_bin_get_child (GTK_BIN (menuitem))),

@@ -746,6 +746,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"statusbar_update_step", "10", &prefs_common.statusbar_update_step, P_INT,
 	 NULL, NULL, NULL},
+	{"compose_no_markup", "FALSE", &prefs_common.compose_no_markup, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

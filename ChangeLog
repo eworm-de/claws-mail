@@ -1,3 +1,11 @@
+2006-04-07 [colin]	2.1.0cvs16
+
+	* README
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add hidden compose_no_markup pref
+
 2006-04-07 [wwp]	2.1.0cvs15
 
 	* src/summary_search.c
