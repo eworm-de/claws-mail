@@ -1,3 +1,9 @@
+2006-04-07 [paul]	2.1.0cvs13
+
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		avoid future potential for namespace collision
+		Patch by Colin
+
 2006-04-06 [wwp]	2.1.0cvs12
 
 	* src/summary_search.c

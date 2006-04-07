@@ -59,7 +59,7 @@ static PrefParam param[] = {
         {0,0,0,0,0,0,0}
 };
 
-DilloBrowserPage prefs_page;
+static DilloBrowserPage prefs_page;
 
 static void create_dillo_prefs_page	(PrefsPage *page,
 					 GtkWindow *window,
@@ -85,7 +85,7 @@ void dillo_prefs_init(void)
         prefs_page.page.create_widget = create_dillo_prefs_page;
         prefs_page.page.destroy_widget = destroy_dillo_prefs_page;
         prefs_page.page.save_page = save_dillo_prefs;
-        
+
         prefs_gtk_register_page((PrefsPage *) &prefs_page);
 }
 
