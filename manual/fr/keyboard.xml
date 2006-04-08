@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <appendix id="ap_keyboard">
-<title>Default keyboard shortcuts</title>
+<title>Raccourcis claviers</title>
 
   <section id="keyb_general">
     <title>Motivations et conventions générales</title>
@@ -21,7 +21,7 @@
   </section>
 
   <section id="keyb_mail">
-    <title>Main window</title>
+    <title>Fenêtre principale</title>
     <informaltable frame="topbot">
       <tgroup cols="2">
         <colspec colwidth="*" />

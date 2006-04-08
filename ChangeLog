@@ -1,3 +1,9 @@
+2006-04-08 [colin]	2.1.0cvs20
+
+	* manual/fr/glossary.xml
+	* manual/fr/keyboard.xml
+		Forgot some headers :)
+
 2006-04-08 [colin]	2.1.0cvs19
 
 	* manual/Makefile.am
