@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE article SYSTEM "../dtd/sdocbook.dtd" [
+  <!ENTITY ch_intro    SYSTEM "intro.xml">
+  <!ENTITY ch_starting SYSTEM "starting.xml">
+  <!ENTITY ch_handling SYSTEM "handling.xml">
+  <!ENTITY ch_account  SYSTEM "account.xml">
+  <!ENTITY ch_advanced SYSTEM "advanced.xml">
+  <!ENTITY ch_plugins  SYSTEM "plugins.xml">
+  <!ENTITY ch_addrbook SYSTEM "addrbook.xml">
+  <!ENTITY ap_faq      SYSTEM "faq.xml">
+  <!ENTITY ap_keyboard SYSTEM "keyboard.xml">
+  <!ENTITY ap_glossary SYSTEM "glossary.xml">
+  <!ENTITY ap_ack      SYSTEM "ack.xml">
+  <!ENTITY ap_gpl      SYSTEM "gpl.xml">
+]>
+<article>
+  <title>Sylpheed-Claws - Manuel de l'utilisateur</title>
+  <subtitle></subtitle>
+  <articleinfo>
+    <corpauthor>
+      <ulink url="http://claws.sylpheed.org">L'équipe de Sylpheed-Claws</ulink>
+    </corpauthor>
+    <copyright>
+      <year>2006</year>
+      <holder>L'équipe de Sylpheed-Claws.</holder>
+    </copyright>
+    <legalnotice id="license">
+      <para>
+	Ce logiciel est un logiciel libre ; vous pouvez le redistribuer et/ou le modifier selon les termes de la <acronym>GNU</acronym> General Public License, telle que publiée par la Free Software Foundation; soit la version 2 de la Licence, soit (à votre choix), toute version ultérieure.
+      </para>
+      <para>
+	Ce logiciel est ditribué dans l'espoir qu'il vous sera utile, mais SANS AUCUNE GARANTIE ; lisez la <acronym>GNU</acronym> General Public License pour plus de détails.
+      </para>
+      <para>
+	Vous devriez avoir reçu une copie de la GNU General Public License avec ce logiciel ; sinon, écrivez à la Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+      </para>
+    </legalnotice>
+  </articleinfo>
+  &ch_intro;
+  &ch_starting;
+  &ch_handling;
+  &ch_account;
+  &ch_addrbook;
+  &ch_advanced;
+  &ch_plugins;
+  &ap_faq;
+  &ap_keyboard;
+  &ap_ack;
+  &ap_glossary;
+  &ap_gpl;
+</article>
+

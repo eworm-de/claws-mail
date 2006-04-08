@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<section id="ch_advanced">
+  <title>Utilisation avancée</title>
+  <section id="adv_actions">
+    <title>Actions</title>
+    <para>
+	  Les actions permettent l'utilisation de toute la puissance de la ligne de commande Unix avec vos messages. Vous pouvez définir de nombreuses commandes, prenant des paramètres, comme par exemple le fichier courriel courant, le texte actuellement sélectionné et ainsi de suite. De cette façon vous serez à même d'éxecuter des tâches variées comme éditer un courriel brut dans un éditeur de texte, "cacher" ce que vous voulez dire en utilisant ROT-13, utiliser les patches contenus dans vos messages directement. La seule limitation est votre propre imagination. Vous pouvez configurer les actions via le menu <quote>Outils</quote>.
+    </para>
+	
+    <blockquote>
+    	<example><title>Un <quote>Ouvrir Avec ...</quote> simple</title>
+	 	<variablelist>
+			<varlistentry><term>Menu nom&thinsp;: <emphasis>Ouvrir avec/kate</emphasis> Ligne de Commande&thinsp;: <emphasis>kate%p</emphasis></term>
+				<listitem><para>Ouvre le fichier de la partie MIME décodée sélectionnée (<emphasis>%p</emphasis>) avec l'éditeur de texte <emphasis>kate</emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+	    	</variablelist>
+    	</example>
+		
+   	<example><title>Gestion des spam en utilisant <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
+		<variablelist>
+			<varlistentry><term>Menu nom&thinsp;: <emphasis>Bogofilter/Marquer comme bon</emphasis> Ligne de Commande&thinsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
+				<listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme n'étant pas des spam en utilisant <emphasis>Bogofilter</emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+		    <varlistentry><term>Menu nom&thinsp;: <emphasis>Bogofilter/Marquer comme spam</emphasis> Ligne de Commande&thinsp;: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
+			    <listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme étant des spam en utilisant <emphasis>Bogofilter</emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+    		</variablelist>
+    </example>
+	
+    <example><title>Recherche Google en utilisant un script externe</title>
+	    <variablelist>
+		    <varlistentry><term>Menu nom&thinsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&thinsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
+			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+				    </para></listitem>
+		    </varlistentry>
+	    </variablelist>
+    </example>
+    </blockquote>
+	
+  </section>
+  <section id="adv_templates">
+    <title>Modèles</title>
+    <para>
+	  Les modèles sont utilisés dans la fenêtre de composition et jouent le rôle de modèles pour la rédaction des courriels. Les modèles peut contenir des parties de textes statiques et d'autres dynamiques tels que le nom de l'auteur original (Bonjour %N, ...), la date, etc . Lorsque vous appliquez un modèle, les champs dynamiques sont remplacés par leurs valeurs. Vous pouvez configurer les modèles via le menu <quote>Outils</quote>.
+    </para>	
+  </section>
+  
+  <section id="adv_processing">
+    <title>Traitements</title>
+    <para>
+	  Les règles de traitements sont identiques aux règles de filtrage à l'exception qu'elles sont appliquées lorsque vous entrez dans un dossier. Vous pouvez les utiliser pour bouger vos anciens messages dans un dossier d'archives ou pour distribuer vos messages. Vous pouvez attribuer à chaque dossier ses règles de traitements en faisant un clic droit dessus.
+    </para>
+    <para>
+      Les règles de traitements sont accompagnées de règles de Pré-traitement et de Post-traitement. Comme les règles de traitements elles ne s'appliquent qu'à l'ouverture d'un dossier, mais comme les règles de filtrage elles sont partagées entre tous les dossiers. Vous pouvez les configurer à partir du menu <quote>Outils</quote>. Les règles de Pré-traitement sont exécutées avant les règles de traitement spécifiques des dossiers alors que les règles de Post-traitement le sont après.
+    </para>
+  </section>
+  <section id="adv_plugins">
+    <title>Modules</title>
+    <para>
+	  Les modules permettent l'extension des capacités de Sylpheed-Claws. Par exemple, imaginez que vous voulez stocker vos messages dans une base de données <acronym>SQL</acronym> distante. Dans la plupart des programmes de messagerie ceci est tout simplement impossible sans un travail de réécriture interne de ces programmes. Avec Sylpheed-Claws vous pouvez simplement écrire votre plugin qui effectuera cette tâche.
+    </para>
+    <para>
+	   Il s'agit juste d'un exemple des possibilités offertes. Un grand nombre de modules développés pour Sylpheed-Claws existent déjà et d'autres sont à venir. Le chapitre <link linkend="ch_plugins">Etendre Sylpheed-Claws</link> donne des détails sur ces derniers.
+    </para>
+  </section>
+  <section id="deploying">
+    <title>Déployer Sylpheed-Claws</title>
+    <para>
+	L'assistant de configuration initial essaye de deviner les différents champs en récupérant des informations du système, telles que le nom de l'utilisateur, le nom de domaine, et d'autres. Comme il orienté vers un usage générique, il peut se tromper, et les valeurs par défaut doivent être corrigées. Toutefois, cet assistant est configurable, dans le sens où vous pouvez lui fournir des indications pour aider le déploiement sur un grand nombre d'utilisateurs et/ou de machines grâce à un outil de réplication.
+    </para>
+    <para>
+	La première partie consiste à créer un modèle de configuration de l'assistant, et de régler les divers paramètres d'une nouvelle installation.
+    </para>
+    <itemizedlist>
+      <listitem><para>Commencez avec un utilisateur qui n'a pas de répertoire ~/.sylpheed-claws, dans l'idéal un nouvel utilisateur.</para></listitem>
+      <listitem><para>Démarrez Sylpheed-Claws et passez l'assistant de configuration. Les valeurs que vous fournissez ne seront pas utiles, donc vous pouvez cliquer sur Suivant-Suivant-Enregistrer.</para></listitem>
+      <listitem><para>
+	Une fois que l'assistant a terminé, la fenêtre principale s'ouvre. Vous pouvez maintenant configurer les différentes options comme désiré. Vous pouvez charger des modules, ajouter des contacts ou des serveurs LDAP au carnet d'adresses, créer des règles de filtrage, etc.</para></listitem>
+      <listitem><para>Si nécessaire, et si Sylpheed-Claws sera utilisé avec une boîte aux lettres MH, vous pouvez créer des sous-dossiers.</para></listitem>
+      <listitem><para>Maintenant, quittez Sylpheed-Claws.</para></listitem>
+      <listitem><para>
+	A présent, éditez le fichier modèle de l'assistant, créé dans ~/.sylpheed-claws/accountrc.tmpl. Dans ce fichier, vous verrez différentes variables, correspondant aux champs de l'assistant. Vous pouvez en laisser commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier des valeurs ou variables. Tous les champs ne peuvent pas contenir une variable ; par exemple, smtpauth, smtpssl et recvssl sont des booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les autres champs, comme name, email, ou recvuser, sont parsés par l'assistant et les variables qu'ils contiennent seront remplacés par des valeurs. Cela vous permettra de spécifier tout ce qui sera nécessaire sur votre site, même si vos serveurs ou logins ne sont pas courants.</para></listitem>
+      <listitem><para>Enregistrez ce fichier, et effacez ~/.sylpheed-claws/accountrc, (qui contient le faux compte que vous avez créé avec l'assistant lors de la première phase) et ~/.sylpheed-claws/folderlist.xml, (de manière à ce que l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement le répertoire .sylpheed-claws dans /etc/skel/ ; si les Sylpheed-Claws déployés utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel. chown-isez tout /etc/skel/.sylpheed-claws et /etc/skel/Mail à root:root.</para></listitem>
+      <listitem><para>Testez! Créez un nouvel utilisateur, connectez-vous avec cet utilisateur, et lancez Sylpheed-Claws. Si tout est bien rempli dans accountrc.tmpl comme désiré, tout ce que cet utilisateur aura à remplir sont ses mots de passe.</para></listitem>
+      <listitem><para>Si vous configuriez une machine master pour un déploiement multi-machines, vous pouvez continuer ce processus. C'est terminé pour Sylpheed-Claws !</para></listitem>
+    </itemizedlist>
+    <para>
+    Voici les différentes variables du fichier accountrc.tmpl :
+    </para>
+    <variablelist>
+     <varlistentry><term>domain</term>
+      <listitem><para>Votre nom de domaine (example.com). Par défaut, ce sera déduit du hostname.</para></listitem></varlistentry>
+     <varlistentry><term>name</term>
+      <listitem><para>Le nom de l'utilisateur. Par défaut, ce sera déduit de /etc/passwd, et souvent juste.</para></listitem></varlistentry>
+     <varlistentry><term>email</term>
+      <listitem><para>L'adresse email de l'utilisateur. Par défaut, ce sera déduit de $name et $domain.</para></listitem></varlistentry>
+     <varlistentry><term>organization</term>
+      <listitem><para>Votre société. Par défaut, ce sera vide.</para></listitem></varlistentry>
+     <varlistentry><term>smtpserver</term>
+      <listitem><para>Le serveur smtp à utiliser. Par défaut, ce sera smtp.$domain</para></listitem></varlistentry>
+     <varlistentry><term>smtpauth</term>
+      <listitem><para>0 or 1. S'il faut s'authentifier sur le serveur SMTP. Par défaut, ce sera 0.</para></listitem></varlistentry>
+     <varlistentry><term>smtpuser</term>
+      <listitem><para>Le login sur le serveur SMTP. Par défaut, ce sera vide (même login que pour recevoir)</para></listitem></varlistentry>
+     <varlistentry><term>smtppass</term>
+      <listitem><para>Le mot de passe sur le serveur SMTP. Par défaut, ce sera vide (si smtppass est vide mais pas smtpuser, le mot de passe sera demandé).</para></listitem></varlistentry>
+     <varlistentry><term>recvtype</term>
+      <listitem><para>Le type de serveur de réception. 0 pour POP3, 3 pour IMAP4, 5 pour un fichier MBOX local. Par défaut, ce sera 0 (POP3).</para></listitem></varlistentry>
+     <varlistentry><term>recvserver</term>
+      <listitem><para>Le serveur de réception. Par défaut, ce sera (pop|imap).$domain, selon $recvtype.</para></listitem></varlistentry>
+     <varlistentry><term>recvuser</term>
+      <listitem><para>Le login sur le serveur de réception. Par défaut, ce sera déduit de /etc/passwd.</para></listitem></varlistentry>
+     <varlistentry><term>recvpass</term>
+      <listitem><para>Le mot de passe sur le serveur de réception. Par défaut, ce sera vide (Il sera demandé à l'utilisateur une fois par session).</para></listitem></varlistentry>
+     <varlistentry><term>imapdir</term>
+      <listitem><para>Le répertoire IMAP. Par défaut, ce sera vide, ce qui est souvent correct.</para></listitem></varlistentry>
+     <varlistentry><term>mboxfile</term>
+      <listitem><para>Le fichier MBOX de réception, si $recvtype est 5. Par défaut, /var/mail/$LOGIN.</para></listitem></varlistentry>
+     <varlistentry><term>mailbox</term>
+      <listitem><para>La boîte aux lettres MH où les messages seront enregistrés (si $recvtype est 0 ou 5). Par défaut, ce sera "Mail".</para></listitem></varlistentry>
+     <varlistentry><term>smtpssl</term>
+      <listitem><para>0 or 1. S'il faut utiliser SSL pour envoyer les messages. Par défaut, ce sera 0.</para></listitem></varlistentry>
+     <varlistentry><term>recvssl</term>
+      <listitem><para>0 or 1. S'il faut utiliser SSL pour recevoir les messages. Par défaut, ce sera 0.</para></listitem></varlistentry>
+    </variablelist>
+    <para>
+	Voici les différentes variables que vous pouvez utiliser dans les champs domain, name, email, organization, smtpserver, smtpuser, smtppass, recvserver, recvuser, recvpass, imapdir, mboxfile and mailbox:
+    </para>
+    <variablelist>
+     <varlistentry><term>$DEFAULTDOMAIN</term>
+      <listitem><para>Le nom de domaine déduit du hostname de la machine. Souvent faux.</para></listitem></varlistentry>
+     <varlistentry><term>$DOMAIN</term>
+      <listitem><para>Le nom de domaine tel que spécifié dans la variable domain, la première du fichier.</para></listitem></varlistentry>
+     <varlistentry><term>$USERNAME</term>
+      <listitem><para>Le vrai nom de l'utilisateur.</para></listitem></varlistentry>
+     <varlistentry><term>$LOGIN</term>
+      <listitem><para>Le login Unix de l'utilisateur.</para></listitem></varlistentry>
+     <varlistentry><term>$NAME_MAIL</term>
+      <listitem><para>Le nom de l'utilisateur tel que spécifié dans la variable name, en minuscules et avec les espaces remplacées par des points. "Colin Leroy" devient "colin.leroy".</para></listitem></varlistentry>
+     <varlistentry><term>$EMAIL</term>
+      <listitem><para>L'adresse email telle que spécifiée dans la variable email.</para></listitem></varlistentry>
+    </variablelist>
+    <para>
+    Faites attention à ne pas utiliser une variable avant de l'avoir définie.
+    </para>
+  </section>
+  <section id="adv_hidden">
+    <title>Préférences cachées</title>
+    <para>
+	  Il existe un certain nombre de préférences cachées dans Sylpheed-Claws dont certains utilisateurs, auxquels nous voulions faire plaisir, ne pouvaient pas se passer mais qui n'avaient pas leur place, selon nous, dans l'interface graphique. Vous pouvez changer les options suivantes pendant que Sylpheed-Claws ne s'exécute pas dans le fichier ~/.sylpheed-claws/sylpheedrc.
+    </para>
+    <variablelist>
+	    <varlistentry><term>bold_unread</term>
+		    <listitem><para>Montre les messages non lus en gras dans la vue du sommaire</para></listitem>
+            </varlistentry>
+	    <varlistentry><term>cache_max_mem_usage</term>
+		    <listitem><para>Indique le maximum de mémoire à utiliser pour mettre en cache les messages (en Ko).</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>cache_min_keep_time</term>
+		    <listitem><para>Le temps minimum pour garder un cache en mémoire, en minutes. Les caches plus récents que ce temps ne seront pas libérés, même si l'utilisation de la mémoire est trop élevée.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_hscrollbar</term>
+		    <listitem><para>active la barre de défilement horizontale dans la vue du sommaire</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_rules_hint</term>
+		    <listitem><para>active les lignes alternées dans les GtkTreeViews</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_swap_from</term>
+		    <listitem><para>Affiche l'adresse électronique de l'expéditeur dans la colonne <quote>De</quote> dans le dossier <quote>Envoyés</quote> au lieu des destinataires</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>folderview_vscrollbar_policy</term>
+		    <listitem><para>spécifie la politique de la barre de défilement verticale de la vue des dossiers.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>hover_timeout</term>
+		    <listitem><para>temps en millisecondes pendant lequel la souris doit rester sur l'arbre des dossiers afin qu'ils se déplient durant un glisser-déposer.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>statusbar_update_step</term>
+		    <listitem><para>étapes de progression lors de la mise à jour dans les barres de progression</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>textview_cursor_visible</term>
+		    <listitem><para>affiche un curseur dans la vue du message</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>thread_by_subject_max_age</term>
+		    <listitem><para>Nombre de jours maximal pour l'inclusion d'un message dans un fil de discussion lorsque cette option est utilisée.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>toolbar_detachable</term>
+		    <listitem><para>cache les poignées des barres d'outils détachables, qui ne le sont plus par la suite</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>utf8_instead_of_locale_for_broken_mail</term>
+		    <listitem><para>utilise l'encodage UTF-8 encoding pour les courriels cassés à la place de la localisation courante</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>warn_dnd</term>
+		    <listitem><para>affiche une boîte de dialogue de confirmation lors d'un glissé-déposé d'un dossier sur un autre.</para></listitem>
+	    </varlistentry>
+    </variablelist>
+  </section>
+</section>
