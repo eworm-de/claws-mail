@@ -7,7 +7,7 @@
     <para>
 	Sylpheed-Claws' capabilities are extended by plugins. It comes with the plugins listed below included, all of which are built automatically if the required libraries are present.
     </para><para>
-	Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/ and have a suffix of <quote>.so</quote> To load a plugin go to <quote>Configuration/Plugins</quote> and click the <quote>Load Plugin</quote> button. Select the plugin that you want and click OK.
+	Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/ and have a suffix of <quote>.so</quote>. To load a plugin go to <quote>Configuration/Plugins</quote> and click the <quote>Load Plugin</quote> button. Select the plugin that you want and click OK.
     </para><para>
 	If you don't find the plugin you're looking for, it is possible that your GNU/Linux distribution provides it in a separate package. In this case, search for the plugin in your package manager.
     </para>
@@ -24,7 +24,7 @@
     <varlistentry><term>SpamAssassin</term>
 	    <listitem>
 			<para>The SpamAssassin plugin comes with two major features:</para>
-			<para>The ability to scan incoming mail received from a POP, IMAP or LOCAL account using SpamAssassin, this can be turned off. It can optionally delete mail identified as spam or save it to a designated folder.</para>
+			<para>The ability to scan incoming mail received from a POP, IMAP or LOCAL account using SpamAssassin. It can optionally delete mail identified as spam or save it to a designated folder. Mail scanning can be turned off, which is useful if your email is scanned on your server.</para>
 			<para>The ability for users to teach SpamAssassin to recognise spam or ham. You can train SpamAssassin by marking messages as spam or ham from the message list contextual menu, or using the relevant toolbar button in the main window or the message window (see "Configuration/Preferences/Customize toolbars"). Messages marked as spam are optionally saved to a designated folder.</para>
 			<para>Plugin preferences can be found in "Configuration/Preferences/Plugins/SpamAssassin".</para>
 			<para>SpamAssassin is available from <ulink url="http://spamassassin.apache.org/">http://spamassassin.apache.org/</ulink>. Version 3.1.x or higher is required to use the learning feature in TCP mode.</para>
@@ -43,7 +43,7 @@
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>
-	    <listitem><para>Enables new mail notification via the LEDs found on some laptops like Acer, Asus and IBM laptops.</para></listitem>
+	    <listitem><para>Enables new mail notification via the LEDs found on some laptops like Acer, Asus, Fujitsu and IBM laptops.</para></listitem>
     </varlistentry>
     <varlistentry><term>AttRemover</term>
 	    <listitem><para> This plugin lets you remove attachments from emails.</para></listitem>
@@ -52,10 +52,13 @@
 	    <listitem><para>Saves the caches every 60 seconds (or user-defined period). It helps avoiding the loss of metadata if your computer (<emphasis>or Sylpheed-Claws!</emphasis>) crashes.</para></listitem>
     </varlistentry>
     <varlistentry><term>etpan! Privacy</term>
-	    <listitem><para>Handles signature verification and decryption of encrypted messages in S/MIME, OpenPGP, and ascii-armored PGP formats.</para></listitem>
+	    <listitem><para>Handles signature verification and decryption of encrypted messages in S/MIME, OpenPGP and ascii-armored PGP formats. Doesn't handle passphrases.</para></listitem>
     </varlistentry>
     <varlistentry><term>Fetchinfo</term>
-	    <listitem><para>Inserts headers containing some download information, like UIDL, Sylpheeds account name, POP server, user ID and retrieval time.</para></listitem>
+	    <listitem><para>Inserts headers containing some download information, like UIDL, Sylpheed-Claws' account name, POP server, user ID and retrieval time.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>GtkHtml Viewer</term>
+	    <listitem><para>Like Dillo, enables the viewing of html messages, but in a nicer way (antialiased fonts).</para></listitem>
     </varlistentry>
     <varlistentry><term>Maildir</term>
 	    <listitem><para>Provides direct support for Maildir++ mailboxes. With this plugin you can share your Maildir++ mailbox with other mailers or IMAP servers.</para></listitem>
@@ -65,6 +68,9 @@
     </varlistentry>
     <varlistentry><term>Perl</term>
 	    <listitem><para>Intended to extend the filtering possibilities of Sylpheed-Claws. It provides a Perl interface to Sylpheed-Claws' filtering mechanism, allowing the use of full Perl power in email filters.</para></listitem>
+    </varlistentry>
+    <varlistentry><term>S/MIME</term>
+	    <listitem><para>Handles S/MIME signed and/or encrypted mails. You can decrypt mails, verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
     </varlistentry>
     <varlistentry><term>SynCE</term>
 	    <listitem><para>Assists in keeping the address book of a Windows CE device (Pocket PC/ iPAQ, Smartphone etc) in sync with Sylpheed-Claws' address book, with respect to email addresses.</para></listitem>
