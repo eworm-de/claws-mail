@@ -788,6 +788,7 @@ GList *prefs_common_read_history(const gchar *history)
 void prefs_common_read_config(void)
 {
 	gchar *rcpath;
+	gchar *tmp;
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, "Common", rcpath, NULL);
@@ -797,9 +798,17 @@ void prefs_common_read_config(void)
 
 	g_free(rcpath);
 
-	prefs_common.quotefmt = gettext(prefs_common.quotefmt);
-	prefs_common.fw_quotefmt = gettext(prefs_common.fw_quotefmt);
-	prefs_common.date_format = gettext(prefs_common.date_format);
+	tmp = g_strdup(gettext(prefs_common.quotefmt));
+	g_free(prefs_common.quotefmt);
+	prefs_common.quotefmt = tmp;
+
+	tmp = g_strdup(gettext(prefs_common.fw_quotefmt));
+	g_free(prefs_common.fw_quotefmt);
+	prefs_common.fw_quotefmt = tmp;
+	
+	tmp = g_strdup(gettext(prefs_common.date_format));
+	g_free(prefs_common.date_format);
+	prefs_common.date_format = tmp;
 
 	prefs_common.mime_open_cmd_history =
 		prefs_common_read_history(COMMAND_HISTORY);
