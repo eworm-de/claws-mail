@@ -36,7 +36,7 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(1, 9, 12, 40))) {
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
 		*error = g_strdup("Your version of Sylpheed-Claws is too old for the PGP/MIME plugin");
 		return -1;
 	}

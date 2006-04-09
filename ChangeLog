@@ -1,3 +1,17 @@
+2006-04-09 [colin]	2.1.0cvs5-stable
+
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpcore/select-keys.c
+	* src/plugins/pgpcore/select-keys.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+		From 2.1.0cvs1
+		Needed for S/MIME plugin to work on this branch 
+
 2006-04-09 [colin]	2.1.0cvs4-stable
 
 	* src/prefs_account.c

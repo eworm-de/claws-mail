@@ -545,7 +545,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 static gchar *pgpinline_get_encrypt_data(GSList *recp_names)
 {
-	return sgpgme_get_encrypt_data(recp_names);
+	return sgpgme_get_encrypt_data(recp_names, GPGME_PROTOCOL_OpenPGP);
 }
 
 static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
