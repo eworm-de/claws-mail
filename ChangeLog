@@ -1,3 +1,9 @@
+2006-04-09 [colin]	2.1.0cvs24
+
+	* src/prefs_common.c
+		gettext() returns statically allocated stuff. We have
+		to strdup it in order to be able to free it.
+
 2006-04-09 [colin]	2.1.0cvs23
 
 	* AUTHORS
