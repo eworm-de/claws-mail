@@ -1375,3 +1375,4 @@
 ( cvs diff -u -r 1.60.2.56 -r 1.60.2.57 src/addressbook.c;  cvs diff -u -r 1.1.2.31 -r 1.1.2.32 commitHelper;  ) > 2.1.0cvs1-stable.patchset
 ( cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/plugins/dillo_viewer/dillo_prefs.c;  ) > 2.1.0cvs2-stable.patchset
 ( cvs diff -u -r 1.15.2.26 -r 1.15.2.27 src/summary_search.c;  ) > 2.1.0cvs3-stable.patchset
+( cvs diff -u -r 1.105.2.50 -r 1.105.2.51 src/prefs_account.c;  cvs diff -u -r 1.16.2.18 -r 1.16.2.19 src/prefs_customheader.c;  ) > 2.1.0cvs4-stable.patchset

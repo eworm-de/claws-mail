@@ -1,3 +1,11 @@
+2006-04-09 [colin]	2.1.0cvs4-stable
+
+	* src/prefs_account.c
+	* src/prefs_customheader.c
+		From 2.1.0cvs21
+		Fix bug #933 (Crash re-entering the custom headers list
+		dialog in accounts prefs)
+
 2006-04-09 [colin]	2.1.0cvs3-stable
 
 	* src/summary_search.c

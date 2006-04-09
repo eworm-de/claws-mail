@@ -949,7 +949,8 @@ void destroy_dialog(gpointer data)
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 	if (!cancelled)
 		*ac_prefs = tmp_ac_prefs;
-
+	else /* the customhdr_list may have changed, update it anyway */
+		ac_prefs->customhdr_list = (&tmp_ac_prefs)->customhdr_list;
 	gtk_main_quit();
 }
 
