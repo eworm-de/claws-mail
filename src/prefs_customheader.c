@@ -326,8 +326,8 @@ void prefs_custom_header_read_config(PrefsAccount *ac)
 	/* remove all previous headers list */
 	while (ac->customhdr_list != NULL) {
 		ch = (CustomHeader *)ac->customhdr_list->data;
-		custom_header_free(ch);
 		ac->customhdr_list = g_slist_remove(ac->customhdr_list, ch);
+		custom_header_free(ch);
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -421,8 +421,8 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 
  	while (all_hdrs != NULL) {
  		ch = (CustomHeader *)all_hdrs->data;
- 		custom_header_free(ch);
  		all_hdrs = g_slist_remove(all_hdrs, ch);
+ 		custom_header_free(ch);
  	}
 
 	if (prefs_file_close(pfile) < 0) {

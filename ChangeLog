@@ -1,3 +1,21 @@
+2006-04-09 [colin]	2.1.0cvs21
+
+	* src/prefs_customheader.c
+		I prefer removing then freeing rather than the contrary
+		(even if it doesn't change anything ;-)
+	* src/prefs_account.c
+		Fix bug #933 (Crash re-entering the custom headers list 
+		dialog in accounts prefs)
+		The problem happened when cancelling the Account 
+		Preferences' dialogs - in which case we didn't do 
+		anything to the PrefsAccount * struct. In case of applying,
+		the old ac_prefs was replaced with the tmp_ac_prefs we were
+		working with in this dialog. The problem is that 
+		prefs_customheader.c, working on this tmp_ac_prefs, always
+		changes the ->customhdr_list pointer, even when cancelled. 
+		So in case of cancelling the prefs_account dialog, we still
+		have to update ->customhdr_list in the real account.
+
 2006-04-08 [colin]	2.1.0cvs20
 
 	* manual/fr/glossary.xml
