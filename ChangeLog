@@ -1,3 +1,9 @@
+2006-04-09 [colin]	2.1.0cvs2-stable
+
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		From 2.1.0cvs13
+		avoid future potential for namespace collision
+
 2006-04-06 [colin]	2.1.0cvs1-stable
 
 	* src/addressbook.c
