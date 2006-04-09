@@ -1,3 +1,9 @@
+2006-04-09 [colin]	2.1.0cvs3-stable
+
+	* src/summary_search.c
+		From 2.1.0cvs15
+		Bugfix: stop button was sticky when searching in an empty folder.
+
 2006-04-09 [colin]	2.1.0cvs2-stable
 
 	* src/plugins/dillo_viewer/dillo_prefs.c

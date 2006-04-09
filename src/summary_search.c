@@ -118,10 +118,11 @@ static gboolean key_pressed		(GtkWidget	*widget,
 
 void summary_search(SummaryView *summaryview)
 {
-	if (!search_window.window)
+	if (!search_window.window) {
 		summary_search_create();
-	else
+	} else {
 		gtk_widget_hide(search_window.window);
+	}
 
 	search_window.summaryview = summaryview;
 
@@ -395,7 +396,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	const gchar *body_str = NULL, *adv_condition = NULL;
 	StrFindFunc str_find_func = NULL;
 
-	if (summary_is_locked(summaryview)) return;
+	if (summary_is_locked(summaryview)) {
+		return;
+	}
 	summary_lock(summaryview);
 
 	adv_search = gtk_toggle_button_get_active
@@ -423,10 +426,11 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		case_sens = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
 
-		if (case_sens)
+		if (case_sens) {
 			str_find_func = str_find;
-		else
+		} else {
 			str_find_func = str_case_find;
+		}
 
 		from_str    = gtk_entry_get_text(GTK_ENTRY(search_window.from_entry));
 		to_str      = gtk_entry_get_text(GTK_ENTRY(search_window.to_entry));
@@ -455,24 +459,28 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		backward = FALSE;
 	} else if (!summaryview->selected) {
-		if (backward)
+		if (backward) {
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
-		else
+		} else {
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+		}
 
 		if (!node) {
 			search_window.is_searching = FALSE;
+			gtk_widget_hide(search_window.stop_btn);
+			gtk_widget_show(search_window.close_btn);
 			main_window_cursor_normal(summaryview->mainwin);
 			summary_unlock(summaryview);
 			return;
 		}
 	} else {
-		if (backward)
+		if (backward) {
 			node = gtkut_ctree_node_prev
 				(ctree, summaryview->selected);
-		else
+		} else {
 			node = gtkut_ctree_node_next
 				(ctree, summaryview->selected);
+		}
 	}
 
 	for (; search_window.is_searching;) {
@@ -500,18 +508,20 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			val = alertpanel(_("Search finished"), str,
 					 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
 			if (G_ALERTALTERNATE == val) {
-				if (backward)
+				if (backward) {
 					node = GTK_CTREE_NODE
 						(GTK_CLIST(ctree)->row_list_end);
-				else
+				} else {
 					node = GTK_CTREE_NODE
 						(GTK_CLIST(ctree)->row_list);
+				}
 
 				all_searched = TRUE;
 
 				manage_window_focus_in(search_window.window, NULL, NULL);
-			} else
+			} else {
 				break;
+			}
 		}
 
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
@@ -524,42 +534,50 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				matched = TRUE;
 				if (*from_str) {
 					if (!msginfo->from ||
-				    	!str_find_func(msginfo->from, from_str))
+				    	!str_find_func(msginfo->from, from_str)) {
 						matched = FALSE;
+					}
 				}
 				if (matched && *to_str) {
 					if (!msginfo->to ||
-				    	!str_find_func(msginfo->to, to_str))
+				    	!str_find_func(msginfo->to, to_str)) {
 						matched = FALSE;
+					}
 				}
 				if (matched && *subject_str) {
 					if (!msginfo->subject ||
-				    	!str_find_func(msginfo->subject, subject_str))
+				    	!str_find_func(msginfo->subject, subject_str)) {
 						matched = FALSE;
+					}
 				}
 				if (matched && *body_str) {
 					if (procmime_find_string(msginfo, body_str,
-								 str_find_func))
+								 str_find_func)) {
 						body_matched = TRUE;
-					else
+					} else {
 						matched = FALSE;
+					}
 				}
 				if (matched && !*from_str && !*to_str &&
-			    	!*subject_str && !*body_str)
+			    	!*subject_str && !*body_str) {
 					matched = FALSE;
+				}
 			} else {
 				matched = FALSE;
 				if (*from_str && msginfo->from) {
-					if (str_find_func(msginfo->from, from_str))
+					if (str_find_func(msginfo->from, from_str)) {
 						matched = TRUE;
+					}
 				}
 				if (!matched && *to_str && msginfo->to) {
-					if (str_find_func(msginfo->to, to_str))
+					if (str_find_func(msginfo->to, to_str)) {
 						matched = TRUE;
+					}
 				}
 				if (!matched && *subject_str && msginfo->subject) {
-					if (str_find_func(msginfo->subject, subject_str))
+					if (str_find_func(msginfo->subject, subject_str)) {
 						matched = TRUE;
+					}
 				}
 				if (!matched && *body_str) {
 					if (procmime_find_string(msginfo, body_str,
@@ -572,9 +590,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		}
 
 		if (matched) {
-			if (search_all)
+			if (search_all) {
 				gtk_ctree_select(ctree, node);
-			else {
+			} else {
 				if (messageview_is_visible
 					(summaryview->messageview)) {
 					summary_unlock(summaryview);
@@ -654,8 +672,9 @@ static void adv_condition_btn_done(MatcherList * matchers)
 	g_return_if_fail(
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL);
 
-	if (matchers == NULL)
+	if (matchers == NULL) {
 		return;
+	}
 
 	str = matcherlist_to_string(matchers);
 
@@ -688,8 +707,9 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 
 	prefs_matcher_open(matchers, adv_condition_btn_done);
 
-	if (matchers != NULL)
+	if (matchers != NULL) {
 		matcherlist_free(matchers);
+	}
 };
 
 static void from_activated(void)
