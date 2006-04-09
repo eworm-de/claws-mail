@@ -814,6 +814,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 };
 
 static gboolean offline_ask_sync = TRUE;
+static guint lastkey;
 
 static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
                                             GObject *arg1,
@@ -827,7 +828,7 @@ static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
 	    mainwin->summaryview->quicksearch &&
 	    quicksearch_has_focus(mainwin->summaryview->quicksearch) &&
 	    (mod == 0 || mod == GDK_SHIFT_MASK)) {
-		quicksearch_pass_key(mainwin->summaryview->quicksearch, value, mod);
+		quicksearch_pass_key(mainwin->summaryview->quicksearch, lastkey, mod);
 		return TRUE;
 	}
 	return FALSE;
@@ -3444,7 +3445,10 @@ gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 
 	if (quicksearch_has_focus(mainwin->summaryview->quicksearch))
+	{
+		lastkey = event->keyval;
 		return FALSE;
+	}
 
 	switch (event->keyval) {
 	case GDK_Q:             /* Quit */

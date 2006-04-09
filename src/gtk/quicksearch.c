@@ -836,23 +836,30 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod)
 {
 	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry);
-	gint curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
+	glong curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
+	guint32 c;
 	char *str = g_strdup(gtk_entry_get_text(entry));
 	char *begin = str;
 	char *end = NULL;
 	char *new = NULL;
+	char key[7] = "";
+	guint char_len = 0;
 
-	if (mod == GDK_SHIFT_MASK)
-		val = toupper(val);
-
-	if (curpos < strlen(str)-1) {
-		end = g_strdup(str+curpos);
-		*(str+curpos) = '\0';
-		new = g_strdup_printf("%s%c%s", begin, val, end);
+	if (!(c = gdk_keyval_to_unicode(val))) {
+		g_free(str);
+		return;
+	}
+	char_len = g_unichar_to_utf8(c, key);
+	if (char_len < 0)
+		return;
+	key[char_len] = '\0';
+	if (curpos < g_utf8_strlen(str, -1)) {
+		end = g_utf8_offset_to_pointer(str, curpos+1);
+		new = g_strdup_printf("%s%s%s", begin, key, end);
 		gtk_entry_set_text(entry, new);
 		g_free(end);
 	} else {
-		new = g_strdup_printf("%s%c", begin, val);
+		new = g_strdup_printf("%s%s", begin, key);
 		gtk_entry_set_text(entry, new);
 	}
 	g_free(str);
