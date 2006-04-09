@@ -1394,3 +1394,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/fr/glossary.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/fr/keyboard.xml;  ) > 2.1.0cvs20.patchset
 ( cvs diff -u -r 1.105.2.50 -r 1.105.2.51 src/prefs_account.c;  cvs diff -u -r 1.16.2.18 -r 1.16.2.19 src/prefs_customheader.c;  ) > 2.1.0cvs21.patchset
 ( cvs diff -u -r 1.274.2.105 -r 1.274.2.106 src/mainwindow.c;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/gtk/quicksearch.c;  ) > 2.1.0cvs22.patchset
+( cvs diff -u -r 1.100.2.37 -r 1.100.2.38 AUTHORS;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/gtk/authors.h;  ) > 2.1.0cvs23.patchset
