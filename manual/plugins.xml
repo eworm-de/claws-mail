@@ -86,5 +86,13 @@
 	If you're a developer, writing a plugin to extend Sylpheed-Claws' capabilities is probably the best and easiest solution. We will provide hosting to your code, and will be glad to answer your questions in the mailing-list or the IRC channel, #sylpheed on IRCnet.
     </para>
   </section>
-
+  <section id="plugins_network">
+    <title>Network access from the plugins</title>
+    <para>
+	Some of the external plugins, for example RSSyl, vCalendar or GtkHtml Viewer, need internet access for their operations (retrieving feeds in the case of RSSyl or vCalendar, and fetching images in the case of GtkHtml Viewer). These plugins use the Curl library. Hence, if your internet access is restricted by a proxy, you will need to tell libCurl to use this proxy. This is done by setting an environment variable, <emphasis>http_proxy</emphasis>. For example, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> will tell libCurl to connect to port 8080 of the machine myproxy.example.com, with the user <quote>user</quote> and password <quote>passwd</quote> to connect to the internet. 
+    </para>
+    <para>
+	You can either set this variable before starting Sylpheed-Claws, by using for example <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080 sylpheed-claws</emphasis>, or set it in your ~/.bashrc file, by adding the following line: <emphasis>export http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> (you'll have to reconnect to have it taken into account).
+    </para>
+  </section>
 </section>

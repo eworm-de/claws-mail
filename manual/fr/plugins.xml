@@ -85,5 +85,13 @@
 	Si vous êtes développeur, l'écriture d'un module Sylpheed-Claws est certainement la meilleure solution pour étendre les fonctionnalités de Sylpheed-Claws. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #sylpheed sur IRCnet.
     </para>
   </section>
-
+  <section id="plugins_network">
+    <title>Accès réseau pour les modules</title>
+    <para>
+	Certains modules externes, comme RSSyl, vCalendar ou GtkHtml Viewer, ont besoin d'un accès à internet pour fonctionner normalement (pour récupérer les abonnements dans le cas de RSSyl ou vCalendar, pour récupérer les images dans le cas de GtkHtml Viewer). Ces modules utilisent la librairie Curl. C'est pourquoi, si votre accès internet est restreint via un proxy (serveur mandataire),il faudra spécifier à la libCurl de l'utiliser. Ceci se fait en mettant en place une variable d'environnement, <emphasis>http_proxy</emphasis>. Par exemple, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> indiquera à la libCurl de se connecter au port 8080 de la machine myproxy.example.com, en tant qu'utilisateur <quote>user</quote> dont le mot de passe est <quote>passwd</quote> pour tout accès HTTP à internet. 
+    </para>
+    <para>
+	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante : <emphasis>export http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
+    </para>
+  </section>
 </section>
