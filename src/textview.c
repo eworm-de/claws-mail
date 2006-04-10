@@ -79,6 +79,11 @@ static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0}
 };
 
+static GdkColor quote_bgcolors[3] = {
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0}
+};
 static GdkColor signature_color = {
 	(gulong)0,
 	(gushort)0x7fff,
@@ -390,28 +395,43 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 	gtk_text_buffer_create_tag(buffer, "header_title",
 				   "font-desc", bold_font_desc,
 				   NULL);
-	gtk_text_buffer_create_tag(buffer, "quote0",
-				   "foreground-gdk", &quote_colors[0],
-				   NULL);
-	gtk_text_buffer_create_tag(buffer, "quote1",
-				   "foreground-gdk", &quote_colors[1],
-				   NULL);
-	gtk_text_buffer_create_tag(buffer, "quote2",
-				   "foreground-gdk", &quote_colors[2],
-				   NULL);
+	if (prefs_common.enable_bgcolor) {
+		gtk_text_buffer_create_tag(buffer, "quote0",
+				"foreground-gdk", &quote_colors[0],
+				"paragraph-background-gdk", &quote_bgcolors[0],
+				NULL);
+		gtk_text_buffer_create_tag(buffer, "quote1",
+				"foreground-gdk", &quote_colors[1],
+				"paragraph-background-gdk", &quote_bgcolors[1],
+				NULL);
+		gtk_text_buffer_create_tag(buffer, "quote2",
+				"foreground-gdk", &quote_colors[2],
+				"paragraph-background-gdk", &quote_bgcolors[2],
+				NULL);
+	} else {
+		gtk_text_buffer_create_tag(buffer, "quote0",
+				"foreground-gdk", &quote_colors[0],
+				NULL);
+		gtk_text_buffer_create_tag(buffer, "quote1",
+				"foreground-gdk", &quote_colors[1],
+				NULL);
+		gtk_text_buffer_create_tag(buffer, "quote2",
+				"foreground-gdk", &quote_colors[2],
+				NULL);
+	}
 	gtk_text_buffer_create_tag(buffer, "emphasis",
-				   "foreground-gdk", &emphasis_color,
-				   NULL);
- 	gtk_text_buffer_create_tag(buffer, "signature",
-				   "foreground-gdk", &signature_color,
-				   NULL);
- 	tag = gtk_text_buffer_create_tag(buffer, "link",
-					 "foreground-gdk", &uri_color,
-					 NULL);
+			"foreground-gdk", &emphasis_color,
+			NULL);
+	gtk_text_buffer_create_tag(buffer, "signature",
+			"foreground-gdk", &signature_color,
+			NULL);
+	tag = gtk_text_buffer_create_tag(buffer, "link",
+			"foreground-gdk", &uri_color,
+			NULL);
 	gtk_text_buffer_create_tag(buffer, "link-hover",
-				   "foreground-gdk", &uri_color,
-				   "underline", PANGO_UNDERLINE_SINGLE,
-				   NULL);
+			"foreground-gdk", &uri_color,
+			"underline", PANGO_UNDERLINE_SINGLE,
+			NULL);
 	g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
  }
@@ -431,10 +451,10 @@ void textview_init(TextView *textview)
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
-#define CHANGE_TAG_COLOR(tagname, color) { \
+#define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
 	if (tag) \
-		g_object_set(G_OBJECT(tag), "foreground-gdk", color, NULL); \
+		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, "paragraph-background-gdk", colorbg, NULL); \
 }
 
 static void textview_update_message_colors(TextView *textview)
@@ -445,6 +465,10 @@ static void textview_update_message_colors(TextView *textview)
 
 	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
 	GtkTextTag *tag = NULL;
+
+	quote_bgcolors[0] = quote_bgcolors[1] = quote_bgcolors[2] = black;
+	quote_colors[0] = quote_colors[1] = quote_colors[2] = 
+		uri_color = emphasis_color = signature_color = black;
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
@@ -459,18 +483,27 @@ static void textview_update_message_colors(TextView *textview)
 		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
 					       &signature_color);
 		emphasis_color = colored_emphasis;
-	} else {
-		quote_colors[0] = quote_colors[1] = quote_colors[2] = 
-			uri_color = emphasis_color = signature_color = black;
 	}
-	CHANGE_TAG_COLOR("quote0", &quote_colors[0]);
-	CHANGE_TAG_COLOR("quote1", &quote_colors[1]);
-	CHANGE_TAG_COLOR("quote2", &quote_colors[2]);
-	CHANGE_TAG_COLOR("emphasis", &emphasis_color);
-	CHANGE_TAG_COLOR("signature", &signature_color);
-	CHANGE_TAG_COLOR("link", &uri_color);
-	CHANGE_TAG_COLOR("link-hover", &uri_color);
+	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
+						   &quote_bgcolors[0]);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_bgcol,
+						   &quote_bgcolors[1]);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_bgcol,
+						   &quote_bgcolors[2]);
+		CHANGE_TAG_COLOR("quote0", &quote_colors[0], &quote_bgcolors[0]);
+		CHANGE_TAG_COLOR("quote1", &quote_colors[1], &quote_bgcolors[1]);
+		CHANGE_TAG_COLOR("quote2", &quote_colors[2], &quote_bgcolors[2]);
+	} else {
+		CHANGE_TAG_COLOR("quote0", &quote_colors[0], NULL);
+		CHANGE_TAG_COLOR("quote1", &quote_colors[1], NULL);
+		CHANGE_TAG_COLOR("quote2", &quote_colors[2], NULL);
+	}
 
+	CHANGE_TAG_COLOR("emphasis", &emphasis_color, NULL);
+	CHANGE_TAG_COLOR("signature", &signature_color, NULL);
+	CHANGE_TAG_COLOR("link", &uri_color, NULL);
+	CHANGE_TAG_COLOR("link-hover", &uri_color, NULL);
 }
 #undef CHANGE_TAG_COLOR
 

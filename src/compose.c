@@ -793,6 +793,9 @@ static gboolean compose_put_existing_to_front(MsgInfo *info)
 static GdkColor quote_color = 
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
 
+static GdkColor quote_bgcolor = 
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+
 static GdkColor signature_color = {
 	(gulong)0,
 	(gushort)0x7fff,
@@ -826,14 +829,24 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 		signature_color = quote_color = uri_color = black;
 	}
 
-	gtk_text_buffer_create_tag(buffer, "quote",
-				   "foreground-gdk", &quote_color,
-				   NULL);
+	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
+						   &quote_bgcolor);
+		gtk_text_buffer_create_tag(buffer, "quote",
+					   "foreground-gdk", &quote_color,
+					   "paragraph-background-gdk", &quote_bgcolor,
+					   NULL);
+	} else {
+		gtk_text_buffer_create_tag(buffer, "quote",
+					   "foreground-gdk", &quote_color,
+					   NULL);
+	}
+
  	gtk_text_buffer_create_tag(buffer, "signature",
 				   "foreground-gdk", &signature_color,
 				   NULL);
  	gtk_text_buffer_create_tag(buffer, "link",
-					 "foreground-gdk", &uri_color,
+					"foreground-gdk", &uri_color,
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);

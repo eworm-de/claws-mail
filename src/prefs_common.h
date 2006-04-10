@@ -235,9 +235,13 @@ struct _PrefsCommon
 
 	/* Message */
 	gboolean enable_color;
+	gboolean enable_bgcolor;
 	gulong quote_level1_col;
 	gulong quote_level2_col;
 	gulong quote_level3_col;
+	gulong quote_level1_bgcol;
+	gulong quote_level2_bgcol;
+	gulong quote_level3_bgcol;
 	gulong uri_col;
 	gulong tgt_folder_col;
 	gulong signature_col;

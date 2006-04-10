@@ -1,3 +1,14 @@
+2006-04-10 [colin]	2.1.0cvs27
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_msg_colors.c
+	* src/textview.c
+		Allow optional background color in quotes
+		Patch by Rafal Weglarz <tokoloshe@users.sf.net>
+		GTK+-2.8.x feature
+
 2006-04-10 [colin]	2.1.0cvs26
 
 	* src/main.c
