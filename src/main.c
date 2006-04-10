@@ -141,6 +141,7 @@ static struct RemoteCmd {
 	gboolean exit;
 	gboolean subscribe;
 	const gchar *subscribe_uri;
+	const gchar *target;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -574,6 +575,10 @@ int main(int argc, char *argv[])
 		send_queue();
 	}
 	
+	if (cmd.target) {
+		mainwindow_jump_to(cmd.target);
+	}
+
 	gtk_main();
 
 	exit_sylpheed(mainwin);
@@ -764,6 +769,8 @@ static void parse_cmd_opt(int argc, char *argv[])
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));
  			g_print("%s\n", _("  --status-full [folder]...\n"
  			       "                         show the status of each folder"));
+			g_print("%s\n", _("  --select folder[/msg]  jumps to the specified folder/message\n" 
+			                  "                         folder is a folder id like '#mh/Mailbox/inbox'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
 			g_print("%s\n", _("  --exit                 exit Sylpheed-Claws"));
@@ -783,6 +790,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(0);
 		} else if (!strncmp(argv[i], "--exit", 6)) {
 			cmd.exit = TRUE;
+		} else if (!strncmp(argv[i], "--select", 8) && i+1 < argc) {
+			cmd.target = argv[i+1];
 		} else if (i == 1 && argc == 2) {
 			/* only one parameter. Do something intelligent about it */
 			if (strstr(argv[i], "@") && !strstr(argv[i], "://")) {
@@ -1051,6 +1060,10 @@ static gint prohibit_duplicate_launch(void)
  		}
 	} else if (cmd.exit) {
 		fd_write_all(uxsock, "exit\n", 5);
+	} else if (cmd.target) {
+		gchar *str = g_strdup_printf("select %s\n", cmd.target);
+		fd_write_all(uxsock, str, strlen(str));
+		g_free(str);
 	} else
 		fd_write_all(uxsock, "popup\n", 6);
 
@@ -1162,6 +1175,9 @@ static void lock_socket_input_cb(gpointer data,
  		fd_write_all(sock, ".\n", 2);
  		g_free(status);
  		if (folders) g_ptr_array_free(folders, TRUE);
+	} else if (!strncmp(buf, "select ", 7)) {
+		const gchar *target = buf+7;
+		mainwindow_jump_to(target);
 	} else if (!strncmp(buf, "exit", 4)) {
 		app_will_exit(NULL, mainwin);
 	}

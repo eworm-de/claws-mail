@@ -3535,3 +3535,56 @@ void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)
 {
 	summary_mark_as_spam(mainwin->summaryview, is_spam, NULL);
 }
+
+void mainwindow_jump_to(const gchar *target)
+{
+	gchar *tmp = NULL;
+	gchar *p = NULL;
+	FolderItem *item = NULL;
+	gchar *msg = NULL;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
+	if (!target)
+		return;
+		
+	if (!mainwin) {
+		printf(_("not initialized\n"));
+		return;
+	}
+
+	tmp = g_strdup(target);
+	
+	if ((p = strstr(tmp, "\r")) != NULL)
+		*p = '\0';
+	if ((p = strstr(tmp, "\n")) != NULL)
+		*p = '\0';
+
+	if ((item = folder_find_item_from_identifier(tmp))) {
+		printf(_("selecting folder '%s'\n"), tmp);
+		folderview_select(mainwin->folderview, item);
+		main_window_popup(mainwin);
+		g_free(tmp);
+		return;
+	}
+	
+	msg = strrchr(tmp, G_DIR_SEPARATOR);
+	if (msg) {
+		*msg++ = '\0';
+		if ((item = folder_find_item_from_identifier(tmp))) {
+			printf(_("selecting folder '%s'\n"), tmp);
+			folderview_select(mainwin->folderview, item);
+		} 
+		if (item && msg && atoi(msg)) {
+			printf(_("selecting message %d\n"), atoi(msg));
+			summary_select_by_msgnum(mainwin->summaryview, atoi(msg));
+			summary_display_msg_selected(mainwin->summaryview, FALSE);
+			main_window_popup(mainwin);
+			g_free(tmp);
+			return;
+		} 
+	}
+	
+	printf("'%s' not found\n", tmp);
+	
+	g_free(tmp);
+}

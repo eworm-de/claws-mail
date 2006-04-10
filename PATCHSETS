@@ -1397,3 +1397,4 @@
 ( cvs diff -u -r 1.100.2.37 -r 1.100.2.38 AUTHORS;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/gtk/authors.h;  ) > 2.1.0cvs23.patchset
 ( cvs diff -u -r 1.204.2.81 -r 1.204.2.82 src/prefs_common.c;  ) > 2.1.0cvs24.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/plugins.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/fr/plugins.xml;  ) > 2.1.0cvs25.patchset
+( cvs diff -u -r 1.115.2.78 -r 1.115.2.79 src/main.c;  cvs diff -u -r 1.274.2.106 -r 1.274.2.107 src/mainwindow.c;  cvs diff -u -r 1.39.2.15 -r 1.39.2.16 src/mainwindow.h;  ) > 2.1.0cvs26.patchset

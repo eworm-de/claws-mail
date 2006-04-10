@@ -1,3 +1,10 @@
+2006-04-10 [colin]	2.1.0cvs26
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Implement --select
+
 2006-04-10 [colin]	2.1.0cvs25
 
 	* manual/plugins.xml
