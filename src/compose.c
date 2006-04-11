@@ -2822,7 +2822,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 					G_CALLBACK(text_inserted),
 					compose);
 
-	cur_encoding = conv_get_locale_charset_str();
+	cur_encoding = conv_get_locale_charset_str_no_utf8();
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *str;
