@@ -1,3 +1,10 @@
+2006-04-11 [colin]	2.1.0cvs9-stable
+
+	* src/compose.c
+		From 2.1.0cvs31
+		Fix inserting files not in utf8 when locale is utf8
+
+
 2006-04-11 [colin]	2.1.0cvs8-stable
 
 	* src/inc.c
