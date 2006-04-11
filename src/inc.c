@@ -765,7 +765,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  GTK_STOCK_CANCEL, NULL,
 			  FALSE, NULL, ALERT_WARNING,
 			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
-			return INC_CONNECT_ERROR;
+			return INC_CANCEL;
 	}
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport : 110;
