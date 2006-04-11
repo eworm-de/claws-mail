@@ -1,3 +1,9 @@
+2006-04-11 [colin]	2.1.0cvs8-stable
+
+	* src/inc.c
+		From 2.1.0cvs30
+		Don't display error when cancelling connection
+
 2006-04-09 [colin]	2.1.0cvs7-stable
 
 	* src/prefs_common.c
