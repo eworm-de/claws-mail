@@ -159,23 +159,29 @@ static void about_create(void)
 	uname(&utsbuf);
 	g_snprintf(buf, sizeof(buf),
 		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		   "Operating System: %s %s (%s)"),
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: %s %s (%s)"),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #elif defined(G_OS_WIN32)
 	g_snprintf(buf, sizeof(buf),
 		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		   "Operating System: %s"),
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: %s"),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   "Win32");
 #else
 	g_snprintf(buf, sizeof(buf),
 		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		   "Operating System: unknown"),
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: unknown"),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version);
+		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str());
 #endif
 
 	label = gtk_label_new(buf);

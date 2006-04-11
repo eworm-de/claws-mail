@@ -1399,3 +1399,4 @@
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/plugins.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/fr/plugins.xml;  ) > 2.1.0cvs25.patchset
 ( cvs diff -u -r 1.115.2.78 -r 1.115.2.79 src/main.c;  cvs diff -u -r 1.274.2.106 -r 1.274.2.107 src/mainwindow.c;  cvs diff -u -r 1.39.2.15 -r 1.39.2.16 src/mainwindow.h;  ) > 2.1.0cvs26.patchset
 ( cvs diff -u -r 1.382.2.260 -r 1.382.2.261 src/compose.c;  cvs diff -u -r 1.204.2.82 -r 1.204.2.83 src/prefs_common.c;  cvs diff -u -r 1.103.2.46 -r 1.103.2.47 src/prefs_common.h;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_msg_colors.c;  cvs diff -u -r 1.96.2.108 -r 1.96.2.109 src/textview.c;  ) > 2.1.0cvs27.patchset
+( cvs diff -u -r 1.4.2.30 -r 1.4.2.31 src/gtk/about.c;  ) > 2.1.0cvs28.patchset
