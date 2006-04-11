@@ -1,3 +1,10 @@
+2006-04-11 [cleroy]	2.1.0cvs29
+
+	* src/compose.c
+		Implement multiple quote levels
+	* src/prefs_common.c
+		Change a little bit the quote bgcolor for 2nd level
+
 2006-04-11 [colin]	2.1.0cvs28
 
 	* src/gtk/about.c

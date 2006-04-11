@@ -790,10 +790,18 @@ static gboolean compose_put_existing_to_front(MsgInfo *info)
 	return FALSE;
 }
 
-static GdkColor quote_color = 
+static GdkColor quote_color1 = 
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkColor quote_color2 = 
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkColor quote_color3 = 
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
 
-static GdkColor quote_bgcolor = 
+static GdkColor quote_bgcolor1 = 
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkColor quote_bgcolor2 = 
+	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkColor quote_bgcolor3 = 
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
 
 static GdkColor signature_color = {
@@ -814,34 +822,61 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
 	GdkColor black = {(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+	GdkColormap *cmap;
+	GdkColor color[8];
+	gboolean success[8];
+	int i;
 
 	buffer = gtk_text_view_get_buffer(text);
-	
+
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
 		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_col,
-					       &quote_color);
+					       &quote_color1);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_col,
+					       &quote_color2);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_col,
+					       &quote_color3);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
+					       &quote_bgcolor1);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_bgcol,
+					       &quote_bgcolor2);
+		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_bgcol,
+					       &quote_bgcolor3);
 		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
 					       &signature_color);
 		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
 					       &uri_color);
 	} else {
-		signature_color = quote_color = uri_color = black;
+		signature_color = quote_color1 = quote_color2 = quote_color3 = 
+			quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = uri_color = black;
 	}
 
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
-						   &quote_bgcolor);
-		gtk_text_buffer_create_tag(buffer, "quote",
-					   "foreground-gdk", &quote_color,
-					   "paragraph-background-gdk", &quote_bgcolor,
+		gtk_text_buffer_create_tag(buffer, "quote0",
+					   "foreground-gdk", &quote_color1,
+					   "paragraph-background-gdk", &quote_bgcolor1,
+					   NULL);
+		gtk_text_buffer_create_tag(buffer, "quote1",
+					   "foreground-gdk", &quote_color2,
+					   "paragraph-background-gdk", &quote_bgcolor2,
+					   NULL);
+		gtk_text_buffer_create_tag(buffer, "quote2",
+					   "foreground-gdk", &quote_color3,
+					   "paragraph-background-gdk", &quote_bgcolor3,
 					   NULL);
 	} else {
-		gtk_text_buffer_create_tag(buffer, "quote",
-					   "foreground-gdk", &quote_color,
+		gtk_text_buffer_create_tag(buffer, "quote0",
+					   "foreground-gdk", &quote_color1,
+					   NULL);
+		gtk_text_buffer_create_tag(buffer, "quote1",
+					   "foreground-gdk", &quote_color2,
+					   NULL);
+		gtk_text_buffer_create_tag(buffer, "quote2",
+					   "foreground-gdk", &quote_color3,
 					   NULL);
 	}
-
+	
  	gtk_text_buffer_create_tag(buffer, "signature",
 				   "foreground-gdk", &signature_color,
 				   NULL);
@@ -850,6 +885,29 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
+
+	color[0] = quote_color1;
+	color[1] = quote_color2;
+	color[2] = quote_color3;
+	color[3] = quote_bgcolor1;
+	color[4] = quote_bgcolor2;
+	color[5] = quote_bgcolor3;
+	color[6] = signature_color;
+	color[7] = uri_color;
+	cmap = gdk_drawable_get_colormap(compose->window->window);
+	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
+
+	for (i = 0; i < 8; i++) {
+		if (success[i] == FALSE) {
+			GtkStyle *style;
+
+			g_warning("Compose: color allocation failed.\n");
+			style = gtk_widget_get_style(text);
+			quote_color1 = quote_color2 = quote_color3 = 
+				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
+				signature_color = uri_color = black;
+		}
+	}
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -884,6 +942,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_NEW, FALSE);
+
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
@@ -3372,6 +3431,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 	gint uri_start = -1, uri_stop = -1;
 	gint nouri_start = -1, nouri_stop = -1;
 	gint num_blocks = 0;
+	gint quotelevel = -1;
 
 	compose->autowrap = FALSE;
 
@@ -3459,9 +3519,18 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
 			if (startq_offset == -1) 
 				startq_offset = gtk_text_iter_get_offset(&iter);
+			quotelevel = get_quote_level(quote_str, prefs_common.quote_chars);
+			if (quotelevel > 2) {
+				/* recycle colors */
+				if (prefs_common.recycle_quote_colors)
+					quotelevel %= 3;
+				else
+					quotelevel = 2;
+			}
 		} else {
 			if (startq_offset == -1)
 				noq_offset = gtk_text_iter_get_offset(&iter);
+			quotelevel = -1;
 		}
 
 		if (prev_autowrap == FALSE && !force && !wrap_quote) {
@@ -3575,8 +3644,17 @@ colorize:
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &startquote, startq_offset);
 			endquote = iter;
-			gtk_text_buffer_apply_tag_by_name(
-				buffer, "quote", &startquote, &endquote);
+			switch (quotelevel) {
+			case 0:	gtk_text_buffer_apply_tag_by_name(
+					buffer, "quote0", &startquote, &endquote);
+				break;
+			case 1:	gtk_text_buffer_apply_tag_by_name(
+					buffer, "quote1", &startquote, &endquote);
+				break;
+			case 2:	gtk_text_buffer_apply_tag_by_name(
+					buffer, "quote2", &startquote, &endquote);
+				break;
+			}
 			startq_offset = -1;
 		} else if (noq_offset != -1) {
 			GtkTextIter startnoquote, endnoquote;
@@ -3584,7 +3662,11 @@ colorize:
 				buffer, &startnoquote, noq_offset);
 			endnoquote = iter;
 			gtk_text_buffer_remove_tag_by_name(
-				buffer, "quote", &startnoquote, &endnoquote);
+				buffer, "quote0", &startnoquote, &endnoquote);
+			gtk_text_buffer_remove_tag_by_name(
+				buffer, "quote1", &startnoquote, &endnoquote);
+			gtk_text_buffer_remove_tag_by_name(
+				buffer, "quote2", &startnoquote, &endnoquote);
 			noq_offset = -1;
 		}
 		
@@ -5504,9 +5586,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 
 	gchar *titles[N_ATTACH_COLS];
 	guint n_menu_entries;
-	GdkColormap *cmap;
-	GdkColor color[1];
-	gboolean success[1];
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
 	GtkItemFactory *ifactory;
@@ -5704,17 +5783,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 			gtk_widget_modify_font(text, font_desc);
 			pango_font_description_free(font_desc);
 		}
-	}
-
-	color[0] = quote_color;
-	cmap = gdk_drawable_get_colormap(window->window);
-	gdk_colormap_alloc_colors(cmap, color, 1, FALSE, TRUE, success);
-	if (success[0] == FALSE) {
-		GtkStyle *style;
-
-		g_warning("Compose: color allocation failed.\n");
-		style = gtk_widget_get_style(text);
-		quote_color = style->black;
 	}
 
 	n_entries = sizeof(compose_popup_entries) /

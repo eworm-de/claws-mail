@@ -526,7 +526,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"quote_level1_bgcolor", "13421772", &prefs_common.quote_level1_bgcol, P_COLOR,
 	 NULL, NULL, NULL},
-	{"quote_level2_bgcolor", "13882323", &prefs_common.quote_level2_bgcol, P_COLOR,
+	{"quote_level2_bgcolor", "13948116", &prefs_common.quote_level2_bgcol, P_COLOR,
 	 NULL, NULL, NULL},
 	{"quote_level3_bgcolor", "14540253", &prefs_common.quote_level3_bgcol, P_COLOR,
 	 NULL, NULL, NULL},
