@@ -62,6 +62,9 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	g_return_if_fail(label != NULL);
 	g_return_if_fail(rcfile != NULL);
 
+	if (encoding != NULL)
+		g_warning("Encoding is ignored\n");
+
 	debug_print("Reading configuration...\n");
 
 	prefs_set_default(param);
@@ -138,13 +141,19 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		switch (param[i].type) {
 		case P_STRING:
 		{
-			gchar *tmp;
+			gchar *tmp = NULL;
 
-			tmp = *value ?
-				conv_codeset_strdup(value,
-						    conv_get_locale_charset_str(),
-						    CS_UTF_8)
-				: g_strdup("");
+			if (*value) {
+				if (g_utf8_validate(value, -1, NULL))
+					tmp = g_strdup(value);
+				else {
+					tmp = conv_codeset_strdup(value,
+						    conv_get_locale_charset_str_no_utf8(),
+						    CS_INTERNAL);
+				}
+			} else {
+				tmp = g_strdup("");
+			}
 			if (!tmp) {
 				g_warning("failed to convert character set.");
 				tmp = g_strdup(value);
@@ -293,11 +302,15 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			gchar *tmp = NULL;
 
 			if (*((gchar **)param[i].data)) {
-				tmp = conv_codeset_strdup(*((gchar **)param[i].data),
-							  CS_UTF_8,
-							  conv_get_locale_charset_str());
-				if (!tmp)
+				if (g_utf8_validate(*((gchar **)param[i].data), -1, NULL))
 					tmp = g_strdup(*((gchar **)param[i].data));
+				else {
+					tmp = conv_codeset_strdup(*((gchar **)param[i].data),
+						conv_get_locale_charset_str_no_utf8(),
+						CS_INTERNAL);
+					if (!tmp)
+						tmp = g_strdup(*((gchar **)param[i].data));
+				}
 			}
 
 			g_snprintf(buf, sizeof(buf), "%s=%s\n", param[i].name,
@@ -386,7 +399,7 @@ void prefs_set_default(PrefParam *param)
 					tmp = envstr && *envstr ?
 						conv_codeset_strdup(envstr,
 								    conv_get_locale_charset_str(),
-								    CS_UTF_8)
+								    CS_INTERNAL)
 						: g_strdup("");
 					if (!tmp) {
 						g_warning("faild to convert character set.");
