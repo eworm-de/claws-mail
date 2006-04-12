@@ -1,3 +1,9 @@
+2006-04-12 [colin]	2.1.0cvs10-stable
+
+	* src/prefs_gtk.c
+		From 2.1.0cvs32
+		Store prefs as UTF-8
+
 2006-04-11 [colin]	2.1.0cvs9-stable
 
 	* src/compose.c
