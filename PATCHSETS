@@ -1383,3 +1383,4 @@
 ( cvs diff -u -r 1.382.2.258 -r 1.382.2.259 src/compose.c;  ) > 2.1.0cvs9-stable.patchset
 ( cvs diff -u -r 1.10.2.17 -r 1.10.2.18 src/prefs_gtk.c;  ) > 2.1.0cvs10-stable.patchset
 ( cvs diff -u -r 1.204.2.80.2.1 -r 1.204.2.80.2.2 src/prefs_common.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/prefs_msg_colors.c;  ) > 2.1.0cvs11-stable.patchset
+( cvs diff -u -r 1.30.2.26 -r 1.30.2.27 src/prefs_toolbar.c;  ) > 2.1.0cvs12-stable.patchset
