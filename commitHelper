@@ -97,6 +97,7 @@ fi;
 
 echo -e "#please complete the changelog entry below" > /tmp/logentry
 echo -e -n $log >> /tmp/logentry
+[ -f commitHelper.msg ] && cat commitHelper.msg >>/tmp/logentry
 
 $EDITOR /tmp/logentry
 
