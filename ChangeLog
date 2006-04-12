@@ -1,3 +1,12 @@
+2006-04-12 [wwp]	2.1.0cvs11-stable
+
+	* src/prefs_common.c
+	* src/prefs_msg_colors.c
+		From 2.1.0cvs34:
+		make default color labels translatable,
+		patch from Fabien Vantard <fzzzzz@gmail.com>,
+		thanks to Tim <timbrain@post.cz> for reporting.
+
 2006-04-12 [colin]	2.1.0cvs10-stable
 
 	* src/prefs_gtk.c
