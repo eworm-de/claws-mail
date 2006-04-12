@@ -1,3 +1,26 @@
+2006-04-12 [wwp]	2.1.0cvs33
+
+	* manual/glossary.xml
+	* manual/intro.xml
+	* manual/plugins.xml
+	* manual/starting.xml
+	* manual/sylpheed-claws-manual.xml
+	* manual/fr/.cvsignore
+	* manual/fr/account.xml
+	* manual/fr/ack.xml
+	* manual/fr/addrbook.xml
+	* manual/fr/advanced.xml
+	* manual/fr/faq.xml
+	* manual/fr/glossary.xml
+	* manual/fr/handling.xml
+	* manual/fr/intro.xml
+	* manual/fr/keyboard.xml
+	* manual/fr/plugins.xml
+	* manual/fr/starting.xml
+	* manual/fr/sylpheed-claws-manual.xml
+		various fixes: typos, missing .fr translations, punctuation,
+		capitalization, links, accents and some bad French more.
+
 2006-04-12 [wwp]	2.1.0cvs32
 
 	* src/prefs_gtk.c

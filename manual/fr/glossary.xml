@@ -19,7 +19,7 @@ Actions
     </term>
     <listitem>
       <para>
-Les Actions sont des commandes définies par l'utilisateur, qui peuvent appliquées à tout ou partie d'un message (ou de plusieurs messages, en utilisant une syntaxe spéciale. Elles sont présentées à l'utilisateur dans un menu configurable.
+Les Actions sont des commandes définies par l'utilisateur, qui peuvent être appliquées à tout ou partie d'un message (ou de plusieurs messages, en utilisant une syntaxe spéciale). Elles sont présentées à l'utilisateur dans un menu configurable.
       </para>
     </listitem>
   </varlistentry>
@@ -141,7 +141,7 @@ Dossier
     </term>
     <listitem>
       <para>
-Les dossiers contiennent des messages et/ou d'autres dossiers. Ils peuvent être locaux ou distants, mais sont gérés de la même manière par Sylpheed-Claws.
+Les dossiers contiennent des messages et/ou d'autres dossiers. Ils peuvent être locaux ou distants, mais sont présentés de la même manière par Sylpheed-Claws.
       </para>
     </listitem>
   </varlistentry>
@@ -165,7 +165,7 @@ En-têtes
     </term>
     <listitem>
       <para>
-Lignes formant la première partie d'un message. Ils servent par exemple à contenir des informations sur l'expéditeur et le destinataire. Certains en-têtes sont optionnels et apportent des informations supplémentaires, comme <xref linkend="gt_xface" />.
+Lignes formant la première partie d'un message. Ils contiennent par exemple des informations sur l'expéditeur et le destinataire. Certains en-têtes sont optionnels et apportent des informations supplémentaires, comme <xref linkend="gt_xface" />.
       </para>
     </listitem>
   </varlistentry>
@@ -209,7 +209,7 @@ Fenêtre de traces
     </term>
     <listitem>
       <para>
-Une fenêtre spécial pour afficher les commandes réseau exécutées par Sylpheed-Claws. C'est un outil utile pour trouver la cause de certains problèmes.
+Une fenêtre spéciale pour afficher les commandes réseau exécutées par Sylpheed-Claws. C'est un outil utile pour trouver la cause de certains problèmes.
       </para>
     </listitem>
   </varlistentry>
@@ -236,7 +236,7 @@ Le protocole <xref linkend="gt_nntp" /> permet de s'abonner à différents groupes
     </term>
     <listitem>
       <para>
-Hyper-Text Markup Language est le language de description stantard sur internet et le <xref linkend="gt_www" />. Certains clients de courriel l'utilisent pour appliquer des effets dans le texte des emails, au détriment de la taille du message. Les messages en HTML sont aussi utilisés massivement pour envoyer du <xref linkend="gt_spam" />.
+Hyper-Text Markup Language est le language de description standard sur Internet et le <xref linkend="gt_www" />. Certains clients de courriel l'utilisent pour appliquer des effets dans le texte des emails, au détriment de la taille du message. Les messages en HTML sont aussi utilisés massivement pour envoyer du <xref linkend="gt_spam" />.
       </para>
     </listitem>
   </varlistentry>
@@ -264,7 +264,7 @@ Justification
     </term>
     <listitem>
       <para>
-Structuration du texte du message pour permettre un nombre maximum de caractères par ligne.
+Structuration du texte du message pour aligner les paragraphes sur la marge gauche et droite. La marge de droite est définie par l'utilisateur comme étant le nombre maximal de caractère par ligne.
       </para>
     </listitem>
   </varlistentry>
@@ -444,7 +444,7 @@ Méthode de signature numérique où la signature est dans une pièce jointe <xref l
     </term>
     <listitem>
       <para>
-Post Office Protocol (version 3). Un protocole pour récupérer ses messages d'un serveur. Les messages sont souvent effacés du serveur, et stockés localement, ensuite.
+Post Office Protocol (version 3). Un protocole pour récupérer ses messages à partir d'un serveur. Les messages sont souvent effacés du serveur, et stockés localement, ensuite.
       </para>
     </listitem>
   </varlistentry>
@@ -508,7 +508,7 @@ Une <xref linkend="gt_rule" /> appliquée aux messages arrivant. Il est possible 
   </varlistentry>
   <varlistentry id="gt_recursive_quick_search">
     <term>
-Recursif (Recherche rapide)
+Récursif (Recherche rapide)
     </term>
     <listitem>
       <para>
@@ -606,7 +606,7 @@ STARTTLS
     </term>
     <listitem>
       <para>
-STARTTLS (start transport layer security) est une commande utilisée pour initier le chiffrement avec un serveur distant en utilisant <xref linkend="gt_ssl" />, après un début de connexion non chiffrée.
+STARTTLS (Start Transport Layer Security) est une commande utilisée pour initier le chiffrement avec un serveur distant en utilisant <xref linkend="gt_ssl" />, après un début de connexion non chiffrée.
       </para>
     </listitem>
   </varlistentry>
@@ -654,7 +654,7 @@ USENET
     </term>
     <listitem>
       <para>
-User's Network. Les groupes de discussion d'internet, souvent appelés <xref linkend="gt_newsgroups" />.
+User's Network. Les groupes de discussion d'Internet, souvent appelés <xref linkend="gt_newsgroups" />.
       </para>
     </listitem>
   </varlistentry>
@@ -664,7 +664,7 @@ User's Network. Les groupes de discussion d'internet, souvent appelés <xref link
     </term>
     <listitem>
       <para>
-8-bit Unicode Transformation Format. Un encodage permettant de représenter n'importe quel caractère universel. Standard Internetdéfini dans la <ulink url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
+8-bit Unicode Transformation Format. Un encodage permettant de représenter n'importe quel caractère universel. Standard Internet défini dans la <ulink url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
       </para>
     </listitem>
   </varlistentry>

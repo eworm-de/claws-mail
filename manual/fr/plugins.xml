@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_plugins">
-<title>Etendre les possibilités de Sylpheed-Claws</title>
+<title>Étendre les possibilités de Sylpheed-Claws</title>
 
   <section id="plugins_default">
     <title>Modules fournis</title>
@@ -13,7 +13,7 @@
     </para>
     <variablelist>
 	    <varlistentry><term>Clam Antivirus</term>
-	    <listitem><para>Permet de vérifier l'absence de virus dans les messages reçus. Ce module peut effacer les courriers contaminés ou les mettre ou quarantaine de le dossier de votre choix. Vous pouvez le configurer dans <quote>Configuration/Préférences/Modules/Clam AntiVirus</quote>. Clam AntiVirus est disponible sur <ulink url="http://clamav.sourceforge.net/">http://clamav.sourceforge.net/</ulink>.</para></listitem>
+	    <listitem><para>Permet de vérifier l'absence de virus dans les messages reçus. Ce module peut effacer les courriers contaminés ou les mettre en quarantaine dans le dossier de votre choix. Vous pouvez le configurer dans <quote>Configuration/Préférences/Modules/Clam AntiVirus</quote>. Clam AntiVirus est disponible sur <ulink url="http://clamav.sourceforge.net/">http://clamav.sourceforge.net/</ulink>.</para></listitem>
     </varlistentry>
     <varlistentry><term>Visualiseur HTML Dillo</term>
 	    <listitem><para>Permet de voir les messages en HTML grâce au navigateur léger Dillo, version 0.7.0 ou supérieure. Il utilise l'option --local de Dillo pour rester sécurisé et ne pas charger les images distantes. Vous pouvez le configurer dans <quote>Configuration/Préférences/Modules/Dillo Browser</quote>. Dillo est disponible sur <ulink url="http://www.dillo.org/">http://www.dillo.org/</ulink>.</para></listitem>
@@ -23,7 +23,7 @@
     </varlistentry>
     <varlistentry><term>SpamAssassin</term>
 	    <listitem>
-			<para>Le modules SpamAssassin plugin possède deux fonctionnalités:</para>
+			<para>Le modules SpamAssassin possède deux fonctionnalités :</para>
 			<para>La possibilité de vérifier les messages reçus pour y détecter les pourriels. Vous pourrez choisir d'effacer directement les pourriels, ou les enregistrer dans un dossier spécifique. Cette fonctionnalité peut être désactivée si, par exemple, votre courrier est déjà vérifié par votre serveur.</para>
 			<para>La possibilité d'apprendre à SpamAssassin à mieux distinguer les pourriels des messages normaux. Vous pouvez entraîner votre SpamAssassin en marquant les messages comme "indésirable" ou "acceptable" dans le menu contextuel des messages, ou avec le bouton de barre d'outil correspondant (Voir <quote>Configuration/Préférences/Barres d'outils</quote>). Optionnellement, les messages que vous marquez comme indésirables peuvent être déplacés dans votre dossier pourriels.</para>
 			<para>SpamAssassin est disponible sur <ulink url="http://spamassassin.apache.org/">http://spamassassin.apache.org/</ulink>. La version 3.1.x ou supérieure est requise pour pouvoir utiliser la fonctionnalité d'apprentissage distant.</para>
@@ -38,7 +38,7 @@
   <section id="plugins_external">
     <title>Autres modules</title>
     <para>
-	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. A l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>:
+	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink> :
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>
@@ -66,7 +66,7 @@
 	    <listitem><para>Fournit le support des boîtes aux lettres au format MBOX. </para></listitem>
     </varlistentry>
     <varlistentry><term>Perl</term>
-	    <listitem><para>Etend les possibilités de filtrage de Sylpheed-Claws. Il fournit une interface Perl au filtrage de Sylpheed-Claws, ce qui permet l'utilisation de toute la puissance de Perl.</para></listitem>
+	    <listitem><para>Étend les possibilités de filtrage de Sylpheed-Claws. Il fournit une interface Perl au filtrage de Sylpheed-Claws, ce qui permet l'utilisation de toute la puissance de Perl.</para></listitem>
     </varlistentry>
     <varlistentry><term>S/MIME</term>
 	    <listitem><para>Gère les messages signés et/ou chiffrés avec S/MIME. Vous pourrez déchiffrer les messages, en vérifier les signatures, ou bien signer et chiffrer les messages que vous envoyez. Il utilise GnuPG/GPGME et GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
@@ -78,7 +78,7 @@
 	    <listitem><para>Gère les messages vCalendar de réunion, tels que ceux envoyés par Outlook ou Evolution. Gère aussi les abonnement aux flux Webcal.</para></listitem>
     </varlistentry>
     <varlistentry><term>RSSyl</term>
-	    <listitem><para>Aggrégateur de flux RSS, sous formes d'une boîte aux lettres virtuelle. Gère les flux au format RSS 1.0, 2.0 et Atom.</para></listitem>
+	    <listitem><para>Aggrégateur de flux RSS, sous la forme d'une boîte aux lettres virtuelle. Gère les flux au format RSS 1.0, 2.0 et Atom.</para></listitem>
     </varlistentry>
     </variablelist>
     <para>
@@ -88,10 +88,10 @@
   <section id="plugins_network">
     <title>Accès réseau pour les modules</title>
     <para>
-	Certains modules externes, comme RSSyl, vCalendar ou GtkHtml Viewer, ont besoin d'un accès à internet pour fonctionner normalement (pour récupérer les abonnements dans le cas de RSSyl ou vCalendar, pour récupérer les images dans le cas de GtkHtml Viewer). Ces modules utilisent la librairie Curl. C'est pourquoi, si votre accès internet est restreint via un proxy (serveur mandataire),il faudra spécifier à la libCurl de l'utiliser. Ceci se fait en mettant en place une variable d'environnement, <emphasis>http_proxy</emphasis>. Par exemple, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> indiquera à la libCurl de se connecter au port 8080 de la machine myproxy.example.com, en tant qu'utilisateur <quote>user</quote> dont le mot de passe est <quote>passwd</quote> pour tout accès HTTP à internet. 
+	Certains modules externes, comme RSSyl, vCalendar ou GtkHtml Viewer, ont besoin d'un accès à Internet pour fonctionner normalement (pour récupérer les abonnements dans le cas de RSSyl ou vCalendar, pour récupérer les images dans le cas de GtkHtml Viewer). Ces modules utilisent la librairie Curl. C'est pourquoi, si votre accès Internet est restreint via un proxy (serveur mandataire), il faudra spécifier à la libCurl de l'utiliser. Ceci se fait en mettant en place une variable d'environnement, <emphasis>http_proxy</emphasis>. Par exemple, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> indiquera à la libCurl de se connecter au port 8080 de la machine myproxy.example.com, en tant qu'utilisateur <quote>user</quote> dont le mot de passe est <quote>passwd</quote> pour tout accès HTTP à Internet. 
     </para>
     <para>
-	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante : <emphasis>export http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
+	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@monproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante : <emphasis>export http_proxy=http://user:passwd@monproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
     </para>
   </section>
 </section>

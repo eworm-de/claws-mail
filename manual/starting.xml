@@ -25,7 +25,7 @@
 	    </varlistentry>
     </variablelist></blockquote>
     <para>
-	    On the next page you will enter the address of your SMTP server, (<emphasis>sometimes referred to as <quote>Outgoing server</quote></emphasis>). You will also be asked whether to authenticate when sending mail; this is often not the case if you're using an ISP to connect to internet, and often the case if you are configuring a professional account.
+	    On the next page you will enter the address of your SMTP server, (<emphasis>sometimes referred to as <quote>Outgoing server</quote></emphasis>). You will also be asked whether to authenticate when sending mail; this is often not the case if you're using an ISP to connect to Internet, and often the case if you are configuring a professional account.
      </para><para>If you chose either POP3 or Local mbox file, the next page  will ask you where you want to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
     </para><para>If Sylpheed-Claws is built with support for OpenSSL, you will next see the <quote>Security</quote> page, here you will be able to choose to use SSL encryption to send and receive your emails. Most ISPs do not enable this, but many companies do; if you're unsure about it, you can leave them unselected.
     </para><para>

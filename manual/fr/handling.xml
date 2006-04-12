@@ -8,7 +8,7 @@
 	Si vous recevez beaucoup de messages, vous allez rapidement trouver que votre Boîte de Réception grossit jusqu'à devenir difficile à utiliser. Vous n'arriverez même plus à retrouver un message reçu les jours précédents. C'est pourquoi Sylpheed-Claws, comme tous les bons clients de courriel, vous fournira plusieurs solutions pour mieux organiser vos courriels.
     </para>
     <para>
-	Vous pouvez créer autant de dossiers et sous-dossiers que nécessaire. Par exemple un dossier pour votre famille, un dossiers Amis, des dossiers pour les listes de diffusion, des dossiers pour archiver les courriels des années passées, etc.
+	Vous pouvez créer autant de dossiers et sous-dossiers que nécessaire. Par exemple un dossier pour votre famille, un dossiers 'Amis', des dossiers pour les listes de diffusion, des dossiers pour archiver les courriels des années passées, etc.
 	Pour créer un nouveau dossier, faites un clic droit sur le dossier parent et choisissez <quote>Nouveau dossier...</quote> dans le menu déroulant. Par exemple pour créer un dossier 'Amis' dans votre dossier 'Boîte de Réception', faites un clic droit sur la Boîte de Réception, choisissez <quote>Nouveau dossier...</quote>, tapez 'Amis' dans le dialogue qui apparaît, et validez.
     </para>
   </section>
@@ -38,7 +38,7 @@
 	Une fois la règle de filtrage définie, vous devez l'ajouter à la liste de règles existantes avec le bouton <quote>Ajouter</quote>. N'oubliez pas, l'ordre des règles est important : si Sylpheed-Claws trouve une règle qui correspond à un message et qui le déplace ou l'efface, la suite des règles n'est pas testée ni exécutée. C'est pourquoi vous pouvez ré-ordonner vos règles grâce aux boutons disponibles à droite de la liste (ou par glisser-déposer).
     </para>
     <para>
-	Il existe aussi une méthode rapide de création de règles de filtrage en se basant sur le message actuellement sélectionné. Après avoir sélectionné un message pour lequel vous voulez créer une règle, choisissez <quote>Créer une règle de filtrage...</quote> dans le menu <quote>Outils</quote>, puis choisissez dans le sous-menu: <quote>Automatiquement</quote> est utilisé pour les messages de liste de diffusion, <quote>avec De</quote> crée un filtre basé sur l'expéditeur, <quote>avec A</quote> crée un filtre basé sur le(s) destinataire(s), et <quote>avec Sujet</quote> crée un filtre basé sur le sujet du message. Chacun de ses types de filtrages a ses avantages, à vous de décider lequel sera le mieux adapté. En général, <quote>avec De</quote> est utile pour vos contacts réguliers et personnels, et <quote>avec A</quote> est utile pour séparer les messages que vous recevez sur différents comptes.
+	Il existe aussi une méthode rapide de création de règles de filtrage en se basant sur le message actuellement sélectionné. Après avoir sélectionné un message pour lequel vous voulez créer une règle, choisissez <quote>Créer une règle de filtrage...</quote> dans le menu <quote>Outils</quote>, puis choisissez dans le sous-menu : <quote>Automatiquement</quote> est utilisé pour les messages de liste de diffusion, <quote>avec De</quote> crée un filtre basé sur l'expéditeur, <quote>avec À</quote> crée un filtre basé sur le(s) destinataire(s), et <quote>avec Sujet</quote> crée un filtre basé sur le sujet du message. Chacun de ses types de filtrages a ses avantages, à vous de décider lequel sera le mieux adapté. En général, <quote>avec De</quote> est utile pour vos contacts réguliers et personnels, et <quote>avec À</quote> est utile pour séparer les messages que vous recevez sur différents comptes.
     </para>
   </section>
 
@@ -48,7 +48,7 @@
 	Il existe plusieurs méthodes pour rechercher dans vos messages.
     </para>
     <para>
-	L'une d'entre elles est assez répandue, vous pouvez la trouver dans le menu <quote>Edition/Chercher dans le dossier...</quote>. Ceci ouvre une fenêtre de recherche où vous pouvez spécifier un ou plusieurs champs où chercher, comme De, A, Sujet, et Message. Après avoir choisi vos critères, utilisez les boutons <quote>Revenir</quote> et <quote>Avancer</quote> pour naviguer dans les messages correspondants, ou utilisez <quote>Chercher tous</quote> pour sélectionner tous les messages correspondants en une fois. Soyez conscients, toutefois, que la recherche dans le message entier est plus lente que la recherche dans les en-têtes, car les corps de messages ne sont pas dans les caches de Sylpheed-Claws.
+	L'une d'entre elles est assez répandue, vous pouvez la trouver dans le menu <quote>Edition/Chercher dans le dossier...</quote>. Ceci ouvre une fenêtre de recherche où vous pouvez spécifier un ou plusieurs champs où chercher, comme De, À, Sujet, et Message. Après avoir choisi vos critères, utilisez les boutons <quote>Revenir</quote> et <quote>Avancer</quote> pour naviguer dans les messages correspondants, ou utilisez <quote>Chercher tous</quote> pour sélectionner tous les messages correspondants en une fois. Soyez conscients, toutefois, que la recherche dans le message entier est plus lente que la recherche dans les en-têtes, car les corps de messages ne sont pas dans les caches de Sylpheed-Claws.
     </para>
     <para>
 	Si vous cherchez une partie spécifique dans un long message, vous pourrez utiliser le menu <quote>Edition/Recherche dans le message...</quote>. Cela fonctionne comme la recherche dans un document texte.

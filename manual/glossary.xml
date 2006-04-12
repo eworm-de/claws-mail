@@ -641,7 +641,7 @@ STARTTLS
     </term>
     <listitem>
       <para>
-STARTTLS, (start transport layer security), is a command used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
+STARTTLS (Start Transport Layer Security) is a command used to initiate a secure connection between two servers using <xref linkend="gt_ssl" />.
       </para>
     </listitem>
   </varlistentry>
@@ -747,7 +747,7 @@ Wrapping
     </term>
     <listitem>
       <para>
-Restructuring of the message text based on a user-defined maximum number of characters per line.
+Restructuring of the message text based on a user-defined maximum number of characters per line. Wrapping ensures that paragraphs are justified, which means that they are aligned to the left and right margins.
       </para>
     </listitem>
   </varlistentry>

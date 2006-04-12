@@ -5,7 +5,7 @@
   <section id="start_wizard">
     <title>L'assistant de configuration</title>
     <para>
-	La première que vous allez lancer Sylpheed-Claws, il vous posera quelques questions afin de mettre en place votre premier compte. Ces questions sont simples et groupées en quelques pages.
+	La première fois que vous allez lancer Sylpheed-Claws, il vous posera quelques questions afin de mettre en place votre premier compte. Ces questions sont simples et groupées en quelques pages.
     </para><para>
 	Tout d'abord Sylpheed-Claws vous demandera votre nom (<emphasis>en général il le trouvera tout seul</emphasis>), votre adresse email, et le nom de votre société (<emphasis>optionnel</emphasis>).
     </para><para>
@@ -30,7 +30,7 @@
     </para><para>
 	Si vous avez choisi POP3 ou Fichier MBOX local, la page suivante vous demandera où enregistrer vos messages sur le disque. La valeur par défaut, <quote>Mail</quote>, est en générale convenable, et enregistrera vos messages dans un répertoire <quote>Mail</quote> à la racine de votre répertoire utilisateur.
     </para><para>
-	Si votre version de Sylpheed-Claws gère OpenSSL, vous verrez ensuite la page <quote>Sécurité</quote>, où vous serez à même de choisir ou non de chiffrer les connexions vers vos serveurs d'envoi et de réception. La plupart des fournisseurs d'accès ne permettent pas cela, mais la plupart des entreprise le font. Si vous n'êtes pas sûr, vous pouvez laisser ces réglages comme ils sont par défaut.
+	Si votre version de Sylpheed-Claws gère OpenSSL, vous verrez ensuite la page <quote>Sécurité</quote>, où vous serez à même de choisir ou non de chiffrer les connexions vers vos serveurs d'envoi et de réception. La plupart des fournisseurs d'accès ne permettent pas cela, mais la plupart des entreprises le font. Si vous n'êtes pas sûr, vous pouvez laisser ces réglages comme ils sont par défaut.
     </para><para>
 	Vous pouvez maintenant cliquer sur le bouton Enregistrer, et commencer à apprécier pleinement Sylpheed-Claws.
     </para>
@@ -53,9 +53,9 @@
   </section>
 
   <section id="start_writing">
-    <title>Ecrire votre premier message</title>
+    <title>Écrire votre premier message</title>
     <para>
-	Une fenêtre de composition de message s'ouvrira en cliquant sur le bouton <quote>Composition</quote>. Cette fenêtre contient différents champs que vous devriez reconnaître sans difficulté : si vous avez de multiples comptes, le champ De pourra être utilisé pour choisir quel compte utiliser pour ce message. Le champ A contiendra le destinataire de votre message ; lorsque vous le remplirez, un second champ A apparaîtra, vous permettant d'envoyer le message à plusieurs destinataires. Vous pouvez aussi changer ce champ A en champ Cc, en choisissant dans la liste déroulante correspondante. Vous pourrez ensuite remplir le champ Sujet du message, puis taper son contenu.
+	Une fenêtre de composition de message s'ouvrira en cliquant sur le bouton <quote>Composition</quote>. Cette fenêtre contient différents champs que vous devriez reconnaître sans difficulté : si vous avez de multiples comptes, le champ De pourra être utilisé pour choisir quel compte utiliser pour ce message. Le champ À contiendra le destinataire de votre message ; lorsque vous le remplirez, un second champ À apparaîtra, vous permettant d'envoyer le message à plusieurs destinataires. Vous pouvez aussi changer ce champ À en champ Cc, en choisissant dans la liste déroulante correspondante. Vous pourrez ensuite remplir le champ Sujet du message, puis taper son contenu.
     </para><para>
 	Petite note à propos du sujet d'un message : Sylpheed-Claws vous demandera confirmation avant d'envoyer un message avec un Sujet vide. C'est parce qu'il peut être ennuyeux pour le destinataire de recevoir un message sans sujet, étant donné que cela complique la lecture et la gestion du message.
     </para>
