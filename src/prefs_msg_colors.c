@@ -429,7 +429,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 		set_button_bg_color(color_buttons.custom_color[c],
 				    prefs_common.custom_colorlabel[c].color);
 		gtk_entry_set_text(GTK_ENTRY (custom_colorlabel_entry[c]), 
-				   SAFE_STRING (prefs_common.custom_colorlabel[c].label));
+				   gettext(SAFE_STRING (prefs_common.custom_colorlabel[c].label)));
 	}
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enablecol),
@@ -686,7 +686,7 @@ static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget, gpointer dat
 		set_button_bg_color(color_buttons.custom_color[c],
 							prefs_common.custom_colorlabel[c].color);
 		gtk_entry_set_text(GTK_ENTRY (page->custom_colorlabel_entry[c]),
-							SAFE_STRING (colorlabel_get_color_default_text(c)));
+							gettext(SAFE_STRING (colorlabel_get_color_default_text(c))));
 	}
 
 #undef CR
