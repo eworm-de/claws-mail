@@ -45,16 +45,16 @@
 	(str) ? (str) : ""
 
 static struct MessageColorButtons {
-	GtkWidget *quote_level1_btn;
-	GtkWidget *quote_level2_btn;
-	GtkWidget *quote_level3_btn;
-	GtkWidget *quote_level1_bg_btn;
-	GtkWidget *quote_level2_bg_btn;
-	GtkWidget *quote_level3_bg_btn;
-	GtkWidget *uri_btn;
-	GtkWidget *tgt_folder_btn;
-	GtkWidget *signature_btn;
-	GtkWidget *color_new_btn;
+	GtkWidget *btn_quote_level1;
+	GtkWidget *btn_quote_level2;
+	GtkWidget *btn_quote_level3;
+	GtkWidget *btn_quote_level1_bg;
+	GtkWidget *btn_quote_level2_bg;
+	GtkWidget *btn_quote_level3_bg;
+	GtkWidget *btn_uri;
+	GtkWidget *btn_tgt_folder;
+	GtkWidget *btn_signature;
+	GtkWidget *btn_color_new;
 	/* custom colors */
 	GtkWidget *custom_color[COLORLABELS];
 } color_buttons;
@@ -65,12 +65,12 @@ typedef struct _MsgColorsPage
 
 	GtkWidget *window;
 	
-	GtkWidget *chkbtn_enablecol;
-	GtkWidget *chkbtn_enablebgcol;
+	GtkWidget *chkbtn_enable_colors;
+	GtkWidget *chkbtn_enable_bgcolors;
 	GtkWidget *chkbtn_recycle_colors;
 
 	/* custom colors */
-	GtkWidget *custom_colorlabel_entry[COLORLABELS];
+	GtkWidget *entry_custom_colorlabel[COLORLABELS];
 } MsgColorsPage;
 
 static GtkWidget *color_dialog;
@@ -96,43 +96,55 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *chkbtn_enablecol;
-	GtkWidget *quotelevel1_label;
-	GtkWidget *quotelevel2_label;
-	GtkWidget *quotelevel3_label;
-	GtkWidget *chkbtn_enablebgcol;
-	GtkWidget *quotelevel1_bglabel;
-	GtkWidget *quotelevel2_bglabel;
-	GtkWidget *quotelevel3_bglabel;
-	GtkWidget *uri_label;
-	GtkWidget *signature_label;
-	GtkWidget *tgt_folder_label;
+	GtkWidget *chkbtn_enable_colors;
+	GtkWidget *label_quote_level1;
+	GtkWidget *label_quote_level2;
+	GtkWidget *label_quote_level3;
+	GtkWidget *label_quote_color1;
+	GtkWidget *label_quote_color2;
+	GtkWidget *label_quote_color3;
+	GtkWidget *chkbtn_enable_bgcolors;
+	GtkWidget *label_quote_bgcolor1;
+	GtkWidget *label_quote_bgcolor2;
+	GtkWidget *label_quote_bgcolor3;
+	GtkWidget *lable_uri;
+	GtkWidget *label_signature;
+	GtkWidget *label_tgt_folder;
 	GtkWidget *chkbtn_recycle_colors;
 	GtkWidget *hbox;
-	GtkWidget *color_new_label;
-	GtkWidget *msg_frame;
-	GtkWidget *folder_frame;
+	GtkWidget *label_color_new;
+	GtkWidget *frame_msg;
+	GtkWidget *frame_folder;
+	GtkWidget *frame_quote;
+	GtkWidget *vbox3;
 	GtkWidget *hbox_quote;
 	GtkWidget *vbox_quotefg;
 	GtkWidget *vbox_quotebg;
 	/* custom colors */
+	GtkWidget *vbox_color_labels;
+	GtkWidget *hbox_custom_colors;
 	GtkWidget *vbox_custom_colors;
+	GtkWidget *vbox_custom_colors1;
+	GtkWidget *vbox_custom_colors2;
 	GtkWidget *frame_custom_colors;
-	GtkWidget *hbox_reset_custom_colors;
-	GtkWidget *reset_custom_colors_btn;
+ 	GtkWidget *hbox_reset_custom_colors;
+	GtkWidget *btn_reset_custom_colors;
 	GtkWidget *hbox_custom_color[COLORLABELS];
-	GtkWidget *custom_colorlabel_entry[COLORLABELS];
+	GtkWidget *entry_custom_colorlabel[COLORLABELS];
 	gint c;
+	GtkTooltips *tooltips;
+	gchar *tooltip_btn_text = NULL;
+	gchar *tooltip_entry_text = NULL;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, msg_frame, _("Message view"));
+	PACK_FRAME(vbox1, frame_msg, _("Message view"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (msg_frame), vbox2);
+	gtk_container_add (GTK_CONTAINER (frame_msg), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 
@@ -147,253 +159,382 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox_quotebg);
 #endif	
 	
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox_quote, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+	PACK_CHECK_BUTTON (hbox, chkbtn_enable_colors,
+			   _("Enable coloration of message text"));
+
+	PACK_FRAME(vbox2, frame_quote, _("Quote"));
+
+	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
+
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox_quote, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_quote), vbox_quotefg, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_quote), vbox_quotebg, FALSE, TRUE, 0);
 
-	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
-	PACK_CHECK_BUTTON (hbox, chkbtn_enablecol,
-			   _("Enable coloration of message text"));
-
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
-
-	color_buttons.quote_level1_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level1_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level1_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level1_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level1_btn);
-
-	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
-	gtk_widget_show(quotelevel1_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel1_label, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel1_label);
-		
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
-
-	color_buttons.quote_level2_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level2_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level2_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level2_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level2_btn);
-
-	quotelevel2_label = gtk_label_new (_("Quoted Text - Second Level"));
-	gtk_widget_show(quotelevel2_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel2_label, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel2_label);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
-
-	color_buttons.quote_level3_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level3_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level3_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level3_btn);
-
-	quotelevel3_label = gtk_label_new (_("Quoted Text - Third Level"));
-	gtk_widget_show(quotelevel3_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel3_label, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel3_label);
-
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
-
-	PACK_CHECK_BUTTON (hbox, chkbtn_enablebgcol,
-			   _("Enable coloration of background text"));
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, chkbtn_enablebgcol);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
-	
-	color_buttons.quote_level1_bg_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level1_bg_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level1_bg_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level1_bg_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level1_bg_btn);
-
-	quotelevel1_bglabel = gtk_label_new (_(" Background"));
-	gtk_widget_show(quotelevel1_bglabel);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel1_bglabel, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel1_bglabel);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
-	
-	color_buttons.quote_level2_bg_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level2_bg_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level2_bg_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level2_bg_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level2_bg_btn);
-
-	quotelevel2_bglabel = gtk_label_new (_(" Background"));
-	gtk_widget_show(quotelevel2_bglabel);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel2_bglabel, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel2_bglabel);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
-	
-	color_buttons.quote_level3_bg_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.quote_level3_bg_btn);
-	gtk_widget_set_size_request (color_buttons.quote_level3_bg_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.quote_level3_bg_btn, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.quote_level3_bg_btn);
-
-	quotelevel3_bglabel = gtk_label_new (_(" Background"));
-	gtk_widget_show(quotelevel3_bglabel);
-  	gtk_box_pack_start (GTK_BOX(hbox), quotelevel3_bglabel, 
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, quotelevel3_bglabel);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	PACK_CHECK_BUTTON (hbox, chkbtn_recycle_colors,
 			   _("Cycle quote colors"));
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, chkbtn_recycle_colors);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, chkbtn_recycle_colors);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, chkbtn_recycle_colors,
+			     _("If there are more than 3 quote levels, the colors will be reused"),
+			     NULL);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
+
+	label_quote_level1 = gtk_label_new (_("1st Level"));
+	gtk_widget_show(label_quote_level1);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_level1, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_level1);
+
+	label_quote_color1 = gtk_label_new (_("Text"));
+	gtk_widget_show(label_quote_color1);
+  	gtk_box_pack_end (GTK_BOX(hbox), label_quote_color1, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_color1);
+		
+	color_buttons.btn_quote_level1 = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level1);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level1, 30, 20);
+  	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level1, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level1);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level1,
+			     _("Pick color for 1st level text"), NULL);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
+
+	label_quote_level2 = gtk_label_new (_("2nd Level"));
+	gtk_widget_show(label_quote_level2);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_level2, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_level2);
+
+	label_quote_color2 = gtk_label_new (_("Text"));
+	gtk_widget_show(label_quote_color2);
+  	gtk_box_pack_end (GTK_BOX(hbox), label_quote_color2, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_color2);
+
+	color_buttons.btn_quote_level2 = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level2);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level2, 30, 20);
+  	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level2, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level2);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level2,
+			     _("Pick color for 2nd level text"), NULL);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
+
+	label_quote_level3 = gtk_label_new (_("3rd Level"));
+	gtk_widget_show(label_quote_level3);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_level3, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_level3);
+
+	label_quote_color3 = gtk_label_new (_("Text"));
+	gtk_widget_show(label_quote_color3);
+  	gtk_box_pack_end (GTK_BOX(hbox), label_quote_color3, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_color3);
+
+	color_buttons.btn_quote_level3 = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level3);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level3, 30, 20);
+  	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level3, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level3);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level3,
+			     _("Pick color for 3rd level text"), NULL);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
+
+	PACK_CHECK_BUTTON (hbox, chkbtn_enable_bgcolors,
+			   _("Enable coloration of text background"));
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, chkbtn_enable_bgcolors);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
+	
+	color_buttons.btn_quote_level1_bg = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level1_bg);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level1_bg, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level1_bg, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level1_bg);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level1_bg,
+			     _("Pick color for 1st level text background"), NULL);
+
+	label_quote_bgcolor1 = gtk_label_new (_("Background"));
+	gtk_widget_show(label_quote_bgcolor1);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor1, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor1);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
+	
+	color_buttons.btn_quote_level2_bg = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level2_bg);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level2_bg, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level2_bg, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level2_bg);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level2_bg,
+			     _("Pick color for 2nd level text background"), NULL);
+
+	label_quote_bgcolor2 = gtk_label_new (_("Background"));
+	gtk_widget_show(label_quote_bgcolor2);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor2, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor2);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
+	
+	color_buttons.btn_quote_level3_bg = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_quote_level3_bg);
+	gtk_widget_set_size_request (color_buttons.btn_quote_level3_bg, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level3_bg, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level3_bg);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level3_bg,
+			     _("Pick color for 3rd level text background"), NULL);
+
+	label_quote_bgcolor3 = gtk_label_new (_("Background"));
+	gtk_widget_show(label_quote_bgcolor3);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor3, 
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor3);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.uri_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.uri_btn);
-	gtk_widget_set_size_request (color_buttons.uri_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.uri_btn, 
+	color_buttons.btn_uri = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_uri);
+	gtk_widget_set_size_request (color_buttons.btn_uri, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_uri, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.uri_btn);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_uri);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_uri,
+			     _("Pick color for links"), NULL);
 
-	uri_label = gtk_label_new (_("URI link"));
-	gtk_widget_show(uri_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), uri_label, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, uri_label);
+	lable_uri = gtk_label_new (_("URI link"));
+	gtk_widget_show(lable_uri);
+  	gtk_box_pack_start (GTK_BOX(hbox), lable_uri, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, lable_uri);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.signature_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.signature_btn);
-	gtk_widget_set_size_request (color_buttons.signature_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.signature_btn, 
+	color_buttons.btn_signature = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_signature);
+	gtk_widget_set_size_request (color_buttons.btn_signature, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_signature, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, color_buttons.signature_btn);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_signature);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_signature,
+			     _("Pick color for signatures"), NULL);
 
-	signature_label = gtk_label_new (_("Signatures"));
-	gtk_widget_show(signature_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), signature_label, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, signature_label);
+	label_signature = gtk_label_new (_("Signatures"));
+	gtk_widget_show(label_signature);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_signature, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_signature);
 
-	PACK_FRAME(vbox1, folder_frame, _("Folder list"));
+	PACK_FRAME(vbox1, frame_folder, _("Folder list"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (folder_frame), vbox2);
+	gtk_container_add (GTK_CONTAINER (frame_folder), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.tgt_folder_btn = gtk_button_new();
-	gtk_widget_show(color_buttons.tgt_folder_btn);
-	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.tgt_folder_btn, 
+	color_buttons.btn_tgt_folder = gtk_button_new();
+	gtk_widget_show(color_buttons.btn_tgt_folder);
+	gtk_widget_set_size_request (color_buttons.btn_tgt_folder, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_tgt_folder, 
 			    FALSE, FALSE, 0);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_tgt_folder,
+			     _("Pick color for Target folder. "
+			       "Target folder is used when the option 'Execute immediately "
+			       "when moving or deleting messages' is turned off"), NULL);
 
-	tgt_folder_label = gtk_label_new (_("Target folder"));
-	gtk_widget_show(tgt_folder_label);
-  	gtk_box_pack_start (GTK_BOX(hbox), tgt_folder_label, FALSE, FALSE, 0);
+	label_tgt_folder = gtk_label_new (_("Target folder"));
+	gtk_widget_show(label_tgt_folder);
+  	gtk_box_pack_start (GTK_BOX(hbox), label_tgt_folder, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	color_buttons.color_new_btn = gtk_button_new();
-	gtk_widget_show (color_buttons.color_new_btn);
-	gtk_widget_set_size_request (color_buttons.color_new_btn, 30, 20);
-  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.color_new_btn,
+	color_buttons.btn_color_new = gtk_button_new();
+	gtk_widget_show (color_buttons.btn_color_new);
+	gtk_widget_set_size_request (color_buttons.btn_color_new, 30, 20);
+  	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_color_new,
 			    FALSE, FALSE, 0);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, color_buttons.btn_color_new,
+			     _("Pick color for folders containing new messages"), NULL);
 
-	color_new_label = gtk_label_new (_("Folder containing new messages"));
- 	gtk_widget_show(color_new_label);
- 	gtk_box_pack_start (GTK_BOX(hbox), color_new_label, FALSE, FALSE, 0);
+	label_color_new = gtk_label_new (_("Folder containing new messages"));
+ 	gtk_widget_show(label_color_new);
+ 	gtk_box_pack_start (GTK_BOX(hbox), label_color_new, FALSE, FALSE, 0);
 
 	/* custom colors */
 	PACK_FRAME (vbox1, frame_custom_colors, _("Color labels"));
 
+	vbox_color_labels = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_color_labels);
+	gtk_container_add (GTK_CONTAINER (frame_custom_colors), vbox_color_labels);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_color_labels), VBOX_BORDER);
+
 	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_custom_colors);
-	gtk_container_add (GTK_CONTAINER (frame_custom_colors), vbox_custom_colors);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_custom_colors), VBOX_BORDER);
+	gtk_box_pack_start(GTK_BOX(vbox_color_labels), vbox_custom_colors,
+		FALSE, FALSE, 0);
 
-	for (c = 0; c < COLORLABELS; c++) {
+	hbox_custom_colors = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_custom_colors);
+	gtk_box_pack_start(GTK_BOX (vbox_custom_colors), hbox_custom_colors,
+				   FALSE, TRUE, 0);
+
+	vbox_custom_colors1 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_custom_colors1);
+	gtk_box_pack_start (GTK_BOX (hbox_custom_colors), vbox_custom_colors1, FALSE, FALSE, 0);
+
+	vbox_custom_colors2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_custom_colors2);
+	gtk_box_pack_start (GTK_BOX (hbox_custom_colors), vbox_custom_colors2, FALSE, FALSE, 0);
+
+	for (c = 0; c < 4; c++) {
+		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
+		   rule name and should not be translated */
+		tooltip_btn_text = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
+
+		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
+		   rule name and should not be translated */
+		tooltip_entry_text = g_strdup_printf(_("Set label for 'color %d'"), c+1);
+
 		hbox_custom_color[c] = gtk_hbox_new(FALSE, 8);
-		gtk_widget_show (hbox_custom_color[c]);
-		gtk_box_pack_start (GTK_BOX (vbox_custom_colors), hbox_custom_color[c],
-				FALSE, TRUE, 0);
+		gtk_widget_show(hbox_custom_color[c]);
+		gtk_box_pack_start(GTK_BOX (vbox_custom_colors1), hbox_custom_color[c],
+				   FALSE, TRUE, 0);
+
 		color_buttons.custom_color[c] = gtk_button_new();
-		gtk_widget_show (color_buttons.custom_color[c]);
-		gtk_widget_set_size_request (color_buttons.custom_color[c], 30, 20);
-  		gtk_box_pack_start (GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
-				FALSE, FALSE, 0);
-		custom_colorlabel_entry[c] = gtk_entry_new();
-		gtk_widget_show (custom_colorlabel_entry[c]);
-  		gtk_box_pack_start (GTK_BOX (hbox_custom_color[c]), custom_colorlabel_entry[c],
-				FALSE, FALSE, 0);
+		gtk_widget_show(color_buttons.custom_color[c]);
+		gtk_widget_set_size_request(color_buttons.custom_color[c], 30, 20);
+  		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
+				   FALSE, FALSE, 0);
+		tooltips = gtk_tooltips_new();
+		gtk_tooltips_set_tip(tooltips, color_buttons.custom_color[c],
+			     	     tooltip_btn_text, NULL);
+
+		entry_custom_colorlabel[c] = gtk_entry_new();
+		gtk_widget_show (entry_custom_colorlabel[c]);
+  		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), entry_custom_colorlabel[c],
+				   FALSE, FALSE, 0);
+		tooltips = gtk_tooltips_new();
+		gtk_tooltips_set_tip(tooltips, entry_custom_colorlabel[c],
+			     	     tooltip_entry_text, NULL);
 	}
+
+	for (c = 4; c < COLORLABELS; c++) {
+		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
+		   rule name and should not be translated */
+		tooltip_btn_text = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
+
+		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
+		   rule name and should not be translated */
+		tooltip_entry_text = g_strdup_printf(_("Set label for 'color %d'"), c+1);
+
+		hbox_custom_color[c] = gtk_hbox_new(FALSE, 8);
+		gtk_widget_show(hbox_custom_color[c]);
+		gtk_box_pack_start(GTK_BOX (vbox_custom_colors2), hbox_custom_color[c],
+				   FALSE, TRUE, 0);
+
+		color_buttons.custom_color[c] = gtk_button_new();
+		gtk_widget_show(color_buttons.custom_color[c]);
+		gtk_widget_set_size_request(color_buttons.custom_color[c], 30, 20);
+  		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
+				   FALSE, FALSE, 0);
+		tooltips = gtk_tooltips_new();
+		gtk_tooltips_set_tip(tooltips, color_buttons.custom_color[c],
+			     	     tooltip_btn_text, NULL);
+
+		entry_custom_colorlabel[c] = gtk_entry_new();
+		gtk_widget_show (entry_custom_colorlabel[c]);
+  		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), entry_custom_colorlabel[c],
+				   FALSE, FALSE, 0);
+		tooltips = gtk_tooltips_new();
+		gtk_tooltips_set_tip(tooltips, entry_custom_colorlabel[c],
+			     	     tooltip_entry_text, NULL);
+	}
+
+	g_free(tooltip_btn_text);
+	g_free(tooltip_entry_text);
 
 	hbox_reset_custom_colors = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox_reset_custom_colors);
-	gtk_box_pack_start (GTK_BOX (vbox_custom_colors), hbox_reset_custom_colors,
-		FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX (vbox_color_labels), hbox_reset_custom_colors,
+			   FALSE, FALSE, 0);
 
-	reset_custom_colors_btn = gtk_button_new_with_label (_(" Use default "));
-	gtk_widget_show (reset_custom_colors_btn);
-	gtk_box_pack_start (GTK_BOX (hbox_reset_custom_colors), reset_custom_colors_btn,
+	btn_reset_custom_colors = gtk_button_new_with_label(_(" Use default "));
+	gtk_widget_show(btn_reset_custom_colors);
+	gtk_box_pack_start(GTK_BOX(hbox_reset_custom_colors), btn_reset_custom_colors,
 		FALSE, FALSE, 0);
 
-	g_signal_connect(G_OBJECT(color_buttons.quote_level1_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level1), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL1");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level2_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level2), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL2");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level3_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level3), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL3");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level1_bg_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level1_bg), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL1BG");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level2_bg_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level2_bg), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL2BG");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level3_bg_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_quote_level3_bg), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "LEVEL3BG");
-	g_signal_connect(G_OBJECT(color_buttons.uri_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_uri), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "URI");
-	g_signal_connect(G_OBJECT(color_buttons.tgt_folder_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_tgt_folder), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "TGTFLD");
-	g_signal_connect(G_OBJECT(color_buttons.signature_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_signature), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "SIGNATURE");
-	g_signal_connect(G_OBJECT(color_buttons.color_new_btn), "clicked",
+	g_signal_connect(G_OBJECT(color_buttons.btn_color_new), "clicked",
 			 G_CALLBACK(quote_color_set_dialog), "NEW");
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
@@ -401,50 +542,50 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 				 G_CALLBACK(quote_color_set_dialog), GINT_TO_POINTER(c));
 	}
 
-	g_signal_connect(G_OBJECT(reset_custom_colors_btn), "clicked",
+	g_signal_connect(G_OBJECT(btn_reset_custom_colors), "clicked",
 			 G_CALLBACK(prefs_msg_colors_reset_custom_colors), prefs_msg_colors);
 
-	set_button_bg_color(color_buttons.quote_level1_btn,
+	set_button_bg_color(color_buttons.btn_quote_level1,
 			    prefs_common.quote_level1_col);
-	set_button_bg_color(color_buttons.quote_level2_btn,
+	set_button_bg_color(color_buttons.btn_quote_level2,
 			    prefs_common.quote_level2_col);
-	set_button_bg_color(color_buttons.quote_level3_btn,
+	set_button_bg_color(color_buttons.btn_quote_level3,
 			    prefs_common.quote_level3_col);
-	set_button_bg_color(color_buttons.quote_level1_bg_btn,
+	set_button_bg_color(color_buttons.btn_quote_level1_bg,
 			    prefs_common.quote_level1_bgcol);
-	set_button_bg_color(color_buttons.quote_level2_bg_btn,
+	set_button_bg_color(color_buttons.btn_quote_level2_bg,
 			    prefs_common.quote_level2_bgcol);
-	set_button_bg_color(color_buttons.quote_level3_bg_btn,
+	set_button_bg_color(color_buttons.btn_quote_level3_bg,
 			    prefs_common.quote_level3_bgcol);
-	set_button_bg_color(color_buttons.uri_btn,
+	set_button_bg_color(color_buttons.btn_uri,
 			    prefs_common.uri_col);
-	set_button_bg_color(color_buttons.tgt_folder_btn,
+	set_button_bg_color(color_buttons.btn_tgt_folder,
 			    prefs_common.tgt_folder_col);
-	set_button_bg_color(color_buttons.signature_btn,
+	set_button_bg_color(color_buttons.btn_signature,
 			    prefs_common.signature_col);
-	set_button_bg_color(color_buttons.color_new_btn,
+	set_button_bg_color(color_buttons.btn_color_new,
 			    prefs_common.color_new);
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
 		set_button_bg_color(color_buttons.custom_color[c],
 				    prefs_common.custom_colorlabel[c].color);
-		gtk_entry_set_text(GTK_ENTRY (custom_colorlabel_entry[c]), 
+		gtk_entry_set_text(GTK_ENTRY (entry_custom_colorlabel[c]), 
 				   gettext(SAFE_STRING (prefs_common.custom_colorlabel[c].label)));
 	}
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enablecol),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enable_colors),
 				     prefs_common.enable_color);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enablebgcol),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_enable_bgcolors),
 				     prefs_common.enable_bgcolor);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_recycle_colors),
 				     prefs_common.recycle_quote_colors);
 
-	prefs_msg_colors->chkbtn_enablecol 	= chkbtn_enablecol;
-	prefs_msg_colors->chkbtn_enablebgcol 	= chkbtn_enablebgcol;
+	prefs_msg_colors->chkbtn_enable_colors 	= chkbtn_enable_colors;
+	prefs_msg_colors->chkbtn_enable_bgcolors 	= chkbtn_enable_bgcolors;
 	prefs_msg_colors->chkbtn_recycle_colors	= chkbtn_recycle_colors;
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
-		prefs_msg_colors->custom_colorlabel_entry[c] = custom_colorlabel_entry[c];
+		prefs_msg_colors->entry_custom_colorlabel[c] = entry_custom_colorlabel[c];
 	}
 
 	prefs_msg_colors->page.widget = vbox1;
@@ -462,7 +603,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
 		if (GPOINTER_TO_INT(type) == c) {
-			title = g_strdup_printf(_("Pick color for color #%d"), c+1);
+			/* TRANSLATORS: 'color %d' refers to the filtering/processing 
+			   rule name and should not be translated */
+			title = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
 			rgbvalue = prefs_common.custom_colorlabel[c].color;
 			break;
 		}
@@ -560,35 +703,35 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	if (c == COLORLABELS) {
 		if (g_ascii_strcasecmp(type, "LEVEL1") == 0) {
 			prefs_common.quote_level1_col = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level1_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level1, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL2") == 0) {
 			prefs_common.quote_level2_col = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level2_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level2, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL3") == 0) {
 			prefs_common.quote_level3_col = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level3_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level3, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL1BG") == 0) {
 			prefs_common.quote_level1_bgcol = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level1_bg_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level1_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL2BG") == 0) {
 			prefs_common.quote_level2_bgcol = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level2_bg_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level2_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL3BG") == 0) {
 			prefs_common.quote_level3_bgcol = rgbvalue;
-			set_button_bg_color(color_buttons.quote_level3_bg_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_quote_level3_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "URI") == 0) {
 			prefs_common.uri_col = rgbvalue;
-			set_button_bg_color(color_buttons.uri_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_uri, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "TGTFLD") == 0) {
 			prefs_common.tgt_folder_col = rgbvalue;
-			set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_tgt_folder, rgbvalue);
 			folderview_set_target_folder_color(prefs_common.tgt_folder_col);
 		} else if (g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
 			prefs_common.signature_col = rgbvalue;
-			set_button_bg_color(color_buttons.signature_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_signature, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "NEW") == 0) {
 			prefs_common.color_new = rgbvalue;
-			set_button_bg_color(color_buttons.color_new_btn, rgbvalue);
+			set_button_bg_color(color_buttons.btn_color_new, rgbvalue);
 		} else {
 			fprintf(stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type);
 		}
@@ -651,9 +794,9 @@ void prefs_msg_colors_save(PrefsPage *_page)
 	gint c;
 
 	prefs_common.enable_color = 
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enablecol));
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enable_colors));
 	prefs_common.enable_bgcolor = 
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enablebgcol));
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_enable_bgcolors));
 	prefs_common.recycle_quote_colors =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->chkbtn_recycle_colors));
 
@@ -661,7 +804,7 @@ void prefs_msg_colors_save(PrefsPage *_page)
 	for (c = 0; c < COLORLABELS; c++) {
 		g_free(prefs_common.custom_colorlabel[c].label);
 		prefs_common.custom_colorlabel[c].label =
-			gtk_editable_get_chars(GTK_EDITABLE(page->custom_colorlabel_entry[c]), 0, -1);
+			gtk_editable_get_chars(GTK_EDITABLE(page->entry_custom_colorlabel[c]), 0, -1);
 	}
 	colorlabel_update_colortable_from_prefs();
 
@@ -685,7 +828,7 @@ static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget, gpointer dat
 							(gint)CR(color.red, color.green, color.blue);
 		set_button_bg_color(color_buttons.custom_color[c],
 							prefs_common.custom_colorlabel[c].color);
-		gtk_entry_set_text(GTK_ENTRY (page->custom_colorlabel_entry[c]),
+		gtk_entry_set_text(GTK_ENTRY (page->entry_custom_colorlabel[c]),
 							gettext(SAFE_STRING (colorlabel_get_color_default_text(c))));
 	}
 

@@ -166,11 +166,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *misspelled_label;
 	GtkWidget *misspelled_hbox;
 	GtkWidget *misspelled_colorbtn;
-	GtkWidget *misspelled_useblack_label;
-
 	GtkTooltips *tooltips;
-
-	tooltips = gtk_tooltips_new ();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -200,7 +196,8 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(use_alternate_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), use_alternate_checkbtn, TRUE, TRUE, 0);
 
-	gtk_tooltips_set_tip (tooltips, use_alternate_checkbtn, 
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, use_alternate_checkbtn, 
 			_("Faster switching with last used dictionary"), NULL);
 
 	
@@ -289,14 +286,10 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(misspelled_colorbtn);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_colorbtn, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(misspelled_colorbtn, 30, 20);
-
-	misspelled_useblack_label = gtk_label_new(_("Use black to underline"));
-	gtkut_widget_set_small_font_size (misspelled_useblack_label);
-	gtk_widget_show(misspelled_useblack_label);
-	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_useblack_label, TRUE, TRUE, 4);
-	gtk_misc_set_alignment(GTK_MISC(misspelled_useblack_label), 0, 0.5);
-	gtk_label_set_line_wrap(GTK_LABEL(misspelled_useblack_label), TRUE);
-
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, misspelled_colorbtn,
+			     _("Pick color for misspelled word. "
+			       "Use black to underline"), NULL);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_aspell_checkbtn),
 			prefs_common.enable_aspell);
@@ -347,8 +340,6 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	prefs_spelling->sugmode_optmenu_menu	= sugmode_optmenu_menu;
 	prefs_spelling->misspelled_label	= misspelled_label;
 	prefs_spelling->misspelled_colorbtn	= misspelled_colorbtn;
-	prefs_spelling->misspelled_useblack_label
-		= misspelled_useblack_label;
 
 	prefs_spelling->page.widget = vbox1;
 

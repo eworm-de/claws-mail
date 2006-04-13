@@ -160,6 +160,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *enable_processing_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
+	GtkTooltips *tooltips;
 
 	page->item	   = item;
 
@@ -235,6 +236,9 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_color_btn = gtk_button_new_with_label("");
 	gtk_widget_set_size_request(folder_color_btn, 36, 26);
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, folder_color_btn,
+			     _("Pick color for folder"), NULL);
 
 	page->folder_color = item->prefs->color;
 

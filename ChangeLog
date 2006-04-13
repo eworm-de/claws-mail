@@ -1,3 +1,11 @@
+2006-04-13 [paul]	2.1.0cvs37
+
+	* src/prefs_msg_colors.c
+		rework dialog
+	* src/prefs_folder_item.c
+	* src/prefs_spelling.c
+		add a tooltip to the colour selector buttons
+
 2006-04-13 [wwp]	2.1.0cvs36
 
 	* manual/advanced.xml
