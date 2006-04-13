@@ -62,8 +62,6 @@ const gchar *plugin_desc(void)
 		 "mails. You can decrypt mails, verify signatures or "
                  "sign and encrypt your own mails.\n"
 		 "\n"
-		 "It also verifies S/MIME signatures.\n"
-		 "\n"
 		 "It can be selected as the Default Privacy System in "
 		 "/Configuration/[Account Preferences]/Privacy and when "
 		 "composing a message from /Options/Privacy System\n"

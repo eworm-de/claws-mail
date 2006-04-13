@@ -1,3 +1,10 @@
+2006-04-13 [paul]	2.1.0cvs38
+
+	* src/plugins/pgpmime/plugin.c
+		remove the mention of S/MIME from the
+		description. This is now handled by the
+		S/MIME plugin.
+
 2006-04-13 [paul]	2.1.0cvs37
 
 	* src/prefs_msg_colors.c
