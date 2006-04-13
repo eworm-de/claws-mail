@@ -48,6 +48,7 @@ struct _SSLCertHookData
 {
 	SSLCertificate *cert;
 	SSLCertificate *old_cert;
+	gboolean expired;
 	gboolean accept;
 };
 
@@ -59,6 +60,7 @@ void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
 char *ssl_certificate_check_signer (X509 *cert);
+time_t asn1toTime(ASN1_TIME *asn1Time);
 
 #endif /* USE_OPENSSL */
 #endif /* SSL_CERTIFICATE_H */

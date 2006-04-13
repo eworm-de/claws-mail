@@ -29,12 +29,14 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "prefs_common.h"
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "alertpanel.h"
 #include "hooks.h"
 
 gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
+gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert);
 gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
 GtkWidget *cert_presenter(SSLCertificate *cert)
@@ -48,13 +50,16 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	GtkTable *signer_table = NULL;
 	GtkTable *status_table = NULL;
 	GtkWidget *label = NULL;
+	
 	char buf[100];
 	char *issuer_commonname, *issuer_location, *issuer_organization;
 	char *subject_commonname, *subject_location, *subject_organization;
-	char *fingerprint, *sig_status;
+	char *fingerprint, *sig_status, *exp_date;
 	unsigned int n;
 	unsigned char md[EVP_MAX_MD_SIZE];	
-	
+	ASN1_TIME *validity;
+	time_t exp_time_t;
+
 	/* issuer */	
 	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
 				       NID_commonName, buf, 100) >= 0)
@@ -103,6 +108,16 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	else 
 		subject_organization = g_strdup(_("<not in certificate>"));
 	 
+	if ((validity = X509_get_notAfter(cert->x509_cert)) != NULL) {
+		exp_time_t = asn1toTime(validity);
+	} else {
+		exp_time_t = (time_t)0;
+	}
+	
+	memset(buf, 0, sizeof(buf));
+	strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime(&exp_time_t));
+	exp_date = buf? g_strdup(buf):g_strdup("?");
+
 	/* fingerprint */
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
 	fingerprint = readable_fingerprint(md, (int)n);
@@ -122,7 +137,7 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	
 	owner_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
 	signer_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
-	status_table = GTK_TABLE(gtk_table_new(2, 2, FALSE));
+	status_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
 	
 	label = gtk_label_new(_("Name: "));
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
@@ -178,6 +193,12 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	label = gtk_label_new(sig_status);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_table_attach(status_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	label = gtk_label_new(_("Expires on: "));
+	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_table_attach(status_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	label = gtk_label_new(exp_date);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_table_attach(status_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	gtk_container_add(GTK_CONTAINER(frame_owner), GTK_WIDGET(owner_table));
 	gtk_container_add(GTK_CONTAINER(frame_signer), GTK_WIDGET(signer_table));
@@ -198,7 +219,7 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	g_free(subject_organization);
 	g_free(fingerprint);
 	g_free(sig_status);
-	
+	g_free(exp_date);
 	return vbox;
 }
 
@@ -208,11 +229,14 @@ static gboolean sslcert_ask_hook(gpointer source, gpointer data)
 	if (hookdata == NULL) {
 		return FALSE;
 	}
-	if (hookdata->old_cert == NULL)
-		hookdata->accept = sslcertwindow_ask_new_cert(hookdata->cert);
-	else
+	if (hookdata->old_cert == NULL) {
+		if (hookdata->expired)
+			hookdata->accept = sslcertwindow_ask_expired_cert(hookdata->cert);
+		else
+			hookdata->accept = sslcertwindow_ask_new_cert(hookdata->cert);
+	} else {
 		hookdata->accept = sslcertwindow_ask_changed_cert(hookdata->old_cert, hookdata->cert);
-
+	}
 	return TRUE;
 }
 
@@ -267,6 +291,46 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 
 	val = alertpanel_full(_("Unknown SSL Certificate"), NULL,
 	 		      _("_Accept and save"), _("_Cancel connection"), NULL,
+	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
+	
+	return (val == G_ALERTDEFAULT);
+}
+
+gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
+{
+	gchar *buf, *sig_status;
+	AlertValue val;
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *cert_widget;
+	
+	vbox = gtk_vbox_new(FALSE, 5);
+	buf = g_strdup_printf(_("Certificate for %s is expired.\nDo you want to continue?"), cert->host);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+	g_free(buf);
+	
+	sig_status = ssl_certificate_check_signer(cert->x509_cert);
+
+	if (sig_status==NULL)
+		sig_status = g_strdup(_("correct"));
+
+	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+	g_free(buf);
+	g_free(sig_status);
+	
+	button = gtk_expander_new_with_mnemonic(_("_View certificate"));
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	cert_widget = cert_presenter(cert);
+	gtk_container_add(GTK_CONTAINER(button), cert_widget);
+
+	val = alertpanel_full(_("Expired SSL Certificate"), NULL,
+	 		      _("_Accept"), _("_Cancel connection"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
 	return (val == G_ALERTDEFAULT);

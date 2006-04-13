@@ -36,6 +36,52 @@
 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
+/* from Courier */
+time_t asn1toTime(ASN1_TIME *asn1Time)
+{
+	struct tm tm;
+	int offset;
+
+	if (asn1Time == NULL || asn1Time->length < 13)
+		return 0;
+
+	memset(&tm, 0, sizeof(tm));
+
+#define N2(n)	((asn1Time->data[n]-'0')*10 + asn1Time->data[(n)+1]-'0')
+
+#define CPY(f,n) (tm.f=N2(n))
+
+	CPY(tm_year,0);
+
+	if(tm.tm_year < 50)
+		tm.tm_year += 100; /* Sux */
+
+	CPY(tm_mon, 2);
+	--tm.tm_mon;
+	CPY(tm_mday, 4);
+	CPY(tm_hour, 6);
+	CPY(tm_min, 8);
+	CPY(tm_sec, 10);
+
+	offset=0;
+
+	if (asn1Time->data[12] != 'Z')
+	{
+		if (asn1Time->length < 17)
+			return 0;
+
+		offset=N2(13)*3600+N2(15)*60;
+
+		if (asn1Time->data[12] == '-')
+			offset= -offset;
+	}
+
+#undef N2
+#undef CPY
+
+	return mktime(&tm)-offset;
+}
+
 static char * get_fqdn(char *host)
 {
 	struct hostent *hp;
@@ -279,7 +325,7 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 	if (cert_a == NULL || cert_b == NULL)
 		return FALSE;
 	else if (!X509_cmp(cert_a->x509_cert, cert_b->x509_cert))
-		return TRUE;	
+		return TRUE;
 	else
 		return FALSE;
 }
@@ -330,27 +376,13 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 	known_cert = ssl_certificate_find (host, port);
 
 	if (known_cert == NULL) {
-		gchar *err_msg, *cur_cert_str, *sig_status;
-		
-		sig_status = ssl_certificate_check_signer(x509_cert);
-
-		g_free(sig_status);
-
-		cur_cert_str = ssl_certificate_to_string(current_cert);
-		
-		err_msg = g_strdup_printf(_("%s presented an unknown SSL certificate:\n%s"),
-					  current_cert->host,
-					  cur_cert_str);
-		g_free (cur_cert_str);
-
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = NULL;
+		cert_hook_data.expired = FALSE;
 		cert_hook_data.accept = FALSE;
 		
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
 		
-		g_free(err_msg);
-
 		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
 			return FALSE;
@@ -361,24 +393,12 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		}
 	}
 	else if (!ssl_certificate_compare (current_cert, known_cert)) {
-		gchar *err_msg, *known_cert_str, *cur_cert_str;
-		
-		known_cert_str = ssl_certificate_to_string(known_cert);
-		cur_cert_str = ssl_certificate_to_string(current_cert);
-		err_msg = g_strdup_printf(_("%s's SSL certificate changed !\nWe have saved this one:\n%s\n\nIt is now:\n%s\n\nThis could mean the server answering is not the known one."),
-					  current_cert->host,
-					  known_cert_str,
-					  cur_cert_str);
-		g_free (cur_cert_str);
-		g_free (known_cert_str);
-
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = known_cert;
+		cert_hook_data.expired = FALSE;
 		cert_hook_data.accept = FALSE;
 		
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
-		
-		g_free(err_msg);
 
 		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
@@ -388,6 +408,21 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			ssl_certificate_save(current_cert);
 			ssl_certificate_destroy(current_cert);
 			ssl_certificate_destroy(known_cert);
+			return TRUE;
+		}
+	} else if (asn1toTime(X509_get_notAfter(current_cert->x509_cert)) < time(NULL)) {
+		cert_hook_data.cert = current_cert;
+		cert_hook_data.old_cert = NULL;
+		cert_hook_data.expired = TRUE;
+		cert_hook_data.accept = FALSE;
+		
+		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
+
+		if (!cert_hook_data.accept) {
+			ssl_certificate_destroy(current_cert);
+			return FALSE;
+		} else {
+			ssl_certificate_destroy(current_cert);
 			return TRUE;
 		}
 	}
