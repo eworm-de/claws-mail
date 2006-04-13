@@ -453,8 +453,10 @@ void textview_init(TextView *textview)
 
 #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
-	if (tag) \
+	if (tag && colorbg) \
 		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, "paragraph-background-gdk", colorbg, NULL); \
+	else if (tag) \
+		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, NULL); \
 }
 
 static void textview_update_message_colors(TextView *textview)

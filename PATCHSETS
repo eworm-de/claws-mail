@@ -1413,3 +1413,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/fr/advanced.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/glossary.xml;  ) > 2.1.0cvs39.patchset
 ( cvs diff -u -r 1.23.2.27 -r 1.23.2.28 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.1.0cvs40.patchset
 ( cvs diff -u -r 1.4.2.7 -r 1.4.2.8 src/common/ssl_certificate.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/common/ssl_certificate.h;  cvs diff -u -r 1.9.2.9 -r 1.9.2.10 src/gtk/sslcertwindow.c;  ) > 2.1.0cvs41.patchset
+( cvs diff -u -r 1.96.2.109 -r 1.96.2.110 src/textview.c;  ) > 2.1.0cvs42.patchset
