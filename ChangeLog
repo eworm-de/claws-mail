@@ -1,3 +1,8 @@
+2006-04-13 [colin]	2.1.0cvs40
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Fix missing set_text on unix socket
+
 2006-04-13 [wwp]	2.1.0cvs39
 
 	* manual/fr/advanced.xml

@@ -409,6 +409,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 		gtk_entry_set_text(GTK_ENTRY(user_entry), config->username);
 	if (config->hostname != NULL)
 		gtk_entry_set_text(GTK_ENTRY(spamd_hostname_entry), config->hostname);
+	if (config->socket != NULL)
+		gtk_entry_set_text(GTK_ENTRY(spamd_socket_entry), config->socket);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spamd_port_spinbtn), (float) config->port);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(timeout_spinbtn), (float) config->timeout);
