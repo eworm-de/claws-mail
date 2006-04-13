@@ -17,14 +17,14 @@
 	    	</variablelist>
     	</example>
 		
-   	<example><title>Gestion des spam en utilisant <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
+   	<example><title>Gestion des pourriels en utilisant <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
 		<variablelist>
-			<varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme bon</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
-				<listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme n'étant pas des spam en utilisant <emphasis>Bogofilter</emphasis>.
+			<varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme courriels légitimes</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
+				<listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme n'étant pas des pourriels en utilisant <emphasis>Bogofilter</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
-		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme spam</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
-			    <listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme étant des spam en utilisant <emphasis>Bogofilter</emphasis>.
+		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme pourriels</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
+			    <listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme étant des pourriels en utilisant <emphasis>Bogofilter</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
     		</variablelist>
@@ -127,7 +127,7 @@
       <listitem><para>0 or 1. S'il faut utiliser SSL pour recevoir les messages. Par défaut, ce sera 0.</para></listitem></varlistentry>
     </variablelist>
     <para>
-	Voici les différentes variables que vous pouvez utiliser dans les champs domain, name, email, organization, smtpserver, smtpuser, smtppass, recvserver, recvuser, recvpass, imapdir, mboxfile and mailbox:
+	Voici les différentes variables que vous pouvez utiliser dans les champs domain, name, email, organization, smtpserver, smtpuser, smtppass, recvserver, recvuser, recvpass, imapdir, mboxfile and mailbox&nbsp;:
     </para>
     <variablelist>
      <varlistentry><term>$DEFAULTDOMAIN</term>

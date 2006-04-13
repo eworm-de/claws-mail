@@ -236,7 +236,7 @@ Le protocole <xref linkend="gt_nntp" /> permet de s'abonner à différents groupes
     </term>
     <listitem>
       <para>
-Hyper-Text Markup Language est le language de description standard sur Internet et le <xref linkend="gt_www" />. Certains clients de courriel l'utilisent pour appliquer des effets dans le texte des emails, au détriment de la taille du message. Les messages en HTML sont aussi utilisés massivement pour envoyer du <xref linkend="gt_spam" />.
+Hyper-Text Markup Language est le language de description standard sur Internet et le <xref linkend="gt_www" />. Certains clients de courriel l'utilisent pour appliquer des effets dans le texte des courriels au détriment de la taille du message. Les messages en HTML sont aussi utilisés massivement pour envoyer du <xref linkend="gt_spam" />.
       </para>
     </listitem>
   </varlistentry>
@@ -566,7 +566,7 @@ Données obtenues en "mélangeant" un message et une clé cryptographique, qui perm
     </term>
     <listitem>
       <para>
-Simple Mail Transfer Protocol. Un protocole pour envoyer un email à un serveur.
+Simple Mail Transfer Protocol. Un protocole pour envoyer un courriel à un serveur.
       </para>
     </listitem>
   </varlistentry>
@@ -706,7 +706,7 @@ X-Face
     </term>
     <listitem>
       <para>
-Image noir et blanc de 48x48 pixels, encodée pour tenir dans les en-têtes de messages. Les bons clients de courriel les affichent dans les messages. Elles ne servent qu'à personnaliser un peu les emails que l'on envoie.
+Image noir et blanc de 48x48 pixels, encodée pour tenir dans les en-têtes de messages. Les bons clients de courriel les affichent dans les messages. Elles ne servent qu'à personnaliser un peu les courriels que l'on envoie.
       </para>
     </listitem>
   </varlistentry>

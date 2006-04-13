@@ -1,3 +1,9 @@
+2006-04-13 [wwp]	2.1.0cvs39
+
+	* manual/fr/advanced.xml
+	* manual/fr/glossary.xml
+		applied new spam/ham/email lexicon (pourriel, courriel)
+
 2006-04-13 [paul]	2.1.0cvs38
 
 	* src/plugins/pgpmime/plugin.c
