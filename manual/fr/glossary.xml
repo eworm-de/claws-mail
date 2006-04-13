@@ -314,7 +314,7 @@ Maildir
     </term>
     <listitem>
       <para>
-Un format de boîte aux lettre où chaque message est un fichier.
+Un format de boîte aux lettre où chaque message est un fichier. Maildir++ est une extension du format maildir.
       </para>
     </listitem>
   </varlistentry>
@@ -324,7 +324,7 @@ Marquer (message)
     </term>
     <listitem>
       <para>
-Une coche qui peut être mise sur un message pour, par exemple, ne pas l'oublier. Les marques sont affichées dans la liste des emails et sur l'icône des dossiers qui ont un ou plusieurs messages marqués.
+Une coche qui peut être mise sur un message pour, par exemple, ne pas l'oublier. Les marques sont affichées dans la liste des messages et sur l'icône des dossiers qui ont un ou plusieurs messages marqués.
       </para>
     </listitem>
   </varlistentry>
@@ -334,7 +334,7 @@ MBOX
     </term>
     <listitem>
       <para>
-Un format de boîte aux lettre où les messages sont concaténés dans un seul fichier.
+Un format de boîte aux lettre où les messages sont concaténés dans un seul fichier. Sylpheed-Claws supporte les mbox au format mboxrd.
       </para>
     </listitem>
   </varlistentry>

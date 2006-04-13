@@ -1,3 +1,31 @@
+2006-04-13 [wwp]	2.1.0cvs36
+
+	* manual/advanced.xml
+	* manual/glossary.xml
+	* manual/handling.xml
+	* manual/keyboard.xml
+	* manual/plugins.xml
+	* manual/starting.xml
+	* manual/fr/account.xml
+	* manual/fr/ack.xml
+	* manual/fr/addrbook.xml
+	* manual/fr/advanced.xml
+	* manual/fr/faq.xml
+	* manual/fr/glossary.xml
+	* manual/fr/gpl.xml
+	* manual/fr/handling.xml
+	* manual/fr/intro.xml
+	* manual/fr/keyboard.xml
+	* manual/fr/plugins.xml
+	* manual/fr/starting.xml
+	* manual/fr/sylpheed-claws-manual.xml
+		fixes to the manuals:
+		 - summaryview -> Message List (same in French)
+		 - translate key names
+		 - fix French punctuation, use non-breakable spaces when
+		   necessary, don't use &thinsp; which is not portable
+		 - tell what maildir and mbox formats we support
+
 2006-04-12 [wwp]	2.1.0cvs35
 
 	* src/prefs_toolbar.c

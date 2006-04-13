@@ -8,9 +8,9 @@
     </para>
 	
     <blockquote>
-    	<example><title>Un <quote>Ouvrir Avec ...</quote> simple</title>
+    	<example><title>Un <quote>Ouvrir Avec...</quote> simple</title>
 	 	<variablelist>
-			<varlistentry><term>Menu nom&thinsp;: <emphasis>Ouvrir avec/kate</emphasis> Ligne de Commande&thinsp;: <emphasis>kate%p</emphasis></term>
+			<varlistentry><term>Menu nom&nbsp;: <emphasis>Ouvrir avec/kate</emphasis> Ligne de Commande&nbsp;: <emphasis>kate%p</emphasis></term>
 				<listitem><para>Ouvre le fichier de la partie MIME décodée sélectionnée (<emphasis>%p</emphasis>) avec l'éditeur de texte <emphasis>kate</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
@@ -19,11 +19,11 @@
 		
    	<example><title>Gestion des spam en utilisant <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
 		<variablelist>
-			<varlistentry><term>Menu nom&thinsp;: <emphasis>Bogofilter/Marquer comme bon</emphasis> Ligne de Commande&thinsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
+			<varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme bon</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
 				<listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme n'étant pas des spam en utilisant <emphasis>Bogofilter</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
-		    <varlistentry><term>Menu nom&thinsp;: <emphasis>Bogofilter/Marquer comme spam</emphasis> Ligne de Commande&thinsp;: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
+		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme spam</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -s -v -B "%f"</emphasis></term>
 			    <listitem><para>Marque les courriels sélectionnés (<emphasis>%f</emphasis>) comme étant des spam en utilisant <emphasis>Bogofilter</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
@@ -32,7 +32,7 @@
 	
     <example><title>Recherche Google en utilisant un script externe</title>
 	    <variablelist>
-		    <varlistentry><term>Menu nom&thinsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&thinsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
+		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&nbsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
 			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
@@ -82,13 +82,13 @@
       <listitem><para>Si nécessaire, et si Sylpheed-Claws sera utilisé avec une boîte aux lettres MH, vous pouvez créer des sous-dossiers.</para></listitem>
       <listitem><para>Maintenant, quittez Sylpheed-Claws.</para></listitem>
       <listitem><para>
-	À présent, éditez le fichier modèle de l'assistant, créé dans ~/.sylpheed-claws/accountrc.tmpl. Dans ce fichier, vous verrez différentes variables, correspondant aux champs de l'assistant. Vous pouvez en laisser commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier des valeurs ou variables. Tous les champs ne peuvent pas contenir une variable ; par exemple, smtpauth, smtpssl et recvssl sont des booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les autres champs, comme name, email, ou recvuser, sont parsés par l'assistant et les variables qu'ils contiennent seront remplacés par des valeurs. Cela vous permettra de spécifier tout ce qui sera nécessaire sur votre site, même si vos serveurs ou logins ne sont pas courants.</para></listitem>
-      <listitem><para>Enregistrez ce fichier, et effacez ~/.sylpheed-claws/accountrc, (qui contient le faux compte que vous avez créé avec l'assistant lors de la première phase) et ~/.sylpheed-claws/folderlist.xml, (de manière à ce que l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement le répertoire .sylpheed-claws dans /etc/skel/ ; si les Sylpheed-Claws déployés utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel. chown-isez tout /etc/skel/.sylpheed-claws et /etc/skel/Mail à root:root.</para></listitem>
-      <listitem><para>Testez! Créez un nouvel utilisateur, connectez-vous avec cet utilisateur, et lancez Sylpheed-Claws. Si tout est bien rempli dans accountrc.tmpl comme désiré, tout ce que cet utilisateur aura à remplir sont ses mots de passe.</para></listitem>
-      <listitem><para>Si vous configuriez une machine master pour un déploiement multi-machines, vous pouvez continuer ce processus. C'est terminé pour Sylpheed-Claws !</para></listitem>
+	À présent, éditez le fichier modèle de l'assistant, créé dans ~/.sylpheed-claws/accountrc.tmpl. Dans ce fichier, vous verrez différentes variables, correspondant aux champs de l'assistant. Vous pouvez en laisser commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier des valeurs ou variables. Tous les champs ne peuvent pas contenir une variable&nbsp;; par exemple, smtpauth, smtpssl et recvssl sont des booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les autres champs, comme name, email, ou recvuser, sont parsés par l'assistant et les variables qu'ils contiennent seront remplacés par des valeurs. Cela vous permettra de spécifier tout ce qui sera nécessaire sur votre site, même si vos serveurs ou logins ne sont pas courants.</para></listitem>
+      <listitem><para>Enregistrez ce fichier, et effacez ~/.sylpheed-claws/accountrc, (qui contient le faux compte que vous avez créé avec l'assistant lors de la première phase) et ~/.sylpheed-claws/folderlist.xml, (de manière à ce que l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement le répertoire .sylpheed-claws dans /etc/skel/&nbsp;; si les Sylpheed-Claws déployés utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel. chown-isez tout /etc/skel/.sylpheed-claws et /etc/skel/Mail à root:root.</para></listitem>
+      <listitem><para>Testez&nbsp;! Créez un nouvel utilisateur, connectez-vous avec cet utilisateur, et lancez Sylpheed-Claws. Si tout est bien rempli dans accountrc.tmpl comme désiré, tout ce que cet utilisateur aura à remplir sont ses mots de passe.</para></listitem>
+      <listitem><para>Si vous configuriez une machine master pour un déploiement multi-machines, vous pouvez continuer ce processus. C'est terminé pour Sylpheed-Claws&nbsp;!</para></listitem>
     </itemizedlist>
     <para>
-    Voici les différentes variables du fichier accountrc.tmpl :
+    Voici les différentes variables du fichier accountrc.tmpl&nbsp;:
     </para>
     <variablelist>
      <varlistentry><term>domain</term>
@@ -154,7 +154,7 @@
     </para>
     <variablelist>
 	    <varlistentry><term>bold_unread</term>
-		    <listitem><para>Montre les messages non lus en gras dans la vue du sommaire.</para></listitem>
+		    <listitem><para>Montre les messages non lus en gras dans la liste de messages.</para></listitem>
             </varlistentry>
 	    <varlistentry><term>cache_max_mem_usage</term>
 		    <listitem><para>Indique le maximum de mémoire à utiliser pour mettre en cache les messages (en Ko).</para></listitem>
@@ -163,7 +163,7 @@
 		    <listitem><para>Le temps minimum pour garder un cache en mémoire, en minutes. Les caches plus récents que ce temps ne seront pas libérés, même si l'utilisation de la mémoire est trop élevée.</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
-		    <listitem><para>Active la barre de défilement horizontale dans la vue du sommaire.</para></listitem>
+		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>enable_rules_hint</term>
 		    <listitem><para>Active les lignes alternées dans les GtkTreeViews (dialogues de filtrage, des traitements, etc.).</para></listitem>

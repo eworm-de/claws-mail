@@ -319,7 +319,7 @@ Maildir
     </term>
     <listitem>
       <para>
-A mailbox format in which all mail is kept in separate files.
+A mailbox format in which all mail is kept in separate files. Maildir++ is an extension to the maildir format.
       </para>
     </listitem>
   </varlistentry>
@@ -339,7 +339,7 @@ MBOX
     </term>
     <listitem>
       <para>
-A mailbox format in which all mail is concatenated and stored in a single file.
+A mailbox format in which all mail is concatenated and stored in a single file. The mbox format supported by Sylpheed-Claws is mboxrd.
       </para>
     </listitem>
   </varlistentry>

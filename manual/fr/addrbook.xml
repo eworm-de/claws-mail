@@ -5,11 +5,11 @@
   <section id="addrbk_basic"> 
     <title>Utilisation de base</title>
     <para>
-	Le carnet d'adresse est accessible au travers du menu <quote>Outils/Carnet d'adresses</quote>. Il est organisé en plusieurs sections : le <quote>Carnet d'adresses</quote> et ses sous-parties qui contiennent les contacts que vous avez ajoutés localement ; la section des vCards qui contiennent les vCards importées ; et, si le support a été compilé avec Sylpheed-Claws, les sections LDAP et jPilot qui contiennent les contacts issus de serveurs LDAP ou de vos organiseurs de poche. 
+	Le carnet d'adresse est accessible au travers du menu <quote>Outils/Carnet d'adresses</quote>. Il est organisé en plusieurs sections&nbsp;: le <quote>Carnet d'adresses</quote> et ses sous-parties qui contiennent les contacts que vous avez ajoutés localement&nbsp;; la section des vCards qui contiennent les vCards importées&nbsp;; et, si le support a été compilé avec Sylpheed-Claws, les sections LDAP et jPilot qui contiennent les contacts issus de serveurs LDAP ou de vos organiseurs de poche. 
     </para>
 	
 	<para>
-	Dans la section du <quote>carnet d'adresses</quote> il est possible de créer de nombreux carnets d'adresses ; chacun peut contenir des adresses et/ou des dossiers. Ceci peut vous aider dans l'organisation de vos contacts en catégories. De plus, il est également possible de créer des groupes d'adresses qui pourront être utilisés dans la fenêtre de composition pour envoyer un même courriel à plusieurs personnes en une fois.
+	Dans la section du <quote>carnet d'adresses</quote> il est possible de créer de nombreux carnets d'adresses&nbsp;; chacun peut contenir des adresses et/ou des dossiers. Ceci peut vous aider dans l'organisation de vos contacts en catégories. De plus, il est également possible de créer des groupes d'adresses qui pourront être utilisés dans la fenêtre de composition pour envoyer un même courriel à plusieurs personnes en une fois.
 	Les menus dans la fenêtre du carnet d'adresses permettent de faire tout ceci. Par exemple, vous pouvez créer un dossier <emphasis>Famille</emphasis> à l'intérieur de votre carnet d'adresses <quote>Adresses Personnelles</quote> en utilisant le menu <quote>Carnet/Nouveau dossier</quote> alors que <quote>Adresses Personnelles</quote> est sélectionné, ou en utilisant un clic droit sur ce dernier. De la même manière vous pouvez ajouter des contacts à un carnet d'adresses en utilisant le menu <quote>Adresse</quote> ou en faisant un clic droit sur un item de la liste dans la partie droite de la fenêtre.
 	L'ajout d'un contact fait apparaître une nouvelle fenêtre dans laquelle vous pourrez renseigner les détails concernant le contact dans le premier onglet (<emphasis>Nom affiché, Nom, ...</emphasis>), et une liste d'adresses de messagerie électronique dans l'onglet suivant.
     </para>
@@ -23,7 +23,7 @@
     <title>Exporter et importer des adresses</title>
     <para>
 	Sylpheed-Claws peut importer des carnets d'adresses de la majorité des programmes de courrier électronique facilement. Depuis le menu <quote>Outils</quote> du carnet d'adresses vous pouvez importer les carnets d'adresses de Pine ou de Mutt. Comme ces formats ne sont pas très courants, vous pouvez aussi importer des fichiers au format LDIF. LDIF est un format très utilisé, ainsi les autres programmes de messagerie peuvent probablement exporter leurs carnets d'adresses dans ce format.
-	L'import d'un fichier LDIF se fait via le menu <quote>Outils/Importer un fichier LDIF</quote> et consiste en trois étapes&thinsp;: sélectionnez le fichier à importer et un nom de carnet d'adresses. Vérifiez et modifiez la liste des champs que vous voulez importer si ceux par défaut ne vous conviennent pas, puis utilisez le bouton <quote>Sauvegarder</quote>.
+	L'import d'un fichier LDIF se fait via le menu <quote>Outils/Importer un fichier LDIF</quote> et consiste en trois étapes&nbsp;: sélectionnez le fichier à importer et un nom de carnet d'adresses. Vérifiez et modifiez la liste des champs que vous voulez importer si ceux par défaut ne vous conviennent pas, puis utilisez le bouton <quote>Sauvegarder</quote>.
     </para>
   </section>
 

@@ -35,7 +35,7 @@
     <section id="pop3">
     <title>POP3</title>
     <para>
-	 POP3 est l'un des deux protocoles les plus utilisés et est disponible chez pratiquement tous les FAI de la Terre. Son principal avantage est qu'il permet de télécharger les courriels sur son ordinateur. Ceci implique que l'accès à vos messages sera très rapide une fois que le téléchargement sera terminé. L'inconvénient de POP3 est qu'il est plus difficile de synchroniser vos boîtes aux lettres électroniques sur plusieurs ordinateurs (cela vous obligeant à garder vos messages sur le serveur pour quelques jours) notamment il sera très difficile de garder une trace des courriels que vous avez lus, auxquels vous avez répondus, etc ..., d'un ordinateur à l'autre.
+	 POP3 est l'un des deux protocoles les plus utilisés et est disponible chez pratiquement tous les FAI de la Terre. Son principal avantage est qu'il permet de télécharger les courriels sur son ordinateur. Ceci implique que l'accès à vos messages sera très rapide une fois que le téléchargement sera terminé. L'inconvénient de POP3 est qu'il est plus difficile de synchroniser vos boîtes aux lettres électroniques sur plusieurs ordinateurs (cela vous obligeant à garder vos messages sur le serveur pour quelques jours) notamment il sera très difficile de garder une trace des courriels que vous avez lus, auxquels vous avez répondus, etc., d'un ordinateur à l'autre.
     </para>
     <para>
      Les courriels reçus d'un compte POP3 seront stockés dans une boîte MH dans votre arbre de dossiers.
@@ -44,7 +44,7 @@
     <section id="imap">
     <title>IMAP</title>
     <para>
-	IMAP est le second protocole le plus utilisé. Son but est de pallier aux inconvénients de POP3. Lorsque vous utilisez IMAP, la liste de vos dossiers et vos messages sont tous gardés sur un serveur central. Ceci ralentit les accès aux courriels car ils sont téléchargés à la demande. Toutefois, lorsque vous utilisez un autre ordinateur ou un autre client de messagerie vos courriels seront dans l'état dans lequel vous les avez laissés, y compris leur statut (lu, non lu, répondu, etc ...).
+	IMAP est le second protocole le plus utilisé. Son but est de pallier aux inconvénients de POP3. Lorsque vous utilisez IMAP, la liste de vos dossiers et vos messages sont tous gardés sur un serveur central. Ceci ralentit les accès aux courriels car ils sont téléchargés à la demande. Toutefois, lorsque vous utilisez un autre ordinateur ou un autre client de messagerie vos courriels seront dans l'état dans lequel vous les avez laissés, y compris leur statut (lu, non lu, répondu, etc.).
     </para>
     <para>
 	 Quand vous créez un compte IMAP, une boîte aux lettres électronique est créée pour ce compte dans l'arbre des dossiers.

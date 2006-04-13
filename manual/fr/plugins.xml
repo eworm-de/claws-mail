@@ -23,9 +23,9 @@
     </varlistentry>
     <varlistentry><term>SpamAssassin</term>
 	    <listitem>
-			<para>Le modules SpamAssassin possède deux fonctionnalités :</para>
+			<para>Le modules SpamAssassin possède deux fonctionnalités&nbsp;:</para>
 			<para>La possibilité de vérifier les messages reçus pour y détecter les pourriels. Vous pourrez choisir d'effacer directement les pourriels, ou les enregistrer dans un dossier spécifique. Cette fonctionnalité peut être désactivée si, par exemple, votre courrier est déjà vérifié par votre serveur.</para>
-			<para>La possibilité d'apprendre à SpamAssassin à mieux distinguer les pourriels des messages normaux. Vous pouvez entraîner votre SpamAssassin en marquant les messages comme "indésirable" ou "acceptable" dans le menu contextuel des messages, ou avec le bouton de barre d'outil correspondant (Voir <quote>Configuration/Préférences/Barres d'outils</quote>). Optionnellement, les messages que vous marquez comme indésirables peuvent être déplacés dans votre dossier pourriels.</para>
+			<para>La possibilité d'apprendre à SpamAssassin à mieux distinguer les pourriels des messages normaux. Vous pouvez entraîner votre SpamAssassin en marquant les messages comme "indésirable" ou "acceptable" dans le menu contextuel de la liste de messages, ou avec le bouton de barre d'outil correspondant (Voir <quote>Configuration/Préférences/Barres d'outils</quote>). Optionnellement, les messages que vous marquez comme indésirables peuvent être déplacés dans votre dossier pourriels.</para>
 			<para>SpamAssassin est disponible sur <ulink url="http://spamassassin.apache.org/">http://spamassassin.apache.org/</ulink>. La version 3.1.x ou supérieure est requise pour pouvoir utiliser la fonctionnalité d'apprentissage distant.</para>
 		</listitem>
     </varlistentry>
@@ -38,7 +38,7 @@
   <section id="plugins_external">
     <title>Autres modules</title>
     <para>
-	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink> :
+	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>&nbsp;:
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>
@@ -48,7 +48,7 @@
 	    <listitem><para> Ce module vous permet d'effacer les pièces jointes dans les messages.</para></listitem>
     </varlistentry>
     <varlistentry><term>CacheSaver</term>
-	    <listitem><para>Enregistre les caches de dossiers toutes les minutes. Il aide à éviter la perte de métadonnées si l'ordinateur (<emphasis>ou Sylpheed-Claws !</emphasis>) plante.</para></listitem>
+	    <listitem><para>Enregistre les caches de dossiers toutes les minutes. Il aide à éviter la perte de métadonnées si l'ordinateur (<emphasis>ou Sylpheed-Claws&nbsp;!</emphasis>) plante.</para></listitem>
     </varlistentry>
     <varlistentry><term>etpan! Privacy</term>
 	    <listitem><para>Gère les signatures numériques et chiffrement aux formats S/MIME, OpenPGP et PGP ASCII. Ne gère pas les phrases secrètes.</para></listitem>
@@ -91,7 +91,7 @@
 	Certains modules externes, comme RSSyl, vCalendar ou GtkHtml Viewer, ont besoin d'un accès à Internet pour fonctionner normalement (pour récupérer les abonnements dans le cas de RSSyl ou vCalendar, pour récupérer les images dans le cas de GtkHtml Viewer). Ces modules utilisent la librairie Curl. C'est pourquoi, si votre accès Internet est restreint via un proxy (serveur mandataire), il faudra spécifier à la libCurl de l'utiliser. Ceci se fait en mettant en place une variable d'environnement, <emphasis>http_proxy</emphasis>. Par exemple, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> indiquera à la libCurl de se connecter au port 8080 de la machine myproxy.example.com, en tant qu'utilisateur <quote>user</quote> dont le mot de passe est <quote>passwd</quote> pour tout accès HTTP à Internet. 
     </para>
     <para>
-	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@monproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante : <emphasis>export http_proxy=http://user:passwd@monproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
+	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@monproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante&nbsp;: <emphasis>export http_proxy=http://user:passwd@monproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
     </para>
   </section>
 </section>
