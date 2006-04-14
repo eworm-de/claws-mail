@@ -8,8 +8,6 @@
 	The first time that you start Sylpheed-Claws, you will be asked a few questions in order to set up an account. These questions are easy to answer and grouped in several short pages.
     </para><para>
 	    First you will be asked to fill in your name, (<emphasis>usually guessed from the operating system</emphasis>), your email address, and the name of your organisation, (<emphasis>optional</emphasis>).
-    </para><para>
-	    On the next page you will enter the address of your SMTP server, (<emphasis>sometimes referred to as <quote>Outgoing server</quote></emphasis>).
     </para><para>The following page will allow you to enter details of how to retrieve your mail. The format of the page will be determined by the <quote>Server type</quote>:
     </para>
     <blockquote><variablelist>
@@ -26,7 +24,9 @@
 			    </para></listitem>
 	    </varlistentry>
     </variablelist></blockquote>
-<para>If you chose either POP3 or Local mbox file, the next page  will ask you where you want to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
+    <para>
+	    On the next page you will enter the address of your SMTP server, (<emphasis>sometimes referred to as <quote>Outgoing server</quote></emphasis>). You will also be asked whether to authenticate when sending mail; this is often not the case if you're using an ISP to connect to Internet, and often the case if you are configuring a professional account.
+     </para><para>If you chose either POP3 or Local mbox file, the next page  will ask you where you want to save your mail on disk. The default, <quote>Mail</quote>, is usually ok and will save your mails in a directory called <quote>Mail</quote> in your home directory.
     </para><para>If Sylpheed-Claws is built with support for OpenSSL, you will next see the <quote>Security</quote> page, here you will be able to choose to use SSL encryption to send and receive your emails. Most ISPs do not enable this, but many companies do; if you're unsure about it, you can leave them unselected.
     </para><para>
 	You can now click on the Save button, and start enjoying Sylpheed-Claws.
@@ -45,14 +45,14 @@
   <section id="start_reading">
     <title>Reading your mail</title>
     <para>
-	Once you have retrieved your emails, the Inbox folder will contain them. The total number of emails in a folder is shown at the right of the folder's name, along with the number of unread and new emails in it. To see them, click on the folder row in the folder list, and the list of emails in that folder will be displayed in the message list pane. You can then select an email using the mouse, or by using the Up and Down keys to navigate through the list, and the Space bar to display and scroll emails. You can use other keys to navigate through emails, like P and N (previous and next).
+	Once you have retrieved your emails, the Inbox folder will contain them. The total number of emails in a folder is shown at the right of the folder's name, along with the number of unread and new emails in it. To see them, click on the folder row in the folder list, and the list of emails in that folder will be displayed in the Message List pane. You can then select an email using the mouse, or by using the Up and Down keys to navigate through the list, and the Space bar to display and scroll emails. You can use other keys to navigate through emails, like P and N (previous and next).
     </para>
   </section>
 
   <section id="start_writing">
     <title>Writing your first mail</title>
     <para>
-	When clicking on the <quote>Compose</quote> button of the toolbar, a composition window will open. This window contains different fields which you should be able to recognise easily: if you have mulitple accounts, the From field can be used to select which account you want to use for this email; the To field is for recipient of the email. When you fill it in, a second To field will appear, so that you can send the email to multiple recipients. You can also change the To field to a Cc field or other types of fields, by using its dropdown menu, or by typing in the field that you require. After that, you will be able to set the subject of your email, then type its body.
+	When clicking on the <quote>Compose</quote> button of the toolbar, a composition window will open. This window contains different fields which you should be able to recognise easily: if you have multiple accounts, the From field can be used to select which account you want to use for this email; the To field is for recipient of the email. When you fill it in, a second To field will appear, so that you can send the email to multiple recipients. You can also change the To field to a Cc field or other types of fields, by using its dropdown menu, or by typing in the field that you require. After that, you will be able to set the subject of your email, then type its body.
     </para><para>
 	A little note about an email's subject: Sylpheed-Claws will ask you for confirmation if you attempt to send an email with an empty subject. This is because it can be annoying for the recipient to receive emails without a subject, as it doesn't help in handling email.
     </para>

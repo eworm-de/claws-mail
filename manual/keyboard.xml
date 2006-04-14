@@ -36,15 +36,14 @@
 	  <row><entry><option>Ctrl+f</option></entry><entry>Find in current message...</entry></row>
 	  <row><entry><option>Shift+Ctrl+f</option></entry><entry>Search folder...</entry></row>
 	  <row><entry><option>Ctrl+t</option></entry><entry>Toggle threaded display</entry></row>
-	  <row><entry><option>Ctrl+s</option></entry><entry>Save as...</entry></row>
-          <row><entry><option>n</option></entry><entry>Goes to next mail in summaryview. The <option>Down</option> arrow does the same.</entry></row>
+          <row><entry><option>n</option></entry><entry>Goes to next mail in Message List. The <option>Down</option> arrow does the same.</entry></row>
           <row><entry><option>p</option></entry><entry>Goes to previous mail. The <option>Up</option> arrow is a synonym.</entry></row>
 	  <row><entry><option>Shift+n</option></entry><entry>Goes to next unread mail.</entry></row>
           <row><entry><option>Shift+p</option></entry><entry>Goes to previous unread mail.</entry></row>
 	  <row><entry><option>g</option></entry><entry>Go to other folder...</entry></row>
 	  <row><entry><option>Ctrl+u</option></entry><entry>Show message source</entry></row>
 	  <row><entry><option>Ctrl+h</option></entry><entry>Show all message headers</entry></row>
-	  <row><entry><option>v</option></entry><entry>Toggles the message view panel visibility. When invisible, summary view expands itself to fill the full window height and more summary lines are displayed.</entry></row>
+	  <row><entry><option>v</option></entry><entry>Toggles the message view panel visibility. When invisible, Message List expands itself to fill the full window height and more summary lines are displayed.</entry></row>
 	  <row><entry><option>/</option></entry><entry>Positions the cursor on the Quicksearch field, also opening the Quicksearch panel if needed.</entry></row>
 	  <row><entry><option>Ctrl+Alt+u</option></entry><entry>Update summary</entry></row>
 	  <row><entry><option>Ctrl+i</option></entry><entry>Get mail from current account</entry></row>
@@ -64,7 +63,6 @@
 	  <row><entry><option>Shift+Ctrl+a</option></entry><entry>Open address book</entry></row>
 	  <row><entry><option>x</option></entry><entry>Execute</entry></row>
 	  <row><entry><option>Shift+Ctrl+l</option></entry><entry>Open log window</entry></row>
-	  <row><entry><option>/</option></entry><entry>Toggle Quick search</entry></row>
         </tbody>
       </tgroup>
     </informaltable>

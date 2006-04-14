@@ -46,7 +46,7 @@
     <section>
     <title>How can I make Sylpheed-Claws notify me when new mail arrives?</title>
     <para>
-	Go to <quote>Configuration/Preferences/Common</quote>, on the <quote>Receive</quote> tab use the settings for <quote>Run command when new mail arrives</quote>. Alternatively, use the Trayicon plugin.
+	Go to <quote>Configuration/Preferences</quote>, in the <quote>Mail handling/Receive</quote> section, use the settings for <quote>Run command when new mail arrives</quote>. Alternatively, use the Trayicon plugin.
     </para></section>
     <section>
     <title>Why are special characters (e.g. umlauts) not displayed correctly?</title>
