@@ -253,6 +253,13 @@ gboolean defer_check(void *data)
 	return FALSE;
 }
 
+static gboolean defer_jump(void *data)
+{
+	const char *target = (const char *)data;
+	mainwindow_jump_to(data);
+	return FALSE;
+}
+
 static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cfg_dir)
 {
 	gchar *message = g_strdup_printf(_("Configuration for Sylpheed-Claws %s found.\n"
@@ -576,7 +583,7 @@ int main(int argc, char *argv[])
 	}
 	
 	if (cmd.target) {
-		mainwindow_jump_to(cmd.target);
+		g_timeout_add(500, defer_jump, cmd.target);
 	}
 
 	gtk_main();
