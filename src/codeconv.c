@@ -811,6 +811,10 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	iconv_t cd;
 	gchar *outbuf;
 
+	if (!src_code && !dest_code && 
+	    g_utf8_validate(inbuf, -1, NULL))
+	    	return g_strdup(inbuf);
+
 	if (!src_code)
 		src_code = conv_get_outgoing_charset_str();
 	if (!dest_code)

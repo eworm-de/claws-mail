@@ -1,3 +1,11 @@
+2006-04-14 [colin]	2.1.0cvs15-stable
+
+	* src/codeconv.c
+		From 2.1.0cvs45
+		when converting from unknown to unknown, if the
+		string is UTF8, don't convert it to the locale
+		(which breaks it)
+
 2006-04-14 [colin]	2.1.0cvs14-stable
 
 	* src/compose.c
