@@ -785,7 +785,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_register), 
 			 prefs_toolbar);
 
-	subst_btn = gtkut_get_replace_btn(_("Replace"));
+	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_substitute),
