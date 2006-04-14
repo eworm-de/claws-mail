@@ -1,3 +1,10 @@
+2006-04-14 [colin]	2.1.0cvs14-stable
+
+	* src/compose.c
+		From 2.1.0cvs44
+		Don't try to use ASCII for converting headers
+		(as done in body)
+
 2006-04-13 [colin]	2.1.0cvs13-stable
 
 	* src/plugins/spamassassin/spamassassin_gtk.c
