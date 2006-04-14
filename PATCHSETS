@@ -1417,3 +1417,4 @@
 ( cvs diff -u -r 1.23.2.16 -r 1.23.2.17 src/crash.c;  cvs diff -u -r 1.4.2.31 -r 1.4.2.32 src/gtk/about.c;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/gtk/authors.h;  ) > 2.1.0cvs43.patchset
 ( cvs diff -u -r 1.382.2.263 -r 1.382.2.264 src/compose.c;  ) > 2.1.0cvs44.patchset
 ( cvs diff -u -r 1.65.2.47 -r 1.65.2.48 src/codeconv.c;  ) > 2.1.0cvs45.patchset
+( cvs diff -u -r 1.17.2.26 -r 1.17.2.27 src/send_message.c;  ) > 2.1.0cvs46.patchset
