@@ -1388,3 +1388,4 @@
 ( cvs diff -u -r 1.382.2.258.2.1 -r 1.382.2.258.2.2 src/compose.c;  ) > 2.1.0cvs14-stable.patchset
 ( cvs diff -u -r 1.65.2.46 -r 1.65.2.47 src/codeconv.c;  ) > 2.1.0cvs15-stable.patchset
 ( cvs diff -u -r 1.30.2.26.2.1 -r 1.30.2.26.2.2 src/prefs_toolbar.c;  ) > 2.1.0cvs16-stable.patchset
+( cvs diff -u -r 1.17.2.26 -r 1.17.2.27 src/send_message.c;  ) > 2.1.0cvs17-stable.patchset

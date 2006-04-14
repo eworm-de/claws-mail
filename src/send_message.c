@@ -214,8 +214,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		session = smtp_session_new();
 		smtp_session = SMTP_SESSION(session);
 
-		smtp_session->hostname =
-			ac_prefs->set_domain ? g_strdup(ac_prefs->domain) : NULL;
+		if (ac_prefs->set_domain && ac_prefs->domain && strlen(ac_prefs->domain)) {
+			smtp_session->hostname = g_strdup(ac_prefs->domain);
+		} else {
+			smtp_session->hostname = NULL;
+		}
 
 		if (ac_prefs->use_smtp_auth) {
 			smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;

@@ -1,3 +1,11 @@
+2006-04-14 [wwp]	2.1.0cvs17-stable
+
+	* src/send_message.c
+		From 2.1.0cvs46:
+		enforce a check for domain in account prefs (a sending
+		error could be faced if domain was checked but no value set),
+		thanks to Colin.
+
 2006-04-14 [wwp]	2.1.0cvs16-stable
 
 	* src/prefs_toolbar.c
