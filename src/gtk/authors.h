@@ -59,6 +59,7 @@ static char *DOC_TEAM_LIST[] = {
 "Ricardo Mones Lastra <mones@users.sf.net>",
 "Colin Leroy <colinleroy@users.sf.net>",
 "Paul Mangan <twb@users.sf.net>",
+"wwp <wwp@users.sf.net>",
 NULL
 };
 
@@ -120,6 +121,7 @@ static char *CONTRIBS_LIST[] = {
 "John E.P. Hynes",
 "Hironori IWANE",
 "Motonobu Ichimura",
+"Alexey Illarionov",
 "Yoichi Imai",
 "Mathias Intemann",
 "Ishihara",
@@ -225,6 +227,5 @@ static char *CONTRIBS_LIST[] = {
 "Gál Zoltán",
 "Marien Zwart",
 "Martin Zwickel",
-"Alexey Illarionov",
 NULL
 };

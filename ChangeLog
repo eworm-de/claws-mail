@@ -1,3 +1,14 @@
+2006-04-14 [paul]	2.1.0cvs43
+
+	* src/crash.c
+		add locale/charset info to crash report
+	* src/gtk/about.c
+		add wwp to doc team
+		replace 'e-mail' with preferred 'email'
+	* src/gtk/authors.h
+		ensure contributors list is in alphabetical
+		order
+
 2006-04-13 [colin]	2.1.0cvs42
 
 	* src/textview.c

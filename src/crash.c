@@ -223,9 +223,16 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
 	crash_report = g_strdup_printf(
-		"Sylpheed-Claws version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s",
+		"Sylpheed-Claws version %s\n"
+		"GTK+ version %d.%d.%d / GLib %d.%d.%d\n"
+		"Locale: %s (charset: %s)\n"
+		"Features:%s\n"
+		"Operating system: %s\n"
+		"C Library: %s\n--\n%s",
 		VERSION,
 		gtk_major_version, gtk_minor_version, gtk_micro_version,
+		glib_major_version, glib_minor_version, glib_micro_version,
+		conv_get_current_locale(), conv_get_locale_charset_str(),
 		get_compiled_in_features(),
 		get_operating_system(),
 		get_lib_version(),
