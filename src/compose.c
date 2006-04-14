@@ -5150,7 +5150,8 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 			test_conv_global_out = conv_codeset_strdup(src, CS_INTERNAL, out_codeset);
 		}
 
-		if (!test_conv_global_out && compose->orig_charset) {
+		if (!test_conv_global_out && compose->orig_charset
+		&&  strcmp(compose->orig_charset, CS_US_ASCII)) {
 			out_codeset = compose->orig_charset;
 			debug_print("failure; trying to convert to %s\n", out_codeset);
 			test_conv_reply = conv_codeset_strdup(src, CS_INTERNAL, out_codeset);

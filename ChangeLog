@@ -1,3 +1,9 @@
+2006-04-14 [colin]	2.1.0cvs44
+
+	* src/compose.c
+		Don't try to use ASCII for converting headers
+		(as done in body)
+
 2006-04-14 [paul]	2.1.0cvs43
 
 	* src/crash.c
