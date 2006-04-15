@@ -1,3 +1,9 @@
+2006-04-15 [colin]	2.1.0cvs48
+
+	* src/etpan/imap-thread.c
+		Fix bug #919 (libetpan: SEGV when connecting 
+		using command)
+
 2006-04-14 [colin]	2.1.0cvs47
 
 	* src/main.c
