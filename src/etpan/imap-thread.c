@@ -2372,12 +2372,13 @@ int socket_connect_cmd(mailimap * imap, const char * command,
 	}
 	
 	r = mailimap_connect(imap, s);
-	if (r != MAILIMAP_NO_ERROR) {
+	if (r != MAILIMAP_NO_ERROR_AUTHENTICATED
+	&&  r != MAILIMAP_NO_ERROR_NON_AUTHENTICATED) {
 		mailstream_close(s);
 		return r;
 	}
 	
-	return MAILIMAP_NO_ERROR;
+	return r;
 }
 
 /* connect cmd */

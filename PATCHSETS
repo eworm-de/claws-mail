@@ -1390,3 +1390,4 @@
 ( cvs diff -u -r 1.30.2.26.2.1 -r 1.30.2.26.2.2 src/prefs_toolbar.c;  ) > 2.1.0cvs16-stable.patchset
 ( cvs diff -u -r 1.17.2.26 -r 1.17.2.27 src/send_message.c;  ) > 2.1.0cvs17-stable.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 manual/advanced.xml;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/faq.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/glossary.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/handling.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/intro.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/keyboard.xml;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/plugins.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/starting.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/sylpheed-claws-manual.xml;  ) > 2.1.0cvs18-stable.patchset
+( cvs diff -u -r 1.1.4.32 -r 1.1.4.33 src/etpan/imap-thread.c;  ) > 2.1.0cvs19-stable.patchset
