@@ -1,3 +1,9 @@
+2006-04-16 [colin]	2.1.0cvs49
+
+	* src/textview.c
+		Fix bgcolor not unset on gtk 2.8, while preventing warnings 
+		with gtk < 2.8. Thanks to Fabien Vantard.
+
 2006-04-15 [colin]	2.1.0cvs48
 
 	* src/etpan/imap-thread.c

@@ -451,13 +451,19 @@ void textview_init(TextView *textview)
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
-#define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
+#if GTK_CHECK_VERSION(2, 8, 0)
+ #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
-	if (tag && colorbg) \
+	if (tag) \
 		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, "paragraph-background-gdk", colorbg, NULL); \
-	else if (tag) \
+ }
+#else
+ #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
+	tag = gtk_text_tag_table_lookup(tags, tagname); \
+	if (tag) \
 		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, NULL); \
-}
+ }
+#endif
 
 static void textview_update_message_colors(TextView *textview)
 {
