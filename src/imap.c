@@ -30,6 +30,7 @@
 #include "imap.h"
 #include "imap_gtk.h"
 #include "inc.h"
+#include "xml.h"
 
 #ifdef HAVE_LIBETPAN
 
@@ -167,6 +168,9 @@ struct _IMAPFolderItem
 	GHashTable *flags_set_table;
 	GHashTable *flags_unset_table;
 };
+
+static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item);
+static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag);
 
 static void imap_folder_init		(Folder		*folder,
 					 const gchar	*name,
@@ -436,6 +440,10 @@ FolderClass *imap_get_class(void)
 		imap_class.close = imap_close;
 		imap_class.get_num_list = imap_get_num_list;
 		imap_class.scan_required = imap_scan_required;
+		imap_class.set_xml = folder_set_xml;
+		imap_class.get_xml = folder_get_xml;
+		imap_class.item_set_xml = imap_item_set_xml;
+		imap_class.item_get_xml = imap_item_get_xml;
 
 		/* Message functions */
 		imap_class.get_msginfo = imap_get_msginfo;
@@ -522,7 +530,6 @@ static gboolean imap_reset_uid_lists_func(GNode *node, gpointer data)
 	IMAPFolderItem *item = (IMAPFolderItem *)node->data;
 	
 	item->lastuid = 0;
-	item->uid_next = 0;
 	g_slist_free(item->uid_list);
 	item->uid_list = NULL;
 	
@@ -4216,6 +4223,9 @@ void imap_folder_unref(Folder *folder)
 
 static FolderClass imap_class;
 
+static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item);
+static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag);
+
 static Folder	*imap_folder_new	(const gchar	*name,
 					 const gchar	*path)
 {
@@ -4249,6 +4259,11 @@ FolderClass *imap_get_class(void)
 		imap_class.create_tree = imap_create_tree;
 		imap_class.create_folder = imap_create_folder;
 		imap_class.rename_folder = imap_rename_folder;
+
+		imap_class.set_xml = folder_set_xml;
+		imap_class.get_xml = folder_get_xml;
+		imap_class.item_set_xml = imap_item_set_xml;
+		imap_class.item_get_xml = imap_item_get_xml;
 		/* nothing implemented */
 	}
 
@@ -4259,4 +4274,157 @@ FolderClass *imap_get_class(void)
 void imap_synchronise(FolderItem *item) 
 {
 	imap_gtk_synchronise(item);
+}
+
+static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
+{
+	GList *cur;
+
+	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
+		XMLAttr *attr = (XMLAttr *) cur->data;
+
+		if (!attr || !attr->name || !attr->value) continue;
+		if (!strcmp(attr->name, "type")) {
+			if (!g_ascii_strcasecmp(attr->value, "normal"))
+				item->stype = F_NORMAL;
+			else if (!g_ascii_strcasecmp(attr->value, "inbox"))
+				item->stype = F_INBOX;
+			else if (!g_ascii_strcasecmp(attr->value, "outbox"))
+				item->stype = F_OUTBOX;
+			else if (!g_ascii_strcasecmp(attr->value, "draft"))
+				item->stype = F_DRAFT;
+			else if (!g_ascii_strcasecmp(attr->value, "queue"))
+				item->stype = F_QUEUE;
+			else if (!g_ascii_strcasecmp(attr->value, "trash"))
+				item->stype = F_TRASH;
+		} else if (!strcmp(attr->name, "name")) {
+			g_free(item->name);
+			item->name = g_strdup(attr->value);
+		} else if (!strcmp(attr->name, "path")) {
+			g_free(item->path);
+			item->path = g_strdup(attr->value);
+		} else if (!strcmp(attr->name, "mtime"))
+			item->mtime = strtoul(attr->value, NULL, 10);
+		else if (!strcmp(attr->name, "new"))
+			item->new_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "unread"))
+			item->unread_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "unreadmarked"))
+			item->unreadmarked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "marked"))
+			item->marked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "total"))
+			item->total_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "no_sub"))
+			item->no_sub = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "no_select"))
+			item->no_select = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "collapsed"))
+			item->collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "thread_collapsed"))
+			item->thread_collapsed =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "threaded"))
+			item->threaded =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "hidereadmsgs"))
+			item->hide_read_msgs =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "reqretrcpt"))
+			item->ret_rcpt =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "uidnext"))
+			IMAP_FOLDER_ITEM(item)->uid_next = atoi(attr->value);
+		else if (!strcmp(attr->name, "sort_key")) {
+			if (!strcmp(attr->value, "none"))
+				item->sort_key = SORT_BY_NONE;
+			else if (!strcmp(attr->value, "number"))
+				item->sort_key = SORT_BY_NUMBER;
+			else if (!strcmp(attr->value, "size"))
+				item->sort_key = SORT_BY_SIZE;
+			else if (!strcmp(attr->value, "date"))
+				item->sort_key = SORT_BY_DATE;
+			else if (!strcmp(attr->value, "from"))
+				item->sort_key = SORT_BY_FROM;
+			else if (!strcmp(attr->value, "subject"))
+				item->sort_key = SORT_BY_SUBJECT;
+			else if (!strcmp(attr->value, "score"))
+				item->sort_key = SORT_BY_SCORE;
+			else if (!strcmp(attr->value, "label"))
+				item->sort_key = SORT_BY_LABEL;
+			else if (!strcmp(attr->value, "mark"))
+				item->sort_key = SORT_BY_MARK;
+			else if (!strcmp(attr->value, "unread"))
+				item->sort_key = SORT_BY_STATUS;
+			else if (!strcmp(attr->value, "mime"))
+				item->sort_key = SORT_BY_MIME;
+			else if (!strcmp(attr->value, "to"))
+				item->sort_key = SORT_BY_TO;
+			else if (!strcmp(attr->value, "locked"))
+				item->sort_key = SORT_BY_LOCKED;
+		} else if (!strcmp(attr->name, "sort_type")) {
+			if (!strcmp(attr->value, "ascending"))
+				item->sort_type = SORT_ASCENDING;
+			else
+				item->sort_type = SORT_DESCENDING;
+		} else if (!strcmp(attr->name, "account_id")) {
+			PrefsAccount *account;
+
+			account = account_find_from_id(atoi(attr->value));
+			if (!account)
+				g_warning("account_id: %s not found\n", attr->value);
+			else
+				item->account = account;
+		} else if (!strcmp(attr->name, "apply_sub"))
+			item->apply_sub = *attr->value == '1' ? TRUE : FALSE;
+	}
+}
+
+static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item)
+{
+	static gchar *folder_item_stype_str[] = {"normal", "inbox", "outbox",
+						 "draft", "queue", "trash"};
+	static gchar *sort_key_str[] = {"none", "number", "size", "date",
+					"from", "subject", "score", "label",
+					"mark", "unread", "mime", "to", 
+					"locked"};
+	XMLTag *tag;
+	gchar *value;
+
+	tag = xml_tag_new("folderitem");
+
+	xml_tag_add_attr(tag, xml_attr_new("type", folder_item_stype_str[item->stype]));
+	if (item->name)
+		xml_tag_add_attr(tag, xml_attr_new("name", item->name));
+	if (item->path)
+		xml_tag_add_attr(tag, xml_attr_new("path", item->path));
+	if (item->no_sub)
+		xml_tag_add_attr(tag, xml_attr_new("no_sub", "1"));
+	if (item->no_select)
+		xml_tag_add_attr(tag, xml_attr_new("no_select", "1"));
+	xml_tag_add_attr(tag, xml_attr_new("collapsed", item->collapsed && item->node->children ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("thread_collapsed", item->thread_collapsed ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("threaded", item->threaded ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("hidereadmsgs", item->hide_read_msgs ? "1" : "0"));
+	if (item->ret_rcpt)
+		xml_tag_add_attr(tag, xml_attr_new("reqretrcpt", "1"));
+
+	if (item->sort_key != SORT_BY_NONE) {
+		xml_tag_add_attr(tag, xml_attr_new("sort_key", sort_key_str[item->sort_key]));
+		xml_tag_add_attr(tag, xml_attr_new("sort_type", item->sort_type == SORT_ASCENDING ? "ascending" : "descending"));
+	}
+
+	value = g_strdup_printf("%ld", (unsigned long int) item->mtime);
+	xml_tag_add_attr(tag, xml_attr_new("mtime", value));
+	g_free(value);
+	xml_tag_add_attr(tag, xml_attr_new_int("new", item->new_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("unread", item->unread_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("unreadmarked", item->unreadmarked_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("marked", item->marked_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("total", item->total_msgs));
+
+	xml_tag_add_attr(tag, xml_attr_new_int("uidnext", 
+			IMAP_FOLDER_ITEM(item)->uid_next));
+	if (item->account)
+		xml_tag_add_attr(tag, xml_attr_new_int("account_id", item->account->account_id));
+	if (item->apply_sub)
+		xml_tag_add_attr(tag, xml_attr_new("apply_sub", "1"));
+
+	return tag;
 }
