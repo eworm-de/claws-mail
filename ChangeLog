@@ -1,3 +1,11 @@
+2006-04-17 [colin]	2.1.1cvs3
+
+	* src/imap.c
+		Faster flag search when there are new mails 
+		in a folder. We can do a full search if the 
+		folder contains less messages than the new
+		list.
+
 2006-04-17 [colin]	2.1.1cvs2
 
 	* po/cs.po

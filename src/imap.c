@@ -3781,7 +3781,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 
 	tmp = folder_item_get_msg_list(item);
 
-	if (g_slist_length(tmp) == g_slist_length(msginfo_list))
+	if (g_slist_length(tmp) <= g_slist_length(msginfo_list))
 		data->full_search = TRUE;
 	
 	for (cur = tmp; cur; cur = cur->next)
