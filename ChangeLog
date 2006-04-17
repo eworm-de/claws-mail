@@ -1,3 +1,15 @@
+2006-04-17 [paul]	2.1.0cvs20-stable
+
+	* po/cs.po
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/nl.po
+	* po/pt_BR.po
+		updated by Tim, Stephan Sachse, Ricardo Mones Lastra,
+		Fabien Vantard, Tim Dijkstra, and Frederico Goncalves
+		Guimaraes
+
 2006-04-15 [colin]	2.1.0cvs19-stable
 
 	* src/etpan/imap-thread.c
