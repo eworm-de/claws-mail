@@ -1428,3 +1428,4 @@
 ( cvs diff -u -r 1.179.2.100 -r 1.179.2.101 src/imap.c;  ) > 2.1.1cvs4.patchset
 ( cvs diff -u -r 1.179.2.101 -r 1.179.2.102 src/imap.c;  ) > 2.1.1cvs5.patchset
 ( cvs diff -u -r 1.207.2.94 -r 1.207.2.95 src/folderview.c;  cvs diff -u -r 1.179.2.102 -r 1.179.2.103 src/imap.c;  ) > 2.1.1cvs6.patchset
+( cvs diff -u -r 1.179.2.103 -r 1.179.2.104 src/imap.c;  ) > 2.1.1cvs7.patchset

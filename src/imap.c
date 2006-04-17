@@ -3386,7 +3386,7 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		debug_print("uidnext %d, item->uid_next %d, exists %d, item->item.total_msgs %d\n", 
 			uid_next, item->uid_next, exists, item->item.total_msgs);
 		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)
-		    || unseen != item->item.unread_msgs) {
+		    || unseen != item->item.unread_msgs || uid_val != item->item.mtime) {
 			unlock_session();
 			return TRUE;
 		}
