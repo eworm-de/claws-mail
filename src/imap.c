@@ -3084,8 +3084,15 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 	lock_session();
-	statusbar_print_all("Scanning %s...\n", FOLDER_ITEM(item)->path 
-				? FOLDER_ITEM(item)->path:"");
+
+	if (FOLDER_ITEM(item)->path) 
+		statusbar_print_all(_("Scanning folder %s%c%s ..."),
+				      FOLDER_ITEM(item)->folder->name, 
+				      G_DIR_SEPARATOR,
+				      FOLDER_ITEM(item)->path);
+	else
+		statusbar_print_all(_("Scanning folder %s ..."),
+				      FOLDER_ITEM(item)->folder->name);
 
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->item.path));
@@ -3378,7 +3385,8 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		item->item.last_num = uid_next - 1;
 		debug_print("uidnext %d, item->uid_next %d, exists %d, item->item.total_msgs %d\n", 
 			uid_next, item->uid_next, exists, item->item.total_msgs);
-		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)) {
+		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)
+		    || unseen != item->item.unread_msgs) {
 			unlock_session();
 			return TRUE;
 		}

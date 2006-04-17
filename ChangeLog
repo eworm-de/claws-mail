@@ -1,3 +1,11 @@
+2006-04-17 [colin]	2.1.1cvs6
+
+	* src/folderview.c
+		Don't scan if not necessary, apart in current
+		folder and INBOX to fetch flags.
+	* src/imap.c
+		Scan is necessary if unread count changes
+
 2006-04-17 [colin]	2.1.1cvs5
 
 	* src/imap.c

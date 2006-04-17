@@ -951,23 +951,24 @@ static void folderview_set_folders(FolderView *folderview)
 	}
 }
 
+static gchar *get_scan_str(FolderItem *item)
+{
+	if (item->path)
+		return g_strdup_printf(_("Scanning folder %s%c%s ..."),
+				      item->folder->name, G_DIR_SEPARATOR,
+				      item->path);
+	else
+		return g_strdup_printf(_("Scanning folder %s ..."),
+				      item->folder->name);	
+}
 static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 				      gpointer data)
 {
 	GList *list;
-
 	for (list = folderview_list; list != NULL; list = list->next) {
 		FolderView *folderview = (FolderView *)list->data;
 		MainWindow *mainwin = folderview->mainwin;
-		gchar *str;
-
-		if (item->path)
-			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
-					      item->folder->name, G_DIR_SEPARATOR,
-					      item->path);
-		else
-			str = g_strdup_printf(_("Scanning folder %s ..."),
-					      item->folder->name);
+		gchar *str = get_scan_str(item);
 
 		STATUSBAR_PUSH(mainwin, str);
 		STATUSBAR_POP(mainwin);
@@ -1035,24 +1036,46 @@ gint folderview_check_new(Folder *folder)
 
 		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+			gchar *str = NULL;
 			item = gtk_ctree_node_get_row_data(ctree, node);
 			if (!item || !item->path || !item->folder) continue;
 			if (item->no_select) continue;
 			if (folder && folder != item->folder) continue;
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 			if (!item->prefs->newmailcheck) continue;
+			
+			str = get_scan_str(item);
+
+			STATUSBAR_PUSH(folderview->mainwin, str);
+
+			g_free(str);
 
 			folderview_scan_tree_func(item->folder, item, NULL);
 			former_new    = item->new_msgs;
 			former_unread = item->unread_msgs;
 			former_total  = item->total_msgs;
 
-			if (folder_item_scan(item) < 0) {
-				summaryview_unlock(folderview->summaryview, item);
-				if (folder && !FOLDER_IS_LOCAL(folder))
-					break;
+			if (item->folder->klass->scan_required &&
+			    (item->folder->klass->scan_required(item->folder, item) ||
+			     item->folder->inbox == item ||
+			     item->opened == TRUE ||
+			     item->processing_pending == TRUE)) {
+				if (folder_item_scan(item) < 0) {
+					summaryview_unlock(folderview->summaryview, item);
+					if (folder && !FOLDER_IS_LOCAL(folder)) {
+						STATUSBAR_POP(folderview->mainwin);
+						break;
+					}
+				}
+			} else if (!item->folder->klass->scan_required) {
+				if (folder_item_scan(item) < 0) {
+					summaryview_unlock(folderview->summaryview, item);
+					if (folder && !FOLDER_IS_LOCAL(folder)) {
+						STATUSBAR_POP(folderview->mainwin);
+						break;
+					}
+				}
 			}
-
 			if (former_new    != item->new_msgs ||
 			    former_unread != item->unread_msgs ||
 			    former_total  != item->total_msgs)
@@ -1060,6 +1083,7 @@ gint folderview_check_new(Folder *folder)
 
 			new_msgs += item->new_msgs;
 			former_new_msgs += former_new;
+			STATUSBAR_POP(folderview->mainwin);
 		}
 
 		main_window_unlock(folderview->mainwin);
