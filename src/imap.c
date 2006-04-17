@@ -3672,37 +3672,39 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			unseen = g_slist_concat(unseen, uidlist);
 		}
 		
-		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
-					 imapset, &lep_uidlist);
-		if (r == MAILIMAP_NO_ERROR) {
-			GSList * uidlist;
-			
-			uidlist = imap_uid_list_from_lep(lep_uidlist);
-			mailimap_search_result_free(lep_uidlist);
-			
-			answered = g_slist_concat(answered, uidlist);
-		}
-
 		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED,
 					 imapset, &lep_uidlist);
 		if (r == MAILIMAP_NO_ERROR) {
 			GSList * uidlist;
-			
+
 			uidlist = imap_uid_list_from_lep(lep_uidlist);
 			mailimap_search_result_free(lep_uidlist);
-			
+
 			flagged = g_slist_concat(flagged, uidlist);
 		}
-		
-		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
-					 imapset, &lep_uidlist);
-		if (r == MAILIMAP_NO_ERROR) {
-			GSList * uidlist;
-			
-			uidlist = imap_uid_list_from_lep(lep_uidlist);
-			mailimap_search_result_free(lep_uidlist);
-			
-			deleted = g_slist_concat(deleted, uidlist);
+
+		if (item->opened || item->processing_pending) {
+			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
+						 imapset, &lep_uidlist);
+			if (r == MAILIMAP_NO_ERROR) {
+				GSList * uidlist;
+
+				uidlist = imap_uid_list_from_lep(lep_uidlist);
+				mailimap_search_result_free(lep_uidlist);
+
+				answered = g_slist_concat(answered, uidlist);
+			}
+
+			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
+						 imapset, &lep_uidlist);
+			if (r == MAILIMAP_NO_ERROR) {
+				GSList * uidlist;
+
+				uidlist = imap_uid_list_from_lep(lep_uidlist);
+				mailimap_search_result_free(lep_uidlist);
+
+				deleted = g_slist_concat(deleted, uidlist);
+			}
 		}
 	}
 
@@ -3719,7 +3721,11 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
+		if (item->opened || item->processing_pending) {
+			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
+		} else {
+			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
+		}
 		if (reverse_seen)
 			flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
 		if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
@@ -3729,18 +3735,22 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				flags &= ~(MSG_UNREAD | MSG_NEW);
 			}
 		}
-		if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
-			flags |= MSG_REPLIED;
-		else
-			flags &= ~MSG_REPLIED;
+		
 		if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
 			flags |= MSG_MARKED;
 		else
 			flags &= ~MSG_MARKED;
-		if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
-			flags |= MSG_DELETED;
-		else
-			flags &= ~MSG_DELETED;
+
+		if (item->opened || item->processing_pending) {
+			if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
+				flags |= MSG_REPLIED;
+			else
+				flags &= ~MSG_REPLIED;
+			if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
+				flags |= MSG_DELETED;
+			else
+				flags &= ~MSG_DELETED;
+		}
 		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
 

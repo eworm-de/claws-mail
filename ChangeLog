@@ -1,3 +1,10 @@
+2006-04-17 [colin]	2.1.1cvs4
+
+	* src/imap.c
+		Don't fetch REPLIED and DELETED flags when synchronising
+		flags with a closed folder. We only need UNSEEN and FLAGGED
+		to update the folderview.
+
 2006-04-17 [colin]	2.1.1cvs3
 
 	* src/imap.c
