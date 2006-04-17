@@ -1,3 +1,9 @@
+2006-04-17 [colin]	2.1.1cvs9
+
+	* src/etpan/imap-thread.c
+		Fix build on DragonFly - patch by 
+		Jonathan Buschmann <jonthn@agmact.com>
+
 2006-04-17 [colin]	2.1.1cvs8
 
 	* src/imap.c
