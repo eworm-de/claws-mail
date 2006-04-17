@@ -3683,7 +3683,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			flagged = g_slist_concat(flagged, uidlist);
 		}
 
-		if (item->opened || item->processing_pending) {
+		if (item->opened || item->processing_pending || item == folder->inbox) {
 			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
 						 imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
@@ -3721,7 +3721,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		if (item->opened || item->processing_pending) {
+		if (item->opened || item->processing_pending || item == folder->inbox) {
 			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
 		} else {
 			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
@@ -3741,7 +3741,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		else
 			flags &= ~MSG_MARKED;
 
-		if (item->opened || item->processing_pending) {
+		if (item->opened || item->processing_pending || item == folder->inbox) {
 			if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
 				flags |= MSG_REPLIED;
 			else
