@@ -1,4 +1,4 @@
-5th April 2006                                   Sylpheed-Claws 2.1.0
+17th April 2006                                  Sylpheed-Claws 2.1.1
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
@@ -9,125 +9,44 @@ user-friendly, lightweight, and fast email client.
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* libetpan version 0.45 or newer is now required for IMAP support,
-  this allows checking for IMAP/SSL certificates.
+* This is a bug-fix release and all users are advised to upgrade.
 
+* This release is the first release in the newly created Stable
+  branch. Primarily, each release will contain bug fixes rather
+  than new features. New features will appear in the Development
+  branch releases, and will make their way into this Stable branch
+  when they have been well-tested. 
+
+  This Stable branch is mainly aimed at distro packagers and the more 
+  cautious self-compiler. Users who wish to remain closer to the
+  cutting edge should choose the release with the highest version
+  number. Normally this will be the Development branch, currently it 
+  is this release.
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Support for the Face header has been added, 
-  see http://quimby.gnus.org/circus/face/
+* The Preferences config file, ~/.sylpheed-claws/sylpheedrc, is now
+  stored with UTF-8 encoding
 
-* In the Templates dialog TAB address completion has been added for
-  Cc and Bcc fields, in addition to To. 
-
-* An account's signature file, (Account Preferences, Compose tab),
-  can now been edited in place using the configured text editor.
-
-* An advanced search is now possible in the '/Edit/Search folder' 
-  dialog.
-
-* '/Edit/Find' has been added to the Compose window for text 
-  searching.
-
-* A progress bar is now shown in the status bar whilst doing a Quick 
-  Search.
-
-* A long search can now be cancelled.
-
-* In a Sent mail folder the From column in the message list is now
-  automatically changed to the To column.
-
-* '/Message/Colour Label' has been added to the main menu, enabling
-  (unmodifiable) shortcut keys, Ctrl+[0-7].
-
-* The colour labels are now customisable from the 'Display/Colours'
-  page of the Preferences. It is now possible to choose any colours 
-  and to give them each a label.
-
-* A Spell Checking option to 'Recheck message when changing 
-  dictionary' has been added.
-
-* An option to 'Render HTML-only mail with plugin if possible' has
-  been added to the 'Message View/Text Options' preferences page.
-
-* Headers in the message view and the Custom headers dialog are now
-  translated if the option 'Translate header names' is activated.
-
-* It is now possible to sort the columns in the Addressbook.
-
-* More drag-n-drop capabilities have been added, from the message
-  list to other apps, from the mimeview to other apps, from other 
-  apps to message list, from other apps to folder list, from the 
-  mimeview to the message and folder lists and the Compose window's
-  attachments pane.
-
-* "Ignore thread" has beed added as a filtering action.
-
-* The Compose window is now hidden when sending mails via filtering.
-
-* An alphabetical resort is done immediately when a folder's name
-  is changed.
-
-* Unsubscribing a newsgroup now removes the related folder and
-  articles from newscache/
-
-* A "Get more..." link has been added to the Plugins window. This
-  loads http://claws.sylpheed.org/plugins.php in your browser.
-
-* The SpamAssassin plugin is now equipped with a spam learning 
-  interface, usable by right-clicking a message and choosing
-  'Mark as Spam' or 'Mark as Ham' in the Mark submenu. It is now also
-  possible to disable SpamAssasin filtering when receiving mail, so
-  that the plugin can be used for learning only.
-
-* Remote learning in the SpamAssassin plugin has been added. This 
-  requires SpamAssassin 3.1.x.
-
-* A new script has been added that integrates a Thunderbird folder 
-  tree into Sylpheed-Claws, tools/tbird2syl.py
-
-* updated Brazilian Portuguese, British English, Bulgarian, Czech,
-  Dutch, Finnish, French, German, Greek, Italian, Polish, Serbian,
-  Simplified Chinese, and Spanish translations.
+* updated Brazilian Portuguese, Czech, Dutch, French, German, Greek, 
+  and Spanish translations.
 
 * Bugfixes: 
 
-	o bug 908, 'Flagging on IMAP-Server fails'
-	o bug 916, 'newsgroup unsubscribe segmentation fault'
-	o bug 924, 'Account combo box shows up wrong if & is in 
-		    account name'
-	o bug 927, 'SIGSEGV during Update Summary'
-	o bug 929, 'Unnecessary reload in quick search bar'
-	o fix a crash in JPilot
-	o fix drafting on IMAP
-	o prevent double-timeouts when connection IMAP fails
-	o return immediately when IMAP password dialog is cancelled
-	o fix missing expunge on IMAP, causing folder refresh 
-          problems in certain conditions
-	o fix crash on Reply with no From:
-	o fix undoing by blocks with spaces in Compose
-	o fix auto-wrap disabling itself after a middle-click paste
-	o convert passphrase to locale encoding
-	o fix GPG preferences items sensitivity
-	o fix some problems on heavily customized toolbars
-	o fix race conditions when big uncached mails are used in 
-          closable windows
-	o fix crashes on cancelling the Quick Search
-	o fix wrong Fake URL Warning
-	o fix the busy cursor not appearing in the textview
-	o fix a crash with the preview in file dialog, on Solaris
-	o fix useless reload of summaryview after execution (of copy 
-          or delete actions)
-	o fix update of caches after actions involving %f or %F
-	o fix search in quoted-printable bodies
-	o fix code conversion on reply when date format returns a 
-  	  non-UTF8 string
-	o fix some GUI issues and compilation warnings
-	o Empty strings for passwords are now allowed.
-	o disable Manual menu if the manual's not installed
-	o Allow URIs containing '(' and ')'
+	o bug 933, 'Crash re-entering the custom headers list dialog
+	  	    in accounts prefs'
+	o bug 859, 'problems with cyrilic input in search panel'
+	o bug 919, 'libetpan: SEGV when connecting using command'
+	o fix sticky Stop button when searching in an empty folder
+	o fix crash in address book on empty columns
+	o fix freeing of gettext() return values in prefs
+	o don't display error when cancelling connection
+	o fix inserting files not in utf8 when locale is utf8
+	o enforce a check for domain in account prefs
+	o dillo viewer plugin: avoid future potential for namespace 
+	  collision
+	o SpamAssassin plugin: fix missing text on Unix Socket option
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
