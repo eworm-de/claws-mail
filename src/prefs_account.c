@@ -319,7 +319,7 @@ static PrefParam param[] = {
 	 &receive.rmmail_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"message_leave_time", "0", &tmp_ac_prefs.msg_leave_time, P_INT,
+	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
 	 &receive.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 

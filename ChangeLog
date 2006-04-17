@@ -1,3 +1,9 @@
+2006-04-17 [colin]	2.1.1cvs10
+
+	* src/prefs_account.c
+		Be safe by default: remove mails from POP3
+		after 7 days, not immediately
+
 2006-04-17 [colin]	2.1.1cvs9
 
 	* src/etpan/imap-thread.c
