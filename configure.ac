@@ -11,7 +11,7 @@ MINOR_VERSION=1
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=10
+EXTRA_VERSION=11
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -358,7 +358,14 @@ AC_SUBST(OPENSSL_LIBS)
 dnl password encryption
 OLDLIBS=$LIBS
 LIBS=
-AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+case $host_os in
+	*dragonfly*)
+		AC_SEARCH_LIBS(encrypt, cipher, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+	;;
+	*)
+		AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+	;;
+esac
 CRYPT_LIBS=$LIBS
 AC_SUBST(CRYPT_LIBS)
 LIBS=$OLDLIBS

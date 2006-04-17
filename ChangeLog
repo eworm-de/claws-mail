@@ -1,3 +1,9 @@
+2006-04-17 [colin]	2.1.1cvs11
+
+	* configure.ac
+		Fix search on encrpyt function on dragonfly
+		Patch by Jonathan Buschmann <jonthn@agmact.com>
+
 2006-04-17 [colin]	2.1.1cvs10
 
 	* src/prefs_account.c
