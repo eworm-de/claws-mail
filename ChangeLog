@@ -1,3 +1,8 @@
+2006-04-17 [colin]	2.1.1cvs1
+
+	* configure.ac
+		Bump version to follow stable release
+
 2006-04-16 [mones]	2.1.0cvs50
 
 	* po/es.po
