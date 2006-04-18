@@ -243,8 +243,6 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 
 	GTK_CLIST(sctree)->focus_row = row;
 
-	GTK_CLIST_GET_CLASS(sctree)->refresh(GTK_CLIST(sctree));
-
 	if (!additive) {
 		sctree->selecting_range = TRUE;
 		gtk_clist_unselect_all (GTK_CLIST (sctree));

@@ -1,3 +1,10 @@
+2006-04-18 [colin]	2.1.1cvs13
+
+	* src/gtk/gtksctree.c
+		Remove seemingly useless refresh that causes
+		flicker - watch this commit in case of 
+		problems before planned backport to stable
+
 2006-04-18 [colin]	2.1.1cvs12
 
 	* src/imap.c
