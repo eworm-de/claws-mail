@@ -1,3 +1,9 @@
+2006-04-18 [colin]	2.1.1cvs14
+
+	* src/textview.c
+		Fix gdk warnings on set_cursor when textview
+		isn't visible
+
 2006-04-18 [colin]	2.1.1cvs13
 
 	* src/gtk/gtksctree.c

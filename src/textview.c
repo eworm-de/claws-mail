@@ -1188,6 +1188,11 @@ void textview_write_link(TextView *textview, const gchar *str,
 	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
 }
 
+static void textview_set_cursor(GdkWindow *window, GdkCursor *cursor)
+{
+	if (GDK_IS_WINDOW(window))
+		gdk_window_set_cursor(window, cursor);
+}
 void textview_clear(TextView *textview)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
@@ -1209,9 +1214,9 @@ void textview_clear(TextView *textview)
 	textview->image = NULL;
 
 	if (textview->messageview->mainwin->cursor_count == 0) {
-		gdk_window_set_cursor(window, text_cursor);
+		textview_set_cursor(window, text_cursor);
 	} else {
-		gdk_window_set_cursor(window, watch_cursor);
+		textview_set_cursor(window, watch_cursor);
 	}
 }
 
@@ -1852,7 +1857,7 @@ void textview_cursor_wait(TextView *textview)
 	GdkWindow *window = gtk_text_view_get_window(
 			GTK_TEXT_VIEW(textview->text),
 			GTK_TEXT_WINDOW_TEXT);
-	gdk_window_set_cursor(window, watch_cursor);
+	textview_set_cursor(window, watch_cursor);
 }
 
 void textview_cursor_normal(TextView *textview)
@@ -1860,7 +1865,7 @@ void textview_cursor_normal(TextView *textview)
 	GdkWindow *window = gtk_text_view_get_window(
 			GTK_TEXT_VIEW(textview->text),
 			GTK_TEXT_WINDOW_TEXT);
-	gdk_window_set_cursor(window, text_cursor);
+	textview_set_cursor(window, text_cursor);
 }
 
 static void textview_uri_update(TextView *textview, gint x, gint y)
@@ -1922,9 +1927,9 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		window = gtk_text_view_get_window(GTK_TEXT_VIEW(textview->text),
 						  GTK_TEXT_WINDOW_TEXT);
 		if (textview->messageview->mainwin->cursor_count == 0) {
-			gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
+			textview_set_cursor(window, uri ? hand_cursor : text_cursor);
 		} else {
-			gdk_window_set_cursor(window, watch_cursor);
+			textview_set_cursor(window, watch_cursor);
 		}
 
 		TEXTVIEW_STATUSBAR_POP(textview);
