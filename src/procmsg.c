@@ -1432,7 +1432,11 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	if (encrypt) {
 		MimeInfo *mimeinfo;
 
-		save_clear_text = (mailac != NULL && mailac->save_encrypted_as_clear_text);
+		if (mailac && mailac->save_encrypted_as_clear_text 
+		&&  !mailac->encrypt_to_self)
+			save_clear_text = TRUE;
+		else
+			save_clear_text = FALSE;
 
 		fclose(fp);
 		fp = NULL;

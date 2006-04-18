@@ -1,3 +1,13 @@
+2006-04-18 [colin]	2.1.1cvs12
+
+	* src/imap.c
+		Factorize get/set_xml code
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/procmsg.c
+		Add Encrypt to self option
+
 2006-04-17 [colin]	2.1.1cvs11
 
 	* configure.ac

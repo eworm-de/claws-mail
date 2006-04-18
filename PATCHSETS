@@ -1433,3 +1433,4 @@
 ( cvs diff -u -r 1.1.4.33 -r 1.1.4.34 src/etpan/imap-thread.c;  ) > 2.1.1cvs9.patchset
 ( cvs diff -u -r 1.105.2.51 -r 1.105.2.52 src/prefs_account.c;  ) > 2.1.1cvs10.patchset
 ( cvs diff -u -r 1.654.2.1477 -r 1.654.2.1478 configure.ac;  ) > 2.1.1cvs11.patchset
+( cvs diff -u -r 1.382.2.264 -r 1.382.2.265 src/compose.c;  cvs diff -u -r 1.179.2.105 -r 1.179.2.106 src/imap.c;  cvs diff -u -r 1.105.2.52 -r 1.105.2.53 src/prefs_account.c;  cvs diff -u -r 1.49.2.18 -r 1.49.2.19 src/prefs_account.h;  cvs diff -u -r 1.150.2.60 -r 1.150.2.61 src/procmsg.c;  ) > 2.1.1cvs12.patchset

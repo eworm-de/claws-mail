@@ -163,6 +163,7 @@ static struct Privacy {
 	GtkWidget *default_encrypt_reply_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *save_clear_text_chkbtn;
+	GtkWidget *encrypt_to_self_chkbtn;
 } privacy;
 
 #if USE_OPENSSL
@@ -443,6 +444,9 @@ static PrefParam param[] = {
 	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
 	 &privacy.save_clear_text_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"encrypt_to_self", "FALSE", &tmp_ac_prefs.encrypt_to_self, P_BOOL,
+	 &privacy.encrypt_to_self_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"privacy_prefs", "", &privacy_prefs, P_STRING,
 	 NULL, NULL, NULL},
 #if USE_OPENSSL
@@ -630,7 +634,10 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.default_encrypt_reply_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.encrypt_to_self_chkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, 
+		privacy_enabled && !gtk_toggle_button_get_active(
+					GTK_TOGGLE_BUTTON(privacy.encrypt_to_self_chkbtn)));
 }
 
 void update_privacy_system_menu() {
@@ -2015,6 +2022,7 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *default_encrypt_reply_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *save_clear_text_chkbtn;
+	GtkWidget *encrypt_to_self_chkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2044,14 +2052,19 @@ static void prefs_account_privacy_create(void)
 			     "encrypted message"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
+	PACK_CHECK_BUTTON (vbox2, encrypt_to_self_chkbtn,
+			   _("Encrypt sent messages to myself too"));
 	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
 			   _("Save sent encrypted messages as clear text"));
+
+	SET_TOGGLE_SENSITIVITY_REVERSE(encrypt_to_self_chkbtn, save_clear_text_chkbtn);
 
 	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_encrypt_reply_chkbtn = default_encrypt_reply_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
 	privacy.save_clear_text_chkbtn = save_clear_text_chkbtn;
+	privacy.encrypt_to_self_chkbtn = encrypt_to_self_chkbtn;
 }
 
 #if USE_OPENSSL

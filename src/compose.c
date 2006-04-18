@@ -4639,8 +4639,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
 		if (compose->use_encryption) {
 			gchar *encdata;
-
-			encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
+			if (mailac && mailac->encrypt_to_self) {
+				GSList *tmp_list = g_slist_copy(compose->to_list);
+				tmp_list = g_slist_append(tmp_list, compose->account->address);
+				encdata = privacy_get_encrypt_data(compose->privacy_system, tmp_list);
+				g_slist_free(tmp_list);
+			} else {
+				encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
+			}
 			if (encdata != NULL) {
 				if (strcmp(encdata, "_DONT_ENCRYPT_")) {
 					fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
