@@ -1,3 +1,14 @@
+2006-04-19 [colin]	2.1.1cvs15
+
+	* src/compose.c
+	* src/compose.h
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Put back Options menu in Spelling/
+	* src/gtk/quicksearch.c
+		Don't search, and show error, if the
+		advanced search has a syntax error
+
 2006-04-18 [colin]	2.1.1cvs14
 
 	* src/textview.c

@@ -208,6 +208,7 @@ struct _Compose
 #if USE_ASPELL
         /* GNU/aspell spell checker */
         GtkAspell *gtkaspell;
+	GtkWidget *aspell_options_menu;
 #endif
 
  	/* Priority */

@@ -646,6 +646,9 @@ static GtkItemFactoryEntry compose_entries[] =
 					NULL, compose_check_backwards , 0, NULL},
 	{N_("/_Spelling/_Forward to next misspelled word"),
 					NULL, compose_check_forwards_go, 0, NULL},
+	{N_("/_Spelling/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Spelling/Options"),
+					NULL, NULL, 0, "<Branch>"},
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
@@ -5561,6 +5564,45 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 	return FALSE;
 }
 
+#if USE_ASPELL
+static void compose_spell_menu_changed(void *data)
+{
+	Compose *compose = (Compose *)data;
+	GSList *items;
+	GtkWidget *menuitem;
+	GtkWidget *parent_item;
+	GtkMenu *menu = gtk_menu_new();
+	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
+	GSList *spell_menu;
+
+	parent_item = gtk_item_factory_get_item(ifactory, 
+			"/Spelling/Options");
+
+	/* setting the submenu removes /Spelling/Options from the factory 
+	 * so we need to save it */
+
+	if (parent_item == NULL) {
+		parent_item = compose->aspell_options_menu;
+		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(parent_item));
+	} else
+		compose->aspell_options_menu = parent_item;
+
+	spell_menu = gtkaspell_make_config_menu(compose->gtkaspell);
+
+	spell_menu = g_slist_reverse(spell_menu);
+	for (items = spell_menu;
+	     items; items = items->next) {
+		menuitem = GTK_MENU_ITEM(items->data);
+		gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), GTK_WIDGET(menuitem));
+		gtk_widget_show(GTK_WIDGET(menuitem));
+	}
+	g_slist_free(spell_menu);
+
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), GTK_WIDGET(menu));
+	
+}
+#endif
+
 static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 						 gboolean batch)
 {
@@ -5886,7 +5928,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 						  prefs_common.recheck_when_changing_dict,
 						  prefs_common.use_alternate,
 						  GTK_TEXT_VIEW(text),
-						  GTK_WINDOW(compose->window));
+						  GTK_WINDOW(compose->window),
+						  compose_spell_menu_changed,
+						  compose);
 			if (!gtkaspell) {
 				alertpanel_error(_("Spell checker could not "
 						"be started.\n%s"),
@@ -5906,6 +5950,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
         	}
 	}
         compose->gtkaspell = gtkaspell;
+	compose_spell_menu_changed(compose);
 #endif
 
 	compose_select_account(compose, account, TRUE);

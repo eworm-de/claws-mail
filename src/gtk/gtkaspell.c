@@ -136,6 +136,8 @@ struct _GtkAspell
 	GtkTextView	*gtktext;
 	GdkColor 	 highlight;
 	GtkAccelGroup	*accel_group;
+	void 		(*menu_changed_cb)(void *data);
+	void 		*menu_changed_data;
 };
 
 typedef AspellConfig GtkAspellConfig;
@@ -206,7 +208,7 @@ static void toggle_check_while_typing_cb	(GtkWidget	*w,
 /* Menu creation */
 static GSList*	make_sug_menu			(GtkAspell	*gtkaspell);
 static GSList * populate_submenu		(GtkAspell	*gtkaspell);
-static GSList*	make_config_menu		(GtkAspell	*gtkaspell);
+GSList*	gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 static void set_menu_pos			(GtkMenu	*menu, 
 						 gint		*x, 
 						 gint		*y, 
@@ -377,7 +379,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 			 gboolean recheck_when_changing_dict,
 			 gboolean use_alternate,
 			 GtkTextView *gtktext,
-			 GtkWindow *parent_win)
+			 GtkWindow *parent_win,
+			 void (*spell_menu_cb)(void *data),
+			 void *data)
 {
 	Dictionary 	*dict;
 	GtkAspell 	*gtkaspell;
@@ -424,7 +428,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	gtkaspell->suggestions_list   = NULL;
 	gtkaspell->use_alternate      = use_alternate;
 	gtkaspell->parent_window      = GTK_WIDGET(parent_win);
-	
+	gtkaspell->menu_changed_cb = spell_menu_cb;
+	gtkaspell->menu_changed_data = data;
+
 	allocate_color(gtkaspell, misspelled_color);
 
 	g_signal_connect_after(G_OBJECT(buffer), "insert-text",
@@ -562,7 +568,7 @@ static void button_press_intercept_cb(GtkTextView *gtktext,
 		}
 	} 
 	if (!spell_menu) 
-		spell_menu = make_config_menu(gtkaspell);
+		spell_menu = gtkaspell_make_config_menu(gtkaspell);
 	
 	spell_menu = g_slist_reverse(spell_menu);
 	for (items = spell_menu;
@@ -808,6 +814,8 @@ static void set_sug_mode_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
 	
 	set_real_sug_mode(gtkaspell, themode);
 	g_free(themode);
+	if (gtkaspell->menu_changed_cb)
+		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }
 
 static void set_real_sug_mode(GtkAspell *gtkaspell, const char *themode)
@@ -1610,6 +1618,8 @@ static void toggle_check_while_typing_cb(GtkWidget *w, gpointer data)
 
 	if (!gtkaspell->check_while_typing)
 		gtkaspell_uncheck_all(gtkaspell);
+	if (gtkaspell->menu_changed_cb)
+		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }
 
 static GSList *create_empty_dictionary_list(void)
@@ -2173,7 +2183,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	return list;
 }
 
-static GSList *make_config_menu(GtkAspell *gtkaspell)
+GSList *gtkaspell_make_config_menu(GtkAspell *gtkaspell)
 {
 	return populate_submenu(gtkaspell);
 }
@@ -2288,6 +2298,8 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 	if (gtkaspell->recheck_when_changing_dict) {
 		gtkaspell_highlight_all(gtkaspell);
 	}
+	if (gtkaspell->menu_changed_cb)
+		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }
 
 static void switch_to_alternate_cb(GtkWidget *w,
@@ -2295,6 +2307,8 @@ static void switch_to_alternate_cb(GtkWidget *w,
 {
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 	use_alternate_dict(gtkaspell);
+	if (gtkaspell->menu_changed_cb)
+		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }
 
 /* Misc. helper functions */

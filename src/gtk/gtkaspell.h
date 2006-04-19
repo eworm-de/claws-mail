@@ -58,7 +58,9 @@ GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
 						 gboolean recheck_when_changing_dict,
 						 gboolean use_alternate,  
 						 GtkTextView *gtktext,
-						 GtkWindow *parent_win);
+						 GtkWindow *parent_win,
+						 void (*spell_menu_cb)(void *data),
+						 void *data);
 
 void 		gtkaspell_delete		(GtkAspell *gtkaspell); 
 
@@ -98,6 +100,7 @@ void 		gtkaspell_sugmode_option_menu_set	(GtkOptionMenu *optmenu,
 							 gint sugmode);
 
 gint 		gtkaspell_get_sugmode_from_option_menu	(GtkOptionMenu *optmenu);
+GSList*		gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 
 #endif /* USE_ASPELL */
 #endif /* __GTKASPELL_H__ */
