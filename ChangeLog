@@ -1,3 +1,9 @@
+2006-04-20 [colin]	2.1.1cvs16
+
+	* src/prefs_matcher.c
+		Fix values when reselecting a ~test
+		rule
+
 2006-04-19 [colin]	2.1.1cvs15
 
 	* src/compose.c

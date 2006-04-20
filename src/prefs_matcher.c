@@ -1844,14 +1844,15 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_FROM:
 	case MATCHCRITERIA_NOT_TO:
 	case MATCHCRITERIA_NOT_CC:
+	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_NOT_HEADER:
+	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHCRITERIA_NOT_BODY_PART:
+	case MATCHCRITERIA_NOT_TEST:
 		negative_cond = TRUE;
 		break;
 	}
@@ -1871,6 +1872,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHCRITERIA_NOT_TEST:
 	case MATCHCRITERIA_SUBJECT:
 	case MATCHCRITERIA_FROM:
 	case MATCHCRITERIA_TO:
@@ -1910,11 +1912,14 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 		break;
 	}
 
-	if (negative_cond)
+	if (negative_cond) {
 		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 1);
-	else
+		gtk_list_select_item(GTK_LIST(matcher.predicate_flag_list), 1);
+	} else {
 		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
-
+		gtk_list_select_item(GTK_LIST(matcher.predicate_flag_list), 0);
+	}
+	
 	switch(prop->matchtype) {
 	case MATCHTYPE_MATCH:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
