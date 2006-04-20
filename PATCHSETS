@@ -1441,3 +1441,4 @@
 ( cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/gtk/quicksearch.c;  ) > 2.1.1cvs17.patchset
 ( cvs diff -u -r 1.115.2.80 -r 1.115.2.81 src/main.c;  ) > 2.1.1cvs18.patchset
 ( cvs diff -u -r 1.115.2.81 -r 1.115.2.82 src/main.c;  ) > 2.1.1cvs19.patchset
+( cvs diff -u -r 1.179.2.106 -r 1.179.2.107 src/imap.c;  cvs diff -u -r 1.34.2.4 -r 1.34.2.5 src/imap.h;  cvs diff -u -r 1.105.2.53 -r 1.105.2.54 src/prefs_account.c;  ) > 2.1.1cvs20.patchset

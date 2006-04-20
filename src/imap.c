@@ -591,6 +591,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	imap_get_capabilities(session);
 
 	switch(type) {
+	case IMAP_AUTH_ANON:
+		ok = imap_cmd_login(session, user, pass, "ANONYMOUS");
+		break;
 	case IMAP_AUTH_CRAM_MD5:
 		ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
 		break;
@@ -599,8 +602,10 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		break;
 	default:
 		debug_print("capabilities:\n"
+				"\t ANONYMOUS %d\n"
 				"\t CRAM-MD5 %d\n"
 				"\t LOGIN %d\n", 
+			imap_has_capability(session, "ANONYMOUS"),
 			imap_has_capability(session, "CRAM-MD5"),
 			imap_has_capability(session, "LOGIN"));
 		if (imap_has_capability(session, "CRAM-MD5"))
@@ -870,13 +875,15 @@ static void imap_session_authenticate(IMAPSession *session,
 	g_return_if_fail(account->userid != NULL);
 
 	pass = account->passwd;
-	if (!pass) {
+	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON) {
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
 		if (!tmp_pass)
 			return;
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
 		g_free(tmp_pass);
+	} else if (account->imap_auth_type == IMAP_AUTH_ANON) {
+		pass = "";
 	}
 	statusbar_print_all(_("Connecting to IMAP4 server %s...\n"),
 				account->recv_server);

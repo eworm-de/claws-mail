@@ -1,3 +1,10 @@
+2006-04-20 [colin]	2.1.1cvs20
+
+	* src/imap.c
+	* src/imap.h
+	* src/prefs_account.c
+		Add ANONYMOUS auth for IMAP
+
 2006-04-20 [paul]	2.1.1cvs19
 
 	* src/main.c
