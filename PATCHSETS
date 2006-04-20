@@ -1439,3 +1439,4 @@
 ( cvs diff -u -r 1.382.2.265 -r 1.382.2.266 src/compose.c;  cvs diff -u -r 1.50.2.23 -r 1.50.2.24 src/compose.h;  cvs diff -u -r 1.9.2.38 -r 1.9.2.39 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.5 -r 1.5.2.6 src/gtk/gtkaspell.h;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/gtk/quicksearch.c;  ) > 2.1.1cvs15.patchset
 ( cvs diff -u -r 1.43.2.37 -r 1.43.2.38 src/prefs_matcher.c;  ) > 2.1.1cvs16.patchset
 ( cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/gtk/quicksearch.c;  ) > 2.1.1cvs17.patchset
+( cvs diff -u -r 1.115.2.80 -r 1.115.2.81 src/main.c;  ) > 2.1.1cvs18.patchset

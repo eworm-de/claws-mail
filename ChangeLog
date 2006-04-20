@@ -1,3 +1,8 @@
+2006-04-20 [paul]	2.1.1cvs18
+
+	* src/main.c
+		fix build warnings
+
 2006-04-20 [paul]	2.1.1cvs17
 
 	* src/gtk/quicksearch.c
