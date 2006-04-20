@@ -550,7 +550,9 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 
 gboolean quicksearch_is_active(QuickSearch *quicksearch)
 {
-	return quicksearch->active && (quicksearch->matcher_list != NULL);
+	return quicksearch->active && 
+		(prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED
+		 || quicksearch->matcher_list != NULL);
 }
 
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
@@ -575,7 +577,9 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 
 	quicksearch->active = active;
 
-	if (active && quicksearch->matcher_list == NULL)
+	if (active && 
+		(prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED
+		 && quicksearch->matcher_list == NULL))
 		error = TRUE;
 
 	if (active) {

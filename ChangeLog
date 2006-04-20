@@ -1,3 +1,10 @@
+2006-04-20 [paul]	2.1.1cvs17
+
+	* src/gtk/quicksearch.c
+		fix standard, non-extended Quick search,
+		was broken in 2.1.1cvs15.
+		Thanks to Colin.
+
 2006-04-20 [colin]	2.1.1cvs16
 
 	* src/prefs_matcher.c
