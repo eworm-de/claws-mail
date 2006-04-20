@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
 	}
 	
 	if (cmd.target) {
-		g_timeout_add(500, defer_jump, GINT_TO_POINTER(cmd.target));
+		g_timeout_add(500, defer_jump, (gpointer)cmd.target);
 	}
 
 	gtk_main();

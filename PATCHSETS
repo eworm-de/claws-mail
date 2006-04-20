@@ -1440,3 +1440,4 @@
 ( cvs diff -u -r 1.43.2.37 -r 1.43.2.38 src/prefs_matcher.c;  ) > 2.1.1cvs16.patchset
 ( cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/gtk/quicksearch.c;  ) > 2.1.1cvs17.patchset
 ( cvs diff -u -r 1.115.2.80 -r 1.115.2.81 src/main.c;  ) > 2.1.1cvs18.patchset
+( cvs diff -u -r 1.115.2.81 -r 1.115.2.82 src/main.c;  ) > 2.1.1cvs19.patchset
