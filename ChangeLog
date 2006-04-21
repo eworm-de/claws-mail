@@ -1,3 +1,13 @@
+2006-04-21 [colin]	2.1.1cvs21
+
+	* src/folderview.c
+	* src/mainwindow.c
+		Fix occasional flicker in folderview
+	* src/common/utils.c
+		Fix bug #943 (Incorrectly parsed email address 
+		list in short headers on message view and in 
+		printouts)
+
 2006-04-20 [colin]	2.1.1cvs20
 
 	* src/imap.c

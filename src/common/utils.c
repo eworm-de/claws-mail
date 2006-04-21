@@ -4377,6 +4377,8 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	g_return_val_if_fail(ep != NULL, FALSE);
 
 	if (hdr) {
+		const gchar *start_quote = NULL;
+		const gchar *end_quote = NULL;
 search_again:
 		/* go to the real start */
 		if (start[0] == ',')
@@ -4387,6 +4389,22 @@ search_again:
 			start++;
 
 		*bp = start;
+		
+		/* check if there are quotes (to skip , in them) */
+		if (*start == '"') {
+			start_quote = start;
+			start++;
+			end_quote = strstr(start, "\"");
+		} else {
+			start_quote = NULL;
+			end_quote = NULL;
+		}
+		
+		/* skip anything between quotes */
+		if (start_quote && end_quote) {
+			start = end_quote;
+			
+		} 
 
 		/* find end (either , or ; or end of line) */
 		if (strstr(start, ",") && strstr(start, ";"))
@@ -4399,6 +4417,11 @@ search_again:
 		else
 			*ep = start+strlen(start);
 
+		/* go back to real start */
+		if (start_quote && end_quote) {
+			start = start_quote;
+		}
+
 		/* check there's still an @ in that, or search
 		 * further if possible */
 		if (strstr(start, "@") && strstr(start, "@") < *ep)
@@ -4406,6 +4429,9 @@ search_again:
 		else if (*ep < start+strlen(start)) {
 			start = *ep;
 			goto search_again;
+		} else if (start_quote && strstr(start, "\"") && strstr(start, "\"") < *ep) {
+			*bp = start_quote;
+			return TRUE;
 		} else
 			return FALSE;
 	}
