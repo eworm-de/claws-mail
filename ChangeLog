@@ -1,3 +1,9 @@
+2006-04-21 [colin]	2.1.1cvs22
+
+	* src/gtk/quicksearch.c
+		On gtk+-2.8, use stock buttons in quicksearch
+		Based on a patch by Fabien and a design by Paul
+
 2006-04-21 [colin]	2.1.1cvs21
 
 	* src/folderview.c
