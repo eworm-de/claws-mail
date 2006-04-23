@@ -2022,7 +2022,7 @@ void folder_find_expired_caches(FolderItem *item, gpointer data)
 	difftime = (gint) (time(NULL) - msgcache_get_last_access_time(item->cache));
 	expiretime = prefs_common.cache_min_keep_time * 60;
 	debug_print("Cache unused time: %d (Expire time: %d)\n", difftime, expiretime);
-	if (difftime > expiretime) {
+	if (difftime > expiretime && !item->opened && !item->processing_pending) {
 		*folder_item_list = g_slist_insert_sorted(*folder_item_list, item, folder_cache_time_compare_func);
 	}
 }

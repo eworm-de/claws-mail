@@ -1449,3 +1449,4 @@
 ( cvs diff -u -r 1.179.2.108 -r 1.179.2.109 src/imap.c;  ) > 2.1.1cvs25.patchset
 ( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/gtk/quicksearch.c;  ) > 2.1.1cvs26.patchset
 ( cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/gtk/quicksearch.c;  ) > 2.1.1cvs27.patchset
+( cvs diff -u -r 1.213.2.88 -r 1.213.2.89 src/folder.c;  ) > 2.1.1cvs28.patchset

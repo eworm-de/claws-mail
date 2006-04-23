@@ -1,3 +1,10 @@
+2006-04-23 [colin]	2.1.1cvs28
+
+	* src/folder.c
+		Never free current's cache to free up 
+		memory. Fixes bug #912 (new count 
+		randomly set to message count)
+
 2006-04-23 [colin]	2.1.1cvs27
 
 	* src/gtk/quicksearch.c
