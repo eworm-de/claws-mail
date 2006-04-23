@@ -3084,7 +3084,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, nummsgs = 0, exists, uid_val, uid_next;
+	gint ok, nummsgs = 0, exists, uid_val, uid_next = 0;
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
@@ -3125,6 +3125,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		}
 		exists = session->exists;
 
+		uid_next = item->c_uid_next;
+		uid_val = item->c_uid_validity;
 		*old_uids_valid = TRUE;
 	} else {
 		if (item->use_cache && time(NULL) - item->use_cache < 2) {

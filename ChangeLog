@@ -1,3 +1,9 @@
+2006-04-23 [colin]	2.1.1cvs25
+
+	* src/imap.c
+		Make sure uidnext is initialized in get_num_list
+		(not for stable, related to 2.1.1cvs8 and friends)
+
 2006-04-23 [colin]	2.1.1cvs24
 
 	* src/imap.c
