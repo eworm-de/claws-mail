@@ -2477,10 +2477,12 @@ static gint imap_cmd_login(IMAPSession *session,
 			type);
 	r = imap_threaded_login(session->folder, user, pass, type);
 	if (r != MAILIMAP_NO_ERROR) {
-		log_error("IMAP4< Error logging in to %s\n",
+		log_print("IMAP4< Error logging in to %s\n",
 				SESSION(session)->server);
 		ok = IMAP_ERROR;
 	} else {
+		log_print("IMAP4< Login to %s successful\n",
+				SESSION(session)->server);
 		ok = IMAP_SUCCESS;
 	}
 	return ok;

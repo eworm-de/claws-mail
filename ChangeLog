@@ -1,3 +1,9 @@
+2006-04-23 [colin]	2.1.1cvs24
+
+	* src/imap.c
+		Output something when login is successful
+		too
+
 2006-04-23 [colin]	2.1.1cvs23
 
 	* src/etpan/imap-thread.c
