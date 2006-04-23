@@ -870,6 +870,16 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 	char key[7] = "";
 	guint char_len = 0;
 
+	if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), NULL, NULL)) {
+		/* remove selection */
+		gtk_editable_delete_selection(GTK_EDITABLE(entry));
+		curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
+		/* refresh string */
+		g_free(str);
+		str = g_strdup(gtk_entry_get_text(entry));
+		begin = str;
+	}
+
 	if (!(c = gdk_keyval_to_unicode(val))) {
 		g_free(str);
 		return;
@@ -879,7 +889,10 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 		return;
 	key[char_len] = '\0';
 	if (curpos < g_utf8_strlen(str, -1)) {
-		end = g_utf8_offset_to_pointer(str, curpos+1);
+		gchar *stop = g_utf8_offset_to_pointer(begin, curpos);
+		end = g_strdup(g_utf8_offset_to_pointer(str, curpos));
+		*stop = '\0';
+		printf("new %s %s %s\n", begin, key, end);
 		new = g_strdup_printf("%s%s%s", begin, key, end);
 		gtk_entry_set_text(entry, new);
 		g_free(end);

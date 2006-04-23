@@ -1,3 +1,9 @@
+2006-04-23 [colin]	2.1.1cvs26
+
+	* src/gtk/quicksearch.c
+		Fix replacing in quicksearch, and fix inserting
+		in the middle of the string. (introduced at cvs22)
+
 2006-04-23 [colin]	2.1.1cvs25
 
 	* src/imap.c

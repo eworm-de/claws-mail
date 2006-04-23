@@ -1447,3 +1447,4 @@
 ( cvs diff -u -r 1.1.4.34 -r 1.1.4.35 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/gtk/logwindow.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/gtk/logwindow.h;  ) > 2.1.1cvs23.patchset
 ( cvs diff -u -r 1.179.2.107 -r 1.179.2.108 src/imap.c;  ) > 2.1.1cvs24.patchset
 ( cvs diff -u -r 1.179.2.108 -r 1.179.2.109 src/imap.c;  ) > 2.1.1cvs25.patchset
+( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/gtk/quicksearch.c;  ) > 2.1.1cvs26.patchset
