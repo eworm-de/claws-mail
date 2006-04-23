@@ -7,7 +7,7 @@
 
 	* src/gtk/quicksearch.c
 		Fix replacing in quicksearch, and fix inserting
-		in the middle of the string. (introduced at cvs22)
+		in the middle of the string. (introduced at 2.1.0cvs22)
 
 2006-04-23 [colin]	2.1.1cvs25
 
