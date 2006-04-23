@@ -1,3 +1,8 @@
+2006-04-23 [colin]	2.1.1cvs27
+
+	* src/gtk/quicksearch.c
+		And remove printf...
+
 2006-04-23 [colin]	2.1.1cvs26
 
 	* src/gtk/quicksearch.c

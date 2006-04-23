@@ -892,7 +892,6 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 		gchar *stop = g_utf8_offset_to_pointer(begin, curpos);
 		end = g_strdup(g_utf8_offset_to_pointer(str, curpos));
 		*stop = '\0';
-		printf("new %s %s %s\n", begin, key, end);
 		new = g_strdup_printf("%s%s%s", begin, key, end);
 		gtk_entry_set_text(entry, new);
 		g_free(end);
