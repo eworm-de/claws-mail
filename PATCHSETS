@@ -1444,3 +1444,4 @@
 ( cvs diff -u -r 1.179.2.106 -r 1.179.2.107 src/imap.c;  cvs diff -u -r 1.34.2.4 -r 1.34.2.5 src/imap.h;  cvs diff -u -r 1.105.2.53 -r 1.105.2.54 src/prefs_account.c;  ) > 2.1.1cvs20.patchset
 ( cvs diff -u -r 1.207.2.95 -r 1.207.2.96 src/folderview.c;  cvs diff -u -r 1.274.2.107 -r 1.274.2.108 src/mainwindow.c;  cvs diff -u -r 1.36.2.60 -r 1.36.2.61 src/common/utils.c;  ) > 2.1.1cvs21.patchset
 ( cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/gtk/quicksearch.c;  ) > 2.1.1cvs22.patchset
+( cvs diff -u -r 1.1.4.34 -r 1.1.4.35 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/gtk/logwindow.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/gtk/logwindow.h;  ) > 2.1.1cvs23.patchset

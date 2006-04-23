@@ -40,26 +40,69 @@ static gboolean thread_manager_event(GIOChannel * source,
 	return TRUE;
 }
 
-void imap_logger(int direction, const char * str, size_t size) 
+void imap_logger_cmd(int direction, const char * str, size_t size) 
 {
-	gchar buf[512];
+	gchar *buf;
+	gchar **lines;
+	int i = 0;
 
-	memset(buf, 0, 512);
-	strncpy(buf, str, size > 510 ? 510:size);
-	buf[511] = '\0';
-	if (size < 511)
-		buf[size] = '\0';
+	buf = malloc(size+1);
+	memset(buf, 0, size+1);
+	strncpy(buf, str, size);
+	buf[size] = '\0';
+
 	if (!strncmp(buf, "<<<<<<<", 7) 
-	||  !strncmp(buf, ">>>>>>>", 7) 
-	||  buf[0] == '\r' ||  buf[0] == '\n')
+	||  !strncmp(buf, ">>>>>>>", 7)) {
+		free(buf);
 		return;
-
+	}
 	while (strstr(buf, "\r"))
 		*strstr(buf, "\r") = ' ';
-	while (strstr(buf, "\n"))
-		*strstr(buf, "\n") = ' ';
+	while (strlen(buf) > 0 && buf[strlen(buf)-1] == '\n')
+		buf[strlen(buf)-1] = '\0';
 
-	log_print("IMAP4%c %s\n", direction?'>':'<', buf);
+	lines = g_strsplit(buf, "\n", -1);
+
+	while (lines[i] && *lines[i]) {
+		log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
+		i++;
+	}
+	g_strfreev(lines);
+	free(buf);
+}
+
+void imap_logger_fetch(int direction, const char * str, size_t size) 
+{
+	gchar *buf;
+	gchar **lines;
+	int i = 0;
+
+	buf = malloc(size+1);
+	memset(buf, 0, size+1);
+	strncpy(buf, str, size);
+	buf[size] = '\0';
+	if (!strncmp(buf, "<<<<<<<", 7) 
+	||  !strncmp(buf, ">>>>>>>", 7)) {
+		free(buf);
+		return;
+	}
+	while (strstr(buf, "\r"))
+		*strstr(buf, "\r") = ' ';
+	while (strlen(buf) > 0 && buf[strlen(buf)-1] == '\n')
+		buf[strlen(buf)-1] = '\0';
+
+	lines = g_strsplit(buf, "\n", -1);
+
+	if (direction != 0 || (buf[0] == '*' && buf[1] == ' ') || size < 32) {
+		while (lines[i] && *lines[i]) {
+			log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			i++;
+		}
+	} else {
+		log_print("IMAP4%c [data - %zd bytes]\n", direction?'>':'<', size);
+	}
+	g_strfreev(lines);
+	free(buf);
 }
 
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
@@ -72,7 +115,7 @@ void imap_main_init(void)
 	mailstream_network_delay.tv_usec = 0;
 	
 	mailstream_debug = 1;
-	mailstream_logger = imap_logger;
+	mailstream_logger = imap_logger_cmd;
 
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
@@ -285,7 +328,7 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	return result.error;
 }
 
-static int etpan_certificate_check(unsigned char *certificate, int len, void *data)
+static int etpan_certificate_check(const unsigned char *certificate, int len, void *data)
 {
 #ifdef USE_OPENSSL
 	struct connect_param *param = (struct connect_param *)data;
@@ -1391,9 +1434,13 @@ static int imap_fetch(mailimap * imap,
 		goto free_fetch_att;
 	}
 
+	mailstream_logger = imap_logger_fetch;
+	
 	r = mailimap_uid_fetch(imap, set,
 			       fetch_type, &fetch_result);
   
+	mailstream_logger = imap_logger_cmd;
+	
 	mailimap_fetch_type_free(fetch_type);
 	mailimap_set_free(set);
   

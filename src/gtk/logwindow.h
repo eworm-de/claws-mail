@@ -34,6 +34,8 @@ struct _LogWindow
 	GdkColor msg_color;
 	GdkColor warn_color;
 	GdkColor error_color;
+	GdkColor in_color;
+	GdkColor out_color;
 
 	gboolean clip;
 	guint	 clip_length;

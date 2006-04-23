@@ -138,26 +138,30 @@ void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
 	GdkColormap *colormap;
-	GdkColor color[3] =
-		{{0, 0, 0xafff, 0}, {0, 0xefff, 0, 0}, {0, 0xefff, 0, 0}};
-	gboolean success[3];
+	GdkColor color[5] =
+		{{0, 0, 0xafff, 0}, {0, 0xefff, 0, 0}, {0, 0xefff, 0, 0},
+		  {0, 0, 0, 0}, {0, 0, 0, 0xefff}};
+	gboolean success[5];
 	gint i;
 
 	logwin->msg_color   = color[0];
 	logwin->warn_color  = color[1];
 	logwin->error_color = color[2];
+	logwin->in_color    = color[3];
+	logwin->out_color   = color[4];
 
 	colormap = gdk_drawable_get_colormap(logwin->window->window);
-	gdk_colormap_alloc_colors(colormap, color, 3, FALSE, TRUE, success);
+	gdk_colormap_alloc_colors(colormap, color, 5, FALSE, TRUE, success);
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 5; i++) {
 		if (success[i] == FALSE) {
 			GtkStyle *style;
 
 			g_warning("LogWindow: color allocation failed\n");
 			style = gtk_widget_get_style(logwin->window);
 			logwin->msg_color = logwin->warn_color =
-			logwin->error_color = style->black;
+			logwin->error_color = logwin->in_color =
+			logwin->out_color = style->black;
 			break;
 		}
 	}
@@ -171,6 +175,12 @@ void log_window_init(LogWindow *logwin)
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "error",
 				   "foreground-gdk", &logwin->error_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "input",
+				   "foreground-gdk", &logwin->in_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "output",
+				   "foreground-gdk", &logwin->out_color,
 				   NULL);
 }
 
@@ -201,7 +211,6 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	GdkColor *color = NULL;
 	gchar *head = NULL;
 	const gchar *tag;
 
@@ -218,17 +227,14 @@ static gboolean log_window_append(gpointer source, gpointer data)
 
 	switch (logtext->type) {
 	case LOG_MSG:
-		color = &logwindow->msg_color;
 		tag = "message";
 		head = "* ";
 		break;
 	case LOG_WARN:
-		color = &logwindow->warn_color;
 		tag = "warn";
 		head = "** ";
 		break;
 	case LOG_ERROR:
-		color = &logwindow->error_color;
 		tag = "error";
 		head = "*** ";
 		break;
@@ -237,6 +243,17 @@ static gboolean log_window_append(gpointer source, gpointer data)
 		break;
 	}
   
+	if (tag == NULL) {
+		if (strstr(logtext->text, "] POP3>")
+		||  strstr(logtext->text, "] IMAP4>")
+		||  strstr(logtext->text, "] NNTP>"))
+			tag = "output";
+		if (strstr(logtext->text, "] POP3<")
+		||  strstr(logtext->text, "] IMAP4<")
+		||  strstr(logtext->text, "] NNTP<"))
+			tag = "input";
+	}
+
 	if (head)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, head, -1,
 							 tag, NULL);
