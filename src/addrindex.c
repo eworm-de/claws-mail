@@ -98,6 +98,7 @@
 #define ATTAG_LDAP_DYN_SEARCH "dyn-search"
 #define ATTAG_LDAP_MATCH_OPT  "match-opt"
 #define ATTAG_LDAP_ENABLE_TLS "enable-tls"
+#define ATTAG_LDAP_ENABLE_SSL "enable-ssl"
 
 #define ELTAG_LDAP_ATTR_SRCH  "attribute"
 #define ATTAG_LDAP_ATTR_NAME  "name"
@@ -1315,13 +1316,14 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	gchar *serverName = NULL;
 	gchar *criteria = NULL;
 	gboolean bDynSearch;
-	gboolean bTLS;
+	gboolean bTLS, bSSL;
 	gint iMatch;
 
 	/* printf( "addrindex_parse_ldap\n" ); */
 	/* Set up some defaults */
 	bDynSearch = FALSE;
 	bTLS = FALSE;
+	bSSL = FALSE;
 	iMatch = LDAPCTL_MATCH_BEGINWITH;
 
 	ds = addrindex_create_datasource( ADDR_IF_LDAP );
@@ -1382,6 +1384,12 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 				bTLS = TRUE;
 			}
 		}
+		else if( strcmp( name, ATTAG_LDAP_ENABLE_SSL ) == 0 ) {
+			bSSL = FALSE;
+			if( strcmp( value, ATVAL_BOOLEAN_YES ) == 0 ) {
+				bSSL = TRUE;
+			}
+		}
 		attr = g_list_next( attr );
 	}
 
@@ -1389,7 +1397,10 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	ldapsvr_set_name( server, serverName );
 	ldapsvr_set_search_flag( server, bDynSearch );
 	ldapctl_set_matching_option( ctl, iMatch );
+#ifdef USE_LDAP_TLS
 	ldapctl_set_tls( ctl, bTLS );
+	ldapctl_set_ssl( ctl, bSSL );
+#endif
 	g_free( serverName );
 	ldapsvr_set_control( server, ctl );
 	ds->rawDataSource = server;
@@ -1451,6 +1462,9 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 
 	addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_TLS,
 			ctl->enableTLS ?
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
+	addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_SSL,
+			ctl->enableSSL ?
 			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
 
 	fputs(" >\n", fp);

@@ -49,6 +49,7 @@
 #include "editldap_basedn.h"
 #include "manage_window.h"
 #include "gtkutils.h"
+#include "prefs_gtk.h"
 
 #define PAGE_BASIC      0
 #define PAGE_SEARCH     1
@@ -79,6 +80,10 @@ static struct _LDAPEdit {
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
+#ifdef USE_LDAP_TLS
+	GtkWidget *enable_ssl;
+	GtkWidget *enable_tls;
+#endif
 } ldapedit;
 
 /**
@@ -217,6 +222,7 @@ static void edit_ldap_server_check( void ) {
 	gchar *sBaseDN = NULL;
 	gint iBaseDN = 0;
 	gboolean flg;
+	gboolean tls = FALSE, ssl = FALSE;
 	GList *baseDN = NULL;
 
 	edit_ldap_status_show( "" );
@@ -226,14 +232,19 @@ static void edit_ldap_server_check( void ) {
 	sPass = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
 	iPort = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
 	iTime = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
+#ifdef USE_LDAP_TLS
+	tls = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_tls));
+	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
+#endif
+
 	g_strchomp( sHost ); g_strchug( sHost );
 	g_strchomp( sBind ); g_strchug( sBind );
 	g_strchomp( sPass ); g_strchug( sPass );
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
-		if( ldaputil_test_connect( sHost, iPort ) ) {
+		if( ldaputil_test_connect( sHost, iPort, ssl, tls ) ) {
 			/* Attempt to read base DN */
-			baseDN = ldaputil_read_basedn( sHost, iPort, sBind, sPass, iTime );
+			baseDN = ldaputil_read_basedn( sHost, iPort, sBind, sPass, iTime, ssl, tls );
 			if( baseDN ) {
 				GList *node = baseDN;
 				while( node ) {
@@ -271,7 +282,7 @@ static void edit_ldap_server_check( void ) {
 
 static void edit_ldap_basedn_select( void ) {
 	gchar *sHost, *sBind, *sPass, *sBase;
-	gint iPort, iTime;
+	gint iPort, iTime, tls = 0, ssl = 0;
 	gchar *selectDN;
 
 	sHost = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_server), 0, -1 );
@@ -280,10 +291,15 @@ static void edit_ldap_basedn_select( void ) {
 	sPass = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
 	iPort = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
 	iTime = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
+#ifdef USE_LDAP_TLS
+	tls = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_tls));
+	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
+#endif
+
 	g_strchomp( sHost ); g_strchug( sHost );
 	g_strchomp( sBind ); g_strchug( sBind );
 	g_strchomp( sPass ); g_strchug( sPass );
-	selectDN = edit_ldap_basedn_selection( sHost, iPort, sBase, iTime, sBind, sPass );
+	selectDN = edit_ldap_basedn_selection( sHost, iPort, sBase, iTime, sBind, sPass, ssl, tls );
 	if( selectDN ) {
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_baseDN), selectDN);
 		g_free( selectDN );
@@ -362,6 +378,13 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 			GTK_STATUSBAR(statusbar), "Edit LDAP Server Dialog" );
 }
 
+static void editldap_update_port (GtkToggleButton *ssl_btn, gpointer data) {
+	gboolean val = gtk_toggle_button_get_active(ssl_btn);
+	gtk_spin_button_set_value(
+		GTK_SPIN_BUTTON( ldapedit.spinbtn_port ), 
+			val ? LDAPCTL_DFL_SSL_PORT:LDAPCTL_DFL_PORT );
+}
+
 static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -371,6 +394,9 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *hbox_spin;
 	GtkObject *spinbtn_port_adj;
 	GtkWidget *spinbtn_port;
+#ifdef USE_LDAP_TLS
+	GtkWidget *enable_ssl_chkbtn, *enable_tls_chkbtn;
+#endif
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
 	GtkWidget *lookdn_btn;
@@ -434,11 +460,32 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
-	spinbtn_port_adj = gtk_adjustment_new (389, 1, 65535, 100, 1000, 1000);
+	spinbtn_port_adj = gtk_adjustment_new (389, 1, 65535, 1, 1000, 1000);
 	spinbtn_port = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_port_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_port, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_port, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_port), TRUE);
+	
+#ifdef USE_LDAP_TLS
+	enable_tls_chkbtn = gtk_check_button_new_with_label(_("TLS"));
+	enable_ssl_chkbtn = gtk_check_button_new_with_label(_("SSL"));
+	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_chkbtn, enable_ssl_chkbtn);
+	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_chkbtn, enable_tls_chkbtn);
+	gtk_tooltips_set_tip( toolTip, enable_tls_chkbtn, _( 
+		"Enable secure connection to the LDAP server via TLS."
+		"If connection fails, be sure to check the correct "
+		"configuration in ldap.conf (TLS_CACERT field)." ),
+		NULL );
+	gtk_tooltips_set_tip( toolTip, enable_ssl_chkbtn, _( 
+		"Enable secure connection to the LDAP server via SSL."
+		"If connection fails, be sure to check the correct "
+		"configuration in ldap.conf (TLS_CACERT field)." ),
+		NULL );
+
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_chkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_chkbtn, FALSE, FALSE, 0);
+#endif
+
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
@@ -498,6 +545,13 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	ldapedit.entry_server = entry_server;
 	ldapedit.spinbtn_port = spinbtn_port;
 	ldapedit.entry_baseDN = entry_baseDN;
+#ifdef USE_LDAP_TLS
+	ldapedit.enable_ssl = enable_ssl_chkbtn;
+	ldapedit.enable_tls = enable_tls_chkbtn;
+
+	g_signal_connect(G_OBJECT(enable_ssl_chkbtn), "toggled", \
+			 G_CALLBACK(editldap_update_port), NULL); 
+#endif			 
 }
 
 static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
@@ -879,6 +933,12 @@ static void edit_ldap_clear_fields( void ) {
 		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), TRUE );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption), FALSE );
+#ifdef USE_LDAP_TLS
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.enable_ssl), FALSE );
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.enable_tls), FALSE );
+#endif
 }
 
 /**
@@ -912,7 +972,12 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_maxentry), ctl->maxEntries );
-
+#ifdef USE_LDAP_TLS
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(ldapedit.enable_tls), ctl->enableTLS );
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(ldapedit.enable_ssl), ctl->enableSSL );
+#endif
 	/* Format criteria */
 	crit = editldap_build_criteria_list( ctl );
 	if( crit ) {
@@ -948,7 +1013,7 @@ AdapterDSource *addressbook_edit_ldap(
 	AddressDataSource *ds = NULL;
 	LdapServer *server = NULL;
 	LdapControl *ctl = NULL;
-	gboolean fin;
+	gboolean fin, ssl = FALSE, tls = FALSE;
 
 	if (!ldapedit.window)
 		addressbook_edit_ldap_create(&cancelled);
@@ -1000,7 +1065,12 @@ AdapterDSource *addressbook_edit_ldap(
 			GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ) );
 	bMatch = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.check_matchoption ) );
-
+#ifdef USE_LDAP_TLS
+	ssl = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( ldapedit.enable_ssl ) );
+	tls = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( ldapedit.enable_tls ) );
+#endif
 	fin = FALSE;
 	if( *sName == '\0' ) fin = TRUE;
 	if( *sHost == '\0' ) fin = TRUE;
@@ -1027,6 +1097,10 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_max_entries( ctl, iMaxE );
 		ldapctl_set_timeout( ctl, iTime );
 		ldapctl_set_max_query_age( ctl, iAge );
+#ifdef USE_LDAP_TLS
+		ldapctl_set_tls( ctl, tls );
+		ldapctl_set_ssl( ctl, ssl );
+#endif
 		ldapctl_set_matching_option(
 			ctl, bMatch ?
 			LDAPCTL_MATCH_CONTAINS : LDAPCTL_MATCH_BEGINWITH );

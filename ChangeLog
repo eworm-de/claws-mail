@@ -1,3 +1,16 @@
+2006-04-24 [colin]	2.1.1cvs30
+
+	* src/addrindex.c
+	* src/editldap.c
+	* src/editldap_basedn.c
+	* src/editldap_basedn.h
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapquery.c
+	* src/ldaputil.c
+	* src/ldaputil.h
+		Fix bug #901 (LDAPS support)
+
 2006-04-24 [colin]	2.1.1cvs29
 
 	* src/compose.c

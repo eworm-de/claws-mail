@@ -34,6 +34,7 @@
  * Constants.
  */
 #define LDAPCTL_DFL_PORT        389
+#define LDAPCTL_DFL_SSL_PORT        636
 #define LDAPCTL_MAX_ENTRIES     30
 #define LDAPCTL_DFL_TIMEOUT     30
 #define LDAPCTL_DFL_QUERY_AGE   600
@@ -68,6 +69,7 @@ struct _LdapControl {
 	gint      matchingOption;
 	gint      version;
 	gboolean  enableTLS;
+	gboolean  enableSSL;
 	gchar     *attribEMail;
 	gchar     *attribCName;
 	gchar     *attribFName;
@@ -88,6 +90,7 @@ void ldapctl_set_timeout	( LdapControl* ctl, const gint value );
 void ldapctl_set_max_query_age	( LdapControl* ctl, const gint value );
 void ldapctl_set_matching_option( LdapControl* ctl, const gint value );
 void ldapctl_set_tls		( LdapControl* ctl, const gboolean value );
+void ldapctl_set_ssl		( LdapControl* ctl, const gboolean value );
 void ldapctl_set_criteria_list	( LdapControl* ctl, GList *value );
 GList *ldapctl_get_criteria_list( const LdapControl* ctl );
 void ldapctl_criteria_list_clear( LdapControl *ctl );

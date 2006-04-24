@@ -247,7 +247,7 @@ static void edit_ldap_bdn_create(void) {
 
 void edit_ldap_bdn_load_data(
 	const gchar *hostName, const gint iPort, const gint tov,
-	const gchar* bindDN, const gchar *bindPW )
+	const gchar* bindDN, const gchar *bindPW, int ssl, int tls )
 {
 	gchar *sHost;
 	gchar *sMsg = NULL;
@@ -266,9 +266,9 @@ void edit_ldap_bdn_load_data(
 	gtk_label_set_text(GTK_LABEL(ldapedit_basedn.port_label), sPort);
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
-		if( ldaputil_test_connect( sHost, iPort ) ) {
+		if( ldaputil_test_connect( sHost, iPort, ssl, tls ) ) {
 			/* Attempt to read base DN */
-			baseDN = ldaputil_read_basedn( sHost, iPort, bindDN, bindPW, tov );
+			baseDN = ldaputil_read_basedn( sHost, iPort, bindDN, bindPW, tov, ssl, tls );
 			if( baseDN ) {
 				GList *node = baseDN;
 				gchar *text[2] = { NULL, NULL };
@@ -301,7 +301,7 @@ void edit_ldap_bdn_load_data(
 }
 
 gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar *baseDN, const gint tov,
-	       const gchar* bindDN, const gchar *bindPW ) {
+	       const gchar* bindDN, const gchar *bindPW, int ssl, int tls ) {
 	gchar *retVal = NULL;
 
 	ldapedit_basedn_cancelled = FALSE;
@@ -311,7 +311,7 @@ gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar
 	manage_window_set_transient(GTK_WINDOW(ldapedit_basedn.window));
 
 	edit_ldap_bdn_status_show( "" );
-	edit_ldap_bdn_load_data( hostName, port, tov, bindDN, bindPW );
+	edit_ldap_bdn_load_data( hostName, port, tov, bindDN, bindPW, ssl, tls );
 	gtk_widget_show(ldapedit_basedn.window);
 
 	gtk_entry_set_text(GTK_ENTRY(ldapedit_basedn.basedn_entry), baseDN);

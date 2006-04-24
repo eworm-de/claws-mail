@@ -32,6 +32,7 @@
 #include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
+#include <errno.h>
 
 #define SYLDAP_TEST_FILTER   "(objectclass=*)"
 #define SYLDAP_SEARCHBASE_V2 "cn=config"
@@ -46,10 +47,10 @@
  * \return List of Base DN's, or NULL if could not read. List should be
  *         g_free() when done.
  */
-static GList *ldaputil_test_v3( LDAP *ld, gint tov ) {
+static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 	GList *baseDN = NULL;
 	gint rc, i;
-	LDAPMessage *result, *e;
+	LDAPMessage *result = NULL, *e;
 	gchar *attribs[2];
 	BerElement *ber;
 	gchar *attribute;
@@ -102,8 +103,11 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov ) {
 			}
 			ber = NULL;
 		}
-	}
-	ldap_msgfree( result );
+	} 
+	if (errcode)
+		*errcode = rc;
+	if (result)
+		ldap_msgfree( result );
 	return baseDN;
 }
 
@@ -117,7 +121,7 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov ) {
 static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 	GList *baseDN = NULL;
 	gint rc, i;
-	LDAPMessage *result, *e;
+	LDAPMessage *result = NULL, *e;
 	gchar *attribs[1];
 	BerElement *ber;
 	gchar *attribute;
@@ -181,7 +185,8 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 			ber = NULL;
 		}
 	}
-	ldap_msgfree( result );
+	if (result)
+		ldap_msgfree( result );
 	return baseDN;
 }
 
@@ -197,19 +202,47 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
  */
 GList *ldaputil_read_basedn(
 		const gchar *host, const gint port, const gchar *bindDN,
-		const gchar *bindPW, const gint tov )
+		const gchar *bindPW, const gint tov, int ssl, int tls )
 {
 	GList *baseDN = NULL;
-	LDAP *ld;
+	LDAP *ld = NULL;
 	gint rc;
+#ifdef USE_LDAP_TLS
+	gint version;
+#endif
 
 	if( host == NULL ) return baseDN;
 	if( port < 1 ) return baseDN;
 
 	/* Connect to server. */
-	if( ( ld = ldap_init( host, port ) ) == NULL ) {
+
+	if (!ssl) {
+		ld = ldap_init( host, port );
+	} else {
+		gchar *uri = g_strdup_printf("ldaps://%s:%d",
+				host, port);
+		rc = ldap_initialize(&ld, uri);
+		g_free(uri);
+	}
+	if( ld == NULL ) {
 		return baseDN;
 	}
+#ifdef USE_LDAP_TLS
+	if( tls && !ssl ) {
+		/* Handle TLS */
+		version = LDAP_VERSION3;
+		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
+		if( rc != LDAP_OPT_SUCCESS ) {
+			ldap_unbind( ld );
+			return baseDN;
+		}
+		rc = ldap_start_tls_s( ld, NULL, NULL );
+		if (rc != 0) {
+			ldap_unbind( ld );
+			return baseDN;
+		}
+	}
+#endif
 
 	/* Bind to the server, if required */
 	if( bindDN ) {
@@ -223,11 +256,14 @@ GList *ldaputil_read_basedn(
 	}
 
 	/* Test for LDAP version 3 */
-	baseDN = ldaputil_test_v3( ld, tov );
-	if( baseDN == NULL ) {
+	baseDN = ldaputil_test_v3( ld, tov, &rc );
+
+	if( baseDN == NULL && !LDAP_API_ERROR(rc) ) {
 		baseDN = ldaputil_test_v2( ld, tov );
 	}
-	ldap_unbind( ld );
+	if (ld && !LDAP_API_ERROR(rc))
+		ldap_unbind( ld );
+	
 	return baseDN;
 }
 
@@ -238,13 +274,51 @@ GList *ldaputil_read_basedn(
  * \param  port Port number.
  * \return <i>TRUE</i> if connected successfully.
  */
-gboolean ldaputil_test_connect( const gchar *host, const gint port ) {
+gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int tls ) {
 	gboolean retVal = FALSE;
 	LDAP *ld;
-
+#ifdef USE_LDAP_TLS
+	gint rc;
+	gint version;
+#endif
 	if( host == NULL ) return retVal;
 	if( port < 1 ) return retVal;
-	ld = ldap_open( host, port );
+	if (!ssl) {
+		ld = ldap_open( host, port );
+	} else {
+		gchar *uri = g_strdup_printf("ldaps://%s:%d",
+				host, port);
+		ldap_initialize(&ld, uri);
+		g_free(uri);
+	}
+	if (ld == NULL)
+		return FALSE;
+
+#ifdef USE_LDAP_TLS
+	if (ssl) {
+		GList *dummy = ldaputil_test_v3( ld, 10, &rc );
+		if (dummy)
+			g_list_free(dummy);
+		if (LDAP_API_ERROR(rc))
+			return FALSE;
+	}
+
+	if( tls && !ssl ) {
+		/* Handle TLS */
+		version = LDAP_VERSION3;
+		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
+		if( rc != LDAP_OPT_SUCCESS ) {
+			ldap_unbind( ld );
+			return FALSE;
+		}
+
+		rc = ldap_start_tls_s( ld, NULL, NULL );
+		if (rc != 0) {
+			ldap_unbind( ld );
+			return FALSE;
+		}
+	}
+#endif
 	if( ld != NULL ) {
 		ldap_unbind( ld );
 		retVal = TRUE;

@@ -700,7 +700,7 @@ void ldapqry_touch( LdapQuery *qry ) {
  */
 static gint ldapqry_connect( LdapQuery *qry ) {
 	LdapControl *ctl;
-	LDAP *ld;
+	LDAP *ld = NULL;
 	gint rc;
 	gint version;
 
@@ -714,9 +714,17 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
 	ADDRQUERY_RETVAL(qry) = LDAPRC_INIT;
-	if( ( ld = ldap_init( ctl->hostName, ctl->port ) ) == NULL ) {
-		return ADDRQUERY_RETVAL(qry);
+	if (!ctl->enableSSL) {
+		ld = ldap_init( ctl->hostName, ctl->port );
+	} else {
+		gchar *uri = g_strdup_printf("ldaps://%s:%d",
+				ctl->hostName, ctl->port);
+		ldap_initialize(&ld, uri);
+		g_free(uri);
 	}
+	if (ld == NULL)
+		return ADDRQUERY_RETVAL(qry);
+
 	qry->ldap = ld;
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
 	if( ldapqry_get_stop_flag( qry ) ) {
@@ -737,13 +745,13 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	}
 
 	if( ctl->version == LDAP_VERSION3 ) {
-		if( ctl->enableTLS ) {
+		if( ctl->enableTLS && !ctl->enableSSL ) {
 			ADDRQUERY_RETVAL(qry) = LDAPRC_TLS;
 			rc = ldap_start_tls_s( ld, NULL, NULL );
-			/*
-			printf( "rc=%d\n", rc );
-			printf( "LDAP Status: set_option: %s\n", ldap_err2string( rc ) );
-			*/
+			
+			/* printf( "rc=%d\n", rc );
+			printf( "LDAP Status: set_option: %s\n", ldap_err2string( rc ) ); */
+			
 			if( rc != LDAP_SUCCESS ) {
 				return ADDRQUERY_RETVAL(qry);
 			}

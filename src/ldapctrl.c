@@ -58,6 +58,7 @@ LdapControl *ldapctl_create( void ) {
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 	ctl->version = 0;
 	ctl->enableTLS = FALSE;
+	ctl->enableSSL = FALSE;
 
 	/* Mutex to protect control block */
 	ctl->mutexCtl = g_malloc0( sizeof( pthread_mutex_t ) );
@@ -195,6 +196,10 @@ void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
 	ctl->enableTLS = value;
 }
 
+void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
+	ctl->enableSSL = value;
+}
+
 /**
  * Specify search criteria list to be used.
  * \param ctl   Control data object.
@@ -295,6 +300,7 @@ void ldapctl_clear( LdapControl *ctl ) {
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 	ctl->version = 0;
 	ctl->enableTLS = FALSE;
+	ctl->enableSSL = FALSE;
 }
 
 /**
@@ -338,6 +344,7 @@ void ldapctl_default_values( LdapControl *ctl ) {
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 	ctl->version = 0;
 	ctl->enableTLS = FALSE;
+	ctl->enableSSL = FALSE;
 
 	ldapctl_default_attributes( ctl );
 }
@@ -367,6 +374,7 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "match opt: %d\n",   ctl->matchingOption );
 	fprintf( stream, "  version: %d\n",   ctl->version );
 	fprintf( stream, "      TLS: %s\n",   ctl->enableTLS ? "yes" : "no" );
+	fprintf( stream, "      SSL: %s\n",   ctl->enableSSL ? "yes" : "no" );
 	fprintf( stream, "crit list:\n" );
 	if( ctl->listCriteria ) {
 		mgu_print_dlist( ctl->listCriteria, stream );
@@ -422,6 +430,7 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	ctlTo->matchingOption = ctlFrom->matchingOption;
 	ctlTo->version = ctlFrom->version;
 	ctlTo->enableTLS = ctlFrom->enableTLS;
+	ctlTo->enableSSL = ctlFrom->enableSSL;
 
 	/* Unlock */
 	pthread_mutex_unlock( ctlTo->mutexCtl );
