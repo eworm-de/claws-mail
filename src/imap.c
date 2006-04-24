@@ -4289,10 +4289,12 @@ void imap_synchronise(FolderItem *item)
 
 static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 {
+#ifdef HAVE_LIBETPAN
 	GList *cur;
-
+#endif
 	folder_item_set_xml(folder, item, tag);
 	
+#ifdef HAVE_LIBETPAN
 	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
 		XMLAttr *attr = (XMLAttr *) cur->data;
 
@@ -4300,6 +4302,7 @@ static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		if (!strcmp(attr->name, "uidnext"))
 			IMAP_FOLDER_ITEM(item)->uid_next = atoi(attr->value);
 	}
+#endif
 }
 
 static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item)
@@ -4308,8 +4311,10 @@ static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item)
 
 	tag = folder_item_get_xml(folder, item);
 
+#ifdef HAVE_LIBETPAN
 	xml_tag_add_attr(tag, xml_attr_new_int("uidnext", 
 			IMAP_FOLDER_ITEM(item)->uid_next));
 
+#endif
 	return tag;
 }

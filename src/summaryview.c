@@ -4563,6 +4563,16 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	summaryview->colorlabel_menu = menu;
 }
 
+static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	summaryview->display_msg = messageview_is_visible(summaryview->messageview);
+
+	gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
+		       NULL, NULL, 0, gtk_get_current_event_time());
+	return TRUE;
+}
+
 static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 {
 	GtkWidget *ctree;
@@ -4665,6 +4675,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(summary_button_pressed),
 			 summaryview);
+	g_signal_connect(G_OBJECT(ctree), "popup-menu",
+			 G_CALLBACK(summary_popup_menu), summaryview);
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(summary_button_released),
 			 summaryview);

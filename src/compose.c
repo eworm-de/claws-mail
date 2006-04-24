@@ -3984,12 +3984,12 @@ gint compose_send(Compose *compose)
 	}
 
 	if (msgnum == 0) {
-		if (!discard_window) {
-			goto bail;
-		}
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
+		if (!discard_window) {
+			goto bail;
+		}
 		return -1;
 	}
 	
@@ -4017,12 +4017,12 @@ gint compose_send(Compose *compose)
 		if (!discard_window)
 			compose_close(compose);
 	} else {
-		if (!discard_window) {
-			goto bail;		
-		}
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
+		if (!discard_window) {
+			goto bail;		
+		}
 		return -1;
  	}
 

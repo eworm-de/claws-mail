@@ -1450,3 +1450,4 @@
 ( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/gtk/quicksearch.c;  ) > 2.1.1cvs26.patchset
 ( cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/gtk/quicksearch.c;  ) > 2.1.1cvs27.patchset
 ( cvs diff -u -r 1.213.2.88 -r 1.213.2.89 src/folder.c;  ) > 2.1.1cvs28.patchset
+( cvs diff -u -r 1.382.2.266 -r 1.382.2.267 src/compose.c;  cvs diff -u -r 1.179.2.109 -r 1.179.2.110 src/imap.c;  cvs diff -u -r 1.395.2.192 -r 1.395.2.193 src/summaryview.c;  ) > 2.1.1cvs29.patchset
