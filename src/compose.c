@@ -905,7 +905,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 			GtkStyle *style;
 
 			g_warning("Compose: color allocation failed.\n");
-			style = gtk_widget_get_style(text);
+			style = gtk_widget_get_style(GTK_WIDGET(text));
 			quote_color1 = quote_color2 = quote_color3 = 
 				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
 				signature_color = uri_color = black;
@@ -5571,7 +5571,7 @@ static void compose_spell_menu_changed(void *data)
 	GSList *items;
 	GtkWidget *menuitem;
 	GtkWidget *parent_item;
-	GtkMenu *menu = gtk_menu_new();
+	GtkMenu *menu = GTK_MENU(gtk_menu_new());
 	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	GSList *spell_menu;
 
@@ -5592,7 +5592,7 @@ static void compose_spell_menu_changed(void *data)
 	spell_menu = g_slist_reverse(spell_menu);
 	for (items = spell_menu;
 	     items; items = items->next) {
-		menuitem = GTK_MENU_ITEM(items->data);
+		menuitem = GTK_WIDGET(GTK_MENU_ITEM(items->data));
 		gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), GTK_WIDGET(menuitem));
 		gtk_widget_show(GTK_WIDGET(menuitem));
 	}
