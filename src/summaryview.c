@@ -4788,9 +4788,9 @@ static gboolean summary_button_released(GtkWidget *ctree, GdkEventButton *event,
 	return FALSE;
 }
 
-void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
+gboolean summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 {
-	summary_key_pressed(summaryview->ctree, event, summaryview);
+	return summary_key_pressed(summaryview->ctree, event, summaryview);
 }
 
 #define BREAK_ON_MODIFIER_KEY() \

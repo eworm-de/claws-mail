@@ -1016,7 +1016,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
-	guint count = 0, lines = (end - begin + 2) * 3;
+	guint count = 0, lines = (end - begin) + 2;
 	gint ok;
 
 	g_return_val_if_fail(session != NULL, NULL);
@@ -1088,11 +1088,6 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
-		count++;
-		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK,
-			 session->fetch_base_percentage +
-			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -1125,11 +1120,6 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
-		count++;
-		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK,
-			 session->fetch_base_percentage +
-			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {

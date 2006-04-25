@@ -1,3 +1,13 @@
+2006-04-25 [colin]	2.1.1cvs32
+
+	* src/news.c
+		Better progress bar
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Fix focus chain
+		Patches by Pawel Pekala
+
 2006-04-24 [colin]	2.1.1cvs31
 
 	* src/compose.c

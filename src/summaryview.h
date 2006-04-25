@@ -220,7 +220,7 @@ void summary_attract_by_subject	  (SummaryView		*summaryview);
 
 gint summary_write_cache	  (SummaryView		*summaryview);
 
-void summary_pass_key_press_event (SummaryView		*summaryview,
+gboolean summary_pass_key_press_event (SummaryView		*summaryview,
 				   GdkEventKey		*event);
 
 void summary_display_msg_selected (SummaryView		*summaryview,

@@ -1849,8 +1849,7 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 
 	if (!mimeview->messageview->mainwin) return FALSE;
 	summaryview = mimeview->messageview->mainwin->summaryview;
-	summary_pass_key_press_event(summaryview, event);
-	return TRUE;
+	return summary_pass_key_press_event(summaryview, event);
 }
 
 static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
