@@ -363,7 +363,7 @@ MimeViewer *image_viewer_create(void)
 
 	gtk_widget_ref(notebook);
 
-	g_signal_connect(G_OBJECT(load_button), "released",
+	g_signal_connect(G_OBJECT(load_button), "clicked",
 			 G_CALLBACK(load_cb), imageviewer);
 	g_signal_connect(G_OBJECT(scrolledwin), "button-press-event",
 			 G_CALLBACK(scrolledwin_button_cb), imageviewer);

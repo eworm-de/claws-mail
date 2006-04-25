@@ -274,6 +274,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
 	color_buttons.btn_quote_level1_bg = gtk_button_new();
@@ -281,7 +282,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.btn_quote_level1_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level1_bg, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level1_bg);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, color_buttons.btn_quote_level1_bg);
 	tooltips = gtk_tooltips_new();
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level1_bg,
 			     _("Pick color for 1st level text background"), NULL);
@@ -290,10 +291,11 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show(label_quote_bgcolor1);
   	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor1, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor1);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, label_quote_bgcolor1);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
 	color_buttons.btn_quote_level2_bg = gtk_button_new();
@@ -301,7 +303,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.btn_quote_level2_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level2_bg, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level2_bg);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, color_buttons.btn_quote_level2_bg);
 	tooltips = gtk_tooltips_new();
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level2_bg,
 			     _("Pick color for 2nd level text background"), NULL);
@@ -310,10 +312,11 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show(label_quote_bgcolor2);
   	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor2, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor2);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, label_quote_bgcolor2);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
 	color_buttons.btn_quote_level3_bg = gtk_button_new();
@@ -321,7 +324,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (color_buttons.btn_quote_level3_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level3_bg, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, color_buttons.btn_quote_level3_bg);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, color_buttons.btn_quote_level3_bg);
 	tooltips = gtk_tooltips_new();
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level3_bg,
 			     _("Pick color for 3rd level text background"), NULL);
@@ -330,7 +333,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show(label_quote_bgcolor3);
   	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor3, 
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_quote_bgcolor3);
+	SET_TOGGLE_SENSITIVITY(chkbtn_enable_bgcolors, label_quote_bgcolor3);
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);

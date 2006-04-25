@@ -22,6 +22,8 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
+
 #include <sys/time.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32
@@ -1327,7 +1329,7 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
                         n = write(fd, buf, len);
 
 		if (n <= 0) {
-			log_error("write on fd%d: %s\n", fd, strerror(errno));
+			log_error(_("write on fd%d: %s\n"), fd, strerror(errno));
 			return -1;
 		}
 		len -= n;

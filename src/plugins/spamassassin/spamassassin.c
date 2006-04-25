@@ -149,7 +149,7 @@ static gboolean msg_is_spam(FILE *fp)
 	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
-		log_error("Spamassassin plugin couldn't connect to spamd.\n");
+		log_error(_("Spamassassin plugin couldn't connect to spamd.\n"));
 		debug_print("failed to setup transport\n");
 		return FALSE;
 	}
@@ -189,7 +189,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	/* SPAMASSASSIN_DISABLED : keep test for compatibility purpose */
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error("Spamassassin plugin is disabled by its preferences.\n");
+		log_error(_("Spamassassin plugin is disabled by its preferences.\n"));
 		return FALSE;
 	}
 	debug_print("Filtering message %d\n", msginfo->msgnum);
@@ -461,7 +461,7 @@ gint plugin_init(gchar **error)
 	}
 
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error("Spamassassin plugin is loaded but disabled by its preferences.\n");
+		log_error(_("Spamassassin plugin is loaded but disabled by its preferences.\n"));
 	}
 	else {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)

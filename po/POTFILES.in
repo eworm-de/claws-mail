@@ -10,6 +10,7 @@ src/common/md5.c
 src/common/nntp.c
 src/common/plugin.c
 src/common/smtp.c
+src/common/socket.c
 src/common/ssl.c
 src/common/ssl_certificate.c
 src/common/string_match.c

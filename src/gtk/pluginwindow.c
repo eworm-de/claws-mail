@@ -363,11 +363,11 @@ void pluginwindow_create()
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
 
 
-	g_signal_connect(G_OBJECT(load_btn), "released",
+	g_signal_connect(G_OBJECT(load_btn), "clicked",
 			 G_CALLBACK(load_cb), pluginwindow);
-	g_signal_connect(G_OBJECT(unload_btn), "released",
+	g_signal_connect(G_OBJECT(unload_btn), "clicked",
 			 G_CALLBACK(unload_cb), pluginwindow);
-	g_signal_connect(G_OBJECT(close_btn), "released",
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(close_cb), pluginwindow);
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(pluginwindow_size_allocate_cb), NULL);

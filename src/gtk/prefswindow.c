@@ -129,7 +129,7 @@ static void close_all_pages(GSList *prefs_pages)
 	}	
 }
 
-static void apply_button_released(GtkButton *button, gpointer user_data)
+static void apply_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
@@ -149,7 +149,7 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 	g_free(prefswindow);
 }
 
-static void ok_button_released(GtkButton *button, gpointer user_data)
+static void ok_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
@@ -159,7 +159,7 @@ static void ok_button_released(GtkButton *button, gpointer user_data)
 	}		
 }
 
-static void cancel_button_released(GtkButton *button, gpointer user_data)
+static void cancel_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
@@ -182,7 +182,7 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event) {
 		switch (event->keyval) {
 			case GDK_Escape :
-				cancel_button_released(NULL, data);
+				cancel_button_clicked(NULL, data);
 				break;
 			case GDK_Return : 
 			case GDK_KP_Enter :
@@ -192,7 +192,7 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 * and text (anything that accepts return) (can pass
 				 * NULL to any of the GTK_xxx() casts) */
 				if (!GTK_IS_TEXT_VIEW(focused_child))
-					ok_button_released(NULL, data);
+					ok_button_clicked(NULL, data);
 				break;
 			default:
 				break;
@@ -424,12 +424,12 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->confirm_area, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 
-	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "released", 
-			 G_CALLBACK(ok_button_released), prefswindow);
-	g_signal_connect(G_OBJECT(prefswindow->cancel_btn), "released", 
-			 G_CALLBACK(cancel_button_released), prefswindow);
-	g_signal_connect(G_OBJECT(prefswindow->apply_btn), "released", 
-			 G_CALLBACK(apply_button_released), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "clicked", 
+			 G_CALLBACK(ok_button_clicked), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->cancel_btn), "clicked", 
+			 G_CALLBACK(cancel_button_clicked), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->apply_btn), "clicked", 
+			 G_CALLBACK(apply_button_clicked), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
 			 G_CALLBACK(window_closed), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->window), "key_press_event",

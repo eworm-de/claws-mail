@@ -2049,9 +2049,13 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 {
 	GtkWidget *item, *submenu;
 	gchar *dictname;
-	GtkAspeller *gtkaspeller = gtkaspell->gtkaspeller;
+	GtkAspeller *gtkaspeller = NULL;
 	GSList *list = NULL;
 
+	if (!gtkaspell)
+		return NULL;
+
+	gtkaspeller = gtkaspell->gtkaspeller;
 	dictname = g_strdup_printf(_("Dictionary: %s"),
 				   gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(dictname);

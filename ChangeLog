@@ -1,3 +1,19 @@
+2006-04-25 [cleroy]	2.1.1cvs34
+
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+		Fix crash on redirect (related to the return 
+		of the aspell menu in compose's toolbar)
+	* src/image_viewer.c
+	* src/prefs_msg_colors.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+		Change released signals to clicked (Fabien)
+	* po/POTFILES.in
+	* src/common/socket.c
+	* src/plugins/spamassassin/spamassassin.c
+		Translate strings (Fabien)
+
 2006-04-25 [paul]	2.1.1cvs33
 
 	* src/folder.c

@@ -5575,6 +5575,9 @@ static void compose_spell_menu_changed(void *data)
 	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	GSList *spell_menu;
 
+	if (compose->gtkaspell == NULL)
+		return;
+
 	parent_item = gtk_item_factory_get_item(ifactory, 
 			"/Spelling/Options");
 
