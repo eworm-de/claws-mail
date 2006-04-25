@@ -1,3 +1,8 @@
+2006-04-25 [colin]	2.1.1cvs36
+
+	* src/folder.c
+		Complete 2.1.1cvs33 (once more ;)
+
 2006-04-25 [colin]	2.1.1cvs35
 
 	* src/editldap.c
