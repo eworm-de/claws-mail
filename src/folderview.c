@@ -1969,7 +1969,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
 	
-	folder_clean_cache_memory();
+	folder_clean_cache_memory(item);
 
 	if (!opened) {
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);

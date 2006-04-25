@@ -1,3 +1,11 @@
+2006-04-25 [paul]	2.1.1cvs33
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+		complete the fix of bug #912
+		Thanks to Colin
+
 2006-04-25 [colin]	2.1.1cvs32
 
 	* src/news.c

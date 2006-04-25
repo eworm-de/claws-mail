@@ -2050,13 +2050,13 @@ void folder_clean_cache_memory_force(void)
 	prefs_common.cache_max_mem_usage = 0;
 	prefs_common.cache_min_keep_time = 0;
 
-	folder_clean_cache_memory();
+	folder_clean_cache_memory(NULL);
 
 	prefs_common.cache_max_mem_usage = old_cache_max_mem_usage;
 	prefs_common.cache_min_keep_time = old_cache_min_keep_time;
 }
 
-void folder_clean_cache_memory(void)
+void folder_clean_cache_memory(FolderItem *protected_item)
 {
 	gint memusage = 0;
 
@@ -2072,7 +2072,8 @@ void folder_clean_cache_memory(void)
 		listitem = folder_item_list;
 		while((listitem != NULL) && (memusage > (prefs_common.cache_max_mem_usage * 1024))) {
 			FolderItem *item = (FolderItem *)(listitem->data);
-
+			if (item == protected_item)
+				continue;
 			debug_print("Freeing cache memory for %s\n", item->path ? item->path : item->name);
 			memusage -= msgcache_get_memory_usage(item->cache);
 		        folder_item_free_cache(item);
@@ -2130,7 +2131,7 @@ void folder_item_read_cache(FolderItem *item)
 		item->cache = msgcache_new();
 	}
 
-	folder_clean_cache_memory();
+	folder_clean_cache_memory(item);
 }
 
 void folder_item_write_cache(FolderItem *item)
