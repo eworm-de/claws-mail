@@ -1,3 +1,8 @@
+2006-04-25 [colin]	2.1.1cvs35
+
+	* src/editldap.c
+		Fix tooltip
+
 2006-04-25 [cleroy]	2.1.1cvs34
 
 	* src/compose.c
