@@ -1,3 +1,9 @@
+2006-04-27 [colin]	2.1.1cvs39
+
+	* src/wizard.c
+		Differentiate subject Welcome from
+		window's title Welcome
+
 2006-04-27 [paul]
 
 	2.2.0-rc1 released

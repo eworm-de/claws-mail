@@ -443,7 +443,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
-	subj = g_strdup_printf(_("Welcome to Sylpheed-Claws"));
+	subj = g_strdup_printf(_("Welcome to Sylpheed-Claws "));
 
 	head = g_strdup_printf(
 		"From: %s <sylpheed-claws-users@lists.sf.net>\n"

@@ -1460,3 +1460,4 @@
 ( cvs diff -u -r 1.213.2.90 -r 1.213.2.91 src/folder.c;  ) > 2.1.1cvs36.patchset
 ( cvs diff -u -r 1.105.2.54 -r 1.105.2.55 src/prefs_account.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/prefs_msg_colors.c;  cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/gtk/gtkutils.c;  ) > 2.1.1cvs37.patchset
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 manual/advanced.xml;  ) > 2.1.1cvs38.patchset
+( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/wizard.c;  ) > 2.1.1cvs39.patchset
