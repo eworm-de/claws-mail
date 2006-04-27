@@ -1,6 +1,7 @@
 2006-04-27 [paul]	2.1.1cvs38
 
 	* manual/advanced.xml
+	* manual/fr/advanced.xml
 		add info about compose_no_markup hidden pref
 
 2006-04-27 [paul]	2.1.1cvs37

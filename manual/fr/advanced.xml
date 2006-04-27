@@ -162,6 +162,9 @@
 	    <varlistentry><term>cache_min_keep_time</term>
 		    <listitem><para>Le temps minimum pour garder un cache en mémoire, en minutes. Les caches plus récents que ce temps ne seront pas libérés, même si l'utilisation de la mémoire est trop élevée.</para></listitem>
 	    </varlistentry>
+            <varlistentry><term>compose_no_markup</term>
+                    <listitem><para>Ne pas utiliser de gras ni d'italique dans le sélecteur de compte de la fenêtre de composition.</para></listitem>
+            </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
 	    </varlistentry>
