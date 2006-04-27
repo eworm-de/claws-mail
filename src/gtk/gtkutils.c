@@ -1186,7 +1186,7 @@ static void link_btn_enter(GtkButton *button, gpointer data)
 		gdk_window_set_cursor(window->window, hand_cursor);
 
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_PRELIGHT);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
 	
 }
 
