@@ -179,6 +179,9 @@
 	    <varlistentry><term>cache_min_keep_time</term>
 		    <listitem><para>the minimum time to keep a cache in memory, in minutes. Caches more recent than this time will not be freed, even if the memory usage is too high.</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>compose_no_markup</term>
+		    <listitem><para>don't use bold and italic text in Compose dialogue's account selector</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>enables horizontal scrollbar in Message List</para></listitem>
 	    </varlistentry>
