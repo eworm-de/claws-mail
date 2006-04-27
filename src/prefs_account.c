@@ -2046,15 +2046,15 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (default_privacy_system);
 	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, FALSE, TRUE, 0);
 
-	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
-			   _("Encrypt message by default"));
-	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_chkbtn,
-			   _("Encrypt message by default when replying to an "
-			     "encrypted message"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
-			   _("Sign message by default"));
+			   _("Always sign messages"));
+	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
+			   _("Always encrypt messages"));
+	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_chkbtn,
+			   _("Always encrypt messages when replying to an "
+			     "encrypted message"));
 	PACK_CHECK_BUTTON (vbox2, encrypt_to_self_chkbtn,
-			   _("Encrypt sent messages to myself too"));
+			   _("Encrypt sent messages with your own key in addition to recipient's"));
 	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
 			   _("Save sent encrypted messages as clear text"));
 

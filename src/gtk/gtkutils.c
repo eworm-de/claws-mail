@@ -1186,7 +1186,7 @@ static void link_btn_enter(GtkButton *button, gpointer data)
 		gdk_window_set_cursor(window->window, hand_cursor);
 
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_PRELIGHT);
 	
 }
 
@@ -1236,7 +1236,6 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
-	gchar *underlined = NULL;
 	gchar *local_url = NULL;
 	if (!url)
 		return NULL;
@@ -1246,12 +1245,9 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
 					       &uri_color[1]);
 
-	underlined = g_markup_printf_escaped("<u>%s</u>", label?label:url);
-	btn = gtk_button_new_with_label(underlined);
-	g_free(underlined);
+	btn = gtk_button_new_with_label(label?label:url);
 	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
 	btn_label = GTK_BIN(btn)->child;
-	gtk_label_set_use_markup(GTK_LABEL(btn_label), TRUE);
 	cmap = gdk_drawable_get_colormap(window->window);
 	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
 	if (success[0] == TRUE && success[1] == TRUE) {

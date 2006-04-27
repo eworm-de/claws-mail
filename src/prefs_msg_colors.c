@@ -604,43 +604,45 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gint c;
 
 	/* custom colors */
+	/* leave the extra space at the end of the title, this is for translators' convenience */
 	for (c = 0; c < COLORLABELS; c++) {
 		if (GPOINTER_TO_INT(type) == c) {
 			/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 			   rule name and should not be translated */
-			title = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
+			title = g_strdup_printf(_("Pick color for 'color %d' "), c+1);
 			rgbvalue = prefs_common.custom_colorlabel[c].color;
 			break;
 		}
 	}
 	/* other colors */
+	/* leave the extra space at the end of the titles, this is for translators' convenience */
 	if (c == COLORLABELS) {
 		if(g_ascii_strcasecmp(type, "LEVEL1") == 0) {
-			title = g_strdup(_("Pick color for quotation level 1"));
+			title = g_strdup(_("Pick color for 1st level text "));
 			rgbvalue = prefs_common.quote_level1_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL2") == 0) {
-			title = g_strdup(_("Pick color for quotation level 2"));
+			title = g_strdup(_("Pick color for 2nd level text "));
 			rgbvalue = prefs_common.quote_level2_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL3") == 0) {
-			title = g_strdup(_("Pick color for quotation level 3"));
+			title = g_strdup(_("Pick color for 3rd level text "));
 			rgbvalue = prefs_common.quote_level3_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL1BG") == 0) {
-			title = g_strdup(_("Pick color for quotation level 1 background"));
+			title = g_strdup(_("Pick color for 1st level text background "));
 			rgbvalue = prefs_common.quote_level1_bgcol;
 		} else if(g_ascii_strcasecmp(type, "LEVEL2BG") == 0) {
-			title = g_strdup(_("Pick color for quotation level 2 background"));
+			title = g_strdup(_("Pick color for 2nd level text background "));
 			rgbvalue = prefs_common.quote_level2_bgcol;
 		} else if(g_ascii_strcasecmp(type, "LEVEL3BG") == 0) {
-			title = g_strdup(_("Pick color for quotation level 3 background"));
+			title = g_strdup(_("Pick color for 3rd level text background "));
 			rgbvalue = prefs_common.quote_level3_bgcol;
 		} else if(g_ascii_strcasecmp(type, "URI") == 0) {
-			title = g_strdup(_("Pick color for URI"));
+			title = g_strdup(_("Pick color for links "));
 			rgbvalue = prefs_common.uri_col;
 		} else if(g_ascii_strcasecmp(type, "TGTFLD") == 0) {
 			title = g_strdup(_("Pick color for target folder"));
 			rgbvalue = prefs_common.tgt_folder_col;
 		} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
-			title = g_strdup(_("Pick color for signatures"));
+			title = g_strdup(_("Pick color for signatures "));
 			rgbvalue = prefs_common.signature_col;
 		} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
 			title = g_strdup(_("Pick color for folder"));
