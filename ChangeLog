@@ -1,3 +1,10 @@
+2006-04-28 [paul]	2.1.1cvs41
+
+	* src/matcher.c
+		fix returned quick search results when search
+		term contains an underscore.
+		Thanks to Colin
+
 2006-04-28 [paul]	2.1.1cvs40
 
 	* src/prefs_message.c

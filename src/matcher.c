@@ -390,7 +390,7 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 		res = matcherprop_string_match(prop, tmp);
 	}
 	
-	if (res == FALSE && strchr(prop->expr, '=')) {
+	if (res == FALSE && strchr(prop->expr, '=') || strchr(prop->expr, '_') ) {
 		/* if searching for something with an equal char, maybe 
 		 * we should try to match the non-decoded string. 
 		 * In case it was not qp-encoded. */

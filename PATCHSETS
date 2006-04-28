@@ -1462,3 +1462,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 manual/advanced.xml;  ) > 2.1.1cvs38.patchset
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/wizard.c;  ) > 2.1.1cvs39.patchset
 ( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/prefs_message.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/prefs_receive.c;  ) > 2.1.1cvs40.patchset
+( cvs diff -u -r 1.75.2.20 -r 1.75.2.21 src/matcher.c;  ) > 2.1.1cvs41.patchset
