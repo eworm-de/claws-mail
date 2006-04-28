@@ -90,7 +90,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_linespc_adj;
 	GtkWidget *spinbtn_linespc;
 
-	GtkWidget *frame_scr;
+	GtkWidget *frame;
 	GtkWidget *vbox_scr;
 	GtkWidget *chkbtn_smoothscroll;
 	GtkWidget *hbox_scr;
@@ -105,9 +105,12 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
+	PACK_FRAME(vbox1, frame, _("Headers"));
+	
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
@@ -133,7 +136,11 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(hbox1, chkbtn_disphdr,
 			  _("Display short headers on message view"));
 
+#if GTK_CHECK_VERSION(2, 6, 0)
+	button_edit_disphdr = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+#else
 	button_edit_disphdr = gtk_button_new_with_label (_(" Edit... "));
+#endif
 	gtk_widget_show (button_edit_disphdr);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_disphdr,
 			  FALSE, TRUE, 0);
@@ -143,14 +150,18 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
 
+	PACK_FRAME(vbox1, frame, _("HTML messages"));
+	
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+
 	PACK_CHECK_BUTTON(vbox2, chkbtn_html,
 			  _("Render HTML messages as text"));
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_html_plugin,
 			  _("Render HTML-only messages with plugin if possible"));
-
-	PACK_CHECK_BUTTON(vbox2, chkbtn_attach_desc,
-			  _("Show attachment descriptions (rather than names)"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -179,11 +190,11 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
 
-	PACK_FRAME(vbox1, frame_scr, _("Scroll"));
+	PACK_FRAME(vbox1, frame, _("Scroll"));
 
 	vbox_scr = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_scr);
-	gtk_container_add (GTK_CONTAINER (frame_scr), vbox_scr);
+	gtk_container_add (GTK_CONTAINER (frame), vbox_scr);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_scr), 8);
 
 	PACK_CHECK_BUTTON(vbox_scr, chkbtn_halfpage, _("Half page"));
@@ -217,6 +228,9 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_scr), label_scr, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
+
+	PACK_CHECK_BUTTON(vbox1, chkbtn_attach_desc,
+			  _("Show attachment descriptions (rather than names)"));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
 		prefs_common.display_header_pane);

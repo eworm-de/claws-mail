@@ -99,14 +99,13 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_scan_after_inc;
 
-	GtkWidget *frame_newmail;
+	GtkWidget *frame;
 	GtkWidget *hbox_newmail_notify;
 	GtkWidget *checkbtn_newmail_auto;
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
 
-	GtkWidget *table;
 	GtkWidget *label_recvdialog;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -118,11 +117,13 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
+	/* Use of external incorporation program */
+	PACK_FRAME(vbox1, frame, _("External incorporation program"));
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
 
-	/* Use of external incorporation program */
 	PACK_CHECK_BUTTON (vbox2, checkbtn_incext,
 			   _("Use external program for receiving mail"));
 
@@ -139,11 +140,13 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (entry_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
 	/* Auto-checking */
+	PACK_FRAME(vbox1, frame, _("Automatic checking"));	
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	
 	hbox_autochk = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autochk);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
@@ -173,30 +176,20 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
 			   _("Check for new mail on startup"));
-	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox,
-		 	   _("Go to inbox after receiving new mail"));
-	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
-			   _("Update all local folders after receiving mail"));
 
 	/* receive dialog */
-	table = gtk_table_new(1, 2, FALSE);
-	gtk_widget_show(table);
-	gtk_container_add (GTK_CONTAINER (vbox2), table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-
+	PACK_FRAME(vbox1, frame, _("Dialogs"));
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	
 	label_recvdialog = gtk_label_new (_("Show receive dialog"));
 	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
 	gtk_widget_show (label_recvdialog);
-	gtk_table_attach(GTK_TABLE(table), label_recvdialog, 0, 1, 0, 1,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 
 	optmenu_recvdialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_recvdialog);
-	gtk_table_attach(GTK_TABLE(table), optmenu_recvdialog, 1, 2, 0, 1,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
@@ -206,25 +199,32 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
 
+	hbox = gtk_hbox_new(FALSE, 20);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(hbox), label_recvdialog, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), optmenu_recvdialog, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
+	
+	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
+			   _("Close receive dialog when finished"));
+
 	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
 			   _("Don't popup error dialog on receive error"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
-			   _("Close receive dialog when finished"));
-	
-	PACK_FRAME(vbox1, frame_newmail, _("Run command when new mail "
+	PACK_FRAME(vbox1, frame, _("Run command when new mail "
 					   "arrives"));
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_newmail), vbox2);
+	gtk_container_add (GTK_CONTAINER (frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
 	hbox = gtk_hbox_new (TRUE, 8);
 	gtk_widget_show (hbox);
 	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_auto,
-			   _("after autochecking"));
+			   _("after automatic check"));
 	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_manu,
-			   _("after manual checking"));
+			   _("after manual check"));
 	gtk_box_pack_start (GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
 
 	hbox_newmail_notify = gtk_hbox_new (FALSE, 8);
@@ -250,6 +250,15 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 				 prefs_common.newmail_notify_auto || 
 				 prefs_common.newmail_notify_manu);
 
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox,
+		 	   _("Go to inbox after receiving new mail"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
+			   _("Update all local folders after receiving mail"));
+			   
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_incext),
 		prefs_common.use_extinc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_no_recv_err_panel),
