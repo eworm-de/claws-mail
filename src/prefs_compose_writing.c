@@ -68,7 +68,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *checkbtn_autoextedit;
 
-	GtkWidget *frame_autosel;
+	GtkWidget *frame;
 	GtkWidget *hbox_autosel;
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
@@ -94,36 +94,43 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-        /* Account autoselection */
-	PACK_FRAME(vbox1, frame_autosel, _("Automatic account selection"));
+	/* Account autoselection */
+	PACK_FRAME(vbox1, frame, _("Automatic account selection"));
 
-	hbox_autosel = gtk_hbox_new (FALSE, VSPACING_NARROW);
+	hbox_autosel = gtk_hbox_new (TRUE, VSPACING_NARROW);
 	gtk_widget_show (hbox_autosel);
-	gtk_container_add (GTK_CONTAINER (frame_autosel), hbox_autosel);
+	gtk_container_add (GTK_CONTAINER (frame), hbox_autosel);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox_autosel), 8);
 
-        PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reply_account_autosel,
+	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reply_account_autosel,
 			   _("when replying"));
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_forward_account_autosel,
 			   _("when forwarding"));
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
 			   _("when re-editing"));
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	PACK_FRAME(vbox1, frame, _("Forwarding"));
+	
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_default_reply_list,
-			   _("Reply button invokes mailing list reply"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
-			   _("Automatically launch the external editor"));
+	gtk_container_add (GTK_CONTAINER (frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);	
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
+
+	PACK_FRAME(vbox1, frame, _("Editing"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
+			   _("Automatically launch the external editor"));
 
 	hbox_autosave = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autosave);
@@ -159,13 +166,16 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
+	
+	PACK_CHECK_BUTTON (vbox1, checkbtn_default_reply_list,
+			   _("Reply button invokes mailing list reply"));
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
-        prefs_writing->checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
+	prefs_writing->checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
 	prefs_writing->checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
 	prefs_writing->checkbtn_reedit_account_autosel  = checkbtn_reedit_account_autosel;
 

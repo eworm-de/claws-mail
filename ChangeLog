@@ -1,3 +1,9 @@
+2006-04-29 [colin]	2.1.1cvs42
+
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+		Cleanups. Patch by Pawel
+
 2006-04-28 [paul]	2.1.1cvs41
 
 	* src/matcher.c
