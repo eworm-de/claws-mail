@@ -1,3 +1,9 @@
+2006-05-01 [colin]	2.1.1cvs44
+
+	* src/action.c
+		Don't reload messageview when result of
+		action is piped.
+
 2006-04-29 [colin]	2.1.1cvs43
 
 	* src/prefs_receive.c
