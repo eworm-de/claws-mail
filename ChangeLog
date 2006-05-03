@@ -1,3 +1,11 @@
+2006-05-03 [colin]	2.1.1cvs45
+
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+		Fix preventing renaming with namespace 
+		separator.
+
 2006-05-01 [colin]	2.1.1cvs44
 
 	* src/action.c

@@ -121,7 +121,8 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	gchar *new_folder;
 	gchar *name;
 	gchar *p;
-
+	gchar separator = '/';
+	
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
@@ -138,10 +139,18 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
-	p = strchr(new_folder, G_DIR_SEPARATOR);
+	separator = imap_get_path_separator_for_item(item);
+
+	p = strchr(new_folder, separator);
 	if (p && *(p + 1) != '\0') {
 		alertpanel_error(_("'%c' can't be included in folder name."),
-				 G_DIR_SEPARATOR);
+				 separator);
+		return;
+	}
+	p = strchr(new_folder, '/');
+	if (p && *(p + 1) != '\0') {
+		alertpanel_error(_("'%c' can't be included in folder name."),
+				 '/');
 		return;
 	}
 
@@ -173,6 +182,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	gchar *old_id;
 	gchar *new_id;
 	gchar *base;
+	gchar separator = '/';
 
 	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
@@ -189,14 +199,18 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
-/*
-	TODO: check new name for IMAP namespace separator
-	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
+	separator = imap_get_path_separator_for_item(item);
+	if (strchr(new_folder, separator) != NULL) {
 		alertpanel_error(_("`%c' can't be included in folder name."),
-				 G_DIR_SEPARATOR);
+				 separator);
 		return;
 	}
-*/
+	if (strchr(new_folder, '/') != NULL) {
+		alertpanel_error(_("`%c' can't be included in folder name."),
+				 '/');
+		return;
+	}
+
 	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
 		name = trim_string(new_folder, 32);
 		alertpanel_error(_("The folder '%s' already exists."), name);

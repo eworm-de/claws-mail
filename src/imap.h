@@ -33,5 +33,6 @@ FolderClass *imap_get_class		(void);
 guint imap_folder_get_refcnt(Folder *folder);
 void imap_folder_ref(Folder *folder);
 void imap_folder_unref(Folder *folder);
+gchar imap_get_path_separator_for_item	(FolderItem *item);
 
 #endif /* __IMAP_H__ */

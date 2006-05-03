@@ -2248,6 +2248,24 @@ static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
 	return NULL;
 }
 
+gchar imap_get_path_separator_for_item(FolderItem *item)
+{
+	Folder *folder = NULL;
+	IMAPFolder *imap_folder = NULL;
+	if (!item)
+		return '/';
+	folder = item->folder;
+	
+	if (!folder)
+		return '/';
+	
+	imap_folder = IMAP_FOLDER(folder);
+	
+	if (!imap_folder)
+		return '/';
+	
+	return imap_get_path_separator(imap_folder, item->path);
+}
 
 static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 {
@@ -4257,6 +4275,11 @@ static gint 	imap_rename_folder	(Folder 	*folder,
 					 const gchar 	*name)
 {
 	return -1;
+}
+
+gchar imap_get_path_separator_for_item(FolderItem *item)
+{
+	return '/';
 }
 
 FolderClass *imap_get_class(void)
