@@ -11,7 +11,7 @@ MINOR_VERSION=1
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=48
+EXTRA_VERSION=49
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -847,6 +847,12 @@ manual/fr/dist/pdf/Makefile
 manual/fr/dist/ps/Makefile
 manual/fr/dist/html/Makefile
 manual/fr/dist/txt/Makefile
+manual/pl/Makefile
+manual/pl/dist/Makefile
+manual/pl/dist/pdf/Makefile
+manual/pl/dist/ps/Makefile
+manual/pl/dist/html/Makefile
+manual/pl/dist/txt/Makefile
 sylpheed-claws.pc
 ])
 

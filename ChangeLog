@@ -1,3 +1,33 @@
+2006-05-05 [colin]	2.1.1cvs49
+
+	* manual/Makefile.am
+	* manual/pl/Makefile.am
+	* manual/pl/account.xml
+	* manual/pl/ack.xml
+	* manual/pl/addrbook.xml
+	* manual/pl/advanced.xml
+	* manual/pl/faq.xml
+	* manual/pl/glossary.xml
+	* manual/pl/gpl.xml
+	* manual/pl/handling.xml
+	* manual/pl/intro.xml
+	* manual/pl/keyboard.xml
+	* manual/pl/plugins.xml
+	* manual/pl/starting.xml
+	* manual/pl/sylpheed-claws-manual.xml
+	* manual/pl/dist/.cvsignore
+	* manual/pl/dist/Makefile.am
+	* manual/pl/dist/html/.cvsignore
+	* manual/pl/dist/html/Makefile.am
+	* manual/pl/dist/pdf/.cvsignore
+	* manual/pl/dist/pdf/Makefile.am
+	* manual/pl/dist/ps/.cvsignore
+	* manual/pl/dist/ps/Makefile.am
+	* manual/pl/dist/txt/.cvsignore
+	* manual/pl/dist/txt/Makefile.am
+		Add the polish translation of the manual,
+		Authored by Pawel Pekala.
+
 2006-05-05 [cleroy]	2.1.1cvs48
 
 	* src/main.c
