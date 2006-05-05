@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
 	FolderView *folderview;
 	GdkPixbuf *icon;
 	gboolean crash_file_present = FALSE;
-
+	gint num_folder_class = 0;
 	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
 	}
@@ -529,7 +529,14 @@ int main(int argc, char *argv[])
 
 	prefs_toolbar_init();
 
+	num_folder_class = g_list_length(folder_get_list());
+
 	plugin_load_all("GTK2");
+
+	if (g_list_length(folder_get_list()) != num_folder_class) {
+		debug_print("new folders loaded, reloading processing rules\n");
+		prefs_matcher_read_config();
+	}
 	
 	if (plugin_get_unloaded_list() != NULL) {
 		alertpanel_warning(_("Some plugin(s) failed to load. "

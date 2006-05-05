@@ -1,3 +1,9 @@
+2006-05-05 [cleroy]	2.1.1cvs48
+
+	* src/main.c
+		Re-read matcherrc after loading plugins 
+		if some of them add folders.
+
 2006-05-03 [colin]	2.1.1cvs47
 
 	* src/imap.c

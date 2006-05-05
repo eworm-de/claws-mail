@@ -1469,3 +1469,4 @@
 ( cvs diff -u -r 1.179.2.110 -r 1.179.2.111 src/imap.c;  cvs diff -u -r 1.34.2.5 -r 1.34.2.6 src/imap.h;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/imap_gtk.c;  ) > 2.1.1cvs45.patchset
 ( cvs diff -u -r 1.179.2.111 -r 1.179.2.112 src/imap.c;  ) > 2.1.1cvs46.patchset
 ( cvs diff -u -r 1.179.2.112 -r 1.179.2.113 src/imap.c;  ) > 2.1.1cvs47.patchset
+( cvs diff -u -r 1.115.2.82 -r 1.115.2.83 src/main.c;  ) > 2.1.1cvs48.patchset
