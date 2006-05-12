@@ -126,6 +126,11 @@ static gchar   *mh_item_get_path		(Folder *folder,
 
 static gboolean mh_scan_required	(Folder		*folder,
 					 FolderItem	*item);
+static int mh_item_close		(Folder		*folder,
+					 FolderItem	*item);
+static gint mh_get_flags		(Folder *folder, FolderItem *item,
+                           		 MsgInfoList *msginfo_list, GRelation *msgflags);
+static void mh_write_sequences		(FolderItem 	*item);
 
 static FolderClass mh_class;
 
@@ -151,7 +156,9 @@ FolderClass *mh_get_class(void)
 		mh_class.remove_folder = mh_remove_folder;
 		mh_class.get_num_list = mh_get_num_list;
 		mh_class.scan_required = mh_scan_required;
-		
+		mh_class.close = mh_item_close;
+		mh_class.get_flags = mh_get_flags;
+
 		/* Message functions */
 		mh_class.get_msginfo = mh_get_msginfo;
 		mh_class.fetch_msg = mh_fetch_msg;
@@ -421,7 +428,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		g_free(destfile);
 		dest->last_num++;
 	}
-
+	mh_write_sequences(dest);
 	return dest->last_num;
 }
 
@@ -527,6 +534,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	dest_need_scan = mh_scan_required(dest->folder, dest);
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
+	else
+		mh_write_sequences(dest);
 
 	return dest->last_num;
 }
@@ -567,6 +576,8 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 	g_return_val_if_fail(path != NULL, -1);
 	val = remove_all_numbered_files(path);
 	g_free(path);
+
+	mh_write_sequences(item);
 
 	return val;
 }
@@ -997,22 +1008,6 @@ static void mh_scan_tree_recursive(FolderItem *item)
 #endif
 
 	item->mtime = time(NULL);
-
-/*
-	if (item->path) {
-		gint new, unread, total, min, max;
-
-		procmsg_get_mark_sum(item->path, &new, &unread, &total,
-				     &min, &max, 0);
-		if (n_msg > total) {
-			new += n_msg - total;
-			unread += n_msg - total;
-		}
-		item->new = new;
-		item->unread = unread;
-		item->total = n_msg;
-	}
-*/
 }
 
 static gboolean mh_rename_folder_func(GNode *node, gpointer data)
@@ -1065,4 +1060,216 @@ static gchar *mh_filename_to_utf8(const gchar *path)
 	}
 
 	return utf8path;
+}
+
+static gint sort_cache_list_by_msgnum(gconstpointer a, gconstpointer b)
+{
+	MsgInfo *msginfo_a = (MsgInfo *) a;
+	MsgInfo *msginfo_b = (MsgInfo *) b;
+
+	return (msginfo_a->msgnum - msginfo_b->msgnum);
+}
+
+static gchar *get_unseen_seq_name(void)
+{
+	static gchar *seq_name = NULL;
+	if (!seq_name) {
+		gchar buf[BUFFSIZE];
+		gchar *tmp;
+		gchar *profile_path = g_strconcat(
+			g_get_home_dir(), G_DIR_SEPARATOR_S,
+			".mh_profile", NULL);
+		FILE *fp = g_fopen(profile_path, "r");
+		if (fp) {
+			while (fgets(buf, sizeof(buf), fp) != NULL) {
+				if (!strncmp(buf, "Unseen-Sequence:", strlen("Unseen-Sequence:"))) {
+					gchar *seq_tmp = buf+strlen("Unseen-Sequence:");
+					while (*seq_tmp == ' ')
+						seq_tmp++;
+					seq_name = g_strdup(seq_tmp);
+					seq_name = strretchomp(seq_name);
+					break;
+				}
+			}
+			fclose(fp);
+		}
+		if (!seq_name)
+			seq_name = g_strdup("unseen");
+		tmp = g_strdup_printf("%s:", seq_name);
+		g_free(seq_name);
+		seq_name = tmp;
+	}
+	return seq_name;	
+}
+
+static gint mh_get_flags(Folder *folder, FolderItem *item,
+                           MsgInfoList *msginfo_list, GRelation *msgflags)
+{
+	gchar *mh_sequences_filename;
+	FILE *mh_sequences_file;
+	gchar buf[BUFFSIZE];
+	gchar *unseen_list = NULL;
+	gchar *path;
+	MsgInfoList *mcur = NULL;
+/*
+	GTimer *timer = g_timer_new();
+	g_timer_start(timer);
+*/
+	if (!item)
+		return 0;
+	path = folder_item_get_path(item);
+
+	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+					    ".mh_sequences", NULL);
+	g_free(path);
+	if ((mh_sequences_file = g_fopen(mh_sequences_filename, "r+b")) != NULL) {
+		while (fgets(buf, sizeof(buf), mh_sequences_file) != NULL) {
+			if (!strncmp(buf, get_unseen_seq_name(), strlen(get_unseen_seq_name()))) {
+				unseen_list = g_strdup(buf+strlen(get_unseen_seq_name()));
+				break;
+			}
+		}
+		fclose(mh_sequences_file);
+	}
+	if (unseen_list) {
+		gchar *cur = NULL;
+		gchar *token = NULL, *next = NULL, *boundary = NULL;
+		gint num = 0;
+		GHashTable *unseen_table = g_hash_table_new(g_direct_hash, g_direct_equal);
+
+		cur = unseen_list = strretchomp(unseen_list);
+		debug_print("found unseen list in .mh_sequences: %s\n", unseen_list);
+next_token:
+		while (*cur && *cur == ' ')
+			cur++;
+		
+		if ((next = strchr(cur, ' ')) != NULL) {
+			token = cur;
+			cur = next+1;
+			*next = '\0';
+		} else {
+			token = cur;
+			cur = NULL;
+		}
+		
+		if ((boundary = strchr(token, '-')) != NULL) {
+			gchar *start, *end;
+			int i;
+			start = token;
+			end = boundary+1;
+			*boundary='\0';
+			for (i = atoi(start); i <= atoi(end); i++) {
+				g_hash_table_insert(unseen_table, GINT_TO_POINTER(i), GINT_TO_POINTER(1));
+			}
+		} else if ((num = atoi(token)) > 0) {
+			g_hash_table_insert(unseen_table, GINT_TO_POINTER(num), GINT_TO_POINTER(1));
+		}
+		
+		if (cur)
+			goto next_token;
+		for (mcur = msginfo_list; mcur; mcur = mcur->next) {
+			MsgInfo *msginfo = (MsgInfo *)mcur->data;
+			MsgPermFlags flags = msginfo->flags.perm_flags;
+			if (g_hash_table_lookup(unseen_table, GINT_TO_POINTER(msginfo->msgnum))) {
+				flags |= MSG_UNREAD;
+			} else if (!(flags & MSG_NEW)) { /* don't mark new msgs as read */
+				flags &= ~(MSG_UNREAD);
+			}
+			if (flags != msginfo->flags.perm_flags)
+				g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
+		}
+		g_hash_table_destroy(unseen_table);
+		g_free(unseen_list);
+	}
+/*
+	g_timer_stop(timer);
+	printf("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
+	g_timer_destroy(timer);
+*/
+	return 0;
+}
+
+static void mh_write_sequences(FolderItem *item)
+{
+	gchar *mh_sequences_old, *mh_sequences_new;
+	FILE *mh_sequences_old_fp, *mh_sequences_new_fp;
+	gchar buf[BUFFSIZE];
+	gchar *path = NULL;
+/*
+	GTimer *timer = g_timer_new();
+	g_timer_start(timer);
+*/
+	if (!item)
+		return;
+	
+	path = folder_item_get_path(item);
+
+	mh_sequences_old = g_strconcat(path, G_DIR_SEPARATOR_S,
+					    ".mh_sequences", NULL);
+	mh_sequences_new = g_strconcat(path, G_DIR_SEPARATOR_S,
+					    ".mh_sequences.new", NULL);
+	if ((mh_sequences_new_fp = g_fopen(mh_sequences_new, "w+b")) != NULL) {
+		GSList *msglist = folder_item_get_msg_list(item);
+		GSList *cur;
+		MsgInfo *info = NULL;
+		gint start = -1, end = -1;
+		gchar *sequence = g_strdup("");
+		msglist = g_slist_sort(msglist, sort_cache_list_by_msgnum);
+		cur = msglist;
+		
+		/* write the unseen sequence */
+		do {
+			info = (MsgInfo *)(cur ? cur->data:NULL);
+			if (info && (MSG_IS_UNREAD(info->flags) || MSG_IS_NEW(info->flags))) {
+				if (start < 0)
+					start = end = info->msgnum;
+				else
+					end = info->msgnum;
+			} else {
+				if (start > 0 && end > 0) {
+					gchar *tmp = sequence;
+					if (start != end)
+						sequence = g_strdup_printf("%s %d-%d ", tmp, start, end);
+					else
+						sequence = g_strdup_printf("%s %d ", tmp, start);
+					g_free(tmp);
+					start = end = -1;
+				}
+			}
+			cur = cur ? cur->next:NULL;
+		} while (cur || (start > 0 && end > 0));
+		if (sequence && strlen(sequence)) {
+			fprintf(mh_sequences_new_fp, "%s%s\n", 
+					get_unseen_seq_name(), sequence);
+			debug_print("wrote unseen sequence: '%s%s'\n", 
+					get_unseen_seq_name(), sequence);
+		}
+		/* rewrite the rest of the file */
+		if ((mh_sequences_old_fp = g_fopen(mh_sequences_old, "r+b")) != NULL) {
+			while (fgets(buf, sizeof(buf), mh_sequences_old_fp) != NULL) {
+				if (strncmp(buf, get_unseen_seq_name(), strlen(get_unseen_seq_name())))
+					fprintf(mh_sequences_new_fp, "%s", buf);
+			}
+			fclose(mh_sequences_old_fp);
+		}
+		
+		fclose(mh_sequences_new_fp);
+		g_rename(mh_sequences_new, mh_sequences_old);
+		g_free(sequence);
+		procmsg_msg_list_free(msglist);
+	}
+	g_free(mh_sequences_old);
+	g_free(mh_sequences_new);
+	g_free(path);
+/*
+	g_timer_stop(timer);
+	printf("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
+	g_timer_destroy(timer);
+*/
+}
+
+static int mh_item_close(Folder *folder, FolderItem *item)
+{
+	mh_write_sequences(item);
+	return 0;
 }

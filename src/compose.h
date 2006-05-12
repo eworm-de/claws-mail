@@ -98,23 +98,7 @@ struct _Compose
 	/* Header */
 	GtkWidget *table_vbox;
 	GtkWidget *table;
-/*
-	GtkWidget *to_hbox;
-	GtkWidget *to_entry;
-	GtkWidget *newsgroups_hbox;
-	GtkWidget *newsgroups_entry;
-*/
 	GtkWidget *subject_entry;
-/*
-	GtkWidget *cc_hbox;
-	GtkWidget *cc_entry;
-	GtkWidget *bcc_hbox;
-	GtkWidget *bcc_entry;
-	GtkWidget *reply_hbox;
-	GtkWidget *reply_entry;
-	GtkWidget *followup_hbox;
-	GtkWidget *followup_entry;
-*/
 	GtkWidget *paned;
 
 	/* Attachments */
@@ -131,6 +115,8 @@ struct _Compose
 	GtkWidget *ruler;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
+	GtkWidget *from_name;
+	GtkTooltips *tooltips;
 
 	GtkWidget *focused_editable;
 

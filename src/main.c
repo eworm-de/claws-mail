@@ -917,7 +917,7 @@ gboolean clean_quit(gpointer data)
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
-
+	
 	if (compose_get_compose_list()) {
 		gint val = alertpanel(_("Really quit?"),
 			       _("Composing message exists."),
@@ -945,7 +945,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	}
 
 	sock_cleanup();
-
+	if (folderview_get_selected_item(mainwin->folderview))
+		folder_item_close(folderview_get_selected_item(mainwin->folderview));
 	gtk_main_quit();
 }
 
