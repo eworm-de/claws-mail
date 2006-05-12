@@ -1,3 +1,9 @@
+2006-05-12 [colin]	2.2.0cvs8
+
+	* src/gtk/quicksearch.c
+		Add "k" as shortcut for "colorlabel". Patch
+		by ath42@users.sf.net.
+
 2006-05-12 [paul]	2.2.0cvs7
 
 	* src/prefs_common.h
