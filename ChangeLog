@@ -1,3 +1,11 @@
+2006-05-12 [paul]	2.2.0cvs7
+
+	* src/prefs_common.h
+	* src/prefs_summaries.c
+	* src/summaryview.c
+		when entering a folder also allow
+		going directly to first Marked message
+
 2006-05-12 [paul]	2.2.0cvs6
 
 	* src/summaryview.c

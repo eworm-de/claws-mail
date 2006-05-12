@@ -916,11 +916,19 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			(GtkAttachOptions) (0), 0, 0);
 
 	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Do nothing"), 0);
-	MENUITEM_ADD (menu, menuitem, _("Select first unread (or new) message"),
-		      SELECTONENTRY_UNREAD);
-	MENUITEM_ADD (menu, menuitem, _("Select first new (or unread) message"),
-		      SELECTONENTRY_NEW);
+	MENUITEM_ADD (menu, menuitem, _("Do nothing"), SELECTONENTRY_NOTHING);
+	MENUITEM_ADD (menu, menuitem, _("Select first unread (or new or marked) message"),
+		      SELECTONENTRY_UNM);
+	MENUITEM_ADD (menu, menuitem, _("Select first unread (or marked or new) message"),
+		      SELECTONENTRY_UMN);
+	MENUITEM_ADD (menu, menuitem, _("Select first new (or unread or marked) message"),
+		      SELECTONENTRY_NUM);
+	MENUITEM_ADD (menu, menuitem, _("Select first new (or marked or unread) message"),
+		      SELECTONENTRY_NMU);
+	MENUITEM_ADD (menu, menuitem, _("Select first marked (or new or unread) message"),
+		      SELECTONENTRY_MNU);
+	MENUITEM_ADD (menu, menuitem, _("Select first marked (or unread or new) message"),
+		      SELECTONENTRY_MUN);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
 

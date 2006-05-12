@@ -1060,16 +1060,62 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 	} else {
  		switch (prefs_common.select_on_entry) {
- 			case SELECTONENTRY_NEW:
+ 			case SELECTONENTRY_MNU:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_NEW, FALSE);
 				if (node == NULL)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_UNREAD, FALSE);
 				break;
- 			case SELECTONENTRY_UNREAD:
+ 			case SELECTONENTRY_MUN:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+				break;
+ 			case SELECTONENTRY_NMU:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				break;
+ 			case SELECTONENTRY_NUM:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
+				break;
+ 			case SELECTONENTRY_UNM:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_UNREAD, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_NEW, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
+				break;
+ 			case SELECTONENTRY_UMN:
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				if (node == NULL)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_MARKED, FALSE);
 				if (node == NULL)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_NEW, FALSE);

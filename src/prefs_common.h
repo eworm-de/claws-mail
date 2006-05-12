@@ -57,8 +57,14 @@ typedef enum {
 
 typedef enum
 {
-	SELECTONENTRY_UNREAD = 1 << 0,
-	SELECTONENTRY_NEW    = 1 << 1
+/* U = unread, N = new, M = marked */
+	SELECTONENTRY_NOTHING,
+	SELECTONENTRY_UNM,
+	SELECTONENTRY_UMN,
+	SELECTONENTRY_NUM,
+	SELECTONENTRY_NMU,
+	SELECTONENTRY_MNU,
+	SELECTONENTRY_MUN
 } SelectOnEntry;
 
 typedef enum
