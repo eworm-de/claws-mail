@@ -1,3 +1,18 @@
+2006-05-12 [colin]	2.1.1cvs50
+
+	* po/cs.po
+	* po/de.po
+	* po/en_GB.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Tim, Stephan Sachse, me, Flammie Pirinen,
+                Fabien Vantard, Frederico Goncalves Guimaraes,
+                Aleksandar Urosevic, Ricardo Mones, and Ralgh Young
+
 2006-05-05 [colin]	2.1.1cvs49
 
 	* manual/Makefile.am
