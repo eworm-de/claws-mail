@@ -402,6 +402,8 @@ static void account_selector_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
 static void account_receive_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
+static void account_compose_menu_cb	 (GtkMenuItem	*menuitem,
+					  gpointer	 data);
 
 static void prefs_open_cb	(GtkMenuItem	*menuitem,
 				 gpointer 	 data);
@@ -443,6 +445,17 @@ void main_window_reply_cb			(MainWindow 	*mainwin,
 						 GtkWidget 	*widget);
 gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 						 gpointer 	 userdata);
+
+static gint mailing_list_create_submenu(GtkItemFactory *ifactory,
+				       MsgInfo *msginfo);
+
+static gint mailing_list_populate_submenu(GtkWidget *menu, const gchar * list_header);
+	
+static void get_url_part(const gchar **buf, gchar *url_decoded, gint maxlen);
+
+static void mailing_list_compose(GtkWidget *w, gpointer *data);
+ 
+static void mailing_list_open_uri(GtkWidget *w, gpointer *data);
 #define  SEPARATE_ACTION 500 
 static void mainwindow_quicksearch		(MainWindow 	*mainwin, 
 						 guint 		 action, 
@@ -708,6 +721,15 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Forward"),		"<control><alt>F", main_window_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
 	{N_("/_Message/For_ward as attachment"),	NULL, main_window_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/Redirect"),		NULL, main_window_reply_cb, COMPOSE_REDIRECT, NULL},
+
+	{N_("/_Message/Mailing-_List"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Mailing-_List/Post"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Mailing-_List/Help"),		NULL, NULL, 0, "<Branch>"},
+ 	{N_("/_Message/Mailing-_List/Subscribe"),	NULL, NULL, 0, "<Branch>"},
+ 	{N_("/_Message/Mailing-_List/Unsubscribe"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Mailing-_List/View archive"),	NULL, NULL, 0, "<Branch>"},
+ 	{N_("/_Message/Mailing-_List/Contact owner"),	NULL, NULL, 0, "<Branch>"},
+ 	
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
@@ -1052,6 +1074,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	ifactory = gtk_item_factory_from_widget(menubar);
 
+/*	gtk_widget_show(gtk_item_factory_get_item(ifactory,"/Message/Mailing-List"));
+	main_create_mailing_list_menu (mainwin, NULL); */
+
 	menu_set_sensitive(ifactory, "/Help/Manual", manual_available(MANUAL_MANUAL_LOCAL));
 
 	if (prefs_common.toolbar_detachable) {
@@ -1259,6 +1284,8 @@ MainWindow *main_window_create(SeparateType type)
 
 	/* create actions menu */
 	main_window_update_actions_menu(mainwin);
+
+	main_create_mailing_list_menu (mainwin, NULL);
 
 	/* attach accel groups to main window */
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)			\
@@ -1596,6 +1623,42 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 	}
 }
 
+static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
+						       GList *account_list)
+{
+	GList *cur_ac, *cur_item;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+	GtkWidget *menu = NULL;
+
+	if (mainwin->toolbar->compose_mail_btn == NULL
+	||  mainwin->toolbar->compose_combo == NULL) /* button doesn't exist */
+		return;
+
+	menu = mainwin->toolbar->compose_combo->menu;
+
+	/* destroy all previous menu item */
+	cur_item = GTK_MENU_SHELL(menu)->children;
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_compose_menu_cb),
+				 ac_prefs);
+	}
+}
+
 void main_window_set_account_menu(GList *account_list)
 {
 	GList *cur;
@@ -1606,6 +1669,7 @@ void main_window_set_account_menu(GList *account_list)
 		main_window_set_account_selector_menu(mainwin, account_list);
 		main_window_set_account_receive_menu(mainwin, account_list);
 		main_window_set_toolbar_combo_receive_menu(mainwin, account_list);
+		main_window_set_toolbar_combo_compose_menu(mainwin, account_list);
 	}
 }
 
@@ -1617,6 +1681,7 @@ void main_window_set_account_menu_only_toolbar(GList *account_list)
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
 		main_window_set_toolbar_combo_receive_menu(mainwin, account_list);
+		main_window_set_toolbar_combo_compose_menu(mainwin, account_list);
 	}
 }
 
@@ -2187,6 +2252,178 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	main_window_menu_callback_unblock(mainwin);
 }
 
+void main_create_mailing_list_menu (MainWindow *mainwin, MsgInfo *msginfo)
+{
+	GtkItemFactory *ifactory;
+	gint is_menu = 0;
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+	
+	if (msginfo) 
+		is_menu = mailing_list_create_submenu (ifactory, msginfo);
+	if (is_menu)
+		gtk_widget_set_sensitive (gtk_item_factory_get_item
+				(ifactory,"/Message/Mailing-List"), TRUE);
+	else
+		gtk_widget_set_sensitive (gtk_item_factory_get_item
+				(ifactory,"/Message/Mailing-List"), FALSE);
+}
+
+static gint mailing_list_create_submenu (GtkItemFactory *ifactory, MsgInfo *msginfo)
+{
+	gint menu_nb = 0;
+	GtkWidget *menuitem;
+
+	/* Mailing list post */
+	if (msginfo && !strcmp2 (msginfo->list_post, "NO")) {
+		msginfo->list_post = g_strdup (_("No posting allowed"));
+ 	}
+ 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Post");
+ 		
+ 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_post);
+ 
+ 	/* Mailing list help */
+	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Help");
+	
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_help);
+
+	/* Mailing list subscribe */
+	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Subscribe");
+	
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_subscribe);
+		
+	/* Mailing list unsubscribe */
+	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Unsubscribe");
+	
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_unsubscribe);
+	
+	/* Mailing list view archive */
+	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/View archive");
+	
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_archive);
+	
+	/* Mailing list contact owner */
+	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Contact owner");
+	
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_owner);
+	
+	return menu_nb;
+}
+
+static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * list_header)
+{
+	GtkWidget *item, *menu;
+	const gchar *url_pt ;
+	gchar url_decoded[BUFFSIZE];
+	GList *amenu, *alist;
+	gint menu_nb = 0;
+	
+	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
+	
+	/* First delete old submenu */
+	/* FIXME: we can optimize this, and only change/add/delete necessary items */
+	for (amenu = (GTK_MENU_SHELL(menu)->children) ; amenu; ) {
+		alist = amenu->next;
+		item = GTK_WIDGET (amenu->data);
+		gtk_widget_destroy (item);
+		amenu = alist;
+	}
+	if (list_header) {
+		for (url_pt = list_header; url_pt && *url_pt;) {
+			get_url_part (&url_pt, url_decoded, BUFFSIZE);
+			item = NULL;
+			if (!g_strncasecmp(url_decoded, "mailto:", 7)) {
+ 				item = gtk_menu_item_new_with_label ((url_decoded));
+				gtk_signal_connect (GTK_OBJECT(item), "activate",
+						GTK_SIGNAL_FUNC(mailing_list_compose), NULL);
+			}
+ 			else if (!g_strncasecmp (url_decoded, "http:", 5) ||
+				 !g_strncasecmp (url_decoded, "https:",6)) {
+
+				item = gtk_menu_item_new_with_label ((url_decoded));
+				gtk_signal_connect (GTK_OBJECT(item), "activate",
+						GTK_SIGNAL_FUNC(mailing_list_open_uri), NULL);
+			} 
+			if (item) {
+				gtk_menu_append (GTK_MENU(menu), item);
+				gtk_widget_show (item);
+				menu_nb++;
+			}
+		}
+	}
+	if (menu_nb)
+		gtk_widget_set_sensitive (menuitem, TRUE);
+	else
+		gtk_widget_set_sensitive (menuitem, FALSE);
+		
+
+	return menu_nb;
+}
+
+static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
+{
+	gchar tmp[BUFFSIZE];
+	const gchar *buf;
+	gint i = 0;
+	buf = *buffer;
+	
+	if (buf == 0x00) {
+		url_decoded = 0x00;
+		return;
+	}
+	/* Ignore spaces, comments  and tabs () */
+	for (;*buf == ' ' || *buf == '(' || *buf == '\t'; buf++)
+		if (*buf == '(')
+			for (;*buf != ')' && *buf != 0x00; buf++);
+	
+	/* First non space and non comment must be a < */
+	if (*buf =='<' ) {
+		buf++;
+		for (i = 0; *buf != '>' && *buf != 0x00 && i<maxlen; tmp[i++] = *(buf++));
+		buf++;
+	}
+	else 
+		/* else, we finish parsing and ignore everything */
+		for (;buf != 0x00; buf++);
+	
+	tmp[i]       = 0x00;
+	*url_decoded = 0x00;
+	
+	if (i == maxlen) {
+		for (;*buf != 0x00; buf++);
+		return;
+	}
+	decode_uri (url_decoded, (const gchar *)tmp);
+
+	/* Prepare the work for the next url in the list */
+	/* after the closing bracket >, ignore space, comments and tabs */
+	for (;*buf == ' ' || *buf == '(' || *buf == '\t'; buf++)
+		if (*buf == '(')
+			for (;*buf != ')' && *buf != 0x00; buf++);
+	/* now first non space, non comment must be a comma */
+	if (*buf != ',')
+		for (;*buf != 0x00; buf++);
+	else
+		buf++;
+	*buffer = buf;
+}
+	
+static void mailing_list_compose (GtkWidget *w, gpointer *data)
+{
+	gchar *mailto;
+
+	gtk_label_get (GTK_LABEL (GTK_BIN (w)->child), (gchar **) &mailto);
+	compose_new(NULL, mailto+7, NULL);
+}
+ 
+ static void mailing_list_open_uri (GtkWidget *w, gpointer *data)
+{
+ 
+ 	gchar *mailto;
+ 
+ 	gtk_label_get (GTK_LABEL (GTK_BIN (w)->child), (gchar **) &mailto);
+ 	open_uri (mailto, prefs_common.uri_cmd);
+} 
+	
 void main_window_popup(MainWindow *mainwin)
 {
 	gtkut_window_popup(mainwin->window);
@@ -3375,6 +3612,15 @@ static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)
 	PrefsAccount *account = (PrefsAccount *)data;
 
 	inc_account_mail(mainwin, account);
+}
+
+static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)mainwin_list->data;
+	PrefsAccount *account = (PrefsAccount *)data;
+	FolderItem *item = mainwin->summaryview->folder_item;	
+
+	compose_new_with_folderitem(account, item);
 }
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)

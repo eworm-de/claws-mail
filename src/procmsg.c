@@ -1209,6 +1209,18 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 
 	/* CLAWS: make sure we add the missing members; see: 
 	 * procheader.c::procheader_get_headernames() */
+	if (!msginfo->list_post)
+		msginfo->list_post = g_strdup(full_msginfo->list_post);
+	if (!msginfo->list_subscribe)
+		msginfo->list_subscribe = g_strdup(full_msginfo->list_subscribe);
+	if (!msginfo->list_unsubscribe)
+		msginfo->list_unsubscribe = g_strdup(full_msginfo->list_unsubscribe);
+	if (!msginfo->list_help)
+		msginfo->list_help = g_strdup(full_msginfo->list_help);
+	if (!msginfo->list_archive)
+		msginfo->list_archive= g_strdup(full_msginfo->list_archive);
+	if (!msginfo->list_owner)
+		msginfo->list_owner = g_strdup(full_msginfo->list_owner);
 	if (!msginfo->xface)
 		msginfo->xface = g_strdup(full_msginfo->xface);
 	if (!msginfo->face)
@@ -1265,6 +1277,13 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->msgid);
 	g_free(msginfo->inreplyto);
 	g_free(msginfo->xref);
+
+	g_free(msginfo->list_post);
+	g_free(msginfo->list_subscribe);
+	g_free(msginfo->list_unsubscribe);
+	g_free(msginfo->list_help);
+	g_free(msginfo->list_archive);
+	g_free(msginfo->list_owner);
 
 	g_free(msginfo->partial_recv);
 	g_free(msginfo->account_server);
@@ -1517,7 +1536,9 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				mailval = send_message_smtp(&tmp_ac, to_list, fp);
 			}
 		}
-	}
+	} else if (!to_list && !newsgroup_list) 
+		mailval = -1;
+
 
 	fseek(fp, filepos, SEEK_SET);
 	if (newsgroup_list && (mailval == 0)) {

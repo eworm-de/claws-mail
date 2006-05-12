@@ -358,6 +358,12 @@ enum
 	H_SC_PARTIALLY_RETRIEVED = 20,
 	H_SC_ACCOUNT_SERVER = 21,
 	H_SC_ACCOUNT_LOGIN = 22,
+ 	H_LIST_POST	   = 23,
+	H_LIST_SUBSCRIBE   = 24,
+ 	H_LIST_UNSUBSCRIBE = 25,
+ 	H_LIST_HELP        = 26,
+ 	H_LIST_ARCHIVE     = 27,
+ 	H_LIST_OWNER       = 28,
 };
 
 static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
@@ -383,6 +389,12 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"SC-Partially-Retrieved:", NULL, FALSE},
 				   {"SC-Account-Server:", NULL, FALSE},
 				   {"SC-Account-Login:",NULL, FALSE},
+				   {"List-Post:",	NULL, TRUE},
+				   {"List-Subscribe:",	NULL, TRUE},
+				   {"List-Unsubscribe:",NULL, TRUE},
+				   {"List-Help:",	NULL, TRUE},
+ 				   {"List-Archive:",	NULL, TRUE},
+ 				   {"List-Owner:",	NULL, TRUE},
 				   {NULL,		NULL, FALSE}};
 
 static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
@@ -609,6 +621,23 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			if (msginfo->fromspace) break;
 			msginfo->fromspace = g_strdup(hp);
 			break;
+ 		case H_LIST_POST:
+			msginfo->list_post = g_strdup(hp);
+			break;
+		case H_LIST_SUBSCRIBE:
+			msginfo->list_subscribe = g_strdup(hp);
+			break;
+		case H_LIST_UNSUBSCRIBE:
+			msginfo->list_unsubscribe = g_strdup(hp);
+			break;
+		case H_LIST_HELP:
+			msginfo->list_help = g_strdup(hp);
+			break;
+		case H_LIST_ARCHIVE:
+			msginfo->list_archive = g_strdup(hp);
+			break;
+		case H_LIST_OWNER:
+			msginfo->list_owner = g_strdup(hp);
 		default:
 			break;
 		}

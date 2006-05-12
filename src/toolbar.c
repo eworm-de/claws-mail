@@ -1432,6 +1432,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	ComboButton *replylist_combo;
 	ComboButton *replysender_combo;
 	ComboButton *fwd_combo;
+	ComboButton *compose_combo;
 
 	GtkTooltips *toolbar_tips;
 	ToolbarSylpheedActions *action_item;
@@ -1523,6 +1524,14 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->compose_news_btn,
 					   _("Compose News"), NULL);
+			compose_combo = gtkut_combo_button_create(toolbar_data->compose_mail_btn, NULL, 0,
+					"<Compose>", (gpointer)toolbar_item);
+			gtk_button_set_relief(GTK_BUTTON(compose_combo->arrow),
+					      GTK_RELIEF_NONE);
+			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
+				  		  GTK_WIDGET_PTR(compose_combo),
+				 		  _("Compose with selected Account"), "Compose");
+			toolbar_data->compose_combo = compose_combo;
 			break;
 		case A_LEARN_SPAM:
 			icon_ham = stock_pixmap_widget(container, STOCK_PIXMAP_HAM_BTN);
@@ -1857,6 +1866,9 @@ void toolbar_main_set_sensitive(gpointer data)
 	if (toolbar->getall_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->getall_combo),
 			M_HAVE_ACCOUNT|M_UNLOCKED);
+	if (toolbar->compose_mail_btn)
+		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->compose_combo),
+			M_HAVE_ACCOUNT);
 	SET_WIDGET_COND(toolbar->compose_news_btn, M_HAVE_ACCOUNT);
 	SET_WIDGET_COND(toolbar->reply_btn,
 			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
@@ -1987,6 +1999,7 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->send_btn         	= NULL;
 	toolbar->compose_mail_btn 	= NULL;
 	toolbar->compose_news_btn 	= NULL;
+	toolbar->compose_combo	 	= NULL;
 	toolbar->reply_btn        	= NULL;
 	toolbar->replysender_btn  	= NULL;
 	toolbar->replyall_btn     	= NULL;

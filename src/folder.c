@@ -1672,7 +1672,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	guint markedcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0, old_uids_valid = FALSE;
-    
+	GHashTable *subject_table = NULL;
+	
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
 
@@ -1682,13 +1683,17 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
 	debug_print("Scanning folder %s for cache changes.\n", item->path ? item->path : "(null)");
-
+	
 	/* Get list of messages for folder and cache */
 	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
 		return(-1);
 	}
 
+	if(prefs_common.thread_by_subject) {
+		subject_table = g_hash_table_new(g_str_hash, g_str_equal);
+	}
+	
 	if (old_uids_valid) {
 		if (!item->cache)
 			folder_item_read_cache(item);
@@ -1808,9 +1813,16 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 				procmsg_msginfo_free(msginfo);
 
 				debug_print("Remembering message %d to update...\n", folder_cur_num);
-			} else
+			} else {
 				exists_list = g_slist_prepend(exists_list, msginfo);
 
+				if(prefs_common.thread_by_subject &&
+					MSG_IS_IGNORE_THREAD(msginfo->flags) &&
+					!subject_table_lookup(subject_table, msginfo->subject)) {
+					subject_table_insert(subject_table, msginfo->subject, msginfo);
+				}
+			}
+			
 			/* Move to next folder and cache number */
 			cache_list_cur = cache_list_cur->next;
 			folder_list_cur = folder_list_cur->next;
@@ -1869,8 +1881,15 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			    (item->folder->account->filter_on_recv) &&
 			    procmsg_msginfo_filter(msginfo))
 				to_filter = g_slist_prepend(to_filter, msginfo);
-			else
+			else {
 				exists_list = g_slist_prepend(exists_list, msginfo);
+				
+				if(prefs_common.thread_by_subject &&
+					MSG_IS_IGNORE_THREAD(msginfo->flags) &&
+					!subject_table_lookup(subject_table, msginfo->subject)) {
+					subject_table_insert(subject_table, msginfo->subject, msginfo);
+				}
+			}
 		}
 		filtering_move_and_copy_msgs(to_filter);
 		for (elem = to_filter; elem; elem = g_slist_next(elem)) {
@@ -1888,13 +1907,22 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 	folder_item_set_batch(item, TRUE);
 	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {
-		MsgInfo *msginfo;
+		MsgInfo *msginfo, *parent_msginfo;
 
 		msginfo = elem->data;
 		if (MSG_IS_IGNORE_THREAD(msginfo->flags) && (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
 			procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
+		}
+		if(prefs_common.thread_by_subject && !msginfo->inreplyto &&
+			!msginfo->references && !MSG_IS_IGNORE_THREAD(msginfo->flags) &&
+			(parent_msginfo = subject_table_lookup(subject_table, msginfo->subject)))
+		{
+			if(MSG_IS_IGNORE_THREAD(parent_msginfo->flags)) {
+				procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0,
+						MSG_NEW | MSG_UNREAD, 0);
+			}
 		}
 		if ((folder_has_parent_of_type(item, F_OUTBOX) ||
 		     folder_has_parent_of_type(item, F_QUEUE)  ||
@@ -1917,7 +1945,11 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	}
 	folder_item_set_batch(item, FALSE);
 	g_slist_free(exists_list);
-
+	
+	if(prefs_common.thread_by_subject) {
+		g_hash_table_destroy(subject_table);
+	}
+	
 	item->new_msgs = newcnt;
 	item->unread_msgs = unreadcnt;
 	item->total_msgs = totalcnt;
@@ -1928,7 +1960,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 	folder_item_update(item, update_flags);
 	folder_item_update_thaw();
-
+	
 	return 0;
 }
 

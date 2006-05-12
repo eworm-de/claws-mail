@@ -218,6 +218,14 @@ struct _MsgInfo
 	gchar *account_server;
 	gchar *account_login;
 	gint planned_download;
+
+ 	/* Mailing list support */
+ 	gchar *list_post;
+ 	gchar *list_subscribe;
+ 	gchar *list_unsubscribe;
+ 	gchar *list_help;
+ 	gchar *list_archive;
+ 	gchar *list_owner;
 };
 
 struct _MsgFileInfo

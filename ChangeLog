@@ -1,3 +1,31 @@
+2006-05-12 [colin]	2.2.0cvs3
+
+	* src/folder.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/messageview.c
+	* src/prefs_spelling.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/toolbar.h
+		Add contextual menu on Compose toolbar
+                button. Fixes bug #944 (Automatic
+                addresses not applied when changing account
+                from compose window)
+                add Mailing List support
+                based on the old 0.6.5claws25 patch by
+                Melvin Hadasht, with finishing touches
+                by Colin
+                Fix "ignore thread" when mails are threaded by
+                subject (and weren't ignored although appearing
+                in the thread).
+                GUI rework.
+                Both patches by Pawel.
+
+
 2006-05-12 [colin]	2.1.1cvs50
 
 	* po/cs.po

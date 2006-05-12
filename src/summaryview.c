@@ -751,6 +751,7 @@ void summary_init(SummaryView *summaryview)
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
 	summary_colorlabel_menu_create(summaryview, FALSE);
+	main_create_mailing_list_menu (summaryview->mainwin, NULL);	
 	summary_set_menu_sensitive(summaryview);
 
 }

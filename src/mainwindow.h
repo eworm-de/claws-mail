@@ -162,6 +162,10 @@ void main_window_set_account_menu_only_toolbar	(GList		*account_list);
 GtkWidget *main_window_get_folder_window	(MainWindow	*mainwin);
 GtkWidget *main_window_get_message_window	(MainWindow	*mainwin);
 
+/* Mailing list support */
+void main_create_mailing_list_menu 	(MainWindow *mainwin, MsgInfo *msginfo);
+gint mailing_list_get_list_post_mailto 	(gchar **url, gchar *mailto, gint maxlen);
+
 void main_window_separation_change	(MainWindow	*mainwin,
 					 SeparateType	 type);
 

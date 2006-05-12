@@ -56,6 +56,7 @@ struct _Toolbar {
 
 	GtkWidget *compose_mail_btn;
 	GtkWidget *compose_news_btn;
+	ComboButton *compose_combo;
 
 	GtkWidget *reply_btn;
 	ComboButton *reply_combo;
