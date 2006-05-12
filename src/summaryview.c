@@ -3150,7 +3150,21 @@ void summary_mark_all_read(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
+	AlertValue val;
 
+	if (prefs_common.ask_mark_all_read) {
+		val = alertpanel_full(_("Mark all as read"),
+			_("Do you really want to mark all mails in this "
+			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+
+		if (val == G_ALERTDEFAULT ||
+		    val == (G_ALERTDEFAULT|G_ALERTDISABLE))
+			return;
+		else if (val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+			prefs_common.ask_mark_all_read = FALSE;
+	}
+	
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;

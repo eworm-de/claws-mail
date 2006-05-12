@@ -1,3 +1,9 @@
+2006-05-12 [paul]	2.2.0cvs6
+
+	* src/summaryview.c
+		always obey 'confirm before marking all
+		mails read' option
+
 2006-05-12 [paul]	2.2.0cvs5
 
 	* src/textview.c
