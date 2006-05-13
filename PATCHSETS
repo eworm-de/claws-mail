@@ -1482,3 +1482,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 RELEASE_NOTES;  ) > 2.2.0cvs10.patchset
 ( cvs diff -u -r 1.8.2.17 -r 1.8.2.18 src/export.c;  cvs diff -u -r 1.13.2.16 -r 1.13.2.17 src/import.c;  cvs diff -u -r 1.274.2.109 -r 1.274.2.110 src/mainwindow.c;  cvs diff -u -r 1.28.2.13 -r 1.28.2.14 src/mbox.c;  cvs diff -u -r 1.395.2.197 -r 1.395.2.198 src/summaryview.c;  cvs diff -u -r 1.68.2.23 -r 1.68.2.24 src/summaryview.h;  ) > 2.2.0cvs11.patchset
 ( cvs diff -u -r 1.382.2.270 -r 1.382.2.271 src/compose.c;  ) > 2.2.0cvs12.patchset
+( cvs diff -u -r 1.60.2.15 -r 1.60.2.16 src/filtering.c;  cvs diff -u -r 1.21.2.6 -r 1.21.2.7 src/filtering.h;  cvs diff -u -r 1.75.2.21 -r 1.75.2.22 src/matcher.c;  cvs diff -u -r 1.16.2.5 -r 1.16.2.6 src/matcher_parser_lex.l;  cvs diff -u -r 1.25.2.13 -r 1.25.2.14 src/matcher_parser_parse.y;  cvs diff -u -r 1.59.2.33 -r 1.59.2.34 src/prefs_filtering.c;  ) > 2.2.0cvs13.patchset

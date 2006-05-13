@@ -113,5 +113,11 @@ void matcher_parser_init(void)
 rulename	{
 		return MATCHER_RULENAME;
 		}
+disabled	{
+		return MATCHER_DISABLED;
+		}
+enabled	{
+		return MATCHER_ENABLED;
+		}
 
 %%

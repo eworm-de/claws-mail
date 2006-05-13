@@ -43,6 +43,7 @@ static MatcherProp *prop;
 
 static GSList *matchers_list = NULL;
 
+static gboolean enabled = TRUE;
 static gchar *name = NULL;
 static MatcherList *cond;
 static GSList *action_list = NULL;
@@ -56,6 +57,7 @@ static int enable_compatibility = 0;
 enum {
         MATCHER_PARSE_FILE,
         MATCHER_PARSE_NO_EOL,
+	MATCHER_PARSE_ENABLED,
 	MATCHER_PARSE_NAME,
         MATCHER_PARSE_CONDITION,
         MATCHER_PARSE_FILTERING_ACTION,
@@ -279,6 +281,7 @@ int matcher_parserwrap(void)
 
 %start file
 
+%token MATCHER_ENABLED MATCHER_DISABLED
 %token MATCHER_RULENAME
 %token <str> MATCHER_STRING
 %token <str> MATCHER_SECTION
@@ -344,13 +347,24 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-name condition filtering MATCHER_EOL
+enabled name condition filtering MATCHER_EOL
+| enabled name condition filtering
+| name condition filtering MATCHER_EOL
 | name condition filtering
 {
 	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
 		YYACCEPT;
 	else {
 		matcher_parsererror("parse error a");
+		YYERROR;
+	}
+}
+| enabled
+{
+	if (matcher_parse_op == MATCHER_PARSE_ENABLED)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error enabled");
 		YYERROR;
 	}
 }
@@ -384,6 +398,17 @@ name condition filtering MATCHER_EOL
 | MATCHER_EOL
 ;
 
+enabled:
+MATCHER_ENABLED
+{
+	enabled = TRUE;
+}
+| MATCHER_DISABLED
+{
+	enabled = FALSE;
+}
+;
+
 name:
 MATCHER_RULENAME MATCHER_STRING
 {
@@ -394,8 +419,9 @@ MATCHER_RULENAME MATCHER_STRING
 filtering:
 filtering_action_list
 {
-	filtering = filteringprop_new(name, cond, action_list);
-        g_free(name);
+	filtering = filteringprop_new(enabled, name, cond, action_list);
+	enabled = TRUE;
+	g_free(name);
 	name = NULL;
         if (enable_compatibility) {
                 prefs_filtering = &filtering_rules;

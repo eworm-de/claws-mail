@@ -55,6 +55,7 @@
 #include "prefs_filtering_action.h"
 
 enum {
+	PREFS_FILTERING_ENABLED,
 	PREFS_FILTERING_NAME,
 	PREFS_FILTERING_RULE,
 	PREFS_FILTERING_PROP,
@@ -112,13 +113,16 @@ static void delete_path(GSList ** p_filters, const gchar * path);
 static GtkListStore* prefs_filtering_create_data_store	(void);
 static gint prefs_filtering_list_view_insert_rule	(GtkListStore *list_store,
 							 gint row,
+							 gboolean enabled,
 							 const gchar *name, 
 							 const gchar *rule, 
 							 gboolean prop);
 static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list, 
 							 gint row);
-static gchar *prefs_filtering_list_view_get_rule_name	(GtkWidget *list, 
-							 gint row);
+static void prefs_filtering_list_view_get_rule_name	(GtkWidget *list, 
+							 gint row,
+							 gboolean *enabled,
+							 gchar **name);
 
 static GtkWidget *prefs_filtering_list_view_create	(void);
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view);
@@ -644,6 +648,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 
 	/* add the place holder (New) at row 0 */
 	prefs_filtering_list_view_insert_rule(list_store, -1, 
+					      FALSE,
 					      _("(New)"),
 					      _("(New)"),
 					      FALSE);
@@ -657,6 +662,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 		subst_char(cond_str, '\t', ':');
 
 		prefs_filtering_list_view_insert_rule(list_store, -1, 
+						      prop->enabled,
 						      prop->name,
 						      cond_str, TRUE);
 		
@@ -707,10 +713,16 @@ static void prefs_filtering_set_list(void)
 		/* FIXME: this strcmp() is bogus: "(New)" should never
 		 * be inserted in the storage */
 		if (strcmp(filtering_str, _("(New)")) != 0) {
-			gchar *name = prefs_filtering_list_view_get_rule_name(filtering.cond_list_view, row);
+			gboolean enabled;
+			gchar *name;
+
+			prefs_filtering_list_view_get_rule_name(
+					filtering.cond_list_view, row,
+					&enabled, &name);
 			prop = matcher_parser_get_filtering(filtering_str);
 			g_free(filtering_str);
 			if (prop) {
+				prop->enabled = enabled;
 				prop->name = name;
 				prefs_filtering = 
 					g_slist_append(prefs_filtering, prop);
@@ -729,17 +741,25 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	gchar *str;
 	GtkListStore *list_store;
 	gchar *name = NULL;
-	
+	gboolean enabled = TRUE;
+
 	str = filteringprop_to_string(prop);
 	if (str == NULL)
 		return -1;
-	
-	if (prop && prop->name)
-		name = prop->name;
+
+	if (prop) {
+		if (prop->name)
+			name = prop->name;
+		enabled = prop->enabled;
+	}
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(list_view));
 
-	row = prefs_filtering_list_view_insert_rule(list_store, row, name, str, prop != NULL);
+	row = prefs_filtering_list_view_insert_rule(list_store, row,
+						    enabled,
+						    name,
+						    str,
+						    prop != NULL);
 
 	g_free(str);
 
@@ -830,6 +850,7 @@ static void prefs_filtering_action_define(void)
 static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
+	gboolean enabled = TRUE;
 	gchar * name = NULL;
 	gchar * cond_str = NULL;
 	gchar * action_str = NULL;
@@ -865,7 +886,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 		goto fail;
 	}
 
-	prop = filteringprop_new(name, cond, action_list);
+	prop = filteringprop_new(enabled, name, cond, action_list);
 
 fail:
 	g_free(name);
@@ -1128,6 +1149,7 @@ static void prefs_filtering_cancel(void)
 static GtkListStore* prefs_filtering_create_data_store(void)
 {
 	return gtk_list_store_new(N_PREFS_FILTERING_COLUMNS,
+				  G_TYPE_BOOLEAN,
 				  G_TYPE_STRING,
 				  G_TYPE_STRING,
 				  G_TYPE_BOOLEAN,
@@ -1142,6 +1164,8 @@ static GtkListStore* prefs_filtering_create_data_store(void)
  *\param	list_store Store to operate on
  *\param	row -1 to add a new rule to store, else change an existing
  *		row
+ *\param	enabled TRUE if rule is enabled
+ *\param	name The Name of rule
  *\param	rule String representation of rule
  *\param	prop TRUE if valid filtering rule; if FALSE it's the first
  *		entry in the store ("(New)").
@@ -1150,6 +1174,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
  */
 static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 						  gint row,
+						  gboolean enabled,
 						  const gchar *name,
 						  const gchar *rule,
 						  gboolean prop) 
@@ -1167,6 +1192,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter, 
+				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
 				   PREFS_FILTERING_RULE, rule,
 				   PREFS_FILTERING_PROP, prop,
@@ -1176,6 +1202,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 	} else {
 		/* change existing */
 		gtk_list_store_set(list_store, &iter, 
+				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
 				   PREFS_FILTERING_RULE, rule,
 				   -1);
@@ -1203,21 +1230,21 @@ static gchar *prefs_filtering_list_view_get_rule(GtkWidget *list, gint row)
 	return result;
 }
 
-static gchar *prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row)
+static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row, gboolean *enabled, gchar **name)
 {	
 	GtkTreeView *list_view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
 	GtkTreeIter iter;
-	gchar *result = NULL;
 
-	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
-		return NULL;
-	
-	gtk_tree_model_get(model, &iter, 
-			   PREFS_FILTERING_NAME, &result,
-			   -1);
-	
-	return result;
+	*enabled = TRUE;
+	*name = NULL;
+
+	if (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
+		gtk_tree_model_get(model, &iter, 
+				   PREFS_FILTERING_ENABLED, enabled,
+				   PREFS_FILTERING_NAME, name,
+				   -1);
+	}
 }
 
 /*!
@@ -1245,10 +1272,45 @@ static GtkWidget *prefs_filtering_list_view_create(void)
 	return GTK_WIDGET(list_view);
 }
 
+static void prefs_filtering_enable_toggled(GtkCellRendererToggle *widget,
+		gchar *path,
+		GtkWidget *list_view)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(list_view));
+	gboolean enabled = TRUE;
+
+	if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
+		return;
+
+	gtk_tree_model_get(model, &iter,
+			   PREFS_FILTERING_ENABLED, &enabled,
+			   -1);
+
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+			   PREFS_FILTERING_ENABLED, !enabled,
+			   -1);
+}
+
 static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_toggle_new();
+	g_object_set(renderer,
+		     "radio", FALSE,
+		     "activatable", TRUE,
+		     NULL);
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Enable"), /* FIXME : Enable, Enabled, or 'E' ? */
+		 renderer,
+		 "active", PREFS_FILTERING_ENABLED,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+	g_signal_connect(G_OBJECT(renderer), "toggled",
+			 G_CALLBACK(prefs_filtering_enable_toggled),
+			 list_view);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes

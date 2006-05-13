@@ -1,3 +1,15 @@
+2006-05-13 [wwp]	2.2.0cvs13
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/matcher.c
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+		new feature: provide the ability to disable filtering and processing
+		rules. Patch by Fabien Vantard <fzzzzz@gmail.com>, w/ some minor
+		adaptations.
+
 2006-05-13 [colin]	2.2.0cvs12
 
 	* src/compose.c

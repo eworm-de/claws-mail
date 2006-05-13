@@ -1438,7 +1438,19 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		
 		if (NULL == (filtering_str = filteringprop_to_string(prop)))
 			continue;
-				
+
+		if (prop->enabled) {
+			if (fputs("enabled ", fp) == EOF) {
+				FILE_OP_ERROR("filtering config", "fputs || fputc");
+				return;
+			}
+		} else {
+			if (fputs("disabled ", fp) == EOF) {
+				FILE_OP_ERROR("filtering config", "fputs || fputc");
+				return;
+			}
+		}
+
 		if (fputs("rulename \"", fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs || fputc");
 			g_free(filtering_str);
