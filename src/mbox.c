@@ -59,6 +59,7 @@
 }
 
 gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
+/* return values: -1 error, >=0 number of msgs added */
 {
 	FILE *mbox_fp;
 	gchar buf[MSGBUFSIZE];
@@ -375,6 +376,7 @@ void empty_mbox(const gchar *mbox)
 }
 
 gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
+/* return values: -2 skipped, -1 error, 0 OK */
 {
 	GSList *cur;
 	MsgInfo *msginfo;
@@ -388,7 +390,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 							_("Overwrite"), GTK_STOCK_CANCEL, NULL, FALSE,
 							NULL, ALERT_WARNING, G_ALERTALTERNATE)
 			== G_ALERTALTERNATE) {
-		return -1;
+		return -2;
 	}
 	}
 
@@ -456,9 +458,11 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 }
 
 /* read all messages in SRC, and store them into one MBOX file. */
+/* return values: -2 skipped, -1 error, 0 OK */
 gint export_to_mbox(FolderItem *src, const gchar *mbox)
 {
 	GSList *mlist;
+	gint ret;
 	
 	g_return_val_if_fail(src != NULL, -1);
 	g_return_val_if_fail(src->folder != NULL, -1);
@@ -469,9 +473,9 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 
 	mlist = folder_item_get_msg_list(src);
 
-	export_list_to_mbox(mlist, mbox);
+	ret = export_list_to_mbox(mlist, mbox);
 
 	procmsg_msg_list_free(mlist);
 
-	return 0;
+	return ret;
 }

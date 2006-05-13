@@ -5914,19 +5914,22 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 		summary_select_node(summaryview, node, TRUE, TRUE);
 }
 
-void summaryview_export_mbox_list(SummaryView *summaryview)
+gint summaryview_export_mbox_list(SummaryView *summaryview)
+/* return values: -2 skipped, -1 error, 0 OK */
 {
 	GSList *list = summary_get_selected_msg_list(summaryview);
 	gchar *mbox = filesel_select_file_save(_("Export to mbox file"), NULL);
+	gint ret;
 	
 	if (mbox == NULL || list == NULL)
 		return;
 		
-	export_list_to_mbox(list, mbox);
+	ret = export_list_to_mbox(list, mbox);
 	
 	g_slist_free(list);
 	g_free(mbox);
 	
+	return ret;
 }
 
 void summaryview_lock(SummaryView *summaryview, FolderItem *item)
