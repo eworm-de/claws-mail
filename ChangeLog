@@ -1,3 +1,9 @@
+2006-05-13 [paul]	2.2.0cvs9
+
+	* po/nl.po
+	* po/ru.po
+		updated by Tim Dijkstra and Pavlo Bohmat
+
 2006-05-12 [colin]	2.2.0cvs8
 
 	* src/gtk/quicksearch.c
