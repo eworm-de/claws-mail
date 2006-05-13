@@ -1,3 +1,9 @@
+2006-05-13 [colin]	2.2.0cvs12
+
+	* src/compose.c
+		Remove useless if (a) b; else b;
+		Thanks to wwp
+
 2006-05-13 [wwp]	2.2.0cvs11
 
 	* src/export.c

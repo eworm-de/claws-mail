@@ -6126,13 +6126,8 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		if (ac->name) {
-			name = g_markup_printf_escaped("From: <i>%s</i>",
-					       ac->account_name);
-		} else {
-			name = g_markup_printf_escaped("From: <i>%s</i>",
-					       ac->account_name);
-		}
+		name = g_markup_printf_escaped("From: <i>%s</i>",
+				       ac->account_name);
 		
 		if (ac == compose->account) {
 			if (ac->name && *ac->name) {
