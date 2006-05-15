@@ -1274,4 +1274,3 @@ static void install_basic_sighandlers()
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
 #endif /* !G_OS_WIN32 */
 }
-/*test*/
