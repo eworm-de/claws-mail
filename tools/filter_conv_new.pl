@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
+use XML::SimpleObject;
 
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -75,8 +76,6 @@ use strict;
 # stop-eval			:	stop
 #
 
-use XML::SimpleObject;
-
 my $old_config = "$ENV{HOME}/.sylpheed-2.0/filter.xml";
 my $older_config = "$ENV{HOME}/.sylpheed/filter.xml";
 my $old_filters;
@@ -96,6 +95,16 @@ if (-e $old_config) {
 } else {
 	print "ERROR:\n\tSylpheed filter not found\n\t[$old_config]\n\t[$older_config]\n";
 	exit;
+}
+
+my $claws_version = `sylpheed-claws --version`;
+$claws_version =~ s/^Sylpheed-Claws version //;
+
+my ($major, $minor) = split(/\./, $claws_version);
+
+my $version_test = 0;
+if ($major > 2 || ($major == 2 && $minor >= 3)) {
+	$version_test = 1;
 }
 
 my $parser = XML::Parser->new(ErrorContext => 2, Style => "Tree");
@@ -119,17 +128,23 @@ my $bool;
 
 ## rules list
 foreach my $element ($xmlobj->child("filter")->children("rule")) {
-	my $new_filter;
+ 	my $new_filter = "\n";
+ 	if ($element->attribute("enabled")) {
+ 		if ($element->attribute("enabled") eq "false") {
+ 			if ($version_test) {
+				$new_filter .= "disabled ";
+ 			} else {
+ 				$disabled++;
+ 				next;	# skip disabled rules
+			}
+ 		} elsif ($version_test) {
+ 				$new_filter .= "enabled ";
+ 		}
+     	}
 	if ($element->attribute("name")) {
 		my $name = $element->attribute("name");
 		$name = clean_me($name);
-		$new_filter = "\nrulename \"$name\" ";
-    	}
-	if ($element->attribute("enabled")) {
-		if ($element->attribute("enabled") eq "false") {
-			$disabled++;
-			next;	# skip disabled rules
-		}
+		$new_filter .= "rulename \"$name\" ";
     	}
 ## condition list
 	foreach my $parent ($element->children("condition-list")) {

@@ -1,3 +1,9 @@
+2006-05-15 [paul]	2.2.0cvs17
+
+	* tools/filter_conv_new.pl
+		updated for rule enabling/disabling
+		claws version >= 2.3.x required
+
 2006-05-15 [cleroy]	2.2.0cvs16
 
 	* src/main.c
