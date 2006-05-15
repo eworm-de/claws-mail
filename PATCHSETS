@@ -1487,3 +1487,4 @@
 ( cvs diff -u -r 1.115.2.84 -r 1.115.2.85 src/main.c;  ) > 2.2.0cvs15.patchset
 ( cvs diff -u -r 1.115.2.85 -r 1.115.2.86 src/main.c;  ) > 2.2.0cvs16.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/filter_conv_new.pl;  ) > 2.2.0cvs17.patchset
+( cvs diff -u -r 1.150.2.62 -r 1.150.2.63 src/procmsg.c;  ) > 2.2.0cvs18.patchset

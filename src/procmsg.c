@@ -633,7 +633,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 		} else if (hentry[H_SENDER].body != NULL) {
 			SET_FILTER_KEY("header \"Sender\"", H_SENDER);
 		} else if (hentry[H_LIST_POST].body != NULL) {
-			SET_FILTER_KEY("header \"Sender\"", H_LIST_POST);
+			SET_FILTER_KEY("header \"List-Post\"", H_LIST_POST);
 		} else if (msginfo->to) {
 			*header = g_strdup("to");
 			*key = g_strdup(msginfo->to);
