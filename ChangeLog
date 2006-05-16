@@ -1,3 +1,9 @@
+2006-05-16 [colin]	2.2.0cvs22
+
+	* src/mainwindow.c
+		Fix bug #922 (sylpheed-claws crashed after 
+		pushing on Inbox folder)
+
 2006-05-16 [colin]	2.2.0cvs21
 
 	* src/compose.c
