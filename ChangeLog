@@ -1,3 +1,8 @@
+2006-05-16 [colin]	2.2.0cvs23
+
+	* src/mainwindow.c
+		Stupid me hit again. Fix cvs22.
+
 2006-05-16 [colin]	2.2.0cvs22
 
 	* src/mainwindow.c

@@ -2395,7 +2395,7 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 
 	/* Prepare the work for the next url in the list */
 	/* after the closing bracket >, ignore space, comments and tabs */
-	for (;*buf && *buf && (buf == ' ' || *buf == '(' || *buf == '\t'); buf++)
+	for (;buf && *buf && (*buf == ' ' || *buf == '(' || *buf == '\t'); buf++)
 		if (*buf == '(')
 			for (;*buf != ')' && *buf != 0x00; buf++);
 			

@@ -1492,3 +1492,4 @@
 ( cvs diff -u -r 1.8.2.18 -r 1.8.2.19 src/export.c;  cvs diff -u -r 1.75.2.22 -r 1.75.2.23 src/matcher.c;  cvs diff -u -r 1.395.2.199 -r 1.395.2.200 src/summaryview.c;  cvs diff -u -r 1.1.4.35 -r 1.1.4.36 src/etpan/imap-thread.c;  ) > 2.2.0cvs20.patchset
 ( cvs diff -u -r 1.382.2.271 -r 1.382.2.272 src/compose.c;  ) > 2.2.0cvs21.patchset
 ( cvs diff -u -r 1.274.2.111 -r 1.274.2.112 src/mainwindow.c;  ) > 2.2.0cvs22.patchset
+( cvs diff -u -r 1.274.2.112 -r 1.274.2.113 src/mainwindow.c;  ) > 2.2.0cvs23.patchset
