@@ -6118,6 +6118,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	from_name = gtk_entry_new();
+	
+	g_signal_connect_after(G_OBJECT(from_name), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
 
 	for (; accounts != NULL; accounts = accounts->next, num++) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
