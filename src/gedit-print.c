@@ -276,7 +276,7 @@ page_cb (GtkSourcePrintJob *job, GeditPrintJobInfo *pji)
 	g_free (str);
 
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (pji->progressbar), 
-				       1.0 * page_num / total);
+				       (total == 0) ? 0 : 1.0 * page_num / total);
 
 	/* Update UI */
 	while (gtk_events_pending ())

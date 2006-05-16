@@ -331,7 +331,8 @@ static MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	gchar *file;
 
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(num > 0, NULL);
+	if (num <= 0)
+		return NULL;
 
 	file = mh_fetch_msg(folder, item, num);
 	if (!file) return NULL;

@@ -1948,8 +1948,7 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), buf);
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(mainwin->progressbar),
-				(cur == 0 && total == 0) ? 0 :
-				(gfloat)cur / (gfloat)total);
+				(total == 0) ? 0 : (gfloat)cur / (gfloat)total);
 }
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)

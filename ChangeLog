@@ -1,3 +1,15 @@
+2006-05-16 [wwp]	2.2.0cvs19
+
+	* src/action.c
+	* src/gedit-print.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/mh.c
+	* src/statusbar.c
+	* src/send_message.c
+	* src/summaryview.c
+		get rid of some gtk warning/errors at runtime (and avoid divide-by-0).
+
 2006-05-15 [colin]	2.2.0cvs18
 
 	* src/procmsg.c

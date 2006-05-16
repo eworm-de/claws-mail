@@ -2496,7 +2496,8 @@ static gchar *summary_complete_address(const gchar *addr)
 
 	Xstrdup_a(email_addr, addr, return NULL);
 	extract_address(email_addr);
-	g_return_val_if_fail(*email_addr, NULL);
+	if (!*email_addr)
+		return NULL;
 
 	/*
 	 * completion stuff must be already initialized
