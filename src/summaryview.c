@@ -5923,7 +5923,7 @@ gint summaryview_export_mbox_list(SummaryView *summaryview)
 	gint ret;
 	
 	if (mbox == NULL || list == NULL)
-		return;
+		return -1;
 		
 	ret = export_list_to_mbox(list, mbox);
 	

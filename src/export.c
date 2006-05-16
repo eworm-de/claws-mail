@@ -49,6 +49,7 @@
 #include "folder.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "alertpanel.h"
 
 static GtkWidget *window;
 static GtkWidget *src_entry;
