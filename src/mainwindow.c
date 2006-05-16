@@ -2399,7 +2399,7 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 		if (*buf == '(')
 			for (;*buf != ')' && *buf != 0x00; buf++);
 			
-	if (!buf) {
+	if (!buf || !*buf) {
 		*buffer = NULL;
 		return;
 	}
