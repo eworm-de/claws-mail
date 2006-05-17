@@ -1,3 +1,9 @@
+2006-05-17 [wwp]	2.2.0cvs25
+
+	* src/plugins/demo/demo.c
+		updated product name in plugin demo (many plugins need to be
+		sync'ed w/ that change).
+
 2006-05-17 [colin]	2.2.0cvs24
 
 	* src/mh.c
