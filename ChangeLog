@@ -1,3 +1,8 @@
+2006-05-17 [paul]	2.2.0cvs28
+
+	* po/Makefile.in.in
+		fix config.status warning with autoconf 2.60
+
 2006-05-17 [paul]	2.2.0cvs27
 
 	* po/POTFILES.in
