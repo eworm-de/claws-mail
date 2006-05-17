@@ -62,6 +62,7 @@ src/ldif.c
 src/main.c
 src/mainwindow.c
 src/matcher.c
+src/mbox.c
 src/message_search.c
 src/messageview.c
 src/mh.c

@@ -1,3 +1,8 @@
+2006-05-17 [paul]	2.2.0cvs27
+
+	* po/POTFILES.in
+		add src/mbox.c
+
 2006-05-17 [wwp]	2.2.0cvs26
 
 	* src/mainwindow.c

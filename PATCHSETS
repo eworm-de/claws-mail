@@ -1496,3 +1496,4 @@
 ( cvs diff -u -r 1.79.2.26 -r 1.79.2.27 src/mh.c;  ) > 2.2.0cvs24.patchset
 ( cvs diff -u -r 1.13.2.6 -r 1.13.2.7 src/plugins/demo/demo.c;  ) > 2.2.0cvs25.patchset
 ( cvs diff -u -r 1.274.2.114 -r 1.274.2.115 src/mainwindow.c;  ) > 2.2.0cvs26.patchset
+( cvs diff -u -r 1.53.2.17 -r 1.53.2.18 po/POTFILES.in;  ) > 2.2.0cvs27.patchset
