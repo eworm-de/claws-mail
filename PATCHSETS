@@ -1499,3 +1499,4 @@
 ( cvs diff -u -r 1.53.2.17 -r 1.53.2.18 po/POTFILES.in;  ) > 2.2.0cvs27.patchset
 ( cvs diff -u -r 1.6.2.7 -r 1.6.2.8 po/Makefile.in.in;  ) > 2.2.0cvs28.patchset
 ( cvs diff -u -r 1.115.2.86 -r 1.115.2.87 src/main.c;  cvs diff -u -r 1.83.2.68 -r 1.83.2.69 src/mimeview.c;  ) > 2.2.0cvs29.patchset
+( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/handling.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/fr/handling.xml;  ) > 2.2.0cvs30.patchset
