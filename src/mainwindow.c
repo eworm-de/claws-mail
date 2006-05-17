@@ -2366,7 +2366,8 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	buf = *buffer;
 	
 	if (buf == 0x00) {
-		url_decoded = 0x00;
+		url_decoded = NULL;
+		*buffer = NULL;
 		return;
 	}
 	/* Ignore spaces, comments  and tabs () */
@@ -2380,15 +2381,17 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 		for (i = 0; *buf != '>' && *buf != 0x00 && i<maxlen; tmp[i++] = *(buf++));
 		buf++;
 	}
-	else 
-		/* else, we finish parsing and ignore everything */
-		for (;buf != 0x00; buf++);
+	else  {
+		*buffer = NULL;
+		*url_decoded = NULL;
+		return;
+	}
 	
 	tmp[i]       = 0x00;
-	*url_decoded = 0x00;
+	*url_decoded = NULL;
+	*buffer = NULL;
 	
 	if (i == maxlen) {
-		for (;*buf != 0x00; buf++);
 		return;
 	}
 	decode_uri (url_decoded, (const gchar *)tmp);
