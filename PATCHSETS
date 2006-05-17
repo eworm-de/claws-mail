@@ -1493,3 +1493,4 @@
 ( cvs diff -u -r 1.382.2.271 -r 1.382.2.272 src/compose.c;  ) > 2.2.0cvs21.patchset
 ( cvs diff -u -r 1.274.2.111 -r 1.274.2.112 src/mainwindow.c;  ) > 2.2.0cvs22.patchset
 ( cvs diff -u -r 1.274.2.112 -r 1.274.2.114 src/mainwindow.c;  ) > 2.2.0cvs23.patchset
+( cvs diff -u -r 1.79.2.26 -r 1.79.2.27 src/mh.c;  ) > 2.2.0cvs24.patchset

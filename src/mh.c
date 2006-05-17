@@ -1132,6 +1132,9 @@ static gint mh_get_flags(Folder *folder, FolderItem *item,
 		}
 		fclose(mh_sequences_file);
 	}
+	
+	g_free(mh_sequences_filename);
+	
 	if (unseen_list) {
 		gchar *cur = NULL;
 		gchar *token = NULL, *next = NULL, *boundary = NULL;
