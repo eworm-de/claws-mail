@@ -1,3 +1,12 @@
+2006-05-17 [colin]	2.2.0cvs29
+
+	* src/main.c
+		Don't initialize g_thread subsystem if it's 
+		already done (thanks to Hiro)
+	* src/mimeview.c
+		Fix saving of parts when there name can't be
+		converted from UTF-8.
+
 2006-05-17 [paul]	2.2.0cvs28
 
 	* po/Makefile.in.in

@@ -334,8 +334,8 @@ int main(int argc, char *argv[])
 	if (cmd.exit)
 		return 0;
 #endif
-	g_thread_init(NULL);
-	/* gdk_threads_init(); */
+	if (!g_thread_supported())
+		g_thread_init(NULL);
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);

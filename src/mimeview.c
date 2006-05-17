@@ -1292,6 +1292,10 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL);
 	
+	if (tmp == NULL) {
+		g_warning("filename not in UTF-8");
+		tmp = g_strdup("Unnamed part");
+	}
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       tmp, NULL);
 
