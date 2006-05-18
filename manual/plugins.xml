@@ -39,7 +39,7 @@
   <section id="plugins_external">
     <title>More plugins</title>
     <para>
-	Other plugins have been written too, which are available as separate downloads. At the time of this writing, there are a number of plugins available at <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>:
+	    Other plugins have been written too, which are available as separate downloads. At the time of this writing, there are a number of plugins available at <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>:
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>

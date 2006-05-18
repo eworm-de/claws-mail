@@ -1,3 +1,21 @@
+2006-05-18 [paul]	2.2.0cvs31
+
+	* manual/advanced.xml
+	* manual/faq.xml
+	* manual/glossary.xml
+	* manual/handling.xml
+	* manual/intro.xml
+	* manual/plugins.xml
+	* manual/sylpheed-claws-manual.xml
+		update URLs
+		add info about mailing-list support
+		edit filtering info
+	* src/wizard.c
+	* src/common/defs.h
+	* src/gtk/about.c
+	* src/plugins/dillo_viewer/README
+		update URLs
+
 2006-05-17 [wwp]	2.2.0cvs30
 
 	* manual/handling.xml

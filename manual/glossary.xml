@@ -323,6 +323,16 @@ A mailbox format in which all mail is kept in separate files. Maildir++ is an ex
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_mailinglist">
+    <term>
+Mailing-List
+    </term>
+   <listitem>
+      <para>
+Electronic mailing-lists are a special usage of email that allows for widespread distribution of information to many Internet users. They often take the form of discussion lists, like the Sylpheed-Claws users' list, where a subscriber uses the mailing-list to send messages to all the other subscribers, who may answer in similar fashion.
+      </para>
+   </listitem>
+  </varlistentry>
   <varlistentry id="gt_mark_message">
     <term>
 Mark (message)

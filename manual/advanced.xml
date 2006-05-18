@@ -30,7 +30,7 @@
     <example><title>Search Google using an external script</title>
 	    <variablelist>
 		    <varlistentry><term>Menu name: <emphasis>Search/Google</emphasis> Command Line: <emphasis>|/path/to/google_search.pl</emphasis></term>
-			    <listitem><para>Searches Google for the currently selected text (<emphasis>|</emphasis>) using the external script <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Searches Google for the currently selected text (<emphasis>|</emphasis>) using the external script <emphasis><ulink url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -55,7 +55,7 @@
     When applying a template, the body is processed first, then the To, Cc, Bcc and Subject fields follow.
     </para>
     <para>
-	    Further information and examples of usage can be found in the user-contributed FAQ on the Sylpheed-Claws website <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+	    Further information and examples of usage can be found in the user-contributed FAQ on the Sylpheed-Claws website <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
     </para>
    </section>
   <section id="adv_processing">
@@ -74,6 +74,12 @@
   </para>
   <para>
   Colour labels are user-configurable. Both the colour and the label can be set by the user. Preferences can be found on the <quote>Configuration/Preferences/Display/Colours</quote> page.
+  </para>
+  </section>
+  <section id="adv_ml_support">
+  <title>Mailing-List support</title>
+  <para>
+  Sylpheed-Claws offers mailing-list support from the <quote>Message/Mailing-List/</quote> submenu. When you have a mailing-list message selected, the submenu allows you to quickly initiate subscribing, unsubscribing, posting, getting help, contacting the list owner, and viewing the list archive; either by opening a new Compose window with the appropriate address pre-filled, or by opening the URL in your web browser.
   </para>
   </section>
   <section id="adv_plugins">

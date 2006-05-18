@@ -4,7 +4,7 @@
     <section>
     <title>What are the differences between Sylpheed-Claws and Sylpheed?</title>
     <para>
-	    Sylpheed-Claws is the <emphasis>extended</emphasis> version of Sylpheed, therefore you will find that it has all the features that Sylpheed has and a lot more besides. It also includes some modified dialogues to enhance usability. Further information can be found at <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
+	    Sylpheed-Claws is the <emphasis>extended</emphasis> version of Sylpheed, therefore you will find that it has all the features that Sylpheed has and a lot more besides. It also includes some modified dialogues to enhance usability. Further information can be found at <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
     </para></section>
     <section>
     <title>What does the word <quote>Sylpheed</quote> mean?</title>
@@ -19,13 +19,13 @@
     <section>
     <title>How can I submit patches, report bugs, and talk about Sylpheed-Claws with others?</title>
     <para>
-        Patches should be submitted via the SourceForge project Patch Tracker at <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, but please follow the patch guidelines at <ulink url="http://claws.sylpheed.org/devel.php">http://claws.sylpheed.org/devel.php</ulink>.
+	    Patches should be submitted via the SourceForge project Patch Tracker at <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, but please follow the patch guidelines at <ulink url="http://www.sylpheed-claws.net/devel.php">http://www.sylpheed-claws.net/devel.php</ulink>.
     </para>
     <para>
 	 Bug reports should be submitted at our Bugzilla, <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>.
     </para>
     <para>
-	To talk to others, you should join the Sylpheed-Claws users' mailing list at <ulink url="http://claws.sylpheed.org/MLs.php">http://claws.sylpheed.org/MLs.php</ulink>.
+	    To talk to others, you should join the Sylpheed-Claws users' mailing list. Details can be found at <ulink url="http://www.sylpheed-claws.net/MLs.php">http://www.sylpheed-claws.net/MLs.php</ulink>.
     </para>
     </section>
     <section>
@@ -61,7 +61,7 @@
     <section>
     <title>Where can I find the answers to more FAQs about Sylpheed-Claws?</title>
     <para>
-	An enlarged, user-contributed FAQ can be found on the Sylpheed-Claws website, <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+	    An enlarged, user-contributed FAQ can be found on the Sylpheed-Claws website, <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
     </para>
     </section>
 </appendix>

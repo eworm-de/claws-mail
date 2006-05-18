@@ -498,7 +498,7 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit ("), -1);
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "http://www.openssl.org/", -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, OPENSSL_URI, -1,
 		"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(").\n"), -1);
 

@@ -1,7 +1,7 @@
 Dillo Viewer: HTML mail viewing in Sylpheed-Claws
 -------------------------------------------------
 
-This plugin uses the Dillo (http://dillo.auriga.wearlab.de/) browser to
+This plugin uses the Dillo (http://www.dillo.org) browser to
 view text/html MIME parts inside Sylpheed-Claws.
 
 When the plugin is loaded, if the MIME part to be viewed is of
