@@ -2022,6 +2022,7 @@ static void icon_list_clear (MimeView *mimeview)
 	for (; child != NULL; child = g_list_next(child)) {
 		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_vbox), 
 				       GTK_WIDGET(child->data));
+		gtk_widget_destroy(GTK_WIDGET(child->data));
 	}
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));

@@ -1309,15 +1309,15 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/Reply"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Reply to"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Reply to"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 
 		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Forward as attachment"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-        	{"/Redirect"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+        	{"/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 
 		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC},

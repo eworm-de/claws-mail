@@ -1871,32 +1871,33 @@ void toolbar_main_set_sensitive(gpointer data)
 			M_HAVE_ACCOUNT);
 	SET_WIDGET_COND(toolbar->compose_news_btn, M_HAVE_ACCOUNT);
 	SET_WIDGET_COND(toolbar->reply_btn,
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	if (toolbar->reply_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->reply_combo),
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
-	SET_WIDGET_COND(toolbar->replyall_btn,
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+	if (toolbar->replyall_btn)
+		SET_WIDGET_COND(toolbar->replyall_btn,
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	if (toolbar->replyall_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replyall_combo),
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->replylist_btn,
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	if (toolbar->replylist_btn) 
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replylist_combo),
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->replysender_btn,
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	if (toolbar->replysender_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replysender_combo),
-			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->fwd_btn, M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	if (toolbar->fwd_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->fwd_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 	if (toolbar->fwd_combo) {
 		GtkWidget *submenu = gtk_item_factory_get_widget(toolbar->fwd_combo->factory, "/Redirect");
-		SET_WIDGET_COND(submenu, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST); 
+		SET_WIDGET_COND(submenu, M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 	}
 
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {

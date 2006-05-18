@@ -1,3 +1,17 @@
+2006-05-18 [colin]	2.2.0cvs33
+
+	* src/imap.c
+		Warning fix
+	* src/compose.c
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/toolbar.c
+		Allow replying to multiple emails
+		in multiple windows
+	* src/mimeview.c
+	* src/etpan/imap-thread.c
+		Leak fixes
+
 2006-05-18 [paul]	2.2.0cvs32
 
 	* src/summaryview.c

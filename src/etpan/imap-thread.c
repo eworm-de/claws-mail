@@ -1073,6 +1073,26 @@ struct search_result {
 	clist * search_result;
 };
 
+static struct mailimap_set_item *sc_mailimap_set_item_copy(struct mailimap_set_item *orig)
+{
+	return mailimap_set_item_new(orig->set_first, orig->set_last);
+}
+
+static struct mailimap_set *sc_mailimap_set_copy(struct mailimap_set *orig)
+{
+	clist *list = orig ? orig->set_list : NULL;
+	clist *newlist = clist_new();
+	clistiter *cur;
+	
+	if (!orig)
+		return NULL;
+	for (cur = clist_begin(list); cur; cur = clist_next(cur))
+		clist_append(newlist, 
+			sc_mailimap_set_item_copy(
+			(struct mailimap_set_item *)clist_content(cur)));
+	return mailimap_set_new(newlist);
+}
+
 static void search_run(struct etpan_thread_op * op)
 {
 	struct search_param * param;
@@ -1085,7 +1105,8 @@ static void search_run(struct etpan_thread_op * op)
 	
 	param = op->param;
 	
-	uid_key = mailimap_search_key_new_uid(param->set);
+	/* we copy the mailimap_set because freeing the key is recursive */
+	uid_key = mailimap_search_key_new_uid(sc_mailimap_set_copy(param->set));
 	
 	search_type_key = NULL;
 	switch (param->type) {
@@ -1149,6 +1170,9 @@ static void search_run(struct etpan_thread_op * op)
 	
 	r = mailimap_uid_search(param->imap, NULL, key, &search_result);
 	
+	/* free the key (with the imapset) */
+	mailimap_search_key_free(key);
+
 	result = op->result;
 	result->error = r;
 	result->search_result = search_result;

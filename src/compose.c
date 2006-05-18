@@ -5689,6 +5689,7 @@ static void compose_spell_menu_changed(void *data)
 }
 #endif
 
+static gboolean compose_force_window_origin = TRUE;
 static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 						 gboolean batch)
 {
@@ -5768,7 +5769,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MIN_SIZE);
-	gtk_widget_set_uposition(window, prefs_common.compose_x, 
+	
+	if (compose_force_window_origin)
+		gtk_widget_set_uposition(window, prefs_common.compose_x, 
 				 prefs_common.compose_y);
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
@@ -8788,10 +8791,10 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
 	}
 }
 
-void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
-				    guint action)
+static void compose_reply_from_messageview_real(MessageView *msgview, GSList *msginfo_list, 
+				    guint action, gboolean opening_multiple)
 {
-	gchar *body;
+	gchar *body = NULL;
 	GSList *new_msglist = NULL;
 	MsgInfo *tmp_msginfo = NULL;
 	gboolean originally_enc = FALSE;
@@ -8801,7 +8804,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 
 	g_return_if_fail(msginfo_list != NULL);
 
-	if (g_slist_length(msginfo_list) == 1) {
+	if (g_slist_length(msginfo_list) == 1 && !opening_multiple) {
 		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
 		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
 		
@@ -8818,7 +8821,8 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 		}
 	}
 
-	body = messageview_get_selection(msgview);
+	if (!opening_multiple)
+		body = messageview_get_selection(msgview);
 
 	if (new_msglist) {
 		compose = compose_reply_mode((ComposeMode)action, new_msglist, body);
@@ -8832,6 +8836,41 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 	}
 
 	g_free(body);
+}
+
+void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
+				    guint action)
+{
+	if ((!prefs_common.forward_as_attachment || action != COMPOSE_FORWARD) 
+	&&  action != COMPOSE_FORWARD_AS_ATTACH && g_slist_length(msginfo_list) > 1) {
+		GSList *cur = msginfo_list;
+		gchar *msg = g_strdup_printf(_("You are about to reply to %d "
+					       "messages. Opening the windows "
+					       "could take some time. Do you "
+					       "want to continue?"), 
+					       g_slist_length(msginfo_list));
+		if (g_slist_length(msginfo_list) > 9
+		&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
+		    != G_ALERTALTERNATE) {
+		    	g_free(msg);
+			return;
+		}
+		g_free(msg);
+		/* We'll open multiple compose windows */
+		/* let the WM place the next windows */
+		compose_force_window_origin = FALSE;
+		for (; cur; cur = cur->next) {
+			GSList tmplist;
+			tmplist.data = cur->data;
+			tmplist.next = NULL;
+			compose_reply_from_messageview_real(msgview, &tmplist, action, TRUE);
+		}
+		compose_force_window_origin = TRUE;
+	} else {
+		/* forwarding multiple mails as attachments is done via a
+		 * single compose window */
+		compose_reply_from_messageview_real(msgview, msginfo_list, action, FALSE);
+	}
 }
 
 void compose_set_position(Compose *compose, gint pos)
