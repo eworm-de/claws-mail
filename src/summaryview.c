@@ -848,6 +848,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 
+	if (!is_refresh)
+		main_create_mailing_list_menu (summaryview->mainwin, NULL);
+
 	if (!prefs_common.summary_quicksearch_sticky
 	 && !prefs_common.summary_quicksearch_recurse
 	 && !quicksearch_is_running(summaryview->quicksearch)
@@ -5067,6 +5070,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	g_return_if_fail(msginfo != NULL);
 
+	main_create_mailing_list_menu (summaryview->mainwin, msginfo);
 	toolbar_set_learn_button
 		(summaryview->mainwin->toolbar,
 		 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);

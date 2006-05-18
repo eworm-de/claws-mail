@@ -1,3 +1,9 @@
+2006-05-18 [paul]	2.2.0cvs32
+
+	* src/summaryview.c
+		keep Mailing-List menu refreshed
+		Thanks to Colin
+
 2006-05-18 [paul]	2.2.0cvs31
 
 	* manual/advanced.xml
