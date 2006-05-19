@@ -1118,6 +1118,12 @@ static gint mh_get_flags(Folder *folder, FolderItem *item,
 */
 	if (!item)
 		return 0;
+
+	/* don't update from .mh_sequences if the item's opened: mails may have
+	 * been marked read/unread and it's not yet written in the file. */	
+	if (item->opened)
+		return 0;
+
 	path = folder_item_get_path(item);
 
 	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,

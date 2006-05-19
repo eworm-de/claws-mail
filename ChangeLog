@@ -1,3 +1,10 @@
+2006-05-19 [cleroy]	2.2.0cvs34
+
+	* src/mh.c
+		Don't update flags from current folder
+		Probably fixes bug #935 (Read Messages 
+		Revert to Being Marked as Unread)
+
 2006-05-18 [colin]	2.2.0cvs33
 
 	* src/imap.c
