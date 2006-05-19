@@ -1,3 +1,14 @@
+2006-05-19 [colin]	2.2.0cvs40
+
+	* src/imap.c
+		Don't issue SELECT in imap_change_flags
+		before having checked that we indeed have
+		some flags to change. MSG_POSTFILTERED for
+		example can't be used on IMAP.
+		Fixes bug #955 (copying messages between 
+		imap folders is extremely slow), which was
+		a regression.
+
 2006-05-19 [colin]	2.2.0cvs39
 
 	* src/folder.c

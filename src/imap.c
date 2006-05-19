@@ -3452,12 +3452,6 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if (!session) {
 		return;
 	}
-	lock_session();
-	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
-	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
-	    	unlock_session();
-		return;
-	}
 
 	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
 		flags_set |= IMAP_FLAG_FLAGGED;
@@ -3479,6 +3473,18 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_DELETED(msginfo->flags) && !(newflags & MSG_DELETED))
 		flags_unset |= IMAP_FLAG_DELETED;
 
+	if (!flags_set && !flags_unset) {
+		/* the changed flags were not translatable to IMAP-speak.
+		 * like MSG_POSTFILTERED */
+		return;
+	}
+
+	lock_session();
+	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
+	    	unlock_session();
+		return;
+	}
 	numlist.next = NULL;
 	numlist.data = GINT_TO_POINTER(msginfo->msgnum);
 
