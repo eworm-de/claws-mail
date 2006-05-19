@@ -1,5 +1,224 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.2.0
+-------
+
+  * S/MIME signature verification has been removed from the PGP/MIME
+    plugin as it is now provided by the S/MIME plugin.
+
+  * IMAP users will see significant speed improvements.
+
+  * ANONYMOUS auth has been added for IMAP
+
+  * In the Compose window all spell-checker options are now available
+    from the /Spelling/Options menu. 
+	
+  * Syntax errors in the extended Quick Search are now indicated by
+    a pink/red background.
+
+  * An encrypt-to-self option has been added to the Account Privacy
+    options.
+
+  * Sysadmins can now provide their users with pre-filled values in
+    the Setup Wizard. See the manual, '6.6. Deploying Sylpheed-Claws',
+    for details.
+
+  * Various GUI improvements have been added.
+
+  * A new command line option has been added: --select 'folder[/msg]'
+    This can be used at startup and causes the specified folder/message
+    to be selected. 'folder' is a folder id like '#mh/Mailbox/inbox'
+
+  * Optional background colouring of quotes has been added. It can be
+    configured from the Colour Preferences dialogue.
+    GTK+-2.8.x or newer is required for this feature.
+
+  * In the Compose window, multiple quote levels are now coloured in
+    the same way as the Message View.
+
+  * A warning is now displayed on expired SSL certificates and the 
+    expiration date is shown.
+
+  * A hidden option has been added, 'compose_no_markup', this prohibits
+    the use of bold and italic text in Compose dialogue's account 
+    selector.
+
+  * LDAPS support has been added.
+
+  * The user manual has been updated, and French and Polish 
+    translations are now also included.
+
+* 2.1.1
+-------
+
+  * bug fix release
+
+  * The Preferences config file, ~/.sylpheed-claws/sylpheedrc, is now
+    stored with UTF-8 encoding
+
+* 2.1.0
+-------
+
+  * libetpan version 0.45 or newer is now required for IMAP support,
+    this allows checking for IMAP/SSL certificates.
+
+  * Support for the Face header has been added, 
+    see http://quimby.gnus.org/circus/face/
+
+  * In the Templates dialog TAB address completion has been added for
+    Cc and Bcc fields, in addition to To. 
+
+  * An account's signature file, (Account Preferences, Compose tab),
+    can now been edited in place using the configured text editor.
+
+  * An advanced search is now possible in the '/Edit/Search folder' 
+    dialog.
+
+  * '/Edit/Find' has been added to the Compose window for text 
+    searching.
+
+  * A progress bar is now shown in the status bar whilst doing a Quick 
+    Search.
+
+  * A long search can now be cancelled.
+
+  * In a Sent mail folder the From column in the message list is now
+    automatically changed to the To column.
+
+  * '/Message/Colour Label' has been added to the main menu, enabling
+    (unmodifiable) shortcut keys, Ctrl+[0-7].
+
+  * The colour labels are now customisable from the 'Display/Colours'
+    page of the Preferences. It is now possible to choose any colours 
+    and to give them each a label.
+
+  * A Spell Checking option to 'Recheck message when changing 
+    dictionary' has been added.
+
+  * An option to 'Render HTML-only mail with plugin if possible' has
+    been added to the 'Message View/Text Options' preferences page.
+
+  * Headers in the message view and the Custom headers dialog are now
+    translated if the option 'Translate header names' is activated.
+
+  * It is now possible to sort the columns in the Addressbook.
+
+  * More drag-n-drop capabilities have been added, from the message
+    list to other apps, from the mimeview to other apps, from other 
+    apps to message list, from other apps to folder list, from the 
+    mimeview to the message and folder lists and the Compose window's
+    attachments pane.
+
+  * "Ignore thread" has beed added as a filtering action.
+
+  * The Compose window is now hidden when sending mails via filtering.
+
+  * An alphabetical resort is done immediately when a folder's name
+    is changed.
+
+  * Unsubscribing a newsgroup now removes the related folder and
+    articles from newscache/
+
+  * A "Get more..." link has been added to the Plugins window. This
+    loads http://claws.sylpheed.org/plugins.php in your browser.
+
+  * The SpamAssassin plugin is now equipped with a spam learning 
+    interface, usable by right-clicking a message and choosing
+    'Mark as Spam' or 'Mark as Ham' in the Mark submenu. It is now also
+    possible to disable SpamAssasin filtering when receiving mail, so
+    that the plugin can be used for learning only.
+
+  * Remote learning in the SpamAssassin plugin has been added. This 
+    requires SpamAssassin 3.1.x.
+
+  * A new script has been added that integrates a Thunderbird folder 
+    tree into Sylpheed-Claws, tools/tbird2syl.py
+
+* 2.0.0
+-------
+
+  * libetpan >= 0.41 is now required for IMAP support
+
+  * A new and completely rewritten manual has been added.
+
+  * An icon legend window has been added to the Help menu
+
+  * Attached images can now be printed along with the message when using
+    the optional libgnomeprintui support.
+
+  * '--exit' command-line option has been added.
+
+  * '--subscribe' command-line option has been added.
+    Calling sylpheed-claws --subscribe '%s' will ask the loaded plugins
+    if they can handle the type of URL passed as a parameter. Thus, if
+    using the RSSyl or vCalendar plugins, for example, the user will be
+    able to subscribe RSS feeds or Webcals from the browser.
+
+  * sylpheed-claws email@domain.com  is now equivalent to --compose
+
+  * sylpheed-claws proto://blah.com is equivalent to --subscribe
+
+  * HIG compliant button order has been implemented.
+
+  * Several dialogues throughout have been improved.
+
+  * Text can now also been displayed next to the icons in the main 
+    window Toolbar.
+
+  * Quick mail retrieval from any account is now possible due to the
+    account submenu which has been added to the 'Get All' button.
+
+  * The spellchecker context menu in the compose window has been added
+    to the standard GtkTextView menu instead of replacing it.
+
+  * The Subject in the compose window title now updates instantaneously.
+
+  * The mimetypes list in the compose window attachment pane is now
+    alphabetically ordered.
+
+  * The message view email and URI parsers have been enhanced.
+
+  * In Quick Search Extended mode, a '...' button has been added, this 
+    provides the user with a dialogue enabling the quick formation of 
+    search criteria.
+
+  * When Quick Search is activated, the entry box is given a yellow
+    background for greater visibility.
+
+  * The LDAP search in the address book now supports wildcard searching
+    using '*'.
+
+  * The configuration option 'Go to inbox after receiving new mail' has 
+    been moved from 'Display/Summaries' to 'Mail handling/Receive'.
+
+  * The 'Wrap at send' configuration option has been removed.
+
+  * Colour preferences have been moved from '/Message View/Colors' to
+    '/Display/Colors'.
+
+  * The previously hidden option, color_new, has been added to the GUI
+    as '/Display/Colors/Folder' containing new messages.
+
+  * The spamassassin and spamassassin_gtk plugins have been merged into
+    one single plugin, and this plugin is now built by default if the
+    requirements are matched.
+
+  * The clamav and clamav_gtk plugins have been merged into one single
+    plugin.
+
+  * GnuPG support: Add support for PKA info if available
+
+  * The PGP/Inline plugin now supports Content-Type 'application/pgp'.
+
+  * A check to verify that plugins are licenced under a GPL-compatible
+    licence has been added.
+
+  * The unmaintained mathml_viewer plugin has been removed.
+
+  * Added tools/filter_conv_new.pl.
+    Converts the new style Sylpheed filter rules (Sylpheed >= 0.9.99)
+    to Claws filtering rules.
+
 * 1.9.100
 ---------
 
