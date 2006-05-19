@@ -1526,6 +1526,11 @@ gint folder_item_open(FolderItem *item)
 	if (item->no_select)
 		return -1;
 
+	if (item->scanning) {
+		debug_print("%s is scanning... \n", item->path ? item->path : item->name);
+		return -2;
+	}
+
 	item->processing_pending = TRUE;
 	folder_item_process_open (item, NULL, NULL, NULL);
 	
@@ -1682,11 +1687,14 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
+	item->scanning = TRUE;
+
 	debug_print("Scanning folder %s for cache changes.\n", item->path ? item->path : "(null)");
 	
 	/* Get list of messages for folder and cache */
 	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
+		item->scanning = FALSE;
 		return(-1);
 	}
 
@@ -1961,6 +1969,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	folder_item_update(item, update_flags);
 	folder_item_update_thaw();
 	
+	item->scanning = FALSE;
+
 	return 0;
 }
 
@@ -2017,6 +2027,8 @@ gint folder_item_syncronize_flags(FolderItem *item)
 	if (item->no_select)
 		return -1;
 
+	item->scanning = TRUE;
+
 	if (item->cache == NULL)
 		folder_item_read_cache(item);
 	
@@ -2028,6 +2040,8 @@ gint folder_item_syncronize_flags(FolderItem *item)
 		procmsg_msginfo_free((MsgInfo *) cur->data);
 	
 	g_slist_free(msglist);
+
+	item->scanning = FALSE;
 
 	return ret;
 }

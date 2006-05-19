@@ -631,6 +631,7 @@ struct _FolderItem
 	/* for faster search of special parents */
 	SpecialFolderItemType parent_stype;
 	gboolean processing_pending;
+	gboolean scanning;
 };
 
 struct _PersistPrefs
