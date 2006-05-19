@@ -308,10 +308,15 @@ struct _PrefsCommon
 	gchar *print_cmd;
 	gchar *ext_editor_cmd;
 
-        gboolean cliplog;
-        guint loglength;
+    gboolean cliplog;
+    guint loglength;
+	gulong log_msg_color;
+	gulong log_warn_color;
+	gulong log_error_color;
+	gulong log_in_color;
+	gulong log_out_color;
 
-        gboolean confirm_on_exit;
+    gboolean confirm_on_exit;
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;

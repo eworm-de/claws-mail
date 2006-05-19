@@ -138,17 +138,21 @@ void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
 	GdkColormap *colormap;
-	GdkColor color[5] =
-		{{0, 0, 0xafff, 0}, {0, 0xefff, 0, 0}, {0, 0xefff, 0, 0},
-		  {0, 0, 0, 0}, {0, 0, 0, 0xefff}};
+	GdkColor color[5];
 	gboolean success[5];
 	gint i;
 
-	logwin->msg_color   = color[0];
-	logwin->warn_color  = color[1];
+	gtkut_convert_int_to_gdk_color(prefs_common.log_msg_color, &color[0]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_warn_color, &color[1]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_error_color, &color[2]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_in_color, &color[3]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_out_color, &color[4]);
+
+	logwin->msg_color = color[0];
+	logwin->warn_color = color[1];
 	logwin->error_color = color[2];
-	logwin->in_color    = color[3];
-	logwin->out_color   = color[4];
+	logwin->in_color = color[3];
+	logwin->out_color = color[4];
 
 	colormap = gdk_drawable_get_colormap(logwin->window->window);
 	gdk_colormap_alloc_colors(colormap, color, 5, FALSE, TRUE, success);

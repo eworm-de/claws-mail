@@ -1,3 +1,13 @@
+2006-05-19 [wwp]	2.2.0cvs37
+
+	* manual/advanced.xml
+	* manual/fr/advanced.xml
+	* src/gtk/logwindow.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		added hidden prefs to allow customization of colors used in
+		protocol log window (useful for dark gtk+ themes).
+
 2006-05-19 [wwp]	2.2.0cvs36
 
 	* ChangeLog
