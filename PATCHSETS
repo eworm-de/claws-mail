@@ -1504,3 +1504,4 @@
 ( cvs diff -u -r 1.395.2.200 -r 1.395.2.201 src/summaryview.c;  ) > 2.2.0cvs32.patchset
 ( cvs diff -u -r 1.382.2.272 -r 1.382.2.273 src/compose.c;  cvs diff -u -r 1.179.2.113 -r 1.179.2.114 src/imap.c;  cvs diff -u -r 1.274.2.115 -r 1.274.2.116 src/mainwindow.c;  cvs diff -u -r 1.83.2.69 -r 1.83.2.70 src/mimeview.c;  cvs diff -u -r 1.395.2.201 -r 1.395.2.202 src/summaryview.c;  cvs diff -u -r 1.43.2.44 -r 1.43.2.45 src/toolbar.c;  cvs diff -u -r 1.1.4.36 -r 1.1.4.37 src/etpan/imap-thread.c;  ) > 2.2.0cvs33.patchset
 ( cvs diff -u -r 1.79.2.27 -r 1.79.2.28 src/mh.c;  ) > 2.2.0cvs34.patchset
+( cvs diff -u -r 1.96.2.113 -r 1.96.2.114 src/textview.c;  cvs diff -u -r 1.1.4.15 -r 1.1.4.16 src/gtk/logwindow.c;  ) > 2.2.0cvs35.patchset

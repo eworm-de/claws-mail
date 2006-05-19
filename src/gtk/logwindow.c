@@ -246,10 +246,14 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (tag == NULL) {
 		if (strstr(logtext->text, "] POP3>")
 		||  strstr(logtext->text, "] IMAP4>")
+		||  strstr(logtext->text, "] SMTP>")
+		||  strstr(logtext->text, "] ESMTP>")
 		||  strstr(logtext->text, "] NNTP>"))
 			tag = "output";
 		if (strstr(logtext->text, "] POP3<")
 		||  strstr(logtext->text, "] IMAP4<")
+		||  strstr(logtext->text, "] SMTP<")
+		||  strstr(logtext->text, "] ESMTP<")
 		||  strstr(logtext->text, "] NNTP<"))
 			tag = "input";
 	}

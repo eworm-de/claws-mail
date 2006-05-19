@@ -1,3 +1,11 @@
+2006-05-19 [paul]	2.2.0cvs35
+
+	* src/textview.c
+		make Reply-To fully clickable
+	* src/gtk/logwindow.c
+		more colouring (SMTP ESMTP)
+	Both patches by Pawel Pekala
+
 2006-05-19 [cleroy]	2.2.0cvs34
 
 	* src/mh.c
