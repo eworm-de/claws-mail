@@ -1,3 +1,8 @@
+2006-05-19 [wwp]	2.2.0cvs36
+
+	* ChangeLog
+		fix an old erroneous changelog entry (thanks to Fabien Vantard).
+
 2006-05-19 [paul]	2.2.0cvs35
 
 	* src/textview.c
@@ -260,6 +265,47 @@
                 GUI rework.
                 Both patches by Pawel.
 
+2006-05-08 [paul]	2.2.0cvs2
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/messageview.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+		add Mailing List support
+		based on the old 0.6.5claws25 patch by 
+		Melvin Hadasht, with finishing touches
+		by Colin
+
+2006-05-08 [colin]	2.2.0cvs1
+
+	* src/mainwindow.c
+	* src/toolbar.c
+	* src/toolbar.h
+		Add contextual menu on Compose toolbar 
+		button. Fixes bug #944 (Automatic 
+		addresses not applied when changing account 
+		from compose window)
+
+2006-05-08 [paul]	2.2.0
+
+	2.2.0 released
+
+2006-05-08 [paul]	2.1.1cvs51
+
+	* po/cs.po
+	* po/de.po
+	* po/en_GB.po
+	* po/fi.po
+	* po/fr.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Tim, Stephan Sachse, me, Flammie Pirinen,
+		Fabien Vantard, Frederico Goncalves Guimaraes,
+		Aleksandar Urosevic, and Ralgh Young
 
 2006-05-12 [colin]	2.1.1cvs50
 
@@ -405,8 +451,9 @@
 	* src/gtk/gtkaspell.c
 		Fix crash on redirect (related to the return 
 		of the aspell menu in compose's toolbar)
+ 	* src/prefs_msg_colors.c
+		Fix sensitivity widgets
 	* src/image_viewer.c
-	* src/prefs_msg_colors.c
 	* src/gtk/pluginwindow.c
 	* src/gtk/prefswindow.c
 		Change released signals to clicked (Fabien)
