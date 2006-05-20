@@ -1,3 +1,11 @@
+2006-05-20 [colin]	2.2.0cvs41
+
+	* src/imap.c
+		Fix -rc2 problems:
+		- remove cache of moved messages from original folder
+		- apply new flags to messages even if they aren't appliable
+		  via IMAP.
+
 2006-05-20 [colin]
 
 	* 2.3.0-rc2 released
