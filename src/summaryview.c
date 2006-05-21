@@ -2347,8 +2347,8 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	summary_set_header(summaryview, text, msginfo, &free_from);
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
-				NULL, NULL, NULL, NULL, FALSE,
-				gnode->parent->parent ? TRUE : FALSE);
+				NULL, NULL, NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
+				//gnode->parent->parent ? TRUE : FALSE);
 #define SET_TEXT(col) \
 	gtk_ctree_node_set_text(ctree, cnode, col_pos[col], \
 				text[col_pos[col]])
@@ -2420,7 +2420,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 		g_node_destroy(root);
                 
-		summary_thread_init(summaryview);
+		//summary_thread_init(summaryview);
 		END_TIMING();
 	} else {
 		gchar *text[N_SUMMARY_COLS];

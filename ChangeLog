@@ -1,3 +1,8 @@
+2006-05-21 [colin]	2.2.0cvs44
+
+	* src/summaryview.c
+		Don't expand after building threads, but during
+
 2006-05-21 [colin]	2.2.0cvs43
 
 	* src/procmsg.c
