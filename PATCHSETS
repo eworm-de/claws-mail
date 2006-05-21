@@ -1511,3 +1511,4 @@
 ( cvs diff -u -r 1.213.2.92 -r 1.213.2.93 src/folder.c;  cvs diff -u -r 1.87.2.27 -r 1.87.2.28 src/folder.h;  cvs diff -u -r 1.207.2.97 -r 1.207.2.98 src/folderview.c;  ) > 2.2.0cvs39.patchset
 ( cvs diff -u -r 1.179.2.114 -r 1.179.2.115 src/imap.c;  ) > 2.2.0cvs40.patchset
 ( cvs diff -u -r 1.179.2.115 -r 1.179.2.116 src/imap.c;  ) > 2.2.0cvs41.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/advanced.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/faq.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/glossary.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/handling.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/intro.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/plugins.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/pl/sylpheed-claws-manual.xml;  ) > 2.2.0cvs42.patchset

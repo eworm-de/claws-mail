@@ -19,7 +19,7 @@
   <section id="intro_features"> 
     <title>Podstawowe funkcje</title>
     <para>
-	    Sylpheed-Claws obs³uguje prawie wszystko co powinien mieæ doskona³y klient email. Pobieranie poczty przy pomocy protoko³ów POP3, IMAP, lokalne skrzynki, obs³uga SSL, obs³uga ró¿nych metod autentykacji. Posiada wiele kont i skrzynek, potê¿ny mechanizm filtrowania i poszukiwania, mo¿liwo¶ci importu/eksportu z wielu ró¿nych formatów, obs³ugê GnuPGP (cyfrowe podpisy i szyfrowanie). Posiada wtyczki, mo¿no¶æ konfiguracji pasków narzêdziowych, sprawdzanie pisowni, kilka mechanizmów chroni±cych przed utrat± danych, opcje specyficzne dla katalogów i wiele wiêcej. Kompletna lista znajduje siê na <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
+	    Sylpheed-Claws obs³uguje prawie wszystko co powinien mieæ doskona³y klient email. Pobieranie poczty przy pomocy protoko³ów POP3, IMAP, lokalne skrzynki, obs³uga SSL, obs³uga ró¿nych metod autentykacji. Posiada wiele kont i skrzynek, potê¿ny mechanizm filtrowania i poszukiwania, mo¿liwo¶ci importu/eksportu z wielu ró¿nych formatów, obs³ugê GnuPGP (cyfrowe podpisy i szyfrowanie). Posiada wtyczki, mo¿no¶æ konfiguracji pasków narzêdziowych, sprawdzanie pisowni, kilka mechanizmów chroni±cych przed utrat± danych, opcje specyficzne dla katalogów i wiele wiêcej. Kompletna lista znajduje siê na <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
     </para>
   </section>
 
@@ -35,22 +35,22 @@
   <section id="intro_information">
     <title>Przydatne strony WWW</title>
     <para>
-	Strona projektu: <ulink url="http://claws.sylpheed.org/">http://claws.sylpheed.org/</ulink>
+	Strona projektu: <ulink url="http://www.sylpheed-claws.net/">http://www.sylpheed-claws.net/</ulink>
     </para>
     <para>
-	Najnowsze wiadomo¶ci: <ulink url="http://claws.sylpheed.org/news.php">http://claws.sylpheed.org/news.php</ulink>
+	Najnowsze wiadomo¶ci: <ulink url="http://www.sylpheed-claws.net/news.php">http://www.sylpheed-claws.net/news.php</ulink>
     </para>
     <para>
-	Dodatkowe wtyczki: <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>
+	Dodatkowe wtyczki: <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>
     </para>
     <para>
-	Tematy ikon: <ulink url="http://claws.sylpheed.org/themes.php">http://claws.sylpheed.org/themes.php</ulink>
+	Tematy ikon: <ulink url="http://www.sylpheed-claws.net/themes.php">http://www.sylpheed-claws.net/themes.php</ulink>
     </para>
     <para>
-	Narzêdzia: <ulink url="http://claws.sylpheed.org/tools.php">http://claws.sylpheed.org/tools.php</ulink>
+	Narzêdzia: <ulink url="http://www.sylpheed-claws.net/tools.php">http://www.sylpheed-claws.net/tools.php</ulink>
     </para>
     <para>
-	Lista dyskusyjna u¿ytkowników: <ulink url="http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/">http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/</ulink>
+	    Lista dyskusyjne: <ulink url="http://www.sylpheed-claws.net/MLs.php">http://www.sylpheed-claws.net/MLs.php</ulink>
     </para>
     <para>
 	Baza b³êdów programu: <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>

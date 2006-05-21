@@ -30,7 +30,7 @@
     <example><title>Wyszukaj w Google u¿ywaj±c pliku skryptowego</title>
 	    <variablelist>
 		    <varlistentry><term>Nazwa menu: <emphasis>Szukaj/Google</emphasis> Komenda: <emphasis>|/¶cie¿ka/do/google_search.pl</emphasis></term>
-			    <listitem><para>Wyszukuje w Google obecnie zaznaczony tekst (<emphasis>|</emphasis>) u¿ywaj±c skryptu <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Wyszukuje w Google obecnie zaznaczony tekst (<emphasis>|</emphasis>) u¿ywaj±c skryptu <emphasis><ulink url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -55,7 +55,7 @@
     Nak³adanie szablonu najpierw przetwarza tre¶æ wiadomo¶ci a nastêpnie nag³ówki To, Cc, Bcc oraz temat.
     </para>
     <para>
-	    Wiêcej informacji i przyk³adów u¿ycia mo¿na znale¼æ w FAQ tworzonym przez u¿ytkowników na stronie Sylpheed-Claws <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+	    Wiêcej informacji i przyk³adów u¿ycia mo¿na znale¼æ w FAQ tworzonym przez u¿ytkowników na stronie Sylpheed-Claws <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
     </para>
    </section>
   <section id="adv_processing">
@@ -74,6 +74,12 @@
   </para>
   <para>
   Etykiety kolorów s± konfigurowalne. Zarówno kolor jak i etykieta mog± zostaæ zmienione przez u¿ytkownika. Te preferencje mo¿na znale¼æ w zak³adce <quote>Konfiguracja/Ustawienia/Wy¶wietlanie/Kolory</quote>.
+  </para>
+  </section>
+  <section id="adv_ml_support">
+  <title>Obs³uga list dyskusyjnych</title>
+  <para>
+  Sylpheed-Claws oferuje wsparcie dla list dyskusyjnych w menu <quote>Wiadomo¶æ/Mailing-List</quote>. Gdy zostanie wybrana wiadomo¶æ z grupy dyskusyjnej to menu pozwala na szybkie zapisywanie, wypisywanie, pisanie wiadomo¶ci, otrzymanie pomocy, kontakt z w³a¶cicielem listy i przegl±danie archiwum listy; poprzez otwarcie okna tworzenia wiadomo¶ci z ju¿ wype³nionym adresem lub otworzenie odpowiedniego adresu w twojej przegl±darce internetowej.
   </para>
   </section>
   <section id="adv_plugins">
@@ -196,6 +202,9 @@
 	    </varlistentry>
 	    <varlistentry><term>hover_timeout</term>
 		    <listitem><para>czas w milisekundach, po którym drzewa katalogu rozwin± siê przy przenoszeniu metod± drag'n'drop</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
+		    <listitem><para>kolory u¿ywane w oknie dziennika</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>statusbar_update_step</term>
 		    <listitem><para>interwa³ od¶wie¿ania pasków postêpu</para></listitem>

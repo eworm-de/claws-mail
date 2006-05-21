@@ -4,7 +4,7 @@
     <section>
     <title>Jakie s± ró¿nice pomiêdzy Sylpheed-Claws i Sylpheed?</title>
     <para>
-	    Sylpheed-Claws jest <emphasis>rozszerzon±</emphasis> wersj± Sylpheed, przekonasz siê, ¿e zawiera wszystkie mo¿liwo¶ci Sylpheed a nawet znacznie wiêcej. Zawiera równie¿ zmodyfikowane okna dialogowe w celu u³atwienia u¿ytkowania. Wiêcej informacji na ten temat mo¿na znale¼æ na <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
+	    Sylpheed-Claws jest <emphasis>rozszerzon±</emphasis> wersj± Sylpheed, przekonasz siê, ¿e zawiera wszystkie mo¿liwo¶ci Sylpheed a nawet znacznie wiêcej. Zawiera równie¿ zmodyfikowane okna dialogowe w celu u³atwienia u¿ytkowania. Wiêcej informacji na ten temat mo¿na znale¼æ na <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
     </para></section>
     <section>
     <title>Co oznacza s³owo <quote>Sylpheed</quote>?</title>
@@ -19,13 +19,13 @@
     <section>
     <title>W jaki sposób mogê zaproponowaæ poprawki, zg³osiæ b³êdy i podyskutowaæ o Sylpheed-Claws z innymi u¿ytkownikami?</title>
     <para>
-        £atki powinny byæ zg³aszane poprzez SourceForge Patch Tracker na <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, prosimy jednak o przestrzeganie naszych zasad  dotycz±cych ³atek <ulink url="http://claws.sylpheed.org/devel.php">http://claws.sylpheed.org/devel.php</ulink>.
+        £atki powinny byæ zg³aszane poprzez SourceForge Patch Tracker na <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, prosimy jednak o przestrzeganie naszych zasad  dotycz±cych ³atek <ulink url="http://www.sylpheed-claws.net/devel.php">http://www.sylpheed-claws.net/devel.php</ulink>.
     </para>
     <para>
 	 Zg³aszanie b³êdów odbywa siê poprzez system Bugzilla, <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>.
     </para>
     <para>
-	¯eby podyskutowaæ z innymi u¿ytkownikami mo¿na zapisaæ siê na listê dyskusyjn± Sylpheed-Claws  <ulink url="http://claws.sylpheed.org/MLs.php">http://claws.sylpheed.org/MLs.php</ulink>.
+	¯eby podyskutowaæ z innymi u¿ytkownikami mo¿na zapisaæ siê na listê dyskusyjn± Sylpheed-Claws  <ulink url="http://www.sylpheed-claws.net/MLs.php">http://www.sylpheed-claws.net/MLs.php</ulink>.
     </para>
     </section>
     <section>
@@ -61,7 +61,7 @@
     <section>
     <title>Gdzie mogê znale¼æ wiêcej odpowiedzi na czêsto zadawane pytania o Sylpheed-Claws?</title>
     <para>
-	Wiêksz±, tworzon± przez u¿ytkowników wersjê FAQ mo¿na znale¼æ na stronie Sylpheed-Claws  <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>
+	Wiêksz±, tworzon± przez u¿ytkowników wersjê FAQ mo¿na znale¼æ na stronie Sylpheed-Claws  <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
     </para>
     </section>
 </appendix>

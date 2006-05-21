@@ -213,6 +213,16 @@ LDAP Data Interchange Format. Tekstowy format pliku szeroko u¿ywany do przenosze
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_mailinglist">
+    <term>
+Lista dyskusyjna
+    </term>
+    <listitem>
+      <para>
+Elektroniczne listy dyskusyjne s± specjalnym u¿yciem us³ugi e-mail pozwalaj±cym na szerokie rozpowszechnianie informacji do wielu u¿ytkownków sieci Internet. Przybieraj± one najczê¶ciej formê listy dyskusyjnej tak jak np. lista dyskusyjna u¿ytkowników Sylpheed-Claws, która wysy³a wiadomo¶ci do wszystkich jej u¿ytkowników a oni mog± post±piæ w podobny sposób.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_local_mbox_file">
     <term>
 Lokalna skrzynka mbox

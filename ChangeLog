@@ -1,3 +1,14 @@
+2006-05-21 [colin]	2.2.0cvs42
+
+	* manual/pl/advanced.xml
+	* manual/pl/faq.xml
+	* manual/pl/glossary.xml
+	* manual/pl/handling.xml
+	* manual/pl/intro.xml
+	* manual/pl/plugins.xml
+	* manual/pl/sylpheed-claws-manual.xml
+		Polish manual updated by Pawel
+
 2006-05-20 [colin]
 
 	* 2.3.0-rc3 released
