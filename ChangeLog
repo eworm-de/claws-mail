@@ -1,3 +1,11 @@
+2006-05-21 [colin]	2.2.0cvs43
+
+	* src/procmsg.c
+	* src/summaryview.c
+		More timing possibilities... For next time I have 
+		to find out how the hell some 3GHz computer takes
+		one minute to open a 30k folder...
+
 2006-05-21 [colin]	2.2.0cvs42
 
 	* manual/pl/advanced.xml

@@ -44,6 +44,7 @@
 #include "partial_download.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "timing.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
 
@@ -244,7 +245,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	MsgInfo *msginfo;
 	const gchar *msgid;
         GSList *reflist;
-
+	START_TIMING("procmsg_get_thread_tree");
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	subject_relation = g_relation_new(2);
@@ -303,6 +304,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	}
 
 	if (prefs_common.thread_by_subject) {
+		START_TIMING("procmsg_get_thread_tree(1)");
 		for (node = root->children; node && node != NULL;) {
 			next = node->next;
 			msginfo = (MsgInfo *) node->data;
@@ -326,11 +328,12 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 			node = next;
 		}	
+		END_TIMING();
 	}
 	
 	g_relation_destroy(subject_relation);
 	g_hash_table_destroy(msgid_table);
-
+	END_TIMING();
 	return root;
 }
 
