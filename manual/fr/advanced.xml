@@ -62,7 +62,7 @@
     <para>
 	  Sylpheed-Claws propose des fonctions d'utilisation de liste de diffusion via le menu <quote>Message/Liste de diffusion/</quote>.
 	  Quand une message en provenance d'une liste de diffusion est sélectionné, ce menu vous permet d'envoyer un
-	  message à la liste, de contacter l'administrateur de la liste afin d'y souscrire, s'en désinscrire, obtenir de
+	  message à la liste, de contacter l'administrateur de la liste afin de s'inscrire, s'en désinscrire, obtenir de
 	  l'aide mais aussi consulter les archives&nbsp;; soit en ouvrant une nouvelle fenêtre de composition, soit en
 	  ouvrant un lien avec votre navigateur Internet.
     </para>
