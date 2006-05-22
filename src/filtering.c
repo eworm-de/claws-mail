@@ -263,6 +263,13 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 		
+		/* check if mail is set to copy already, 
+		 * in which case we have to do it */
+		if (info->is_copy && info->to_filter_folder) {
+			debug_print("should cp and mv !\n");
+			folder_item_copy_msg(info->to_filter_folder, info);
+			info->is_copy = FALSE;
+		}
 		/* mark message to be moved */		
 		info->is_move = TRUE;
 		info->to_filter_folder = dest_folder;
@@ -279,6 +286,13 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 
+		/* check if mail is set to copy already, 
+		 * in which case we have to do it */
+		if (info->is_copy && info->to_filter_folder) {
+			debug_print("should cp and mv !\n");
+			folder_item_copy_msg(info->to_filter_folder, info);
+			info->is_copy = FALSE;
+		}
 		/* mark message to be copied */		
 		info->is_copy = TRUE;
 		info->to_filter_folder = dest_folder;

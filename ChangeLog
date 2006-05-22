@@ -1,3 +1,16 @@
+2006-05-22 [colin]	2.2.0cvs46
+
+	* src/filtering.c
+		Fix possible infinite loop. 'copy' is not a 
+		final action, so when encountering a 'copy',
+		we have to check if a previous one was set
+		and do it. In the same way, if we encounter
+		a 'move' we have to perform a possibly 
+		pending 'copy'. This will slow down filtering
+		on IMAP if move+copy or multiple copy actions
+		are to be done, but handling it via the batch
+		would be really too convoluted.
+
 2006-05-22 [wwp]	2.2.0cvs45
 
 	* manual/fr/advanced.xml
