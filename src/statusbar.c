@@ -155,7 +155,7 @@ void statusbar_progress_all (gint done, gint total, gint step)
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
-			 (gfloat)done / (gfloat)total);
+			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);
 	} else if (total == 0) {
 		gtk_progress_bar_set_text
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");

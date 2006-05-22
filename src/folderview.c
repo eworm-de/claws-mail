@@ -1043,7 +1043,12 @@ gint folderview_check_new(Folder *folder)
 			if (folder && folder != item->folder) continue;
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 			if (!item->prefs->newmailcheck) continue;
-			
+			if (item->processing_pending == TRUE) {
+				debug_print("skipping %s, processing pending\n",
+					item->path ? item->path : item->name);
+				continue;
+			}
+
 			str = get_scan_str(item);
 
 			STATUSBAR_PUSH(folderview->mainwin, str);
@@ -1874,6 +1879,27 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+typedef struct _PostponedSelectData
+{
+	GtkCTree *ctree;
+	GtkCTreeNode *row;
+	gint column;
+	FolderView *folderview;
+} PostponedSelectData;
+
+static gboolean postpone_select(void *data)
+{
+	PostponedSelectData *psdata = (PostponedSelectData *)data;
+	debug_print("trying again\n");
+	psdata->folderview->open_folder = TRUE;
+	main_window_cursor_normal(psdata->folderview->mainwin);
+	STATUSBAR_POP(psdata->folderview->mainwin);
+	folderview_selected(psdata->ctree, psdata->row,
+			    psdata->column, psdata->folderview);
+	g_free(psdata);
+	return FALSE;
+}
+
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {
@@ -1881,6 +1907,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	gboolean opened;
 	FolderItem *item;
 	gchar *buf;
+	int res = 0;
 
 	folderview->selected = row;
 
@@ -1951,7 +1978,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	main_window_cursor_wait(folderview->mainwin);
 
-	if (folder_item_open(item) != 0) {
+	res = folder_item_open(item);
+	if (res == -1) {
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 
@@ -1961,7 +1989,19 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		can_select = TRUE;
 
 		return;
-        }
+        } else if (res == -2) {
+		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
+		data->ctree = ctree;
+		data->row = row;
+		data->column = column;
+		data->folderview = folderview;
+		debug_print("postponing open of %s till end of scan\n",
+			item->path ? item->path:item->name);
+		folderview->open_folder = FALSE;
+		can_select = TRUE;
+		g_timeout_add(500, postpone_select, data);
+		return;
+	}
 	
 	main_window_cursor_normal(folderview->mainwin);
 

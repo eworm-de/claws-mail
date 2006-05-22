@@ -1883,8 +1883,7 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), buf);
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(mainwin->progressbar),
-				(cur == 0 && total == 0) ? 0 :
-				(gfloat)cur / (gfloat)total);
+				(total == 0) ? 0 : (gfloat)cur / (gfloat)total);
 }
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
@@ -2667,19 +2666,28 @@ static void foldersort_cb(MainWindow *mainwin, guint action,
 static void import_mbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	import_mbox(mainwin->summaryview->folder_item);
+	/* only notify if import has failed */
+	if (import_mbox(mainwin->summaryview->folder_item) == -1) {
+		alertpanel_error(_("Mbox import has failed."));
+	}
 }
 
 static void export_mbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	export_mbox(mainwin->summaryview->folder_item);
+	/* only notify if export has failed */
+	if (export_mbox(mainwin->summaryview->folder_item) == -1) {
+		alertpanel_error(_("Export to mbox has failed."));
+	}
 }
 
 static void export_list_mbox_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
-	summaryview_export_mbox_list(mainwin->summaryview);
+	/* only notify if export has failed */
+	if (summaryview_export_mbox_list(mainwin->summaryview) == -1) {
+		alertpanel_error(_("Export to mbox has failed."));
+	}
 }
 
 static void empty_trash_cb(MainWindow *mainwin, guint action,

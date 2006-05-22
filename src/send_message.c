@@ -493,7 +493,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 		   cur_len, total_len);
 	progress_dialog_set_label(dialog->dialog, buf);
 	progress_dialog_set_fraction
-		(dialog->dialog, (gfloat)cur_len / (gfloat)total_len);
+		(dialog->dialog, (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
 
 	return 0;
 }

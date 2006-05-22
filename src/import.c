@@ -49,6 +49,7 @@
 #include "manage_window.h"
 #include "folder.h"
 #include "codeconv.h"
+#include "alertpanel.h"
 
 static GtkWidget *window;
 static GtkWidget *file_entry;
@@ -57,7 +58,7 @@ static GtkWidget *file_button;
 static GtkWidget *dest_button;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
-static gboolean import_ack;
+static gboolean import_ok; /* see import_mbox() return values */
 
 static void import_create(void);
 static void import_ok_cb(GtkWidget *widget, gpointer data);
@@ -68,9 +69,11 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 gint import_mbox(FolderItem *default_dest)
+/* return values: -2 skipped/cancelled, -1 error, 0 OK */
 {
-	gint ok = 0;
 	gchar *dest_id = NULL;
+
+	import_ok = -2;	// skipped or cancelled
 
 	if (!window) {
 		import_create();
@@ -98,41 +101,9 @@ gint import_mbox(FolderItem *default_dest)
 
 	gtk_main();
 
-	if (import_ack) {
-		const gchar *utf8mbox, *destdir;
-		FolderItem *dest;
-
-		utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
-		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
-		if (utf8mbox && *utf8mbox) {
-			gchar *mbox;
-
-			mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
-			if (!mbox) {
-				g_warning("Failed to convert character set.\n");
-				mbox = g_strdup(utf8mbox);
-			}
-
-			if (!destdir || !*destdir) {
-				dest = folder_find_item_from_path(INBOX_DIR);
-			} else {
-				dest = folder_find_item_from_identifier
-					(destdir);
-			}
-
-			if (!dest) {
-				g_warning("Can't find the folder.\n");
-			} else {
-				ok = proc_mbox(dest, mbox, FALSE);
-			}
-
-			g_free(mbox);
-		}
-	}
-
 	gtk_widget_hide(window);
 
-	return ok;
+	return import_ok;
 }
 
 static void import_create(void)
@@ -228,14 +199,56 @@ static void import_create(void)
 
 static void import_ok_cb(GtkWidget *widget, gpointer data)
 {
-	import_ack = TRUE;
+	const gchar *utf8mbox, *destdir;
+	FolderItem *dest;
+	gchar *mbox;
+
+	utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
+	destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
+
+	if (utf8mbox && !*utf8mbox) {
+		alertpanel_error(_("Source mbox filename can't be left empty."));
+		gtk_widget_grab_focus(file_entry);
+		return;
+	}
+	if (destdir && !*destdir) {
+		if (alertpanel(_("Import mbox file"), _("Destination folder is not set.\nImport mbox file to the inbox folder?"),
+						GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
+			== G_ALERTALTERNATE) {
+			gtk_widget_grab_focus(dest_entry);
+			return;
+		}
+	}
+
+	mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
+	if (!mbox) {
+		g_warning("import_ok_cb(): failed to convert character set.\n");
+		mbox = g_strdup(utf8mbox);
+	}
+
+	if (!destdir || !*destdir) {
+		dest = folder_find_item_from_path(INBOX_DIR);
+	} else {
+		dest = folder_find_item_from_identifier
+			(destdir);
+	}
+
+	if (!dest) {
+		alertpanel_error(_("Can't find the destination folder."));
+		gtk_widget_grab_focus(dest_entry);
+		return;
+	} else {
+		import_ok = proc_mbox(dest, mbox, FALSE);
+	}
+
+	g_free(mbox);
+
 	if (gtk_main_level() > 1)
 		gtk_main_quit();
 }
 
 static void import_cancel_cb(GtkWidget *widget, gpointer data)
 {
-	import_ack = FALSE;
 	if (gtk_main_level() > 1)
 		gtk_main_quit();
 }

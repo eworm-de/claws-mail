@@ -2449,7 +2449,8 @@ static gchar *summary_complete_address(const gchar *addr)
 
 	Xstrdup_a(email_addr, addr, return NULL);
 	extract_address(email_addr);
-	g_return_val_if_fail(*email_addr, NULL);
+	if (!*email_addr)
+		return NULL;
 
 	/*
 	 * completion stuff must be already initialized
@@ -3149,7 +3150,21 @@ void summary_mark_all_read(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
+	AlertValue val;
 
+	if (prefs_common.ask_mark_all_read) {
+		val = alertpanel_full(_("Mark all as read"),
+			_("Do you really want to mark all mails in this "
+			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+
+		if (val == G_ALERTDEFAULT ||
+		    val == (G_ALERTDEFAULT|G_ALERTDISABLE))
+			return;
+		else if (val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+			prefs_common.ask_mark_all_read = FALSE;
+	}
+	
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
@@ -5853,19 +5868,22 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 		summary_select_node(summaryview, node, TRUE, TRUE);
 }
 
-void summaryview_export_mbox_list(SummaryView *summaryview)
+gint summaryview_export_mbox_list(SummaryView *summaryview)
+/* return values: -2 skipped, -1 error, 0 OK */
 {
 	GSList *list = summary_get_selected_msg_list(summaryview);
 	gchar *mbox = filesel_select_file_save(_("Export to mbox file"), NULL);
+	gint ret;
 	
 	if (mbox == NULL || list == NULL)
-		return;
+		return -1;
 		
-	export_list_to_mbox(list, mbox);
+	ret = export_list_to_mbox(list, mbox);
 	
 	g_slist_free(list);
 	g_free(mbox);
 	
+	return ret;
 }
 
 void summaryview_lock(SummaryView *summaryview, FolderItem *item)

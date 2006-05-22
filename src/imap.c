@@ -1325,7 +1325,7 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest, 
 			        MsgInfoList *msglist, GRelation *relation)
 {
-	gchar *destdir;
+	gchar *destdir, *dir;
 	GSList *numlist = NULL, *cur;
 	MsgInfo *msginfo;
 	IMAPSession *session;
@@ -1375,6 +1375,15 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 		return ok;
 	}
 	
+	dir = folder_item_get_path(msginfo->folder);
+	if (is_dir_exist(dir)) {
+		for (cur = msglist; cur; cur = cur->next) {
+			msginfo = (MsgInfo *)cur->data;
+			remove_numbered_files(dir, msginfo->msgnum, msginfo->msgnum);
+		}
+	}
+	g_free(dir);
+
 	g_relation_destroy(uid_mapping);
 	g_slist_free(numlist);
 
@@ -3452,12 +3461,6 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if (!session) {
 		return;
 	}
-	lock_session();
-	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
-	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
-	    	unlock_session();
-		return;
-	}
 
 	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
 		flags_set |= IMAP_FLAG_FLAGGED;
@@ -3479,6 +3482,19 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_DELETED(msginfo->flags) && !(newflags & MSG_DELETED))
 		flags_unset |= IMAP_FLAG_DELETED;
 
+	if (!flags_set && !flags_unset) {
+		/* the changed flags were not translatable to IMAP-speak.
+		 * like MSG_POSTFILTERED, so just apply. */
+		msginfo->flags.perm_flags = newflags;
+		return;
+	}
+
+	lock_session();
+	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
+	    	unlock_session();
+		return;
+	}
 	numlist.next = NULL;
 	numlist.data = GINT_TO_POINTER(msginfo->msgnum);
 

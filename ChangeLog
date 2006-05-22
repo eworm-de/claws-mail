@@ -1,3 +1,39 @@
+2006-05-22 [colin]	2.2.0cvs1-stable
+
+	* src/action.c
+	* src/export.c
+	* src/filtering.c
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/gedit-print.c
+	* src/imap.c
+	* src/import.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/mbox.c
+	* src/mh.c
+	* src/mimeview.c
+	* src/procmsg.c
+	* src/send_message.c
+	* src/statusbar.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/etpan/imap-thread.c
+		Backport fixes from 2.2.0cvs{6,11,18,19,20,29,39,40,41,46}:
+		always obey 'confirm before marking all mails read' option
+		fix mbox import/export behaviour on failure
+		fix automatic rule creation with List-Post
+		get rid of some gtk warning/errors at runtime (and avoid divide-by-0).
+		fix some compiler warnings
+		don't initialize g_thread subsystem if it's already done
+		fix saving of parts when there name can't be converted from UTF-8.
+		fix bug #830 (Some unread messages get marked read in IMAP inbox)
+		fix bug #955 (copying messages between imap folders is extremely slow)
+		fix infinite loop in filtering when encountering move+copy
+
 2006-05-12 [colin]	2.1.1cvs50
 
 	* po/cs.po

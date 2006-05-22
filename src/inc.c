@@ -927,7 +927,7 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 	}
 
 	progress_dialog_set_fraction
-		(inc_dialog->dialog,(gfloat)cur_total / (gfloat)total);
+		(inc_dialog->dialog, (total == 0) ? 0: (gfloat)cur_total / (gfloat)total);
 
 	g_snprintf(buf, sizeof(buf), "%d / %d",
 		   pop3_session->cur_msg, pop3_session->count);
@@ -935,7 +935,7 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), buf);
 	gtk_progress_bar_set_fraction
 		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-		 (gfloat)cur_total / (gfloat)total);
+		 (total == 0) ? 0 : (gfloat)cur_total / (gfloat)total);
 
 	if (pop3_session->cur_total_num > 0) {
 		g_snprintf(buf, sizeof(buf),

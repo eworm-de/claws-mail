@@ -338,7 +338,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 		g_warning("no cert presented.\n");
 		return 0;
 	}
-	cert = d2i_X509(NULL, &certificate, len);
+	cert = d2i_X509(NULL, (unsigned char **) &certificate, len);
 	if (cert == NULL) {
 		g_warning("can't get cert\n");
 		return 0;

@@ -1137,6 +1137,7 @@ static void update_io_dialog(Children *children)
 		gchar *text;
 		
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(children->progress_bar),
+						  (children->initial_nb == 0) ? 0 :
 					      (gdouble) (children->initial_nb - children->nb) /
 					      (gdouble) children->initial_nb);
 		text = g_strdup_printf("%s %d/%d", _("Completed"), 
