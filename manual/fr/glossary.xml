@@ -304,6 +304,16 @@ LDAP Data Interchange Format. Un format de fichier utilisé pour transmettre des 
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_mailinglist">
+    <term>
+Liste de diffusion
+    </term>
+   <listitem>
+      <para>
+Une liste de diffusion (mailing list en anglais) est une utilisation spécifique du courrier électronique qui permet la diffusion d'informations à un grand nombre d'utilisateurs de l'Internet. Les listes de diffusion sont le plus souvent le lieu de discussions sur un sujet particulier (c'est le cas de la liste de diffusion des utilisateurs de Sylpheed-Claws). Un utilisateur contacte tous les autres en envoyant un courriel à la liste de diffusion, ces derniers pouvant alors lui répondre par le même biais.
+	  </para>
+   </listitem>
+  </varlistentry>
 </variablelist>
     
 <variablelist>

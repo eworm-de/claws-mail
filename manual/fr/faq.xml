@@ -4,7 +4,7 @@
     <section>
     <title>Quelles sont les différences entre Sylpheed-Claws et Sylpheed&nbsp;?</title>
     <para>
-	Sylpheed-Claws est la version <emphasis>étendue</emphasis> de Sylpheed. C'est pourquoi vous y trouverez toutes les fonctionnalités de Sylpheed, et encore beaucoup d'autres. Vous pourrez trouver plus d'informations à ce sujet sur <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
+	Sylpheed-Claws est la version <emphasis>étendue</emphasis> de Sylpheed. C'est pourquoi vous y trouverez toutes les fonctionnalités de Sylpheed, et encore beaucoup d'autres. Vous pourrez trouver plus d'informations à ce sujet sur <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
     </para></section>
     <section>
     <title>Que signifie <quote>Sylpheed</quote>&nbsp;?</title>
@@ -19,13 +19,13 @@
     <section>
     <title>Comment puis-je soumettre des patches, signaler des bogues, et discuter avec d'autres utilisateurs de Sylpheed-Claws&nbsp;?</title>
     <para>
-        Les patches peuvent être soumis via le Patch Tracker de Sourceforge, à <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>. Merci de suivre les conseils disponibles sur <ulink url="http://claws.sylpheed.org/devel.php">http://claws.sylpheed.org/devel.php</ulink>.
+        Les patches peuvent être soumis via le Patch Tracker de Sourceforge, à <ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>. Merci de suivre les conseils disponibles sur <ulink url="http://www.sylpheed-claws.net/devel.php">http://www.sylpheed-claws.net/devel.php</ulink>.
     </para>
     <para>
 	Les rapports de bogues peuvent être soumis sur notre Bugzilla, <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>, en anglais.
     </para>
     <para>
-	Pour discuter et poser des questions, vous êtes les bienvenus sur les listes de diffusion présentées à <ulink url="http://claws.sylpheed.org/MLs.php">http://claws.sylpheed.org/MLs.php</ulink>.
+	Pour discuter et poser des questions, vous êtes les bienvenus sur les listes de diffusion présentées à <ulink url="http://www.sylpheed-claws.net/MLs.php">http://www.sylpheed-claws.net/MLs.php</ulink>.
     </para>
     </section>
     <section>
@@ -61,7 +61,7 @@
     <section>
     <title>Où puis-je trouver des réponses à d'autres questions fréquemment posées sur Sylpheed-Claws&nbsp;?</title>
     <para>
-	Une FAQ plus élaborée, maintenue par les utilisateurs de Sylpheed-Claws, est disponible sur notre site, à l'adresse <ulink url="http://claws.sylpheed.org/faq.php">http://claws.sylpheed.org/faq.php</ulink>.
+	Une FAQ plus élaborée, maintenue par les utilisateurs de Sylpheed-Claws, est disponible sur notre site, à l'adresse <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>.
     </para>
     </section>
 </appendix>

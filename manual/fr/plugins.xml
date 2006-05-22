@@ -38,7 +38,7 @@
   <section id="plugins_external">
     <title>Autres modules</title>
     <para>
-	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>&nbsp;:
+	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>&nbsp;:
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>

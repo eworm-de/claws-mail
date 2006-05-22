@@ -33,7 +33,7 @@
     <example><title>Recherche Google en utilisant un script externe</title>
 	    <variablelist>
 		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&nbsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
-			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://claws.sylpheed.org/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -55,6 +55,16 @@
     </para>
     <para>
       Les règles de traitement sont accompagnées de règles de Pré-traitement et de Post-traitement. Comme les règles de traitement elles ne s'appliquent qu'à l'ouverture d'un dossier, mais comme les règles de filtrage elles sont partagées entre tous les dossiers. Vous pouvez les configurer à partir du menu <quote>Outils</quote>. Les règles de Pré-traitement sont exécutées avant les règles de traitement spécifiques des dossiers alors que les règles de Post-traitement le sont après.
+    </para>
+  </section>
+  <section id="adv_ml_support">
+    <title>Support des listes de diffusion</title>
+    <para>
+	  Sylpheed-Claws propose des fonctions d'utilisation de liste de diffusion via le menu <quote>Message/Liste de diffusion/</quote>.
+	  Quand une message en provenance d'une liste de diffusion est sélectionné, ce menu vous permet d'envoyer un
+	  message à la liste, de contacter l'administrateur de la liste afin d'y souscrire, s'en désinscrire, obtenir de
+	  l'aide mais aussi consulter les archives&nbsp;; soit en ouvrant une nouvelle fenêtre de composition, soit en
+	  ouvrant un lien avec votre navigateur Internet.
     </para>
   </section>
   <section id="adv_plugins">

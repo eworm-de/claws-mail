@@ -19,7 +19,7 @@
   <section id="intro_features"> 
     <title>Fonctionnalités principales</title>
     <para>
-	Sylpheed-Claws dispose d'à peu près tout ce dont un client de courriel parfait a besoin. Récupération de messages via POP3, IMAP4, <quote>spool MBOX</quote> local, avec ou sans SSL&nbsp;; gestion de multiples formats d'authentification. Il gère les comptes et les boîtes multiples, possède des systèmes de filtrage et de recherche puissants, un certain nombre de formats d'import/export, les signatures numériques avec GnuPG. Sylpheed-Claws a aussi un système de modules, des barres d'outils personnalisables, la vérification orthographique, des préférences spécifiques par dossier, et encore beaucoup plus. La liste complète des fonctionnalités est disponible à l'adresse <ulink url="http://claws.sylpheed.org/features.php">http://claws.sylpheed.org/features.php</ulink>.
+	Sylpheed-Claws dispose d'à peu près tout ce dont un client de courriel parfait a besoin. Récupération de messages via POP3, IMAP4, <quote>spool MBOX</quote> local, avec ou sans SSL&nbsp;; gestion de multiples formats d'authentification. Il gère les comptes et les boîtes multiples, possède des systèmes de filtrage et de recherche puissants, un certain nombre de formats d'import/export, les signatures numériques avec GnuPG. Sylpheed-Claws a aussi un système de modules, des barres d'outils personnalisables, la vérification orthographique, des préférences spécifiques par dossier, et encore beaucoup plus. La liste complète des fonctionnalités est disponible à l'adresse <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
     </para>
   </section>
 
@@ -35,19 +35,19 @@
   <section id="intro_information">
     <title>Adresses utiles</title>
     <para>
-	Site web&nbsp;: <ulink url="http://claws.sylpheed.org/">http://claws.sylpheed.org/</ulink>
+	Site web&nbsp;: <ulink url="http://www.sylpheed-claws.net/">http://www.sylpheed-claws.net/</ulink>
     </para>
     <para>
-	Dernières nouvelles&nbsp;: <ulink url="http://claws.sylpheed.org/news.php">http://claws.sylpheed.org/news.php</ulink>
+	Dernières nouvelles&nbsp;: <ulink url="http://www.sylpheed-claws.net/news.php">http://www.sylpheed-claws.net/news.php</ulink>
     </para>
     <para>
-	Modules externes&nbsp;: <ulink url="http://claws.sylpheed.org/plugins.php">http://claws.sylpheed.org/plugins.php</ulink>
+	Modules externes&nbsp;: <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>
     </para>
     <para>
-	Thèmes&nbsp;: <ulink url="http://claws.sylpheed.org/themes.php">http://claws.sylpheed.org/themes.php</ulink>
+	Thèmes&nbsp;: <ulink url="http://www.sylpheed-claws.net/themes.php">http://www.sylpheed-claws.net/themes.php</ulink>
     </para>
     <para>
-	Outils&nbsp;: <ulink url="http://claws.sylpheed.org/tools.php">http://claws.sylpheed.org/tools.php</ulink>
+	Outils&nbsp;: <ulink url="http://www.sylpheed-claws.net/tools.php">http://www.sylpheed-claws.net/tools.php</ulink>
     </para>
     <para>
 	Liste de diffusion&nbsp;: <ulink url="http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/">http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/</ulink>
