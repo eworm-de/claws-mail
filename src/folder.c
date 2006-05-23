@@ -54,6 +54,7 @@
 #include "remotefolder.h"
 #include "partial_download.h"
 #include "statusbar.h"
+#include "timing.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -2134,7 +2135,7 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 void folder_item_read_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file;
-	
+	START_TIMING("folder_item_read_cache");
 	g_return_if_fail(item != NULL);
 
 	if (item->path != NULL) {
@@ -2178,7 +2179,7 @@ void folder_item_read_cache(FolderItem *item)
 	} else {
 		item->cache = msgcache_new();
 	}
-
+	END_TIMING();
 	folder_clean_cache_memory(item);
 }
 

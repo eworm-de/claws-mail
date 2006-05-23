@@ -1709,7 +1709,7 @@ static void folderview_append_folder(FolderView *folderview, Folder *folder)
 
 	g_return_if_fail(folder != NULL);
 
-	root = gtk_ctree_insert_gnode(ctree, NULL, NULL, folder->node,
+	root = gtk_sctree_insert_gnode(ctree, NULL, NULL, folder->node,
 				      folderview_gnode_func, folderview);
 	gtk_ctree_pre_recursive(ctree, root, folderview_expand_func,
 				folderview);

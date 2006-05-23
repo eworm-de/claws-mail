@@ -130,7 +130,7 @@ static int mh_item_close		(Folder		*folder,
 					 FolderItem	*item);
 static gint mh_get_flags		(Folder *folder, FolderItem *item,
                            		 MsgInfoList *msginfo_list, GRelation *msgflags);
-static void mh_write_sequences		(FolderItem 	*item);
+static void mh_write_sequences		(FolderItem 	*item, gboolean remove_unseen);
 
 static FolderClass mh_class;
 
@@ -429,7 +429,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		g_free(destfile);
 		dest->last_num++;
 	}
-	mh_write_sequences(dest);
+	mh_write_sequences(dest, TRUE);
 	return dest->last_num;
 }
 
@@ -532,12 +532,12 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		dest->last_num++;
 	}
 
+	mh_write_sequences(dest, TRUE);
+
 	dest_need_scan = mh_scan_required(dest->folder, dest);
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
-	else
-		mh_write_sequences(dest);
-
+	
 	return dest->last_num;
 }
 
@@ -578,7 +578,7 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 	val = remove_all_numbered_files(path);
 	g_free(path);
 
-	mh_write_sequences(item);
+	mh_write_sequences(item, TRUE);
 
 	return val;
 }
@@ -1199,7 +1199,7 @@ next_token:
 	return 0;
 }
 
-static void mh_write_sequences(FolderItem *item)
+static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 {
 	gchar *mh_sequences_old, *mh_sequences_new;
 	FILE *mh_sequences_old_fp, *mh_sequences_new_fp;
@@ -1227,8 +1227,8 @@ static void mh_write_sequences(FolderItem *item)
 		msglist = g_slist_sort(msglist, sort_cache_list_by_msgnum);
 		cur = msglist;
 		
-		/* write the unseen sequence */
-		do {
+		/* write the unseen sequence if we don't have to scrap it */
+		if (!remove_unseen) do {
 			info = (MsgInfo *)(cur ? cur->data:NULL);
 			if (info && (MSG_IS_UNREAD(info->flags) || MSG_IS_NEW(info->flags))) {
 				if (start < 0)
@@ -1280,6 +1280,6 @@ static void mh_write_sequences(FolderItem *item)
 
 static int mh_item_close(Folder *folder, FolderItem *item)
 {
-	mh_write_sequences(item);
+	mh_write_sequences(item, FALSE);
 	return 0;
 }

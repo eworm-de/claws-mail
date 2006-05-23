@@ -1021,6 +1021,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 
 	if (!hidden_removed) {
+		START_TIMING("removing hidden");
         	not_killed = NULL;
         	for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
                 	MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -1032,6 +1033,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
         	}
 		g_slist_free(mlist);
 		mlist = not_killed;
+		END_TIMING();
 	}
 
 	STATUSBAR_POP(summaryview->mainwin);
@@ -2315,7 +2317,6 @@ void summary_sort(SummaryView *summaryview,
 		gtk_clist_set_compare_func(clist, cmp_func);
 
 		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
-
 		gtk_sctree_sort_recursive(ctree, NULL);
 
 		gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
@@ -2348,7 +2349,6 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
-				//gnode->parent->parent ? TRUE : FALSE);
 #define SET_TEXT(col) \
 	gtk_ctree_node_set_text(ctree, cnode, col_pos[col], \
 				text[col_pos[col]])
@@ -2413,14 +2413,13 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 		for (gnode = root->children; gnode != NULL;
 		     gnode = gnode->next) {
-			node = gtk_ctree_insert_gnode
+			node = gtk_sctree_insert_gnode
 				(ctree, NULL, node, gnode,
 				 summary_insert_gnode_func, summaryview);
 		}
 
 		g_node_destroy(root);
                 
-		//summary_thread_init(summaryview);
 		END_TIMING();
 	} else {
 		gchar *text[N_SUMMARY_COLS];
@@ -5451,7 +5450,6 @@ static gint func_name(GtkCList *clist,					 \
 {									 \
 	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
 	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
-									 \
 	if (!msginfo1 || !msginfo2)					 \
 		return -1;						 \
 									 \

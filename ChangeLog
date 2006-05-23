@@ -1,3 +1,21 @@
+2006-05-23 [colin]	2.2.0cvs48
+
+	* src/folder.c
+	* src/folderview.c
+	* src/msgcache.c
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		More timings
+		Fix slow loading problem, which was caused by the
+		use of some gtk_ctree funcs and their use of
+		g_list_position while gtk_ctree_(un)link'ing.
+		Reap more functions from gtkctree.c to be sure we
+		use our (fast) version instead of theirs.
+	* src/mh.c
+		Fix copy of unread mails
+
+
 2006-05-22 [wwp]	2.2.0cvs47
 
 	* manual/fr/advanced.xml

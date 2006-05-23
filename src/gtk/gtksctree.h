@@ -34,6 +34,7 @@ struct _GtkSCTree {
 	guint dnd_select_pending_state;
 	gint dnd_select_pending_row;
 	gboolean selecting_range;
+	gboolean sorting;
 };
 
 struct _GtkSCTreeClass {
@@ -100,5 +101,12 @@ void        gtk_sctree_set_node_info        (GtkCTree *ctree,
                                              GdkBitmap *mask_opened,
                                              gboolean is_leaf,
                                              gboolean expanded);
+GtkCTreeNode *
+gtk_sctree_insert_gnode 		    (GtkCTree          *ctree,
+					     GtkCTreeNode      *parent,
+					     GtkCTreeNode      *sibling,
+					     GNode             *gnode,
+					     GtkCTreeGNodeFunc  func,
+					     gpointer           data);
 
 #endif /* __GTK_SCTREE_H__ */
