@@ -3215,12 +3215,11 @@ void summary_mark_all_read(SummaryView *summaryview)
 		val = alertpanel_full(_("Mark all as read"),
 			_("Do you really want to mark all mails in this "
 			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
-		if (val == G_ALERTDEFAULT ||
-		    val == (G_ALERTDEFAULT|G_ALERTDISABLE))
+		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
-		else if (val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
 	

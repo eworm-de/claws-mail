@@ -386,12 +386,12 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 	if (g_file_test(mbox, G_FILE_TEST_EXISTS) == TRUE) {
 		if (alertpanel_full(_("Overwrite mbox file"),
-							_("This file already exists. Do you want to overwrite it?"),
-							_("Overwrite"), GTK_STOCK_CANCEL, NULL, FALSE,
-							NULL, ALERT_WARNING, G_ALERTALTERNATE)
-			== G_ALERTALTERNATE) {
-		return -2;
-	}
+					_("This file already exists. Do you want to overwrite it?"),
+					GTK_STOCK_CANCEL, _("Overwrite"), NULL, FALSE,
+					NULL, ALERT_WARNING, G_ALERTDEFAULT)
+				!= G_ALERTALTERNATE) {
+			return -2;
+		}
 	}
 
 	if ((mbox_fp = g_fopen(mbox, "wb")) == NULL) {

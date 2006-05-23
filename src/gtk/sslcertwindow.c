@@ -290,10 +290,10 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
 	val = alertpanel_full(_("Unknown SSL Certificate"), NULL,
-	 		      _("_Accept and save"), _("_Cancel connection"), NULL,
+			      _("_Cancel connection"), _("_Accept and save"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
-	return (val == G_ALERTDEFAULT);
+	return (val == G_ALERTALTERNATE);
 }
 
 gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
@@ -330,10 +330,10 @@ gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
 	val = alertpanel_full(_("Expired SSL Certificate"), NULL,
-	 		      _("_Accept"), _("_Cancel connection"), NULL,
+			      _("_Cancel connection"), _("_Accept"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
-	return (val == G_ALERTDEFAULT);
+	return (val == G_ALERTALTERNATE);
 }
 
 gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert)
@@ -383,9 +383,9 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	gtk_container_add(GTK_CONTAINER(button), vbox);
 
 	val = alertpanel_full(_("Changed SSL Certificate"), NULL,
-	 		      _("_Accept and save"), _("_Cancel connection"), NULL,
+			      _("_Cancel connection"), _("_Accept and save"), NULL,
 	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);
 	
-	return (val == G_ALERTDEFAULT);
+	return (val == G_ALERTALTERNATE);
 }
 #endif

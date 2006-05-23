@@ -721,15 +721,14 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 		val = alertpanel_full(_("Mark all as read"),
 			_("Do you really want to mark all mails in this "
 			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
-		if (val == G_ALERTDEFAULT ||
-		    val == (G_ALERTDEFAULT|G_ALERTDISABLE))
+		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
-		else if (val == (G_ALERTALTERNATE|G_ALERTDISABLE))
+		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
-	
+
 	summary_lock(folderview->summaryview);
 	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item == item)
@@ -2233,10 +2232,9 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 				       	 NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 		g_free(buf);
 
-		if (status != G_ALERTALTERNATE
-		 && status != (G_ALERTALTERNATE | G_ALERTDISABLE))
+		if ((status & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
-		if (status & G_ALERTDISABLE)
+		else if (status & G_ALERTDISABLE)
 			prefs_common.warn_dnd = FALSE;
 	}
 

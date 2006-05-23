@@ -1,3 +1,16 @@
+2006-05-23 [colin]	2.2.0cvs49
+
+	* src/folderview.c
+	* src/imap.c
+	* src/inc.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/news.c
+	* src/send_message.c
+	* src/summaryview.c
+	* src/gtk/sslcertwindow.c
+		alertpanel fixes, by Fabien
+
 2006-05-23 [colin]	2.2.0cvs48
 
 	* src/folder.c

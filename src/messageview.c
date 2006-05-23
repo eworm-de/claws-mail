@@ -563,11 +563,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "Return path: %s\n"
 		    "It is advised to not to send the return receipt."),
 		  to, buf);
-		val = alertpanel_full(_("Warning"), message, _("_Send"),
-					_("+_Don't Send"), NULL, FALSE,
-				       	NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		val = alertpanel_full(_("Warning"), message,
+				_("_Don't Send"), _("_Send"), NULL, FALSE,
+				NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(message);				
-		if (val != G_ALERTDEFAULT)
+		if (val != G_ALERTALTERNATE)
 			return -1;
 	}
 
@@ -581,9 +581,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "but according to its 'To:' and 'CC:' headers it was not\n"
 		    "officially addressed to you.\n"
 		    "It is advised to not to send the return receipt."),
-		  _("_Send"), _("+_Don't Send"),NULL, FALSE,
-		  NULL, ALERT_WARNING, G_ALERTALTERNATE);
-		if (val != G_ALERTDEFAULT)
+		  _("_Don't Send"), _("_Send"), NULL, FALSE,
+		  NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		if (val != G_ALERTALTERNATE)
 			return -1;
 	}
 

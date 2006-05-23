@@ -761,10 +761,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  _("Con_tinue connecting"), 
-			  GTK_STOCK_CANCEL, NULL,
-			  FALSE, NULL, ALERT_WARNING,
-			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), 
+			  NULL, FALSE, NULL, ALERT_WARNING,
+			  G_ALERTDEFAULT) != G_ALERTALTERNATE)
 			return INC_CANCEL;
 	}
 	port = pop3_session->ac_prefs->set_popport ?

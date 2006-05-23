@@ -282,10 +282,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				  "Do you want to continue connecting to this "
 				  "server? The communication would not be "
 				  "secure."),
-				  _("Con_tinue connecting"), 
-				  GTK_STOCK_CANCEL, NULL,
-				  FALSE, NULL, ALERT_WARNING,
-				  G_ALERTALTERNATE) != G_ALERTDEFAULT) {
+				  GTK_STOCK_CANCEL, _("Con_tinue connecting"),
+				  NULL, FALSE, NULL, ALERT_WARNING,
+				  G_ALERTDEFAULT) != G_ALERTALTERNATE) {
 				session_destroy(session);
 				return -1;
 			}

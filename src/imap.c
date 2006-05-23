@@ -775,10 +775,9 @@ static IMAPSession *imap_session_new(Folder * folder,
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  _("Con_tinue connecting"), 
-			  GTK_STOCK_CANCEL, NULL,
-			  FALSE, NULL, ALERT_WARNING,
-			  G_ALERTALTERNATE) != G_ALERTDEFAULT)
+			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), 
+			  NULL, FALSE, NULL, ALERT_WARNING,
+			  G_ALERTDEFAULT) != G_ALERTALTERNATE)
 			return NULL;
 	}
 	port = account->set_imapport ? account->imapport
