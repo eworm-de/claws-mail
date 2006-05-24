@@ -136,6 +136,7 @@ void folderutils_mark_all_read(FolderItem *item)
 		procmsg_msginfo_free(msginfo);
 	}
 	folder_item_set_batch(item, FALSE);
+	folder_item_close(item);
 	folder_item_update_thaw();
 
 	g_slist_free(msglist);
