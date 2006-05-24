@@ -358,15 +358,16 @@ next_folder:
 		}
 		if (!dest) {
 			dest = msginfo->to_folder;
-			movelist = g_slist_append(movelist, msginfo);
+			movelist = g_slist_prepend(movelist, msginfo);
 		} else if (dest == msginfo->to_folder) {
-			movelist = g_slist_append(movelist, msginfo);
+			movelist = g_slist_prepend(movelist, msginfo);
 		} else {
 			continue;
 		}
 		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
 	if (movelist) {
+		movelist = g_slist_reverse(movelist);
 		retval |= folder_item_move_msgs(dest, movelist);
 		g_slist_free(movelist);
 		movelist = NULL;
@@ -401,15 +402,16 @@ next_folder:
 		}
 		if (!dest) {
 			dest = msginfo->to_folder;
-			copylist = g_slist_append(copylist, msginfo);
+			copylist = g_slist_prepend(copylist, msginfo);
 		} else if (dest == msginfo->to_folder) {
-			copylist = g_slist_append(copylist, msginfo);
+			copylist = g_slist_prepend(copylist, msginfo);
 		} else {
 			continue;
 		}
 		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
 	if (copylist) {
+		copylist = g_slist_reverse(copylist);
 		folder_item_copy_msgs(dest, copylist);
 		g_slist_free(copylist);
 		copylist = NULL;
@@ -1773,11 +1775,6 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
 
 		update_folder_msg_counts(item, msginfo, perm_flags_old);
-
-		msginfo_update.msginfo = msginfo;
-		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
-		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
-		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
 
 	/* Tmp flags hanlding */

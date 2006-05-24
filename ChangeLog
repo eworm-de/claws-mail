@@ -1,3 +1,26 @@
+2006-05-24 [colin]	2.2.0cvs54
+
+	attention cvs users: if you manage to crash
+	Sylpheed-Claws while moving, copying or deleting
+	mails, we *are* interested in stack traces and
+	valgrind logs. It looks stable, but one never
+	knows...
+
+	* src/folder.c
+		Add progressbar for cache updates
+	* src/folderutils.c
+		Optimize Mark all read in the current
+		folder
+	* src/mh.c
+		Add progressbar for copy/move
+	* src/procmsg.c
+		Optimize O(n^2) in copy/move
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+		Optimize O(n^2) algos
+	* src/common/timing.h
+		Display ms instead of us
+
 2006-05-24 [wwp]	2.2.0cvs53
 
 	* manual/fr/advanced.xml

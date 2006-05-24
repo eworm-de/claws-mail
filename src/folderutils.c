@@ -24,6 +24,8 @@
 #include "folderutils.h"
 #include "prefs_account.h"
 #include "account.h"
+#include "mainwindow.h"
+#include "summaryview.h"
 
 gint folderutils_delete_duplicates(FolderItem *item,
 				   DeleteDuplicatesMode mode)
@@ -119,25 +121,33 @@ gint folderutils_delete_duplicates(FolderItem *item,
 void folderutils_mark_all_read(FolderItem *item)
 {
 	MsgInfoList *msglist, *cur;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	g_return_if_fail(item != NULL);
 
-	msglist = folder_item_get_msg_list(item);
-	if (msglist == NULL)
-		return;
 
 	folder_item_update_freeze();
-	folder_item_set_batch(item, TRUE);
-	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
-		MsgInfo *msginfo = cur->data;
+	if (mainwin && mainwin->summaryview &&
+	    mainwin->summaryview->folder_item == item) {
+		summary_mark_all_read(mainwin->summaryview);
+	} else {
+		msglist = folder_item_get_msg_list(item);
+		if (msglist == NULL) {
+			folder_item_update_thaw();
+			return;
+		}
+		folder_item_set_batch(item, TRUE);
+		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
+			MsgInfo *msginfo = cur->data;
 
-		if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD))
-			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-		procmsg_msginfo_free(msginfo);
+			if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD))
+				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+			procmsg_msginfo_free(msginfo);
+		}
+		folder_item_set_batch(item, FALSE);
+		folder_item_close(item);
+
+		g_slist_free(msglist);
 	}
-	folder_item_set_batch(item, FALSE);
-	folder_item_close(item);
 	folder_item_update_thaw();
-
-	g_slist_free(msglist);
 }

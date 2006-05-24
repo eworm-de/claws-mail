@@ -43,6 +43,7 @@
 #include "procheader.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "gtkutils.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
@@ -456,6 +457,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	MsgInfo *msginfo = NULL;
 	gboolean remove_special_headers = FALSE;
 	MsgInfoList *cur = NULL;
+	gint curnum = 0, total = 0;
+
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 	
@@ -488,6 +491,11 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 
 	prefs = dest->prefs;
 
+	if (MSG_IS_MOVE(msginfo->flags))
+		statusbar_print_all(_("Moving messages..."));
+	else
+		statusbar_print_all(_("Copying messages..."));
+	total = g_slist_length(msglist);
 	for (cur = msglist; cur; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		if (!msginfo)
@@ -498,6 +506,11 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			g_free(srcfile);
 			continue;
 		}
+
+		statusbar_progress_all(curnum, total, 100);
+		if (curnum % 100 == 0)
+			GTK_EVENTS_FLUSH();
+		curnum++;
 
 		debug_print("Copying message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
@@ -538,6 +551,9 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
 	
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
+
 	return dest->last_num;
 }
 

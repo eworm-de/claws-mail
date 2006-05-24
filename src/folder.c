@@ -54,6 +54,7 @@
 #include "remotefolder.h"
 #include "partial_download.h"
 #include "statusbar.h"
+#include "gtkutils.h"
 #include "timing.h"
 
 /* Dependecies to be removed ?! */
@@ -1524,6 +1525,7 @@ void folder_item_process_open (FolderItem *item,
 
 gint folder_item_open(FolderItem *item)
 {
+	START_TIMING("folder_item_open"); 
 	if (item->no_select)
 		return -1;
 
@@ -1536,7 +1538,7 @@ gint folder_item_open(FolderItem *item)
 	folder_item_process_open (item, NULL, NULL, NULL);
 	
 	item->opened = TRUE;
-
+	END_TIMING();
 	return 0;
 }
 
@@ -2814,6 +2816,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	gboolean folderscan = FALSE;
 	GRelation *relation;
 	GSList *not_moved = NULL;
+	gint total = 0, curmsg = 0;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -2920,6 +2923,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		folderscan = TRUE;
 	}
 
+	statusbar_print_all(_("Updating cache for %s..."), dest->path ? dest->path : "(null)");
+	total = g_slist_length(msglist);
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
                 GTuples *tuples;
@@ -2927,6 +2932,10 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
                 tuples = g_relation_select(relation, msginfo, 0);
                 num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
                 g_tuples_destroy(tuples);
+
+		statusbar_progress_all(curmsg++,total, 100);
+		if (curmsg % 100 == 0)
+			GTK_EVENTS_FLUSH();
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo = NULL;
@@ -2966,6 +2975,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 				lastnum = num;
 		}
 	}
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
 
 	g_relation_destroy(relation);
 	if (not_moved != NULL) {

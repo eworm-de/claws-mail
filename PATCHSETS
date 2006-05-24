@@ -1523,3 +1523,4 @@
 ( cvs diff -u -r 1.3.2.9 -r 1.3.2.10 src/folderutils.c;  ) > 2.2.0cvs51.patchset
 ( cvs diff -u -r 1.36.2.61 -r 1.36.2.62 src/common/utils.c;  ) > 2.2.0cvs52.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/fr/advanced.xml;  ) > 2.2.0cvs53.patchset
+( cvs diff -u -r 1.213.2.94 -r 1.213.2.95 src/folder.c;  cvs diff -u -r 1.3.2.10 -r 1.3.2.11 src/folderutils.c;  cvs diff -u -r 1.79.2.29 -r 1.79.2.30 src/mh.c;  cvs diff -u -r 1.150.2.64 -r 1.150.2.65 src/procmsg.c;  cvs diff -u -r 1.395.2.206 -r 1.395.2.207 src/summaryview.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/common/timing.h;  cvs diff -u -r 1.1.4.17 -r 1.1.4.18 src/gtk/gtksctree.c;  ) > 2.2.0cvs54.patchset

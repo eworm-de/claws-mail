@@ -49,9 +49,9 @@
 #define END_TIMING()							\
 	gettimeofday(&end, NULL);					\
 	timersub(&end, &start, &diff);					\
-	printf("%s: %ds%dus\n", 					\
+	printf("%s: %ds%03dms\n", 					\
 		timing_name, (unsigned int)diff.tv_sec, 		\
-		(unsigned int)diff.tv_usec);				\
+		(unsigned int)diff.tv_usec/1000);				\
 
 #endif
 
