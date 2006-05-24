@@ -1,10 +1,10 @@
 .TH "Sylpheed-Claws" "1" "" "Hiroyuki Yamamoto & the Sylpheed-Claws team" ""
 .SH "NAME"
 .LP 
-Sylpheed\-Claws \- a GTK+ based fast e\-mail and news client
+Sylpheed\-Claws \- a GTK+ based fast email and news client
 .SH "DESCRIPTION"
 .TP 
-Sylpheed\-Claws is an e\-mail client (and news reader) based on GTK+, running on X Window System, and aiming for
+Sylpheed\-Claws is an email client (and news reader) based on GTK+, running on X Window System, and aiming for
 .br 
 * Quick response
 .br 
@@ -104,9 +104,13 @@ This list is not complete.
 .br 
 \fB \-\-status\-full\fR
 .br 
+\fB \-\-select folder[/msg]\fR
+.br 
 \fB \-\-online\fR
 .br 
 \fB \-\-offline\fR
+.br 
+\fB \-\-exit\fR
 .br 
 \fB \-\-debug\fR
 .br 
@@ -181,9 +185,6 @@ sylpheed\-claws
 .LP 
 Alternatively you can run it with the following options:
 .TP 
-\fB\-\-debug\fR
-for debug mode
-.TP 
 \fB\-\-compose [address]\fR 
 to open a Compose window
 .TP 
@@ -221,14 +222,23 @@ show the total number of messages per folder
 .br 
 [new][unread][unread answers to marked][total]
 .TP 
+\fB\-\-select folder[/msg]\fR
+On startup, jumps to the specified folder/message
+.TP 
 \fB\-\-online\fR
-Start sylpheed in (or switch to, if already running) online mode
+Start sylpheed-claws in (or switch to, if already running) online mode
 .TP 
 \fB\-\-offline\fR
-Start sylpheed in (or switch to, if already running) offline mode
+Start sylpheed-claws in (or switch to, if already running) offline mode
 .TP 
 \fB\-\-help\fR
 display the help message and exit
+.TP 
+\fB\-\-exit\fR
+exit Sylpheed-Claws
+.TP 
+\fB\-\-debug\fR
+for debug mode
 .TP 
 \fB\-\-version\fR
 display version number and exit
@@ -264,13 +274,13 @@ Holger Berndt 			<berndth@users.sf.net>
 .br 
 Hoà Viêt Dinh 			<hoa@users.sf.net>
 .br 
+Werner Koch			<wk@gnupg.org>
+.br 
 Darko Koruga 			<darko@users.sf.net>
 .br 
 Ricardo Mones Lastra 	<mones@users.sf.net>
 .br 
 Colin Leroy 			<colinleroy@users.sf.net>
-.br 
-Thorsten Maerz 		<netztorte@users.sf.net>
 .br 
 Paul Mangan 			<twb@users.sf.net>
 .br 
@@ -292,11 +302,11 @@ Christoph Hohmann
 .br 
 Alfons Hoogervorst
 .br 
+Thorsten Maerz
+.br 
 Leandro A. F. Pereira
 .br 
 Luke Plant
-.br 
-Martin Schaaf
 .br 
 Carsten Schurig
 .br 
@@ -309,4 +319,4 @@ Hiroyuki Yamamoto
 .LP 
 .TP 
 Sylpheed\-Claws Homepage
-<http://claws.sylpheed.org>
+<http://www.sylpheed-claws.net>

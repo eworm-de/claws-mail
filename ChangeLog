@@ -1,3 +1,8 @@
+2006-05-24 [paul]	2.2.0cvs50
+
+	* doc/man/sylpheed-claws.1
+		updated the man page
+
 2006-05-23 [colin]	2.2.0cvs49
 
 	* src/folderview.c
