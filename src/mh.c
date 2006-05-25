@@ -158,7 +158,7 @@ FolderClass *mh_get_class(void)
 		mh_class.get_num_list = mh_get_num_list;
 		mh_class.scan_required = mh_scan_required;
 		mh_class.close = mh_item_close;
-		mh_class.get_flags = mh_get_flags;
+		mh_class.get_flags = NULL; /*mh_get_flags */;
 
 		/* Message functions */
 		mh_class.get_msginfo = mh_get_msginfo;
