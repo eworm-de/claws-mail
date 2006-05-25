@@ -391,8 +391,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			ssl_certificate_destroy(current_cert);
 			return TRUE;
 		}
-	}
-	else if (!ssl_certificate_compare (current_cert, known_cert)) {
+	} else if (!ssl_certificate_compare (current_cert, known_cert)) {
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = known_cert;
 		cert_hook_data.expired = FALSE;
@@ -420,9 +419,11 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 
 		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
 			return FALSE;
 		} else {
 			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
 			return TRUE;
 		}
 	}
