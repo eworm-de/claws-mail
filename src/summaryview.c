@@ -4295,6 +4295,11 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 	child = GTK_CTREE_ROW(node)->children;
 	if (!child) return;
 
+	if (node == summaryview->selected)
+		summaryview->selected = NULL;
+	if (node == summaryview->displayed)
+		summaryview->displayed = NULL;
+
 	for (top_parent = node;
 	     GTK_CTREE_ROW(top_parent)->parent != NULL;
 	     top_parent = GTK_CTREE_ROW(top_parent)->parent)

@@ -387,6 +387,8 @@ gboolean gtkut_ctree_node_is_parent(GtkCTreeNode *parent, GtkCTreeNode *node)
 
 void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
 {
+	if (node == NULL)
+		return;
 	gtkut_clist_set_focus_row(GTK_CLIST(ctree),
 				  gtkut_ctree_get_nth_from_node(ctree, node));
 }
