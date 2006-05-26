@@ -1,3 +1,12 @@
+2006-05-26 [colin]	2.2.0cvs59
+
+	* src/procheader.c
+		Convert date only if necessary (and don't
+		try to convert from utf8 to utf8, too)
+	* src/summaryview.c
+		Only set column's text if the column's 
+		displayed
+
 2006-05-26 [colin]	2.2.0cvs58
 
 	* src/summaryview.c

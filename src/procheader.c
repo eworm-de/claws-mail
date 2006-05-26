@@ -860,13 +860,14 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	else
 		strftime(dest, len, default_format, lt);
 
-	src_codeset = conv_get_locale_charset_str();
-	dest_codeset = CS_UTF_8;
-	str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
-	if (str) {
-		g_snprintf(dest, len, "%s", str);
-		strncpy2(dest, str, len);
-		g_free(str);
+	if (!g_utf8_validate(dest, -1, NULL)) {
+		src_codeset = conv_get_locale_charset_str_no_utf8();
+		dest_codeset = CS_UTF_8;
+		str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
+		if (str) {
+			strncpy2(dest, str, len);
+			g_free(str);
+		}
 	}
 }
 

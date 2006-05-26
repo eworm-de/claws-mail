@@ -2353,17 +2353,23 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
-#define SET_TEXT(col) \
-	gtk_ctree_node_set_text(ctree, cnode, col_pos[col], \
-				text[col_pos[col]])
+#define SET_TEXT(col) {						\
+	gtk_ctree_node_set_text(ctree, cnode, col_pos[col], 	\
+				text[col_pos[col]]);		\
+}
 
-	SET_TEXT(S_COL_NUMBER);
-	SET_TEXT(S_COL_SCORE);
-	SET_TEXT(S_COL_SIZE);
-	SET_TEXT(S_COL_DATE);
-	SET_TEXT(S_COL_FROM);
-	SET_TEXT(S_COL_TO);
-	/* SET_TEXT(S_COL_SUBJECT);  already set by node info */
+	if (summaryview->col_state[summaryview->col_pos[S_COL_NUMBER]].visible)
+		SET_TEXT(S_COL_NUMBER);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_SCORE]].visible)
+		SET_TEXT(S_COL_SCORE);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_SIZE]].visible)
+		SET_TEXT(S_COL_SIZE);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible)
+		SET_TEXT(S_COL_DATE);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_FROM]].visible)
+		SET_TEXT(S_COL_FROM);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
+		SET_TEXT(S_COL_TO);
 
 	if (free_from) {
 		g_free(text[col_pos[S_COL_FROM]]);
@@ -2546,20 +2552,33 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_MIME]]   = "";
 	text[col_pos[S_COL_LOCKED]] = "";
 	text[col_pos[S_COL_DATE]]   = "";
-	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
-	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
-	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
-
-	if (msginfo->date_t) {
-		procheader_date_get_localtime(date_modified,
-					      sizeof(date_modified),
-					      msginfo->date_t);
-		text[col_pos[S_COL_DATE]] = date_modified;
-	} else if (msginfo->date)
-		text[col_pos[S_COL_DATE]] = msginfo->date;
+	if (summaryview->col_state[summaryview->col_pos[S_COL_NUMBER]].visible)
+		text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	else
-		text[col_pos[S_COL_DATE]] = _("(No Date)");
+		text[col_pos[S_COL_NUMBER]] = "";
 
+	if (summaryview->col_state[summaryview->col_pos[S_COL_SIZE]].visible)
+		text[col_pos[S_COL_SIZE]] = to_human_readable(msginfo->size);
+	else
+		text[col_pos[S_COL_SIZE]] = "";
+
+	if (summaryview->col_state[summaryview->col_pos[S_COL_SCORE]].visible)
+		text[col_pos[S_COL_SCORE]] = itos_buf(col_score, msginfo->score);
+	else
+		text[col_pos[S_COL_SCORE]] = "";
+
+	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible) {
+		if (msginfo->date_t) {
+			procheader_date_get_localtime(date_modified,
+						      sizeof(date_modified),
+						      msginfo->date_t);
+			text[col_pos[S_COL_DATE]] = date_modified;
+		} else if (msginfo->date)
+			text[col_pos[S_COL_DATE]] = msginfo->date;
+		else
+			text[col_pos[S_COL_DATE]] = _("(No Date)");
+	}
+	
 	if (prefs_common.swap_from && msginfo->from && msginfo->to
 	&&  !summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible) {
 		gchar *addr = NULL;
