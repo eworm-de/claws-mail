@@ -1,3 +1,9 @@
+2006-05-26 [colin]	2.2.0cvs60
+
+	* src/foldersel.c
+		Fix bold in folder selection window with glib2.10
+		thanks Hiro
+
 2006-05-26 [colin]	2.2.0cvs59
 
 	* src/procheader.c
