@@ -3981,7 +3981,7 @@ gboolean summary_execute(SummaryView *summaryview)
 			if (GTK_CTREE_ROW(node)->sibling) {
 				next = GTK_CTREE_ROW(node)->sibling;
 			} else {
-				GtkCTreeRow *parent = NULL;
+				GtkCTreeNode *parent = NULL;
 				for (parent = GTK_CTREE_ROW(node)->parent; parent != NULL;
 				     parent = GTK_CTREE_ROW(parent)->parent) {
 					if (GTK_CTREE_ROW(parent)->sibling) {
@@ -4148,9 +4148,15 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	if (!summaryview->mlist) return;
 
+	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
+		summaryview->msginfo_update_callback_id);
+
 	folder_item_remove_msgs(summaryview->folder_item,
 				summaryview->mlist);
 
+	summaryview->msginfo_update_callback_id =
+		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, 
+			summary_update_msg, (gpointer) summaryview);
 	for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
 		procmsg_msginfo_free((MsgInfo *)cur->data);
 
@@ -4235,7 +4241,7 @@ void summary_thread_build(SummaryView *summaryview)
 				 msginfo->subject);
 		}
 
-		if (parent && parent != node) {
+		if (parent && parent != node && parent != GTK_CTREE_ROW(node)->parent) {
 			gtk_ctree_move(ctree, node, parent, NULL);
 		}
 
