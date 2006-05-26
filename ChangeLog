@@ -1,3 +1,22 @@
+2006-05-26 [colin]	2.2.0cvs57
+
+	* src/mainwindow.c
+		Make summaryview selectable as long as 
+		no message has focus
+	* src/mh.c
+		Faster deletion (by implementing mh_remove_msgs)
+		Faster copy (avoid using mh_fetch_msg just to get
+		the filename)
+		Faster move (using move_file instead of copy_file
+		if MSG_IS_MOVE)
+		No progressbar if total number of mails to cp/mv 
+		is less than 100
+	* src/summaryview.c
+		Fix removal from subject_table when mail gets moved
+		Faster deletion (g_slist_prepend instead of append)
+	* src/gtk/gtksctree.c
+		Remove useless code
+
 2006-05-25 [colin]	2.2.0cvs56
 
 	* src/common/ssl_certificate.c

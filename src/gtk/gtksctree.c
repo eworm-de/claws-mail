@@ -249,7 +249,6 @@ select_range (GtkSCTree *sctree, gint row)
 		}
 		node = node->next;
 	}
-	//	gtk_clist_select_row (GTK_CLIST (sctree), i, -1);
 
 	sctree->selecting_range = FALSE;
 	gtk_clist_select_row (GTK_CLIST (sctree), max, -1);

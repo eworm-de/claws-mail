@@ -3518,11 +3518,11 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	MessageView *msgview = mainwin->messageview;
 
-	if (GTK_WIDGET_HAS_FOCUS(mainwin->summaryview->ctree))
-		summary_select_all(mainwin->summaryview);
-	else if (messageview_is_visible(msgview) &&
+	if (messageview_is_visible(msgview) &&
 		 (GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
+	else
+		summary_select_all(mainwin->summaryview);
 }
 
 static void select_thread_cb(MainWindow *mainwin, guint action,

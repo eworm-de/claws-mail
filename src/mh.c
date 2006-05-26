@@ -43,6 +43,7 @@
 #include "procheader.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "statusbar.h"
 #include "gtkutils.h"
 
 /* Define possible missing constants for Windows. */
@@ -89,6 +90,10 @@ static gint	mh_copy_msgs		(Folder 	*folder,
 static gint     mh_remove_msg		(Folder		*folder,
 					 FolderItem	*item,
 					 gint 		 num);
+static gint 	mh_remove_msgs		(Folder 	*folder, 
+					 FolderItem 	*item, 
+		    			 MsgInfoList 	*msglist, 
+					 GRelation 	*relation);
 static gint     mh_remove_all_msg	(Folder		*folder,
 					 FolderItem	*item);
 static gboolean mh_is_msg_changed	(Folder		*folder,
@@ -168,6 +173,7 @@ FolderClass *mh_get_class(void)
 		mh_class.copy_msg = mh_copy_msg;
 		mh_class.copy_msgs = mh_copy_msgs;
 		mh_class.remove_msg = mh_remove_msg;
+		mh_class.remove_msgs = mh_remove_msgs;
 		mh_class.remove_all_msg = mh_remove_all_msg;
 		mh_class.is_msg_changed = mh_is_msg_changed;
 	}
@@ -458,6 +464,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	gboolean remove_special_headers = FALSE;
 	MsgInfoList *cur = NULL;
 	gint curnum = 0, total = 0;
+	gchar *srcpath = NULL;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -491,26 +498,37 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 
 	prefs = dest->prefs;
 
-	if (MSG_IS_MOVE(msginfo->flags))
-		statusbar_print_all(_("Moving messages..."));
-	else
-		statusbar_print_all(_("Copying messages..."));
+	srcpath = folder_item_get_path(msginfo->folder);
+
 	total = g_slist_length(msglist);
+	if (total > 100) {
+		if (MSG_IS_MOVE(msginfo->flags))
+			statusbar_print_all(_("Moving messages..."));
+		else
+			statusbar_print_all(_("Copying messages..."));
+	}
 	for (cur = msglist; cur; cur = cur->next) {
+		gboolean moved = FALSE;
 		msginfo = (MsgInfo *)cur->data;
-		if (!msginfo)
-			continue;
-		srcfile = procmsg_get_message_file(msginfo);
+		if (!msginfo) {
+			goto err_reset_status;
+		}
+		srcfile = g_strconcat(srcpath, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+		if (!srcfile) {
+			goto err_reset_status;
+		}
 		destfile = mh_get_new_msg_filename(dest);
 		if (!destfile) {
 			g_free(srcfile);
-			continue;
+			goto err_reset_status;
 		}
 
-		statusbar_progress_all(curnum, total, 100);
-		if (curnum % 100 == 0)
-			GTK_EVENTS_FLUSH();
-		curnum++;
+		if (total > 100) {
+			statusbar_progress_all(curnum, total, 100);
+			if (curnum % 100 == 0)
+				GTK_EVENTS_FLUSH();
+			curnum++;
+		}
 
 		debug_print("Copying message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
@@ -521,14 +539,24 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
 				g_free(srcfile);
 				g_free(destfile);
-				continue;
+				goto err_reset_status;
+			}
+		} else if (MSG_IS_MOVE(msginfo->flags)) {
+			if (move_file(srcfile, destfile, TRUE) < 0) {
+				FILE_OP_ERROR(srcfile, "move");
+				if (copy_file(srcfile, destfile, TRUE) < 0) {
+					FILE_OP_ERROR(srcfile, "copy");
+					g_free(srcfile);
+					g_free(destfile);
+					goto err_reset_status;
+				}
 			}
 		} else if (copy_file(srcfile, destfile, TRUE) < 0) {
 			FILE_OP_ERROR(srcfile, "copy");
 			g_free(srcfile);
 			g_free(destfile);
-			continue;
-		}
+			goto err_reset_status;
+		} 
 		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 			if (chmod(destfile, prefs->folder_chmod) < 0)
 				FILE_OP_ERROR(destfile, "chmod");
@@ -545,16 +573,27 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		dest->last_num++;
 	}
 
+	g_free(srcpath);
 	mh_write_sequences(dest, TRUE);
 
 	dest_need_scan = mh_scan_required(dest->folder, dest);
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
 	
-	statusbar_progress_all(0,0,0);
-	statusbar_pop_all();
-
+	if (total > 100) {
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
+	}
 	return dest->last_num;
+err_reset_status:
+	g_free(srcpath);
+	mh_write_sequences(dest, TRUE);
+	if (total > 100) {
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
+	}
+	return -1;
+
 }
 
 static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
@@ -579,6 +618,42 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 		item->mtime = time(NULL);
 
 	g_free(file);
+	return 0;
+}
+
+static gint mh_remove_msgs(Folder *folder, FolderItem *item, 
+		    MsgInfoList *msglist, GRelation *relation)
+{
+	gboolean need_scan = FALSE;
+	gchar *path, *file;
+	MsgInfoList *cur;
+
+	g_return_val_if_fail(item != NULL, -1);
+
+	path = folder_item_get_path(item);
+	
+	for (cur = msglist; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		if (msginfo == NULL)
+			continue;
+		file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+		if (file == NULL)
+			continue;
+		
+		if (g_unlink(file) < 0) {
+			g_free(file);
+			continue;
+		}
+		
+		g_free(file);
+	}
+
+	need_scan = mh_scan_required(folder, item);
+
+	if (!need_scan)
+		item->mtime = time(NULL);
+
+	g_free(path);
 	return 0;
 }
 

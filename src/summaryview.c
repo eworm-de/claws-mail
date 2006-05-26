@@ -4070,6 +4070,12 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid))
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
+		if (msginfo->subject && *msginfo->subject && 
+		    node == subject_table_lookup(summaryview->subject_table,
+						 msginfo->subject)) {
+			subject_table_remove(summaryview->subject_table,
+					     msginfo->subject);
+		}					    
 	}
 }
 
@@ -4143,7 +4149,7 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (msginfo && MSG_IS_DELETED(msginfo->flags)) {
 		summaryview->mlist =
-			g_slist_append(summaryview->mlist, msginfo);
+			g_slist_prepend(summaryview->mlist, msginfo);
 		gtk_ctree_node_set_row_data(ctree, node, NULL);
 
 		if (msginfo->msgid && *msginfo->msgid &&
@@ -5219,10 +5225,10 @@ GSList *summary_get_selection(SummaryView *summaryview)
 
 	for ( ; sel != NULL; sel = sel->next)
 		msginfo_list = 
-			g_slist_append(msginfo_list, 
+			g_slist_prepend(msginfo_list, 
 				       gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 								   GTK_CTREE_NODE(sel->data)));
-	return msginfo_list;
+	return g_slist_reverse(msginfo_list);
 }
 
 static void summary_reply_cb(SummaryView *summaryview, guint action,
