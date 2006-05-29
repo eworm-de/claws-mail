@@ -1353,8 +1353,9 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	for (cur = msglist; cur; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		if (!MSG_IS_DELETED(msginfo->flags))
-			numlist = g_slist_append(numlist, GINT_TO_POINTER(msginfo->msgnum));
+			numlist = g_slist_prepend(numlist, GINT_TO_POINTER(msginfo->msgnum));
 	}
+	numlist = g_slist_reverse(numlist);
 
 	uid_mapping = g_relation_new(2);
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
@@ -3317,13 +3318,14 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 			imap_get_uncached_messages(session, item,
 						   msgnum_list));
 	} else {
-		MsgNumberList *sorted_list, *elem;
+		MsgNumberList *sorted_list, *elem, *llast = NULL;
 		gint startnum, lastnum;
 
  		sorted_list = g_slist_sort(g_slist_copy(msgnum_list), g_int_compare);
 
 		startnum = lastnum = GPOINTER_TO_INT(sorted_list->data);
 
+		llast = g_slist_last(ret);
 		for (elem = sorted_list;; elem = g_slist_next(elem)) {
 			guint num = 0;
 
@@ -3340,7 +3342,12 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 						MsgInfo *msginfo = imap_parse_msg(file, item);
 						if (msginfo != NULL) {
 							msginfo->msgnum = i;
-							ret = g_slist_append(ret, msginfo);
+							if (llast == NULL)
+								llast = ret = g_slist_append(ret, msginfo);
+							else {
+								llast = g_slist_append(llast, msginfo);
+								llast = llast->next;
+							}
 						}
 						g_free(file);
 					}
@@ -3992,9 +3999,7 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 				   clist * list, const gchar * real_path, gboolean all)
 {
 	clistiter * iter;
-	GSList * item_list;
-	
-	item_list = NULL;
+	GSList * item_list = NULL, *llast = NULL;
 	
 	for(iter = clist_begin(list) ; iter != NULL ;
 	    iter = clist_next(iter)) {
@@ -4053,8 +4058,12 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 		    ((flags & ETPAN_IMAP_MB_NOSELECT) != 0))
 			new_item->no_select = TRUE;
 		
-		item_list = g_slist_append(item_list, new_item);
-		
+		if (item_list == NULL)
+			llast = item_list = g_slist_append(item_list, new_item);
+		else {
+			llast = g_slist_append(llast, new_item);
+			llast = llast->next;
+		}
 		debug_print("folder '%s' found.\n", loc_path);
 		g_free(base);
 		g_free(loc_path);
@@ -4070,7 +4079,7 @@ static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist)
 {
 	GSList *sorted_list, *cur;
 	guint first, last, next;
-	GSList *ret_list = NULL;
+	GSList *ret_list = NULL, *llast = NULL;
 	unsigned int count;
 	struct mailimap_set * current_set;
 	unsigned int item_count;
@@ -4109,8 +4118,13 @@ static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist)
 			first = next;
 			
 			if (count >= IMAP_SET_MAX_COUNT) {
-				ret_list = g_slist_append(ret_list,
+				if (ret_list == NULL)
+					llast = ret_list = g_slist_append(ret_list,
 							  current_set);
+				else {
+					llast = g_slist_append(llast, current_set);
+					llast = llast->next;
+				}
 				current_set = mailimap_set_new_empty();
 				count = 0;
 				item_count = 0;
@@ -4137,8 +4151,9 @@ static GSList * imap_get_lep_set_from_msglist(MsgInfoList *msglist)
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *) cur->data;
 
-		numlist = g_slist_append(numlist, GINT_TO_POINTER(msginfo->msgnum));
+		numlist = g_slist_prepend(numlist, GINT_TO_POINTER(msginfo->msgnum));
 	}
+	numlist = g_slist_reverse(numlist);
 	seq_list = imap_get_lep_set_from_numlist(numlist);
 	g_slist_free(numlist);
 
@@ -4157,9 +4172,10 @@ static GSList * imap_uid_list_from_lep(clist * list)
 		uint32_t * puid;
 		
 		puid = clist_content(iter);
-		result = g_slist_append(result, GINT_TO_POINTER(* puid));
+		result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
 	}
 	
+	result = g_slist_reverse(result);
 	return result;
 }
 
@@ -4174,9 +4190,9 @@ static GSList * imap_uid_list_from_lep_tab(carray * list)
 		uint32_t * puid;
 		
 		puid = carray_get(list, i);
-		result = g_slist_append(result, GINT_TO_POINTER(* puid));
+		result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
 	}
-	
+	result = g_slist_reverse(result);
 	return result;
 }
 
