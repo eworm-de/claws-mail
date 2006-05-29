@@ -633,7 +633,9 @@ void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int st
 void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
 	sctree->selecting_range = TRUE;
+	gtk_clist_freeze(GTK_CLIST(sctree));
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
+	gtk_clist_thaw(GTK_CLIST(sctree));
 	sctree->selecting_range = FALSE;
 	sctree->anchor_row = NULL;
 }

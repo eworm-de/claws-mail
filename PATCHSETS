@@ -1531,3 +1531,4 @@
 ( cvs diff -u -r 1.47.2.29 -r 1.47.2.30 src/procheader.c;  cvs diff -u -r 1.395.2.209 -r 1.395.2.210 src/summaryview.c;  ) > 2.2.0cvs59.patchset
 ( cvs diff -u -r 1.26.2.25 -r 1.26.2.26 src/foldersel.c;  ) > 2.2.0cvs60.patchset
 ( cvs diff -u -r 1.395.2.210 -r 1.395.2.211 src/summaryview.c;  ) > 2.2.0cvs61.patchset
+( cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/gtk/gtksctree.c;  ) > 2.2.0cvs62.patchset
