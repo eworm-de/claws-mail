@@ -1,3 +1,19 @@
+2006-05-29 [colin]	2.2.0cvs64
+
+	* src/compose.c
+	* src/common/utils.c
+		Fix extraneous tab at start of addresses
+	* src/mainwindow.c
+		Fix warnings (thanks to Fabien)
+		Fix crash at exit when composing messages 
+		exist
+	* src/pop.c
+		Fix progress bar when deleting expired mails
+		Thanks to Hiro
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+		Fix re-sorting slowness
+
 2006-05-29 [paul]	2.2.0cvs63
 
 	* src/mh.c

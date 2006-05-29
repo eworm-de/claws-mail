@@ -2366,7 +2366,7 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	buf = *buffer;
 	
 	if (buf == 0x00) {
-		url_decoded = NULL;
+		*url_decoded = '\0';
 		*buffer = NULL;
 		return;
 	}
@@ -2383,12 +2383,12 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	}
 	else  {
 		*buffer = NULL;
-		*url_decoded = NULL;
+		*url_decoded = '\0';
 		return;
 	}
 	
 	tmp[i]       = 0x00;
-	*url_decoded = NULL;
+	*url_decoded = '\0';
 	*buffer = NULL;
 	
 	if (i == maxlen) {
@@ -3686,6 +3686,8 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	SummaryView *summary;
 
 	g_return_val_if_fail(data, FALSE);
+	if (!g_list_find(mainwin_list, data))
+		return TRUE;
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
 

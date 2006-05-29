@@ -934,8 +934,6 @@ gtk_sctree_unlink (GtkCTree     *ctree,
 	if (parent) {
 		if (GTK_CTREE_ROW (parent)->children == node) {
 			GTK_CTREE_ROW (parent)->children = GTK_CTREE_ROW (node)->sibling;
-			if (!GTK_CTREE_ROW (parent)->children)
-				gtk_ctree_collapse (ctree, parent);
 		}
 		else {
 			GtkCTreeNode *sibling;

@@ -1953,7 +1953,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			tmp[cur-begin]='\0';
 			cur++;
 			begin = cur;
-			while (*tmp == ' ')
+			while (*tmp == ' ' || *tmp == '\t')
 				tmp++;
 			compose_add_header_entry(compose, header, tmp);
 			g_free(o_tmp);
@@ -1967,7 +1967,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		tmp[cur-begin]='\0';
 		cur++;
 		begin = cur;
-		while (*tmp == ' ')
+		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
 		compose_add_header_entry(compose, header, tmp);
 		g_free(o_tmp);		

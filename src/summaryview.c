@@ -5316,6 +5316,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 
 	node = GTK_CTREE_NODE(GTK_CLIST(summaryview->ctree)->row_list);
 
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 	if (prefs_common.bold_unread) {
 		while (node) {
 			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
@@ -5324,6 +5325,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 			node = next;
 		}
 	}
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	END_TIMING();
 }
 

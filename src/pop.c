@@ -777,6 +777,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 			log_message
 				(_("POP3: Deleting expired message "
 				   "%d\n"), session->cur_msg);
+			session->cur_total_bytes += size;
 			pop3_delete_send(session);
 			return POP3_DELETE;
 		}
