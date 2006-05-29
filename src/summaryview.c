@@ -2028,12 +2028,9 @@ static void summary_status_show(SummaryView *summaryview)
 		msginfo = gtk_ctree_node_get_row_data
 			(GTK_CTREE(summaryview->ctree),
 			 GTK_CTREE_NODE(cur->data));
-		if (!msginfo)
-			g_warning("summary_status_show(): msginfo == NULL\n");
-		else {
+		if (msginfo) {
 			sel_size += msginfo->size;
 			n_selected++;
-			
 		}
 	}
 	
@@ -2044,9 +2041,7 @@ static void summary_status_show(SummaryView *summaryview)
 			msginfo = gtk_ctree_node_get_row_data
 				(GTK_CTREE(summaryview->ctree),
 				 GTK_CTREE_NODE(cur));
-			if (!msginfo)
-				g_warning("summary_status_show(): msginfo == NULL\n");
-			else {
+			if (msginfo) {
 				n_size += msginfo->size;
 				n_total++;
 				if (MSG_IS_NEW(msginfo->flags))
