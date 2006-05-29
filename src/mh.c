@@ -465,6 +465,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	MsgInfoList *cur = NULL;
 	gint curnum = 0, total = 0;
 	gchar *srcpath = NULL;
+	gboolean full_fetch = FALSE;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -477,6 +478,9 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
+
+	if (msginfo->folder->folder != dest->folder)
+		full_fetch = TRUE;
 
 	if (dest->last_num < 0) {
 		mh_get_last_num(folder, dest);
@@ -513,7 +517,13 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		if (!msginfo) {
 			goto err_reset_status;
 		}
-		srcfile = g_strconcat(srcpath, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+		if (!full_fetch) {
+			srcfile = g_strconcat(srcpath, 
+				G_DIR_SEPARATOR_S, 
+				itos(msginfo->msgnum), NULL);
+		} else {
+			srcfile = procmsg_get_message_file(msginfo);
+		}
 		if (!srcfile) {
 			goto err_reset_status;
 		}
