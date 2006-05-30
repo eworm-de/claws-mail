@@ -2778,6 +2778,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	summary_lock(summaryview);
 
 	STATUSBAR_POP(summaryview->mainwin);
+	GTK_EVENTS_FLUSH();
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	

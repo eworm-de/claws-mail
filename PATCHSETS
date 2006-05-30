@@ -1536,3 +1536,4 @@
 ( cvs diff -u -r 1.382.2.273 -r 1.382.2.274 src/compose.c;  cvs diff -u -r 1.274.2.117 -r 1.274.2.118 src/mainwindow.c;  cvs diff -u -r 1.56.2.42 -r 1.56.2.43 src/pop.c;  cvs diff -u -r 1.395.2.211 -r 1.395.2.212 src/summaryview.c;  cvs diff -u -r 1.36.2.62 -r 1.36.2.63 src/common/utils.c;  cvs diff -u -r 1.1.4.20 -r 1.1.4.21 src/gtk/gtksctree.c;  ) > 2.2.0cvs64.patchset
 ( cvs diff -u -r 1.179.2.117 -r 1.179.2.118 src/imap.c;  ) > 2.2.0cvs65.patchset
 ( cvs diff -u -r 1.395.2.212 -r 1.395.2.213 src/summaryview.c;  ) > 2.2.0cvs66.patchset
+( cvs diff -u -r 1.395.2.213 -r 1.395.2.214 src/summaryview.c;  ) > 2.2.0cvs67.patchset

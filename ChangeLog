@@ -1,3 +1,10 @@
+2006-05-30 [colin]	2.2.0cvs67
+
+	* src/summaryview.c
+		Put back event flush when displaying message
+		It avoids reading a bunch of messages just
+		by hitting shift-n for too long ;)
+
 2006-05-29 [colin]	2.2.0cvs66
 
 	* src/summaryview.c
