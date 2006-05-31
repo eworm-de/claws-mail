@@ -208,8 +208,9 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 void ssl_done_socket(SockInfo *sockinfo)
 {
-	if (sockinfo->ssl) {
+	if (sockinfo && sockinfo->ssl) {
 		SSL_free(sockinfo->ssl);
+		sockinfo->ssl = NULL;
 	}
 }
 
