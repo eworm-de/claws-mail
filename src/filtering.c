@@ -182,7 +182,6 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 	while (messages) {
 		GSList *batch = NULL, *cur;
 		gint found = 0;
-		debug_print("%d messages to filter\n", g_slist_length(messages));
 		for (cur = messages; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			if (last_item == NULL) {
@@ -201,7 +200,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 			if (info->to_filter_folder == last_item 
 			&&  info->is_copy == is_copy
 			&&  info->is_move == is_move) {
-				batch = g_slist_append(batch, info);
+				batch = g_slist_prepend(batch, info);
 			}
 		}
 		if (found == 0) {
@@ -212,11 +211,11 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 			MsgInfo *info = (MsgInfo *)cur->data;
 			messages = g_slist_remove(messages, info);
 		}
+		batch = g_slist_reverse(batch);
 		if (g_slist_length(batch)) {
 			MsgInfo *info = (MsgInfo *)batch->data;
-			debug_print("%s %d messages to %s\n",
+			debug_print("%s messages to %s\n",
 				is_copy?"copying":"moving",
-				g_slist_length(batch),
 				folder_item_get_path(last_item));
 			if (is_copy && last_item != info->folder) {
 				folder_item_copy_msgs(last_item, batch);
@@ -233,7 +232,6 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		last_item = NULL;
 		is_copy = FALSE;
 		is_move = FALSE;
-		debug_print("%d messages remaining\n", g_slist_length(messages));
 	}
 	/* we don't reference the msginfos, because caller will do */
 	g_slist_free(messages);

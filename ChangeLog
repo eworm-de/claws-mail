@@ -1,3 +1,17 @@
+2006-05-31 [colin]	2.2.0cvs68
+
+	* src/filtering.c
+		Use g_slist_prepend
+	* src/imap.c
+		Don't remove caches when destroying folder, it
+		could (should) be done at exit
+	* src/inc.c
+		free processing cache after incorporation
+	* src/etpan/imap-thread.c
+		Maybe fix bug #959 (Crash on moving to emails 
+		to a imap account per ssl with a expired 
+		certificate.)
+
 2006-05-30 [colin]	2.2.0cvs67
 
 	* src/summaryview.c

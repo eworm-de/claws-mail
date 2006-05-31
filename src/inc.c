@@ -687,6 +687,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			    inc_state == INC_IO_ERROR)
 				break;
 		}
+		folder_item_free_cache(processing);
 
 		inc_session_destroy(session);
 		inc_dialog->queue_list =
