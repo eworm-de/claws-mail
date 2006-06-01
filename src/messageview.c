@@ -546,7 +546,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		gchar *to_addr = g_strdup(to);
 		extract_address(to_addr);
 		extract_address(buf);
-		ok = strcmp(to_addr, buf);
+		ok = strcasecmp(to_addr, buf);
 		g_free(to_addr);
 	} else {
 		strncpy(buf, _("<No Return-Path found>"), 

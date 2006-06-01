@@ -1539,3 +1539,4 @@
 ( cvs diff -u -r 1.395.2.213 -r 1.395.2.214 src/summaryview.c;  ) > 2.2.0cvs67.patchset
 ( cvs diff -u -r 1.60.2.17 -r 1.60.2.18 src/filtering.c;  cvs diff -u -r 1.179.2.118 -r 1.179.2.119 src/imap.c;  cvs diff -u -r 1.149.2.49 -r 1.149.2.50 src/inc.c;  cvs diff -u -r 1.1.4.37 -r 1.1.4.38 src/etpan/imap-thread.c;  ) > 2.2.0cvs68.patchset
 ( cvs diff -u -r 1.9.2.13 -r 1.9.2.14 src/common/ssl.c;  ) > 2.2.0cvs69.patchset
+( cvs diff -u -r 1.94.2.84 -r 1.94.2.85 src/messageview.c;  ) > 2.2.0cvs70.patchset
