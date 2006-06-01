@@ -766,6 +766,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_no_markup", "FALSE", &prefs_common.compose_no_markup, P_BOOL,
 	 NULL, NULL, NULL},
+	{"skip_ssl_cert_check", "FALSE", &prefs_common.skip_ssl_cert_check, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

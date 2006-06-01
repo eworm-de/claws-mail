@@ -8,7 +8,7 @@
 #define IMAP_SET_MAX_COUNT 100
 
 void imap_main_set_timeout(int sec);
-void imap_main_init(void);
+void imap_main_init(gboolean skip_ssl_cert_check);
 void imap_main_done(void);
 
 void imap_init(Folder * folder);

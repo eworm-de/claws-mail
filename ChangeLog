@@ -1,3 +1,23 @@
+2006-06-01 [colin]	2.2.0cvs71
+
+	* src/compose.c
+		Better guards against IMAP races
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/common/ssl_certificate.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+	* src/gtk/sslcertwindow.c
+		New hidden option ssl_skip_cert_check to 
+		avoid dups of bug #959 (libetpan linked
+		against gnutls and gnutls buggy on 64bit)
+		Present expired warning only once per
+		session/server.
+	* manual/advanced.xml
+	* manual/fr/advanced.xml
+		Document new option
+
 2006-06-01 [wwp]	2.2.0cvs70
 
 	* src/messageview.c

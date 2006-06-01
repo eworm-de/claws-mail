@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
 	main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN
-	imap_main_init();
+	imap_main_init(prefs_common.skip_ssl_cert_check);
 #endif	
 	account_set_missing_folder();
 	folder_set_missing_folders();

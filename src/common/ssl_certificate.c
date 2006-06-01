@@ -34,6 +34,8 @@
 #include "socket.h"
 #include "hooks.h"
 
+static GHashTable *warned_expired = NULL;
+
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
 /* from Courier */
@@ -410,6 +412,18 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			return TRUE;
 		}
 	} else if (asn1toTime(X509_get_notAfter(current_cert->x509_cert)) < time(NULL)) {
+		gchar *tmp = g_strdup_printf("%s:%d", current_cert->host, current_cert->port);
+		
+		if (warned_expired == NULL)
+			warned_expired = g_hash_table_new(g_str_hash, g_str_equal);
+		
+		if (g_hash_table_lookup(warned_expired, tmp)) {
+			g_free(tmp);
+			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
+			return TRUE;
+		}
+			
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = NULL;
 		cert_hook_data.expired = TRUE;
@@ -418,10 +432,12 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
 
 		if (!cert_hook_data.accept) {
+			g_free(tmp);
 			ssl_certificate_destroy(current_cert);
 			ssl_certificate_destroy(known_cert);
 			return FALSE;
 		} else {
+			g_hash_table_insert(warned_expired, tmp, GINT_TO_POINTER(1));
 			ssl_certificate_destroy(current_cert);
 			ssl_certificate_destroy(known_cert);
 			return TRUE;

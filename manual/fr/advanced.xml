@@ -193,6 +193,9 @@
 	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
 			<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>skip_ssl_cert_check</term>
+		    <listitem><para>Permet de ne pas faire la vérification des certificats SSL</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>statusbar_update_step</term>
 		    <listitem><para>Étapes de progression lors de la mise à jour dans les barres de progression.</para></listitem>
 	    </varlistentry>

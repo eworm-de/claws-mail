@@ -1259,21 +1259,17 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		reply_account = account;
 
 	compose = compose_create(account, COMPOSE_REPLY, FALSE);
+
+	compose->updating = TRUE;
+
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	menu_set_active(ifactory, "/Options/Remove references", FALSE);
 	menu_set_sensitive(ifactory, "/Options/Remove references", TRUE);
 
-	compose->updating = TRUE;
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
-	compose->updating = FALSE;
-
-	if (compose->deferred_destroy) {
-		compose_destroy(compose);
-		return NULL;
-	}
 
 	compose_extract_original_charset(compose);
 	
@@ -1343,6 +1339,14 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		
 	compose->modified = FALSE;
 	compose_set_title(compose);
+
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
+
 	return compose;
 }
 
@@ -1377,12 +1381,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->fwdinfo)
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
-	compose->updating = FALSE;
-
-	if (compose->deferred_destroy) {
-		compose_destroy(compose);
-		return NULL;
-	}
 
 	compose_extract_original_charset(compose);
 
@@ -1420,16 +1418,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		gchar *qmark;
 		MsgInfo *full_msginfo;
 
-		compose->updating = TRUE;
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!full_msginfo)
 			full_msginfo = procmsg_msginfo_copy(msginfo);
-		compose->updating = FALSE;
-
-		if (compose->deferred_destroy) {
-			compose_destroy(compose);
-			return NULL;
-		}
 
 		if (prefs_common.fw_quotemark &&
 		    *prefs_common.fw_quotemark)
@@ -1476,6 +1467,14 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	
 	compose->modified = FALSE;
 	compose_set_title(compose);
+
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
+
         return compose;
 }
 
@@ -1515,20 +1514,16 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 	compose = compose_create(account, COMPOSE_FORWARD, FALSE);
 
+	compose->updating = TRUE;
+
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
 	compose_create_tags(textview, compose);
 	
 	undo_block(compose->undostruct);
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
-		compose->updating = TRUE;
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
-		compose->updating = FALSE;
-		if (compose->deferred_destroy) {
-			compose_destroy(compose);
-			g_free(msgfile);
-			return NULL;
-		}
+
 		if (!is_file_exist(msgfile))
 			g_warning("%s: file not exist\n", msgfile);
 		else
@@ -1573,6 +1568,14 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	undo_unblock(compose->undostruct);
 	compose->modified = FALSE;
 	compose_set_title(compose);
+
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
+
 	return compose;
 }
 
@@ -1706,6 +1709,9 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account, COMPOSE_REEDIT, FALSE);
+	
+	compose->updating = TRUE;
+	
 	if (privacy_system != NULL) {
 		compose->privacy_system = privacy_system;
 		compose_use_signing(compose, use_signing);
@@ -1715,14 +1721,7 @@ void compose_reedit(MsgInfo *msginfo)
 		activate_privacy_system(compose, account, FALSE);
 	}
 
-	compose->updating = TRUE;
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
-	compose->updating = FALSE;
-	
-	if (compose->deferred_destroy) {
-		compose_destroy(compose);
-		return;
-	}
 
 	compose_extract_original_charset(compose);
 
@@ -1749,6 +1748,8 @@ void compose_reedit(MsgInfo *msginfo)
 	}
 	
 	if (compose_parse_header(compose, msginfo) < 0) {
+		compose->updating = FALSE;
+		compose_destroy(compose);
 		return;
 	}
 	compose_reedit_set_entry(compose, msginfo);
@@ -1804,6 +1805,12 @@ void compose_reedit(MsgInfo *msginfo)
 	}
 	compose->modified = FALSE;
 	compose_set_title(compose);
+
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+	}
 }
 
 Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
@@ -1822,6 +1829,9 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_REDIRECT, batch);
+
+	compose->updating = TRUE;
+
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	compose_create_tags(GTK_TEXT_VIEW(compose->text), compose);
 	compose->replyinfo = NULL;
@@ -1831,18 +1841,14 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	compose->updating = TRUE;
 	filename = procmsg_get_message_file_path(msginfo);
-	compose->updating = FALSE;
 
-	if (compose->deferred_destroy) {
+	if (filename == NULL) {
+		compose->updating = FALSE;
 		compose_destroy(compose);
-		g_free(filename);
+
 		return NULL;
 	}
-
-	if (filename == NULL)
-		return NULL;
 
 	compose->redirect_filename = filename;
 	
@@ -1901,7 +1907,14 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose->modified = FALSE;
 	compose_set_title(compose);
-        return compose;
+	compose->updating = FALSE;
+
+	if (compose->deferred_destroy) {
+		compose_destroy(compose);
+		return NULL;
+	}
+	
+	return compose;
 }
 
 GList *compose_get_compose_list(void)
@@ -7718,7 +7731,7 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 	prefs_common.compose_x = x;
 	prefs_common.compose_y = y;
 
-	if (compose->sending)
+	if (compose->sending || compose->updating)
 		return TRUE;
 	compose_close_cb(compose, 0, NULL);
 	return TRUE;

@@ -206,6 +206,9 @@
 	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
 			<listitem><para>colours used in log window</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>skip_ssl_cert_check</term>
+		    <listitem><para>Disables the verification of SSL certificates</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>statusbar_update_step</term>
 		    <listitem><para>update stepping in progress bars</para></listitem>
 	    </varlistentry>
