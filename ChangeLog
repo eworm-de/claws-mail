@@ -1,3 +1,10 @@
+2006-06-02 [wwp]	2.2.0cvs73
+
+	* manual/fr/glossary.xml
+	* manual/fr/ack.xml
+	* manual/ack.xml
+		one fix (thanks to Fabien Vantard), one update (thanks to Norman Walsh).
+
 2006-06-02 [wwp]	2.2.0cvs72
 
 	* manual/xml2pdf
