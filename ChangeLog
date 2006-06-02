@@ -1,3 +1,11 @@
+2006-06-02 [cleroy]	2.2.0cvs75
+
+	* src/filtering.c
+	* src/folder.c
+	* src/procmsg.c
+	* src/summaryview.c
+		Fix a few leaks
+
 2006-06-02 [colin]	2.2.0cvs74
 
 	* src/main.c

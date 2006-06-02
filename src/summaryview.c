@@ -2594,6 +2594,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				msginfo->fromname :
 				_("(No From)");
 	} else {
+		/* this leaks */
 		gchar *tmp = summary_complete_address(msginfo->from);
 		from_text = tmp ? tmp : (msginfo->fromname ?
 					 msginfo->fromname: 

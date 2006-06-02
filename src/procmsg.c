@@ -1856,9 +1856,8 @@ gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 			gboolean result;
 
 			if (g_hash_table_lookup(parentmsgs, info)) {
-				debug_print("loop detected: %s%c%d\n",
-					folder_item_get_path(info->folder),
-					G_DIR_SEPARATOR, info->msgnum);
+				debug_print("loop detected: %d\n",
+					info->msgnum);
 				result = FALSE;
 			} else {
 				g_hash_table_insert(parentmsgs, info, "1");
