@@ -50,6 +50,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "statusbar.h"
+#include "msgcache.h"
 #include "manage_window.h"
 #include "stock_pixmap.h"
 #include "progressdialog.h"

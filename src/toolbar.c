@@ -2084,6 +2084,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	GList *list;
 	gboolean found;
+	gboolean got_error = FALSE;
 
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
@@ -2120,10 +2121,12 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (folder->queue) {
 			if (procmsg_send_queue(folder->queue, 
 					       prefs_common.savemsg) < 0)
-				alertpanel_error(_("Some errors occurred while "
-						   "sending queued messages."));
+				got_error = TRUE;
 		}
 	}
+	if (got_error)
+		alertpanel_error(_("Some errors occurred while "
+				   "sending queued messages."));
 }
 
 void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)

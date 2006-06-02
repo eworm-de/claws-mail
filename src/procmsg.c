@@ -44,6 +44,7 @@
 #include "partial_download.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "log.h"
 #include "timing.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
@@ -878,7 +879,13 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	GSList *list, *elem;
 	GSList *sorted_list = NULL;
 	GNode *node, *next;
-
+	static gboolean send_queue_lock = FALSE;
+	
+	if (send_queue_lock) {
+		log_error(_("Already trying to send\n"));
+		return -1;
+	}
+	send_queue_lock = TRUE;
 	if (!queue)
 		queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, -1);
@@ -903,16 +910,6 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 						  msginfo->msgnum);
 					err++;
 				} else {
-					/* CLAWS: 
-					 * We save in procmsg_send_message_queue because
-					 * we need the destination folder from the queue
-					 * header
-							
-					if (save_msgs)
-						procmsg_save_to_outbox
-							(queue->folder->outbox,
-							 file, TRUE);
-					 */
 					sent++; 
 					folder_item_remove_msg(queue, msginfo->msgnum);
 				}
@@ -941,7 +938,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 			node = next;
 		}
 	}
-
+	send_queue_lock = FALSE;
 	return (err != 0 ? -err : sent);
 }
 

@@ -604,7 +604,11 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	if (!item->cache) {
 		return;
 	}
-	folder_item_write_cache(item);
+
+	if (item->opened)
+		folder_item_close(item);
+
+	folder_item_free_cache(item);
 }
 
 static void exit_sylpheed(MainWindow *mainwin)
