@@ -16,7 +16,7 @@ sylpheed-claws-manual.pdf: \
 	../../plugins.xml \
 	../../starting.xml \
 	../../sylpheed-claws-manual.xml 
-	-docbook2pdf -d ../../../dtd/manual.dsl -o . ../../sylpheed-claws-manual.xml
+	-sh ../../../xml2pdf ../../../dtd/manual.xsl ../../sylpheed-claws-manual.xml
 	
 clean:
-	-rm sylpheed-claws-manual.pdf
+	-rm sylpheed-claws-manual.pdf sylpheed-claws-manual.fo sylpheed-claws-manual.xsl

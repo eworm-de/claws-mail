@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# pdf generation from xml and xsl
+# $1: .xsl file 
+# $2: .xml file
+
+if [ $# -ne 2 ]
+then
+	echo "usage: ${0##*/} <file.xsl> <file.xml>"
+fi
+
+test -n "$XML_CATALOG_FILES" && \
+	CATALOG_FILES=$XML_CATALOG_FILES || \
+	CATALOG_FILES="/usr/local/etc/xml/catalog /etc/xml/catalog $HOME/xml/catalog"
+KEY="http://docbook.sourceforge.net/release/xsl/current"
+
+for CATALOG in $CATALOG_FILES
+do
+	if [ -s "$CATALOG" ]
+	then
+		DOCBOOKXSLPATH=$(xmlcatalog "$CATALOG" "$KEY/")
+		# second chance
+		test $? -ne 0 -o -z "$DOCBOOKXSLPATH" && \
+			DOCBOOKXSLPATH=$(xmlcatalog "$CATALOG" "$KEY")
+
+		test "${DOCBOOKXSLPATH:0:7}" == "file://" && \
+			DOCBOOKXSLPATH=${DOCBOOKXSLPATH:7}
+		if [ -n "$DOCBOOKXSLPATH" ]
+		then
+			echo "docbook-xsl path found: $DOCBOOKXSLPATH"
+			sed "s|@DOCBOOK_XSL_PATH@|$DOCBOOKXSLPATH|g" "$1" > sylpheed-claws-manual.xsl && \
+				saxon -o sylpheed-claws-manual.fo "$2" sylpheed-claws-manual.xsl && \
+				fop -fo sylpheed-claws-manual.fo -pdf sylpheed-claws-manual.pdf
+			exit $?
+		fi
+	fi
+done
+echo "couldn't find docbook-xsl path from any of the following catalog files:"
+echo "$CATALOG_FILES"
+exit 1
