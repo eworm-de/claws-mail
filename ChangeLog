@@ -1,3 +1,10 @@
+2006-06-03 [colin]	2.2.0cvs76
+
+	* src/mbox.c
+		Fix bug #962 (Manual and/or UI should 
+		warn about incompatible locking 
+		causing dataloss)
+
 2006-06-02 [cleroy]	2.2.0cvs75
 
 	* src/filtering.c
