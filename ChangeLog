@@ -1,3 +1,10 @@
+2006-06-03 [colin]	2.2.0cvs77
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Check that gpg_data_release_and_get_mem 
+		didn't fail (now, why this happens...)
+
 2006-06-03 [colin]	2.2.0cvs76
 
 	* src/mbox.c
