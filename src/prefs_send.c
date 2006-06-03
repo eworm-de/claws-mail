@@ -335,7 +335,7 @@ void prefs_send_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Mail Handling");
-	path[1] = _("Send");
+	path[1] = _("Sending");
 	path[2] = NULL;
 
 	page = g_new0(SendPage, 1);

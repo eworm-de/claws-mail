@@ -369,7 +369,7 @@ void prefs_receive_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Mail Handling");
-	path[1] = _("Receive");
+	path[1] = _("Receiving");
 	path[2] = NULL;
 
 	page = g_new0(ReceivePage, 1);
