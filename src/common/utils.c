@@ -336,7 +336,7 @@ gchar *itos(gint n)
 
 gchar *to_human_readable(off_t size)
 {
-	static gchar str[10];
+	static gchar str[14];
 
 	if (size < 1024)
 		g_snprintf(str, sizeof(str), _("%dB"), (gint)size);

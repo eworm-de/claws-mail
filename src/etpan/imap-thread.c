@@ -106,11 +106,13 @@ void imap_logger_fetch(int direction, const char * str, size_t size)
 }
 
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
+static gboolean etpan_skip_ssl_cert_check = FALSE;
 
-void imap_main_init(void)
+void imap_main_init(gboolean skip_ssl_cert_check)
 {
 	int fd_thread_manager;
 	
+	etpan_skip_ssl_cert_check = skip_ssl_cert_check;
 	mailstream_network_delay.tv_sec = ETPAN_DEFAULT_NETWORK_TIMEOUT;
 	mailstream_network_delay.tv_usec = 0;
 	
@@ -391,7 +393,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	threaded_run(folder, &param, &result, connect_ssl_run);
 	
-	if (result.error >= 0) {
+	if (result.error >= 0 && !etpan_skip_ssl_cert_check) {
 		cert_len = mailstream_ssl_get_certificate(imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			return -1;
@@ -804,7 +806,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	
 	debug_print("imap starttls - end\n");
 	
-	if (result.error == 0) {
+	if (result.error == 0 && !etpan_skip_ssl_cert_check) {
 		cert_len = mailstream_ssl_get_certificate(param.imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			result.error = MAILIMAP_ERROR_STREAM;

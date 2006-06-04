@@ -187,7 +187,6 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 			}
 			if (last_item == NULL)
 				continue;
-			debug_print("for %s\n", folder_item_get_path(last_item));
 			if (!is_copy && !is_move) {
 				if (info->is_copy)
 					is_copy = TRUE;
@@ -211,10 +210,6 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		}
 		if (g_slist_length(batch)) {
 			MsgInfo *info = (MsgInfo *)batch->data;
-			debug_print("%s %d messages to %s\n",
-				is_copy?"copying":"moving",
-				g_slist_length(batch),
-				folder_item_get_path(last_item));
 			if (is_copy && last_item != info->folder) {
 				folder_item_copy_msgs(last_item, batch);
 			} else if (is_move && last_item != info->folder) {
@@ -270,7 +265,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		/* mark message to be moved */		
 		info->is_move = TRUE;
 		info->to_filter_folder = dest_folder;
-		debug_print("set to move to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
 	case MATCHACTION_COPY:
@@ -286,7 +280,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		/* mark message to be copied */		
 		info->is_copy = TRUE;
 		info->to_filter_folder = dest_folder;
-		debug_print("set to copy to %s\n", folder_item_get_path(dest_folder));
 		return TRUE;
 
 	case MATCHACTION_DELETE:

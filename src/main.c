@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
 	main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN
-	imap_main_init();
+	imap_main_init(prefs_common.skip_ssl_cert_check);
 #endif	
 	account_set_missing_folder();
 	folder_set_missing_folders();
@@ -604,7 +604,11 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	if (!item->cache) {
 		return;
 	}
-	folder_item_write_cache(item);
+
+	if (item->opened)
+		folder_item_close(item);
+
+	folder_item_free_cache(item);
 }
 
 static void exit_sylpheed(MainWindow *mainwin)

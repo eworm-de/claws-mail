@@ -1,3 +1,61 @@
+2006-06-04 [colin]	2.2.0cvs2-stable
+
+	* commitHelper
+	* manual/advanced.xml
+	* manual/fr/advanced.xml
+	* src/compose.c
+	* src/filtering.c
+	* src/folder.c
+	* src/foldersel.c
+	* src/main.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/procmsg.c
+	* src/send_message.c
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/common/ssl.c
+	* src/common/ssl_certificate.c
+	* src/common/utils.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+	* src/gtk/sslcertwindow.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Backport fixes from 2.2.0cvs{52,56,60,69,70,71,74,75,76,77,78}
+		Buffer overflow in to_human_readable in russian
+		Fix leak in expired cert check
+		Fix bold in folder selection window with glib2.10
+		Guard against NULLs in SSL code, although it never happens
+		Fix bug #961 (return receipt dialog complains incorrectly 
+		about return-path email adress being different)
+		New hidden option ssl_skip_cert_check to 
+		avoid dups of bug #959 (libetpan linked
+		against gnutls and gnutls buggy on 64bit)
+		Present expired warning only once per
+		session/server.
+		Better guards against IMAP races
+		On exit, free caches after writing them
+		Shuts up some valgrind false positives
+		Fix races when reusing existing SMTP connections
+		Fix inexistant SMTP session timeout
+		Display alertpanel after all queues have
+		been processed, not after each
+		Fix a few leaks
+		Fix bug #962 (Manual and/or UI should 
+		warn about incompatible locking 
+		causing dataloss)
+		Check that gpg_data_release_and_get_mem 
+		didn't fail (now, why this happens...)
+		Autoswitch to Localhost if transport was previously
+		disabled. Else people had to check [] Enable, then
+		*reselect* transport.
+
+
+
 2006-05-22 [colin]	2.2.0cvs1-stable
 
 	* src/action.c

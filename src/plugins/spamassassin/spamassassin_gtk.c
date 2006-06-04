@@ -448,6 +448,15 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 		if (config->transport == transports[i].transport) {
 			show_transport(page, &transports[i]);
 			active = i;
+		} else if (config->transport == SPAMASSASSIN_DISABLED 
+			&& transports[i].transport == SPAMASSASSIN_TRANSPORT_LOCALHOST) {
+			show_transport(page, &transports[i]);
+			active = i;
+			/* and disable via new way */
+			config->enable = FALSE;
+			gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(enable_sa_checkbtn), 
+				config->enable);
 		}
 	}
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(transport_optmenu), transport_menu);

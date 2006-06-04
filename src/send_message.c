@@ -322,12 +322,12 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			(session, send_send_data_progressive, dialog);
 		session_set_send_data_notify(session, send_send_data_finished, dialog);
 
-		ac_prefs->session = SMTP_SESSION(session);
 	} else {
 		/* everything is ready to start at MAIL FROM:, just
 		 * reinit useful variables. 
 		 */
 		session = SESSION(ac_prefs->session);
+		ac_prefs->session = NULL;
 		smtp_session = SMTP_SESSION(session);
 		smtp_session->state = SMTP_HELO;
 		dialog = (SendProgressDialog *)smtp_session->dialog;
@@ -341,6 +341,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	smtp_session->send_data = get_outgoing_rfc2822_str(fp);
 	smtp_session->send_data_len = strlen(smtp_session->send_data);
 
+	session_set_timeout(session,
+			    prefs_common.io_timeout_secs * 1000);
 	/* connect if necessary */
 	if (!was_inited && session_connect(session, ac_prefs->smtp_server, port) < 0) {
 		session_destroy(session);
@@ -409,6 +411,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		g_free(smtp_session->send_data);
 		g_free(smtp_session->error_msg);
 	}
+	if (keep_session && ret == 0 && ac_prefs->session == NULL)
+		ac_prefs->session = SMTP_SESSION(session);
+
 
 	statusbar_pop_all();
 	statusbar_verbosity_set(FALSE);

@@ -517,8 +517,18 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	gpgme_release(ctx);
 	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
+	
+	gpgme_release(ctx);
+	
+	if (sigcontent == NULL || len <= 0) {
+		g_warning("gpgme_data_release_and_get_mem failed");
+		gpgme_data_release(gpgtext);
+		g_free(textstr);
+		g_free(sigcontent);
+		return FALSE;
+	}
+
 	tmp = g_malloc(len+1);
 	g_memmove(tmp, sigcontent, len+1);
 	tmp[len] = '\0';
@@ -615,6 +625,13 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	gpgme_release(ctx);
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
+
+	if (enccontent == NULL || len <= 0) {
+		g_warning("gpgme_data_release_and_get_mem failed");
+		gpgme_data_release(gpgtext);
+		g_free(textstr);
+		return FALSE;
+	}
 
 	tmp = g_malloc(len+1);
 	g_memmove(tmp, enccontent, len+1);

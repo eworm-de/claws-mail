@@ -486,6 +486,11 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
 
+	if (sigcontent == NULL || len <= 0) {
+		g_warning("gpgme_data_release_and_get_mem failed");
+		return FALSE;
+	}
+
 	/* add signature */
 	g_hash_table_insert(sigmultipart->typeparameters, g_strdup("micalg"),
                             micalg);
@@ -589,6 +594,11 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
+
+	if (enccontent == NULL || len <= 0) {
+		g_warning("gpgme_data_release_and_get_mem failed");
+		return FALSE;
+	}
 
 	/* create encrypted multipart */
 	g_node_unlink(msgcontent->node);

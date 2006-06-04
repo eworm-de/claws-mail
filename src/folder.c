@@ -2346,6 +2346,8 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 				procmsg_msginfo_set_flags(msginfo, 0, MSG_SCANNED);
 			}
 		}
+		procmsg_msginfo_free(msginfo);
+		procmsg_msginfo_free(msginfo);
 	}
 
 	return msgfile;
@@ -2713,7 +2715,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 {
 	FolderItem *tmp = folder_item_parent(dest);
 	gchar * src_identifier, * dst_identifier;
-	gchar * phys_srcpath, * phys_dstpath;
+	gchar * phys_srcpath, * phys_dstpath, *tmppath;
 	
 	while (tmp) {
 		if (tmp == src) {
@@ -2741,10 +2743,12 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	}
 
 	phys_srcpath = folder_item_get_path(src);
-	phys_dstpath = g_strconcat(folder_item_get_path(dest),
+	tmppath = folder_item_get_path(dest);
+	phys_dstpath = g_strconcat(tmppath,
 		       G_DIR_SEPARATOR_S,
 		       g_path_get_basename(phys_srcpath),
 		       NULL);
+	g_free(tmppath);
 
 	if (folder_item_parent(src) == dest || src == dest) {
 		g_free(src_identifier);

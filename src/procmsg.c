@@ -44,6 +44,7 @@
 #include "partial_download.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "log.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
 
@@ -873,7 +874,13 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	GSList *list, *elem;
 	GSList *sorted_list = NULL;
 	GNode *node, *next;
-
+	static gboolean send_queue_lock = FALSE;
+	
+	if (send_queue_lock) {
+		log_error(_("Already trying to send\n"));
+		return -1;
+	}
+	send_queue_lock = TRUE;
 	if (!queue)
 		queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, -1);
@@ -898,16 +905,6 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 						  msginfo->msgnum);
 					err++;
 				} else {
-					/* CLAWS: 
-					 * We save in procmsg_send_message_queue because
-					 * we need the destination folder from the queue
-					 * header
-							
-					if (save_msgs)
-						procmsg_save_to_outbox
-							(queue->folder->outbox,
-							 file, TRUE);
-					 */
 					sent++; 
 					folder_item_remove_msg(queue, msginfo->msgnum);
 				}
@@ -936,7 +933,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 			node = next;
 		}
 	}
-
+	send_queue_lock = FALSE;
 	return (err != 0 ? -err : sent);
 }
 
@@ -1838,9 +1835,8 @@ gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 			gboolean result;
 
 			if (g_hash_table_lookup(parentmsgs, info)) {
-				debug_print("loop detected: %s%c%d\n",
-					folder_item_get_path(info->folder),
-					G_DIR_SEPARATOR, info->msgnum);
+				debug_print("loop detected: %d\n",
+					info->msgnum);
 				result = FALSE;
 			} else {
 				g_hash_table_insert(parentmsgs, info, "1");
