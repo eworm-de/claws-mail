@@ -7,11 +7,16 @@
 if [ $# -ne 2 ]
 then
 	echo "usage: ${0##*/} <file.xsl> <file.xml>"
+	exit 1
 fi
 
-test -n "$XML_CATALOG_FILES" && \
-	CATALOG_FILES=$XML_CATALOG_FILES || \
+if [ -n "$XML_CATALOG_FILES" ]
+then
+	CATALOG_FILES=$XML_CATALOG_FILES
+else
+	echo "warning: XML_CATALOG_FILES is not set or empty"
 	CATALOG_FILES="/usr/local/etc/xml/catalog /etc/xml/catalog $HOME/xml/catalog"
+fi
 KEY="http://docbook.sourceforge.net/release/xsl/current"
 
 for CATALOG in $CATALOG_FILES
@@ -20,8 +25,13 @@ do
 	then
 		DOCBOOKXSLPATH=$(xmlcatalog "$CATALOG" "$KEY/")
 		# second chance
-		test $? -ne 0 -o -z "$DOCBOOKXSLPATH" && \
+		if [ $? -ne 0 -o -z "$DOCBOOKXSLPATH" ]
+		then
 			DOCBOOKXSLPATH=$(xmlcatalog "$CATALOG" "$KEY")
+			# still not found
+			test $? -ne 0 -o -z "$DOCBOOKXSLPATH" && \
+				continue
+		fi
 
 		test "${DOCBOOKXSLPATH:0:7}" == "file://" && \
 			DOCBOOKXSLPATH=${DOCBOOKXSLPATH:7}

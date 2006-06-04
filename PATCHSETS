@@ -1549,3 +1549,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/plugins/pgpmime/pgpmime.c;  ) > 2.2.0cvs77.patchset
 ( cvs diff -u -r 1.23.2.29 -r 1.23.2.30 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.2.0cvs78.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_receive.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_send.c;  ) > 2.2.0cvs79.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/xml2pdf;  ) > 2.2.0cvs80.patchset
