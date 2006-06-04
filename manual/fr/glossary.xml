@@ -165,7 +165,7 @@ En-têtes
     </term>
     <listitem>
       <para>
-Lignes formant la première partie d'un message. Ils contiennent par exemple des informations sur l'expéditeur et le destinataire. Certains en-têtes sont optionnels et apportent des informations supplémentaires, comme <xref linkend="gt_xface" />.
+Lignes formant la première partie d'un message. Ils contiennent par exemple des informations sur l'expéditeur et le destinataire. Certains en-têtes sont optionnels et apportent des informations supplémentaires, comme <xref linkend="gt_xface" /> ou <xref linkend="gt_face" />.
       </para>
     </listitem>
   </varlistentry>
@@ -173,6 +173,16 @@ Lignes formant la première partie d'un message. Ils contiennent par exemple des 
     
 <variablelist>
   <title>F</title>
+  <varlistentry id="gt_face">
+    <term>
+Face
+    </term>
+    <listitem>
+      <para>
+Implémentation moderne du <xref linkend="gt_xface" />, c'est une image en couleur de 48x48 pixels encodée pour tenir dans les en-têtes de messages.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_thread">
     <term>
 Fil de discussion (messages)
@@ -716,7 +726,7 @@ X-Face
     </term>
     <listitem>
       <para>
-Image noir et blanc de 48x48 pixels, encodée pour tenir dans les en-têtes de messages. Les bons clients de courriel les affichent dans les messages. Elles ne servent qu'à personnaliser un peu les courriels que l'on envoie.
+Image noir et blanc de 48x48 pixels, encodée pour tenir dans les en-têtes de messages. Les bons clients de courriel les affichent dans les messages. Elles ne servent qu'à personnaliser un peu les courriels que l'on envoie. Voir aussi <xref linkend="gt_face" />.
       </para>
     </listitem>
   </varlistentry>

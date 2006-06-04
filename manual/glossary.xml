@@ -141,6 +141,16 @@ Scrambling a message with a cryptographic key so that only the recipient and own
     
 <variablelist>
   <title>F</title>
+  <varlistentry id="gt_face">
+    <term>
+Face
+    </term>
+    <listitem>
+      <para>
+A more modern implementation of the <xref linkend="gt_xface" />, it's a coloured image (48x48 pixels) included in the message headers.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_filtering_rule">
     <term>
 Filtering rule
@@ -193,7 +203,7 @@ Headers
     </term>
     <listitem>
       <para>
-Machine readable lines which form the first part of a mail message. The purpose of headers varies; Typical headers are From and To which state the sender and recipient of the message, others are used by the mail system. Some headers are optional and are used to provide additional information, such as <xref linkend="gt_xface" />.
+Machine readable lines which form the first part of a mail message. The purpose of headers varies; Typical headers are From and To which state the sender and recipient of the message, others are used by the mail system. Some headers are optional and are used to provide additional information, such as <xref linkend="gt_xface" /> or <xref linkend="gt_face" />.
       </para>
     </listitem>
   </varlistentry>
@@ -781,7 +791,7 @@ X-Face
     </term>
     <listitem>
       <para>
-Specially coded black and white image (48x48 pixels) included in the message headers. Capable mailers like Sylpheed-Claws and others can decode and show it alongside the message text. Although they are not unique, they can help to quickly identify the mensage sender.
+Specially coded black and white image (48x48 pixels) included in the message headers. Capable mailers like Sylpheed-Claws and others can decode and show it alongside the message text. Although they are not unique, they can help to quickly identify the message sender. See also <xref linkend="gt_face" />.
       </para>
     </listitem>
   </varlistentry>

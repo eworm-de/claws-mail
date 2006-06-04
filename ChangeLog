@@ -1,3 +1,11 @@
+2006-06-04 [wwp]	2.2.0cvs82
+
+	* manual/glossary.xml
+	* manual/account.xml
+	* manual/fr/glossary.xml
+	* manual/fr/account.xml
+		added glossary section and references/links related to the Face custom header.
+
 2006-06-04 [colin]	2.2.0cvs81
 
 	* src/summaryview.c
