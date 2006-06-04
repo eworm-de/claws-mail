@@ -1550,3 +1550,4 @@
 ( cvs diff -u -r 1.23.2.29 -r 1.23.2.30 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 2.2.0cvs78.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_receive.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_send.c;  ) > 2.2.0cvs79.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/xml2pdf;  ) > 2.2.0cvs80.patchset
+( cvs diff -u -r 1.395.2.215 -r 1.395.2.216 src/summaryview.c;  ) > 2.2.0cvs81.patchset

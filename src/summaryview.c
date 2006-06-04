@@ -1786,7 +1786,8 @@ static GtkCTreeNode *summary_find_next_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo && !MSG_IS_DELETED(msginfo->flags)) break;
+		if (msginfo && !MSG_IS_DELETED(msginfo->flags) 
+		&& !MSG_IS_MOVE(msginfo->flags)) break;
 	}
 
 	return node;
@@ -3612,7 +3613,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 {
 	GList *cur;
-
+	GtkCTreeNode *sel_last = NULL;
 	if (!to_folder) return;
 	if (!summaryview->folder_item ||
 	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
@@ -3627,10 +3628,11 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	START_LONG_OPERATION(summaryview); 
 
 	for (cur = GTK_CLIST(summaryview->ctree)->selection;
-	     cur != NULL && cur->data != NULL; cur = cur->next)
+	     cur != NULL && cur->data != NULL; cur = cur->next) {
+		sel_last = GTK_CTREE_NODE(cur->data);
 		summary_move_row_to
 			(summaryview, GTK_CTREE_NODE(cur->data), to_folder);
-
+	}
 	END_LONG_OPERATION(summaryview);
 
 	summaryview->display_msg = prefs_common.always_show_msg;
@@ -3638,6 +3640,10 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (prefs_common.immediate_exec) {
 		summary_execute(summaryview);
 	} else {
+		GtkCTreeNode *node = summary_find_next_msg(summaryview, sel_last);
+		if (!node)
+			node = summary_find_prev_msg(summaryview, sel_last);
+		summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 		summary_status_show(summaryview);
 	}
 	
