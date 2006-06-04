@@ -126,8 +126,10 @@
 2006-06-01 [wwp]	2.2.0cvs70
 
 	* src/messageview.c
-		fix for bug #961 (wrong check was done when checking before sending
-		notification email), thanks to Colin.
+		fix for bug #961 (return receipt dialog 
+		complains incorrectly about return-path 
+		email adress being different), thanks 
+		to Colin.
 
 2006-05-31 [cleroy]	2.2.0cvs69
 
