@@ -341,6 +341,9 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	gchar *buf;
 	gboolean all = FALSE;
 
+	if (folder->path == NULL)
+		return;
+
 	g_return_if_fail(prefs != NULL);
 
 	if (page->item == folder) 
@@ -706,6 +709,9 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 	GtkWidget *menuitem;
 	gboolean all = FALSE;
 
+	if (folder->path == NULL)
+		return;
+
 	if (page->item == folder) 
 		all = TRUE;
 
@@ -879,7 +885,10 @@ void prefs_folder_item_open(FolderItem *item)
 		register_compose_page();
 	}
 
-	id = folder_item_get_identifier (item);
+	if (item->path)
+		id = folder_item_get_identifier (item);
+	else 
+		id = g_strdup(item->name);
 	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
 	prefswindow_open(title, prefs_pages, item,

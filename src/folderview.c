@@ -1813,7 +1813,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
-	SET_SENS("/Properties...", item->node->parent != NULL);
+	SET_SENS("/Properties...", TRUE);
 	SET_SENS("/Processing...", item->node->parent != NULL);
 	if (item == folder->trash || item == special_trash
 	    || folder_has_parent_of_type(item, F_TRASH)) {
@@ -2180,9 +2180,6 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-
-	if (folder_item_parent(item) == NULL)
-		return;
 
 	prefs_folder_item_open(item);
 }

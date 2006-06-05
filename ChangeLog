@@ -1,3 +1,12 @@
+2006-06-05 [colin]	2.2.1cvs2
+
+	* src/prefs_folder_item.c
+	* src/folderview.c
+		Allow recursive setting of properties 
+		for whole mailboxes
+	* src/matcher.c
+		Don't freeze on 'test' filtering rule
+
 2006-06-05 [colin]	2.2.1cvs1
 
 	* configure.ac

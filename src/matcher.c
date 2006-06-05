@@ -17,12 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
 
 #include "defs.h"
 #include "utils.h"
@@ -410,6 +418,29 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 	return res;
 }
 
+#ifdef USE_PTHREAD
+typedef struct _thread_data {
+	const gchar *cmd;
+	gboolean done;
+} thread_data;
+#endif
+
+#ifdef USE_PTHREAD
+void *matcher_test_thread(void *data)
+{
+	thread_data *td = (thread_data *)data;
+	int result = -1;
+
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+	result = system(td->cmd);
+	if (result) perror("system");
+	td->done = TRUE; /* let the caller thread join() */
+	return GINT_TO_POINTER(result);
+}
+#endif
+
 /*!
  *\brief	Execute a command defined in the matcher structure
  *
@@ -424,6 +455,12 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	gchar *file;
 	gchar *cmd;
 	gint retval;
+#ifdef USE_PTHREAD
+	pthread_t pt;
+	thread_data *td = g_new0(thread_data, 1);
+	void *res = NULL;
+	time_t start_time = time(NULL);
+#endif
 
 	file = procmsg_get_message_file(info);
 	if (file == NULL)
@@ -434,7 +471,31 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	if (cmd == NULL)
 		return FALSE;
 
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	td->cmd = cmd;
+	td->done = FALSE;
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
+			matcher_test_thread, td) != 0)
+		retval = system(cmd);
+	else {
+		printf("waiting for test thread\n");
+		while(!td->done) {
+			/* don't let the interface freeze while waiting */
+			sylpheed_do_idle();
+			if (time(NULL) - start_time > 30) {
+				pthread_cancel(pt);
+				td->done = TRUE;
+				retval = -1;
+			}
+		}
+		pthread_join(pt, &res);
+		retval = GPOINTER_TO_INT(res);
+		printf(" test thread returned %d\n", retval);
+	}
+	g_free(td);
+#else
 	retval = system(cmd);
+#endif
 	debug_print("Command exit code: %d\n", retval);
 
 	g_free(cmd);
