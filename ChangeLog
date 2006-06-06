@@ -1,3 +1,10 @@
+2006-06-06 [paul]	2.2.1cvs4
+
+	* src/textview.c
+	* src/common/utils.c
+		fix URI check
+		Thanks to Colin
+
 2006-06-05 [wwp]	2.2.1cvs3
 
 	* manual/fr/account.xml

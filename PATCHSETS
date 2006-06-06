@@ -1555,3 +1555,4 @@
 ( cvs diff -u -r 1.654.2.1597 -r 1.654.2.1598 configure.ac;  ) > 2.2.1cvs1.patchset
 ( cvs diff -u -r 1.52.2.19 -r 1.52.2.20 src/prefs_folder_item.c;  cvs diff -u -r 1.207.2.100 -r 1.207.2.101 src/folderview.c;  cvs diff -u -r 1.75.2.23 -r 1.75.2.24 src/matcher.c;  ) > 2.2.1cvs2.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/account.xml;  ) > 2.2.1cvs3.patchset
+( cvs diff -u -r 1.96.2.114 -r 1.96.2.115 src/textview.c;  cvs diff -u -r 1.36.2.63 -r 1.36.2.64 src/common/utils.c;  ) > 2.2.1cvs4.patchset
