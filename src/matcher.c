@@ -579,14 +579,14 @@ gboolean matcherprop_match(MatcherProp *prop,
 		|| matcherprop_string_match(prop, info->cc));
 	case MATCHCRITERIA_AGE_GREATER:
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->value;
+		return ((t - info->date_t) / (60 * 60 * 24)) > prop->value;
 	case MATCHCRITERIA_AGE_LOWER:
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->value;
+		return ((t - info->date_t) / (60 * 60 * 24)) < prop->value;
 	case MATCHCRITERIA_SCORE_GREATER:
-		return info->score >= prop->value;
+		return info->score > prop->value;
 	case MATCHCRITERIA_SCORE_LOWER:
-		return info->score <= prop->value;
+		return info->score < prop->value;
 	case MATCHCRITERIA_SCORE_EQUAL:
 		return info->score == prop->value;
 	case MATCHCRITERIA_SIZE_GREATER:
