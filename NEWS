@@ -1,5 +1,18 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.2.2
+-------
+
+  * Bugfix release
+
+  * Fix URI check, which failed to identify fake, phishing URIs if they
+    began with a space.
+
+  * Reply-To and Sender addresses in the message view are now fully
+    clickable.
+
+* Remove extraneous tab at start of addresses.
+
 * 2.2.1
 -------
 

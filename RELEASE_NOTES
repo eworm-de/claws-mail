@@ -1,4 +1,4 @@
-5th June 2006                                     Sylpheed-Claws 2.2.1
+6th June 2006                                     Sylpheed-Claws 2.2.2
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
@@ -14,65 +14,13 @@ Notes for this release:
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Always obey the "confirm before marking all mails read" option
+* Fix URI check, which failed to identify fake, phishing URIs if they
+  began with a space.
 
-* Fixed MBOX import/export's behaviour on failure
+* Reply-To and Sender addresses in the message view are now fully
+  clickable.
 
-* Fixed automatic rule creation with List-Post
-
-* Fixed some GTK+ warnings and errors at runtime
-
-* Fixed some compiler warnings
-
-* Fixed double init of the g_thread subsystem
-
-* Fixed saving of parts with names that can't be converted to UTF-8
-
-* Fixed a possible infinite loop when filtering moved and copied some
-  mails
-
-* Fixed a buffer overflow in Russian locale 
-
-* Fixed a memory leak in expired SSL certificate check
-
-* Fixed bolding of folder names in the folder selector window with
-  GLib 2.10
-
-* Added an hidden preference, 'ssl_skip_cert_check', to avoid
-  duplicates of bug #959 - if libetpan is linked against gnutls, there
-  can be bugs on 64 bits systems. Gnutls fixed them in their 1.2.4 
-  release.
-
-* The SSL "expired certificate" warning is now presented only once per
-  session
-
-* Fixed races when reusing the SMTP sessions
-
-* Added the missing timeout on SMTP sessions
-
-* Fixed a few leaks
-
-* Fixed a crash in PGP plugins, which could happen when signing fails
-  for unknown reasons
-
-* Fixed SpamAssassin plugin, which stayed disabled as long as the
-  transport wasn't reselected
-
-* Fixed bug #830 (Some unread messages get marked read in IMAP inbox)
-
-* Fixed bug #955 (copying messages between imap folders is extremely
-  slow)
-
-* Fixed bug #961 (return receipt dialog complains incorrectly about
-  return-path email adress being different)
-
-* Fixed bug #962 (Manual and/or UI should warn about incompatible
-  locking causing dataloss)
-
-For further details of the numbered bugs listed above consult
-http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
-
-* and other code reorganisation, cleanups, and more.
+* Remove extraneous tab at start of addresses.
 
 ---------------------------------------------------------------------
 See ChangeLog and README for full information regarding changes in
