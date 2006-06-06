@@ -41,6 +41,7 @@
 #include "addr_compl.h"
 #include "codeconv.h"
 #include "quoted-printable.h"
+#include "sylpheed.h"
 #include <ctype.h>
 
 /*!

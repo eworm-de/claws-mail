@@ -1,3 +1,10 @@
+2006-06-06 [paul]	2.2.1cvs6
+
+	* src/matcher.c
+		fix  implicit declaration of
+		sylpheed_do_idle()
+		Patch by Fabien Vantard
+
 2006-06-06 [paul]	2.2.1cvs5
 
 	* src/matcher.c
