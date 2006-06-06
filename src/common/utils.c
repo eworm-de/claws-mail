@@ -4391,6 +4391,8 @@ search_again:
 			start++;
 		if (start[0] == ';')
 			start++;
+		while (start[0] == '\n' || start[0] == '\r')
+			start++;
 		while (start[0] == ' ' || start[0] == '\t')
 			start++;
 

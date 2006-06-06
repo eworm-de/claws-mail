@@ -1,3 +1,12 @@
+2006-06-06 [paul]	2.2.1cvs2-stable
+
+	* src/textview.c
+		make Reply-To and Sender fully clickable
+		Backported fixes from 2.2.0cvs{5, 35}
+	* src/common/utils.c
+		Fix extraneous tab at start of addresses
+		Backported fix from 2.2.0cvs64
+
 2006-06-06 [paul]	2.2.1cvs1-stable
 
 	* configure.ac
