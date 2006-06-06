@@ -1757,6 +1757,8 @@ static gint axtoi(const gchar *hexstr)
 
 gboolean is_uri_string(const gchar *str)
 {
+	while (str && *str && g_ascii_isspace(*str))
+		str++;
 	return (g_ascii_strncasecmp(str, "http://", 7) == 0 ||
 		g_ascii_strncasecmp(str, "https://", 8) == 0 ||
 		g_ascii_strncasecmp(str, "ftp://", 6) == 0 ||
@@ -1765,6 +1767,8 @@ gboolean is_uri_string(const gchar *str)
 
 gchar *get_uri_path(const gchar *uri)
 {
+	while (uri && *uri && g_ascii_isspace(*uri))
+		uri++;
 	if (g_ascii_strncasecmp(uri, "http://", 7) == 0)
 		return (gchar *)(uri + 7);
 	else if (g_ascii_strncasecmp(uri, "https://", 8) == 0)
@@ -4279,6 +4283,8 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 
 gchar *make_uri_string(const gchar *bp, const gchar *ep)
 {
+	while (bp && *bp && g_ascii_isspace(*bp))
+		bp++;
 	return g_strndup(bp, ep - bp);
 }
 
@@ -4606,6 +4612,8 @@ gchar *make_http_string(const gchar *bp, const gchar *ep)
 	gchar *tmp;
 	gchar *result;
 
+	while (bp && *bp && g_ascii_isspace(*bp))
+		bp++;
 	tmp = g_strndup(bp, ep - bp);
 	result = g_strconcat("http://", tmp, NULL);
 	g_free(tmp);

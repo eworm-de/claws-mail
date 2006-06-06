@@ -906,7 +906,9 @@ static void textview_show_html(TextView *textview, FILE *fp,
 				/* ALF - the sylpheed html parser returns an empty string,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
-				if (str) { 
+				if (str) {
+					while (str && *str && g_ascii_isspace(*str))
+						str++; 
 					parser->href = g_strdup(str);
 					/* the URL may (or not) be followed by the
 					 * referenced text */
@@ -1150,6 +1152,9 @@ void textview_write_link(TextView *textview, const gchar *str,
 	if (!uri)
 		return;
 
+	while (uri && *uri && g_ascii_isspace(*uri))
+		uri++;
+		
 	text = GTK_TEXT_VIEW(textview->text);
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
