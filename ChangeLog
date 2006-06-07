@@ -1,3 +1,9 @@
+2006-06-07 [colin]	2.2.2cvs3
+
+	* src/msgcache.c
+		Fix catching cache read errors (guint instead of gint)
+		Prevent malloc'ing more than 8MB (means cache corruption)
+
 2006-06-07 [paul]	2.2.2cvs2
 
 	* src/exporthtml.c

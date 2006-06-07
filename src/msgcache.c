@@ -241,7 +241,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	if ((tmp_len = msgcache_read_cache_data_str(fp, &data, conv)) < 0) { \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
-		break; \
+		goto bail_err; \
 	} \
 	total_len += tmp_len; \
 }
@@ -256,7 +256,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 			  "offset %ld\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
-		break; \
+		goto bail_err; \
 	} else \
 		n = swapping ? bswap_32(idata) : (idata);\
 }
@@ -367,6 +367,11 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	if (len == 0)
 		return 0;
 
+	if (len > (8<<20)) {
+		/* allocating 8MB is too much. Something's going on */
+		g_warning("read_data_str: Cache data (len) probably corrupted, asked for %d bytes.", len);
+		return -1;
+	}
 	tmpstr = g_malloc(len + 1);
 
 	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
@@ -422,7 +427,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	const gchar *dstcharset = NULL;
 	gchar *ref = NULL;
 	guint memusage = 0;
-	guint tmp_len = 0;
+	gint tmp_len = 0;
 	
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -526,6 +531,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		if(msginfo->msgid)
 			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
 	}
+bail_err:
 	fclose(fp);
 
 	if (conv != NULL) {
