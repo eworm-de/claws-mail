@@ -1999,7 +1999,17 @@ const gchar *get_home_dir(void)
 	}
 	return home_dir;
 #else
-	return g_get_home_dir();
+	const gchar *homeenv = NULL;
+
+	if (homeenv)
+		return homeenv;
+
+	if (!homeenv && g_getenv("HOME") != NULL)
+		homeenv = g_strdup(g_getenv("HOME"));
+	if (!homeenv)
+		homeenv = g_get_home_dir();
+
+	return homeenv;
 #endif
 }
 

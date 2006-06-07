@@ -664,7 +664,7 @@ gchar *pine_find_file( void ) {
 	gint len;
 	FILE *fp;
 
-	homedir = g_get_home_dir();
+	homedir = get_home_dir();
 	if( ! homedir ) return g_strdup( "" );
 
 	strcpy( str, homedir );

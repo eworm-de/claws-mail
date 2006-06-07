@@ -1179,7 +1179,7 @@ static gchar *get_unseen_seq_name(void)
 		gchar buf[BUFFSIZE];
 		gchar *tmp;
 		gchar *profile_path = g_strconcat(
-			g_get_home_dir(), G_DIR_SEPARATOR_S,
+			get_home_dir(), G_DIR_SEPARATOR_S,
 			".mh_profile", NULL);
 		FILE *fp = g_fopen(profile_path, "r");
 		if (fp) {

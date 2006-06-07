@@ -1143,7 +1143,7 @@ static void exporthtml_default_values( ExportHtmlCtl *ctl ) {
 	gchar *str;
 
 	str = g_strconcat(
-		g_get_home_dir(), G_DIR_SEPARATOR_S,
+		get_home_dir(), G_DIR_SEPARATOR_S,
 		DFL_DIR_SYLPHEED_OUT, NULL );
 
 	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, str );
