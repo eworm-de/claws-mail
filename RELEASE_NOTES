@@ -1,4 +1,4 @@
-6th June 2006                                     Sylpheed-Claws 2.2.2
+8th June 2006                                     Sylpheed-Claws 2.2.3
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                       http://claws.sylpheed.org
@@ -14,13 +14,8 @@ Notes for this release:
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Fix URI check, which failed to identify fake, phishing URIs if they
-  began with a space.
-
-* Reply-To and Sender addresses in the message view are now fully
-  clickable.
-
-* Remove extraneous tab at start of addresses.
+* Fix crash on a very common code path, introduced by a merge error in 
+  2.2.1
 
 ---------------------------------------------------------------------
 See ChangeLog and README for full information regarding changes in
