@@ -1,3 +1,9 @@
+2006-06-08 [paul]	2.2.2cvs1-stable
+
+	* src/folder.c
+		fix crasher
+		Thanks to Colin
+
 2006-06-06 [paul]	2.2.2
 
 	2.2.2 released

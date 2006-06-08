@@ -2347,7 +2347,6 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 			}
 		}
 		procmsg_msginfo_free(msginfo);
-		procmsg_msginfo_free(msginfo);
 	}
 
 	return msgfile;
