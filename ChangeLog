@@ -1,3 +1,9 @@
+2006-06-08 [paul]	2.2.3cvs1
+
+	* configure.ac
+		Update version number following
+		stable release
+
 2006-06-07 [colin]	2.2.2cvs3
 
 	* src/msgcache.c
