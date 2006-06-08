@@ -1,3 +1,8 @@
+2006-06-08 [colin]	2.2.3cvs3
+
+	* src/etpan/imap-thread.c
+		Fix leak on SSL cert check
+
 2006-06-08 [colin]	2.2.3cvs2
 
 	* src/common/utils.c

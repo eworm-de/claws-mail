@@ -346,8 +346,10 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 		return 0;
 	} else if (ssl_certificate_check(cert, 
 		(gchar *)param->server, (gushort)param->port) == TRUE) {
+		X509_free(cert);
 		return 0;
 	} else {
+		X509_free(cert);
 		return -1;
 	}
 #else
