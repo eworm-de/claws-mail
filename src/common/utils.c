@@ -1999,7 +1999,7 @@ const gchar *get_home_dir(void)
 	}
 	return home_dir;
 #else
-	const gchar *homeenv = NULL;
+	static const gchar *homeenv = NULL;
 
 	if (homeenv)
 		return homeenv;
