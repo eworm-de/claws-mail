@@ -1,10 +1,6 @@
-main-branch (http://sylpheed.good-day.net)
+Sylpheed-Claws (http://www.sylpheed-claws.net)
 
-	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
-				<yamamoto@good-day.co.jp>
-
-claws-branch (http://sylpheed-claws.sourceforge.net)
-
+	Holger Berndt		<berndth@users.sf.net>
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
 	Keith Edmunds 		<keith@midnighthax.com>	
 	Match Grun		<match@dimensional.com>
@@ -15,30 +11,28 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 	Darko Koruga		<darko@users.sourceforge.net>
 	Colin Leroy		<colin@colino.net>
 	Paul Mangan		<claws@thewildbeast.co.uk>
+	Ricardo Mones Lastra 	<ricardo@mones.org>
 	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
 	Luke Plant 		<L.Plant.98@cantab.net>
 	Martin Schaaf		<mascha@ma-scha.de>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
+	wwp			<wwp@users.sf.net>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
-sylpheed-w32 (http://www.gnupg.org/cvs-access.html)	
-
-	Werner Koch		<wk@gnupg.org>
-
-sylpheed-claws-w32 (http://www.gpg4win.org)
+Sylpheed-Claws-w32 (http://www.gpg4win.org)
 
 	Werner Koch		<wk@gnupg.org>
 	Thorsten Maerz		<torte@netztorte.de>
 
-sylpheed-claws translation team
+Sylpheed-Claws translation team
 
 	[bg]	George Danchev 		<danchev@spnet.net>
 	[ca]	Miquel Oliete 		<miqueloliete@softhome.net>
 	[de]	Stephan Sachse 		<white@dev-zero.com>
 	[en_GB]	Paul Mangan		<claws@thewildbeast.co.uk>
 	[el] 	Stavros Giannouris 	<stavrosg2002@freemail.gr>
-	[es]	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
+	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
 	[fi]	Flammie Pirinen 	<flammie@iki.fi>
 	[fr]	Fabien Vantard 		<fzzzzz@gmail.com>
 	[hr]	Dragan 			<drleskov@inet.hr>
@@ -57,39 +51,29 @@ sylpheed-claws translation team
 	[sv]	Anders Troback 		<sylpheed@troback.com>
 	[zh_CN] Hansom Young 		<hyoung@operamail.com>
 	[zh_TW]	Wei-Lun Chao 		<chaoweilun@pcmail.com.tw>
+
+Sypheed-Claws documentation team
+
+	[en]	Ricardo Mones Lastra 	<ricardo@mones.org>
+		Colin Leroy		<colin@colino.net>
+		Paul Mangan		<claws@thewildbeast.co.uk>
+		wwp			<wwp@users.sf.net>
+
+	[fr]	Colin Leroy		<colin@colino.net>
+		wwp			<wwp@users.sf.net>
+
+	[pl]	Pawel Pekala 		<c0rn@gazeta.pl>
 	
-sylpheed documentation (http://sylpheeddoc.sourceforge.net)
+Sylpheed-Claws logo
 
-	François Barriere 	<barriere.francois@libertysurf.fr>
-	Martin Bretschneider	<martin.bretschneider@gmx.de>
-	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
-	Melvin Hadasht		<melvin.hadasht@free.fr>
-	Paul Kater		<paul@nlpagan.net>
-	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
-	Jens Oberender		<j.obi@troja.net>
-	Marcelo Ramos 		<mramos@montevideo.com.uy>
-	Guido Rudolphi		<rudolphi@netmon.ch>
-	Nick Selby
-
-user manuals
-
-	Yoichi Imai (Japanese)	<yoichi@silver-forest.com>
-	Paul Kater (English)	<paul@nlpagan.net>
-
-application icon
-
-	WAKAI Kazunao		<silver@lacmhacarh.gr.jp>
+	Jesper Schultz		<jesper@schultz-net.dk>
 
 other icons
 
 	Jakub 'jimmac' Steiner	<jimmac@ximian.com>
 	Aleksandar Urosevic	<urke@users.sf.net>
 
-Sylpheed-Claws logo
-
-	Jesper Schultz		<jesper@schultz-net.dk>
-
-contributors (beside the above; based on Changelog)
+contributors (in addition to the above; based on Changelog)
 
 	Alte
 	Pierric Descamps

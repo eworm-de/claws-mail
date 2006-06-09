@@ -1,3 +1,10 @@
+2006-06-09 [paul]	2.2.3cvs5
+
+	* AUTHORS
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		updated with new info
+
 2006-06-09 [paul]	2.2.3cvs4
 
 	* README

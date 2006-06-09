@@ -41,7 +41,7 @@
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
 	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
-	'es.po' => 'Ricardo Mones Lastra <mones@aic.uniovi.es>',
+	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Fabien Vantard <fzzzzz@gmail.com>',
 	'hr.po' => 'Dragan Leskovar <drleskov@inet.hr>',
