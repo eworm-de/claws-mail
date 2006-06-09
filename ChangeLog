@@ -1,3 +1,12 @@
+2006-06-09 [paul]	2.2.3cvs4
+
+	* README
+		updated
+	* manual/ack.xml
+		add wwp to authors list
+	* src/gtk/authors.h
+		update mine and Colin's addresses
+
 2006-06-08 [colin]	2.2.3cvs3
 
 	* src/etpan/imap-thread.c

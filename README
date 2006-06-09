@@ -1,10 +1,10 @@
-[LAST REVISION: 2005-11-08]
+[LAST REVISION: 2006-06-09]
 
 Sylpheed-Claws - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright(C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
+   Copyright(C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
    Sylpheed-Claws Team
 
    This program is free software; you can redistribute it and/or modify
@@ -117,7 +117,7 @@ Select the plugin that you want and click 'OK'
     new, unread and total number of messages
 
 Additonal plugins can be found here:
-http://claws.sylpheed.org/plugins.php
+http://www.sylpheed-claws.net/plugins.php
 
 
 3. Actions
@@ -257,7 +257,7 @@ http://claws.sylpheed.org/plugins.php
 4. Icon Themes
 --------------
   Claws has support for different icon sets. Several icon sets can be
-  downloaded from http://claws.sylpheed.org/themes.php
+  downloaded from http://www.sylpheed-claws.net/themes.php
   You will need to create a directory called 'themes' in your config
   directory, unpack them into this directory, and then use the interface
   to select them, /Configuration/Preferences/Display/Themes
@@ -497,6 +497,11 @@ http://claws.sylpheed.org/plugins.php
 	is accessed on every check, which will cause much
 	disk IO.
 
+    compose_no_markup		(default: 0)
+	prevent italic and bold text in the Compose dialog
+	account selector
+	0: normal (markup) 1: no markup
+
     enable_hscrollbar		(default: 1)
 	enable horizontal scroll bar in summary view
 	0: off  1: on
@@ -543,10 +548,6 @@ http://claws.sylpheed.org/plugins.php
 	display a confirmation dialog on drag n drop of folders
 	0: off  1: on
 
-    compose_no_markup		(default: 0)
-	prevents italic and bold in the Compose' From header
-	0: normal (markup) 1: no markup
-
 10. Tools
 --------- 
   You will find all of these tools in the 'tools' directory:
@@ -563,6 +564,9 @@ http://claws.sylpheed.org/plugins.php
   filter_conv.pl
 	convert sylpheed main's filter rules, (< 0.9.99),
 	into Claws' filtering format
+  filter_conv_new.pl
+	convert sylpheed main's filter rules, (>= 0.9.99),
+	into Claws' filtering format
   freshmeat_search.pl
   	Actions script to lookup the selected text on
 	Freshmeat www.freshmeat.net using the configured
@@ -578,6 +582,10 @@ http://claws.sylpheed.org/plugins.php
   gpg-sign-syl
 	GnuPG cleartext-signing script for use with
 	Actions
+  kdeservicemenu/*
+  	Service Menus for Konqueror to allow attaching files and
+	compressing/attaching files/directories to a new Compose
+	window
   kmail2sylpheed.pl
 	convert a Kmail addressbook to a Sylpheed
 	addressbook
@@ -603,6 +611,8 @@ http://claws.sylpheed.org/plugins.php
   tb2sylpheed
 	convert an addressbook exported from The Bat! into 
 	a Sylpheed addressbook
+  tbird2syl.py
+  	integrate a Thunderbird folder tree into Claws
   textviewer.sh
   	attempt to view an attachment as plain text
   update-po 
@@ -610,10 +620,8 @@ http://claws.sylpheed.org/plugins.php
 	*.po files
   uudec
 	decode UUencoded mails, for use with Actions
-  kdeservicemenu/*
-  	Service Menus for Konqueror to allow attaching files and
-	compressing/attaching files/directories to a new Compose
-	window
+  vcard2xml
+	import an Evolution vCard
 
 
 11. How to contribute
@@ -624,9 +632,9 @@ project's Patch Tracker.
 http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
 
 If that's too troublesome, either contact Paul Mangan
-<twb@users.sourceforge.net> or consider posting to the
+<claws@thewildbeast.co.uk> or consider posting to the
 Sylpheed-Claws-users mailing list.
-http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users
+http://www.sylpheed-claws.net/MLs.php
 
 Bugs can be reported with Claws' bugzilla at:
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
@@ -636,7 +644,7 @@ Of course, you can also post to the Sylpheed-Claws-users mailing list.
 Also, we really try to incorporate good contributions, but sometimes we
 don't have enough time. If the contribution is really big, or requires
 a long time to stabilise, send a mail to Paul Mangan
-<twb@users.sourceforge.net>. We can probably arrange access to the
+<claws@thewildbeast.co.uk>. We can probably arrange access to the
 Sylpheed-Claws CVS tree.
 
 
@@ -663,12 +671,13 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
   To download the latest cvs cd to the directory where you wish to download
   to and type the following information:
 
-  cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws login
+  cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs login
 
-  When prompted for a password press the RETURN key.
-  After anonymously logging in:
+  The password is cvs
 
-  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws co -r gtk2 sylpheed-claws 
+  After logging in:
+
+   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/sylpheed-claws
 
 
   b. Installing
@@ -690,6 +699,13 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 GTK 2 Version
 -------------
+2006-06-08	2.2.3
+2006-06-06	2.2.2
+2006-06-05	2.2.1
+2006-05-08	2.2.0
+2006-04-17	2.1.1
+2006-04-05	2.1.0
+2006-01-30	2.0.0
 2005-11-08	1.9.100
 2005-10-31	1.9.99
 2005-10-03	1.9.15
@@ -755,29 +771,25 @@ GTK 1 Version
 15. Useful links
 ----------------
 Homepage
-    http://claws.sylpheed.org/
-Sylpheed-Claws for Windows homepage
-    http://claws.sylpheed.org/win32/
+    http://www.sylpheed-claws.net/
 User Contributed FAQ
-    http://claws.sylpheed.org/faq.php
+    http://www.sylpheed-claws.net/faq/
 Project page
     http://sourceforge.net/projects/sylpheed-claws/
 Downloads
     http://sourceforge.net/project/showfiles.php?group_id=25528&package_id=147457
-External Plugins
-    http://claws.sylpheed.org/plugins.php
+Extra Plugins
+    http://www.sylpheed-claws.net/plugins.php
 Icon Themes
-    http://claws.sylpheed.org/themes.php
+    http://www.sylpheed-claws.net/themes.php
 CVS webview
-    http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/sylpheed-claws/sylpheed-claws/?only_with_tag=gtk2
-Users Mailing List subscription page
-    http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-users/
+    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/sylpheed-claws/?only_with_tag=gtk2
+Mailing Lists
+    http://www.sylpheed-claws.net/MLs.php
 Users Mailing List archive
-    http://sourceforge.net/mailarchive/forum.php?forum=sylpheed-claws-users/
-Commits Announcement List subscription page
-    http://lists.sourceforge.net/lists/listinfo/sylpheed-claws-commits/
+    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/28
 Commits Announcement List archive
-    http://sourceforge.net/mailarchive/forum.php?forum=sylpheed-claws-commits/
+    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/27
 Bug Tracker
     http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
 Feature Request Tracker
@@ -785,9 +797,11 @@ Feature Request Tracker
 Patch Tracker
     http://sourceforge.net/tracker/?group_id=25528&atid=384600
 Internationalisation Status
-    http://sylpheed-claws.sourceforge.net/i18n.php
+    http://www.sylpheed-claws.net/i18n.php
 Donations
-    https://sourceforge.net/donate/index.php?group_id=25528
+    http://www.sylpheed-claws.net/sponsors.php
 Planet Sylpheed
-    http://planet.sylpheed.org/
+    http://planet.sylpheed-claws.net/
+Sylpheed-Claws for Windows homepage
+    http://www.sylpheed-claws.net/win32/
 

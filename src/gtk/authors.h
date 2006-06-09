@@ -4,8 +4,8 @@ static char *TEAM_LIST[] = {
 "Werner Koch <wk@gnupg.org>",
 "Darko Koruga <darko@users.sf.net>",
 "Ricardo Mones Lastra <mones@users.sf.net>",
-"Colin Leroy <colinleroy@users.sf.net>",
-"Paul Mangan <twb@users.sf.net>",
+"Colin Leroy <colin@colino.net>",
+"Paul Mangan <claws@thewildbeast.co.uk>",
 "Martin Schaaf <mascha1@users.sf.net>",
 "wwp <wwp@users.sf.net>",
 NULL
@@ -32,7 +32,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
 "[cs] Tim <timbrain@post.cz>",
 "[de] Stephan Sachse <white@dev-zero.com>",
-"[en_GB] Paul Mangan <twb@users.sf.net>",
+"[en_GB] Paul Mangan <claws@thewildbeast.co.uk>",
 "[el] Stavros Giannouris <stavrosg2002@freemail.gr>",
 "[es] Ricardo Mones Lastra <mones@users.sf.net>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",
@@ -57,8 +57,8 @@ NULL
 
 static char *DOC_TEAM_LIST[] = {
 "Ricardo Mones Lastra <mones@users.sf.net>",
-"Colin Leroy <colinleroy@users.sf.net>",
-"Paul Mangan <twb@users.sf.net>",
+"Colin Leroy <colin@colino.net>",
+"Paul Mangan <claws@thewildbeast.co.uk>",
 "wwp <wwp@users.sf.net>",
 NULL
 };
