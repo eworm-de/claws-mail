@@ -1,3 +1,8 @@
+2006-06-09 [colin]	2.2.3cvs7
+
+	* src/summaryview.c
+		Fix leak when using Display Sender using Addressbook
+
 2006-06-09 [colin]	2.2.3cvs6
 
 	* src/compose.c

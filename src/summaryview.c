@@ -2595,11 +2595,17 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				msginfo->fromname :
 				_("(No From)");
 	} else {
-		/* this leaks */
+		gchar buf[BUFFSIZE];
 		gchar *tmp = summary_complete_address(msginfo->from);
-		from_text = tmp ? tmp : (msginfo->fromname ?
-					 msginfo->fromname: 
-					 	_("(No From)"));
+		if (tmp) {
+			strncpy2(buf, tmp, sizeof(buf));
+			g_free(tmp);
+			from_text = buf;
+		} else {
+			from_text = (msginfo->fromname) ?
+					msginfo->fromname: 
+					_("(No From)");
+		}
 	}
 	
 	to_text = msginfo->to ? msginfo->to : 
