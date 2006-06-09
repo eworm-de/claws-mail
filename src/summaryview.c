@@ -4572,6 +4572,7 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	}
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
+	gtk_style_unref(style);
 }
 
 static void summary_set_row_colorlabel(SummaryView *summaryview, GtkCTreeNode *row, guint labelcolor)

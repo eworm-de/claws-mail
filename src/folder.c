@@ -90,7 +90,7 @@ static void folder_get_persist_prefs_recursive
 					(GNode *node, GHashTable *pptable);
 static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 void folder_item_read_cache		(FolderItem *item);
-void folder_item_free_cache		(FolderItem *item);
+gboolean folder_item_free_cache		(FolderItem *item, gboolean force);
 gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 static void folder_item_update_with_msg (FolderItem *item, FolderItemUpdateFlags update_flags,
                                          MsgInfo *msg);
@@ -414,7 +414,7 @@ void folder_item_destroy(FolderItem *item)
 	}
 
 	if (item->cache)
-		folder_item_free_cache(item);
+		folder_item_free_cache(item, TRUE);
 	if (item->prefs)
 		folder_item_prefs_free(item->prefs);
 	g_free(item->name);
@@ -2071,24 +2071,26 @@ void folder_find_expired_caches(FolderItem *item, gpointer data)
 	difftime = (gint) (time(NULL) - msgcache_get_last_access_time(item->cache));
 	expiretime = prefs_common.cache_min_keep_time * 60;
 	debug_print("Cache unused time: %d (Expire time: %d)\n", difftime, expiretime);
+
 	if (difftime > expiretime && !item->opened && !item->processing_pending) {
 		*folder_item_list = g_slist_insert_sorted(*folder_item_list, item, folder_cache_time_compare_func);
 	}
 }
 
-void folder_item_free_cache(FolderItem *item)
+gboolean folder_item_free_cache(FolderItem *item, gboolean force)
 {
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(item != NULL, TRUE);
 	
 	if (item->cache == NULL)
-		return;
+		return TRUE;
 	
-	if (item->opened > 0)
-		return;
+	if (item->opened > 0 && !force)
+		return FALSE;
 
 	folder_item_write_cache(item);
 	msgcache_destroy(item->cache);
 	item->cache = NULL;
+	return TRUE;
 }
 
 void folder_clean_cache_memory_force(void)
@@ -2121,13 +2123,16 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 		listitem = folder_item_list;
 		while((listitem != NULL) && (memusage > (prefs_common.cache_max_mem_usage * 1024))) {
 			FolderItem *item = (FolderItem *)(listitem->data);
+			gint cache_size = 0;
 			if (item == protected_item) {
 				listitem = listitem->next;
 				continue;
 			}
 			debug_print("Freeing cache memory for %s\n", item->path ? item->path : item->name);
-			memusage -= msgcache_get_memory_usage(item->cache);
-		        folder_item_free_cache(item);
+			cache_size = msgcache_get_memory_usage(item->cache);
+		        if (folder_item_free_cache(item, FALSE))
+				memusage -= cache_size;
+
 			listitem = listitem->next;
 		}
 		g_slist_free(folder_item_list);
@@ -3143,7 +3148,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		result = folder->klass->remove_all_msg(folder, item);
 
 		if (result == 0) {
-			folder_item_free_cache(item);
+			folder_item_free_cache(item, TRUE);
 			item->cache = msgcache_new();
 		}
 	} else {

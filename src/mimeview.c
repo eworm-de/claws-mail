@@ -2024,6 +2024,7 @@ static void icon_list_clear (MimeView *mimeview)
 				       GTK_WIDGET(child->data));
 		gtk_widget_destroy(GTK_WIDGET(child->data));
 	}
+	g_list_free(child);
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 	gtk_adjustment_set_value(adj, adj->lower);

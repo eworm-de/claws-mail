@@ -1,3 +1,12 @@
+2006-06-09 [colin]	2.2.3cvs6
+
+	* src/compose.c
+	* src/folder.c
+	* src/folderview.c
+	* src/mimeview.c
+	* src/summaryview.c
+		More leaks fixes
+
 2006-06-09 [paul]	2.2.3cvs5
 
 	* AUTHORS

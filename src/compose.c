@@ -5379,8 +5379,6 @@ static void compose_add_header_entry(Compose *compose, gchar *header, gchar *tex
 
 static GtkWidget *compose_create_header(Compose *compose) 
 {
-	GtkWidget *label;
-	GtkWidget *hbox;
 	GtkWidget *from_optmenu_hbox;
 	GtkWidget *header_scrolledwin;
 	GtkWidget *header_table;
@@ -5400,11 +5398,6 @@ static GtkWidget *compose_create_header(Compose *compose)
 	count = 0;
 
 	/* option menu for selecting accounts */
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(prefs_common.trans_hdr ? _("From:") : "From:");
-	gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	//gtk_table_attach(GTK_TABLE(header_table), hbox, 0, 1, count, count + 1,
-	//		 GTK_FILL, 0, 2, 0);
 	from_optmenu_hbox = compose_account_option_menu_create(compose);
 	gtk_table_attach(GTK_TABLE(header_table), from_optmenu_hbox,
 				  0, 2, count, count + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
