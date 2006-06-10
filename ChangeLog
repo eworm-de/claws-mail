@@ -1,3 +1,9 @@
+2006-06-10 [colin]	2.2.3cvs10
+
+	* src/textview.c
+		Revert previous (Forgot it changes the
+		margin on the whole mail)
+
 2006-06-10 [colin]	2.2.3cvs9
 
 	* src/textview.c

@@ -1401,7 +1401,6 @@ static void textview_show_face(TextView *textview)
 	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
-	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), WIDTH+6);
 	
 	x = textview->text->allocation.width - WIDTH -5;
 
@@ -1416,7 +1415,6 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;	
-	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 }
 
 static void textview_show_icon(TextView *textview, const gchar *stock_id)
@@ -1473,7 +1471,6 @@ static void textview_show_xface(TextView *textview)
 	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
-	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), WIDTH+6);
 	
 	x = textview->text->allocation.width - WIDTH -5;
 
@@ -1487,7 +1484,6 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
-	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 	
 }
 #endif

@@ -1570,3 +1570,4 @@
 ( cvs diff -u -r 1.395.2.217 -r 1.395.2.218 src/summaryview.c;  ) > 2.2.3cvs7.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/xml2pdf;  cvs diff -u -r 1.60.2.29 -r 1.60.2.30 po/es.po;  ) > 2.2.3cvs8.patchset
 ( cvs diff -u -r 1.96.2.115 -r 1.96.2.116 src/textview.c;  ) > 2.2.3cvs9.patchset
+( cvs diff -u -r 1.96.2.116 -r 1.96.2.117 src/textview.c;  ) > 2.2.3cvs10.patchset
