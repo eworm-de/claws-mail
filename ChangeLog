@@ -1,3 +1,8 @@
+2006-06-10 [colin]	2.2.3cvs9
+
+	* src/textview.c
+		Don't overlap long headers under (X-)Face
+
 2006-06-10 [mones]	2.2.3cvs8
 
 	* manual/xml2pdf
