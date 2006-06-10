@@ -10,6 +10,34 @@ then
 	exit 1
 fi
 
+JAVA=`which java`
+if [ "$JAVA" = "" ]
+then
+	JAVA="$JAVA_HOME/bin/java"
+fi
+if [ ! -x "$JAVA" ]
+then
+	echo 'error: java not found in your $PATH or in $JAVA_HOME/bin' \
+		&& exit 1
+fi
+
+SAXON=`which saxon`
+if [ "$SAXON" = "" ]
+then
+	SAXONJAR='/usr/share/java/saxon.jar'
+	if [ ! -f $SAXONJAR ]
+	then
+		SAXONJAR='/usr/local/share/java/saxon.jar'
+		if [ ! -f $SAXONJAR ]
+		then
+			echo "error: neither saxon nor saxon.jar were found" \
+				&& exit 1
+		fi
+	fi
+	SAXON="$JAVA -jar $SAXONJAR"
+fi
+
+
 if [ -n "$XML_CATALOG_FILES" ]
 then
 	CATALOG_FILES=$XML_CATALOG_FILES
@@ -18,6 +46,9 @@ else
 	CATALOG_FILES="/usr/local/etc/xml/catalog /etc/xml/catalog $HOME/xml/catalog"
 fi
 KEY="http://docbook.sourceforge.net/release/xsl/current"
+
+# manual base name
+SCM=sylpheed-claws-manual
 
 for CATALOG in $CATALOG_FILES
 do
@@ -38,9 +69,10 @@ do
 		if [ -n "$DOCBOOKXSLPATH" ]
 		then
 			echo "docbook-xsl path found: $DOCBOOKXSLPATH"
-			sed "s|@DOCBOOK_XSL_PATH@|$DOCBOOKXSLPATH|g" "$1" > sylpheed-claws-manual.xsl && \
-				saxon -o sylpheed-claws-manual.fo "$2" sylpheed-claws-manual.xsl && \
-				fop -fo sylpheed-claws-manual.fo -pdf sylpheed-claws-manual.pdf
+			sed "s|@DOCBOOK_XSL_PATH@|$DOCBOOKXSLPATH|g" "$1" \
+			    > ${SCM}.xsl && \
+				$SAXON -o ${SCM}.fo "$2" ${SCM}.xsl && \
+				fop -fo ${SCM}.fo -pdf ${SCM}.pdf
 			exit $?
 		fi
 	fi

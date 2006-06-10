@@ -1,3 +1,12 @@
+2006-06-10 [mones]	2.2.3cvs8
+
+	* manual/xml2pdf
+		allow generation of manual on systems lacking saxon binary
+		but with java and the saxon library installed
+
+	* po/es.po
+		updated for release
+
 2006-06-09 [colin]	2.2.3cvs7
 
 	* src/summaryview.c

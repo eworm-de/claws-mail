@@ -1568,3 +1568,4 @@
 ( cvs diff -u -r 1.100.2.38 -r 1.100.2.39 AUTHORS;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/gtk/authors.h;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 tools/claws.i18n.status.pl;  ) > 2.2.3cvs5.patchset
 ( cvs diff -u -r 1.382.2.275 -r 1.382.2.276 src/compose.c;  cvs diff -u -r 1.213.2.96 -r 1.213.2.97 src/folder.c;  cvs diff -u -r 1.207.2.101 -r 1.207.2.102 src/folderview.c;  cvs diff -u -r 1.83.2.70 -r 1.83.2.71 src/mimeview.c;  cvs diff -u -r 1.395.2.216 -r 1.395.2.217 src/summaryview.c;  ) > 2.2.3cvs6.patchset
 ( cvs diff -u -r 1.395.2.217 -r 1.395.2.218 src/summaryview.c;  ) > 2.2.3cvs7.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/xml2pdf;  cvs diff -u -r 1.60.2.29 -r 1.60.2.30 po/es.po;  ) > 2.2.3cvs8.patchset
