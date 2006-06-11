@@ -1,8 +1,7 @@
 TODO
 ====
 
-* LDAPS
-* Better thingy for the "The following can be performed on this part":
-  Shiny stuff with buttons etc, but in the textview rather than as an
-  alertpanel
+* Better error reporting from low-level folder ops to GUI
+* Add a Developer manual (describing APIs, and howtos, for
+  plugins writers)
 o full-text search using Namazu (?)
