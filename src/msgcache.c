@@ -374,6 +374,11 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	}
 	tmpstr = g_malloc(len + 1);
 
+	if(tmpstr == NULL) {
+		g_warning("read_data_str: can't g_malloc %d bytes\n", len);
+		return -1;
+	}
+
 	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
 		g_warning("read_data_str: Cache data corrupted, read %d of %d "
 			  "bytes at offset %ld\n", 
