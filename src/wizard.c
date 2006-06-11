@@ -428,6 +428,19 @@ static void initialize_fonts(WizardWindow *wizard)
 }
 
 #define XFACE "+}Axz@~a,-Yx?0Ysa|q}CLRH=89Y]\"')DSX^<6p\"d)'81yx5%G#u^o*7JG&[aPU0h1Ux.vb2yIjH83{5`/bVo|~nn/i83vE^E)qk-4W)_E.4Y=D*qvf/,Ci_=P<iY<M6"
+#define FACE "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAJ1BMVEUTGBYnS3BCUE9KVC9acyRy\n\
+ kC6LjITZdGiumnF/p7yrq6jJzc/5+vf7GI+IAAACZ0lEQVQ4y5XUvW/UMBQA8LRl6VZ3QLqNNhVS\n\
+ YSnKFfExEg9lbJNK3QqVoiPHzgpFnAIs5Do9ORNDVOwuFVIgduZWOfuP4vlyybVVkeCdTpHe7z1/\n\
+ RHYc85dw/gEUxi2gS5ZlDKqbUDcpzarroMEOpDU2VtcAmFKlxn+t2VWQUNa1BmAlGrsCqWKMwetv\n\
+ MMbnFaixFn9rh47DFCuzDs6hxPyrxXuOA7WqWQcp2Fhx7gTOcga6bGHSS6FHCHFouLcMJptuaQbp\n\
+ +kff90P6Yn0TMpXN4DxNVz+FQZ8Gob8DGWSsBUIG23seDXwaBBnU0EJKVhNvqx/6aHTHrmMGhNw9\n\
+ XlqkgbdEX/gh1PUcVj84G4HnuHTXDQ+6Dk3IyqFL/UfEpXvj7RChaoEsUX9rYeGE7o83wp0WcCjS\n\
+ 9/01AifhLrj0oINeuuJ53kIP+uF+7uL03eQpGWx5yzDu05fM3Z53AJDkvdODwvOfmbH3uOuwcLz+\n\
+ UBWLR8/N+MHnDsoeG4zecDl5Mhqa74NR90p+VEYmo+ioSEan8WnytANhDB8kX06TJFZJcowvfrZz\n\
+ XIMS2vxMIlHJfHMTRLOqC7TovlJFEVVGF7yafFVTkGgij+I851hZCHP5Tk8BWXObjuxhl2fm8pdu\n\
+ O0wluZDKHgJ91nVMKhuKN6cZQf9uQAs85lrjGDYmwmqzDynwClRKTCF/OwfDub0dQyzHxVUt6DzK\n\
+ eY5NseIxb8abwoVSMpZDhJyL9kJamGAxplC7izkHyaXM5/nZHFiNeRHfBFNwLjhOr+fAmw1G3OYl\n\
+ bwoijGGzD40pdeu3ROv/+Pr8AWPP4vVXbP0VAAAAAElFTkSuQmCC"
 
 static void write_welcome_email(WizardWindow *wizard)
 {
@@ -451,12 +464,13 @@ static void write_welcome_email(WizardWindow *wizard)
 		"Date: %s\n"
 		"Subject: %s\n"
 		"X-Face: %s\n"
+		"Face: %s\n"
 		"Content-Type: text/plain; charset=UTF-8\n",
 		_("Sylpheed-Claws Team"),
 		USERS_ML_ADDR,
 		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
-		buf_date, subj, XFACE);
+		buf_date, subj, XFACE, FACE);
 	body = g_strdup_printf(
 		_("\n"
 		"Welcome to Sylpheed-Claws\n"
