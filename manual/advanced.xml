@@ -49,13 +49,13 @@
     Whether you choose to Insert or Replace, any To, Cc or Bcc field that is defined in the template will be appended to the compose window's recipients list. If it is defined, the template's Subject will always replace the compose window's Subject.
     </para>
     <para>
-    Symbols can be used in all parts of the templates and will be substituted with their respective dynamic value if possible, otherwise no value will be used. This often makes more sense if you apply a template when a replying or forwarding. There is no restriction on which symbols can be used in template parts, even if inserting the body (%M or %Q) may make no sense in common situations.
+    Symbols can be used in all parts of the templates and will be substituted with their respective dynamic value if possible, otherwise no value will be used. This often makes more sense if you apply a template when replying or forwarding, otherwise most of the symbols value will be undefined. There is no restriction on which symbols can be used in template parts, even if inserting the body (%M or %Q) may make no sense in common situations.
     </para>
     <para>
     When applying a template, the body is processed first, then the To, Cc, Bcc and Subject fields follow.
     </para>
     <para>
-	    Further information and examples of usage can be found in the user-contributed FAQ on the Sylpheed-Claws website <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
+	Further information and examples of usage can be found in the user-contributed FAQ on the Sylpheed-Claws website <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>.
     </para>
    </section>
   <section id="adv_processing">

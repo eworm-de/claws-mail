@@ -44,8 +44,23 @@
   <section id="adv_templates">
     <title>Modèles</title>
     <para>
-	  Les modèles sont utilisés dans la fenêtre de composition et jouent le rôle de modèles pour la rédaction des courriels. Les modèles peut contenir des parties de textes statiques et d'autres dynamiques tels que le nom de l'auteur original (Bonjour %N, ...), la date, etc . Lorsque vous appliquez un modèle, les champs dynamiques sont remplacés par leurs valeurs. Vous pouvez configurer les modèles via le menu <quote>Outils</quote>.
+	  Les modèles sont utilisés dans la fenêtre de composition et jouent le rôle de modèles pour la rédaction des courriels. Les modèles peut contenir des parties de textes statiques et d'autres dynamiques tels que le nom de l'auteur original (Bonjour %N, ...), la date, etc. Lorsque vous appliquez un modèle, les champs dynamiques sont remplacés par leurs valeurs. Vous pouvez configurer les modèles via le menu <quote>Outils</quote>.
     </para>	
+    <para>
+	  L'utilisation d'un modèle se fait soit par insertion, soit par remplacement. La différence se situe au niveau du corps de message. <quote>Remplacer</quote> substituera le corps de message défini dans le modèle à celui du message en cours de composition, l'effaçant si ce premier est vide. <quote>Insérer</quote> insérera le corps de message du modèle, s'il est défini, à la position actuelle du curseur dans la fenêtre de composition.
+    </para>
+    <para>
+	  Que vous choisissiez d'<quote>Insérer</quote> ou de <quote>Remplacer</quote>, tout champs À, Cc ou Cci défini dans le modèle sera ajouté à ceux existant dans la fenêtre de composition. Si le sujet est défini dans le modèle, il remplacera celui de la fenêtre de composition.
+    </para>
+    <para>
+	  Les symboles peuvent être utilisés partout dans les modèles, ils seront remplacés par leur valeur dynamique respective du moment où cela est possible, sinon, aucune valeur ne sera insérée. L'utilisation de symboles est plus souvent pertinente dans le cas d'une réponse ou d'un transfert, le cas échéant, la plupart des valeurs de symboles seront non définies. Il n'y a toutefois pas de restriction dans l'emploi des symboles dans les modèles, même s'il peut sembler généralement peu pertinent d'insérer le corps de texte du message d'origine (%M ou %Q) dans un en-tête.
+    </para>
+    <para>
+	  Quand un modèle est utilisé, le corps de message est traité en premier, viennent ensuite les champs À, Cc, Cci puis Sujet.
+    </para>
+    <para>
+	  Plus d'informations et des exemples d'utilisation sont disponibles dans la FAQ du site de Sylpheed-Claws <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>.
+    </para>
   </section>
   
   <section id="adv_processing">
