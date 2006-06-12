@@ -1,3 +1,15 @@
+2006-06-12 [wwp]	2.3.0cvs2
+
+	* src/quote_fmt.c
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		extend the quote_fmt parser (templates and quotes):
+		- allow limited sub-expressions in |p{} and |f{} expressions,
+		- add !x{expr} (evaluate and insert 'expr' if 'x' is not set) and \! symbols,
+		- implemented/fixed missing implementation of query_references and show_references,
+		- completed, fixed contents and format of the symbols help dialog,
+		- fix some compilation warnings.
+
 2006-06-12 [wwp]	2.3.0cvs1
 
 	* manual/advanced.xml

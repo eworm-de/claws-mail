@@ -47,14 +47,22 @@ static gboolean dry_run = FALSE;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
-static gchar *buffer = NULL;
-static gint bufmax = 0;
-static gint bufsize = 0;
+typedef struct st_buffer
+{
+	gchar *buffer;
+	gint bufsize;
+	gint bufmax;
+} st_buffer;
+
+static struct st_buffer main_expr = { NULL, 0, 0 };
+static struct st_buffer sub_expr = { NULL, 0, 0 };
+static struct st_buffer* current = NULL;
+
 static const gchar *quote_str = NULL;
 static const gchar *body = NULL;
 static gint error = 0;
 
-static gint cursor_pos  = -1;
+static gint cursor_pos = -1;
 
 extern int quote_fmt_firsttime;
 
@@ -74,30 +82,47 @@ static void add_visibility(gboolean val)
 static void remove_visibility(void)
 {
 	stacksize--;
+	if (stacksize < 0) {
+		g_warning("Error: visibility stack underflow\n");
+		stacksize = 0;
+	}
 }
 
 static void add_buffer(const gchar *s)
 {
 	gint len;
 
+	if (s == NULL)
+		return;
+
 	len = strlen(s);
-	if (bufsize + len + 1 > bufmax) {
-		if (bufmax == 0)
-			bufmax = 128;
-		while (bufsize + len + 1 > bufmax)
-			bufmax *= 2;
-		buffer = g_realloc(buffer, bufmax);
+	if (current->bufsize + len + 1 > current->bufmax) {
+		if (current->bufmax == 0)
+			current->bufmax = 128;
+		while (current->bufsize + len + 1 > current->bufmax)
+			current->bufmax *= 2;
+		current->buffer = g_realloc(current->buffer, current->bufmax);
 	}
-	strcpy(buffer + bufsize, s);
-	bufsize += len;
+	strcpy(current->buffer + current->bufsize, s);
+	current->bufsize += len;
+}
+
+static void clear_buffer(void)
+{
+	if (current->buffer)
+		*current->buffer = '\0';
+	current->bufsize = 0;
 }
 
 gchar *quote_fmt_get_buffer(void)
 {
+	if (current != &main_expr)
+		g_warning("Error: parser still in sub-expr mode\n");
+
 	if (error != 0)
 		return NULL;
 	else
-		return buffer;
+		return current->buffer;
 }
 
 gint quote_fmt_get_cursor_pos(void)
@@ -106,8 +131,8 @@ gint quote_fmt_get_cursor_pos(void)
 }
 
 #define INSERT(buf) \
-	if (stacksize != 0 && visible[stacksize - 1]) \
-		add_buffer(buf)
+	if (stacksize != 0 && visible[stacksize - 1])\
+		add_buffer(buf); \
 
 #define INSERT_CHARACTER(chr) \
 	if (stacksize != 0 && visible[stacksize - 1]) { \
@@ -126,9 +151,10 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	dry_run = my_dry_run;
 	stacksize = 0;
 	add_visibility(TRUE);
-	if (buffer != NULL)
-		*buffer = 0;
-	bufsize = 0;
+	main_expr.bufmax = 0;
+	sub_expr.bufmax = 0;
+	current = &main_expr;
+	clear_buffer();
 	error = 0;
         /*
          * force LEX initialization
@@ -243,14 +269,14 @@ static void quote_fmt_show_first_name(const MsgInfo *msginfo)
 	if (!msginfo->fromname)
 		return;	
 	
-	p = strchr(msginfo->fromname, ',');
+	p = (guchar*)strchr(msginfo->fromname, ',');
 	if (p != NULL) {
 		/* fromname is like "Duck, Donald" */
 		p++;
 		while (*p && isspace(*p)) p++;
-		str = alloca(strlen(p) + 1);
+		str = alloca(strlen((char *)p) + 1);
 		if (str != NULL) {
-			strcpy(str, p);
+			strcpy(str, (char *)p);
 			INSERT(str);
 		}
 	} else {
@@ -258,7 +284,7 @@ static void quote_fmt_show_first_name(const MsgInfo *msginfo)
 		str = alloca(strlen(msginfo->fromname) + 1);
 		if (str != NULL) {
 			strcpy(str, msginfo->fromname);
-			p = str;
+			p = (guchar *)str;
 			while (*p && !isspace(*p)) p++;
 			*p = '\0';
 			INSERT(str);
@@ -321,10 +347,10 @@ static void quote_fmt_show_sender_initial(const MsgInfo *msginfo)
 	if (!msginfo->fromname) 
 		return;
 
-	p = msginfo->fromname;
+	p = (guchar *)msginfo->fromname;
 	cur = tmp;
 	while (*p) {
-		if (*p && g_utf8_validate(p, 1, NULL)) {
+		if (*p && g_utf8_validate((gchar *)p, 1, NULL)) {
 			*cur = toupper(*p);
 				cur++;
 			len++;
@@ -416,10 +442,13 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 %token SHOW_PERCENT SHOW_CC SHOW_REFERENCES SHOW_MESSAGE
 %token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
-%token SHOW_EOL SHOW_QUESTION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
+%token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token QUERY_DATE QUERY_FROM
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
 %token QUERY_MESSAGEID QUERY_CC QUERY_REFERENCES
+%token QUERY_NOT_DATE QUERY_NOT_FROM
+%token QUERY_NOT_FULLNAME QUERY_NOT_SUBJECT QUERY_NOT_TO QUERY_NOT_NEWSGROUPS
+%token QUERY_NOT_MESSAGEID QUERY_NOT_CC QUERY_NOT_REFERENCES
 %token INSERT_FILE INSERT_PROGRAMOUTPUT
 %token OPARENT CPARENT
 %token CHARACTER
@@ -435,20 +464,31 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 %%
 
 quote_fmt:
-	character_or_special_or_insert_or_query_list;
+	character_or_special_or_insert_or_query_list ;
+
+sub_expr:
+	character_or_special_list ;
 
 character_or_special_or_insert_or_query_list:
 	character_or_special_or_insert_or_query character_or_special_or_insert_or_query_list
 	| character_or_special_or_insert_or_query ;
 
+character_or_special_list:
+	character_or_special character_or_special_list
+	| character_or_special ;
+
 character_or_special_or_insert_or_query:
+	character_or_special
+	| query
+	| query_not
+	| insert ;
+
+character_or_special:
 	special
 	| character
 	{
 		INSERT_CHARACTER($1);
-	}
-	| query
-	| insert ;
+	};
 
 character:
 	CHARACTER
@@ -503,7 +543,7 @@ special:
 		quote_fmt_show_first_name(msginfo);
 	}
 	| SHOW_LAST_NAME
-        {
+    {
 		quote_fmt_show_last_name(msginfo);
 	}
 	| SHOW_SENDER_INITIAL
@@ -536,9 +576,12 @@ special:
 	}
 	| SHOW_REFERENCES
 	{
-                /* CLAWS: use in reply to header */
-		/* if (msginfo->references)
-			INSERT(msginfo->references); */
+		GSList *item;
+
+		INSERT(msginfo->inreplyto);
+		for (item = msginfo->references; item != NULL; item = g_slist_next(item))
+			if (item->data)
+				INSERT(item->data);
 	}
 	| SHOW_MESSAGE
 	{
@@ -572,6 +615,10 @@ special:
 	{
 		INSERT("?");
 	}
+	| SHOW_EXCLAMATION_MARK
+	{
+		INSERT("!");
+	}
 	| SHOW_PIPE
 	{
 		INSERT("|");
@@ -586,7 +633,7 @@ special:
 	}
 	| SET_CURSOR_POS
 	{
-		cursor_pos = bufsize;
+		cursor_pos = current->bufsize;
 	};
 
 query:
@@ -656,8 +703,95 @@ query:
 	}
 	| QUERY_REFERENCES
 	{
-                /* CLAWS: use in-reply-to header */
-		/* add_visibility(msginfo->references != NULL); */
+		gboolean found;
+		GSList *item;
+
+		found = (msginfo->inreplyto != NULL);
+		for (item = msginfo->references; found == FALSE && item != NULL; item = g_slist_next(item))
+			if (item->data)
+				found = TRUE;
+		add_visibility(found == TRUE);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	};
+
+query_not:
+	QUERY_NOT_DATE
+	{
+		add_visibility(msginfo->date == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_FROM
+	{
+		add_visibility(msginfo->from == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_FULLNAME
+	{
+		add_visibility(msginfo->fromname == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_SUBJECT
+	{
+		add_visibility(msginfo->subject == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_TO
+	{
+		add_visibility(msginfo->to == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_NEWSGROUPS
+	{
+		add_visibility(msginfo->newsgroups == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_MESSAGEID
+	{
+		add_visibility(msginfo->msgid == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_CC
+	{
+		add_visibility(msginfo->cc == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_REFERENCES
+	{
+		gboolean found;
+		GSList *item;
+
+		found = (msginfo->inreplyto != NULL);
+		for (item = msginfo->references; found == FALSE && item != NULL; item = g_slist_next(item))
+			if (item->data)
+				found = TRUE;
+		add_visibility(found == FALSE);
 	}
 	OPARENT quote_fmt CPARENT
 	{
@@ -665,15 +799,27 @@ query:
 	};
 
 insert:
-	INSERT_FILE OPARENT string CPARENT
+	INSERT_FILE
 	{
+		current = &sub_expr;
+		clear_buffer();
+	}
+	OPARENT sub_expr CPARENT
+	{
+		current = &main_expr;
 		if (!dry_run) {
-			quote_fmt_insert_file($3);
+			quote_fmt_insert_file(sub_expr.buffer);
 		}
 	}
-	| INSERT_PROGRAMOUTPUT OPARENT string CPARENT
+	| INSERT_PROGRAMOUTPUT
 	{
+		current = &sub_expr;
+		clear_buffer();
+	}
+	OPARENT sub_expr CPARENT
+	{
+		current = &main_expr;
 		if (!dry_run) {
-			quote_fmt_insert_program_output($3);
+			quote_fmt_insert_program_output(sub_expr.buffer);
 		}
 	};
