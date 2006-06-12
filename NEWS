@@ -1,5 +1,140 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.3.0
+-------
+
+  * Mailing-list support (Subscribe, Unsubscribe, View Archive, etc) 
+    has been added in the main window's 'Message/Mailing list' menu
+
+  * Filtering and processing rules can be disabled with just one click
+
+  * The From address is editable in the Compose window
+
+  * A menu has been added to the Compose toolbar button to enable
+    choosing the account to use
+
+  * Write-only support of .mh_sequences' Unseen property has been added 
+    for MH mailboxes, allowing synchronised flags when reading your MH
+    mailbox with Mutt or other MH-based mail clients
+
+  * More feedback is provided to the user when importing MBOX files
+
+  * 'k' added as a shortcut for 'colorlabel' in the Extended Quick
+    Search
+
+  * The option to go to the first Marked message when entering a
+    folder has been added.
+
+  * The 'ignore thread' flag is now correctly set on mails threaded by
+    subject, in addition to standard headers.
+
+  * Hidden prefs have been added that allow customization of the
+    colours used in the Log window (useful for dark GTK+ themes)
+
+  * Optimised large folder reading
+
+  * Optimised copy/move/deletion/selection
+
+  * Optimised 'mark all read' in the current folder
+
+  * 'test' filtering rules are processed in the background
+
+  * A progressbar for cache updates has been added
+
+  * A progressbar for copy/move functions has been added
+
+  * More dialogues have been made HIG compliant
+
+  * Allow recursive setting of properties for whole mailboxes
+
+  * A Face header has been added to the Welcome mail
+
+  * The user manual has been updated
+
+  * tools/filter_conv_new.pl has been updated for rule 
+    enabling/disabling
+
+* 2.2.3
+-------
+
+  * bug fix release
+
+  * Fix crash on a very common code path, introduced by a merge error in 
+    2.2.1
+
+* 2.2.2
+-------
+
+  * bug fix release
+
+  * Fix URI check, which failed to identify fake, phishing URIs if they
+    began with a space.
+
+  * Reply-To and Sender addresses in the message view are now fully
+    clickable.
+
+  * Remove extraneous tab at start of addresses.
+
+* 2.2.1
+-------
+
+  * bug fix release
+
+  * Always obey the "confirm before marking all mails read" option
+
+  * Fixed MBOX import/export's behaviour on failure
+
+  * Fixed automatic rule creation with List-Post
+
+  * Fixed some GTK+ warnings and errors at runtime
+
+  * Fixed some compiler warnings
+
+  * Fixed double init of the g_thread subsystem
+
+  * Fixed saving of parts with names that can't be converted to UTF-8
+
+  * Fixed a possible infinite loop when filtering moved and copied some
+    mails
+
+  * Fixed a buffer overflow in Russian locale 
+
+  * Fixed a memory leak in expired SSL certificate check
+
+  * Fixed bolding of folder names in the folder selector window with
+    GLib 2.10
+
+  * Added an hidden preference, 'ssl_skip_cert_check', to avoid
+    duplicates of bug #959 - if libetpan is linked against gnutls, there
+    can be bugs on 64 bits systems. Gnutls fixed them in their 1.2.4 
+    release.
+
+  * The SSL "expired certificate" warning is now presented only once per
+    session
+
+  * Fixed races when reusing the SMTP sessions
+
+  * Added the missing timeout on SMTP sessions
+
+  * Fixed a few leaks
+
+  * Fixed a crash in PGP plugins, which could happen when signing fails
+    for unknown reasons
+
+  * Fixed SpamAssassin plugin, which stayed disabled as long as the
+    transport wasn't reselected
+
+  * Fixed bug #830 (Some unread messages get marked read in IMAP inbox)
+
+  * Fixed bug #955 (copying messages between imap folders is extremely
+    slow)
+
+  * Fixed bug #961 (return receipt dialog complains incorrectly about
+    return-path email adress being different)
+
+  * Fixed bug #962 (Manual and/or UI should warn about incompatible
+    locking causing dataloss)
+
 * 2.2.0
 -------
 

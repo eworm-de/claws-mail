@@ -1,99 +1,78 @@
-8th May 2006                                     Sylpheed-Claws 2.2.0
+12th June 2006                                   Sylpheed-Claws 2.3.0
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
-                      http://claws.sylpheed.org
+                    http://www.sylpheed-claws.net
 		      
 Sylpheed-Claws is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-Notes for this release:
-~~~~~~~~~~~~~~~~~~~~~~~
-
-* S/MIME signature verification has been removed from the PGP/MIME
-  plugin as it is now provided by the S/MIME plugin.
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* IMAP users will see significant speed improvements.
+* Mailing-list support (Subscribe, Unsubscribe, View Archive, etc) 
+  has been added in the main window's 'Message/Mailing list' menu
 
-* ANONYMOUS auth has been added for IMAP
+* Filtering and processing rules can be disabled with just one click
 
-* In the Compose window all spell-checker options are now available
-  from the /Spelling/Options menu. 
-	
-* Syntax errors in the extended Quick Search are now indicated by
-  a pink/red background.
+* The From address is editable in the Compose window
 
-* An encrypt-to-self option has been added to the Account Privacy
-  options.
+* A menu has been added to the Compose toolbar button to enable
+  choosing the account to use
 
-* Sysadmins can now provide their users with pre-filled values in
-  the Setup Wizard. See the manual, '6.6. Deploying Sylpheed-Claws',
-  for details.
+* Write-only support of .mh_sequences' Unseen property has been added 
+  for MH mailboxes, allowing synchronised flags when reading your MH
+  mailbox with Mutt or other MH-based mail clients
 
-* Various GUI improvements have been added.
+* More feedback is provided to the user when importing MBOX files
 
-* A new command line option has been added: --select 'folder[/msg]'
-  This can be used at startup and causes the specified folder/message
-  to be selected. 'folder' is a folder id like '#mh/Mailbox/inbox'
+* 'k' added as a shortcut for 'colorlabel' in the Extended Quick
+  Search
 
-* Optional background colouring of quotes has been added. It can be
-  configured from the Colour Preferences dialogue.
-  GTK+-2.8.x or newer is required for this feature.
+* The option to go to the first Marked message when entering a
+  folder has been added.
 
-* In the Compose window, multiple quote levels are now coloured in
-  the same way as the Message View.
+* The 'ignore thread' flag is now correctly set on mails threaded by
+  subject, in addition to standard headers.
 
-* A warning is now displayed on expired SSL certificates and the 
-  expiration date is shown.
+* Hidden prefs have been added that allow customization of the
+  colours used in the Log window (useful for dark GTK+ themes)
 
-* A hidden option has been added, 'compose_no_markup', this prohibits
-  the use of bold and italic text in Compose dialogue's account 
-  selector.
+* Optimised large folder reading
 
-* LDAPS support has been added.
+* Optimised copy/move/deletion/selection
 
-* The user manual has been updated, and French and Polish 
-  translations are now also included.
+* Optimised 'mark all read' in the current folder
 
-* updated Brazilian Portuguese, British English, Czech, Dutch,
-  Finnish, French, German, Serbian, Simplified Chinese, and 
-  Spanish translations.
+* 'test' filtering rules are processed in the background
 
-* Bugfixes: 
-	o bug 859, 'problems with cyrilic input in search panel'
-	o bug 912, '"new" count randomly set to message count'
-	o bug 919, 'libetpan: SEGV when connecting using command'
-	o bug 925, 'File accountrc does not store non-ascii 
-		    characters correctly'
-	o bug 933, 'Crash re-entering the custom headers list dialog
-		    in accounts prefs'
-	o bug 943, 'Incorrectly parsed email address list in short
-		    headers on message view and in printouts'
-	* src/compose.c
-		Fix inserting files not in utf8 when locale is utf8
-	* Don't show error dialog when cancelling connection
-	* src/summary_search.c
-		'stop' button was sticky when searching in an empty
-  		folder.
-	* src/addressbook.c
-		Fix crash with empty columns
-	* src/plugins/spamassassin/spamassassin_gtk.c
-		Fix missing set_text on unix socket
-	* src/send_message.c
-		enforce a check for domain in account prefs (a 
-		sending error could be faced if domain was checked 
-		but no value set)
-	* src/prefs_matcher.c
-		Fix values when reselecting a ~test rule
-	* IMAP: fix preventing renaming with namespace separator
-	* Fix build on DragonFly
-	* Fix occasional flicker in folderview
-	* Fix crash on redirect (related to the return of the aspell
-	  menu in compose's toolbar)
-	* Fix returned quick search results when search term contains
-	  an underscore
+* A progressbar for cache updates has been added
+
+* A progressbar for copy/move functions has been added
+
+* More dialogues have been made HIG compliant
+
+* Allow recursive setting of properties for whole mailboxes
+
+* A Face header has been added to the Welcome mail
+
+* The user manual has been updated
+
+* tools/filter_conv_new.pl has been updated for rule 
+  enabling/disabling
+
+* updated Brazilian Portuguese, Catalan, Czech, French, German, 
+  Greek, Italian, Serbian, Simplified Chinese, and Spanish 
+  translations.
+
+* Bug fixes: 
+	o bug 965, 'crash opening inbox (cf just previously described
+		    bug)' (Sylpheed-Claws crashed, checking for new 
+  		    messages in local folders)
+	o fix 'mark all read' .mh_sequences support
+	o fix catching cache read errors and detect corruption better
+	o fix possible infinite loop in filtering that was introduced 
+  	  in 2.3.0-rc3
+	o fix memory leaks
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
