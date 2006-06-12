@@ -1,3 +1,19 @@
+2006-06-12 [paul]	2.2.3cvs14
+
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/el.po
+	* po/fr.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Miquel Oliete, Tim, Stephan Sachse,
+		Stavros Giannouris, Fabien Vantard, Andrea
+		Spadaccini, Frederico Goncalves Guimaraes,
+		Aleksandar Urosevic, and Ralgh Young
+
 2006-06-12 [colin]	2.2.3cvs13
 
 	* src/mbox.c

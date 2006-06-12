@@ -1574,3 +1574,4 @@
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/wizard.c;  ) > 2.2.3cvs11.patchset
 ( cvs diff -u -r 1.16.2.32 -r 1.16.2.33 src/msgcache.c;  ) > 2.2.3cvs12.patchset
 ( cvs diff -u -r 1.28.2.16 -r 1.28.2.17 src/mbox.c;  ) > 2.2.3cvs13.patchset
+( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 po/ca.po;  cvs diff -u -r 1.9.2.6 -r 1.9.2.7 po/cs.po;  cvs diff -u -r 1.58.2.22 -r 1.58.2.23 po/de.po;  cvs diff -u -r 1.9.2.5 -r 1.9.2.6 po/el.po;  cvs diff -u -r 1.42.2.24 -r 1.42.2.25 po/fr.po;  cvs diff -u -r 1.34.2.18 -r 1.34.2.19 po/it.po;  cvs diff -u -r 1.50.2.18 -r 1.50.2.19 po/pt_BR.po;  cvs diff -u -r 1.17.2.21 -r 1.17.2.22 po/sr.po;  cvs diff -u -r 1.5.2.15 -r 1.5.2.16 po/zh_CN.po;  ) > 2.2.3cvs14.patchset
