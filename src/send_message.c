@@ -607,7 +607,7 @@ static void send_put_error(Session *session)
 	if (log_msg)
 		log_warning("%s\n", log_msg);
 	if (err_msg) {
-		alertpanel_error_log("%s", err_msg);
+		log_error("%s", err_msg);
 		g_free(err_msg);
 	}
 }

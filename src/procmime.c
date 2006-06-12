@@ -1841,8 +1841,22 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 	if ((fp = g_fopen(filename, "rb")) == NULL)
 		return NULL;
 	/* Skip queue header */
-	while (fgets(buf, sizeof(buf), fp) != NULL)
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		/* new way */
+		if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+			strlen("X-Sylpheed-End-Special-Headers:")))
+			break;
+		/* old way */
 		if (buf[0] == '\r' || buf[0] == '\n') break;
+		/* from other mailers */
+		if (!strncmp(buf, "Date: ", 6)
+		||  !strncmp(buf, "To: ", 4)
+		||  !strncmp(buf, "From: ", 6)
+		||  !strncmp(buf, "Subject: ", 9)) {
+			rewind(fp);
+			break;
+		}
+	}
 	offset = ftell(fp);
 	fclose(fp);
 

@@ -461,7 +461,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	gint filemode = 0;
 	FolderItemPrefs *prefs;
 	MsgInfo *msginfo = NULL;
-	gboolean remove_special_headers = FALSE;
 	MsgInfoList *cur = NULL;
 	gint curnum = 0, total = 0;
 	gchar *srcpath = NULL;
@@ -487,19 +486,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		if (dest->last_num < 0) return -1;
 	}
 
-	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
-	&& !folder_has_parent_of_type(dest, F_QUEUE)
-	&& !folder_has_parent_of_type(dest, F_DRAFT)) {
-		/* as every msginfo comes from the same folder, it is supposed they
-		 * will either match the preceding condition either all or none.
-		 */
-		remove_special_headers = TRUE;
-	} else if (!(MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
-	&& (folder_has_parent_of_type(dest, F_QUEUE)
-	 || folder_has_parent_of_type(dest, F_DRAFT))) {
-		return -1;
-	} 
-
 	prefs = dest->prefs;
 
 	srcpath = folder_item_get_path(msginfo->folder);
@@ -512,7 +498,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			statusbar_print_all(_("Copying messages..."));
 	}
 	for (cur = msglist; cur; cur = cur->next) {
-		gboolean moved = FALSE;
 		msginfo = (MsgInfo *)cur->data;
 		if (!msginfo) {
 			goto err_reset_status;
@@ -545,13 +530,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			    msginfo->msgnum, dest->path);
 
 
-		if (remove_special_headers) {
-			if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
-				g_free(srcfile);
-				g_free(destfile);
-				goto err_reset_status;
-			}
-		} else if (MSG_IS_MOVE(msginfo->flags)) {
+		if (MSG_IS_MOVE(msginfo->flags)) {
 			if (move_file(srcfile, destfile, TRUE) < 0) {
 				FILE_OP_ERROR(srcfile, "move");
 				if (copy_file(srcfile, destfile, TRUE) < 0) {

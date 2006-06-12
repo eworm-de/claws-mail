@@ -435,6 +435,8 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	gchar *hp;
 	HeaderEntry *hentry;
 	gint hnum;
+	void *orig_data = data;
+
 	get_one_field_func get_one_field =
 		isstring ? (get_one_field_func)string_get_one_field
 			 : (get_one_field_func)procheader_get_one_field;
@@ -442,8 +444,22 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	hentry = procheader_get_headernames(full);
 
 	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
-		while (get_one_field(buf, sizeof(buf), data, NULL) != -1)
-			; /* loop */
+		while (get_one_field(buf, sizeof(buf), data, NULL) != -1) {
+			if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+				strlen("X-Sylpheed-End-Special-Headers:")))
+				break;
+			/* from other mailers */
+			if (!strncmp(buf, "Date: ", 6)
+			||  !strncmp(buf, "To: ", 4)
+			||  !strncmp(buf, "From: ", 6)
+			||  !strncmp(buf, "Subject: ", 9)) {
+				if (isstring)
+					data = orig_data;
+				else 
+					rewind((FILE *)data);
+				break;
+			}
+		}
 	}
 
 	msginfo = procmsg_msginfo_new();

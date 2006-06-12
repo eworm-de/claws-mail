@@ -608,7 +608,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	if (item->opened)
 		folder_item_close(item);
 
-	folder_item_free_cache(item);
+	folder_item_free_cache(item, TRUE);
 }
 
 static void exit_sylpheed(MainWindow *mainwin)
@@ -1218,21 +1218,29 @@ static void open_compose_new(const gchar *address, GPtrArray *attach_files)
 static void send_queue(void)
 {
 	GList *list;
-
+	gchar *errstr = NULL;
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;
 
 		if (folder->queue) {
 			gint res = procmsg_send_queue
-				(folder->queue, prefs_common.savemsg);
+				(folder->queue, prefs_common.savemsg,
+				&errstr);
 
-			if (res < 0) {
-				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			}
 			if (res) {
 				folder_item_scan(folder->queue);
 			}
 		}
+	}
+	if (errstr) {
+		gchar *tmp = g_strdup_printf(_("Some errors occurred "
+				"while sending queued messages:\n%s"), errstr);
+		g_free(errstr);
+		alertpanel_error_log(tmp);
+		g_free(tmp);
+	} else {
+		alertpanel_error_log("Some errors occurred "
+				"while sending queued messages.");
 	}
 }
 

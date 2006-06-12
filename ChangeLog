@@ -1,3 +1,32 @@
+2006-06-12 [colin]	2.3.0cvs5
+
+	* src/compose.c
+	* src/compose.h
+	* src/folder.c
+	* src/folder.h
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/messageview.c
+	* src/mh.c
+	* src/prefs_folder_item.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/send_message.c
+	* src/summaryview.c
+	* src/toolbar.c
+		Apply bug #964's patch (Queue and drafts aren't normal)
+		The Drafts and Queue folder now contain RFC-822 files,
+		allowing to move and copy mails from and to these 
+		folders. Moving from Drafts to Queue will prepare the
+		mail for sending (PGP signature, encryption, etc).
+		This patch also rework sending errors handling to try
+		to be more helpful.
+		Also, allow redefining folder types via the GUI 
+		(Folder type in its Properties)
+
 2006-06-12 [colin]	2.3.0cvs4
 
 	* src/summaryview.c

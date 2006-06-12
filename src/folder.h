@@ -822,5 +822,8 @@ void folder_item_process_open		(FolderItem *item,
 					 gpointer data);
 gboolean folder_subscribe		(const gchar *uri);
 gboolean folder_have_mailbox 		(void);
+gboolean folder_item_free_cache		(FolderItem *item, gboolean force);
+void folder_item_change_type		(FolderItem *item,
+					 SpecialFolderItemType newtype);
 
 #endif /* __FOLDER_H__ */

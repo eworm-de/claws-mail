@@ -32,6 +32,7 @@
 #include "folder.h"
 #include "prefs_folder_item.h"
 #include "folderview.h"
+#include "folder.h"
 #include "summaryview.h"
 #include "menu.h"
 #include "account.h"
@@ -65,6 +66,7 @@ struct _FolderItemGeneralPage
 	FolderItem *item;
 
 	GtkWidget *table;
+	GtkWidget *folder_type;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *checkbtn_folder_chmod;
@@ -137,12 +139,20 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
                                 		   gpointer data)
 {
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) page_;
-	FolderItem *item = (FolderItem *) data;
+	FolderItem *item = (FolderItem *) data, *parent;
 	guint rowcount;
+
 
 	GtkWidget *table;
 	GtkWidget *hbox;
 	GtkWidget *label;
+	
+	GtkWidget *folder_type_menu;
+	GtkWidget *folder_type;
+	GtkWidget *dummy_chkbtn;
+	GtkWidget *menuitem;
+	SpecialFolderItemType type;
+	gboolean type_apply_to_sub = TRUE;
 	
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
@@ -175,6 +185,56 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	rowcount++;
+
+	/* folder_type */
+	folder_type = gtk_option_menu_new ();
+	gtk_widget_show (folder_type);
+
+	parent = item;
+	type = F_NORMAL;
+	while (parent && (type = parent->stype) == F_NORMAL) {
+		parent = folder_item_parent(parent);
+	}
+
+	if (type == F_INBOX && (parent = folder_item_parent(item)) != NULL
+	&&  folder_item_parent(parent) != NULL) {
+		type = F_NORMAL;
+		type_apply_to_sub = FALSE;
+	}
+
+	folder_type_menu = gtk_menu_new ();
+
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Normal"),  F_NORMAL);
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Inbox"),  F_INBOX);
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Outbox"),  F_OUTBOX);
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Drafts"),  F_DRAFT);
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Queue"),  F_QUEUE);
+	MENUITEM_ADD (folder_type_menu, menuitem, _("Trash"),  F_TRASH);
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (folder_type), folder_type_menu);
+
+	gtk_option_menu_set_history(GTK_OPTION_MENU(folder_type), type);
+
+	dummy_chkbtn = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_chkbtn), type_apply_to_sub);
+	gtk_widget_set_sensitive(dummy_chkbtn, FALSE);
+
+	if (((parent = folder_item_parent(item)) != NULL
+	&&  folder_item_parent(parent) == NULL)
+	&&  item->stype == F_NORMAL) {
+		gtk_widget_set_sensitive(folder_type, TRUE);
+	} else {
+		gtk_widget_set_sensitive(folder_type, FALSE);
+	}
+	label = gtk_label_new(_("Folder type:"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), folder_type, 1, 2, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), dummy_chkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
 	rowcount++;
 
 	/* Simplify Subject */
@@ -306,6 +366,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_widget_show_all(table);
 
 	page->table = table;
+	page->folder_type = folder_type;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
@@ -340,6 +401,9 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	FolderItemPrefs *prefs = folder->prefs;
 	gchar *buf;
 	gboolean all = FALSE;
+	SpecialFolderItemType type = F_NORMAL;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 
 	if (folder->path == NULL)
 		return;
@@ -348,6 +412,14 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 
 	if (page->item == folder) 
 		all = TRUE;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->folder_type));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	type = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	if (all && folder->stype != type) {
+		folder_item_change_type(folder, type);
+	}
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn))) {
 		prefs->enable_simplify_subject =

@@ -47,7 +47,7 @@
 #include "log.h"
 #include "timing.h"
 
-static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session);
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr);
 
 enum
 {
@@ -63,6 +63,7 @@ enum
 	Q_PRIVACY_SYSTEM   = 9,
 	Q_ENCRYPT 	   = 10,
 	Q_ENCRYPT_DATA	   = 11,
+	Q_SYLPHEED_HDRS    = 12,
 };
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
@@ -540,8 +541,22 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 	if (MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags)) {
 		gchar buf[BUFFSIZE];
 
-		while (fgets(buf, sizeof(buf), fp) != NULL)
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			/* new way */
+			if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+				strlen("X-Sylpheed-End-Special-Headers:")))
+				break;
+			/* old way */
 			if (buf[0] == '\r' || buf[0] == '\n') break;
+			/* from other mailers */
+			if (!strncmp(buf, "Date: ", 6)
+			||  !strncmp(buf, "To: ", 4)
+			||  !strncmp(buf, "From: ", 6)
+			||  !strncmp(buf, "Subject: ", 9)) {
+				rewind(fp);
+				break;
+			}
+		}
 	}
 
 	return fp;
@@ -873,7 +888,7 @@ static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo,
  *\return	Number of messages sent, negative if an error occurred
  *		positive if no error occurred
  */
-gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
+gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 {
 	gint sent = 0, err = 0;
 	GSList *list, *elem;
@@ -883,6 +898,10 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	
 	if (send_queue_lock) {
 		log_error(_("Already trying to send\n"));
+		if (errstr) {
+			if (*errstr) g_free(*errstr);
+			*errstr = g_strdup_printf(_("Already trying to send."));
+		}
 		return -1;
 	}
 	send_queue_lock = TRUE;
@@ -905,7 +924,8 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 			file = folder_item_fetch_msg(queue, msginfo->msgnum);
 			if (file) {
 				if (procmsg_send_message_queue_full(file, 
-						!procmsg_is_last_for_account(queue, msginfo, elem)) < 0) {
+						!procmsg_is_last_for_account(queue, msginfo, elem),
+						errstr) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
 					err++;
@@ -930,7 +950,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		while (node != NULL) {
 			int res = 0;
 			next = node->next;
-			res = procmsg_send_queue(FOLDER_ITEM(node->data), save_msgs);
+			res = procmsg_send_queue(FOLDER_ITEM(node->data), save_msgs, errstr);
 			if (res < 0) 
 				err = -res;
 			else
@@ -991,8 +1011,22 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 		fclose(fp);
 		return -1;
 	}
-	while (fgets(buf, sizeof(buf), fp) != NULL)
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		/* new way */
+		if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+			strlen("X-Sylpheed-End-Special-Headers:")))
+			break;
+		/* old way */
 		if (buf[0] == '\r' || buf[0] == '\n') break;
+		/* from other mailers */
+		if (!strncmp(buf, "Date: ", 6)
+		||  !strncmp(buf, "To: ", 4)
+		||  !strncmp(buf, "From: ", 6)
+		||  !strncmp(buf, "Subject: ", 9)) {
+			rewind(fp);
+			break;
+		}
+	}
 	while (fgets(buf, sizeof(buf), fp) != NULL)
 		fputs(buf, outfp);
 	fclose(outfp);
@@ -1036,7 +1070,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			g_warning("can't save message\n");
 			return -1;
 		}
-		return -1;
+		return 0;
 	}
 	msginfo = folder_item_get_msginfo(outbox, num);		/* refcnt++ */
 	tmp_msginfo = procmsg_msginfo_get_full_info(msginfo);	/* refcnt++ */ 
@@ -1354,7 +1388,7 @@ gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 	return msginfo1->msgnum - msginfo2->msgnum;
 }
 
-static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session)
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr)
 {
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
@@ -1368,6 +1402,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
+				       {"X-Sylpheed-End-Special-Headers:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1394,6 +1429,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
+		if (errstr) {
+			if (*errstr) g_free(*errstr);
+			*errstr = g_strdup_printf(_("Couldn't open file %s."), file);
+		}
 		return -1;
 	}
 
@@ -1446,8 +1485,12 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			if (encrypt_data == NULL) 
 				encrypt_data = g_strdup(p);
 			break;
+		case Q_SYLPHEED_HDRS:
+			/* end of special headers reached */
+			goto send_mail; /* can't "break;break;" */
 		}
 	}
+send_mail:
 	filepos = ftell(fp);
 
 	if (encrypt) {
@@ -1480,6 +1523,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			g_free(fwdmessageid);
 			g_free(privacy_system);
 			g_free(encrypt_data);
+			if (errstr) {
+				if (*errstr) g_free(*errstr);
+				*errstr = g_strdup_printf(_("Couldn't encrypt the email."));
+			}
 			return -1;
 		}
 		
@@ -1508,7 +1555,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	if (to_list) {
 		debug_print("Sending message by mail\n");
 		if (!from) {
-			g_warning("Queued message header is broken.\n");
+			if (errstr) {
+				if (*errstr) g_free(*errstr);
+				*errstr = g_strdup_printf(_("Queued message header is broken."));
+			}
 			mailval = -1;
 		} else if (mailac && mailac->use_mail_command &&
 			   mailac->mail_command && (* mailac->mail_command)) {
@@ -1524,9 +1574,13 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				}
 			}
 
-			if (mailac)
+			if (mailac) {
 				mailval = send_message_smtp_full(mailac, to_list, fp, keep_session);
-			else {
+				if (mailval == -1 && errstr) {
+					if (*errstr) g_free(*errstr);
+					*errstr = g_strdup_printf(_("An error happened during SMTP session."));
+				}
+			} else {
 				PrefsAccount tmp_ac;
 
 				g_warning("Account not found.\n");
@@ -1536,11 +1590,21 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				tmp_ac.smtp_server = smtpserver;
 				tmp_ac.smtpport = SMTP_PORT;
 				mailval = send_message_smtp(&tmp_ac, to_list, fp);
+				if (mailval == -1 && errstr) {
+					if (*errstr) g_free(*errstr);
+					*errstr = g_strdup_printf(_("No specific account has been found to "
+							"send, and an error happened during SMTP session."));
+				}
 			}
 		}
-	} else if (!to_list && !newsgroup_list) 
+	} else if (!to_list && !newsgroup_list) {
+		if (errstr) {
+			if (*errstr) g_free(*errstr);
+			*errstr = g_strdup(_("Couldn't determine sending informations. "
+				"Maybe the email hasn't been generated by Sylpheed-Claws."));
+		}
 		mailval = -1;
-
+	}
 
 	fseek(fp, filepos, SEEK_SET);
 	if (newsgroup_list && (mailval == 0)) {
@@ -1565,7 +1629,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				if (fputs(buf, tmpfp) == EOF) {
 					FILE_OP_ERROR(tmp, "fputs");
 					newsval = -1;
-					alertpanel_error(_("Error when writing temporary file for news sending."));
+					if (errstr) {
+						if (*errstr) g_free(*errstr);
+						*errstr = g_strdup_printf(_("Error when writing temporary file for news sending."));
+					}
 				}
 			}
 			fclose(tmpfp);
@@ -1576,10 +1643,11 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				folder = FOLDER(newsac->folder);
 
     				newsval = news_post(folder, tmp);
-    				if (newsval < 0) {
-            				alertpanel_error(_("Error occurred while posting the message to %s ."),
-                            			 newsac->nntp_server);
-    				}
+    				if (newsval < 0 && errstr)  {
+					if (*errstr) g_free(*errstr);
+					*errstr = g_strdup_printf(_("Error occurred while posting the message to %s."),
+                            		 newsac->nntp_server);
+				}
 			}
 			g_unlink(tmp);
 		}
@@ -1668,9 +1736,9 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	return (newsval != 0 ? newsval : mailval);
 }
 
-gint procmsg_send_message_queue(const gchar *file)
+gint procmsg_send_message_queue(const gchar *file, gchar **errstr)
 {
-	return procmsg_send_message_queue_full(file, FALSE);
+	return procmsg_send_message_queue_full(file, FALSE, errstr);
 }
 
 static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old_flags)

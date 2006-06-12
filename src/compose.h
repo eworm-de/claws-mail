@@ -265,7 +265,8 @@ Compose *compose_forward_multiple	(PrefsAccount	*account,
 Compose *compose_redirect		(PrefsAccount	*account,
 					 MsgInfo	*msginfo,
 					 gboolean	 batch);
-void compose_reedit			(MsgInfo	*msginfo);
+Compose *compose_reedit			(MsgInfo	*msginfo,
+					 gboolean	 batch);
 
 GList *compose_get_compose_list		(void);
 
@@ -302,5 +303,10 @@ gboolean compose_search_string			(Compose	*compose,
 gboolean compose_search_string_backward	(Compose	*compose,
 						 const gchar	*str,
 						 gboolean	 case_sens);
-
+gint compose_queue			(Compose *compose, 
+					 gint *msgnum, 
+					 FolderItem **item, 
+					 gchar **msgpath,
+					 gboolean remove_reedit_target);
+gboolean compose_close			(Compose *compose);
 #endif /* __COMPOSE_H__ */

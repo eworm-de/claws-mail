@@ -56,6 +56,7 @@
 #include "statusbar.h"
 #include "gtkutils.h"
 #include "timing.h"
+#include "compose.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -90,7 +91,6 @@ static void folder_get_persist_prefs_recursive
 					(GNode *node, GHashTable *pptable);
 static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 void folder_item_read_cache		(FolderItem *item);
-gboolean folder_item_free_cache		(FolderItem *item, gboolean force);
 gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 static void folder_item_update_with_msg (FolderItem *item, FolderItemUpdateFlags update_flags,
                                          MsgInfo *msg);
@@ -197,6 +197,58 @@ void folder_init(Folder *folder, const gchar *name)
 	folder->draft = NULL;
 	folder->queue = NULL;
 	folder->trash = NULL;
+}
+
+static void reset_parent_type(FolderItem *item, gpointer data) {
+	item->parent_stype = -1;
+}
+
+void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
+{
+	FolderItem *parent;
+	Folder *folder = NULL;
+	FolderUpdateData hookdata;
+
+	if ((parent = folder_item_parent(item)) != NULL 
+	&& folder_item_parent(parent) != NULL) {
+		g_warning("can't change subfolder's type");
+		return;
+	}
+	folder = item->folder;
+	/* unset previous root of newtype */
+	switch(newtype) {
+	case F_INBOX:
+		folder_item_change_type(folder->inbox, F_NORMAL);
+		folder->inbox = item;
+		break;
+	case F_OUTBOX:
+		folder_item_change_type(folder->outbox, F_NORMAL);
+		folder->outbox = item;
+		break;
+	case F_QUEUE:
+		folder_item_change_type(folder->queue, F_NORMAL);
+		folder->queue = item;
+		break;
+	case F_DRAFT:
+		folder_item_change_type(folder->draft, F_NORMAL);
+		folder->draft = item;
+		break;
+	case F_TRASH:
+		folder_item_change_type(folder->trash, F_NORMAL);
+		folder->trash = item;
+		break;
+	case F_NORMAL:
+	default:
+		break;
+	}
+	/* set new type for current folder and sons */
+	item->stype = newtype;
+	folder_func_to_all_folders(reset_parent_type, NULL);
+	
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED;
+	hookdata.item = NULL;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
 void folder_destroy(Folder *folder)
@@ -2826,6 +2878,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	GRelation *relation;
 	GSList *not_moved = NULL;
 	gint total = 0, curmsg = 0;
+	MsgInfo *msginfo = NULL;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -2835,6 +2888,40 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 	if (dest->no_select)
 		return -1;
+
+	msginfo = (MsgInfo *)msglist->data;
+	
+	if (!msginfo)
+		return -1;
+	
+	if (!MSG_IS_QUEUED(msginfo->flags) && 
+	    MSG_IS_DRAFT(msginfo->flags) && 
+	    folder_has_parent_of_type(dest, F_QUEUE)) {
+		GSList *cur = msglist;
+		gboolean queue_err = FALSE;
+		for (; cur; cur = cur->next) {
+			Compose *compose = NULL;
+			FolderItem *queue = dest;
+			int val = 0;
+			
+			msginfo = (MsgInfo *)cur->data;
+			compose = compose_reedit(msginfo, TRUE);
+			if (compose == NULL) {
+				queue_err = TRUE;
+				continue;
+			}
+			val = compose_queue(compose, NULL, &queue, NULL,
+					FALSE);
+			if (val < 0) {
+				queue_err = TRUE;
+			} else if (remove_source) {
+				folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+			}
+			if (val == 0)
+				compose_close(compose);
+		}
+		return queue_err ? -1:0;
+	}
 
 	relation = g_relation_new(2);
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);

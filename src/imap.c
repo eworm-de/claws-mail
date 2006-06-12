@@ -483,8 +483,6 @@ static Folder *imap_folder_new(const gchar *name, const gchar *path)
 
 static void imap_folder_destroy(Folder *folder)
 {
-	gchar *dir;
-
 	while (imap_folder_get_refcnt(folder) > 0)
 		gtk_main_iteration();
 	
@@ -1061,7 +1059,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		IMAPFlags iflags = 0;
 		guint32 new_uid = 0;
 		gchar *real_file = NULL;
-		gboolean file_is_tmp = FALSE;
 		fileinfo = (MsgFileInfo *)cur->data;
 
 		statusbar_progress_all(curnum, total, 1);
@@ -1076,28 +1073,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				iflags |= IMAP_FLAG_SEEN;
 		}
 		
-		if (fileinfo->flags) {
-			if ((MSG_IS_QUEUED(*fileinfo->flags) 
-			     || MSG_IS_DRAFT(*fileinfo->flags))
-			&& !folder_has_parent_of_type(dest, F_QUEUE)
-			&& !folder_has_parent_of_type(dest, F_DRAFT)) {
-				real_file = get_tmp_file();
-				file_is_tmp = TRUE;
-				if (procmsg_remove_special_headers(
-						fileinfo->file, 
-						real_file) !=0) {
-					g_free(real_file);
-					g_free(destdir);
-					unlock_session();
-					return -1;
-				}
-			}  else if (!(MSG_IS_QUEUED(*fileinfo->flags) 
-				      || MSG_IS_DRAFT(*fileinfo->flags))
-				    && (folder_has_parent_of_type(dest, F_QUEUE)
-				    || folder_has_parent_of_type(dest, F_DRAFT))) {
-				return -1;
-			} 
-		}
 		if (real_file == NULL)
 			real_file = g_strdup(fileinfo->file);
 		
@@ -1112,8 +1087,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 		if (ok != IMAP_SUCCESS) {
 			g_warning("can't append message %s\n", real_file);
-			if (file_is_tmp)
-				g_unlink(real_file);
 			g_free(real_file);
 			g_free(destdir);
 			unlock_session();
@@ -1149,8 +1122,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		}
 		if (last_uid < new_uid)
 			last_uid = new_uid;
-		if (file_is_tmp)
-			g_unlink(real_file);
 
 		g_free(real_file);
 	}
@@ -1195,6 +1166,27 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		unlock_session();
 		return -1;
 	}
+
+	if (src->folder != dest->folder) {
+		GSList *infolist = NULL, *cur;
+		int res = -1;
+		for (cur = msglist; cur; cur = cur->next) {
+			msginfo = (MsgInfo *)cur->data;
+			MsgFileInfo *fileinfo = g_new0(MsgFileInfo, 1);
+			fileinfo->file = procmsg_get_message_file(msginfo);
+			fileinfo->flags = &(msginfo->flags);
+			infolist = g_slist_prepend(infolist, fileinfo);
+		}
+		infolist = g_slist_reverse(infolist);
+		res = folder_item_add_msgs(dest, infolist, FALSE);
+		for (cur = infolist; cur; cur = cur->next) {
+			MsgFileInfo *info = (MsgFileInfo *)cur->data;
+			g_free(info->file);
+			g_free(info);
+		}
+		g_slist_free(infolist);
+		return res;
+	} 
 
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 			 NULL, NULL, NULL, NULL, FALSE);
@@ -1278,7 +1270,6 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 		    MsgInfoList *msglist, GRelation *relation)
 {
 	MsgInfo *msginfo;
-	GSList *file_list;
 	gint ret;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -1288,30 +1279,7 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
-	/* if from/to are the same "type" (with or without extra headers),
-	 * copy them via imap */
-	if (folder == msginfo->folder->folder &&
-	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT) &&
-	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
-	    !folder_has_parent_of_type(dest, F_DRAFT) &&
-	    !folder_has_parent_of_type(dest, F_QUEUE)) {
-		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
-		return ret;
-	} else if (folder == msginfo->folder->folder &&
-	    (folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
-	     folder_has_parent_of_type(msginfo->folder, F_QUEUE)) && 
-	    (folder_has_parent_of_type(dest, F_DRAFT) ||
-	     folder_has_parent_of_type(dest, F_QUEUE))) {
-		ret = imap_do_copy_msgs(folder, dest, msglist, relation);
-		return ret;
-	}
-	/* else reupload them */
-	file_list = procmsg_get_message_file_list(msglist);
-	g_return_val_if_fail(file_list != NULL, -1);
-
-	ret = imap_add_msgs(folder, dest, file_list, relation);
-	procmsg_message_file_list_free(file_list);
-
+	ret = imap_do_copy_msgs(folder, dest, msglist, relation);
 	return ret;
 }
 

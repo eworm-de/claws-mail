@@ -287,7 +287,8 @@ void	procmsg_empty_trash		(FolderItem	*trash);
 void	procmsg_empty_all_trash		(void);
 
 gint	procmsg_send_queue		(FolderItem	*queue,
-					 gboolean	 save_msgs);
+					 gboolean	 save_msgs,
+					 gchar		**errstr);
 gboolean procmsg_queue_is_empty	(FolderItem *queue);
 gint	procmsg_save_to_outbox		(FolderItem	*outbox,
 					 const gchar	*file,
@@ -304,7 +305,8 @@ guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
 
 gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
 					 gconstpointer	 b);
-gint procmsg_send_message_queue		(const gchar *file);
+gint procmsg_send_message_queue		(const gchar *file,
+					 gchar **errstr);
 
 void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,

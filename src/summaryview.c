@@ -2892,7 +2892,7 @@ void summary_reedit(SummaryView *summaryview)
 					      summaryview->selected);
 	if (!msginfo) return;
 
-	compose_reedit(msginfo);
+	compose_reedit(msginfo, FALSE);
 }
 
 gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
