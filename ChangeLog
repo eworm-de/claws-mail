@@ -1,3 +1,8 @@
+2006-06-12 [colin]	2.2.3cvs13
+
+	* src/mbox.c
+		Add missing header
+
 2006-06-11 [colin]	2.2.3cvs12
 
 	* src/msgcache.c

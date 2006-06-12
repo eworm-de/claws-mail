@@ -32,6 +32,7 @@
 #include <sys/file.h>
 #include <ctype.h>
 #include <time.h>
+#include <errno.h>
 
 #include "mbox.h"
 #include "procmsg.h"
