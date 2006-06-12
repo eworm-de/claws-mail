@@ -1,3 +1,9 @@
+2006-06-12 [colin]	2.3.0cvs6
+
+	* src/folderview.c
+		Fix double-ask of "Do you want to mark all
+		as read"
+
 2006-06-12 [colin]	2.3.0cvs5
 
 	* src/compose.c
