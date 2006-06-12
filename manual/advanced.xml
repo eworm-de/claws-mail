@@ -203,6 +203,9 @@
 	    <varlistentry><term>hover_timeout</term>
 		    <listitem><para>time in milliseconds that will cause a folder tree to expand during drag 'n' drop when the mouse cursor is held over it</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>live_dangerously</term>
+			<listitem><para>Don't ask for confirmation before definitive deletion of emails</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
 			<listitem><para>colours used in log window</para></listitem>
 	    </varlistentry>

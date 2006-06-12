@@ -95,6 +95,8 @@ static PrefParam param_os_specific[] = {
 	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
+        {"print_font_gtk2",     "Monospace 9"
+         &prefs_common.printfont
 	{"small_font_gtk2",	"Sans 9",
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
@@ -280,6 +282,8 @@ static PrefParam param[] = {
 	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
+        {"print_font_gtk2",     "Monospace 9",
+         &SPECIFIC_PREFS.printfont,             P_STRING, NULL, NULL, NULL},
 	{"small_font_gtk2",	"Sans 9",
 	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
@@ -563,6 +567,9 @@ static PrefParam param[] = {
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
 	 NULL, NULL, NULL},
 
+	{"use_different_print_font", "FALSE", &prefs_common.use_different_print_font, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{"attach_desc", "TRUE", &prefs_common.attach_desc, P_BOOL,
 	 NULL, NULL, NULL},
 	{"attach_save_directory", NULL,
@@ -767,6 +774,8 @@ static PrefParam param[] = {
 	{"compose_no_markup", "FALSE", &prefs_common.compose_no_markup, P_BOOL,
 	 NULL, NULL, NULL},
 	{"skip_ssl_cert_check", "FALSE", &prefs_common.skip_ssl_cert_check, P_BOOL,
+	 NULL, NULL, NULL},
+	{"live_dangerously", "FALSE", &prefs_common.live_dangerously, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}

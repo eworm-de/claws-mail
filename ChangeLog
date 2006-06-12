@@ -1,3 +1,17 @@
+2006-06-12 [colin]	2.3.0cvs4
+
+	* src/summaryview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gedit-print.c
+		Allow to define a specific print font - patch
+		by Bernhard Walle <bernhard.walle@gmx.de>
+	* src/prefs_fonts.c
+	* manual/advanced.xml
+	* manual/fr/advanced.xml
+		Add a hidden pref to allow deletion without
+		confirmation
+
 2006-06-12 [wwp]	2.3.0cvs3
 
 	* .cvsignore

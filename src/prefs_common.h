@@ -149,6 +149,7 @@ struct _PrefsCommon
 	/* new fonts */
 	gchar *widgetfont;
 	gchar *textfont;
+        gchar *printfont;
 	gchar *normalfont;
 	gchar *smallfont;
 	gchar *titlefont;
@@ -264,6 +265,7 @@ struct _PrefsCommon
 	gboolean scroll_halfpage;
 
 	gboolean show_other_header;
+	gboolean use_different_print_font;
 	GSList *disphdr_list;
 
 	gboolean attach_desc;
@@ -372,6 +374,7 @@ struct _PrefsCommon
 	gint warn_dnd;
 	gint broken_are_utf8;
 	gint skip_ssl_cert_check;
+	gint live_dangerously;
 };
 
 extern PrefsCommon prefs_common;

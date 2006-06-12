@@ -457,9 +457,20 @@ gedit_print_job_info_new (GtkTextView* view)
 	gtk_source_print_job_set_print_footer (pjob, TRUE);
 
 	pango_context = gtk_widget_get_pango_context (GTK_WIDGET (view));
-	font_desc = pango_context_get_font_description (pango_context);
+	if (prefs_common.use_different_print_font) 
+	{
+		font_desc = pango_font_description_from_string (prefs_common.printfont);
+	}
+	else
+	{
+		font_desc = pango_context_get_font_description (pango_context);
+	}
 
 	gtk_source_print_job_set_font_desc (pjob, font_desc);
+	if (prefs_common.use_different_print_font) 
+	{
+        	pango_font_description_free (font_desc);
+	}
 
 	pji = g_new0 (GeditPrintJobInfo, 1);
 

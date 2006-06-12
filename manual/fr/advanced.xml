@@ -205,6 +205,9 @@
 	    <varlistentry><term>hover_timeout</term>
 		    <listitem><para>Temps en millisecondes pendant lequel la souris doit rester sur l'arbre des dossiers afin qu'ils se déplient durant un glisser-déposer.</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>live_dangerously</term>
+			<listitem><para>Ne pas demander confirmation avant suppression définitive de messages</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
 			<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
 	    </varlistentry>
