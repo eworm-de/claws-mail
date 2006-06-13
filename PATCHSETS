@@ -1583,3 +1583,4 @@
 ( cvs diff -u -r 1.207.2.102 -r 1.207.2.103 src/folderview.c;  ) > 2.3.0cvs6.patchset
 ( cvs diff -u -r 1.213.2.98 -r 1.213.2.99 src/folder.c;  cvs diff -u -r 1.52.2.21 -r 1.52.2.22 src/prefs_folder_item.c;  ) > 2.3.0cvs7.patchset
 ( cvs diff -u -r 1.8.2.3 -r 1.8.2.4 src/quote_fmt_lex.l;  ) > 2.3.0cvs8.patchset
+( cvs diff -u -r 1.94.2.86 -r 1.94.2.87 src/messageview.c;  ) > 2.3.0cvs9.patchset

@@ -1,3 +1,8 @@
+2006-06-13 [colin]	2.3.0cvs9
+
+	* src/messageview.c
+		Fix sending of return receipt with the new queue folders
+
 2006-06-13 [wwp]	2.3.0cvs8
 
 	* src/quote_fmt_lex.l

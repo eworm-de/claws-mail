@@ -654,7 +654,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		g_free(path);
 	}		
 
-	fprintf(fp, "\n");
+	fprintf(fp, "X-Sylpheed-End-Special-Headers: 1\n");
 	
 	/* Date */
 	get_rfc822_date(buf, sizeof(buf));
