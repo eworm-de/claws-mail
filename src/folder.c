@@ -209,11 +209,6 @@ void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
 	Folder *folder = NULL;
 	FolderUpdateData hookdata;
 
-	if ((parent = folder_item_parent(item)) != NULL 
-	&& folder_item_parent(parent) != NULL) {
-		g_warning("can't change subfolder's type");
-		return;
-	}
 	folder = item->folder;
 	/* unset previous root of newtype */
 	switch(newtype) {

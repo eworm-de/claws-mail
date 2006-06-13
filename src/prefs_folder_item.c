@@ -152,7 +152,6 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *dummy_chkbtn;
 	GtkWidget *menuitem;
 	SpecialFolderItemType type;
-	gboolean type_apply_to_sub = TRUE;
 	
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
@@ -191,17 +190,17 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_type = gtk_option_menu_new ();
 	gtk_widget_show (folder_type);
 
-	parent = item;
 	type = F_NORMAL;
-	while (parent && (type = parent->stype) == F_NORMAL) {
-		parent = folder_item_parent(parent);
-	}
-
-	if (type == F_INBOX && (parent = folder_item_parent(item)) != NULL
-	&&  folder_item_parent(parent) != NULL) {
-		type = F_NORMAL;
-		type_apply_to_sub = FALSE;
-	}
+	if (item->stype == F_INBOX)
+		type = F_INBOX;
+	else if (folder_has_parent_of_type(item, F_OUTBOX))
+		type = F_OUTBOX;
+	else if (folder_has_parent_of_type(item, F_DRAFT))
+		type = F_DRAFT;
+	else if (folder_has_parent_of_type(item, F_QUEUE))
+		type = F_QUEUE;
+	else if (folder_has_parent_of_type(item, F_TRASH))
+		type = F_TRASH;
 
 	folder_type_menu = gtk_menu_new ();
 
@@ -216,16 +215,14 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_option_menu_set_history(GTK_OPTION_MENU(folder_type), type);
 
 	dummy_chkbtn = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_chkbtn), type_apply_to_sub);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_chkbtn), type != F_INBOX);
 	gtk_widget_set_sensitive(dummy_chkbtn, FALSE);
 
-	if (((parent = folder_item_parent(item)) != NULL
-	&&  folder_item_parent(parent) == NULL)
-	&&  item->stype == F_NORMAL) {
+	if (type == item->stype && type == F_NORMAL)
 		gtk_widget_set_sensitive(folder_type, TRUE);
-	} else {
+	else
 		gtk_widget_set_sensitive(folder_type, FALSE);
-	}
+
 	label = gtk_label_new(_("Folder type:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 
