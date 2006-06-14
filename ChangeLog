@@ -1,3 +1,11 @@
+2006-06-14 [colin]	2.3.0cvs12
+
+	* manual/dtd/manual.xsl
+	* manual/sylpheed-claws-manual.xml
+	* manual/fr/sylpheed-claws-manual.xml
+	* manual/pl/sylpheed-claws-manual.xml
+		Insert pagebreaks between sections
+
 2006-06-14 [paul]	2.3.0cvs11
 
 	* configure.ac
