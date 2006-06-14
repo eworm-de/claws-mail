@@ -1,3 +1,8 @@
+2006-06-14 [paul]	2.3.0cvs11
+
+	* configure.ac
+		better fix than 2.3.0cvs10
+
 2006-06-14 [paul]	2.3.0cvs10
 
 	* configure.ac
