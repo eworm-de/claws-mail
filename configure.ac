@@ -11,7 +11,7 @@ MINOR_VERSION=3
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=9
+EXTRA_VERSION=10
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -195,14 +195,10 @@ AC_ARG_ENABLE(manual,
 AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
+if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", PACKAGE_DATA_DIR)
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", PACKAGE_DATA_DIR)
-  fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", PACKAGE_DATA_DIR)
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", PACKAGE_DATA_DIR)
 fi
 
 AC_CHECK_LIB(xpg4, setlocale)

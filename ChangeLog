@@ -1,3 +1,9 @@
+2006-06-14 [paul]	2.3.0cvs10
+
+	* configure.ac
+		fix setting of PACKAGE_DATA_DIR with newer autoconf
+		(backwards compatible)
+
 2006-06-13 [colin]	2.3.0cvs9
 
 	* src/messageview.c
