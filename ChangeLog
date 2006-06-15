@@ -1,3 +1,9 @@
+2006-06-15 [colin]	2.3.0cvs14
+
+	* src/folder.c
+		Better fix (avoid losing the folder if scan_tree 
+		fails)
+
 2006-06-15 [cleroy]	2.3.0cvs13
 
 	* src/folder.c

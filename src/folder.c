@@ -205,7 +205,6 @@ static void reset_parent_type(FolderItem *item, gpointer data) {
 
 void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
 {
-	FolderItem *parent;
 	Folder *folder = NULL;
 	FolderUpdateData hookdata;
 
@@ -832,17 +831,22 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 {
 	GHashTable *pptable;
 	FolderUpdateData hookdata;
-	
+	Folder *old_folder = folder;
+
 	if (!folder->klass->scan_tree)
 		return;
 	
 	pptable = folder_persist_prefs_new(folder);
 
 	if (rebuild)
-		folder_tree_destroy(folder);
+		folder_remove(folder);
 
-	if (folder->klass->scan_tree(folder) < 0)
+	if (folder->klass->scan_tree(folder) < 0) {
+		if (rebuild)
+			folder_add(old_folder);
 		return;
+	} else if (rebuild)
+		folder_add(folder);
 
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED;
