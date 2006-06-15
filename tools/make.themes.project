@@ -1,0 +1,256 @@
+#!/bin/bash
+#
+# Generate the source directory for sylpheed-claws-themes package
+# from the theme tarballs in http://sylpheed-claws.net/themes.php
+#
+# Copyright (c) 2006 Ricardo Mones <ricardo@mones.org>
+#                    Paul Mangan <claws@thewildbeast.co.uk>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# 
+
+function printHelp()
+{
+  echo "Syntax: ";
+  echo "  $0 version {--clean[-all]|--download|--autotoolize|--all}"
+}
+
+test x$1 = x && echo "Error: version number not given" && printHelp && exit 1;
+
+VERS=$1
+shift;
+SITE=http://sylpheed-claws.net
+NAME=sylpheed-claws-themes
+NOTES=RELEASE_NOTES
+DDIR=$NAME-$VERS
+PAGE=themes.php
+LIST=themes.list
+WLOG=themes.wget.log
+
+function getListFromPage()
+{
+  test -f ${PAGE} && rm -f ${PAGE};
+  wget -q -a ${WLOG} ${SITE}/${PAGE}
+  test ! -f ${PAGE} && echo "Error: couldn't get ${PAGE}." && exit 1;
+
+  grep 'download.php?file=' ${PAGE} \
+       | cut -f2 -d\" \
+       > ${LIST}
+}
+
+function makeRoomForThemes()
+{
+  test -d ${DDIR} \
+    && rm -rf ${DDIR} \
+    && echo "Removing previous destination";
+  mkdir ${DDIR};
+}
+
+function downloadThemes()
+{
+  for theme in `cat ${LIST} `;
+  do tarf=`echo $theme | cut -f2 -d/ `;
+     echo -n "Downloading... ";
+     wget -q -a ${WLOG} -P ${DDIR} ${SITE}/$theme
+     test ! -f ${DDIR}/$tarf && echo "Error: couldn't get $tarf" && exit 1;
+     pushd ${DDIR} > /dev/null
+     tarops="";
+     test ${tarf} = ${tarf/.tar.bz2/} && tarops="xzf" || tarops="xjf";
+     echo -n "unpacking... " \
+          && tar $tarops $tarf \
+	  && echo -n "deleting tarball... " \
+          && rm -f $tarf \
+	  && echo "Ok ($tarf)";
+     popd > /dev/null
+  done;
+}
+
+function removeWhitespaces()
+{
+  cd ${DDIR};
+  for dir in *;
+  do test -d "$dir" \
+       && test ! "${dir}" = "${dir/ /_}" \
+       && mv "${dir}" "${dir// /_}"; 
+  done;
+  cd "..";
+}
+
+function createProject()
+{
+  touch ${DDIR}/${NAME} ${DDIR}/${NOTES}
+}
+
+function createThemeMakefileAm()
+{
+  echo "Making $1";
+  MA="/tmp/tmp.makefile.am";
+  cd "$1"
+  dir="$1";
+  echo 'themedir = $(prefix)/share/sylpheed-claws/themes/'${dir} > $MA
+  echo "" >> $MA
+  echo -n 'dist_theme_DATA =' >> $MA 
+  test -f .sylpheed_themeinfo \
+    && echo " .sylpheed_themeinfo \\" >> $MA;
+  count=`ls *.xpm | wc -l `;
+  i=1;
+  for px in `ls -1 *.xpm `; 
+  do if [ $i -lt $count ]; 
+     then echo " $px \\" >> $MA; 
+     else echo " $px" >> $MA; 
+     fi; 
+     i=$((1 + $i)); 
+  done;
+  echo "" >> $MA;
+  count=`ls * | grep -v '\.xpm$' | wc -l `;
+  if [ $count -gt 0 ];
+  then echo -n 'EXTRA_DIST =' >> $MA;
+       i=1;
+       for npx in `ls -1 * | grep -v '\.xpm$' `;
+       do if [ $i -lt $count ];
+          then echo " $npx \\" >> $MA;
+          else echo " $npx" >> $MA;
+          fi;
+          i=$((1 + $i));
+       done;
+       echo "" >> $MA;
+  fi;
+  mv $MA Makefile.am
+  cd ".."
+}
+
+function createAutogenSh()
+{
+  cat<<EOA > ${DDIR}/autogen.sh
+#!/bin/sh
+
+aclocal \
+  && automake --add-missing --foreign --copy \
+  && autoconf \
+  && ./configure --enable-maintainer-mode $@
+EOA
+  chmod +x ${DDIR}/autogen.sh
+  echo "Created autogen.sh"
+}
+
+function createMakefileAm()
+{
+  cd ${DDIR}
+  MA=Makefile.am
+  echo "EXTRA_DIST = INSTALL "${NOTES} ${NAME} > $MA
+  echo "" >> $MA
+  echo -n "SUBDIRS =" >> $MA
+  for dir in *;
+  do test -d "$dir" && echo -n " ${dir}" >> $MA;
+  done;
+  echo "" >> $MA
+  echo "" >> $MA
+  echo "BZIP2_ENV =" >> $MA
+  echo "" >> $MA
+  echo "release: distdir" >> $MA
+  echo "	-chmod -R a+r \$(distdir)" >> $MA
+  echo "	GZIP=\$(GZIP_ENV) \$(AMTAR)\$(TAR) chozf \$(distdir).tar.gz \$(distdir)" >> $MA
+  echo "	BZIP2=\$(BZIP2_ENV) \$(AMTAR)\$(TAR) --bzip2 -chof \$(distdir).tar.bz2 \$(distdir)" >> $MA
+  echo "	-rm -rf \$(distdir)" >> $MA
+  echo "" >> $MA
+  cd ".."
+  echo "Created Makefile.am"
+}
+
+function createConfigureAc()
+{
+  cd ${DDIR}
+  CA=configure.ac
+  echo 'AC_PREREQ(2.59d)' > $CA
+  echo 'AC_INIT('${NAME}')' >> $CA
+  echo 'AM_INIT_AUTOMAKE('${NAME}', '${VERS}')' >> $CA
+  cat >> $CA <<EOC
+
+AM_MAINTAINER_MODE
+
+dnl Checks for programs.
+AC_PROG_INSTALL
+
+AC_OUTPUT([
+Makefile
+EOC
+  # the list of Makefiles
+  for dir in *;
+  do test -d "$dir" \
+       && echo "${dir}/Makefile" >> $CA \
+       && createThemeMakefileAm "$dir";
+  done;
+  echo "])" >> $CA
+  cd "..";
+  echo "Created $CA";
+}
+
+function cleanMine()
+{
+  find ${DDIR} -name Makefile.am -delete
+  rm -f \
+     ${DDIR}/autogen.sh \
+     ${DDIR}/configure.ac \
+     ${DDIR}/${NAME}
+}
+
+function cleanGenerated()
+{
+  find ${DDIR} -name Makefile.in -delete
+  find ${DDIR} -name Makefile -delete
+  rm -rf ${DDIR}/autom4te.cache
+  rm -f \
+     ${DDIR}/aclocal.m4 \
+     ${DDIR}/install-sh \
+     ${DDIR}/missing \
+     ${DDIR}/config.status \
+     ${DDIR}/configure \
+     ${DDIR}/config.log
+}
+
+case "$1" in
+  --clean)
+      cleanMine;      
+      echo "Cleaned.";
+    ;;
+  --clean-all)
+      cleanMine;
+      cleanGenerated;
+      echo "Cleaned all.";
+    ;;
+  --download)
+      getListFromPage;
+      makeRoomForThemes;
+      downloadThemes;
+      echo "Downloaded.";
+    ;;
+  --autotoolize)
+      removeWhitespaces;
+      createProject;
+      createAutogenSh;
+      createMakefileAm;
+      createConfigureAc;
+      echo "Autotoolized.";
+    ;;
+  --all)
+    $0 $VERS --download
+    $0 $VERS --autotoolize
+    echo "Done.";
+    ;;
+  *)
+      printHelp;
+    ;;
+esac
+

@@ -1,3 +1,8 @@
+2006-06-15 [mones]	2.3.0cvs15
+
+	* tools/make.themes.project
+		creates the themes project from the web page
+
 2006-06-15 [colin]	2.3.0cvs14
 
 	* src/folder.c
