@@ -24,6 +24,33 @@
 #include "procmime.h"
 
 static GSList *systems = NULL;
+static gchar *privacy_last_error = NULL;
+
+void privacy_set_error(const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFSIZ];
+
+	va_start(args, format);
+	g_vsnprintf(buf, BUFSIZ, format, args);
+	va_end(args);
+	g_free(privacy_last_error);
+	privacy_last_error = g_strdup(buf);
+}
+
+static gchar tmp_privacy_error[BUFSIZ];
+
+const gchar *privacy_get_error (void)
+{
+	if (privacy_last_error) {
+		strncpy2(tmp_privacy_error, privacy_last_error, BUFSIZ-1);
+		g_free(privacy_last_error);
+		privacy_last_error = NULL;
+		return tmp_privacy_error;
+	} else {
+		return _("Unknown error");
+	}
+}
 
 PrivacySystem *privacy_data_get_system(PrivacyData *data)
 {
@@ -365,7 +392,10 @@ gboolean privacy_encrypt(const gchar *id, MimeInfo *mimeinfo, const gchar *encda
 
 	g_return_val_if_fail(id != NULL, FALSE);
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
-	g_return_val_if_fail(encdata != NULL, FALSE);
+	if (encdata == NULL) {
+		privacy_set_error(_("No recipient keys defined."));
+		return FALSE;
+	}
 
 	system = privacy_get_system(id);
 	if (system == NULL)

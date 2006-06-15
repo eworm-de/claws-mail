@@ -1525,7 +1525,8 @@ send_mail:
 			g_free(encrypt_data);
 			if (errstr) {
 				if (*errstr) g_free(*errstr);
-				*errstr = g_strdup_printf(_("Couldn't encrypt the email."));
+				*errstr = g_strdup_printf(_("Couldn't encrypt the email: %s"),
+						privacy_get_error());
 			}
 			return -1;
 		}

@@ -4055,7 +4055,7 @@ gint compose_send(Compose *compose)
 					   "Charset conversion failed."));
 		} else if (val == -3) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
-					   "Signature failed."));
+					   "Signature failed: %s"), privacy_get_error());
 		} else if (val == -2 && errno != 0) {
 			alertpanel_error(_("Could not queue message for sending:\n\n%s."), strerror(errno));
 		} else {
@@ -7520,7 +7520,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 		alertpanel_error(_("Could not queue message:\n\n%s."), strerror(errno));
 	} else if (val == -3) {
 		alertpanel_error(_("Could not queue message for sending:\n\n"
-				   "Signature failed."));
+				   "Signature failed: %s"), privacy_get_error());
 	} else if (val == -4) {
 		alertpanel_error(_("Could not queue message for sending:\n\n"
 				   "Charset conversion failed."));

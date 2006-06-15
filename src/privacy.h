@@ -65,6 +65,9 @@ gboolean privacy_encrypt			(const gchar  *system,
 						 MimeInfo     *mimeinfo,
 						 const gchar  *encdata);
 
+void privacy_set_error				(const gchar *format, ...);
+const gchar *privacy_get_error			(void);
+
 struct _PrivacySystem {
 	/** Identifier for the PrivacySystem that can use in config files */
 	gchar		 *id;

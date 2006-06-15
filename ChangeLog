@@ -1,3 +1,24 @@
+2006-06-15 [colin]	2.3.0cvs16
+
+	* src/folderview.c
+		Add "Send queue" in the folder's contextual
+		menu
+	* src/compose.c
+	* src/messageview.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/procmsg.c
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Better error reporting
+	* src/mbox.c
+		Probably fix bug #971 (2.2.3 cannot read mail 
+		from local mbox)
+
+
 2006-06-15 [mones]	2.3.0cvs15
 
 	* tools/make.themes.project

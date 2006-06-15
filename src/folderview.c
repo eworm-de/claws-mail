@@ -227,6 +227,10 @@ static void folderview_empty_trash_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void folderview_send_queue_cb	(FolderView	*folderview,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void folderview_search_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -285,8 +289,13 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 };
 
 static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
-	{N_("/------"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/------trashsep"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Empty _trash..."),	NULL, folderview_empty_trash_cb, 0, NULL},
+};
+
+static GtkItemFactoryEntry folder_view_queue_popup_entries[] = {
+	{N_("/------queuesep"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Send _queue..."),	NULL, folderview_send_queue_cb, 0, NULL},
 };
 
 
@@ -1503,8 +1512,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			style = bold_tgtfold_style;
 		}
 	} else if (use_color) {
-		GdkColor gdk_color;
-
 		style = normal_color_style;
 		gtk_ctree_node_set_foreground(ctree, node,
 					      &folderview->color_new);
@@ -1723,7 +1730,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	FolderViewPopup *fpopup;
 	GtkItemFactory *fpopup_factory;
 	GtkWidget *popup;
-	FolderItem *special_trash = NULL;
+	FolderItem *special_trash = NULL, *special_queue = NULL;
 	PrefsAccount *ac;
 
 	if (!event) return FALSE;
@@ -1789,9 +1796,11 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (fpopup->set_sensitivity != NULL)
 		fpopup->set_sensitivity(fpopup_factory, item);
 
-	if (NULL != (ac = account_find_from_item(item)))
+	if (NULL != (ac = account_find_from_item(item))) {
 		special_trash = account_get_special_folder(ac, F_TRASH);
-
+		special_queue = account_get_special_folder(ac, F_QUEUE);
+	}
+	
 	if ((item == folder->trash || item == special_trash
 	     || folder_has_parent_of_type(item, F_TRASH)) &&
 	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
@@ -1801,6 +1810,17 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	        && !folder_has_parent_of_type(item, F_TRASH)) {
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
 		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
+	}
+	
+	if ((item == folder->queue || item == special_queue
+	     || folder_has_parent_of_type(item, F_QUEUE)) &&
+	    gtk_item_factory_get_item(fpopup_factory, "/Send queue...") == NULL) {
+		gtk_item_factory_create_item(fpopup_factory, &folder_view_queue_popup_entries[0], folderview, 1);
+		gtk_item_factory_create_item(fpopup_factory, &folder_view_queue_popup_entries[1], folderview, 1);
+	} else if (item != folder->queue && (special_queue == NULL || item != special_queue)
+	        && !folder_has_parent_of_type(item, F_QUEUE)) {
+		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_queue_popup_entries[0]);
+		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_queue_popup_entries[1]);
 	}
 	
 #define SET_SENS(name, sens) \
@@ -1815,6 +1835,12 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	    || folder_has_parent_of_type(item, F_TRASH)) {
 		GSList *msglist = folder_item_get_msg_list(item);
 		SET_SENS("/Empty trash...", msglist != NULL);
+		procmsg_msg_list_free(msglist);
+	}
+	if (item == folder->queue || item == special_queue
+	    || folder_has_parent_of_type(item, F_QUEUE)) {
+		GSList *msglist = folder_item_get_msg_list(item);
+		SET_SENS("/Send queue...", msglist != NULL);
 		procmsg_msg_list_free(msglist);
 	}
 #undef SET_SENS
@@ -2157,6 +2183,64 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	procmsg_msg_list_free(mlist);
 
 	folder_item_remove_all_msg(item);
+}
+
+static void folderview_send_queue_cb(FolderView *folderview, guint action,
+				      GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+	FolderItem *special_queue = NULL;
+	PrefsAccount *ac;
+	gchar *errstr = NULL;
+
+	if (!folderview->selected) return;
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	if (NULL != (ac = account_find_from_item(item)))
+		special_queue = account_get_special_folder(ac, F_QUEUE);
+
+	if (item != item->folder->queue && item != special_queue
+	&&  !folder_has_parent_of_type(item, F_QUEUE)) return;
+	
+	if (procmsg_queue_is_empty(item))
+		return;
+
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       GTK_STOCK_NO, GTK_STOCK_YES,
+			       NULL) != G_ALERTALTERNATE)
+		return;
+
+	/* ask for confirmation before sending queued messages only
+	   in online mode and if there is at least one message queued
+	   in any of the folder queue
+	*/
+	if (prefs_common.confirm_send_queued_messages) {
+		if (!prefs_common.work_offline) {
+			if (alertpanel(_("Send queued messages"), 
+			    	   _("Send all queued messages?"),
+			    	   GTK_STOCK_CANCEL, _("_Send"),
+				   NULL) != G_ALERTALTERNATE)
+				return;
+		}
+	}
+
+	if (procmsg_send_queue(item, prefs_common.savemsg, &errstr) < 0) {
+		if (!errstr)
+			alertpanel_error_log(_("Some errors occurred while "
+					   "sending queued messages."));
+		else {
+			gchar *tmp = g_strdup_printf(_("Some errors occurred "
+					"while sending queued messages:\n%s"), errstr);
+			g_free(errstr);
+			alertpanel_error_log(tmp);
+			g_free(tmp);
+		}
+	}
 }
 
 static void folderview_search_cb(FolderView *folderview, guint action,

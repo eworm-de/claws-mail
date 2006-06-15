@@ -788,8 +788,11 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
 		debug_print("decrypting message part\n");
-		if (privacy_mimeinfo_decrypt(encinfo) < 0)
+		if (privacy_mimeinfo_decrypt(encinfo) < 0) {
+			alertpanel_error(_("Couldn't decrypt: %s"),
+				privacy_get_error());
 			break;
+		}
 	}
 	
 	messageview->updating = TRUE;
