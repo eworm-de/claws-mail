@@ -841,7 +841,8 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 	if (rebuild)
 		folder_tree_destroy(folder);
 
-	folder->klass->scan_tree(folder);
+	if (folder->klass->scan_tree(folder) < 0)
+		return;
 
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED;
@@ -3460,6 +3461,9 @@ static GNode *folder_get_xml_node(Folder *folder)
 	xmlnode = xml_node_new(tag, NULL);
 
 	node = g_node_new(xmlnode);
+	
+	g_return_val_if_fail (folder->node != NULL, NULL);
+	
 	if (folder->node->children) {
 		GNode *cur;
 

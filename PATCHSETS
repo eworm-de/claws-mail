@@ -1587,3 +1587,4 @@
 ( cvs diff -u -r 1.654.2.1630 -r 1.654.2.1631 configure.ac;  ) > 2.3.0cvs10.patchset
 ( cvs diff -u -r 1.654.2.1631 -r 1.654.2.1632 configure.ac;  ) > 2.3.0cvs11.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/sylpheed-claws-manual.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/dtd/manual.xsl;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/sylpheed-claws-manual.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/pl/sylpheed-claws-manual.xml;  ) > 2.3.0cvs12.patchset
+( cvs diff -u -r 1.213.2.99 -r 1.213.2.100 src/folder.c;  ) > 2.3.0cvs13.patchset

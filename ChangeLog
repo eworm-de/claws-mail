@@ -1,3 +1,9 @@
+2006-06-15 [cleroy]	2.3.0cvs13
+
+	* src/folder.c
+		Probably fix Bug #969 (crash on rebuilding 
+		imap folder)
+
 2006-06-14 [colin]	2.3.0cvs12
 
 	* manual/dtd/manual.xsl
