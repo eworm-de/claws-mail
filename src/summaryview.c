@@ -828,6 +828,17 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	summary_set_column_titles(summaryview);
 }
 
+static gboolean summaryview_quicksearch_recurse(gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	main_window_cursor_wait(summaryview->mainwin);
+	quicksearch_reset_cur_folder_item(summaryview->quicksearch);
+	quicksearch_search_subfolders(summaryview->quicksearch, 
+			      summaryview->folderview,
+			      summaryview->folder_item);
+	main_window_cursor_normal(summaryview->mainwin);
+	return FALSE;
+}
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -1000,17 +1011,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		statusbar_pop_all();
 		
 		hidden_removed = TRUE;
-		if (quicksearch_is_running(summaryview->quicksearch)) {
-			/* only scan subfolders when quicksearch changed,
-			 * not when search is the same and folder changed */
-			main_window_cursor_wait(summaryview->mainwin);
-			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
-			quicksearch_search_subfolders(summaryview->quicksearch, 
-					      summaryview->folderview,
-					      summaryview->folder_item);
-			main_window_cursor_normal(summaryview->mainwin);
-		}
-
 		if (!quicksearch_is_active(summaryview->quicksearch)) {
 			debug_print("search cancelled!\n");
 			gtk_clist_thaw(GTK_CLIST(ctree));
@@ -1048,6 +1048,13 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
+
+	if (quicksearch_is_active(summaryview->quicksearch) &&
+	    quicksearch_is_running(summaryview->quicksearch)) {
+		/* only scan subfolders when quicksearch changed,
+		 * not when search is the same and folder changed */
+		g_timeout_add(100, summaryview_quicksearch_recurse, summaryview);
+	}
 
 	if (is_refresh) {
 		summaryview->displayed =

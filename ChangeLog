@@ -1,3 +1,10 @@
+2006-06-16 [colin]	2.3.0cvs19
+
+	* src/summaryview.c
+		Recursive quicksearch: show message list
+		in current folder, *then* search children
+		in the background.
+
 2006-06-16 [colin]	2.3.0cvs18
 
 	* src/main.c
