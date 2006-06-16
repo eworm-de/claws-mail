@@ -462,7 +462,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
 		gchar *keyid;
-		gpgme_key_t key;
+		gpgme_key_t key, key2;
 		gpgme_error_t err;
 
 		if (config->sign_key == SIGN_KEY_BY_FROM)
@@ -470,34 +470,42 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		else if (config->sign_key == SIGN_KEY_CUSTOM)
 			keyid = config->sign_key_id;
 		else
-			return FALSE;
+			goto bail;
 
 		err = gpgme_op_keylist_start(ctx, keyid, 1);
+		if (!err)
+			err = gpgme_op_keylist_next(ctx, &key);
 		if (err) {
-			g_warning("setup_signers start: %s",
-				gpg_strerror(err));
-			return FALSE;
+			g_warning("setup_signers start: %s", gpgme_strerror(err));
+			privacy_set_error(_("Private key not found (%s)"), gpgme_strerror(err));
+			goto bail;
 		}
-		while (!(err = gpgme_op_keylist_next(ctx, &key))) {
-			gpgme_signers_add(ctx, key);
-			gpgme_key_release(key);
+		
+		err = gpgme_op_keylist_next(ctx, &key2);
+		if (!err) {
+			g_warning("ambiguous specification of private key '%s'\n",
+				keyid);
+			privacy_set_error(_("Private key specification is ambiguous"));
+			goto bail;
 		}
-		if (err && gpg_err_code(err) != GPG_ERR_EOF) {
-			g_warning("setup_signers next: %s",
-				gpg_strerror(err));
-			return FALSE;
-		}
-		err = gpgme_op_keylist_end(ctx);
+		
+		gpgme_op_keylist_end(ctx);
+		err = gpgme_signers_add(ctx, key);
+		gpgme_key_release(key);
+		
 		if (err) {
-			g_warning("setup_signers end: %s",
-				gpg_strerror(err));
-			return FALSE;
+			g_warning("error adding secret key: %s\n", gpgme_strerror(err));
+			privacy_set_error(_("Error setting private key: %s"), gpgme_strerror(err));
+			goto bail;
 		}
 	}
 
 	prefs_gpg_account_free_config(config);
 
 	return TRUE;
+bail:
+	prefs_gpg_account_free_config(config);
+	return FALSE;
 }
 
 void sgpgme_init()

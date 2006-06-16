@@ -515,7 +515,6 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (!sgpgme_setup_signers(ctx, account)) {
 		gpgme_release(ctx);
-		privacy_set_error(_("Couldn't find private key."));
 		return FALSE;
 	}
 

@@ -1,3 +1,14 @@
+2006-06-16 [colin]	2.3.0cvs17
+
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpinline/pgpinline.c
+		Better error reporting in setup_signers.
+		Don't fallback to default key if specified
+		key isn't found.
+		Don't allow signing if more than one secret
+		key matches the one specified in prefs.
+
 2006-06-15 [colin]	2.3.0cvs16
 
 	* src/folderview.c
