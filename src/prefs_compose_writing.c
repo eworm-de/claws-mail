@@ -137,7 +137,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave to Drafts folder every"));
+			   _("Autosave message text to Drafts folder every"));
 
 	spinbtn_autosave_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 10);
 	spinbtn_autosave_length = gtk_spin_button_new

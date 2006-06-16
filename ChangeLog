@@ -1,3 +1,32 @@
+2006-06-16 [colin]	2.3.0cvs18
+
+	* src/main.c
+		Instead of ignoring SIGPIPE, save caches
+		when getting one. Will fix the fact that
+		hot caches are out-of-date when logging 
+		out of Xorg.
+	* src/compose.c
+	* src/prefs_compose_writing.c
+		Only save text (not attachments) when 
+		auto-saving to drafts
+	* src/unmime.c
+		Always replace \n, \r and \t with spaces
+		in headers
+	* manual/dist/html/Makefile.am
+	* manual/dist/pdf/Makefile.am
+	* manual/dist/ps/Makefile.am
+	* manual/dist/txt/Makefile.am
+	* manual/fr/dist/html/Makefile.am
+	* manual/fr/dist/pdf/Makefile.am
+	* manual/fr/dist/ps/Makefile.am
+	* manual/fr/dist/txt/Makefile.am
+	* manual/pl/dist/html/Makefile.am
+	* manual/pl/dist/pdf/Makefile.am
+	* manual/pl/dist/ps/Makefile.am
+	* manual/pl/dist/txt/Makefile.am
+		Fix make clean removing pregenerated manuals
+
+
 2006-06-16 [colin]	2.3.0cvs17
 
 	* src/plugins/pgpcore/sgpgme.c

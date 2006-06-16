@@ -265,7 +265,8 @@ static gboolean compose_check_entries		(Compose	*compose,
 						 gboolean 	check_subject);
 static gint compose_write_to_file		(Compose	*compose,
 						 FILE		*fp,
-						 gint 		 action);
+						 gint 		 action,
+						 gboolean	 attach_parts);
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose,
@@ -4338,7 +4339,7 @@ error:
 	return -1;
 }
 
-static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
+static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gboolean attach_parts)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
@@ -4348,6 +4349,9 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	EncodingType encoding;
 	MimeInfo *mimemsg, *mimetext;
 	gint line;
+
+	if (action == COMPOSE_WRITE_FOR_SEND)
+		attach_parts = TRUE;
 
 	/* create message MimeInfo */
 	mimemsg = procmime_mimeinfo_new();
@@ -4495,7 +4499,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		procmime_encode_content(mimetext, encoding);
 
 	/* append attachment parts */
-	if (compose_use_attach(compose)) {
+	if (compose_use_attach(compose) && attach_parts) {
 		MimeInfo *mimempart;
 		gchar *boundary = NULL;
 		mimempart = procmime_mimeinfo_new();
@@ -4812,7 +4816,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		}
 	} else {
 		gint result = 0;
-		if ((result = compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND)) < 0) {
+		if ((result = compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND, TRUE)) < 0) {
 			lock = FALSE;
 			fclose(fp);
 			g_unlink(tmp);
@@ -7596,7 +7600,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	/* end of headers */
 	fprintf(fp, "X-Sylpheed-End-Special-Headers: 1\n");
 
-	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE) < 0) {
+	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE, action != COMPOSE_AUTO_SAVE) < 0) {
 		fclose(fp);
 		g_unlink(tmp);
 		g_free(tmp);
@@ -7632,7 +7636,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 			procmsg_msginfo_set_flags(newmsginfo, MSG_LOCKED, MSG_DRAFT);
 		else
 			procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
-		if (compose_use_attach(compose))
+		if (compose_use_attach(compose) && action != COMPOSE_AUTO_SAVE)
 			procmsg_msginfo_set_flags(newmsginfo, 0,
 						  MSG_HAS_ATTACHMENT);
 
