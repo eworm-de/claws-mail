@@ -134,8 +134,10 @@ static gboolean mh_scan_required	(Folder		*folder,
 					 FolderItem	*item);
 static int mh_item_close		(Folder		*folder,
 					 FolderItem	*item);
+#if 0
 static gint mh_get_flags		(Folder *folder, FolderItem *item,
                            		 MsgInfoList *msginfo_list, GRelation *msgflags);
+#endif
 static void mh_write_sequences		(FolderItem 	*item, gboolean remove_unseen);
 
 static FolderClass mh_class;
@@ -1183,6 +1185,7 @@ static gchar *get_unseen_seq_name(void)
 	return seq_name;	
 }
 
+#if 0
 static gint mh_get_flags(Folder *folder, FolderItem *item,
                            MsgInfoList *msginfo_list, GRelation *msgflags)
 {
@@ -1278,6 +1281,7 @@ next_token:
 */
 	return 0;
 }
+#endif
 
 static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 {
