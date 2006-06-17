@@ -18,5 +18,5 @@ sylpheed-claws-manual.txt: \
 	../../sylpheed-claws-manual.xml 
 	-docbook2txt -o . ../../sylpheed-claws-manual.xml
 	
-clean:
+maintainer-clean:
 	-rm sylpheed-claws-manual.txt

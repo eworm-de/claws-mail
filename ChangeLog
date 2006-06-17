@@ -1,3 +1,24 @@
+2006-06-17 [colin]	2.3.0cvs6-stable
+
+	* src/unmime.c
+		From 2.3.0cvs18
+		Always replace \n, \r and \t with spaces
+		in headers
+	* manual/dist/html/Makefile.am
+	* manual/dist/pdf/Makefile.am
+	* manual/dist/ps/Makefile.am
+	* manual/dist/txt/Makefile.am
+	* manual/fr/dist/html/Makefile.am
+	* manual/fr/dist/pdf/Makefile.am
+	* manual/fr/dist/ps/Makefile.am
+	* manual/fr/dist/txt/Makefile.am
+	* manual/pl/dist/html/Makefile.am
+	* manual/pl/dist/pdf/Makefile.am
+	* manual/pl/dist/ps/Makefile.am
+	* manual/pl/dist/txt/Makefile.am
+		From 2.3.0.cvs18
+		Fix make clean removing pregenerated manuals
+
 2006-06-17 [colin]	2.3.0cvs5-stable
 
 	* src/mbox.c

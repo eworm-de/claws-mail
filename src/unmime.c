@@ -132,6 +132,14 @@ gchar *unmime_header(const gchar *encoded_str)
 	out_str = outbuf->str;
 	out_len = outbuf->len;
 	g_string_free(outbuf, FALSE);
+	if (out_str) {
+		while (strchr(out_str, '\n'))
+			*strchr(out_str, '\n') = ' ';
+		while (strchr(out_str, '\r'))
+			*strchr(out_str, '\r') = ' ';
+		while (strchr(out_str, '\t'))
+			*strchr(out_str, '\t') = ' ';
+	}
 
 	return g_realloc(out_str, out_len + 1);
 }
