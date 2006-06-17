@@ -1,3 +1,10 @@
+2006-06-17 [colin]	2.3.0cvs2-stable
+
+	* configure.ac
+		From 2.3.0cvs10,11:
+		fix setting of PACKAGE_DATA_DIR with newer autoconf
+		(backwards compatible)
+
 2006-06-17 [colin]	2.3.0cvs1-stable
 
 	* src/folderview.c
