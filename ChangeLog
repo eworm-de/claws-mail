@@ -1,3 +1,14 @@
+2006-06-17 [colin]	2.3.0cvs7-stable
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mh.c
+		Warning fixes
+
 2006-06-17 [colin]	2.3.0cvs6-stable
 
 	* src/unmime.c

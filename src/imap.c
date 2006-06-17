@@ -483,8 +483,6 @@ static Folder *imap_folder_new(const gchar *name, const gchar *path)
 
 static void imap_folder_destroy(Folder *folder)
 {
-	gchar *dir;
-
 	while (imap_folder_get_refcnt(folder) > 0)
 		gtk_main_iteration();
 	

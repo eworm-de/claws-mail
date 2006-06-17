@@ -1503,8 +1503,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			style = bold_tgtfold_style;
 		}
 	} else if (use_color) {
-		GdkColor gdk_color;
-
 		style = normal_color_style;
 		gtk_ctree_node_set_foreground(ctree, node,
 					      &folderview->color_new);
