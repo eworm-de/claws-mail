@@ -11,6 +11,10 @@
 <xsl:param name="variablelist.as.blocks" select="1"/>
 <xsl:param name="paper.type" select="'A4'"/>
 
+<xsl:template match="processing-instruction('hard-pagebreak')">
+   <fo:block break-before='page'/>
+</xsl:template>
+ 
 <xsl:template match="appendix[@id='ap_glossary']/variablelist"
               mode="fop1.outline">
 

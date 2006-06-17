@@ -36,17 +36,29 @@
       </para>
     </legalnotice>
   </articleinfo>
+  <?hard-pagebreak?>
   &ch_intro;
+  <?hard-pagebreak?>
   &ch_starting;
+  <?hard-pagebreak?>
   &ch_handling;
+  <?hard-pagebreak?>
   &ch_account;
+  <?hard-pagebreak?>
   &ch_addrbook;
+  <?hard-pagebreak?>
   &ch_advanced;
+  <?hard-pagebreak?>
   &ch_plugins;
+  <?hard-pagebreak?>
   &ap_faq;
+  <?hard-pagebreak?>
   &ap_keyboard;
+  <?hard-pagebreak?>
   &ap_ack;
+  <?hard-pagebreak?>
   &ap_glossary;
+  <?hard-pagebreak?>
   &ap_gpl;
 </article>
 
