@@ -1,3 +1,10 @@
+2006-06-17 [colin]	2.3.0cvs5-stable
+
+	* src/mbox.c
+		From 2.3.0cvs16
+		Probably fix bug #971 (2.2.3 cannot read mail 
+		from local mbox)
+
 2006-06-17 [colin]	2.3.0cvs4-stable
 
 	* src/folder.c
