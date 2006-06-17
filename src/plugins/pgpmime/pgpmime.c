@@ -25,8 +25,10 @@
 
 #include "defs.h"
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gpgme.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include "utils.h"
 #include "privacy.h"
@@ -185,9 +187,10 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
-	if (!boundary)
+	if (!boundary) {
+		privacy_set_error(_("Signature boundary not found."));
 		return 0;
-
+	}
 	textstr = get_canonical_content(fp, boundary);
 
 	err = gpgme_data_new_from_mem(&textdata, textstr, strlen(textstr), 0);
@@ -300,10 +303,12 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	gpgme_ctx_t ctx;
 	gchar *chars;
 	size_t len;
+	gpgme_error_t err;
 
-	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+	privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		return NULL;
-
+	}
 	
 	g_return_val_if_fail(pgpmime_is_encrypted(mimeinfo), NULL);
 	
@@ -324,6 +329,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
     	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
         	FILE_OP_ERROR(fname, "fopen");
+		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
@@ -342,11 +348,13 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	g_free(fname);
 	if (parseinfo == NULL) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't parse decrypted file."));
 		return NULL;
 	}
 	decinfo = g_node_first_child(parseinfo->node) != NULL ?
 		g_node_first_child(parseinfo->node)->data : NULL;
 	if (decinfo == NULL) {
+		privacy_set_error(_("Couldn't parse decrypted file parts."));
 		gpgme_release(ctx);
 		return NULL;
 	}
@@ -392,7 +400,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	
 	fp = my_tmpfile();
 	if (fp == NULL) {
-		perror("my_tmpfile");
+		privacy_set_error(_("Couldn't create temporary file: %s"), strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(mimeinfo, fp);
@@ -431,6 +439,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	fp = my_tmpfile();
 	if (fp == NULL) {
 		perror("my_tmpfile");
+		privacy_set_error(_("Couldn't create temporary file: %s"), strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(sigmultipart, fp);
@@ -450,6 +459,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (!sgpgme_setup_signers(ctx, account)) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't find private key."));
 		return FALSE;
 	}
 
@@ -462,23 +472,42 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH);
 	if (err != GPG_ERR_NO_ERROR) {
+		privacy_set_error(_("Data signing failed, %s"), gpgme_strerror(err));
 		debug_print("gpgme_op_sign error : %x\n", err);
 		gpgme_release(ctx);
 		return FALSE;
 	}
 	result = gpgme_op_sign_result(ctx);
 	if (result && result->signatures) {
-	    if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
-		micalg = g_strdup_printf("PGP-%s", gpgme_hash_algo_name(
-			    result->signatures->hash_algo));
-	    } else {
-		micalg = g_strdup(gpgme_hash_algo_name(
-			    result->signatures->hash_algo));
-	    }
+		gpgme_new_signature_t sig = result->signatures;
+		if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
+			micalg = g_strdup_printf("PGP-%s", gpgme_hash_algo_name(
+				result->signatures->hash_algo));
+		} else {
+			micalg = g_strdup(gpgme_hash_algo_name(
+				result->signatures->hash_algo));
+		}
+		while (sig) {
+			debug_print("valid signature: %s\n", sig->fpr);
+			sig = sig->next;
+		}
+	} else if (result && result->invalid_signers) {
+		gpgme_invalid_key_t invalid = result->invalid_signers;
+		while (invalid) {
+			g_warning("invalid signer: %s (%s)", invalid->fpr, 
+				gpgme_strerror(invalid->reason));
+			privacy_set_error(_("Data signing failed due to invalid signer: %s"), 
+				gpgme_strerror(invalid->reason));
+			invalid = invalid->next;
+		}
+		gpgme_release(ctx);
+		return FALSE;
 	} else {
-	    /* can't get result (maybe no signing key?) */
-	    debug_print("gpgme_op_sign_result error\n");
-	    return FALSE;
+		/* can't get result (maybe no signing key?) */
+		debug_print("gpgme_op_sign_result error\n");
+		privacy_set_error(_("Data signing failed, no results."));
+		gpgme_release(ctx);
+		return FALSE;
 	}
 
 	gpgme_release(ctx);
@@ -488,6 +517,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (sigcontent == NULL || len <= 0) {
 		g_warning("gpgme_data_release_and_get_mem failed");
+		privacy_set_error(_("Data signing failed, no contents."));
 		return FALSE;
 	}
 
@@ -530,6 +560,8 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_key_t *kset = NULL;
 	gchar **fprs = g_strsplit(encrypt_data, " ", -1);
 	gint i = 0;
+	gpgme_error_t err;
+	
 	while (fprs[i] && strlen(fprs[i])) {
 		i++;
 	}
@@ -540,11 +572,11 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	i = 0;
 	while (fprs[i] && strlen(fprs[i])) {
 		gpgme_key_t key;
-		gpgme_error_t err;
 		err = gpgme_get_key(ctx, fprs[i], &key, 0);
 		if (err) {
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
-			break;
+			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
+			return FALSE;
 		}
 		debug_print("found %s at %d\n", fprs[i], i);
 		kset[i] = key;
@@ -571,7 +603,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* write message content to temporary file */
 	fp = my_tmpfile();
 	if (fp == NULL) {
-		perror("my_tmpfile");
+		privacy_set_error(_("Couldn't create temporary file, %s"), strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(encmultipart, fp);
@@ -588,7 +620,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_set_armor(ctx, 1);
 	gpgme_data_rewind(gpgtext);
 	
-	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
+	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	gpgme_release(ctx);
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
@@ -597,6 +629,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	if (enccontent == NULL || len <= 0) {
 		g_warning("gpgme_data_release_and_get_mem failed");
+		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		return FALSE;
 	}
 

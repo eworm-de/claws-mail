@@ -48,6 +48,7 @@
 #include "utils.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
+#include "alertpanel.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
 
@@ -818,8 +819,11 @@ FILE *procmime_get_first_encrypted_text_content(MsgInfo *msginfo)
 	partinfo = mimeinfo;
 	if ((encinfo = find_encrypted_part(partinfo)) != NULL) {
 		debug_print("decrypting message part\n");
-		if (privacy_mimeinfo_decrypt(encinfo) < 0)
+		if (privacy_mimeinfo_decrypt(encinfo) < 0) {
+			alertpanel_error(_("Couldn't decrypt: %s"),
+				privacy_get_error());
 			return NULL;
+		}
 	}
 	partinfo = mimeinfo;
 	while (partinfo && partinfo->type != MIMETYPE_TEXT) {

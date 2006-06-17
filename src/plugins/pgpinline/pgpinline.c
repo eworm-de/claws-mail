@@ -26,6 +26,8 @@
 
 #include "defs.h"
 #include <glib.h>
+#include <glib/gi18n.h>
+#include <errno.h>
 #include <gpgme.h>
 
 #include "utils.h"
@@ -231,6 +233,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	
 	if (!textdata) {
 		g_free(textdata);
+		privacy_set_error(_("Couldn't get text data."));
 		return 0;
 	}
 
@@ -247,9 +250,10 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	}
 	g_free(textdata);
 
-	if (!tmp)
+	if (!tmp) {
+		privacy_set_error(_("Couldn't convert text data to any sane charset."));
 		return 0;
-
+	}
 	textdata = g_strdup(tmp);
 	g_free(tmp);
 	
@@ -370,12 +374,14 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL ||
 	    mimeinfo->type != MIMETYPE_TEXT) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't parse mime part."));
 		return NULL;
 	}
 
 	textdata = get_part_as_string(mimeinfo);
 	if (!textdata) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't get text data."));
 		return NULL;
 	}
 
@@ -398,6 +404,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 
     	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
         	FILE_OP_ERROR(fname, "fopen");
+		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
@@ -427,6 +434,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	
 	if (parseinfo == NULL) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't scan decrypted file."));
 		return NULL;
 	}
 	decinfo = g_node_first_child(parseinfo->node) != NULL ?
@@ -434,6 +442,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		
 	if (decinfo == NULL) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't scan decrypted file parts."));
 		return NULL;
 	}
 
@@ -470,7 +479,9 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_ctx_t ctx;
 	gpgme_data_t gpgtext, gpgsig;
 	guint len;
+	gpgme_error_t err;
 	struct passphrase_cb_info_s info;
+	gpgme_sign_result_t result = NULL;
 
 	memset (&info, 0, sizeof info);
 
@@ -485,6 +496,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	fp = my_tmpfile();
 	if (fp == NULL) {
 		perror("my_tmpfile");
+		privacy_set_error(_("Couldn't create temporary file."));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(msgcontent, fp);
@@ -503,6 +515,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (!sgpgme_setup_signers(ctx, account)) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't find private key."));
 		return FALSE;
 	}
 
@@ -511,11 +524,38 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
 	}
 
-	if (gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_CLEAR) 
+	if ((err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_CLEAR)) 
 	    != GPG_ERR_NO_ERROR) {
 	    	gpgme_release(ctx);
+		privacy_set_error(_("Data signing failed, %s"), gpgme_strerror(err));
 		return FALSE;
 	}
+	result = gpgme_op_sign_result(ctx);
+	if (result && result->signatures) {
+		gpgme_new_signature_t sig = result->signatures;
+		while (sig) {
+			debug_print("valid signature: %s\n", sig->fpr);
+			sig = sig->next;
+		}
+	} else if (result && result->invalid_signers) {
+		gpgme_invalid_key_t invalid = result->invalid_signers;
+		while (invalid) {
+			g_warning("invalid signer: %s (%s)", invalid->fpr, 
+				gpgme_strerror(invalid->reason));
+			privacy_set_error(_("Data signing failed due to invalid signer: %s"), 
+				gpgme_strerror(invalid->reason));
+			invalid = invalid->next;
+		}
+		gpgme_release(ctx);
+		return FALSE;
+	} else {
+		/* can't get result (maybe no signing key?) */
+		debug_print("gpgme_op_sign_result error\n");
+		privacy_set_error(_("Data signing failed, no results."));
+		gpgme_release(ctx);
+		return FALSE;
+	}
+
 
 	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
 	
@@ -523,6 +563,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	
 	if (sigcontent == NULL || len <= 0) {
 		g_warning("gpgme_data_release_and_get_mem failed");
+		privacy_set_error(_("Data signing failed, no contents."));
 		gpgme_data_release(gpgtext);
 		g_free(textstr);
 		g_free(sigcontent);
@@ -569,7 +610,9 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_ctx_t ctx;
 	gpgme_key_t *kset = NULL;
 	gchar **fprs = g_strsplit(encrypt_data, " ", -1);
+	gpgme_error_t err;
 	gint i = 0;
+
 	while (fprs[i] && strlen(fprs[i])) {
 		i++;
 	}
@@ -580,11 +623,11 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	i = 0;
 	while (fprs[i] && strlen(fprs[i])) {
 		gpgme_key_t key;
-		gpgme_error_t err;
 		err = gpgme_get_key(ctx, fprs[i], &key, 0);
 		if (err) {
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
-			break;
+			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
+			return FALSE;
 		}
 		debug_print("found %s at %d\n", fprs[i], i);
 		kset[i] = key;
@@ -604,6 +647,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	fp = my_tmpfile();
 	if (fp == NULL) {
+		privacy_set_error(_("Couldn't create temporary file, %s"), strerror(errno));
 		perror("my_tmpfile");
 		return FALSE;
 	}
@@ -621,13 +665,14 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_new(&ctx);
 	gpgme_set_armor(ctx, 1);
 
-	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
+	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	gpgme_release(ctx);
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
 
 	if (enccontent == NULL || len <= 0) {
 		g_warning("gpgme_data_release_and_get_mem failed");
+		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		gpgme_data_release(gpgtext);
 		g_free(textstr);
 		return FALSE;

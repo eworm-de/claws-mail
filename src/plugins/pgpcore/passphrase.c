@@ -294,7 +294,7 @@ static int free_passphrase(gpointer _unused)
 #endif
         g_free(last_pass);
         last_pass = NULL;
-        debug_print("%% passphrase removed");
+        debug_print("%% passphrase removed\n");
     }
     
     return FALSE;
@@ -310,11 +310,11 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         pass = last_pass;
     else {
     gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
-    debug_print ("%% requesting passphrase for '%s': ", uid_hint);
+    debug_print ("%% requesting passphrase for '%s'\n ", uid_hint);
     pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad);
     gpgmegtk_free_passphrase();
     if (!pass) {
-        debug_print ("%% cancel passphrase entry");
+        debug_print ("%% cancel passphrase entry\n");
         write(fd, "\n", 1);
         return GPG_ERR_CANCELED;
     }
@@ -323,7 +323,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
             last_pass = g_strdup(pass);
 #ifndef G_PLATFORM_WIN32
             if (mlock(last_pass, strlen(last_pass)) == -1)
-                debug_print("%% locking passphrase failed");
+                debug_print("%% locking passphrase failed\n");
 #endif
             if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
                     gtk_timeout_add(prefs_gpg_get_config()
@@ -331,7 +331,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
                                 free_passphrase, NULL);
             }
         }
-        debug_print ("%% sending passphrase");
+        debug_print ("%% sending passphrase\n");
     }
     }
 

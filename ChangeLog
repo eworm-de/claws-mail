@@ -1,3 +1,17 @@
+2006-06-17 [colin]	2.3.0cvs8-stable
+
+	* src/compose.c
+	* src/messageview.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		From 2.3.0cvs16
+		Better error catching on GPG stuff
+
 2006-06-17 [colin]	2.3.0cvs7-stable
 
 	* src/folder.c

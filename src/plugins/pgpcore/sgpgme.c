@@ -57,6 +57,7 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 
 	if ((err = gpgme_op_verify(ctx, sig, plain, dummy)) != GPG_ERR_NO_ERROR) {
 		debug_print("op_verify err %s\n", gpgme_strerror(err));
+		privacy_set_error(gpgme_strerror(err));
 		return GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR);
 		
 	}
@@ -163,7 +164,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	static gboolean warned = FALSE;
 
 	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
-		return g_strdup(_("The signature can't be checked - GPG error."));
+		return g_strdup_printf(_("The signature can't be checked - %s"), privacy_get_error());
 	}
 
 	if (status == NULL) {
@@ -344,6 +345,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	if (err) {
 		debug_print ("gpgme_data_new_from_file failed: %s\n",
 			     gpgme_strerror (err));
+		privacy_set_error(_("Couldn't get data from message, %s"), gpgme_strerror(err));
 		return NULL;
 	}
 	return data;
@@ -357,8 +359,9 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 
 	memset (&info, 0, sizeof info);
 	
-	if (gpgme_data_new(&plain) != GPG_ERR_NO_ERROR) {
+	if ((err = gpgme_data_new(&plain)) != GPG_ERR_NO_ERROR) {
 		gpgme_release(ctx);
+		privacy_set_error(_("Couldn't initialize data, %s"), gpgme_strerror(err));
 		return NULL;
 	}
 	
@@ -377,6 +380,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 		err = gpgme_op_decrypt_verify(ctx, cipher, plain);
 		if (err != GPG_ERR_NO_ERROR) {
 			debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
+			privacy_set_error("%s", gpgme_strerror(err));
 			gpgmegtk_free_passphrase();
 			gpgme_data_release(plain);
 			return NULL;
@@ -443,6 +447,18 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 	gpgme_signers_clear(ctx);
 
 	config = prefs_gpg_account_get_config(account);
+
+	switch(config->sign_key) {
+	case SIGN_KEY_DEFAULT:
+		debug_print("using default gnupg key\n");
+		break;
+	case SIGN_KEY_BY_FROM:
+		debug_print("using key for %s\n", account->address);
+		break;
+	case SIGN_KEY_CUSTOM:
+		debug_print("using key for %s\n", config->sign_key_id);
+		break;
+	}
 
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
 		gchar *keyid;
