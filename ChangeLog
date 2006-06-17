@@ -1,3 +1,10 @@
+2006-06-17 [colin]	2.3.0cvs4-stable
+
+	* src/folder.c
+		From 2.3.0cvs13,14:
+		Fix Bug #969 (crash on rebuilding 
+		imap folder)
+
 2006-06-17 [colin]	2.3.0cvs3-stable
 
 	* manual/sylpheed-claws-manual.xml

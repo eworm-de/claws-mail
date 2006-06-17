@@ -785,16 +785,22 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 {
 	GHashTable *pptable;
 	FolderUpdateData hookdata;
-	
+	Folder *old_folder = folder;
+
 	if (!folder->klass->scan_tree)
 		return;
 	
 	pptable = folder_persist_prefs_new(folder);
 
 	if (rebuild)
-		folder_tree_destroy(folder);
+		folder_remove(folder);
 
-	folder->klass->scan_tree(folder);
+	if (folder->klass->scan_tree(folder) < 0) {
+		if (rebuild)
+			folder_add(old_folder);
+		return;
+	} else if (rebuild)
+		folder_add(folder);
 
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED;
@@ -3378,6 +3384,9 @@ static GNode *folder_get_xml_node(Folder *folder)
 	xmlnode = xml_node_new(tag, NULL);
 
 	node = g_node_new(xmlnode);
+	
+	g_return_val_if_fail (folder->node != NULL, NULL);
+	
 	if (folder->node->children) {
 		GNode *cur;
 
