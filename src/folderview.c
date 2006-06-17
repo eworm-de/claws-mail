@@ -717,7 +717,8 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 	if (item == NULL)
 		return;
 
-	if (prefs_common.ask_mark_all_read) {
+	if (folderview->summaryview->folder_item != item
+	&&  prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
 			_("Do you really want to mark all mails in this "
 			  "folder as read ?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,

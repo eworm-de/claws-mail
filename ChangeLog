@@ -1,3 +1,10 @@
+2006-06-17 [colin]	2.3.0cvs1-stable
+
+	* src/folderview.c
+		From 2.3.0cvs6
+		Fix double-ask of "Do you want to mark all
+		as read"
+
 2006-06-12 [paul]	2.3.0
 
 	2.3.0 released
