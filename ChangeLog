@@ -1,3 +1,12 @@
+2006-06-18 [colin]	2.3.0cvs21
+
+	* src/prefs_customheader.c
+		Add a 'From File...' button in custom headers prefs, which
+		try to do the right thing: 
+		for normal headers, use file as plaintext,
+		for X-Face, calls compface,
+		for Face, encode to b64.
+
 2006-06-17 [colin]	2.3.0cvs20
 
 	* src/mh.c

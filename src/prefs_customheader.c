@@ -45,6 +45,8 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "alertpanel.h"
+#include "base64.h"
+#include "filesel.h"
 
 enum {
 	CUSTHDR_STRING,		/*!< display string managed by list store */
@@ -73,6 +75,7 @@ static void prefs_custom_header_list_view_set_row	(PrefsAccount *ac);
 
 /* callback functions */
 static void prefs_custom_header_add_cb		(void);
+static void prefs_custom_header_val_from_file_cb(void);
 static void prefs_custom_header_delete_cb	(void);
 static void prefs_custom_header_up		(void);
 static void prefs_custom_header_down		(void);
@@ -139,6 +142,7 @@ static void prefs_custom_header_create(void)
 	GtkWidget *hdr_combo;
 	GtkWidget *val_label;
 	GtkWidget *val_entry;
+	GtkWidget *val_btn;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -191,7 +195,7 @@ static void prefs_custom_header_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (2, 2, FALSE);
+	table1 = gtk_table_new (3, 2, FALSE);
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1,
 			    FALSE, FALSE, 0);
@@ -212,7 +216,7 @@ static void prefs_custom_header_create(void)
 			  0, 0, 0);
 	gtk_widget_set_size_request (hdr_combo, 150, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
-			       "User-Agent", "X-Face", "X-Operating-System",
+			       "User-Agent", "Face", "X-Face", "X-Operating-System",
 			       NULL);
 
 	val_label = gtk_label_new (_("Value"));
@@ -228,6 +232,15 @@ static void prefs_custom_header_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
 	gtk_widget_set_size_request (val_entry, 200, -1);
+
+	val_btn = gtk_button_new_with_label (_("From file..."));
+	gtk_widget_show (val_btn);
+	gtk_table_attach (GTK_TABLE (table1), val_btn, 2, 3, 1, 2,
+			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			  0, 0, 0);
+	g_signal_connect (G_OBJECT (val_btn), "clicked",
+			  G_CALLBACK (prefs_custom_header_val_from_file_cb),
+			  NULL);
 
 	/* add / delete */
 
@@ -492,6 +505,12 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 		alertpanel_error(_("Header name is not set."));
 		return;
 	}
+	
+	while (*entry_text && 
+	       (*entry_text == '\n' || *entry_text == '\r' || 
+	        *entry_text == '\t' || *entry_text == ' '))
+		entry_text++;
+	
 	if (!custom_header_is_allowed(entry_text)) {
 		alertpanel_error(_("This Header name is not allowed as a custom header."));
 		return;
@@ -507,6 +526,11 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 	gtk_entry_set_text(GTK_ENTRY(customhdr.hdr_entry), ch->name);
 
 	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.val_entry));
+	while (*entry_text && 
+	       (*entry_text == '\n' || *entry_text == '\r' || 
+	        *entry_text == '\t' || *entry_text == ' '))
+		entry_text++;
+	
 	if (entry_text[0] != '\0') {
 		ch->value = g_strdup(entry_text);
 		unfold_line(ch->value);
@@ -524,6 +548,121 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 
 	prefs_custom_header_set_list(cur_ac);
 
+}
+
+#define B64_LINE_SIZE		57
+#define B64_BUFFSIZE		77
+static void prefs_custom_header_val_from_file_cb(void)
+{
+	gchar *filename = filesel_select_file_open(_("Choose file"), NULL);
+	gchar *contents = NULL;
+	const gchar *hdr = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
+	
+	if (!strcmp(hdr, "Face") || !strcmp(hdr, "X-Face")) {
+		if (filename && is_file_exist(filename)) {
+			FILE *fp = NULL;
+			gint len;
+			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+			gchar *tmp = NULL;
+			gint w, h;
+			GdkPixbufFormat *format = gdk_pixbuf_get_file_info(
+							filename, &w, &h);
+			
+			if (format == NULL) {
+				alertpanel_error(_("This file isn't an image."));
+				g_free(filename);
+				return;
+			}
+			if (w != 48 || h != 48) {
+				alertpanel_error(_("The chosen image isn't the correct size (48x48)."));
+				g_free(filename);
+				return;	
+			}
+			if (!strcmp(hdr, "Face")) {
+				if (get_file_size(filename) > 725) {
+					alertpanel_error(_("The image is too big; it must be maximum 725 bytes."));
+					g_free(filename);
+					return;
+				}
+				if (g_ascii_strcasecmp("png", gdk_pixbuf_format_get_name(format))) {
+					alertpanel_error(_("The image isn't in the correct format (PNG)."));
+					printf("%s\n", gdk_pixbuf_format_get_name(format));
+					g_free(filename);
+					return;
+				}
+			} else if (!strcmp(hdr, "X-Face")) {
+				gchar *tmp = NULL, *cmd = NULL;
+				int i = 0;
+				if (g_ascii_strcasecmp("xbm", gdk_pixbuf_format_get_name(format))) {
+					alertpanel_error(_("The image isn't in the correct format (XBM)."));
+					printf("%s\n", gdk_pixbuf_format_get_name(format));
+					g_free(filename);
+					return;
+				}
+				cmd = g_strdup_printf("compface %s", filename);
+				tmp = get_command_output(cmd);
+				g_free(cmd);
+				if (tmp == NULL || strlen(tmp) == 0){
+					alertpanel_error(_("Couldn't call `compface`. Make sure it's in your $PATH."));
+					g_free(filename);
+					g_free(tmp);
+					return;
+				}
+				while (tmp[i]) {
+					gchar *tmp2 = NULL;
+					if (tmp[i] == ' ') {
+						i++; continue;
+					} 
+					if (tmp[i] == '\r' || tmp[i] == '\n') {
+						i++; continue;
+					}
+					tmp2 = contents;
+					contents = g_strdup_printf("%s%c",tmp2?tmp2:"", tmp[i]);
+					g_free(tmp2);
+					i++;
+				}
+				g_free(tmp);
+				goto settext;
+			}
+
+			fp = g_fopen(filename, "rb");
+			if (!fp) {
+				g_free(filename);
+				return;	
+			}
+
+			while ((len = fread(inbuf, sizeof(gchar),
+					    B64_LINE_SIZE, fp))
+			       == B64_LINE_SIZE) {
+				base64_encode(outbuf, inbuf, B64_LINE_SIZE);
+
+				tmp = contents;
+				contents = g_strconcat(tmp?tmp:"",outbuf, NULL);
+				g_free(tmp);
+			}
+			if (len > 0 && feof(fp)) {
+				tmp = contents;
+				base64_encode(outbuf, inbuf, len);
+				contents = g_strconcat(tmp?tmp:"",outbuf, NULL);
+				g_free(tmp);
+			}
+			fclose(fp);
+		}
+	} else {
+		contents = file_read_to_str(filename);
+		if (strchr(contents, '\n') || strchr(contents,'\r')) {
+			alertpanel_error(_("This file contains newlines."));
+			g_free(contents);
+			g_free(filename);
+			return;
+		}
+	}
+settext:
+	if (contents && strlen(contents))
+		gtk_entry_set_text(GTK_ENTRY(customhdr.val_entry), contents);
+	
+	g_free(contents);
+	g_free(filename);
 }
 
 static void prefs_custom_header_add_cb(void)
