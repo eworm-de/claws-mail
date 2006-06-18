@@ -554,10 +554,17 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 #define B64_BUFFSIZE		77
 static void prefs_custom_header_val_from_file_cb(void)
 {
-	gchar *filename = filesel_select_file_open(_("Choose file"), NULL);
+	gchar *filename = NULL;
 	gchar *contents = NULL;
 	const gchar *hdr = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
 	
+	if (!strcmp(hdr, "Face"))
+		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.png");
+	else if (!strcmp(hdr, "X-Face"))
+		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.xbm");
+	else
+		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.txt");
+
 	if (!strcmp(hdr, "Face") || !strcmp(hdr, "X-Face")) {
 		if (filename && is_file_exist(filename)) {
 			FILE *fp = NULL;
@@ -649,6 +656,9 @@ static void prefs_custom_header_val_from_file_cb(void)
 			fclose(fp);
 		}
 	} else {
+		if (!filename)
+			return;
+
 		contents = file_read_to_str(filename);
 		if (strchr(contents, '\n') || strchr(contents,'\r')) {
 			alertpanel_error(_("This file contains newlines."));

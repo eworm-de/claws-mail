@@ -1,3 +1,9 @@
+2006-06-18 [colin]	2.3.0cvs22
+
+	* src/prefs_customheader.c
+		Only allow correct filenames for various
+		custom headers
+
 2006-06-18 [colin]	2.3.0cvs21
 
 	* src/prefs_customheader.c
