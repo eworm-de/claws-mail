@@ -1137,14 +1137,19 @@ static void search_run(struct etpan_thread_op * op)
 	struct search_result * result;
 	int r;
 	struct mailimap_search_key * key;
-	struct mailimap_search_key * uid_key;
+	struct mailimap_search_key * uid_key = NULL;
 	struct mailimap_search_key * search_type_key;
 	clist * search_result;
 	
 	param = op->param;
 	
+	if (param->set == NULL && param->type == IMAP_SEARCH_TYPE_SIMPLE) {
+		g_warning("broken search");
+	}
+	
 	/* we copy the mailimap_set because freeing the key is recursive */
-	uid_key = mailimap_search_key_new_uid(sc_mailimap_set_copy(param->set));
+	if (param->set != NULL)
+		uid_key = mailimap_search_key_new_uid(sc_mailimap_set_copy(param->set));
 	
 	search_type_key = NULL;
 	switch (param->type) {
@@ -1198,22 +1203,33 @@ static void search_run(struct etpan_thread_op * op)
 	}
 	
 	if (search_type_key != NULL) {
-		key = mailimap_search_key_new_multiple_empty();
-		mailimap_search_key_multiple_add(key, search_type_key);
-		mailimap_search_key_multiple_add(key, uid_key);
+		if (param->set != NULL) {
+			key = mailimap_search_key_new_multiple_empty();
+			mailimap_search_key_multiple_add(key, search_type_key);
+			mailimap_search_key_multiple_add(key, uid_key);
+		} else {
+			key = search_type_key;
+		}
 	}
-	else {
+	else if (uid_key != NULL) {
 		key = uid_key;
 	}
 	
-	r = mailimap_uid_search(param->imap, NULL, key, &search_result);
-	
-	/* free the key (with the imapset) */
-	mailimap_search_key_free(key);
+	if (key == NULL) {
+		g_warning("no key!");
+		result = op->result;
+		result->error = -1;
+		result->search_result = NULL;
+	} else {
+		r = mailimap_uid_search(param->imap, NULL, key, &search_result);
 
-	result = op->result;
-	result->error = r;
-	result->search_result = search_result;
+		/* free the key (with the imapset) */
+		mailimap_search_key_free(key);
+
+		result = op->result;
+		result->error = r;
+		result->search_result = search_result;
+	}
 	debug_print("imap search run - end %i\n", r);
 }
 

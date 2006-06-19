@@ -3689,12 +3689,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		imapset = cur->data;
 		if (reverse_seen) {
 			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN,
-						 imapset, &lep_uidlist);
+						 full_search ? NULL:imapset, &lep_uidlist);
 		}
 		else {
 			r = imap_threaded_search(folder,
 						 IMAP_SEARCH_TYPE_UNSEEN,
-						 imapset, &lep_uidlist);
+						 full_search ? NULL:imapset, &lep_uidlist);
 		}
 		if (r == MAILIMAP_NO_ERROR) {
 			GSList * uidlist;
@@ -3706,7 +3706,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		}
 		
 		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED,
-					 imapset, &lep_uidlist);
+					 full_search ? NULL:imapset, &lep_uidlist);
 		if (r == MAILIMAP_NO_ERROR) {
 			GSList * uidlist;
 
@@ -3718,7 +3718,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 
 		if (item->opened || item->processing_pending || item == folder->inbox) {
 			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
-						 imapset, &lep_uidlist);
+						 full_search ? NULL:imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
 
@@ -3729,7 +3729,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			}
 
 			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
-						 imapset, &lep_uidlist);
+						 full_search ? NULL:imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
 
