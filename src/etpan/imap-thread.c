@@ -105,6 +105,40 @@ void imap_logger_fetch(int direction, const char * str, size_t size)
 	free(buf);
 }
 
+void imap_logger_append(int direction, const char * str, size_t size) 
+{
+	gchar *buf;
+	gchar **lines;
+	int i = 0;
+
+	buf = malloc(size+1);
+	memset(buf, 0, size+1);
+	strncpy(buf, str, size);
+	buf[size] = '\0';
+	if (!strncmp(buf, "<<<<<<<", 7) 
+	||  !strncmp(buf, ">>>>>>>", 7)) {
+		free(buf);
+		return;
+	}
+	while (strstr(buf, "\r"))
+		*strstr(buf, "\r") = ' ';
+	while (strlen(buf) > 0 && buf[strlen(buf)-1] == '\n')
+		buf[strlen(buf)-1] = '\0';
+
+	lines = g_strsplit(buf, "\n", -1);
+
+	if (direction == 0 || (buf[0] == '*' && buf[1] == ' ') || size < 32) {
+		while (lines[i] && *lines[i]) {
+			log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			i++;
+		}
+	} else {
+		log_print("IMAP4%c [data - %zd bytes]\n", direction?'>':'<', size);
+	}
+	g_strfreev(lines);
+	free(buf);
+}
+
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
 static gboolean etpan_skip_ssl_cert_check = FALSE;
 
@@ -2137,9 +2171,13 @@ static void append_run(struct etpan_thread_op * op)
 		return;
 	}
 	
+	mailstream_logger = imap_logger_append;
+	
 	r = mailimap_append(param->imap, param->mailbox,
 			    param->flag_list, NULL,
 			    data, size/*, &uid */);
+
+	mailstream_logger = imap_logger_cmd;
 	
 	munmap(data, size);
 	close(fd);

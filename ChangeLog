@@ -1,3 +1,14 @@
+2006-06-19 [colin]	2.3.0cvs23
+
+	* src/compose.c
+	* src/imap.c
+	* src/etpan/imap-thread.c
+		Probably fix bug #972 (Freezes when adding 
+		an attachment to the message)
+	* src/common/defs.h
+		Modernize Firefox cmd
+
+
 2006-06-18 [colin]	2.3.0cvs22
 
 	* src/prefs_customheader.c

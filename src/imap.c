@@ -958,10 +958,10 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 
 		if (cached)
 			debug_print("message %d has been already %scached (%d/%d).\n", uid,
-				have_size == cached->size ? "fully ":"",
+				have_size >= cached->size ? "fully ":"",
 				have_size, (int)cached->size);
 		
-		if (cached && (cached->size == have_size || !body)) {
+		if (cached && (cached->size <= have_size || !body)) {
 			procmsg_msginfo_free(cached);
 			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
@@ -1120,8 +1120,9 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		if (new_uid == 0) {
 			new_uid = dest->last_num+1;
 		}
-		if (last_uid < new_uid)
+		if (last_uid < new_uid) {
 			last_uid = new_uid;
+		}
 
 		g_free(real_file);
 	}
@@ -3144,7 +3145,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		else {
 			*old_uids_valid = FALSE;
 
-			debug_print("Freeing imap uid cache\n");
+			debug_print("Freeing imap uid cache (%d != %d)\n",
+					item->item.mtime, uid_val);
 			item->lastuid = 0;
 			g_slist_free(item->uid_list);
 			item->uid_list = NULL;
