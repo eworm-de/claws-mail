@@ -1,3 +1,11 @@
+2006-06-20 [paul]	2.3.1cvs1
+
+	* NEWS
+	* README
+	* configure.ac
+		Update version number following
+		stable release
+
 2006-06-20 [colin]	2.3.0cvs26
 
 	* src/compose.c

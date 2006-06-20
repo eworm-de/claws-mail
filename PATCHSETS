@@ -1601,3 +1601,4 @@
 ( cvs diff -u -r 1.179.2.121 -r 1.179.2.122 src/imap.c;  cvs diff -u -r 1.1.4.41 -r 1.1.4.42 src/etpan/imap-thread.c;  ) > 2.3.0cvs24.patchset
 ( cvs diff -u -r 1.1.4.42 -r 1.1.4.43 src/etpan/imap-thread.c;  ) > 2.3.0cvs25.patchset
 ( cvs diff -u -r 1.382.2.280 -r 1.382.2.281 src/compose.c;  ) > 2.3.0cvs26.patchset
+( cvs diff -u -r 1.42.2.12 -r 1.42.2.13 NEWS;  cvs diff -u -r 1.8.2.12 -r 1.8.2.13 README;  cvs diff -u -r 1.654.2.1647 -r 1.654.2.1648 configure.ac;  ) > 2.3.1cvs1.patchset
