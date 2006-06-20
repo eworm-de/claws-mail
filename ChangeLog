@@ -1,3 +1,10 @@
+2006-06-20 [colin]	2.3.0cvs26
+
+	* src/compose.c
+		When dragging a file to the text of the compose
+		window, ask whether we want to insert or attach
+		(I know lots of people who do that to attach)
+
 2006-06-20 [colin]	2.3.0cvs25
 
 	* src/etpan/imap-thread.c

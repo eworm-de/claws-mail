@@ -8508,6 +8508,18 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
+	AlertValue val = alertpanel(_("Insert or attach?"),
+				 _("Do you want to insert the contents of this file in the email body,"
+				   "or rather attach it to the email?"),
+				  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"));
+	
+	if (val == G_ALERTDEFAULT) {
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);
+		return;
+	} else if (val == G_ALERTOTHER) {
+		compose_attach_drag_received_cb(widget, drag_context, x, y, data, info, time, user_data);
+		return;
+	} 
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
