@@ -2146,12 +2146,16 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 		gchar *msg;
 		AlertValue aval;
 
-		msg = g_strdup_printf(_("The real URL (%s) is different from\n"
-					"the apparent URL (%s).\n"
-					"\n"
-					"Open it anyway?"),
-				      uri->uri, visible_str);
-		aval = alertpanel_full(_("Fake URL warning"), msg,
+		msg = g_markup_printf_escaped(_("The real URL is different from "
+						"the displayed URL.\n"
+						"\n"
+						"<b>Displayed URL:</b> %s\n"
+						"\n"
+						"<b>Real URL:</b> %s\n"
+						"\n"
+						"Open it anyway?"),
+				       	       visible_str,uri->uri);
+		aval = alertpanel_full(_("Phishing attempt warning"), msg,
 				       GTK_STOCK_CANCEL, _("_Open URL"), NULL, FALSE,
 				       NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(msg);

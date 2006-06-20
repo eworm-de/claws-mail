@@ -1,3 +1,10 @@
+2006-06-20 [paul]	2.3.1cvs2
+
+	* src/alertpanel.c
+	* src/textview.c
+		improve legibility of phishing attempt
+		dialog
+
 2006-06-20 [paul]	2.3.1cvs1
 
 	* NEWS
