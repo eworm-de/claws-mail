@@ -127,7 +127,7 @@ void imap_logger_append(int direction, const char * str, size_t size)
 
 	lines = g_strsplit(buf, "\n", -1);
 
-	if (direction == 0 || (buf[0] == '*' && buf[1] == ' ') || size < 32) {
+	if (direction == 0 || (buf[0] == '*' && buf[1] == ' ') || size < 64) {
 		while (lines[i] && *lines[i]) {
 			log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
 			i++;
