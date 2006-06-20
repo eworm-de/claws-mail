@@ -708,6 +708,10 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 
         msginfo->subject = conv_unmime_header(subject, NULL);
 
+	remove_return(msginfo->from);
+	remove_return(msginfo->fromname);
+	remove_return(msginfo->subject);
+
         if (msgid) {
                 extract_parenthesis(msgid, '<', '>');
                 remove_space(msgid);
@@ -739,15 +743,6 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
                                 msginfo->inreplyto = g_strdup(p);
                 }
         } 
-
-	/*
-	msginfo->xref = g_strdup(xref);
-	p = msginfo->xref+strlen(msginfo->xref) - 1;
-	while (*p == '\r' || *p == '\n') {
-		*p = '\0';
-		p--;
-	}
-	*/
 
 	return msginfo;
 }

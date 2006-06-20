@@ -1,3 +1,11 @@
+2006-06-20 [colin]	2.3.1cvs3
+
+	* src/news.c
+	* src/procheader.c
+	* src/unmime.c
+		Better fix for \n's in headers (don't 
+		break Received: and others)
+
 2006-06-20 [paul]	2.3.1cvs2
 
 	* src/alertpanel.c

@@ -502,11 +502,12 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			if (msginfo->from) break;
                         msginfo->from = conv_unmime_header(hp, NULL);
 			msginfo->fromname = procheader_get_fromname(msginfo->from);
-			replace_returns(msginfo->from);
-			replace_returns(msginfo->fromname);
+			remove_return(msginfo->from);
+			remove_return(msginfo->fromname);
 			break;
 		case H_TO:
                         tmp = conv_unmime_header(hp, NULL);
+			remove_return(tmp);
 			if (msginfo->to) {
 				p = msginfo->to;
 				msginfo->to =
@@ -518,6 +519,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 		case H_CC:
                         tmp = conv_unmime_header(hp, NULL);
+			remove_return(tmp);
 			if (msginfo->cc) {
 				p = msginfo->cc;
 				msginfo->cc =
@@ -539,7 +541,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_SUBJECT:
 			if (msginfo->subject) break;
                         msginfo->subject = conv_unmime_header(hp, NULL);
-			replace_returns(msginfo->subject);
+			remove_return(msginfo->subject);
 			break;
 		case H_MSG_ID:
 			if (msginfo->msgid) break;
@@ -636,6 +638,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_FROM_SPACE:
 			if (msginfo->fromspace) break;
 			msginfo->fromspace = g_strdup(hp);
+			remove_return(msginfo->fromspace);
 			break;
  		case H_LIST_POST:
 			msginfo->list_post = g_strdup(hp);
