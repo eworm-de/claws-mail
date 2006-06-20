@@ -1,5 +1,28 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.3.1
+-------
+
+  * bug fix release
+
+  * Improved error catching in GnuPG plugins
+
+  * Always replace \n, \r and \t with spaces in headers
+
+  * Fix 'make clean' removing of provided manuals
+
+  * Fix setting of PACKAGE_DATA_DIR with newer versions of autoconf,
+    backwards compatible
+
+  * Fix double-ask of "Do you want to mark all as read"
+
+  * Fix bug #968 (Rockliffe IMAP server doesn't like SC (server isn't 
+    RFC-compliant)) - Workaround Rockliffe IMAP server bug
+
+  * Fix bug #969 (crash on rebuilding imap folder)
+
+  * Fix bug #971 (2.2.3 cannot read mail from local mbox)
+
 * 2.3.0
 -------
 

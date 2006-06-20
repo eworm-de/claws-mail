@@ -1,4 +1,4 @@
-[LAST REVISION: 2006-06-12]
+[LAST REVISION: 2006-06-20]
 
 Sylpheed-Claws - a GTK+ based, lightweight, and fast e-mail client
 
@@ -699,6 +699,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 GTK 2 Version
 -------------
+2006-06-20	2.3.1
 2006-06-12	2.3.0
 2006-06-08	2.2.3
 2006-06-06	2.2.2
