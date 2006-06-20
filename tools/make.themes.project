@@ -91,6 +91,7 @@ function removeWhitespaces()
 function createProject()
 {
   touch ${DDIR}/${NAME} ${DDIR}/${NOTES}
+  find ${DDIR} -type f -exec chmod -x '{}' +
 }
 
 function createThemeMakefileAm()

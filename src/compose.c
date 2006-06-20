@@ -8509,7 +8509,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
 	AlertValue val = alertpanel(_("Insert or attach?"),
-				 _("Do you want to insert the contents of this file in the email body,"
+				 _("Do you want to insert the contents of this file in the email body, "
 				   "or rather attach it to the email?"),
 				  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"));
 	
