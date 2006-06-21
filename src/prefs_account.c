@@ -131,7 +131,6 @@ static struct Receive {
 } receive;
 
 static struct Send {
-	GtkWidget *date_chkbtn;
 	GtkWidget *msgid_chkbtn;
 	GtkWidget *customhdr_chkbtn;
 	GtkWidget *smtp_auth_chkbtn;
@@ -1654,7 +1653,6 @@ static void prefs_account_send_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *frame;
-	GtkWidget *date_chkbtn;
 	GtkWidget *msgid_chkbtn;
 	GtkWidget *hbox;
 	GtkWidget *customhdr_chkbtn;
@@ -1687,7 +1685,6 @@ static void prefs_account_send_create(void)
 	gtk_container_add (GTK_CONTAINER (frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
-	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date"));
 	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
@@ -1832,7 +1829,6 @@ static void prefs_account_send_create(void)
 
 
 	
-	p_send.date_chkbtn      = date_chkbtn;
 	p_send.msgid_chkbtn     = msgid_chkbtn;
 	p_send.customhdr_chkbtn = customhdr_chkbtn;
 
