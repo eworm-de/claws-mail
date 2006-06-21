@@ -555,6 +555,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"line_space", "2", &prefs_common.line_space, P_INT,
 	 NULL, NULL, NULL},
+	{"never_send_retrcpt", "FALSE", &prefs_common.never_send_retrcpt, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"enable_smooth_scroll", "FALSE",
 	 &prefs_common.enable_smooth_scroll, P_BOOL,

@@ -375,6 +375,7 @@ struct _PrefsCommon
 	gint broken_are_utf8;
 	gint skip_ssl_cert_check;
 	gint live_dangerously;
+	gint never_send_retrcpt;
 };
 
 extern PrefsCommon prefs_common;

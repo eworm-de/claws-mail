@@ -56,6 +56,7 @@ typedef struct _OtherPage
         GtkWidget *checkbtn_cliplog;
 	GtkWidget *spinbtn_loglength;
 	GtkWidget *spinbtn_iotimeout;
+	GtkWidget *chkbtn_never_send_retrcpt;
 } OtherPage;
 
 void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -89,6 +90,8 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
 	GtkObject *spinbtn_iotimeout_adj;
+
+	GtkWidget *chkbtn_never_send_retrcpt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -185,6 +188,9 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
+	PACK_CHECK_BUTTON(vbox1, chkbtn_never_send_retrcpt,
+			  _("Never send Return Receipts"));
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confonexit), 
@@ -197,6 +203,8 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.warn_queued_on_exit);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cliplog), 
 		prefs_common.cliplog);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_never_send_retrcpt),
+		prefs_common.never_send_retrcpt);
 	
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_loglength),
 		prefs_common.loglength);
@@ -211,6 +219,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_cliplog = checkbtn_cliplog;
 	prefs_other->spinbtn_loglength = spinbtn_loglength;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
+	prefs_other->chkbtn_never_send_retrcpt = chkbtn_never_send_retrcpt;
 
 	prefs_other->page.widget = vbox1;
 }
@@ -240,6 +249,8 @@ void prefs_other_save(PrefsPage *_page)
 #ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif
+	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->chkbtn_never_send_retrcpt));
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);

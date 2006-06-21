@@ -851,7 +851,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				  messageview->msginfo);
 	else if ((messageview->msginfo->dispositionnotificationto || 
 	     messageview->msginfo->returnreceiptto) &&
-	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags))
+	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags) &&
+	    !prefs_common.never_send_retrcpt)
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
 	else 
