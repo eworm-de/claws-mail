@@ -912,7 +912,6 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(imap_auth_type);
 
 	/* send */
-	ACP_FASSIGN(add_date);
 	ACP_FASSIGN(gen_msgid);
 	ACP_FASSIGN(add_customhdr);
 	ACP_FASSIGN(use_smtp_auth);

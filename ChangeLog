@@ -1,3 +1,14 @@
+2006-06-21 [paul]	2.3.1cvs9
+
+	* src/account.c
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+		remove option to add date header - always
+		add date header
+	* src/etpan/imap-thread.c
+		fix warnings (Thanks to Colin)
+
 2006-06-21 [wwp]	2.3.1cvs8
 
 	* src/folder.c

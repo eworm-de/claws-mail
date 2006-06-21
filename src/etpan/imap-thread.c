@@ -1136,7 +1136,7 @@ static void search_run(struct etpan_thread_op * op)
 	struct search_param * param;
 	struct search_result * result;
 	int r;
-	struct mailimap_search_key * key;
+	struct mailimap_search_key * key = NULL;
 	struct mailimap_search_key * uid_key = NULL;
 	struct mailimap_search_key * search_type_key;
 	clist * search_result;
@@ -1210,8 +1210,7 @@ static void search_run(struct etpan_thread_op * op)
 		} else {
 			key = search_type_key;
 		}
-	}
-	else if (uid_key != NULL) {
+	} else if (uid_key != NULL) {
 		key = uid_key;
 	}
 	
@@ -1230,7 +1229,7 @@ static void search_run(struct etpan_thread_op * op)
 		result->error = r;
 		result->search_result = search_result;
 	}
-	debug_print("imap search run - end %i\n", r);
+	debug_print("imap search run - end %i\n", result->error);
 }
 
 int imap_threaded_search(Folder * folder, int search_type,

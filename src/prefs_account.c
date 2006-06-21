@@ -353,10 +353,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	/* Send */
-	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
-	 &p_send.date_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
 	 &p_send.msgid_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},

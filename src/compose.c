@@ -5014,10 +5014,8 @@ static gchar *compose_get_header(Compose *compose)
 	header = g_string_sized_new(64);
 
 	/* Date */
-	if (compose->account->add_date) {
-		get_rfc822_date(buf, sizeof(buf));
-		g_string_append_printf(header, "Date: %s\n", buf);
-	}
+	get_rfc822_date(buf, sizeof(buf));
+	g_string_append_printf(header, "Date: %s\n", buf);
 
 	/* From */
 	
