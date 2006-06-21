@@ -1,3 +1,9 @@
+2006-06-21 [paul]	2.3.1cvs7
+
+	* src/inc.c
+		fix off-by-one count of current msg in
+		statusbar filtering progressbar
+
 2006-06-21 [paul]	2.3.1cvs6
 
 	* src/folder.c

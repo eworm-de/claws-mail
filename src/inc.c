@@ -542,7 +542,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 }
 
 	for (; inc_dialog->queue_list != NULL && !cancelled; inc_dialog->cur_row++) {
-		int cur = 0, total = 0;
+		int cur = 1, total = 0;
 		session = inc_dialog->queue_list->data;
 		pop3_session = POP3_SESSION(session->session);
 

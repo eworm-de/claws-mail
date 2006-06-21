@@ -1607,3 +1607,4 @@
 ( cvs diff -u -r 1.60.2.30 -r 1.60.2.31 po/es.po;  cvs diff -u -r 1.382.2.281 -r 1.382.2.282 src/compose.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/make.themes.project;  ) > 2.3.1cvs4.patchset
 ( cvs diff -u -r 1.94.2.88 -r 1.94.2.89 src/messageview.c;  cvs diff -u -r 1.204.2.88 -r 1.204.2.89 src/prefs_common.c;  cvs diff -u -r 1.103.2.51 -r 1.103.2.52 src/prefs_common.h;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/prefs_other.c;  ) > 2.3.1cvs5.patchset
 ( cvs diff -u -r 1.213.2.101 -r 1.213.2.102 src/folder.c;  ) > 2.3.1cvs6.patchset
+( cvs diff -u -r 1.149.2.52 -r 1.149.2.53 src/inc.c;  ) > 2.3.1cvs7.patchset
