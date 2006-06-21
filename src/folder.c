@@ -2345,7 +2345,13 @@ void msginfo_set_mime_flags(GNode *node, gpointer data)
 		if (!mimeinfo->subtype 
 		||  strcmp(mimeinfo->subtype, "pgp-signature"))
 			procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
-	}
+	} else if (mimeinfo->disposition == DISPOSITIONTYPE_INLINE &&
+		(mimeinfo->type != MIMETYPE_TEXT || strcmp(mimeinfo->subtype, "plain")) &&
+		strcmp(mimeinfo->subtype, "pgp-signature") && 
+		(procmime_mimeinfo_get_parameter(mimeinfo, "name") != NULL ||
+		 procmime_mimeinfo_get_parameter(mimeinfo, "filename") != NULL)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
+	} 
 
 	/* don't descend below top level message for signed and encrypted info */
 	if (mimeinfo->type == MIMETYPE_MESSAGE)

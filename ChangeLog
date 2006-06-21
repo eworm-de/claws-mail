@@ -1,3 +1,14 @@
+2006-06-21 [paul]	2.3.1cvs6
+
+	* src/folder.c
+		Show attachment icon even if the part is 'inline'
+		if the following conditions are met:
+		- content-type != 'text/plain'
+		- content-type != '*/pgp-signature'
+		- either 'name' or 'filename' parameter is not NULL
+		
+		Thanks to Colin
+
 2006-06-21 [paul]	2.3.1cvs5
 
 	* src/messageview.c
