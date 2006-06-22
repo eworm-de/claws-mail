@@ -3781,6 +3781,7 @@ int subject_get_prefix_length(const gchar *subject)
 	/*!< Array with allowable reply prefixes regexps. */
 	static const gchar * const prefixes[] = {
 		"Re\\:",			/* "Re:" */
+		"RE\\:",			/* "RE:" (outlook) */
 		"Re\\[[1-9][0-9]*\\]\\:",	/* "Re[XXX]:" (non-conforming news mail clients) */
 		"Antw\\:",			/* "Antw:" (Dutch / German Outlook) */
 		"Aw\\:",			/* "Aw:"   (German) */
@@ -3789,7 +3790,13 @@ int subject_get_prefix_length(const gchar *subject)
 		"Fw\\:",			/* "Fw:" Forward */
 		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
 		"Odp\\:",			/* "Odp:" Re (Polish Outlook) */
-		"Rif\\:"			/* "Rif:" (Italian Outlook) */
+		"Rif\\:",			/* "Rif:" (Italian Outlook) */
+		"SV\\:",			/* "SV" (Norwegian) */
+                "Sv\\:",			/* "Sv" (Norwegian) */
+                "VS\\:",			/* "VS" (Norwegian) */
+                "Vs\\:",			/* "Vs" (Norwegian) */
+		"AD\\:",                        /* "AD" (Norwegian) */
+                "Ad\\:"				/* "Ad" (Norwegian) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
