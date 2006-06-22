@@ -1,7 +1,14 @@
+2006-06-22 [colin]	2.3.1cvs13
+
+	* src/mainwindow.c
+		Add 'View/Go to/Next unread folder'.
+		I missed that :)
+
 2006-06-22 [colin]	2.3.1cvs12
 
 	* src/common/utils.c
 		Add some subject prefixes
+		Patch by Bjorn T Johansen <btj@havleik.no>
 
 2006-06-22 [colin]	2.3.1cvs11
 

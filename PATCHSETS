@@ -1613,3 +1613,4 @@
 ( cvs diff -u -r 1.105.2.56 -r 1.105.2.57 src/prefs_account.c;  ) > 2.3.1cvs10.patchset
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 manual/advanced.xml;  ) > 2.3.1cvs11.patchset
 ( cvs diff -u -r 1.36.2.66 -r 1.36.2.67 src/common/utils.c;  ) > 2.3.1cvs12.patchset
+( cvs diff -u -r 1.274.2.118 -r 1.274.2.119 src/mainwindow.c;  ) > 2.3.1cvs13.patchset

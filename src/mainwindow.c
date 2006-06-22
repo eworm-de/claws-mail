@@ -350,6 +350,9 @@ static void next_labeled_cb	 (MainWindow	*mainwin,
 static void goto_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void goto_unread_folder_cb(MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void copy_cb		 (MainWindow	*mainwin,
 				  guint		 action,
@@ -572,7 +575,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Go to/Next la_beled message"),
 						NULL, next_labeled_cb, 0, NULL},
 	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Other _folder..."),	"G", goto_folder_cb, 0, NULL},
+	{N_("/_View/_Go to/Next unread _folder"),	"<shift>G", goto_unread_folder_cb, 0, NULL},
+	{N_("/_View/_Go to/_Other folder..."),	"G", goto_folder_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 
 #define ENC_SEPARATOR \
@@ -3507,6 +3511,12 @@ static void goto_folder_cb(MainWindow *mainwin, guint action,
 
 	if (to_folder)
 		folderview_select(mainwin->folderview, to_folder);
+}
+
+static void goto_unread_folder_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	folderview_select_next_unread(mainwin->folderview);
 }
 
 static void copy_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
