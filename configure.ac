@@ -11,7 +11,7 @@ MINOR_VERSION=3
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=13
+EXTRA_VERSION=14
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -175,6 +175,12 @@ if test "x${DATADIRNAME}" = "x"; then
   DATADIRNAME="share"
   AC_SUBST(DATADIRNAME)
 fi
+
+mandir='${prefix}/${DATADIRNAME}/man'
+AC_ARG_WITH(mandir,
+	[  --with-mandir=DIR    man directory],
+	[mandir="$withval"])
+AC_SUBST(mandir)
 
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_ARG_WITH(localedir,
