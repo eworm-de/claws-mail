@@ -1,3 +1,9 @@
+2006-06-22 [colin]	2.3.1cvs15
+
+	* src/prefs_customheader.c
+		Don't use filters in custom headers' file 
+		selector. Remember, extensions mean nothing :)
+
 2006-06-22 [paul]	2.3.1cvs14
 
 	* configure.ac

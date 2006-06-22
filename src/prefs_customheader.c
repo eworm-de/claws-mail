@@ -559,11 +559,11 @@ static void prefs_custom_header_val_from_file_cb(void)
 	const gchar *hdr = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
 	
 	if (!strcmp(hdr, "Face"))
-		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.png");
+		filename = filesel_select_file_open(_("Choose a png file"), NULL);
 	else if (!strcmp(hdr, "X-Face"))
-		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.xbm");
+		filename = filesel_select_file_open(_("Choose an xbm file"), NULL);
 	else
-		filename = filesel_select_file_open_with_filter(_("Choose file"), NULL, "*.txt");
+		filename = filesel_select_file_open(_("Choose a text file"), NULL);
 
 	if (!strcmp(hdr, "Face") || !strcmp(hdr, "X-Face")) {
 		if (filename && is_file_exist(filename)) {
