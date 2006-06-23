@@ -1,3 +1,8 @@
+2006-06-23 [wwp]	2.3.1cvs16
+
+	* src/compose.c
+		i18n fix (thanks to Fabien Vantard)
+
 2006-06-22 [colin]	2.3.1cvs15
 
 	* src/prefs_customheader.c
