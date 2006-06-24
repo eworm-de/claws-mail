@@ -8506,10 +8506,36 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
-	AlertValue val = alertpanel(_("Insert or attach?"),
-				 _("Do you want to insert the contents of this file in the email body, "
-				   "or rather attach it to the email?"),
-				  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"));
+	AlertValue val = G_ALERTDEFAULT;
+
+	switch (prefs_common.compose_dnd_mode) {
+		case COMPOSE_DND_ASK:
+			val = alertpanel_full(_("Insert or attach?"),
+				 _("Do you want to insert the contents of the file(s) "
+				   "into the message body, or attach it to the email?"),
+				  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"),
+				  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+			break;
+		case COMPOSE_DND_INSERT:
+			val = G_ALERTALTERNATE;
+			break;
+		case COMPOSE_DND_ATTACH:
+			val = G_ALERTOTHER;
+			break;
+		default:
+			/* unexpected case */
+			g_warning("error: unexpected compose_dnd_mode option value in compose_insert_drag_received_cb()");
+	}
+
+	if (val & G_ALERTDISABLE) {
+		val &= ~G_ALERTDISABLE;
+		/* remember what action to perform by default, only if we don't click Cancel */
+		if (val == G_ALERTALTERNATE)
+			prefs_common.compose_dnd_mode = COMPOSE_DND_INSERT;
+		else
+			if (val == G_ALERTOTHER)
+				prefs_common.compose_dnd_mode = COMPOSE_DND_ATTACH;
+	}
 	
 	if (val == G_ALERTDEFAULT) {
 		gtk_drag_finish(drag_context, FALSE, FALSE, time);

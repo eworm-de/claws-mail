@@ -36,6 +36,7 @@
 
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
+#include "gtk/menu.h"
 
 #include "manage_window.h"
 
@@ -56,6 +57,7 @@ typedef struct _WritingPage
 	GtkWidget *hbox_autosave;
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
+	GtkWidget *optmenu_dnd_insert_or_attach;
 } WritingPage;
 
 void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -90,6 +92,12 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *label_autosave_length;
 	
+	GtkWidget *hbox_dnd_insert_or_attach;
+	GtkWidget *label_dnd_insert_or_attach;
+	GtkWidget *optmenu_dnd_insert_or_attach;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -170,6 +178,29 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox1, checkbtn_default_reply_list,
 			   _("Reply button invokes mailing list reply"));
 
+	/* dnd insert or attach */
+	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));
+	gtk_misc_set_alignment(GTK_MISC(label_dnd_insert_or_attach), 0, 0.5);
+	gtk_widget_show (label_dnd_insert_or_attach);
+
+	optmenu_dnd_insert_or_attach = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_dnd_insert_or_attach);
+
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Ask whether to insert or attach"), COMPOSE_DND_ASK);
+	MENUITEM_ADD (menu, menuitem, _("Always insert"), COMPOSE_DND_INSERT);
+	MENUITEM_ADD (menu, menuitem, _("Always attach"), COMPOSE_DND_ATTACH);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_dnd_insert_or_attach), menu);
+
+	hbox_dnd_insert_or_attach = gtk_hbox_new(FALSE, 20);
+	gtk_widget_show(hbox_dnd_insert_or_attach);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dnd_insert_or_attach, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_dnd_insert_or_attach),
+			label_dnd_insert_or_attach, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_dnd_insert_or_attach),
+			optmenu_dnd_insert_or_attach, FALSE, FALSE, 0);
+	
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
@@ -189,6 +220,8 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_writing->checkbtn_redirect_keep_from =
 		checkbtn_redirect_keep_from;
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
+
+	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -210,12 +243,17 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.reedit_account_autosel);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_default_reply_list),
 		prefs_common.default_reply_list);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_dnd_insert_or_attach),
+		prefs_common.compose_dnd_mode);
 
 	prefs_writing->page.widget = vbox1;
 }
 
 void prefs_compose_writing_save(PrefsPage *_page)
 {
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
 	WritingPage *page = (WritingPage *) _page;
 	prefs_common.auto_exteditor = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autoextedit));
@@ -239,6 +277,10 @@ void prefs_compose_writing_save(PrefsPage *_page)
 	prefs_common.default_reply_list =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_list));
 	
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_dnd_insert_or_attach));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	prefs_common.compose_dnd_mode = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)

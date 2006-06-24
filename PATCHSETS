@@ -1617,3 +1617,4 @@
 ( cvs diff -u -r 1.654.2.1660 -r 1.654.2.1661 configure.ac;  ) > 2.3.1cvs14.patchset
 ( cvs diff -u -r 1.16.2.21 -r 1.16.2.22 src/prefs_customheader.c;  ) > 2.3.1cvs15.patchset
 ( cvs diff -u -r 1.382.2.283 -r 1.382.2.284 src/compose.c;  ) > 2.3.1cvs16.patchset
+( cvs diff -u -r 1.382.2.284 -r 1.382.2.285 src/compose.c;  cvs diff -u -r 1.204.2.89 -r 1.204.2.90 src/prefs_common.c;  cvs diff -u -r 1.103.2.52 -r 1.103.2.53 src/prefs_common.h;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/prefs_compose_writing.c;  ) > 2.3.1cvs17.patchset

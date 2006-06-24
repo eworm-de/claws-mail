@@ -43,6 +43,12 @@ typedef enum {
 } RecvDialogMode;
 
 typedef enum {
+	COMPOSE_DND_ASK,
+	COMPOSE_DND_INSERT,
+	COMPOSE_DND_ATTACH
+} ComposeDndInsertOrAttach;
+
+typedef enum {
 	CTE_AUTO,
 	CTE_BASE64,
 	CTE_QUOTED_PRINTABLE,
@@ -115,6 +121,7 @@ struct _PrefsCommon
 	gboolean autosave;
 	gint autosave_length;
 	gboolean compose_no_markup;
+	ComposeDndInsertOrAttach compose_dnd_mode;
 
 	/* Quote */
 	gboolean reply_with_quote;

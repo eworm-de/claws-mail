@@ -230,6 +230,8 @@ static PrefParam param[] = {
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
 	 NULL, NULL, NULL},
+	{"compose_dnd_insert_or_attach", "TRUE", &prefs_common.compose_dnd_mode, P_ENUM,
+	 NULL, NULL, NULL},
 
 	/* Account autoselection */
 	{"reply_account_autoselect", "TRUE",
