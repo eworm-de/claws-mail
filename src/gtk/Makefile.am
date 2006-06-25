@@ -10,6 +10,7 @@ libsylpheedgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
 	colorsel.c \
+	combobox.c \
 	description_window.c \
 	filesel.c \
 	foldersort.c \
@@ -37,6 +38,7 @@ sylpheedgtkinclude_HEADERS = \
 	about.h \
 	colorlabel.h \
 	colorsel.h \
+	combobox.h \
 	description_window.h \
 	filesel.h \
 	foldersort.h \

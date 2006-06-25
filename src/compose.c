@@ -120,6 +120,7 @@
 #include "toolbar.h"
 #include "inc.h"
 #include "message_search.h"
+#include "combobox.h"
 
 enum
 {
@@ -333,7 +334,7 @@ static void compose_add_field_list	( Compose *compose,
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
-static void account_activated		(GtkMenuItem	*menuitem,
+static void account_activated		(GtkComboBox *optmenu,
 					 gpointer	 data);
 static void attach_selected		(GtkTreeView	*tree_view, 
 					 GtkTreePath	*tree_path,
@@ -6146,7 +6147,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	GList *accounts;
 	GtkWidget *hbox;
 	GtkWidget *optmenu;
-	GtkWidget *menu;
+	GtkWidget *optmenubox;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkWidget *from_name = NULL;
 
 	gint num = 0, def_menu = 0;
@@ -6154,8 +6157,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	accounts = account_get_list();
 	g_return_val_if_fail(accounts != NULL, NULL);
 
-	optmenu = gtk_option_menu_new();
-	menu = gtk_menu_new();
+	optmenubox = gtk_event_box_new();
+	optmenu = gtkut_sc_combobox_create(optmenubox);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	from_name = gtk_entry_new();
@@ -6165,7 +6169,6 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	for (; accounts != NULL; accounts = accounts->next, num++) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
-		GtkWidget *menuitem;
 		gchar *name, *from = NULL;
 
 		if (ac == compose->account) def_menu = num;
@@ -6186,24 +6189,21 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 				gtk_entry_set_text(GTK_ENTRY(from_name), from);
 			}
 		}
-		MENUITEM_ADD(menu, menuitem, name, ac->account_id);
-		gtk_label_set_use_markup (
-				GTK_LABEL (gtk_bin_get_child (GTK_BIN (menuitem))),
-				TRUE);
+		COMBOBOX_ADD(menu, name, ac->account_id);
 		g_free(name);
 		g_free(from);
-		g_signal_connect(G_OBJECT(menuitem), "activate",
-				 G_CALLBACK(account_activated),
-				 compose);
 	}
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), def_menu);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(optmenu), def_menu);
 
-	gtk_box_pack_start(GTK_BOX(hbox), optmenu, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(optmenu), "changed",
+			G_CALLBACK(account_activated),
+			compose);
+
+	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);
 	
-	gtk_tooltips_set_tip(compose->tooltips, optmenu,
+	gtk_tooltips_set_tip(compose->tooltips, optmenubox,
 		_("Account to use for this email"), NULL);
 	gtk_tooltips_set_tip(compose->tooltips, from_name,
 		_("Sender address to be used"), NULL);
@@ -6753,7 +6753,7 @@ static void compose_attach_property(Compose *compose)
 {
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	AttachInfo *ainfo;
-	GtkOptionMenu *optmenu;
+	GtkComboBox *optmenu;
 	GtkTreeSelection *selection;
 	GList *sel;
 	GtkTreeModel *model;
@@ -6787,13 +6787,11 @@ static void compose_attach_property(Compose *compose)
 	gtk_widget_show(attach_prop.window);
 	manage_window_set_transient(GTK_WINDOW(attach_prop.window));
 
-	optmenu = GTK_OPTION_MENU(attach_prop.encoding_optmenu);
+	optmenu = GTK_COMBO_BOX(attach_prop.encoding_optmenu);
 	if (ainfo->encoding == ENC_UNKNOWN)
-		menu_select_by_data(GTK_MENU(gtk_option_menu_get_menu(optmenu)),
-				    GINT_TO_POINTER(ENC_BASE64));
+		combobox_select_by_data(optmenu, ENC_BASE64);
 	else
-		menu_select_by_data(GTK_MENU(gtk_option_menu_get_menu(optmenu)),
-				    GINT_TO_POINTER(ainfo->encoding));
+		combobox_select_by_data(optmenu, ainfo->encoding);
 
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.mimetype_entry),
 			   ainfo->content_type ? ainfo->content_type : "");
@@ -6808,8 +6806,6 @@ static void compose_attach_property(Compose *compose)
 		gchar *cnttype = NULL;
 		gchar *file = NULL;
 		off_t size = 0;
-		GtkWidget *menu;
-		GtkWidget *menuitem;
 
 		cancelled = FALSE;
 		gtk_main();
@@ -6834,10 +6830,7 @@ static void compose_attach_property(Compose *compose)
 			}
 		}
 
-		menu = gtk_option_menu_get_menu(optmenu);
-		menuitem = gtk_menu_get_active(GTK_MENU(menu));
-		ainfo->encoding = GPOINTER_TO_INT
-			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+		ainfo->encoding = combobox_get_active_data(optmenu);
 
 		entry_text = gtk_entry_get_text(GTK_ENTRY(attach_prop.path_entry));
 		if (*entry_text != '\0') {
@@ -6905,14 +6898,14 @@ static void compose_attach_property_create(gboolean *cancelled)
 	GtkWidget *mimetype_entry;
 	GtkWidget *hbox;
 	GtkWidget *optmenu;
-	GtkWidget *optmenu_menu;
-	GtkWidget *menuitem;
+	GtkListStore *optmenu_menu;
 	GtkWidget *path_entry;
 	GtkWidget *filename_entry;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GList     *mime_type_list, *strlist;
+	GtkTreeIter iter;
 
 	debug_print("Creating attach_property window...\n");
 
@@ -6979,21 +6972,16 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	optmenu = gtk_option_menu_new();
+	optmenu = gtkut_sc_combobox_create(NULL);
+	optmenu_menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
+
+	COMBOBOX_ADD(optmenu_menu, "7bit", ENC_7BIT);
+	COMBOBOX_ADD(optmenu_menu, "8bit", ENC_8BIT);
+	COMBOBOX_ADD(optmenu_menu, "quoted-printable",	ENC_QUOTED_PRINTABLE);
+	COMBOBOX_ADD(optmenu_menu, "base64", ENC_BASE64);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(optmenu), 0);
+
 	gtk_box_pack_start(GTK_BOX(hbox), optmenu, TRUE, TRUE, 0);
-
-	optmenu_menu = gtk_menu_new();
-	MENUITEM_ADD(optmenu_menu, menuitem, "7bit", ENC_7BIT);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
-	MENUITEM_ADD(optmenu_menu, menuitem, "8bit", ENC_8BIT);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
-	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable",
-		     ENC_QUOTED_PRINTABLE);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
-
-	MENUITEM_ADD(optmenu_menu, menuitem, "base64", ENC_BASE64);
-
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
 
 	SET_LABEL_AND_ENTRY(_("Path"),      path_entry,     2);
 	SET_LABEL_AND_ENTRY(_("File name"), filename_entry, 3);
@@ -7389,15 +7377,22 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 	return TRUE;
 }
 
-static void account_activated(GtkMenuItem *menuitem, gpointer data)
+static void account_activated(GtkComboBox *optmenu, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
 	PrefsAccount *ac;
 	gchar *folderidentifier;
+	gint account_id = 0;
+	GtkTreeModel *menu;
+	GtkTreeIter iter;
 
-	ac = account_find_from_id(
-		GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID)));
+	/* Get ID of active account in the combo box */
+	menu = gtk_combo_box_get_model(optmenu);
+	gtk_combo_box_get_active_iter(optmenu, &iter);
+	gtk_tree_model_get(menu, &iter, 1, &account_id, -1);
+
+	ac = account_find_from_id(account_id);
 	g_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)

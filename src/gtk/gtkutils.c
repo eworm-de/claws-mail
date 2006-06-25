@@ -1280,3 +1280,27 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 			 G_CALLBACK(link_btn_unrealize), local_url);
 	return btn;
 }
+
+GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox)
+{
+	GtkWidget *combobox;
+	GtkListStore *menu;
+	GtkCellRenderer *rend;
+
+	menu = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_INT);
+
+	combobox = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
+
+	rend = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), rend, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), rend,
+			"markup", 0,
+			NULL);
+
+	if( eventbox != NULL )
+		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
+
+	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), FALSE);
+
+	return combobox;
+}
