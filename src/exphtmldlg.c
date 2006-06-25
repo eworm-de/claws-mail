@@ -47,6 +47,7 @@
 #include "utils.h"
 #include "manage_window.h"
 #include "filesel.h"
+#include "combobox.h"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_FORMAT                1
@@ -210,19 +211,14 @@ static gboolean exp_html_move_file( void ) {
  */
 static gboolean exp_html_move_format( void ) {
 	gboolean retVal = FALSE;
-	GtkWidget *menu, *menuItem;
 	gint id;
 
 	/* Set stylesheet */
-	menu = gtk_option_menu_get_menu( GTK_OPTION_MENU( exphtml_dlg.optmenuCSS ) );
-	menuItem = gtk_menu_get_active( GTK_MENU( menu ) );
-	id = GPOINTER_TO_INT( gtk_object_get_user_data(GTK_OBJECT(menuItem)) );
+	id = combobox_get_active_data(GTK_COMBO_BOX(exphtml_dlg.optmenuCSS));
 	exporthtml_set_stylesheet( _exportCtl_, id );
 
 	/* Set name format */
-	menu = gtk_option_menu_get_menu( GTK_OPTION_MENU( exphtml_dlg.optmenuName ) );
-	menuItem = gtk_menu_get_active( GTK_MENU( menu ) );
-	id = GPOINTER_TO_INT( gtk_object_get_user_data(GTK_OBJECT(menuItem)) );
+	id = combobox_get_active_data(GTK_COMBO_BOX(exphtml_dlg.optmenuName));
 	exporthtml_set_name_format( _exportCtl_, id );
 
 	exporthtml_set_banding( _exportCtl_,
@@ -425,11 +421,12 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *label;
 	GtkWidget *optmenuCSS;
 	GtkWidget *optmenuName;
-	GtkWidget *menu;
-	GtkWidget *menuItem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkWidget *checkBanding;
 	GtkWidget *checkLinkEMail;
 	GtkWidget *checkAttributes;
+
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -457,52 +454,16 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	menu = gtk_menu_new();
+	optmenuCSS = gtkut_sc_combobox_create(NULL, TRUE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuCSS)));
 
-	menuItem = gtk_menu_item_new_with_label( _( "None" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_NONE ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Default" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_DEFAULT ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Full" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_FULL ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Custom" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_CUSTOM ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Custom-2" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_CUSTOM2 ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Custom-3" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_CUSTOM3 ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Custom-4" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_ID_CUSTOM4 ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	optmenuCSS = gtk_option_menu_new();
-	gtk_option_menu_set_menu( GTK_OPTION_MENU( optmenuCSS ), menu );
+	COMBOBOX_ADD(menu, _("None"), EXPORT_HTML_ID_NONE);
+	COMBOBOX_ADD(menu, _("Default"), EXPORT_HTML_ID_DEFAULT);
+	COMBOBOX_ADD(menu, _("Full"), EXPORT_HTML_ID_FULL);
+	COMBOBOX_ADD(menu, _("Custom"), EXPORT_HTML_ID_CUSTOM);
+	COMBOBOX_ADD(menu, _("Custom-2"), EXPORT_HTML_ID_CUSTOM2);
+	COMBOBOX_ADD(menu, _("Custom-3"), EXPORT_HTML_ID_CUSTOM3);
+	COMBOBOX_ADD(menu, _("Custom-4"), EXPORT_HTML_ID_CUSTOM4);
 
 	gtk_table_attach(GTK_TABLE(table), optmenuCSS, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
@@ -514,22 +475,11 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	menu = gtk_menu_new();
+	optmenuName = gtkut_sc_combobox_create(NULL, TRUE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuName)));
 
-	menuItem = gtk_menu_item_new_with_label( _( "First Name, Last Name" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_FIRST_LAST ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Last Name, First Name" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
-			GINT_TO_POINTER( EXPORT_HTML_LAST_FIRST ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-
-	optmenuName = gtk_option_menu_new();
-	gtk_option_menu_set_menu( GTK_OPTION_MENU( optmenuName ), menu );
+	COMBOBOX_ADD(menu, _("First Name, Last Name"), EXPORT_HTML_FIRST_LAST);
+	COMBOBOX_ADD(menu, _("Last Name, First Name"), EXPORT_HTML_LAST_FIRST);
 
 	gtk_table_attach(GTK_TABLE(table), optmenuName, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
@@ -728,10 +678,10 @@ static void export_html_fill_fields( ExportHtmlCtl *ctl ) {
 			ctl->path );
 	}
 
-	gtk_option_menu_set_history(
-		GTK_OPTION_MENU( exphtml_dlg.optmenuCSS ), ctl->stylesheet );
-	gtk_option_menu_set_history(
-		GTK_OPTION_MENU( exphtml_dlg.optmenuName ), ctl->nameFormat );
+	combobox_select_by_data(
+			GTK_COMBO_BOX(exphtml_dlg.optmenuCSS), ctl->stylesheet );
+	combobox_select_by_data(
+			GTK_COMBO_BOX(exphtml_dlg.optmenuName), ctl->nameFormat );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( exphtml_dlg.checkBanding ), ctl->banding );
 	gtk_toggle_button_set_active(

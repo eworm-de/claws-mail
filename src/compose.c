@@ -6158,7 +6158,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	g_return_val_if_fail(accounts != NULL, NULL);
 
 	optmenubox = gtk_event_box_new();
-	optmenu = gtkut_sc_combobox_create(optmenubox);
+	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
 	hbox = gtk_hbox_new(FALSE, 6);
@@ -6972,7 +6972,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	optmenu = gtkut_sc_combobox_create(NULL);
+	optmenu = gtkut_sc_combobox_create(NULL, TRUE);
 	optmenu_menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
 	COMBOBOX_ADD(optmenu_menu, "7bit", ENC_7BIT);

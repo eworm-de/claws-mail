@@ -1281,7 +1281,7 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	return btn;
 }
 
-GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox)
+GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click)
 {
 	GtkWidget *combobox;
 	GtkListStore *menu;
@@ -1300,7 +1300,7 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox)
 	if( eventbox != NULL )
 		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
 
-	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), FALSE);
+	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
 
 	return combobox;
 }
