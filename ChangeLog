@@ -1,3 +1,9 @@
+2006-06-26 [colin]	2.3.1cvs22
+
+	* src/mbox.c
+		Fix double-frees when leaving folders
+		after exporting to mbox
+
 2006-06-26 [colin]	2.3.1cvs21
 
 	* src/mbox.c

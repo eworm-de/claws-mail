@@ -486,7 +486,6 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 		msg_fp = procmsg_open_message(msginfo);
 		if (!msg_fp) {
-			procmsg_msginfo_free(msginfo);
 			continue;
 		}
 
@@ -529,7 +528,6 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		fputc('\n', mbox_fp);
 
 		fclose(msg_fp);
-		procmsg_msginfo_free(msginfo);
 		statusbar_progress_all(msgs++,total, 500);
 		if (msgs%500 == 0)
 			GTK_EVENTS_FLUSH();
