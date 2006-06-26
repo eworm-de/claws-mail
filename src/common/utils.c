@@ -3848,8 +3848,7 @@ guint g_stricase_hash(gconstpointer gptr)
 	const char *str;
 
 	for (str = gptr; str && *str; str++) {
-		if (isupper((guchar)*str)) hash_result += (*str + ' ');
-		else hash_result += *str;
+		hash_result += toupper(*str);
 	}
 
 	return hash_result;
@@ -3860,7 +3859,7 @@ gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
 	const char *str1 = gptr1;
 	const char *str2 = gptr2;
 
-	return !g_utf8_collate(str1, str2);
+	return !strcasecmp(str1, str2);
 }
 
 gint g_int_compare(gconstpointer a, gconstpointer b)

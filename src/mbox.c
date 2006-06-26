@@ -43,6 +43,7 @@
 #include "utils.h"
 #include "filtering.h"
 #include "alertpanel.h"
+#include "statusbar.h"
 
 #define MSGBUFSIZE	8192
 
@@ -69,7 +70,9 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 	gint lines;
 	MsgInfo *msginfo;
 	gboolean more;
-	GSList *to_filter = NULL, *cur;
+	GSList *to_filter = NULL, *to_drop = NULL, *cur, *to_add = NULL;
+	gboolean printed = FALSE;
+	FolderItem *dropfolder;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -100,13 +103,25 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 	tmp_file = get_tmp_file();
 
 	folder_item_update_freeze();
+
+	if (apply_filter)
+		dropfolder = folder_get_default_processing();
+	else
+		dropfolder = dest;
 	
 	do {
 		FILE *tmp_fp;
-		FolderItem *dropfolder;
 		gint empty_lines;
 		gint msgnum;
-
+		
+		if (msgs > 0 && msgs%500 == 0) {
+			if (printed)
+				statusbar_pop_all();
+			statusbar_print_all(_("Importing from mbox... (%d mails imported)"), msgs);
+			printed=TRUE;
+			GTK_EVENTS_FLUSH();
+		}
+	
 		if ((tmp_fp = g_fopen(tmp_file, "wb")) == NULL) {
 			FILE_OP_ERROR(tmp_file, "fopen");
 			g_warning("can't open temporary file\n");
@@ -203,29 +218,59 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 			return -1;
 		}
 
-		dropfolder = folder_get_default_processing();
+		if (apply_filter) {
+			if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, NULL, TRUE)) < 0) {
+				fclose(mbox_fp);
+				g_unlink(tmp_file);
+				g_free(tmp_file);
+				return -1;
+			}
+			msginfo = folder_item_get_msginfo(dropfolder, msgnum);
+                	if (!procmsg_msginfo_filter(msginfo))
+				to_drop = g_slist_prepend(to_drop, msginfo);
+			else
+				to_filter = g_slist_prepend(to_filter, msginfo);
+		} else {
+			MsgFileInfo *finfo = g_new0(MsgFileInfo, 1);
+			finfo->file = tmp_file;
 			
-		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, NULL, TRUE)) < 0) {
-			fclose(mbox_fp);
-			g_unlink(tmp_file);
-			g_free(tmp_file);
-			return -1;
+			to_add = g_slist_prepend(to_add, finfo);
+			tmp_file = get_tmp_file();
+			
+			/* flush every 500 */
+			if (msgs > 0 && msgs % 500 == 0) {
+				folder_item_add_msgs(dropfolder, to_add, TRUE);
+				procmsg_message_file_list_free(to_add);
+				to_add = NULL;
+			}
 		}
-
-		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-                if (!apply_filter || !procmsg_msginfo_filter(msginfo)) {
-			folder_item_move_msg(dest, msginfo);
-			procmsg_msginfo_free(msginfo);
-		} else
-			to_filter = g_slist_append(to_filter, msginfo);
-
 		msgs++;
 	} while (more);
 
-	filtering_move_and_copy_msgs(to_filter);
-	for (cur = to_filter; cur; cur = g_slist_next(cur)) {
-		MsgInfo *info = (MsgInfo *)cur->data;
-		procmsg_msginfo_free(info);
+	if (printed)
+		statusbar_pop_all();
+
+	if (apply_filter) {
+		to_drop = g_slist_reverse(to_drop);
+		folder_item_move_msgs(dest, to_drop);
+		for (cur = to_drop; cur; cur = g_slist_next(cur)) {
+			MsgInfo *info = (MsgInfo *)cur->data;
+			procmsg_msginfo_free(info);
+		}
+
+		to_drop = g_slist_reverse(to_filter);
+		filtering_move_and_copy_msgs(to_filter);
+		for (cur = to_filter; cur; cur = g_slist_next(cur)) {
+			MsgInfo *info = (MsgInfo *)cur->data;
+			procmsg_msginfo_free(info);
+		}
+
+		g_slist_free(to_drop);
+		g_slist_free(to_filter);
+	} else if (to_add) {
+		folder_item_add_msgs(dropfolder, to_add, TRUE);
+		procmsg_message_file_list_free(to_add);
+		to_add = NULL;
 	}
 
 	folder_item_update_thaw();
@@ -417,7 +462,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	FILE *msg_fp;
 	FILE *mbox_fp;
 	gchar buf[BUFFSIZE];
-
+	gint msgs = 1, total = g_slist_length(mlist);
 	if (g_file_test(mbox, G_FILE_TEST_EXISTS) == TRUE) {
 		if (alertpanel_full(_("Overwrite mbox file"),
 					_("This file already exists. Do you want to overwrite it?"),
@@ -434,6 +479,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		return -1;
 	}
 
+	statusbar_print_all(_("Exporting to mbox..."));
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		int len;
@@ -484,8 +530,13 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 		fclose(msg_fp);
 		procmsg_msginfo_free(msginfo);
+		statusbar_progress_all(msgs++,total, 500);
+		if (msgs%500 == 0)
+			GTK_EVENTS_FLUSH();
 	}
-	
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
+
 	fclose(mbox_fp);
 
 	return 0;

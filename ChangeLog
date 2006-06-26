@@ -1,3 +1,13 @@
+2006-06-26 [colin]	2.3.1cvs21
+
+	* src/mbox.c
+		More feedback (and optimisation)
+		on import/export
+	* src/common/utils.c
+		Fix case when looking for mail addresses
+	* src/gtk/gtkutils.c
+		Extra check for (X-)Face
+
 2006-06-25 [ticho]	2.3.1cvs20
 
 	* src/compose.c

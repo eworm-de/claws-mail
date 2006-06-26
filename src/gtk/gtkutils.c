@@ -1147,6 +1147,9 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
 	GtkWidget *image;
 	
+	if (o_face == NULL || strlen(o_face) == 0)
+		return NULL;
+
 	strncpy2(face, o_face, sizeof(face));
 
 	unfold_line(face); /* strip all whitespace and linebreaks */
