@@ -5,9 +5,13 @@
 	* src/prefs_common.h
 	* src/prefs_ext_prog.c
 	* src/textview.c
-	add a preference (Preferences/External programs)
-	to allow "Display as text" to be done via a script
-	(patch by H.Merijn Brand)
+		Add a preference (Preferences/External programs)
+		to allow "Display as text" to be done via a script
+		(patch by H.Merijn Brand).
+		Use GtkComboBox for protocol selection in account
+		preferences.
+		Only include current choice for existing accounts, and
+		insensitivize the combobox.
 
 2006-06-27 [paul]	2.3.1cvs23
 
