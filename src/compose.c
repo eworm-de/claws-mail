@@ -8501,48 +8501,47 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
-	AlertValue val = G_ALERTDEFAULT;
-
-	switch (prefs_common.compose_dnd_mode) {
-		case COMPOSE_DND_ASK:
-			val = alertpanel_full(_("Insert or attach?"),
-				 _("Do you want to insert the contents of the file(s) "
-				   "into the message body, or attach it to the email?"),
-				  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"),
-				  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
-			break;
-		case COMPOSE_DND_INSERT:
-			val = G_ALERTALTERNATE;
-			break;
-		case COMPOSE_DND_ATTACH:
-			val = G_ALERTOTHER;
-			break;
-		default:
-			/* unexpected case */
-			g_warning("error: unexpected compose_dnd_mode option value in compose_insert_drag_received_cb()");
-	}
-
-	if (val & G_ALERTDISABLE) {
-		val &= ~G_ALERTDISABLE;
-		/* remember what action to perform by default, only if we don't click Cancel */
-		if (val == G_ALERTALTERNATE)
-			prefs_common.compose_dnd_mode = COMPOSE_DND_INSERT;
-		else
-			if (val == G_ALERTOTHER)
-				prefs_common.compose_dnd_mode = COMPOSE_DND_ATTACH;
-	}
-	
-	if (val == G_ALERTDEFAULT) {
-		gtk_drag_finish(drag_context, FALSE, FALSE, time);
-		return;
-	} else if (val == G_ALERTOTHER) {
-		compose_attach_drag_received_cb(widget, drag_context, x, y, data, info, time, user_data);
-		return;
-	} 
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+		AlertValue val = G_ALERTDEFAULT;
+
+		switch (prefs_common.compose_dnd_mode) {
+			case COMPOSE_DND_ASK:
+				val = alertpanel_full(_("Insert or attach?"),
+					 _("Do you want to insert the contents of the file(s) "
+					   "into the message body, or attach it to the email?"),
+					  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"),
+					  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+				break;
+			case COMPOSE_DND_INSERT:
+				val = G_ALERTALTERNATE;
+				break;
+			case COMPOSE_DND_ATTACH:
+				val = G_ALERTOTHER;
+				break;
+			default:
+				/* unexpected case */
+				g_warning("error: unexpected compose_dnd_mode option value in compose_insert_drag_received_cb()");
+		}
+
+		if (val & G_ALERTDISABLE) {
+			val &= ~G_ALERTDISABLE;
+			/* remember what action to perform by default, only if we don't click Cancel */
+			if (val == G_ALERTALTERNATE)
+				prefs_common.compose_dnd_mode = COMPOSE_DND_INSERT;
+			else if (val == G_ALERTOTHER)
+					prefs_common.compose_dnd_mode = COMPOSE_DND_ATTACH;
+		}
+
+		if (val == G_ALERTDEFAULT || val == G_ALERTCANCEL) {
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);
+			return;
+		} else if (val == G_ALERTOTHER) {
+			compose_attach_drag_received_cb(widget, drag_context, x, y, data, info, time, user_data);
+			return;
+		} 
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
 			compose_insert_file(compose, (const gchar *)tmp->data);

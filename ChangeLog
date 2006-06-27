@@ -1,3 +1,14 @@
+2006-06-27 [colin]	2.3.1cvs26
+
+	* src/compose.c
+		Fix Esc handling in insert/attach dialog
+		Don't show this dialog if dragging something
+		else than text/uri-list
+		Thanks to Fabien Vantard
+	* tools/textviewer.pl
+		Filter script to display stuff as text
+		by H. Merijn Brand
+
 2006-06-27 [wwp]	2.3.1cvs25
 
 	* src/messageview.c
