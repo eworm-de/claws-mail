@@ -1,3 +1,9 @@
+2006-06-27 [paul]	2.3.1cvs23
+
+	* src/mbox.c
+		fix crasher introduced in cvs21.
+		Thanks to Colin
+
 2006-06-26 [colin]	2.3.1cvs22
 
 	* src/mbox.c

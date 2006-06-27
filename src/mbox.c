@@ -258,7 +258,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 			procmsg_msginfo_free(info);
 		}
 
-		to_drop = g_slist_reverse(to_filter);
+		to_filter = g_slist_reverse(to_filter);
 		filtering_move_and_copy_msgs(to_filter);
 		for (cur = to_filter; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
