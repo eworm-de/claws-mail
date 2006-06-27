@@ -1,3 +1,9 @@
+2006-06-27 [wwp]	2.3.1cvs25
+
+	* src/messageview.c
+		use the exact product name (message view title), patch
+		by Fabien Vantard.
+
 2006-06-27 [ticho]	2.3.1cvs24
 
 	* src/prefs_account.c

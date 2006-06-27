@@ -444,7 +444,7 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed-Claws - Message View"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
 	if (!geometry.min_height) {
