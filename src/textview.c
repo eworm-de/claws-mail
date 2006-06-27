@@ -34,6 +34,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #if HAVE_LIBCOMPFACE
 #  include <compface.h>
 #endif
@@ -836,7 +837,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
 	CodeConverter *conv;
-	const gchar *charset;
+	const gchar *charset, *p, *cmd;
 	
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -876,7 +877,53 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			g_unlink(filename);
 		}
 		g_free(filename);
+	} else if ( g_ascii_strcasecmp(mimeinfo->subtype, "plain") &&
+		   (cmd = prefs_common.mime_textviewer) && *cmd &&
+		   (p = strchr(cmd, '%')) && *(p + 1) == 's') {
+		int pid, pfd[2];
+		const gchar *fname;
+
+		fname  = procmime_get_tmp_file_name(mimeinfo);
+		if (procmime_get_part(fname, mimeinfo)) goto textview_default;
+
+		g_snprintf(buf, sizeof(buf), cmd, fname);
+		debug_print("Viewing text content of type: %s (length: %d) "
+			"using %s\n", mimeinfo->subtype, mimeinfo->length, buf);
+
+		if (pipe(pfd) < 0) {
+			g_snprintf(buf, sizeof(buf),
+				"pipe failed for textview\n\n%s\n", strerror(errno));
+			textview_write_line(textview, buf, conv);
+			goto textview_default;
+		}
+		pid = fork();
+		if (pid < 0) {
+			g_snprintf(buf, sizeof(buf),
+				"fork failed for textview\n\n%s\n", strerror(errno));
+			textview_write_line(textview, buf, conv);
+			close(pfd[0]);
+			close(pfd[1]);
+			goto textview_default;
+		}
+		if (pid == 0) { /* child */
+			gchar **argv;
+			argv = strsplit_with_quote(buf, " ", 0);
+			close(1);
+			close(pfd[0]);
+			dup(pfd[1]);
+			execvp(argv[0], argv);
+			close(pfd[1]);
+			exit(255);
+		}
+		close(pfd[1]);
+		tmpfp = fdopen(pfd[0], "rb");
+		while (fgets(buf, sizeof(buf), tmpfp))
+			textview_write_line(textview, buf, conv);
+		fclose(tmpfp);
+		waitpid(pid, pfd, 0);
+		unlink(fname);
 	} else {
+textview_default:
 		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);

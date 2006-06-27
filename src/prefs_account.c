@@ -54,6 +54,7 @@
 #include "imap.h"
 #include "remotefolder.h"
 #include "base64.h"
+#include "combobox.h"
 
 static gboolean cancelled;
 static gboolean new_account;
@@ -220,11 +221,10 @@ static struct Advanced {
 	GtkWidget *trash_folder_entry;
 } advanced;
 
-static void prefs_account_fix_size			(void);
-
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
-static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
+static void prefs_account_protocol_activated		(GtkComboBox *combobox,
+							gpointer data);
 
 static void prefs_account_set_string_from_optmenu	(PrefParam *pparam);
 static void prefs_account_set_optmenu_from_string	(PrefParam *pparam);
@@ -709,12 +709,6 @@ static void create_widget_func(PrefsPage * _page,
 			gtk_entry_set_text(GTK_ENTRY(basic.org_entry),
 					   def_ac->organization ? def_ac->organization : "");
 		}
-		menu_set_sensitive_all
-			(GTK_MENU_SHELL
-				(gtk_option_menu_get_menu
-					(GTK_OPTION_MENU
-						(basic.protocol_optmenu))),
-			 TRUE);
 	} else
 		prefs_set_dialog(param);
 
@@ -1028,34 +1022,6 @@ static void prefs_account_create(void)
 #endif /* USE_OPENSSL */
 	prefs_account_advanced_create();
 	SET_NOTEBOOK_LABEL(notebook, _("A_dvanced"), page++);
-
-	prefs_account_fix_size();
-}
-
-/**
- * prefs_account_fix_size:
- * 
- * Fix the window size after creating widgets by selecting "Local"
- * protocol (currently it has the largest size of parameter widgets).
- * Without this the window gets too large.
- **/
-static void prefs_account_fix_size(void)
-{
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU (basic.protocol_optmenu);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	gtk_option_menu_set_history (optmenu, 4); /* local */
-	menu = gtk_option_menu_get_menu (optmenu);
-	menuitem = gtk_menu_get_active (GTK_MENU (menu));
-	gtk_menu_item_activate (GTK_MENU_ITEM (menuitem));
-}
-
-#define SET_ACTIVATE(menuitem) \
-{ \
-	g_signal_connect(G_OBJECT(menuitem), "activate", \
-			 G_CALLBACK(prefs_account_protocol_activated), \
-			 NULL); \
 }
 
 #define TABLE_YPAD 2
@@ -1076,8 +1042,7 @@ static void prefs_account_basic_create(void)
 	GtkWidget *serv_frame;
 	GtkWidget *vbox2;
 	GtkWidget *optmenu;
-	GtkWidget *optmenu_menu;
-	GtkWidget *menuitem;
+	GtkListStore *optmenu_menu;
 	GtkWidget *serv_table;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
@@ -1179,24 +1144,17 @@ static void prefs_account_basic_create(void)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	optmenu = gtk_option_menu_new ();
+	/* We will only create the combobox here, and we will fill it later in
+	 * prefs_account_protocol_set_optmenu().
+	 */
+	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (optmenu);
 	gtk_box_pack_start (GTK_BOX (hbox), optmenu, FALSE, FALSE, 0);
 
-	optmenu_menu = gtk_menu_new ();
+	optmenu_menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3"),  A_POP3);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("IMAP4"), A_IMAP4);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("News (NNTP)"), A_NNTP);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("Local mbox file"), A_LOCAL);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("None (SMTP only)"), A_NONE);
-	SET_ACTIVATE (menuitem);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+	g_signal_connect(G_OBJECT(optmenu), "changed",
+			G_CALLBACK(prefs_account_protocol_activated), NULL);
 
 	serv_table = gtk_table_new (6, 4, FALSE);
 	gtk_widget_show (serv_table);
@@ -2481,15 +2439,10 @@ static void prefs_account_advanced_create(void)
 static gint prefs_account_apply(void)
 {
 	RecvProtocol protocol;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	gchar *old_id = NULL;
 	gchar *new_id = NULL;
 	
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(basic.protocol_optmenu));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	protocol = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	protocol = combobox_get_active_data(GTK_COMBO_BOX(basic.protocol_optmenu));
 
 	if (*gtk_entry_get_text(GTK_ENTRY(basic.acname_entry)) == '\0') {
 		alertpanel_error(_("Account name is not entered."));
@@ -2675,23 +2628,32 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 {
 	RecvProtocol protocol;
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gint index;
+	GtkWidget *optmenu = *pparam->widget;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 
 	protocol = *((RecvProtocol *)pparam->data);
-	index = menu_find_option_menu_index
-		(optmenu, GINT_TO_POINTER(protocol), NULL);
-	if (index < 0) return;
-	gtk_option_menu_set_history(optmenu, index);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	menu = gtk_option_menu_get_menu(optmenu);
-	menu_set_insensitive_all(GTK_MENU_SHELL(menu));
+	/* Clear all options and add them as necessary:
+	 * - if we're creating a new account, add all of them
+	 * - otherwise only add the correct one for this account
+	 */
+	gtk_list_store_clear(menu);
+	if( new_account || protocol == A_POP3 )
+		COMBOBOX_ADD (menu, _("POP3"),  A_POP3);
+	if( new_account || protocol == A_IMAP4 )
+		COMBOBOX_ADD (menu, _("IMAP4"), A_IMAP4);
+	if( new_account || protocol == A_NNTP )
+		COMBOBOX_ADD (menu, _("News (NNTP)"), A_NNTP);
+	if( new_account || protocol == A_LOCAL )
+		COMBOBOX_ADD (menu, _("Local mbox file"), A_LOCAL);
+	if( new_account || protocol == A_NONE )
+		COMBOBOX_ADD (menu, _("None (SMTP only)"), A_NONE);
 
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_widget_set_sensitive(menuitem, TRUE);
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu), protocol);
+
+	gtk_widget_set_sensitive(optmenu, new_account);
 }
 
 static void prefs_account_imap_auth_type_set_data_from_optmenu(PrefParam *pparam)
@@ -2838,12 +2800,11 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 	g_list_free(children);
 }
 
-static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
+static void prefs_account_protocol_activated(GtkComboBox *combobox, gpointer data)
 {
 	RecvProtocol protocol;
 
-	protocol = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	protocol = combobox_get_active_data(combobox);
 
 	switch(protocol) {
 	case A_NNTP:

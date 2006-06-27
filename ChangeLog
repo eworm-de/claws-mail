@@ -1,3 +1,14 @@
+2006-06-27 [ticho]	2.3.1cvs24
+
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_ext_prog.c
+	* src/textview.c
+	add a preference (Preferences/External programs)
+	to allow "Display as text" to be done via a script
+	(patch by H.Merijn Brand)
+
 2006-06-27 [paul]	2.3.1cvs23
 
 	* src/mbox.c

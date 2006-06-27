@@ -279,6 +279,7 @@ struct _PrefsCommon
 
 	/* MIME viewer */
 	gchar *mime_image_viewer;
+	gchar *mime_textviewer;
 	gchar *mime_audio_player;
 	gchar *mime_open_cmd;
 	gchar *attach_save_dir;
