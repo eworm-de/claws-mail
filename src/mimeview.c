@@ -430,13 +430,22 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 	}
 }
 
-static const gchar *get_part_name(MimeInfo *partinfo)
+static const gchar *get_real_part_name(MimeInfo *partinfo)
 {
-	const gchar *name;
+	const gchar *name = NULL;
 
 	name = procmime_mimeinfo_get_parameter(partinfo, "filename");
 	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(partinfo, "name");
+
+	return name;
+}
+
+static const gchar *get_part_name(MimeInfo *partinfo)
+{
+	const gchar *name;
+
+	name = get_real_part_name(partinfo);
 	if (name == NULL)
 		name = "";
 
@@ -1440,7 +1449,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		if (partinfo->type != MIMETYPE_MESSAGE &&
 		    partinfo->type != MIMETYPE_MULTIPART &&
 		    (partinfo->disposition != DISPOSITIONTYPE_INLINE
-		     || get_part_name(partinfo) != NULL)) {
+		     || get_real_part_name(partinfo) != NULL)) {
 			gchar *filename = mimeview_get_filename_for_part
 				(partinfo, dirname, number++);
 
