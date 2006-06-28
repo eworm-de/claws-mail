@@ -1,3 +1,9 @@
+2006-06-28 [paul]	2.3.1cvs27
+
+	* src/prefs_ext_prog.c
+		hide Print command option if libgnomeprint
+		support is present
+
 2006-06-27 [colin]	2.3.1cvs26
 
 	* src/compose.c
