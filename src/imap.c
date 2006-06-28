@@ -3146,7 +3146,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 			*old_uids_valid = FALSE;
 
 			debug_print("Freeing imap uid cache (%d != %d)\n",
-					item->item.mtime, uid_val);
+					(int)item->item.mtime, uid_val);
 			item->lastuid = 0;
 			g_slist_free(item->uid_list);
 			item->uid_list = NULL;

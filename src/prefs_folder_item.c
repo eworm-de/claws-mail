@@ -76,7 +76,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *checkbtn_newmailcheck;
 	GtkWidget *checkbtn_offlinesync;
 
-	/* appy to sub folders */
+	/* apply to sub folders */
 	GtkWidget *simplify_subject_rec_checkbtn;
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
@@ -139,7 +139,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
                                 		   gpointer data)
 {
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) page_;
-	FolderItem *item = (FolderItem *) data, *parent;
+	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
 
@@ -391,7 +391,7 @@ void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_)
 /** \brief  Save the prefs in page to folder.
  *
  *  If the folder is not the one  specified in page->item, then only those properties 
- *  that have the relevant 'appy to sub folders' button checked are saved
+ *  that have the relevant 'apply to sub folders' button checked are saved
  */
 static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage *page)
 {
@@ -769,7 +769,7 @@ void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 /** \brief  Save the prefs in page to folder.
  *
  *  If the folder is not the one  specified in page->item, then only those properties 
- *  that have the relevant 'appy to sub folders' button checked are saved
+ *  that have the relevant 'apply to sub folders' button checked are saved
  */
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page)
 {

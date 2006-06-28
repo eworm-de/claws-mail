@@ -1,3 +1,9 @@
+2006-06-28 [wwp]	2.3.1cvs31
+
+	* src/imap.c
+	* src/prefs_folder_item.c
+		less compilation warnings (thanks to Fabien Vantard), less typos.
+
 2006-06-28 [paul]	2.3.1cvs30
 
 	* src/gtk/gtkutils.c
