@@ -90,6 +90,9 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *audio_player_entry;
 	GtkWidget *printcmd_label;
 	GtkWidget *printcmd_entry;
+	GtkTooltips *tooltip;
+
+	tooltip = gtk_tooltips_new();
 
 	table = gtk_table_new(2, 1, FALSE);
 	gtk_widget_show(table);
@@ -195,7 +198,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(image_viewer_entry), 
 			   prefs_common.mime_image_viewer ? prefs_common.mime_image_viewer : "");
 
-	astextviewer_label = gtk_label_new(_("View as text command"));
+	astextviewer_label = gtk_label_new(_("Command for 'Display as text'"));
 	gtk_widget_show(astextviewer_label);
 
 	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, 3, 4,
@@ -206,6 +209,11 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	astextviewer_entry = gtk_entry_new ();
 	gtk_widget_show(astextviewer_entry);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltip), astextviewer_entry,
+			     _("This option enables MIME parts to be displayed in the "
+ 			       "message view via a script when using the 'Display as text' "
+			       "contextual menu item"),
+			     NULL);
 	
 	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, 3, 4,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
