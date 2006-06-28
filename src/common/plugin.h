@@ -38,6 +38,7 @@ void plugin_unload		(Plugin		 *plugin);
 void plugin_load_all		(const gchar	 *type);
 void plugin_unload_all		(const gchar	 *type);
 void plugin_save_list		(void);
+void plugin_load_standard_plugins (void);
 
 GSList *plugin_get_list		(void);
 GSList *plugin_get_unloaded_list(void);

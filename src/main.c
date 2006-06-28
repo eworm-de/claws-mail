@@ -539,7 +539,9 @@ int main(int argc, char *argv[])
 				     "Check the Plugins configuration "
 				     "for more information."));
 	}
-	
+
+ 	plugin_load_standard_plugins ();
+       
 	if (!folder_have_mailbox()) {
 		alertpanel_error(_("Sylpheed-Claws has detected a configured "
 				   "mailbox, but could not load it. It is "

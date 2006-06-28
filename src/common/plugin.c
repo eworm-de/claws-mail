@@ -64,10 +64,15 @@ static gint list_find_by_string(gconstpointer data, gconstpointer str)
 
 static gint list_find_by_plugin_filename(const Plugin *plugin, const gchar *filename)
 {
-        g_return_val_if_fail(plugin, 1);
-        g_return_val_if_fail(plugin->filename, 1);
-        g_return_val_if_fail(filename, 1);
-        return strcmp(filename, plugin->filename);
+	/* FIXME: There is a problem in case of symlinks or when a
+	   user tries to load a plugin with the same name from a
+	   different directory.  I think it would be better to compare
+	   only the basename of the filename here (case-insensitive on
+	   W32). */
+	g_return_val_if_fail(plugin, 1);
+	g_return_val_if_fail(plugin->filename, 1);
+	g_return_val_if_fail(filename, 1);
+	return strcmp(filename, plugin->filename);
 }
 
 void plugin_save_list(void)
@@ -116,7 +121,7 @@ void plugin_save_list(void)
 static gboolean plugin_is_loaded(const gchar *filename)
 {
 	return (g_slist_find_custom(plugins, filename, 
-                  (GCompareFunc)list_find_by_plugin_filename) != NULL);
+		  (GCompareFunc)list_find_by_plugin_filename) != NULL);
 }
 
 static Plugin *plugin_get_by_filename(const gchar *filename)
@@ -146,9 +151,11 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 	gchar *deps_file = NULL;
 	FILE *fp = NULL;
 	gchar buf[BUFFSIZE];
+	gchar *p;
 
-        tmp = g_strdup(filename);
-	*strrchr(tmp, '.') = '\0';
+	tmp = g_strdup(filename);
+	if( (p = strrchr(tmp, '.')) )
+	  *p = '\0';
 	deps_file = g_strconcat(tmp, ".deps", NULL);
 	g_free(tmp);
 	
@@ -242,8 +249,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	/* check duplicate plugin path name */
 	if (plugin_is_loaded(filename)) {
 		*error = g_strdup(_("Plugin already loaded"));
-		return NULL;                
-	}                               
+		return NULL;		
+	}			       
 	
 	plugin_remove_from_unloaded_list(filename);
 	
@@ -255,7 +262,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
-        debug_print("trying to load `%s'\n", filename);
+	debug_print("trying to load `%s'\n", filename);
 	plugin->module = g_module_open(filename, 0);
 	if (plugin->module == NULL) {
 		*error = g_strdup(g_module_error());
@@ -389,6 +396,45 @@ void plugin_unload_all(const gchar *type)
 		plugin_types = g_slist_remove(plugin_types, cur);
 	}
 }
+
+
+/* Load those plugins we always want to use.  No error output; just
+ * try. */
+void plugin_load_standard_plugins (void)
+{
+	static const char *names[] = {
+#ifdef G_OS_WIN32 
+		"pgpmime",
+		"pgpinline",
+#endif
+		NULL
+	};
+	int i;
+	gchar *error, *filename;
+	
+	for (i=0; names[i]; i++) {
+		/* Simple hack to check whether the plugin has already
+		 * been loaded but checking only for the basename. */
+		GSList *cur = plugins;
+		for(; cur; cur = cur->next) {
+			Plugin *p = (Plugin *)cur->data;
+			if (strstr(p->filename, names[i]))
+				break;
+		}
+		if (!cur) { /* Not yet loaded. */
+			/* FIXME: get_plugin_dir () returns with a trailing
+			 * (back)slash; this should be fixed so that we can use
+			 * g_module_build_path here. */
+			filename = g_strconcat (get_plugin_dir(),
+						names[i], NULL);
+			error = NULL;
+			plugin_load(filename, &error);
+			g_free (error);
+			g_free(filename);
+		}
+	}
+}
+
 
 GSList *plugin_get_list(void)
 {

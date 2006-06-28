@@ -16,3 +16,5 @@ procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mimeinfo
 sylpheed_get_version
+privacy_set_error
+privacy_get_error

@@ -170,12 +170,12 @@ gint g_chmod(const gchar *path, gint mode)
 gint mkstemp_name(const gchar *template, gchar **name_used)
 {
 	static gulong count=0; /* W32-_mktemp only supports up to 27
-                                  tempfiles... */
+				  tempfiles... */
 	int tmpfd;
 
 	*name_used = g_strdup_printf("%s.%ld",_mktemp(template),count++);
 	tmpfd = open (*name_used, (O_CREAT | O_RDWR | O_BINARY),
-                                    (S_IRUSR | S_IWUSR));
+				    (S_IRUSR | S_IWUSR));
 
 	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
 	if (tmpfd<0) {
@@ -370,21 +370,21 @@ gchar *strstr2(const gchar *s1, const gchar *s2)
 gint path_cmp(const gchar *s1, const gchar *s2)
 {
 	gint len1, len2;
-        int rc;
+	int rc;
 #ifdef G_OS_WIN32
-        gchar *s1buf, *s2buf;
+	gchar *s1buf, *s2buf;
 #endif
 
 	if (s1 == NULL || s2 == NULL) return -1;
 	if (*s1 == '\0' || *s2 == '\0') return -1;
 
 #ifdef G_OS_WIN32
-        s1buf = g_strdup (s1);
-        s2buf = g_strdup (s2);
-        subst_char (s1buf, '/', G_DIR_SEPARATOR);
-        subst_char (s2buf, '/', G_DIR_SEPARATOR);
-        s1 = s1buf;
-        s2 = s2buf;
+	s1buf = g_strdup (s1);
+	s2buf = g_strdup (s2);
+	subst_char (s1buf, '/', G_DIR_SEPARATOR);
+	subst_char (s2buf, '/', G_DIR_SEPARATOR);
+	s1 = s1buf;
+	s2 = s2buf;
 #endif /* !G_OS_WIN32 */
 
 	len1 = strlen(s1);
@@ -395,10 +395,10 @@ gint path_cmp(const gchar *s1, const gchar *s2)
 
 	rc = strncmp(s1, s2, MAX(len1, len2));
 #ifdef G_OS_WIN32
-        g_free (s1buf);
-        g_free (s2buf);
+	g_free (s1buf);
+	g_free (s2buf);
 #endif /* !G_OS_WIN32 */
-        return rc;
+	return rc;
 }
 
 /* remove trailing return code */
@@ -1700,7 +1700,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 					strncpy(escaped_utf8uri, p, q - p + 1);
 					escaped_utf8uri[q - p + 1] = '\0';
 					decode_uri(file, escaped_utf8uri);
-                    /*
+		    /*
 		     * g_filename_from_uri() rejects escaped/locale encoded uri
 		     * string which come from Nautilus.
 		     */
@@ -1905,8 +1905,8 @@ w32_strerror (int w32_errno)
   if (w32_errno == 0)
     w32_errno = ec;
   FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM, NULL, w32_errno,
-                 MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                 strerr, DIM (strerr)-1, NULL);
+		 MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+		 strerr, DIM (strerr)-1, NULL);
   return strerr;
 }
 
@@ -1924,7 +1924,7 @@ dlsym (void * hd, const char * sym)
     {
       void * fnc = GetProcAddress (hd, sym);
       if (!fnc)
-        return NULL;
+	return NULL;
       return fnc;
     }
   return NULL;
@@ -1964,18 +1964,18 @@ w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d, LPSTR e)
       initialized = 1;
 
       for (i=0, handle = NULL; !handle && dllnames[i]; i++)
-        {
-          handle = dlopen (dllnames[i], RTLD_LAZY);
-          if (handle)
-            {
-              func = dlsym (handle, "SHGetFolderPathA");
-              if (!func)
-                {
-                  dlclose (handle);
-                  handle = NULL;
-                }
-            }
-        }
+	{
+	  handle = dlopen (dllnames[i], RTLD_LAZY);
+	  if (handle)
+	    {
+	      func = dlsym (handle, "SHGetFolderPathA");
+	      if (!func)
+		{
+		  dlclose (handle);
+		  handle = NULL;
+		}
+	    }
+	}
     }
 
   if (func)
@@ -1983,16 +1983,56 @@ w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d, LPSTR e)
   else
     return -1;
 }
+
+/* Returns a static string with the directroy from which the module
+   has been loaded.  Returns an empty string on error. */
+static char *w32_get_module_dir(void)
+{
+	static char *moddir;
+
+	if (!moddir) {
+		char name[MAX_PATH+10];
+		char *p;
+
+		if ( !GetModuleFileNameA (0, name, sizeof (name)-10) )
+			*name = 0;
+		else {
+			p = strrchr (name, '\\');
+			if (p)
+				*p = 0;
+			else
+				*name = 0;
+		}
+		moddir = g_strdup (name);
+	}
+	return moddir;
+}
+#endif /* G_OS_WIN32 */
+
+/* Return a static string with the locale dir. */
+const gchar *get_locale_dir(void)
+{
+	static gchar *loc_dir;
+
+#ifdef G_OS_WIN32
+	if (!loc_dir)
+		loc_dir = g_strconcat(w32_get_module_dir(), G_DIR_SEPARATOR_S,
+				      "\\share\\locale", NULL);
 #endif
+	if (!loc_dir)
+		loc_dir = LOCALEDIR;
+	
+	return loc_dir;
+}
+
 
 const gchar *get_home_dir(void)
 {
 #ifdef G_OS_WIN32
 	static char home_dir[MAX_PATH] = "";
 
-	if (home_dir[0] == '\0')
-		{
-			if (w32_shgetfolderpath
+	if (home_dir[0] == '\0') {
+		if (w32_shgetfolderpath
 			    (NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE,
 			     NULL, 0, home_dir) < 0)
 				strcpy (home_dir, "C:\\Sylpheed");
@@ -2112,12 +2152,21 @@ const gchar *get_plugin_dir(void)
 	static gchar *plugin_dir = NULL;
 
 	if (!plugin_dir)
-                plugin_dir = g_strconcat(sylpheed_get_startup_dir(),
-                                         "\\lib\\sylpheed-claws\\plugins\\",
-                                         NULL);
+		plugin_dir = g_strconcat(w32_get_module_dir(),
+					 "\\lib\\sylpheed-claws\\plugins\\",
+					 NULL);
 	return plugin_dir;
 #else
-        return PLUGINDIR;
+	if (is_dir_exist(PLUGINDIR))
+		return PLUGINDIR;
+	else {
+		static gchar *plugin_dir = NULL;
+		if (!plugin_dir)
+			plugin_dir = g_strconcat(get_rc_dir(), 
+				G_DIR_SEPARATOR_S, "plugins", 
+				G_DIR_SEPARATOR_S, NULL);
+		return plugin_dir;			
+	}
 #endif
 }
 
@@ -2261,21 +2310,21 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
  * straightforward for Unix but more complex for Windows. */
 gboolean is_relative_filename(const gchar *file)
 {
-        if (!file)
-                return TRUE;
+	if (!file)
+		return TRUE;
 #ifdef G_OS_WIN32
-        if ( *file == '\\' && file[1] == '\\' && strchr (file+2, '\\') )
-                return FALSE; /* Prefixed with a hostname - this can't
-                               * be a relative name. */
+	if ( *file == '\\' && file[1] == '\\' && strchr (file+2, '\\') )
+		return FALSE; /* Prefixed with a hostname - this can't
+			       * be a relative name. */
 
-        if ( ((*file >= 'a' && *file <= 'z')
-              || (*file >= 'A' && *file <= 'Z'))
-             && file[1] == ':')
-                file += 2;  /* Skip drive letter. */
+	if ( ((*file >= 'a' && *file <= 'z')
+	      || (*file >= 'A' && *file <= 'Z'))
+	     && file[1] == ':')
+		file += 2;  /* Skip drive letter. */
 
-        return !(*file == '\\' || *file == '/');
+	return !(*file == '\\' || *file == '/');
 #else
-        return !(*file == G_DIR_SEPARATOR);
+	return !(*file == G_DIR_SEPARATOR);
 #endif
 }
 
@@ -3180,8 +3229,8 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
  *   boundary := 0*69<bchars> bcharsnospace
  *   bchars := bcharsnospace / " "
  *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
- *                    "+" / "_" / "," / "-" / "." /
- *                    "/" / ":" / "=" / "?"
+ *		    "+" / "_" / "," / "-" / "." /
+ *		    "/" / ":" / "=" / "?"
  *
  * some special characters removed because of buggy MTAs
  */
@@ -3260,7 +3309,7 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 	int fd;
 #ifdef G_OS_WIN32
 	char *template = g_strdup_printf ("%s%csylpheed.XXXXXX",
-                                          dir, G_DIR_SEPARATOR);
+					  dir, G_DIR_SEPARATOR);
 	fd = mkstemp_name(template, filename);
 	g_free(template);
 #else
@@ -3732,8 +3781,8 @@ void debug_print_real(const gchar *format, ...)
 
 const char * debug_srcname(const char *file)
 {
-        const char *s = strrchr (file, '/');
-        return s? s+1:file;
+	const char *s = strrchr (file, '/');
+	return s? s+1:file;
 }
 
 
@@ -3792,11 +3841,11 @@ int subject_get_prefix_length(const gchar *subject)
 		"Odp\\:",			/* "Odp:" Re (Polish Outlook) */
 		"Rif\\:",			/* "Rif:" (Italian Outlook) */
 		"SV\\:",			/* "SV" (Norwegian) */
-                "Sv\\:",			/* "Sv" (Norwegian) */
-                "VS\\:",			/* "VS" (Norwegian) */
-                "Vs\\:",			/* "Vs" (Norwegian) */
-		"AD\\:",                        /* "AD" (Norwegian) */
-                "Ad\\:"				/* "Ad" (Norwegian) */
+		"Sv\\:",			/* "Sv" (Norwegian) */
+		"VS\\:",			/* "VS" (Norwegian) */
+		"Vs\\:",			/* "Vs" (Norwegian) */
+		"AD\\:",			/* "AD" (Norwegian) */
+		"Ad\\:"				/* "Ad" (Norwegian) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -4345,7 +4394,7 @@ static GHashTable *create_domain_tab(void)
 	    "tc", "td", "tf", "tg", "th", "tj", "tk", "tm", "tn", "to",
 	    "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "um",
 	    "us", "uy", "uz", "va", "vc", "ve", "vg", "vi", "vn", "vu",
-            "wf", "ws", "ye", "yt", "yu", "za", "zm", "zw"
+	    "wf", "ws", "ye", "yt", "yu", "za", "zm", "zw"
 	};
 	gint n;
 	GHashTable *htab = g_hash_table_new(g_stricase_hash, g_stricase_equal);
@@ -4483,7 +4532,7 @@ search_again:
 				last_dot = ep_;
 		 		if (*(last_dot + 1) == '.') {
 					if (prelast_dot == NULL)
-	        				return FALSE;
+						return FALSE;
 					last_dot = prelast_dot;
 					break;
 				}

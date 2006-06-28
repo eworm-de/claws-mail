@@ -2,6 +2,7 @@ LIBRARY SYLPHEED-CLAWS.EXE
 EXPORTS
 alertpanel
 alertpanel_full
+alertpanel_error
 copy_file_part
 debug_print_real
 debug_srcname
@@ -30,3 +31,5 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 sylpheed_get_version
+privacy_set_error
+privacy_get_error

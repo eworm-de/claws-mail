@@ -1,3 +1,19 @@
+2006-06-28 [colin]	2.3.1cvs32
+
+	* src/mimeview.c
+		Save named inlined attachments with "Save all"
+	* src/main.c
+	* src/mbox.c
+	* src/common/plugin.c
+	* src/common/plugin.h
+	* src/common/sylpheed.c
+	* src/common/utils.c
+	* src/plugins/pgpcore/sylpheed.def
+	* src/plugins/pgpinline/sylpheed.def
+	* src/plugins/pgpmime/sylpheed.def
+		Win32 compatibility patch, by
+		Werner Koch
+
 2006-06-28 [wwp]	2.3.1cvs31
 
 	* src/imap.c
