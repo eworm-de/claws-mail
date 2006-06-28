@@ -499,7 +499,11 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), value_entry, 2, 3, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
+	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+#else
 	test_btn = gtk_button_new_with_label(_(" Info... "));
+#endif
 	gtk_widget_show(test_btn);
 	gtk_table_attach(GTK_TABLE (criteria_table), test_btn, 3, 4, 1, 2,
 			 0, 0, 0, 0);

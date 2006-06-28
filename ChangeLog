@@ -1,3 +1,12 @@
+2006-06-28 [wwp]	2.3.1cvs35
+
+	* src/prefs_template.c
+	* src/prefs_matcher.c
+	* src/prefs_filtering_action.c
+	* src/prefs_quote.c
+		unify info/help/symbols.. buttons to use GTK_STOCK_HELP,
+		patch by Fabien Vantard, slightly modified.
+
 2006-06-28 [paul]
 
 	2.4.0-rc2 released

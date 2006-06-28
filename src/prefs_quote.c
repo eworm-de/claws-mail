@@ -177,8 +177,12 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
+	btn_quotedesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
+#else
 	btn_quotedesc =
 		gtk_button_new_with_label (_(" Description of symbols... "));
+#endif
 	gtk_widget_show (btn_quotedesc);
 	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_quotedesc), "clicked",
