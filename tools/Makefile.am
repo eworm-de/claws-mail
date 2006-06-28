@@ -20,6 +20,7 @@ EXTRA_TOOLS = \
 	sylprint.rc \
 	tb2sylpheed \
 	tbird2syl.py \
+	textviewer.pl \
 	textviewer.sh \
         update-po \
 	uudec \

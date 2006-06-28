@@ -1,6 +1,8 @@
-2006-06-28 [paul]
+2006-06-28 [paul]	2.3.1cvs28
 
-	2.4.0-rc1 released
+	* ChangeLog
+	* tools/Makefile.am
+		include textviewer.pl in releases
 
 2006-06-28 [paul]	2.3.1cvs27
 
