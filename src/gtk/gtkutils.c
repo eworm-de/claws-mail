@@ -1302,8 +1302,8 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 
 	if( eventbox != NULL )
 		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
-
+#if GTK_CHECK_VERSION(2,6,0)
 	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
-
+#endif
 	return combobox;
 }
