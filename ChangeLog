@@ -4,7 +4,7 @@
 	* src/prefs_matcher.c
 	* src/prefs_filtering_action.c
 	* src/prefs_quote.c
-		unify info/help/symbols.. buttons to use GTK_STOCK_HELP,
+		unify info/help/symbols.. buttons to use GTK_STOCK_INFO,
 		patch by Fabien Vantard, slightly modified.
 
 2006-06-28 [paul]
