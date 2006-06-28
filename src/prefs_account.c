@@ -2616,13 +2616,7 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	*((RecvProtocol *)pparam->data) = combobox_get_active_data(GTK_WIDGET (*pparam->widget));
 }
 
 static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
