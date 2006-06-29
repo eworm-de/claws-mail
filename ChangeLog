@@ -1,3 +1,12 @@
+2006-06-29 [colin]	2.3.1cvs40
+
+	* src/main.c
+		Fix transient setting on failing plugins
+		Patch by Fabien
+	* src/plugins/pgpcore/sgpgme.c
+		Only warn for OpenPGP. Most people don't
+		have CMS available.
+
 2006-06-29 [colin]	2.3.1cvs39
 
 	* src/compose.c

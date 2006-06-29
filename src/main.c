@@ -447,6 +447,7 @@ int main(int argc, char *argv[])
 		
 	mainwin = main_window_create
 		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
 	gtk_clist_freeze(GTK_CLIST(mainwin->folderview->ctree));
@@ -535,14 +536,17 @@ int main(int argc, char *argv[])
 	}
 	
 	if (plugin_get_unloaded_list() != NULL) {
+		main_window_cursor_normal(mainwin);
 		alertpanel_warning(_("Some plugin(s) failed to load. "
 				     "Check the Plugins configuration "
 				     "for more information."));
+		main_window_cursor_wait(mainwin);
 	}
 
  	plugin_load_standard_plugins ();
        
 	if (!folder_have_mailbox()) {
+		main_window_cursor_normal(mainwin);
 		alertpanel_error(_("Sylpheed-Claws has detected a configured "
 				   "mailbox, but could not load it. It is "
 				   "probably provided by an out-of-date "

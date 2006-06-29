@@ -527,7 +527,8 @@ void sgpgme_init()
 					engineInfo->version ? engineInfo->version:"???",
 					engineInfo->req_version ? engineInfo->req_version:"???",
 					engineInfo->file_name ? engineInfo->file_name:"???");
-				if (gpgme_engine_check_version(engineInfo->protocol) != 
+				if (engineInfo->protocol == GPGME_PROTOCOL_OpenPGP
+				&&  gpgme_engine_check_version(engineInfo->protocol) != 
 					GPG_ERR_NO_ERROR) {
 					if (engineInfo->file_name && !engineInfo->version) {
 						alertpanel_error(_("Gpgme protocol '%s' is unusable: "
