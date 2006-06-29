@@ -1,3 +1,9 @@
+2006-06-29 [wwp]	2.3.1cvs38
+
+	* src/mainwindow.c
+		honor the display-header-pane setting even when the message view
+		is a separate window.
+
 2006-06-29 [wwp]	2.3.1cvs37
 
 	* src/prefs_actions.c

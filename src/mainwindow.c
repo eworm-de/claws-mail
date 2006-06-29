@@ -2685,6 +2685,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				  mainwin->messageview->handlebox, 
 				  prefs_common.toolbar_style);
 
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
+
 		break;
 	case SEPARATE_BOTH:
 		messageview_add_toolbar(mainwin->messageview, messagewin);
@@ -2704,6 +2708,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		toolbar_set_style(mainwin->messageview->toolbar->toolbar, 
 				  mainwin->messageview->handlebox, 
 				  prefs_common.toolbar_style);		
+
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
 
 		break;
 	}
