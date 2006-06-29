@@ -68,6 +68,7 @@
 #include "statusbar.h"
 #include "msgcache.h"
 #include "imap-thread.h"
+#include "account.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -4252,6 +4253,24 @@ void imap_folder_ref(Folder *folder)
 	((IMAPFolder *)folder)->refcnt++;
 }
 
+void imap_disconnect_all(void)
+{
+	GList *list;
+	for (list = account_get_list(); list != NULL; list = list->next) {
+		PrefsAccount *account = list->data;
+		if (account->protocol == A_IMAP4) {
+			RemoteFolder *folder = (RemoteFolder *)account->folder;
+			if (folder && folder->session) {
+				printf("disconnecting\n");
+				IMAPSession *session = (IMAPSession *)folder->session;
+				imap_threaded_disconnect(FOLDER(folder));
+				session_destroy(session);
+				folder->session = NULL;
+			}
+		}
+	}
+}
+
 void imap_folder_unref(Folder *folder)
 {
 	if (((IMAPFolder *)folder)->refcnt > 0)
@@ -4313,6 +4332,11 @@ FolderClass *imap_get_class(void)
 
 	return &imap_class;
 }
+
+void imap_disconnect_all(void)
+{
+}
+
 #endif
 
 void imap_synchronise(FolderItem *item) 

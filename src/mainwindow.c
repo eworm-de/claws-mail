@@ -3143,6 +3143,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		menuitem->active = TRUE;
 		prefs_common.work_offline = TRUE;
 		inc_autocheck_timer_remove();		
+		imap_disconnect_all();
 	} else {
 		/*go online */
 		gtk_widget_hide (mainwin->offline_switch);
