@@ -1,3 +1,16 @@
+2006-06-29 [colin]	2.3.1cvs44
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+	* src/summaryview.c
+		Let 'View/Go to/Next marked' work like
+		Next new & Next unread: across folders
+		Change the select_on_entry pref to do
+		what we want when changing folder
+	* src/common/utils.c
+		Fix single-quoted links 
+
 2006-06-29 [colin]	2.3.1cvs43
 
 	* src/gtk/gtkaspell.c

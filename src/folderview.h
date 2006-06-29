@@ -100,6 +100,7 @@ void folderview_select			(FolderView	*folderview,
 void folderview_unselect		(FolderView	*folderview);
 void folderview_select_next_unread	(FolderView	*folderview);
 void folderview_select_next_new		(FolderView	*folderview);
+void folderview_select_next_marked	(FolderView	*folderview);
 
 FolderItem *folderview_get_selected_item(FolderView	*folderview);
 

@@ -1613,27 +1613,56 @@ void summary_select_prev_marked(SummaryView *summaryview)
 
 void summary_select_next_marked(SummaryView *summaryview)
 {
-	GtkCTreeNode *node;
-
-	node = summary_find_next_flagged_msg
-		(summaryview, summaryview->selected, MSG_MARKED, TRUE);
-
-	if (!node) {
-		AlertValue val;
-
-		val = alertpanel(_("No more marked messages"),
-				 _("No marked message found. "
-				   "Search from the beginning?"),
-				 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
-		if (val != G_ALERTALTERNATE) return;
-		node = summary_find_next_flagged_msg(summaryview, NULL,
-						     MSG_MARKED, TRUE);
+	GtkCTreeNode *node = summaryview->selected;
+	gboolean skip_cur = FALSE;
+	
+	if (summaryview->displayed 
+	&&  summaryview->selected == summaryview->displayed) {
+		debug_print("skipping cur (%p %p)\n",
+			summaryview->displayed, summaryview->selected);
+		skip_cur = TRUE;
 	}
 
-	if (!node)
-		alertpanel_notice(_("No marked messages."));
-	else
+
+	node = summary_find_next_flagged_msg
+		(summaryview, node, MSG_MARKED, skip_cur);
+	
+	if (node)
 		summary_select_node(summaryview, node, TRUE, FALSE);
+	else {
+		node = summary_find_next_flagged_msg
+			(summaryview, NULL, MSG_MARKED, FALSE);
+		if (node == NULL || node == summaryview->selected) {
+			AlertValue val = 0;
+
+ 			switch (prefs_common.next_unread_msg_dialog) {
+ 				case NEXTUNREADMSGDIALOG_ALWAYS:
+					val = alertpanel(_("No more marked messages"),
+							 _("No marked message found. "
+							   "Go to next folder?"),
+							 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+ 					break;
+ 				case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 					val = G_ALERTALTERNATE;
+ 					break;
+ 				case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 					val = G_ALERTOTHER;
+ 					break;
+ 				default:
+ 					debug_print(
+ 						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 			}
+
+			if (val == G_ALERTALTERNATE) {
+				folderview_select_next_marked(summaryview->folderview);
+				return;
+			} 
+			else
+				return;
+		} else
+			summary_select_node(summaryview, node, TRUE, FALSE);
+
+	}
 }
 
 void summary_select_prev_labeled(SummaryView *summaryview)

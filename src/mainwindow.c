@@ -2112,7 +2112,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Previous unread message" , M_MSG_EXIST},
 		{"/View/Go to/Previous new message"    , M_MSG_EXIST},
 		{"/View/Go to/Previous marked message" , M_MSG_EXIST},
-		{"/View/Go to/Next marked message" , M_MSG_EXIST},
 		{"/View/Go to/Previous labeled message", M_MSG_EXIST},
 		{"/View/Go to/Next labeled message", M_MSG_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
