@@ -1643,3 +1643,4 @@
 ( cvs diff -u -r 1.115.2.92 -r 1.115.2.93 src/main.c;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpcore/sgpgme.c;  ) > 2.3.1cvs40.patchset
 ( cvs diff -u -r 1.179.2.124 -r 1.179.2.125 src/imap.c;  cvs diff -u -r 1.34.2.6 -r 1.34.2.7 src/imap.h;  cvs diff -u -r 1.274.2.120 -r 1.274.2.121 src/mainwindow.c;  ) > 2.3.1cvs41.patchset
 ( cvs diff -u -r 1.179.2.125 -r 1.179.2.126 src/imap.c;  ) > 2.3.1cvs42.patchset
+( cvs diff -u -r 1.9.2.40 -r 1.9.2.41 src/gtk/gtkaspell.c;  ) > 2.3.1cvs43.patchset

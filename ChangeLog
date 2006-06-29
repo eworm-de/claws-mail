@@ -1,3 +1,8 @@
+2006-06-29 [colin]	2.3.1cvs43
+
+	* src/gtk/gtkaspell.c
+		"Sylpheed" and "Sylpheed-Claws" do exist !
+
 2006-06-29 [colin]	2.3.1cvs42
 
 	* src/imap.c

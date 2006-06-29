@@ -1065,7 +1065,8 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 			       &start, &end))
 		return FALSE;
 
-	if (misspelled_test(gtkaspell, buf)) {
+	if (misspelled_test(gtkaspell, buf)
+	&& strcasecmp(buf, "sylpheed") && strcasecmp(buf, "sylpheed-claws")) {
 		strncpy(gtkaspell->theword, buf, GTKASPELLWORDSIZE - 1);
 		gtkaspell->theword[GTKASPELLWORDSIZE - 1] = 0;
 		gtkaspell->start_pos  = start;
