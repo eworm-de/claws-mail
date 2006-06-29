@@ -1,3 +1,12 @@
+2006-06-29 [colin]	2.3.1cvs39
+
+	* src/compose.c
+		Fix Spelling menu (discrepancy between context menu
+		and top menu when folder's dictionary isn't the 
+		default one)
+	* src/plugins/pgpcore/sgpgme.c
+		More error reporting about why gpgme can fail
+
 2006-06-29 [wwp]	2.3.1cvs38
 
 	* src/mainwindow.c
@@ -149,9 +158,9 @@
 	* src/exphtmldlg.c
 	* src/gtk/gtkutils.c
 	* src/gtk/gtkutils.h
-	Added second argument to gtkut_sc_combobox_create() to
-	control focus-on-click for the widget.
-	Migrated the only GtkOptionMenu in exphtmldlg.c to GtkComboBox.
+		Added second argument to gtkut_sc_combobox_create() to
+		control focus-on-click for the widget.
+		Migrated the only GtkOptionMenu in exphtmldlg.c to GtkComboBox.
 
 2006-06-25 [ticho]	2.3.1cvs19
 

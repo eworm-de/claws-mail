@@ -520,9 +520,35 @@ void sgpgme_init()
 #endif
 		if (!gpgme_get_engine_info(&engineInfo)) {
 			while (engineInfo) {
-				debug_print("GpgME Protocol: %s\n      Version: %s\n",
+				debug_print("GpgME Protocol: %s\n"
+					    "Version: %s (req %s)\n"
+					    "Executable: %s\n",
 					gpgme_get_protocol_name(engineInfo->protocol),
-					engineInfo->version);
+					engineInfo->version ? engineInfo->version:"???",
+					engineInfo->req_version ? engineInfo->req_version:"???",
+					engineInfo->file_name ? engineInfo->file_name:"???");
+				if (gpgme_engine_check_version(engineInfo->protocol) != 
+					GPG_ERR_NO_ERROR) {
+					if (engineInfo->file_name && !engineInfo->version) {
+						alertpanel_error(_("Gpgme protocol '%s' is unusable: "
+								   "Engine '%s' isn't installed properly."),
+								   gpgme_get_protocol_name(engineInfo->protocol),
+								   engineInfo->file_name);
+					} else if (engineInfo->file_name && engineInfo->version
+					  && engineInfo->req_version) {
+						alertpanel_error(_("Gpgme protocol '%s' is unusable: "
+								   "Engine '%s' version %s is installed, "
+								   "but version %s is required.\n"),
+								   gpgme_get_protocol_name(engineInfo->protocol),
+								   engineInfo->file_name,
+								   engineInfo->version,
+								   engineInfo->req_version);
+					} else {
+						alertpanel_error(_("Gpgme protocol '%s' is unusable "
+								   "(unknown problem)"),
+								   gpgme_get_protocol_name(engineInfo->protocol));
+					}
+				}
 				engineInfo = engineInfo->next;
 			}
 		}

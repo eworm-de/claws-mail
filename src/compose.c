@@ -325,7 +325,9 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 static void compose_create_header_entry	(Compose *compose);
 static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
 static void compose_update_priority_menu_item(Compose * compose);
-
+#if USE_ASPELL
+static void compose_spell_menu_changed	(void *data);
+#endif
 static void compose_add_field_list	( Compose *compose,
 					  GList *listAddress );
 
@@ -958,6 +960,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	    compose->gtkaspell) 
 		gtkaspell_change_dict(compose->gtkaspell, 
 		    item->prefs->default_dictionary);
+	compose_spell_menu_changed(compose);
 #endif
 
 	if (account->auto_sig)
