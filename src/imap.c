@@ -4261,7 +4261,6 @@ void imap_disconnect_all(void)
 		if (account->protocol == A_IMAP4) {
 			RemoteFolder *folder = (RemoteFolder *)account->folder;
 			if (folder && folder->session) {
-				printf("disconnecting\n");
 				IMAPSession *session = (IMAPSession *)folder->session;
 				imap_threaded_disconnect(FOLDER(folder));
 				session_destroy(session);
