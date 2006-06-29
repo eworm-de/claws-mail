@@ -862,11 +862,13 @@ static IMAPSession *imap_session_new(Folder * folder,
 static void imap_session_authenticate(IMAPSession *session, 
 				      const PrefsAccount *account)
 {
-	gchar *pass;
+	gchar *pass, *acc_pass;
+	gboolean failed = FALSE;
 
 	g_return_if_fail(account->userid != NULL);
-
-	pass = account->passwd;
+	acc_pass = account->passwd;
+try_again:
+	pass = acc_pass;
 	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON) {
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
@@ -880,12 +882,21 @@ static void imap_session_authenticate(IMAPSession *session,
 	statusbar_print_all(_("Connecting to IMAP4 server %s...\n"),
 				account->recv_server);
 	if (imap_auth(session, account->userid, pass, account->imap_auth_type) != IMAP_SUCCESS) {
-		imap_threaded_disconnect(session->folder);
-		imap_cmd_logout(session);
 		statusbar_pop_all();
 		
+		if (!failed) {
+			acc_pass = NULL;
+			failed = TRUE;
+			goto try_again;
+		} else {
+			imap_threaded_disconnect(session->folder);
+			imap_cmd_logout(session);
+			alertpanel_error(_("Couldn't login to IMAP server %s."), account->recv_server);
+		}		
+
 		return;
-	}
+	} 
+
 	statusbar_pop_all();
 	session->authenticated = TRUE;
 }
@@ -2663,7 +2674,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 
 	flag_list = imap_flag_to_lep(flags);
 	r = imap_threaded_append(session->folder, destfolder,
-			 file, flag_list, new_uid);
+			 file, flag_list, (int *)new_uid);
 	mailimap_flag_list_free(flag_list);
 
 	if (r != MAILIMAP_NO_ERROR) {
@@ -3077,7 +3088,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, nummsgs = 0, exists, uid_val, uid_next = 0;
+	gint ok, nummsgs = 0, exists;
+	guint32 uid_next = 0, uid_val = 0;
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;

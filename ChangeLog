@@ -1,3 +1,10 @@
+2006-06-29 [colin]	2.3.1cvs36
+
+	* src/imap.c
+		Better handling of login errors (ask the password
+		again once), alert in case of error. Fix three
+		signedness warnings.
+
 2006-06-28 [wwp]	2.3.1cvs35
 
 	* src/prefs_template.c

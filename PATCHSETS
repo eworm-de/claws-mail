@@ -1636,3 +1636,4 @@
 ( cvs diff -u -r 1.83.2.72 -r 1.83.2.73 src/mimeview.c;  ) > 2.3.1cvs33.patchset
 ( cvs diff -u -r 1.105.2.58 -r 1.105.2.59 src/prefs_account.c;  ) > 2.3.1cvs34.patchset
 ( cvs diff -u -r 1.12.2.24 -r 1.12.2.25 src/prefs_template.c;  cvs diff -u -r 1.43.2.38 -r 1.43.2.39 src/prefs_matcher.c;  cvs diff -u -r 1.1.4.26 -r 1.1.4.27 src/prefs_filtering_action.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_quote.c;  ) > 2.3.1cvs35.patchset
+( cvs diff -u -r 1.179.2.123 -r 1.179.2.124 src/imap.c;  ) > 2.3.1cvs36.patchset
