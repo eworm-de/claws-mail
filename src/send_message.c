@@ -202,12 +202,33 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
 	gboolean was_inited = FALSE;
+	MsgInfo *tmp_msginfo = NULL;
+	MsgFlags flags = {0, 0};
+	long fp_pos = 0;
+	gchar spec_from[BUFFSIZE];
 
 	g_return_val_if_fail(ac_prefs != NULL, -1);
 	g_return_val_if_fail(ac_prefs->address != NULL, -1);
 	g_return_val_if_fail(ac_prefs->smtp_server != NULL, -1);
 	g_return_val_if_fail(to_list != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
+
+	/* get the From address used, not necessarily the ac_prefs',
+	 * because it's editable. */
+
+	fp_pos = ftell(fp);
+	tmp_msginfo = procheader_parse_stream(fp, flags, FALSE, FALSE);
+	fseek(fp, fp_pos, SEEK_SET);
+	
+	if (tmp_msginfo && tmp_msginfo->from) {
+		strncpy2(spec_from, tmp_msginfo->from, BUFFSIZE-1);
+		extract_address(spec_from);
+	} else {
+		strncpy2(spec_from, ac_prefs->address, BUFFSIZE-1);
+	}
+	if (tmp_msginfo) {
+		procmsg_msginfo_free(tmp_msginfo);
+	}
 
 	if (!ac_prefs->session) {
 		/* we can't reuse a previously initialised session */
@@ -334,11 +355,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	}
 
 	/* This has to be initialised for every mail sent */
-	smtp_session->from = g_strdup(ac_prefs->address);
+	smtp_session->from = g_strdup(spec_from);
 	smtp_session->to_list = to_list;
 	smtp_session->cur_to = to_list;
-	smtp_session->send_data = get_outgoing_rfc2822_str(fp);
-	smtp_session->send_data_len = strlen(smtp_session->send_data);
+	smtp_session->send_data = (guchar *)get_outgoing_rfc2822_str(fp);
+	smtp_session->send_data_len = strlen((gchar *)smtp_session->send_data);
 
 	session_set_timeout(session,
 			    prefs_common.io_timeout_secs * 1000);
