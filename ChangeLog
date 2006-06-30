@@ -1,3 +1,10 @@
+2006-06-30 [colin]	2.3.1cvs45
+
+	* src/compose.c
+		Fix signature replacement:
+		- when no newline before separator
+		- when reediting
+
 2006-06-29 [colin]	2.3.1cvs44
 
 	* src/folderview.c

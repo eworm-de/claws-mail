@@ -1645,3 +1645,4 @@
 ( cvs diff -u -r 1.179.2.125 -r 1.179.2.126 src/imap.c;  ) > 2.3.1cvs42.patchset
 ( cvs diff -u -r 1.9.2.40 -r 1.9.2.41 src/gtk/gtkaspell.c;  ) > 2.3.1cvs43.patchset
 ( cvs diff -u -r 1.207.2.104 -r 1.207.2.105 src/folderview.c;  cvs diff -u -r 1.20.2.11 -r 1.20.2.12 src/folderview.h;  cvs diff -u -r 1.274.2.121 -r 1.274.2.122 src/mainwindow.c;  cvs diff -u -r 1.395.2.221 -r 1.395.2.222 src/summaryview.c;  cvs diff -u -r 1.36.2.69 -r 1.36.2.70 src/common/utils.c;  ) > 2.3.1cvs44.patchset
+( cvs diff -u -r 1.382.2.289 -r 1.382.2.290 src/compose.c;  ) > 2.3.1cvs45.patchset

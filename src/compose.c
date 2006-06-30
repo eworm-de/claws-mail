@@ -1812,6 +1812,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		compose_destroy(compose);
 		return NULL;
 	}
+	
+	compose->sig_str = compose_get_signature_str(compose);
+	
 	return compose;
 }
 
@@ -2683,7 +2686,9 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	GtkTextMark *mark;
 	GtkTextIter iter, iter_end;
 	gint cur_pos;
+	gchar *search = NULL;
 	gboolean prev_autowrap;
+	gboolean found = FALSE, shift = FALSE;
 
 	
 	g_return_if_fail(compose->account != NULL);
@@ -2701,8 +2706,9 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-	if (replace && compose->sig_str) {
-		gboolean found;
+	search = compose->sig_str;
+again:
+	if (replace && search) {
 		GtkTextIter first_iter, start_iter, end_iter;
 
 		gtk_text_buffer_get_start_iter(buffer, &first_iter);
@@ -2711,7 +2717,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 			found = FALSE;
 		else
 			found = gtk_text_iter_forward_search(&first_iter,
-							     compose->sig_str,
+							     search,
 							     GTK_TEXT_SEARCH_TEXT_ONLY,
 							     &start_iter, &end_iter,
 							     NULL);
@@ -2720,6 +2726,12 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 			gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
 			iter = start_iter;
 		}
+	} 
+	if (replace && !found && search && strlen(search) > 2
+	&&  search[0] == '\n' && search[1] == '\n') {
+		search ++;
+		shift = TRUE;
+		goto again;
 	}
 
 	g_free(compose->sig_str);
@@ -2728,7 +2740,10 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 		compose->sig_str = g_strdup("");
 
 	cur_pos = gtk_text_iter_get_offset(&iter);
-	gtk_text_buffer_insert(buffer, &iter, compose->sig_str, -1);
+	if (shift && found)
+		gtk_text_buffer_insert(buffer, &iter, compose->sig_str + 1, -1);
+	else
+		gtk_text_buffer_insert(buffer, &iter, compose->sig_str, -1);
 	/* skip \n\n */
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
 	gtk_text_iter_forward_char(&iter);
