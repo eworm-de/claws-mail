@@ -3896,8 +3896,11 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 				       
 	activate_privacy_system(compose, account, FALSE);
 
-	if (!init && compose->mode != COMPOSE_REDIRECT)
+	if (!init && compose->mode != COMPOSE_REDIRECT) {
+		undo_block(compose->undostruct);
 		compose_insert_sig(compose, TRUE);
+		undo_unblock(compose->undostruct);
+	}
 }
 
 gboolean compose_check_for_valid_recipient(Compose *compose) {
