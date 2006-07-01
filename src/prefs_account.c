@@ -70,6 +70,12 @@ static GtkWidget *signature_edit_button;
 
 static GSList *prefs_pages = NULL;
 
+struct BasicProtocol {
+	GtkWidget *combobox;
+	GtkWidget *label;
+	GtkWidget *descrlabel;
+};
+
 static struct Basic {
 	GtkWidget *acname_entry;
 	GtkWidget *default_chkbtn;
@@ -80,7 +86,7 @@ static struct Basic {
 
 	GtkWidget *serv_frame;
 	GtkWidget *serv_table;
-	GtkWidget *protocol_optmenu;
+	gpointer *protocol_optmenu;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
 	GtkWidget *nntpserv_label;
@@ -221,9 +227,19 @@ static struct Advanced {
 	GtkWidget *trash_folder_entry;
 } advanced;
 
+static char *protocol_names[] = {
+	N_("POP3"),
+	NULL,		/* APOP, deprecated */
+	NULL,		/* RPOP, deprecated */
+	N_("IMAP4"),
+	N_("News (NNTP)"),
+	N_("Local mbox file"),
+	N_("None (SMTP only)")
+};
+
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
-static void prefs_account_protocol_activated		(GtkComboBox *combobox,
+static void prefs_account_protocol_changed		(GtkComboBox *combobox,
 							gpointer data);
 
 static void prefs_account_set_string_from_optmenu	(PrefParam *pparam);
@@ -268,7 +284,7 @@ static PrefParam param[] = {
 	 &basic.org_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"protocol", NULL, &tmp_ac_prefs.protocol, P_ENUM,
-	 &basic.protocol_optmenu,
+	 (GtkWidget **)&basic.protocol_optmenu,
 	 prefs_account_protocol_set_data_from_optmenu,
 	 prefs_account_protocol_set_optmenu},
 
@@ -1041,8 +1057,9 @@ static void prefs_account_basic_create(void)
 
 	GtkWidget *serv_frame;
 	GtkWidget *vbox2;
+	GtkWidget *optmenubox;
 	GtkWidget *optmenu;
-	GtkListStore *optmenu_menu;
+	GtkWidget *optlabel;
 	GtkWidget *serv_table;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
@@ -1061,6 +1078,11 @@ static void prefs_account_basic_create(void)
 	GtkWidget *pass_label;
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
+	GtkListStore *menu;
+	GtkTreeIter iter;
+
+	struct BasicProtocol *protocol_optmenu;
+	gint i;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1144,17 +1166,34 @@ static void prefs_account_basic_create(void)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	/* We will only create the combobox here, and we will fill it later in
-	 * prefs_account_protocol_set_optmenu().
-	 */
-	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
-	gtk_widget_show (optmenu);
-	gtk_box_pack_start (GTK_BOX (hbox), optmenu, FALSE, FALSE, 0);
+	/* Create GtkHBox for protocol combobox and label */
+	optmenubox = gtk_hbox_new(FALSE, 20);
+	gtk_widget_show(optmenubox);
+	gtk_box_pack_start (GTK_BOX (hbox), optmenubox, FALSE, FALSE, 0);
 
-	optmenu_menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
+	/* Create and populate the combobox */
+	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
+	gtk_box_pack_start(GTK_BOX (optmenubox), optmenu, FALSE, FALSE, 0);
+
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
+	for( i = 0; i < NUM_RECV_PROTOCOLS; i++ )
+		if( protocol_names[i] != NULL )
+			COMBOBOX_ADD (menu, protocol_names[i], i);
 
 	g_signal_connect(G_OBJECT(optmenu), "changed",
-			G_CALLBACK(prefs_account_protocol_activated), NULL);
+			G_CALLBACK(prefs_account_protocol_changed), NULL);
+
+	/* Create protocol label, empty for now */
+	optlabel = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(optlabel), TRUE);
+	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_CENTER);
+	gtk_box_pack_start(GTK_BOX (optmenubox), optlabel, FALSE, FALSE, 0);
+
+	/* Set up a struct to store pointers to necessary widgets */
+	protocol_optmenu = g_new(struct BasicProtocol, 1);
+	protocol_optmenu->combobox = optmenu;
+	protocol_optmenu->label = optlabel;
+	protocol_optmenu->descrlabel = label;
 
 	serv_table = gtk_table_new (6, 4, FALSE);
 	gtk_widget_show (serv_table);
@@ -1292,7 +1331,7 @@ static void prefs_account_basic_create(void)
 
 	basic.serv_frame       = serv_frame;
 	basic.serv_table       = serv_table;
-	basic.protocol_optmenu = optmenu;
+	basic.protocol_optmenu = (gpointer)protocol_optmenu;
 	basic.recvserv_label   = recvserv_label;
 	basic.recvserv_entry   = recvserv_entry;
 	basic.smtpserv_label   = smtpserv_label;
@@ -2616,38 +2655,46 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 {
-	*((RecvProtocol *)pparam->data) = combobox_get_active_data(GTK_WIDGET (*pparam->widget));
+	struct BasicProtocol *protocol_optmenu =
+		(struct BasicProtocol *)*pparam->widget;
+	GtkWidget *optmenu = protocol_optmenu->combobox;
+
+	*((RecvProtocol *)pparam->data) =
+		combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 }
 
 static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 {
 	RecvProtocol protocol;
-	GtkWidget *optmenu = *pparam->widget;
-	GtkListStore *menu;
-	GtkTreeIter iter;
+	struct BasicProtocol *protocol_optmenu =
+		(struct BasicProtocol *)*pparam->widget;
+	GtkWidget *optmenu = protocol_optmenu->combobox;
+	GtkWidget *optlabel = protocol_optmenu->label;
+	GtkWidget *descrlabel = protocol_optmenu->descrlabel;
+	gchar *label = NULL, *tmp = NULL;
 
 	protocol = *((RecvProtocol *)pparam->data);
-	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	/* Clear all options and add them as necessary:
-	 * - if we're creating a new account, add all of them
-	 * - otherwise only add the correct one for this account
-	 */
-	gtk_list_store_clear(menu);
-	if( new_account || protocol == A_POP3 )
-		COMBOBOX_ADD (menu, _("POP3"),  A_POP3);
-	if( new_account || protocol == A_IMAP4 )
-		COMBOBOX_ADD (menu, _("IMAP4"), A_IMAP4);
-	if( new_account || protocol == A_NNTP )
-		COMBOBOX_ADD (menu, _("News (NNTP)"), A_NNTP);
-	if( new_account || protocol == A_LOCAL )
-		COMBOBOX_ADD (menu, _("Local mbox file"), A_LOCAL);
-	if( new_account || protocol == A_NONE )
-		COMBOBOX_ADD (menu, _("None (SMTP only)"), A_NONE);
-
+	/* Set combobox to correct value even if it will be hidden, so
+	 * we won't break existing accounts when saving. */
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu), protocol);
 
-	gtk_widget_set_sensitive(optmenu, new_account);
+	/* Set up widgets accordingly */
+	if( new_account ) {
+		gtk_label_set_text(GTK_LABEL(descrlabel), _("Protocol"));
+		gtk_widget_hide(optlabel);
+		gtk_widget_show(optmenu);
+	} else {
+		/* We don't want translators to hate us, so... */
+		tmp = g_strdup_printf("%s:", _("Protocol"));
+		gtk_label_set_text(GTK_LABEL(descrlabel), tmp);
+		g_free(tmp);
+		label = g_markup_printf_escaped("<b>%s</b>", protocol_names[protocol]);
+		gtk_label_set_markup(GTK_LABEL(optlabel), label);
+		g_free(label);
+		gtk_widget_hide(optmenu);
+		gtk_widget_show(optlabel);
+	}
 }
 
 static void prefs_account_imap_auth_type_set_data_from_optmenu(PrefParam *pparam)
@@ -2794,7 +2841,7 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 	g_list_free(children);
 }
 
-static void prefs_account_protocol_activated(GtkComboBox *combobox, gpointer data)
+static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 {
 	RecvProtocol protocol;
 

@@ -1,3 +1,11 @@
+2006-07-01 [ticho]	2.3.1cvs48
+
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Use GtkLabel for existing account protocol name.
+		Created an array for protocol names and populate the
+		combobox from it in a for() cycle.
+
 2006-06-30 [colin]	2.3.1cvs47
 
 	* src/compose.c

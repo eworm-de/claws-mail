@@ -1648,3 +1648,4 @@
 ( cvs diff -u -r 1.382.2.289 -r 1.382.2.290 src/compose.c;  ) > 2.3.1cvs45.patchset
 ( cvs diff -u -r 1.17.2.31 -r 1.17.2.32 src/send_message.c;  ) > 2.3.1cvs46.patchset
 ( cvs diff -u -r 1.382.2.290 -r 1.382.2.291 src/compose.c;  ) > 2.3.1cvs47.patchset
+( cvs diff -u -r 1.105.2.59 -r 1.105.2.60 src/prefs_account.c;  cvs diff -u -r 1.49.2.20 -r 1.49.2.21 src/prefs_account.h;  ) > 2.3.1cvs48.patchset
