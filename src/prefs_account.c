@@ -2685,10 +2685,7 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 		gtk_widget_hide(optlabel);
 		gtk_widget_show(optmenu);
 	} else {
-		/* We don't want translators to hate us, so... */
-		label = g_strdup_printf("%s:", _("Protocol"));
-		gtk_label_set_text(GTK_LABEL(descrlabel), label);
-		g_free(label);
+		gtk_label_set_text(GTK_LABEL(descrlabel), _("Protocol:"));
 		label = g_markup_printf_escaped("<b>%s</b>", protocol_names[protocol]);
 		gtk_label_set_markup(GTK_LABEL(optlabel), label);
 		g_free(label);

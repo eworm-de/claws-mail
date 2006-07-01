@@ -1,3 +1,10 @@
+2006-07-01 [colin]	2.3.1cvs50
+
+	* src/prefs_account.c
+		Typographic rules varying from language
+		to language (in french "Protocole :"),
+		we have to do that :)
+
 2006-07-01 [ticho]	2.3.1cvs49
 
 	* src/prefs_account.c
