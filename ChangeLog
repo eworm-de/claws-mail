@@ -1,3 +1,9 @@
+2006-07-01 [ticho]	2.3.1cvs49
+
+	* src/prefs_account.c
+		Only use one temporary gchar* variable in
+		prefs_account_protocol_set_optmenu().
+
 2006-07-01 [ticho]	2.3.1cvs48
 
 	* src/prefs_account.c
