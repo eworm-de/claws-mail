@@ -801,24 +801,28 @@ void folderview_select_next_marked(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
 	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	gboolean last_open = prefs_common.always_show_msg;
+	
 	prefs_common.select_on_entry = SELECTONENTRY_MNU;
+	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_marked(ctree, folderview->opened))
 	    != NULL) {
 		folderview_select_node(folderview, node);
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 
 	if (!folderview->opened ||
 	    folderview->opened == GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list)) {
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 	/* search again from the first node */
 	if ((node = folderview_find_next_marked(ctree, NULL)) != NULL)
 		folderview_select_node(folderview, node);
+
+out:
 	prefs_common.select_on_entry = last_sel;
+	prefs_common.always_show_msg = last_open;
 }
 
 static GtkCTreeNode *folderview_find_next_unread(GtkCTree *ctree,
@@ -845,26 +849,28 @@ void folderview_select_next_unread(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
 	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	gboolean last_open = prefs_common.always_show_msg;
+	
 	prefs_common.select_on_entry = SELECTONENTRY_UNM;
+	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_unread(ctree, folderview->opened))
 	    != NULL) {
 		folderview_select_node(folderview, node);
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 
 	if (!folderview->opened ||
 	    folderview->opened == GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list)) {
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 	/* search again from the first node */
 	if ((node = folderview_find_next_unread(ctree, NULL)) != NULL)
 		folderview_select_node(folderview, node);
 
+out:
 	prefs_common.select_on_entry = last_sel;
-
+	prefs_common.always_show_msg = last_open;
 }
 
 static GtkCTreeNode *folderview_find_next_new(GtkCTree *ctree,
@@ -891,24 +897,28 @@ void folderview_select_next_new(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
 	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	gboolean last_open = prefs_common.always_show_msg;
+	
 	prefs_common.select_on_entry = SELECTONENTRY_NUM;
+	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_new(ctree, folderview->opened))
 	    != NULL) {
 		folderview_select_node(folderview, node);
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 
 	if (!folderview->opened ||
 	    folderview->opened == GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list)) {
-		prefs_common.select_on_entry = last_sel;
-		return;
+		goto out;
 	}
 	/* search again from the first node */
 	if ((node = folderview_find_next_new(ctree, NULL)) != NULL)
 		folderview_select_node(folderview, node);
+
+out:
 	prefs_common.select_on_entry = last_sel;
+	prefs_common.always_show_msg = last_open;
 }
 
 FolderItem *folderview_get_selected_item(FolderView *folderview)

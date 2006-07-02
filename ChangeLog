@@ -1,3 +1,9 @@
+2006-07-02 [colin]	2.3.1cvs51
+
+	* src/folderview.c
+		Open message when crossing folders with Space,
+		goto next unread and friends
+
 2006-07-01 [colin]	2.3.1cvs50
 
 	* src/prefs_account.c

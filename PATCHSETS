@@ -1651,3 +1651,4 @@
 ( cvs diff -u -r 1.105.2.59 -r 1.105.2.60 src/prefs_account.c;  cvs diff -u -r 1.49.2.20 -r 1.49.2.21 src/prefs_account.h;  ) > 2.3.1cvs48.patchset
 ( cvs diff -u -r 1.105.2.60 -r 1.105.2.61 src/prefs_account.c;  ) > 2.3.1cvs49.patchset
 ( cvs diff -u -r 1.105.2.61 -r 1.105.2.62 src/prefs_account.c;  ) > 2.3.1cvs50.patchset
+( cvs diff -u -r 1.207.2.105 -r 1.207.2.106 src/folderview.c;  ) > 2.3.1cvs51.patchset
