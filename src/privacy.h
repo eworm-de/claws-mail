@@ -66,6 +66,8 @@ gboolean privacy_encrypt			(const gchar  *system,
 						 const gchar  *encdata);
 
 void privacy_set_error				(const gchar *format, ...);
+void privacy_reset_error				(void);
+gboolean privacy_peek_error				(void);
 const gchar *privacy_get_error			(void);
 
 struct _PrivacySystem {

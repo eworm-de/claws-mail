@@ -40,12 +40,22 @@ void privacy_set_error(const gchar *format, ...)
 
 static gchar tmp_privacy_error[BUFSIZ];
 
+void privacy_reset_error(void)
+{
+	g_free(privacy_last_error);
+	privacy_last_error = NULL;
+}
+
+gboolean privacy_peek_error(void)
+{
+	return (privacy_last_error != NULL);
+}
+
 const gchar *privacy_get_error (void)
 {
 	if (privacy_last_error) {
 		strncpy2(tmp_privacy_error, privacy_last_error, BUFSIZ-1);
-		g_free(privacy_last_error);
-		privacy_last_error = NULL;
+		privacy_reset_error();
 		return tmp_privacy_error;
 	} else {
 		return _("Unknown error");

@@ -1652,3 +1652,4 @@
 ( cvs diff -u -r 1.105.2.60 -r 1.105.2.61 src/prefs_account.c;  ) > 2.3.1cvs49.patchset
 ( cvs diff -u -r 1.105.2.61 -r 1.105.2.62 src/prefs_account.c;  ) > 2.3.1cvs50.patchset
 ( cvs diff -u -r 1.207.2.105 -r 1.207.2.106 src/folderview.c;  ) > 2.3.1cvs51.patchset
+( cvs diff -u -r 1.382.2.291 -r 1.382.2.292 src/compose.c;  cvs diff -u -r 1.10.2.9 -r 1.10.2.10 src/privacy.c;  cvs diff -u -r 1.10.2.8 -r 1.10.2.9 src/privacy.h;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/pgpmime/pgpmime.c;  ) > 2.3.1cvs52.patchset

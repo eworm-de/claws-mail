@@ -523,10 +523,17 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
 	}
 
-	if ((err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_CLEAR)) 
-	    != GPG_ERR_NO_ERROR) {
-	    	gpgme_release(ctx);
-		privacy_set_error(_("Data signing failed, %s"), gpgme_strerror(err));
+	err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_CLEAR);
+	if (err != GPG_ERR_NO_ERROR) {
+		if (err == GPG_ERR_CANCELED) {
+			/* ignore cancelled signing */
+			privacy_reset_error();
+			debug_print("gpgme_op_sign cancelled\n");
+		} else {
+			privacy_set_error(_("Data signing failed, %s"), gpgme_strerror(err));
+			debug_print("gpgme_op_sign error : %x\n", err);
+		}
+		gpgme_release(ctx);
 		return FALSE;
 	}
 	result = gpgme_op_sign_result(ctx);

@@ -1,3 +1,12 @@
+2006-07-03 [wwp]	2.3.1cvs52
+
+	* src/compose.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		don't report an error when the user cancels the passphrase dialog.
+
 2006-07-02 [colin]	2.3.1cvs51
 
 	* src/folderview.c
