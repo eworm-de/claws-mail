@@ -1129,7 +1129,7 @@ gint folderview_check_new(Folder *folder)
 			str = get_scan_str(item);
 
 			STATUSBAR_PUSH(folderview->mainwin, str);
-
+			GTK_EVENTS_FLUSH();
 			g_free(str);
 
 			folderview_scan_tree_func(item->folder, item, NULL);

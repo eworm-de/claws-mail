@@ -495,6 +495,7 @@ int main(int argc, char *argv[])
 
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
+		GTK_EVENTS_FLUSH();
 		debug_print("Sylpheed-Claws crashed, checking for new messages in local folders\n");
 		folder_item_update_thaw();
 		folderview_check_new(NULL);
