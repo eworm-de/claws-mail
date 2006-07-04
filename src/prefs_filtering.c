@@ -1101,7 +1101,7 @@ static void prefs_filtering_ok(void)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL);
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), NULL);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1123,7 +1123,7 @@ static void prefs_filtering_ok(void)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL);
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), NULL);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);

@@ -2027,10 +2027,17 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		
 		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
 		if (olditem) {
+			buf = g_strdup_printf(_("Closing Folder %s..."), 
+				olditem->path ? olditem->path:olditem->name);
 			/* will be null if we just moved the previously opened folder */
+			STATUSBAR_PUSH(folderview->mainwin, buf);
+			main_window_cursor_wait(folderview->mainwin);
+			g_free(buf);
 			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
 			summary_show(folderview->summaryview, NULL);
 			folder_item_close(olditem);
+			main_window_cursor_normal(folderview->mainwin);
+			STATUSBAR_POP(folderview->mainwin);
 		}
 	}
 

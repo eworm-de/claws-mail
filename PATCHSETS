@@ -1655,3 +1655,4 @@
 ( cvs diff -u -r 1.382.2.291 -r 1.382.2.292 src/compose.c;  cvs diff -u -r 1.10.2.9 -r 1.10.2.10 src/privacy.c;  cvs diff -u -r 1.10.2.8 -r 1.10.2.9 src/privacy.h;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/pgpmime/pgpmime.c;  ) > 2.3.1cvs52.patchset
 ( cvs diff -u -r 1.207.2.106 -r 1.207.2.107 src/folderview.c;  cvs diff -u -r 1.115.2.93 -r 1.115.2.94 src/main.c;  ) > 2.3.1cvs53.patchset
 ( cvs diff -u -r 1.101.2.26 -r 1.101.2.27 src/news.c;  ) > 2.3.1cvs54.patchset
+( cvs diff -u -r 1.207.2.107 -r 1.207.2.108 src/folderview.c;  cvs diff -u -r 1.60.2.34 -r 1.60.2.35 src/prefs_actions.c;  cvs diff -u -r 1.59.2.34 -r 1.59.2.35 src/prefs_filtering.c;  cvs diff -u -r 1.43.2.39 -r 1.43.2.40 src/prefs_matcher.c;  cvs diff -u -r 1.12.2.25 -r 1.12.2.26 src/prefs_template.c;  ) > 2.3.1cvs55.patchset

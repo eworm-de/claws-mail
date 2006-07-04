@@ -1,3 +1,14 @@
+2006-07-04 [colin]	2.3.1cvs55
+
+	* src/folderview.c
+		Feedback when closing (for big folders)
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+		Fix default button when closing without
+		having saved
+
 2006-07-04 [colin]	2.3.1cvs54
 
 	* src/news.c

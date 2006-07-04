@@ -403,7 +403,7 @@ static void prefs_template_ok_cb(void)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), 
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
@@ -420,7 +420,7 @@ static void prefs_template_cancel_cb(void)
 {
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"),
+				 GTK_STOCK_CLOSE, _("+_Continue editing"),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
