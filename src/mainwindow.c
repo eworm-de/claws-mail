@@ -94,6 +94,7 @@
 #include "icon_legend.h"
 #include "colorlabel.h"
 #include "textview.h"
+#include "imap.h"
 
 #define AC_LABEL_WIDTH	240
 

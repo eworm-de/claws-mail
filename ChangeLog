@@ -1,3 +1,9 @@
+2006-07-04 [colin]	2.3.1cvs57
+
+	* src/mainwindow.c
+	* src/news.c
+		Warning fixes, thanks to Fabien
+
 2006-07-04 [colin]	2.3.1cvs56
 
 	* src/mimeview.c

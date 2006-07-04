@@ -175,11 +175,9 @@ static int news_remove_msg		 (Folder 	*folder,
 					  gint 		 msgnum)
 {
 	gchar *path, *filename;
-	NNTPSession *session;
-	gint ok;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
