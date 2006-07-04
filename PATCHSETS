@@ -1658,3 +1658,4 @@
 ( cvs diff -u -r 1.207.2.107 -r 1.207.2.108 src/folderview.c;  cvs diff -u -r 1.60.2.34 -r 1.60.2.35 src/prefs_actions.c;  cvs diff -u -r 1.59.2.34 -r 1.59.2.35 src/prefs_filtering.c;  cvs diff -u -r 1.43.2.39 -r 1.43.2.40 src/prefs_matcher.c;  cvs diff -u -r 1.12.2.25 -r 1.12.2.26 src/prefs_template.c;  ) > 2.3.1cvs55.patchset
 ( cvs diff -u -r 1.83.2.73 -r 1.83.2.74 src/mimeview.c;  cvs diff -u -r 1.20.2.9 -r 1.20.2.10 src/mimeview.h;  cvs diff -u -r 1.96.2.119 -r 1.96.2.120 src/textview.c;  ) > 2.3.1cvs56.patchset
 ( cvs diff -u -r 1.274.2.122 -r 1.274.2.123 src/mainwindow.c;  cvs diff -u -r 1.101.2.27 -r 1.101.2.28 src/news.c;  ) > 2.3.1cvs57.patchset
+( cvs diff -u -r 1.83.2.74 -r 1.83.2.75 src/mimeview.c;  cvs diff -u -r 1.96.2.120 -r 1.96.2.121 src/textview.c;  cvs diff -u -r 1.36.2.70 -r 1.36.2.71 src/common/utils.c;  ) > 2.3.1cvs58.patchset

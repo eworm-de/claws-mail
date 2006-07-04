@@ -2213,9 +2213,13 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, gpointer data)
 		mimeview_open_with(mimeview);
 	else if (!strcmp(cmd, "sc://open"))
 		mimeview_launch(mimeview);
-	else if (!strcmp(cmd, "sc://open_attachment") && data != NULL) {
+	else if (!strcmp(cmd, "sc://select_attachment") && data != NULL) {
 		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
 		icon_selected(mimeview, -1, (MimeInfo *)data);
+	} else if (!strcmp(cmd, "sc://open_attachment") && data != NULL) {
+		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
+		icon_selected(mimeview, -1, (MimeInfo *)data);
+		mimeview_launch(mimeview);
 	}
 }
 

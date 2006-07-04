@@ -633,7 +633,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
 		//gtk_text_buffer_insert(buffer, &iter, buf, -1);
-		TEXT_INSERT_LINK(buf, "sc://open_attachment", mimeinfo);
+		TEXT_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
@@ -2093,11 +2093,14 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	if ((event->type == GDK_BUTTON_PRESS && bevent->button == 1) ||
 		bevent->button == 2 || bevent->button == 3) {
 		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "sc://", 5)) {
-			if (bevent->button == 1) {
-				MimeView *mimeview = 
-					(textview->messageview)?
-						textview->messageview->mimeview:NULL;
+			MimeView *mimeview = 
+				(textview->messageview)?
+					textview->messageview->mimeview:NULL;
+			if (mimeview && bevent->button == 1) {
 				mimeview_handle_cmd(mimeview, uri->filename, uri->data);
+			} else if (mimeview && bevent->button == 2 && 
+				!g_ascii_strcasecmp(uri->filename, "sc://select_attachment")) {
+				mimeview_handle_cmd(mimeview, "sc://open_attachment", uri->data);
 			}
 			return TRUE;
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {

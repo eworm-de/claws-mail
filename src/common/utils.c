@@ -4738,6 +4738,8 @@ gchar *mailcap_get_command_for_type(const gchar *type)
 {
 	gchar *result = NULL;
 	gchar *path = NULL;
+	if (type == NULL)
+		return NULL;
 	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
 	result = mailcap_get_command_in_file(path, type);
 	g_free(path);

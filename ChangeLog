@@ -1,3 +1,12 @@
+2006-07-04 [colin]	2.3.1cvs58
+
+	* src/mimeview.c
+	* src/textview.c
+		Use left click to select, middle click to open
+		on mimeparts links
+	* src/common/utils.c
+		Fix segfault
+
 2006-07-04 [colin]	2.3.1cvs57
 
 	* src/mainwindow.c
