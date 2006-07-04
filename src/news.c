@@ -135,7 +135,7 @@ static gchar *news_folder_get_path	 (Folder	*folder);
 gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
 static void news_synchronise		 (FolderItem	*item);
-static int news_dummy_remove		 (Folder 	*folder, 
+static int news_remove_msg		 (Folder 	*folder, 
 					  FolderItem 	*item, 
 					  gint 		 msgnum);
 static gint news_remove_folder		 (Folder	*folder,
@@ -164,17 +164,31 @@ FolderClass *news_get_class(void)
 		news_class.get_msginfos = news_get_msginfos;
 		news_class.fetch_msg = news_fetch_msg;
 		news_class.synchronise = news_synchronise;
-		news_class.remove_msg = news_dummy_remove;
+		news_class.remove_msg = news_remove_msg;
 	};
 
 	return &news_class;
 }
 
-static int news_dummy_remove		 (Folder 	*folder, 
+static int news_remove_msg		 (Folder 	*folder, 
 					  FolderItem 	*item, 
 					  gint 		 msgnum)
 {
-	debug_print("doing nothing on purpose\n");
+	gchar *path, *filename;
+	NNTPSession *session;
+	gint ok;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+
+	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+	
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msgnum), NULL);
+	g_free(path);
+	g_unlink(filename);
+	g_free(filename);
 	return 0;
 }
 
