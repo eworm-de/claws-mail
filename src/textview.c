@@ -70,6 +70,8 @@ struct _RemoteURI
 
 	gchar *filename;
 
+	gpointer data;
+
 	guint start;
 	guint end;
 };
@@ -557,6 +559,27 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview_write_body(textview, mimeinfo);
 }
 
+#define TEXT_INSERT(str) \
+	gtk_text_buffer_insert_with_tags_by_name \
+				(buffer, &iter, str, -1,\
+				 "header", NULL)
+
+#define TEXT_INSERT_LINK(str, fname, udata) {				\
+	RemoteURI *uri;							\
+	uri = g_new(RemoteURI, 1);					\
+	uri->uri = g_strdup("");					\
+	uri->start = gtk_text_iter_get_offset(&iter);			\
+	gtk_text_buffer_insert_with_tags_by_name 			\
+				(buffer, &iter, str, -1,		\
+				 "link", "header_title", "header", 	\
+				 NULL); 				\
+	uri->end = gtk_text_iter_get_offset(&iter);			\
+	uri->filename = fname?g_strdup(fname):NULL;			\
+	uri->data = udata;						\
+	textview->uri_list =						\
+		g_slist_append(textview->uri_list, uri);		\
+}
+
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkTextView *text;
@@ -609,7 +632,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
-		gtk_text_buffer_insert(buffer, &iter, buf, -1);
+		//gtk_text_buffer_insert(buffer, &iter, buf, -1);
+		TEXT_INSERT_LINK(buf, "sc://open_attachment", mimeinfo);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
@@ -749,26 +773,6 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
         recursive_add_parts(textview, mimeinfo->node);
 }
 
-#define TEXT_INSERT(str) \
-	gtk_text_buffer_insert_with_tags_by_name \
-				(buffer, &iter, str, -1,\
-				 "header", NULL)
-
-#define TEXT_INSERT_LINK(str, fname) { 					\
-	RemoteURI *uri;							\
-	uri = g_new(RemoteURI, 1);					\
-	uri->uri = g_strdup("");					\
-	uri->start = gtk_text_iter_get_offset(&iter);			\
-	gtk_text_buffer_insert_with_tags_by_name 			\
-				(buffer, &iter, str, -1,		\
-				 "link", "header_title", "header", 	\
-				 NULL); 				\
-	uri->end = gtk_text_iter_get_offset(&iter);			\
-	uri->filename = g_strdup(fname);				\
-	textview->uri_list =						\
-		g_slist_append(textview->uri_list, uri);		\
-}
-
 void textview_show_error(TextView *textview)
 {
 	GtkTextView *text;
@@ -787,7 +791,7 @@ void textview_show_error(TextView *textview)
 		      "  This is probably due to a network error.\n"
 		      "\n"
 		      "  Use "));
-	TEXT_INSERT_LINK(_("'View Log'"), "sc://view_log");
+	TEXT_INSERT_LINK(_("'View Log'"), "sc://view_log", NULL);
 	TEXT_INSERT(_(" in the Tools menu for more information."));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
 
@@ -813,18 +817,18 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXT_INSERT(_("  right-clicking the icon or list item:\n"));
 
 	TEXT_INSERT(_("     - To save, select "));
-	TEXT_INSERT_LINK(_("'Save as...'"), "sc://save_as");
+	TEXT_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
 	TEXT_INSERT(_(" (Shortcut key: 'y')\n"));
 	TEXT_INSERT(_("     - To display as text, select "));
-	TEXT_INSERT_LINK(_("'Display as text'"), "sc://display_as_text");
+	TEXT_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
 	TEXT_INSERT(_(" (Shortcut key: 't')\n"));
 	TEXT_INSERT(_("     - To open with an external program, select "));
-	TEXT_INSERT_LINK(_("'Open'"), "sc://open");
+	TEXT_INSERT_LINK(_("'Open'"), "sc://open", NULL);
 	TEXT_INSERT(_(" (Shortcut key: 'l')\n"));
 	TEXT_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXT_INSERT(_("mouse button)\n"));
 	TEXT_INSERT(_("     - Or use "));
-	TEXT_INSERT_LINK(_("'Open with...'"), "sc://open_with");
+	TEXT_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
 	TEXT_INSERT(_(" (Shortcut key: 'o')\n"));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
 }
@@ -2093,7 +2097,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				MimeView *mimeview = 
 					(textview->messageview)?
 						textview->messageview->mimeview:NULL;
-				mimeview_handle_cmd(mimeview, uri->filename);
+				mimeview_handle_cmd(mimeview, uri->filename, uri->data);
 			}
 			return TRUE;
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {

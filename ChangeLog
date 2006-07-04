@@ -1,3 +1,11 @@
+2006-07-04 [colin]	2.3.1cvs56
+
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/textview.c
+		Allow parts to be selected via their text label
+		in textview
+
 2006-07-04 [colin]	2.3.1cvs55
 
 	* src/folderview.c

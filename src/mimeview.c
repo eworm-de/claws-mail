@@ -1621,6 +1621,14 @@ static void mimeview_open_with(MimeView *mimeview)
 			partinfo->subtype);
 	}
 	mime_command = mailcap_get_command_for_type(content_type);
+
+	if (mime_command == NULL) {
+		/* try with extension this time */
+		g_free(content_type);
+		content_type = procmime_get_mime_type(filename);
+		mime_command = mailcap_get_command_for_type(content_type);
+	}
+
 	g_free(content_type);
 	cmd = input_dialog_combo
 		(_("Open with"),
@@ -2179,7 +2187,7 @@ void mimeview_update (MimeView *mimeview) {
 	}
 }
 
-void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd)
+void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, gpointer data)
 {
 	MessageView *msgview = NULL;
 	MainWindow *mainwin = NULL;
@@ -2205,5 +2213,9 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd)
 		mimeview_open_with(mimeview);
 	else if (!strcmp(cmd, "sc://open"))
 		mimeview_launch(mimeview);
+	else if (!strcmp(cmd, "sc://open_attachment") && data != NULL) {
+		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
+		icon_selected(mimeview, -1, (MimeInfo *)data);
+	}
 }
 
