@@ -10,28 +10,29 @@ then
 	exit 1
 fi
 
-JAVA=`which java`
-if [ "$JAVA" = "" ]
-then
+test -z "$JAVA" && \
+	JAVA=`which java`
+test -z "$JAVA" && \
 	JAVA="$JAVA_HOME/bin/java"
-fi
 if [ ! -x "$JAVA" ]
 then
-	echo 'error: java not found in your $PATH or in $JAVA_HOME/bin' \
-		&& exit 1
+	echo 'error: java not found in your $PATH or in $JAVA_HOME/bin'
+	exit 1
 fi
 
-SAXON=`which saxon`
-if [ "$SAXON" = "" ]
+test -z "$SAXON" && \
+	SAXON=`which saxon`
+if [ -z "$SAXON" ]
 then
-	SAXONJAR='/usr/share/java/saxon.jar'
-	if [ ! -f $SAXONJAR ]
+	test -z "$SAXONJAR" && \
+		SAXONJAR='/usr/share/java/saxon.jar'
+	if [ ! -f "$SAXONJAR" ]
 	then
 		SAXONJAR='/usr/local/share/java/saxon.jar'
-		if [ ! -f $SAXONJAR ]
+		if [ ! -f "$SAXONJAR" ]
 		then
-			echo "error: neither saxon nor saxon.jar were found" \
-				&& exit 1
+			echo "error: neither saxon nor saxon.jar were found"
+			exit 1
 		fi
 	fi
 	SAXON="$JAVA -jar $SAXONJAR"

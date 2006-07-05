@@ -1,3 +1,8 @@
+2006-07-05 [wwp]	2.3.1cvs59
+
+	* manual/xml2pdf
+		use JAVA and SAXON (or SAXONJAR) env. vars is there's defined.
+
 2006-07-04 [colin]	2.3.1cvs58
 
 	* src/mimeview.c
