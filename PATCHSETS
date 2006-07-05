@@ -1660,3 +1660,4 @@
 ( cvs diff -u -r 1.274.2.122 -r 1.274.2.123 src/mainwindow.c;  cvs diff -u -r 1.101.2.27 -r 1.101.2.28 src/news.c;  ) > 2.3.1cvs57.patchset
 ( cvs diff -u -r 1.83.2.74 -r 1.83.2.75 src/mimeview.c;  cvs diff -u -r 1.96.2.120 -r 1.96.2.121 src/textview.c;  cvs diff -u -r 1.36.2.70 -r 1.36.2.71 src/common/utils.c;  ) > 2.3.1cvs58.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/xml2pdf;  ) > 2.3.1cvs59.patchset
+( cvs diff -u -r 1.2.2.24 -r 1.2.2.25 src/gtk/filesel.c;  ) > 2.3.1cvs60.patchset

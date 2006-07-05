@@ -110,6 +110,10 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 
 	}
 
+	if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
+		gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
+	}
+
 	manage_window_set_transient (GTK_WINDOW(chooser));
 	gtk_window_set_modal(GTK_WINDOW(chooser), TRUE);
 
