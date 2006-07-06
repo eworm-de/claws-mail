@@ -1,3 +1,8 @@
+2006-07-06 [colin]	2.3.1cvs66
+
+	* src/remotefolder.h
+		Forgotten in previous commit
+
 2006-07-06 [colin]	2.3.1cvs65
 
 	* src/folder.c

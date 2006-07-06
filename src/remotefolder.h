@@ -34,6 +34,7 @@ struct _RemoteFolder
 	Folder folder;
 
 	Session *session;
+	time_t last_failure;
 };
 
 void        folder_remote_folder_init	(Folder		*folder,
