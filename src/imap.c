@@ -682,7 +682,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 	IMAPSession *session = NULL;
-	static time_t last_failure = 0;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
@@ -704,12 +703,12 @@ static IMAPSession *imap_session_get(Folder *folder)
 		} */
 	} else {
 		imap_reset_uid_lists(folder);
-		if (time(NULL) - last_failure <= 2)
+		if (time(NULL) - rfolder->last_failure <= 2)
 			return NULL;
 		session = imap_session_new(folder, folder->account);
 	}
 	if(session == NULL) {
-		last_failure = time(NULL);
+		rfolder->last_failure = time(NULL);
 		return NULL;
 	}
 
@@ -720,7 +719,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	if (!IMAP_SESSION(session)->authenticated) {
 		session_destroy(SESSION(session));
 		rfolder->session = NULL;
-		last_failure = time(NULL);
+		rfolder->last_failure = time(NULL);
 		return NULL;
 	}
 
@@ -4263,7 +4262,7 @@ void imap_disconnect_all(void)
 			if (folder && folder->session) {
 				IMAPSession *session = (IMAPSession *)folder->session;
 				imap_threaded_disconnect(FOLDER(folder));
-				session_destroy(session);
+				session_destroy(SESSION(session));
 				folder->session = NULL;
 			}
 		}

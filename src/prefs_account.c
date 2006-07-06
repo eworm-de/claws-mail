@@ -2480,8 +2480,10 @@ static gint prefs_account_apply(void)
 	RecvProtocol protocol;
 	gchar *old_id = NULL;
 	gchar *new_id = NULL;
-	
-	protocol = combobox_get_active_data(GTK_COMBO_BOX(basic.protocol_optmenu));
+	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic.protocol_optmenu;
+	GtkWidget *optmenu = protocol_optmenu->combobox;
+
+	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 
 	if (*gtk_entry_get_text(GTK_ENTRY(basic.acname_entry)) == '\0') {
 		alertpanel_error(_("Account name is not entered."));

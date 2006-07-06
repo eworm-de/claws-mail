@@ -1,3 +1,15 @@
+2006-07-06 [colin]	2.3.1cvs65
+
+	* src/folder.c
+		Set summary update flag whenever
+		totals changed
+	* src/imap.c
+	* src/prefs_account.c
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+		Fix warnings, thanks to Fabien and
+		Ricardo
+
 2006-07-06 [wwp]	2.3.1cvs64
 
 	* src/gtk/gtkutils.c

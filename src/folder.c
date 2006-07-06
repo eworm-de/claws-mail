@@ -2013,6 +2013,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		g_hash_table_destroy(subject_table);
 	}
 	
+	if (item->new_msgs != newcnt || item->unread_msgs != unreadcnt
+	||  item->total_msgs != totalcnt || item->marked_msgs != markedcnt
+	||  item->unreadmarked_msgs != unreadmarkedcnt) {
+		update_flags |= F_ITEM_UPDATE_CONTENT;
+	}
+
 	item->new_msgs = newcnt;
 	item->unread_msgs = unreadcnt;
 	item->total_msgs = totalcnt;

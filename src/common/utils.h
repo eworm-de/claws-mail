@@ -409,6 +409,7 @@ const gchar *get_template_dir		(void);
 const gchar *get_header_cache_dir	(void);
 const gchar *get_plugin_dir             (void);
 const gchar *get_tmp_dir		(void);
+const gchar *get_locale_dir		(void);
 gchar *get_tmp_file			(void);
 const gchar *get_domain_name		(void);
 
