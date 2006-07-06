@@ -109,11 +109,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	g_return_if_fail(bbox != NULL);
 
-#if GTK_CHECK_VERSION(2, 6, 0)
 	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
-#else
-	*help_btn = gtk_button_new_with_label(_("Help"));
-#endif
 
 	GTK_WIDGET_SET_FLAGS(*help_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);

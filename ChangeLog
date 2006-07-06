@@ -1,3 +1,8 @@
+2006-07-06 [wwp]	2.3.1cvs64
+
+	* src/gtk/gtkutils.c
+		GTK_STOCK_HELP exists in GTK+ 2.4.x.
+
 2006-07-06 [wwp]	2.3.1cvs63
 
 	* src/account.c
