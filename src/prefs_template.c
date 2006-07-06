@@ -39,6 +39,7 @@
 #include "addr_compl.h"
 #include "quote_fmt.h"
 #include "prefs_common.h"
+#include "manual.h"
 
 enum {
 	TEMPL_TEXT,
@@ -160,8 +161,9 @@ static void prefs_template_window_create(void)
 	GtkWidget       *scroll1;
 	GtkWidget         *list_view;
 	GtkWidget       *confirm_area;
-	GtkWidget         *ok_btn;
+	GtkWidget         *help_btn;
 	GtkWidget         *cancel_btn;
+	GtkWidget         *ok_btn;
 	static GdkGeometry geometry;
 
 	debug_print("Creating templates configuration window...\n");
@@ -291,9 +293,11 @@ static void prefs_template_window_create(void)
 	gtk_widget_set_size_request(scroll1, -1, 140);
 	gtk_container_add(GTK_CONTAINER(scroll1), list_view);
 
-	/* ok | cancel */
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
+	/* help | cancel | ok */
+	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
+			&cancel_btn, GTK_STOCK_CANCEL,
+			&ok_btn, GTK_STOCK_OK,
+			NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox2), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -311,6 +315,9 @@ static void prefs_template_window_create(void)
 			 G_CALLBACK(prefs_template_ok_cb), NULL);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_template_cancel_cb), NULL);
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_TEMPLATES);
 
 	address_completion_start(window);
 

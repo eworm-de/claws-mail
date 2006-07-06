@@ -49,11 +49,13 @@
 #include "gtkutils.h"
 #include "manage_window.h"
 #include "alertpanel.h"
+#include "manual.h"
 
 static struct MessageSearchWindow {
 	GtkWidget *window;
 	GtkWidget *body_entry;
 	GtkWidget *case_checkbtn;
+	GtkWidget *help_btn;
 	GtkWidget *prev_btn;
 	GtkWidget *next_btn;
 	GtkWidget *close_btn;
@@ -119,6 +121,7 @@ static void message_search_create(void)
 	GtkWidget *case_checkbtn;
 
 	GtkWidget *confirm_area;
+	GtkWidget *help_btn;
 	GtkWidget *prev_btn;
 	GtkWidget *next_btn;
 	GtkWidget *close_btn;
@@ -163,14 +166,17 @@ static void message_search_create(void)
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &prev_btn, GTK_STOCK_GO_BACK,
-				      &next_btn, GTK_STOCK_GO_FORWARD,
-				      &close_btn, GTK_STOCK_CLOSE);
+	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
+			&prev_btn, GTK_STOCK_GO_BACK,
+			&next_btn, GTK_STOCK_GO_FORWARD,
+			&close_btn, GTK_STOCK_CLOSE);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(next_btn);
 
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_SEARCHING);
 	g_signal_connect(G_OBJECT(prev_btn), "clicked",
 			 G_CALLBACK(message_search_prev_clicked), NULL);
 	g_signal_connect(G_OBJECT(next_btn), "clicked",
@@ -184,6 +190,7 @@ static void message_search_create(void)
 	search_window.window = window;
 	search_window.body_entry = body_entry;
 	search_window.case_checkbtn = case_checkbtn;
+	search_window.help_btn = help_btn;
 	search_window.prev_btn = prev_btn;
 	search_window.next_btn = next_btn;
 	search_window.close_btn = close_btn;

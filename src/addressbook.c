@@ -77,6 +77,7 @@
 #include "importldif.h"
 #include "importmutt.h"
 #include "importpine.h"
+#include "manual.h"
 
 #ifdef USE_JPILOT
 #include "jpilot.h"
@@ -806,6 +807,7 @@ static void addressbook_create(void)
 	GtkWidget *statusbar;
 	GtkWidget *hbbox;
 	GtkWidget *hsbox;
+	GtkWidget *help_btn;
 	GtkWidget *del_btn;
 	GtkWidget *edit_btn;
 	GtkWidget *reg_btn;
@@ -986,6 +988,8 @@ static void addressbook_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 4);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
+	gtkut_stock_button_add_help(hbbox, &help_btn);
+
 #if GTK_CHECK_VERSION(2, 6, 0)
 	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
 #else
@@ -1004,6 +1008,10 @@ static void addressbook_create(void)
 	lup_btn = gtk_button_new_from_stock(GTK_STOCK_FIND);
 	GTK_WIDGET_SET_FLAGS(lup_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbox), lup_btn, TRUE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_ADDRBOOK);
 
 	g_signal_connect(G_OBJECT(edit_btn), "clicked",
 			 G_CALLBACK(addressbook_edit_clicked), NULL);
@@ -1103,6 +1111,7 @@ static void addressbook_create(void)
 	addrbook.status_cid = gtk_statusbar_get_context_id(
 			GTK_STATUSBAR(statusbar), "Addressbook Window" );
 
+	addrbook.help_btn = help_btn;
 	addrbook.edit_btn = edit_btn;
 	addrbook.del_btn = del_btn;
 	addrbook.reg_btn = reg_btn;

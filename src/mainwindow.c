@@ -3567,6 +3567,7 @@ static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_filtering_open(&pre_global_processing,
 			     _("Processing rules to apply before folder rules"),
+			     MANUAL_ANCHOR_PROCESSING,
 			     NULL, NULL);
 }
 
@@ -3575,6 +3576,7 @@ static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_filtering_open(&post_global_processing,
 			     _("Processing rules to apply after folder rules"),
+			     MANUAL_ANCHOR_PROCESSING,
 			     NULL, NULL);
 }
 
@@ -3583,6 +3585,7 @@ static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_filtering_open(&filtering_rules,
 			     _("Filtering configuration"),
+			     MANUAL_ANCHOR_FILTERING,
 			     NULL, NULL);
 }
 
@@ -3672,7 +3675,7 @@ static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)
 static void manual_open_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	manual_open((ManualType)action);
+	manual_open((ManualType)action, NULL);
 }
 
 static void legend_open_cb(GtkMenuItem *menuitem, gpointer data)

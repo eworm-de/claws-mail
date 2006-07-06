@@ -35,6 +35,7 @@
 #include "alertpanel.h"
 #include "prefs_common.h"
 #include "../inc.h"
+#include "manual.h"
 
 enum {
 	PLUGINWINDOW_NAME,		/*<! plugin name */
@@ -266,6 +267,7 @@ void pluginwindow_create()
 	GtkWidget *scrolledwindow3;
 	GtkWidget *plugin_desc;
 	GtkWidget *hbuttonbox1, *hbox3;
+	GtkWidget *help_btn;
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
@@ -339,30 +341,21 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(hbox3), get_more_btn, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox3, FALSE, FALSE, 0);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox1),
-				  GTK_BUTTONBOX_END);
+
+	gtkut_stock_button_set_create_with_help(&hbuttonbox1, &help_btn,
+			&load_btn, _("Load Plugin..."),
+			&unload_btn, _("Unload Plugin"),
+			&close_btn, GTK_STOCK_CLOSE);
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbuttonbox1), 6);
-
-	load_btn = gtk_button_new_with_label(_("Load Plugin..."));
-	gtk_widget_show(load_btn);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), load_btn);
-	GTK_WIDGET_SET_FLAGS(load_btn, GTK_CAN_DEFAULT);
-
-	unload_btn = gtk_button_new_with_label(_("Unload Plugin"));
-	gtk_widget_show(unload_btn);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), unload_btn);
-	GTK_WIDGET_SET_FLAGS(unload_btn, GTK_CAN_DEFAULT);
-
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	gtk_widget_show(close_btn);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), close_btn);
-	GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
-	/* ----------------------------------------------------------- */
+	gtk_widget_show(hbuttonbox1);
+	gtk_box_pack_end (GTK_BOX (hbox3), hbuttonbox1, FALSE, FALSE, 0);
 
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
 
-
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_PLUGINS);
 	g_signal_connect(G_OBJECT(load_btn), "clicked",
 			 G_CALLBACK(load_cb), pluginwindow);
 	g_signal_connect(G_OBJECT(unload_btn), "clicked",

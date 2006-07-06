@@ -60,6 +60,7 @@
 #include "prefs_common.h"
 #include "manage_window.h"
 #include "base64.h"
+#include "manual.h"
 
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)
@@ -102,6 +103,40 @@ void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
 	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0) * 65535.0);
 	color->green = (int) (((gdouble)((rgbvalue & 0x00ff00) >>  8) / 255.0) * 65535.0);
 	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0) * 65535.0);
+}
+
+void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
+{
+	g_return_if_fail(bbox != NULL);
+
+#if GTK_CHECK_VERSION(2, 6, 0)
+	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
+#else
+	*help_btn = gtk_button_new_with_label(_("Help"));
+#endif
+
+	GTK_WIDGET_SET_FLAGS(*help_btn, GTK_CAN_DEFAULT);
+	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
+	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX (bbox),
+			*help_btn, TRUE);
+	gtk_widget_set_sensitive(*help_btn,
+			manual_available(MANUAL_MANUAL_LOCAL));
+	gtk_widget_show(*help_btn);
+}
+
+void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
+		GtkWidget **help_button,
+		GtkWidget **button1, const gchar *label1,
+		GtkWidget **button2, const gchar *label2,
+		GtkWidget **button3, const gchar *label3)
+{
+	g_return_if_fail(bbox != NULL);
+	g_return_if_fail(button1 != NULL);
+
+	gtkut_stock_button_set_create(bbox, button1, label1,
+			button2, label2, button3, label3);
+
+	gtkut_stock_button_add_help(*bbox, help_button);
 }
 
 void gtkut_stock_button_set_create(GtkWidget **bbox,

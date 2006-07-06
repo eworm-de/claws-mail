@@ -26,7 +26,18 @@ typedef enum
 	MANUAL_FAQ_CLAWS,
 } ManualType;
 
+#define MANUAL_ANCHOR_WIZARD		"start_wizard"
+#define MANUAL_ANCHOR_FILTERING		"handling_filters"
+#define MANUAL_ANCHOR_SEARCHING		"handling_searching"
+#define MANUAL_ANCHOR_ACCOUNTPREFS	"ch_account"
+#define MANUAL_ANCHOR_ADDRBOOK		"ch_addrbook"
+#define MANUAL_ANCHOR_ACTIONS		"adv_actions"
+#define MANUAL_ANCHOR_TEMPLATES		"adv_templates"
+#define MANUAL_ANCHOR_PROCESSING	"adv_processing"
+#define MANUAL_ANCHOR_PLUGINS		"adv_plugins"
+
 gboolean manual_available	(ManualType type);
-void	 manual_open		(ManualType type);
+void	 manual_open		(ManualType type, gchar *url_anchor);
+void	 manual_open_with_anchor_cb(GtkWidget *widget, gchar *url_anchor);
 
 #endif /* __MANUAL_H__ */

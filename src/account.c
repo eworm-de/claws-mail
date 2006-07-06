@@ -49,6 +49,7 @@
 #include "procheader.h"
 #include "customheader.h"
 #include "remotefolder.h"
+#include "manual.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,		/* GDK_TYPE_PIXMAP! */
@@ -668,6 +669,7 @@ static void account_edit_create(void)
 	GtkWidget *default_btn;
 
 	GtkWidget *hbbox;
+	GtkWidget *help_btn;
 	GtkWidget *close_btn;
 
 	static GdkGeometry geometry;
@@ -779,8 +781,9 @@ static void account_edit_create(void)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(hbbox), 5);
 
-	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create_with_help(&hbbox, &help_btn,
+			&close_btn, GTK_STOCK_CLOSE,
+			NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 
 	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
@@ -789,6 +792,9 @@ static void account_edit_create(void)
 	g_signal_connect (G_OBJECT (close_btn), "clicked",
 			  G_CALLBACK (account_edit_close),
 			  NULL);
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			G_CALLBACK(manual_open_with_anchor_cb),
+			MANUAL_ANCHOR_ACCOUNTPREFS);
 
 	account_create_list_view_images(list_view);
 

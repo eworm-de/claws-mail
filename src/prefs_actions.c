@@ -44,6 +44,7 @@
 #include "action.h"
 #include "description_window.h"
 #include "gtkutils.h"
+#include "manual.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -76,7 +77,7 @@ static void prefs_actions_set_dialog	(void);
 static gint prefs_actions_clist_set_row	(GtkTreeIter *row);
 
 /* callback functions */
-static void prefs_actions_help_cb	(GtkWidget	*w,
+static void prefs_actions_info_cb	(GtkWidget	*w,
 					 GtkWidget	*window);
 static void prefs_actions_register_cb	(GtkWidget	*w,
 					 gpointer	 data);
@@ -145,6 +146,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
+	GtkWidget *help_btn;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
@@ -169,7 +171,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *cond_scrolledwin;
 	GtkWidget *cond_list_view;
 
-	GtkWidget *help_button;
+	GtkWidget *info_btn;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -189,9 +191,10 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
+			&cancel_btn, GTK_STOCK_CANCEL,
+			&ok_btn, GTK_STOCK_OK,
+			NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -208,6 +211,9 @@ static void prefs_actions_create(MainWindow *mainwin)
 			 G_CALLBACK(prefs_actions_ok), mainwin);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_actions_cancel), NULL);
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_ACTIONS);
 
 	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(vbox1);
@@ -271,11 +277,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 
-	help_button = gtk_button_new_from_stock(GTK_STOCK_INFO);
-	gtk_widget_show(help_button);
-	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(help_button), "clicked",
-			 G_CALLBACK(prefs_actions_help_cb), GTK_WINDOW(window));
+	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	gtk_widget_show(info_btn);
+	gtk_box_pack_end(GTK_BOX(reg_hbox), info_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(info_btn), "clicked",
+			 G_CALLBACK(prefs_actions_info_cb), GTK_WINDOW(window));
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -821,7 +827,7 @@ static DescriptionWindow actions_desc_win = {
 };
 
 
-static void prefs_actions_help_cb(GtkWidget *w, GtkWidget *window)
+static void prefs_actions_info_cb(GtkWidget *w, GtkWidget *window)
 {
 	actions_desc_win.parent = window;
 	description_window_create(&actions_desc_win);

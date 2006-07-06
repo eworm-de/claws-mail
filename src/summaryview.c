@@ -88,6 +88,7 @@
 #include "timing.h"
 #include "gedit-print.h"
 #include "log.h"
+#include "manual.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -4524,16 +4525,19 @@ void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
 		if (item == NULL)
 			prefs_filtering_open(&pre_global_processing,
 					     _("Processing rules to apply before folder rules"),
+					     MANUAL_ANCHOR_PROCESSING,
 					     header, key);
 		else
 			prefs_filtering_open(&item->prefs->processing,
 					     _("Processing configuration"),
+					     MANUAL_ANCHOR_PROCESSING,
 					     header, key);
 	}
 	else {
 		prefs_filtering_open(&filtering_rules,
-				     _("Filtering configuration"),
-				       header, key);
+				_("Filtering configuration"),
+				MANUAL_ANCHOR_FILTERING,
+				header, key);
 	}
 	
 	g_free(header);

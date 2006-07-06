@@ -56,6 +56,7 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "prefs_matcher.h"
+#include "manual.h"
 
 static struct SummarySearchWindow {
 	GtkWidget *window;
@@ -74,6 +75,7 @@ static struct SummarySearchWindow {
 	GtkWidget *case_checkbtn;
 
 	GtkWidget *clear_btn;
+	GtkWidget *help_btn;
 	GtkWidget *all_btn;
 	GtkWidget *prev_btn;
 	GtkWidget *next_btn;
@@ -159,6 +161,7 @@ static void summary_search_create(void)
 	GtkWidget *case_checkbtn;
 
 	GtkWidget *confirm_area;
+	GtkWidget *help_btn;
 	GtkWidget *all_btn;
 	GtkWidget *prev_btn;
 	GtkWidget *next_btn;
@@ -307,6 +310,8 @@ static void summary_search_create(void)
 				  GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(confirm_area), 5);
 
+	gtkut_stock_button_add_help(confirm_area, &help_btn);
+
 	all_btn = gtk_button_new_with_mnemonic(_("Find _all"));
 	GTK_WIDGET_SET_FLAGS(all_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(confirm_area), all_btn, TRUE, TRUE, 0);
@@ -345,6 +350,9 @@ static void summary_search_create(void)
 	SET_TOGGLE_SENSITIVITY(adv_search_checkbtn, adv_condition_btn)
 	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, case_checkbtn)
 
+	g_signal_connect(G_OBJECT(help_btn), "clicked",
+			 G_CALLBACK(manual_open_with_anchor_cb),
+			 MANUAL_ANCHOR_SEARCHING);
 	g_signal_connect(G_OBJECT(clear_btn), "clicked",
 			 G_CALLBACK(summary_search_clear), NULL);
 	g_signal_connect(G_OBJECT(all_btn), "clicked",
@@ -371,6 +379,7 @@ static void summary_search_create(void)
 	search_window.case_checkbtn = case_checkbtn;
 	search_window.adv_search_checkbtn = adv_search_checkbtn;
 	search_window.clear_btn = clear_btn;
+	search_window.help_btn = help_btn;
 	search_window.all_btn = all_btn;
 	search_window.prev_btn = prev_btn;
 	search_window.next_btn = next_btn;

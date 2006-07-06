@@ -111,7 +111,7 @@ gboolean manual_available(ManualType type)
 	return ret;
 }
 
-void manual_open(ManualType type)
+void manual_open(ManualType type, gchar *url_anchor)
 {
 	gchar *uri = NULL;
 	gchar *dir;
@@ -120,7 +120,14 @@ void manual_open(ManualType type)
 		case MANUAL_MANUAL_LOCAL:
 			dir = get_local_path_with_locale(MANUALDIR);
 			if (dir != NULL) {
-				uri = g_strconcat("file://", dir, G_DIR_SEPARATOR_S, MANUAL_HTML_INDEX, NULL);
+				gchar *tmp_anchor = NULL;
+				if (url_anchor && *url_anchor != '\0')
+					tmp_anchor = g_strconcat("#", url_anchor, NULL);
+				uri = g_strconcat("file://",
+						dir, G_DIR_SEPARATOR_S, MANUAL_HTML_INDEX,
+						tmp_anchor,
+						NULL);
+				g_free(tmp_anchor);
 				g_free(dir);
 			}
 			break;
@@ -133,4 +140,9 @@ void manual_open(ManualType type)
 	}
 	open_uri(uri, prefs_common.uri_cmd);
 	g_free(uri);
+}
+
+void manual_open_with_anchor_cb(GtkWidget *widget, gchar *url_anchor)
+{
+	manual_open(MANUAL_MANUAL_LOCAL, url_anchor);
 }

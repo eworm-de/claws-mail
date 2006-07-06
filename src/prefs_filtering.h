@@ -39,7 +39,8 @@ typedef enum
 #include "folder.h"
 
 void prefs_filtering_open(GSList ** p_processing,
-			  const gchar * title,
+			  const gchar *title,
+			  const gchar *help_url_anchor,
 			  const gchar *header,
 			  const gchar *key);
 

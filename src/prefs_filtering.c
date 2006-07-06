@@ -49,6 +49,7 @@
 #include "filtering.h"
 #include "addr_compl.h"
 #include "colorlabel.h"
+#include "manual.h"
 
 #include "matcher_parser.h"
 #include "matcher.h"
@@ -65,6 +66,7 @@ enum {
 static struct Filtering {
 	GtkWidget *window;
 
+	GtkWidget *help_btn;
 	GtkWidget *ok_btn;
 	GtkWidget *name_entry;
 	GtkWidget *cond_entry;
@@ -135,8 +137,11 @@ static gboolean prefs_filtering_selected		(GtkTreeSelection *selector,
 							 gboolean currently_selected,
 							 gpointer data);
 
+static gulong signal_id = 0; /* filtering.help_btn clicked signal */
+
 void prefs_filtering_open(GSList ** p_processing,
-			  const gchar * title,
+			  const gchar *title,
+			  const gchar *help_url_anchor,
 			  const gchar *header,
 			  const gchar *key)
 {
@@ -157,7 +162,23 @@ void prefs_filtering_open(GSList ** p_processing,
 	else
 		gtk_window_set_title (GTK_WINDOW(filtering.window),
 				      _("Filtering/Processing configuration"));
-	
+
+	if (help_url_anchor != NULL) {
+		if (signal_id != 0) {
+			g_signal_handler_disconnect(
+					G_OBJECT(filtering.help_btn),
+					signal_id);
+		}
+
+		signal_id = g_signal_connect(G_OBJECT(filtering.help_btn),
+				"clicked",
+				G_CALLBACK(manual_open_with_anchor_cb),
+				(gchar*)help_url_anchor);
+	}
+	else {
+		gtk_widget_set_sensitive(filtering.help_btn, FALSE);
+	}
+
         p_processing_list = p_processing;
         
 	prefs_filtering_set_dialog(header, key);
@@ -189,8 +210,9 @@ static void prefs_filtering_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *ok_btn;
+	GtkWidget *help_btn;
 	GtkWidget *cancel_btn;
+	GtkWidget *ok_btn;
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
@@ -236,8 +258,10 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
+	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
+			&cancel_btn, GTK_STOCK_CANCEL,
+			&ok_btn, GTK_STOCK_OK,
+			NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -419,6 +443,7 @@ static void prefs_filtering_create(void)
 	gtk_widget_show_all(window);
 
 	filtering.window    = window;
+	filtering.help_btn = help_btn;
 	filtering.ok_btn = ok_btn;
 
 	filtering.name_entry     = name_entry;

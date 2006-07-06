@@ -1,3 +1,25 @@
+2006-07-06 [wwp]	2.3.1cvs63
+
+	* src/account.c
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/manual.c
+	* src/manual.h
+	* src/message_search.c
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering.h
+	* src/prefs_template.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/pluginwindow.c
+		add help buttons to some dialogs. Clicking such buttons opens a
+		relevant manual page. Patch by Fabien Vantard <fzzzzz@gmail.com>.
+
 2006-07-06 [paul]	2.3.1cvs62
 
 	* src/textview.c

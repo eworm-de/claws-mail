@@ -65,6 +65,7 @@
 #include "partial_download.h"
 #include "prefs_folder_column.h"
 #include "filtering.h"
+#include "manual.h"
 
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
@@ -2467,7 +2468,8 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	title = g_strdup_printf (_("Processing configuration for folder %s"), id);
 	g_free (id);
 
-	prefs_filtering_open(&item->prefs->processing, title, NULL, NULL);
+	prefs_filtering_open(&item->prefs->processing, title,
+			MANUAL_ANCHOR_PROCESSING, NULL, NULL);
 	g_free (title);
 }
 
