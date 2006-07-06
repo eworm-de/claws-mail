@@ -1,3 +1,9 @@
+2006-07-06 [paul]	2.3.1cvs62
+
+	* src/textview.c
+		fix attachments contextual menu
+		Thanks to Colin
+
 2006-07-05 [colin]	2.3.1cvs61
 
 	* src/textview.c

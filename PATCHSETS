@@ -1662,3 +1662,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/xml2pdf;  ) > 2.3.1cvs59.patchset
 ( cvs diff -u -r 1.2.2.24 -r 1.2.2.25 src/gtk/filesel.c;  ) > 2.3.1cvs60.patchset
 ( cvs diff -u -r 1.96.2.121 -r 1.96.2.122 src/textview.c;  cvs diff -u -r 1.382.2.292 -r 1.382.2.293 src/compose.c;  ) > 2.3.1cvs61.patchset
+( cvs diff -u -r 1.96.2.122 -r 1.96.2.123 src/textview.c;  ) > 2.3.1cvs62.patchset

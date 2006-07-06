@@ -632,7 +632,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
-		//gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		TEXT_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
@@ -677,6 +676,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {
+				gtk_text_buffer_insert(buffer, &iter, " ", -1);
 				uri = g_new(RemoteURI, 1);
 				uri->uri = uri_str;
 				uri->start = gtk_text_iter_get_offset(&iter);
