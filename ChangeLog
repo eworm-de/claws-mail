@@ -7,7 +7,7 @@
 	* src/textview.c
 		add contextual menu to mime parts listed
 		in the textview
-		Thank to Colin
+		Thanks to Colin
 	* src/common/utils.c
 		reversal: ' is a valid character in URLs
 
