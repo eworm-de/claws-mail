@@ -1,3 +1,9 @@
+2006-07-07 [paul]	2.3.1cvs68
+
+	* src/textview.c
+		add missing #include <errno.h>
+		Thanks to René J. Blokland
+
 2006-07-07 [paul]	2.3.1cvs67
 
 	* src/action.c

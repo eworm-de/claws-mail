@@ -1668,3 +1668,4 @@
 ( cvs diff -u -r 1.213.2.103 -r 1.213.2.104 src/folder.c;  cvs diff -u -r 1.179.2.126 -r 1.179.2.127 src/imap.c;  cvs diff -u -r 1.105.2.62 -r 1.105.2.63 src/prefs_account.c;  cvs diff -u -r 1.20.2.33 -r 1.20.2.34 src/common/utils.h;  cvs diff -u -r 1.1.4.44 -r 1.1.4.45 src/etpan/imap-thread.c;  ) > 2.3.1cvs65.patchset
 ( cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/remotefolder.h;  ) > 2.3.1cvs66.patchset
 ( cvs diff -u -r 1.12.2.35 -r 1.12.2.36 src/action.c;  cvs diff -u -r 1.83.2.75 -r 1.83.2.76 src/mimeview.c;  cvs diff -u -r 1.20.2.10 -r 1.20.2.11 src/mimeview.h;  cvs diff -u -r 1.96.2.123 -r 1.96.2.124 src/textview.c;  cvs diff -u -r 1.36.2.71 -r 1.36.2.72 src/common/utils.c;  ) > 2.3.1cvs67.patchset
+( cvs diff -u -r 1.96.2.124 -r 1.96.2.125 src/textview.c;  ) > 2.3.1cvs68.patchset
