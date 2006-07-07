@@ -1671,3 +1671,4 @@
 ( cvs diff -u -r 1.96.2.124 -r 1.96.2.125 src/textview.c;  ) > 2.3.1cvs68.patchset
 ( cvs diff -u -r 1.213.2.104 -r 1.213.2.105 src/folder.c;  ) > 2.3.1cvs69.patchset
 ( cvs diff -u -r 1.53.2.18 -r 1.53.2.19 po/POTFILES.in;  cvs diff -u -r 1.8.2.7 -r 1.8.2.8 src/quote_fmt.c;  cvs diff -u -r 1.8.2.4 -r 1.8.2.5 src/quote_fmt_lex.l;  cvs diff -u -r 1.22.2.21 -r 1.22.2.22 src/quote_fmt_parse.y;  ) > 2.3.1cvs70.patchset
+( cvs diff -u -r 1.9.2.26 -r 1.9.2.27 src/common/defs.h;  ) > 2.3.1cvs71.patchset

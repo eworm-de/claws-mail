@@ -77,7 +77,7 @@
 #define MAILING_LIST_URI	"http://www.sylpheed-claws.net/MLs.php"
 #define USERS_ML_ADDR		"sylpheed-claws-users@dotsrc.org"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
-#define DONATE_URI		"https://sourceforge.net/donate/index.php?group_id=25528"
+#define DONATE_URI		"http://www.sylpheed-claws.net/sponsors.php"
 #define OPENSSL_URI		"http://www.openssl.org/"
 #define THEMEINFO_FILE		".sylpheed_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"
