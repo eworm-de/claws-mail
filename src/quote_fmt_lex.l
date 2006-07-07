@@ -87,6 +87,7 @@ int quote_fmt_firsttime = 1;
 "?r" /* query references */ return QUERY_REFERENCES;
 "|f" /* insert file */ return INSERT_FILE;
 "|p" /* insert program output */ return INSERT_PROGRAMOUTPUT;
+"|i" /* insert user input */ return INSERT_USERINPUT;
 "!d" /* query date */ return QUERY_NOT_DATE;
 "!f" /* query from */ return QUERY_NOT_FROM;
 "!N"|"!F"|"!L"|"!I" /* query not(from name) */ return QUERY_NOT_FULLNAME;

@@ -1,3 +1,12 @@
+2006-07-07 [colin]	2.3.1cvs70
+
+	* po/POTFILES.in
+	* src/quote_fmt.c
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Add |i{var}, a way to insert user-entered
+		text in a template
+
 2006-07-07 [colin]
 
 	* 2.4.0-rc3 released

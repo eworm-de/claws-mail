@@ -121,6 +121,7 @@ src/privacy.c
 src/procmime.c
 src/procmsg.c
 src/quote_fmt.c
+src/quote_fmt_parse.y
 src/send_message.c
 src/setup.c
 src/sourcewindow.c

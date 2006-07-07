@@ -22,6 +22,8 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
+
 #include <ctype.h>
 
 #include "procmsg.h"
@@ -29,6 +31,7 @@
 #include "utils.h"
 #include "codeconv.h"
 #include "procheader.h"
+#include "gtk/inputdialog.h"
 
 #include "quote_fmt.h"
 #include "quote_fmt_lex.h"
@@ -46,6 +49,7 @@ static gboolean *visible = NULL;
 static gboolean dry_run = FALSE;
 static gint maxsize = 0;
 static gint stacksize = 0;
+static GHashTable *var_table = NULL;
 
 typedef struct st_buffer
 {
@@ -156,6 +160,12 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	current = &main_expr;
 	clear_buffer();
 	error = 0;
+	if (var_table) {
+		g_hash_table_destroy(var_table);
+		var_table = NULL;
+	}
+	var_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+
         /*
          * force LEX initialization
          */
@@ -429,6 +439,32 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 	}
 }
 
+static void quote_fmt_insert_user_input(const gchar *varname)
+{
+	gchar *buf = NULL;
+	gchar *text = NULL;
+	
+	if (dry_run) 
+		return;
+
+	if ((text = g_hash_table_lookup(var_table, varname)) == NULL) {
+		buf = g_strdup_printf(_("Enter text to replace '%s'"), varname);
+		text = input_dialog(_("Enter variable"), buf, "");
+		g_free(buf);
+		if (!text)
+			return;
+		g_hash_table_insert(var_table, g_strdup(varname), g_strdup(text));
+	} else {
+		/* don't free the one in hashtable at the end */
+		text = g_strdup(text);
+	}
+
+	if (!text)
+		return;
+	INSERT(text);
+	g_free(text);
+}
+
 %}
 
 %union {
@@ -449,7 +485,7 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 %token QUERY_NOT_DATE QUERY_NOT_FROM
 %token QUERY_NOT_FULLNAME QUERY_NOT_SUBJECT QUERY_NOT_TO QUERY_NOT_NEWSGROUPS
 %token QUERY_NOT_MESSAGEID QUERY_NOT_CC QUERY_NOT_REFERENCES
-%token INSERT_FILE INSERT_PROGRAMOUTPUT
+%token INSERT_FILE INSERT_PROGRAMOUTPUT INSERT_USERINPUT
 %token OPARENT CPARENT
 %token CHARACTER
 %token SHOW_DATE_EXPR
@@ -821,5 +857,17 @@ insert:
 		current = &main_expr;
 		if (!dry_run) {
 			quote_fmt_insert_program_output(sub_expr.buffer);
+		}
+	}
+	| INSERT_USERINPUT
+	{
+		current = &sub_expr;
+		clear_buffer();
+	}
+	OPARENT sub_expr CPARENT
+	{
+		current = &main_expr;
+		if (!dry_run) {
+			quote_fmt_insert_user_input(sub_expr.buffer);
 		}
 	};
