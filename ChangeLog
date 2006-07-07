@@ -1,3 +1,9 @@
+2006-07-07 [colin]	2.3.1cvs69
+
+	* src/folder.c
+		Don't consider inboxes of UNKNOWN folder 
+		classes to be useable as default inboxes
+
 2006-07-07 [paul]	2.3.1cvs68
 
 	* src/textview.c

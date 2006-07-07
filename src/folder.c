@@ -1346,6 +1346,8 @@ FolderItem *folder_get_default_inbox(void)
 			continue;
 		if (folder->inbox == NULL)
 			continue;
+		if (folder->klass->type == F_UNKNOWN)
+			continue;
 
 		return folder->inbox;
 	}
