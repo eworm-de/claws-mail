@@ -1073,7 +1073,8 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 static gint io_dialog_key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && (event->keyval == GDK_Escape ||
+		      event->keyval == GDK_Return))
 		hide_io_dialog_cb(widget, data);
 	return TRUE;
 }

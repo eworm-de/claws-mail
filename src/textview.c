@@ -2098,11 +2098,14 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				(textview->messageview)?
 					textview->messageview->mimeview:NULL;
 			if (mimeview && bevent->button == 1) {
-				mimeview_handle_cmd(mimeview, uri->filename, uri->data);
+				mimeview_handle_cmd(mimeview, uri->filename, NULL, uri->data);
 			} else if (mimeview && bevent->button == 2 && 
 				!g_ascii_strcasecmp(uri->filename, "sc://select_attachment")) {
-				mimeview_handle_cmd(mimeview, "sc://open_attachment", uri->data);
-			}
+				mimeview_handle_cmd(mimeview, "sc://open_attachment", NULL, uri->data);
+			} else if (mimeview && bevent->button == 3 && 
+				!g_ascii_strcasecmp(uri->filename, "sc://select_attachment")) {
+				mimeview_handle_cmd(mimeview, "sc://menu_attachment", bevent, uri->data);
+			} 
 			return TRUE;
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {

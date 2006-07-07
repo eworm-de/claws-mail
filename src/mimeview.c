@@ -118,6 +118,8 @@ static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_save_all		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview);
 static void mimeview_open_with		(MimeView	*mimeview);
+static void mimeview_open_part_with	(MimeView	*mimeview,
+					 MimeInfo	*partinfo);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
 					 const gchar	*cmdline,
@@ -1034,6 +1036,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	MimeInfo *partinfo;
 	if (mimeview->opened == node) return;
 	mimeview->opened = node;
+	mimeview->spec_part = NULL;
 	gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
 
 	partinfo = gtk_ctree_node_get_row_data(ctree, node);
@@ -1120,8 +1123,7 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		mimeview_launch(mimeview);
 		return TRUE;
 	} else if (event->button == 3) {
-		if (partinfo && (partinfo->type == MIMETYPE_TEXT ||
-				 partinfo->type == MIMETYPE_MESSAGE ||
+		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
 				 partinfo->type == MIMETYPE_IMAGE ||
 				 partinfo->type == MIMETYPE_MULTIPART))
 			menu_set_sensitive(mimeview->popupfactory,
@@ -1316,7 +1318,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	uriname = g_strconcat("file://", filename, "\r\n", NULL);
 
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
-			       uriname, strlen(uriname));
+			       (guchar *)uriname, strlen(uriname));
 
 	g_free(uriname);
 	g_free(filename);
@@ -1464,6 +1466,25 @@ static void mimeview_save_all(MimeView *mimeview)
 	prefs_common.attach_save_dir = g_strdup(dirname);
 }
 
+static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
+{
+	MimeInfo *partinfo = NULL;
+	if (mimeview->spec_part) {
+		partinfo = mimeview->spec_part;
+		mimeview->spec_part = NULL;
+	} else {
+		partinfo = mimeview_get_selected_part(mimeview);
+		if (!partinfo) { 
+			partinfo = (MimeInfo *) g_object_get_data
+				 (G_OBJECT(mimeview->popupmenu),
+				 "pop_partinfo");
+			g_object_set_data(G_OBJECT(mimeview->popupmenu),
+					  "pop_partinfo", NULL);
+		}			 
+	}
+
+	return partinfo;
+}
 /**
  * Menu callback: Save the selected attachment
  * \param mimeview Current display
@@ -1479,14 +1500,8 @@ static void mimeview_save_as(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = mimeview_get_selected_part(mimeview);
-	if (!partinfo) { 
-		partinfo = (MimeInfo *) g_object_get_data
-			 (G_OBJECT(mimeview->popupmenu),
-			 "pop_partinfo");
-		g_object_set_data(G_OBJECT(mimeview->popupmenu),
-				  "pop_partinfo", NULL);
-	}			 
+	partinfo = mimeview_get_part_to_use(mimeview);
+
 	g_return_if_fail(partinfo != NULL);
 	
 	if (get_part_name(partinfo) == NULL) {
@@ -1534,15 +1549,8 @@ static void mimeview_display_as_text(MimeView *mimeview)
 
 	if (!mimeview->opened) return;
 
-	partinfo = mimeview_get_selected_part(mimeview);
-	if (!partinfo)  {
-		partinfo = (MimeInfo *) g_object_get_data
-			(G_OBJECT(mimeview->popupmenu),
-			 "pop_partinfo");
-		g_object_set_data(G_OBJECT(mimeview->popupmenu),
-				  "pop_partinfo", NULL);
-	
-	}			 
+	partinfo = mimeview_get_part_to_use(mimeview);
+
 	g_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
 }
@@ -1555,14 +1563,8 @@ static void mimeview_launch(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = mimeview_get_selected_part(mimeview);
-	if (!partinfo) { 
-		partinfo = (MimeInfo *) g_object_get_data
-			(G_OBJECT(mimeview->popupmenu),
-			 "pop_partinfo");
-		g_object_set_data(G_OBJECT(mimeview->popupmenu),
-				  "pop_partinfo", NULL);
-	}			 
+	partinfo = mimeview_get_part_to_use(mimeview);
+
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -1579,23 +1581,23 @@ static void mimeview_launch(MimeView *mimeview)
 static void mimeview_open_with(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
-	gchar *filename;
-	gchar *cmd;
-	gchar *mime_command = NULL;
-	gchar *content_type = NULL;
 
 	if (!mimeview) return;
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = mimeview_get_selected_part(mimeview);
-	if (!partinfo) { 
-		partinfo = (MimeInfo *) g_object_get_data
-			(G_OBJECT(mimeview->popupmenu),
-			 "pop_partinfo");
-		g_object_set_data(G_OBJECT(mimeview->popupmenu),
-				  "pop_partinfo", NULL);
-	}			 
+	partinfo = mimeview_get_part_to_use(mimeview);
+
+	mimeview_open_part_with(mimeview, partinfo);
+}
+
+static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo)
+{
+	gchar *filename;
+	gchar *cmd;
+	gchar *mime_command = NULL;
+	gchar *content_type = NULL;
+
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -1667,7 +1669,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		def_cmd = NULL;
 	} else if (MIMETYPE_APPLICATION == partinfo->type &&
 		   !g_ascii_strcasecmp(partinfo->subtype, "octet-stream")) {
-		mimeview_open_with(mimeview);
+		mimeview_open_part_with(mimeview, partinfo);
 		return;
 	} else if (MIMETYPE_IMAGE == partinfo->type) {
 		cmd = prefs_common.mime_image_viewer;
@@ -1698,13 +1700,13 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		if (def_cmd)
 			g_snprintf(buf, sizeof(buf), def_cmd, filename);
 		else {
-			mimeview_open_with(mimeview);
+			mimeview_open_part_with(mimeview, partinfo);
 			return;
 		}
 	}
 
 	if (execute_command_line(buf, TRUE) != 0)
-		mimeview_open_with(mimeview);
+		mimeview_open_part_with(mimeview, partinfo);
 }
 
 void mimeview_register_viewer_factory(MimeViewerFactory *factory)
@@ -2187,7 +2189,7 @@ void mimeview_update (MimeView *mimeview) {
 	}
 }
 
-void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, gpointer data)
+void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *event, gpointer data)
 {
 	MessageView *msgview = NULL;
 	MainWindow *mainwin = NULL;
@@ -2220,6 +2222,9 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, gpointer data)
 		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
 		icon_selected(mimeview, -1, (MimeInfo *)data);
 		mimeview_launch(mimeview);
+	} else if (!strcmp(cmd, "sc://menu_attachment") && data != NULL) {
+		mimeview->spec_part = (MimeInfo *)data;
+		part_button_pressed(mimeview, event, (MimeInfo *)data);
 	}
 }
 

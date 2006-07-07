@@ -99,6 +99,7 @@ struct _MimeView
 #ifdef USE_PTHREAD
 	SigCheckData *check_data;
 #endif
+	MimeInfo *spec_part;
 };
 
 struct _MimeViewerFactory
@@ -150,6 +151,7 @@ void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
 void mimeview_unregister_viewer_factory	(MimeViewerFactory *factory);
 void mimeview_handle_cmd		(MimeView 	*mimeview, 
 					 const gchar 	*cmd,
+					 GdkEventButton *event,
 					 gpointer	 data);
 
 

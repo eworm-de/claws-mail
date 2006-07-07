@@ -1,3 +1,16 @@
+2006-07-07 [paul]	2.3.1cvs67
+
+	* src/action.c
+		Return now Closes dialog
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/textview.c
+		add contextual menu to mime parts listed
+		in the textview
+		Thank to Colin
+	* src/common/utils.c
+		reversal: ' is a valid character in URLs
+
 2006-07-06 [colin]	2.3.1cvs66
 
 	* src/remotefolder.h
