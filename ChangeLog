@@ -1,3 +1,8 @@
+2006-07-07 [colin]	2.3.1cvs72
+
+	* src/prefs_actions.c
+		Fix compile on gtk < 2.8. argh :)
+
 2006-07-07 [paul]	2.3.1cvs71
 
 	* src/common/defs.h
