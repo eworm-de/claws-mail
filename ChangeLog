@@ -1,3 +1,14 @@
+2006-07-08 [colin]	2.3.1cvs74
+
+	* src/main.c
+		Prevent bug #981 (sc 2.3.1 segfaults with 
+		gtk+ 2.10) from being reported again:
+		if Sylpheed-Claws has been compiled against
+		GTK+ < 2.9.0 and we're running with GTK+ >= 2.9.0, 
+		of if Sylpheed-Claws has been compiled against
+		GTK+ >= 2.9.0 and we're running with GTK+ < 2.9.0,
+		error out.
+
 2006-07-07 [colin]	2.3.1cvs73
 
 	* src/prefs_actions.c

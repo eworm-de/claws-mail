@@ -1674,3 +1674,4 @@
 ( cvs diff -u -r 1.9.2.26 -r 1.9.2.27 src/common/defs.h;  ) > 2.3.1cvs71.patchset
 ( cvs diff -u -r 1.60.2.36 -r 1.60.2.37 src/prefs_actions.c;  ) > 2.3.1cvs72.patchset
 ( cvs diff -u -r 1.60.2.37 -r 1.60.2.38 src/prefs_actions.c;  ) > 2.3.1cvs73.patchset
+( cvs diff -u -r 1.115.2.94 -r 1.115.2.95 src/main.c;  ) > 2.3.1cvs74.patchset

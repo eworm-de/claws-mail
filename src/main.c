@@ -348,6 +348,26 @@ int main(int argc, char *argv[])
 		g_error(_("g_thread is not supported by glib.\n"));
 	}
 
+	/* check that we're not on a too recent/old gtk+ */
+#if GTK_CHECK_VERSION(2, 9, 0)
+	if (gtk_check_version(2, 9, 0) != NULL) {
+		alertpanel_error(_("Sylpheed-Claws has been compiled with "
+				   "a more recent GTK+ library than is "
+				   "currently available. This will cause "
+				   "crashes. Please upgrade GTK+ or recompile "
+				   "Sylpheed-Claws."));
+		exit(1);
+	}
+#else
+	if (gtk_check_version(2, 9, 0) == NULL) {
+		alertpanel_error(_("Sylpheed-Claws has been compiled with "
+				   "an an older GTK+ library than is "
+				   "currently available. This will cause "
+				   "crashes. Please recompile "
+				   "Sylpheed-Claws."));
+		exit(1);
+	}
+#endif	
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc-2.0",
 			     NULL);
