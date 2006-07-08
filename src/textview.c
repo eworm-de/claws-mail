@@ -622,10 +622,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 	if (name != NULL)
-		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
+		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]",
 			   name, content_type, mimeinfo->length);
 	else
-		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
+		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]",
 			   content_type, mimeinfo->length);
 
 	g_free(content_type);			   
@@ -634,6 +634,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
 		TEXT_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
+		gtk_text_buffer_insert(buffer, &iter, " \n", -1);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
@@ -677,7 +678,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {
-				gtk_text_buffer_insert(buffer, &iter, " ", -1);
 				uri = g_new(RemoteURI, 1);
 				uri->uri = uri_str;
 				uri->start = gtk_text_iter_get_offset(&iter);
