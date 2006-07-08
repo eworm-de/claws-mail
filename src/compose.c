@@ -1316,6 +1316,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_quote_fmt(compose, compose->replyinfo,
 			          prefs_common.quotefmt,
 			          qmark, body, FALSE);
+		quote_fmt_reset_vartable();
 	}
 	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
 		compose_force_encryption(compose, account, FALSE);
@@ -1431,6 +1432,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose_quote_fmt(compose, full_msginfo,
 			          prefs_common.fw_quotefmt,
 			          qmark, body, FALSE);
+		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
 
 		procmsg_msginfo_free(full_msginfo);
@@ -1876,6 +1878,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
 	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE);
+	quote_fmt_reset_vartable();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
 
 	compose_colorize_signature(compose);
@@ -6568,7 +6571,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 	/* process the other fields */
 	compose_template_apply_fields(compose, tmpl);
-	
+	quote_fmt_reset_vartable();
 	compose_changed_cb(NULL, compose);
 }
 
@@ -7612,6 +7615,15 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
 		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
 		fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
+	}
+
+	/* Message-ID of message replying to */
+	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
+		gchar *folderid;
+		
+		folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
+		g_free(folderid);
 	}
 
 	/* end of headers */
@@ -8735,6 +8747,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_place_cursor(buffer, iter);
 
 		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE);
+		quote_fmt_reset_vartable();
 		g_free(new_text);
 		g_object_set_data(G_OBJECT(compose->text), "paste_as_quotation",
 				  GINT_TO_POINTER(paste_as_quotation - 1));

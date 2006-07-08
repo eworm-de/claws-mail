@@ -522,6 +522,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 			g_free(value);
 			return FALSE;
 		}
+		quote_fmt_reset_vartable();
 	}
 
 	name = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_name),

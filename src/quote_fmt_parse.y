@@ -146,6 +146,14 @@ gint quote_fmt_get_cursor_pos(void)
 		add_buffer(tmp); \
 	}
 
+void quote_fmt_reset_vartable(void)
+{
+	if (var_table) {
+		g_hash_table_destroy(var_table);
+		var_table = NULL;
+	}
+}
+
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run)
 {
@@ -160,11 +168,10 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	current = &main_expr;
 	clear_buffer();
 	error = 0;
-	if (var_table) {
-		g_hash_table_destroy(var_table);
-		var_table = NULL;
-	}
-	var_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+
+	if (!var_table)
+		var_table = g_hash_table_new_full(g_str_hash, g_str_equal, 
+				g_free, g_free);
 
         /*
          * force LEX initialization
