@@ -1,3 +1,9 @@
+2006-07-09 [colin]	2.3.1cvs78
+
+	* src/textview.c
+		Show errors in textviewer's command
+		Patch by H. Merijn Brand
+
 2006-07-09 [colin]	2.3.1cvs77
 
 	* src/compose.c

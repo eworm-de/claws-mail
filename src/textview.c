@@ -911,13 +911,18 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			goto textview_default;
 		}
 		if (pid == 0) { /* child */
+			int rc;
 			gchar **argv;
 			argv = strsplit_with_quote(buf, " ", 0);
 			close(1);
 			close(pfd[0]);
 			dup(pfd[1]);
-			execvp(argv[0], argv);
+			rc = execvp(argv[0], argv);
 			close(pfd[1]);
+			printf (_("The command to view attachment "
+			        "as text failed:\n"
+			        "    %s\n"
+			        "Exit code %d\n"), buf, rc);
 			exit(255);
 		}
 		close(pfd[1]);
