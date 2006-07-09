@@ -7625,6 +7625,14 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
 		g_free(folderid);
 	}
+	/* Message-ID of message forwarding to */
+	if ((compose->fwdinfo != NULL) && (compose->fwdinfo->msgid != NULL)) {
+		gchar *folderid;
+		
+		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		g_free(folderid);
+	}
 
 	/* end of headers */
 	fprintf(fp, "X-Sylpheed-End-Special-Headers: 1\n");

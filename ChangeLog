@@ -1,3 +1,8 @@
+2006-07-09 [colin]	2.3.1cvs77
+
+	* src/compose.c
+		Save FMID in drafts too
+
 2006-07-08 [colin]	2.3.1cvs76
 
 	* src/compose.c
