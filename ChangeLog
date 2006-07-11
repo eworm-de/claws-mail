@@ -1,3 +1,8 @@
+2006-07-11 [paul]	2.3.1cvs79
+
+	* src/main.c
+		fix the labels a smidgin
+
 2006-07-09 [colin]	2.3.1cvs78
 
 	* src/textview.c

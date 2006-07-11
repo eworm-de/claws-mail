@@ -354,16 +354,16 @@ int main(int argc, char *argv[])
 		alertpanel_error(_("Sylpheed-Claws has been compiled with "
 				   "a more recent GTK+ library than is "
 				   "currently available. This will cause "
-				   "crashes. Please upgrade GTK+ or recompile "
-				   "Sylpheed-Claws."));
+				   "crashes. You need to upgrade GTK+ or "
+				   "recompile Sylpheed-Claws."));
 		exit(1);
 	}
 #else
 	if (gtk_check_version(2, 9, 0) == NULL) {
 		alertpanel_error(_("Sylpheed-Claws has been compiled with "
-				   "an an older GTK+ library than is "
+				   "an older GTK+ library than is "
 				   "currently available. This will cause "
-				   "crashes. Please recompile "
+				   "crashes. You need to recompile "
 				   "Sylpheed-Claws."));
 		exit(1);
 	}
