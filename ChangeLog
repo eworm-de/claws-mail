@@ -1,3 +1,14 @@
+2006-07-12 [paul]	2.3.1cvs81
+
+	* AUTHORS
+	* src/mainwindow.c
+	* src/gtk/authors.h
+		check online state before resetting
+		mailcheck timer. Useful if some program
+		verifies connection state and updates
+		Claws.
+		Patch by  Leonid Evdokimov <darkk@users.sf.net>
+
 2006-07-12 [paul]	2.3.1cvs80
 
 	* sylpheed-claws-128x128.png
