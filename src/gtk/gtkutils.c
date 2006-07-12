@@ -790,16 +790,17 @@ void gtkut_widget_init(void)
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
 {
-#include "pixmaps/sylpheed.xpm"	
-	static GdkPixmap *sylpheedxpm;
-	static GdkBitmap *sylpheedxpmmask;
+#include "pixmaps/sylpheed-claws.xpm"
+	static GdkPixmap *sylpheedclawsxpm;
+	static GdkBitmap *sylpheedclawsxpmmask;
 	
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(widget->window != NULL);
-	if (!sylpheedxpm) {
-		PIXMAP_CREATE(widget, sylpheedxpm, sylpheedxpmmask, sylpheed_xpm);
+	if (!sylpheedclawsxpm) {
+		PIXMAP_CREATE(widget, sylpheedclawsxpm, sylpheedclawsxpmmask,
+			      sylpheed_claws_xpm);
 	}		
-	gdk_window_set_icon(widget->window, NULL, sylpheedxpm, sylpheedxpmmask);
+	gdk_window_set_icon(widget->window, NULL, sylpheedclawsxpm, sylpheedclawsxpmmask);
 }
 
 void gtkut_widget_set_composer_icon(GtkWidget *widget)

@@ -1,3 +1,25 @@
+2006-07-12 [paul]	2.3.1cvs80
+
+	* sylpheed-claws-128x128.png
+	* sylpheed-claws-64x64.png
+	* sylpheed-claws.png
+	* src/Makefile.am
+	* src/main.c
+	* src/prefs_toolbar.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/wizard.c
+	* src/gtk/about.c
+	* src/gtk/gtkutils.c
+	* src/pixmaps/sylpheed-claws.xpm	** ADDED **
+	* src/pixmaps/sylpheed-claws_icon.xpm	** ADDED **
+	* src/pixmaps/sylpheed-claws_logo.xpm	** ADDED **
+	* src/pixmaps/sylpheed.xpm		** REMOVED **
+	* src/pixmaps/sylpheed_icon.xpm		** REMOVED **
+	* src/pixmaps/sylpheed_logo.xpm		** REMOVED **
+		updated and renamed logo/icon files and related
+		logo by Jesper Schultz
+
 2006-07-11 [paul]	2.3.1cvs79
 
 	* src/main.c

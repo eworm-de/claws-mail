@@ -703,7 +703,7 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	/* create the titlebar */
 	hbox = gtk_hbox_new (FALSE, 12);
 	image = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_ICON);
+			  	STOCK_PIXMAP_SYLPHEED_CLAWS_ICON);
 	gtk_box_pack_start (GTK_BOX(hbox), image, FALSE, FALSE, 0);
      	title_string = g_strconcat ("<span size=\"xx-large\" weight=\"ultrabold\">", title ? title : "", "</span>", NULL);
 	w = gtk_label_new (title_string);
@@ -1254,7 +1254,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_LOGO);
+			  	STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
@@ -1323,7 +1323,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_LOGO);
+			  	STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	

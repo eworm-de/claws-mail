@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
 	renderer_read_config();
 
 	gtkut_widget_init();
-	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_SYLPHEED_ICON, &icon);
+	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_SYLPHEED_CLAWS_ICON, &icon);
 	gtk_window_set_default_icon(icon);
 
 	folderview_initialize();

@@ -374,9 +374,9 @@ EXTRA_DIST = \
 	pixmaps/search.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
-	pixmaps/sylpheed_icon.xpm \
-	pixmaps/sylpheed_logo.xpm \
-	pixmaps/sylpheed.xpm \
+	pixmaps/sylpheed-claws_icon.xpm \
+	pixmaps/sylpheed-claws_logo.xpm \
+	pixmaps/sylpheed-claws.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/trash_btn.xpm \

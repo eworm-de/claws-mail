@@ -132,7 +132,7 @@ static void about_create(void)
 	table = gtk_table_new (1, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
 
-	image = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
+	image = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
 	gtk_table_attach(GTK_TABLE(table), image, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_SHRINK),
 			 (GtkAttachOptions) (GTK_SHRINK), 8, 0);
