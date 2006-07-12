@@ -1,3 +1,10 @@
+2006-07-12 [wwp]	2.3.1cvs82
+
+	* src/messageview.c
+		remove Message/Re-edit menu entry from messageview window,
+		as sent/draft/queued messages are opened in compose window when
+		re-edited and it's not possible to re-edit other msgs.
+
 2006-07-12 [paul]	2.3.1cvs81
 
 	* AUTHORS

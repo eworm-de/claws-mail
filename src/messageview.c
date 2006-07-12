@@ -127,9 +127,6 @@ static void compose_cb			(gpointer	 data,
 static void reply_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void reedit_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
 
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
@@ -294,8 +291,6 @@ static GtkItemFactoryEntry msgview_entries[] =
 	{N_("/_Message/For_ward as attachment"),
 					NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/Redirec_t"),	NULL, reply_cb, COMPOSE_REDIRECT, NULL},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Re-_edit"),	NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Address book"),	"<control><shift>A", addressbook_open_cb, 0, NULL},
@@ -1548,22 +1543,6 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 	msginfo_list = g_slist_append(msginfo_list, messageview->msginfo);
 	compose_reply_from_messageview(messageview, msginfo_list, action);
 	g_slist_free(msginfo_list);
-}
-
-static void reedit_cb(gpointer data, guint action, GtkWidget *widget)
-{
-	MessageView *messageview = (MessageView *)data;
-	MsgInfo *msginfo;
-
-	if (!messageview->msginfo) return;
-	msginfo = messageview->msginfo;
-	if (!msginfo->folder) return;
-	if (!folder_has_parent_of_type(msginfo->folder, F_DRAFT) &&
-	    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
-	    !folder_has_parent_of_type(msginfo->folder, F_QUEUE)) 
-		return;
-
-	compose_reedit(msginfo, FALSE);
 }
 
 static void addressbook_open_cb(gpointer data, guint action, GtkWidget *widget)
