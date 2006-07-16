@@ -1,3 +1,8 @@
+2006-07-16 [wwp]	2.3.1cvs83
+
+	* sylpheed-claws.ico
+		Added .ico file (widows multi-size icon file, generated).
+
 2006-07-12 [wwp]	2.3.1cvs82
 
 	* src/messageview.c
