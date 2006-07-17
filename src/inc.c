@@ -773,14 +773,16 @@ static IncState inc_pop3_session_do(IncSession *session)
 #endif
 
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s..."), server);
+	statusbar_print_all("%s", buf);
 	log_message("%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
+	GTK_EVENTS_FLUSH();
 	g_free(buf);
 
 	session_set_timeout(SESSION(pop3_session),
 			    prefs_common.io_timeout_secs * 1000);
-
+	
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
@@ -871,6 +873,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
+		statusbar_pop_all();
 		statusbar_print_all(_("Retrieving messages from %s (%s) ..."),
 				    SESSION(session)->server,
 				    session->ac_prefs->account_name);
