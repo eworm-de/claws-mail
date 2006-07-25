@@ -95,6 +95,7 @@
 #include "colorlabel.h"
 #include "textview.h"
 #include "imap.h"
+#include "socket.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -3155,6 +3156,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		menuitem->active = FALSE;
 		prefs_common.work_offline = FALSE;
 		inc_autocheck_timer_set();
+		refresh_resolvers();
 	}
 }
 

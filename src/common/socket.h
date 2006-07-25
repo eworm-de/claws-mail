@@ -69,6 +69,7 @@ struct _SockInfo
 	GIOCondition condition;
 };
 
+void refresh_resolvers			(void);
 gint sock_init				(void);
 gint sock_cleanup			(void);
 

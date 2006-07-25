@@ -20,6 +20,7 @@
 #include "etpan-thread-manager.h"
 #include "utils.h"
 #include "ssl_certificate.h"
+#include "socket.h"
 
 #define DISABLE_LOG_DURING_LOGIN
 
@@ -357,6 +358,7 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	param.server = server;
 	param.port = port;
 	
+	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_run);
 	
 	debug_print("connect ok %i\n", result.error);
@@ -427,6 +429,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	param.server = server;
 	param.port = port;
 	
+	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
 	
 	if (result.error >= 0 && !etpan_skip_ssl_cert_check) {
