@@ -1686,3 +1686,4 @@
 ( diff -u /dev/null sylpheed-claws.ico;  ) > 2.3.1cvs83.patchset
 ( cvs diff -u -r 1.149.2.53 -r 1.149.2.54 src/inc.c;  ) > 2.3.1cvs84.patchset
 ( cvs diff -u -r 1.274.2.125 -r 1.274.2.126 src/mainwindow.c;  cvs diff -u -r 1.13.2.6 -r 1.13.2.7 src/common/socket.h;  cvs diff -u -r 1.1.4.45 -r 1.1.4.46 src/etpan/imap-thread.c;  ) > 2.3.1cvs85.patchset
+( cvs diff -u -r 1.96.2.127 -r 1.96.2.128 src/textview.c;  ) > 2.3.1cvs86.patchset

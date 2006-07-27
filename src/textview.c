@@ -622,10 +622,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 	if (name != NULL)
-		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]",
+		g_snprintf(buf, sizeof(buf), _("[%s  %s (%d bytes)]"),
 			   name, content_type, mimeinfo->length);
 	else
-		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]",
+		g_snprintf(buf, sizeof(buf), _("[%s (%d bytes)]"),
 			   content_type, mimeinfo->length);
 
 	g_free(content_type);			   
@@ -633,6 +633,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 		TEXT_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
 		gtk_text_buffer_insert(buffer, &iter, " \n", -1);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&

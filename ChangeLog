@@ -1,3 +1,9 @@
+2006-07-27 [colin]	2.3.1cvs86
+
+	* src/textview.c
+		Don't include the leading \n in links
+		Patch by Fabien
+
 2006-07-25 [colin]	2.3.1cvs85
 
 	* src/mainwindow.c
