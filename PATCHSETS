@@ -1687,3 +1687,4 @@
 ( cvs diff -u -r 1.149.2.53 -r 1.149.2.54 src/inc.c;  ) > 2.3.1cvs84.patchset
 ( cvs diff -u -r 1.274.2.125 -r 1.274.2.126 src/mainwindow.c;  cvs diff -u -r 1.13.2.6 -r 1.13.2.7 src/common/socket.h;  cvs diff -u -r 1.1.4.45 -r 1.1.4.46 src/etpan/imap-thread.c;  ) > 2.3.1cvs85.patchset
 ( cvs diff -u -r 1.96.2.127 -r 1.96.2.128 src/textview.c;  ) > 2.3.1cvs86.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 doc/man/sylpheed-claws.1;  cvs diff -u -r 1.60.2.31 -r 1.60.2.32 po/es.po;  ) > 2.3.1cvs87.patchset
