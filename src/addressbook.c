@@ -69,6 +69,7 @@
 #include "addrbook.h"
 #include "addrindex.h"
 #include "addressadd.h"
+#include "addressbook_foldersel.h"
 #include "vcard.h"
 #include "editvcard.h"
 #include "editgroup.h"
@@ -114,6 +115,19 @@ typedef enum
 	COL_REMARKS	= 2,
 	N_LIST_COLS	= 3
 } AddressListColumns;
+
+typedef struct {
+	AddressBookFile	*book;
+	ItemFolder	*folder;
+} FolderInfo;
+
+typedef struct {
+	gchar **folder_path;
+	gboolean matched;
+	gint index;
+	AddressDataSource *book;
+	ItemFolder *folder;
+} FolderPathMatch;
 
 static gchar *list_titles[] = { N_("Name"),
                                 N_("Email Address"),
@@ -4452,6 +4466,198 @@ gboolean addressbook_add_contact(
 	}
 	return TRUE;
 }
+
+/* ***********************************************************************
+ * Book/folder selection.
+ * ***********************************************************************
+ */
+
+/*
+ * This function is used by the matcher dialog to select a book/folder.
+ */
+gboolean addressbook_folder_selection( gchar **folderpath )
+{
+	AddressBookFile *book = NULL;
+	ItemFolder *folder = NULL;
+	gchar *path;
+
+	g_return_val_if_fail( folderpath != NULL, FALSE);
+
+	path = *folderpath;
+	*folderpath = NULL;
+	if ( addressbook_foldersel_selection( _addressIndex_, &book, &folder, path )
+		&& book != NULL ) {
+		if ( folder != NULL) {
+			gchar *tmp = NULL;
+			gchar *oldtmp = NULL;
+			AddrItemObject *obj = NULL;
+
+			/* walk thru folder->parent to build the full folder path */
+			/* TODO: wwp: optimize this */
+			obj = &folder->obj;
+			tmp = g_strdup(obj->uid);
+			while ( obj->parent ) {
+				obj = obj->parent;
+				if ( obj->name != NULL ) {
+					oldtmp = g_strdup(tmp);
+					g_free(tmp);
+					tmp = g_strdup_printf("%s/%s", obj->uid, oldtmp);
+					g_free(oldtmp);
+				}
+			}
+			*folderpath = g_strdup_printf("%s/%s", book->fileName, tmp);
+			g_free(tmp);
+		} else {
+			*folderpath = g_strdup_printf("%s", book->fileName);
+		}
+		debug_print( "addressbook_foldersel: %s\n", *folderpath);
+		return (*folderpath != NULL);
+	}
+	return FALSE;
+}
+
+/* ***********************************************************************
+ * Book/folder checking.
+ * ***********************************************************************
+ */
+
+static FolderInfo *addressbook_peek_subfolder_exists_create_folderinfo( AddressBookFile *abf, ItemFolder *folder )
+{
+	FolderInfo *fi = g_new0( FolderInfo, 1 );
+	fi->book   = abf;
+	fi->folder = folder;
+	return fi;
+}
+
+static void addressbook_peek_subfolder_exists_load_folder( ItemFolder *parentFolder,
+					FolderInfo *fiParent, FolderPathMatch *match )
+{
+	GList *list;
+	ItemFolder *folder;
+	gchar *fName;
+	FolderInfo *fi;
+	FolderPathMatch *nextmatch = NULL;
+
+	list = parentFolder->listFolder;
+	while ( list ) {
+		folder = list->data;
+		fName = g_strdup( ADDRITEM_NAME(folder) );
+
+		/* match folder name, match pointer will be set to NULL if next recursive call
+		   doesn't need to match subfolder name */
+		if ( match != NULL &&
+			 match->matched == FALSE ) {
+			if ( strcmp(match->folder_path[match->index], folder->obj.uid) == 0 ) {
+				/* folder name matches, prepare next subfolder match */
+				debug_print("matched folder name '%s'\n", fName);
+				match->index++;
+				if ( match->folder_path[match->index] == NULL ) {
+					/* we've matched all elements */
+					match->matched = TRUE;
+					match->folder = folder;
+					debug_print("book/folder path matched!\n");
+				} else {
+					/* keep on matching */
+					nextmatch = match;
+				}
+			}
+		}
+
+		g_free( fName );
+
+		fi = addressbook_peek_subfolder_exists_create_folderinfo( fiParent->book, folder );
+		addressbook_peek_subfolder_exists_load_folder( folder, fi, nextmatch );
+		list = g_list_next( list );
+	}
+}
+
+/*
+ * This function is used by to check if a matcher book/folder path corresponds to an
+   existing addressbook book/folder ("" or "Any" are considered as valid, NULL invalid).
+ */
+
+gboolean addressbook_peek_folder_exists( gchar *folderpath,
+										 AddressDataSource **book,
+										 ItemFolder **folder )
+{
+	AddressDataSource *ds;
+	GList *list, *nodeDS;
+	ItemFolder *rootFolder;
+	AddressBookFile *abf;
+	FolderInfo *fi;
+	FolderPathMatch folder_path_match = { NULL, FALSE, 0, NULL, NULL };
+	FolderPathMatch *nextmatch;
+
+	if ( book )
+		*book = NULL;
+	if ( folder )
+		*folder = NULL;
+
+	if ( folderpath == NULL )
+		return FALSE;
+
+	if ( strcasecmp(folderpath, _("Any")) == 0 || *folderpath == '\0' )
+		return TRUE;
+
+	/* split the folder path we've received, we'll try to match this path, subpath by
+	   subpath against the book/folder structure in order */
+	folder_path_match.folder_path = g_strsplit( folderpath, "/", 256 );
+
+	list = addrindex_get_interface_list( _addressIndex_ );
+	while ( list ) {
+		AddressInterface *interface = list->data;
+		if ( interface->type == ADDR_IF_BOOK ) {
+			nodeDS = interface->listSource;
+			while ( nodeDS ) {
+				ds = nodeDS->data;
+
+				/* Read address book */
+				if( ! addrindex_ds_get_read_flag( ds ) ) {
+					addrindex_ds_read_data( ds );
+				}
+
+				/* Add node for address book */
+				abf = ds->rawDataSource;
+
+				/* try to match subfolders if this book is the right book
+					(and if there's smth to match, and not yet matched) */
+				nextmatch = NULL;
+				if ( folder_path_match.folder_path != NULL &&
+					 folder_path_match.matched == FALSE &&
+					 strcmp(folder_path_match.folder_path[0], abf->fileName) == 0 ) {
+					debug_print("matched book name '%s'\n", abf->fileName);
+					folder_path_match.index = 1;
+					if ( folder_path_match.folder_path[folder_path_match.index] == NULL ) {
+						/* we've matched all elements */
+						folder_path_match.matched = TRUE;
+						folder_path_match.book = ds;
+						debug_print("book path matched!\n");
+					} else {
+						/* keep on matching */
+						nextmatch = &folder_path_match;
+					}
+				}
+
+				fi = addressbook_peek_subfolder_exists_create_folderinfo( abf, NULL );
+
+				rootFolder = addrindex_ds_get_root_folder( ds );
+				addressbook_peek_subfolder_exists_load_folder( rootFolder, fi, nextmatch );
+
+				nodeDS = g_list_next( nodeDS );
+			}
+		}
+		list = g_list_next( list );
+	}
+
+	g_strfreev( folder_path_match.folder_path );
+
+	if ( book )
+		*book = folder_path_match.book;
+	if ( folder )
+		*folder = folder_path_match.folder;
+	return folder_path_match.matched;
+}
+
 
 /* **********************************************************************
  * Address Import.

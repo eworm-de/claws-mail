@@ -113,6 +113,8 @@ static gchar	   *g_completion_prefix;	/* last prefix. (this is cached here
 						 * because the prefix passed to g_completion
 						 * is g_strdown()'ed */
 
+static gchar *completion_folder_path = NULL;
+
 /*******************************************************************************/
 
 /*
@@ -259,8 +261,8 @@ static gint add_address(const gchar *name, const gchar *address,
 /**
  * Read address book, creating all entries in the completion index.
  */ 
-static void read_address_book(void) {	
-	addrindex_load_completion( add_address );
+static void read_address_book(gchar *folderpath) {	
+	addrindex_load_completion( add_address, folderpath );
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
 }
@@ -298,19 +300,42 @@ static void clear_completion_cache(void)
  * address completion.
  * \return The number of addresses in the completion list.
  */
-gint start_address_completion(void)
+gint start_address_completion(gchar *folderpath)
 {
 	clear_completion_cache();
+
+	if ((completion_folder_path == NULL && folderpath != NULL) ||
+		(completion_folder_path != NULL && folderpath == NULL) ||
+		(completion_folder_path != NULL && folderpath != NULL &&
+		 strcmp(completion_folder_path, folderpath) != 0)) {
+
+		debug_print("start_address_completion: resetting\n");
+
+		/* TODO: wwp: optimize: only reset when the new folderpath is MORE restrictive than the old one
+		  (the most easy case is when folderpath is NULL and completion_folder_path is != NULL */
+		if (g_ref_count) {
+			free_all();
+			g_ref_count = 0;
+		}
+	}
+
+	g_free(completion_folder_path);
+	if (folderpath != NULL)
+		completion_folder_path = g_strdup(folderpath);
+	else
+		completion_folder_path = NULL;
+
 	if (!g_ref_count) {
 		init_all();
 		/* open the address book */
-		read_address_book();
+		read_address_book(folderpath);
 		/* merge the completion entry list into g_completion */
 		if (g_completion_list)
 			g_completion_add_items(g_completion, g_completion_list);
 	}
 	g_ref_count++;
-	debug_print("start_address_completion ref count %d\n", g_ref_count);
+	debug_print("start_address_completion(%s) ref count %d\n",
+				folderpath, g_ref_count);
 
 	return g_list_length(g_completion_list);
 }
@@ -402,10 +427,11 @@ static void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
  */
 guint complete_address(const gchar *str)
 {
-	GList *result;
-	gchar *d;
-	guint  count, cpl;
-	completion_entry *ce;
+	GList *result = NULL;
+	gchar *d = NULL;
+	guint  count = 0;
+	guint  cpl = 0;
+	completion_entry *ce = NULL;
 
 	g_return_val_if_fail(str != NULL, 0);
 
@@ -524,7 +550,8 @@ gint invalidate_address_completion(void)
 		debug_print("Invalidation request for address completion\n");
 		free_all();
 		init_all();
-		read_address_book();
+		read_address_book(completion_folder_path);
+		if (g_completion_list)
 		g_completion_add_items(g_completion, g_completion_list);
 		clear_completion_cache();
 	}
@@ -949,7 +976,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *
  */
 void address_completion_start(GtkWidget *mainwindow)
 {
-	start_address_completion();
+	start_address_completion(NULL);
 
 	/* register focus change hook */
 	g_signal_connect(G_OBJECT(mainwindow), "set_focus",

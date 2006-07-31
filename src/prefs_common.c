@@ -749,6 +749,11 @@ static PrefParam param[] = {
 	{"addressaddwin_height", "-1", &prefs_common.addressaddwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"addressbook_folderselwin_width", "300", &prefs_common.addressbook_folderselwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addressbook_folderselwin_height", "-1", &prefs_common.addressbook_folderselwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},

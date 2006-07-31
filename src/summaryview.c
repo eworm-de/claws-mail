@@ -2447,7 +2447,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	summaryview->subject_table = subject_table;
 
 	if (prefs_common.use_addr_book)
-		start_address_completion();
+		start_address_completion(NULL);
 	
 	if (summaryview->threaded) {
 		GNode *root, *gnode;

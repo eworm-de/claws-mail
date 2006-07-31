@@ -25,6 +25,7 @@
 
 #include "compose.h"
 #include "addritem.h"
+#include "addrindex.h"
 
 void addressbook_open			( Compose *target );
 void addressbook_set_target_compose	( Compose *target );
@@ -39,6 +40,11 @@ gboolean addressbook_add_contact	( const gchar *name,
 					  const gchar *address,
 					  const gchar *remarks );
 					  
+gboolean addressbook_folder_selection( gchar **folderpath );
+gboolean addressbook_peek_folder_exists( gchar *folderpath,
+										 AddressDataSource **book,
+										 ItemFolder **folder );
+
 gboolean addressbook_load_completion	(gint (*callBackFunc) 
 					       (const gchar *, 
 					  	const gchar *, 

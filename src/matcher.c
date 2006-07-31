@@ -103,6 +103,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_SCORE_EQUAL, "score_equal"},
 	{MATCHCRITERIA_PARTIAL, "partial"},
 	{MATCHCRITERIA_NOT_PARTIAL, "~partial"},
+	{MATCHCRITERIA_FOUND_IN_ADDRESSBOOK, "found_in_addressbook"},
+	{MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK, "~found_in_addressbook"},
 
 	{MATCHCRITERIA_SIZE_GREATER, "size_greater"},
 	{MATCHCRITERIA_SIZE_SMALLER, "size_smaller"},
@@ -125,8 +127,6 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHTYPE_MATCH, "match"},
 	{MATCHTYPE_REGEXPCASE, "regexpcase"},
 	{MATCHTYPE_REGEXP, "regexp"},
-	{MATCHTYPE_ANY_IN_ADDRESSBOOK, "any_in_addressbook"},
-	{MATCHTYPE_ALL_IN_ADDRESSBOOK, "all_in_addressbook"},
 
 	/* actions */
 	{MATCHACTION_SCORE, "score"},    /* for backward compatibility */
@@ -149,6 +149,12 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_STOP, "stop"},
 	{MATCHACTION_HIDE, "hide"},
 	{MATCHACTION_IGNORE, "ignore"},
+};
+
+enum {
+	MATCH_ANY = 0,
+	MATCH_ALL = 1,
+	MATCH_ONE = 2
 };
 
 /*!
@@ -213,7 +219,8 @@ gint get_matchparser_tab_id(const gchar *str)
  *		"condition" (a matcher structure)
  *
  *\param	criteria Criteria ID (MATCHCRITERIA_XXXX)
- *\param	header Header string (if criteria is MATCHCRITERIA_HEADER)
+ *\param	header Header string (if criteria is MATCHCRITERIA_HEADER
+			or MATCHCRITERIA_FOUND_IN_ADDRESSBOOK)
  *\param	matchtype Type of action (MATCHTYPE_XXX)
  *\param	expr String value or expression to check
  *\param	value Integer value to check
@@ -280,38 +287,59 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 /* ************** match ******************************/
 
 static gboolean match_with_addresses_in_addressbook
-	(MatcherProp *prop, const gchar *str, gint type)
+	(MatcherProp *prop, GSList *address_list, gint type,
+	 gchar* folderpath, gint match)
 {
-	GSList *address_list = NULL;
-	GSList *walk;
-	gboolean res = FALSE;
+	GSList *walk = NULL;
+	gboolean found = FALSE;
+	gchar *path = NULL;
 
-	if (str == NULL || *str == 0) 
-		return FALSE;
+	g_return_val_if_fail(address_list != NULL, FALSE);
+
+	debug_print("match_with_addresses_in_addressbook(%d, %s)\n",
+				g_slist_length(address_list), folderpath);
+
+	if (folderpath == NULL ||
+		strcasecmp(folderpath, _("Any")) == 0 ||
+		*folderpath == '\0')
+		path = NULL;
+	else
+		path = folderpath;
 	
-	/* XXX: perhaps complete with comments too */
-	address_list = address_list_append(address_list, str);
-	if (!address_list) 
-		return FALSE;
+	start_address_completion(path);
 
-	start_address_completion();		
-	res = FALSE;
 	for (walk = address_list; walk != NULL; walk = walk->next) {
-		gboolean found = complete_address(walk->data) ? TRUE : FALSE;
-		
+		/* exact matching of email address */
+		guint num_addr = complete_address(walk->data);
+		found = FALSE;
+		if (num_addr > 1) {
+			/* skip first item (this is the search string itself) */
+			int i = 1;
+			for (; i < num_addr && !found; i++) {
+				gchar *addr = get_complete_address(i);
+				extract_address(addr);
+				if (strcasecmp(addr, walk->data) == 0)
+					found = TRUE;
+				g_free(addr);
+			}
+		}
 		g_free(walk->data);
-		if (!found && type == MATCHTYPE_ALL_IN_ADDRESSBOOK) {
-			res = FALSE;
-			break;
-		} else if (found) 
-			res = TRUE;
-	}
 
-	g_slist_free(address_list);
+		if (match == MATCH_ALL) {
+			/* if matching all addresses, stop if one doesn't match */
+			if (!found)
+			break;
+		} else if (match == MATCH_ANY) {
+			/* if matching any address, stop if one does match */
+			if (found)
+				break;
+	}
+		/* MATCH_ONE: there should be only one loop iteration */
+	}
 
 	end_address_completion();
 	
-	return res;
+	return found;
 }
 
 /*!
@@ -354,11 +382,6 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 		else
 			return FALSE;
 			
-	case MATCHTYPE_ALL_IN_ADDRESSBOOK:	
-	case MATCHTYPE_ANY_IN_ADDRESSBOOK:
-		return match_with_addresses_in_addressbook
-			(prop, str, prop->matchtype);
-
 	case MATCHTYPE_MATCH:
 		return (strstr(str, prop->expr) != NULL);
 
@@ -624,7 +647,7 @@ gboolean matcherprop_match(MatcherProp *prop,
 	case MATCHCRITERIA_NOT_TEST:
 		return !matcherprop_match_test(prop, info);
 	default:
-		return 0;
+		return FALSE;
 	}
 }
 
@@ -690,8 +713,8 @@ static void matcherlist_skip_headers(FILE *fp)
 static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 					     gchar *buf)
 {
-	gboolean result;
-	Header *header;
+	gboolean result = FALSE;
+	Header *header = NULL;
 
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_HEADER:
@@ -720,7 +743,57 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		return !matcherprop_string_decode_match(matcher, buf);
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
+		{
+			GSList *address_list = NULL;
+			gint match = MATCH_ONE;
+			gboolean found = FALSE;
+
+			/* how many address headers are me trying to mach? */
+			if (strcasecmp(matcher->header, _("Any")) == 0)
+				match = MATCH_ANY;
+			else if (strcasecmp(matcher->header, _("All")) == 0)
+					match = MATCH_ALL;
+
+			if (match == MATCH_ONE) {
+				/* matching one address header exactly, is that the right one? */
+				header = procheader_parse_header(buf);
+				if (!header ||
+						!procheader_headername_equal(header->name, matcher->header))
+					return FALSE;
+				address_list = address_list_append(address_list, header->body);
+				if (address_list == NULL)
+					return FALSE;
+
+			} else {
+				header = procheader_parse_header(buf);
+				if (!header)
+					return FALSE;
+				/* address header is one of the headers we have to match when checking
+				   for any address header or all address headers? */
+				if (procheader_headername_equal(header->name, "From") ||
+					 procheader_headername_equal(header->name, "To") ||
+					 procheader_headername_equal(header->name, "Cc") ||
+					 procheader_headername_equal(header->name, "Reply-To") ||
+					 procheader_headername_equal(header->name, "Sender"))
+					address_list = address_list_append(address_list, header->body);
+				if (address_list == NULL)
+					return FALSE;
+			}
+
+			found = match_with_addresses_in_addressbook
+							(matcher, address_list, matcher->criteria,
+							 matcher->expr, match);
+			g_slist_free(address_list);
+
+			if (matcher->criteria == MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK)
+				return !found;
+			else
+				return found;
 	}
+	}
+
 	return FALSE;
 }
 
@@ -740,6 +813,8 @@ static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
 		return TRUE;
 	default:
 		return FALSE;
@@ -785,14 +860,46 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
 		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 			MatcherProp *matcher = (MatcherProp *) l->data;
+			gint match = MATCH_ANY;
 
 			if (matcher->done)
 				continue;
 
-			/* if the criteria is ~headers_part or ~message, ZERO lines
-			 * must NOT match for the rule to match. */
+			/* determine the match range (all, any are our concern here) */
 			if (matcher->criteria == MATCHCRITERIA_NOT_HEADERS_PART ||
 			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+				match = MATCH_ALL;
+
+			} else if (matcher->criteria == MATCHCRITERIA_FOUND_IN_ADDRESSBOOK ||
+			 		   matcher->criteria == MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK) {
+				Header *header = NULL;
+
+				/* address header is one of the headers we have to match when checking
+				   for any address header or all address headers? */
+				header = procheader_parse_header(buf);
+				if (header &&
+					(procheader_headername_equal(header->name, "From") ||
+					 procheader_headername_equal(header->name, "To") ||
+					 procheader_headername_equal(header->name, "Cc") ||
+					 procheader_headername_equal(header->name, "Reply-To") ||
+					 procheader_headername_equal(header->name, "Sender"))) {
+
+					if (strcasecmp(matcher->header, _("Any")) == 0)
+						match = MATCH_ANY;
+					else if (strcasecmp(matcher->header, _("All")) == 0)
+						match = MATCH_ALL;
+					else
+						match = MATCH_ONE;
+				} else {
+					/* further call to matcherprop_match_one_header() can't match
+					   and it irrelevant, so: don't alter the match result */
+					continue;
+				}
+			}
+
+			/* ZERO line must NOT match for the rule to match.
+			 */
+			if (match == MATCH_ALL) {
 				if (matcherprop_match_one_header(matcher, buf)) {
 					matcher->result = TRUE;
 				} else {
@@ -802,7 +909,7 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 			/* else, just one line matching is enough for the rule to match
 			 */
 			} else if (matcherprop_criteria_headers(matcher) ||
-			           matcherprop_criteria_message(matcher)){
+			           matcherprop_criteria_message(matcher)) {
 				if (matcherprop_match_one_header(matcher, buf)) {
 					matcher->result = TRUE;
 					matcher->done = TRUE;
@@ -817,6 +924,7 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 			}
 		}
 	}
+
 	return FALSE;
 }
 
@@ -1180,6 +1288,7 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	const gchar *matchtype_str;
 	int i;
 	gchar * quoted_expr;
+	gchar * quoted_header;
 	
 	criteria_str = NULL;
 	for (i = 0; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)); i++) {
@@ -1228,6 +1337,15 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 					      criteria_str, quoted_expr);
 		g_free(quoted_expr);
                 return matcher_str;
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
+		quoted_header = matcher_quote_str(matcher->header);
+		quoted_expr = matcher_quote_str(matcher->expr);
+		matcher_str = g_strdup_printf("%s \"%s\" in \"%s\"",
+					      criteria_str, quoted_header, quoted_expr);
+		g_free(quoted_header);
+		g_free(quoted_expr);
+		return matcher_str;
 	}
 
 	matchtype_str = NULL;
@@ -1244,12 +1362,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
-	case MATCHTYPE_ALL_IN_ADDRESSBOOK:
-	case MATCHTYPE_ANY_IN_ADDRESSBOOK:
 		quoted_expr = matcher_quote_str(matcher->expr);
 		if (matcher->header) {
-			gchar * quoted_header;
-			
 			quoted_header = matcher_quote_str(matcher->header);
 			matcher_str = g_strdup_printf
 					("%s \"%s\" %s \"%s\"",

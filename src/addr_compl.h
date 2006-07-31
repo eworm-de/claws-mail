@@ -23,7 +23,7 @@
 
 #include <gtk/gtk.h>
 
-gint start_address_completion		(void);
+gint start_address_completion		(gchar *folderpath);
 guint complete_address			(const gchar *str);
 gchar *get_complete_address		(gint index);
 gint invalidate_address_completion	(void);

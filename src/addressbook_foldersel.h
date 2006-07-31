@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 2001-2006 Match Grun and the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __PREFS_MATCHER_H__
-#define __PREFS_MATCHER_H__
+/*
+ * Add address to address book dialog.
+ */
 
-#include "matcher.h"
+#ifndef __ADDRESSBOOK_FOLDERSEL_H__
+#define __ADDRESSBOOK_FOLDERSEL_H__
 
-typedef void PrefsMatcherSignal	(MatcherList *matchers);
+#include "addrindex.h"
 
-void prefs_matcher_open		(MatcherList *matchers,
-				 PrefsMatcherSignal *cb);
-void prefs_matcher_test_info	(void);
-void prefs_matcher_addressbook_select	(void);
+gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
+				AddressBookFile **book, ItemFolder **folder, gchar *path );
 
-#endif /* __PREFS_FILTER_H__ */
+#endif /* __ADDRESSBOOK_FOLDERSEL_H__ */

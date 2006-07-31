@@ -1,3 +1,28 @@
+2006-07-31 [wwp]	2.4.0cvs3
+
+	* src/Makefile.am
+	* src/addr_compl.c
+	* src/addr_compl.h
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addressbook_foldersel.c
+	* src/addressbook_foldersel.h
+	* src/addrindex.c
+	* src/addrindex.h
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_matcher.h
+	* src/summaryview.c
+		introduce filtering against the address book. It's now possible to add
+		matched conditions to determine if any email address in a message matches
+		or doesn't match any or all books or folders in the address book.
+
 2006-07-31 [wwp]	2.4.0cvs2
 
 	* src/account.c

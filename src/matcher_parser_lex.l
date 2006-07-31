@@ -57,6 +57,8 @@ void matcher_parser_init(void)
 
 %%
 			
+"in"	return MATCHER_IN; 
+
 			/*
 			 * a keyword consists of alpha and underscore 
 			 * characters, possibly preceded by a tilde (~)

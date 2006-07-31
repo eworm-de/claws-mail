@@ -67,6 +67,7 @@ static struct Matcher {
 	GtkWidget *predicate_combo;
 	GtkWidget *predicate_flag_combo;
 	GtkWidget *header_combo;
+	GtkWidget *header_addr_combo;
 
 	GtkWidget *criteria_list;
 
@@ -78,13 +79,18 @@ static struct Matcher {
 
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
+	GtkWidget *header_addr_entry;
+	GtkWidget *header_addr_label;
 	GtkWidget *value_entry;
 	GtkWidget *value_label;
+	GtkWidget *addressbook_folder_label;
+	GtkWidget *addressbook_folder_combo;
 	GtkWidget *case_chkbtn;
 	GtkWidget *regexp_chkbtn;
 	GtkWidget *color_optmenu;
 
 	GtkWidget *test_btn;
+	GtkWidget *addressbook_select_btn;
 
 	GtkWidget *cond_list_view;
 
@@ -140,7 +146,9 @@ enum {
 	CRITERIA_SIZE_SMALLER = 29,
 	CRITERIA_SIZE_EQUAL   = 30,
 	
-	CRITERIA_PARTIAL = 31
+	CRITERIA_PARTIAL = 31,
+
+	CRITERIA_FOUND_IN_ADDRESSBOOK = 32
 };
 
 /*!
@@ -165,7 +173,8 @@ static const gchar *criteria_text [] = {
 	N_("Size greater than"), 
 	N_("Size smaller than"),
 	N_("Size exactly"),
-	N_("Partially downloaded")
+	N_("Partially downloaded"),
+	N_("Found in addressbook")
 };
 
 /*!
@@ -200,6 +209,13 @@ enum {
  */
 static const gchar *predicate_text [] = {
 	N_("contains"), N_("does not contain")
+};
+
+/*!
+ *\brief	Preset addressbook book/folder items
+ */
+static const gchar *addressbook_folder_text [] = {
+	N_("Any")
 };
 
 /*!
@@ -348,11 +364,16 @@ static void prefs_matcher_create(void)
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
+	GtkWidget *header_addr_combo;
+	GtkWidget *header_addr_entry;
+	GtkWidget *header_addr_label;
 	GtkWidget *criteria_combo;
 	GtkWidget *criteria_list;
 	GtkWidget *criteria_label;
 	GtkWidget *value_label;
 	GtkWidget *value_entry;
+	GtkWidget *addressbook_folder_label;
+	GtkWidget *addressbook_folder_combo;
 	GtkWidget *predicate_combo;
 	GtkWidget *predicate_list;
 	GtkWidget *predicate_flag_combo;
@@ -381,6 +402,7 @@ static void prefs_matcher_create(void)
 	GtkWidget *down_btn;
 
 	GtkWidget *test_btn;
+	GtkWidget *addressbook_select_btn;
 
 	GtkWidget *color_optmenu;
 
@@ -485,6 +507,23 @@ static void prefs_matcher_create(void)
 	header_entry = GTK_COMBO(header_combo)->entry;
 	gtk_entry_set_editable(GTK_ENTRY(header_entry), TRUE);
 
+	/* address header name */
+
+	header_addr_label = gtk_label_new(_("Address header"));
+	gtk_misc_set_alignment(GTK_MISC(header_addr_label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_label, 1, 2, 0, 1,
+			 GTK_FILL, 0, 0, 0);
+
+	header_addr_combo = gtk_combo_new();
+	gtk_widget_set_size_request(header_addr_combo, 120, -1);
+	gtkut_combo_set_items(GTK_COMBO (header_addr_combo),
+			      _("All"), _("Any"), "From", "To", "Cc", "Reply-To", "Sender",
+			      NULL);
+	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_combo, 1, 2, 1, 2,
+			 0, 0, 0, 0);
+	header_addr_entry = GTK_COMBO(header_addr_combo)->entry;
+	gtk_entry_set_editable(GTK_ENTRY(header_addr_entry), TRUE);
+
 	/* value */
 
 	value_label = gtk_label_new(_("Value"));
@@ -499,6 +538,30 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), value_entry, 2, 3, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
+	/* book/folder value */
+
+	addressbook_folder_label = gtk_label_new(_("Book/folder"));
+	gtk_misc_set_alignment(GTK_MISC (addressbook_folder_label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_label, 2, 3, 0, 1,
+			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+
+	addressbook_folder_combo = gtk_combo_new();
+	gtk_widget_show(addressbook_folder_combo);
+	gtk_widget_set_size_request(addressbook_folder_combo, 200, -1);
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(addressbook_folder_combo)->entry),
+			       TRUE);
+
+	combo_items = NULL;
+	for (i = 0; i < (gint) (sizeof(addressbook_folder_text) / sizeof(gchar *)); i++) {
+		combo_items = g_list_append(combo_items,
+					    (gpointer) _(addressbook_folder_text[i]));
+	}
+	gtk_combo_set_popdown_strings(GTK_COMBO(addressbook_folder_combo), combo_items);
+	g_list_free(combo_items);
+
+	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_combo, 2, 3, 1, 2,
+			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+
 #if GTK_CHECK_VERSION(2, 8, 0)
 	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 #else
@@ -509,6 +572,13 @@ static void prefs_matcher_create(void)
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),
+			 NULL);
+
+	addressbook_select_btn = gtk_button_new_with_label(_(" Select... "));
+	gtk_table_attach(GTK_TABLE (criteria_table), addressbook_select_btn, 3, 4, 1, 2,
+			 0, 0, 0, 0);
+	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_addressbook_select),
 			 NULL);
 
 	color_optmenu = gtk_option_menu_new();
@@ -684,6 +754,10 @@ static void prefs_matcher_create(void)
 				    prefs_common.matcherwin_height);
 
 	gtk_widget_show_all(window);
+	gtk_widget_hide(header_addr_label);
+	gtk_widget_hide(header_addr_combo);
+	gtk_widget_hide(addressbook_select_btn);
+	gtk_widget_hide(addressbook_folder_label);
 
 	matcher.window    = window;
 
@@ -693,8 +767,13 @@ static void prefs_matcher_create(void)
 	matcher.header_combo = header_combo;
 	matcher.header_entry = header_entry;
 	matcher.header_label = header_label;
+	matcher.header_addr_combo = header_addr_combo;
+	matcher.header_addr_entry = header_addr_entry;
+	matcher.header_addr_label = header_addr_label;
 	matcher.value_entry = value_entry;
 	matcher.value_label = value_label;
+	matcher.addressbook_folder_label = addressbook_folder_label;
+	matcher.addressbook_folder_combo = addressbook_folder_combo;
 	matcher.predicate_label = predicate_label;
 	matcher.predicate_list = predicate_list;
 	matcher.predicate_combo = predicate_combo;
@@ -704,6 +783,7 @@ static void prefs_matcher_create(void)
 	matcher.regexp_chkbtn = regexp_chkbtn;
 	matcher.bool_op_list = bool_op_list;
 	matcher.test_btn = test_btn;
+	matcher.addressbook_select_btn = addressbook_select_btn;
 	matcher.color_optmenu = color_optmenu;
 	matcher.criteria_table = criteria_table;
 
@@ -751,7 +831,9 @@ static void prefs_matcher_reset_condition(void)
 	gtk_list_select_item(GTK_LIST(matcher.criteria_list), 0);
 	gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), "");
 }
 
 /*!
@@ -907,7 +989,6 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_MESSAGE:
 		return CRITERIA_MESSAGE;
-		break;
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_HEADERS_PART:
 		return CRITERIA_HEADERS_PART;
@@ -933,6 +1014,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_SIZE_SMALLER;
 	case MATCHCRITERIA_SIZE_EQUAL:
 		return CRITERIA_SIZE_EQUAL;
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
+		return CRITERIA_FOUND_IN_ADDRESSBOOK;
 	default:
 		return -1;
 	}
@@ -1013,6 +1097,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_SIZE_SMALLER;
 	case CRITERIA_SIZE_EQUAL:
 		return MATCHCRITERIA_SIZE_EQUAL;
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+		return MATCHCRITERIA_FOUND_IN_ADDRESSBOOK;
 	default:
 		return -1;
 	}
@@ -1075,6 +1161,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_TEST;
 	case MATCHCRITERIA_BODY_PART:
 		return MATCHCRITERIA_NOT_BODY_PART;
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+		return MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK;
 	default:
 		return matcher_criteria;
 	}
@@ -1123,6 +1211,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
 		break;
@@ -1206,7 +1295,6 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		}
 
 		value = atoi(value_str);
-
 		break;
 		
 	case CRITERIA_COLORLABEL:
@@ -1216,12 +1304,32 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		break;
 
 	case CRITERIA_HEADER:
-
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
 		if (*header == '\0') {
 		    alertpanel_error(_("Header name is not set."));
+		    return NULL;
+		}
+		break;
+
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_addr_entry));
+		expr = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry));
+
+		if (*header == '\0') {
+		    alertpanel_error(_("Header name is not set."));
+		    return NULL;
+		}
+		if (*expr == '\0') {
+			gchar *msg;
+
+			msg = g_strdup_printf(_("Book/folder path is not set.\n\n"
+								"If you want to match the '%s' address against the whole address book, "
+								"you have to select 'Any' from the book/folder drop-down list."),
+								header);
+		    alertpanel_error(msg);
+			g_free(msg);
 		    return NULL;
 		}
 		break;
@@ -1412,6 +1520,22 @@ static void prefs_matcher_set_value_widget(GtkWidget *old_widget,
 			 0, 0, 0);
 }
 
+static void prefs_matcher_disable_widget(GtkWidget* widget)
+{
+	g_return_if_fail( widget != NULL);
+
+	gtk_widget_set_sensitive(widget, FALSE);
+	gtk_widget_hide(widget);
+}
+
+static void prefs_matcher_enable_widget(GtkWidget* widget)
+{
+	g_return_if_fail( widget != NULL);
+
+	gtk_widget_set_sensitive(widget, TRUE);
+	gtk_widget_show(widget);
+}
+
 /*!
  *\brief	Change widgets depending on the selected condition
  *
@@ -1444,18 +1568,21 @@ static void prefs_matcher_criteria_select(GtkList *list,
 
 	switch (value) {
 	case CRITERIA_ALL:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
-		gtk_widget_hide(matcher.predicate_combo);
-		gtk_widget_show(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_disable_widget(matcher.value_label);
+		prefs_matcher_disable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_disable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 
 	case CRITERIA_UNREAD:
@@ -1467,32 +1594,39 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_LOCKED:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
-		gtk_widget_hide(matcher.predicate_combo);
-		gtk_widget_show(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_disable_widget(matcher.value_label);
+		prefs_matcher_disable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 		
 	case CRITERIA_COLORLABEL:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
-		gtk_widget_hide(matcher.predicate_combo);
-		gtk_widget_show(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_enable_widget(matcher.value_label);
+		prefs_matcher_disable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1506,33 +1640,39 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, TRUE);
-		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
-		gtk_widget_show(matcher.predicate_combo);
-		gtk_widget_hide(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_enable_widget(matcher.value_label);
+		prefs_matcher_enable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_enable_widget(matcher.predicate_combo);
+		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_enable_widget(matcher.case_chkbtn);
+		prefs_matcher_enable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 
 	case CRITERIA_TEST:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, TRUE);
-		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
-		gtk_widget_hide(matcher.predicate_combo);
-		gtk_widget_show(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.test_btn, TRUE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_enable_widget(matcher.value_label);
+		prefs_matcher_enable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_enable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 
 	case CRITERIA_AGE_GREATER:
@@ -1543,33 +1683,57 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_SIZE_GREATER:
 	case CRITERIA_SIZE_SMALLER:
 	case CRITERIA_SIZE_EQUAL:
-		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.header_label, FALSE);
-		gtk_widget_set_sensitive(matcher.value_label, TRUE);
-		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
-		gtk_widget_show(matcher.predicate_combo);
-		gtk_widget_hide(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_enable_widget(matcher.value_label);
+		prefs_matcher_enable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_disable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
 
 	case CRITERIA_HEADER:
-		gtk_widget_set_sensitive(matcher.header_combo, TRUE);
-		gtk_widget_set_sensitive(matcher.header_label, TRUE);
-		gtk_widget_set_sensitive(matcher.value_label, TRUE);
-		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
-		gtk_widget_show(matcher.predicate_combo);
-		gtk_widget_hide(matcher.predicate_flag_combo);
-		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
+		prefs_matcher_enable_widget(matcher.header_combo);
+		prefs_matcher_enable_widget(matcher.header_label);
+		prefs_matcher_disable_widget(matcher.header_addr_combo);
+		prefs_matcher_disable_widget(matcher.header_addr_label);
+		prefs_matcher_enable_widget(matcher.value_label);
+		prefs_matcher_enable_widget(matcher.value_entry);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_enable_widget(matcher.predicate_combo);
+		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_enable_widget(matcher.case_chkbtn);
+		prefs_matcher_enable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+		break;
+
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+		prefs_matcher_disable_widget(matcher.header_combo);
+		prefs_matcher_disable_widget(matcher.header_label);
+		prefs_matcher_enable_widget(matcher.header_addr_combo);
+		prefs_matcher_enable_widget(matcher.header_addr_label);
+		prefs_matcher_disable_widget(matcher.value_label);
+		prefs_matcher_disable_widget(matcher.value_entry);
+		prefs_matcher_enable_widget(matcher.addressbook_folder_label);
+		prefs_matcher_enable_widget(matcher.addressbook_folder_combo);
+		prefs_matcher_enable_widget(matcher.predicate_label);
+		prefs_matcher_disable_widget(matcher.predicate_combo);
+		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
+		prefs_matcher_disable_widget(matcher.case_chkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.test_btn);
+		prefs_matcher_enable_widget(matcher.addressbook_select_btn);
 		break;
 	}
 }
@@ -1718,6 +1882,18 @@ void prefs_matcher_test_info(void)
 	description_window_create(&test_desc_win);
 }
 
+void prefs_matcher_addressbook_select(void)
+{
+	gchar *folderpath = NULL;
+	gboolean ret = FALSE;
+
+	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry));
+	ret = addressbook_folder_selection(&folderpath);
+	if ( ret != FALSE && folderpath != NULL)
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), folderpath);
+}
+
+
 /*
  * list view
  */
@@ -1857,6 +2033,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_TEST:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
 		negative_cond = TRUE;
 		break;
 	}
@@ -1890,6 +2067,12 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_TEST:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		break;
+
+	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
+	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
+		gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), prop->header);
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), prop->expr);
 		break;
 
 	case MATCHCRITERIA_AGE_GREATER:

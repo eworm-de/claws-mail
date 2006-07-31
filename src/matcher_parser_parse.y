@@ -310,7 +310,7 @@ int matcher_parserwrap(void)
 %token MATCHER_NOT_MESSAGE  MATCHER_BODY_PART  MATCHER_NOT_BODY_PART
 %token MATCHER_TEST  MATCHER_NOT_TEST  MATCHER_MATCHCASE  MATCHER_MATCH
 %token MATCHER_REGEXPCASE  MATCHER_REGEXP  MATCHER_SCORE  MATCHER_MOVE
-%token MATCHER_ANY_IN_ADDRESSBOOK MATCHER_ALL_IN_ADDRESSBOOK
+%token MATCHER_FOUND_IN_ADDRESSBOOK MATCHER_NOT_FOUND_IN_ADDRESSBOOK MATCHER_IN
 %token MATCHER_COPY  MATCHER_DELETE  MATCHER_MARK  MATCHER_UNMARK
 %token MATCHER_LOCK MATCHER_UNLOCK
 %token MATCHER_EXECUTE
@@ -545,14 +545,6 @@ MATCHER_MATCHCASE
 | MATCHER_REGEXP
 {
 	match_type = MATCHTYPE_REGEXP;
-}
-| MATCHER_ANY_IN_ADDRESSBOOK
-{
-	match_type = MATCHTYPE_ANY_IN_ADDRESSBOOK;
-}
-| MATCHER_ALL_IN_ADDRESSBOOK
-{
-	match_type = MATCHTYPE_ALL_IN_ADDRESSBOOK;
 }
 ;
 
@@ -999,6 +991,32 @@ MATCHER_ALL
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_FOUND_IN_ADDRESSBOOK MATCHER_STRING
+{
+	header = g_strdup($2);
+} MATCHER_IN MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_FOUND_IN_ADDRESSBOOK;
+	expr = $2;
+	prop = matcherprop_new(criteria, header, match_type, expr, 0);
+	g_free(header);
+}
+| MATCHER_NOT_FOUND_IN_ADDRESSBOOK MATCHER_STRING
+{
+	header = g_strdup($2);
+} MATCHER_IN MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK;
+	expr = $2;
+	prop = matcherprop_new(criteria, header, match_type, expr, 0);
+	g_free(header);
 }
 | MATCHER_MESSAGE match_type MATCHER_STRING
 {

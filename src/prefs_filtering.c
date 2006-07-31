@@ -210,7 +210,7 @@ void prefs_filtering_open(GSList ** p_processing,
 
 	gtk_widget_show(filtering.window);
 
-	start_address_completion();
+	start_address_completion(NULL);
 }
 
 static void prefs_filtering_size_allocate_cb(GtkWidget *widget,

@@ -34,6 +34,7 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "addrbook.h"
+#include "addressbook.h"
 #include "addrindex.h"
 #include "xml.h"
 #include "addrquery.h"
@@ -2788,38 +2789,14 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 * ***********************************************************************
 */
 
-/**
- * This function is used by the address completion function to load
- * addresses for all non-external address book interfaces.
- *
- * \param callBackFunc Function to be called when an address is
- *                     to be loaded.
- * \return <i>TRUE</i> if data loaded, <i>FALSE</i> if address index not loaded.
- */
-gboolean addrindex_load_completion(
+static void addrindex_load_completion_load_persons(
 		gint (*callBackFunc) ( const gchar *, const gchar *, 
-				       const gchar *, const gchar * ) )
+				       const gchar *, const gchar * ),
+		AddressDataSource *ds)
 {
-	AddressDataSource *ds;
-	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
 	GList *nodeM;
 	gchar *sName;
-
-	nodeIf = addrindex_get_interface_list( _addressIndex_ );
-	while( nodeIf ) {
-		AddressInterface *iface = nodeIf->data;
-
-		nodeIf = g_list_next( nodeIf );
-		if( ! iface->useInterface ) {
-			continue;
-		}
-		if( iface->externalQuery ) {
-			continue;
-		}
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
 
 			/* Read address book */
 			if( addrindex_ds_get_modify_flag( ds ) ) {
@@ -2856,9 +2833,110 @@ gboolean addrindex_load_completion(
 			}
 			/* Free up the list */
 			g_list_free( listP );
+}		
 
+/**
+ * This function is used by the address completion function to load
+ * addresses for all non-external address book interfaces.
+ *
+ * \param callBackFunc Function to be called when an address is
+ *                     to be loaded.
+ * \param folderpath Addressbook's Book/folder path to restrict to (if NULL or ""
+ *                     or "Any", assume the whole addressbook
+ * \return <i>TRUE</i> if data loaded, <i>FALSE</i> if address index not loaded.
+ */
+
+gboolean addrindex_load_completion(
+		gint (*callBackFunc) ( const gchar *, const gchar *, 
+				       const gchar *, const gchar * ),
+		gchar *folderpath )
+{
+	GList *nodeIf, *nodeDS;
+
+	if( folderpath != NULL ) {
+		AddressDataSource *book;
+		ItemFolder* folder;
+
+		/* split the folder path we've received, we'll try to match this path, subpath by
+		   subpath against the book/folder structure in order and restrict loading of
+		   addresses to that subpart (if matches). book/folder path must exist and
+		   folderpath must not be empty or NULL */
+		
+		if( ! addressbook_peek_folder_exists( folderpath, &book, &folder ) ) {
+			g_warning("addrindex_load_completion: folder path '%s' doesn't exist\n", folderpath);
+			return FALSE;
+		}
+
+		if( book != NULL ) {
+			AddressBookFile *abf = book->rawDataSource;
+
+			debug_print("addrindex_load_completion: book %p '%s'\n", book, abf->fileName);
+
+			addrindex_load_completion_load_persons( callBackFunc, book );
+
+			return TRUE;
+
+		} else {
+
+			if( folder != NULL ) {
+				GList *items;
+				GList *nodeM;
+				gchar *sName;
+				ItemPerson *person;
+
+				debug_print("addrindex_load_completion: folder %p '%s'\n", folder, folder->obj.name);
+
+				/* Load email addresses */
+				items = addritem_folder_get_person_list( folder );
+				for( ; items != NULL; items = g_list_next( items ) ) {
+					person = items->data;
+					nodeM = person->listEMail;
+
+					/* Figure out name to use */
+					sName = ADDRITEM_NAME(person);
+					if( sName == NULL || *sName == '\0' ) {
+						sName = person->nickName;
+					}
+
+					/* Process each E-Mail address */
+					while( nodeM ) {
+						ItemEMail *email = nodeM->data;
+
+						callBackFunc( sName, email->address, person->nickName, 
+								  ADDRITEM_NAME(email) );
+
+						nodeM = g_list_next( nodeM );
+					}
+				}
+				/* Free up the list */
+				mgu_clear_list( items );
+				g_list_free( items );
+
+				return TRUE;
+
+			} else {
+				g_warning("addrindex_load_completion: book/folder path is valid but got no pointer\n");
+			}
+		}
+		return FALSE;
+
+	} else {
+
+		nodeIf = addrindex_get_interface_list( _addressIndex_ );
+		while( nodeIf ) {
+			AddressInterface *iface = nodeIf->data;
+
+			nodeIf = g_list_next( nodeIf );
+
+			if( ! iface->useInterface || iface->externalQuery )
+				continue;
+
+			nodeDS = iface->listSource;
+			while( nodeDS ) {
+				addrindex_load_completion_load_persons( callBackFunc, nodeDS->data );
 			nodeDS = g_list_next( nodeDS );
 		}
+	}
 	}
 
 	return TRUE;
@@ -2887,12 +2965,10 @@ gboolean addrindex_load_person_attribute(
 		AddressInterface *iface = nodeIf->data;
 
 		nodeIf = g_list_next( nodeIf );
-		if( ! iface->useInterface ) {
+
+		if( ! iface->useInterface || iface->externalQuery )
 			continue;
-		}
-		if( iface->externalQuery ) {
-			continue;
-		}
+
 		nodeDS = iface->listSource;
 		while( nodeDS ) {
 			ds = nodeDS->data;

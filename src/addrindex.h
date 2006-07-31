@@ -181,7 +181,8 @@ void addrindex_remove_results		( AddressDataSource *ds,
 gboolean addrindex_load_completion(
 		gint (*callBackFunc)
 			( const gchar *, const gchar *, 
-			  const gchar *, const gchar * ) );
+			  const gchar *, const gchar * ),
+			gchar *folderpath );
 
 gboolean addrindex_load_person_attribute( const gchar *attr,
 		gint (*callBackFunc)

@@ -378,6 +378,8 @@ struct _PrefsCommon
 	gint folderselwin_height;
 	gint addressaddwin_width;
 	gint addressaddwin_height;
+	gint addressbook_folderselwin_width;
+	gint addressbook_folderselwin_height;
 
 	gint warn_dnd;
 	gint broken_are_utf8;

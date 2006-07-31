@@ -20,6 +20,7 @@ sylpheed_claws_SOURCES = \
 	addr_compl.c \
 	addressadd.c \
 	addressbook.c \
+	addressbook_foldersel.c \
 	addrgather.c \
 	addrharvest.c \
 	addrindex.c \
@@ -157,6 +158,7 @@ sylpheed_clawsinclude_HEADERS = \
 	addrdefs.h \
 	addressadd.h \
 	addressbook.h \
+	addressbook_foldersel.h \
 	addressitem.h \
 	addrgather.h \
 	addrharvest.h \
