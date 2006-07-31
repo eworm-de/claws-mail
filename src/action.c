@@ -1467,7 +1467,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			if (ret_str && bytes_written > 0) {
 				gtk_text_buffer_insert
 					(textbuf, &iter, ret_str,
-					 bytes_written);
+					 -1);
 				g_free(ret_str);
 			} else
 				gtk_text_buffer_insert(textbuf, &iter, buf, c);
