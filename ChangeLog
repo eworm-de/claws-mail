@@ -1,3 +1,17 @@
+2006-07-31 [paul]	2.3.1cvs90
+
+	* po/de.po
+	* po/el.po
+	* po/fr.po
+	* po/it.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Stephan Sachse, Stavros Giannouris, Fabien Vantard,
+		Andrea Spadaccini, Emil Nowak, Frederico Goncalves Guimaraes,
+		Aleksandar Urosevic, and Ralgh Young
+
 2006-07-31 [paul]	2.3.1cvs89
 
 	* src/account.c
