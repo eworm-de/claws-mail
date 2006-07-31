@@ -108,6 +108,7 @@ struct _SummaryView
 
 	GtkCTreeNode *selected;
 	GtkCTreeNode *displayed;
+	GtkCTreeNode *last_displayed;
 
 	gboolean display_msg;
 
@@ -183,6 +184,8 @@ void summary_select_prev_marked	  (SummaryView		*summaryview);
 void summary_select_next_marked	  (SummaryView		*summaryview);
 void summary_select_prev_labeled  (SummaryView		*summaryview);
 void summary_select_next_labeled  (SummaryView		*summaryview);
+void summary_select_last_read     (SummaryView		*summaryview);
+void summary_select_parent        (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);

@@ -858,6 +858,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	if (!summaryview->mainwin)
 		return FALSE;
 
+	summaryview->last_displayed = NULL;
 	summary_switch_from_to(summaryview, item);
 
 	inc_lock();
@@ -1058,6 +1059,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 
 	if (is_refresh) {
+		summaryview->last_displayed = summaryview->displayed;
 		summaryview->displayed =
 			summary_find_msg_by_msgnum(summaryview,
 						   displayed_msgnum);
@@ -1713,6 +1715,22 @@ void summary_select_next_labeled(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No labeled messages."));
 	else
+		summary_select_node(summaryview, node, TRUE, FALSE);
+}
+
+void summary_select_last_read(SummaryView *summaryview)
+{
+	if (summaryview->last_displayed)
+		summary_select_node(summaryview, summaryview->last_displayed, TRUE, FALSE);
+}
+
+void summary_select_parent(SummaryView *summaryview)
+{
+	GtkCTreeNode *node;
+
+	if (summaryview->selected)
+		node = GTK_CTREE_ROW(summaryview->selected)->parent;
+	if (node)
 		summary_select_node(summaryview, node, TRUE, FALSE);
 }
 
@@ -2838,7 +2856,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		MessageView *msgview;
 
 		msgview = summaryview->messageview;
-
+		summaryview->last_displayed = summaryview->displayed;
 		summaryview->displayed = row;
 		if (!messageview_is_visible(msgview)) {
 			main_window_toggle_message_view(summaryview->mainwin);
@@ -4948,6 +4966,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	summary_select_by_msgnum(summaryview, selected_msgnum);
 
 	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
+	summaryview->last_displayed = summaryview->displayed;
 	if (!summaryview->displayed)
 		messageview_clear(summaryview->messageview);
 	else

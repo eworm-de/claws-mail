@@ -348,6 +348,12 @@ static void prev_labeled_cb	 (MainWindow	*mainwin,
 static void next_labeled_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void last_read_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void parent_cb		 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void goto_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -576,6 +582,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prev_labeled_cb, 0, NULL},
 	{N_("/_View/_Go to/Next la_beled message"),
 						NULL, next_labeled_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Last read message"),
+						NULL, last_read_cb, 0, NULL},
+	{N_("/_View/_Go to/Parent message"),
+						"<control>Up", parent_cb, 0, NULL},
 	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to/Next unread _folder"),	"<shift>G", goto_unread_folder_cb, 0, NULL},
 	{N_("/_View/_Go to/_Other folder..."),	"G", goto_folder_cb, 0, NULL},
@@ -2121,6 +2132,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Previous marked message" , M_MSG_EXIST},
 		{"/View/Go to/Previous labeled message", M_MSG_EXIST},
 		{"/View/Go to/Next labeled message", M_MSG_EXIST},
+		{"/View/Go to/Last read message"   , M_SINGLE_TARGET_EXIST},
+		{"/View/Go to/Parent message"      , M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
 		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
@@ -3520,6 +3533,18 @@ static void next_labeled_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
 	summary_select_next_labeled(mainwin->summaryview);
+}
+
+static void last_read_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_select_last_read(mainwin->summaryview);
+}
+
+static void parent_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_select_parent(mainwin->summaryview);
 }
 
 static void goto_folder_cb(MainWindow *mainwin, guint action,
