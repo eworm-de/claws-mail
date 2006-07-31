@@ -1,3 +1,9 @@
+2006-07-31 [colin]	2.4.0cvs8
+
+	* AUTHORS
+	* src/gtk/authors.h
+		Add Rafal to authors
+
 2006-07-31 [colin]	2.4.0cvs7
 
 	* src/compose.c

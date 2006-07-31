@@ -221,6 +221,7 @@ static char *CONTRIBS_LIST[] = {
 "Radek Vybiral",
 "Jonathan Ware",
 "Watanabe",
+"Rafal Weglarz",
 "Martin Wicke",
 "Bob Woodside",
 "YAMAGUCHI",
