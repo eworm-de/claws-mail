@@ -42,7 +42,8 @@ void prefs_filtering_open(GSList ** p_processing,
 			  const gchar *title,
 			  const gchar *help_url_anchor,
 			  const gchar *header,
-			  const gchar *key);
+			  const gchar *key,
+			  gboolean per_account_filtering);
 
 void prefs_filtering_rename_path	(const gchar	*old_path,
 				 	 const gchar	*new_path);

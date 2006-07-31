@@ -45,6 +45,7 @@ static GSList *matchers_list = NULL;
 
 static gboolean enabled = TRUE;
 static gchar *name = NULL;
+static gint account_id = 0;
 static MatcherList *cond;
 static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
@@ -59,6 +60,7 @@ enum {
         MATCHER_PARSE_NO_EOL,
 	MATCHER_PARSE_ENABLED,
 	MATCHER_PARSE_NAME,
+	MATCHER_PARSE_ACCOUNT,
         MATCHER_PARSE_CONDITION,
         MATCHER_PARSE_FILTERING_ACTION,
 };
@@ -77,6 +79,7 @@ int matcher_parserlex(void);
 void matcher_parser_start_parsing(FILE *f)
 {
 	matcher_parserrestart(f);
+	account_id = 0;
 	matcher_parserparse();
 }
 
@@ -144,6 +147,50 @@ MatcherList *matcher_parser_get_name(gchar *str)
 	matcher_parse_op = MATCHER_PARSE_NAME;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
+	bufstate = matcher_parser_scan_string(str);
+	matcher_parserparse();
+	matcher_parse_op = MATCHER_PARSE_FILE;
+	matcher_parser_delete_buffer(bufstate);
+	return cond;
+}
+
+MatcherList *matcher_parser_get_enabled(gchar *str)
+{
+	void *bufstate;
+
+	if (!check_quote_symetry(str)) {
+		cond = NULL;
+		return cond;
+	}
+	
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
+	matcher_parserlineno = 1;
+	matcher_parse_op = MATCHER_PARSE_ENABLED;
+	matcher_parserrestart(NULL);
+	matcher_parser_init();
+	bufstate = matcher_parser_scan_string(str);
+	matcher_parserparse();
+	matcher_parse_op = MATCHER_PARSE_FILE;
+	matcher_parser_delete_buffer(bufstate);
+	return cond;
+}
+
+MatcherList *matcher_parser_get_account(gchar *str)
+{
+	void *bufstate;
+
+	if (!check_quote_symetry(str)) {
+		cond = NULL;
+		return cond;
+	}
+	
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
+	matcher_parserlineno = 1;
+	matcher_parse_op = MATCHER_PARSE_ACCOUNT;
+	matcher_parserrestart(NULL);
+	matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
 	matcher_parse_op = MATCHER_PARSE_FILE;
@@ -283,6 +330,7 @@ int matcher_parserwrap(void)
 
 %token MATCHER_ENABLED MATCHER_DISABLED
 %token MATCHER_RULENAME
+%token MATCHER_ACCOUNT
 %token <str> MATCHER_STRING
 %token <str> MATCHER_SECTION
 %token <str> MATCHER_INTEGER
@@ -347,7 +395,9 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-enabled name condition filtering MATCHER_EOL
+enabled name account condition filtering MATCHER_EOL
+| enabled name account condition filtering
+| enabled name condition filtering MATCHER_EOL
 | enabled name condition filtering
 | name condition filtering MATCHER_EOL
 | name condition filtering
@@ -355,7 +405,7 @@ enabled name condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error a");
+		matcher_parsererror("parse error [no eol]");
 		YYERROR;
 	}
 }
@@ -364,7 +414,16 @@ enabled name condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_ENABLED)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error enabled");
+		matcher_parsererror("parse error [enabled]");
+		YYERROR;
+	}
+}
+| account
+{
+	if (matcher_parse_op == MATCHER_PARSE_ACCOUNT)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error [account]");
 		YYERROR;
 	}
 }
@@ -373,7 +432,7 @@ enabled name condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_NAME)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error b");
+		matcher_parsererror("parse error [name]");
 		YYERROR;
 	}
 }
@@ -382,7 +441,7 @@ enabled name condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_CONDITION)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error c");
+		matcher_parsererror("parse error [condition]");
 		YYERROR;
 	}
 }
@@ -391,7 +450,7 @@ enabled name condition filtering MATCHER_EOL
 	if (matcher_parse_op == MATCHER_PARSE_FILTERING_ACTION)
 		YYACCEPT;
 	else {
-		matcher_parsererror("parse error d");
+		matcher_parsererror("parse error [filtering action]");
 		YYERROR;
 	}
 }
@@ -416,11 +475,21 @@ MATCHER_RULENAME MATCHER_STRING
 }
 ;
 
+account:
+MATCHER_ACCOUNT MATCHER_INTEGER
+{
+	account_id = strtol($2, NULL, 10);
+fprintf(stderr, "parser %d\n", account_id);
+fflush(stderr);
+}
+;
+
 filtering:
 filtering_action_list
 {
-	filtering = filteringprop_new(enabled, name, cond, action_list);
+	filtering = filteringprop_new(enabled, name, account_id, cond, action_list);
 	enabled = TRUE;
+	account_id = 0;
 	g_free(name);
 	name = NULL;
         if (enable_compatibility) {

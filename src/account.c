@@ -50,6 +50,7 @@
 #include "customheader.h"
 #include "remotefolder.h"
 #include "manual.h"
+#include "filtering.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,		/* GDK_TYPE_PIXMAP! */
@@ -1003,6 +1004,7 @@ static void account_delete(GtkWidget *widget, gpointer data)
 	gchar buf[BUFFSIZE];
 	GList *list;
 	Folder *folder;
+	GSList *cur;
  
  	ac_prefs = account_list_view_get_selected_account(edit_account.list_view);
  	if (ac_prefs == NULL)
@@ -1038,6 +1040,22 @@ static void account_delete(GtkWidget *widget, gpointer data)
 				G_TRAVERSE_ALL, -1,
 				account_delete_references_func,
 				GINT_TO_POINTER(ac_prefs->account_id));
+	}
+
+	debug_print("Removing filter rules relative to this account...\n");
+	for(cur = filtering_rules ; cur != NULL ;) {
+		FilteringProp * prop = (FilteringProp *) cur->data;
+
+		if (prop && (prop->account_id == ac_prefs->account_id)) {
+			/* get next item before we kill the current one */
+			cur = g_slist_next(cur);
+
+			/* unallocate filteringprop and unchain it from the list */
+			filteringprop_free(prop);
+			filtering_rules = g_slist_remove(filtering_rules, prop);
+		} else {
+			cur = g_slist_next(cur);
+		}
 	}
 }
 

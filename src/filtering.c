@@ -84,6 +84,7 @@ void filteringaction_free(FilteringAction * action)
 
 FilteringProp * filteringprop_new(gboolean enabled,
 				  const gchar *name,
+				  gint account_id,
 				  MatcherList * matchers,
 				  GSList * action_list)
 {
@@ -92,6 +93,7 @@ FilteringProp * filteringprop_new(gboolean enabled,
 	filtering = g_new0(FilteringProp, 1);
 	filtering->enabled = enabled;
 	filtering->name = name ? g_strdup(name): NULL;
+	filtering->account_id = account_id;
 	filtering->matchers = matchers;
 	filtering->action_list = action_list;
 
@@ -405,9 +407,18 @@ gboolean filteringaction_apply_action_list(GSList *action_list, MsgInfo *info)
 	return TRUE;
 }
 
-static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info)
+static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info,
+							PrefsAccount *ac_prefs)
 {
-	return matcherlist_match(filtering->matchers, info);
+	gboolean matches = FALSE;
+
+	if (ac_prefs != NULL)
+		matches = ((filtering->account_id == 0)
+					|| (filtering->account_id == ac_prefs->account_id));
+	else
+		matches = TRUE;
+
+	return matches && matcherlist_match(filtering->matchers, info);
 }
 
 /*!
@@ -467,7 +478,7 @@ static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 	}
 }
 
-static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
+static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAccount* ac_prefs)
 {
 	GSList	*l;
 	gboolean final;
@@ -478,7 +489,7 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 	for (l = filtering_list, final = FALSE, apply_next = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
-		if (filtering->enabled && filtering_match_condition(filtering, info)) {
+		if (filtering->enabled && filtering_match_condition(filtering, info, ac_prefs)) {
 			apply_next = filtering_apply_rule(filtering, info, &final);
                         if (final)
                                 break;
@@ -507,9 +518,9 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
  *		processing. E.g. \ref inc.c::inc_start moves the 
  *		message to the inbox. 	
  */
-gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info)
+gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* ac_prefs)
 {
-	return filter_msginfo(flist, info);
+	return filter_msginfo(flist, info, ac_prefs);
 }
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)

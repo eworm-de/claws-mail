@@ -2469,7 +2469,7 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_free (id);
 
 	prefs_filtering_open(&item->prefs->processing, title,
-			MANUAL_ANCHOR_PROCESSING, NULL, NULL);
+			MANUAL_ANCHOR_PROCESSING, NULL, NULL, FALSE);
 	g_free (title);
 }
 

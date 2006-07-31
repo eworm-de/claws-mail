@@ -116,6 +116,9 @@ rulename	{
 disabled	{
 		return MATCHER_DISABLED;
 		}
+account	{
+		return MATCHER_ACCOUNT;
+		}
 enabled	{
 		return MATCHER_ENABLED;
 		}

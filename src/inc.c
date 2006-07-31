@@ -645,7 +645,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				statusbar_progress_all(cur++,total, prefs_common.statusbar_update_step);
 
 			if (!pop3_session->ac_prefs->filter_on_recv || 
-			    !procmsg_msginfo_filter(msginfo))
+			    !procmsg_msginfo_filter(msginfo, pop3_session->ac_prefs))
 				folder_item_move_msg(inbox, msginfo);
 		}
 		filtering_move_and_copy_msgs(msglist);

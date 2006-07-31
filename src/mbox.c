@@ -226,7 +226,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 				return -1;
 			}
 			msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-                	if (!procmsg_msginfo_filter(msginfo))
+                	if (!procmsg_msginfo_filter(msginfo, NULL))
 				to_drop = g_slist_prepend(to_drop, msginfo);
 			else
 				to_filter = g_slist_prepend(to_filter, msginfo);

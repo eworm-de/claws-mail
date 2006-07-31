@@ -4510,7 +4510,7 @@ static void summary_filter_func(MsgInfo *msginfo)
 	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return;
 
-	filter_message_by_msginfo(filtering_rules, msginfo);
+	filter_message_by_msginfo(filtering_rules, msginfo, NULL);
 }
 
 void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
@@ -4526,18 +4526,18 @@ void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
 			prefs_filtering_open(&pre_global_processing,
 					     _("Processing rules to apply before folder rules"),
 					     MANUAL_ANCHOR_PROCESSING,
-					     header, key);
+					     header, key, FALSE);
 		else
 			prefs_filtering_open(&item->prefs->processing,
 					     _("Processing configuration"),
 					     MANUAL_ANCHOR_PROCESSING,
-					     header, key);
+					     header, key, FALSE);
 	}
 	else {
 		prefs_filtering_open(&filtering_rules,
 				_("Filtering configuration"),
 				MANUAL_ANCHOR_FILTERING,
-				header, key);
+				header, key, TRUE);
 	}
 	
 	g_free(header);

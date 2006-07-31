@@ -3579,7 +3579,7 @@ static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
 	prefs_filtering_open(&pre_global_processing,
 			     _("Processing rules to apply before folder rules"),
 			     MANUAL_ANCHOR_PROCESSING,
-			     NULL, NULL);
+			     NULL, NULL, FALSE);
 }
 
 static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
@@ -3588,7 +3588,7 @@ static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
 	prefs_filtering_open(&post_global_processing,
 			     _("Processing rules to apply after folder rules"),
 			     MANUAL_ANCHOR_PROCESSING,
-			     NULL, NULL);
+			     NULL, NULL, FALSE);
 }
 
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
@@ -3597,7 +3597,7 @@ static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 	prefs_filtering_open(&filtering_rules,
 			     _("Filtering configuration"),
 			     MANUAL_ANCHOR_FILTERING,
-			     NULL, NULL);
+			     NULL, NULL, TRUE);
 }
 
 static void prefs_template_open_cb(MainWindow *mainwin, guint action,

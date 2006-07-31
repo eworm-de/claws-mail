@@ -1,3 +1,28 @@
+2006-07-31 [wwp]	2.4.0cvs2
+
+	* src/account.c
+	* src/filtering.c
+	* src/filtering.h
+	* src/folder.c
+	* src/folderview.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/mbox.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+		introduce per-account filtering rules. Each filtering rule can now be assigned
+		to a specific account (by default it's "All"), works w/ POP3/IMAP. Take care
+		when applying filtering rules manually, as all rules will apply - even the ones
+		assigned to an account. This issue will be addressed soon.
+ 
+
+
 2006-07-31 [wwp]	2.4.0cvs1
 
 	* src/quote_fmt.c

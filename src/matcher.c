@@ -1488,12 +1488,12 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
  */
 static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 {
-	GSList *cur;
+	GSList *cur = NULL;
 
 	for (cur = prefs_filtering; cur != NULL; cur = cur->next) {
-		gchar *filtering_str;
+		gchar *filtering_str = NULL;
 		gchar *tmp_name = NULL;
-		FilteringProp *prop;
+		FilteringProp *prop = NULL;
 
 		if (NULL == (prop = (FilteringProp *) cur->data))
 			continue;
@@ -1503,18 +1503,18 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 
 		if (prop->enabled) {
 			if (fputs("enabled ", fp) == EOF) {
-				FILE_OP_ERROR("filtering config", "fputs || fputc");
+				FILE_OP_ERROR("filtering config", "fputs");
 				return;
 			}
 		} else {
 			if (fputs("disabled ", fp) == EOF) {
-				FILE_OP_ERROR("filtering config", "fputs || fputc");
+				FILE_OP_ERROR("filtering config", "fputs");
 				return;
 			}
 		}
 
 		if (fputs("rulename \"", fp) == EOF) {
-			FILE_OP_ERROR("filtering config", "fputs || fputc");
+			FILE_OP_ERROR("filtering config", "fputs");
 			g_free(filtering_str);
 			return;
 		}
@@ -1522,22 +1522,39 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		while (tmp_name && *tmp_name != '\0') {
 			if (*tmp_name != '"') {
 				if (fputc(*tmp_name, fp) == EOF) {
-					FILE_OP_ERROR("filtering config", "fputc");
+					FILE_OP_ERROR("filtering config", "fputs || fputc");
 					g_free(filtering_str);
 					return;
 				}
 			} else if (*tmp_name == '"') {
 				if (fputc('\\', fp) == EOF ||
 				    fputc('"', fp) == EOF) {
-					FILE_OP_ERROR("filtering config", "fputc");
+					FILE_OP_ERROR("filtering config", "fputs || fputc");
 					g_free(filtering_str);
 					return;
 				}
 			}
 			tmp_name ++;
 		}
-		if(fputs("\" ", fp) == EOF ||
-		    fputs(filtering_str, fp) == EOF ||
+		if (fputs("\" ", fp) == EOF) {
+			FILE_OP_ERROR("filtering config", "fputs");
+			g_free(filtering_str);
+			return;
+		}
+
+		if (prop->account_id != 0) {
+			gchar *tmp = NULL;
+
+			tmp = g_strdup_printf("account %d ", prop->account_id);
+			if (fputs(tmp, fp) == EOF) {
+				FILE_OP_ERROR("filtering config", "fputs");
+				g_free(tmp);
+				return;
+			}
+			g_free(tmp);
+		}
+
+		if(fputs(filtering_str, fp) == EOF ||
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs || fputc");
 			g_free(filtering_str);
@@ -1708,7 +1725,7 @@ void prefs_matcher_read_config(void)
 		fclose(matcher_parserin);
 	}
 	else {
-		/* previous version compatibily */
+		/* previous version compatibility */
 
 		/* printf("reading filtering\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,

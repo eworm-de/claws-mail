@@ -50,6 +50,7 @@
 #include "addr_compl.h"
 #include "colorlabel.h"
 #include "manual.h"
+#include "combobox.h"
 
 #include "matcher_parser.h"
 #include "matcher.h"
@@ -58,22 +59,30 @@
 enum {
 	PREFS_FILTERING_ENABLED,
 	PREFS_FILTERING_NAME,
+	PREFS_FILTERING_ACCOUNT,
 	PREFS_FILTERING_RULE,
 	PREFS_FILTERING_PROP,
 	N_PREFS_FILTERING_COLUMNS
 };
 
-static struct Filtering {
+struct _Filtering {
 	GtkWidget *window;
 
 	GtkWidget *help_btn;
 	GtkWidget *ok_btn;
 	GtkWidget *name_entry;
+	GtkWidget *account_label;
+	GtkWidget *account_combobox;
+	GtkListStore *account_combobox_list;
 	GtkWidget *cond_entry;
 	GtkWidget *action_entry;
 
 	GtkWidget *cond_list_view;
-} filtering;
+};
+
+typedef struct _Filtering Filtering;
+
+static Filtering  filtering;
 
 static GSList ** p_processing_list = NULL;
 
@@ -117,6 +126,7 @@ static gint prefs_filtering_list_view_insert_rule	(GtkListStore *list_store,
 							 gint row,
 							 gboolean enabled,
 							 const gchar *name, 
+							 gint account_id,
 							 const gchar *rule, 
 							 gboolean prop);
 static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list, 
@@ -124,7 +134,8 @@ static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list,
 static void prefs_filtering_list_view_get_rule_name	(GtkWidget *list, 
 							 gint row,
 							 gboolean *enabled,
-							 gchar **name);
+							 gchar **name,
+							 gint *account_id);
 
 static GtkWidget *prefs_filtering_list_view_create	(void);
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view);
@@ -137,13 +148,16 @@ static gboolean prefs_filtering_selected		(GtkTreeSelection *selector,
 							 gboolean currently_selected,
 							 gpointer data);
 
+static void prefs_filtering_account_option_menu_populate(void);
+
 static gulong signal_id = 0; /* filtering.help_btn clicked signal */
 
 void prefs_filtering_open(GSList ** p_processing,
 			  const gchar *title,
 			  const gchar *help_url_anchor,
 			  const gchar *header,
-			  const gchar *key)
+			  const gchar *key,
+			  gboolean per_account_filtering)
 {
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
@@ -152,6 +166,9 @@ void prefs_filtering_open(GSList ** p_processing,
 
 	if (!filtering.window) {
 		prefs_filtering_create();
+	} else {
+		gtk_list_store_clear(filtering.account_combobox_list);
+		prefs_filtering_account_option_menu_populate();
 	}
 
 	manage_window_set_transient(GTK_WINDOW(filtering.window));
@@ -182,6 +199,14 @@ void prefs_filtering_open(GSList ** p_processing,
         p_processing_list = p_processing;
         
 	prefs_filtering_set_dialog(header, key);
+	if (per_account_filtering) {
+		gtk_widget_show(filtering.account_label);
+		gtk_widget_show(filtering.account_combobox);
+	} else {
+		gtk_widget_hide(filtering.account_label);
+		gtk_widget_hide(filtering.account_combobox);
+		combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
+	}
 
 	gtk_widget_show(filtering.window);
 
@@ -206,6 +231,41 @@ static void prefs_filtering_close(void)
 	inc_unlock();
 }
 
+static void prefs_filtering_account_option_menu_populate(void)
+{
+	GList *accounts = NULL;
+	GtkTreeIter iter;
+
+	accounts = account_get_list();
+
+	g_return_val_if_fail(accounts != NULL, NULL);
+
+	COMBOBOX_ADD(filtering.account_combobox_list, _("All"), 0);
+	for (; accounts != NULL; accounts = accounts->next) {
+		PrefsAccount *ac = (PrefsAccount *)accounts->data;
+
+		COMBOBOX_ADD(filtering.account_combobox_list, ac->account_name, ac->account_id);
+	}
+}
+
+static GtkWidget *prefs_filtering_account_option_menu(Filtering *filtering)
+{
+	GtkWidget *optmenu = NULL;
+	GtkWidget *optmenubox = NULL;
+	GtkListStore *menu = NULL;
+	
+	optmenubox = gtk_event_box_new();
+	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
+
+	filtering->account_combobox = optmenu;
+	filtering->account_combobox_list = menu;
+
+	prefs_filtering_account_option_menu_populate();
+
+	return optmenubox;
+}
+
 static void prefs_filtering_create(void)
 {
 	GtkWidget *window;
@@ -222,6 +282,8 @@ static void prefs_filtering_create(void)
 
 	GtkWidget *name_label;
 	GtkWidget *name_entry;
+	GtkWidget *account_label;
+	GtkWidget *account_opt_menu;
 	GtkWidget *cond_label;
 	GtkWidget *cond_entry;
 	GtkWidget *cond_btn;
@@ -286,7 +348,7 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table = gtk_table_new(3, 3, FALSE);
+	table = gtk_table_new(3, 4, FALSE);
 	gtk_widget_show(table);
 	gtk_box_pack_start (GTK_BOX (vbox1), table, TRUE, TRUE, 0);
 	
@@ -304,22 +366,36 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
+	account_label = gtk_label_new (_("Account:"));
+	gtk_widget_show (account_label);
+	gtk_misc_set_alignment (GTK_MISC (account_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), account_label, 0, 1, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
+
+	account_opt_menu = prefs_filtering_account_option_menu(&filtering);
+	gtk_widget_show (account_opt_menu);
+  	gtk_table_attach (GTK_TABLE (table), account_opt_menu, 1, 2, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
+	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
+
 	cond_label = gtk_label_new (_("Condition: "));
 	gtk_widget_show (cond_label);
 	gtk_misc_set_alignment (GTK_MISC (cond_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	cond_entry = gtk_entry_new ();
 	gtk_widget_show (cond_entry);
-  	gtk_table_attach (GTK_TABLE (table), cond_entry, 1, 2, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), cond_entry, 1, 2, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	cond_btn = gtk_button_new_with_label (_(" Define... "));
 	gtk_widget_show (cond_btn);
-  	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 2);
 	g_signal_connect(G_OBJECT (cond_btn), "clicked",
@@ -329,19 +405,19 @@ static void prefs_filtering_create(void)
 	action_label = gtk_label_new (_("Action: "));
 	gtk_widget_show (action_label);
 	gtk_misc_set_alignment (GTK_MISC (action_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 2, 3,
+  	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	action_entry = gtk_entry_new ();
 	gtk_widget_show (action_entry);
-  	gtk_table_attach (GTK_TABLE (table), action_entry, 1, 2, 2, 3,
+  	gtk_table_attach (GTK_TABLE (table), action_entry, 1, 2, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	action_btn = gtk_button_new_with_label (_(" Define... "));
 	gtk_widget_show (action_btn);
-  	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 2, 3,
+  	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 2);
 	g_signal_connect(G_OBJECT (action_btn), "clicked",
@@ -450,6 +526,7 @@ static void prefs_filtering_create(void)
 	filtering.cond_entry     = cond_entry;
 	filtering.action_entry   = action_entry;
 	filtering.cond_list_view = cond_list_view;
+	filtering.account_label  = account_label;
 }
 
 static void rename_path(GSList * filters,
@@ -675,6 +752,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	prefs_filtering_list_view_insert_rule(list_store, -1, 
 					      FALSE,
 					      _("(New)"),
+						  0,
 					      _("(New)"),
 					      FALSE);
 
@@ -689,6 +767,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 		prefs_filtering_list_view_insert_rule(list_store, -1, 
 						      prop->enabled,
 						      prop->name,
+							  prop->account_id,
 						      cond_str, TRUE);
 		
 		g_free(cond_str);
@@ -714,6 +793,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 static void prefs_filtering_reset_dialog(void)
 {
 	gtk_entry_set_text(GTK_ENTRY(filtering.name_entry), "");
+	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), "");
 }
@@ -740,15 +820,17 @@ static void prefs_filtering_set_list(void)
 		if (strcmp(filtering_str, _("(New)")) != 0) {
 			gboolean enabled;
 			gchar *name;
+			gint account_id = 0;
 
 			prefs_filtering_list_view_get_rule_name(
 					filtering.cond_list_view, row,
-					&enabled, &name);
+					&enabled, &name, &account_id);
 			prop = matcher_parser_get_filtering(filtering_str);
 			g_free(filtering_str);
 			if (prop) {
 				prop->enabled = enabled;
 				prop->name = name;
+				prop->account_id = account_id;
 				prefs_filtering = 
 					g_slist_append(prefs_filtering, prop);
 			}
@@ -766,6 +848,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	gchar *str;
 	GtkListStore *list_store;
 	gchar *name = NULL;
+	gint account_id = 0;
 	gboolean enabled = TRUE;
 
 	str = filteringprop_to_string(prop);
@@ -775,6 +858,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	if (prop) {
 		if (prop->name)
 			name = prop->name;
+		account_id = prop->account_id;
 		enabled = prop->enabled;
 	}
 
@@ -783,6 +867,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	row = prefs_filtering_list_view_insert_rule(list_store, row,
 						    enabled,
 						    name,
+						    account_id,
 						    str,
 						    prop != NULL);
 
@@ -877,6 +962,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	MatcherList * cond;
 	gboolean enabled = TRUE;
 	gchar * name = NULL;
+	gint account_id = 0;
 	gchar * cond_str = NULL;
 	gchar * action_str = NULL;
 	FilteringProp * prop = NULL;
@@ -884,6 +970,8 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 
 	name = gtk_editable_get_chars(GTK_EDITABLE(filtering.name_entry), 0, -1);
 	
+	account_id = combobox_get_active_data(GTK_COMBO_BOX(filtering.account_combobox));
+
 	cond_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
 	if (*cond_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
@@ -911,7 +999,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 		goto fail;
 	}
 
-	prop = filteringprop_new(enabled, name, cond, action_list);
+	prop = filteringprop_new(enabled, name, account_id, cond, action_list);
 
 fail:
 	g_free(name);
@@ -1073,6 +1161,8 @@ static void prefs_filtering_select_set(FilteringProp *prop)
 	if (prop->name != NULL)
 		gtk_entry_set_text(GTK_ENTRY(filtering.name_entry), prop->name);
 
+	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), prop->account_id);
+		
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), matcher_str);
 
         action_str = filteringaction_list_to_string(prop->action_list);
@@ -1176,6 +1266,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
 	return gtk_list_store_new(N_PREFS_FILTERING_COLUMNS,
 				  G_TYPE_BOOLEAN,
 				  G_TYPE_STRING,
+				  G_TYPE_INT,
 				  G_TYPE_STRING,
 				  G_TYPE_BOOLEAN,
 				 -1);
@@ -1191,6 +1282,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
  *		row
  *\param	enabled TRUE if rule is enabled
  *\param	name The Name of rule
+ *\param	account_id The account ID
  *\param	rule String representation of rule
  *\param	prop TRUE if valid filtering rule; if FALSE it's the first
  *		entry in the store ("(New)").
@@ -1201,6 +1293,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 						  gint row,
 						  gboolean enabled,
 						  const gchar *name,
+						  gint account_id,
 						  const gchar *rule,
 						  gboolean prop) 
 {
@@ -1219,6 +1312,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 		gtk_list_store_set(list_store, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
+				   PREFS_FILTERING_ACCOUNT, account_id,
 				   PREFS_FILTERING_RULE, rule,
 				   PREFS_FILTERING_PROP, prop,
 				   -1);
@@ -1229,6 +1323,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 		gtk_list_store_set(list_store, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
+				   PREFS_FILTERING_ACCOUNT, account_id,
 				   PREFS_FILTERING_RULE, rule,
 				   -1);
 		return row;				   
@@ -1255,7 +1350,8 @@ static gchar *prefs_filtering_list_view_get_rule(GtkWidget *list, gint row)
 	return result;
 }
 
-static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row, gboolean *enabled, gchar **name)
+static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row,
+				gboolean *enabled, gchar **name, gint *account_id)
 {	
 	GtkTreeView *list_view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
@@ -1268,6 +1364,7 @@ static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row, g
 		gtk_tree_model_get(model, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
+				   PREFS_FILTERING_ACCOUNT, account_id,
 				   -1);
 	}
 }
@@ -1446,6 +1543,7 @@ static gboolean prefs_filtering_selected(GtkTreeSelection *selector,
 			FilteringProp *prop;
 			gchar *filtering_str = NULL;
 			gchar *name = NULL;
+			gint account_id = 0;
 
 			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_RULE, &filtering_str,
@@ -1453,10 +1551,17 @@ static gboolean prefs_filtering_selected(GtkTreeSelection *selector,
 			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_NAME, &name,
 					   -1);
+			gtk_tree_model_get(model, &iter,
+					   PREFS_FILTERING_ACCOUNT, &account_id,
+					   -1);
+			gtk_tree_model_get(model, &iter,
+					   PREFS_FILTERING_ACCOUNT, &account_id,
+					   -1);
 
 			prop = matcher_parser_get_filtering(filtering_str);
 			if (prop) { 
 				prop->name = g_strdup(name);
+				prop->account_id = account_id;
 				prefs_filtering_select_set(prop);
 				filteringprop_free(prop);
 			}				

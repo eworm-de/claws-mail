@@ -1944,7 +1944,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			    (item->stype == F_INBOX) &&
 			    (item->folder->account != NULL) && 
 			    (item->folder->account->filter_on_recv) &&
-			    procmsg_msginfo_filter(msginfo))
+			    procmsg_msginfo_filter(msginfo,  item->folder->account))
 				to_filter = g_slist_prepend(to_filter, msginfo);
 			else {
 				exists_list = g_slist_prepend(exists_list, msginfo);
@@ -3749,13 +3749,13 @@ void folder_item_apply_processing(FolderItem *item)
 		statusbar_progress_all(curmsg++,total, 10);
 
                 /* apply pre global rules */
-		filter_message_by_msginfo(pre_global_processing, msginfo);
+		filter_message_by_msginfo(pre_global_processing, msginfo, NULL);
 		
                 /* apply rules of the folder */
-		filter_message_by_msginfo(processing_list, msginfo);
+		filter_message_by_msginfo(processing_list, msginfo, NULL);
 
                 /* apply post global rules */
-		filter_message_by_msginfo(post_global_processing, msginfo);
+		filter_message_by_msginfo(post_global_processing, msginfo, NULL);
                 
 	}
 	if (pre_global_processing || processing_list

@@ -38,6 +38,7 @@ typedef struct _FilteringAction FilteringAction;
 struct _FilteringProp {
 	gboolean enabled;
 	gchar *name;
+	gint account_id;
 	MatcherList * matchers;
 	GSList * action_list;
 };
@@ -56,6 +57,7 @@ gboolean filteringaction_apply_action_list (GSList *action_list, MsgInfo *info);
 
 FilteringProp * filteringprop_new(gboolean enabled,
 				  const gchar *name,
+				  gint account_id,
 				  MatcherList *matchers,
 				  GSList *action_list);
 void filteringprop_free(FilteringProp *prop);
@@ -63,7 +65,7 @@ void filteringprop_free(FilteringProp *prop);
 FilteringProp * filteringprop_parse(gchar **str);
 
 void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info);
-gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info);
+gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount *ac_prefs);
 
 gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action);
 void prefs_filtering_write_config(void);

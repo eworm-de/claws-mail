@@ -330,7 +330,8 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
-gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
+gboolean procmsg_msginfo_filter		(MsgInfo		*msginfo,
+									 PrefsAccount	*ac_prefs);
 MsgInfo *procmsg_msginfo_new_from_mimeinfo
 					(MsgInfo 	*src_msginfo, 
 					 MimeInfo	*mimeinfo);

@@ -2067,7 +2067,7 @@ void procmsg_msginfo_set_to_folder(MsgInfo *msginfo, FolderItem *to_folder)
  * \return TRUE if the message was moved and MsgInfo is now invalid,
  *         FALSE otherwise
  */
-gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
+gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 {
 	MailFilteringData mail_filtering_data;
 			
@@ -2078,7 +2078,7 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 
 	/* filter if enabled in prefs or move to inbox if not */
 	if((filtering_rules != NULL) &&
-	   filter_message_by_msginfo(filtering_rules, msginfo)) {
+	   filter_message_by_msginfo(filtering_rules, msginfo, ac_prefs)) {
 		return TRUE;
 	}
 		
