@@ -1475,6 +1475,11 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 	return FALSE;
 }
 
+void main_window_reflect_prefs_all_now(void)
+{
+	reflect_prefs_timeout_cb(GINT_TO_POINTER(FALSE));
+}
+
 void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 {
 	GtkMenuShell *menu;

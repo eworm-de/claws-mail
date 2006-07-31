@@ -1689,3 +1689,4 @@
 ( cvs diff -u -r 1.96.2.127 -r 1.96.2.128 src/textview.c;  ) > 2.3.1cvs86.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 doc/man/sylpheed-claws.1;  cvs diff -u -r 1.60.2.31 -r 1.60.2.32 po/es.po;  ) > 2.3.1cvs87.patchset
 ( cvs diff -u -r 1.207.2.109 -r 1.207.2.110 src/folderview.c;  ) > 2.3.1cvs88.patchset
+( cvs diff -u -r 1.61.2.47 -r 1.61.2.48 src/account.c;  cvs diff -u -r 1.115.2.97 -r 1.115.2.98 src/main.c;  cvs diff -u -r 1.274.2.126 -r 1.274.2.127 src/mainwindow.c;  cvs diff -u -r 1.39.2.17 -r 1.39.2.18 src/mainwindow.h;  ) > 2.3.1cvs89.patchset

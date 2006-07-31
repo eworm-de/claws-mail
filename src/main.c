@@ -1276,6 +1276,7 @@ static void quit_signal_handler(int sig)
 #ifdef SIGPIPE
 	if (sig == SIGPIPE) {
 		debug_print("caugth SIGPIPE, maybe X closing!\n");
+		signal(SIGPIPE, SIG_IGN); /* ignore following sigpipes */
 		folder_write_list();
 		folder_func_to_all_folders(save_all_caches, GINT_TO_POINTER(0));
 		return;	

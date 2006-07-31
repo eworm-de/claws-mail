@@ -1,3 +1,13 @@
+2006-07-31 [paul]	2.3.1cvs89
+
+	* src/account.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Fix a race condition when, after an SC crash, rescanning
+		folders took more than 0.5 seconds
+		Thanks to Colin
+
 2006-07-31 [paul]	2.3.1cvs88
 
 	* src/folderview.c

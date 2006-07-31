@@ -223,7 +223,7 @@ void account_read_config_all(void)
 	}
 
 	account_set_menu();
-	main_window_reflect_prefs_all();
+	main_window_reflect_prefs_all_now();
 
 	while (ac_label_list) {
 		g_free(ac_label_list->data);
