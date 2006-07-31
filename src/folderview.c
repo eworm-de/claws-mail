@@ -290,12 +290,12 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 };
 
 static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
-	{N_("/------trashsep"),			NULL, NULL, 0, "<Separator>"},
+	{"/------trashsep",		NULL, NULL, 0, "<Separator>"},
 	{N_("/Empty _trash..."),	NULL, folderview_empty_trash_cb, 0, NULL},
 };
 
 static GtkItemFactoryEntry folder_view_queue_popup_entries[] = {
-	{N_("/------queuesep"),			NULL, NULL, 0, "<Separator>"},
+	{"/------queuesep",	NULL, NULL, 0, "<Separator>"},
 	{N_("/Send _queue..."),	NULL, folderview_send_queue_cb, 0, NULL},
 };
 
