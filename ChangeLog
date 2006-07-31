@@ -1,3 +1,8 @@
+2006-07-31 [wwp]	2.4.0cvs1
+
+	* src/quote_fmt.c
+		make more strings translatable.
+
 2006-07-31 [paul]	2.4.0
 
 	2.4.0 released

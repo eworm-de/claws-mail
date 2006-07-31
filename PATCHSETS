@@ -1692,3 +1692,4 @@
 ( cvs diff -u -r 1.61.2.47 -r 1.61.2.48 src/account.c;  cvs diff -u -r 1.115.2.97 -r 1.115.2.98 src/main.c;  cvs diff -u -r 1.274.2.126 -r 1.274.2.127 src/mainwindow.c;  cvs diff -u -r 1.39.2.17 -r 1.39.2.18 src/mainwindow.h;  ) > 2.3.1cvs89.patchset
 ( cvs diff -u -r 1.58.2.23 -r 1.58.2.24 po/de.po;  cvs diff -u -r 1.9.2.6 -r 1.9.2.7 po/el.po;  cvs diff -u -r 1.42.2.25 -r 1.42.2.26 po/fr.po;  cvs diff -u -r 1.34.2.19 -r 1.34.2.20 po/it.po;  cvs diff -u -r 1.10.2.10 -r 1.10.2.11 po/pl.po;  cvs diff -u -r 1.50.2.19 -r 1.50.2.20 po/pt_BR.po;  cvs diff -u -r 1.17.2.22 -r 1.17.2.23 po/sr.po;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 po/zh_CN.po;  ) > 2.3.1cvs90.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 po/ca.po;  ) > 2.3.1cvs91.patchset
+( cvs diff -u -r 1.8.2.8 -r 1.8.2.9 src/quote_fmt.c;  ) > 2.4.0cvs1.patchset
