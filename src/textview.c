@@ -77,6 +77,8 @@ struct _RemoteURI
 	guint end;
 };
 
+gint previousquotelevel = -1;
+
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -1192,7 +1194,16 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
+	if ( prefs_common.hide_quotes == TRUE && quotelevel > -1) {
+		if ( previousquotelevel != quotelevel ) {
+/*			textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);*/
+			textview_make_clickable_parts(textview, fg_color, "link", " [...]\n", FALSE);
+			previousquotelevel = quotelevel;
+		}
+	} else {
+		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
+		previousquotelevel = -1;
+	}
 }
 
 void textview_write_link(TextView *textview, const gchar *str,

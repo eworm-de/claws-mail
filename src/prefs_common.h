@@ -386,6 +386,7 @@ struct _PrefsCommon
 	gint skip_ssl_cert_check;
 	gint live_dangerously;
 	gint never_send_retrcpt;
+	gint hide_quotes;
 };
 
 extern PrefsCommon prefs_common;

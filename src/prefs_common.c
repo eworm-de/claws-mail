@@ -790,6 +790,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"live_dangerously", "FALSE", &prefs_common.live_dangerously, P_BOOL,
 	 NULL, NULL, NULL},
+	{"hide_quotes", "FALSE", &prefs_common.hide_quotes, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

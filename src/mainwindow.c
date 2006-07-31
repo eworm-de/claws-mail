@@ -218,6 +218,10 @@ static void show_all_header_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void hide_quotes_cb(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void move_to_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -711,6 +715,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
 	{N_("/_View/Show all headers"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Hide quotes"),		"<control><shift>Q", hide_quotes_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
 
@@ -2136,6 +2141,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Parent message"      , M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
 		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
+		{"/View/Hide quotes"               , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Receive/Get from current account"
@@ -3236,6 +3242,16 @@ static void show_all_header_cb(MainWindow *mainwin, guint action,
 {
 	if (mainwin->menu_lock_count) return;
 	mainwin->summaryview->messageview->all_headers = 
+			GTK_CHECK_MENU_ITEM(widget)->active;
+	summary_display_msg_selected(mainwin->summaryview,
+				     GTK_CHECK_MENU_ITEM(widget)->active);
+}
+
+static void hide_quotes_cb(MainWindow *mainwin, guint action,
+			       GtkWidget *widget)
+{
+	if (mainwin->menu_lock_count) return;
+	prefs_common.hide_quotes = 
 			GTK_CHECK_MENU_ITEM(widget)->active;
 	summary_display_msg_selected(mainwin->summaryview,
 				     GTK_CHECK_MENU_ITEM(widget)->active);

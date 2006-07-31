@@ -1698,3 +1698,4 @@
 ( cvs diff -u -r 1.274.2.128 -r 1.274.2.129 src/mainwindow.c;  cvs diff -u -r 1.395.2.225 -r 1.395.2.226 src/summaryview.c;  cvs diff -u -r 1.68.2.24 -r 1.68.2.25 src/summaryview.h;  ) > 2.4.0cvs4.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 po/nb.po;  ) > 2.4.0cvs5.patchset
 ( cvs diff -u -r 1.12.2.36 -r 1.12.2.37 src/action.c;  ) > 2.4.0cvs6.patchset
+( cvs diff -u -r 1.382.2.295 -r 1.382.2.296 src/compose.c;  cvs diff -u -r 1.274.2.129 -r 1.274.2.130 src/mainwindow.c;  cvs diff -u -r 1.19.2.8 -r 1.19.2.9 src/messageview.h;  cvs diff -u -r 1.204.2.93 -r 1.204.2.94 src/prefs_common.c;  cvs diff -u -r 1.103.2.55 -r 1.103.2.56 src/prefs_common.h;  cvs diff -u -r 1.96.2.128 -r 1.96.2.129 src/textview.c;  ) > 2.4.0cvs7.patchset

@@ -1,3 +1,14 @@
+2006-07-31 [colin]	2.4.0cvs7
+
+	* src/compose.c
+	* src/mainwindow.c
+	* src/messageview.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c
+		Add 'View/Hide quotes'. Patch based on a patch
+		by Rafal Weglarz
+
 2006-07-31 [colin]	2.4.0cvs6
 
 	* src/action.c
