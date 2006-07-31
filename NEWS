@@ -1,5 +1,104 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.4.0
+-------
+
+* A ./configure option has been added, --with-mandir=DIR allowing the
+  setting of the man directory location
+
+* 'Send queue' has been added to the folder contextual menu, which
+  allows sending the contents of a single queue, as opposed to the
+  toolbar's Send Queue, which sends all queues
+
+* '/View/Go to/Next unread folder' has been added
+
+* 'View/Go to/Next marked messages' now traverses folders
+
+* sftp:// links are now recognised in mails
+
+* A dialogue is presented to the user when dropping files into the
+  Compose window, asking whether to insert or attach the file(s). The
+  default behaviour can be controlled via a new option in 
+  Compose/Writing
+
+* Allow attached message parts to be selected, opened, or saved via
+  their text label in the message body
+
+* Save named inlined attachments with "Save all"
+
+* An option to change the Folder Type has been added to the Folder
+  Properties
+
+* Add |i{sub_expr} to Templates, which allows inserting user-entered
+  text in a template
+
+* A new option has been added to '/Preferences/External programs' to
+  allow "Display as text" on attachments to be done via a script
+
+* An option to 'Never send Return Receipts' has been added to the
+  'Other' page of the preferences.
+
+* The Custom Header dialogue in Account Preferences now has a 'From
+  file...' button, which enables a Face or X-Face header to be set by
+  selecting a file 
+
+* libgnomeprint support : A font for printing can be specified in
+  '/Display/Fonts'
+
+* Add Help buttons to some dialogues, clicking on them will open the
+  manual at a suitable section in the configured browser
+
+* The option 'Add date header' has been removed, a date header is
+  now always added
+
+* The '/Message/Re-edit' menu item has been removed from the separate
+  Message View, where it was useless
+
+* Display an Account's Protocol as a label instead of the unusable
+  combo when editing accounts
+
+* It is now possible to move and copy mails from and to the Drafts
+  and Queue folders
+
+* More non-English Subject prefixes have been added
+
+* The Attachment flag is now set for some inlined attachments
+
+* Faster recursive quicksearch (show current folder's results before
+  searching sub-folders)
+
+* Faster send on IMAP
+
+* Alert in case of authentication error on imap
+
+* Better error reporting in GPG plugins
+
+* Faster and better MBOX import/export
+
+* Save caches on SIGPIPE (like on Xorg exit)
+
+* Unified Info/Help/Symbols buttons
+
+* Honor display-header-pane setting in separate window too
+
+* Use the user-defined From: in the Return-Path: header when sending
+
+* Grab Save button by default in Save dialog, which allows saving
+  by hitting Enter
+
+* The online status is checked before resetting mailcheck timer
+
+* Show POP3 connection earlier in statusbar
+
+* Re-read /etc/resolv.conf before connecting to IMAP servers, and
+  when switching to Online mode
+
+* tools/textviewer.pl has been added, which can be used with the new
+  option 'Command for Display as Text' in '/Preferences/External
+  programs'
+
+* The Sylpheed-Claws logo has been updated
+
 * 2.3.1
 -------
 

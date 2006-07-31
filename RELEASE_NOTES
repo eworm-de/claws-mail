@@ -1,4 +1,4 @@
-12th June 2006                                   Sylpheed-Claws 2.3.0
+31st July 2006                                   Sylpheed-Claws 2.4.0
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,70 +9,128 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Mailing-list support (Subscribe, Unsubscribe, View Archive, etc) 
-  has been added in the main window's 'Message/Mailing list' menu
+* A ./configure option has been added, --with-mandir=DIR allowing the
+  setting of the man directory location
 
-* Filtering and processing rules can be disabled with just one click
+* 'Send queue' has been added to the folder contextual menu, which
+  allows sending the contents of a single queue, as opposed to the
+  toolbar's Send Queue, which sends all queues
 
-* The From address is editable in the Compose window
+* '/View/Go to/Next unread folder' has been added
 
-* A menu has been added to the Compose toolbar button to enable
-  choosing the account to use
+* 'View/Go to/Next marked messages' now traverses folders
 
-* Write-only support of .mh_sequences' Unseen property has been added 
-  for MH mailboxes, allowing synchronised flags when reading your MH
-  mailbox with Mutt or other MH-based mail clients
+* sftp:// links are now recognised in mails
 
-* More feedback is provided to the user when importing MBOX files
+* A dialogue is presented to the user when dropping files into the
+  Compose window, asking whether to insert or attach the file(s). The
+  default behaviour can be controlled via a new option in 
+  Compose/Writing
 
-* 'k' added as a shortcut for 'colorlabel' in the Extended Quick
-  Search
+* Allow attached message parts to be selected, opened, or saved via
+  their text label in the message body
 
-* The option to go to the first Marked message when entering a
-  folder has been added.
+* Save named inlined attachments with "Save all"
 
-* The 'ignore thread' flag is now correctly set on mails threaded by
-  subject, in addition to standard headers.
+* An option to change the Folder Type has been added to the Folder
+  Properties
 
-* Hidden prefs have been added that allow customization of the
-  colours used in the Log window (useful for dark GTK+ themes)
+* Add |i{sub_expr} to Templates, which allows inserting user-entered
+  text in a template
 
-* Optimised large folder reading
+* A new option has been added to '/Preferences/External programs' to
+  allow "Display as text" on attachments to be done via a script
 
-* Optimised copy/move/deletion/selection
+* An option to 'Never send Return Receipts' has been added to the
+  'Other' page of the preferences.
 
-* Optimised 'mark all read' in the current folder
+* The Custom Header dialogue in Account Preferences now has a 'From
+  file...' button, which enables a Face or X-Face header to be set by
+  selecting a file 
 
-* 'test' filtering rules are processed in the background
+* libgnomeprint support : A font for printing can be specified in
+  '/Display/Fonts'
 
-* A progressbar for cache updates has been added
+* Add Help buttons to some dialogues, clicking on them will open the
+  manual at a suitable section in the configured browser
 
-* A progressbar for copy/move functions has been added
+* The option 'Add date header' has been removed, a date header is
+  now always added
 
-* More dialogues have been made HIG compliant
+* The '/Message/Re-edit' menu item has been removed from the separate
+  Message View, where it was useless
 
-* Allow recursive setting of properties for whole mailboxes
+* Display an Account's Protocol as a label instead of the unusable
+  combo when editing accounts
 
-* A Face header has been added to the Welcome mail
+* It is now possible to move and copy mails from and to the Drafts
+  and Queue folders
 
-* The user manual has been updated
+* More non-English Subject prefixes have been added
 
-* tools/filter_conv_new.pl has been updated for rule 
-  enabling/disabling
+* The Attachment flag is now set for some inlined attachments
 
-* updated Brazilian Portuguese, Catalan, Czech, French, German, 
-  Greek, Italian, Serbian, Simplified Chinese, and Spanish 
+* Faster recursive quicksearch (show current folder's results before
+  searching sub-folders)
+
+* Faster send on IMAP
+
+* Alert in case of authentication error on imap
+
+* Better error reporting in GPG plugins
+
+* Faster and better MBOX import/export
+
+* Save caches on SIGPIPE (like on Xorg exit)
+
+* Unified Info/Help/Symbols buttons
+
+* Honor display-header-pane setting in separate window too
+
+* Use the user-defined From: in the Return-Path: header when sending
+
+* Grab Save button by default in Save dialog, which allows saving
+  by hitting Enter
+
+* The online status is checked before resetting mailcheck timer
+
+* Show POP3 connection earlier in statusbar
+
+* Re-read /etc/resolv.conf before connecting to IMAP servers, and
+  when switching to Online mode
+
+* tools/textviewer.pl has been added, which can be used with the new
+  option 'Command for Display as Text' in '/Preferences/External
+  programs'
+
+* The Sylpheed-Claws logo has been updated
+
+* updated Brazilian Portuguese, Catalan, French, German, Greek,
+  Italian, Polish, Serbian, Simplified Chinese, and Spanish 
   translations.
 
 * Bug fixes: 
-	o bug 965, 'crash opening inbox (cf just previously described
-		    bug)' (Sylpheed-Claws crashed, checking for new 
-  		    messages in local folders)
-	o fix 'mark all read' .mh_sequences support
-	o fix catching cache read errors and detect corruption better
-	o fix possible infinite loop in filtering that was introduced 
-  	  in 2.3.0-rc3
-	o fix memory leaks
+	o bug 977, 'Can't add or edit imap accounts'
+	o bug 978, 'Disconnect from IMAP server when going offline'
+	o bug 981, 'sc 2.3.1 segfaults with gtk+ 2.10'
+	o Fix double '/Go to/Next ...'
+	o Fix signature replacement when changing accounts and
+          re-editing, in certains cases
+	o Don't report a GPG error when Cancel is clicked on the
+	  passphrase dialogue
+	o Block undo while changing signature
+	o Don't freeze the GUI when rescanning local folders after a
+	  crash/kill
+	o Fix default button for rules, actions, templates when
+	  attempting to close without saving (default was to close)
+	o Fix compilation on some systems
+	o Fix a race condition when, after an SC crash, rescanning
+	  folders took more than 0.5 seconds
+	o Don't allow the use of inboxes from F_UNKNOWN folders as
+	  default inbox, vCalendar plugin for example
+	o Fixed off-by-one count of current message in the statusbar
+  	  filtering progressbar
+	o Fix focus of button in Actions I/O dialogue
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
