@@ -517,7 +517,8 @@ static void prefs_matcher_create(void)
 	header_addr_combo = gtk_combo_new();
 	gtk_widget_set_size_request(header_addr_combo, 120, -1);
 	gtkut_combo_set_items(GTK_COMBO (header_addr_combo),
-			      _("All"), _("Any"), "From", "To", "Cc", "Reply-To", "Sender",
+			      Q_("Filtering Matcher Menu|All"),
+			      _("Any"), "From", "To", "Cc", "Reply-To", "Sender",
 			      NULL);
 	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_combo, 1, 2, 1, 2,
 			 0, 0, 0, 0);

@@ -1,3 +1,11 @@
+2006-08-01 [wwp]	2.4.0cvs9
+
+	* src/matcher.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+		allow context-dependent translations for "All",
+		patch by Fabien Vantard <fzzzzz@gmail.com>.
+
 2006-07-31 [colin]	2.4.0cvs8
 
 	* AUTHORS

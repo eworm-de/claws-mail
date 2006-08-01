@@ -753,7 +753,7 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 			/* how many address headers are me trying to mach? */
 			if (strcasecmp(matcher->header, _("Any")) == 0)
 				match = MATCH_ANY;
-			else if (strcasecmp(matcher->header, _("All")) == 0)
+			else if (strcasecmp(matcher->header, Q_("Filtering Matcher Menu|All")) == 0)
 					match = MATCH_ALL;
 
 			if (match == MATCH_ONE) {
@@ -886,7 +886,7 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 
 					if (strcasecmp(matcher->header, _("Any")) == 0)
 						match = MATCH_ANY;
-					else if (strcasecmp(matcher->header, _("All")) == 0)
+					else if (strcasecmp(matcher->header, Q_("Filtering Matcher Menu|All")) == 0)
 						match = MATCH_ALL;
 					else
 						match = MATCH_ONE;
