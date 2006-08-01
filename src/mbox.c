@@ -481,8 +481,8 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 	statusbar_print_all(_("Exporting to mbox..."));
 	for (cur = mlist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
 		int len;
+		msginfo = (MsgInfo *)cur->data;
 
 		msg_fp = procmsg_open_message(msginfo);
 		if (!msg_fp) {

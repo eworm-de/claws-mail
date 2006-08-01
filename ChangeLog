@@ -1,3 +1,8 @@
+2006-08-01 [wwp]	2.4.0cvs11
+
+	* src/mbox.c
+		fix strict ISO C90 compliance.
+
 2006-08-01 [wwp]	2.4.0cvs10
 
 	* tools/update-po
