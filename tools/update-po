@@ -33,7 +33,7 @@ if [ "$1" -a -f "$1" ] ; then
 
 sources = \$(shell cat po/POTFILES.in)
 po/messages.pot: \$(sources) po/POTFILES.in
-	xgettext --keyword=N_ --keyword=_ --file=po/POTFILES.in \
+	xgettext --keyword=N_ --keyword=_ --keyword=Q_ --file=po/POTFILES.in \
 	        --output=po/messages.pot
 EOF
 

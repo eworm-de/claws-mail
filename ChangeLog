@@ -1,3 +1,9 @@
+2006-08-01 [wwp]	2.4.0cvs10
+
+	* tools/update-po
+		updated update-po tool to work w/ context-dependent translations.
+		Patch by Fabien Vantard <fzzzzz@gmail.com>.
+
 2006-08-01 [wwp]	2.4.0cvs9
 
 	* src/matcher.c
