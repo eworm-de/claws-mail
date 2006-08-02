@@ -1705,3 +1705,4 @@
 ( cvs diff -u -r 1.28.2.23 -r 1.28.2.24 src/mbox.c;  ) > 2.4.0cvs11.patchset
 ( cvs diff -u -r 1.5.2.13 -r 1.5.2.14 src/noticeview.c;  ) > 2.4.0cvs12.patchset
 ( cvs diff -u -r 1.5.2.14 -r 1.5.2.15 src/noticeview.c;  ) > 2.4.0cvs13.patchset
+( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/passphrase.c;  ) > 2.4.0cvs14.patchset

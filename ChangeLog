@@ -1,3 +1,9 @@
+2006-08-02 [paul]	2.4.0cvs14
+
+	* src/plugins/pgpcore/passphrase.c
+		don't set initial dialog size
+		make it resizable
+
 2006-08-02 [paul]	2.4.0cvs13
 
 	* src/noticeview.c
