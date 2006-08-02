@@ -1,3 +1,8 @@
+2006-08-02 [wwp]	2.4.0cvs16
+
+	* src/mainwindow.c
+		fix "View/Hide quotes" menu item status initialization.
+
 2006-08-02 [wwp]	2.4.0cvs15
 
 	* src/matcher_parser_parse.y

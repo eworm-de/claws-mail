@@ -2274,6 +2274,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
+	SET_CHECK_MENU_ACTIVE("/View/Hide quotes", prefs_common.hide_quotes);
 
 #undef SET_CHECK_MENU_ACTIVE
 
