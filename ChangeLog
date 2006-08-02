@@ -1,3 +1,8 @@
+2006-08-02 [wwp]	2.4.0cvs15
+
+	* src/matcher_parser_parse.y
+		remove a debug trace.
+
 2006-08-02 [paul]	2.4.0cvs14
 
 	* src/plugins/pgpcore/passphrase.c

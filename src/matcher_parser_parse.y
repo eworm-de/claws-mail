@@ -479,8 +479,6 @@ account:
 MATCHER_ACCOUNT MATCHER_INTEGER
 {
 	account_id = strtol($2, NULL, 10);
-fprintf(stderr, "parser %d\n", account_id);
-fflush(stderr);
 }
 ;
 
