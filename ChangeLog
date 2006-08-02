@@ -1,3 +1,15 @@
+2006-08-02 [colin]	2.4.0cvs17
+
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/textview.c
+	* src/textview.h
+	* src/gtk/about.c
+		Allow per-level quote hiding,
+		Allow toggling quotes by double-clicking them
+		Rename RemoteURI to ClickableText to reflect
+		the fact it's used for a variety of things
+
 2006-08-02 [wwp]	2.4.0cvs16
 
 	* src/mainwindow.c

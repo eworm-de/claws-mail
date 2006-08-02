@@ -690,7 +690,7 @@ static void about_textview_uri_update(GtkWidget *textview, gint x, gint y)
 	}
 
 	/* compare previous hovered link and this one
-	   (here links must be unique in text buffer otherwise RemoteURI structures should be
+	   (here links must be unique in text buffer otherwise ClickableText structures should be
 	   used as in textview.c) */
 	same = (uri != NULL && uri_hover != NULL
 		&& strcmp((char*)uri, (char*)uri_hover) == 0);

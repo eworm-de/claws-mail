@@ -715,7 +715,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
 	{N_("/_View/Show all headers"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Hide quotes"),		"<control><shift>Q", hide_quotes_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Quotes"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Quotes/_Hide all"),		"<control><shift>Q", hide_quotes_cb, 1, "<ToggleItem>"},
+	{N_("/_View/Quotes/Hide from level _2"),NULL, hide_quotes_cb, 2, "<ToggleItem>"},
+	{N_("/_View/Quotes/Hide from level _3"),NULL, hide_quotes_cb, 3, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
 
@@ -2141,7 +2144,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Parent message"      , M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
 		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
-		{"/View/Hide quotes"               , M_SINGLE_TARGET_EXIST},
+		{"/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Receive/Get from current account"
@@ -2274,7 +2277,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
-	SET_CHECK_MENU_ACTIVE("/View/Hide quotes", prefs_common.hide_quotes);
+	if (prefs_common.hide_quotes == 1)
+		SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide all", TRUE);
+	if (prefs_common.hide_quotes == 2)
+		SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide from level 2", TRUE);
+	if (prefs_common.hide_quotes == 3)
+		SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide from level 3", TRUE);
 
 #undef SET_CHECK_MENU_ACTIVE
 
@@ -3248,16 +3256,35 @@ static void show_all_header_cb(MainWindow *mainwin, guint action,
 				     GTK_CHECK_MENU_ITEM(widget)->active);
 }
 
+#define SET_CHECK_MENU_ACTIVE(path, active) \
+{ \
+	menuitem = gtk_item_factory_get_widget(ifactory, path); \
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
+}
+
 static void hide_quotes_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
+	GtkWidget *menuitem;
+	GtkItemFactory *ifactory = mainwin->menu_factory;
+
 	if (mainwin->menu_lock_count) return;
+
 	prefs_common.hide_quotes = 
-			GTK_CHECK_MENU_ITEM(widget)->active;
+			GTK_CHECK_MENU_ITEM(widget)->active ? action : 0;
+
+	mainwin->menu_lock_count++;
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide all", FALSE);
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide from level 2", FALSE);
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Hide from level 3", FALSE);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), prefs_common.hide_quotes > 0);
+	mainwin->menu_lock_count--;
+
 	summary_display_msg_selected(mainwin->summaryview,
-				     GTK_CHECK_MENU_ITEM(widget)->active);
+			mainwin->summaryview->messageview->all_headers);
 }
 
+#undef SET_CHECK_MENU_ACTIVE
 static void mark_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_mark(mainwin->summaryview);

@@ -29,7 +29,7 @@
 #include <gtk/gtktextiter.h>
 
 typedef struct _TextView	TextView;
-typedef struct _RemoteURI	RemoteURI;
+typedef struct _ClickableText	ClickableText;
 
 #include "messageview.h"
 #include "procmime.h"
@@ -58,7 +58,7 @@ struct _TextView
 	MessageView *messageview;
 	gint last_buttonpress;
 
-	RemoteURI *uri_hover;
+	ClickableText *uri_hover;
 	GtkTextIter uri_hover_start_iter;
 	GtkTextIter uri_hover_end_iter;
 	GtkWidget *image;

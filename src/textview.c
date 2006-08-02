@@ -65,7 +65,7 @@
 #include "filesel.h"
 #include "base64.h"
 
-struct _RemoteURI
+struct _ClickableText
 {
 	gchar *uri;
 
@@ -75,6 +75,11 @@ struct _RemoteURI
 
 	guint start;
 	guint end;
+	
+	gboolean is_quote;
+	gint quote_level;
+	gboolean q_expanded;
+	gchar *fg_color;
 };
 
 gint previousquotelevel = -1;
@@ -173,12 +178,12 @@ static gboolean textview_get_uri_range		(TextView	*textview,
 						 GtkTextTag	*tag,
 						 GtkTextIter	*start_iter,
 						 GtkTextIter	*end_iter);
-static RemoteURI *textview_get_uri_from_range	(TextView	*textview,
+static ClickableText *textview_get_uri_from_range	(TextView	*textview,
 						 GtkTextIter	*iter,
 						 GtkTextTag	*tag,
 						 GtkTextIter	*start_iter,
 						 GtkTextIter	*end_iter);
-static RemoteURI *textview_get_uri		(TextView	*textview,
+static ClickableText *textview_get_uri		(TextView	*textview,
 						 GtkTextIter	*iter,
 						 GtkTextTag	*tag);
 static gboolean textview_uri_button_pressed	(GtkTextTag 	*tag,
@@ -197,8 +202,10 @@ static gboolean textview_smooth_scroll_page	(TextView	*textview,
 						 gboolean	 up);
 
 static gboolean textview_uri_security_check	(TextView	*textview,
-						 RemoteURI	*uri);
+						 ClickableText	*uri);
 static void textview_uri_list_remove_all	(GSList		*uri_list);
+
+static void textview_toggle_quote		(TextView *textview, ClickableText *uri);
 
 static void open_uri_cb				(TextView 	*textview,
 						 guint		 action,
@@ -373,7 +380,7 @@ TextView *textview_create(void)
 static void textview_create_tags(GtkTextView *text, TextView *textview)
 {
 	GtkTextBuffer *buffer;
-	GtkTextTag *tag;
+	GtkTextTag *tag, *qtag;
 	static PangoFontDescription *font_desc, *bold_font_desc;
 	
 	if (!font_desc)
@@ -434,10 +441,13 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 	tag = gtk_text_buffer_create_tag(buffer, "link",
 			"foreground-gdk", &uri_color,
 			NULL);
+	qtag = gtk_text_buffer_create_tag(buffer, "qlink",
+			NULL);
 	gtk_text_buffer_create_tag(buffer, "link-hover",
-			"foreground-gdk", &uri_color,
 			"underline", PANGO_UNDERLINE_SINGLE,
 			NULL);
+	g_signal_connect(G_OBJECT(qtag), "event",
+                         G_CALLBACK(textview_uri_button_pressed), textview);
 	g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
  }
@@ -568,8 +578,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 				 "header", NULL)
 
 #define TEXT_INSERT_LINK(str, fname, udata) {				\
-	RemoteURI *uri;							\
-	uri = g_new(RemoteURI, 1);					\
+	ClickableText *uri;							\
+	uri = g_new0(ClickableText, 1);					\
 	uri->uri = g_strdup("");					\
 	uri->start = gtk_text_iter_get_offset(&iter);			\
 	gtk_text_buffer_insert_with_tags_by_name 			\
@@ -643,7 +653,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			GdkPixbuf *pixbuf;
 			GError *error = NULL;
 			gchar *filename;
-			RemoteURI *uri;
+			ClickableText *uri;
 			gchar *uri_str;
 
 			filename = procmime_get_tmp_file_name(mimeinfo);
@@ -681,7 +691,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {
-				uri = g_new(RemoteURI, 1);
+				uri = g_new0(ClickableText, 1);
 				uri->uri = uri_str;
 				uri->start = gtk_text_iter_get_offset(&iter);
 				
@@ -846,6 +856,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	gchar buf[BUFFSIZE];
 	CodeConverter *conv;
 	const gchar *charset, *p, *cmd;
+	GSList *cur;
 	
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -948,6 +959,16 @@ textview_default:
 
 	conv_code_converter_destroy(conv);
 	procmime_force_encoding(0);
+
+	for (cur = textview->uri_list; cur; cur = cur->next) {
+		ClickableText *uri = (ClickableText *)cur->data;
+		if (!uri->is_quote)
+			continue;
+		if (!prefs_common.hide_quotes ||
+		    uri->quote_level+1 < prefs_common.hide_quotes) {
+			textview_toggle_quote(textview, uri);
+		}
+	}
 }
 
 static void textview_show_html(TextView *textview, FILE *fp,
@@ -1011,6 +1032,15 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 							 linebuf, -1, \
 							 fg_tag, NULL); \
 		return; \
+	}
+
+#define ADD_TXT_POS_LATER(bp_, ep_, pti_) \
+	if ((last->next = alloca(sizeof(struct txtpos))) != NULL) { \
+		last = last->next; \
+		last->bp = (bp_); last->ep = (ep_); last->pti = (pti_); \
+		last->next = NULL; \
+	} else { \
+		g_warning("alloc error scanning URIs\n"); \
 	}
 
 /* textview_make_clickable_parts() - colorizes clickable parts */
@@ -1108,8 +1138,8 @@ static void textview_make_clickable_parts(TextView *textview,
 		/* insert URIs */
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
-			RemoteURI *uri;
-			uri = g_new(RemoteURI, 1);
+			ClickableText *uri;
+			uri = g_new0(ClickableText, 1);
 			if (last->bp - normal_text > 0)
 				gtk_text_buffer_insert_with_tags_by_name
 					(buffer, &iter,
@@ -1135,6 +1165,118 @@ static void textview_make_clickable_parts(TextView *textview,
 		gtk_text_buffer_insert_with_tags_by_name
 			(buffer, &iter, mybuf, -1, fg_tag, NULL);
 	}
+	g_free(mybuf);
+}
+
+/* textview_make_clickable_parts() - colorizes clickable parts */
+static void textview_make_clickable_parts_later(TextView *textview,
+					  gint start, gint end)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter start_iter, end_iter;
+	gchar *mybuf;
+	gint offset = 0;
+	/* parse table - in order of priority */
+	struct table {
+		const gchar *needle; /* token */
+
+		/* token search function */
+		gchar    *(*search)	(const gchar *haystack,
+					 const gchar *needle);
+		/* part parsing function */
+		gboolean  (*parse)	(const gchar *start,
+					 const gchar *scanpos,
+					 const gchar **bp_,
+					 const gchar **ep_,
+					 gboolean hdr);
+		/* part to URI function */
+		gchar    *(*build_uri)	(const gchar *bp,
+					 const gchar *ep);
+	};
+
+	static struct table parser[] = {
+		{"http://",  strcasestr, get_uri_part,   make_uri_string},
+		{"https://", strcasestr, get_uri_part,   make_uri_string},
+		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
+		{"sftp://",  strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
+		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
+		{"@",        strcasestr, get_email_part, make_email_string}
+	};
+	const gint PARSE_ELEMS = sizeof parser / sizeof parser[0];
+
+	gint  n;
+	const gchar *walk, *bp, *ep;
+
+	struct txtpos {
+		const gchar	*bp, *ep;	/* text position */
+		gint		 pti;		/* index in parse table */
+		struct txtpos	*next;		/* next */
+	} head = {NULL, NULL, 0,  NULL}, *last = &head;
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
+	gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
+	mybuf = gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, FALSE);
+	offset = gtk_text_iter_get_offset(&start_iter);
+
+	/* parse for clickable parts, and build a list of begin and end positions  */
+	for (walk = mybuf, n = 0;;) {
+		gint last_index = PARSE_ELEMS;
+		gchar *scanpos = NULL;
+
+		/* FIXME: this looks phony. scanning for anything in the parse table */
+		for (n = 0; n < PARSE_ELEMS; n++) {
+			gchar *tmp;
+
+			tmp = parser[n].search(walk, parser[n].needle);
+			if (tmp) {
+				if (scanpos == NULL || tmp < scanpos) {
+					scanpos = tmp;
+					last_index = n;
+				}
+			}					
+		}
+
+		if (scanpos) {
+			/* check if URI can be parsed */
+			if (parser[last_index].parse(walk, scanpos, &bp, &ep, FALSE)
+			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
+					ADD_TXT_POS_LATER(bp, ep, last_index);
+					walk = ep;
+			} else
+				walk = scanpos +
+					strlen(parser[last_index].needle);
+		} else
+			break;
+	}
+
+	/* colorize this line */
+	if (head.next) {
+		const gchar *normal_text = mybuf;
+
+		/* insert URIs */
+		for (last = head.next; last != NULL;
+		     normal_text = last->ep, last = last->next) {
+			ClickableText *uri;
+			uri = g_new0(ClickableText, 1);
+			uri->uri = parser[last->pti].build_uri(last->bp,
+							       last->ep);
+							       
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, last->bp - mybuf + offset);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, last->ep - mybuf + offset);
+			
+			uri->start = gtk_text_iter_get_offset(&start_iter);
+			
+			gtk_text_buffer_apply_tag_by_name(buffer, "link", &start_iter, &end_iter);
+
+			uri->end = gtk_text_iter_get_offset(&end_iter);
+			uri->filename = NULL;
+			textview->uri_list =
+				g_slist_append(textview->uri_list, uri);
+		}
+	} 
+
 	g_free(mybuf);
 }
 
@@ -1194,11 +1336,32 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	if ( prefs_common.hide_quotes == TRUE && quotelevel > -1) {
+	if (quotelevel > -1) {
 		if ( previousquotelevel != quotelevel ) {
-/*			textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);*/
-			textview_make_clickable_parts(textview, fg_color, "link", " [...]\n", FALSE);
+			ClickableText *uri;
+			uri = g_new0(ClickableText, 1);
+			uri->uri = g_strdup("");
+			uri->data = g_strdup(buf);
+			uri->start = gtk_text_iter_get_offset(&iter);
+			gtk_text_buffer_insert_with_tags_by_name
+						(buffer, &iter, " [...]", -1,
+						 "qlink", fg_color, NULL);
+			uri->end = gtk_text_iter_get_offset(&iter);
+			uri->filename = NULL;
+			uri->fg_color = g_strdup(fg_color);
+			uri->is_quote = TRUE;
+			uri->quote_level = quotelevel;
+			textview->uri_list =
+				g_slist_append(textview->uri_list, uri);
+			gtk_text_buffer_insert(buffer, &iter, "  \n", -1);
+		
 			previousquotelevel = quotelevel;
+		} else {
+			GSList *last = g_slist_last(textview->uri_list);
+			ClickableText *lasturi = (ClickableText *)last->data;
+			gchar *tmp = g_strdup_printf("%s%s", (gchar *)lasturi->data, buf);
+			g_free(lasturi->data);
+			lasturi->data = tmp;
 		}
 	} else {
 		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
@@ -1215,7 +1378,7 @@ void textview_write_link(TextView *textview, const gchar *str,
 	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
 	gchar *bufp;
-	RemoteURI *r_uri;
+	ClickableText *r_uri;
 
 	if (!str || *str == '\0')
 		return;
@@ -1253,7 +1416,7 @@ void textview_write_link(TextView *textview, const gchar *str,
     	if (prefs_common.enable_color) {
 		link_color = &uri_color;
     	}
-	r_uri = g_new(RemoteURI, 1);
+	r_uri = g_new0(ClickableText, 1);
 	r_uri->uri = g_strdup(uri);
 	r_uri->start = gtk_text_iter_get_offset(&iter);
 	gtk_text_buffer_insert_with_tags_by_name
@@ -1949,7 +2112,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start_iter, end_iter;
-	RemoteURI *uri = NULL;
+	ClickableText *uri = NULL;
 	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
@@ -1958,7 +2121,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		GtkTextIter iter;
 		GSList *tags;
 		GSList *cur;
-	    
+
 		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(textview->text), 
 						      GTK_TEXT_WINDOW_WIDGET,
 						      x, y, &bx, &by);
@@ -1971,13 +2134,16 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 			char *name;
 
 			g_object_get(G_OBJECT(tag), "name", &name, NULL);
-			if (!strcmp(name, "link")
+
+			if ((!strcmp(name, "link") || !strcmp(name, "qlink"))
 			    && textview_get_uri_range(textview, &iter, tag,
-						      &start_iter, &end_iter))
+						      &start_iter, &end_iter)) {
+
 				uri = textview_get_uri_from_range(textview,
 								  &iter, tag,
 								  &start_iter,
 								  &end_iter);
+			} 
 			g_free(name);
 
 			if (uri)
@@ -2014,7 +2180,8 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		if (uri) {
 			char *trimmed_uri;
 
-			gtk_text_buffer_apply_tag_by_name(buffer,
+			if (!uri->is_quote)
+				gtk_text_buffer_apply_tag_by_name(buffer,
 							  "link-hover",
 							  &start_iter,
 							  &end_iter);
@@ -2035,14 +2202,14 @@ static gboolean textview_get_uri_range(TextView *textview,
 	return get_tag_range(iter, tag, start_iter, end_iter);
 }
 
-static RemoteURI *textview_get_uri_from_range(TextView *textview,
+static ClickableText *textview_get_uri_from_range(TextView *textview,
 					      GtkTextIter *iter,
 					      GtkTextTag *tag,
 					      GtkTextIter *start_iter,
 					      GtkTextIter *end_iter)
 {
 	gint start_pos, end_pos, cur_pos;
-	RemoteURI *uri = NULL;
+	ClickableText *uri = NULL;
 	GSList *cur;
 
 	start_pos = gtk_text_iter_get_offset(start_iter);
@@ -2050,7 +2217,7 @@ static RemoteURI *textview_get_uri_from_range(TextView *textview,
 	cur_pos = gtk_text_iter_get_offset(iter);
 
 	for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
-		RemoteURI *uri_ = (RemoteURI *)cur->data;
+		ClickableText *uri_ = (ClickableText *)cur->data;
 		if (start_pos == uri_->start &&
 		    end_pos ==  uri_->end) {
 			uri = uri_;
@@ -2073,12 +2240,12 @@ static RemoteURI *textview_get_uri_from_range(TextView *textview,
 	return uri;
 }
 
-static RemoteURI *textview_get_uri(TextView *textview,
+static ClickableText *textview_get_uri(TextView *textview,
 				   GtkTextIter *iter,
 				   GtkTextTag *tag)
 {
 	GtkTextIter start_iter, end_iter;
-	RemoteURI *uri = NULL;
+	ClickableText *uri = NULL;
 
 	if (textview_get_uri_range(textview, iter, tag, &start_iter,
 				   &end_iter))
@@ -2088,12 +2255,107 @@ static RemoteURI *textview_get_uri(TextView *textview,
 	return uri;
 }
 
+static void textview_shift_uris_after(TextView *textview, gint start, gint shift)
+{
+	GSList *cur;
+	for (cur = textview->uri_list; cur; cur = cur->next) {
+		ClickableText *uri = (ClickableText *)cur->data;
+		if (uri->start <= start)
+			continue;
+		uri->start += shift;
+		uri->end += shift;
+	}
+}
+
+static void textview_remove_uris_in(TextView *textview, gint start, gint end)
+{
+	GSList *cur;
+	for (cur = textview->uri_list; cur; ) {
+		ClickableText *uri = (ClickableText *)cur->data;
+		if (uri->start > start && uri->end < end) {
+			cur = cur->next;
+			textview->uri_list = g_slist_remove(textview->uri_list, uri);
+			g_free(uri->uri);
+			g_free(uri->filename);
+			if (uri->is_quote) {
+				g_free(uri->fg_color);
+				g_free(uri->data); 
+				/* (only free data in quotes uris) */
+			}
+			g_free(uri);
+		} else {
+			cur = cur->next;
+		}
+		
+	}
+}
+
+static void textview_toggle_quote(TextView *textview, ClickableText *uri)
+{
+	GtkTextIter start, end;
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+	
+	if (!uri->is_quote)
+		return;
+	
+	gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+	gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
+	if (textview->uri_hover)
+		gtk_text_buffer_remove_tag_by_name(buffer,
+						   "link-hover",
+						   &textview->uri_hover_start_iter,
+						   &textview->uri_hover_end_iter);
+	textview->uri_hover = NULL;
+	gtk_text_buffer_remove_tag_by_name(buffer,
+					   "qlink",
+					   &start,
+					   &end);
+	/* when shifting URIs start and end, we have to do it per-UTF8-char
+	 * so use g_utf8_strlen(). OTOH, when inserting in the text buffer, 
+	 * we have to pass a number of bytes, so use strlen(). disturbing. */
+	if (!uri->q_expanded) {
+		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
+		textview_shift_uris_after(textview, uri->start, 
+			g_utf8_strlen((gchar *)uri->data, -1)-strlen(" [...]\n"));
+		gtk_text_buffer_delete(buffer, &start, &end);
+		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+		gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &start, (gchar *)uri->data, 
+				 strlen((gchar *)uri->data)-1,
+				 "qlink", (gchar *)uri->fg_color, NULL);
+		uri->end = gtk_text_iter_get_offset(&start);
+		textview_make_clickable_parts_later(textview,
+					  uri->start, uri->end);
+		uri->q_expanded = TRUE;
+	} else {
+		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
+		textview_remove_uris_in(textview, uri->start, uri->end);
+		textview_shift_uris_after(textview, uri->start, 
+			strlen(" [...]\n")-g_utf8_strlen((gchar *)uri->data, -1));
+		gtk_text_buffer_delete(buffer, &start, &end);
+		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+		gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &start, " [...]", -1,
+				 "qlink", (gchar *)uri->fg_color, NULL);
+		uri->end = gtk_text_iter_get_offset(&start);
+		uri->q_expanded = FALSE;
+	}
+	if (textview->messageview->mainwin->cursor_count == 0) {
+		textview_cursor_normal(textview);
+	} else {
+		textview_cursor_wait(textview);
+	}
+}
 static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					    GdkEvent *event, GtkTextIter *iter,
 					    TextView *textview)
 {
 	GdkEventButton *bevent;
-	RemoteURI *uri = NULL;
+	ClickableText *uri = NULL;
+	char *tagname;
+	gboolean qlink = FALSE;
 
 	if (!event)
 		return FALSE;
@@ -2106,10 +2368,17 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	if (!uri)
 		return FALSE;
 
+	g_object_get(G_OBJECT(tag), "name", &tagname, NULL);
+	
+	if (!strcmp(tagname, "qlink"))
+		qlink = TRUE;
+
+	g_free(tagname);
+	
 	bevent = (GdkEventButton *) event;
 	
 	/* doubleclick: open compose / add address / browser */
-	if ((event->type == GDK_BUTTON_PRESS && bevent->button == 1) ||
+	if ((event->type == (qlink ? GDK_2BUTTON_PRESS:GDK_BUTTON_PRESS) && bevent->button == 1) ||
 		bevent->button == 2 || bevent->button == 3) {
 		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "sc://", 5)) {
 			MimeView *mimeview = 
@@ -2125,6 +2394,10 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				mimeview_handle_cmd(mimeview, "sc://menu_attachment", bevent, uri->data);
 			} 
 			return TRUE;
+		} else if (qlink && bevent->button == 1) {
+			textview_toggle_quote(textview, uri);
+			return TRUE;
+				
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
 				g_object_set_data(
@@ -2152,7 +2425,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			    textview_uri_security_check(textview, uri) == TRUE) 
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
-			else if (bevent->button == 3) {
+			else if (bevent->button == 3 && !qlink) {
 				g_object_set_data(
 					G_OBJECT(textview->link_popup_menu),
 					"menu_button", uri);
@@ -2162,7 +2435,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			}
 			return TRUE;
 		} else {
-			if (bevent->button == 3) {
+			if (bevent->button == 3 && !qlink) {
 				g_object_set_data(
 					G_OBJECT(textview->file_popup_menu),
 					"menu_button", uri);
@@ -2188,7 +2461,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
  *\return   gboolean TRUE if the URL is ok, or if the user chose to open
  *          it anyway, otherwise FALSE          
  */
-static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
+static gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 {
 	gchar *visible_str;
 	gboolean retval = TRUE;
@@ -2250,8 +2523,13 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 
 	for (cur = uri_list; cur != NULL; cur = cur->next) {
 		if (cur->data) {
-			g_free(((RemoteURI *)cur->data)->uri);
-			g_free(((RemoteURI *)cur->data)->filename);
+			g_free(((ClickableText *)cur->data)->uri);
+			g_free(((ClickableText *)cur->data)->filename);
+			if (((ClickableText *)cur->data)->is_quote) {
+				g_free(((ClickableText *)cur->data)->fg_color);
+				g_free(((ClickableText *)cur->data)->data); 
+				/* (only free data in quotes uris) */
+			}
 			g_free(cur->data);
 		}
 	}
@@ -2261,7 +2539,7 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 
 static void open_uri_cb (TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
@@ -2275,7 +2553,7 @@ static void open_uri_cb (TextView *textview, guint action, void *data)
 
 static void open_image_cb (TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
 					   "menu_button");
 
 	static gchar *default_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
@@ -2331,7 +2609,7 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 
 static void save_file_cb (TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
 					   "menu_button");
 	gchar *filename = NULL;
 	gchar *filepath = NULL;
@@ -2399,7 +2677,7 @@ static void save_file_cb (TextView *textview, guint action, void *data)
 
 static void copy_uri_cb	(TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
@@ -2413,7 +2691,7 @@ static void copy_uri_cb	(TextView *textview, guint action, void *data)
 static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data)
 {
 	gchar *fromname, *fromaddress;
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
@@ -2434,7 +2712,7 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 static void mail_to_uri_cb (TextView *textview, guint action, void *data)
 {
 	PrefsAccount *account = NULL;
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
@@ -2452,7 +2730,7 @@ static void mail_to_uri_cb (TextView *textview, guint action, void *data)
 
 static void copy_mail_to_uri_cb	(TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;

@@ -1708,3 +1708,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/passphrase.c;  ) > 2.4.0cvs14.patchset
 ( cvs diff -u -r 1.25.2.16 -r 1.25.2.17 src/matcher_parser_parse.y;  ) > 2.4.0cvs15.patchset
 ( cvs diff -u -r 1.274.2.130 -r 1.274.2.131 src/mainwindow.c;  ) > 2.4.0cvs16.patchset
+( cvs diff -u -r 1.274.2.131 -r 1.274.2.132 src/mainwindow.c;  cvs diff -u -r 1.204.2.94 -r 1.204.2.95 src/prefs_common.c;  cvs diff -u -r 1.96.2.129 -r 1.96.2.130 src/textview.c;  cvs diff -u -r 1.12.2.11 -r 1.12.2.12 src/textview.h;  cvs diff -u -r 1.4.2.34 -r 1.4.2.35 src/gtk/about.c;  ) > 2.4.0cvs17.patchset
