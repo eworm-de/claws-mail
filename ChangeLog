@@ -1,3 +1,8 @@
+2006-08-02 [colin]	2.4.0cvs18
+
+	* src/messageview.c
+		Add Hide quotes menu
+
 2006-08-02 [colin]	2.4.0cvs17
 
 	* src/mainwindow.c
