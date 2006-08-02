@@ -1,3 +1,8 @@
+2006-08-02 [paul]	2.4.0cvs13
+
+	* src/noticeview.c
+		remove the rogue '/' character
+
 2006-08-02 [paul]	2.4.0cvs12
 
 	* src/noticeview.c

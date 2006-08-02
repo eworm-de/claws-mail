@@ -1704,3 +1704,4 @@
 ( cvs diff -u -r 1.2.14.1 -r 1.2.14.2 tools/update-po;  ) > 2.4.0cvs10.patchset
 ( cvs diff -u -r 1.28.2.23 -r 1.28.2.24 src/mbox.c;  ) > 2.4.0cvs11.patchset
 ( cvs diff -u -r 1.5.2.13 -r 1.5.2.14 src/noticeview.c;  ) > 2.4.0cvs12.patchset
+( cvs diff -u -r 1.5.2.14 -r 1.5.2.15 src/noticeview.c;  ) > 2.4.0cvs13.patchset
