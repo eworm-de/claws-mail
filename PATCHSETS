@@ -1703,3 +1703,4 @@
 ( cvs diff -u -r 1.75.2.28 -r 1.75.2.29 src/matcher.c;  cvs diff -u -r 1.59.2.38 -r 1.59.2.39 src/prefs_filtering.c;  cvs diff -u -r 1.43.2.41 -r 1.43.2.42 src/prefs_matcher.c;  ) > 2.4.0cvs9.patchset
 ( cvs diff -u -r 1.2.14.1 -r 1.2.14.2 tools/update-po;  ) > 2.4.0cvs10.patchset
 ( cvs diff -u -r 1.28.2.23 -r 1.28.2.24 src/mbox.c;  ) > 2.4.0cvs11.patchset
+( cvs diff -u -r 1.5.2.13 -r 1.5.2.14 src/noticeview.c;  ) > 2.4.0cvs12.patchset

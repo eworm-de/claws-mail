@@ -118,15 +118,13 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
 
 	widget = gtk_button_new_with_label("");
-	gtk_widget_set_size_request(widget, 120, -1);
 	g_signal_connect(G_OBJECT(widget), "clicked", 
 			 G_CALLBACK(noticeview_button_pressed),
 			 (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
 	
 	widget2 = gtk_button_new_with_label("");
-	gtk_widget_set_size_request(widget2, 120, -1);
-	g_signal_connect(G_OBJECT(widget2), "clicked", 
+/	g_signal_connect(G_OBJECT(widget2), "clicked", 
 			 G_CALLBACK(noticeview_2ndbutton_pressed),
 			 (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 0);

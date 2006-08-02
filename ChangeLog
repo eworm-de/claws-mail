@@ -1,3 +1,8 @@
+2006-08-02 [paul]	2.4.0cvs12
+
+	* src/noticeview.c
+		allow buttons to resize as necessary
+
 2006-08-01 [wwp]	2.4.0cvs11
 
 	* src/mbox.c
