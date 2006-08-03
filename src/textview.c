@@ -2300,6 +2300,9 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboole
 	if (!uri->is_quote)
 		return;
 	
+	if (uri->q_expanded && expand_only)
+		return;
+
 	gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 	if (textview->uri_hover)
@@ -2331,7 +2334,7 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboole
 		textview_make_clickable_parts_later(textview,
 					  uri->start, uri->end);
 		uri->q_expanded = TRUE;
-	} else if (!expand_only) {
+	} else {
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 		textview_remove_uris_in(textview, uri->start, uri->end);

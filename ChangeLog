@@ -1,3 +1,8 @@
+2006-08-03 [colin]	2.4.0cvs20
+
+	* src/textview.c
+		Optimize previous patch
+
 2006-08-03 [cleroy]	2.4.0cvs19
 
 	* src/textview.c
