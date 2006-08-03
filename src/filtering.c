@@ -33,6 +33,7 @@
 #include "filtering.h"
 #include "prefs_gtk.h"
 #include "compose.h"
+#include "prefs_common.h"
 
 #define PREFSBUFSIZE		1024
 
@@ -412,11 +413,25 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 {
 	gboolean matches = FALSE;
 
-	if (ac_prefs != NULL)
+	if (ac_prefs != NULL) {
 		matches = ((filtering->account_id == 0)
 					|| (filtering->account_id == ac_prefs->account_id));
-	else
-		matches = TRUE;
+	} else {
+		switch (prefs_common.apply_per_account_filtering_rules) {
+		case FILTERING_ACCOUNT_RULES_FORCE:
+			/* apply filtering rules regardless to the account info */
+			matches = TRUE;
+			break;
+		case FILTERING_ACCOUNT_RULES_SKIP:
+			/* don't apply filtering rules that belong to an account */
+			matches = (filtering->account_id == 0);
+			break;
+		case FILTERING_ACCOUNT_RULES_USE_CURRENT:
+			matches = ((filtering->account_id == 0)
+					|| (filtering->account_id == cur_account->account_id));
+			break;
+		}
+	}
 
 	return matches && matcherlist_match(filtering->matchers, info);
 }
@@ -685,3 +700,18 @@ void prefs_filtering_clear_folder(Folder *folder)
 	/* FIXME: Note folder settings were changed, where the updates? */
 }
 
+gboolean filtering_peek_per_account_rules(GSList *filtering_list)
+/* return TRUE if there's at least one per-account filtering rule */
+{
+	GSList *l;
+
+	for (l = filtering_list; l != NULL; l = g_slist_next(l)) {
+		FilteringProp * filtering = (FilteringProp *) l->data;
+
+		if (filtering->enabled && (filtering->account_id != 0)) {
+			return TRUE;
+		}		
+	}
+
+	return FALSE;
+}

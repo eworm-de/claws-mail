@@ -1712,3 +1712,4 @@
 ( cvs diff -u -r 1.94.2.91 -r 1.94.2.92 src/messageview.c;  ) > 2.4.0cvs18.patchset
 ( cvs diff -u -r 1.96.2.130 -r 1.96.2.131 src/textview.c;  ) > 2.4.0cvs19.patchset
 ( cvs diff -u -r 1.96.2.131 -r 1.96.2.132 src/textview.c;  ) > 2.4.0cvs20.patchset
+( cvs diff -u -r 1.60.2.20 -r 1.60.2.21 src/filtering.c;  cvs diff -u -r 1.21.2.8 -r 1.21.2.9 src/filtering.h;  cvs diff -u -r 1.204.2.95 -r 1.204.2.96 src/prefs_common.c;  cvs diff -u -r 1.395.2.226 -r 1.395.2.227 src/summaryview.c;  cvs diff -u -r 1.17.2.23 -r 1.17.2.24 src/alertpanel.c;  cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/alertpanel.h;  cvs diff -u -r 1.94.2.92 -r 1.94.2.93 src/messageview.c;  ) > 2.4.0cvs21.patchset

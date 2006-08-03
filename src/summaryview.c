@@ -4469,10 +4469,90 @@ void summary_collapse_threads(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 }
 
+void account_rules_radio_button_toggled_cb(GtkToggleButton *btn, gpointer data)
+{
+	prefs_common.apply_per_account_filtering_rules = GPOINTER_TO_INT(data);
+}
+
+gboolean summary_filter_get_mode(void)
+/* ask what to do w/ them: skip them, apply them regardless to the account,
+   use the current account */
+{
+	/* TODO: eventually also propose to use the current folder's default account,
+	   if it is set */
+	/* TODO: eventually allow to select the account to use from a optmenu */
+
+	GtkWidget *vbox;
+	GtkWidget *account_rules_skip;
+	GtkWidget *account_rules_force;
+	GtkWidget *account_rules_user_current;
+	GSList *group;
+	AlertValue val;
+
+	vbox = gtk_vbox_new (FALSE, 0);
+
+	account_rules_skip = gtk_radio_button_new_with_label
+							(NULL, _("Skip these rules"));
+	account_rules_force = gtk_radio_button_new_with_label_from_widget
+							(GTK_RADIO_BUTTON(account_rules_skip),
+							_("Apply these rules regardless of the account they belong to"));
+	account_rules_user_current = gtk_radio_button_new_with_label_from_widget
+							(GTK_RADIO_BUTTON(account_rules_skip),
+							_("Use current account for these rules"));
+	gtk_box_pack_start (GTK_BOX (vbox), account_rules_skip, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), account_rules_force, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), account_rules_user_current, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(account_rules_skip), "toggled",
+			G_CALLBACK(account_rules_radio_button_toggled_cb),
+			GINT_TO_POINTER(FILTERING_ACCOUNT_RULES_SKIP));
+	g_signal_connect(G_OBJECT(account_rules_force), "toggled",
+			G_CALLBACK(account_rules_radio_button_toggled_cb),
+			GINT_TO_POINTER(FILTERING_ACCOUNT_RULES_FORCE));
+	g_signal_connect(G_OBJECT(account_rules_user_current), "toggled",
+			G_CALLBACK(account_rules_radio_button_toggled_cb),
+			GINT_TO_POINTER(FILTERING_ACCOUNT_RULES_USE_CURRENT));
+	switch (prefs_common.apply_per_account_filtering_rules) {
+	case FILTERING_ACCOUNT_RULES_SKIP:
+		gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(account_rules_skip), TRUE);
+		break;
+	case FILTERING_ACCOUNT_RULES_FORCE:
+		gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(account_rules_force), TRUE);
+		break;
+	case FILTERING_ACCOUNT_RULES_USE_CURRENT:
+		gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(account_rules_user_current), TRUE);
+		break;
+	}
+
+	val = alertpanel_with_widget(
+			_("Filtering"),
+			_("There are some filtering rules that belong to an account.\n"
+			  "Please choose what to do with these rules:"),
+			_("_Filter"), _("_Cancel"), NULL, TRUE, vbox);
+	if ((val & ~G_ALERTDISABLE) != G_ALERTDEFAULT) {
+		return FALSE;
+	} else if (val & G_ALERTDISABLE)
+		prefs_common.ask_apply_per_account_filtering_rules = FALSE;
+
+	return TRUE;
+}
+
 void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
 	GSList *mlist = NULL, *cur_list;
 	summary_lock(summaryview);
+
+	/* are there any per-account filtering rules? */
+	if (prefs_common.ask_apply_per_account_filtering_rules == TRUE &&
+		filtering_peek_per_account_rules(filtering_rules)) {
+
+		if (summary_filter_get_mode() == FALSE) {
+			summary_unlock(summaryview);
+			return;
+		}
+	}
 
 	folder_item_update_freeze();
 	

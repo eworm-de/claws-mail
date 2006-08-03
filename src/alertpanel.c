@@ -73,11 +73,12 @@ AlertValue alertpanel_with_widget(const gchar *title,
 				  const gchar *button1_label,
 				  const gchar *button2_label,
 				  const gchar *button3_label,
+				  gboolean     can_disable,
 				  GtkWidget *widget)
 {
 	return alertpanel_full(title, message, button1_label,
 				    button2_label, button3_label,
-				    FALSE, widget, ALERT_QUESTION,
+				    can_disable, widget, ALERT_QUESTION,
 				    G_ALERTDEFAULT);
 }
 

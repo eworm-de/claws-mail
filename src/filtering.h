@@ -45,6 +45,12 @@ struct _FilteringProp {
 
 typedef struct _FilteringProp FilteringProp;
 
+enum {
+	FILTERING_ACCOUNT_RULES_SKIP = 0,
+	FILTERING_ACCOUNT_RULES_FORCE = 1,
+	FILTERING_ACCOUNT_RULES_USE_CURRENT = 2
+};
+
 /* extern GSList * prefs_filtering; */
 
 
@@ -83,5 +89,7 @@ void filtering_move_and_copy_msg(MsgInfo *msginfo);
 extern GSList * filtering_rules;
 extern GSList * pre_global_processing;
 extern GSList * post_global_processing;
+
+gboolean filtering_peek_per_account_rules(GSList *filtering_list);
 
 #endif

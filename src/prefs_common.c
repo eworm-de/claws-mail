@@ -624,6 +624,11 @@ static PrefParam param[] = {
 	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
 	 NULL, NULL, NULL},
 
+	{"ask_apply_per_account_filtering_rules", "TRUE", &prefs_common.ask_apply_per_account_filtering_rules, P_BOOL,
+	 NULL, NULL, NULL},
+	{"apply_per_account_filtering_rules", "0", &prefs_common.apply_per_account_filtering_rules, P_ENUM,
+	 NULL, NULL, NULL},
+
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
