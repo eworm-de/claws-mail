@@ -1255,18 +1255,29 @@ static void textview_make_clickable_parts_later(TextView *textview,
 
 	/* colorize this line */
 	if (head.next) {
-		const gchar *normal_text = mybuf;
-
 		/* insert URIs */
-		for (last = head.next; last != NULL;
-		     normal_text = last->ep, last = last->next) {
+		for (last = head.next; last != NULL; last = last->next) {
 			ClickableText *uri;
+			gint start_offset, end_offset;
+			gchar *tmp_str;
+			gchar old_char;
 			uri = g_new0(ClickableText, 1);
 			uri->uri = parser[last->pti].build_uri(last->bp,
 							       last->ep);
-							       
-			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, last->bp - mybuf + offset);
-			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, last->ep - mybuf + offset);
+			
+			tmp_str = mybuf;
+			old_char = tmp_str[last->ep - mybuf];
+			tmp_str[last->ep - mybuf] = '\0';				       
+			end_offset = g_utf8_strlen(tmp_str, -1);
+			tmp_str[last->ep - mybuf] = old_char;
+			
+			old_char = tmp_str[last->bp - mybuf];
+			tmp_str[last->bp - mybuf] = '\0';				       
+			start_offset = g_utf8_strlen(tmp_str, -1);
+			tmp_str[last->bp - mybuf] = old_char;
+			
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start_offset + offset);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end_offset + offset);
 			
 			uri->start = gtk_text_iter_get_offset(&start_iter);
 			
@@ -2115,6 +2126,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 	GtkTextBuffer *buffer;
 	GtkTextIter start_iter, end_iter;
 	ClickableText *uri = NULL;
+	ClickableText *link_uri = NULL, *qlink_uri = NULL;
 	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
@@ -2123,7 +2135,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		GtkTextIter iter;
 		GSList *tags;
 		GSList *cur;
-
+		
 		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(textview->text), 
 						      GTK_TEXT_WINDOW_WIDGET,
 						      x, y, &bx, &by);
@@ -2137,23 +2149,37 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 
 			g_object_get(G_OBJECT(tag), "name", &name, NULL);
 
-			if ((!strcmp(name, "link") || !strcmp(name, "qlink"))
+			if ((!strcmp(name, "link"))
 			    && textview_get_uri_range(textview, &iter, tag,
 						      &start_iter, &end_iter)) {
 
-				uri = textview_get_uri_from_range(textview,
+				link_uri = textview_get_uri_from_range(textview,
 								  &iter, tag,
 								  &start_iter,
 								  &end_iter);
-			} 
-			g_free(name);
+				qlink_uri = NULL;
+			}
+			if (link_uri == NULL && (!strcmp(name, "qlink"))
+			    && textview_get_uri_range(textview, &iter, tag,
+						      &start_iter, &end_iter)) {
 
-			if (uri)
+				qlink_uri = textview_get_uri_from_range(textview,
+								  &iter, tag,
+								  &start_iter,
+								  &end_iter);
+			}
+			g_free(name);
+			if (link_uri)
 				break;
 		}
 		g_slist_free(tags);
 	}
 	
+	if (link_uri) {
+		uri = link_uri; /* prioritize real links */
+	} else
+		uri = qlink_uri;
+
 	if (uri != textview->uri_hover) {
 		GdkWindow *window;
 
@@ -2224,7 +2250,11 @@ static ClickableText *textview_get_uri_from_range(TextView *textview,
 		    end_pos ==  uri_->end) {
 			uri = uri_;
 			break;
-		} else if (start_pos == uri_->start ||
+		} 
+	}
+	for (cur = textview->uri_list; uri == NULL && cur != NULL; cur = cur->next) {
+		ClickableText *uri_ = (ClickableText *)cur->data;
+		if (start_pos == uri_->start ||
 			   end_pos == uri_->end) {
 			/* in case of contiguous links, textview_get_uri_range
 			 * returns a broader range (start of 1st link to end

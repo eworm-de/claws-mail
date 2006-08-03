@@ -3170,15 +3170,16 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	g_return_if_fail(menuitem != NULL);
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
-		/* go offline */
-		if (prefs_common.work_offline)
-			return;
-		mainwindow_check_synchronise(mainwin, TRUE);
 		gtk_widget_hide (mainwin->online_switch);
 		gtk_widget_show (mainwin->offline_switch);
 		menuitem->active = TRUE;
+		inc_autocheck_timer_remove();
+			
+		/* go offline */
+		if (prefs_common.work_offline)
+			return;
 		prefs_common.work_offline = TRUE;
-		inc_autocheck_timer_remove();		
+		mainwindow_check_synchronise(mainwin, TRUE);
 		imap_disconnect_all();
 	} else {
 		/*go online */

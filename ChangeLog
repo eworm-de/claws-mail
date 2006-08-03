@@ -1,3 +1,12 @@
+2006-08-03 [colin]	2.4.0cvs23
+
+	* src/textview.c
+                Fix links offset when they are preceded
+                by accentued chars (g_utf8_strlen!)
+        * src/mainwindow.c
+                Fix wrong status when starting offline
+
+
 2006-08-03 [wwp]	2.4.0cvs22
 
 	* src/prefs_common.h
