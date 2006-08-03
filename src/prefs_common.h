@@ -312,6 +312,8 @@ struct _PrefsCommon
 	gchar *pixmap_theme_path;
 	int hover_timeout; /* msecs mouse hover timeout */
 	gboolean ask_mark_all_read;
+	gboolean ask_apply_per_account_filtering_rules;
+	gint apply_per_account_filtering_rules;
 
 	/* Other */
 	gchar *uri_cmd;

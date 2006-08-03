@@ -1,3 +1,12 @@
+2006-08-03 [wwp]	2.4.0cvs22
+
+	* src/prefs_common.h
+		ask what to do w/ filtering rules that belong to an account when
+		applying filtering rules manually from the main window (skip,
+		apply regardless of the account, use current account). This dialog
+		can be skipped and the last reply used.
+		(forgot that file)
+
 2006-08-03 [wwp]	2.4.0cvs21
 
 	* src/filtering.c
