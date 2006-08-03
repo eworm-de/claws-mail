@@ -98,6 +98,7 @@ static char *CONTRIBS_LIST[] = {
 "Matthieu Dazy",
 "Pierric Descamps",
 "Felix Eckhofer",
+"Charles A. Edwards",
 "Stefaan Eeckels",
 "Willem van Engen",
 "Paul Evans",

@@ -1,3 +1,11 @@
+2006-08-03 [colin]	2.4.0cvs24
+
+	* AUTHORS
+	* sylpheed-claws.desktop
+	* src/gtk/authors.h
+		Bring the desktop file to XDG compliance
+		Patch by Charles A. Edwards
+
 2006-08-03 [colin]	2.4.0cvs23
 
 	* src/textview.c
