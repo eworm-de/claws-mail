@@ -205,7 +205,9 @@ static gboolean textview_uri_security_check	(TextView	*textview,
 						 ClickableText	*uri);
 static void textview_uri_list_remove_all	(GSList		*uri_list);
 
-static void textview_toggle_quote		(TextView *textview, ClickableText *uri);
+static void textview_toggle_quote		(TextView 	*textview, 
+						 ClickableText 	*uri,
+						 gboolean	 expand_only);
 
 static void open_uri_cb				(TextView 	*textview,
 						 guint		 action,
@@ -966,7 +968,7 @@ textview_default:
 			continue;
 		if (!prefs_common.hide_quotes ||
 		    uri->quote_level+1 < prefs_common.hide_quotes) {
-			textview_toggle_quote(textview, uri);
+			textview_toggle_quote(textview, uri, TRUE);
 		}
 	}
 }
@@ -2290,7 +2292,7 @@ static void textview_remove_uris_in(TextView *textview, gint start, gint end)
 	}
 }
 
-static void textview_toggle_quote(TextView *textview, ClickableText *uri)
+static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboolean expand_only)
 {
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
@@ -2313,6 +2315,7 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri)
 	/* when shifting URIs start and end, we have to do it per-UTF8-char
 	 * so use g_utf8_strlen(). OTOH, when inserting in the text buffer, 
 	 * we have to pass a number of bytes, so use strlen(). disturbing. */
+	 
 	if (!uri->q_expanded) {
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
@@ -2328,7 +2331,7 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri)
 		textview_make_clickable_parts_later(textview,
 					  uri->start, uri->end);
 		uri->q_expanded = TRUE;
-	} else {
+	} else if (!expand_only) {
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 		textview_remove_uris_in(textview, uri->start, uri->end);
@@ -2395,7 +2398,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			} 
 			return TRUE;
 		} else if (qlink && bevent->button == 1) {
-			textview_toggle_quote(textview, uri);
+			textview_toggle_quote(textview, uri, FALSE);
 			return TRUE;
 				
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {

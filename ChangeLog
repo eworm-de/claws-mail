@@ -1,3 +1,9 @@
+2006-08-03 [cleroy]	2.4.0cvs19
+
+	* src/textview.c
+		Fix quotes getting toggled back when the
+		mail has an even number of text parts
+
 2006-08-02 [colin]	2.4.0cvs18
 
 	* src/messageview.c
