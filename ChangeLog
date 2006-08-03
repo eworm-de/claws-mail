@@ -1,3 +1,13 @@
+2006-08-03 [colin]	2.4.0cvs25
+
+	* src/mainwindow.c
+	* src/messageview.c
+		Rename "Hide quotes" to "Fold quotes"
+	* src/textview.c
+		Don't use hand cursor on quotes. "all 
+		the bonuses of the feature and none of 
+		unwelcome side-effects"
+
 2006-08-03 [colin]	2.4.0cvs24
 
 	* AUTHORS

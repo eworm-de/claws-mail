@@ -2126,7 +2126,6 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 	GtkTextBuffer *buffer;
 	GtkTextIter start_iter, end_iter;
 	ClickableText *uri = NULL;
-	ClickableText *link_uri = NULL, *qlink_uri = NULL;
 	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
@@ -2153,33 +2152,18 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 			    && textview_get_uri_range(textview, &iter, tag,
 						      &start_iter, &end_iter)) {
 
-				link_uri = textview_get_uri_from_range(textview,
-								  &iter, tag,
-								  &start_iter,
-								  &end_iter);
-				qlink_uri = NULL;
-			}
-			if (link_uri == NULL && (!strcmp(name, "qlink"))
-			    && textview_get_uri_range(textview, &iter, tag,
-						      &start_iter, &end_iter)) {
-
-				qlink_uri = textview_get_uri_from_range(textview,
+				uri = textview_get_uri_from_range(textview,
 								  &iter, tag,
 								  &start_iter,
 								  &end_iter);
 			}
 			g_free(name);
-			if (link_uri)
+			if (uri)
 				break;
 		}
 		g_slist_free(tags);
 	}
 	
-	if (link_uri) {
-		uri = link_uri; /* prioritize real links */
-	} else
-		uri = qlink_uri;
-
 	if (uri != textview->uri_hover) {
 		GdkWindow *window;
 
