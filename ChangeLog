@@ -1,3 +1,26 @@
+2006-08-04 [colin]	2.4.0cvs27
+
+	* src/compose.c
+	* src/undo.c
+	* src/undo.h
+		Fix a bit replace-by-pasting undo
+	* src/mainwindow.c
+	* src/messageview.c
+		Fix Fold quotes menu synchro in
+		mainwindow when it changes in 
+		messageview
+	* src/textview.c
+		Fix right-click on quotes blocks
+	* src/common/utils.c
+		Verify that the file created by
+		my_tmpfile() is writable. Fixes
+		bug #988 (very specific filesystem
+		issue)
+	* src/plugins/pgpcore/sgpgme.c
+		Fix file descriptor leak
+	* src/plugins/spamassassin/spamassassin.c
+		Warn once if spamd isn't reachable
+
 2006-08-04 [colin]	2.4.0cvs26
 
 	* src/toolbar.c

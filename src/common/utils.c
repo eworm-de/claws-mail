@@ -3271,6 +3271,7 @@ FILE *my_tmpfile(void)
 	gchar *fname;
 	gint fd;
 	FILE *fp;
+	gchar buf[2]="a";
 
 	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
@@ -3292,13 +3293,23 @@ FILE *my_tmpfile(void)
 
 #ifndef G_OS_WIN32
 	g_unlink(fname);
+	
+	/* verify that we can write in the file after unlinking */
+	if (write(fd, buf, 1) < 0) {
+		close(fd);
+		return tmpfile();
+	}
+	
 #endif
 
 	fp = fdopen(fd, "w+b");
 	if (!fp)
 		close(fd);
-	else
+	else {
+		rewind(fp);
 		return fp;
+	}
+
 #endif /* HAVE_MKSTEMP || G_OS_WIN32 */
 
 	return tmpfile();

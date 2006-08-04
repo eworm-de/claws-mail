@@ -48,6 +48,7 @@
 #include "inc.h"
 #include "log.h"
 #include "prefs_common.h"
+#include "alertpanel.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -120,14 +121,20 @@ gboolean timeout_func(gpointer data)
 	return FALSE;
 }
 
-static gboolean msg_is_spam(FILE *fp)
+typedef enum {
+	MSG_IS_HAM = 0,
+	MSG_IS_SPAM = 1,
+	MSG_FILTERING_ERROR = 2
+} MsgStatus;
+
+static MsgStatus msg_is_spam(FILE *fp)
 {
 	struct transport trans;
 	struct message m;
 	gboolean is_spam = FALSE;
 
 	if (!config.enable)
-		return FALSE;
+		return MSG_IS_HAM;
 
 	transport_init(&trans);
 	switch (config.transport) {
@@ -145,13 +152,13 @@ static gboolean msg_is_spam(FILE *fp)
 		trans.socketpath = config.socket;
 		break;
 	default:
-		return FALSE;
+		return MSG_IS_HAM;
 	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
 		log_error(_("Spamassassin plugin couldn't connect to spamd.\n"));
 		debug_print("failed to setup transport\n");
-		return FALSE;
+		return MSG_FILTERING_ERROR;
 	}
 
 	m.type = MESSAGE_NONE;
@@ -161,13 +168,14 @@ static gboolean msg_is_spam(FILE *fp)
 	if (message_read(fileno(fp), flags, &m) != EX_OK) {
 		debug_print("failed to read message\n");
 		message_cleanup(&m);
-		return FALSE;
+		return MSG_FILTERING_ERROR;
 	}
 
 	if (message_filter(&trans, config.username, flags, &m) != EX_OK) {
+		log_error(_("Spamassassin plugin filtering failed.\n"));
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
-		return FALSE;
+		return MSG_FILTERING_ERROR;
 	}
 
 	if (m.is_spam == EX_ISSPAM)
@@ -175,14 +183,15 @@ static gboolean msg_is_spam(FILE *fp)
 
 	message_cleanup(&m);
 
-	return is_spam;
+	return is_spam ? MSG_IS_SPAM:MSG_IS_HAM;
 }
 
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	gboolean is_spam = FALSE;
+	gboolean is_spam = FALSE, error = FALSE;
+	static gboolean warned_error = FALSE;
 	FILE *fp = NULL;
 	int pid = 0;
 	int status;
@@ -203,7 +212,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	pid = fork();
 	if (pid == 0) {
-		_exit(msg_is_spam(fp) ? 1 : 0);
+		_exit(msg_is_spam(fp));
 	} else {
 		gint running = 0;
 
@@ -218,8 +227,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			ret = waitpid(pid, &status, WNOHANG);
 			if (ret == pid) {
 				if (WIFEXITED(status)) {
+					MsgStatus result = MSG_IS_HAM;
 					running &= ~CHILD_RUNNING;
-    					is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
+					result = WEXITSTATUS(status);
+    					is_spam = (result == MSG_IS_SPAM) ? TRUE : FALSE;
+					error = (result == MSG_FILTERING_ERROR);
 				}
 			} if (ret < 0) {
 				running &= ~CHILD_RUNNING;
@@ -257,6 +269,17 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		debug_print("message is ham\n");
 		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 	}
+	
+	if (error) {
+		if (!warned_error) {
+			alertpanel_error(_("The Spamassassin plugin couldn't filter "
+					   "a message. The probable error cause is "
+					   "an unreachable spamd daemon. Please make "
+					   "sure spamd is running and accessible."));
+		}
+		warned_error = TRUE;
+	}
+	
 	return FALSE;
 }
 

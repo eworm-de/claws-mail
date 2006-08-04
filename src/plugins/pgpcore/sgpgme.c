@@ -332,10 +332,8 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	tmp_file = get_tmp_file();
 	copy_file_part(fp, mimeinfo->offset, mimeinfo->length, tmp_file);
 	fclose(fp);
-	fp = g_fopen(tmp_file, "rb");
+	fp = NULL;
 	debug_print("tmp file %s\n", tmp_file);
-	if (!fp) 
-		return NULL;
 	
 	err = gpgme_data_new_from_file(&data, tmp_file, 1);
 	g_unlink(tmp_file);

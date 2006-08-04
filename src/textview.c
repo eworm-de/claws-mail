@@ -2398,7 +2398,10 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	bevent = (GdkEventButton *) event;
 	
 	/* doubleclick: open compose / add address / browser */
-	if ((event->type == (qlink ? GDK_2BUTTON_PRESS:GDK_BUTTON_PRESS) && bevent->button == 1) ||
+	if (qlink && event->type == GDK_BUTTON_PRESS && bevent->button != 1) {
+		/* pass rightclick through */
+		return FALSE;
+	} else if ((event->type == (qlink ? GDK_2BUTTON_PRESS:GDK_BUTTON_PRESS) && bevent->button == 1) ||
 		bevent->button == 2 || bevent->button == 3) {
 		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "sc://", 5)) {
 			MimeView *mimeview = 
@@ -2417,7 +2420,6 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		} else if (qlink && bevent->button == 1) {
 			textview_toggle_quote(textview, uri, FALSE);
 			return TRUE;
-				
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
 				g_object_set_data(

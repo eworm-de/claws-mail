@@ -2277,6 +2277,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", FALSE);
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 2", FALSE);
+	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 3", FALSE);
 	if (prefs_common.hide_quotes == 1)
 		SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", TRUE);
 	if (prefs_common.hide_quotes == 2)
@@ -3281,8 +3284,7 @@ static void hide_quotes_cb(MainWindow *mainwin, guint action,
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), prefs_common.hide_quotes > 0);
 	mainwin->menu_lock_count--;
 
-	summary_display_msg_selected(mainwin->summaryview,
-			mainwin->summaryview->messageview->all_headers);
+	summary_redisplay_msg(mainwin->summaryview);
 }
 
 #undef SET_CHECK_MENU_ACTIVE

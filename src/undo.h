@@ -79,4 +79,6 @@ void undo_block			(UndoMain 		*undostruct);
 void undo_unblock		(UndoMain 		*undostruct);
 void undo_wrapping		(UndoMain		*undostruct, 
 				 gboolean 		 wrap);
+void undo_paste_clipboard	(GtkTextView 		*textview, 
+				 UndoMain 		*undostruct);
 #endif /* __UNDO_H__ */

@@ -7934,16 +7934,18 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 		GtkTextMark *mark_start = gtk_text_buffer_get_insert(buffer);
 		GtkTextIter start_iter, end_iter;
 		gint start, end;
-		
 		gchar *contents = gtk_clipboard_wait_for_text(gtk_clipboard_get(clip));
 
 		if (contents == NULL)
 			return;
 
+		undo_paste_clipboard(compose->text, compose->undostruct);
+
 		/* we shouldn't delete the selection when middle-click-pasting, or we
 		 * can't mid-click-paste our own selection */
-		if (clip != GDK_SELECTION_PRIMARY)
+		if (clip != GDK_SELECTION_PRIMARY) {
 			gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
+		}
 		
 		if (insert_place == NULL) {
 			/* if insert_place isn't specified, insert at the cursor.
@@ -7971,7 +7973,6 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 			gtk_text_iter_backward_char(&start_iter);
 			compose_beautify_paragraph(compose, &start_iter, TRUE);
 		}
-		
 	} else if (GTK_IS_EDITABLE(entry))
 		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
 	

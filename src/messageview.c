@@ -120,7 +120,7 @@ static void view_source_cb		(gpointer	 data,
 static void show_all_header_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void hide_quotes_cb		(gpointer	 data,
+static void msg_hide_quotes_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -278,9 +278,9 @@ static GtkItemFactoryEntry msgview_entries[] =
 	{N_("/_View/Mess_age source"),	"<control>U", view_source_cb, 0, NULL},
 	{N_("/_View/Show all _headers"),"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/_View/Quotes"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Quotes/_Fold all"),		"<control><shift>Q", hide_quotes_cb, 1, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _2"),NULL, hide_quotes_cb, 2, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _3"),NULL, hide_quotes_cb, 3, "<ToggleItem>"},
+	{N_("/_View/Quotes/_Fold all"),		"<control><shift>Q", msg_hide_quotes_cb, 1, "<ToggleItem>"},
+	{N_("/_View/Quotes/Fold from level _2"),NULL, msg_hide_quotes_cb, 2, "<ToggleItem>"},
+	{N_("/_View/Quotes/Fold from level _3"),NULL, msg_hide_quotes_cb, 3, "<ToggleItem>"},
 
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/Compose _new message"),
@@ -816,9 +816,15 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	
 	if (messageview->msginfo != msginfo) {
 		procmsg_msginfo_free(messageview->msginfo);
+		messageview->msginfo = NULL;
+		messageview_set_menu_sensitive(messageview);
 		messageview->msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!messageview->msginfo)
 			messageview->msginfo = procmsg_msginfo_copy(msginfo);
+	} else {
+		messageview->msginfo = NULL;
+		messageview_set_menu_sensitive(messageview);
+		messageview->msginfo = msginfo;
 	}
 	headerview_show(messageview->headerview, messageview->msginfo);
 
@@ -1525,7 +1531,7 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
 }
 
-static void hide_quotes_cb(gpointer data, guint action, GtkWidget *widget)
+static void msg_hide_quotes_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo = messageview->msginfo;
@@ -1549,7 +1555,10 @@ static void hide_quotes_cb(gpointer data, guint action, GtkWidget *widget)
 	messageview_show(messageview, msginfo,
 			 messageview->all_headers);
 	procmsg_msginfo_free(msginfo);
+	
+	/* update main window */
 	main_window_set_menu_sensitive(messageview->mainwin);
+	summary_redisplay_msg(messageview->mainwin->summaryview);
 }
 #undef SET_CHECK_MENU_ACTIVE
 
@@ -1654,7 +1663,7 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 void messageview_set_menu_sensitive(MessageView *messageview)
 {
 	GtkItemFactory *ifactory;
-	GtkWidget *menuitem;
+	GtkWidget *menuitem = NULL;
 
 	if (!messageview || !messageview->new_window) 
 		return;
@@ -1667,20 +1676,21 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem),
 			 messageview->mimeview->textview->show_all_headers);
-		if (prefs_common.hide_quotes) {
-			if (prefs_common.hide_quotes == 1)
-				menuitem = gtk_item_factory_get_widget(ifactory, 
-						"/View/Quotes/Fold all");
-			if (prefs_common.hide_quotes == 2)
-				menuitem = gtk_item_factory_get_widget(ifactory, 
-						"/View/Quotes/Fold from level 2");
-			if (prefs_common.hide_quotes == 3)
-				menuitem = gtk_item_factory_get_widget(ifactory, 
-						"/View/Quotes/Fold from level 3");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem),
-				 TRUE);
-		}
+	}
+	if (prefs_common.hide_quotes) {
+		menuitem = NULL;
+		if (prefs_common.hide_quotes == 1)
+			menuitem = gtk_item_factory_get_widget(ifactory, 
+					"/View/Quotes/Fold all");
+		if (prefs_common.hide_quotes == 2)
+			menuitem = gtk_item_factory_get_widget(ifactory, 
+					"/View/Quotes/Fold from level 2");
+		if (prefs_common.hide_quotes == 3)
+			menuitem = gtk_item_factory_get_widget(ifactory, 
+					"/View/Quotes/Fold from level 3");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem),
+			 TRUE);
 	}
 }
 
