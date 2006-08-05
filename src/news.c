@@ -919,6 +919,26 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, g
 		} \
 	}
 
+static void news_set_msg_flags(FolderItem *item, MsgInfo *msginfo)
+{
+	msginfo->flags.tmp_flags = 0;
+	if (item->folder->account->mark_crosspost_read) {
+		if (item->folder->newsart && msginfo->msgid &&
+		    g_hash_table_lookup(item->folder->newsart, msginfo->msgid) != NULL) {
+			msginfo->flags.perm_flags = MSG_COLORLABEL_TO_FLAGS(item->folder->account->crosspost_col);
+				
+		} else {
+			if (!item->folder->newsart) 
+				item->folder->newsart = g_hash_table_new(g_str_hash, g_str_equal);
+			g_hash_table_insert(item->folder->newsart,
+					g_strdup(msginfo->msgid), GINT_TO_POINTER(1));
+			msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
+		}
+	} else {
+		msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	}
+}
+
 MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	NNTPSession *session;
@@ -967,8 +987,9 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	}
 
 	msginfo->folder = item;
-	msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
-	msginfo->flags.tmp_flags = MSG_NEWS;
+	
+	news_set_msg_flags(item, msginfo);
+	msginfo->flags.tmp_flags |= MSG_NEWS;
 	msginfo->newsgroups = g_strdup(item->path);
 
 	ok = nntp_xhdr(session, "to", num, num);
@@ -1063,8 +1084,8 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 
 		msginfo->folder = item;
-		msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
-		msginfo->flags.tmp_flags = MSG_NEWS;
+		news_set_msg_flags(item, msginfo);
+		msginfo->flags.tmp_flags |= MSG_NEWS;
 		msginfo->newsgroups = g_strdup(item->path);
 
 		if (!newlist)

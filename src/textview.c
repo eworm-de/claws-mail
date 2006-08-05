@@ -1303,7 +1303,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
 	gchar *fg_color;
-	gint quotelevel = -1;
+	gint quotelevel = -1, real_quotelevel = -1;
 	gchar quote_tag_str[10];
 
 	text = GTK_TEXT_VIEW(textview->text);
@@ -1324,8 +1324,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	   level is colored using a different color. */
 	if (prefs_common.enable_color 
 	    && line_has_quote_char(buf, prefs_common.quote_chars)) {
-		quotelevel = get_quote_level(buf, prefs_common.quote_chars);
-
+		real_quotelevel = get_quote_level(buf, prefs_common.quote_chars);
+		quotelevel = real_quotelevel;
 		/* set up the correct foreground color */
 		if (quotelevel > 2) {
 			/* recycle colors */
@@ -1349,8 +1349,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	if (quotelevel > -1) {
-		if ( previousquotelevel != quotelevel ) {
+	if (real_quotelevel > -1) {
+		if ( previousquotelevel != real_quotelevel ) {
 			ClickableText *uri;
 			uri = g_new0(ClickableText, 1);
 			uri->uri = g_strdup("");
@@ -1363,12 +1363,12 @@ static void textview_write_line(TextView *textview, const gchar *str,
 			uri->filename = NULL;
 			uri->fg_color = g_strdup(fg_color);
 			uri->is_quote = TRUE;
-			uri->quote_level = quotelevel;
+			uri->quote_level = real_quotelevel;
 			textview->uri_list =
 				g_slist_append(textview->uri_list, uri);
 			gtk_text_buffer_insert(buffer, &iter, "  \n", -1);
 		
-			previousquotelevel = quotelevel;
+			previousquotelevel = real_quotelevel;
 		} else {
 			GSList *last = g_slist_last(textview->uri_list);
 			ClickableText *lasturi = (ClickableText *)last->data;

@@ -1,3 +1,13 @@
+2006-08-05 [colin]	2.4.0cvs28
+
+	* src/news.c
+	* src/summaryview.c
+		Fix bug #995 ("Mark cross-posted as read" doesn't work)
+		by reimplementing it
+	* src/textview.c
+		Fix bug when hiding quotes with level > 3 and quote
+		colors are recycled
+
 2006-08-04 [colin]	2.4.0cvs27
 
 	* src/compose.c

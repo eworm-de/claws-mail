@@ -394,8 +394,6 @@ static gint summary_cmp_by_locked	(GtkCList 		*clist,
 				         gconstpointer 		 ptr1, 
 					 gconstpointer 		 ptr2);
 
-static void news_flag_crosspost		(MsgInfo *msginfo);
-
 static void quicksearch_execute_cb	(QuickSearch    *quicksearch,
 					 gpointer	 data);
 static void tog_searchbar_cb		(GtkWidget	*w,
@@ -1726,7 +1724,7 @@ void summary_select_last_read(SummaryView *summaryview)
 
 void summary_select_parent(SummaryView *summaryview)
 {
-	GtkCTreeNode *node;
+	GtkCTreeNode *node = NULL;
 
 	if (summaryview->selected)
 		node = GTK_CTREE_ROW(summaryview->selected)->parent;
@@ -2023,10 +2021,6 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
-
- 	if (msginfo && msginfo->folder && msginfo->folder->folder &&
-	    msginfo->folder->folder->klass->type == F_NEWS)
- 		news_flag_crosspost(msginfo);
 
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
@@ -4486,7 +4480,6 @@ gboolean summary_filter_get_mode(void)
 	GtkWidget *account_rules_skip;
 	GtkWidget *account_rules_force;
 	GtkWidget *account_rules_user_current;
-	GSList *group;
 	AlertValue val;
 
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -5810,38 +5803,6 @@ static gint summary_cmp_by_score(GtkCList *clist,
 		return diff;
 	else
 		return summary_cmp_by_date(clist, ptr1, ptr2);
-}
-
-static void news_flag_crosspost(MsgInfo *msginfo)
-{
-	GString *line;
-	gpointer key;
-	gpointer value;
-	Folder *mff;
-
-	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(msginfo->folder != NULL);
-	g_return_if_fail(msginfo->folder->folder != NULL);
-	mff = msginfo->folder->folder;
-	g_return_if_fail(mff->klass->type == F_NEWS);
-
-	if (mff->account->mark_crosspost_read) {
-		line = g_string_sized_new(128);
-		g_string_printf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
-		debug_print("nfcp: checking <%s>", line->str);
-		if (mff->newsart && 
-		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {
-			debug_print(" <%s>", (gchar *)value);
-			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-				summary_msginfo_change_flags(msginfo, 
-					mff->account->crosspost_col, 0, MSG_NEW | MSG_UNREAD, 0);
-			}
-			g_hash_table_remove(mff->newsart, key);
-			g_free(key);
-		}
-		g_string_free(line, TRUE);
-		debug_print("\n");
-	}
 }
 
 static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
