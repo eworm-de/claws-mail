@@ -1,3 +1,8 @@
+2006-08-05 [colin]	2.4.0cvs29
+
+	* src/news.c
+		Just make sure we have a msgid.
+
 2006-08-05 [colin]	2.4.0cvs28
 
 	* src/news.c

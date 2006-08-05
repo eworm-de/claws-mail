@@ -922,8 +922,8 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, g
 static void news_set_msg_flags(FolderItem *item, MsgInfo *msginfo)
 {
 	msginfo->flags.tmp_flags = 0;
-	if (item->folder->account->mark_crosspost_read) {
-		if (item->folder->newsart && msginfo->msgid &&
+	if (item->folder->account->mark_crosspost_read && msginfo->msgid) {
+		if (item->folder->newsart &&
 		    g_hash_table_lookup(item->folder->newsart, msginfo->msgid) != NULL) {
 			msginfo->flags.perm_flags = MSG_COLORLABEL_TO_FLAGS(item->folder->account->crosspost_col);
 				
