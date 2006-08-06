@@ -948,7 +948,14 @@ gboolean clean_quit(gpointer data)
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
+	static gboolean exiting = FALSE;
 	
+	if (exiting == TRUE) {
+		debug_print("exit pending\n");
+		return;
+	}
+	exiting = TRUE;
+	debug_print("exiting\n");
 	if (compose_get_compose_list()) {
 		gint val = alertpanel(_("Really quit?"),
 			       _("Composing message exists."),

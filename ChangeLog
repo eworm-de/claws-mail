@@ -1,3 +1,10 @@
+2006-08-06 [colin]	2.4.0cvs30
+
+	* src/main.c
+		Fix bug #979 (Plugin crashes when exiting 
+		sylpheed-claws) : handle exit request only 
+		once
+
 2006-08-05 [colin]	2.4.0cvs29
 
 	* src/news.c
