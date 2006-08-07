@@ -1,3 +1,10 @@
+2006-08-07 [colin]	2.4.0cvs32
+
+	* src/gtk/gtkaspell.c
+		Fix bug #973 (Unicode punctation characters 
+		are not recognized as separators by the
+		spell checker); fix unsigned stuff
+
 2006-08-07 [colin]	2.4.0cvs31
 
 	* src/compose.c

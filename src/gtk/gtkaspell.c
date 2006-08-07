@@ -186,7 +186,7 @@ static gboolean check_at			(GtkAspell	*gtkaspell,
 static gboolean	check_next_prev			(GtkAspell	*gtkaspell, 
 						 gboolean	 forward);
 static GList* misspelled_suggest	 	(GtkAspell	*gtkaspell, 
-						 guchar		*word);
+						 gchar		*word);
 static void add_word_to_session_cb		(GtkWidget	*w, 
 						 gpointer	 data);
 static void add_word_to_personal_cb		(GtkWidget	*w, 
@@ -226,8 +226,8 @@ static void switch_to_alternate_cb		(GtkWidget	*w,
 /* Misc. helper functions */
 static void	 	set_point_continue		(GtkAspell *gtkaspell);
 static void 		continue_check			(gpointer *gtkaspell);
-static gboolean 	iswordsep			(unsigned char c);
-static guchar 		get_text_index_whar		(GtkAspell *gtkaspell, 
+static gboolean 	iswordsep			(gunichar c);
+static gunichar		get_text_index_whar		(GtkAspell *gtkaspell, 
 							 int pos);
 static gboolean 	get_word_from_pos		(GtkAspell *gtkaspell, 
 							 gint pos, 
@@ -242,7 +242,7 @@ static void 		change_color			(GtkAspell *gtkaspell,
 							 gint end, 
 							 gchar *newtext,
 							 GdkColor *color);
-static guchar*		convert_to_aspell_encoding 	(const guchar *encoding);
+static gchar*		convert_to_aspell_encoding 	(const gchar *encoding);
 static gint 		compare_dict			(Dictionary *a, 
 							 Dictionary *b);
 static void 		dictionary_delete		(Dictionary *dict);
@@ -497,7 +497,7 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 
 	pos = gtk_text_iter_get_offset(iter);
 	
-	if (iswordsep(newtext[0])) {
+	if (iswordsep(g_utf8_get_char(newtext))) {
 		/* did we just end a word? */
 		if (pos >= 2)
 			check_at(gtkaspell, pos - 2);
@@ -787,7 +787,7 @@ guchar *gtkaspell_get_dict(GtkAspell *gtkaspell)
 	g_return_val_if_fail(gtkaspell->gtkaspeller->config,     NULL);
 	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
  	
-	return g_strdup(gtkaspell->gtkaspeller->dictionary->dictname);
+	return (guchar *)g_strdup(gtkaspell->gtkaspeller->dictionary->dictname);
 }
   
 guchar *gtkaspell_get_path(GtkAspell *gtkaspell)
@@ -799,7 +799,7 @@ guchar *gtkaspell_get_path(GtkAspell *gtkaspell)
 	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
 
 	dict = gtkaspell->gtkaspeller->dictionary;
-	path = g_strndup(dict->fullname, dict->dictname - dict->fullname);
+	path = (guchar *)g_strndup(dict->fullname, dict->dictname - dict->fullname);
 
 	return path;
 }
@@ -878,7 +878,7 @@ gboolean gtkaspell_set_sug_mode(GtkAspell *gtkaspell, gint themode)
 }
 
 /* misspelled_suggest() - Create a suggestion list for  word  */
-static GList *misspelled_suggest(GtkAspell *gtkaspell, guchar *word) 
+static GList *misspelled_suggest(GtkAspell *gtkaspell, gchar *word) 
 {
 	const guchar          *newword;
 	GList                 *list = NULL;
@@ -896,8 +896,8 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, guchar *word)
 		elements    = aspell_word_list_elements(suggestions);
 		list        = g_list_append(list, g_strdup(word)); 
 		
-		while ((newword = aspell_string_enumeration_next(elements)) != NULL)
-			list = g_list_append(list, g_strdup(newword));
+		while ((newword = (guchar *)aspell_string_enumeration_next(elements)) != NULL)
+			list = g_list_append(list, g_strdup((gchar *)newword));
 
 		gtkaspell->max_sug          = g_list_length(list) - 1;
 		gtkaspell->suggestions_list = list;
@@ -913,35 +913,35 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, guchar *word)
 /* misspelled_test() - Just test if word is correctly spelled */  
 static int misspelled_test(GtkAspell *gtkaspell, unsigned char *word) 
 {
-	return aspell_speller_check(gtkaspell->gtkaspeller->checker, word, -1)
+	return aspell_speller_check(gtkaspell->gtkaspeller->checker, (char *)word, -1)
 				    ? 0 : 1;
 }
 
 
-static gboolean iswordsep(unsigned char c) 
+static gboolean iswordsep(gunichar c) 
 {
-	return (isspace(c) || ispunct(c)) && c != '\'';
+	return (g_unichar_isspace(c) || g_unichar_ispunct(c)) && c != (gunichar)'\'';
 }
 
-static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos) 
+static gunichar get_text_index_whar(GtkAspell *gtkaspell, int pos) 
 {
 	GtkTextView *view = gtkaspell->gtktext;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
 	GtkTextIter start, end;
 	gchar *utf8chars;
-	guchar a = '\0';
+	gunichar a = '\0';
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &start, pos);
 	gtk_text_buffer_get_iter_at_offset(buffer, &end, pos+1);
 
 	utf8chars = gtk_text_iter_get_text(&start, &end);
 	if (is_ascii_str(utf8chars)) {
-		a = utf8chars ? utf8chars[0] : '\0' ;
+		a = utf8chars ? (gunichar)utf8chars[0] : '\0' ;
 	} else {
 		gchar *tr = conv_iconv_strdup(utf8chars, CS_UTF_8, 
 				gtkaspell->gtkaspeller->dictionary->encoding);
 		if (tr) {
-			a = tr[0];
+			a = g_utf8_get_char(tr);
 			g_free(tr);
 		}
 	}
@@ -965,7 +965,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 	gint start;
 	gint end;
 		  
-	guchar c;
+	gunichar c;
 	GtkTextView *gtktext;
 	
 	gtktext = gtkaspell->gtktext;
@@ -979,13 +979,13 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 	 
 	for (start = pos; start >= 0; --start) {
 		c = get_text_index_whar(gtkaspell, start);
-		if (c == '\'') {
+		if (c == (gunichar)'\'') {
 			if (start > 0) {
-				if (isspace(get_text_index_whar(gtkaspell,
+				if (g_unichar_isspace(get_text_index_whar(gtkaspell,
 								 start - 1))
-				||  ispunct(get_text_index_whar(gtkaspell,
+				||  g_unichar_ispunct(get_text_index_whar(gtkaspell,
 								 start - 1))
-				||  isdigit(get_text_index_whar(gtkaspell,
+				||  g_unichar_isdigit(get_text_index_whar(gtkaspell,
 								 start - 1))) {
 					/* start_quote = TRUE; */
 					break;
@@ -996,7 +996,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 				break;
 			}
 		}
-		else if (isspace(c) || ispunct(c) || isdigit(c))
+		else if (g_unichar_isspace(c) || g_unichar_ispunct(c) || g_unichar_isdigit(c))
 				break;
 	}
 
@@ -1004,13 +1004,13 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 
 	for (end = pos; end < get_textview_buffer_charcount(gtktext); end++) {
 		c = get_text_index_whar(gtkaspell, end); 
-		if (c == '\'') {
+		if (c == (gunichar)'\'') {
 			if (end < get_textview_buffer_charcount(gtktext)) {
-				if (isspace(get_text_index_whar(gtkaspell,
+				if (g_unichar_isspace(get_text_index_whar(gtkaspell,
 								 end + 1))
-				||  ispunct(get_text_index_whar(gtkaspell,
+				||  g_unichar_ispunct(get_text_index_whar(gtkaspell,
 								 end + 1))
-				||  isdigit(get_text_index_whar(gtkaspell,
+				||  g_unichar_isdigit(get_text_index_whar(gtkaspell,
 								 end + 1))) {
 					/* end_quote = TRUE; */
 					break;
@@ -1021,7 +1021,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 				break;
 			}
 		}
-		else if (isspace(c) || ispunct(c) || isdigit(c))
+		else if (g_unichar_isspace(c) || g_unichar_ispunct(c) || g_unichar_isdigit(c))
 				break;
 	}
 						
@@ -1041,7 +1041,7 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 			conv = conv_iconv_strdup(tmp, CS_UTF_8, 
 				gtkaspell->gtkaspeller->dictionary->encoding);
 			g_free(tmp);
-			strncpy(buf, conv, buflen-1);
+			strncpy((char *)buf, conv, buflen-1);
 			buf[buflen-1]='\0';
 			g_free(conv);
 		} else
@@ -1066,17 +1066,17 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 		return FALSE;
 
 	if (misspelled_test(gtkaspell, buf)
-	&& strcasecmp(buf, "sylpheed") && strcasecmp(buf, "sylpheed-claws")) {
-		strncpy(gtkaspell->theword, buf, GTKASPELLWORDSIZE - 1);
+	&& strcasecmp((char *)buf, "sylpheed") && strcasecmp((char *)buf, "sylpheed-claws")) {
+		strncpy(gtkaspell->theword, (gchar *)buf, GTKASPELLWORDSIZE - 1);
 		gtkaspell->theword[GTKASPELLWORDSIZE - 1] = 0;
 		gtkaspell->start_pos  = start;
 		gtkaspell->end_pos    = end;
 		free_suggestions_list(gtkaspell);
 
-		change_color(gtkaspell, start, end, buf, &(gtkaspell->highlight));
+		change_color(gtkaspell, start, end, (gchar *)buf, &(gtkaspell->highlight));
 		return TRUE;
 	} else {
-		change_color(gtkaspell, start, end, buf, NULL);
+		change_color(gtkaspell, start, end, (gchar *)buf, NULL);
 		return FALSE;
 	}
 }
@@ -1254,18 +1254,18 @@ static void replace_with_supplied_word_cb(GtkWidget *w, GtkAspell *gtkaspell)
 	unsigned char *newword;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 
-	newword = gtk_editable_get_chars(GTK_EDITABLE(gtkaspell->replace_entry),
+	newword = (unsigned char *)gtk_editable_get_chars(GTK_EDITABLE(gtkaspell->replace_entry),
 					 0, -1);
 
-	if (strcmp(newword, gtkaspell->theword)) {
-		replace_real_word(gtkaspell, newword);
+	if (strcmp((char *)newword, gtkaspell->theword)) {
+		replace_real_word(gtkaspell, (char *)newword);
 
 		if ((e->type == GDK_KEY_PRESS &&
 		    ((GdkEventKey *) e)->state & GDK_CONTROL_MASK)) {
 			aspell_speller_store_replacement(
 					gtkaspell->gtkaspeller->checker,
 					 gtkaspell->theword, -1,
-					 newword, -1);
+					 (char *)newword, -1);
 		}
 		gtkaspell->replace_entry = NULL;
 	}
@@ -1287,9 +1287,9 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 
 	newword = (unsigned char *) gtk_label_get_text(GTK_LABEL(GTK_BIN(w)->child));
-	newword = g_strdup(newword);
+	newword = (unsigned char *)g_strdup((char *)newword);
 
-	replace_real_word(gtkaspell, newword);
+	replace_real_word(gtkaspell, (char *)newword);
 
 	if ((e->type == GDK_KEY_PRESS && 
 	    ((GdkEventKey *) e)->state & GDK_CONTROL_MASK) ||
@@ -1298,7 +1298,7 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 		aspell_speller_store_replacement(
 				gtkaspell->gtkaspeller->checker,
 						 gtkaspell->theword, -1, 
-						 newword, -1);
+						(char *)newword, -1);
 	}
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
@@ -1894,7 +1894,7 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 static GSList *make_sug_menu(GtkAspell *gtkaspell) 
 {
 	GtkWidget 	*item;
-	unsigned char	*caption;
+	char	*caption;
 	GtkTextView 	*gtktext;
 	GtkAccelGroup 	*accel;
 	GList 		*l = gtkaspell->suggestions_list;
@@ -1910,7 +1910,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 		gtkaspell->accel_group = NULL;
 	}
 
-	utf8buf  = conv_codeset_strdup((unsigned char*)l->data,
+	utf8buf  = conv_codeset_strdup((char*)l->data,
 				conv_get_locale_charset_str(),
 				CS_UTF_8);
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
@@ -2005,7 +2005,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 							  curmenu);
 			}
 
-			utf8buf  = conv_codeset_strdup((unsigned char*)l->data,
+			utf8buf  = conv_codeset_strdup((char*)l->data,
 							conv_get_locale_charset_str(),
 							CS_UTF_8);
 			item = gtk_menu_item_new_with_label(utf8buf);
@@ -2384,9 +2384,9 @@ static void change_color(GtkAspell * gtkaspell,
  * as needed by aspell. Returns an allocated string.
  */
 
-static guchar *convert_to_aspell_encoding (const guchar *encoding)
+static gchar *convert_to_aspell_encoding (const gchar *encoding)
 {
-	guchar * aspell_encoding;
+	gchar * aspell_encoding;
 
 	if (strstr2(encoding, "ISO-8859-")) {
 		aspell_encoding = g_strdup_printf("iso8859%s", encoding+8);
