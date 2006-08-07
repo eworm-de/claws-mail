@@ -765,8 +765,8 @@ static GtkItemFactoryEntry compose_entries[] =
 static GtkTargetEntry compose_mime_types[] =
 {
 	{"text/uri-list", 0, 0},
-	{"text/plain", 0, 0},
-	{"STRING", 0, 0}
+	{"UTF8_STRING", 0, 0},
+	{"text/plain", 0, 0}
 };
 
 static gboolean compose_put_existing_to_front(MsgInfo *info)
@@ -2083,7 +2083,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *subject = NULL;
 	gchar *body = NULL;
 	gchar *temp = NULL;
-	gint  len = 0;
+	guint  len = 0;
 
 	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body);
 
@@ -2579,7 +2579,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2;
-		guchar *p;
+		gchar *p;
 
 		buf = p = g_strdup(msginfo->subject);
 		p += subject_get_prefix_length(p);
@@ -7939,7 +7939,7 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 		if (contents == NULL)
 			return;
 
-		undo_paste_clipboard(compose->text, compose->undostruct);
+		undo_paste_clipboard(GTK_TEXT_VIEW(compose->text), compose->undostruct);
 
 		/* we shouldn't delete the selection when middle-click-pasting, or we
 		 * can't mid-click-paste our own selection */

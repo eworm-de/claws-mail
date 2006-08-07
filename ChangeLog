@@ -1,3 +1,9 @@
+2006-08-07 [colin]	2.4.0cvs31
+
+	* src/compose.c
+		Fix bug #956 (DnD text with accents in compose 
+		text entry); fix gccc's signed/unsigned fuss
+
 2006-08-06 [colin]	2.4.0cvs30
 
 	* src/main.c

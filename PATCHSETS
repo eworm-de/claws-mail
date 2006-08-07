@@ -1722,3 +1722,4 @@
 ( cvs diff -u -r 1.101.2.28 -r 1.101.2.29 src/news.c;  cvs diff -u -r 1.395.2.227 -r 1.395.2.228 src/summaryview.c;  cvs diff -u -r 1.96.2.135 -r 1.96.2.136 src/textview.c;  ) > 2.4.0cvs28.patchset
 ( cvs diff -u -r 1.101.2.29 -r 1.101.2.30 src/news.c;  ) > 2.4.0cvs29.patchset
 ( cvs diff -u -r 1.115.2.98 -r 1.115.2.99 src/main.c;  ) > 2.4.0cvs30.patchset
+( cvs diff -u -r 1.382.2.297 -r 1.382.2.298 src/compose.c;  ) > 2.4.0cvs31.patchset
