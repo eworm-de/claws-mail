@@ -75,7 +75,7 @@ static gint gtk_vscrollbutton_button_release	(GtkWidget 	  *widget,
 					     	 GdkEventButton   *event,
 					     	 GtkVScrollbutton *scrollbutton);
 
-static gint gtk_vscrollbutton_scroll		(GtkVScrollbutton *scrollbutton);
+gint gtk_vscrollbutton_scroll		(GtkVScrollbutton *scrollbutton);
 
 static gboolean gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton);
 
@@ -240,7 +240,7 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
     return TRUE;
 }
 
-static gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
+gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 {
     gfloat new_value;
     gint return_val;

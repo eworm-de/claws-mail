@@ -113,6 +113,9 @@ static void mimeview_drag_data_get      (GtkWidget	  *widget,
 					 guint		   time,
 					 MimeView	  *mimeview);
 
+static gboolean mimeview_scrolled	(GtkWidget	*widget,
+					 GdkEventScroll	*event,
+					 MimeView	*mimeview);
 static void mimeview_display_as_text	(MimeView	*mimeview);
 static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_save_all		(MimeView	*mimeview);
@@ -246,6 +249,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	scrollbutton = gtk_vscrollbutton_new(gtk_layout_get_vadjustment(GTK_LAYOUT(icon_scroll)));
 	gtk_widget_show(scrollbutton);
 
+	g_signal_connect(G_OBJECT(icon_scroll), "scroll_event",
+			 G_CALLBACK(mimeview_scrolled), mimeview);
+
     	mime_toggle = gtk_toggle_button_new();
 	gtk_widget_show(mime_toggle);
 	arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
@@ -311,7 +317,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->oldsize       = 60;
 	mimeview->mime_toggle   = mime_toggle;
 	mimeview->siginfoview	= siginfoview;
-
+	mimeview->scrollbutton  = scrollbutton;
 	mimeview->target_list	= gtk_target_list_new(mimeview_mime_types, 1); 
 	
 	mimeviews = g_slist_prepend(mimeviews, mimeview);
@@ -1106,6 +1112,19 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	part_button_pressed(mimeview, event, mimeview_get_selected_part(mimeview));
 
 	return FALSE;
+}
+
+static gboolean mimeview_scrolled(GtkWidget *widget, GdkEventScroll *event,
+				    MimeView *mimeview)
+{
+	GtkVScrollbutton *scrollbutton = (GtkVScrollbutton *)mimeview->scrollbutton;
+	if (event->direction == GDK_SCROLL_UP) {
+		scrollbutton->scroll_type = GTK_SCROLL_STEP_BACKWARD;
+	} else {
+		scrollbutton->scroll_type = GTK_SCROLL_STEP_FORWARD;
+	}
+	gtk_vscrollbutton_scroll(scrollbutton);
+	return TRUE;
 }
 
 /* from gdkevents.c */
@@ -2114,7 +2133,7 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
 			    GTK_LAYOUT(mimeview->icon_scroll)->width, 
 			    MAX(vbox_size->height, layout_size->height));
-	adj->step_increment = 5;
+	adj->step_increment = 10;
 }
 
 static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)

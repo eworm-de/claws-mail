@@ -68,7 +68,7 @@ struct _MimeView
 	GtkWidget *icon_vbox;
 	GtkWidget *icon_mainbox;
 	GtkWidget *mime_toggle;
-
+	GtkWidget *scrollbutton;
 	MimeViewType type;
 
 	GtkWidget *popupmenu;

@@ -1,3 +1,14 @@
+2006-08-08 [colin]	2.4.0cvs33
+
+	* src/procmime.c
+		Fix bug #998 (last attachment is not accessible)
+		Bad RFC interpretation on multipart close-delimiters
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/gtkvscrollbutton.h
+		Make attachments list wheel-scrollable
+
 2006-08-07 [colin]	2.4.0cvs32
 
 	* src/gtk/gtkaspell.c

@@ -1385,7 +1385,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	while ((p = fgets(buf, sizeof(buf), fp)) != NULL && result == 0) {
-		if (ftell(fp) > (mimeinfo->offset + mimeinfo->length))
+		if (ftell(fp) - 1 > (mimeinfo->offset + mimeinfo->length))
 			break;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
