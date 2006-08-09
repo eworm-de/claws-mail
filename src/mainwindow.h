@@ -49,7 +49,8 @@ typedef enum
 	M_HIDE_READ_MSG	      = 1 << 13,
 	M_DELAY_EXEC	      = 1 << 14,
 	M_NOT_NEWS	      = 1 << 15,
-	M_CAN_LEARN_SPAM      = 1 << 16
+	M_CAN_LEARN_SPAM      = 1 << 16,
+	M_ACTIONS_EXIST       = 1 << 17
 } SensitiveCond;
 
 typedef enum

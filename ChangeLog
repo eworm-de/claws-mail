@@ -1,3 +1,10 @@
+2006-08-09 [colin]	2.4.0cvs38
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Fix Tools/Actions sensitivity when there are
+		no actions
+
 2006-08-09 [colin]	2.4.0cvs37
 
 	* src/prefs_filtering.c

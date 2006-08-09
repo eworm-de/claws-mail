@@ -2073,6 +2073,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_NEWS;
 	else
 		state |= M_NOT_NEWS;
+	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
+		state |= M_ACTIONS_EXIST;
+
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (item &&
 	     (folder_has_parent_of_type(item, F_DRAFT) ||
@@ -2180,7 +2183,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                      , M_TARGET_EXIST},
+		{"/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
