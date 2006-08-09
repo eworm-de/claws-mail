@@ -1696,7 +1696,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	} else if (MIMETYPE_AUDIO == partinfo->type) {
 		cmd = prefs_common.mime_audio_player;
 		def_cmd = default_audio_cmdline;
-	} else if (MIMETYPE_TEXT == partinfo->type && !strcmp(partinfo->subtype, "html")) {
+	} else if (MIMETYPE_TEXT == partinfo->type && !strcasecmp(partinfo->subtype, "html")) {
 		cmd = prefs_common.uri_cmd;
 		def_cmd = default_html_cmdline;
 	} else {
@@ -1790,6 +1790,12 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 	if (node)
 		gtk_ctree_select(GTK_CTREE(mimeview->ctree), node);
 }		
+
+void mimeview_select_mimepart_icon(MimeView *mimeview, MimeInfo *partinfo)
+{
+	icon_list_toggle_by_mime_info(mimeview, partinfo);
+	icon_selected(mimeview, -1, partinfo);
+}
 
 #undef  KEY_PRESS_EVENT_STOP
 #define KEY_PRESS_EVENT_STOP() \

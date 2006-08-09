@@ -1,3 +1,13 @@
+2006-08-09 [colin]	2.4.0cvs35
+
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+		Fix lack of part selection when automatically 
+		jumping to a specific part
+	* src/msgcache.c
+		Little optimisation in cache reading
+
 2006-08-09 [colin]	2.4.0cvs34
 
 	* src/compose.c

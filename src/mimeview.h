@@ -153,6 +153,8 @@ void mimeview_handle_cmd		(MimeView 	*mimeview,
 					 const gchar 	*cmd,
 					 GdkEventButton *event,
 					 gpointer	 data);
+void mimeview_select_mimepart_icon	(MimeView 	*mimeview, 
+					 MimeInfo 	*partinfo);
 
 
 #ifdef __cplusplus

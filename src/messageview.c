@@ -868,11 +868,11 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
-	    strcmp(mimeinfo->subtype, "plain"))) {
-	    	if (strcmp(mimeinfo->subtype, "html"))
-			mimeview_show_part(messageview->mimeview,mimeinfo);
+	    strcasecmp(mimeinfo->subtype, "plain"))) {
+	    	if (strcasecmp(mimeinfo->subtype, "html"))
+			mimeview_select_mimepart_icon(messageview->mimeview,mimeinfo);
 		else if (prefs_common.invoke_plugin_on_html)
-			mimeview_show_part(messageview->mimeview,mimeinfo);
+			mimeview_select_mimepart_icon(messageview->mimeview,mimeinfo);
 	}
 
 	g_free(file);

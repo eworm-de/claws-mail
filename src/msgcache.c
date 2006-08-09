@@ -521,7 +521,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 
 			READ_CACHE_DATA(ref, fp, memusage);
 
-			if (ref && strlen(ref))
+			if (ref && *ref)
 				msginfo->references =
 					g_slist_prepend(msginfo->references, ref);
 		}
