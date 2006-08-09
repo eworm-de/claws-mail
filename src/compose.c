@@ -1641,6 +1641,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	gboolean use_signing = FALSE;
 	gboolean use_encryption = FALSE;
 	gchar *privacy_system = NULL;
+	int priority = PRIORITY_NORMAL;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1692,7 +1693,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Priority: ")) {
 			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
-			compose->priority = param;
+			priority = param;
 		}
 	} else {
 		account = msginfo->folder->folder->account;
@@ -1713,7 +1714,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	compose = compose_create(account, COMPOSE_REEDIT, batch);
 	
 	compose->updating = TRUE;
-	
+	compose->priority = priority;
+
 	if (privacy_system != NULL) {
 		compose->privacy_system = privacy_system;
 		compose_use_signing(compose, use_signing);

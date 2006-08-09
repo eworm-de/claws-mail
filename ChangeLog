@@ -1,3 +1,9 @@
+2006-08-09 [colin]	2.4.0cvs34
+
+	* src/compose.c
+		Fix crash setting the priority on reedit
+		(Accessing compose before creating it!)
+
 2006-08-08 [colin]	2.4.0cvs33
 
 	* src/procmime.c
