@@ -238,7 +238,7 @@ static void prefs_filtering_account_option_menu_populate(void)
 
 	accounts = account_get_list();
 
-	g_return_val_if_fail(accounts != NULL, NULL);
+	g_return_if_fail(accounts != NULL);
 
 	COMBOBOX_ADD(filtering.account_combobox_list, Q_("Filtering Account Menu|All"), 0);
 	for (; accounts != NULL; accounts = accounts->next) {

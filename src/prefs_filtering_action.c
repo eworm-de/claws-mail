@@ -461,7 +461,7 @@ static void prefs_filtering_action_create(void)
 #if GTK_CHECK_VERSION(2, 8, 0)
 	exec_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 #else
-	exec_btn = gtk_button_new_with_label (_("Info ..."));
+	exec_btn = gtk_button_new_with_label (_("Info..."));
 #endif
 	gtk_widget_show (exec_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);

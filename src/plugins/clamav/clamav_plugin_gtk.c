@@ -141,7 +141,6 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_tooltips_set_tip(tooltips, save_folder,
 			     _("Folder for storing infected mail. Leave empty to use the default trash folder"),
 			     NULL);
-	SET_TOGGLE_SENSITIVITY (recv_infected, save_folder);
  	SET_TOGGLE_SENSITIVITY (enable_clamav, save_folder);
 
 	save_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
@@ -150,7 +149,6 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_tooltips_set_tip(tooltips, save_folder_select,
 			     _("Click this button to select a folder for storing infected mail"),
 			     NULL);
-	SET_TOGGLE_SENSITIVITY (recv_infected, save_folder_select);
  	SET_TOGGLE_SENSITIVITY (enable_clamav, save_folder_select);
 
 	config = clamav_get_config();

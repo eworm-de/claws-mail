@@ -870,7 +870,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
 	    strcasecmp(mimeinfo->subtype, "plain"))) {
 	    	if (strcasecmp(mimeinfo->subtype, "html"))
-			mimeview_select_mimepart_icon(messageview->mimeview,mimeinfo);
+			mimeview_show_part(messageview->mimeview,mimeinfo);
 		else if (prefs_common.invoke_plugin_on_html)
 			mimeview_select_mimepart_icon(messageview->mimeview,mimeinfo);
 	}

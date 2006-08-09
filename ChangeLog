@@ -1,3 +1,16 @@
+2006-08-09 [colin]	2.4.0cvs37
+
+	* src/prefs_filtering.c
+		Warning fix, patch by Paul
+	* src/messageview.c
+	* src/prefs_actions.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		Uniformisation of "Info ..." to "Info..." (for
+		old gtk), patch by Fabien
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		Sensitivity fix by Fabien
+
 2006-08-09 [colin]	2.4.0cvs36
 
 	* src/main.c
