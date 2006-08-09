@@ -1,3 +1,13 @@
+2006-08-09 [colin]	2.4.0cvs36
+
+	* src/main.c
+	* src/main.h
+		Add a function to know whether we're exiting
+	* src/plugins/trayicon/trayicon.c
+		If exiting, don't do anything. Faster, and
+		avoids gtk_main_iteration reentracy causing
+		segfaults at exit
+
 2006-08-09 [colin]	2.4.0cvs35
 
 	* src/messageview.c

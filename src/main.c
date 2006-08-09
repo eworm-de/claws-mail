@@ -638,9 +638,13 @@ static void save_all_caches(FolderItem *item, gpointer data)
 		folder_item_write_cache(item);
 }
 
+static gboolean sc_exiting = FALSE;
+
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
+
+	sc_exiting = TRUE;
 
 	debug_print("shutting down\n");
 	inc_autocheck_timer_remove();
@@ -948,13 +952,12 @@ gboolean clean_quit(gpointer data)
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
-	static gboolean exiting = FALSE;
 	
-	if (exiting == TRUE) {
+	if (sc_exiting == TRUE) {
 		debug_print("exit pending\n");
 		return;
 	}
-	exiting = TRUE;
+	sc_exiting = TRUE;
 	debug_print("exiting\n");
 	if (compose_get_compose_list()) {
 		gint val = alertpanel(_("Really quit?"),
@@ -986,6 +989,11 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (folderview_get_selected_item(mainwin->folderview))
 		folder_item_close(folderview_get_selected_item(mainwin->folderview));
 	gtk_main_quit();
+}
+
+gboolean sylpheed_is_exiting(void)
+{
+	return sc_exiting;
 }
 
 /*
