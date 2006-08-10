@@ -308,7 +308,6 @@ static gint imap_cmd_login	(IMAPSession	*session,
 				 const gchar	*user,
 				 const gchar	*pass,
 				 const gchar 	*type);
-static gint imap_cmd_logout	(IMAPSession	*session);
 static gint imap_cmd_noop	(IMAPSession	*session);
 #if USE_OPENSSL
 static gint imap_cmd_starttls	(IMAPSession	*session);
@@ -539,18 +538,24 @@ static void imap_reset_uid_lists(Folder *folder)
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
 
-void imap_get_capabilities(IMAPSession *session)
+int imap_get_capabilities(IMAPSession *session)
 {
 	struct mailimap_capability_data *capabilities = NULL;
 	clistiter *cur;
+	int result = -1;
 
 	if (session->capability != NULL)
-		return;
+		return MAILIMAP_NO_ERROR;
 
-	capabilities = imap_threaded_capability(session->folder);
+	capabilities = imap_threaded_capability(session->folder, &result);
 
-	if (capabilities == NULL)
-		return;
+	if (result != MAILIMAP_NO_ERROR) {
+		return MAILIMAP_ERROR_CAPABILITY;
+	}
+
+	if (capabilities == NULL) {
+		return MAILIMAP_NO_ERROR;
+	}
 
 	for(cur = clist_begin(capabilities->cap_list) ; cur != NULL ;
 	    cur = clist_next(cur)) {
@@ -564,6 +569,7 @@ void imap_get_capabilities(IMAPSession *session)
 		debug_print("got capa %s\n", cap->cap_data.cap_name);
 	}
 	mailimap_capability_data_free(capabilities);
+	return MAILIMAP_NO_ERROR;
 }
 
 gboolean imap_has_capability(IMAPSession *session, const gchar *cap) 
@@ -581,8 +587,10 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 {
 	gint ok = IMAP_ERROR;
 	static time_t last_login_err = 0;
+	gchar *ext_info = "";
 	
-	imap_get_capabilities(session);
+	if (imap_get_capabilities(session) != MAILIMAP_NO_ERROR)
+		return IMAP_ERROR;
 
 	switch(type) {
 	case IMAP_AUTH_ANON:
@@ -607,19 +615,16 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		if (ok == IMAP_ERROR) /* we always try LOGIN before giving up */
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 	}
+
 	if (ok == IMAP_SUCCESS)
 		session->authenticated = TRUE;
 	else {
-		gchar *ext_info = NULL;
-		
 		if (type == IMAP_AUTH_CRAM_MD5) {
 			ext_info = _("\n\nCRAM-MD5 logins only work if libetpan has been "
 				     "compiled with SASL support and the "
 				     "CRAM-MD5 SASL plugin is installed.");
-		} else {
-			ext_info = "";
-		}
-		
+		} 
+
 		if (time(NULL) - last_login_err > 10) {
 			if (!prefs_common.no_recv_err_panel) {
 				alertpanel_error(_("Connection to %s failed: "
@@ -717,6 +722,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 		imap_session_authenticate(IMAP_SESSION(session), folder->account);
 	
 	if (!IMAP_SESSION(session)->authenticated) {
+		imap_threaded_disconnect(session->folder);
+		SESSION(session)->state = SESSION_DISCONNECTED;
 		session_destroy(SESSION(session));
 		rfolder->session = NULL;
 		rfolder->last_failure = time(NULL);
@@ -750,7 +757,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	IMAPSession *session;
 	gushort port;
 	int r;
-	int authenticated;
+	int authenticated = FALSE;
 	
 #ifdef USE_OPENSSL
 	/* FIXME: IMAP over SSL only... */ 
@@ -889,8 +896,6 @@ try_again:
 			failed = TRUE;
 			goto try_again;
 		} else {
-			imap_threaded_disconnect(session->folder);
-			imap_cmd_logout(session);
 			alertpanel_error(_("Couldn't login to IMAP server %s."), account->recv_server);
 		}		
 
@@ -899,6 +904,7 @@ try_again:
 
 	statusbar_pop_all();
 	session->authenticated = TRUE;
+	return;
 }
 
 static void imap_session_destroy(Session *session)
@@ -2475,6 +2481,37 @@ static gint imap_cmd_login(IMAPSession *session,
 	int r;
 	gint ok;
 
+	if (!strcmp(type, "LOGIN") && imap_has_capability(session, "LOGINDISABLED")) {
+		gint ok = IMAP_ERROR;
+		if (imap_has_capability(session, "STARTTLS")) {
+#if USE_OPENSSL
+			log_warning(_("Server requires TLS to log in.\n"));
+			ok = imap_cmd_starttls(session);
+			if (ok != IMAP_SUCCESS) {
+				log_warning(_("Can't start TLS session.\n"));
+				return IMAP_ERROR;
+			} else {
+				/* refresh capas */
+				imap_free_capabilities(session);
+				if (imap_get_capabilities(session) != MAILIMAP_NO_ERROR) {
+					log_warning(_("Can't refresh capabilities.\n"));
+					return IMAP_ERROR;
+				}
+			}
+#else		
+			log_error(_("Connection to %s failed: "
+					"server requires TLS, but Sylpheed-Claws "
+					"has been compiled without OpenSSL "
+					"support.\n"),
+					SESSION(session)->server);
+			return IMAP_ERROR;
+#endif
+		} else {
+			log_error(_("Server logins are disabled.\n"));
+			return IMAP_ERROR;
+		}
+	}
+
 	log_print("IMAP4> Logging %s to %s using %s\n", 
 			user,
 			SESSION(session)->server,
@@ -2490,13 +2527,6 @@ static gint imap_cmd_login(IMAPSession *session,
 		ok = IMAP_SUCCESS;
 	}
 	return ok;
-}
-
-static gint imap_cmd_logout(IMAPSession *session)
-{
-	imap_threaded_disconnect(session->folder);
-
-	return IMAP_SUCCESS;
 }
 
 static gint imap_cmd_noop(IMAPSession *session)
@@ -4262,6 +4292,7 @@ void imap_disconnect_all(void)
 			if (folder && folder->session) {
 				IMAPSession *session = (IMAPSession *)folder->session;
 				imap_threaded_disconnect(FOLDER(folder));
+				SESSION(session)->state = SESSION_DISCONNECTED;
 				session_destroy(SESSION(session));
 				folder->session = NULL;
 			}

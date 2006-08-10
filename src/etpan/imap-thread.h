@@ -16,7 +16,7 @@ void imap_done(Folder * folder);
 
 int imap_threaded_connect(Folder * folder, const char * server, int port);
 int imap_threaded_connect_ssl(Folder * folder, const char * server, int port);
-struct mailimap_capability_data * imap_threaded_capability(Folder *folder);
+struct mailimap_capability_data * imap_threaded_capability(Folder *folder, int *ok);
 int imap_threaded_connect_cmd(Folder * folder, const char * command,
 			      const char * server, int port);
 

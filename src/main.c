@@ -487,6 +487,7 @@ int main(int argc, char *argv[])
 	if (folder_read_list() < 0) {
 		if (!run_wizard(mainwin, TRUE))
 			exit(1);
+		main_window_reflect_prefs_all_now();
 		folder_write_list();
 	}
 

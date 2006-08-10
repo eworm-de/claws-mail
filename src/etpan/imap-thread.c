@@ -470,7 +470,7 @@ static void capability_run(struct etpan_thread_op * op)
 }
 
 
-struct mailimap_capability_data * imap_threaded_capability(Folder *folder)
+struct mailimap_capability_data * imap_threaded_capability(Folder *folder, int *ok)
 {
 	struct capa_param param;
 	struct capa_result result;
@@ -482,8 +482,11 @@ struct mailimap_capability_data * imap_threaded_capability(Folder *folder)
 	
 	threaded_run(folder, &param, &result, capability_run);
 	
-	debug_print("capa ok\n");
+	debug_print("capa %d\n", result.error);
 	
+	if (ok)
+		*ok = result.error;
+
 	return result.caps;
 	
 }
