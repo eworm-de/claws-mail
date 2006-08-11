@@ -1,3 +1,9 @@
+2006-08-11 [wwp]	2.4.0cvs40
+
+	* src/main.c
+		fix a logic issue when quitting while a compose window is
+		still open, thanks to Colin.
+
 2006-08-10 [colin]	2.4.0cvs39
 
 	* src/main.c
