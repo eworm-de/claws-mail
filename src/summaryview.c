@@ -2070,6 +2070,7 @@ static void summary_status_show(SummaryView *summaryview)
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), "");
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), "");
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs),   "");
+		toolbar_main_set_sensitive(summaryview->mainwin);
 		return;
 	}
 
@@ -2161,6 +2162,7 @@ static void summary_status_show(SummaryView *summaryview)
 				      to_human_readable(n_size));
 	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 }
 
 static void summary_set_column_titles(SummaryView *summaryview)

@@ -1,3 +1,16 @@
+2006-08-11 [colin]	2.4.0cvs41
+
+	* src/compose.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/toolbar.c
+		Grey out the Send button if
+		- Queue folders are empty, or
+		- We're sending already
+
 2006-08-11 [wwp]	2.4.0cvs40
 
 	* src/main.c

@@ -1862,43 +1862,61 @@ void toolbar_main_set_sensitive(gpointer data)
 	entry_list = g_slist_append(entry_list, e); \
 }
 
-	SET_WIDGET_COND(toolbar->get_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
-	SET_WIDGET_COND(toolbar->getall_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
-	if (toolbar->getall_btn)
+	
+	if (toolbar->get_btn)
+		SET_WIDGET_COND(toolbar->get_btn, 
+			M_HAVE_ACCOUNT|M_UNLOCKED);
+
+	if (toolbar->getall_btn) {
+		SET_WIDGET_COND(toolbar->getall_btn, 
+			M_HAVE_ACCOUNT|M_UNLOCKED);
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->getall_combo),
 			M_HAVE_ACCOUNT|M_UNLOCKED);
-	if (toolbar->compose_mail_btn)
+	}
+	if (toolbar->send_btn) {
+		SET_WIDGET_COND(toolbar->send_btn,
+			M_HAVE_QUEUED_MAILS);
+	}
+	if (toolbar->compose_mail_btn) {
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->compose_combo),
 			M_HAVE_ACCOUNT);
-	SET_WIDGET_COND(toolbar->compose_news_btn, M_HAVE_ACCOUNT);
-	SET_WIDGET_COND(toolbar->reply_btn,
+		SET_WIDGET_COND(toolbar->compose_news_btn, 
+			M_HAVE_ACCOUNT);
+	}
+	if (toolbar->reply_btn) {
+		SET_WIDGET_COND(toolbar->reply_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->reply_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->reply_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->replyall_btn)
+	}
+	if (toolbar->replyall_btn) {
 		SET_WIDGET_COND(toolbar->replyall_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->replyall_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replyall_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	SET_WIDGET_COND(toolbar->replylist_btn,
+	}
+	if (toolbar->replylist_btn) {
+		SET_WIDGET_COND(toolbar->replylist_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->replylist_btn) 
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replylist_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	SET_WIDGET_COND(toolbar->replysender_btn,
+	}
+	if (toolbar->replysender_btn) {
+		SET_WIDGET_COND(toolbar->replysender_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->replysender_btn)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replysender_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	SET_WIDGET_COND(toolbar->fwd_btn, M_HAVE_ACCOUNT|M_TARGET_EXIST);
-	if (toolbar->fwd_btn)
+	}
+	if (toolbar->fwd_btn) {
+		SET_WIDGET_COND(toolbar->fwd_btn, 
+			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->fwd_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
+	}
 	if (toolbar->fwd_combo) {
 		GtkWidget *submenu = gtk_item_factory_get_widget(toolbar->fwd_combo->factory, "/Redirect");
-		SET_WIDGET_COND(submenu, M_HAVE_ACCOUNT|M_TARGET_EXIST); 
+		SET_WIDGET_COND(submenu, 
+			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 	}
 
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
@@ -1910,16 +1928,22 @@ void toolbar_main_set_sensitive(gpointer data)
 	if (toolbar->trash_btn)
 		SET_WIDGET_COND(toolbar->trash_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE);
+
 	if (toolbar->delete_btn)
 		SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE);
+
 	if (toolbar->exec_btn)
-		SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
+		SET_WIDGET_COND(toolbar->exec_btn, 
+			M_DELAY_EXEC);
 	
 	if (toolbar->learn_ham_btn)
-		SET_WIDGET_COND(toolbar->learn_ham_btn, M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+		SET_WIDGET_COND(toolbar->learn_ham_btn,
+			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+
 	if (toolbar->learn_spam_btn)
-		SET_WIDGET_COND(toolbar->learn_spam_btn, M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+		SET_WIDGET_COND(toolbar->learn_spam_btn, 
+			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
 
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;

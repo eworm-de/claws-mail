@@ -2057,7 +2057,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 
 		if ((selection == SUMMARY_NONE && item->hide_read_msgs)
 		    || selection != SUMMARY_NONE)
-			state |= M_HIDE_READ_MSG;	
+			state |= M_HIDE_READ_MSG;
 	}		
 	if (mainwin->summaryview->threaded)
 		state |= M_THREADED;
@@ -2075,6 +2075,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_NOT_NEWS;
 	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
 		state |= M_ACTIONS_EXIST;
+
+	if (procmsg_have_queued_mails_fast() && !procmsg_is_sending())
+		state |= M_HAVE_QUEUED_MAILS;
 
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (item &&

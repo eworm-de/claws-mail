@@ -1732,3 +1732,4 @@
 ( cvs diff -u -r 1.274.2.135 -r 1.274.2.136 src/mainwindow.c;  cvs diff -u -r 1.39.2.18 -r 1.39.2.19 src/mainwindow.h;  ) > 2.4.0cvs38.patchset
 ( cvs diff -u -r 1.179.2.127 -r 1.179.2.128 src/imap.c;  cvs diff -u -r 1.115.2.100 -r 1.115.2.101 src/main.c;  cvs diff -u -r 1.1.4.46 -r 1.1.4.47 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/etpan/imap-thread.h;  ) > 2.4.0cvs39.patchset
 ( cvs diff -u -r 1.115.2.101 -r 1.115.2.102 src/main.c;  ) > 2.4.0cvs40.patchset
+( cvs diff -u -r 1.382.2.299 -r 1.382.2.300 src/compose.c;  cvs diff -u -r 1.274.2.136 -r 1.274.2.137 src/mainwindow.c;  cvs diff -u -r 1.39.2.19 -r 1.39.2.20 src/mainwindow.h;  cvs diff -u -r 1.150.2.70 -r 1.150.2.71 src/procmsg.c;  cvs diff -u -r 1.60.2.30 -r 1.60.2.31 src/procmsg.h;  cvs diff -u -r 1.395.2.228 -r 1.395.2.229 src/summaryview.c;  cvs diff -u -r 1.43.2.48 -r 1.43.2.49 src/toolbar.c;  ) > 2.4.0cvs41.patchset

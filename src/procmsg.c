@@ -879,6 +879,7 @@ static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo,
 	return TRUE;
 }
 
+static gboolean send_queue_lock = FALSE;
 /*!
  *\brief	Send messages in queue
  *
@@ -894,7 +895,6 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	GSList *list, *elem;
 	GSList *sorted_list = NULL;
 	GNode *node, *next;
-	static gboolean send_queue_lock = FALSE;
 	
 	if (send_queue_lock) {
 		log_error(_("Already trying to send\n"));
@@ -902,12 +902,19 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 			if (*errstr) g_free(*errstr);
 			*errstr = g_strdup_printf(_("Already trying to send."));
 		}
+		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 		return -1;
 	}
 	send_queue_lock = TRUE;
 	if (!queue)
 		queue = folder_get_default_queue();
-	g_return_val_if_fail(queue != NULL, -1);
+	
+	if (queue == NULL) {
+		send_queue_lock = FALSE;
+		return -1;
+	}
+
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
@@ -959,7 +966,14 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		}
 	}
 	send_queue_lock = FALSE;
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+
 	return (err != 0 ? -err : sent);
+}
+
+gboolean procmsg_is_sending(void)
+{
+	return send_queue_lock;
 }
 
 /*!
@@ -1739,7 +1753,9 @@ send_mail:
 
 gint procmsg_send_message_queue(const gchar *file, gchar **errstr)
 {
-	return procmsg_send_message_queue_full(file, FALSE, errstr);
+	gint result = procmsg_send_message_queue_full(file, FALSE, errstr);
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	return result;
 }
 
 static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old_flags)
@@ -2179,4 +2195,20 @@ FolderItem *procmsg_spam_get_folder (void)
 {
 	FolderItem *item = spam_folder_item ? folder_find_item_from_identifier(spam_folder_item) : NULL;
 	return item ? item : folder_get_default_trash();
+}
+
+static void item_has_queued_mails(FolderItem *item, gpointer data)
+{
+	gboolean *result = (gboolean *)data;
+	if (*result == TRUE)
+		return;
+	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0)
+		*result = TRUE;
+}
+
+gboolean procmsg_have_queued_mails_fast (void)
+{
+	gboolean result = FALSE;
+	folder_func_to_all_folders(item_has_queued_mails, &result);
+	return result;
 }

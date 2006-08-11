@@ -4153,12 +4153,14 @@ gint compose_send(Compose *compose)
 		return -1;
  	}
 
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	return 0;
 
 bail:
 	compose_allow_user_actions (compose, TRUE);
 	compose->sending = FALSE;
 	compose->modified = TRUE; 
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
 	return -1;
 }
@@ -7541,9 +7543,9 @@ static void compose_send_later_cb(gpointer data, guint action,
 	gint val;
 
 	val = compose_queue_sub(compose, NULL, NULL, NULL, TRUE, TRUE);
-	if (!val) 
+	if (!val) {
 		compose_close(compose);
-	else if (val == -1) {
+	} else if (val == -1) {
 		alertpanel_error(_("Could not queue message."));
 	} else if (val == -2) {
 		alertpanel_error(_("Could not queue message:\n\n%s."), strerror(errno));
@@ -7555,6 +7557,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 		alertpanel_error(_("Could not queue message for sending:\n\n"
 				   "Charset conversion failed."));
 	}
+	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }
 
 void compose_draft (gpointer data) 
