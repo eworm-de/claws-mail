@@ -1,3 +1,9 @@
+2006-08-12 [paul]	2.4.0cvs42
+
+	* manual/plugins.xml
+		update IRC channel info before it gets forgotten
+		about
+
 2006-08-11 [colin]	2.4.0cvs41
 
 	* src/compose.c
