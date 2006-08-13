@@ -3271,7 +3271,7 @@ FILE *my_tmpfile(void)
 	gchar *fname;
 	gint fd;
 	FILE *fp;
-	gchar buf[2]="a";
+	gchar buf[2]="\0";
 
 	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
