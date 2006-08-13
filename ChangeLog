@@ -1,3 +1,12 @@
+2006-08-13 [paul]	2.4.0cvs43
+
+	* src/editldap.c
+		fix overlapping widgets
+	* src/prefs_account.c
+		fix translation of protocol_names[]
+		fix label disappearing off the edge of the
+		visible area
+
 2006-08-12 [paul]	2.4.0cvs42
 
 	* manual/plugins.xml

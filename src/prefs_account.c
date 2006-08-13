@@ -1104,7 +1104,7 @@ static void prefs_account_basic_create(void)
 
 	default_chkbtn = gtk_check_button_new_with_label (_("Set as default"));
 	gtk_widget_show (default_chkbtn);
-	gtk_box_pack_end (GTK_BOX (hbox), default_chkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), default_chkbtn, TRUE, FALSE, 0);
 
 	PACK_FRAME (vbox1, frame1, _("Personal information"));
 
@@ -1178,7 +1178,7 @@ static void prefs_account_basic_create(void)
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 	for( i = 0; i < NUM_RECV_PROTOCOLS; i++ )
 		if( protocol_names[i] != NULL )
-			COMBOBOX_ADD (menu, protocol_names[i], i);
+			COMBOBOX_ADD (menu, _(protocol_names[i]), i);
 
 	g_signal_connect(G_OBJECT(optmenu), "changed",
 			G_CALLBACK(prefs_account_protocol_changed), NULL);

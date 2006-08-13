@@ -462,7 +462,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_port_adj = gtk_adjustment_new (389, 1, 65535, 1, 1000, 1000);
 	spinbtn_port = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_port_adj), 1, 0);
-	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_port, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_port, TRUE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_port, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_port), TRUE);
 	
@@ -482,8 +482,8 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"configuration in ldap.conf (TLS_CACERT or TLS_CACERTDIR fields)." ),
 		NULL );
 
-	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_chkbtn, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_chkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_chkbtn, TRUE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_chkbtn, TRUE, FALSE, 0);
 #endif
 
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),

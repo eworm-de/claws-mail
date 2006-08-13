@@ -1734,3 +1734,4 @@
 ( cvs diff -u -r 1.115.2.101 -r 1.115.2.102 src/main.c;  ) > 2.4.0cvs40.patchset
 ( cvs diff -u -r 1.382.2.299 -r 1.382.2.300 src/compose.c;  cvs diff -u -r 1.274.2.136 -r 1.274.2.137 src/mainwindow.c;  cvs diff -u -r 1.39.2.19 -r 1.39.2.20 src/mainwindow.h;  cvs diff -u -r 1.150.2.70 -r 1.150.2.71 src/procmsg.c;  cvs diff -u -r 1.60.2.30 -r 1.60.2.31 src/procmsg.h;  cvs diff -u -r 1.395.2.228 -r 1.395.2.229 src/summaryview.c;  cvs diff -u -r 1.43.2.48 -r 1.43.2.49 src/toolbar.c;  ) > 2.4.0cvs41.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 manual/plugins.xml;  ) > 2.4.0cvs42.patchset
+( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/editldap.c;  cvs diff -u -r 1.105.2.63 -r 1.105.2.64 src/prefs_account.c;  ) > 2.4.0cvs43.patchset
