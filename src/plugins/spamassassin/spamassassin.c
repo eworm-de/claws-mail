@@ -156,7 +156,7 @@ static MsgStatus msg_is_spam(FILE *fp)
 	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
-		log_error(_("Spamassassin plugin couldn't connect to spamd.\n"));
+		log_error(_("SpamAssassin plugin couldn't connect to spamd.\n"));
 		debug_print("failed to setup transport\n");
 		return MSG_FILTERING_ERROR;
 	}
@@ -172,7 +172,7 @@ static MsgStatus msg_is_spam(FILE *fp)
 	}
 
 	if (message_filter(&trans, config.username, flags, &m) != EX_OK) {
-		log_error(_("Spamassassin plugin filtering failed.\n"));
+		log_error(_("SpamAssassin plugin filtering failed.\n"));
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
 		return MSG_FILTERING_ERROR;
@@ -198,7 +198,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	/* SPAMASSASSIN_DISABLED : keep test for compatibility purpose */
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error(_("Spamassassin plugin is disabled by its preferences.\n"));
+		log_error(_("SpamAssassin plugin is disabled by its preferences.\n"));
 		return FALSE;
 	}
 	debug_print("Filtering message %d\n", msginfo->msgnum);
@@ -272,7 +272,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	
 	if (error) {
 		if (!warned_error) {
-			alertpanel_error(_("The Spamassassin plugin couldn't filter "
+			alertpanel_error(_("The SpamAssassin plugin couldn't filter "
 					   "a message. The probable error cause is "
 					   "an unreachable spamd daemon. Please make "
 					   "sure spamd is running and accessible."));
@@ -477,14 +477,14 @@ gint plugin_init(gchar **error)
 	}
 	spamassassin_gtk_init();
 		
-	debug_print("Spamassassin plugin loaded\n");
+	debug_print("SpamAssassin plugin loaded\n");
 
 	if (config.process_emails) {
 		spamassassin_register_hook();
 	}
 
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error(_("Spamassassin plugin is loaded but disabled by its preferences.\n"));
+		log_error(_("SpamAssassin plugin is loaded but disabled by its preferences.\n"));
 	}
 	else {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
@@ -507,7 +507,7 @@ void plugin_done(void)
 	spamassassin_gtk_done();
 	procmsg_unregister_spam_learner(spamassassin_learn);
 	procmsg_spam_set_folder(NULL);
-	debug_print("Spamassassin plugin unloaded\n");
+	debug_print("SpamAssassin plugin unloaded\n");
 }
 
 const gchar *plugin_name(void)

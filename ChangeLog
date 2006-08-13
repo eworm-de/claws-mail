@@ -1,3 +1,9 @@
+2006-08-13 [wwp]	2.4.0cvs44
+
+	* src/plugins/spamassassin/spamassassin.c
+		fix capitalization of "SpamAssassin" in some debug, log and
+		dialog messages.
+
 2006-08-13 [paul]	2.4.0cvs43
 
 	* src/editldap.c
