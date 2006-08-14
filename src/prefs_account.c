@@ -1691,7 +1691,11 @@ static void prefs_account_send_create(void)
 	PACK_CHECK_BUTTON (hbox, customhdr_chkbtn,
 			   _("Add user-defined header"));
 
+#if GTK_CHECK_VERSION(2, 6, 0)
+	customhdr_edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+#else
 	customhdr_edit_btn = gtk_button_new_with_label (_(" Edit... "));
+#endif
 	gtk_widget_show (customhdr_edit_btn);
 	gtk_box_pack_start (GTK_BOX (hbox), customhdr_edit_btn,
 			    FALSE, FALSE, 0);
@@ -1930,11 +1934,11 @@ static void prefs_account_compose_create(void)
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_signature_browse_cb), NULL);
 
-	#if GTK_CHECK_VERSION(2, 6, 0)
+#if GTK_CHECK_VERSION(2, 6, 0)
 	signature_edit_button = gtk_button_new_from_stock (GTK_STOCK_EDIT);
-	#else
+#else
 	signature_edit_button = gtk_button_new_with_label (_(" Edit... "));
-	#endif
+#endif
 	gtk_widget_show (signature_edit_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), signature_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(signature_edit_button), "clicked",
