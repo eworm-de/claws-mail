@@ -272,6 +272,7 @@ void pluginwindow_create()
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
 	GtkWidget *get_more_btn;
+	GtkWidget *desc_lbl;
 	static GdkGeometry geometry;
 	
 	debug_print("Creating plugins window...\n");
@@ -286,6 +287,18 @@ void pluginwindow_create()
 	vbox1 = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
+	gtk_box_set_homogeneous(GTK_BOX(vbox1), FALSE);
+	gtk_widget_realize(window);
+
+	desc_lbl = gtk_label_new(_("Plugins are a way to greatly extend Sylpheed-Claws' capabilities."));
+	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
+	gtk_widget_show(desc_lbl);
+	gtk_box_pack_start(GTK_BOX(vbox1), desc_lbl, FALSE, FALSE, 0);
+
+	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
+	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
+	gtk_widget_show(get_more_btn);
+	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
 
 	hbox2 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox2);
@@ -333,12 +346,6 @@ void pluginwindow_create()
 	hbuttonbox1 = gtk_hbutton_box_new();
 	gtk_widget_show(hbuttonbox1);
 
-	gtk_widget_realize(window);
-	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
-	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
-	gtk_widget_show(get_more_btn);
-
-	gtk_box_pack_start(GTK_BOX(hbox3), get_more_btn, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox3, FALSE, FALSE, 0);
 
@@ -430,7 +437,7 @@ static void pluginwindow_create_list_view_columns(GtkWidget *list_view)
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
-		(_("Plugins"),
+		(_("Loaded plugins"),
 		 renderer,
 		 "text", PLUGINWINDOW_NAME,
 		 "style", PLUGINWINDOW_STYLE,

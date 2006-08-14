@@ -31,5 +31,7 @@ void gpgmegtk_set_passphrase_grab (gint yesno);
 gpgme_error_t gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
 const char *passphrase_info, int prev_bad, int fd);
 void gpgmegtk_free_passphrase();
+gchar* passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint,
+			      gint prev_bad, gint new_key);
 
 #endif /* GPGMEGTK_PASSPHRASE_H */

@@ -26,6 +26,7 @@
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefs_gpg.h"
+#include "sgpgme.h"
 
 struct GPGConfig prefs_gpg;
 
@@ -42,6 +43,8 @@ static PrefParam param[] = {
 	{"passphrase_grab", "FALSE", &prefs_gpg.passphrase_grab, P_BOOL,
 	 NULL, NULL, NULL},
 	{"gpg_warning", "TRUE", &prefs_gpg.gpg_warning, P_BOOL,
+	 NULL, NULL, NULL},
+	{"gpg_ask_create_key", "TRUE", &prefs_gpg.gpg_ask_create_key, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -193,6 +196,9 @@ struct GPGAccountPage
 	GtkWidget *key_custom;
 	GtkWidget *keyid;
 	GtkWidget *keyid_label;
+	GtkWidget *new_key_label;
+	GtkWidget *new_key_btn;
+	GtkWidget *new_key_box;
 
 	PrefsAccount *account;
 };
@@ -207,6 +213,12 @@ void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid), active);
 	if (!active)
 		gtk_editable_delete_text(GTK_EDITABLE(page->keyid), 0, -1);
+}
+
+static void new_key_clicked(GtkWidget *widget, gpointer user_data)
+{
+	struct GPGAccountPage *page = (struct GPGAccountPage *) user_data;
+	sgpgme_create_secret_key(page->account);
 }
 
 static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
@@ -227,6 +239,10 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	GtkWidget *key_custom;
 	GtkWidget *keyid_label;
 	GtkWidget *keyid;
+	GtkWidget *image;
+	GtkWidget *new_key_label;
+	GtkWidget *new_key_btn;
+	GtkWidget *new_key_box;
 
 	vbox = gtk_vbox_new(FALSE, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
@@ -305,10 +321,30 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 		break;
 	}
 
+	new_key_box = gtk_hbox_new(FALSE, 6);
+	
+	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+			GTK_ICON_SIZE_SMALL_TOOLBAR);
+
+	gtk_box_pack_start(GTK_BOX(new_key_box), image, FALSE, FALSE, 0);
+	new_key_label = gtk_label_new(
+			_("No secret key found."));
+	gtk_box_pack_start(GTK_BOX(new_key_box), new_key_label, FALSE, FALSE, 0);
+	new_key_btn = gtk_button_new_with_label(_("Generate new secret key"));
+	gtk_box_pack_start(GTK_BOX(new_key_box), new_key_btn, FALSE, FALSE, 0);
+
+	gtk_box_pack_start(GTK_BOX(vbox2), new_key_box, FALSE, FALSE, 0);
+
+	gtk_widget_show_all(new_key_box);
+
+	if (sgpgme_has_secret_key())
+		gtk_widget_hide(new_key_box);
+
 	if (config->sign_key_id != NULL)
 		gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);
 
 	g_signal_connect(G_OBJECT(key_custom), "toggled", G_CALLBACK(key_custom_toggled), page);
+	g_signal_connect(G_OBJECT(new_key_btn), "clicked", G_CALLBACK(new_key_clicked), page);
 
 	page->key_default = key_default;
 	page->key_by_from = key_by_from;

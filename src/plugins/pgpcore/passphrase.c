@@ -68,11 +68,9 @@ static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
 			       gpointer data);
 static gboolean passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       gpointer data);
-static gchar* passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint,
-			      gint prev_bad);
 
 static GtkWidget *create_description(const gchar *uid_hint,
-				     const gchar *pass_hint, gint prev_bad);
+				     const gchar *pass_hint, gint prev_bad, gint new_key);
 
 void
 gpgmegtk_set_passphrase_grab(gint yes)
@@ -80,8 +78,8 @@ gpgmegtk_set_passphrase_grab(gint yes)
     grab_all = yes;
 }
 
-static gchar*
-passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
+gchar*
+passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gint new_key)
 {
     gchar *the_passphrase = NULL;
     GtkWidget *vbox, *hbox;
@@ -114,7 +112,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
 
     if (uid_hint || pass_hint) {
         GtkWidget *label, *icon;
-        label = create_description (uid_hint, pass_hint, prev_bad);
+        label = create_description (uid_hint, pass_hint, prev_bad, new_key);
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
         			GTK_ICON_SIZE_DIALOG); 
 
@@ -250,7 +248,7 @@ linelen (const gchar *s)
 }
 
 static GtkWidget *
-create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
+create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gint new_key)
 {
     const gchar *uid = NULL, *info = NULL;
     gchar *buf;
@@ -271,11 +269,23 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad)
     while (strchr(my_uid, '>')) 
     	*(strchr(my_uid, '>')) = ')';
 
-    buf = g_strdup_printf (_("<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for:</span>\n\n"
+    if (new_key == 1) {
+	    buf = g_strdup_printf (_("<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for the new key:</span>\n\n"
+                           "%.*s\n"),
+                           prev_bad ?
+                           _("Passphrases did not match.\n") : "",
+                           linelen (my_uid), my_uid);
+    } else if (new_key == 2) {
+	    buf = g_strdup_printf (_("<span weight=\"bold\" size=\"larger\">Please re-enter the passphrase for the new key:</span>\n\n"
+                           "%.*s\n"),
+                           linelen (my_uid), my_uid);
+    } else {
+	    buf = g_strdup_printf (_("<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for:</span>\n\n"
                            "%.*s\n"),
                            prev_bad ?
                            _("Bad passphrase.\n") : "",
                            linelen (my_uid), my_uid);
+    }
     g_free(my_uid);
     label = gtk_label_new (buf);
     gtk_label_set_use_markup(GTK_LABEL (label), TRUE);
@@ -311,7 +321,7 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
     else {
     gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
     debug_print ("%% requesting passphrase for '%s'\n ", uid_hint);
-    pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad);
+    pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad, FALSE);
     gpgmegtk_free_passphrase();
     if (!pass) {
         debug_print ("%% cancel passphrase entry\n");

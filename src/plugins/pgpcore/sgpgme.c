@@ -30,6 +30,9 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <errno.h>
+#ifndef G_OS_WIN32
+#include <sys/mman.h>
+#endif
 #if HAVE_LOCALE_H
 #  include <locale.h>
 #endif
@@ -41,6 +44,7 @@
 #include "alertpanel.h"
 #include "passphrase.h"
 #include "prefs_gpg.h"
+#include "account.h"
 #include "select-keys.h"
 
 static void sgpgme_disable_all(void)
@@ -575,4 +579,153 @@ void sgpgme_done()
         gpgmegtk_free_passphrase();
 }
 
+void sgpgme_create_secret_key(PrefsAccount *account)
+{
+	AlertValue val = alertpanel(_("No PGP key found"),
+			_("Sylpheed-Claws did not find a secret PGP key, "
+			  "which means that you won't be able to sign "
+			  "emails or receive encrypted emails.\n"
+			  "Do you want to create a secret key now?"),
+			  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+	gchar *key_parms = NULL;
+	gchar *name = NULL;
+	gchar *email = NULL;
+	gchar *passphrase = NULL, *passphrase_second = NULL;
+	gint prev_bad = 0;
+	gchar *tmp = NULL;
+	gpgme_error_t err = 0;
+	gpgme_ctx_t ctx;
+	GtkWidget *window = NULL;
+	gpgme_genkey_result_t key;
+
+	if (account == NULL)
+		account = account_get_default();
+
+	if (val == G_ALERTDEFAULT) {
+		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
+		prefs_gpg_save_config();
+		return;
+	}
+
+	if (account->name) {
+		name = g_strdup(account->name);
+	} else {
+		name = g_strdup(account->address);
+	}
+	email = g_strdup(account->address);
+	tmp = g_strdup_printf("%s <%s>", account->name?account->name:account->address, account->address);
+again:
+	passphrase = passphrase_mbox(tmp, NULL, prev_bad, 1);
+	if (passphrase == NULL) {
+		g_free(tmp);
+		g_free(email);
+		g_free(name);		
+		return;
+	}
+	passphrase_second = passphrase_mbox(tmp, NULL, 0, 2);
+	if (passphrase_second == NULL) {
+		g_free(tmp);
+		g_free(email);
+		g_free(passphrase);		
+		g_free(name);		
+		return;
+	}
+	if (strcmp(passphrase, passphrase_second)) {
+		g_free(passphrase);
+		g_free(passphrase_second);
+		prev_bad = 1;
+		goto again;
+	}
+	
+	key_parms = g_strdup_printf("<GnupgKeyParms format=\"internal\">\n"
+					"Key-Type: DSA\n"
+					"Key-Length: 1024\n"
+					"Subkey-Type: ELG-E\n"
+					"Subkey-Length: 2048\n"
+					"Name-Real: %s\n"
+					"Name-Email: %s\n"
+					"Expire-Date: 0\n"
+					"Passphrase: %s\n"
+					"</GnupgKeyParms>\n",
+					name, email, passphrase);
+#ifndef G_PLATFORM_WIN32
+	if (mlock(passphrase, strlen(passphrase)) == -1)
+		debug_print("couldn't lock passphrase\n");
+	if (mlock(passphrase_second, strlen(passphrase_second)) == -1)
+		debug_print("couldn't lock passphrase2\n");
+#endif
+	g_free(tmp);
+	g_free(email);
+	g_free(name);
+	g_free(passphrase_second);
+	g_free(passphrase);
+	
+	err = gpgme_new (&ctx);
+	if (err) {
+		alertpanel_error(_("Couldn't generate new key: %s"), gpgme_strerror(err));
+		g_free(key_parms);
+		return;
+	}
+	
+
+	window = label_window_create(_("Generating your new key... Please move the mouse "
+			      "around to help generate entropy..."));
+
+	err = gpgme_op_genkey(ctx, key_parms, NULL, NULL);
+	g_free(key_parms);
+
+	gtk_widget_destroy(window);
+
+	if (err) {
+		alertpanel_error(_("Couldn't generate new key: %s"), gpgme_strerror(err));
+		gpgme_release(ctx);
+		return;
+	}
+	key = gpgme_op_genkey_result(ctx);
+	if (key == NULL) {
+		alertpanel_error(_("Couldn't generate new key: unknown error"));
+		gpgme_release(ctx);
+		return;
+	} else {
+		alertpanel_notice(_("Your secret key has been generated. "
+				    "Its fingerprint is:\n%s"),
+				    key->fpr ? key->fpr:"null");
+	}
+	prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
+	prefs_gpg_save_config();
+	gpgme_release(ctx);
+}
+
+gboolean sgpgme_has_secret_key(void)
+{
+	gpgme_error_t err = 0;
+	gpgme_ctx_t ctx;
+	gpgme_key_t key;
+
+	err = gpgme_new (&ctx);
+	if (err) {
+		debug_print("err : %s\n", gpgme_strerror(err));
+		return TRUE;
+	}
+	err = gpgme_op_keylist_start(ctx, NULL, TRUE);
+	if (!err)
+		err = gpgme_op_keylist_next(ctx, &key);
+	gpgme_op_keylist_end(ctx);
+	gpgme_release(ctx);
+	if (gpg_err_code(err) == GPG_ERR_EOF)
+		return FALSE;
+	else
+		return TRUE;
+}
+
+void sgpgme_check_create_key(void)
+{
+	if (prefs_gpg_get_config()->gpg_ask_create_key &&
+	    !sgpgme_has_secret_key()) {
+		sgpgme_create_secret_key(NULL);
+	} else {
+		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
+		prefs_gpg_save_config();
+	}	
+}
 #endif /* USE_GPGME */

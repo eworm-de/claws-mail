@@ -1,3 +1,18 @@
+2006-08-14 [cleroy]	2.4.0cvs50
+
+	* src/gtk/pluginwindow.c
+		New layout (maybe to be changed?)
+	* src/gtk/gtkutils.c
+		Fix a bit label_window
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/passphrase.h
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+		Allow to create a PGP private key via the GUI
+
 2006-08-14 [wwp]	2.4.0cvs49
 
 	* src/addressbook_foldersel.c

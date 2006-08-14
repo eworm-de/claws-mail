@@ -35,6 +35,7 @@ struct GPGConfig
 	gint		 store_passphrase_timeout;
 	gboolean	 passphrase_grab;
 	gboolean	 gpg_warning;
+	gboolean	 gpg_ask_create_key;
 };
 
 struct GPGAccountConfig

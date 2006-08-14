@@ -44,7 +44,7 @@ gint plugin_init(gchar **error)
 
 	sgpgme_init();
 	prefs_gpg_init();
-
+	sgpgme_check_create_key();
 	return 0;	
 }
 
