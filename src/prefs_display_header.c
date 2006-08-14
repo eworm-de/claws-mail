@@ -252,7 +252,7 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (hdr_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_label, FALSE, FALSE, 0);
 
-	hdr_combo = gtk_combo_box_new_text();
+	hdr_combo = gtk_combo_box_entry_new_text();
 	for(i=0; i < 9 ; i++)
 		gtk_combo_box_append_text(GTK_COMBO_BOX (hdr_combo),
 			prefs_common.trans_hdr ? gettext(defaults[i]) : defaults[i]);
@@ -560,8 +560,7 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 	const gchar *entry_text;
 	GtkTreeModel *model;
 
-	entry_text = defaults[gtk_combo_box_get_active(
-						GTK_COMBO_BOX(dispheader.hdr_combo))];
+	entry_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(dispheader.hdr_combo));
 	if (entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
 		return;
