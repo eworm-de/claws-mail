@@ -369,9 +369,9 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex, gchar *pat
 gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 					AddressBookFile **book, ItemFolder **folder, gchar* path)
 {
+	FolderPathMatch folder_path_match = { NULL, FALSE, 0, NULL };
 	gboolean retVal = FALSE;
 	addressbook_foldersel_cancelled = FALSE;
-	FolderPathMatch folder_path_match = { NULL, FALSE, 0, NULL };
 
 	if ( ! addressbook_foldersel_dlg.window )
 		addressbook_foldersel_create();

@@ -1,3 +1,8 @@
+2006-08-14 [wwp]	2.4.0cvs49
+
+	* src/addressbook_foldersel.c
+		fix strict ISO C90 compliance.
+
 2006-08-14 [paul]	2.4.0cvs48
 
 	* src/gtk/prefswindow.c

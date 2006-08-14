@@ -1740,3 +1740,4 @@
 ( cvs diff -u -r 1.105.2.64 -r 1.105.2.65 src/prefs_account.c;  ) > 2.4.0cvs46.patchset
 ( cvs diff -u -r 1.16.2.19 -r 1.16.2.20 src/prefs_display_header.c;  ) > 2.4.0cvs47.patchset
 ( cvs diff -u -r 1.12.2.26 -r 1.12.2.27 src/gtk/prefswindow.c;  ) > 2.4.0cvs48.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addressbook_foldersel.c;  ) > 2.4.0cvs49.patchset
