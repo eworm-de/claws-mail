@@ -543,6 +543,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	gchar *labeltext;
 	gint pagenum, i;
 	GtkTreeIter iter;
+	GtkAdjustment *adj;
 
 	if (currently_selected) 
 		return TRUE;
@@ -579,6 +580,10 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
 					page->widget);
 	gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
+
+	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, 0);
 
 	return TRUE;
 }

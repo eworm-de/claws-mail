@@ -1,3 +1,9 @@
+2006-08-14 [paul]	2.4.0cvs48
+
+	* src/gtk/prefswindow.c
+		re-set scrolled window on opening
+		Patch by Ticho
+
 2006-08-14 [paul]
 
 	2.5.0-rc1 released
