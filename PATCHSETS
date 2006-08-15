@@ -1742,3 +1742,4 @@
 ( cvs diff -u -r 1.12.2.26 -r 1.12.2.27 src/gtk/prefswindow.c;  ) > 2.4.0cvs48.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addressbook_foldersel.c;  ) > 2.4.0cvs49.patchset
 ( cvs diff -u -r 1.5.2.35 -r 1.5.2.36 src/gtk/gtkutils.c;  cvs diff -u -r 1.5.2.31 -r 1.5.2.32 src/gtk/pluginwindow.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/passphrase.h;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpcore/plugin.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/prefs_gpg.h;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/plugins/pgpcore/sgpgme.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpcore/sgpgme.h;  ) > 2.4.0cvs50.patchset
+( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/plugins/pgpcore/sgpgme.c;  ) > 2.4.0cvs51.patchset

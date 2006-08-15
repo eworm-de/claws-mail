@@ -215,10 +215,32 @@ void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 		gtk_editable_delete_text(GTK_EDITABLE(page->keyid), 0, -1);
 }
 
+static void prefs_gpg_update_sens(struct GPGAccountPage *page)
+{
+	gboolean active;
+	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom));
+	if (sgpgme_has_secret_key()) {
+		gtk_widget_hide(page->new_key_box);
+		gtk_widget_set_sensitive(page->key_default, TRUE);
+		gtk_widget_set_sensitive(page->key_by_from, TRUE);
+		gtk_widget_set_sensitive(page->key_custom, TRUE);
+		gtk_widget_set_sensitive(page->keyid, active);
+		gtk_widget_set_sensitive(page->keyid_label, active);
+	} else {
+		gtk_widget_show(page->new_key_box);
+		gtk_widget_set_sensitive(page->key_default, FALSE);
+		gtk_widget_set_sensitive(page->key_by_from, FALSE);
+		gtk_widget_set_sensitive(page->key_custom, FALSE);
+		gtk_widget_set_sensitive(page->keyid, FALSE);
+		gtk_widget_set_sensitive(page->keyid_label, FALSE);
+	}
+}
+
 static void new_key_clicked(GtkWidget *widget, gpointer user_data)
 {
 	struct GPGAccountPage *page = (struct GPGAccountPage *) user_data;
 	sgpgme_create_secret_key(page->account);
+	prefs_gpg_update_sens(page);
 }
 
 static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
@@ -330,15 +352,18 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	new_key_label = gtk_label_new(
 			_("No secret key found."));
 	gtk_box_pack_start(GTK_BOX(new_key_box), new_key_label, FALSE, FALSE, 0);
+
 	new_key_btn = gtk_button_new_with_label(_("Generate new secret key"));
-	gtk_box_pack_start(GTK_BOX(new_key_box), new_key_btn, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox2), new_key_box, FALSE, FALSE, 0);
 
-	gtk_widget_show_all(new_key_box);
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), new_key_btn, FALSE, FALSE, 0);
 
-	if (sgpgme_has_secret_key())
-		gtk_widget_hide(new_key_box);
+	gtk_widget_show_all(new_key_box);
+	gtk_widget_show(new_key_btn);
 
 	if (config->sign_key_id != NULL)
 		gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);
@@ -351,9 +376,11 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	page->key_custom = key_custom;
 	page->keyid = keyid;
 	page->keyid_label = keyid_label;
+	page->new_key_box = new_key_box;
 
 	page->page.widget = vbox;
 	page->account = account;
+	prefs_gpg_update_sens(page);
 }
 
 static void prefs_gpg_account_destroy_widget_func(PrefsPage *_page)

@@ -645,9 +645,12 @@ again:
 					"Name-Real: %s\n"
 					"Name-Email: %s\n"
 					"Expire-Date: 0\n"
-					"Passphrase: %s\n"
+					"%s%s%s"
 					"</GnupgKeyParms>\n",
-					name, email, passphrase);
+					name, email, 
+					strlen(passphrase)?"Passphrase: ":"",
+					passphrase,
+					strlen(passphrase)?"\n":"");
 #ifndef G_PLATFORM_WIN32
 	if (mlock(passphrase, strlen(passphrase)) == -1)
 		debug_print("couldn't lock passphrase\n");

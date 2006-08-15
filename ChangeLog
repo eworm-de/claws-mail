@@ -1,3 +1,11 @@
+2006-08-15 [colin]	2.4.0cvs51
+
+	* src/plugins/pgpcore/prefs_gpg.c
+		Set options sensitivity according to
+		key existence
+	* src/plugins/pgpcore/sgpgme.c
+		Allow to create key with no passphrase
+
 2006-08-14 [cleroy]	2.4.0cvs50
 
 	* src/gtk/pluginwindow.c
