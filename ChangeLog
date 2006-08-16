@@ -1,3 +1,11 @@
+2006-08-16 [paul]	2.4.0cvs52
+
+	* src/toolbar.c
+		workaround GTK+ Bug 351600 - 'Can't re-click
+		on button after sensitivity update'
+		http://bugzilla.gnome.org/show_bug.cgi?id=351600
+		Thanks to Colin
+
 2006-08-15 [colin]	2.4.0cvs51
 
 	* src/plugins/pgpcore/prefs_gpg.c

@@ -1838,6 +1838,15 @@ void toolbar_update(ToolbarType type, gpointer data)
 	}
 }
 
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
+	gboolean in_btn = FALSE;				\
+	if (GTK_IS_BUTTON(widget))				\
+		in_btn = GTK_BUTTON(widget)->in_button;		\
+	gtk_widget_set_sensitive(widget, sensitive);		\
+	if (GTK_IS_BUTTON(widget))				\
+		GTK_BUTTON(widget)->in_button = in_btn;		\
+}
+
 void toolbar_main_set_sensitive(gpointer data)
 {
 	SensitiveCond state;
@@ -1960,7 +1969,7 @@ void toolbar_main_set_sensitive(gpointer data)
 
 		if (e->widget != NULL) {
 			sensitive = ((e->cond & state) == e->cond);
-			gtk_widget_set_sensitive(e->widget, sensitive);	
+			GTK_BUTTON_SET_SENSITIVE(e->widget, sensitive);	
 		}
 	}
 	
@@ -1984,32 +1993,32 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 	GSList *items = compose->toolbar->action_list;
 
 	if (compose->toolbar->send_btn)
-		gtk_widget_set_sensitive(compose->toolbar->send_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->send_btn, sensitive);
 	if (compose->toolbar->sendl_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sendl_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->sendl_btn, sensitive);
 	if (compose->toolbar->draft_btn )
-		gtk_widget_set_sensitive(compose->toolbar->draft_btn , sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->draft_btn , sensitive);
 	if (compose->toolbar->insert_btn )
-		gtk_widget_set_sensitive(compose->toolbar->insert_btn , sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->insert_btn , sensitive);
 	if (compose->toolbar->attach_btn)
-		gtk_widget_set_sensitive(compose->toolbar->attach_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->attach_btn, sensitive);
 	if (compose->toolbar->sig_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sig_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->sig_btn, sensitive);
 	if (compose->toolbar->exteditor_btn)
-		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->exteditor_btn, sensitive);
 	if (compose->toolbar->linewrap_current_btn)
-		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->linewrap_current_btn, sensitive);
 	if (compose->toolbar->linewrap_all_btn)
-		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->linewrap_all_btn, sensitive);
 	if (compose->toolbar->addrbook_btn)
-		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->addrbook_btn, sensitive);
 #ifdef USE_ASPELL
 	if (compose->toolbar->spellcheck_btn)
-		gtk_widget_set_sensitive(compose->toolbar->spellcheck_btn, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->spellcheck_btn, sensitive);
 #endif
 	for (; items != NULL; items = g_slist_next(items)) {
 		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
-		gtk_widget_set_sensitive(item->widget, sensitive);
+		GTK_BUTTON_SET_SENSITIVE(item->widget, sensitive);
 	}
 }
 
