@@ -136,11 +136,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(hbox1, chkbtn_disphdr,
 			  _("Display short headers on message view"));
 
-#if GTK_CHECK_VERSION(2, 6, 0)
 	button_edit_disphdr = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-#else
-	button_edit_disphdr = gtk_button_new_with_label (_(" Edit... "));
-#endif
 	gtk_widget_show (button_edit_disphdr);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_disphdr,
 			  FALSE, TRUE, 0);

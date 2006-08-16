@@ -1004,11 +1004,7 @@ static void addressbook_create(void)
 
 	gtkut_stock_button_add_help(hbbox, &help_btn);
 
-#if GTK_CHECK_VERSION(2, 6, 0)
 	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-#else
-	edit_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
-#endif
 	GTK_WIDGET_SET_FLAGS(edit_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), edit_btn, TRUE, TRUE, 0);
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);

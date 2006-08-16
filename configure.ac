@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=52
+EXTRA_VERSION=53
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -299,7 +299,7 @@ dnl ** common code **
 dnl *****************
 
 dnl check for glib
-AM_PATH_GLIB_2_0(2.0.0,,
+AM_PATH_GLIB_2_0(2.6.0,,
 	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
 	gmodule gobject gthread)
 
@@ -389,7 +389,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AM_PATH_GTK_2_0(2.4.0,,
+AM_PATH_GTK_2_0(2.6.0,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 dnl --disable-deprecated switch for GTK2 purification

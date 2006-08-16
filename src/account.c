@@ -729,11 +729,7 @@ static void account_edit_create(void)
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
 
-#if GTK_CHECK_VERSION(2, 6, 0)
 	edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
-#else
-	edit_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
-#endif
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
