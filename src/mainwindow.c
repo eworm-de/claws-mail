@@ -2159,7 +2159,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 						 , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Receive/Cancel receiving"
 						 , M_INC_ACTIVE},
-
+		{"/Message/Send queued messages"  , M_HAVE_ACCOUNT|M_HAVE_QUEUED_MAILS},
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Message/Reply to"              , M_HAVE_ACCOUNT|M_TARGET_EXIST},

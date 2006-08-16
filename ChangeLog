@@ -1,3 +1,28 @@
+2006-08-16 [colin]	2.4.0cvs54
+
+	* src/compose.c
+	* src/main.c
+	* src/mainwindow.c
+		Fix send button sensitivity at startup
+		Set send menu sensitivity (patch by Fabien)
+	* src/ssl_manager.c
+		Enable closing with esc (patch by Fabien)
+	* src/gtk/foldersort.c
+		Enable closing with esc (patch by Fabien)
+	* src/procmime.c
+		Optimisation (no need to copy to tempfile to
+		"decode" 7bit and 8bit)
+	* src/summaryview.c
+		Fix cruft in swap_from case
+	* src/textview.c
+		Fix missing last line in some mail cases 
+		(Fixes debian #381872)
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+		Don't show "no key found" when user explicitely
+		wants to create a key
+
 2006-08-16 [paul]	2.4.0cvs53
 
 	* configure.ac

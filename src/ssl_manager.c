@@ -25,6 +25,7 @@
 #include <gtk/gtkwidget.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gdk/gdkkeysyms.h>
 #include <sys/types.h>
 #include <dirent.h>
 
@@ -60,6 +61,8 @@ static struct SSLManager
 static void ssl_manager_view_cb		(GtkWidget *widget, gpointer data);
 static void ssl_manager_delete_cb	(GtkWidget *widget, gpointer data);
 static void ssl_manager_close_cb	(GtkWidget *widget, gpointer data);
+static gboolean key_pressed		(GtkWidget *widget, GdkEventKey *event,
+					 gpointer data);
 static void ssl_manager_load_certs	(void);
 static void ssl_manager_double_clicked(GtkTreeView		*list_view,
 				   	GtkTreePath		*path,
@@ -158,6 +161,8 @@ void ssl_manager_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(ssl_manager_close_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
 	hbox1 = gtk_hbox_new(FALSE, 6);
@@ -324,6 +329,13 @@ static void ssl_manager_close_cb(GtkWidget *widget,
 			         gpointer data) 
 {
 	ssl_manager_close();
+}
+
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		ssl_manager_close();
+	return FALSE;
 }
 
 static void ssl_manager_double_clicked(GtkTreeView		*list_view,

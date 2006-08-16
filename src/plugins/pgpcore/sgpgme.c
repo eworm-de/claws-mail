@@ -579,14 +579,9 @@ void sgpgme_done()
         gpgmegtk_free_passphrase();
 }
 
-void sgpgme_create_secret_key(PrefsAccount *account)
+void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 {
-	AlertValue val = alertpanel(_("No PGP key found"),
-			_("Sylpheed-Claws did not find a secret PGP key, "
-			  "which means that you won't be able to sign "
-			  "emails or receive encrypted emails.\n"
-			  "Do you want to create a secret key now?"),
-			  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+	AlertValue val = G_ALERTDEFAULT;
 	gchar *key_parms = NULL;
 	gchar *name = NULL;
 	gchar *email = NULL;
@@ -601,10 +596,18 @@ void sgpgme_create_secret_key(PrefsAccount *account)
 	if (account == NULL)
 		account = account_get_default();
 
-	if (val == G_ALERTDEFAULT) {
-		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
-		prefs_gpg_save_config();
-		return;
+	if (ask_create) {
+		val = alertpanel(_("No PGP key found"),
+				_("Sylpheed-Claws did not find a secret PGP key, "
+				  "which means that you won't be able to sign "
+				  "emails or receive encrypted emails.\n"
+				  "Do you want to create a secret key now?"),
+				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+		if (val == G_ALERTDEFAULT) {
+			prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
+			prefs_gpg_save_config();
+			return;
+		}
 	}
 
 	if (account->name) {
@@ -725,7 +728,7 @@ void sgpgme_check_create_key(void)
 {
 	if (prefs_gpg_get_config()->gpg_ask_create_key &&
 	    !sgpgme_has_secret_key()) {
-		sgpgme_create_secret_key(NULL);
+		sgpgme_create_secret_key(NULL, TRUE);
 	} else {
 		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
 		prefs_gpg_save_config();

@@ -180,8 +180,7 @@ static void summary_set_ctree_from_list	(SummaryView		*summaryview,
 					 GSList			*mlist);
 static void summary_set_header		(SummaryView		*summaryview,
 					 gchar			*text[],
-					 MsgInfo		*msginfo,
-					 gboolean		*free_from);
+					 MsgInfo		*msginfo);
 static void summary_display_msg		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_display_msg_full	(SummaryView		*summaryview,
@@ -2394,9 +2393,8 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	gint *col_pos = summaryview->col_pos;
 	const gchar *msgid = msginfo->msgid;
 	GHashTable *msgid_table = summaryview->msgid_table;
-	gboolean free_from = FALSE;
 	
-	summary_set_header(summaryview, text, msginfo, &free_from);
+	summary_set_header(summaryview, text, msginfo);
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
@@ -2417,11 +2415,6 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 		SET_TEXT(S_COL_FROM);
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
 		SET_TEXT(S_COL_TO);
-
-	if (free_from) {
-		g_free(text[col_pos[S_COL_FROM]]);
-		text[col_pos[S_COL_FROM]] = NULL;
-	}
 
 #undef SET_TEXT
 
@@ -2480,23 +2473,19 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		END_TIMING();
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-		gboolean free_from = FALSE;
 		gint *col_pos = summaryview->col_pos;
 		START_TIMING("summaryview_set_ctree_from_list(2)");
 		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
-			summary_set_header(summaryview, text, msginfo, &free_from);
+			summary_set_header(summaryview, text, msginfo);
 
 			node = gtk_sctree_insert_node
 				(ctree, NULL, node, text, 2,
 				 NULL, NULL, NULL, NULL,
 				 FALSE, FALSE);
-			if (free_from) {
-				g_free(text[col_pos[S_COL_FROM]]);
-				text[col_pos[S_COL_FROM]] = NULL;
-			}
+
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
 
@@ -2582,7 +2571,7 @@ static gchar *summary_complete_address(const gchar *addr)
 }
 
 static void summary_set_header(SummaryView *summaryview, gchar *text[],
-			       MsgInfo *msginfo, gboolean *free_from)
+			       MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
 	static gchar col_score[11];
@@ -2668,12 +2657,11 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_TO]] = to_text;
 	if (!should_swap) {
 		text[col_pos[S_COL_FROM]] = from_text;
-		*free_from = FALSE;
 	} else {
-		gchar *tmp = NULL;
-		tmp = g_strconcat("-->", to_text, NULL);
+		gchar tmp[BUFFSIZE];
+		snprintf(tmp, BUFFSIZE-1, "--> %s", to_text);
+		tmp[BUFFSIZE-1]='\0';
 		text[col_pos[S_COL_FROM]] = tmp;
-		*free_from = TRUE;
 	}
 	
 	if (summaryview->simplify_subject_preg != NULL)

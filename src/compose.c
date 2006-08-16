@@ -4059,6 +4059,8 @@ gint compose_send(Compose *compose)
 	gchar *msgpath = NULL;
 	gboolean discard_window = FALSE;
 	gchar *errstr = NULL;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
 	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS
 			|| compose->batch == TRUE)
 		discard_window = TRUE;
@@ -4153,14 +4155,16 @@ gint compose_send(Compose *compose)
 		return -1;
  	}
 
-	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	toolbar_main_set_sensitive(mainwin);
+	main_window_set_menu_sensitive(mainwin);
 	return 0;
 
 bail:
 	compose_allow_user_actions (compose, TRUE);
 	compose->sending = FALSE;
 	compose->modified = TRUE; 
-	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	toolbar_main_set_sensitive(mainwin);
+	main_window_set_menu_sensitive(mainwin);
 
 	return -1;
 }

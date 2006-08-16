@@ -47,5 +47,5 @@ gchar *sgpgme_get_encrypt_data		(GSList *recp_names,
 gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account);
 void sgpgme_check_create_key(void);
 gboolean sgpgme_has_secret_key(void);
-void sgpgme_create_secret_key(PrefsAccount *account);
+void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create);
 #endif /* SGPGME_H */

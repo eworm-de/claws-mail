@@ -499,6 +499,10 @@ int main(int argc, char *argv[])
 			exit_sylpheed(mainwin);
 	}
 
+	
+	toolbar_main_set_sensitive(mainwin);
+	main_window_set_menu_sensitive(mainwin);
+
 	main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN

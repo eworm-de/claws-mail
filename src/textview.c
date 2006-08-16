@@ -953,8 +953,8 @@ textview_default:
 		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
-		while ((fgets(buf, sizeof(buf), tmpfp) != NULL) && 
-		       (ftell(tmpfp) <= mimeinfo->offset + mimeinfo->length))
+		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
+		       (fgets(buf, sizeof(buf), tmpfp) != NULL))
 			textview_write_line(textview, buf, conv);
 		fclose(tmpfp);
 	}

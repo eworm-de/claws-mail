@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "foldersort.h"
 #include "inc.h"
@@ -114,6 +115,19 @@ static void row_moved(GtkCList *clist, gint srcpos, gint destpos, FolderSortDial
 		set_selected(dialog, dialog->selected + 1);
 }
 
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, FolderSortDialog *dialog)
+{
+	destroy_dialog(dialog);
+	return TRUE;
+}
+
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, FolderSortDialog *dialog)
+{
+	if (event && event->keyval == GDK_Escape)
+		destroy_dialog(dialog);
+	return FALSE;
+}
+
 void foldersort_open()
 {
 	FolderSortDialog *dialog = g_new0(FolderSortDialog, 1);
@@ -138,10 +152,14 @@ void foldersort_open()
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(window), "window", window);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Set folder order"));
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_title(GTK_WINDOW(window), _("Set folder order"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(delete_event), dialog);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), dialog);
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_widget_show(vbox);

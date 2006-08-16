@@ -1985,6 +1985,7 @@ void toolbar_main_set_sensitive(gpointer data)
 	activate_compose_button(toolbar, 
 				prefs_common.toolbar_style,
 				toolbar->compose_btn_type);
+	
 }
 
 void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)

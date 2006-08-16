@@ -243,7 +243,9 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (encoding == ENC_UNKNOWN ||
-	    encoding == ENC_BINARY)
+	    encoding == ENC_BINARY ||
+	    encoding == ENC_7BIT ||
+	    encoding == ENC_8BIT)
 		return TRUE;
 
 	infp = g_fopen(mimeinfo->data.filename, "rb");

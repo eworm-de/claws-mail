@@ -239,7 +239,7 @@ static void prefs_gpg_update_sens(struct GPGAccountPage *page)
 static void new_key_clicked(GtkWidget *widget, gpointer user_data)
 {
 	struct GPGAccountPage *page = (struct GPGAccountPage *) user_data;
-	sgpgme_create_secret_key(page->account);
+	sgpgme_create_secret_key(page->account, FALSE);
 	prefs_gpg_update_sens(page);
 }
 
