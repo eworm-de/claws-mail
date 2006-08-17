@@ -78,7 +78,7 @@ struct select_keys_s {
 
 
 static void set_row (GtkCList *clist, gpgme_key_t key);
-static void fill_clist (struct select_keys_s *sk, const char *pattern,
+static gpgme_key_t fill_clist (struct select_keys_s *sk, const char *pattern,
 			gpgme_protocol_t proto);
 static void create_dialog (struct select_keys_s *sk);
 static void open_dialog (struct select_keys_s *sk);
@@ -104,7 +104,7 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
     char *buf;
 
     if (!running)
-        buf = g_strdup_printf (_("Please select key for '%s'"),
+        buf = g_strdup_printf (_("No exact match for '%s'; please select the key."),
                                pattern);
     else 
         buf = g_strdup_printf (_("Collecting info for '%s' ... %c"),
@@ -130,7 +130,7 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
 				gpgme_protocol_t proto)
 {
     struct select_keys_s sk;
-
+    gpgme_key_t key = NULL;
     memset (&sk, 0, sizeof sk);
 
     open_dialog (&sk);
@@ -139,9 +139,25 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
         sk.pattern = recp_names? recp_names->data:NULL;
 	sk.proto = proto;
         gtk_clist_clear (sk.clist);
-        fill_clist (&sk, sk.pattern, proto);
+        key = fill_clist (&sk, sk.pattern, proto);
         update_progress (&sk, 0, sk.pattern);
-        gtk_main ();
+	if (!key) {
+    		gtk_widget_show_all (sk.window);
+	        gtk_main ();
+	} else {
+     		gtk_widget_hide (sk.window);
+	       	sk.kset = g_realloc(sk.kset,
+                	sizeof(gpgme_key_t) * (sk.num_keys + 1));
+        	gpgme_key_ref(key);
+        	sk.kset[sk.num_keys] = key;
+        	sk.num_keys++;
+        	sk.okay = 1;
+		sk.result = KEY_SELECTION_OK;
+		gpgme_release (sk.select_ctx);
+		sk.select_ctx = NULL;
+		printf("used %s\n", key->uids->email);
+	}
+	key = NULL;
         if (recp_names)
             recp_names = recp_names->next;
     } while (sk.okay && recp_names);
@@ -237,7 +253,7 @@ set_row (GtkCList *clist, gpgme_key_t key)
     gtk_clist_set_row_data_full (clist, row, key, destroy_key);
 }
 
-static void 
+static gpgme_key_t 
 fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t proto)
 {
     GtkCList *clist;
@@ -245,10 +261,12 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     gpgme_error_t err;
     gpgme_key_t key;
     int running=0;
-
-    g_return_if_fail (sk);
+    int num_results = 0;
+    gboolean exact_match = FALSE;
+    gpgme_key_t last_key = NULL;
+    g_return_val_if_fail (sk, NULL);
     clist = sk->clist;
-    g_return_if_fail (clist);
+    g_return_val_if_fail (clist, NULL);
 
     debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern, proto);
 
@@ -269,25 +287,45 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
                      pattern, gpgme_strerror (err));
         sk->select_ctx = NULL;
         gpgme_release(ctx);
-        return;
+        return FALSE;
     }
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
+	gpgme_user_id_t uid = key->uids;
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
-        set_row (clist, key ); key = NULL;
+        set_row (clist, key ); 
+	for (; uid; uid = uid->next) {
+		if (!strcmp(pattern, uid->email)) {
+			exact_match = TRUE;
+			break;
+		}
+	}
+	num_results++;
+	last_key = key;
+	key = NULL;
         update_progress (sk, ++running, pattern);
         while (gtk_events_pending ())
             gtk_main_iteration ();
     }
+ 
+    if (exact_match == TRUE && num_results == 1) {
+	    if (last_key->uids->validity < GPGME_VALIDITY_FULL && 
+		!use_untrusted(last_key))
+		    exact_match = FALSE;
+    }
+
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
     if (gpgme_err_code(err) != GPG_ERR_EOF) {
         debug_print ("** gpgme_op_keylist_next failed: %s",
                      gpgme_strerror (err));
         gpgme_op_keylist_end(ctx);
     }
-    sk->select_ctx = NULL;
-    gpgme_release (ctx);
+    if (!exact_match || num_results != 1) {
+	    sk->select_ctx = NULL;
+	    gpgme_release (ctx);
+    }
     /*gtk_clist_thaw (select_keys.clist);*/
+    return (exact_match == TRUE && num_results == 1 ? last_key:NULL);
 }
 
 
@@ -381,8 +419,6 @@ create_dialog (struct select_keys_s *sk)
     vbox2 = gtk_vbox_new (FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-    gtk_widget_show_all (window);
-
     sk->window = window;
     sk->toplabel = GTK_LABEL (label);
     sk->clist  = GTK_CLIST (clist);
@@ -398,7 +434,6 @@ open_dialog (struct select_keys_s *sk)
     sk->okay = 0;
     sk->sort_column = N_COL_TITLES; /* use an invalid value */
     sk->sort_type = GTK_SORT_ASCENDING;
-    gtk_widget_show (sk->window);
 }
 
 
@@ -510,7 +545,10 @@ other_btn_cb (GtkWidget *widget, gpointer data)
                          NULL );
     if (!uid)
         return;
-    fill_clist (sk, uid, sk->proto);
+    if (fill_clist (sk, uid, sk->proto) != NULL) {
+	    gpgme_release(sk->select_ctx);
+	    sk->select_ctx = NULL;
+    }
     update_progress (sk, 0, sk->pattern);
     g_free (uid);
 }
@@ -520,14 +558,15 @@ static gboolean
 use_untrusted (gpgme_key_t key)
 {
     AlertValue aval;
-
-    aval = alertpanel
-	    (_("Trust key"),
-	     _("The selected key is not fully trusted.\n"
+    gchar *buf = g_strdup_printf(_("The key of '%s' is not fully trusted.\n"
 	       "If you choose to encrypt the message with this key you don't\n"
 	       "know for sure that it will go to the person you mean it to.\n"
-	       "Do you trust it enough to use it anyway?"),
+	       "Do you trust it enough to use it anyway?"), key->uids->email);
+    aval = alertpanel
+	    (_("Trust key"),
+	     buf,
 	     GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+    g_free(buf);
     if (aval == G_ALERTALTERNATE)
 	return TRUE;
     else

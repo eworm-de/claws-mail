@@ -1,3 +1,9 @@
+2006-08-17 [colin]	2.4.0cvs59
+
+	* src/plugins/pgpcore/select-keys.c
+		When encrypting, if only one key matches and it 
+		matches exactly, automatically use it.
+
 2006-08-17 [colin]	2.4.0cvs58
 
 	* src/mimeview.c
