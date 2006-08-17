@@ -4084,6 +4084,9 @@ gint compose_send(Compose *compose)
 		if (val == -4) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Charset conversion failed."));
+		} else if (val == -5) {
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+					   "Couldn't get recipient encryption key."));
 		} else if (val == -3) {
 			if (privacy_peek_error())
 			alertpanel_error(_("Could not queue message for sending:\n\n"
@@ -4808,6 +4811,11 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
 				/* and if encdata was null, it means there's been a problem in 
 				 * key selection */
+				lock = FALSE;
+				fclose(fp);
+				g_unlink(tmp);
+				g_free(tmp);
+				return -5;
 			}
 			g_free(encdata);
 		}
@@ -7560,6 +7568,9 @@ static void compose_send_later_cb(gpointer data, guint action,
 	} else if (val == -4) {
 		alertpanel_error(_("Could not queue message for sending:\n\n"
 				   "Charset conversion failed."));
+	} else if (val == -5) {
+		alertpanel_error(_("Could not queue message for sending:\n\n"
+				   "Couldn't get recipient encryption key."));
 	}
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }

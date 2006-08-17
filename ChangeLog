@@ -1,3 +1,9 @@
+2006-08-17 [colin]	2.4.0cvs60
+
+	* src/compose.c
+		Don't continue queuing if Cancel is clicked
+		in select-keys
+
 2006-08-17 [colin]	2.4.0cvs59
 
 	* src/plugins/pgpcore/select-keys.c
