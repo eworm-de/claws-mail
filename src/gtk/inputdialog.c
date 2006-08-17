@@ -38,6 +38,8 @@
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkimage.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkcheckbutton.h>
 
 #include "inputdialog.h"
 #include "manage_window.h"
@@ -63,13 +65,15 @@ static GtkWidget *msg_title;
 static GtkWidget *msg_label;
 static GtkWidget *entry;
 static GtkWidget *combo;
+static GtkWidget *remember_chkbtn;
 static GtkWidget *ok_button;
 static GtkWidget *icon_q, *icon_p;
 static gboolean is_pass = FALSE;
 static void input_dialog_create	(gboolean is_password);
 static gchar *input_dialog_open	(const gchar	*title,
 				 const gchar	*message,
-				 const gchar	*default_string);
+				 const gchar	*default_string,
+				 gboolean	*remember);
 static void input_dialog_set	(const gchar	*title,
 				 const gchar	*message,
 				 const gchar	*default_string);
@@ -105,7 +109,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	is_pass = FALSE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
 
-	return input_dialog_open(title, message, default_string);
+	return input_dialog_open(title, message, default_string, NULL);
 }
 
 gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
@@ -125,12 +129,20 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	is_pass = TRUE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 
-	return input_dialog_open(title, message, default_string);
+	return input_dialog_open(title, message, default_string, NULL);
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
 			  const gchar *default_string, GList *list,
 			  gboolean case_sensitive)
+{
+	return input_dialog_combo_remember(title, message, 
+		default_string, list, case_sensitive, NULL);
+}
+
+gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
+			  const gchar *default_string, GList *list,
+			  gboolean case_sensitive, gboolean *remember)
 {
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
@@ -140,6 +152,12 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_COMBO;
 	gtk_widget_hide(entry);
 	gtk_widget_show(combo);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_chkbtn), FALSE);
+	if (remember)
+		gtk_widget_show(remember_chkbtn);
+	else
+		gtk_widget_hide(remember_chkbtn);
 
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
@@ -157,7 +175,7 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 
 	gtk_combo_set_case_sensitive(GTK_COMBO(combo), case_sensitive);
 
-	return input_dialog_open(title, message, default_string);
+	return input_dialog_open(title, message, default_string, remember);
 }
 
 gchar *input_dialog_query_password(const gchar *server, const gchar *user)
@@ -253,6 +271,9 @@ static void input_dialog_create(gboolean is_password)
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
+	remember_chkbtn = gtk_check_button_new_with_label(_("Remember this"));
+	gtk_box_pack_start(GTK_BOX(vbox), remember_chkbtn, FALSE, FALSE, 0);
+
 	hbox = gtk_hbox_new(TRUE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
@@ -266,6 +287,8 @@ static void input_dialog_create(gboolean is_password)
 
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 	
+	gtk_widget_hide(remember_chkbtn);
+
 	if (is_password)
 		gtk_widget_hide(icon_q);
 	else
@@ -282,7 +305,7 @@ static void input_dialog_create(gboolean is_password)
 }
 
 static gchar *input_dialog_open(const gchar *title, const gchar *message,
-				const gchar *default_string)
+				const gchar *default_string, gboolean *remember)
 {
 	gchar *str;
 
@@ -323,6 +346,9 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 
 	GTK_EVENTS_FLUSH();
 
+	if (remember) {
+		*remember = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(remember_chkbtn));
+	}
 	debug_print("return string = %s\n", str ? str : "(none)");
 	return str;
 }

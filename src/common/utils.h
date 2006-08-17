@@ -562,7 +562,7 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			       const gchar **bp, const gchar **ep, gboolean hdr);
 gchar *make_email_string(const gchar *bp, const gchar *ep);
 gchar *make_http_string(const gchar *bp, const gchar *ep);
-gchar *mailcap_get_command_for_type(const gchar *type);
+gchar *mailcap_get_command_for_type(const gchar *type, const gchar *file_to_open);
 gboolean file_is_email (const gchar *filename);
 
 #ifdef __cplusplus

@@ -122,10 +122,11 @@ static void mimeview_save_all		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview);
 static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_open_part_with	(MimeView	*mimeview,
-					 MimeInfo	*partinfo);
+					 MimeInfo	*partinfo,
+					 gboolean	 automatic);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
-					 const gchar	*cmdline,
+					 const gchar	*cmd,
 					 MimeView  	*mimeview);
 static gboolean icon_clicked_cb		(GtkWidget 	*button, 
 					 GdkEventButton	*event, 
@@ -1607,10 +1608,10 @@ static void mimeview_open_with(MimeView *mimeview)
 
 	partinfo = mimeview_get_part_to_use(mimeview);
 
-	mimeview_open_part_with(mimeview, partinfo);
+	mimeview_open_part_with(mimeview, partinfo, FALSE);
 }
 
-static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo)
+static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboolean automatic)
 {
 	gchar *filename;
 	gchar *cmd;
@@ -1641,24 +1642,47 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo)
 		content_type = procmime_get_content_type_str(partinfo->type,
 			partinfo->subtype);
 	}
-	mime_command = mailcap_get_command_for_type(content_type);
-
+	
+	if (partinfo->type != MIMETYPE_TEXT || !prefs_common.ext_editor_cmd
+	||  !prefs_common.ext_editor_cmd[0])
+		mime_command = mailcap_get_command_for_type(content_type, filename);
+	else
+		mime_command = g_strdup(prefs_common.ext_editor_cmd);
 	if (mime_command == NULL) {
 		/* try with extension this time */
 		g_free(content_type);
 		content_type = procmime_get_mime_type(filename);
-		mime_command = mailcap_get_command_for_type(content_type);
+		mime_command = mailcap_get_command_for_type(content_type, filename);
 	}
 
-	g_free(content_type);
-	cmd = input_dialog_combo
-		(_("Open with"),
-		 _("Enter the command line to open file:\n"
-		   "('%s' will be replaced with file name)"),
-		 mime_command ? mime_command : prefs_common.mime_open_cmd,
-		 prefs_common.mime_open_cmd_history,
-		 TRUE);
-	g_free(mime_command);
+	if (mime_command == NULL)
+		automatic = FALSE;
+	
+	if (!automatic) {
+		gboolean remember = FALSE;
+		if (content_type != NULL)
+			cmd = input_dialog_combo_remember
+				(_("Open with"),
+				 _("Enter the command line to open file:\n"
+				   "('%s' will be replaced with file name)"),
+				 mime_command ? mime_command : prefs_common.mime_open_cmd,
+				 prefs_common.mime_open_cmd_history,
+				 TRUE, &remember);
+		else
+			cmd = input_dialog_combo
+				(_("Open with"),
+				 _("Enter the command line to open file:\n"
+				   "('%s' will be replaced with file name)"),
+				 mime_command ? mime_command : prefs_common.mime_open_cmd,
+				 prefs_common.mime_open_cmd_history,
+				 TRUE);
+		if (cmd && remember) {
+			mailcap_update_default(content_type, cmd);
+		}
+		g_free(mime_command);
+	} else {
+		cmd = mime_command;
+	}
 	if (cmd) {
 		mimeview_view_file(filename, partinfo, cmd, mimeview);
 		g_free(prefs_common.mime_open_cmd);
@@ -1666,66 +1690,28 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo)
 		prefs_common.mime_open_cmd_history =
 			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
-
+	g_free(content_type);
 	g_free(filename);
 }
 
 static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
-			       const gchar *cmdline, MimeView *mimeview)
+			       const gchar *cmd, MimeView *mimeview)
 {
-	static gchar *default_image_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
-	static gchar *default_audio_cmdline = DEFAULT_AUDIO_PLAYER_CMD;
-	static gchar *default_html_cmdline = DEFAULT_BROWSER_CMD;
-	static gchar *mime_cmdline = DEFAULT_MIME_CMD;
-	gchar buf[1024];
-	gchar m_buf[1024];
-	const gchar *cmd;
-	const gchar *def_cmd;
-	const gchar *p;
-
-	if (cmdline) {
-		cmd = cmdline;
-		def_cmd = NULL;
-	} else if (MIMETYPE_APPLICATION == partinfo->type &&
-		   !g_ascii_strcasecmp(partinfo->subtype, "octet-stream")) {
-		mimeview_open_part_with(mimeview, partinfo);
-		return;
-	} else if (MIMETYPE_IMAGE == partinfo->type) {
-		cmd = prefs_common.mime_image_viewer;
-		def_cmd = default_image_cmdline;
-	} else if (MIMETYPE_AUDIO == partinfo->type) {
-		cmd = prefs_common.mime_audio_player;
-		def_cmd = default_audio_cmdline;
-	} else if (MIMETYPE_TEXT == partinfo->type && !strcasecmp(partinfo->subtype, "html")) {
-		cmd = prefs_common.uri_cmd;
-		def_cmd = default_html_cmdline;
-	} else {
-		gchar *content_type;
-		
-		content_type = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
-		g_snprintf(m_buf, sizeof(m_buf), mime_cmdline,
-			   content_type, "%s");
-		g_free(content_type);
-		cmd = m_buf;
-		def_cmd = NULL;
-	}
-
-	if (cmd && (p = strchr(cmd, '%')) && *(p + 1) == 's' &&
-	    !strchr(p + 2, '%'))
-		g_snprintf(buf, sizeof(buf), cmd, filename);
+	gchar *p;
+	gchar buf[BUFFSIZE];
+	if (cmd == NULL)
+		mimeview_open_part_with(mimeview, partinfo, TRUE);
 	else {
-		if (cmd)
+		if ((p = strchr(cmd, '%')) && *(p + 1) == 's' &&
+		    !strchr(p + 2, '%'))
+			g_snprintf(buf, sizeof(buf), cmd, filename);
+ 		else {
 			g_warning("MIME viewer command line is invalid: '%s'", cmd);
-		if (def_cmd)
-			g_snprintf(buf, sizeof(buf), def_cmd, filename);
-		else {
-			mimeview_open_part_with(mimeview, partinfo);
-			return;
-		}
+			mimeview_open_part_with(mimeview, partinfo, FALSE);
+ 		}
+		if (execute_command_line(buf, TRUE) != 0)
+			mimeview_open_part_with(mimeview, partinfo, FALSE);
 	}
-
-	if (execute_command_line(buf, TRUE) != 0)
-		mimeview_open_part_with(mimeview, partinfo);
 }
 
 void mimeview_register_viewer_factory(MimeViewerFactory *factory)

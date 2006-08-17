@@ -585,7 +585,8 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	if (msgcontent->content == MIMECONTENT_FILE &&
 	    msgcontent->data.filename != NULL) {
-		g_unlink(msgcontent->data.filename);
+	    	if (msgcontent->tmp == TRUE)
+			g_unlink(msgcontent->data.filename);
 		g_free(msgcontent->data.filename);
 	}
 	msgcontent->data.mem = g_strdup(tmp);
@@ -694,7 +695,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	if (msgcontent->content == MIMECONTENT_FILE &&
 	    msgcontent->data.filename != NULL) {
-		g_unlink(msgcontent->data.filename);
+	    	if (msgcontent->tmp == TRUE)
+			g_unlink(msgcontent->data.filename);
 		g_free(msgcontent->data.filename);
 	}
 	msgcontent->data.mem = g_strdup(tmp);

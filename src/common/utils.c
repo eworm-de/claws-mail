@@ -4699,7 +4699,7 @@ gchar *make_http_string(const gchar *bp, const gchar *ep)
 	return result;
 }
 
-static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
+static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, const gchar *file_to_open)
 {
 	FILE *fp = fopen(path, "rb");
 	gchar buf[BUFFSIZE];
@@ -4707,7 +4707,7 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 	if (!fp)
 		return NULL;
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
-		gchar **parts = g_strsplit(buf, ";", -1);
+		gchar **parts = g_strsplit(buf, ";", 3);
 		gchar *trimmed = parts[0];
 		while (trimmed[0] == ' ')
 			trimmed++;
@@ -4715,19 +4715,63 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 			trimmed[strlen(trimmed)-1] = '\0';
 
 		if (!strcmp(trimmed, type)) {
+			gboolean needsterminal = FALSE;
+			if (parts[2] && strstr(parts[2], "needsterminal")) {
+				needsterminal = TRUE;
+			}
+			if (parts[2] && strstr(parts[2], "test=")) {
+				gchar *orig_testcmd = g_strdup(strstr(parts[2], "test=")+5);
+				gchar *testcmd = orig_testcmd;
+				if (strstr(testcmd,";"))
+					*(strstr(testcmd,";")) = '\0';
+				while (testcmd[0] == ' ')
+					testcmd++;
+				while (testcmd[strlen(testcmd)-1] == '\n')
+					testcmd[strlen(testcmd)-1] = '\0';
+				while (testcmd[strlen(testcmd)-1] == '\r')
+					testcmd[strlen(testcmd)-1] = '\0';
+				while (testcmd[strlen(testcmd)-1] == ' ')
+					testcmd[strlen(testcmd)-1] = '\0';
+					
+				if (strstr(testcmd, "%s")) {
+					gchar *tmp = g_strdup_printf(testcmd, file_to_open);
+					gint res = system(tmp);
+					g_free(tmp);
+					g_free(orig_testcmd);
+					
+					if (res != 0) {
+						g_strfreev(parts);
+						continue;
+					}
+				} else {
+					gint res = system(testcmd);
+					g_free(orig_testcmd);
+					
+					if (res != 0) {
+						g_strfreev(parts);
+						continue;
+					}
+				}
+			}
+			
 			trimmed = parts[1];
 			while (trimmed[0] == ' ')
 				trimmed++;
-			while (trimmed[strlen(trimmed)-1] == ' ')
-				trimmed[strlen(trimmed)-1] = '\0';
 			while (trimmed[strlen(trimmed)-1] == '\n')
 				trimmed[strlen(trimmed)-1] = '\0';
 			while (trimmed[strlen(trimmed)-1] == '\r')
 				trimmed[strlen(trimmed)-1] = '\0';
+			while (trimmed[strlen(trimmed)-1] == ' ')
+				trimmed[strlen(trimmed)-1] = '\0';
 			result = g_strdup(trimmed);
 			g_strfreev(parts);
 			fclose(fp);
-			if (strstr(result, "%s") && !strstr(result, "'%s'")) {
+			/* if there are no single quotes around %s, add them.
+			 * '.*%s.*' is ok, as in display 'png:%s'
+			 */
+			if (strstr(result, "%s") 
+			&& !(strstr(result, "'") < strstr(result,"%s") &&
+			     strstr(strstr(result,"%s"), "'"))) {
 				gchar *start = g_strdup(result);
 				gchar *end = g_strdup(strstr(result, "%s")+2);
 				gchar *tmp;
@@ -4738,6 +4782,11 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 				g_free(result);
 				result = tmp;
 			}
+			if (needsterminal) {
+				gchar *tmp = g_strdup_printf("xterm -e %s", result);
+				g_free(result);
+				result = tmp;
+			}
 			return result;
 		}
 		g_strfreev(parts);
@@ -4745,19 +4794,62 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type)
 	fclose(fp);
 	return NULL;
 }
-gchar *mailcap_get_command_for_type(const gchar *type)
+gchar *mailcap_get_command_for_type(const gchar *type, const gchar *file_to_open)
 {
 	gchar *result = NULL;
 	gchar *path = NULL;
 	if (type == NULL)
 		return NULL;
 	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
-	result = mailcap_get_command_in_file(path, type);
+	result = mailcap_get_command_in_file(path, type, file_to_open);
 	g_free(path);
 	if (result)
 		return result;
-	result = mailcap_get_command_in_file("/etc/mailcap", type);
+	result = mailcap_get_command_in_file("/etc/mailcap", type, file_to_open);
 	return result;
+}
+
+void mailcap_update_default(const gchar *type, const gchar *command)
+{
+	gchar *path = NULL, *outpath = NULL;
+	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
+	outpath = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap.new", NULL);
+	FILE *fp = fopen(path, "rb");
+	FILE *outfp = fopen(outpath, "wb");
+	gchar buf[BUFFSIZE];
+
+	if (!fp) {
+		g_free(path);
+		g_free(outpath);
+		return;
+	}
+	if (!outfp) {
+		g_free(path);
+		g_free(outpath);
+		fclose(fp);
+		return;
+	}
+	while (fgets(buf, sizeof (buf), fp) != NULL) {
+		gchar **parts = g_strsplit(buf, ";", 3);
+		gchar *trimmed = parts[0];
+		while (trimmed[0] == ' ')
+			trimmed++;
+		while (trimmed[strlen(trimmed)-1] == ' ')
+			trimmed[strlen(trimmed)-1] = '\0';
+
+		if (!strcmp(trimmed, type)) {
+			g_strfreev(parts);
+			continue;
+		}
+		else {
+			fputs(buf, outfp);
+		}
+		g_strfreev(parts);
+	}
+	fprintf(outfp, "%s; %s\n", type, command);
+	fclose(fp);
+	fclose(outfp);
+	g_rename(outpath, path);
 }
 
 gint copy_dir(const gchar *src, const gchar *dst)

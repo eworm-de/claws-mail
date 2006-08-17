@@ -1084,7 +1084,6 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			g_warning("can't save message\n");
 			return -1;
 		}
-		return 0;
 	}
 	msginfo = folder_item_get_msginfo(outbox, num);		/* refcnt++ */
 	tmp_msginfo = procmsg_msginfo_get_full_info(msginfo);	/* refcnt++ */ 
@@ -1095,8 +1094,8 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		if (tmp_msginfo && (msginfo->dispositionnotificationto || 
 		    msginfo->returnreceiptto)) {
 			procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0); 
-			procmsg_msginfo_free(msginfo);		/* refcnt-- */
 		}	
+		procmsg_msginfo_free(tmp_msginfo);		/* refcnt-- */
 	}
 
 	return 0;
