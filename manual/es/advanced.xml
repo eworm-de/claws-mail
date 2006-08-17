@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<section id="ch_advanced">
+  <title>Funcionalidades avanzadas</title>
+  <section id="adv_actions">
+    <title>Acciones</title>
+    <para>
+	Las acciones le permitirán utilizar toda la potencia de la línea de
+	órdenes de Unix con sus correos. Puede definir múltiples órdenes,
+	con parámetros como el fichero de correo actual, una lista de mensajes,
+	el texto seleccionado actualmente, y similares. Así podrá realizar
+	varias tareas, como editar el mensaje en crudo en su editor de texto,
+	<quote>esconder</quote> lo que escriba usando ROT-13, aplicar parches
+	contenidos en los correos directamente, etc. El único límite es su
+	imaginación. Las acciones se pueden configurar a través del menú
+	<quote>Herramientas</quote>.
+    </para>
+    <blockquote>
+      <example>
+	<title>
+	Un simple <quote>Abrin con...</quote>
+	</title>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	Nombre del menú: <emphasis>Abrir con/Kate</emphasis> 
+	Línea de orden: <emphasis>kate %p</emphasis>
+	    </term>
+	    <listitem>
+	      <para>
+	Abre el fichero de la parte MIME decodificada seleccionada 
+	(<emphasis>%p</emphasis>) con el editor de texto 
+	<emphasis>kate</emphasis>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </example>
+      <example>
+        <title>
+	Gestión de spam usando <ulink url="http://bogofilter.sourceforge.net/"
+	>Bogofilter</ulink>
+	</title>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	Nombre del menú: <emphasis>Bogofilter/Marcar como bueno</emphasis> 
+	Línea de orden: <emphasis>bogofilter -n -v -B "%f"</emphasis>
+	    </term>
+	    <listitem>
+	      <para>
+	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>) como
+	<quote>no spam</quote> usando <emphasis>Bogofilter</emphasis>. 
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	Nombre del menú: <emphasis>Bogofilter/Marcar como spam</emphasis> 
+	Línea de orden: <emphasis>bogofilter -s -v -B "%f"</emphasis>
+	    </term>
+	    <listitem>
+	      <para>
+	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>) como
+	<quote>spam</quote> usando <emphasis>Bogofilter</emphasis>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+    	</variablelist>
+      </example>
+    <example>
+      <title>Buscar en Google usando un script externo</title>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	Nombre del menú: <emphasis>Buscar/Google</emphasis> 
+	Línea de orden: <emphasis>|/ruta/a/google_search.pl</emphasis>
+	    </term>
+	    <listitem>
+	      <para>
+	Busca en Google el texto seleccionado actualmente 
+	(<emphasis>|</emphasis>) usando un script externo <emphasis><ulink 
+	url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink>
+	</emphasis>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </example>
+    </blockquote>
+  </section>
+  <section id="adv_templates">
+    <title>Plantillas</title>
+    <para>
+	Las plantillas se usan en las ventanas de composición y sirven de
+	modelo para correos. Las plantillas se pueden rellenar con texto
+	estático y con partes dinámicas, como el nombre del remitente original
+	(<quote>Estimado %N, ..."</quote>), la fecha, etc. Al aplicar la
+	plantilla los campos dinámicos serán reemplazados con los valores
+	relevantes. Se pueden configurar las plantillas a través del menú
+	<quote>Herramientas</quote>.
+    </para><para>
+	Al aplicar una plantilla se le preguntará si quiere 
+	<quote>Insertar</quote> o <quote>Reemplazar</quote>, la diferencia
+	entre ellas sólo es relativa al cuerpo del mensaje. 
+	<quote>Reemplazar</quote> sustituirá el cuerpo del mensaje en la
+	ventana de composición actual con el cuerpo definido en la plantilla,
+	eliminándolo si el cuerpo de la plantilla está vacío. 
+	<quote>Insertar</quote> insertará el cuerpo de la plantilla, si existe,
+	en la posición actual del cursor.
+    </para><para>
+	Independientemente de lo que elija, cualquier campo Para, Cc, Bcc que
+	esté definido en la plantilla será agregado a la lista de destinatarios
+	de la ventana de composición. Si está definido el asunto de la
+	plantilla siempre sustituirá el asunto de la ventana de composición.
+    </para><para>
+	Se pueden usar símbolos en cualquier parte de la plantilla y serán
+	reemplazados por su valor dinámico si es posible, si no, no se usará
+	ningún valor. Esto tiene habitualmente más sentido si aplica una 
+	plantilla al responder o reenviar, de otra manera la mayoría de los
+	valores de los símbolos estarán indefinidos. No hay restricción sobre
+	que símbolos se pueden usar en que parte de la plantilla, incluso si
+	insertar el cuerpo (%M o %Q) pueda carecer de sentido en situaciones
+	comunes.
+    </para><para>
+	Al aplicar una plantilla el cuerpo se procesa en primer lugar, después
+	los campos Para, Cc, Bcc y el Asunto.
+    </para><para>
+	Más información y ejemplos de uso se pueden encontrar en las preguntas
+	frecuentes de usuario (FAQ) en el sitio web de &SC; <ulink 
+	url="http://www.sylpheed-claws.net/faq/"
+	>http://www.sylpheed-claws.net/faq/</ulink>.
+    </para>
+   </section>
+  <section id="adv_processing">
+    <title>Procesamiento</title>
+    <para>
+	Las reglas de procesamiento son iguales que las de filtrado, con la
+	excepcón de que son aplicadas cuando se abre una carpeta y que sólo
+	se aplican a ésa carpeta. Puede usarlas para mover automáticamente
+	correos antiguos a una carpeta de archivo, o para un procesado
+	posterior de los mensajes, y más cosas. Se pueden establecer las reglas
+	de procesamiento de cada carpeta pulsando con el botón derecho del
+	ratón sobre ella.
+    </para><para>
+	Las reglas de procesamiento están acompañadas por las reglas de
+	pre-procesamiento y post-procesamiento. Al igual que las reglas de
+	procesamiento sólo se aplican al abrir una carpeta, pero al igual
+	que las reglas de filtrado son compartidas por todas las carpetas.
+	Se pueden configurar en el menú <quote>Herramientas</quote>. Las
+	reglas de pre-procesamiento se ejecutan antes que las reglas de
+	procesamiento específicas de la carpeta, mientras que las de
+	post-procesamiento se ejecutan después de éstas.
+    </para>
+  </section>
+  <section id="adv_colour_labels">
+  <title>Etiquetas de colores</title>
+  <para>
+	Las etiquetas de colores se pueden usar para indicar que un mensaje
+	tiene alguna relevancia particular. Para establecer una etiqueta de
+	color simplemente pulse con el botón derecho sobre un mensaje en la
+	lista de mensajes y utilize el submenú <quote>Etiquetar de 
+	color</quote>.
+  </para><para>
+	Las etiquetas de colores son configurables por el usuario. Se puede
+	establecer tanto el color como la etiqueta asociada. Las preferencias
+	se encuentran en la página 
+	<quote>Configuración/Preferencias/Ver/Colores</quote>.
+  </para>
+  </section>
+  <section id="adv_ml_support">
+  <title>Soporte de listas de correo</title>
+  <para>
+	&SC; ofrece soporte para listas de correo desde el submenú
+	<quote>Mensaje/Lista de correo</quote>. Cuando tenga seleccionado un
+	mensaje de una lista de correo, el submenú le permite rápidamente
+	iniciar la suscripción, desuscribirse, enviar un correo, obtener ayuda,
+	contactar con el dueño de la lista y ver los archivos de la lista, bien
+	abriendo una nueva ventana de composición con la dirección apropiada
+	rellenada o bien abriendo la URL en su navegador web.
+  </para>
+  </section>
+  <section id="adv_plugins">
+    <title>Módulos</title>
+    <para>
+	Los módulos son el mecanismo para extender las capacidades de &SC;.
+	Por ejemplo, imagine que quiere almacenar sus mensajes en una base
+	de datos <acronym>SQL</acronym> remota. En la mayoría de clientes
+	que encontrará esto es simplemente imposible sin reconstruir toda la
+	estructura interna del mismo. Con &SC; puede simplemente escribir un
+	módulo para conseguirlo.
+    </para><para>
+	Este sólo es un ejemplo de las posibilidades. Ya existe un buen número
+	de módulos desarrollados para &SC;, y más están por venir. La <link
+	linkend="ch_plugins">sección Extendiendo &SC;</link> contiene más
+	detalles sobre ellos.
+    </para>
+  </section>
+  <section id="deploying">
+    <title>Desplegando &SC;</title>
+    <para>
+	La asistente de configuración inicial intenta rellenar varios campos
+	utilizando información recolectada del sistema, como el nombre de
+	usuario, nombre de la máquina, y otros. Como está orientado al uso
+	general los valores predeterminados a menudo tienen que ser fijos.
+	Sin embargo este asistente es configurable, de tal manera que permite
+	a los administradores de sistema desplegar &SC; fácilmente para varios
+	usuarios de una máquina o, incluso, sobre múltiples máquinas instaladas
+	con alguna herramienta de replicación.
+    </para><para>
+	La primera parte consiste en crear una plantilla para el asistente
+	de configuración y establecer los parámetros predeterminados de una
+	nueva instalación de &SC;.
+    </para>
+    <itemizedlist>
+      <listitem>
+	<para>
+	Comience con un usuario que no tenga el directorio <filename
+	class="directory">~/.sylpheed-claws</filename>, idealmente un usuario
+	nuevo.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Inicie &SC; y navegue por el asistente. Los valores que introduzca no
+	serán de utilidad para el futuro despliegue, así que puede pulsar
+	siguiente-siguiente-siguiente.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Una vez que el asistente haya finalizado y tenga la ventana principal
+	de &SC; abierta, configure los valores predeterminados que quiera en
+	la copia maestra. Puede cargar módulos, añadir gente o servidores LDAP
+	en la agenda, crear reglas de filtrado, etc.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Si es necesario y el despliege de &SC; usará carpetas MH, puede crear
+	subdirectorios en el buzón.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	A continuación, salga de &SC;.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Ahora edite el nuevo fichero de plantilla creado por el asistente,
+	<filename>~/.sylpheed-claws/accountrc.tmpl</filename>. En este fichero
+	podrá ver distintas variables, correspondientes con los campos del
+	asistente. Puede dejar alguna comentada, en cuyo caso se usará el valor
+	predeterminado habitual, o especificar valores o variables. No todos
+	los campos pueden contener variables. Por ejemplo, 
+	<literal>smtpauth</literal>, <literal>smtpssl</literal> y 
+	<literal>recvssl</literal> son booleanos, bien 0 o 1, y 
+	<literal>recvtype</literal> es un valor entero. Los otros campos, como
+	<literal>name</literal>, <literal>email</literal> o 
+	<literal>recvuser</literal>, son leídos por el asistente y las 
+	variables que contienen reemplazadas por valores. Esto permite 
+	especificar todo lo que su instalación necesite, incluso si tiene
+	nombres de servidores o de entrada extraños.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Guarde este fichero y borre 
+	<filename>~/.sylpheed-claws/accountrc</filename> (que contiene la
+	cuenta inútil) y <filename>~/.sylpheed-claws/folderlist.xml</filename>
+	(de manera que el árbol de carpetas sea leído correctamente para los
+	nuevos usuarios). Copie recursivamente <filename 
+	class="directory">.sylpheed-claws</filename> a <filename
+	class="directory">/etc/skel/</filename>. Si el despliegue de &SC; va
+	a usar carpetas MH, copie tambien el directorio <filename 
+	class="directory">Mail</filename> creado. Cambie los permisos de todos
+	los ficheros bajo <filename
+	class="directory">/etc/skel/.sylpheed-claws</filename> y <filename
+	class="directory">etc/skel/Mail</filename> a 
+	<literal>root:root</literal> por razones de seguridad.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	¡Pruebe! Cree un usuario nuevo, inicie la sesión como ese usuario y
+	ejecute &SC;. Si todo fue rellenado tal y como quería, el usuario
+	simplemente tendrá que rellenar su contraseña.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	Ahora, si está creando una copia maestra para un despliegue en una
+	instalación múltiple, puede seguir este proceso. Si lo estaba haciendo
+	para una sola máquina ¡ha terminado!
+	</para>
+      </listitem>
+    </itemizedlist>
+    <para>
+	A continuación se listan las distintas variables del fichero
+	<filename>accountrc.tmpl</filename>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>domain</term>
+	<listitem>
+	  <para>
+	Su nombre de dominio (<literal>ejemplo.com</literal>). Si no se 
+	establece se extraerá del nombre de la máquina.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>name</term>
+	<listitem>
+	  <para>
+	El nombre de usuario. Si no se establece se extraerá de la información 
+	de entrada de Unix, que normalmente es lo correcto.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>email</term>
+	<listitem>
+	  <para>
+	El correo electrónico del usuario. Si no se establece se extraerá a 
+	partir de <literal>$name</literal> y <literal>$domain</literal>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>organization</term>
+	<listitem>
+	  <para>
+	Su organización. Si no se establece estará vacía.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>smtpserver</term>
+	<listitem>
+	  <para>
+	El servidor SMTP a usar. Si no se establece será 
+	<literal>smtp.$domain</literal>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>smtpauth</term>
+	<listitem>
+	  <para>
+	0 o 1. Si hay que autentificarse en el servidor SMTP. Si no se
+	establece será 0.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>smtpuser</term>
+	<listitem>
+	  <para>
+	El nombre de usuario para el servidor SMTP. Si no se establece estará
+	vacío (el mismo nombre de usuario que para recibir).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>smtppass</term>
+	<listitem>
+	  <para>
+	La contraseña del servidor SMTP. Si no se establece estará vacío
+	(si <literal>smtppass</literal> está vacío pero 
+	<literal>smtpuser</literal> no, se le preguntará la contraseña al
+	usuario).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>recvtype</term>
+	<listitem>
+	  <para>
+	El tipo de servidor del que recibir. 0 para POP3, 3 para IMAP4, 5 para
+	fichero MBox local. Si no se establece será 0 (POP3).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>recvserver</term>
+	<listitem>
+	  <para>
+	El servidor de recepción. Si no se establece será 
+	<literal>(pop|imap).$domain</literal>, dependiendo del 
+	<literal>$recvtype</literal>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>recvuser</term>
+	<listitem>
+	  <para>
+	El nombre de usuario del servidor de recepción. Si no se establece
+	será extraído de la información de entrada de Unix.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>recvpass</term>
+	<listitem>
+	  <para>
+	La contraseña del servidor de recepción. Si no se establece estará
+	vacía (se pedirá al usuario una vez por sesión).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>imapdir</term>
+	<listitem>
+	  <para>
+	El subdirectorio IMAP. Si no se establece estará vacío, lo cual es
+	suficiente a menudo.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>mboxfile</term>
+	<listitem>
+	  <para>
+	El fichero Mbox para recibir si <literal>$recvtype</literal> es 5.
+	Si no se establece será <literal>/var/mail/$LOGIN.</literal>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>mailbox</term>
+	<listitem>
+	  <para>
+	El buzón MH donde almacenar el correo (para 
+	<literal>$recvtype</literal> igual a 0 o a 5). Si no se establece
+	será <quote>Mail</quote>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>smtpssl</term>
+	<listitem>
+	  <para>
+	0 o 1. Si hay que usar SSL para enviar correo. Si no se establece será 
+	0.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>recvssl</term>
+	<listitem>
+	  <para>
+	0 o 1. Si hay que usar SSL para recibir correo. Si no se establece será 
+	0.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    <para>
+	A continuación se listan las diferentes variables que puede utilizar
+	en los campos <literal>domain</literal>, <literal>name</literal>,
+	<literal>email</literal>, <literal>organization</literal>, 
+	<literal>smtpserver</literal>, <literal>smtpuser</literal>, 
+	<literal>smtppass</literal>, <literal>recvserver</literal>, 
+	<literal>recvuser</literal>, <literal>recvpass</literal>, 
+	<literal>imapdir</literal>, <literal>mboxfile</literal> y
+	<literal>mailbox</literal>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>$DEFAULTDOMAIN</term>
+	<listitem>
+	  <para>
+	El nombre de dominio extraído de la información Unix del nombre de
+	máquina. A menudo incorrecta.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>$DOMAIN</term>
+	<listitem>
+	  <para>
+	El nombre de dominio establecido en la variable 
+	<literal>domain</literal>, la primera del fichero plantilla.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>$USERNAME</term>
+	<listitem>
+	  <para>
+	El nombre real del usuario.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>$LOGIN</term>
+	<listitem>
+	  <para>
+	El nombre de usuario (<emphasis>login</emphasis>) Unix del usuario.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>$NAME_MAIL</term>
+	<listitem>
+	  <para>
+	El nombre real del usuario tal y como se estableción en el campo de
+	la plantilla, en minúsculas y con los espacios reemplazados por puntos.
+	<quote>Ricardo Mones</quote> se convertiría en 
+	<quote>ricardo.mones</quote>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>$EMAIL</term>
+	<listitem>
+	  <para>
+	La dirección de correo electrónico tal y como se estableción en la
+	variable <literal>email</literal> del campo de la plantilla.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    <para>
+	Asegúrese de no usar una variable antes de definirla.
+    </para>
+  </section>
+  <section id="adv_hidden">
+    <title>Preferencias ocultas</title>
+    <para>
+	Hay cierto número de preferencias ocultas en &SC;, preferencias sin 
+	las que ciertos usuarios a quienes quisimos complacer no podrían
+	vivir, pero que en nuestra opinión no tienen lugar en el interfaz
+	gráfico. Puede encontrar las siguientes en 
+	<filename>~/.sylpheed-claws/sylpheedrc</filename>, y cambiarlas 
+	mientras &SC; no esté ejecutándose.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>bold_unread</term>
+	<listitem>
+	  <para>
+	Mostrar los mensajes no leídos utilizando negrita en la lista de
+	mensajes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>cache_max_mem_usage</term>
+	<listitem>
+	  <para>
+	La cantidad máxima de memoria a usar para la cache de mensajes, en Kb.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>cache_min_keep_time</term>
+	<listitem>
+	  <para>
+	El tiempo mínimo para mantener la cache en memoria, en minutos. Las
+	caches más recientes que este tiempo no se liberarán, aunque el uso
+	de memoria sea demasiado elevado.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>compose_no_markup</term>
+	<listitem>
+	  <para>
+	No utilizar texto en negrita y cursiva en el selector de cuentas de
+	la ventana de composición.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>enable_hscrollbar</term>
+	<listitem>
+	  <para>
+	Activa la barra de desplazamiento horizontal en la lista de mensajes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>enable_rules_hint</term>
+	 <listitem>
+	   <para>
+	Activar las líneas alternantes en los componentes GtkTreeView.
+	   </para>
+	 </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>enable_swap_from</term>
+	<listitem>
+	  <para>
+	Mostrar la dirección de correo del remitente en la columna Para de
+	la carpeta Enviado en lugar de la del destinatario.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>folderview_vscrollbar_policy</term>
+	<listitem>
+	  <para>
+	Especificar la política de la barra de desplazamiento vertical de
+	la vista de carpetas.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>hover_timeout</term>
+	<listitem>
+	  <para>
+	Tiempo en milisegundos que causará que se expanda un árbol de carpetas
+	cuando el cursor del ratón se mantenga encima en las operaciones de
+	arrastrar y soltar.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>live_dangerously</term>
+	<listitem>
+	  <para>
+	No solicitar confirmación antes de la eliminación definitiva de los
+	mensajes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>log_error_color</term>
+	<term>log_in_color</term>
+	<term>log_msg_color</term>
+	<term>log_out_color</term>
+	<term>log_warn_color</term>
+	<listitem>
+	  <para>
+	Colores a usar en la ventana de traza.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>mark_as_read_delay</term>
+	<listitem>
+	  <para>
+	Segundos de espera antes de marcar un mensaje como leído.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>skip_ssl_cert_check</term>
+	<listitem>
+	  <para>
+	Desactiva la verificación de los certificados SSL.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>statusbar_update_step</term>
+	<listitem>
+	  <para>
+	Salto de actualización en las barras de progreso.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>textview_cursor_visible</term>
+	<listitem>
+	  <para>
+	Mostrar el cursor en la vista de mensaje.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>thread_by_subject_max_age</term>
+	<listitem>
+	  <para>
+	Número de días para incluir un mensaje en un hilo cuando se use
+	<quote>Jerarquizar usando el asunto además de las cabeceras 
+	estándar</quote>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>toolbar_detachable</term>
+	<listitem>
+	  <para>
+	Ocultar los botones de manejo de las barras de herramientas.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>utf8_instead_of_locale_for_broken_mail</term>
+	<listitem>
+	  <para>
+	Utilizar la codificación UTF-8 para los correos incorrectos en lugar
+	de la localización actual.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>warn_dnd</term>
+	<listitem>
+	  <para>
+	Mostrar un diálogo de confirmación al arrastrar y soltar carpetas.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</section>

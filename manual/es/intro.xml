@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<section id="ch_intro">
+<title>Introduction</title>
+
+  <section id="intro_what">
+    <title>¿Qué es &SC;?</title>
+    <para>
+	&SC; es un cliente de correo electrónico orientado a ser rápido, 
+	fácil de usar y potente. Mayormente es independiente del escritorio 
+	usado, pero intenta integrarse en el escritorio de la mejor manera 
+	posible. Los desarrolladores de &SC; intentan por todos los medios 
+	mantenerlo ligero, de manera que sea utilizable en ordenadores de 
+	bajo coste o sin mucha memoria o potencia de CPU.
+    </para>
+  </section>
+
+  <section id="intro_whatnot">
+    <title>¿Qué no es &SC;?</title>
+    <para>
+	&SC; no es un gestor de información personal completo como Evolution 
+	u Outlook, aunque los módulos externos proporcionan estas 
+	funcionalidades. &SC; no le permitirá escribir y enviar correos HTML 
+	u otros tipos de cosas desagradables, por lo que para algunos entornos
+	empresariales puede que no sea el software que necesita.
+    </para>
+  </section>
+
+  <section id="intro_features"> 
+    <title>Características principales</title>
+    <para>
+    	&SC; brinda casi todo lo que un perfecto cliente de correo necesita.
+	Recuperacion de correo POP3, IMAP4, buzón local, sobre SSL; soporta
+	varios métodos de autentificación; Tiene múltiples cuentas y buzones,
+	potentes funcionalidades de filtrado y búsqueda, capacidad de 
+	importación y exportación de varios formatos, soporte de GnuPG
+	(firmas digitales y cifrado). Soporta módulos, barras de herramientas
+	configurables, corrección ortográfica, mecanismos para evitar cualquier
+	pérdida de datos, preferencias para cada carpeta y mucho más. Una 
+	lista completa de las características se puede encontrar en <ulink 
+	url="http://www.sylpheed-claws.net/features.php"
+	>http://www.sylpheed-claws.net/features.php</ulink>.
+    </para>
+  </section>
+
+  <section id="intro_history">
+    <title>Historia de &SC;</title>
+    <para>
+	&SC; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
+	servir de banco de puebas para posibles características de Sylpheed (
+	<ulink url="http://sylpheed.good-day.net/"
+	>http://sylpheed.good-day.net/</ulink>), de manera que las nuevas
+	funcionalidades se pudieran probar ampliamente sin comprometer la
+	estabilidad de Sylpheed. Los desarrolladores de &SC; sincronizaban
+	regularmente su código fuente con el de Sylpheed, y el autor de
+	Sylpheed, Hiroyuki Yamamoto, tomaba las nuevas funcionalidades que
+	le gustaban una vez se estabilizaban.
+    </para><para>
+	Originalmente ambos, Sylpheed y &SC; estaban basados en GTK1. El
+	trabajo en las versiones GTK2 empezó a principios del 2003, y el
+	primer &SC; moderno (basado en GTK2) se liberó en Marzo del 2005.
+	Desde esa época los objetivos de Sylpheed y &SC; empezaron a ser
+	más divergentes, y &SC; se convirtió en una entidad por si mismo.
+    </para>
+  </section>
+
+  <section id="intro_information">
+    <title>URLs de utilidad</title>
+    <para>
+	Sitio web: <ulink 
+	url="http://www.sylpheed-claws.net">www.sylpheed-claws.net</ulink>
+    </para><para>
+	Últimas noticias: <ulink url="http://www.sylpheed-claws.net/news.php"
+	>http://www.sylpheed-claws.net/news.php</ulink>
+    </para><para>
+	Módulos adicionales: <ulink 
+	url="http://www.sylpheed-claws.net/plugins.php"
+	>http://www.sylpheed-claws.net/plugins.php</ulink>
+    </para><para>
+	Temas de iconos: <ulink url="http://www.sylpheed-claws.net/themes.php"
+	>http://www.sylpheed-claws.net/themes.php</ulink>
+    </para><para>
+	Herramientas: <ulink url="http://www.sylpheed-claws.net/tools.php"
+	>http://www.sylpheed-claws.net/tools.php</ulink>
+    </para><para>
+	Listas de correo: <ulink url="http://www.sylpheed-claws.net/MLs.php"
+	>http://www.sylpheed-claws.net/MLs.php</ulink>
+    </para><para>
+	Seguimiento de fallos: <ulink 
+	url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/"
+	>http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>
+    </para><para>
+	Proyecto: <ulink url="http://sourceforge.net/projects/sylpheed-claws/"
+	>http://sourceforge.net/projects/sylpheed-claws/</ulink>
+    </para>
+  </section>
+
+</section>
+

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<section id="ch_plugins">
+<title>Extendiendo &SC;</title>
+
+  <section id="plugins_default">
+    <title>Módulos proporcionados</title>
+    <para>
+	Las capacidades de &SC; se amplian usando módulos. Los módulos que
+	se listan más adelante vienen incluidos con él, y se construyen
+	automáticamente si las librerías necesarias están disponibles.
+    </para><para>
+	Los módulos se instalan en $PREFIX/lib/sylpheed-claws/plugins/ y 
+	tienen el sufijo <quote>.so</quote>. Para cargar un módulo vaya
+	al menú <quote>Configuración/Módulos</quote> y pulse el botón
+	<quote>Cargar módulo</quote>. Seleccione el módulo que desee cargar y
+	pulse el botón Aceptar.
+    </para><para>
+	Si no encuentra el módulo que busca es posible que su distribución de
+	GNU/Linux lo proporcione en algún paquete distinto. En ese caso busque
+	el módulo con su gestor de paquetes.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>Antivirus Clam</term>
+	<listitem>
+	  <para>
+	Habilita el escaneado usando el antivirus Clam de los adjuntos de los 
+	mensajes recibidos de una cuenta POP, IMAP o local. Las preferencias
+	se encuentran en <quote>Configuración/Preferencias/Módulos/Antivirus
+	Clam</quote>. El antivirus Clam está disponible en <ulink 
+	url="http://clamav.sourceforge.net/"
+	>http://clamav.sourceforge.net/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Visor HTML Dillo</term>
+	<listitem>
+	  <para>
+	Habilita la visualización de mensajes HTML usando la versión 0.7.0 o
+	posterior del navegador web Dillo. De manera predeterminada utiliza la
+	opción <quote>--local</quote> para una navegación segura. Las
+	preferencias se encuentran en 
+	<quote>Configuración/Preferencias/Módulos/Navegador Dillo</quote>.
+	Dillo está disponible en  <ulink url="http://www.dillo.org/"
+	>http://www.dillo.org/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>PGP/Core, PGP/Inline y PGP/MIME</term>
+	<listitem>
+	  <para>
+	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
+	correos, verificar firmas o firmar y encriptar sus propios correos.
+	Utiliza GnuPG/GPGME,  <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SpamAssassin</term>
+	<listitem>
+	  <para>
+	El módulo SpamAssassin proporciona dos grandes funcionalidades:
+	  </para><para>
+	La capacidad de escanear con SpamAssassin el correo entrante de 
+	cualquier cuenta POP, IMAP o local. Opcionalmente puede borrar los
+	mensajes identificados como spam o guardarlos en una carpeta al efecto.
+	El escaneo de correo se puede desactivar, lo cual es útil si el
+	correo ya es escaneado en su servidor.
+	  </para><para>
+	La posibilidad para que los usuarios enseñen a SpamAssassin a 
+	distinguir el spam de los correos deseados. Se puede entrenar a
+	SpamAssassin marcando los mensajes como spam o no usando el menú
+	contextual de la lista de mensajes, o usando un botón para ello en
+	la barra de herramientas de la ventana principal o de mensaje (vea
+	<quote>Configuración/Preferencias/Configurar barras de 
+	herramientas</quote>. Los mensajes marcados como spam se pueden
+	guardar opcionalmente en una carpeta destinada a ello.
+	  </para><para>
+	Las preferencias del módulo se encuentran 
+	en <quote>Configuración/Preferencias/Módulos/SpamAssassin</quote>. 
+	  </para><para>
+	SpamAssassin está disponible en <ulink
+	url="http://spamassassin.apache.org/"
+	>http://spamassassin.apache.org/</ulink>. Es necesaria la versión
+	3.1.x o superior para utilizar la funcionalidad de aprendizaje en
+	modo TCP.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Trayicon</term>
+	<listitem>
+	  <para>
+	Coloca un icono en la bandeja del sistema que indica si hay correo
+	nuevo. Una notificación emergente muestra también el número de 
+	mensajes nuevos, sin leer y totales, al mover el puntero del ratón
+	sobre el icono.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section id="plugins_external">
+    <title>Más módulos</title>
+    <para>
+	También se han escrito otros módulos, que están disponibles para
+	descargar aparte. Mientras se escribe esto hay cierto número de módulos
+	dispononibles en <ulink url="http://www.sylpheed-claws.net/plugins.php"
+	>http://www.sylpheed-claws.net/plugins.php</ulink>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>Acpi Notifier</term>
+	<listitem>
+	  <para>
+	Permite la notificación de correo nuevo a través de los LEDs que 
+	tienen algunos portátiles, como los de Acer, Asus, Fujitsu e IBM.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>AttRemover</term>
+	<listitem>
+	  <para> 
+	Este módulo le permite eliminar los adjuntos de los mensajes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>CacheSaver</term>
+	<listitem>
+	  <para>
+	Guarda las caches cada 60 segundos (o un período definido por el 
+	usuario). Puede ayudar a prevenir la pérdida de metadatos si su
+	ordenador (<emphasis>¡o &SC;!</emphasis>) se cuelga.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>etpan! Privacy</term>
+	<listitem>
+	  <para>
+	Gestiona la verificación y descifrado de mensajes cifrados con S/MIME,
+	OpenPGP y en formato blindado-ASCII (<emphasis>ASCII-armored</emphasis> N. del T.). No gestiona contraseñas.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Fetchinfo</term>
+	<listitem>
+	  <para>
+	Inserta cabeceras que contienen cierta información sobre la descarga,
+	como el UIDL, el nombre de la cuenta de &SC;, el servidor POP, el
+	identificador de usuario y la hora de descarga.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>GtkHtml Viewer</term>
+	<listitem>
+	  <para>
+	Al igual que Dillo, permite la visualización de mensajes HTML, pero
+	lo hace de manera más elegante (utiliza tipografías suavizadas).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Maildir</term>
+	<listitem>
+	  <para>
+	Proporciona soporte de acceso directo a buzones Maildir++. Con este
+	módulo puede compartir su buzón Maildir++ con otros clientes de
+	correo o servidores IMAP.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>mailMBOX</term>
+	<listitem>
+	  <para>
+	Gestiona buzones en formato mbox.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Perl</term>
+	<listitem>
+	  <para>
+	Para ampliar las posibilidades de filtrado de &SC;. Proporciona un
+	interfaz Perl al mecanismo de filtrado de &SC;, permitiendo el uso de
+	toda la potencia de Perl en los filtros de correo.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>S/MIME</term>
+	<listitem>
+	  <para>
+	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
+	correos, verificar firmas digitales o firmar y cifrar sus propios
+	correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
+	url="ftp://ftp.gnupg.org/gcrypt/gpgme/">
+	ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SynCE</term>
+	<listitem>
+	  <para>
+	Ayuda a mantener sincronizada la agenda de direcciones de un
+	dispositivo Windows CE (Pocket PC, iPAQ, Smartphone, etc.) con la
+	agenda de direcciones de &SC; en lo que a direcciones de correo
+	electrónico se refiere.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>vCalendar</term>
+	<listitem>
+	  <para>
+	Permite la gestión de mensajes vCalendar al estilo de Evolution u
+	Outlook, y también suscripciones Webcal.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>RSSyl</term>
+	<listitem>
+	  <para>
+	Permite leer sus canales de noticias favoritos en &SC;. Actualmente
+	están soportados canales RSS 1.0, 2.0 y Atom.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    <para>
+	Si usted es un desarrollador, escribir un módulo para extender las
+	capacidades de &SC; será probablemente la mejor solución y la más 
+	fácil. Nosotros proporcionaremos almacenamiento para su código y
+	estaremos encantados de responder a sus preguntas en la lista de
+	correo o en los canales de IRC, #sylpheed-claws en Freenode o IRCnet.
+    </para>
+  </section>
+  <section id="plugins_network">
+    <title>Acceso a la red desde los módulos</title>
+    <para>
+	Algunos de los módulos externos, por ejemplo RSSyl, vCalendar o el
+	visor GtkHtml, necesitan acceso a Internet para llevar a cabo sus
+	funciones (recuperar canales en el caso de RSSyl o vCalendar, y
+	obtener imágenes en el caso del visro GtkHtml). Estos módulos usan
+	para ello la librería Curl. Por tanto, si su acceso a internet está
+	restringido por un proxy necesitará decirle a libCurl que lo use.
+	Esto se consigue estableciendo la variable de entorno 
+	<emphasis>http_proxy</emphasis>. Por ejemplo, <emphasis>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</emphasis> le dirá a libCurl que
+	conecte al puerto 8080 de la máquina miproxy.ejemplo.com con el 
+	usuario <quote>usuario</quote> y contraseña <quote>contra</quote> para
+	conectarse a Internet.
+    </para><para>
+	Puede establecer esta variable antes de iniciar &SC;, usando por
+	por ejemplo la orden 
+	<emphasis>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080 
+	sylpheed-claws</emphasis>, o establecerla en su fichero ~/.bashrc
+	añadiendo la línea <emphasis>export
+	http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</emphasis>
+	(tendrá que reconectar para que se tenga en cuenta).
+    </para>
+  </section>
+</section>
+

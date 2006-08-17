@@ -1,3 +1,28 @@
+2006-08-17 [mones]	2.4.0cvs55
+
+	* configure.ac
+	* manual/Makefile.am
+	* manual/es/Makefile.am
+	* manual/es/account.xml
+	* manual/es/ack.xml
+	* manual/es/addrbook.xml
+	* manual/es/advanced.xml
+	* manual/es/faq.xml
+	* manual/es/glossary.xml
+	* manual/es/gpl.xml
+	* manual/es/handling.xml
+	* manual/es/intro.xml
+	* manual/es/keyboard.xml
+	* manual/es/plugins.xml
+	* manual/es/starting.xml
+	* manual/es/sylpheed-claws-manual.xml
+	* manual/es/dist/Makefile.am
+	* manual/es/dist/html/Makefile.am
+	* manual/es/dist/pdf/Makefile.am
+	* manual/es/dist/ps/Makefile.am
+	* manual/es/dist/txt/Makefile.am
+		Spanish translation for the manual
+
 2006-08-16 [colin]	2.4.0cvs54
 
 	* src/compose.c
