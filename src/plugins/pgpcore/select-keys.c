@@ -155,7 +155,7 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
 		sk.result = KEY_SELECTION_OK;
 		gpgme_release (sk.select_ctx);
 		sk.select_ctx = NULL;
-		printf("used %s\n", key->uids->email);
+		debug_print("used %s\n", key->uids->email);
 	}
 	key = NULL;
         if (recp_names)
@@ -287,7 +287,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
                      pattern, gpgme_strerror (err));
         sk->select_ctx = NULL;
         gpgme_release(ctx);
-        return FALSE;
+        return NULL;
     }
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
