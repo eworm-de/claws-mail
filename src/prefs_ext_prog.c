@@ -57,14 +57,8 @@ typedef struct _ExtProgPage
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
 
-	GtkWidget *image_viewer_label;
-	GtkWidget *image_viewer_entry;
-	
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
-
-	GtkWidget *audio_player_label;
-	GtkWidget *audio_player_entry;
 } ExtProgPage;
 
 void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -82,12 +76,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
-	GtkWidget *image_viewer_label;
-	GtkWidget *image_viewer_entry;
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
-	GtkWidget *audio_player_label;
-	GtkWidget *audio_player_entry;
 	GtkWidget *printcmd_label;
 	GtkWidget *printcmd_entry;
 	GtkTooltips *tooltip;
@@ -180,28 +170,10 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
 			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
 
-	image_viewer_label = gtk_label_new (_("Image viewer"));
-	gtk_widget_show(image_viewer_label);
-
-	gtk_table_attach(GTK_TABLE (table2), image_viewer_label, 0, 1, 2, 3,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (image_viewer_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (image_viewer_label), 1, 0.5);
-
-	image_viewer_entry = gtk_entry_new ();
-	gtk_widget_show(image_viewer_entry);
-	
-	gtk_table_attach(GTK_TABLE (table2), image_viewer_entry, 1, 2, 2, 3,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(image_viewer_entry), 
-			   prefs_common.mime_image_viewer ? prefs_common.mime_image_viewer : "");
-
 	astextviewer_label = gtk_label_new(_("Command for 'Display as text'"));
 	gtk_widget_show(astextviewer_label);
 
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, 3, 4,
+	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, 2, 3,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (astextviewer_label), GTK_JUSTIFY_RIGHT);
@@ -215,35 +187,17 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "contextual menu item"),
 			     NULL);
 	
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, 2, 3,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(astextviewer_entry), 
 			   prefs_common.mime_textviewer ? prefs_common.mime_textviewer : "");
 
-	audio_player_label = gtk_label_new (_("Audio player"));
-	gtk_widget_show(audio_player_label);
-
-	gtk_table_attach(GTK_TABLE (table2), audio_player_label, 0, 1, 4, 5,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (audio_player_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (audio_player_label), 1, 0.5);
-
-	audio_player_entry = gtk_entry_new ();
-	gtk_widget_show(audio_player_entry);
-	
-	gtk_table_attach(GTK_TABLE (table2), audio_player_entry, 1, 2, 4, 5,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(audio_player_entry), 
-			   prefs_common.mime_audio_player ? prefs_common.mime_audio_player : "");
-
 	printcmd_label = gtk_label_new (_("Print command"));
 	#ifndef USE_GNOMEPRINT
 		gtk_widget_show(printcmd_label);
 	#endif
-	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, 5, 6,
+	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, 3, 4,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (printcmd_label), GTK_JUSTIFY_RIGHT);
@@ -253,7 +207,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	#ifndef USE_GNOMEPRINT
 		gtk_widget_show(printcmd_entry);
 	#endif
-	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, 5, 6,
+	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, 3, 4,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd ? prefs_common.print_cmd : "");
@@ -262,9 +216,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_ext_prog->window			= GTK_WIDGET(window);
 	prefs_ext_prog->uri_entry		= uri_entry;
 	prefs_ext_prog->exteditor_entry		= exteditor_entry;
-	prefs_ext_prog->image_viewer_entry	= image_viewer_entry;
 	prefs_ext_prog->astextviewer_entry	= astextviewer_entry;
-	prefs_ext_prog->audio_player_entry	= audio_player_entry;
 	prefs_ext_prog->printcmd_entry		= printcmd_entry;
 
 	prefs_ext_prog->page.widget = table;
@@ -280,12 +232,8 @@ void prefs_ext_prog_save(PrefsPage *_page)
 		(GTK_EDITABLE(ext_prog->printcmd_entry), 0, -1);
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);
-	prefs_common.mime_image_viewer = gtk_editable_get_chars
-		(GTK_EDITABLE(ext_prog->image_viewer_entry), 0, -1);
 	prefs_common.mime_textviewer = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->astextviewer_entry), 0, -1);
-	prefs_common.mime_audio_player = gtk_editable_get_chars
-		(GTK_EDITABLE(ext_prog->audio_player_entry), 0, -1);
 }
 
 static void prefs_ext_prog_destroy_widget(PrefsPage *_page)

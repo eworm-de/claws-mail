@@ -109,12 +109,8 @@ static PrefParam param_os_specific[] = {
 	 &prefs_common.attach_load_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
-	{"mime_image_viewer", NULL,
-	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
 	{"mime_textviewer", NULL,
 	 &prefs_common.mime_textviewer,   P_STRING, NULL, NULL, NULL},
-	{"mime_audio_player", NULL,
-	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
 	{"mime_open_command", "notepad '%s'",
 	 &prefs_common.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 
@@ -584,12 +580,8 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.attach_load_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
-	{"mime_image_viewer", DEFAULT_IMAGE_VIEWER_CMD,
-	 &SPECIFIC_PREFS.mime_image_viewer, P_STRING, NULL, NULL, NULL},
 	{"mime_textviewer",   NULL,
 	 &SPECIFIC_PREFS.mime_textviewer,   P_STRING, NULL, NULL, NULL},
-	{"mime_audio_player", DEFAULT_AUDIO_PLAYER_CMD,
-	 &SPECIFIC_PREFS.mime_audio_player, P_STRING, NULL, NULL, NULL},
 	{"mime_open_command", "gedit '%s'",
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 

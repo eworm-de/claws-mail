@@ -278,9 +278,7 @@ struct _PrefsCommon
 	gboolean attach_desc;
 
 	/* MIME viewer */
-	gchar *mime_image_viewer;
 	gchar *mime_textviewer;
-	gchar *mime_audio_player;
 	gchar *mime_open_cmd;
 	gchar *attach_save_dir;
 	gchar *attach_load_dir;

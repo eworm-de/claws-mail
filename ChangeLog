@@ -1,3 +1,13 @@
+2006-08-17 [colin]	2.4.0cvs58
+
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_ext_prog.c
+	* src/textview.c
+		Fix issues with previous patch (text/html)
+		Remove outdated prefs
+
 2006-08-17 [colin]	2.4.0cvs57
 
 	* src/imap.c

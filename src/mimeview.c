@@ -1643,11 +1643,15 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 			partinfo->subtype);
 	}
 	
-	if (partinfo->type != MIMETYPE_TEXT || !prefs_common.ext_editor_cmd
+	if ((partinfo->type == MIMETYPE_TEXT && !strcmp(partinfo->subtype, "html"))
+	&& prefs_common.uri_cmd && prefs_common.uri_cmd[0])
+		mime_command = g_strdup(prefs_common.uri_cmd);
+	else if (partinfo->type != MIMETYPE_TEXT || !prefs_common.ext_editor_cmd
 	||  !prefs_common.ext_editor_cmd[0])
 		mime_command = mailcap_get_command_for_type(content_type, filename);
 	else
 		mime_command = g_strdup(prefs_common.ext_editor_cmd);
+
 	if (mime_command == NULL) {
 		/* try with extension this time */
 		g_free(content_type);

@@ -2578,10 +2578,8 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
 					   "menu_button");
 
-	static gchar *default_cmdline = DEFAULT_IMAGE_VIEWER_CMD;
+	gchar *cmd = NULL;
 	gchar buf[1024];
-	const gchar *cmd;
-	const gchar *def_cmd;
 	const gchar *p;
 	gchar *filename = NULL;
 	gchar *tmp_filename = NULL;
@@ -2606,24 +2604,32 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 	copy_file(tmp_filename, filename, FALSE);
 	g_free(tmp_filename);
 
-	cmd = prefs_common.mime_image_viewer;
-	def_cmd = default_cmdline;
-	
+	cmd = mailcap_get_command_for_type("image/jpeg", filename);
+	if (cmd == NULL) {
+		gboolean remember = FALSE;
+		cmd = input_dialog_combo_remember
+			(_("Open with"),
+			 _("Enter the command line to open file:\n"
+			   "('%s' will be replaced with file name)"),
+			 prefs_common.mime_open_cmd,
+			 prefs_common.mime_open_cmd_history,
+			 TRUE, &remember);
+		if (cmd && remember) {
+			mailcap_update_default("image/jpeg", cmd);
+		}
+	}
 	if (cmd && (p = strchr(cmd, '%')) && *(p + 1) == 's' &&
 	    !strchr(p + 2, '%'))
 		g_snprintf(buf, sizeof(buf), cmd, filename);
 	else {
-		if (cmd)
-			g_warning("Image viewer command line is invalid: '%s'", cmd);
-		if (def_cmd)
-			g_snprintf(buf, sizeof(buf), def_cmd, filename);
-		else
-			return;
+		g_warning("Image viewer command line is invalid: '%s'", cmd);
+		return;
 	}
 
 	execute_command_line(buf, TRUE);
 
 	g_free(filename);
+	g_free(cmd);
 
 	g_object_set_data(G_OBJECT(textview->file_popup_menu), "menu_button",
 			  NULL);
