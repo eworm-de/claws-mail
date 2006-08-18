@@ -1,3 +1,9 @@
+2006-08-18 [paul]	2.4.0cvs64
+
+	* src/stock_pixmap.c
+		fix leaks
+		Thanks to Colin
+
 2006-08-18 [paul]	2.4.0cvs63
 
 	* src/compose.c

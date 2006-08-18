@@ -466,8 +466,10 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 				filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
 				if (is_file_exist(filetoexist)) {
 					*list = g_list_append(*list, fullentry);
+					g_free(filetoexist);
 					break;
 				}
+				g_free(filetoexist);
 			}
 			g_free(filetoexist);
 			if (i == N_STOCK_PIXMAPS) 
