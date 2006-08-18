@@ -4075,6 +4075,7 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
+	inc_lock();
 	val = compose_queue(compose, &msgnum, &folder, &msgpath, TRUE);
 
 	if (val) {
@@ -4114,6 +4115,7 @@ gint compose_send(Compose *compose)
 		if (!discard_window) {
 			goto bail;
 		}
+		inc_unlock();
 		return -1;
 	}
 	
@@ -4155,14 +4157,16 @@ gint compose_send(Compose *compose)
 		if (!discard_window) {
 			goto bail;		
 		}
+		inc_unlock();
 		return -1;
  	}
-
+	inc_unlock();
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
 	return 0;
 
 bail:
+	inc_unlock();
 	compose_allow_user_actions (compose, TRUE);
 	compose->sending = FALSE;
 	compose->modified = TRUE; 
@@ -7554,7 +7558,10 @@ static void compose_send_later_cb(gpointer data, guint action,
 	Compose *compose = (Compose *)data;
 	gint val;
 
+	inc_lock();
 	val = compose_queue_sub(compose, NULL, NULL, NULL, TRUE, TRUE);
+	inc_unlock();
+
 	if (!val) {
 		compose_close(compose);
 	} else if (val == -1) {

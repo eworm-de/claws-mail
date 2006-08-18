@@ -46,6 +46,7 @@
 #include "summaryview.h"
 #include "log.h"
 #include "timing.h"
+#include "inc.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr);
 
@@ -906,11 +907,13 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		return -1;
 	}
 	send_queue_lock = TRUE;
+	inc_lock();
 	if (!queue)
 		queue = folder_get_default_queue();
 	
 	if (queue == NULL) {
 		send_queue_lock = FALSE;
+		inc_unlock();
 		return -1;
 	}
 
@@ -966,6 +969,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		}
 	}
 	send_queue_lock = FALSE;
+	inc_unlock();
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
 	return (err != 0 ? -err : sent);

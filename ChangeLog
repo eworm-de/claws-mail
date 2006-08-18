@@ -1,3 +1,11 @@
+2006-08-18 [paul]	2.4.0cvs63
+
+	* src/compose.c
+	* src/procmsg.c
+		fix occasional IMAP bug where large msgs
+		were left in the queue folder after sending
+		Thanks to Colin
+
 2006-08-18 [paul]	2.4.0cvs62
 
 	* src/folderview.c
