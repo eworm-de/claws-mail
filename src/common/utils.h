@@ -554,16 +554,29 @@ gpointer g_auto_pointer_get_ptr		(GAuto *auto_ptr);
 GAuto *g_auto_pointer_copy		(GAuto *auto_ptr);
 void g_auto_pointer_free		(GAuto *auto_ptr);
 void replace_returns			(gchar *str);
+gboolean get_uri_part	(const gchar *start,
+		    	 const gchar *scanpos,
+		     	 const gchar **bp,
+		    	 const gchar **ep,
+		   	 gboolean hdr);
+gchar *make_uri_string	(const gchar *bp,
+			 const gchar *ep);
+gboolean get_email_part	(const gchar *start, 
+			 const gchar *scanpos,
+			 const gchar **bp, 
+			 const gchar **ep,
+			 gboolean hdr);
+gchar *make_email_string(const gchar *bp,
+			 const gchar *ep);
+gchar *make_http_string (const gchar *bp,
+			 const gchar *ep);
 
-gboolean get_uri_part(const gchar *start, const gchar *scanpos,
-			     const gchar **bp, const gchar **ep, gboolean hdr);
-gchar *make_uri_string(const gchar *bp, const gchar *ep);
-gboolean get_email_part(const gchar *start, const gchar *scanpos,
-			       const gchar **bp, const gchar **ep, gboolean hdr);
-gchar *make_email_string(const gchar *bp, const gchar *ep);
-gchar *make_http_string(const gchar *bp, const gchar *ep);
-gchar *mailcap_get_command_for_type(const gchar *type, const gchar *file_to_open);
-gboolean file_is_email (const gchar *filename);
+gchar *mailcap_get_command_for_type(const gchar *type, 
+				    const gchar *file_to_open);
+void mailcap_update_default	   (const gchar *type,
+				    const gchar *command);
+
+gboolean file_is_email(const gchar *filename);
 
 #ifdef __cplusplus
 }

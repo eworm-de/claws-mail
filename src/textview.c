@@ -64,6 +64,7 @@
 #include "image_viewer.h"
 #include "filesel.h"
 #include "base64.h"
+#include "inputdialog.h"
 
 struct _ClickableText
 {

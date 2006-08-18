@@ -1753,3 +1753,4 @@
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpcore/select-keys.c;  ) > 2.4.0cvs59.patchset
 ( cvs diff -u -r 1.382.2.301 -r 1.382.2.302 src/compose.c;  ) > 2.4.0cvs60.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpcore/select-keys.c;  ) > 2.4.0cvs61.patchset
+( cvs diff -u -r 1.207.2.111 -r 1.207.2.112 src/folderview.c;  cvs diff -u -r 1.96.2.138 -r 1.96.2.139 src/textview.c;  cvs diff -u -r 1.20.2.35 -r 1.20.2.36 src/common/utils.h;  ) > 2.4.0cvs62.patchset

@@ -65,6 +65,7 @@
 #include "partial_download.h"
 #include "prefs_folder_column.h"
 #include "filtering.h"
+#include "quicksearch.h"
 #include "manual.h"
 
 #define COL_FOLDER_WIDTH	150
@@ -1665,7 +1666,8 @@ gboolean folderview_update_item_claws(gpointer source, gpointer data)
 		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME))
 			folderview_update_node(folderview, node);
 		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && (folderview->opened == node))
-			summary_show(folderview->summaryview, update_info->item);
+			if (!quicksearch_is_active(folderview->summaryview->quicksearch))
+				summary_show(folderview->summaryview, update_info->item);
 	}
 	
 	return FALSE;

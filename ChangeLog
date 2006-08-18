@@ -1,3 +1,15 @@
+2006-08-18 [paul]	2.4.0cvs62
+
+	* src/folderview.c
+		freeze the summaryview while quicksearch results
+		are displayed
+		Thanks to Colin
+	* src/textview.c
+		add missing #include "inputdialog.h"
+	* src/common/utils.h
+		add missing mailcap_update_default() and improve
+		readability
+
 2006-08-17 [colin]	2.4.0cvs61
 
 	* src/plugins/pgpcore/select-keys.c
