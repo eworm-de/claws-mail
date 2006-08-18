@@ -17,6 +17,9 @@
 	* src/folderview.c
 		freeze the summaryview while quicksearch results
 		are displayed
+		(fixes bug 456 'current message is hidden when the
+		view is refreshed and extended search is "unread 
+		messages"')
 		Thanks to Colin
 	* src/textview.c
 		add missing #include "inputdialog.h"
