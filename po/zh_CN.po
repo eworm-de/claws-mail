@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claw\n"
 "Report-Msgid-Bugs-To: paul@sylpheed.org\n"
-"POT-Creation-Date: 2006-07-24 05:45+0100\n"
-"PO-Revision-Date: 2006-07-30 00:25+0800\n"
+"POT-Creation-Date: 2006-08-20 08:56+0100\n"
+"PO-Revision-Date: 2006-08-20 09:15+0100\n"
 "Last-Translator: Ralgh Young <glyoung@users.sourceforge.net>\n"
-"Language-Team: Ralgh Young <glyoung@users.sourceforge.net> \n"
+"Language-Team: Ralgh Young <glyoung@users.sourceforge.net>>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0"
 
-#: src/account.c:377
+#: src/account.c:378
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing the accounts."
@@ -25,15 +25,15 @@ msgstr ""
 "您正在撰写邮件，\n"
 "请关掉所有撰写中的邮件再进行帐号设置。"
 
-#: src/account.c:424
+#: src/account.c:425
 msgid "Can't create folder."
 msgstr "无法创建邮件夹。"
 
-#: src/account.c:681
+#: src/account.c:682
 msgid "Edit accounts"
 msgstr "编辑帐号设置"
 
-#: src/account.c:699
+#: src/account.c:700
 msgid ""
 "New messages will be checked in this order. Check the boxes\n"
 "on the 'G' column to enable message retrieval by 'Get Mail'."
@@ -41,46 +41,46 @@ msgstr ""
 "检查新邮件时将会依照下面的顺序。您可以勾选 G 栏位中的方块，\n"
 "来决定是否在「全部收取」时要检查该帐号的邮件。"
 
-#: src/account.c:774
+#: src/account.c:771
 msgid " _Set as default account "
 msgstr " 设为缺省帐号(_S) "
 
-#: src/account.c:868
+#: src/account.c:865
 msgid "Accounts with remote folders cannot be copied."
 msgstr "不能克隆有远程邮件夹的帐户。"
 
-#: src/account.c:874
+#: src/account.c:871
 #, c-format
 msgid "Copy of %s"
 msgstr "%s 副本"
 
-#: src/account.c:1012
+#: src/account.c:1010
 #, c-format
 msgid "Do you really want to delete the account '%s'?"
 msgstr "您确定要删除帐号 '%s' 吗？"
 
-#: src/account.c:1014
+#: src/account.c:1012
 msgid "(Untitled)"
 msgstr "(未命名)"
 
-#: src/account.c:1015
+#: src/account.c:1013
 msgid "Delete account"
 msgstr "删除帐号"
 
-#: src/account.c:1456 src/addressadd.c:196 src/addressbook.c:118
-#: src/compose.c:5519 src/compose.c:5810 src/editaddress.c:953
+#: src/account.c:1470 src/addressadd.c:196 src/addressbook.c:132
+#: src/compose.c:5543 src/compose.c:5834 src/editaddress.c:953
 #: src/editaddress.c:1002 src/editbook.c:175 src/editgroup.c:279
 #: src/editjpilot.c:270 src/editldap.c:424 src/editvcard.c:183
-#: src/importmutt.c:226 src/importpine.c:226 src/mimeview.c:203
-#: src/plugins/pgpcore/select-keys.c:338 src/prefs_filtering.c:1342
+#: src/importmutt.c:226 src/importpine.c:226 src/mimeview.c:207
+#: src/plugins/pgpcore/select-keys.c:376 src/prefs_filtering.c:1439
 msgid "Name"
 msgstr "名称"
 
-#: src/account.c:1463 src/prefs_account.c:1165 src/prefs_account.c:2686
+#: src/account.c:1477 src/prefs_account.c:1165 src/prefs_account.c:2682
 msgid "Protocol"
 msgstr "通讯协议"
 
-#: src/account.c:1470 src/ssl_manager.c:99
+#: src/account.c:1484 src/ssl_manager.c:102
 msgid "Server"
 msgstr "服务器"
 
@@ -178,12 +178,12 @@ msgstr "用户提供的参数"
 msgid "Add to address book"
 msgstr "将地址加入地址簿"
 
-#: src/addressadd.c:208 src/plugins/pgpcore/select-keys.c:339
-#: src/toolbar.c:448
+#: src/addressadd.c:208 src/plugins/pgpcore/select-keys.c:377
+#: src/toolbar.c:449
 msgid "Address"
 msgstr "地址"
 
-#: src/addressadd.c:218 src/addressbook.c:120 src/editaddress.c:761
+#: src/addressadd.c:218 src/addressbook.c:134 src/editaddress.c:761
 #: src/editaddress.c:825 src/editgroup.c:281
 msgid "Remarks"
 msgstr "备注"
@@ -192,345 +192,345 @@ msgstr "备注"
 msgid "Select Address Book Folder"
 msgstr "选择地址簿资料夹"
 
-#: src/addressbook.c:119 src/editaddress.c:759 src/editaddress.c:807
+#: src/addressbook.c:133 src/editaddress.c:759 src/editaddress.c:807
 #: src/editgroup.c:280 src/expldifdlg.c:521 src/exporthtml.c:638
 #: src/exporthtml.c:802 src/ldif.c:835
 msgid "Email Address"
 msgstr "电子邮件"
 
-#: src/addressbook.c:402
+#: src/addressbook.c:416
 msgid "/_Book"
 msgstr "/地址簿(_B)"
 
-#: src/addressbook.c:403
+#: src/addressbook.c:417
 msgid "/_Book/New _Book"
 msgstr "/地址簿(_B)/新增地址簿(_B)"
 
-#: src/addressbook.c:404
+#: src/addressbook.c:418
 msgid "/_Book/New _Folder"
 msgstr "/地址簿(_B)/新资料夹(_F)"
 
-#: src/addressbook.c:405
+#: src/addressbook.c:419
 msgid "/_Book/New _vCard"
 msgstr "/地址簿(_B)/新增_vCard"
 
-#: src/addressbook.c:407
+#: src/addressbook.c:421
 msgid "/_Book/New _JPilot"
 msgstr "/地址簿(_B)/新增_J-Pilot"
 
-#: src/addressbook.c:410
+#: src/addressbook.c:424
 msgid "/_Book/New LDAP _Server"
 msgstr "/地址簿(_B)/新增LDAP服务器(_S)"
 
-#: src/addressbook.c:412 src/addressbook.c:415
+#: src/addressbook.c:426 src/addressbook.c:429
 msgid "/_Book/---"
 msgstr "/地址簿(_B)/---"
 
-#: src/addressbook.c:413
+#: src/addressbook.c:427
 msgid "/_Book/_Edit book"
 msgstr "/地址簿(_B)/编辑地址簿(_E)"
 
-#: src/addressbook.c:414
+#: src/addressbook.c:428
 msgid "/_Book/_Delete book"
 msgstr "/地址簿(_B)/删除地址簿(_D)"
 
-#: src/addressbook.c:416
+#: src/addressbook.c:430
 msgid "/_Book/_Save"
 msgstr "/地址簿(_B)/保存(_S)"
 
-#: src/addressbook.c:417
+#: src/addressbook.c:431
 msgid "/_Book/_Close"
 msgstr "/地址簿(_B)/关闭(_C)"
 
-#: src/addressbook.c:418
+#: src/addressbook.c:432
 msgid "/_Address"
 msgstr "/地址(_A)"
 
-#: src/addressbook.c:419
+#: src/addressbook.c:433
 msgid "/_Address/_Select all"
 msgstr "/地址(_A)/全选(_S)"
 
-#: src/addressbook.c:420 src/addressbook.c:424 src/addressbook.c:427
-#: src/addressbook.c:430
+#: src/addressbook.c:434 src/addressbook.c:438 src/addressbook.c:441
+#: src/addressbook.c:444
 msgid "/_Address/---"
 msgstr "/地址(_A)/---"
 
-#: src/addressbook.c:421
+#: src/addressbook.c:435
 msgid "/_Address/C_ut"
 msgstr "/地址(_A)/剪切(_u)"
 
-#: src/addressbook.c:422
+#: src/addressbook.c:436
 msgid "/_Address/_Copy"
 msgstr "/地址(_A)/拷贝(_C)"
 
-#: src/addressbook.c:423
+#: src/addressbook.c:437
 msgid "/_Address/_Paste"
 msgstr "/地址(_A)/删除(_P)"
 
-#: src/addressbook.c:425
+#: src/addressbook.c:439
 msgid "/_Address/_Edit"
 msgstr "/地址(_A)/编辑(_E)"
 
-#: src/addressbook.c:426
+#: src/addressbook.c:440
 msgid "/_Address/_Delete"
 msgstr "/地址(_A)/删除(_D)"
 
-#: src/addressbook.c:428
+#: src/addressbook.c:442
 msgid "/_Address/New _Address"
 msgstr "/地址(_A)/新增地址(_A)"
 
-#: src/addressbook.c:429
+#: src/addressbook.c:443
 msgid "/_Address/New _Group"
 msgstr "/地址(_A)/新增群组(_G)"
 
-#: src/addressbook.c:431
+#: src/addressbook.c:445
 msgid "/_Address/_Mail To"
 msgstr "/地址(_A)/发送邮件(_M)"
 
-#: src/addressbook.c:432 src/compose.c:756 src/mainwindow.c:759
-#: src/messageview.c:295
+#: src/addressbook.c:446 src/compose.c:756 src/mainwindow.c:779
+#: src/messageview.c:302
 msgid "/_Tools"
 msgstr "工具(_T)"
 
-#: src/addressbook.c:433
+#: src/addressbook.c:447
 msgid "/_Tools/Import _LDIF file..."
 msgstr "/工具(_T)/导入 _LDIF 文件..."
 
-#: src/addressbook.c:434
+#: src/addressbook.c:448
 msgid "/_Tools/Import M_utt file..."
 msgstr "/工具(_T)/导入 M_utt 文件..."
 
-#: src/addressbook.c:435
+#: src/addressbook.c:449
 msgid "/_Tools/Import _Pine file..."
 msgstr "/工具(_T)/导入 _Pine 文件..."
 
-#: src/addressbook.c:436 src/mainwindow.c:768 src/mainwindow.c:791
-#: src/mainwindow.c:793 src/mainwindow.c:802 src/mainwindow.c:805
-#: src/mainwindow.c:809 src/messageview.c:299 src/messageview.c:320
+#: src/addressbook.c:450 src/mainwindow.c:788 src/mainwindow.c:811
+#: src/mainwindow.c:813 src/mainwindow.c:822 src/mainwindow.c:825
+#: src/mainwindow.c:829 src/messageview.c:306 src/messageview.c:327
 msgid "/_Tools/---"
 msgstr "/工具(_T)/---"
 
-#: src/addressbook.c:437
+#: src/addressbook.c:451
 msgid "/_Tools/Export _HTML..."
 msgstr "/工具(_T)/导出为 _HTML..."
 
-#: src/addressbook.c:438
+#: src/addressbook.c:452
 msgid "/_Tools/Export LDI_F..."
 msgstr "/工具(_T)/导出为 LDI_F..."
 
-#: src/addressbook.c:439 src/compose.c:761 src/mainwindow.c:834
-#: src/messageview.c:323
+#: src/addressbook.c:453 src/compose.c:761 src/mainwindow.c:854
+#: src/messageview.c:330
 msgid "/_Help"
 msgstr "/帮助(_H)"
 
-#: src/addressbook.c:440 src/compose.c:762 src/mainwindow.c:840
-#: src/messageview.c:324
+#: src/addressbook.c:454 src/compose.c:762 src/mainwindow.c:860
+#: src/messageview.c:331
 msgid "/_Help/_About"
 msgstr "/帮助(_H)/关于(_A)"
 
-#: src/addressbook.c:445 src/addressbook.c:459 src/compose.c:535
-#: src/mainwindow.c:492 src/messageview.c:161
+#: src/addressbook.c:459 src/addressbook.c:473 src/compose.c:535
+#: src/mainwindow.c:503 src/messageview.c:164
 msgid "/_Edit"
 msgstr "/编辑(_E)"
 
-#: src/addressbook.c:446 src/addressbook.c:460
+#: src/addressbook.c:460 src/addressbook.c:474
 msgid "/_Delete"
 msgstr "/删除(_D)"
 
-#: src/addressbook.c:447 src/addressbook.c:449 src/addressbook.c:458
-#: src/addressbook.c:461 src/addressbook.c:464 src/addressbook.c:468
+#: src/addressbook.c:461 src/addressbook.c:463 src/addressbook.c:472
+#: src/addressbook.c:475 src/addressbook.c:478 src/addressbook.c:482
 #: src/compose.c:514 src/imap_gtk.c:59 src/imap_gtk.c:62 src/imap_gtk.c:66
 #: src/mh_gtk.c:54 src/mh_gtk.c:58 src/mh_gtk.c:60 src/news_gtk.c:54
 #: src/news_gtk.c:57 src/news_gtk.c:59 src/plugins/trayicon/trayicon.c:94
 #: src/plugins/trayicon/trayicon.c:97 src/plugins/trayicon/trayicon.c:99
-#: src/summaryview.c:423 src/summaryview.c:427 src/summaryview.c:432
-#: src/summaryview.c:450 src/summaryview.c:471 src/summaryview.c:477
+#: src/summaryview.c:420 src/summaryview.c:424 src/summaryview.c:429
+#: src/summaryview.c:447 src/summaryview.c:468 src/summaryview.c:474
 msgid "/---"
 msgstr "/---"
 
-#: src/addressbook.c:448
+#: src/addressbook.c:462
 msgid "/New _Folder"
 msgstr "/新资料夹(_F)"
 
-#: src/addressbook.c:450 src/addressbook.c:465
+#: src/addressbook.c:464 src/addressbook.c:479
 msgid "/C_ut"
 msgstr "/剪切(_u)"
 
-#: src/addressbook.c:451 src/addressbook.c:466
+#: src/addressbook.c:465 src/addressbook.c:480
 msgid "/_Copy"
 msgstr "/复制(_C)"
 
-#: src/addressbook.c:452 src/addressbook.c:467
+#: src/addressbook.c:466 src/addressbook.c:481
 msgid "/_Paste"
 msgstr "/粘贴(_P)"
 
-#: src/addressbook.c:457
+#: src/addressbook.c:471
 msgid "/_Select all"
 msgstr "/全选(_S)"
 
-#: src/addressbook.c:462
+#: src/addressbook.c:476
 msgid "/New _Address"
 msgstr "/新地址(_A)"
 
-#: src/addressbook.c:463
+#: src/addressbook.c:477
 msgid "/New _Group"
 msgstr "/新群组(_G)"
 
-#: src/addressbook.c:470
+#: src/addressbook.c:484
 msgid "/_Mail To"
 msgstr "/发送邮件(_M)"
 
-#: src/addressbook.c:472
+#: src/addressbook.c:486
 msgid "/_Browse Entry"
 msgstr "/查看项目(_B)"
 
-#: src/addressbook.c:485 src/crash.c:450 src/crash.c:469 src/importldif.c:119
-#: src/plugins/pgpcore/sgpgme.c:123 src/prefs_themes.c:683
+#: src/addressbook.c:499 src/crash.c:450 src/crash.c:469 src/importldif.c:119
+#: src/plugins/pgpcore/sgpgme.c:127 src/prefs_themes.c:683
 #: src/prefs_themes.c:715 src/prefs_themes.c:716
 msgid "Unknown"
 msgstr "未知"
 
-#: src/addressbook.c:492 src/addressbook.c:511 src/importldif.c:126
+#: src/addressbook.c:506 src/addressbook.c:525 src/importldif.c:126
 msgid "Success"
 msgstr "成功"
 
-#: src/addressbook.c:493 src/importldif.c:127
+#: src/addressbook.c:507 src/importldif.c:127
 msgid "Bad arguments"
 msgstr "错误的参数"
 
-#: src/addressbook.c:494 src/importldif.c:128
+#: src/addressbook.c:508 src/importldif.c:128
 msgid "File not specified"
 msgstr "未指定文件"
 
-#: src/addressbook.c:495 src/importldif.c:129
+#: src/addressbook.c:509 src/importldif.c:129
 msgid "Error opening file"
 msgstr "打开文件错误"
 
-#: src/addressbook.c:496 src/importldif.c:130
+#: src/addressbook.c:510 src/importldif.c:130
 msgid "Error reading file"
 msgstr "读取文件错误"
 
-#: src/addressbook.c:497 src/importldif.c:131
+#: src/addressbook.c:511 src/importldif.c:131
 msgid "End of file encountered"
 msgstr "遇到文件末尾"
 
-#: src/addressbook.c:498 src/importldif.c:132
+#: src/addressbook.c:512 src/importldif.c:132
 msgid "Error allocating memory"
 msgstr "内存分配错误"
 
-#: src/addressbook.c:499 src/importldif.c:133
+#: src/addressbook.c:513 src/importldif.c:133
 msgid "Bad file format"
 msgstr "文件格式错误"
 
-#: src/addressbook.c:500 src/importldif.c:134
+#: src/addressbook.c:514 src/importldif.c:134
 msgid "Error writing to file"
 msgstr "文件写入错误"
 
-#: src/addressbook.c:501 src/importldif.c:135
+#: src/addressbook.c:515 src/importldif.c:135
 msgid "Error opening directory"
 msgstr "打开目录错误"
 
-#: src/addressbook.c:502 src/importldif.c:136
+#: src/addressbook.c:516 src/importldif.c:136
 msgid "No path specified"
 msgstr "未指定文件路径"
 
-#: src/addressbook.c:512
+#: src/addressbook.c:526
 msgid "Error connecting to LDAP server"
 msgstr "LDAP 服务器连接错误"
 
-#: src/addressbook.c:513
+#: src/addressbook.c:527
 msgid "Error initializing LDAP"
 msgstr "LDAP 起始错误"
 
-#: src/addressbook.c:514
+#: src/addressbook.c:528
 msgid "Error binding to LDAP server"
 msgstr "无法连接到LDAP服务器"
 
-#: src/addressbook.c:515
+#: src/addressbook.c:529
 msgid "Error searching LDAP database"
 msgstr "搜寻LDAP资料库时出错"
 
-#: src/addressbook.c:516
+#: src/addressbook.c:530
 msgid "Timeout performing LDAP operation"
 msgstr "进行LDAP操作时超时"
 
-#: src/addressbook.c:517
+#: src/addressbook.c:531
 msgid "Error in LDAP search criteria"
 msgstr "LDAP搜寻条件错误"
 
-#: src/addressbook.c:518
+#: src/addressbook.c:532
 msgid "No LDAP entries found for search criteria"
 msgstr "LDAP搜寻没有结果"
 
-#: src/addressbook.c:519
+#: src/addressbook.c:533
 msgid "LDAP search terminated on request"
 msgstr "LDAP已按请求终止"
 
-#: src/addressbook.c:520
+#: src/addressbook.c:534
 msgid "Error starting TLS connection"
 msgstr "创建TLS链接时发生错误"
 
-#: src/addressbook.c:835
+#: src/addressbook.c:849
 msgid "Sources"
 msgstr "来源"
 
-#: src/addressbook.c:839 src/prefs_other.c:100 src/toolbar.c:190
-#: src/toolbar.c:1730
+#: src/addressbook.c:853 src/prefs_other.c:100 src/toolbar.c:190
+#: src/toolbar.c:1731
 msgid "Address book"
 msgstr "地址簿"
 
-#: src/addressbook.c:962
+#: src/addressbook.c:976
 msgid "Lookup name:"
 msgstr "查找姓名:"
 
-#: src/addressbook.c:1026 src/compose.c:1959 src/compose.c:4187
-#: src/compose.c:5381 src/compose.c:6126 src/prefs_template.c:207
+#: src/addressbook.c:1036 src/compose.c:1961 src/compose.c:4202
+#: src/compose.c:5405 src/compose.c:6150 src/prefs_template.c:207
 #: src/summary_search.c:264
 msgid "To:"
 msgstr "To:"
 
-#: src/addressbook.c:1030 src/compose.c:1943 src/compose.c:3966
-#: src/compose.c:4186 src/prefs_template.c:209
+#: src/addressbook.c:1040 src/compose.c:1945 src/compose.c:3968
+#: src/compose.c:4201 src/prefs_template.c:209
 msgid "Cc:"
 msgstr "Cc:"
 
-#: src/addressbook.c:1034 src/compose.c:1946 src/compose.c:3997
+#: src/addressbook.c:1044 src/compose.c:1948 src/compose.c:3999
 #: src/prefs_template.c:211
 msgid "Bcc:"
 msgstr "Bcc:"
 
-#: src/addressbook.c:1269 src/addressbook.c:1292
+#: src/addressbook.c:1279 src/addressbook.c:1302
 msgid "Delete address(es)"
 msgstr "删除邮件地址"
 
-#: src/addressbook.c:1270
+#: src/addressbook.c:1280
 msgid "This address data is readonly and cannot be deleted."
 msgstr "此邮件地址数据是只读的，不能删除。"
 
-#: src/addressbook.c:1293
+#: src/addressbook.c:1303
 msgid "Really delete the address(es)?"
 msgstr "确定删除邮件地址?"
 
-#: src/addressbook.c:1887
+#: src/addressbook.c:1897
 msgid "Cannot paste. Target address book is readonly."
 msgstr "无法粘贴，该地址簿已设为只读。"
 
-#: src/addressbook.c:1898
+#: src/addressbook.c:1908
 msgid "Cannot paste into an address group."
 msgstr "无法贴入指定的通讯群组。"
 
 # c-format
-#: src/addressbook.c:2554
+#: src/addressbook.c:2564
 #, c-format
 msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "您想要删除'%s'里面的查询结果和地址信息吗?"
 
-#: src/addressbook.c:2557 src/addressbook.c:2583
+#: src/addressbook.c:2567 src/addressbook.c:2593
 #: src/prefs_filtering_action.c:152
 msgid "Delete"
 msgstr "删除"
 
-#: src/addressbook.c:2566
+#: src/addressbook.c:2576
 #, c-format
 msgid ""
 "Do you want to delete '%s' ?If you delete the folder only, the addresses it "
@@ -539,19 +539,19 @@ msgstr ""
 "您确定要删除'%s'这个资料夹以及里面所有的地址吗？ \n"
 "如果只删除资料夹，地址簿会被移到上一层的资料夹中。"
 
-#: src/addressbook.c:2569 src/imap_gtk.c:283 src/mh_gtk.c:179
+#: src/addressbook.c:2579 src/imap_gtk.c:283 src/mh_gtk.c:179
 msgid "Delete folder"
 msgstr "删除文件夹"
 
-#: src/addressbook.c:2570
+#: src/addressbook.c:2580
 msgid "+Delete _folder only"
 msgstr "+只删除目录(_f)"
 
-#: src/addressbook.c:2570
+#: src/addressbook.c:2580
 msgid "Delete folder and _addresses"
 msgstr "删除目录及地址数据"
 
-#: src/addressbook.c:2581
+#: src/addressbook.c:2591
 #, c-format
 msgid ""
 "Do you want to delete '%s'?\n"
@@ -560,19 +560,19 @@ msgstr ""
 "您想要删除'%s'吗?\n"
 "里面的地址数据将会丢失。"
 
-#: src/addressbook.c:3391
+#: src/addressbook.c:3401
 msgid "New user, could not save index file."
 msgstr "新用户，无法保存索引文件。"
 
-#: src/addressbook.c:3395
+#: src/addressbook.c:3405
 msgid "New user, could not save address book files."
 msgstr "新用户，无法保存地址簿文件。"
 
-#: src/addressbook.c:3405
+#: src/addressbook.c:3415
 msgid "Old address book converted successfully."
 msgstr "转换旧地址簿格式完成。"
 
-#: src/addressbook.c:3410
+#: src/addressbook.c:3420
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file."
@@ -580,7 +580,7 @@ msgstr ""
 "旧地址簿格式已转换，\n"
 "但无法保存新的索引文件。"
 
-#: src/addressbook.c:3423
+#: src/addressbook.c:3433
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -588,7 +588,7 @@ msgstr ""
 "无法转换地址簿格式，\n"
 "但空的新地址簿文件已经生成。"
 
-#: src/addressbook.c:3429
+#: src/addressbook.c:3439
 msgid ""
 "Could not convert address book,\n"
 "could not save new address index file."
@@ -596,7 +596,7 @@ msgstr ""
 "无法转换地址簿格式，\n"
 "无法保存新的地址簿索引文件。"
 
-#: src/addressbook.c:3434
+#: src/addressbook.c:3444
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -604,69 +604,74 @@ msgstr ""
 "无法转换地址簿格式，\n"
 "亦无法产生新的地址簿文件。"
 
-#: src/addressbook.c:3441 src/addressbook.c:3447
+#: src/addressbook.c:3451 src/addressbook.c:3457
 msgid "Addressbook conversion error"
 msgstr "转换地址簿格式时发生错误"
 
-#: src/addressbook.c:3485
+#: src/addressbook.c:3495
 msgid "Addressbook Error"
 msgstr "地址簿发生错误"
 
-#: src/addressbook.c:3486
+#: src/addressbook.c:3496
 msgid "Could not read address index"
 msgstr "无法读取地址簿索引"
 
-#: src/addressbook.c:3813
+#: src/addressbook.c:3823
 msgid "Busy searching..."
 msgstr "正在搜索..."
 
 # c-format
-#: src/addressbook.c:3884
+#: src/addressbook.c:3894
 #, c-format
 msgid "Search '%s'"
 msgstr "搜索 '%s'"
 
-#: src/addressbook.c:4109
+#: src/addressbook.c:4119
 msgid "Interface"
 msgstr "界面"
 
-#: src/addressbook.c:4125 src/exphtmldlg.c:378 src/expldifdlg.c:394
+#: src/addressbook.c:4135 src/exphtmldlg.c:378 src/expldifdlg.c:394
 #: src/exporthtml.c:1020 src/importldif.c:651
 msgid "Address Book"
 msgstr "地址簿"
 
-#: src/addressbook.c:4141
+#: src/addressbook.c:4151
 msgid "Person"
 msgstr "人名"
 
-#: src/addressbook.c:4157
+#: src/addressbook.c:4167
 msgid "EMail Address"
 msgstr "电子邮件邮箱"
 
-#: src/addressbook.c:4173
+#: src/addressbook.c:4183
 msgid "Group"
 msgstr "群组"
 
-#: src/addressbook.c:4189 src/exporthtml.c:922 src/folderview.c:441
-#: src/prefs_account.c:2399 src/prefs_folder_column.c:79
+#: src/addressbook.c:4199 src/exporthtml.c:922 src/folderview.c:442
+#: src/prefs_account.c:2395 src/prefs_folder_column.c:79
 msgid "Folder"
 msgstr "邮件夹"
 
-#: src/addressbook.c:4205
+#: src/addressbook.c:4215
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:4221 src/addressbook.c:4237
+#: src/addressbook.c:4231 src/addressbook.c:4247
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:4253
+#: src/addressbook.c:4263
 msgid "LDAP servers"
 msgstr "LDAP 服务器"
 
-#: src/addressbook.c:4269
+#: src/addressbook.c:4279
 msgid "LDAP Query"
 msgstr "LDAP 查询"
+
+#: src/addressbook.c:4595 src/matcher.c:303 src/matcher.c:754
+#: src/matcher.c:887 src/prefs_matcher.c:218 src/prefs_matcher.c:521
+msgid "Any"
+msgstr ""
 
 #: src/addrgather.c:158
 msgid "Please specify name for address book."
@@ -724,9 +729,9 @@ msgstr "信头名称"
 msgid "Address Count"
 msgstr "邮件地址数目"
 
-#: src/addrgather.c:537 src/alertpanel.c:153 src/compose.c:4518
-#: src/compose.c:8971 src/messageview.c:561 src/messageview.c:574
-#: src/plugins/pgpcore/sgpgme.c:563
+#: src/addrgather.c:537 src/alertpanel.c:154 src/compose.c:4537
+#: src/compose.c:9003 src/messageview.c:568 src/messageview.c:581
+#: src/plugins/pgpcore/sgpgme.c:565
 msgid "Warning"
 msgstr "警告"
 
@@ -747,36 +752,36 @@ msgstr "批量获取Email地址 - 选取的邮件"
 msgid "Harvest Email Addresses - from Folder"
 msgstr "批量获取Email地址 - 邮件夹"
 
-#: src/addrindex.c:115
+#: src/addrindex.c:116
 msgid "Common addresses"
 msgstr "公用邮件地址"
 
-#: src/addrindex.c:116
+#: src/addrindex.c:117
 msgid "Personal addresses"
 msgstr "个人邮件地址"
 
-#: src/addrindex.c:122
+#: src/addrindex.c:123
 msgid "Common address"
 msgstr "公用邮件地址"
 
-#: src/addrindex.c:123
+#: src/addrindex.c:124
 msgid "Personal address"
 msgstr "个人邮件地址"
 
-#: src/alertpanel.c:140 src/compose.c:7199
+#: src/alertpanel.c:141 src/compose.c:7223
 msgid "Notice"
 msgstr "注意"
 
-#: src/alertpanel.c:166 src/alertpanel.c:188 src/compose.c:4464 src/inc.c:594
-#: src/plugins/pgpcore/sgpgme.c:135 src/plugins/pgpcore/sgpgme.c:226
+#: src/alertpanel.c:167 src/alertpanel.c:189 src/compose.c:4479 src/inc.c:594
+#: src/plugins/pgpcore/sgpgme.c:139 src/plugins/pgpcore/sgpgme.c:230
 msgid "Error"
 msgstr "错误"
 
-#: src/alertpanel.c:189
+#: src/alertpanel.c:190
 msgid "_View log"
 msgstr "查看日志文件(_V)"
 
-#: src/alertpanel.c:336
+#: src/alertpanel.c:337
 msgid "Show this message next time"
 msgstr "在显示一次讯息"
 
@@ -935,11 +940,11 @@ msgstr "/新增(_A)..."
 msgid "/_Remove"
 msgstr "/删除(_R)"
 
-#: src/compose.c:515 src/folderview.c:288
+#: src/compose.c:515 src/folderview.c:289
 msgid "/_Properties..."
 msgstr "/属性(_P)..."
 
-#: src/compose.c:520 src/mainwindow.c:705 src/messageview.c:278
+#: src/compose.c:520 src/mainwindow.c:725 src/messageview.c:285
 msgid "/_Message"
 msgstr "/邮件(_M)"
 
@@ -951,9 +956,9 @@ msgstr "/邮件(_M)/发送(_S)"
 msgid "/_Message/Send _later"
 msgstr "/邮件(_M)/稍后发送(_l)"
 
-#: src/compose.c:525 src/compose.c:529 src/compose.c:532 src/mainwindow.c:715
-#: src/mainwindow.c:725 src/mainwindow.c:738 src/mainwindow.c:744
-#: src/mainwindow.c:756 src/messageview.c:281 src/messageview.c:289
+#: src/compose.c:525 src/compose.c:529 src/compose.c:532 src/mainwindow.c:735
+#: src/mainwindow.c:745 src/mainwindow.c:758 src/mainwindow.c:764
+#: src/mainwindow.c:776 src/messageview.c:288 src/messageview.c:296
 msgid "/_Message/---"
 msgstr "/邮件(_M)/---"
 
@@ -986,7 +991,7 @@ msgid "/_Edit/_Redo"
 msgstr "/编辑(_E)/重复前一个动作(_R)"
 
 #: src/compose.c:538 src/compose.c:626 src/compose.c:629 src/compose.c:635
-#: src/mainwindow.c:496 src/messageview.c:164
+#: src/mainwindow.c:507 src/messageview.c:167
 msgid "/_Edit/---"
 msgstr "/编辑(_E)/---"
 
@@ -994,7 +999,7 @@ msgstr "/编辑(_E)/---"
 msgid "/_Edit/Cu_t"
 msgstr "/编辑(_E)/剪切(_t)"
 
-#: src/compose.c:540 src/mainwindow.c:493 src/messageview.c:162
+#: src/compose.c:540 src/mainwindow.c:504 src/messageview.c:165
 msgid "/_Edit/_Copy"
 msgstr "/编辑(_E)/拷贝(_C)"
 
@@ -1018,7 +1023,7 @@ msgstr "/编辑(_E)/选择性粘贴/自动折行(_w)"
 msgid "/_Edit/Special paste/_unwrapped"
 msgstr "/编辑(_E)/选择性粘贴/不自动折行(_u)"
 
-#: src/compose.c:549 src/mainwindow.c:494 src/messageview.c:163
+#: src/compose.c:549 src/mainwindow.c:505 src/messageview.c:166
 msgid "/_Edit/Select _all"
 msgstr "/编辑(_E)/全选(_a)"
 
@@ -1313,7 +1318,7 @@ msgstr "/选项(_O)/字符集(_e)/泰国 (Windows-874)"
 msgid "/_Tools/Show _ruler"
 msgstr "/工具(_T)/显示标尺(_r)"
 
-#: src/compose.c:758 src/messageview.c:296
+#: src/compose.c:758 src/messageview.c:303
 msgid "/_Tools/_Address book"
 msgstr "/工具(_T)/地址簿(_A)"
 
@@ -1321,7 +1326,7 @@ msgstr "/工具(_T)/地址簿(_A)"
 msgid "/_Tools/_Template"
 msgstr "/工具(_T)/套用邮件模板(_T)"
 
-#: src/compose.c:760 src/mainwindow.c:792 src/messageview.c:321
+#: src/compose.c:760 src/mainwindow.c:812 src/messageview.c:328
 msgid "/_Tools/Actio_ns"
 msgstr "/工具(_T)/执行动作(_n)"
 
@@ -1329,56 +1334,56 @@ msgstr "/工具(_T)/执行动作(_n)"
 msgid "Fw: multiple emails"
 msgstr "转发: 多封邮件"
 
-#: src/compose.c:1949
+#: src/compose.c:1951
 msgid "Reply-To:"
 msgstr ""
 
-#: src/compose.c:1952 src/compose.c:5378 src/compose.c:6128
+#: src/compose.c:1954 src/compose.c:5402 src/compose.c:6152
 msgid "Newsgroups:"
 msgstr ""
 
-#: src/compose.c:1955
+#: src/compose.c:1957
 msgid "Followup-To:"
 msgstr ""
 
-#: src/compose.c:2352
+#: src/compose.c:2354
 msgid "Quote mark format error."
 msgstr "引文格式错误。"
 
-#: src/compose.c:2368
+#: src/compose.c:2370
 msgid "Message reply/forward format error."
 msgstr "回复/转发邮件格式错误。"
 
-#: src/compose.c:2925
+#: src/compose.c:2927
 #, c-format
 msgid "File %s is empty."
 msgstr "文件 %s 不存在。"
 
-#: src/compose.c:2929
+#: src/compose.c:2931
 #, c-format
 msgid "Can't read %s."
 msgstr "无法读取 %s。"
 
-#: src/compose.c:2956
+#: src/compose.c:2958
 #, c-format
 msgid "Message: %s"
 msgstr "邮件: %s"
 
-#: src/compose.c:3768
+#: src/compose.c:3770
 msgid " [Edited]"
 msgstr " [已修改] "
 
-#: src/compose.c:3774
+#: src/compose.c:3776
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - 新邮件%s"
 
-#: src/compose.c:3777
+#: src/compose.c:3779
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[无主题] - 撰写新邮件%s"
 
-#: src/compose.c:3802 src/messageview.c:596
+#: src/compose.c:3804 src/messageview.c:603
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1386,32 +1391,32 @@ msgstr ""
 "您选用的帐号并非一个电子邮件帐号，可能是用来在新闻组上发表文章用的。\n"
 "要发送邮件请选择一个电子邮件帐号。"
 
-#: src/compose.c:3979 src/compose.c:4010 src/compose.c:4041 src/toolbar.c:391
-#: src/toolbar.c:441
+#: src/compose.c:3981 src/compose.c:4012 src/compose.c:4043 src/toolbar.c:391
+#: src/toolbar.c:442
 msgid "Send"
 msgstr "发送"
 
-#: src/compose.c:3980
+#: src/compose.c:3982
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "缺省的抄送地址是仅有的收件人，要发送吗？"
 
-#: src/compose.c:3981 src/compose.c:4012 src/compose.c:4043 src/compose.c:4464
+#: src/compose.c:3983 src/compose.c:4014 src/compose.c:4045 src/compose.c:4479
 msgid "+_Send"
 msgstr "+ 发送(_S)"
 
-#: src/compose.c:4011
+#: src/compose.c:4013
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "缺省的密送地址是仅有的收件若，要发送吗？"
 
-#: src/compose.c:4028
+#: src/compose.c:4030
 msgid "Recipient is not specified."
 msgstr "没有指定收信人。"
 
-#: src/compose.c:4042
+#: src/compose.c:4044
 msgid "Subject is empty. Send it anyway?"
 msgstr "没有标题。确定要发送？"
 
-#: src/compose.c:4081 src/compose.c:7549
+#: src/compose.c:4086 src/compose.c:7576
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1421,7 +1426,18 @@ msgstr ""
 "\n"
 "转换字符集失败。"
 
-#: src/compose.c:4085 src/compose.c:7546
+#: src/compose.c:4089 src/compose.c:7579
+#, fuzzy
+msgid ""
+"Could not queue message for sending:\n"
+"\n"
+"Couldn't get recipient encryption key."
+msgstr ""
+"无法将邮件加入待发送队列:\n"
+"\n"
+"转换字符集失败。"
+
+#: src/compose.c:4093 src/compose.c:7573
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1432,7 +1448,7 @@ msgstr ""
 "\n"
 "签名失败: %s"
 
-#: src/compose.c:4088
+#: src/compose.c:4096
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1443,11 +1459,11 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:4090
+#: src/compose.c:4098
 msgid "Could not queue message for sending."
 msgstr "无法将邮件加入待发送队列"
 
-#: src/compose.c:4104 src/compose.c:4144
+#: src/compose.c:4112 src/compose.c:4153
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1455,7 +1471,7 @@ msgstr ""
 "邮件已加入发送队列，但无法发送出去。\n"
 "请使用主窗口 \"送出待发送邮件\" 再试一次。"
 
-#: src/compose.c:4138
+#: src/compose.c:4147
 #, c-format
 msgid ""
 "%s\n"
@@ -1464,7 +1480,7 @@ msgstr ""
 "%s\n"
 "请使用主窗口 \"送出待发送邮件\" 再试一次。"
 
-#: src/compose.c:4461
+#: src/compose.c:4476
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -1474,7 +1490,7 @@ msgstr ""
 "无法将邮件的字符编码转换为 %s 。\n"
 "以 %s 发送吗？"
 
-#: src/compose.c:4514
+#: src/compose.c:4533
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -1487,60 +1503,60 @@ msgstr ""
 "\n"
 "确实要发送吗?"
 
-#: src/compose.c:4699
+#: src/compose.c:4718
 msgid "No account for sending mails available!"
 msgstr "没有发信所需的帐号！"
 
-#: src/compose.c:4709
+#: src/compose.c:4728
 msgid "No account for posting news available!"
 msgstr "没有张贴news所需的帐号！"
 
-#: src/compose.c:5395
+#: src/compose.c:5419
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "可以使用<tab>键自动完成地址"
 
-#: src/compose.c:5507
+#: src/compose.c:5531
 msgid "Mime type"
 msgstr "MIME 类型"
 
-#: src/compose.c:5513 src/compose.c:5809 src/mimeview.c:202
-#: src/plugins/pgpcore/select-keys.c:336 src/prefs_summary_column.c:86
-#: src/summaryview.c:490
+#: src/compose.c:5537 src/compose.c:5833 src/mimeview.c:206
+#: src/plugins/pgpcore/select-keys.c:374 src/prefs_summary_column.c:86
+#: src/summaryview.c:487
 msgid "Size"
 msgstr "大小"
 
-#: src/compose.c:5574
+#: src/compose.c:5598
 msgid "Save Message to "
 msgstr "将邮件保存至"
 
-#: src/compose.c:5596 src/editjpilot.c:289 src/editldap.c:526
+#: src/compose.c:5620 src/editjpilot.c:289 src/editldap.c:526
 #: src/editvcard.c:202 src/export.c:172 src/import.c:171 src/importmutt.c:242
-#: src/importpine.c:242 src/plugins/clamav/clamav_plugin_gtk.c:147
+#: src/importpine.c:242 src/plugins/clamav/clamav_plugin_gtk.c:146
 #: src/plugins/spamassassin/spamassassin_gtk.c:387 src/prefs_spelling.c:210
 msgid "_Browse"
 msgstr "浏览(_B)"
 
-#: src/compose.c:5808 src/compose.c:6959
+#: src/compose.c:5832 src/compose.c:6983
 msgid "MIME type"
 msgstr "MIME 类型"
 
-#: src/compose.c:5880
+#: src/compose.c:5904
 msgid "Hea_der"
 msgstr "邮件头(_d)"
 
-#: src/compose.c:5884
+#: src/compose.c:5908
 msgid "_Attachments"
 msgstr "附件(_A)"
 
-#: src/compose.c:5888
+#: src/compose.c:5912
 msgid "Othe_rs"
 msgstr "其他(_r)"
 
-#: src/compose.c:5903 src/prefs_template.c:213 src/summary_search.c:271
+#: src/compose.c:5927 src/prefs_template.c:213 src/summary_search.c:271
 msgid "Subject:"
 msgstr "主题:"
 
-#: src/compose.c:6091
+#: src/compose.c:6115
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1549,67 +1565,67 @@ msgstr ""
 "无法启动拼写检查器.\n"
 "%s"
 
-#: src/compose.c:6202
+#: src/compose.c:6226
 #, c-format
 msgid "From: <i>%s</i>"
 msgstr ""
 
-#: src/compose.c:6233
+#: src/compose.c:6257
 msgid "Account to use for this email"
 msgstr "用于此邮件的帐号"
 
-#: src/compose.c:6235
+#: src/compose.c:6259
 msgid "Sender address to be used"
 msgstr "想要使用的发送邮件地址"
 
-#: src/compose.c:6359
+#: src/compose.c:6383
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
 "encrypt this message."
 msgstr "无法加载隐私系统`%s'，签名和邮件加密功能将不可用。"
 
-#: src/compose.c:6598
+#: src/compose.c:6622
 msgid "Message To format error."
 msgstr "'收件人'格式错误。"
 
-#: src/compose.c:6611
+#: src/compose.c:6635
 msgid "Message Cc format error."
 msgstr "'抄送人'格式错误。"
 
-#: src/compose.c:6624
+#: src/compose.c:6648
 msgid "Message Bcc format error."
 msgstr "'秘送'格式错误。"
 
-#: src/compose.c:6638
+#: src/compose.c:6662
 msgid "Message subject format error."
 msgstr "'主题'格式错误。"
 
-#: src/compose.c:6853
+#: src/compose.c:6877
 msgid "Invalid MIME type."
 msgstr "不正确的MIME类型。"
 
-#: src/compose.c:6868
+#: src/compose.c:6892
 msgid "File doesn't exist or is empty."
 msgstr "文件是空的或不存在。"
 
-#: src/compose.c:6941
+#: src/compose.c:6965
 msgid "Properties"
 msgstr "属性"
 
-#: src/compose.c:6992
+#: src/compose.c:7016
 msgid "Encoding"
 msgstr "编码"
 
-#: src/compose.c:7012
+#: src/compose.c:7036
 msgid "Path"
 msgstr "路径"
 
-#: src/compose.c:7013 src/prefs_toolbar.c:1060
+#: src/compose.c:7037 src/prefs_toolbar.c:1060
 msgid "File name"
 msgstr "文件名"
 
-#: src/compose.c:7196
+#: src/compose.c:7220
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1620,19 +1636,19 @@ msgstr ""
 "强制关闭该进程吗？\n"
 "进程祖id: %d"
 
-#: src/compose.c:7238
+#: src/compose.c:7262
 msgid "Compose: input from monitoring process\n"
 msgstr "撰写: 从被监视的进程中输入\n"
 
-#: src/compose.c:7519 src/messageview.c:701
+#: src/compose.c:7543 src/messageview.c:708
 msgid "Sylpheed-Claws needs network access in order to send this email."
 msgstr "Sylpheed-Claws需要访问网络才能发送这封邮件。"
 
-#: src/compose.c:7541
+#: src/compose.c:7568
 msgid "Could not queue message."
 msgstr "无法将邮件加入待发送队列。"
 
-#: src/compose.c:7543
+#: src/compose.c:7570
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -1643,20 +1659,20 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:7659
+#: src/compose.c:7690
 msgid "Could not save draft."
 msgstr "无法保存草稿。"
 
-#: src/compose.c:7734 src/compose.c:7757
+#: src/compose.c:7765 src/compose.c:7788
 msgid "Select file"
 msgstr "选择文件"
 
-#: src/compose.c:7770
+#: src/compose.c:7801
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "无法读取文件 '%s'。"
 
-#: src/compose.c:7772
+#: src/compose.c:7803
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1665,59 +1681,58 @@ msgstr ""
 "文件 '%s' 包含有不属于当前编码集的无效字符,\n"
 "插入部分可能不正确."
 
-#: src/compose.c:7820
+#: src/compose.c:7851
 msgid "Discard message"
 msgstr "摈弃讯息"
 
-#: src/compose.c:7821
+#: src/compose.c:7852
 msgid "This message has been modified. Discard it?"
 msgstr "这封邮件已被更改，是否摈弃？"
 
-#: src/compose.c:7822
+#: src/compose.c:7853
 msgid "_Discard"
 msgstr "摈弃(_D)"
 
-#: src/compose.c:7822
+#: src/compose.c:7853
 msgid "_Save to Drafts"
 msgstr "存为草稿(_S)"
 
-#: src/compose.c:7866
+#: src/compose.c:7897
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "是否应用模板'%s'?"
 
-#: src/compose.c:7868
+#: src/compose.c:7899
 msgid "Apply template"
 msgstr "使用模板"
 
-#: src/compose.c:7869
+#: src/compose.c:7900
 msgid "_Replace"
 msgstr "替换(_R)"
 
-#: src/compose.c:7869
+#: src/compose.c:7900
 msgid "_Insert"
 msgstr "插入(_I)"
 
-#: src/compose.c:8556
+#: src/compose.c:8588
 msgid "Insert or attach?"
 msgstr "插入其内容还是添加附件?"
 
-#: src/compose.c:8557
+#: src/compose.c:8589
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
-msgstr ""
-"请问是将文件的内容插入到邮件中，还是添加为附件？"
+msgstr "请问是将文件的内容插入到邮件中，还是添加为附件？"
 
-#: src/compose.c:8559
+#: src/compose.c:8591
 msgid "+_Insert"
 msgstr "+插入(_I)"
 
-#: src/compose.c:8559
+#: src/compose.c:8591
 msgid "_Attach"
 msgstr "附加文件(_A)"
 
-#: src/compose.c:8965
+#: src/compose.c:8997
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -1804,7 +1819,7 @@ msgid "Alias"
 msgstr "别名"
 
 #: src/editaddress.c:954 src/editaddress.c:1011 src/prefs_customheader.c:222
-#: src/prefs_matcher.c:490
+#: src/prefs_matcher.c:530
 msgid "Value"
 msgstr "值"
 
@@ -1925,7 +1940,7 @@ msgstr "编辑LDAP - 选择搜寻资料库"
 msgid "Hostname"
 msgstr "主机名"
 
-#: src/editldap_basedn.c:173 src/editldap.c:458 src/ssl_manager.c:107
+#: src/editldap_basedn.c:173 src/editldap.c:458 src/ssl_manager.c:110
 msgid "Port"
 msgstr "端口"
 
@@ -2237,8 +2252,8 @@ msgid "Stylesheet"
 msgstr "样式表"
 
 #: src/exphtmldlg.c:460 src/gtk/colorlabel.c:367 src/gtk/gtkaspell.c:1632
-#: src/gtk/gtkaspell.c:2299 src/mainwindow.c:964 src/prefs_account.c:661
-#: src/summaryview.c:4735
+#: src/gtk/gtkaspell.c:2299 src/mainwindow.c:984 src/prefs_account.c:661
+#: src/summaryview.c:4816
 msgid "None"
 msgstr "无"
 
@@ -2246,7 +2261,7 @@ msgstr "无"
 msgid "Default"
 msgstr "缺省"
 
-#: src/exphtmldlg.c:462 src/plugins/pgpcore/sgpgme.c:131
+#: src/exphtmldlg.c:462 src/plugins/pgpcore/sgpgme.c:135
 msgid "Full"
 msgstr "完整"
 
@@ -2457,7 +2472,7 @@ msgstr "将地址簿输出成LDIF文件"
 msgid "Distguished Name"
 msgstr "唯一名称(DN)"
 
-#: src/export.c:120 src/summaryview.c:6069
+#: src/export.c:120 src/summaryview.c:6119
 msgid "Export to mbox file"
 msgstr "以mbox格式导出邮件夹"
 
@@ -2530,7 +2545,7 @@ msgid "Queue"
 msgstr "待发送"
 
 #: src/folder.c:1287 src/foldersel.c:383 src/prefs_folder_item.c:212
-#: src/toolbar.c:366 src/toolbar.c:399 src/toolbar.c:490
+#: src/toolbar.c:366 src/toolbar.c:400 src/toolbar.c:491
 msgid "Trash"
 msgstr "垃圾桶"
 
@@ -2591,64 +2606,54 @@ msgstr "邮件夹'%s'已存在。"
 msgid "Can't create the folder '%s'."
 msgstr "无法创建邮件夹'%s'。"
 
-#: src/folderview.c:286
+#: src/folderview.c:287
 msgid "/Mark all re_ad"
 msgstr "/标记所有邮件为已读(_a)"
 
-#: src/folderview.c:287
+#: src/folderview.c:288
 msgid "/_Search folder..."
 msgstr "/在邮件夹中搜索(_S)..."
 
-#: src/folderview.c:289
+#: src/folderview.c:290
 msgid "/Process_ing..."
 msgstr "/处理(_i)..."
 
-#: src/folderview.c:293
-#, fuzzy
-msgid "/------trashsep"
-msgstr "/------"
-
-#: src/folderview.c:294
+#: src/folderview.c:295
 msgid "/Empty _trash..."
 msgstr "/清空垃圾桶(_t)..."
 
-#: src/folderview.c:298
-#, fuzzy
-msgid "/------queuesep"
-msgstr "/------"
-
-#: src/folderview.c:299
+#: src/folderview.c:300
 msgid "/Send _queue..."
 msgstr "/发送队列(_q)..."
 
-#: src/folderview.c:442 src/prefs_actions.c:450
+#: src/folderview.c:443 src/prefs_actions.c:450
 #: src/prefs_filtering_action.c:585 src/prefs_folder_column.c:80
-#: src/prefs_matcher.c:730
+#: src/prefs_matcher.c:811
 msgid "New"
 msgstr "新邮件"
 
-#: src/folderview.c:443 src/prefs_folder_column.c:81
+#: src/folderview.c:444 src/prefs_folder_column.c:81
 msgid "Unread"
 msgstr "未读"
 
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:445 src/summaryview.c:491
+#: src/folderview.c:446 src/summaryview.c:488
 msgid "#"
 msgstr "＃"
 
-#: src/folderview.c:678
+#: src/folderview.c:679
 msgid "Setting folder info..."
 msgstr "设置邮件夹资料..."
 
-#: src/folderview.c:732 src/summaryview.c:3278
+#: src/folderview.c:733 src/summaryview.c:3280
 msgid "Mark all as read"
 msgstr "设所有为已读"
 
-#: src/folderview.c:733 src/summaryview.c:3279
+#: src/folderview.c:734 src/summaryview.c:3281
 msgid "Do you really want to mark all mails in this folder as read ?"
 msgstr "确定要将此邮件夹中所有邮件设置已读？"
 
-#: src/folderview.c:1018
+#: src/folderview.c:1019
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Sylpheed-"
 "Claws has been built without IMAP support; your IMAP account(s) are "
@@ -2661,89 +2666,89 @@ msgstr ""
 "\n"
 "你需要安装libetpan并重新编译Sylpheed-Claws。"
 
-#: src/folderview.c:1035 src/imap.c:3110 src/mainwindow.c:3696 src/setup.c:90
+#: src/folderview.c:1036 src/imap.c:3140 src/mainwindow.c:3781 src/setup.c:90
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "扫描邮件夹%s%c%s..."
 
-#: src/folderview.c:1039 src/imap.c:3115 src/mainwindow.c:3701 src/setup.c:95
+#: src/folderview.c:1040 src/imap.c:3145 src/mainwindow.c:3786 src/setup.c:95
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr " 扫描邮件夹 %s ..."
 
-#: src/folderview.c:1066
+#: src/folderview.c:1067
 msgid "Rebuild folder tree"
 msgstr "重建邮件夹树"
 
-#: src/folderview.c:1067
+#: src/folderview.c:1068
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr "重建邮件夹树将删除原有的本地缓存。是否要继续?"
 
-#: src/folderview.c:1077
+#: src/folderview.c:1078
 msgid "Rebuilding folder tree..."
 msgstr " 重新建立邮件夹树 ..."
 
-#: src/folderview.c:1079
+#: src/folderview.c:1080
 msgid "Scanning folder tree..."
 msgstr " 正在扫描邮件夹..."
 
-#: src/folderview.c:1197
+#: src/folderview.c:1198
 msgid "Checking for new messages in all folders..."
 msgstr "检查所有邮件夹中的新邮件..."
 
-#: src/folderview.c:2031
+#: src/folderview.c:2033
 #, c-format
 msgid "Closing Folder %s..."
 msgstr "关闭邮件夹%s..."
 
-#: src/folderview.c:2070
+#: src/folderview.c:2072
 #, c-format
 msgid "Opening Folder %s..."
 msgstr "打开邮件夹%s..."
 
-#: src/folderview.c:2083
+#: src/folderview.c:2085
 msgid "Folder could not be opened."
 msgstr "无法打开邮件夹。"
 
-#: src/folderview.c:2242 src/mainwindow.c:1962
+#: src/folderview.c:2244 src/mainwindow.c:1987
 msgid "Empty trash"
 msgstr "清空垃圾桶"
 
-#: src/folderview.c:2243
+#: src/folderview.c:2245
 msgid "Delete all messages in trash?"
 msgstr "清空垃圾桶内所有邮件？"
 
-#: src/folderview.c:2244 src/mainwindow.c:1964
+#: src/folderview.c:2246 src/mainwindow.c:1989
 msgid "+_Empty trash"
 msgstr "+清空垃圾桶(_E)"
 
-#: src/folderview.c:2288 src/inc.c:1447 src/toolbar.c:2091
+#: src/folderview.c:2290 src/inc.c:1447 src/toolbar.c:2126
 msgid "Offline warning"
 msgstr "脱机警告"
 
-#: src/folderview.c:2289 src/toolbar.c:2092
+#: src/folderview.c:2291 src/toolbar.c:2127
 msgid "You're working offline. Override?"
 msgstr "您正在脱机工作。是否更改？"
 
-#: src/folderview.c:2300 src/toolbar.c:2111
+#: src/folderview.c:2302 src/toolbar.c:2146
 msgid "Send queued messages"
 msgstr "送出待发送邮件"
 
-#: src/folderview.c:2301 src/toolbar.c:2112
+#: src/folderview.c:2303 src/toolbar.c:2147
 msgid "Send all queued messages?"
 msgstr "送出所有待发送邮件?"
 
-#: src/folderview.c:2302 src/messageview.c:562 src/messageview.c:579
-#: src/prefs_account.c:1030 src/toolbar.c:2113
+#: src/folderview.c:2304 src/messageview.c:569 src/messageview.c:586
+#: src/prefs_account.c:1030 src/toolbar.c:2148
 msgid "_Send"
 msgstr "发送(_S)"
 
-#: src/folderview.c:2310 src/toolbar.c:2131
+#: src/folderview.c:2312 src/toolbar.c:2166
 msgid "Some errors occurred while sending queued messages."
 msgstr "发送邮件时发生错误。"
 
-#: src/folderview.c:2313 src/main.c:1263 src/toolbar.c:2134
+#: src/folderview.c:2315 src/main.c:1285 src/toolbar.c:2169
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -2752,42 +2757,42 @@ msgstr ""
 "发送邮件时发生错误:\n"
 "%s"
 
-#: src/folderview.c:2380
+#: src/folderview.c:2382
 #, c-format
 msgid "Do you really want to make folder '%s' a sub-folder of '%s' ?"
 msgstr "确定要将邮件夹 '%s' 改为 '%s' 的一个子邮件夹？"
 
-#: src/folderview.c:2383
+#: src/folderview.c:2385
 msgid "Move folder"
 msgstr "移动邮件夹"
 
-#: src/folderview.c:2394
+#: src/folderview.c:2396
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "将%s 移到%s..."
 
-#: src/folderview.c:2423
+#: src/folderview.c:2425
 msgid "Source and destination are the same."
 msgstr "文件来源和目的相同。"
 
-#: src/folderview.c:2426
+#: src/folderview.c:2428
 msgid "Can't move a folder to one of its children."
 msgstr "无法将上一层邮件夹移到其子邮件夹中。"
 
-#: src/folderview.c:2429
+#: src/folderview.c:2431
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr "邮件夹不能跨邮箱移动。"
 
-#: src/folderview.c:2432
+#: src/folderview.c:2434
 msgid "Move failed!"
 msgstr "移动失败！"
 
-#: src/folderview.c:2468
+#: src/folderview.c:2470
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "邮件夹 %s 的邮件分拣配置"
 
-#: src/gedit-print.c:146 src/messageview.c:1409 src/summaryview.c:3945
+#: src/gedit-print.c:146 src/messageview.c:1422 src/summaryview.c:3947
 #: src/toolbar.c:178
 msgid "Print"
 msgstr "打印"
@@ -2858,7 +2863,7 @@ msgstr "未知"
 msgid "Can't retrieve newsgroup list."
 msgstr "无法取回新闻组列表。"
 
-#: src/grouplistdialog.c:447 src/summaryview.c:1168
+#: src/grouplistdialog.c:447 src/summaryview.c:1167
 msgid "Done."
 msgstr "完成。"
 
@@ -2867,11 +2872,11 @@ msgstr "完成。"
 msgid "%d newsgroups received (%s read)"
 msgstr "已接收%d新闻组(已读%s)"
 
-#: src/gtk/about.c:78 src/textview.c:226
+#: src/gtk/about.c:78 src/textview.c:238
 msgid "/_Open with Web browser"
 msgstr "/用网页浏览器打开(_O)"
 
-#: src/gtk/about.c:79 src/textview.c:227
+#: src/gtk/about.c:79 src/textview.c:239
 msgid "/Copy this _link"
 msgstr "/拷贝链接地址(_l)"
 
@@ -3065,43 +3070,43 @@ msgstr ")。\n"
 msgid "_License"
 msgstr "许可协议(_L)"
 
-#: src/gtk/colorlabel.c:48 src/prefs_common.c:299
+#: src/gtk/colorlabel.c:48 src/prefs_common.c:295
 msgid "Orange"
 msgstr "橙色"
 
-#: src/gtk/colorlabel.c:49 src/prefs_common.c:303
+#: src/gtk/colorlabel.c:49 src/prefs_common.c:299
 msgid "Red"
 msgstr "红色"
 
-#: src/gtk/colorlabel.c:50 src/prefs_common.c:307
+#: src/gtk/colorlabel.c:50 src/prefs_common.c:303
 msgid "Pink"
 msgstr "粉红"
 
-#: src/gtk/colorlabel.c:51 src/prefs_common.c:311
+#: src/gtk/colorlabel.c:51 src/prefs_common.c:307
 msgid "Sky blue"
 msgstr "天蓝"
 
-#: src/gtk/colorlabel.c:52 src/prefs_common.c:315
+#: src/gtk/colorlabel.c:52 src/prefs_common.c:311
 msgid "Blue"
 msgstr "蓝色"
 
-#: src/gtk/colorlabel.c:53 src/prefs_common.c:319
+#: src/gtk/colorlabel.c:53 src/prefs_common.c:315
 msgid "Green"
 msgstr "绿色"
 
-#: src/gtk/colorlabel.c:54 src/prefs_common.c:323
+#: src/gtk/colorlabel.c:54 src/prefs_common.c:319
 msgid "Brown"
 msgstr "棕色"
 
-#: src/gtk/foldersort.c:142
+#: src/gtk/foldersort.c:156
 msgid "Set folder order"
 msgstr "设置邮件夹顺序"
 
-#: src/gtk/foldersort.c:172
+#: src/gtk/foldersort.c:190
 msgid "Move folders up or down to change the sort order in the folder list."
 msgstr "上下移动邮件夹以改变邮件夹视图中的排列顺序。"
 
-#: src/gtk/foldersort.c:196
+#: src/gtk/foldersort.c:214
 msgid "Folders"
 msgstr "邮件夹"
 
@@ -3386,14 +3391,18 @@ msgid ""
 "messages and folders:</span>"
 msgstr "<span weight=\"bold\">下列图标用于标识邮件和邮件夹的状态: </span>"
 
-#: src/gtk/inputdialog.c:168
+#: src/gtk/inputdialog.c:186
 #, c-format
 msgid "Input password for %s on %s:"
 msgstr "请输入%s在%s上的密码:"
 
-#: src/gtk/inputdialog.c:170
+#: src/gtk/inputdialog.c:188
 msgid "Input password"
 msgstr "输入密码"
+
+#: src/gtk/inputdialog.c:274
+msgid "Remember this"
+msgstr ""
 
 #: src/gtk/logwindow.c:87
 msgid "Protocol log"
@@ -3434,29 +3443,37 @@ msgstr ""
 "加载此插件时发生如下错误[%s]:\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:283 src/gtk/pluginwindow.c:433
-#: src/plugins/clamav/clamav_plugin_gtk.c:213
+#: src/gtk/pluginwindow.c:284 src/plugins/clamav/clamav_plugin_gtk.c:211
 #: src/plugins/dillo_viewer/dillo_prefs.c:75
-#: src/plugins/pgpcore/prefs_gpg.c:453
+#: src/plugins/pgpcore/prefs_gpg.c:516
 #: src/plugins/spamassassin/spamassassin_gtk.c:548
 msgid "Plugins"
 msgstr "插件"
 
-#: src/gtk/pluginwindow.c:314 src/prefs_summaries.c:210
-msgid "Description"
-msgstr "描述"
+#: src/gtk/pluginwindow.c:293
+msgid "Plugins are a way to greatly extend Sylpheed-Claws' capabilities."
+msgstr ""
 
-#: src/gtk/pluginwindow.c:337 src/prefs_themes.c:866
+#: src/gtk/pluginwindow.c:298 src/prefs_themes.c:866
 msgid "Get more..."
 msgstr "下载更多..."
 
-#: src/gtk/pluginwindow.c:346
+#: src/gtk/pluginwindow.c:327 src/prefs_summaries.c:210
+msgid "Description"
+msgstr "描述"
+
+#: src/gtk/pluginwindow.c:353
 msgid "Load Plugin..."
 msgstr "加载插件..."
 
-#: src/gtk/pluginwindow.c:347
+#: src/gtk/pluginwindow.c:354
 msgid "Unload Plugin"
 msgstr "卸载插件"
+
+#: src/gtk/pluginwindow.c:440
+#, fuzzy
+msgid "Loaded plugins"
+msgstr "加载插件..."
 
 #: src/gtk/prefswindow.c:527
 msgid "Page Index"
@@ -3653,20 +3670,20 @@ msgstr ""
 "可以使用如下一些符号:"
 
 #: src/gtk/quicksearch.c:399 src/prefs_filtering_action.c:1080
-#: src/prefs_matcher.c:150 src/prefs_matcher.c:1684
-#: src/prefs_summary_column.c:82 src/quote_fmt.c:47 src/summaryview.c:486
+#: src/prefs_matcher.c:158 src/prefs_matcher.c:1849
+#: src/prefs_summary_column.c:82 src/quote_fmt.c:47 src/summaryview.c:483
 msgid "Subject"
 msgstr "主题"
 
 #: src/gtk/quicksearch.c:403 src/prefs_filtering_action.c:1081
-#: src/prefs_matcher.c:151 src/prefs_matcher.c:1685
-#: src/prefs_summary_column.c:83 src/quote_fmt.c:42 src/summaryview.c:487
+#: src/prefs_matcher.c:159 src/prefs_matcher.c:1850
+#: src/prefs_summary_column.c:83 src/quote_fmt.c:42 src/summaryview.c:484
 msgid "From"
 msgstr "发信人"
 
 #: src/gtk/quicksearch.c:407 src/prefs_filtering_action.c:1082
-#: src/prefs_matcher.c:151 src/prefs_matcher.c:1686
-#: src/prefs_summary_column.c:84 src/quote_fmt.c:48 src/summaryview.c:488
+#: src/prefs_matcher.c:159 src/prefs_matcher.c:1851
+#: src/prefs_summary_column.c:84 src/quote_fmt.c:48 src/summaryview.c:485
 msgid "To"
 msgstr "收信人"
 
@@ -3690,7 +3707,7 @@ msgstr "编辑搜索条件"
 msgid " Extended Symbols... "
 msgstr "扩展符号"
 
-#: src/gtk/quicksearch.c:917 src/summaryview.c:993
+#: src/gtk/quicksearch.c:917 src/summaryview.c:991
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "正在搜索(%s)... \n"
@@ -3709,7 +3726,7 @@ msgid "Signer"
 msgstr "歌者"
 
 #: src/gtk/sslcertwindow.c:142 src/gtk/sslcertwindow.c:163
-#: src/prefs_filtering.c:294 src/prefs_themes.c:883
+#: src/prefs_filtering.c:356 src/prefs_themes.c:883
 msgid "Name: "
 msgstr "名称: "
 
@@ -3808,11 +3825,11 @@ msgstr "查看认证(_V)"
 msgid "Changed SSL Certificate"
 msgstr "更改SSL认证"
 
-#: src/headerview.c:196 src/summaryview.c:2633 src/summaryview.c:2644
+#: src/headerview.c:195 src/summaryview.c:2636 src/summaryview.c:2647
 msgid "(No From)"
 msgstr "(没有发信人)"
 
-#: src/headerview.c:211 src/summaryview.c:2669 src/summaryview.c:2672
+#: src/headerview.c:210 src/summaryview.c:2671 src/summaryview.c:2674
 msgid "(No Subject)"
 msgstr "(没有主题)"
 
@@ -3832,7 +3849,7 @@ msgstr "加载图片"
 msgid "Content-Type:"
 msgstr ""
 
-#: src/imap.c:616
+#: src/imap.c:623
 msgid ""
 "\n"
 "\n"
@@ -3844,36 +3861,36 @@ msgstr ""
 "CRAM-MD5登录方式仅仅在libetpan编译进了SASL支持并且CRAM-MD5 SASL插件已经加载的"
 "情况下可用。"
 
-#: src/imap.c:625
+#: src/imap.c:630
 #, c-format
 msgid "Connection to %s failed: login refused.%s"
 msgstr "连接到 %s 失败: 登录被拒绝。%s"
 
-#: src/imap.c:629
+#: src/imap.c:634
 #, c-format
 msgid "Connection to %s failed: login refused.%s\n"
 msgstr "连接到 %s 失败: 登录被拒绝。%s\n"
 
-#: src/imap.c:646
+#: src/imap.c:651
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "连接到 %s 失败"
 
-#: src/imap.c:651 src/imap.c:654
+#: src/imap.c:656 src/imap.c:659
 #, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "与 %s 的IMAP4连接已经断开。正在重新连接...\n"
 
-#: src/imap.c:692 src/imap.c:2153 src/imap.c:2653 src/imap.c:2737
-#: src/imap.c:3075 src/imap.c:3831
+#: src/imap.c:697 src/imap.c:2159 src/imap.c:2683 src/imap.c:2767
+#: src/imap.c:3105 src/imap.c:3861
 msgid "Sylpheed-Claws needs network access in order to access the IMAP server."
 msgstr "Sylpheed-Claws需要访问网络才能连接IMAP服务。"
 
-#: src/imap.c:764 src/inc.c:759 src/news.c:295 src/send_message.c:299
+#: src/imap.c:771 src/inc.c:759 src/news.c:295 src/send_message.c:299
 msgid "Insecure connection"
 msgstr "不安全的连接"
 
-#: src/imap.c:765 src/inc.c:760 src/news.c:296 src/send_message.c:300
+#: src/imap.c:772 src/inc.c:760 src/news.c:296 src/send_message.c:300
 msgid ""
 "This connection is configured to be secured using SSL, but SSL is not "
 "available in this build of Sylpheed-Claws. \n"
@@ -3885,104 +3902,123 @@ msgstr ""
 "入)。\n"
 "请问是否要继续连接该服务器? 如果继续的话，通讯并不能保证是安全的。"
 
-#: src/imap.c:771 src/inc.c:766 src/news.c:302 src/send_message.c:306
+#: src/imap.c:778 src/inc.c:766 src/news.c:302 src/send_message.c:306
 msgid "Con_tinue connecting"
 msgstr "继续连接(_t)"
 
-#: src/imap.c:781
+#: src/imap.c:788
 #, c-format
 msgid "Connecting to IMAP4 server: %s..."
 msgstr "连接到 IMAP4 服务器: %s..."
 
-#: src/imap.c:813
+#: src/imap.c:820
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d"
 msgstr "无法连接到 IMAP4 服务器: %s:%d"
 
-#: src/imap.c:816
+#: src/imap.c:823
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "无法连接到 IMAP4 服务器: %s:%d\n"
 
-#: src/imap.c:845
+#: src/imap.c:852 src/imap.c:2491
 msgid "Can't start TLS session.\n"
 msgstr "无法启动TLS。\n"
 
-#: src/imap.c:882
+#: src/imap.c:889
 #, c-format
 msgid "Connecting to IMAP4 server %s...\n"
 msgstr "正在连接 IMAP4 服务器 %s...\n"
 
-#: src/imap.c:894
-#,  c-format
+#: src/imap.c:899
+#, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "无法登录到 IMAP 服务器 %s。"
 
-#: src/imap.c:1067
+#: src/imap.c:1073
 msgid "Adding messages..."
 msgstr "正在添加邮件..."
 
-#: src/imap.c:1215 src/mh.c:500
+#: src/imap.c:1221 src/mh.c:500
 msgid "Copying messages..."
 msgstr "正在拷贝邮件..."
 
-#: src/imap.c:1342
+#: src/imap.c:1348
 msgid "can't set deleted flags\n"
 msgstr "不能设置删除标记\n"
 
-#: src/imap.c:1348 src/imap.c:3583
+#: src/imap.c:1354 src/imap.c:3613
 msgid "can't expunge\n"
 msgstr "无法擦除\n"
 
-#: src/imap.c:1792
+#: src/imap.c:1798
 msgid "can't create mailbox: LIST failed\n"
 msgstr "无法创建收信夹: LIST失败\n"
 
-#: src/imap.c:1808
+#: src/imap.c:1814
 msgid "can't create mailbox\n"
 msgstr "无法启动收信夹\n"
 
-#: src/imap.c:1889
+#: src/imap.c:1895
 msgid "New folder name must not contain the namespace path separator"
 msgstr "新目录并不能包含名字空间分隔符"
 
-#: src/imap.c:1920
+#: src/imap.c:1926
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "无法将邮箱%s 重新命名为 %s\n"
 
-#: src/imap.c:1984
+#: src/imap.c:1990
 msgid "can't delete mailbox\n"
 msgstr "无法删除信夹\n"
 
-#: src/imap.c:2265
+#: src/imap.c:2271
 msgid "LIST failed\n"
 msgstr ""
 
-#: src/imap.c:2373
+#: src/imap.c:2379
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "无法选择邮件夹: %s\n"
 
-#: src/imap.c:2658
+#: src/imap.c:2488
+msgid "Server requires TLS to log in.\n"
+msgstr ""
+
+#: src/imap.c:2497
+msgid "Can't refresh capabilities.\n"
+msgstr ""
+
+#: src/imap.c:2502
+#, c-format
+msgid ""
+"Connection to %s failed: server requires TLS, but Sylpheed-Claws has been "
+"compiled without OpenSSL support.\n"
+msgstr ""
+
+#: src/imap.c:2510
+msgid "Server logins are disabled.\n"
+msgstr ""
+
+#: src/imap.c:2688
 msgid "Fetching message..."
 msgstr "正在收取邮件..."
 
-#: src/imap.c:2824
+#: src/imap.c:2854
 #, c-format
 msgid "iconv cannot convert UTF-7 to %s\n"
 msgstr "iconv无法将UTF-7转换成%s\n"
 
-#: src/imap.c:2854
+#: src/imap.c:2884
 #, c-format
 msgid "iconv cannot convert %s to UTF-7\n"
 msgstr "iconv无法将%s转换成UTF-7\n"
 
-#: src/imap.c:2898
+#: src/imap.c:2928
 msgid "iconv cannot convert UTF-8 to UTF-7\n"
 msgstr "iconv无法将UTF-8转换成UTF-7\n"
 
-#: src/imap.c:3568
+#: src/imap.c:3598
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "不能设置删除标记: %d\n"
@@ -4163,7 +4199,7 @@ msgstr "请选择要导入的LDIF文件。"
 msgid "R"
 msgstr ""
 
-#: src/importldif.c:726 src/summaryview.c:484
+#: src/importldif.c:726 src/summaryview.c:481
 msgid "S"
 msgstr "S"
 
@@ -4283,7 +4319,6 @@ msgstr "正在收取"
 msgid "Done (%d message (%s) received)"
 msgid_plural "Done (%d messages (%s) received)"
 msgstr[0] "完成(取回%d个邮件(%s))"
-msgstr[1] "完成(取回%d个邮件(%s))"
 
 #: src/inc.c:576
 msgid "Done (no new messages)"
@@ -4310,7 +4345,6 @@ msgstr "超时时间"
 msgid "Finished (%d new message)"
 msgid_plural "Finished (%d new messages)"
 msgstr[0] "完成 (%d个新邮件)"
-msgstr[1] "完成 (%d个新邮件)"
 
 #: src/inc.c:705
 msgid "Finished (no new messages)"
@@ -4375,7 +4409,6 @@ msgstr "取回邮件(%d/%d)(%s/%s)"
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
 msgstr[0] "正在收取邮件(已收到%d个，大小为%s)"
-msgstr[1] "正在收取邮件(已收到%d个，大小为%s)"
 
 #: src/inc.c:1102
 msgid "Connection failed."
@@ -4537,13 +4570,13 @@ msgstr ""
 "Sylpheed-Claws编译时采用的GTK+库比当前系统的版本更高，这可能会导致程序崩溃。"
 "请升级GTK+的版本，或者重新编译Sylpheed-Claws。"
 
-#: src/main.c:561
+#: src/main.c:566
 msgid ""
 "Some plugin(s) failed to load. Check the Plugins configuration for more "
 "information."
 msgstr "部分插件无法成功加载，请检查插件配置以获取详细信息。"
 
-#: src/main.c:571
+#: src/main.c:576
 msgid ""
 "Sylpheed-Claws has detected a configured mailbox, but could not load it. It "
 "is probably provided by an out-of-date external plugin. Please reinstall the "
@@ -4552,20 +4585,20 @@ msgstr ""
 "Sylpheed-Claws检测到一个已经配置的邮箱，但无法加载。它可能是由一个已经过时的"
 "第三方插件建立的。请重新安装该插件后再尝试。"
 
-#: src/main.c:803
+#: src/main.c:812
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "用法: %s [选项]...\n"
 
-#: src/main.c:805
+#: src/main.c:814
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [地址]       打开写信窗口"
 
-#: src/main.c:806
+#: src/main.c:815
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      订阅指定的URI"
 
-#: src/main.c:807
+#: src/main.c:816
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -4574,23 +4607,23 @@ msgstr ""
 "  --attach 文件1 [文件2]...\n"
 "                         打开写新邮件窗口，并附上所指定的文件"
 
-#: src/main.c:810
+#: src/main.c:819
 msgid "  --receive              receive new messages"
 msgstr "  --receive              接收新邮件"
 
-#: src/main.c:811
+#: src/main.c:820
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          接收所有帐号的新邮件"
 
-#: src/main.c:812
+#: src/main.c:821
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 发送所有待发送邮件"
 
-#: src/main.c:813
+#: src/main.c:822
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status               显示所有邮件的数目"
 
-#: src/main.c:814
+#: src/main.c:823
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -4598,7 +4631,7 @@ msgstr ""
 "  --status-full [邮件夹]...\n"
 "                         显示每个邮件夹的状态"
 
-#: src/main.c:816
+#: src/main.c:825
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like '#mh/Mailbox/inbox'"
@@ -4606,895 +4639,923 @@ msgstr ""
 "  --select folder[/msg]  跳转到指定的邮件夹/邮件\n"
 "                         可采用如下方式指定邮件夹: '#mh/Mailbox/inbox'"
 
-#: src/main.c:818
+#: src/main.c:827
 msgid "  --online               switch to online mode"
 msgstr "  --online               切换到联机模式"
 
-#: src/main.c:819
+#: src/main.c:828
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              切换到脱机模式"
 
-#: src/main.c:820
+#: src/main.c:829
 msgid "  --exit                 exit Sylpheed-Claws"
 msgstr "  --exit                 退出Sylpheed-Claws"
 
-#: src/main.c:821
+#: src/main.c:830
 msgid "  --debug                debug mode"
 msgstr "  --debug                调试模式"
 
-#: src/main.c:822
+#: src/main.c:831
 msgid "  --help                 display this help and exit"
 msgstr "  --help                 显示本说明并结束程序"
 
-#: src/main.c:823
+#: src/main.c:832
 msgid "  --version              output version information and exit"
 msgstr "  --version              显示版本内容并结束程序"
 
-#: src/main.c:824
+#: src/main.c:833
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           显示配置数据目录"
 
-#: src/main.c:889
+#: src/main.c:898
 #, c-format
 msgid "Processing (%s)..."
 msgstr "正在处理(%s)..."
 
-#: src/main.c:892
+#: src/main.c:901
 msgid "top level folder"
 msgstr "最上一层邮件夹"
 
-#: src/main.c:953
+#: src/main.c:968
 msgid "Really quit?"
 msgstr "确定要退出吗?"
 
-#: src/main.c:954
+#: src/main.c:969
 msgid "Composing message exists."
 msgstr "所编辑的文件已经存在。"
 
-#: src/main.c:955
+#: src/main.c:970
 msgid "_Save to Draft"
 msgstr "存为草稿(_S)"
 
-#: src/main.c:955
+#: src/main.c:970
 msgid "_Discard them"
 msgstr "摈弃(_D)"
 
-#: src/main.c:955
+#: src/main.c:970
 msgid "Do_n't quit"
 msgstr "不退出(_n)"
 
-#: src/main.c:969
+#: src/main.c:985
 msgid "Queued messages"
 msgstr "待发送的邮件"
 
-#: src/main.c:970
+#: src/main.c:986
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "待发送邮件夹内尚有邮件。要退出吗？"
 
-#: src/mainwindow.c:470 src/messageview.c:155
+#: src/mainwindow.c:481 src/messageview.c:158
 msgid "/_File"
 msgstr "/文件(_F)"
 
-#: src/mainwindow.c:471
+#: src/mainwindow.c:482
 msgid "/_File/_Add mailbox"
 msgstr "/文件(_F)/添加邮箱(_A)..."
 
-#: src/mainwindow.c:472
+#: src/mainwindow.c:483
 msgid "/_File/_Add mailbox/MH..."
 msgstr "/文件(_F)/增加邮箱(_A)/MH格式..."
 
-#: src/mainwindow.c:473 src/mainwindow.c:475 src/mainwindow.c:480
-#: src/mainwindow.c:482 src/mainwindow.c:485 src/mainwindow.c:488
-#: src/messageview.c:158
+#: src/mainwindow.c:484 src/mainwindow.c:486 src/mainwindow.c:491
+#: src/mainwindow.c:493 src/mainwindow.c:496 src/mainwindow.c:499
+#: src/messageview.c:161
 msgid "/_File/---"
 msgstr "/文件(_F)/---"
 
-#: src/mainwindow.c:474
+#: src/mainwindow.c:485
 msgid "/_File/Change folder order..."
 msgstr "/文件(_F)/修改邮件夹顺序..."
 
-#: src/mainwindow.c:476
+#: src/mainwindow.c:487
 msgid "/_File/_Import mbox file..."
 msgstr "/文件(_F)/导入mbox的文件(_I)... "
 
-#: src/mainwindow.c:477
+#: src/mainwindow.c:488
 msgid "/_File/_Export to mbox file..."
 msgstr "/文件(_F)/以mbox格式导出邮件夹(_E)..."
 
-#: src/mainwindow.c:478
+#: src/mainwindow.c:489
 msgid "/_File/Exp_ort selected to mbox file..."
 msgstr "/文件(_F)/以mbox格式导出选中的邮件(_o)..."
 
-#: src/mainwindow.c:481
+#: src/mainwindow.c:492
 msgid "/_File/Empty all _Trash folders"
 msgstr "/文件(_F)/清空所有垃圾桶(_T)"
 
-#: src/mainwindow.c:483 src/messageview.c:156
+#: src/mainwindow.c:494 src/messageview.c:159
 msgid "/_File/_Save as..."
 msgstr "/文件(_F)/保存为(_S)..."
 
-#: src/mainwindow.c:484 src/messageview.c:157
+#: src/mainwindow.c:495 src/messageview.c:160
 msgid "/_File/_Print..."
 msgstr "/文件(_F)/打印(_P)..."
 
-#: src/mainwindow.c:486
+#: src/mainwindow.c:497
 msgid "/_File/_Work offline"
 msgstr "/文件(_F)/脱机工作(_W)"
 
-#: src/mainwindow.c:487
+#: src/mainwindow.c:498
 msgid "/_File/Synchronise folders"
 msgstr "/文件(_F)/同步邮件夹"
 
-#: src/mainwindow.c:490
+#: src/mainwindow.c:501
 msgid "/_File/E_xit"
 msgstr "/文件(_F)/退出(_x)"
 
-#: src/mainwindow.c:495
+#: src/mainwindow.c:506
 msgid "/_Edit/Select _thread"
 msgstr "/编辑(_E)/选择线索(_T)"
 
-#: src/mainwindow.c:497 src/messageview.c:165
+#: src/mainwindow.c:508 src/messageview.c:168
 msgid "/_Edit/_Find in current message..."
 msgstr "/编辑(_E)/在邮件中查找(_F)..."
 
-#: src/mainwindow.c:499
+#: src/mainwindow.c:510
 msgid "/_Edit/_Search folder..."
 msgstr "/编辑(_E)/在邮件夹中搜索(_S)..."
 
-#: src/mainwindow.c:500
+#: src/mainwindow.c:511
 msgid "/_Edit/_Quick search"
 msgstr "/编辑(_E)/快速搜索(_Q)"
 
-#: src/mainwindow.c:501 src/messageview.c:168 src/summaryview.c:472
+#: src/mainwindow.c:512 src/messageview.c:171 src/summaryview.c:469
 msgid "/_View"
 msgstr "/查看(_V)"
 
-#: src/mainwindow.c:502
+#: src/mainwindow.c:513
 msgid "/_View/Show or hi_de"
 msgstr "/查看(_V)/显示或隐藏(_d)"
 
-#: src/mainwindow.c:503
+#: src/mainwindow.c:514
 msgid "/_View/Show or hi_de/_Folder tree"
 msgstr "/查看(_V)/显示或隐藏(_d)/邮件夹树(_F)"
 
-#: src/mainwindow.c:505
+#: src/mainwindow.c:516
 msgid "/_View/Show or hi_de/_Message view"
 msgstr "/查看(_V)/显示或隐藏(_d)/邮件内容(_M)"
 
-#: src/mainwindow.c:507
+#: src/mainwindow.c:518
 msgid "/_View/Show or hi_de/_Toolbar"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)"
 
-#: src/mainwindow.c:509
+#: src/mainwindow.c:520
 msgid "/_View/Show or hi_de/_Toolbar/Text _below icons"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/文字在图标下方(_b)"
 
-#: src/mainwindow.c:511
+#: src/mainwindow.c:522
 msgid "/_View/Show or hi_de/_Toolbar/Text be_side icons"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/文字在图标旁边(_s)"
 
-#: src/mainwindow.c:513
+#: src/mainwindow.c:524
 msgid "/_View/Show or hi_de/_Toolbar/_Icons only"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/仅显示图标(_I)"
 
-#: src/mainwindow.c:515
+#: src/mainwindow.c:526
 msgid "/_View/Show or hi_de/_Toolbar/_Text only"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/仅显示文字(_T)"
 
-#: src/mainwindow.c:517
+#: src/mainwindow.c:528
 msgid "/_View/Show or hi_de/_Toolbar/_Hide"
 msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/均不显示(_H)"
 
-#: src/mainwindow.c:519
+#: src/mainwindow.c:530
 msgid "/_View/Show or hi_de/Status _bar"
 msgstr "/查看(_V)/显示或隐藏(_d)/隐藏工具栏(_b)"
 
-#: src/mainwindow.c:521
+#: src/mainwindow.c:532
 msgid "/_View/Set displayed _columns"
 msgstr "/查看(_V)/设置显示列(_c)..."
 
-#: src/mainwindow.c:522
+#: src/mainwindow.c:533
 msgid "/_View/Set displayed _columns/in _Folder list..."
 msgstr "/查看(_V)/设置显示列(_c)/邮件夹列表(_F)..."
 
-#: src/mainwindow.c:523
+#: src/mainwindow.c:534
 msgid "/_View/Set displayed _columns/in _Message list..."
 msgstr "/查看(_V)/设置显示列(_c)/邮件列表(M)..."
 
-#: src/mainwindow.c:525 src/mainwindow.c:528 src/mainwindow.c:556
-#: src/mainwindow.c:581 src/mainwindow.c:698 src/mainwindow.c:702
-#: src/messageview.c:274
+#: src/mainwindow.c:536 src/mainwindow.c:539 src/mainwindow.c:567
+#: src/mainwindow.c:597 src/mainwindow.c:714 src/mainwindow.c:722
+#: src/messageview.c:277
 msgid "/_View/---"
 msgstr "/显示(_V)/---"
 
-#: src/mainwindow.c:526
+#: src/mainwindow.c:537
 msgid "/_View/Separate f_older tree"
 msgstr "/查看(_V)/用单独窗口显示邮件夹树(_o)"
 
-#: src/mainwindow.c:527
+#: src/mainwindow.c:538
 msgid "/_View/Separate _message view"
 msgstr "/查看(_V)/用单独窗口中显示邮件内容(_m)"
 
-#: src/mainwindow.c:529
+#: src/mainwindow.c:540
 msgid "/_View/_Sort"
 msgstr "/查看(_V)/排序(_S)"
 
-#: src/mainwindow.c:530
+#: src/mainwindow.c:541
 msgid "/_View/_Sort/by _number"
 msgstr "/查看(_V)/排序(_S)/按顺序(_n)"
 
-#: src/mainwindow.c:531
+#: src/mainwindow.c:542
 msgid "/_View/_Sort/by S_ize"
 msgstr "/查看(_V)/排序(_S)/按大小(_i)"
 
-#: src/mainwindow.c:532
+#: src/mainwindow.c:543
 msgid "/_View/_Sort/by _Date"
 msgstr "/查看(_V)/排序(_S)/按日期(_D)"
 
-#: src/mainwindow.c:533
+#: src/mainwindow.c:544
 msgid "/_View/_Sort/by _From"
 msgstr "/查看(_V)/排序(_S)/按发信人(_F)"
 
-#: src/mainwindow.c:534
+#: src/mainwindow.c:545
 msgid "/_View/_Sort/by _To"
 msgstr "/查看(_V)/排序(_S)/按收信人(_T)"
 
-#: src/mainwindow.c:535
+#: src/mainwindow.c:546
 msgid "/_View/_Sort/by S_ubject"
 msgstr "/查看(_V)/排序(_S)/按主题(_u)"
 
-#: src/mainwindow.c:536
+#: src/mainwindow.c:547
 msgid "/_View/_Sort/by _color label"
 msgstr "/查看(_V)/排序(_S)/按颜色标签(_c)"
 
-#: src/mainwindow.c:538
+#: src/mainwindow.c:549
 msgid "/_View/_Sort/by _mark"
 msgstr "/查看(_V)/排序(_S)/按标记(_m)"
 
-#: src/mainwindow.c:539
+#: src/mainwindow.c:550
 msgid "/_View/_Sort/by _status"
 msgstr "/查看(_V)/排序(_S)/按状态(_s)"
 
-#: src/mainwindow.c:540
+#: src/mainwindow.c:551
 msgid "/_View/_Sort/by a_ttachment"
 msgstr "/查看(_V)/排序(_S)/按附件(_t)"
 
-#: src/mainwindow.c:542
+#: src/mainwindow.c:553
 msgid "/_View/_Sort/by score"
 msgstr "/查看(_V)/排序(_S)/按得分"
 
-#: src/mainwindow.c:543
+#: src/mainwindow.c:554
 msgid "/_View/_Sort/by locked"
 msgstr "/查看(_V)/排序(_S)/按锁定状态"
 
-#: src/mainwindow.c:544
+#: src/mainwindow.c:555
 msgid "/_View/_Sort/D_on't sort"
 msgstr "/查看(_V)/排序(_S)/不排序(_o)"
 
-#: src/mainwindow.c:545 src/mainwindow.c:548
+#: src/mainwindow.c:556 src/mainwindow.c:559
 msgid "/_View/_Sort/---"
 msgstr "/查看(_V)/排序(_S)/---"
 
-#: src/mainwindow.c:546
+#: src/mainwindow.c:557
 msgid "/_View/_Sort/Ascending"
 msgstr "/查看(_V)/排序(_S)/升序"
 
-#: src/mainwindow.c:547
+#: src/mainwindow.c:558
 msgid "/_View/_Sort/Descending"
 msgstr "/查看(_V)/排序(_S)/降序"
 
-#: src/mainwindow.c:549
+#: src/mainwindow.c:560
 msgid "/_View/_Sort/_Attract by subject"
 msgstr "/查看(_V)/排序(_S)/按主题排列(_A)"
 
-#: src/mainwindow.c:551
+#: src/mainwindow.c:562
 msgid "/_View/Th_read view"
 msgstr "/查看(_V)/按线索查看(_R)"
 
-#: src/mainwindow.c:552
+#: src/mainwindow.c:563
 msgid "/_View/E_xpand all threads"
 msgstr "/查看(_V)/展开所有线索(_X)"
 
-#: src/mainwindow.c:553
+#: src/mainwindow.c:564
 msgid "/_View/Co_llapse all threads"
 msgstr "/查看(_V)/折叠所有线索(_L)"
 
-#: src/mainwindow.c:554
+#: src/mainwindow.c:565
 msgid "/_View/_Hide read messages"
 msgstr "/查看(_V)/隐藏已读邮件(_H) "
 
-#: src/mainwindow.c:557
+#: src/mainwindow.c:568
 msgid "/_View/_Go to"
 msgstr "/查看(_V)/转到(_G)"
 
-#: src/mainwindow.c:558
+#: src/mainwindow.c:569
 msgid "/_View/_Go to/_Previous message"
 msgstr "/查看(_V)/转到(_G)/上一封(_P)"
 
-#: src/mainwindow.c:559
+#: src/mainwindow.c:570
 msgid "/_View/_Go to/_Next message"
 msgstr "/查看(_V)/转到(_G)/下一封(_N)"
 
-#: src/mainwindow.c:560 src/mainwindow.c:565 src/mainwindow.c:568
-#: src/mainwindow.c:573 src/mainwindow.c:578
+#: src/mainwindow.c:571 src/mainwindow.c:576 src/mainwindow.c:579
+#: src/mainwindow.c:584 src/mainwindow.c:589 src/mainwindow.c:594
 msgid "/_View/_Go to/---"
 msgstr "/查看(_V)/转到(_G)/---"
 
-#: src/mainwindow.c:561
+#: src/mainwindow.c:572
 msgid "/_View/_Go to/P_revious unread message"
 msgstr "/查看(_V)/转到(_G)/上一封未读邮件(_r)"
 
-#: src/mainwindow.c:563
+#: src/mainwindow.c:574
 msgid "/_View/_Go to/N_ext unread message"
 msgstr "/查看(_V)/转到(_G)/下一封未读邮件(_e)"
 
-#: src/mainwindow.c:566
+#: src/mainwindow.c:577
 msgid "/_View/_Go to/Previous ne_w message"
 msgstr "/查看(_V)/转到(_G)/前一封新邮件(_w)"
 
-#: src/mainwindow.c:567
+#: src/mainwindow.c:578
 msgid "/_View/_Go to/Ne_xt new message"
 msgstr "/查看(_V)/转到(_G)/下一封新邮件(_x)"
 
-#: src/mainwindow.c:569
+#: src/mainwindow.c:580
 msgid "/_View/_Go to/Previous _marked message"
 msgstr "/查看(_V)/ 转到(_G)/前一封标记过的邮件(_M)"
 
-#: src/mainwindow.c:571
+#: src/mainwindow.c:582
 msgid "/_View/_Go to/Next m_arked message"
 msgstr "/查看(_V)/ 转到(_G)/下一封标记过的邮件(_a)"
 
-#: src/mainwindow.c:574
+#: src/mainwindow.c:585
 msgid "/_View/_Go to/Previous _labeled message"
 msgstr "/查看(_V)/ 转到(_G)/前一封打标签的邮件(_l)"
 
-#: src/mainwindow.c:576
+#: src/mainwindow.c:587
 msgid "/_View/_Go to/Next la_beled message"
 msgstr "/查看(_V)/ 转到(_G)/下一封打标签的邮件(_b)"
 
-#: src/mainwindow.c:579
+#: src/mainwindow.c:590
+#, fuzzy
+msgid "/_View/_Go to/Last read message"
+msgstr "/查看(_V)/转到(_G)/下一封未读邮件(_e)"
+
+#: src/mainwindow.c:592
+#, fuzzy
+msgid "/_View/_Go to/Parent message"
+msgstr "/查看(_V)/转到(_G)/下一封(_N)"
+
+#: src/mainwindow.c:595
 msgid "/_View/_Go to/Next unread _folder"
 msgstr "/查看(_V)/转到(_G)/下一个未读邮件夹(_f)"
 
-#: src/mainwindow.c:580
+#: src/mainwindow.c:596
 msgid "/_View/_Go to/_Other folder..."
 msgstr "/查看(_V)/转到(_G)/其他邮件夹(_O)..."
 
-#: src/mainwindow.c:584 src/mainwindow.c:591 src/messageview.c:171
+#: src/mainwindow.c:600 src/mainwindow.c:607 src/messageview.c:174
 msgid "/_View/Character _encoding/---"
 msgstr "/查看(_V)/字符编码(_e)/---"
 
-#: src/mainwindow.c:588 src/messageview.c:175
+#: src/mainwindow.c:604 src/messageview.c:178
 msgid "/_View/Character _encoding"
 msgstr "/查看(_V)/字符编码(_e)"
 
-#: src/mainwindow.c:589 src/messageview.c:176
+#: src/mainwindow.c:605 src/messageview.c:179
 msgid "/_View/Character _encoding/_Auto detect"
 msgstr "/查看(_V)/字符集(_e)/自动侦测(_A)"
 
-#: src/mainwindow.c:592 src/messageview.c:179
+#: src/mainwindow.c:608 src/messageview.c:182
 msgid "/_View/Character _encoding/7bit ascii (US-ASC_II)"
 msgstr "/查看(_V)/字符集(_e)/7bit ascii (US-ASCI_I)"
 
-#: src/mainwindow.c:594 src/messageview.c:182
+#: src/mainwindow.c:610 src/messageview.c:185
 msgid "/_View/Character _encoding/Unicode (_UTF-8)"
 msgstr "/查看(_V)/字符集(_e)/Unicode (_UTF-8)"
 
-#: src/mainwindow.c:598 src/messageview.c:185
+#: src/mainwindow.c:614 src/messageview.c:188
 msgid "/_View/Character _encoding/Western European (ISO-8859-_1)"
 msgstr "/查看(_V)/字符集(_e)/西欧(ISO-8859-_1)"
 
-#: src/mainwindow.c:600 src/messageview.c:187
+#: src/mainwindow.c:616 src/messageview.c:190
 msgid "/_View/Character _encoding/Western European (ISO-8859-15)"
 msgstr "/查看(_V)/字符集(_e)/西欧(ISO-8859-15)"
 
-#: src/mainwindow.c:602 src/messageview.c:189
+#: src/mainwindow.c:618 src/messageview.c:192
 msgid "/_View/Character _encoding/Western European (Windows-1252)"
 msgstr "/查看(_V)/字符集(_e)/西欧(Windows-1252)"
 
-#: src/mainwindow.c:606 src/messageview.c:192
+#: src/mainwindow.c:622 src/messageview.c:195
 msgid "/_View/Character _encoding/Central European (ISO-8859-_2)"
 msgstr "/查看(_V)/字符集(_e)/西欧(ISO-8859-_2) "
 
-#: src/mainwindow.c:610 src/messageview.c:195
+#: src/mainwindow.c:626 src/messageview.c:198
 msgid "/_View/Character _encoding/_Baltic (ISO-8859-13)"
 msgstr "/查看(_V)/字符集(_e)/波罗的海 (ISO-8859-13)(_B)"
 
-#: src/mainwindow.c:612 src/messageview.c:197
+#: src/mainwindow.c:628 src/messageview.c:200
 msgid "/_View/Character _encoding/Baltic (ISO-8859-_4)"
 msgstr "/查看(_V)/字符集(_e)/波罗的海 (ISO-8859-_4) "
 
-#: src/mainwindow.c:616 src/messageview.c:200
+#: src/mainwindow.c:632 src/messageview.c:203
 msgid "/_View/Character _encoding/Greek (ISO-8859-_7)"
 msgstr "/查看(_V)/字符集(_e)/希腊 (ISO-8859-_7)"
 
-#: src/mainwindow.c:620 src/messageview.c:203
+#: src/mainwindow.c:636 src/messageview.c:206
 msgid "/_View/Character _encoding/Hebrew (ISO-8859-_8)"
 msgstr "/查看(_V)/字符集(_e)/希伯来 (ISO-8859-_8)"
 
-#: src/mainwindow.c:622 src/messageview.c:205
+#: src/mainwindow.c:638 src/messageview.c:208
 msgid "/_View/Character _encoding/Hebrew (Windows-1255)"
 msgstr "/查看(_V)/字符集(_e)/希伯来 (Windows-1251)"
 
-#: src/mainwindow.c:626 src/messageview.c:208
+#: src/mainwindow.c:642 src/messageview.c:211
 msgid "/_View/Character _encoding/Arabic (ISO-8859-_6)"
 msgstr "/查看(_V)/字符集(_e)/阿拉伯语 (ISO-8859-_6) "
 
-#: src/mainwindow.c:628 src/messageview.c:210
+#: src/mainwindow.c:644 src/messageview.c:213
 msgid "/_View/Character _encoding/Arabic (Windows-1256)"
 msgstr "/查看(_V)/字符集(_e)/阿拉伯语 (Windows-1256)"
 
-#: src/mainwindow.c:632 src/messageview.c:213
+#: src/mainwindow.c:648 src/messageview.c:216
 msgid "/_View/Character _encoding/Turkish (ISO-8859-_9)"
 msgstr "/查看(_V)/字符集(_e)/土耳其 (ISO-8859-_9)"
 
-#: src/mainwindow.c:636 src/messageview.c:216
+#: src/mainwindow.c:652 src/messageview.c:219
 msgid "/_View/Character _encoding/Cyrillic (ISO-8859-_5)"
 msgstr "/查看(_V)/字符集(_e)/斯拉夫 (ISO-8859-_5)"
 
-#: src/mainwindow.c:638 src/messageview.c:218
+#: src/mainwindow.c:654 src/messageview.c:221
 msgid "/_View/Character _encoding/Cyrillic (KOI8-_R)"
 msgstr "/查看(_V)/字符集(_e)/斯拉夫 (KOI8-_R)"
 
-#: src/mainwindow.c:640 src/messageview.c:220
+#: src/mainwindow.c:656 src/messageview.c:223
 msgid "/_View/Character _encoding/Cyrillic (KOI8-U)"
 msgstr "/查看(_V)/字符集(_e)/斯拉夫 (KOI8-U)"
 
-#: src/mainwindow.c:642 src/messageview.c:222
+#: src/mainwindow.c:658 src/messageview.c:225
 msgid "/_View/Character _encoding/Cyrillic (Windows-1251)"
 msgstr "/查看(_V)/字符集(_e)/斯拉夫 (Windows-1251)"
 
-#: src/mainwindow.c:646 src/messageview.c:225
+#: src/mainwindow.c:662 src/messageview.c:228
 msgid "/_View/Character _encoding/Japanese (ISO-2022-_JP)"
 msgstr "/查看(_V)/字符集(_e)/日文 (ISO-2022-_JP)"
 
-#: src/mainwindow.c:648 src/messageview.c:227
+#: src/mainwindow.c:664 src/messageview.c:230
 msgid "/_View/Character _encoding/Japanese (ISO-2022-JP-2)"
 msgstr "/查看(_V)/字符集(_e)/日文 (ISO-2022-JP-2)"
 
-#: src/mainwindow.c:650 src/messageview.c:229
+#: src/mainwindow.c:666 src/messageview.c:232
 msgid "/_View/Character _encoding/Japanese (_EUC-JP)"
 msgstr "/查看(_V)/字符集(_e)/日文 (_EUC-JP)"
 
-#: src/mainwindow.c:652 src/messageview.c:231
+#: src/mainwindow.c:668 src/messageview.c:234
 msgid "/_View/Character _encoding/Japanese (_Shift__JIS)"
 msgstr "/查看(_V)/字符集(_e)/日文 (_Shift__JIS)"
 
-#: src/mainwindow.c:656 src/messageview.c:234
+#: src/mainwindow.c:672 src/messageview.c:237
 msgid "/_View/Character _encoding/Simplified Chinese (_GB2312)"
 msgstr "/查看(_V)/字符集(_e)/简体中文 (_GB2312)"
 
-#: src/mainwindow.c:658 src/messageview.c:236
+#: src/mainwindow.c:674 src/messageview.c:239
 msgid "/_View/Character _encoding/Simplified Chinese (GBK)"
 msgstr "/查看(_V)/字符集(_e)/简体中文 (GBK)"
 
-#: src/mainwindow.c:660 src/messageview.c:238
+#: src/mainwindow.c:676 src/messageview.c:241
 msgid "/_View/Character _encoding/Traditional Chinese (_Big5)"
 msgstr "/查看(_V)/字符集(_e)/繁体中文 (_Big5)"
 
-#: src/mainwindow.c:662 src/messageview.c:240
+#: src/mainwindow.c:678 src/messageview.c:243
 msgid "/_View/Character _encoding/Traditional Chinese (EUC-_TW)"
 msgstr "/查看(_V)/字符集(_e)/繁体中文 (EUC-_TW)"
 
-#: src/mainwindow.c:664 src/messageview.c:242
+#: src/mainwindow.c:680 src/messageview.c:245
 msgid "/_View/Character _encoding/Chinese (ISO-2022-_CN)"
 msgstr "/查看(_V)/字符集(_e)/中文 (ISO-2022-_CN)"
 
-#: src/mainwindow.c:668 src/messageview.c:245
+#: src/mainwindow.c:684 src/messageview.c:248
 msgid "/_View/Character _encoding/Korean (EUC-_KR)"
 msgstr "/查看(_V)/字符集(_e)/韩文 (EUC-_KR) "
 
-#: src/mainwindow.c:670 src/messageview.c:247
+#: src/mainwindow.c:686 src/messageview.c:250
 msgid "/_View/Character _encoding/Korean (ISO-2022-KR)"
 msgstr "/查看(_V)/字符集(_e)/韩文 (ISO-2022-KR)"
 
-#: src/mainwindow.c:674 src/messageview.c:250
+#: src/mainwindow.c:690 src/messageview.c:253
 msgid "/_View/Character _encoding/Thai (TIS-620)"
 msgstr "/查看(_V)/字符集(_e)/泰国 (TIS-620)"
 
-#: src/mainwindow.c:676 src/messageview.c:252
+#: src/mainwindow.c:692 src/messageview.c:255
 msgid "/_View/Character _encoding/Thai (Windows-874)"
 msgstr "/查看(_V)/字符集(_e)/泰国 (Windows-874)"
 
-#: src/mainwindow.c:683 src/mainwindow.c:689 src/messageview.c:259
-#: src/messageview.c:265
+#: src/mainwindow.c:699 src/mainwindow.c:705 src/messageview.c:262
+#: src/messageview.c:268
 msgid "/_View/Decode/---"
 msgstr "/查看(_V)/解码/---"
 
-#: src/mainwindow.c:686 src/messageview.c:262
+#: src/mainwindow.c:702 src/messageview.c:265
 msgid "/_View/Decode"
 msgstr "/查看(_V)/解码"
 
-#: src/mainwindow.c:687 src/messageview.c:263
+#: src/mainwindow.c:703 src/messageview.c:266
 msgid "/_View/Decode/_Auto detect"
 msgstr "/查看(_V)/解码/自动侦测(_A)"
 
-#: src/mainwindow.c:690 src/messageview.c:266
+#: src/mainwindow.c:706 src/messageview.c:269
 msgid "/_View/Decode/_8bit"
 msgstr "/查看(_V)/解码/_8位"
 
-#: src/mainwindow.c:691 src/messageview.c:267
+#: src/mainwindow.c:707 src/messageview.c:270
 msgid "/_View/Decode/_Quoted printable"
 msgstr "/查看(_V)/解码/_Quoted Printable"
 
-#: src/mainwindow.c:692 src/messageview.c:268
+#: src/mainwindow.c:708 src/messageview.c:271
 msgid "/_View/Decode/_Base64"
 msgstr "/查看(_V)/解码/_Base64"
 
-#: src/mainwindow.c:693 src/messageview.c:269
+#: src/mainwindow.c:709 src/messageview.c:272
 msgid "/_View/Decode/_Uuencode"
 msgstr "/查看(_V)/解码/_Uuencode"
 
-#: src/mainwindow.c:699 src/summaryview.c:473
+#: src/mainwindow.c:715 src/summaryview.c:470
 msgid "/_View/Open in new _window"
 msgstr "/查看(_V)/在新窗口中打开(_w)"
 
-#: src/mainwindow.c:700 src/messageview.c:275
+#: src/mainwindow.c:716 src/messageview.c:278
 msgid "/_View/Mess_age source"
 msgstr "/查看(_V)/邮件源文件(_a)"
 
-#: src/mainwindow.c:701
+#: src/mainwindow.c:717
 msgid "/_View/Show all headers"
 msgstr "/查看(_V)/显示所有信息头"
 
-#: src/mainwindow.c:703
+#: src/mainwindow.c:718 src/messageview.c:280
+#, fuzzy
+msgid "/_View/Quotes"
+msgstr "/查看(_V)/排序(_S)"
+
+#: src/mainwindow.c:719 src/messageview.c:281
+#, fuzzy
+msgid "/_View/Quotes/_Fold all"
+msgstr "/查看(_V)/排序(_S)/按颜色标签(_c)"
+
+#: src/mainwindow.c:720 src/messageview.c:282
+msgid "/_View/Quotes/Fold from level _2"
+msgstr ""
+
+#: src/mainwindow.c:721 src/messageview.c:283
+msgid "/_View/Quotes/Fold from level _3"
+msgstr ""
+
+#: src/mainwindow.c:723
 msgid "/_View/_Update summary"
 msgstr "/查看(_V)/更新邮件摘要列表(_U)"
 
-#: src/mainwindow.c:706
+#: src/mainwindow.c:726
 msgid "/_Message/Recei_ve"
 msgstr "/邮件(_M)/收取(_v)"
 
-#: src/mainwindow.c:707
+#: src/mainwindow.c:727
 msgid "/_Message/Recei_ve/Get from _current account"
 msgstr "/邮件(_M)/收取(_v)/从当前帐号收取(_c)"
 
-#: src/mainwindow.c:709
+#: src/mainwindow.c:729
 msgid "/_Message/Recei_ve/Get from _all accounts"
 msgstr "/邮件(_M)/收取(_v)/从所有帐号收取(_c)"
 
-#: src/mainwindow.c:711
+#: src/mainwindow.c:731
 msgid "/_Message/Recei_ve/Cancel receivin_g"
 msgstr "/邮件(_M)/收取(_v)/取消(_g)"
 
-#: src/mainwindow.c:713
+#: src/mainwindow.c:733
 msgid "/_Message/Recei_ve/---"
 msgstr "/邮件(_M)/收取(_v)/---"
 
-#: src/mainwindow.c:714
+#: src/mainwindow.c:734
 msgid "/_Message/_Send queued messages"
 msgstr "/邮件(_M)/送出待发送邮件(_S)"
 
-#: src/mainwindow.c:716
+#: src/mainwindow.c:736
 msgid "/_Message/Compose a_n email message"
 msgstr "/邮件(_M)/写信(_n)"
 
-#: src/mainwindow.c:717
+#: src/mainwindow.c:737
 msgid "/_Message/Compose a news message"
 msgstr "/邮件(_M)/写新闻群留言"
 
-#: src/mainwindow.c:718 src/messageview.c:282
+#: src/mainwindow.c:738 src/messageview.c:289
 msgid "/_Message/_Reply"
 msgstr "/邮件(_M)/回信(_R)"
 
-#: src/mainwindow.c:719
+#: src/mainwindow.c:739
 msgid "/_Message/Repl_y to"
 msgstr "/邮件(_M)/回信给(_y)"
 
-#: src/mainwindow.c:720 src/messageview.c:283
+#: src/mainwindow.c:740 src/messageview.c:290
 msgid "/_Message/Repl_y to/_all"
 msgstr "/邮件(_M)/回信给(_y)/全部人(_a)"
 
-#: src/mainwindow.c:721 src/messageview.c:285
+#: src/mainwindow.c:741 src/messageview.c:292
 msgid "/_Message/Repl_y to/_sender"
 msgstr "/邮件(_M)/回信给(_y)/发信人(_s)"
 
-#: src/mainwindow.c:722 src/messageview.c:287
+#: src/mainwindow.c:742 src/messageview.c:294
 msgid "/_Message/Repl_y to/mailing _list"
 msgstr "/邮件(_M)/回信给(_y)/邮件列表(_l)"
 
-#: src/mainwindow.c:724
+#: src/mainwindow.c:744
 msgid "/_Message/Follow-up and reply to"
 msgstr "/邮件(_M)/Follow-up and reply to"
 
-#: src/mainwindow.c:726 src/messageview.c:290
+#: src/mainwindow.c:746 src/messageview.c:297
 msgid "/_Message/_Forward"
 msgstr "/邮件(_M)/转发(_F)"
 
-#: src/mainwindow.c:727 src/messageview.c:291
+#: src/mainwindow.c:747 src/messageview.c:298
 msgid "/_Message/For_ward as attachment"
 msgstr "/邮件(_M)/以附加文件形式转发(_A)"
 
-#: src/mainwindow.c:728
+#: src/mainwindow.c:748
 msgid "/_Message/Redirect"
 msgstr "/邮件(_M)/重定向"
 
-#: src/mainwindow.c:730
+#: src/mainwindow.c:750
 msgid "/_Message/Mailing-_List"
 msgstr "/邮件(_M)/邮件列表(_L)"
 
-#: src/mainwindow.c:731
+#: src/mainwindow.c:751
 msgid "/_Message/Mailing-_List/Post"
 msgstr "/邮件(_M)/邮件列表(_L)/发贴"
 
-#: src/mainwindow.c:732
+#: src/mainwindow.c:752
 msgid "/_Message/Mailing-_List/Help"
 msgstr "/邮件(_M)/邮件列表(_l)/帮助"
 
-#: src/mainwindow.c:733
+#: src/mainwindow.c:753
 msgid "/_Message/Mailing-_List/Subscribe"
 msgstr "/邮件(_M)/邮件列表(_L)/订阅"
 
-#: src/mainwindow.c:734
+#: src/mainwindow.c:754
 msgid "/_Message/Mailing-_List/Unsubscribe"
 msgstr "/邮件(_M)/邮件列表(_L)/退订"
 
-#: src/mainwindow.c:735
+#: src/mainwindow.c:755
 msgid "/_Message/Mailing-_List/View archive"
 msgstr "/邮件(_M)/邮件列表(_L)/查看归档邮件"
 
-#: src/mainwindow.c:736
+#: src/mainwindow.c:756
 msgid "/_Message/Mailing-_List/Contact owner"
 msgstr "/邮件(_M)/邮件列表(_L)/联系作者"
 
-#: src/mainwindow.c:739
+#: src/mainwindow.c:759
 msgid "/_Message/M_ove..."
 msgstr "/邮件(_M)/移动(_o)"
 
-#: src/mainwindow.c:740
+#: src/mainwindow.c:760
 msgid "/_Message/_Copy..."
 msgstr "/邮件(_M)/复制(_C)"
 
-#: src/mainwindow.c:741
+#: src/mainwindow.c:761
 msgid "/_Message/Move to _trash"
 msgstr "/邮件(_M)/移动到垃圾桶(_t)"
 
-#: src/mainwindow.c:742
+#: src/mainwindow.c:762
 msgid "/_Message/_Delete..."
 msgstr "/邮件(_M)/删除(_D)..."
 
-#: src/mainwindow.c:743
+#: src/mainwindow.c:763
 msgid "/_Message/Cancel a news message"
 msgstr "/邮件(_M)/取消新邮件"
 
-#: src/mainwindow.c:745
+#: src/mainwindow.c:765
 msgid "/_Message/_Mark"
 msgstr "/邮件(_M)/标记(_M)"
 
-#: src/mainwindow.c:746
+#: src/mainwindow.c:766
 msgid "/_Message/_Mark/_Mark"
 msgstr "/邮件(_M)/标记(_M)/ 标记(_M) "
 
-#: src/mainwindow.c:747
+#: src/mainwindow.c:767
 msgid "/_Message/_Mark/_Unmark"
 msgstr "/邮件(_M)/标记(_M)/ 不标记(_U)"
 
-#: src/mainwindow.c:748 src/mainwindow.c:752
+#: src/mainwindow.c:768 src/mainwindow.c:772
 msgid "/_Message/_Mark/---"
 msgstr "/邮件(_M)/标记(_M)/---"
 
-#: src/mainwindow.c:749
+#: src/mainwindow.c:769
 msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/邮件(_M)/标记(_M)/标记为未读(_e)"
 
-#: src/mainwindow.c:750
+#: src/mainwindow.c:770
 msgid "/_Message/_Mark/Mark as rea_d"
 msgstr "/邮件(_M)/标记(_M)/标记为已读(_d)"
 
-#: src/mainwindow.c:751
+#: src/mainwindow.c:771
 msgid "/_Message/_Mark/Mark all _read"
 msgstr "/邮件(_M)/标记(_M)/标记所有为已读(_r)"
 
-#: src/mainwindow.c:753
+#: src/mainwindow.c:773
 msgid "/_Message/_Mark/Mark as _spam"
 msgstr "/邮件(_M)/标记(_M)/标记为垃圾邮件(_s)"
 
-#: src/mainwindow.c:754
+#: src/mainwindow.c:774
 msgid "/_Message/_Mark/Mark as _ham"
 msgstr "/邮件(_M)/标记(_M)/标记为非垃圾邮件(_h)"
 
-#: src/mainwindow.c:755
+#: src/mainwindow.c:775
 msgid "/_Message/Color la_bel"
 msgstr "/邮件(_M)/彩色标记(_b)"
 
-#: src/mainwindow.c:757
+#: src/mainwindow.c:777
 msgid "/_Message/Re-_edit"
 msgstr "/邮件(_M)/重新编辑(_e)"
 
-#: src/mainwindow.c:760
+#: src/mainwindow.c:780
 msgid "/_Tools/_Address book..."
 msgstr "/工具(_T)/地址簿(_A)..."
 
-#: src/mainwindow.c:761 src/messageview.c:297
+#: src/mainwindow.c:781 src/messageview.c:304
 msgid "/_Tools/Add sender to address boo_k"
 msgstr "/工具(_T)/将发信人加入地址簿中(_k)"
 
-#: src/mainwindow.c:763
+#: src/mainwindow.c:783
 msgid "/_Tools/_Harvest addresses"
 msgstr "/工具(_T)/批量提取通讯地址(_H)"
 
-#: src/mainwindow.c:764
+#: src/mainwindow.c:784
 msgid "/_Tools/_Harvest addresses/from _Folder..."
 msgstr "/工具(_T)/批量提取通讯地址(_H)/从邮件夹(_F)"
 
-#: src/mainwindow.c:766
+#: src/mainwindow.c:786
 msgid "/_Tools/_Harvest addresses/from _Messages..."
 msgstr "/工具(_T)/批量提取通讯地址(_H)/从邮件(_M)"
 
-#: src/mainwindow.c:769
+#: src/mainwindow.c:789
 msgid "/_Tools/_Filter all messages in folder"
 msgstr "/工具(_T)/过滤邮件夹中所有邮件(_F)"
 
-#: src/mainwindow.c:771
+#: src/mainwindow.c:791
 msgid "/_Tools/Filter _selected messages"
 msgstr "/工具(_T)/过滤选定的邮件(_F)"
 
-#: src/mainwindow.c:773 src/messageview.c:300
+#: src/mainwindow.c:793 src/messageview.c:307
 msgid "/_Tools/_Create filter rule"
 msgstr "/工具(_T)/创建过滤规则(_C)"
 
-#: src/mainwindow.c:774 src/messageview.c:302
+#: src/mainwindow.c:794 src/messageview.c:309
 msgid "/_Tools/_Create filter rule/_Automatically"
 msgstr "/工具(_T)/创建过滤规则(_C)/自动创建(_A)"
 
-#: src/mainwindow.c:776 src/messageview.c:304
+#: src/mainwindow.c:796 src/messageview.c:311
 msgid "/_Tools/_Create filter rule/by _From"
 msgstr "/工具(_T)/创建过滤规则(_C)/由发信人(_F)"
 
-#: src/mainwindow.c:778 src/messageview.c:306
+#: src/mainwindow.c:798 src/messageview.c:313
 msgid "/_Tools/_Create filter rule/by _To"
 msgstr "/工具(_T)/创建过滤规则(_C)/由收信人(_T)"
 
-#: src/mainwindow.c:780 src/messageview.c:308
+#: src/mainwindow.c:800 src/messageview.c:315
 msgid "/_Tools/_Create filter rule/by _Subject"
 msgstr "/工具(_T)/创建过滤规则(_C)/由主题(_S)"
 
-#: src/mainwindow.c:782
+#: src/mainwindow.c:802
 msgid "/_Tools/C_reate processing rule"
 msgstr "/工具(_T)/创建处理规则(_r)"
 
-#: src/mainwindow.c:783
+#: src/mainwindow.c:803
 msgid "/_Tools/C_reate processing rule/_Automatically"
 msgstr "/工具(_T)/创建处理规则(_r)/自动创建(_A)"
 
-#: src/mainwindow.c:785
+#: src/mainwindow.c:805
 msgid "/_Tools/C_reate processing rule/by _From"
 msgstr "/工具(_T)/创建处理规则(_r)/由发信人(_F)"
 
-#: src/mainwindow.c:787
+#: src/mainwindow.c:807
 msgid "/_Tools/C_reate processing rule/by _To"
 msgstr "/工具(_T)/创建处理规则(_r)/由收信人(_T)"
 
-#: src/mainwindow.c:789
+#: src/mainwindow.c:809
 msgid "/_Tools/C_reate processing rule/by _Subject"
 msgstr "/工具(_T)/创建处理规则(_r)/由主题(_S)"
 
-#: src/mainwindow.c:794
+#: src/mainwindow.c:814
 msgid "/_Tools/Ch_eck for new messages in all folders"
 msgstr "/工具(_T)/检查所有邮件夹中的新邮件(_e)"
 
-#: src/mainwindow.c:796
+#: src/mainwindow.c:816
 msgid "/_Tools/Delete du_plicated messages"
 msgstr "/工具(_T)/删除重复邮件(_p)"
 
-#: src/mainwindow.c:798
+#: src/mainwindow.c:818
 msgid "/_Tools/Delete du_plicated messages/In selected folder"
 msgstr "/工具(_T)/删除重复邮件(_p)/选定邮件夹"
 
-#: src/mainwindow.c:800
+#: src/mainwindow.c:820
 msgid "/_Tools/Delete du_plicated messages/In all folders"
 msgstr "/工具(_T)/删除重复邮件(_p)/所有邮件夹"
 
-#: src/mainwindow.c:803
+#: src/mainwindow.c:823
 msgid "/_Tools/E_xecute"
 msgstr "/工具(_T)/执行(_x)"
 
-#: src/mainwindow.c:806
+#: src/mainwindow.c:826
 msgid "/_Tools/SSL cer_tificates..."
 msgstr "/工具(_T)/SSL认证(_t)"
 
-#: src/mainwindow.c:810
+#: src/mainwindow.c:830
 msgid "/_Tools/_Log window"
 msgstr "/工具(_T)/日志窗口(_L)"
 
-#: src/mainwindow.c:812
+#: src/mainwindow.c:832
 msgid "/_Configuration"
 msgstr "/设置(_C)"
 
-#: src/mainwindow.c:813
+#: src/mainwindow.c:833
 msgid "/_Configuration/C_hange current account"
 msgstr "/设置(_C)/更改目前帐号(_h)"
 
-#: src/mainwindow.c:815
+#: src/mainwindow.c:835
 msgid "/_Configuration/_Preferences for current account..."
 msgstr "/设置(_C)/目前帐号的偏好设置(_P)..."
 
-#: src/mainwindow.c:817
+#: src/mainwindow.c:837
 msgid "/_Configuration/Create _new account..."
 msgstr "/设置(_C)/创建新帐号(_n)..."
 
-#: src/mainwindow.c:819
+#: src/mainwindow.c:839
 msgid "/_Configuration/_Edit accounts..."
 msgstr "/设置(_C)/编辑帐号(_E)..."
 
-#: src/mainwindow.c:821
+#: src/mainwindow.c:841
 msgid "/_Configuration/---"
 msgstr "/设置(_C)/---"
 
-#: src/mainwindow.c:822
+#: src/mainwindow.c:842
 msgid "/_Configuration/P_references..."
 msgstr "/设置(_C)/偏好(_r)..."
 
-#: src/mainwindow.c:824
+#: src/mainwindow.c:844
 msgid "/_Configuration/Pre-pr_ocessing..."
 msgstr "/设置(_C)/预处理(_o)..."
 
-#: src/mainwindow.c:826
+#: src/mainwindow.c:846
 msgid "/_Configuration/Post-pro_cessing..."
 msgstr "/设置(_C)/后处理(_c)..."
 
-#: src/mainwindow.c:828
+#: src/mainwindow.c:848
 msgid "/_Configuration/_Filtering..."
 msgstr "/设置(_C)/过滤(_F)..."
 
-#: src/mainwindow.c:830
+#: src/mainwindow.c:850
 msgid "/_Configuration/_Templates..."
 msgstr "/设置(_C)/模板(_T)..."
 
-#: src/mainwindow.c:831
+#: src/mainwindow.c:851
 msgid "/_Configuration/_Actions..."
 msgstr "/设置(_C)/动作(_A)..."
 
-#: src/mainwindow.c:832
+#: src/mainwindow.c:852
 msgid "/_Configuration/Plu_gins..."
 msgstr "/设置(_C)/插件(_g)..."
 
-#: src/mainwindow.c:835
+#: src/mainwindow.c:855
 msgid "/_Help/_Manual"
 msgstr "/求助(_H)/联机手册(_M)"
 
-#: src/mainwindow.c:836
+#: src/mainwindow.c:856
 msgid "/_Help/_Online User-contributed FAQ"
 msgstr "/帮助(_H)/在线FAQ(_O)"
 
-#: src/mainwindow.c:838
+#: src/mainwindow.c:858
 msgid "/_Help/Icon _Legend"
 msgstr "/帮助(_H)/图标说明(_L)"
 
-#: src/mainwindow.c:839
+#: src/mainwindow.c:859
 msgid "/_Help/---"
 msgstr "/求助(_H)/---"
 
-#: src/mainwindow.c:1132
+#: src/mainwindow.c:1152
 msgid "You are online. Click the icon to go offline"
 msgstr "目前在线。点击图标转到离线模式。"
 
-#: src/mainwindow.c:1136
+#: src/mainwindow.c:1156
 msgid "You are offline. Click the icon to go online"
 msgstr "目前离线。点击图标转到在线状态。"
 
-#: src/mainwindow.c:1153
+#: src/mainwindow.c:1173
 msgid "Select account"
 msgstr "选择帐号"
 
-#: src/mainwindow.c:1545 src/mainwindow.c:1586 src/mainwindow.c:1622
-#: src/mainwindow.c:1658 src/mainwindow.c:1700 src/prefs_folder_item.c:668
+#: src/mainwindow.c:1570 src/mainwindow.c:1611 src/mainwindow.c:1647
+#: src/mainwindow.c:1683 src/mainwindow.c:1725 src/prefs_folder_item.c:668
 msgid "Untitled"
 msgstr "未命名"
 
-#: src/mainwindow.c:1701
+#: src/mainwindow.c:1726
 msgid "none"
 msgstr "无"
 
-#: src/mainwindow.c:1963
+#: src/mainwindow.c:1988
 msgid "Delete all messages in trash folders?"
 msgstr "清空垃圾桶内所有邮件？"
 
-#: src/mainwindow.c:1982
+#: src/mainwindow.c:2007
 msgid "Add mailbox"
 msgstr "添加邮箱"
 
-#: src/mainwindow.c:1983
+#: src/mainwindow.c:2008
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -5503,16 +5564,16 @@ msgstr ""
 "请输入邮箱位置。\n"
 "如果指定已存在的邮箱，它将会自动被扫描。"
 
-#: src/mainwindow.c:1989
+#: src/mainwindow.c:2014
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "邮箱 `%s' 已经存在。"
 
-#: src/mainwindow.c:1994 src/setup.c:51
+#: src/mainwindow.c:2019 src/setup.c:51
 msgid "Mailbox"
 msgstr "邮箱"
 
-#: src/mainwindow.c:1999 src/setup.c:54
+#: src/mainwindow.c:2024 src/setup.c:54
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -5521,86 +5582,85 @@ msgstr ""
 "创建邮箱失败。\n"
 "也许某些文件已经存在，或者你没有足够的写权限。"
 
-#: src/mainwindow.c:2281
+#: src/mainwindow.c:2324
 msgid "No posting allowed"
 msgstr "不允许发贴"
 
-#: src/mainwindow.c:2543
+#: src/mainwindow.c:2586
 msgid "Sylpheed-Claws - Folder View"
 msgstr "Sylpheed-Claws - 邮件夹"
 
-#: src/mainwindow.c:2579 src/messageview.c:442 src/messageview.c:825
+#: src/mainwindow.c:2622 src/messageview.c:449 src/messageview.c:838
 msgid "Sylpheed-Claws - Message View"
 msgstr "Sylpheed-Claws - 邮件"
 
-#: src/mainwindow.c:2929
+#: src/mainwindow.c:2972
 msgid "Mbox import has failed."
 msgstr "导入mbox文件失败。"
 
-#: src/mainwindow.c:2938 src/mainwindow.c:2947
+#: src/mainwindow.c:2981 src/mainwindow.c:2990
 msgid "Export to mbox has failed."
 msgstr "导出到mbox失败。"
 
-#: src/mainwindow.c:2970 src/plugins/trayicon/trayicon.c:369
+#: src/mainwindow.c:3013 src/plugins/trayicon/trayicon.c:372
 msgid "Exit"
 msgstr "退出"
 
-#: src/mainwindow.c:2970
+#: src/mainwindow.c:3013
 msgid "Exit Sylpheed-Claws?"
 msgstr "退出 Sylpheed-Claws?"
 
-#: src/mainwindow.c:3116
+#: src/mainwindow.c:3159
 msgid "Folder synchronisation"
 msgstr "邮件夹同步"
 
-#: src/mainwindow.c:3117
+#: src/mainwindow.c:3160
 msgid "Do you want to synchronise your folders now?"
 msgstr "是否现在同步邮件夹?"
 
-#: src/mainwindow.c:3118
+#: src/mainwindow.c:3161
 msgid "+_Synchronise"
 msgstr "+同步(_S)"
 
-#: src/mainwindow.c:3392
+#: src/mainwindow.c:3465
 msgid "Deleting duplicated messages..."
 msgstr "删除重复的邮件..."
 
-#: src/mainwindow.c:3426
+#: src/mainwindow.c:3499
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "删除 %d 个重复的邮件(分布于 %d 个邮件夹)。\n"
-msgstr[1] "删除 %d 个重复的邮件(分布于 %d 个邮件夹)。\n"
 
-#: src/mainwindow.c:3573 src/summaryview.c:4527
+#: src/mainwindow.c:3658 src/summaryview.c:4608
 msgid "Processing rules to apply before folder rules"
 msgstr "在邮件夹规则前应用的规则"
 
-#: src/mainwindow.c:3582
+#: src/mainwindow.c:3667
 msgid "Processing rules to apply after folder rules"
 msgstr "在邮件夹规则后应用的规则"
 
-#: src/mainwindow.c:3591 src/summaryview.c:4538
+#: src/mainwindow.c:3676 src/summaryview.c:4619
 msgid "Filtering configuration"
 msgstr "过滤/处理 配置"
 
-#: src/mainwindow.c:3845
+#: src/mainwindow.c:3930
 #, c-format
 msgid "not initialized\n"
 msgstr "未初始化\n"
 
-#: src/mainwindow.c:3857 src/mainwindow.c:3868
+#: src/mainwindow.c:3942 src/mainwindow.c:3953
 #, c-format
 msgid "selecting folder '%s'\n"
 msgstr "选择邮件夹: '%s'\n"
 
-#: src/mainwindow.c:3872
+#: src/mainwindow.c:3957
 #, c-format
 msgid "selecting message %d\n"
 msgstr "选择邮件 %d\n"
 
-#: src/matcher.c:1347 src/matcher.c:1348 src/matcher.c:1349 src/matcher.c:1350
-#: src/matcher.c:1351 src/matcher.c:1352 src/matcher.c:1353 src/matcher.c:1354
+#: src/matcher.c:1461 src/matcher.c:1462 src/matcher.c:1463 src/matcher.c:1464
+#: src/matcher.c:1465 src/matcher.c:1466 src/matcher.c:1467 src/matcher.c:1468
 msgid "(none)"
 msgstr "(无)"
 
@@ -5626,8 +5686,8 @@ msgstr "覆盖mbox文件"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "该文件已经存在, 是否要覆盖?"
 
-#: src/mbox.c:469 src/messageview.c:1106 src/mimeview.c:1390
-#: src/textview.c:2364
+#: src/mbox.c:469 src/messageview.c:1119 src/mimeview.c:1410
+#: src/textview.c:2683
 msgid "Overwrite"
 msgstr "覆盖"
 
@@ -5652,7 +5712,7 @@ msgstr "在当前邮件中查找"
 msgid "Find text:"
 msgstr "查找文字"
 
-#: src/message_search.c:164 src/prefs_matcher.c:578 src/summary_search.c:297
+#: src/message_search.c:164 src/prefs_matcher.c:649 src/summary_search.c:297
 msgid "Case sensitive"
 msgstr "大小写敏感"
 
@@ -5676,47 +5736,47 @@ msgstr "已到达邮件末尾，是否重新开始查找？"
 msgid "Search finished"
 msgstr "搜索完成"
 
-#: src/messageview.c:159
+#: src/messageview.c:162
 msgid "/_File/_Close"
 msgstr "/文件(_F)/关闭(_C)"
 
-#: src/messageview.c:276
+#: src/messageview.c:279
 msgid "/_View/Show all _headers"
 msgstr "/查看(_V)/显示所有信息头(_H)"
 
-#: src/messageview.c:279
+#: src/messageview.c:286
 msgid "/_Message/Compose _new message"
 msgstr "/邮件(_M)/撰写新邮件(_N)"
 
-#: src/messageview.c:293
+#: src/messageview.c:300
 msgid "/_Message/Redirec_t"
 msgstr "/邮件(_M)/重定向(_t)"
 
-#: src/messageview.c:310
+#: src/messageview.c:317
 msgid "/_Tools/Create processing rule"
 msgstr "/工具(_T)/创建处理规则"
 
-#: src/messageview.c:312
+#: src/messageview.c:319
 msgid "/_Tools/Create processing rule/_Automatically"
 msgstr "/工具(_T)/创建处理规则/自动创建(_A)"
 
-#: src/messageview.c:314
+#: src/messageview.c:321
 msgid "/_Tools/Create processing rule/by _From"
 msgstr "/工具(_T)/创建处理规则/由发信人(_F)"
 
-#: src/messageview.c:316
+#: src/messageview.c:323
 msgid "/_Tools/Create processing rule/by _To"
 msgstr "/工具(_T)/创建处理规则/由收信人(_T)"
 
-#: src/messageview.c:318
+#: src/messageview.c:325
 msgid "/_Tools/Create processing rule/by _Subject"
 msgstr "/工具(_T)/创建处理规则/由主题(_S)"
 
-#: src/messageview.c:547
+#: src/messageview.c:554
 msgid "<No Return-Path found>"
 msgstr "<未找到回信地址>"
 
-#: src/messageview.c:555
+#: src/messageview.c:562
 #, c-format
 msgid ""
 "The notification address to which the return receipt is\n"
@@ -5730,11 +5790,11 @@ msgstr ""
 " 返回路径: %s\n"
 "建议不发送此回执。"
 
-#: src/messageview.c:562 src/messageview.c:579
+#: src/messageview.c:569 src/messageview.c:586
 msgid "_Don't Send"
 msgstr "不发送(_D)"
 
-#: src/messageview.c:575
+#: src/messageview.c:582
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -5746,35 +5806,35 @@ msgstr ""
 "\n"
 "建议不发送回执。"
 
-#: src/messageview.c:787 src/procmime.c:823
+#: src/messageview.c:794 src/procmime.c:825
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "无法解密: %s"
 
-#: src/messageview.c:1101 src/mimeview.c:1528 src/summaryview.c:3871
-#: src/summaryview.c:3874 src/textview.c:2352
+#: src/messageview.c:1114 src/mimeview.c:1548 src/summaryview.c:3873
+#: src/summaryview.c:3876 src/textview.c:2671
 msgid "Save as"
 msgstr "保存为"
 
-#: src/messageview.c:1107
+#: src/messageview.c:1120
 msgid "Overwrite existing file?"
 msgstr "附加已有文件？"
 
-#: src/messageview.c:1115 src/summaryview.c:3891 src/summaryview.c:3894
-#: src/summaryview.c:3909
+#: src/messageview.c:1128 src/summaryview.c:3893 src/summaryview.c:3896
+#: src/summaryview.c:3911
 #, c-format
 msgid "Can't save the file '%s'."
 msgstr "无法保存文件 '%s'。"
 
-#: src/messageview.c:1198
+#: src/messageview.c:1211
 msgid "This message asks for a return receipt."
 msgstr "该邮件要求返回回执。"
 
-#: src/messageview.c:1199
+#: src/messageview.c:1212
 msgid "Send receipt"
 msgstr "发送回执"
 
-#: src/messageview.c:1239
+#: src/messageview.c:1252
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -5782,7 +5842,7 @@ msgstr ""
 "这封邮件只有部分被取回, \n"
 "并已经从服务器删除了。"
 
-#: src/messageview.c:1245
+#: src/messageview.c:1258
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -5791,15 +5851,15 @@ msgstr ""
 "这封邮件只有部分被取回; \n"
 "它是 %s。"
 
-#: src/messageview.c:1249 src/messageview.c:1271
+#: src/messageview.c:1262 src/messageview.c:1284
 msgid "Mark for download"
 msgstr "标记为待下载"
 
-#: src/messageview.c:1250 src/messageview.c:1262
+#: src/messageview.c:1263 src/messageview.c:1275
 msgid "Mark for deletion"
 msgstr "标记为待删除"
 
-#: src/messageview.c:1255
+#: src/messageview.c:1268
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -5808,12 +5868,12 @@ msgstr ""
 "这封邮件只有部分被取回; \n"
 "它 %s 并将会被下载。"
 
-#: src/messageview.c:1260 src/messageview.c:1273
+#: src/messageview.c:1273 src/messageview.c:1286
 #: src/prefs_filtering_action.c:154
 msgid "Unmark"
 msgstr "不标记"
 
-#: src/messageview.c:1266
+#: src/messageview.c:1279
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -5822,11 +5882,11 @@ msgstr ""
 "这封邮件只有部分被取回; \n"
 "它 %s 并将会被删除。"
 
-#: src/messageview.c:1342
+#: src/messageview.c:1355
 msgid "Return Receipt Notification"
 msgstr "返回回执"
 
-#: src/messageview.c:1343
+#: src/messageview.c:1356
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -5835,15 +5895,15 @@ msgstr ""
 "该邮件发送到了您的多个帐号中。\n"
 "请选择用以发送回执的帐号: "
 
-#: src/messageview.c:1347
+#: src/messageview.c:1360
 msgid "_Send Notification"
 msgstr "发送通知(_S)"
 
-#: src/messageview.c:1347
+#: src/messageview.c:1360
 msgid "+_Cancel"
 msgstr "+取消(_C)"
 
-#: src/messageview.c:1410 src/summaryview.c:3946
+#: src/messageview.c:1423 src/summaryview.c:3948
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -5852,7 +5912,7 @@ msgstr ""
 "请输入用于打印的命令行:\n"
 "(`%s' 将被替换为文件名)"
 
-#: src/messageview.c:1416 src/summaryview.c:3952
+#: src/messageview.c:1429 src/summaryview.c:3954
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -5861,12 +5921,12 @@ msgstr ""
 "打印命令行无效:\n"
 "`%s'"
 
-#: src/messageview.c:1427 src/summaryview.c:3923
+#: src/messageview.c:1440 src/summaryview.c:3925
 msgid "Cannot print: the message doesn't contain text."
 msgstr "无法打印: 该邮件不包含任何文字。"
 
-#: src/messageview.c:1638 src/messageview.c:1644 src/summaryview.c:3342
-#: src/summaryview.c:5237
+#: src/messageview.c:1703 src/messageview.c:1709 src/summaryview.c:3344
+#: src/summaryview.c:5319
 msgid "An error happened while learning.\n"
 msgstr "培训时发生错误.\n"
 
@@ -5900,82 +5960,82 @@ msgstr "删除邮箱"
 msgid "_Remove"
 msgstr "删除(_R)"
 
-#: src/mimeview.c:158
+#: src/mimeview.c:162
 msgid "/_Open"
 msgstr "/打开(_O)"
 
-#: src/mimeview.c:159
+#: src/mimeview.c:163
 msgid "/Open _with..."
 msgstr "/打开方式(_w)..."
 
-#: src/mimeview.c:160
+#: src/mimeview.c:164
 msgid "/_Display as text"
 msgstr "/以文本方式显示(_D)"
 
-#: src/mimeview.c:161 src/summaryview.c:478
+#: src/mimeview.c:165 src/summaryview.c:475
 msgid "/_Save as..."
 msgstr "/另存为(_S)..."
 
-#: src/mimeview.c:162
+#: src/mimeview.c:166
 msgid "/Save _all..."
 msgstr "/全部保存(_a)..."
 
-#: src/mimeview.c:201
+#: src/mimeview.c:205
 msgid "MIME Type"
 msgstr "MIME类型"
 
-#: src/mimeview.c:702
+#: src/mimeview.c:709
 msgid "Check signature"
 msgstr "检查签名"
 
-#: src/mimeview.c:707 src/mimeview.c:712 src/mimeview.c:717
+#: src/mimeview.c:714 src/mimeview.c:719 src/mimeview.c:724
 msgid "View full information"
 msgstr "查看详细信息"
 
-#: src/mimeview.c:722 src/mimeview.c:726
+#: src/mimeview.c:729 src/mimeview.c:733
 msgid "Check again"
 msgstr "再次检查"
 
-#: src/mimeview.c:735
+#: src/mimeview.c:742
 msgid "Click the icon or hit 'C' to check it."
 msgstr "点击图标或者按'C'选中。"
 
-#: src/mimeview.c:740
+#: src/mimeview.c:747
 msgid "Timeout checking the signature. Click the icon or hit 'C' to try again."
 msgstr "检查签名超时。请点击图标或者按'C'以重试。"
 
-#: src/mimeview.c:950
+#: src/mimeview.c:957
 msgid "Checking signature..."
 msgstr "正在检查签名..."
 
-#: src/mimeview.c:992
+#: src/mimeview.c:999
 msgid "Go back to email"
 msgstr "回到邮件"
 
-#: src/mimeview.c:1317 src/mimeview.c:1398 src/mimeview.c:1574
-#: src/mimeview.c:1607
+#: src/mimeview.c:1337 src/mimeview.c:1418 src/mimeview.c:1594
+#: src/mimeview.c:1627
 msgid "Can't save the part of multipart message."
 msgstr "无法保存复合邮件的这一部分。"
 
-#: src/mimeview.c:1387 src/textview.c:2362
+#: src/mimeview.c:1407 src/textview.c:2681
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "覆盖已有文件 '%s' 吗？"
 
-#: src/mimeview.c:1425
+#: src/mimeview.c:1445
 msgid "Select destination folder"
 msgstr "选择目的邮件夹"
 
-#: src/mimeview.c:1432
+#: src/mimeview.c:1452
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "`%s'不是一个目录。"
 
-#: src/mimeview.c:1636
+#: src/mimeview.c:1669 src/mimeview.c:1677 src/textview.c:2612
 msgid "Open with"
 msgstr "打开方式"
 
-#: src/mimeview.c:1637
+#: src/mimeview.c:1670 src/mimeview.c:1678 src/textview.c:2613
 #, c-format
 msgid ""
 "Enter the command line to open file:\n"
@@ -6031,33 +6091,33 @@ msgstr "无效帖子索引范围: %d - %d \n"
 msgid "error occurred while getting %s.\n"
 msgstr "提取 %s 时发生错误.\n"
 
-#: src/news.c:935
+#: src/news.c:955
 #, c-format
 msgid "getting xover %d in %s...\n"
 msgstr "正在提取xover %d于 %s...\n"
 
-#: src/news.c:942 src/news.c:1035
+#: src/news.c:962 src/news.c:1056
 msgid "can't get xover\n"
 msgstr "无法取得xover\n"
 
-#: src/news.c:952 src/news.c:1047
+#: src/news.c:972 src/news.c:1068
 msgid "error occurred while getting xover.\n"
 msgstr "提取xover时发生错误。\n"
 
-#: src/news.c:959 src/news.c:1061
+#: src/news.c:979 src/news.c:1082
 #, c-format
 msgid "invalid xover line: %s\n"
 msgstr ""
 
-#: src/news.c:976 src/news.c:997 src/news.c:1080 src/news.c:1112
+#: src/news.c:997 src/news.c:1018 src/news.c:1101 src/news.c:1133
 msgid "can't get xhdr\n"
 msgstr "无法取得xhdr\n"
 
-#: src/news.c:986 src/news.c:1007 src/news.c:1093 src/news.c:1125
+#: src/news.c:1007 src/news.c:1028 src/news.c:1114 src/news.c:1146
 msgid "error occurred while getting xhdr.\n"
 msgstr "提取xhdr时发生错误。\n"
 
-#: src/news.c:1031
+#: src/news.c:1052
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr ""
@@ -6088,7 +6148,7 @@ msgid "ClamAV: scanning message..."
 msgstr "ClamAV: 正在扫描邮件..."
 
 #: src/plugins/clamav/clamav_plugin.c:251
-#: src/plugins/clamav/clamav_plugin_gtk.c:214
+#: src/plugins/clamav/clamav_plugin_gtk.c:212
 msgid "Clam AntiVirus"
 msgstr ""
 
@@ -6141,7 +6201,7 @@ msgid ""
 "Folder for storing infected mail. Leave empty to use the default trash folder"
 msgstr "用于保存受感染邮件的邮件夹，不设置时将缺省使用垃圾桶"
 
-#: src/plugins/clamav/clamav_plugin_gtk.c:151
+#: src/plugins/clamav/clamav_plugin_gtk.c:150
 msgid "Click this button to select a folder for storing infected mail"
 msgstr "点击此按钮可选择一个邮件夹，以用于存放受感染的邮件"
 
@@ -6199,15 +6259,43 @@ msgstr ""
 "\n"
 "您可以在'/配置/偏好/插件/Dillo浏览器'中配置选项。"
 
-#: src/plugins/pgpcore/passphrase.c:99 src/plugins/pgpcore/prefs_gpg.c:94
+#: src/plugins/pgpcore/passphrase.c:97 src/plugins/pgpcore/prefs_gpg.c:97
 msgid "Passphrase"
 msgstr ""
 
-#: src/plugins/pgpcore/passphrase.c:260
+#: src/plugins/pgpcore/passphrase.c:258
 msgid "[no user id]"
 msgstr ""
 
-#: src/plugins/pgpcore/passphrase.c:274
+#: src/plugins/pgpcore/passphrase.c:273
+#, fuzzy, c-format
+msgid ""
+"<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for the "
+"new key:</span>\n"
+"\n"
+"%.*s\n"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">%s请输入passphrase:</span>\n"
+"\n"
+"%.*s\n"
+
+#: src/plugins/pgpcore/passphrase.c:276
+msgid "Passphrases did not match.\n"
+msgstr ""
+
+#: src/plugins/pgpcore/passphrase.c:279
+#, fuzzy, c-format
+msgid ""
+"<span weight=\"bold\" size=\"larger\">Please re-enter the passphrase for the "
+"new key:</span>\n"
+"\n"
+"%.*s\n"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">%s请输入passphrase:</span>\n"
+"\n"
+"%.*s\n"
+
+#: src/plugins/pgpcore/passphrase.c:283
 #, c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for:</"
@@ -6219,111 +6307,117 @@ msgstr ""
 "\n"
 "%.*s\n"
 
-#: src/plugins/pgpcore/passphrase.c:277
+#: src/plugins/pgpcore/passphrase.c:286
 msgid "Bad passphrase.\n"
 msgstr "无效的passphrase!\n"
 
-#: src/plugins/pgpcore/prefs_gpg.c:92
+#: src/plugins/pgpcore/prefs_gpg.c:95
 msgid "Automatically check signatures"
 msgstr "自动检查数字签名"
 
-#: src/plugins/pgpcore/prefs_gpg.c:102
+#: src/plugins/pgpcore/prefs_gpg.c:105
 msgid "Store passphrase in memory"
 msgstr "将passphrase暂时存在内存中"
 
-#: src/plugins/pgpcore/prefs_gpg.c:108
+#: src/plugins/pgpcore/prefs_gpg.c:111
 msgid "Expire after"
 msgstr " 有限期"
 
-#: src/plugins/pgpcore/prefs_gpg.c:123
+#: src/plugins/pgpcore/prefs_gpg.c:126
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "若设置为 '0' 则会在整个会话期内保存passphrase"
 
-#: src/plugins/pgpcore/prefs_gpg.c:128 src/prefs_receive.c:170
+#: src/plugins/pgpcore/prefs_gpg.c:131 src/prefs_receive.c:170
 msgid "minute(s)"
 msgstr "分钟"
 
-#: src/plugins/pgpcore/prefs_gpg.c:138
+#: src/plugins/pgpcore/prefs_gpg.c:141
 msgid "Grab input while entering a passphrase"
 msgstr "导入 passphrase 时抓取导入"
 
-#: src/plugins/pgpcore/prefs_gpg.c:145
+#: src/plugins/pgpcore/prefs_gpg.c:148
 msgid "Display warning on startup if GnuPG doesn't work"
 msgstr "若 GnuPG 无法运作，则在启动时发出警告"
 
-#: src/plugins/pgpcore/prefs_gpg.c:235
+#: src/plugins/pgpcore/prefs_gpg.c:273
 msgid "Sign key"
 msgstr ""
 
-#: src/plugins/pgpcore/prefs_gpg.c:248
+#: src/plugins/pgpcore/prefs_gpg.c:286
 msgid "Use default GnuPG key"
 msgstr "使用缺省 GnuPG 密钥"
 
-#: src/plugins/pgpcore/prefs_gpg.c:259
+#: src/plugins/pgpcore/prefs_gpg.c:297
 msgid "Select key by your email address"
 msgstr "按邮件地址选择密钥"
 
-#: src/plugins/pgpcore/prefs_gpg.c:270
+#: src/plugins/pgpcore/prefs_gpg.c:308
 msgid "Specify key manually"
 msgstr "手工指定密钥"
 
-#: src/plugins/pgpcore/prefs_gpg.c:280
+#: src/plugins/pgpcore/prefs_gpg.c:318
 msgid "User or key ID:"
 msgstr "用户ID或者密钥ID:"
 
-#: src/plugins/pgpcore/prefs_gpg.c:454
+#: src/plugins/pgpcore/prefs_gpg.c:353
+#, fuzzy
+msgid "No secret key found."
+msgstr "没有定义动作。"
+
+#: src/plugins/pgpcore/prefs_gpg.c:356
+msgid "Generate new secret key"
+msgstr ""
+
+#: src/plugins/pgpcore/prefs_gpg.c:517
 msgid "GPG"
 msgstr ""
 
 #: src/plugins/pgpcore/select-keys.c:107
 #, c-format
-msgid "Please select key for '%s'"
-msgstr "请为 '%s' 选择密钥"
+msgid "No exact match for '%s'; please select the key."
+msgstr ""
 
 #: src/plugins/pgpcore/select-keys.c:110
 #, c-format
 msgid "Collecting info for '%s' ... %c"
 msgstr "正在收集 '%s' 的信息 ... %c"
 
-#: src/plugins/pgpcore/select-keys.c:310
+#: src/plugins/pgpcore/select-keys.c:348
 msgid "Select Keys"
 msgstr "选择密钥"
 
-#: src/plugins/pgpcore/select-keys.c:337
+#: src/plugins/pgpcore/select-keys.c:375
 msgid "Key ID"
 msgstr "密钥ID"
 
-#: src/plugins/pgpcore/select-keys.c:340
+#: src/plugins/pgpcore/select-keys.c:378
 msgid "Val"
 msgstr "值"
 
-#: src/plugins/pgpcore/select-keys.c:361
+#: src/plugins/pgpcore/select-keys.c:399
 msgid "Select"
 msgstr "选择"
 
-#: src/plugins/pgpcore/select-keys.c:362 src/prefs_other.c:271
+#: src/plugins/pgpcore/select-keys.c:400 src/prefs_other.c:271
 msgid "Other"
 msgstr "其它"
 
-#: src/plugins/pgpcore/select-keys.c:363
+#: src/plugins/pgpcore/select-keys.c:401
 msgid "Don't encrypt"
 msgstr "不加密"
 
-#: src/plugins/pgpcore/select-keys.c:508
+#: src/plugins/pgpcore/select-keys.c:543
 msgid "Add key"
 msgstr "加入key 的识别码"
 
-#: src/plugins/pgpcore/select-keys.c:509
+#: src/plugins/pgpcore/select-keys.c:544
 msgid "Enter another user or key ID:"
 msgstr "导入另一个用户代号或 key 的识别码:"
 
-#: src/plugins/pgpcore/select-keys.c:525
-msgid "Trust key"
-msgstr "信任密钥"
-
-#: src/plugins/pgpcore/select-keys.c:526
+#: src/plugins/pgpcore/select-keys.c:561
+#, fuzzy, c-format
 msgid ""
-"The selected key is not fully trusted.\n"
+"The key of '%s' is not fully trusted.\n"
 "If you choose to encrypt the message with this key you don't\n"
 "know for sure that it will go to the person you mean it to.\n"
 "Do you trust it enough to use it anyway?"
@@ -6332,137 +6426,141 @@ msgstr ""
 "如果你选择该密钥加密邮件，将不能确保该邮件会被发送给指定的人。\n"
 "你足够信任它并坚持要使用它吗?"
 
-#: src/plugins/pgpcore/sgpgme.c:125
+#: src/plugins/pgpcore/select-keys.c:566
+msgid "Trust key"
+msgstr "信任密钥"
+
+#: src/plugins/pgpcore/sgpgme.c:129
 msgid "Undefined"
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:127 src/prefs_receive.c:199
+#: src/plugins/pgpcore/sgpgme.c:131 src/prefs_receive.c:199
 #: src/prefs_send.c:170
 msgid "Never"
 msgstr "从不显示"
 
-#: src/plugins/pgpcore/sgpgme.c:129
+#: src/plugins/pgpcore/sgpgme.c:133
 msgid "Marginal"
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:133
+#: src/plugins/pgpcore/sgpgme.c:137
 msgid "Ultimate"
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:167
+#: src/plugins/pgpcore/sgpgme.c:171
 #, c-format
 msgid "The signature can't be checked - %s"
 msgstr "该签名无法被校验 - %s。"
 
-#: src/plugins/pgpcore/sgpgme.c:171 src/plugins/pgpcore/sgpgme.c:175
-#: src/plugins/pgpcore/sgpgme.c:222
+#: src/plugins/pgpcore/sgpgme.c:175 src/plugins/pgpcore/sgpgme.c:179
+#: src/plugins/pgpcore/sgpgme.c:226
 msgid "The signature has not been checked."
 msgstr "该签名尚未被检查。"
 
-#: src/plugins/pgpcore/sgpgme.c:181 src/plugins/pgpcore/sgpgme.c:183
+#: src/plugins/pgpcore/sgpgme.c:185 src/plugins/pgpcore/sgpgme.c:187
 msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:196
+#: src/plugins/pgpcore/sgpgme.c:200
 #, c-format
 msgid "Good signature from %s."
 msgstr "来自 \"%s\" 的签名正确。"
 
-#: src/plugins/pgpcore/sgpgme.c:202
+#: src/plugins/pgpcore/sgpgme.c:206
 #, c-format
 msgid "Good signature (untrusted) from %s."
 msgstr "来自 \"%s\" 的签名完好(但尚未被信任)。"
 
-#: src/plugins/pgpcore/sgpgme.c:207
+#: src/plugins/pgpcore/sgpgme.c:211
 #, c-format
 msgid "Expired signature from %s."
 msgstr "来自 %s 的签名已过期。"
 
-#: src/plugins/pgpcore/sgpgme.c:210
+#: src/plugins/pgpcore/sgpgme.c:214
 #, c-format
 msgid "Expired key from %s."
 msgstr "来自 %s 的密钥已过期。"
 
-#: src/plugins/pgpcore/sgpgme.c:213
+#: src/plugins/pgpcore/sgpgme.c:217
 #, c-format
 msgid "Bad signature from %s."
 msgstr "来自 %s 的签名检查不通过。"
 
-#: src/plugins/pgpcore/sgpgme.c:217
+#: src/plugins/pgpcore/sgpgme.c:221
 #, c-format
 msgid "Key 0x%s not available to verify this signature."
 msgstr "没有匹配的密钥0x%s，无法检查此签名。"
 
-#: src/plugins/pgpcore/sgpgme.c:259
+#: src/plugins/pgpcore/sgpgme.c:263
 #, c-format
 msgid "Signature made using %s key ID %s\n"
 msgstr "签名采用%s制作，密钥ID: %s\n"
 
-#: src/plugins/pgpcore/sgpgme.c:266
+#: src/plugins/pgpcore/sgpgme.c:270
 #, c-format
 msgid "Good signature from \"%s\" (Trust: %s)\n"
 msgstr "\"%s\"的签名有效 (信任: %s)\n"
 
-#: src/plugins/pgpcore/sgpgme.c:271
+#: src/plugins/pgpcore/sgpgme.c:275
 #, c-format
 msgid "Expired signature from \"%s\"\n"
 msgstr "来自 \"%s\" 的签名已过期\n"
 
-#: src/plugins/pgpcore/sgpgme.c:276
+#: src/plugins/pgpcore/sgpgme.c:280
 #, c-format
 msgid "BAD signature from \"%s\"\n"
 msgstr "来自 \"%s\" 的签名检查错误\n"
 
-#: src/plugins/pgpcore/sgpgme.c:287
+#: src/plugins/pgpcore/sgpgme.c:291
 #, c-format
 msgid "                aka \"%s\"\n"
 msgstr "               又称为 \"%s\"\n"
 
-#: src/plugins/pgpcore/sgpgme.c:293
+#: src/plugins/pgpcore/sgpgme.c:297
 #, c-format
 msgid "Primary key fingerprint: %s\n"
 msgstr "主密钥指纹: %s\n"
 
-#: src/plugins/pgpcore/sgpgme.c:298
+#: src/plugins/pgpcore/sgpgme.c:302
 #, c-format
 msgid "WARNING: Signer's address \"%s\" does not match DNS entry\n"
 msgstr "警告: 签名者的地址\"%s\"与DNS中的数据并不相符\n"
 
-#: src/plugins/pgpcore/sgpgme.c:304
+#: src/plugins/pgpcore/sgpgme.c:308
 #, c-format
 msgid "Verified signer's address is \"%s\"\n"
 msgstr "经验证的签名者地址是\"%s\"\n"
 
-#: src/plugins/pgpcore/sgpgme.c:348
-#,  c-format
+#: src/plugins/pgpcore/sgpgme.c:350
+#, c-format
 msgid "Couldn't get data from message, %s"
 msgstr "无法取得邮件的数据, %s"
 
-#: src/plugins/pgpcore/sgpgme.c:364
+#: src/plugins/pgpcore/sgpgme.c:366
 #, c-format
 msgid "Couldn't initialize data, %s"
 msgstr "不能初始化数据, %s"
 
-#: src/plugins/pgpcore/sgpgme.c:480
+#: src/plugins/pgpcore/sgpgme.c:482
 #, c-format
 msgid "Private key not found (%s)"
 msgstr "没有找到私有密钥(%s)"
 
-#: src/plugins/pgpcore/sgpgme.c:488
+#: src/plugins/pgpcore/sgpgme.c:490
 msgid "Private key specification is ambiguous"
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:498
+#: src/plugins/pgpcore/sgpgme.c:500
 #, c-format
 msgid "Error setting private key: %s"
 msgstr ""
 
-#: src/plugins/pgpcore/sgpgme.c:534
+#: src/plugins/pgpcore/sgpgme.c:536
 #, c-format
 msgid "Gpgme protocol '%s' is unusable: Engine '%s' isn't installed properly."
 msgstr "GPGME协议 '%s'不可用: '%s'引擎未被正确安装。"
 
-#: src/plugins/pgpcore/sgpgme.c:540
+#: src/plugins/pgpcore/sgpgme.c:542
 #, c-format
 msgid ""
 "Gpgme protocol '%s' is unusable: Engine '%s' version %s is installed, but "
@@ -6470,18 +6568,51 @@ msgid ""
 msgstr ""
 "GPGME协议'%s'不可用: '%s'引擎虽已安装，但当前版本为%s(至少需要版本%s)。\n"
 
-#: src/plugins/pgpcore/sgpgme.c:548
+#: src/plugins/pgpcore/sgpgme.c:550
 #, c-format
 msgid "Gpgme protocol '%s' is unusable (unknown problem)"
 msgstr "GPGME协议'%s'不可用(未知错误)"
 
-#: src/plugins/pgpcore/sgpgme.c:564
+#: src/plugins/pgpcore/sgpgme.c:566
 msgid ""
 "GnuPG is not installed properly, or needs to be upgraded.\n"
 "OpenPGP support disabled."
 msgstr ""
 "GnuPG的安装不正常，或需要升级。\n"
 "OpenPGP支持已被禁用。"
+
+#: src/plugins/pgpcore/sgpgme.c:600
+msgid "No PGP key found"
+msgstr ""
+
+#: src/plugins/pgpcore/sgpgme.c:601
+msgid ""
+"Sylpheed-Claws did not find a secret PGP key, which means that you won't be "
+"able to sign emails or receive encrypted emails.\n"
+"Do you want to create a secret key now?"
+msgstr ""
+
+#: src/plugins/pgpcore/sgpgme.c:671 src/plugins/pgpcore/sgpgme.c:686
+#, fuzzy, c-format
+msgid "Couldn't generate new key: %s"
+msgstr "无法加密邮件: %s"
+
+#: src/plugins/pgpcore/sgpgme.c:677
+msgid ""
+"Generating your new key... Please move the mouse around to help generate "
+"entropy..."
+msgstr ""
+
+#: src/plugins/pgpcore/sgpgme.c:692
+msgid "Couldn't generate new key: unknown error"
+msgstr ""
+
+#: src/plugins/pgpcore/sgpgme.c:696
+#, c-format
+msgid ""
+"Your secret key has been generated. Its fingerprint is:\n"
+"%s"
+msgstr ""
 
 #: src/plugins/pgpcore/plugin.c:59
 msgid "PGP/Core"
@@ -6556,17 +6687,17 @@ msgstr ""
 msgid "Data signing failed, no contents."
 msgstr ""
 
-#: src/plugins/pgpinline/pgpinline.c:635 src/plugins/pgpmime/pgpmime.c:583
+#: src/plugins/pgpinline/pgpinline.c:636 src/plugins/pgpmime/pgpmime.c:583
 #, c-format
 msgid "Couldn't add GPG key %s, %s"
 msgstr "无法添加GPG密钥 %s, %s"
 
-#: src/plugins/pgpinline/pgpinline.c:656 src/plugins/pgpmime/pgpmime.c:611
+#: src/plugins/pgpinline/pgpinline.c:657 src/plugins/pgpmime/pgpmime.c:611
 #, c-format
 msgid "Couldn't create temporary file, %s"
 msgstr "无法创建临时文件, %s"
 
-#: src/plugins/pgpinline/pgpinline.c:681 src/plugins/pgpmime/pgpmime.c:637
+#: src/plugins/pgpinline/pgpinline.c:682 src/plugins/pgpmime/pgpmime.c:637
 #, c-format
 msgid "Encryption failed, %s"
 msgstr "加密失败, %s"
@@ -6647,39 +6778,54 @@ msgid "Couldn't parse decrypted file parts."
 msgstr "无法读取文件。"
 
 #: src/plugins/pgpmime/pgpmime.c:403 src/plugins/pgpmime/pgpmime.c:442
-#,  c-format
+#, c-format
 msgid "Couldn't create temporary file: %s"
 msgstr "无法创建临时文件: %s"
 
-#: src/plugins/spamassassin/spamassassin.c:152
-msgid "Spamassassin plugin couldn't connect to spamd.\n"
+#: src/plugins/spamassassin/spamassassin.c:159
+#, fuzzy
+msgid "SpamAssassin plugin couldn't connect to spamd.\n"
 msgstr "SpamAssassin插件无法连接到spamd服务器.\n"
 
-#: src/plugins/spamassassin/spamassassin.c:192
-msgid "Spamassassin plugin is disabled by its preferences.\n"
+#: src/plugins/spamassassin/spamassassin.c:175
+#, fuzzy
+msgid "SpamAssassin plugin filtering failed.\n"
+msgstr "SpamAssassin: 正在过滤邮件..."
+
+#: src/plugins/spamassassin/spamassassin.c:201
+#, fuzzy
+msgid "SpamAssassin plugin is disabled by its preferences.\n"
 msgstr "SpamAssassin插件已经被设置为禁用.\n"
 
-#: src/plugins/spamassassin/spamassassin.c:197
+#: src/plugins/spamassassin/spamassassin.c:206
 msgid "SpamAssassin: filtering message..."
 msgstr "SpamAssassin: 正在过滤邮件..."
 
-#: src/plugins/spamassassin/spamassassin.c:303
+#: src/plugins/spamassassin/spamassassin.c:275
+msgid ""
+"The SpamAssassin plugin couldn't filter a message. The probable error cause "
+"is an unreachable spamd daemon. Please make sure spamd is running and "
+"accessible."
+msgstr ""
+
+#: src/plugins/spamassassin/spamassassin.c:326
 msgid ""
 "Sylpheed-Claws needs network access in order to feed this mail(s) to the "
 "remote learner."
 msgstr ""
 "Sylpheed-Claws需要访问网络才能将此邮件的内容反馈给远端的垃圾邮件识别器。"
 
-#: src/plugins/spamassassin/spamassassin.c:464
-msgid "Spamassassin plugin is loaded but disabled by its preferences.\n"
+#: src/plugins/spamassassin/spamassassin.c:487
+#, fuzzy
+msgid "SpamAssassin plugin is loaded but disabled by its preferences.\n"
 msgstr "Spamassassin插件已经加载，但用户选择了禁用。\n"
 
-#: src/plugins/spamassassin/spamassassin.c:492
+#: src/plugins/spamassassin/spamassassin.c:515
 #: src/plugins/spamassassin/spamassassin_gtk.c:549
 msgid "SpamAssassin"
 msgstr ""
 
-#: src/plugins/spamassassin/spamassassin.c:497
+#: src/plugins/spamassassin/spamassassin.c:520
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using a SpamAssassin server. You will need a "
@@ -6822,11 +6968,11 @@ msgstr "/脱机工作"
 msgid "/Get Mail"
 msgstr "/收信"
 
-#: src/plugins/trayicon/trayicon.c:310
+#: src/plugins/trayicon/trayicon.c:313
 msgid "Trayicon"
 msgstr ""
 
-#: src/plugins/trayicon/trayicon.c:315
+#: src/plugins/trayicon/trayicon.c:318
 msgid ""
 "This plugin places a mailbox icon in the system tray that indicates if you "
 "have new or unread mail.\n"
@@ -6839,7 +6985,7 @@ msgstr ""
 "如果你没有未读的邮件，该图标将是一个空邮箱，否则则是含有邮件图样。提示信息将"
 "能够显示新邮件、未读邮件的数量和邮件总数。"
 
-#: src/plugins/trayicon/trayicon.c:369
+#: src/plugins/trayicon/trayicon.c:372
 msgid "Exit this program?"
 msgstr "退出本程序？"
 
@@ -6898,12 +7044,12 @@ msgstr "POP3会话中出现错误\n"
 msgid "TOP command unsupported\n"
 msgstr "TOP命令不被支持\n"
 
-#: src/prefs_account.c:231 src/prefs_account.c:1440 src/prefs_account.c:2127
+#: src/prefs_account.c:231 src/prefs_account.c:1440 src/prefs_account.c:2123
 #: src/wizard.c:991
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:234 src/prefs_account.c:1566 src/prefs_account.c:2144
+#: src/prefs_account.c:234 src/prefs_account.c:1566 src/prefs_account.c:2140
 msgid "IMAP4"
 msgstr "IMAP4"
 
@@ -7082,7 +7228,7 @@ msgstr ""
 msgid "KB"
 msgstr "KB"
 
-#: src/prefs_account.c:1535 src/prefs_account.c:2161
+#: src/prefs_account.c:1535 src/prefs_account.c:2157
 msgid "NNTP"
 msgstr "NNTP"
 
@@ -7119,7 +7265,7 @@ msgid "'Get Mail' checks for new messages on this account"
 msgstr "`全部收取'包含本帐户的新邮件"
 
 #: src/prefs_account.c:1678 src/prefs_customheader.c:205
-#: src/prefs_matcher.c:154
+#: src/prefs_matcher.c:162
 msgid "Header"
 msgstr "邮件头"
 
@@ -7130,10 +7276,6 @@ msgstr "生成Message-ID"
 #: src/prefs_account.c:1692
 msgid "Add user-defined header"
 msgstr "添加自定义消息头"
-
-#: src/prefs_account.c:1694 src/prefs_account.c:1936 src/prefs_message.c:142
-msgid " Edit... "
-msgstr " 编辑... "
 
 #: src/prefs_account.c:1704
 msgid "Authentication"
@@ -7177,180 +7319,180 @@ msgstr "签名分隔符"
 msgid "Command output"
 msgstr "命令输出"
 
-#: src/prefs_account.c:1943
+#: src/prefs_account.c:1939
 msgid "Automatically set the following addresses"
 msgstr "自动设置如下地址"
 
-#: src/prefs_account.c:1952 src/prefs_filtering_action.c:1083
-#: src/prefs_matcher.c:151 src/prefs_matcher.c:1687 src/quote_fmt.c:49
+#: src/prefs_account.c:1948 src/prefs_filtering_action.c:1083
+#: src/prefs_matcher.c:159 src/prefs_matcher.c:1852 src/quote_fmt.c:49
 msgid "Cc"
 msgstr "回信地址"
 
-#: src/prefs_account.c:1965
+#: src/prefs_account.c:1961
 msgid "Bcc"
 msgstr "抄送地址"
 
-#: src/prefs_account.c:1978
+#: src/prefs_account.c:1974
 msgid "Reply-To"
 msgstr "回信地址"
 
-#: src/prefs_account.c:2030
+#: src/prefs_account.c:2026
 msgid "Default privacy system"
 msgstr "缺省隐私系统"
 
-#: src/prefs_account.c:2039
+#: src/prefs_account.c:2035
 msgid "Always sign messages"
 msgstr "总是添加签名"
 
-#: src/prefs_account.c:2041
+#: src/prefs_account.c:2037
 msgid "Always encrypt messages"
 msgstr "总是加密邮件"
 
-#: src/prefs_account.c:2043
+#: src/prefs_account.c:2039
 msgid "Always encrypt messages when replying to an encrypted message"
 msgstr "回复加密邮件时也采用加密模式"
 
-#: src/prefs_account.c:2046
+#: src/prefs_account.c:2042
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr "采用自己和收件人的密钥进行双重加密"
 
-#: src/prefs_account.c:2048
+#: src/prefs_account.c:2044
 msgid "Save sent encrypted messages as clear text"
 msgstr "将发出的加密邮件以明文保存"
 
-#: src/prefs_account.c:2135 src/prefs_account.c:2152 src/prefs_account.c:2168
+#: src/prefs_account.c:2131 src/prefs_account.c:2148 src/prefs_account.c:2164
 msgid "Don't use SSL"
 msgstr "不采用SSL"
 
-#: src/prefs_account.c:2138
+#: src/prefs_account.c:2134
 msgid "Use SSL for POP3 connection"
 msgstr "用SSL进行POP3连接"
 
-#: src/prefs_account.c:2141 src/prefs_account.c:2158 src/prefs_account.c:2193
+#: src/prefs_account.c:2137 src/prefs_account.c:2154 src/prefs_account.c:2189
 msgid "Use STARTTLS command to start SSL session"
 msgstr "用STARTTLS命令开始SSL会话"
 
-#: src/prefs_account.c:2155
+#: src/prefs_account.c:2151
 msgid "Use SSL for IMAP4 connection"
 msgstr "用SSL进行IMAP连接"
 
-#: src/prefs_account.c:2177
+#: src/prefs_account.c:2173
 msgid "Use SSL for NNTP connection"
 msgstr "用SSL进行NNTP连接"
 
-#: src/prefs_account.c:2179
+#: src/prefs_account.c:2175
 msgid "Send (SMTP)"
 msgstr "发送 (SMTP)"
 
-#: src/prefs_account.c:2187
+#: src/prefs_account.c:2183
 msgid "Don't use SSL (but, if necessary, use STARTTLS)"
 msgstr "不采用SSL (但在必要的情况下将启用STARTTLS)"
 
-#: src/prefs_account.c:2190
+#: src/prefs_account.c:2186
 msgid "Use SSL for SMTP connection"
 msgstr "用SSL进行SMTP连接"
 
-#: src/prefs_account.c:2201
+#: src/prefs_account.c:2197
 msgid "Use non-blocking SSL"
 msgstr "采用非阻塞式SSL"
 
-#: src/prefs_account.c:2213
+#: src/prefs_account.c:2209
 msgid "Turn this off if you have SSL connection problems"
 msgstr "(如果你在SSL连接上碰到问题请关闭本项试试)"
 
-#: src/prefs_account.c:2339
+#: src/prefs_account.c:2335
 msgid "SMTP port"
 msgstr "SMTP端口"
 
-#: src/prefs_account.c:2345
+#: src/prefs_account.c:2341
 msgid "POP3 port"
 msgstr "POP3端口"
 
-#: src/prefs_account.c:2351
+#: src/prefs_account.c:2347
 msgid "IMAP4 port"
 msgstr "IMAP4端口"
 
-#: src/prefs_account.c:2357
+#: src/prefs_account.c:2353
 msgid "NNTP port"
 msgstr "NNTP端口"
 
-#: src/prefs_account.c:2362
+#: src/prefs_account.c:2358
 msgid "Domain name"
 msgstr "域名"
 
-#: src/prefs_account.c:2372
+#: src/prefs_account.c:2368
 msgid "Use command to communicate with server"
 msgstr "用如下命令与服务器通讯"
 
-#: src/prefs_account.c:2380
+#: src/prefs_account.c:2376
 msgid "Mark cross-posted messages as read and color:"
 msgstr "将交叉投递(cross-posted)的邮件表示为已读和彩色:"
 
-#: src/prefs_account.c:2427
+#: src/prefs_account.c:2423
 msgid "Browse"
 msgstr "浏览"
 
-#: src/prefs_account.c:2440
+#: src/prefs_account.c:2436
 msgid "Put sent messages in"
 msgstr "将已发送邮件存放到"
 
-#: src/prefs_account.c:2442
+#: src/prefs_account.c:2438
 msgid "Put queued messages in"
 msgstr "将待发送的邮件存放到"
 
-#: src/prefs_account.c:2444
+#: src/prefs_account.c:2440
 msgid "Put draft messages in"
 msgstr "将邮件草稿存放到"
 
-#: src/prefs_account.c:2446
+#: src/prefs_account.c:2442
 msgid "Put deleted messages in"
 msgstr "将已删除的邮件存放到"
 
-#: src/prefs_account.c:2489
+#: src/prefs_account.c:2485
 msgid "Account name is not entered."
 msgstr "未输入帐户名称。"
 
-#: src/prefs_account.c:2493
+#: src/prefs_account.c:2489
 msgid "Mail address is not entered."
 msgstr "未输入邮件地址。"
 
-#: src/prefs_account.c:2500
+#: src/prefs_account.c:2496
 msgid "SMTP server is not entered."
 msgstr "未输入SMTP服务器"
 
-#: src/prefs_account.c:2505
+#: src/prefs_account.c:2501
 msgid "User ID is not entered."
 msgstr "未输入用户ID"
 
-#: src/prefs_account.c:2510
+#: src/prefs_account.c:2506
 msgid "POP3 server is not entered."
 msgstr "未输入POP3服务器"
 
-#: src/prefs_account.c:2515
+#: src/prefs_account.c:2511
 msgid "IMAP4 server is not entered."
 msgstr "未输入IMAP4服务器"
 
-#: src/prefs_account.c:2520
+#: src/prefs_account.c:2516
 msgid "NNTP server is not entered."
 msgstr "尚未输入NNTP服务器"
 
-#: src/prefs_account.c:2526
+#: src/prefs_account.c:2522
 msgid "local mailbox filename is not entered."
 msgstr "尚未输入本地邮箱名称"
 
-#: src/prefs_account.c:2532
+#: src/prefs_account.c:2528
 msgid "mail command is not entered."
 msgstr "尚未输入邮件命令"
 
-#: src/prefs_account.c:2597
+#: src/prefs_account.c:2593
 msgid "Select signature file"
 msgstr "选择签名文件"
 
-#: src/prefs_account.c:2690
+#: src/prefs_account.c:2686
 msgid "Protocol:"
 msgstr "通讯协议:"
 
-#: src/prefs_account.c:2830
+#: src/prefs_account.c:2826
 #, c-format
 msgid "Unsupported (%s)"
 msgstr "不支持的 (%s)"
@@ -7368,13 +7510,15 @@ msgid "Command line:"
 msgstr "命令行:"
 
 #: src/prefs_actions.c:267 src/prefs_filtering_action.c:493
-#: src/prefs_filtering.c:371 src/prefs_matcher.c:602 src/prefs_template.c:260
+#: src/prefs_filtering.c:447 src/prefs_matcher.c:673 src/prefs_template.c:260
 #: src/prefs_toolbar.c:788
 msgid "Replace"
 msgstr "替换"
 
 #: src/prefs_actions.c:283 src/prefs_filtering_action.c:464
-msgid "Info ..."
+#: src/prefs_matcher.c:569
+#, fuzzy
+msgid "Info..."
 msgstr "说明 ..."
 
 #: src/prefs_actions.c:515
@@ -7420,20 +7564,20 @@ msgstr "删除动作"
 msgid "Do you really want to delete this action?"
 msgstr "你真的要删除此动作码? "
 
-#: src/prefs_actions.c:741 src/prefs_actions.c:761 src/prefs_filtering.c:1127
-#: src/prefs_filtering.c:1149 src/prefs_matcher.c:1640
+#: src/prefs_actions.c:741 src/prefs_actions.c:761 src/prefs_filtering.c:1217
+#: src/prefs_filtering.c:1239 src/prefs_matcher.c:1805
 #: src/prefs_template.c:411 src/prefs_template.c:428
 msgid "Entry not saved"
 msgstr "项目未保存"
 
-#: src/prefs_actions.c:742 src/prefs_actions.c:762 src/prefs_filtering.c:1128
-#: src/prefs_filtering.c:1150 src/prefs_template.c:412
+#: src/prefs_actions.c:742 src/prefs_actions.c:762 src/prefs_filtering.c:1218
+#: src/prefs_filtering.c:1240 src/prefs_template.c:412
 #: src/prefs_template.c:429
 msgid "The entry was not saved. Close anyway?"
 msgstr "该项未保存，真的退出？"
 
-#: src/prefs_actions.c:743 src/prefs_actions.c:763 src/prefs_filtering.c:1129
-#: src/prefs_filtering.c:1151 src/prefs_matcher.c:1642
+#: src/prefs_actions.c:743 src/prefs_actions.c:763 src/prefs_filtering.c:1219
+#: src/prefs_filtering.c:1241 src/prefs_matcher.c:1807
 #: src/prefs_template.c:413 src/prefs_template.c:430
 msgid "+_Continue editing"
 msgstr "+继续编辑(_C)"
@@ -7531,11 +7675,11 @@ msgstr ""
 msgid "Current actions"
 msgstr "当前动作"
 
-#: src/prefs_common.c:258
+#: src/prefs_common.c:254
 msgid "On %d\\n%f wrote:\\n\\n%q"
 msgstr "于 %d\\n%f 写道:\\n\\n%q"
 
-#: src/prefs_common.c:264
+#: src/prefs_common.c:260
 msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
@@ -7543,7 +7687,7 @@ msgstr ""
 "\\n\\n===== 转发邮件:\\n\\n?d{日期: %d\\n}?f{发件人: %f\\n}?t{收件人: %t\\n}?"
 "c{抄送: %c\\n}?n{新闻组: %n\\n}?s{主题: %s\\n}\\n\\n%M"
 
-#: src/prefs_common.c:349
+#: src/prefs_common.c:345
 msgid "%y/%m/%d(%a) %H:%M"
 msgstr ""
 
@@ -7617,7 +7761,7 @@ msgstr "总是添加为附件"
 
 #: src/prefs_compose_writing.c:297 src/prefs_folder_item.c:935
 #: src/prefs_quote.c:285 src/prefs_spelling.c:404 src/prefs_wrapping.c:144
-#: src/toolbar.c:392 src/toolbar.c:1514
+#: src/toolbar.c:1515
 msgid "Compose"
 msgstr "撰写"
 
@@ -7633,8 +7777,8 @@ msgstr "自定义信头"
 msgid "From file..."
 msgstr "从文件读取..."
 
-#: src/prefs_customheader.c:505 src/prefs_display_header.c:566
-#: src/prefs_matcher.c:1224
+#: src/prefs_customheader.c:505 src/prefs_display_header.c:565
+#: src/prefs_matcher.c:1312 src/prefs_matcher.c:1322
 msgid "Header name is not set."
 msgstr "为设定信头名称。"
 
@@ -7698,7 +7842,7 @@ msgstr "当前自定义信头"
 msgid "Displayed header configuration"
 msgstr "信头字段显示配置"
 
-#: src/prefs_display_header.c:251 src/prefs_matcher.c:469
+#: src/prefs_display_header.c:251 src/prefs_matcher.c:491
 msgid "Header name"
 msgstr "信头名称"
 
@@ -7714,53 +7858,45 @@ msgstr "需隐藏的信头"
 msgid "Show all unspecified headers"
 msgstr "显示所有未指明的信头字段"
 
-#: src/prefs_display_header.c:576
+#: src/prefs_display_header.c:575
 msgid "This header is already in the list."
 msgstr "该字段已经在列表中存在。"
 
-#: src/prefs_ext_prog.c:110
+#: src/prefs_ext_prog.c:100
 #, c-format
 msgid "%s will be replaced with file name / URI"
 msgstr "%s 将被替换为相应的文件名或者URI"
 
-#: src/prefs_ext_prog.c:127
+#: src/prefs_ext_prog.c:117
 msgid "Web browser"
 msgstr "网页浏览器"
 
-#: src/prefs_ext_prog.c:156
+#: src/prefs_ext_prog.c:146
 msgid "Text editor"
 msgstr "文本编辑器"
 
-#: src/prefs_ext_prog.c:183
-msgid "Image viewer"
-msgstr "图片查看器"
-
-#: src/prefs_ext_prog.c:201
+#: src/prefs_ext_prog.c:173
 msgid "Command for 'Display as text'"
 msgstr "用于'以文本方式显示'的命令"
 
-#: src/prefs_ext_prog.c:213
+#: src/prefs_ext_prog.c:185
 msgid ""
 "This option enables MIME parts to be displayed in the message view via a "
 "script when using the 'Display as text' contextual menu item"
 msgstr ""
-"此选项使得邮件的MIME部分可以通过一个脚本转化为文本格式显示在邮件内容上。"
-"(您仍然需要使用'以文本方式显示'菜单项来运行这个脚本)"
+"此选项使得邮件的MIME部分可以通过一个脚本转化为文本格式显示在邮件内容上。(您仍"
+"然需要使用'以文本方式显示'菜单项来运行这个脚本)"
 
-#: src/prefs_ext_prog.c:224
-msgid "Audio player"
-msgstr "音频播放器"
-
-#: src/prefs_ext_prog.c:242
+#: src/prefs_ext_prog.c:196
 msgid "Print command"
 msgstr "打印命令"
 
-#: src/prefs_ext_prog.c:304 src/prefs_image_viewer.c:128
-#: src/prefs_message.c:312
+#: src/prefs_ext_prog.c:252 src/prefs_image_viewer.c:128
+#: src/prefs_message.c:308
 msgid "Message View"
 msgstr "邮件视图"
 
-#: src/prefs_ext_prog.c:305
+#: src/prefs_ext_prog.c:253
 msgid "External Programs"
 msgstr "外部程序"
 
@@ -7792,7 +7928,7 @@ msgstr "设为已读"
 msgid "Mark as unread"
 msgstr "设为未读"
 
-#: src/prefs_filtering_action.c:159 src/toolbar.c:397 src/toolbar.c:488
+#: src/prefs_filtering_action.c:159 src/toolbar.c:398 src/toolbar.c:489
 msgid "Forward"
 msgstr "转发"
 
@@ -7801,7 +7937,7 @@ msgid "Redirect"
 msgstr "重新指定"
 
 #: src/prefs_filtering_action.c:162 src/prefs_filtering_action.c:429
-#: src/toolbar.c:174 src/toolbar.c:1654
+#: src/toolbar.c:174 src/toolbar.c:1655
 msgid "Execute"
 msgstr "执行"
 
@@ -7846,7 +7982,7 @@ msgid "Recipient"
 msgstr "回执"
 
 #: src/prefs_filtering_action.c:439 src/prefs_summary_column.c:88
-#: src/summaryview.c:492
+#: src/summaryview.c:489
 msgid "Score"
 msgstr "得分"
 
@@ -7874,44 +8010,44 @@ msgstr "未指定积分"
 msgid "No action was defined."
 msgstr "没有定义动作。"
 
-#: src/prefs_filtering_action.c:1079 src/prefs_matcher.c:1683
+#: src/prefs_filtering_action.c:1079 src/prefs_matcher.c:1848
 #: src/quote_fmt.c:58
 msgid "literal %"
 msgstr "% 符号"
 
-#: src/prefs_filtering_action.c:1084 src/prefs_matcher.c:1688
-#: src/prefs_summary_column.c:85 src/quote_fmt.c:41 src/summaryview.c:489
+#: src/prefs_filtering_action.c:1084 src/prefs_matcher.c:1853
+#: src/prefs_summary_column.c:85 src/quote_fmt.c:41 src/summaryview.c:486
 msgid "Date"
 msgstr "日期"
 
-#: src/prefs_filtering_action.c:1085 src/prefs_matcher.c:1689
+#: src/prefs_filtering_action.c:1085 src/prefs_matcher.c:1854
 #: src/quote_fmt.c:52
 msgid "Message-ID"
 msgstr ""
 
-#: src/prefs_filtering_action.c:1086 src/prefs_matcher.c:152
-#: src/prefs_matcher.c:1690 src/quote_fmt.c:50
+#: src/prefs_filtering_action.c:1086 src/prefs_matcher.c:160
+#: src/prefs_matcher.c:1855 src/quote_fmt.c:50
 msgid "Newsgroups"
 msgstr "新闻组"
 
-#: src/prefs_filtering_action.c:1087 src/prefs_matcher.c:152
-#: src/prefs_matcher.c:1691 src/quote_fmt.c:51
+#: src/prefs_filtering_action.c:1087 src/prefs_matcher.c:160
+#: src/prefs_matcher.c:1856 src/quote_fmt.c:51
 msgid "References"
 msgstr ""
 
-#: src/prefs_filtering_action.c:1088 src/prefs_matcher.c:1692
+#: src/prefs_filtering_action.c:1088 src/prefs_matcher.c:1857
 msgid "filename (should not be modified)"
 msgstr "文件名(请勿更动)"
 
-#: src/prefs_filtering_action.c:1089 src/prefs_matcher.c:1693
+#: src/prefs_filtering_action.c:1089 src/prefs_matcher.c:1858
 msgid "new line"
 msgstr "新行"
 
-#: src/prefs_filtering_action.c:1090 src/prefs_matcher.c:1694
+#: src/prefs_filtering_action.c:1090 src/prefs_matcher.c:1859
 msgid "escape character for quotes"
 msgstr "引文逃逸字符"
 
-#: src/prefs_filtering_action.c:1091 src/prefs_matcher.c:1695
+#: src/prefs_filtering_action.c:1091 src/prefs_matcher.c:1860
 msgid "quote character"
 msgstr "引文字符"
 
@@ -7935,56 +8071,61 @@ msgstr ""
 msgid "Current action list"
 msgstr "当前动作列表"
 
-#: src/prefs_filtering.c:164 src/prefs_filtering.c:270
+#: src/prefs_filtering.c:181 src/prefs_filtering.c:332
 msgid "Filtering/Processing configuration"
 msgstr "过滤/处理 配置"
 
-#: src/prefs_filtering.c:307
+#: src/prefs_filtering.c:369
+#, fuzzy
+msgid "Account:"
+msgstr "帐号"
+
+#: src/prefs_filtering.c:383
 msgid "Condition: "
 msgstr "条件: "
 
-#: src/prefs_filtering.c:320 src/prefs_filtering.c:342
+#: src/prefs_filtering.c:396 src/prefs_filtering.c:418
 msgid " Define... "
 msgstr "定义... "
 
-#: src/prefs_filtering.c:329
+#: src/prefs_filtering.c:405
 msgid "Action: "
 msgstr "动作: "
 
-#: src/prefs_filtering.c:677 src/prefs_filtering.c:678
-#: src/prefs_filtering.c:740 src/prefs_template.c:361
+#: src/prefs_filtering.c:754 src/prefs_filtering.c:756
+#: src/prefs_filtering.c:820 src/prefs_template.c:361
 msgid "(New)"
 msgstr "(新建)"
 
-#: src/prefs_filtering.c:819 src/prefs_filtering.c:902
+#: src/prefs_filtering.c:904 src/prefs_filtering.c:990
 msgid "Condition string is not valid."
 msgstr "无效的条件字符串。"
 
-#: src/prefs_filtering.c:855 src/prefs_filtering.c:910
+#: src/prefs_filtering.c:940 src/prefs_filtering.c:998
 msgid "Action string is not valid."
 msgstr "无效的动作。"
 
-#: src/prefs_filtering.c:889
+#: src/prefs_filtering.c:977
 msgid "Condition string is empty."
 msgstr "条件字符串为空。"
 
-#: src/prefs_filtering.c:895
+#: src/prefs_filtering.c:983
 msgid "Action string is empty."
 msgstr "文件 %s 不存在。"
 
-#: src/prefs_filtering.c:967
+#: src/prefs_filtering.c:1055
 msgid "Delete rule"
 msgstr "删除规则"
 
-#: src/prefs_filtering.c:968
+#: src/prefs_filtering.c:1056
 msgid "Do you really want to delete this rule?"
 msgstr "确定删除这项规则？"
 
-#: src/prefs_filtering.c:1331
+#: src/prefs_filtering.c:1428
 msgid "Enable"
 msgstr "启用"
 
-#: src/prefs_filtering.c:1351
+#: src/prefs_filtering.c:1448
 msgid "Rule"
 msgstr "规则"
 
@@ -8148,159 +8289,184 @@ msgstr "嵌入显示图片"
 msgid "Image Viewer"
 msgstr "图片查看器"
 
-#: src/prefs_matcher.c:150
+#: src/prefs_matcher.c:158
 msgid "All messages"
 msgstr "所有邮件"
 
-#: src/prefs_matcher.c:151
+#: src/prefs_matcher.c:159
 msgid "To or Cc"
 msgstr ""
 
-#: src/prefs_matcher.c:152
+#: src/prefs_matcher.c:160
 msgid "In reply to"
 msgstr "回复"
 
-#: src/prefs_matcher.c:153
+#: src/prefs_matcher.c:161
 msgid "Age greater than"
 msgstr "邮件年龄大于"
 
-#: src/prefs_matcher.c:153
+#: src/prefs_matcher.c:161
 msgid "Age lower than"
 msgstr "邮件年龄小于"
 
-#: src/prefs_matcher.c:154
+#: src/prefs_matcher.c:162
 msgid "Headers part"
 msgstr "信头"
 
-#: src/prefs_matcher.c:155
+#: src/prefs_matcher.c:163
 msgid "Body part"
 msgstr "主体"
 
-#: src/prefs_matcher.c:155
+#: src/prefs_matcher.c:163
 msgid "Whole message"
 msgstr "完整邮件"
 
-#: src/prefs_matcher.c:156
+#: src/prefs_matcher.c:164
 msgid "Unread flag"
 msgstr "未读标记"
 
-#: src/prefs_matcher.c:156
+#: src/prefs_matcher.c:164
 msgid "New flag"
 msgstr "新邮件标记"
 
-#: src/prefs_matcher.c:157
+#: src/prefs_matcher.c:165
 msgid "Marked flag"
 msgstr "记号标记"
 
-#: src/prefs_matcher.c:157
+#: src/prefs_matcher.c:165
 msgid "Deleted flag"
 msgstr "已删除标记"
 
-#: src/prefs_matcher.c:158
+#: src/prefs_matcher.c:166
 msgid "Replied flag"
 msgstr "已回复标记"
 
-#: src/prefs_matcher.c:158
+#: src/prefs_matcher.c:166
 msgid "Forwarded flag"
 msgstr "已转发标记"
 
-#: src/prefs_matcher.c:159
+#: src/prefs_matcher.c:167
 msgid "Locked flag"
 msgstr "已锁定标记"
 
-#: src/prefs_matcher.c:160
+#: src/prefs_matcher.c:168
 msgid "Color label"
 msgstr "颜色标签"
 
-#: src/prefs_matcher.c:161
+#: src/prefs_matcher.c:169
 msgid "Ignored thread"
 msgstr "忽略讨论线索"
 
-#: src/prefs_matcher.c:162
+#: src/prefs_matcher.c:170
 msgid "Score greater than"
 msgstr "积分大于"
 
-#: src/prefs_matcher.c:162
+#: src/prefs_matcher.c:170
 msgid "Score lower than"
 msgstr "积分少于"
 
-#: src/prefs_matcher.c:163
+#: src/prefs_matcher.c:171
 msgid "Score equal to"
 msgstr "积分等于"
 
-#: src/prefs_matcher.c:164
+#: src/prefs_matcher.c:172
 msgid "Test"
 msgstr "测试"
 
-#: src/prefs_matcher.c:165
+#: src/prefs_matcher.c:173
 msgid "Size greater than"
 msgstr "尺寸大于"
 
-#: src/prefs_matcher.c:166
+#: src/prefs_matcher.c:174
 msgid "Size smaller than"
 msgstr "尺寸小于"
 
-#: src/prefs_matcher.c:167
+#: src/prefs_matcher.c:175
 msgid "Size exactly"
 msgstr "尺寸等于"
 
-#: src/prefs_matcher.c:168
+#: src/prefs_matcher.c:176
 msgid "Partially downloaded"
 msgstr "仅部分下载"
 
-#: src/prefs_matcher.c:185
+#: src/prefs_matcher.c:177
+#, fuzzy
+msgid "Found in addressbook"
+msgstr "编辑地址簿"
+
+#: src/prefs_matcher.c:194
 msgid "or"
 msgstr "或"
 
-#: src/prefs_matcher.c:185
+#: src/prefs_matcher.c:194
 msgid "and"
 msgstr "与"
 
-#: src/prefs_matcher.c:202
+#: src/prefs_matcher.c:211
 msgid "contains"
 msgstr "包含"
 
-#: src/prefs_matcher.c:202
+#: src/prefs_matcher.c:211
 msgid "does not contain"
 msgstr "不包含"
 
-#: src/prefs_matcher.c:219
+#: src/prefs_matcher.c:235
 msgid "yes"
 msgstr "是"
 
-#: src/prefs_matcher.c:219
+#: src/prefs_matcher.c:235
 msgid "no"
 msgstr "不"
 
-#: src/prefs_matcher.c:410
+#: src/prefs_matcher.c:432
 msgid "Condition configuration"
 msgstr "条件设置"
 
-#: src/prefs_matcher.c:437
+#: src/prefs_matcher.c:459
 msgid "Match type"
 msgstr "匹配类型"
 
-#: src/prefs_matcher.c:505
-msgid " Info... "
-msgstr "说明... "
+#: src/prefs_matcher.c:512
+#, fuzzy
+msgid "Address header"
+msgstr "需隐藏的信头"
 
-#: src/prefs_matcher.c:528
+#: src/prefs_matcher.c:544
+#, fuzzy
+msgid "Book/folder"
+msgstr "/地址簿(_B)/新资料夹(_F)"
+
+#: src/prefs_matcher.c:578
+#, fuzzy
+msgid " Select... "
+msgstr "选择..."
+
+#: src/prefs_matcher.c:599
 msgid "Predicate"
 msgstr "谓词"
 
-#: src/prefs_matcher.c:579
+#: src/prefs_matcher.c:650
 msgid "Use regexp"
 msgstr "使用正则表达式"
 
-#: src/prefs_matcher.c:617
+#: src/prefs_matcher.c:688
 msgid "Boolean Op"
 msgstr "逻辑操作符"
 
-#: src/prefs_matcher.c:1204
+#: src/prefs_matcher.c:1294
 msgid "Value is not set."
 msgstr "尚未赋值"
 
-#: src/prefs_matcher.c:1641
+#: src/prefs_matcher.c:1328
+#, c-format
+msgid ""
+"Book/folder path is not set.\n"
+"\n"
+"If you want to match the '%s' address against the whole address book, you "
+"have to select 'Any' from the book/folder drop-down list."
+msgstr ""
+
+#: src/prefs_matcher.c:1806
 msgid ""
 "The entry was not saved.\n"
 "Close anyway?"
@@ -8308,11 +8474,11 @@ msgstr ""
 "该项未保存，\n"
 "确实关闭？"
 
-#: src/prefs_matcher.c:1703
+#: src/prefs_matcher.c:1868
 msgid "Match Type: 'Test'"
 msgstr "匹配类型: 'Test'"
 
-#: src/prefs_matcher.c:1704
+#: src/prefs_matcher.c:1869
 msgid ""
 "'Test' allows you to test a message or message element using an external "
 "program or script. The program will return either 0 or 1.\n"
@@ -8324,7 +8490,7 @@ msgstr ""
 "\n"
 "可以使用如下一些符号:"
 
-#: src/prefs_matcher.c:1786
+#: src/prefs_matcher.c:1963
 msgid "Current condition rules"
 msgstr "当前条件规则"
 
@@ -8348,47 +8514,47 @@ msgstr "显示邮件的Face"
 msgid "Display short headers on message view"
 msgstr "在邮件视图显示邮件的简要信头"
 
-#: src/prefs_message.c:153
+#: src/prefs_message.c:149
 msgid "HTML messages"
 msgstr "HTML 邮件"
 
-#: src/prefs_message.c:161
+#: src/prefs_message.c:157
 msgid "Render HTML messages as text"
 msgstr "以文本方式显示HTML邮件"
 
-#: src/prefs_message.c:164
+#: src/prefs_message.c:160
 msgid "Render HTML-only messages with plugin if possible"
 msgstr "如果可能的话调用插件显示HTML邮件"
 
-#: src/prefs_message.c:174
+#: src/prefs_message.c:170
 msgid "Line space"
 msgstr "行间距"
 
-#: src/prefs_message.c:188 src/prefs_message.c:226
+#: src/prefs_message.c:184 src/prefs_message.c:222
 msgid "pixel(s)"
 msgstr "像素"
 
-#: src/prefs_message.c:193
+#: src/prefs_message.c:189
 msgid "Scroll"
 msgstr "卷动"
 
-#: src/prefs_message.c:200
+#: src/prefs_message.c:196
 msgid "Half page"
 msgstr "一次半页"
 
-#: src/prefs_message.c:206
+#: src/prefs_message.c:202
 msgid "Smooth scroll"
 msgstr "平滑卷动"
 
-#: src/prefs_message.c:212
+#: src/prefs_message.c:208
 msgid "Step"
 msgstr "每次卷动"
 
-#: src/prefs_message.c:233
+#: src/prefs_message.c:229
 msgid "Show attachment descriptions (rather than names)"
 msgstr "显示附件的描述信息(而不是附件名称)"
 
-#: src/prefs_message.c:313
+#: src/prefs_message.c:309
 msgid "Text Options"
 msgstr "文本选项"
 
@@ -9493,59 +9659,57 @@ msgstr "没有信息"
 msgid "No recipient keys defined."
 msgstr "没有定义动作。"
 
-#: src/procmime.c:296 src/procmime.c:298
+#: src/procmime.c:298 src/procmime.c:300
 msgid "[Error decoding BASE64]\n"
 msgstr "[BASE64解码错误]\n"
 
-#: src/procmsg.c:900
+#: src/procmsg.c:901
 msgid "Already trying to send\n"
 msgstr ""
 
-#: src/procmsg.c:903
+#: src/procmsg.c:904
 msgid "Already trying to send."
 msgstr ""
 
-#: src/procmsg.c:1434
+#: src/procmsg.c:1451
 #, c-format
 msgid "Couldn't open file %s."
 msgstr "无法打开文件 %s。"
 
-#: src/procmsg.c:1528
+#: src/procmsg.c:1545
 #, c-format
 msgid "Couldn't encrypt the email: %s"
 msgstr "无法加密邮件: %s"
 
-#: src/procmsg.c:1561
+#: src/procmsg.c:1578
 msgid "Queued message header is broken."
 msgstr "待发送的邮件头已经损坏"
 
-#: src/procmsg.c:1582
+#: src/procmsg.c:1599
 msgid "An error happened during SMTP session."
 msgstr "建立SMTP会话时发生错误."
 
-#: src/procmsg.c:1596
+#: src/procmsg.c:1613
 msgid ""
 "No specific account has been found to send, and an error happened during "
 "SMTP session."
-msgstr ""
-"没有发现可供发送邮件的账户，同时在SMTP会话中发生了一个错误。"
+msgstr "没有发现可供发送邮件的账户，同时在SMTP会话中发生了一个错误。"
 
-#: src/procmsg.c:1604
+#: src/procmsg.c:1621
 msgid ""
 "Couldn't determine sending informations. Maybe the email hasn't been "
 "generated by Sylpheed-Claws."
-msgstr ""
-"无法判断待发送的信息。也许这封邮件不是用Sylpheed-Claws生成的。"
+msgstr "无法判断待发送的信息。也许这封邮件不是用Sylpheed-Claws生成的。"
 
-#: src/procmsg.c:1622
+#: src/procmsg.c:1639
 msgid "Could not create temporary file for news sending."
 msgstr "发送新闻过程中无法创建临时文件。"
 
-#: src/procmsg.c:1635
+#: src/procmsg.c:1652
 msgid "Error when writing temporary file for news sending."
 msgstr "发送新闻过程中写往临时文件时出错。"
 
-#: src/procmsg.c:1649
+#: src/procmsg.c:1666
 #, c-format
 msgid "Error occurred while posting the message to %s."
 msgstr "发贴至 %s 时发生错误。"
@@ -9665,6 +9829,20 @@ msgstr ""
 "插入用户输入:\n"
 "sub_expr将被替换为用户输入的文本\n"
 " "
+
+#: src/quote_fmt.c:74
+msgid "terms definition:"
+msgstr ""
+
+#: src/quote_fmt.c:75
+msgid "text that can contain any of the symbols above"
+msgstr ""
+
+#: src/quote_fmt.c:76
+msgid ""
+"text that can contain any of the symbols above\n"
+"but ?x{}, !x{}, |f{}, |p{} and |i{}"
+msgstr ""
 
 #: src/quote_fmt.c:84
 msgid "Description of symbols"
@@ -9798,15 +9976,15 @@ msgstr "邮件源文件"
 msgid "%s - Source"
 msgstr "%s - 邮件源文件"
 
-#: src/ssl_manager.c:154
+#: src/ssl_manager.c:157
 msgid "Saved SSL Certificates"
 msgstr "保存SSL认证"
 
-#: src/ssl_manager.c:374
+#: src/ssl_manager.c:386
 msgid "Delete certificate"
 msgstr "删除认证"
 
-#: src/ssl_manager.c:375
+#: src/ssl_manager.c:387
 msgid "Do you really want to delete this certificate?"
 msgstr "确定删除这项认证？"
 
@@ -9846,354 +10024,388 @@ msgstr "搜寻已到顶端。要从结尾继续搜寻吗？"
 msgid "End of list reached; continue from beginning?"
 msgstr "搜寻已到结尾。要从开头继续搜寻吗？"
 
-#: src/summaryview.c:417
+#: src/summaryview.c:414
 msgid "/_Reply"
 msgstr "/回复(_R)"
 
-#: src/summaryview.c:418
+#: src/summaryview.c:415
 msgid "/Repl_y to"
 msgstr "/回复给(_y)"
 
-#: src/summaryview.c:419
+#: src/summaryview.c:416
 msgid "/Repl_y to/_all"
 msgstr "/回复给(_y)/所有人(_a)"
 
-#: src/summaryview.c:420
+#: src/summaryview.c:417
 msgid "/Repl_y to/_sender"
 msgstr "/回复给(_y)/发信人(_s)"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:418
 msgid "/Repl_y to/mailing _list"
 msgstr "/回复给(_y)/邮件列表 (_l)"
 
-#: src/summaryview.c:424 src/toolbar.c:234
+#: src/summaryview.c:421 src/toolbar.c:234
 msgid "/_Forward"
 msgstr "转发(_F)"
 
-#: src/summaryview.c:425 src/toolbar.c:235
+#: src/summaryview.c:422 src/toolbar.c:235
 msgid "/For_ward as attachment"
 msgstr "/作为附件转发(_w)"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:423
 msgid "/Redirect"
 msgstr "/重定向"
 
-#: src/summaryview.c:428
+#: src/summaryview.c:425
 msgid "/M_ove..."
 msgstr "/移动(_o)..."
 
-#: src/summaryview.c:429
+#: src/summaryview.c:426
 msgid "/_Copy..."
 msgstr "/复制(_C)..."
 
-#: src/summaryview.c:430
+#: src/summaryview.c:427
 msgid "/Move to _trash"
 msgstr "/移动到垃圾桶(_t)"
 
-#: src/summaryview.c:431
+#: src/summaryview.c:428
 msgid "/_Delete..."
 msgstr "/删除(_D)..."
 
-#: src/summaryview.c:433
+#: src/summaryview.c:430
 msgid "/_Mark"
 msgstr "/标记(_M)"
 
-#: src/summaryview.c:434
+#: src/summaryview.c:431
 msgid "/_Mark/_Mark"
 msgstr "/标记(_M)/标记(_M)"
 
-#: src/summaryview.c:435
+#: src/summaryview.c:432
 msgid "/_Mark/_Unmark"
 msgstr "/标记(_M)/去除标记(_U)"
 
-#: src/summaryview.c:436 src/summaryview.c:442 src/summaryview.c:445
+#: src/summaryview.c:433 src/summaryview.c:439 src/summaryview.c:442
 msgid "/_Mark/---"
 msgstr "/标记(_M)/---"
 
-#: src/summaryview.c:437
+#: src/summaryview.c:434
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/标记(_M)/标记为未读(_e)"
 
-#: src/summaryview.c:438
+#: src/summaryview.c:435
 msgid "/_Mark/Mark as rea_d"
 msgstr "/标记(_M)/标记为已读(_d)"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:436
 msgid "/_Mark/Mark all read"
 msgstr "/标记(_M)/标记全部为已读"
 
-#: src/summaryview.c:440
+#: src/summaryview.c:437
 msgid "/_Mark/Ignore thread"
 msgstr "/标记(_M)/忽略邮件线索"
 
-#: src/summaryview.c:441
+#: src/summaryview.c:438
 msgid "/_Mark/Unignore thread"
 msgstr "/标记(_M)/不忽略邮件线索"
 
-#: src/summaryview.c:443
+#: src/summaryview.c:440
 msgid "/_Mark/Mark as _spam"
 msgstr "/标记(_M)/标记为垃圾邮件(_s)"
 
-#: src/summaryview.c:444
+#: src/summaryview.c:441
 msgid "/_Mark/Mark as _ham"
 msgstr "/标记(_M)/标记为非垃圾邮件(_h)"
 
-#: src/summaryview.c:446
+#: src/summaryview.c:443
 msgid "/_Mark/Lock"
 msgstr "/标记(_M)/锁定"
 
-#: src/summaryview.c:447
+#: src/summaryview.c:444
 msgid "/_Mark/Unlock"
 msgstr "/标记(_M)/解锁"
 
-#: src/summaryview.c:448
+#: src/summaryview.c:445
 msgid "/Color la_bel"
 msgstr "/彩色标记(_b)"
 
-#: src/summaryview.c:451
+#: src/summaryview.c:448
 msgid "/Add sender to address boo_k"
 msgstr "将发信人加入地址簿中(_k)"
 
-#: src/summaryview.c:453
+#: src/summaryview.c:450
 msgid "/Create f_ilter rule"
 msgstr "/创建邮件过滤规则(_i)"
 
-#: src/summaryview.c:454
+#: src/summaryview.c:451
 msgid "/Create f_ilter rule/_Automatically"
 msgstr "/创建邮件过滤规则(_i)/自动创建"
 
-#: src/summaryview.c:456
+#: src/summaryview.c:453
 msgid "/Create f_ilter rule/by _From"
 msgstr "/创建邮件过滤规则(_i)/按来源(_F)"
 
-#: src/summaryview.c:458
+#: src/summaryview.c:455
 msgid "/Create f_ilter rule/by _To"
 msgstr "/创建邮件过滤规则(_i)/按收信人(_T)"
 
-#: src/summaryview.c:460
+#: src/summaryview.c:457
 msgid "/Create f_ilter rule/by _Subject"
 msgstr "/创建邮件过滤规则(_i)/按标题(_S)"
 
-#: src/summaryview.c:462
+#: src/summaryview.c:459
 msgid "/Create processing rule"
 msgstr "/创建处理规则"
 
-#: src/summaryview.c:463
+#: src/summaryview.c:460
 msgid "/Create processing rule/_Automatically"
 msgstr "/创建处理规则/自动创建(_A)"
 
-#: src/summaryview.c:465
+#: src/summaryview.c:462
 msgid "/Create processing rule/by _From"
 msgstr "/创建处理规则/按来源(_F)"
 
-#: src/summaryview.c:467
+#: src/summaryview.c:464
 msgid "/Create processing rule/by _To"
 msgstr "/创建处理规则/按收信人(_T)"
 
-#: src/summaryview.c:469
+#: src/summaryview.c:466
 msgid "/Create processing rule/by _Subject"
 msgstr "/创建处理规则/按标题(_S)"
 
-#: src/summaryview.c:475
+#: src/summaryview.c:472
 msgid "/_View/_Source"
 msgstr "/查看(_V)/邮件源文件(_S)"
 
-#: src/summaryview.c:476
+#: src/summaryview.c:473
 msgid "/_View/All _header"
 msgstr "/查看(_V)/所有的信头(_h)"
 
-#: src/summaryview.c:479
+#: src/summaryview.c:476
 msgid "/_Print..."
 msgstr "/打印(_P)..."
 
-#: src/summaryview.c:555
+#: src/summaryview.c:552
 msgid "Toggle quick search bar"
 msgstr "切换快速搜索条显示状态"
 
-#: src/summaryview.c:893
+#: src/summaryview.c:891
 msgid "Process mark"
 msgstr "邮件标记"
 
-#: src/summaryview.c:894
+#: src/summaryview.c:892
 msgid "Some marks are left. Process them?"
 msgstr "某些邮件已做了待处理标记。是否进行处理？"
 
-#: src/summaryview.c:949
+#: src/summaryview.c:947
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "扫描邮件夹(%s)..."
 
-#: src/summaryview.c:1411 src/summaryview.c:1463
+#: src/summaryview.c:1410 src/summaryview.c:1462
 msgid "No more unread messages"
 msgstr "没有其他新邮件"
 
-#: src/summaryview.c:1412
+#: src/summaryview.c:1411
 msgid "No unread message found. Search from the end?"
 msgstr "没有找到新邮件。要从尾部继续搜寻吗？"
 
-#: src/summaryview.c:1424 src/summaryview.c:1476 src/summaryview.c:1523
-#: src/summaryview.c:1575 src/summaryview.c:1654
+#: src/summaryview.c:1423 src/summaryview.c:1475 src/summaryview.c:1522
+#: src/summaryview.c:1574 src/summaryview.c:1653
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
 
-#: src/summaryview.c:1432
+#: src/summaryview.c:1431
 msgid "No unread messages."
 msgstr "没有未读邮件。"
 
-#: src/summaryview.c:1464
+#: src/summaryview.c:1463
 msgid "No unread message found. Go to next folder?"
 msgstr "没有新邮件。要到下一个邮件夹吗？"
 
-#: src/summaryview.c:1510 src/summaryview.c:1562
+#: src/summaryview.c:1509 src/summaryview.c:1561
 msgid "No more new messages"
 msgstr "没有其他新邮件"
 
-#: src/summaryview.c:1511
+#: src/summaryview.c:1510
 msgid "No new message found. Search from the end?"
 msgstr "没有找到新邮件。要从尾部继续搜寻吗？"
 
-#: src/summaryview.c:1531
+#: src/summaryview.c:1530
 msgid "No new messages."
 msgstr "没有新邮件"
 
-#: src/summaryview.c:1563
+#: src/summaryview.c:1562
 msgid "No new message found. Go to next folder?"
 msgstr "没有新邮件。要转到下一个邮件夹吗？"
 
-#: src/summaryview.c:1600 src/summaryview.c:1641
+#: src/summaryview.c:1599 src/summaryview.c:1640
 msgid "No more marked messages"
 msgstr "没有其他已标记邮件"
 
-#: src/summaryview.c:1601
+#: src/summaryview.c:1600
 msgid "No marked message found. Search from the end?"
 msgstr "没有找到已标记邮件。要从尾部继续搜寻吗？"
 
-#: src/summaryview.c:1610
+#: src/summaryview.c:1609
 msgid "No marked messages."
 msgstr "没有已标记邮件"
 
-#: src/summaryview.c:1642
+#: src/summaryview.c:1641
 msgid "No marked message found. Go to next folder?"
 msgstr "没有已标记的新邮件。要转到下一个邮件夹吗？"
 
-#: src/summaryview.c:1679 src/summaryview.c:1704
+#: src/summaryview.c:1678 src/summaryview.c:1703
 msgid "No more labeled messages"
 msgstr "没有已标记颜色之邮件"
 
-#: src/summaryview.c:1680
+#: src/summaryview.c:1679
 msgid "No labeled message found. Search from the end?"
 msgstr "没有找到已标记颜色之邮件。要从尾部继续搜寻吗？"
 
-#: src/summaryview.c:1689 src/summaryview.c:1714
+#: src/summaryview.c:1688 src/summaryview.c:1713
 msgid "No labeled messages."
 msgstr "没有已标记颜色之邮件"
 
-#: src/summaryview.c:1705
+#: src/summaryview.c:1704
 msgid "No labeled message found. Search from the beginning?"
 msgstr "没有找到已标记颜色之邮件。要从开头继续搜寻吗？"
 
-#: src/summaryview.c:1942
+#: src/summaryview.c:1957
 msgid "Attracting messages by subject..."
 msgstr "正在按主题排列邮件邮件..."
 
-#: src/summaryview.c:2103
+#: src/summaryview.c:2115
 #, c-format
 msgid "%d deleted"
 msgstr "%d 封已删除"
 
-#: src/summaryview.c:2107
+#: src/summaryview.c:2119
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d 封已移动"
 
-#: src/summaryview.c:2108 src/summaryview.c:2115
+#: src/summaryview.c:2120 src/summaryview.c:2127
 msgid ", "
 msgstr "，"
 
-#: src/summaryview.c:2113
+#: src/summaryview.c:2125
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d 已复制"
 
-#: src/summaryview.c:2128
+#: src/summaryview.c:2140
 msgid " item selected"
 msgstr "封已选择"
 
-#: src/summaryview.c:2130
+#: src/summaryview.c:2142
 msgid " items selected"
 msgstr "封已选择"
 
-#: src/summaryview.c:2146
+#: src/summaryview.c:2158
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d 封新邮件，%d 封未读，共 %d 封 (%s)"
 
-#: src/summaryview.c:2349
+#: src/summaryview.c:2362
 msgid "Sorting summary..."
 msgstr "正在对邮件进行排序..."
 
-#: src/summaryview.c:2438
+#: src/summaryview.c:2445
 msgid "Setting summary from message data..."
 msgstr "正在根据邮件数据提取摘要信息..."
 
-#: src/summaryview.c:2612
+#: src/summaryview.c:2615
 msgid "(No Date)"
 msgstr "(没有日期)"
 
-#: src/summaryview.c:2650
+#: src/summaryview.c:2653
 msgid "(No Recipient)"
 msgstr "(没有收件人)"
 
-#: src/summaryview.c:3436
+#: src/summaryview.c:3438
 msgid "You're not the author of the article.\n"
 msgstr "您不是这篇文章的作者。\n"
 
-#: src/summaryview.c:3520
+#: src/summaryview.c:3522
 msgid "Delete message(s)"
 msgstr "删除邮件"
 
-#: src/summaryview.c:3521
+#: src/summaryview.c:3523
 msgid "Do you really want to delete selected message(s)?"
 msgstr "确定删除选定的邮件吗？"
 
-#: src/summaryview.c:3669
+#: src/summaryview.c:3671
 msgid "Destination is same as current folder."
 msgstr "目标邮件夹与当前邮件夹相同"
 
-#: src/summaryview.c:3758
+#: src/summaryview.c:3760
 msgid "Destination to copy is same as current folder."
 msgstr "目标邮件夹与来源邮件夹相同"
 
-#: src/summaryview.c:3878
+#: src/summaryview.c:3880
 msgid "Append or Overwrite"
 msgstr "附加或覆盖"
 
-#: src/summaryview.c:3879
+#: src/summaryview.c:3881
 msgid "Append or overwrite existing file?"
 msgstr "附加或覆盖文件？"
 
-#: src/summaryview.c:3880
+#: src/summaryview.c:3882
 msgid "_Append"
 msgstr "追加(_A)"
 
-#: src/summaryview.c:3880
+#: src/summaryview.c:3882
 msgid "_Overwrite"
 msgstr "覆盖(_O)"
 
-#: src/summaryview.c:4257
+#: src/summaryview.c:4259
 msgid "Building threads..."
 msgstr "正在建立邮件线索..."
 
-#: src/summaryview.c:4462
+#: src/summaryview.c:4478
+msgid "Skip these rules"
+msgstr ""
+
+#: src/summaryview.c:4481
+msgid "Apply these rules regardless of the account they belong to"
+msgstr ""
+
+#: src/summaryview.c:4484
+#, fuzzy
+msgid "Use current account for these rules"
+msgstr "当前条件规则"
+
+#: src/summaryview.c:4513
+#, fuzzy
+msgid "Filtering"
+msgstr "正在过滤邮件..."
+
+#: src/summaryview.c:4514
+msgid ""
+"There are some filtering rules that belong to an account.\n"
+"Please choose what to do with these rules:"
+msgstr ""
+
+#: src/summaryview.c:4516
+#, fuzzy
+msgid "_Filter"
+msgstr "/文件(_F)"
+
+#: src/summaryview.c:4516
+#, fuzzy
+msgid "_Cancel"
+msgstr "+取消(_C)"
+
+#: src/summaryview.c:4543
 msgid "Filtering..."
 msgstr "正在过滤邮件..."
 
-#: src/summaryview.c:4532
+#: src/summaryview.c:4613
 msgid "Processing configuration"
 msgstr "过滤处理配置"
 
-#: src/summaryview.c:5958
+#: src/summaryview.c:6008
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -10202,27 +10414,37 @@ msgstr ""
 "正则表达式(regexp)错误:\n"
 "%s"
 
-#: src/textview.c:232
+#: src/textview.c:244
 msgid "/Compose _new message"
 msgstr "/撰写新邮件(_n)"
 
-#: src/textview.c:233
+#: src/textview.c:245
 msgid "/Add to _address book"
 msgstr "/将地址加入地址簿(_a)"
 
-#: src/textview.c:234
+#: src/textview.c:246
 msgid "/Copy this add_ress"
 msgstr "/拷贝此地址(_r)"
 
-#: src/textview.c:239
+#: src/textview.c:251
 msgid "/_Open image"
 msgstr "/打开图片(_O)"
 
-#: src/textview.c:240
+#: src/textview.c:252
 msgid "/_Save image..."
 msgstr "/保存图片(_S)..."
 
-#: src/textview.c:790
+#: src/textview.c:640
+#, c-format
+msgid "[%s  %s (%d bytes)]"
+msgstr ""
+
+#: src/textview.c:643
+#, c-format
+msgid "[%s (%d bytes)]"
+msgstr ""
+
+#: src/textview.c:806
 msgid ""
 "\n"
 "  This message can't be displayed.\n"
@@ -10236,79 +10458,79 @@ msgstr ""
 "\n"
 "  可用'工具'菜单中的 "
 
-#: src/textview.c:795
+#: src/textview.c:811
 msgid "'View Log'"
 msgstr "查看日志文件"
 
-#: src/textview.c:796
+#: src/textview.c:812
 msgid " in the Tools menu for more information."
 msgstr "一项了解更多信息。"
 
-#: src/textview.c:817
+#: src/textview.c:833
 msgid "  The following can be performed on this part by\n"
 msgstr "  可对该部分执行以下操作\n"
 
-#: src/textview.c:818
+#: src/textview.c:834
 msgid "  right-clicking the icon or list item:\n"
 msgstr "  右键点击图标或者列表项:\n"
 
-#: src/textview.c:820
+#: src/textview.c:836
 msgid "     - To save, select "
 msgstr "     - 若要保存，请选择"
 
-#: src/textview.c:821
+#: src/textview.c:837
 msgid "'Save as...'"
 msgstr "另存为..."
 
-#: src/textview.c:822
+#: src/textview.c:838
 msgid " (Shortcut key: 'y')\n"
 msgstr " (快捷键: 'y')\n"
 
-#: src/textview.c:823
+#: src/textview.c:839
 msgid "     - To display as text, select "
 msgstr "     - 若要以文本方式显示，请选择 "
 
-#: src/textview.c:824
+#: src/textview.c:840
 msgid "'Display as text'"
 msgstr "'以文本方式显示'"
 
-#: src/textview.c:825
+#: src/textview.c:841
 msgid " (Shortcut key: 't')\n"
 msgstr " (快捷键: 't')\n"
 
-#: src/textview.c:826
+#: src/textview.c:842
 msgid "     - To open with an external program, select "
 msgstr "    - 若要用外部程序打开，请选择"
 
-#: src/textview.c:827
+#: src/textview.c:843
 msgid "'Open'"
 msgstr "'打开'"
 
-#: src/textview.c:828
+#: src/textview.c:844
 msgid " (Shortcut key: 'l')\n"
 msgstr " (快捷键: 'l')\n"
 
-#: src/textview.c:829
+#: src/textview.c:845
 msgid "       (alternately double-click, or click the middle "
 msgstr "       (也可以双击或者点击),"
 
-#: src/textview.c:830
+#: src/textview.c:846
 msgid "mouse button)\n"
 msgstr "鼠标中键)\n"
 
-#: src/textview.c:831
+#: src/textview.c:847
 msgid "     - Or use "
 msgstr "     - 或者采用"
 
-#: src/textview.c:832
+#: src/textview.c:848
 msgid "'Open with...'"
 msgstr "'打开方式...'"
 
-#: src/textview.c:833
+#: src/textview.c:849
 msgid " (Shortcut key: 'o')\n"
 msgstr " (快捷键: 'o')\n"
 
-#: src/textview.c:922
+#: src/textview.c:939
 #, c-format
 msgid ""
 "The command to view attachment as text failed:\n"
@@ -10319,7 +10541,7 @@ msgstr ""
 "    %s\n"
 "程序退出码 %d\n"
 
-#: src/textview.c:2213
+#: src/textview.c:2521
 #, c-format
 msgid ""
 "The real URL is different from the displayed URL.\n"
@@ -10338,67 +10560,67 @@ msgstr ""
 "\n"
 "真的要打开吗?"
 
-#: src/textview.c:2222
+#: src/textview.c:2530
 msgid "Phishing attempt warning"
 msgstr "钓鱼企图警告"
 
-#: src/textview.c:2223
+#: src/textview.c:2531
 msgid "_Open URL"
 msgstr "打开(_O)"
 
-#: src/toolbar.c:162 src/toolbar.c:1489
+#: src/toolbar.c:162 src/toolbar.c:1490
 msgid "Receive Mail on all Accounts"
 msgstr "收所有帐号的信"
 
-#: src/toolbar.c:163 src/toolbar.c:1503
+#: src/toolbar.c:163 src/toolbar.c:1504
 msgid "Receive Mail on current Account"
 msgstr "用目前的帐号收信"
 
-#: src/toolbar.c:164 src/toolbar.c:1509
+#: src/toolbar.c:164 src/toolbar.c:1510
 msgid "Send Queued Messages"
 msgstr "送出待发送邮件"
 
-#: src/toolbar.c:165 src/toolbar.c:1522
+#: src/toolbar.c:165 src/toolbar.c:1523
 msgid "Compose Email"
 msgstr "写信"
 
-#: src/toolbar.c:166 src/toolbar.c:1526
+#: src/toolbar.c:166 src/toolbar.c:1527
 msgid "Compose News"
 msgstr "撰写文章"
 
-#: src/toolbar.c:167 src/toolbar.c:1557 src/toolbar.c:1567
+#: src/toolbar.c:167 src/toolbar.c:1558 src/toolbar.c:1568
 msgid "Reply to Message"
 msgstr "回应原文"
 
-#: src/toolbar.c:168 src/toolbar.c:1574 src/toolbar.c:1584
+#: src/toolbar.c:168 src/toolbar.c:1575 src/toolbar.c:1585
 msgid "Reply to Sender"
 msgstr "回复给发信人"
 
-#: src/toolbar.c:169 src/toolbar.c:1591 src/toolbar.c:1601
+#: src/toolbar.c:169 src/toolbar.c:1592 src/toolbar.c:1602
 msgid "Reply to All"
 msgstr "回复给所有人"
 
-#: src/toolbar.c:170 src/toolbar.c:1608 src/toolbar.c:1618
+#: src/toolbar.c:170 src/toolbar.c:1609 src/toolbar.c:1619
 msgid "Reply to Mailing-list"
 msgstr "回复至邮件列表"
 
-#: src/toolbar.c:171 src/toolbar.c:1625 src/toolbar.c:1635
+#: src/toolbar.c:171 src/toolbar.c:1626 src/toolbar.c:1636
 msgid "Forward Message"
 msgstr "转发邮件"
 
-#: src/toolbar.c:172 src/toolbar.c:1642
+#: src/toolbar.c:172 src/toolbar.c:1643
 msgid "Trash Message"
 msgstr "将邮件转移到垃圾桶"
 
-#: src/toolbar.c:173 src/toolbar.c:1648
+#: src/toolbar.c:173 src/toolbar.c:1649
 msgid "Delete Message"
 msgstr "删除邮件"
 
-#: src/toolbar.c:175 src/toolbar.c:1660
+#: src/toolbar.c:175 src/toolbar.c:1661
 msgid "Go to Previous Unread Message"
 msgstr "转到上一封未读邮件"
 
-#: src/toolbar.c:176 src/toolbar.c:1667
+#: src/toolbar.c:176 src/toolbar.c:1668
 msgid "Go to Next Unread Message"
 msgstr "转到下一封未读邮件"
 
@@ -10406,43 +10628,43 @@ msgstr "转到下一封未读邮件"
 msgid "Learn Spam or Ham"
 msgstr "训练垃圾邮件识别能力"
 
-#: src/toolbar.c:181 src/toolbar.c:1676
+#: src/toolbar.c:181 src/toolbar.c:1677
 msgid "Send Message"
 msgstr "发送邮件"
 
-#: src/toolbar.c:182 src/toolbar.c:1682
+#: src/toolbar.c:182 src/toolbar.c:1683
 msgid "Put into queue folder and send later"
 msgstr "放入待发送邮件夹稍后再送"
 
-#: src/toolbar.c:183 src/toolbar.c:1688
+#: src/toolbar.c:183 src/toolbar.c:1689
 msgid "Save to draft folder"
 msgstr "存入草稿邮件夹"
 
-#: src/toolbar.c:184 src/toolbar.c:1694
+#: src/toolbar.c:184 src/toolbar.c:1695
 msgid "Insert file"
 msgstr "插入文件"
 
-#: src/toolbar.c:185 src/toolbar.c:1700
+#: src/toolbar.c:185 src/toolbar.c:1701
 msgid "Attach file"
 msgstr "附加文件"
 
-#: src/toolbar.c:186 src/toolbar.c:1706
+#: src/toolbar.c:186 src/toolbar.c:1707
 msgid "Insert signature"
 msgstr "插入签名"
 
-#: src/toolbar.c:187 src/toolbar.c:1712
+#: src/toolbar.c:187 src/toolbar.c:1713
 msgid "Edit with external editor"
 msgstr "以外部编辑器编辑"
 
-#: src/toolbar.c:188 src/toolbar.c:1718
+#: src/toolbar.c:188 src/toolbar.c:1719
 msgid "Wrap long lines of current paragraph"
 msgstr "拆分当前段落中超长的行"
 
-#: src/toolbar.c:189 src/toolbar.c:1724
+#: src/toolbar.c:189 src/toolbar.c:1725
 msgid "Wrap all long lines"
 msgstr "拆分所有超长的行"
 
-#: src/toolbar.c:192 src/toolbar.c:1737
+#: src/toolbar.c:192 src/toolbar.c:1738
 msgid "Check spelling"
 msgstr "检查拼写"
 
@@ -10490,59 +10712,59 @@ msgstr "/重定向(_t)"
 msgid "Get Mail"
 msgstr "收信"
 
-#: src/toolbar.c:394 src/toolbar.c:485
+#: src/toolbar.c:395 src/toolbar.c:486
 msgid "Reply"
 msgstr "回复"
 
-#: src/toolbar.c:395 src/toolbar.c:486
+#: src/toolbar.c:396 src/toolbar.c:487
 msgid "All"
 msgstr "全部"
 
-#: src/toolbar.c:396 src/toolbar.c:487
+#: src/toolbar.c:397 src/toolbar.c:488
 msgid "Sender"
 msgstr "发信人"
 
-#: src/toolbar.c:401 src/toolbar.c:492
+#: src/toolbar.c:402 src/toolbar.c:493
 msgid "Spam"
 msgstr "垃圾邮件"
 
-#: src/toolbar.c:404 src/toolbar.c:494
+#: src/toolbar.c:405 src/toolbar.c:495
 msgid "Next"
 msgstr "下一个"
 
-#: src/toolbar.c:442
+#: src/toolbar.c:443
 msgid "Send later"
 msgstr "稍后再送"
 
-#: src/toolbar.c:443
+#: src/toolbar.c:444
 msgid "Draft"
 msgstr "草稿"
 
-#: src/toolbar.c:445
+#: src/toolbar.c:446
 msgid "Insert"
 msgstr "插入"
 
-#: src/toolbar.c:446
+#: src/toolbar.c:447
 msgid "Attach"
 msgstr "附加文件"
 
-#: src/toolbar.c:1496
+#: src/toolbar.c:1497
 msgid "Receive Mail on selected Account"
 msgstr "收选中帐号的信"
 
-#: src/toolbar.c:1533
+#: src/toolbar.c:1534
 msgid "Compose with selected Account"
 msgstr "以选中帐号撰写邮件"
 
-#: src/toolbar.c:1539
+#: src/toolbar.c:1540
 msgid "Ham"
 msgstr "非垃圾"
 
-#: src/toolbar.c:1547
+#: src/toolbar.c:1548
 msgid "Learn Spam"
 msgstr "学习垃圾邮件"
 
-#: src/toolbar.c:1551
+#: src/toolbar.c:1552
 msgid "Learn Ham"
 msgstr "学习非垃圾邮件"
 
@@ -10793,6 +11015,29 @@ msgstr ""
 "Sylpheed-Claws配置完成。\n"
 "\n"
 "点击[保存]开始使用。"
+
+#, fuzzy
+#~ msgid "/------trashsep"
+#~ msgstr "/------"
+
+#, fuzzy
+#~ msgid "/------queuesep"
+#~ msgstr "/------"
+
+#~ msgid "Please select key for '%s'"
+#~ msgstr "请为 '%s' 选择密钥"
+
+#~ msgid " Edit... "
+#~ msgstr " 编辑... "
+
+#~ msgid "Image viewer"
+#~ msgstr "图片查看器"
+
+#~ msgid "Audio player"
+#~ msgstr "音频播放器"
+
+#~ msgid " Info... "
+#~ msgstr "说明... "
 
 #~ msgid "Sylpheed - Message View"
 #~ msgstr "Sylpheed - 邮件"

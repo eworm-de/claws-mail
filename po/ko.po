@@ -7,13 +7,13 @@ msgstr ""
 "Project-Id-Version: sylpheed-claws 1.9.99\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
 "POT-Creation-Date: 2005-12-20 18:32+0100\n"
-"PO-Revision-Date: 2005-11-02 10:01+0900\n"
+"PO-Revision-Date: 2006-08-20 09:02+0100\n"
 "Last-Translator: SungHyun Nam <goweol@gmail.com>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0;"
 
 #: src/account.c:376
 msgid ""
@@ -4020,7 +4020,7 @@ msgstr "받는 중"
 msgid "Done (%d message (%s) received)"
 msgid_plural "Done (%d messages (%s) received)"
 msgstr[0] "완료 (%d 메시지 (%s)가 받아짐)"
-msgstr[1] "완료 (%d 메시지 (%s)가 받아짐)"
+
 
 #: src/inc.c:566
 msgid "Done (no new messages)"
@@ -4043,7 +4043,6 @@ msgstr "시간초과"
 msgid "Finished (%d new message)"
 msgid_plural "Finished (%d new messages)"
 msgstr[0] "끝났습니다 (%d개의 새로운 메시지)"
-msgstr[1] "끝났습니다 (%d개의 새로운 메시지)"
 
 #: src/inc.c:689
 msgid "Finished (no new messages)"
@@ -4117,7 +4116,6 @@ msgstr "메시지 (%d / %d)을(를) 가져오는 중 (%s / %s)"
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
 msgstr[0] "수신 (%d 메시지 (%s)가 받아짐)"
-msgstr[1] "수신 (%d 메시지 (%s)가 받아짐)"
 
 #: src/inc.c:1106
 msgid "Connection failed."
@@ -5204,7 +5202,6 @@ msgstr "중복된 메시지를 지웁니다..."
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "중복된 %d 메시지를 %d 폴더에서 지웁니다.\n"
-msgstr[1] "중복된 %d 메시지들을 %d 폴더에서 지웁니다.\n"
 
 #: src/mainwindow.c:3123 src/summaryview.c:4250
 msgid "Processing rules to apply before folder rules"
@@ -9525,90 +9522,3 @@ msgstr ""
 "\n"
 "시작하려면 저장을 클릭하세요."
 
-#~ msgid "/_Spelling/---"
-#~ msgstr "/맞춤법(_S)/---"
-
-#~ msgid "/_Spelling/_Spelling Configuration"
-#~ msgstr "/맞춤법(_S)/설정(_S)"
-
-#~ msgid "Compose message%s"
-#~ msgstr "메시지%s 편집"
-
-#~ msgid "http://www.openssl.org/"
-#~ msgstr "http://www.openssl.org/"
-
-#~ msgid "Extended symbols"
-#~ msgstr "확장 심볼"
-
-#~ msgid "/_Help/_FAQ"
-#~ msgstr "/도움말(_H)/FAQ(_F)"
-
-#~ msgid "Clam AntiVirus GTK"
-#~ msgstr "Clam AntiVirus GTK"
-
-#~ msgid "MathML Viewer"
-#~ msgstr "MathML 뷰어"
-
-#~ msgid ""
-#~ "This plugin uses the GtkMathView widget to render MathML attachments "
-#~ "(Content-Type: text/mathml)"
-#~ msgstr ""
-#~ "이 플러그인은 GtkMathView 위젯을 사용하여 MathML 첨부를 표시합니다 "
-#~ "(Content-Type: text/mathml)"
-
-#~ msgid "Save Folder"
-#~ msgstr "폴더 저장"
-
-#~ msgid ""
-#~ "Folder that will be used to save spam. Leave empty to use the default "
-#~ "trash folder"
-#~ msgstr "스팸을 저장할 폴더. 비어있으면 지운 편지함 폴더가 사용됩니다"
-
-#~ msgid "SpamAssassin GTK"
-#~ msgstr "SpamAssassin GTK"
-
-#~ msgid "/_Get"
-#~ msgstr "/받기(_G)"
-
-#~ msgid "/Get _All"
-#~ msgstr "/전부 받기(_A)"
-
-#~ msgid " Select... "
-#~ msgstr "고르기..."
-
-#~ msgid "IMAP server directory (usually empty)"
-#~ msgstr "IMAP 서버 디렉토리 (보통 빔)"
-
-#~ msgid ""
-#~ "Display multi-byte alphanumeric as\n"
-#~ "ASCII character (Japanese only)"
-#~ msgstr ""
-#~ "다중바이트 알파벳과 숫자를 ASCII 문자로\n"
-#~ "표시 (일본어인 경우에만)"
-
-#~ msgid " Default "
-#~ msgstr " 기본 "
-
-#~ msgid "Your name:"
-#~ msgstr "이름:"
-
-#~ msgid "Your email address:"
-#~ msgstr "이메일 주소:"
-
-#~ msgid "Mailbox name:"
-#~ msgstr "우편함 이름:"
-
-#~ msgid "SMTP server address:"
-#~ msgstr "SMTP 서버 주소:"
-
-#~ msgid "Server address:"
-#~ msgstr "서버 주소:"
-
-#~ msgid "Local mailbox:"
-#~ msgstr "로컬 우편함:"
-
-#~ msgid "Server type:"
-#~ msgstr "서버 형식:"
-
-#~ msgid "Username:"
-#~ msgstr "사용자이름:"

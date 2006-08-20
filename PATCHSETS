@@ -1757,3 +1757,4 @@
 ( cvs diff -u -r 1.382.2.302 -r 1.382.2.303 src/compose.c;  cvs diff -u -r 1.150.2.72 -r 1.150.2.73 src/procmsg.c;  ) > 2.4.0cvs63.patchset
 ( cvs diff -u -r 1.25.2.24 -r 1.25.2.25 src/stock_pixmap.c;  ) > 2.4.0cvs64.patchset
 ( cvs diff -u -r 1.25.2.25 -r 1.25.2.26 src/stock_pixmap.c;  ) > 2.4.0cvs65.patchset
+( cvs diff -u -r 1.8.2.6 -r 1.8.2.7 po/ko.po;  cvs diff -u -r 1.5.2.17 -r 1.5.2.18 po/zh_CN.po;  ) > 2.4.0cvs66.patchset
