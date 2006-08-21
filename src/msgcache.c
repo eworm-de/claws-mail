@@ -367,15 +367,10 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	if (len == 0)
 		return 0;
 
-	if (len > (8<<20)) {
-		/* allocating 8MB is too much. Something's going on */
-		g_warning("read_data_str: Cache data (len) probably corrupted, asked for %d bytes.", len);
-		return -1;
-	}
-	tmpstr = g_malloc(len + 1);
+	tmpstr = g_try_malloc(len + 1);
 
 	if(tmpstr == NULL) {
-		g_warning("read_data_str: can't g_malloc %d bytes\n", len);
+		g_warning("read_data_str: can't g_malloc %d bytes - cache data probably corrupted.\n", len);
 		return -1;
 	}
 

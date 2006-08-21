@@ -1,3 +1,14 @@
+2006-08-21 [colin]	2.4.0cvs68
+
+	* src/compose.c
+		fix replied flag not set after drafting
+	* src/matcher.c
+		fix body quicksearch in non-encoded bodies
+		containing '='
+	* src/msgcache.c
+		Get rid of the g_malloc workaround for
+		corrupted caches, use g_try_malloc
+
 2006-08-21 [colin]	2.4.0cvs67
 
 	* src/alertpanel.c

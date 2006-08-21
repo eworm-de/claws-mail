@@ -422,7 +422,8 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 		res = matcherprop_string_match(prop, tmp);
 	}
 	
-	if (res == FALSE && (strchr(prop->expr, '=') || strchr(prop->expr, '_')) ) {
+	if (res == FALSE && (strchr(prop->expr, '=') || strchr(prop->expr, '_')
+			    || strchr(str, '=')) || strchr(prop->expr, '_')) {
 		/* if searching for something with an equal char, maybe 
 		 * we should try to match the non-decoded string. 
 		 * In case it was not qp-encoded. */
@@ -431,6 +432,7 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 				(str, conv_get_locale_charset_str_no_utf8(),
 				 CS_INTERNAL);
 			res = matcherprop_string_match(prop, utf);
+			g_free(utf);
 		} else {
 			res = matcherprop_string_match(prop, str);
 		}

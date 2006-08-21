@@ -1642,6 +1642,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	gboolean use_encryption = FALSE;
 	gchar *privacy_system = NULL;
 	int priority = PRIORITY_NORMAL;
+	MsgInfo *replyinfo = NULL, *fwdinfo = NULL;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1695,6 +1696,28 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
 			priority = param;
 		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "RMID:")) {
+			gchar **tokens = g_strsplit(&queueheader_buf[strlen("RMID:")], "\t", 0);
+			if (tokens[0] && tokens[1] && tokens[2]) {
+				FolderItem *orig_item = folder_find_item_from_identifier(tokens[0]);
+				if (orig_item != NULL) {
+					replyinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
+				}
+			}
+			g_strfreev(tokens);
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "FMID:")) {
+			gchar **tokens = g_strsplit(&queueheader_buf[strlen("FMID:")], "\t", 0);
+			if (tokens[0] && tokens[1] && tokens[2]) {
+				FolderItem *orig_item = folder_find_item_from_identifier(tokens[0]);
+				if (orig_item != NULL) {
+					fwdinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
+				}
+			}
+			g_strfreev(tokens);
+		}
 	} else {
 		account = msginfo->folder->folder->account;
 	}
@@ -1713,6 +1736,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	compose = compose_create(account, COMPOSE_REEDIT, batch);
 	
+	compose->replyinfo = replyinfo;
+	compose->fwdinfo = fwdinfo;
+
 	compose->updating = TRUE;
 	compose->priority = priority;
 
