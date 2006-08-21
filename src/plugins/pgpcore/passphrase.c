@@ -133,6 +133,9 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
 				  &cancel_button, GTK_STOCK_CANCEL,
 		    		  &ok_button, GTK_STOCK_OK,
 				  NULL, NULL);
+
+    gtk_widget_set_size_request(confirm_box, 375, -1);
+
     gtk_box_pack_end(GTK_BOX(vbox), confirm_box, FALSE, FALSE, 0);
     gtk_widget_grab_default(ok_button);
 

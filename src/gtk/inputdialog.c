@@ -281,6 +281,8 @@ static void input_dialog_create(gboolean is_password)
 				      &ok_button, GTK_STOCK_OK,
 				      NULL, NULL);
 
+	gtk_widget_set_size_request(confirm_area, 375, -1);
+
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 			 confirm_area, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);

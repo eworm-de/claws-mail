@@ -1758,3 +1758,4 @@
 ( cvs diff -u -r 1.25.2.24 -r 1.25.2.25 src/stock_pixmap.c;  ) > 2.4.0cvs64.patchset
 ( cvs diff -u -r 1.25.2.25 -r 1.25.2.26 src/stock_pixmap.c;  ) > 2.4.0cvs65.patchset
 ( cvs diff -u -r 1.8.2.6 -r 1.8.2.7 po/ko.po;  cvs diff -u -r 1.5.2.17 -r 1.5.2.18 po/zh_CN.po;  ) > 2.4.0cvs66.patchset
+( cvs diff -u -r 1.17.2.24 -r 1.17.2.25 src/alertpanel.c;  cvs diff -u -r 1.274.2.138 -r 1.274.2.139 src/mainwindow.c;  cvs diff -u -r 1.83.2.80 -r 1.83.2.81 src/mimeview.c;  cvs diff -u -r 1.2.2.17 -r 1.2.2.18 src/gtk/inputdialog.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/plugins/pgpcore/passphrase.c;  ) > 2.4.0cvs67.patchset

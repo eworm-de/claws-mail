@@ -3187,8 +3187,8 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		/* go offline */
 		if (prefs_common.work_offline)
 			return;
-		prefs_common.work_offline = TRUE;
 		mainwindow_check_synchronise(mainwin, TRUE);
+		prefs_common.work_offline = TRUE;
 		imap_disconnect_all();
 	} else {
 		/*go online */
