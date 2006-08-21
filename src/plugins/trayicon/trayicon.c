@@ -273,18 +273,18 @@ static void create_trayicon()
 int plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the Trayicon plugin was built with");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the Trayicon plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your version of Sylpheed-Claws is too old for the Trayicon plugin");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the Trayicon plugin"));
 		return -1;
 	}
 
 	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
 	if (hook_id == -1) {
-		*error = g_strdup("Failed to register folder item update hook");
+		*error = g_strdup(_("Failed to register folder item update hook"));
 		return -1;
 	}
 

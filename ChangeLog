@@ -1,3 +1,9 @@
+2006-08-21 [colin]	2.4.0cvs69
+
+	* src/plugins/trayicon/trayicon.c
+		Add more strings for translation; patch
+		by Pawel
+
 2006-08-21 [colin]	2.4.0cvs68
 
 	* src/compose.c
