@@ -1,3 +1,9 @@
+2006-08-22 [colin]	2.4.0cvs71
+
+	* src/gtk/pluginwindow.c
+		Fix layout in verbose translations (such
+		as french)
+
 2006-08-22 [paul]	2.4.0cvs70
 
 	* manual/Makefile.am

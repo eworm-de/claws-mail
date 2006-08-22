@@ -394,6 +394,8 @@ void pluginwindow_create()
 	gtk_widget_set_size_request(window, prefs_common.pluginswin_width,
 				    prefs_common.pluginswin_height);
 
+	gtk_widget_set_size_request(hbuttonbox1, -1, -1);
+
 	gtk_widget_show(window);
 }
 
