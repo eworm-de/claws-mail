@@ -1,3 +1,19 @@
+2006-08-22 [paul]	2.4.0cvs72
+
+	wrap documents and do some items from mones' MANUAL-TODO:
+
+	* manual/account.xml
+		4.1. = fix tabname references to <quote>tabname</quote>
+		4.2. = fix "xxx" and 'xxx' items to <quote>xxx</quote>
+	* manual/faq.xml
+		1.1. = mentioned options don't match UI
+		Add information about the 'Never send Return Receipts'
+		option
+	* manual/handling.xml
+		6.2. = Mentions Extended symbols button, but now is
+		named Information
+		6.3. = Mentions ... button, which is now Edit
+
 2006-08-22 [colin]	2.4.0cvs71
 
 	* src/gtk/pluginwindow.c
