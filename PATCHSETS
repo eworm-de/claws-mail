@@ -1766,3 +1766,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/account.xml;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/faq.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/handling.xml;  ) > 2.4.0cvs72.patchset
 ( cvs diff -u -r 1.213.2.106 -r 1.213.2.107 src/folder.c;  cvs diff -u -r 1.207.2.112 -r 1.207.2.113 src/folderview.c;  cvs diff -u -r 1.150.2.73 -r 1.150.2.74 src/procmsg.c;  cvs diff -u -r 1.395.2.230 -r 1.395.2.231 src/summaryview.c;  cvs diff -u -r 1.36.2.75 -r 1.36.2.76 src/common/utils.c;  cvs diff -u -r 1.1.4.21 -r 1.1.4.22 src/gtk/gtksctree.c;  cvs diff -u -r 1.5.2.38 -r 1.5.2.39 src/gtk/gtkutils.c;  cvs diff -u -r 1.4.2.23 -r 1.4.2.24 src/gtk/gtkutils.h;  ) > 2.4.0cvs73.patchset
 ( cvs diff -u -r 1.654.2.1812 -r 1.654.2.1813 configure.ac;  ) > 2.4.0cvs74.patchset
+( cvs diff -u -r 1.79.2.36 -r 1.79.2.37 src/mh.c;  ) > 2.4.0cvs75.patchset

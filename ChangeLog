@@ -1,3 +1,9 @@
+2006-08-22 [colin]	2.4.0cvs75
+
+	* src/mh.c
+		Check if scan is required before touching
+		the folder (or it'll be required every time)
+
 2006-08-22 [colin]	2.4.0cvs74
 
 	* configure.ac

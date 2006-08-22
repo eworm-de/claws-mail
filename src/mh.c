@@ -492,6 +492,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 
 	srcpath = folder_item_get_path(msginfo->folder);
 
+	dest_need_scan = mh_scan_required(dest->folder, dest);
+
 	total = g_slist_length(msglist);
 	if (total > 100) {
 		if (MSG_IS_MOVE(msginfo->flags))
@@ -567,7 +569,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	g_free(srcpath);
 	mh_write_sequences(dest, TRUE);
 
-	dest_need_scan = mh_scan_required(dest->folder, dest);
 	if (!dest_need_scan)
 		dest->mtime = time(NULL);
 	
@@ -623,6 +624,8 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 
 	path = folder_item_get_path(item);
 	
+	need_scan = mh_scan_required(folder, item);
+
 	for (cur = msglist; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		if (msginfo == NULL)
@@ -638,8 +641,6 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		
 		g_free(file);
 	}
-
-	need_scan = mh_scan_required(folder, item);
 
 	if (!need_scan)
 		item->mtime = time(NULL);
