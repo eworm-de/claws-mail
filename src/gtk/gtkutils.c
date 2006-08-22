@@ -832,7 +832,7 @@ GtkWidget *label_window_create(const gchar *str)
 
 	label = gtk_label_new(str);
 	gtk_container_add(GTK_CONTAINER(window), label);
-	gtk_label_set_line_wrap(label, TRUE);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_widget_show(label);
 
 	gtk_widget_show_now(window);

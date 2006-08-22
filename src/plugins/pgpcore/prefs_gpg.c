@@ -343,8 +343,14 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 		break;
 	}
 
+	hbox = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
 	new_key_box = gtk_hbox_new(FALSE, 6);
-	
+	gtk_widget_show(new_key_box);
+	gtk_box_pack_start(GTK_BOX(hbox), new_key_box, FALSE, FALSE, 0);
+
 	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
 
@@ -353,17 +359,9 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 			_("No secret key found."));
 	gtk_box_pack_start(GTK_BOX(new_key_box), new_key_label, FALSE, FALSE, 0);
 
-	new_key_btn = gtk_button_new_with_label(_("Generate new secret key"));
-
-	gtk_box_pack_start(GTK_BOX(vbox2), new_key_box, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 5);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), new_key_btn, FALSE, FALSE, 0);
-
-	gtk_widget_show_all(new_key_box);
+	new_key_btn = gtk_button_new_with_label(_("Generate a new key pair"));
 	gtk_widget_show(new_key_btn);
+	gtk_box_pack_start(GTK_BOX(hbox), new_key_btn, FALSE, FALSE, 0);
 
 	if (config->sign_key_id != NULL)
 		gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);

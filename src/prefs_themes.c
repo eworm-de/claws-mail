@@ -986,8 +986,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_add (GTK_CONTAINER (frame_buttons), hbuttonbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (hbuttonbox1), 5);
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 5);
-	gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX (hbuttonbox1), 5, 0);
+	gtk_box_set_spacing (GTK_BOX (hbuttonbox1), 5);
 
 	btn_use = gtk_button_new_with_label (_("Use this"));
 	gtk_widget_show (btn_use);

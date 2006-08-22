@@ -1,3 +1,21 @@
+2006-08-22 [paul]	2.4.0cvs70
+
+	* manual/Makefile.am
+		build manuals in alphabetical order
+	* src/addressbook.c
+	* src/prefs_themes.c
+		replace/remove deprecated symbols
+	* src/gtk/gtkutils.c
+		fix a warning
+	* src/gtk/pluginwindow.c
+		replace deprecated symbol
+		replace label text and move it
+	* src/plugins/pgpcore/prefs_gpg.c
+		move the 'Generate...' button out of the
+		Sign Key frame, replace the English used
+	* src/plugins/pgpcore/sgpgme.c
+		fixes to the English
+
 2006-08-21 [colin]	2.4.0cvs69
 
 	* src/plugins/trayicon/trayicon.c

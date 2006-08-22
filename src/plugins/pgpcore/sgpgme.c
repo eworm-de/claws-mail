@@ -479,15 +479,15 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 			err = gpgme_op_keylist_next(ctx, &key);
 		if (err) {
 			g_warning("setup_signers start: %s", gpgme_strerror(err));
-			privacy_set_error(_("Private key not found (%s)"), gpgme_strerror(err));
+			privacy_set_error(_("Secret key not found (%s)"), gpgme_strerror(err));
 			goto bail;
 		}
 		
 		err = gpgme_op_keylist_next(ctx, &key2);
 		if (!err) {
-			g_warning("ambiguous specification of private key '%s'\n",
+			g_warning("ambiguous specification of secret key '%s'\n",
 				keyid);
-			privacy_set_error(_("Private key specification is ambiguous"));
+			privacy_set_error(_("Secret key specification is ambiguous"));
 			goto bail;
 		}
 		
@@ -497,7 +497,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		
 		if (err) {
 			g_warning("error adding secret key: %s\n", gpgme_strerror(err));
-			privacy_set_error(_("Error setting private key: %s"), gpgme_strerror(err));
+			privacy_set_error(_("Error setting secret key: %s"), gpgme_strerror(err));
 			goto bail;
 		}
 	}
@@ -601,7 +601,7 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 				_("Sylpheed-Claws did not find a secret PGP key, "
 				  "which means that you won't be able to sign "
 				  "emails or receive encrypted emails.\n"
-				  "Do you want to create a secret key now?"),
+				  "Do you want to create a new key pair now?"),
 				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 		if (val == G_ALERTDEFAULT) {
 			prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
@@ -668,13 +668,14 @@ again:
 	
 	err = gpgme_new (&ctx);
 	if (err) {
-		alertpanel_error(_("Couldn't generate new key: %s"), gpgme_strerror(err));
+		alertpanel_error(_("Couldn't generate a new key pair: %s"),
+				 gpgme_strerror(err));
 		g_free(key_parms);
 		return;
 	}
 	
 
-	window = label_window_create(_("Generating your new key... Please move the mouse "
+	window = label_window_create(_("Generating your new key pair... Please move the mouse "
 			      "around to help generate entropy..."));
 
 	err = gpgme_op_genkey(ctx, key_parms, NULL, NULL);
@@ -683,17 +684,17 @@ again:
 	gtk_widget_destroy(window);
 
 	if (err) {
-		alertpanel_error(_("Couldn't generate new key: %s"), gpgme_strerror(err));
+		alertpanel_error(_("Couldn't generate a new key pair: %s"), gpgme_strerror(err));
 		gpgme_release(ctx);
 		return;
 	}
 	key = gpgme_op_genkey_result(ctx);
 	if (key == NULL) {
-		alertpanel_error(_("Couldn't generate new key: unknown error"));
+		alertpanel_error(_("Couldn't generate a new key pair: unknown error"));
 		gpgme_release(ctx);
 		return;
 	} else {
-		alertpanel_notice(_("Your secret key has been generated. "
+		alertpanel_notice(_("Your new key pair has been generated. "
 				    "Its fingerprint is:\n%s"),
 				    key->fpr ? key->fpr:"null");
 	}

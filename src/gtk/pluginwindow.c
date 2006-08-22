@@ -255,7 +255,6 @@ static void pluginwindow_size_allocate_cb(GtkWidget *widget,
 void pluginwindow_create()
 {
 	PluginWindow *pluginwindow;
-	/* ---------------------- code made by glade ---------------------- */
 	GtkWidget *window;
 	GtkWidget *vbox1;
 	GtkWidget *hbox2;
@@ -289,16 +288,6 @@ void pluginwindow_create()
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 	gtk_box_set_homogeneous(GTK_BOX(vbox1), FALSE);
 	gtk_widget_realize(window);
-
-	desc_lbl = gtk_label_new(_("Plugins are a way to greatly extend Sylpheed-Claws' capabilities."));
-	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
-	gtk_widget_show(desc_lbl);
-	gtk_box_pack_start(GTK_BOX(vbox1), desc_lbl, FALSE, FALSE, 0);
-
-	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
-	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
-	gtk_widget_show(get_more_btn);
-	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
 
 	hbox2 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox2);
@@ -341,6 +330,17 @@ void pluginwindow_create()
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
+	desc_lbl = gtk_label_new(_("More plugins are available from the "
+			           "Sylpheed-Claws website."));
+	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
+	gtk_widget_show(desc_lbl);
+	gtk_box_pack_start(GTK_BOX(vbox1), desc_lbl, FALSE, FALSE, 0);
+
+	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
+	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
+	gtk_widget_show(get_more_btn);
+	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
+
 	hbox3 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox3);
 	hbuttonbox1 = gtk_hbutton_box_new();
@@ -353,7 +353,7 @@ void pluginwindow_create()
 			&load_btn, _("Load Plugin..."),
 			&unload_btn, _("Unload Plugin"),
 			&close_btn, GTK_STOCK_CLOSE);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbuttonbox1), 6);
+	gtk_box_set_spacing(GTK_BOX(hbuttonbox1), 6);
 	gtk_widget_show(hbuttonbox1);
 	gtk_box_pack_end (GTK_BOX (hbox3), hbuttonbox1, FALSE, FALSE, 0);
 
