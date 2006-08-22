@@ -1,3 +1,9 @@
+2006-08-22 [colin]	2.4.0cvs74
+
+	* configure.ac
+		Require libetpan 0.46 (crasher fix when built
+		against gnutls)
+
 2006-08-22 [colin]	2.4.0cvs73
 
 	* src/folder.c
