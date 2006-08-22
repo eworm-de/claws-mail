@@ -255,8 +255,11 @@ select_range (GtkSCTree *sctree, gint row)
 }
 
 /* Handles row selection according to the specified modifier state */
+/* in certain cases, we arrive here from a function knowing the GtkCTreeNode, and having
+ * already slowly found row using g_list_position. In which case, _node will be non-NULL
+ * to avoid this function having to slowly find it with g_list_nth. */
 static void
-select_row (GtkSCTree *sctree, gint row, gint col, guint state)
+select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_node)
 {
 	gboolean range, additive;
 	g_return_if_fail (sctree != NULL);
@@ -269,20 +272,41 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 
-	gtk_clist_freeze (GTK_CLIST (sctree));
+	/* heavy GUI updates will be done only if we're selecting a range.
+	 * additive selection is ctrl-click, where the user is the slow factor.
+	 * So we only freeze the list if selecting a range (potentially thousands 
+	 * of lines. */
+	if (range)
+		gtk_clist_freeze (GTK_CLIST (sctree));
 
 	GTK_CLIST(sctree)->focus_row = row;
 
 	if (!additive) {
-		sctree->selecting_range = TRUE;
+		/* if this selection isn't additive, we have to unselect what
+		 * is selected. Here, heavy GUI updates can occur if we have 
+		 * a big selection. See if more than one line is selected, in
+		 * which case, freeze, else don't. */
+
+		gboolean should_freeze = FALSE;
+		if (GTK_CLIST(sctree)->selection
+		 && GTK_CLIST(sctree)->selection->next) {
+		 	should_freeze = TRUE;
+			sctree->selecting_range = TRUE;
+			gtk_clist_freeze (GTK_CLIST (sctree));
+		}
+
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
-		sctree->selecting_range = FALSE;
+
+		if (should_freeze) {
+			gtk_clist_thaw (GTK_CLIST (sctree));
+			sctree->selecting_range = FALSE;
+		}
 	}
 
 	if (!range) {
 		GtkCTreeNode *node;
 
-		node = gtk_ctree_node_nth (GTK_CTREE(sctree), row);
+		node = _node ? _node : gtk_ctree_node_nth (GTK_CTREE(sctree), row);
 
 		/*No need to manage overlapped list*/
 		if (additive) {
@@ -301,7 +325,8 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 	} else
 		select_range (sctree, row);
 	
-	gtk_clist_thaw (GTK_CLIST (sctree));
+	if (range)
+		gtk_clist_thaw (GTK_CLIST (sctree));
 }
 
 /* Our handler for button_press events.  We override all of GtkCList's broken
@@ -360,7 +385,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 					sctree->dnd_select_pending_state = event->state;
 					sctree->dnd_select_pending_row = row;
 				} else {
-					select_row (sctree, row, col, event->state);
+					select_row (sctree, row, col, event->state, NULL);
 				}
 			} else {
 				sctree->selecting_range = TRUE;
@@ -373,7 +398,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 			/* Emit *_popup_menu signal*/
 			if (on_row) {
 				if (!row_is_selected(sctree,row))
-					select_row (sctree, row, col, 0);
+					select_row (sctree, row, col, 0, NULL);
 				g_signal_emit (G_OBJECT (sctree),
 						 sctree_signals[ROW_POPUP_MENU],
 						 0, event);
@@ -445,7 +470,7 @@ gtk_sctree_button_release (GtkWidget *widget, GdkEventButton *event)
 
 	if (on_row) {
 		if (sctree->dnd_select_pending) {
-			select_row (sctree, row, col, sctree->dnd_select_pending_state);
+			select_row (sctree, row, col, sctree->dnd_select_pending_state, NULL);
 			sctree->dnd_select_pending = FALSE;
 			sctree->dnd_select_pending_state = 0;
 		}
@@ -492,7 +517,8 @@ gtk_sctree_motion (GtkWidget *widget, GdkEventMotion *event)
 			select_row (sctree,
 				    sctree->dnd_select_pending_row,
 				    -1,
-				    sctree->dnd_select_pending_state);
+				    sctree->dnd_select_pending_state,
+				    NULL);
 
 		sctree->dnd_select_pending = FALSE;
 		sctree->dnd_select_pending_state = 0;
@@ -620,14 +646,14 @@ void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)
 {
 	select_row(sctree, 
 		   g_list_position(GTK_CLIST(sctree)->row_list, (GList *)node),
-		   -1, 0);
+		   -1, 0, node);
 }
 
 void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int state)
 {
 	select_row(sctree, 
 		   g_list_position(GTK_CLIST(sctree)->row_list, (GList *)node),
-		   -1, state);
+		   -1, state, node);
 }
 
 void gtk_sctree_unselect_all (GtkSCTree *sctree)

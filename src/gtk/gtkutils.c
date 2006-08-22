@@ -275,7 +275,7 @@ ComboButton *gtkut_combo_button_create(GtkWidget *button,
 #define ROW_FROM_YPIXEL(clist, y) (((y) - (clist)->voffset) / \
 				   ((clist)->row_height + CELL_SPACING))
 
-void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node)
+void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node, gint _row)
 {
 	GtkCList *clist = GTK_CLIST(ctree);
 	gint row;
@@ -284,7 +284,8 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node)
 	g_return_if_fail(ctree != NULL);
 	g_return_if_fail(node != NULL);
 
-	row = g_list_position(clist->row_list, (GList *)node);
+	row = (_row != -1 ? _row : g_list_position(clist->row_list, (GList *)node));
+
 	if (row < 0 || row >= clist->rows || clist->row_height == 0) return;
 	row_visibility = gtk_clist_row_is_visible(clist, row);
 	prev_row_visibility = gtk_clist_row_is_visible(clist, row - 1);

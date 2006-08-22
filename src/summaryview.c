@@ -854,7 +854,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (!summaryview->mainwin)
 		return FALSE;
-
+START_TIMING("--------- summary_show");
 	summaryview->last_displayed = NULL;
 	summary_switch_from_to(summaryview, item);
 
@@ -901,6 +901,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		} else {
 			summary_unlock(summaryview);
 			inc_unlock();
+			END_TIMING();
 			return FALSE;
 		}
 		if (changed || !quicksearch_is_active(summaryview->quicksearch))
@@ -933,7 +934,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					      summaryview->folderview,
 					      summaryview->folder_item);
 			main_window_cursor_normal(summaryview->mainwin);
-		}			
+		}	
+		END_TIMING();		
 		return TRUE;
 	}
 	g_free(buf);
@@ -1018,6 +1020,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			summary_unlock(summaryview);
 			inc_unlock();
 			summary_show(summaryview, summaryview->folder_item);
+			END_TIMING();
 			return FALSE;
 		}
 		g_slist_free(mlist);
@@ -1169,7 +1172,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	main_window_cursor_normal(summaryview->mainwin);
 	summary_unlock(summaryview);
 	inc_unlock();
-
+	END_TIMING();
 	return TRUE;
 }
 
@@ -1766,18 +1769,8 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 			GTK_EVENTS_FLUSH();
 			summary_unlock(summaryview);
 			gtk_widget_grab_focus(GTK_WIDGET(ctree));
-			if (GTK_CTREE_ROW(node) == NULL) {
-				g_warning("crash avoidance hack 1\n");
-				return;
-			}
-			if (((GtkCListRow *)(GTK_CTREE_ROW(node)))->state < GTK_STATE_NORMAL
-			||  ((GtkCListRow *)(GTK_CTREE_ROW(node)))->state > GTK_STATE_INSENSITIVE) {
-				g_warning("crash avoidance hack 2\n");
-				return;
-			}
 			gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
 		}
-		summary_unselect_all(summaryview);
 		if (display_msg && summaryview->displayed == node)
 			summaryview->displayed = NULL;
 		summaryview->display_msg = display_msg;
@@ -2593,6 +2586,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_NUMBER]] = "";
 
+	/* slow! */
 	if (summaryview->col_state[summaryview->col_pos[S_COL_SIZE]].visible)
 		text[col_pos[S_COL_SIZE]] = to_human_readable(msginfo->size);
 	else
@@ -2603,6 +2597,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_SCORE]] = "";
 
+	/* slow! */
 	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible) {
 		if (msginfo->date_t) {
 			procheader_date_get_localtime(date_modified,
@@ -2849,7 +2844,8 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		val = messageview_show(msgview, msginfo, all_headers);
 		if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
 			gtk_widget_grab_focus(summaryview->ctree);
-		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
+		gtkut_ctree_node_move_if_on_the_edge(ctree, row,
+			GTK_CLIST(summaryview->ctree)->focus_row);
 	}
 
 	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)) {

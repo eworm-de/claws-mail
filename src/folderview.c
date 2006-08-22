@@ -67,6 +67,7 @@
 #include "filtering.h"
 #include "quicksearch.h"
 #include "manual.h"
+#include "timing.h"
 
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
@@ -2000,11 +2001,12 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	FolderItem *item;
 	gchar *buf;
 	int res = 0;
-
+	START_TIMING("--- folderview_selected");
 	folderview->selected = row;
 
 	if (folderview->opened == row) {
 		folderview->open_folder = FALSE;
+		END_TIMING();
 		return;
 	}
 	
@@ -2013,13 +2015,19 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gtkut_ctree_set_focus_row(ctree, folderview->opened);
 			gtk_ctree_select(ctree, folderview->opened);
 		}
+		END_TIMING();
 		return;
 	}
 
-	if (!folderview->open_folder) return;
-
+	if (!folderview->open_folder) {
+		END_TIMING();
+		return;
+	}
 	item = gtk_ctree_node_get_row_data(ctree, row);
-	if (!item || item->no_select) return;
+	if (!item || item->no_select) {
+		END_TIMING();
+		return;
+	}
 
 	can_select = FALSE;
 
@@ -2086,7 +2094,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 		folderview->open_folder = FALSE;
 		can_select = TRUE;
-
+		END_TIMING();
 		return;
         } else if (res == -2) {
 		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
@@ -2099,6 +2107,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		folderview->open_folder = FALSE;
 		can_select = TRUE;
 		g_timeout_add(500, postpone_select, data);
+		END_TIMING();
 		return;
 	}
 	
@@ -2124,6 +2133,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;
+	END_TIMING();
 }
 
 static void folderview_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,

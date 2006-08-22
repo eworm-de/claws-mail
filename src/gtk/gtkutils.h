@@ -120,7 +120,8 @@ ComboButton *gtkut_combo_button_create	(GtkWidget		*button,
 
 void gtkut_ctree_node_move_if_on_the_edge
 					(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
+					 GtkCTreeNode	*node,
+					 gint		 _row);
 gint gtkut_ctree_get_nth_from_node	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 GtkCTreeNode *gtkut_ctree_node_next	(GtkCTree	*ctree,

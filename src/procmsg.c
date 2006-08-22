@@ -251,8 +251,11 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	START_TIMING("procmsg_get_thread_tree");
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
-	subject_relation = g_relation_new(2);
-	g_relation_index(subject_relation, 0, g_str_hash, g_str_equal);
+	
+	if (prefs_common.thread_by_subject) {
+		subject_relation = g_relation_new(2);
+		g_relation_index(subject_relation, 0, g_str_hash, g_str_equal);
+	}
 
 	for (; mlist != NULL; mlist = mlist->next) {
 		msginfo = (MsgInfo *)mlist->data;
@@ -334,7 +337,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		END_TIMING();
 	}
 	
-	g_relation_destroy(subject_relation);
+	if (prefs_common.thread_by_subject)
+		g_relation_destroy(subject_relation);
+
 	g_hash_table_destroy(msgid_table);
 	END_TIMING();
 	return root;

@@ -334,20 +334,44 @@ gchar *itos(gint n)
 	return itos_buf(nstr, n);
 }
 
+#define divide(num,divisor,i,d)		\
+{					\
+	register int tmp;		\
+	i = num/divisor;		\
+	tmp = i*divisor;		\
+	d = num-tmp;			\
+	if (d > 1000) d /= 1000;	\
+	else if (d > 100) d /= 100;	\
+	else if (d > 10) d /= 10;		\
+}
+
 gchar *to_human_readable(off_t size)
 {
 	static gchar str[14];
-
-	if (size < 1024)
-		g_snprintf(str, sizeof(str), _("%dB"), (gint)size);
-	else if (size >> 10 < 1024)
-		g_snprintf(str, sizeof(str), _("%.1fKB"), (gfloat)size / (1 << 10));
-	else if (size >> 20 < 1024)
-		g_snprintf(str, sizeof(str), _("%.2fMB"), (gfloat)size / (1 << 20));
-	else
-		g_snprintf(str, sizeof(str), _("%.2fGB"), (gfloat)size / (1 << 30));
-
-	return str;
+	static gchar *b_format = NULL, *kb_format = NULL, 
+		     *mb_format = NULL, *gb_format = NULL;
+	register int t = 0, r = 0;
+	if (b_format == NULL) {
+		b_format  = _("%dB");
+		kb_format = _("%d.%dKB");
+		mb_format = _("%.2fMB");
+		gb_format = _("%.2fGB");
+	}
+	
+	if (size < 1024) {
+		g_snprintf(str, sizeof(str), b_format, (gint)size);
+		return str;
+	} else if (size >> 10 < 1024) {
+		divide(size, (1 << 10), t, r);
+		g_snprintf(str, sizeof(str), kb_format, t, r);
+		return str;
+	} else if (size >> 20 < 1024) {
+		g_snprintf(str, sizeof(str), mb_format, (gfloat)size / (1 << 20));
+		return str;
+	} else {
+		g_snprintf(str, sizeof(str), gb_format, (gfloat)size / (1 << 30));
+		return str;
+	}
 }
 
 /* strcmp with NULL-checking */

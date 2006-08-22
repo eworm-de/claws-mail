@@ -2277,6 +2277,9 @@ void folder_item_write_cache(FolderItem *item)
 		}
         }
 
+	if (FOLDER_TYPE(item->folder) == F_MH)
+		item->mtime = time(NULL);
+
 	g_free(cache_file);
 	g_free(mark_file);
 }
