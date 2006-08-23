@@ -241,6 +241,10 @@ select_range (GtkSCTree *sctree, gint row)
 		min = max;
 		max = t;
 	}
+	
+	if (max - min > 10)
+		gtk_clist_freeze(GTK_CLIST(sctree));
+
 	node = g_list_nth((GTK_CLIST(sctree))->row_list, min);
 	for (i = min; i < max; i++) {
 		if (node && GTK_CTREE_ROW (node)->row.selectable) {
@@ -249,9 +253,23 @@ select_range (GtkSCTree *sctree, gint row)
 		}
 		node = node->next;
 	}
+	if (max - min > 10)
+		gtk_clist_thaw(GTK_CLIST(sctree));
+
 
 	sctree->selecting_range = FALSE;
 	gtk_clist_select_row (GTK_CLIST (sctree), max, -1);
+}
+
+static gboolean sc_g_list_bigger(GList *list, gint max)
+{
+	GList *cur = list;
+	int i = 0;
+	while (cur && i <= max+1) {
+		i++;
+		cur = cur->next;
+	}
+	return (i > max);
 }
 
 /* Handles row selection according to the specified modifier state */
@@ -272,13 +290,6 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 
-	/* heavy GUI updates will be done only if we're selecting a range.
-	 * additive selection is ctrl-click, where the user is the slow factor.
-	 * So we only freeze the list if selecting a range (potentially thousands 
-	 * of lines. */
-	if (range)
-		gtk_clist_freeze (GTK_CLIST (sctree));
-
 	GTK_CLIST(sctree)->focus_row = row;
 
 	if (!additive) {
@@ -288,8 +299,7 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 		 * which case, freeze, else don't. */
 
 		gboolean should_freeze = FALSE;
-		if (GTK_CLIST(sctree)->selection
-		 && GTK_CLIST(sctree)->selection->next) {
+		if (sc_g_list_bigger(GTK_CLIST(sctree)->selection, 10)) {
 		 	should_freeze = TRUE;
 			sctree->selecting_range = TRUE;
 			gtk_clist_freeze (GTK_CLIST (sctree));
@@ -324,9 +334,6 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 		sctree->anchor_row = node;
 	} else
 		select_range (sctree, row);
-	
-	if (range)
-		gtk_clist_thaw (GTK_CLIST (sctree));
 }
 
 /* Our handler for button_press events.  We override all of GtkCList's broken

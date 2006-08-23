@@ -1,3 +1,9 @@
+2006-08-23 [colin]	2.4.0cvs79
+
+	* src/gtk/gtksctree.c
+		When selecting or deselecting range, only
+		freeze/thaw when selection is bigger than 10
+
 2006-08-23 [colin]	2.4.0cvs78
 
 	* src/messageview.c
