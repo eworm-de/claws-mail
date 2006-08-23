@@ -65,6 +65,7 @@
 #include "filesel.h"
 #include "base64.h"
 #include "inputdialog.h"
+#include "timing.h"
 
 struct _ClickableText
 {
@@ -554,6 +555,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
+	START_TIMING("textview_show_part");
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
@@ -561,6 +563,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822"))) {
 		textview_clear(textview);
 		textview_add_parts(textview, mimeinfo);
+		END_TIMING();
 		return;
 	}
 
@@ -573,6 +576,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview_add_parts(textview, mimeinfo);
 	else
 		textview_write_body(textview, mimeinfo);
+	END_TIMING();
 }
 
 #define TEXT_INSERT(str) \
@@ -606,6 +610,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	const gchar *name;
 	gchar *content_type;
 	gint charcount;
+	START_TIMING("textview_add_part");
 
 	g_return_if_fail(mimeinfo != NULL);
 	text = GTK_TEXT_VIEW(textview->text);
@@ -613,7 +618,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	charcount = gtk_text_buffer_get_char_count(buffer);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-	if (mimeinfo->type == MIMETYPE_MULTIPART) return;
+	if (mimeinfo->type == MIMETYPE_MULTIPART) {
+		END_TIMING();
+		return;
+	}
 
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
@@ -628,6 +636,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			procheader_header_array_destroy(headers);
 		}
 		fclose(fp);
+		END_TIMING();
 		return;
 	}
 
@@ -658,15 +667,30 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			gchar *filename;
 			ClickableText *uri;
 			gchar *uri_str;
-
+			START_TIMING("inserting image");
 			filename = procmime_get_tmp_file_name(mimeinfo);
+
 			if (procmime_get_part(filename, mimeinfo) < 0) {
 				g_warning("Can't get the image file.");
 				g_free(filename);
+				END_TIMING();
 				return;
 			}
 
-			pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+			printf("1-get_part: "); END_TIMING();
+
+			if (!prefs_common.resize_img) {
+				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+			} else {
+				gint w, h;
+				gdk_pixbuf_get_file_info(filename, &w, &h);
+				if (w > textview->scrolledwin->allocation.width - 100)
+					pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 
+						textview->scrolledwin->allocation.width - 100, 
+						-1, TRUE, &error);
+				else
+					pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+			}
 			if (error != NULL) {
 				g_warning("%s\n", error->message);
 				g_error_free(error);
@@ -674,23 +698,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			if (!pixbuf) {
 				g_warning("Can't load the image.");
 				g_free(filename);
+				END_TIMING();
 				return;
 			}
-
-			if (prefs_common.resize_img) {
-				int new_width, new_height;
-				GdkPixbuf *scaled;
-				image_viewer_get_resized_size(gdk_pixbuf_get_width(pixbuf),
-						 gdk_pixbuf_get_height(pixbuf),
-						 textview->scrolledwin->allocation.width - 100, 
-						 gdk_pixbuf_get_height(pixbuf),
-						 &new_width, &new_height);
-				scaled = gdk_pixbuf_scale_simple
-					(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
-
-				g_object_unref(pixbuf);
-				pixbuf = scaled;
-			}
+			printf("2-gdk_pixbuf: "); END_TIMING();
 
 			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {
@@ -716,6 +727,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			g_object_unref(pixbuf);
 			g_free(filename);
+			END_TIMING();
 		}
 	} else if (mimeinfo->type == MIMETYPE_TEXT) {
 		if (prefs_common.display_header && (charcount > 0))
@@ -723,21 +735,24 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 		textview_write_body(textview, mimeinfo);
 	}
+	END_TIMING();
 }
 
 static void recursive_add_parts(TextView *textview, GNode *node)
 {
         GNode * iter;
 	MimeInfo *mimeinfo;
-        
+        START_TIMING("recursive_add_parts");
+
         mimeinfo = (MimeInfo *) node->data;
         
         textview_add_part(textview, mimeinfo);
         
         if ((mimeinfo->type != MIMETYPE_MULTIPART) &&
-            (mimeinfo->type != MIMETYPE_MESSAGE))
+            (mimeinfo->type != MIMETYPE_MESSAGE)) {
+	    	END_TIMING();
                 return;
-        
+        }
         if (g_ascii_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
                 GNode * prefered_body;
                 int prefered_score;
@@ -781,6 +796,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                         recursive_add_parts(textview, iter);
                 }
         }
+	END_TIMING();
 }
 
 static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)

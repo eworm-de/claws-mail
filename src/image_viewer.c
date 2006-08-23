@@ -67,18 +67,30 @@ static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
 static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
 {
 	GdkPixbuf *pixbuf;
-	GdkPixbuf *pixbuf_scaled;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	gint avail_width;
 	gint avail_height;
-	gint new_width;
-	gint new_height;
 	GError *error = NULL;
 
 	debug_print("image_viewer_show_mimepart\n");
 
-	pixbuf = gdk_pixbuf_new_from_file(imgfile, &error);
+	if (!imageviewer->resize_img) {
+		pixbuf = gdk_pixbuf_new_from_file(imgfile, &error);
+	} else {
+		gint w, h;
+		gdk_pixbuf_get_file_info(imgfile, &w, &h);
+		avail_width = imageviewer->notebook->parent->allocation.width;
+		avail_height = imageviewer->notebook->parent->allocation.height;
+		if (avail_width > 8) avail_width -= 8;
+		if (avail_height > 8) avail_height -= 8;
+		if (w > avail_width || h > avail_height)
+			pixbuf = gdk_pixbuf_new_from_file_at_scale(imgfile, avail_width,
+				avail_height, TRUE, &error);
+		else
+			pixbuf = gdk_pixbuf_new_from_file(imgfile, &error);
+	}
+
 	if (error) {
 		g_warning(error->message);
 		g_error_free(error);
@@ -86,23 +98,6 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	if (!pixbuf) {
 		g_warning("Can't load the image.");	
 		return;
-	}
-
-	if (imageviewer->resize_img) {
-		avail_width = imageviewer->notebook->parent->allocation.width;
-		avail_height = imageviewer->notebook->parent->allocation.height;
-		if (avail_width > 8) avail_width -= 8;
-		if (avail_height > 8) avail_height -= 8;
-
-		image_viewer_get_resized_size(gdk_pixbuf_get_width(pixbuf),
-				 gdk_pixbuf_get_height(pixbuf),
-				 avail_width, avail_height,
-				 &new_width, &new_height);
-
-		pixbuf_scaled = gdk_pixbuf_scale_simple
-			(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
-		g_object_unref(pixbuf);
-		pixbuf = pixbuf_scaled;
 	}
 
 	gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, &mask, 0);
@@ -351,6 +346,7 @@ MimeViewer *image_viewer_create(void)
 	imageviewer->mimeviewer.show_mimepart = image_viewer_show_mimepart;
 	imageviewer->mimeviewer.clear_viewer = image_viewer_clear_viewer;
 	imageviewer->mimeviewer.destroy_viewer = image_viewer_destroy_viewer;
+	imageviewer->mimeviewer.get_selection = NULL;
 
 	imageviewer->resize_img   = prefs_common.resize_img;
 

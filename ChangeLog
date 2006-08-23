@@ -1,3 +1,11 @@
+2006-08-23 [colin]	2.4.0cvs77
+
+	* src/image_viewer.c
+	* src/textview.c
+		Use gtk_pixbuf_new_from_file_at_scale(), which
+		is faster than getting the pixbuf then resizing
+		it.
+
 2006-08-23 [colin]	2.4.0cvs76
 
 	* src/procmime.c
