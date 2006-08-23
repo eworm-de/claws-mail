@@ -1137,7 +1137,9 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 		return ENC_8BIT;
 	else if (!g_ascii_strncasecmp(charset, "ISO-8859-", 9))
 		return ENC_QUOTED_PRINTABLE;
-	else
+	else if (!g_ascii_strncasecmp(charset, "UTF-8", 5))
+		return ENC_QUOTED_PRINTABLE;
+	else 
 		return ENC_8BIT;
 }
 

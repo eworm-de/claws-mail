@@ -1,3 +1,8 @@
+2006-08-23 [colin]	2.4.0cvs76
+
+	* src/procmime.c
+		UTF-8 should be sent Quoted-printable
+
 2006-08-22 [colin]	2.4.0cvs75
 
 	* src/mh.c
