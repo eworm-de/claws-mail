@@ -1381,6 +1381,15 @@ gchar *messageview_get_selection(MessageView *msgview)
 	
 	g_return_val_if_fail(msgview != NULL, NULL);
 
+	if (msgview->mimeview->type == MIMEVIEW_VIEWER) {
+		MimeViewer *viewer = msgview->mimeview->mimeviewer;
+		if (viewer && viewer->get_selection) {
+			text = viewer->get_selection(viewer);
+			if (text)
+				return text;
+		}
+	}
+
 	textview = messageview_get_current_textview(msgview);
 	g_return_val_if_fail(textview != NULL, NULL);
 

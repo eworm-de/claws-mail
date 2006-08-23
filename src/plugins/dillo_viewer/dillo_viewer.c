@@ -141,6 +141,7 @@ static MimeViewer *dillo_viewer_create(void)
 	viewer->mimeviewer.show_mimepart = dillo_show_mimepart;
 	viewer->mimeviewer.clear_viewer = dillo_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = dillo_destroy_viewer;	
+	viewer->mimeviewer.get_selection = NULL;
 	viewer->widget = gtk_event_box_new();
 
 	gtk_widget_show(viewer->widget);
@@ -159,7 +160,7 @@ static MimeViewerFactory dillo_viewer_factory =
 	content_types,	
 	0,
 
-	dillo_viewer_create
+	dillo_viewer_create,
 };
 
 gint plugin_init(gchar **error)

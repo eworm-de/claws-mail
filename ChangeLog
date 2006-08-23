@@ -1,3 +1,12 @@
+2006-08-23 [colin]	2.4.0cvs78
+
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Provide an API for MimeViewer plugins to
+		return a text selection for replying
+
 2006-08-23 [colin]	2.4.0cvs77
 
 	* src/image_viewer.c

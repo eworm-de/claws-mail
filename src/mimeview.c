@@ -64,7 +64,7 @@
 #include "stock_pixmap.h"
 #include "gtk/gtkvscrollbutton.h"
 #include "gtk/logwindow.h"
-
+#include "timing.h"
 
 typedef enum
 {
