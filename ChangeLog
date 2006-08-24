@@ -1,3 +1,9 @@
+2006-08-24 [colin]	2.4.0cvs85
+
+	* src/addressbook.c
+		Fix strange list selection
+		Fix random seg (Invalid read of freed memory)
+
 2006-08-24 [colin]	2.4.0cvs84
 
 	* src/alertpanel.c

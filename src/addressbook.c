@@ -1342,6 +1342,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(item);
 				item = addrbook_person_remove_email( abf, person, item );
 				if( item ) {
+					addrcache_remove_email(abf->addressCache, item);
 					addritem_free_item_email( item );
 				}
 				addressbook_folder_refresh_one_person( clist, person );
@@ -3278,7 +3279,8 @@ static void addressbook_set_clist( AddressObject *obj, gboolean refresh ) {
 			addressbook_folder_load_group( ctreelist, itemFolder );
 		}
 	}
-	gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
+	gtk_sctree_sort_recursive(GTK_CTREE(clist), NULL);
+	clist->focus_row = -1;
 	gtk_clist_thaw(clist);
 }
 
