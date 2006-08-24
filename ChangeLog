@@ -1,3 +1,33 @@
+2006-08-24 [colin]	2.4.0cvs83
+
+	* src/msgcache.c
+		Write cache/mark to temp files before
+		overwriting old ones (avoids metadata
+		loss if writing the new files fail).
+		Use mmap() to read cache/mark file, as
+		this makes cache reading faster. Dis-
+		abled for big-endian machines until it
+		can be tested. (Big-endian users: set
+		msgcache_use_mmap = TRUE in the relevant
+		#if).
+	* src/procmsg.h
+		Move rarely used fields of MsgInfo in 
+		another structure, which will only be
+		allocated if needed. Face, X-Face,
+		Return receipt headers and List-*
+		headers are moved. Mails having none
+		of these occupy 52 bytes less with
+		this patch, which makes 2.5MB of RAM
+		saved on a 50k folder).
+	* src/headerview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/partial_download.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/textview.c
+		Follow this structure change.
+
 2006-08-24 [wwp]	2.4.0cvs82
 
 	* manual/es/.cvsignore

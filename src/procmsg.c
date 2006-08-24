@@ -244,7 +244,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next;
 	GHashTable *msgid_table;
-	GRelation *subject_relation;
+	GRelation *subject_relation = NULL;
 	MsgInfo *msginfo;
 	const gchar *msgid;
         GSList *reflist;
@@ -1100,8 +1100,9 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 		procmsg_msginfo_free(msginfo);			/* refcnt-- */
 		/* tmp_msginfo == msginfo */
-		if (tmp_msginfo && (msginfo->dispositionnotificationto || 
-		    msginfo->returnreceiptto)) {
+		if (tmp_msginfo && msginfo->extradata && 
+		    (msginfo->extradata->dispositionnotificationto || 
+		     msginfo->extradata->returnreceiptto)) {
 			procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0); 
 		}	
 		procmsg_msginfo_free(tmp_msginfo);		/* refcnt-- */
@@ -1226,10 +1227,22 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBCOPY(folder);
 	MEMBCOPY(to_folder);
 
-	MEMBDUP(face);
-	MEMBDUP(xface);
-	MEMBDUP(dispositionnotificationto);
-	MEMBDUP(returnreceiptto);
+	if (msginfo->extradata) {
+		newmsginfo->extradata = g_new0(MsgInfoExtraData, 1);
+		MEMBDUP(extradata->face);
+		MEMBDUP(extradata->xface);
+		MEMBDUP(extradata->dispositionnotificationto);
+		MEMBDUP(extradata->returnreceiptto);
+		MEMBDUP(extradata->partial_recv);
+		MEMBDUP(extradata->account_server);
+		MEMBDUP(extradata->account_login);
+		MEMBDUP(extradata->list_post);
+		MEMBDUP(extradata->list_subscribe);
+		MEMBDUP(extradata->list_unsubscribe);
+		MEMBDUP(extradata->list_help);
+		MEMBDUP(extradata->list_archive);
+		MEMBDUP(extradata->list_owner);
+	}
 
         refs = msginfo->references;
         for (refs = msginfo->references; refs != NULL; refs = refs->next) {
@@ -1265,41 +1278,44 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	g_free(file);
 	if (!full_msginfo) return NULL;
 
-	/* CLAWS: make sure we add the missing members; see: 
-	 * procheader.c::procheader_get_headernames() */
-	if (!msginfo->list_post)
-		msginfo->list_post = g_strdup(full_msginfo->list_post);
-	if (!msginfo->list_subscribe)
-		msginfo->list_subscribe = g_strdup(full_msginfo->list_subscribe);
-	if (!msginfo->list_unsubscribe)
-		msginfo->list_unsubscribe = g_strdup(full_msginfo->list_unsubscribe);
-	if (!msginfo->list_help)
-		msginfo->list_help = g_strdup(full_msginfo->list_help);
-	if (!msginfo->list_archive)
-		msginfo->list_archive= g_strdup(full_msginfo->list_archive);
-	if (!msginfo->list_owner)
-		msginfo->list_owner = g_strdup(full_msginfo->list_owner);
-	if (!msginfo->xface)
-		msginfo->xface = g_strdup(full_msginfo->xface);
-	if (!msginfo->face)
-		msginfo->face = g_strdup(full_msginfo->face);
-	if (!msginfo->dispositionnotificationto)
-		msginfo->dispositionnotificationto = 
-			g_strdup(full_msginfo->dispositionnotificationto);
-	if (!msginfo->returnreceiptto)
-		msginfo->returnreceiptto = g_strdup
-			(full_msginfo->returnreceiptto);
-	if (!msginfo->partial_recv && full_msginfo->partial_recv)
-		msginfo->partial_recv = g_strdup
-			(full_msginfo->partial_recv);
 	msginfo->total_size = full_msginfo->total_size;
-	if (!msginfo->account_server && full_msginfo->account_server)
-		msginfo->account_server = g_strdup
-			(full_msginfo->account_server);
-	if (!msginfo->account_login && full_msginfo->account_login)
-		msginfo->account_login = g_strdup
-			(full_msginfo->account_login);
 	msginfo->planned_download = full_msginfo->planned_download;
+
+	if (full_msginfo->extradata) {
+		if (!msginfo->extradata)
+			msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+		if (!msginfo->extradata->list_post)
+			msginfo->extradata->list_post = g_strdup(full_msginfo->extradata->list_post);
+		if (!msginfo->extradata->list_subscribe)
+			msginfo->extradata->list_subscribe = g_strdup(full_msginfo->extradata->list_subscribe);
+		if (!msginfo->extradata->list_unsubscribe)
+			msginfo->extradata->list_unsubscribe = g_strdup(full_msginfo->extradata->list_unsubscribe);
+		if (!msginfo->extradata->list_help)
+			msginfo->extradata->list_help = g_strdup(full_msginfo->extradata->list_help);
+		if (!msginfo->extradata->list_archive)
+			msginfo->extradata->list_archive= g_strdup(full_msginfo->extradata->list_archive);
+		if (!msginfo->extradata->list_owner)
+			msginfo->extradata->list_owner = g_strdup(full_msginfo->extradata->list_owner);
+		if (!msginfo->extradata->xface)
+			msginfo->extradata->xface = g_strdup(full_msginfo->extradata->xface);
+		if (!msginfo->extradata->face)
+			msginfo->extradata->face = g_strdup(full_msginfo->extradata->face);
+		if (!msginfo->extradata->dispositionnotificationto)
+			msginfo->extradata->dispositionnotificationto = 
+				g_strdup(full_msginfo->extradata->dispositionnotificationto);
+		if (!msginfo->extradata->returnreceiptto)
+			msginfo->extradata->returnreceiptto = g_strdup
+				(full_msginfo->extradata->returnreceiptto);
+		if (!msginfo->extradata->partial_recv && full_msginfo->extradata->partial_recv)
+			msginfo->extradata->partial_recv = g_strdup
+				(full_msginfo->extradata->partial_recv);
+		if (!msginfo->extradata->account_server && full_msginfo->extradata->account_server)
+			msginfo->extradata->account_server = g_strdup
+				(full_msginfo->extradata->account_server);
+		if (!msginfo->extradata->account_login && full_msginfo->extradata->account_login)
+			msginfo->extradata->account_login = g_strdup
+				(full_msginfo->extradata->account_login);
+	}
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
@@ -1319,10 +1335,6 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	}
 
 	g_free(msginfo->fromspace);
-	g_free(msginfo->returnreceiptto);
-	g_free(msginfo->dispositionnotificationto);
-	g_free(msginfo->xface);
-	g_free(msginfo->face);
 
 	g_free(msginfo->fromname);
 
@@ -1336,17 +1348,22 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->inreplyto);
 	g_free(msginfo->xref);
 
-	g_free(msginfo->list_post);
-	g_free(msginfo->list_subscribe);
-	g_free(msginfo->list_unsubscribe);
-	g_free(msginfo->list_help);
-	g_free(msginfo->list_archive);
-	g_free(msginfo->list_owner);
-
-	g_free(msginfo->partial_recv);
-	g_free(msginfo->account_server);
-	g_free(msginfo->account_login);
-	
+	if (msginfo->extradata) {
+		g_free(msginfo->extradata->returnreceiptto);
+		g_free(msginfo->extradata->dispositionnotificationto);
+		g_free(msginfo->extradata->xface);
+		g_free(msginfo->extradata->face);
+		g_free(msginfo->extradata->list_post);
+		g_free(msginfo->extradata->list_subscribe);
+		g_free(msginfo->extradata->list_unsubscribe);
+		g_free(msginfo->extradata->list_help);
+		g_free(msginfo->extradata->list_archive);
+		g_free(msginfo->extradata->list_owner);
+		g_free(msginfo->extradata->partial_recv);
+		g_free(msginfo->extradata->account_server);
+		g_free(msginfo->extradata->account_login);
+		g_free(msginfo->extradata);
+	}
 	slist_free_strings(msginfo->references);
 	g_slist_free(msginfo->references);
 
@@ -1379,14 +1396,6 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 		memusage += strlen(msginfo->msgid);
 	if (msginfo->inreplyto)
 		memusage += strlen(msginfo->inreplyto);
-	if (msginfo->xface)
-		memusage += strlen(msginfo->xface);
-	if (msginfo->face)
-		memusage += strlen(msginfo->face);
-	if (msginfo->dispositionnotificationto)
-		memusage += strlen(msginfo->dispositionnotificationto);
-	if (msginfo->returnreceiptto)
-		memusage += strlen(msginfo->returnreceiptto);
 	for (refs = msginfo->references; refs; refs=refs->next) {
 		gchar *r = (gchar *)refs->data;
 		memusage += r?strlen(r):0;
@@ -1394,6 +1403,37 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 	if (msginfo->fromspace)
 		memusage += strlen(msginfo->fromspace);
 
+	if (msginfo->extradata) {
+		memusage += sizeof(MsgInfoExtraData);
+		if (msginfo->extradata->xface)
+			memusage += strlen(msginfo->extradata->xface);
+		if (msginfo->extradata->face)
+			memusage += strlen(msginfo->extradata->face);
+		if (msginfo->extradata->dispositionnotificationto)
+			memusage += strlen(msginfo->extradata->dispositionnotificationto);
+		if (msginfo->extradata->returnreceiptto)
+			memusage += strlen(msginfo->extradata->returnreceiptto);
+
+		if (msginfo->extradata->partial_recv)
+			memusage += strlen(msginfo->extradata->partial_recv);
+		if (msginfo->extradata->account_server)
+			memusage += strlen(msginfo->extradata->account_server);
+		if (msginfo->extradata->account_login)
+			memusage += strlen(msginfo->extradata->account_login);
+
+		if (msginfo->extradata->list_post)
+			memusage += strlen(msginfo->extradata->list_post);
+		if (msginfo->extradata->list_subscribe)
+			memusage += strlen(msginfo->extradata->list_subscribe);
+		if (msginfo->extradata->list_unsubscribe)
+			memusage += strlen(msginfo->extradata->list_unsubscribe);
+		if (msginfo->extradata->list_help)
+			memusage += strlen(msginfo->extradata->list_help);
+		if (msginfo->extradata->list_archive)
+			memusage += strlen(msginfo->extradata->list_archive);
+		if (msginfo->extradata->list_owner)
+			memusage += strlen(msginfo->extradata->list_owner);
+	}
 	return memusage;
 }
 

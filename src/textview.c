@@ -1653,14 +1653,14 @@ static void textview_show_face(TextView *textview)
 	||  !prefs_common.display_xface)
 		goto bail;
 	
-	if (!msginfo->face) {
+	if (!msginfo->extradata || !msginfo->extradata->face) {
 		goto bail;
 	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = face_get_from_header(msginfo->face);
+	textview->image = face_get_from_header(msginfo->extradata->face);
 	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
@@ -1715,20 +1715,20 @@ static void textview_show_xface(TextView *textview)
 	||  !prefs_common.display_xface)
 		goto bail;
 	
-	if (!msginfo)
+	if (!msginfo || !msginfo->extradata)
 		goto bail;
 
-	if (msginfo->face)
+	if (msginfo->extradata->face)
 		return;
 	
-	if (!msginfo->xface || strlen(msginfo->xface) < 5) {
+	if (!msginfo->extradata->xface || strlen(msginfo->extradata->xface) < 5) {
 		goto bail;
 	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = xface_get_from_header(msginfo->xface,
+	textview->image = xface_get_from_header(msginfo->extradata->xface,
 				&textview->text->style->white,
 				textview->text->window);
 	g_return_if_fail(textview->image != NULL);

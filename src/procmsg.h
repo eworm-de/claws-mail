@@ -36,6 +36,8 @@ typedef struct _MsgFileInfo     	MsgFileInfo;
 typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
 typedef struct _MailFilteringData	MailFilteringData;
 
+typedef struct _MsgInfoExtraData	MsgInfoExtraData;
+
 typedef GSList MsgInfoList;
 typedef GSList MsgNumberList;
 
@@ -165,7 +167,6 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
-
 struct _MsgInfo
 {
 	guint refcnt;
@@ -196,12 +197,6 @@ struct _MsgInfo
 	gboolean is_move;
 	gboolean is_copy;
 
-	gchar *xface;
-	gchar *face;
-
-	gchar *dispositionnotificationto;
-	gchar *returnreceiptto;
-
 	GSList *references;
 	gchar *fromspace;
 
@@ -211,13 +206,26 @@ struct _MsgInfo
 	gchar *plaintext_file;
         
         gint hidden;
-	
+
+	/* used only for partially received messages */
+	gint total_size;
+	gint planned_download;
+
+	MsgInfoExtraData *extradata;
+};
+
+struct _MsgInfoExtraData
+{
+	gchar *xface;
+	gchar *face;
+
+	gchar *dispositionnotificationto;
+	gchar *returnreceiptto;
+
 	/* used only for partially received messages */
 	gchar *partial_recv;
-	gint total_size;
 	gchar *account_server;
 	gchar *account_login;
-	gint planned_download;
 
  	/* Mailing list support */
  	gchar *list_post;

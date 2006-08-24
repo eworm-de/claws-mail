@@ -578,32 +578,47 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 #endif			
 		case H_FACE:
-			if (msginfo->face) break;
-			msginfo->face = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->face) break;
+			msginfo->extradata->face = g_strdup(hp);
 			break;
 		case H_X_FACE:
-			if (msginfo->xface) break;
-			msginfo->xface = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->xface) break;
+			msginfo->extradata->xface = g_strdup(hp);
 			break;
 		case H_DISPOSITION_NOTIFICATION_TO:
-			if (msginfo->dispositionnotificationto) break;
-			msginfo->dispositionnotificationto = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->dispositionnotificationto) break;
+			msginfo->extradata->dispositionnotificationto = g_strdup(hp);
 			break;
 		case H_RETURN_RECEIPT_TO:
-			if (msginfo->returnreceiptto) break;
-			msginfo->returnreceiptto = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->returnreceiptto) break;
+			msginfo->extradata->returnreceiptto = g_strdup(hp);
 			break;
+/* partial download infos */			
 		case H_SC_PARTIALLY_RETRIEVED:
-			if (msginfo->partial_recv) break;
-			msginfo->partial_recv = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->partial_recv) break;
+			msginfo->extradata->partial_recv = g_strdup(hp);
 			break;
 		case H_SC_ACCOUNT_SERVER:
-			if (msginfo->account_server) break;
-			msginfo->account_server = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->account_server) break;
+			msginfo->extradata->account_server = g_strdup(hp);
 			break;
 		case H_SC_ACCOUNT_LOGIN:
-			if (msginfo->account_login) break;
-			msginfo->account_login = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->account_login) break;
+			msginfo->extradata->account_login = g_strdup(hp);
 			break;
 		case H_SC_MESSAGE_SIZE:
 			if (msginfo->total_size) break;
@@ -612,6 +627,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_SC_PLANNED_DOWNLOAD:
 			msginfo->planned_download = atoi(hp);
 			break;
+/* end partial download infos */
 #ifdef ALLOW_HEADER_HINT			
 		case H_STATUS:
 			if (strchr(hp, 'R') != NULL)
@@ -640,23 +656,44 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			msginfo->fromspace = g_strdup(hp);
 			remove_return(msginfo->fromspace);
 			break;
+/* list infos */
  		case H_LIST_POST:
-			msginfo->list_post = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_post) break;
+			msginfo->extradata->list_post = g_strdup(hp);
 			break;
 		case H_LIST_SUBSCRIBE:
-			msginfo->list_subscribe = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_subscribe) break;
+			msginfo->extradata->list_subscribe = g_strdup(hp);
 			break;
 		case H_LIST_UNSUBSCRIBE:
-			msginfo->list_unsubscribe = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_unsubscribe) break;
+			msginfo->extradata->list_unsubscribe = g_strdup(hp);
 			break;
 		case H_LIST_HELP:
-			msginfo->list_help = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_help) break;
+			msginfo->extradata->list_help = g_strdup(hp);
 			break;
 		case H_LIST_ARCHIVE:
-			msginfo->list_archive = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_archive) break;
+			msginfo->extradata->list_archive = g_strdup(hp);
 			break;
 		case H_LIST_OWNER:
-			msginfo->list_owner = g_strdup(hp);
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->list_owner) break;
+			msginfo->extradata->list_owner = g_strdup(hp);
+			break;
+/* end list infos */
 		default:
 			break;
 		}

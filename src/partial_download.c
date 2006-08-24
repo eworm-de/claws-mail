@@ -72,23 +72,28 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 	time_t recv_time;
 	time_t now;
 	gint partial_recv;
-	gchar *sanitized_uid = g_strdup(msginfo->account_login);
+	gchar *sanitized_uid = NULL;
+	
+	if (!msginfo->extradata)
+		return FALSE;
+
+	sanitized_uid = g_strdup(msginfo->extradata->account_login);
 	
 	subst_for_filename(sanitized_uid);
 
-	if (!msginfo->account_server
-	||  !msginfo->account_login
-	||  !msginfo->partial_recv)
+	if (!msginfo->extradata->account_server
+	||  !msginfo->extradata->account_login
+	||  !msginfo->extradata->partial_recv)
 		return FALSE;
 	
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, msginfo->account_server,
-			   "-", msginfo->account_login, NULL);
+			   "uidl", G_DIR_SEPARATOR_S, msginfo->extradata->account_server,
+			   "-", msginfo->extradata->account_login, NULL);
 	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				   "uidl-", msginfo->account_server,
+				   "uidl-", msginfo->extradata->account_server,
 				   "-", sanitized_uid, NULL);
 		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
@@ -116,7 +121,7 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 				recv_time = now;
 			}
 		}
-		if (!strcmp(uidl, msginfo->partial_recv)) {
+		if (!strcmp(uidl, msginfo->extradata->partial_recv)) {
 			fclose(fp);
 			return TRUE;
 		}
@@ -144,6 +149,9 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	MsgInfo *tinfo;
 	gchar *sanitized_uid = NULL;	
 
+	if (!tinfo->extradata)
+		return err;
+
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename) {
 		g_warning("can't get message file path.\n");
@@ -151,16 +159,16 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	}
 	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);
 
-	sanitized_uid = g_strdup(tinfo->account_login);
+	sanitized_uid = g_strdup(tinfo->extradata->account_login);
 	subst_for_filename(sanitized_uid);
 
-	if (!tinfo->account_server
-	||  !tinfo->account_login
-	||  !tinfo->partial_recv) {
+	if (!tinfo->extradata->account_server
+	||  !tinfo->extradata->account_login
+	||  !tinfo->extradata->partial_recv) {
 		goto bail;
 	}
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
+			   "uidl", G_DIR_SEPARATOR_S, tinfo->extradata->account_server,
 			   "-", sanitized_uid, NULL);
 
 	if ((fp = g_fopen(path, "rb")) == NULL) {
@@ -168,8 +176,8 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				   "uidl-", tinfo->account_server,
-				   "-", tinfo->account_login, NULL);
+				   "uidl-", tinfo->extradata->account_server,
+				   "-", tinfo->extradata->account_login, NULL);
 		if ((fp = g_fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
@@ -178,7 +186,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	}
 
 	pathnew = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
+			   "uidl", G_DIR_SEPARATOR_S, tinfo->extradata->account_server,
 			   "-", sanitized_uid, ".new", NULL);
 	
 	g_free(sanitized_uid);
@@ -205,7 +213,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 				recv_time = now;
 			}
 		}
-		if (strcmp(tinfo->partial_recv, uidl)) {
+		if (strcmp(tinfo->extradata->partial_recv, uidl)) {
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, (long int) recv_time, partial_recv);
 		} else {

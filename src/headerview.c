@@ -223,7 +223,9 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
 
-	if (!msginfo->xface || strlen(msginfo->xface) < 5) {
+	if (!msginfo->extradata || 
+	    !msginfo->extradata->xface || 
+	    strlen(msginfo->extradata->xface) < 5) {
 		if (headerview->image &&
 		    GTK_WIDGET_VISIBLE(headerview->image)) {
 			gtk_widget_hide(headerview->image);
@@ -239,7 +241,7 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	}
 	
 
-	image = xface_get_from_header(msginfo->xface, &hbox->style->white,
+	image = xface_get_from_header(msginfo->extradata->xface, &hbox->style->white,
 				hbox->window);
 
 	if (image) {
@@ -256,7 +258,7 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
 
-	if (!msginfo->face) {
+	if (!msginfo->extradata || !msginfo->extradata->face) {
 		if (headerview->image &&
 		    GTK_WIDGET_VISIBLE(headerview->image)) {
 			gtk_widget_hide(headerview->image);
@@ -272,7 +274,7 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 	}
 	
 
-	image = face_get_from_header(msginfo->face);
+	image = face_get_from_header(msginfo->extradata->face);
 
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);

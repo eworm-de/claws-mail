@@ -532,15 +532,17 @@ static gint disposition_notification_send(MsgInfo *msginfo)
         gchar *addr;
         gchar *addrp;
 	gchar *foo = NULL;
-	if ((!msginfo->returnreceiptto) && 
-	    (!msginfo->dispositionnotificationto)) 
+	if (!msginfo->extradata)
+		return -1;
+	if (!msginfo->extradata->returnreceiptto && 
+	    !msginfo->extradata->dispositionnotificationto) 
 		return -1;
 
 	/* RFC2298: Test for Return-Path */
-	if (msginfo->dispositionnotificationto)
-		to = msginfo->dispositionnotificationto;
+	if (msginfo->extradata->dispositionnotificationto)
+		to = msginfo->extradata->dispositionnotificationto;
 	else
-		to = msginfo->returnreceiptto;
+		to = msginfo->extradata->returnreceiptto;
 
 	ok = procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf),
 				"Return-Path:");
@@ -854,11 +856,13 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	main_create_mailing_list_menu(messageview->mainwin, messageview->msginfo);
 
-	if (messageview->msginfo->partial_recv)
+	if (messageview->msginfo->extradata
+	    && messageview->msginfo->extradata->partial_recv)
 		partial_recv_show(messageview->noticeview, 
 				  messageview->msginfo);
-	else if ((messageview->msginfo->dispositionnotificationto || 
-	     messageview->msginfo->returnreceiptto) &&
+	else if (messageview->msginfo->extradata &&
+	    (messageview->msginfo->extradata->dispositionnotificationto || 
+	     messageview->msginfo->extradata->returnreceiptto) &&
 	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags) &&
 	    !prefs_common.never_send_retrcpt)
 		return_receipt_show(messageview->noticeview, 
@@ -1248,6 +1252,8 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	void  *button1_cb = NULL;
 	void  *button2_cb = NULL;
 
+	if (!msginfo->extradata)
+		return;
 	if (!partial_msg_in_uidl_list(msginfo)) {
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved,\nand has been deleted from the "

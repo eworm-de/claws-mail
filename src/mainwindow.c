@@ -2318,39 +2318,50 @@ static gint mailing_list_create_submenu (GtkItemFactory *ifactory, MsgInfo *msgi
 {
 	gint menu_nb = 0;
 	GtkWidget *menuitem;
-
+	
+	if (!msginfo || !msginfo->extradata) {
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/Post", FALSE);
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/Help", FALSE);
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/Subscribe", FALSE);
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/Unsubscribe", FALSE);
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/View archive", FALSE);
+		menu_set_sensitive(ifactory, "/Message/Mailing-List/Contact owner", FALSE);
+		return 0;
+	}
+		
 	/* Mailing list post */
-	if (msginfo && !strcmp2 (msginfo->list_post, "NO")) {
-		msginfo->list_post = g_strdup (_("No posting allowed"));
+	if (!strcmp2 (msginfo->extradata->list_post, "NO")) {
+		g_free(msginfo->extradata->list_post);
+		msginfo->extradata->list_post = g_strdup (_("No posting allowed"));
  	}
  	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Post");
  		
- 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_post);
+ 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_post);
  
  	/* Mailing list help */
 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Help");
 	
-	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_help);
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_help);
 
 	/* Mailing list subscribe */
 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Subscribe");
 	
-	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_subscribe);
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_subscribe);
 		
 	/* Mailing list unsubscribe */
 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Unsubscribe");
 	
-	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_unsubscribe);
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_unsubscribe);
 	
 	/* Mailing list view archive */
 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/View archive");
 	
-	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_archive);
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_archive);
 	
 	/* Mailing list contact owner */
 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Contact owner");
 	
-	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->list_owner);
+	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_owner);
 	
 	return menu_nb;
 }
