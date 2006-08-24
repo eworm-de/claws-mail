@@ -203,6 +203,7 @@ static void input_dialog_create(gboolean is_password)
 	dialog = gtk_dialog_new();
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 375, 100);
 	gtk_window_set_title(GTK_WINDOW(dialog), "");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
@@ -280,8 +281,6 @@ static void input_dialog_create(gboolean is_password)
 				      &cancel_button, GTK_STOCK_CANCEL,
 				      &ok_button, GTK_STOCK_OK,
 				      NULL, NULL);
-
-	gtk_widget_set_size_request(confirm_area, 375, -1);
 
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 			 confirm_area, FALSE, FALSE, 0);

@@ -247,7 +247,7 @@ static void alertpanel_create(const gchar *title,
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 
-	gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 100);
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 375, 100);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -356,8 +356,6 @@ static void alertpanel_create(const gchar *title,
 				      &button1, button1_label,
 				      button2_label ? &button2 : NULL, label2,
 				      button3_label ? &button3 : NULL, label3);
-
-	gtk_widget_set_size_request(confirm_area, 375, -1);
 
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 			 confirm_area, FALSE, FALSE, 0);
