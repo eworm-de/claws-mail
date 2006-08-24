@@ -467,6 +467,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	gint curnum = 0, total = 0;
 	gchar *srcpath = NULL;
 	gboolean full_fetch = FALSE;
+	time_t last_mtime = (time_t)0;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -493,6 +494,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	srcpath = folder_item_get_path(msginfo->folder);
 
 	dest_need_scan = mh_scan_required(dest->folder, dest);
+	last_mtime = dest->mtime;
 
 	total = g_slist_length(msglist);
 	if (total > 100) {
@@ -569,7 +571,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	g_free(srcpath);
 	mh_write_sequences(dest, TRUE);
 
-	if (!dest_need_scan)
+	if (dest->mtime == last_mtime && !dest_need_scan)
 		dest->mtime = time(NULL);
 	
 	if (total > 100) {
@@ -591,6 +593,7 @@ err_reset_status:
 static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gboolean need_scan = FALSE;
+	time_t last_mtime = (time_t)0;
 	gchar *file;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -599,6 +602,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(file != NULL, -1);
 
 	need_scan = mh_scan_required(folder, item);
+	last_mtime = item->mtime;
 
 	if (g_unlink(file) < 0) {
 		FILE_OP_ERROR(file, "unlink");
@@ -606,7 +610,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 		return -1;
 	}
 
-	if (!need_scan)
+	if (item->mtime == last_mtime && !need_scan)
 		item->mtime = time(NULL);
 
 	g_free(file);
@@ -618,6 +622,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 {
 	gboolean need_scan = FALSE;
 	gchar *path, *file;
+	time_t last_mtime = (time_t)0;
 	MsgInfoList *cur;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -625,6 +630,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 	path = folder_item_get_path(item);
 	
 	need_scan = mh_scan_required(folder, item);
+	last_mtime = item->mtime;
 
 	for (cur = msglist; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
@@ -642,7 +648,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		g_free(file);
 	}
 
-	if (!need_scan)
+	if (item->mtime == last_mtime && !need_scan)
 		item->mtime = time(NULL);
 
 	g_free(path);

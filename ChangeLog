@@ -1,3 +1,12 @@
+2006-08-24 [colin]	2.4.0cvs81
+
+	* src/folder.c
+	* src/mh.c
+		Fix possible problems with local delivery. Check the folder doesn't
+		need scan before setting its mtime when saving cache (which can be
+		done long after the folder's been modified by an external process);
+		Check that the stored item's mtime didn't change in mh functions.
+
 2006-08-24 [mones]	2.4.0cvs80
 
 	* manual/advanced.xml
