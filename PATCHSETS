@@ -1771,3 +1771,4 @@
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/image_viewer.c;  cvs diff -u -r 1.96.2.139 -r 1.96.2.140 src/textview.c;  ) > 2.4.0cvs77.patchset
 ( cvs diff -u -r 1.94.2.97 -r 1.94.2.98 src/messageview.c;  cvs diff -u -r 1.83.2.81 -r 1.83.2.82 src/mimeview.c;  cvs diff -u -r 1.20.2.13 -r 1.20.2.14 src/mimeview.h;  cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/plugins/dillo_viewer/dillo_viewer.c;  ) > 2.4.0cvs78.patchset
 ( cvs diff -u -r 1.1.4.22 -r 1.1.4.23 src/gtk/gtksctree.c;  ) > 2.4.0cvs79.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 manual/advanced.xml;  ) > 2.4.0cvs80.patchset

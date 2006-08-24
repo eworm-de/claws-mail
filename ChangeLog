@@ -1,3 +1,11 @@
+2006-08-24 [mones]	2.4.0cvs80
+
+	* manual/advanced.xml
+		Rewrapping, some fixes and MANUAL-TODO items:
+		8.1. = change "" to <quote></quote>
+		8.3. = quote menu items
+		8.5. - deploying -> new user ... ideally a new user (redundant)
+
 2006-08-23 [colin]	2.4.0cvs79
 
 	* src/gtk/gtksctree.c
