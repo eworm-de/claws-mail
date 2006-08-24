@@ -1773,3 +1773,4 @@
 ( cvs diff -u -r 1.1.4.22 -r 1.1.4.23 src/gtk/gtksctree.c;  ) > 2.4.0cvs79.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 manual/advanced.xml;  ) > 2.4.0cvs80.patchset
 ( cvs diff -u -r 1.213.2.107 -r 1.213.2.108 src/folder.c;  cvs diff -u -r 1.79.2.37 -r 1.79.2.38 src/mh.c;  ) > 2.4.0cvs81.patchset
+( diff -u /dev/null manual/es/.cvsignore;  diff -u /dev/null manual/es/dist/.cvsignore;  diff -u /dev/null manual/es/dist/html/.cvsignore;  diff -u /dev/null manual/es/dist/pdf/.cvsignore;  diff -u /dev/null manual/es/dist/ps/.cvsignore;  diff -u /dev/null manual/es/dist/txt/.cvsignore;  ) > 2.4.0cvs82.patchset
