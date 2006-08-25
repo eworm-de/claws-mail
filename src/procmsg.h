@@ -86,6 +86,7 @@ typedef guint32 MsgPermFlags;
 
 #define MSG_MOVE		(1U << 0)
 #define MSG_COPY		(1U << 1)
+#define MSG_MOVE_DONE		(1U << 15)		
 #define MSG_QUEUED		(1U << 16)
 #define MSG_DRAFT		(1U << 17)
 #define MSG_ENCRYPTED		(1U << 18)
@@ -130,6 +131,7 @@ typedef guint32 MsgTmpFlags;
 
 #define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
+#define MSG_IS_MOVE_DONE(msg)		(((msg).tmp_flags & MSG_MOVE_DONE) != 0)
 
 #define MSG_IS_QUEUED(msg)		(((msg).tmp_flags & MSG_QUEUED) != 0)
 #define MSG_IS_DRAFT(msg)		(((msg).tmp_flags & MSG_DRAFT) != 0)
@@ -167,6 +169,13 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
+/* *********************************************************** *
+ * WARNING: When adding or removing members to this structure, *
+ * be sure to update procmsg.c::procmsg_msginfo_memusage()  to *
+ * avoid underestimating cache memory usage - especially since *
+ * this would cause an overflow and metadata loss when writing *
+ * the cache to disk.                                          *
+ * *********************************************************** */
 struct _MsgInfo
 {
 	guint refcnt;

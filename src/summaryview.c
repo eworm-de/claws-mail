@@ -3156,7 +3156,8 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	summary_msginfo_change_flags(msginfo, MSG_MARKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_MARKED, 0, MSG_DELETED, 
+		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %s/%d is marked\n", msginfo->folder->path, msginfo->msgnum);
 }
@@ -3180,7 +3181,8 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 		changed = TRUE;
 	}
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	summary_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, 
+		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 	
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is locked\n", msginfo->msgnum);
@@ -3486,7 +3488,8 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	summary_msginfo_change_flags(msginfo, MSG_DELETED, 0, MSG_MARKED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_change_flags(msginfo, MSG_DELETED, 0, MSG_MARKED, 
+		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec && 
@@ -3625,7 +3628,8 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
-	summary_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
+	summary_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, 
+		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 	summary_set_row_marks(summaryview, row);
 
 	debug_print("Message %s/%d is unmarked\n",
@@ -3668,7 +3672,8 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->copied--;
 	}
 	if (!MSG_IS_MOVE(msginfo->flags)) {
-		summary_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_DELETED, MSG_COPY);
+		summary_msginfo_change_flags(msginfo, 0, MSG_MOVE, MSG_DELETED, 
+			MSG_COPY | MSG_MOVE_DONE);
 		summaryview->moved++;
 	} else {
 		summary_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_COPY);
@@ -3760,7 +3765,8 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	
 	if (!MSG_IS_COPY(msginfo->flags)) {
-		summary_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_DELETED, MSG_MOVE);
+		summary_msginfo_change_flags(msginfo, 0, MSG_COPY, MSG_DELETED, 
+			MSG_MOVE | MSG_MOVE_DONE);
 		summaryview->copied++;
 	} else {
 		summary_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE);

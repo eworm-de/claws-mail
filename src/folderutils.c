@@ -91,7 +91,8 @@ gint folderutils_delete_duplicates(FolderItem *item,
 				MsgInfo *msginfo = (MsgInfo *) cur->data;
 
 				procmsg_msginfo_set_to_folder(msginfo, NULL);
-				procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
+				procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, 
+					MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 				procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 			}
 			break;

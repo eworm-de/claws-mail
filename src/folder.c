@@ -2590,7 +2590,7 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 		perm_flags |= MSG_IGNORE_THREAD;
 
 	/* Unset tmp flags that should not be copied */
-	tmp_flags &= ~(MSG_MOVE | MSG_COPY);
+	tmp_flags &= ~(MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 
 	/* unset flags that are set but should not */
 	/* and set new flags */

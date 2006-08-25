@@ -1,3 +1,15 @@
+2006-08-25 [colin]	2.4.0cvs92
+
+	* src/folder.c
+	* src/folderutils.c
+	* src/mh.c
+	* src/procmsg.h
+	* src/summaryview.c
+		Speed up MH moving, and add progressbar
+		for MH deletion
+	* src/msgcache.c
+		Write cache files using mmap() too
+
 2006-08-25 [wwp]	2.4.0cvs91
 
 	* src/summaryview.c

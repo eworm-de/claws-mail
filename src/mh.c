@@ -537,6 +537,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 
 
 		if (MSG_IS_MOVE(msginfo->flags)) {
+			msginfo->flags.tmp_flags &= ~MSG_MOVE_DONE;
 			if (move_file(srcfile, destfile, TRUE) < 0) {
 				FILE_OP_ERROR(srcfile, "move");
 				if (copy_file(srcfile, destfile, TRUE) < 0) {
@@ -545,6 +546,9 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 					g_free(destfile);
 					goto err_reset_status;
 				}
+			} else {
+				/* say unlinking's not necessary */
+				msginfo->flags.tmp_flags |= MSG_MOVE_DONE;
 			}
 		} else if (copy_file(srcfile, destfile, TRUE) < 0) {
 			FILE_OP_ERROR(srcfile, "copy");
@@ -624,6 +628,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 	gchar *path, *file;
 	time_t last_mtime = (time_t)0;
 	MsgInfoList *cur;
+	gint total = 0, curnum = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
 
@@ -632,10 +637,25 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 	need_scan = mh_scan_required(folder, item);
 	last_mtime = item->mtime;
 
+	total = g_slist_length(msglist);
+	if (total > 100) {
+		statusbar_print_all(_("Deleting messages..."));
+	}
+
 	for (cur = msglist; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		if (msginfo == NULL)
 			continue;
+		if (MSG_IS_MOVE(msginfo->flags) && MSG_IS_MOVE_DONE(msginfo->flags)) {
+			msginfo->flags.tmp_flags &= ~MSG_MOVE_DONE;
+			continue;
+		}
+		if (total > 100) {
+			statusbar_progress_all(curnum, total, 100);
+			if (curnum % 100 == 0)
+				GTK_EVENTS_FLUSH();
+			curnum++;
+		}
 		file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
 		if (file == NULL)
 			continue;
@@ -648,6 +668,10 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		g_free(file);
 	}
 
+	if (total > 100) {
+		statusbar_progress_all(0,0,0);
+		statusbar_pop_all();
+	}
 	if (item->mtime == last_mtime && !need_scan)
 		item->mtime = time(NULL);
 

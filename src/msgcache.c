@@ -36,17 +36,37 @@
      ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
       (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
      
+#define MMAP_TO_GUINT32(x)	\
+	(((x[3]&0xff)) |	\
+	 ((x[2]&0xff) << 8) |	\
+	 ((x[1]&0xff) << 16) |	\
+	 ((x[0]&0xff) << 24))
+
+#define MMAP_TO_GUINT32_SWAPPED(x)	\
+	(((x[0]&0xff)) |		\
+	 ((x[1]&0xff) << 8) |		\
+	 ((x[2]&0xff) << 16) |		\
+	 ((x[3]&0xff) << 24))
+
 static gboolean msgcache_use_mmap = FALSE;
+
 #else
 #define bswap_32(x) (x)
+
+#define MMAP_TO_GUINT32(x)	\
+	(((x[0]&0xff)) |	\
+	 ((x[1]&0xff) << 8) |	\
+	 ((x[2]&0xff) << 16) |	\
+	 ((x[3]&0xff) << 24))
+
+#define MMAP_TO_GUINT32_SWAPPED(x)	\
+	(((x[0]&0xff)) |		\
+	 ((x[1]&0xff) << 8) |		\
+	 ((x[2]&0xff) << 16) |		\
+	 ((x[3]&0xff) << 24))
+
 static gboolean msgcache_use_mmap = TRUE;
 #endif
-
-#define MMAP_TO_GUINT32(x) \
-	(((x[0]&0xff)) | \
-	 ((x[1]&0xff) << 8) | \
-	 ((x[2]&0xff) << 16) | \
-	 ((x[3]&0xff) << 24))
 
 static gboolean swapping = TRUE;
 
@@ -273,8 +293,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 
 #define GET_CACHE_DATA_INT(n) \
 { \
-	guint32 idata = MMAP_TO_GUINT32(walk_data); \
-	n = swapping ? bswap_32(idata) : (idata);\
+	n = (swapping ? (MMAP_TO_GUINT32_SWAPPED(walk_data)):(MMAP_TO_GUINT32(walk_data))); \
 	walk_data += 4;	rem_len -= 4;			\
 }
 
@@ -292,27 +311,54 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 }
 
 
-#define WRITE_CACHE_DATA_INT(n, fp)		\
-{						\
-	guint32 idata;				\
-						\
+#define WRITE_CACHE_DATA_INT(n, fp)			\
+{							\
+	guint32 idata;					\
+							\
 	idata = (guint32)bswap_32(n);			\
 	if (fwrite(&idata, sizeof(idata), 1, fp) != 1)	\
 		w_err = 1;				\
+	wrote += 4;					\
+}
+
+#define PUT_CACHE_DATA_INT(n)				\
+{							\
+	walk_data[0]=(((guint32)n)&0x000000ff);			\
+	walk_data[1]=(((guint32)n)&0x0000ff00)>>8;		\
+	walk_data[2]=(((guint32)n)&0x00ff0000)>>16;		\
+	walk_data[3]=(((guint32)n)&0xff000000)>>24;		\
+	walk_data += 4;					\
+	wrote += 4;					\
 }
 
 #define WRITE_CACHE_DATA(data, fp) \
 { \
-	size_t len; \
-	if (data == NULL) \
-		len = 0; \
-	else \
-		len = strlen(data); \
-	WRITE_CACHE_DATA_INT(len, fp); \
-	if (w_err == 0 && len > 0) { \
-		if (fwrite(data, 1, len, fp) != len) \
+	size_t len;					\
+	if (data == NULL)				\
+		len = 0;				\
+	else						\
+		len = strlen(data);			\
+	WRITE_CACHE_DATA_INT(len, fp);			\
+	if (w_err == 0 && len > 0) {			\
+		if (fwrite(data, 1, len, fp) != len)	\
 			w_err = 1;			\
+		wrote += len;				\
 	} \
+}
+
+#define PUT_CACHE_DATA(data)				\
+{							\
+	size_t len;					\
+	if (data == NULL)				\
+		len = 0;				\
+	else						\
+		len = strlen(data);			\
+	PUT_CACHE_DATA_INT(len);			\
+	if (len > 0) {					\
+		memcpy(walk_data, data, len);		\
+		walk_data += len;			\
+		wrote += len;				\
+	}						\
 }
 
 static FILE *msgcache_open_data_file(const gchar *file, guint version,
@@ -325,8 +371,8 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 	g_return_val_if_fail(file != NULL, NULL);
 
 	if (mode == DATA_WRITE) {
-		int w_err = 0;
-		if ((fp = g_fopen(file, "wb")) == NULL) {
+		int w_err = 0, wrote = 0;
+		if ((fp = g_fopen(file, "w+")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
 			return NULL;
 		}
@@ -759,7 +805,7 @@ static int msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 {
 	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
 	GSList *cur;
-	int w_err = 0;
+	int w_err = 0, wrote = 0;
 
 	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
 	WRITE_CACHE_DATA_INT(msginfo->size, fp);
@@ -786,43 +832,119 @@ static int msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 	for (cur = msginfo->references; cur != NULL; cur = cur->next) {
 		WRITE_CACHE_DATA((gchar *)cur->data, fp);
 	}
-	return w_err;
+	return w_err ? -1 : wrote;
+}
+
+static int msgcache_write_mmap_cache(MsgInfo *msginfo, char *walk_data)
+{
+	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
+	GSList *cur;
+	int wrote = 0;
+
+	PUT_CACHE_DATA_INT(msginfo->msgnum);
+	PUT_CACHE_DATA_INT(msginfo->size);
+	PUT_CACHE_DATA_INT(msginfo->mtime);
+	PUT_CACHE_DATA_INT(msginfo->date_t);
+	PUT_CACHE_DATA_INT(flags);
+	PUT_CACHE_DATA(msginfo->fromname);
+
+	PUT_CACHE_DATA(msginfo->date);
+	PUT_CACHE_DATA(msginfo->from);
+	PUT_CACHE_DATA(msginfo->to);
+	PUT_CACHE_DATA(msginfo->cc);
+	PUT_CACHE_DATA(msginfo->newsgroups);
+	PUT_CACHE_DATA(msginfo->subject);
+	PUT_CACHE_DATA(msginfo->msgid);
+	PUT_CACHE_DATA(msginfo->inreplyto);
+	PUT_CACHE_DATA(msginfo->xref);
+	PUT_CACHE_DATA_INT(msginfo->planned_download);
+	PUT_CACHE_DATA_INT(msginfo->total_size);
+        
+	PUT_CACHE_DATA_INT(g_slist_length(msginfo->references));
+
+	for (cur = msginfo->references; cur != NULL; cur = cur->next) {
+		PUT_CACHE_DATA((gchar *)cur->data);
+	}
+	return wrote;
 }
 
 static int msgcache_write_flags(MsgInfo *msginfo, FILE *fp)
 {
 	MsgPermFlags flags = msginfo->flags.perm_flags;
-	int w_err = 0;
+	int w_err = 0, wrote = 0;
 	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
 	WRITE_CACHE_DATA_INT(flags, fp);
-	return w_err;
+	return w_err ? -1 : wrote;
+}
+
+static int msgcache_write_mmap_flags(MsgInfo *msginfo, char *walk_data)
+{
+	MsgPermFlags flags = msginfo->flags.perm_flags;
+	int wrote = 0;
+
+	PUT_CACHE_DATA_INT(msginfo->msgnum);
+	PUT_CACHE_DATA_INT(flags);
+	return wrote;
 }
 
 struct write_fps
 {
 	FILE *cache_fp;
 	FILE *mark_fp;
+	char *cache_data;
+	char *mark_data;
 	int error;
+	guint cache_size;
+	guint mark_size;
 };
 
 static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data)
 {
 	MsgInfo *msginfo;
 	struct write_fps *write_fps;
+	int tmp;
 
 	msginfo = (MsgInfo *)value;
 	write_fps = user_data;
 
-	write_fps->error |= msgcache_write_cache(msginfo, write_fps->cache_fp);
-	write_fps->error |= msgcache_write_flags(msginfo, write_fps->mark_fp);
+	tmp = msgcache_write_cache(msginfo, write_fps->cache_fp);
+	if (tmp < 0)
+		write_fps->error = 1;
+	else
+		write_fps->cache_size += tmp;
+	tmp= msgcache_write_flags(msginfo, write_fps->mark_fp);
+	if (tmp < 0)
+		write_fps->error = 1;
+	else
+		write_fps->mark_size += tmp;
+}
+
+static void msgcache_write_mmap_func(gpointer key, gpointer value, gpointer user_data)
+{
+	MsgInfo *msginfo;
+	struct write_fps *write_fps;
+	int tmp;
+
+	msginfo = (MsgInfo *)value;
+	write_fps = user_data;
+
+	tmp = msgcache_write_mmap_cache(msginfo, write_fps->cache_data);
+	write_fps->cache_size += tmp;
+	write_fps->cache_data += tmp;
+	tmp = msgcache_write_mmap_flags(msginfo, write_fps->mark_data);
+	write_fps->mark_size += tmp;
+	write_fps->mark_data += tmp;
 }
 
 gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *cache)
 {
 	struct write_fps write_fps;
 	gchar *new_cache, *new_mark;
-	int w_err = 0;
-
+	int w_err = 0, wrote = 0;
+	gint map_len = -1;
+	char *cache_data = NULL;
+	char *mark_data = NULL;
+	START_TIMING("*** writing caches");
 	g_return_val_if_fail(cache_file != NULL, -1);
 	g_return_val_if_fail(mark_file != NULL, -1);
 	g_return_val_if_fail(cache != NULL, -1);
@@ -831,6 +953,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	new_mark  = g_strconcat(mark_file, ".new", NULL);
 
 	write_fps.error = 0;
+	write_fps.cache_size = 0;
+	write_fps.mark_size = 0;
 	write_fps.cache_fp = msgcache_open_data_file(new_cache, CACHE_VERSION,
 		DATA_WRITE, NULL, 0);
 	if (write_fps.cache_fp == NULL) {
@@ -865,8 +989,37 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	if (change_file_mode_rw(write_fps.cache_fp, new_cache) < 0)
 		FILE_OP_ERROR(new_cache, "chmod");
 
-	g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
+	write_fps.cache_size = ftell(write_fps.cache_fp);
+	write_fps.mark_size = ftell(write_fps.mark_fp);
+	if (msgcache_use_mmap && cache->memusage > 0) {
+		map_len = cache->memusage;
+		if (ftruncate(fileno(write_fps.cache_fp), (off_t)map_len) == 0) {
+			cache_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
+				fileno(write_fps.cache_fp), 0);
+		}
+		if (cache_data != NULL && cache_data != MAP_FAILED) {
+			if (ftruncate(fileno(write_fps.mark_fp), (off_t)map_len) == 0) {
+				mark_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
+					fileno(write_fps.mark_fp), 0);
+			} 
+			if (mark_data == NULL || mark_data == MAP_FAILED) {
+				munmap(cache_data, map_len);
+				cache_data = NULL;
+			}
+		}
+	}
 
+	if (cache_data != NULL && cache_data != MAP_FAILED) {
+		write_fps.cache_data = cache_data + ftell(write_fps.cache_fp);
+		write_fps.mark_data = mark_data + ftell(write_fps.mark_fp);
+		g_hash_table_foreach(cache->msgnum_table, msgcache_write_mmap_func, (gpointer)&write_fps);
+		munmap(cache_data, map_len);
+		munmap(mark_data, map_len);
+	} else {
+		g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
+	}
+	ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
+	ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
 	fclose(write_fps.cache_fp);
 	fclose(write_fps.mark_fp);
 
@@ -886,6 +1039,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	g_free(new_cache);
 	g_free(new_mark);
 	debug_print("done.\n");
+	END_TIMING();
 	return 0;
 }
 
