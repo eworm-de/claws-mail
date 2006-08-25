@@ -1778,3 +1778,4 @@
 ( cvs diff -u -r 1.17.2.25 -r 1.17.2.26 src/alertpanel.c;  cvs diff -u -r 1.2.2.18 -r 1.2.2.19 src/gtk/inputdialog.c;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/plugins/pgpcore/passphrase.c;  ) > 2.4.0cvs84.patchset
 ( cvs diff -u -r 1.60.2.62 -r 1.60.2.63 src/addressbook.c;  ) > 2.4.0cvs85.patchset
 ( cvs diff -u -r 1.395.2.231 -r 1.395.2.232 src/summaryview.c;  cvs diff -u -r 1.36.2.76 -r 1.36.2.77 src/common/utils.c;  cvs diff -u -r 1.20.2.36 -r 1.20.2.37 src/common/utils.h;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/gtk/gtksctree.c;  ) > 2.4.0cvs86.patchset
+( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/icon_legend.c;  ) > 2.4.0cvs87.patchset

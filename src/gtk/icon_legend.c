@@ -38,44 +38,51 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 16
+#define ICONS 17
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
 	STOCK_PIXMAP_UNREAD,
 	STOCK_PIXMAP_REPLIED, 
 	STOCK_PIXMAP_FORWARDED, 
+	STOCK_PIXMAP_IGNORETHREAD,
+	STOCK_PIXMAP_SPAM,
 	STOCK_PIXMAP_CLIP,
 	STOCK_PIXMAP_GPG_SIGNED,
 	STOCK_PIXMAP_KEY,
 	STOCK_PIXMAP_CLIP_GPG_SIGNED,
 	STOCK_PIXMAP_CLIP_KEY,
 	STOCK_PIXMAP_MARK,
+	STOCK_PIXMAP_DELETED,
 	STOCK_PIXMAP_LOCKED,
-	STOCK_PIXMAP_IGNORETHREAD,
-	STOCK_PIXMAP_SPAM,
 	STOCK_PIXMAP_DIR_OPEN, 
 	STOCK_PIXMAP_DIR_OPEN_HRM,
 	STOCK_PIXMAP_DIR_OPEN_MARK,
 };
 
 static gchar *legend_icon_desc[] = {
+/* status column */
 	N_("New message"),
 	N_("Unread message"),
 	N_("Message has been replied to"),
 	N_("Message has been forwarded"),
+	N_("Message is in an ignored thread"),
+	N_("Message is spam"),
+/* attachment column */
 	N_("Message has attachment(s)"),
 	N_("Digitally signed message"),
 	N_("Encrypted message"),
 	N_("Message is signed and has attachment(s)"),
 	N_("Message is encrypted and has attachment(s)"),
+/* mark column */
 	N_("Marked message"),
+	N_("Message is marked for deletion"),
+/* locked column */
 	N_("Locked message"),
-	N_("Message is in an ignored thread"),
-	N_("Message is spam"),
+/* others */
 	N_("Folder (normal, opened)"),
 	N_("Folder with read messages hidden"),
-	N_("Folder contains marked emails"),
+	N_("Folder contains marked messages"),
 };
 
 static struct LegendDialog {
@@ -125,7 +132,9 @@ static void legend_create(void)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("<span weight=\"bold\">The following icons are used to show the status of messages and folders:</span>"));
+	label = gtk_label_new(_("<span weight=\"bold\">The following icons "
+				"are used to show the status of messages and "
+				"folders:</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_widget_show(label);
