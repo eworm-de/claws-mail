@@ -135,6 +135,8 @@
 #include "pixmaps/spam.xpm"
 #include "pixmaps/spam_btn.xpm"
 #include "pixmaps/ham_btn.xpm"
+#include "pixmaps/moved.xpm"
+#include "pixmaps/copied.xpm"
 #include "pixmaps/empty.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -300,6 +302,8 @@ static StockPixmapData pixmaps[] =
         {spam_xpm                               , NULL, NULL, "spam" , NULL},
         {spam_btn_xpm                           , NULL, NULL, "spam_btn" , NULL},
         {ham_btn_xpm                            , NULL, NULL, "ham_btn" , NULL},
+	{moved_xpm				, NULL, NULL, "moved", NULL},
+	{copied_xpm				, NULL, NULL, "copied", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 

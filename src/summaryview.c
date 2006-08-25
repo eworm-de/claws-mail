@@ -107,6 +107,10 @@ static GdkPixmap *markxpm;
 static GdkBitmap *markxpmmask;
 static GdkPixmap *deletedxpm;
 static GdkBitmap *deletedxpmmask;
+static GdkPixmap *movedxpm;
+static GdkBitmap *movedxpmmask;
+static GdkPixmap *copiedxpm;
+static GdkBitmap *copiedxpmmask;
 
 static GdkPixmap *newxpm;
 static GdkBitmap *newxpmmask;
@@ -734,6 +738,10 @@ void summary_init(SummaryView *summaryview)
 			 &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_SPAM,
 			 &spamxpm, &spamxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MOVED,
+			 &movedxpm, &movedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_COPIED,
+			 &copiedxpm, &copiedxpmmask);
 
 	summary_set_fonts(summaryview);
 
@@ -3075,7 +3083,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
 					  markxpm, markxpmmask);
 	} else if (MSG_IS_MOVE(flags)) {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "o");
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
+					  movedxpm, movedxpmmask);
 		if (style)
 			style = bold_marked_style;
 		else {
@@ -3084,7 +3093,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
 	} else if (MSG_IS_COPY(flags)) {
-		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "O");
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
+					  copiedxpm, copiedxpmmask);
 		if (style)
 			style = bold_marked_style;
 		else {
@@ -5951,6 +5961,8 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm, &spamxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MOVED, &movedxpm, &movedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_COPIED, &copiedxpm, &copiedxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

@@ -38,7 +38,7 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 17
+#define ICONS 19
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
@@ -54,6 +54,8 @@ StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_CLIP_KEY,
 	STOCK_PIXMAP_MARK,
 	STOCK_PIXMAP_DELETED,
+	STOCK_PIXMAP_MOVED,
+	STOCK_PIXMAP_COPIED,
 	STOCK_PIXMAP_LOCKED,
 	STOCK_PIXMAP_DIR_OPEN, 
 	STOCK_PIXMAP_DIR_OPEN_HRM,
@@ -77,6 +79,8 @@ static gchar *legend_icon_desc[] = {
 /* mark column */
 	N_("Marked message"),
 	N_("Message is marked for deletion"),
+	N_("Message is marked for moving"),
+	N_("Message is marked for copying"),
 /* locked column */
 	N_("Locked message"),
 /* others */

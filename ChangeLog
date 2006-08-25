@@ -1,3 +1,15 @@
+2006-08-25 [paul]	2.4.0cvs90
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/gtk/icon_legend.c
+	* src/pixmaps/copied.xpm
+	* src/pixmaps/moved.xpm
+		add icons for delayed execution marked for
+		copying, marked for moving
+
 2006-08-25 [mones]	2.4.0cvs89
 
 	* manual/glossary.xml
