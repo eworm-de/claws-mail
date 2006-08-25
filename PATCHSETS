@@ -1782,3 +1782,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/ack.xml;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/glossary.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/es/advanced.xml;  ) > 2.4.0cvs88.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 manual/glossary.xml;  cvs diff -u -r 1.60.2.32 -r 1.60.2.33 po/es.po;  ) > 2.4.0cvs89.patchset
 ( cvs diff -u -r 1.155.2.40 -r 1.155.2.41 src/Makefile.am;  cvs diff -u -r 1.25.2.26 -r 1.25.2.27 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.17 -r 1.18.2.18 src/stock_pixmap.h;  cvs diff -u -r 1.395.2.232 -r 1.395.2.233 src/summaryview.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/icon_legend.c;  diff -u /dev/null src/pixmaps/copied.xpm;  diff -u /dev/null src/pixmaps/moved.xpm;  ) > 2.4.0cvs90.patchset
+( cvs diff -u -r 1.395.2.233 -r 1.395.2.234 src/summaryview.c;  ) > 2.4.0cvs91.patchset

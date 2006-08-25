@@ -3360,8 +3360,6 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 		log_error(_("An error happened while learning.\n"));
 	}
 
-	g_slist_free(msgs);
-	
 	prefs_common.immediate_exec = immediate_exec;
 
 	END_LONG_OPERATION(summaryview);
@@ -3370,6 +3368,14 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 		summary_execute(summaryview);
 	}
 
+	if (!moved && msgs) {
+		MsgInfo *msginfo = (MsgInfo *)msgs->data;
+		toolbar_set_learn_button
+			(summaryview->mainwin->toolbar,
+			 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
+	}
+	g_slist_free(msgs);
+	
 	summary_status_show(summaryview);	
 }
 

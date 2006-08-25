@@ -1,3 +1,9 @@
+2006-08-25 [wwp]	2.4.0cvs91
+
+	* src/summaryview.c
+		switch spam<->ham button when a message has been marked as spam or ham
+		and is still selected. Thanks to Colin.
+
 2006-08-25 [paul]	2.4.0cvs90
 
 	* src/Makefile.am
