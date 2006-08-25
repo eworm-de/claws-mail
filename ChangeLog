@@ -1,3 +1,17 @@
+2006-08-25 [colin]	2.4.0cvs86
+
+	* src/common/utils.c
+	* src/common/utils.h
+		Add the sc_g_*list_bigger functions in
+		a place everyone can use it
+	* src/summaryview.c
+		Only freeze/thaw the list when working
+		on the selection, if it's bigger than 1
+	* src/gtk/gtksctree.c
+		Only freeze/thaw the list when unselec-
+		ting 'all' if ('all' != 1)
+		This avoids some flickering
+
 2006-08-24 [colin]	2.4.0cvs85
 
 	* src/addressbook.c

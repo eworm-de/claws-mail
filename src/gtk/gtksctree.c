@@ -7,6 +7,7 @@
 #include "gtksctree.h"
 #include "sylpheed-marshal.h"
 #include "stock_pixmap.h"
+#include "utils.h"
 
 #define CLIST_UNFROZEN(clist)     (((GtkCList*) (clist))->freeze_count == 0)
 #define CLIST_REFRESH(clist)    G_STMT_START { \
@@ -259,17 +260,6 @@ select_range (GtkSCTree *sctree, gint row)
 
 	sctree->selecting_range = FALSE;
 	gtk_clist_select_row (GTK_CLIST (sctree), max, -1);
-}
-
-static gboolean sc_g_list_bigger(GList *list, gint max)
-{
-	GList *cur = list;
-	int i = 0;
-	while (cur && i <= max+1) {
-		i++;
-		cur = cur->next;
-	}
-	return (i > max);
 }
 
 /* Handles row selection according to the specified modifier state */
@@ -665,10 +655,15 @@ void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int st
 
 void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
+	gboolean froze = FALSE;
 	sctree->selecting_range = TRUE;
-	gtk_clist_freeze(GTK_CLIST(sctree));
+	if (sc_g_list_bigger(GTK_CLIST(sctree)->selection, 1)) {
+		gtk_clist_freeze(GTK_CLIST(sctree));
+		froze = TRUE;
+	}
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
-	gtk_clist_thaw(GTK_CLIST(sctree));
+	if (froze)
+		gtk_clist_thaw(GTK_CLIST(sctree));
 	sctree->selecting_range = FALSE;
 	sctree->anchor_row = NULL;
 }

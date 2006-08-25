@@ -577,7 +577,8 @@ void mailcap_update_default	   (const gchar *type,
 				    const gchar *command);
 
 gboolean file_is_email(const gchar *filename);
-
+gboolean sc_g_list_bigger(GList *list, gint max);
+gboolean sc_g_slist_bigger(GSList *list, gint max);
 #ifdef __cplusplus
 }
 #endif

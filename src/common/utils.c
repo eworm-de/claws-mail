@@ -4931,3 +4931,25 @@ gboolean file_is_email (const gchar *filename)
 	fclose(fp);
 	return (score >= 3);
 }
+
+gboolean sc_g_list_bigger(GList *list, gint max)
+{
+	GList *cur = list;
+	int i = 0;
+	while (cur && i <= max+1) {
+		i++;
+		cur = cur->next;
+	}
+	return (i > max);
+}
+
+gboolean sc_g_slist_bigger(GSList *list, gint max)
+{
+	GSList *cur = list;
+	int i = 0;
+	while (cur && i <= max+1) {
+		i++;
+		cur = cur->next;
+	}
+	return (i > max);
+}

@@ -493,7 +493,10 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 #define START_LONG_OPERATION(summaryview) {			\
 	summary_lock(summaryview);				\
 	main_window_cursor_wait(summaryview->mainwin);		\
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	\
+	if (sc_g_list_bigger(GTK_CLIST(summaryview->ctree)->selection, 1)) {\
+		froze = TRUE;						\
+		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	\
+	}							\
 	folder_item_update_freeze();				\
 	inc_lock();						\
 	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,		\
@@ -502,7 +505,8 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 #define END_LONG_OPERATION(summaryview) {			\
 	inc_unlock();						\
 	folder_item_update_thaw();				\
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));		\
+	if (froze) 						\
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));	\
 	main_window_cursor_normal(summaryview->mainwin);	\
 	summary_unlock(summaryview);				\
 	summaryview->msginfo_update_callback_id =		\
@@ -2466,7 +2470,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		END_TIMING();
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-		gint *col_pos = summaryview->col_pos;
 		START_TIMING("summaryview_set_ctree_from_list(2)");
 		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
@@ -3192,6 +3195,7 @@ void summary_mark(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
@@ -3226,6 +3230,7 @@ void summary_mark_as_read
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
@@ -3242,6 +3247,7 @@ void summary_msgs_lock(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -3256,6 +3262,7 @@ void summary_msgs_unlock(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -3271,6 +3278,7 @@ void summary_mark_all_read(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
 	AlertValue val;
+	gboolean froze = FALSE;
 
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
@@ -3308,6 +3316,8 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	GSList *msgs = NULL;
 	gboolean immediate_exec = prefs_common.immediate_exec;
 	gboolean moved = FALSE;
+	gboolean froze = FALSE;
+
 	prefs_common.immediate_exec = FALSE;
 
 	START_LONG_OPERATION(summaryview);
@@ -3379,6 +3389,7 @@ void summary_mark_as_unread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
@@ -3507,6 +3518,7 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTreeNode *node;
 	AlertValue aval;
 	MsgInfo *msginfo;
+	gboolean froze = FALSE;
 
 	if (!item) return;
 
@@ -3608,6 +3620,7 @@ void summary_unmark(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
@@ -3657,6 +3670,8 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 {
 	GList *cur;
 	GtkCTreeNode *sel_last = NULL;
+	gboolean froze = FALSE;
+
 	if (!to_folder) return;
 	if (!summaryview->folder_item ||
 	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
@@ -3745,6 +3760,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 {
 	GList *cur;
+	gboolean froze = FALSE;
 
 	if (!to_folder) return;
 	if (!summaryview->folder_item) return;
@@ -4050,22 +4066,20 @@ gboolean summary_execute(SummaryView *summaryview)
 	}
 
 	folder_item_update_thaw();
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	if (new_selected) {
 		summary_unlock(summaryview);
 		gtk_sctree_select
-			(GTK_SCTREE(ctree),
-			 new_selected);
+			(GTK_SCTREE(ctree), new_selected);
 		summary_lock(summaryview);
 	}
 
 	if (summaryview->threaded) {
-		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 		summary_thread_build(summaryview);
 		summary_thread_init(summaryview);
-		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
+
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	summaryview->selected = clist->selection ?
 		GTK_CTREE_NODE(clist->selection->data) : NULL;
@@ -4334,6 +4348,7 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	gboolean froze = FALSE;
 
 	debug_print("Unthreading for execution...");
 
@@ -4718,6 +4733,7 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 
@@ -5810,6 +5826,7 @@ static void summary_ignore_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -5841,6 +5858,7 @@ static void summary_unignore_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
+	gboolean froze = FALSE;
 
 	START_LONG_OPERATION(summaryview);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
