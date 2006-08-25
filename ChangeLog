@@ -1,3 +1,15 @@
+2006-08-25 [mones]	2.4.0cvs89
+
+	* manual/glossary.xml
+		Fix the other glossary items:
+		5.1. = Inmmediate execution -> <quote>immediate execution...
+		5.2. = Fix MBOX capitalization -> Mbox
+		5.3. + Improve Plugins def. w/ tech. ref.
+		5.4. = Quotation -> replace '>' by <quote>></quote>
+		5.5. - SMTP Server. -> remove dot
+	* po/es.po
+		Updated translation
+
 2006-08-25 [mones]	2.4.0cvs88
 
 	* manual/ack.xml

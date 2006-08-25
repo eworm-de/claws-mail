@@ -277,7 +277,8 @@
     </term>
     <listitem>
       <para>
-	When the <quote>immediate execution</quote> option is used, operations 
+	When the <quote>Execute immediately when moving or deleting 
+	messages</quote> option is used, operations 
 	performed on messages, (like deletions or movements), are performed 
 	immediately. If the option is turned off, all operations performed on 
 	messages by the user are only carried out when the 
@@ -410,7 +411,7 @@
   </varlistentry>
   <varlistentry id="gt_mbox">
     <term>
-	MBOX
+	MBox
     </term>
     <listitem>
       <para>
@@ -544,7 +545,10 @@
     <listitem>
       <para>
 	External modules which can be loaded and used by Sylpheed-Claws to 
-	extend its functionality.  
+	extend its functionality. Technically speaking these modules are
+	shared libraries which can register one or several functions to be 
+	called by Sylpheed-Claws when something 
+	<emphasis>interesting</emphasis> is being done.
       </para>
     </listitem>
   </varlistentry>
@@ -618,7 +622,7 @@
       <para>
 	When replying to a message the user will often include a quoted section
 	of that message to provide the context. The quoted section is shown by 
-	the prepending of a common character, usually '>'.
+	the prepending of a common character, usually <quote>&gt;</quote>.
       </para>
     </listitem>
   </varlistentry>
@@ -700,7 +704,7 @@
   </varlistentry>
   <varlistentry id="gt_smtp_server">
     <term>
-	<acronym>SMTP</acronym> server.
+	<acronym>SMTP</acronym> server
     </term>
     <listitem>
       <para>
