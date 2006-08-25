@@ -23,7 +23,7 @@
 	  <varlistentry>
 	    <term>
 	Nombre del menú: <emphasis>Abrir con/Kate</emphasis> 
-	Línea de orden: <emphasis>kate %p</emphasis>
+	Línea de orden: <command>kate %p</command>
 	    </term>
 	    <listitem>
 	      <para>
@@ -44,7 +44,7 @@
 	  <varlistentry>
 	    <term>
 	Nombre del menú: <emphasis>Bogofilter/Marcar como bueno</emphasis> 
-	Línea de orden: <emphasis>bogofilter -n -v -B "%f"</emphasis>
+	Línea de orden: <command>bogofilter -n -v -B "%f"</command>
 	    </term>
 	    <listitem>
 	      <para>
@@ -56,7 +56,7 @@
 	  <varlistentry>
 	    <term>
 	Nombre del menú: <emphasis>Bogofilter/Marcar como spam</emphasis> 
-	Línea de orden: <emphasis>bogofilter -s -v -B "%f"</emphasis>
+	Línea de orden: <command>bogofilter -s -v -B "%f"</command>
 	    </term>
 	    <listitem>
 	      <para>
@@ -73,7 +73,7 @@
 	  <varlistentry>
 	    <term>
 	Nombre del menú: <emphasis>Buscar/Google</emphasis> 
-	Línea de orden: <emphasis>|/ruta/a/google_search.pl</emphasis>
+	Línea de orden: <command>|/ruta/a/google_search.pl</command>
 	    </term>
 	    <listitem>
 	      <para>
@@ -301,7 +301,7 @@
     </para>
     <variablelist>
       <varlistentry>
-	<term>domain</term>
+	<term><literal>domain</literal></term>
 	<listitem>
 	  <para>
 	Su nombre de dominio (<literal>ejemplo.com</literal>). Si no se 
@@ -310,7 +310,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>name</term>
+	<term><literal>name</literal></term>
 	<listitem>
 	  <para>
 	El nombre de usuario. Si no se establece se extraerá de la información 
@@ -319,7 +319,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>email</term>
+	<term><literal>email</literal></term>
 	<listitem>
 	  <para>
 	El correo electrónico del usuario. Si no se establece se extraerá a 
@@ -328,7 +328,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>organization</term>
+	<term><literal>organization</literal></term>
 	<listitem>
 	  <para>
 	Su organización. Si no se establece estará vacía.
@@ -336,7 +336,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>smtpserver</term>
+	<term><literal>smtpserver</literal></term>
 	<listitem>
 	  <para>
 	El servidor SMTP a usar. Si no se establece será 
@@ -345,7 +345,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>smtpauth</term>
+	<term><literal>smtpauth</literal></term>
 	<listitem>
 	  <para>
 	0 o 1. Si hay que autentificarse en el servidor SMTP. Si no se
@@ -354,7 +354,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>smtpuser</term>
+	<term><literal>smtpuser</literal></term>
 	<listitem>
 	  <para>
 	El nombre de usuario para el servidor SMTP. Si no se establece estará
@@ -363,7 +363,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>smtppass</term>
+	<term><literal>smtppass</literal></term>
 	<listitem>
 	  <para>
 	La contraseña del servidor SMTP. Si no se establece estará vacío
@@ -374,7 +374,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>recvtype</term>
+	<term><literal>recvtype</literal></term>
 	<listitem>
 	  <para>
 	El tipo de servidor del que recibir. 0 para POP3, 3 para IMAP4, 5 para
@@ -383,7 +383,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>recvserver</term>
+	<term><literal>recvserver</literal></term>
 	<listitem>
 	  <para>
 	El servidor de recepción. Si no se establece será 
@@ -393,7 +393,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>recvuser</term>
+	<term><literal>recvuser</literal></term>
 	<listitem>
 	  <para>
 	El nombre de usuario del servidor de recepción. Si no se establece
@@ -402,7 +402,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>recvpass</term>
+	<term><literal>recvpass</literal></term>
 	<listitem>
 	  <para>
 	La contraseña del servidor de recepción. Si no se establece estará
@@ -411,7 +411,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>imapdir</term>
+	<term><literal>imapdir</literal></term>
 	<listitem>
 	  <para>
 	El subdirectorio IMAP. Si no se establece estará vacío, lo cual es
@@ -420,7 +420,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>mboxfile</term>
+	<term><literal>mboxfile</literal></term>
 	<listitem>
 	  <para>
 	El fichero Mbox para recibir si <literal>$recvtype</literal> es 5.
@@ -429,7 +429,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>mailbox</term>
+	<term><literal>mailbox</literal></term>
 	<listitem>
 	  <para>
 	El buzón MH donde almacenar el correo (para 
@@ -439,7 +439,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>smtpssl</term>
+	<term><literal>smtpssl</literal></term>
 	<listitem>
 	  <para>
 	0 o 1. Si hay que usar SSL para enviar correo. Si no se establece será 
@@ -448,7 +448,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>recvssl</term>
+	<term><literal>recvssl</literal></term>
 	<listitem>
 	  <para>
 	0 o 1. Si hay que usar SSL para recibir correo. Si no se establece será 
@@ -469,7 +469,7 @@
     </para>
     <variablelist>
       <varlistentry>
-	<term>$DEFAULTDOMAIN</term>
+	<term><literal>$DEFAULTDOMAIN</literal></term>
 	<listitem>
 	  <para>
 	El nombre de dominio extraído de la información Unix del nombre de
@@ -478,7 +478,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>$DOMAIN</term>
+	<term><literal>$DOMAIN</literal></term>
 	<listitem>
 	  <para>
 	El nombre de dominio establecido en la variable 
@@ -487,7 +487,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>$USERNAME</term>
+	<term><literal>$USERNAME</literal></term>
 	<listitem>
 	  <para>
 	El nombre real del usuario.
@@ -495,7 +495,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>$LOGIN</term>
+	<term><literal>$LOGIN</literal></term>
 	<listitem>
 	  <para>
 	El nombre de usuario (<emphasis>login</emphasis>) Unix del usuario.
@@ -503,7 +503,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>$NAME_MAIL</term>
+	<term><literal>$NAME_MAIL</literal></term>
 	<listitem>
 	  <para>
 	El nombre real del usuario tal y como se estableción en el campo de
@@ -514,7 +514,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>$EMAIL</term>
+	<term><literal>$EMAIL</literal></term>
 	<listitem>
 	  <para>
 	La dirección de correo electrónico tal y como se estableción en la
@@ -539,7 +539,7 @@
     </para>
     <variablelist>
       <varlistentry>
-	<term>bold_unread</term>
+	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
 	Mostrar los mensajes no leídos utilizando negrita en la lista de
@@ -548,7 +548,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>cache_max_mem_usage</term>
+	<term><literal>cache_max_mem_usage</literal></term>
 	<listitem>
 	  <para>
 	La cantidad máxima de memoria a usar para la cache de mensajes, en Kb.
@@ -556,7 +556,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>cache_min_keep_time</term>
+	<term><literal>cache_min_keep_time</literal></term>
 	<listitem>
 	  <para>
 	El tiempo mínimo para mantener la cache en memoria, en minutos. Las
@@ -566,7 +566,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>compose_no_markup</term>
+	<term><literal>compose_no_markup</literal></term>
 	<listitem>
 	  <para>
 	No utilizar texto en negrita y cursiva en el selector de cuentas de
@@ -575,7 +575,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>enable_hscrollbar</term>
+	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>
 	Activa la barra de desplazamiento horizontal en la lista de mensajes.
@@ -583,7 +583,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>enable_rules_hint</term>
+	<term><literal>enable_rules_hint</literal></term>
 	 <listitem>
 	   <para>
 	Activar las líneas alternantes en los componentes GtkTreeView.
@@ -591,7 +591,7 @@
 	 </listitem>
       </varlistentry>
       <varlistentry>
-	<term>enable_swap_from</term>
+	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
 	Mostrar la dirección de correo del remitente en la columna Para de
@@ -600,7 +600,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-        <term>folderview_vscrollbar_policy</term>
+        <term><literal>folderview_vscrollbar_policy</literal></term>
 	<listitem>
 	  <para>
 	Especificar la política de la barra de desplazamiento vertical de
@@ -609,7 +609,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>hover_timeout</term>
+	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
 	Tiempo en milisegundos que causará que se expanda un árbol de carpetas
@@ -619,7 +619,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>live_dangerously</term>
+	<term><literal>live_dangerously</literal></term>
 	<listitem>
 	  <para>
 	No solicitar confirmación antes de la eliminación definitiva de los
@@ -628,11 +628,11 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>log_error_color</term>
-	<term>log_in_color</term>
-	<term>log_msg_color</term>
-	<term>log_out_color</term>
-	<term>log_warn_color</term>
+	<term><literal>log_error_color</literal></term>
+	<term><literal>log_in_color</literal></term>
+	<term><literal>log_msg_color</literal></term>
+	<term><literal>log_out_color</literal></term>
+	<term><literal>log_warn_color</literal></term>
 	<listitem>
 	  <para>
 	Colores a usar en la ventana de traza.
@@ -640,15 +640,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>mark_as_read_delay</term>
+	<term><literal>mark_as_read_delay</literal></term>
 	<listitem>
 	  <para>
-	Segundos de espera antes de marcar un mensaje como leído.
+	Segundos de espera antes he marcar un mensaje como leído.
 	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>skip_ssl_cert_check</term>
+	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>
 	Desactiva la verificación de los certificados SSL.
@@ -656,7 +656,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>statusbar_update_step</term>
+	<term><literal>statusbar_update_step</literal></term>
 	<listitem>
 	  <para>
 	Salto de actualización en las barras de progreso.
@@ -664,7 +664,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>textview_cursor_visible</term>
+	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>
 	Mostrar el cursor en la vista de mensaje.
@@ -672,7 +672,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>thread_by_subject_max_age</term>
+	<term><literal>thread_by_subject_max_age</literal></term>
 	<listitem>
 	  <para>
 	Número de días para incluir un mensaje en un hilo cuando se use
@@ -682,7 +682,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>toolbar_detachable</term>
+	<term><literal>toolbar_detachable</literal></term>
 	<listitem>
 	  <para>
 	Ocultar los botones de manejo de las barras de herramientas.
@@ -690,7 +690,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>utf8_instead_of_locale_for_broken_mail</term>
+	<term><literal>utf8_instead_of_locale_for_broken_mail</literal></term>
 	<listitem>
 	  <para>
 	Utilizar la codificación UTF-8 para los correos incorrectos en lugar
@@ -699,7 +699,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>warn_dnd</term>
+	<term><literal>warn_dnd</literal></term>
 	<listitem>
 	  <para>
 	Mostrar un diálogo de confirmación al arrastrar y soltar carpetas.

@@ -1779,3 +1779,4 @@
 ( cvs diff -u -r 1.60.2.62 -r 1.60.2.63 src/addressbook.c;  ) > 2.4.0cvs85.patchset
 ( cvs diff -u -r 1.395.2.231 -r 1.395.2.232 src/summaryview.c;  cvs diff -u -r 1.36.2.76 -r 1.36.2.77 src/common/utils.c;  cvs diff -u -r 1.20.2.36 -r 1.20.2.37 src/common/utils.h;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/gtk/gtksctree.c;  ) > 2.4.0cvs86.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/icon_legend.c;  ) > 2.4.0cvs87.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/ack.xml;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/glossary.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/es/advanced.xml;  ) > 2.4.0cvs88.patchset

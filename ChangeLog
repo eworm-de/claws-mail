@@ -1,3 +1,14 @@
+2006-08-25 [mones]	2.4.0cvs88
+
+	* manual/ack.xml
+		Reformatted, changed email address
+	* manual/glossary.xml
+		Reformatted, fixed MANUAL-TODO items:
+		8.2. + add ROT-13 to glossary
+		8.4. + add URL to glossary
+	* manual/es/advanced.xml
+		Fixed <literal>s
+
 2006-08-25 [paul]	2.4.0cvs87
 
 	* src/gtk/icon_legend.c
