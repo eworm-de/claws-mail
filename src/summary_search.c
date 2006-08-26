@@ -133,6 +133,24 @@ void summary_search(SummaryView *summaryview)
 	gtk_widget_show(search_window.window);
 }
 
+static void summary_show_stop_button(void)
+{
+	gtk_widget_hide(search_window.close_btn);
+	gtk_widget_show(search_window.stop_btn);
+	gtk_widget_set_sensitive(search_window.all_btn, FALSE);
+	gtk_widget_set_sensitive(search_window.prev_btn, FALSE);
+	gtk_widget_set_sensitive(search_window.next_btn, FALSE);
+}
+
+static void summary_hide_stop_button(void)
+{
+	gtk_widget_hide(search_window.stop_btn);
+	gtk_widget_show(search_window.close_btn);
+	gtk_widget_set_sensitive(search_window.all_btn, TRUE);
+	gtk_widget_set_sensitive(search_window.prev_btn, TRUE);
+	gtk_widget_set_sensitive(search_window.next_btn, TRUE);
+}
+
 static void summary_search_create(void)
 {
 	GtkWidget *window;
@@ -459,8 +477,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 
 	search_window.is_searching = TRUE;
 	main_window_cursor_wait(summaryview->mainwin);
-	gtk_widget_hide(search_window.close_btn);
-	gtk_widget_show(search_window.stop_btn);
+	summary_show_stop_button();
 
 	if (search_all) {
 		gtk_clist_freeze(GTK_CLIST(ctree));
@@ -476,8 +493,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 
 		if (!node) {
 			search_window.is_searching = FALSE;
-			gtk_widget_hide(search_window.stop_btn);
-			gtk_widget_show(search_window.close_btn);
+			summary_hide_stop_button();
 			main_window_cursor_normal(summaryview->mainwin);
 			summary_unlock(summaryview);
 			return;
@@ -628,8 +644,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	}
 
 	search_window.is_searching = FALSE;
-	gtk_widget_hide(search_window.stop_btn);
-	gtk_widget_show(search_window.close_btn);
+	summary_hide_stop_button();
 	main_window_cursor_normal(summaryview->mainwin);
 	if (search_all) {
 		gtk_clist_thaw(GTK_CLIST(ctree));

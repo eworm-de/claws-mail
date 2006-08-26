@@ -1,3 +1,8 @@
+2006-08-26 [wwp]	2.4.0cvs93
+
+	* src/summary_search.c
+		disable find buttons while summary search is running.
+
 2006-08-25 [colin]	2.4.0cvs92
 
 	* src/folder.c
