@@ -1,3 +1,21 @@
+2006-08-26 [mones]	2.4.0cvs94
+
+	* manual/glossary.xml
+		2.2. + add ISP to the glossary
+		7.5. + Add UIDL to glossary
+		7.7. + Add TCP to glossary
+	* manual/handling.xml
+		7.1. + Mentions GNU/Linux distribution, what about the non...
+		7.2. = s/html/HTML/, quote --local option -> Dillo HTML Viewer
+		7.3. + Mentions .bashrc, what about the non-bash ones? 
+		7.4. = Use appropriate quotation for commands
+		7.6. = change "" to <quote></quote>
+	* manual/plugins.xml
+		6.1. + Example #mh/Mailbox/Friends -> #mh/inbox/Friends		
+	* manual/starting.xml
+		2.1. + local mbox file: some examples of mbox file locations...
+		Also reformatted files requiring it
+
 2006-08-26 [wwp]	2.4.0cvs93
 
 	* src/summary_search.c

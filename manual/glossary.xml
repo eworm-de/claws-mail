@@ -286,6 +286,19 @@
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_isp">
+    <term>
+    	<acronym>ISP</acronym>
+    </term>
+    <listitem>
+      <para>
+	Internet Service Provider. A company which provides Internet access to 
+	its customers. In the dialup access age these were the big telephony
+	companies, with the arrival of broadband access the number of companies 
+	and types of services offered has grown exponentially.
+      </para>
+    </listitem>
+  </varlistentry>
 </variablelist>
 <!-- 
 <variablelist>
@@ -805,6 +818,18 @@
     
 <variablelist>
   <title>T</title>
+  <varlistentry id="gt_tcp">
+    <term>
+    	<acronym>TCP</acronym>
+    </term>
+    <listitem>
+      <para>
+	Transport Control Protocol. The main protocol used in the Internet.
+	Allows media-independent reliable connections between two endpoints 
+	and is supported by all modern Operating Systems in use.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_themes">
     <term>
 	Themes
@@ -841,6 +866,18 @@
   
 <variablelist>
   <title>U</title>
+  <varlistentry id="gt_uidl">
+    <term>
+	<acronym>UIDL</acronym>
+    </term>
+    <listitem>
+      <para>
+	Unique IDentification Listing. A <xref linkend="gt_pop3" /> command
+	which allows single message handling by asigning a unique identifier 
+	for each message. 
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_url">
     <term>
 	URL
