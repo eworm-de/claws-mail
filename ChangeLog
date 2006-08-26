@@ -1,3 +1,8 @@
+2006-08-26 [mones]	2.4.0cvs95
+
+	* manual/handling.xml
+		Fix subfolder path in the example (thanks to Paul) 
+
 2006-08-26 [mones]	2.4.0cvs94
 
 	* manual/glossary.xml

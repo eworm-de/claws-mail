@@ -81,7 +81,7 @@
 	action, which instructs Sylpheed-Claws what to do with emails matching
 	the condition we just defined. For example, <quote>mark_as_read</quote>
 	marks the mail as read as soon as it arrives in your inbox, or
-	<quote>move #mh/inbox/Friends</quote> moves the mail to your
+	<quote>move #mh/Mailbox/inbox/Friends</quote> moves the mail to your
 	<quote>Friends</quote> subfolder. Here, too, a <quote>Define...</quote>
 	button is available to help you define the action to take.
     </para>
