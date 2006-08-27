@@ -1366,6 +1366,8 @@ FolderItem *folder_get_default_outbox(void)
 			continue;
 		if (folder->outbox == NULL)
 			continue;
+		if (folder->klass->type == F_UNKNOWN)
+			continue;
 
 		return folder->outbox;
 	}
@@ -1383,6 +1385,8 @@ FolderItem *folder_get_default_draft(void)
 		if (folder == NULL)
 			continue;
 		if (folder->draft == NULL)
+			continue;
+		if (folder->klass->type == F_UNKNOWN)
 			continue;
 
 		return folder->draft;
@@ -1402,6 +1406,8 @@ FolderItem *folder_get_default_queue(void)
 			continue;
 		if (folder->queue == NULL)
 			continue;
+		if (folder->klass->type == F_UNKNOWN)
+			continue;
 
 		return folder->queue;
 	}
@@ -1419,6 +1425,8 @@ FolderItem *folder_get_default_trash(void)
 		if (folder == NULL)
 			continue;
 		if (folder->trash == NULL)
+			continue;
+		if (folder->klass->type == F_UNKNOWN)
 			continue;
 
 		return folder->trash;

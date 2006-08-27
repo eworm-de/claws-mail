@@ -32,6 +32,7 @@ struct _BogofilterConfig
 	gboolean 		 receive_spam;
 	gchar 			*save_folder;
 	guint 			 max_size;
+	gchar			*bogopath;
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);

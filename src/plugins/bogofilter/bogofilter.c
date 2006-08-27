@@ -90,6 +90,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"max_size", "250", &config.max_size, P_INT,
 	 NULL, NULL, NULL},
+	{"bogopath", "bogofilter", &config.bogopath, P_STRING,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -102,6 +104,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	static gboolean warned_error = FALSE;
 	gchar *file = NULL, *cmd = NULL;
 	int status = 3;
+	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 
 	if (!config.process_emails) {
 		return FALSE;
@@ -113,7 +116,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	file = procmsg_get_message_file(msginfo);
 
 	if (file)
-		cmd = g_strdup_printf("bogofilter -I %s", file);
+		cmd = g_strdup_printf("%s -I %s", bogo_exec, file);
 	
 	if (cmd)
 		status = system(cmd);
@@ -125,7 +128,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	g_free(cmd);
 	g_free(file);
-	printf("bogofilter status %d\n", status);
+	debug_print("bogofilter status %d\n", status);
 	is_spam = (status == 0);
 	
 	if (is_spam) {
@@ -176,7 +179,8 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 {
 	gchar *cmd = NULL;
 	gchar *file = NULL;
-
+	const gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
+	gint status = 0;
 	if (msginfo == NULL && msglist == NULL) {
 		return -1;
 	}
@@ -188,9 +192,18 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		} else {
 			if (message_callback != NULL)
 				message_callback(_("Bogofilter: learning from message..."), 0, 0);
-			cmd = g_strdup_printf("bogofilter -%c -I %s",
-							spam ? 's':'n', file);
-			execute_command_line(cmd, FALSE);
+			if (spam)
+				/* learn as spam */
+				cmd = g_strdup_printf("%s -s -I '%s'", bogo_exec, file);
+			else if (MSG_IS_SPAM(msginfo->flags))
+				/* correct bogofilter, this wasn't spam */
+				cmd = g_strdup_printf("%s -Sn -I '%s'", bogo_exec, file);
+			else 
+				/* learn as ham */
+				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
+			if ((status = execute_command_line(cmd, FALSE)) != 0)
+				alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+						cmd, status);
 			g_free(cmd);
 			g_free(file);
 			if (message_callback != NULL)
@@ -206,13 +219,24 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		if (message_callback != NULL)
 			message_callback(_("Bogofilter: learning from messages..."), total, 0);
 		
-		for (; cur; cur = cur->next) {
+		for (; cur && status == 0; cur = cur->next) {
 			info = (MsgInfo *)cur->data;
 			file = procmsg_get_message_file(info);
 
-			cmd = g_strdup_printf("bogofilter -%c -I %s",
-							spam ? 's':'n', file);
-			execute_command_line(cmd, FALSE);
+			if (spam)
+				/* learn as spam */
+				cmd = g_strdup_printf("%s -s -I '%s'", bogo_exec, file);
+			else if (MSG_IS_SPAM(info->flags))
+				/* correct bogofilter, this wasn't spam */
+				cmd = g_strdup_printf("%s -Sn -I '%s'", bogo_exec, file);
+			else 
+				/* learn as ham */
+				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
+	
+			if ((status = execute_command_line(cmd, FALSE)) != 0)
+				alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+						cmd, status);
+
 			g_free(cmd);
 			g_free(file);
 			done++;

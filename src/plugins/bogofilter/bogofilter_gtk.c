@@ -50,6 +50,7 @@ struct BogofilterPage
 	GtkWidget *save_folder;
 	GtkWidget *save_folder_select;
 	GtkWidget *max_size;
+	GtkWidget *bogopath;
 };
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
@@ -76,7 +77,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *vbox1, *vbox2;
 	GtkWidget *hbox_max_size;
-	GtkWidget *hbox_process_emails, *hbox_save_spam;
+	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_bogopath;
 
 	GtkWidget *max_size_label;
 	GtkObject *max_size_spinbtn_adj;
@@ -88,6 +89,9 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_spam_checkbtn;
 	GtkWidget *save_spam_folder_entry;
 	GtkWidget *save_spam_folder_select;
+
+	GtkWidget *bogopath_label;
+	GtkWidget *bogopath_entry;
 
 	GtkTooltips *tooltips;
 
@@ -152,6 +156,19 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a folder for storing spam"),
 			NULL);
 
+	hbox_bogopath = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_bogopath);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_bogopath, FALSE, FALSE, 0);
+
+	bogopath_label = gtk_label_new(
+			_("Bogofilter call: "));
+	gtk_widget_show(bogopath_label);
+	gtk_box_pack_start(GTK_BOX(hbox_bogopath), bogopath_label, FALSE, FALSE, 0);
+
+	bogopath_entry = gtk_entry_new();
+	gtk_widget_show(bogopath_entry);
+	gtk_box_pack_start(GTK_BOX(hbox_bogopath), bogopath_entry, FALSE, FALSE, 0);
+
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 
@@ -165,12 +182,15 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
+	if (config->bogopath != NULL)
+		gtk_entry_set_text(GTK_ENTRY(bogopath_entry), config->bogopath);
 
 	page->max_size = max_size_spinbtn;
 	page->process_emails = process_emails_checkbtn;
 	page->receive_spam = save_spam_checkbtn;
 	page->save_folder = save_spam_folder_entry;
 	page->save_folder_select = save_spam_folder_select;
+	page->bogopath = bogopath_entry;
 
 	page->page.widget = vbox1;
 }
@@ -198,6 +218,10 @@ static void bogofilter_save_func(PrefsPage *_page)
 	/* save_folder */
 	g_free(config->save_folder);
 	config->save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+
+	/* bogopath */
+	g_free(config->bogopath);
+	config->bogopath = gtk_editable_get_chars(GTK_EDITABLE(page->bogopath), 0, -1);
 
 	/* max_size */
 	config->max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
