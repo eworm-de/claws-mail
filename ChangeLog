@@ -1,3 +1,9 @@
+2006-08-27 [colin]	2.4.0cvs99
+
+	* manual/faq.xml
+	* manual/plugins.xml
+		Document Bogofilter plugin
+
 2006-08-27 [colin]	2.4.0cvs98
 
 	* src/compose.c

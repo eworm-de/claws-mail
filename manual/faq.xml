@@ -51,7 +51,8 @@
     <section>
     <title>Does Sylpheed-Claws have an anti-spam feature?</title>
     <para>
-	Yes. It has a SpamAssassin plugin. You can find details of it on the
+	Yes. It has a SpamAssassin and a Bogofilter plugin. You can find 
+	details of it on the
 	<link linkend="ch_plugins">Extending Sylpheed-Claws</link> chapter.
     </para>
     <para>

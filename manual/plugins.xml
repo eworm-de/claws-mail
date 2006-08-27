@@ -22,6 +22,35 @@
     </para>
     <variablelist>
       <varlistentry>
+	<term>Bogofilter</term>
+	<listitem>
+	  <para>
+	The Bogofilter plugin comes with two major features:
+	  </para><para>
+	The ability to scan incoming mail received from a POP, IMAP or LOCAL 
+	account using Bogofilter. It can optionally delete mail identified 
+	as spam or save it to a designated folder. Mail scanning can be turned 
+	off.
+	  </para><para>
+	The ability for users to teach Bogofilter to recognise spam or ham. 
+	You can train Bogofilter by marking messages as spam or ham from the 
+	Message List contextual menu, or using the relevant toolbar button in 
+	the main window or the message window (see 
+	<quote>Configuration/Preferences/Customize toolbars</quote>). Messages 
+	marked as spam are optionally saved to a designated folder.
+	  </para><para>
+	Plugin preferences can be found in 
+	<quote>Configuration/Preferences/Plugins/Bogofilter</quote>.
+	  </para><para>
+	Bogofilter's advantage over Spamassassin is its speed.
+	  </para><para>
+	Bogofilter is available from <ulink 
+	url="http://bogofilter.sourceforge.net/"
+	>http://bogofilter.sourceforge.net/</ulink>. 
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
         <term>Clam Antivirus</term>
 	<listitem>
 	  <para>
@@ -80,6 +109,10 @@
 	  </para><para>
 	Plugin preferences can be found in 
 	<quote>Configuration/Preferences/Plugins/SpamAssassin</quote>.
+	  </para><para>
+	SpamAssassin's advantage over Bogofilter is that it's not only a bayesian
+	filter, but it also performs various local and network tests to
+	determine spaminess.
 	  </para><para>
 	SpamAssassin is available from <ulink 
 	url="http://spamassassin.apache.org/"
