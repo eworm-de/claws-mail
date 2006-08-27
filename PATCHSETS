@@ -1792,3 +1792,4 @@
 ( cvs diff -u -r 1.382.2.304 -r 1.382.2.305 src/compose.c;  cvs diff -u -r 1.94.2.99 -r 1.94.2.100 src/messageview.c;  cvs diff -u -r 1.150.2.75 -r 1.150.2.76 src/procmsg.c;  cvs diff -u -r 1.60.2.33 -r 1.60.2.34 src/procmsg.h;  ) > 2.4.0cvs98.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/faq.xml;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 manual/plugins.xml;  ) > 2.4.0cvs99.patchset
 ( cvs diff -u -r 1.213.2.109 -r 1.213.2.110 src/folder.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.4.0cvs100.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/Makefile.am;  ) > 2.4.0cvs101.patchset
