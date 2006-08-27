@@ -40,6 +40,7 @@
 #include "quoted-printable.h"
 #include "base64.h"
 #include "codeconv.h"
+#include "plugin.h"
 
 extern struct GPGConfig prefs_gpg;
 
@@ -739,4 +740,11 @@ void pgpinline_done()
 	privacy_unregister_system(&pgpinline_system);
 }
 
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_PRIVACY, N_("PGP/Inline")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}
 #endif /* USE_GPGME */

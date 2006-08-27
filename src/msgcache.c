@@ -65,7 +65,7 @@ static gboolean msgcache_use_mmap = FALSE;
 	 ((x[2]&0xff) << 16) |		\
 	 ((x[3]&0xff) << 24))
 
-static gboolean msgcache_use_mmap = TRUE;
+static gboolean msgcache_use_mmap = FALSE;
 #endif
 
 static gboolean swapping = TRUE;

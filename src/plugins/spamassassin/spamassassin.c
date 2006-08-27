@@ -545,6 +545,15 @@ const gchar *plugin_version(void)
 	return VERSION;
 }
 
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_FILTERING, N_("Spam detection")},
+		  {PLUGIN_FILTERING, N_("Spam learning")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}
+
 void spamassassin_register_hook(void)
 {
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);

@@ -276,3 +276,11 @@ const gchar *plugin_version(void)
 {
 	return VERSION;
 }
+
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_FILTERING, N_("Virus detection")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}

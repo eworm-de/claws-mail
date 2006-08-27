@@ -29,6 +29,7 @@
 #include "common/sylpheed.h"
 #include "sgpgme.h"
 #include "prefs_gpg.h"
+#include "plugin.h"
 
 gint plugin_init(gchar **error)
 {
@@ -87,3 +88,10 @@ const gchar *plugin_version(void)
 	return VERSION;
 }
 
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_PRIVACY, N_("Core operations")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}

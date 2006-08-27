@@ -216,3 +216,11 @@ const gchar *plugin_version(void)
 {
 	return VERSION;
 }
+
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_MIMEVIEWER, N_("text/html")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}

@@ -388,3 +388,11 @@ static void trayicon_exit_cb( gpointer data, guint action, GtkWidget *widget )
 		app_exit_cb(mainwin, 0, NULL);
 	}
 }
+
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_NOTIFIER, N_("Trayicon")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}

@@ -1001,6 +1001,7 @@ START_TIMING("--------- summary_show");
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
+		START_TIMING("quicksearch");
 		gint num = 0, total = summaryview->folder_item->total_msgs;
 		statusbar_print_all(_("Searching in %s... \n"), 
 			summaryview->folder_item->path ? 
@@ -1037,6 +1038,7 @@ START_TIMING("--------- summary_show");
 		}
 		g_slist_free(mlist);
 		mlist = not_killed;
+		END_TIMING();
 	}
 
 	if (!hidden_removed) {

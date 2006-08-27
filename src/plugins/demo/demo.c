@@ -96,3 +96,11 @@ const gchar *plugin_version(void)
 {
 	return VERSION;
 }
+
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_OTHER, N_("Demo")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}

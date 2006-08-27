@@ -42,9 +42,22 @@ struct _Plugin
 	const gchar *(*version) (void);
 	const gchar *(*type) (void);
 	const gchar *(*licence) (void);
+	struct PluginFeature *(*provides) (void);
+	
 	GSList *rdeps;
 	gchar *error;
 };
+
+const gchar *plugin_feature_names[] =
+	{ N_("Nothing"),
+	  N_("a viewer"),
+	  N_("folders"),
+	  N_("filtering"),
+	  N_("a privacy interface"),
+	  N_("a notifier"),
+	  N_("an utility"),
+	  N_("things"),
+	  NULL };
 
 /**
  * List of all loaded plugins
@@ -227,6 +240,32 @@ static void plugin_remove_from_unloaded_list (const gchar *filename)
 	}
 }
 
+static gchar *plugin_check_features(struct PluginFeature *features) {
+	int i = 0, j = 0;
+	GSList *cur = plugins;
+
+	if (features == NULL)
+		return NULL;
+	for(; cur; cur = cur->next) {
+		Plugin *p = (Plugin *)cur->data;
+		struct PluginFeature *cur_features = p->provides();
+		for (j = 0; cur_features[j].type != PLUGIN_NOTHING; j++) {
+			for (i = 0; features[i].type != PLUGIN_NOTHING; i++) {
+				if (cur_features[j].type == features[i].type &&
+				    !strcmp(cur_features[j].subtype, features[i].subtype)) {
+					return g_strdup_printf(_(
+						"This plugin provides %s (%s), which is "
+						"already provided by the %s plugin."),
+						_(plugin_feature_names[features[i].type]), 
+						_(features[i].subtype),
+						p->name());
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
 /**
  * Loads a plugin
  *
@@ -241,6 +280,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	gpointer plugin_name, plugin_desc, plugin_version;
 	const gchar *(*plugin_type)(void);
 	const gchar *(*plugin_licence)(void);
+	struct PluginFeature *(*plugin_provides)(void);
+
 	gint ok;
 
 	g_return_val_if_fail(filename != NULL, NULL);
@@ -275,6 +316,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	    !g_module_symbol(plugin->module, "plugin_version", &plugin_version) ||
 	    !g_module_symbol(plugin->module, "plugin_type", (gpointer)&plugin_type) ||
 	    !g_module_symbol(plugin->module, "plugin_licence", (gpointer)&plugin_licence) ||
+	    !g_module_symbol(plugin->module, "plugin_provides", (gpointer)&plugin_provides) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer)&plugin_init)) {
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
@@ -297,11 +339,17 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
+	if ((*error = plugin_check_features(plugin_provides())) != NULL) {
+		g_module_close(plugin->module);
+		g_free(plugin);
+		return NULL;
+	}
 	plugin->name = plugin_name;
 	plugin->desc = plugin_desc;
 	plugin->version = plugin_version;
 	plugin->type = plugin_type;
 	plugin->licence = plugin_licence;
+	plugin->provides = plugin_provides;
 	plugin->filename = g_strdup(filename);
 	plugin->error = NULL;
 	if ((ok = plugin_init(error)) < 0) {

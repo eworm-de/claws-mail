@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "privacy.h"
 #include "procmime.h"
+#include "plugin.h"
 
 #include "pgpmime.h"
 #include <plugins/pgpcore/sgpgme.h>
@@ -697,4 +698,11 @@ void pgpmime_done()
 	privacy_unregister_system(&pgpmime_system);
 }
 
+struct PluginFeature *plugin_provides(void)
+{
+	static struct PluginFeature features[] = 
+		{ {PLUGIN_PRIVACY, N_("PGP/Mime")},
+		  {PLUGIN_NOTHING, NULL}};
+	return features;
+}
 #endif /* USE_GPGME */

@@ -24,12 +24,29 @@
 
 typedef struct _Plugin Plugin;
 
+typedef enum {
+	PLUGIN_NOTHING,
+	PLUGIN_MIMEVIEWER,
+	PLUGIN_FOLDERCLASS,
+	PLUGIN_FILTERING,
+	PLUGIN_PRIVACY,
+	PLUGIN_NOTIFIER,
+	PLUGIN_UTILITY,
+	PLUGIN_OTHER
+} PluginFeatureType;
+
+struct PluginFeature {
+	PluginFeatureType type;
+	const gchar *subtype;
+};
+
 /* Functions to implement by the plugin */
 gint plugin_init		(gchar		**error);
 void plugin_done		(void);
 const gchar *plugin_name	(void);
 const gchar *plugin_desc	(void);
 const gchar *plugin_version	(void);
+struct PluginFeature *plugin_provides (void);
 
 /* Functions by the sylpheed plugin system */
 Plugin *plugin_load		(const gchar	 *filename,

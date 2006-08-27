@@ -1,3 +1,24 @@
+2006-08-27 [colin]	2.4.0cvs97
+
+	* src/msgcache.c
+		Disable mmaped caches - huge metadata loss
+		here after a power failure.
+	* src/summaryview.c
+		Add quicksearch timing
+	* src/common/plugin.c
+	* src/common/plugin.h
+		Implement an interface to tell what plugins
+		provide. Prevent loading of similar plugins.
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		Implement plugin_provides()
+
 2006-08-27 [colin]	2.4.0cvs96
 
 	* configure.ac
