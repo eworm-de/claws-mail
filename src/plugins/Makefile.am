@@ -6,6 +6,10 @@ if BUILD_SPAMASSASSIN_PLUGIN
 spamassasssin_dir = spamassassin
 endif
 
+if BUILD_BOGOFILTER_PLUGIN
+bogofilter_dir = bogofilter
+endif
+
 if BUILD_DILLO_VIEWER_PLUGIN
 dillo_viewer_dir = dillo_viewer
 endif
@@ -30,6 +34,7 @@ endif
 
 SUBDIRS = $(demo_dir) \
 	$(spamassasssin_dir) \
+	$(bogofilter_dir) \
 	$(dillo_viewer_dir) \
 	$(trayicon_dir) \
 	$(clamav_dir) \

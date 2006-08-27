@@ -1,3 +1,15 @@
+2006-08-27 [colin]	2.4.0cvs96
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/bogofilter/.cvsignore
+	* src/plugins/bogofilter/Makefile.am
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		New Bogofilter plugin, provides filtering and
+		learning. Spamassassin will go to extra plugins.
+
 2006-08-26 [mones]	2.4.0cvs95
 
 	* manual/handling.xml

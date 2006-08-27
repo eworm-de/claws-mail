@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=95
+EXTRA_VERSION=96
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -643,6 +643,20 @@ else
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
+dnl --- Bogofilter ---
+AC_MSG_CHECKING([whether to build Bogofilter plugin])
+AC_ARG_ENABLE(bogofilter-plugin,
+	[  --disable-bogofilter-plugin      Build bogofilter plugin [default=yes]],
+	[ac_cv_enable_bogofilter_plugin=$enableval], [ac_cv_enable_bogofilter_plugin=yes])
+if test x"$ac_cv_enable_bogofilter_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PLUGINS="bogofilter $PLUGINS"
+	AC_DEFINE(USE_BOGOFILTER_PLUGIN, 1, Define if bogofilter plugin is being build.)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_BOGOFILTER_PLUGIN, test x"$ac_cv_enable_bogofilter_plugin" = xyes)
+
 dnl --- PGP/CORE ---
 AC_MSG_CHECKING([whether to build PGP/CORE plugin])
 AC_ARG_ENABLE(pgpcore-plugin,
@@ -824,6 +838,7 @@ src/gtk/Makefile
 src/etpan/Makefile
 src/plugins/Makefile
 src/plugins/demo/Makefile
+src/plugins/bogofilter/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/trayicon/Makefile

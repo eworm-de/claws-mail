@@ -1787,3 +1787,4 @@
 ( cvs diff -u -r 1.15.2.30 -r 1.15.2.31 src/summary_search.c;  ) > 2.4.0cvs93.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 manual/glossary.xml;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/handling.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 manual/plugins.xml;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/starting.xml;  ) > 2.4.0cvs94.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/handling.xml;  ) > 2.4.0cvs95.patchset
+( cvs diff -u -r 1.654.2.1834 -r 1.654.2.1835 configure.ac;  cvs diff -u -r 1.8.2.5 -r 1.8.2.6 src/plugins/Makefile.am;  diff -u /dev/null src/plugins/bogofilter/.cvsignore;  diff -u /dev/null src/plugins/bogofilter/Makefile.am;  diff -u /dev/null src/plugins/bogofilter/bogofilter.c;  diff -u /dev/null src/plugins/bogofilter/bogofilter.h;  diff -u /dev/null src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.4.0cvs96.patchset
