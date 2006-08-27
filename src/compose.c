@@ -4144,13 +4144,12 @@ gint compose_send(Compose *compose)
 		inc_unlock();
 		return -1;
 	}
-	
 	if (msgpath == NULL) {
 		msgpath = folder_item_fetch_msg(folder, msgnum);
-		val = procmsg_send_message_queue(msgpath, &errstr);
+		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum);
 		g_free(msgpath);
 	} else {
-		val = procmsg_send_message_queue(msgpath, &errstr);
+		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum);
 		g_unlink(msgpath);
 		g_free(msgpath);
 	}

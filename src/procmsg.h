@@ -323,7 +323,9 @@ guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
 gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
 					 gconstpointer	 b);
 gint procmsg_send_message_queue		(const gchar *file,
-					 gchar **errstr);
+					 gchar **errstr,
+					 FolderItem *queue, 
+					 gint msgnum);
 
 void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,

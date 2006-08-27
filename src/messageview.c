@@ -713,7 +713,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	/* send it */
 	path = folder_item_fetch_msg(queue, num);
-	ok = procmsg_send_message_queue(path, &foo);
+	ok = procmsg_send_message_queue(path, &foo, queue, num);
 	g_free(path);
 	g_free(foo);
 	folder_item_remove_msg(queue, num);

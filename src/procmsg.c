@@ -48,7 +48,8 @@
 #include "timing.h"
 #include "inc.h"
 
-static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr);
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
+					    FolderItem *queue, gint msgnum);
 
 enum
 {
@@ -940,7 +941,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 			if (file) {
 				if (procmsg_send_message_queue_full(file, 
 						!procmsg_is_last_for_account(queue, msginfo, elem),
-						errstr) < 0) {
+						errstr, queue, msginfo->msgnum) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
 					err++;
@@ -1450,7 +1451,8 @@ gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 	return msginfo1->msgnum - msginfo2->msgnum;
 }
 
-static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr)
+static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
+					    FolderItem *queue, gint msgnum)
 {
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
@@ -1730,7 +1732,15 @@ send_mail:
 			outbox = folder_get_default_outbox();
 			
 		if (save_clear_text || tmp_enc_file == NULL) {
-			procmsg_save_to_outbox(outbox, file, TRUE);
+			gboolean saved = FALSE;
+			if (queue && msgnum > 0) {
+				MsgInfo *queued_mail = folder_item_get_msginfo(queue, msgnum);
+				if (folder_item_copy_msg(outbox, queued_mail) >= 0)
+					saved = TRUE;
+				procmsg_msginfo_free(queued_mail);
+			}
+			if (!saved)
+				procmsg_save_to_outbox(outbox, file, TRUE);
 		} else {
 			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
 		}
@@ -1799,9 +1809,9 @@ send_mail:
 	return (newsval != 0 ? newsval : mailval);
 }
 
-gint procmsg_send_message_queue(const gchar *file, gchar **errstr)
+gint procmsg_send_message_queue(const gchar *file, gchar **errstr, FolderItem *queue, gint msgnum)
 {
-	gint result = procmsg_send_message_queue_full(file, FALSE, errstr);
+	gint result = procmsg_send_message_queue_full(file, FALSE, errstr, queue, msgnum);
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	return result;
 }
