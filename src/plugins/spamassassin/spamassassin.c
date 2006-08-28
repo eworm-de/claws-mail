@@ -273,8 +273,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (error) {
 		if (!warned_error) {
 			alertpanel_error(_("The SpamAssassin plugin couldn't filter "
-					   "a message. The probable error cause is "
-					   "an unreachable spamd daemon. Please make "
+					   "a message. The probable cause of the error "
+					   "is an unreachable spamd daemon. Please make "
 					   "sure spamd is running and accessible."));
 		}
 		warned_error = TRUE;
