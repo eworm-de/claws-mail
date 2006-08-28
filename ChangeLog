@@ -1,3 +1,17 @@
+2006-08-28 [paul]	2.4.0cvs102
+
+	* configure.ac
+	* po/Makefile.in.in
+	* po/Makevars
+		require autoconf 2.60, enabling building
+		with gettext 0.15 (gettext 0.14.x build still
+		possible). Replace Makefiles with versions
+		from gettext 0.15.
+		Remove configure options --with-localedir and
+		--with-mandir. The options that are provided
+		directly by autoconf 2.60 can be used instead:
+		--mandir --localedir
+
 2006-08-27 [colin]	2.4.0cvs101
 
 	* src/plugins/bogofilter/Makefile.am

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.50)
+AC_PREREQ(2.60)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
 
@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=101
+EXTRA_VERSION=102
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -168,27 +168,10 @@ GETTEXT_PACKAGE=sylpheed-claws
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 
-AM_GNU_GETTEXT_VERSION([0.14.5])
+AM_GNU_GETTEXT_VERSION([0.15])
 AM_GNU_GETTEXT([external])
 
-if test "x${DATADIRNAME}" = "x"; then
-  DATADIRNAME="share"
-  AC_SUBST(DATADIRNAME)
-fi
-
-mandir='${prefix}/${DATADIRNAME}/man'
-AC_ARG_WITH(mandir,
-	[  --with-mandir=DIR    man directory],
-	[mandir="$withval"])
-AC_SUBST(mandir)
-
-localedir='${prefix}/${DATADIRNAME}/locale'
-AC_ARG_WITH(localedir,
-	[  --with-localedir=DIR    Locale directory],
-	[localedir="$withval"])
-AC_SUBST(localedir)
-
-manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
+manualdir='${datarootdir}/${PACKAGE}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
 	[manualdir="$withval"])
@@ -201,10 +184,14 @@ AC_ARG_ENABLE(manual,
 AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}", PACKAGE_DATA_DIR)
+if test "x${datarootdir}" = 'x${prefix}/share'; then
+	if test "x${prefix}" = "xNONE"; then
+    		AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}",[PACKAGE_DATA_DIR])
+  	else
+    		AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}",[PACKAGE_DATA_DIR])
+  	fi
 else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/${DATADIRNAME}/${PACKAGE}", PACKAGE_DATA_DIR)
+	AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}",[PACKAGE_DATA_DIR])
 fi
 
 AC_CHECK_LIB(xpg4, setlocale)
