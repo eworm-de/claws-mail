@@ -160,14 +160,16 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_bogopath);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_bogopath, FALSE, FALSE, 0);
 
-	bogopath_label = gtk_label_new(
-			_("Bogofilter call: "));
+	bogopath_label = gtk_label_new(_("Bogofilter call"));
 	gtk_widget_show(bogopath_label);
 	gtk_box_pack_start(GTK_BOX(hbox_bogopath), bogopath_label, FALSE, FALSE, 0);
 
 	bogopath_entry = gtk_entry_new();
 	gtk_widget_show(bogopath_entry);
 	gtk_box_pack_start(GTK_BOX(hbox_bogopath), bogopath_entry, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, bogopath_entry,
+			_("Path to bogofilter executable"),
+			NULL);
 
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);

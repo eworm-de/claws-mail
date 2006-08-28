@@ -1,3 +1,9 @@
+2006-08-28 [paul]	2.4.0cvs103
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		fix english up a bit, innit
+
 2006-08-28 [paul]	2.4.0cvs102
 
 	* configure.ac

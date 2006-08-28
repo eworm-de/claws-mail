@@ -158,11 +158,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (status == 3) { /* I/O or other errors */
 		if (!warned_error) {
 			alertpanel_error(_("The Bogofilter plugin couldn't filter "
-					   "a message. The probable error cause is "
-					   "that it didn't learn from any mail.\n"
-					   "Use \"Mark/As Spam(Ham)\" from messages' "
-					   "contextual menu to train Bogofilter with "
-					   "a few hundreds spam and ham messages."));
+					   "a message. The probable cause of the "
+					   "error is that it didn't learn from any mail.\n"
+					   "Use \"/Mark/Mark as spam\" and \"/Mark/Mark as "
+					   "ham\" to train Bogofilter with a few hundred "
+					   "spam and ham messages."));
 		}
 		warned_error = TRUE;
 	}
@@ -334,13 +334,13 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
 	return _("This plugin can check all messages that are received from an "
-	         "IMAP, LOCAL or POP account for spam using a Bogofilter "
-		 "server. You will need Bogofilter installed locally.\n "
+	         "IMAP, LOCAL or POP account for spam using Bogofilter. "
+		 "You will need Bogofilter installed locally.\n "
 	         "\n"
 		 "Before Bogofilter can recognize spam messages, you have to "
-		 "train it by marking a few hundreds spam and ham messages. "
-		 "Use \"Mark/As Spam(Ham)\" from messages' contextual menu "
-		 "to train Bogofilter.\n"
+		 "train it by marking a few hundred spam and ham messages. "
+		 "Use \"/Mark/Mark as Spam\" and \"/Mark/Mark as ham\" to "
+		 "train Bogofilter.\n"
 	         "\n"
 	         "When a message is identified as spam it can be deleted or "
 	         "saved in a specially designated folder.\n"

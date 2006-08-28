@@ -1794,3 +1794,4 @@
 ( cvs diff -u -r 1.213.2.109 -r 1.213.2.110 src/folder.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.4.0cvs100.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/bogofilter/Makefile.am;  ) > 2.4.0cvs101.patchset
 ( cvs diff -u -r 1.654.2.1840 -r 1.654.2.1841 configure.ac;  cvs diff -u -r 1.6.2.8 -r 1.6.2.9 po/Makefile.in.in;  cvs diff -u -r 1.1.4.2 -r 1.1.4.3 po/Makevars;  ) > 2.4.0cvs102.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.4.0cvs103.patchset
