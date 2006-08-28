@@ -196,7 +196,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_tooltips_set_tip(tooltips, use_alternate_checkbtn, 
 			_("Faster switching with last used dictionary"), NULL);
 
-	PACK_FRAME(vbox1, path_frame, _("Dictionary path"));
+	PACK_FRAME(vbox1, path_frame, _("Path to dictionaries"));
 	aspell_path_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(aspell_path_hbox);
 	gtk_container_add(GTK_CONTAINER(path_frame), aspell_path_hbox);

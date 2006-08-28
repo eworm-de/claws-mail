@@ -1,3 +1,14 @@
+2006-08-28 [paul]	2.4.0cvs104
+
+	* src/mh.c
+		fix data loss when moving to another
+		mailbox fails
+	* src/prefs_spelling.c
+		improve the english
+	* src/gtk/pluginwindow.c
+		improve the layout of the dialog text
+	All thanks to Colin
+
 2006-08-28 [paul]	2.4.0cvs103
 
 	* src/plugins/bogofilter/bogofilter.c

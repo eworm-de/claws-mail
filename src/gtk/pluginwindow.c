@@ -195,9 +195,11 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 			if (!file) continue;
 			plugin_load(file, &error);
 			if (error != NULL) {
+				gchar *basename = g_path_get_basename(file);
 				alertpanel_error(
-				_("The following error occured while loading the plugin [%s] :\n%s\n"),
-				file, error);
+				_("The following error occured while loading %s :\n\n%s\n"),
+				basename, error);
+				g_free(basename);
 				g_free(error);
 			}
 
