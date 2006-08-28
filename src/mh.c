@@ -644,8 +644,6 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 
 	for (cur = msglist; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		GTuples *tuples;
-		gint num;
 		if (msginfo == NULL)
 			continue;
 		if (MSG_IS_MOVE(msginfo->flags) && MSG_IS_MOVE_DONE(msginfo->flags)) {
@@ -659,13 +657,6 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 			curnum++;
 		}
 
-		if (relation) {
-	            	tuples = g_relation_select(relation, msginfo, 0);
-        	    	num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-            		g_tuples_destroy(tuples);
-			if (num <= 0)
-				continue;
-		}
 		file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
 		if (file == NULL)
 			continue;

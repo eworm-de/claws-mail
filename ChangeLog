@@ -1,3 +1,9 @@
+2006-08-28 [paul]	2.4.0cvs106
+
+	* src/mh.c
+		revert change in 2.4.0cvs104, it breaks
+		stuff
+
 2006-08-28 [paul]	2.4.0cvs105
 
 	* src/plugins/spamassassin/spamassassin.c
