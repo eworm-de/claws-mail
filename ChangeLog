@@ -1,3 +1,9 @@
+2006-08-29 [paul]	2.4.0cvs109
+
+	* Makefile.am
+		remove 'make release', it's not needed
+		since we use 'AUTOMAKE_OPTIONS = dist-bzip2'
+
 2006-08-29 [paul]	2.4.0cvs108
 
 	* src/foldersel.c
