@@ -1,3 +1,17 @@
+2006-08-29 [colin]	2.4.0cvs111
+
+	* src/folderview.c
+		Handle "popup_menu" signal (for popping the 
+		menu via the keyboard)
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Factorize scrolling code, and add an API 
+		for MimeViewers to handle scroll orders
+
 2006-08-29 [wwp]	2.4.0cvs110
 
 	* src/plugins//bogofilter/bogofilter.c

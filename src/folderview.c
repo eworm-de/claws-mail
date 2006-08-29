@@ -280,6 +280,8 @@ gboolean folderview_update_item_claws	 (gpointer 	    source,
 					  gpointer	    data);
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
+static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row, 
+				GdkEventButton *event);
 
 GHashTable *folderview_popups;
 
@@ -416,6 +418,23 @@ static void folderview_column_set_titles(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_TOTAL],hbox_total);
 }
 
+static gboolean folderview_popup_menu(GtkWidget *widget, gpointer data)
+{
+	FolderView *folderview = (FolderView *)data;
+	GdkEventButton event;
+	if (folderview_get_selected_item(folderview) == NULL)
+		return FALSE;
+	
+	event.button = 3;
+	event.time = gtk_get_current_event_time();
+	
+	folderview_set_sens_and_popup_menu(folderview, -1, 
+				&event);
+
+	return TRUE;
+}
+
+
 GtkWidget *folderview_ctree_create(FolderView *folderview)
 {
 	GtkWidget *ctree;
@@ -480,6 +499,8 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(folderview_button_pressed),
 			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "popup-menu",
+			 G_CALLBACK(folderview_popup_menu), folderview);
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(folderview_button_released),
 			 folderview);
@@ -1791,12 +1812,10 @@ static void folderview_append_folder(FolderView *folderview, Folder *folder)
 }
 
 /* callback functions */
-
-static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
-					  FolderView *folderview)
+static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row, 
+				GdkEventButton *event)
 {
-	GtkCList *clist = GTK_CLIST(ctree);
-	gint prev_row = -1, row = -1, column = -1;
+	GtkCList *clist = GTK_CLIST(folderview->ctree);
 	FolderItem *item;
 	Folder *folder;
 	FolderViewPopup *fpopup;
@@ -1805,56 +1824,13 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	FolderItem *special_trash = NULL, *special_queue = NULL;
 	PrefsAccount *ac;
 
-	if (!event) return FALSE;
+	if (row > 0)
+		item = gtk_clist_get_row_data(clist, row);
+	else
+		item = folderview_get_selected_item(folderview);
 
-	if (event->button == 1 || event->button == 2) {
-		folderview->open_folder = TRUE;
-
-	        if (event->type == GDK_2BUTTON_PRESS) {
-			if (clist->selection) {
-				GtkCTreeNode *node;
-
-				node = GTK_CTREE_NODE(clist->selection->data);
-				if (node)
-					gtk_ctree_toggle_expansion(
-						GTK_CTREE(ctree),
-						node);
-			}
-		}
-		return FALSE;
-	}
-
-	if (event->button == 2 || event->button == 3) {
-		/* right clicked */
-		if (clist->selection) {
-			GtkCTreeNode *node;
-
-			node = GTK_CTREE_NODE(clist->selection->data);
-			if (node)
-				prev_row = gtkut_ctree_get_nth_from_node
-					(GTK_CTREE(ctree), node);
-		}
-
-		if (!gtk_clist_get_selection_info(clist, event->x, event->y,
-						  &row, &column))
-			return FALSE;
-		if (prev_row != row) {
-			gtk_clist_unselect_all(clist);
-			if (event->button == 2)
-				folderview_select_node
-					(folderview,
-					 gtk_ctree_node_nth(GTK_CTREE(ctree),
-					 		    row));
-			else
-				gtk_clist_select_row(clist, row, column);
-		}
-	}
-
-	if (event->button != 3) return FALSE;
-
-	item = gtk_clist_get_row_data(clist, row);
-	g_return_val_if_fail(item != NULL, FALSE);
-	g_return_val_if_fail(item->folder != NULL, FALSE);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
 	folder = item->folder;
 
 	fpopup = g_hash_table_lookup(folderview_popups, folder->klass->idstr);
@@ -1921,6 +1897,63 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time);
 
+
+}
+
+static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
+					  FolderView *folderview)
+{
+	GtkCList *clist = GTK_CLIST(ctree);
+	gint prev_row = -1, row = -1, column = -1;
+
+	if (!event) return FALSE;
+
+	if (event->button == 1 || event->button == 2) {
+		folderview->open_folder = TRUE;
+
+	        if (event->type == GDK_2BUTTON_PRESS) {
+			if (clist->selection) {
+				GtkCTreeNode *node;
+
+				node = GTK_CTREE_NODE(clist->selection->data);
+				if (node)
+					gtk_ctree_toggle_expansion(
+						GTK_CTREE(ctree),
+						node);
+			}
+		}
+		return FALSE;
+	}
+
+	if (event->button == 2 || event->button == 3) {
+		/* right clicked */
+		if (clist->selection) {
+			GtkCTreeNode *node;
+
+			node = GTK_CTREE_NODE(clist->selection->data);
+			if (node)
+				prev_row = gtkut_ctree_get_nth_from_node
+					(GTK_CTREE(ctree), node);
+		}
+
+		if (!gtk_clist_get_selection_info(clist, event->x, event->y,
+						  &row, &column))
+			return FALSE;
+		if (prev_row != row) {
+			gtk_clist_unselect_all(clist);
+			if (event->button == 2)
+				folderview_select_node
+					(folderview,
+					 gtk_ctree_node_nth(GTK_CTREE(ctree),
+					 		    row));
+			else
+				gtk_clist_select_row(clist, row, column);
+		}
+	}
+
+	if (event->button != 3) return FALSE;
+
+	folderview_set_sens_and_popup_menu(folderview, row, event);
 	return FALSE;
 }
 

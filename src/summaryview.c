@@ -5184,7 +5184,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	switch (event->keyval) {
 	case GDK_space:		/* Page down or go to the next */
 		if (event->state & GDK_SHIFT_MASK) 
-			textview_scroll_page(textview, TRUE);
+			mimeview_scroll_page(messageview->mimeview, TRUE);
 		else {
 			if (summaryview->displayed != summaryview->selected) {
 				summary_display_msg(summaryview,
@@ -5192,16 +5192,16 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				break;
 			}
 			if (mod_pressed) {
-				if (!textview_scroll_page(textview, TRUE))
+				if (!mimeview_scroll_page(messageview->mimeview, TRUE))
 					summary_select_prev_unread(summaryview);
 			} else {
-				if (!textview_scroll_page(textview, FALSE))
+				if (!mimeview_scroll_page(messageview->mimeview, FALSE))
 					summary_select_next_unread(summaryview);
 			}				
 		}
 		break;
 	case GDK_BackSpace:	/* Page up */
-		textview_scroll_page(textview, TRUE);
+		mimeview_scroll_page(messageview->mimeview, TRUE);
 		break;
 	case GDK_Return:	/* Scroll up/down one line */
 		if (summaryview->displayed != summaryview->selected) {
@@ -5209,7 +5209,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					    summaryview->selected);
 			break;
 		}
-		textview_scroll_one_line(textview, mod_pressed);
+		mimeview_scroll_one_line(messageview->mimeview, mod_pressed);
 		break;
 	case GDK_Delete:
 		BREAK_ON_MODIFIER_KEY();

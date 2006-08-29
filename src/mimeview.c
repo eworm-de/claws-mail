@@ -1204,7 +1204,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		
 	switch (event->keyval) {
 	case GDK_space:
-		if (textview_scroll_page(mimeview->textview, FALSE))
+		if (mimeview_scroll_page(mimeview, FALSE))
 			return TRUE;
 
 		node = GTK_CTREE_NODE_NEXT(mimeview->opened);
@@ -1215,10 +1215,10 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		break;
 	case GDK_BackSpace:
-		textview_scroll_page(mimeview->textview, TRUE);
+		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
 	case GDK_Return:
-		textview_scroll_one_line(mimeview->textview,
+		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		return TRUE;
 	case GDK_n:
@@ -1816,7 +1816,7 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 			/* stop the button being untoggled */
 			KEY_PRESS_EVENT_STOP();
-			if (textview_scroll_page(textview, FALSE))
+			if (mimeview_scroll_page(mimeview, FALSE))
 				return TRUE;
 
 			if (icon_list_select_by_number(mimeview, num + 1))
@@ -1829,12 +1829,12 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 
 		break;
 	case GDK_BackSpace:
-		textview_scroll_page(textview, TRUE);
+		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
 	case GDK_Return:
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 			KEY_PRESS_EVENT_STOP();
-			textview_scroll_one_line(textview,
+			mimeview_scroll_one_line(mimeview,
 						 (event->state & GDK_MOD1_MASK) != 0);
 			return TRUE;
 		} else {
@@ -2247,3 +2247,25 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 	}
 }
 
+gboolean mimeview_scroll_page(MimeView *mimeview, gboolean up)
+{
+	if (mimeview->type == MIMEVIEW_TEXT)
+		return textview_scroll_page(mimeview->textview, up);
+	else if (mimeview->mimeviewer) {
+		MimeViewer *mimeviewer = mimeview->mimeviewer;
+		if (mimeviewer->scroll_page)
+			return mimeviewer->scroll_page(mimeviewer, up);
+	}
+	return TRUE;
+}
+
+void mimeview_scroll_one_line(MimeView *mimeview, gboolean up)
+{
+	if (mimeview->type == MIMEVIEW_TEXT)
+		textview_scroll_one_line(mimeview->textview, up);
+	else if (mimeview->mimeviewer) {
+		MimeViewer *mimeviewer = mimeview->mimeviewer;
+		if (mimeviewer->scroll_one_line)
+			mimeviewer->scroll_one_line(mimeviewer, up);
+	}
+}

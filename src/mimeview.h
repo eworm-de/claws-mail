@@ -123,6 +123,8 @@ struct _MimeViewer
 	void		(*clear_viewer)		(MimeViewer *);
 	void		(*destroy_viewer)	(MimeViewer *);
 	gchar 		*(*get_selection)	(MimeViewer *);
+	gboolean	(*scroll_page)		(MimeViewer *, gboolean up);
+	void		(*scroll_one_line)	(MimeViewer *, gboolean up);
 	MimeView	*mimeview;
 };
 
@@ -156,6 +158,10 @@ void mimeview_handle_cmd		(MimeView 	*mimeview,
 					 gpointer	 data);
 void mimeview_select_mimepart_icon	(MimeView 	*mimeview, 
 					 MimeInfo 	*partinfo);
+gboolean mimeview_scroll_page		(MimeView 	*mimeview, 
+					 gboolean 	 up);
+void mimeview_scroll_one_line		(MimeView 	*mimeview, 
+					 gboolean 	 up);
 
 
 #ifdef __cplusplus

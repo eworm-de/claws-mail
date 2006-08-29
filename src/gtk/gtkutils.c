@@ -1283,3 +1283,162 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 #endif
 	return combobox;
 }
+
+static void gtkutils_smooth_scroll_do(GtkWidget *widget, GtkAdjustment *vadj,
+				      gfloat old_value, gfloat last_value,
+				      gint step)
+{
+	gint change_value;
+	gboolean up;
+	gint i;
+
+	if (old_value < last_value) {
+		change_value = last_value - old_value;
+		up = FALSE;
+	} else {
+		change_value = old_value - last_value;
+		up = TRUE;
+	}
+
+	for (i = step; i <= change_value; i += step) {
+		vadj->value = old_value + (up ? -i : i);
+		g_signal_emit_by_name(G_OBJECT(vadj),
+				      "value_changed", 0);
+	}
+
+	vadj->value = last_value;
+	g_signal_emit_by_name(G_OBJECT(vadj), "value_changed", 0);
+
+	gtk_widget_queue_draw(widget);
+}
+
+static gboolean gtkutils_smooth_scroll_page(GtkWidget *widget, GtkAdjustment *vadj, gboolean up)
+{
+	gfloat upper;
+	gfloat page_incr;
+	gfloat old_value;
+	gfloat last_value;
+
+	if (prefs_common.scroll_halfpage)
+		page_incr = vadj->page_increment / 2;
+	else
+		page_incr = vadj->page_increment;
+
+	if (!up) {
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			old_value = vadj->value;
+			last_value = vadj->value + page_incr;
+			last_value = MIN(last_value, upper);
+
+			gtkutils_smooth_scroll_do(widget, vadj, old_value,
+						  last_value,
+						  prefs_common.scroll_step);
+		} else
+			return FALSE;
+	} else {
+		if (vadj->value > 0.0) {
+			old_value = vadj->value;
+			last_value = vadj->value - page_incr;
+			last_value = MAX(last_value, 0.0);
+
+			gtkutils_smooth_scroll_do(widget, vadj, old_value,
+						  last_value,
+						  prefs_common.scroll_step);
+		} else
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+gboolean gtkutils_scroll_page(GtkWidget *widget, GtkAdjustment *vadj, gboolean up)
+{
+	gfloat upper;
+	gfloat page_incr;
+
+	if (prefs_common.enable_smooth_scroll)
+		return gtkutils_smooth_scroll_page(widget, vadj, up);
+
+	if (prefs_common.scroll_halfpage)
+		page_incr = vadj->page_increment / 2;
+	else
+		page_incr = vadj->page_increment;
+
+	if (!up) {
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			vadj->value += page_incr;
+			vadj->value = MIN(vadj->value, upper);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
+		} else
+			return FALSE;
+	} else {
+		if (vadj->value > 0.0) {
+			vadj->value -= page_incr;
+			vadj->value = MAX(vadj->value, 0.0);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
+		} else
+			return FALSE;
+	}
+	return TRUE;
+}
+
+static void gtkutils_smooth_scroll_one_line(GtkWidget *widget, GtkAdjustment *vadj, gboolean up)
+{
+	gfloat upper;
+	gfloat old_value;
+	gfloat last_value;
+
+	if (!up) {
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			old_value = vadj->value;
+			last_value = vadj->value + vadj->step_increment;
+			last_value = MIN(last_value, upper);
+
+			gtkutils_smooth_scroll_do(widget, vadj, old_value,
+						  last_value,
+						  prefs_common.scroll_step);
+		}
+	} else {
+		if (vadj->value > 0.0) {
+			old_value = vadj->value;
+			last_value = vadj->value - vadj->step_increment;
+			last_value = MAX(last_value, 0.0);
+
+			gtkutils_smooth_scroll_do(widget, vadj, old_value,
+						  last_value,
+						  prefs_common.scroll_step);
+		}
+	}
+}
+
+void gtkutils_scroll_one_line(GtkWidget *widget, GtkAdjustment *vadj, gboolean up)
+{
+	gfloat upper;
+
+	if (prefs_common.enable_smooth_scroll) {
+		gtkutils_smooth_scroll_one_line(widget, vadj, up);
+		return;
+	}
+
+	if (!up) {
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			vadj->value += vadj->step_increment;
+			vadj->value = MIN(vadj->value, upper);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
+		}
+	} else {
+		if (vadj->value > 0.0) {
+			vadj->value -= vadj->step_increment;
+			vadj->value = MAX(vadj->value, 0.0);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
+		}
+	}
+}

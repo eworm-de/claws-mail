@@ -194,15 +194,6 @@ static gboolean textview_uri_button_pressed	(GtkTextTag 	*tag,
 						 GtkTextIter	*iter,
 						 TextView 	*textview);
 
-static void textview_smooth_scroll_do		(TextView	*textview,
-						 gfloat		 old_value,
-						 gfloat		 last_value,
-						 gint		 step);
-static void textview_smooth_scroll_one_line	(TextView	*textview,
-						 gboolean	 up);
-static gboolean textview_smooth_scroll_page	(TextView	*textview,
-						 gboolean	 up);
-
 static gboolean textview_uri_security_check	(TextView	*textview,
 						 ClickableText	*uri);
 static void textview_uri_list_remove_all	(GSList		*uri_list);
@@ -1842,170 +1833,16 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkAdjustment *vadj = text->vadjustment;
-	gfloat upper;
 
-	if (prefs_common.enable_smooth_scroll) {
-		textview_smooth_scroll_one_line(textview, up);
-		return;
-	}
-
-	if (!up) {
-		upper = vadj->upper - vadj->page_size;
-		if (vadj->value < upper) {
-			vadj->value += vadj->step_increment;
-			vadj->value = MIN(vadj->value, upper);
-			g_signal_emit_by_name(G_OBJECT(vadj),
-					      "value_changed", 0);
-		}
-	} else {
-		if (vadj->value > 0.0) {
-			vadj->value -= vadj->step_increment;
-			vadj->value = MAX(vadj->value, 0.0);
-			g_signal_emit_by_name(G_OBJECT(vadj),
-					      "value_changed", 0);
-		}
-	}
+	gtkutils_scroll_one_line(text, vadj, up);
 }
 
 gboolean textview_scroll_page(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkAdjustment *vadj = text->vadjustment;
-	gfloat upper;
-	gfloat page_incr;
 
-	if (prefs_common.enable_smooth_scroll)
-		return textview_smooth_scroll_page(textview, up);
-
-	if (prefs_common.scroll_halfpage)
-		page_incr = vadj->page_increment / 2;
-	else
-		page_incr = vadj->page_increment;
-
-	if (!up) {
-		upper = vadj->upper - vadj->page_size;
-		if (vadj->value < upper) {
-			vadj->value += page_incr;
-			vadj->value = MIN(vadj->value, upper);
-			g_signal_emit_by_name(G_OBJECT(vadj),
-					      "value_changed", 0);
-		} else
-			return FALSE;
-	} else {
-		if (vadj->value > 0.0) {
-			vadj->value -= page_incr;
-			vadj->value = MAX(vadj->value, 0.0);
-			g_signal_emit_by_name(G_OBJECT(vadj),
-					      "value_changed", 0);
-		} else
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-static void textview_smooth_scroll_do(TextView *textview,
-				      gfloat old_value, gfloat last_value,
-				      gint step)
-{
-	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = text->vadjustment;
-	gint change_value;
-	gboolean up;
-	gint i;
-
-	if (old_value < last_value) {
-		change_value = last_value - old_value;
-		up = FALSE;
-	} else {
-		change_value = old_value - last_value;
-		up = TRUE;
-	}
-
-	for (i = step; i <= change_value; i += step) {
-		vadj->value = old_value + (up ? -i : i);
-		g_signal_emit_by_name(G_OBJECT(vadj),
-				      "value_changed", 0);
-	}
-
-	vadj->value = last_value;
-	g_signal_emit_by_name(G_OBJECT(vadj), "value_changed", 0);
-
-	gtk_widget_queue_draw(GTK_WIDGET(text));
-}
-
-static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
-{
-	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = text->vadjustment;
-	gfloat upper;
-	gfloat old_value;
-	gfloat last_value;
-
-	if (!up) {
-		upper = vadj->upper - vadj->page_size;
-		if (vadj->value < upper) {
-			old_value = vadj->value;
-			last_value = vadj->value + vadj->step_increment;
-			last_value = MIN(last_value, upper);
-
-			textview_smooth_scroll_do(textview, old_value,
-						  last_value,
-						  prefs_common.scroll_step);
-		}
-	} else {
-		if (vadj->value > 0.0) {
-			old_value = vadj->value;
-			last_value = vadj->value - vadj->step_increment;
-			last_value = MAX(last_value, 0.0);
-
-			textview_smooth_scroll_do(textview, old_value,
-						  last_value,
-						  prefs_common.scroll_step);
-		}
-	}
-}
-
-static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
-{
-	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = text->vadjustment;
-	gfloat upper;
-	gfloat page_incr;
-	gfloat old_value;
-	gfloat last_value;
-
-	if (prefs_common.scroll_halfpage)
-		page_incr = vadj->page_increment / 2;
-	else
-		page_incr = vadj->page_increment;
-
-	if (!up) {
-		upper = vadj->upper - vadj->page_size;
-		if (vadj->value < upper) {
-			old_value = vadj->value;
-			last_value = vadj->value + page_incr;
-			last_value = MIN(last_value, upper);
-
-			textview_smooth_scroll_do(textview, old_value,
-						  last_value,
-						  prefs_common.scroll_step);
-		} else
-			return FALSE;
-	} else {
-		if (vadj->value > 0.0) {
-			old_value = vadj->value;
-			last_value = vadj->value - page_incr;
-			last_value = MAX(last_value, 0.0);
-
-			textview_smooth_scroll_do(textview, old_value,
-						  last_value,
-						  prefs_common.scroll_step);
-		} else
-			return FALSE;
-	}
-
-	return TRUE;
+	return gtkutils_scroll_page(text, vadj, up);
 }
 
 #define KEY_PRESS_EVENT_STOP() \
@@ -2039,17 +1876,17 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		else
-			textview_scroll_page
-				(textview,
+			mimeview_scroll_page
+				(messageview->mimeview,
 				 (event->state &
 				  (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_BackSpace:
-		textview_scroll_page(textview, TRUE);
+		mimeview_scroll_page(messageview->mimeview, TRUE);
 		break;
 	case GDK_Return:
-		textview_scroll_one_line
-			(textview, (event->state &
+		mimeview_scroll_one_line
+			(messageview->mimeview, (event->state &
 				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_Delete:
