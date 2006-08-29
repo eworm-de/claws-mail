@@ -1798,3 +1798,4 @@
 ( cvs diff -u -r 1.79.2.39 -r 1.79.2.40 src/mh.c;  cvs diff -u -r 1.5.2.24 -r 1.5.2.25 src/prefs_spelling.c;  cvs diff -u -r 1.5.2.34 -r 1.5.2.35 src/gtk/pluginwindow.c;  ) > 2.4.0cvs104.patchset
 ( cvs diff -u -r 1.18.2.37 -r 1.18.2.38 src/plugins/spamassassin/spamassassin.c;  ) > 2.4.0cvs105.patchset
 ( cvs diff -u -r 1.79.2.40 -r 1.79.2.41 src/mh.c;  ) > 2.4.0cvs106.patchset
+( cvs diff -u -r 1.213.2.110 -r 1.213.2.111 src/folder.c;  ) > 2.4.0cvs107.patchset

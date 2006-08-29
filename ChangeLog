@@ -1,3 +1,11 @@
+2006-08-29 [colin]	2.4.0cvs107
+
+	* src/folder.c
+		Fix data loss when copy fails during a move:
+		only use fast remove_msgs if everything was
+		copied OK; else use slow remove_msg on the
+		mails that got copied only.
+
 2006-08-28 [paul]	2.4.0cvs106
 
 	* src/mh.c

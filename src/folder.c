@@ -3012,7 +3012,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		 * copying was successfull and update folder
 		 * message counts
 		 */
-		if (item->folder->klass->remove_msgs) {
+		if (not_moved == NULL && item->folder->klass->remove_msgs) {
 			item->folder->klass->remove_msgs(item->folder,
 					    		        msginfo->folder,
 						    		msglist,
