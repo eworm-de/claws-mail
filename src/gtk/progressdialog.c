@@ -75,7 +75,7 @@ ProgressDialog *progress_dialog_create(void)
 	dialog = gtk_dialog_new();
 	gtk_widget_set_size_request(dialog, 460, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 8);
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, TRUE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 	gtk_widget_realize(dialog);
 
 	gtk_container_set_border_width

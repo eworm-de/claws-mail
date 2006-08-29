@@ -1,3 +1,11 @@
+2006-08-29 [paul]	2.4.0cvs108
+
+	* src/foldersel.c
+	* src/summary_search.c
+	* src/gtk/progressdialog.c
+	* src/plugins/pgpcore/passphrase.c
+		replace deprecated gtk_window_set_policy()
+
 2006-08-29 [colin]	2.4.0cvs107
 
 	* src/folder.c
