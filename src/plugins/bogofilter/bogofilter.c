@@ -156,15 +156,22 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	}
 	
 	if (status == 3) { /* I/O or other errors */
-		if (!warned_error) {
-			alertpanel_error(_("The Bogofilter plugin couldn't filter "
+		gchar *msg = _("The Bogofilter plugin couldn't filter "
 					   "a message. The probable cause of the "
 					   "error is that it didn't learn from any mail.\n"
 					   "Use \"/Mark/Mark as spam\" and \"/Mark/Mark as "
 					   "ham\" to train Bogofilter with a few hundred "
-					   "spam and ham messages."));
+					   "spam and ham messages.");
+		if (!prefs_common.no_recv_err_panel) {
+			if (!warned_error) {
+				alertpanel_error(msg);
+			}
+			warned_error = TRUE;
+		} else {
+			gchar *tmp = g_strdup_printf("%s\n", msg);
+			log_error(tmp);
+			g_free(tmp);
 		}
-		warned_error = TRUE;
 	}
 	
 	return FALSE;

@@ -1,3 +1,12 @@
+2006-08-29 [wwp]	2.4.0cvs110
+
+	* src/plugins//bogofilter/bogofilter.c
+	* src/plugins//spamassassin/spamassassin.c
+		make the bogofilter/spamassassin filtering error dialogs at
+        incorporation obey to the "don't popup error dialog on
+        receive error" option. If disabled, feed the log window w/
+        the error message.
+
 2006-08-29 [paul]
 
 	2.5.0-rc2 released

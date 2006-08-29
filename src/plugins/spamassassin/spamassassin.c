@@ -271,13 +271,20 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	}
 	
 	if (error) {
-		if (!warned_error) {
-			alertpanel_error(_("The SpamAssassin plugin couldn't filter "
+		gchar *msg = _("The SpamAssassin plugin couldn't filter "
 					   "a message. The probable cause of the error "
 					   "is an unreachable spamd daemon. Please make "
-					   "sure spamd is running and accessible."));
+					   "sure spamd is running and accessible.");
+		if (!prefs_common.no_recv_err_panel) {
+			if (!warned_error) {
+				alertpanel_error(msg);
+			}
+			warned_error = TRUE;
+		} else {
+			gchar *tmp = g_strdup_printf("%s\n", msg);
+			log_error(tmp);
+			g_free(tmp);
 		}
-		warned_error = TRUE;
 	}
 	
 	return FALSE;
