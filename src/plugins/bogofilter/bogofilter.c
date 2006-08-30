@@ -223,33 +223,92 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		MsgInfo *info;
 		int total = g_slist_length(msglist);
 		int done = 0;
+		gboolean some_correction = FALSE, some_no_correction = FALSE;
+	
 		if (message_callback != NULL)
 			message_callback(_("Bogofilter: learning from messages..."), total, 0);
 		
-		for (; cur && status == 0; cur = cur->next) {
+		for (cur = msglist; cur && status == 0; cur = cur->next) {
 			info = (MsgInfo *)cur->data;
-			file = procmsg_get_message_file(info);
-
 			if (spam)
-				/* learn as spam */
-				cmd = g_strdup_printf("%s -s -I '%s'", bogo_exec, file);
+				some_no_correction = TRUE;
 			else if (MSG_IS_SPAM(info->flags))
 				/* correct bogofilter, this wasn't spam */
-				cmd = g_strdup_printf("%s -Sn -I '%s'", bogo_exec, file);
+				some_correction = TRUE;
 			else 
-				/* learn as ham */
-				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
-	
-			if ((status = execute_command_line(cmd, FALSE)) != 0)
-				alertpanel_error(_("Learning failed; `%s` returned with status %d."),
-						cmd, status);
-
-			g_free(cmd);
-			g_free(file);
-			done++;
-			if (message_callback != NULL)
-				message_callback(NULL, total, done);
+				some_no_correction = TRUE;
+			
 		}
+		
+		if (some_correction && some_no_correction) {
+			/* we potentially have to do different stuff for every mail */
+			for (cur = msglist; cur && status == 0; cur = cur->next) {
+				info = (MsgInfo *)cur->data;
+				file = procmsg_get_message_file(info);
+
+				if (spam)
+					/* learn as spam */
+					cmd = g_strdup_printf("%s -s -I '%s'", bogo_exec, file);
+				else if (MSG_IS_SPAM(info->flags))
+					/* correct bogofilter, this wasn't spam */
+					cmd = g_strdup_printf("%s -Sn -I '%s'", bogo_exec, file);
+				else 
+					/* learn as ham */
+					cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
+
+				if ((status = execute_command_line(cmd, FALSE)) != 0)
+					alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+							cmd, status);
+
+				g_free(cmd);
+				g_free(file);
+				done++;
+				if (message_callback != NULL)
+					message_callback(NULL, total, done);
+			}
+		} else if (some_correction || some_no_correction) {
+			int count = 0;
+			gchar *file_list = NULL;
+			cur = msglist;
+			
+			while (cur && status == 0) {
+				gchar *tmp = NULL;
+				info = (MsgInfo *)cur->data;
+				file = procmsg_get_message_file(info);
+				if (file) {
+					tmp = g_strdup_printf("%s%s'%s'", 
+						file_list?file_list:"",
+						file_list?" ":"",
+						file);
+					g_free(file_list);
+					file_list = tmp;
+				}
+				g_free(file);
+				count ++;
+				done++;
+				if (count > 10 || cur->next == NULL) {
+					/* flush */
+					if (some_correction && !some_no_correction)
+						cmd = g_strdup_printf("%s -Sn -B %s", bogo_exec, file_list);
+					else if (some_no_correction && !some_correction)
+						cmd = g_strdup_printf("%s -%c -B %s", bogo_exec, spam?'s':'n', file_list);
+					else
+						g_warning("duuh bogofilter plugin shouldn't be there!\n");
+					if ((status = execute_command_line(cmd, FALSE)) != 0)
+						alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+								cmd, status);
+					count = 0;
+					g_free(cmd);
+					g_free(file_list);
+					file_list = NULL;
+				}
+				if (message_callback != NULL)
+					message_callback(NULL, total, done);
+				cur = cur->next;
+			}
+			g_free(file_list);
+		}
+
 		if (message_callback != NULL)
 			message_callback(NULL, 0, 0);
 		return 0;

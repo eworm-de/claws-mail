@@ -1,3 +1,9 @@
+2006-08-30 [colin]	2.4.0cvs113
+
+	* src/plugins/bogofilter/bogofilter.c
+		Really fast mass learning - thanks to David
+		Relson for the options explanations :)
+
 2006-08-30 [colin]	2.4.0cvs112
 
 	* src/msgcache.c
