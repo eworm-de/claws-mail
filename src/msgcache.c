@@ -22,6 +22,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <time.h>
 

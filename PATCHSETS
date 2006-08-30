@@ -1803,3 +1803,4 @@
 ( cvs diff -u -r 1.24.2.13 -r 1.24.2.14 Makefile.am;  ) > 2.4.0cvs109.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins//bogofilter/bogofilter.c;  cvs diff -u -r 1.18.2.38 -r 1.18.2.39 src/plugins//spamassassin/spamassassin.c;  ) > 2.4.0cvs110.patchset
 ( cvs diff -u -r 1.207.2.113 -r 1.207.2.114 src/folderview.c;  cvs diff -u -r 1.83.2.82 -r 1.83.2.83 src/mimeview.c;  cvs diff -u -r 1.20.2.14 -r 1.20.2.15 src/mimeview.h;  cvs diff -u -r 1.395.2.236 -r 1.395.2.237 src/summaryview.c;  cvs diff -u -r 1.96.2.141 -r 1.96.2.142 src/textview.c;  cvs diff -u -r 1.5.2.39 -r 1.5.2.40 src/gtk/gtkutils.c;  cvs diff -u -r 1.4.2.24 -r 1.4.2.25 src/gtk/gtkutils.h;  ) > 2.4.0cvs111.patchset
+( cvs diff -u -r 1.16.2.38 -r 1.16.2.39 src/msgcache.c;  ) > 2.4.0cvs112.patchset

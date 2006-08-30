@@ -1,3 +1,9 @@
+2006-08-30 [colin]	2.4.0cvs112
+
+	* src/msgcache.c
+		Fix compilation on FreeBSD. Thanks
+		to Michael Hugues
+
 2006-08-29 [colin]	2.4.0cvs111
 
 	* src/folderview.c
