@@ -71,10 +71,7 @@
 #include <pwd.h>
 #endif
 
-enum {
-    CHILD_RUNNING = 1 << 0,
-    TIMEOUT_RUNNING = 1 << 1,
-};
+#define MAILS_PER_BATCH 20
 
 static guint hook_id = -1;
 static MessageCallback message_callback;
@@ -96,72 +93,160 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+/*
+ * Helper function for spawn_with_input() - write an entire
+ * string to a fd.
+ */
+static gboolean
+write_all (int         fd,
+	   const char *buf,
+	   gsize       to_write)
+{
+  while (to_write > 0)
+    {
+      gssize count = write (fd, buf, to_write);
+      if (count < 0)
+	{
+	  if (errno != EINTR)
+	    return FALSE;
+	}
+      else
+	{
+	  to_write -= count;
+	  buf += count;
+	}
+    }
+
+  return TRUE;
+}
+
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	gboolean is_spam = FALSE;
+	GSList *msglist = mail_filtering_data->msglist;
+	GSList *cur = NULL;
 	static gboolean warned_error = FALSE;
 	gchar *file = NULL, *cmd = NULL;
-	int status = 3;
+	int status = 0;
 	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
+	int total = 0, curnum = 0;
+	GSList *spams = NULL;
+	gchar buf[BUFSIZ];
+
+	gchar *bogo_args[4];
+	GPid bogo_pid;
+	gint bogo_stdin, bogo_stdout;
+	GError *error = NULL;
+	gboolean bogo_forked;
 
 	if (!config.process_emails) {
 		return FALSE;
 	}
-	debug_print("Filtering message %d\n", msginfo->msgnum);
-	if (message_callback != NULL)
-		message_callback(_("Bogofilter: filtering message..."), 0, 0);
-
-	file = procmsg_get_message_file(msginfo);
-
-	if (file)
-		cmd = g_strdup_printf("%s -I %s", bogo_exec, file);
 	
-	if (cmd)
-		status = system(cmd);
-	
-	if (status == -1)
-		status = 3;
-	else 
-		status = WEXITSTATUS(status);
-
-	g_free(cmd);
-	g_free(file);
-	debug_print("bogofilter status %d\n", status);
-	is_spam = (status == 0);
-	
-	if (is_spam) {
-		debug_print("message is spam\n");
-		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
-		if (config.receive_spam) {
-			FolderItem *save_folder;
-
-			if ((!config.save_folder) ||
-			    (config.save_folder[0] == '\0') ||
-			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
-				save_folder = folder_get_default_trash();
-
-			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
-			folder_item_move_msg(save_folder, msginfo);
-		} else {
-			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-		}
-
-		return TRUE;
-	} else {
-		debug_print("message is ham\n");
-		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+	if (msglist == NULL && msginfo != NULL) {
+		g_warning("wrong call to bogofilter mail_filtering_hook");
+		return FALSE;
 	}
 	
-	if (status == 3) { /* I/O or other errors */
-		gchar *msg = _("The Bogofilter plugin couldn't filter "
+	total = g_slist_length(msglist);
+	if (message_callback != NULL)
+		message_callback(_("Bogofilter: filtering messages..."), total, 0);
+
+	cmd = g_strdup_printf("%s -T -b", bogo_exec);
+
+	bogo_args[0] = bogo_exec;
+	bogo_args[1] = "-T";
+	bogo_args[2] = "-b";
+	bogo_args[3] = NULL;
+
+	bogo_forked = g_spawn_async_with_pipes(
+			NULL, bogo_args,NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,
+			NULL, NULL, &bogo_pid, &bogo_stdin,
+			&bogo_stdout, NULL, &error);
+		
+	if (bogo_forked == FALSE) {
+		g_warning("%s\n", error ? error->message:"ERROR???");
+		g_error_free(error);
+		error = NULL;
+		status = -1;
+	} else {
+		for (cur = msglist; cur; cur = cur->next) {
+			msginfo = (MsgInfo *)cur->data;
+			debug_print("Filtering message %d (%d/%d)\n", msginfo->msgnum, curnum, total);
+
+			if (message_callback != NULL)
+				message_callback(NULL, total, curnum++);
+
+			file = procmsg_get_message_file(msginfo);
+
+			if (file) {
+				gchar *tmp = g_strdup_printf("%s\n",file);
+				write_all(bogo_stdin, tmp, strlen(tmp));
+				g_free(tmp);
+				memset(buf, 0, sizeof(buf));
+				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
+					printf("ERROR 2\n");
+				} else {
+					gchar **parts = NULL;
+					if (strchr(buf, '/')) {
+						tmp = strrchr(buf, '/')+1;
+					} else {
+						tmp = buf;
+					}
+					parts = g_strsplit(tmp, " ", 0);
+					debug_print("read %s\n", buf);
+					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
+						debug_print("message %d is spam\n", msginfo->msgnum);
+						procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+						if (config.receive_spam) {
+							procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+							procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+							spams = g_slist_prepend(spams, msginfo);
+						} else {
+							folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+						}
+						mail_filtering_data->filtered = g_slist_prepend(
+							mail_filtering_data->filtered, msginfo);
+					} else {
+						debug_print("message %d is ham\n", msginfo->msgnum);
+						procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+						mail_filtering_data->unfiltered = g_slist_prepend(
+							mail_filtering_data->unfiltered, msginfo);
+					}
+					g_strfreev(parts);
+				}
+				g_free(file);
+			} else {
+				mail_filtering_data->unfiltered = g_slist_prepend(
+					mail_filtering_data->unfiltered, msginfo);
+			}
+		}
+	}
+	
+	if (status != -1) {
+		close(bogo_stdout);
+		close(bogo_stdin);
+		waitpid(bogo_pid, &status, 0);
+		if (!WIFEXITED(status))
+			status = -1;
+		else
+			status = WEXITSTATUS(status);
+	} 
+
+	if (status < 0 || status > 2) { /* I/O or other errors */
+		gchar *msg = NULL;
+		
+		if (status == 3)
+			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
 					   "a message. The probable cause of the "
 					   "error is that it didn't learn from any mail.\n"
 					   "Use \"/Mark/Mark as spam\" and \"/Mark/Mark as "
 					   "ham\" to train Bogofilter with a few hundred "
-					   "spam and ham messages.");
+					   "spam and ham messages."));
+		else
+			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
+					   "a message. the command `%s` couldn't be run."), cmd);
 		if (!prefs_common.no_recv_err_panel) {
 			if (!warned_error) {
 				alertpanel_error(msg);
@@ -172,7 +257,31 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			log_error(tmp);
 			g_free(tmp);
 		}
+		g_free(msg);
 	}
+	if (status < 0 || status > 2) {
+		g_slist_free(mail_filtering_data->filtered);
+		g_slist_free(mail_filtering_data->unfiltered);
+		g_slist_free(spams);
+		mail_filtering_data->filtered = NULL;
+		mail_filtering_data->unfiltered = NULL;
+	} else if (config.receive_spam && spams) {
+		FolderItem *save_folder;
+
+		if ((!config.save_folder) ||
+		    (config.save_folder[0] == '\0') ||
+		    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
+			save_folder = folder_get_default_trash();
+
+		folder_item_move_msgs(save_folder, spams);
+	} 
+
+	if (message_callback != NULL)
+		message_callback(NULL, 0, 0);
+	mail_filtering_data->filtered = g_slist_reverse(
+		mail_filtering_data->filtered);
+	mail_filtering_data->unfiltered = g_slist_reverse(
+		mail_filtering_data->unfiltered);
 	
 	return FALSE;
 }
@@ -267,46 +376,58 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					message_callback(NULL, total, done);
 			}
 		} else if (some_correction || some_no_correction) {
-			int count = 0;
-			gchar *file_list = NULL;
 			cur = msglist;
 			
-			while (cur && status == 0) {
+			gchar *bogo_args[4];
+			GPid bogo_pid;
+			gint bogo_stdin;
+			GError *error = NULL;
+			gboolean bogo_forked;
+
+			bogo_args[0] = (gchar *)bogo_exec;
+			if (some_correction && !some_no_correction)
+				bogo_args[1] = "-Sn";
+			else if (some_no_correction && !some_correction)
+				bogo_args[1] = spam ? "-s":"-n";
+			bogo_args[2] = "-b";
+			bogo_args[3] = NULL;
+
+			bogo_forked = g_spawn_async_with_pipes(
+					NULL, bogo_args,NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,
+					NULL, NULL, &bogo_pid, &bogo_stdin,
+					NULL, NULL, &error);
+
+			while (bogo_forked && cur) {
 				gchar *tmp = NULL;
 				info = (MsgInfo *)cur->data;
 				file = procmsg_get_message_file(info);
 				if (file) {
-					tmp = g_strdup_printf("%s%s'%s'", 
-						file_list?file_list:"",
-						file_list?" ":"",
+					tmp = g_strdup_printf("%s\n", 
 						file);
-					g_free(file_list);
-					file_list = tmp;
+					write_all(bogo_stdin, tmp, strlen(tmp));
+					g_free(tmp);
 				}
 				g_free(file);
-				count ++;
 				done++;
-				if (count > 10 || cur->next == NULL) {
-					/* flush */
-					if (some_correction && !some_no_correction)
-						cmd = g_strdup_printf("%s -Sn -B %s", bogo_exec, file_list);
-					else if (some_no_correction && !some_correction)
-						cmd = g_strdup_printf("%s -%c -B %s", bogo_exec, spam?'s':'n', file_list);
-					else
-						g_warning("duuh bogofilter plugin shouldn't be there!\n");
-					if ((status = execute_command_line(cmd, FALSE)) != 0)
-						alertpanel_error(_("Learning failed; `%s` returned with status %d."),
-								cmd, status);
-					count = 0;
-					g_free(cmd);
-					g_free(file_list);
-					file_list = NULL;
-				}
 				if (message_callback != NULL)
 					message_callback(NULL, total, done);
 				cur = cur->next;
 			}
-			g_free(file_list);
+			if (bogo_forked) {
+				close(bogo_stdin);
+				waitpid(bogo_pid, &status, 0);
+				if (!WIFEXITED(status))
+					status = -1;
+				else
+					status = WEXITSTATUS(status);
+			}
+			if (!bogo_forked || status != 0) {
+				alertpanel_error(_("Learning failed; `%s` returned with error:\n%s"),
+						cmd, error ? error->message:_("Unknown error"));
+				if (error)
+					g_error_free(error);
+			}
+
 		}
 
 		if (message_callback != NULL)
@@ -440,7 +561,7 @@ struct PluginFeature *plugin_provides(void)
 
 void bogofilter_register_hook(void)
 {
-	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
+	hook_id = hooks_register_hook(MAIL_LISTFILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
@@ -450,6 +571,6 @@ void bogofilter_register_hook(void)
 void bogofilter_unregister_hook(void)
 {
 	if (hook_id != -1) {
-		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
+		hooks_unregister_hook(MAIL_LISTFILTERING_HOOKLIST, hook_id);
 	}
 }

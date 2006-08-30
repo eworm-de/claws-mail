@@ -1,3 +1,22 @@
+2006-08-30 [colin]	2.4.0cvs114
+
+	* src/procmsg.c
+	* src/procmsg.h
+		Provide a way to filter a list of
+		messages in an optimised manner, and
+		add a list-filtering hook
+	* src/folder.c
+	* src/inc.c
+	* src/mbox.c
+		Use the list filtering
+	* src/plugins/bogofilter/bogofilter.c
+		Use the list-filtering hook
+		Use -b (bulk) mode for more speed
+		when learning and filtering
+	* src/etpan/imap-thread.c
+		Make log output shorter in UID SEARCH
+
+
 2006-08-30 [colin]	2.4.0cvs113
 
 	* src/plugins/bogofilter/bogofilter.c

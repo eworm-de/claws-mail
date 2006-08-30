@@ -2146,6 +2146,9 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 	MailFilteringData mail_filtering_data;
 			
 	mail_filtering_data.msginfo = msginfo;			
+	mail_filtering_data.msglist = NULL;			
+	mail_filtering_data.filtered = NULL;			
+	mail_filtering_data.unfiltered = NULL;			
 	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
 		return TRUE;
 	}
@@ -2157,6 +2160,84 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 	}
 		
 	return FALSE;
+}
+
+void procmsg_msglist_filter(GSList *list, PrefsAccount *ac, 
+			    GSList **filtered, GSList **unfiltered,
+			    gboolean do_filter)
+{
+	GSList *cur, *to_do = NULL;
+	gint total = 0, curnum = 0;
+	MailFilteringData mail_filtering_data;
+			
+	g_return_if_fail(filtered != NULL);
+	g_return_if_fail(unfiltered != NULL);
+
+	*filtered = NULL;
+	*unfiltered = NULL;
+	
+	if (list == NULL)
+		return;
+
+	total = g_slist_length(list);
+
+	if (!do_filter) {
+		*filtered = NULL;
+		*unfiltered = g_slist_copy(list);
+		return;
+	}
+
+	statusbar_print_all(_("Filtering messages...\n"));
+
+	mail_filtering_data.msginfo = NULL;			
+	mail_filtering_data.msglist = list;			
+	mail_filtering_data.filtered = NULL;			
+	mail_filtering_data.unfiltered = NULL;	
+			
+	hooks_invoke(MAIL_LISTFILTERING_HOOKLIST, &mail_filtering_data);
+	
+	if (mail_filtering_data.filtered == NULL &&
+	    mail_filtering_data.unfiltered == NULL) {
+	    	/* nothing happened */
+		debug_print(MAIL_LISTFILTERING_HOOKLIST " did nothing. filtering whole list normally.\n");
+		to_do = list;
+	} 
+	if (mail_filtering_data.filtered != NULL) {
+		/* keep track of what's been filtered by the hooks */
+		debug_print(MAIL_LISTFILTERING_HOOKLIST " filtered some stuff. total %d filtered %d unfilt %d.\n",
+			g_slist_length(list),
+			g_slist_length(mail_filtering_data.filtered),
+			g_slist_length(mail_filtering_data.unfiltered));
+
+		*filtered = g_slist_copy(mail_filtering_data.filtered);
+	}
+	if (mail_filtering_data.unfiltered != NULL) {
+		/* what the hooks didn't handle will go in filtered or 
+		 * unfiltered in the next loop */
+		debug_print(MAIL_LISTFILTERING_HOOKLIST " left unfiltered stuff. total %d filtered %d unfilt %d.\n",
+			g_slist_length(list),
+			g_slist_length(mail_filtering_data.filtered),
+			g_slist_length(mail_filtering_data.unfiltered));
+		to_do = mail_filtering_data.unfiltered;
+	} 
+
+	for (cur = to_do; cur; cur = cur->next) {
+		MsgInfo *info = (MsgInfo *)cur->data;
+		if (procmsg_msginfo_filter(info, ac))
+			*filtered = g_slist_prepend(*filtered, info);
+		else
+			*unfiltered = g_slist_prepend(*unfiltered, info);
+		statusbar_progress_all(curnum++, total, prefs_common.statusbar_update_step);
+	}
+
+	g_slist_free(mail_filtering_data.filtered);
+	g_slist_free(mail_filtering_data.unfiltered);
+	
+	*filtered = g_slist_reverse(*filtered);
+	*unfiltered = g_slist_reverse(*unfiltered);
+
+	statusbar_progress_all(0,0,0);
+	statusbar_pop_all();
 }
 
 MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimeinfo)

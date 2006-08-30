@@ -152,6 +152,7 @@ typedef guint32 MsgTmpFlags;
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
+#define MAIL_LISTFILTERING_HOOKLIST "mail_listfiltering_hooklist"
 #define MAIL_POSTFILTERING_HOOKLIST "mail_postfiltering_hooklist"
 
 typedef enum {
@@ -260,6 +261,9 @@ struct _MsgInfoUpdate {
 struct _MailFilteringData
 {
 	MsgInfo	*msginfo;
+	GSList  *msglist;
+	GSList  *filtered;
+	GSList  *unfiltered;
 };
 
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);
@@ -349,8 +353,14 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
-gboolean procmsg_msginfo_filter		(MsgInfo		*msginfo,
-									 PrefsAccount	*ac_prefs);
+gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo,
+					 PrefsAccount	*ac_prefs);
+void procmsg_msglist_filter		(GSList 	*list, 
+					 PrefsAccount 	*ac, 
+					 GSList 	**filtered,
+					 GSList 	**unfiltered,
+					 gboolean 	 do_filter);
+
 MsgInfo *procmsg_msginfo_new_from_mimeinfo
 					(MsgInfo 	*src_msginfo, 
 					 MimeInfo	*mimeinfo);

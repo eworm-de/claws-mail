@@ -488,7 +488,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gchar *msg;
 	gchar *fin_msg;
 	FolderItem *processing, *inbox;
-	MsgInfo *msginfo;
 	GSList *msglist, *msglist_element;
 	gboolean cancelled = FALSE;
 
@@ -542,9 +541,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 }
 
 	for (; inc_dialog->queue_list != NULL && !cancelled; inc_dialog->cur_row++) {
-		int cur = 1, total = 0;
 		session = inc_dialog->queue_list->data;
 		pop3_session = POP3_SESSION(session->session);
+		GSList *filtered, *unfiltered;
 
 		if (pop3_session->pass == NULL) {
 			SET_PIXMAP_AND_TEXT(okpix, _("Cancelled"));
@@ -630,25 +629,16 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		/* process messages */
 		folder_item_update_freeze();
-		if (pop3_session->ac_prefs->filter_on_recv)
-			statusbar_print_all(_("Filtering messages...\n"));
-		total = g_slist_length(msglist);
+		
+		procmsg_msglist_filter(msglist, pop3_session->ac_prefs, 
+				&filtered, &unfiltered, 
+				pop3_session->ac_prefs->filter_on_recv);
 
-		for(msglist_element = msglist; msglist_element != NULL; 
-		    msglist_element = msglist_element->next) {
-			gchar *filename;
-			msginfo = (MsgInfo *) msglist_element->data;
-			filename = folder_item_fetch_msg(processing, msginfo->msgnum);
-			g_free(filename);
+		if (filtered != NULL)
+			filtering_move_and_copy_msgs(filtered);
+		if (unfiltered != NULL)
+			folder_item_move_msgs(inbox, unfiltered);
 
-			if (pop3_session->ac_prefs->filter_on_recv)
-				statusbar_progress_all(cur++,total, prefs_common.statusbar_update_step);
-
-			if (!pop3_session->ac_prefs->filter_on_recv || 
-			    !procmsg_msginfo_filter(msginfo, pop3_session->ac_prefs))
-				folder_item_move_msg(inbox, msginfo);
-		}
-		filtering_move_and_copy_msgs(msglist);
 		for(msglist_element = msglist; msglist_element != NULL; 
 		    msglist_element = msglist_element->next) {
 			MsgInfo *msginfo = (MsgInfo *)msglist_element->data;
@@ -656,10 +646,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 		folder_item_update_thaw();
 		
-		statusbar_progress_all(0,0,0);
-		statusbar_pop_all();
-
 		g_slist_free(msglist);
+		g_slist_free(filtered);
+		g_slist_free(unfiltered);
 
 		statusbar_pop_all();
 

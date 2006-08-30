@@ -70,7 +70,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 	gint lines;
 	MsgInfo *msginfo;
 	gboolean more;
-	GSList *to_filter = NULL, *to_drop = NULL, *cur, *to_add = NULL;
+	GSList *to_filter = NULL, *filtered = NULL, *unfiltered = NULL, *cur, *to_add = NULL;
 	gboolean printed = FALSE;
 	FolderItem *dropfolder;
 
@@ -226,10 +226,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 				return -1;
 			}
 			msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-                	if (!procmsg_msginfo_filter(msginfo, NULL))
-				to_drop = g_slist_prepend(to_drop, msginfo);
-			else
-				to_filter = g_slist_prepend(to_filter, msginfo);
+			to_filter = g_slist_prepend(to_filter, msginfo);
 		} else {
 			MsgFileInfo *finfo = g_new0(MsgFileInfo, 1);
 			finfo->file = tmp_file;
@@ -251,21 +248,23 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		statusbar_pop_all();
 
 	if (apply_filter) {
-		to_drop = g_slist_reverse(to_drop);
-		folder_item_move_msgs(dest, to_drop);
-		for (cur = to_drop; cur; cur = g_slist_next(cur)) {
+		procmsg_msglist_filter(to_filter, NULL, &filtered, &unfiltered, TRUE);
+		unfiltered = g_slist_reverse(unfiltered);
+		folder_item_move_msgs(dest, unfiltered);
+		for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			procmsg_msginfo_free(info);
 		}
 
-		to_filter = g_slist_reverse(to_filter);
-		filtering_move_and_copy_msgs(to_filter);
-		for (cur = to_filter; cur; cur = g_slist_next(cur)) {
+		filtered = g_slist_reverse(filtered);
+		filtering_move_and_copy_msgs(filtered);
+		for (cur = filtered; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			procmsg_msginfo_free(info);
 		}
 
-		g_slist_free(to_drop);
+		g_slist_free(unfiltered);
+		g_slist_free(filtered);
 		g_slist_free(to_filter);
 	} else if (to_add) {
 		folder_item_add_msgs(dropfolder, to_add, TRUE);

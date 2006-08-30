@@ -1934,47 +1934,57 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	folder_item_update_freeze();
 	if (newmsg_list != NULL) {
 		GSList *elem, *to_filter = NULL;
-		int total = g_slist_length(newmsg_list), cur = 0;
-		
-		if ((filtering == TRUE) &&
-		    (item->stype == F_INBOX) &&
-		    (item->folder->account != NULL) && 
-		    (item->folder->account->filter_on_recv)) 
-			statusbar_print_all(_("Filtering messages...\n"));
+		gboolean do_filter = (filtering == TRUE) &&
+		    			(item->stype == F_INBOX) &&
+		   			(item->folder->account != NULL) && 
+		   			(item->folder->account->filter_on_recv);
 		
 		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
 			MsgInfo *msginfo = (MsgInfo *) elem->data;
 
-			statusbar_progress_all(cur++,total, 10);
-
 			msgcache_add_msg(item->cache, msginfo);
-			if ((filtering == TRUE) &&
-			    (item->stype == F_INBOX) &&
-			    (item->folder->account != NULL) && 
-			    (item->folder->account->filter_on_recv) &&
-			    procmsg_msginfo_filter(msginfo,  item->folder->account))
-				to_filter = g_slist_prepend(to_filter, msginfo);
-			else {
+			if (!do_filter) {
 				exists_list = g_slist_prepend(exists_list, msginfo);
-				
+
 				if(prefs_common.thread_by_subject &&
 					MSG_IS_IGNORE_THREAD(msginfo->flags) &&
 					!subject_table_lookup(subject_table, msginfo->subject)) {
 					subject_table_insert(subject_table, msginfo->subject, msginfo);
-				}
+				}			
 			}
 		}
-		filtering_move_and_copy_msgs(to_filter);
-		for (elem = to_filter; elem; elem = g_slist_next(elem)) {
-			MsgInfo *msginfo = (MsgInfo *)elem->data;
-			procmsg_msginfo_free(msginfo);
-		}
 
-		g_slist_free(to_filter);
+		if (do_filter) {
+			GSList *unfiltered;
+			procmsg_msglist_filter(newmsg_list, item->folder->account, 
+					&to_filter, &unfiltered, 
+					TRUE);
+			
+			if (to_filter != NULL) {
+				filtering_move_and_copy_msgs(to_filter);
+				for (elem = to_filter; elem; elem = g_slist_next(elem)) {
+					MsgInfo *msginfo = (MsgInfo *)elem->data;
+					procmsg_msginfo_free(msginfo);
+				}
+				g_slist_free(to_filter);
+			}
+			if (unfiltered != NULL) {
+				for (elem = unfiltered; elem; elem = g_slist_next(elem)) {
+					MsgInfo *msginfo = (MsgInfo *)elem->data;
+					exists_list = g_slist_prepend(exists_list, msginfo);
+
+					if(prefs_common.thread_by_subject &&
+						MSG_IS_IGNORE_THREAD(msginfo->flags) &&
+						!subject_table_lookup(subject_table, msginfo->subject)) {
+						subject_table_insert(subject_table, msginfo->subject, msginfo);
+					}
+				}
+				g_slist_free(unfiltered);
+			}
+		} 
+
 		g_slist_free(newmsg_list);
 
-		statusbar_progress_all(0,0,0);
-		statusbar_pop_all();
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 	}
 

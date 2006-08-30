@@ -106,6 +106,43 @@ void imap_logger_fetch(int direction, const char * str, size_t size)
 	free(buf);
 }
 
+void imap_logger_uid(int direction, const char * str, size_t size) 
+{
+	gchar *buf;
+	gchar **lines;
+	int i = 0;
+
+	buf = malloc(size+1);
+	memset(buf, 0, size+1);
+	strncpy(buf, str, size);
+	buf[size] = '\0';
+	if (!strncmp(buf, "<<<<<<<", 7) 
+	||  !strncmp(buf, ">>>>>>>", 7)) {
+		free(buf);
+		return;
+	}
+	while (strstr(buf, "\r"))
+		*strstr(buf, "\r") = ' ';
+	while (strlen(buf) > 0 && buf[strlen(buf)-1] == '\n')
+		buf[strlen(buf)-1] = '\0';
+
+	lines = g_strsplit(buf, "\n", -1);
+
+	if (direction == 0 && size > 64) {
+		gchar tmp[32];
+		strncpy2(tmp, lines[0], 31);
+		log_print("IMAP4%c %s[... - %zd bytes more]\n", direction?'>':'<', tmp,
+			size-32);
+	} else {
+		while (lines[i] && *lines[i]) {
+			log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			i++;
+		}
+	}
+	g_strfreev(lines);
+	free(buf);
+}
+
 void imap_logger_append(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
@@ -1226,7 +1263,11 @@ static void search_run(struct etpan_thread_op * op)
 		result->error = -1;
 		result->search_result = NULL;
 	} else {
+		mailstream_logger = imap_logger_uid;
+
 		r = mailimap_uid_search(param->imap, NULL, key, &search_result);
+
+		mailstream_logger = imap_logger_cmd;
 
 		/* free the key (with the imapset) */
 		mailimap_search_key_free(key);
