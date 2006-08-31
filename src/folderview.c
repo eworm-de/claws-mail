@@ -878,11 +878,9 @@ void folderview_select_next_unread(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
-	SelectOnEntry last_sel = prefs_common.select_on_entry;
 	gboolean last_open = prefs_common.always_show_msg;
 	
 	prefs_common.select_on_entry = SELECTONENTRY_UNM;
-	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_unread(ctree, folderview->opened))
 	    != NULL) {
@@ -899,7 +897,6 @@ void folderview_select_next_unread(FolderView *folderview)
 		folderview_select_node(folderview, node);
 
 out:
-	prefs_common.select_on_entry = last_sel;
 	prefs_common.always_show_msg = last_open;
 }
 

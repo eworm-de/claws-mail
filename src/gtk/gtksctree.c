@@ -752,6 +752,45 @@ gtk_sctree_draw_lines (GtkCTree     *ctree,
   return offset;
 }
 
+static PangoLayout *
+sc_gtk_clist_create_cell_layout (GtkCList       *clist,
+			       GtkCListRow    *clist_row,
+			       gint            column)
+{
+  PangoLayout *layout;
+  GtkStyle *style;
+  GtkCell *cell;
+  gchar *text;
+  
+  gtk_sctree_get_cell_style (clist, clist_row, GTK_STATE_NORMAL, 0, column, &style,
+		  NULL, NULL);
+
+
+  cell = &clist_row->cell[column];
+  switch (cell->type)
+    {
+    case GTK_CELL_TEXT:
+    case GTK_CELL_PIXTEXT:
+      text = ((cell->type == GTK_CELL_PIXTEXT) ?
+	      GTK_CELL_PIXTEXT (*cell)->text :
+	      GTK_CELL_TEXT (*cell)->text);
+
+      if (!text)
+	return NULL;
+      
+      layout = gtk_widget_create_pango_layout (GTK_WIDGET (clist),
+					       ((cell->type == GTK_CELL_PIXTEXT) ?
+						GTK_CELL_PIXTEXT (*cell)->text :
+						GTK_CELL_TEXT (*cell)->text));
+      pango_layout_set_font_description (layout, style->font_desc);
+      
+      return layout;
+      
+    default:
+      return NULL;
+    }
+}
+
 static void
 gtk_sctree_draw_row (GtkCList     *clist,
 	  GdkRectangle *area,
@@ -996,7 +1035,7 @@ gtk_sctree_draw_row (GtkCList     *clist,
 			      crect->x, crect->y, crect->width, crect->height);
 
 
-	  layout = _gtk_clist_create_cell_layout (clist, clist_row, i);
+	  layout = sc_gtk_clist_create_cell_layout (clist, clist_row, i);
 	  if (layout)
 	    {
 	      pango_layout_get_pixel_extents (layout, NULL, &logical_rect);

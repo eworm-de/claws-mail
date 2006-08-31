@@ -1,3 +1,12 @@
+2006-08-31 [colin]	2.4.0cvs116
+
+	* src/folderview.c
+		Use pref "Always open on select" when going
+		to next unread folder
+	* src/gtk/gtksctree.c
+		Fix link failure to _gtk_clist_create_cell_layout
+		on certain computers. (Why not mine, I wonder)
+
 2006-08-31 [colin]	2.4.0cvs115
 
 	* src/procmsg.c
