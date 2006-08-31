@@ -1,3 +1,8 @@
+2006-08-31 [colin]	2.4.0cvs119
+
+	* src/folderview.c
+		Revert 2.4.0cvs116, wrong fix.
+
 2006-08-31 [colin]	2.4.0cvs118
 
 	* src/gtk/gtksctree.c
