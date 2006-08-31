@@ -668,8 +668,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				return;
 			}
 
-			printf("1-get_part: "); END_TIMING();
-
 			if (!prefs_common.resize_img) {
 				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			} else {
@@ -692,7 +690,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				END_TIMING();
 				return;
 			}
-			printf("2-gdk_pixbuf: "); END_TIMING();
 
 			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {

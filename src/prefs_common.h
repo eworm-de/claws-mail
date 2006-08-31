@@ -180,6 +180,7 @@ struct _PrefsCommon
 	gchar *date_format;
 
 	gboolean enable_rules_hint;
+	gboolean enable_dotted_lines;
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
 	gboolean enable_thread;

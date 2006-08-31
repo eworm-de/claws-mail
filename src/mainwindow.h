@@ -139,6 +139,7 @@ struct _MainWindow
 	gint	progressindicator_hook;
 	
 	GtkWidget 	*colorlabel_menu;
+	GtkWidget	*warning_btn;
 };
 
 MainWindow *main_window_create		(SeparateType	 type);

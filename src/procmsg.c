@@ -904,7 +904,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	GNode *node, *next;
 	
 	if (send_queue_lock) {
-		log_error(_("Already trying to send\n"));
+		log_warning(_("Already trying to send\n"));
 		if (errstr) {
 			if (*errstr) g_free(*errstr);
 			*errstr = g_strdup_printf(_("Already trying to send."));

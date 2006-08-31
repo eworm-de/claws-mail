@@ -4954,9 +4954,17 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				   prefs_common.summary_col_size[S_COL_NUMBER]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
 				   prefs_common.summary_col_size[S_COL_SCORE]);
-	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
-	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+
+	if (prefs_common.enable_dotted_lines) {
+		gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
+		gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
+		gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+				     GTK_CTREE_EXPANDER_TRIANGLE);
+	}
+
 	gtk_ctree_set_indent(GTK_CTREE(ctree), 12);
 	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 

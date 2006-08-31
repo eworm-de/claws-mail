@@ -56,6 +56,7 @@
 #include "stock_pixmap.h"
 #include "folder.h"
 #include "inc.h"
+#include "log.h"
 #include "compose.h"
 #include "procmsg.h"
 #include "import.h"
@@ -103,6 +104,7 @@
 static GList *mainwin_list = NULL;
 
 static GdkCursor *watch_cursor = NULL;
+static GdkCursor *hand_cursor = NULL;
 
 static void main_window_menu_callback_block	(MainWindow	*mainwin);
 static void main_window_menu_callback_unblock	(MainWindow	*mainwin);
@@ -1020,6 +1022,51 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	mainwin->colorlabel_menu = menu;
 }
 
+static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
+				    MainWindow *mainwindow)
+{
+	if (evt && evt->button == 1) {
+		log_window_show(mainwindow->logwin);
+		gtk_widget_hide(mainwindow->warning_btn);
+	}
+	return FALSE;
+}
+
+static gboolean warning_visi_notify(GtkWidget *widget,
+				       GdkEventVisibility *event,
+				       MainWindow *mainwindow)
+{
+	gdk_window_set_cursor(mainwindow->warning_btn->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean warning_leave_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      MainWindow *mainwindow)
+{
+	gdk_window_set_cursor(mainwindow->warning_btn->window, NULL);
+	return FALSE;
+}
+
+static gboolean warning_enter_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      MainWindow *mainwindow)
+{
+	gdk_window_set_cursor(mainwindow->warning_btn->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean mainwindow_log_error(gpointer source, gpointer data)
+{
+	LogText *logtext = (LogText *) source;
+	MainWindow *mainwin = (MainWindow *) data;
+	if (logtext->type != LOG_ERROR)
+		return FALSE;
+	
+	gtk_widget_show(mainwin->warning_btn);
+	
+	return FALSE;
+}
 
 MainWindow *main_window_create(SeparateType type)
 {
@@ -1039,9 +1086,9 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *offline_pixmap;
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
-	GtkTooltips *offline_tip;
-	GtkTooltips *online_tip;
-	GtkTooltips *sel_ac_tip;
+	GtkTooltips *tips;
+	GtkWidget *warning_icon;
+	GtkWidget *warning_btn;
 
 	FolderView *folderview;
 	SummaryView *summaryview;
@@ -1137,6 +1184,35 @@ MainWindow *main_window_create(SeparateType type)
 	hbox_stat = gtk_hbox_new(FALSE, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
+	tips = gtk_tooltips_new();
+
+	warning_icon = gtk_image_new_from_stock
+                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	warning_btn = gtk_event_box_new();
+	gtk_event_box_set_visible_window(GTK_EVENT_BOX(warning_btn), FALSE);
+	
+	mainwin->warning_btn      = warning_btn;
+	
+	g_signal_connect(G_OBJECT(warning_btn), "button-press-event", 
+			 G_CALLBACK(warning_icon_pressed),
+			 (gpointer) mainwin);
+	g_signal_connect(G_OBJECT(warning_btn), "visibility-notify-event",
+			 G_CALLBACK(warning_visi_notify), mainwin);
+	g_signal_connect(G_OBJECT(warning_btn), "motion-notify-event",
+			 G_CALLBACK(warning_visi_notify), mainwin);
+	g_signal_connect(G_OBJECT(warning_btn), "leave-notify-event",
+			 G_CALLBACK(warning_leave_notify), mainwin);
+	g_signal_connect(G_OBJECT(warning_btn), "enter-notify-event",
+			 G_CALLBACK(warning_enter_notify), mainwin);
+
+	gtk_container_add (GTK_CONTAINER(warning_btn), warning_icon);
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),warning_btn, 
+			     _("Some error(s) happened. Click here to view log."), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_stat), warning_btn, FALSE, FALSE, 0);
+
+	hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, mainwindow_log_error, mainwin);
+
 	statusbar = statusbar_create();
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
@@ -1146,13 +1222,11 @@ MainWindow *main_window_create(SeparateType type)
 
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
-	online_tip = gtk_tooltips_new();
 	online_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),online_switch, 
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),online_switch, 
 			     _("You are online. Click the icon to go offline"), NULL);
-	offline_tip = gtk_tooltips_new();
 	offline_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),offline_switch, 
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),offline_switch, 
 			     _("You are offline. Click the icon to go online"),
 			     NULL);
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
@@ -1167,9 +1241,8 @@ MainWindow *main_window_create(SeparateType type)
 	statuslabel = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statuslabel, FALSE, FALSE, 0);
 
-	sel_ac_tip = gtk_tooltips_new();
 	ac_button = gtk_button_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(sel_ac_tip),
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
 			     ac_button, _("Select account"), NULL);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request(ac_button, -1, 0);
@@ -1183,6 +1256,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show_all(hbox_stat);
 
 	gtk_widget_hide(offline_switch);
+	gtk_widget_hide(warning_btn);
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
@@ -1352,6 +1426,8 @@ MainWindow *main_window_create(SeparateType type)
 
 	if (!watch_cursor)
 		watch_cursor = gdk_cursor_new(GDK_WATCH);
+	if (!hand_cursor)
+		hand_cursor = gdk_cursor_new(GDK_HAND2);
 
 	mainwin_list = g_list_append(mainwin_list, mainwin);
 

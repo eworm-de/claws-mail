@@ -761,6 +761,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"enable_rules_hint", "TRUE", &prefs_common.enable_rules_hint, P_BOOL,
 	 NULL, NULL, NULL},
+	{"enable_dotted_lines", "FALSE", &prefs_common.enable_rules_hint, P_BOOL,
+	 NULL, NULL, NULL},
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
 	{"folderview_vscrollbar_policy", "0",

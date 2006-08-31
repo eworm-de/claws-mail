@@ -48,6 +48,18 @@ GtkWidget *statusbar_create(void)
 	statusbar_list = g_list_append(statusbar_list, statusbar);
 	gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(statusbar), 
 					  FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
+
+	gtk_widget_ref(GTK_STATUSBAR(statusbar)->label);
+	gtk_container_remove(GTK_CONTAINER(GTK_STATUSBAR(statusbar)->frame),
+		GTK_STATUSBAR(statusbar)->label);
+	gtk_widget_hide(GTK_STATUSBAR(statusbar)->frame);
+	gtk_box_pack_start (GTK_BOX(statusbar), GTK_STATUSBAR(statusbar)->label, 
+		TRUE, TRUE, 0);
+	gtk_widget_unref(GTK_STATUSBAR(statusbar)->label);
+	gtk_container_remove(GTK_CONTAINER(statusbar),
+		GTK_STATUSBAR(statusbar)->frame);
+	GTK_STATUSBAR(statusbar)->frame = gtk_frame_new(NULL);
 
 	return statusbar;
 }

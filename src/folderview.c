@@ -477,9 +477,15 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), 
 					   col_pos[F_COL_TOTAL],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
-	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+	if (prefs_common.enable_dotted_lines) {
+		gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
+		gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
+		gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+				     GTK_CTREE_EXPANDER_TRIANGLE);
+	}
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	gtk_clist_set_compare_func(GTK_CLIST(ctree), folderview_clist_compare);
 

@@ -25,6 +25,7 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -127,7 +128,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	GSList *msglist = mail_filtering_data->msglist;
 	GSList *cur = NULL;
 	static gboolean warned_error = FALSE;
-	gchar *file = NULL, *cmd = NULL;
+	gchar *file = NULL;
 	int status = 0;
 	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 	int total = 0, curnum = 0;
@@ -152,8 +153,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	total = g_slist_length(msglist);
 	if (message_callback != NULL)
 		message_callback(_("Bogofilter: filtering messages..."), total, 0);
-
-	cmd = g_strdup_printf("%s -T -b", bogo_exec);
 
 	bogo_args[0] = bogo_exec;
 	bogo_args[1] = "-T";
@@ -186,7 +185,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				g_free(tmp);
 				memset(buf, 0, sizeof(buf));
 				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
-					printf("ERROR 2\n");
+					g_warning("bogofilter short read\n");
+					debug_print("message %d is ham\n", msginfo->msgnum);
+					procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+					mail_filtering_data->unfiltered = g_slist_prepend(
+						mail_filtering_data->unfiltered, msginfo);
 				} else {
 					gchar **parts = NULL;
 					if (strchr(buf, '/')) {
@@ -199,6 +202,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
 						debug_print("message %d is spam\n", msginfo->msgnum);
 						procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+						
 						if (config.receive_spam) {
 							procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 							procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
@@ -206,6 +210,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 						} else {
 							folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 						}
+
 						mail_filtering_data->filtered = g_slist_prepend(
 							mail_filtering_data->filtered, msginfo);
 					} else {
@@ -218,6 +223,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				}
 				g_free(file);
 			} else {
+				procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 				mail_filtering_data->unfiltered = g_slist_prepend(
 					mail_filtering_data->unfiltered, msginfo);
 			}
@@ -246,7 +252,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					   "spam and ham messages."));
 		else
 			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
-					   "a message. the command `%s` couldn't be run."), cmd);
+					   "a message. the command `%s %s %s` couldn't be run."), 
+					   bogo_args[0], bogo_args[1], bogo_args[2]);
 		if (!prefs_common.no_recv_err_panel) {
 			if (!warned_error) {
 				alertpanel_error(msg);
@@ -318,7 +325,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				/* learn as ham */
 				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
 			if ((status = execute_command_line(cmd, FALSE)) != 0)
-				alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+				log_error(_("Learning failed; `%s` returned with status %d."),
 						cmd, status);
 			g_free(cmd);
 			g_free(file);
@@ -366,7 +373,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
 
 				if ((status = execute_command_line(cmd, FALSE)) != 0)
-					alertpanel_error(_("Learning failed; `%s` returned with status %d."),
+					log_error(_("Learning failed; `%s` returned with status %d."),
 							cmd, status);
 
 				g_free(cmd);
@@ -422,8 +429,9 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					status = WEXITSTATUS(status);
 			}
 			if (!bogo_forked || status != 0) {
-				alertpanel_error(_("Learning failed; `%s` returned with error:\n%s"),
-						cmd, error ? error->message:_("Unknown error"));
+				log_error(_("Learning failed; `%s %s %s` returned with error:\n%s"),
+						bogo_args[0], bogo_args[1], bogo_args[2], 
+						error ? error->message:_("Unknown error"));
 				if (error)
 					g_error_free(error);
 			}

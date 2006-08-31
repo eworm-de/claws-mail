@@ -198,7 +198,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	/* SPAMASSASSIN_DISABLED : keep test for compatibility purpose */
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error(_("SpamAssassin plugin is disabled by its preferences.\n"));
+		log_warning(_("SpamAssassin plugin is disabled by its preferences.\n"));
 		return FALSE;
 	}
 	debug_print("Filtering message %d\n", msginfo->msgnum);
@@ -491,7 +491,7 @@ gint plugin_init(gchar **error)
 	}
 
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_error(_("SpamAssassin plugin is loaded but disabled by its preferences.\n"));
+		log_warning(_("SpamAssassin plugin is loaded but disabled by its preferences.\n"));
 	}
 	else {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
