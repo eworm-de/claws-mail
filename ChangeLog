@@ -7,6 +7,7 @@
 	* src/summaryview.c
 		obey the 'When entering folder...' option
 		when using the /View/Go to/... menu items
+		Thanks to Colin
 
 2006-08-31 [colin]	2.4.0cvs119
 
