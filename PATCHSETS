@@ -1815,3 +1815,4 @@
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 manual/advanced.xml;  ) > 2.4.0cvs121.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 manual/advanced.xml;  ) > 2.4.0cvs122.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 manual/advanced.xml;  ) > 2.4.0cvs123.patchset
+( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 commitHelper;  ) > 2.4.0cvs124.patchset

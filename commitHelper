@@ -86,14 +86,17 @@ for line in $files; do
 done;
 patchset="$patchset ) > $nextsversion.patchset"
 
-if [ "$EDITOR" == "" ]; then
-	if [ "$VISUAL" != "" ]; then
-		EDITOR=$VISUAL
-	else
-		EDITOR=vi
+if [ "$CVSEDITOR" == "" ]; then
+	if [ "$EDITOR" == "" ]; then
+		if [ "$VISUAL" != "" ]; then
+			EDITOR=$VISUAL
+		else
+			EDITOR=vi
+		fi;
 	fi;
+else
+	EDITOR=$CVSEDITOR
 fi;
-
 
 echo -e "#please complete the changelog entry below" > /tmp/logentry
 echo -e -n $log >> /tmp/logentry
