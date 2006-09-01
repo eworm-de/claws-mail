@@ -3123,7 +3123,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
-	
 	debug_print("get_num_list\n");
 	
 	g_return_val_if_fail(folder != NULL, -1);
@@ -3398,7 +3397,7 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 	IMAPSession *session;
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	gint ok, exists = 0, unseen = 0;
-	guint32 uid_next, uid_val;
+	guint32 uid_next = 0, uid_val = 0;
 	gboolean selected_folder;
 	
 	g_return_val_if_fail(folder != NULL, FALSE);

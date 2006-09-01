@@ -1493,7 +1493,7 @@ void summary_select_next_unread(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTALTERNATE) {
-				folderview_select_next_unread(summaryview->folderview);
+				folderview_select_next_unread(summaryview->folderview, TRUE);
 				return;
 			} 
 			else

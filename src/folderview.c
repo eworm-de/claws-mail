@@ -874,7 +874,7 @@ static GtkCTreeNode *folderview_find_next_unread(GtkCTree *ctree,
 	return NULL;
 }
 
-void folderview_select_next_unread(FolderView *folderview)
+void folderview_select_next_unread(FolderView *folderview, gboolean force_open)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
@@ -882,7 +882,7 @@ void folderview_select_next_unread(FolderView *folderview)
 	gboolean last_open = prefs_common.always_show_msg;
 	
 	prefs_common.select_on_entry = SELECTONENTRY_UNM;
-	prefs_common.always_show_msg = TRUE;
+	prefs_common.always_show_msg = force_open ? TRUE : last_open;
 
 	if ((node = folderview_find_next_unread(ctree, folderview->opened))
 	    != NULL) {
@@ -1998,7 +1998,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			if (folderview->opened == folderview->selected &&
 			    (!folderview->summaryview->folder_item ||
 			     folderview->summaryview->folder_item->total_msgs == 0))
-				folderview_select_next_unread(folderview);
+				folderview_select_next_unread(folderview, TRUE);
 			else
 				folderview_select_node(folderview,
 						       folderview->selected);

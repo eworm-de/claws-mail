@@ -98,7 +98,8 @@ void folderview_set_all			(void);
 void folderview_select			(FolderView	*folderview,
 					 FolderItem	*item);
 void folderview_unselect		(FolderView	*folderview);
-void folderview_select_next_unread	(FolderView	*folderview);
+void folderview_select_next_unread	(FolderView	*folderview, 
+					 gboolean 	 force_open);
 void folderview_select_next_new		(FolderView	*folderview);
 void folderview_select_next_marked	(FolderView	*folderview);
 
