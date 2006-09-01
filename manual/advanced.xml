@@ -544,6 +544,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>enable_dotted_lines</literal></term>
+	<listitem>
+	  <para>
+	Don't use <emphasis>modern</emphasis> lineless stripped look on Folder 
+	List and Message Summary.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>
