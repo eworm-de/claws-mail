@@ -1,3 +1,9 @@
+2006-09-01 [wwp]	2.4.0cvs126
+
+	* manual/fr/account.xml
+		reflect changes to the ref. manual (parts of cvs72):
+		fix tabnames and quotes.
+
 2006-09-01 [wwp]	2.4.0cvs125
 
 	* manual/fr/plugins.xml
