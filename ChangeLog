@@ -1,3 +1,9 @@
+2006-09-01 [wwp]	2.4.0cvs125
+
+	* manual/fr/plugins.xml
+		reflect changes to the reference manual (cvs42):
+		update IRC channel info.
+
 2006-09-01 [wwp]	2.4.0cvs124
 
 	* commitHelper

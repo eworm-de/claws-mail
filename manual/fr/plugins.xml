@@ -82,7 +82,7 @@
     </varlistentry>
     </variablelist>
     <para>
-	Si vous êtes développeur, l'écriture d'un module Sylpheed-Claws est certainement la meilleure solution pour étendre les fonctionnalités de Sylpheed-Claws. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #sylpheed sur IRCnet.
+	Si vous êtes développeur, l'écriture d'un module Sylpheed-Claws est certainement la meilleure solution pour étendre les fonctionnalités de Sylpheed-Claws. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #sylpheed-claws sur Freenode et sur IRCnet.
     </para>
   </section>
   <section id="plugins_network">
