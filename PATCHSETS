@@ -1814,3 +1814,4 @@
 ( cvs diff -u -r 1.207.2.117 -r 1.207.2.118 src/folderview.c;  cvs diff -u -r 1.20.2.12 -r 1.20.2.13 src/folderview.h;  cvs diff -u -r 1.179.2.129 -r 1.179.2.130 src/imap.c;  cvs diff -u -r 1.274.2.141 -r 1.274.2.142 src/mainwindow.c;  cvs diff -u -r 1.395.2.238 -r 1.395.2.239 src/summaryview.c;  ) > 2.4.0cvs120.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 manual/advanced.xml;  ) > 2.4.0cvs121.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 manual/advanced.xml;  ) > 2.4.0cvs122.patchset
+( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 manual/advanced.xml;  ) > 2.4.0cvs123.patchset

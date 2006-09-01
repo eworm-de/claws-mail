@@ -547,8 +547,8 @@
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>
-	Use the <emphasis>old</emphasis> dotted look for Folder List and Message
-	List instead of the <emphasis>modern</emphasis> lineless look.
+	Use the <emphasis>old</emphasis> dotted line look for Folder List and
+	Message	List instead of the <emphasis>modern</emphasis> lineless look.
 	  </para>
 	</listitem>
       </varlistentry>
