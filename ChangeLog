@@ -1,7 +1,7 @@
 2006-09-01 [wwp]	2.4.0cvs124
 
 	* commitHelper
-		use CVSEDITOR env. var. is set, according to `man cvs`.
+		use CVSEDITOR env. var. if set, according to `man cvs`.
 
 2006-09-01 [wwp]	2.4.0cvs123
 
