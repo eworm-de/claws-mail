@@ -547,8 +547,8 @@
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>
-	Don't use <emphasis>modern</emphasis> lineless stripped look on Folder 
-	List and Message Summary.
+	Use the <emphasis>old</emphasis> dotted look for Folder List and Message
+	List instead of the <emphasis>modern</emphasis> lineless look.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -659,7 +659,7 @@
 	<term><literal>toolbar_detachable</literal></term>
 	<listitem>
 	  <para>
-	Hide handles in the toolbars.
+	Show handles in the toolbars.
 	  </para>
 	</listitem>
       </varlistentry>
