@@ -41,7 +41,7 @@ static gboolean thread_manager_event(GIOChannel * source,
 	return TRUE;
 }
 
-void imap_logger_cmd(int direction, const char * str, size_t size) 
+static void imap_logger_cmd(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
 	gchar **lines;
@@ -72,7 +72,7 @@ void imap_logger_cmd(int direction, const char * str, size_t size)
 	free(buf);
 }
 
-void imap_logger_fetch(int direction, const char * str, size_t size) 
+static void imap_logger_fetch(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
 	gchar **lines;
@@ -106,7 +106,7 @@ void imap_logger_fetch(int direction, const char * str, size_t size)
 	free(buf);
 }
 
-void imap_logger_uid(int direction, const char * str, size_t size) 
+static void imap_logger_uid(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
 	gchar **lines;
@@ -128,16 +128,17 @@ void imap_logger_uid(int direction, const char * str, size_t size)
 
 	lines = g_strsplit(buf, "\n", -1);
 
-	if (direction == 0 && size > 64) {
-		gchar tmp[32];
-		strncpy2(tmp, lines[0], 31);
-		log_print("IMAP4%c %s[... - %zd bytes more]\n", direction?'>':'<', tmp,
-			size-32);
-	} else {
-		while (lines[i] && *lines[i]) {
+	while (lines[i] && *lines[i]) {
+		int llen = strlen(lines[i]);
+		if (llen < 64)
 			log_print("IMAP4%c %s\n", direction?'>':'<', lines[i]);
-			i++;
+		else {
+			gchar tmp[64];
+			strncpy2(tmp, lines[i], 63);
+			log_print("IMAP4%c %s[... - %zd bytes more]\n", direction?'>':'<', tmp,
+				  llen-64);
 		}
+		i++;
 	}
 	g_strfreev(lines);
 	free(buf);

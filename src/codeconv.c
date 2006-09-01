@@ -823,7 +823,11 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	if (!strcasecmp(src_code, dest_code))
 		return g_strdup(inbuf);
 
-	/* don't convert if current codeset is US-ASCII */
+	/* don't convert if dest codeset is US-ASCII */
+	if (!strcasecmp(src_code, CS_US_ASCII))
+		return g_strdup(inbuf);
+
+	/* don't convert if dest codeset is US-ASCII */
 	if (!strcasecmp(dest_code, CS_US_ASCII))
 		return g_strdup(inbuf);
 

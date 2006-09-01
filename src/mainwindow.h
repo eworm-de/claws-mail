@@ -216,4 +216,5 @@ MainWindow *mainwindow_get_mainwindow 	      (void);
 void mainwindow_learn			      (MainWindow *mainwin,
 					       gboolean is_spam);
 void mainwindow_jump_to			      (const gchar 	 *target);
+void mainwindow_clear_error		      (MainWindow *mainwin);
 #endif /* __MAINWINDOW_H__ */

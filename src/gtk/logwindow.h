@@ -40,6 +40,8 @@ struct _LogWindow
 	gboolean clip;
 	guint	 clip_length;
 	guint 	 hook_id;
+	GtkTextBuffer *buffer;
+	gboolean hidden;
 };
 
 LogWindow *log_window_create(void);

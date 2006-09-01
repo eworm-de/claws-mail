@@ -186,6 +186,7 @@ void alertpanel_error_log(const gchar *format, ...)
 	mainwin = mainwindow_get_mainwindow();
 	
 	if (mainwin && mainwin->logwin) {
+		mainwindow_clear_error(mainwin);
 		val = alertpanel_full(_("Error"), buf, GTK_STOCK_CLOSE,
 				      _("_View log"), NULL, FALSE, NULL,
 				      ALERT_ERROR, G_ALERTDEFAULT);

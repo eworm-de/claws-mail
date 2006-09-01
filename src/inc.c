@@ -773,8 +773,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 			    prefs_common.io_timeout_secs * 1000);
 	
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
-		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
-			    server, port);
 		if(!prefs_common.no_recv_err_panel) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
@@ -783,6 +781,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
 					 server, port);
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		} else {
+			log_error(_("Can't connect to POP3 server: %s:%d\n"),
+			    server, port);
 		}
 		session->inc_state = INC_CONNECT_ERROR;
 		statusbar_pop_all();
@@ -1089,14 +1090,17 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 	switch (istate) {
 	case INC_CONNECT_ERROR:
 		log_msg = _("Connection failed.");
+		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d failed."),
 					  SESSION(session)->server, 
 					  SESSION(session)->port);
+		fatal_error = TRUE;
 		break;
 	case INC_ERROR:
 		log_msg = _("Error occurred while processing mail.");
+		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		if (session->error_msg)
@@ -1118,6 +1122,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_SOCKET_ERROR:
 		log_msg = _("Socket error.");
+		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Socket error on connection to %s:%d."),
@@ -1154,6 +1159,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_TIMEOUT:
 		log_msg = _("Session timed out.");
+		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 

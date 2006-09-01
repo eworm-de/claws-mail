@@ -1068,6 +1068,11 @@ static gboolean mainwindow_log_error(gpointer source, gpointer data)
 	return FALSE;
 }
 
+void mainwindow_clear_error(MainWindow *mainwin)
+{
+	gtk_widget_hide(mainwin->warning_btn);
+}
+
 MainWindow *main_window_create(SeparateType type)
 {
 	MainWindow *mainwin;
@@ -1211,7 +1216,9 @@ MainWindow *main_window_create(SeparateType type)
 			     _("Some error(s) happened. Click here to view log."), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), warning_btn, FALSE, FALSE, 0);
 
-	hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, mainwindow_log_error, mainwin);
+	/* Disabled for now 
+	 * hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, mainwindow_log_error, mainwin);
+	 */
 
 	statusbar = statusbar_create();
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);

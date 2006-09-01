@@ -49,7 +49,7 @@ static void size_allocate_cb	(GtkWidget *widget,
 					 GtkAllocation *allocation);
 static gboolean log_window_append		(gpointer 	 source,
 						 gpointer   	 data);
-static void log_window_clip			(GtkWidget 	*text,
+static void log_window_clip			(LogWindow	*logwin,
 						 guint		 glip_length);
 static void log_window_clear			(GtkWidget	*widget,
 						 LogWindow	*logwin);
@@ -90,7 +90,7 @@ LogWindow *log_window_create(void)
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), logwin);
-	g_signal_connect(G_OBJECT(window), "hide",
+	g_signal_connect_after(G_OBJECT(window), "hide",
 			 G_CALLBACK(hide_cb), logwin);
 	gtk_widget_realize(window);
 
@@ -105,7 +105,8 @@ LogWindow *log_window_create(void)
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	logwin->buffer = buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
 	g_signal_connect(G_OBJECT(text), "populate-popup",
@@ -170,7 +171,7 @@ void log_window_init(LogWindow *logwin)
 		}
 	}
 
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(logwin->text));
+	buffer = logwin->buffer;
 	gtk_text_buffer_create_tag(buffer, "message",
 				   "foreground-gdk", &logwin->msg_color,
 				   NULL);
@@ -186,13 +187,20 @@ void log_window_init(LogWindow *logwin)
 	gtk_text_buffer_create_tag(buffer, "output",
 				   "foreground-gdk", &logwin->out_color,
 				   NULL);
+
+	g_object_ref(G_OBJECT(logwin->buffer));
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), NULL);
+	logwin->hidden = TRUE;
 }
 
 void log_window_show(LogWindow *logwin)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(logwin->text);
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextBuffer *buffer = logwin->buffer;
 	GtkTextMark *mark;
+
+	logwin->hidden = FALSE;
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), logwin->buffer);
 
 	mark = gtk_text_buffer_get_mark(buffer, "end");
 	gtk_text_view_scroll_mark_onscreen(text, mark);
@@ -226,7 +234,7 @@ static gboolean log_window_append(gpointer source, gpointer data)
 		return FALSE;
 
 	text = GTK_TEXT_VIEW(logwindow->text);
-	buffer = gtk_text_view_get_buffer(text);
+	buffer = logwindow->buffer;
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
 
 	switch (logtext->type) {
@@ -271,17 +279,21 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	if (logwindow->clip)
-	       log_window_clip (GTK_WIDGET (text), logwindow->clip_length);
+	       log_window_clip (logwindow, logwindow->clip_length);
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
-	gtk_text_view_scroll_to_iter(text, &iter, 0, TRUE, 0, 0);
-	gtk_text_buffer_place_cursor(buffer, &iter);
+	if (!logwindow->hidden) {
+		gtk_text_view_scroll_to_iter(text, &iter, 0, TRUE, 0, 0);
+		gtk_text_buffer_place_cursor(buffer, &iter);
+	}
 
 	return FALSE;
 }
 
 static void hide_cb(GtkWidget *widget, LogWindow *logwin)
 {
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), NULL);
+	logwin->hidden = TRUE;
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -295,12 +307,11 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
-static void log_window_clip(GtkWidget *textw, guint clip_length)
+static void log_window_clip(LogWindow *logwin, guint clip_length)
 {
         guint length;
 	guint point;
-	GtkTextView *textview = GTK_TEXT_VIEW(textw);
-	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
+	GtkTextBuffer *textbuf = logwin->buffer;
 	GtkTextIter start_iter, end_iter;
 	
 	length = gtk_text_buffer_get_line_count(textbuf);
@@ -320,8 +331,7 @@ static void log_window_clip(GtkWidget *textw, guint clip_length)
 
 static void log_window_clear(GtkWidget *widget, LogWindow *logwin)
 {
-	GtkTextView *textview = GTK_TEXT_VIEW(logwin->text);
-	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
+	GtkTextBuffer *textbuf = logwin->buffer;
 	GtkTextIter start_iter, end_iter;
 	
 	gtk_text_buffer_get_start_iter(textbuf, &start_iter);

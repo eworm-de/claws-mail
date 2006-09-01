@@ -1,3 +1,22 @@
+2006-09-01 [colin]	2.4.0cvs127
+
+	* src/codeconv.c
+		Don't uselessly use iconv to convert from
+		us-ascii
+	* src/alertpanel.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/inc.c
+		Fix certain log cases, disable warning icon
+		for now, the correct way to display it when
+		necessary and only when necessary is probably
+		to do it manually rather than use error logs
+	* src/etpan/imap-thread.c
+		Clean up UID logging a bit
+	* src/gtk/logwindow.c
+	* src/gtk/logwindow.h
+		Make logging faster when the window's closed
+
 2006-09-01 [wwp]	2.4.0cvs126
 
 	* manual/fr/account.xml
