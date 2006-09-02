@@ -1,3 +1,14 @@
+2006-09-02 [colin]	2.4.0cvs129
+
+	* src/folder.c
+		Make sure account-specific rules can't
+		be used in {pre-,post-,}processing
+	* src/mainwindow.c
+	* src/gtk/logwindow.c
+	* src/gtk/logwindow.h
+		Jump to last error when clicking on the
+		warning icon
+
 2006-09-02 [colin]	2.4.0cvs128
 
 	* src/imap.c

@@ -1026,7 +1026,7 @@ static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
 				    MainWindow *mainwindow)
 {
 	if (evt && evt->button == 1) {
-		log_window_show(mainwindow->logwin);
+		log_window_show_error(mainwindow->logwin);
 		gtk_widget_hide(mainwindow->warning_btn);
 	}
 	return FALSE;

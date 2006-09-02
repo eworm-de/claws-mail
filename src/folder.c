@@ -3750,6 +3750,7 @@ void folder_item_apply_processing(FolderItem *item)
 	GSList *processing_list;
 	GSList *mlist, *cur;
 	guint total = 0, curmsg = 0;
+	gint last_apply_per_account;
 
 	g_return_if_fail(item != NULL);
 
@@ -3767,6 +3768,10 @@ void folder_item_apply_processing(FolderItem *item)
 	mlist = folder_item_get_msg_list(item);
 	total = g_slist_length(mlist);
 	statusbar_print_all(_("Processing messages..."));
+
+	last_apply_per_account = prefs_common.apply_per_account_filtering_rules;
+	prefs_common.apply_per_account_filtering_rules = FILTERING_ACCOUNT_RULES_SKIP;
+
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 
@@ -3788,6 +3793,8 @@ void folder_item_apply_processing(FolderItem *item)
 		filter_message_by_msginfo(post_global_processing, msginfo, NULL);
                 
 	}
+	prefs_common.apply_per_account_filtering_rules = last_apply_per_account;
+
 	if (pre_global_processing || processing_list
 	    || post_global_processing)
 		filtering_move_and_copy_msgs(mlist);

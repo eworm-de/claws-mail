@@ -41,12 +41,14 @@ struct _LogWindow
 	guint	 clip_length;
 	guint 	 hook_id;
 	GtkTextBuffer *buffer;
+	GtkTextTag *error_tag;
 	gboolean hidden;
 };
 
 LogWindow *log_window_create(void);
 void log_window_init(LogWindow *logwin);
 void log_window_show(LogWindow *logwin);
+void log_window_show_error(LogWindow *logwin);
 void log_window_set_clipping(LogWindow *logwin, gboolean clip, guint clip_length);
 
 #endif /* __LOGWINDOW_H__ */

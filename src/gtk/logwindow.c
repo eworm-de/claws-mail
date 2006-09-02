@@ -178,7 +178,7 @@ void log_window_init(LogWindow *logwin)
 	gtk_text_buffer_create_tag(buffer, "warn",
 				   "foreground-gdk", &logwin->warn_color,
 				   NULL);
-	gtk_text_buffer_create_tag(buffer, "error",
+	logwin->error_tag = gtk_text_buffer_create_tag(buffer, "error",
 				   "foreground-gdk", &logwin->error_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "input",
@@ -206,6 +206,23 @@ void log_window_show(LogWindow *logwin)
 	gtk_text_view_scroll_mark_onscreen(text, mark);
 
 	gtk_widget_show(logwin->window);
+}
+
+static void log_window_jump_to_error(LogWindow *logwin)
+{
+	GtkTextIter iter;
+	gtk_text_buffer_get_end_iter(logwin->buffer, &iter);
+	if (!gtk_text_iter_backward_to_tag_toggle(&iter, logwin->error_tag))
+		return;
+
+	gtk_text_iter_backward_line(&iter);
+	gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(logwin->text), &iter, 0, TRUE, 0, 0);
+}
+
+void log_window_show_error(LogWindow *logwin)
+{
+	log_window_show(logwin);
+	log_window_jump_to_error(logwin);
 }
 
 void log_window_set_clipping(LogWindow *logwin, gboolean clip, guint clip_length)
