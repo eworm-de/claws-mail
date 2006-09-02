@@ -1,3 +1,13 @@
+2006-09-02 [colin]	2.4.0cvs133
+
+	* src/messageview.c
+		Display a special return-receipt message
+		if the message is from the user
+	* src/summaryview.c
+		Fix missing freeze of the list when marking
+		all read and unthreading for exec. Thanks
+		to Stephan Sachse.
+
 2006-09-02 [paul]	2.4.0cvs132
 
 	* src/mainwindow.c

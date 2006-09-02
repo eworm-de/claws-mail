@@ -1207,16 +1207,33 @@ void messageview_toggle_view_real(MessageView *messageview)
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
+	gchar *addr = NULL;
+	gboolean from_me = FALSE;
 	if (msginfo->folder 
 		&& (folder_has_parent_of_type(msginfo->folder, F_QUEUE)
 		 || folder_has_parent_of_type(msginfo->folder, F_DRAFT)))
 		return;
 
-	noticeview_set_text(noticeview, _("This message asks for a return receipt."));
-	noticeview_set_button_text(noticeview, _("Send receipt"));
-	noticeview_set_button_press_callback(noticeview,
-					     G_CALLBACK(return_receipt_send_clicked),
-					     (gpointer) msginfo);
+	addr = g_strdup(msginfo->from);
+	if (addr) {
+		extract_address(addr);
+		if (account_find_from_address(addr)) {
+			from_me = TRUE;
+		}
+		g_free(addr);
+	}
+
+	if (from_me) {
+		noticeview_set_text(noticeview, _("You asked for a return receipt in this message."));
+		noticeview_set_button_text(noticeview, NULL);
+		noticeview_set_button_press_callback(noticeview, NULL, NULL);
+	} else {
+		noticeview_set_text(noticeview, _("This message asks for a return receipt."));
+		noticeview_set_button_text(noticeview, _("Send receipt"));
+		noticeview_set_button_press_callback(noticeview,
+						     G_CALLBACK(return_receipt_send_clicked),
+						     (gpointer) msginfo);
+	}
 	noticeview_show(noticeview);
 }
 
