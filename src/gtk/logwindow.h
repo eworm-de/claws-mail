@@ -42,6 +42,7 @@ struct _LogWindow
 	guint 	 hook_id;
 	GtkTextBuffer *buffer;
 	GtkTextTag *error_tag;
+	GtkTextTag *end_mark;
 	gboolean hidden;
 };
 

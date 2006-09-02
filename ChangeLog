@@ -1,3 +1,10 @@
+2006-09-02 [colin]	2.4.0cvs130
+
+	* src/gtk/logwindow.c
+	* src/gtk/logwindow.h
+		Block scrolling if we're not at the end
+		of the log
+
 2006-09-02 [colin]	2.4.0cvs129
 
 	* src/folder.c

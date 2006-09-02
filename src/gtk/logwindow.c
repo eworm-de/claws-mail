@@ -108,7 +108,8 @@ LogWindow *log_window_create(void)
 	logwin->buffer = buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
-	gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
+	logwin->end_mark = gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
+
 	g_signal_connect(G_OBJECT(text), "populate-popup",
 			 G_CALLBACK(log_window_popup_menu_extend), logwin);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
@@ -298,10 +299,11 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (logwindow->clip)
 	       log_window_clip (logwindow, logwindow->clip_length);
 
-	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
 	if (!logwindow->hidden) {
-		gtk_text_view_scroll_to_iter(text, &iter, 0, TRUE, 0, 0);
-		gtk_text_buffer_place_cursor(buffer, &iter);
+		GtkAdjustment *vadj = text->vadjustment;
+		gfloat upper = vadj->upper - vadj->page_size;
+		if (vadj->value == upper)
+			gtk_text_view_scroll_mark_onscreen(text, logwindow->end_mark);
 	}
 
 	return FALSE;
