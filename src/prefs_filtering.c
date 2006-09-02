@@ -59,7 +59,8 @@
 enum {
 	PREFS_FILTERING_ENABLED,
 	PREFS_FILTERING_NAME,
-	PREFS_FILTERING_ACCOUNT,
+	PREFS_FILTERING_ACCOUNT_ID,
+	PREFS_FILTERING_ACCOUNT_NAME,
 	PREFS_FILTERING_RULE,
 	PREFS_FILTERING_PROP,
 	N_PREFS_FILTERING_COLUMNS
@@ -78,6 +79,8 @@ struct _Filtering {
 	GtkWidget *action_entry;
 
 	GtkWidget *cond_list_view;
+
+	GtkTreeViewColumn *account_name_column;
 };
 
 typedef struct _Filtering Filtering;
@@ -170,6 +173,9 @@ void prefs_filtering_open(GSList ** p_processing,
 		gtk_list_store_clear(filtering.account_combobox_list);
 		prefs_filtering_account_option_menu_populate();
 	}
+
+	gtk_tree_view_column_set_visible(filtering.account_name_column,
+									 per_account_filtering);
 
 	manage_window_set_transient(GTK_WINDOW(filtering.window));
 	gtk_widget_grab_focus(filtering.ok_btn);
@@ -1268,6 +1274,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
 				  G_TYPE_STRING,
 				  G_TYPE_INT,
 				  G_TYPE_STRING,
+				  G_TYPE_STRING,
 				  G_TYPE_BOOLEAN,
 				 -1);
 }
@@ -1298,6 +1305,7 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 						  gboolean prop) 
 {
 	GtkTreeIter iter;
+	gchar *account_name;
 
 	/* check if valid row at all */
 	if (row >= 0) {
@@ -1306,13 +1314,20 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 			row = -1;						   
 	}
 
+	if (account_id > 0) {
+		account_name = account_find_from_id(account_id)->account_name;
+	} else {
+		account_name = (gchar *)Q_("Filtering Account Menu|All");
+	}
+
 	if (row < 0) {
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
-				   PREFS_FILTERING_ACCOUNT, account_id,
+				   PREFS_FILTERING_ACCOUNT_ID, account_id,
+				   PREFS_FILTERING_ACCOUNT_NAME, account_name,
 				   PREFS_FILTERING_RULE, rule,
 				   PREFS_FILTERING_PROP, prop,
 				   -1);
@@ -1323,7 +1338,8 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 		gtk_list_store_set(list_store, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
-				   PREFS_FILTERING_ACCOUNT, account_id,
+				   PREFS_FILTERING_ACCOUNT_ID, account_id,
+				   PREFS_FILTERING_ACCOUNT_NAME, account_name,
 				   PREFS_FILTERING_RULE, rule,
 				   -1);
 		return row;				   
@@ -1364,7 +1380,7 @@ static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row,
 		gtk_tree_model_get(model, &iter, 
 				   PREFS_FILTERING_ENABLED, enabled,
 				   PREFS_FILTERING_NAME, name,
-				   PREFS_FILTERING_ACCOUNT, account_id,
+				   PREFS_FILTERING_ACCOUNT_ID, account_id,
 				   -1);
 	}
 }
@@ -1442,6 +1458,17 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 	gtk_tree_view_column_set_resizable(column, TRUE);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Account"),
+		 renderer,
+		 "text", PREFS_FILTERING_ACCOUNT_NAME,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+
+	filtering.account_name_column = column;
 		
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
@@ -1552,10 +1579,7 @@ static gboolean prefs_filtering_selected(GtkTreeSelection *selector,
 					   PREFS_FILTERING_NAME, &name,
 					   -1);
 			gtk_tree_model_get(model, &iter,
-					   PREFS_FILTERING_ACCOUNT, &account_id,
-					   -1);
-			gtk_tree_model_get(model, &iter,
-					   PREFS_FILTERING_ACCOUNT, &account_id,
+					   PREFS_FILTERING_ACCOUNT_ID, &account_id,
 					   -1);
 
 			prop = matcher_parser_get_filtering(filtering_str);
