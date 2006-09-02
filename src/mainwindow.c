@@ -716,7 +716,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all headers"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/All headers"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/_View/Quotes"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Quotes/_Fold all"),		"<control><shift>Q", hide_quotes_cb, 1, "<ToggleItem>"},
 	{N_("/_View/Quotes/Fold from level _2"),NULL, hide_quotes_cb, 2, "<ToggleItem>"},

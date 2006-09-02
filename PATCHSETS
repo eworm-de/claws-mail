@@ -1823,3 +1823,4 @@
 ( cvs diff -u -r 1.213.2.112 -r 1.213.2.113 src/folder.c;  cvs diff -u -r 1.274.2.144 -r 1.274.2.145 src/mainwindow.c;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/gtk/logwindow.c;  cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/gtk/logwindow.h;  ) > 2.4.0cvs129.patchset
 ( cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/gtk/logwindow.c;  cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk/logwindow.h;  ) > 2.4.0cvs130.patchset
 ( cvs diff -u -r 1.59.2.40 -r 1.59.2.41 src/prefs_filtering.c;  ) > 2.4.0cvs131.patchset
+( cvs diff -u -r 1.274.2.145 -r 1.274.2.146 src/mainwindow.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/prefs_message.c;  cvs diff -u -r 1.395.2.239 -r 1.395.2.240 src/summaryview.c;  ) > 2.4.0cvs132.patchset
