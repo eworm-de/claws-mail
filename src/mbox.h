@@ -32,7 +32,8 @@ typedef enum {
 
 gint proc_mbox		(FolderItem	*dest,
 			 const gchar	*mbox,
-			 gboolean	 apply_filter);
+			 gboolean	 apply_filter,
+			 PrefsAccount	*account);
 gint lock_mbox		(const gchar	*base,
 			 LockType	 type);
 gint unlock_mbox	(const gchar	*base,

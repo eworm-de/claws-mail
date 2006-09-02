@@ -60,7 +60,8 @@
 	} \
 }
 
-gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
+gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
+	       PrefsAccount *account)
 /* return values: -1 error, >=0 number of msgs added */
 {
 	FILE *mbox_fp;
@@ -248,7 +249,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 		statusbar_pop_all();
 
 	if (apply_filter) {
-		procmsg_msglist_filter(to_filter, NULL, &filtered, &unfiltered, TRUE);
+		procmsg_msglist_filter(to_filter, account, 
+				&filtered, &unfiltered, TRUE);
 		unfiltered = g_slist_reverse(unfiltered);
 		folder_item_move_msgs(dest, unfiltered);
 		for (cur = unfiltered; cur; cur = g_slist_next(cur)) {

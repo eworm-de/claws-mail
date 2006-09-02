@@ -123,7 +123,8 @@ static gint inc_dialog_delete_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
 static gint get_spool			(FolderItem	*dest,
-					 const gchar	*mbox);
+					 const gchar	*mbox,
+					 PrefsAccount	*account);
 
 static gint inc_spool_account(PrefsAccount *account);
 static gint inc_all_spool(void);
@@ -1096,7 +1097,6 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		err_msg = g_strdup_printf(_("Connection to %s:%d failed."),
 					  SESSION(session)->server, 
 					  SESSION(session)->port);
-		fatal_error = TRUE;
 		break;
 	case INC_ERROR:
 		log_msg = _("Error occurred while processing mail.");
@@ -1122,7 +1122,6 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_SOCKET_ERROR:
 		log_msg = _("Socket error.");
-		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Socket error on connection to %s:%d."),
@@ -1149,6 +1148,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_AUTH_FAILED:
 		log_msg = _("Authentication failed.");
+		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		if (session->error_msg)
@@ -1159,7 +1159,6 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_TIMEOUT:
 		log_msg = _("Session timed out.");
-		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 
@@ -1176,6 +1175,9 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		else
 			log_warning("%s\n", log_msg);
 	}
+	if (prefs_common.no_recv_err_panel && fatal_error)
+		mainwindow_show_error();
+
 	if (err_msg) {
 		alertpanel_error_log(err_msg);
 		g_free(err_msg);
@@ -1253,7 +1255,7 @@ static gint inc_spool_account(PrefsAccount *account)
 		return -1;
 	}
 	
-	result = get_spool(inbox, mbox);
+	result = get_spool(inbox, mbox, account);
 	g_free(mbox);
 	
 	statusbar_pop_all();
@@ -1284,7 +1286,7 @@ static gint inc_all_spool(void)
 	return new_msgs;
 }
 
-static gint get_spool(FolderItem *dest, const gchar *mbox)
+static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account)
 {
 	gint msgs, size;
 	gint lockfd;
@@ -1313,7 +1315,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
-	msgs = proc_mbox(dest, tmp_mbox, TRUE);
+	msgs = proc_mbox(dest, tmp_mbox, TRUE, account);
 
 	g_unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);

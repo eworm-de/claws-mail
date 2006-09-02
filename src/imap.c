@@ -896,7 +896,11 @@ try_again:
 			failed = TRUE;
 			goto try_again;
 		} else {
-			alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
+			if (prefs_common.no_recv_err_panel) {
+				log_error(_("Couldn't login to IMAP server %s."), account->recv_server);
+				mainwindow_show_error();
+			} else
+				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
 		}		
 
 		return;

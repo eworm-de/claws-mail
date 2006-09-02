@@ -1,3 +1,16 @@
+2006-09-02 [colin]	2.4.0cvs128
+
+	* src/imap.c
+	* src/import.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Fix warning icon
+	* src/inc.c
+	* src/mbox.c
+	* src/mbox.h
+		Let proc_mbox know its account, for
+		account-specific rules
+
 2006-09-01 [colin]	2.4.0cvs127
 
 	* src/codeconv.c

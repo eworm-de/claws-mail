@@ -238,7 +238,7 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 		gtk_widget_grab_focus(dest_entry);
 		return;
 	} else {
-		import_ok = proc_mbox(dest, mbox, FALSE);
+		import_ok = proc_mbox(dest, mbox, FALSE, NULL);
 	}
 
 	g_free(mbox);
