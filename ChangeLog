@@ -1,3 +1,8 @@
+2006-09-03 [colin]	2.4.0cvs138
+
+	* src/folderview.c
+		Fix bug #1007 (Wrong folder highlighted)
+
 2006-09-03 [colin]	2.4.0cvs137
 
 	* src/compose.c

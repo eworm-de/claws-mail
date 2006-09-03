@@ -1829,3 +1829,4 @@
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/prefs_summaries.c;  ) > 2.4.0cvs135.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_other.c;  cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/prefs_spelling.c;  ) > 2.4.0cvs136.patchset
 ( cvs diff -u -r 1.382.2.305 -r 1.382.2.306 src/compose.c;  ) > 2.4.0cvs137.patchset
+( cvs diff -u -r 1.207.2.118 -r 1.207.2.119 src/folderview.c;  ) > 2.4.0cvs138.patchset

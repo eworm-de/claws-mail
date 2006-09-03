@@ -786,6 +786,10 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 
 	g_return_if_fail(node != NULL);
 
+	if (folderview->open_folder) {
+		return;
+	}
+
 	folderview->open_folder = TRUE;
 	gtkut_ctree_set_focus_row(ctree, node);
 	gtk_ctree_select(ctree, node);
