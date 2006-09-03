@@ -1,3 +1,9 @@
+2006-09-03 [colin]	2.4.0cvs137
+
+	* src/compose.c
+		Don't set Newsgroup: header to a mail folder
+		path
+
 2006-09-03 [paul]	2.4.0cvs136
 
 	* src/prefs_other.c

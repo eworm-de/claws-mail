@@ -982,7 +982,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	} else {
 		if (mailto) {
 			compose_entry_append(compose, mailto, COMPOSE_NEWSGROUPS);
-		} else if (item) {
+		} else if (item && FOLDER_CLASS(item->folder) == news_get_class()) {
 			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS);
 		}
 		/*
