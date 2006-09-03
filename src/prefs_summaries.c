@@ -463,7 +463,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
 		{"<Main>/View/Message source",			"<control>U"},
-		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/All headers",			"<control>H"},
 		{"<Main>/View/Update summary",			"<control><alt>U"},
 
 		{"<Main>/Message/Receive/Get from current account",
@@ -543,7 +543,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
 		{"<Main>/View/Message source",			"<control>U"},
-		{"<Main>/View/Show all headers",		"<shift>H"},
+		{"<Main>/View/All headers",			"<shift>H"},
 		{"<Main>/View/Update summary",			"<shift>S"},
 
 		{"<Main>/Message/Receive/Get from current account",
@@ -597,8 +597,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Other folder...",		"C"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
 		{"<Main>/View/Message source",			"<control>U"},
-		{"<Main>/View/Show all headers",		"<control>H"},
-		{"<Main>/View/Update summary",				"<control><alt>U"},
+		{"<Main>/View/All headers",			"<control>H"},
+		{"<Main>/View/Update summary",			"<control><alt>U"},
 
 		{"<Main>/Message/Receive/Get from current account",
 								"<control>I"},
@@ -651,7 +651,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Other folder...",		"<alt>G"},
 		{"<Main>/View/Open in new window",		"<shift><control>N"},
 		{"<Main>/View/Message source",			"<control>U"},
-		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/All headers",			"<control>H"},
 		{"<Main>/View/Update summary",			"<alt>U"},
 
 		{"<Main>/Message/Receive/Get from current account",
