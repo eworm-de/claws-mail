@@ -144,14 +144,12 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 {
 	SpellingPage *prefs_spelling = (SpellingPage *) _page;
 
-	GtkWidget *vbox1, *vbox2, *hbox;
+	GtkWidget *vbox1, *vbox2;
 
 	GtkWidget *enable_aspell_checkbtn;
 	GtkWidget *check_while_typing_checkbtn;
 	GtkWidget *recheck_when_changing_dict_checkbtn;
 	GtkWidget *use_alternate_checkbtn;
-
-	GtkWidget *label;
 
 	GtkWidget *automatic_frame;
 	GtkWidget *dictionary_frame;
@@ -160,6 +158,8 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *aspell_path_hbox;
 	GtkWidget *aspell_path_entry;
 	GtkWidget *aspell_path_select;
+
+	GtkWidget *table;
 
 	GtkWidget *default_dict_label;
 	GtkWidget *default_dict_optmenu;
@@ -228,62 +228,59 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_box_pack_start(GTK_BOX(vbox2), recheck_when_changing_dict_checkbtn, TRUE, TRUE, 0);
 	
 	PACK_FRAME(vbox1, dictionary_frame, _("Dictionary"));
-	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new(TRUE, VSPACING_NARROW);
 	gtk_widget_show(vbox2);
 	gtk_container_add(GTK_CONTAINER(dictionary_frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
 	
-	hbox = gtk_hbox_new(FALSE, 10);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox, TRUE, TRUE, 0);
-	
+	table = gtk_table_new(6, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
+ 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+ 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+
+	gtk_box_pack_start(GTK_BOX(vbox2), table, TRUE, TRUE, 0);
+
 	default_dict_label = gtk_label_new(_("Default dictionary"));
 	gtk_widget_show(default_dict_label);
-	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_LEFT);
+	gtk_table_attach(GTK_TABLE (table), default_dict_label, 0, 1, 0, 1,
+                    	 (GtkAttachOptions) (GTK_FILL),
+                    	 (GtkAttachOptions) (0), 0, 2);
+	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(default_dict_label), 1, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), default_dict_label, FALSE, FALSE, 0);
-	
-	label = gtk_label_new("");
-	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	
 	default_dict_optmenu = gtk_option_menu_new();
 	gtk_widget_show(default_dict_optmenu);
 	gtk_widget_set_size_request(default_dict_optmenu, 180, -1);
+	gtk_table_attach (GTK_TABLE (table), default_dict_optmenu, 1, 2, 0, 1,
+			  GTK_SHRINK, 0, 0, 0);
 
 	default_dict_optmenu_menu = gtk_menu_new();
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(default_dict_optmenu),
 			default_dict_optmenu_menu);
-	gtk_box_pack_start(GTK_BOX(hbox), default_dict_optmenu, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 10);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox, TRUE, TRUE, 0);
-	
 	sugmode_label = gtk_label_new(_("Default suggestion mode"));
 	gtk_widget_show(sugmode_label);
-	gtk_label_set_justify(GTK_LABEL(sugmode_label), GTK_JUSTIFY_LEFT);
+	gtk_table_attach(GTK_TABLE (table), sugmode_label, 0, 1, 1, 2,
+                    	 (GtkAttachOptions) (GTK_FILL),
+                    	 (GtkAttachOptions) (0), 0, 2);
+	gtk_label_set_justify(GTK_LABEL(sugmode_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(sugmode_label), 1, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), sugmode_label, FALSE, FALSE, 0);
-
-	label = gtk_label_new("");
-	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 
 	sugmode_optmenu = gtk_option_menu_new();
 	gtk_widget_show(sugmode_optmenu);
 	gtk_widget_set_size_request(sugmode_optmenu, 180, -1); 
+	gtk_table_attach (GTK_TABLE (table), sugmode_optmenu, 1, 2, 1, 2,
+			  GTK_SHRINK, 0, 0, 0);
 	
 	sugmode_optmenu_menu = gtk_menu_new();
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
 			sugmode_optmenu_menu);
-	gtk_box_pack_start(GTK_BOX(hbox), sugmode_optmenu, FALSE, FALSE, 0);
 	
 	misspelled_hbox = gtk_hbox_new(FALSE, 10);
 	gtk_widget_show(misspelled_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), misspelled_hbox, FALSE, FALSE, 0);
 		
-	misspelled_label = gtk_label_new(_("Misspelled word color:"));
+	misspelled_label = gtk_label_new(_("Misspelled word color"));
 	gtk_widget_show(misspelled_label);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_label,
 		FALSE, FALSE, 0);

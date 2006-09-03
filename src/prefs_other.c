@@ -118,7 +118,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_cliplog), 8);
 	PACK_CHECK_BUTTON (vbox_cliplog, checkbtn_cliplog,
 			   _("Clip the log size"));
-	hbox_cliplog = gtk_hbox_new (FALSE, 3);
+	hbox_cliplog = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_cliplog), hbox_cliplog);
 	gtk_widget_show (hbox_cliplog);
 	
@@ -178,7 +178,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	label_iotimeout = gtk_label_new (_("Socket I/O timeout:"));
+	label_iotimeout = gtk_label_new (_("Socket I/O timeout"));
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 

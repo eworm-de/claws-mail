@@ -1,3 +1,9 @@
+2006-09-03 [paul]	2.4.0cvs136
+
+	* src/prefs_other.c
+	* src/prefs_spelling.c
+		unify the gui
+
 2006-09-03 [paul]	2.4.0cvs135
 
 	* src/prefs_summaries.c
