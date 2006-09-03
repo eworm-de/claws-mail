@@ -505,7 +505,7 @@
 	There are a number of hidden preferences in Sylpheed-Claws, preferences
 	that some users who we wanted to please couldn't live without, but 
 	which did not have a place in the GUI in our opinion. You can find the 
-	following, and change them while Sylpheed-Claws is not running in 
+	following, and change them while Sylpheed-Claws is not running, in 
 	<filename>~/.sylpheed-claws/sylpheedrc</filename>.
     </para>
     <variablelist>
@@ -513,7 +513,7 @@
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
-	Show unread messages using bold font in Message List.
+	Show unread messages in the Message List using a bold font.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -529,7 +529,7 @@
 	<term><literal>cache_min_keep_time</literal></term>
 	<listitem>
 	  <para>
-	The minimum time to keep a cache in memory, in minutes. Caches more 
+	The minimum time in minutes to keep a cache in memory. Caches more 
 	recent than this time will not be freed, even if the memory usage is 
 	too high.
 	  </para>
@@ -547,7 +547,7 @@
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>
-	Use the <emphasis>old</emphasis> dotted line look for Folder List and
+	Use the <emphasis>old</emphasis> dotted line look for the Folder List and
 	Message	List instead of the <emphasis>modern</emphasis> lineless look.
 	  </para>
 	</listitem>
@@ -556,7 +556,7 @@
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>
-	Enables horizontal scrollbar in Message List.
+	Enable the horizontal scrollbar in the Message List.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -564,7 +564,7 @@
 	<term><literal>enable_rules_hint</literal></term>
 	<listitem>
 	  <para>
-	Enable alternate lines in GtkTreeView components.
+	Enable alternately coloured lines in GtkTreeView components.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -572,8 +572,8 @@
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
-	Display sender's email address in To column in Sent folder instead of 
-	recipient's.
+	Display the sender's email address in the To column of the
+	Sent folder instead of the recipient's.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -581,7 +581,8 @@
 	<term><literal>folderview_vscrollbar_policy</literal></term>
 	<listitem>
 	  <para>
-	Specify the policy of vertical scroll bar of folder view.
+	Specify the policy of vertical scrollbar of Folder List.
+	'0' is always shown, '1' is automatic, '2' is always hidden.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -589,8 +590,8 @@
 	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
-	Time in milliseconds that will cause a folder tree to expand during 
-	drag 'n' drop when the mouse cursor is held over it.
+	Time in milliseconds that will cause a folder tree to expand 
+	when the mouse cursor is held over it during drag 'n' drop.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -610,7 +611,7 @@
 	<term><literal>log_warn_color</literal></term>
 	<listitem>
 	  <para>
-	Colours used in log window.
+	The colours used in the log window.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -618,7 +619,7 @@
 	<term><literal>mark_as_read_delay</literal></term>
 	<listitem>
 	  <para>
-	Seconds to wait before marking a mail as read.
+	Number of seconds to wait before marking an opened mail as read.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -675,7 +676,7 @@
 	<term><literal>warn_dnd</literal></term>
 	<listitem>
 	  <para>
-	Display a confirmation dialog on drag 'n' drop of folders.
+	Display a confirmation dialogue on drag 'n' drop of folders.
 	  </para>
 	</listitem>
       </varlistentry>

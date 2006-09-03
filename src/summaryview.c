@@ -1377,8 +1377,8 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 		{"/View"			, M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
-		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
-		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
+		{"/View/Message source"		, M_SINGLE_TARGET_EXIST},
+		{"/View/All headers"		, M_SINGLE_TARGET_EXIST},
 		{"/Save as..."			, M_TARGET_EXIST},
 		{"/Print..."			, M_TARGET_EXIST},
 		{NULL, 0}
@@ -1395,7 +1395,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 
 	summary_lock(summaryview);
-	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All header");
+	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All headers");
 	if (summaryview->messageview 
 	&&  summaryview->messageview->mimeview
 	&&  summaryview->messageview->mimeview->textview)

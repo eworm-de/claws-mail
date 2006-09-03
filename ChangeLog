@@ -1,3 +1,20 @@
+2006-09-03 [paul]	2.4.0cvs134
+
+	* manual/advanced.xml
+		some improvements to the descriptions
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.c
+	* src/gtk/menu.c
+		fix menu sensitivity issues
+	* src/prefs_message.c
+		drop the useless word 'short'
+	* src/prefs_other.c
+		add the word 'lines' indicating log length
+		is a measure of lines
+	* src/textview.c
+		fix compilation warnings
+
 2006-09-02 [colin]	2.4.0cvs133
 
 	* src/messageview.c

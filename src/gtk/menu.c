@@ -245,8 +245,8 @@ void menu_connect_identical_items(void)
 		{"<Main>/Tools/Create processing rule/by Subject",
 								"<SummaryView>/Create processing rule/by Subject"},
 		{"<Main>/View/Open in new window",		"<SummaryView>/View/Open in new window"},
-		{"<Main>/View/Message source",			"<SummaryView>/View/Source"},
-		{"<Main>/View/Show all headers",		"<SummaryView>/View/All header"},
+		{"<Main>/View/Message source",			"<SummaryView>/View/Message source"},
+		{"<Main>/View/All headers",			"<SummaryView>/View/All headers"},
 	};
 
 	const gint numpairs = sizeof pairs / sizeof pairs[0];

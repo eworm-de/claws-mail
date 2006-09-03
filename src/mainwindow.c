@@ -2206,6 +2206,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
+		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
 
 		{"/View/Sort"                      , M_EXEC},
 		{"/View/Thread view"               , M_EXEC},
@@ -2222,9 +2223,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Last read message"   , M_SINGLE_TARGET_EXIST},
 		{"/View/Go to/Parent message"      , M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
-		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
-		{"/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
+		{"/View/All headers"          	   , M_SINGLE_TARGET_EXIST},
+		{"/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Receive/Get from current account"
 						 , M_HAVE_ACCOUNT|M_UNLOCKED},
@@ -2353,7 +2354,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	if (mainwin->messageview 
 	&&  mainwin->messageview->mimeview
 	&&  mainwin->messageview->mimeview->textview)
-		SET_CHECK_MENU_ACTIVE("/View/Show all headers",
+		SET_CHECK_MENU_ACTIVE("/View/All headers",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", FALSE);

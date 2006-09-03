@@ -1825,3 +1825,4 @@
 ( cvs diff -u -r 1.59.2.40 -r 1.59.2.41 src/prefs_filtering.c;  ) > 2.4.0cvs131.patchset
 ( cvs diff -u -r 1.274.2.145 -r 1.274.2.146 src/mainwindow.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/prefs_message.c;  cvs diff -u -r 1.395.2.239 -r 1.395.2.240 src/summaryview.c;  ) > 2.4.0cvs132.patchset
 ( cvs diff -u -r 1.94.2.100 -r 1.94.2.101 src/messageview.c;  cvs diff -u -r 1.395.2.240 -r 1.395.2.241 src/summaryview.c;  ) > 2.4.0cvs133.patchset
+( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 manual/advanced.xml;  cvs diff -u -r 1.274.2.146 -r 1.274.2.147 src/mainwindow.c;  cvs diff -u -r 1.94.2.101 -r 1.94.2.102 src/messageview.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/prefs_message.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_other.c;  cvs diff -u -r 1.395.2.241 -r 1.395.2.242 src/summaryview.c;  cvs diff -u -r 1.96.2.143 -r 1.96.2.144 src/textview.c;  cvs diff -u -r 1.5.2.19 -r 1.5.2.20 src/gtk/menu.c;  ) > 2.4.0cvs134.patchset

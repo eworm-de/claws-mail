@@ -1831,7 +1831,7 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkAdjustment *vadj = text->vadjustment;
 
-	gtkutils_scroll_one_line(text, vadj, up);
+	gtkutils_scroll_one_line(GTK_WIDGET(text), vadj, up);
 }
 
 gboolean textview_scroll_page(TextView *textview, gboolean up)
@@ -1839,7 +1839,7 @@ gboolean textview_scroll_page(TextView *textview, gboolean up)
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkAdjustment *vadj = text->vadjustment;
 
-	return gtkutils_scroll_page(text, vadj, up);
+	return gtkutils_scroll_page(GTK_WIDGET(text), vadj, up);
 }
 
 #define KEY_PRESS_EVENT_STOP() \

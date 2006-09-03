@@ -79,6 +79,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_loglength;
 	GtkObject *spinbtn_loglength_adj;
 	GtkTooltips *loglength_tooltip;
+	GtkWidget *label;
 
 	GtkWidget *frame_exit;
 	GtkWidget *vbox_exit;
@@ -140,8 +141,14 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), spinbtn_loglength,
 			     _("0 to stop logging in the log window"),
 			     NULL);
+
+	label = gtk_label_new(_("lines"));
+	gtk_widget_show (label);
+  	gtk_box_pack_start(GTK_BOX(hbox_cliplog), label, FALSE, FALSE, 0);
+
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_label);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, spinbtn_loglength);
+	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, label);
 
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));

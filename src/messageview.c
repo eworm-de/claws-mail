@@ -1175,7 +1175,6 @@ void messageview_toggle_view_real(MessageView *messageview)
 	union CompositeWin *cwin = &mainwin->win;
 	GtkWidget *vpaned = NULL;
 	GtkWidget *container = NULL;
-	GtkItemFactory *ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	
 	switch (mainwin->type) {
 	case SEPARATE_NONE:
@@ -1189,19 +1188,6 @@ void messageview_toggle_view_real(MessageView *messageview)
 	case SEPARATE_MESSAGE:
 	case SEPARATE_BOTH:
 		return;
-	}
-
-	if (vpaned->parent != NULL) {
-		gtk_widget_ref(vpaned);
-		gtkut_container_remove(GTK_CONTAINER(container), vpaned);
-		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), container);
-		menu_set_sensitive(ifactory, "/View/Expand Summary View", FALSE);
-	} else {
-		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), vpaned);
-		gtk_container_add(GTK_CONTAINER(container), vpaned);
-		gtk_widget_unref(vpaned);
-		menu_set_sensitive(ifactory, "/View/Expand Summary View", TRUE);
-		gtk_widget_grab_focus(GTK_WIDGET(mainwin->summaryview->ctree));
 	}
 }
 
@@ -1704,7 +1690,7 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	ifactory = gtk_item_factory_from_widget(messageview->menubar);
 	if (!ifactory) return;
 	if (messageview->mainwin->type == SEPARATE_MESSAGE) {
-		menuitem = gtk_item_factory_get_widget(ifactory, "/View/Show all headers");
+		menuitem = gtk_item_factory_get_widget(ifactory, "/View/All headers");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem),
 			 messageview->mimeview->textview->show_all_headers);
