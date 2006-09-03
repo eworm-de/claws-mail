@@ -1,7 +1,7 @@
 2006-09-03 [paul]	2.4.0cvs135
 
 	* src/prefs_summaries.c
-		fix menu sensitivity issues
+		correct menu item text in prefs_keybind_apply_clicked()
 
 2006-09-03 [paul]	2.4.0cvs134
 
