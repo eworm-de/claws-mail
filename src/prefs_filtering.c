@@ -128,8 +128,9 @@ static GtkListStore* prefs_filtering_create_data_store	(void);
 static gint prefs_filtering_list_view_insert_rule	(GtkListStore *list_store,
 							 gint row,
 							 gboolean enabled,
-							 const gchar *name, 
+							 const gchar *name,
 							 gint account_id,
+							 const gchar *account_name,
 							 const gchar *rule, 
 							 gboolean prop);
 static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list, 
@@ -760,12 +761,20 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 					      _("(New)"),
 						  0,
 					      _("(New)"),
+					      _("(New)"),
 					      FALSE);
 
         prefs_filtering = *p_processing_list;
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
+		gchar *account_name;
+
+		if (prop->account_id > 0) {
+			account_name = account_find_from_id(prop->account_id)->account_name;
+		} else {
+			account_name = (gchar *)Q_("Filtering Account Menu|All");
+		}
 
 		cond_str = filteringprop_to_string(prop);
 		subst_char(cond_str, '\t', ':');
@@ -774,6 +783,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 						      prop->enabled,
 						      prop->name,
 							  prop->account_id,
+							  account_name,
 						      cond_str, TRUE);
 		
 		g_free(cond_str);
@@ -855,6 +865,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	GtkListStore *list_store;
 	gchar *name = NULL;
 	gint account_id = 0;
+	gchar *account_name = (gchar *)Q_("Filtering Account Menu|All");
 	gboolean enabled = TRUE;
 
 	str = filteringprop_to_string(prop);
@@ -865,6 +876,11 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 		if (prop->name)
 			name = prop->name;
 		account_id = prop->account_id;
+		if (account_id > 0) {
+			account_name = account_find_from_id(account_id)->account_name;
+		} else {
+			account_name = (gchar *)Q_("Filtering Account Menu|All");
+		}
 		enabled = prop->enabled;
 	}
 
@@ -874,6 +890,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 						    enabled,
 						    name,
 						    account_id,
+							account_name,
 						    str,
 						    prop != NULL);
 
@@ -1290,6 +1307,7 @@ static GtkListStore* prefs_filtering_create_data_store(void)
  *\param	enabled TRUE if rule is enabled
  *\param	name The Name of rule
  *\param	account_id The account ID
+ *\param	account_name The account name or All or (New)
  *\param	rule String representation of rule
  *\param	prop TRUE if valid filtering rule; if FALSE it's the first
  *		entry in the store ("(New)").
@@ -1301,23 +1319,17 @@ static gint prefs_filtering_list_view_insert_rule(GtkListStore *list_store,
 						  gboolean enabled,
 						  const gchar *name,
 						  gint account_id,
+						  const gchar *account_name,
 						  const gchar *rule,
 						  gboolean prop) 
 {
 	GtkTreeIter iter;
-	gchar *account_name;
 
 	/* check if valid row at all */
 	if (row >= 0) {
 		if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store),
 						   &iter, NULL, row))
 			row = -1;						   
-	}
-
-	if (account_id > 0) {
-		account_name = account_find_from_id(account_id)->account_name;
-	} else {
-		account_name = (gchar *)Q_("Filtering Account Menu|All");
 	}
 
 	if (row < 0) {

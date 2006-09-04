@@ -1,3 +1,9 @@
+2006-09-04 [wwp]	2.4.0cvs140
+
+	* src/prefs_filtering.c
+		fix new line's account name in filtering prefs:
+		was "All", is now "(New)".
+
 2006-09-04 [paul]	2.4.0cvs139
 
 	* tools/make.themes.project
