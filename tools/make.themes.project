@@ -150,21 +150,14 @@ function createMakefileAm()
 {
   cd ${DDIR}
   MA=Makefile.am
-  echo "EXTRA_DIST = INSTALL "${NOTES} ${NAME} > $MA
+  echo "AUTOMAKE_OPTIONS = dist-bzip2" > $MA
+  echo "" >> $MA
+  echo "EXTRA_DIST = INSTALL "${NOTES} ${NAME} >> $MA
   echo "" >> $MA
   echo -n "SUBDIRS =" >> $MA
   for dir in *;
   do test -d "$dir" && echo -n " ${dir}" >> $MA;
   done;
-  echo "" >> $MA
-  echo "" >> $MA
-  echo "BZIP2_ENV =" >> $MA
-  echo "" >> $MA
-  echo "release: distdir" >> $MA
-  echo "	-chmod -R a+r \$(distdir)" >> $MA
-  echo "	GZIP=\$(GZIP_ENV) \$(AMTAR)\$(TAR) chozf \$(distdir).tar.gz \$(distdir)" >> $MA
-  echo "	BZIP2=\$(BZIP2_ENV) \$(AMTAR)\$(TAR) --bzip2 -chof \$(distdir).tar.bz2 \$(distdir)" >> $MA
-  echo "	-rm -rf \$(distdir)" >> $MA
   echo "" >> $MA
   cd ".."
   echo "Created Makefile.am"

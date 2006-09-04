@@ -1,3 +1,9 @@
+2006-09-04 [paul]	2.4.0cvs139
+
+	* tools/make.themes.project
+		use "AUTOMAKE_OPTIONS = dist-bzip2"
+		instead of homebrewed "make release"
+
 2006-09-03 [colin]	2.4.0cvs138
 
 	* src/folderview.c
