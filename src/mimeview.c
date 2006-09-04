@@ -632,6 +632,10 @@ gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 {
 	TextView  *textview  = mimeview->textview;
+	GtkWidget *focused = NULL;
+	
+	if (mainwindow_get_mainwindow())
+		focused = gtkut_get_focused_child(mainwindow_get_mainwindow()->window);
 
 	if ((mimeview->type != MIMEVIEW_VIEWER) && 
 	    (mimeview->type == type)) return;
@@ -650,7 +654,8 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 	default:
 		return;
 	}
-
+	if (focused)
+		gtk_widget_grab_focus(focused);
 	mimeview->type = type;
 }
 

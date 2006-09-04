@@ -1,3 +1,12 @@
+2006-09-04 [colin]	2.4.0cvs147
+
+	* src/mimeview.c
+		Looks like gtk_notebook_set_current_page()
+		sometimes steals focus, and this annoys us
+		in MimeViewers as it renders navigation
+		keys useless. Take back focus after switching
+		pages.
+
 2006-09-04 [colin]	2.4.0cvs146
 
 	* src/messageview.c
