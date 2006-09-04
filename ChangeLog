@@ -1,3 +1,9 @@
+2006-09-04 [colin]	2.4.0cvs144
+
+	* src/summaryview.c
+		Let navigation keys be handled during 
+		load
+
 2006-09-04 [colin]	2.4.0cvs143
 
 	* src/messageview.c

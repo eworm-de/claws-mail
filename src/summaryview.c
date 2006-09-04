@@ -1757,6 +1757,34 @@ void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 	summary_select_node(summaryview, node, FALSE, TRUE);
 }
 
+typedef struct _PostponedSelectData
+{
+	GtkCTree *ctree;
+	GtkCTreeNode *row;
+	GtkCTreeNode *node;
+	GtkScrollType type;
+	gint column;
+	SummaryView *summaryview;
+	gboolean display_msg;
+	gboolean do_refresh;
+} PostponedSelectData;
+
+static gboolean summary_select_retry(void *data)
+{
+	PostponedSelectData *psdata = (PostponedSelectData *)data;
+	debug_print("trying again\n");
+	if (psdata->row)
+		summary_selected(psdata->ctree, psdata->row,
+			    psdata->column, psdata->summaryview);
+	else if (psdata->node)
+		summary_select_node(psdata->summaryview, psdata->node,
+			    psdata->display_msg, psdata->do_refresh);
+	else
+		summary_step(psdata->summaryview, psdata->type);
+	g_free(psdata);
+	return FALSE;
+}
+
 /**
  * summary_select_node:
  * @summaryview: Summary view.
@@ -1773,8 +1801,28 @@ void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
 			 gboolean display_msg, gboolean do_refresh)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	if (summary_is_locked(summaryview))
+	
+	if (summary_is_locked(summaryview)
+	&& !GTK_SCTREE(ctree)->selecting_range
+	&& summaryview->messageview->mimeview
+	&& summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
+	&& summaryview->messageview->mimeview->textview->loading) {
+		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
+		summaryview->messageview->mimeview->textview->stop_loading = TRUE;
+		
+		data->ctree = ctree;
+		data->row = NULL;
+		data->node = node;
+		data->summaryview = summaryview;
+		data->display_msg = display_msg;
+		data->do_refresh = do_refresh;
+		debug_print("postponing open of message till end of load\n");
+		g_timeout_add(100, summary_select_retry, data);
 		return;
+	}
+	if (summary_is_locked(summaryview)) {
+		return;
+	}
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
@@ -2949,7 +2997,25 @@ gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
 
-	if (summary_is_locked(summaryview)) return FALSE;
+	if (summary_is_locked(summaryview)
+	&& !GTK_SCTREE(ctree)->selecting_range
+	&& summaryview->messageview->mimeview
+	&& summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
+	&& summaryview->messageview->mimeview->textview->loading) {
+		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
+		summaryview->messageview->mimeview->textview->stop_loading = TRUE;
+		
+		data->ctree = ctree;
+		data->row = NULL;
+		data->node = NULL;
+		data->type = type;
+		data->summaryview = summaryview;
+		debug_print("postponing open of message till end of load\n");
+		g_timeout_add(100, summary_select_retry, data);
+		return FALSE;
+	}
+	if (summary_is_locked(summaryview))
+		return FALSE;
 	if (type == GTK_SCROLL_STEP_FORWARD) {
 		node = gtkut_ctree_node_next(ctree, summaryview->selected);
 		if (node)
@@ -5135,11 +5201,60 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkAdjustment *adj;
 	gboolean mod_pressed;
 
-	if (summary_is_locked(summaryview)) return TRUE;
-	if (!event) return TRUE;
+	if (!event) 
+		return TRUE;
 
 	if (quicksearch_has_focus(summaryview->quicksearch))
 		return FALSE;
+
+	messageview = summaryview->messageview;
+	textview = messageview->mimeview->textview;
+
+	mod_pressed =
+		((event->state & (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
+
+	if (summaryview->selected) {
+		gboolean handled = FALSE;
+		switch (event->keyval) {
+		case GDK_space:		/* Page down or go to the next */
+			handled = TRUE;
+			if (event->state & GDK_SHIFT_MASK) 
+				mimeview_scroll_page(messageview->mimeview, TRUE);
+			else {
+				if (summaryview->displayed != summaryview->selected) {
+					summary_display_msg(summaryview,
+							    summaryview->selected);
+					break;
+				}
+				if (mod_pressed) {
+					if (!mimeview_scroll_page(messageview->mimeview, TRUE))
+						summary_select_prev_unread(summaryview);
+				} else {
+					if (!mimeview_scroll_page(messageview->mimeview, FALSE))
+						summary_select_next_unread(summaryview);
+				}				
+			}
+			break;
+		case GDK_BackSpace:	/* Page up */
+			handled = TRUE;
+			mimeview_scroll_page(messageview->mimeview, TRUE);
+			break;
+		case GDK_Return:	/* Scroll up/down one line */
+			handled = TRUE;
+			if (summaryview->displayed != summaryview->selected) {
+				summary_display_msg(summaryview,
+						    summaryview->selected);
+				break;
+			}
+			mimeview_scroll_one_line(messageview->mimeview, mod_pressed);
+			break;
+		}
+		
+		if (handled)
+			return FALSE;
+	}
+	if (summary_is_locked(summaryview)) 
+		return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
@@ -5182,42 +5297,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			return TRUE;
 	}
 
-	messageview = summaryview->messageview;
-	textview = messageview->mimeview->textview;
-
-	mod_pressed =
-		((event->state & (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
-
 	switch (event->keyval) {
-	case GDK_space:		/* Page down or go to the next */
-		if (event->state & GDK_SHIFT_MASK) 
-			mimeview_scroll_page(messageview->mimeview, TRUE);
-		else {
-			if (summaryview->displayed != summaryview->selected) {
-				summary_display_msg(summaryview,
-						    summaryview->selected);
-				break;
-			}
-			if (mod_pressed) {
-				if (!mimeview_scroll_page(messageview->mimeview, TRUE))
-					summary_select_prev_unread(summaryview);
-			} else {
-				if (!mimeview_scroll_page(messageview->mimeview, FALSE))
-					summary_select_next_unread(summaryview);
-			}				
-		}
-		break;
-	case GDK_BackSpace:	/* Page up */
-		mimeview_scroll_page(messageview->mimeview, TRUE);
-		break;
-	case GDK_Return:	/* Scroll up/down one line */
-		if (summaryview->displayed != summaryview->selected) {
-			summary_display_msg(summaryview,
-					    summaryview->selected);
-			break;
-		}
-		mimeview_scroll_one_line(messageview->mimeview, mod_pressed);
-		break;
 	case GDK_Delete:
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete_trash(summaryview);
@@ -5308,24 +5388,6 @@ static void summary_unselected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_status_show(summaryview);
 }
 
-typedef struct _PostponedSelectData
-{
-	GtkCTree *ctree;
-	GtkCTreeNode *row;
-	gint column;
-	SummaryView *summaryview;
-} PostponedSelectData;
-
-static gboolean summary_select_retry(void *data)
-{
-	PostponedSelectData *psdata = (PostponedSelectData *)data;
-	debug_print("trying again\n");
-	summary_selected(psdata->ctree, psdata->row,
-			    psdata->column, psdata->summaryview);
-	g_free(psdata);
-	return FALSE;
-}
-
 static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			     gint column, SummaryView *summaryview)
 {
@@ -5342,6 +5404,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		
 		data->ctree = ctree;
 		data->row = row;
+		data->node = NULL;
 		data->column = column;
 		data->summaryview = summaryview;
 		debug_print("postponing open of message till end of load\n");
