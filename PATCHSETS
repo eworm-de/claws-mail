@@ -1836,3 +1836,4 @@
 ( cvs diff -u -r 1.14.2.37 -r 1.14.2.38 src/plugins/trayicon/trayicon.c;  ) > 2.4.0cvs142.patchset
 ( cvs diff -u -r 1.94.2.102 -r 1.94.2.103 src/messageview.c;  cvs diff -u -r 1.395.2.242 -r 1.395.2.243 src/summaryview.c;  cvs diff -u -r 1.96.2.144 -r 1.96.2.145 src/textview.c;  cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/textview.h;  ) > 2.4.0cvs143.patchset
 ( cvs diff -u -r 1.395.2.243 -r 1.395.2.244 src/summaryview.c;  ) > 2.4.0cvs144.patchset
+( cvs diff -u -r 1.83.2.83 -r 1.83.2.84 src/mimeview.c;  cvs diff -u -r 1.94.2.103 -r 1.94.2.104 src/messageview.c;  ) > 2.4.0cvs145.patchset

@@ -505,6 +505,8 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 	const gchar *fname;
 
 	if (!partinfo) return;
+	if (partinfo == mimeview->opened)
+		return;
 
 	fname = mimeview->file;
 	if (!fname) return;

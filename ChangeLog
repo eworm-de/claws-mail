@@ -1,3 +1,9 @@
+2006-09-04 [colin]	2.4.0cvs145
+
+	* src/mimeview.c
+	* src/messageview.c
+		Fix multiple loads in separate messageview
+
 2006-09-04 [colin]	2.4.0cvs144
 
 	* src/summaryview.c
