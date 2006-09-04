@@ -1832,3 +1832,4 @@
 ( cvs diff -u -r 1.207.2.118 -r 1.207.2.119 src/folderview.c;  ) > 2.4.0cvs138.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/make.themes.project;  ) > 2.4.0cvs139.patchset
 ( cvs diff -u -r 1.59.2.41 -r 1.59.2.42 src/prefs_filtering.c;  ) > 2.4.0cvs140.patchset
+( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/gtk/icon_legend.c;  ) > 2.4.0cvs141.patchset

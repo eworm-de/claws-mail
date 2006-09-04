@@ -115,6 +115,7 @@ static void legend_create(void)
 	GtkWidget *label;
 	GtkWidget *icon_label;
 	GtkWidget *desc_label;
+	GtkWidget *table;
 	gint i;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -144,17 +145,25 @@ static void legend_create(void)
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
+	table = gtk_table_new(ICONS, 2, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+
 	for (i = 0; i < ICONS; ++i) {
 		icon_label = stock_pixmap_widget(window, legend_icons[i]);
-		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
-		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
+		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
+		gtk_table_attach(GTK_TABLE(table), icon_label, 0, 1, i, i+1,
+				GTK_FILL, 0, 0, 0);
 
-		hbox = gtk_hbox_new(FALSE, 4);
-		gtk_widget_show(hbox);
-		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox), icon_label, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 0);
+		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
+		gtk_misc_set_alignment (GTK_MISC (desc_label), 0, 0.5);
+		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
+		gtk_table_attach(GTK_TABLE(table), desc_label, 1, 2, i, i+1,
+				GTK_FILL, 0, 0, 0);
 	}	
+
+	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);

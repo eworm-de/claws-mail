@@ -1,3 +1,9 @@
+2006-09-04 [paul]	2.4.0cvs141
+
+	* src/gtk/icon_legend.c
+		straighten up columns
+		Patch by Fabien Vantard
+
 2006-09-04 [wwp]	2.4.0cvs140
 
 	* src/prefs_filtering.c
