@@ -758,9 +758,10 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	if (messageview->mimeview->textview &&
-	    messageview->mimeview->textview->loading)
+	    messageview->mimeview->textview->loading) {
+		messageview->mimeview->textview->stop_loading = TRUE;
 		return 0;
-
+	}
 	if (messageview->toolbar)
 		toolbar_set_learn_button
 			(messageview->toolbar,

@@ -1,3 +1,10 @@
+2006-09-04 [colin]	2.4.0cvs146
+
+	* src/messageview.c
+		Set stop_loading when clicking on Next
+		during load. Don't add a callback to 
+		avoid over-complicating things.
+
 2006-09-04 [colin]	2.4.0cvs145
 
 	* src/mimeview.c
