@@ -1,3 +1,9 @@
+2006-09-04 [colin]	2.4.0cvs142
+
+	* src/plugins/trayicon/trayicon.c
+		Fix annoyance when removing a folder with 
+		unread mails: trayicon didn't update
+
 2006-09-04 [paul]	2.4.0cvs141
 
 	* src/gtk/icon_legend.c

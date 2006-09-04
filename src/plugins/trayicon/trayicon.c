@@ -49,7 +49,8 @@
 #include "unreadmail.xpm"
 #include "nomail.xpm"
 
-static guint hook_id;
+static guint item_hook_id;
+static guint folder_hook_id;
 
 static GdkPixmap *newmail_pixmap;
 static GdkPixmap *newmail_bitmap;
@@ -138,13 +139,19 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 	last_pixmap = pixmap;
 }
 
-static void update(void)
+static void update(FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
 	gchar *buf;
 	TrayIconType icontype = TRAYICON_NOTHING;
 
 	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	if (removed_item) {
+		total -= removed_item->total_msgs;
+		new -= removed_item->new_msgs;
+		unread -= removed_item->unread_msgs;
+	}
+
 	buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"), new, unread, total);
 
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
@@ -165,7 +172,19 @@ static void update(void)
 
 static gboolean folder_item_update_hook(gpointer source, gpointer data)
 {
-	update();
+	update(NULL);
+
+	return FALSE;
+}
+
+static gboolean folder_update_hook(gpointer source, gpointer data)
+{
+	FolderUpdateData *hookdata;
+	hookdata = source;
+	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+		update(hookdata->item);
+	else
+		update(NULL);
 
 	return FALSE;
 }
@@ -173,7 +192,7 @@ static gboolean folder_item_update_hook(gpointer source, gpointer data)
 static void resize_cb(GtkWidget *widget, GtkRequisition *req,
 		      gpointer user_data)
 {
-	update();
+	update(NULL);
 }
 
 static gboolean click_cb(GtkWidget * widget,
@@ -267,7 +286,7 @@ static void create_trayicon()
 
 	gtk_widget_show_all(GTK_WIDGET(trayicon));
 
-	update();
+	update(NULL);
 }
 
 int plugin_init(gchar **error)
@@ -282,9 +301,15 @@ int plugin_init(gchar **error)
 		return -1;
 	}
 
-	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
-	if (hook_id == -1) {
+	item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
+	if (item_hook_id == -1) {
 		*error = g_strdup(_("Failed to register folder item update hook"));
+		return -1;
+	}
+
+	folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, folder_update_hook, NULL);
+	if (folder_hook_id == -1) {
+		*error = g_strdup(_("Failed to register folder update hook"));
 		return -1;
 	}
 
@@ -301,7 +326,8 @@ void plugin_done(void)
 	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
 	
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
-	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
+	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
+	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
