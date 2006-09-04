@@ -1,3 +1,12 @@
+2006-09-04 [colin]	2.4.0cvs143
+
+	* src/messageview.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/textview.h
+		Make loading of huge mails (lots of text and/or
+		images) cancellable, so the GUI doesn't block 
+
 2006-09-04 [colin]	2.4.0cvs142
 
 	* src/plugins/trayicon/trayicon.c

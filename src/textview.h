@@ -62,6 +62,8 @@ struct _TextView
 	GtkTextIter uri_hover_start_iter;
 	GtkTextIter uri_hover_end_iter;
 	GtkWidget *image;
+	gboolean loading;
+	gboolean stop_loading;
 };
 
 TextView *textview_create		(void);

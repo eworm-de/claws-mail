@@ -849,6 +849,7 @@ static gboolean summaryview_quicksearch_recurse(gpointer data)
 	main_window_cursor_normal(summaryview->mainwin);
 	return FALSE;
 }
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -5307,12 +5308,46 @@ static void summary_unselected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_status_show(summaryview);
 }
 
+typedef struct _PostponedSelectData
+{
+	GtkCTree *ctree;
+	GtkCTreeNode *row;
+	gint column;
+	SummaryView *summaryview;
+} PostponedSelectData;
+
+static gboolean summary_select_retry(void *data)
+{
+	PostponedSelectData *psdata = (PostponedSelectData *)data;
+	debug_print("trying again\n");
+	summary_selected(psdata->ctree, psdata->row,
+			    psdata->column, psdata->summaryview);
+	g_free(psdata);
+	return FALSE;
+}
+
 static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			     gint column, SummaryView *summaryview)
 {
 	MsgInfo *msginfo;
 	gboolean marked_unread = FALSE;
 
+	if (summary_is_locked(summaryview)
+	&& !GTK_SCTREE(ctree)->selecting_range
+	&& summaryview->messageview->mimeview
+	&& summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
+	&& summaryview->messageview->mimeview->textview->loading) {
+		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
+		summaryview->messageview->mimeview->textview->stop_loading = TRUE;
+		
+		data->ctree = ctree;
+		data->row = row;
+		data->column = column;
+		data->summaryview = summaryview;
+		debug_print("postponing open of message till end of load\n");
+		g_timeout_add(100, summary_select_retry, data);
+		return;
+	}
 	if (summary_is_locked(summaryview)
 	||  GTK_SCTREE(ctree)->selecting_range) {
 		return;

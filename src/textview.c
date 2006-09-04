@@ -537,11 +537,17 @@ void textview_reflect_prefs(TextView *textview)
 void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
+	textview->loading = TRUE;
+	textview->stop_loading = FALSE;
+
 	textview_clear(textview);
 
 	textview_add_parts(textview, mimeinfo);
 
 	textview_set_position(textview, 0);
+
+	textview->loading = FALSE;
+	textview->stop_loading = FALSE;
 }
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
@@ -552,11 +558,19 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	if ((mimeinfo->type == MIMETYPE_MULTIPART) ||
 	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822"))) {
+		textview->loading = TRUE;
+		textview->stop_loading = FALSE;
+		
 		textview_clear(textview);
 		textview_add_parts(textview, mimeinfo);
+
+		textview->loading = FALSE;
+		textview->stop_loading = FALSE;
 		END_TIMING();
 		return;
 	}
+	textview->loading = TRUE;
+	textview->stop_loading = FALSE;
 
 	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0)
 		perror("fseek");
@@ -567,6 +581,9 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview_add_parts(textview, mimeinfo);
 	else
 		textview_write_body(textview, mimeinfo);
+
+	textview->loading = FALSE;
+	textview->stop_loading = FALSE;
 	END_TIMING();
 }
 
@@ -609,6 +626,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	charcount = gtk_text_buffer_get_char_count(buffer);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
+	if (textview->stop_loading) {
+		return;
+	}
 	if (mimeinfo->type == MIMETYPE_MULTIPART) {
 		END_TIMING();
 		return;
@@ -659,6 +679,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			ClickableText *uri;
 			gchar *uri_str;
 			START_TIMING("inserting image");
+
 			filename = procmime_get_tmp_file_name(mimeinfo);
 
 			if (procmime_get_part(filename, mimeinfo) < 0) {
@@ -716,6 +737,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			g_object_unref(pixbuf);
 			g_free(filename);
 			END_TIMING();
+			GTK_EVENTS_FLUSH();
 		}
 	} else if (mimeinfo->type == MIMETYPE_TEXT) {
 		if (prefs_common.display_header && (charcount > 0))
@@ -864,6 +886,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	CodeConverter *conv;
 	const gchar *charset, *p, *cmd;
 	GSList *cur;
+	int lines = 0;
 	
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -948,25 +971,47 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		}
 		close(pfd[1]);
 		tmpfp = fdopen(pfd[0], "rb");
-		while (fgets(buf, sizeof(buf), tmpfp))
+		while (fgets(buf, sizeof(buf), tmpfp)) {
 			textview_write_line(textview, buf, conv);
+			
+			lines++;
+			if (lines % 500 == 0)
+				GTK_EVENTS_FLUSH();
+			if (textview->stop_loading) {
+				fclose(tmpfp);
+				waitpid(pid, pfd, 0);
+				unlink(fname);
+				return;
+			}
+		}
+
 		fclose(tmpfp);
 		waitpid(pid, pfd, 0);
 		unlink(fname);
 	} else {
 textview_default:
+		lines = 0;
 		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
-		       (fgets(buf, sizeof(buf), tmpfp) != NULL))
+		       (fgets(buf, sizeof(buf), tmpfp) != NULL)) {
 			textview_write_line(textview, buf, conv);
+			lines++;
+			if (lines % 500 == 0)
+				GTK_EVENTS_FLUSH();
+			if (textview->stop_loading) {
+				fclose(tmpfp);
+				return;
+			}
+		}
 		fclose(tmpfp);
 	}
 
 	conv_code_converter_destroy(conv);
 	procmime_force_encoding(0);
 
+	lines = 0;
 	for (cur = textview->uri_list; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
 		if (!uri->is_quote)
@@ -974,6 +1019,12 @@ textview_default:
 		if (!prefs_common.hide_quotes ||
 		    uri->quote_level+1 < prefs_common.hide_quotes) {
 			textview_toggle_quote(textview, uri, TRUE);
+			lines++;
+			if (lines % 500 == 0)
+				GTK_EVENTS_FLUSH();
+			if (textview->stop_loading) {
+				return;
+			}
 		}
 	}
 }
@@ -983,6 +1034,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 {
 	SC_HTMLParser *parser;
 	gchar *str;
+	gint lines = 0;
 
 	parser = sc_html_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
@@ -1007,6 +1059,12 @@ static void textview_show_html(TextView *textview, FILE *fp,
 			        textview_write_link(textview, str, parser->href, NULL);
 	        } else
 		        textview_write_line(textview, str, NULL);
+		lines++;
+		if (lines % 500 == 0)
+			GTK_EVENTS_FLUSH();
+		if (textview->stop_loading) {
+			return;
+		}
 	}
 	textview_write_line(textview, "\n", NULL);
 	sc_html_parser_destroy(parser);
@@ -1017,12 +1075,19 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 {
 	ERTFParser *parser;
 	gchar *str;
+	gint lines = 0;
 
 	parser = ertf_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
 
 	while ((str = ertf_parse(parser)) != NULL) {
 		textview_write_line(textview, str, NULL);
+		lines++;
+		if (lines % 500 == 0)
+			GTK_EVENTS_FLUSH();
+		if (textview->stop_loading) {
+			return;
+		}
 	}
 	
 	ertf_parser_destroy(parser);
@@ -1921,6 +1986,8 @@ static gboolean textview_motion_notify(GtkWidget *widget,
 				       GdkEventMotion *event,
 				       TextView *textview)
 {
+	if (textview->loading)
+		return FALSE;
 	textview_uri_update(textview, event->x, event->y);
 	gdk_window_get_pointer(widget->window, NULL, NULL, NULL);
 
@@ -1931,6 +1998,8 @@ static gboolean textview_leave_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      TextView *textview)
 {
+	if (textview->loading)
+		return FALSE;
 	textview_uri_update(textview, -1, -1);
 
 	return FALSE;
@@ -1942,6 +2011,9 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 {
 	gint wx, wy;
 	GdkWindow *window;
+
+	if (textview->loading)
+		return FALSE;
 
 	window = gtk_text_view_get_window(GTK_TEXT_VIEW(widget),
 					  GTK_TEXT_WINDOW_TEXT);

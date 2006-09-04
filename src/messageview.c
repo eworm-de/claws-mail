@@ -830,6 +830,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	headerview_show(messageview->headerview, messageview->msginfo);
 
+	messageview_set_position(messageview, 0);
+
 	textview_set_all_headers(messageview->mimeview->textview, 
 			messageview->all_headers);
 
@@ -851,8 +853,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				subject);
 		g_free(subject);
 	}
-
-	messageview_set_position(messageview, 0);
 
 	main_create_mailing_list_menu(messageview->mainwin, messageview->msginfo);
 
@@ -917,8 +917,17 @@ void messageview_destroy(MessageView *messageview)
 	}
 
 	if (messageview->updating) {
-		debug_print("uh oh, better not touch that now\n");
+		debug_print("uh oh, better not touch that now (fetching)\n");
 		messageview->deferred_destroy = TRUE;
+		gtk_widget_hide(messageview->window);
+		return;
+	}
+	
+	if (messageview->mimeview->textview
+	&&  messageview->mimeview->textview->loading) {
+		debug_print("uh oh, better not touch that now (loading text)\n");
+		messageview->deferred_destroy = TRUE;
+		messageview->mimeview->textview->stop_loading = TRUE;
 		gtk_widget_hide(messageview->window);
 		return;
 	}
