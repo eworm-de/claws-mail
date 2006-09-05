@@ -1,3 +1,9 @@
+2006-09-05 [paul]	2.4.0cvs149
+
+	* src/mimeview.c
+		completion of previous commit
+		Thanks to Colin
+
 2006-09-05 [colin]	2.4.0cvs148
 
 	* src/mimeview.c
