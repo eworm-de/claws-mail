@@ -107,6 +107,10 @@ LogWindow *log_window_create(void)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 	logwin->buffer = buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 
+	g_object_ref(G_OBJECT(logwin->buffer));
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(text), NULL);
+	logwin->hidden = TRUE;
+
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	logwin->end_mark = gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
 
@@ -188,10 +192,6 @@ void log_window_init(LogWindow *logwin)
 	gtk_text_buffer_create_tag(buffer, "output",
 				   "foreground-gdk", &logwin->out_color,
 				   NULL);
-
-	g_object_ref(G_OBJECT(logwin->buffer));
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), NULL);
-	logwin->hidden = TRUE;
 }
 
 void log_window_show(LogWindow *logwin)

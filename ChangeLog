@@ -1,3 +1,11 @@
+2006-09-05 [colin]	2.4.0cvs151
+
+	* src/mainwindow.c
+	* src/gtk/logwindow.c
+		Fix race condition when something writes
+		to the log too soon during init. Thanks
+		to Fabien Vantard
+
 2006-09-05 [colin]	2.4.0cvs150
 
 	* src/mimeview.c

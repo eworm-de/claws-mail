@@ -1260,6 +1260,10 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->messageview = messageview = messageview_create(mainwin);
 	mainwin->logwin      = log_window_create();
 
+	log_window_init(mainwin->logwin);
+	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
+
 	folderview->mainwin      = mainwin;
 	folderview->summaryview  = summaryview;
 
@@ -1408,9 +1412,6 @@ MainWindow *main_window_create(SeparateType type)
 	folderview_init(folderview);
 	summary_init(summaryview);
 	messageview_init(messageview);
-	log_window_init(mainwin->logwin);
-	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
-				prefs_common.loglength);
 #ifdef USE_OPENSSL
 	sslcertwindow_register_hook();
 #endif
