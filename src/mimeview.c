@@ -119,7 +119,8 @@ static gboolean mimeview_scrolled	(GtkWidget	*widget,
 static void mimeview_display_as_text	(MimeView	*mimeview);
 static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_save_all		(MimeView	*mimeview);
-static void mimeview_launch		(MimeView	*mimeview);
+static void mimeview_launch		(MimeView	*mimeview,
+					 MimeInfo	*partinfo);
 static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
@@ -157,9 +158,13 @@ static void icon_scroll_size_allocate_cb(GtkWidget 	*widget,
 					 GtkAllocation  *layout_size, 
 					 MimeView 	*mimeview);
 
+static void mimeview_launch_cb(MimeView *mimeview)
+{
+	mimeview_launch(mimeview, NULL);
+}
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
-	{N_("/_Open"),		  NULL, mimeview_launch,	  0, NULL},
+	{N_("/_Open"),		  NULL, mimeview_launch_cb,	  0, NULL},
 	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
 	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
 	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL},
@@ -1147,7 +1152,7 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 	if (event->button == 2 ||
 	    (event->button == 1 && (event->time - lasttime) < DOUBLE_CLICK_TIME && lastinfo == partinfo)) {
 		/* call external program for image, audio or html */
-		mimeview_launch(mimeview);
+		mimeview_launch(mimeview, partinfo);
 		return TRUE;
 	} else if (event->button == 3) {
 		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
@@ -1257,7 +1262,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
-		mimeview_launch(mimeview);
+		mimeview_launch(mimeview, NULL);
 		return TRUE;
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
@@ -1582,15 +1587,15 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	mimeview_show_message_part(mimeview, partinfo);
 }
 
-static void mimeview_launch(MimeView *mimeview)
+static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 {
-	MimeInfo *partinfo;
 	gchar *filename;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = mimeview_get_part_to_use(mimeview);
+	if (!partinfo)
+		partinfo = mimeview_get_part_to_use(mimeview);
 
 	g_return_if_fail(partinfo != NULL);
 
@@ -1770,15 +1775,16 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	num      = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "icon_number"));
 	partinfo = g_object_get_data(G_OBJECT(button), "partinfo");
 
-	icon_selected(mimeview, num, partinfo);
-	gtk_widget_grab_focus(button);
-	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-		toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
-		if (event->button == 2 || event->button == 3)
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-						     TRUE);
+	if (event->button != 2) {
+		icon_selected(mimeview, num, partinfo);
+		gtk_widget_grab_focus(button);
+		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
+			if (event->button == 3)
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+							     TRUE);
+		}
 	}
-
 	part_button_pressed(mimeview, event, partinfo);
 
 	return FALSE;
@@ -1881,7 +1887,7 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
-		mimeview_launch(mimeview);
+		mimeview_launch(mimeview, NULL);
 		return TRUE;
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
@@ -2240,14 +2246,14 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 	else if (!strcmp(cmd, "sc://open_with"))
 		mimeview_open_with(mimeview);
 	else if (!strcmp(cmd, "sc://open"))
-		mimeview_launch(mimeview);
+		mimeview_launch(mimeview, NULL);
 	else if (!strcmp(cmd, "sc://select_attachment") && data != NULL) {
 		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
 		icon_selected(mimeview, -1, (MimeInfo *)data);
 	} else if (!strcmp(cmd, "sc://open_attachment") && data != NULL) {
 		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
 		icon_selected(mimeview, -1, (MimeInfo *)data);
-		mimeview_launch(mimeview);
+		mimeview_launch(mimeview, NULL);
 	} else if (!strcmp(cmd, "sc://menu_attachment") && data != NULL) {
 		mimeview->spec_part = (MimeInfo *)data;
 		part_button_pressed(mimeview, event, (MimeInfo *)data);
