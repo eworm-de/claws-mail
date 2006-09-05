@@ -157,10 +157,11 @@ static gboolean part_button_pressed	(MimeView 	*mimeview,
 static void icon_scroll_size_allocate_cb(GtkWidget 	*widget, 
 					 GtkAllocation  *layout_size, 
 					 MimeView 	*mimeview);
+static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview);
 
 static void mimeview_launch_cb(MimeView *mimeview)
 {
-	mimeview_launch(mimeview, NULL);
+	mimeview_launch(mimeview, mimeview_get_part_to_use(mimeview));
 }
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
@@ -1505,13 +1506,13 @@ static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
 		partinfo = mimeview->spec_part;
 		mimeview->spec_part = NULL;
 	} else {
-		partinfo = mimeview_get_selected_part(mimeview);
+		partinfo = (MimeInfo *) g_object_get_data
+			 (G_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		g_object_set_data(G_OBJECT(mimeview->popupmenu),
+				  "pop_partinfo", NULL);
 		if (!partinfo) { 
-			partinfo = (MimeInfo *) g_object_get_data
-				 (G_OBJECT(mimeview->popupmenu),
-				 "pop_partinfo");
-			g_object_set_data(G_OBJECT(mimeview->popupmenu),
-					  "pop_partinfo", NULL);
+			partinfo = mimeview_get_selected_part(mimeview);
 		}			 
 	}
 
@@ -1775,14 +1776,11 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	num      = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "icon_number"));
 	partinfo = g_object_get_data(G_OBJECT(button), "partinfo");
 
-	if (event->button != 2) {
+	if (event->button == 1) {
 		icon_selected(mimeview, num, partinfo);
 		gtk_widget_grab_focus(button);
 		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
-			if (event->button == 3)
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-							     TRUE);
 		}
 	}
 	part_button_pressed(mimeview, event, partinfo);
@@ -2237,7 +2235,10 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 	if (!mainwin)
 		return;
 		
-	else if (!strcmp(cmd, "sc://view_log"))
+	g_object_set_data(G_OBJECT(mimeview->popupmenu),
+			  "pop_partinfo", NULL);
+
+	if (!strcmp(cmd, "sc://view_log"))
 		log_window_show(mainwin->logwin);
 	else if (!strcmp(cmd, "sc://save_as"))
 		mimeview_save_as(mimeview);
