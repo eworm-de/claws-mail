@@ -1,3 +1,13 @@
+2006-09-05 [colin]	2.4.0cvs152
+
+	* src/plugins/trayicon/trayicon.c
+		Fix crash at exit - we have to disconnect
+		our handlers
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+		Update eggtrayicon - patch adapted from a
+		patch by Fryderyk Dziarmagowski <freetz@gmx.net>
+		on Sylpheed's ML
+
 2006-09-05 [colin]	2.4.0cvs151
 
 	* src/mainwindow.c

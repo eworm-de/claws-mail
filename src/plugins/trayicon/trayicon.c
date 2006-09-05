@@ -320,14 +320,15 @@ int plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
+	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
+
 	if (sylpheed_is_exiting())
 		return;
 
 	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
 	
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
-	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
-	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
