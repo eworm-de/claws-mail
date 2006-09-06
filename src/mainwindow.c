@@ -2567,6 +2567,9 @@ static void mailing_list_compose (GtkWidget *w, gpointer *data)
 	
 void main_window_popup(MainWindow *mainwin)
 {
+	if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+		main_window_show(mainwin);
+
 	gtkut_window_popup(mainwin->window);
 
 	switch (mainwin->type) {
