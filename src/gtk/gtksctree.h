@@ -35,6 +35,9 @@ struct _GtkSCTree {
 	gint dnd_select_pending_row;
 	gboolean selecting_range;
 	gboolean sorting;
+
+	/* (dis)allow fancy color stripes */
+	gboolean show_stripes;
 };
 
 struct _GtkSCTreeClass {
@@ -71,6 +74,8 @@ void gtk_sctree_set_anchor_row		(GtkSCTree	*sctree,
 
 void gtk_sctree_remove_node		(GtkSCTree	*sctree,
 					 GtkCTreeNode	*node);
+
+void gtk_sctree_set_stripes(GtkSCTree  *sctree, gboolean show_stripes);
 
 /***********************************************************
  *             Tree sorting functions                      *

@@ -1,3 +1,8 @@
+2006-09-06 [wwp]	2.4.0cvs155
+
+	* src/gtk//gtksctree.h
+		oops, forgot that one!
+
 2006-09-06 [wwp]	2.4.0cvs154
 
 	* manual/pl/advanced.xml
