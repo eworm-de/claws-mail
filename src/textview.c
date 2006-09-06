@@ -1639,6 +1639,24 @@ void textview_set_position(TextView *textview, gint pos)
 	gtkut_text_view_set_position(text, pos);
 }
 
+static gboolean header_is_internal(Header *header)
+{
+	const gchar *internal_hdrs[] = 
+		{"AF:", "NF:", "PS:", "SRH:", "SFN:", "DSR:", "MID:", 
+		 "CFG:", "PT:", "S:", "RQ:", "SSV:", "NSV:", "SSH:", 
+		 "R:", "MAID:", "SCF:", "RMID:", "FMID:", "NAID:", 
+		 "X-Sylpheed-Account-Id:", "X-Sylpheed-Sign:", "X-Sylpheed-Encrypt:", 
+		 "X-Sylpheed-Privacy-System:", "X-Sylpheed-End-Special-Headers:",
+		 NULL};
+	int i;
+	
+	for (i = 0; internal_hdrs[i]; i++) {
+		if (!strcmp(header->name, internal_hdrs[i]))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -1649,8 +1667,19 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
-	if (textview->show_all_headers)
-		return procheader_get_header_array_asis(fp);
+	if (textview->show_all_headers) {
+		headers = procheader_get_header_array_asis(fp);
+		sorted_headers = g_ptr_array_new();
+		for (i = 0; i < headers->len; i++) {
+			header = g_ptr_array_index(headers, i);
+			if (!header_is_internal(header))
+				g_ptr_array_add(sorted_headers, header);
+			else
+				procheader_header_free(header);
+		}
+		g_ptr_array_free(headers, TRUE);
+		return sorted_headers;
+	}
 
 	if (!prefs_common.display_header) {
 		while (fgets(buf, sizeof(buf), fp) != NULL)
@@ -1686,7 +1715,11 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	if (prefs_common.show_other_header) {
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-			g_ptr_array_add(sorted_headers, header);
+			if (!header_is_internal(header)) {
+				g_ptr_array_add(sorted_headers, header);
+			} else {
+				procheader_header_free(header);
+			}
 		}
 		g_ptr_array_free(headers, TRUE);
 	} else

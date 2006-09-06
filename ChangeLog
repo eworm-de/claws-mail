@@ -1,3 +1,10 @@
+2006-09-06 [colin]	2.4.0cvs153
+
+	* src/textview.c
+		Hide Sylpheed-Claws' internal queue headers
+		when showing all headers. They'll be present
+		only in Source window.
+
 2006-09-05 [colin]	2.4.0cvs152
 
 	* src/plugins/trayicon/trayicon.c
