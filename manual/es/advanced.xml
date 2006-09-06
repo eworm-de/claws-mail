@@ -583,13 +583,14 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>enable_rules_hint</literal></term>
+	<term><literal>use_stripes_everywhere</literal></term>
 	 <listitem>
 	   <para>
 	Activar las líneas alternantes en los componentes GtkTreeView.
 	   </para>
 	 </listitem>
       </varlistentry>
+      <varlistentry>
       <varlistentry>
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>

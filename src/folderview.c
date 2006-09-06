@@ -467,7 +467,7 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 
 	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],
 					   titles);
-	
+
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[F_COL_NEW],
 					   GTK_JUSTIFY_RIGHT);
@@ -486,6 +486,9 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 		gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_TRIANGLE);
 	}
+
+	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
+
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	gtk_clist_set_compare_func(GTK_CLIST(ctree), folderview_clist_compare);
 

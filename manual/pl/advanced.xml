@@ -191,7 +191,7 @@
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>w³±czenie poziomego paska przewijania w li¶cie wiadomo¶ci</para></listitem>
 	    </varlistentry>
-	    <varlistentry><term>enable_rules_hint</term>
+	    <varlistentry><term>use_stripes_everywhere</term>
 		    <listitem><para>w³±czenie alternatywnych linii w GtkTreeViews</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>enable_swap_from</term>

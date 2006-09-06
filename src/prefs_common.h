@@ -179,7 +179,8 @@ struct _PrefsCommon
 	gboolean use_addr_book;
 	gchar *date_format;
 
-	gboolean enable_rules_hint;
+	gboolean use_stripes_everywhere;
+	gboolean use_stripes_in_summaries; /* overrides if use_stripes_everywhere is set to TRUE */
 	gboolean enable_dotted_lines;
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;

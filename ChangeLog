@@ -1,3 +1,40 @@
+2006-09-06 [wwp]	2.4.0cvs154
+
+	* manual/pl/advanced.xml
+	* manual/advanced.xml
+	* manual/es/advanced.xml
+	* manual/fr/advanced.xml
+	* src/prefs_customheader.c
+	* src/prefs_filtering_action.c
+	* src/foldersel.c
+	* src/prefs_summaries.c
+	* src/prefs_filtering.c
+	* src/account.c
+	* src/compose.c
+	* src/prefs_summary_column.c
+	* src/addr_compl.c
+	* src/prefs_actions.c
+	* src/prefs_folder_column.c
+	* src/ssl_manager.c
+	* src/prefs_template.c
+	* src/prefs_display_header.c
+	* src/prefs_common.h
+	* src/prefs_matcher.c
+	* src/prefs_common.c
+	* src/prefs_toolbar.c
+	* src/summaryview.c
+	* src/folderview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/progressdialog.c
+	* src/gtk/prefswindow.c
+		renamed hidden option enable_rules_hint to use_stripes_everywhere
+		to make its meaning more obvious (all versions of the manual reflect
+		the change).
+		added an extra hidden option use_stripes_in_summary to allow
+		discarding these stripes in mainwindow's folder and message lists;
+		en and fr manuals only are OK towards this.
+
 2006-09-06 [colin]	2.4.0cvs153
 
 	* src/textview.c

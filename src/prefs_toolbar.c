@@ -1002,7 +1002,7 @@ static GtkWidget *create_icon_list_view(ToolbarPage *prefs_toolbar)
 	gtk_tree_view_append_column(list_view, column);
 
 	/* various other tree view attributes */
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_headers_visible(list_view, FALSE);
 	
 	selector = gtk_tree_view_get_selection(list_view);
@@ -1085,7 +1085,7 @@ static GtkWidget *create_set_list_view(ToolbarPage *prefs_toolbar)
 	gtk_tree_view_append_column(list_view, column);
 
 	/* various other tree view attributes */
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

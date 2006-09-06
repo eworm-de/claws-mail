@@ -193,8 +193,11 @@
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
 	    </varlistentry>
-	    <varlistentry><term>enable_rules_hint</term>
+	    <varlistentry><term>use_stripes_everywhere</term>
 		    <listitem><para>Active les lignes alternées dans les GtkTreeViews (dialogues de filtrage, des traitements, etc.).</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>use_stripes_in_summaries</term>
+		    <listitem><para>Active les lignes alternées dans les GtkTreeViews de la fenêtre principale (liste des dossiers et liste des messages). L'emploi de cette option (valeur 0) n'a de sens que lorsque l'option cachée use_stripes_everywhere est activée (valeur 1).</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>enable_swap_from</term>
 		    <listitem><para>Affiche l'adresse électronique de l'expéditeur dans la colonne <quote>De</quote> dans le dossier <quote>Envoyés</quote> au lieu des destinataires.</para></listitem>

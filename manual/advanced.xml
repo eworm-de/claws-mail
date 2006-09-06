@@ -561,10 +561,20 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>enable_rules_hint</literal></term>
+	<term><literal>use_stripes_everywhere</literal></term>
 	<listitem>
 	  <para>
 	Enable alternately coloured lines in GtkTreeView components.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>use_stripes_in_summaries</literal></term>
+	<listitem>
+	  <para>
+	Enable alternately coloured lines in main window's GtkTreeView components
+	(folder list and messages list). The only useful way to use this option is
+	to set it to 0 when use_stripes_everywhere is set to 1.
 	  </para>
 	</listitem>
       </varlistentry>

@@ -126,7 +126,7 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 	
  	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model),
                                              0, GTK_SORT_ASCENDING);
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

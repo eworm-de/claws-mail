@@ -420,7 +420,7 @@ static GtkWidget *pluginwindow_list_view_create(PluginWindow *pluginwindow)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.enable_rules_hint);
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_search_column (list_view, 0);
 
 	selector = gtk_tree_view_get_selection(list_view);

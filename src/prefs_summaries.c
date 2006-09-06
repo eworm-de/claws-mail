@@ -195,7 +195,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	datefmt_list_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(G_OBJECT(store));
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(datefmt_list_view),
-				     prefs_common.enable_rules_hint);
+				     prefs_common.use_stripes_everywhere);
 	gtk_widget_show(datefmt_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_list_view);
 

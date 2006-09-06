@@ -721,7 +721,7 @@ static GtkWidget *prefs_summary_column_list_view_create(const gchar *name)
 	g_object_unref(G_OBJECT(model));
 	
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(list_view),
-				     prefs_common.enable_rules_hint);
+				     prefs_common.use_stripes_everywhere);
 	
 	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

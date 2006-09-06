@@ -5030,6 +5030,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				     GTK_CTREE_EXPANDER_TRIANGLE);
 	}
 
+	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
+
 	gtk_ctree_set_indent(GTK_CTREE(ctree), 12);
 	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 

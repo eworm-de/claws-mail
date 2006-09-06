@@ -894,7 +894,8 @@ gtk_sctree_draw_row (GtkCList     *clist,
   clip_rectangle.y = row_rectangle.y;
   clip_rectangle.height = row_rectangle.height;
 
-  if (prefs_common.enable_rules_hint && color_change && row % 2) {
+  if (prefs_common.use_stripes_everywhere && GTK_SCTREE(ctree)->show_stripes
+      && color_change && row % 2) {
     clist_row->background = greybg;
     clist_row->bg_set = TRUE;
   } else {
@@ -1771,6 +1772,8 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 		gtk_clist_column_titles_show (clist);
 	}
 
+	GTK_SCTREE(widget)->show_stripes = TRUE;
+
 	return widget;
 }
 
@@ -1813,6 +1816,11 @@ void gtk_sctree_remove_node (GtkSCTree *sctree, GtkCTreeNode *node)
 	if (sctree->anchor_row == node)
 		sctree->anchor_row = NULL;
 	gtk_ctree_remove_node(GTK_CTREE(sctree), node);
+}
+
+void gtk_sctree_set_stripes(GtkSCTree  *sctree, gboolean show_stripes)
+{
+	sctree->show_stripes = show_stripes;
 }
 
 /***********************************************************
