@@ -591,7 +591,6 @@
 	 </listitem>
       </varlistentry>
       <varlistentry>
-      <varlistentry>
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
