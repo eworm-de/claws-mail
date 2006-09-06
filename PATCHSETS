@@ -1849,3 +1849,4 @@
 ( cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk//gtksctree.h;  ) > 2.4.0cvs155.patchset
 ( cvs diff -u -r 1.274.2.148 -r 1.274.2.149 src/mainwindow.c;  ) > 2.4.0cvs156.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/es/advanced.xml;  ) > 2.4.0cvs157.patchset
+( cvs diff -u -r 1.59.2.43 -r 1.59.2.44 src/prefs_filtering.c;  ) > 2.4.0cvs158.patchset

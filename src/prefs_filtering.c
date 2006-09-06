@@ -356,11 +356,13 @@ static void prefs_filtering_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
 	table = gtk_table_new(3, 4, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	gtk_table_set_col_spacing (GTK_TABLE (table), 2, 0);
 	gtk_widget_show(table);
 	gtk_box_pack_start (GTK_BOX (vbox1), table, TRUE, TRUE, 0);
-	
 
-	name_label = gtk_label_new (_("Name: "));
+	name_label = gtk_label_new (_("Name"));
 	gtk_widget_show (name_label);
 	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
   	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
@@ -373,7 +375,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-	account_label = gtk_label_new (_("Account:"));
+	account_label = gtk_label_new (_("Account"));
 	gtk_widget_show (account_label);
 	gtk_misc_set_alignment (GTK_MISC (account_label), 1, 0.5);
   	gtk_table_attach (GTK_TABLE (table), account_label, 0, 1, 1, 2,
@@ -387,7 +389,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (0), 0, 0);
 	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
 
-	cond_label = gtk_label_new (_("Condition: "));
+	cond_label = gtk_label_new (_("Condition"));
 	gtk_widget_show (cond_label);
 	gtk_misc_set_alignment (GTK_MISC (cond_label), 1, 0.5);
   	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 2, 3,
@@ -409,7 +411,7 @@ static void prefs_filtering_create(void)
 			 G_CALLBACK(prefs_filtering_condition_define),
 			 NULL);
 
-	action_label = gtk_label_new (_("Action: "));
+	action_label = gtk_label_new (_("Action"));
 	gtk_widget_show (action_label);
 	gtk_misc_set_alignment (GTK_MISC (action_label), 1, 0.5);
   	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 3, 4,
@@ -1457,6 +1459,7 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 		 renderer,
 		 "active", PREFS_FILTERING_ENABLED,
 		 NULL);
+	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 	g_signal_connect(G_OBJECT(renderer), "toggled",
 			 G_CALLBACK(prefs_filtering_enable_toggled),
