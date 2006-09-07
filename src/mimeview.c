@@ -511,8 +511,6 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 	const gchar *fname;
 
 	if (!partinfo) return;
-	if (partinfo == mimeview->opened)
-		return;
 
 	fname = mimeview->file;
 	if (!fname) return;
@@ -641,7 +639,8 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 	GtkWidget *focused = NULL;
 	
 	if (mainwindow_get_mainwindow())
-		focused = gtkut_get_focused_child(mainwindow_get_mainwindow()->window);
+		focused = gtkut_get_focused_child(
+				GTK_CONTAINER(mainwindow_get_mainwindow()->window));
 
 	if ((mimeview->type != MIMEVIEW_VIEWER) && 
 	    (mimeview->type == type)) return;

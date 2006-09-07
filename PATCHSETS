@@ -1851,3 +1851,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/es/advanced.xml;  ) > 2.4.0cvs157.patchset
 ( cvs diff -u -r 1.59.2.43 -r 1.59.2.44 src/prefs_filtering.c;  ) > 2.4.0cvs158.patchset
 ( cvs diff -u -r 1.83.2.88 -r 1.83.2.89 src/mimeview.c;  ) > 2.4.0cvs159.patchset
+( cvs diff -u -r 1.83.2.89 -r 1.83.2.90 src/mimeview.c;  ) > 2.4.0cvs160.patchset
