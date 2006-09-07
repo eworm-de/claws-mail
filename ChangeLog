@@ -1,3 +1,9 @@
+2006-09-07 [wwp]	2.4.0cvs161
+
+	* src/summaryview.c
+		use GTK_STOCK icons when possible, patch by Fabien Vantard
+		<fzzzzz@gmail.com>.
+
 2006-09-07 [paul]	2.4.0cvs160
 
 	* src/mimeview.c

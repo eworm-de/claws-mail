@@ -4614,7 +4614,7 @@ gboolean summary_filter_get_mode(void)
 			_("Filtering"),
 			_("There are some filtering rules that belong to an account.\n"
 			  "Please choose what to do with these rules:"),
-			_("_Filter"), _("_Cancel"), NULL, TRUE, vbox);
+			_("_Filter"), GTK_STOCK_CANCEL, NULL, TRUE, vbox);
 	if ((val & ~G_ALERTDISABLE) != G_ALERTDEFAULT) {
 		return FALSE;
 	} else if (val & G_ALERTDISABLE)
