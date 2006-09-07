@@ -878,11 +878,8 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 		if (prop->name)
 			name = prop->name;
 		account_id = prop->account_id;
-		if (account_id > 0) {
+		if (account_id > 0)
 			account_name = account_find_from_id(account_id)->account_name;
-		} else {
-			account_name = (gchar *)Q_("Filtering Account Menu|All");
-		}
 		enabled = prop->enabled;
 	}
 
