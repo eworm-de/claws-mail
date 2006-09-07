@@ -1854,3 +1854,4 @@
 ( cvs diff -u -r 1.83.2.89 -r 1.83.2.90 src/mimeview.c;  ) > 2.4.0cvs160.patchset
 ( cvs diff -u -r 1.395.2.245 -r 1.395.2.246 src/summaryview.c;  ) > 2.4.0cvs161.patchset
 ( cvs diff -u -r 1.59.2.44 -r 1.59.2.45 src/prefs_filtering.c;  ) > 2.4.0cvs162.patchset
+( cvs diff -u -r 1.43.2.44 -r 1.43.2.45 src/prefs_matcher.c;  ) > 2.4.0cvs163.patchset

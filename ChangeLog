@@ -1,3 +1,10 @@
+2006-09-07 [wwp]	2.4.0cvs163
+
+	* src/prefs_matcher.c
+		make better sentences about addressbook matching in the
+		matcher prefs. This should make translators' work easier
+		too.
+
 2006-09-07 [wwp]	2.4.0cvs162
 
 	* src/prefs_filtering.c
