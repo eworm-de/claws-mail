@@ -1,3 +1,10 @@
+2006-09-07 [paul]	2.4.0cvs159
+
+	* src/mimeview.c
+		select the mimepart icon when
+		displaying as text
+		Thanks to Colin
+
 2006-09-06 [paul]	2.4.0cvs158
 
 	* src/prefs_filtering.c

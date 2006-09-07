@@ -1583,7 +1583,7 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	if (!mimeview->opened) return;
 
 	partinfo = mimeview_get_part_to_use(mimeview);
-
+	mimeview_select_mimepart_icon(mimeview, partinfo);
 	g_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
 }
