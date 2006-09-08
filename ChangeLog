@@ -1,3 +1,11 @@
+2006-09-08 [colin]	2.4.0cvs164
+
+	* src/folder.c
+		Wrong assert, make it an if()
+	* src/gtk/gtksctree.c
+		Fix bug #1013 (expand selected thread 
+		tree) - expanding is now recursive
+
 2006-09-07 [wwp]	2.4.0cvs163
 
 	* src/prefs_matcher.c

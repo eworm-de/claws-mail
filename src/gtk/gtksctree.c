@@ -1253,6 +1253,48 @@ gtk_sctree_draw_row (GtkCList     *clist,
     }
 }
 
+static void
+gtk_sctree_change_focus_row_expansion (GtkCTree          *ctree,
+			    GtkCTreeExpansionType action)
+{
+  GtkCList *clist;
+  GtkCTreeNode *node;
+
+  g_return_if_fail (GTK_IS_CTREE (ctree));
+
+  clist = GTK_CLIST (ctree);
+
+  if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (ctree))) && 
+      GTK_WIDGET_HAS_GRAB (ctree))
+    return;
+  
+  if (!(node =
+	GTK_CTREE_NODE (g_list_nth (clist->row_list, clist->focus_row))) ||
+      GTK_CTREE_ROW (node)->is_leaf || !(GTK_CTREE_ROW (node)->children))
+    return;
+
+  switch (action)
+    {
+    case GTK_CTREE_EXPANSION_EXPAND:
+      gtk_ctree_expand_recursive (ctree, node);
+      break;
+    case GTK_CTREE_EXPANSION_EXPAND_RECURSIVE:
+      gtk_ctree_expand_recursive (ctree, node);
+      break;
+    case GTK_CTREE_EXPANSION_COLLAPSE:
+      gtk_ctree_collapse (ctree, node);
+      break;
+    case GTK_CTREE_EXPANSION_COLLAPSE_RECURSIVE:
+      gtk_ctree_collapse_recursive (ctree, node);
+      break;
+    case GTK_CTREE_EXPANSION_TOGGLE:
+      gtk_ctree_toggle_expansion_recursive (ctree, node);
+      break;
+    case GTK_CTREE_EXPANSION_TOGGLE_RECURSIVE:
+      gtk_ctree_toggle_expansion_recursive (ctree, node);
+      break;
+    }
+}
 
 /* Standard class initialization function */
 static void
@@ -1314,7 +1356,8 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
         ctree_class->tree_collapse = gtk_sctree_collapse;
 	ctree_class->tree_expand = gtk_sctree_real_tree_expand;
 	ctree_class->tree_move = sreal_tree_move;
-	
+	ctree_class->change_focus_row_expansion = gtk_sctree_change_focus_row_expansion;
+
 	widget_class->button_press_event = gtk_sctree_button_press;
 	widget_class->button_release_event = gtk_sctree_button_release;
 	widget_class->motion_notify_event = gtk_sctree_motion;
@@ -1492,7 +1535,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		gtk_widget_grab_focus (widget);
 
 	if (gtk_ctree_is_hot_spot (GTK_CTREE(sctree), event->x, event->y)) {
-		gtk_ctree_toggle_expansion
+		gtk_ctree_toggle_expansion_recursive
 			(GTK_CTREE(sctree), 
 			 gtk_ctree_node_nth(GTK_CTREE(sctree), row));
 		return TRUE;
@@ -2785,6 +2828,7 @@ gtk_sctree_real_tree_expand (GtkCTree     *ctree,
     /* resize tree_column if needed */
     gtk_sctree_column_auto_resize (clist, &GTK_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
+
 }
 
 GtkCTreeNode * 

@@ -1202,7 +1202,9 @@ gchar *folder_item_get_identifier(FolderItem *item)
 	gchar *folder_id = NULL;
 
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->path != NULL, NULL);
+
+	if (item->path == NULL)
+		return NULL;
 
 	folder_id = folder_get_identifier(item->folder);
 	id = g_strconcat(folder_id, "/", item->path, NULL);
