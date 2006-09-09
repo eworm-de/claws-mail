@@ -1,3 +1,14 @@
+2006-09-09 [wwp]	2.4.0cvs167
+
+	* src/prefs_filtering.c
+		fix a minor bug when the enabled status of a filtering/processing
+		rule always got set to TRUE when replacing this rule. That still
+		make sense when adding a new rule, but now when replacing, we
+		don't override the value of 'enabled'.
+		Also renamed the func prefs_filtering_list_view_get_rule_name()
+		to prefs_filtering_list_view_get_info() as this function not only
+		returns the name, but also the account_id and the enabled status.
+
 2006-09-09 [mones]	2.4.0cvs166
 
 	* manual/glossary.xml

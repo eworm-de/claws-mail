@@ -135,7 +135,7 @@ static gint prefs_filtering_list_view_insert_rule	(GtkListStore *list_store,
 							 gboolean prop);
 static gchar *prefs_filtering_list_view_get_rule	(GtkWidget *list, 
 							 gint row);
-static void prefs_filtering_list_view_get_rule_name	(GtkWidget *list, 
+static void prefs_filtering_list_view_get_rule_info	(GtkWidget *list, 
 							 gint row,
 							 gboolean *enabled,
 							 gchar **name,
@@ -843,7 +843,7 @@ static void prefs_filtering_set_list(void)
 			gchar *name;
 			gint account_id = 0;
 
-			prefs_filtering_list_view_get_rule_name(
+			prefs_filtering_list_view_get_rule_info(
 					filtering.cond_list_view, row,
 					&enabled, &name, &account_id);
 			prop = matcher_parser_get_filtering(filtering_str);
@@ -1052,11 +1052,22 @@ static void prefs_filtering_substitute_cb(void)
 	gint selected_row = prefs_filtering_get_selected_row
 		(filtering.cond_list_view);
 	FilteringProp *prop;
+	gboolean enabled;
+	gchar *name;
+	gint account_id;
 	
 	if (selected_row <= 0)
 		return;
 
 	prop = prefs_filtering_dialog_to_filtering(TRUE);
+
+	/* prop->emabled is always TRUE here, re-use the value from the selected row 
+	   as we don't substitute this value from dialog */
+	prefs_filtering_list_view_get_rule_info(
+			filtering.cond_list_view, selected_row,
+			&enabled, &name, &account_id);
+	prop->enabled = enabled;
+
 	if (prop == NULL) 
 		return;
 	prefs_filtering_list_view_set_row(selected_row, prop);
@@ -1380,7 +1391,7 @@ static gchar *prefs_filtering_list_view_get_rule(GtkWidget *list, gint row)
 	return result;
 }
 
-static void prefs_filtering_list_view_get_rule_name(GtkWidget *list, gint row,
+static void prefs_filtering_list_view_get_rule_info(GtkWidget *list, gint row,
 				gboolean *enabled, gchar **name, gint *account_id)
 {	
 	GtkTreeView *list_view = GTK_TREE_VIEW(list);
@@ -1598,7 +1609,7 @@ static gboolean prefs_filtering_selected(GtkTreeSelection *selector,
 					   -1);
 
 			prop = matcher_parser_get_filtering(filtering_str);
-			if (prop) { 
+			if (prop) {
 				prop->name = g_strdup(name);
 				prop->account_id = account_id;
 				prefs_filtering_select_set(prop);
