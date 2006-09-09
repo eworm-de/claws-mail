@@ -770,13 +770,16 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
-		gchar *account_name;
+		gchar *account_name = NULL;
 
 		if (prop->account_id > 0) {
-			account_name = account_find_from_id(prop->account_id)->account_name;
-		} else {
-			account_name = (gchar *)Q_("Filtering Account Menu|All");
+			PrefsAccount *ac_prefs = account_find_from_id(prop->account_id);
+
+			if (ac_prefs)
+				account_name = ac_prefs->account_name;
 		}
+		if (account_name == NULL)
+			account_name = (gchar *)Q_("Filtering Account Menu|All");
 
 		cond_str = filteringprop_to_string(prop);
 		subst_char(cond_str, '\t', ':');

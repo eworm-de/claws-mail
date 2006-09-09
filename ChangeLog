@@ -1,3 +1,10 @@
+2006-09-09 [wwp]	2.4.0cvs165
+
+	* src/prefs_filtering.c
+		fix a crash when opening filtering prefs, if matcherrc file contains
+		broken data (non-existing account id, which is theoretically not
+		possible).
+
 2006-09-08 [colin]	2.4.0cvs164
 
 	* src/folder.c

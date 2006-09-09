@@ -1856,3 +1856,4 @@
 ( cvs diff -u -r 1.59.2.44 -r 1.59.2.45 src/prefs_filtering.c;  ) > 2.4.0cvs162.patchset
 ( cvs diff -u -r 1.43.2.44 -r 1.43.2.45 src/prefs_matcher.c;  ) > 2.4.0cvs163.patchset
 ( cvs diff -u -r 1.213.2.113 -r 1.213.2.114 src/folder.c;  cvs diff -u -r 1.1.4.28 -r 1.1.4.29 src/gtk/gtksctree.c;  ) > 2.4.0cvs164.patchset
+( cvs diff -u -r 1.59.2.45 -r 1.59.2.46 src/prefs_filtering.c;  ) > 2.4.0cvs165.patchset
