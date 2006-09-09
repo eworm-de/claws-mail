@@ -282,7 +282,7 @@
 	GtkHtml Viewer). These plugins use the Curl library. Hence, if your 
 	Internet access is restricted by a proxy, you will need to tell libCurl
 	to use this proxy. This is done by setting an environment variable, 
-	<emphasis>http_proxy</emphasis>. For example, 
+	<literal>http_proxy</literal>. For example, 
 <literal>http_proxy=http://user:passwd@myproxy.example.com:8080</literal> 
 	will tell libCurl to connect to port 8080 of the machine 
 	myproxy.example.com, with the user <quote>user</quote> and password 

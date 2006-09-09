@@ -86,7 +86,7 @@
 	indica a &SC; que hacer con los mensajes que cumplan la condición que
 	hemos definido. Por ejemplo, <quote>mark_as_read</quote> marcaría el
 	correo como leído tan pronto como llegase a la Entrada, o <quote>move
-	#mh/inbox/Amigos</quote> movería el mensaje a la subcarpeta 
+	#mh/Mailbox/inbox/Amigos</quote> movería el mensaje a la subcarpeta 
 	<quote>Amigos</quote>. Aquí también el botón <quote>Definir...</quote>
 	está disponible para ayudarle a definir las acciones a realizar.
     </para><para>

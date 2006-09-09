@@ -9,17 +9,49 @@
 	se listan más adelante vienen incluidos con él, y se construyen
 	automáticamente si las librerías necesarias están disponibles.
     </para><para>
-	Los módulos se instalan en $PREFIX/lib/sylpheed-claws/plugins/ y 
+	Los módulos se instalan en <filename class="directory"
+	>$PREFIX/lib/sylpheed-claws/plugins/</filename> y 
 	tienen el sufijo <quote>.so</quote>. Para cargar un módulo vaya
 	al menú <quote>Configuración/Módulos</quote> y pulse el botón
 	<quote>Cargar módulo</quote>. Seleccione el módulo que desee cargar y
-	pulse el botón Aceptar.
+	pulse el botón <quote>Aceptar</quote>.
     </para><para>
-	Si no encuentra el módulo que busca es posible que su distribución de
-	GNU/Linux lo proporcione en algún paquete distinto. En ese caso busque
-	el módulo con su gestor de paquetes.
+	Si no encuentra el módulo que busca es posible que la distribución de
+	su sistema operativo lo proporcione en algún paquete distinto. En ese 
+	caso busque el módulo con su gestor de paquetes.
     </para>
     <variablelist>
+      <varlistentry>
+	<term>Bogofilter</term>
+	<listitem>
+	  <para>
+	El módulo Bogofilter viene con dos características principales:
+	  </para><para>
+	La habilidad para escanear el correo entrante recibido de cuentas
+	IMAP, POP3 o locales usando Bogofilter. Puede, opcionalmente, borrar
+	el correo identificado como basura o guardarlo en una carpeta 
+	designada al efecto. El escaneado se puede desactivar.
+	  </para><para>
+	La posibilidad de que el usuario enseñe a Bogofilter a distinguir entre
+	el correo basura o el aceptable. Puede entrenar a Bogofilter marcando 
+	los mensajes como correo basura o como buenos en el menú contextual de
+	la lista de mensajes, o a través del botón correspondiente en la 
+	venana principal o de mensaje (vea
+	<quote>Configuración/Preferencias/Configurar barras de 
+	herramientas</quote>. Los mensajes marcados como basura se pueden
+	guardar en una carpeta designada al efecto también de manera opcional.
+	  </para><para>
+	Las preferencias del módulo se pueden encontrar en
+	<quote>Configuración/Preferencias/Módulos/Bogofilter</quote>.
+	  </para><para>
+	La ventaja de Bogofilter sobre SpamAssassin es su velocidad.
+	  </para><para>
+	Bogofilter está disponible en <ulink 
+	url="http://bogofilter.sourceforge.net/"
+	>http://bogofilter.sourceforge.net/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term>Antivirus Clam</term>
 	<listitem>
@@ -52,8 +84,9 @@
 	<listitem>
 	  <para>
 	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
-	correos, verificar firmas o firmar y encriptar sus propios correos.
-	Utiliza GnuPG/GPGME,  <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	correos y verificar firmas, así como firmar y encriptar sus propios 
+	correos. Utiliza GnuPG/GPGME, <ulink 
+	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
 	  </para>
 	</listitem>
@@ -95,9 +128,9 @@
 	<listitem>
 	  <para>
 	Coloca un icono en la bandeja del sistema que indica si hay correo
-	nuevo. Una notificación emergente muestra también el número de 
-	mensajes nuevos, sin leer y totales, al mover el puntero del ratón
-	sobre el icono.
+	nuevo. Al mover el puntero del ratón sobre el icono una notificación 
+	emergente muestra también el número de mensajes nuevos, sin leer y 
+	totales.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -145,7 +178,9 @@
 	<listitem>
 	  <para>
 	Gestiona la verificación y descifrado de mensajes cifrados con S/MIME,
-	OpenPGP y en formato blindado-ASCII (<emphasis>ASCII-armored</emphasis> N. del T.). No gestiona contraseñas.
+	OpenPGP y en formato blindado-ASCII<footnote><para>
+	<emphasis>ASCII-armored</emphasis> en el original (N. del T.)</para>
+	</footnote>. No gestiona contraseñas.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -160,7 +195,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GtkHtml Viewer</term>
+	<term>Visor GtkHtml</term>
 	<listitem>
 	  <para>
 	Al igual que Dillo, permite la visualización de mensajes HTML, pero
@@ -182,7 +217,7 @@
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>
-	Gestiona buzones en formato mbox.
+	Gestiona buzones en formato Mbox.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -201,10 +236,10 @@
 	<listitem>
 	  <para>
 	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
-	correos, verificar firmas digitales o firmar y cifrar sus propios
-	correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
-	url="ftp://ftp.gnupg.org/gcrypt/gpgme/">
-	ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	correos y verificar firmas digitales, así como firmar y cifrar sus 
+	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
+	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -243,7 +278,8 @@
 	capacidades de &SC; será probablemente la mejor solución y la más 
 	fácil. Nosotros proporcionaremos almacenamiento para su código y
 	estaremos encantados de responder a sus preguntas en la lista de
-	correo o en los canales de IRC, #sylpheed-claws en Freenode o IRCnet.
+	correo o en los canales de IRC, <literal>#sylpheed-claws</literal> en 
+	Freenode o IRCnet.
     </para>
   </section>
   <section id="plugins_network">
@@ -252,21 +288,24 @@
 	Algunos de los módulos externos, por ejemplo RSSyl, vCalendar o el
 	visor GtkHtml, necesitan acceso a Internet para llevar a cabo sus
 	funciones (recuperar canales en el caso de RSSyl o vCalendar, y
-	obtener imágenes en el caso del visro GtkHtml). Estos módulos usan
-	para ello la librería Curl. Por tanto, si su acceso a internet está
+	obtener imágenes en el caso del visor GtkHtml). Estos módulos usan
+	para ello la librería Curl. Por tanto, si su acceso a Internet está
 	restringido por un proxy necesitará decirle a libCurl que lo use.
 	Esto se consigue estableciendo la variable de entorno 
-	<emphasis>http_proxy</emphasis>. Por ejemplo, <emphasis>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</emphasis> le dirá a libCurl que
+	<literal>http_proxy</literal>. Por ejemplo, <literal>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</literal> le dirá a libCurl que
 	conecte al puerto 8080 de la máquina miproxy.ejemplo.com con el 
 	usuario <quote>usuario</quote> y contraseña <quote>contra</quote> para
 	conectarse a Internet.
     </para><para>
 	Puede establecer esta variable antes de iniciar &SC;, usando por
 	por ejemplo la orden 
-	<emphasis>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080 
-	sylpheed-claws</emphasis>, o establecerla en su fichero ~/.bashrc
-	añadiendo la línea <emphasis>export
-	http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</emphasis>
+	<command>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080 
+	sylpheed-claws</command>, o establecerla en su fichero 
+	<filename>~/.bashrc</filename> (o el equivalente de su shell) añadiendo
+	la línea<footnote><para>Otros shells pueden tener diferentes sintaxis,
+	compruebe la página del manual de su shell.</para></footnote>:
+	<command>export
+	http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</command>
 	(tendrá que reconectar para que se tenga en cuenta).
     </para>
   </section>

@@ -47,7 +47,11 @@
 		<listitem>
 		    <para>
 	Si elije fichero mbox local necesitará introducir la ubicación del
-	fichero de almacenamiento del buzón local.
+	fichero de almacenamiento del buzón local. Esta ubicación depende de
+	su sistema operativo, pero valores como 
+	<filename>/var/mail/usuario</filename> o 
+	<filename>/var/spool/mail/usuario</filename> son comunes, donde
+	<literal>usuario</literal> es su nombre de usuario en el sistema.
 		    </para>
 		</listitem>
 	    </varlistentry>

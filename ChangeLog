@@ -1,3 +1,25 @@
+2006-09-09 [mones]	2.4.0cvs166
+
+	* manual/glossary.xml
+	* manual/plugins.xml
+		Minor format corrections
+	* manual/gpl.xml
+		Fix misplaced NO WARRANTY section
+	* manual/es/advanced.xml
+	* manual/es/faq.xml
+	* manual/es/glossary.xml
+	* manual/es/gpl.xml
+	* manual/es/handling.xml
+	* manual/es/plugins.xml
+	* manual/es/starting.xml
+		Incorporate changes from English version
+	* manual/fr/ack.xml
+	* manual/pl/ack.xml
+	* manual/es/ack.xml
+		Fix address, (add translation credits in es version)
+	* po/es.po
+		Updated translation
+
 2006-09-09 [wwp]	2.4.0cvs165
 
 	* src/prefs_filtering.c

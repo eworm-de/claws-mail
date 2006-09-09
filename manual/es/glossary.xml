@@ -375,6 +375,20 @@
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_isp">
+    <term>
+        <acronym>ISP</acronym>
+    </term>
+    <listitem>
+      <para>
+	Acrónimo de <emphasis>Internet Service Provider</emphasis> (Proveedor
+	de servicios de internet). Una empresa que proporciona acceso a sus
+	clientes. En la época del acceso por módem fueron las grandes compañías
+	telefónicas, pero con la llegada del acceso de banda ancha el número
+	de compañías y tipos de servicio ofrecidos ha crecido exponencialmente.
+      </para>
+    </listitem>
+  </varlistentry>
 </variablelist>
  
 <variablelist>
@@ -467,7 +481,7 @@
   </varlistentry>
   <varlistentry id="gt_mbox">
     <term>
-	MBOX
+	MBox
     </term>
     <listitem>
       <para>
@@ -523,7 +537,9 @@
     <listitem>
       <para>
 	Elementos externos que &SC; puede cargar y utilizar para extender
-	sus funcionalidades.
+	sus funcionalidades. En términos técnicos estos elementos son
+	librerías dinámicas que pueden registrar una o varias funciones que
+	&SC; llamará cuando algo <emphasis>interesante</emphasis> se haga.
       </para>
     </listitem>
   </varlistentry>
@@ -712,6 +728,19 @@
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_rot13">
+    <term>
+        ROT-13
+    </term>
+    <listitem>
+      <para>
+        Una técnica de <emphasis>cifrado</emphasis> simple usada desde la 
+	época de los Romanos, la cual usa un alfabeto rotado trece posiciones
+	para codificar cada letra del mensaje. Se usa a veces para esconder
+	mensajes divertidos en los correos.
+      </para>
+    </listitem>
+  </varlistentry>
 </variablelist>
     
 <variablelist>
@@ -802,6 +831,20 @@
     
 <variablelist>
   <title>T</title>
+  <varlistentry id="gt_tcp">
+    <term>
+        <acronym>TCP</acronym>
+    </term>
+    <listitem>
+      <para>
+	Acrónimo de <emphasis>Transmission Control Protocol</emphasis>
+	(Protocolo de control de transmisión). Es el principal protocolo
+	utilizado en Internet. Permite conexiónes fiables independientes del
+	medio entre dos extremos y está soportado por todos los sistemas
+	operativos modernos en uso.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_themes">
     <term>
 	Temas
@@ -817,6 +860,33 @@
   
 <variablelist>
   <title>U</title>
+  <varlistentry id="gt_uidl">
+    <term>
+        <acronym>UIDL</acronym>
+    </term>
+    <listitem>
+      <para>
+        Pseudo-acrónimo de <emphasis>Unique IDentification Listing</emphasis>
+	(Listado de identificación única), una orden del protocolo <xref 
+	linkend="gt_pop3" /> que permite la gestión de mensajes individuales 
+	asignándoles un identificador único a cada uno.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_url">
+    <term>
+        <acronym>URL</acronym>
+    </term>
+    <listitem>
+      <para>
+	Acrónimo de <emphasis>Uniform Resource Locator</emphasis> (Localizador 
+	uniforme de recurso). Es un esquema de nombrado para objetos (ficheros
+	normalmente) en entornos de red multi-protocolo como Internet.
+	Por ejemplo éste es el de la página principal de &SC;:
+        <literal>http://www.sylpheed-claws.net</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_usenet">
     <term>
 	USENET

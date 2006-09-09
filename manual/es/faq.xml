@@ -55,8 +55,8 @@
   <section>
     <title>¿Tiene &SC; alguna funcionalidad anti-spam?</title>
     <para>
-	Si. Tiene un módulo para SpamAssassin. Puede encontrar más detalles
-	sobre ello en el capítulo <link linkend="ch_plugins"
+	Si. Tiene módulos para SpamAssassin y Bogofilter. Puede encontrar más 
+	detalles sobre ello en el capítulo <link linkend="ch_plugins"
 	>Extendiendo &SC;</link>.
     </para>
     <para>
