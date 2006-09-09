@@ -1,3 +1,8 @@
+2006-09-09 [wwp]	2.4.0cvs168
+
+	* src/prefs_filtering.c
+		better place for this fix.
+
 2006-09-09 [wwp]	2.4.0cvs167
 
 	* src/prefs_filtering.c

@@ -1061,6 +1061,9 @@ static void prefs_filtering_substitute_cb(void)
 
 	prop = prefs_filtering_dialog_to_filtering(TRUE);
 
+	if (prop == NULL) 
+		return;
+
 	/* prop->emabled is always TRUE here, re-use the value from the selected row 
 	   as we don't substitute this value from dialog */
 	prefs_filtering_list_view_get_rule_info(
@@ -1068,8 +1071,6 @@ static void prefs_filtering_substitute_cb(void)
 			&enabled, &name, &account_id);
 	prop->enabled = enabled;
 
-	if (prop == NULL) 
-		return;
 	prefs_filtering_list_view_set_row(selected_row, prop);
 
 	filteringprop_free(prop);
