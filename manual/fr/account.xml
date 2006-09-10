@@ -178,10 +178,10 @@
   <section id="account_morefilt">
     <title>Plus de filtrage</title>
     <para>
-	Les règles de filtrages sont globales. Cela veut dire que les courriels
-	des différents comptes peuvent être filtrés dans le dossier d'un autre
-	compte. Par exemple un message reçu par un compte POP3 pourra être
-	filtré dans un dossier d'un compte IMAP et vice-versa. En fonction de
+	Par défaut, les règles de filtrages sont globales. Cela veut dire que
+	les courriels des différents comptes peuvent être filtrés dans le dossier
+	d'un autre compte. Par exemple un message reçu par un compte POP3 pourra
+	être filtré dans un dossier d'un compte IMAP et vice-versa. En fonction de
 	ce que vous voulez faire cela peut-être vous être très utile ou très
 	embêtant. Si vous voulez éviter cela mais souhaitez toujours trier
 	automatiquement votre courriel entrant, la meilleure chose à faire est
@@ -189,6 +189,9 @@
 	traitement dans les différentes boîtes de réception des comptes. Les
 	règles de traitement sont exécutées lorsque vous entrerez dans le
 	dossier.
+	Il est aussi possible de définir des règles de filtrages spéciques à un
+	compte particulier, pour une utilisation plus fine lors de la relève du
+	courrier ou le filtrage manuel de messages.
     </para>
   </section>
 

@@ -69,22 +69,44 @@
 	<quote>Configuration</quote> menu, <quote>Filtering</quote> item. From
 	this dialogue you will be able to define new rules, modify or delete
 	existing rules, re-order the rules, and enable/disable them. Filtering
-	rules are defined by four things: the enabled status, a name, a
-	condition, and an action. All disabled rules are simply ignored. The
-	name format is optional, it's there to help you identify your existing
-	rules. The condition format is an expression defining what
-	Sylpheed-Claws should look for when filtering emails, for example:
-	<quote>to matchcase sylpheed-claws-users</quote> is for messages sent to
-	any address containing <quote>sylpheed-claws-users</quote>. You can
+	rules are defined by five things: the enabled status, a name, an account
+	name, a	condition, and an action. All disabled rules are simply ignored.
+	The <quote>Name</quote> entry is optional, it's there to help you
+	identify your rules. An account name can be chosen, which will restrict
+	the rule to mail retrieved from the named account only, skipping it for
+	mail retrieved from all other accounts. The default value is
+	<quote>All</quote>, which means that the rule is global and will
+	be applied  to all mail, reagrdless of the account from which it was
+	retireved, (see paragraph below). The condition format is an expression
+	defining what Sylpheed-Claws should look for when filtering mail, for
+	example: <quote>to matchcase sylpheed-claws-users</quote> is for messages
+	sent to any address containing <quote>sylpheed-claws-users</quote>. You can
 	easily define conditions by clicking the <quote>Define...</quote> button
-	at the right of the field. The third part of a filtering rule is the
-	action, which instructs Sylpheed-Claws what to do with emails matching
+	at the right of the field. The last part of a filtering rule is the
+	action, which instructs Sylpheed-Claws what to do with mail matching
 	the condition we just defined. For example, <quote>mark_as_read</quote>
 	marks the mail as read as soon as it arrives in your inbox, or
 	<quote>move #mh/Mailbox/inbox/Friends</quote> moves the mail to your
 	<quote>Friends</quote> subfolder. Here, too, a <quote>Define...</quote>
 	button is available to help you define the action to take.
     </para>
+    <para>
+	Filtering rules can be assigned to a single, specific account. To do
+	this select an account from the <quote>Account</quote> combo below the 
+	<quote>Name</quote> entry. When you set a specific account the filtering
+	rule will only be applied to messages retrieved from the named account.
+	The default value is <quote>All</quote>, which means that the rule will
+	be appied globally, to messages retrieved from any account. When filtering
+	messages manually, if there are any per-account filtering rules defined,
+	you will be asked what you wish to do with those rules. Possible choices
+	are to skip the rules, or apply these rules regardless of the account to
+	which they belong, or use the rules for the currently selected account.
+	Caution: if you unset the <quote>Show this message next time</quote>
+	checkbox and click <quote>Filter</quote>, on subsequent manual filtering
+	this choice will be applied without any confirmation. Account specific
+	rules are only available for filtering, (at incorporation or manually),
+	the feature is not available for folder Processing or Pre/Post-Processing. 
+	</para>
     <para>
 	Once you have defined the rule, you can add it to the list of rules with
 	the <quote>Add</quote> button. Don't forget that the order of the rules
@@ -126,7 +148,9 @@
 	<quote>Find all</quote> to select all the matching emails at once. Be
 	aware that searching for text in the body of emails is much slower than
 	searching in its headers, because the body of emails isn't cached by
-	Sylpheed-Claws.
+	Sylpheed-Claws. <quote>Extended Search</quote> mode can be turned on by
+	clicking the relevant checkbox, thus allowing you to use match expressions
+	like those used in <quote>Filtering</quote> rules.
     </para>
     <para>
 	If you're looking at a large email and want to find a particular part
@@ -134,18 +158,18 @@
 	the <quote>Edit</quote> menu. This works like search in a text document.
     </para>
     <para>
-	The last way of searching for emails is using Quick Search, which you
-	can display or hide using the little magnifying glass under the Message
-	List. It's also accessible from the <quote>Quick Search</quote> item of
-	the <quote>Edit</quote> menu. Quick Search is more powerful than the
-	normal search as it can search in standard headers (From, To, Subject)
-	or in <quote>Extended</quote> mode using just about any criteria you can
-	think of. When in <quote>Extended</quote> mode, the
+	The final way of searching for emails is using <quote>Quick Search</quote>,
+	which you can display or hide by cilicking the little magnifying glass icon
+	under the Message List. It is also accessible from the <quote>Quick Search</quote>
+	item of	the <quote>Edit</quote> menu. <quote>Quick Search</quote> is more
+	powerful than the normal search as it can search in standard headers (From,
+	To, Subject) or in <quote>Extended</quote> mode using just about any
+	criteria you can think of. When in <quote>Extended</quote> mode, the
 	<quote>Information</quote> button is visible, enabling you to see the
 	search syntax. An <quote>Edit</quote> button is also available which
-	allows you to quickly create a rule. You can also configure the Quick
-	Search to search recursively through the subfolders, and whether it
-	should reset itself when you change folders.
+	allows you to quickly create a rule. You can also configure
+	<quote>Quick Search</quote> to search recursively through subfolders,
+	and whether it should reset itself when you change folders.
     </para>
     <para>
 	When you hit Enter after having specified the search string, the Message

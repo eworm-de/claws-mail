@@ -23,6 +23,24 @@
     </para>
   </section>
 
+  <section id="addrbk_filtering">
+    <title>Filtering messages using the address book</title>
+    <para>
+	It is possible to filter messages by matching addresses found in
+	headers against the address book, use for this the match type
+	<quote>Found in addressbook</quote> when defining the condition
+	expression of a filtering rule. You have to select the address header
+	to match against a part of the address book. The address header can be
+	To, From, Cc, Reply-to and Sender (if at least one address in that
+	header matches, the rule will be applied). Some special items allow to match
+	at least one address found in <quote>Any</quote> address header, or to
+	match <quote>All</quote> addresses found in all address headers. Click
+	the <quote>Select...</quote> button to choose the address book part to
+	search in (either a book or a sub-folder), or select <quote>Any</quote>
+	to search in the whole address book.
+    </para>
+  </section>
+
   <section id="addrbk_advanced">
     <title>Advanced features</title>
 

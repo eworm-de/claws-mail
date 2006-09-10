@@ -136,19 +136,21 @@
 	actual...</quote> del menú <quote>Editar</quote>. Funciona igual que
 	la búsqueda en un documento de texto.
     </para><para>
-	La última manera de buscar mensaje es utilizar la búsqueda rápida, que
-	puede mostrar u ocultar usando la pequeña lupa que aparece bajo la
-	lista de mensajes. También se puede acceder a ella a través de la 
-	opción <quote>Búsqueda rápida</quote> del menú <quote>Editar</quote>.
-	La búsqueda rápida es más potente que la búsqueda normal, ya que puede
-	buscar en las cabeceras estándar (Desde, Para, Asunto) o en modo
-	<quote>Extendido</quote> utilizando prácticamente cualquier criterio
-	que pueda imaginar. En modo <quote>Extendido</quote> el botón de 
+	La última manera de buscar mensaje es utilizar la
+	<quote>búsqueda rápida</quote>, que	puede mostrar u ocultar usando la
+	pequeña lupa que aparece bajo la lista de mensajes. También se puede
+	acceder a ella a través de la opción <quote>Búsqueda rápida</quote>
+	del menú <quote>Editar</quote>.
+	La <quote>búsqueda rápida</quote> es más potente que la búsqueda normal,
+	ya que puede buscar en las cabeceras estándar (Desde, Para, Asunto)
+	o en modo <quote>Extendido</quote> utilizando prácticamente cualquier
+	criterio que pueda imaginar. En modo <quote>Extendido</quote> el botón de 
 	<quote>Información</quote> es visible, lo que permite ver la sintaxis
 	de búsqueda. El botón <quote>Editar</quote> también esta disponible
 	para crear rápidamente una regla. Además se puede configurar la 
-	búsqueda rápida para buscar recursivamente por las subcarpetas y si
-	debe o no reinicializarse por si misma cuando se cambia de carpeta.
+	<quote>búsqueda rápida</quote> para buscar recursivamente por las
+	subcarpetas y si debe o no reinicializarse por si misma cuando se
+	cambia de carpeta.
     </para><para>
 	Cuando pulse Entrar después de haber especificado la cadena de 
 	búsqueda, la lista de mensajes se reducirá para mostrarle sólo los

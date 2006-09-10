@@ -27,6 +27,27 @@
     </para>
   </section>
 
+  <section id="addrbk_filtering">
+    <title>Filtrage des messages à l'aide du carnet d'adressse</title>
+    <para>
+	Il est possible de filtrer les messages par correspondance des adresses
+	trouvées dans les en-têtes avec le carnet d'adresses. Pour cela, utilisez
+	le type <quote>Dans le carnet d'adresses</quote> quand vous définissez la
+	condition de filtrage d'une règle. Choisissez alors l'en-tête (From, To,
+	Cc, Reply-to, Sender) dont la ou les adresses seront comparées avec le
+	contenu du carnet d'adresses (si une adresse au moins correspond, la règle
+	est appliquée). L'emploi de <quote>Quelconque</quote> permet
+	de requérir la correspondance d'au moins une adresse dans au moins un de
+	ces en-têtes. Utilisez <quote>Tous</quote> pour requérir la correspondance
+	de toutes les adresses contenues dans tous ces en-têtes.
+	Enfin, choisissez quelle partie du carnet d'adresse servira pour la
+	vérification de la correspondance des adresses&nbsp;: sélectionnez
+	<quote>Carnet entier</quote> pour utiliser le carnet d'adresse entier
+	ou cliquez sur <quote>Sélection...</quote> pour choisir un carnet d'adresse
+	en particulier ou un de ses sous-dossiers.
+    </para>
+  </section>
+
   <section id="addrbk_advanced">
     <title>Caractéristiques avancées</title>
 

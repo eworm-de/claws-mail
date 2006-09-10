@@ -1863,3 +1863,4 @@
 ( cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/bogofilter/bogofilter.c;  ) > 2.4.0cvs169.patchset
 ( cvs diff -u -r 1.395.2.246 -r 1.395.2.247 src/summaryview.c;  ) > 2.4.0cvs170.patchset
 ( cvs diff -u -r 1.60.2.40 -r 1.60.2.41 src/prefs_actions.c;  cvs diff -u -r 1.59.2.48 -r 1.59.2.49 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.29 -r 1.12.2.30 src/prefs_template.c;  ) > 2.4.0cvs171.patchset
+( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/account.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/addrbook.xml;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 manual/handling.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/es/handling.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/fr/account.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/fr/addrbook.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/fr/handling.xml;  ) > 2.4.0cvs172.patchset

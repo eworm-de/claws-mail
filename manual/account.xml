@@ -163,15 +163,20 @@
   <section id="account_morefilt">
     <title>More filtering</title>
     <para>
-	The filtering rules are global. This means that mails from various
-	accounts can be filtered into another account's folders, for example a
-	mail received by POP3 could be filtered into an IMAP account's folder,
-	and vice-versa. This is either a useful feature or an annoying one,
-	depending on what you want to do.  If you'd rather avoid that, but
-	still want to auomatically sort your incoming mail, the best thing to
-	do is to disable Filtering on the accounts, and use Processing rules in
-	the various Inbox folders you specified. Processing rules are applied
-	when entering the folder.
+	By default filtering rules are global, but they can also be assigned to
+	a specific account. When fetching mail, any rules that are assigned to
+	a specific account will only be applied to mails that are retrieved from
+	that account.   
+    </para>
+    <para>
+	Mail from any account can be filtered into another account's folders,
+	for example, a mail received by POP3 could be filtered into an IMAP
+	account's folder, and vice-versa. This is either a useful feature or an
+	annoying one, depending on what you want to achieve. If you'd rather
+	avoid that, but still want to automatically sort your incoming mail, the
+	best thing to do is to disable Filtering on certain accounts, and use
+	Processing rules in the Inbox folders that you specified, as Processing
+	rules are applied when entering a folder.
     </para>
   </section>
 

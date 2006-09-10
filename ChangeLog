@@ -1,3 +1,26 @@
+2006-09-10 [wwp]	2.4.0cvs172
+
+	* manual/account.xml
+	* manual/addrbook.xml
+	* manual/handling.xml
+	* manual/es/handling.xml
+	* manual/fr/account.xml
+	* manual/fr/addrbook.xml
+	* manual/fr/handling.xml
+		documented addressbook matching (condition configuration):
+		  addrbook.xml, en fr
+		documented per-account filtering rules (handling/filtering
+		  section, account section):
+		  account.xml, handling.xml, en fr
+		slightly updated the handling/searching section to tell few
+		  words about the extended search ability:
+		  handling.xml, en fr
+		added missing <quote></quotes> to Quick Search:
+		  handling.xml, en fr es
+		fixed a typo (auomatically):
+		  handling.xml, en
+		changes revisited by Paul.
+
 2006-09-10 [paul]	2.4.0cvs171
 
 	* src/prefs_actions.c
