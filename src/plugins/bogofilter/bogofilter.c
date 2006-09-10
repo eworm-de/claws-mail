@@ -279,8 +279,13 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		    (config.save_folder[0] == '\0') ||
 		    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
 			save_folder = folder_get_default_trash();
-
-		folder_item_move_msgs(save_folder, spams);
+		if (save_folder) {
+			for (cur = spams; cur; cur = cur->next) {
+				msginfo = (MsgInfo *)cur->data;
+				msginfo->is_move = TRUE;
+				msginfo->to_filter_folder = save_folder;
+			}
+		}
 	} 
 
 	if (message_callback != NULL)

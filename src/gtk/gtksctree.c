@@ -1535,9 +1535,11 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		gtk_widget_grab_focus (widget);
 
 	if (gtk_ctree_is_hot_spot (GTK_CTREE(sctree), event->x, event->y)) {
-		gtk_ctree_toggle_expansion_recursive
-			(GTK_CTREE(sctree), 
-			 gtk_ctree_node_nth(GTK_CTREE(sctree), row));
+		GtkCTreeNode *node = gtk_ctree_node_nth(GTK_CTREE(sctree), row);
+		if (GTK_CTREE_ROW (node)->expanded)
+			gtk_ctree_collapse(GTK_CTREE(sctree), node);
+		else
+			gtk_ctree_expand_recursive(GTK_CTREE(sctree), node);
 		return TRUE;
 	}
 

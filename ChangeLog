@@ -1,3 +1,13 @@
+2006-09-10 [colin]	2.4.0cvs169
+
+	* src/gtk/gtksctree.c
+		Fix recursive expansion via mouse
+	* src/plugins/bogofilter/bogofilter.c
+		Use normal filtering way of moving
+		messages (batching), possibly fixing
+		bug #1015 (Bogofilter plugin doubles 
+		new messages)
+
 2006-09-09 [wwp]	2.4.0cvs168
 
 	* src/prefs_filtering.c
