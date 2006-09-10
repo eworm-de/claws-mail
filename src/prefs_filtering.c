@@ -355,10 +355,9 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table = gtk_table_new(3, 4, FALSE);
+	table = gtk_table_new(4, 3, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
-	gtk_table_set_col_spacing (GTK_TABLE (table), 2, 0);
 	gtk_widget_show(table);
 	gtk_box_pack_start (GTK_BOX (vbox1), table, TRUE, TRUE, 0);
 

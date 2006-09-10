@@ -1,3 +1,11 @@
+2006-09-10 [paul]	2.4.0cvs171
+
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+		adjustments to the gui
+		Patch by Fabien Vantard (slightly modified)
+
 2006-09-10 [colin]	2.4.0cvs170
 
 	* src/summaryview.c

@@ -30,6 +30,7 @@
 
 #include "template.h"
 #include "main.h"
+#include "prefs_gtk.h"
 #include "inc.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -120,34 +121,13 @@ static void prefs_template_size_allocate_cb(GtkWidget *widget,
 	prefs_common.templateswin_height = allocation->height;
 }
 
-#define ADD_ENTRY(entry, str, row) \
-{ \
-	label1 = gtk_label_new(str); \
-	gtk_widget_show(label1); \
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, row, (row + 1), \
-			 GTK_FILL, 0, 0, 0); \
-	gtk_misc_set_alignment(GTK_MISC(label1), 1, 0.5); \
- \
-	entry = gtk_entry_new(); \
-	gtk_widget_show(entry); \
-	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, (row + 1), \
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0); \
-}
-
 static void prefs_template_window_create(void)
 {
 	/* window structure ;) */
 	GtkWidget *window;
 	GtkWidget   *vpaned;
 	GtkWidget     *vbox1;
-	GtkWidget       *hbox1;
-	GtkWidget         *label1;
-	GtkWidget         *entry_name;
-	GtkWidget       *table;
-	GtkWidget         *entry_to;
-	GtkWidget         *entry_cc;
-	GtkWidget         *entry_bcc;		
-	GtkWidget         *entry_subject;
+	GtkWidget       *table; /* including : entry_[name|to|cc|bcc|subject] */
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
 	GtkWidget     *vbox2;
@@ -165,6 +145,8 @@ static void prefs_template_window_create(void)
 	GtkWidget         *cancel_btn;
 	GtkWidget         *ok_btn;
 	static GdkGeometry geometry;
+	gint i;
+	GtkTooltips *tooltips;
 
 	debug_print("Creating templates configuration window...\n");
 
@@ -185,34 +167,51 @@ static void prefs_template_window_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_paned_pack1(GTK_PANED(vpaned), vbox1, FALSE, FALSE);
 
-	hbox1 = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox1);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-
-	label1 = gtk_label_new(_("Template name"));
-	gtk_widget_show(label1);
-	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);
-
-	entry_name = gtk_entry_new();
-	gtk_widget_show(entry_name);
-	gtk_box_pack_start(GTK_BOX(hbox1), entry_name, TRUE, TRUE, 0);
-
-	/* table for headers */
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(5, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 	gtk_widget_show(table);
-	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
 
-	ADD_ENTRY(entry_to, _("To:"), 0);
-	address_completion_register_entry(GTK_ENTRY(entry_to));
-	ADD_ENTRY(entry_cc, _("Cc:"), 1)
-	address_completion_register_entry(GTK_ENTRY(entry_cc));
-	ADD_ENTRY(entry_bcc, _("Bcc:"), 2)	
-	address_completion_register_entry(GTK_ENTRY(entry_bcc));
-	ADD_ENTRY(entry_subject, _("Subject:"), 3);
+	tooltips = gtk_tooltips_new();
 
-#undef ADD_ENTRY
+	struct
+	{
+		gchar *label;
+		GtkWidget **entry;
+		gboolean compl;
+		gchar *tooltips;
+	} tab[] = {
+		{_("Name"),	&templates.entry_name,		FALSE,
+			_("This name is used as the Menu item")},
+		{_("To"),	&templates.entry_to,		TRUE, 	NULL},
+		{_("Cc"),	&templates.entry_cc,		TRUE, 	NULL},
+		{_("Bcc"),	&templates.entry_bcc,		TRUE, 	NULL},
+		{_("Subject"),	&templates.entry_subject,	FALSE,	NULL},
+		{NULL,		NULL,				FALSE,	NULL}
+	};
+
+	for (i=0; tab[i].label; i++) {
+
+		GtkWidget *label;
+
+		label = gtk_label_new(tab[i].label);
+		gtk_widget_show(label);
+		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
+				(GtkAttachOptions) (GTK_FILL),
+				(GtkAttachOptions) 0, 0, 0);
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+
+		*(tab[i].entry) = gtk_entry_new();
+		gtk_widget_show(*(tab[i].entry));
+		gtk_table_attach(GTK_TABLE(table), *(tab[i].entry), 1, 2, i, (i + 1),
+				(GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
+				(GtkAttachOptions) 0, 0, 0);
+		gtk_tooltips_set_tip(tooltips, *(tab[i].entry), tab[i].tooltips, NULL);
+
+		if (tab[i].compl)
+			address_completion_register_entry(GTK_ENTRY(*(tab[i].entry)));
+	}
 
 	/* template content */
 	scroll2 = gtk_scrolled_window_new(NULL, NULL);
@@ -334,11 +333,6 @@ static void prefs_template_window_create(void)
 	templates.window = window;
 	templates.ok_btn = ok_btn;
 	templates.list_view = list_view;
-	templates.entry_name = entry_name;
-	templates.entry_subject = entry_subject;
-	templates.entry_to = entry_to;
-	templates.entry_cc = entry_cc;
-	templates.entry_bcc = entry_bcc;	
 	templates.text_value = text_value;
 }
 

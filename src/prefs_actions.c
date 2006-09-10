@@ -152,9 +152,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
+	GtkWidget *table;
 
-	GtkWidget *entry_vbox;
-	GtkWidget *hbox;
 	GtkWidget *name_label;
 	GtkWidget *name_entry;
 	GtkWidget *cmd_label;
@@ -215,33 +214,42 @@ static void prefs_actions_create(MainWindow *mainwin)
 			 G_CALLBACK(manual_open_with_anchor_cb),
 			 MANUAL_ANCHOR_ACTIONS);
 
-	vbox1 = gtk_vbox_new(FALSE, 8);
+	vbox1 = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);
 
-	entry_vbox = gtk_vbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox1), entry_vbox, FALSE, FALSE, 0);
+	table = gtk_table_new(2, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	gtk_widget_show(table);
+	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(entry_vbox), hbox, FALSE, FALSE, 0);
+	name_label = gtk_label_new (_("Menu name"));
+	gtk_widget_show (name_label);
+	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
-	name_label = gtk_label_new(_("Menu name:"));
-	gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
+	name_entry = gtk_entry_new ();
+	gtk_widget_show (name_entry);
+  	gtk_table_attach (GTK_TABLE (table), name_entry, 1, 2, 0, 1,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
-	name_entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox), name_entry, TRUE, TRUE, 0);
+	cmd_label = gtk_label_new (_("Command line"));
+	gtk_widget_show (cmd_label);
+	gtk_misc_set_alignment (GTK_MISC (cmd_label), 1, 0.5);
+  	gtk_table_attach (GTK_TABLE (table), cmd_label, 0, 1, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(entry_vbox), hbox, TRUE, TRUE, 0);
-
-	cmd_label = gtk_label_new(_("Command line:"));
-	gtk_box_pack_start(GTK_BOX(hbox), cmd_label, FALSE, FALSE, 0);
-
-	cmd_entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox), cmd_entry, TRUE, TRUE, 0);
-
-	gtk_widget_show_all(entry_vbox);
+	cmd_entry = gtk_entry_new ();
+	gtk_widget_show (cmd_entry);
+  	gtk_table_attach (GTK_TABLE (table), cmd_entry, 1, 2, 1, 2,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+                    	  (GtkAttachOptions) (0), 0, 0);
 
 	/* register / substitute / delete */
 
