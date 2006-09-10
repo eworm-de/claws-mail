@@ -1,3 +1,11 @@
+2006-09-10 [colin]	2.4.0cvs170
+
+	* src/summaryview.c
+		Check folderitem/summaryview consistency
+		(basically automates Update summary). Fixes
+		#1011 (wrong (negative) count on unread 
+		messages)
+
 2006-09-10 [colin]	2.4.0cvs169
 
 	* src/gtk/gtksctree.c

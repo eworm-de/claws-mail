@@ -850,6 +850,36 @@ static gboolean summaryview_quicksearch_recurse(gpointer data)
 	return FALSE;
 }
 
+static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
+{
+	int u = 0, n = 0, m = 0, t = 0;
+	GSList *cur;
+	START_TIMING("consistency check");
+	for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
+		MsgInfo * msginfo = (MsgInfo *) cur->data;
+		t++;
+		if (MSG_IS_NEW(msginfo->flags))
+			n++;
+		if (MSG_IS_UNREAD(msginfo->flags))
+			u++;
+		if (MSG_IS_MARKED(msginfo->flags))
+			m++;		
+	}
+	if (t != item->total_msgs
+	||  n != item->new_msgs
+	||  u != item->unread_msgs
+	||  m != item->marked_msgs
+	||  (m == 0 && item->unreadmarked_msgs != 0)
+	||  item->unreadmarked_msgs < 0) {
+		debug_print("Inconsistency\n");
+		folder_item_scan_full(item, FALSE);
+		END_TIMING();
+		return FALSE;
+	} 
+	END_TIMING();
+	return TRUE;
+}
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -967,6 +997,12 @@ START_TIMING("--------- summary_show");
 	main_window_cursor_wait(summaryview->mainwin);
 
 	mlist = folder_item_get_msg_list(item);
+
+	if (!summary_check_consistency(item, mlist)) {
+		debug_print("reloading due to inconsistency\n");
+		procmsg_msg_list_free(mlist);
+		mlist = folder_item_get_msg_list(item);
+	}
 
 	if (summaryview->folder_item->hide_read_msgs &&
 	    quicksearch_is_active(summaryview->quicksearch) == FALSE) {

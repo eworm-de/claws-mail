@@ -1861,3 +1861,4 @@
 ( cvs diff -u -r 1.59.2.46 -r 1.59.2.47 src/prefs_filtering.c;  ) > 2.4.0cvs167.patchset
 ( cvs diff -u -r 1.59.2.47 -r 1.59.2.48 src/prefs_filtering.c;  ) > 2.4.0cvs168.patchset
 ( cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/bogofilter/bogofilter.c;  ) > 2.4.0cvs169.patchset
+( cvs diff -u -r 1.395.2.246 -r 1.395.2.247 src/summaryview.c;  ) > 2.4.0cvs170.patchset
