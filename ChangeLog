@@ -1,3 +1,10 @@
+2006-09-11 [colin]	2.4.0cvs174
+
+	* src/alertpanel.c
+		Make maximum buffer size bigger to avoid
+		truncating translated messages. Patch by
+		Fabien
+
 2006-09-11 [colin]	2.4.0cvs173
 
 	* src/etpan/imap-thread.c

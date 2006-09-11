@@ -157,7 +157,7 @@ void alertpanel_warning(const gchar *format, ...)
 void alertpanel_error(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[256];
+	gchar buf[512];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
