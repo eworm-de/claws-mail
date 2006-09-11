@@ -34,12 +34,12 @@
 gint plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the PGP/Core plugin was built with");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the PGP/Core plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
-		*error = g_strdup("Your version of Sylpheed-Claws is too old for the PGP/Core plugin");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the PGP/Core plugin"));
 		return -1;
 	}
 

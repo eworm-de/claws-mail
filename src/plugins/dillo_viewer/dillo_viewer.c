@@ -166,12 +166,12 @@ static MimeViewerFactory dillo_viewer_factory =
 gint plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the Dillo plugin was built with");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the Dillo plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your version of Sylpheed-Claws is too old for the Dillo plugin");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the Dillo plugin"));
 		return -1;
 	}
 

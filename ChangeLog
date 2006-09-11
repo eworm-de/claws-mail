@@ -1,3 +1,15 @@
+2006-09-11 [wwp]	2.4.0cvs175
+
+	* src/plugins//bogofilter/bogofilter.c
+	* src/plugins//clamav/clamav_plugin.c
+	* src/plugins//demo/demo.c
+	* src/plugins//dillo_viewer/dillo_viewer.c
+	* src/plugins//pgpcore/plugin.c
+	* src/plugins//pgpinline/plugin.c
+	* src/plugins//pgpmime/plugin.c
+	* src/plugins//spamassassin/spamassassin.c
+		gettext-ize more strings (mostly plugin error messages).
+
 2006-09-11 [colin]	2.4.0cvs174
 
 	* src/alertpanel.c

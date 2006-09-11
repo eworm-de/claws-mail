@@ -42,18 +42,18 @@ static guint hook_id;
 gint plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your sylpheed-claws version is newer than the version the plugin was built with");
+		*error = g_strdup(_("Your sylpheed-claws version is newer than the version the plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 8, 11, 39))) {
-		*error = g_strdup("Your sylpheed-claws version is too old");
+		*error = g_strdup(_("Your sylpheed-claws version is too old"));
 		return -1;
 	}
 
 	hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, my_log_hook, NULL);
 	if (hook_id == -1) {
-		*error = g_strdup("Failed to register log text hook");
+		*error = g_strdup(_("Failed to register log text hook"));
 		return -1;
 	}
 

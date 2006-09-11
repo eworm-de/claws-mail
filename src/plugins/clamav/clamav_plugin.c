@@ -194,18 +194,18 @@ gint plugin_init(gchar **error)
 	unsigned int no;
 
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the ClamAV plugin was built with");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the ClamAV plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your version of Sylpheed-Claws is too old for the ClamAV plugin");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the ClamAV plugin"));
 		return -1;
 	}
 
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
-		*error = g_strdup("Failed to register mail filtering hook");
+		*error = g_strdup(_("Failed to register mail filtering hook"));
 		return -1;
 	}
 

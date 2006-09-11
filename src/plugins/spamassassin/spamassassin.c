@@ -465,12 +465,12 @@ gint plugin_init(gchar **error)
 	hook_id = -1;
 
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your version of Sylpheed-Claws is newer than the version the SpamAssassin plugin was built with");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the SpamAssassin plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup("Your version of Sylpheed-Claws is too old for the SpamAssassin plugin");
+		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the SpamAssassin plugin"));
 		return -1;
 	}
 
@@ -479,7 +479,7 @@ gint plugin_init(gchar **error)
 	prefs_read_config(param, "SpamAssassin", rcpath, NULL);
 	g_free(rcpath);
 	if (!spamassassin_check_username()) {
-		*error = g_strdup("Failed to get username");
+		*error = g_strdup(_("Failed to get username"));
 		return -1;
 	}
 	spamassassin_gtk_init();
