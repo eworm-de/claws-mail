@@ -582,7 +582,7 @@ static void prefs_filtering_action_list_view_set_row(GtkTreeIter *row,
 	if (row == NULL && action == NULL) {
 		prefs_filtering_action_list_view_insert_action
 			(filtering_action.action_list_view,
-			 NULL, _("New"), FALSE);
+			 NULL, _("(New)"), FALSE);
 		return;
 	}			 
 

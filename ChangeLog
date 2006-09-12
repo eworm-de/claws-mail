@@ -1,3 +1,10 @@
+2006-09-12 [colin]	2.4.0cvs178
+
+	* src/prefs_actions.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		Use (New) instead of New everywhere
+
 2006-09-12 [wwp]	2.4.0cvs177
 
 	* manual/fr/addrbook.xml

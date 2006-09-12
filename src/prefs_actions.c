@@ -455,7 +455,7 @@ static void prefs_actions_set_dialog(void)
 	gtk_list_store_clear(store);
 
 	prefs_actions_list_view_insert_action(actions.actions_list_view,
-					      NULL, _("New"), FALSE);
+					      NULL, _("(New)"), FALSE);
 
 	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 		gchar *action = (gchar *) cur->data;

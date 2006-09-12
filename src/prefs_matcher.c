@@ -808,7 +808,7 @@ static void prefs_matcher_list_view_set_row(GtkTreeIter *row, MatcherProp *prop)
 
 	if (prop == NULL) {
 		prefs_matcher_list_view_insert_matcher(matcher.cond_list_view,
-						       NULL, _("New"), FALSE);
+						       NULL, _("(New)"), FALSE);
 		return;						       
 	}
 
