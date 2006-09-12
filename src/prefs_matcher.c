@@ -1329,7 +1329,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 			if (strcasecmp(header, Q_("Filtering Matcher Menu|All")) == 0)
 				tmp = g_strdup(_("all addresses in all headers"));
 			else
-			if (strcasecmp(header, Q_("Filtering Matcher Menu|Any")) == 0)
+			if (strcasecmp(header, _("Any")) == 0)
 				tmp = g_strdup(_("any address in any header"));
 			else
 				tmp = g_strdup_printf(_("the address(es) in header '%s'"), header);
@@ -1342,6 +1342,14 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 			g_free(tmp);
 		    return NULL;
 		}
+		/* don't store translated "Any"/"All" in matcher expressions */
+		if (strcasecmp(header, Q_("Filtering Matcher Menu|All")) == 0)
+			header = "All";
+		else
+			if (strcasecmp(header, _("Any")) == 0)
+				header = "Any";
+		if (strcasecmp(expr, _("Any")) == 0)
+			expr = "Any";
 		break;
 	}
 
@@ -2081,9 +2089,28 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
-		gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), prop->header);
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), prop->expr);
+	{
+		gchar *header;
+		gchar *expr;
+
+		/* matcher expressions contain UNtranslated "Any"/"All",
+		  select the relevant translated combo item */
+		if (strcasecmp(prop->header, "All") == 0)
+			header = Q_("Filtering Matcher Menu|All");
+		else
+			if (strcasecmp(prop->header, "Any") == 0)
+				header = _("Any");
+			else
+				header = prop->header;
+		if (strcasecmp(prop->expr, "Any") == 0)
+			expr = _("Any");
+		else
+			expr = prop->expr;
+
+		gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), header);
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), expr);
 		break;
+	}
 
 	case MATCHCRITERIA_AGE_GREATER:
 	case MATCHCRITERIA_AGE_LOWER:

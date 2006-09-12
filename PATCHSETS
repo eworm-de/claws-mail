@@ -1867,3 +1867,4 @@
 ( cvs diff -u -r 1.1.4.49 -r 1.1.4.50 src/etpan/imap-thread.c;  ) > 2.4.0cvs173.patchset
 ( cvs diff -u -r 1.17.2.27 -r 1.17.2.28 src/alertpanel.c;  ) > 2.4.0cvs174.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins//bogofilter/bogofilter.c;  cvs diff -u -r 1.13.2.23 -r 1.13.2.24 src/plugins//clamav/clamav_plugin.c;  cvs diff -u -r 1.13.2.8 -r 1.13.2.9 src/plugins//demo/demo.c;  cvs diff -u -r 1.12.2.14 -r 1.12.2.15 src/plugins//dillo_viewer/dillo_viewer.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins//pgpcore/plugin.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins//pgpinline/plugin.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins//pgpmime/plugin.c;  cvs diff -u -r 1.18.2.40 -r 1.18.2.41 src/plugins//spamassassin/spamassassin.c;  ) > 2.4.0cvs175.patchset
+( cvs diff -u -r 1.43.2.45 -r 1.43.2.46 src/prefs_matcher.c;  ) > 2.4.0cvs176.patchset

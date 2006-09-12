@@ -1,3 +1,9 @@
+2006-09-12 [wwp]	2.4.0cvs176
+
+	* src/prefs_matcher.c
+		don't store translated string elements in matcher expressions.
+		Also fixed a misused of Q_().
+
 2006-09-11 [wwp]	2.4.0cvs175
 
 	* src/plugins//bogofilter/bogofilter.c
