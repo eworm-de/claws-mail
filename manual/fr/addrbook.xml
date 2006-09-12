@@ -40,10 +40,10 @@
 	de requérir la correspondance d'au moins une adresse dans au moins un de
 	ces en-têtes. Utilisez <quote>Tous</quote> pour requérir la correspondance
 	de toutes les adresses contenues dans tous ces en-têtes.
-	Enfin, choisissez quelle partie du carnet d'adresse servira pour la
+	Enfin, choisissez la partie du carnet d'adresse qui servira pour la
 	vérification de la correspondance des adresses&nbsp;: sélectionnez
-	<quote>Carnet entier</quote> pour utiliser le carnet d'adresse entier
-	ou cliquez sur <quote>Sélection...</quote> pour choisir un carnet d'adresse
+	<quote>Quelconque</quote> pour utiliser le carnet d'adresse entier
+	ou cliquez sur <quote>Parcourir...</quote> pour choisir un carnet d'adresse
 	en particulier ou un de ses sous-dossiers.
     </para>
   </section>

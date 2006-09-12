@@ -1,3 +1,9 @@
+2006-09-12 [wwp]	2.4.0cvs177
+
+	* manual/fr/addrbook.xml
+	* manual/fr/handling.xml
+		updated some quotes in the fr manual to match the fr translation.
+
 2006-09-12 [wwp]	2.4.0cvs176
 
 	* src/prefs_matcher.c
