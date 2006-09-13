@@ -366,16 +366,24 @@ char *ssl_certificate_check_signer (X509 *cert)
 
 gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 {
-	SSLCertificate *current_cert = ssl_certificate_new(x509_cert, host, port);
+	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
 	SSLCertHookData cert_hook_data;
+	gchar *fqdn_host = NULL;	
+	
+	fqdn_host = get_fqdn(host);
+
+	current_cert = ssl_certificate_new_lookup(x509_cert, fqdn_host, port, FALSE);
 	
 	if (current_cert == NULL) {
 		debug_print("Buggy certificate !\n");
+		g_free(fqdn_host);
 		return FALSE;
 	}
 
-	known_cert = ssl_certificate_find (host, port);
+	known_cert = ssl_certificate_find_lookup (fqdn_host, port, FALSE);
+
+	g_free(fqdn_host);
 
 	if (known_cert == NULL) {
 		cert_hook_data.cert = current_cert;
