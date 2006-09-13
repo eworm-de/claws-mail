@@ -1,3 +1,9 @@
+2006-09-13 [wwp]	2.4.0cvs180
+
+	* src/prefs_common.c
+		fix broken font entry in prefs (patch issued by the gpg4win team,
+		probably by Marcus Brinkmann <marcus@g10code.de>).
+
 2006-09-13 [colin]	2.4.0cvs179
 
 	* src/folder.h

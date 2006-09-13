@@ -95,8 +95,8 @@ static PrefParam param_os_specific[] = {
 	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
-        {"print_font_gtk2",     "Monospace 9"
-         &prefs_common.printfont
+	{"print_font_gtk2",     "Monospace 9",
+	 &prefs_common.printfont,		P_STRING, NULL, NULL, NULL},
 	{"small_font_gtk2",	"Sans 9",
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
