@@ -92,6 +92,7 @@ struct _GeditPrintJobInfo
 	GtkWidget         *progressbar;
 
 	GtkWindow	  *parent;
+	gboolean	   done;
 };
 
 static GeditPrintJobInfo* gedit_print_job_info_new 	(GtkTextView       *view);
@@ -200,7 +201,7 @@ gedit_print_dialog_response (GtkWidget *dialog, int response, GeditPrintJobInfo 
 
 	default:
 		gtk_widget_destroy (dialog);
-		gedit_print_job_info_destroy (pji, FALSE);
+		pji->done = TRUE;
         }
 } 
 
@@ -304,7 +305,7 @@ preview_finished_cb (GtkSourcePrintJob *job, GeditPrintJobInfo *pji)
 	gtk_widget_destroy (pji->dialog);
 
 	if (pji->preview == PREVIEW)
-		gedit_print_job_info_destroy (pji, FALSE);
+		pji->done = TRUE;
 	else
 	{
 		g_signal_handlers_disconnect_by_func (pji->pjob, (GCallback) page_cb, pji);
@@ -327,7 +328,7 @@ print_finished_cb (GtkSourcePrintJob *job, GeditPrintJobInfo *pji)
 
 	gtk_widget_destroy (pji->dialog);
 
-	gedit_print_job_info_destroy (pji, TRUE);
+	pji->done = TRUE;
 }
 
 void 
@@ -355,6 +356,10 @@ gedit_print (GtkTextView *view)
 			  pji);
 
 	gtk_widget_show (dialog);
+	while (pji->done != TRUE)
+		gtk_main_iteration();
+	gedit_print_job_info_destroy (pji, pji->preview ? FALSE:TRUE);
+	
 }
 
 static void 

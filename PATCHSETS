@@ -1876,3 +1876,4 @@
 ( cvs diff -u -r 1.654.2.1920 -r 1.654.2.1921 configure.ac;  cvs diff -u -r 1.20.2.37 -r 1.20.2.38 src/common/utils.h;  cvs diff -u -r 1.36.2.77 -r 1.36.2.78 src/common/utils.c;  ) > 2.4.0cvs182.patchset
 ( cvs diff -u -r 1.61.2.51 -r 1.61.2.52 src/account.c;  cvs diff -u -r 1.5.2.36 -r 1.5.2.37 src/gtk/pluginwindow.c;  ) > 2.4.0cvs183.patchset
 ( cvs diff -u -r 1.4.2.10 -r 1.4.2.11 src/common/ssl_certificate.c;  ) > 2.4.0cvs184.patchset
+( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gedit-print.c;  cvs diff -u -r 1.94.2.105 -r 1.94.2.106 src/messageview.c;  cvs diff -u -r 1.19.2.9 -r 1.19.2.10 src/messageview.h;  cvs diff -u -r 1.395.2.248 -r 1.395.2.249 src/summaryview.c;  cvs diff -u -r 1.96.2.147 -r 1.96.2.148 src/textview.c;  ) > 2.4.0cvs185.patchset

@@ -4054,21 +4054,6 @@ void summary_save_as(SummaryView *summaryview)
 	g_free(tmp);
 }
 
-#ifdef USE_GNOMEPRINT
-static void print_mimeview(MimeView *mimeview) 
-{
-	if (!mimeview 
-	||  !mimeview->textview
-	||  !mimeview->textview->text)
-		alertpanel_warning(_("Cannot print: the message doesn't "
-				     "contain text."));
-	else {
-		gtk_widget_realize(mimeview->textview->text);
-		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
-	}
-}
-#endif
-
 void summary_print(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
@@ -4109,23 +4094,10 @@ void summary_print(SummaryView *summaryview)
 	     cur != NULL && cur->data != NULL; 
 	     cur = cur->next) {
 		GtkCTreeNode *node = GTK_CTREE_NODE(cur->data);
-		if (node != summaryview->displayed) {
-			MessageView *tmpview = messageview_create(
-						summaryview->mainwin);
-			MsgInfo *msginfo = gtk_ctree_node_get_row_data(
-						GTK_CTREE(summaryview->ctree),
-						node);
-
-			messageview_init(tmpview);
-			tmpview->all_headers = summaryview->messageview->all_headers;
-			if (msginfo && messageview_show(tmpview, msginfo, 
-				tmpview->all_headers) >= 0) {
-					print_mimeview(tmpview->mimeview);
-			}
-			messageview_destroy(tmpview);
-		} else {
-			print_mimeview(summaryview->messageview->mimeview);
-		}
+		MsgInfo *msginfo = gtk_ctree_node_get_row_data(
+					GTK_CTREE(summaryview->ctree),
+					node);
+		messageview_print(msginfo, summaryview->messageview->all_headers);
 	}
 #endif
 }

@@ -405,6 +405,18 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 	gtk_text_buffer_create_tag(buffer, "header_title",
 				   "font-desc", bold_font_desc,
 				   NULL);
+	tag = gtk_text_buffer_create_tag(buffer, "hlink",
+				   "pixels-above-lines", 0,
+				   "pixels-above-lines-set", TRUE,
+				   "pixels-below-lines", 0,
+				   "pixels-below-lines-set", TRUE,
+				   "font-desc", font_desc,
+				   "left-margin", 3,
+				   "left-margin-set", TRUE,
+				   "foreground-gdk", &uri_color,
+				   NULL);
+	g_signal_connect(G_OBJECT(tag), "event",
+                         G_CALLBACK(textview_uri_button_pressed), textview);
 	if (prefs_common.enable_bgcolor) {
 		gtk_text_buffer_create_tag(buffer, "quote0",
 				"foreground-gdk", &quote_colors[0],
@@ -1898,7 +1910,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			  procheader_headername_equal(header->name, "Reply-To") ||
 			  procheader_headername_equal(header->name, "Sender");
 			textview_make_clickable_parts(textview, "header", 
-						      "link", header->body, 
+						      "hlink", header->body, 
 						      hdr);
 		}
 		gtk_text_buffer_get_end_iter (buffer, &iter);
@@ -2108,7 +2120,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 
 			g_object_get(G_OBJECT(tag), "name", &name, NULL);
 
-			if ((!strcmp(name, "link"))
+			if ((!strcmp(name, "link") || !strcmp(name, "hlink"))
 			    && textview_get_uri_range(textview, &iter, tag,
 						      &start_iter, &end_iter)) {
 

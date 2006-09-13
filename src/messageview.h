@@ -20,6 +20,10 @@
 #ifndef __MESSAGEVIEW_H__
 #define __MESSAGEVIEW_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
@@ -113,5 +117,8 @@ gchar *messageview_get_selection		(MessageView 	*msgview);
 void messageview_set_menu_sensitive		(MessageView	*msgview);
 void messageview_learn				(MessageView	*msgview,
 						 gboolean is_spam);
-
+#ifdef USE_GNOMEPRINT
+void messageview_print				(MsgInfo	*msginfo,
+						 gboolean	 all_headers);
+#endif
 #endif /* __MESSAGEVIEW_H__ */

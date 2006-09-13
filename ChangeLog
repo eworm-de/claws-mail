@@ -1,3 +1,15 @@
+2006-09-13 [colin]	2.4.0cvs185
+
+	* src/gedit-print.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/summaryview.c
+	* src/textview.c
+		Fix misc. printing issues: 
+		- Bad font for linkified headers
+		- Different font if the mail was displayed or not
+		- Factorize the thing
+
 2006-09-13 [colin]	2.4.0cvs184
 
 	* src/common/ssl_certificate.c

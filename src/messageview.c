@@ -439,7 +439,7 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	msgview_list = g_list_append(msgview_list, msgview);
 }
 
-MessageView *messageview_create_with_new_window(MainWindow *mainwin)
+static MessageView *messageview_create_with_new_window_visible(MainWindow *mainwin, gboolean show)
 {
 	MessageView *msgview;
 	GtkWidget *window;
@@ -471,8 +471,12 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 
 	messageview_add_toolbar(msgview, window);
 
-	gtk_widget_grab_focus(msgview->mimeview->textview->text);
-	gtk_widget_show(window);
+	if (show) {
+		gtk_widget_grab_focus(msgview->mimeview->textview->text);
+		gtk_widget_show(window);
+	} else {
+		gtk_widget_realize(window);
+	}
 
 	msgview->new_window = TRUE;
 	msgview->window = window;
@@ -485,6 +489,10 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	return msgview;
 }
 
+MessageView *messageview_create_with_new_window(MainWindow *mainwin)
+{
+	return messageview_create_with_new_window_visible(mainwin, TRUE);
+}
 void messageview_init(MessageView *messageview)
 {
 	headerview_init(messageview->headerview);
@@ -1441,6 +1449,48 @@ static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 	messageview_save_as(messageview);
 }
 
+#ifdef USE_GNOMEPRINT
+static void print_mimeview(MimeView *mimeview) 
+{
+	if (!mimeview 
+	||  !mimeview->textview
+	||  !mimeview->textview->text)
+		alertpanel_warning(_("Cannot print: the message doesn't "
+				     "contain text."));
+	else {
+		gtk_widget_realize(mimeview->textview->text);
+		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
+	}
+}
+
+void messageview_print(MsgInfo *msginfo, gboolean all_headers) 
+{
+	PangoFontDescription *font_desc = NULL;
+	MessageView *tmpview = messageview_create_with_new_window_visible(
+				mainwindow_get_mainwindow(), FALSE);
+
+	if (prefs_common.use_different_print_font) {
+		font_desc = pango_font_description_from_string
+						(prefs_common.printfont);
+	} else {
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+	}
+	if (font_desc) {
+		gtk_widget_modify_font(tmpview->mimeview->textview->text, 
+			font_desc);
+		pango_font_description_free(font_desc);
+	}
+
+	tmpview->all_headers = all_headers;
+	if (msginfo && messageview_show(tmpview, msginfo, 
+		tmpview->all_headers) >= 0) {
+			print_mimeview(tmpview->mimeview);
+	}
+	messageview_destroy(tmpview);
+}
+#endif
+
 static void print_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
@@ -1466,15 +1516,7 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 	procmsg_print_message(messageview->msginfo, cmdline);
 	g_free(cmdline);
 #else
-	if (!messageview->mimeview 
-	||  !messageview->mimeview->textview
-	||  !messageview->mimeview->textview->text)
-		alertpanel_warning(_("Cannot print: the message doesn't "
-				     "contain text."));
-
-	gedit_print(
-		GTK_TEXT_VIEW(messageview->mimeview
-				->textview->text));
+	messageview_print(messageview->msginfo, messageview->all_headers);
 #endif
 }
 
