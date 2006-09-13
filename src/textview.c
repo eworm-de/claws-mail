@@ -35,7 +35,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
 #if HAVE_LIBCOMPFACE
 #  include <compface.h>
 #endif
@@ -926,6 +928,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			g_unlink(filename);
 		}
 		g_free(filename);
+#ifndef G_OS_WIN32
 	} else if ( g_ascii_strcasecmp(mimeinfo->subtype, "plain") &&
 		   (cmd = prefs_common.mime_textviewer) && *cmd &&
 		   (p = strchr(cmd, '%')) && *(p + 1) == 's') {
@@ -988,6 +991,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		fclose(tmpfp);
 		waitpid(pid, pfd, 0);
 		unlink(fname);
+#endif
 	} else {
 textview_default:
 		lines = 0;

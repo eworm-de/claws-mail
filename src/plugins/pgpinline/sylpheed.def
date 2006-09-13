@@ -19,3 +19,4 @@ procmime_write_mimeinfo
 sylpheed_get_version
 privacy_set_error
 privacy_get_error
+privacy_reset_error

@@ -1,3 +1,11 @@
+2006-09-13 [wwp]	2.4.0cvs181
+
+	* src/plugins/pgpinline/sylpheed.def
+	* src/textview.c
+		merge more w32 patches from gpg4win sources (Marcus Brinkmann <marcus@g10code.de>):
+		add privacy_reset_error to the .def file,
+		do not fork for an external textviewer.
+
 2006-09-13 [wwp]	2.4.0cvs180
 
 	* src/prefs_common.c
