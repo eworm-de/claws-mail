@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=181
+EXTRA_VERSION=182
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -276,8 +276,6 @@ AC_CHECK_SIZEOF(unsigned long, 4)
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
-	       wcsstr wcswcs iswalnum iswspace towlower \
-	       wcslen wcscpy wcsncpy \
 	       uname flock lockf inet_aton inet_addr \
 	       fchmod mkstemp truncate getuid regcomp)
 

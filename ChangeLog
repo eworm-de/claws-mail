@@ -1,3 +1,10 @@
+2006-09-13 [wwp]	2.4.0cvs182
+
+	* configure.ac
+	* src/common/utils.h
+	* src/common/utils.c
+		get rid of unused wide-char functions.
+
 2006-09-13 [wwp]	2.4.0cvs181
 
 	* src/plugins/pgpinline/sylpheed.def
