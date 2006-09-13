@@ -1,3 +1,13 @@
+2006-09-13 [colin]	2.4.0cvs179
+
+	* src/folder.h
+		Fix a warning in summaryview.c
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Add missing Mark/* elements in the
+		main menu
+
 2006-09-12 [colin]	2.4.0cvs178
 
 	* src/prefs_actions.c

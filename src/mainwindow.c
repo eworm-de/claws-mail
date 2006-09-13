@@ -261,6 +261,19 @@ static void mark_as_spam_cb		(MainWindow 	*mainwin,
 					 guint 		 action,
 			     		 GtkWidget 	*widget);
 
+static void ignore_thread_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
+static void unignore_thread_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
+static void lock_msgs_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
+static void unlock_msgs_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
+
 static void reedit_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -771,9 +784,14 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark as unr_ead"),	"<shift>exclam", mark_as_unread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark as rea_d"),	NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
+	{N_("/_Message/_Mark/Ignore thread"),	NULL, ignore_thread_cb, 0, NULL},
+	{N_("/_Message/_Mark/Unignore thread"),	NULL, unignore_thread_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark/Mark as _spam"),	NULL, mark_as_spam_cb, 1, NULL},
 	{N_("/_Message/_Mark/Mark as _ham"),	NULL, mark_as_spam_cb, 0, NULL},
+	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Mark/Lock"),		NULL, lock_msgs_cb, 0, NULL},
+	{N_("/_Message/_Mark/Unlock"),		NULL, unlock_msgs_cb, 0, NULL},
 	{N_("/_Message/Color la_bel"),		NULL, NULL, 	       0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
@@ -2250,6 +2268,10 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Mark/Mark as spam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Message/Mark/Mark as ham" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"/Message/Mark/Ignore thread"    , M_TARGET_EXIST},
+		{"/Message/Mark/Unignore thread"  , M_TARGET_EXIST},
+		{"/Message/Mark/Lock"   	  , M_TARGET_EXIST},
+		{"/Message/Mark/Unlock"   	  , M_TARGET_EXIST},
 		{"/Message/Color label"		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
@@ -3416,6 +3438,31 @@ static void mark_as_spam_cb(MainWindow *mainwin, guint action,
 {
 	summary_mark_as_spam(mainwin->summaryview, action, NULL);
 }
+
+static void ignore_thread_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_ignore_thread(mainwin->summaryview);
+}
+
+static void unignore_thread_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_unignore_thread(mainwin->summaryview);
+}
+
+static void lock_msgs_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_msgs_lock(mainwin->summaryview);
+}
+
+static void unlock_msgs_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_msgs_unlock(mainwin->summaryview);
+}
+
 
 static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {

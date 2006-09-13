@@ -258,6 +258,9 @@ void summary_mark_all_read	  (SummaryView		*summaryview);
 void summary_mark_as_spam	  (SummaryView 		*summaryview, 
 				   guint 		 action, 
 				   GtkWidget 		*widget);
+void summary_ignore_thread	  (SummaryView 		*summaryview);
+void summary_unignore_thread	  (SummaryView 		*summaryview);
+
 void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);

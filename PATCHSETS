@@ -1870,3 +1870,4 @@
 ( cvs diff -u -r 1.43.2.45 -r 1.43.2.46 src/prefs_matcher.c;  ) > 2.4.0cvs176.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/addrbook.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/fr/handling.xml;  ) > 2.4.0cvs177.patchset
 ( cvs diff -u -r 1.60.2.41 -r 1.60.2.42 src/prefs_actions.c;  cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.46 -r 1.43.2.47 src/prefs_matcher.c;  ) > 2.4.0cvs178.patchset
+( cvs diff -u -r 1.87.2.29 -r 1.87.2.30 src/folder.h;  cvs diff -u -r 1.274.2.149 -r 1.274.2.150 src/mainwindow.c;  cvs diff -u -r 1.395.2.247 -r 1.395.2.248 src/summaryview.c;  cvs diff -u -r 1.68.2.25 -r 1.68.2.26 src/summaryview.h;  ) > 2.4.0cvs179.patchset

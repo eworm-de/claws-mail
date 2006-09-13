@@ -230,8 +230,6 @@ static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 gpointer		 data);
 
 static void summary_thread_init		(SummaryView		*summaryview);
-static void summary_ignore_thread	(SummaryView		*summaryview);
-static void summary_unignore_thread     (SummaryView            *summaryview);
 
 static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
@@ -1402,6 +1400,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Mark/Mark as unread"   	, M_TARGET_EXIST},
 		{"/Mark/Mark all read"   	, M_TARGET_EXIST},
 		{"/Mark/Ignore thread"   	, M_TARGET_EXIST},
+		{"/Mark/Unignore thread"   	, M_TARGET_EXIST},
 		{"/Mark/Lock"   		, M_TARGET_EXIST},
 		{"/Mark/Unlock"   		, M_TARGET_EXIST},
 		{"/Mark/Mark as spam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
@@ -5988,7 +5987,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	    msginfo->msgnum);
 }
 
-static void summary_ignore_thread(SummaryView *summaryview)
+void summary_ignore_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
@@ -6020,7 +6019,7 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 	    msginfo->msgnum);
 }
 
-static void summary_unignore_thread(SummaryView *summaryview)
+void summary_unignore_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
