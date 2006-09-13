@@ -1443,13 +1443,17 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
+	GtkTooltips *tooltips = gtk_tooltips_new();
 
 	renderer = gtk_cell_renderer_pixbuf_new();
 	column = gtk_tree_view_column_new_with_attributes
-		("D", renderer,
+		(Q_("Accounts List Default Column Name|D"), renderer,
 	         "pixbuf", ACCOUNT_IS_DEFAULT,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		 
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), column->button,
+			_("Default account"), NULL);
 
 	renderer = gtk_cell_renderer_toggle_new();
 	g_object_set(renderer, 
@@ -1457,14 +1461,17 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 		     "activatable", TRUE,
 		      NULL);
 	column = gtk_tree_view_column_new_with_attributes
-		("G", renderer,
+		(Q_("Accounts List Get Column Name|G"), renderer,
 		 "active", ACCOUNT_ENABLE_GET_ALL,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), column->button,
+			_("'Get Mail' retrieve mails for all checked accounts"), NULL);
 	g_signal_connect(G_OBJECT(renderer), "toggled", 		     
 			 G_CALLBACK(account_get_all_toggled),
 			 list_view);
-	
+
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Name"), renderer,

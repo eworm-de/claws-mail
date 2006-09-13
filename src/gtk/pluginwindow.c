@@ -182,7 +182,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	GList *file_list;
 
 	file_list = filesel_select_multiple_files_open_with_filter(
-			_("Select Plugin to load"), get_plugin_dir(), 
+			_("Select one or more Plugins to load"), get_plugin_dir(), 
 			"*." G_MODULE_SUFFIX);
 
 	if (file_list) {
@@ -275,6 +275,7 @@ void pluginwindow_create()
 	GtkWidget *get_more_btn;
 	GtkWidget *desc_lbl;
 	static GdkGeometry geometry;
+	GtkTooltips *tooltips;
 	
 	debug_print("Creating plugins window...\n");
 
@@ -357,7 +358,7 @@ void pluginwindow_create()
 			&close_btn, GTK_STOCK_CLOSE);
 	gtk_box_set_spacing(GTK_BOX(hbuttonbox1), 6);
 	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_end (GTK_BOX (hbox3), hbuttonbox1, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox3), hbuttonbox1, TRUE, TRUE, 0);
 
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
@@ -375,6 +376,16 @@ void pluginwindow_create()
 			 G_CALLBACK(pluginwindow_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			   G_CALLBACK(pluginwindow_key_pressed), pluginwindow);
+
+	tooltips = gtk_tooltips_new();
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
+			load_btn,
+			_("Load one or more plugins by selecting here."), NULL);
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
+			unload_btn,
+			_("Unload the currently selected plugin."), NULL);
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list_view = plugin_list_view;

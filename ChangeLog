@@ -1,3 +1,9 @@
+2006-09-13 [colin]	2.4.0cvs183
+
+	* src/account.c
+	* src/gtk/pluginwindow.c
+		Misc. GUI fixes by Fabien
+
 2006-09-13 [wwp]	2.4.0cvs182
 
 	* configure.ac
