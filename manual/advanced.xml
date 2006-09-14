@@ -579,6 +579,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>stripes_color_offset</literal></term>
+	<listitem>
+	  <para>
+	Specify the value to use to create alternate colors in summaries. The
+	more little it is, the less the difference will be visible.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>

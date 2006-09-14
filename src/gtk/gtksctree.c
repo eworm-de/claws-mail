@@ -848,14 +848,14 @@ gtk_sctree_draw_row (GtkCList     *clist,
 	}
 	if (normalbg.red > 0x8888 && normalbg.green > 0x8888 && normalbg.blue > 0x8888) {
 		greybg.pixel = normalbg.pixel;
-		greybg.red = normalbg.red - 0x1111;
-		greybg.green = normalbg.green - 0x1111;
-		greybg.blue = normalbg.blue - 0x1111;
+		greybg.red = normalbg.red - prefs_common.stripes_color_offset;
+		greybg.green = normalbg.green - prefs_common.stripes_color_offset;
+		greybg.blue = normalbg.blue - prefs_common.stripes_color_offset;
 	} else if (normalbg.red < 0x8888 && normalbg.green < 0x8888 && normalbg.blue < 0x8888) {
 		greybg.pixel = normalbg.pixel;
-		greybg.red = normalbg.red + 0x1111;
-		greybg.green = normalbg.green + 0x1111;
-		greybg.blue = normalbg.blue + 0x1111;
+		greybg.red = normalbg.red + prefs_common.stripes_color_offset;
+		greybg.green = normalbg.green + prefs_common.stripes_color_offset;
+		greybg.blue = normalbg.blue + prefs_common.stripes_color_offset;
 	} else {
 		color_change = FALSE;
 	}

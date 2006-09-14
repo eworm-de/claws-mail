@@ -1,3 +1,13 @@
+2006-09-14 [colin]	2.4.0cvs186
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gtk/gtksctree.c
+	* manual/advanced.xml
+		New hidden pref, stripes_color_offset, to change
+		the value added/substracted to normal bgcolor to
+		create the stripes in summaries
+
 2006-09-13 [colin]	2.4.0cvs185
 
 	* src/gedit-print.c

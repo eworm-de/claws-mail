@@ -181,6 +181,7 @@ struct _PrefsCommon
 
 	gboolean use_stripes_everywhere;
 	gboolean use_stripes_in_summaries; /* overrides if use_stripes_everywhere is set to TRUE */
+	gint stripes_color_offset;
 	gboolean enable_dotted_lines;
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
