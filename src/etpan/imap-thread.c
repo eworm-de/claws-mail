@@ -418,7 +418,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	if (cert == NULL) {
 		g_warning("can't get cert\n");
 		return 0;
-	} else if (ssl_certificate_check(cert, 
+	} else if (ssl_certificate_check(cert, NULL,
 		(gchar *)param->server, (gushort)param->port) == TRUE) {
 		X509_free(cert);
 		return 0;

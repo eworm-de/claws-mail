@@ -54,7 +54,7 @@ struct _SSLCertHookData
 
 SSLCertificate *ssl_certificate_find (gchar *host, gushort port);
 SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup);
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port);
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port);
 char* ssl_certificate_to_string(SSLCertificate *cert);
 void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);

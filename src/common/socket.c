@@ -92,6 +92,7 @@ struct _SockConnectData {
 	guint io_tag;
 	SockConnectFunc func;
 	gpointer data;
+	gchar *canonical_name;
 };
 
 struct _SockLookupData {
@@ -103,6 +104,7 @@ struct _SockLookupData {
 	gpointer data;
 	gushort port;
         gint pipe_fds[2];
+	gchar *canonical_name;
 };
 
 struct _SockAddrData {
@@ -782,6 +784,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	sockinfo->hostname = g_strdup(conn_data->hostname);
 	sockinfo->port = conn_data->port;
 	sockinfo->state = CONN_ESTABLISHED;
+	sockinfo->canonical_name = g_strdup(conn_data->canonical_name);
 
 	conn_data->func(sockinfo, conn_data->data);
 
@@ -797,6 +800,8 @@ static gint sock_connect_async_get_address_info_cb(GList *addr_list,
 
 	conn_data->addr_list = addr_list;
 	conn_data->cur_addr = addr_list;
+	conn_data->canonical_name = conn_data->lookup_data->canonical_name;
+	conn_data->lookup_data->canonical_name = NULL;
 	conn_data->lookup_data = NULL;
 
 	return sock_connect_address_list_async(conn_data);
@@ -862,6 +867,7 @@ gint sock_connect_async_cancel(gint id)
 		}
 
 		sock_address_list_free(conn_data->addr_list);
+		g_free(conn_data->canonical_name);
 		g_free(conn_data->hostname);
 		g_free(conn_data);
 	} else {
@@ -930,7 +936,36 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	gsize bytes_read;
 	gint ai_member[4];
 	struct sockaddr *addr;
+	gchar *canonical_name = NULL;
+	gchar len = 0;
 
+	if (g_io_channel_read(source, &len, sizeof(len),
+			      &bytes_read) == G_IO_ERROR_NONE) {
+		if (bytes_read == sizeof(len) && len > 0) {
+			gchar *cur = NULL;
+			gint todo = len;
+			canonical_name = g_malloc0(len + 1);
+			cur = canonical_name;
+			while (todo > 0) {
+				if (g_io_channel_read(source, cur, todo,
+				      &bytes_read) != G_IO_ERROR_NONE) {
+				      g_warning("canonical name not read\n");
+				      g_free(canonical_name);
+				      canonical_name = NULL;
+				      break;
+				} else {
+					cur += bytes_read;
+					todo -= bytes_read;
+				}
+				if (bytes_read == 0) {
+				      g_warning("canonical name not read\n");
+				      g_free(canonical_name);
+				      canonical_name = NULL;
+				      break;
+				}
+			}
+		}	      
+	}
 	for (;;) {
 		if (g_io_channel_read(source, (gchar *)ai_member,
 				      sizeof(ai_member), &bytes_read)
@@ -984,9 +1019,11 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	kill(lookup_data->child_pid, SIGKILL);
 	waitpid(lookup_data->child_pid, NULL, 0);
 #endif
+	lookup_data->canonical_name = canonical_name;
 
 	lookup_data->func(addr_list, lookup_data->data);
 
+	g_free(lookup_data->canonical_name);
 	g_free(lookup_data->hostname);
 	g_free(lookup_data);
 
@@ -1019,7 +1056,7 @@ static void address_info_async_child(void *opaque)
 
 #ifdef INET6
         memset(&hints, 0, sizeof(hints));
-        /* hints.ai_flags = AI_CANONNAME; */
+        hints.ai_flags = AI_CANONNAME;
         hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
@@ -1028,8 +1065,11 @@ static void address_info_async_child(void *opaque)
 
         gai_err = getaddrinfo(parm->hostname, port_str, &hints, &res);
         if (gai_err != 0) {
+		gchar len = 0;
                 g_warning("getaddrinfo for %s:%s failed: %s\n",
                           parm->hostname, port_str, gai_strerror(gai_err));
+	        fd_write_all(parm->pipe_fds[1], &len,
+                     sizeof(len));
                 fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
                              sizeof(ai_member));
                 close(parm->pipe_fds[1]);
@@ -1040,6 +1080,24 @@ static void address_info_async_child(void *opaque)
                 _exit(1);
 #endif
         }
+
+	if (res != NULL) {
+		if (res->ai_canonname && strlen(res->ai_canonname) < 255) {
+			gchar len = strlen(res->ai_canonname);
+	                fd_write_all(parm->pipe_fds[1], &len,
+                             sizeof(len));
+	                fd_write_all(parm->pipe_fds[1], res->ai_canonname,
+                             len);			 
+		} else {
+			gchar len = 0;
+	                fd_write_all(parm->pipe_fds[1], &len,
+                             sizeof(len));
+		}
+	} else {
+		gchar len = 0;
+	        fd_write_all(parm->pipe_fds[1], &len,
+                     sizeof(len));
+	}
 
         for (ai = res; ai != NULL; ai = ai->ai_next) {
                 ai_member[0] = ai->ai_family;
@@ -1058,9 +1116,12 @@ static void address_info_async_child(void *opaque)
 #else /* !INET6 */
         hp = my_gethostbyname(parm->hostname);
         if (hp == NULL || hp->h_addrtype != AF_INET) {
+		gchar len = 0;
+ 	        fd_write_all(parm->pipe_fds[1], &len,
+                     sizeof(len));
                 fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
                              sizeof(ai_member));
-                close(parm->pipe_fds[1]);
+               close(parm->pipe_fds[1]);
                 parm->pipe_fds[1] = -1;
 #ifdef G_OS_WIN32
                 _endthread();
@@ -1078,6 +1139,17 @@ static void address_info_async_child(void *opaque)
         ad.sin_family = AF_INET;
         ad.sin_port = htons(parm->port);
 
+	if (hp->h_name && strlen(hp->h_name) < 255) {
+		gchar len = strlen(hp->h_name);
+	        fd_write_all(parm->pipe_fds[1], &len,
+                     sizeof(len));
+	        fd_write_all(parm->pipe_fds[1], hp->h_name,
+                     len);			 
+	} else {
+		gchar len = 0;
+ 	        fd_write_all(parm->pipe_fds[1], &len,
+                     sizeof(len));
+	}
         for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
              addr_list_p++) {
                 memcpy(&ad.sin_addr, *addr_list_p, hp->h_length);
@@ -1172,6 +1244,7 @@ static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
 #endif
 	}
 
+	g_free(lookup_data->canonical_name);
 	g_free(lookup_data->hostname);
 	g_free(lookup_data);
 
@@ -1622,6 +1695,7 @@ gint sock_close(SockInfo *sock)
 	ret = fd_close(sock->sock); 
 #endif
 
+	g_free(sock->canonical_name);
 	g_free(sock->hostname);
 	g_free(sock);
 

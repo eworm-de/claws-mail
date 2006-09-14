@@ -67,6 +67,7 @@ struct _SockInfo
 
 	SockFunc callback;
 	GIOCondition condition;
+	gchar *canonical_name;
 };
 
 void refresh_resolvers			(void);

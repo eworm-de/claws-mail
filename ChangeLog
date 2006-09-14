@@ -1,3 +1,20 @@
+2006-09-14 [colin]	2.4.0cvs188
+
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/ssl.c
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/etpan/imap-thread.c
+		the get_fqdn() call done to get canonical name when
+		checking an SSL certificate is blocking, which is
+		sad as we just did a non-blocking lookup to connect.
+		Fix that by letting the fqdn available to the SockInfo,
+		and use that in ssl_certificate_check(). For IMAP,
+		we don't do it as the lookup's done by libetpan, but
+		it's less annoying as IMAP connections as much more
+		rare than POP3 connections.
+
 2006-09-14 [paul]	2.4.0cvs187
 
 	* manual/advanced.xml

@@ -364,15 +364,22 @@ char *ssl_certificate_check_signer (X509 *cert)
 	return NULL;
 }
 
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port)
 {
 	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
 	SSLCertHookData cert_hook_data;
 	gchar *fqdn_host = NULL;	
 	
-	fqdn_host = get_fqdn(host);
-
+	if (fqdn)
+		fqdn_host = g_strdup(fqdn);
+	else if (host)
+		fqdn_host = get_fqdn(host);
+	else {
+		g_warning("no host!\n");
+		return FALSE;
+	}
+		
 	current_cert = ssl_certificate_new_lookup(x509_cert, fqdn_host, port, FALSE);
 	
 	if (current_cert == NULL) {
