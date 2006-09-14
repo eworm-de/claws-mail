@@ -1,3 +1,12 @@
+2006-09-14 [paul]	2.4.0cvs187
+
+	* manual/advanced.xml
+		improvements to the English,
+		properly place the new hidden options
+		within the alphabetical order
+	* src/gtk/pluginwindow.c
+		improvements to the English
+
 2006-09-14 [colin]	2.4.0cvs186
 
 	* src/prefs_common.c

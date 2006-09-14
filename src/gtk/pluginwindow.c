@@ -182,7 +182,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	GList *file_list;
 
 	file_list = filesel_select_multiple_files_open_with_filter(
-			_("Select one or more Plugins to load"), get_plugin_dir(), 
+			_("Select the Plugins to load"), get_plugin_dir(), 
 			"*." G_MODULE_SUFFIX);
 
 	if (file_list) {
@@ -381,11 +381,11 @@ void pluginwindow_create()
 
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
 			load_btn,
-			_("Load one or more plugins by selecting here."), NULL);
+			_("Click here to load one or more plugins"), NULL);
 
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
 			unload_btn,
-			_("Unload the currently selected plugin."), NULL);
+			_("Unload the selected plugin"), NULL);
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list_view = plugin_list_view;

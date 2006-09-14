@@ -547,8 +547,9 @@
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>
-	Use the <emphasis>old</emphasis> dotted line look for the Folder List and
-	Message	List instead of the <emphasis>modern</emphasis> lineless look.
+	Use the <emphasis>old</emphasis> dotted line look in the main window
+	GtkTreeView components, (Folder List and Message List), instead of the
+	<emphasis>modern</emphasis> lineless look.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -557,33 +558,6 @@
 	<listitem>
 	  <para>
 	Enable the horizontal scrollbar in the Message List.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>use_stripes_everywhere</literal></term>
-	<listitem>
-	  <para>
-	Enable alternately coloured lines in GtkTreeView components.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>use_stripes_in_summaries</literal></term>
-	<listitem>
-	  <para>
-	Enable alternately coloured lines in main window's GtkTreeView components
-	(folder list and messages list). The only useful way to use this option is
-	to set it to 0 when use_stripes_everywhere is set to 1.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>stripes_color_offset</literal></term>
-	<listitem>
-	  <para>
-	Specify the value to use to create alternate colors in summaries. The
-	more little it is, the less the difference will be visible.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -659,6 +633,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>stripes_color_offset</literal></term>
+	<listitem>
+	<para>
+	Specify the value to use when creating alternately coloured lines in
+	GtkTreeView components. The smaller the value, the less visible the
+	difference in the alternating colours of the lines.
+	</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>
@@ -681,6 +665,25 @@
 	  <para>
 	Show handles in the toolbars.
 	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>use_stripes_everywhere</literal></term>
+	<listitem>
+	<para>
+	Enable alternately coloured lines in GtkTreeView components.
+	</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>use_stripes_in_summaries</literal></term>
+	<listitem>
+	<para>
+	Enable alternately coloured lines in the main window GtkTreeView
+	components, (Folder List and Message List). The only useful way to
+	use this option is to set it to 0 when use_stripes_everywhere is set
+	to 1.
+	</para>
 	</listitem>
       </varlistentry>
       <varlistentry>
