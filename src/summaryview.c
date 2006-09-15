@@ -4621,8 +4621,8 @@ gboolean summary_filter_get_mode(void)
 			_("Filtering"),
 			_("There are some filtering rules that belong to an account.\n"
 			  "Please choose what to do with these rules:"),
-			_("_Filter"), GTK_STOCK_CANCEL, NULL, TRUE, vbox);
-	if ((val & ~G_ALERTDISABLE) != G_ALERTDEFAULT) {
+			GTK_STOCK_CANCEL, _("+_Filter"), NULL, TRUE, vbox);
+	if ((val & ~G_ALERTDISABLE) == G_ALERTDEFAULT) {
 		return FALSE;
 	} else if (val & G_ALERTDISABLE)
 		prefs_common.ask_apply_per_account_filtering_rules = FALSE;
