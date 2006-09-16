@@ -1882,3 +1882,4 @@
 ( cvs diff -u -r 1.13.2.21 -r 1.13.2.22 src/common/socket.c;  cvs diff -u -r 1.13.2.7 -r 1.13.2.8 src/common/socket.h;  cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/common/ssl.c;  cvs diff -u -r 1.4.2.11 -r 1.4.2.12 src/common/ssl_certificate.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/common/ssl_certificate.h;  cvs diff -u -r 1.1.4.50 -r 1.1.4.51 src/etpan/imap-thread.c;  ) > 2.4.0cvs188.patchset
 ( cvs diff -u -r 1.395.2.249 -r 1.395.2.250 src/summaryview.c;  ) > 2.4.0cvs189.patchset
 ( cvs diff -u -r 1.61.2.52 -r 1.61.2.53 src/account.c;  ) > 2.4.0cvs190.patchset
+( cvs diff -u -r 1.395.2.250 -r 1.395.2.251 src/summaryview.c;  ) > 2.4.0cvs191.patchset

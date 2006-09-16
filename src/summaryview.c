@@ -4696,6 +4696,9 @@ static void summary_filter_func(MsgInfo *msginfo)
 	MailFilteringData mail_filtering_data;
 
 	mail_filtering_data.msginfo = msginfo;
+	mail_filtering_data.msglist = NULL;			
+	mail_filtering_data.filtered = NULL;			
+	mail_filtering_data.unfiltered = NULL;			
 	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return;
 
