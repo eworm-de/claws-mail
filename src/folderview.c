@@ -1799,15 +1799,18 @@ static void folderview_sort_folders(FolderView *folderview, GtkCTreeNode *root,
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *prev = NULL;
 
+	gtk_clist_freeze(GTK_CLIST(ctree));
 	gtk_sctree_sort_recursive(ctree, root);
-
-	if (root && GTK_CTREE_ROW(root)->parent) return;
-
+	if (root && GTK_CTREE_ROW(root)->parent) {
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		return;
+	}
 	set_special_folder(ctree, folder->inbox, root, &prev);
 	set_special_folder(ctree, folder->outbox, root, &prev);
 	set_special_folder(ctree, folder->draft, root, &prev);
 	set_special_folder(ctree, folder->queue, root, &prev);
 	set_special_folder(ctree, folder->trash, root, &prev);
+	gtk_clist_thaw(GTK_CLIST(ctree));
 }
 
 static void folderview_append_folder(FolderView *folderview, Folder *folder)

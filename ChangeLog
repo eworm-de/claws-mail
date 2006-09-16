@@ -1,3 +1,8 @@
+2006-09-16 [colin]	2.4.0cvs195
+
+	* src/folderview.c
+		Fix "real-time" sorting by freezing/thawing
+
 2006-09-16 [colin]	2.4.0cvs194
 
 	* manual/faq.xml
