@@ -697,11 +697,13 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("New messages will be checked in this order. Check the boxes\n"
-		   "on the 'G' column to enable message retrieval by 'Get Mail'."));
+		(_("Using 'Get Mail' will retrieve messages from your Accounts "
+		   "in the order given, the checkbox in the 'G' column indicates "
+		   "which accounts will be included."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1467,7 +1469,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), column->button,
-			_("'Get Mail' retrieve mails for all checked accounts"), NULL);
+			_("'Get Mail' retrieves mail from the checked accounts"), NULL);
 	g_signal_connect(G_OBJECT(renderer), "toggled", 		     
 			 G_CALLBACK(account_get_all_toggled),
 			 list_view);
