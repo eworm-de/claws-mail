@@ -1884,3 +1884,4 @@
 ( cvs diff -u -r 1.61.2.52 -r 1.61.2.53 src/account.c;  ) > 2.4.0cvs190.patchset
 ( cvs diff -u -r 1.395.2.250 -r 1.395.2.251 src/summaryview.c;  ) > 2.4.0cvs191.patchset
 ( cvs diff -u -r 1.115.2.103 -r 1.115.2.104 src/main.c;  ) > 2.4.0cvs192.patchset
+( cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/wizard.c;  ) > 2.4.0cvs193.patchset
