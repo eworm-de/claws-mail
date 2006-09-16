@@ -1,3 +1,8 @@
+2006-09-16 [colin]	2.4.0cvs194
+
+	* manual/faq.xml
+		Fix the anti-spam entry a bit
+
 2006-09-16 [colin]	2.4.0cvs193
 
 	* src/wizard.c
