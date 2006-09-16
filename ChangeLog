@@ -1,3 +1,10 @@
+2006-09-16 [colin]	2.4.0cvs192
+
+	* src/main.c
+		Revert part of 2.3.0cvs18, Saving caches on SIGPIPE,
+		as if the SIGPIPE comes from etpan's thread we could
+		trigger a GUI update from this thread.
+
 2006-09-16 [colin]	2.4.0cvs191
 
 	* src/summaryview.c

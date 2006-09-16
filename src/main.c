@@ -532,6 +532,10 @@ int main(int argc, char *argv[])
 
 	inc_autocheck_timer_init(mainwin);
 
+	/* ignore SIGPIPE signal for preventing sudden death of program */
+#ifdef G_OS_UNIX
+	signal(SIGPIPE, SIG_IGN);
+#endif
 	if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
 		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
 	}
@@ -629,7 +633,6 @@ int main(int argc, char *argv[])
 
 static void save_all_caches(FolderItem *item, gpointer data)
 {
-	gint free_caches = GPOINTER_TO_INT(data);
 	if (!item->cache) {
 		return;
 	}
@@ -637,10 +640,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	if (item->opened)
 		folder_item_close(item);
 	
-	if (free_caches)
-		folder_item_free_cache(item, TRUE);
-	else
-		folder_item_write_cache(item);
+	folder_item_free_cache(item, TRUE);
 }
 
 static gboolean sc_exiting = FALSE;
@@ -668,7 +668,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	/* save all state before exiting */
 	folder_write_list();
-	folder_func_to_all_folders(save_all_caches, GINT_TO_POINTER(1));
+	folder_func_to_all_folders(save_all_caches, NULL);
 
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);
@@ -1295,15 +1295,6 @@ static void send_queue(void)
 
 static void quit_signal_handler(int sig)
 {
-#ifdef SIGPIPE
-	if (sig == SIGPIPE) {
-		debug_print("caugth SIGPIPE, maybe X closing!\n");
-		signal(SIGPIPE, SIG_IGN); /* ignore following sigpipes */
-		folder_write_list();
-		folder_func_to_all_folders(save_all_caches, GINT_TO_POINTER(0));
-		return;	
-	}
-#endif
 	debug_print("Quitting on signal %d\n", sig);
 
 	g_timeout_add(0, clean_quit, NULL);
@@ -1326,9 +1317,6 @@ static void install_basic_sighandlers()
 #ifdef SIGHUP
 	sigaddset(&mask, SIGHUP);
 #endif
-#ifdef SIGPIPE
-	sigaddset(&mask, SIGPIPE);
-#endif
 
 	act.sa_handler = quit_signal_handler;
 	act.sa_mask    = mask;
@@ -1342,9 +1330,6 @@ static void install_basic_sighandlers()
 #endif	
 #ifdef SIGHUP
 	sigaction(SIGHUP, &act, 0);
-#endif	
-#ifdef SIGPIPE
-	sigaction(SIGPIPE, &act, 0);
 #endif	
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
