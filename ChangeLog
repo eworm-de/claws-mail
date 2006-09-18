@@ -1,3 +1,9 @@
+2006-09-18 [paul]	2.4.0cvs197
+
+	* src/wizard.c
+		add missing bracket, capitalise the A of
+		'SpamAssassin'
+
 2006-09-18 [paul]	2.4.0cvs196
 
 	* src/compose.c

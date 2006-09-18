@@ -482,7 +482,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"\n"
 		"Sylpheed-Claws has lots of extra features accessible via plugins,\n"
 		"like anti-spam filtering and learning (via the Bogofilter or\n"
-		"Spamassassin plugins, privacy protection (via PGP/Mime), an RSS\n"
+		"SpamAssassin plugins), privacy protection (via PGP/Mime), an RSS\n"
 		"aggregator, a calendar, and much more. You can load them from\n"
 		"the menu entry '/Configuration/Plugins'.\n"
 		"\n"
