@@ -45,7 +45,7 @@
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Fabien Vantard <fzzzzz@gmail.com>',
 	'hr.po' => 'Dragan Leskovar <drleskov@inet.hr>',
-	'hu.po' => 'Gál Zoltán <galzoli@hu.inter.net>',
+	'hu.po' => 'G&aacute;l Zolt&aacute;n <galzoli@hu.inter.net>',
 	'it.po' => 'Andrea Spadaccini <a.spadaccini@catania.linux.it>',
 	'ja.po' => 'Rui Hirokawa <rui_hirokawa@ybb.ne.jp>',
 	'ko.po' => 'ChiDeok, Hwang <hwang@mizi.co.kr>',
@@ -56,7 +56,7 @@
 	'ru.po' => 'Pavlo Bohmat <bohm@ukr.net>',
 	'sk.po' => 'Andrej Kacian <andrej@kacian.sk>',
 	'sr.po' => 'urke <urke@users.sourceforge.net>',
-	'sv.po' => 'Anders Trobäck <sylpheed@troback.com>',
+	'sv.po' => 'Anders Trob&auml;ck <sylpheed@troback.com>',
 	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
 	'zh_TW.po' => 'Wei-Lun Chao <chaoweilun@pcmail.com.tw>',
 );
