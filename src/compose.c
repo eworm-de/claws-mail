@@ -4021,7 +4021,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 			g_strstrip(entry);
-			if (strcmp(entry, compose->account->auto_cc)
+			if (strcmp(entry, compose->account->auto_bcc)
 			||  strcmp(header, (prefs_common.trans_hdr ? gettext("Bcc:") : "Bcc:"))) {
 				found_other = TRUE;
 				g_free(entry);

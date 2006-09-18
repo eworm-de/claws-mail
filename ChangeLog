@@ -1,3 +1,10 @@
+2006-09-18 [paul]	2.4.0cvs196
+
+	* src/compose.c
+		fix bug 1012 'crashed upon sending mail
+		from compose window'
+		Thanks to Colin
+
 2006-09-16 [colin]	2.4.0cvs195
 
 	* src/folderview.c

@@ -1887,3 +1887,4 @@
 ( cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/wizard.c;  ) > 2.4.0cvs193.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 manual/faq.xml;  ) > 2.4.0cvs194.patchset
 ( cvs diff -u -r 1.207.2.120 -r 1.207.2.121 src/folderview.c;  ) > 2.4.0cvs195.patchset
+( cvs diff -u -r 1.382.2.307 -r 1.382.2.308 src/compose.c;  ) > 2.4.0cvs196.patchset
