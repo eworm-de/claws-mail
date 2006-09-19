@@ -2096,7 +2096,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 		/* matcher expressions contain UNtranslated "Any"/"All",
 		  select the relevant translated combo item */
 		if (strcasecmp(prop->header, "All") == 0)
-			header = Q_("Filtering Matcher Menu|All");
+			header = (gchar*)Q_("Filtering Matcher Menu|All");
 		else
 			if (strcasecmp(prop->header, "Any") == 0)
 				header = _("Any");

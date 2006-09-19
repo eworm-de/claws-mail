@@ -157,6 +157,9 @@ private:
 	GSList *mlist;
 	int msginfo_update_callback_id;
 
+	/* update folder label when renaming */
+	gint folder_item_update_callback_id;
+
 	GtkTargetList *target_list; /* DnD */
 };
 

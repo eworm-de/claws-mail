@@ -404,6 +404,7 @@ static void summary_find_answers	(SummaryView 	*summaryview,
 					 MsgInfo	*msg);
 
 static gboolean summary_update_msg	(gpointer source, gpointer data);
+static gboolean summary_update_folder_item_name(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[2] =
 {
@@ -644,6 +645,10 @@ SummaryView *summary_create(void)
 	summaryview->lock_count = 0;
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
+	summaryview->folder_item_update_callback_id =
+		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST,
+				summary_update_folder_item_name,
+				(gpointer) summaryview);
 
 	summaryview->target_list = gtk_target_list_new(summary_drag_types, 2);
 
@@ -6225,6 +6230,24 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 
 		if (node) 
 			summary_set_row_marks(summaryview, node);
+	}
+
+	return FALSE;
+}
+
+static gboolean summary_update_folder_item_name(gpointer source, gpointer data)
+{
+	FolderItemUpdateData *hookdata = (FolderItemUpdateData *)source;
+	SummaryView *summaryview = (SummaryView *)data;
+
+	g_return_val_if_fail(hookdata != NULL, FALSE);
+	g_return_val_if_fail(hookdata->item != NULL, FALSE);
+	g_return_val_if_fail(summaryview != NULL, FALSE);
+
+	if (hookdata->update_flags & F_ITEM_UPDATE_NAME) {
+		gchar *name = folder_item_get_name(hookdata->item);
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), name);
+		g_free(name);
 	}
 
 	return FALSE;

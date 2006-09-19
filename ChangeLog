@@ -1,3 +1,13 @@
+2006-09-19 [colin]	2.4.0cvs199
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Update folder name label on folder rename
+	* src/prefs_matcher.c
+	* src/gtk/logwindow.h
+		Fix warnings
+		Patches by Fabien
+
 2006-09-19 [wwp]	2.4.0cvs198
 
 	* src/summary_search.c

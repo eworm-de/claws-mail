@@ -1890,3 +1890,4 @@
 ( cvs diff -u -r 1.382.2.307 -r 1.382.2.308 src/compose.c;  ) > 2.4.0cvs196.patchset
 ( cvs diff -u -r 1.1.2.34 -r 1.1.2.35 src/wizard.c;  ) > 2.4.0cvs197.patchset
 ( cvs diff -u -r 1.15.2.32 -r 1.15.2.33 src/summary_search.c;  ) > 2.4.0cvs198.patchset
+( cvs diff -u -r 1.43.2.47 -r 1.43.2.48 src/prefs_matcher.c;  cvs diff -u -r 1.395.2.251 -r 1.395.2.252 src/summaryview.c;  cvs diff -u -r 1.68.2.26 -r 1.68.2.27 src/summaryview.h;  cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/logwindow.h;  ) > 2.4.0cvs199.patchset
