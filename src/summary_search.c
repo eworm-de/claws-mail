@@ -118,6 +118,15 @@ static gboolean key_pressed		(GtkWidget	*widget,
 					 gpointer	 data);
 
 
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {	\
+	gboolean in_btn = FALSE;							\
+	if (GTK_IS_BUTTON(widget))							\
+		in_btn = GTK_BUTTON(widget)->in_button;			\
+	gtk_widget_set_sensitive(widget, sensitive);		\
+	if (GTK_IS_BUTTON(widget))							\
+		GTK_BUTTON(widget)->in_button = in_btn;			\
+}
+
 void summary_search(SummaryView *summaryview)
 {
 	if (!search_window.window) {
@@ -137,9 +146,9 @@ static void summary_show_stop_button(void)
 {
 	gtk_widget_hide(search_window.close_btn);
 	gtk_widget_show(search_window.stop_btn);
-	gtk_widget_set_sensitive(search_window.all_btn, FALSE);
-	gtk_widget_set_sensitive(search_window.prev_btn, FALSE);
-	gtk_widget_set_sensitive(search_window.next_btn, FALSE);
+	GTK_BUTTON_SET_SENSITIVE(search_window.all_btn, FALSE)
+	GTK_BUTTON_SET_SENSITIVE(search_window.prev_btn, FALSE)
+	GTK_BUTTON_SET_SENSITIVE(search_window.next_btn, FALSE)
 }
 
 static void summary_hide_stop_button(void)
