@@ -1,3 +1,10 @@
+2006-09-20 [colin]	2.4.0cvs201
+
+	* src/compose.c
+		Fix free-after-use in some cases (when 
+		procmime_encode_content() frees mimeinfo->data.mem
+		and turns it to a temp file)
+
 2006-09-20 [colin]	2.4.0cvs200
 
 	* src/folderview.c

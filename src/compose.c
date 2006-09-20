@@ -4532,7 +4532,9 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	mimetext = procmime_mimeinfo_new();
 	mimetext->content = MIMECONTENT_MEM;
 	mimetext->tmp = TRUE; /* must free content later */
-	mimetext->data.mem = buf;
+	/* dup'ed because procmime_encode_content can turn it into a tmpfile
+	 * and free the data, which we need later. */
+	mimetext->data.mem = g_strdup(buf); 
 	mimetext->type = MIMETYPE_TEXT;
 	mimetext->subtype = g_strdup("plain");
 	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
@@ -4562,6 +4564,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		aval = alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
+			g_free(buf);
 			return -1;
 		}
 	}
@@ -4594,6 +4597,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		compose_add_attachments(compose, mimempart);
 	} else
 		g_node_append(mimemsg->node, mimetext->node);
+
+	g_free(buf);
 
 	/* sign message if sending */
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
