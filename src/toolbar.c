@@ -398,7 +398,7 @@ static void toolbar_set_default_main(void)
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
-#ifdef USE_SPAMASSASSIN_PLUGIN
+#if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN,             _("Spam")    },
 #endif
 		{ A_SEPARATOR,     0,                                 ("")         },
@@ -489,7 +489,7 @@ static void toolbar_set_default_msgview(void)
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
-#ifdef USE_SPAMASSASSIN_PLUGIN
+#if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN,             _("Spam")    },
 #endif
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }

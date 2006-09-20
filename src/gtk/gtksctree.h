@@ -38,6 +38,7 @@ struct _GtkSCTree {
 
 	/* (dis)allow fancy color stripes */
 	gboolean show_stripes;
+	GtkTooltips *tips;
 };
 
 struct _GtkSCTreeClass {
@@ -114,4 +115,7 @@ gtk_sctree_insert_gnode 		    (GtkCTree          *ctree,
 					     GtkCTreeGNodeFunc  func,
 					     gpointer           data);
 
+void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,
+					     int		 column,
+					     const gchar 	*tip);
 #endif /* __GTK_SCTREE_H__ */

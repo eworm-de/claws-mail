@@ -379,7 +379,7 @@ static void folderview_column_set_titles(FolderView *folderview)
 	GtkWidget *hbox_unread;
 	GtkWidget *hbox_total;
 	gint *col_pos = folderview->col_pos;
-	
+
 	debug_print("setting titles...\n");
 	gtk_widget_realize(folderview->ctree);
 	gtk_widget_show_all(folderview->scrolledwin);
@@ -396,7 +396,9 @@ static void folderview_column_set_titles(FolderView *folderview)
 	label_new = gtk_pixmap_new(newxpm, newxpmmask);
 	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
 	label_total = gtk_pixmap_new(readxpm, readxpmmask);
-
+	
+	gtk_clist_column_titles_active(GTK_CLIST(ctree));
+	 
 	hbox_new = gtk_hbox_new(FALSE, 4);
 	hbox_unread = gtk_hbox_new(FALSE, 4);
 	hbox_total = gtk_hbox_new(FALSE, 4);
@@ -416,6 +418,10 @@ static void folderview_column_set_titles(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_NEW],hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_UNREAD],hbox_unread);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_TOTAL],hbox_total);
+
+	gtk_sctree_set_column_tooltip(GTK_SCTREE(ctree), col_pos[F_COL_NEW], _("New"));
+	gtk_sctree_set_column_tooltip(GTK_SCTREE(ctree), col_pos[F_COL_UNREAD], _("Unread"));
+	gtk_sctree_set_column_tooltip(GTK_SCTREE(ctree), col_pos[F_COL_TOTAL], _("Total"));
 }
 
 static gboolean folderview_popup_menu(GtkWidget *widget, gpointer data)

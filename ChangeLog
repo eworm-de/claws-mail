@@ -1,3 +1,16 @@
+2006-09-20 [colin]	2.4.0cvs200
+
+	* src/folderview.c
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		Add tooltips in the folderview and summaryview
+		(Doesn't break string freeze as they already
+		exist)
+	* src/toolbar.c
+		Put the spam button in the default configuration
+		if compiled with bogo plugin too
+
 2006-09-19 [colin]	2.4.0cvs199
 
 	* src/summaryview.c

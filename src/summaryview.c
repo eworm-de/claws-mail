@@ -2315,19 +2315,23 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			label = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
+			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Attachment"));
 			continue;
 		} else if (type == S_COL_MARK) {
 			label = gtk_image_new_from_pixmap(markxpm, markxpmmask);
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
+			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Mark"));
 			continue;
 		} else if (type == S_COL_LOCKED) {
 			label = gtk_image_new_from_pixmap(lockedxpm, lockedxpmmask);
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
+			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Locked"));
 			continue;
 		} else if (type == S_COL_STATUS) {
 			gtk_clist_set_column_title(clist, pos, title);
+			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Status"));
 			continue;
 		}
 
