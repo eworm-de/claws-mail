@@ -1,3 +1,11 @@
+2006-09-21 [colin]	2.4.0cvs209
+
+	* src/wizard.c
+	* src/common/plugin.c
+		Prepare infra to load predefined plugins when
+		no configuration existed. Don't actually load
+		anything yet (feat. freeze)
+
 2006-09-21 [wwp]	2.4.0cvs208
 
 	* manual/fr/faq.xml

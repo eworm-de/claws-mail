@@ -49,6 +49,7 @@
 
 #include "utils.h"
 #include "gtk/menu.h"
+#include "plugin.h"
 #include "account.h"
 #include "prefs_account.h"
 #include "mainwindow.h"
@@ -390,7 +391,6 @@ static void wizard_read_defaults(void)
 	g_free(rcpath);
 }
 
-
 static void initialize_fonts(WizardWindow *wizard)
 {
 	GtkWidget *widget = wizard->email;
@@ -692,6 +692,9 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4)
 		write_welcome_email(wizard);
 	
+#ifndef G_OS_WIN32 
+	plugin_load_standard_plugins();
+#endif
 	return TRUE;
 }
 

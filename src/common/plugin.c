@@ -454,6 +454,9 @@ void plugin_load_standard_plugins (void)
 #ifdef G_OS_WIN32 
 		"pgpmime",
 		"pgpinline",
+#else
+		/* post-2.5 maybe 
+		"bogofilter", */
 #endif
 		NULL
 	};
@@ -473,8 +476,13 @@ void plugin_load_standard_plugins (void)
 			/* FIXME: get_plugin_dir () returns with a trailing
 			 * (back)slash; this should be fixed so that we can use
 			 * g_module_build_path here. */
+#ifdef G_OS_WIN32 
 			filename = g_strconcat (get_plugin_dir(),
 						names[i], NULL);
+#else
+			filename = g_strconcat (get_plugin_dir(),
+						names[i], ".", G_MODULE_SUFFIX, NULL);
+#endif
 			error = NULL;
 			plugin_load(filename, &error);
 			g_free (error);
@@ -482,7 +490,6 @@ void plugin_load_standard_plugins (void)
 		}
 	}
 }
-
 
 GSList *plugin_get_list(void)
 {
