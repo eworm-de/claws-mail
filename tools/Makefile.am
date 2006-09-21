@@ -4,6 +4,7 @@ EXTRA_TOOLS = \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \
+	fix_date.sh \
 	filter_conv.pl \
 	filter_conv_new.pl \
 	freshmeat_search.pl \
@@ -24,6 +25,7 @@ EXTRA_TOOLS = \
 	textviewer.sh \
         update-po \
 	uudec \
+	uuooffice \
 	vcard2xml.py \
 	kdeservicemenu/install.sh \
 	kdeservicemenu/sylpheed-kdeservicemenu.pl

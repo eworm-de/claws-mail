@@ -1895,3 +1895,4 @@
 ( cvs diff -u -r 1.382.2.308 -r 1.382.2.309 src/compose.c;  ) > 2.4.0cvs201.patchset
 ( cvs diff -u -r 1.382.2.309 -r 1.382.2.310 src/compose.c;  cvs diff -u -r 1.96.2.148 -r 1.96.2.149 src/textview.c;  ) > 2.4.0cvs202.patchset
 ( diff -u /dev/null tools/uuooffice;  ) > 2.4.0cvs203.patchset
+( diff -u /dev/null tools/fix_date.sh;  cvs diff -u -r 1.25.2.10 -r 1.25.2.11 tools/Makefile.am;  ) > 2.4.0cvs204.patchset

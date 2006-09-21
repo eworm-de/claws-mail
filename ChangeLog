@@ -1,3 +1,10 @@
+2006-09-21 [wwp]	2.4.0cvs204
+
+	* tools/fix_date.sh
+	* tools/Makefile.am
+		Added an action tool to fix missing Date field in emails.
+		Updated Makefile.am to reflect those last two additions.
+
 2006-09-21 [wwp]	2.4.0cvs203
 
 	* tools/uuooffice
