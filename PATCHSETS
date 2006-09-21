@@ -1899,3 +1899,4 @@
 ( cvs diff -u -r 1.25.2.11 -r 1.25.2.12 tools/Makefile.am;  ) > 2.4.0cvs205.patchset
 ( cvs diff -u -r 1.36.2.78 -r 1.36.2.79 src/common/utils.c;  ) > 2.4.0cvs206.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/fix_date.sh;  ) > 2.4.0cvs207.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/faq.xml;  ) > 2.4.0cvs208.patchset
