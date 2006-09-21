@@ -1,3 +1,9 @@
+2006-09-21 [wwp]	2.4.0cvs203
+
+	* tools/uuooffice
+		Added a action tool to open uuencoded docs w/
+		OpenOffice (based on uudec method).
+
 2006-09-21 [colin]	2.4.0cvs202
 
 	* src/compose.c
