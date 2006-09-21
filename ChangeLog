@@ -1,3 +1,8 @@
+2006-09-21 [paul]	2.4.0cvs206
+
+	* src/common/utils.c
+		add Chinese UTF8 Re prefix
+
 2006-09-21 [wwp]	2.4.0cvs205
 
 	* tools/Makefile.am

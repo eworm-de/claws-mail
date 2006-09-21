@@ -1897,3 +1897,4 @@
 ( diff -u /dev/null tools/uuooffice;  ) > 2.4.0cvs203.patchset
 ( diff -u /dev/null tools/fix_date.sh;  cvs diff -u -r 1.25.2.10 -r 1.25.2.11 tools/Makefile.am;  ) > 2.4.0cvs204.patchset
 ( cvs diff -u -r 1.25.2.11 -r 1.25.2.12 tools/Makefile.am;  ) > 2.4.0cvs205.patchset
+( cvs diff -u -r 1.36.2.78 -r 1.36.2.79 src/common/utils.c;  ) > 2.4.0cvs206.patchset

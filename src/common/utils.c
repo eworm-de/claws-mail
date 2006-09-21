@@ -3676,7 +3676,8 @@ int subject_get_prefix_length(const gchar *subject)
 		"VS\\:",			/* "VS" (Norwegian) */
 		"Vs\\:",			/* "Vs" (Norwegian) */
 		"AD\\:",			/* "AD" (Norwegian) */
-		"Ad\\:"				/* "Ad" (Norwegian) */
+		"Ad\\:",			/* "Ad" (Norwegian) */
+		"\347\255\224\345\244\215\\:"	/* "Re" (Chinese, UTF-8) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
