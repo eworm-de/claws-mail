@@ -4,9 +4,9 @@ EXTRA_TOOLS = \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \
-	fix_date.sh \
 	filter_conv.pl \
 	filter_conv_new.pl \
+	fix_date.sh \
 	freshmeat_search.pl \
 	gif2xface.pl \
 	google_msgid.pl \
@@ -23,7 +23,7 @@ EXTRA_TOOLS = \
 	tbird2syl.py \
 	textviewer.pl \
 	textviewer.sh \
-        update-po \
+	update-po \
 	uudec \
 	uuooffice \
 	vcard2xml.py \
