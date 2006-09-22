@@ -1,3 +1,10 @@
+2006-09-22 [colin]	2.4.0cvs211
+
+	* README
+		Revert test change
+	* commitHelper
+		ping the correct URI
+
 2006-09-22 [colin]	2.4.0cvs210
 
 	* README
