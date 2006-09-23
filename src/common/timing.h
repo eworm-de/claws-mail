@@ -34,7 +34,18 @@
 #  include "config.h"
 #endif
 
-#if 1 /* set to 0 to measure times at various places */
+#include "utils.h"
+# define mytimersub(a, b, result)                                             \
+  do {                                                                        \
+    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
+    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
+    if ((result)->tv_usec < 0) {                                              \
+      --(result)->tv_sec;                                                     \
+      (result)->tv_usec += 1000000;                                           \
+    }                                                                         \
+  } while (0)
+
+#if 0 /* set to 0 to measure times at various places */
 #define START_TIMING(str) do {} while(0);
 #define END_TIMING() do {} while(0);
 #else
@@ -46,13 +57,22 @@
 	const char *timing_name=str;					\
 	gettimeofday(&start, NULL);					\
 
+#ifdef __GLIBC__
 #define END_TIMING()							\
 	gettimeofday(&end, NULL);					\
-	timersub(&end, &start, &diff);					\
-	printf("%s: %ds%03dms\n", 					\
+	mytimersub(&end, &start, &diff);				\
+	debug_print("TIMING %s %s: %ds%03dms\n", 			\
+		__FUNCTION__,						\
 		timing_name, (unsigned int)diff.tv_sec, 		\
-		(unsigned int)diff.tv_usec/1000);				\
-
+		(unsigned int)diff.tv_usec/1000);			
+#else
+#define END_TIMING()							\
+	gettimeofday(&end, NULL);					\
+	mytimersub(&end, &start, &diff);				\
+	debug_print("TIMING %s: %ds%03dms\n", 				\
+		timing_name, (unsigned int)diff.tv_sec, 		\
+		(unsigned int)diff.tv_usec/1000);			
 #endif
 
+#endif 
 #endif 

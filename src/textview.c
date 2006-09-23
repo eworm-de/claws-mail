@@ -566,7 +566,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	START_TIMING("textview_show_part");
+	START_TIMING("");
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
@@ -632,7 +632,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	const gchar *name;
 	gchar *content_type;
 	gint charcount;
-	START_TIMING("textview_add_part");
+	START_TIMING("");
 
 	g_return_if_fail(mimeinfo != NULL);
 	text = GTK_TEXT_VIEW(textview->text);
@@ -766,7 +766,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
 {
         GNode * iter;
 	MimeInfo *mimeinfo;
-        START_TIMING("recursive_add_parts");
+        START_TIMING("");
 
         mimeinfo = (MimeInfo *) node->data;
         

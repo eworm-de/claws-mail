@@ -1,3 +1,19 @@
+2006-09-23 [colin]	2.4.0cvs212
+
+	* src/gtk/inputdialog.c
+		Fix [ ] remember this appearing in normal
+		input dialogs after it's been used by
+		mimeview.
+	* src/folder.c
+	* src/folderview.c
+	* src/msgcache.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/timing.h
+		Enable timings in debug mode and make it
+		look prettier.
+
 2006-09-22 [colin]	2.4.0cvs211
 
 	* README

@@ -249,7 +249,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	MsgInfo *msginfo;
 	const gchar *msgid;
         GSList *reflist;
-	START_TIMING("procmsg_get_thread_tree");
+	START_TIMING("");
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	
@@ -311,7 +311,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	}
 
 	if (prefs_common.thread_by_subject) {
-		START_TIMING("procmsg_get_thread_tree(1)");
+		START_TIMING("thread by subject");
 		for (node = root->children; node && node != NULL;) {
 			next = node->next;
 			msginfo = (MsgInfo *) node->data;

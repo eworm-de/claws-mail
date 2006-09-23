@@ -1589,7 +1589,7 @@ void folder_item_process_open (FolderItem *item,
 
 gint folder_item_open(FolderItem *item)
 {
-	START_TIMING("folder_item_open"); 
+	START_TIMING(""); 
 	if (item->no_select)
 		return -1;
 
@@ -2222,7 +2222,7 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 void folder_item_read_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file;
-	START_TIMING("folder_item_read_cache");
+	START_TIMING("");
 	g_return_if_fail(item != NULL);
 
 	if (item->path != NULL) {

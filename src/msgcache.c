@@ -239,7 +239,7 @@ static void msgcache_get_msg_list_func(gpointer key, gpointer value, gpointer us
 MsgInfoList *msgcache_get_msg_list(MsgCache *cache)
 {
 	MsgInfoList *msg_list = NULL;
-	START_TIMING("msgcache_get_msg_list");
+	START_TIMING("");
 	g_return_val_if_fail(cache != NULL, NULL);
 
 	g_hash_table_foreach((GHashTable *)cache->msgnum_table, msgcache_get_msg_list_func, (gpointer)&msg_list);	
@@ -946,7 +946,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	gint map_len = -1;
 	char *cache_data = NULL;
 	char *mark_data = NULL;
-	START_TIMING("*** writing caches");
+	START_TIMING("");
 	g_return_val_if_fail(cache_file != NULL, -1);
 	g_return_val_if_fail(mark_file != NULL, -1);
 	g_return_val_if_fail(cache != NULL, -1);

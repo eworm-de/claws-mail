@@ -104,6 +104,8 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
 
+	gtk_widget_hide(remember_chkbtn);
+
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
 	is_pass = FALSE;
@@ -123,6 +125,7 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_INVISIBLE;
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
+	gtk_widget_hide(remember_chkbtn);
 
 	gtk_widget_hide(icon_q);
 	gtk_widget_show(icon_p);
@@ -317,6 +320,12 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 
 	input_dialog_set(title, message, default_string);
 	gtk_widget_show(dialog);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_chkbtn), FALSE);
+	if (remember)
+		gtk_widget_show(remember_chkbtn);
+	else
+		gtk_widget_hide(remember_chkbtn);
 
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));

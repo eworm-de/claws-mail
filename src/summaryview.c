@@ -857,7 +857,7 @@ static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 {
 	int u = 0, n = 0, m = 0, t = 0;
 	GSList *cur;
-	START_TIMING("consistency check");
+	START_TIMING("");
 	for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
 		t++;
@@ -900,7 +900,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (!summaryview->mainwin)
 		return FALSE;
-START_TIMING("--------- summary_show");
+	START_TIMING("");
 	summaryview->last_displayed = NULL;
 	summary_switch_from_to(summaryview, item);
 
@@ -2396,7 +2396,7 @@ void summary_sort(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCListCompareFunc cmp_func = NULL;
-	START_TIMING("summary_sort");
+	START_TIMING("");
 	g_signal_handlers_block_by_func(G_OBJECT(summaryview->ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
@@ -2536,7 +2536,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	GSList * cur;
-	START_TIMING("summary_set_ctree_from_list");
+	START_TIMING("");
 	
 	if (!mlist) return;
 
@@ -2558,7 +2558,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	
 	if (summaryview->threaded) {
 		GNode *root, *gnode;
-		START_TIMING("summaryview_set_ctree_from_list(1)");
+		START_TIMING("threaded");
 		root = procmsg_get_thread_tree(mlist);
 
 		for (gnode = root->children; gnode != NULL;
@@ -2573,7 +2573,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		END_TIMING();
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-		START_TIMING("summaryview_set_ctree_from_list(2)");
+		START_TIMING("unthreaded");
 		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
@@ -2628,7 +2628,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
 	if (prefs_common.bold_unread) {
-		START_TIMING("summaryview_set_ctree_from_list(3)");
+		START_TIMING("bold_unread");
 		while (node) {
 			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
 			if (GTK_CTREE_ROW(node)->children)
@@ -2913,7 +2913,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gint val;
-	START_TIMING("summary_display_msg_full");
+	START_TIMING("");
 	if (!new_window) {
 		if (summaryview->displayed == row)
 			return;
@@ -4435,7 +4435,7 @@ static void summary_thread_init(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	GtkCTreeNode *next;
-	START_TIMING("summary_thread_init");
+	START_TIMING("");
 	if (!summaryview->thread_collapsed) {
 		g_signal_handlers_block_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
@@ -5601,7 +5601,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
 	GtkCTreeNode *node = NULL;
-	START_TIMING("summary_sort_by_column_click");
+	START_TIMING("");
 	if (summaryview->sort_key == sort_key)
 		summary_sort(summaryview, sort_key,
 			     summaryview->sort_type == SORT_ASCENDING

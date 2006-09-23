@@ -2056,7 +2056,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	FolderItem *item;
 	gchar *buf;
 	int res = 0;
-	START_TIMING("--- folderview_selected");
+	START_TIMING("");
 	folderview->selected = row;
 
 	if (folderview->opened == row) {
