@@ -1,3 +1,18 @@
+2006-09-25 [paul]	2.4.0cvs214
+
+	* po/cs.po
+	* po/de.po
+	* po/fi.po
+	* po/fr.po
+	* po/nl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Tim, Stephan Sachse, Flammie Pirinen,
+		Fabien Vantard, Tim Dijkstra, Frederico Goncalves Guimaraes,
+		Ticho, Aleksander Urosevic, Ralgh Young
+
 2006-09-24 [mones]	2.4.0cvs213
 
 	* po/es.po
