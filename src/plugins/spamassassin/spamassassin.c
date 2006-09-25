@@ -259,7 +259,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
-			folder_item_move_msg(save_folder, msginfo);
+			msginfo->is_move = TRUE;
+			msginfo->to_filter_folder = save_folder;
 		} else {
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		}
@@ -563,7 +564,8 @@ struct PluginFeature *plugin_provides(void)
 
 void spamassassin_register_hook(void)
 {
-	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
+	if (hook_id == -1)
+		hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
@@ -575,4 +577,5 @@ void spamassassin_unregister_hook(void)
 	if (hook_id != -1) {
 		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	}
+	hook_id = -1;
 }

@@ -574,7 +574,8 @@ struct PluginFeature *plugin_provides(void)
 
 void bogofilter_register_hook(void)
 {
-	hook_id = hooks_register_hook(MAIL_LISTFILTERING_HOOKLIST, mail_filtering_hook, NULL);
+	if (hook_id == -1)
+		hook_id = hooks_register_hook(MAIL_LISTFILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
@@ -586,4 +587,5 @@ void bogofilter_unregister_hook(void)
 	if (hook_id != -1) {
 		hooks_unregister_hook(MAIL_LISTFILTERING_HOOKLIST, hook_id);
 	}
+	hook_id = -1;
 }
