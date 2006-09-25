@@ -1187,14 +1187,12 @@ static void search_run(struct etpan_thread_op * op)
 	
 	param = op->param;
 	
-	if (param->set == NULL && param->type == IMAP_SEARCH_TYPE_SIMPLE) {
-		g_warning("broken search");
-	}
-	
 	/* we copy the mailimap_set because freeing the key is recursive */
-	if (param->set != NULL)
+	if (param->set != NULL) {
 		uid_key = mailimap_search_key_new_uid(sc_mailimap_set_copy(param->set));
-	
+	} else if (param->type == IMAP_SEARCH_TYPE_SIMPLE) {
+		uid_key = mailimap_search_key_new_all();
+	}
 	search_type_key = NULL;
 	switch (param->type) {
 	case IMAP_SEARCH_TYPE_SIMPLE:

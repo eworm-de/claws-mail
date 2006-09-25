@@ -1,3 +1,11 @@
+2006-09-25 [colin]	2.5.0cvs2
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+		Use UID SEARCH ALL instead of UID 1:*
+		(braindead servers can't figure out that's
+		the same...)
+
 2006-09-25 [wwp]	2.5.0cvs1
 
 	* src/message_search.c

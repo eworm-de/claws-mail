@@ -3024,7 +3024,6 @@ static void *get_list_of_uids_thread(void *data)
 	gint ok, nummsgs = 0, lastuid_old;
 	IMAPSession *session;
 	GSList *uidlist, *elem;
-	struct mailimap_set * set;
 	clist * lep_uidlist;
 	int r;
 
@@ -3043,11 +3042,8 @@ static void *get_list_of_uids_thread(void *data)
 
 	uidlist = NULL;
 	
-	set = mailimap_set_new_interval(item->lastuid + 1, 0);
-
-	r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, set,
+	r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, NULL,
 				 &lep_uidlist);
-	mailimap_set_free(set);
 	
 	if (r == MAILIMAP_NO_ERROR) {
 		GSList * fetchuid_list;
