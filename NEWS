@@ -1,5 +1,109 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.0
+-------
+
+* Minimum required versions of GTK+ and GLIB is now 2.6.0
+
+* Minimum required version of libetpan (for IMAP support) is now 0.46
+
+* metamail support has been dropped, this is now handled internally
+
+* New plugin: Bogofilter, providing Spam filtering and learning
+
+* Account-based filtering rules. Each filtering rule can now be
+  assigned to a specific account, by default it's "All".
+
+* Filtering against Address Book. It is now possible add matched 
+  conditions to determine if any email address in a message matches
+  or doesn't match any or all books or folders in the Address Book.
+
+* Quote folding. Quotes in the message view can now be folded, via
+  the "/View/Quotes/..." menu. The folding can also be toggled by
+  double clicking on the quotes in the Message View
+
+* Re-enabled user-defined Headers in Displayed Headers configuration
+
+* "/View/Go to/Parent message" and "/View/Go to/Last read message"
+  have been added
+
+* Made the list views look more modern by add alternating coloured
+  lines, replacing the box-type expanders with arrows, removing the
+  dotted lines.
+  Hidden prefs have been added to enable users to maintain the old
+  style:
+  'enable_dotted_lines' for the dotted lines and box-type expanders. 
+  'use stripes_in_summary' to enable alternating coloured lines in
+   the Message and Folder lists.
+  'use stripes_everywhere' to  also enable alternating coloured lines
+   in all other lists.
+  Note: 'use_stripes_everywhere' replaces the previous hidden option
+  'enable_rules_hint'.
+
+* New hidden pref, 'stripes_color_offset', to change the value added/
+  subtracted to normal bgcolor to create the stripes in the summaries
+ 
+* The Send button on the main toolbar is now inactive when the Queue
+  folders are empty
+
+* IMAP: Added a View Log button on auth error
+
+* PGP/Core plugin: it is now possible to create a new key pair from
+  within Sylpheed-Claws
+
+* PGP/Core plugin: When encrypting, if only one key matches, and it 
+  matches exactly, it is automatically used
+
+* TrayIcon plugin: the icon now has transparency
+
+* Enabled text selection for replying from MimeViewer plugins
+
+* The attachments list in the MimeView column can now be scrolled
+  using the mousewheel
+
+* In the MimeView column a middle-click will now just open the Mime
+  part without showing it in the Message View, likewise, a right-
+  click will display the context menu without displaying the part
+
+* The "When entering a folder..." selection option is now used for
+  '/View/Go to/Next unread folder'
+
+* A special Return-Receipt message is shown if the message is from
+  the user
+
+* An icon has been added to the statusbar to notify of errors
+
+* Added missing icons to the Icon Legend dialog
+
+* Enabled closing of SSL certificates and Folder Sort dialogs with Esc
+  key
+
+* Displaying of huge mails can now be cancelled, so the GUI doesn't
+  block
+
+* Sylpheed-Claws' internal queue headers are now hidden when showing
+  all headers. They'll be present only in Source window.
+
+* Several GUI improvements.
+
+* Faster loading of folders and other optimisations and speed-ups
+
+* Logging has been improved.
+
+* improved sizing of some widgets
+
+* Made the desktop file XDG compliant
+
+* The manuals have been updated
+
+* A Spanish translation of the manual has been added
+
+* Added an action tool, tools/uuooffice, to open uuencoded *.doc files
+  with OpenOffice.
+
+* Added an action tool, tools/fix_date.sh, to fix a missing Date field
+  in emails.
+
 * 2.4.0
 -------
 
