@@ -1913,3 +1913,4 @@
 ( cvs diff -u -r 1.395.2.254 -r 1.395.2.255 src/summaryview.c;  ) > 2.5.1cvs2.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/partial_download.c;  ) > 2.5.1cvs3.patchset
 ( cvs diff -u -r 1.28.2.27 -r 1.28.2.28 src/mbox.c;  ) > 2.5.1cvs4.patchset
+( cvs diff -u -r 1.75.2.30 -r 1.75.2.31 src/matcher.c;  ) > 2.5.1cvs5.patchset

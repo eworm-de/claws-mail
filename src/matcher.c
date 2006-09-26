@@ -423,7 +423,7 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 	}
 	
 	if (res == FALSE && (strchr(prop->expr, '=') || strchr(prop->expr, '_')
-			    || strchr(str, '=')) || strchr(prop->expr, '_')) {
+			    || strchr(str, '=') || strchr(str, '_'))) {
 		/* if searching for something with an equal char, maybe 
 		 * we should try to match the non-decoded string. 
 		 * In case it was not qp-encoded. */

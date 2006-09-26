@@ -1,3 +1,8 @@
+2006-09-26 [colin]	2.5.1cvs5
+
+	* src/matcher.c
+		Fix condition
+
 2006-09-26 [colin]	2.5.1cvs4
 
 	* src/mbox.c
