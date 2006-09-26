@@ -1911,3 +1911,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.13.2.24 -r 1.13.2.25 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.18.2.41 -r 1.18.2.42 src/plugins/spamassassin/spamassassin.c;  ) > 2.5.0cvs3.patchset
 ( cvs diff -u -r 1.28.2.26 -r 1.28.2.27 src/mbox.c;  ) > 2.5.1cvs1.patchset
 ( cvs diff -u -r 1.395.2.254 -r 1.395.2.255 src/summaryview.c;  ) > 2.5.1cvs2.patchset
+( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/partial_download.c;  ) > 2.5.1cvs3.patchset

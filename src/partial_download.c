@@ -149,15 +149,17 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	MsgInfo *tinfo;
 	gchar *sanitized_uid = NULL;	
 
-	if (!tinfo->extradata)
-		return err;
-
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename) {
 		g_warning("can't get message file path.\n");
 		return err;
 	}
 	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);
+	
+	if (!tinfo->extradata) {
+		g_free(filename);
+		return err;
+	}
 
 	sanitized_uid = g_strdup(tinfo->extradata->account_login);
 	subst_for_filename(sanitized_uid);
