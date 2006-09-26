@@ -1,4 +1,4 @@
-25th September 2006                              Sylpheed-Claws 2.5.0
+26th September 2006                              Sylpheed-Claws 2.5.1
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -6,166 +6,18 @@
 Sylpheed-Claws is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-Notes for this release:
-~~~~~~~~~~~~~~~~~~~~~~~
-
-* Minimum required versions of GTK+ and GLIB is now 2.6.0
-
-* Minimum required version of libetpan (for IMAP support) is now 0.46
-
-* metamail support has been dropped, this is now handled internally
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* New plugin: Bogofilter, providing Spam filtering and learning
+* It is now possible to stop searches in message bodies
 
-* Account-based filtering rules. Each filtering rule can now be
-  assigned to a specific account, by default it's "All".
-
-* Filtering against Address Book. It is now possible add matched 
-  conditions to determine if any email address in a message matches
-  or doesn't match any or all books or folders in the Address Book.
-
-* Quote folding. Quotes in the message view can now be folded, via
-  the "/View/Quotes/..." menu. The folding can also be toggled by
-  double clicking on the quotes in the Message View
-
-* Re-enabled user-defined Headers in Displayed Headers configuration
-
-* "/View/Go to/Parent message" and "/View/Go to/Last read message"
-  have been added
-
-* Made the list views look more modern by add alternating coloured
-  lines, replacing the box-type expanders with arrows, removing the
-  dotted lines.
-  Hidden prefs have been added to enable users to maintain the old
-  style:
-  'enable_dotted_lines' for the dotted lines and box-type expanders. 
-  'use stripes_in_summary' to enable alternating coloured lines in
-   the Message and Folder lists.
-  'use stripes_everywhere' to  also enable alternating coloured lines
-   in all other lists.
-  Note: 'use_stripes_everywhere' replaces the previous hidden option
-  'enable_rules_hint'.
-
-* New hidden pref, 'stripes_color_offset', to change the value added/
-  subtracted to normal bgcolor to create the stripes in the summaries
- 
-* The Send button on the main toolbar is now inactive when the Queue
-  folders are empty
-
-* IMAP: Added a View Log button on auth error
-
-* PGP/Core plugin: it is now possible to create a new key pair from
-  within Sylpheed-Claws
-
-* PGP/Core plugin: When encrypting, if only one key matches, and it 
-  matches exactly, it is automatically used
-
-* TrayIcon plugin: the icon now has transparency
-
-* Enabled text selection for replying from MimeViewer plugins
-
-* The attachments list in the MimeView column can now be scrolled
-  using the mousewheel
-
-* In the MimeView column a middle-click will now just open the Mime
-  part without showing it in the Message View, likewise, a right-
-  click will display the context menu without displaying the part
-
-* The "When entering a folder..." selection option is now used for
-  '/View/Go to/Next unread folder'
-
-* A special Return-Receipt message is shown if the message is from
-  the user
-
-* An icon has been added to the statusbar to notify of errors
-
-* Added missing icons to the Icon Legend dialog
-
-* Enabled closing of SSL certificates and Folder Sort dialogs with Esc
-  key
-
-* Displaying of huge mails can now be cancelled, so the GUI doesn't
-  block
-
-* Sylpheed-Claws' internal queue headers are now hidden when showing
-  all headers. They'll be present only in Source window.
-
-* Several GUI improvements.
-
-* Faster loading of folders and other optimisations and speed-ups
-
-* Logging has been improved.
-
-* improved sizing of some widgets
-
-* Made the desktop file XDG compliant
-
-* The manuals have been updated
-
-* A Spanish translation of the manual has been added
-
-* Added an action tool, tools/uuooffice, to open uuencoded *.doc files
-  with OpenOffice.
-
-* Added an action tool, tools/fix_date.sh, to fix a missing Date field
-  in emails.
-
-* updated Brazilian Portuguese, Czech, Dutch, Finnish, French, German,
-  Serbian, Simplified Chinese, Slovak and Spanish translations.
-
+* IMAP: Use UID SEARCH ALL instead of UID SEARCH UID 1:* in order
+  to fix speed issues with badly implemented servers
+  
 * Bug fixes: 
-	o bug 456  'current message is hidden when the view is
-		    refreshed and extended search is "unread
-		    messages"'
-	o bug 956  'DnD text with accents in compose text entry'
-	o bug 973  'Unicode punctation characters are not recognized'
-	o bug 979  'Plugin crashes when exiting sylpheed-claws'
-	o bug 988  'Very specific filesystem issue on temp files'
-	o bug 995  '"Mark cross-posted as read" doesn't work'
-	o bug 998  'last attachment is not accessible'
-	o bug 999  'Timing out on TSL cert validation dialog makes
-		    ugly things happen'
-	o bug 1007 'Wrong folder highlighted'
-	o bug 1011 'wrong (negative) count on unread messages'
-	o bug 1012 'crashed upon sending mail from compose window'
-	o bug 1013 'expand selected thread tree'
-	o problem with Actions of the format "> stuff >"
-	o strict ISO C90 compliance
-	o crash setting the priority on re-edit
-	o default font size setting after wizard run
-	o missing last line in some mail cases (Fixes debian bug
-	  #381872)
-	o Send button sensitivity at startup
-	o encrypt bug on IMAP
-	o occasional IMAP bug where large msgs were left in the queue
-  	  folder after sending
-	o encrypted mail marked as new when saved in normal folders
-	o switching to offline, asking if it should be overriden for
-  	  synchronising
-	o body quicksearch in non-encoded bodies containing '='
-	o replied flag not being set after drafting
-	o data loss when copy fails during a move
-	o automatic sizing of some dialogs
-	o compilation on FreeBSD
-	o fix free-after-use in some cases
-	  (when procmime_encode_content() frees mimeinfo->data.mem
-	  and turns it to a temp file)
-	o fix "real-time" sorting in folder list by freezing/thawing
-	o fix can't click forward/backward buttons in the summary
-	  search
-	o miscellaneous printing issues: 
-	  - Bad font for linkified headers
-	  - Different font if the mail was displayed or not
-	o select the mimepart icon when displaying as text
-	o fix blocking check of an SSL certificate
-	o update folder name label on folder rename
-	o workaround possible GTK crash: remove selection clipboard
-	  before destroying widget, or GTK+-2.10
-	o workaround GTK+ Bug 351600 - 'Can't re-click on button after
-  	  sensitivity update'
+	o Fix multiple registering of SpamAssassin and Bogofilter
+	  plugin after having changed their preferences, leading to
+	  slowness or duplicated messages.
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi

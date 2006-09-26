@@ -1,5 +1,18 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.1
+-------
+
+* It is now possible to stop searches in message bodies
+
+* IMAP: Use UID SEARCH ALL instead of UID SEARCH UID 1:* in order
+  to fix speed issues with badly implemented servers
+  
+* Bug fixes: 
+	o Fix multiple registering of SpamAssassin and Bogofilter
+	  plugin after having changed their preferences, leading to
+	  slowness or duplicated messages.
+
 * 2.5.0
 -------
 
