@@ -5297,7 +5297,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 						g_list_length(GTK_CLIST(ctree)->row_list)-1);
 			if (next) {
 				gtk_sctree_select_with_state
-					(GTK_SCTREE(ctree), next, event->state);
+					(GTK_SCTREE(ctree), next, (event->state & ~GDK_CONTROL_MASK) );
 
 				/* Deprecated - what are the non-deprecated equivalents? */
 				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
