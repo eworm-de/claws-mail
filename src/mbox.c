@@ -118,7 +118,9 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		if (msgs > 0 && msgs%500 == 0) {
 			if (printed)
 				statusbar_pop_all();
-			statusbar_print_all(_("Importing from mbox... (%d mails imported)"), msgs);
+			statusbar_print_all(
+				ngettext("Importing from mbox... (%d message imported)",
+					"Importing from mbox... (%d messages imported)", msgs), msgs);
 			printed=TRUE;
 			GTK_EVENTS_FLUSH();
 		}
