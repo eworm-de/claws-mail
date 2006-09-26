@@ -29,6 +29,8 @@
 #include "utils.h"
 #include "prefs_common.h"
 
+#include "pixmaps/addr_one.xpm"
+#include "pixmaps/addr_two.xpm"
 #include "pixmaps/address.xpm"
 #include "pixmaps/book.xpm"
 #include "pixmaps/category.xpm"
@@ -172,6 +174,8 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
 
 static StockPixmapData pixmaps[] =
 {
+	{addr_one_xpm				, NULL, NULL, "addr_one", NULL},
+	{addr_two_xpm				, NULL, NULL, "addr_two", NULL},
 	{address_xpm				, NULL, NULL, "address", NULL},
 	{address_book_xpm			, NULL, NULL, "address_book", NULL},
 	{address_search_xpm			, NULL, NULL, "address_search", NULL},

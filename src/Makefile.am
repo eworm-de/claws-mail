@@ -290,6 +290,8 @@ BUILT_SOURCES = \
 	quote_fmt_parse.h
 
 EXTRA_DIST = \
+	pixmaps/addr_one.xpm \
+	pixmaps/addr_two.xpm \
 	pixmaps/address_book.xpm \
 	pixmaps/address_search.xpm \
 	pixmaps/address.xpm \

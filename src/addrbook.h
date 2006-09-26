@@ -109,6 +109,7 @@ gchar *addrbook_gen_new_file_name	( gint fileNum );
 gint addrbook_test_read_file		( AddressBookFile *book, gchar *fileName );
 
 GList *addrbook_get_all_persons		( AddressBookFile *book );
+GList *addrbook_get_all_groups		( AddressBookFile *book );
 
 ItemPerson *addrbook_add_contact	( AddressBookFile *book, ItemFolder *folder,
 					  const gchar *name, const gchar *address,

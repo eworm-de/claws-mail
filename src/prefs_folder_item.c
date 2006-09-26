@@ -611,7 +611,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 		SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
 		gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
-		address_completion_register_entry(GTK_ENTRY(entry_default_to));
+		address_completion_register_entry(GTK_ENTRY(entry_default_to),
+				TRUE);
 
 		default_to_rec_checkbtn = gtk_check_button_new();
 		gtk_table_attach(GTK_TABLE(table), default_to_rec_checkbtn, 2, 3, 
@@ -631,7 +632,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 		SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
 		gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
-		address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
+		address_completion_register_entry(
+				GTK_ENTRY(entry_default_reply_to), TRUE);
 
 		default_reply_to_rec_checkbtn = gtk_check_button_new();
 		gtk_table_attach(GTK_TABLE(table), default_reply_to_rec_checkbtn, 2, 3, 

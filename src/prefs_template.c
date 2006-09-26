@@ -210,7 +210,8 @@ static void prefs_template_window_create(void)
 		gtk_tooltips_set_tip(tooltips, *(tab[i].entry), tab[i].tooltips, NULL);
 
 		if (tab[i].compl)
-			address_completion_register_entry(GTK_ENTRY(*(tab[i].entry)));
+			address_completion_register_entry(
+				GTK_ENTRY(*(tab[i].entry)), TRUE);
 	}
 
 	/* template content */

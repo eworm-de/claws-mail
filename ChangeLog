@@ -1,3 +1,24 @@
+2006-09-26 [colin]	2.5.2cvs1
+
+	* src/Makefile.am
+	* src/addr_compl.c
+	* src/addr_compl.h
+	* src/addrbook.c
+	* src/addrbook.h
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/addrindex.h
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_filtering_action.c
+	* src/prefs_folder_item.c
+	* src/prefs_template.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/addr_one.xpm
+	* src/pixmaps/addr_two.xpm
+		Add auto-completion on groups
+
 2006-09-26 [colin]	2.5.2
 
 	* NEWS

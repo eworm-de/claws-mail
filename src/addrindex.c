@@ -219,6 +219,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getListFolder = ( void * ) addrbook_get_list_folder;
 	iface->getListPerson = ( void * ) addrbook_get_list_person;
 	iface->getAllPersons = ( void * ) addrbook_get_all_persons;
+	iface->getAllGroups  = ( void * ) addrbook_get_all_groups;
 	iface->getName       = ( void * ) addrbook_get_name;
 	iface->setAccessFlag = ( void * ) addrbook_set_accessed;
 	iface->searchOrder   = 0;
@@ -2791,48 +2792,67 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 
 static void addrindex_load_completion_load_persons(
 		gint (*callBackFunc) ( const gchar *, const gchar *, 
-				       const gchar *, const gchar * ),
+				       const gchar *, const gchar *, GList * ),
 		AddressDataSource *ds)
 {
 	GList *listP, *nodeP;
 	GList *nodeM;
 	gchar *sName;
 
-			/* Read address book */
-			if( addrindex_ds_get_modify_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-			}
+	/* Read address book */
+	if( addrindex_ds_get_modify_flag( ds ) ) {
+		addrindex_ds_read_data( ds );
+	}
 
-			if( ! addrindex_ds_get_read_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-			}
+	if( ! addrindex_ds_get_read_flag( ds ) ) {
+		addrindex_ds_read_data( ds );
+	}
 
-			/* Get all persons */
-			listP = addrindex_ds_get_all_persons( ds );
-			nodeP = listP;
-			while( nodeP ) {
-				ItemPerson *person = nodeP->data;
-				nodeM = person->listEMail;
+	/* Get all groups */
+	listP = addrindex_ds_get_all_groups( ds );
+	nodeP = listP;
+	while( nodeP ) {
+		ItemGroup *group = nodeP->data;
+		GList *emails = NULL;
+		for (nodeM = group->listEMail; nodeM; nodeM = g_list_next(nodeM)) {
+			ItemEMail *email = nodeM->data;
+			if (email->address)
+				emails = g_list_append(emails, email);
+		}
+		callBackFunc( ((AddrItemObject *)group)->name, NULL,
+			      NULL, NULL, emails );
+		nodeP = g_list_next( nodeP );
+	}
 
-				/* Figure out name to use */
-				sName = ADDRITEM_NAME(person);
-				if( sName == NULL || *sName == '\0' ) {
-					sName = person->nickName;
-				}
+	/* Free up the list */
+	g_list_free( listP );
+	/* Get all persons */
+	listP = addrindex_ds_get_all_persons( ds );
+	nodeP = listP;
+	while( nodeP ) {
+		ItemPerson *person = nodeP->data;
+		nodeM = person->listEMail;
 
-				/* Process each E-Mail address */
-				while( nodeM ) {
-					ItemEMail *email = nodeM->data;
-					
-					callBackFunc( sName, email->address, person->nickName, 
-						      ADDRITEM_NAME(email) );
-					
-					nodeM = g_list_next( nodeM );
-				}
-				nodeP = g_list_next( nodeP );
-			}
-			/* Free up the list */
-			g_list_free( listP );
+		/* Figure out name to use */
+		sName = ADDRITEM_NAME(person);
+		if( sName == NULL || *sName == '\0' ) {
+			sName = person->nickName;
+		}
+
+		/* Process each E-Mail address */
+		while( nodeM ) {
+			ItemEMail *email = nodeM->data;
+
+			callBackFunc( sName, email->address, person->nickName, 
+				      ADDRITEM_NAME(email), NULL );
+
+			nodeM = g_list_next( nodeM );
+		}
+		nodeP = g_list_next( nodeP );
+	}
+
+	/* Free up the list */
+	g_list_free( listP );
 }		
 
 /**
@@ -2848,7 +2868,7 @@ static void addrindex_load_completion_load_persons(
 
 gboolean addrindex_load_completion(
 		gint (*callBackFunc) ( const gchar *, const gchar *, 
-				       const gchar *, const gchar * ),
+				       const gchar *, const gchar *, GList * ),
 		gchar *folderpath )
 {
 	GList *nodeIf, *nodeDS;
@@ -2903,7 +2923,7 @@ gboolean addrindex_load_completion(
 						ItemEMail *email = nodeM->data;
 
 						callBackFunc( sName, email->address, person->nickName, 
-								  ADDRITEM_NAME(email) );
+								  ADDRITEM_NAME(email), NULL );
 
 						nodeM = g_list_next( nodeM );
 					}

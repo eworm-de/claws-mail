@@ -2248,6 +2248,12 @@ GList *addrbook_get_all_persons(AddressBookFile *book)
 	return addrcache_get_all_persons(book->addressCache);
 }
 
+GList *addrbook_get_all_groups(AddressBookFile *book)
+{
+	g_return_val_if_fail(book != NULL, NULL);
+	return addrcache_get_all_groups(book->addressCache);
+}
+
 /**
  * Add person and address data to address book.
  * \param  book    Address book.

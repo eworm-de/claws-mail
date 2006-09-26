@@ -1138,11 +1138,15 @@ static void prefs_filtering_action_type_selection_changed(GtkList *list,
 		||  filtering_action.current_action == ACTION_REDIRECT) {
 			debug_print("unregistering address completion entry\n");
 			address_completion_unregister_entry(GTK_ENTRY(filtering_action.dest_entry));
+			address_completion_end(filtering_action.window);
 		}
 		if (value == ACTION_FORWARD || value == ACTION_FORWARD_AS_ATTACHMENT
 		||  value == ACTION_REDIRECT) {
 			debug_print("registering address completion entry\n");
-			address_completion_register_entry(GTK_ENTRY(filtering_action.dest_entry));
+			address_completion_start(filtering_action.window);
+			address_completion_register_entry(
+					GTK_ENTRY(filtering_action.dest_entry),
+					TRUE);
 		}
 		filtering_action.current_action = value;
 	}

@@ -622,6 +622,8 @@ void addressbook_open(Compose *target)
 	}
 
 	gtk_widget_show_all(addrbook.window);
+	address_completion_start(addrbook.window);
+
 	addressbook_show_buttons(target == NULL, lastCanLookup, target != NULL);
 	addressbook_set_target_compose(target);
 }
@@ -979,7 +981,7 @@ static void addressbook_create(void)
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 
-	address_completion_register_entry(GTK_ENTRY(entry));
+	address_completion_register_entry(GTK_ENTRY(entry), FALSE);
 
 	g_signal_connect(G_OBJECT(entry), "key_press_event",
 			 G_CALLBACK(addressbook_entry_key_pressed),
@@ -1137,7 +1139,6 @@ static void addressbook_create(void)
 	addrbook.menu_factory = menu_factory;
 
 	addrbook.listSelected = NULL;
-	address_completion_start(window);
 
 	if (!geometry.min_height) {
 		geometry.min_width = ADDRESSBOOK_WIDTH;
@@ -1156,6 +1157,7 @@ static void addressbook_create(void)
  * Close address book window and save to file(s).
  */
 static gint addressbook_close( void ) {
+	address_completion_end(addrbook.window);
 	gtk_widget_hide(addrbook.window);
 	addressbook_export_to_file();
 	return TRUE;
@@ -2838,8 +2840,8 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		/* Edit person - basic page */
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE ) == NULL ) return;
-		invalidate_address_completion();
 		addressbook_folder_refresh_one_person( clist, person );
+		invalidate_address_completion();
 		return;
 	}
 	else if( obj->type == ADDR_ITEM_GROUP ) {
@@ -2848,6 +2850,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		parentNode = addrbook.treeSelected;
 		node = addressbook_find_group_node( parentNode, itemGrp );
 		name = ADDRITEM_NAME(itemGrp);
+		invalidate_address_completion();
 	}
 	else {
 		return;

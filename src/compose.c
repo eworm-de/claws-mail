@@ -5469,7 +5469,7 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_drag_drop),
 			 compose);
 	
-	address_completion_register_entry(GTK_ENTRY(entry));
+	address_completion_register_entry(GTK_ENTRY(entry), TRUE);
 
         headerentry->compose = compose;
         headerentry->combo = combo;

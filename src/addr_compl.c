@@ -53,7 +53,10 @@
  *\brief	For the GtkListStore
  */
 enum {
+	ADDR_COMPL_ICON,
 	ADDR_COMPL_ADDRESS,
+	ADDR_COMPL_ISGROUP,
+	ADDR_COMPL_GROUPLIST,
 	N_ADDR_COMPL_COLUMNS
 };
 
@@ -83,6 +86,7 @@ typedef struct
 {
 	gchar *name;
 	gchar *address;
+	GList *grp_emails;
 } address_entry;
 
 /**
@@ -101,6 +105,9 @@ static gint	    g_ref_count;	/* list ref count */
 static GList 	   *g_completion_list;	/* list of strings to be checked */
 static GList 	   *g_address_list;	/* address storage */
 static GCompletion *g_completion;	/* completion object */
+
+static GHashTable *_groupAddresses_ = NULL;
+static gboolean _allowGroups_ = TRUE;
 
 /* To allow for continuing completion we have to keep track of the state
  * using the following variables. No need to create a context object. */
@@ -195,6 +202,7 @@ static void free_all(void)
 		address_entry *ae = (address_entry *) walk->data;
 		g_free(ae->name);
 		g_free(ae->address);
+		g_list_free(ae->grp_emails);
 		g_free(walk->data);
 	}
 	g_list_free(g_address_list);
@@ -202,6 +210,9 @@ static void free_all(void)
 	
 	g_completion_free(g_completion);
 	g_completion = NULL;
+	if (_groupAddresses_)
+		g_hash_table_destroy(_groupAddresses_);
+	_groupAddresses_ = NULL;
 }
 
 /**
@@ -226,15 +237,23 @@ static void add_address1(const char *str, address_entry *ae)
  * \param name    Recipient name.
  * \param address EMail address.
  * \param alias   Alias to append.
+ * \param grp_emails the emails in case of a group. List should be freed later, 
+ * but not its strings
  * \return <code>0</code> if entry appended successfully, or <code>-1</code>
  *         if failure.
  */
 static gint add_address(const gchar *name, const gchar *address, 
-			const gchar *nick, const gchar *alias)
+			const gchar *nick, const gchar *alias, GList *grp_emails)
 {
 	address_entry    *ae;
+	gboolean is_group = FALSE;
 
-	if (!name || !address) return -1;
+	if (!name || !address) {
+		if (!address && !nick && !alias && grp_emails) {
+			is_group = TRUE;
+		} else
+			return -1;
+	}
 
 	ae = g_new0(address_entry, 1);
 
@@ -242,11 +261,12 @@ static gint add_address(const gchar *name, const gchar *address,
 
 	ae->name    = g_strdup(name);
 	ae->address = g_strdup(address);		
-
+	ae->grp_emails = grp_emails;
 	g_address_list = g_list_prepend(g_address_list, ae);
 
 	add_address1(name, ae);
-	add_address1(address, ae);
+	if (address != NULL)
+		add_address1(address, ae);
 	
 	if (nick != NULL)
 		add_address1(nick, ae);
@@ -401,6 +421,20 @@ static gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 	return str;
 } 
 
+static gchar *get_complete_address_from_name_email(const gchar *name, const gchar *email)
+{
+	gchar *address = NULL;
+	if (!name || name[0] == '\0')
+		address = g_strdup_printf("<%s>", email);
+	else if (strchr_with_skip_quote(name, '"', ','))
+		address = g_strdup_printf
+			("\"%s\" <%s>", name, email);
+	else
+		address = g_strdup_printf
+			("%s <%s>", name, email);
+	return address;
+}
+
 /**
  * Replace an incompleted address with a completed one.
  * \param entry     Address entry field.
@@ -408,12 +442,35 @@ static gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
  * \param start_pos Insertion point in entry field.
  */
 static void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
-			     gint start_pos)
+			     gint start_pos, gboolean is_group, GList *grp_emails)
 {
 	if (!newtext) return;
 	gtk_editable_delete_text(GTK_EDITABLE(entry), start_pos, -1);
-	gtk_editable_insert_text(GTK_EDITABLE(entry), newtext, strlen(newtext),
+	if (!is_group) {
+		gtk_editable_insert_text(GTK_EDITABLE(entry), newtext, strlen(newtext),
 				 &start_pos);
+	} else {
+		gchar *addresses = NULL;
+		GList *cur = grp_emails;
+		for (; cur; cur = cur->next) {
+			gchar *tmp;
+			ItemEMail *email = (ItemEMail *)cur->data;
+			ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(email);
+			
+			gchar *addr = get_complete_address_from_name_email(
+				ADDRITEM_NAME(person), email->address);
+			if (addresses)
+				tmp = g_strdup_printf("%s, %s", addresses, addr);
+			else
+				tmp = g_strdup_printf("%s", addr);
+			g_free(addr);
+			g_free(addresses);
+			addresses = tmp;
+		}
+		gtk_editable_insert_text(GTK_EDITABLE(entry), addresses, strlen(addresses),
+				 &start_pos);
+		g_free(addresses);
+	}
 	gtk_editable_set_position(GTK_EDITABLE(entry), -1);
 }
 
@@ -490,15 +547,17 @@ gchar *get_complete_address(gint index)
 			/* get something from the unique addresses */
 			p = (address_entry *)g_slist_nth_data
 				(g_completion_addresses, index - 1);
-			if (p != NULL) {
-				if (!p->name || p->name[0] == '\0')
-					address = g_strdup_printf(p->address);
-				else if (strchr_with_skip_quote(p->name, '"', ','))
-					address = g_strdup_printf
-						("\"%s\" <%s>", p->name, p->address);
-				else
-					address = g_strdup_printf
-						("%s <%s>", p->name, p->address);
+			if (p != NULL && p->address != NULL) {
+				address = get_complete_address_from_name_email(p->name, p->address);
+			} else if (p != NULL && p->address == NULL && p->name != NULL) {
+				/* that's a group */
+				address = g_strdup_printf("%s%s <!--___group___-->", p->name, _(" (Group)"));
+				if (!_groupAddresses_) {
+					_groupAddresses_ = g_hash_table_new(NULL, g_direct_equal);
+				}
+				if (!g_hash_table_lookup(_groupAddresses_, GINT_TO_POINTER(g_str_hash(address)))) {
+					g_hash_table_insert(_groupAddresses_, GINT_TO_POINTER(g_str_hash(address)), p->grp_emails);
+				}
 			}
 		}
 	}
@@ -590,7 +649,6 @@ static pthread_mutex_t _completionMutex_ = PTHREAD_MUTEX_INITIALIZER;
  * Completion queue list.
  */
 static GList *_displayQueue_ = NULL;
-
 /**
  * Current query ID.
  */
@@ -607,6 +665,7 @@ static guint _completionIdleID_ = 0;
  */
 
 #define ENTRY_DATA_TAB_HOOK	"tab_hook"	/* used to lookup entry */
+#define ENTRY_DATA_ALLOW_GROUPS	"allowgrp"	/* used to know whether to present groups */
 
 static void address_completion_mainwindow_set_focus	(GtkWindow   *window,
 							 GtkWidget   *widget,
@@ -759,6 +818,9 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 		gtk_widget_set_size_request(cw->window, width, r.height);
 }
 
+static GdkPixbuf *group_pixbuf = NULL;
+static GdkPixbuf *email_pixbuf = NULL;
+
 /**
  * Add an address the completion window address list.
  * \param cw      Completion window.
@@ -768,12 +830,38 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	GtkListStore *store;
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
-
+	gboolean is_group = FALSE;
+	GList *grp_emails = NULL;
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(cw->list_view)));
-	gtk_list_store_append(store, &iter);
+	GdkPixbuf *pixbuf;
+	
+	if (!group_pixbuf)
+		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_TWO, &group_pixbuf);
+	if (!email_pixbuf)
+		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_ONE, &email_pixbuf);
 
 	/* printf( "\t\tAdding :%s\n", address ); */
-	gtk_list_store_set(store, &iter, ADDR_COMPL_ADDRESS, address, -1);
+	if (strstr(address, " <!--___group___-->")) {
+		is_group = TRUE;
+		if (_groupAddresses_)
+			grp_emails = g_hash_table_lookup(_groupAddresses_, GINT_TO_POINTER(g_str_hash(address)));
+		*(strstr(address, " <!--___group___-->")) = '\0';
+		pixbuf = group_pixbuf;
+	} else if (strchr(address, '@') && strchr(address, '<') &&
+		   strchr(address, '>')) {
+		pixbuf = email_pixbuf;
+	} else
+		pixbuf = NULL;
+	
+	if (is_group && !_allowGroups_)
+		return;
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter, 
+				ADDR_COMPL_ICON, pixbuf,
+				ADDR_COMPL_ADDRESS, address, 
+				ADDR_COMPL_ISGROUP, is_group, 
+				ADDR_COMPL_GROUPLIST, grp_emails,
+				-1);
 	cw->listCount++;
 
 	/* Resize window */
@@ -940,9 +1028,10 @@ static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-
+	gboolean is_group = FALSE;
 	g_return_if_fail(list_view != NULL);
 	g_return_if_fail(entry != NULL);
+	GList *grp_emails = NULL;
 
 	selection = gtk_tree_view_get_selection(list_view);
 	if (! gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -955,11 +1044,14 @@ static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *
 	}
 
 	/* Process selected item */
-	gtk_tree_model_get(model, &iter, ADDR_COMPL_ADDRESS, &text, -1);
+	gtk_tree_model_get(model, &iter, ADDR_COMPL_ADDRESS, &text, 
+				ADDR_COMPL_ISGROUP, &is_group, 
+				ADDR_COMPL_GROUPLIST, &grp_emails,
+				-1);
 
 	address = get_address_from_edit(entry, &cursor_pos);
 	g_free(address);
-	replace_address_in_edit(entry, text, cursor_pos);
+	replace_address_in_edit(entry, text, cursor_pos, is_group, grp_emails);
 	g_free(text);
 
 	/* Move focus to next widget */
@@ -994,13 +1086,14 @@ void address_completion_start(GtkWidget *mainwindow)
  * Register specified entry widget for address completion.
  * \param entry Address entry field.
  */
-void address_completion_register_entry(GtkEntry *entry)
+void address_completion_register_entry(GtkEntry *entry, gboolean allow_groups)
 {
 	g_return_if_fail(entry != NULL);
 	g_return_if_fail(GTK_IS_ENTRY(entry));
 
 	/* add hooked property */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, entry);
+	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_GROUPS, GINT_TO_POINTER(allow_groups));
 
 	/* add keypress event */
 	g_signal_connect_closure
@@ -1056,6 +1149,7 @@ static void address_completion_mainwindow_set_focus(GtkWindow *window,
 	
 	if (widget && GTK_IS_ENTRY(widget) &&
 	    g_object_get_data(G_OBJECT(widget), ENTRY_DATA_TAB_HOOK)) {
+		_allowGroups_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), ENTRY_DATA_ALLOW_GROUPS));
 		clear_completion_cache();
 	}
 }
@@ -1073,7 +1167,7 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 {
 	if (ev->keyval == GDK_Tab) {
 		addrcompl_clear_queue();
-
+		_allowGroups_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_GROUPS));
 		if( address_completion_complete_address_in_entry( entry, TRUE ) ) {
 			/* route a void character to the default handler */
 			/* this is a dirty hack; we're actually changing a key
@@ -1137,20 +1231,17 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		new = get_next_complete_address();
 		g_free( new );
 	}
-
 #ifndef USE_LDAP
 	/* Select the address if there is only one match */
 	if (ncount == 2) {
 		/* Display selected address in entry field */		
 		gchar *addr = get_complete_address(1);
-
-		if (addr) {
-			replace_address_in_edit(entry, addr, cursor_pos);
-			g_free(addr);
-		}
-
-		/* Discard the window */
-		clear_completion_cache();
+		if (addr && !strstr(addr, " <!--___group___-->")) {
+			replace_address_in_edit(entry, addr, cursor_pos, FALSE, NULL);
+			/* Discard the window */
+			clear_completion_cache();
+		} 
+		g_free(addr);
 	}
 	/* Make sure that drop-down appears uniform! */
 	else 
@@ -1194,7 +1285,8 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(window), scroll);
 	gtk_container_add(GTK_CONTAINER(scroll), list_view);
-
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll),
+		GTK_SHADOW_OUT);
 	/* Use entry widget to create initial window */
 	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
 	gdk_window_get_deskrelative_origin (entry->window, &x, &y);
@@ -1278,7 +1370,7 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 		/* Clicked outside of completion window - restore */
 		searchTerm = _compWindow_->searchTerm;
 		g_free(get_address_from_edit(GTK_ENTRY(entry), &cursor_pos));
-		replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos);
+		replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos, FALSE, NULL);
 	}
 
 	clear_completion_cache();
@@ -1383,7 +1475,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	/* some other key, let's restore the searchTerm (orignal text) */
 	searchTerm = _compWindow_->searchTerm;
 	g_free(get_address_from_edit(GTK_ENTRY(entry), &cursor_pos));
-	replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos);
+	replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos, FALSE, NULL);
 
 	/* make sure anything we typed comes in the edit box */
 	tmp_event.type       = event->type;
@@ -1444,7 +1536,10 @@ void addrcompl_teardown( void ) {
 static GtkListStore *addr_compl_create_store(void)
 {
 	return gtk_list_store_new(N_ADDR_COMPL_COLUMNS,
+				  GDK_TYPE_PIXBUF,
 				  G_TYPE_STRING,
+				  G_TYPE_BOOLEAN,
+				  G_TYPE_POINTER,
 				  -1);
 }
 					     
@@ -1477,6 +1572,11 @@ static void addr_compl_create_list_view_columns(GtkWidget *list_view)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 
+	renderer = gtk_cell_renderer_pixbuf_new();
+	column = gtk_tree_view_column_new_with_attributes
+		("", renderer,
+	         "pixbuf", ADDR_COMPL_ICON, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
 		("", renderer, "text", ADDR_COMPL_ADDRESS, NULL);

@@ -31,7 +31,7 @@ gint end_address_completion		(void);
 
 /* ui functions */
 void address_completion_start		(GtkWidget *mainwindow);
-void address_completion_register_entry	(GtkEntry  *entry);
+void address_completion_register_entry	(GtkEntry  *entry, gboolean allow_groups);
 void address_completion_unregister_entry(GtkEntry  *entry);
 void address_completion_end		(GtkWidget *mainwindow);
 
