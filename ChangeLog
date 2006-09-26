@@ -1,3 +1,9 @@
+2006-09-26 [colin]	2.5.1cvs4
+
+	* src/mbox.c
+		Revert cvs1 (useless as the message is printed 
+		every 500 mails)
+
 2006-09-26 [colin]	2.5.1cvs3
 
 	* src/partial_download.c
