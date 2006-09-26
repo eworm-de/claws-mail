@@ -1,3 +1,10 @@
+2006-09-26 [colin]	2.5.2
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+		2.5.2 released
+
 2006-09-26 [colin]	2.5.1cvs5
 
 	* src/matcher.c

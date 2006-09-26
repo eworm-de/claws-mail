@@ -1,5 +1,12 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.2
+-------
+
+* Bug fixes: 
+	o bug #1023 (Sylpheed deletes too much messages)
+	o Crash in partial downloading
+
 * 2.5.1
 -------
 

@@ -1,4 +1,4 @@
-26th September 2006                              Sylpheed-Claws 2.5.1
+26th September 2006                              Sylpheed-Claws 2.5.2
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,15 +9,9 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* It is now possible to stop searches in message bodies
-
-* IMAP: Use UID SEARCH ALL instead of UID SEARCH UID 1:* in order
-  to fix speed issues with badly implemented servers
-  
 * Bug fixes: 
-	o Fix multiple registering of SpamAssassin and Bogofilter
-	  plugin after having changed their preferences, leading to
-	  slowness or duplicated messages.
+	o bug #1023 (Sylpheed deletes too much messages)
+	o Crash in partial downloading
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
