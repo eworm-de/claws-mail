@@ -107,7 +107,7 @@ static GList 	   *g_address_list;	/* address storage */
 static GCompletion *g_completion;	/* completion object */
 
 static GHashTable *_groupAddresses_ = NULL;
-static gboolean _allowGroups_ = TRUE;
+static gboolean _allowCommas_ = TRUE;
 
 /* To allow for continuing completion we have to keep track of the state
  * using the following variables. No need to create a context object. */
@@ -665,7 +665,7 @@ static guint _completionIdleID_ = 0;
  */
 
 #define ENTRY_DATA_TAB_HOOK	"tab_hook"	/* used to lookup entry */
-#define ENTRY_DATA_ALLOW_GROUPS	"allowgrp"	/* used to know whether to present groups */
+#define ENTRY_DATA_ALLOW_COMMAS	"allowcommas"	/* used to know whether to present groups */
 
 static void address_completion_mainwindow_set_focus	(GtkWindow   *window,
 							 GtkWidget   *widget,
@@ -853,7 +853,7 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	} else
 		pixbuf = NULL;
 	
-	if (is_group && !_allowGroups_)
+	if (is_group && !_allowCommas_)
 		return;
 	gtk_list_store_append(store, &iter);
 	gtk_list_store_set(store, &iter, 
@@ -1019,8 +1019,11 @@ static void addrcompl_start_search( void ) {
  * moved to the next widget so that Tab key works correctly.
  * \param list_view List to process.
  * \param entry Address entry field.
+ * \param move_focus Move focus to the next widget ?
  */
-static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *entry)
+static void completion_window_apply_selection(GtkTreeView *list_view,
+						GtkEntry *entry,
+						gboolean move_focus)
 {
 	gchar *address = NULL, *text = NULL;
 	gint   cursor_pos;
@@ -1056,7 +1059,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *
 
 	/* Move focus to next widget */
 	parent = GTK_WIDGET(entry)->parent;
-	if( parent ) {
+	if( parent && move_focus) {
 		gtk_widget_child_focus( parent, GTK_DIR_TAB_FORWARD );
 	}
 }
@@ -1086,14 +1089,14 @@ void address_completion_start(GtkWidget *mainwindow)
  * Register specified entry widget for address completion.
  * \param entry Address entry field.
  */
-void address_completion_register_entry(GtkEntry *entry, gboolean allow_groups)
+void address_completion_register_entry(GtkEntry *entry, gboolean allow_commas)
 {
 	g_return_if_fail(entry != NULL);
 	g_return_if_fail(GTK_IS_ENTRY(entry));
 
 	/* add hooked property */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, entry);
-	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_GROUPS, GINT_TO_POINTER(allow_groups));
+	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_COMMAS, GINT_TO_POINTER(allow_commas));
 
 	/* add keypress event */
 	g_signal_connect_closure
@@ -1149,7 +1152,7 @@ static void address_completion_mainwindow_set_focus(GtkWindow *window,
 	
 	if (widget && GTK_IS_ENTRY(widget) &&
 	    g_object_get_data(G_OBJECT(widget), ENTRY_DATA_TAB_HOOK)) {
-		_allowGroups_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), ENTRY_DATA_ALLOW_GROUPS));
+		_allowCommas_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), ENTRY_DATA_ALLOW_COMMAS));
 		clear_completion_cache();
 	}
 }
@@ -1167,7 +1170,7 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 {
 	if (ev->keyval == GDK_Tab) {
 		addrcompl_clear_queue();
-		_allowGroups_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_GROUPS));
+		_allowCommas_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_COMMAS));
 		if( address_completion_complete_address_in_entry( entry, TRUE ) ) {
 			/* route a void character to the default handler */
 			/* this is a dirty hack; we're actually changing a key
@@ -1395,7 +1398,6 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	gint cursor_pos;
 	GtkWidget *list_view;
 	GtkWidget *parent;
-
 	g_return_val_if_fail(compWin != NULL, FALSE);
 
 	entry = compWin->entry;
@@ -1443,14 +1445,23 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 		}
 		return FALSE;
 	}
+	_allowCommas_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_COMMAS));
 
 	/* look for presses that accept the selection */
-	if (event->keyval == GDK_Return || event->keyval == GDK_space) {
+	if (event->keyval == GDK_Return || event->keyval == GDK_space
+			|| event->keyval == GDK_comma) {
 		/* User selected address with a key press */
 
 		/* Display selected address in entry field */		
 		completion_window_apply_selection(
-			GTK_TREE_VIEW(list_view), GTK_ENTRY(entry) );
+			GTK_TREE_VIEW(list_view), GTK_ENTRY(entry),
+			event->keyval != GDK_comma);
+
+		if (event->keyval == GDK_comma) {
+			gint pos = gtk_editable_get_position(GTK_EDITABLE(entry));
+			gtk_editable_insert_text(GTK_EDITABLE(entry), ", ", 2, &pos);
+			gtk_editable_set_position(GTK_EDITABLE(entry), pos + 1);
+		}
 
 		/* Discard the window */
 		clear_completion_cache();
@@ -1633,7 +1644,7 @@ static gboolean addr_compl_defer_select_destruct(CompletionWindow *window)
 	GtkEntry *entry = GTK_ENTRY(window->entry);
 
 	completion_window_apply_selection(GTK_TREE_VIEW(window->list_view), 
-					  entry);
+					  entry, TRUE);
 
 	clear_completion_cache();
 

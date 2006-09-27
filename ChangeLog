@@ -1,3 +1,11 @@
+2006-09-27 [colin]	2.5.2cvs2
+
+	* src/addr_compl.c
+	* src/addr_compl.h
+		Allow completing with comma (in certain cases: vCalendar
+		for example doesn't support that)
+		Patch by Fabien Vantard
+
 2006-09-26 [colin]	2.5.2cvs1
 
 	* src/Makefile.am
