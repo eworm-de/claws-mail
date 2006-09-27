@@ -1,3 +1,8 @@
+2006-09-27 [colin]	2.5.2cvs5
+
+	* src/html.c
+		Use UTF-8 chars to replace HTML entities
+
 2006-09-27 [colin]	2.5.2cvs4
 
 	* AUTHORS

@@ -1918,3 +1918,4 @@
 ( cvs diff -u -r 1.27.2.21 -r 1.27.2.22 src/addr_compl.c;  cvs diff -u -r 1.8.2.6 -r 1.8.2.7 src/addr_compl.h;  ) > 2.5.2cvs2.patchset
 ( cvs diff -u -r 1.27.2.22 -r 1.27.2.23 src/addr_compl.c;  ) > 2.5.2cvs3.patchset
 ( cvs diff -u -r 1.100.2.42 -r 1.100.2.43 AUTHORS;  cvs diff -u -r 1.105.2.66 -r 1.105.2.67 src/prefs_account.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/authors.h;  ) > 2.5.2cvs4.patchset
+( cvs diff -u -r 1.12.2.13 -r 1.12.2.14 src/html.c;  ) > 2.5.2cvs5.patchset
