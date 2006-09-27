@@ -1,3 +1,12 @@
+2006-09-27 [colin]	2.5.2cvs7
+
+	* src/addressbook.c
+		Fix issues:
+		o Allow Book and Group creation from the tree's
+		  contextual menu
+		o Do not actually delete the contacts when 
+		  deleting groups from the tree (duh!)
+
 2006-09-27 [colin]	2.5.2cvs6
 
 	* src/compose.c

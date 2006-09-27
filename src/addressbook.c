@@ -459,7 +459,9 @@ static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
 	{N_("/_Edit"),		NULL, addressbook_treenode_edit_cb,   0, NULL},
 	{N_("/_Delete"),	NULL, addressbook_treenode_delete_cb, 0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/New _Book"),	NULL, addressbook_new_book_cb,      0, NULL},
 	{N_("/New _Folder"),	NULL, addressbook_new_folder_cb,      0, NULL},
+	{N_("/New _Group"),	NULL, addressbook_new_group_cb,      0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/C_ut"),		NULL, addressbook_treenode_cut_cb,    0, NULL},
 	{N_("/_Copy"),		NULL, addressbook_treenode_copy_cb,   0, NULL},
@@ -1300,16 +1302,35 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	abf = ds->rawDataSource;
 	if( abf == NULL ) return;
 
-	/* Confirm deletion */
-	aval = alertpanel( _("Delete address(es)"),
-			_("Really delete the address(es)?"),
-			GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
-	if( aval != G_ALERTALTERNATE ) return;
 
 	/* Process deletions */
 	if( pobj->type == ADDR_DATASOURCE || pobj->type == ADDR_ITEM_FOLDER ) {
+		gboolean group_delete = TRUE;
 		/* Items inside folders */
 		list = addrselect_get_list( _addressSelect_ );
+		/* Confirm deletion */
+		node = list;
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
+			if( aio->type == ADDR_ITEM_PERSON || aio->type == ADDR_ITEM_EMAIL ) {
+				group_delete = FALSE;
+				break;
+			}
+		}
+		if (group_delete) {
+			aval = alertpanel( _("Delete group"),
+					_("Really delete the group(s)?\n"
+					  "The addresses it contains will not be lost."),
+					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
+			if( aval != G_ALERTALTERNATE ) return;
+		} else {
+			aval = alertpanel( _("Delete address(es)"),
+					_("Really delete the address(es)?"),
+					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
+			if( aval != G_ALERTALTERNATE ) return;
+		}
 
 		node = list;
 		while( node ) {
@@ -1490,17 +1511,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 		}
 		else if( aio->type == ADDR_ITEM_GROUP ) {
 			ItemGroup *group = ( ItemGroup * ) aio;
-			AddressDataSource *ds = NULL;
-			AddressBookFile *abf = NULL;
 			GList *nodeMail = group->listEMail;
-			if (nodeMail == NULL) {
-				if(addrbook.treeSelected ) {
-					ds = addressbook_find_datasource( addrbook.treeSelected );
-					abf = ds->rawDataSource;
-					if( abf != NULL )
-						nodeMail = addrbook_get_available_email_list( abf, group );
-				}
-			}
 			while( nodeMail ) {
 				ItemEMail *email = nodeMail->data;
 
@@ -2183,6 +2194,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	gboolean canTreeCopy = FALSE;
 	gboolean canTreePaste = FALSE;
 	gboolean canLookup = FALSE;
+	GtkCTreeNode *node = NULL;
 
 	if( ! event ) return FALSE;
 	addressbook_menubar_set_sensitive( FALSE );
@@ -2195,11 +2207,27 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	menu_set_insensitive_all(GTK_MENU_SHELL(addrbook.tree_popup));
 
 	if( obj == NULL ) return FALSE;
+	node = gtk_ctree_node_nth(GTK_CTREE(clist), row);
 
 	if( ! addrclip_is_empty( _clipBoard_ ) ) {
 		canTreePaste = TRUE;
 	}
 
+	if (obj->type == ADDR_INTERFACE) {
+		AdapterInterface *adapter = ADAPTER_INTERFACE(obj);
+		iface = adapter->interface;
+		canEdit = FALSE;
+		canDelete = FALSE;
+		canTreeCopy = FALSE;
+		if( iface->readOnly ) {
+			canTreePaste = FALSE;
+		}
+		else {
+			menu_set_sensitive( addrbook.tree_factory, "/New Book", TRUE );
+			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
+		}
+		if( iface->externalQuery ) canLookup = TRUE;
+	}
 	if (obj->type == ADDR_DATASOURCE) {
 		ads = ADAPTER_DSOURCE(obj);
 		ds = ads->dataSource;
@@ -2215,15 +2243,18 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		}
 		else {
 			menu_set_sensitive( addrbook.tree_factory, "/New Folder", TRUE );
+			menu_set_sensitive( addrbook.tree_factory, "/New Group", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 		canTreeCopy = TRUE;
 		if( iface->externalQuery ) canLookup = TRUE;
 	}
 	else if (obj->type == ADDR_ITEM_FOLDER) {
-		ds = addressbook_find_datasource( addrbook.treeSelected );
-		if (!ds)
+		ds = addressbook_find_datasource( node );
+		if (!ds) {
+			printf("no ds\n");
 			goto just_set_sens;
+		}
 		iface = ds->interface;
 		if (!iface)
 			goto just_set_sens;
@@ -2235,6 +2266,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 			canDelete = TRUE;
 			canTreeCut = TRUE;
 			menu_set_sensitive( addrbook.tree_factory, "/New Folder", TRUE );
+			menu_set_sensitive( addrbook.tree_factory, "/New Group", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 		canTreeCopy = TRUE;
@@ -2246,7 +2278,7 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		}
 	}
 	else if (obj->type == ADDR_ITEM_GROUP) {
-		ds = addressbook_find_datasource( addrbook.treeSelected );
+		ds = addressbook_find_datasource( node );
 		if (!ds)
 			goto just_set_sens;
 		iface = ds->interface;
@@ -2590,7 +2622,14 @@ static void addressbook_treenode_delete_cb(
 			}
 		}
 	}
-	else {
+	else if( obj->type == ADDR_ITEM_GROUP ) {
+		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
+					    "The addresses it contains will not be lost."), obj->name);
+		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
+				"+" GTK_STOCK_DELETE, NULL);
+		g_free(message);
+		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_FOLDER_ONLY;
+	} else {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
