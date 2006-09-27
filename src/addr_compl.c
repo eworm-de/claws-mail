@@ -1449,7 +1449,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 	/* look for presses that accept the selection */
 	if (event->keyval == GDK_Return || event->keyval == GDK_space
-			|| event->keyval == GDK_comma) {
+			|| (_allowCommas_ && event->keyval == GDK_comma)) {
 		/* User selected address with a key press */
 
 		/* Display selected address in entry field */		
