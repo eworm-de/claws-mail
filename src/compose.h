@@ -232,7 +232,8 @@ Compose *compose_new			(PrefsAccount	*account,
 				 	 GPtrArray	*attach_files);
 
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
-					 FolderItem	*item);
+					 FolderItem	*item,
+					 const gchar	*mailto);
 
 Compose *compose_new_with_list		(PrefsAccount	*account,
 					 GList          *listAddress);

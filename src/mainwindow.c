@@ -3884,7 +3884,7 @@ static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
 	PrefsAccount *account = (PrefsAccount *)data;
 	FolderItem *item = mainwin->summaryview->folder_item;	
 
-	compose_new_with_folderitem(account, item);
+	compose_new_with_folderitem(account, item, NULL);
 }
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)

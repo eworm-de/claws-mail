@@ -1182,6 +1182,7 @@ static void textview_make_clickable_parts(TextView *textview,
 	} head = {NULL, NULL, 0,  NULL}, *last = &head;
 
 	if (!g_utf8_validate(linebuf, -1, NULL)) {
+		g_free(mybuf);
 		mybuf = g_malloc(strlen(linebuf)*2 +1);
 		conv_localetodisp(mybuf, strlen(linebuf)*2 +1, linebuf);
 	}
@@ -2409,16 +2410,16 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					       bevent->button, bevent->time);
 			} else {
 				PrefsAccount *account = NULL;
-
+				FolderItem   *folder_item = NULL;
 				if (textview->messageview && textview->messageview->msginfo &&
 				    textview->messageview->msginfo->folder) {
-					FolderItem   *folder_item;
+					
 
 					folder_item = textview->messageview->msginfo->folder;
 					if (folder_item->prefs && folder_item->prefs->enable_default_account)
 						account = account_find_from_id(folder_item->prefs->default_account);
 				}
-				compose_new(account, uri->uri + 7, NULL);
+				compose_new_with_folderitem(account, folder_item, uri->uri + 7);
 			}
 			return TRUE;
 		} else if (g_ascii_strncasecmp(uri->uri, "file:", 5)) {

@@ -997,7 +997,7 @@ static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
 		compose_new_with_folderitem(NULL, 
-					    msgview->msginfo->folder);
+					    msgview->msginfo->folder, NULL);
 		break;	
 	default:
 		debug_print("toolbar event not supported\n");
@@ -2186,7 +2186,7 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	if (item) {
 		ac = account_find_from_item(item);
 		if (ac && ac->protocol != A_NNTP) {
-			compose_new_with_folderitem(ac, item);		/* CLAWS */
+			compose_new_with_folderitem(ac, item, NULL);		/* CLAWS */
 			return;
 		}
 	}
@@ -2195,7 +2195,7 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	 * CLAWS - use current account
 	 */
 	if (cur_account && (cur_account->protocol != A_NNTP)) {
-		compose_new_with_folderitem(cur_account, item);
+		compose_new_with_folderitem(cur_account, item, NULL);
 		return;
 	}
 
@@ -2206,7 +2206,7 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	for (cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol != A_NNTP) {
-			compose_new_with_folderitem(ac, item);
+			compose_new_with_folderitem(ac, item, NULL);
 			return;
 		}
 	}
@@ -2223,7 +2223,7 @@ void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol == A_NNTP) {
 			compose_new_with_folderitem(ac,
-				    mainwin->summaryview->folder_item);
+				    mainwin->summaryview->folder_item, NULL);
 			return;
 		}
 	}
@@ -2233,7 +2233,7 @@ void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol == A_NNTP) {
 			compose_new_with_folderitem(ac,
-				    mainwin->summaryview->folder_item);
+				    mainwin->summaryview->folder_item, NULL);
 			return;
 		}
 	}

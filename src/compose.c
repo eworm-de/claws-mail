@@ -918,9 +918,9 @@ Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 	return compose_generic_new(account, mailto, NULL, attach_files, NULL);
 }
 
-Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
+Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item, const gchar *mailto)
 {
-	return compose_generic_new(account, NULL, item, NULL, NULL);
+	return compose_generic_new(account, mailto, item, NULL, NULL);
 }
 
 Compose *compose_new_with_list( PrefsAccount *account, GList *listAddress )

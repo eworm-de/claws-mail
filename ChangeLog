@@ -1,3 +1,17 @@
+2006-09-27 [colin]	2.5.2cvs6
+
+	* src/compose.c
+	* src/compose.h
+	* src/mainwindow.c
+	* src/textview.c
+	* src/toolbar.c
+		o Allow passing an email address to 
+		  compose_new_with_folderitem
+		o Update callers
+		o Use current folderitem when clicking
+		  on a TextView mailto: link
+		o Fix a possible leak in TextView
+
 2006-09-27 [colin]	2.5.2cvs5
 
 	* src/html.c
