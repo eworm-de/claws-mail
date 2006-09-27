@@ -2252,7 +2252,6 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	else if (obj->type == ADDR_ITEM_FOLDER) {
 		ds = addressbook_find_datasource( node );
 		if (!ds) {
-			printf("no ds\n");
 			goto just_set_sens;
 		}
 		iface = ds->interface;

@@ -1923,3 +1923,4 @@
 ( cvs diff -u -r 1.60.2.64 -r 1.60.2.65 src/addressbook.c;  ) > 2.5.2cvs7.patchset
 ( cvs diff -u -r 1.654.2.1971 -r 1.654.2.1972 configure.ac;  cvs diff -u -r 1.115.2.104 -r 1.115.2.105 src/main.c;  cvs diff -u -r 1.39.2.23 -r 1.39.2.24 src/mainwindow.h;  ) > 2.5.2cvs8.patchset
 ( cvs diff -u -r 1.11.2.12 -r 1.11.2.13 src/editgroup.c;  cvs diff -u -r 1.17.2.32 -r 1.17.2.33 src/send_message.c;  cvs diff -u -r 1.149.2.58 -r 1.149.2.59 src/inc.c;  cvs diff -u -r 1.204.2.103 -r 1.204.2.104 src/prefs_common.c;  cvs diff -u -r 1.103.2.61 -r 1.103.2.62 src/prefs_common.h;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/gtk/progressdialog.c;  ) > 2.5.2cvs9.patchset
+( cvs diff -u -r 1.60.2.65 -r 1.60.2.66 src/addressbook.c;  ) > 2.5.2cvs10.patchset
