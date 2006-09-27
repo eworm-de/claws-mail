@@ -1,3 +1,14 @@
+2006-09-27 [wwp]	2.5.2cvs9
+
+	* src/editgroup.c
+	* src/send_message.c
+	* src/inc.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gtk/progressdialog.c
+		remember more windows' sizes (send dialog, received dialog,
+		edit group in addressbook).
+
 2006-09-27 [colin]	2.5.2cvs8
 
 	* configure.ac

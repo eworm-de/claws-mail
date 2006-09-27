@@ -164,6 +164,10 @@ static PrefParam param[] = {
  	 NULL, NULL, NULL},
 	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
+	{"receivewin_width", "460", &prefs_common.receivewin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"receivewin_height", "-1", &prefs_common.receivewin_height, P_INT,
+	 NULL, NULL, NULL},
 	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
 	 P_BOOL, NULL, NULL, NULL},
 	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
@@ -175,6 +179,10 @@ static PrefParam param[] = {
 	{"confirm_send_queued_messages", "FALSE", &prefs_common.confirm_send_queued_messages,
 	 P_BOOL, NULL, NULL, NULL},
 	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
+	 NULL, NULL, NULL},
+	{"sendwin_width", "460", &prefs_common.sendwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"sendwin_height", "-1", &prefs_common.sendwin_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"outgoing_charset", CS_AUTO, &prefs_common.outgoing_charset, P_STRING,
@@ -704,6 +712,11 @@ static PrefParam param[] = {
 	{"addressbookeditpersonwin_width", "640", &prefs_common.addressbookeditpersonwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"addressbookeditpersonwin_height", "-1", &prefs_common.addressbookeditpersonwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"addressbookeditgroupwin_width", "580", &prefs_common.addressbookeditgroupwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addressbookeditgroupwin_height", "340", &prefs_common.addressbookeditgroupwin_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"pluginswin_width", "480", &prefs_common.pluginswin_width, P_INT,

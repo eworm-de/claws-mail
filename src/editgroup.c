@@ -44,9 +44,6 @@
 #define ADDRESSBOOK_GUESS_FOLDER_NAME	"NewFolder"
 #define ADDRESSBOOK_GUESS_GROUP_NAME	"NewGroup"
 
-#define EDITGROUP_WIDTH      580
-#define EDITGROUP_HEIGHT     340
-
 typedef enum {
 	GROUP_COL_NAME    = 0,
 	GROUP_COL_EMAIL   = 1,
@@ -248,6 +245,15 @@ static gint edit_group_list_compare_func( GtkCList *clist, gconstpointer ptr1, g
 	return g_utf8_collate( name1, name2 );
 }
 
+static void addressbook_edit_group_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.addressbookeditgroupwin_width = allocation->width;
+	prefs_common.addressbookeditgroupwin_height = allocation->height;
+}
+
 static void addressbook_edit_group_create( gboolean *cancelled ) {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -276,12 +282,13 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gchar *titles[ GROUP_N_COLS ];
 	gint i;
 
+	static GdkGeometry geometry;
+
 	titles[ GROUP_COL_NAME    ] = _( "Name" );
 	titles[ GROUP_COL_EMAIL   ] = _("Email Address");
 	titles[ GROUP_COL_REMARKS ] = _("Remarks");
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request(window, EDITGROUP_WIDTH, EDITGROUP_HEIGHT );
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Group Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -292,6 +299,8 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(edit_group_key_pressed),
 			 cancelled);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(addressbook_edit_group_size_allocate_cb), NULL);
 
 	vbox = gtk_vbox_new( FALSE, 6 );
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
@@ -410,6 +419,17 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_group_list_avail_button), NULL);
 	g_signal_connect(G_OBJECT(clist_group), "button_press_event",
 			 G_CALLBACK(edit_group_list_group_button), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 580;
+		geometry.min_height = 340;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window,
+					prefs_common.addressbookeditgroupwin_width,
+				    prefs_common.addressbookeditgroupwin_height);
 
 	groupeditdlg.window     = window;
 	groupeditdlg.ok_btn     = ok_btn;

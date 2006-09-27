@@ -362,10 +362,20 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	inc_autocheck_timer_set();
 }
 
+static void inc_progress_dialog_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.receivewin_width = allocation->width;
+	prefs_common.receivewin_height = allocation->height;
+}
+
 static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 {
 	IncProgressDialog *dialog;
 	ProgressDialog *progress;
+	static GdkGeometry geometry;
 
 	dialog = g_new0(IncProgressDialog, 1);
 
@@ -376,7 +386,9 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 			 G_CALLBACK(inc_cancel_cb), dialog);
 	g_signal_connect(G_OBJECT(progress->window), "delete_event",
 			 G_CALLBACK(inc_dialog_delete_cb), dialog);
-	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
+	g_signal_connect(G_OBJECT(progress->window), "size_allocate",
+			 G_CALLBACK(inc_progress_dialog_size_allocate_cb), NULL);
+ 	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
 
 	progress_dialog_get_fraction(progress);
 
@@ -386,6 +398,16 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 			 &currentpix);
 	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_ERROR,
 			 &errorpix);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 460;
+		geometry.min_height = 250;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(progress->window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(progress->window, prefs_common.receivewin_width,
+				    prefs_common.receivewin_height);
 
 	if (prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS ||
 	    (prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL &&

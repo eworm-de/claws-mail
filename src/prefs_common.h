@@ -94,6 +94,8 @@ struct _PrefsCommon
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
 	RecvDialogMode recv_dialog_mode;
+	gint receivewin_width;
+	gint receivewin_height;
 	gboolean close_recv_dialog;
 	gboolean no_recv_err_panel;
 
@@ -101,6 +103,8 @@ struct _PrefsCommon
 	gboolean savemsg;
 	gboolean confirm_send_queued_messages;
 	SendDialogMode send_dialog_mode;
+	gint sendwin_width;
+	gint sendwin_height;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
 
@@ -365,6 +369,8 @@ struct _PrefsCommon
 	gint addressbookwin_height;
 	gint addressbookeditpersonwin_width;
 	gint addressbookeditpersonwin_height;
+	gint addressbookeditgroupwin_width;
+	gint addressbookeditgroupwin_height;
 	gint pluginswin_width;
 	gint pluginswin_height;
 	gint prefswin_width;
