@@ -758,7 +758,7 @@ void prefs_account_init()
 	static gchar *path[2];
 
 	path[0] = _("Account");
-	path[2] = NULL;
+	path[1] = NULL;
         
 	account_page.page.path = path;
 	account_page.page.weight = 1000.0;

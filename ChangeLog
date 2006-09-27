@@ -1,3 +1,12 @@
+2006-09-27 [colin]	2.5.2cvs4
+
+	* AUTHORS
+	* src/prefs_account.c
+	* src/gtk/authors.h
+		Fix bug #1024 (Array index out of
+		range in sylpheed-claws-2.5.2)
+		Patch by Ales Nosek <anosek@suse.cz>
+
 2006-09-27 [colin]	2.5.2cvs3
 
 	* src/addr_compl.c
