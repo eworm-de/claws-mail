@@ -140,6 +140,10 @@ struct _MainWindow
 	
 	GtkWidget 	*colorlabel_menu;
 	GtkWidget	*warning_btn;
+	
+#ifdef HAVE_LIBSM
+	gpointer smc_conn;
+#endif
 };
 
 MainWindow *main_window_create		(SeparateType	 type);

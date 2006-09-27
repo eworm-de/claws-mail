@@ -1,3 +1,13 @@
+2006-09-27 [colin]	2.5.2cvs8
+
+	* configure.ac
+	* src/main.c
+	* src/mainwindow.h
+		Use libSM to communicate with the session
+		manager, so that we can know when the 
+		session ends, save our caches, and draft
+		our compose windows.
+
 2006-09-27 [colin]	2.5.2cvs7
 
 	* src/addressbook.c

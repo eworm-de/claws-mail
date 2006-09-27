@@ -39,6 +39,11 @@
 #ifdef G_OS_UNIX
 #  include <signal.h>
 #endif
+#ifdef HAVE_LIBSM
+#include <X11/SM/SMlib.h>
+#include <fcntl.h>
+#endif
+
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
 # define SN_API_NOT_YET_FROZEN
@@ -105,9 +110,7 @@
 #include "crash.h"
 
 gchar *prog_version;
-#ifdef CRASH_DIALOG
 gchar *argv0;
-#endif
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static SnLauncheeContext *sn_context = NULL;
@@ -183,6 +186,7 @@ static void exit_sylpheed		(MainWindow *mainwin);
 }
 
 static MainWindow *static_mainwindow;
+static gboolean emergency_exit = FALSE;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static void sn_error_trap_push(SnDisplay *display, Display *xdisplay)
@@ -283,6 +287,174 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	return (r == 0);
 }
 
+#ifdef HAVE_LIBSM
+static void
+sc_client_set_value (MainWindow *client,
+		  gchar       *name,
+		  char        *type,
+		  int          num_vals,
+		  SmPropValue *vals)
+{
+	SmProp *proplist[1];
+	SmProp prop;
+
+	prop.name = name;
+	prop.type = type;
+	prop.num_vals = num_vals;
+	prop.vals = vals;
+
+	proplist[0]= &prop;
+	SmcSetProperties ((SmcConn) client->smc_conn, 1, proplist);
+}
+
+static void sc_die_callback (SmcConn smc_conn, SmPointer client_data)
+{
+	clean_quit(NULL);
+}
+
+static void sc_save_complete_callback(SmcConn smc_conn, SmPointer client_data)
+{
+}
+
+static void sc_shutdown_cancelled_callback (SmcConn smc_conn, SmPointer client_data)
+{
+	MainWindow *mainwin = (MainWindow *)client_data;
+	SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
+}
+
+static void sc_save_yourself_callback (SmcConn   smc_conn,
+			       SmPointer client_data,
+			       int       save_style,
+			       gboolean  shutdown,
+			       int       interact_style,
+			       gboolean  fast) {
+
+	MainWindow *mainwin = (MainWindow *)client_data;
+	SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
+}
+
+static IceIOErrorHandler sc_ice_installed_handler;
+
+static void sc_ice_io_error_handler (IceConn connection)
+{
+	if (sc_ice_installed_handler)
+		(*sc_ice_installed_handler) (connection);
+}
+static gboolean sc_process_ice_messages (GIOChannel   *source,
+		      GIOCondition  condition,
+		      gpointer      data)
+{
+	IceConn connection = (IceConn) data;
+	IceProcessMessagesStatus status;
+
+	status = IceProcessMessages (connection, NULL, NULL);
+
+	if (status == IceProcessMessagesIOError) {
+		IcePointer context = IceGetConnectionContext (connection);
+
+		if (context && GTK_IS_OBJECT (context)) {
+		guint disconnect_id = g_signal_lookup ("disconnect", G_OBJECT_TYPE (context));
+
+		if (disconnect_id > 0)
+			g_signal_emit (context, disconnect_id, 0);
+		} else {
+			IceSetShutdownNegotiation (connection, False);
+			IceCloseConnection (connection);
+		}
+	}
+
+	return TRUE;
+}
+
+static void new_ice_connection (IceConn connection, IcePointer client_data, Bool opening,
+		    IcePointer *watch_data)
+{
+	guint input_id;
+
+	if (opening) {
+		GIOChannel *channel;
+		/* Make sure we don't pass on these file descriptors to any
+		exec'ed children */
+		fcntl(IceConnectionNumber(connection),F_SETFD,
+		fcntl(IceConnectionNumber(connection),F_GETFD,0) | FD_CLOEXEC);
+
+		channel = g_io_channel_unix_new (IceConnectionNumber (connection));
+		input_id = g_io_add_watch (channel,
+		G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_PRI,
+		sc_process_ice_messages,
+		connection);
+		g_io_channel_unref (channel);
+
+		*watch_data = (IcePointer) GUINT_TO_POINTER (input_id);
+	} else {
+		input_id = GPOINTER_TO_UINT ((gpointer) *watch_data);
+		g_source_remove (input_id);
+	}
+}
+
+static void sc_session_manager_connect(MainWindow *mainwin)
+{
+	static gboolean connected = FALSE;
+	SmcCallbacks      callbacks;
+	gchar            *client_id;
+	IceIOErrorHandler default_handler;
+
+	if (connected)
+		return;
+	connected = TRUE;
+
+
+	sc_ice_installed_handler = IceSetIOErrorHandler (NULL);
+	default_handler = IceSetIOErrorHandler (sc_ice_io_error_handler);
+
+	if (sc_ice_installed_handler == default_handler)
+		sc_ice_installed_handler = NULL;
+
+	IceAddConnectionWatch (new_ice_connection, NULL);
+      
+      
+      	callbacks.save_yourself.callback      = sc_save_yourself_callback;
+	callbacks.die.callback                = sc_die_callback;
+	callbacks.save_complete.callback      = sc_save_complete_callback;
+	callbacks.shutdown_cancelled.callback = sc_shutdown_cancelled_callback;
+
+	callbacks.save_yourself.client_data =
+		callbacks.die.client_data =
+		callbacks.save_complete.client_data =
+		callbacks.shutdown_cancelled.client_data = (SmPointer) mainwin;
+	if (g_getenv ("SESSION_MANAGER")) {
+		gchar error_string_ret[256] = "";
+
+		mainwin->smc_conn= (gpointer)
+			SmcOpenConnection (NULL, mainwin,
+				SmProtoMajor, SmProtoMinor,
+				SmcSaveYourselfProcMask | SmcDieProcMask |
+				SmcSaveCompleteProcMask |
+				SmcShutdownCancelledProcMask,
+				&callbacks,
+				NULL, &client_id,
+				256, error_string_ret);
+
+		if (error_string_ret[0])
+			g_warning ("While connecting to session manager:\n%s.",
+				error_string_ret);
+		else {
+			SmPropValue *vals;
+			vals = g_new (SmPropValue, 1);
+			vals[0].length = strlen(argv0);
+			vals[0].value = argv0;
+			sc_client_set_value (mainwin, SmCloneCommand, SmLISTofARRAY8, 1, vals);
+			sc_client_set_value (mainwin, SmRestartCommand, SmLISTofARRAY8, 1, vals);
+			sc_client_set_value (mainwin, SmProgram, SmARRAY8, 1, vals);
+
+			vals[0].length = strlen(g_get_user_name()?g_get_user_name():"");
+			vals[0].value = g_strdup(g_get_user_name()?g_get_user_name():"");
+			sc_client_set_value (mainwin, SmUserID, SmARRAY8, 1, vals);
+		}
+	}
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -296,9 +468,7 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
-#ifdef CRASH_DIALOG
 	argv0 = g_strdup(argv[0]);
-#endif
 
 	parse_cmd_opt(argc, argv);
 
@@ -590,6 +760,9 @@ int main(int argc, char *argv[])
 #ifdef HAVE_STARTUP_NOTIFICATION
 	startup_notification_complete(FALSE);
 #endif
+#ifdef HAVE_LIBSM
+	sc_session_manager_connect(mainwin);
+#endif
 	folder_item_update_thaw();
 	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
@@ -648,13 +821,16 @@ static gboolean sc_exiting = FALSE;
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
+#ifdef HAVE_LIBSM
+	SmcConn smc_conn = mainwin->smc_conn;
+#endif
 
 	sc_exiting = TRUE;
 
 	debug_print("shutting down\n");
 	inc_autocheck_timer_remove();
 
-	if (prefs_common.clean_on_exit) {
+	if (prefs_common.clean_on_exit && !emergency_exit) {
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
 	}
 
@@ -722,7 +898,9 @@ static void exit_sylpheed(MainWindow *mainwin)
 	gtkaspell_checkers_quit();
 #endif
 	sylpheed_done();
-
+#ifdef HAVE_LIBSM
+	SmcCloseConnection (smc_conn, 0, NULL);
+#endif
 }
 
 static void parse_cmd_opt(int argc, char *argv[])
@@ -920,7 +1098,6 @@ static void draft_all_messages(void)
 		compose_draft(c);
 	}	
 }
-
 gboolean clean_quit(gpointer data)
 {
 	static gboolean firstrun = TRUE;
@@ -947,7 +1124,7 @@ gboolean clean_quit(gpointer data)
 	}
 		
 	draft_all_messages();
-
+	emergency_exit = TRUE;
 	exit_sylpheed(static_mainwindow);
 	exit(0);
 

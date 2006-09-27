@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=7
+EXTRA_VERSION=8
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -195,6 +195,29 @@ else
 fi
 
 AC_CHECK_LIB(xpg4, setlocale)
+
+SM_LIBS=""
+dnl Check for LibSM
+AC_ARG_ENABLE(libsm,
+	[  --disable-libsm    Do not use libSM for session management.],
+	[ac_cv_enable_libsm=$enableval], [ac_cv_enable_libsm=yes])
+AC_MSG_CHECKING([whether to use LibSM])
+if test x"$ac_cv_enable_libsm" = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_CHECK_LIB(SM, SmcSaveYourselfDone,
+		[SM_LIBS="$X_LIBS -lSM -lICE"],ac_cv_enable_libsm=no,
+		$X_LIBS -lICE)
+	AC_CHECK_HEADERS(X11/SM/SMlib.h,,SC_HAVE_SM=false)
+	if test x"$ac_cv_enable_libsm" = xyes; then
+		AC_DEFINE(HAVE_LIBSM, 1, [Define to 1 if you have libSM installed])
+	else
+		AC_MSG_RESULT(not found)
+		AC_MSG_WARN([*** LibSM will not be supported ***])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AC_SUBST(SM_LIBS)
 
 dnl for GThread support (currently disabled)
 dnl AC_ARG_ENABLE(threads,
@@ -878,6 +901,7 @@ echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "IMAP4         : $ac_cv_enable_libetpan"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
 echo "Libgnomeprint : $ac_cv_enable_gnomeprint"
+echo "LibSM         : $ac_cv_enable_libsm"
 echo "Manual        : $ac_cv_enable_manual"
 echo "Plugins       : $PLUGINS"
 echo "Config dir    : $ac_cv_with_config_dir"

@@ -1921,3 +1921,4 @@
 ( cvs diff -u -r 1.12.2.13 -r 1.12.2.14 src/html.c;  ) > 2.5.2cvs5.patchset
 ( cvs diff -u -r 1.382.2.311 -r 1.382.2.312 src/compose.c;  cvs diff -u -r 1.50.2.26 -r 1.50.2.27 src/compose.h;  cvs diff -u -r 1.274.2.150 -r 1.274.2.151 src/mainwindow.c;  cvs diff -u -r 1.96.2.150 -r 1.96.2.151 src/textview.c;  cvs diff -u -r 1.43.2.52 -r 1.43.2.53 src/toolbar.c;  ) > 2.5.2cvs6.patchset
 ( cvs diff -u -r 1.60.2.64 -r 1.60.2.65 src/addressbook.c;  ) > 2.5.2cvs7.patchset
+( cvs diff -u -r 1.654.2.1971 -r 1.654.2.1972 configure.ac;  cvs diff -u -r 1.115.2.104 -r 1.115.2.105 src/main.c;  cvs diff -u -r 1.39.2.23 -r 1.39.2.24 src/mainwindow.h;  ) > 2.5.2cvs8.patchset
