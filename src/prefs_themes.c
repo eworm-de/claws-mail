@@ -729,7 +729,7 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 
 		info->status = prefs_themes_get_theme_stats(path);
 		if (info->status == NULL) {
-			info->status = g_strdup(_("Error: can't get theme status"));
+			info->status = g_strdup(_("Error: couldn't get theme status"));
 		}
 	}
 

@@ -148,7 +148,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 				     &pid, &child_stdin, NULL, NULL,
 				     NULL) == FALSE) {
 		g_snprintf(buf, sizeof(buf),
-			   _("Can't execute command: %s"), command);
+			   _("Couldn't execute command: %s"), command);
 		log_warning("%s\n", buf);
 		alertpanel_error("%s", buf);
 		g_strfreev(argv);

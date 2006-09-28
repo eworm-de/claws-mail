@@ -343,7 +343,7 @@ gint session_start_tls(Session *session)
 		sock_set_nonblocking_mode(session->sock, FALSE);
 
 	if (!ssl_init_socket_with_method(session->sock, SSL_METHOD_TLSv1)) {
-		g_warning("can't start TLS session.\n");
+		g_warning("couldn't start TLS session.\n");
 		if (nb_mode)
 			sock_set_nonblocking_mode(session->sock, TRUE);
 		return -1;

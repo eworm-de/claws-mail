@@ -226,7 +226,7 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 
 	src = folder_find_item_from_identifier(srcdir);
 	if (!src) {
-		alertpanel_error(_("Can't find the source folder."));
+		alertpanel_error(_("Couldn't find the source folder."));
 		gtk_widget_grab_focus(src_entry);
 		return;
 	} else {

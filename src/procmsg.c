@@ -904,7 +904,8 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	GNode *node, *next;
 	
 	if (send_queue_lock) {
-		log_warning(_("Already trying to send\n"));
+		/* Avoid having to translate two similar strings */
+		log_warning("%s\n", _("Already trying to send."));
 		if (errstr) {
 			if (*errstr) g_free(*errstr);
 			*errstr = g_strdup_printf(_("Already trying to send."));
@@ -1683,7 +1684,7 @@ send_mail:
     		if ((tmpfp = g_fopen(tmp, "wb")) == NULL) {
             		FILE_OP_ERROR(tmp, "fopen");
             		newsval = -1;
-			alertpanel_error(_("Could not create temporary file for news sending."));
+			alertpanel_error(_("Couldn't create temporary file for news sending."));
     		} else {
     			if (change_file_mode_rw(tmpfp, tmp) < 0) {
             			FILE_OP_ERROR(tmp, "chmod");

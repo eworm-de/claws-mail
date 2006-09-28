@@ -832,7 +832,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 			switch (session->state) {
 #if USE_OPENSSL
 			case POP3_STLS:
-				log_error(_("can't start TLS session\n"));
+				log_error(_("couldn't start TLS session\n"));
 				ok = PS_ERROR;
 				break;
 #endif

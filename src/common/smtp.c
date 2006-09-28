@@ -632,7 +632,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_STARTTLS:
 #if USE_OPENSSL
 		if (session_start_tls(session) < 0) {
-			log_warning(_("can't start TLS session\n"));
+			log_warning(_("couldn't start TLS session\n"));
 			smtp_session->state = SMTP_ERROR;
 			smtp_session->error_val = SM_ERROR;
 			return -1;

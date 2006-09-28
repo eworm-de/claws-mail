@@ -1,3 +1,22 @@
+2006-09-28 [ticho]	2.5.2cvs13
+
+	* src/export.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/news.c
+	* src/pop.c
+	* src/prefs_themes.c
+	* src/procmsg.c
+		Small i18n string optimization.
+	* src/send_message.c
+	* src/summaryview.c
+	* src/common/session.c
+	* src/common/smtp.c
+	* src/common/ssl_certificate.c
+	* src/common/utils.c
+		Use "Couldn't" instead of "Can't" in UI messages,
+		where appropriate.
+
 2006-09-28 [colin]	2.5.2cvs12
 
 	* configure.ac

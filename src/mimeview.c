@@ -1346,7 +1346,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
-			(_("Can't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message."));
 	uriname = g_strconcat("file://", filename, "\r\n", NULL);
 
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
@@ -1427,7 +1427,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 
 	if (procmime_get_part(filename, partinfo) < 0) {
 		alertpanel_error
-			(_("Can't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message."));
 		return FALSE;
 	}
 
@@ -1603,7 +1603,7 @@ static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 
 	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
-			(_("Can't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message."));
 	else
 		mimeview_view_file(filename, partinfo, NULL, mimeview);
 
@@ -1636,7 +1636,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 
 	if (procmime_get_part(filename, partinfo) < 0) {
 		alertpanel_error
-			(_("Can't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message."));
 		g_free(filename);
 		return;
 	}

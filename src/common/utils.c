@@ -3277,7 +3277,7 @@ gint execute_async(gchar *const argv[])
 
 	if (g_spawn_async(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			  NULL, NULL, NULL, FALSE) == FALSE) {
-		g_warning("Can't execute command: %s\n", argv[0]);
+		g_warning("Couldn't execute command: %s\n", argv[0]);
 		return -1;
 	}
 
@@ -3292,7 +3292,7 @@ gint execute_sync(gchar *const argv[])
 
 	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
-		g_warning("Can't execute command: %s\n", argv[0]);
+		g_warning("Couldn't execute command: %s\n", argv[0]);
 		return -1;
 	}
 
@@ -3336,7 +3336,7 @@ gchar *get_command_output(const gchar *cmdline)
 
 	if (g_spawn_command_line_sync(cmdline, &child_stdout, NULL, &status,
 				      NULL) == FALSE) {
-		g_warning("Can't execute command: %s\n", cmdline);
+		g_warning("Couldn't execute command: %s\n", cmdline);
 		return NULL;
 	}
 
