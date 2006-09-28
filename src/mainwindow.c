@@ -910,12 +910,13 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 	GtkMenuShell *menu;
 	GtkCheckMenuItem **items;
 	gint n;
-	GList *cur, *sel;
+	GList *cur;
+	GSList *sel;
 
 	mainwin = (MainWindow *)data;
 	g_return_if_fail(mainwin != NULL);
 
-	sel = GTK_CLIST(mainwin->summaryview->ctree)->selection;
+	sel = summary_get_selection(mainwin->summaryview);
 	if (!sel) return;
 
 	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
@@ -945,9 +946,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 			MsgInfo *msginfo;
 			gint clabel;
 
-			msginfo = gtk_ctree_node_get_row_data
-				(GTK_CTREE(mainwin->summaryview->ctree),
-				 GTK_CTREE_NODE(sel->data));
+			msginfo = (MsgInfo *)sel->data;
 			if (msginfo) {
 				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
 				if (!items[clabel]->active)
@@ -1966,7 +1965,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 
 	prefs_common.msgview_visible = mainwin->messageview->visible;
 
-	gtk_widget_grab_focus(summaryview->ctree);
+	summary_grab_focus(summaryview);
 }
 
 void main_window_get_size(MainWindow *mainwin)

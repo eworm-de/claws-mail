@@ -1,3 +1,14 @@
+2006-09-28 [colin]	2.5.2cvs19
+
+	* src/action.c
+	* src/compose.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summary_search.c
+	* src/toolbar.c
+		Avoid using summaryview->ctree directly
+
 2006-09-28 [colin]	2.5.2cvs18
 
 	* src/summaryview.c

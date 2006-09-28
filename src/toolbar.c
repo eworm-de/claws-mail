@@ -1139,12 +1139,10 @@ static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
 		
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
-			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
-			
-			MsgInfo * msginfo = gtk_ctree_node_get_row_data(ctree, 
-									msgview->mainwin->summaryview->selected);
+			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 		       
-			messageview_show(msgview, msginfo, 
+			if (msginfo)
+				messageview_show(msgview, msginfo, 
 					 msgview->all_headers);
 		} else {
 			gtk_widget_destroy(msgview->window);
@@ -1186,12 +1184,10 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
-			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
+			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 			
-			MsgInfo * msginfo = gtk_ctree_node_get_row_data(ctree, 
-									msgview->mainwin->summaryview->selected);
-		       
-			messageview_show(msgview, msginfo, 
+			if (msginfo)
+				messageview_show(msgview, msginfo, 
 					 msgview->all_headers);
 		} else {
 			gtk_widget_destroy(msgview->window);

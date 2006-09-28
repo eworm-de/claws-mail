@@ -1020,9 +1020,7 @@ static void messageview_update(MessageView *msgview)
 	g_return_if_fail(summaryview != NULL);
 	
 	if (summaryview->selected) {
-		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
-						      summaryview->selected);
+		MsgInfo *msginfo = summary_get_selected_msg(summaryview);
 		if (msginfo == NULL)
 			return;
 

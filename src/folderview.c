@@ -782,10 +782,10 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 	summary_lock(folderview->summaryview);
 	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item == item)
-		gtk_clist_freeze(GTK_CLIST(folderview->summaryview->ctree));
+		summary_freeze(folderview->summaryview);
 	folderutils_mark_all_read(item);
 	if (folderview->summaryview->folder_item == item)
-		gtk_clist_thaw(GTK_CLIST(folderview->summaryview->ctree));
+		summary_thaw(folderview->summaryview);
 	folder_item_update_thaw();
 	summary_unlock(folderview->summaryview);
 }
@@ -805,7 +805,7 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 	gtk_ctree_select(ctree, node);
 	if (folderview->summaryview->folder_item &&
 	    folderview->summaryview->folder_item->total_msgs > 0)
-		gtk_widget_grab_focus(folderview->summaryview->ctree);
+		summary_grab_focus(folderview->summaryview);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
 
@@ -2762,7 +2762,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		src_item = folderview->summaryview->folder_item;
 
 		srcwidget = gtk_drag_get_source_widget(context);
-		if (srcwidget == folderview->summaryview->ctree) {
+		if (srcwidget == summary_get_main_widget(folderview->summaryview)) {
 			/* comes from summaryview */
 			/* we are copying messages, so only accept folder items that are not
 			   the source item, are no root items and can copy messages */

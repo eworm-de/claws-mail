@@ -619,7 +619,7 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 	if (summaryview) {
 		summary_lock(summaryview);				
 		main_window_cursor_wait(mainwin);		
-		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	
+		summary_freeze(summaryview);	
 		folder_item_update_freeze();				
 	}
 
@@ -627,7 +627,7 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 
 	if (summaryview) {
 		folder_item_update_thaw();				
-		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));		
+		summary_thaw(summaryview);		
 		main_window_cursor_normal(mainwin);	
 		summary_unlock(summaryview);				
 		summary_show(summaryview, summaryview->folder_item);

@@ -489,8 +489,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	summary_show_stop_button();
 
 	if (search_all) {
-		gtk_clist_freeze(GTK_CLIST(ctree));
-		gtk_clist_unselect_all(GTK_CLIST(ctree));
+		summary_freeze(summaryview);
+		summary_unselect_all(summaryview);
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		backward = FALSE;
 	} else if (!summaryview->selected) {
@@ -656,7 +656,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	summary_hide_stop_button();
 	main_window_cursor_normal(summaryview->mainwin);
 	if (search_all) {
-		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_thaw(summaryview);
 	}
 	summary_unlock(summaryview);
 }
