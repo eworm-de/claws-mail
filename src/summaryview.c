@@ -493,12 +493,38 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	"",		/* S_COL_LOCKED	 */
 };
 
+void summary_freeze(SummaryView *summaryview)
+{
+	if (summaryview)
+		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
+}
+
+void summary_thaw(SummaryView *summaryview)
+{
+	if (summaryview)
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+}
+
+void summary_grab_focus(SummaryView *summaryview)
+{
+	if (summaryview)
+		gtk_widget_grab_focus(summaryview->ctree);
+}
+
+GtkWidget *summary_get_main_widget(SummaryView *summaryview)
+{
+	if (summaryview)
+		return summaryview->ctree;
+	else
+		return NULL;
+}
+
 #define START_LONG_OPERATION(summaryview,force_freeze) {	\
 	summary_lock(summaryview);				\
 	main_window_cursor_wait(summaryview->mainwin);		\
 	if (force_freeze || sc_g_list_bigger(GTK_CLIST(summaryview->ctree)->selection, 1)) {\
 		froze = TRUE;						\
-		gtk_clist_freeze(GTK_CLIST(summaryview->ctree));	\
+		summary_freeze(summaryview);	\
 	}							\
 	folder_item_update_freeze();				\
 	inc_lock();						\
@@ -509,7 +535,7 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	inc_unlock();						\
 	folder_item_update_thaw();				\
 	if (froze) 						\
-		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));	\
+		summary_thaw(summaryview);	\
 	main_window_cursor_normal(summaryview->mainwin);	\
 	summary_unlock(summaryview);				\
 	summaryview->msginfo_update_callback_id =		\
@@ -954,7 +980,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			folder_update_op_count();
 	}
 	
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	summary_freeze(summaryview);
 
 	summary_clear_list(summaryview);
 
@@ -969,7 +995,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
-		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_thaw(summaryview);
 		summary_unlock(summaryview);
 		inc_unlock();
 		if (item && quicksearch_is_running(summaryview->quicksearch)) {
@@ -1067,7 +1093,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		hidden_removed = TRUE;
 		if (!quicksearch_is_active(summaryview->quicksearch)) {
 			debug_print("search cancelled!\n");
-			gtk_clist_thaw(GTK_CLIST(ctree));
+			summary_thaw(summaryview);
 			STATUSBAR_POP(summaryview->mainwin);
 			main_window_cursor_normal(summaryview->mainwin);
 			summary_unlock(summaryview);
@@ -1219,7 +1245,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
 	
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	summary_thaw(summaryview);
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 	STATUSBAR_POP(summaryview->mainwin);
@@ -1238,7 +1264,7 @@ void summary_clear_list(SummaryView *summaryview)
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	gint optimal_width;
 
-	gtk_clist_freeze(clist);
+	summary_freeze(summaryview);
 
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree),
 				NULL, summary_free_msginfo_func, NULL);
@@ -1274,7 +1300,7 @@ void summary_clear_list(SummaryView *summaryview)
 			 optimal_width);
 	}
 
-	gtk_clist_thaw(clist);
+	summary_thaw(summaryview);
 }
 
 void summary_clear_all(SummaryView *summaryview)
@@ -2053,7 +2079,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 		       _("Attracting messages by subject..."));
 
 	main_window_cursor_wait(summaryview->mainwin);
-	gtk_clist_freeze(clist);
+	summary_freeze(summaryview);
 
 	subject_table = g_hash_table_new(attract_hash_func,
 					 attract_compare_func);
@@ -2092,7 +2118,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
-	gtk_clist_thaw(clist);
+	summary_thaw(summaryview);
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
@@ -2399,7 +2425,7 @@ void summary_sort(SummaryView *summaryview,
 	START_TIMING("");
 	g_signal_handlers_block_by_func(G_OBJECT(summaryview->ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
+	summary_freeze(summaryview);
 
 	switch (sort_key) {
 	case SORT_BY_MARK:
@@ -2463,7 +2489,7 @@ void summary_sort(SummaryView *summaryview,
 
 		main_window_cursor_wait(summaryview->mainwin);
 
-                gtk_clist_freeze(clist);
+                summary_freeze(summaryview);
 		gtk_clist_set_compare_func(clist, cmp_func);
 
 		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
@@ -2472,13 +2498,13 @@ void summary_sort(SummaryView *summaryview,
 		gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 		main_window_cursor_normal(summaryview->mainwin);
-                gtk_clist_thaw(clist);
+                summary_thaw(summaryview);
 
 		debug_print("done.\n");
 		STATUSBAR_POP(summaryview->mainwin);
 	}
 unlock:
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 	g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
 	END_TIMING();
@@ -3616,7 +3642,6 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 void summary_cancel(SummaryView *summaryview)
 {
 	MsgInfo * msginfo;
-	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -3631,12 +3656,12 @@ void summary_cancel(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	gtk_clist_freeze(clist);
+	summary_freeze(summaryview);
 
 	summary_update_status(summaryview);
 	summary_status_show(summaryview);
 
-	gtk_clist_thaw(clist);
+	summary_thaw(summaryview);
 
 	summary_unlock(summaryview);
 }
@@ -4124,7 +4149,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	if (summary_is_locked(summaryview)) return FALSE;
 	summary_lock(summaryview);
 
-	gtk_clist_freeze(clist);
+	summary_freeze(summaryview);
 
 	main_window_cursor_wait(summaryview->mainwin);
 
@@ -4186,7 +4211,7 @@ gboolean summary_execute(SummaryView *summaryview)
 		summary_thread_init(summaryview);
 	}
 
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 
 	summaryview->selected = clist->selection ?
 		GTK_CTREE_NODE(clist->selection->data) : NULL;
@@ -4378,7 +4403,7 @@ void summary_thread_build(SummaryView *summaryview)
 
 	g_signal_handlers_block_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	summary_freeze(summaryview);
 
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	while (node) {
@@ -4417,7 +4442,7 @@ void summary_thread_build(SummaryView *summaryview)
 
 	gtkut_ctree_set_focus_row(ctree, summaryview->selected);
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	summary_thaw(summaryview);
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					 G_CALLBACK(summary_tree_expanded), summaryview);
 
@@ -4531,7 +4556,7 @@ void summary_expand_threads(SummaryView *summaryview)
 
 	g_signal_handlers_block_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	summary_freeze(summaryview);
 
 	while (node) {
 		if (GTK_CTREE_ROW(node)->children) {
@@ -4541,7 +4566,7 @@ void summary_expand_threads(SummaryView *summaryview)
 		node = GTK_CTREE_NODE_NEXT(node);
 	}
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	summary_thaw(summaryview);
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					 G_CALLBACK(summary_tree_expanded), summaryview);
 
@@ -4555,7 +4580,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	summary_freeze(summaryview);
 
 	while (node) {
 		if (GTK_CTREE_ROW(node)->children)
@@ -4563,7 +4588,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 		node = GTK_CTREE_ROW(node)->sibling;
 	}
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	summary_thaw(summaryview);
 	
 	summaryview->thread_collapsed = TRUE;
 
@@ -4660,7 +4685,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
+	summary_freeze(summaryview);
 
 	if (selected_only) {
 		GList *cur;
@@ -4684,7 +4709,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	}
 	g_slist_free(mlist);
 
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 
 	folder_item_update_thaw();
 	debug_print("done.\n");
@@ -5611,7 +5636,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 
 	node = GTK_CTREE_NODE(GTK_CLIST(summaryview->ctree)->row_list);
 
-	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
+	summary_freeze(summaryview);
 	if (prefs_common.bold_unread) {
 		while (node) {
 			GtkCTreeNode *next = GTK_CTREE_NODE_NEXT(node);
@@ -5620,7 +5645,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 			node = next;
 		}
 	}
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 	END_TIMING();
 }
 

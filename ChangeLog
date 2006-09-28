@@ -1,3 +1,11 @@
+2006-09-28 [colin]	2.5.2cvs18
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Add helpers to freeze/thaw/grab_focus
+		Factorize calls to freeze/thaw/grab_focus
+		
+
 2006-09-28 [colin]	2.5.2cvs17
 
 	* src/main.c
