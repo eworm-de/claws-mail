@@ -1,3 +1,10 @@
+2006-09-28 [colin]	2.5.2cvs15
+
+	* src/addressbook.c
+		If nothing is selected in the list (right part)
+		and a group is selected in the tree (left part),
+		mail this group.
+
 2006-09-28 [colin]	2.5.2cvs14
 
 	* src/Makefile.am

@@ -1498,20 +1498,41 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 	/* Select from address list */
 	list = addrselect_get_list( _addressSelect_ );
 	node = list;
-	while( node ) {
-		item = node->data;
-		node = g_list_next( node );
-		aio = item->addressItem;
-		if( aio->type == ADDR_ITEM_PERSON ||
-		    aio->type == ADDR_ITEM_EMAIL ) {
-			addr = addressbook_format_address( aio );
-			compose_entry_append(
-				compose, addr, (ComposeEntryType) data );
-			g_free( addr );
+	if (node) {
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = item->addressItem;
+			if( aio->type == ADDR_ITEM_PERSON ||
+			    aio->type == ADDR_ITEM_EMAIL ) {
+				addr = addressbook_format_address( aio );
+				compose_entry_append(
+					compose, addr, (ComposeEntryType) data );
+				g_free( addr );
+			}
+			else if( aio->type == ADDR_ITEM_GROUP ) {
+				ItemGroup *group = ( ItemGroup * ) aio;
+				GList *nodeMail = group->listEMail;
+				while( nodeMail ) {
+					ItemEMail *email = nodeMail->data;
+
+					addr = addressbook_format_address(
+							( AddrItemObject * ) email );
+					compose_entry_append(
+						compose, addr, (ComposeEntryType) data );
+					g_free( addr );
+					nodeMail = g_list_next( nodeMail );
+				}
+			}
 		}
-		else if( aio->type == ADDR_ITEM_GROUP ) {
-			ItemGroup *group = ( ItemGroup * ) aio;
-			GList *nodeMail = group->listEMail;
+	} else {
+		AddressObject *obj = NULL;
+
+		obj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
+	
+		if( obj && obj->type == ADDR_ITEM_GROUP ) {
+			ItemGroup *itemGroup = ADAPTER_GROUP(obj)->itemGroup;
+			GList *nodeMail = itemGroup->listEMail;
 			while( nodeMail ) {
 				ItemEMail *email = nodeMail->data;
 
