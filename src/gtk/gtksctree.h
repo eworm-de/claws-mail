@@ -39,6 +39,7 @@ struct _GtkSCTree {
 	/* (dis)allow fancy color stripes */
 	gboolean show_stripes;
 	GtkTooltips *tips;
+	gboolean always_expand_recursively;
 };
 
 struct _GtkSCTreeClass {
@@ -77,6 +78,7 @@ void gtk_sctree_remove_node		(GtkSCTree	*sctree,
 					 GtkCTreeNode	*node);
 
 void gtk_sctree_set_stripes(GtkSCTree  *sctree, gboolean show_stripes);
+void gtk_sctree_set_recursive_expand(GtkSCTree  *sctree, gboolean rec_exp);
 
 /***********************************************************
  *             Tree sorting functions                      *

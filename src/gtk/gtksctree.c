@@ -1276,7 +1276,11 @@ gtk_sctree_change_focus_row_expansion (GtkCTree          *ctree,
   switch (action)
     {
     case GTK_CTREE_EXPANSION_EXPAND:
-      gtk_ctree_expand_recursive (ctree, node);
+      if (GTK_SCTREE(ctree)->always_expand_recursively)
+	      gtk_ctree_expand_recursive (ctree, node);
+      else
+	      gtk_ctree_expand (ctree, node);
+
       break;
     case GTK_CTREE_EXPANSION_EXPAND_RECURSIVE:
       gtk_ctree_expand_recursive (ctree, node);
@@ -1288,7 +1292,10 @@ gtk_sctree_change_focus_row_expansion (GtkCTree          *ctree,
       gtk_ctree_collapse_recursive (ctree, node);
       break;
     case GTK_CTREE_EXPANSION_TOGGLE:
-      gtk_ctree_toggle_expansion_recursive (ctree, node);
+      if (GTK_SCTREE(ctree)->always_expand_recursively)
+	      gtk_ctree_toggle_expansion_recursive (ctree, node);
+      else
+	      gtk_ctree_toggle_expansion (ctree, node);
       break;
     case GTK_CTREE_EXPANSION_TOGGLE_RECURSIVE:
       gtk_ctree_toggle_expansion_recursive (ctree, node);
@@ -1538,8 +1545,10 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		GtkCTreeNode *node = gtk_ctree_node_nth(GTK_CTREE(sctree), row);
 		if (GTK_CTREE_ROW (node)->expanded)
 			gtk_ctree_collapse(GTK_CTREE(sctree), node);
+		else if (GTK_SCTREE(sctree)->always_expand_recursively)
+			gtk_ctree_expand_recursive (GTK_CTREE(sctree), node);
 		else
-			gtk_ctree_expand_recursive(GTK_CTREE(sctree), node);
+			gtk_ctree_expand(GTK_CTREE(sctree), node);
 		return TRUE;
 	}
 
@@ -1818,6 +1827,7 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 	}
 
 	GTK_SCTREE(widget)->show_stripes = TRUE;
+	GTK_SCTREE(widget)->always_expand_recursively = TRUE;
 
 	return widget;
 }
@@ -1866,6 +1876,11 @@ void gtk_sctree_remove_node (GtkSCTree *sctree, GtkCTreeNode *node)
 void gtk_sctree_set_stripes(GtkSCTree  *sctree, gboolean show_stripes)
 {
 	sctree->show_stripes = show_stripes;
+}
+
+void gtk_sctree_set_recursive_expand(GtkSCTree  *sctree, gboolean rec_exp)
+{
+	sctree->always_expand_recursively = rec_exp;
 }
 
 /***********************************************************
