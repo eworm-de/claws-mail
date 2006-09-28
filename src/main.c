@@ -289,7 +289,7 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 
 #ifdef HAVE_LIBSM
 static void
-sc_client_set_value (MainWindow *client,
+sc_client_set_value (MainWindow *mainwin,
 		  gchar       *name,
 		  char        *type,
 		  int          num_vals,
@@ -304,7 +304,8 @@ sc_client_set_value (MainWindow *client,
 	prop.vals = vals;
 
 	proplist[0]= &prop;
-	SmcSetProperties ((SmcConn) client->smc_conn, 1, proplist);
+	if (mainwin->smc_conn)
+		SmcSetProperties ((SmcConn) mainwin->smc_conn, 1, proplist);
 }
 
 static void sc_die_callback (SmcConn smc_conn, SmPointer client_data)
@@ -319,7 +320,8 @@ static void sc_save_complete_callback(SmcConn smc_conn, SmPointer client_data)
 static void sc_shutdown_cancelled_callback (SmcConn smc_conn, SmPointer client_data)
 {
 	MainWindow *mainwin = (MainWindow *)client_data;
-	SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
+	if (mainwin->smc_conn)
+		SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
 }
 
 static void sc_save_yourself_callback (SmcConn   smc_conn,
@@ -330,7 +332,8 @@ static void sc_save_yourself_callback (SmcConn   smc_conn,
 			       gboolean  fast) {
 
 	MainWindow *mainwin = (MainWindow *)client_data;
-	SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
+	if (mainwin->smc_conn)
+		SmcSaveYourselfDone ((SmcConn) mainwin->smc_conn, TRUE);
 }
 
 static IceIOErrorHandler sc_ice_installed_handler;
@@ -425,7 +428,7 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 	if (g_getenv ("SESSION_MANAGER")) {
 		gchar error_string_ret[256] = "";
 
-		mainwin->smc_conn= (gpointer)
+		mainwin->smc_conn = (gpointer)
 			SmcOpenConnection (NULL, mainwin,
 				SmProtoMajor, SmProtoMinor,
 				SmcSaveYourselfProcMask | SmcDieProcMask |
@@ -435,7 +438,7 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 				NULL, &client_id,
 				256, error_string_ret);
 
-		if (error_string_ret[0])
+		if (error_string_ret[0] || mainwin->smc_conn == NULL)
 			g_warning ("While connecting to session manager:\n%s.",
 				error_string_ret);
 		else {
@@ -821,9 +824,6 @@ static gboolean sc_exiting = FALSE;
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
-#ifdef HAVE_LIBSM
-	SmcConn smc_conn = mainwin->smc_conn;
-#endif
 
 	sc_exiting = TRUE;
 
@@ -871,6 +871,12 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	lock_socket_remove();
 
+#ifdef HAVE_LIBSM
+	if (mainwin->smc_conn)
+		SmcCloseConnection ((SmcConn)mainwin->smc_conn, 0, NULL);
+	mainwin->smc_conn = NULL;
+#endif
+
 	main_window_destroy_all();
 	
 	plugin_unload_all("GTK2");
@@ -898,9 +904,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 	gtkaspell_checkers_quit();
 #endif
 	sylpheed_done();
-#ifdef HAVE_LIBSM
-	SmcCloseConnection (smc_conn, 0, NULL);
-#endif
 }
 
 static void parse_cmd_opt(int argc, char *argv[])
