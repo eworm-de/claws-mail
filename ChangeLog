@@ -1,3 +1,8 @@
+2006-09-28 [colin]	2.5.2cvs14
+
+	* src/Makefile.am
+		Actually use SM_LIBS
+
 2006-09-28 [ticho]	2.5.2cvs13
 
 	* src/export.c
