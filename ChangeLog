@@ -1,3 +1,8 @@
+2006-09-28 [colin]	2.5.2cvs12
+
+	* configure.ac
+		Possibly fix link errors
+
 2006-09-27 [wwp]	2.5.2cvs11
 
 	* src/gtk/authors.h

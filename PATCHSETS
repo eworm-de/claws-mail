@@ -1925,3 +1925,4 @@
 ( cvs diff -u -r 1.11.2.12 -r 1.11.2.13 src/editgroup.c;  cvs diff -u -r 1.17.2.32 -r 1.17.2.33 src/send_message.c;  cvs diff -u -r 1.149.2.58 -r 1.149.2.59 src/inc.c;  cvs diff -u -r 1.204.2.103 -r 1.204.2.104 src/prefs_common.c;  cvs diff -u -r 1.103.2.61 -r 1.103.2.62 src/prefs_common.h;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/gtk/progressdialog.c;  ) > 2.5.2cvs9.patchset
 ( cvs diff -u -r 1.60.2.65 -r 1.60.2.66 src/addressbook.c;  ) > 2.5.2cvs10.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/gtk/authors.h;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 doc/man/sylpheed-claws.1;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/ack.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/es/ack.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/fr/ack.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/pl/ack.xml;  ) > 2.5.2cvs11.patchset
+( cvs diff -u -r 1.654.2.1975 -r 1.654.2.1976 configure.ac;  ) > 2.5.2cvs12.patchset

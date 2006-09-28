@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=11
+EXTRA_VERSION=12
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -207,7 +207,7 @@ if test x"$ac_cv_enable_libsm" = xyes; then
 	AC_CHECK_LIB(SM, SmcSaveYourselfDone,
 		[SM_LIBS="$X_LIBS -lSM -lICE"],ac_cv_enable_libsm=no,
 		$X_LIBS -lICE)
-	AC_CHECK_HEADERS(X11/SM/SMlib.h,,SC_HAVE_SM=false)
+	AC_CHECK_HEADERS(X11/SM/SMlib.h,,ac_cv_enable_libsm=no)
 	if test x"$ac_cv_enable_libsm" = xyes; then
 		AC_DEFINE(HAVE_LIBSM, 1, [Define to 1 if you have libSM installed])
 	else
