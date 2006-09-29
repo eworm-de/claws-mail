@@ -923,7 +923,7 @@ static void prefs_filtering_condition_define(void)
 	cond_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
 
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond(cond_str);
+		matchers = matcher_parser_get_cond(cond_str, NULL);
 		if (matchers == NULL)
 			alertpanel_error(_("Condition string is not valid."));
 	}
@@ -1008,7 +1008,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 		goto fail;
 	}
 
-	cond = matcher_parser_get_cond(cond_str);
+	cond = matcher_parser_get_cond(cond_str, NULL);
 
 	if (cond == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Condition string is not valid."));

@@ -51,5 +51,6 @@ void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch);
 void quicksearch_search_subfolders(QuickSearch *quicksearch, 
 				   FolderView  *folderview,
 				   FolderItem  *folder_item);
+gboolean quicksearch_is_fast(QuickSearch *quicksearch);
 
 #endif /* QUICKSEARCH_H */

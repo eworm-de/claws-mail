@@ -49,6 +49,7 @@ static gint account_id = 0;
 static MatcherList *cond;
 static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
+static gboolean matcher_is_fast = TRUE;
 
 static FilteringProp *filtering;
 
@@ -198,7 +199,7 @@ MatcherList *matcher_parser_get_account(gchar *str)
 	return cond;
 }
 
-MatcherList *matcher_parser_get_cond(gchar *str)
+MatcherList *matcher_parser_get_cond(gchar *str, gboolean *is_fast)
 {
 	void *bufstate;
 
@@ -207,6 +208,7 @@ MatcherList *matcher_parser_get_cond(gchar *str)
 		return cond;
 	}
 	
+	matcher_is_fast = TRUE;
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
@@ -217,6 +219,8 @@ MatcherList *matcher_parser_get_cond(gchar *str)
 	matcher_parserparse();
 	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
+	if (is_fast)
+		*is_fast = matcher_is_fast;
 	return cond;
 }
 
@@ -248,7 +252,7 @@ MatcherProp *matcher_parser_get_prop(gchar *str)
 	MatcherProp *prop;
 
 	matcher_parserlineno = 1;
-	list = matcher_parser_get_cond(str);
+	list = matcher_parser_get_cond(str, NULL);
 	if (list == NULL)
 		return NULL;
 
@@ -953,7 +957,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_HEADER;
 	expr = $2;
 	prop = matcherprop_new(criteria, header, match_type, expr, 0);
@@ -966,7 +970,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_HEADER;
 	expr = $2;
 	prop = matcherprop_new(criteria, header, match_type, expr, 0);
@@ -976,7 +980,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_HEADERS_PART;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -985,7 +989,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -1020,7 +1024,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_MESSAGE;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -1029,7 +1033,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_MESSAGE;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -1038,7 +1042,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_BODY_PART;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -1047,7 +1051,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_BODY_PART;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
@@ -1056,7 +1060,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_TEST;
 	expr = $2;
 	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
@@ -1065,7 +1069,7 @@ MATCHER_ALL
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
-
+	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_TEST;
 	expr = $2;
 	prop = matcherprop_new(criteria, NULL, 0, expr, 0);

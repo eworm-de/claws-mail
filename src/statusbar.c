@@ -161,8 +161,8 @@ void statusbar_verbosity_set(gboolean verbose)
 void statusbar_progress_all (gint done, gint total, gint step) 
 {
 	gchar buf[32];
-	g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
 	if (total && done % step == 0) {
+		g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
 		gtk_progress_bar_set_text
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
 		gtk_progress_bar_set_fraction

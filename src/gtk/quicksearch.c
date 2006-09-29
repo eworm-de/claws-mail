@@ -62,11 +62,17 @@ struct _QuickSearch
 	gboolean			 matching;
 	gboolean			 deferred_free;
 	FolderItem			*root_folder_item;
+	gboolean			 is_fast;
 };
 
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active);
 static void quicksearch_reset_folder_items(QuickSearch *quicksearch, FolderItem *folder_item);
+
+gboolean quicksearch_is_fast(QuickSearch *quicksearch)
+{
+	return quicksearch->is_fast;
+}
 
 static void prepare_matcher(QuickSearch *quicksearch)
 {
@@ -95,7 +101,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 
 		newstr = expand_search_string(search_string);
 		if (newstr && newstr[0] != '\0') {
-			quicksearch->matcher_list = matcher_parser_get_cond(newstr);
+			quicksearch->matcher_list = matcher_parser_get_cond(newstr, &quicksearch->is_fast);
 			g_free(newstr);
 		} else {
 			quicksearch->matcher_list = NULL;
@@ -349,7 +355,7 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 {
 	const gchar * cond_str;
 	MatcherList * matchers = NULL;
-
+	
 	g_return_val_if_fail(
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL,
 			FALSE);
@@ -360,7 +366,7 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 			GTK_ENTRY(GTK_COMBO(mainwindow_get_mainwindow()->summaryview->quicksearch->
 			search_string_entry)->entry));
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond((gchar*)cond_str);
+		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}
 
 	prefs_matcher_open(matchers, search_condition_expr_done);
@@ -914,21 +920,26 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	GSList *cur;
 	gboolean result = FALSE;
 	gint num = 0, total = src->total_msgs;
+	gint interval = quicksearch_is_fast(quicksearch) ? 1000:100;
+
 	statusbar_print_all(_("Searching in %s... \n"),
 		src->path ? src->path : "(null)");
+	folder_item_update_freeze();
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		MsgInfo *msg = (MsgInfo *)cur->data;
-		statusbar_progress_all(num++,total, 50);
+		statusbar_progress_all(num++,total, interval);
 		if (quicksearch_match(quicksearch, msg)) {
 			procmsg_msginfo_free(msg);
 			result = TRUE;
 			break;
 		}
 		procmsg_msginfo_free(msg);
-		GTK_EVENTS_FLUSH();
+		if (num % interval == 0)
+			GTK_EVENTS_FLUSH();
 		if (!quicksearch_is_active(quicksearch))
 			break;
 	}
+	folder_item_update_thaw();
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 

@@ -431,6 +431,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	const gchar *from_str = NULL, *to_str = NULL, *subject_str = NULL;
 	const gchar *body_str = NULL, *adv_condition = NULL;
 	StrFindFunc str_find_func = NULL;
+	gboolean is_fast = TRUE;
+	gint interval = 1000;
+	gint i = 0;
 
 	if (summary_is_locked(summaryview)) {
 		return;
@@ -447,7 +450,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		}
 		adv_condition = gtk_entry_get_text(GTK_ENTRY(search_window.adv_condition_entry));
 		if (adv_condition[0] != '\0') {
-			search_window.matcher_list = matcher_parser_get_cond((gchar*)adv_condition);
+			search_window.matcher_list = matcher_parser_get_cond((gchar*)adv_condition, &is_fast);
+			if (!is_fast)
+				interval = 100;
 			/* TODO: check for condition parsing error and show an error dialog */
 		} else {
 			/* TODO: warn if no search condition? (or make buttons enabled only when
@@ -517,7 +522,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		}
 	}
 
-	for (; search_window.is_searching;) {
+	for (; search_window.is_searching; i++) {
 		if (!node) {
 			gchar *str;
 			AlertValue val;
@@ -648,8 +653,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 
 		node = backward ? gtkut_ctree_node_prev(ctree, node)
 				: gtkut_ctree_node_next(ctree, node);
-
-		GTK_EVENTS_FLUSH();
+		if (i % interval == 0)
+			GTK_EVENTS_FLUSH();
 	}
 
 	search_window.is_searching = FALSE;
@@ -735,7 +740,7 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 	cond_str = gtk_entry_get_text(
 			GTK_ENTRY(search_window.adv_condition_entry));
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond((gchar*)cond_str);
+		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}
 
 	prefs_matcher_open(matchers, adv_condition_btn_done);

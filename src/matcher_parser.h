@@ -30,7 +30,7 @@ extern int matcher_parserlineno;
 void matcher_parser_start_parsing	(FILE *f);
 int matcher_parserparse			(void);
 
-MatcherList *matcher_parser_get_cond	(gchar *str);
+MatcherList *matcher_parser_get_cond	(gchar *str, gboolean *is_fast);
 MatcherProp *matcher_parser_get_prop	(gchar *str);
 FilteringProp *matcher_parser_get_filtering	(gchar *str);
 GSList *matcher_parser_get_action_list(gchar *str);

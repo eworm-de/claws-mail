@@ -1,3 +1,17 @@
+2006-09-29 [colin]	2.5.2cvs22
+
+	* src/matcher_parser.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+	* src/statusbar.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Optimise searches by setting different
+		refresh intervals (depending if the 
+		search is fast or not)
+
 2006-09-29 [colin]	2.5.2cvs21
 
 	* src/codeconv.c

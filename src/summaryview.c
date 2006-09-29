@@ -1067,26 +1067,30 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
+		gint interval = quicksearch_is_fast(summaryview->quicksearch) ? 1000:100;
 		START_TIMING("quicksearch");
 		gint num = 0, total = summaryview->folder_item->total_msgs;
 		statusbar_print_all(_("Searching in %s... \n"), 
 			summaryview->folder_item->path ? 
 			summaryview->folder_item->path : "(null)");
 		not_killed = NULL;
+		folder_item_update_freeze();
 		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 
-			statusbar_progress_all(num++,total, 50);
+			statusbar_progress_all(num++,total, interval);
 
 			if (!msginfo->hidden && quicksearch_match(summaryview->quicksearch, msginfo))
 				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
-			GTK_EVENTS_FLUSH();
+			if (num % interval == 0)
+				GTK_EVENTS_FLUSH();
 			if (!quicksearch_is_active(summaryview->quicksearch)) {
 				break;
 			}
 		}
+		folder_item_update_thaw();
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();
 		
@@ -4623,7 +4627,7 @@ gboolean summary_filter_get_mode(void)
 							_("Apply these rules regardless of the account they belong to"));
 	account_rules_user_current = gtk_radio_button_new_with_label_from_widget
 							(GTK_RADIO_BUTTON(account_rules_skip),
-							_("Use current account for these rules"));
+							_("Apply these rules if they apply to the current account"));
 	gtk_box_pack_start (GTK_BOX (vbox), account_rules_skip, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), account_rules_force, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), account_rules_user_current, FALSE, FALSE, 0);
