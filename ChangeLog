@@ -1,3 +1,12 @@
+2006-09-29 [colin]	2.5.2cvs21
+
+	* src/codeconv.c
+		Optimise by reusing the last iconv converter
+		if possible
+	* src/textview.c
+		Optimise a bit (the foldable quotes feature
+		still has an awful O(n^2) algo
+
 2006-09-29 [colin]	2.5.2cvs20
 
 	* src/gtk/gtksctree.c

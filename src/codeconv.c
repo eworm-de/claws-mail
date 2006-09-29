@@ -807,8 +807,9 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 gchar *conv_iconv_strdup(const gchar *inbuf,
 			 const gchar *src_code, const gchar *dest_code)
 {
-	iconv_t cd;
+	static iconv_t cd = (iconv_t)-1;
 	gchar *outbuf;
+	static const gchar *last_src_code = NULL, *last_dest_code = NULL;
 
 	if (!src_code && !dest_code && 
 	    g_utf8_validate(inbuf, -1, NULL))
@@ -831,13 +832,30 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	if (!strcasecmp(dest_code, CS_US_ASCII))
 		return g_strdup(inbuf);
 
-	cd = iconv_open(dest_code, src_code);
-	if (cd == (iconv_t)-1)
+	if (last_src_code == NULL || last_dest_code == NULL) {
+		cd = iconv_open(dest_code, src_code);
+		last_src_code = src_code;
+		last_dest_code = dest_code;
+	} else if (last_src_code != src_code || last_dest_code != dest_code) {
+		if (cd != (iconv_t)-1)
+			iconv_close(cd);
+		cd = iconv_open(dest_code, src_code);
+		last_src_code = src_code;
+		last_dest_code = dest_code;
+	} else if (cd == (iconv_t)-1) {
+		cd = iconv_open(dest_code, src_code);
+		last_src_code = src_code;
+		last_dest_code = dest_code;
+	} else {
+		/* that's the same converter */
+	}
+
+	if (cd == (iconv_t)-1) {
+		last_src_code = last_dest_code = NULL;
 		return NULL;
+	}
 
 	outbuf = conv_iconv_strdup_with_cd(inbuf, cd);
-
-	iconv_close(cd);
 
 	return outbuf;
 }

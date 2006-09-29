@@ -201,6 +201,7 @@ static gboolean textview_uri_security_check	(TextView	*textview,
 static void textview_uri_list_remove_all	(GSList		*uri_list);
 
 static void textview_toggle_quote		(TextView 	*textview, 
+						 GSList		*start_list,
 						 ClickableText 	*uri,
 						 gboolean	 expand_only);
 
@@ -619,7 +620,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	uri->filename = fname?g_strdup(fname):NULL;			\
 	uri->data = udata;						\
 	textview->uri_list =						\
-		g_slist_append(textview->uri_list, uri);		\
+		g_slist_prepend(textview->uri_list, uri);		\
 }
 
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
@@ -737,7 +738,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				uri->end = uri->start + 1;
 				uri->filename = procmime_get_part_file_name(mimeinfo);
 				textview->uri_list =
-					g_slist_append(textview->uri_list, uri);
+					g_slist_prepend(textview->uri_list, uri);
 				
 				gtk_text_buffer_insert(buffer, &iter, " ", 1);
 				gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, uri->start);	
@@ -1028,13 +1029,14 @@ textview_default:
 	procmime_force_encoding(0);
 
 	lines = 0;
+	textview->uri_list = g_slist_reverse(textview->uri_list);
 	for (cur = textview->uri_list; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
 		if (!uri->is_quote)
 			continue;
 		if (!prefs_common.hide_quotes ||
 		    uri->quote_level+1 < prefs_common.hide_quotes) {
-			textview_toggle_quote(textview, uri, TRUE);
+			textview_toggle_quote(textview, cur, uri, TRUE);
 			lines++;
 			if (lines % 500 == 0)
 				GTK_EVENTS_FLUSH();
@@ -1244,7 +1246,7 @@ static void textview_make_clickable_parts(TextView *textview,
 			uri->end = gtk_text_iter_get_offset(&iter);
 			uri->filename = NULL;
 			textview->uri_list =
-				g_slist_append(textview->uri_list, uri);
+				g_slist_prepend(textview->uri_list, uri);
 		}
 
 		if (*normal_text)
@@ -1373,7 +1375,7 @@ static void textview_make_clickable_parts_later(TextView *textview,
 			uri->end = gtk_text_iter_get_offset(&end_iter);
 			uri->filename = NULL;
 			textview->uri_list =
-				g_slist_append(textview->uri_list, uri);
+				g_slist_prepend(textview->uri_list, uri);
 		}
 	} 
 
@@ -1443,25 +1445,29 @@ static void textview_write_line(TextView *textview, const gchar *str,
 			uri->uri = g_strdup("");
 			uri->data = g_strdup(buf);
 			uri->start = gtk_text_iter_get_offset(&iter);
-			gtk_text_buffer_insert_with_tags_by_name
-						(buffer, &iter, " [...]", -1,
-						 "qlink", fg_color, NULL);
-			uri->end = gtk_text_iter_get_offset(&iter);
-			uri->filename = NULL;
-			uri->fg_color = g_strdup(fg_color);
 			uri->is_quote = TRUE;
 			uri->quote_level = real_quotelevel;
-			textview->uri_list =
-				g_slist_append(textview->uri_list, uri);
+			uri->fg_color = g_strdup(fg_color);
+
+			gtk_text_buffer_insert_with_tags_by_name
+					(buffer, &iter, " [...]", -1,
+					 "qlink", fg_color, NULL);
+			uri->end = gtk_text_iter_get_offset(&iter);
 			gtk_text_buffer_insert(buffer, &iter, "  \n", -1);
+			
+			uri->filename = NULL;
+			textview->uri_list =
+				g_slist_prepend(textview->uri_list, uri);
 		
 			previousquotelevel = real_quotelevel;
 		} else {
-			GSList *last = g_slist_last(textview->uri_list);
+			GSList *last = textview->uri_list;
 			ClickableText *lasturi = (ClickableText *)last->data;
-			gchar *tmp = g_strdup_printf("%s%s", (gchar *)lasturi->data, buf);
-			g_free(lasturi->data);
-			lasturi->data = tmp;
+			gint e_len = strlen(lasturi->data);
+			gint n_len = strlen(buf);
+			lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
+			strcpy((gchar *)lasturi->data + e_len, buf);
+			*((gchar *)lasturi->data + e_len + n_len) = '\0';
 		}
 	} else {
 		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
@@ -1523,7 +1529,7 @@ void textview_write_link(TextView *textview, const gchar *str,
 		(buffer, &iter, bufp, -1, "link", NULL);
 	r_uri->end = gtk_text_iter_get_offset(&iter);
 	r_uri->filename = NULL;
-	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
+	textview->uri_list = g_slist_prepend(textview->uri_list, r_uri);
 }
 
 static void textview_set_cursor(GdkWindow *window, GdkCursor *cursor)
@@ -2251,10 +2257,13 @@ static ClickableText *textview_get_uri(TextView *textview,
 	return uri;
 }
 
-static void textview_shift_uris_after(TextView *textview, gint start, gint shift)
+static void textview_shift_uris_after(TextView *textview, GSList *start_list, gint start, gint shift)
 {
 	GSList *cur;
-	for (cur = textview->uri_list; cur; cur = cur->next) {
+	if (!start_list)
+		start_list = textview->uri_list;
+
+	for (cur = start_list; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
 		if (uri->start <= start)
 			continue;
@@ -2286,7 +2295,7 @@ static void textview_remove_uris_in(TextView *textview, gint start, gint end)
 	}
 }
 
-static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboolean expand_only)
+static void textview_toggle_quote(TextView *textview, GSList *start_list, ClickableText *uri, gboolean expand_only)
 {
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
@@ -2316,7 +2325,7 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboole
 	if (!uri->q_expanded) {
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
-		textview_shift_uris_after(textview, uri->start, 
+		textview_shift_uris_after(textview, start_list, uri->start, 
 			g_utf8_strlen((gchar *)uri->data, -1)-strlen(" [...]\n"));
 		gtk_text_buffer_delete(buffer, &start, &end);
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
@@ -2332,7 +2341,7 @@ static void textview_toggle_quote(TextView *textview, ClickableText *uri, gboole
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 		textview_remove_uris_in(textview, uri->start, uri->end);
-		textview_shift_uris_after(textview, uri->start, 
+		textview_shift_uris_after(textview, start_list, uri->start, 
 			strlen(" [...]\n")-g_utf8_strlen((gchar *)uri->data, -1));
 		gtk_text_buffer_delete(buffer, &start, &end);
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
@@ -2398,7 +2407,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			} 
 			return TRUE;
 		} else if (qlink && bevent->button == 1) {
-			textview_toggle_quote(textview, uri, FALSE);
+			textview_toggle_quote(textview, NULL, uri, FALSE);
 			return TRUE;
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
