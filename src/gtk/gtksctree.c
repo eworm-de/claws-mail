@@ -84,6 +84,7 @@ static void gtk_sctree_drag_data_received (GtkWidget *widget, GdkDragContext *co
 					  guint info, guint time);
 
 static void gtk_sctree_clear (GtkCList *clist);
+static void gtk_sctree_real_unselect_all (GtkCList *clist);
 static void gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node);
        
 static void stree_sort (GtkCTree *ctree, GtkCTreeNode  *node, gpointer data);
@@ -1360,11 +1361,12 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 
 	clist_class->clear = gtk_sctree_clear;
 	clist_class->draw_row = gtk_sctree_draw_row;
+	clist_class->unselect_all = gtk_sctree_real_unselect_all;
         ctree_class->tree_collapse = gtk_sctree_collapse;
 	ctree_class->tree_expand = gtk_sctree_real_tree_expand;
 	ctree_class->tree_move = sreal_tree_move;
 	ctree_class->change_focus_row_expansion = gtk_sctree_change_focus_row_expansion;
-
+	
 	widget_class->button_press_event = gtk_sctree_button_press;
 	widget_class->button_release_event = gtk_sctree_button_release;
 	widget_class->motion_notify_event = gtk_sctree_motion;
@@ -1421,7 +1423,7 @@ select_range (GtkSCTree *sctree, gint row)
 		min = prev_row;
 		max = row;
 	}
-	sctree->selecting_range = TRUE;
+	sctree->selecting_range++;
 	
 	if (max < min) {
 		int t = min;
@@ -1444,7 +1446,7 @@ select_range (GtkSCTree *sctree, gint row)
 		gtk_clist_thaw(GTK_CLIST(sctree));
 
 
-	sctree->selecting_range = FALSE;
+	sctree->selecting_range--;
 	gtk_clist_select_row (GTK_CLIST (sctree), max, -1);
 }
 
@@ -1469,24 +1471,7 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 	GTK_CLIST(sctree)->focus_row = row;
 
 	if (!additive) {
-		/* if this selection isn't additive, we have to unselect what
-		 * is selected. Here, heavy GUI updates can occur if we have 
-		 * a big selection. See if more than one line is selected, in
-		 * which case, freeze, else don't. */
-
-		gboolean should_freeze = FALSE;
-		if (sc_g_list_bigger(GTK_CLIST(sctree)->selection, 10)) {
-		 	should_freeze = TRUE;
-			sctree->selecting_range = TRUE;
-			gtk_clist_freeze (GTK_CLIST (sctree));
-		}
-
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
-
-		if (should_freeze) {
-			gtk_clist_thaw (GTK_CLIST (sctree));
-			sctree->selecting_range = FALSE;
-		}
 	}
 
 	if (!range) {
@@ -1575,9 +1560,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 					select_row (sctree, row, col, event->state, NULL);
 				}
 			} else {
-				sctree->selecting_range = TRUE;
 				gtk_clist_unselect_all (clist);
-				sctree->selecting_range = FALSE;
 			}
 
 			retval = TRUE;
@@ -1590,9 +1573,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 						 sctree_signals[ROW_POPUP_MENU],
 						 0, event);
 			} else {
-				sctree->selecting_range = TRUE;
 				gtk_clist_unselect_all(clist);
-				sctree->selecting_range = FALSE;
 				g_signal_emit (G_OBJECT (sctree),
 						 sctree_signals[EMPTY_POPUP_MENU],
 						 0, event);
@@ -1791,6 +1772,32 @@ gtk_sctree_clear (GtkCList *clist)
 		(* ((GtkCListClass *)parent_class)->clear) (clist);
 }
 
+static void
+gtk_sctree_real_unselect_all (GtkCList *clist)
+{
+	GtkSCTree *sctree;
+	gboolean should_freeze = FALSE;
+
+	g_return_if_fail (clist != NULL);
+	g_return_if_fail (GTK_IS_SCTREE (clist));
+
+	sctree = GTK_SCTREE (clist);
+
+	if (sc_g_list_bigger(GTK_CLIST(sctree)->selection, 10)) {
+		should_freeze = TRUE;
+		sctree->selecting_range++;
+		gtk_clist_freeze (GTK_CLIST (sctree));
+	}
+
+	if (((GtkCListClass *)parent_class)->unselect_all)
+		(* ((GtkCListClass *)parent_class)->unselect_all) (clist);
+
+	if (should_freeze) {
+		gtk_clist_thaw (GTK_CLIST (sctree));
+		sctree->selecting_range--;
+	}
+}
+
 /* Our handler for the change_focus_row_expansion signal of the ctree.  
  We have to set the anchor to parent visible node.
  */
@@ -1848,16 +1855,7 @@ void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int st
 
 void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
-	gboolean froze = FALSE;
-	sctree->selecting_range = TRUE;
-	if (sc_g_list_bigger(GTK_CLIST(sctree)->selection, 1)) {
-		gtk_clist_freeze(GTK_CLIST(sctree));
-		froze = TRUE;
-	}
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
-	if (froze)
-		gtk_clist_thaw(GTK_CLIST(sctree));
-	sctree->selecting_range = FALSE;
 	sctree->anchor_row = NULL;
 }
 

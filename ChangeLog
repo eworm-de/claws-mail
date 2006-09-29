@@ -1,3 +1,10 @@
+2006-09-29 [colin]	2.5.2cvs20
+
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		Optimise de-selection via up/down or
+		another key
+
 2006-09-28 [colin]	2.5.2cvs19
 
 	* src/action.c
