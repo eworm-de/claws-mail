@@ -1,3 +1,13 @@
+2006-09-30 [colin]	2.5.2cvs25
+
+	* src/folder.c
+		Move a debug_print where it belongs 
+		(processing)
+	* src/summaryview.c
+		Don't mess with a huge slow subject
+		table if we're not threading by
+		subject
+
 2006-09-30 [colin]	2.5.2cvs24
 
 	* src/msgcache.c

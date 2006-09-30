@@ -2580,8 +2580,13 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	summaryview->msgid_table = msgid_table;
-	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
-	summaryview->subject_table = subject_table;
+
+	if (prefs_common.thread_by_subject) {
+		subject_table = g_hash_table_new(g_str_hash, g_str_equal);
+		summaryview->subject_table = subject_table;
+	} else {
+		summaryview->subject_table = NULL;
+	}
 
 	if (prefs_common.use_addr_book)
 		start_address_completion(NULL);
@@ -2622,7 +2627,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
 
-			subject_table_insert(subject_table,
+			if (prefs_common.thread_by_subject)
+				subject_table_insert(subject_table,
 					     msginfo->subject,
 					     node);
 		}
@@ -2649,7 +2655,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	if (debug_get_mode()) {
 		debug_print("\tmsgid hash table size = %d\n",
 			    g_hash_table_size(msgid_table));
-		debug_print("\tsubject hash table size = %d\n",
+		if (prefs_common.thread_by_subject)
+			debug_print("\tsubject hash table size = %d\n",
 			    g_hash_table_size(subject_table));
 	}
 
@@ -4285,7 +4292,8 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid))
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
-		if (msginfo->subject && *msginfo->subject && 
+		if (prefs_common.thread_by_subject &&
+		    msginfo->subject && *msginfo->subject && 
 		    node == subject_table_lookup(summaryview->subject_table,
 						 msginfo->subject)) {
 			subject_table_remove(summaryview->subject_table,
@@ -4379,7 +4387,8 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
 		}	
-		if (msginfo->subject && *msginfo->subject && 
+		if (prefs_common.thread_by_subject &&
+		    msginfo->subject && *msginfo->subject && 
 		    node == subject_table_lookup(summaryview->subject_table,
 						 msginfo->subject)) {
 			subject_table_remove(summaryview->subject_table,

@@ -1571,7 +1571,6 @@ void folder_item_process_open (FolderItem *item,
 	/* Processing */
 	buf = g_strdup_printf(_("Processing (%s)...\n"), 
 			      item->path ? item->path : item->name);
-	debug_print("%s\n", buf);
 	g_free(buf);
 
 	if (before_proc_func)
@@ -1582,7 +1581,6 @@ void folder_item_process_open (FolderItem *item,
 	if (after_proc_func)
 		after_proc_func(data);
 
-	debug_print("done.\n");
 	item->processing_pending = FALSE;
 	return;	
 }
@@ -3765,6 +3763,7 @@ void folder_item_apply_processing(FolderItem *item)
 	&&  !post_global_processing)
 		return;
 
+	debug_print("processing %s\n", item->name);
 	folder_item_update_freeze();
 
 	mlist = folder_item_get_msg_list(item);
