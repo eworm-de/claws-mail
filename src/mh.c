@@ -1340,6 +1340,7 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 		MsgInfo *info = NULL;
 		gint start = -1, end = -1;
 		gchar *sequence = g_strdup("");
+		gint seq_len = 0;
 		msglist = g_slist_sort(msglist, sort_cache_list_by_msgnum);
 		cur = msglist;
 		
@@ -1353,12 +1354,18 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 					end = info->msgnum;
 			} else {
 				if (start > 0 && end > 0) {
-					gchar *tmp = sequence;
+					gchar tmp[32];
+					gint tmp_len = 0;
 					if (start != end)
-						sequence = g_strdup_printf("%s %d-%d ", tmp, start, end);
+						snprintf(tmp, 31, " %d-%d", start, end);
 					else
-						sequence = g_strdup_printf("%s %d ", tmp, start);
-					g_free(tmp);
+						snprintf(tmp, 31, " %d", start);
+					
+					tmp_len = strlen(tmp);
+					sequence = g_realloc(sequence, seq_len+tmp_len+1);
+					strcpy(sequence+seq_len, tmp);
+					seq_len += tmp_len;
+
 					start = end = -1;
 				}
 			}

@@ -1,3 +1,8 @@
+2006-09-30 [colin]	2.5.2cvs27
+
+	* src/mh.c
+		Do stuff faster when writing mh_sequences
+
 2006-09-30 [colin]	2.5.2cvs26
 
 	* src/mh.c
