@@ -1,3 +1,10 @@
+2006-09-30 [wwp]	2.5.2cvs23
+
+	* tools/fix_date.sh
+		Fixed a minor bug in date value extraction, added a switch
+		to replace non RFC-compliant Date: value, added a switch
+		to use strict RFC matching patterns for dates.
+
 2006-09-29 [colin]	2.5.2cvs22
 
 	* src/matcher_parser.h

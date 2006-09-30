@@ -7,9 +7,7 @@
 # If no X-Original-Date already exist, the former Date value will be set
 # in such field.
 
-# TODO: add a switch to replace only non RFC-compliant Date: headers
-
-VERSION="0.0.3"
+VERSION="0.0.4"
 
 
 function version()
@@ -25,19 +23,36 @@ function usage()
 	echo "switches:"
 	echo "  --help     display this help then exit"
 	echo "  --version  display version information then exit"
-	echo "  --force    force writting of Date: header even if it already exists"
+	echo "  --force    always force (re-)writing of Date: header"
+	echo "  --rfc      force re-writing of Date: header when it's not RFC-compliant"
 	echo "  --debug    turn on debug information (be more verbose)"
+	echo "  --strict   use RFC-strict matching patterns for dates"
 	echo "  --         end of switches (in case a filename starts with a -)"
 	exit $1
 }
 
+function date_valid()
+{
+	test $STRICT -eq 1 && \
+		REGEXP="$DATE_REGEXP_STRICT" || \
+		REGEXP="$DATE_REGEXP"
+		
+	echo "$1" | grep -qEim 1 "$REGEXP"
+	DATE_VALID=$?
+}
 
-# use --force to always write the Date header
-# otherwise, the Date header will be written if only it doesn't already
-# exist
+# use --force to always (re-)write the Date header
+# otherwise, the Date header will be written if only it doesn't exist
 FORCE=0
+# use --rfc to (re-)write the Date header when it's not RFC-compliant
+# otherwise, the Date header will be written if only it doesn't exist
+RFC=0
 # use --debug to display more information about what's performed
 DEBUG=0
+# use --strict to use strict matching patterns for date validation
+STRICT=0
+# 0 = valid, always valid until --strict is used, then date_valid overrides this value
+DATE_VALID=0
 
 while [ -n "$1" ]
 do
@@ -46,6 +61,8 @@ do
 	--version)	version;;
 	--force)	FORCE=1;;
 	--debug)	DEBUG=1;;
+	--rfc)		RFC=1;;
+	--strict)	STRICT=1;;
 	--)			shift
 				break;;
 	-*)			echo "error: unrecognized switch '$1'"
@@ -55,10 +72,19 @@ do
 	shift
 done
 
+if [ $FORCE -eq 1 -a $RFC -eq 1 ]
+then
+	echo "error: use either --force or --rfc, but not both at the same time"
+	usage 1
+fi
+
 test $# -lt 1 && \
 	usage 1
 
 TMP="/tmp/${0##*/}.tmp"
+
+DATE_REGEXP="( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+"
+DATE_REGEXP_STRICT="(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+"
 
 while [ -n "$1" ]
 do
@@ -69,11 +95,11 @@ do
 		continue
 	fi
 
-	X_ORIGINAL_DATE=$(grep -Eim 1 '^X-Original-Date: ' "$1" | cut -d ':' -f 2)
-	DATE=$(grep -Eim 1 '^Date: ' "$1" | cut -d ':' -f 2)
-	RECEIVED_DATE=$(grep -Eim 1 ';( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+' "$1" | cut -d ';' -f 2)
-# strict, day of week needed
-#	RECEIVED_DATE=$(grep -Eim 1 '; (Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+' "$1" | cut -d ';' -f 2)
+	X_ORIGINAL_DATE=$(grep -Eim 1 '^X-Original-Date: ' "$1" | cut -d ':' -f 2-)
+	DATE=$(grep -Eim 1 '^Date: ' "$1" | cut -d ':' -f 2-)
+	test $STRICT -eq 1 && \
+		RECEIVED_DATE=$(grep -Eim 1 ";$DATE_REGEXP" "$1" | cut -d ';' -f 2) || \
+		RECEIVED_DATE=$(grep -Eim 1 "; $DATE_REGEXP_STRICT" "$1" | cut -d ';' -f 2)
 	FILE_DATE=$(ls -l --time-style="+%a, %d %b %Y %X %z" "$1" | tr -s ' ' ' ' | cut -d ' ' -f 6-11)
 	# we could also use the system date as a possible replacement
 	#SYSTEM_DATE="$(date -R)"
@@ -106,6 +132,8 @@ do
 	fi
 
 	# replace/set the date and write all lines
+	test $RFC -eq 1 && \
+		date_valid "$DATE"
 	if [ -z "$DATE" ]
 	then
 		test $DEBUG -eq 1 && \
@@ -119,9 +147,23 @@ do
 				echo "$1: date already found, replacing with $REPLACEMENT"
 			sed "s/^Date: .*/Date:$REPLACEMENT_DATE/" "$1" >> "$TMP"
 		else
-			test $DEBUG -eq 1 && \
-				echo "$1: date already found, skipping"
-			cat "$1" >> "$TMP"
+			if [ $RFC -eq 1 ]
+			then
+				if [ $DATE_VALID -ne 0 ]
+				then
+					test $DEBUG -eq 1 && \
+						echo "$1: date already found but not RFC-compliant, replacing with $REPLACEMENT"
+					sed "s/^Date: .*/Date:$REPLACEMENT_DATE/" "$1" >> "$TMP"
+				else
+					test $DEBUG -eq 1 && \
+						echo "$1: date already found and RFC-compliant, skipping"
+					cat "$1" >> "$TMP"
+				fi
+			else
+				test $DEBUG -eq 1 && \
+					echo "$1: date already found, skipping"
+				cat "$1" >> "$TMP"
+			fi
 		fi
 	fi
 
