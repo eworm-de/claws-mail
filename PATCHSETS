@@ -1939,3 +1939,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/fix_date.sh;  ) > 2.5.2cvs23.patchset
 ( cvs diff -u -r 1.16.2.40 -r 1.16.2.41 src/msgcache.c;  cvs diff -u -r 1.150.2.80 -r 1.150.2.81 src/procmsg.c;  cvs diff -u -r 1.36.2.80 -r 1.36.2.81 src/common/utils.c;  ) > 2.5.2cvs24.patchset
 ( cvs diff -u -r 1.213.2.115 -r 1.213.2.116 src/folder.c;  cvs diff -u -r 1.395.2.258 -r 1.395.2.259 src/summaryview.c;  ) > 2.5.2cvs25.patchset
+( cvs diff -u -r 1.79.2.41 -r 1.79.2.42 src/mh.c;  ) > 2.5.2cvs26.patchset

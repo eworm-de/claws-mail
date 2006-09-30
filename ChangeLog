@@ -1,3 +1,10 @@
+2006-09-30 [colin]	2.5.2cvs26
+
+	* src/mh.c
+		Don't let the writing of .mh_sequences, which
+		can change the folder's mtime, let us think
+		we need to scan.
+
 2006-09-30 [colin]	2.5.2cvs25
 
 	* src/folder.c
