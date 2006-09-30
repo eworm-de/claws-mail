@@ -311,6 +311,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	closedir(dp);
 
 	item->mtime = time(NULL);
+	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
 	return nummsgs;
 }
 
@@ -575,9 +576,10 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	g_free(srcpath);
 	mh_write_sequences(dest, TRUE);
 
-	if (dest->mtime == last_mtime && !dest_need_scan)
+	if (dest->mtime == last_mtime && !dest_need_scan) {
 		dest->mtime = time(NULL);
-	
+		debug_print("MH: forced mtime of %s to %ld\n", dest->name, dest->mtime);
+	}
 	if (total > 100) {
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();
@@ -614,9 +616,10 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 		return -1;
 	}
 
-	if (item->mtime == last_mtime && !need_scan)
+	if (item->mtime == last_mtime && !need_scan) {
 		item->mtime = time(NULL);
-
+		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	}
 	g_free(file);
 	return 0;
 }
@@ -673,8 +676,10 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();
 	}
-	if (item->mtime == last_mtime && !need_scan)
+	if (item->mtime == last_mtime && !need_scan) {
 		item->mtime = time(NULL);
+		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	}
 
 	g_free(path);
 	return 0;
@@ -1123,6 +1128,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 #endif
 
 	item->mtime = time(NULL);
+	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
 }
 
 static gboolean mh_rename_folder_func(GNode *node, gpointer data)
@@ -1409,8 +1415,10 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 
 	mh_write_sequences(item, FALSE);
 
-	if (item->mtime == last_mtime && !need_scan)
+	if (item->mtime == last_mtime && !need_scan) {
 		item->mtime = time(NULL);
+		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	}
 
 	return 0;
 }

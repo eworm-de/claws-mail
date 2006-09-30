@@ -1,3 +1,9 @@
+2006-09-30 [colin]	2.5.2cvs29
+
+	* src/folder.c
+	* src/mh.c
+		Debug forced mtime changes
+
 2006-09-30 [colin]	2.5.2cvs28
 
 	* src/folder.c
