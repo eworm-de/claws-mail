@@ -1080,7 +1080,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 			      item->path 
 			      ? item->path 
 			      : _("top level folder"));
-	debug_print("%s\n", buf);
 	g_free(buf);
 
 	
@@ -1088,7 +1087,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 		folder_item_apply_processing(item);
 	}
 
-	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
 }
 

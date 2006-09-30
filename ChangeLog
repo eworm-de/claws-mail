@@ -1,3 +1,10 @@
+2006-09-30 [colin]	2.5.2cvs28
+
+	* src/folder.c
+	* src/main.c
+		Remove useless debug_print()s (code
+		well-tested)
+
 2006-09-30 [colin]	2.5.2cvs27
 
 	* src/mh.c
