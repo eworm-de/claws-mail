@@ -1,3 +1,14 @@
+2006-09-30 [colin]	2.5.2cvs24
+
+	* src/msgcache.c
+		Reenable mmaped reads (*not* writes!)
+	* src/procmsg.c
+		Don't destroy and recreate hashtables just
+		for fun
+	* src/common/utils.c
+		Remove useless reply prefixes (it's case
+		unsensitive)
+
 2006-09-30 [wwp]	2.5.2cvs23
 
 	* tools/fix_date.sh

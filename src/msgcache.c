@@ -50,7 +50,8 @@
 	 ((x[2]&0xff) << 16) |		\
 	 ((x[3]&0xff) << 24))
 
-static gboolean msgcache_use_mmap = FALSE;
+static gboolean msgcache_use_mmap_read = TRUE;
+static gboolean msgcache_use_mmap_write = FALSE;
 
 #else
 #define bswap_32(x) (x)
@@ -67,7 +68,8 @@ static gboolean msgcache_use_mmap = FALSE;
 	 ((x[2]&0xff) << 16) |		\
 	 ((x[3]&0xff) << 24))
 
-static gboolean msgcache_use_mmap = FALSE;
+static gboolean msgcache_use_mmap_read = TRUE;
+static gboolean msgcache_use_mmap_write = FALSE;
 #endif
 
 static gboolean swapping = TRUE;
@@ -601,7 +603,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 
 	cache = msgcache_new();
 
-	if (msgcache_use_mmap == TRUE) {
+	if (msgcache_use_mmap_read == TRUE) {
 		if (fstat(fileno(fp), &st) >= 0)
 			map_len = st.st_size;
 		else
@@ -764,7 +766,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	}
 	debug_print("reading %sswapped mark file.\n", swapping?"":"un");
 	
-	if (msgcache_use_mmap) {
+	if (msgcache_use_mmap_read) {
 		if (fstat(fileno(fp), &st) >= 0)
 			map_len = st.st_size;
 		else
@@ -993,7 +995,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 
 	write_fps.cache_size = ftell(write_fps.cache_fp);
 	write_fps.mark_size = ftell(write_fps.mark_fp);
-	if (msgcache_use_mmap && cache->memusage > 0) {
+	if (msgcache_use_mmap_write && cache->memusage > 0) {
 		map_len = cache->memusage;
 		if (ftruncate(fileno(write_fps.cache_fp), (off_t)map_len) == 0) {
 			cache_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 

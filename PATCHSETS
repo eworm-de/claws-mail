@@ -1937,3 +1937,4 @@
 ( cvs diff -u -r 1.65.2.49 -r 1.65.2.50 src/codeconv.c;  cvs diff -u -r 1.96.2.151 -r 1.96.2.152 src/textview.c;  ) > 2.5.2cvs21.patchset
 ( cvs diff -u -r 1.4.2.4 -r 1.4.2.5 src/matcher_parser.h;  cvs diff -u -r 1.25.2.17 -r 1.25.2.18 src/matcher_parser_parse.y;  cvs diff -u -r 1.59.2.49 -r 1.59.2.50 src/prefs_filtering.c;  cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/statusbar.c;  cvs diff -u -r 1.15.2.34 -r 1.15.2.35 src/summary_search.c;  cvs diff -u -r 1.395.2.257 -r 1.395.2.258 src/summaryview.c;  cvs diff -u -r 1.1.2.45 -r 1.1.2.46 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/quicksearch.h;  ) > 2.5.2cvs22.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/fix_date.sh;  ) > 2.5.2cvs23.patchset
+( cvs diff -u -r 1.16.2.40 -r 1.16.2.41 src/msgcache.c;  cvs diff -u -r 1.150.2.80 -r 1.150.2.81 src/procmsg.c;  cvs diff -u -r 1.36.2.80 -r 1.36.2.81 src/common/utils.c;  ) > 2.5.2cvs24.patchset

@@ -2034,11 +2034,14 @@ gboolean parentmsgs_hash_remove(gpointer key,
 gboolean procmsg_msg_has_flagged_parent(MsgInfo *info, MsgPermFlags perm_flags)
 {
 	gboolean result;
-	GHashTable *parentmsgs = g_hash_table_new(NULL, NULL); 
+	static GHashTable *parentmsgs = NULL;
+	
+	if (parentmsgs == NULL)
+		parentmsgs = g_hash_table_new(NULL, NULL); 
 
 	result = procmsg_msg_has_flagged_parent_real(info, perm_flags, parentmsgs);
 	g_hash_table_foreach_remove(parentmsgs, parentmsgs_hash_remove, NULL);
-	g_hash_table_destroy(parentmsgs);
+
 	return result;
 }
 
