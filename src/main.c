@@ -843,8 +843,8 @@ static void exit_sylpheed(MainWindow *mainwin)
 	}
 
 	/* save all state before exiting */
-	folder_write_list();
 	folder_func_to_all_folders(save_all_caches, NULL);
+	folder_write_list();
 
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);

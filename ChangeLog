@@ -1,3 +1,8 @@
+2006-09-30 [colin]	2.5.2cvs30
+
+	* src/main.c
+		Write folder list *after* saving caches
+
 2006-09-30 [colin]	2.5.2cvs29
 
 	* src/folder.c
