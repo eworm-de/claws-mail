@@ -1024,6 +1024,10 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	} else {
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
 	}
+	
+	fflush(write_fps.cache_fp);
+	fflush(write_fps.mark_fp);
+
 	fclose(write_fps.cache_fp);
 	fclose(write_fps.mark_fp);
 

@@ -1945,3 +1945,4 @@
 ( cvs diff -u -r 1.213.2.117 -r 1.213.2.118 src/folder.c;  cvs diff -u -r 1.79.2.43 -r 1.79.2.44 src/mh.c;  ) > 2.5.2cvs29.patchset
 ( cvs diff -u -r 1.115.2.107 -r 1.115.2.108 src/main.c;  ) > 2.5.2cvs30.patchset
 ( cvs diff -u -r 1.16.2.41 -r 1.16.2.42 src/msgcache.c;  ) > 2.5.2cvs31.patchset
+( cvs diff -u -r 1.79.2.44 -r 1.79.2.45 src/mh.c;  cvs diff -u -r 1.16.2.42 -r 1.16.2.43 src/msgcache.c;  ) > 2.5.2cvs32.patchset

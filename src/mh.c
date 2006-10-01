@@ -1392,7 +1392,9 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 			fclose(mh_sequences_old_fp);
 		}
 		
+		fflush(mh_sequences_new_fp);
 		fclose(mh_sequences_new_fp);
+
 		g_rename(mh_sequences_new, mh_sequences_old);
 		g_free(sequence);
 		procmsg_msg_list_free(msglist);
