@@ -310,8 +310,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 	closedir(dp);
 
-	item->mtime = time(NULL);
-	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	mh_set_mtime(item);
 	return nummsgs;
 }
 
@@ -577,8 +576,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	mh_write_sequences(dest, TRUE);
 
 	if (dest->mtime == last_mtime && !dest_need_scan) {
-		dest->mtime = time(NULL);
-		debug_print("MH: forced mtime of %s to %ld\n", dest->name, dest->mtime);
+		mh_set_mtime(dest);
 	}
 	if (total > 100) {
 		statusbar_progress_all(0,0,0);
@@ -617,8 +615,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	}
 
 	if (item->mtime == last_mtime && !need_scan) {
-		item->mtime = time(NULL);
-		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+		mh_set_mtime(item);
 	}
 	g_free(file);
 	return 0;
@@ -677,8 +674,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		statusbar_pop_all();
 	}
 	if (item->mtime == last_mtime && !need_scan) {
-		item->mtime = time(NULL);
-		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+		mh_set_mtime(item);
 	}
 
 	g_free(path);
@@ -1127,8 +1123,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	closedir(dp);
 #endif
 
-	item->mtime = time(NULL);
-	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	mh_set_mtime(item);
 }
 
 static gboolean mh_rename_folder_func(GNode *node, gpointer data)
@@ -1393,6 +1388,9 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 		}
 		
 		fflush(mh_sequences_new_fp);
+#if 0
+		fsync(fileno(mh_sequences_new_fp));
+#endif
 		fclose(mh_sequences_new_fp);
 
 		g_rename(mh_sequences_new, mh_sequences_old);
@@ -1418,9 +1416,26 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 	mh_write_sequences(item, FALSE);
 
 	if (item->mtime == last_mtime && !need_scan) {
-		item->mtime = time(NULL);
-		debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+		mh_set_mtime(item);
 	}
 
 	return 0;
+}
+
+void mh_set_mtime(FolderItem *item)
+{
+	struct stat s;
+	gchar *path = folder_item_get_path(item);
+
+	g_return_if_fail(path != NULL);
+
+	if (stat(path, &s) < 0) {
+		FILE_OP_ERROR(path, "stat");
+		g_free(path);
+		return;
+	}
+
+	item->mtime = s.st_mtime;
+	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	g_free(path);
 }

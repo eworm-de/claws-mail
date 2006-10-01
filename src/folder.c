@@ -2304,8 +2304,7 @@ void folder_item_write_cache(FolderItem *item)
 
 	if (!need_scan && FOLDER_TYPE(item->folder) == F_MH) {
 		if (item->mtime == last_mtime) {
-			item->mtime = time(NULL);
-			debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+			mh_set_mtime(item);
 		}
 	}
 

@@ -1,3 +1,12 @@
+2006-10-01 [colin]	2.5.2cvs33
+
+	* src/folder.c
+	* src/mh.c
+	* src/mh.h
+	* src/msgcache.c
+		Add helper mh_set_mtime(), and set mtime to stat()'s result
+		Add fsync but disable it, it's slow as hell
+
 2006-10-01 [colin]	2.5.2cvs32
 
 	* src/mh.c

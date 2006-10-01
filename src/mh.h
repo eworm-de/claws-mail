@@ -35,5 +35,6 @@ struct _MHFolder
 };
 
 FolderClass *mh_get_class	(void);
+void mh_set_mtime(FolderItem *item);
 
 #endif /* __MH_H__ */
