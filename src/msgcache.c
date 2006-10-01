@@ -1019,11 +1019,11 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_mmap_func, (gpointer)&write_fps);
 		munmap(cache_data, map_len);
 		munmap(mark_data, map_len);
+		ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
+		ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
 	} else {
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
 	}
-	ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
-	ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
 	fclose(write_fps.cache_fp);
 	fclose(write_fps.mark_fp);
 

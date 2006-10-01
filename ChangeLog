@@ -1,3 +1,8 @@
+2006-10-01 [colin]	2.5.2cvs31
+
+	* src/msgcache.c
+		Don't ftruncate when not using mmap
+
 2006-09-30 [colin]	2.5.2cvs30
 
 	* src/main.c
