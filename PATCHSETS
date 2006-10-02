@@ -1950,3 +1950,4 @@
 ( cvs diff -u -r 1.79.2.46 -r 1.79.2.47 src/mh.c;  cvs diff -u -r 1.395.2.259 -r 1.395.2.260 src/summaryview.c;  ) > 2.5.2cvs34.patchset
 ( cvs diff -u -r 1.47.2.33 -r 1.47.2.34 src/procheader.c;  cvs diff -u -r 1.395.2.260 -r 1.395.2.261 src/summaryview.c;  cvs diff -u -r 1.36.2.81 -r 1.36.2.82 src/common/utils.c;  cvs diff -u -r 1.20.2.38 -r 1.20.2.39 src/common/utils.h;  ) > 2.5.2cvs35.patchset
 ( cvs diff -u -r 1.207.2.125 -r 1.207.2.126 src/folderview.c;  ) > 2.5.2cvs36.patchset
+( cvs diff -u -r 1.207.2.126 -r 1.207.2.127 src/folderview.c;  ) > 2.5.2cvs37.patchset

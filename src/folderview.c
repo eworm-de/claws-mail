@@ -802,7 +802,6 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 
 	folderview->open_folder = TRUE;
 	gtkut_ctree_set_focus_row(ctree, node);
-
 	gtk_ctree_select(ctree, node);
 	if (folderview->summaryview->folder_item &&
 	    folderview->summaryview->folder_item->total_msgs > 0)
@@ -882,7 +881,6 @@ static GtkCTreeNode *folderview_find_next_unread(GtkCTree *ctree,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		item = gtk_ctree_node_get_row_data(ctree, node);
-
 		if (item && item->unread_msgs > 0 && item->stype != F_TRASH)
 			return node;
 	}
@@ -1934,6 +1932,8 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (!event) return FALSE;
 
 	if (event->button == 1 || event->button == 2) {
+		if (!gtk_ctree_is_hot_spot (GTK_CTREE(clist), event->x, event->y))
+			folderview->open_folder = TRUE;
 
 	        if (event->type == GDK_2BUTTON_PRESS) {
 			if (clist->selection) {
