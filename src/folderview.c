@@ -1940,10 +1940,12 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 				GtkCTreeNode *node;
 
 				node = GTK_CTREE_NODE(clist->selection->data);
-				if (node)
+				if (node) {
 					gtk_ctree_toggle_expansion(
 						GTK_CTREE(ctree),
 						node);
+					folderview->open_folder = FALSE;
+				}
 			}
 		}
 		return FALSE;

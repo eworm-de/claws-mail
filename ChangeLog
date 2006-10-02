@@ -1,3 +1,8 @@
+2006-10-02 [colin]	2.5.2cvs38
+
+	* src/folderview.c
+		Fix for double-click too
+
 2006-10-02 [colin]	2.5.2cvs37
 
 	* src/folderview.c
