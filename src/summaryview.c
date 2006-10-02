@@ -2564,7 +2564,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	MsgInfo *msginfo;
 	GtkCTreeNode *node = NULL;
 	GHashTable *msgid_table;
-	GHashTable *subject_table;
+	GHashTable *subject_table = NULL;
 	GSList * cur;
 	START_TIMING("");
 	

@@ -1,3 +1,10 @@
+2006-10-02 [colin]	2.5.2cvs34
+
+	* src/mh.c
+		Time mh_write_sequences() - it's fast
+	* src/summaryview.c
+		Init a variable to shut up gcc
+
 2006-10-01 [colin]	2.5.2cvs33
 
 	* src/folder.c

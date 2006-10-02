@@ -30,12 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
-#undef MEASURE_TIME
-
-#ifdef MEASURE_TIME
-#  include <sys/time.h>
-#endif
+#include <time.h>
 
 #include "folder.h"
 #include "mh.h"
@@ -45,6 +40,7 @@
 #include "codeconv.h"
 #include "statusbar.h"
 #include "gtkutils.h"
+#include "timing.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
@@ -1322,10 +1318,8 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 	FILE *mh_sequences_old_fp, *mh_sequences_new_fp;
 	gchar buf[BUFFSIZE];
 	gchar *path = NULL;
-/*
-	GTimer *timer = g_timer_new();
-	g_timer_start(timer);
-*/
+	START_TIMING("");
+
 	if (!item)
 		return;
 	
@@ -1400,11 +1394,8 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 	g_free(mh_sequences_old);
 	g_free(mh_sequences_new);
 	g_free(path);
-/*
-	g_timer_stop(timer);
-	printf("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
-	g_timer_destroy(timer);
-*/
+
+	END_TIMING();
 }
 
 static int mh_item_close(Folder *folder, FolderItem *item)
