@@ -336,13 +336,9 @@ gchar *itos(gint n)
 
 #define divide(num,divisor,i,d)		\
 {					\
-	register int tmp;		\
-	i = num/divisor;		\
-	tmp = i*divisor;		\
-	d = num-tmp;			\
-	if (d > 1000) d /= 1000;	\
-	else if (d > 100) d /= 100;	\
-	else if (d > 10) d /= 10;		\
+	i = num >> divisor;		\
+	d = num% (1 << divisor);	\
+	d = (d*100) >> divisor;		\
 }
 
 gchar *to_human_readable(off_t size)
@@ -353,8 +349,8 @@ gchar *to_human_readable(off_t size)
 	register int t = 0, r = 0;
 	if (b_format == NULL) {
 		b_format  = _("%dB");
-		kb_format = _("%d.%dKB");
-		mb_format = _("%.2fMB");
+		kb_format = _("%d.%02dKB");
+		mb_format = _("%d.%02dMB");
 		gb_format = _("%.2fGB");
 	}
 	
@@ -362,11 +358,12 @@ gchar *to_human_readable(off_t size)
 		g_snprintf(str, sizeof(str), b_format, (gint)size);
 		return str;
 	} else if (size >> 10 < 1024) {
-		divide(size, (1 << 10), t, r);
+		divide(size, 10, t, r);
 		g_snprintf(str, sizeof(str), kb_format, t, r);
 		return str;
 	} else if (size >> 20 < 1024) {
-		g_snprintf(str, sizeof(str), mb_format, (gfloat)size / (1 << 20));
+		divide(size, 20, t, r);
+		g_snprintf(str, sizeof(str), mb_format, t, r);
 		return str;
 	} else {
 		g_snprintf(str, sizeof(str), gb_format, (gfloat)size / (1 << 30));
@@ -4745,4 +4742,361 @@ gboolean sc_g_slist_bigger(GSList *list, gint max)
 		cur = cur->next;
 	}
 	return (i > max);
+}
+
+const gchar *daynames[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+const gchar *monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL, 
+			     NULL, NULL, NULL, NULL, NULL, NULL};
+const gchar *s_daynames[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+const gchar *s_monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL, 
+			     NULL, NULL, NULL, NULL, NULL, NULL};
+const gchar *s_am_up = NULL;
+const gchar *s_pm_up = NULL;
+const gchar *s_am_low = NULL;
+const gchar *s_pm_low = NULL;
+const gchar *def_loc_format = NULL;
+const gchar *date_loc_format = NULL;
+const gchar *time_loc_format = NULL;
+const gchar *time_am_pm = NULL;
+
+static gboolean time_names_init_done = FALSE;
+
+static void init_time_names(void)
+{
+	daynames[0] = Q_("Complete day name for use by strftime|Sunday");
+	daynames[1] = Q_("Complete day name for use by strftime|Monday");
+	daynames[2] = Q_("Complete day name for use by strftime|Tuesday");
+	daynames[3] = Q_("Complete day name for use by strftime|Wednesday");
+	daynames[4] = Q_("Complete day name for use by strftime|Thursday");
+	daynames[5] = Q_("Complete day name for use by strftime|Friday");
+	daynames[6] = Q_("Complete day name for use by strftime|Saturday");
+	
+	monthnames[0] = Q_("Complete month name for use by strftime|January");
+	monthnames[1] = Q_("Complete month name for use by strftime|February");
+	monthnames[2] = Q_("Complete month name for use by strftime|March");
+	monthnames[3] = Q_("Complete month name for use by strftime|April");
+	monthnames[4] = Q_("Complete month name for use by strftime|May");
+	monthnames[5] = Q_("Complete month name for use by strftime|June");
+	monthnames[6] = Q_("Complete month name for use by strftime|July");
+	monthnames[7] = Q_("Complete month name for use by strftime|August");
+	monthnames[8] = Q_("Complete month name for use by strftime|September");
+	monthnames[9] = Q_("Complete month name for use by strftime|October");
+	monthnames[10] = Q_("Complete month name for use by strftime|November");
+	monthnames[11] = Q_("Complete month name for use by strftime|December");
+
+	s_daynames[0] = Q_("Abbr. day name for use by strftime|Sun");
+	s_daynames[1] = Q_("Abbr. day name for use by strftime|Mon");
+	s_daynames[2] = Q_("Abbr. day name for use by strftime|Tue");
+	s_daynames[3] = Q_("Abbr. day name for use by strftime|Wed");
+	s_daynames[4] = Q_("Abbr. day name for use by strftime|Thu");
+	s_daynames[5] = Q_("Abbr. day name for use by strftime|Fri");
+	s_daynames[6] = Q_("Abbr. day name for use by strftime|Sat");
+	
+	s_monthnames[0] = Q_("Abbr. month name for use by strftime|Jan");
+	s_monthnames[1] = Q_("Abbr. month name for use by strftime|Feb");
+	s_monthnames[2] = Q_("Abbr. month name for use by strftime|Mar");
+	s_monthnames[3] = Q_("Abbr. month name for use by strftime|Apr");
+	s_monthnames[4] = Q_("Abbr. month name for use by strftime|May");
+	s_monthnames[5] = Q_("Abbr. month name for use by strftime|Jun");
+	s_monthnames[6] = Q_("Abbr. month name for use by strftime|Jul");
+	s_monthnames[7] = Q_("Abbr. month name for use by strftime|Aug");
+	s_monthnames[8] = Q_("Abbr. month name for use by strftime|Sep");
+	s_monthnames[9] = Q_("Abbr. month name for use by strftime|Oct");
+	s_monthnames[10] = Q_("Abbr. month name for use by strftime|Nov");
+	s_monthnames[11] = Q_("Abbr. month name for use by strftime|Dec");
+
+	s_am_up = Q_("For use by strftime (morning)|AM");
+	s_pm_up = Q_("For use by strftime (afternoon)|PM");
+	s_am_low = Q_("For use by strftime (morning, lowercase)|am");
+	s_pm_low = Q_("For use by strftime (afternoon, lowercase)|pm");
+	
+	def_loc_format = Q_("For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y");
+	date_loc_format = Q_("For use by strftime (default date format)|%m/%d/%y");
+	time_loc_format = Q_("For use by strftime (default time format)|%H:%M:%S");
+
+	time_am_pm = Q_("For use by strftime (default 12-hour time format)|%I:%M:%S %p");
+
+	time_names_init_done = TRUE;
+#if 0
+	{
+	struct tm *lt;
+	time_t now = time(NULL), next;
+	gchar buf_a[1024], buf_b[1024];
+	
+	printf("test strftime:\n");
+	tzset();
+	for (next = now; next < now + 86400*365*2; next++) {
+		lt = localtime(&now);
+		strftime(buf_a, 1024, 
+			"%a,%A,%b,%B,%c,%C,%d,%D,%e,%F,%G,%g,%h,%H,%I "
+			"%j,%k,%l,%m,%M,%n,%p,%P,%r,%R,%s,%S,%t,%T,%u,%U,%V"
+			"%w,%W,%x,%X,%y,%Y,%z,%Z,%%,%EY,%OY", lt);
+		fast_strftime(buf_b, 1024, 
+			"%a,%A,%b,%B,%c,%C,%d,%D,%e,%F,%G,%g,%h,%H,%I "
+			"%j,%k,%l,%m,%M,%n,%p,%P,%r,%R,%s,%S,%t,%T,%u,%U,%V"
+			"%w,%W,%x,%X,%y,%Y,%z,%Z,%%,%EY,%OY", lt);
+		if (strcmp(buf_a, buf_b)) {
+			printf("diff: \n%s\n%s\n", buf_a, buf_b);
+		}
+	}
+	}
+#endif
+}
+
+#define CHECK_SIZE() {			\
+	total_done += len;		\
+	if (total_done >= buflen) {	\
+		buf[buflen-1] = '\0';	\
+		return 0;		\
+	}				\
+}
+
+size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt)
+{
+	gchar *curpos = buf;
+	gint total_done = 0;
+	gchar subbuf[64], subfmt[64];
+	static time_t last_tzset = (time_t)0;
+	
+	if (!time_names_init_done)
+		init_time_names();
+	
+	if (format == NULL || lt == NULL)
+		return 0;
+		
+	if (last_tzset != time(NULL)) {
+		tzset();
+		last_tzset = time(NULL);
+	}
+	while(*format) {
+		if (*format == '%') {
+			gint len = 0, tmp = 0;
+			format++;
+			switch(*format) {
+			case '%':
+				len = 1; CHECK_SIZE();
+				*curpos = '%';
+				break;
+			case 'a':
+				len = strlen(s_daynames[lt->tm_wday]); CHECK_SIZE();
+				strncpy2(curpos, s_daynames[lt->tm_wday], buflen - total_done);
+				break;
+			case 'A':
+				len = strlen(daynames[lt->tm_wday]); CHECK_SIZE();
+				strncpy2(curpos, daynames[lt->tm_wday], buflen - total_done);
+				break;
+			case 'b':
+			case 'h':
+				len = strlen(s_monthnames[lt->tm_mon]); CHECK_SIZE();
+				strncpy2(curpos, s_monthnames[lt->tm_mon], buflen - total_done);
+				break;
+			case 'B':
+				len = strlen(monthnames[lt->tm_mon]); CHECK_SIZE();
+				strncpy2(curpos, monthnames[lt->tm_mon], buflen - total_done);
+				break;
+			case 'c':
+				fast_strftime(subbuf, 64, def_loc_format, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'C':
+				total_done += 2; CHECK_SIZE();
+				tmp = (lt->tm_year + 1900)/100;
+				*curpos++ = '0'+(tmp / 10);
+				*curpos++ = '0'+(tmp % 10);
+				break;
+			case 'd':
+				total_done += 2; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_mday / 10);
+				*curpos++ = '0'+(lt->tm_mday % 10);
+				break;
+			case 'D':
+				total_done += 8; CHECK_SIZE();
+				*curpos++ = '0'+((lt->tm_mon+1) / 10);
+				*curpos++ = '0'+((lt->tm_mon+1) % 10);
+				*curpos++ = '/';
+				*curpos++ = '0'+(lt->tm_mday / 10);
+				*curpos++ = '0'+(lt->tm_mday % 10);
+				*curpos++ = '/';
+				tmp = lt->tm_year%100;
+				*curpos++ = '0'+(tmp / 10);
+				*curpos++ = '0'+(tmp % 10);
+				break;
+			case 'e':
+				len = 2; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%2d", lt->tm_mday);
+				break;
+			case 'F':
+				len = 10; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%4d-%02d-%02d", 
+					lt->tm_year + 1900, lt->tm_mon +1, lt->tm_mday);
+				break;
+			case 'H':
+				total_done += 2; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_hour / 10);
+				*curpos++ = '0'+(lt->tm_hour % 10);
+				break;
+			case 'I':
+				total_done += 2; CHECK_SIZE();
+				tmp = lt->tm_hour;
+				if (tmp > 12)
+					tmp -= 12;
+				else if (tmp == 0)
+					tmp = 12;
+				*curpos++ = '0'+(tmp / 10);
+				*curpos++ = '0'+(tmp % 10);
+				break;
+			case 'j':
+				len = 3; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%03d", lt->tm_yday+1);
+				break;
+			case 'k':
+				len = 2; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%2d", lt->tm_hour);
+				break;
+			case 'l':
+				len = 2; CHECK_SIZE();
+				tmp = lt->tm_hour;
+				if (tmp > 12)
+					tmp -= 12;
+				else if (tmp == 0)
+					tmp = 12;
+				snprintf(curpos, buflen - total_done, "%2d", tmp);
+				break;
+			case 'm':
+				total_done += 2; CHECK_SIZE();
+				tmp = lt->tm_mon + 1;
+				*curpos++ = '0'+(tmp / 10);
+				*curpos++ = '0'+(tmp % 10);
+				break;
+			case 'M':
+				total_done += 2; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_min / 10);
+				*curpos++ = '0'+(lt->tm_min % 10);
+				break;
+			case 'n':
+				len = 1; CHECK_SIZE();
+				*curpos = '\n';
+				break;
+			case 'p':
+				if (lt->tm_hour >= 12) {
+					len = strlen(s_pm_up); CHECK_SIZE();
+					snprintf(curpos, buflen-total_done, s_pm_up);
+				} else {
+					len = strlen(s_am_up); CHECK_SIZE();
+					snprintf(curpos, buflen-total_done, s_am_up);
+				}
+				break;
+			case 'P':
+				if (lt->tm_hour >= 12) {
+					len = strlen(s_pm_low); CHECK_SIZE();
+					snprintf(curpos, buflen-total_done, s_pm_low);
+				} else {
+					len = strlen(s_am_low); CHECK_SIZE();
+					snprintf(curpos, buflen-total_done, s_am_low);
+				}
+				break;
+			case 'r':
+				fast_strftime(subbuf, 64, time_am_pm, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'R':
+				total_done += 5; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_hour / 10);
+				*curpos++ = '0'+(lt->tm_hour % 10);
+				*curpos++ = ':';
+				*curpos++ = '0'+(lt->tm_min / 10);
+				*curpos++ = '0'+(lt->tm_min % 10);
+				break;
+			case 's':
+				snprintf(subbuf, buflen - total_done, "%ld", mktime(lt));
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'S':
+				total_done += 2; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_sec / 10);
+				*curpos++ = '0'+(lt->tm_sec % 10);
+				break;
+			case 't':
+				len = 1; CHECK_SIZE();
+				*curpos = '\t';
+				break;
+			case 'T':
+				total_done += 8; CHECK_SIZE();
+				*curpos++ = '0'+(lt->tm_hour / 10);
+				*curpos++ = '0'+(lt->tm_hour % 10);
+				*curpos++ = ':';
+				*curpos++ = '0'+(lt->tm_min / 10);
+				*curpos++ = '0'+(lt->tm_min % 10);
+				*curpos++ = ':';
+				*curpos++ = '0'+(lt->tm_sec / 10);
+				*curpos++ = '0'+(lt->tm_sec % 10);
+				break;
+			case 'u':
+				len = 1; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%d", lt->tm_wday == 0 ? 7: lt->tm_wday);
+				break;
+			case 'w':
+				len = 1; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%d", lt->tm_wday);
+				break;
+			case 'x':
+				fast_strftime(subbuf, 64, date_loc_format, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'X':
+				fast_strftime(subbuf, 64, time_loc_format, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'y':
+				total_done += 2; CHECK_SIZE();
+				tmp = lt->tm_year%100;
+				*curpos++ = '0'+(tmp / 10);
+				*curpos++ = '0'+(tmp % 10);
+				break;
+			case 'Y':
+				len = 4; CHECK_SIZE();
+				snprintf(curpos, buflen - total_done, "%4d", lt->tm_year + 1900);
+				break;
+			case 'G':
+			case 'g':
+			case 'U':
+			case 'V':
+			case 'W':
+			case 'z':
+			case 'Z':
+			case '+':
+				/* let these complicated ones be done with the libc */
+				snprintf(subfmt, 64, "%%%c", *format);
+				strftime(subbuf, 64, subfmt, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				break;
+			case 'E':
+			case 'O':
+				/* let these complicated modifiers be done with the libc */
+				snprintf(subfmt, 64, "%%%c%c", *format, *(format+1));
+				strftime(subbuf, 64, subfmt, lt);
+				len = strlen(subbuf); CHECK_SIZE();
+				strncpy2(curpos, subbuf, buflen - total_done);
+				format++;
+				break;
+			default:
+				g_warning("format error (%c)", *format);
+				*curpos = '\0';
+				return total_done;
+			}
+			curpos += len;
+			format++;
+		} else {
+			int len = 1; CHECK_SIZE();
+			*curpos++ = *format++; 
+		}
+	}
+	*curpos++ = '\0';
+	return total_done;
 }

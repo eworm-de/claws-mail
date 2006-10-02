@@ -2493,7 +2493,6 @@ void summary_sort(SummaryView *summaryview,
 
 		main_window_cursor_wait(summaryview->mainwin);
 
-                summary_freeze(summaryview);
 		gtk_clist_set_compare_func(clist, cmp_func);
 
 		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
@@ -2502,7 +2501,6 @@ void summary_sort(SummaryView *summaryview,
 		gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 
 		main_window_cursor_normal(summaryview->mainwin);
-                summary_thaw(summaryview);
 
 		debug_print("done.\n");
 		STATUSBAR_POP(summaryview->mainwin);

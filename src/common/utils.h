@@ -474,6 +474,10 @@ size_t my_strftime		(gchar			*s,
 				 size_t			 max,
 				 const gchar		*format,
 				 const struct tm	*tm);
+size_t fast_strftime		(gchar 			*buf, 
+				 gint 			 buflen, 
+				 const gchar 		*format, 
+				 struct tm 		*lt);
 
 /* debugging */
 void debug_print_real	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);

@@ -1,3 +1,14 @@
+2006-10-02 [colin]	2.5.2cvs35
+
+	* src/summaryview.c
+		Fix double freeze/thaw
+	* src/common/utils.c
+	* src/common/utils.h
+		Reimplement strftime
+	* src/procheader.c
+		Use it
+
+
 2006-10-02 [colin]	2.5.2cvs34
 
 	* src/mh.c

@@ -912,9 +912,9 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	lt = localtime(&timer);
 
 	if (prefs_common.date_format)
-		strftime(dest, len, prefs_common.date_format, lt);
+		fast_strftime(dest, len, prefs_common.date_format, lt);
 	else
-		strftime(dest, len, default_format, lt);
+		fast_strftime(dest, len, default_format, lt);
 
 	if (!g_utf8_validate(dest, -1, NULL)) {
 		src_codeset = conv_get_locale_charset_str_no_utf8();
