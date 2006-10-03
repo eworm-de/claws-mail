@@ -1,3 +1,9 @@
+2006-10-03 [colin]	2.5.2cvs5
+
+	* src/mh.c
+		From 2.5.2cvs40: Fix "Check for new folders"
+		with accentued chars
+
 2006-10-03 [backports]	2.5.2cvs4
 
 	* src/filtering.c

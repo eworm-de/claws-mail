@@ -1918,3 +1918,4 @@
 ( cvs diff -u -r 1.105.2.66 -r 1.105.2.67 src/prefs_account.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/authors.h;  cvs diff -u -r 1.100.2.42 -r 1.100.2.43 AUTHORS;  ) > 2.5.2cvs2.patchset
 ( cvs diff -u -r 1.207.2.123 -r 1.207.2.124 src/folderview.c;  cvs diff -u -r 1.1.4.32 -r 1.1.4.33 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/gtk/gtksctree.h;  ) > 2.5.2cvs3.patchset
 ( cvs diff -u -r 1.60.2.21 -r 1.60.2.22 src/filtering.c;  cvs diff -u -r 1.213.2.115 -r 1.213.2.116 src/folder.c;  cvs diff -u -r 1.149.2.58 -r 1.149.2.59 src/inc.c;  cvs diff -u -r 1.28.2.28 -r 1.28.2.29 src/mbox.c;  ) > 2.5.2cvs4.patchset
+( cvs diff -u -r 1.79.2.41 -r 1.79.2.42 src/mh.c;  ) > 2.5.2cvs5.patchset
