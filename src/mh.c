@@ -1369,7 +1369,7 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 			}
 			cur = cur ? cur->next:NULL;
 		} while (cur || (start > 0 && end > 0));
-		if (sequence && strlen(sequence)) {
+		if (sequence && *sequence) {
 			fprintf(mh_sequences_new_fp, "%s%s\n", 
 					get_unseen_seq_name(), sequence);
 			debug_print("wrote unseen sequence: '%s%s'\n", 

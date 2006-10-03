@@ -1,3 +1,9 @@
+2006-10-03 [colin]	2.5.2cvs41
+
+	* src/mh.c
+		Don't use strlen() to know if the
+		string's empty
+
 2006-10-03 [colin]	2.5.2cvs40
 
 	* src/mh.c
