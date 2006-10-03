@@ -181,7 +181,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 	GSList *messages = g_slist_copy(msgs);
 	FolderItem *last_item = NULL;
 	gboolean is_copy = FALSE, is_move = FALSE;
-	
+	debug_print("checking %d messages\n", g_slist_length(msgs));
 	while (messages) {
 		GSList *batch = NULL, *cur;
 		gint found = 0;
@@ -208,6 +208,9 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		if (found == 0) {
 			debug_print("no more messages to move/copy\n");
 			break;
+		} else {
+			debug_print("%d messages to %s in %s\n", found,
+				is_copy ? "copy":"move", last_item->name ? last_item->name:"(noname)");
 		}
 		for (cur = batch; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;
