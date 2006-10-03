@@ -1,3 +1,12 @@
+2006-10-03 [backports]	2.5.2cvs2
+
+	* src/prefs_account.c
+	* src/gtk/authors.h
+	* AUTHORS
+		From 2.5.2cvs4: Fix bug #1024 (Array index out of
+		range in sylpheed-claws-2.5.2)
+		Patch by Ales Nosek <anosek@suse.cz>
+
 2006-10-03 [backports]	2.5.2cvs1
 
 	* configure.ac

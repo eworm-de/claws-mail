@@ -1915,3 +1915,4 @@
 ( cvs diff -u -r 1.28.2.27 -r 1.28.2.28 src/mbox.c;  ) > 2.5.1cvs4.patchset
 ( cvs diff -u -r 1.75.2.30 -r 1.75.2.31 src/matcher.c;  ) > 2.5.1cvs5.patchset
 ( cvs diff -u -r 1.654.2.1964 -r 1.654.2.1965 configure.ac;  ) > 2.5.2cvs1.patchset
+( cvs diff -u -r 1.105.2.66 -r 1.105.2.67 src/prefs_account.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/authors.h;  cvs diff -u -r 1.100.2.42 -r 1.100.2.43 AUTHORS;  ) > 2.5.2cvs2.patchset
