@@ -494,6 +494,7 @@ GtkWidget *folderview_ctree_create(FolderView *folderview)
 	}
 
 	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
+	gtk_sctree_set_recursive_expand(GTK_SCTREE(ctree), FALSE);
 
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	gtk_clist_set_compare_func(GTK_CLIST(ctree), folderview_clist_compare);
@@ -1931,17 +1932,20 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (!event) return FALSE;
 
 	if (event->button == 1 || event->button == 2) {
-		folderview->open_folder = TRUE;
+		if (!gtk_ctree_is_hot_spot (GTK_CTREE(clist), event->x, event->y))
+			folderview->open_folder = TRUE;
 
 	        if (event->type == GDK_2BUTTON_PRESS) {
 			if (clist->selection) {
 				GtkCTreeNode *node;
 
 				node = GTK_CTREE_NODE(clist->selection->data);
-				if (node)
+				if (node) {
 					gtk_ctree_toggle_expansion(
 						GTK_CTREE(ctree),
 						node);
+					folderview->open_folder = FALSE;
+				}
 			}
 		}
 		return FALSE;

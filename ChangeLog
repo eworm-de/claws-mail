@@ -1,3 +1,13 @@
+2006-10-03 [backports]	2.5.2cvs3
+
+	* src/folderview.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		From 2.5.2cvs16: Make expanding not recursive 
+		in folderview
+		From 2.5.2cvs{36,37,38}: Fix 'goto next unread' 
+		after collapsing/expanding a node
+
 2006-10-03 [backports]	2.5.2cvs2
 
 	* src/prefs_account.c

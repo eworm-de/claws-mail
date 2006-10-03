@@ -1916,3 +1916,4 @@
 ( cvs diff -u -r 1.75.2.30 -r 1.75.2.31 src/matcher.c;  ) > 2.5.1cvs5.patchset
 ( cvs diff -u -r 1.654.2.1964 -r 1.654.2.1965 configure.ac;  ) > 2.5.2cvs1.patchset
 ( cvs diff -u -r 1.105.2.66 -r 1.105.2.67 src/prefs_account.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/authors.h;  cvs diff -u -r 1.100.2.42 -r 1.100.2.43 AUTHORS;  ) > 2.5.2cvs2.patchset
+( cvs diff -u -r 1.207.2.123 -r 1.207.2.124 src/folderview.c;  cvs diff -u -r 1.1.4.32 -r 1.1.4.33 src/gtk/gtksctree.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/gtk/gtksctree.h;  ) > 2.5.2cvs3.patchset
