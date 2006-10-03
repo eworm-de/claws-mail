@@ -1070,10 +1070,13 @@ static void mh_scan_tree_recursive(FolderItem *item)
 			node = item->node;
 			for (node = node->children; node != NULL; node = node->next) {
 				FolderItem *cur_item = FOLDER_ITEM(node->data);
-				if (!strcmp2(cur_item->path, entry)) {
+				gchar *curpath = mh_filename_from_utf8(cur_item->path);
+				if (!strcmp2(curpath, entry)) {
 					new_item = cur_item;
+					g_free(curpath);
 					break;
 				}
+				g_free(curpath);
 			}
 			if (!new_item) {
 				debug_print("new folder '%s' found.\n", entry);
