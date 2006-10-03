@@ -251,16 +251,16 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	if (apply_filter) {
 		procmsg_msglist_filter(to_filter, account, 
 				&filtered, &unfiltered, TRUE);
-		unfiltered = g_slist_reverse(unfiltered);
-		folder_item_move_msgs(dest, unfiltered);
-		for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
+
+		filtering_move_and_copy_msgs(to_filter);
+		for (cur = filtered; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			procmsg_msginfo_free(info);
 		}
 
-		filtered = g_slist_reverse(filtered);
-		filtering_move_and_copy_msgs(filtered);
-		for (cur = filtered; cur; cur = g_slist_next(cur)) {
+		unfiltered = g_slist_reverse(unfiltered);
+		folder_item_move_msgs(dest, unfiltered);
+		for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			procmsg_msginfo_free(info);
 		}

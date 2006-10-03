@@ -657,9 +657,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				&filtered, &unfiltered, 
 				pop3_session->ac_prefs->filter_on_recv);
 
-		if (filtered != NULL)
-			filtering_move_and_copy_msgs(filtered);
-		if (unfiltered != NULL)
+		filtering_move_and_copy_msgs(msglist);
+		if (unfiltered != NULL)		
 			folder_item_move_msgs(inbox, unfiltered);
 
 		for(msglist_element = msglist; msglist_element != NULL; 

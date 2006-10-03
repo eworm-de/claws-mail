@@ -1960,8 +1960,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 					&to_filter, &unfiltered, 
 					TRUE);
 			
+			filtering_move_and_copy_msgs(newmsg_list);
 			if (to_filter != NULL) {
-				filtering_move_and_copy_msgs(to_filter);
 				for (elem = to_filter; elem; elem = g_slist_next(elem)) {
 					MsgInfo *msginfo = (MsgInfo *)elem->data;
 					procmsg_msginfo_free(msginfo);
