@@ -1,3 +1,8 @@
+2006-10-04 [colin]	2.5.3cvs5
+
+	* src/folder.c
+		Maybe fix a segfault
+
 2006-10-04 [wwp]	2.5.3cvs4
 
 	* src/prefs_folder_item.c

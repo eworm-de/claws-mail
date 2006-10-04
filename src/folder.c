@@ -3035,9 +3035,12 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			item = msginfo->folder;
 
             		tuples = g_relation_select(relation, msginfo, 0);
-            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-            		g_tuples_destroy(tuples);
-
+			if (tuples) {
+	            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+        	    		g_tuples_destroy(tuples);
+			} else {
+				num = -1;
+			}
 			if (g_slist_find(not_moved, msginfo))
 				continue;
 

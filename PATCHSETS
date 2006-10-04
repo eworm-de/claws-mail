@@ -1959,3 +1959,4 @@
 ( cvs diff -u -r 1.52.2.24 -r 1.52.2.25 src/prefs_folder_item.c;  ) > 2.5.3cvs2.patchset
 ( cvs diff -u -r 1.52.2.25 -r 1.52.2.26 src/prefs_folder_item.c;  ) > 2.5.3cvs3.patchset
 ( cvs diff -u -r 1.52.2.26 -r 1.52.2.27 src/prefs_folder_item.c;  ) > 2.5.3cvs4.patchset
+( cvs diff -u -r 1.213.2.121 -r 1.213.2.122 src/folder.c;  ) > 2.5.3cvs5.patchset
