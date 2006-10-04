@@ -45,6 +45,7 @@
 #include "filtering.h"
 #include "folder_item_prefs.h"
 #include "gtk/colorsel.h"
+#include "string_match.h"
 
 #if USE_ASPELL
 #include "gtkaspell.h"
@@ -69,6 +70,8 @@ struct _FolderItemGeneralPage
 	GtkWidget *folder_type;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
+	GtkWidget *entry_regexp_test_string;
+	GtkWidget *entry_regexp_test_result;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
@@ -107,6 +110,7 @@ struct _FolderItemComposePage
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *optmenu_default_dictionary;
 #endif
+	GtkWidget *checkbtn_do_not_sign_or_encrypt;
 
 	/* apply to sub folders */
 	GtkWidget *request_return_receipt_rec_checkbtn;
@@ -117,6 +121,7 @@ struct _FolderItemComposePage
 #if USE_ASPELL
 	GtkWidget *default_dictionary_rec_checkbtn;
 #endif
+	GtkWidget *do_not_sign_or_encrypt_rec_checkbtn;
 
 };
 
@@ -130,6 +135,8 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data);
 gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
+static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
+static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer data);
 
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
@@ -155,6 +162,12 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
+	GtkWidget *hbox_regexp;
+	GtkWidget *label_regexp_test;
+	GtkWidget *entry_regexp_test_string;
+	GtkWidget *left_arrow;
+	GtkWidget *entry_regexp_test_result;
+
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color;
@@ -182,7 +195,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), label, 3, 4,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	rowcount++;
 
@@ -223,39 +236,77 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	else
 		gtk_widget_set_sensitive(folder_type, FALSE);
 
-	label = gtk_label_new(_("Folder type:"));
+	label = gtk_label_new(_("Folder type"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach(GTK_TABLE(table), folder_type, 1, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(table), dummy_chkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), dummy_chkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
 
 	/* Simplify Subject */
-	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp: "));
+	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_simplify_subject, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_simplify_subject), 
 				     item->prefs->enable_simplify_subject);
 
+	g_signal_connect(G_OBJECT(checkbtn_simplify_subject), "toggled",
+			G_CALLBACK(folder_regexp_set_subject_example_cb), page);
+
 	entry_simplify_subject = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_simplify_subject, 1, 2, 
+	gtk_table_attach(GTK_TABLE(table), entry_simplify_subject, 1, 3, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
 	gtk_entry_set_text(GTK_ENTRY(entry_simplify_subject), 
 			   SAFE_STRING(item->prefs->simplify_subject_regexp));
 
+	g_signal_connect(G_OBJECT(entry_simplify_subject), "changed",
+			G_CALLBACK(folder_regexp_test_cb), page);
+
 	simplify_subject_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), simplify_subject_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), simplify_subject_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
 
+	/* Test RegExp */
+	label_regexp_test = gtk_label_new(_("Test RegExp"));
+	gtk_misc_set_alignment(GTK_MISC(label_regexp_test), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label_regexp_test, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_test);
+
+	entry_regexp_test_string = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entry_regexp_test_string, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_string);
+
+	g_signal_connect(G_OBJECT(entry_regexp_test_string), "changed",
+			G_CALLBACK(folder_regexp_test_cb), page);
+
+	hbox_regexp = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hbox_regexp);
+	gtk_table_attach(GTK_TABLE(table), hbox_regexp, 2, 3, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
+	left_arrow = gtk_arrow_new(GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
+	gtk_widget_show(left_arrow);
+	gtk_box_pack_start (GTK_BOX(hbox_regexp), left_arrow, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, left_arrow);
+
+	entry_regexp_test_result = gtk_entry_new();
+	gtk_box_pack_end (GTK_BOX(hbox_regexp), entry_regexp_test_result, TRUE, TRUE, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_result);
+	gtk_entry_set_editable(GTK_ENTRY(entry_regexp_test_result), FALSE);
+
+	rowcount++;
+
 	/* Folder chmod */
-	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod: "));
+	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -275,13 +326,13 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	}
 	
 	folder_chmod_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), folder_chmod_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), folder_chmod_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
 	
 	/* Folder color */
-	folder_color = gtk_label_new(_("Folder color: "));
+	folder_color = gtk_label_new(_("Folder color"));
 	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), folder_color, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
@@ -306,7 +357,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtkut_set_widget_bgcolor_rgb(folder_color_btn, item->prefs->color);
 
 	folder_color_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), folder_color_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), folder_color_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -320,7 +371,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 				     item->prefs->enable_processing);
 
 	enable_processing_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), enable_processing_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), enable_processing_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	
 	rowcount++;
@@ -333,7 +384,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
 								 item->prefs->newmailcheck);
 	newmailcheck_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), newmailcheck_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), newmailcheck_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -344,7 +395,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	
 	offlinesync_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 2, 3, 
+	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	if (item->folder && (item->folder->klass->type != F_IMAP && 
@@ -366,6 +417,8 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->folder_type = folder_type;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
+	page->entry_regexp_test_string = entry_regexp_test_string;
+	page->entry_regexp_test_result = entry_regexp_test_result;
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
@@ -381,6 +434,8 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->offlinesync_rec_checkbtn	     = offlinesync_rec_checkbtn;
 
 	page->page.widget = table;
+
+	folder_regexp_set_subject_example_cb(NULL, page);
 }
 
 void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
@@ -911,6 +966,100 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 	page->folder_color = rgbcolor;
 }
 
+static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
+{
+	int err;
+	gchar buf[BUFFSIZE];
+	regex_t *preg = NULL;
+
+	preg = g_new0(regex_t, 1);
+
+	err = string_match_precompile(simplify_subject_regexp, 
+				      preg, REG_EXTENDED);
+	if (err) {
+		regerror(err, preg, buf, BUFFSIZE);
+		g_free(preg);
+		preg = NULL;
+	}
+
+	return preg;
+}
+
+static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
+{
+	static GdkColor red;
+	static gboolean colors_initialised = FALSE;
+	static gchar buf[BUFFSIZE];
+	FolderItemGeneralPage *page = (FolderItemGeneralPage *)data;
+	gchar *test_string, *regexp;
+	regex_t *preg;
+
+	regexp = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->entry_simplify_subject)));
+	test_string = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->entry_regexp_test_string)));
+
+	if (!regexp || !regexp[0]) {
+		if (test_string) {
+			gtk_entry_set_text(GTK_ENTRY(page->entry_regexp_test_result), test_string);
+			g_free(test_string);
+		}
+		return;
+	}
+
+	if (!test_string || !test_string[0]) {
+		g_free(regexp);
+		return;
+	}
+
+	if (!colors_initialised) {
+		gdk_color_parse("#ff7070", &red);
+		colors_initialised = gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &red, FALSE, TRUE);
+	}
+
+	preg = summary_compile_simplify_regexp(regexp);
+	if (colors_initialised) {
+		gtk_widget_modify_base(page->entry_simplify_subject,
+				GTK_STATE_NORMAL, preg ? NULL : &red);
+	}
+
+	if (preg != NULL) {
+		string_remove_match(buf, BUFFSIZE, test_string, preg);
+
+		gtk_entry_set_text(GTK_ENTRY(page->entry_regexp_test_result), buf);
+
+		regfree(preg);
+		g_free(preg);
+	}
+
+	g_free(test_string);
+	g_free(regexp);
+}
+
+static gchar *folder_regexp_get_subject_example(void)
+{
+	MsgInfo *msginfo_selected;
+	SummaryView *summaryview = NULL;
+
+	if (!mainwindow_get_mainwindow())
+		return NULL;
+	summaryview = mainwindow_get_mainwindow()->summaryview;
+
+	msginfo_selected = summary_get_selected_msg(summaryview);
+	return msginfo_selected ? g_strdup(msginfo_selected->subject) : NULL;
+}
+
+static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer data)
+{
+	FolderItemGeneralPage *page = (FolderItemGeneralPage *)data;
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject))) {
+		gchar *subject = folder_regexp_get_subject_example();
+		if (subject) {
+			gtk_entry_set_text(GTK_ENTRY(page->entry_regexp_test_string), subject);
+			g_free(subject);
+		}
+	}
+}
 
 static void register_general_page()
 {

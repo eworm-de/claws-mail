@@ -1,3 +1,10 @@
+2006-10-04 [wwp]	2.5.3cvs2
+
+	* src/prefs_folder_item.c
+		Add a way to test the subject simplify regexp in
+		folder prefs. Patch by Fabien Vantard <fzzzzz@gmail.com>,
+		w/ few layout changes.
+
 2006-20-04 [paul]	2.5.3cvs1
 
 	* NEWS
