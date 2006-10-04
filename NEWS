@@ -1,5 +1,18 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.3
+-------
+
+* Make node expanding in the Folder List non-recursive
+
+* Bug fixes:
+	o bug 1024, 'Array index out of range in
+	  sylpheed-claws-2.5.2'
+	o Fix "Check for new folders" on folders with accented
+	  characters
+	o Fix filtering "copy" rules
+	o Fix "goto next unread" after collapsing/expanding a node
+
 * 2.5.2
 -------
 
