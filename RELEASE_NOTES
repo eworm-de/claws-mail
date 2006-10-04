@@ -1,4 +1,4 @@
-26th September 2006                              Sylpheed-Claws 2.5.2
+4th October 2006                                 Sylpheed-Claws 2.5.3
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,14 +9,17 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Bug fixes: 
-	o bug #1023 (Sylpheed deletes too much messages)
-	o Crash in partial downloading
+* Make node expanding in the Folder List non-recursive
+
+* Bug fixes:
+	o bug 1024, 'Array index out of range in sylpheed-claws-2.5.2'
+	o Fix "Check for new folders" on folders with accented
+	  characters
+	o Fix filtering "copy" rules
+	o Fix "goto next unread" after collapsing/expanding a node
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
-
-* and other code reorganisation, cleanups, and more.
 
 ---------------------------------------------------------------------
 See ChangeLog and README for full information regarding changes in
