@@ -110,7 +110,6 @@ struct _FolderItemComposePage
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *optmenu_default_dictionary;
 #endif
-	GtkWidget *checkbtn_do_not_sign_or_encrypt;
 
 	/* apply to sub folders */
 	GtkWidget *request_return_receipt_rec_checkbtn;
@@ -121,8 +120,6 @@ struct _FolderItemComposePage
 #if USE_ASPELL
 	GtkWidget *default_dictionary_rec_checkbtn;
 #endif
-	GtkWidget *do_not_sign_or_encrypt_rec_checkbtn;
-
 };
 
 
