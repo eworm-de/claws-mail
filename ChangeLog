@@ -1,3 +1,11 @@
+2006-10-04 [colin]	2.5.2cvs42
+
+	* src/folder.c
+	* src/folder.h
+	* src/summaryview.c
+		Provide a way for folder classes to set their sort
+		type and key
+
 2006-10-03 [colin]	2.5.2cvs41
 
 	* src/mh.c

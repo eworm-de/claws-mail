@@ -4012,4 +4012,17 @@ gboolean folder_subscribe (const gchar *uri)
 	return FALSE;
 
 }
+
+gboolean folder_get_sort_type		(Folder		*folder,
+					 FolderSortKey	*sort_key,
+					 FolderSortType	*sort_type)
+{
+	if (!folder || !sort_key || !sort_type)
+		return FALSE;
+	if (folder->klass->get_sort_type == NULL)
+		return FALSE;
+	folder->klass->get_sort_type(folder, sort_key, sort_type); 
+	return TRUE;
+}
+
 #undef PUT_ESCAPE_STR

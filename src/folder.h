@@ -576,6 +576,9 @@ struct _FolderClass
 	void		(*synchronise)		(FolderItem	*item);
 	gboolean	(*subscribe)		(Folder 	*folder,
 						 const gchar	*uri);
+	void		(*get_sort_type)	(Folder		*folder,
+						 FolderSortKey	*sort_key,
+						 FolderSortType	*sort_type);
 };
 
 struct _FolderItem
@@ -827,5 +830,8 @@ gboolean folder_have_mailbox 		(void);
 gboolean folder_item_free_cache		(FolderItem *item, gboolean force);
 void folder_item_change_type		(FolderItem *item,
 					 SpecialFolderItemType newtype);
+gboolean folder_get_sort_type		(Folder		*folder,
+					 FolderSortKey	*sort_key,
+					 FolderSortType	*sort_type);
 
 #endif /* __FOLDER_H__ */
