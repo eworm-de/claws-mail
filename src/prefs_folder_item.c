@@ -185,6 +185,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Table */
 	table = gtk_table_new(6, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
@@ -610,6 +611,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 # define TABLEHEIGHT 5
 #endif
 	table = gtk_table_new(TABLEHEIGHT, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
