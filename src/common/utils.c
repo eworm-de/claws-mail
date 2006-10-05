@@ -29,6 +29,7 @@
 #else
 #define _(a) (a)
 #define N_(a) (a)
+#define Q_(a) (a)
 #endif
 #include <stdio.h>
 #include <string.h>
