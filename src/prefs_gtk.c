@@ -101,7 +101,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	}
 	g_free(block_label);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		/* reached next block */
 		if (buf[0] == '[') break;
