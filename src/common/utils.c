@@ -338,7 +338,7 @@ gchar *itos(gint n)
 #define divide(num,divisor,i,d)		\
 {					\
 	i = num >> divisor;		\
-	d = num% (1 << divisor);	\
+	d = num & ((1<<divisor)-1);	\
 	d = (d*100) >> divisor;		\
 }
 
