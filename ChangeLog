@@ -1,3 +1,11 @@
+2006-10-05 [colin]	2.5.3cvs8
+
+	* src/folderview.c
+		Fix go to next * after preferences apply
+	* src/msgcache.c
+		Do the fd lock/unlock ourselves instead of
+		letting the libc do it at each write 
+
 2006-10-05 [colin]	2.5.3cvs7
 
 	* src/common/utils.c

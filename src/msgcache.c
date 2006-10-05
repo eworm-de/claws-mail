@@ -320,7 +320,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	guint32 idata;					\
 							\
 	idata = (guint32)bswap_32(n);			\
-	if (fwrite(&idata, sizeof(idata), 1, fp) != 1)	\
+	if (fwrite_unlocked(&idata, sizeof(idata), 1, fp) != 1)	\
 		w_err = 1;				\
 	wrote += 4;					\
 }
@@ -344,7 +344,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 		len = strlen(data);			\
 	WRITE_CACHE_DATA_INT(len, fp);			\
 	if (w_err == 0 && len > 0) {			\
-		if (fwrite(data, 1, len, fp) != len)	\
+		if (fwrite_unlocked(data, 1, len, fp) != len)	\
 			w_err = 1;			\
 		wrote += len;				\
 	} \
@@ -1022,7 +1022,11 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 		ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
 		ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
 	} else {
+		flockfile(write_fps.cache_fp);
+		flockfile(write_fps.mark_fp);
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
+		funlockfile(write_fps.mark_fp);
+		funlockfile(write_fps.cache_fp);
 	}
 	
 	fflush(write_fps.cache_fp);
