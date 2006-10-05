@@ -76,8 +76,10 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 
 	block_label = g_strdup_printf("[%s]", label);
 
+	flockfile(fp);
+
 	/* search aiming block */
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
 		gint val;
 
 		if (encoding) {
@@ -119,6 +121,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	}
 
 	debug_print("Finished reading configuration.\n");
+	funlockfile(fp);
 	fclose(fp);
 }
 
