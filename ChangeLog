@@ -1,3 +1,12 @@
+2006-10-06 [colin]	2.5.3cvs1-stable
+
+	* src/textview.c
+		From 2.5.3cvs11: Fix crasher with quote folding
+		on HTML (don't do quote folding on HTML)
+	* src/common/utils.c
+		From 2.5.3cvs7: Better division
+		From 2.5.3cvs6: fix building with --disable-nls
+
 2006-10-04 [paul]	2.5.3
 
 	2.5.3 released

@@ -29,6 +29,7 @@
 #else
 #define _(a) (a)
 #define N_(a) (a)
+#define Q_(a) (a)
 #endif
 #include <stdio.h>
 #include <string.h>
@@ -336,13 +337,9 @@ gchar *itos(gint n)
 
 #define divide(num,divisor,i,d)		\
 {					\
-	register int tmp;		\
-	i = num/divisor;		\
-	tmp = i*divisor;		\
-	d = num-tmp;			\
-	if (d > 1000) d /= 1000;	\
-	else if (d > 100) d /= 100;	\
-	else if (d > 10) d /= 10;		\
+	i = num >> divisor;		\
+	d = num & ((1<<divisor)-1);	\
+	d = (d*100) >> divisor;		\
 }
 
 gchar *to_human_readable(off_t size)

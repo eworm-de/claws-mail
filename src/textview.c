@@ -151,7 +151,8 @@ static void textview_show_html		(TextView	*textview,
 
 static void textview_write_line		(TextView	*textview,
 					 const gchar	*str,
-					 CodeConverter	*conv);
+					 CodeConverter	*conv,
+					 gboolean	 do_quote_folding);
 static void textview_write_link		(TextView	*textview,
 					 const gchar	*str,
 					 const gchar	*uri,
@@ -957,14 +958,14 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		if (pipe(pfd) < 0) {
 			g_snprintf(buf, sizeof(buf),
 				"pipe failed for textview\n\n%s\n", strerror(errno));
-			textview_write_line(textview, buf, conv);
+			textview_write_line(textview, buf, conv, TRUE);
 			goto textview_default;
 		}
 		pid = fork();
 		if (pid < 0) {
 			g_snprintf(buf, sizeof(buf),
 				"fork failed for textview\n\n%s\n", strerror(errno));
-			textview_write_line(textview, buf, conv);
+			textview_write_line(textview, buf, conv, TRUE);
 			close(pfd[0]);
 			close(pfd[1]);
 			goto textview_default;
@@ -987,7 +988,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		close(pfd[1]);
 		tmpfp = fdopen(pfd[0], "rb");
 		while (fgets(buf, sizeof(buf), tmpfp)) {
-			textview_write_line(textview, buf, conv);
+			textview_write_line(textview, buf, conv, TRUE);
 			
 			lines++;
 			if (lines % 500 == 0)
@@ -1012,7 +1013,7 @@ textview_default:
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
 		       (fgets(buf, sizeof(buf), tmpfp) != NULL)) {
-			textview_write_line(textview, buf, conv);
+			textview_write_line(textview, buf, conv, TRUE);
 			lines++;
 			if (lines % 500 == 0)
 				GTK_EVENTS_FLUSH();
@@ -1074,7 +1075,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 		        if (str != NULL)
 			        textview_write_link(textview, str, parser->href, NULL);
 	        } else
-		        textview_write_line(textview, str, NULL);
+		        textview_write_line(textview, str, NULL, FALSE);
 		lines++;
 		if (lines % 500 == 0)
 			GTK_EVENTS_FLUSH();
@@ -1082,7 +1083,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 			return;
 		}
 	}
-	textview_write_line(textview, "\n", NULL);
+	textview_write_line(textview, "\n", NULL, FALSE);
 	sc_html_parser_destroy(parser);
 }
 
@@ -1097,7 +1098,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 	g_return_if_fail(parser != NULL);
 
 	while ((str = ertf_parse(parser)) != NULL) {
-		textview_write_line(textview, str, NULL);
+		textview_write_line(textview, str, NULL, FALSE);
 		lines++;
 		if (lines % 500 == 0)
 			GTK_EVENTS_FLUSH();
@@ -1382,7 +1383,7 @@ static void textview_make_clickable_parts_later(TextView *textview,
 #undef ADD_TXT_POS
 
 static void textview_write_line(TextView *textview, const gchar *str,
-				CodeConverter *conv)
+				CodeConverter *conv, gboolean do_quote_folding)
 {
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
@@ -1435,7 +1436,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		textview->is_in_signature = TRUE;
 	}
 
-	if (real_quotelevel > -1) {
+	if (real_quotelevel > -1 && do_quote_folding) {
 		if ( previousquotelevel != real_quotelevel ) {
 			ClickableText *uri;
 			uri = g_new0(ClickableText, 1);
@@ -1458,9 +1459,10 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		} else {
 			GSList *last = g_slist_last(textview->uri_list);
 			ClickableText *lasturi = (ClickableText *)last->data;
-			gchar *tmp = g_strdup_printf("%s%s", (gchar *)lasturi->data, buf);
-			g_free(lasturi->data);
-			lasturi->data = tmp;
+ 			gint e_len = lasturi->data ? strlen(lasturi->data):0;
+  			gint n_len = strlen(buf);
+  			lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
+  			strcpy((gchar *)lasturi->data + e_len, buf);
 		}
 	} else {
 		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
