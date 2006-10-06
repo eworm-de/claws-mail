@@ -39,7 +39,6 @@
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"
-#include "plugin.h"
 
 static gboolean sylpheed_initialized = FALSE;
 static gchar *startup_dir;
@@ -120,8 +119,6 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	ssl_init();
 #endif
 
-	plugin_load_all("Common");
-
 	sylpheed_initialized = TRUE;
 
 	return TRUE;
@@ -129,7 +126,6 @@ gboolean sylpheed_init(int *argc, char ***argv)
 
 void sylpheed_done(void)
 {
-	plugin_unload_all("Common");
 
 #if USE_OPENSSL
 	ssl_done();

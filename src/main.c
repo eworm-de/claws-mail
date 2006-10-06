@@ -109,6 +109,8 @@
 
 #include "crash.h"
 
+#include "timing.h"
+
 gchar *prog_version;
 gchar *argv0;
 
@@ -466,6 +468,9 @@ int main(int argc, char *argv[])
 	GdkPixbuf *icon;
 	gboolean crash_file_present = FALSE;
 	gint num_folder_class = 0;
+	START_TIMING("startup");
+	
+	prefs_prepare_cache();
 	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
 	}
@@ -474,6 +479,9 @@ int main(int argc, char *argv[])
 	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
+
+	if (!cmd.exit)
+		plugin_load_all("Common");
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
@@ -553,6 +561,7 @@ int main(int argc, char *argv[])
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 	if (!is_dir_exist(RC_DIR)) {
+		prefs_destroy_cache();
 		gboolean r = FALSE;
 		if (is_dir_exist(OLD_GTK2_RC_DIR))
 			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR);
@@ -658,6 +667,7 @@ int main(int argc, char *argv[])
 	account_read_config_all();
 
 	if (folder_read_list() < 0) {
+		prefs_destroy_cache();
 		if (!run_wizard(mainwin, TRUE))
 			exit(1);
 		main_window_reflect_prefs_all_now();
@@ -665,6 +675,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (!account_get_list()) {
+		prefs_destroy_cache();
 		if (!run_wizard(mainwin, FALSE))
 			exit(1);
 		account_read_config_all();
@@ -749,6 +760,7 @@ int main(int argc, char *argv[])
  	plugin_load_standard_plugins ();
        
 	if (!folder_have_mailbox()) {
+		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);
 		alertpanel_error(_("Sylpheed-Claws has detected a configured "
 				   "mailbox, but could not load it. It is "
@@ -800,6 +812,8 @@ int main(int argc, char *argv[])
 		g_timeout_add(500, defer_jump, (gpointer)cmd.target);
 	}
 
+	prefs_destroy_cache();
+	END_TIMING();
 	gtk_main();
 
 	exit_sylpheed(mainwin);
@@ -903,6 +917,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();
 #endif
+	plugin_unload_all("Common");
 	sylpheed_done();
 }
 

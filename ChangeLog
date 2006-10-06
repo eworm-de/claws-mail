@@ -1,3 +1,13 @@
+2006-10-06 [colin]	2.5.3cvs13
+
+	* src/main.c
+	* src/common/sylpheed.c
+		Don't load common plugins if --exit is passed
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+		Implement a cache to avoid reading the same
+		files over and over again at startup
+
 2006-10-06 [colin]	2.5.3cvs12
 
 	* src/summaryview.c

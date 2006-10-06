@@ -184,4 +184,7 @@ void prefs_gtk_open		(void);
 void prefs_gtk_register_page	(PrefsPage 	*page);
 void prefs_gtk_unregister_page	(PrefsPage 	*page);
 
+void prefs_prepare_cache(void);
+void prefs_destroy_cache(void);
+
 #endif /* __PREFS_H__ */

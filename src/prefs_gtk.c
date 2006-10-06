@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#define _GNU_SOURCE
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -30,6 +31,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "defs.h"
 #include "main.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
@@ -51,6 +53,11 @@ typedef enum
 	DUMMY_PARAM
 } DummyEnum;
 
+static GHashTable *whole_cache = NULL;
+
+static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *label,
+			       const gchar *rcfile);
+
 void prefs_read_config(PrefParam *param, const gchar *label,
 		       const gchar *rcfile, const gchar *encoding)
 {
@@ -68,6 +75,11 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	debug_print("Reading configuration...\n");
 
 	prefs_set_default(param);
+
+	if (whole_cache != NULL) {
+		if (prefs_read_config_from_cache(param, label, rcfile) == TRUE)
+			return;
+	}
 
 	if ((fp = g_fopen(rcfile, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcfile, "fopen");
@@ -883,4 +895,146 @@ void prefs_gtk_register_page(PrefsPage *page)
 void prefs_gtk_unregister_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_remove(prefs_pages, page);
+}
+
+static void prefs_destroy_whole_cache(gpointer to_free)
+{	
+	GHashTable *table = (GHashTable *)to_free;
+	g_hash_table_destroy(table);
+}
+
+static void prefs_destroy_file_cache(gpointer to_free)
+{	
+	GHashTable *table = (GHashTable *)to_free;
+	g_hash_table_destroy(table);
+}
+
+static void prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
+{
+	FILE *fp = g_fopen(rcfile, "rb");
+	gchar buf[PREFSBUFSIZE];
+	GHashTable *section_cache = NULL;
+
+	if (!fp) {
+		debug_print("cache: %s: %s", rcfile, strerror(errno));
+		return;
+	}
+	
+	flockfile(fp);
+	
+	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		if (buf[0] == '\0')
+			continue;
+		if (buf[0] == '#')
+			continue; /* comment */
+		if (buf[0] == '[') { /* new section */
+			gchar *blockname = g_strdup(buf+1);
+
+			if (strrchr(blockname, ']'))
+				*strrchr(blockname, ']') = '\0';
+			debug_print("new section '%s'\n", blockname);
+			section_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+						g_free, NULL);
+			g_hash_table_insert(file_cache, 
+				blockname, section_cache);
+		} else {
+			if (!section_cache) {
+				g_warning("uh no table\n");
+				fclose(fp);
+				return;
+			} else {
+				gchar *pref;
+				
+				if (!strchr(buf, '=')) {
+					/* plugins do differently */
+					continue;
+				}
+				pref = g_strdup(buf);
+				
+				debug_print("new pref '%s'\n", pref);
+				g_hash_table_insert(section_cache, pref, GINT_TO_POINTER(1));
+			}
+		}
+	}
+	funlockfile(fp);
+	fclose(fp);
+}
+
+static void prefs_cache(const gchar *rcfile)
+{
+	GHashTable *file_cache = g_hash_table_new_full(g_str_hash, g_str_equal, 
+					g_free, prefs_destroy_file_cache);
+	
+	debug_print("new file '%s'\n", rcfile);
+	g_hash_table_insert(whole_cache, g_strdup(rcfile), file_cache);
+	
+	prefs_cache_sections(file_cache, rcfile);
+}
+
+void prefs_prepare_cache(void)
+{
+	gchar *sylpheedrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+	gchar *folderitemrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FOLDERITEM_RC, NULL);
+	gchar *accountrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
+	
+	if (whole_cache == NULL) {
+		whole_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+				g_free, prefs_destroy_whole_cache);
+	} else {
+		debug_print("already cached\n");
+		g_free(sylpheedrc);
+		g_free(folderitemrc);
+		g_free(accountrc);
+		return;
+	}
+	prefs_cache(sylpheedrc);
+	prefs_cache(folderitemrc);
+	prefs_cache(accountrc);
+	
+	g_free(sylpheedrc);
+	g_free(folderitemrc);
+	g_free(accountrc);
+}
+
+void prefs_destroy_cache(void)
+{
+	if (!whole_cache) {
+		debug_print("no cache\n");
+		return;
+	}
+	debug_print("destroying cache\n");
+	g_hash_table_destroy(whole_cache);
+	whole_cache = NULL;
+	return;
+}
+
+static void prefs_parse_cache(gpointer key, gpointer value, gpointer user_data)
+{
+	gchar *pref = (gchar *)key;
+
+	PrefParam *param = (PrefParam *)user_data;
+	
+	prefs_config_parse_one_line(param, pref);
+}
+
+static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *label,
+			       const gchar *rcfile) 
+{
+	GHashTable *sections_table = NULL;
+	GHashTable *values_table = NULL;
+	sections_table = g_hash_table_lookup(whole_cache, rcfile);
+	
+	if (sections_table == NULL) {
+		g_warning("can't find %s in the whole cache", rcfile);
+		return FALSE;
+	}
+	values_table = g_hash_table_lookup(sections_table, label);
+	
+	if (values_table == NULL) {
+		debug_print("no '%s' section in '%s' cache", label, rcfile);
+		return TRUE;
+	}
+	g_hash_table_foreach(values_table, prefs_parse_cache, param);
+	return TRUE;
 }
