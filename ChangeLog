@@ -1,3 +1,10 @@
+2006-10-06 [colin]	2.5.3cvs11
+
+	* src/textview.c
+		Don't do quote folding on HTML or ERTF.
+		May fix the Cygwin issues if they were
+		happening with HTML mails?
+
 2006-10-05 [colin]	2.5.3cvs10
 
 	* src/prefs_gtk.c
