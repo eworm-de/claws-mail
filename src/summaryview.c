@@ -1067,7 +1067,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
 		GSList *not_killed;
-		gint interval = quicksearch_is_fast(summaryview->quicksearch) ? 1000:100;
+		gint interval = quicksearch_is_fast(summaryview->quicksearch) ? 5000:100;
 		START_TIMING("quicksearch");
 		gint num = 0, total = summaryview->folder_item->total_msgs;
 		statusbar_print_all(_("Searching in %s... \n"), 

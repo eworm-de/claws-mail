@@ -920,7 +920,7 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	GSList *cur;
 	gboolean result = FALSE;
 	gint num = 0, total = src->total_msgs;
-	gint interval = quicksearch_is_fast(quicksearch) ? 1000:100;
+	gint interval = quicksearch_is_fast(quicksearch) ? 5000:100;
 
 	statusbar_print_all(_("Searching in %s... \n"),
 		src->path ? src->path : "(null)");
