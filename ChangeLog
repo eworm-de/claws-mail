@@ -1,3 +1,9 @@
+2006-10-06 [mones]	2.5.3cvs14
+
+	* po/de.po
+	* po/es.po
+		updated by Stephan Sachse and me
+
 2006-10-06 [colin]	2.5.3cvs13
 
 	* src/main.c

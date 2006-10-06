@@ -1968,3 +1968,4 @@
 ( cvs diff -u -r 1.96.2.152 -r 1.96.2.153 src/textview.c;  ) > 2.5.3cvs11.patchset
 ( cvs diff -u -r 1.395.2.262 -r 1.395.2.263 src/summaryview.c;  cvs diff -u -r 1.1.2.46 -r 1.1.2.47 src/gtk/quicksearch.c;  ) > 2.5.3cvs12.patchset
 ( cvs diff -u -r 1.115.2.108 -r 1.115.2.109 src/main.c;  cvs diff -u -r 1.10.2.21 -r 1.10.2.22 src/prefs_gtk.c;  cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/prefs_gtk.h;  cvs diff -u -r 1.7.2.8 -r 1.7.2.9 src/common/sylpheed.c;  ) > 2.5.3cvs13.patchset
+( cvs diff -u -r 1.58.2.25 -r 1.58.2.26 po/de.po;  cvs diff -u -r 1.60.2.35 -r 1.60.2.36 po/es.po;  ) > 2.5.3cvs14.patchset
