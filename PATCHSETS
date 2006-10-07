@@ -1971,3 +1971,4 @@
 ( cvs diff -u -r 1.58.2.25 -r 1.58.2.26 po/de.po;  cvs diff -u -r 1.60.2.35 -r 1.60.2.36 po/es.po;  ) > 2.5.3cvs14.patchset
 ( cvs diff -u -r 1.207.2.129 -r 1.207.2.130 src/folderview.c;  cvs diff -u -r 1.179.2.132 -r 1.179.2.133 src/imap.c;  cvs diff -u -r 1.105.2.67 -r 1.105.2.68 src/prefs_account.c;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/wizard.c;  ) > 2.5.3cvs15.patchset
 ( cvs diff -u -r 1.96.2.153 -r 1.96.2.154 src/textview.c;  cvs diff -u -r 1.12.2.13 -r 1.12.2.14 src/textview.h;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/Makefile.am;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpcore/plugin.c;  cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.3cvs16.patchset
+( cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.3cvs17.patchset

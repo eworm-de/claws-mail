@@ -715,7 +715,7 @@ again:
 			if (res == 0) {
 				alertpanel_notice(_("Key exported."));
 			} else {
-				alertpanel_notice(_("Couldn't export key."));
+				alertpanel_error(_("Couldn't export key."));
 			}
 			g_free(cmd);
 #else

@@ -1,3 +1,9 @@
+2006-10-07 [colin]	2.5.3cvs17
+
+	* src/plugins/pgpcore/sgpgme.c
+		Be sure not to crash on 'application/pgp-signature' that
+		are not application/pgp-signatures
+
 2006-10-07 [colin]	2.5.3cvs16
 
 	* src/textview.c
