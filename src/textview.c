@@ -69,23 +69,6 @@
 #include "inputdialog.h"
 #include "timing.h"
 
-struct _ClickableText
-{
-	gchar *uri;
-
-	gchar *filename;
-
-	gpointer data;
-
-	guint start;
-	guint end;
-	
-	gboolean is_quote;
-	gint quote_level;
-	gboolean q_expanded;
-	gchar *fg_color;
-};
-
 gint previousquotelevel = -1;
 
 static GdkColor quote_colors[3] = {
@@ -227,7 +210,6 @@ static void save_file_cb			(TextView 	*textview,
 static void open_image_cb			(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
-static void textview_show_icon(TextView *textview, const gchar *stock_id);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -603,27 +585,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	END_TIMING();
 }
 
-#define TEXT_INSERT(str) \
-	gtk_text_buffer_insert_with_tags_by_name \
-				(buffer, &iter, str, -1,\
-				 "header", NULL)
-
-#define TEXT_INSERT_LINK(str, fname, udata) {				\
-	ClickableText *uri;							\
-	uri = g_new0(ClickableText, 1);					\
-	uri->uri = g_strdup("");					\
-	uri->start = gtk_text_iter_get_offset(&iter);			\
-	gtk_text_buffer_insert_with_tags_by_name 			\
-				(buffer, &iter, str, -1,		\
-				 "link", "header_title", "header", 	\
-				 NULL); 				\
-	uri->end = gtk_text_iter_get_offset(&iter);			\
-	uri->filename = fname?g_strdup(fname):NULL;			\
-	uri->data = udata;						\
-	textview->uri_list =						\
-		g_slist_prepend(textview->uri_list, uri);		\
-}
-
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkTextView *text;
@@ -685,7 +646,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
-		TEXT_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
+		TEXTVIEW_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
 		gtk_text_buffer_insert(buffer, &iter, " \n", -1);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
@@ -845,13 +806,13 @@ void textview_show_error(TextView *textview)
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
-	TEXT_INSERT(_("\n"
+	TEXTVIEW_INSERT(_("\n"
 		      "  This message can't be displayed.\n"
 		      "  This is probably due to a network error.\n"
 		      "\n"
 		      "  Use "));
-	TEXT_INSERT_LINK(_("'View Log'"), "sc://view_log", NULL);
-	TEXT_INSERT(_(" in the Tools menu for more information."));
+	TEXTVIEW_INSERT_LINK(_("'View Log'"), "sc://view_log", NULL);
+	TEXTVIEW_INSERT(_(" in the Tools menu for more information."));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
 
 }
@@ -871,29 +832,26 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
-	TEXT_INSERT("\n");
-	TEXT_INSERT(_("  The following can be performed on this part by\n"));
-	TEXT_INSERT(_("  right-clicking the icon or list item:\n"));
+	TEXTVIEW_INSERT("\n");
+	TEXTVIEW_INSERT(_("  The following can be performed on this part by\n"));
+	TEXTVIEW_INSERT(_("  right-clicking the icon or list item:\n"));
 
-	TEXT_INSERT(_("     - To save, select "));
-	TEXT_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
-	TEXT_INSERT(_(" (Shortcut key: 'y')\n"));
-	TEXT_INSERT(_("     - To display as text, select "));
-	TEXT_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
-	TEXT_INSERT(_(" (Shortcut key: 't')\n"));
-	TEXT_INSERT(_("     - To open with an external program, select "));
-	TEXT_INSERT_LINK(_("'Open'"), "sc://open", NULL);
-	TEXT_INSERT(_(" (Shortcut key: 'l')\n"));
-	TEXT_INSERT(_("       (alternately double-click, or click the middle "));
-	TEXT_INSERT(_("mouse button)\n"));
-	TEXT_INSERT(_("     - Or use "));
-	TEXT_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
-	TEXT_INSERT(_(" (Shortcut key: 'o')\n"));
+	TEXTVIEW_INSERT(_("     - To save, select "));
+	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
+	TEXTVIEW_INSERT(_(" (Shortcut key: 'y')\n"));
+	TEXTVIEW_INSERT(_("     - To display as text, select "));
+	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
+	TEXTVIEW_INSERT(_(" (Shortcut key: 't')\n"));
+	TEXTVIEW_INSERT(_("     - To open with an external program, select "));
+	TEXTVIEW_INSERT_LINK(_("'Open'"), "sc://open", NULL);
+	TEXTVIEW_INSERT(_(" (Shortcut key: 'l')\n"));
+	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
+	TEXTVIEW_INSERT(_("mouse button)\n"));
+	TEXTVIEW_INSERT(_("     - Or use "));
+	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
+	TEXTVIEW_INSERT(_(" (Shortcut key: 'o')\n"));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
 }
-
-#undef TEXT_INSERT
-#undef TEXT_INSERT_LINK
 
 static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 {
@@ -1797,7 +1755,7 @@ bail:
 	textview->image = NULL;	
 }
 
-static void textview_show_icon(TextView *textview, const gchar *stock_id)
+void textview_show_icon(TextView *textview, const gchar *stock_id)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;

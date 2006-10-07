@@ -30,6 +30,23 @@
 
 typedef struct _TextView	TextView;
 typedef struct _ClickableText	ClickableText;
+struct _ClickableText
+{
+	gchar *uri;
+
+	gchar *filename;
+
+	gpointer data;
+
+	guint start;
+	guint end;
+	
+	gboolean is_quote;
+	gint quote_level;
+	gboolean q_expanded;
+	gchar *fg_color;
+};
+
 
 #include "messageview.h"
 #include "procmime.h"
@@ -102,5 +119,27 @@ gboolean textview_search_string_backward	(TextView	*textview,
 						 gboolean	 case_sens);
 void textview_cursor_wait(TextView *textview);
 void textview_cursor_normal(TextView *textview);
+void textview_show_icon(TextView *textview, const gchar *stock_id);
+
+#define TEXTVIEW_INSERT(str) \
+	gtk_text_buffer_insert_with_tags_by_name \
+				(buffer, &iter, str, -1,\
+				 "header", NULL)
+
+#define TEXTVIEW_INSERT_LINK(str, fname, udata) {				\
+	ClickableText *uri;							\
+	uri = g_new0(ClickableText, 1);					\
+	uri->uri = g_strdup("");					\
+	uri->start = gtk_text_iter_get_offset(&iter);			\
+	gtk_text_buffer_insert_with_tags_by_name 			\
+				(buffer, &iter, str, -1,		\
+				 "link", "header_title", "header", 	\
+				 NULL); 				\
+	uri->end = gtk_text_iter_get_offset(&iter);			\
+	uri->filename = fname?g_strdup(fname):NULL;			\
+	uri->data = udata;						\
+	textview->uri_list =						\
+		g_slist_prepend(textview->uri_list, uri);		\
+}
 
 #endif /* __TEXTVIEW_H__ */

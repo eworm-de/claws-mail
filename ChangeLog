@@ -1,3 +1,13 @@
+2006-10-07 [colin]	2.5.3cvs16
+
+	* src/textview.c
+	* src/textview.h
+		Make a bit more of the API available
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpcore/sgpgme.c
+		Add basic key import/export
+
 2006-10-07 [colin]	2.5.3cvs15
 
 	* src/folderview.c

@@ -596,6 +596,11 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 	if (account == NULL)
 		account = account_get_default();
 
+	if (account->address == NULL) {
+		alertpanel_error(_("You have to save the account's information with \"OK\" "
+				   "before being able to generate a key pair.\n"));
+		return;
+	}
 	if (ask_create) {
 		val = alertpanel(_("No PGP key found"),
 				_("Sylpheed-Claws did not find a secret PGP key, "
@@ -694,9 +699,29 @@ again:
 		gpgme_release(ctx);
 		return;
 	} else {
-		alertpanel_notice(_("Your new key pair has been generated. "
-				    "Its fingerprint is:\n%s"),
+		gchar *buf = g_strdup_printf(_("Your new key pair has been generated. "
+				    "Its fingerprint is:\n%s\n\nDo you want to export it "
+				    "to a keyserver?"),
 				    key->fpr ? key->fpr:"null");
+		AlertValue val = alertpanel(_("Key generated"), buf,
+				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+		g_free(buf);
+		if (val == G_ALERTALTERNATE) {
+#ifndef G_OS_WIN32
+			gchar *cmd = g_strdup_printf("gpg --send-keys %s", key->fpr);
+			int res = 0;
+			GTK_EVENTS_FLUSH();
+			res = system(cmd);
+			if (res == 0) {
+				alertpanel_notice(_("Key exported."));
+			} else {
+				alertpanel_notice(_("Couldn't export key."));
+			}
+			g_free(cmd);
+#else
+			alertpanel_error(_("Key export isn't implemented in Windows."));
+#endif
+		}
 	}
 	prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
 	prefs_gpg_save_config();

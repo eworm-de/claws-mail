@@ -50,14 +50,16 @@ pgpcore_la_SOURCES = \
 	plugin.c \
 	prefs_gpg.c \
 	select-keys.c \
-	sgpgme.c
+	sgpgme.c \
+	pgp_viewer.c
 
 pluginincludedir = $(pkgincludedir)/plugins/pgpcore
 plugininclude_HEADERS = \
 	passphrase.h \
 	prefs_gpg.h \
 	select-keys.h \
-	sgpgme.h
+	sgpgme.h \
+	pgp_viewer.h
 
 pgpcore_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

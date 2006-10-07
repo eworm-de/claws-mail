@@ -29,6 +29,7 @@
 #include "common/sylpheed.h"
 #include "sgpgme.h"
 #include "prefs_gpg.h"
+#include "pgp_viewer.h"
 #include "plugin.h"
 
 gint plugin_init(gchar **error)
@@ -46,11 +47,13 @@ gint plugin_init(gchar **error)
 	sgpgme_init();
 	prefs_gpg_init();
 	sgpgme_check_create_key();
+	pgp_viewer_init();
 	return 0;	
 }
 
 void plugin_done(void)
 {
+	pgp_viewer_done();
 	prefs_gpg_done();
 	sgpgme_done();
 }
