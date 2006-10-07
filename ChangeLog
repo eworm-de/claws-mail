@@ -1,3 +1,8 @@
+2006-10-07 [colin]	2.5.3cvs20
+
+	* src/plugins/pgpcore/pgp_viewer.c
+		Kill gpg after 5 seconds wait
+
 2006-10-07 [colin]	2.5.3cvs19
 
 	* src/plugins/pgpcore/pgp_viewer.c

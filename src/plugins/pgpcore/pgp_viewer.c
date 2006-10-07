@@ -25,6 +25,8 @@
 #include <stddef.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "version.h"
 #include "common/sylpheed.h"
@@ -119,8 +121,38 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 #ifndef G_OS_WIN32
 			gchar *cmd = g_strdup_printf("gpg --recv-keys %s", sig->fpr);
 			int res = 0;
+			pid_t pid = 0;
 			GTK_EVENTS_FLUSH();
-			res = system(cmd);
+			
+			pid = fork();
+			if (pid == -1) {
+				res = -1;
+			} else if (pid == 0) {
+				/* son */
+				res = system(cmd);
+				_exit(res);
+			} else {
+				int status = 0;
+				time_t start_wait = time(NULL);
+				res = -1;
+				do {
+					if (waitpid(pid, &status, WNOHANG) == 0 || !WIFEXITED(status)) {
+						usleep(200000);
+					} else {
+						res = WEXITSTATUS(status);
+						break;
+					}
+					if (time(NULL) - start_wait > 5) {
+						debug_print("SIGTERM'ing gpg\n");
+						kill(pid, SIGTERM);
+					}
+					if (time(NULL) - start_wait > 6) {
+						debug_print("SIGKILL'ing gpg\n");
+						kill(pid, SIGKILL);
+						break;
+					}
+				} while(1);
+			}
 			if (res == 0) {
 				TEXTVIEW_INSERT(_("   This key has been imported to your keyring.\n"));
 			} else {
