@@ -74,6 +74,8 @@ struct BasicProtocol {
 	GtkWidget *combobox;
 	GtkWidget *label;
 	GtkWidget *descrlabel;
+	GtkWidget *no_imap_warn_icon;
+	GtkWidget *no_imap_warn_label;
 };
 
 static struct Basic {
@@ -1060,6 +1062,8 @@ static void prefs_account_basic_create(void)
 	GtkWidget *optmenubox;
 	GtkWidget *optmenu;
 	GtkWidget *optlabel;
+	GtkWidget *no_imap_warn_icon;
+	GtkWidget *no_imap_warn_label;
 	GtkWidget *serv_table;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
@@ -1189,11 +1193,21 @@ static void prefs_account_basic_create(void)
 	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX (optmenubox), optlabel, FALSE, FALSE, 0);
 
+	no_imap_warn_icon = gtk_image_new_from_stock
+                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	no_imap_warn_label = gtk_label_new(_("<span weight=\"bold\">Warning: this version of Sylpheed-Claws\n"
+			  "has been built without IMAP support.</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(no_imap_warn_label), TRUE);
+
+	gtk_box_pack_start(GTK_BOX (optmenubox), no_imap_warn_icon, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (optmenubox), no_imap_warn_label, FALSE, FALSE, 0);
 	/* Set up a struct to store pointers to necessary widgets */
 	protocol_optmenu = g_new(struct BasicProtocol, 1);
 	protocol_optmenu->combobox = optmenu;
 	protocol_optmenu->label = optlabel;
 	protocol_optmenu->descrlabel = label;
+	protocol_optmenu->no_imap_warn_icon = no_imap_warn_icon;
+	protocol_optmenu->no_imap_warn_label = no_imap_warn_label;
 
 	serv_table = gtk_table_new (6, 4, FALSE);
 	gtk_widget_show (serv_table);
@@ -2689,6 +2703,15 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 		g_free(label);
 		gtk_widget_hide(optmenu);
 		gtk_widget_show(optlabel);
+#ifndef HAVE_LIBETPAN
+		if (protocol == A_IMAP4) {
+			gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
+			gtk_widget_show(protocol_optmenu->no_imap_warn_label);
+		} else {
+			gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+			gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
+		}
+#endif
 	}
 }
 
@@ -2839,11 +2862,16 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 {
 	RecvProtocol protocol;
+	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *)basic.protocol_optmenu;
 
 	protocol = combobox_get_active_data(combobox);
 
+	gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+	gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 	switch(protocol) {
 	case A_NNTP:
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_show(basic.nntpserv_label);
 		gtk_widget_show(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -2930,6 +2958,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	case A_LOCAL:
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -3012,6 +3042,10 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_entry);
 		break;
 	case A_IMAP4:
+#ifndef HAVE_LIBETPAN
+		gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_show(protocol_optmenu->no_imap_warn_label);
+#endif
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -3097,6 +3131,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive.imapdir_entry);
 		break;
 	case A_NONE:
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -3179,6 +3215,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		break;
 	case A_POP3:
 	default:
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),

@@ -108,7 +108,7 @@ typedef struct
 	GtkWidget *recv_password_label;
 	GtkWidget *recv_imap_label;
 	GtkWidget *recv_imap_subdir;
-
+	GtkWidget *no_imap_warning;
 #ifdef USE_OPENSSL
 	GtkWidget *smtp_use_ssl;
 	GtkWidget *recv_use_ssl;
@@ -945,10 +945,13 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
+		gtk_widget_hide(wizard->no_imap_warning);
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
 	} else if (protocol == A_IMAP4) {
+#ifdef HAVE_LIBETPAN
 		text = get_default_server(wizard, "imap");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		gtk_widget_show(wizard->recv_imap_label);
@@ -957,19 +960,33 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
+		gtk_widget_hide(wizard->no_imap_warning);
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
-	} else if (protocol == A_LOCAL) {
-		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), tmpl.mboxfile?tmpl.mboxfile:"");
-		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Local mailbox:</span>"));
-		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
+#else
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
 		gtk_widget_hide(wizard->recv_username);
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
+		gtk_widget_show(wizard->no_imap_warning);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, FALSE);
+#endif
+	} else if (protocol == A_LOCAL) {
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), tmpl.mboxfile?tmpl.mboxfile:"");
+		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Local mailbox:</span>"));
+		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
+		gtk_widget_hide(wizard->no_imap_warning);
+		gtk_widget_hide(wizard->recv_imap_label);
+		gtk_widget_hide(wizard->recv_imap_subdir);
+		gtk_widget_hide(wizard->recv_username);
+		gtk_widget_hide(wizard->recv_password);
+		gtk_widget_hide(wizard->recv_username_label);
+		gtk_widget_hide(wizard->recv_password_label);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 	}
 }
 
@@ -1001,12 +1018,12 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
 			 wizard);
-#ifdef HAVE_LIBETPAN
+
 	MENUITEM_ADD (menu, menuitem, _("IMAP"), A_IMAP4);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
 			 wizard);
-#endif
+
 	MENUITEM_ADD (menu, menuitem, _("Local mbox file"), A_LOCAL);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(wizard_protocol_changed),
@@ -1017,18 +1034,12 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	case A_POP3: 
 		index = 0;
 		break;
-#ifdef HAVE_LIBETPAN
 	case A_IMAP4:
 		index = 1;
 		break;
 	case A_LOCAL:
 		index = 2;
 		break;
-#else
-	case A_LOCAL:
-		index = 1;
-		break;
-#endif
 	default:
 		index = 0;
 	}
@@ -1090,6 +1101,13 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 
 	i++;
+	
+	wizard->no_imap_warning = gtk_label_new(_(
+			  "<span weight=\"bold\">Warning: this version of Sylpheed-Claws\n"
+			  "has been built without IMAP support.</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(wizard->no_imap_warning), TRUE);
+	gtk_table_attach(GTK_TABLE(table), wizard->no_imap_warning, 			      
+			 0,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 	
 	return table;
 }

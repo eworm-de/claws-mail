@@ -4315,6 +4315,19 @@ static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag);
 static Folder	*imap_folder_new	(const gchar	*name,
 					 const gchar	*path)
 {
+	static gboolean missing_imap_warning = TRUE;
+	if (missing_imap_warning) {
+		missing_imap_warning = FALSE;
+		alertpanel_error(
+			_("You have one or more IMAP accounts "
+			  "defined. However this version of "
+			  "Sylpheed-Claws has been built without "
+			  "IMAP support; your IMAP account(s) are "
+			  "disabled.\n\n"
+			  "You probably need to "
+			  "install libetpan and recompile "
+			  "Sylpheed-Claws."));
+	}
 	return NULL;
 }
 static gint 	imap_create_tree	(Folder 	*folder)
