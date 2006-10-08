@@ -909,7 +909,7 @@ static void prefs_destroy_file_cache(gpointer to_free)
 	g_hash_table_destroy(table);
 }
 
-static void prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
+static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 {
 	FILE *fp = g_fopen(rcfile, "rb");
 	gchar buf[PREFSBUFSIZE];
@@ -917,7 +917,7 @@ static void prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 
 	if (!fp) {
 		debug_print("cache: %s: %s", rcfile, strerror(errno));
-		return;
+		return -1;
 	}
 	
 	flockfile(fp);
@@ -940,9 +940,9 @@ static void prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 				blockname, section_cache);
 		} else {
 			if (!section_cache) {
-				g_warning("uh no table\n");
+				debug_print("no table at %s\n", buf);
 				fclose(fp);
-				return;
+				return -1;
 			} else {
 				gchar *pref;
 				
@@ -959,9 +959,10 @@ static void prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 	}
 	funlockfile(fp);
 	fclose(fp);
+	return 0;
 }
 
-static void prefs_cache(const gchar *rcfile)
+static int prefs_cache(const gchar *rcfile)
 {
 	GHashTable *file_cache = g_hash_table_new_full(g_str_hash, g_str_equal, 
 					g_free, prefs_destroy_file_cache);
@@ -969,7 +970,7 @@ static void prefs_cache(const gchar *rcfile)
 	debug_print("new file '%s'\n", rcfile);
 	g_hash_table_insert(whole_cache, g_strdup(rcfile), file_cache);
 	
-	prefs_cache_sections(file_cache, rcfile);
+	return prefs_cache_sections(file_cache, rcfile);
 }
 
 void prefs_prepare_cache(void)
@@ -988,10 +989,11 @@ void prefs_prepare_cache(void)
 		g_free(accountrc);
 		return;
 	}
-	prefs_cache(sylpheedrc);
-	prefs_cache(folderitemrc);
-	prefs_cache(accountrc);
-	
+	if (prefs_cache(sylpheedrc) < 0 ||
+	    prefs_cache(folderitemrc) < 0 ||
+	    prefs_cache(accountrc) < 0)
+		prefs_destroy_cache();
+
 	g_free(sylpheedrc);
 	g_free(folderitemrc);
 	g_free(accountrc);
