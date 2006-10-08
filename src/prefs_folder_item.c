@@ -59,6 +59,7 @@
 
 typedef struct _FolderItemGeneralPage FolderItemGeneralPage;
 typedef struct _FolderItemComposePage FolderItemComposePage;
+static gboolean can_save = TRUE;
 
 struct _FolderItemGeneralPage
 {
@@ -67,6 +68,7 @@ struct _FolderItemGeneralPage
 	FolderItem *item;
 
 	GtkWidget *table;
+	GtkWidget *no_save_warning;
 	GtkWidget *folder_type;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
@@ -98,6 +100,7 @@ struct _FolderItemComposePage
 
 	GtkWidget *window;
 	GtkWidget *table;
+	GtkWidget *no_save_warning;
 	GtkWidget *checkbtn_request_return_receipt;
 	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
@@ -157,6 +160,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *menuitem;
 	SpecialFolderItemType type;
 	
+	GtkWidget *no_save_warning = NULL;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *hbox_regexp;
@@ -184,12 +188,25 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(6, 2, FALSE);
+	table = gtk_table_new(7, 4, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
 
+	if (!can_save) {
+		no_save_warning = gtk_label_new(
+			_("<i>These preferences will not be saved as this folder "
+			"is a top-level one. However you can use them to set them "
+			"to the whole mailbox tree using \"Apply to subfolders\".</i>"));
+		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
+		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
+		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
+		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 4,
+			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
+		rowcount++;
+	}
+	
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
@@ -413,6 +430,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	page->table = table;
 	page->folder_type = folder_type;
+	page->no_save_warning = no_save_warning;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->entry_regexp_test_string = entry_regexp_test_string;
@@ -568,6 +586,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *table;
 	GtkWidget *label;
 	
+	GtkWidget *no_save_warning = NULL;
 	GtkWidget *checkbtn_request_return_receipt = NULL;
 	GtkWidget *checkbtn_save_copy_to_folder = NULL;
 	GtkWidget *checkbtn_default_to = NULL;
@@ -606,16 +625,29 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	/* Table */
 #if USE_ASPELL
-# define TABLEHEIGHT 6
+# define TABLEHEIGHT 7
 #else
-# define TABLEHEIGHT 5
+# define TABLEHEIGHT 6
 #endif
-	table = gtk_table_new(TABLEHEIGHT, 2, FALSE);
+	table = gtk_table_new(TABLEHEIGHT, 3, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
 
+	if (!can_save) {
+		no_save_warning = gtk_label_new(
+			_("<i>These preferences will not be saved as this folder "
+			"is a top-level one. However you can use them to set them "
+			"to the whole mailbox tree using \"Apply to subfolders\".</i>"));
+		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
+		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
+		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
+		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 3,
+			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
+		rowcount++;
+	}
+	
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
@@ -784,6 +816,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	page->window = GTK_WIDGET(window);
 	page->table = table;
+	page->no_save_warning = no_save_warning;
 	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
 	page->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
 	page->checkbtn_default_to = checkbtn_default_to;
@@ -1098,20 +1131,23 @@ static GSList *prefs_pages = NULL;
 void prefs_folder_item_open(FolderItem *item)
 {
 	gchar *id, *title;
-
 	if (prefs_pages == NULL) {
 		register_general_page();
 		register_compose_page();
 	}
 
-	if (item->path)
+	if (item->path) {
 		id = folder_item_get_identifier (item);
-	else 
+		can_save = TRUE;
+	} else {
 		id = g_strdup(item->name);
+		can_save = FALSE;
+	}
 	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
 	prefswindow_open(title, prefs_pages, item,
 			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height);
+	
 	g_free (title);
 }
 

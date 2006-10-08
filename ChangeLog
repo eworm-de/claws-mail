@@ -1,3 +1,9 @@
+2006-10-08 [colin]	2.5.3cvs23
+
+	* src/prefs_folder_item.c
+		Explain why prefs in the top-level folder
+		aren't retained, but are still useful
+
 2006-10-08 [colin]	2.5.3cvs22
 
 	* src/prefs_gtk.c
