@@ -1,3 +1,8 @@
+2006-10-08 [colin]	2.5.3cvs21
+
+	* src/common/utils.c
+		always include gi18n.h
+
 2006-10-07 [colin]	2.5.3cvs20
 
 	* src/plugins/pgpcore/pgp_viewer.c

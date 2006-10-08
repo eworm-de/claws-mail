@@ -1975,3 +1975,4 @@
 ( diff -u /dev/null src/plugins/pgpcore/pgp_viewer.c;  diff -u /dev/null src/plugins/pgpcore/pgp_viewer.h;  ) > 2.5.3cvs18.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpcore/pgp_viewer.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpcore/pgp_viewer.h;  ) > 2.5.3cvs19.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpcore/pgp_viewer.c;  ) > 2.5.3cvs20.patchset
+( cvs diff -u -r 1.36.2.84 -r 1.36.2.85 src/common/utils.c;  ) > 2.5.3cvs21.patchset
