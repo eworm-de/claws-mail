@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=25
+EXTRA_VERSION=26
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -301,6 +301,8 @@ AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
 	       uname flock lockf inet_aton inet_addr \
 	       fchmod mkstemp truncate getuid regcomp)
+
+AC_CHECK_FUNCS(fgets_unlocked fwrite_unlocked)
 
 dnl *****************
 dnl ** common code **

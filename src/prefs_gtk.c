@@ -22,10 +22,11 @@
 #endif
 
 #define _GNU_SOURCE
+#include <stdio.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -47,6 +48,12 @@
 	((CL(c.red)   << (gulong) 16) | \
 	 (CL(c.green) << (gulong)  8) | \
 	 (CL(c.blue)))
+
+#ifdef HAVE_FGETS_UNLOCKED
+#define SC_FGETS fgets_unlocked
+#else
+#define SC_FGETS fgets
+#endif
 
 typedef enum
 {
@@ -88,10 +95,12 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 
 	block_label = g_strdup_printf("[%s]", label);
 
+#ifdef HAVE_FGETS_UNLOCKED
 	flockfile(fp);
+#endif
 
 	/* search aiming block */
-	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
+	while (SC_FGETS(buf, sizeof(buf), fp) != NULL) {
 		gint val;
 
 		if (encoding) {
@@ -113,7 +122,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	}
 	g_free(block_label);
 
-	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
+	while (SC_FGETS(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		/* reached next block */
 		if (buf[0] == '[') break;
@@ -133,7 +142,9 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	}
 
 	debug_print("Finished reading configuration.\n");
+#ifdef HAVE_FGETS_UNLOCKED
 	funlockfile(fp);
+#endif
 	fclose(fp);
 }
 
@@ -920,9 +931,11 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 		return -1;
 	}
 	
+#ifdef HAVE_FGETS_UNLOCKED
 	flockfile(fp);
+#endif
 	
-	while (fgets_unlocked(buf, sizeof(buf), fp) != NULL) {
+	while (SC_FGETS(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		if (buf[0] == '\0')
 			continue;
@@ -957,7 +970,9 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 			}
 		}
 	}
+#ifdef HAVE_FGETS_UNLOCKED
 	funlockfile(fp);
+#endif
 	fclose(fp);
 	return 0;
 }

@@ -1,3 +1,11 @@
+2006-10-09 [colin]	2.5.3cvs26
+
+	* configure.ac
+	* src/msgcache.c
+	* src/prefs_gtk.c
+		Check for existence of fgets_unlocked
+		and fwrite_unlocked
+
 2006-10-09 [paul]	2.5.3cvs25
 
 	* src/prefs_summaries.c
