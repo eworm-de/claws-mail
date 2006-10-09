@@ -1,3 +1,18 @@
+2006-10-09 [colin]	2.5.3cvs27
+
+	* src/main.c
+	* src/prefs_gtk.c
+		Prepare cache a bit later
+		If section already exists, skip the new one 
+		(as previously); avoid writing the same block
+		twice - if we find a second block with the 
+		same id, skip it.
+	* src/plugins/pgpcore/pgp_viewer.c
+		Set cursor to busy when retrieving a key
+	* src/plugins/pgpcore/sgpgme.c
+		allow 5 seconds for gpg to export the key
+		
+
 2006-10-09 [colin]	2.5.3cvs26
 
 	* configure.ac

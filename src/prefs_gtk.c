@@ -289,13 +289,12 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 	}
 
 	TRY(fprintf(pfile->fp, "%s\n", block_label) > 0);
-	g_free(block_label);
-	block_label = NULL;
 
 	/* write all param data to file */
 	TRY(prefs_write_param(param, pfile->fp) == 0);
 
 	if (block_matched) {
+		gboolean in_dup_block = FALSE;
 		while (fgets(buf, sizeof(buf), orig_fp) != NULL) {
 			/* next block */
 			if (buf[0] == '[') {
@@ -304,9 +303,21 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 				break;
 			}
 		}
-		while (fgets(buf, sizeof(buf), orig_fp) != NULL)
-			TRY(fputs(buf, pfile->fp) != EOF);
+		while (fgets(buf, sizeof(buf), orig_fp) != NULL) {
+			if (buf[0] == '[') {
+				if (!strncmp(buf, block_label,
+						strlen(block_label)))
+					in_dup_block = TRUE;
+				else
+					in_dup_block = FALSE;
+			}
+			if (!in_dup_block)
+				TRY(fputs(buf, pfile->fp) != EOF);
+		}
 	}
+
+	g_free(block_label);
+	block_label = NULL;
 
 	if (orig_fp) fclose(orig_fp);
 	if (prefs_file_close(pfile) < 0)
@@ -946,16 +957,23 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 
 			if (strrchr(blockname, ']'))
 				*strrchr(blockname, ']') = '\0';
-			debug_print("new section '%s'\n", blockname);
-			section_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+
+			if ((section_cache = g_hash_table_lookup(file_cache, blockname)) == NULL) {
+				debug_print("new section '%s'\n", blockname);
+				section_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
 						g_free, NULL);
-			g_hash_table_insert(file_cache, 
-				blockname, section_cache);
+				g_hash_table_insert(file_cache, 
+					blockname, section_cache);
+			} else {
+				debug_print("section '%s' already done\n", blockname);
+				g_free(blockname);
+				section_cache = NULL;
+				continue;
+			}
 		} else {
 			if (!section_cache) {
-				debug_print("no table at %s\n", buf);
-				fclose(fp);
-				return -1;
+				debug_print("skipping stuff %s with no section\n", buf);
+				continue;
 			} else {
 				gchar *pref;
 				
@@ -965,7 +983,7 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 				}
 				pref = g_strdup(buf);
 				
-				debug_print("new pref '%s'\n", pref);
+				//debug_print("new pref '%s'\n", pref);
 				g_hash_table_insert(section_cache, pref, GINT_TO_POINTER(1));
 			}
 		}
@@ -1043,13 +1061,13 @@ static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *labe
 	sections_table = g_hash_table_lookup(whole_cache, rcfile);
 	
 	if (sections_table == NULL) {
-		g_warning("can't find %s in the whole cache", rcfile);
+		g_warning("can't find %s in the whole cache\n", rcfile);
 		return FALSE;
 	}
 	values_table = g_hash_table_lookup(sections_table, label);
 	
 	if (values_table == NULL) {
-		debug_print("no '%s' section in '%s' cache", label, rcfile);
+		debug_print("no '%s' section in '%s' cache\n", label, rcfile);
 		return TRUE;
 	}
 	g_hash_table_foreach(values_table, prefs_parse_cache, param);

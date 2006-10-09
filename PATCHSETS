@@ -1981,3 +1981,4 @@
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 po/sk.po;  ) > 2.5.3cvs24.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_summaries.c;  ) > 2.5.3cvs25.patchset
 ( cvs diff -u -r 1.654.2.2031 -r 1.654.2.2032 configure.ac;  cvs diff -u -r 1.16.2.45 -r 1.16.2.46 src/msgcache.c;  cvs diff -u -r 1.10.2.23 -r 1.10.2.24 src/prefs_gtk.c;  ) > 2.5.3cvs26.patchset
+( cvs diff -u -r 1.115.2.109 -r 1.115.2.110 src/main.c;  cvs diff -u -r 1.10.2.24 -r 1.10.2.25 src/prefs_gtk.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/pgp_viewer.c;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.3cvs27.patchset

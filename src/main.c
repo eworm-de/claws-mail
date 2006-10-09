@@ -470,11 +470,11 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	START_TIMING("startup");
 	
-	prefs_prepare_cache();
 	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
 	}
 
+	prefs_prepare_cache();
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
 
@@ -646,7 +646,7 @@ int main(int argc, char *argv[])
 	mh_gtk_init();
 	imap_gtk_init();
 	news_gtk_init();
-		
+
 	mainwin = main_window_create
 		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
 	manage_window_focus_in(mainwin->window, NULL, NULL);

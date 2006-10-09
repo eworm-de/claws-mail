@@ -30,6 +30,8 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #ifndef G_OS_WIN32
 #include <sys/mman.h>
 #endif
@@ -710,8 +712,36 @@ again:
 #ifndef G_OS_WIN32
 			gchar *cmd = g_strdup_printf("gpg --send-keys %s", key->fpr);
 			int res = 0;
-			GTK_EVENTS_FLUSH();
-			res = system(cmd);
+			pid_t pid = 0;
+			pid = fork();
+			if (pid == -1) {
+				res = -1;
+			} else if (pid == 0) {
+				/* son */
+				res = system(cmd);
+				_exit(res);
+			} else {
+				int status = 0;
+				time_t start_wait = time(NULL);
+				res = -1;
+				do {
+					if (waitpid(pid, &status, WNOHANG) == 0 || !WIFEXITED(status)) {
+						usleep(200000);
+					} else {
+						res = WEXITSTATUS(status);
+						break;
+					}
+					if (time(NULL) - start_wait > 5) {
+						debug_print("SIGTERM'ing gpg\n");
+						kill(pid, SIGTERM);
+					}
+					if (time(NULL) - start_wait > 6) {
+						debug_print("SIGKILL'ing gpg\n");
+						kill(pid, SIGKILL);
+						break;
+					}
+				} while(1);
+			}
 			if (res == 0) {
 				alertpanel_notice(_("Key exported."));
 			} else {

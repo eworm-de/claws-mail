@@ -30,6 +30,7 @@
 
 #include "version.h"
 #include "common/sylpheed.h"
+#include "mainwindow.h"
 #include "mimeview.h"
 #include "textview.h"
 #include "sgpgme.h"
@@ -122,6 +123,8 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			gchar *cmd = g_strdup_printf("gpg --recv-keys %s", sig->fpr);
 			int res = 0;
 			pid_t pid = 0;
+
+			main_window_cursor_wait(mainwindow_get_mainwindow());
 			GTK_EVENTS_FLUSH();
 			
 			pid = fork();
@@ -153,6 +156,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 					}
 				} while(1);
 			}
+			main_window_cursor_normal(mainwindow_get_mainwindow());
 			if (res == 0) {
 				TEXTVIEW_INSERT(_("   This key has been imported to your keyring.\n"));
 			} else {
