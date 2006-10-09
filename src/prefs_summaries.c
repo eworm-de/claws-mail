@@ -1156,7 +1156,7 @@ static void date_format_entry_on_change(GtkEditable *editable,
 	buffer[0] = 0;
 	text = gtk_editable_get_chars(editable, 0, -1);
 	if (text)
-		strftime(buffer, sizeof buffer, text, cal_time); 
+		fast_strftime(buffer, sizeof buffer, text, cal_time); 
 	g_free(text);
 
 	text = conv_codeset_strdup(buffer,

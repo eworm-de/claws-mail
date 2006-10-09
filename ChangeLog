@@ -1,3 +1,10 @@
+2006-10-09 [paul]	2.5.3cvs25
+
+	* src/prefs_summaries.c
+		replace strftime() with fast_strftime() and in
+		the consequence fix the bug in the display of
+		AM/PM in the 'Example' string
+
 2006-10-09 [ticho]	2.5.3cvs24
 
 	* po/sk.po

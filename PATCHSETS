@@ -1979,3 +1979,4 @@
 ( cvs diff -u -r 1.10.2.22 -r 1.10.2.23 src/prefs_gtk.c;  ) > 2.5.3cvs22.patchset
 ( cvs diff -u -r 1.52.2.27 -r 1.52.2.28 src/prefs_folder_item.c;  ) > 2.5.3cvs23.patchset
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 po/sk.po;  ) > 2.5.3cvs24.patchset
+( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_summaries.c;  ) > 2.5.3cvs25.patchset
