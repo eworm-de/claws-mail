@@ -187,9 +187,9 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (optmenu_dnd_insert_or_attach);
 
 	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Ask whether to insert or attach"), COMPOSE_DND_ASK);
-	MENUITEM_ADD (menu, menuitem, _("Always insert"), COMPOSE_DND_INSERT);
-	MENUITEM_ADD (menu, menuitem, _("Always attach"), COMPOSE_DND_ATTACH);
+	MENUITEM_ADD (menu, menuitem, _("Ask"), COMPOSE_DND_ASK);
+	MENUITEM_ADD (menu, menuitem, _("Insert"), COMPOSE_DND_INSERT);
+	MENUITEM_ADD (menu, menuitem, _("Attach"), COMPOSE_DND_ATTACH);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_dnd_insert_or_attach), menu);
 
