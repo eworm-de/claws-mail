@@ -45,6 +45,7 @@ bison -p quote_fmt quote_fmt.y
 int yylex(void);
 
 static MsgInfo *msginfo = NULL;
+static PrefsAccount *account = NULL;
 static gboolean *visible = NULL;
 static gboolean dry_run = FALSE;
 static gint maxsize = 0;
@@ -155,11 +156,13 @@ void quote_fmt_reset_vartable(void)
 }
 
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
-		    const gchar *my_body, gboolean my_dry_run)
+		    const gchar *my_body, gboolean my_dry_run,
+			PrefsAccount *compose_account)
 {
 	quote_str = my_quote_str;
 	body = my_body;
 	msginfo = info;
+	account = compose_account;
 	dry_run = my_dry_run;
 	stacksize = 0;
 	add_visibility(TRUE);
@@ -479,6 +482,7 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 	char str[256];
 }
 
+/* tokens SHOW */
 %token SHOW_NEWSGROUPS
 %token SHOW_DATE SHOW_FROM SHOW_FULLNAME SHOW_FIRST_NAME SHOW_LAST_NAME
 %token SHOW_SENDER_INITIAL SHOW_SUBJECT SHOW_TO SHOW_MESSAGEID
@@ -486,12 +490,18 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 %token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
+%token SHOW_ACCOUNT_FULL_NAME SHOW_ACCOUNT_MAIL_ADDRESS SHOW_ACCOUNT_NAME SHOW_ACCOUNT_ORGANIZATION
+/* tokens QUERY */
 %token QUERY_DATE QUERY_FROM
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
 %token QUERY_MESSAGEID QUERY_CC QUERY_REFERENCES
+%token QUERY_ACCOUNT_FULL_NAME QUERY_ACCOUNT_ORGANIZATION
+/* tokens QUERY_NOT */
 %token QUERY_NOT_DATE QUERY_NOT_FROM
 %token QUERY_NOT_FULLNAME QUERY_NOT_SUBJECT QUERY_NOT_TO QUERY_NOT_NEWSGROUPS
 %token QUERY_NOT_MESSAGEID QUERY_NOT_CC QUERY_NOT_REFERENCES
+%token QUERY_NOT_ACCOUNT_FULL_NAME QUERY_NOT_ACCOUNT_ORGANIZATION
+/* other tokens */
 %token INSERT_FILE INSERT_PROGRAMOUTPUT INSERT_USERINPUT
 %token OPARENT CPARENT
 %token CHARACTER
@@ -642,6 +652,26 @@ special:
 	{
 		quote_fmt_show_msg(msginfo, body, TRUE, FALSE, quote_str);
 	}
+	| SHOW_ACCOUNT_FULL_NAME
+	{
+		if (account && account->name)
+			INSERT(account->name);
+	}
+	| SHOW_ACCOUNT_MAIL_ADDRESS
+	{
+		if (account && account->address)
+			INSERT(account->address);
+	}
+	| SHOW_ACCOUNT_NAME
+	{
+		if (account && account->account_name)
+			INSERT(account->account_name);
+	}
+	| SHOW_ACCOUNT_ORGANIZATION
+	{
+		if (account && account->organization)
+			INSERT(account->organization);
+	}
 	| SHOW_BACKSLASH
 	{
 		INSERT("\\");
@@ -758,6 +788,22 @@ query:
 	OPARENT quote_fmt CPARENT
 	{
 		remove_visibility();
+	}
+	| QUERY_ACCOUNT_FULL_NAME
+	{
+		add_visibility(account != NULL && account->name != NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_ACCOUNT_ORGANIZATION
+	{
+		add_visibility(account != NULL && account->organization != NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
 	};
 
 query_not:
@@ -835,6 +881,22 @@ query_not:
 			if (item->data)
 				found = TRUE;
 		add_visibility(found == FALSE);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_ACCOUNT_FULL_NAME
+	{
+		add_visibility(account == NULL || account->name == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_ACCOUNT_ORGANIZATION
+	{
+		add_visibility(account == NULL || account->organization == NULL);
 	}
 	OPARENT quote_fmt CPARENT
 	{

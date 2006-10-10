@@ -2371,7 +2371,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		msginfo = &dummyinfo;
 
 	if (qmark != NULL) {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
 		quote_fmt_scan_string(qmark);
 		quote_fmt_parse();
 
@@ -2387,7 +2387,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 			&& trimmed_body[0]=='\n')
 			*trimmed_body++;
 
-		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE);
+		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
@@ -6643,7 +6643,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		msginfo = &dummyinfo;
 
 	if (tmpl->to && *tmpl->to != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
 		quote_fmt_scan_string(tmpl->to);
 		quote_fmt_parse();
 
@@ -6656,7 +6656,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	}
 
 	if (tmpl->cc && *tmpl->cc != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
 		quote_fmt_scan_string(tmpl->cc);
 		quote_fmt_parse();
 
@@ -6669,7 +6669,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	}
 
 	if (tmpl->bcc && *tmpl->bcc != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
 		quote_fmt_scan_string(tmpl->bcc);
 		quote_fmt_parse();
 
@@ -6683,7 +6683,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 	/* process the subject */
 	if (tmpl->subject && *tmpl->subject != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
 		quote_fmt_scan_string(tmpl->subject);
 		quote_fmt_parse();
 

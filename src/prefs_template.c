@@ -508,7 +508,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 		MsgInfo dummyinfo;
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL);
 		quote_fmt_scan_string(value);
 		quote_fmt_parse();
 		parsed_buf = quote_fmt_get_buffer();
