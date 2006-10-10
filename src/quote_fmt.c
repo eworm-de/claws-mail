@@ -55,10 +55,10 @@ static gchar *quote_desc_strings[] = {
 	"%m",		N_("message body without signature"), /* message with no signature */
 	"%q",		N_("quoted message body without signature"), /* quoted message with no signature */
 	"%X",		N_("cursor position"), /* X marks the cursor spot */
-	"%af",		N_("compose account: full name"), /* full name in compose account */
-	"%am",		N_("compose account: mail address"), /* mail address in compose account */
-	"%an",		N_("compose account name itself"), /* compose account name itself */
-	"%ao",		N_("compose account: organization"), /* organization in compose account */
+	"%af",		N_("Account property: your name"), /* full name in compose account */
+	"%am",		N_("Account property: your email address"), /* mail address in compose account */
+	"%an",		N_("Account property: account name"), /* compose account name itself */
+	"%ao",		N_("Account property: organization"), /* organization in compose account */
 	"\\%", 		N_("literal %"),
 	"\\\\",		N_("literal backslash"),
 	"\\?",		N_("literal question mark"),
