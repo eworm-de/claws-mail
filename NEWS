@@ -1,5 +1,14 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.4
+-------
+
+* Bug fixes:
+	o bug 1032, 'Segmentation fault when showing message'
+	o fix crash with quote folding on HTML
+	o fix building with --disable-nls
+	o remove tabs in Subject string
+
 * 2.5.3
 -------
 

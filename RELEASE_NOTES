@@ -1,4 +1,4 @@
-4th October 2006                                 Sylpheed-Claws 2.5.3
+11th October 2006                                Sylpheed-Claws 2.5.4
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,14 +9,11 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Make node expanding in the Folder List non-recursive
-
 * Bug fixes:
-	o bug 1024, 'Array index out of range in sylpheed-claws-2.5.2'
-	o Fix "Check for new folders" on folders with accented
-	  characters
-	o Fix filtering "copy" rules
-	o Fix "goto next unread" after collapsing/expanding a node
+	o bug 1032, 'Segmentation fault when showing message'
+	o fix crash with quote folding on HTML
+	o fix building with --disable-nls
+	o remove tabs in Subject string
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
