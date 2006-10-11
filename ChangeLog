@@ -1,3 +1,9 @@
+2006-10-11 [paul]	2.5.3cvs2-stable
+
+	* src/textview.c
+		From 2.5.3cvs32: fix bug 1032, 'Segmentation fault
+		when showing message' (bug in quote folding)
+
 2006-10-06 [colin]	2.5.3cvs1-stable
 
 	* src/textview.c
