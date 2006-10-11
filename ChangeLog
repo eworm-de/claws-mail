@@ -1,3 +1,9 @@
+2006-10-11 [paul]	2.5.3cvs3-stable
+
+	* src/procheader.c
+		From 2.5.3cvs28: Fix this \t problem in
+		subject
+
 2006-10-11 [paul]	2.5.3cvs2-stable
 
 	* src/textview.c

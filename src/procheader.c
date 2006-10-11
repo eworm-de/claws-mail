@@ -134,6 +134,7 @@ static gint generic_get_one_field(gchar *buf, size_t len, void *data,
 		/* ([*WSP CRLF] 1*WSP) */
 		if (nexthead == ' ' || nexthead == '\t') {
 			size_t buflen;
+			gboolean skiptab = (nexthead == '\t');
 			/* trim previous trailing \n if requesting one header or
 			 * unfolding was requested */
 			if ((!hentry && unfold) || (hp && hp->unfold))
@@ -145,6 +146,9 @@ static gint generic_get_one_field(gchar *buf, size_t len, void *data,
 			if ((len - buflen) > 2) {
 				if (getline(buf + buflen, len - buflen, data) == NULL)
 					break;
+				if (skiptab) { /* replace tab with space */
+					*(buf + buflen) = ' ';
+				}
 			} else
 				break;
 		} else {
@@ -541,7 +545,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_SUBJECT:
 			if (msginfo->subject) break;
                         msginfo->subject = conv_unmime_header(hp, NULL);
-			remove_return(msginfo->subject);
 			break;
 		case H_MSG_ID:
 			if (msginfo->msgid) break;
