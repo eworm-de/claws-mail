@@ -1986,3 +1986,4 @@
 ( cvs diff -u -r 1.382.2.313 -r 1.382.2.314 src/compose.c;  cvs diff -u -r 1.12.2.31 -r 1.12.2.32 src/prefs_template.c;  cvs diff -u -r 1.8.2.9 -r 1.8.2.10 src/quote_fmt.c;  cvs diff -u -r 1.5.12.5 -r 1.5.12.6 src/quote_fmt.h;  cvs diff -u -r 1.8.2.5 -r 1.8.2.6 src/quote_fmt_lex.l;  cvs diff -u -r 1.22.2.23 -r 1.22.2.24 src/quote_fmt_parse.y;  ) > 2.5.3cvs29.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_compose_writing.c;  ) > 2.5.3cvs30.patchset
 ( cvs diff -u -r 1.8.2.10 -r 1.8.2.11 src/quote_fmt.c;  ) > 2.5.3cvs31.patchset
+( cvs diff -u -r 1.96.2.154 -r 1.96.2.155 src/textview.c;  ) > 2.5.3cvs32.patchset

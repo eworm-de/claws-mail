@@ -602,7 +602,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	buffer = gtk_text_view_get_buffer(text);
 	charcount = gtk_text_buffer_get_char_count(buffer);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
-
+	
 	if (textview->stop_loading) {
 		return;
 	}
@@ -610,6 +610,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		END_TIMING();
 		return;
 	}
+
+	previousquotelevel = -1;
 
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
@@ -1398,6 +1400,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	}
 
 	if (real_quotelevel > -1 && do_quote_folding) {
+do_quote:
 		if ( previousquotelevel != real_quotelevel ) {
 			ClickableText *uri;
 			uri = g_new0(ClickableText, 1);
@@ -1422,8 +1425,14 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		} else {
 			GSList *last = textview->uri_list;
 			ClickableText *lasturi = (ClickableText *)last->data;
-			gint e_len = lasturi->data ? strlen(lasturi->data):0;
-			gint n_len = strlen(buf);
+			gint e_len = 0, n_len = 0;
+			
+			if (lasturi->is_quote == FALSE) {
+				previousquotelevel = -1;
+				goto do_quote;
+			}
+			e_len = lasturi->data ? strlen(lasturi->data):0;
+			n_len = strlen(buf);
 			lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
 			strcpy((gchar *)lasturi->data + e_len, buf);
 			*((gchar *)lasturi->data + e_len + n_len) = '\0';
