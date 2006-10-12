@@ -1,4 +1,4 @@
-11th October 2006                                Sylpheed-Claws 2.5.4
+12th October 2006                                Sylpheed-Claws 2.5.5
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,11 +9,8 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Bug fixes:
-	o bug 1032, 'Segmentation fault when showing message'
-	o fix crash with quote folding on HTML
-	o fix building with --disable-nls
-	o remove tabs in Subject string
+* Bug fix:
+	o bug 1034, 'Incorrect display of size field in message view'
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
