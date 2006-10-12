@@ -3009,6 +3009,12 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		g_free(name);
 	}
 
+	if (ainfo->name != NULL
+	&&  !strcmp(ainfo->name, ".")) {
+		g_free(ainfo->name);
+		ainfo->name = NULL;
+	}
+
 	if (!strcmp(ainfo->content_type, "unknown") || has_binary) {
 		g_free(ainfo->content_type);
 		ainfo->content_type = g_strdup("application/octet-stream");
@@ -4998,11 +5004,13 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 		    !g_ascii_strcasecmp(mimepart->subtype, "rfc822")) {
 			mimepart->disposition = DISPOSITIONTYPE_INLINE;
 		} else {
-			g_hash_table_insert(mimepart->typeparameters,
+			if (ainfo->name) {
+				g_hash_table_insert(mimepart->typeparameters,
 					    g_strdup("name"), g_strdup(ainfo->name));
-			g_hash_table_insert(mimepart->dispositionparameters,
+				g_hash_table_insert(mimepart->dispositionparameters,
 					    g_strdup("filename"), g_strdup(ainfo->name));
-			mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
+				mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
+			}
 		}
 
 		if (compose->use_signing) {
