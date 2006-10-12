@@ -1,3 +1,12 @@
+2006-10-12 [colin]	2.5.5cvs5
+
+	* src/codeconv.c
+		Revert part of 2.5.2cvs21:
+		Don't optimise by reusing the 
+		last iconv converter if possible:
+		it seems slightly broken in a 
+		very hard way to reproduce
+
 2006-10-12 [colin]	2.5.5cvs4
 
 	* src/prefs_common.c
