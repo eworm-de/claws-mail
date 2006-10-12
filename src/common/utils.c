@@ -359,7 +359,7 @@ gchar *to_human_readable(off_t size)
 		g_snprintf(str, sizeof(str), b_format, (gint)size);
 		return str;
 	} else if (size >> 10 < 1024) {
-		divide(size, (1 << 10), t, r);
+		divide(size, 10, t, r);
 		g_snprintf(str, sizeof(str), kb_format, t, r);
 		return str;
 	} else if (size >> 20 < 1024) {

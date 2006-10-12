@@ -1,3 +1,9 @@
+2006-10-12 [colin]	2.5.4cvs1-stable
+
+	* src/common/utils.c
+		Fix bug 1034, 'Incorrect display of size 
+		field in message view'
+
 2006-10-11 [paul]	2.5.4
 
 	2.5.4 released
