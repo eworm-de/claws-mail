@@ -36,6 +36,7 @@
 #include "sgpgme.h"
 #include "prefs_common.h"
 #include "prefs_gpg.h"
+#include "alertpanel.h"
 #include "plugin.h"
 
 typedef struct _PgpViewer PgpViewer;
@@ -107,26 +108,39 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		return;
 	}
 	gpgme_get_key(ctx, sig->fpr, &key, 0);
-	TEXTVIEW_INSERT(_("\n  Importing key ID "));
-	TEXTVIEW_INSERT(sig->fpr);
-	TEXTVIEW_INSERT(":\n\n");
 	if (!key) {
-		if (prefs_common.work_offline) {
-			gchar *cmd = g_strdup_printf("gpg --recv-keys %s", sig->fpr);
+		gchar *cmd = g_strdup_printf("gpg --no-tty --recv-keys %s", sig->fpr);
+		AlertValue val = G_ALERTDEFAULT;
+		if (!prefs_common.work_offline) {
+			val = alertpanel(_("Key import"),
+				_("This key is not in your keyring. Do you want "
+				  "Sylpheed-Claws to try and import it from a "
+				  "keyserver?"),
+				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+			GTK_EVENTS_FLUSH();
+		}
+		if (val == G_ALERTDEFAULT) {
+			TEXTVIEW_INSERT(_("\n  Key ID "));
+			TEXTVIEW_INSERT(sig->fpr);
+			TEXTVIEW_INSERT(":\n\n");
 			TEXTVIEW_INSERT(_("   This key is not in your keyring.\n"));
-			TEXTVIEW_INSERT(_("   It should be possible to import it when working online,\n"));
-			TEXTVIEW_INSERT(_("   or with the following command: \n\n     "));
+			TEXTVIEW_INSERT(_("   It should be possible to import it "));
+			if (prefs_common.work_offline)
+				TEXTVIEW_INSERT(_("when working online,\n   or "));
+			TEXTVIEW_INSERT(_("with the following command: \n\n     "));
 			TEXTVIEW_INSERT(cmd);
-			g_free(cmd);
 		} else {
 #ifndef G_OS_WIN32
-			gchar *cmd = g_strdup_printf("gpg --recv-keys %s", sig->fpr);
 			int res = 0;
 			pid_t pid = 0;
+	
+			TEXTVIEW_INSERT(_("\n  Importing key ID "));
+			TEXTVIEW_INSERT(sig->fpr);
+			TEXTVIEW_INSERT(":\n\n");
 
 			main_window_cursor_wait(mainwindow_get_mainwindow());
 			GTK_EVENTS_FLUSH();
-			
+
 			pid = fork();
 			if (pid == -1) {
 				res = -1;
@@ -164,16 +178,18 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:\n\n     "));
 				TEXTVIEW_INSERT(cmd);
 			}
-			g_free(cmd);
 #else
 			TEXTVIEW_INSERT(_("   This key is not in your keyring.\n"));
 			TEXTVIEW_INSERT(_("   Key import isn't implemented in Windows.\n"));
 #endif
 		}
+		g_free(cmd);
 		return;
 	} else {
-		TEXTVIEW_INSERT(_("   This key is already in your keyring.\n"));
-
+		TEXTVIEW_INSERT(_("\n  Key ID "));
+		TEXTVIEW_INSERT(sig->fpr);
+		TEXTVIEW_INSERT(":\n\n");
+		TEXTVIEW_INSERT(_("   This key is in your keyring.\n"));
 	}
 	gpgme_data_release(sigdata);
 	gpgme_release(ctx);

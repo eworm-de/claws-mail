@@ -710,7 +710,7 @@ again:
 		g_free(buf);
 		if (val == G_ALERTALTERNATE) {
 #ifndef G_OS_WIN32
-			gchar *cmd = g_strdup_printf("gpg --send-keys %s", key->fpr);
+			gchar *cmd = g_strdup_printf("gpg --no-tty --send-keys %s", key->fpr);
 			int res = 0;
 			pid_t pid = 0;
 			pid = fork();

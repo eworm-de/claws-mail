@@ -80,6 +80,7 @@ src/plugins/pgpcore/prefs_gpg.c
 src/plugins/pgpcore/select-keys.c
 src/plugins/pgpcore/sgpgme.c
 src/plugins/pgpcore/plugin.c
+src/plugins/pgpcore/pgp_viewer.c
 src/plugins/pgpinline/pgpinline.c
 src/plugins/pgpinline/plugin.c
 src/plugins/pgpmime/plugin.c

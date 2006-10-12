@@ -1,3 +1,11 @@
+2006-10-12 [colin]	2.5.5cvs3
+
+	* po/POTFILES.in
+		Add new file
+	* src/plugins/pgpcore/pgp_viewer.c
+	* src/plugins/pgpcore/sgpgme.c
+		Don't try to import without asking
+
 2006-10-12 [colin]	2.5.5cvs2
 
 	* src/compose.c
