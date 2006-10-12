@@ -1,5 +1,11 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.5
+-------
+
+* Bug fix:
+	o bug 1034, 'Incorrect display of size field in message view'
+
 * 2.5.4
 -------
 
