@@ -350,7 +350,7 @@ gchar *to_human_readable(off_t size)
 	register int t = 0, r = 0;
 	if (b_format == NULL) {
 		b_format  = _("%dB");
-		kb_format = _("%d.%dKB");
+		kb_format = _("%d.%02dKB");
 		mb_format = _("%.2fMB");
 		gb_format = _("%.2fGB");
 	}

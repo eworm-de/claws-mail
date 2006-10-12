@@ -1,3 +1,8 @@
+2006-10-12 [colin]	2.5.4cvs2
+
+	* src/common/utils.c
+		Trim to two decimals
+
 2006-10-12 [colin]	2.5.4cvs1-stable
 
 	* src/common/utils.c
