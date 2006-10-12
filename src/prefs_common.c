@@ -573,6 +573,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"scroll_half_page", "FALSE", &prefs_common.scroll_halfpage, P_BOOL,
 	 NULL, NULL, NULL},
+	{"respect_flowed_format", "FALSE", &prefs_common.respect_flowed_format, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
 	 NULL, NULL, NULL},

@@ -227,6 +227,24 @@ const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *na
 	return value;
 }
 
+#define FLUSH_LASTLINE() {							\
+	if (*lastline != '\0') {						\
+		gint llen = 0;							\
+		strretchomp(lastline);						\
+		llen = strlen(lastline);					\
+		if (lastline[llen-1] == ' ' && strcmp(lastline,"-- ")) {	\
+			/* this is flowed */					\
+			if (delsp)						\
+				lastline[llen-1] = '\0';			\
+			fputs(lastline, outfp);					\
+		} else {							\
+			fputs(lastline, outfp);					\
+			fputs("\n", outfp);					\
+		}								\
+	} 									\
+	strcpy(lastline, buf);							\
+}
+
 gboolean procmime_decode_content(MimeInfo *mimeinfo)
 {
 	gchar buf[BUFFSIZE];
@@ -235,17 +253,34 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	FILE *outfp, *infp;
 	struct stat statbuf;
 	gboolean tmp_file = FALSE;
-
+	gboolean flowed = FALSE;
+	gboolean delsp = FALSE; 
 	EncodingType encoding = forced_encoding 
 				? forced_encoding
 				: mimeinfo->encoding_type;
+	gchar lastline[BUFFSIZE];
+	memset(lastline, 0, BUFFSIZE);
 		   
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
-	if (encoding == ENC_UNKNOWN ||
-	    encoding == ENC_BINARY ||
-	    encoding == ENC_7BIT ||
-	    encoding == ENC_8BIT)
+	if (prefs_common.respect_flowed_format &&
+	    mimeinfo->type == MIMETYPE_TEXT && 
+	    !strcasecmp(mimeinfo->subtype, "plain")) {
+		if (procmime_mimeinfo_get_parameter(mimeinfo, "format") != NULL &&
+		    !strcasecmp(procmime_mimeinfo_get_parameter(mimeinfo, "format"),"flowed"))
+			flowed = TRUE;
+		if (flowed &&
+		    procmime_mimeinfo_get_parameter(mimeinfo, "delsp") != NULL &&
+		    !strcasecmp(procmime_mimeinfo_get_parameter(mimeinfo, "delsp"),"yes"))
+			delsp = TRUE;
+	}
+	
+	if (!flowed && (
+	     encoding == ENC_UNKNOWN ||
+	     encoding == ENC_BINARY ||
+	     encoding == ENC_7BIT ||
+	     encoding == ENC_8BIT
+	    ))
 		return TRUE;
 
 	infp = g_fopen(mimeinfo->data.filename, "rb");
@@ -268,8 +303,15 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			gint len;
 			len = qp_decode_line(buf);
-			fwrite(buf, 1, len, outfp);
+			buf[len]='\0';
+			if (!flowed) {
+				fwrite(buf, 1, len, outfp);
+			} else {
+				FLUSH_LASTLINE();
+			}
 		}
+		if (flowed)
+			FLUSH_LASTLINE();
 	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
@@ -339,8 +381,14 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		}
 	} else {
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
-			fputs(buf, outfp);
+			if (!flowed) {
+				fputs(buf, outfp);
+			} else {
+				FLUSH_LASTLINE();
+			}
 		}
+		if (flowed)
+			FLUSH_LASTLINE();
 	}
 
 	fclose(outfp);

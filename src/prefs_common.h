@@ -277,6 +277,7 @@ struct _PrefsCommon
 	gboolean enable_smooth_scroll;
 	gint scroll_step;
 	gboolean scroll_halfpage;
+	gboolean respect_flowed_format;
 
 	gboolean show_other_header;
 	gboolean use_different_print_font;

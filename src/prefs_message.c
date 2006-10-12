@@ -59,6 +59,7 @@ typedef struct _MessagePage
 	GtkWidget *chkbtn_halfpage;
 
 	GtkWidget *chkbtn_attach_desc;
+	GtkWidget *chkbtn_respect_flowed_format;
 } MessagePage;
 
 static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
@@ -100,6 +101,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *chkbtn_halfpage;
 
 	GtkWidget *chkbtn_attach_desc;
+	GtkWidget *chkbtn_respect_flowed_format;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -225,8 +227,14 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
 
-	PACK_CHECK_BUTTON(vbox1, chkbtn_attach_desc,
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	PACK_CHECK_BUTTON(vbox2, chkbtn_attach_desc,
 			  _("Show attachment descriptions (rather than names)"));
+	PACK_CHECK_BUTTON(vbox2, chkbtn_respect_flowed_format,
+			  _("Respect flowed format"));
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2,
+			  FALSE, TRUE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
 		prefs_common.display_header_pane);
@@ -246,6 +254,8 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.scroll_halfpage);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_attach_desc),
 		prefs_common.attach_desc);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_respect_flowed_format),
+		prefs_common.respect_flowed_format);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_linespc),
 		prefs_common.line_space);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_scrollstep),
@@ -262,7 +272,8 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
 	prefs_message->chkbtn_halfpage = chkbtn_halfpage;
 	prefs_message->chkbtn_attach_desc = chkbtn_attach_desc;
-	
+	prefs_message->chkbtn_respect_flowed_format = chkbtn_respect_flowed_format;
+
 	prefs_message->page.widget = vbox1;
 }
 
@@ -286,6 +297,8 @@ void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->chkbtn_halfpage));
 	prefs_common.attach_desc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_attach_desc));
+	prefs_common.respect_flowed_format = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->chkbtn_respect_flowed_format));
 	prefs_common.line_space = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_linespc));
 	prefs_common.scroll_step = gtk_spin_button_get_value_as_int(

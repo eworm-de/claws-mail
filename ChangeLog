@@ -1,3 +1,14 @@
+2006-10-12 [colin]	2.5.5cvs4
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_message.c
+	* src/procmime.c
+		Fix bug 1035, 'Incorrect handling 
+		of flowed lines'. We now optionnaly
+		handle this format (preference is in
+		Message View/Text options section)
+
 2006-10-12 [colin]	2.5.5cvs3
 
 	* po/POTFILES.in
