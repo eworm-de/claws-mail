@@ -1,3 +1,11 @@
+2006-10-13 [paul]	2.5.5cvs6
+
+	* manual/advanced.xml
+	* src/prefs_message.c
+		make 'respect_flowed_format' a hidden
+		option, and add a manual entry for it
+		Thanks to Colin
+
 2006-10-12 [colin]	2.5.5cvs5
 
 	* src/codeconv.c

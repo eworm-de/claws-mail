@@ -1991,3 +1991,4 @@
 ( cvs diff -u -r 1.53.2.19 -r 1.53.2.20 po/POTFILES.in;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpcore/pgp_viewer.c;  cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.5cvs3.patchset
 ( cvs diff -u -r 1.204.2.104 -r 1.204.2.105 src/prefs_common.c;  cvs diff -u -r 1.103.2.62 -r 1.103.2.63 src/prefs_common.h;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_message.c;  cvs diff -u -r 1.49.2.81 -r 1.49.2.82 src/procmime.c;  ) > 2.5.5cvs4.patchset
 ( cvs diff -u -r 1.65.2.50 -r 1.65.2.51 src/codeconv.c;  ) > 2.5.5cvs5.patchset
+( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 manual/advanced.xml;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/prefs_message.c;  ) > 2.5.5cvs6.patchset

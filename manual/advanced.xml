@@ -419,6 +419,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>respect_flowed_format</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Respect format=flowed on text/plain message parts. This
+	will cause some mails to have long lines, but will fix some URLs
+	that would otherwise be wrapped. Default is 0, turned off.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>smtpssl</literal></term>
 	<listitem>
 	  <para>
