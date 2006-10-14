@@ -343,7 +343,8 @@ static void prefs_template_window_setup(void)
 	GSList *cur;
 	Template *tmpl;
 	GtkListStore *store;
-
+	GtkTextBuffer *buffer;
+	
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
 				(templates.list_view)));
 
@@ -364,6 +365,15 @@ static void prefs_template_window_setup(void)
 							 NULL, tmpl->name, 
 							 tmpl, FALSE);
 	}
+
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_name), "");
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_to), "");
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_cc), "");
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_bcc), "");			
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject), "");
+	
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
+	gtk_text_buffer_set_text(buffer, "", -1);
 
 	g_slist_free(tmpl_list);
 }
