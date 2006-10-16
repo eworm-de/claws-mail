@@ -1439,6 +1439,13 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	}
 
 	if (real_quotelevel > -1 && do_quote_folding) {
+		if (!g_utf8_validate(buf, -1, NULL)) {
+			gchar *utf8buf = NULL;
+			utf8buf = g_malloc(BUFFSIZE);
+			conv_localetodisp(utf8buf, BUFFSIZE, buf);
+			strncpy2(buf, utf8buf, BUFFSIZE-1);
+			g_free(utf8buf);
+		}
 do_quote:
 		if ( previousquotelevel != real_quotelevel ) {
 			ClickableText *uri;

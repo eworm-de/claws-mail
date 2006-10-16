@@ -1,3 +1,10 @@
+2006-10-16 [colin]	2.5.5cvs1-stable
+
+	* src/textview.c
+		From 2.5.5cvs8:
+		Fix problem with quote-folding when emails
+		don't convert cleanly to UTF-8
+
 2006-10-12 [paul]	2.5.5
 
 	2.5.5 released
