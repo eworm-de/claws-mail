@@ -1,3 +1,9 @@
+2006-10-16 [colin]	2.5.5cvs8
+
+	* src/textview.c
+		Fix problem with quote-folding when emails
+		don't convert cleanly to UTF-8
+
 2006-10-14 [colin]	2.5.5cvs7
 
 	* src/prefs_template.c

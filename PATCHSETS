@@ -1993,3 +1993,4 @@
 ( cvs diff -u -r 1.65.2.50 -r 1.65.2.51 src/codeconv.c;  ) > 2.5.5cvs5.patchset
 ( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 manual/advanced.xml;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/prefs_message.c;  ) > 2.5.5cvs6.patchset
 ( cvs diff -u -r 1.12.2.32 -r 1.12.2.33 src/prefs_template.c;  ) > 2.5.5cvs7.patchset
+( cvs diff -u -r 1.96.2.155 -r 1.96.2.156 src/textview.c;  ) > 2.5.5cvs8.patchset
