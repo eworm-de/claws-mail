@@ -1,3 +1,9 @@
+2006-10-17 [colin]	2.5.5cvs2-stable
+
+	* src/folderview.c
+		From 2.5.3cvs8:
+		Fix go to next * after preferences apply
+
 2006-10-16 [colin]	2.5.5cvs1-stable
 
 	* src/textview.c

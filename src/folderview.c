@@ -2085,6 +2085,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	item = gtk_ctree_node_get_row_data(ctree, row);
 	if (!item || item->no_select) {
 		END_TIMING();
+		folderview->open_folder = FALSE;
 		return;
 	}
 
@@ -2604,6 +2605,7 @@ void folderview_reflect_prefs(void)
 			GTK_CTREE(folderview->ctree), NULL, item);
 
 		folderview_select(folderview, item);
+		folderview->open_folder = FALSE;
 		folderview->selected = node;
 	}
 

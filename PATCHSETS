@@ -1925,3 +1925,4 @@
 ( cvs diff -u -r 1.36.2.79.2.1 -r 1.36.2.79.2.2 src/common/utils.c;  ) > 2.5.4cvs1.patchset
 ( cvs diff -u -r 1.36.2.79.2.2 -r 1.36.2.79.2.3 src/common/utils.c;  ) > 2.5.4cvs2.patchset
 ( cvs diff -u -r 1.96.2.150.2.2 -r 1.96.2.150.2.3 src/textview.c;  ) > 2.5.5cvs1.patchset
+( cvs diff -u -r 1.207.2.123.2.1 -r 1.207.2.123.2.2 src/folderview.c;  ) > 2.5.5cvs2.patchset
