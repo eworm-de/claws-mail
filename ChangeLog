@@ -1,3 +1,9 @@
+2006-10-17 [wwp]	2.5.5cvs13
+
+	* src/send_message.c
+		Fix duplicate error messages when sending, and missing
+		newline in such error messages.
+
 2006-10-17 [colin]	2.5.5cvs12
 
 	* src/compose.c

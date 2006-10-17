@@ -647,11 +647,12 @@ static void send_put_error(Session *session)
 		break;
 	}
 
-	if (log_msg)
-		log_warning("%s\n", log_msg);
 	if (err_msg) {
-		log_error("%s", err_msg);
+		log_error("%s\n", err_msg);
 		g_free(err_msg);
+	} else {
+		if (log_msg)
+			log_warning("%s\n", log_msg);
 	}
 }
 
