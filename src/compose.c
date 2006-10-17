@@ -2494,7 +2494,7 @@ static gboolean same_address(const gchar *addr1, const gchar *addr2)
 	extract_address(my_addr1);
 	extract_address(my_addr2);
 	
-	return !strcmp(my_addr1, my_addr2);
+	return !strcasecmp(my_addr1, my_addr2);
 }
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,

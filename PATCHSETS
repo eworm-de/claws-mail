@@ -1997,3 +1997,4 @@
 ( cvs diff -u -r 1.8.2.11 -r 1.8.2.12 src/quote_fmt.c;  ) > 2.5.5cvs9.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/pgp_viewer.c;  ) > 2.5.5cvs10.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.5cvs11.patchset
+( cvs diff -u -r 1.382.2.315 -r 1.382.2.316 src/compose.c;  ) > 2.5.5cvs12.patchset
