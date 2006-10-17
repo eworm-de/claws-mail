@@ -69,7 +69,7 @@ static gchar *quote_desc_strings[] = {
 	"\\t", 		N_("tab"),
 	"\\n", 		N_("linefeed"),
 	"",		NULL,
-	"?x{expr}\n",	N_("insert expr if x is set\n(where x is one of the dfNFLIstcnri characters or af, ao"),
+	"?x{expr}\n",	N_("insert expr if x is set\n(where x is one of the dfNFLIstcnri characters or af, ao)"),
 	"!x{expr}\n",	N_("insert expr if x is not set\n(where x is one of the dfNFLIstcnri characters or af, ao)"),
 	"|f{sub_expr}\n",	N_("insert file:\nsub_expr is evaluated as a filename to insert"), /* insert file */
 	"|p{sub_expr}\n\n",	N_("insert program output:\nsub_expr is evaluated as a command-line to get\nthe output from"), /* insert program output */
