@@ -1,3 +1,8 @@
+2006-10-17 [colin]	2.5.5cvs11
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix return status
+
 2006-10-17 [colin]	2.5.5cvs10
 
 	* src/plugins/pgpcore/pgp_viewer.c

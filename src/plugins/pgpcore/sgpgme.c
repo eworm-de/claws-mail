@@ -719,6 +719,7 @@ again:
 			} else if (pid == 0) {
 				/* son */
 				res = system(cmd);
+				res = WEXITSTATUS(res);
 				_exit(res);
 			} else {
 				int status = 0;
