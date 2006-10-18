@@ -1999,3 +1999,4 @@
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.5cvs11.patchset
 ( cvs diff -u -r 1.382.2.315 -r 1.382.2.316 src/compose.c;  ) > 2.5.5cvs12.patchset
 ( cvs diff -u -r 1.17.2.34 -r 1.17.2.35 src/send_message.c;  ) > 2.5.5cvs13.patchset
+( cvs diff -u -r 1.382.2.316 -r 1.382.2.317 src/compose.c;  ) > 2.5.5cvs14.patchset

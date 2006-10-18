@@ -4348,26 +4348,38 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 	FILE *fp;
 	size_t len;
 	gchar buf[BUFFSIZE];
-
+	int i = 0;
+	gboolean skip = FALSE;
+	gchar *not_included[]={
+		"Return-Path:",		"Delivered-To:",	"Received:",
+		"Subject:",		"X-UIDL:",		"AF:",
+		"NF:",			"PS:",			"SRH:",
+		"SFN:",			"DSR:",			"MID:",
+		"CFG:",			"PT:",			"S:",
+		"RQ:",			"SSV:",			"NSV:",
+		"SSH:",			"R:",			"MAID:",
+		"NAID:",		"RMID:",		"FMID:",
+		"SCF:",			"RRCPT:",		"NG:",
+		"X-Sylpheed-Privacy",	"X-Sylpheed-Sign:",	"X-Sylpheed-Encrypt",
+		"X-Sylpheed-End-Special-Headers:",
+		NULL
+		};
 	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(compose->redirect_filename, "fopen");
 		return -1;
 	}
 
 	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
-		/* should filter returnpath, delivered-to */
-		if (g_ascii_strncasecmp(buf, "Return-Path:",
-				   	strlen("Return-Path:")) == 0 ||
-		    g_ascii_strncasecmp(buf, "Delivered-To:",
-				  	strlen("Delivered-To:")) == 0 ||
-		    g_ascii_strncasecmp(buf, "Received:",
-				  	strlen("Received:")) == 0 ||
-		    g_ascii_strncasecmp(buf, "Subject:",
-				  	strlen("Subject:")) == 0 ||
-		    g_ascii_strncasecmp(buf, "X-UIDL:",
-				  	strlen("X-UIDL:")) == 0)
+		skip = FALSE;
+		for (i = 0; not_included[i] != NULL; i++) {
+			if (g_ascii_strncasecmp(buf, not_included[i],
+						strlen(not_included[i])) == 0) {
+				skip = TRUE;
+				break;
+			}
+		}
+		if (skip)
 			continue;
-
 		if (fputs(buf, fdest) == -1)
 			goto error;
 
