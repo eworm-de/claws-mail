@@ -52,5 +52,6 @@ void quicksearch_search_subfolders(QuickSearch *quicksearch,
 				   FolderView  *folderview,
 				   FolderItem  *folder_item);
 gboolean quicksearch_is_fast(QuickSearch *quicksearch);
+gboolean quicksearch_is_in_typing(QuickSearch *quicksearch);
 
 #endif /* QUICKSEARCH_H */

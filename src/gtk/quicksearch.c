@@ -63,6 +63,8 @@ struct _QuickSearch
 	gboolean			 deferred_free;
 	FolderItem			*root_folder_item;
 	gboolean			 is_fast;
+	gboolean			 in_typing;
+	guint				 press_timeout_id;
 };
 
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
@@ -110,6 +112,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 			return;
 		}
 	} else {
+		quicksearch->is_fast = TRUE;
 		g_free(quicksearch->search_string);
 		quicksearch->search_string = g_strdup(search_string);
 	}
@@ -134,10 +137,18 @@ static void update_extended_buttons (QuickSearch *quicksearch)
 	}
 }
 
-static gboolean searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
-			      	  QuickSearch *quicksearch)
+static gboolean searchbar_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  QuickSearch *qs)
 {
-	quicksearch->has_focus = (event && event->in);
+	qs->has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean searchbar_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  QuickSearch *qs)
+{
+	qs->has_focus = FALSE;
+	qs->in_typing = FALSE;
 	return FALSE;
 }
 
@@ -146,37 +157,86 @@ gboolean quicksearch_has_focus(QuickSearch *quicksearch)
 	return quicksearch->has_focus;
 }
 
-static void searchbar_run(QuickSearch *quicksearch)
+static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 {
 	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
-	if (search_string && strlen(search_string) != 0) {
-		prefs_common.summary_quicksearch_history =
-			add_history(prefs_common.summary_quicksearch_history,
-					search_string);
-		gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry),
-			prefs_common.summary_quicksearch_history);
+	/* add to history */
+	if (!quicksearch->in_typing && search_string && strlen(search_string) != 0) {
+		/* only if there's no syntax error */
+		if (quicksearch->matcher_list != NULL ||
+		    prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED) {
+			prefs_common.summary_quicksearch_history =
+				add_history(prefs_common.summary_quicksearch_history,
+						search_string);
+			gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry),
+				prefs_common.summary_quicksearch_history);
+		}
 	}
 
 	prepare_matcher(quicksearch);
-
+	if (run_only_if_fast && !quicksearch->is_fast)
+		return;
+	if (quicksearch->matcher_list == NULL && 
+	    prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
+		return;
 	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
 }
 
+static int searchbar_changed_timeout(void *data)
+{
+	QuickSearch *qs = (QuickSearch *)data;
+	if (qs && prefs_common.summary_quicksearch_dynamic) {
+		qs->in_typing = TRUE;
+		searchbar_run(qs, TRUE);
+	}
+	return FALSE;
+}
+
+static gboolean searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
+{
+	if (prefs_common.summary_quicksearch_dynamic) {
+		if (qs->press_timeout_id != -1) {
+			gtk_timeout_remove(qs->press_timeout_id);
+		}
+		qs->press_timeout_id = gtk_timeout_add(500,
+				searchbar_changed_timeout, qs);
+	}
+
+	return FALSE;
+}
+
 static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      	  QuickSearch *quicksearch)
 {
 	if (event != NULL && event->keyval == GDK_Escape) {
-		quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+
+		const gchar *str;
+
+		quicksearch->in_typing = FALSE;
+
+		str = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
+		g_return_val_if_fail(str != NULL, TRUE);
+
+		/* If the string entry is empty -> hide quicksearch bar. If not -> empty it */
+		if (!*str) {
+			quicksearch_hide(quicksearch);
+		} else {
+			quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+			gtk_widget_grab_focus(
+					GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
+		}
+
 		return TRUE;
 	}
 
 	if (event != NULL && event->keyval == GDK_Return) {
+		quicksearch->in_typing = FALSE;
 		/* add expression to history list and exec quicksearch */
-		searchbar_run(quicksearch);
+		searchbar_run(quicksearch, FALSE);
 
 		g_signal_stop_emission_by_name(G_OBJECT(widget), "key_press_event");
 		return TRUE;
@@ -241,6 +301,20 @@ static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
 
 	prefs_common.summary_quicksearch_sticky = checked;
+
+	/* reselect the search type */
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
+				    prefs_common.summary_quicksearch_type);
+
+	return TRUE;
+}
+
+static gboolean searchtype_dynamic_changed(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+
+	prefs_common.summary_quicksearch_dynamic = checked;
 
 	/* reselect the search type */
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
@@ -347,7 +421,7 @@ static void search_condition_expr_done(MatcherList * matchers)
 		g_free(str);
 
 		/* add expression to history list and exec quicksearch */
-		searchbar_run(mainwindow_get_mainwindow()->summaryview->quicksearch);
+		searchbar_run(mainwindow_get_mainwindow()->summaryview->quicksearch, FALSE);
 	}
 }
 
@@ -441,6 +515,16 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_sticky_changed),
 			 quicksearch);
 
+	menuitem = gtk_check_menu_item_new_with_label(_("Type-ahead"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					prefs_common.summary_quicksearch_dynamic);
+
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_dynamic_changed),
+			 quicksearch);
+
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 
 	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
@@ -504,13 +588,19 @@ QuickSearch *quicksearch_new()
 			   "key_press_event",
 			   G_CALLBACK(searchbar_pressed),
 			   quicksearch);
+
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
+			 "changed",
+			 G_CALLBACK(searchbar_changed_cb),
+			 quicksearch);
+
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
 			 "focus_in_event",
-			 G_CALLBACK(searchbar_focus_evt),
+			 G_CALLBACK(searchbar_focus_evt_in),
 			 quicksearch);
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
 			 "focus_out_event",
-			 G_CALLBACK(searchbar_focus_evt),
+			 G_CALLBACK(searchbar_focus_evt_out),
 			 quicksearch);
 
 	quicksearch->hbox_search = hbox_search;
@@ -523,6 +613,8 @@ QuickSearch *quicksearch_new()
 	quicksearch->active = FALSE;
 	quicksearch->running = FALSE;
 	quicksearch->clear_search = clear_search;
+	quicksearch->in_typing = FALSE;
+	quicksearch->press_timeout_id = -1;
 
 	update_extended_buttons(quicksearch);
 
@@ -555,8 +647,14 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 {
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
 				    type);
+
+	g_signal_handlers_block_by_func(G_OBJECT(GTK_COMBO(quicksearch->search_string_entry)->entry),
+			G_CALLBACK(searchbar_changed_cb), quicksearch);
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry),
 			   matchstring);
+	g_signal_handlers_unblock_by_func(G_OBJECT(GTK_COMBO(quicksearch->search_string_entry)->entry),
+			G_CALLBACK(searchbar_changed_cb), quicksearch);
+
 	prefs_common.summary_quicksearch_type = type;
 
 	prepare_matcher(quicksearch);
@@ -954,7 +1052,8 @@ void quicksearch_search_subfolders(QuickSearch *quicksearch,
 	FolderItem *cur = NULL;
 	GNode *node = folder_item->node->children;
 
-	if (!prefs_common.summary_quicksearch_recurse)
+	if (!prefs_common.summary_quicksearch_recurse
+	||  quicksearch->in_typing == TRUE)
 		return;
 
 	for (; node != NULL; node = node->next) {
@@ -997,4 +1096,9 @@ void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
 					       quicksearch->root_folder_item);
 
 	quicksearch->root_folder_item = NULL;
+}
+
+gboolean quicksearch_is_in_typing(QuickSearch *quicksearch)
+{
+	return quicksearch->in_typing;
 }

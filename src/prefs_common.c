@@ -800,6 +800,8 @@ static PrefParam param[] = {
 	P_INT, NULL, NULL, NULL },
 	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
 	 NULL, NULL, NULL},
+	{"summary_quicksearch_dynamic", "0", &prefs_common.summary_quicksearch_dynamic, P_INT,
+	 NULL, NULL, NULL},
 	{"statusbar_update_step", "10", &prefs_common.statusbar_update_step, P_INT,
 	 NULL, NULL, NULL},
 	{"compose_no_markup", "FALSE", &prefs_common.compose_no_markup, P_BOOL,

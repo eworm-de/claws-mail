@@ -912,7 +912,7 @@ static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
+	GtkCTreeNode *node = NULL;
 	GSList *mlist = NULL;
 	gchar *buf;
 	gboolean is_refresh;
@@ -1143,28 +1143,39 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 
 	if (is_refresh) {
-		summaryview->last_displayed = summaryview->displayed;
-		summaryview->displayed =
-			summary_find_msg_by_msgnum(summaryview,
-						   displayed_msgnum);
-		if (!summaryview->displayed)
-			messageview_clear(summaryview->messageview);
-		summary_unlock(summaryview);
-		summary_select_by_msgnum(summaryview, selected_msgnum);
-		summary_lock(summaryview);
-		if (!summaryview->selected) {
-			/* no selected message - select first unread
-			   message, but do not display it */
-			node = summary_find_next_flagged_msg(summaryview, NULL,
-							     MSG_UNREAD, FALSE);
-			if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
+		if (!quicksearch_is_in_typing(summaryview->quicksearch)) {
+			summaryview->last_displayed = summaryview->displayed;
+			summaryview->displayed =
+				summary_find_msg_by_msgnum(summaryview,
+							   displayed_msgnum);
+			if (!summaryview->displayed)
+				messageview_clear(summaryview->messageview);
+			summary_unlock(summaryview);
+			summary_select_by_msgnum(summaryview, selected_msgnum);
+			summary_lock(summaryview);
+			if (!summaryview->selected) {
+				/* no selected message - select first unread
+				   message, but do not display it */
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
+					node = gtk_ctree_node_nth
+						(ctree,
+						 item->sort_type == SORT_DESCENDING
+						 ? 0 : GTK_CLIST(ctree)->rows - 1);
+				summary_unlock(summaryview);
+				summary_select_node(summaryview, node, FALSE, TRUE);
+				summary_lock(summaryview);
+			}
+		} else {
+			/* just select first/last */
+			if (GTK_CLIST(ctree)->row_list != NULL)
 				node = gtk_ctree_node_nth
 					(ctree,
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CLIST(ctree)->rows - 1);
-			summary_unlock(summaryview);
-			summary_select_node(summaryview, node, FALSE, TRUE);
-			summary_lock(summaryview);
+			gtk_sctree_select(GTK_SCTREE(ctree), node);
+			gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
 		}
 	} else {
  		switch (prefs_common.select_on_entry) {

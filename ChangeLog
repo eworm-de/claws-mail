@@ -1,3 +1,13 @@
+2006-10-18 [colin]	2.5.5cvs16
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Add a type-ahead option for fast searches
+		Patch by Fabien Vantard
+
 2006-10-18 [colin]	2.5.5cvs15
 
 	* src/compose.c
