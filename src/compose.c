@@ -324,6 +324,8 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 
 static void compose_create_header_entry	(Compose *compose);
 static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
+static void compose_remove_header_entries(Compose *compose);
+
 static void compose_update_priority_menu_item(Compose * compose);
 #if USE_ASPELL
 static void compose_spell_menu_changed	(void *data);
@@ -443,6 +445,9 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 static void compose_toggle_remove_refs_cb(gpointer data, guint action,
 					     GtkWidget *widget);
 static void compose_set_priority_cb	(gpointer 	 data,
+					 guint 		 action,
+					 GtkWidget 	*widget);
+static void compose_reply_change_mode	(gpointer 	 data,
 					 guint 		 action,
 					 GtkWidget 	*widget);
 
@@ -650,8 +655,14 @@ static GtkItemFactoryEntry compose_entries[] =
 					NULL, NULL, 0, "<Branch>"},
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Options/Privacy System/None"),	NULL, NULL,   0, "<RadioItem>"},
+	{N_("/_Options/Reply _mode"),		NULL, NULL,   0, "<Branch>"},
+	{N_("/_Options/Reply _mode/_Normal"),	NULL, compose_reply_change_mode,   COMPOSE_REPLY, "<RadioItem>"},
+	{N_("/_Options/Reply _mode/_All"),		NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_ALL, "/Options/Reply mode/Normal"},
+	{N_("/_Options/Reply _mode/_Sender"),		NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_SENDER, "/Options/Reply mode/Normal"},
+	{N_("/_Options/Reply _mode/_Mailing-list"), 	NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_LIST, "/Options/Reply mode/Normal"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Options/Privacy _System"),		NULL, NULL,   0, "<Branch>"},
+	{N_("/_Options/Privacy _System/None"),	NULL, NULL,   0, "<RadioItem>"},
 	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
 	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
@@ -1079,6 +1090,8 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	MsgInfo *msginfo;
 	guint list_len;
 	Compose *compose = NULL;
+	GtkItemFactory *ifactory = NULL;
+	
 	g_return_val_if_fail(msginfo_list != NULL, NULL);
 
 	msginfo = (MsgInfo*)g_slist_nth_data(msginfo_list, 0);
@@ -1164,6 +1177,40 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 		break;
 	default:
 		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
+	}
+	
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
+	compose->rmode = mode;
+	switch (compose->rmode) {
+	case COMPOSE_REPLY:
+	case COMPOSE_REPLY_WITH_QUOTE:
+	case COMPOSE_REPLY_WITHOUT_QUOTE:
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		debug_print("reply mode Normal\n");
+		menu_set_active(ifactory, "/Options/Reply mode/Normal", TRUE);
+		compose_reply_change_mode(compose, COMPOSE_REPLY, NULL); /* force update */
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		debug_print("reply mode Sender\n");
+		menu_set_active(ifactory, "/Options/Reply mode/Sender", TRUE);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
+	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
+		debug_print("reply mode All\n");
+		menu_set_active(ifactory, "/Options/Reply mode/All", TRUE);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
+	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
+		debug_print("reply mode List\n");
+		menu_set_active(ifactory, "/Options/Reply mode/List", TRUE);
+		break;
+	default:
+		break;
 	}
 	return compose;
 }
@@ -1287,9 +1334,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	}
 
 	if (compose_parse_header(compose, msginfo) < 0) return NULL;
-	compose_reply_set_entry(compose, msginfo, to_all, to_ml, 
-				to_sender, followup_and_reply_to);
-	compose_show_first_last_header(compose, TRUE);
 
 	textview = (GTK_TEXT_VIEW(compose->text));
 	textbuf = gtk_text_view_get_buffer(textview);
@@ -5510,6 +5554,22 @@ static void compose_add_header_entry(Compose *compose, gchar *header, gchar *tex
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 }
 
+static void compose_remove_header_entries(Compose *compose) 
+{
+	GSList *list;
+	for (list = compose->header_list; list; list = list->next) {
+		ComposeHeaderEntry *headerentry = 
+			(ComposeHeaderEntry *)list->data;
+		gtk_widget_destroy(headerentry->combo);
+		gtk_widget_destroy(headerentry->entry);
+		g_free(headerentry);
+	}
+	g_slist_free(compose->header_list);
+	compose->header_list = NULL;
+	compose->header_nextrow = 1;
+	compose_create_header_entry(compose);
+}
+
 static GtkWidget *compose_create_header(Compose *compose) 
 {
 	GtkWidget *from_optmenu_hbox;
@@ -6106,6 +6166,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	compose->tmpl_menu = tmpl_menu;
 
 	compose->mode = mode;
+	compose->rmode = mode;
 
 	compose->targetinfo = NULL;
 	compose->replyinfo  = NULL;
@@ -6195,6 +6256,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_replyto, COMPOSE_REPLYTO);
 
+	menu_set_sensitive(ifactory, "/Options/Reply mode", compose->mode == COMPOSE_REPLY);
 
 	if (account->protocol != A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("To:") : "To:");
@@ -6319,6 +6381,36 @@ static void compose_set_priority_cb(gpointer data,
 {
 	Compose *compose = (Compose *) data;
 	compose->priority = action;
+}
+
+static void compose_reply_change_mode(gpointer data,
+				    ComposeMode action,
+				    GtkWidget *widget)
+{
+	Compose *compose = (Compose *) data;
+	gboolean was_modified = compose->modified;
+
+	gboolean all = FALSE, ml = FALSE, sender = FALSE, followup = FALSE;
+	if (compose->mode != COMPOSE_REPLY)
+		return;
+	g_return_if_fail(compose->replyinfo != NULL);
+	
+	if (action == COMPOSE_REPLY && prefs_common.default_reply_list)
+		ml = TRUE;
+	if (action == COMPOSE_REPLY && compose->rmode == COMPOSE_FOLLOWUP_AND_REPLY_TO)
+		followup = TRUE;
+	if (action == COMPOSE_REPLY_TO_ALL)
+		all = TRUE;
+	if (action == COMPOSE_REPLY_TO_SENDER)
+		sender = TRUE;
+	if (action == COMPOSE_REPLY_TO_LIST)
+		ml = TRUE;
+
+	compose_remove_header_entries(compose);
+	compose_reply_set_entry(compose, compose->replyinfo, all, ml, sender, followup);
+	compose_show_first_last_header(compose, TRUE);
+	compose->modified = was_modified;
+	compose_set_title(compose);
 }
 
 static void compose_update_priority_menu_item(Compose * compose)

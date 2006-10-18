@@ -214,6 +214,7 @@ struct _Compose
 	
 	gboolean updating;
 	gboolean deferred_destroy;
+	ComposeMode rmode;
 };
 
 struct _AttachInfo
