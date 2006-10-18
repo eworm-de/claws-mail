@@ -1,3 +1,10 @@
+2006-10-18 [colin]	2.5.5cvs17
+
+	* src/gtk/quicksearch.c
+		Remove "save to history only if there's
+		no syntax error", it breaks for some 
+		reason which I'll investigate later.
+
 2006-10-18 [colin]	2.5.5cvs16
 
 	* src/prefs_common.c

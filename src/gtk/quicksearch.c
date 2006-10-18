@@ -163,15 +163,11 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 
 	/* add to history */
 	if (!quicksearch->in_typing && search_string && strlen(search_string) != 0) {
-		/* only if there's no syntax error */
-		if (quicksearch->matcher_list != NULL ||
-		    prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED) {
-			prefs_common.summary_quicksearch_history =
-				add_history(prefs_common.summary_quicksearch_history,
-						search_string);
-			gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry),
-				prefs_common.summary_quicksearch_history);
-		}
+		prefs_common.summary_quicksearch_history =
+			add_history(prefs_common.summary_quicksearch_history,
+					search_string);
+		gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry),
+			prefs_common.summary_quicksearch_history);
 	}
 
 	prepare_matcher(quicksearch);
