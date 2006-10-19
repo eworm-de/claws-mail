@@ -1,4 +1,4 @@
-12th October 2006                                Sylpheed-Claws 2.5.5
+19th October 2006                                Sylpheed-Claws 2.5.6
 
 		    SYLPHEED-CLAWS  RELEASE NOTES
                     http://www.sylpheed-claws.net
@@ -9,8 +9,10 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Bug fix:
-	o bug 1034, 'Incorrect display of size field in message view'
+	o Fix redirecting of sent mails
+	o Fix Go to Next * after applying Preferences
+	o Fix quote-folding when emails don't convert cleanly to
+	  UTF-8
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi

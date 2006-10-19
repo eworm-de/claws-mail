@@ -1,5 +1,14 @@
 Changes of the  Sylpheed-Claws GTK2 branch
 
+* 2.5.6
+-------
+
+* Bug fixes:
+	o Fix redirecting of sent mails
+	o Fix Go to Next * after applying Preferences
+	o Fix quote-folding when emails don't convert cleanly to
+	  UTF-8
+
 * 2.5.5
 -------
 
