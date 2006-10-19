@@ -161,7 +161,7 @@
 	The final way of searching for emails is using <quote>Quick Search</quote>,
 	which you can display or hide by cilicking the little magnifying glass icon
 	under the Message List. It is also accessible from the <quote>Quick Search</quote>
-	item of	the <quote>Edit</quote> menu. <quote>Quick Search</quote> is more
+	item of the <quote>Edit</quote> menu. <quote>Quick Search</quote> is more
 	powerful than the normal search as it can search in standard headers (From,
 	To, Subject) or in <quote>Extended</quote> mode using just about any
 	criteria you can think of. When in <quote>Extended</quote> mode, the
@@ -169,7 +169,9 @@
 	search syntax. An <quote>Edit</quote> button is also available which
 	allows you to quickly create a rule. You can also configure
 	<quote>Quick Search</quote> to search recursively through subfolders,
-	and whether it should reset itself when you change folders.
+	whether it should reset itself when you change folders, and whether to
+	use Type-ahead search (this is a search which results update dynamically
+	if you pause in the typing).
     </para>
     <para>
 	When you hit Enter after having specified the search string, the Message
