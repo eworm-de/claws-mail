@@ -3832,7 +3832,7 @@ msgstr "Von"
 #: src/prefs_summary_column.c:84 src/prefs_template.c:187 src/quote_fmt.c:48
 #: src/summaryview.c:488
 msgid "To"
-msgstr "An:"
+msgstr "An"
 
 #: src/gtk/quicksearch.c:418
 msgid "Recursive"
