@@ -3300,6 +3300,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		mainwindow_check_synchronise(mainwin, TRUE);
 		prefs_common.work_offline = TRUE;
 		imap_disconnect_all();
+		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);
 	} else {
 		/*go online */
 		if (!prefs_common.work_offline)
@@ -3310,6 +3311,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		prefs_common.work_offline = FALSE;
 		inc_autocheck_timer_set();
 		refresh_resolvers();
+		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);
 	}
 }
 

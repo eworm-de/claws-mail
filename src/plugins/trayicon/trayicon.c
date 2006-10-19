@@ -43,25 +43,32 @@
 #include "gtk/manage_window.h"
 
 #include "eggtrayicon.h"
+
 #include "newmarkedmail.xpm"
 #include "unreadmarkedmail.xpm"
 #include "newmail.xpm"
 #include "unreadmail.xpm"
 #include "nomail.xpm"
+#include "newmarkedmail.offline.xpm"
+#include "unreadmarkedmail.offline.xpm"
+#include "newmail.offline.xpm"
+#include "unreadmail.offline.xpm"
+#include "nomail.offline.xpm"
 
 static guint item_hook_id;
 static guint folder_hook_id;
+static guint offline_hook_id;
 
-static GdkPixmap *newmail_pixmap;
-static GdkPixmap *newmail_bitmap;
-static GdkPixmap *unreadmail_pixmap;
-static GdkPixmap *unreadmail_bitmap;
-static GdkPixmap *newmarkedmail_pixmap;
-static GdkPixmap *newmarkedmail_bitmap;
-static GdkPixmap *unreadmarkedmail_pixmap;
-static GdkPixmap *unreadmarkedmail_bitmap;
-static GdkPixmap *nomail_pixmap;
-static GdkPixmap *nomail_bitmap;
+static GdkPixmap *newmail_pixmap[2];
+static GdkPixmap *newmail_bitmap[2];
+static GdkPixmap *unreadmail_pixmap[2];
+static GdkPixmap *unreadmail_bitmap[2];
+static GdkPixmap *newmarkedmail_pixmap[2];
+static GdkPixmap *newmarkedmail_bitmap[2];
+static GdkPixmap *unreadmarkedmail_pixmap[2];
+static GdkPixmap *unreadmarkedmail_bitmap[2];
+static GdkPixmap *nomail_pixmap[2];
+static GdkPixmap *nomail_bitmap[2];
 
 static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
@@ -109,24 +116,24 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 
 	switch(icontype) {
 	case TRAYICON_NEW:
-		pixmap = newmail_pixmap;
-		bitmap = newmail_bitmap;
+		pixmap = newmail_pixmap[prefs_common.work_offline];
+		bitmap = newmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_NEWMARKED:
-		pixmap = newmarkedmail_pixmap;
-		bitmap = newmarkedmail_bitmap;
+		pixmap = newmarkedmail_pixmap[prefs_common.work_offline];
+		bitmap = newmarkedmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREAD:
-		pixmap = unreadmail_pixmap;
-		bitmap = unreadmail_bitmap;
+		pixmap = unreadmail_pixmap[prefs_common.work_offline];
+		bitmap = unreadmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREADMARKED:
-		pixmap = unreadmarkedmail_pixmap;
-		bitmap = unreadmarkedmail_bitmap;
+		pixmap = unreadmarkedmail_pixmap[prefs_common.work_offline];
+		bitmap = unreadmarkedmail_bitmap[prefs_common.work_offline];
 		break;
 	default:
-		pixmap = nomail_pixmap;
-		bitmap = nomail_bitmap;
+		pixmap = nomail_pixmap[prefs_common.work_offline];
+		bitmap = nomail_bitmap[prefs_common.work_offline];
 		break;
 	}
 
@@ -186,6 +193,12 @@ static gboolean folder_update_hook(gpointer source, gpointer data)
 	else
 		update(NULL);
 
+	return FALSE;
+}
+
+static gboolean offline_update_hook(gpointer source, gpointer data)
+{
+	update(NULL);
 	return FALSE;
 }
 
@@ -253,17 +266,24 @@ static void create_trayicon()
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
 	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap, unreadmarkedmail_bitmap, unreadmarkedmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap, newmarkedmail_bitmap, newmarkedmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap[0], nomail_bitmap[0], nomail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap[0], unreadmail_bitmap[0], unreadmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap[0], newmail_bitmap[0], newmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap[0], unreadmarkedmail_bitmap[0], unreadmarkedmail_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap[0], newmarkedmail_bitmap[0], newmarkedmail_xpm);
+
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap[1], nomail_bitmap[1], nomail_offline_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap[1], unreadmail_bitmap[1], unreadmail_offline_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap[1], newmail_bitmap[1], newmail_offline_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap[1], unreadmarkedmail_bitmap[1], unreadmarkedmail_offline_xpm);
+	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap[1], newmarkedmail_bitmap[1], newmarkedmail_offline_xpm);
+
 
 	eventbox = gtk_event_box_new();
 	gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
 	gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
-	image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
+	image = gtk_image_new_from_pixmap(nomail_pixmap[0], nomail_bitmap[0]);
 	gtk_container_add(GTK_CONTAINER(eventbox), image);
 
 	destroy_signal_id =
@@ -313,6 +333,12 @@ int plugin_init(gchar **error)
 		return -1;
 	}
 
+	offline_hook_id = hooks_register_hook (OFFLINE_SWITCH_HOOKLIST, offline_update_hook, NULL);
+	if (offline_hook_id == -1) {
+		*error = g_strdup(_("Failed to register offline switch hook"));
+		return -1;
+	}
+
 	create_trayicon();
 
 	return 0;
@@ -322,6 +348,7 @@ void plugin_done(void)
 {
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
+	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
 
 	if (sylpheed_is_exiting())
 		return;
@@ -389,7 +416,7 @@ static void trayicon_toggle_offline_cb( gpointer data, guint action, GtkWidget *
 	/* toggle offline mode if menu checkitem has been clicked */
 	if (!updating_menu) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
-		main_window_toggle_work_offline(mainwin, !prefs_common.work_offline, FALSE);
+		main_window_toggle_work_offline(mainwin, !prefs_common.work_offline, TRUE);
 	}
 }
 

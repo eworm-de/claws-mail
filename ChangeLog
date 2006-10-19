@@ -1,3 +1,20 @@
+2006-10-19 [colin]	2.5.6cvs2
+
+	* src/gtk/quicksearch.c
+		Fix emptying in type-ahead+extended mode
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Add a hook for offline state change
+	* src/plugins/trayicon/trayicon.c
+		Use it to display offline icons
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/newmail.offline.xpm
+	* src/plugins/trayicon/newmarkedmail.offline.xpm
+	* src/plugins/trayicon/nomail.offline.xpm
+	* src/plugins/trayicon/unreadmail.offline.xpm
+	* src/plugins/trayicon/unreadmarkedmail.offline.xpm
+		Add the icons
+
 2006-10-12 [paul]	2.5.6cvs1
 
 	* NEWS

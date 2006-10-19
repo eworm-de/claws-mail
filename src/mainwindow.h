@@ -31,6 +31,8 @@ typedef struct _MainWindow  MainWindow;
 #include "logwindow.h"
 #include "toolbar.h"
 
+#define OFFLINE_SWITCH_HOOKLIST "offline_switch"
+
 typedef enum
 {
 	M_UNLOCKED            = 1 << 0,

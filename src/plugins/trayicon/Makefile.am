@@ -39,4 +39,9 @@ EXTRA_DIST = \
 	newmarkedmail.xpm \
 	nomail.xpm \
 	unreadmail.xpm \
-	unreadmarkedmail.xpm
+	unreadmarkedmail.xpm \
+	newmail.offline.xpm \
+	newmarkedmail.offline.xpm \
+	nomail.offline.xpm \
+	unreadmail.offline.xpm \
+	unreadmarkedmail.offline.xpm

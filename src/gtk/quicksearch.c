@@ -174,7 +174,8 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 	if (run_only_if_fast && !quicksearch->is_fast)
 		return;
 	if (quicksearch->matcher_list == NULL && 
-	    prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
+	    prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED &&
+	    search_string && strlen(search_string) != 0)
 		return;
 	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
