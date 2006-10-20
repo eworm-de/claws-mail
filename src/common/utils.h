@@ -382,6 +382,8 @@ off_t get_file_size		(const gchar	*file);
 off_t get_file_size_as_crlf	(const gchar	*file);
 off_t get_left_file_size	(FILE		*fp);
 
+time_t get_file_mtime		(const gchar *file);
+
 gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
 gboolean is_relative_filename   (const gchar *file);

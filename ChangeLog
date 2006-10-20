@@ -1,3 +1,17 @@
+2006-10-20 [colin]	2.5.6cvs3
+
+	* configure.ac
+		Bump up libetpan requirement
+		*** THIS COMMIT REQUIRES LIBETPAN CVS ***
+	* src/common/utils.c
+	* src/common/utils.h
+		Add convenience get_file_mtime()
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Implement UIDPLUS support if the server
+		supports it - faster sending in this case
+
 2006-10-19 [colin]	2.5.6cvs2
 
 	* src/gtk/quicksearch.c

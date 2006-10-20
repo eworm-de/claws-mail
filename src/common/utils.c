@@ -2048,6 +2048,18 @@ off_t get_file_size(const gchar *file)
 	return s.st_size;
 }
 
+time_t get_file_mtime(const gchar *file)
+{
+	struct stat s;
+
+	if (g_stat(file, &s) < 0) {
+		FILE_OP_ERROR(file, "stat");
+		return -1;
+	}
+
+	return s.st_mtime;
+}
+
 off_t get_file_size_as_crlf(const gchar *file)
 {
 	FILE *fp;

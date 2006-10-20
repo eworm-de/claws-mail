@@ -86,7 +86,8 @@ int imap_threaded_append(Folder * folder, const char * mailbox,
 int imap_threaded_expunge(Folder * folder);
 
 int imap_threaded_copy(Folder * folder, struct mailimap_set * set,
-		       const char * mb);
+		       const char * mb, struct mailimap_set **source,
+		       struct mailimap_set **dest);
 
 int imap_threaded_store(Folder * folder, struct mailimap_set * set,
 			struct mailimap_store_att_flags * store_att_flags);

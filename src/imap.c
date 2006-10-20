@@ -346,7 +346,9 @@ static gint imap_cmd_append	(IMAPSession	*session,
 static gint imap_cmd_copy       (IMAPSession *session,
 				 struct mailimap_set * set,
 				 const gchar *destfolder,
-				 GRelation *uid_mapping);
+				 GRelation *uid_mapping,
+				 struct mailimap_set ** source,
+				 struct mailimap_set ** dest);
 static gint imap_cmd_store	(IMAPSession	*session,
 				 struct mailimap_set * set,
 				 IMAPFlags flags,
@@ -987,8 +989,8 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
 			return filename;
-		} else if (!cached) {
-			debug_print("message not cached, considering file complete\n");
+		} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
+			debug_print("message not cached and file recent, considering file complete\n");
 			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
 			return filename;
@@ -1169,6 +1171,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	gint ok = IMAP_SUCCESS;
 	GRelation *uid_mapping;
 	gint last_num = 0;
+	gboolean single = FALSE;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1181,7 +1184,8 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	}
 	lock_session();
 	msginfo = (MsgInfo *)msglist->data;
-
+	if (msglist->next == NULL)
+		single = TRUE;
 	src = msginfo->folder;
 	if (src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
@@ -1225,12 +1229,36 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	statusbar_print_all(_("Copying messages..."));
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
 		struct mailimap_set * seq_set;
+		struct mailimap_set * source;
+		struct mailimap_set * dest;
 		seq_set = cur->data;
 
 		debug_print("Copying messages from %s to %s ...\n",
 			    src->path, destdir);
 
-		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping);
+		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping,
+			&source, &dest);
+		
+		if (ok == IMAP_SUCCESS) {
+			if (single && relation && source && dest) {
+				clistiter *l = clist_begin(source->set_list);
+				struct mailimap_set_item *i = (struct mailimap_set_item *)clist_content(l);
+				int snum = i->set_first;
+				int dnum = 0;
+				l = clist_begin(dest->set_list);
+				i = (struct mailimap_set_item *)clist_content(l);
+				dnum = i->set_first;
+				g_relation_insert(uid_mapping, GINT_TO_POINTER(snum), 
+					GINT_TO_POINTER(dnum));
+			}
+		}
+
+
+		if (source)
+			mailimap_set_free(source);
+		if (dest)
+			mailimap_set_free(dest);
+
 		if (ok != IMAP_SUCCESS) {
 			g_relation_destroy(uid_mapping);
 			imap_lep_set_free(seq_list);
@@ -1252,6 +1280,30 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 					  GPOINTER_TO_INT(num));
 			if (num > last_num)
 				last_num = num;
+			debug_print("copied new message as %d\n", num);
+			/* put the local file in the imapcache, so that we don't
+			 * have to fetch it back later. */
+			if (num > 0) {
+				gchar *cache_path = folder_item_get_path(msginfo->folder);
+				gchar *real_file = g_strconcat(
+					cache_path, G_DIR_SEPARATOR_S, 
+					itos(msginfo->msgnum), NULL);
+				gchar *cache_file = NULL;
+				g_free(cache_path);
+				cache_path = folder_item_get_path(dest);
+				cache_file = g_strconcat(
+					cache_path, G_DIR_SEPARATOR_S, 
+					itos(num), NULL);
+				if (!is_dir_exist(cache_path))
+					make_dir_hier(cache_path);
+				if (is_file_exist(real_file) && is_dir_exist(cache_path)) {
+					copy_file(real_file, cache_file, TRUE);
+					debug_print("copied to cache: %s\n", cache_file);
+				}
+				g_free(real_file);
+				g_free(cache_file);
+				g_free(cache_path);
+			}
 		} else
 			g_relation_insert(relation, msginfo,
 					  GPOINTER_TO_INT(0));
@@ -2719,7 +2771,8 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 }
 
 static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
-			  const gchar *destfolder, GRelation *uid_mapping)
+			  const gchar *destfolder, GRelation *uid_mapping,
+			  struct mailimap_set **source, struct mailimap_set **dest)
 {
 	int r;
 	
@@ -2727,7 +2780,7 @@ static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
 	g_return_val_if_fail(set != NULL, IMAP_ERROR);
 	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
 
-	r = imap_threaded_copy(session->folder, set, destfolder);
+	r = imap_threaded_copy(session->folder, set, destfolder, source, dest);
 	if (r != MAILIMAP_NO_ERROR) {
 		
 		return IMAP_ERROR;

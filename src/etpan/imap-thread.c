@@ -2207,7 +2207,8 @@ static void append_run(struct etpan_thread_op * op)
 	char * data;
 	size_t size;
 	struct stat stat_buf;
-	int fd, uid = 0;
+	int fd;
+	guint32 uid = 0, val = 0;
 	
 	param = op->param;
 	result = op->result;
@@ -2234,9 +2235,9 @@ static void append_run(struct etpan_thread_op * op)
 	
 	mailstream_logger = imap_logger_append;
 	
-	r = mailimap_append(param->imap, param->mailbox,
+	r = mailimap_uidplus_append(param->imap, param->mailbox,
 			    param->flag_list, NULL,
-			    data, size/*, &uid */);
+			    data, size, &val, &uid);
 
 	mailstream_logger = imap_logger_cmd;
 	
@@ -2327,6 +2328,8 @@ struct copy_param {
 
 struct copy_result {
 	int error;
+	struct mailimap_set *source;
+	struct mailimap_set *dest;
 };
 
 static void copy_run(struct etpan_thread_op * op)
@@ -2334,19 +2337,25 @@ static void copy_run(struct etpan_thread_op * op)
 	struct copy_param * param;
 	struct copy_result * result;
 	int r;
-	
+	guint32 val;
 	param = op->param;
+	struct mailimap_set *source = NULL, *dest = NULL;
 	
-	r = mailimap_uid_copy(param->imap, param->set, param->mb);
+	r = mailimap_uidplus_uid_copy(param->imap, param->set, param->mb,
+		&val, &source, &dest);
 	
 	result = op->result;
 	result->error = r;
-	
+
+	result->source = source;
+	result->dest = dest;
+
 	debug_print("imap copy run - end %i\n", r);
 }
 
 int imap_threaded_copy(Folder * folder, struct mailimap_set * set,
-		       const char * mb)
+		       const char * mb, struct mailimap_set **source,
+		       struct mailimap_set **dest)
 {
 	struct copy_param param;
 	struct copy_result result;
@@ -2360,10 +2369,15 @@ int imap_threaded_copy(Folder * folder, struct mailimap_set * set,
 	param.mb = mb;
 	
 	threaded_run(folder, &param, &result, copy_run);
+	*source = NULL;
+	*dest = NULL;
 	
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;
 	
+	*source = result.source;
+	*dest = result.dest;
+
 	debug_print("imap copy - end\n");
 	
 	return result.error;
