@@ -27,6 +27,9 @@
 #include <glib/gi18n.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#if (defined(__DragonFly__) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__))
+#  include <sys/signal.h>
+#endif
 
 #include "version.h"
 #include "common/sylpheed.h"

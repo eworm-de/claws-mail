@@ -1,3 +1,12 @@
+2006-10-21 [paul]	2.5.6cvs4
+
+	* src/gtk/authors.h
+	* src/plugins/pgpcore/pgp_viewer.c
+	* src/plugins/pgpcore/sgpgme.c
+		fix building on BSDs
+		Thanks to Michael Hughes
+		<Sylpheed-Claws_user@thehugheslogcabin.net>
+
 2006-10-20 [colin]	2.5.6cvs3
 
 	* configure.ac
