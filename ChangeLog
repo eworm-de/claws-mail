@@ -1,3 +1,10 @@
+2006-10-24 [mones]	2.5.6cvs5
+
+	* manual/es/advanced.xml
+		Synchronize hidden option respect_flowed_format
+	* po/es.po
+		Updated translation
+
 2006-10-21 [paul]	2.5.6cvs4
 
 	* src/gtk/authors.h
