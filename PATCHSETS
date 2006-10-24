@@ -2008,3 +2008,4 @@
 ( cvs diff -u -r 1.654.2.2059 -r 1.654.2.2060 configure.ac;  cvs diff -u -r 1.179.2.133 -r 1.179.2.134 src/imap.c;  cvs diff -u -r 1.36.2.85 -r 1.36.2.86 src/common/utils.c;  cvs diff -u -r 1.20.2.39 -r 1.20.2.40 src/common/utils.h;  cvs diff -u -r 1.1.4.52 -r 1.1.4.53 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/etpan/imap-thread.h;  ) > 2.5.6cvs3.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/gtk/authors.h;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpcore/pgp_viewer.c;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/plugins/pgpcore/sgpgme.c;  ) > 2.5.6cvs4.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/advanced.xml;  cvs diff -u -r 1.60.2.36 -r 1.60.2.37 po/es.po;  ) > 2.5.6cvs5.patchset
+( cvs diff -u -r 1.96.2.156 -r 1.96.2.157 src/textview.c;  cvs diff -u -r 1.5.2.40 -r 1.5.2.41 src/gtk/gtkutils.c;  ) > 2.5.6cvs6.patchset

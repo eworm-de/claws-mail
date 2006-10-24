@@ -1801,7 +1801,8 @@ static void textview_show_xface(TextView *textview)
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
-
+	GdkWindow *window = NULL;
+	
 	if (prefs_common.display_header_pane
 	||  !prefs_common.display_xface)
 		goto bail;
@@ -1818,10 +1819,13 @@ static void textview_show_xface(TextView *textview)
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
-	
+
+	window = mainwindow_get_mainwindow() ?
+			mainwindow_get_mainwindow()->window->window :
+			textview->text->window;
 	textview->image = xface_get_from_header(msginfo->extradata->xface,
 				&textview->text->style->white,
-				textview->text->window);
+				window);
 	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);

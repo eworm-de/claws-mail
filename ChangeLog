@@ -1,3 +1,10 @@
+2006-10-24 [colin]	2.5.6cvs6
+
+	* src/textview.c
+	* src/gtk/gtkutils.c
+		Fix crash when printing emails with an
+		xface
+
 2006-10-24 [mones]	2.5.6cvs5
 
 	* manual/es/advanced.xml

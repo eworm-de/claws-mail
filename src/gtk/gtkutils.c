@@ -1089,6 +1089,10 @@ GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
 	gchar xface[2048];
 	strncpy(xface, o_xface, sizeof(xface));
 
+	if (!window) {
+		g_warning("no window\n");
+		return NULL;
+	}
 	if (uncompface(xface) < 0) {
 		g_warning("uncompface failed\n");
 		return NULL;
