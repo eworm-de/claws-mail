@@ -222,6 +222,9 @@ static void about_create(void)
 #if USE_GNOMEPRINT
 		   " libgnomeprint"
 #endif
+#if HAVE_LIBSM
+		   " libSM"
+#endif
 	"");
 
 	label = gtk_label_new(buf);
