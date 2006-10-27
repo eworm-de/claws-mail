@@ -1,3 +1,9 @@
+2006-10-27 [colin]	2.5.6cvs9
+
+	* configure.ac
+		Require libetpan-0.48. I'm so annoying,
+		I know ;-)
+
 2006-10-27 [colin]	2.5.6cvs8
 
 	* src/folder.c
