@@ -1277,7 +1277,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		if (tuples->len > 0) {
 			gint num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
 			g_relation_insert(relation, msginfo,
-					  GPOINTER_TO_INT(num));
+					  GINT_TO_POINTER(num));
 			if (num > last_num)
 				last_num = num;
 			debug_print("copied new message as %d\n", num);
@@ -1306,7 +1306,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			}
 		} else
 			g_relation_insert(relation, msginfo,
-					  GPOINTER_TO_INT(0));
+					  GINT_TO_POINTER(0));
 		g_tuples_destroy(tuples);
 	}
 	statusbar_pop_all();

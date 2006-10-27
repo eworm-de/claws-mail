@@ -3036,11 +3036,15 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
             		tuples = g_relation_select(relation, msginfo, 0);
 			if (tuples) {
-	            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+				if (tuples->len)
+		            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+				else
+					num = 0;
         	    		g_tuples_destroy(tuples);
 			} else {
 				num = -1;
 			}
+
 			if (g_slist_find(not_moved, msginfo))
 				continue;
 
@@ -3073,9 +3077,14 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
                 GTuples *tuples;
 
                 tuples = g_relation_select(relation, msginfo, 0);
-                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-                g_tuples_destroy(tuples);
-
+		if (tuples->len > 0) {
+	                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+        	        g_tuples_destroy(tuples);
+		} else {
+			num = 0;
+			if (tuples)
+				g_tuples_destroy(tuples);
+		}
 		statusbar_progress_all(curmsg++,total, 100);
 		if (curmsg % 100 == 0)
 			GTK_EVENTS_FLUSH();

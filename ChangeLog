@@ -1,3 +1,12 @@
+2006-10-27 [colin]	2.5.6cvs8
+
+	* src/folder.c
+	* src/imap.c
+		Probably fix bug 1044, 'sylpheed-claws 
+		segfaults while moving mails' - Fix relation
+		usage when moving to an IMAP mailbox from another
+		mailbox
+
 2006-10-26 [paul]	2.5.6cvs7
 
 	* src/gtk/about.c
