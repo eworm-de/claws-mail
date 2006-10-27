@@ -4135,6 +4135,7 @@ gint compose_send(Compose *compose)
 	gchar *msgpath = NULL;
 	gboolean discard_window = FALSE;
 	gchar *errstr = NULL;
+	gchar *tmsgid = NULL;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS
@@ -4176,6 +4177,7 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
+	tmsgid = g_strdup(compose->msgid);
 	if (discard_window) {
 		compose->sending = FALSE;
 		compose_close(compose);
@@ -4192,6 +4194,7 @@ gint compose_send(Compose *compose)
 			goto bail;
 		}
 		inc_unlock();
+		g_free(tmsgid);
 		return -1;
 	}
 	if (msgpath == NULL) {
@@ -4209,12 +4212,30 @@ gint compose_send(Compose *compose)
 		if (val != 0) {
 			folder_item_remove_msg(folder, msgnum);
 			folder_item_scan(folder);
+			if (tmsgid) {
+				/* make sure we delete that */
+				MsgInfo *tmp = folder_item_get_msginfo_by_msgid(folder, tmsgid);
+				if (tmp) {
+					debug_print("removing %d via %s\n", tmp->msgnum, tmsgid);
+					folder_item_remove_msg(folder, tmp->msgnum);
+					procmsg_msginfo_free(tmp);
+				} 
+			}
 		}
 	}
 
 	if (val == 0) {
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
+		if (tmsgid) {
+			/* make sure we delete that */
+			MsgInfo *tmp = folder_item_get_msginfo_by_msgid(folder, tmsgid);
+			if (tmp) {
+				debug_print("removing %d via %s\n", tmp->msgnum, tmsgid);
+				folder_item_remove_msg(folder, tmp->msgnum);
+				procmsg_msginfo_free(tmp);
+			}
+		}
 		if (!discard_window)
 			compose_close(compose);
 	} else {
@@ -4233,8 +4254,10 @@ gint compose_send(Compose *compose)
 			goto bail;		
 		}
 		inc_unlock();
+		g_free(tmsgid);
 		return -1;
  	}
+	g_free(tmsgid);
 	inc_unlock();
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
@@ -4242,6 +4265,7 @@ gint compose_send(Compose *compose)
 
 bail:
 	inc_unlock();
+	g_free(tmsgid);
 	compose_allow_user_actions (compose, TRUE);
 	compose->sending = FALSE;
 	compose->modified = TRUE; 

@@ -1,3 +1,11 @@
+2006-10-27 [colin]	2.5.6cvs10
+
+	* src/compose.c
+		Probably fix bug 1045, 'sylpheed-claws 
+		doesn't remove the mail from the IMAP 
+		Queue folder after sending'. From
+		2.5.6cvs3-stable
+
 2006-10-27 [colin]	2.5.6cvs9
 
 	* configure.ac
