@@ -406,7 +406,8 @@ void prefs_common_read_config	(void);
 void prefs_common_write_config	(void);
 void prefs_common_open		(void);
 PrefsCommon *prefs_common_get	(void);
-void pref_set_textview_from_pref(GtkTextView *textview, gchar *txt);
+void pref_get_unescaped_pref(gchar *out, const gchar *in);
+void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt);
 gchar *pref_get_pref_from_textview(GtkTextView *textview);
 
 #endif /* __PREFS_COMMON_H__ */

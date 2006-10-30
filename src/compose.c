@@ -2427,13 +2427,20 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
+		gchar *tmp = NULL;
+
 		while (trimmed_body && strlen(trimmed_body) > 1
 			&& trimmed_body[0]=='\n')
 			*trimmed_body++;
 
+		/* decode \-escape sequences in the internal representation of the quote format */
+		tmp = malloc(strlen(fmt)+1);
+		pref_get_unescaped_pref(tmp, fmt);
+
 		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account);
-		quote_fmt_scan_string(fmt);
+		quote_fmt_scan_string(tmp);
 		quote_fmt_parse();
+		g_free(tmp);
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {

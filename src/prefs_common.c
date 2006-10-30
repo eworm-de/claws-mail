@@ -923,30 +923,58 @@ void prefs_common_write_config(void)
 		prefs_common.summary_quicksearch_history);
 }
 
-void pref_set_textview_from_pref(GtkTextView *textview, gchar *txt)
+/* make a copy of string 'in' into buffer 'out'. un-escape \ sequences.
+   both 'in' and 'out' must be non-NULL.
+   'out' must be a pointer to a buffer whose size is at least equal
+   to strlen(txt)+1, this buffer will get cleared. */
+void pref_get_unescaped_pref(gchar *out, const gchar *in)
 {
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(textview);
-	gchar *o_out, *out = malloc(txt?(strlen(txt)+1):1);
-	gchar *t = txt;
-	memset(out, 0, strlen(txt)+1);
-	o_out = out;
-	while (*t != '\0') {
-		if (*t == '\\' && *(t+1) == 'n') {
-			*out++ = '\n';
-			t++;
-		} else if (*t == '\\') {
-			t++;
-		} else {
-			*out++ = *t;
-		}
-		t++;
-	}
-	*out='\0';
+	gchar *o, *i;
 
-	gtk_text_buffer_set_text(buffer, o_out?o_out:"", -1);
-	g_free(o_out);
+	g_return_if_fail( in != NULL );
+	g_return_if_fail( out != NULL );
+
+	i = in;
+	o = out;
+	memset(out, 0, strlen(in)+1);
+	while (*i != '\0') {
+		if (*i == '\\' && *(i+1) == 'n') {
+			*o++ = '\n';
+			i++;
+		} else if (*i == '\\' && *(i+1) == 't') {
+			*o++ = '\t';
+			i++;
+		} else if (*i == '\\' && *(i+1) == '\\') {
+			*o++ = '\\';
+			i++;
+		} else {
+			*o++ = *i;
+		}
+		i++;
+	}
+	*o='\0';
 }
 
+/* set the contents of a textview widget from the internal \-escaped
+  representation of a pref string */
+void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
+{
+	GtkTextBuffer *out_buffer;
+	gchar *out = NULL;
+
+	g_return_if_fail( txt != NULL );
+
+	out_buffer = gtk_text_view_get_buffer(textview);
+	out = malloc(txt?(strlen(txt)+1):1);
+
+	pref_get_unescaped_pref(out, txt);
+
+	gtk_text_buffer_set_text(out_buffer, out?out:"", -1);
+	g_free(out);
+}
+
+/* get the \-escaped internal representation of a pref from the contents of
+   a textview widget */
 gchar *pref_get_pref_from_textview(GtkTextView *textview) 
 {
 	GtkTextBuffer *buffer;
@@ -964,6 +992,9 @@ gchar *pref_get_pref_from_textview(GtkTextView *textview)
 		if (*t == '\n') {
 			*out++ = '\\';
 			*out++ = 'n';
+		} else if (*t == '\t') {
+			*out++ = '\\';
+			*out++ = 't';
 		} else if (*t == '\\') {
 			*out++ = '\\';
 			*out++ = '\\';
