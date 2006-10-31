@@ -2429,9 +2429,9 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	if (fmt && *fmt != '\0') {
 		gchar *tmp = NULL;
 
-		while (trimmed_body && strlen(trimmed_body) > 1
-			&& trimmed_body[0]=='\n')
-			*trimmed_body++;
+		if (trimmed_body)
+			while (*trimmed_body == '\n')
+				trimmed_body++;
 
 		/* decode \-escape sequences in the internal representation of the quote format */
 		tmp = malloc(strlen(fmt)+1);

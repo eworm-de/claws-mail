@@ -1,3 +1,8 @@
+2006-10-31 [wwp]	2.5.6cvs13
+
+	* src/compose.c
+		fix and optimize trimming of leading linefeeds in body loop.
+
 2006-10-31 [colin]	2.5.6cvs12
 
 	* src/etpan/imap-thread.c
