@@ -1229,8 +1229,8 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	statusbar_print_all(_("Copying messages..."));
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
 		struct mailimap_set * seq_set;
-		struct mailimap_set * source;
-		struct mailimap_set * dest;
+		struct mailimap_set * source = NULL;
+		struct mailimap_set * dest = NULL;
 		seq_set = cur->data;
 
 		debug_print("Copying messages from %s to %s ...\n",

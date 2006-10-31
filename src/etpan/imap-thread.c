@@ -2346,10 +2346,13 @@ static void copy_run(struct etpan_thread_op * op)
 	
 	result = op->result;
 	result->error = r;
-
-	result->source = source;
-	result->dest = dest;
-
+	if (r == 0) {
+		result->source = source;
+		result->dest = dest;
+	} else {
+		result->source = NULL;
+		result->dest = NULL;
+	}
 	debug_print("imap copy run - end %i\n", r);
 }
 
