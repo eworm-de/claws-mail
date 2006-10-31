@@ -1,3 +1,10 @@
+2006-10-31 [colin]	2.5.6cvs14
+
+	* COPYING
+		Allow linking with the Apache licensed files in
+		src/plugins/spamassassin. Hopefully fixes 
+		bug 1048, 'Spamassassin plugin license problem'
+
 2006-10-31 [wwp]	2.5.6cvs13
 
 	* src/compose.c
