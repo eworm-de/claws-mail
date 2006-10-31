@@ -2806,6 +2806,12 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	
 	/*copy prefs*/
 	folder_item_prefs_copy_prefs(src, new_item);
+	
+	/* copy internal data */
+	if (src->folder->klass == new_item->folder->klass &&
+	    src->folder->klass->copy_private_data != NULL)
+		src->folder->klass->copy_private_data(src->folder,
+					src, new_item);
 	new_item->collapsed = src->collapsed;
 	new_item->thread_collapsed = src->thread_collapsed;
 	new_item->threaded  = src->threaded;

@@ -570,15 +570,39 @@ struct _FolderClass
 						 MsgInfoList	*msglist,
 						 GRelation	*msgflags);
 	
+	/* Sets batch mode for a FolderItem. It means that numerous flags updates
+	 * could follow, and the FolderClass implementation can cache them in order
+	 * to process them later when set_false will be called again with the
+	 * batch parameter set to FALSE. 
+	 */
 	void		(*set_batch)		(Folder		*folder,
 						 FolderItem	*item,
 						 gboolean	 batch);
+	/* Called when switching offline or asking for synchronisation. the imple
+	 * mentation should do what's necessary to be able to read mails present
+	 * in the FolderItem at this time with no network connectivity. 
+	 */
 	void		(*synchronise)		(FolderItem	*item);
+	
+	/* Passed from sylpheed-claws --subscribe scheme://uri. Implementations
+	 * should check if they handle this type of URI, and return TRUE in this
+	 * case after having subscribed it.
+	 */
 	gboolean	(*subscribe)		(Folder 	*folder,
 						 const gchar	*uri);
+	
+	/* Gets the preferred sort key and type for a folderclass. */
 	void		(*get_sort_type)	(Folder		*folder,
 						 FolderSortKey	*sort_key,
 						 FolderSortType	*sort_type);
+	
+	/* Copies internal FolderItem data from one folderItem to another. Used
+	 * when moving folders (this move is in reality a folder creation, content
+	 * move, folder delettion).
+	 */
+	void		(*copy_private_data)	(Folder		*folder,
+						 FolderItem	*src,
+						 FolderItem	*dest);
 };
 
 struct _FolderItem

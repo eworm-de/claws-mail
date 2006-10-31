@@ -2017,3 +2017,4 @@
 ( cvs diff -u -r 1.1.4.53 -r 1.1.4.54 src/etpan/imap-thread.c;  cvs diff -u -r 1.179.2.135 -r 1.179.2.136 src/imap.c;  ) > 2.5.6cvs12.patchset
 ( cvs diff -u -r 1.382.2.320 -r 1.382.2.321 src/compose.c;  ) > 2.5.6cvs13.patchset
 ( cvs diff -u -r 1.5.10.2 -r 1.5.10.3 COPYING;  ) > 2.5.6cvs14.patchset
+( cvs diff -u -r 1.213.2.123 -r 1.213.2.124 src/folder.c;  cvs diff -u -r 1.87.2.31 -r 1.87.2.32 src/folder.h;  ) > 2.5.6cvs15.patchset
