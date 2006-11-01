@@ -1,3 +1,8 @@
+2006-11-01 [colin]	2.5.6cvs16
+
+	* COPYING
+		Add missed files to the Apache exception
+
 2006-10-31 [colin]	2.5.6cvs15
 
 	* src/folder.c
