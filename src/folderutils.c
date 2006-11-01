@@ -123,16 +123,19 @@ void folderutils_mark_all_read(FolderItem *item)
 {
 	MsgInfoList *msglist, *cur;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-
+	int i = 0, m = 0;
+	debug_print("marking all read in item %s\n", (item==NULL)?"NULL":item->name);
 	g_return_if_fail(item != NULL);
 
 
 	folder_item_update_freeze();
 	if (mainwin && mainwin->summaryview &&
 	    mainwin->summaryview->folder_item == item) {
+		debug_print("folder opened, using summary\n");
 		summary_mark_all_read(mainwin->summaryview);
 	} else {
 		msglist = folder_item_get_msg_list(item);
+		debug_print("got msglist %p\n", msglist);
 		if (msglist == NULL) {
 			folder_item_update_thaw();
 			return;
@@ -141,13 +144,16 @@ void folderutils_mark_all_read(FolderItem *item)
 		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 			MsgInfo *msginfo = cur->data;
 
-			if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD))
+			if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD)) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+				m++;
+			}
+			i++;
 			procmsg_msginfo_free(msginfo);
 		}
 		folder_item_set_batch(item, FALSE);
 		folder_item_close(item);
-
+		debug_print("marked %d messages out of %d as read\n", m, i);
 		g_slist_free(msglist);
 	}
 	folder_item_update_thaw();
