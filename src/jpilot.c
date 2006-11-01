@@ -41,10 +41,12 @@
 #  include <libpisock/pi-args.h>
 #  include <libpisock/pi-appinfo.h>
 #  include <libpisock/pi-address.h>
+#  include <libpisock/pi-version.h>
 #else
 #  include <pi-args.h>
 #  include <pi-appinfo.h>
 #  include <pi-address.h>
+#  include <pi-version.h>
 #endif
 
 #include "mgutils.h"
@@ -1144,122 +1146,136 @@ static void jpilot_load_address(
 	struct AddressAppInfo *ai;
 	gchar **firstName = NULL;
 	gchar **lastName = NULL;
+#if (PILOT_LINK_MAJOR > 11)
+	pi_buffer_t *RecordBuffer;
+#endif /* PILOT_LINK_0_12 */
 
 	/* Retrieve address */
-	num = unpack_Address( & addr, buf->buf, buf->size );
-	if( num > 0 ) {
-		addrEnt = addr.entry;
-		attrib = buf->attrib;
-		unique_id = buf->unique_id;
-		cat_id = attrib & 0x0F;
-
-		*fullName = '\0';
-
-		if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
-			firstName = g_strsplit( addrEnt[ IND_LABEL_FIRSTNAME ], "\01", 2 );
-		}
-
-		if( addrEnt[ IND_LABEL_LASTNAME ] ) {
-			lastName = g_strsplit( addrEnt[ IND_LABEL_LASTNAME ], "\01", 2 );
-		}
-
-		if( name_order == FAMILY_LAST ) {
-			g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
-				    firstName ? firstName[0] : "",
-				    lastName ? lastName[0] : "" );
-		}
-		else {
-			g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
-				    lastName ? lastName[0] : "",
-				    firstName ? firstName[0] : "" );
-		}
-
-		if( firstName ) {
-			g_strfreev( firstName );
-		}
-		if( lastName ) {
-			g_strfreev( lastName );
-		}
-
-		g_strstrip( fullName );
-
-		if( convert_charcode ) {
-			gchar *nameConv;
-			nameConv = conv_codeset_strdup( fullName, 
-					conv_get_locale_charset_str_no_utf8(), 
-					CS_INTERNAL );
-			strncpy2( fullName, nameConv, FULLNAME_BUFSIZE );
-			g_free( nameConv );
-		}
-
-		person = addritem_create_item_person();
-		addritem_person_set_common_name( person, fullName );
-		addritem_person_set_first_name( person, addrEnt[ IND_LABEL_FIRSTNAME ] );
-		addritem_person_set_last_name( person, addrEnt[ IND_LABEL_LASTNAME ] );
-		addrcache_id_person( pilotFile->addressCache, person );
-
-		extID = g_strdup_printf( "%d", unique_id );
-		addritem_person_set_external_id( person, extID );
-		g_free( extID );
-		extID = NULL;
-
-		/* Pointer to address metadata. */
-		ai = & pilotFile->addrInfo;
-
-		/* Add entry for each email address listed under phone labels. */
-		indPhoneLbl = addr.phoneLabel;
-		for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
-			gint ind;
-
-			ind = indPhoneLbl[k];
-			/*
-			* fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
-			* ai->phoneLabels[ind], addrEnt[3+k] );
-			*/
-			if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
-				labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
-				jpilot_parse_label( pilotFile, labelEntry, person );
-			}
-		}
-
-		/* Add entry for each custom label */
-		node = pilotFile->labelInd;
-		while( node ) {
-			gint ind;
-
-			ind = GPOINTER_TO_INT( node->data );
-			if( ind > -1 ) {
-				/*
-				* fprintf( stdout, "%d : %20s : %s\n", ind, ai->labels[ind],
-				* addrEnt[ind] );
-				*/
-				labelEntry = addrEnt[ind];
-				jpilot_parse_label( pilotFile, labelEntry, person );
-			}
-
-			node = g_list_next( node );
-		}
-
-		if( person->listEMail ) {
-			if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
-				/* Add to specified category */
-				addrcache_folder_add_person(
-					pilotFile->addressCache,
-					folderInd[cat_id], person );
-			}
-			else {
-				/* Add to root folder */
-				addrcache_add_person(
-					pilotFile->addressCache, person );
-			}
-		}
-		else {
-			addritem_free_item_person( person );
-			person = NULL;
-		}
-		/* Free up pointer allocated inside address */
-		free_Address( & addr );
+#if (PILOT_LINK_MAJOR < 12)
+	num = unpack_Address(&addr, buf->buf, buf->size);
+	if (num <= 0) {
+		return;
 	}
+#else /* PILOT_LINK_0_12 */
+	RecordBuffer = pi_buffer_new(buf->size);
+	memcpy(RecordBuffer->data, buf->buf, buf->size);
+	RecordBuffer->used = buf->size;
+	if (unpack_Address(&addr, RecordBuffer, address_v1) == -1) {
+		pi_buffer_free(RecordBuffer);
+		return;
+	}
+	pi_buffer_free(RecordBuffer);
+#endif
+	addrEnt = addr.entry;
+	attrib = buf->attrib;
+	unique_id = buf->unique_id;
+	cat_id = attrib & 0x0F;
+
+	*fullName = '\0';
+	if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
+		firstName = g_strsplit( addrEnt[ IND_LABEL_FIRSTNAME ], "\01", 2 );
+	}
+
+	if( addrEnt[ IND_LABEL_LASTNAME ] ) {
+		lastName = g_strsplit( addrEnt[ IND_LABEL_LASTNAME ], "\01", 2 );
+	}
+
+	if( name_order == FAMILY_LAST ) {
+		g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
+			    firstName ? firstName[0] : "",
+			    lastName ? lastName[0] : "" );
+	}
+	else {
+		g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
+			    lastName ? lastName[0] : "",
+			    firstName ? firstName[0] : "" );
+	}
+
+	if( firstName ) {
+		g_strfreev( firstName );
+	}
+	if( lastName ) {
+		g_strfreev( lastName );
+	}
+
+	g_strstrip( fullName );
+
+	if( convert_charcode ) {
+		gchar *nameConv;
+		nameConv = conv_codeset_strdup( fullName, 
+				conv_get_locale_charset_str_no_utf8(), 
+				CS_INTERNAL );
+		strncpy2( fullName, nameConv, FULLNAME_BUFSIZE );
+		g_free( nameConv );
+	}
+
+	person = addritem_create_item_person();
+	addritem_person_set_common_name( person, fullName );
+	addritem_person_set_first_name( person, addrEnt[ IND_LABEL_FIRSTNAME ] );
+	addritem_person_set_last_name( person, addrEnt[ IND_LABEL_LASTNAME ] );
+	addrcache_id_person( pilotFile->addressCache, person );
+
+	extID = g_strdup_printf( "%d", unique_id );
+	addritem_person_set_external_id( person, extID );
+	g_free( extID );
+	extID = NULL;
+
+	/* Pointer to address metadata. */
+	ai = & pilotFile->addrInfo;
+
+	/* Add entry for each email address listed under phone labels. */
+	indPhoneLbl = addr.phoneLabel;
+	for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
+		gint ind;
+
+		ind = indPhoneLbl[k];
+		/*
+		* fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
+		* ai->phoneLabels[ind], addrEnt[3+k] );
+		*/
+		if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
+			labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
+			jpilot_parse_label( pilotFile, labelEntry, person );
+		}
+	}
+
+	/* Add entry for each custom label */
+	node = pilotFile->labelInd;
+	while( node ) {
+		gint ind;
+
+		ind = GPOINTER_TO_INT( node->data );
+		if( ind > -1 ) {
+			/*
+			* fprintf( stdout, "%d : %20s : %s\n", ind, ai->labels[ind],
+			* addrEnt[ind] );
+			*/
+			labelEntry = addrEnt[ind];
+			jpilot_parse_label( pilotFile, labelEntry, person );
+		}
+
+		node = g_list_next( node );
+	}
+
+	if( person->listEMail ) {
+		if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
+			/* Add to specified category */
+			addrcache_folder_add_person(
+				pilotFile->addressCache,
+				folderInd[cat_id], person );
+		}
+		else {
+			/* Add to root folder */
+			addrcache_add_person(
+				pilotFile->addressCache, person );
+		}
+	}
+	else {
+		addritem_free_item_person( person );
+		person = NULL;
+	}
+	/* Free up pointer allocated inside address */
+	free_Address( & addr );
 }
 
 /**

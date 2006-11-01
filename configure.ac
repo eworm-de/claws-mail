@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=17
+EXTRA_VERSION=18
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -578,11 +578,11 @@ AC_ARG_ENABLE(jpilot,
 AC_MSG_CHECKING([whether to use JPilot])
 if test "$ac_cv_enable_jpilot" = yes; then
 	AC_MSG_RESULT(yes)
-	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h,
+	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h pi-version.h,
 			 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
 			 [ ac_cv_enable_jpilot=no ])
 	if test "$ac_cv_enable_jpilot" = no; then
-		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h,
+		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h libpisock/pi-version.h,
 				 [ ac_cv_enable_jpilot=yes
 				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
 	fi
