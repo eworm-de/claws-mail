@@ -1,3 +1,11 @@
+2006-11-02 [colin]	2.5.6cvs19
+
+	* src/imap.c
+	* src/imap.h
+	* src/prefs_account.c
+	* src/etpan/imap-thread.c
+		Add GSSAPI support - fixes Debian bug #383274
+
 2006-11-01 [colin]	2.5.6cvs18
 
 	* src/jpilot.c

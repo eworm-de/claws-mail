@@ -604,16 +604,23 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
+	case IMAP_AUTH_GSSAPI:
+		ok = imap_cmd_login(session, user, pass, "GSSAPI");
+		break;
 	default:
 		debug_print("capabilities:\n"
 				"\t ANONYMOUS %d\n"
 				"\t CRAM-MD5 %d\n"
-				"\t LOGIN %d\n", 
+				"\t LOGIN %d\n"
+				"\t GSSAPI %d\n", 
 			imap_has_capability(session, "ANONYMOUS"),
 			imap_has_capability(session, "CRAM-MD5"),
-			imap_has_capability(session, "LOGIN"));
+			imap_has_capability(session, "LOGIN"),
+			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
 			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
+		if (ok == IMAP_ERROR && imap_has_capability(session, "GSSAPI"))
+			ok = imap_cmd_login(session, user, pass, "GSSAPI");
 		if (ok == IMAP_ERROR) /* we always try LOGIN before giving up */
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 	}

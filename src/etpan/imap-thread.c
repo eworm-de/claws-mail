@@ -643,6 +643,7 @@ struct login_param {
 	const char * login;
 	const char * password;
 	const char * type;
+	const char * server;
 };
 
 struct login_result {
@@ -667,6 +668,11 @@ static void login_run(struct etpan_thread_op * op)
 	if (!strcmp(param->type, "LOGIN"))
 		r = mailimap_login(param->imap,
 			   param->login, param->password);
+	else if (!strcmp(param->type, "GSSAPI"))
+		r = mailimap_authenticate(param->imap,
+			param->type, param->server, NULL, NULL,
+			param->login, param->login,
+			param->password, NULL);
 	else 
 		r = mailimap_authenticate(param->imap,
 			param->type, NULL, NULL, NULL,
@@ -694,6 +700,10 @@ int imap_threaded_login(Folder * folder,
 	param.login = login;
 	param.password = password;
 	param.type = type;
+	if (folder && folder->account)
+		param.server = folder->account->recv_server;
+	else
+		param.server = NULL;
 
 	threaded_run(folder, &param, &result, login_run);
 	

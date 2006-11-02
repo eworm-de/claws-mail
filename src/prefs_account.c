@@ -1602,6 +1602,7 @@ static void prefs_account_receive_create(void)
 	MENUITEM_ADD (optmenu_menu, menuitem, "LOGIN", IMAP_AUTH_LOGIN);
 	MENUITEM_ADD (optmenu_menu, menuitem, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
 	MENUITEM_ADD (optmenu_menu, menuitem, "ANONYMOUS", IMAP_AUTH_ANON);
+	MENUITEM_ADD (optmenu_menu, menuitem, "GSSAPI", IMAP_AUTH_GSSAPI);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
@@ -2742,6 +2743,9 @@ static void prefs_account_imap_auth_type_set_optmenu(PrefParam *pparam)
 		break;
 	case IMAP_AUTH_ANON:
 		gtk_option_menu_set_history(optmenu, 3);
+		break;
+	case IMAP_AUTH_GSSAPI:
+		gtk_option_menu_set_history(optmenu, 4);
 		break;
 	case 0:
 	default:
