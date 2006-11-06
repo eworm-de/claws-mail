@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Sylpheed-Claws 2.0\n"
 "Report-Msgid-Bugs-To: paul@sylpheed.org\n"
 "POT-Creation-Date: 2006-09-18 10:12+0100\n"
-"PO-Revision-Date: 2006-09-25 00:03+0200\n"
+"PO-Revision-Date: 2006-09-26 21:51+0200\n"
 "Last-Translator: Tim Dijkstra <tim@famdijkstra.org>\n"
 "Language-Team: Nederlands <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -681,7 +681,7 @@ msgstr "LDAP-verzoek"
 #: src/prefs_matcher.c:1332 src/prefs_matcher.c:1349 src/prefs_matcher.c:1351
 #: src/prefs_matcher.c:2102 src/prefs_matcher.c:2106
 msgid "Any"
-msgstr ""
+msgstr "Elke"
 
 #: src/addrgather.c:158
 msgid "Please specify name for address book."
@@ -865,7 +865,7 @@ msgstr "een aankondiger"
 
 #: src/common/plugin.c:58
 msgid "an utility"
-msgstr ""
+msgstr "een utility"
 
 #: src/common/plugin.c:59
 msgid "things"
@@ -1778,12 +1778,12 @@ msgid "Insert or attach?"
 msgstr "In- of Bijvoegen"
 
 #: src/compose.c:8614
-#, fuzzy
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
 msgstr ""
-"Wilt u de inhoud van het bericht(en) in "
+"Wilt u de inhoud van de bestand(en) invoegen in de tekst van het bericht "
+"of bij het bericht voegen als het verstuurd wordt?"
 
 #: src/compose.c:8616
 msgid "+_Insert"
@@ -2718,12 +2718,11 @@ msgstr "/_Verwerken..."
 
 #: src/folderview.c:298
 msgid "/Empty _trash..."
-msgstr "Prullenbak leegmaken..."
+msgstr "/Prullenbak leegmaken..."
 
 #: src/folderview.c:303
-#, fuzzy
 msgid "/Send _queue..."
-msgstr "/Verzend berichten uit wachtrij..."
+msgstr "/Verzend wacht_rij..."
 
 #: src/folderview.c:463 src/prefs_folder_column.c:80
 msgid "New"
@@ -3525,9 +3524,8 @@ msgid "Input password"
 msgstr "Geef wachtwoord"
 
 #: src/gtk/inputdialog.c:275
-#, fuzzy
 msgid "Remember this"
-msgstr "Onthoudt dit"
+msgstr "Onthoud dit"
 
 #: src/gtk/logwindow.c:87
 msgid "Protocol log"
@@ -4139,10 +4137,12 @@ msgid ""
 "Connection to %s failed: server requires TLS, but Sylpheed-Claws has been "
 "compiled without OpenSSL support.\n"
 msgstr ""
+"Verbinden me %s mislukt: de server vereist TLS, maar Sylpheed-Claws is niet "
+"vertaald met OpenSSL-ondersteuning.\n"
 
 #: src/imap.c:2514
 msgid "Server logins are disabled.\n"
-msgstr ""
+msgstr "Inloggen op servers staat uit.\n"
 
 #: src/imap.c:2692
 msgid "Fetching message..."
@@ -4713,6 +4713,10 @@ msgid ""
 "currently available. This will cause crashes. You need to upgrade GTK+ or "
 "recompile Sylpheed-Claws."
 msgstr ""
+"Sylpheed-Claws is vertaald met een recentere versie van de GTK+-bibliotheek "
+"dan op het moment beschikbaar is. Dit zal voor crashes zorgen. "
+"U dient de GTK+-bibliotheek bij te werken naar een nieuwere versie of "
+"Sylpheed-Claws opnieuw te vertalen."
 
 #: src/main.c:363
 msgid ""
@@ -4720,6 +4724,9 @@ msgid ""
 "currently available. This will cause crashes. You need to recompile Sylpheed-"
 "Claws."
 msgstr ""
+"Sylpheed-Claws is vertaald met een oudere versie van de GTK+-bibliotheek "
+"dan op het moment beschikbaar is. Dit zal voor crashes zorgen. "
+"U dient Sylpheed-Claws opnieuw te vertalen."
 
 #: src/main.c:570
 msgid ""
@@ -6342,14 +6349,16 @@ msgid ""
 "Your version of Sylpheed-Claws is newer than the version the ClamAV plugin "
 "was built with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
+"ClamAV-plugin gemaakt is"
 
 #: src/plugins/clamav/clamav_plugin.c:202
 msgid "Your version of Sylpheed-Claws is too old for the ClamAV plugin"
-msgstr ""
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de ClamAV-plugin"
 
 #: src/plugins/clamav/clamav_plugin.c:208
 msgid "Failed to register mail filtering hook"
-msgstr ""
+msgstr "Registreren van mail-filter-haak mislukt"
 
 #: src/plugins/clamav/clamav_plugin.c:251
 #: src/plugins/clamav/clamav_plugin_gtk.c:212
@@ -6376,7 +6385,7 @@ msgstr ""
 
 #: src/plugins/clamav/clamav_plugin.c:283
 msgid "Virus detection"
-msgstr ""
+msgstr "Virus-detectie"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:96
 msgid "Enable virus scanning"
@@ -6424,6 +6433,9 @@ msgid ""
 "Your sylpheed-claws version is newer than the version the plugin was built "
 "with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de plugin "
+"gemaakt is"
+
 
 #: src/plugins/demo/demo.c:50
 msgid "Your sylpheed-claws version is too old"
@@ -6479,10 +6491,12 @@ msgid ""
 "Your version of Sylpheed-Claws is newer than the version the Dillo plugin "
 "was built with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
+"Dillo-plugin gemaakt is"
 
 #: src/plugins/dillo_viewer/dillo_viewer.c:174
 msgid "Your version of Sylpheed-Claws is too old for the Dillo plugin"
-msgstr ""
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de Dillo-plugin"
 
 #: src/plugins/dillo_viewer/dillo_viewer.c:194
 msgid "Dillo HTML Viewer"
@@ -6537,7 +6551,8 @@ msgid ""
 "\n"
 "%.*s\n"
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Geef nogmaals het wachtwoord voor de nieuwe sleutel:</span>\n"
+"<span weight=\"bold\" size=\"larger\">Geef nogmaals het wachtwoord voor de "
+"nieuwe sleutel:</span>\n"
 "\n"
 "%.*s\n"
 
@@ -6623,7 +6638,7 @@ msgstr "GPG"
 #: src/plugins/pgpcore/select-keys.c:107
 #, c-format
 msgid "No exact match for '%s'; please select the key."
-msgstr ""
+msgstr "Geen exacte overeenkomst gevonden voor '%s'; selecteer de sleutel."
 
 #: src/plugins/pgpcore/select-keys.c:110
 #, c-format
@@ -6835,7 +6850,6 @@ msgid "No PGP key found"
 msgstr "Geen PGP-sleutel gevonden"
 
 #: src/plugins/pgpcore/sgpgme.c:601
-#, fuzzy
 msgid ""
 "Sylpheed-Claws did not find a secret PGP key, which means that you won't be "
 "able to sign emails or receive encrypted emails.\n"
@@ -6855,6 +6869,8 @@ msgid ""
 "Generating your new key pair... Please move the mouse around to help "
 "generate entropy..."
 msgstr ""
+"Uw nieuw sleutelpaar wordt nu aangemaakt... Beweeg uw muis heen en weer "
+"om te helpen bij het maken van entropie..."
 
 #: src/plugins/pgpcore/sgpgme.c:693
 msgid "Couldn't generate a new key pair: unknown error"
@@ -6873,10 +6889,12 @@ msgid ""
 "Your version of Sylpheed-Claws is newer than the version the PGP/Core plugin "
 "was built with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
+"PGP/Core-plugin gemaakt is"
 
 #: src/plugins/pgpcore/plugin.c:42
 msgid "Your version of Sylpheed-Claws is too old for the PGP/Core plugin"
-msgstr ""
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de PGP/Core-plugin"
 
 #: src/plugins/pgpcore/plugin.c:60
 msgid "PGP/Core"
@@ -6905,9 +6923,8 @@ msgstr ""
 "GPGME auteursrecht 2001 door Werner Koch <dd9jn@gnu.org>"
 
 #: src/plugins/pgpcore/plugin.c:94
-#, fuzzy
 msgid "Core operations"
-msgstr "Huidige acties"
+msgstr "Basis-operaties"
 
 #: src/plugins/pgpinline/pgpinline.c:237 src/plugins/pgpinline/pgpinline.c:385
 msgid "Couldn't get text data."
@@ -6981,7 +6998,7 @@ msgid ""
 "plugin was built with"
 msgstr ""
 "Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
-"PGP/inline-plugin gemaakt is."
+"PGP/inline-plugin gemaakt is"
 
 #: src/plugins/pgpinline/plugin.c:41
 msgid "Your version of Sylpheed-Claws is too old for the PGP/inline plugin"
@@ -7022,10 +7039,12 @@ msgid ""
 "Your version of Sylpheed-Claws is newer than the version the PGP/MIME plugin "
 "was built with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
+"PGP/MIME-plugin gemaakt is"
 
 #: src/plugins/pgpmime/plugin.c:40
 msgid "Your version of Sylpheed-Claws is too old for the PGP/MIME plugin"
-msgstr ""
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de PGP/MIMI-plugin"
 
 #: src/plugins/pgpmime/plugin.c:56
 msgid "PGP/MIME"
@@ -7104,6 +7123,9 @@ msgid ""
 "error is an unreachable spamd daemon. Please make sure spamd is running and "
 "accessible."
 msgstr ""
+"De SpamAssassin-plugin kon een bericht niet filteren. De meest waarschijnlijke "
+"oorzaak is een onbereikbare spamd-daemon. Zorg er voor dat een spamd draait "
+"en toegankelijk is."
 
 #: src/plugins/spamassassin/spamassassin.c:333
 msgid ""
@@ -7118,10 +7140,12 @@ msgid ""
 "Your version of Sylpheed-Claws is newer than the version the SpamAssassin "
 "plugin was built with"
 msgstr ""
+"Uw versie van Sylpheed-Claws is nieuwer dan de versie waarmee de "
+"SpamAssassin-plugin gemaakt is"
 
 #: src/plugins/spamassassin/spamassassin.c:473
 msgid "Your version of Sylpheed-Claws is too old for the SpamAssassin plugin"
-msgstr ""
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de SpamAssassin-plugin"
 
 #: src/plugins/spamassassin/spamassassin.c:482
 msgid "Failed to get username"
@@ -7303,15 +7327,15 @@ msgstr ""
 
 #: src/plugins/trayicon/trayicon.c:300
 msgid "Your version of Sylpheed-Claws is too old for the Trayicon plugin"
-msgstr "Uw versie can Sylpheed-Claws is te oud voor de Systeemvakpictogram-plugin"
+msgstr "Uw versie van Sylpheed-Claws is te oud voor de Systeemvakpictogram-plugin"
 
 #: src/plugins/trayicon/trayicon.c:306
 msgid "Failed to register folder item update hook"
-msgstr ""
+msgstr "Registreren van map-item-bijwerk-haak mislukt"
 
 #: src/plugins/trayicon/trayicon.c:312
 msgid "Failed to register folder update hook"
-msgstr ""
+msgstr "Registreren van map-bijwerk-haak mislukt"
 
 #: src/plugins/trayicon/trayicon.c:340 src/plugins/trayicon/trayicon.c:422
 msgid "Trayicon"
@@ -8258,6 +8282,9 @@ msgid ""
 "This option enables MIME parts to be displayed in the message view via a "
 "script when using the 'Display as text' contextual menu item"
 msgstr ""
+"Deze optie maakt het mogelijk om als MIME-onderdelen van een bericht m.b.v "
+"de 'Als tekst weergeven'-optie worden weergegeven, dit te laten doen door "
+"middel van een script."
 
 #: src/prefs_ext_prog.c:196
 msgid "Print command"
@@ -8530,7 +8557,7 @@ msgstr "Normaal"
 
 #: src/prefs_folder_item.c:209
 msgid "Outbox"
-msgstr ""
+msgstr "Uitbox"
 
 #: src/prefs_folder_item.c:226
 msgid "Folder type:"
@@ -8832,6 +8859,10 @@ msgid ""
 "If you want to match %s against the whole address book, you have to select "
 "'Any' from the book/folder drop-down list."
 msgstr ""
+"Boek/map-pad is niet leeg.\n"
+"\n"
+"Als je %s wilt vergelijken met alle ingangen in het adresboek, dan dien je "
+"'Elke' te selecteren van de boek/map-keuzelijst."
 
 #: src/prefs_matcher.c:1823
 msgid ""
@@ -9278,9 +9309,8 @@ msgid "Mail Handling"
 msgstr "E-mailverwerking"
 
 #: src/prefs_receive.c:372
-#, fuzzy
 msgid "Receiving"
-msgstr "Bezig met onvangen ontvangen"
+msgstr "Ontvangen"
 
 #: src/prefs_send.c:142
 msgid "Save sent messages to Sent folder"
@@ -9437,7 +9467,7 @@ msgstr ""
 #: src/prefs_send.c:338 src/send_message.c:477 src/send_message.c:481
 #: src/send_message.c:486
 msgid "Sending"
-msgstr "Bezig met verzenden"
+msgstr "Verzenden"
 
 #: src/prefs_spelling.c:105
 msgid "Select dictionaries location"
@@ -10045,9 +10075,8 @@ msgid "No information available"
 msgstr "Geen informatie beschikbaar"
 
 #: src/privacy.c:406
-#, fuzzy
 msgid "No recipient keys defined."
-msgstr "Geen acties gedefinieerd."
+msgstr "Geen ontvanger-sleutel gedefinieerd."
 
 #: src/procmime.c:298 src/procmime.c:300
 msgid "[Error decoding BASE64]\n"
@@ -10084,6 +10113,8 @@ msgid ""
 "No specific account has been found to send, and an error happened during "
 "SMTP session."
 msgstr ""
+"Er is geen specifiek account gevonden om mee te versturen en er is een "
+"fout opgetreden tijdens de SMTP-sessie."
 
 #: src/procmsg.c:1668
 msgid ""
@@ -10204,6 +10235,8 @@ msgid ""
 "insert file:\n"
 "sub_expr is evaluated as a filename to insert"
 msgstr ""
+"voeg bestand in:\n"
+"sub_expr wordt geevalueerd tot de in te voegen bestandsnaam"
 
 #: src/quote_fmt.c:71
 msgid ""
@@ -10211,6 +10244,9 @@ msgid ""
 "sub_expr is evaluated as a command-line to get\n"
 "the output from"
 msgstr ""
+"voeg programma output in:\n"
+"sub_expr wordt geevalueerd tot een opdracht regel\n"
+"waarvan de output wordt te halen"
 
 #: src/quote_fmt.c:72
 msgid ""
@@ -10218,10 +10254,13 @@ msgid ""
 "sub_expr is a variable to be replaced by\n"
 "user-entered text"
 msgstr ""
+"voeg invoer gebruiker in:\n"
+"sub_expr is een variabele die vervangen wordt\n"
+"door ingevoerde tekst"
 
 #: src/quote_fmt.c:74
 msgid "terms definition:"
-msgstr ""
+msgstr "definities van gebruikte termen:"
 
 #: src/quote_fmt.c:75
 msgid "text that can contain any of the symbols above"
@@ -10853,11 +10892,11 @@ msgstr " in het 'Gereedschap'-menu voor meer informatie."
 
 #: src/textview.c:873
 msgid "  The following can be performed on this part by\n"
-msgstr " Het volgende kan worden toegepast op dit gedeelte door\n"
+msgstr " Het volgende kan op dit gedeelte worden toegepast door of\n"
 
 #: src/textview.c:874
 msgid "  right-clicking the icon or list item:\n"
-msgstr "  met de rechter muisknop op het pictogram of lijst-item te klikken:\n"
+msgstr "  met de rechtermuisknop op het pictogram of lijst-item te klikken:\n"
 
 #: src/textview.c:876
 msgid "     - To save, select "
@@ -10922,6 +10961,9 @@ msgid ""
 "    %s\n"
 "Exit code %d\n"
 msgstr ""
+"De opdracht om het bijvoegsel mee te bekijken mislukte:\n"
+"    %s\n"
+"Uitvoer-code %d\n"
 
 #: src/textview.c:2492
 #, c-format

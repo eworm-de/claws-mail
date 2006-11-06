@@ -2022,3 +2022,4 @@
 ( cvs diff -u -r 1.3.2.12 -r 1.3.2.13 src/folderutils.c;  ) > 2.5.6cvs17.patchset
 ( cvs diff -u -r 1.18.2.16 -r 1.18.2.17 src/jpilot.c;  ) > 2.5.6cvs18.patchset
 ( cvs diff -u -r 1.179.2.136 -r 1.179.2.137 src/imap.c;  cvs diff -u -r 1.34.2.7 -r 1.34.2.8 src/imap.h;  cvs diff -u -r 1.105.2.68 -r 1.105.2.69 src/prefs_account.c;  cvs diff -u -r 1.1.4.54 -r 1.1.4.55 src/etpan/imap-thread.c;  ) > 2.5.6cvs19.patchset
+( cvs diff -u -r 1.9.2.8 -r 1.9.2.9 po/cs.po;  cvs diff -u -r 1.58.2.26 -r 1.58.2.27 po/de.po;  cvs diff -u -r 1.42.2.27 -r 1.42.2.28 po/fr.po;  cvs diff -u -r 1.34.2.20 -r 1.34.2.21 po/it.po;  cvs diff -u -r 1.28.2.8 -r 1.28.2.9 po/nl.po;  cvs diff -u -r 1.50.2.21 -r 1.50.2.22 po/pt_BR.po;  cvs diff -u -r 1.2.2.22 -r 1.2.2.23 po/sk.po;  cvs diff -u -r 1.4.2.7 -r 1.4.2.8 po/sv.po;  cvs diff -u -r 1.5.2.19 -r 1.5.2.20 po/zh_CN.po;  ) > 2.5.6cvs20.patchset

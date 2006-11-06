@@ -1,3 +1,19 @@
+2006-11-06 [paul]	2.5.6cvs20
+
+	* po/cs.po
+	* po/de.po
+	* po/fr.po
+	* po/it.po
+	* po/nl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sv.po
+	* po/zh_CN.po
+		updated by Tim Brain, Stephan Sachse, Fabien Vantard,
+		Andrea Spadaccini, Tim Dijkstra, Frederico Goncalves
+		Guimaraes, Andrej Kacian, Anders Troback, and Ralgh
+		Young
+
 2006-11-02 [colin]	2.5.6cvs19
 
 	* src/imap.c
