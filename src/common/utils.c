@@ -1639,10 +1639,14 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 }
 
 gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
-		     gchar **subject, gchar **body)
+		     gchar **subject, gchar **body, gchar **attach)
 {
 	gchar *tmp_mailto;
 	gchar *p;
+	const gchar *forbidden_uris[] = { ".gnupg/",
+					  "/etc/passwd",
+					  "/etc/shadow",
+					  NULL };
 
 	Xstrdup_a(tmp_mailto, mailto, return -1);
 
@@ -1689,6 +1693,19 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "body")) {
 			*body = g_malloc(strlen(value) + 1);
 			decode_uri(*body, value);
+		} else if (attach && !*attach && !g_ascii_strcasecmp(field, "attach")) {
+			int i = 0;
+			*attach = g_malloc(strlen(value) + 1);
+			decode_uri(*attach, value);
+			for (; forbidden_uris[i]; i++) {
+				if (strstr(*attach, forbidden_uris[i])) {
+					printf("Refusing to attach '%s', potential private data leak\n",
+							*attach);
+					g_free(*attach);
+					*attach = NULL;
+					break;
+				}
+			}
 		}
 	}
 

@@ -1,3 +1,12 @@
+2006-11-06 [wwp]	2.6.0cvs3
+
+	* src/compose.c
+	* src/common/utils.c
+	* src/common/utils.h
+		show an alertpanel to make sure users are aware that sensitive
+		files are attached (it's file blacklist-based). This will fix
+		interaction w/ GoogleEarth for instance, thanks to Colin.
+
 2006-11-06 [wwp]	2.6.0cvs2
 
 	* src/prefs_quote.c

@@ -239,7 +239,7 @@ static gchar *compose_get_signature_str		(Compose	*compose);
 static ComposeInsertResult compose_insert_file	(Compose	*compose,
 						 const gchar	*file);
 
-static void compose_attach_append		(Compose	*compose,
+static gboolean compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 const gchar	*type,
 						 const gchar	*content_type);
@@ -2156,8 +2156,9 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *body = NULL;
 	gchar *temp = NULL;
 	guint  len = 0;
-
-	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body);
+	gchar *attach = NULL;
+	
+	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body, &attach);
 
 	if (to)
 		compose_entry_append(compose, to, COMPOSE_TO);
@@ -2198,10 +2199,22 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 			compose_wrap_all(compose);
 	}
 
+	if (attach) {
+		gchar *utf8_filename = conv_filename_to_utf8(attach);
+		if (utf8_filename) {
+			if (compose_attach_append(compose, attach, utf8_filename, NULL)) {
+				alertpanel_notice(_("The file '%s' has been attached."), attach);
+			} 
+			g_free(utf8_filename);
+		} else {
+			alertpanel_error(_("Couldn't attach a file (charset conversion failed)."));
+		}
+	}
 	g_free(to);
 	g_free(cc);
 	g_free(subject);
 	g_free(body);
+	g_free(attach);
 }
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
@@ -2286,7 +2299,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		extract_address(hentry[H_LIST_POST].body);
 		if (hentry[H_LIST_POST].body[0] != '\0') {
 			scan_mailto_url(hentry[H_LIST_POST].body,
-					&to, NULL, NULL, NULL, NULL);
+					&to, NULL, NULL, NULL, NULL, NULL);
 			if (to) {
 				g_free(compose->ml_post);
 				compose->ml_post = to;
@@ -2978,7 +2991,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		return COMPOSE_INSERT_SUCCESS;
 }
 
-static void compose_attach_append(Compose *compose, const gchar *file,
+static gboolean compose_attach_append(Compose *compose, const gchar *file,
 				  const gchar *filename,
 				  const gchar *content_type)
 {
@@ -2993,20 +3006,20 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gboolean has_binary = FALSE;
 
 	if (!is_file_exist(file)) {
-		g_warning("File %s doesn't exist\n", filename);
-		return;
+		alertpanel_error("File %s doesn't exist\n", filename);
+		return FALSE;
 	}
 	if ((size = get_file_size(file)) < 0) {
-		g_warning("Can't get file size of %s\n", filename);
-		return;
+		alertpanel_error("Can't get file size of %s\n", filename);
+		return FALSE;
 	}
 	if (size == 0) {
-		alertpanel_notice(_("File %s is empty."), filename);
-		return;
+		alertpanel_error(_("File %s is empty."), filename);
+		return FALSE;
 	}
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		alertpanel_error(_("Can't read %s."), filename);
-		return;
+		return FALSE;
 	}
 	fclose(fp);
 
@@ -3087,6 +3100,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			   -1);
 	
 	g_auto_pointer_free(auto_ainfo);
+	return TRUE;
 }
 
 static void compose_use_signing(Compose *compose, gboolean use_signing)

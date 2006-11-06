@@ -359,7 +359,8 @@ gint scan_mailto_url			(const gchar	*mailto,
 					 gchar	       **cc,
 					 gchar	       **bcc,
 					 gchar	       **subject,
-					 gchar	       **body);
+					 gchar	       **body,
+					 gchar	       **attach);
 
 /* return static strings */
 const gchar *get_home_dir		(void);
