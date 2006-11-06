@@ -536,7 +536,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 		value = NULL;
 		}
 	if (!prefs_template_string_is_valid(value)) {
-		alertpanel_error(_("Template Body format error."));	
+		alertpanel_error(_("Template body format error."));	
 		g_free(value);
 		return FALSE;
 	}

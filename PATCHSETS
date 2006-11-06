@@ -2030,3 +2030,4 @@
 ( cvs diff -u -r 1.382.2.321 -r 1.382.2.322 src/compose.c;  cvs diff -u -r 1.36.2.86 -r 1.36.2.87 src/common/utils.c;  cvs diff -u -r 1.20.2.40 -r 1.20.2.41 src/common/utils.h;  ) > 2.6.0cvs3.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_msg_colors.c;  ) > 2.6.0cvs4.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_quote.c;  ) > 2.6.0cvs5.patchset
+( cvs diff -u -r 1.12.2.35 -r 1.12.2.36 src/prefs_template.c;  ) > 2.6.0cvs6.patchset

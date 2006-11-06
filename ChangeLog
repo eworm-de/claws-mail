@@ -1,3 +1,9 @@
+2006-11-06 [wwp]	2.6.0cvs6
+
+	* src/prefs_template.c
+		unify messages related to quote format/template errors (fix
+		capitalization), again.
+
 2006-11-06 [wwp]	2.6.0cvs5
 
 	* src/prefs_quote.c
