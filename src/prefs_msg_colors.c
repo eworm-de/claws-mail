@@ -445,7 +445,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	for (c = 0; c < 4; c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
-		tooltip_btn_text = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
+		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);
 
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
@@ -477,7 +477,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	for (c = 4; c < COLORLABELS; c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
-		tooltip_btn_text = g_strdup_printf(_("Pick color for 'color %d'"), c+1);
+		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);
 
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
@@ -609,7 +609,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		if (GPOINTER_TO_INT(type) == c) {
 			/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 			   rule name and should not be translated */
-			title = g_strdup_printf(_("Pick color for 'color %d' "), c+1);
+			title = g_strdup_printf(Q_("Dialog title|Pick color for 'color %d'"), c+1);
 			rgbvalue = prefs_common.custom_colorlabel[c].color;
 			break;
 		}

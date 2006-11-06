@@ -1,3 +1,9 @@
+2006-11-06 [wwp]	2.6.0cvs4
+
+	* src/prefs_msg_colors.c
+		more uses of Q_ macro for contextual translations, thanks
+		to Fabien (fzzzzz).
+
 2006-11-06 [wwp]	2.6.0cvs3
 
 	* src/compose.c
