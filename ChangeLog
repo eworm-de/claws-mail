@@ -1,3 +1,10 @@
+2006-11-06 [paul]	2.5.6cvs22
+
+	* manual/advanced.xml
+	* manual/es/advanced.xml
+		put 'respect_flowed_format' info in the correct
+		place
+
 2006-11-06 [mones]	2.5.6cvs21
 
 	* po/es.po

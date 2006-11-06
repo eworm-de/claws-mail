@@ -439,17 +439,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-        <term><literal>respect_flowed_format</literal></term>
-        <listitem>
-          <para>
-        0 o 1. Respetar el <literal>format=flowed</literal> en las partes
-	<literal>text/plain</literal> de los mensajes. Esto provocará que
-	algunos correos tengan líneas largas, pero corregirá algunas URLs
-	que de otra manera serían cortadas. Por omisión es 0, desactivado.
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
 	<term><literal>smtpssl</literal></term>
 	<listitem>
 	  <para>
@@ -678,6 +667,17 @@
 	Segundos de espera antes he marcar un mensaje como leído.
 	  </para>
 	</listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>respect_flowed_format</literal></term>
+        <listitem>
+          <para>
+        0 o 1. Respetar el <literal>format=flowed</literal> en las partes
+	<literal>text/plain</literal> de los mensajes. Esto provocará que
+	algunos correos tengan líneas largas, pero corregirá algunas URLs
+	que de otra manera serían cortadas. Por omisión es 0, desactivado.
+          </para>
+        </listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
