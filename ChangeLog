@@ -1,3 +1,12 @@
+2006-11-06 [wwp]	2.6.0cvs2
+
+	* src/prefs_quote.c
+	* src/prefs_template.c
+	* src/prefs_template.h
+		check quote format when applying/closing prefs. For now this only
+		shows up an error dialog box, not preventing the user from using
+		a broken quote (reply, forwards) format.
+
 2006-11-06 [wwp]	2.6.0cvs1
 
 	* src/prefs_template.c

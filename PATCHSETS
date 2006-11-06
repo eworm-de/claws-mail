@@ -2026,3 +2026,4 @@
 ( cvs diff -u -r 1.60.2.37 -r 1.60.2.38 po/es.po;  ) > 2.5.6cvs21.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 manual/advanced.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/es/advanced.xml;  ) > 2.5.6cvs22.patchset
 ( cvs diff -u -r 1.12.2.33 -r 1.12.2.34 src/prefs_template.c;  ) > 2.6.0cvs1.patchset
+( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_quote.c;  cvs diff -u -r 1.12.2.34 -r 1.12.2.35 src/prefs_template.c;  cvs diff -u -r 1.1.16.2 -r 1.1.16.3 src/prefs_template.h;  ) > 2.6.0cvs2.patchset
