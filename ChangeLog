@@ -1,3 +1,8 @@
+2006-11-06 [wwp]	2.6.0cvs5
+
+	* src/prefs_quote.c
+		unify messages related to quote format/template errors.
+
 2006-11-06 [wwp]	2.6.0cvs4
 
 	* src/prefs_msg_colors.c
