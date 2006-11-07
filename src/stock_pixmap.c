@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,8 +73,8 @@
 #include "pixmaps/paste.xpm"
 #include "pixmaps/preferences.xpm"
 #include "pixmaps/properties.xpm"
-#include "pixmaps/sylpheed-claws_icon.xpm"
-#include "pixmaps/sylpheed-claws_logo.xpm"
+#include "pixmaps/claws-mail_icon.xpm"
+#include "pixmaps/claws-mail_logo.xpm"
 #include "pixmaps/address_book.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/read.xpm"
@@ -298,10 +298,10 @@ static StockPixmapData pixmaps[] =
 	{privacy_emblem_failed_xpm		, NULL, NULL, "privacy_emblem_failed", NULL},	
 	{privacy_emblem_warn_xpm		, NULL, NULL, "privacy_emblem_warn", NULL},
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
-	{sylpheed_claws_icon_xpm		, NULL, NULL, "sylpheed_claws_icon", NULL},
+	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
-	{sylpheed_claws_logo_xpm		, NULL, NULL, "sylpheed_claws_logo", NULL},
+	{claws_mail_logo_xpm			, NULL, NULL, "claws_mail_logo", NULL},
         {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL},
         {spam_xpm                               , NULL, NULL, "spam" , NULL},
         {spam_btn_xpm                           , NULL, NULL, "spam_btn" , NULL},

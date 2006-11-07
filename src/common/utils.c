@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto & The Sylpheed-Claws Team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1984,7 +1984,7 @@ const gchar *get_plugin_dir(void)
 
 	if (!plugin_dir)
 		plugin_dir = g_strconcat(w32_get_module_dir(),
-					 "\\lib\\sylpheed-claws\\plugins\\",
+					 "\\lib\\claws-mail\\plugins\\",
 					 NULL);
 	return plugin_dir;
 #else
@@ -3120,7 +3120,7 @@ FILE *my_tmpfile(void)
 	tmplen = strlen(tmpdir);
 	progname = g_get_prgname();
 	if (progname == NULL)
-		progname = "sylpheed-claws";
+		progname = "claws-mail";
 	proglen = strlen(progname);
 	Xalloca(fname, tmplen + 1 + proglen + sizeof(suffix),
 		return tmpfile());

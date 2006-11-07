@@ -18,7 +18,7 @@
 
 unless ($ARGV[0]) { exit; }
 
-my $sylpheed = "sylpheed-claws --compose --attach";
+my $sylpheed = "claws-mail --compose --attach";
 my $prefix = "/tmp/archive.";
 my $command = find_command($ARGV[0]);
 my ($sel,$att) = split_parts();

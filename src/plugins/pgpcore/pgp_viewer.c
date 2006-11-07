@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto & the Claws Mail team
  * This file Copyright (C) 2006 Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -117,7 +117,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		if (!prefs_common.work_offline) {
 			val = alertpanel(_("Key import"),
 				_("This key is not in your keyring. Do you want "
-				  "Sylpheed-Claws to try and import it from a "
+				  "Claws Mail to try and import it from a "
 				  "keyserver?"),
 				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 			GTK_EVENTS_FLUSH();

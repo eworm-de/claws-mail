@@ -22,13 +22,13 @@ use XML::SimpleObject;
 
 #
 # Convert new style Sylpheed filter rules (Sylpheed >= 0.9.99) to
-# Sylpheed-Claws filtering rules
+# Claws Mail filtering rules
 #
 
 #
 # TABLE OF EQUIVALENTS
 #
-# SYLPHEED			:	SYLPHEED-CLAWS
+# SYLPHEED			:	Claws Mail
 #------------------------------------------------------
 #
 # NAME
@@ -80,13 +80,13 @@ my $old_config = "$ENV{HOME}/.sylpheed-2.0/filter.xml";
 my $older_config = "$ENV{HOME}/.sylpheed/filter.xml";
 my $old_filters;
 
-my $config_dir = `sylpheed-claws --config-dir` or die("ERROR:
-	You don't appear to have Sylpheed-Claws installed\n");
+my $config_dir = `claws-mail --config-dir` or die("ERROR:
+	You don't appear to have Claws Mail installed\n");
 chomp $config_dir;
 
 chdir($ENV{HOME} . "/$config_dir") or die("ERROR:
-	Sylpheed-Claws config directory not found [~/$config_dir]
-	You need to run Sylpheed-Claws once, quit it, and then rerun this script\n");
+	Claws Mail config directory not found [~/$config_dir]
+	You need to run Claws Mail once, quit it, and then rerun this script\n");
 
 if (-e $old_config) {
 	$old_filters = $old_config;
@@ -97,8 +97,8 @@ if (-e $old_config) {
 	exit;
 }
 
-my $claws_version = `sylpheed-claws --version`;
-$claws_version =~ s/^Sylpheed-Claws version //;
+my $claws_version = `claws-mail --version`;
+$claws_version =~ s/^Claws Mail version //;
 
 my ($major, $minor) = split(/\./, $claws_version);
 

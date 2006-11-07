@@ -148,7 +148,7 @@ FILES
 		Stores user default preferred configuration for the
 		script. Settings in this file may be overriden by
 		command line options. Must be stored in the same
-		directory of the script and/or in the ~/.sylpheed-claws
+		directory of the script and/or in the ~/.claws-mail
 		one (Sylpheed user's configuration directory).
 	
 	/tmp/sylprint.username.number
@@ -165,7 +165,7 @@ FILES
 
 SEE ALSO
 	Sylpheed: http://sylpheed.good-day.net
-	Sylpheed Claws: http://sylpheed-claws.sourceforge.net
+	Claws Mail: http://claws-mail.org/
 	Enscript: http://www.iki.fi/~mtr/genscript/
 	Muttprint: http://bwalle.exit.mytoday.de/muttprint/
 	Sylprint: http://www.aic.uniovi.es/mones/sylprint/

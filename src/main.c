@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,12 +265,10 @@ static gboolean defer_jump(void *data)
 	return FALSE;
 }
 
-static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cfg_dir)
+static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cfg_dir, const gchar *oldversion)
 {
-	gchar *message = g_strdup_printf(_("Configuration for Sylpheed-Claws %s found.\n"
-			 "Do you want to migrate this configuration?"),
-			 !strcmp(old_cfg_dir, OLD_GTK1_RC_DIR)?
-			 	_("1.0.5 or previous"):_("1.9.15 or previous"));
+	gchar *message = g_strdup_printf(_("Configuration for %s (or previous) found.\n"
+			 "Do you want to migrate this configuration?"), oldversion);
 	gint r = 0;
 	GtkWidget *window = NULL;
 	if (alertpanel(_("Migration of configuration"),
@@ -507,7 +505,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (cmd.status || cmd.status_full) {
-		puts("0 Sylpheed-Claws not running.");
+		puts("0 Claws Mail not running.");
 		lock_socket_remove();
 		return 0;
 	}
@@ -532,20 +530,20 @@ int main(int argc, char *argv[])
 	/* check that we're not on a too recent/old gtk+ */
 #if GTK_CHECK_VERSION(2, 9, 0)
 	if (gtk_check_version(2, 9, 0) != NULL) {
-		alertpanel_error(_("Sylpheed-Claws has been compiled with "
+		alertpanel_error(_("Claws Mail has been compiled with "
 				   "a more recent GTK+ library than is "
 				   "currently available. This will cause "
 				   "crashes. You need to upgrade GTK+ or "
-				   "recompile Sylpheed-Claws."));
+				   "recompile Claws Mail."));
 		exit(1);
 	}
 #else
 	if (gtk_check_version(2, 9, 0) == NULL) {
-		alertpanel_error(_("Sylpheed-Claws has been compiled with "
+		alertpanel_error(_("Claws Mail has been compiled with "
 				   "an older GTK+ library than is "
 				   "currently available. This will cause "
 				   "crashes. You need to recompile "
-				   "Sylpheed-Claws."));
+				   "Claws Mail."));
 		exit(1);
 	}
 #endif	
@@ -564,9 +562,11 @@ int main(int argc, char *argv[])
 		prefs_destroy_cache();
 		gboolean r = FALSE;
 		if (is_dir_exist(OLD_GTK2_RC_DIR))
-			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR);
+			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 2.6.0"));
+		else if (is_dir_exist(OLDER_GTK2_RC_DIR))
+			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.9.15"));
 		else if (is_dir_exist(OLD_GTK1_RC_DIR))
-			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR);
+			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.0.5"));
 		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0)
 			exit(1);
 	}
@@ -638,7 +638,7 @@ int main(int argc, char *argv[])
 	renderer_read_config();
 
 	gtkut_widget_init();
-	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_SYLPHEED_CLAWS_ICON, &icon);
+	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
 	gtk_window_set_default_icon(icon);
 
 	folderview_initialize();
@@ -705,7 +705,7 @@ int main(int argc, char *argv[])
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
 		GTK_EVENTS_FLUSH();
-		debug_print("Sylpheed-Claws crashed, checking for new messages in local folders\n");
+		debug_print("Claws Mail crashed, checking for new messages in local folders\n");
 		folder_item_update_thaw();
 		folderview_check_new(NULL);
 		folder_clean_cache_memory_force();
@@ -762,7 +762,7 @@ int main(int argc, char *argv[])
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);
-		alertpanel_error(_("Sylpheed-Claws has detected a configured "
+		alertpanel_error(_("Claws Mail has detected a configured "
 				   "mailbox, but could not load it. It is "
 				   "probably provided by an out-of-date "
 				   "external plugin. Please reinstall the "
@@ -971,7 +971,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9)) {
-			puts("Sylpheed-Claws version " VERSION);
+			puts("Claws Mail version " VERSION);
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
  			const gchar *p = argv[i + 1];
@@ -1022,7 +1022,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			                  "                         folder is a folder id like '#mh/Mailbox/inbox'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
-			g_print("%s\n", _("  --exit                 exit Sylpheed-Claws"));
+			g_print("%s\n", _("  --exit                 exit Claws Mail"));
 			g_print("%s\n", _("  --debug                debug mode"));
 			g_print("%s\n", _("  --help                 display this help and exit"));
 			g_print("%s\n", _("  --version              output version information and exit"));
@@ -1208,7 +1208,7 @@ gchar *get_socket_name(void)
 	static gchar *filename = NULL;
 
 	if (filename == NULL) {
-		filename = g_strdup_printf("%s%csylpheed-claws-%d",
+		filename = g_strdup_printf("%s%cclaws-mail-%d",
 					   g_get_tmp_dir(), G_DIR_SEPARATOR,
 #if HAVE_GETUID
 					   getuid());
@@ -1225,7 +1225,7 @@ static gchar *get_crashfile_name(void)
 	static gchar *filename = NULL;
 
 	if (filename == NULL) {
-		filename = g_strdup_printf("%s%csylpheed-crashed",
+		filename = g_strdup_printf("%s%cclaws-crashed",
 					   get_tmp_dir(), G_DIR_SEPARATOR);
 	}
 
@@ -1246,7 +1246,7 @@ static gint prohibit_duplicate_launch(void)
 
 	/* remote command mode */
 
-	debug_print("another Sylpheed-Claws instance is already running.\n");
+	debug_print("another Claws Mail instance is already running.\n");
 
 	if (cmd.receive_all) {
 		fd_write_all(uxsock, "receive_all\n", 12);

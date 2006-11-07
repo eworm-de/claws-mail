@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2006 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 2002-2006 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,7 +295,7 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 
 	for (i = 0; i < STOCK_PIXMAP_EMPTY; i++) {
 		GdkPixbuf *pixbuf;
-		if (i == STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO)
+		if (i == STOCK_PIXMAP_CLAWS_MAIL_LOGO)
 			continue;/* that's too big */
 
 		stock_pixbuf_gdk(prefs_toolbar->window, i, &pixbuf);
@@ -640,7 +640,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	if (g_utf8_collate(cur_entry, actions_entry) == 0) {
 		gtk_widget_hide(prefs_toolbar->entry_icon_text);
 		gtk_widget_show(prefs_toolbar->combo_syl_action);
-		gtk_label_set_text(GTK_LABEL(prefs_toolbar->label_icon_text), _("Sylpheed-Claws Action"));
+		gtk_label_set_text(GTK_LABEL(prefs_toolbar->label_icon_text), _("Claws Mail Action"));
 
 		if (prefs_common.actions_list == NULL) {
 		    gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, FALSE);

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# claws.i18n.stats.pl - Generate statistics for Sylpheed Claws po directory.
+# claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
 # (c) 2003 by Ricardo Mones Lastra <mones@aic.uniovi.es>
 # This program is released under the GNU General Public License.

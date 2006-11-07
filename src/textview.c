@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1889,7 +1889,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		if ((procheader_headername_equal(header->name, "X-Mailer") ||
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
-		    strstr(header->body, "Sylpheed-Claws") != NULL) {
+		    strstr(header->body, "Claws Mail") != NULL) {
 			gtk_text_buffer_get_end_iter (buffer, &iter);
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, header->body, -1,

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2006 Match Grun and the Sylpheed-Claws team
+ * Copyright (C) 2001-2006 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -450,7 +450,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"\"ldap.mydomain.com\" may be appropriate for the " \
 		"\"mydomain.com\" organization. An IP address may also be " \
 		"used. You may specify \"localhost\" if running an LDAP " \
-		"server on the same computer as Sylpheed-Claws." ),
+		"server on the same computer as Claws Mail." ),
 		NULL );
 
 	/* Next row */

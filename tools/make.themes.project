@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Generate the source directory for sylpheed-claws-themes package
-# from the theme tarballs in http://sylpheed-claws.net/themes.php
+# Generate the source directory for claws-mail-themes package
+# from the theme tarballs in http://claws-mail.org/themes.php
 #
 # Copyright (c) 2006 Ricardo Mones <ricardo@mones.org>
 #                    Paul Mangan <claws@thewildbeast.co.uk>
@@ -31,8 +31,8 @@ test x$1 = x && echo "Error: version number not given" && printHelp && exit 1;
 
 VERS=$1
 shift;
-SITE=http://sylpheed-claws.net
-NAME=sylpheed-claws-themes
+SITE=http://claws-mail.org
+NAME=claws-mail-themes
 NOTES=RELEASE_NOTES
 DDIR=$NAME-$VERS
 PAGE=themes.php
@@ -100,7 +100,7 @@ function createThemeMakefileAm()
   MA="/tmp/tmp.makefile.am";
   cd "$1"
   dir="$1";
-  echo 'themedir = $(prefix)/share/sylpheed-claws/themes/'${dir} > $MA
+  echo 'themedir = $(prefix)/share/claws-mail/themes/'${dir} > $MA
   echo "" >> $MA
   echo -n 'dist_theme_DATA =' >> $MA 
   test -f .sylpheed_themeinfo \

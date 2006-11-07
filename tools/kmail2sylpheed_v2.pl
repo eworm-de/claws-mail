@@ -40,7 +40,7 @@ if ($kmailfile eq "" || $iNeedHelp) {
 	exit;
 }
 
-$sylph_dir  = ".sylpheed-claws";
+$sylph_dir  = ".claws-mail";
 $addr_index = "$sylph_dir/addrbook--index.xml";
 $new_addressbook = "Kmail address book";
  

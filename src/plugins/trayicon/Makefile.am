@@ -5,7 +5,7 @@ plugindir = $(pkglibdir)/plugins
 plugin_LTLIBRARIES = trayicon.la
 
 if CYGWIN
-cygwin_export_lib = -L$(top_builddir)/src -lsylpheed-claws
+cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
 else
 cygwin_export_lib = 
 endif 

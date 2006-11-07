@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2006 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 2003-2006 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -703,7 +703,7 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 	
 	if (IS_INTERNAL_THEME(path)) {
 		info->name = g_strdup(_("Default internal theme"));
-		info->author = g_strdup(_("The Sylpheed-Claws Team"));
+		info->author = g_strdup(_("The Claws Mail Team"));
 		info->url = g_strdup(HOMEPAGE_URI);
 		info->status = g_strdup_printf(_("Internal theme has %d icons"), N_STOCK_PIXMAPS);
 	}

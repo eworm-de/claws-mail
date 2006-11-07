@@ -1,6 +1,6 @@
 /*
  * This file Copyright (C) 2005 Paul Mangan <claws@thewildbeast.co.uk>
- * and the Sylpheed-Claws team
+ * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

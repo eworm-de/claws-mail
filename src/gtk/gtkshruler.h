@@ -1,5 +1,5 @@
 /* GTKSHRuler
- * Copyright (C) 2000-2004 Alfons Hoogervorst & The Sylpheed Claws Team
+ * Copyright (C) 2000-2004 Alfons Hoogervorst & The Claws Mail Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

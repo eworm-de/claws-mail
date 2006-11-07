@@ -47,7 +47,7 @@ Action scripts
 * freshmeat_search.pl
   WORKS ON: selection
   COMMAND: |freshmeat_search.pl
-  Search freshmeat.net for selected text using the default Sylpheed-Claws browser
+  Search freshmeat.net for selected text using the default Claws Mail browser
 
 * google_msgid.pl
   WORKS ON: selection
@@ -58,7 +58,7 @@ Action scripts
 * google_search.pl
   WORKS ON: selection
   COMMAND: |google_search.pl
-  Search google.com for selected text using the default Sylpheed-Claws browser
+  Search google.com for selected text using the default Claws Mail browser
 
 * multiwebsearch.pl
   WORKS ON: selection
@@ -82,8 +82,8 @@ Action scripts
   WHAT IT DOES
 	This is an Actions script that allows you to search
 	websites for the selected text. It uses the default
-	Sylpheed-Claws browser as configured through Sylpheed
-	-Claws' GUI and specified in ~/.sylpheed-claws/sylpheedrc,
+	Claws Mail browser as configured through Sylpheed
+	-Claws' GUI and specified in ~/.claws-mail/sylpheedrc,
 	and a configuration file called multiwebsearch.conf.
 	
   CONFIGURATION
@@ -98,7 +98,7 @@ Action scripts
 	is included.
 	
   HOW TO USE IT
-	Copy 'multiwebsearch.conf' to ~/.sylpheed-claws/
+	Copy 'multiwebsearch.conf' to ~/.claws-mail/
 	
 	Configure an Action:
 	a) pre-configured website 
@@ -141,24 +141,24 @@ Address book conversion
 
   WHAT IT DOES
 	This perl script will convert an exported Kmail addressbook into a
-  	Sylpheed-Claws addressbook. If your version of Kmail is 1.37 or
+  	Claws Mail addressbook. If your version of Kmail is 1.37 or
 	greater and/or your version of KAddressBook is 3.1beta1 or greater,
 	or this script mixes up your definitions and their related data, use
   	'kmail2sylpheed_v2.pl' instead.
 
   HOW TO USE IT
-	(You must run sylpheed-claws at least once before running this script.)
+	(You must run claws-mail at least once before running this script.)
 
 	In Kmail's Address book choose '/File/Export List'. This will export
   	your Kmail address book data to a *.csv file.
 
-  	If Sylpheed-Claws is running, close it.
+  	If Claws Mail is running, close it.
 
   	From the command line, execute the following:
  
 		perl kmail2sylpheed.pl --kmailfile=/path/to/addressbook.csv
 
-  	Your Kmail address book data will now be contained in Sylpheed-Claws'
+  	Your Kmail address book data will now be contained in Claws Mail'
   	address book, under the name 'Kmail Address Book'.
 
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
@@ -170,16 +170,16 @@ Address book conversion
 
   WHAT IT DOES
 	This perl script will convert a Kmail address book that has been
-  	exported in csv format into a Sylpheed-Claws address book.
+  	exported in csv format into a Claws Mail address book.
 
   HOW TO USE IT
-	(You must run sylpheed-claws at least once before running this script.)
+	(You must run claws-mail at least once before running this script.)
   
   	Open Kmail's Addressbook, /File/Address Book
   	In Kmail's Addressbook choose '/File/Export/Export List...'. This 
   	will allow you to export your Kmail addressbook data to a *.csv file.
 
-  	If Sylpheed-Claws is running, close it.
+  	If Claws Mail is running, close it.
 
   	From the command line, execute the following:
  
@@ -187,7 +187,7 @@ Address book conversion
 	
   	You can also use --help to see usage instructions.
 
-  	Your Kmail addressbook data will now be contained in Sylpheed-Claws'
+  	Your Kmail addressbook data will now be contained in Claws Mail'
   	addressbook, under the name 'Kmail address book'.
 
   Contact: Paul Mangan <claws@thewildbeast.co.uk>  
@@ -197,7 +197,7 @@ Address book conversion
 
   WHAT IT DOES
   	This perl script converts an Outlook generated contact list into a 
-  	Sylpheed-Claws XML address book.
+  	Claws Mail XML address book.
 
   HOW TO USE IT
   	For text files:
@@ -205,7 +205,7 @@ Address book conversion
   	You must export Outlook Express contact list as TXT file, choosing
   	only "Name" and "Address" fields to export.
 
-  	You must exit Sylpheed-Claws before converting the contact list.
+  	You must exit Claws Mail before converting the contact list.
 
   	From the command line, execute the following:
 
@@ -216,7 +216,7 @@ Address book conversion
 	You must export Outlook contact list as CSV file, choosing ALL the
 	fields available for exporting.
 
-	You must exit Sylpheed-Claws before converting the contact list.
+	You must exit Claws Mail before converting the contact list.
 
 	From the command line, execute the following:
 
@@ -228,7 +228,7 @@ Address book conversion
 	script.
 
 	For csv files you must export all fields (but only non empty fields
-	are added to the created Sylpheed-Claws address book) and the number
+	are added to the created Claws Mail address book) and the number
 	of fields expected is harcoded. Look for the $nboffields variable in
 	the script and change its value if you are sure you exported all
 	fields and script gives the 'unknown csv file format' error.
@@ -240,19 +240,19 @@ Address book conversion
 
   WHAT IT DOES
   	This perl script will convert an address book exported from The Bat! 
-	into a Sylpheed-Claws address book.
+	into a Claws Mail address book.
 
   HOW TO USE IT
-	(You must run sylpheed-claws at least once before running this script.)
+	(You must run claws-mail at least once before running this script.)
 
-  	If Sylpheed-Claws is running, close it.
+  	If Claws Mail is running, close it.
 
   	Export The Bat! Address Book to CSV file format with all fields 
   	selected to YES and then start:
 
   		tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
  
-  	The Bat! addressbook data will now be contained in Sylpheed-Claws'
+  	The Bat! addressbook data will now be contained in Claws Mail'
   	addressbook, under the name 'The Bat! Address Book'.
 
   Contact: Urke MMI <urke@gmx.net>  
@@ -261,13 +261,13 @@ Address book conversion
 * vcard2xml.py
 
   WHAT IT DOES
-  	This python script will convert an Evolution vCard into a Sylpheed-Claws
+  	This python script will convert an Evolution vCard into a Claws Mail
 	address book.
 
   HOW TO USE IT
-	(You must run sylpheed-claws at least once before running this script.)
+	(You must run claws-mail at least once before running this script.)
 
-  	If Sylpheed-Claws is running, close it.
+  	If Claws Mail is running, close it.
 	From the command line, execute the following:
 
   		vcard2xml.py source_file [destination_file]
@@ -317,7 +317,7 @@ Mailbox conversion
 
   WHAT IT DOES
 	This perl script converts an mbox directory's contents into 
-	Sylpheed-Claws' MH format.
+	Claws Mail' MH format.
   
   HOW TO USE IT
   
@@ -325,8 +325,8 @@ Mailbox conversion
 	 
     		perl convert_mbox.pl MBOX MH_DIR
 		
-	Move the outputted MH_DIR and its contents into your Sylpheed-Claws
-	Mail folder; in Sylpheed-Claws right-click the top-level folder and
+	Move the outputted MH_DIR and its contents into your Claws Mail
+	Mail folder; in Claws Mail right-click the top-level folder and
 	choose 'Rebuild folder tree' from the popup menu.
 
   Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
@@ -335,17 +335,17 @@ Mailbox conversion
 
   WHAT IT DOES
 	This perl script converts a mailbox in maildir format into
-	Sylpheed-Claws' MH format.
+	Claws Mail' MH format.
   
   HOW TO USE IT
   
-  	Exit Sylpheed-Claws if running.
+  	Exit Claws Mail if running.
 	
 	Run the script using:
 	 
     		perl maildir2sylpheed.pl --kmaildir=mail_folder_name
 		
-	Start Sylpheed-Claws and right-click the toplevel mailbox, i.e
+	Start Claws Mail and right-click the toplevel mailbox, i.e
 	"Mailbox (MH)", and select 'Rebuild folder tree'.
 	You may also need to run '/File/Folder/Check for new messages
 	in all folders'
@@ -362,7 +362,7 @@ Mailbox conversion
 
   WHAT IT DOES
 	This python script integrates a Thunderbird folder tree into 
-        Sylpheed-Claws.
+        Claws Mail.
   
   HOW TO USE IT
   
@@ -385,7 +385,7 @@ Other tools
 
   WHAT IT DOES
   	This perl script enables Adobe Reader 7 to send documents to
-	Sylpheed-Claws as attachments.
+	Claws Mail as attachments.
 
   HOW TO USE IT
   	Make sure that the script is executable (chmod +x acroread2sylpheed.pl)
@@ -395,7 +395,7 @@ Other tools
 	Enter the path to this script in the alternate location box  
 
   	You can then use 'File/Email' or the Email toolbar button to launch
-	sylpheed-claws (if not already launched) and open a new compose window
+	claws-mail (if not already launched) and open a new compose window
 	with the PDF attached.
   
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
@@ -406,7 +406,7 @@ Other tools
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules from
 	sylpheed's new filter system (>= 0.9.99) to the filtering system used in
-	sylpheed-claws. (Disabled rules are ignored)
+	claws-mail. (Disabled rules are ignored)
 	It reads '~/.sylpheed-2.0/filter.xml' or '~/.sylpheed/filter.xml' and
 	writes '~/[CLAWS CONFIG DIR]/matcherrc'
   
@@ -429,8 +429,8 @@ Other tools
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules
   	from sylpheed's old filter system (< 0.9.99) to the filtering system
-	used in sylpheed-claws.
-	It reads '~/.sylpheed/filterrc' and writes '~/.sylpheed-claws/matcherrc'
+	used in claws-mail.
+	It reads '~/.sylpheed/filterrc' and writes '~/.claws-mail/matcherrc'
   
   HOW TO USE IT
 	Issue the following command from the 'tools' directory:
@@ -461,14 +461,14 @@ Other tools
 
   WHAT IT DOES
   	This perl script enables OpenOffice.org to send documents to
-	Sylpheed-Claws as attachments.
+	Claws Mail as attachments.
 
   HOW TO USE IT
     OpenOffice.org Version 2.0
     ----------------------------
 	This script is not needed for OOo version 2, which can work
-	directly with Sylpheed-Claws.
-	Go to 'Tools/Options/Internet/E-mail' and enter 'sylpheed-claws'
+	directly with Claws Mail.
+	Go to 'Tools/Options/Internet/E-mail' and enter 'claws-mail'
 	in the box.
 
     OpenOffice.org Version 1.1.0
@@ -481,7 +481,7 @@ Other tools
   	or select it by clicking on the '...' button.
     
   	You can then use 'File/Send/Document as email' to launch
-	sylpheed-claws (if not already launched) and open a new compose
+	claws-mail (if not already launched) and open a new compose
 	window with the document attached.
 
     OpenOffice.org Version 1.0
@@ -524,7 +524,7 @@ Extra tools
   WHAT IT DOES
 	This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
   	into an X-Face graphic suitable for inclusion into custom headers of
-  	Sylpheed-Claws. An X-Face allows to quickly identify (or be identified
+  	Claws Mail. An X-Face allows to quickly identify (or be identified
 	as) the sender of a mail message in a xface-capable MUA (like sylpheed
 	-claws).
 
@@ -541,11 +541,11 @@ Extra tools
       		./gif2xface < filename.gif > filename.xface
 
   	In filename.xface will be the X-Face header ready to use.
-  	You can add a custom header in Sylpheed-Claws through Configuration->
+  	You can add a custom header in Claws Mail through Configuration->
   	Preferences per account, "Send" tab, check "Add user-defined header"
   	then "Edit..." if you want to add it via Sylpheed -Claws interface, or do
 
-      		echo "0:" `cat filename.xface` > ~/.sylpheed-claws/customheaderrc
+      		echo "0:" `cat filename.xface` > ~/.claws-mail/customheaderrc
 
   	if you want to create the custom headers file yourself (Warning: this
   	method is valid only if you don't have any other custom header set or

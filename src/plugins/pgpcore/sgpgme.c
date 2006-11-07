@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -608,7 +608,7 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 	}
 	if (ask_create) {
 		val = alertpanel(_("No PGP key found"),
-				_("Sylpheed-Claws did not find a secret PGP key, "
+				_("Claws Mail did not find a secret PGP key, "
 				  "which means that you won't be able to sign "
 				  "emails or receive encrypted emails.\n"
 				  "Do you want to create a new key pair now?"),

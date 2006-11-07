@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 2001-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -191,7 +191,7 @@ struct {
 #ifdef USE_ASPELL
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_SYL_ACTIONS",   	N_("Sylpheed-Claws Actions Feature")	   }, 
+	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_SEPARATOR",     	"Separator"				}
 };
 

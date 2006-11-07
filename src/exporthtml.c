@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2006 Match Grun and the Sylpheed-Claws team
+ * Copyright (C) 2002-2006 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1007,7 +1007,7 @@ void exporthtml_process(
 		return;
 	}
 
-	title = _( "Sylpheed-Claws Address Book" );
+	title = _( "Claws Mail Address Book" );
 	rootFolder = cache->rootFolder;
 	dsName = cache->name;
 

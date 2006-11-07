@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
 #define RC_DIR			CFG_RC_DIR
-#define OLD_GTK2_RC_DIR		".sylpheed-gtk2"
+#define OLD_GTK2_RC_DIR		".sylpheed-claws"
+#define OLDER_GTK2_RC_DIR	".sylpheed-gtk2"
 #define OLD_GTK1_RC_DIR		".sylpheed"
 #define NEWS_CACHE_DIR		"newscache"
 #define IMAP_CACHE_DIR		"imapcache"
@@ -67,17 +68,17 @@
 #define UIDL_DIR		"uidl"
 #define NEWSGROUP_LIST		".newsgroup_list"
 #define ADDRESS_BOOK		"addressbook.xml"
-#define MANUAL_HTML_INDEX	"sylpheed-claws-manual.html"
-#define HOMEPAGE_URI		"http://www.sylpheed-claws.net/"
-#define MANUAL_URI		"http://www.sylpheed-claws.net/documentation.php"
-#define FAQ_URI			"http://www.sylpheed-claws.net/faq/index.php"
-#define PLUGINS_URI		"http://www.sylpheed-claws.net/plugins.php"
+#define MANUAL_HTML_INDEX	"claws-mail-manual.html"
+#define HOMEPAGE_URI		"http://www.claws-mail.org/"
+#define MANUAL_URI		"http://www.claws-mail.org/documentation.php"
+#define FAQ_URI			"http://www.claws-mail.org/faq/index.php"
+#define PLUGINS_URI		"http://www.claws-mail.org/plugins.php"
 #define BUGZILLA_URI		"http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/enter_bug.cgi"
-#define THEMES_URI		"http://www.sylpheed-claws.net/themes.php"
-#define MAILING_LIST_URI	"http://www.sylpheed-claws.net/MLs.php"
-#define USERS_ML_ADDR		"sylpheed-claws-users@dotsrc.org"
+#define THEMES_URI		"http://www.claws-mail.org/themes.php"
+#define MAILING_LIST_URI	"http://www.claws-mail.org/MLs.php"
+#define USERS_ML_ADDR		"claws-mail-users@dotsrc.org"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
-#define DONATE_URI		"http://www.sylpheed-claws.net/sponsors.php"
+#define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
 #define OPENSSL_URI		"http://www.openssl.org/"
 #define THEMEINFO_FILE		".sylpheed_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"

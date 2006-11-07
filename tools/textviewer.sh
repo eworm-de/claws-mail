@@ -21,14 +21,14 @@
 
 ##############################################################################
 #
-# This script is a text viewer designed to be used with sylpheed-claws actions
+# This script is a text viewer designed to be used with claws-mail actions
 # Set up an action with the command line:  textviewer.sh %p |
 #
 # The script will try to detect file type automatically, and then
 # invokes a relevant program to print the file in plain text to
 # the standard output.
 #
-# From v 0.9.7claws7, sylpheed-claws sets the temporary file
+# From v 0.9.7claws7, claws-mail sets the temporary file
 # of a part to XXXXXX.mimetmp.[filename of attachment]
 # This means we can use the extension of the filename for checking.
 # Also use the program 'file' if that fails.
@@ -73,7 +73,7 @@
 #	  on the result, insteading of doing 'gzip -l'
 #
 # 2003-12-30
-#	added the script to sylpheed-claws/tools
+#	added the script to claws-mail/tools
 #
 # 2003-12-30
 #	- use 'fold' after 'unrtf' to wrap to a nice width

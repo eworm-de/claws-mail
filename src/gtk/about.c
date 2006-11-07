@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ static void about_create(void)
 	gint i;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("About Sylpheed-Claws"));
+	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_widget_set_size_request(window, -1, -1);
@@ -132,7 +132,7 @@ static void about_create(void)
 	table = gtk_table_new (1, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
 
-	image = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
+	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
 	gtk_table_attach(GTK_TABLE(table), image, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_SHRINK),
 			 (GtkAttachOptions) (GTK_SHRINK), 8, 0);
@@ -147,7 +147,7 @@ static void about_create(void)
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 	markup = g_markup_printf_escaped
-		("<span weight=\"bold\" size=\"xx-large\">Sylpheed-Claws</span>\nversion %s",
+		("<span weight=\"bold\" size=\"xx-large\">Claws Mail</span>\nversion %s",
 		 VERSION);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
@@ -238,7 +238,7 @@ static void about_create(void)
 
 	label = gtk_label_new
 		(_("Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-		 "and the Sylpheed-Claws team"));
+		 "and the Claws Mail team"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_table_attach(GTK_TABLE(table2), label, 0, 1, 0, 1,
@@ -280,16 +280,16 @@ static void about_create(void)
 				NULL);
 
 	gtk_text_buffer_insert(buffer, &iter, _(
-				"Sylpheed-Claws is a lightweight, fast and "
+				"Claws Mail is a lightweight, fast and "
 				"highly-configurable email client.\n\n"
 				"For further information visit the Sylpheed-"
 				"Claws website:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, HOMEPAGE_URI, -1,
 				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _("\n\n"
-				"Sylpheed-Claws is free software released "
+				"Claws Mail is free software released "
 				"under the GPL license. If you wish to donate "
-				"to the Sylpheed-Claws project you can do "
+				"to the Claws Mail project you can do "
 				"so at:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DONATE_URI, -1,
 				"link", NULL);
@@ -332,7 +332,7 @@ static void about_create(void)
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The Sylpheed-Claws Team\n")), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The Claws Mail Team\n")), -1,
 			"underlined-list-title", NULL);
 
 	for (i = 0; TEAM_LIST[i] != NULL; i++) {

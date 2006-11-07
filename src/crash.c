@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002 by the Sylpheed Claws Team and Hiroyuki Yamamoto
+ * Copyright (C) 2002 by the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ void crash_main(const char *arg)
 	tokens = g_strsplit(arg, ",", 0);
 
 	pid = atol(tokens[0]);
-	text = g_strdup_printf(_("Sylpheed-Claws process (%ld) received signal %ld"),
+	text = g_strdup_printf(_("Claws Mail process (%ld) received signal %ld"),
 			       pid, atol(tokens[1]));
 
 	output = g_string_new("");     
@@ -185,7 +185,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 
 	window1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
-	gtk_window_set_title(GTK_WINDOW(window1), _("Sylpheed-Claws has crashed"));
+	gtk_window_set_title(GTK_WINDOW(window1), _("Claws Mail has crashed"));
 	gtk_window_set_position(GTK_WINDOW(window1), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window1), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window1), 460, 272);
@@ -223,7 +223,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
 	crash_report = g_strdup_printf(
-		"Sylpheed-Claws version %s\n"
+		"Claws Mail version %s\n"
 		"GTK+ version %d.%d.%d / GLib %d.%d.%d\n"
 		"Locale: %s (charset: %s)\n"
 		"Features:%s\n"
@@ -314,7 +314,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 }
 
 /*!
- *\brief	create bug report (goes to Sylpheed Claws bug tracker)	
+ *\brief	create bug report (goes to Claws Mail bug tracker)	
  */
 static void crash_create_bug_report(GtkButton *button, const gchar *data)
 {

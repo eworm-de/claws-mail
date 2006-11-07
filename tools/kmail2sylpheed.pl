@@ -33,7 +33,7 @@ $sylph_addr .= "<address-book name=\"Kmail Address Book\" >\n";
 
 chdir;
 
-opendir(SYLPHEED, ".sylpheed-claws") || die("Can't open .sylpheed-claws directory\n");
+opendir(SYLPHEED, ".claws-mail") || die("Can't open .claws-mail directory\n");
 	push(@cached,(readdir(SYLPHEED)));
 closedir(SYLPHEED);
 
@@ -186,11 +186,11 @@ foreach $kmailline (@kmaillines) {
 }
 $sylph_addr .= "</address-book>\n";
 
-open (NEWADDR, ">.sylpheed-claws/$new_addrbk");
+open (NEWADDR, ">.claws-mail/$new_addrbk");
 print NEWADDR $sylph_addr;
 close NEWADDR;
 
-open (ADDRIN, "<.sylpheed-claws/addrbook--index.xml") || die("can't open addrbook--index.xml");
+open (ADDRIN, "<.claws-mail/addrbook--index.xml") || die("can't open addrbook--index.xml");
 	@addrindex_file = <ADDRIN>;
 close ADDRIN;
 
@@ -203,7 +203,7 @@ foreach $addrindex_line (@addrindex_file) {
 	}
 }
 
-open (NEWADDRIN, ">.sylpheed-claws/addrbook--index.xml");
+open (NEWADDRIN, ">.claws-mail/addrbook--index.xml");
 print NEWADDRIN "$rewrite_addrin";
 close NEWADDRIN;
 

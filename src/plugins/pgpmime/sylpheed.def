@@ -1,4 +1,4 @@
-LIBRARY SYLPHEED-CLAWS.EXE
+LIBRARY CLAWS-MAIL.EXE
 EXPORTS
 canonicalize_str
 debug_print_real

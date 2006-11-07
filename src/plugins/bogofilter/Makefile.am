@@ -10,7 +10,7 @@ bogofilter_la_LDFLAGS = \
 	-avoid-version -module -no-undefined
 
 if CYGWIN
-cygwin_export_lib = -L$(top_builddir)/src -lsylpheed-claws
+cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
 else
 cygwin_export_lib =
 endif

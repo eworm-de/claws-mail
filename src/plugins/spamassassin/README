@@ -22,7 +22,7 @@ Plugin preferences can be found under "Configuration/Preferences/Plugins
 /SpamAssassin". 
 
 The SpamAssassin plugin uses it's own block in the sylpheedrc file in your
-~/.sylpheed-claws/ directory, and define the following options:
+~/.claws-mail/ directory, and define the following options:
 
 [SpamAssassin]
 transport=0				transport type (to reach spamd)

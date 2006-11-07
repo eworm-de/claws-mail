@@ -1,13 +1,13 @@
-Dillo Viewer: HTML mail viewing in Sylpheed-Claws
+Dillo Viewer: HTML mail viewing in Claws Mail
 -------------------------------------------------
 
 This plugin uses the Dillo (http://www.dillo.org) browser to
-view text/html MIME parts inside Sylpheed-Claws.
+view text/html MIME parts inside Claws Mail.
 
 When the plugin is loaded, if the MIME part to be viewed is of
 text/html type, then the MIME part is saved in a temporary file and
 Dillo is started with special options to embed it inside
-Sylpheed-Claws' message view and to "safely" view the part.  Dillo is
+Claws Mail' message view and to "safely" view the part.  Dillo is
 also run in the fullwindow mode, where the toolbar, menubar and the
 statusbar are hidden so the message is viewed in a larger area.  The
 fullwindow mode is toggled on and off by double clicking on an empty

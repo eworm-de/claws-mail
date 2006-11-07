@@ -9,9 +9,9 @@ endif
 
 SUBDIRS = common gtk $(etpan_dir) . plugins
 
-bin_PROGRAMS = sylpheed-claws
+bin_PROGRAMS = claws-mail
 
-sylpheed_claws_SOURCES = \
+claws_mail_SOURCES = \
 	account.c \
 	action.c \
 	addrbook.c \
@@ -146,8 +146,8 @@ sylpheed_claws_SOURCES = \
 	vcard.c \
 	wizard.c
 
-sylpheed_clawsincludedir = $(pkgincludedir)
-sylpheed_clawsinclude_HEADERS = \
+claws_mailincludedir = $(pkgincludedir)
+claws_mailinclude_HEADERS = \
 	account.h \
 	action.h \
 	adbookbase.h \
@@ -378,9 +378,9 @@ EXTRA_DIST = \
 	pixmaps/search.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
-	pixmaps/sylpheed-claws_icon.xpm \
-	pixmaps/sylpheed-claws_logo.xpm \
-	pixmaps/sylpheed-claws.xpm \
+	pixmaps/claws-mail_icon.xpm \
+	pixmaps/claws-mail_logo.xpm \
+	pixmaps/claws-mail.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/trash_btn.xpm \
@@ -415,10 +415,10 @@ else
 arch_ldflags :=
 endif
 
-sylpheed_claws_LDFLAGS = \
+claws_mail_LDFLAGS = \
 	$(arch_ldflags) -export-dynamic
 
-sylpheed_claws_LDADD = \
+claws_mail_LDADD = \
 	$(etpan_library) \
 	gtk/libsylpheedgtk.la \
 	$(ASPELL_LIBS) \
@@ -437,7 +437,7 @@ sylpheed_claws_LDADD = \
 	$(LIBETPAN_LIBS)
 
 AM_CPPFLAGS = \
-	-DG_LOG_DOMAIN=\"Sylpheed-Claws\" \
+	-DG_LOG_DOMAIN=\"Claws-Mail\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
@@ -459,18 +459,18 @@ AM_CPPFLAGS = \
 AM_YFLAGS = -d
 
 if CYGWIN
-sylpheed-claws$(EXEEXT): $(sylpheed_claws_OBJECTS) $(sylpheed_claws_DEPENDENCIES) 
-	@rm -f sylpheed-claws$(EXEEXT)
-	@rm -f sylpheed-claws.def sylpheed-claws.base sylpheed-claws.exp libsylpheed-claws.a .libs/libsylpheed-claws.a
-	$(LINK) -shared $(sylpheed_clawsLDFLAGS) -Wl,--out-implib=libsylpheed-claws.a -Wl,--export-all-symbols,--exclude-symbols,main $(sylpheed_claws_OBJECTS) -Wl,--no-whole-archive $(sylpheed_claws_LDADD) $(LIBS)
-	dlltool --output-def sylpheed-claws.def --dllname sylpheed-claws$(EXEEXT) --export-all-symbols --exclude-symbols main $(sylpheed_claws_OBJECTS) gtk/.libs/libsylpheedgtk.a
-	$(LINK) $(sylpheed_claws_LDFLAGS) -Wl,--base-file,sylpheed-claws.base $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
+claws-mail$(EXEEXT): $(claws_mail_OBJECTS) $(claws_mail_DEPENDENCIES) 
+	@rm -f claws-mail$(EXEEXT)
+	@rm -f claws-mail.def claws-mail.base claws-mail.exp libclaws-mail.a .libs/libclaws-mail.a
+	$(LINK) -shared $(claws_mailLDFLAGS) -Wl,--out-implib=libclaws-mail.a -Wl,--export-all-symbols,--exclude-symbols,main $(claws_mail_OBJECTS) -Wl,--no-whole-archive $(claws_mail_LDADD) $(LIBS)
+	dlltool --output-def claws-mail.def --dllname claws-mail$(EXEEXT) --export-all-symbols --exclude-symbols main $(claws_mail_OBJECTS) gtk/.libs/libsylpheedgtk.a
+	$(LINK) $(claws_mail_LDFLAGS) -Wl,--base-file,claws-mail.base $(claws_mail_OBJECTS) $(claws_mail_LDADD) $(LIBS)
 	sleep 5
-	dlltool --base-file sylpheed-claws.base --input-def sylpheed-claws.def --output-exp sylpheed-claws.exp
-	$(LINK) $(sylpheed_claws_LDFLAGS) -Wl,sylpheed-claws.exp $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
-	@cp libsylpheed-claws.a .libs/libsylpheed-claws.a
+	dlltool --base-file claws-mail.base --input-def claws-mail.def --output-exp claws-mail.exp
+	$(LINK) $(claws_mail_LDFLAGS) -Wl,claws-mail.exp $(claws_mail_OBJECTS) $(claws_mail_LDADD) $(LIBS)
+	@cp libclaws-mail.a .libs/libclaws-mail.a
 else
-#sylpheed-claws$(EXEEXT): $(sylpheed_claws_OBJECTS) $(sylpheed_claws_DEPENDENCIES) 
-#	@rm -f sylpheed-claws$(EXEEXT)
-#	$(LINK) $(sylpheed_claws_LDFLAGS) $(sylpheed_claws_OBJECTS) $(sylpheed_claws_LDADD) $(LIBS)
+#claws-mail$(EXEEXT): $(claws_mail_OBJECTS) $(claws_mail_DEPENDENCIES) 
+#	@rm -f claws-mail$(EXEEXT)
+#	$(LINK) $(claws_mail_LDFLAGS) $(claws_mail_OBJECTS) $(claws_mail_LDADD) $(LIBS)
 endif

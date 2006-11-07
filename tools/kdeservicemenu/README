@@ -1,6 +1,6 @@
 sylpheed-kdeservicemenu.pl 
 Version: 1.3
-Sylpheed-Claws servicemenu for Konqueror
+Claws Mail servicemenu for Konqueror
 
 FILES
 o README			You're reading it
@@ -16,13 +16,13 @@ or compression of files/directories and then attaching of
 the archive to a new compose window.
 
 Adds the following right-click menu item to Konqueror:
-/Sylpheed-Claws/Attach file(s)
-/Sylpheed-Claws/Attach as GZip File(s)
-/Sylpheed-Claws/Attach as BZip File(s)
-/Sylpheed-Claws/Attach as Tar Archive
-/Sylpheed-Claws/Attach as Bzipped Tar Archive
-/Sylpheed-Claws/Attach as Gzipped Tar Archive
-/Sylpheed-Claws/Attach as Zip Archive
+/Claws Mail/Attach file(s)
+/Claws Mail/Attach as GZip File(s)
+/Claws Mail/Attach as BZip File(s)
+/Claws Mail/Attach as Tar Archive
+/Claws Mail/Attach as Bzipped Tar Archive
+/Claws Mail/Attach as Gzipped Tar Archive
+/Claws Mail/Attach as Zip Archive
 
 OPERATION
 All outputted files are created in /tmp
@@ -32,7 +32,7 @@ REQUIREMENTS
 Perl 5.x.x
 
 INSTALL
-o cd sylpheed-claws/tools/kdeservicemenu
+o cd claws-mail/tools/kdeservicemenu
 o ./install.sh (for kdialog prompt)
  -or-
 o ./install.sh --global
@@ -40,7 +40,7 @@ o ./install.sh --global
   	(systemwide or home directory installation)
 		
 UNINSTALL
-o cd sylpheed-claws/tools/kdeservicemenu
+o cd claws-mail/tools/kdeservicemenu
 o ./install.sh (for kdialog prompt)
  -or-
 o ./install.sh --uninstall-global
@@ -67,7 +67,7 @@ Translators:
 [sk] Andrej Kacian <andrej@kacian.sk>
 
 LINKS
-Sylpheed-Claws <http://claws.sylpheed.org/>
+Claws Mail <http://claws.sylpheed.org/>
 Perl <http://www.perl.org>
 KDE <http://www.kde.org>
 

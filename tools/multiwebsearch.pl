@@ -27,11 +27,11 @@ GetOptions("where=s"	=> \$where,
 
 $what =~ s/\s/%20/g;
 
-chdir($ENV{HOME} . "/.sylpheed-claws") 
-	|| die("Can't find your ~/.sylpheed-claws directory\n");
+chdir($ENV{HOME} . "/.claws-mail") 
+	|| die("Can't find your ~/.claws-mail directory\n");
 
 open (CONF, "<multiwebsearch.conf") 
-	|| die("Can't open ~/.sylpheed-claws/multiwebsearch.conf\n");
+	|| die("Can't open ~/.claws-mail/multiwebsearch.conf\n");
 	@conflines = <CONF>;
 close CONF;
 
@@ -51,7 +51,7 @@ if (!$url) {
 } 
 
 open (SYLRC, "<sylpheedrc") 
-	|| die("Can't open ~/.sylpheed-claws/sylpheedrc\n");
+	|| die("Can't open ~/.claws-mail/sylpheedrc\n");
 	@rclines = <SYLRC>;
 close SYLRC;
 

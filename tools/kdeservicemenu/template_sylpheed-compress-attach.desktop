@@ -3,7 +3,7 @@ Actions=TarAndAttach;TarBzipAndAttach;TarGzipAndAttach;ZipAndAttach;
 Encoding=UTF8
 Name=Sylpheed compress and attach files/dirs
 Comment=kde service menu for compressing and attaching files/dirs to Sylpheed
-X-KDE-Submenu=Sylpheed-Claws
+X-KDE-Submenu=Claws Mail
 X-KDE-Priority=TopLevel
 ServiceTypes=all/all
 
@@ -15,7 +15,7 @@ Name[fr]=Joindre comme Archive Tar
 Name[it]=Allega come file tar
 Name[pt_BR]=Anexar como arquivo Tar
 Name[sk]=Pripoji» ako archív Tar
-Icon=sylpheed-claws
+Icon=claws-mail
 Exec=SCRIPT_PATH tar %U
 
 [Desktop Action TarBzipAndAttach]
@@ -26,7 +26,7 @@ Name[fr]=Joindre comme Archive Tar Bzippée
 Name[it]=Allega come file tar.bz
 Name[pt_BR]=Anexar como arquivo Tar compactado com BZip
 Name[sk]=Pripoji» ako Bzip-om komprimovaný archív Tar
-Icon=sylpheed-claws
+Icon=claws-mail
 Exec=SCRIPT_PATH tar.bz2 %U
 
 [Desktop Action TarGzipAndAttach]
@@ -37,7 +37,7 @@ Name[fr]=Joindre comme Archive Tar Gzippée
 Name[it]=Allega come file tar.gz
 Name[pt_BR]=Anexar como arquivo Tar compactado com GZip
 Name[sk]=Pripoji» ako Gzip-om komprimovaný archív Tar
-Icon=sylpheed-claws
+Icon=claws-mail
 Exec=SCRIPT_PATH tar.gz %U
 
 [Desktop Action ZipAndAttach]
@@ -48,5 +48,5 @@ Name[fr]=Joindre comme Archive Zip
 Name[it]=Allega come file zip
 Name[pt_BR]=Anexar como arquivo Zip
 Name[sk]=Pripoji» ako archív Zip
-Icon=sylpheed-claws
+Icon=claws-mail
 Exec=SCRIPT_PATH zip %U

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -703,7 +703,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to access the IMAP server."))) {
 		return NULL;
 	}
@@ -780,7 +780,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
 			  "using SSL, but SSL is not available in this "
-			  "build of Sylpheed-Claws. \n\n"
+			  "build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
@@ -2219,7 +2219,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		
 		if (prefs_common.work_offline && 
 		    !inc_offline_should_override(
-			_("Sylpheed-Claws needs network access in order "
+			_("Claws Mail needs network access in order "
 			  "to access the IMAP server."))) {
 			g_free(data);
 			return NULL;
@@ -2563,7 +2563,7 @@ static gint imap_cmd_login(IMAPSession *session,
 			}
 #else		
 			log_error(_("Connection to %s failed: "
-					"server requires TLS, but Sylpheed-Claws "
+					"server requires TLS, but Claws Mail "
 					"has been compiled without OpenSSL "
 					"support.\n"),
 					SESSION(session)->server);
@@ -2743,7 +2743,7 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
@@ -2828,7 +2828,7 @@ static gint imap_cmd_expunge(IMAPSession *session)
 	
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to access the IMAP server."))) {
 		return -1;
 	}
@@ -3162,7 +3162,7 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	data->session = session;
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
@@ -3917,7 +3917,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to access the IMAP server."))) {
 		g_free(data);
 		return -1;
@@ -4381,12 +4381,12 @@ static Folder	*imap_folder_new	(const gchar	*name,
 		alertpanel_error(
 			_("You have one or more IMAP accounts "
 			  "defined. However this version of "
-			  "Sylpheed-Claws has been built without "
+			  "Claws Mail has been built without "
 			  "IMAP support; your IMAP account(s) are "
 			  "disabled.\n\n"
 			  "You probably need to "
 			  "install libetpan and recompile "
-			  "Sylpheed-Claws."));
+			  "Claws Mail."));
 	}
 	return NULL;
 }
