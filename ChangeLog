@@ -1,3 +1,9 @@
+2006-11-07 [paul]	2.6.0cvs8
+
+	* Makefile.am
+		Fix icon breakages with Gtk, which needs a 
+		cache updated to see them.
+
 2006-11-07 [paul]	2.6.0cvs7
 
 	* .cvsignore

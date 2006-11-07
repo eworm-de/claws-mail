@@ -26,6 +26,20 @@ pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 pixmap_DATA=claws-mail.png
 gnomapdir = $(datadir)/applications
 gnomap_DATA=claws-mail.desktop
+
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
+
+install-data-hook:
+	@-if test -z "$(DESTDIR)"; then					\
+                echo "Updating Gtk icon cache.";			\
+                $(gtk_update_icon_cache);				\
+        else								\
+                echo "*** Icon cache not updated. Remember to run:";	\
+		echo "***";						\
+                echo "***   $(gtk_update_icon_cache)";			\
+		echo "***";						\
+        fi
+
 else
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedatadir)/pixmaps
