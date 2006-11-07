@@ -2036,3 +2036,4 @@
 ( cvs diff -u -r 1.155.2.44 -r 1.155.2.45 src/Makefile.am;  cvs diff -u -r 1.36.2.88 -r 1.36.2.89 src/common/utils.c;  cvs diff -u -r 1.1.4.55 -r 1.1.4.56 src/etpan/imap-thread.c;  ) > 2.6.0cvs9.patchset
 ( cvs diff -u -r 1.155.2.45 -r 1.155.2.46 src/Makefile.am;  ) > 2.6.0cvs10.patchset
 ( cvs diff -u -r 1.4.2.37 -r 1.4.2.38 src/gtk/about.c;  ) > 2.6.0cvs11.patchset
+( cvs diff -u -r 1.382.2.323 -r 1.382.2.324 src/compose.c;  ) > 2.6.0cvs12.patchset

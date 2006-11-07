@@ -1207,7 +1207,7 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
 	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
 		debug_print("reply mode List\n");
-		menu_set_active(ifactory, "/Options/Reply mode/List", TRUE);
+		menu_set_active(ifactory, "/Options/Reply mode/Mailing-list", TRUE);
 		break;
 	default:
 		break;
