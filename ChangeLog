@@ -1,8 +1,3 @@
-2006-11-07 [colin]	2.6.0cvs2
-
-	* src/compose.c
-		Fix Reply To/Mailing list. From 2.6.0cvs12
-
 2006-11-07 [colin]	2.6.0cvs1-stable
 
 	* src/compose.c
