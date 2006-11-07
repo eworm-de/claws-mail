@@ -282,8 +282,8 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter, _(
 				"Claws Mail is a lightweight, fast and "
 				"highly-configurable email client.\n\n"
-				"For further information visit the Sylpheed-"
-				"Claws website:\n"), -1);
+				"For further information visit the Claws Mail "
+				"website:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, HOMEPAGE_URI, -1,
 				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _("\n\n"

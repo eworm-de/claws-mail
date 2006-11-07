@@ -1,3 +1,9 @@
+2006-11-07 [paul]	2.6.0cvs11
+
+	* src/gtk/about.c
+		Fix a missed occurence of
+		Sylpheed-Claws
+
 2006-11-07 [paul]	2.6.0cvs10
 
 	* src/Makefile.am
