@@ -4714,6 +4714,15 @@ gint copy_dir(const gchar *src, const gchar *dst)
 			gint r = copy_file(old_file, new_file, TRUE);
 			if (r < 0)
 				return r;
+		} else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
+			GError *error;
+			gint r = 0;
+			gchar *target = g_file_read_link(old_file, &error);
+			if (target)
+				r = symlink(target, new_file);
+			g_free(target);
+			if (r < 0)
+				return r;
 		} else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
 			gint r = copy_dir(old_file, new_file);
 			if (r < 0)

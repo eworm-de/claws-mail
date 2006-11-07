@@ -470,7 +470,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
 	
-	if (result.error >= 0 && !etpan_skip_ssl_cert_check) {
+	if (result.error == 0 && !etpan_skip_ssl_cert_check) {
 		cert_len = mailstream_ssl_get_certificate(imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			return -1;

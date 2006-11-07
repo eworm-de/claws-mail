@@ -1,3 +1,13 @@
+2006-11-07 [paul]	2.6.0cvs9
+
+	* src/Makefile.am
+		Symlink claws-mail to sylpheed-claws
+	* src/common/utils.c
+		Fix migrating symlinks
+	* src/etpan/imap-thread.c
+		check certificate only when there's
+		no error
+
 2006-11-07 [paul]	2.6.0cvs8
 
 	* Makefile.am
