@@ -883,7 +883,7 @@
 	uniforme de recurso). Es un esquema de nombrado para objetos (ficheros
 	normalmente) en entornos de red multi-protocolo como Internet.
 	Por ejemplo éste es el de la página principal de &SC;:
-        <literal>http://www.sylpheed-claws.net</literal>.
+        <literal>http://www.claws-mail.org</literal>.
       </para>
     </listitem>
   </varlistentry>

@@ -1,8 +1,8 @@
-EXTRA_DIST=sylpheed-claws-manual.pdf
-manualfr_DATA=sylpheed-claws-manual.pdf
+EXTRA_DIST=claws-mail-manual.pdf
+manualfr_DATA=claws-mail-manual.pdf
 manualfrdir=$(manualdir)/fr
 
-sylpheed-claws-manual.pdf: \
+claws-mail-manual.pdf: \
 	../../account.xml \
 	../../ack.xml \
 	../../addrbook.xml \
@@ -15,8 +15,8 @@ sylpheed-claws-manual.pdf: \
 	../../keyboard.xml \
 	../../plugins.xml \
 	../../starting.xml \
-	../../sylpheed-claws-manual.xml 
-	-sh ../../../xml2pdf ../../../dtd/manual.xsl ../../sylpheed-claws-manual.xml
+	../../claws-mail-manual.xml 
+	-sh ../../../xml2pdf ../../../dtd/manual.xsl ../../claws-mail-manual.xml
 	
 maintainer-clean:
-	-rm sylpheed-claws-manual.pdf sylpheed-claws-manual.fo sylpheed-claws-manual.xsl
+	-rm claws-mail-manual.pdf claws-mail-manual.fo claws-mail-manual.xsl

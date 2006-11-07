@@ -49,7 +49,7 @@ fi
 KEY="http://docbook.sourceforge.net/release/xsl/current"
 
 # manual base name
-SCM=sylpheed-claws-manual
+SCM=claws-mail-manual
 
 for CATALOG in $CATALOG_FILES
 do

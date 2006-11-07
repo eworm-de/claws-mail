@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <section id="ch_plugins">
-<title>Extending Sylpheed-Claws</title>
+<title>Extending Claws Mail</title>
 
   <section id="plugins_default">
     <title>Provided plugins</title>
     <para>
-	Sylpheed-Claws' capabilities are extended by plugins. It comes with 
+	Claws Mail' capabilities are extended by plugins. It comes with 
 	the plugins listed below included, all of which are built automatically
 	if the required libraries are present.
     </para><para>
 	Plugins are installed in <filename class="directory"
-	>$PREFIX/lib/sylpheed-claws/plugins/</filename> and have a suffix of 
+	>$PREFIX/lib/claws-mail/plugins/</filename> and have a suffix of 
 	<quote>.so</quote>. To load a plugin go to 
 	<quote>Configuration/Plugins</quote> and click the 
 	<quote>Load Plugin</quote> button. Select the plugin that you want and 
@@ -139,8 +139,8 @@
     <para>
 	Other plugins have been written too, which are available as separate 
 	downloads. At the time of this writing, there are a number of plugins 
-	available at <ulink url="http://www.sylpheed-claws.net/plugins.php"
-	>http://www.sylpheed-claws.net/plugins.php</ulink>:
+	available at <ulink url="http://www.claws-mail.org/plugins.php"
+	>http://www.claws-mail.org/plugins.php</ulink>:
     </para>
     <variablelist>
       <varlistentry>
@@ -166,7 +166,7 @@
 	  <para>
 	Saves the caches every 60 seconds (or user-defined period). It helps 
 	avoiding the loss of metadata if your computer (<emphasis>or 
-	Sylpheed-Claws!</emphasis>) crashes.
+	Claws Mail!</emphasis>) crashes.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -185,7 +185,7 @@
 	<listitem>
 	  <para>
 	Inserts headers containing some download information, like UIDL, 
-	Sylpheed-Claws' account name, POP server, user ID and retrieval time.
+	Claws Mail' account name, POP server, user ID and retrieval time.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -219,8 +219,8 @@
 	<term>Perl</term>
 	<listitem>
 	  <para>
-	Intended to extend the filtering possibilities of Sylpheed-Claws. It 
-	provides a Perl interface to Sylpheed-Claws' filtering mechanism, 
+	Intended to extend the filtering possibilities of Claws Mail. It 
+	provides a Perl interface to Claws Mail' filtering mechanism, 
 	allowing the use of full Perl power in email filters.
 	  </para>
 	</listitem>
@@ -241,7 +241,7 @@
 	<listitem>
 	  <para>
 	Assists in keeping the address book of a Windows CE device (Pocket 
-	PC, iPAQ, Smartphone, etc.) in sync with Sylpheed-Claws' address book, 
+	PC, iPAQ, Smartphone, etc.) in sync with Claws Mail' address book, 
 	with respect to email addresses.
 	  </para>
 	</listitem>
@@ -266,11 +266,11 @@
       </varlistentry>
     </variablelist>
     <para>
-	If you're a developer, writing a plugin to extend Sylpheed-Claws' 
+	If you're a developer, writing a plugin to extend Claws Mail' 
 	capabilities is probably the best and easiest solution. We will 
 	provide hosting to your code, and will be glad to answer your questions
 	in the mailing-list or on the IRC channels, 
-	<literal>#sylpheed-claws</literal> on Freenode or IRCnet.
+	<literal>#claws-mail</literal> on Freenode or IRCnet.
     </para>
   </section>
   <section id="plugins_network">
@@ -288,10 +288,10 @@
 	myproxy.example.com, with the user <quote>user</quote> and password 
 	<quote>passwd</quote> to connect to the Internet. 
     </para><para>
-	You can either set this variable before starting Sylpheed-Claws, by 
+	You can either set this variable before starting Claws Mail, by 
 	using for example 
 	<command>http_proxy=http://user:passwd@myproxy.example.com:8080 
-	sylpheed-claws</command>, or set it in your 
+	claws-mail</command>, or set it in your 
 	<filename>~/.bashrc</filename> file (or your shell equivalent), by 
 	adding the following line<footnote><para>Other shells may have 
 	diferent syntaxes, check your shell's manual page.</para></footnote>: 

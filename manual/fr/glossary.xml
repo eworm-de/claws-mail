@@ -77,7 +77,7 @@ Compte
     </term>
     <listitem>
       <para>
-Un compte représente une identité dans Sylpheed-Claws. Une seule adresse email peut être associée à un compte, et vous pouvez configurer autant de comptes que nécessaire.
+Un compte représente une identité dans Claws Mail. Une seule adresse email peut être associée à un compte, et vous pouvez configurer autant de comptes que nécessaire.
       </para>
     </listitem>
   </varlistentry>
@@ -141,7 +141,7 @@ Dossier
     </term>
     <listitem>
       <para>
-Les dossiers contiennent des messages et/ou d'autres dossiers. Ils peuvent être locaux ou distants, mais sont présentés de la même manière par Sylpheed-Claws.
+Les dossiers contiennent des messages et/ou d'autres dossiers. Ils peuvent être locaux ou distants, mais sont présentés de la même manière par Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -219,7 +219,7 @@ Fenêtre de traces
     </term>
     <listitem>
       <para>
-Une fenêtre spéciale pour afficher les commandes réseau exécutées par Sylpheed-Claws. C'est un outil utile pour trouver la cause de certains problèmes.
+Une fenêtre spéciale pour afficher les commandes réseau exécutées par Claws Mail. C'est un outil utile pour trouver la cause de certains problèmes.
       </para>
     </listitem>
   </varlistentry>
@@ -320,7 +320,7 @@ Liste de diffusion
     </term>
    <listitem>
       <para>
-Une liste de diffusion (mailing list en anglais) est une utilisation spécifique du courrier électronique qui permet la diffusion d'informations à un grand nombre d'utilisateurs de l'Internet. Les listes de diffusion sont le plus souvent le lieu de discussions sur un sujet particulier (c'est le cas de la liste de diffusion des utilisateurs de Sylpheed-Claws). Un utilisateur contacte tous les autres en envoyant un courriel à la liste de diffusion, ces derniers pouvant alors lui répondre par le même biais.
+Une liste de diffusion (mailing list en anglais) est une utilisation spécifique du courrier électronique qui permet la diffusion d'informations à un grand nombre d'utilisateurs de l'Internet. Les listes de diffusion sont le plus souvent le lieu de discussions sur un sujet particulier (c'est le cas de la liste de diffusion des utilisateurs de Claws Mail). Un utilisateur contacte tous les autres en envoyant un courriel à la liste de diffusion, ces derniers pouvant alors lui répondre par le même biais.
 	  </para>
    </listitem>
   </varlistentry>
@@ -354,7 +354,7 @@ MBOX
     </term>
     <listitem>
       <para>
-Un format de boîte aux lettre où les messages sont concaténés dans un seul fichier. Sylpheed-Claws supporte les mbox au format mboxrd.
+Un format de boîte aux lettre où les messages sont concaténés dans un seul fichier. Claws Mail supporte les mbox au format mboxrd.
       </para>
     </listitem>
   </varlistentry>
@@ -364,7 +364,7 @@ Message
     </term>
     <listitem>
       <para>
-Un message est la pièce d'information la plus basique gérée par Sylpheed-Claws. Les messages sont en général des courriels, stockés au format <xref linkend="gt_mh" /> sur disque. D'autres sortes de messages peuvent être gérées via les <xref linkend="gt_plugins" />.
+Un message est la pièce d'information la plus basique gérée par Claws Mail. Les messages sont en général des courriels, stockés au format <xref linkend="gt_mh" /> sur disque. D'autres sortes de messages peuvent être gérées via les <xref linkend="gt_plugins" />.
       </para>
     </listitem>
   </varlistentry>
@@ -374,7 +374,7 @@ MH
     </term>
     <listitem>
       <para>
-Un format de boîte aux lettre où chaque message est un fichier. C'est le format par défaut pour Sylpheed-Claws.
+Un format de boîte aux lettre où chaque message est un fichier. C'est le format par défaut pour Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -394,7 +394,7 @@ Modules
     </term>
     <listitem>
       <para>
-Ajoutent des fonctionnalités à Sylpheed-Claws lorsqu'ils sont chargés.
+Ajoutent des fonctionnalités à Claws Mail lorsqu'ils sont chargés.
       </para>
     </listitem>
   </varlistentry>
@@ -434,7 +434,7 @@ Pièces jointes
     </term>
     <listitem>
       <para>
-Fichiers inclus dans un message. Certains peuvent être affichés par Sylpheed-Claws, d'autres doivent être ouverts avec d'autres logiciels. Les <xref linkend="gt_plugins" /> peuvent gérer certains types de pièces jointes.
+Fichiers inclus dans un message. Certains peuvent être affichés par Claws Mail, d'autres doivent être ouverts avec d'autres logiciels. Les <xref linkend="gt_plugins" /> peuvent gérer certains types de pièces jointes.
       </para>
     </listitem>
   </varlistentry>
@@ -660,7 +660,7 @@ Thèmes
     </term>
     <listitem>
       <para>
-Jeux d'icônes pour changer l'apparence des boutons, dossiers et autres éléments graphiques de Sylpheed-Claws.
+Jeux d'icônes pour changer l'apparence des boutons, dossiers et autres éléments graphiques de Claws Mail.
       </para>
     </listitem>
   </varlistentry>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_plugins">
-<title>Étendre les possibilités de Sylpheed-Claws</title>
+<title>Étendre les possibilités de Claws Mail</title>
 
   <section id="plugins_default">
     <title>Modules fournis</title>
     <para>
-	Les fonctionnalités de Sylpheed-Claws peuvent être augmentées grâce à divers modules. Sylpheed-Claws est livré avec les modules suivants, tous installés par défaut tant que les dépendances nécessaires sont présentes sur votre système.
+	Les fonctionnalités de Claws Mail peuvent être augmentées grâce à divers modules. Claws Mail est livré avec les modules suivants, tous installés par défaut tant que les dépendances nécessaires sont présentes sur votre système.
     </para><para>
-	Les modules sont installés dans le répertoire $PREFIX/lib/sylpheed-claws/plugins/ et leur extension est <quote>.so</quote>. Pour charger un module en mémoire, allez dans le menu <quote>Configuration/Modules</quote> et cliquez sur le bouton <quote>Charger un module</quote>. Choisissez le module désiré, et validez.
+	Les modules sont installés dans le répertoire $PREFIX/lib/claws-mail/plugins/ et leur extension est <quote>.so</quote>. Pour charger un module en mémoire, allez dans le menu <quote>Configuration/Modules</quote> et cliquez sur le bouton <quote>Charger un module</quote>. Choisissez le module désiré, et validez.
     </para><para>
 	Si vous ne trouvez pas le module que vous cherchez, il est possible que votre distribution GNU/Linux le fournisse dans un paquet séparé. Dans ce cas, recherchez-le dans votre gestionnaire de paquets.
     </para>
@@ -38,7 +38,7 @@
   <section id="plugins_external">
     <title>Autres modules</title>
     <para>
-	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>&nbsp;:
+	D'autres modules ont été écrits, qui sont disponibles sous forme de téléchargements séparés. À l'heure de l'écriture de ces lignes, un certain nombre est disponible sur <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>&nbsp;:
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>
@@ -48,7 +48,7 @@
 	    <listitem><para> Ce module vous permet d'effacer les pièces jointes dans les messages.</para></listitem>
     </varlistentry>
     <varlistentry><term>CacheSaver</term>
-	    <listitem><para>Enregistre les caches de dossiers toutes les minutes. Il aide à éviter la perte de métadonnées si l'ordinateur (<emphasis>ou Sylpheed-Claws&nbsp;!</emphasis>) plante.</para></listitem>
+	    <listitem><para>Enregistre les caches de dossiers toutes les minutes. Il aide à éviter la perte de métadonnées si l'ordinateur (<emphasis>ou Claws Mail&nbsp;!</emphasis>) plante.</para></listitem>
     </varlistentry>
     <varlistentry><term>etpan! Privacy</term>
 	    <listitem><para>Gère les signatures numériques et chiffrement aux formats S/MIME, OpenPGP et PGP ASCII. Ne gère pas les phrases secrètes.</para></listitem>
@@ -66,13 +66,13 @@
 	    <listitem><para>Fournit le support des boîtes aux lettres au format MBOX. </para></listitem>
     </varlistentry>
     <varlistentry><term>Perl</term>
-	    <listitem><para>Étend les possibilités de filtrage de Sylpheed-Claws. Il fournit une interface Perl au filtrage de Sylpheed-Claws, ce qui permet l'utilisation de toute la puissance de Perl.</para></listitem>
+	    <listitem><para>Étend les possibilités de filtrage de Claws Mail. Il fournit une interface Perl au filtrage de Claws Mail, ce qui permet l'utilisation de toute la puissance de Perl.</para></listitem>
     </varlistentry>
     <varlistentry><term>S/MIME</term>
 	    <listitem><para>Gère les messages signés et/ou chiffrés avec S/MIME. Vous pourrez déchiffrer les messages, en vérifier les signatures, ou bien signer et chiffrer les messages que vous envoyez. Il utilise GnuPG/GPGME et GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
     </varlistentry>
     <varlistentry><term>SynCE</term>
-	    <listitem><para>Permet de garder les adresses synchronisées entre un ordinateur Windows CE (Pocket PC/ iPAQ, Smartphone etc) et Sylpheed-Claws.</para></listitem>
+	    <listitem><para>Permet de garder les adresses synchronisées entre un ordinateur Windows CE (Pocket PC/ iPAQ, Smartphone etc) et Claws Mail.</para></listitem>
     </varlistentry>
     <varlistentry><term>vCalendar</term>
 	    <listitem><para>Gère les messages vCalendar de réunion, tels que ceux envoyés par Outlook ou Evolution. Gère aussi les abonnement aux flux Webcal.</para></listitem>
@@ -82,7 +82,7 @@
     </varlistentry>
     </variablelist>
     <para>
-	Si vous êtes développeur, l'écriture d'un module Sylpheed-Claws est certainement la meilleure solution pour étendre les fonctionnalités de Sylpheed-Claws. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #sylpheed-claws sur Freenode et sur IRCnet.
+	Si vous êtes développeur, l'écriture d'un module Claws Mail est certainement la meilleure solution pour étendre les fonctionnalités de Claws Mail. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #claws-mail sur Freenode et sur IRCnet.
     </para>
   </section>
   <section id="plugins_network">
@@ -91,7 +91,7 @@
 	Certains modules externes, comme RSSyl, vCalendar ou GtkHtml Viewer, ont besoin d'un accès à Internet pour fonctionner normalement (pour récupérer les abonnements dans le cas de RSSyl ou vCalendar, pour récupérer les images dans le cas de GtkHtml Viewer). Ces modules utilisent la librairie Curl. C'est pourquoi, si votre accès Internet est restreint via un proxy (serveur mandataire), il faudra spécifier à la libCurl de l'utiliser. Ceci se fait en mettant en place une variable d'environnement, <emphasis>http_proxy</emphasis>. Par exemple, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> indiquera à la libCurl de se connecter au port 8080 de la machine myproxy.example.com, en tant qu'utilisateur <quote>user</quote> dont le mot de passe est <quote>passwd</quote> pour tout accès HTTP à Internet. 
     </para>
     <para>
-	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Sylpheed-Claws, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@monproxy.example.com:8080 sylpheed-claws</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante&nbsp;: <emphasis>export http_proxy=http://user:passwd@monproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
+	Vous pouvez mettre en place cette variable d'environnement avant de démarrer Claws Mail, par exemple en utilisant la commande <emphasis>http_proxy=http://user:passwd@monproxy.example.com:8080 claws-mail</emphasis>, ou bien le mettre en place une fois pour toutes dans votre fichier ~/.bashrc, avec la ligne suivante&nbsp;: <emphasis>export http_proxy=http://user:passwd@monproxy.example.com:8080</emphasis> (vous devrez vous reconnecter pour qu'elle soit prise en compte).
     </para>
   </section>
 </section>

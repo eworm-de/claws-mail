@@ -5,7 +5,7 @@
   <section id="keyb_general">
     <title>Motivations et conventions générales</title>
     <para>
-	Bien que Sylpheed-Claws soit une application graphique utilisable presque intégralement à la souris, vous aurez tout de même besoin du clavier de temps en temps - par exemple pour taper un courriel. Pour les utilisateurs qui écrivent beaucoup de courriels et ceux qui sont habitués à tout faire au clavier, Sylpheed-Claws propose un grand nombre de raccourcis pour vous permettre de ne (presque) jamais déplacer les mains du clavier vers la souris.
+	Bien que Claws Mail soit une application graphique utilisable presque intégralement à la souris, vous aurez tout de même besoin du clavier de temps en temps - par exemple pour taper un courriel. Pour les utilisateurs qui écrivent beaucoup de courriels et ceux qui sont habitués à tout faire au clavier, Claws Mail propose un grand nombre de raccourcis pour vous permettre de ne (presque) jamais déplacer les mains du clavier vers la souris.
     </para>
     <para>
 	Non seulement cela bénéficie aux utilisateurs avancés, mais cela est aussi très utile aux personnes à mobilité réduite (qui ne peuvent pas forcément utiliser une souris).
@@ -14,7 +14,7 @@
 	La convention la plus courante est la touche <option>Échap</option> (Esc). La plupart des dialogues et fenêtres peuvent être fermés par cette touche.
     </para>
     <para>
-	Il y a beaucoup de raccourcis clavier assignés par défaut aux différents éléments des menus. Nous ne les listerons pas ici, étant donné qu'ils sont affichés sur la droite de ces éléments, et seront plus facilement retenus par la pratique. Si ces raccourcis ne vous conviennent pas, sachez qu'il est possible de les modifier à la volée&nbsp;: laissez simplement la souris sur l'élément de menu dont vous voulez changer le raccourci, puis appuyez sur la combinaison de touches souhaitée. Cette combinaison doit toutefois inclure au moins l'une des touches suivantes&nbsp;: <option>Alt</option>, <option>Ctrl</option> et/ou <option>Maj</option> (Shift)&nbsp;; il n'est pas possible d'assigner des touches seules. C'est ainsi que fonctionne l'attribution de raccourcis clavier dans les menus des applications basées sur la library GTK2 comme Sylpheed-Claws, mais notez bien que cette possibilité peut être désactivée par défaut sur certains systèmes.
+	Il y a beaucoup de raccourcis clavier assignés par défaut aux différents éléments des menus. Nous ne les listerons pas ici, étant donné qu'ils sont affichés sur la droite de ces éléments, et seront plus facilement retenus par la pratique. Si ces raccourcis ne vous conviennent pas, sachez qu'il est possible de les modifier à la volée&nbsp;: laissez simplement la souris sur l'élément de menu dont vous voulez changer le raccourci, puis appuyez sur la combinaison de touches souhaitée. Cette combinaison doit toutefois inclure au moins l'une des touches suivantes&nbsp;: <option>Alt</option>, <option>Ctrl</option> et/ou <option>Maj</option> (Shift)&nbsp;; il n'est pas possible d'assigner des touches seules. C'est ainsi que fonctionne l'attribution de raccourcis clavier dans les menus des applications basées sur la library GTK2 comme Claws Mail, mais notez bien que cette possibilité peut être désactivée par défaut sur certains systèmes.
     </para>
     <para>En plus de ces raccourcis, il en existe d'autres, qui varient selon les fenêtres, et qui sont résumés ci-dessous.
     </para>

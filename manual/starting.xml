@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <section id="ch_starting">
-<title>Getting started with Sylpheed-Claws</title>
+<title>Getting started with Claws Mail</title>
 
   <section id="start_wizard">
     <title>The initial wizard</title>
     <para>
-	The first time that you start Sylpheed-Claws, you will be asked a few 
+	The first time that you start Claws Mail, you will be asked a few 
 	questions in order to set up an account. These questions are easy to 
 	answer and grouped in several short pages.
     </para><para>
@@ -68,13 +68,13 @@
 	<quote>Mail</quote>, is usually ok and will save your mails in a 
 	directory called <filename>Mail</filename> in your home directory.
     </para><para>
-	If Sylpheed-Claws is built with support for OpenSSL, you will next see 
+	If Claws Mail is built with support for OpenSSL, you will next see 
 	the <quote>Security</quote> page, here you will be able to choose to 
 	use SSL encryption to send and receive your emails. Most ISPs do not 
 	enable this, but many companies do; if you're unsure about it, you can 
 	leave them unselected.
     </para><para>
-	You can now click on the Save button, and start enjoying Sylpheed-Claws.
+	You can now click on the Save button, and start enjoying Claws Mail.
     </para>
   </section>
 
@@ -85,7 +85,7 @@
 	<quote>Get mail</quote> or from the <quote>Receive</quote> submenu of 
 	the <quote>Message</quote> menu.
     </para><para>
-	If you want Sylpheed-Claws to check your mail automatically at regular 
+	If you want Claws Mail to check your mail automatically at regular 
 	intervals, you can ask it to do so from the 
 	<quote>Mail handling: Receiving</quote> preference page which you'll 
 	find in the <quote>Configuration/Preferences...</quote> menu. Just 
@@ -124,7 +124,7 @@
 	typing in the field that you require. After that, you will be able to 
 	set the subject of your email, then type its body.
     </para><para>
-	A little note about an email's subject: Sylpheed-Claws will ask you for
+	A little note about an email's subject: Claws Mail will ask you for
 	confirmation if you attempt to send an email with an empty subject. 
 	This is because it can be annoying for the recipient to receive emails 
 	without a subject, as it doesn't help in handling email.

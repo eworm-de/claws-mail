@@ -8,7 +8,7 @@
 	If you receive a lot of emails, you will probably soon find that your
 	Inbox folder is growing to the point where you have a hard time finding
 	an email again, even if you received it just a few days ago. This is why
-	Sylpheed-Claws, like most good mail clients, provides you with multiple
+	Claws Mail, like most good mail clients, provides you with multiple
 	possibilities in organising your mails.
     </para>
     <para>
@@ -60,7 +60,7 @@
     <title>Filtering</title>
     <para>
 	Once you have a nice folder hierarchy in place, you'll probably want
-	Sylpheed-Claws to sort your incoming emails automatically, in order to
+	Claws Mail to sort your incoming emails automatically, in order to
 	avoid having to move messages manually each time they arrive. For this
 	you can use the Filtering feature.
     </para>
@@ -78,12 +78,12 @@
 	<quote>All</quote>, which means that the rule is global and will
 	be applied  to all mail, reagrdless of the account from which it was
 	retireved, (see paragraph below). The condition format is an expression
-	defining what Sylpheed-Claws should look for when filtering mail, for
-	example: <quote>to matchcase sylpheed-claws-users</quote> is for messages
-	sent to any address containing <quote>sylpheed-claws-users</quote>. You can
+	defining what Claws Mail should look for when filtering mail, for
+	example: <quote>to matchcase claws-mail-users</quote> is for messages
+	sent to any address containing <quote>claws-mail-users</quote>. You can
 	easily define conditions by clicking the <quote>Define...</quote> button
 	at the right of the field. The last part of a filtering rule is the
-	action, which instructs Sylpheed-Claws what to do with mail matching
+	action, which instructs Claws Mail what to do with mail matching
 	the condition we just defined. For example, <quote>mark_as_read</quote>
 	marks the mail as read as soon as it arrives in your inbox, or
 	<quote>move #mh/Mailbox/inbox/Friends</quote> moves the mail to your
@@ -110,7 +110,7 @@
     <para>
 	Once you have defined the rule, you can add it to the list of rules with
 	the <quote>Add</quote> button. Don't forget that the order of the rules
-	is important: if Sylpheed-Claws finds a rule suitable for an email that
+	is important: if Claws Mail finds a rule suitable for an email that
 	either moves or deletes the email, it will stop looking for further
 	rules for that email. This is why, at the right of the rules list, you
 	will find four buttons allowing the re-ordering of rules. The rules can
@@ -148,7 +148,7 @@
 	<quote>Find all</quote> to select all the matching emails at once. Be
 	aware that searching for text in the body of emails is much slower than
 	searching in its headers, because the body of emails isn't cached by
-	Sylpheed-Claws. <quote>Extended Search</quote> mode can be turned on by
+	Claws Mail. <quote>Extended Search</quote> mode can be turned on by
 	clicking the relevant checkbox, thus allowing you to use match expressions
 	like those used in <quote>Filtering</quote> rules.
     </para>

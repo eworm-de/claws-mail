@@ -1,7 +1,7 @@
 This package was debianized by Ricardo Mones <mones@aic.uniovi.es> on
 Thu, 10 Jun 2004 21:51:21 +0200.
 
-It was downloaded from http://sylpheed-claws.sourceforge.net
+It was downloaded from http://claws-mail.org/
 
 Upstream Authors:
 
@@ -10,7 +10,7 @@ main-branch (http://sylpheed.good-day.net)
         Hiroyuki Yamamoto       <hiro-y@kcn.ne.jp>
                                 <yamamoto@good-day.co.jp>
 
-claws-branch (http://sylpheed-claws.sourceforge.net)
+claws-branch (http://claws-mail.sourceforge.net)
 
         Hoa viet Dinh           <dinh.viet.hoa@free.fr>
         Keith Edmunds           <keith@midnighthax.com> 
@@ -31,7 +31,7 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 
 Copyright:
 
-Copyright 1999-2005 by Hiroyuki Yamamoto and the Sylpheed Claws Team
+Copyright 1999-2005 by Hiroyuki Yamamoto and the Claws Mail Team
 
 You are free to distribute this software under the terms of
 the GNU General Public License.

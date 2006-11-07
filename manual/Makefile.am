@@ -15,4 +15,4 @@ EXTRA_DIST = \
 	keyboard.xml \
 	plugins.xml \
 	starting.xml \
-	sylpheed-claws-manual.xml
+	claws-mail-manual.xml

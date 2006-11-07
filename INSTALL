@@ -20,7 +20,7 @@ Password: [Enter password]
 
 To run, just type:
 
-% sylpheed-claws
+% claws-mail
 
 Additional libraries
 ====================
@@ -69,7 +69,7 @@ Options for configure script
 Most options are automatically enabled if the dependencies
 are matched.
 
-  --with-config-dir=RCDIR      	    local config dir (default: ~/.sylpheed-claws)
+  --with-config-dir=RCDIR      	    local config dir (default: ~/.claws-mail)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
   --disable-openssl    		    disable OpenSSL support

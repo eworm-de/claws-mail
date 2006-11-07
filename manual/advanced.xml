@@ -76,7 +76,7 @@
 	      <para>
 	Searches Google for the currently selected text 
 	(<emphasis>|</emphasis>) using the external script <emphasis><ulink 
-	url="http://www.sylpheed-claws.net/tools.php"
+	url="http://www.claws-mail.org/tools.php"
 	>google_search.pl</ulink></emphasis>.
 	      </para>
 	    </listitem>
@@ -120,9 +120,9 @@
 	Bcc and Subject fields follow.
     </para><para>
 	Further information and examples of usage can be found in the 
-	user-contributed FAQ on the Sylpheed-Claws website <ulink 
-	url="http://www.sylpheed-claws.net/faq/"
-	>http://www.sylpheed-claws.net/faq/</ulink>.
+	user-contributed FAQ on the Claws Mail website <ulink 
+	url="http://www.claws-mail.org/faq/"
+	>http://www.claws-mail.org/faq/</ulink>.
     </para>
    </section>
   <section id="adv_processing">
@@ -157,7 +157,7 @@
   <section id="adv_ml_support">
     <title>Mailing-List support</title>
     <para>
-	Sylpheed-Claws offers mailing-list support from the 
+	Claws Mail offers mailing-list support from the 
 	<quote>Message/Mailing-List/</quote> submenu. When you have a 
 	mailing-list message selected, the submenu allows you to quickly 
 	initiate subscribing, unsubscribing, posting, getting help, contacting 
@@ -169,50 +169,50 @@
   <section id="adv_plugins">
     <title>Plugins</title>
     <para>
-	Plugins are the mechanism for extending Sylpheed-Claws' capabilities. 
+	Plugins are the mechanism for extending Claws Mail' capabilities. 
 	For example, imagine that you want to store your mails in a remote 
 	<acronym>SQL</acronym> database. In most mailers out there this is 
 	simply impossible without reworking the internals of the mailer. With 
-	Sylpheed-Claws you can simply write a plugin to achieve the task.
+	Claws Mail you can simply write a plugin to achieve the task.
     </para><para>
 	This is just an example of the possibilities. A good number of plugins 
-	developed for Sylpheed-Claws already exist, and more are to come. The 
-	<link linkend="ch_plugins">Extending Sylpheed-Claws section</link> 
+	developed for Claws Mail already exist, and more are to come. The 
+	<link linkend="ch_plugins">Extending Claws Mail section</link> 
 	gives details of them.
     </para>
   </section>
   <section id="deploying">
-    <title>Deploying Sylpheed-Claws</title>
+    <title>Deploying Claws Mail</title>
     <para>
 	The initial configuration wizard tries to guess various fields using 
 	information gathered from the system, such as username, hostname, and 
 	more. As it is oriented towards general use, the default values often 
 	have to be fixed. However, this wizard is customisable, in a manner 
-	designed to allow system administrators to deploy Sylpheed-Claws easily
+	designed to allow system administrators to deploy Claws Mail easily
 	over various users of one machine, or even over multiple machines 
 	installed via some replication tool.
     </para><para>
 	The first part consists of creating a wizard configuration template 
-	and setting the various default parameters of a new Sylpheed-Claws 
+	and setting the various default parameters of a new Claws Mail 
 	installation.
     </para>
     <itemizedlist>
       <listitem>
         <para>
 	Start with a user who does not have a <filename class="directory"
-	>~/.sylpheed-claws</filename> directory, ideally a new user.
+	>~/.claws-mail</filename> directory, ideally a new user.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Start Sylpheed-Claws and go through the wizard. The values you fill in 
+	Start Claws Mail and go through the wizard. The values you fill in 
 	will be of no use for the future deployment, so you can click 
 	next-next-next.
 	</para>
       </listitem>
       <listitem>
         <para>
-	Once the wizard is finished and you have Sylpheed-Claws' main window 
+	Once the wizard is finished and you have Claws Mail' main window 
 	opened, configure the various defaults you want to have in the master. 
 	You can load plugins, add people or LDAP servers in the addressbook, 
 	create filtering rules, and so on.
@@ -220,19 +220,19 @@
       </listitem>
       <listitem>
 	<para>
-	If needed, and if the deployed Sylpheed-Claws will use MH folders, you 
+	If needed, and if the deployed Claws Mail will use MH folders, you 
 	can create subdirectories in the mailbox.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Next, quit Sylpheed-Claws.
+	Next, quit Claws Mail.
 	</para>
       </listitem>
       <listitem>
 	<para>
 	Now, edit the newly created wizard template file, 
-	<filename>~/.sylpheed-claws/accountrc.tmpl</filename>. In this file, 
+	<filename>~/.claws-mail/accountrc.tmpl</filename>. In this file, 
 	you will see different variables, corresponding to the wizard's fields.
 	You can leave some commented, in which case the usual default will be 
 	used, or specify values or variables. Not all fields can contain 
@@ -249,22 +249,22 @@
       <listitem>
 	<para>
 	Save this file, and delete both 
-	<filename>~/.sylpheed-claws/accountrc</filename>, (which contains your 
+	<filename>~/.claws-mail/accountrc</filename>, (which contains your 
 	dummy account) and 
-	<filename>~/.sylpheed-claws/folderlist.xml</filename>, (so that the 
+	<filename>~/.claws-mail/folderlist.xml</filename>, (so that the 
 	folder tree will be correctly parsed for new users). Recursively copy 
-	<filename class="directory">.sylpheed-claws</filename> to 
+	<filename class="directory">.claws-mail</filename> to 
 	<filename class="directory">/etc/skel/</filename>; if the deployed 
-	Sylpheed-Claws will use MH folders, also copy the created 
+	Claws Mail will use MH folders, also copy the created 
 	<filename class="directory">Mail</filename> directory. chown all of 
-	<filename class="directory">/etc/skel/.sylpheed-claws</filename> 
+	<filename class="directory">/etc/skel/.claws-mail</filename> 
 	and <filename class="directory">/etc/skel/Mail</filename> to 
 	<literal>root:root</literal> for security reasons.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Test! Create a new user, login as that user, run Sylpheed-Claws. If you
+	Test! Create a new user, login as that user, run Claws Mail. If you
 	filled everything as you wanted, this user will just have to fill in 
 	his passwords.
 	</para>
@@ -502,11 +502,11 @@
   <section id="adv_hidden">
     <title>Hidden preferences</title>
     <para>
-	There are a number of hidden preferences in Sylpheed-Claws, preferences
+	There are a number of hidden preferences in Claws Mail, preferences
 	that some users who we wanted to please couldn't live without, but 
 	which did not have a place in the GUI in our opinion. You can find the 
-	following, and change them while Sylpheed-Claws is not running, in 
-	<filename>~/.sylpheed-claws/sylpheedrc</filename>.
+	following, and change them while Claws Mail is not running, in 
+	<filename>~/.claws-mail/sylpheedrc</filename>.
     </para>
     <variablelist>
       <varlistentry>

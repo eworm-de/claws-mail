@@ -32,8 +32,8 @@ config.status: configure
 		--prefix=/usr \
 		--mandir=\$${prefix}/share/man \
 		--infodir=\$${prefix}/share/info \
-		--with-manualdir=\$${prefix}/share/doc/sylpheed-claws/manual \
-		--with-faqdir=\$${prefix}/share/doc/sylpheed-claws/faq \
+		--with-manualdir=\$${prefix}/share/doc/claws-mail/manual \
+		--with-faqdir=\$${prefix}/share/doc/claws-mail/faq \
 		--enable-openssl \
 		--enable-gpgme \
 		--enable-ipv6 \
@@ -42,7 +42,7 @@ config.status: configure
 		--enable-ldap \
 		--enable-spamassassin-plugin=yes \
 		--enable-clamav-plugin=yes \
-		--with-config-dir=.sylpheed-claws
+		--with-config-dir=.claws-mail
 
 build: build-stamp
 
@@ -77,63 +77,63 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/sylpheed-claws.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/sylpheed-claws
-	rm -f $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/*.a
-	rm -f $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/*.la
-	#________________________________________[libsylpheed-claws-dev]__
-	mkdir -m 755 -p $(CURDIR)/debian/libsylpheed-claws-dev/usr/lib/pkgconfig
-	mv $(CURDIR)/debian/sylpheed-claws/usr/include \
-	    $(CURDIR)/debian/libsylpheed-claws-dev/usr/include
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/pkgconfig/sylpheed-claws.pc \
-	   $(CURDIR)/debian/libsylpheed-claws-dev/usr/lib/pkgconfig
-	#__________________________________________[sylpheed-claws-i18n]__
-	mkdir -m 755 -p $(CURDIR)/debian/sylpheed-claws-i18n/usr/share/locale
-	mv $(CURDIR)/debian/sylpheed-claws/usr/share/locale/* \
-	   $(CURDIR)/debian/sylpheed-claws-i18n/usr/share/locale
-	#________________________________________[sylpheed-claws-clamav]__
+	# Add here commands to install the package into debian/claws-mail.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/claws-mail
+	rm -f $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/*.a
+	rm -f $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/*.la
+	#________________________________________[libclaws-mail-dev]__
+	mkdir -m 755 -p $(CURDIR)/debian/libclaws-mail-dev/usr/lib/pkgconfig
+	mv $(CURDIR)/debian/claws-mail/usr/include \
+	    $(CURDIR)/debian/libclaws-mail-dev/usr/include
+	mv $(CURDIR)/debian/claws-mail/usr/lib/pkgconfig/claws-mail.pc \
+	   $(CURDIR)/debian/libclaws-mail-dev/usr/lib/pkgconfig
+	#__________________________________________[claws-mail-i18n]__
+	mkdir -m 755 -p $(CURDIR)/debian/claws-mail-i18n/usr/share/locale
+	mv $(CURDIR)/debian/claws-mail/usr/share/locale/* \
+	   $(CURDIR)/debian/claws-mail-i18n/usr/share/locale
+	#________________________________________[claws-mail-clamav]__
 	mkdir -m 755 -p \
-	     $(CURDIR)/debian/sylpheed-claws-clamav/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/clamav* \
-	   $(CURDIR)/debian/sylpheed-claws-clamav/usr/lib/sylpheed-claws/plugins
-	#__________________________________[sylpheed-claws-dillo-viewer]__
+	     $(CURDIR)/debian/claws-mail-clamav/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/clamav* \
+	   $(CURDIR)/debian/claws-mail-clamav/usr/lib/claws-mail/plugins
+	#__________________________________[claws-mail-dillo-viewer]__
 	mkdir -m 755 -p \
-	      $(CURDIR)/debian/sylpheed-claws-dillo-viewer/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/dillo* \
-	   $(CURDIR)/debian/sylpheed-claws-dillo-viewer/usr/lib/sylpheed-claws/plugins
-	#__________________________________[sylpheed-claws-spamassassin]__
+	      $(CURDIR)/debian/claws-mail-dillo-viewer/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/dillo* \
+	   $(CURDIR)/debian/claws-mail-dillo-viewer/usr/lib/claws-mail/plugins
+	#__________________________________[claws-mail-spamassassin]__
 	mkdir -m 755 -p \
-	      $(CURDIR)/debian/sylpheed-claws-spamassassin/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/spamassassin* \
-	   $(CURDIR)/debian/sylpheed-claws-spamassassin/usr/lib/sylpheed-claws/plugins
-	#______________________________________[sylpheed-claws-trayicon]__
+	      $(CURDIR)/debian/claws-mail-spamassassin/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/spamassassin* \
+	   $(CURDIR)/debian/claws-mail-spamassassin/usr/lib/claws-mail/plugins
+	#______________________________________[claws-mail-trayicon]__
 	mkdir -m 755 -p \
-	      $(CURDIR)/debian/sylpheed-claws-trayicon/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/trayicon* \
-	   $(CURDIR)/debian/sylpheed-claws-trayicon/usr/lib/sylpheed-claws/plugins
-	#_______________________________________[sylpheed-claws-pgpmime]__
+	      $(CURDIR)/debian/claws-mail-trayicon/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/trayicon* \
+	   $(CURDIR)/debian/claws-mail-trayicon/usr/lib/claws-mail/plugins
+	#_______________________________________[claws-mail-pgpmime]__
 	mkdir -m 755 -p \
-	      $(CURDIR)/debian/sylpheed-claws-pgpmime/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/pgpmime.* \
-	   $(CURDIR)/debian/sylpheed-claws-pgpmime/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/pgpcore.so \
-	   $(CURDIR)/debian/sylpheed-claws-pgpmime/usr/lib/sylpheed-claws/plugins
-	#_____________________________________[sylpheed-claws-pgpinline]__
+	      $(CURDIR)/debian/claws-mail-pgpmime/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/pgpmime.* \
+	   $(CURDIR)/debian/claws-mail-pgpmime/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/pgpcore.so \
+	   $(CURDIR)/debian/claws-mail-pgpmime/usr/lib/claws-mail/plugins
+	#_____________________________________[claws-mail-pgpinline]__
 	mkdir -m 755 -p \
-	      $(CURDIR)/debian/sylpheed-claws-pgpinline/usr/lib/sylpheed-claws/plugins
-	mv $(CURDIR)/debian/sylpheed-claws/usr/lib/sylpheed-claws/plugins/pgpinline.* \
-	   $(CURDIR)/debian/sylpheed-claws-pgpinline/usr/lib/sylpheed-claws/plugins
-	#_______________________________________________[sylpheed-claws]__
+	      $(CURDIR)/debian/claws-mail-pgpinline/usr/lib/claws-mail/plugins
+	mv $(CURDIR)/debian/claws-mail/usr/lib/claws-mail/plugins/pgpinline.* \
+	   $(CURDIR)/debian/claws-mail-pgpinline/usr/lib/claws-mail/plugins
+	#_______________________________________________[claws-mail]__
 	# application icons
 	mkdir -m 755 -p \
-	   $(CURDIR)/debian/sylpheed-claws/usr/share/pixmaps/
+	   $(CURDIR)/debian/claws-mail/usr/share/pixmaps/
 	cp $(CURDIR)/sylpheed*.png \
-	   $(CURDIR)/debian/sylpheed-claws/usr/share/pixmaps/
+	   $(CURDIR)/debian/claws-mail/usr/share/pixmaps/
 	# desktop entry
 	mkdir -m 755 -p \
-	   $(CURDIR)/debian/sylpheed-claws/usr/share/applications
-	cp $(CURDIR)/debian/sylpheed-claws.desktop \
-	   $(CURDIR)/debian/sylpheed-claws/usr/share/applications/sylpheed-claws.desktop
+	   $(CURDIR)/debian/claws-mail/usr/share/applications
+	cp $(CURDIR)/debian/claws-mail.desktop \
+	   $(CURDIR)/debian/claws-mail/usr/share/applications/claws-mail.desktop
 
 # Build architecture-independent files here.
 binary-indep: build install

@@ -21,6 +21,6 @@ tags
 TAGS
 *.swp
 depcomp
-sylpheed-claws.pc
+claws-mail.pc
 patches
 commitHelper.tmp

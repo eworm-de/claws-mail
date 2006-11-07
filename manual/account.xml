@@ -8,7 +8,7 @@
 	The first tab of the account preferences, <quote>Basic</quote>,
 	contains, as its name indicates, basic account data. In this tab you can
 	specify your name, email address, organization and basic connection
-	information.  The name of the account is just the name Sylpheed-Claws
+	information.  The name of the account is just the name Claws Mail
 	will use when referring to this account, for example, in the account
 	switcher at the lower right-hand corner of the main window.  The server
 	information lets you specify the receiving protocol to use (which is
@@ -18,7 +18,7 @@
     </para>
     <para>
 	In the <quote>Receive</quote> tab you are able to change the default
-	behaviour of Sylpheed-Claws. For example, leaving messages on the server
+	behaviour of Claws Mail. For example, leaving messages on the server
 	for a while, preventing downloading of mails that are too large, or
 	specifying whether you want the filtering rules to apply to this
 	account's mails. The <quote>Receive size limit</quote> is used to limit
@@ -147,7 +147,7 @@
   <section id="account_multiple">
     <title>Multiple accounts</title>
     <para>
-	You can easily create multiple accounts in Sylpheed-Claws. For POP
+	You can easily create multiple accounts in Claws Mail. For POP
 	accounts, you can choose to store all email from your different accounts
 	in the same folder(s), using the Receive tab preference.  IMAP and News
 	accounts each get their own mailbox in the folder tree.

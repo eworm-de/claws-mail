@@ -33,7 +33,7 @@
     <example><title>Recherche Google en utilisant un script externe</title>
 	    <variablelist>
 		    <varlistentry><term>Menu nom&nbsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&nbsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
-			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://www.claws-mail.org/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -59,7 +59,7 @@
 	  Quand un modèle est utilisé, le corps de message est traité en premier, viennent ensuite les champs À, Cc, Cci puis Sujet.
     </para>
     <para>
-	  Plus d'informations et des exemples d'utilisation sont disponibles dans la FAQ du site de Sylpheed-Claws <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>.
+	  Plus d'informations et des exemples d'utilisation sont disponibles dans la FAQ du site de Claws Mail <ulink url="http://www.claws-mail.org/faq/">http://www.claws-mail.org/faq/</ulink>.
     </para>
   </section>
   
@@ -75,7 +75,7 @@
   <section id="adv_ml_support">
     <title>Support des listes de diffusion</title>
     <para>
-	  Sylpheed-Claws propose l'utilisation de fonctions fournies par les listes de diffusion via le menu <quote>Message/Liste de diffusion/</quote>.
+	  Claws Mail propose l'utilisation de fonctions fournies par les listes de diffusion via le menu <quote>Message/Liste de diffusion/</quote>.
 	  Quand un message en provenance d'une liste de diffusion est sélectionné, ce menu vous permet d'envoyer un
 	  message à la liste, de contacter l'administrateur de la liste afin de s'inscrire, s'en désinscrire, obtenir de
 	  l'aide mais aussi consulter les archives&nbsp;; soit en ouvrant une nouvelle fenêtre de composition, soit en
@@ -85,14 +85,14 @@
   <section id="adv_plugins">
     <title>Modules</title>
     <para>
-	  Les modules permettent l'extension des capacités de Sylpheed-Claws. Par exemple, imaginez que vous voulez stocker vos messages dans une base de données <acronym>SQL</acronym> distante. Dans la plupart des programmes de messagerie ceci est tout simplement impossible sans un travail de réécriture interne de ces programmes. Avec Sylpheed-Claws vous pouvez simplement écrire votre module qui effectuera cette tâche.
+	  Les modules permettent l'extension des capacités de Claws Mail. Par exemple, imaginez que vous voulez stocker vos messages dans une base de données <acronym>SQL</acronym> distante. Dans la plupart des programmes de messagerie ceci est tout simplement impossible sans un travail de réécriture interne de ces programmes. Avec Claws Mail vous pouvez simplement écrire votre module qui effectuera cette tâche.
     </para>
     <para>
-	   Il s'agit juste d'un exemple des possibilités offertes. Un grand nombre de modules développés pour Sylpheed-Claws existent déjà et d'autres sont à venir. Le chapitre <link linkend="ch_plugins">Étendre Sylpheed-Claws</link> donne des détails sur ces derniers.
+	   Il s'agit juste d'un exemple des possibilités offertes. Un grand nombre de modules développés pour Claws Mail existent déjà et d'autres sont à venir. Le chapitre <link linkend="ch_plugins">Étendre Claws Mail</link> donne des détails sur ces derniers.
     </para>
   </section>
   <section id="deploying">
-    <title>Déployer Sylpheed-Claws</title>
+    <title>Déployer Claws Mail</title>
     <para>
 	L'assistant de configuration initial essaye de deviner les différents champs en récupérant des informations du système, telles que le nom de l'utilisateur, le nom de domaine, et d'autres. Comme il orienté vers un usage générique, il peut se tromper, et les valeurs par défaut doivent être corrigées. Toutefois, cet assistant est configurable, dans le sens où vous pouvez lui fournir des indications pour aider le déploiement sur un grand nombre d'utilisateurs et/ou de machines grâce à un outil de réplication.
     </para>
@@ -100,17 +100,17 @@
 	La première partie consiste à créer un modèle de configuration de l'assistant, et de régler les divers paramètres d'une nouvelle installation.
     </para>
     <itemizedlist>
-      <listitem><para>Commencez avec un utilisateur qui n'a pas de répertoire ~/.sylpheed-claws, dans l'idéal un nouvel utilisateur.</para></listitem>
-      <listitem><para>Démarrez Sylpheed-Claws et passez l'assistant de configuration. Les valeurs que vous fournissez ne seront pas utiles, donc vous pouvez cliquer sur Suivant-Suivant-Enregistrer.</para></listitem>
+      <listitem><para>Commencez avec un utilisateur qui n'a pas de répertoire ~/.claws-mail, dans l'idéal un nouvel utilisateur.</para></listitem>
+      <listitem><para>Démarrez Claws Mail et passez l'assistant de configuration. Les valeurs que vous fournissez ne seront pas utiles, donc vous pouvez cliquer sur Suivant-Suivant-Enregistrer.</para></listitem>
       <listitem><para>
 	Une fois que l'assistant a terminé, la fenêtre principale s'ouvre. Vous pouvez maintenant configurer les différentes options comme désiré. Vous pouvez charger des modules, ajouter des contacts ou des serveurs LDAP au carnet d'adresses, créer des règles de filtrage, etc.</para></listitem>
-      <listitem><para>Si nécessaire, et si Sylpheed-Claws sera utilisé avec une boîte aux lettres MH, vous pouvez créer des sous-dossiers.</para></listitem>
-      <listitem><para>Maintenant, quittez Sylpheed-Claws.</para></listitem>
+      <listitem><para>Si nécessaire, et si Claws Mail sera utilisé avec une boîte aux lettres MH, vous pouvez créer des sous-dossiers.</para></listitem>
+      <listitem><para>Maintenant, quittez Claws Mail.</para></listitem>
       <listitem><para>
-	À présent, éditez le fichier modèle de l'assistant, créé dans ~/.sylpheed-claws/accountrc.tmpl. Dans ce fichier, vous verrez différentes variables, correspondant aux champs de l'assistant. Vous pouvez en laisser commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier des valeurs ou variables. Tous les champs ne peuvent pas contenir une variable&nbsp;; par exemple, smtpauth, smtpssl et recvssl sont des booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les autres champs, comme name, email, ou recvuser, sont parsés par l'assistant et les variables qu'ils contiennent seront remplacés par des valeurs. Cela vous permettra de spécifier tout ce qui sera nécessaire sur votre site, même si vos serveurs ou logins ne sont pas courants.</para></listitem>
-      <listitem><para>Enregistrez ce fichier, et effacez ~/.sylpheed-claws/accountrc, (qui contient le faux compte que vous avez créé avec l'assistant lors de la première phase) et ~/.sylpheed-claws/folderlist.xml, (de manière à ce que l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement le répertoire .sylpheed-claws dans /etc/skel/&nbsp;; si les Sylpheed-Claws déployés utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel. chown-isez tout /etc/skel/.sylpheed-claws et /etc/skel/Mail à root:root.</para></listitem>
-      <listitem><para>Testez&nbsp;! Créez un nouvel utilisateur, connectez-vous avec cet utilisateur, et lancez Sylpheed-Claws. Si tout est bien rempli dans accountrc.tmpl comme désiré, tout ce que cet utilisateur aura à remplir sont ses mots de passe.</para></listitem>
-      <listitem><para>Si vous configuriez une machine master pour un déploiement multi-machines, vous pouvez continuer ce processus. C'est terminé pour Sylpheed-Claws&nbsp;!</para></listitem>
+	À présent, éditez le fichier modèle de l'assistant, créé dans ~/.claws-mail/accountrc.tmpl. Dans ce fichier, vous verrez différentes variables, correspondant aux champs de l'assistant. Vous pouvez en laisser commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier des valeurs ou variables. Tous les champs ne peuvent pas contenir une variable&nbsp;; par exemple, smtpauth, smtpssl et recvssl sont des booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les autres champs, comme name, email, ou recvuser, sont parsés par l'assistant et les variables qu'ils contiennent seront remplacés par des valeurs. Cela vous permettra de spécifier tout ce qui sera nécessaire sur votre site, même si vos serveurs ou logins ne sont pas courants.</para></listitem>
+      <listitem><para>Enregistrez ce fichier, et effacez ~/.claws-mail/accountrc, (qui contient le faux compte que vous avez créé avec l'assistant lors de la première phase) et ~/.claws-mail/folderlist.xml, (de manière à ce que l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement le répertoire .claws-mail dans /etc/skel/&nbsp;; si les Claws Mail déployés utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel. chown-isez tout /etc/skel/.claws-mail et /etc/skel/Mail à root:root.</para></listitem>
+      <listitem><para>Testez&nbsp;! Créez un nouvel utilisateur, connectez-vous avec cet utilisateur, et lancez Claws Mail. Si tout est bien rempli dans accountrc.tmpl comme désiré, tout ce que cet utilisateur aura à remplir sont ses mots de passe.</para></listitem>
+      <listitem><para>Si vous configuriez une machine master pour un déploiement multi-machines, vous pouvez continuer ce processus. C'est terminé pour Claws Mail&nbsp;!</para></listitem>
     </itemizedlist>
     <para>
     Voici les différentes variables du fichier accountrc.tmpl&nbsp;:
@@ -175,7 +175,7 @@
   <section id="adv_hidden">
     <title>Préférences cachées</title>
     <para>
-	  Il existe un certain nombre de préférences cachées dans Sylpheed-Claws dont certains utilisateurs, auxquels nous voulions faire plaisir, ne pouvaient pas se passer mais qui n'avaient pas leur place, selon nous, dans l'interface graphique. Vous pouvez changer les options suivantes pendant que Sylpheed-Claws ne s'exécute pas dans le fichier ~/.sylpheed-claws/sylpheedrc.
+	  Il existe un certain nombre de préférences cachées dans Claws Mail dont certains utilisateurs, auxquels nous voulions faire plaisir, ne pouvaient pas se passer mais qui n'avaient pas leur place, selon nous, dans l'interface graphique. Vous pouvez changer les options suivantes pendant que Claws Mail ne s'exécute pas dans le fichier ~/.claws-mail/sylpheedrc.
     </para>
     <variablelist>
 	    <varlistentry><term>bold_unread</term>

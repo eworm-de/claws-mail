@@ -9,7 +9,7 @@
     </term>
     <listitem>
       <para>
-	An account represents an identity within Sylpheed-Claws. As such only 
+	An account represents an identity within Claws Mail. As such only 
 	one email address is associated with each account. However, the number 
 	of accounts you can setup is unlimited.
       </para>
@@ -71,7 +71,7 @@
     <listitem>
       <para>
 	Additional file(s) included with a mail message. Some attachments can 
-	be displayed by Sylpheed-Claws, others require external programs. 
+	be displayed by Claws Mail, others require external programs. 
 	<xref linkend="gt_plugins" /> can provide additional functions for 
 	attachments.
       </para>
@@ -194,7 +194,7 @@
     <listitem>
       <para>
 	A folder is the primary message container. Folders can be local or 
-	remote, but they are managed in a uniform way by Sylpheed-Claws.
+	remote, but they are managed in a uniform way by Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -367,7 +367,7 @@
     <listitem>
       <para>
 	A special window which records protocol operations in detail that are 
-	performed by Sylpheed-Claws. It's a useful tool for debugging.
+	performed by Claws Mail. It's a useful tool for debugging.
       </para>
     </listitem>
   </varlistentry>
@@ -404,7 +404,7 @@
       <para>
 	Electronic mailing-lists are a special usage of email that allows for 
 	widespread distribution of information to many Internet users. They 
-	often take the form of discussion lists, like the Sylpheed-Claws users'
+	often take the form of discussion lists, like the Claws Mail users'
 	list, where a subscriber uses the mailing-list to send messages to all 
 	the other subscribers, who may answer in similar fashion.
       </para>
@@ -429,7 +429,7 @@
     <listitem>
       <para>
 	A mailbox format in which all mail is concatenated and stored in a 
-	single file. The mbox format supported by Sylpheed-Claws is 
+	single file. The mbox format supported by Claws Mail is 
 	<literal>mboxrd</literal>.
       </para>
     </listitem>
@@ -440,7 +440,7 @@
     </term>
     <listitem>
       <para>
-	A message is the basic piece of information handled by Sylpheed-Claws. 
+	A message is the basic piece of information handled by Claws Mail. 
 	A message is usually an email message, which is stored in <xref 
 	linkend="gt_mh" /> format on disk. Other kinds of messages (and storage
 	formats) can be handled through <xref linkend="gt_plugins" />.
@@ -454,7 +454,7 @@
     <listitem>
       <para>
 	A mailbox format in which all mail is kept in separate files. This is 
-	the default mailbox format used by Sylpheed-Claws.
+	the default mailbox format used by Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -557,10 +557,10 @@
     </term>
     <listitem>
       <para>
-	External modules which can be loaded and used by Sylpheed-Claws to 
+	External modules which can be loaded and used by Claws Mail to 
 	extend its functionality. Technically speaking these modules are
 	shared libraries which can register one or several functions to be 
-	called by Sylpheed-Claws when something 
+	called by Claws Mail when something 
 	<emphasis>interesting</emphasis> is being done.
       </para>
     </listitem>
@@ -837,7 +837,7 @@
     <listitem>
       <para>
 	Image sets for changing the appearance of buttons, folders and other 
-	graphical elements of Sylpheed-Claws.
+	graphical elements of Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -858,7 +858,7 @@
     <listitem>
       <para>
 	Sets of buttons arranged horizontally which provide access to all 
-	commonly used functions. Toolbars in Sylpheed-Claws can be customised.
+	commonly used functions. Toolbars in Claws Mail can be customised.
       </para>
     </listitem>
   </varlistentry>
@@ -886,8 +886,8 @@
       <para>
 	Uniform Resource Locator. A naming scheme for objects (usually files) 
 	in a multi-protocol networked environment like current Internet.
-	For example, this is the one of the Sylpheed-Claws home page: 
-	<literal>http://www.sylpheed-claws.net</literal>.
+	For example, this is the one of the Claws Mail home page: 
+	<literal>http://www.claws-mail.org</literal>.
       </para>
     </listitem>
   </varlistentry>
@@ -971,7 +971,7 @@
     <listitem>
       <para>
 	Specially coded black and white image (48x48 pixels) included in the 
-	message headers. Capable mailers like Sylpheed-Claws and others can 
+	message headers. Capable mailers like Claws Mail and others can 
 	decode and show it alongside the message text. Although they are not 
 	unique, they can help to quickly identify the message sender. See also 
 	<xref linkend="gt_face" />.

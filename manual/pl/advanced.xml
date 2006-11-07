@@ -30,7 +30,7 @@
     <example><title>Wyszukaj w Google u¿ywaj±c pliku skryptowego</title>
 	    <variablelist>
 		    <varlistentry><term>Nazwa menu: <emphasis>Szukaj/Google</emphasis> Komenda: <emphasis>|/¶cie¿ka/do/google_search.pl</emphasis></term>
-			    <listitem><para>Wyszukuje w Google obecnie zaznaczony tekst (<emphasis>|</emphasis>) u¿ywaj±c skryptu <emphasis><ulink url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink></emphasis>.
+			    <listitem><para>Wyszukuje w Google obecnie zaznaczony tekst (<emphasis>|</emphasis>) u¿ywaj±c skryptu <emphasis><ulink url="http://www.claws-mail.org/tools.php">google_search.pl</ulink></emphasis>.
 				    </para></listitem>
 		    </varlistentry>
 	    </variablelist>
@@ -55,7 +55,7 @@
     Nak³adanie szablonu najpierw przetwarza tre¶æ wiadomo¶ci a nastêpnie nag³ówki To, Cc, Bcc oraz temat.
     </para>
     <para>
-	    Wiêcej informacji i przyk³adów u¿ycia mo¿na znale¼æ w FAQ tworzonym przez u¿ytkowników na stronie Sylpheed-Claws <ulink url="http://www.sylpheed-claws.net/faq/">http://www.sylpheed-claws.net/faq/</ulink>
+	    Wiêcej informacji i przyk³adów u¿ycia mo¿na znale¼æ w FAQ tworzonym przez u¿ytkowników na stronie Claws Mail <ulink url="http://www.claws-mail.org/faq/">http://www.claws-mail.org/faq/</ulink>
     </para>
    </section>
   <section id="adv_processing">
@@ -79,35 +79,35 @@
   <section id="adv_ml_support">
   <title>Obs³uga list dyskusyjnych</title>
   <para>
-  Sylpheed-Claws oferuje wsparcie dla list dyskusyjnych w menu <quote>Wiadomo¶æ/Mailing-List</quote>. Gdy zostanie wybrana wiadomo¶æ z grupy dyskusyjnej to menu pozwala na szybkie zapisywanie, wypisywanie, pisanie wiadomo¶ci, otrzymanie pomocy, kontakt z w³a¶cicielem listy i przegl±danie archiwum listy; poprzez otwarcie okna tworzenia wiadomo¶ci z ju¿ wype³nionym adresem lub otworzenie odpowiedniego adresu w twojej przegl±darce internetowej.
+  Claws Mail oferuje wsparcie dla list dyskusyjnych w menu <quote>Wiadomo¶æ/Mailing-List</quote>. Gdy zostanie wybrana wiadomo¶æ z grupy dyskusyjnej to menu pozwala na szybkie zapisywanie, wypisywanie, pisanie wiadomo¶ci, otrzymanie pomocy, kontakt z w³a¶cicielem listy i przegl±danie archiwum listy; poprzez otwarcie okna tworzenia wiadomo¶ci z ju¿ wype³nionym adresem lub otworzenie odpowiedniego adresu w twojej przegl±darce internetowej.
   </para>
   </section>
   <section id="adv_plugins">
     <title>Wtyczki</title>
     <para>
-      Mechanizm wtyczek s³u¿y do rozszerzania mo¿liwo¶ci oferowanych przez Sylpheed-Claws. Na przyk³ad za³ó¿my, ¿e chcia³by¶ przechowywaæ swoje emaile w zdalnej bazie <acronym>SQL</acronym>. W wiêkszo¶ci klientów pocztowych by³oby to niemo¿liwe bez zmian w g³ównym programie. Z Sylpheed-Claws mo¿esz napisaæ wtyczkê, która wykona takie zadanie. 
+      Mechanizm wtyczek s³u¿y do rozszerzania mo¿liwo¶ci oferowanych przez Claws Mail. Na przyk³ad za³ó¿my, ¿e chcia³by¶ przechowywaæ swoje emaile w zdalnej bazie <acronym>SQL</acronym>. W wiêkszo¶ci klientów pocztowych by³oby to niemo¿liwe bez zmian w g³ównym programie. Z Claws Mail mo¿esz napisaæ wtyczkê, która wykona takie zadanie. 
     </para>
     <para>
-	    To jest tylko przyk³ad mo¿liwo¶ci. Wiele wtyczek zosta³o ju¿ napisanych dla Sylpheed-Claws i wiêcej bêdzie w przysz³o¶ci. Rozdzia³ <link linkend="ch_plugins">Rozszerzanie mo¿liwo¶ci Sylpheed-Claws</link> opisuje je dok³adnie.
+	    To jest tylko przyk³ad mo¿liwo¶ci. Wiele wtyczek zosta³o ju¿ napisanych dla Claws Mail i wiêcej bêdzie w przysz³o¶ci. Rozdzia³ <link linkend="ch_plugins">Rozszerzanie mo¿liwo¶ci Claws Mail</link> opisuje je dok³adnie.
     </para>
   </section>
   <section id="deploying">
-    <title>Wdra¿anie Sylpheed-Claws</title>
+    <title>Wdra¿anie Claws Mail</title>
     <para>
-    Pocz±tkowy kreator próbuje stworzyæ konfiguracjê u¿ywaj±c danych zgromadzonych z systemu operacyjnego, jak np. has³o u¿ytkownika, domenê itd. Jako ¿e jest on zorientowany na prost± konfiguracjê niektóre domy¶lne warto¶ci czêsto musz± byæ zmodyfikowane. Jednak¿e wystêpuje mo¿liwo¶æ konfiguracji kreatora, zaprojektowana w ten sposób aby umo¿liwiæ administratorom w ³atwy sposób wdro¿enie Sylpheed-Claws dla wielu u¿ytkowników na jednym komputerze lub wielu za pomoc± jakiego¶ narzêdzia replikacyjnego.
+    Pocz±tkowy kreator próbuje stworzyæ konfiguracjê u¿ywaj±c danych zgromadzonych z systemu operacyjnego, jak np. has³o u¿ytkownika, domenê itd. Jako ¿e jest on zorientowany na prost± konfiguracjê niektóre domy¶lne warto¶ci czêsto musz± byæ zmodyfikowane. Jednak¿e wystêpuje mo¿liwo¶æ konfiguracji kreatora, zaprojektowana w ten sposób aby umo¿liwiæ administratorom w ³atwy sposób wdro¿enie Claws Mail dla wielu u¿ytkowników na jednym komputerze lub wielu za pomoc± jakiego¶ narzêdzia replikacyjnego.
     </para>
     <para>
-    Pierwsza czê¶æ zawiera tworzenie szablonu kreatora konfiguracyjnego i ustawienia ró¿nych domy¶lnych parametrów nowej instalacji Sylpheed-Claws.
+    Pierwsza czê¶æ zawiera tworzenie szablonu kreatora konfiguracyjnego i ustawienia ró¿nych domy¶lnych parametrów nowej instalacji Claws Mail.
     </para>
     <itemizedlist>
-      <listitem><para>Zacznij jako nowy u¿ytkownik, który nie posiada za³o¿onego katalogu ~/.sylpheed-claws.</para></listitem>
-      <listitem><para>Uruchom Sylpheed-Claws i przejd¼ przez kreatora. Warto¶ci do wype³nienia nie bêd± istotne dla pó¼niejszego wdro¿enia, wiêc mo¿esz wcisn±æ nastêpne-nastêpne-nastêpne.</para></listitem>
-      <listitem><para>Kiedy kreator siê zakoñczy i masz przed sob± g³ówne okno Sylpheed-Claws skonfiguruj wszystkie domy¶lne opcje, które znajd± siê w kopii pierwotnej. Mo¿esz za³adowaæ wtyczki, dodaæ kontakty i serwery LDAP, utworzyæ regu³ki filtrowania itd.</para></listitem>
-      <listitem><para>Je¶li jest to niezbêdne i wdro¿ony Sylpheed-Claws bêdzie u¿ywaæ skrzynek MH stwórz odpowiednie katalogi w skrzynce.</para></listitem>
-      <listitem><para>Wy³±cz Sylpheed-Claws.</para></listitem>
-      <listitem><para>Nastêpnie zmodyfikuj nowopowsta³y plik szablonu kreatora ~/.sylpheed-claws/accountrc.tmpl. W tym pliku znajduj± siê ró¿ne zmienne, które odpowiadaj± polom w kreatorze. Mo¿esz zostawiæ je jako komentarz, w tym przypadku zostan± u¿yte domy¶lne warto¶ci lub podaæ ich warto¶ci. Nie wszystkie pola s± zmiennymi, np. smtpauth, smtpssl i recvssl s± warto¶ciami binarnymi, 0 albo 1, oraz recvtype jest typem liczbowym. Inne pola jak name, email, lub recvuser, s± przetwarzane przez kreatora i zmienne, które zawieraj± s± zmieniane na odpowiednie warto¶ci. Pozwala to na ustawienie wszystkiego dla twoich zastosowañ, nawet je¶li s± to dziwne nazwy serwerów lub u¿ytkowników.</para></listitem>
-      <listitem><para>Zapisz ten plik i usuñ ~/.sylpheed-claws/accountrc, (zawiera fa³szywe konto) i  ~/.sylpheed-claws/folderlist.xml (¿eby drzewo katalogów zosta³o odtworzone dla nowych u¿ytkowników). Rekursywnie skopiuj katalog .sylpheed-claws do /etc/skel/; je¶li wdro¿ony Sylpheed-Claws bêdzie u¿ywa³ skrzynek MH skopiuj równie¿ katalog Mail. Zmieñ prawa dostêpu (chown) do wszystkich plików w /etc/skel/.sylpheed-claws i /etc/skel/Mail na root:root ze wzglêdu na bezpieczeñstwo.</para></listitem>
-      <listitem><para>Przetestuj! Stwórz nowego u¿ytkownika, zaloguj siê, uruchom Sylpheed-Claws. Je¶li wszystko jest wype³nione tak jak chcia³e¶ ten u¿ytkownik powinien tylko wpisaæ swoje has³a.</para></listitem>
+      <listitem><para>Zacznij jako nowy u¿ytkownik, który nie posiada za³o¿onego katalogu ~/.claws-mail.</para></listitem>
+      <listitem><para>Uruchom Claws Mail i przejd¼ przez kreatora. Warto¶ci do wype³nienia nie bêd± istotne dla pó¼niejszego wdro¿enia, wiêc mo¿esz wcisn±æ nastêpne-nastêpne-nastêpne.</para></listitem>
+      <listitem><para>Kiedy kreator siê zakoñczy i masz przed sob± g³ówne okno Claws Mail skonfiguruj wszystkie domy¶lne opcje, które znajd± siê w kopii pierwotnej. Mo¿esz za³adowaæ wtyczki, dodaæ kontakty i serwery LDAP, utworzyæ regu³ki filtrowania itd.</para></listitem>
+      <listitem><para>Je¶li jest to niezbêdne i wdro¿ony Claws Mail bêdzie u¿ywaæ skrzynek MH stwórz odpowiednie katalogi w skrzynce.</para></listitem>
+      <listitem><para>Wy³±cz Claws Mail.</para></listitem>
+      <listitem><para>Nastêpnie zmodyfikuj nowopowsta³y plik szablonu kreatora ~/.claws-mail/accountrc.tmpl. W tym pliku znajduj± siê ró¿ne zmienne, które odpowiadaj± polom w kreatorze. Mo¿esz zostawiæ je jako komentarz, w tym przypadku zostan± u¿yte domy¶lne warto¶ci lub podaæ ich warto¶ci. Nie wszystkie pola s± zmiennymi, np. smtpauth, smtpssl i recvssl s± warto¶ciami binarnymi, 0 albo 1, oraz recvtype jest typem liczbowym. Inne pola jak name, email, lub recvuser, s± przetwarzane przez kreatora i zmienne, które zawieraj± s± zmieniane na odpowiednie warto¶ci. Pozwala to na ustawienie wszystkiego dla twoich zastosowañ, nawet je¶li s± to dziwne nazwy serwerów lub u¿ytkowników.</para></listitem>
+      <listitem><para>Zapisz ten plik i usuñ ~/.claws-mail/accountrc, (zawiera fa³szywe konto) i  ~/.claws-mail/folderlist.xml (¿eby drzewo katalogów zosta³o odtworzone dla nowych u¿ytkowników). Rekursywnie skopiuj katalog .claws-mail do /etc/skel/; je¶li wdro¿ony Claws Mail bêdzie u¿ywa³ skrzynek MH skopiuj równie¿ katalog Mail. Zmieñ prawa dostêpu (chown) do wszystkich plików w /etc/skel/.claws-mail i /etc/skel/Mail na root:root ze wzglêdu na bezpieczeñstwo.</para></listitem>
+      <listitem><para>Przetestuj! Stwórz nowego u¿ytkownika, zaloguj siê, uruchom Claws Mail. Je¶li wszystko jest wype³nione tak jak chcia³e¶ ten u¿ytkownik powinien tylko wpisaæ swoje has³a.</para></listitem>
       <listitem><para>Teraz je¶li stworzy³e¶ konfiguracjê pierwotn± dla jednego systemu mo¿esz kontynuowaæ na innych. Je¶li to by³o tylko dla jednego komputera, skoñczy³e¶!</para></listitem>
     </itemizedlist>
     <para>
@@ -173,7 +173,7 @@
   <section id="adv_hidden">
     <title>Ukryte opcje</title>
     <para>
-    Jest w Sylpheed-Claws kilka ukrytych opcji, bez których u¿ytkownicy nie mogli siê obej¶æ, lecz w opinii autorów nie pasowa³y do graficznego interfejsu. Mo¿esz je znale¼æ i zmieniæ w  ~/.sylpheed-claws/sylpheedrc podczas gdy Sylpheed-Claws nie jest uruchomiony.
+    Jest w Claws Mail kilka ukrytych opcji, bez których u¿ytkownicy nie mogli siê obej¶æ, lecz w opinii autorów nie pasowa³y do graficznego interfejsu. Mo¿esz je znale¼æ i zmieniæ w  ~/.claws-mail/sylpheedrc podczas gdy Claws Mail nie jest uruchomiony.
     </para>
     <variablelist>
 	    <varlistentry><term>bold_unread</term>

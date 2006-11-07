@@ -1,9 +1,9 @@
-Sylpheed-Claws - a GTK+ based, lightweight, and fast e-mail client
+Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
    Copyright(C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
-   Sylpheed-Claws Team
+   Claws Mail Team
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ Sylpheed-Claws - a GTK+ based, lightweight, and fast e-mail client
 
 Summary:
 
- 1. What is Sylpheed-Claws?
+ 1. What is Claws Mail?
  2. Plugins
  3. Actions
  4. Icon Themes
@@ -42,18 +42,18 @@ Summary:
 15. Useful Links
 
 
-1. What is Sylpheed-Claws?
+1. What is Claws Mail?
 --------------------------
 
-Sylpheed-Claws is the extended version of Sylpheed, a lightweight and
+Claws Mail is the extended version of Sylpheed, a lightweight and
 highly configurable email client and news reader based on the GTK+ GUI
 toolkit, it runs on the X Window System.
 
-Sylpheed-Claws is free software distributed under the GNU GPL.
+Claws Mail is free software distributed under the GNU GPL.
 
-To run Sylpheed-Claws use 'sylpheed-claws' on the command line.
+To run Claws Mail use 'claws-mail' on the command line.
 
-When sylpheed-claws is executed for the first time a configuration
+When claws-mail is executed for the first time a configuration
 'Wizard' will appear prompting you for the minimum information necesary
 to create a new account.
 
@@ -61,11 +61,11 @@ to create a new account.
 2. Plugins
 ----------
 
-Sylpheed-Claws' capabilities are extended by plugins. It comes with
+Claws Mail' capabilities are extended by plugins. It comes with
 the following plugins included, all of which, except SpamAssassin, are
 built automatically if the required libraries are present.
 
-Plugins are installed in $PREFIX/lib/sylpheed-claws/plugins/
+Plugins are installed in $PREFIX/lib/claws-mail/plugins/
 and have a suffix of '.so'
 To load a plugin go to '/Configuration/Plugins' and click
 the 'Load Plugin' button.
@@ -115,7 +115,7 @@ Select the plugin that you want and click 'OK'
     new, unread and total number of messages
 
 Additonal plugins can be found here:
-http://www.sylpheed-claws.net/plugins.php
+http://www.claws-mail.org/plugins.php
 
 
 3. Actions
@@ -125,8 +125,8 @@ http://www.sylpheed-claws.net/plugins.php
   just one of its parts. It allows also the use of an external command to 
   filter the whole text or just a selected part in the message window or in 
   the compose window. This is a generic tool that allows to do any uncommon 
-  actions on the messages, and thus extends the possibilities of Sylpheed-Claws. 
-  For example, Sylpheed-Claws does not include the rot13 cyphering algorithm 
+  actions on the messages, and thus extends the possibilities of Claws Mail. 
+  For example, Claws Mail does not include the rot13 cyphering algorithm 
   popular in some newsgroups. It does not support uuencoded messages. As 
   all these features can be handled by external programs, the actions 
   provide a convenient way to use them from the menu bar.
@@ -139,7 +139,7 @@ http://www.sylpheed-claws.net/plugins.php
   command. The created menu will be found in the Tools -> Actions submenu. 
   By inserting a slash / in the menu name, you create a submenu.
 
-  The command is entered in the Command line entry. Note that Sylpheed-Claws
+  The command is entered in the Command line entry. Note that Claws Mail
   stores every single email in a separate file. This allows to use the 
   following syntax for the command:
 
@@ -163,7 +163,7 @@ http://www.sylpheed-claws.net/plugins.php
 	 contrast to prepending >, the entered text is hidden (useful when 
 	 entering passwords).
     * Appending an ampersand &: this will run the command asynchronously. 
-	 That means "fire and forget". Sylpheed-Claws won't wait for the
+	 That means "fire and forget". Claws Mail won't wait for the
 	 command to finish, nor will it catch its output or its error
 	 messages.
     * Prepending the vertical bar | (pipe-in): this will send the current 
@@ -192,7 +192,7 @@ http://www.sylpheed-claws.net/plugins.php
 
   Here are some examples that are listed in the same syntax as used for 
   storing the actions list. You can copy and past the definition in your 
-  ~/.sylpheed-claws/actionsrc file (exit Sylpheed-Claws before). The syntax
+  ~/.claws-mail/actionsrc file (exit Claws Mail before). The syntax
   is very simple: one line per action, each action contains the menu name
   and the command line separated by a colon and a space ": "
 
@@ -255,7 +255,7 @@ http://www.sylpheed-claws.net/plugins.php
 4. Icon Themes
 --------------
   Claws has support for different icon sets. Several icon sets can be
-  downloaded from http://www.sylpheed-claws.net/themes.php
+  downloaded from http://www.claws-mail.org/themes.php
   You will need to create a directory called 'themes' in your config
   directory, unpack them into this directory, and then use the interface
   to select them, /Configuration/Preferences/Display/Themes
@@ -274,7 +274,7 @@ http://www.sylpheed-claws.net/plugins.php
   a. Requirements
   ---------------
 
-  The spell checker in Sylpheed-Claws requires the GNU/aspell library
+  The spell checker in Claws Mail requires the GNU/aspell library
   (http://www.gnu.org/software/aspell), version 0.50 or newer.
 
   You also need the dictionaries. Check GNU/aspell home page for how
@@ -314,7 +314,7 @@ http://www.sylpheed-claws.net/plugins.php
   c. Usage
   --------
 
-  After successful compiling, you need to tell Sylpheed-Claws where your
+  After successful compiling, you need to tell Claws Mail where your
   dictionaries reside. The configure script should have found it, but in
   case it did not, run 'aspell config dict-dir' on the shell to get the
   path to the dictionaries.
@@ -373,7 +373,7 @@ http://www.sylpheed-claws.net/plugins.php
     Search type extended allows one to use Sylpheed's powerful
     filtering engine to select messages. Examples:
     from regexpcase "foo"
-    subject regexp "Bug" & to regexp "sylpheed-claws"
+    subject regexp "Bug" & to regexp "claws-mail"
 
     Additionally, it is possible to use simpler yet equally
     powerfull patterns for message selections. Mutt users will
@@ -435,7 +435,7 @@ http://www.sylpheed-claws.net/plugins.php
    /Configuration/Preferences/Customize Toolbars lets you define the
    toolbar you want. The configuration dialog enables you to set an icon,
    an appropriate text, and map an action to it. Actions to choose
-   from are predefined. You can also have your "Sylpheed-Claws Actions"
+   from are predefined. You can also have your "Claws Mail Actions"
    (refer to "Actions" above) on your toolbar.
 
    Example: 
@@ -625,32 +625,32 @@ http://www.sylpheed-claws.net/plugins.php
 11. How to contribute
 ---------------------
 
-You are encourged to send patches via the Sylpheed-Claws sourceforge
+You are encourged to send patches via the Claws Mail sourceforge
 project's Patch Tracker.
 http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
 
 If that's too troublesome, either contact Paul Mangan
 <claws@thewildbeast.co.uk> or consider posting to the
-Sylpheed-Claws-users mailing list.
-http://www.sylpheed-claws.net/MLs.php
+Claws Mail-users mailing list.
+http://www.claws-mail.org/MLs.php
 
 Bugs can be reported with Claws' bugzilla at:
 http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
 
-Of course, you can also post to the Sylpheed-Claws-users mailing list.
+Of course, you can also post to the Claws Mail-users mailing list.
 
 Also, we really try to incorporate good contributions, but sometimes we
 don't have enough time. If the contribution is really big, or requires
 a long time to stabilise, send a mail to Paul Mangan
 <claws@thewildbeast.co.uk>. We can probably arrange access to the
-Sylpheed-Claws CVS tree.
+Claws Mail CVS tree.
 
 
 
 12. How to request features
 ---------------------------
 
-Ask around in Sylpheed-Claws-users ML. Note that some developers may
+Ask around in Claws Mail-users ML. Note that some developers may
 have already thought about your feature, may,perhaps, be implementing it,
 or the feature was already discussed and rejected for whatever reason.
 You might want to go ahead and hack a patch for it. (That would be very
@@ -660,7 +660,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 
 
-13. Installing Sylpheed-Claws from CVS
+13. Installing Claws Mail from CVS
 --------------------------------------
 
   a. Downloading
@@ -675,7 +675,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
   After logging in:
 
-   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/sylpheed-claws
+   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/claws-mail
 
 
   b. Installing
@@ -780,21 +780,21 @@ GTK 1 Version
 15. Useful links
 ----------------
 Homepage
-    http://www.sylpheed-claws.net/
+    http://www.claws-mail.org/
 User Contributed FAQ
-    http://www.sylpheed-claws.net/faq/
+    http://www.claws-mail.org/faq/
 Project page
-    http://sourceforge.net/projects/sylpheed-claws/
+    http://sourceforge.net/projects/claws-mail/
 Downloads
     http://sourceforge.net/project/showfiles.php?group_id=25528&package_id=147457
 Extra Plugins
-    http://www.sylpheed-claws.net/plugins.php
+    http://www.claws-mail.org/plugins.php
 Icon Themes
-    http://www.sylpheed-claws.net/themes.php
+    http://www.claws-mail.org/themes.php
 CVS webview
-    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/sylpheed-claws/?only_with_tag=gtk2
+    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/claws-mail/?only_with_tag=gtk2
 Mailing Lists
-    http://www.sylpheed-claws.net/MLs.php
+    http://www.claws-mail.org/MLs.php
 Users Mailing List archive
     http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/28
 Commits Announcement List archive
@@ -806,11 +806,11 @@ Feature Request Tracker
 Patch Tracker
     http://sourceforge.net/tracker/?group_id=25528&atid=384600
 Internationalisation Status
-    http://www.sylpheed-claws.net/i18n.php
+    http://www.claws-mail.org/i18n.php
 Donations
-    http://www.sylpheed-claws.net/sponsors.php
+    http://www.claws-mail.org/sponsors.php
 Planet Sylpheed
-    http://planet.sylpheed-claws.net/
-Sylpheed-Claws for Windows homepage
-    http://www.sylpheed-claws.net/win32/
+    http://planet.claws-mail.org/
+Claws Mail for Windows homepage
+    http://www.claws-mail.org/win32/
 

@@ -1,12 +1,12 @@
 [Desktop Entry]
-Name=Sylpheed Claws
-Name[ja]=Sylpheed Claws
-Name[es]=Sylpheed Claws
+Name=Claws Mail
+Name[ja]=Claws Mail
+Name[es]=Claws Mail
 Comment=E-Mail client
 Comment[ja]=電子メールクライアント
 Comment[es]=Cliente de correo
-Exec=sylpheed-claws
-Icon=sylpheed-claws.png
+Exec=claws-mail
+Icon=claws-mail.png
 Terminal=0
 Type=Application
 Categories=Application;Network;

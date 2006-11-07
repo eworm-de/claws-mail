@@ -1,9 +1,9 @@
-6th November 2006                                Sylpheed-Claws 2.6.0
+6th November 2006                                Claws Mail 2.6.0
 
-		    SYLPHEED-CLAWS  RELEASE NOTES
-                    http://www.sylpheed-claws.net
+		    CLAWS MAIL  RELEASE NOTES
+                    http://www.claws-mail.org
 		      
-Sylpheed-Claws is a GTK+ based, user-friendly, lightweight, and fast 
+Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
 Notes for this release:
@@ -73,8 +73,8 @@ New in this release:
 	o bug 1036, 'Forwarding a mutlipart mail with a "text/html"
 		    block to ms outlook users leeds to freeze of
 		    outlook'
-	o bug 1044, 'sylpheed-claws segfaults while moving mails'
-	o bug 1045, 'sylpheed-claws doesn't remove the mail from the
+	o bug 1044, 'claws-mail segfaults while moving mails'
+	o bug 1045, 'claws-mail doesn't remove the mail from the
 		    IMAP Queue folder after sending'
 	o bug 1046, 'jpilot AddressDB.pdb import fail'
 	o bug 1048, 'Spamassassin plugin license problem'

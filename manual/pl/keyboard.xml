@@ -4,13 +4,13 @@
 
   <section id="keyb_general">
     <title>Motywacja i ogólne konwencje</title>
-    <para> Pomimo tego, ¿e Sylpheed-Claws jest graficzn± aplikacj± i mo¿e byæ obs³ugiwana g³ównie za pomoc± myszki, czasami wymaga równie¿ u¿ycia klawiatury. Tworzenie wiadomo¶ci pocztowych jest jednym z powszechnych zadañ wymagaj±cym u¿ycia klawiatury. Dla ludzi, którzy pisz± wiele wiadomo¶ci przenoszenie r±k z klawiatury na myszkê oznacza spadek produktywno¶ci, wiêc Sylpheed-Claws dostarcza skróty klawiszowe umo¿liwiaj±ce szybsz± obs³ugê.
+    <para> Pomimo tego, ¿e Claws Mail jest graficzn± aplikacj± i mo¿e byæ obs³ugiwana g³ównie za pomoc± myszki, czasami wymaga równie¿ u¿ycia klawiatury. Tworzenie wiadomo¶ci pocztowych jest jednym z powszechnych zadañ wymagaj±cym u¿ycia klawiatury. Dla ludzi, którzy pisz± wiele wiadomo¶ci przenoszenie r±k z klawiatury na myszkê oznacza spadek produktywno¶ci, wiêc Claws Mail dostarcza skróty klawiszowe umo¿liwiaj±ce szybsz± obs³ugê.
     </para>
-    <para>To nie tylko jest u¿yteczne dla zaawansowanych u¿ytkowników poprzez oferowanie alternatywnych skrótów klawiszowych ale równie¿ pomaga ludziom niepe³nosprawnym (którzy mog± mieæ problemy z obs³ug± urz±dzenia wskazuj±cego) u¿ywaæ Sylpheed-Claws.
+    <para>To nie tylko jest u¿yteczne dla zaawansowanych u¿ytkowników poprzez oferowanie alternatywnych skrótów klawiszowych ale równie¿ pomaga ludziom niepe³nosprawnym (którzy mog± mieæ problemy z obs³ug± urz±dzenia wskazuj±cego) u¿ywaæ Claws Mail.
     </para>
     <para>Najbardziej przyjêt± konwencj± jest klawisz <option>Escape</option>. Okna dialogowe lub zwyk³e okna mog± byæ zamkniête za pomoc± klawisza <option>Esc</option>.
     </para>
-    <para>S± te¿ inne kombinacje domy¶lnie przypisane do opcji menu. Nie bêd± one tu zawarte, poniewa¿ s± one wy¶wietlane po prawej stronie opcji menu co pozwala ci na ³atw± ich naukê, Ponadto je¶li dany skrót ci nie odpowiada mo¿esz go zmieniæ na bie¿±co naje¿d¿aj±c myszk± na dan± opcjê i naciskaj±c po¿±dan± kombinacjê, ale musi ona zawieraæ klawisze <option>Alt</option>, <option>Ctrl</option> i/lub <option>Shift</option>; pojedyncze klawisze nie mog± byæ ustawione. (To jest standardowe zachowanie programów bazuj±cych na bibliotece GTK2 jak Sylpheed-Claws. To w³a¶ciwo¶æ mo¿e byæ wy³±czona w niektórych ¶rodowiskach.)
+    <para>S± te¿ inne kombinacje domy¶lnie przypisane do opcji menu. Nie bêd± one tu zawarte, poniewa¿ s± one wy¶wietlane po prawej stronie opcji menu co pozwala ci na ³atw± ich naukê, Ponadto je¶li dany skrót ci nie odpowiada mo¿esz go zmieniæ na bie¿±co naje¿d¿aj±c myszk± na dan± opcjê i naciskaj±c po¿±dan± kombinacjê, ale musi ona zawieraæ klawisze <option>Alt</option>, <option>Ctrl</option> i/lub <option>Shift</option>; pojedyncze klawisze nie mog± byæ ustawione. (To jest standardowe zachowanie programów bazuj±cych na bibliotece GTK2 jak Claws Mail. To w³a¶ciwo¶æ mo¿e byæ wy³±czona w niektórych ¶rodowiskach.)
     </para>
     <para>W dodatku do tych skrótów klawiszowych s± jeszcze inne, które ró¿ni± siê jednak w zale¿no¶ci od okna, s± one podsumowane poni¿ej.
     </para>

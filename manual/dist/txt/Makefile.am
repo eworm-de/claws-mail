@@ -1,8 +1,8 @@
-EXTRA_DIST=sylpheed-claws-manual.txt
-manualen_DATA=sylpheed-claws-manual.txt
+EXTRA_DIST=claws-mail-manual.txt
+manualen_DATA=claws-mail-manual.txt
 manualendir=$(manualdir)/en
 
-sylpheed-claws-manual.txt: \
+claws-mail-manual.txt: \
 	../../account.xml \
 	../../ack.xml \
 	../../addrbook.xml \
@@ -15,8 +15,8 @@ sylpheed-claws-manual.txt: \
 	../../keyboard.xml \
 	../../plugins.xml \
 	../../starting.xml \
-	../../sylpheed-claws-manual.xml 
-	-docbook2txt -o . ../../sylpheed-claws-manual.xml
+	../../claws-mail-manual.xml 
+	-docbook2txt -o . ../../claws-mail-manual.xml
 	
 maintainer-clean:
-	-rm sylpheed-claws-manual.txt
+	-rm claws-mail-manual.txt
