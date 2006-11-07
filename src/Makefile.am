@@ -12,7 +12,7 @@ SUBDIRS = common gtk $(etpan_dir) . plugins
 bin_PROGRAMS = claws-mail
 install-exec-hook:
 	@rm -f $(bindir)/sylpheed-claws
-	@ln -s $(bindir)/claws-mail $(bindir)/sylpheed-claws
+	@ln -s claws-mail $(bindir)/sylpheed-claws
 
 claws_mail_SOURCES = \
 	account.c \

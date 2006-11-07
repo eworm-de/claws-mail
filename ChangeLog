@@ -1,3 +1,9 @@
+2006-11-07 [colin]	2.6.0cvs13
+
+	* src/Makefile.am
+		Symlink sylpheed-claws relative to 
+		claws-mail
+
 2006-11-07 [colin]	2.6.0cvs12
 
 	* src/compose.c
