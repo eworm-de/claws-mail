@@ -1,3 +1,10 @@
+2006-11-08 [paul]	2.6.0cvs14
+
+	* src/main.c
+	* src/common/defs.h
+		Migrate sylpheedrc to clawsrc, and fix the standard
+		plugins path in the process
+
 2006-11-07 [colin]	2.6.0cvs13
 
 	* src/Makefile.am

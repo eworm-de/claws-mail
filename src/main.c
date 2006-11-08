@@ -287,6 +287,49 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	return (r == 0);
 }
 
+static void migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
+{
+	FILE *oldfp, *newfp;
+	gchar *plugin_path, *old_plugin_path, *new_plugin_path;
+	gchar buf[BUFFSIZE];
+	oldfp = g_fopen(old_rc, "r");
+	if (!oldfp)
+		return;
+	newfp = g_fopen(new_rc, "w");
+	if (!newfp) {
+		fclose(oldfp);
+		return;
+	}
+	
+	plugin_path = g_strdup(get_plugin_dir());
+	new_plugin_path = g_strdup(plugin_path);
+	
+	if (strstr(plugin_path, "/claws-mail/")) {
+		gchar *end = g_strdup(strstr(plugin_path, "/claws-mail/")+strlen("/claws-mail/"));
+		*(strstr(plugin_path, "/claws-mail/")) = '\0';
+		old_plugin_path = g_strconcat(plugin_path, "/sylpheed-claws/", end, NULL);
+		g_free(end);
+	} else {
+		old_plugin_path = g_strdup(new_plugin_path);
+	}
+	debug_print("replacing %s with %s\n", old_plugin_path, new_plugin_path);
+	while (fgets(buf, sizeof(buf), oldfp)) {
+		if (strncmp(buf, old_plugin_path, strlen(old_plugin_path))) {
+			fputs(buf, newfp);
+		} else {
+			debug_print("->replacing %s", buf);
+			debug_print("  with %s%s", new_plugin_path, buf+strlen(old_plugin_path));
+			fputs(new_plugin_path, newfp);
+			fputs(buf+strlen(old_plugin_path), newfp);
+		}
+	}
+	g_free(plugin_path);
+	g_free(new_plugin_path);
+	g_free(old_plugin_path);
+	fclose(oldfp);
+	fclose(newfp);
+}
+
 #ifdef HAVE_LIBSM
 static void
 sc_client_set_value (MainWindow *mainwin,
@@ -478,9 +521,6 @@ int main(int argc, char *argv[])
 
 	parse_cmd_opt(argc, argv);
 
-	if (!cmd.exit)
-		plugin_load_all("Common");
-
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
 		gtk_set_locale();
@@ -570,6 +610,15 @@ int main(int argc, char *argv[])
 		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0)
 			exit(1);
 	}
+	if (!is_file_exist(RC_DIR G_DIR_SEPARATOR_S COMMON_RC) &&
+	    is_file_exist(RC_DIR G_DIR_SEPARATOR_S OLD_COMMON_RC)) {
+	    	/* post 2.6 name change */
+		migrate_common_rc(RC_DIR G_DIR_SEPARATOR_S OLD_COMMON_RC,
+			  RC_DIR G_DIR_SEPARATOR_S COMMON_RC);
+	}
+
+	if (!cmd.exit)
+		plugin_load_all("Common");
 
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "gtkrc-2.0", NULL);
 	gtk_rc_parse(userrc);

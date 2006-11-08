@@ -2038,3 +2038,4 @@
 ( cvs diff -u -r 1.4.2.37 -r 1.4.2.38 src/gtk/about.c;  ) > 2.6.0cvs11.patchset
 ( cvs diff -u -r 1.382.2.323 -r 1.382.2.324 src/compose.c;  ) > 2.6.0cvs12.patchset
 ( cvs diff -u -r 1.155.2.46 -r 1.155.2.47 src/Makefile.am;  ) > 2.6.0cvs13.patchset
+( cvs diff -u -r 1.115.2.111 -r 1.115.2.112 src/main.c;  cvs diff -u -r 1.9.2.28 -r 1.9.2.29 src/common/defs.h;  ) > 2.6.0cvs14.patchset
