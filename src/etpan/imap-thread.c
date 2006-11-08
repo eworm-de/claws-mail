@@ -47,6 +47,10 @@ static void imap_logger_cmd(int direction, const char * str, size_t size)
 	gchar **lines;
 	int i = 0;
 
+	if (size > 8192) {
+		log_print("IMAP4%c [CMD data - %zd bytes]\n", direction?'>':'<', size);
+		return;
+	}
 	buf = malloc(size+1);
 	memset(buf, 0, size+1);
 	strncpy(buf, str, size);
@@ -78,6 +82,11 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 	gchar **lines;
 	int i = 0;
 
+	if (size > 8192) {
+		log_print("IMAP4%c [FETCH data - %zd bytes]\n", direction?'>':'<', size);
+		return;
+	}
+	
 	buf = malloc(size+1);
 	memset(buf, 0, size+1);
 	strncpy(buf, str, size);
@@ -112,6 +121,10 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 	gchar **lines;
 	int i = 0;
 
+	if (size > 8192) {
+		log_print("IMAP4%c [UID data - %zd bytes]\n", direction?'>':'<', size);
+		return;
+	}
 	buf = malloc(size+1);
 	memset(buf, 0, size+1);
 	strncpy(buf, str, size);
@@ -150,6 +163,10 @@ void imap_logger_append(int direction, const char * str, size_t size)
 	gchar **lines;
 	int i = 0;
 
+	if (size > 8192) {
+		log_print("IMAP4%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		return;
+	}
 	buf = malloc(size+1);
 	memset(buf, 0, size+1);
 	strncpy(buf, str, size);

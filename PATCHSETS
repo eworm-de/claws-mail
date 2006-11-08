@@ -2026,3 +2026,4 @@
 ( cvs diff -u -r 1.60.2.37 -r 1.60.2.38 po/es.po;  ) > 2.5.6cvs21.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 manual/advanced.xml;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/es/advanced.xml;  ) > 2.5.6cvs22.patchset
 ( cvs diff -u -r 1.382.2.321 -r 1.382.2.322 src/compose.c;  ) > 2.6.0cvs1.patchset
+( cvs diff -u -r 1.1.4.55 -r 1.1.4.56 src/etpan/imap-thread.c;  ) > 2.6.0cvs2.patchset

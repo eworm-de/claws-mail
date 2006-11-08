@@ -1,3 +1,9 @@
+2006-11-08 [colin]	2.6.0cvs2-stable
+
+	* src/etpan/imap-thread.c
+		Backport fix for bug 1054, 'Slowness logging big 
+		data chunks'
+
 2006-11-07 [colin]	2.6.0cvs1-stable
 
 	* src/compose.c
