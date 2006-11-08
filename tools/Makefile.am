@@ -16,9 +16,9 @@ EXTRA_TOOLS = \
 	maildir2claws-mail.pl \
 	multiwebsearch.pl \
 	nautilus2claws-mail.sh \
-	outlook2sylpheed.pl \
-	clawsprint.pl \
-	clawsprint.rc \
+	outlook2claws-mail.pl \
+	sylprint.pl \
+	sylprint.rc \
 	tb2claws-mail \
 	tbird2claws.py \
 	textviewer.pl \

@@ -1,3 +1,8 @@
+2006-11-08 [paul]	2.6.0cvs17
+
+	* tools/Makefile.am
+		fix the renaming
+
 2006-11-08 [paul]	2.6.0cvs16
 
 	* src/common/defs.h
