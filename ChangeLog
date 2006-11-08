@@ -1,3 +1,9 @@
+2006-11-08 [colin]	2.6.0cvs18
+
+	* src/etpan/imap-thread.c
+		Fix bug 1054, 'Slowness logging big 
+		data chunks'
+
 2006-11-08 [paul]	2.6.0cvs17
 
 	* tools/Makefile.am
