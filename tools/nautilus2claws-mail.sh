@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# nautilus2sylpheed.sh
+# nautilus2claws-mail.sh
 # Copyright 2004 Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
 
 # This program is free software; you can redistribute it and/or

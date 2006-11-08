@@ -17,11 +17,11 @@
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # outlook2sylpheed.pl -- perl script to convert an Outlook generated 
-# 			 contact list into a Sylpheed XML address book.
+# 			 contact list into a Claws Mail XML address book.
 # 
 # This script is based on:
 # 	out2syl.sh by Rafael Lossurdo <mugas@via-rs.net>
-# 	kmail2sylpheed.pl by Paul Mangan <claws@thewildbeast.co.uk>
+# 	kmail2claws-mail.pl by Paul Mangan <claws@thewildbeast.co.uk>
 #
 # See README file for details and usage.
 #
@@ -41,16 +41,16 @@ else {
 	$outl_file = $ARGV[0];
 }
 # some init
-$sylconf = ".claws-mail";
-$indexname = "$sylconf/addrbook--index.xml";
+$clawsconf = ".claws-mail";
+$indexname = "$clawsconf/addrbook--index.xml";
 
 # the next is mostly Paul's code
 $time = time;
 
 chdir;
-opendir(SYLPHEED, $sylconf) || die("Error: can't open $sylconf directory\n");
-	push(@cached,(readdir(SYLPHEED)));
-closedir(SYLPHEED);
+opendir(CLAWS, $clawsconf) || die("Error: can't open $clawsconf directory\n");
+	push(@cached,(readdir(CLAWS)));
+closedir(CLAWS);
 
 foreach $cached (@cached) {
 	if ($cached =~ m/^addrbook/ && $cached =~ m/[0-9].xml$/) {
@@ -189,8 +189,8 @@ if ($do_csv) {
 	die "Error: unknown csv file format\n" 
 		unless ($#headerline == $nboffields);
 }
-open(NEWB, '>', "$sylconf/$new_book") 
-	or die "Error: can't open $sylconf/$new_book for writting\n";
+open(NEWB, '>', "$clawsconf/$new_book") 
+	or die "Error: can't open $clawsconf/$new_book for writting\n";
 if ($do_csv) { process_csv(); }
 else { process_text(); }
 

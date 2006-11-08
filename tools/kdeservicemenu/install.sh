@@ -1,10 +1,10 @@
 #!/bin/bash
 
-PERL_SCRIPT="sylpheed-kdeservicemenu.pl"
-DESKTOP_TEMPLATE_ONE="template_sylpheed-attach-files.desktop"
-DESKTOP_ONE="sylpheed-attach-files.desktop"
-DESKTOP_TEMPLATE_TWO="template_sylpheed-compress-attach.desktop"
-DESKTOP_TWO="sylpheed-compress-attach.desktop"
+PERL_SCRIPT="claws-mail-kdeservicemenu.pl"
+DESKTOP_TEMPLATE_ONE="template_claws-mail-attach-files.desktop"
+DESKTOP_ONE="claws-mail-attach-files.desktop"
+DESKTOP_TEMPLATE_TWO="template_claws-mail-compress-attach.desktop"
+DESKTOP_TWO="claws-mail-compress-attach.desktop"
 SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 
 function check_environ {

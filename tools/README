@@ -13,24 +13,24 @@ Action scripts:
 
 Addressbook conversion:
   eud2gc.py                     Convert Eudora address book to Gnomecard
-  kmail2sylpheed.pl             Import a Kmail address book (KDE2)
-  kmail2sylpheed_v2.pl          Import a Kmail address book (KDE3)
-  outlook2sylpheed.pl           Import an Outlook generated contact list
-  tb2sylpheed                   Import The Bat! address books
+  kmail2claws-mail.pl           Import a Kmail address book (KDE2)
+  kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
+  outlook2claws-mail.pl         Import an Outlook generated contact list
+  tb2claws-mail                 Import The Bat! address books
   vcard2xml.py			Import an Evolution vCard
 
 Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
   convert_mbox.pl		Import mbox files
-  maildir2sylpheed.pl		Convert a maildir mailbox to MH format
-  tbird2syl.py			Integrate a Thunderbird folder tree into Claws
+  maildir2claws-mail.pl		Convert a maildir mailbox to MH format
+  tbird2claws.py		Integrate a Thunderbird folder tree into Claws
 
 Other tools:
-  acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
+  acroread2claws-mail.pl	Send PDFs from Adobe Reader 7
   filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
   filter_conv.pl                Convert old-style Sylpheed filters to filtering
-  nautilus2sylpheed.sh		Send files from Nautilus
-  OOo2sylpheed.pl               Send documents from OpenOffice.org
+  nautilus2claws-mail.sh	Send files from Nautilus
+  OOo2claws-mail.pl             Send documents from OpenOffice.org
   sylprint.pl                   Printing engine, explained in README.sylprint
   update-po                     Update the .po files named on the command line.
 
@@ -82,8 +82,8 @@ Action scripts
   WHAT IT DOES
 	This is an Actions script that allows you to search
 	websites for the selected text. It uses the default
-	Claws Mail browser as configured through Sylpheed
-	-Claws' GUI and specified in ~/.claws-mail/sylpheedrc,
+	Claws Mail browser as configured through Claws Mail's 
+	GUI and specified in ~/.claws-mail/sylpheedrc,
 	and a configuration file called multiwebsearch.conf.
 	
   CONFIGURATION
@@ -137,14 +137,14 @@ Address book conversion
 
   Contact: Jeroen Versteeg <j.m.versteeg@student.utwente.nl>
 
-* kmail2sylpheed.pl
+* kmail2claws-mail.pl
 
   WHAT IT DOES
 	This perl script will convert an exported Kmail addressbook into a
   	Claws Mail addressbook. If your version of Kmail is 1.37 or
 	greater and/or your version of KAddressBook is 3.1beta1 or greater,
 	or this script mixes up your definitions and their related data, use
-  	'kmail2sylpheed_v2.pl' instead.
+  	'kmail2claws-mail_v2.pl' instead.
 
   HOW TO USE IT
 	(You must run claws-mail at least once before running this script.)
@@ -156,7 +156,7 @@ Address book conversion
 
   	From the command line, execute the following:
  
-		perl kmail2sylpheed.pl --kmailfile=/path/to/addressbook.csv
+		perl kmail2claws-mail.pl --kmailfile=/path/to/addressbook.csv
 
   	Your Kmail address book data will now be contained in Claws Mail'
   	address book, under the name 'Kmail Address Book'.
@@ -164,7 +164,7 @@ Address book conversion
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
     
 
-* kmail2sylpheed_v2.pl
+* kmail2claws-mail_v2.pl
 
   This script has been tested with Kmail 1.4.7 and KAddressBook 3.1beta1
 
@@ -183,7 +183,7 @@ Address book conversion
 
   	From the command line, execute the following:
  
-		perl kmail2sylpheed_v2.pl --kmailfile=/path/to/addressbook.csv
+		perl kmail2claws-mail_v2.pl --kmailfile=/path/to/addressbook.csv
 	
   	You can also use --help to see usage instructions.
 
@@ -193,7 +193,7 @@ Address book conversion
   Contact: Paul Mangan <claws@thewildbeast.co.uk>  
 
 
-* outlook2sylpheed.pl
+* outlook2claws-mail.pl
 
   WHAT IT DOES
   	This perl script converts an Outlook generated contact list into a 
@@ -209,7 +209,7 @@ Address book conversion
 
   	From the command line, execute the following:
 
-		outlook2sylpheed.pl fullpathname
+		outlook2claws-mail.pl fullpathname
 
 	For csv files:
 	-------------
@@ -220,7 +220,7 @@ Address book conversion
 
 	From the command line, execute the following:
 
-		outlook2sylpheed.pl --csv fullpathname
+		outlook2claws-mail.pl --csv fullpathname
 
   LIMITATIONS
 	For text files only works with fields described above. If you have 
@@ -236,7 +236,7 @@ Address book conversion
   Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
 
 
-* tb2sylpheed
+* tb2claws-mail
 
   WHAT IT DOES
   	This perl script will convert an address book exported from The Bat! 
@@ -250,7 +250,7 @@ Address book conversion
   	Export The Bat! Address Book to CSV file format with all fields 
   	selected to YES and then start:
 
-  		tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
+  		tb2claws-mail --tbfile=/full/path/to/thebat/addressbook.csv
  
   	The Bat! addressbook data will now be contained in Claws Mail'
   	addressbook, under the name 'The Bat! Address Book'.
@@ -331,7 +331,7 @@ Mailbox conversion
 
   Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
 
-* maildir2sylpheed.pl
+* maildir2claws-mail.pl
 
   WHAT IT DOES
 	This perl script converts a mailbox in maildir format into
@@ -343,7 +343,7 @@ Mailbox conversion
 	
 	Run the script using:
 	 
-    		perl maildir2sylpheed.pl --kmaildir=mail_folder_name
+    		perl maildir2claws-mail.pl --kmaildir=mail_folder_name
 		
 	Start Claws Mail and right-click the toplevel mailbox, i.e
 	"Mailbox (MH)", and select 'Rebuild folder tree'.
@@ -367,12 +367,12 @@ Mailbox conversion
   HOW TO USE IT
   
 	The script receives two parameters from command-line:
-	<Thunderbird folder path> <Sylpheed folder path>
+	<Thunderbird folder path> <Claws Mail folder path>
 
 	The best way to use it is to go to inside your Thunderbird
 	root mailfolder directory and invoke it as:
 
-		<path>\python2.4 <path>\tbird2syl.py . <path to sylpheed>\Mail
+		<path>\python2.4 <path>\tbird2syl.py . <path to Claws Mail>\Mail
 
   Contact: Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
 
@@ -381,14 +381,14 @@ Mailbox conversion
 Other tools
 -----------
 
-* acroread2sylpheed.pl
+* acroread2claws-mail.pl
 
   WHAT IT DOES
   	This perl script enables Adobe Reader 7 to send documents to
 	Claws Mail as attachments.
 
   HOW TO USE IT
-  	Make sure that the script is executable (chmod +x acroread2sylpheed.pl)
+  	Make sure that the script is executable (chmod +x acroread2claws-mail.pl)
 	Start up Adobe Reader 7 (acroread)
 	Go to /Edit/Preferences/SendMail
 	Select any email client except 'System Mail (mail)'
@@ -406,7 +406,7 @@ Other tools
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules from
 	sylpheed's new filter system (>= 0.9.99) to the filtering system used in
-	claws-mail. (Disabled rules are ignored)
+	Claws Mail.
 	It reads '~/.sylpheed-2.0/filter.xml' or '~/.sylpheed/filter.xml' and
 	writes '~/[CLAWS CONFIG DIR]/matcherrc'
   
@@ -429,7 +429,7 @@ Other tools
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules
   	from sylpheed's old filter system (< 0.9.99) to the filtering system
-	used in claws-mail.
+	used in Claws Mail.
 	It reads '~/.sylpheed/filterrc' and writes '~/.claws-mail/matcherrc'
   
   HOW TO USE IT
@@ -443,7 +443,7 @@ Other tools
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
   
 
-* nautilus2sylpheed.sh
+* nautilus2claws-mail.sh
 
   WHAT IT DOES
 	This script will recursively attach a number of selected 
@@ -452,12 +452,12 @@ Other tools
   HOW TO USE IT
   	Copy the script to $HOME/.gnome2/nautilus-scripts, chmod u+x, 
 	and restart nautilus (killall -9 nautilus). You will now have 
-	a right-click menu item: '/Scripts/nautilus2sylpheed.sh'
+	a right-click menu item: '/Scripts/nautilus2claws-mail.sh'
 	
   Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
 
 
-* OOo2sylpheed.pl
+* OOo2claws-mail.pl
 
   WHAT IT DOES
   	This perl script enables OpenOffice.org to send documents to
@@ -477,7 +477,7 @@ Other tools
   	Go to 'Tools/Options/OpenOffice.org/External Programs'
 	Select either ''Mozilla 1.x (Option 1)', or 
 	'Netscape 6.x - 7.0 (Option 1)' from the 'Program' selection
-  	Enter the path to OOo2sylpheed.pl in the 'Path' box
+  	Enter the path to OOo2claws-mail.pl in the 'Path' box
   	or select it by clicking on the '...' button.
     
   	You can then use 'File/Send/Document as email' to launch
@@ -488,7 +488,7 @@ Other tools
     --------------------------
   	Start up OpenOffice.org.
   	Go to 'Tools/Options/OpenOffice.org/External Programs'
-  	Enter the path to OOo2sylpheed.pl in the 'Program' box
+  	Enter the path to OOo2claws-mail.pl in the 'Program' box
   	or select it by clicking on the '...' button.
 
 
@@ -543,7 +543,7 @@ Extra tools
   	In filename.xface will be the X-Face header ready to use.
   	You can add a custom header in Claws Mail through Configuration->
   	Preferences per account, "Send" tab, check "Add user-defined header"
-  	then "Edit..." if you want to add it via Sylpheed -Claws interface, or do
+  	then "Edit..." if you want to add it via the Claws Mail interface, or do
 
       		echo "0:" `cat filename.xface` > ~/.claws-mail/customheaderrc
 

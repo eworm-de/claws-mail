@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2005 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2002 Paul Mangan <claws@thewildbeast.co.uk>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -16,32 +16,17 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
-# acroread2sylpheed.pl	helper script to send documents from
-#			Adobe Reader 7 to claws-mail
+# OOo2claws-mail.pl	helper script to send documents from OpenOffice.org
+#			to Claws Mail
 
 use strict;
 
 my $input = <>;
 
-my $pdf;
-my $output = $ARGV;
-
-if ($ARGV =~ m/^\//) {
-	$pdf = $output;
-} elsif ($ARGV =~ m/^mailto/) {
-	my @parts = split(/&[a-z]*=/, $output);
-	$parts[0] =~ s/^mailto:\?attach=//;
-	$pdf = $parts[0];
-} elsif ($ARGV =~ m/^to/) {
-	my @parts = split(/,/, $output);
-	$parts[3] =~ s/^attachment=file:\/\///;
-	$pdf = $parts[3];
-} else {
-	$pdf = $ENV{HOME}."/".$output;
-}
-
-exec "claws-mail --attach \"$pdf\"";
-## if necessary, change the line above to point to
-## your claws-mail executable
+$ARGV =~ s/^"attachment='file:\/\///;
+$ARGV =~ s/'"$//;
+$ARGV =~ s/%20/ /g;
+exec "claws-mail --attach \"$ARGV\"";
+## change the line above to point to your claws-mail executable
 
 exit;

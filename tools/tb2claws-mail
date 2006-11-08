@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
-# Script name : tb2sylpheed
+# Script name : tb2claws-mail
 # Script version: 1.0.2
-# Script based on : script kmail2sylpheed.pl
-# Script purpose : convert The Bat! addressbook into Sylpheed addressbook
+# Script based on : script kmail2claws-mail.pl
+# Script purpose : convert The Bat! addressbook into Claws Mail addressbook
 # Author : Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
 # Licence : GPL
 #
@@ -11,7 +11,7 @@
 #
 # Usage: Export The Bat! Address Book to CSV file format
 #        with all fields selected to YES and then start:
-#        tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
+#        tb2claws-mail --tbfile=/full/path/to/thebat/addressbook.csv
 #
 # Change Log:
 #
@@ -42,10 +42,10 @@ $total_addresses = 0;
 
 chdir;
 
-# check is Sylpheed instrtalled
-opendir(SYLPHEED, ".claws-mail") || die("Can't open Claws Mail directory! Conversion abroted\n");
-    push(@cached, (readdir(SYLPHEED)));
-closedir(SYLPHEED);
+# check is Claws-Mail instrtalled
+opendir(CLAWS, ".claws-mail") || die("Can't open Claws Mail directory! Conversion abroted\n");
+    push(@cached, (readdir(CLAWS)));
+closedir(CLAWS);
 
 # get last existing addressbook filename
 # to set filename for newest addressbook
@@ -74,8 +74,8 @@ $dross = shift(@tblines);
 
 # set time mark and header of addressbook
 $time = time;
-$sylph_addr = "<?xml version=\"1.0\" encoding=\"ISO-8859-2\" ?>\n";
-$sylph_addr .= "<address-book name=\"The Bat! Address Book\" >\n";
+$claws_addr = "<?xml version=\"1.0\" encoding=\"ISO-8859-2\" ?>\n";
+$claws_addr .= "<address-book name=\"The Bat! Address Book\" >\n";
 
 # create addressbook entry from The Bat! addressbook
 foreach $tbline (@tblines) {
@@ -95,12 +95,12 @@ foreach $tbline (@tblines) {
 	$tbdata =~ s/\ {2,}/ /g;
     }
     # set addressbook field values
-    $sylph_addr .= "  <person uid=\"$time\" first-name=\"$tbdata[1]\""
+    $claws_addr .= "  <person uid=\"$time\" first-name=\"$tbdata[1]\""
 		." last-name=\"$tbdata[2]\" nick-name=\"$tbdata[5]\""
 		." cn=\"$tbdata[0]\" >\n"
 		."    <address-list>\n";
     $time++;
-    $sylph_addr .= "      <address uid=\"$time\" alias=\"$tbdata[5]\" email=\"$tbdata[4]\""
+    $claws_addr .= "      <address uid=\"$time\" alias=\"$tbdata[5]\" email=\"$tbdata[4]\""
 		." remarks=\"\" />\n"
 		."    </address-list>\n";
 
@@ -113,7 +113,7 @@ foreach $tbline (@tblines) {
     }
 
     if ($check > 0) {
-    $sylph_addr .= "    <attribute-list>\n";
+    $claws_addr .= "    <attribute-list>\n";
 	if ($tbdata[1] ne "" || $tbdata[2] ne "") {
 	    $time++;
 	    if($tbdata[29] ne "" && $tbdata[1] ne "") { $full_name = "$tbdata[29] $tbdata[1]"; } else { $full_name = "$tbdata[1]"; }
@@ -121,138 +121,138 @@ foreach $tbline (@tblines) {
 	    if($tbdata[2] ne "") { $full_name .= " $tbdata[2]"; }
 	    if($tbdata[28] ne "") { $full_name .= " $tbdata[28]"; }
 		
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Full Name\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Full Name\" >"
 			."$full_name</attribute>\n";
 	}
 	if ($tbdata[15] ne "") {
     	    $time++;
-	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Street Address\" >"
+	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home Street Address\" >"
 			."$tbdata[15]</attribute>\n";
 	}
 	if ($tbdata[16] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home City Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home City Address\" >"
 			."$tbdata[16]</attribute>\n";
 	}
 	if ($tbdata[17] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home State Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home State Address\" >"
 			."$tbdata[17]</attribute>\n";
 	}
 	if ($tbdata[18] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Zip Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home Zip Address\" >"
 			."$tbdata[18]</attribute>\n";
 	}
 	if ($tbdata[19] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Country Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home Country Address\" >"
 			."$tbdata[19]</attribute>\n";
 	}
 	if ($tbdata[9] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Phone\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home Phone\" >"
 			."$tbdata[9]</attribute>\n";
 	}
 	if ($tbdata[10] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Fax\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Home Fax\" >"
 			."$tbdata[10]</attribute>\n";
 	}
 	if ($tbdata[11] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Mobile Phone\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Mobile Phone\" >"
 			."$tbdata[11]</attribute>\n";
 	}
 	if ($tbdata[30] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Personal Homepage\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Personal Homepage\" >"
 			."$tbdata[30]</attribute>\n";
 	}
 	if ($tbdata[14] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Pager\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Pager\" >"
 			."$tbdata[14]</attribute>\n";
 	}
 	if ($tbdata[7] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Bussines Company\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Bussines Company\" >"
 			."$tbdata[7]</attribute>\n";
 	}
 	if ($tbdata[8] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Bussines Job Title\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Bussines Job Title\" >"
 			."$tbdata[8]</attribute>\n";
 	}
 	if ($tbdata[20] ne "") {
    	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Department\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Department\" >"
 			."$tbdata[20]</attribute>\n";
 	}
 	if ($tbdata[21] ne "") {
    	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Office\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Office\" >"
 			."$tbdata[21]</attribute>\n";
 	}
 	if ($tbdata[22] ne "") {
    	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Street Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Street Address\" >"
 			."$tbdata[22]</attribute>\n";
 	}
 	if ($tbdata[23] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business City Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business City Address\" >"
 			."$tbdata[23]</attribute>\n";
 	}
 	if ($tbdata[24] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business State Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business State Address\" >"
 			."$tbdata[24]</attribute>\n";
 	}
 	if ($tbdata[25] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Zip Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Zip Address\" >"
 			."$tbdata[25]</attribute>\n";
 	}
 	if ($tbdata[26] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Country Address\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Country Address\" >"
 			."$tbdata[26]</attribute>\n";
 	}
 	if ($tbdata[12] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Phone\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Phone\" >"
 			."$tbdata[12]</attribute>\n";
 	}
 	if ($tbdata[13] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Fax\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Fax\" >"
 			."$tbdata[13]</attribute>\n";
 	}
 	if ($tbdata[31] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Homepage\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Business Homepage\" >"
 			."$tbdata[31]</attribute>\n";
 	}
 	if ($tbdata[27] ne "") {
     	    $time++;
-    	    $sylph_addr .= "      <attribute uid=\"$time\" name=\"Notes\" >"
+    	    $claws_addr .= "      <attribute uid=\"$time\" name=\"Notes\" >"
 			."$tbdata[27]</attribute>\n";
 	}
-	$sylph_addr .= "    </attribute-list>\n";
+	$claws_addr .= "    </attribute-list>\n";
     }
 #    if ( $check > 0 ) {
-#        $sylph_addr .= "</attribute-list>\n";
+#        $claws_addr .= "</attribute-list>\n";
 #    }
 
-    $sylph_addr .=  "  </person>\n";
+    $claws_addr .=  "  </person>\n";
     $time++;
 }
-$sylph_addr .= "</address-book>\n";
+$claws_addr .= "</address-book>\n";
 
 # print new addressbook to file
 open (NEWADDR, ">.claws-mail/$new_addrbk");
-    print NEWADDR $sylph_addr;
+    print NEWADDR $claws_addr;
 close NEWADDR;
 
 # add new addressbook to index

@@ -16,10 +16,10 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-## script name : kmail2sylpheed_v2.pl
+## script name : kmail2claws-mail_v2.pl
 
 ## script purpose : convert an exported Kmail addressbook csv file 
-## into a Sylpheed addressbook
+## into a Claws Mail addressbook
 
 ## tested with Kmail 1.4.7 and KAddressBook 3.1beta1
 
@@ -36,21 +36,21 @@ if ($kmailfile eq "" || $iNeedHelp) {
 		print "No filename given\n";
 	}
 	print "Use the following format:\n";
-	print "\tkmail2sylpheed_v2.pl --kmailfile=/path/to/addressbook.csv\n";
+	print "\tkmail2claws-mail_v2.pl --kmailfile=/path/to/addressbook.csv\n";
 	exit;
 }
 
-$sylph_dir  = ".claws-mail";
-$addr_index = "$sylph_dir/addrbook--index.xml";
+$claws_dir  = ".claws-mail";
+$addr_index = "$claws_dir/addrbook--index.xml";
 $new_addressbook = "Kmail address book";
  
 $time = time;
 
 chdir;
 
-opendir(SYLPHEED, $sylph_dir) || die("Can't open $sylph_dir directory\n");
-	push(@cached,(readdir(SYLPHEED)));
-closedir(SYLPHEED);
+opendir(CLAWS, $claws_dir) || die("Can't open $claws_dir directory\n");
+	push(@cached,(readdir(CLAWS)));
+closedir(CLAWS);
 
 foreach $cached (@cached) {
 	if ($cached =~ m/^addrbook/ && $cached =~ m/[0-9].xml$/) {
@@ -75,8 +75,8 @@ $defs = shift(@kmaillines);
 
 (@kmaildefs) = split(/,/,$defs);
 
-$sylph_addr = "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
-$sylph_addr .= "<address-book name=\"Kmail address book\" >\n";
+$claws_addr = "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
+$claws_addr .= "<address-book name=\"Kmail address book\" >\n";
 
 foreach $kmailline (@kmaillines) {
     (@kmaildata) = split(/,/,$kmailline); 
@@ -91,12 +91,12 @@ foreach $kmailline (@kmaillines) {
 		$kmaildata =~ s/\\n/, /g;
 		chomp $kmaildata;
 	}
-    $sylph_addr .= "  <person uid=\"$time\" first-name=\"$kmaildata[2]\""
+    $claws_addr .= "  <person uid=\"$time\" first-name=\"$kmaildata[2]\""
 		 ." last-name=\"$kmaildata[1]\" nick-name=\"$kmaildata[6]\""
 		 ." cn=\"$kmaildata[2] $kmaildata[1]\" >\n"
 		 ."    <address-list>\n";
     $time++;
-    $sylph_addr .= "      <address uid=\"$time\" alias=\"\" email=\"$kmaildata[28]\""
+    $claws_addr .= "      <address uid=\"$time\" alias=\"\" email=\"$kmaildata[28]\""
 		." remarks=\"$kmaildata[33]\" />\n"
 		."    </address-list>\n";
 
@@ -106,7 +106,7 @@ foreach $kmailline (@kmaillines) {
 		}
 	}
 	if ($def_exist[0]) {
-		$sylph_addr .= "    <attribute-list>\n";
+		$claws_addr .= "    <attribute-list>\n";
 	}
 	foreach $def_exist (@def_exist) {
 		$kmaildefs[$def_exist] =~ s/^"//;
@@ -114,21 +114,21 @@ foreach $kmailline (@kmaillines) {
 		$kmaildefs[$def_exist] =~ s/'/&apos;/g;
 		
 		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"$kmaildefs[$def_exist]\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"$kmaildefs[$def_exist]\" >"
 			."$kmaildata[$def_exist]</attribute>\n";
 		$attribs = 1;
 	}
 	if ($attribs == 1) {
-		$sylph_addr .= "    </attribute-list>\n";
+		$claws_addr .= "    </attribute-list>\n";
 	}
-    $sylph_addr .=  "  </person>\n";
+    $claws_addr .=  "  </person>\n";
     $time++;
     $count++;
 }
-$sylph_addr .= "</address-book>\n";
+$claws_addr .= "</address-book>\n";
 
-open (NEWADDR, ">$sylph_dir/$new_addrbk");
-print NEWADDR $sylph_addr;
+open (NEWADDR, ">$claws_dir/$new_addrbk");
+print NEWADDR $claws_addr;
 close NEWADDR;
 
 open (ADDRIN, "<$addr_index") 

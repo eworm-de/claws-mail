@@ -16,9 +16,9 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-## script name : kmail2sylpheed.pl
+## script name : kmail2claws-mail.pl
 
-## script purpose : convert a Kmail addressbook into a Sylpheed addressbook
+## script purpose : convert a Kmail addressbook into a Claws Mail addressbook
 
 use Getopt::Long;
 
@@ -28,14 +28,14 @@ GetOptions("kmailfile=s" => \$kmailfile);
 
 $time = time;
 
-$sylph_addr = "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
-$sylph_addr .= "<address-book name=\"Kmail Address Book\" >\n";
+$claws_addr = "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
+$claws_addr .= "<address-book name=\"Kmail Address Book\" >\n";
 
 chdir;
 
-opendir(SYLPHEED, ".claws-mail") || die("Can't open .claws-mail directory\n");
-	push(@cached,(readdir(SYLPHEED)));
-closedir(SYLPHEED);
+opendir(CLAWS, ".claws-mail") || die("Can't open .claws-mail directory\n");
+	push(@cached,(readdir(CLAWS)));
+closedir(CLAWS);
 
 foreach $cached (@cached) {
 	if ($cached =~ m/^addrbook/ && $cached =~ m/[0-9].xml$/) {
@@ -67,12 +67,12 @@ foreach $kmailline (@kmaillines) {
 		$kmaildata =~ s/</&lt;/g;
 		$kmaildata =~ s/>/&gt;/g;
 	}
-    $sylph_addr .= "  <person uid=\"$time\" first-name=\"$kmaildata[0]\""
+    $claws_addr .= "  <person uid=\"$time\" first-name=\"$kmaildata[0]\""
 		 ." last-name=\"$kmaildata[1]\" nick-name=\"$kmaildata[7]\""
 		 ." cn=\"$kmaildata[0] $kmaildata[1]\" >\n"
 		 ."    <address-list>\n";
     $time++;
-    $sylph_addr .= "      <address uid=\"$time\" alias=\"\" email=\"$kmaildata[6]\""
+    $claws_addr .= "      <address uid=\"$time\" alias=\"\" email=\"$kmaildata[6]\""
 		." remarks=\"$kmaildata[8]\" />\n"
 		."    </address-list>\n";
     if ($kmaildata[13] ne "" || $kmaildata[9] ne "" || $kmaildata[21] ne "" ||
@@ -82,112 +82,112 @@ foreach $kmailline (@kmaillines) {
 	$kmaildata[3] ne "" || $kmaildata[14] ne "" || $kmaildata[22] ne "" ||
 	$kmaildata[17] ne "" || $kmaildata[20] ne "" || $kmaildata[15] ne "" ||
 	$kmaildata[23] ne "" || $kmaildata[18] ne "") {
-    	$sylph_addr .= "    <attribute-list>\n";
+    	$claws_addr .= "    <attribute-list>\n";
 
 	if ($kmaildata[3] ne "" || $kmaildata[2] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Full Name\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Full Name\" >"
 			."$kmaildata[3] $kmaildata[0] $kmaildata[2] $kmaildata[1]</attribute>\n";
 	}
 	if ($kmaildata[15] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Street Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home Street Address\" >"
 			."$kmaildata[15]</attribute>\n";
 	}
 	if ($kmaildata[16] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home City Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home City Address\" >"
 			."$kmaildata[16]</attribute>\n";
 	}
 	if ($kmaildata[17] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home State Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home State Address\" >"
 			."$kmaildata[17]</attribute>\n";
 	}
 	if ($kmaildata[18] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Zip Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home Zip Address\" >"
 			."$kmaildata[18]</attribute>\n";
 	}
 	if ($kmaildata[19] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Country Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home Country Address\" >"
 			."$kmaildata[19]</attribute>\n";
 	}
 	if ($kmaildata[10] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Phone\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home Phone\" >"
 			."$kmaildata[10]</attribute>\n";
 	}
 	if ($kmaildata[12] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Home Fax\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Home Fax\" >"
 			."$kmaildata[12]</attribute>\n";
 	}
 	if ($kmaildata[11] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Mobile Phone\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Mobile Phone\" >"
 			."$kmaildata[11]</attribute>\n";
 	}
 	if ($kmaildata[14] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Pager\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Pager\" >"
 			."$kmaildata[14]</attribute>\n";
 	}
 	if ($kmaildata[5] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Company\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Company\" >"
 			."$kmaildata[5]</attribute>\n";
 	}
 	if ($kmaildata[4] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Job Title\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Job Title\" >"
 			."$kmaildata[4]</attribute>\n";
 	}
 	if ($kmaildata[20] ne "") {
    		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Street Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business Street Address\" >"
 			."$kmaildata[20]</attribute>\n";
 	}
 	if ($kmaildata[21] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business City Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business City Address\" >"
 			."$kmaildata[21]</attribute>\n";
 	}
 	if ($kmaildata[22] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business State Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business State Address\" >"
 			."$kmaildata[22]</attribute>\n";
 	}
 	if ($kmaildata[23] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Zip Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business Zip Address\" >"
 			."$kmaildata[23]</attribute>\n";
 	}
 	if ($kmaildata[24] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Country Address\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business Country Address\" >"
 			."$kmaildata[24]</attribute>\n";
 	}
 	if ($kmaildata[9] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Phone\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business Phone\" >"
 			."$kmaildata[9]</attribute>\n";
 	}
 	if ($kmaildata[13] ne "") {
     		$time++;
-    		$sylph_addr .= "      <attribute uid=\"$time\" name=\"Business Fax\" >"
+    		$claws_addr .= "      <attribute uid=\"$time\" name=\"Business Fax\" >"
 			."$kmaildata[13]</attribute>\n";
 	}
-	$sylph_addr .= "    </attribute-list>\n";
+	$claws_addr .= "    </attribute-list>\n";
     }
-    $sylph_addr .=  "  </person>\n";
+    $claws_addr .=  "  </person>\n";
     $time++;
 }
-$sylph_addr .= "</address-book>\n";
+$claws_addr .= "</address-book>\n";
 
 open (NEWADDR, ">.claws-mail/$new_addrbk");
-print NEWADDR $sylph_addr;
+print NEWADDR $claws_addr;
 close NEWADDR;
 
 open (ADDRIN, "<.claws-mail/addrbook--index.xml") || die("can't open addrbook--index.xml");

@@ -1,3 +1,34 @@
+2006-11-08 [paul]	2.6.0cvs15
+
+	* tools/Makefile.am
+	* tools/OOo2claws-mail.pl
+	* tools/OOo2sylpheed.pl
+	* tools/README
+	* tools/acroread2claws-mail.pl
+	* tools/acroread2sylpheed.pl
+	* tools/kmail2claws-mail.pl
+	* tools/kmail2claws-mail_v2.pl
+	* tools/kmail2sylpheed.pl
+	* tools/kmail2sylpheed_v2.pl
+	* tools/maildir2claws-mail.pl
+	* tools/maildir2sylpheed.pl
+	* tools/nautilus2claws-mail.sh
+	* tools/nautilus2sylpheed.sh
+	* tools/outlook2claws-mail.pl
+	* tools/outlook2sylpheed.pl
+	* tools/tb2claws-mail
+	* tools/tb2sylpheed
+	* tools/tbird2claws.py
+	* tools/tbird2syl.py
+	* tools/kdeservicemenu/claws-mail-kdeservicemenu.pl
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_claws-mail-attach-files.desktop
+	* tools/kdeservicemenu/template_claws-mail-compress-attach.desktop
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		renamed (removed, added) tools files
+
 2006-11-08 [paul]	2.6.0cvs14
 
 	* src/main.c

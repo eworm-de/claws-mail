@@ -18,18 +18,18 @@
 
 unless ($ARGV[0]) { exit; }
 
-my $sylpheed = "claws-mail --compose --attach";
+my $claws = "claws-mail --compose --attach";
 my $prefix = "/tmp/archive.";
 my $command = find_command($ARGV[0]);
 my ($sel,$att) = split_parts();
 
 if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
-	exec "$sel$sylpheed $att";
+	exec "$sel$claws $att";
 } elsif ($ARGV[0] eq "attachfile") {
-	exec "$sylpheed $sel";
+	exec "$claws $sel";
 } else {
 	exec "$command $prefix$ARGV[0] $sel;"
-	    ."$sylpheed $prefix$ARGV[0]";
+	    ."$claws $prefix$ARGV[0]";
 }
 
 exit;
