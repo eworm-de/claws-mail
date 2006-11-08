@@ -74,7 +74,7 @@
 #define MANUAL_URI		"http://www.claws-mail.org/documentation.php"
 #define FAQ_URI			"http://www.claws-mail.org/faq/index.php"
 #define PLUGINS_URI		"http://www.claws-mail.org/plugins.php"
-#define BUGZILLA_URI		"http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/enter_bug.cgi"
+#define BUGZILLA_URI		"http://www.thewildbeast.co.uk/claws-mail/bugzilla/enter_bug.cgi"
 #define THEMES_URI		"http://www.claws-mail.org/themes.php"
 #define MAILING_LIST_URI	"http://www.claws-mail.org/MLs.php"
 #define USERS_ML_ADDR		"claws-mail-users@dotsrc.org"
