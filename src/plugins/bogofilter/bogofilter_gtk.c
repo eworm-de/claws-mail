@@ -272,6 +272,8 @@ static void gtk_safe_message_callback(gchar *message, gint total, gint done)
 		cbdata->message = g_strdup(message);
 	cbdata->total = total;
 	cbdata->done = done;
+	/* looks like the various calls can come in unordered. 
+	 * annoying. */
 	g_timeout_add(0, gtk_message_callback, cbdata);
 }
 
