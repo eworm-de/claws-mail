@@ -58,6 +58,7 @@
 static guint item_hook_id;
 static guint folder_hook_id;
 static guint offline_hook_id;
+static guint account_hook_id;
 
 static GdkPixmap *newmail_pixmap[2];
 static GdkPixmap *newmail_bitmap[2];
@@ -91,6 +92,7 @@ typedef enum
 
 static void trayicon_get_all_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_compose_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_compose_acc_cb (GtkMenuItem *menuitem, gpointer data );
 static void trayicon_addressbook_cb (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_exit_cb	    (gpointer data, guint action, GtkWidget *widget);
 static void trayicon_toggle_offline_cb	(gpointer data, guint action, GtkWidget *widget);
@@ -101,12 +103,49 @@ static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 	{N_("/_Get Mail"),		NULL, trayicon_get_all_cb,		0, NULL},
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/_Email"),			NULL, trayicon_compose_cb,		0, NULL},
+	{N_("/_Email from account"),	NULL, NULL,				0, "<Branch>"},
+	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb,		0, NULL},
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/_Work Offline"),		NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/E_xit Claws Mail"),	NULL, trayicon_exit_cb,			0, NULL}
 };
+
+static gboolean trayicon_set_accounts_hook(gpointer source, gpointer data)
+{
+	GList *cur_ac, *cur_item = NULL;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+
+	GList *account_list = account_get_list();
+
+	menu = gtk_item_factory_get_widget(traymenu_factory,
+					   "/Email from account");
+
+	/* destroy all previous menu item */
+	cur_item = GTK_MENU_SHELL(menu)->children;
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name ? ac_prefs->account_name
+			 : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(trayicon_compose_acc_cb),
+				 ac_prefs);
+	}
+	return FALSE;
+}
 
 static void set_trayicon_pixmap(TrayIconType icontype)
 {
@@ -339,7 +378,14 @@ int plugin_init(gchar **error)
 		return -1;
 	}
 
+	account_hook_id = hooks_register_hook (ACCOUNT_LIST_CHANGED_HOOKLIST, trayicon_set_accounts_hook, NULL);
+	if (offline_hook_id == -1) {
+		*error = g_strdup(_("Failed to register offline switch hook"));
+		return -1;
+	}
+
 	create_trayicon();
+	trayicon_set_accounts_hook(NULL, NULL);
 
 	return 0;
 }
@@ -349,6 +395,7 @@ void plugin_done(void)
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
+	hooks_unregister_hook(ACCOUNT_LIST_CHANGED_HOOKLIST, account_hook_id);
 
 	if (sylpheed_is_exiting())
 		return;
@@ -404,6 +451,11 @@ static void trayicon_compose_cb( gpointer data, guint action, GtkWidget *widget 
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	compose_mail_cb(mainwin, 0, NULL);
+}
+
+static void trayicon_compose_acc_cb( GtkMenuItem *menuitem, gpointer data )
+{
+	compose_new((PrefsAccount *)data, NULL, NULL);
 }
 
 static void trayicon_addressbook_cb( gpointer data, guint action, GtkWidget *widget )

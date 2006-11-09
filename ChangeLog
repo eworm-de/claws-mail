@@ -1,3 +1,17 @@
+2006-11-09 [colin]	2.6.0cvs22
+
+	* src/account.c
+	* src/compose.c
+		Search for one of our accounts in Delivered-To
+		(helps for auto-account selection when 
+		 replying/forwarding)
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/plugins/trayicon/trayicon.c
+		Allow opening a new mail with any account from
+		the contextual menu
+
 2006-11-09 [wwp]	2.6.0cvs21
 
 	* src/compose.c

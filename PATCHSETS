@@ -2046,3 +2046,4 @@
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/gtk/authors.h;  ) > 2.6.0cvs19.patchset
 ( cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/gtk/authors.h;  ) > 2.6.0cvs20.patchset
 ( cvs diff -u -r 1.382.2.324 -r 1.382.2.325 src/compose.c;  cvs diff -u -r 1.204.2.108 -r 1.204.2.109 src/prefs_common.c;  cvs diff -u -r 1.103.2.66 -r 1.103.2.67 src/prefs_common.h;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_compose_writing.c;  ) > 2.6.0cvs21.patchset
+( cvs diff -u -r 1.61.2.54 -r 1.61.2.55 src/account.c;  cvs diff -u -r 1.382.2.325 -r 1.382.2.326 src/compose.c;  cvs diff -u -r 1.207.2.131 -r 1.207.2.132 src/folderview.c;  cvs diff -u -r 1.274.2.154 -r 1.274.2.155 src/mainwindow.c;  cvs diff -u -r 1.39.2.26 -r 1.39.2.27 src/mainwindow.h;  cvs diff -u -r 1.14.2.41 -r 1.14.2.42 src/plugins/trayicon/trayicon.c;  ) > 2.6.0cvs22.patchset

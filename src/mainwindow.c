@@ -1792,6 +1792,7 @@ void main_window_set_account_menu(GList *account_list)
 		main_window_set_toolbar_combo_receive_menu(mainwin, account_list);
 		main_window_set_toolbar_combo_compose_menu(mainwin, account_list);
 	}
+	hooks_invoke(ACCOUNT_LIST_CHANGED_HOOKLIST, NULL);
 }
 
 void main_window_set_account_menu_only_toolbar(GList *account_list)

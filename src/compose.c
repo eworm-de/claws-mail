@@ -9194,9 +9194,20 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 	if (!account && prefs_common.forward_account_autosel) {
 		gchar cc[BUFFSIZE];
 		if (!procheader_get_header_from_msginfo
-			(msginfo, cc,sizeof cc , "CC:")) { /* Found a CC header */
-		        extract_address(cc);
-		        account = account_find_from_address(cc);
+			(msginfo, cc,sizeof cc , "Cc:")) { 
+			gchar *buf = cc + strlen("Cc:");
+		        extract_address(buf);
+		        account = account_find_from_address(buf);
+                }
+	}
+	
+	if (!account && prefs_common.forward_account_autosel) {
+		gchar deliveredto[BUFFSIZE];
+		if (!procheader_get_header_from_msginfo
+			(msginfo, deliveredto,sizeof deliveredto , "Delivered-To:")) { 
+			gchar *buf = deliveredto + strlen("Delivered-To:");
+		        extract_address(buf);
+		        account = account_find_from_address(buf);
                 }
 	}
 	

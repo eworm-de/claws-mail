@@ -32,6 +32,7 @@ typedef struct _MainWindow  MainWindow;
 #include "toolbar.h"
 
 #define OFFLINE_SWITCH_HOOKLIST "offline_switch"
+#define ACCOUNT_LIST_CHANGED_HOOKLIST "account_list_changed"
 
 typedef enum
 {

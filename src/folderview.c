@@ -1684,6 +1684,7 @@ gboolean folderview_update_item_claws(gpointer source, gpointer data)
     	ctree = GTK_CTREE(folderview->ctree);
 
 	node = gtk_ctree_find_by_row_data(ctree, NULL, update_info->item);
+
 	if (node) {
 		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME))
 			folderview_update_node(folderview, node);

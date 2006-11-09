@@ -1335,6 +1335,15 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 				}
 			}
 		}
+		if (!account) {
+			gchar deliveredto[BUFFSIZE];
+			if (!procheader_get_header_from_msginfo
+				(msginfo, deliveredto,sizeof deliveredto , "Delivered-To:")) { 
+				gchar *buf = deliveredto + strlen("Delivered-To:");
+		        	extract_address(buf);
+		        	account = account_find_from_address(buf);
+                	}
+		}
 	}
 
 	/* select the account for the whole folder (IMAP / NNTP) */
