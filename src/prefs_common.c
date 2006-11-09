@@ -203,6 +203,12 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"undo_level", "50", &prefs_common.undolevels, P_INT,
 	 NULL, NULL, NULL},
+	{"compose_with_format", "FALSE", &prefs_common.compose_with_format, P_BOOL,
+	 NULL, NULL, NULL},
+	{"compose_subject_format", "",
+	 &prefs_common.compose_subject_format, P_STRING, NULL, NULL, NULL},
+	{"compose_body_format", N_("Hello,\\n"),
+	 &prefs_common.compose_body_format, P_STRING, NULL, NULL, NULL},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
 	 NULL, NULL, NULL},
@@ -926,10 +932,14 @@ void prefs_common_write_config(void)
 /* make a copy of string 'in' into buffer 'out'. un-escape \ sequences.
    both 'in' and 'out' must be non-NULL.
    'out' must be a pointer to a buffer whose size is at least equal
-   to strlen(txt)+1, this buffer will get cleared. */
+   to strlen(txt)+1, this buffer will get cleared. out's contents
+   will always get set to a valid string, even if it's "".*/
 void pref_get_unescaped_pref(gchar *out, const gchar *in)
 {
-	gchar *o, *i;
+	const gchar *i;
+	gchar *o;
+
+	*out = '\0';
 
 	g_return_if_fail( in != NULL );
 	g_return_if_fail( out != NULL );
@@ -955,56 +965,112 @@ void pref_get_unescaped_pref(gchar *out, const gchar *in)
 	*o='\0';
 }
 
+/* make a copy of string 'in' into buffer 'out'. escape \ sequences.
+   both 'in' and 'out' must be non-NULL.
+   'out' must be a pointer to a buffer whose size is at least equal
+   to 2*strlen(txt)+1. out's contents will always get set to a valid
+   string, even if it's "". */
+void pref_get_escaped_pref(gchar *out, const gchar *in)
+{
+	const gchar *i;
+	gchar *o;
+
+	*out = '\0';
+
+	g_return_if_fail( in != NULL );
+	g_return_if_fail( out != NULL );
+
+	i = in;
+	o = out;
+	while (*i != '\0') {
+		if (*i == '\n') {
+			*o++ = '\\';
+			*o++ = 'n';
+		} else if (*i == '\t') {
+			*o++ = '\\';
+			*o++ = 't';
+		} else if (*i == '\\') {
+			*o++ = '\\';
+			*o++ = '\\';
+		} else {
+			*o++ = *i;
+		}
+		i++;
+	}
+	*o = '\0';
+}
+		
 /* set the contents of a textview widget from the internal \-escaped
-  representation of a pref string */
+  representation of a pref string. both txt and textview must be non-NULL. */
 void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
 {
-	GtkTextBuffer *out_buffer;
+	GtkTextBuffer *buffer;
 	gchar *out = NULL;
 
 	g_return_if_fail( txt != NULL );
+	g_return_if_fail( textview != NULL );
 
-	out_buffer = gtk_text_view_get_buffer(textview);
-	out = malloc(txt?(strlen(txt)+1):1);
+	buffer = gtk_text_view_get_buffer(textview);
+	out = malloc(strlen(txt)+1);
 
 	pref_get_unescaped_pref(out, txt);
 
-	gtk_text_buffer_set_text(out_buffer, out?out:"", -1);
+	gtk_text_buffer_set_text(buffer, out?out:"", -1);
+	g_free(out);
+}
+
+/* set the contents of a gtkentry widget from the internal \-escaped
+  representation of a pref string. both txt and entry must be non-NULL. */
+void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt)
+{
+	gchar *out = NULL;
+
+	g_return_if_fail( txt != NULL );
+	g_return_if_fail( entry != NULL );
+
+	out = malloc(strlen(txt)+1);
+
+	pref_get_unescaped_pref(out, txt);
+
+	gtk_entry_set_text(entry, out?out:"");
 	g_free(out);
 }
 
 /* get the \-escaped internal representation of a pref from the contents of
-   a textview widget */
+   a textview widget. textview must be non-NULL. */
 gchar *pref_get_pref_from_textview(GtkTextView *textview) 
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
-	gchar *o_out, *out, *tmp, *t;
+	gchar *out, *tmp;
 	
+	g_return_val_if_fail( textview != NULL, "" );
+
 	buffer = gtk_text_view_get_buffer(textview);
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
 	tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-	t = tmp;
-	o_out = out = malloc(2*strlen(tmp)+1);
+	out = malloc(2*strlen(tmp)+1);
 	
-	while (*t != '\0') {
-		if (*t == '\n') {
-			*out++ = '\\';
-			*out++ = 'n';
-		} else if (*t == '\t') {
-			*out++ = '\\';
-			*out++ = 't';
-		} else if (*t == '\\') {
-			*out++ = '\\';
-			*out++ = '\\';
-		} else {
-			*out++ = *t;
-		}
-		t++;
-	}
-	*out = '\0';
+	pref_get_escaped_pref(out, tmp);
 	g_free(tmp);
 
-	return o_out;
+	return out?out:"";
+}
+
+/* get the \-escaped internal representation of a pref from the contents of
+   a gtkentry widget. entry must be non-NULL. */
+gchar *pref_get_pref_from_entry(GtkEntry *entry) 
+{
+	gchar *out, *tmp;
+
+	g_return_val_if_fail( entry != NULL, "" );
+
+	tmp = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	out = malloc(2*strlen(tmp)+1);
+
+	pref_get_escaped_pref(out, tmp);
+	g_free(tmp);
+
+	return out?out:"";
 }

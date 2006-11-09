@@ -126,6 +126,9 @@ struct _PrefsCommon
 	gint autosave_length;
 	gboolean compose_no_markup;
 	ComposeDndInsertOrAttach compose_dnd_mode;
+	gboolean compose_with_format;
+	gchar *compose_subject_format;
+	gchar *compose_body_format;
 
 	/* Quote */
 	gboolean reply_with_quote;
@@ -407,7 +410,10 @@ void prefs_common_write_config	(void);
 void prefs_common_open		(void);
 PrefsCommon *prefs_common_get	(void);
 void pref_get_unescaped_pref(gchar *out, const gchar *in);
+void pref_get_escaped_pref(gchar *out, const gchar *in);
 void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt);
+void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt);
 gchar *pref_get_pref_from_textview(GtkTextView *textview);
+gchar *pref_get_pref_from_entry(GtkEntry *entry);
 
 #endif /* __PREFS_COMMON_H__ */

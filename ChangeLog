@@ -1,3 +1,19 @@
+2006-11-09 [wwp]	2.6.0cvs21
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_compose_writing.c
+		add a compose new message format (in prefs/compose/writing), it's a
+		simple subject+body template to use when opening a new composition
+		window. It's similar to the existent reply and forward formats.
+
+		enhanced the template/format % symbols substitution mechanism to
+		use current composition window information when % are used in
+		the compose new message format or in templates applied to new
+		messages (there were useless in that situations before). When
+		applied to new messages, %d corresponds to the system time/date.
+
 2006-11-09 [paul]	2.6.0cvs20
 
 	* src/gtk/authors.h

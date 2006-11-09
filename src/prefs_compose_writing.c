@@ -40,6 +40,10 @@
 
 #include "manage_window.h"
 
+#include "quote_fmt.h"
+#include "prefs_template.h"
+#include "alertpanel.h"
+
 typedef struct _WritingPage
 {
 	PrefsPage page;
@@ -58,6 +62,9 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *optmenu_dnd_insert_or_attach;
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *entry_subject;
+	GtkWidget *text_format;
 } WritingPage;
 
 void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -97,6 +104,17 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *optmenu_dnd_insert_or_attach;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+
+	GtkWidget *frame_format;
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *vbox_format;
+	GtkWidget *hbox_format;
+	GtkWidget *label_subject;
+	GtkWidget *entry_subject;
+	GtkWidget *scrolledwin_format;
+	GtkWidget *text_format;
+	GtkWidget *hbox_formatdesc;
+	GtkWidget *btn_formatdesc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -204,6 +222,59 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
+	PACK_CHECK_BUTTON (vbox1, checkbtn_compose_with_format, _("Use format when composing new messages"));
+
+	PACK_FRAME (vbox1, frame_format, _("New message format"));
+
+	vbox_format = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_format);
+	gtk_container_add (GTK_CONTAINER (frame_format), vbox_format);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
+
+	hbox_format = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_format);
+	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_format, FALSE, FALSE, 0);
+
+	label_subject = gtk_label_new (_("Subject"));
+	gtk_widget_show (label_subject);
+	gtk_box_pack_start (GTK_BOX (hbox_format), label_subject, FALSE, FALSE, 0);
+
+	entry_subject = gtk_entry_new ();
+	gtk_widget_show (entry_subject);
+	gtk_box_pack_start (GTK_BOX (hbox_format), entry_subject, TRUE, TRUE, 0);
+	gtk_widget_set_size_request (entry_subject, 100, -1);
+
+	scrolledwin_format = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_format);
+	gtk_box_pack_start (GTK_BOX (vbox_format), scrolledwin_format,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_format),
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_format), GTK_SHADOW_IN);
+
+	text_format = gtk_text_view_new ();
+	gtk_widget_show (text_format);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_format), text_format);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_format), TRUE);
+	gtk_widget_set_size_request(text_format, -1, 100);
+
+	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox_formatdesc);
+	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_formatdesc, FALSE, FALSE, 0);
+
+#if GTK_CHECK_VERSION(2, 8, 0)
+	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
+#else
+	btn_formatdesc =
+		gtk_button_new_with_label (_(" Description of symbols... "));
+#endif
+	gtk_widget_show (btn_formatdesc);
+	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
+			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(window));
+
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
 	prefs_writing->checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
@@ -222,6 +293,11 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
+
+	prefs_writing->checkbtn_compose_with_format
+								 = checkbtn_compose_with_format;
+	prefs_writing->entry_subject = entry_subject;
+	prefs_writing->text_format	 = text_format;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -245,6 +321,11 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.default_reply_list);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_dnd_insert_or_attach),
 		prefs_common.compose_dnd_mode);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_compose_with_format),
+			prefs_common.compose_with_format);
+	pref_set_entry_from_pref(GTK_ENTRY(prefs_writing->entry_subject), prefs_common.compose_subject_format);
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_writing->text_format), prefs_common.compose_body_format);
 
 	prefs_writing->page.widget = vbox1;
 }
@@ -281,6 +362,17 @@ void prefs_compose_writing_save(PrefsPage *_page)
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_common.compose_dnd_mode = GPOINTER_TO_INT
 		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+
+	prefs_common.compose_with_format =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
+	prefs_common.compose_subject_format = pref_get_pref_from_entry(
+			GTK_ENTRY(page->entry_subject));
+	if (!prefs_template_string_is_valid(prefs_common.compose_subject_format))
+		alertpanel_error(_("New message subject format error."));
+	prefs_common.compose_body_format = pref_get_pref_from_textview(
+			GTK_TEXT_VIEW(page->text_format));
+	if (!prefs_template_string_is_valid(prefs_common.compose_body_format))
+		alertpanel_error(_("New message body format error."));
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)

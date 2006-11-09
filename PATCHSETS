@@ -2045,3 +2045,4 @@
 ( cvs diff -u -r 1.1.4.56 -r 1.1.4.57 src/etpan/imap-thread.c;  ) > 2.6.0cvs18.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/gtk/authors.h;  ) > 2.6.0cvs19.patchset
 ( cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/gtk/authors.h;  ) > 2.6.0cvs20.patchset
+( cvs diff -u -r 1.382.2.324 -r 1.382.2.325 src/compose.c;  cvs diff -u -r 1.204.2.108 -r 1.204.2.109 src/prefs_common.c;  cvs diff -u -r 1.103.2.66 -r 1.103.2.67 src/prefs_common.h;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/prefs_compose_writing.c;  ) > 2.6.0cvs21.patchset
