@@ -1,5 +1,6 @@
 static char *TEAM_LIST[] = {
 "Holger Berndt <berndth@users.sf.net>",
+"Tristan Chabredier <wwp@users.sf.net>",
 "Hoà Viêt Dinh <hoa@users.sf.net>",
 "Werner Koch <wk@gnupg.org>",
 "Darko Koruga <darko@users.sf.net>",
@@ -7,7 +8,6 @@ static char *TEAM_LIST[] = {
 "Colin Leroy <colin@colino.net>",
 "Paul Mangan <claws@thewildbeast.co.uk>",
 "Martin Schaaf <mascha1@users.sf.net>",
-"Tristan Chabredier <wwp@users.sf.net>",
 NULL
 };
 
@@ -56,12 +56,12 @@ NULL
 };
 
 static char *DOC_TEAM_LIST[] = {
-"[en] Ricardo Mones Lastra <ricardo@mones.org>",
+"[en] Tristan Chabredier <wwp@users.sf.net>Ricardo Mones Lastra <ricardo@mones.org>",
+"     Ricardo Mones Lastra <ricardo@mones.org>",
 "     Colin Leroy <colin@colino.net>",
 "     Paul Mangan <claws@thewildbeast.co.uk>",
-"     Tristan Chabredier <wwp@users.sf.net>",
-"[fr] Colin Leroy <colin@colino.net>",
-"     Tristan Chabredier <wwp@users.sf.net>",
+"[fr] Tristan Chabredier <wwp@users.sf.net>",
+"     Colin Leroy <colin@colino.net>",
 "[pl] Pawel Pekala <c0rn@gazeta.pl>",
 NULL
 };
