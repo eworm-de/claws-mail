@@ -132,7 +132,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	int status = 0;
 	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 	int total = 0, curnum = 0;
-	GSList *spams = NULL;
+	GSList *spams = NULL, *new_hams = NULL, *new_spams = NULL;
 	gchar buf[BUFSIZ];
 
 	gchar *bogo_args[4];
@@ -154,6 +154,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (message_callback != NULL)
 		message_callback(_("Bogofilter: filtering messages..."), total, 0);
 
+	/* determine spam status - should be threaded */
 	bogo_args[0] = bogo_exec;
 	bogo_args[1] = "-T";
 	bogo_args[2] = "-b";
@@ -177,6 +178,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			if (message_callback != NULL)
 				message_callback(NULL, total, curnum++);
 
+			/* can set flags (SCANNED, ATTACHMENT) but that's ok 
+			 * as GUI updates are hooked not direct */
 			file = procmsg_get_message_file(msginfo);
 
 			if (file) {
@@ -187,9 +190,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
 					g_warning("bogofilter short read\n");
 					debug_print("message %d is ham\n", msginfo->msgnum);
-					procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 					mail_filtering_data->unfiltered = g_slist_prepend(
 						mail_filtering_data->unfiltered, msginfo);
+					new_hams = g_slist_prepend(new_hams, msginfo);
 				} else {
 					gchar **parts = NULL;
 					if (strchr(buf, '/')) {
@@ -201,31 +204,26 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					debug_print("read %s\n", buf);
 					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
 						debug_print("message %d is spam\n", msginfo->msgnum);
-						procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
-						
 						if (config.receive_spam) {
-							procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-							procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 							spams = g_slist_prepend(spams, msginfo);
-						} else {
-							folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-						}
+						} 
 
 						mail_filtering_data->filtered = g_slist_prepend(
 							mail_filtering_data->filtered, msginfo);
+						new_spams = g_slist_prepend(new_spams, msginfo);
 					} else {
 						debug_print("message %d is ham\n", msginfo->msgnum);
-						procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 						mail_filtering_data->unfiltered = g_slist_prepend(
 							mail_filtering_data->unfiltered, msginfo);
+						new_hams = g_slist_prepend(new_hams, msginfo);
 					}
 					g_strfreev(parts);
 				}
 				g_free(file);
 			} else {
-				procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 				mail_filtering_data->unfiltered = g_slist_prepend(
 					mail_filtering_data->unfiltered, msginfo);
+				new_hams = g_slist_prepend(new_hams, msginfo);
 			}
 		}
 	}
@@ -239,7 +237,25 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		else
 			status = WEXITSTATUS(status);
 	} 
+	/* end of thread */
 
+	/* flag hams */
+	for (cur = new_hams; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+	}
+	g_slist_free(new_hams);
+	/* flag spams */
+	for (cur = new_spams; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		if (config.receive_spam) {
+			procmsg_msginfo_change_flags(msginfo, MSG_SPAM, 0, ~0, 0);
+		} else {
+			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+		}
+	}
+	g_slist_free(new_spams);
+	
 	if (status < 0 || status > 2) { /* I/O or other errors */
 		gchar *msg = NULL;
 		

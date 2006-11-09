@@ -1,3 +1,11 @@
+2006-11-09 [colin]	2.6.0cvs23
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		Prepare things needed to thread bogofilter
+		filtering: separate bogo stuff and possible GUI
+		stuff. 
+
 2006-11-09 [colin]	2.6.0cvs22
 
 	* src/account.c

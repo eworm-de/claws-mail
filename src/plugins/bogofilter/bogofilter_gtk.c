@@ -240,18 +240,39 @@ static void bogofilter_save_func(PrefsPage *_page)
 	bogofilter_save_config();
 }
 
-static void gtk_message_callback(gchar *message, gint total, gint done)
+typedef struct _BogoCbData {
+	gchar *message;
+	gint total;
+	gint done;
+} BogoCbData;
+
+static gboolean gtk_message_callback(gpointer data)
 {
-	if (message)
-		statusbar_print_all(message);
-	else if (total == 0) {
+	BogoCbData *cbdata = (BogoCbData *)data;
+
+	if (cbdata->message)
+		statusbar_print_all(cbdata->message);
+	else if (cbdata->total == 0) {
 		statusbar_pop_all();
 	}
-	if (total && done)
-		statusbar_progress_all(done, total, 10);
+	if (cbdata->total && cbdata->done)
+		statusbar_progress_all(cbdata->done, cbdata->total, 10);
 	else
 		statusbar_progress_all(0,0,0);
+	g_free(cbdata->message);
+	g_free(cbdata);
 	GTK_EVENTS_FLUSH();
+	return FALSE;
+}
+
+static void gtk_safe_message_callback(gchar *message, gint total, gint done)
+{
+	BogoCbData *cbdata = g_new0(BogoCbData, 1);
+	if (message)
+		cbdata->message = g_strdup(message);
+	cbdata->total = total;
+	cbdata->done = done;
+	g_timeout_add(0, gtk_message_callback, cbdata);
 }
 
 static struct BogofilterPage bogofilter_page;
@@ -271,7 +292,7 @@ gint bogofilter_gtk_init(void)
 	bogofilter_page.page.weight = 35.0;
 
 	prefs_gtk_register_page((PrefsPage *) &bogofilter_page);
-	bogofilter_set_message_callback(gtk_message_callback);
+	bogofilter_set_message_callback(gtk_safe_message_callback);
 
 	debug_print("Bogofilter GTK plugin loaded\n");
 	return 0;	
