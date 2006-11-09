@@ -2044,3 +2044,4 @@
 ( cvs diff -u -r 1.25.2.13 -r 1.25.2.14 tools/Makefile.am;  ) > 2.6.0cvs17.patchset
 ( cvs diff -u -r 1.1.4.56 -r 1.1.4.57 src/etpan/imap-thread.c;  ) > 2.6.0cvs18.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/gtk/authors.h;  ) > 2.6.0cvs19.patchset
+( cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/gtk/authors.h;  ) > 2.6.0cvs20.patchset

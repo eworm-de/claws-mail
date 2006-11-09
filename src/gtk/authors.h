@@ -56,7 +56,7 @@ NULL
 };
 
 static char *DOC_TEAM_LIST[] = {
-"[en] Tristan Chabredier <wwp@users.sf.net>Ricardo Mones Lastra <ricardo@mones.org>",
+"[en] Tristan Chabredier <wwp@users.sf.net>",
 "     Ricardo Mones Lastra <ricardo@mones.org>",
 "     Colin Leroy <colin@colino.net>",
 "     Paul Mangan <claws@thewildbeast.co.uk>",
