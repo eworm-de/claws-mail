@@ -4,10 +4,10 @@
     <section>
     <title>What are the differences between Claws Mail and Sylpheed?</title>
     <para>
-	Claws Mail is the <emphasis>extended</emphasis> version of
-	Sylpheed, therefore you will find that it has all the features that
-	Sylpheed has and a lot more besides. It also includes some modified
-	dialogues to enhance usability. Further information can be found at 
+	Claws Mail is a fork of Sylpheed, therefore you will find that 
+	it has all the features that Sylpheed has and a lot more besides. 
+	It also includes some modified dialogues to enhance usability. 
+	Further information can be found at 
 	<ulink url="http://www.claws-mail.org/features.php">
 	http://www.claws-mail.org/features.php</ulink>.
     </para></section>
@@ -38,8 +38,8 @@
     </para>
     <para>
 	 Bug reports should be submitted at our Bugzilla, 
-	 <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">
-	http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>.
+	 <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">
+	http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>.
     </para>
     <para>
 	To talk to others, you should join the Claws Mail users' mailing

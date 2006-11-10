@@ -2049,3 +2049,4 @@
 ( cvs diff -u -r 1.61.2.54 -r 1.61.2.55 src/account.c;  cvs diff -u -r 1.382.2.325 -r 1.382.2.326 src/compose.c;  cvs diff -u -r 1.207.2.131 -r 1.207.2.132 src/folderview.c;  cvs diff -u -r 1.274.2.154 -r 1.274.2.155 src/mainwindow.c;  cvs diff -u -r 1.39.2.26 -r 1.39.2.27 src/mainwindow.h;  cvs diff -u -r 1.14.2.41 -r 1.14.2.42 src/plugins/trayicon/trayicon.c;  ) > 2.6.0cvs22.patchset
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.0cvs23.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.0cvs24.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/addrbook.xml;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 manual/advanced.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 manual/faq.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/intro.xml;  ) > 2.6.0cvs25.patchset

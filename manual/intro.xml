@@ -26,9 +26,9 @@
   <section id="intro_history">
     <title>History of Claws Mail</title>
     <para>
-	Claws Mail has existed since April 2001. The primary goal of Claws Mail was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Claws Mail developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
+	Claws Mail has existed since April 2001. It was initially named Sylpheed-Claws and changed its name to Claws Mail in November 2006. The primary goal of Sylpheed-Claws was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Sylpheed-Claws developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
     </para><para>
-	Originally both Sylpheed and Claws Mail were based on GTK1. The work on the GTK2 versions started in early 2003, and the first modern (GTK2-based) Claws Mail was released in March 2005. Since about this time, Sylpheed and Claws Mail' goals started to diverge more, and Claws Mail became an entity of its own.
+	Originally both Sylpheed and Claws Mail were based on GTK1. The work on the GTK2 versions started in early 2003, and the first modern (GTK2-based) Sylpheed-Claws was released in March 2005. Since about this time, Sylpheed and Sylpheed-Claws' goals started to diverge more, and Sylpheed-Claws became an entity of its own. This is why its name is now Claws Mail.
     </para>
   </section>
 
@@ -53,7 +53,7 @@
 	    Mailing Lists: <ulink url="http://www.claws-mail.org/MLs.php">http://www.claws-mail.org/MLs.php</ulink>
     </para>
     <para>
-	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>
+	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para>
     <para>
 	Project: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>

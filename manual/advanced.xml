@@ -506,7 +506,7 @@
 	that some users who we wanted to please couldn't live without, but 
 	which did not have a place in the GUI in our opinion. You can find the 
 	following, and change them while Claws Mail is not running, in 
-	<filename>~/.claws-mail/sylpheedrc</filename>.
+	<filename>~/.claws-mail/clawsrc</filename>.
     </para>
     <variablelist>
       <varlistentry>

@@ -1,3 +1,11 @@
+2006-11-10 [colin]	2.6.0cvs25
+
+	* manual/addrbook.xml
+	* manual/advanced.xml
+	* manual/faq.xml
+	* manual/intro.xml
+		Some more renaming
+
 2006-11-09 [colin]	2.6.0cvs24
 
 	* src/plugins/bogofilter/bogofilter_gtk.c
