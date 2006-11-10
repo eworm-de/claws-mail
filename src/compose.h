@@ -42,6 +42,8 @@ typedef struct _AttachInfo	AttachInfo;
 #include "gtkaspell.h"
 #endif
 
+#define COMPOSE_CHECK_BEFORE_SEND_HOOKLIST "compose_check_before_send"
+
 typedef enum
 {
 	COMPOSE_TO,

@@ -121,6 +121,7 @@
 #include "inc.h"
 #include "message_search.h"
 #include "combobox.h"
+#include "hooks.h"
 
 enum
 {
@@ -4215,6 +4216,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 				return FALSE;
 		}
 	}
+
+	if (hooks_invoke(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, compose))
+		return FALSE;
 
 	return TRUE;
 }

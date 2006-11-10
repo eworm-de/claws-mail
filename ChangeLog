@@ -1,3 +1,9 @@
+2006-11-10 [mones]	2.6.0cvs28
+
+	* src/compose.c
+	* src/compose.h
+		added COMPOSE_CHECK_BEFORE_SEND hook
+
 2006-11-10 [paul]	2.6.0cvs27
 
 	* src/crash.c

@@ -2052,3 +2052,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/addrbook.xml;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 manual/advanced.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 manual/faq.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/intro.xml;  ) > 2.6.0cvs25.patchset
 ( cvs diff -u -r 1.1.4.57 -r 1.1.4.58 src/etpan/imap-thread.c;  ) > 2.6.0cvs26.patchset
 ( cvs diff -u -r 1.23.2.18 -r 1.23.2.19 src/crash.c;  cvs diff -u -r 1.115.2.112 -r 1.115.2.113 src/main.c;  ) > 2.6.0cvs27.patchset
+( cvs diff -u -r 1.382.2.326 -r 1.382.2.327 src/compose.c;  cvs diff -u -r 1.50.2.28 -r 1.50.2.29 src/compose.h;  ) > 2.6.0cvs28.patchset
