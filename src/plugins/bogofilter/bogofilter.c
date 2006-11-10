@@ -72,8 +72,6 @@
 #include <pwd.h>
 #endif
 
-#define MAILS_PER_BATCH 20
-
 static guint hook_id = -1;
 static MessageCallback message_callback;
 
@@ -121,47 +119,43 @@ write_all (int         fd,
   return TRUE;
 }
 
-static gboolean mail_filtering_hook(gpointer source, gpointer data)
-{
-	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
-	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	GSList *msglist = mail_filtering_data->msglist;
-	GSList *cur = NULL;
-	static gboolean warned_error = FALSE;
-	gchar *file = NULL;
-	int status = 0;
-	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
-	int total = 0, curnum = 0;
-	GSList *spams = NULL, *new_hams = NULL, *new_spams = NULL;
-	gchar buf[BUFSIZ];
+typedef struct _BogoFilterData {
+	MailFilteringData *mail_filtering_data;
+	gchar **bogo_args;
+	GSList *msglist;
+	GSList *new_hams;
+	GSList *new_spams;
+	GSList *spams_to_receive;
+	gboolean done;
+	int status;
+	gboolean in_thread;
+} BogoFilterData;
 
-	gchar *bogo_args[4];
+static BogoFilterData *to_filter_data = NULL;
+#ifdef USE_PTHREAD
+static gboolean filter_th_done = FALSE;
+static pthread_mutex_t list_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t wait_mutex = PTHREAD_MUTEX_INITIALIZER; 
+static pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER; 
+#endif
+
+static void bogofilter_do_filter(BogoFilterData *data)
+{
 	GPid bogo_pid;
 	gint bogo_stdin, bogo_stdout;
 	GError *error = NULL;
 	gboolean bogo_forked;
+	int status = 0;
+	MsgInfo *msginfo;
+	GSList *cur = NULL;
+	int total = 0, curnum = 0;
+	gchar *file = NULL;
+	gchar buf[BUFSIZ];
 
-	if (!config.process_emails) {
-		return FALSE;
-	}
-	
-	if (msglist == NULL && msginfo != NULL) {
-		g_warning("wrong call to bogofilter mail_filtering_hook");
-		return FALSE;
-	}
-	
-	total = g_slist_length(msglist);
-	if (message_callback != NULL)
-		message_callback(_("Bogofilter: filtering messages..."), total, 0);
-
-	/* determine spam status - should be threaded */
-	bogo_args[0] = bogo_exec;
-	bogo_args[1] = "-T";
-	bogo_args[2] = "-b";
-	bogo_args[3] = NULL;
+	total = g_slist_length(data->msglist);
 
 	bogo_forked = g_spawn_async_with_pipes(
-			NULL, bogo_args,NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,
+			NULL, data->bogo_args,NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,
 			NULL, NULL, &bogo_pid, &bogo_stdin,
 			&bogo_stdout, NULL, &error);
 		
@@ -171,12 +165,12 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		error = NULL;
 		status = -1;
 	} else {
-		for (cur = msglist; cur; cur = cur->next) {
+		for (cur = data->msglist; cur; cur = cur->next) {
 			msginfo = (MsgInfo *)cur->data;
 			debug_print("Filtering message %d (%d/%d)\n", msginfo->msgnum, curnum, total);
 
 			if (message_callback != NULL)
-				message_callback(NULL, total, curnum++);
+				message_callback(NULL, total, curnum++, data->in_thread);
 
 			/* can set flags (SCANNED, ATTACHMENT) but that's ok 
 			 * as GUI updates are hooked not direct */
@@ -190,9 +184,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
 					g_warning("bogofilter short read\n");
 					debug_print("message %d is ham\n", msginfo->msgnum);
-					mail_filtering_data->unfiltered = g_slist_prepend(
-						mail_filtering_data->unfiltered, msginfo);
-					new_hams = g_slist_prepend(new_hams, msginfo);
+					data->mail_filtering_data->unfiltered = g_slist_prepend(
+						data->mail_filtering_data->unfiltered, msginfo);
+					data->new_hams = g_slist_prepend(data->new_hams, msginfo);
 				} else {
 					gchar **parts = NULL;
 					if (strchr(buf, '/')) {
@@ -205,29 +199,28 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
 						debug_print("message %d is spam\n", msginfo->msgnum);
 						if (config.receive_spam) {
-							spams = g_slist_prepend(spams, msginfo);
+							data->spams_to_receive = g_slist_prepend(data->spams_to_receive, msginfo);
 						} 
 
-						mail_filtering_data->filtered = g_slist_prepend(
-							mail_filtering_data->filtered, msginfo);
-						new_spams = g_slist_prepend(new_spams, msginfo);
+						data->mail_filtering_data->filtered = g_slist_prepend(
+							data->mail_filtering_data->filtered, msginfo);
+						data->new_spams = g_slist_prepend(data->new_spams, msginfo);
 					} else {
 						debug_print("message %d is ham\n", msginfo->msgnum);
-						mail_filtering_data->unfiltered = g_slist_prepend(
-							mail_filtering_data->unfiltered, msginfo);
-						new_hams = g_slist_prepend(new_hams, msginfo);
+						data->mail_filtering_data->unfiltered = g_slist_prepend(
+							data->mail_filtering_data->unfiltered, msginfo);
+						data->new_hams = g_slist_prepend(data->new_hams, msginfo);
 					}
 					g_strfreev(parts);
 				}
 				g_free(file);
 			} else {
-				mail_filtering_data->unfiltered = g_slist_prepend(
-					mail_filtering_data->unfiltered, msginfo);
-				new_hams = g_slist_prepend(new_hams, msginfo);
+				data->mail_filtering_data->unfiltered = g_slist_prepend(
+					data->mail_filtering_data->unfiltered, msginfo);
+				data->new_hams = g_slist_prepend(data->new_hams, msginfo);
 			}
 		}
 	}
-	
 	if (status != -1) {
 		close(bogo_stdout);
 		close(bogo_stdin);
@@ -236,8 +229,175 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			status = -1;
 		else
 			status = WEXITSTATUS(status);
-	} 
-	/* end of thread */
+	}
+	
+	to_filter_data->status = status; 
+}
+
+#ifdef USE_PTHREAD
+static void *bogofilter_filtering_thread(void *data) 
+{
+	while (!filter_th_done) {
+		pthread_mutex_lock(&list_mutex);
+		if (to_filter_data == NULL || to_filter_data->done == TRUE) {
+			pthread_mutex_unlock(&list_mutex);
+			debug_print("thread is waiting for something to filter\n");
+			pthread_mutex_lock(&wait_mutex);
+			pthread_cond_wait(&wait_cond, &wait_mutex);
+			pthread_mutex_unlock(&wait_mutex);
+		} else {
+			debug_print("thread awaken with something to filter\n");
+			to_filter_data->done = FALSE;
+			bogofilter_do_filter(to_filter_data);
+			pthread_mutex_unlock(&list_mutex);
+			to_filter_data->done = TRUE;
+			usleep(100);
+		}
+	}
+	return NULL;
+}
+
+static pthread_t filter_th = 0;
+
+static void bogofilter_start_thread(void)
+{
+	filter_th_done = FALSE;
+	if (filter_th != 0 || 1)
+		return;
+	if (pthread_create(&filter_th, 0, 
+			bogofilter_filtering_thread, 
+			NULL) != 0) {
+		filter_th = 0;
+		return;
+	}
+	debug_print("thread created\n");
+}
+
+static void bogofilter_stop_thread(void)
+{
+	void *res;
+	while (pthread_mutex_trylock(&list_mutex) != 0) {
+		GTK_EVENTS_FLUSH();
+		usleep(100);
+	}
+	if (filter_th != 0) {
+		filter_th_done = TRUE;
+		debug_print("waking thread up\n");
+		pthread_mutex_lock(&wait_mutex);
+		pthread_cond_broadcast(&wait_cond);
+		pthread_mutex_unlock(&wait_mutex);
+		pthread_join(filter_th, &res);
+		filter_th = 0;
+	}
+	pthread_mutex_unlock(&list_mutex);
+	debug_print("thread done\n");
+}
+#endif
+
+static gboolean mail_filtering_hook(gpointer source, gpointer data)
+{
+	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
+	MsgInfo *msginfo = mail_filtering_data->msginfo;
+	GSList *msglist = mail_filtering_data->msglist;
+	GSList *cur = NULL;
+	static gboolean warned_error = FALSE;
+	int status = 0;
+	int total = 0, curnum = 0;
+	GSList *spams_to_receive = NULL, *new_hams = NULL, *new_spams = NULL;
+	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
+	gchar *bogo_args[4];
+	gboolean ok_to_thread = TRUE;
+
+	bogo_args[0] = bogo_exec;
+	bogo_args[1] = "-T";
+	bogo_args[2] = "-b";
+	bogo_args[3] = NULL;
+	
+	if (!config.process_emails) {
+		return FALSE;
+	}
+	
+	if (msglist == NULL && msginfo != NULL) {
+		g_warning("wrong call to bogofilter mail_filtering_hook");
+		return FALSE;
+	}
+	
+	total = g_slist_length(msglist);
+	
+	/* we have to make sure the mails are cached - or it'll break on IMAP */
+	if (message_callback != NULL)
+		message_callback(_("Bogofilter: fetching bodies..."), total, 0, FALSE);
+	for (cur = msglist; cur; cur = cur->next) {
+		gchar *file = procmsg_get_message_file((MsgInfo *)cur->data);
+		if (file == NULL)
+			ok_to_thread = FALSE;
+		if (message_callback != NULL)
+			message_callback(NULL, total, curnum++, FALSE);
+		g_free(file);
+	}
+	if (message_callback != NULL)
+		message_callback(NULL, 0, 0, FALSE);
+
+	if (message_callback != NULL)
+		message_callback(_("Bogofilter: filtering messages..."), total, 0, FALSE);
+
+#ifdef USE_PTHREAD
+	while (pthread_mutex_trylock(&list_mutex) != 0) {
+		GTK_EVENTS_FLUSH();
+		usleep(100);
+	}
+#endif
+	to_filter_data = g_new0(BogoFilterData, 1);
+	to_filter_data->msglist = msglist;
+	to_filter_data->mail_filtering_data = mail_filtering_data;
+	to_filter_data->spams_to_receive = NULL;
+	to_filter_data->new_hams = NULL;
+	to_filter_data->new_spams = NULL;
+	to_filter_data->done = FALSE;
+	to_filter_data->status = -1;
+	to_filter_data->bogo_args = bogo_args;
+#ifdef USE_PTHREAD
+	to_filter_data->in_thread = (filter_th != 0 && ok_to_thread);
+#else
+	to_filter_data->in_thread = FALSE;
+#endif
+
+#ifdef USE_PTHREAD
+	pthread_mutex_unlock(&list_mutex);
+	
+	if (filter_th != 0 && ok_to_thread) {
+		debug_print("waking thread to let it filter things\n");
+		pthread_mutex_lock(&wait_mutex);
+		pthread_cond_broadcast(&wait_cond);
+		pthread_mutex_unlock(&wait_mutex);
+
+		while (!to_filter_data->done) {
+			GTK_EVENTS_FLUSH();
+			usleep(100);
+		}
+	}
+
+	while (pthread_mutex_trylock(&list_mutex) != 0) {
+		GTK_EVENTS_FLUSH();
+		usleep(100);
+
+	}
+	if (filter_th == 0 || !ok_to_thread)
+		bogofilter_do_filter(to_filter_data);
+#else
+	bogofilter_do_filter(to_filter_data);	
+#endif
+
+	spams_to_receive = to_filter_data->spams_to_receive;
+	new_hams = to_filter_data->new_hams;
+	new_spams = to_filter_data->new_spams;
+	status = to_filter_data->status;
+	g_free(to_filter_data);
+	to_filter_data = NULL;
+#ifdef USE_PTHREAD
+	pthread_mutex_unlock(&list_mutex);
+#endif
+
 
 	/* flag hams */
 	for (cur = new_hams; cur; cur = cur->next) {
@@ -285,10 +445,10 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (status < 0 || status > 2) {
 		g_slist_free(mail_filtering_data->filtered);
 		g_slist_free(mail_filtering_data->unfiltered);
-		g_slist_free(spams);
+		g_slist_free(spams_to_receive);
 		mail_filtering_data->filtered = NULL;
 		mail_filtering_data->unfiltered = NULL;
-	} else if (config.receive_spam && spams) {
+	} else if (config.receive_spam && spams_to_receive) {
 		FolderItem *save_folder;
 
 		if ((!config.save_folder) ||
@@ -296,7 +456,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
 			save_folder = folder_get_default_trash();
 		if (save_folder) {
-			for (cur = spams; cur; cur = cur->next) {
+			for (cur = spams_to_receive; cur; cur = cur->next) {
 				msginfo = (MsgInfo *)cur->data;
 				msginfo->is_move = TRUE;
 				msginfo->to_filter_folder = save_folder;
@@ -305,7 +465,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	} 
 
 	if (message_callback != NULL)
-		message_callback(NULL, 0, 0);
+		message_callback(NULL, 0, 0, FALSE);
 	mail_filtering_data->filtered = g_slist_reverse(
 		mail_filtering_data->filtered);
 	mail_filtering_data->unfiltered = g_slist_reverse(
@@ -335,7 +495,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			return -1;
 		} else {
 			if (message_callback != NULL)
-				message_callback(_("Bogofilter: learning from message..."), 0, 0);
+				message_callback(_("Bogofilter: learning from message..."), 0, 0, FALSE);
 			if (spam)
 				/* learn as spam */
 				cmd = g_strdup_printf("%s -s -I '%s'", bogo_exec, file);
@@ -351,7 +511,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			g_free(cmd);
 			g_free(file);
 			if (message_callback != NULL)
-				message_callback(NULL, 0, 0);
+				message_callback(NULL, 0, 0, FALSE);
 			return 0;
 		}
 	}
@@ -363,7 +523,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		gboolean some_correction = FALSE, some_no_correction = FALSE;
 	
 		if (message_callback != NULL)
-			message_callback(_("Bogofilter: learning from messages..."), total, 0);
+			message_callback(_("Bogofilter: learning from messages..."), total, 0, FALSE);
 		
 		for (cur = msglist; cur && status == 0; cur = cur->next) {
 			info = (MsgInfo *)cur->data;
@@ -401,7 +561,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				g_free(file);
 				done++;
 				if (message_callback != NULL)
-					message_callback(NULL, total, done);
+					message_callback(NULL, total, done, FALSE);
 			}
 		} else if (some_correction || some_no_correction) {
 			cur = msglist;
@@ -438,7 +598,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				g_free(file);
 				done++;
 				if (message_callback != NULL)
-					message_callback(NULL, total, done);
+					message_callback(NULL, total, done, FALSE);
 				cur = cur->next;
 			}
 			if (bogo_forked) {
@@ -460,7 +620,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		}
 
 		if (message_callback != NULL)
-			message_callback(NULL, 0, 0);
+			message_callback(NULL, 0, 0, FALSE);
 		return 0;
 	}
 	return -1;
@@ -519,6 +679,10 @@ gint plugin_init(gchar **error)
 		
 	debug_print("Bogofilter plugin loaded\n");
 
+#ifdef USE_PTHREAD
+	bogofilter_start_thread();
+#endif
+
 	if (config.process_emails) {
 		bogofilter_register_hook();
 	}
@@ -535,6 +699,9 @@ void plugin_done(void)
 	if (hook_id != -1) {
 		bogofilter_unregister_hook();
 	}
+#ifdef USE_PTHREAD
+	bogofilter_stop_thread();
+#endif
 	g_free(config.save_folder);
 	bogofilter_gtk_done();
 	procmsg_unregister_spam_learner(bogofilter_learn);

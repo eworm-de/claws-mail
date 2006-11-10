@@ -24,7 +24,7 @@
 
 typedef struct _BogofilterConfig BogofilterConfig;
 
-typedef void (*MessageCallback) (gchar *, gint total, gint done);
+typedef void (*MessageCallback) (gchar *, gint total, gint done, gboolean thread_safe);
 
 struct _BogofilterConfig
 {

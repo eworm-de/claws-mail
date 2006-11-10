@@ -1,3 +1,14 @@
+2006-11-10 [colin]	2.6.0cvs29
+
+	* src/mainwindow.c
+		Set cursor to wait before filtering
+		duplicates in all folders
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		Completely thread away the bogofilter
+		filtering
+
 2006-11-10 [mones]	2.6.0cvs28
 
 	* src/compose.c
