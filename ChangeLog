@@ -1,3 +1,11 @@
+2006-11-10 [paul]	2.6.0cvs27
+
+	* src/crash.c
+		more renaming
+		add libSM to get_compiled_in_features()
+	* src/main.c
+		more renaming
+
 2006-11-10 [colin]	2.6.0cvs26
 
 	* src/etpan/imap-thread.c

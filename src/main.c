@@ -646,11 +646,11 @@ int main(int argc, char *argv[])
 	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
 
-	if (is_file_exist("sylpheed.log")) {
-		if (rename_force("sylpheed.log", "sylpheed.log.bak") < 0)
-			FILE_OP_ERROR("sylpheed.log", "rename");
+	if (is_file_exist("claws.log")) {
+		if (rename_force("claws.log", "claws.log.bak") < 0)
+			FILE_OP_ERROR("claws.log", "rename");
 	}
-	set_log_file("sylpheed.log");
+	set_log_file("claws.log");
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 

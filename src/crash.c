@@ -306,7 +306,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 
 	timer = time(NULL);
 	lt = localtime(&timer);
-	strftime(buf, sizeof buf, "sylpheed-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
+	strftime(buf, sizeof buf, "claws-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
 	if (NULL != (filename = filesel_select_file_save(_("Save crash information"), buf))
 	&&  *filename)
 		str_write_to_file(text, filename);
@@ -434,6 +434,9 @@ static const gchar *get_compiled_in_features(void)
 #if USE_GNOMEPRINT
 		   " libgnomeprint"
 #endif
+#if HAVE_LIBSM
+		   " libSM"
+#endif
 	"");
 }
 
@@ -475,11 +478,11 @@ static const gchar *get_operating_system(void)
 
 /*!
  *\brief	see if the crash dialog is allowed (because some
- *		developers may prefer to run sylpheed under gdb...)
+ *		developers may prefer to run claws-mail under gdb...)
  */
 static gboolean is_crash_dialog_allowed(void)
 {
-	return !getenv("SYLPHEED_NO_CRASH");
+	return !getenv("CLAWS_NO_CRASH");
 }
 
 /*!
