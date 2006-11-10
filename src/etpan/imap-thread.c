@@ -197,6 +197,7 @@ void imap_logger_append(int direction, const char * str, size_t size)
 
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
 static gboolean etpan_skip_ssl_cert_check = FALSE;
+extern void mailsasl_ref(void);
 
 void imap_main_init(gboolean skip_ssl_cert_check)
 {
@@ -208,7 +209,8 @@ void imap_main_init(gboolean skip_ssl_cert_check)
 	
 	mailstream_debug = 1;
 	mailstream_logger = imap_logger_cmd;
-
+	mailsasl_ref();
+	
 	imap_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	courier_workaround_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);

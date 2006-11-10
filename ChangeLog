@@ -1,3 +1,13 @@
+2006-11-10 [colin]	2.6.0cvs26
+
+	* src/etpan/imap-thread.c
+		Add a reference to libetpan's sasl engine
+		so that sasl_done() doesn't get called by
+		libetpan, and doesn't break openssl.
+		Should fix bug 1053, 'SC fails to reestablish 
+		a secure connection'
+		Patch by Hoa
+
 2006-11-10 [colin]	2.6.0cvs25
 
 	* manual/addrbook.xml

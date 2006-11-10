@@ -2050,3 +2050,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.0cvs23.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.0cvs24.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/addrbook.xml;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 manual/advanced.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 manual/faq.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/intro.xml;  ) > 2.6.0cvs25.patchset
+( cvs diff -u -r 1.1.4.57 -r 1.1.4.58 src/etpan/imap-thread.c;  ) > 2.6.0cvs26.patchset
