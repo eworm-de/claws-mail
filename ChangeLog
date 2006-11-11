@@ -1,3 +1,9 @@
+2006-11-11 [colin]	2.6.0cvs30
+
+	* src/undo.c
+		init undostruct to 0s (from
+		valgrind log of bug 1057)
+
 2006-11-10 [colin]	2.6.0cvs29
 
 	* src/mainwindow.c

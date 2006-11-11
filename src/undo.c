@@ -85,7 +85,7 @@ UndoMain *undo_init(GtkWidget *text)
 
 	g_return_val_if_fail(text != NULL, NULL);
 
-	undostruct = g_new(UndoMain, 1);
+	undostruct = g_new0(UndoMain, 1);
 	undostruct->textview = textview;
 	undostruct->undo = NULL;
 	undostruct->redo = NULL;
