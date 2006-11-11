@@ -1,3 +1,9 @@
+2006-11-11 [colin]	2.6.0cvs33
+
+	* src/folderview.c
+		Forbid drag and drop from/to different
+		folders of type F_UNKNOWN
+
 2006-11-11 [colin]	2.6.0cvs32
 
 	* src/plugins/pgpinline/pgpinline.c

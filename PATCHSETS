@@ -2057,3 +2057,4 @@
 ( cvs diff -u -r 1.13.2.11 -r 1.13.2.12 src/undo.c;  ) > 2.6.0cvs30.patchset
 ( cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs31.patchset
 ( cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins/pgpinline/pgpinline.c;  ) > 2.6.0cvs32.patchset
+( cvs diff -u -r 1.207.2.132 -r 1.207.2.133 src/folderview.c;  ) > 2.6.0cvs33.patchset
