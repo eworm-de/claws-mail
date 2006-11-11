@@ -63,13 +63,17 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo);
 static PrivacyDataPGP *pgpinline_new_privacydata()
 {
 	PrivacyDataPGP *data;
+	gpgme_error_t err;
 
 	data = g_new0(PrivacyDataPGP, 1);
 	data->data.system = &pgpinline_system;
 	data->done_sigtest = FALSE;
 	data->is_signed = FALSE;
 	data->sigstatus = NULL;
-	gpgme_new(&data->ctx);
+	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		return NULL;
+	}
 	
 	return data;
 }
@@ -219,7 +223,8 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	gchar *textdata = NULL, *tmp = NULL;
 	gpgme_data_t plain = NULL, cipher = NULL;
 	gpgme_ctx_t ctx;
-	
+	gpgme_error_t err;
+
 	g_return_val_if_fail(mimeinfo != NULL, 0);
 
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
@@ -258,7 +263,11 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	textdata = g_strdup(tmp);
 	g_free(tmp);
 	
-	gpgme_new(&ctx);
+	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		return 0;
+	}
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
 	
@@ -510,7 +519,11 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		
 	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
-	gpgme_new(&ctx);
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		return FALSE;
+	}
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
 
@@ -627,7 +640,11 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	
 	kset = g_malloc(sizeof(gpgme_key_t)*(i+1));
 	memset(kset, 0, sizeof(gpgme_key_t)*(i+1));
-	gpgme_new(&ctx);
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		return FALSE;
+	}
 	i = 0;
 	while (fprs[i] && strlen(fprs[i])) {
 		gpgme_key_t key;
@@ -670,7 +687,11 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
-	gpgme_new(&ctx);
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		return FALSE;
+	}
 	gpgme_set_armor(ctx, 1);
 
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);

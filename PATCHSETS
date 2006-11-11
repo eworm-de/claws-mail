@@ -2055,3 +2055,4 @@
 ( cvs diff -u -r 1.382.2.326 -r 1.382.2.327 src/compose.c;  cvs diff -u -r 1.50.2.28 -r 1.50.2.29 src/compose.h;  ) > 2.6.0cvs28.patchset
 ( cvs diff -u -r 1.274.2.155 -r 1.274.2.156 src/mainwindow.c;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.0cvs29.patchset
 ( cvs diff -u -r 1.13.2.11 -r 1.13.2.12 src/undo.c;  ) > 2.6.0cvs30.patchset
+( cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs31.patchset

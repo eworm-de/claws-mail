@@ -1,3 +1,11 @@
+2006-11-11 [colin]	2.6.0cvs31
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Check success after calling gpgme_new
+		Maybe fixes bug 1057, 'crash on sending 
+		signed message to a newsgroup'
+
 2006-11-11 [colin]	2.6.0cvs30
 
 	* src/undo.c
