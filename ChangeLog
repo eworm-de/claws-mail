@@ -1,3 +1,10 @@
+2006-11-11 [colin]	2.6.0cvs32
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix typo in previous commit:
+		- gpgme_new(&ctx);
+		+ if ((err = gpgme_new(&data->ctx)) ...)
+
 2006-11-11 [colin]	2.6.0cvs31
 
 	* src/plugins/pgpinline/pgpinline.c

@@ -263,7 +263,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	textdata = g_strdup(tmp);
 	g_free(tmp);
 	
-	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		return 0;
