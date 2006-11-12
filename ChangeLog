@@ -1,3 +1,9 @@
+2006-11-12 [colin]	2.6.0cvs35
+
+	* src/compose.c
+		Fix bug 1060, 'compilation error with 
+		Irix's cc'
+
 2006-11-12 [paul]	2.6.0cvs34
 
 	* doc/man/claws-mail.1

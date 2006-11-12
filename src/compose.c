@@ -450,7 +450,7 @@ static void compose_set_priority_cb	(gpointer 	 data,
 					 guint 		 action,
 					 GtkWidget 	*widget);
 static void compose_reply_change_mode	(gpointer 	 data,
-					 guint 		 action,
+					 ComposeMode	action,
 					 GtkWidget 	*widget);
 
 static void compose_attach_drag_received_cb (GtkWidget		*widget,
