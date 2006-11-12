@@ -530,7 +530,6 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	gpgme_release(ctx);
 	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
@@ -560,6 +559,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	g_node_append(sigmultipart->node, newinfo->node);
 
 	g_free(sigcontent);
+	gpgme_release(ctx);
 
 	return TRUE;
 }
@@ -646,7 +646,6 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
-	gpgme_release(ctx);
 	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
@@ -654,6 +653,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if (enccontent == NULL || len <= 0) {
 		g_warning("gpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
+		gpgme_release(ctx);
 		return FALSE;
 	}
 
@@ -679,6 +679,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	g_node_append(encmultipart->node, newinfo->node);
 
 	g_free(enccontent);
+	gpgme_release(ctx);
 
 	return TRUE;
 }

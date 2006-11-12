@@ -1,3 +1,13 @@
+2006-11-12 [colin]	2.6.0cvs37
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Release GPG context at the latest 
+		possible moment. Maybe fixes 
+		bug 1057, 'crash on sending signed 
+		message to a newsgroup'
+		
+
 2006-11-12 [colin]	2.6.0cvs36
 
 	* src/plugins/pgpcore/sgpgme.c
