@@ -1005,7 +1005,7 @@ msgstr "%d.%02dKB"
 #: src/common/utils.c:350
 #, c-format
 msgid "%d.%02dMB"
-msgstr "%d.%02dKB"
+msgstr "%d.%02dMB"
 
 #: src/common/utils.c:351
 #, c-format
