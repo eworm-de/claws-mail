@@ -50,8 +50,8 @@ if (!$url) {
 	die("No url found with the alias \"$where\"\n");
 } 
 
-open (SYLRC, "<sylpheedrc") 
-	|| die("Can't open ~/.claws-mail/sylpheedrc\n");
+open (SYLRC, "<clawsrc") 
+	|| die("Can't open ~/.claws-mail/clawsrc\n");
 	@rclines = <SYLRC>;
 close SYLRC;
 

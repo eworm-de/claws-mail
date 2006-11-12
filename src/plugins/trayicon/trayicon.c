@@ -40,6 +40,7 @@
 #include "prefs_common.h"
 #include "main.h"
 #include "alertpanel.h"
+#include "account.h"
 #include "gtk/manage_window.h"
 
 #include "eggtrayicon.h"

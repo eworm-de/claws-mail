@@ -22,7 +22,7 @@ $_ = <>;
 
 chdir($ENV{HOME} . "/.claws-mail") || die("Can't find your .claws-mail directory\n");
 
-open (SYLRC, "<sylpheedrc") || die("Can't open the sylpheedrc file\n");
+open (SYLRC, "<clawsrc") || die("Can't open the clawsrc file\n");
 	@rclines = <SYLRC>;
 close SYLRC;
 

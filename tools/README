@@ -83,8 +83,8 @@ Action scripts
 	This is an Actions script that allows you to search
 	websites for the selected text. It uses the default
 	Claws Mail browser as configured through Claws Mail's 
-	GUI and specified in ~/.claws-mail/sylpheedrc,
-	and a configuration file called multiwebsearch.conf.
+	GUI and specified in ~/.claws-mail/clawsrc, and a
+	configuration file called multiwebsearch.conf.
 	
   CONFIGURATION
   	The configuration file takes the following format:

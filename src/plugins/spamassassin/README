@@ -12,16 +12,17 @@ using the external command sa-learn in local modes or spamc in TCP mode
 messages as spam or ham can be added to the main window or the message
 window (see "Configuration/Preferences/Customize toolbars).
 
-To build the plugin run configure with --enable-spamassassin-plugin.
+The plugin is built automatically if you have the required libraries
+available.
 
 Message that are classified as spam can be deleted or moved to a folder
 that can be specified in the configuration, if the folder is not
 specified or not found the default trash folder will be used.
 
-Plugin preferences can be found under "Configuration/Preferences/Plugins
+Plugin preferences can be found under "/Configuration/Preferences/Plugins
 /SpamAssassin". 
 
-The SpamAssassin plugin uses it's own block in the sylpheedrc file in your
+The SpamAssassin plugin uses it's own block in the clawsrc file in your
 ~/.claws-mail/ directory, and define the following options:
 
 [SpamAssassin]

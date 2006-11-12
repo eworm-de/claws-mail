@@ -1,3 +1,17 @@
+2006-11-12 [paul]	2.6.0cvs34
+
+	* doc/man/claws-mail.1
+	* src/prefs_gtk.c
+	* src/plugins/clamav/README
+	* src/plugins/spamassassin/README
+	* tools/README
+	* tools/freshmeat_search.pl
+	* tools/google_search.pl
+	* tools/multiwebsearch.pl
+		more renaming
+	* src/plugins/trayicon/trayicon.c
+		fix compiliation warning
+
 2006-11-11 [colin]	2.6.0cvs33
 
 	* src/folderview.c

@@ -11,22 +11,15 @@ configuration, if the folder is not specified or not found
 the default trash folder will be used.
 
 The plugin is built automatically if you have the required
-libraries available. It has two parts and will be installed
-in $PREFIX/lib/sylpheed/plugins/ as clamav_plugin.so and
-clamav_plugin_gtk.so.
+libraries available. It will be installed in
+$PREFIX/lib/claws-mail/plugins/ as clamav_plugin.so.
 
-The 'clamav_plugin.so' plugin provides only the actual 
-scanning. By default it is not enabled. 
+Configuration preferences are found on the 
+"/Configuration/Preferences.../Plugins/Clam AntiVirus" page.
 
-You will probably also want to load the configuration plugin
-'clamav_plugin_gtk.so' to get a configuration page under 
-"Configuration/Other Preferences.../Filtering/Clam AntiVirus" 
-for the Clam AntiVirus plugin.
-
-The Clam AntiVirus plugin uses its own block in the 'sylpheedrc' 
-file in your config directory (default: '~/.sylpheed'). If you 
-really want to configure it without the GTK plugin you can 
-specify the following options:
+The Clam AntiVirus plugin uses its own block in the 'clawsrc' 
+file in your config directory (default: '~/.claws-mail'). It
+has the following options:
 
 [ClamAV]
 clamav_enable=1				enable scanning with Clam AntiVirus
