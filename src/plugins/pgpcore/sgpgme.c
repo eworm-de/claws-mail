@@ -71,7 +71,11 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 		
 	}
 	status = gpgme_op_verify_result(ctx);
-
+	if (status && status->signatures == NULL) {
+		debug_print("no signature found\n");
+		privacy_set_error(_("No signature found"));
+		return GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR);
+	}
 	return status;
 }
 

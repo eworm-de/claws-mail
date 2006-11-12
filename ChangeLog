@@ -1,3 +1,9 @@
+2006-11-12 [colin]	2.6.0cvs36
+
+	* src/plugins/pgpcore/sgpgme.c
+		Tell a bit more when gpg's status doesn't
+		contain any signature
+
 2006-11-12 [colin]	2.6.0cvs35
 
 	* src/compose.c

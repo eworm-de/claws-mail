@@ -2060,3 +2060,4 @@
 ( cvs diff -u -r 1.207.2.132 -r 1.207.2.133 src/folderview.c;  ) > 2.6.0cvs33.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 doc/man/claws-mail.1;  cvs diff -u -r 1.10.2.26 -r 1.10.2.27 src/prefs_gtk.c;  cvs diff -u -r 1.1.4.1 -r 1.1.4.2 src/plugins/clamav/README;  cvs diff -u -r 1.3.2.2 -r 1.3.2.3 src/plugins/spamassassin/README;  cvs diff -u -r 1.14.2.42 -r 1.14.2.43 src/plugins/trayicon/trayicon.c;  cvs diff -u -r 1.30.2.11 -r 1.30.2.12 tools/README;  cvs diff -u -r 1.3.2.3 -r 1.3.2.4 tools/freshmeat_search.pl;  cvs diff -u -r 1.3.2.3 -r 1.3.2.4 tools/google_search.pl;  cvs diff -u -r 1.3.2.3 -r 1.3.2.4 tools/multiwebsearch.pl;  ) > 2.6.0cvs34.patchset
 ( cvs diff -u -r 1.382.2.327 -r 1.382.2.328 src/compose.c;  ) > 2.6.0cvs35.patchset
+( cvs diff -u -r 1.1.2.34 -r 1.1.2.35 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.0cvs36.patchset
