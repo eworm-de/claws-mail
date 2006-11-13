@@ -2067,3 +2067,4 @@
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpinline/pgpinline.c;  ) > 2.6.0cvs40.patchset
 ( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.0cvs41.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs42.patchset
+( cvs diff -u -r 1.20.2.9 -r 1.20.2.10 src/gtk/Makefile.am;  ) > 2.6.0cvs43.patchset

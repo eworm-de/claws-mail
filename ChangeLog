@@ -1,3 +1,8 @@
+2006-11-13 [colin]	2.6.0cvs43
+
+	* src/gtk/Makefile.am
+		authors.h isn't generated
+
 2006-11-13 [colin]	2.6.0cvs42
 
 	* src/plugins/pgpinline/pgpinline.c
