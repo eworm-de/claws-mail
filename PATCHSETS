@@ -2065,3 +2065,4 @@
 ( cvs diff -u -r 1.58.2.27 -r 1.58.2.28 po/de.po;  ) > 2.6.0cvs38.patchset
 ( cvs diff -u -r 1.382.2.328 -r 1.382.2.329 src/compose.c;  cvs diff -u -r 1.22.2.25 -r 1.22.2.26 src/quote_fmt_parse.y;  ) > 2.6.0cvs39.patchset
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpinline/pgpinline.c;  ) > 2.6.0cvs40.patchset
+( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.0cvs41.patchset

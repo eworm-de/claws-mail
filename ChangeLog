@@ -1,3 +1,9 @@
+2006-11-13 [colin]	2.6.0cvs41
+
+	* src/plugins/pgpcore/sgpgme.c
+		Maybe fix bug 1061, 'crash on opening 
+		signed email'
+
 2006-11-13 [wwp]	2.6.0cvs40
 
 	* src/plugins/pgpinline/pgpinline.c
