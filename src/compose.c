@@ -223,6 +223,7 @@ static gchar *compose_quote_fmt			(Compose	*compose,
 						 const gchar	*qmark,
 						 const gchar	*body,
 						 gboolean	 rewrap,
+						 gboolean	 need_unescape,
 						 const gchar *err_msg);
 
 static void compose_reply_set_entry		(Compose	*compose,
@@ -1059,7 +1060,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 			compose_quote_fmt(compose, dummyinfo,
 			        	  prefs_common.compose_body_format,
-			        	  NULL, tmp, FALSE,
+			        	  NULL, tmp, FALSE, TRUE,
 						  _("New message body format error."));
 			quote_fmt_reset_vartable();
 
@@ -1424,7 +1425,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 		compose_quote_fmt(compose, compose->replyinfo,
 			          prefs_common.quotefmt,
-			          qmark, body, FALSE,
+			          qmark, body, FALSE, TRUE,
 					  _("Message reply format error."));
 		quote_fmt_reset_vartable();
 	}
@@ -1541,7 +1542,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		compose_quote_fmt(compose, full_msginfo,
 			          prefs_common.fw_quotefmt,
-			          qmark, body, FALSE,
+			          qmark, body, FALSE, TRUE,
 					  _("Message forward format error."));
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
@@ -2016,7 +2017,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 				   msginfo->subject);
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
-	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE,
+	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE, FALSE,
 					  _("Message redirect format error."));
 	quote_fmt_reset_vartable();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
@@ -2477,6 +2478,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				const gchar *fmt, const gchar *qmark,
 				const gchar *body, gboolean rewrap,
+				gboolean need_unescape,
 				const gchar *err_msg)
 {
 	MsgInfo* dummyinfo = NULL;
@@ -2511,20 +2513,25 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
-		gchar *tmp = NULL;
 
 		if (trimmed_body)
 			while (*trimmed_body == '\n')
 				trimmed_body++;
 
-		/* decode \-escape sequences in the internal representation of the quote format */
-		tmp = malloc(strlen(fmt)+1);
-		pref_get_unescaped_pref(tmp, fmt);
-
 		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account);
-		quote_fmt_scan_string(tmp);
-		quote_fmt_parse();
-		g_free(tmp);
+		if (need_unescape) {
+			gchar *tmp = NULL;
+
+			/* decode \-escape sequences in the internal representation of the quote format */
+			tmp = malloc(strlen(fmt)+1);
+			pref_get_unescaped_pref(tmp, fmt);
+			quote_fmt_scan_string(tmp);
+			quote_fmt_parse();
+			g_free(tmp);
+		} else {
+			quote_fmt_scan_string(fmt);
+			quote_fmt_parse();
+		}
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
@@ -6826,7 +6833,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 			gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 			parsed_str = compose_quote_fmt(compose, compose->replyinfo,
-						   tmpl->value, qmark, NULL, FALSE, err_msg);
+						   tmpl->value, qmark, NULL, FALSE, FALSE, err_msg);
 
 		} else if (compose->fwdinfo != NULL) {
 
@@ -6836,7 +6843,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 			gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 			parsed_str = compose_quote_fmt(compose, compose->fwdinfo,
-						   tmpl->value, qmark, NULL, FALSE, err_msg);
+						   tmpl->value, qmark, NULL, FALSE, FALSE, err_msg);
 
 		} else {
 			MsgInfo* dummyinfo = compose_msginfo_new_from_compose(compose);
@@ -6853,7 +6860,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 				gtk_text_buffer_set_text(buffer, "", -1);
 
 			parsed_str = compose_quote_fmt(compose, dummyinfo,
-							   tmpl->value, qmark, tmp, FALSE, err_msg);
+							   tmpl->value, qmark, tmp, FALSE, FALSE, err_msg);
 			procmsg_msginfo_free( dummyinfo );
 
 			g_free( tmp );
@@ -9088,7 +9095,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 		gtk_text_buffer_place_cursor(buffer, iter);
 
-		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE,
+		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE, FALSE,
 						  _("Quote format error."));
 		quote_fmt_reset_vartable();
 		g_free(new_text);

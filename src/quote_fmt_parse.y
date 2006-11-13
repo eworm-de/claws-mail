@@ -116,6 +116,9 @@ static void clear_buffer(void)
 {
 	if (current->buffer)
 		*current->buffer = '\0';
+	else
+		/* force to an empty string, as buffer should not be left unallocated */
+		add_buffer("");
 	current->bufsize = 0;
 }
 

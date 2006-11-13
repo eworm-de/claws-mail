@@ -1,3 +1,18 @@
+2006-11-13 [wwp]	2.6.0cvs39
+
+	* src/compose.c
+	* src/quote_fmt_parse.y
+		fix bug 1052: current parser buffer was not always allocated, ptr to this buffer could be
+		returned as NULL whereas no parser error has occurred. in consequence, defining a template
+		body as "%d" (w/o the quotes) for the first time of the instance of claws-mail, was reporting
+		a parser error. make sure that the buffer is always allocated, even to an empty string.
+
+		fix mis-unescaping in compose.:compose_quote_fmt(): unescaping of the fmt string was always done
+		whereas it must be done *only* when receiving quote format strings issued from the prefs
+		(compose new message, reply, forward, redirect formats), *not* when applying templates.
+		in consequences, applying templates w/ sequences like \\|p{echo} were failing. make
+		sure that unescaping is done only when necessary.
+
 2006-11-12 [colin]	2.6.0cvs38
 
 	* po/de.po
