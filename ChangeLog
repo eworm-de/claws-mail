@@ -1,3 +1,8 @@
+2006-11-13 [wwp]	2.6.0cvs40
+
+	* src/plugins/pgpinline/pgpinline.c
+		fix candidate for bug #1057, thanks to Colin.
+
 2006-11-13 [wwp]	2.6.0cvs39
 
 	* src/compose.c
