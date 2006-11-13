@@ -1,3 +1,11 @@
+2006-11-13 [colin]	2.6.0cvs42
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Very probably fix bug 1061, 'crash on 
+		opening signed email'. Another cast
+		problem
+
 2006-11-13 [colin]	2.6.0cvs41
 
 	* src/plugins/pgpcore/sgpgme.c

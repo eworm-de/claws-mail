@@ -203,7 +203,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	}
 	textstr = get_canonical_content(fp, boundary);
 
-	err = gpgme_data_new_from_mem(&textdata, textstr, strlen(textstr), 0);
+	err = gpgme_data_new_from_mem(&textdata, textstr, (size_t)strlen(textstr), 0);
 	if (err) {
 		debug_print ("gpgme_data_new_from_mem failed: %s\n",
                    gpgme_strerror (err));
@@ -461,7 +461,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 
 	fclose(fp);
 
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
@@ -639,7 +639,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	fclose(fp);
 
 	/* encrypt data */
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
 	gpgme_set_armor(ctx, 1);
 	gpgme_data_rewind(gpgtext);
