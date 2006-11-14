@@ -1,3 +1,17 @@
+2006-11-14 [paul]	2.6.0cvs46
+
+	* po/Makevars
+		enable Q_ macro
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/gtk/about.c
+	* src/pixmaps/active.xpm
+	* src/pixmaps/inactive.xpm
+		add a new page, 'Features', to the About dialog
+		showing which features are compiled in and which
+		are not
+
 2006-11-14 [paul]	2.6.0cvs45
 
 	* po/ru.po

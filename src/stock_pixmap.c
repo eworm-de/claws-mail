@@ -139,6 +139,8 @@
 #include "pixmaps/ham_btn.xpm"
 #include "pixmaps/moved.xpm"
 #include "pixmaps/copied.xpm"
+#include "pixmaps/active.xpm"
+#include "pixmaps/inactive.xpm"
 #include "pixmaps/empty.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -308,6 +310,8 @@ static StockPixmapData pixmaps[] =
         {ham_btn_xpm                            , NULL, NULL, "ham_btn" , NULL},
 	{moved_xpm				, NULL, NULL, "moved", NULL},
 	{copied_xpm				, NULL, NULL, "copied", NULL},
+	{active_xpm				, NULL, NULL, "active", NULL},
+	{inactive_xpm				, NULL, NULL, "inactive", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 

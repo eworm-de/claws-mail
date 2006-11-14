@@ -90,17 +90,44 @@ void about_show(void)
 		gtk_window_present(GTK_WINDOW(window));
 }
 
+#define ADD_FEATURES_HBOX(vbox, image, name, desc)			\
+{									\
+	GtkWidget *hbox1;						\
+	char *markup;							\
+	GtkWidget *label1;						\
+									\
+	hbox1 = gtk_hbox_new(FALSE, 2);					\
+	gtk_widget_show(hbox1);						\
+	gtk_box_pack_start(GTK_BOX(vbox), hbox1, TRUE, TRUE, 0);	\
+	gtk_widget_show(image);						\
+	gtk_box_pack_start(GTK_BOX(hbox1), image, FALSE, FALSE, 0);	\
+									\
+	label1 = gtk_label_new("");					\
+	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);		\
+	gtk_widget_show(label1);					\
+	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);	\
+									\
+	markup = g_markup_printf_escaped				\
+			("<span weight=\"bold\">%s</span> %s", name,	\
+			 desc);						\
+	gtk_label_set_markup (GTK_LABEL(label1), markup);		\
+	g_free(markup);							\
+}
 static void about_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *table;
-	GtkWidget *table2;
 	GtkWidget *image;	
  	GtkWidget *vbox2;
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
 	GtkWidget *notebook;
+	GtkWidget *viewport;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	const gchar *name;
+	const gchar *desc;
 	char *markup;
 	GtkWidget *text;
 	GtkWidget *confirm_area;
@@ -190,60 +217,13 @@ static void about_create(void)
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
-	g_snprintf(buf, sizeof(buf),
-		   _("Compiled-in features:\n%s"),
-#if USE_THREADS
-		   " gthread"
-#endif
-#if INET6
-		   " IPv6"
-#endif
-#if HAVE_ICONV
-		   " iconv"
-#endif
-#if HAVE_LIBCOMPFACE
-		   " compface"
-#endif
-#if USE_OPENSSL
-		   " OpenSSL"
-#endif
-#if USE_LDAP
-		   " LDAP"
-#endif
-#if USE_JPILOT
-		   " JPilot"
-#endif
-#if USE_ASPELL
-		   " GNU/aspell"
-#endif
-#if HAVE_LIBETPAN
-		   " libetpan"
-#endif
-#if USE_GNOMEPRINT
-		   " libgnomeprint"
-#endif
-#if HAVE_LIBSM
-		   " libSM"
-#endif
-	"");
-
-	label = gtk_label_new(buf);
-	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-
-	table2 = gtk_table_new (2, 3, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox1), table2, FALSE, FALSE, 0);
-
 	label = gtk_label_new
 		(_("Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_table_attach(GTK_TABLE(table2), label, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND),
-			 (GtkAttachOptions) (GTK_SHRINK), 0, 6);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	notebook = gtk_notebook_new();
 	gtk_widget_set_size_request(notebook, -1, 200);
@@ -461,6 +441,114 @@ static void about_create(void)
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
 
+	viewport = gtk_viewport_new(NULL, NULL);
+	gtk_widget_show(viewport);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), viewport);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_set_spacing(GTK_BOX(vbox), 4);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(viewport), vbox);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	label = gtk_label_new(_("Compiled-in Features"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	name = "IPv6";
+	desc = (gchar *)Q_("IPv6|adds support for IPv6 addresses, the new internet "
+			   "addressing protocol");
+#if INET6
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "iconv";
+	desc = (gchar *)Q_("iconv|allows converting to and from different character sets");
+#if HAVE_ICONV
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "compface";
+	desc = (gchar *)Q_("compface|adds support for the X-Face header");
+#if HAVE_LIBCOMPFACE
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "OpenSSL";
+	desc = (gchar *)Q_("OpenSSL|adds support for encrypted connections to servers");
+#if USE_OPENSSL
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "LDAP";
+	desc = (gchar *)Q_("LDAP|adds support for LDAP shared addressbooks");
+#if USE_LDAP
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "JPilot";
+	desc = (gchar *)Q_("JPilot|adds support for PalmOS addressbooks");
+#if USE_JPILOT
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "GNU/aspell";
+	desc = (gchar *)Q_("GNU/aspell|adds support for spell checking");
+#if USE_ASPELL
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "libetpan";
+	desc = (gchar *)Q_("libetpan|adds support for IMAP servers");
+#if HAVE_LIBETPAN
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "libgnomeprint";
+	desc = (gchar *)Q_("libgnomeprint|adds support for a complete print dialog");
+#if USE_GNOMEPRINT
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	name = "libSM";
+	desc = (gchar *)Q_("libSM|adds support for session handling");
+#if HAVE_LIBSM
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+#else
+	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+#endif
+
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				 scrolledwin,
+				 gtk_label_new_with_mnemonic(_("_Features")));
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_IN);
+
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
@@ -531,6 +619,7 @@ static void about_create(void)
 
 	gtk_widget_show_all(window);
 }
+#undef ADD_FEATURES_HBOX
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 {
