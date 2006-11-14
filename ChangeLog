@@ -1,3 +1,8 @@
+2006-11-14 [paul]	2.6.0cvs45
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2006-11-14 [colin]	2.6.0cvs44
 
 	* src/compose.c
