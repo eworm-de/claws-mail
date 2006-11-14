@@ -616,8 +616,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	}
 
 	/* write to temporary file */
-	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
-		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
+	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%p",
+		   get_rc_dir(), G_DIR_SEPARATOR, msginfo);
 
 	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");

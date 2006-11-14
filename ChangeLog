@@ -1,3 +1,18 @@
+2006-11-14 [colin]	2.6.0cvs44
+
+	* src/compose.c
+	* src/inc.c
+	* src/messageview.c
+	* src/news.c
+	* src/pop.c
+	* src/procmsg.c
+	* src/gtk/gtkaspell.c
+		Fix 64-bit-related warnings
+	* src/ssl_manager.c
+		Fix possible infinite loop
+	* src/plugins/pgpcore/sgpgme.c
+		Remove useless check
+
 2006-11-13 [colin]	2.6.0cvs43
 
 	* src/gtk/Makefile.am

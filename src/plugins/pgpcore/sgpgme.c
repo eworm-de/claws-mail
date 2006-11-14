@@ -187,10 +187,6 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	if (sig == NULL) {
 		return g_strdup(_("The signature has not been checked."));
 	}
-	if (sig->fpr == NULL) {
-		g_warning(_("PGP Core: Can't get key fingerprint."));
-		return g_strdup(_("PGP Core: Can't get key fingerprint."));
-	}
 
 	err = gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (gpg_err_code(err) == GPG_ERR_NO_AGENT) {

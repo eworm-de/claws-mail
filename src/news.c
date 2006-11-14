@@ -789,8 +789,8 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	FILE * tmpfp;
 	gchar buf[BUFFSIZE];
 
-	tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
-			      G_DIR_SEPARATOR, (gint)msginfo);
+	tmp = g_strdup_printf("%s%ctmp%p", g_get_tmp_dir(),
+			      G_DIR_SEPARATOR, msginfo);
 	if (tmp == NULL)
 		return -1;
 

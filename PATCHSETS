@@ -2068,3 +2068,4 @@
 ( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.0cvs41.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs42.patchset
 ( cvs diff -u -r 1.20.2.9 -r 1.20.2.10 src/gtk/Makefile.am;  ) > 2.6.0cvs43.patchset
+( cvs diff -u -r 1.382.2.329 -r 1.382.2.330 src/compose.c;  cvs diff -u -r 1.149.2.61 -r 1.149.2.62 src/inc.c;  cvs diff -u -r 1.94.2.109 -r 1.94.2.110 src/messageview.c;  cvs diff -u -r 1.101.2.32 -r 1.101.2.33 src/news.c;  cvs diff -u -r 1.56.2.45 -r 1.56.2.46 src/pop.c;  cvs diff -u -r 1.150.2.82 -r 1.150.2.83 src/procmsg.c;  cvs diff -u -r 1.3.2.22 -r 1.3.2.23 src/ssl_manager.c;  cvs diff -u -r 1.9.2.43 -r 1.9.2.44 src/gtk/gtkaspell.c;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.0cvs44.patchset

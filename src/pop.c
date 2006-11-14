@@ -234,7 +234,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 	gchar id[IDLEN + 1];
 	gchar buf[POPBUFSIZE];
 	gint buf_len;
-	gint num;
+	guint32 num;
 	time_t recv_time;
 	gint partial_recv;
 	const gchar *p = data;

@@ -2224,7 +2224,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *subject = NULL;
 	gchar *body = NULL;
 	gchar *temp = NULL;
-	guint  len = 0;
+	gsize  len = 0;
 	gchar *attach = NULL;
 	
 	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body, &attach);

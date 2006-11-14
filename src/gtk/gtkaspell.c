@@ -443,7 +443,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	g_signal_connect(G_OBJECT(gtktext), "populate-popup",
 			 G_CALLBACK(button_press_intercept_cb), gtkaspell);
 	
-	debug_print("Aspell: created gtkaspell %0x\n", (guint) gtkaspell);
+	debug_print("Aspell: created gtkaspell %p\n", gtkaspell);
 
 	return gtkaspell;
 }
@@ -475,7 +475,7 @@ void gtkaspell_delete(GtkAspell *gtkaspell)
 	g_free((gchar *)gtkaspell->dictionary_path);
 	gtkaspell->dictionary_path = NULL;
 
-	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
+	debug_print("Aspell: deleting gtkaspell %p\n", gtkaspell);
 
 	g_free(gtkaspell);
 
@@ -633,8 +633,8 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 				gtkaspellcheckers->checkers,
 				gtkaspeller);
 
-		debug_print("Aspell: Created a new gtkaspeller %0x\n",
-				(gint) gtkaspeller);
+		debug_print("Aspell: Created a new gtkaspeller %p\n",
+				gtkaspeller);
 	} else {
 		dictionary_delete(dict);
 
@@ -692,8 +692,8 @@ static GtkAspeller *gtkaspeller_delete(GtkAspeller *gtkaspeller)
 		g_slist_remove(gtkaspellcheckers->checkers, 
 				gtkaspeller);
 
-	debug_print("Aspell: Deleting gtkaspeller %0x.\n", 
-			(gint) gtkaspeller);
+	debug_print("Aspell: Deleting gtkaspeller %p.\n", 
+			gtkaspeller);
 
 	gtkaspeller_real_delete(gtkaspeller);
 
@@ -714,8 +714,8 @@ static GtkAspeller *gtkaspeller_real_delete(GtkAspeller *gtkaspeller)
 
 	dictionary_delete(gtkaspeller->dictionary);
 
-	debug_print("Aspell: gtkaspeller %0x deleted.\n", 
-		    (gint) gtkaspeller);
+	debug_print("Aspell: gtkaspeller %p deleted.\n", 
+		    gtkaspeller);
 
 	g_free(gtkaspeller);
 
@@ -849,8 +849,8 @@ gboolean gtkaspell_set_sug_mode(GtkAspell *gtkaspell, gint themode)
 	g_return_val_if_fail(gtkaspell->gtkaspeller, FALSE);
 	g_return_val_if_fail(gtkaspell->gtkaspeller->config, FALSE);
 
-	debug_print("Aspell: setting sug mode of gtkaspeller %0x to %d\n",
-			(guint) gtkaspell->gtkaspeller, themode);
+	debug_print("Aspell: setting sug mode of gtkaspeller %p to %d\n",
+			gtkaspell->gtkaspeller, themode);
 
 	config = gtkaspell->gtkaspeller->config;
 
