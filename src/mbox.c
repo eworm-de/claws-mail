@@ -21,11 +21,14 @@
 #  include "config.h"
 #endif
 
-#include "defs.h"
 
+#define _GNU_SOURCE
+#include <stdio.h>
+
+#include "defs.h"
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
@@ -46,6 +49,16 @@
 #include "statusbar.h"
 
 #define MSGBUFSIZE	8192
+
+#ifdef HAVE_FGETS_UNLOCKED
+#define SC_FGETS fgets_unlocked
+#define SC_FPUTS fputs_unlocked
+#define SC_FPUTC fputc_unlocked
+#else
+#define SC_FGETS fgets
+#define SC_FPUTS fputs
+#define SC_FPUTC fputc
+#endif
 
 #define FPUTS_TO_TMP_ABORT_IF_FAIL(s) \
 { \
@@ -480,6 +493,10 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		return -1;
 	}
 
+#ifdef HAVE_FGETS_UNLOCKED
+	flockfile(mbox_fp);
+#endif
+
 	statusbar_print_all(_("Exporting to mbox..."));
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		int len;
@@ -490,6 +507,9 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 			continue;
 		}
 
+#ifdef HAVE_FGETS_UNLOCKED
+		flockfile(msg_fp);
+#endif
 		strncpy2(buf,
 			 msginfo->from ? msginfo->from :
 			 cur_account && cur_account->address ?
@@ -503,7 +523,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		buf[0] = '\0';
 		
 		/* write email to mboxrc */
-		while (fgets(buf, sizeof(buf), msg_fp) != NULL) {
+		while (SC_FGETS(buf, sizeof(buf), msg_fp) != NULL) {
 			/* quote any From, >From, >>From, etc., according to mbox format specs */
 			int offset;
 
@@ -513,8 +533,8 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 				offset++;
 			}
 			if (!strncmp(buf+offset, "From ", 5))
-				fputc('>', mbox_fp);
-			fputs(buf, mbox_fp);
+				SC_FPUTC('>', mbox_fp);
+			SC_FPUTS(buf, mbox_fp);
 		}
 
 		/* force last line to end w/ a newline */
@@ -522,12 +542,15 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		if (len > 0) {
 			len--;
 			if ((buf[len] != '\n') && (buf[len] != '\r'))
-				fputc('\n', mbox_fp);
+				SC_FPUTC('\n', mbox_fp);
 		}
 
 		/* add a trailing empty line */
-		fputc('\n', mbox_fp);
+		SC_FPUTC('\n', mbox_fp);
 
+#ifdef HAVE_FGETS_UNLOCKED
+		funlockfile(msg_fp);
+#endif
 		fclose(msg_fp);
 		statusbar_progress_all(msgs++,total, 500);
 		if (msgs%500 == 0)
@@ -536,6 +559,9 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 
+#ifdef HAVE_FGETS_UNLOCKED
+	funlockfile(mbox_fp);
+#endif
 	fclose(mbox_fp);
 
 	return 0;
@@ -557,7 +583,9 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 
 	mlist = folder_item_get_msg_list(src);
 
+	folder_item_update_freeze();
 	ret = export_list_to_mbox(mlist, mbox);
+	folder_item_update_thaw();
 
 	procmsg_msg_list_free(mlist);
 

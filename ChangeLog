@@ -1,3 +1,12 @@
+2006-11-14 [paul]	2.6.0cvs47
+
+	* src/Makefile.am
+		Fix make DESTDIR=...
+	* src/mbox.c
+		Optimise speed
+	* src/plugins/pgpinline/pgpinline.c
+		Probably fix bug 1061
+
 2006-11-14 [paul]	2.6.0cvs46
 
 	* po/Makevars
