@@ -2073,3 +2073,4 @@
 ( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 po/Makevars;  cvs diff -u -r 1.155.2.47 -r 1.155.2.48 src/Makefile.am;  cvs diff -u -r 1.25.2.29 -r 1.25.2.30 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.20 -r 1.18.2.21 src/stock_pixmap.h;  cvs diff -u -r 1.4.2.38 -r 1.4.2.39 src/gtk/about.c;  diff -u /dev/null src/pixmaps/active.xpm;  diff -u /dev/null src/pixmaps/inactive.xpm;  ) > 2.6.0cvs46.patchset
 ( cvs diff -u -r 1.155.2.48 -r 1.155.2.49 src/Makefile.am;  cvs diff -u -r 1.28.2.30 -r 1.28.2.31 src/mbox.c;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/plugins/pgpinline/pgpinline.c;  ) > 2.6.0cvs47.patchset
 ( cvs diff -u -r 1.382.2.330 -r 1.382.2.331 src/compose.c;  ) > 2.6.0cvs48.patchset
+( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/gtk/authors.h;  ) > 2.6.0cvs49.patchset
