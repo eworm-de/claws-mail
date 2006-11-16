@@ -90,44 +90,16 @@ void about_show(void)
 		gtk_window_present(GTK_WINDOW(window));
 }
 
-#define ADD_FEATURES_HBOX(vbox, image, name, desc)			\
-{									\
-	GtkWidget *hbox1;						\
-	char *markup;							\
-	GtkWidget *label1;						\
-									\
-	hbox1 = gtk_hbox_new(FALSE, 2);					\
-	gtk_widget_show(hbox1);						\
-	gtk_box_pack_start(GTK_BOX(vbox), hbox1, TRUE, TRUE, 0);	\
-	gtk_widget_show(image);						\
-	gtk_box_pack_start(GTK_BOX(hbox1), image, FALSE, FALSE, 0);	\
-									\
-	label1 = gtk_label_new("");					\
-	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);		\
-	gtk_widget_show(label1);					\
-	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);	\
-									\
-	markup = g_markup_printf_escaped				\
-			("<span weight=\"bold\">%s</span> %s", name,	\
-			 desc);						\
-	gtk_label_set_markup (GTK_LABEL(label1), markup);		\
-	g_free(markup);							\
-}
 static void about_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *table;
 	GtkWidget *image;	
  	GtkWidget *vbox2;
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
 	GtkWidget *notebook;
-	GtkWidget *viewport;
-	GtkWidget *vbox;
 	GtkWidget *hbox;
-	const gchar *name;
-	const gchar *desc;
 	char *markup;
 	GtkWidget *text;
 	GtkWidget *confirm_area;
@@ -136,6 +108,8 @@ static void about_create(void)
 	GtkTextIter iter;
 	GtkTextTag *tag;
 	GdkColor uri_color;
+	GdkPixbuf *active_pixbuf;
+	GdkPixbuf *inactive_pixbuf;
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
 #endif
@@ -146,28 +120,25 @@ static void about_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-	gtk_widget_set_size_request(window, -1, -1);
+	gtk_widget_set_size_request(window, 450, -1);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	gtk_widget_realize(window);
 
-	vbox1 = gtk_vbox_new(FALSE, 0);
+	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 
-	table = gtk_table_new (1, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
 
 	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
-	gtk_table_attach(GTK_TABLE(table), image, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_SHRINK),
-			 (GtkAttachOptions) (GTK_SHRINK), 8, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), image, TRUE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new (TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), vbox2, 1, 2, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND),
-			 (GtkAttachOptions) (GTK_FILL), 0, 0);
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
 
 	label = gtk_label_new("");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
@@ -182,51 +153,17 @@ static void about_create(void)
 	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 
-#if HAVE_SYS_UTSNAME_H
-	uname(&utsbuf);
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: %s %s (%s)"),
-		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version,
-		   conv_get_current_locale(), conv_get_locale_charset_str(),
-		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
-#elif defined(G_OS_WIN32)
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: %s"),
-		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version,
-		   conv_get_current_locale(), conv_get_locale_charset_str(),
-		   "Win32");
-#else
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: unknown"),
-		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version,
-		   conv_get_current_locale(), conv_get_locale_charset_str());
-#endif
-
-	label = gtk_label_new(buf);
-	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-
 	label = gtk_label_new
 		(_("Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
+	gtk_misc_set_padding(GTK_MISC(label), 0, 12);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	notebook = gtk_notebook_new();
-	gtk_widget_set_size_request(notebook, -1, 200);
+	gtk_widget_set_size_request(notebook, -1, 220);
 	gtk_widget_show(notebook);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -273,7 +210,50 @@ static void about_create(void)
 				"so at:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DONATE_URI, -1,
 				"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _("\n"), -1);
+
+	gtk_text_buffer_create_tag(buffer, "indented-list-item",
+				"indent", 8,
+				NULL);
+	gtk_text_buffer_create_tag(buffer, "underlined-list-title",
+				"underline", PANGO_UNDERLINE_SINGLE,
+				NULL);
+
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\n\nSystem Information\n")), -1,
+			"underlined-list-title", NULL);
+
+#if HAVE_SYS_UTSNAME_H
+	uname(&utsbuf);
+	g_snprintf(buf, sizeof(buf),
+		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: %s %s (%s)"),
+		   gtk_major_version, gtk_minor_version, gtk_micro_version,
+		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str(),
+		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
+#elif defined(G_OS_WIN32)
+	g_snprintf(buf, sizeof(buf),
+		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: %s"),
+		   gtk_major_version, gtk_minor_version, gtk_micro_version,
+		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str(),
+		   "Win32");
+#else
+	g_snprintf(buf, sizeof(buf),
+		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		     "Locale: %s (charset: %s)\n"
+		     "Operating System: unknown"),
+		   gtk_major_version, gtk_minor_version, gtk_micro_version,
+		   glib_major_version, glib_minor_version, glib_micro_version,
+		   conv_get_current_locale(), conv_get_locale_charset_str());
+#endif
+
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, buf, -1,
+						 "indented-list-item", NULL);
+
+	gtk_text_buffer_insert(buffer, &iter, "\n", -1);
 
 	g_signal_connect(G_OBJECT(tag), "event",
 				G_CALLBACK(about_textview_uri_clicked), text);
@@ -306,7 +286,7 @@ static void about_create(void)
 
 	/* init formatting tag: indentation  for list items */
 	gtk_text_buffer_create_tag(buffer, "indented-list-item",
-				"indent", 24,
+				"indent", 8,
 				NULL);
 	gtk_text_buffer_create_tag(buffer, "underlined-list-title",
 				"underline", PANGO_UNDERLINE_SINGLE,
@@ -374,7 +354,7 @@ static void about_create(void)
 			gchar *conv = conv_codeset_strdup(DOC_TEAM_LIST[i], CS_ISO_8859_1, CS_UTF_8);
 			if (conv)
 				gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, conv, -1,
-						"undeindented-list-itemitle", NULL);
+						"indented-list-item", NULL);
 			g_free(conv);
 		}
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
@@ -441,103 +421,126 @@ static void about_create(void)
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
 
-	viewport = gtk_viewport_new(NULL, NULL);
-	gtk_widget_show(viewport);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), viewport);
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+	gtk_widget_add_events(text, GDK_LEAVE_NOTIFY_MASK);
 
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_set_spacing(GTK_BOX(vbox), 4);
-	gtk_widget_show(vbox);
-	gtk_container_add(GTK_CONTAINER(viewport), vbox);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+	gtk_text_buffer_insert(buffer, &iter, _("Compiled-in Features\n"), -1);
 
-	label = gtk_label_new(_("Compiled-in Features"));
-	gtk_widget_show (label);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_text_buffer_create_tag(buffer, "bold", "weight", PANGO_WEIGHT_BOLD,
+				   NULL);
 
-	name = "IPv6";
-	desc = (gchar *)Q_("IPv6|adds support for IPv6 addresses, the new internet "
-			   "addressing protocol");
+	stock_pixbuf_gdk(window, STOCK_PIXMAP_ACTIVE, &active_pixbuf);
+	stock_pixbuf_gdk(window, STOCK_PIXMAP_INACTIVE, &inactive_pixbuf);
+
 #if INET6
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" IPv6 "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("IPv6|adds support for IPv6 addresses, the new internet "
+			    "addressing protocol\n"), -1);
 
-	name = "iconv";
-	desc = (gchar *)Q_("iconv|allows converting to and from different character sets");
 #if HAVE_ICONV
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" iconv "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("iconv|allows converting to and from different character sets\n"), -1);
 
-	name = "compface";
-	desc = (gchar *)Q_("compface|adds support for the X-Face header");
 #if HAVE_LIBCOMPFACE
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" compface "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("compface|adds support for the X-Face header\n"), -1);
 
-	name = "OpenSSL";
-	desc = (gchar *)Q_("OpenSSL|adds support for encrypted connections to servers");
 #if USE_OPENSSL
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" OpenSSL "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("OpenSSL|adds support for encrypted connections to servers\n"), -1);
 
-	name = "LDAP";
-	desc = (gchar *)Q_("LDAP|adds support for LDAP shared addressbooks");
 #if USE_LDAP
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" LDAP "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("LDAP|adds support for LDAP shared addressbooks\n"), -1);
 
-	name = "JPilot";
-	desc = (gchar *)Q_("JPilot|adds support for PalmOS addressbooks");
 #if USE_JPILOT
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" JPilot "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("JPilot|adds support for PalmOS addressbooks\n"), -1);
 
-	name = "GNU/aspell";
-	desc = (gchar *)Q_("GNU/aspell|adds support for spell checking");
 #if USE_ASPELL
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GNU/aspell "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("GNU/aspell|adds support for spell checking\n"), -1);
 
-	name = "libetpan";
-	desc = (gchar *)Q_("libetpan|adds support for IMAP servers");
 #if HAVE_LIBETPAN
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libetpan "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("libetpan|adds support for IMAP servers\n"), -1);
 
-	name = "libgnomeprint";
-	desc = (gchar *)Q_("libgnomeprint|adds support for a complete print dialog");
 #if USE_GNOMEPRINT
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libgnomeprint "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("libgnomeprint|adds support for a complete print dialog\n"), -1);
 
-	name = "libSM";
-	desc = (gchar *)Q_("libSM|adds support for session handling");
 #if HAVE_LIBSM
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_ACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
-	ADD_FEATURES_HBOX(vbox, stock_pixmap_widget(window, STOCK_PIXMAP_INACTIVE), name, desc);
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libSM "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("libSM|adds support for session handling\n"), -1);
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 				 scrolledwin,
@@ -619,7 +622,6 @@ static void about_create(void)
 
 	gtk_widget_show_all(window);
 }
-#undef ADD_FEATURES_HBOX
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event)
 {

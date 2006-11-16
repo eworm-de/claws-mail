@@ -1,3 +1,10 @@
+2006-11-16 [paul]	2.6.0cvs51
+
+	* src/gtk/about.c
+		move the tech info from the upper panel
+		to the Info tab
+		use a gtk_text_view for the features tab
+
 2006-11-16 [paul]	2.6.0cvs50
 
 	* po/Makevars
