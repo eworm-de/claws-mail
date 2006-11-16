@@ -1,3 +1,20 @@
+2006-11-16 [paul]	2.6.0cvs50
+
+	* po/Makevars
+		update my email address
+	* src/addressbook.c
+	* src/compose.c
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/summaryview.c
+	* src/plugins/trayicon/trayicon.c
+		don't offer simple menu separators
+		for translation
+	* src/folderview.c
+		add separator between 'mark all read'
+		and 'search folder'
+
 2006-11-15 [wwp]	2.6.0cvs49
 
 	* src/gtk/authors.h

@@ -56,14 +56,14 @@ static GtkItemFactoryEntry imap_popup_entries[] =
 	{N_("/_Rename folder..."),	 NULL, rename_folder_cb, 0, NULL},
 	{N_("/M_ove folder..."),	 NULL, move_folder_cb,   0, NULL},
 	{N_("/_Delete folder..."),	 NULL, delete_folder_cb, 0, NULL},
-	{N_("/---"),			 NULL, NULL,             0, "<Separator>"},
+	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/Synchronise"),		 NULL, sync_cb,      	0, NULL},
 	{N_("/Down_load messages"),	 NULL, download_cb,      0, NULL},
-	{N_("/---"),			 NULL, NULL,             0, "<Separator>"},
+	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/_Check for new messages"), NULL, update_tree_cb,   0, NULL},
 	{N_("/C_heck for new folders"),	 NULL, update_tree_cb,   1, NULL},
 	{N_("/R_ebuild folder tree"),	 NULL, update_tree_cb,   2, NULL},
-	{N_("/---"),			 NULL, NULL, 		 0, "<Separator>"},
+	{"/---",			 NULL, NULL, 		 0, "<Separator>"},
 };
 
 static void set_sensitivity(GtkItemFactory *factory, FolderItem *item);

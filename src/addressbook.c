@@ -458,11 +458,11 @@ static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
 {
 	{N_("/_Edit"),		NULL, addressbook_treenode_edit_cb,   0, NULL},
 	{N_("/_Delete"),	NULL, addressbook_treenode_delete_cb, 0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/New _Book"),	NULL, addressbook_new_book_cb,      0, NULL},
 	{N_("/New _Folder"),	NULL, addressbook_new_folder_cb,      0, NULL},
 	{N_("/New _Group"),	NULL, addressbook_new_group_cb,      0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/C_ut"),		NULL, addressbook_treenode_cut_cb,    0, NULL},
 	{N_("/_Copy"),		NULL, addressbook_treenode_copy_cb,   0, NULL},
 	{N_("/_Paste"),		NULL, addressbook_treenode_paste_cb,  0, NULL}
@@ -471,17 +471,17 @@ static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
 static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 {
 	{N_("/_Select all"),	NULL, addressbook_select_all_cb, 0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit"),		NULL, addressbook_edit_address_cb,   0, NULL},
 	{N_("/_Delete"),	NULL, addressbook_delete_address_cb, 0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/New _Address"),	NULL, addressbook_new_address_cb,    0, NULL},
 	{N_("/New _Group"),	NULL, addressbook_new_group_cb,      0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/C_ut"),		NULL, addressbook_clip_cut_cb,       0, NULL},
 	{N_("/_Copy"),		NULL, addressbook_clip_copy_cb,      0, NULL},
 	{N_("/_Paste"),		NULL, addressbook_clip_paste_cb,     0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 /*	{N_("/Pa_ste Address"),	NULL, addressbook_clip_paste_address_cb, 0, NULL},*/
 	{N_("/_Mail To"),	NULL, addressbook_mail_to_cb,            0, NULL},
 #ifdef USE_LDAP

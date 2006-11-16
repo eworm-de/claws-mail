@@ -51,12 +51,12 @@ static GtkItemFactoryEntry news_popup_entries[] =
 {
 	{N_("/_Subscribe to newsgroup..."),	NULL, subscribe_newsgroup_cb,    0, NULL},
 	{N_("/_Unsubscribe newsgroup"),		NULL, unsubscribe_newsgroup_cb,  0, NULL},
-	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
+	{"/---",				NULL, NULL,                      0, "<Separator>"},
 	{N_("/Synchronise"),			NULL, sync_cb,      	0, NULL},
 	{N_("/Down_load messages"),		NULL, download_cb,               0, NULL},
-	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
+	{"/---",				NULL, NULL,                      0, "<Separator>"},
 	{N_("/_Check for new messages"),	NULL, update_tree_cb,            0, NULL},
-	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
+	{"/---",				NULL, NULL,                      0, "<Separator>"},
 };
 
 static void set_sensitivity(GtkItemFactory *factory, FolderItem *item);

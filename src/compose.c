@@ -521,7 +521,7 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
 	{N_("/_Remove"),	NULL, compose_attach_remove_selected, 0, NULL},
-	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{"/---",		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Properties..."),	NULL, compose_attach_property, 0, NULL}
 };
 
