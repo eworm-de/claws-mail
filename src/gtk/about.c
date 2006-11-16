@@ -110,6 +110,7 @@ static void about_create(void)
 	GdkColor uri_color;
 	GdkPixbuf *active_pixbuf;
 	GdkPixbuf *inactive_pixbuf;
+	static GdkGeometry geometry;
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
 #endif
@@ -119,13 +120,21 @@ static void about_create(void)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-	gtk_widget_set_size_request(window, 450, -1);
+	gtk_widget_set_size_request(window, -1, -1);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	gtk_widget_realize(window);
+
+	if (!geometry.min_width) {
+		geometry.min_width = 420;
+		geometry.min_height = 480;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+
 
 	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
@@ -154,7 +163,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("Copyright (C) 1999-2006\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		(_("Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
 	gtk_misc_set_padding(GTK_MISC(label), 0, 12);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);

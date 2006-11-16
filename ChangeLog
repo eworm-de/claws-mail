@@ -1,3 +1,9 @@
+2006-11-16 [paul]	2.6.0cvs53
+
+	* src/gtk/about.c
+		set a minimum size for the window, allow
+		it to automatically expand as necessary
+
 2006-11-16 [wwp]	2.6.0cvs52
 
 	* src/gtk/about.c

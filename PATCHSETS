@@ -2077,3 +2077,4 @@
 ( cvs diff -u -r 1.1.4.5 -r 1.1.4.6 po/Makevars;  cvs diff -u -r 1.60.2.68 -r 1.60.2.69 src/addressbook.c;  cvs diff -u -r 1.382.2.331 -r 1.382.2.332 src/compose.c;  cvs diff -u -r 1.207.2.133 -r 1.207.2.134 src/folderview.c;  cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/imap_gtk.c;  cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/mh_gtk.c;  cvs diff -u -r 1.2.2.18 -r 1.2.2.19 src/news_gtk.c;  cvs diff -u -r 1.395.2.265 -r 1.395.2.266 src/summaryview.c;  cvs diff -u -r 1.14.2.43 -r 1.14.2.44 src/plugins/trayicon/trayicon.c;  ) > 2.6.0cvs50.patchset
 ( cvs diff -u -r 1.4.2.39 -r 1.4.2.40 src/gtk/about.c;  ) > 2.6.0cvs51.patchset
 ( cvs diff -u -r 1.4.2.40 -r 1.4.2.41 src/gtk/about.c;  ) > 2.6.0cvs52.patchset
+( cvs diff -u -r 1.4.2.41 -r 1.4.2.42 src/gtk/about.c;  ) > 2.6.0cvs53.patchset
