@@ -1,3 +1,9 @@
+2006-11-17 [paul]	2.6.0cvs54
+
+	* src/gtk/about.c
+		more reworking of the GUI
+		Patch by Fabien Vantard
+
 2006-11-16 [paul]	2.6.0cvs53
 
 	* src/gtk/about.c

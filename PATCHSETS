@@ -2078,3 +2078,4 @@
 ( cvs diff -u -r 1.4.2.39 -r 1.4.2.40 src/gtk/about.c;  ) > 2.6.0cvs51.patchset
 ( cvs diff -u -r 1.4.2.40 -r 1.4.2.41 src/gtk/about.c;  ) > 2.6.0cvs52.patchset
 ( cvs diff -u -r 1.4.2.41 -r 1.4.2.42 src/gtk/about.c;  ) > 2.6.0cvs53.patchset
+( cvs diff -u -r 1.4.2.42 -r 1.4.2.43 src/gtk/about.c;  ) > 2.6.0cvs54.patchset

@@ -99,7 +99,7 @@ static void about_create(void)
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
 	GtkWidget *notebook;
-	GtkWidget *hbox;
+	GtkWidget *table;
 	char *markup;
 	GtkWidget *text;
 	GtkWidget *confirm_area;
@@ -128,26 +128,32 @@ static void about_create(void)
 	gtk_widget_realize(window);
 
 	if (!geometry.min_width) {
-		geometry.min_width = 420;
-		geometry.min_height = 480;
+		geometry.min_width = 450;
+		geometry.min_height = 500;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 
-
 	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+	table = gtk_table_new (2, 1, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox1), table,
+			FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
 	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
-	gtk_box_pack_start(GTK_BOX(hbox), image, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table), image, 0, 1, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND),
+			(GtkAttachOptions) (0), 0, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
+	vbox2 = gtk_vbox_new (FALSE, 4);
+	gtk_table_attach (GTK_TABLE (table), vbox2, 1, 2, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND),
+			(GtkAttachOptions) (0), 0, 0);
 
 	label = gtk_label_new("");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
@@ -163,9 +169,8 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		(_("Copyright (C) 1999-2006\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
-	gtk_misc_set_padding(GTK_MISC(label), 0, 12);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
