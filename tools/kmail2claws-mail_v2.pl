@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright © 2002 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2002 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by

@@ -114,7 +114,7 @@ Action scripts
 	which you type one of your configured aliases
 
   
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
 --------------------------------------------------------------------------------
 
 Address book conversion
@@ -161,7 +161,7 @@ Address book conversion
   	Your Kmail address book data will now be contained in Claws Mail'
   	address book, under the name 'Kmail Address Book'.
 
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
     
 
 * kmail2claws-mail_v2.pl
@@ -190,7 +190,7 @@ Address book conversion
   	Your Kmail addressbook data will now be contained in Claws Mail'
   	addressbook, under the name 'Kmail address book'.
 
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>  
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 
 * outlook2claws-mail.pl
@@ -356,7 +356,7 @@ Mailbox conversion
 		--dry-run	test mode, nothing is actually written
 		--help		brief usage info
 	
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 * tbird2syl.py
 
@@ -398,7 +398,7 @@ Other tools
 	claws-mail (if not already launched) and open a new compose window
 	with the PDF attached.
   
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 
 * filter_conv_new.pl
@@ -421,7 +421,7 @@ Other tools
   REQUIREMENTS
 	XML::SimpleObject
 
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
   
 
 * filter_conv.pl
@@ -440,7 +440,7 @@ Other tools
   	That's it, the new filtering system is now implemented with your
   	previous rules applied.
 
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
   
 
 * nautilus2claws-mail.sh
@@ -492,7 +492,7 @@ Other tools
   	or select it by clicking on the '...' button.
 
 
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 
 * update-po

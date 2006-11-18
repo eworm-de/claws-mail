@@ -14,7 +14,7 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
-#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * 2003-10-01: add --debug and --dry-run options
 #  * 2003-09-30: updated/improved by Matthias Förste <itsjustme@users.sourceforge.net>

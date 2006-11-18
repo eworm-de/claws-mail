@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 
-#  * Copyright 2002 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2002 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * Reimplemented by Torsten Schoenfeld <kaffeetisch@web.de>
 #  *

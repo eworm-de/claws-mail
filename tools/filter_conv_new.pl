@@ -17,7 +17,7 @@ use XML::SimpleObject;
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
-#  * Copyright 2006 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2006 Paul Mangan <paul@claws-mail.org>
 #  *
 
 #

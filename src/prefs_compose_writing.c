@@ -222,7 +222,8 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_compose_with_format, _("Use format when composing new messages"));
+	PACK_CHECK_BUTTON (vbox1, checkbtn_compose_with_format, 
+			   _("Use format when composing new messages"));
 
 	PACK_FRAME (vbox1, frame_format, _("New message format"));
 
@@ -274,6 +275,8 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
 			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(window));
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_compose_with_format, frame_format);
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 

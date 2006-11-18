@@ -40,7 +40,7 @@
 	'cs.po' => 'Tim <timbrain@post.cz>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
-	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
+	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Fabien Vantard <fzzzzz@gmail.com>',

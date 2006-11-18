@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * This file Copyright (C) 2005 Paul Mangan <claws@thewildbeast.co.uk>
+ * This file Copyright (C) 2005 Paul Mangan <paul@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify

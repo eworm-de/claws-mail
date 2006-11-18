@@ -1,12 +1,12 @@
 static char *TEAM_LIST[] = {
 "Holger Berndt <berndth@users.sf.net>",
-"Tristan Chabredier <wwp@users.sf.net>",
+"Tristan Chabredier <wwp@claws-mail.org>",
 "Hoà Viêt Dinh <hoa@users.sf.net>",
 "Werner Koch <wk@gnupg.org>",
 "Darko Koruga <darko@users.sf.net>",
 "Ricardo Mones Lastra <ricardo@mones.org>",
 "Colin Leroy <colin@colino.net>",
-"Paul Mangan <claws@thewildbeast.co.uk>",
+"Paul Mangan <paul@claws-mail.org>",
 "Martin Schaaf <mascha1@users.sf.net>",
 NULL
 };
@@ -32,7 +32,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
 "[cs] Tim <timbrain@post.cz>",
 "[de] Stephan Sachse <white@dev-zero.com>",
-"[en_GB] Paul Mangan <claws@thewildbeast.co.uk>",
+"[en_GB] Paul Mangan <paul@claws-mail.org>",
 "[el] Stavros Giannouris <stavrosg2002@freemail.gr>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",
@@ -56,12 +56,12 @@ NULL
 };
 
 static char *DOC_TEAM_LIST[] = {
-"[en] Tristan Chabredier <wwp@users.sf.net>",
+"[en] Tristan Chabredier <wwp@claws-mail.org>",
 "     Ricardo Mones Lastra <ricardo@mones.org>",
 "     Colin Leroy <colin@colino.net>",
-"     Paul Mangan <claws@thewildbeast.co.uk>",
+"     Paul Mangan <paul@claws-mail.org>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
-"[fr] Tristan Chabredier <wwp@users.sf.net>",
+"[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "     Colin Leroy <colin@colino.net>",
 "[pl] Pawel Pekala <c0rn@gazeta.pl>",
 NULL

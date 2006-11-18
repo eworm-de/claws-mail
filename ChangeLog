@@ -1,3 +1,37 @@
+2006-11-18 [paul]	2.6.0cvs55
+
+	* AUTHORS
+	* README
+	* debian/copyright
+	* manual/ack.xml
+	* manual/es/ack.xml
+	* manual/fr/ack.xml
+	* manual/pl/ack.xml
+	* src/gtk/authors.h
+	* src/gtk/icon_legend.c
+	* src/gtk/icon_legend.h
+	* tools/OOo2claws-mail.pl
+	* tools/README
+	* tools/acroread2claws-mail.pl
+	* tools/claws.i18n.status.pl
+	* tools/filter_conv.pl
+	* tools/filter_conv_new.pl
+	* tools/freshmeat_search.pl
+	* tools/google_search.pl
+	* tools/kmail2claws-mail.pl
+	* tools/kmail2claws-mail_v2.pl
+	* tools/maildir2claws-mail.pl
+	* tools/make.themes.project
+	* tools/multiwebsearch.pl
+	* tools/outlook2claws-mail.pl
+	* tools/tb2claws-mail
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/claws-mail-kdeservicemenu.pl
+		update mine and wwp's email addresses in
+		several places
+	* src/prefs_compose_writing.c
+		set sensitivity on 'new message format' frame
+
 2006-11-17 [paul]	2.6.0cvs54
 
 	* src/gtk/about.c

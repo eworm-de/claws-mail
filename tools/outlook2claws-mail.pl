@@ -21,7 +21,7 @@
 # 
 # This script is based on:
 # 	out2syl.sh by Rafael Lossurdo <mugas@via-rs.net>
-# 	kmail2claws-mail.pl by Paul Mangan <claws@thewildbeast.co.uk>
+# 	kmail2claws-mail.pl by Paul Mangan <paul@claws-mail.org>
 #
 # See README file for details and usage.
 #
