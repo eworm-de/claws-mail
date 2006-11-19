@@ -37,6 +37,7 @@
 	* tools/kdeservicemenu/claws-mail-kdeservicemenu.pl
 		update mine and wwp's email addresses in
 		several places
+		Patch by wwp
 	* src/prefs_compose_writing.c
 		set sensitivity on 'new message format' frame
 
