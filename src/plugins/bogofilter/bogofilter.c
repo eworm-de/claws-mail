@@ -722,7 +722,7 @@ const gchar *plugin_desc(void)
 	         "\n"
 		 "Before Bogofilter can recognize spam messages, you have to "
 		 "train it by marking a few hundred spam and ham messages. "
-		 "Use \"/Mark/Mark as Spam\" and \"/Mark/Mark as ham\" to "
+		 "Use \"/Mark/Mark as spam\" and \"/Mark/Mark as ham\" to "
 		 "train Bogofilter.\n"
 	         "\n"
 	         "When a message is identified as spam it can be deleted or "

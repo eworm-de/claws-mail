@@ -1,3 +1,11 @@
+2006-11-19 [paul]	2.6.0cvs56
+
+	* src/summaryview.c
+		obey always_show_msg option when
+		marking as spam
+	* src/plugins/bogofilter/bogofilter.c
+		fix typo
+
 2006-11-18 [paul]	2.6.0cvs55
 
 	* AUTHORS
