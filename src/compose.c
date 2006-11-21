@@ -973,10 +973,11 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
 	if (item && item->prefs && item->prefs->enable_default_dictionary &&
-	    compose->gtkaspell) 
+	    compose->gtkaspell) {
 		gtkaspell_change_dict(compose->gtkaspell, 
 		    item->prefs->default_dictionary);
-	compose_spell_menu_changed(compose);
+		compose_spell_menu_changed(compose);
+	}
 #endif
 
 	if (account->auto_sig)
@@ -1410,9 +1411,11 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (msginfo->folder && msginfo->folder->prefs && 
 	    msginfo->folder->prefs && 
 	    msginfo->folder->prefs->enable_default_dictionary &&
-	    compose->gtkaspell)
+	    compose->gtkaspell) {
 		gtkaspell_change_dict(compose->gtkaspell, 
 		    msginfo->folder->prefs->default_dictionary);
+		compose_spell_menu_changed(compose);
+	}
 #endif
 
 	if (quote) {

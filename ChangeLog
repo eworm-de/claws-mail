@@ -1,3 +1,10 @@
+2006-11-21 [wwp]	2.6.0cvs57
+
+	* src/compose.c
+		fix spelling menu when replying (same as 2.3.1cvs39):
+		discrepancy between context menu and top menu when
+		folder's dictionary isn't the default one.
+
 2006-11-19 [paul]	2.6.0cvs56
 
 	* src/summaryview.c
