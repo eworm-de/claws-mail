@@ -1,3 +1,10 @@
+2006-11-24 [paul]	2.6.0cvs5-stable
+
+	* src/folderview.c
+		backported from 2.6.0cvs33 (gtk2 branch),
+		Forbid drag and drop from/to different
+		folders of type F_UNKNOWN
+
 2006-11-24 [paul]	2.6.0cvs4-stable
 
 	* src/undo.c

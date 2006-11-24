@@ -2029,3 +2029,4 @@
 ( cvs diff -u -r 1.1.4.55 -r 1.1.4.56 src/etpan/imap-thread.c;  ) > 2.6.0cvs2.patchset
 ( cvs diff -u -r 1.1.4.55.2.1 -r 1.1.4.55.2.2 src/etpan/imap-thread.c;  ) > 2.6.0cvs3.patchset
 ( cvs diff -u -r 1.13.2.10 -r 1.13.2.11 src/undo.c;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs4.patchset
+( cvs diff -u -r 1.207.2.130 -r 1.207.2.131 src/folderview.c;  ) > 2.6.0cvs5.patchset
