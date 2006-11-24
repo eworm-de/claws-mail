@@ -222,7 +222,6 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	PrivacyDataPGP *data = NULL;
 	gchar *textdata = NULL, *tmp = NULL;
 	gpgme_data_t plain = NULL, cipher = NULL;
-	gpgme_ctx_t ctx;
 	gpgme_error_t err;
 
 	g_return_val_if_fail(mimeinfo != NULL, 0);
@@ -263,24 +262,22 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	textdata = g_strdup(tmp);
 	g_free(tmp);
 	
-	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		return 0;
 	}
-	gpgme_set_textmode(ctx, 1);
-	gpgme_set_armor(ctx, 1);
+	gpgme_set_textmode(data->ctx, 1);
+	gpgme_set_armor(data->ctx, 1);
 	
-	gpgme_data_new_from_mem(&plain, textdata, strlen(textdata), 1);
+	gpgme_data_new_from_mem(&plain, textdata, (size_t)strlen(textdata), 1);
 	gpgme_data_new(&cipher);
 
-	data->sigstatus = sgpgme_verify_signature(ctx, plain, NULL, cipher);
+	data->sigstatus = sgpgme_verify_signature(data->ctx, plain, NULL, cipher);
 	
 	gpgme_data_release(plain);
 	gpgme_data_release(cipher);
 	
-	gpgme_release(ctx);
-
 	g_free(textdata);
 	
 	return 0;
@@ -398,7 +395,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	}
 
 	debug_print("decrypting '%s'\n", textdata);
-	gpgme_data_new_from_mem(&cipher, textdata, strlen(textdata), 1);
+	gpgme_data_new_from_mem(&cipher, textdata, (size_t)strlen(textdata), 1);
 
 	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);
 	if (sigstat && !sigstat->signatures)
@@ -519,7 +516,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	
 	fclose(fp);
 		
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
@@ -687,7 +684,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	fclose(fp);
 
 	/* encrypt data */
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));

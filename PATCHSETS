@@ -2031,3 +2031,4 @@
 ( cvs diff -u -r 1.13.2.10 -r 1.13.2.11 src/undo.c;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs4.patchset
 ( cvs diff -u -r 1.207.2.130 -r 1.207.2.131 src/folderview.c;  ) > 2.6.0cvs5.patchset
 ( cvs diff -u -r 1.382.2.321.2.1 -r 1.382.2.321.2.2 src/compose.c;  ) > 2.6.0cvs6.patchset
+( cvs diff -u -r 1.58.2.27 -r 1.58.2.28 po/de.po;  cvs diff -u -r 1.20.2.9 -r 1.20.2.10 src/gtk/Makefile.am;  cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/plugins/pgpcore/sgpgme.c;  cvs diff -u -r 1.1.2.17.4.1 -r 1.1.2.17.4.2 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.38.4.1 -r 1.1.2.38.4.2 src/plugins/pgpmime/pgpmime.c;  ) > 2.6.0cvs7.patchset
