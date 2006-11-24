@@ -6422,8 +6422,7 @@ static void compose_reply_change_mode(gpointer data,
 	gboolean was_modified = compose->modified;
 
 	gboolean all = FALSE, ml = FALSE, sender = FALSE, followup = FALSE;
-	if (compose->mode != COMPOSE_REPLY)
-		return;
+	
 	g_return_if_fail(compose->replyinfo != NULL);
 	
 	if (action == COMPOSE_REPLY && prefs_common.default_reply_list)

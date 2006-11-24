@@ -1,3 +1,9 @@
+2006-11-24 [paul]	2.6.0cvs9-stable
+
+	* src/compose.c
+		backported fix from 2.6.0cvs48:
+		Fix Options/Reply mode after draft save
+
 2006-11-24 [paul]	2.6.0cvs8-stable
 
 	* src/ssl_manager.c
