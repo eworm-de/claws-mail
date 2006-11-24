@@ -1,3 +1,9 @@
+2006-11-24 [paul]	2.6.0cvs8-stable
+
+	* src/ssl_manager.c
+		backport fix from 2.6.0cvs44:
+		Fix possible infinite loop
+
 2006-11-24 [paul]	2.6.0cvs7-stable
 
 	* po/de.po
