@@ -1,8 +1,8 @@
 The code in this distribution is Copyright 1999-2006 by Hiroyuki Yamamoto
-and the Sylpheed-Claws team.
+and the Claws Mail team.
 
-As a special exception, the Sylpheed-Claws team gives permission to link 
-the code of its release of Sylpheed-Claws with the OpenSSL project's 
+As a special exception, the Claws Mail team gives permission to link 
+the code of its release of Claws Mail with the OpenSSL project's 
 "OpenSSL" library (or with modified versions of it that use the same 
 license as the "OpenSSL" library), and distribute the linked executables. 
 You must obey the GNU General Public License in all respects for all of the 
@@ -10,13 +10,13 @@ code used other than "OpenSSL". If you modify this file, you may extend this
 exception to your version of the file, but you are not obliged to do so. If 
 you do not wish to do so, delete this exception statement from your version. 
 
-As a special exception, the Sylpheed-Claws team gives permission to link 
-the code of its release of Sylpheed-Claws with the four Spamassassin files 
+As a special exception, the Claws Mail team gives permission to link 
+the code of its release of Claws Mail with the four Spamassassin files 
 src/plugins/spamassassin/libspamc.c, src/plugins/spamassassin/libspamc.h,
 src/plugins/spamassassin/utils.c and src/plugins/spamassassin/utils.h
 included in the releases, which are licenced under the Apache License version
-2.0. The Sylpheed-Claws team allow the compilation and distribution of 
-Sylpheed-Claws with these files without invoking GPL clause 2(b). 
+2.0. The Claws Mail team allow the compilation and distribution of 
+Claws Mail with these files without invoking GPL clause 2(b). 
 
 -------------------------------------------------------------------------------
 		    GNU GENERAL PUBLIC LICENSE

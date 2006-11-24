@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-2"?>
 <section id="ch_plugins">
-<title>Rozszerzanie Sylpheed-Claws</title>
+<title>Rozszerzanie Claws Mail</title>
 
   <section id="plugins_default">
     <title>Udostępnione wtyczki</title>
     <para>
-	Możliwości Sylpheed-Claws są rozszerzane poprzez wtyczki. Wtyczki dostarczane z nim są opisane poniżej, wszystkie one są kompilowane automatycznie jeśli wymagane biblioteki są dostępne.
+	Możliwości Claws Mail są rozszerzane poprzez wtyczki. Wtyczki dostarczane z nim są opisane poniżej, wszystkie one są kompilowane automatycznie jeśli wymagane biblioteki są dostępne.
     </para><para>
-	Wtyczki są instalowane w $PREFIX/lib/sylpheed-claws/plugins/ i mają rozszerzenie <quote>.so</quote>. Aby załadować wtyczkę wejdź w menu <quote>Konfiguracja/Wtyczki</quote> i kliknij na przycisk <quote>Załaduj wtyczkę</quote>. Wybierz wtyczkę, którą chcesz użyć i naciśnij OK.
+	Wtyczki są instalowane w $PREFIX/lib/claws-mail/plugins/ i mają rozszerzenie <quote>.so</quote>. Aby załadować wtyczkę wejdź w menu <quote>Konfiguracja/Wtyczki</quote> i kliknij na przycisk <quote>Załaduj wtyczkę</quote>. Wybierz wtyczkę, którą chcesz użyć i naciśnij OK.
     </para><para>
 	Jeśli nie możesz znaleźć wtyczki, której poszukujesz jest całkiem możliwe, że twoja dystrybucja GNU/Linux oferuje ją jako oddzielną paczkę. W tym przypadku poszukaj wtyczki w swoim menadżerze paczek.
     </para>
@@ -39,7 +39,7 @@
   <section id="plugins_external">
     <title>Więcej wtyczek</title>
     <para>
-	Stworzono również inne wtyczki, lecz są one dostępne oddzielnie do pobrania. W czasie pisania tego podręcznika użytkownika dostępne są następujące wtyczki na stronie <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>:
+	Stworzono również inne wtyczki, lecz są one dostępne oddzielnie do pobrania. W czasie pisania tego podręcznika użytkownika dostępne są następujące wtyczki na stronie <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>:
     </para>
     <variablelist>
     <varlistentry><term>Acpi Notifier</term>
@@ -49,13 +49,13 @@
 	    <listitem><para>Ta wtyczka usuwa załączniki z twoich wiadomości.</para></listitem>
     </varlistentry>
     <varlistentry><term>CacheSaver</term>
-	    <listitem><para>Zapisuje zawartość pamięci podręcznej co 60 sekund (albo co zdefiniowany przez użytkownika interwał). Pomaga unikać utraty metadanych wiadomości podczas awarii twojego komputera lub błędu (<emphasis>Sylpheed-Claws!</emphasis>).</para></listitem>
+	    <listitem><para>Zapisuje zawartość pamięci podręcznej co 60 sekund (albo co zdefiniowany przez użytkownika interwał). Pomaga unikać utraty metadanych wiadomości podczas awarii twojego komputera lub błędu (<emphasis>Claws Mail!</emphasis>).</para></listitem>
     </varlistentry>
     <varlistentry><term>etpan! Privacy</term>
 	    <listitem><para>Obsługuje weryfikację i deszyfrację wiadomości w formatach S/MIME, OpenPGP i ascii-armored PGP. Nie obsługuje haseł.</para></listitem>
     </varlistentry>
     <varlistentry><term>Fetchinfo</term>
-	    <listitem><para>Dodaje możliwość dodawania nagłówków do emaili zawierających informacje dotyczące pobierania jak UIDL, konto Sylpheed-Claws, serwer POP, nazwę użytkownika i czas pobrania.</para></listitem>
+	    <listitem><para>Dodaje możliwość dodawania nagłówków do emaili zawierających informacje dotyczące pobierania jak UIDL, konto Claws Mail, serwer POP, nazwę użytkownika i czas pobrania.</para></listitem>
     </varlistentry>
     <varlistentry><term>Przeglądarka GtkHtml</term>
 	    <listitem><para>Podobnie jak Dillo, umożliwia wyświetlanie wiadomości w formacie HTML, lecz w lepszej formie(używa antyaliasingu czcionek).</para></listitem>
@@ -67,23 +67,23 @@
 	    <listitem><para>Obsługuje skrzynki pocztowe w formacie mbox. </para></listitem>
     </varlistentry>
     <varlistentry><term>Perl</term>
-	    <listitem><para>Rozszerza możliwości filtrowania poczty Sylpheed-Claws. Oferuje interfejs Perla do mechanizmu filtrującego Sylpheed-Claws, pozwalając na użycie pełni możliwości Perla filtrach email.</para></listitem>
+	    <listitem><para>Rozszerza możliwości filtrowania poczty Claws Mail. Oferuje interfejs Perla do mechanizmu filtrującego Claws Mail, pozwalając na użycie pełni możliwości Perla filtrach email.</para></listitem>
     </varlistentry>
     <varlistentry><term>S/MIME</term>
 	    <listitem><para>Obsługuje wiadomości w formacie S/MIME, podpisane i/lub zaszyfrowane. Umożliwia deszyfrację wiadomości, weryfikację podpisów i szyfrowanie własnych emaili. Używa GnuPG/GPGME i GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.</para></listitem>
     </varlistentry>
     <varlistentry><term>SynCE</term>
-	    <listitem><para>Pomaga w utrzymywaniu książki w synchronizacji adresowej urządzeń Windows CE (Pocket PC/ iPAQ, Smartphone itp) z książką adresową Sylpheed-Claws, jeśli chodzi o adresy email.</para></listitem>
+	    <listitem><para>Pomaga w utrzymywaniu książki w synchronizacji adresowej urządzeń Windows CE (Pocket PC/ iPAQ, Smartphone itp) z książką adresową Claws Mail, jeśli chodzi o adresy email.</para></listitem>
     </varlistentry>
     <varlistentry><term>vCalendar</term>
 	    <listitem><para>Obsługuje wiadomości formatu vCalendar tworzone przez programy takie jak  Evolution czy Outlook oraz subskrypcję Webcal.</para></listitem>
     </varlistentry>
     <varlistentry><term>RSSyl</term>
-	    <listitem><para>Pozwala na czytanie twoich ulubionych wiadomości RSS w Sylpheed-Claws. Obsługuje kanały w formacie RSS 1.0, 2.0 i Atom.</para></listitem>
+	    <listitem><para>Pozwala na czytanie twoich ulubionych wiadomości RSS w Claws Mail. Obsługuje kanały w formacie RSS 1.0, 2.0 i Atom.</para></listitem>
     </varlistentry>
     </variablelist>
     <para>
-	Jeśli jesteś programistą napisanie wtyczki, żeby rozszerzyć możliwości Sylpheed-Claws jest chyba najłatwiejszym rozwiązaniem. Udostępnimy ci miejsce na serwerze dla twojego kodu źródłowego oraz bardzo chętnie odpowiemy na twoje pytania za pośrednictwem listy dyskusyjnej lub kanału IRC, #sylpheed na IRCnet.
+	Jeśli jesteś programistą napisanie wtyczki, żeby rozszerzyć możliwości Claws Mail jest chyba najłatwiejszym rozwiązaniem. Udostępnimy ci miejsce na serwerze dla twojego kodu źródłowego oraz bardzo chętnie odpowiemy na twoje pytania za pośrednictwem listy dyskusyjnej lub kanału IRC, #sylpheed na IRCnet.
     </para>
   </section>
   <section id="plugins_network">
@@ -92,7 +92,7 @@
 	Niektóre z wtyczek, np. RSSyl, vCalendar i przeglądarka GtkHtml wymagają dostępu do Internetu aby normlanie funkcjonować (ściąganie wiadomości w przypadku RSSyl czy vCalendar oraz ściąganie plików graficznych w przypadku przeglądarki GtkHtml). Te wtyczki używają biblioteki Curl. Dlatego też jeśli twój dostęp do Internetu odbywa się za pomocą proxy, będziesz zmuszony poinstruować o tym bibliotekę libCurl. Możesz to zrobić ustawiając zmienną systemową <emphasis>http_proxy</emphasis>. Np, <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> poinformuje libCurl by połączyć się z portem 8080 serwera myproxy.example.com, używając nazwy użytkownika <quote>user</quote> i hasła <quote>passwd</quote> aby połączyć się z siecią Internet.
     </para>
     <para>
-	Możesz ustawić tą zmienną przed uruchomieniem Sylpheed-Claws, np. tak <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080 sylpheed-claws</emphasis>, albo ustwić w swoim pliku ~/.bashrc dodając następującą linię: <emphasis>export http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> (będziesz musiał połączyć się ponownie, żeby to zadziałało).
+	Możesz ustawić tą zmienną przed uruchomieniem Claws Mail, np. tak <emphasis>http_proxy=http://user:passwd@myproxy.example.com:8080 claws-mail</emphasis>, albo ustwić w swoim pliku ~/.bashrc dodając następującą linię: <emphasis>export http_proxy=http://user:passwd@myproxy.example.com:8080</emphasis> (będziesz musiał połączyć się ponownie, żeby to zadziałało).
     </para>
   </section>
 </section>

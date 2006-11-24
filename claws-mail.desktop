@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Sylpheed-Claws
-Exec=sylpheed-claws
-Icon=sylpheed-claws.png
-Info="Sylpheed-Claws"
+Name=Claws Mail
+Exec=claws-mail
+Icon=claws-mail.png
+Info="Claws Mail"
 Categories=GTK;Network;Email;
 Comment="Gtk+ based Mail Client"
 Terminal=false

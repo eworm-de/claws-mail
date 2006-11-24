@@ -10,7 +10,7 @@
 	automáticamente si las librerías necesarias están disponibles.
     </para><para>
 	Los módulos se instalan en <filename class="directory"
-	>$PREFIX/lib/sylpheed-claws/plugins/</filename> y 
+	>$PREFIX/lib/claws-mail/plugins/</filename> y 
 	tienen el sufijo <quote>.so</quote>. Para cargar un módulo vaya
 	al menú <quote>Configuración/Módulos</quote> y pulse el botón
 	<quote>Cargar módulo</quote>. Seleccione el módulo que desee cargar y
@@ -142,8 +142,8 @@
     <para>
 	También se han escrito otros módulos, que están disponibles para
 	descargar aparte. Mientras se escribe esto hay cierto número de módulos
-	dispononibles en <ulink url="http://www.sylpheed-claws.net/plugins.php"
-	>http://www.sylpheed-claws.net/plugins.php</ulink>:
+	dispononibles en <ulink url="http://www.claws-mail.org/plugins.php"
+	>http://www.claws-mail.org/plugins.php</ulink>:
     </para>
     <variablelist>
       <varlistentry>
@@ -278,7 +278,7 @@
 	capacidades de &SC; será probablemente la mejor solución y la más 
 	fácil. Nosotros proporcionaremos almacenamiento para su código y
 	estaremos encantados de responder a sus preguntas en la lista de
-	correo o en los canales de IRC, <literal>#sylpheed-claws</literal> en 
+	correo o en los canales de IRC, <literal>#claws-mail</literal> en 
 	Freenode o IRCnet.
     </para>
   </section>
@@ -300,7 +300,7 @@
 	Puede establecer esta variable antes de iniciar &SC;, usando por
 	por ejemplo la orden 
 	<command>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080 
-	sylpheed-claws</command>, o establecerla en su fichero 
+	claws-mail</command>, o establecerla en su fichero 
 	<filename>~/.bashrc</filename> (o el equivalente de su shell) añadiendo
 	la línea<footnote><para>Otros shells pueden tener diferentes sintaxis,
 	compruebe la página del manual de su shell.</para></footnote>:

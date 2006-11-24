@@ -1,0 +1,6 @@
+?package(claws-mail):\
+needs="X11"\
+section="Apps/Net"\
+title="Claws Mail"\
+hints="GTK+2.0-based Mail Client"\
+command="/usr/bin/claws-mail"

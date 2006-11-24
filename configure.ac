@@ -3,7 +3,7 @@ AC_PREREQ(2.60)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
 
-PACKAGE=sylpheed-claws
+PACKAGE=claws-mail
 
 dnl version number
 MAJOR_VERSION=2
@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=11
+EXTRA_VERSION=12
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=-stable
 
@@ -164,7 +164,7 @@ LIBS=$syl_save_LIBS
 
 dnl for gettext
 ALL_LINGUAS="bg ca cs de el en_GB es fi fr hr hu it ja ko nb nl pl pt_BR ru sk sr sv zh_CN zh_TW"
-GETTEXT_PACKAGE=sylpheed-claws
+GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 
@@ -387,10 +387,10 @@ AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode pa
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
 
 dnl RC dir (will be default at a certain point in time)
-AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed-claws)],
-	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed-claws")
+AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .claws-mail)],
+	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".claws-mail")
 if test x"$ac_cv_with_config_dir" = x""; then
-	ac_cv_with_config_dir=".sylpheed-claws"
+	ac_cv_with_config_dir=".claws-mail"
 fi 
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
@@ -886,7 +886,7 @@ manual/es/dist/pdf/Makefile
 manual/es/dist/ps/Makefile
 manual/es/dist/html/Makefile
 manual/es/dist/txt/Makefile
-sylpheed-claws.pc
+claws-mail.pc
 ])
 
 dnl Output the configuration summary

@@ -6326,7 +6326,7 @@
 	* folder.[ch]
 	  folderview.c
 		make collapse state of folders and folder items persistent, i.e.
-		if you collapse a folder tree, the next time sylpheed-claws starts 
+		if you collapse a folder tree, the next time claws-mail starts 
 		up the folder tree remains collapsed.  
 		
 2001-07-10 [christoph]

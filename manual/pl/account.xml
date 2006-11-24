@@ -5,10 +5,10 @@
   <section id="account_basic">
     <title>Podstawowe opcje</title>
     <para>
-    Pierwsza zak³adka ustawieñ konta, Podstawowe zawiera jak sama nazwa wskazuje podstawowe opcje konta. W tej zak³adce mo¿esz podaæ swoje imiê, nazwisko, adres email, organizacjê i podstawowe dane dotycz±ce po³±czenia. Nazwa konta jest tylko nazw±, któr± Sylpheed-Claws bêdzie u¿ywa³ odnosz±c siê do tego konta, np. w ikonce zmiany konta znajduj±cej siê w prawym dolnym rogu g³ównego okna. Informacje o serwerze umo¿liwiaj± ustawienie u¿ywanego do odbierania poczty protoko³u (nie mo¿na go zmieniaæ w ju¿ istniej±cych kontach), nazwy serwera u¿ywanego do odbierania b±d¼ wysy³ania wiadomo¶ci (zazwyczaj pop.dostawca.com i smtp.dostawca.com) oraz twojej nazwy u¿ytkownika na serwerze.
+    Pierwsza zak³adka ustawieñ konta, Podstawowe zawiera jak sama nazwa wskazuje podstawowe opcje konta. W tej zak³adce mo¿esz podaæ swoje imiê, nazwisko, adres email, organizacjê i podstawowe dane dotycz±ce po³±czenia. Nazwa konta jest tylko nazw±, któr± Claws Mail bêdzie u¿ywa³ odnosz±c siê do tego konta, np. w ikonce zmiany konta znajduj±cej siê w prawym dolnym rogu g³ównego okna. Informacje o serwerze umo¿liwiaj± ustawienie u¿ywanego do odbierania poczty protoko³u (nie mo¿na go zmieniaæ w ju¿ istniej±cych kontach), nazwy serwera u¿ywanego do odbierania b±d¼ wysy³ania wiadomo¶ci (zazwyczaj pop.dostawca.com i smtp.dostawca.com) oraz twojej nazwy u¿ytkownika na serwerze.
     </para>
     <para>
-    W zak³adce Odbieranie istnieje mo¿liwo¶æ zmiany domy¶lnych ustawieñ Sylpheed-Claws. Na przyk³ad, zostawianie wiadomo¶ci na serwerze na jaki¶ czas, zaniechanie ¶ci±gania listów o za du¿ej wielko¶ci albo zdecydowanie czy regu³ki filtruj±ce powinny byæ zastosowane w przypadku listów z tego konta. Opcja "Limit ilo¶ci pobieranych danych" zapewnia limitowanie czasu po¶wiêconego na ¶ci±ganie du¿ych wiadomo¶ci. Gdy otrzymasz wiadomo¶æ wiêksz± ni¿ ustalony limit zostanie ona czê¶ciowo ¶ci±gniêta i pó¼niej bêdziesz móg³ zadecydowaæ czy ¶ci±gn±æ j± w ca³o¶ci czy usun±æ z serwera. Ta mo¿liwo¶æ bêdzie przedstawiona podczas przegl±dania poczty.
+    W zak³adce Odbieranie istnieje mo¿liwo¶æ zmiany domy¶lnych ustawieñ Claws Mail. Na przyk³ad, zostawianie wiadomo¶ci na serwerze na jaki¶ czas, zaniechanie ¶ci±gania listów o za du¿ej wielko¶ci albo zdecydowanie czy regu³ki filtruj±ce powinny byæ zastosowane w przypadku listów z tego konta. Opcja "Limit ilo¶ci pobieranych danych" zapewnia limitowanie czasu po¶wiêconego na ¶ci±ganie du¿ych wiadomo¶ci. Gdy otrzymasz wiadomo¶æ wiêksz± ni¿ ustalony limit zostanie ona czê¶ciowo ¶ci±gniêta i pó¼niej bêdziesz móg³ zadecydowaæ czy ¶ci±gn±æ j± w ca³o¶ci czy usun±æ z serwera. Ta mo¿liwo¶æ bêdzie przedstawiona podczas przegl±dania poczty.
     </para>
     <para>
     Zak³adka Wy¶lij zawiera preferencje umo¿liwiaj±ce dodawanie specjalnych nag³ówków pocztowych do wysy³anych wiadomo¶ci, jak X-Face(bu¼ka) oraz informacji autoryzacyjnych potrzebnych do wysy³ania emaili. Zazwyczaj dostawca us³ugi email zezwala swoim u¿ytkownikom na wysy³anie wiadomo¶ci poprzez serwer SMTP bez autentykacji, lecz w niektórych konfiguracjach musisz siê uwierzytelniæ przed wys³aniem wiadomo¶ci. S± trzy mo¿liwo¶ci na wykonanie tego zadania. Gdy jest dostêpna najlepsza jest metoda SMTP AUTH. Je¶li nie jest ona dostêpna u¿ywane jest po³±czenie POP-przed-SMTP, które ³±czy siê do serwera POP(wymaga autentykacji), roz³±cza a nastêpnie wysy³a wiadomo¶æ.
@@ -79,7 +79,7 @@
   <section id="account_multiple">
     <title>Wiele kont</title>
     <para>
-    Mo¿esz w ³atwy sposób stworzyæ wiele kont w Sylpheed-CLaws. Dla kont POP mo¿liwe jest zapisywanie wszystkich wiadomo¶ci z ró¿nych kont w tym samym katalogu(ach) u¿ywaj±c zak³adki Odbieranie. IMAP i grupy dyskusyjne stworz± w³asne skrzynki w drzewie katalogów.
+    Mo¿esz w ³atwy sposób stworzyæ wiele kont w Claws Mail. Dla kont POP mo¿liwe jest zapisywanie wszystkich wiadomo¶ci z ró¿nych kont w tym samym katalogu(ach) u¿ywaj±c zak³adki Odbieranie. IMAP i grupy dyskusyjne stworz± w³asne skrzynki w drzewie katalogów.
     </para>
     <para>
     Mo¿liwy jest wybór, które konta zostan± sprawdzone czy nie ma na nich nowej poczty podczas u¿ycia komendy "Pobierz wszystkie" (albo "Pobierz" na pasku zadañ) zaznaczaj±c odpowiednia opcjê w zak³adce Obieranie lub kolumnê G w oknie z list± kont.

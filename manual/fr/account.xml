@@ -9,7 +9,7 @@
 	comporte des informations de base sur le compte. Dans cet onglet vous
 	pouvez indiquer votre nom, votre adresse de messagerie, votre société et
 	des informations basiques de connexion. Le nom du compte est seulement
-	utilisé par Sylpheed-Claws en interne, comme par exemple, dans le
+	utilisé par Claws Mail en interne, comme par exemple, dans le
 	bouton de changement d'identité en bas à droite de la fenêtre
 	principale. Le panneau Configuration des serveurs vous permet
 	d'indiquer le protocole utilisé pour la réception (information qui
@@ -20,7 +20,7 @@
     </para>
     <para>
 	Dans l'onglet <quote>Réception</quote> vous pouvez changer le comportement
-	par défaut de Sylpheed-Claws. Par exemple, laisser les messages sur le
+	par défaut de Claws Mail. Par exemple, laisser les messages sur le
 	serveur pour un temps, ne pas télécharger les courriels trop gros ou
 	spécifier si vous souhaitez que les règles de filtrage s'appliquent à
 	ce compte de messagerie. Le paramètre <quote>taille maximale pour la
@@ -159,7 +159,7 @@
   <section id="account_multiple">
     <title>Comptes multiples</title>
     <para>
-	Il est possible de créer plusieurs comptes dans Sylpheed-Claws. Pour les
+	Il est possible de créer plusieurs comptes dans Claws Mail. Pour les
 	comptes POP vous pouvez choisir d'enregistrer vos courriels de vos
 	différents comptes dans le même dossier en utilisant l'onglet
 	<quote>Réception</quote> des préférences générales. Les comptes IMAP et

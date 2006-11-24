@@ -78,9 +78,9 @@
 	simplemente se ignoran. El nombre es opcional, pero está para facilitar
 	la identificación de las reglas existentes. El formato de la condición
 	es una expresión que define lo que &SC; deberá buscar al filtrar los
-	mensajes, por ejemplo: <quote>to matchcase sylpheed-claws-users</quote>
+	mensajes, por ejemplo: <quote>to matchcase claws-mail-users</quote>
 	es para mensajes enviados a cualquier dirección que contenga
-	<quote>sylpheed-claws-users</quote>. Puede definir condiciones
+	<quote>claws-mail-users</quote>. Puede definir condiciones
 	fácilmente pulsando el botón <quote>Definir...</quote> a la derecha del
 	campo. La tercera parte de una regla de filtrado es la acción, que
 	indica a &SC; que hacer con los mensajes que cumplan la condición que

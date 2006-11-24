@@ -3,60 +3,60 @@
 <title>Wstêp</title>
 
   <section id="intro_what">
-    <title>Czym jest Sylpheed-Claws?</title>
+    <title>Czym jest Claws Mail?</title>
     <para>
-	Sylpheed-Claws jest programem pocztowym maj±cym na celu szybko¶æ, ³atwo¶æ obs³ugi oraz potê¿n± funkcjonalno¶æ. Jest on w³a¶ciwie niezale¿ny od u¿ywanego ¶rodowiska graficznego, lecz ma na celu integracjê z danym ¶rodowiskiem jak najlepiej jest to mo¿liwe. Autorzy Sylpheed-Claws bardzo staraj± siê by zu¿ywa³ jak najmniej zasobów, wiêc powinien on dzia³aæ bez problemu na komputerach z ma³± ilo¶ci± pamiêci i o s³abych procesorach.
+	Claws Mail jest programem pocztowym maj±cym na celu szybko¶æ, ³atwo¶æ obs³ugi oraz potê¿n± funkcjonalno¶æ. Jest on w³a¶ciwie niezale¿ny od u¿ywanego ¶rodowiska graficznego, lecz ma na celu integracjê z danym ¶rodowiskiem jak najlepiej jest to mo¿liwe. Autorzy Claws Mail bardzo staraj± siê by zu¿ywa³ jak najmniej zasobów, wiêc powinien on dzia³aæ bez problemu na komputerach z ma³± ilo¶ci± pamiêci i o s³abych procesorach.
     </para>
   </section>
 
   <section id="intro_whatnot">
-    <title>Czym Sylpheed-Claws nie jest</title>
+    <title>Czym Claws Mail nie jest</title>
     <para>
-	Sylpheed-Claws nie jest pe³nym programem zarz±dzania informacj± osobist± jak Evolution czy Outlook ale jego wtyczki dodaj± tak± funkcjonalno¶æ. Sylpheed-Claws nie umo¿liwi ci tworzenia i wysy³ania email w formacie HTML lub na inne denerwuj±ce rzeczy, dlatego te¿ nie jest to oprogramowanie odpowiednie dla pewnych ¶rodowisk biznesowych.
+	Claws Mail nie jest pe³nym programem zarz±dzania informacj± osobist± jak Evolution czy Outlook ale jego wtyczki dodaj± tak± funkcjonalno¶æ. Claws Mail nie umo¿liwi ci tworzenia i wysy³ania email w formacie HTML lub na inne denerwuj±ce rzeczy, dlatego te¿ nie jest to oprogramowanie odpowiednie dla pewnych ¶rodowisk biznesowych.
     </para>
   </section>
 
   <section id="intro_features"> 
     <title>Podstawowe funkcje</title>
     <para>
-	    Sylpheed-Claws obs³uguje prawie wszystko co powinien mieæ doskona³y klient email. Pobieranie poczty przy pomocy protoko³ów POP3, IMAP, lokalne skrzynki, obs³uga SSL, obs³uga ró¿nych metod autentykacji. Posiada wiele kont i skrzynek, potê¿ny mechanizm filtrowania i poszukiwania, mo¿liwo¶ci importu/eksportu z wielu ró¿nych formatów, obs³ugê GnuPGP (cyfrowe podpisy i szyfrowanie). Posiada wtyczki, mo¿no¶æ konfiguracji pasków narzêdziowych, sprawdzanie pisowni, kilka mechanizmów chroni±cych przed utrat± danych, opcje specyficzne dla katalogów i wiele wiêcej. Kompletna lista znajduje siê na <ulink url="http://www.sylpheed-claws.net/features.php">http://www.sylpheed-claws.net/features.php</ulink>.
+	    Claws Mail obs³uguje prawie wszystko co powinien mieæ doskona³y klient email. Pobieranie poczty przy pomocy protoko³ów POP3, IMAP, lokalne skrzynki, obs³uga SSL, obs³uga ró¿nych metod autentykacji. Posiada wiele kont i skrzynek, potê¿ny mechanizm filtrowania i poszukiwania, mo¿liwo¶ci importu/eksportu z wielu ró¿nych formatów, obs³ugê GnuPGP (cyfrowe podpisy i szyfrowanie). Posiada wtyczki, mo¿no¶æ konfiguracji pasków narzêdziowych, sprawdzanie pisowni, kilka mechanizmów chroni±cych przed utrat± danych, opcje specyficzne dla katalogów i wiele wiêcej. Kompletna lista znajduje siê na <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
 
   <section id="intro_history">
-    <title>Historia Sylpheed-Claws</title>
+    <title>Historia Claws Mail</title>
     <para>
-	Sylpheed-Claws istnieje od kwietnia 2001. Pierwotnym celem Sylpheed-Claws by³o testowanie nowych, potencjalnych funkcji programu Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), tak aby nowe funkcje by³y przetestowane, ¿eby nie zagroziæ stabilno¶ci programu Sylpheed. Autorzy Sylpheed-Claws regularnie synchronizowali kod ¼ród³owy z kodem Sylpheed i autor Sylpheed  Hiroyuki Yamamoto, pobiera³ z powrotem nowe funkcje kiedy by³y one ju¿ stabilne.
+	Claws Mail istnieje od kwietnia 2001. Pierwotnym celem Claws Mail by³o testowanie nowych, potencjalnych funkcji programu Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), tak aby nowe funkcje by³y przetestowane, ¿eby nie zagroziæ stabilno¶ci programu Sylpheed. Autorzy Claws Mail regularnie synchronizowali kod ¼ród³owy z kodem Sylpheed i autor Sylpheed  Hiroyuki Yamamoto, pobiera³ z powrotem nowe funkcje kiedy by³y one ju¿ stabilne.
     </para><para>
-	Oryginalnie obie programy Sylpheed i Sylpheed-Claws by³y oparte na GTK1. Prace na wersjami opartymi na GTK2 rozpoczê³y siê wczesnym 2003, pierwsza wersja oparta na GTK2 Sylpheed-Claws zosta³a wydana w marcu 2005. Od tego czasu cele Sylpheed i Sylpheed-Claws zaczê³y siê coraz bardziej rozmijaæ i w pewnym momencie Sylpheed-Claws sta³ siê oddzielnym projektem.
+	Oryginalnie obie programy Sylpheed i Claws Mail by³y oparte na GTK1. Prace na wersjami opartymi na GTK2 rozpoczê³y siê wczesnym 2003, pierwsza wersja oparta na GTK2 Claws Mail zosta³a wydana w marcu 2005. Od tego czasu cele Sylpheed i Claws Mail zaczê³y siê coraz bardziej rozmijaæ i w pewnym momencie Claws Mail sta³ siê oddzielnym projektem.
     </para>
   </section>
 
   <section id="intro_information">
     <title>Przydatne strony WWW</title>
     <para>
-	Strona projektu: <ulink url="http://www.sylpheed-claws.net/">http://www.sylpheed-claws.net/</ulink>
+	Strona projektu: <ulink url="http://www.claws-mail.org/">http://www.claws-mail.org/</ulink>
     </para>
     <para>
-	Najnowsze wiadomo¶ci: <ulink url="http://www.sylpheed-claws.net/news.php">http://www.sylpheed-claws.net/news.php</ulink>
+	Najnowsze wiadomo¶ci: <ulink url="http://www.claws-mail.org/news.php">http://www.claws-mail.org/news.php</ulink>
     </para>
     <para>
-	Dodatkowe wtyczki: <ulink url="http://www.sylpheed-claws.net/plugins.php">http://www.sylpheed-claws.net/plugins.php</ulink>
+	Dodatkowe wtyczki: <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>
     </para>
     <para>
-	Tematy ikon: <ulink url="http://www.sylpheed-claws.net/themes.php">http://www.sylpheed-claws.net/themes.php</ulink>
+	Tematy ikon: <ulink url="http://www.claws-mail.org/themes.php">http://www.claws-mail.org/themes.php</ulink>
     </para>
     <para>
-	Narzêdzia: <ulink url="http://www.sylpheed-claws.net/tools.php">http://www.sylpheed-claws.net/tools.php</ulink>
+	Narzêdzia: <ulink url="http://www.claws-mail.org/tools.php">http://www.claws-mail.org/tools.php</ulink>
     </para>
     <para>
-	    Lista dyskusyjne: <ulink url="http://www.sylpheed-claws.net/MLs.php">http://www.sylpheed-claws.net/MLs.php</ulink>
+	    Lista dyskusyjne: <ulink url="http://www.claws-mail.org/MLs.php">http://www.claws-mail.org/MLs.php</ulink>
     </para>
     <para>
 	Baza b³êdów programu: <ulink url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/">http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>
     </para>
     <para>
-	Projekt: <ulink url="http://sourceforge.net/projects/sylpheed-claws/">http://sourceforge.net/projects/sylpheed-claws/</ulink>
+	Projekt: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>
     </para>
   </section>
 

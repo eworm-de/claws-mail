@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE article SYSTEM "dtd/sdocbook.dtd" [
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE article SYSTEM "../dtd/sdocbook.dtd" [
   <!ENTITY ch_intro    SYSTEM "intro.xml">
   <!ENTITY ch_starting SYSTEM "starting.xml">
   <!ENTITY ch_handling SYSTEM "handling.xml">
@@ -12,17 +12,18 @@
   <!ENTITY ap_glossary SYSTEM "glossary.xml">
   <!ENTITY ap_ack      SYSTEM "ack.xml">
   <!ENTITY ap_gpl      SYSTEM "gpl.xml">
+  <!ENTITY SC          "Claws Mail">
 ]>
 <article>
-  <title>The Sylpheed-Claws User Manual</title>
+  <title>Manual de usuario de &SC;</title>
   <subtitle></subtitle>
   <articleinfo>
     <corpauthor>
-	    <ulink url="http://www.sylpheed-claws.net/">The Sylpheed Claws Team</ulink>
+	    <ulink url="http://www.claws-mail.org/">El equipo de &SC;</ulink>
     </corpauthor>
     <copyright>
       <year>2006</year>
-      <holder>The Sylpheed Claws Team.</holder>
+      <holder>El equipo de &SC;.</holder>
     </copyright>
     <legalnotice id="license">
       <para>

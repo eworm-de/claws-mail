@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-2"?>
 <section id="ch_starting">
-<title>Pierwsze uruchomienia Sylpheed-Claws</title>
+<title>Pierwsze uruchomienia Claws Mail</title>
 
   <section id="start_wizard">
     <title>Początkowy kreator</title>
     <para>
-	Gdy uruchomisz Sylpheed-Claws po raz pierwszy zostanie zadanie ci kilka pytań w celu założenia konta. Te pytania są stosunkowo proste i pogrupowane na kilku krótkich stronach.
+	Gdy uruchomisz Claws Mail po raz pierwszy zostanie zadanie ci kilka pytań w celu założenia konta. Te pytania są stosunkowo proste i pogrupowane na kilku krótkich stronach.
     </para><para>
 	    Po pierwsze zostaniesz zapytany o twoje imię i nazwisko (<emphasis>najczęściej uzyskiwane z systemu operacyjnego</emphasis>), twój adres email. nazwę twojej organizacji (<emphasis>opcjonalne</emphasis>).
     </para><para>Następna strona wymaga wpisanie szczegółów opisujących sposób pobierania poczty. Wygląd strony uzależniony jest od <quote>typu serwera</quote>:
@@ -27,9 +27,9 @@
     <para>
 	    Na następnej stronie potrzebne jest podanie adresu twojego serwera SMTP (<emphasis>czasami nazywanego <quote>serwerem wychodzącym</quote></emphasis>). Zostaniesz również zapytany czy serwer wymaga autentykacji przy wysyłaniu poczty; jest to często nieużywane gdy łączysz się z internetem za pomocą dostawcy internetu, często jest to używane w konfiguracji profesjonalnych kont.
      </para><para>Jeśli wybrałeś POP3 albo lokalną skrzynkę na następnej stronie znajdziesz pytanie o miejsce zapisywania odebranej poczty na dysku twardym. Domyślnie jest to <quote>Mail</quote> i najczęściej to ustawienie jest dobre, zapisuje ono pocztę w podkatalogu <quote>Mail</quote> w twoim katalogu domowym.
-    </para><para>Jeśli Sylpheed-Claws został skompilowany z obsługą OpenSSL, zobaczysz stronę <quote>Bezpieczeństwo</quote>, tutaj będziesz mógł zadecydować o używaniu szyfrowania SSL przy wysyłaniu i odbieraniu poczty. Większość dostawców internetu nie zezwala na to, lecz wiele firm tego wymaga, jeśli nie jesteś pewien możesz zostawić te opcje wyłączone.
+    </para><para>Jeśli Claws Mail został skompilowany z obsługą OpenSSL, zobaczysz stronę <quote>Bezpieczeństwo</quote>, tutaj będziesz mógł zadecydować o używaniu szyfrowania SSL przy wysyłaniu i odbieraniu poczty. Większość dostawców internetu nie zezwala na to, lecz wiele firm tego wymaga, jeśli nie jesteś pewien możesz zostawić te opcje wyłączone.
     </para><para>
-	Teraz możesz nacisnąć przycisk Zapisz i zacząć cieszyć się z używania Sylpheed-Claws.
+	Teraz możesz nacisnąć przycisk Zapisz i zacząć cieszyć się z używania Claws Mail.
     </para>
   </section>
 
@@ -38,7 +38,7 @@
     <para>
 	Odbierać pocztę można za pomocą przycisku <quote>Get mail</quote> na pasku narzędziowym lub z opcji <quote>Odbieranie</quote> w menu <quote>Wiadomość</quote>.
     </para><para>
-	Jeśli chcesz aby Sylpheed-Claws pobierał twoją pocztę automatycznie w regularnych odstępach czasu możesz to ustawić na stronie <quote>Obsługa poczty: Odbieranie</quote>, którą znajdziesz za pomocą menu <quote>Konfiguracja/Ustawienia</quote>. Wybierz opcję <quote>Automatyczne sprawdzanie skrzynek pocztowych co</quote> i ustaw interwał czasu pomiędzy kolejnymi sprawdzeniami.
+	Jeśli chcesz aby Claws Mail pobierał twoją pocztę automatycznie w regularnych odstępach czasu możesz to ustawić na stronie <quote>Obsługa poczty: Odbieranie</quote>, którą znajdziesz za pomocą menu <quote>Konfiguracja/Ustawienia</quote>. Wybierz opcję <quote>Automatyczne sprawdzanie skrzynek pocztowych co</quote> i ustaw interwał czasu pomiędzy kolejnymi sprawdzeniami.
     </para>
   </section>
 
@@ -54,7 +54,7 @@
     <para>
 	Naciskając przycisk <quote>Tworzenie</quote> na pasku narzędziowym uruchomisz okno tworzenia nowej wiadomości. To okno zawiera kilka różnych pól, które powinny być proste do rozpoznania: jeśli masz wiele kont, pole Od daje możliwość wybrania konta do napisania danej wiadomości; pole Do oznacza odbiorcę wiadomości. Gdy je już wypełnisz pojawi się drugie pole Do na wypadek gdybyś chciał wysłać wiadomość do kilku osób jednocześnie. Pole Do można zmienić na pole Kopia lub inny typ za pomocą rozwijanego menu lub wpisując nazwę pola, które potrzebujesz dodać. Następnie zostaje wpisać temat twojej wiadomości, potem jej treść.
     </para><para>
-	Jeszcze jedna mała uwaga dotycząca pola tematu: Sylpheed-Claws poprosi cię o potwierdzenie jeśli spróbujesz wysłać wiadomość z pustym tematem. Działanie to spowodowane jest tym, że otrzymywanie wiadomości bez tematu może być czasami denerwujące no i na pewno nie ułatwia zarządzania nimi.
+	Jeszcze jedna mała uwaga dotycząca pola tematu: Claws Mail poprosi cię o potwierdzenie jeśli spróbujesz wysłać wiadomość z pustym tematem. Działanie to spowodowane jest tym, że otrzymywanie wiadomości bez tematu może być czasami denerwujące no i na pewno nie ułatwia zarządzania nimi.
     </para>
   </section>
 

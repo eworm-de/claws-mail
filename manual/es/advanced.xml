@@ -79,7 +79,7 @@
 	      <para>
 	Busca en Google el texto seleccionado actualmente 
 	(<emphasis>|</emphasis>) usando un script externo <emphasis><ulink 
-	url="http://www.sylpheed-claws.net/tools.php">google_search.pl</ulink>
+	url="http://www.claws-mail.org/tools.php">google_search.pl</ulink>
 	</emphasis>.
 	      </para>
 	    </listitem>
@@ -127,8 +127,8 @@
     </para><para>
 	Más información y ejemplos de uso se pueden encontrar en las preguntas
 	frecuentes de usuario (FAQ) en el sitio web de &SC; <ulink 
-	url="http://www.sylpheed-claws.net/faq/"
-	>http://www.sylpheed-claws.net/faq/</ulink>.
+	url="http://www.claws-mail.org/faq/"
+	>http://www.claws-mail.org/faq/</ulink>.
     </para>
    </section>
   <section id="adv_processing">
@@ -215,7 +215,7 @@
       <listitem>
 	<para>
 	Comience con un usuario que no tenga el directorio <filename
-	class="directory">~/.sylpheed-claws</filename>, idealmente un usuario
+	class="directory">~/.claws-mail</filename>, idealmente un usuario
 	nuevo.
 	</para>
       </listitem>
@@ -248,7 +248,7 @@
       <listitem>
 	<para>
 	Ahora edite el nuevo fichero de plantilla creado por el asistente,
-	<filename>~/.sylpheed-claws/accountrc.tmpl</filename>. En este fichero
+	<filename>~/.claws-mail/accountrc.tmpl</filename>. En este fichero
 	podrá ver distintas variables, correspondientes con los campos del
 	asistente. Puede dejar alguna comentada, en cuyo caso se usará el valor
 	predeterminado habitual, o especificar valores o variables. No todos
@@ -266,16 +266,16 @@
       <listitem>
 	<para>
 	Guarde este fichero y borre 
-	<filename>~/.sylpheed-claws/accountrc</filename> (que contiene la
-	cuenta inútil) y <filename>~/.sylpheed-claws/folderlist.xml</filename>
+	<filename>~/.claws-mail/accountrc</filename> (que contiene la
+	cuenta inútil) y <filename>~/.claws-mail/folderlist.xml</filename>
 	(de manera que el árbol de carpetas sea leído correctamente para los
 	nuevos usuarios). Copie recursivamente <filename 
-	class="directory">.sylpheed-claws</filename> a <filename
+	class="directory">.claws-mail</filename> a <filename
 	class="directory">/etc/skel/</filename>. Si el despliegue de &SC; va
 	a usar carpetas MH, copie tambien el directorio <filename 
 	class="directory">Mail</filename> creado. Cambie los permisos de todos
 	los ficheros bajo <filename
-	class="directory">/etc/skel/.sylpheed-claws</filename> y <filename
+	class="directory">/etc/skel/.claws-mail</filename> y <filename
 	class="directory">etc/skel/Mail</filename> a 
 	<literal>root:root</literal> por razones de seguridad.
 	</para>
@@ -534,7 +534,7 @@
 	las que ciertos usuarios a quienes quisimos complacer no podrían
 	vivir, pero que en nuestra opinión no tienen lugar en el interfaz
 	gráfico. Puede encontrar las siguientes en 
-	<filename>~/.sylpheed-claws/sylpheedrc</filename>, y cambiarlas 
+	<filename>~/.claws-mail/sylpheedrc</filename>, y cambiarlas 
 	mientras &SC; no esté ejecutándose.
     </para>
     <variablelist>

@@ -145,7 +145,7 @@ Katalog
     </term>
     <listitem>
       <para>
-Katalog jest podstawowym pojemnikiem wiadomo¶ci. Katalogi mog± byæ lokalne lub zdalne, ale s± zarz±dzane przez Sylpheed-Claws w taki sam sposób.
+Katalog jest podstawowym pojemnikiem wiadomo¶ci. Katalogi mog± byæ lokalne lub zdalne, ale s± zarz±dzane przez Claws Mail w taki sam sposób.
       </para>
     </listitem>
   </varlistentry>
@@ -175,7 +175,7 @@ Konto
     </term>
     <listitem>
       <para>
-Konto reprezentuje to¿samo¶æ w Sylpheed-Claws. Jest z nim powi±zany tylko jeden adres email. Jednak¿e ilo¶æ kont, które mo¿esz za³o¿yæ jest nieograniczona.
+Konto reprezentuje to¿samo¶æ w Claws Mail. Jest z nim powi±zany tylko jeden adres email. Jednak¿e ilo¶æ kont, które mo¿esz za³o¿yæ jest nieograniczona.
       </para>
     </listitem>
   </varlistentry>
@@ -219,7 +219,7 @@ Lista dyskusyjna
     </term>
     <listitem>
       <para>
-Elektroniczne listy dyskusyjne s± specjalnym u¿yciem us³ugi e-mail pozwalaj±cym na szerokie rozpowszechnianie informacji do wielu u¿ytkownków sieci Internet. Przybieraj± one najczê¶ciej formê listy dyskusyjnej tak jak np. lista dyskusyjna u¿ytkowników Sylpheed-Claws, która wysy³a wiadomo¶ci do wszystkich jej u¿ytkowników a oni mog± post±piæ w podobny sposób.
+Elektroniczne listy dyskusyjne s± specjalnym u¿yciem us³ugi e-mail pozwalaj±cym na szerokie rozpowszechnianie informacji do wielu u¿ytkownków sieci Internet. Przybieraj± one najczê¶ciej formê listy dyskusyjnej tak jak np. lista dyskusyjna u¿ytkowników Claws Mail, która wysy³a wiadomo¶ci do wszystkich jej u¿ytkowników a oni mog± post±piæ w podobny sposób.
       </para>
     </listitem>
   </varlistentry>
@@ -253,7 +253,7 @@ MBOX
     </term>
     <listitem>
       <para>
-Format skrzynki pocztowej charakteryzuj±cym siê tym, ¿e przechowuje pocztê w jednym pliku.  Formatem mbox obs³ugiwanym przez Sylpheed-Claws jest mboxrd.
+Format skrzynki pocztowej charakteryzuj±cym siê tym, ¿e przechowuje pocztê w jednym pliku.  Formatem mbox obs³ugiwanym przez Claws Mail jest mboxrd.
       </para>
     </listitem>
   </varlistentry>
@@ -263,7 +263,7 @@ MH
     </term>
     <listitem>
       <para>
-Format skrzynki, w którym ka¿da wiadomo¶æ jest przechowywana w oddzielnym pliku. To jest domy¶lny format przechowywania poczty u¿ywany przez Sylpheed-Claws.
+Format skrzynki, w którym ka¿da wiadomo¶æ jest przechowywana w oddzielnym pliku. To jest domy¶lny format przechowywania poczty u¿ywany przez Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -331,7 +331,7 @@ Okno dziennika
     </term>
     <listitem>
       <para>
-Specjalne okno, które przechowuje informacje o operacjach protoko³ów przeprowadzanych przez  Sylpheed-Claws. Jest u¿yteczne narzêdzie w usuwaniu b³êdów w programie.
+Specjalne okno, które przechowuje informacje o operacjach protoko³ów przeprowadzanych przez  Claws Mail. Jest u¿yteczne narzêdzie w usuwaniu b³êdów w programie.
       </para>
     </listitem>
   </varlistentry>
@@ -345,7 +345,7 @@ Pasek narzêdziowy
     </term>
     <listitem>
       <para>
-Zbiór przycisków u³o¿onych poziomo u³atwiaj±cych dostêp do najczê¶ciej u¿ywanych funkcji. Paski narzêdziowe w Sylpheed-Claws mog± byæ edytowane.
+Zbiór przycisków u³o¿onych poziomo u³atwiaj±cych dostêp do najczê¶ciej u¿ywanych funkcji. Paski narzêdziowe w Claws Mail mog± byæ edytowane.
       </para>
     </listitem>
   </varlistentry>
@@ -603,7 +603,7 @@ Tematy
     </term>
     <listitem>
       <para>
-Zbiór ikonek zmieniaj±cych wygl±d przycisków, katalogów i innych graficznych elementów Sylpheed-Claws.
+Zbiór ikonek zmieniaj±cych wygl±d przycisków, katalogów i innych graficznych elementów Claws Mail.
       </para>
     </listitem>
   </varlistentry>
@@ -685,7 +685,7 @@ Wiadomo¶æ
     </term>
     <listitem>
       <para>
-Wiadomo¶æ jest najmniejsz± jednostk± informacji przetwarzana przez Sylpheed-Claws. Wiadomo¶æ jest to najczê¶ciej wiadomo¶æ email, która jest przechowywana w formacie <xref linkend="gt_mh" /> na dysku. Inne rodzaje wiadomo¶ci i skrzynek s± obs³ugiwane przez <xref linkend="gt_plugins" />.
+Wiadomo¶æ jest najmniejsz± jednostk± informacji przetwarzana przez Claws Mail. Wiadomo¶æ jest to najczê¶ciej wiadomo¶æ email, która jest przechowywana w formacie <xref linkend="gt_mh" /> na dysku. Inne rodzaje wiadomo¶ci i skrzynek s± obs³ugiwane przez <xref linkend="gt_plugins" />.
       </para>
     </listitem>
   </varlistentry>
@@ -695,7 +695,7 @@ Wtyczki
     </term>
     <listitem>
       <para>
-Zewnêtrzne modu³y, które mog± byæ za³adowane do Sylpheed-Claws w celu rozszerzenia jego funkcjonalno¶ci.
+Zewnêtrzne modu³y, które mog± byæ za³adowane do Claws Mail w celu rozszerzenia jego funkcjonalno¶ci.
       </para>
     </listitem>
   </varlistentry>
@@ -719,7 +719,7 @@ X-Face (bu¼ka)
     </term>
     <listitem>
       <para>
-Specjalnie zakodowany bia³o-czarny obrazek (48x48 pikseli) zawarty w nag³ówkach wiadomo¶ci. Niektóre programy pocztowe takie jak np. Sylpheed-Claws i inne potrafi± zdekodowaæ i wy¶wietliæ ów obrazek wraz z tre¶ci± wiadomo¶ci. Mimo ¿e nie s± one unikalne na ich podstawie mo¿na ³atwo zidentyfikowaæ nadawcê.
+Specjalnie zakodowany bia³o-czarny obrazek (48x48 pikseli) zawarty w nag³ówkach wiadomo¶ci. Niektóre programy pocztowe takie jak np. Claws Mail i inne potrafi± zdekodowaæ i wy¶wietliæ ów obrazek wraz z tre¶ci± wiadomo¶ci. Mimo ¿e nie s± one unikalne na ich podstawie mo¿na ³atwo zidentyfikowaæ nadawcê.
       </para>
     </listitem>
   </varlistentry>
@@ -745,7 +745,7 @@ Za³±cznik
     </term>
     <listitem>
       <para>
-Dodatkowy plik(i) do³±czone do wiadomo¶ci. Niektóre za³±czniki mog± byæ wy¶wietlane za pomoc± Sylpheed-Claws, inne wymagaj± programówzewnêtrznych. <xref linkend="gt_plugins" /> mog± dostarczaæ dodatkow± funkcjonalno¶æ dla za³±czników.
+Dodatkowy plik(i) do³±czone do wiadomo¶ci. Niektóre za³±czniki mog± byæ wy¶wietlane za pomoc± Claws Mail, inne wymagaj± programówzewnêtrznych. <xref linkend="gt_plugins" /> mog± dostarczaæ dodatkow± funkcjonalno¶æ dla za³±czników.
       </para>
     </listitem>
   </varlistentry>

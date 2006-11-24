@@ -1,6 +1,0 @@
-?package(sylpheed-claws):\
-needs="X11"\
-section="Apps/Net"\
-title="Sylpheed Claws"\
-hints="GTK+2.0-based Mail Client"\
-command="/usr/bin/sylpheed-claws"

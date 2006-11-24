@@ -1,4 +1,4 @@
-Sylpheed-Claws (http://www.sylpheed-claws.net)
+Claws Mail (http://www.claws-mail.org)
 
 	Holger Berndt		<berndth@users.sf.net>
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
@@ -10,27 +10,27 @@ Sylpheed-Claws (http://www.sylpheed-claws.net)
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko@users.sourceforge.net>
 	Colin Leroy		<colin@colino.net>
-	Paul Mangan		<claws@thewildbeast.co.uk>
+	Paul Mangan		<paul@claws-mail.org>
 	Ricardo Mones Lastra 	<ricardo@mones.org>
 	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
 	Luke Plant 		<L.Plant.98@cantab.net>
 	Martin Schaaf		<mascha@ma-scha.de>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
-	wwp			<wwp@users.sf.net>
+	Tristan Chabredier		<wwp@claws-mail.org>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
-Sylpheed-Claws-w32 (http://www.gpg4win.org)
+Claws Mail-w32 (http://www.gpg4win.org)
 
 	Werner Koch		<wk@gnupg.org>
 	Thorsten Maerz		<torte@netztorte.de>
 
-Sylpheed-Claws translation team
+Claws Mail translation team
 
 	[bg]	George Danchev 		<danchev@spnet.net>
 	[ca]	Miquel Oliete 		<miqueloliete@softhome.net>
 	[de]	Stephan Sachse 		<white@dev-zero.com>
-	[en_GB]	Paul Mangan		<claws@thewildbeast.co.uk>
+	[en_GB]	Paul Mangan		<paul@claws-mail.org>
 	[el] 	Stavros Giannouris 	<stavrosg2002@freemail.gr>
 	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
 	[fi]	Flammie Pirinen 	<flammie@iki.fi>
@@ -56,15 +56,17 @@ Sypheed-Claws documentation team
 
 	[en]	Ricardo Mones Lastra 	<ricardo@mones.org>
 		Colin Leroy		<colin@colino.net>
-		Paul Mangan		<claws@thewildbeast.co.uk>
-		wwp			<wwp@users.sf.net>
+		Paul Mangan		<paul@claws-mail.org>
+		Tristan Chabredier	<wwp@claws-mail.org>
+
+	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
 
 	[fr]	Colin Leroy		<colin@colino.net>
-		wwp			<wwp@users.sf.net>
+		Tristan Chabredier		<wwp@claws-mail.org>
 
 	[pl]	Pawel Pekala 		<c0rn@gazeta.pl>
 	
-Sylpheed-Claws logo
+Claws Mail logo
 
 	Jesper Schultz		<jesper@schultz-net.dk>
 
@@ -128,7 +130,6 @@ contributors (in addition to the above; based on Changelog)
 	David Looney
 	Eric Limpens
 	Paul Evans
-	wwp
 	Jeroen Versteeg
 	Ravemax
 	Jens Jahnke

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <appendix id="ap_faq">
-<title>La FAQ Sylpheed-Claws</title>
+<title>La FAQ Claws Mail</title>
 	<section>
-	<title>Quelles sont les différences entre Sylpheed-Claws et
+	<title>Quelles sont les différences entre Claws Mail et
 	Sylpheed&nbsp;?</title>
 	<para>
-	Sylpheed-Claws est la version <emphasis>étendue</emphasis> de Sylpheed.
+	Claws Mail est la version <emphasis>étendue</emphasis> de Sylpheed.
 	C'est pourquoi vous y trouverez toutes les fonctionnalités de Sylpheed,
 	et encore beaucoup d'autres. Vous pourrez trouver plus d'informations à
-	ce sujet sur <ulink url="http://www.sylpheed-claws.net/features.php">
-	http://www.sylpheed-claws.net/features.php</ulink>.
+	ce sujet sur <ulink url="http://www.claws-mail.org/features.php">
+	http://www.claws-mail.org/features.php</ulink>.
 	</para></section>
 	<section>
 	<title>Que signifie <quote>Sylpheed</quote>&nbsp;?</title>
@@ -20,7 +20,7 @@
 	</para></section>
 	<section>
 	<title>Puis-je écrire des courriels en HTML avec
-	Sylpheed-Claws&nbsp;?</title>
+	Claws Mail&nbsp;?</title>
 	<para>
 	Non. Une discussion a eu lieu sur ce sujet, et il est apparu que les
 	courriels en HTML n'étaient pas désirés par la majorité de nos
@@ -29,14 +29,14 @@
 	</para></section>
 	<section>
 	<title>Comment puis-je soumettre des patches, signaler des bogues, et
-	discuter avec d'autres utilisateurs de Sylpheed-Claws&nbsp;?</title>
+	discuter avec d'autres utilisateurs de Claws Mail&nbsp;?</title>
 	<para>
 	Les patches peuvent être soumis via le Patch Tracker de Sourceforge, à
 	<ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>
 	http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>.
 	Merci de suivre les conseils disponibles sur
-	<ulink url="http://www.sylpheed-claws.net/devel.php">
-	http://www.sylpheed-claws.net/devel.php</ulink>.
+	<ulink url="http://www.claws-mail.org/devel.php">
+	http://www.claws-mail.org/devel.php</ulink>.
 	</para>
 	<para>
 	Les rapports de bogues peuvent être soumis sur notre Bugzilla,
@@ -46,38 +46,38 @@
 	<para>
 	Pour discuter et poser des questions, vous êtes les bienvenus sur les
 	listes de diffusion présentées à
-	<ulink url="http://www.sylpheed-claws.net/MLs.php">
-	http://www.sylpheed-claws.net/MLs.php</ulink>.
+	<ulink url="http://www.claws-mail.org/MLs.php">
+	http://www.claws-mail.org/MLs.php</ulink>.
 	</para>
 	</section>
 	<section>
-	<title>Y a-t-il un filtre anti-pourriel dans Sylpheed-Claws&nbsp;?</title>
+	<title>Y a-t-il un filtre anti-pourriel dans Claws Mail&nbsp;?</title>
 	<para>
 	Oui, il existe un module Spamassassin, sur lequel vous trouverez tous les
 	détails dans ce manuel, au chapitre <link linkend="ch_plugins">Étendre
-	les possibilités de Sylpheed-Claws</link>.
+	les possibilités de Claws Mail</link>.
 	</para>
 	<para>
 	Vous pouvez aussi utiliser d'autres filtres anti-pourriels en utilisant le
 	<quote>Filtrage</quote> et les <quote>Actions</quote>, par exemple
-	Bogofilter. Des instructions pour configurer Sylpheed-Claws avec
+	Bogofilter. Des instructions pour configurer Claws Mail avec
 	Bogofilter sont disponibles sur la
 	<ulink url="http://bogofilter.sourceforge.net/faq.shtml#with-sc">FAQ
 	Bogofilter</ulink>. 
 	</para></section>
 	<section>
-	<title>Est-ce que Sylpheed-Claws gère les accusés de réception&nbsp;?</title>
+	<title>Est-ce que Claws Mail gère les accusés de réception&nbsp;?</title>
 	<para>
 	Oui.
 	Vous pouvez demander un accusé de réception à vos courriels dans le menu
 	<quote>Options/Demander un accusé de réception</quote> de la fenêtre de
 	composition. Lorsque vous recevez un message qui demande un accusé de
-	réception, Sylpheed-Claws vous proposera de l'envoyer, via une zone de
+	réception, Claws Mail vous proposera de l'envoyer, via une zone de
 	notification au dessus du message. Vous pouvez soit envoyer l'accusé,
 	soit ne rien faire - l'accusé n'est jamais envoyé automatiquement.
 	</para></section>
 	<section>
-	<title>Comment Sylpheed-Claws peut-il me prévenir lorsque j'ai de nouveaux
+	<title>Comment Claws Mail peut-il me prévenir lorsque j'ai de nouveaux
 	messages&nbsp;?</title>
 	<para>
 	Dans les préférences <quote>Traitement des messages/Réception</quote>,
@@ -102,12 +102,12 @@
 	</para></section>
 	<section>
 	<title>Où puis-je trouver des réponses à d'autres questions fréquemment
-	posées sur Sylpheed-Claws&nbsp;?</title>
+	posées sur Claws Mail&nbsp;?</title>
 	<para>
-	Une FAQ plus élaborée, maintenue par les utilisateurs de Sylpheed-Claws,
+	Une FAQ plus élaborée, maintenue par les utilisateurs de Claws Mail,
 	est disponible sur notre site, à l'adresse
-	<ulink url="http://www.sylpheed-claws.net/faq/">
-	http://www.sylpheed-claws.net/faq/</ulink>.
+	<ulink url="http://www.claws-mail.org/faq/">
+	http://www.claws-mail.org/faq/</ulink>.
 	</para>
 	</section>
 </appendix>

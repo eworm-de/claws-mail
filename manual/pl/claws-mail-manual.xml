@@ -14,15 +14,15 @@
   <!ENTITY ap_gpl      SYSTEM "gpl.xml">
 ]>
 <article>
-  <title>Podrêcznik u¿ytkownika Sylpheed-Claws</title>
+  <title>Podrêcznik u¿ytkownika Claws Mail</title>
   <subtitle></subtitle>
   <articleinfo>
     <corpauthor>
-      <ulink url="http://www.sylpheed-claws.net/">Autorzy Sylpheed Claws</ulink>
+      <ulink url="http://www.claws-mail.org/">Autorzy Claws Mail</ulink>
     </corpauthor>
     <copyright>
       <year>2006</year>
-      <holder>Autorzy Sylpheed Claws.</holder>
+      <holder>Autorzy Claws Mail.</holder>
     </copyright>
     <legalnotice id="license">
       <para>

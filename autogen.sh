@@ -36,7 +36,7 @@ if test "$1" = "--build-w32"; then
              --with-libiconv-prefix=${w32root} \
              --with-gpg-error-prefix=${w32root} \
 	     --with-gpgme-prefix=${w32root} \
-             --with-config-dir="Sylpheed-claws" \
+             --with-config-dir="Claws-mail" \
              --disable-openssl --disable-dillo-viewer-plugin \
              --disable-nls --disable-libetpan --disable-aspell \
              --disable-trayicon-plugin --disable-spamassassin-plugin \

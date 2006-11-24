@@ -1,4 +1,4 @@
-Changes of the  Sylpheed-Claws GTK2 branch
+Changes of the  Claws Mail GTK2 branch
 
 * 2.6.0
 -------
@@ -86,7 +86,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
 
 * Bug fixes:
 	o bug 1024, 'Array index out of range in
-	  sylpheed-claws-2.5.2'
+	  claws-mail-2.5.2'
 	o Fix "Check for new folders" on folders with accented
 	  characters
 	o Fix filtering "copy" rules
@@ -161,7 +161,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
 * IMAP: Added a View Log button on auth error
 
 * PGP/Core plugin: it is now possible to create a new key pair from
-  within Sylpheed-Claws
+  within Claws Mail
 
 * PGP/Core plugin: When encrypting, if only one key matches, and it 
   matches exactly, it is automatically used
@@ -193,7 +193,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
 * Displaying of huge mails can now be cancelled, so the GUI doesn't
   block
 
-* Sylpheed-Claws' internal queue headers are now hidden when showing
+* Claws Mail' internal queue headers are now hidden when showing
   all headers. They'll be present only in Source window.
 
 * Several GUI improvements.
@@ -313,7 +313,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
   option 'Command for Display as Text' in '/Preferences/External
   programs'
 
-* The Sylpheed-Claws logo has been updated
+* The Claws Mail logo has been updated
 
 * 2.3.1
 -------
@@ -493,7 +493,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
     options.
 
   * Sysadmins can now provide their users with pre-filled values in
-    the Setup Wizard. See the manual, '6.6. Deploying Sylpheed-Claws',
+    the Setup Wizard. See the manual, '6.6. Deploying Claws Mail',
     for details.
 
   * Various GUI improvements have been added.
@@ -526,7 +526,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
 
   * bug fix release
 
-  * The Preferences config file, ~/.sylpheed-claws/sylpheedrc, is now
+  * The Preferences config file, ~/.claws-mail/sylpheedrc, is now
     stored with UTF-8 encoding
 
 * 2.1.0
@@ -605,7 +605,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
     requires SpamAssassin 3.1.x.
 
   * A new script has been added that integrates a Thunderbird folder 
-    tree into Sylpheed-Claws, tools/tbird2syl.py
+    tree into Claws Mail, tools/tbird2syl.py
 
 * 2.0.0
 -------
@@ -622,14 +622,14 @@ Changes of the  Sylpheed-Claws GTK2 branch
   * '--exit' command-line option has been added.
 
   * '--subscribe' command-line option has been added.
-    Calling sylpheed-claws --subscribe '%s' will ask the loaded plugins
+    Calling claws-mail --subscribe '%s' will ask the loaded plugins
     if they can handle the type of URL passed as a parameter. Thus, if
     using the RSSyl or vCalendar plugins, for example, the user will be
     able to subscribe RSS feeds or Webcals from the browser.
 
-  * sylpheed-claws email@domain.com  is now equivalent to --compose
+  * claws-mail email@domain.com  is now equivalent to --compose
 
-  * sylpheed-claws proto://blah.com is equivalent to --subscribe
+  * claws-mail proto://blah.com is equivalent to --subscribe
 
   * HIG compliant button order has been implemented.
 
@@ -706,14 +706,14 @@ Changes of the  Sylpheed-Claws GTK2 branch
 
   * The URLs in the About window are now clickable
 
-  * the man page has been updated and renamed 'sylpheed-claws'
+  * the man page has been updated and renamed 'claws-mail'
 
 * 1.9.99
 --------
 
-  * The binary is now 'sylpheed-claws' and not 'sylpheed'
+  * The binary is now 'claws-mail' and not 'sylpheed'
 
-  * The default config dir is now '~/.sylpheed-claws'. The user will
+  * The default config dir is now '~/.claws-mail'. The user will
     be prompted to perform an automatic migration of configuration
     options to this new directory.
 
@@ -876,7 +876,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
     unread mail.
 
   * tools/kdeservicemenu/*
-    Use Sylpheed-Claws icon and the text 'Sylpheed-Claws' in the menu,
+    Use Claws Mail icon and the text 'Claws Mail' in the menu,
     use kdialog during installation
 
 * 1.9.13
@@ -925,7 +925,7 @@ Changes of the  Sylpheed-Claws GTK2 branch
   * Reordering of accounts by drag 'n' drop has been enabled in the
     'Edit accounts' dialogue
 
-  * New Sylpheed-Claws icons have been added, and the default
+  * New Claws Mail icons have been added, and the default
     application icon is now set.
 
   * The SpamAssassin and Clam AntiVirus plugins have been optimised.
