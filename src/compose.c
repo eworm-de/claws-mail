@@ -6441,6 +6441,14 @@ static void compose_reply_change_mode(gpointer data,
 
 	compose_remove_header_entries(compose);
 	compose_reply_set_entry(compose, compose->replyinfo, all, ml, sender, followup);
+	if (compose->account->set_autocc && compose->account->auto_cc)
+		compose_entry_append(compose, compose->account->auto_cc, COMPOSE_CC);
+
+	if (compose->account->set_autobcc && compose->account->auto_bcc) 
+		compose_entry_append(compose, compose->account->auto_bcc, COMPOSE_BCC);
+	
+	if (compose->account->set_autoreplyto && compose->account->auto_replyto)
+		compose_entry_append(compose, compose->account->auto_replyto, COMPOSE_REPLYTO);
 	compose_show_first_last_header(compose, TRUE);
 	compose->modified = was_modified;
 	compose_set_title(compose);
