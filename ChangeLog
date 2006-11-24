@@ -1,3 +1,11 @@
+2006-11-24 [paul]	2.6.0cvs4-stable
+
+	* src/undo.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		backport fixes for bug 1057, 'crash on
+		sending s signed message to a newsgroup'
+
 2006-11-24 [paul]	2.6.0cvs3-stable
 
 	* src/etpan/imap-thread.c
