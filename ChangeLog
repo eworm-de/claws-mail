@@ -1,3 +1,14 @@
+2006-11-24 [paul]	2.6.0cvs10-stable
+
+	* src/compose.c
+		backport fix from 2.6.0cvs57:
+		fix spelling menu when replying (same as 2.3.1cvs39):
+		discrepancy between context menu and top menu when
+		folder's dictionary isn't the default one.
+	* src/summaryview.c
+		backport fix from 2.6.0cvs56:
+		obey always_show_msg option when marking as spam
+
 2006-11-24 [paul]	2.6.0cvs9-stable
 
 	* src/compose.c

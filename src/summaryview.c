@@ -3515,6 +3515,8 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 			} else {
 				summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 			}
+			summaryview->display_msg = prefs_common.always_show_msg;
+	
 			summary_set_row_marks(summaryview, row);
 		}
 	} else {
