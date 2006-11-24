@@ -1,3 +1,9 @@
+2006-11-24 [paul]	2.6.0cvs58
+
+	* src/compose.c
+		fix bug 1069, 'Sent mails disappear, BCC
+		or locking problem?'
+
 2006-11-21 [wwp]	2.6.0cvs57
 
 	* src/compose.c
