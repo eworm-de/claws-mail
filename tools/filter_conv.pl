@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 
-#  * Copyright 2002 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2002 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * Reimplemented by Torsten Schoenfeld <kaffeetisch@web.de>
 #  *
@@ -21,11 +21,11 @@ use strict;
 #  *
 
 my $old_config_dir = "$ENV{HOME}/.sylpheed";
-my $config_dir = `sylpheed-claws --config-dir`;
+my $config_dir = `claws-mail --config-dir`;
 chomp $config_dir;
 
 chdir($ENV{ HOME } . "/$config_dir")
-	or die("You don't appear to have Sylpheed-Claws installed\n");
+	or die("You don't appear to have Claws Mail installed\n");
 
 ###############################################################################
 

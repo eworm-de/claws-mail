@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws Team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -333,7 +333,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	}
 
 	if (!strcmp(plugin_type(), "GTK")) {
-		*error = g_strdup(_("This module is for Sylpheed-Claws GTK1."));
+		*error = g_strdup(_("This module is for Claws Mail GTK1."));
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;

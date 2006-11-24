@@ -5,7 +5,7 @@
 # your personal default preferences. Some of the values can 
 # still be changed from the command line options if required.
 # This file must have exec permissions set and be located in
-# sylprint.pl directory and/or ~/.sylpheed-claws to be used.   
+# sylprint.pl directory and/or ~/.claws-mail to be used.   
 #
 # (c) 2001 by Ricardo Mones Lastra <mones@aic.uniovi.es>
 # This program is released under the GNU General Public License.

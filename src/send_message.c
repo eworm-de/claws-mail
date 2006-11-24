@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -299,7 +299,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			if (alertpanel_full(_("Insecure connection"),
 				_("This connection is configured to be secured "
 				  "using SSL, but SSL is not available in this "
-				  "build of Sylpheed-Claws. \n\n"
+				  "build of Claws Mail. \n\n"
 				  "Do you want to continue connecting to this "
 				  "server? The communication would not be "
 				  "secure."),

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# claws.i18n.stats.pl - Generate statistics for Sylpheed Claws po directory.
+# claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
 # (c) 2003 by Ricardo Mones Lastra <mones@aic.uniovi.es>
 # This program is released under the GNU General Public License.
@@ -40,7 +40,7 @@
 	'cs.po' => 'Tim <timbrain@post.cz>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
-	'en_GB.po' => 'Paul Mangan <claws@thewildbeast.co.uk>',
+	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Fabien Vantard <fzzzzz@gmail.com>',

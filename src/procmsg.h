@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ typedef GSList MsgNumberList;
 #define MSG_SPAM		(1U << 13)   /* new one */ 
 					 	
 /* RESERVED */
-#define	MSG_RESERVED_CLAWS	(1U << 30)   /* for sylpheed-claws */
+#define	MSG_RESERVED_CLAWS	(1U << 30)   /* for claws-mail */
 #define	MSG_RESERVED		(1U << 31)
 
 typedef guint32 MsgPermFlags;

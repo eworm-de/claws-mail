@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1195,7 +1195,7 @@ static void prefs_account_basic_create(void)
 
 	no_imap_warn_icon = gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
-	no_imap_warn_label = gtk_label_new(_("<span weight=\"bold\">Warning: this version of Sylpheed-Claws\n"
+	no_imap_warn_label = gtk_label_new(_("<span weight=\"bold\">Warning: this version of Claws Mail\n"
 			  "has been built without IMAP support.</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(no_imap_warn_label), TRUE);
 

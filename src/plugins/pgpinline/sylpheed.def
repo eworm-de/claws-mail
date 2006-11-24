@@ -1,4 +1,4 @@
-LIBRARY SYLPHEED-CLAWS.EXE
+LIBRARY CLAWS-MAIL.EXE
 EXPORTS
 codeconv_set_strict
 conv_codeset_strdup

@@ -14,7 +14,7 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
-#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * 2003-10-01: add --debug and --dry-run options
 #  * 2003-09-30: updated/improved by Matthias Förste <itsjustme@users.sourceforge.net>
@@ -22,9 +22,9 @@
 
 ## script name : maildir2sylpheed.pl
 
-## script purpose : convert a Kmail mailbox into a Sylpheed mailbox
+## script purpose : convert a Kmail mailbox into a Claws Mail mailbox
 
-## USAGE: maildir2sylpheed.pl --kmaildir=Mail
+## USAGE: maildir2claws-mail.pl --kmaildir=Mail
 
 ## tested with Kmail version 1.5.2
 
@@ -40,8 +40,8 @@ my $PRETEND = '';
 # print debug info if set
 my $DEBUG = '';
 
-my $sylpheed_tmpdir = "$ENV{HOME}/sylpheed_tmp";
-my $kmail_olddir    = "$ENV{HOME}/kmail_junk";
+my $claws_tmpdir = "$ENV{HOME}/claws_tmp";
+my $kmail_olddir = "$ENV{HOME}/kmail_junk";
 
 GetOptions("kmaildir=s" => \$kmaildir,
 	   "help"	=> \$iNeedHelp,
@@ -53,7 +53,7 @@ if ($kmaildir eq "" || $iNeedHelp) {
 		print "No directory name given\n";
 	}
 	print "Use the following format:\n";
-	print "\tmaildir2sylpheed.pl --kmaildir=mail_folder_name\n\n";
+	print "\tmaildir2claws-mail.pl --kmaildir=mail_folder_name\n\n";
 	print "For example: 'Mail'\n";
 	exit;
 }
@@ -73,12 +73,12 @@ if (-d $MAIL_dir) {
 }
 
 unless ($PRETEND) {
-	mkdir("$sylpheed_tmpdir", 0755);
+	mkdir("$claws_tmpdir", 0755);
 	system("mv $kmaildir $kmail_olddir");
-	system("mv $sylpheed_tmpdir $ENV{HOME}/Mail");
+	system("mv $claws_tmpdir $ENV{HOME}/Mail");
 
 	print "\n\nSucessfully converted mailbox \"$MAIL_dir\"\n";
-	print "Start Sylpheed and right-click \"Mailbox (MH)\" and ";
+	print "Start claws-mail and right-click \"Mailbox (MH)\" and ";
 	print "select \"Rebuild folder tree\"\n";
 	print "You may also need to run \"/File/Folder/Check for ";
 	print "new messages in all folders\"\n\n";
@@ -114,7 +114,7 @@ sub process_dir() {
 		$tmpdir =~ s/\.directory//g;
 		$tmpdir =~ s/\.//g;
 		
-		my $newdir = "$sylpheed_tmpdir/$tmpdir";
+		my $newdir = "$claws_tmpdir/$tmpdir";
 		$DEBUG && print qq{\n>>> -e "$newdir" || mkdir("$newdir")};
 		$PRETEND || -e "$newdir" || mkdir("$newdir");
 	}
@@ -145,7 +145,7 @@ sub process_file {
 		}
 
     		$nfile = join("/", @spl_str);
-    		$nfile =~ s|$kmaildir|$sylpheed_tmpdir/|;
+    		$nfile =~ s|$kmaildir|$claws_tmpdir/|;
 	}
 
 	if (-e "$file" && $nfile ne "") {

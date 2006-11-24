@@ -2,7 +2,7 @@
 
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -584,7 +584,7 @@ struct _FolderClass
 	 */
 	void		(*synchronise)		(FolderItem	*item);
 	
-	/* Passed from sylpheed-claws --subscribe scheme://uri. Implementations
+	/* Passed from claws-mail --subscribe scheme://uri. Implementations
 	 * should check if they handle this type of URI, and return TRUE in this
 	 * case after having subscribed it.
 	 */

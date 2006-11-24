@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,7 +446,7 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	static GdkGeometry geometry;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed-Claws - Message View"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Claws Mail - Message View"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
 	if (!geometry.min_height) {
@@ -715,7 +715,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to send this email.")))
 		return 0;
 
@@ -852,7 +852,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	
 	if (messageview->window)
 		gtk_window_set_title(GTK_WINDOW(messageview->window), 
-				_("Sylpheed-Claws - Message View"));
+				_("Claws Mail - Message View"));
 	if (messageview->window && msginfo->subject) {
 		subject = g_strdup(msginfo->subject);
 		if (!g_utf8_validate(subject, -1, NULL)) {

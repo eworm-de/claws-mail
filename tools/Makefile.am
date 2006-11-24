@@ -1,6 +1,6 @@
 EXTRA_TOOLS = \
-	OOo2sylpheed.pl \
-	acroread2sylpheed.pl \
+	OOo2claws-mail.pl \
+	acroread2claws-mail.pl \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \
@@ -11,16 +11,16 @@ EXTRA_TOOLS = \
 	gif2xface.pl \
 	google_msgid.pl \
 	google_search.pl \
-	kmail2sylpheed.pl \
-	kmail2sylpheed_v2.pl \
-	maildir2sylpheed.pl \
+	kmail2claws-mail.pl \
+	kmail2claws-mail_v2.pl \
+	maildir2claws-mail.pl \
 	multiwebsearch.pl \
-	nautilus2sylpheed.sh \
-	outlook2sylpheed.pl \
+	nautilus2claws-mail.sh \
+	outlook2claws-mail.pl \
 	sylprint.pl \
 	sylprint.rc \
-	tb2sylpheed \
-	tbird2syl.py \
+	tb2claws-mail \
+	tbird2claws.py \
 	textviewer.pl \
 	textviewer.sh \
 	update-po \
@@ -28,15 +28,15 @@ EXTRA_TOOLS = \
 	uuooffice \
 	vcard2xml.py \
 	kdeservicemenu/install.sh \
-	kdeservicemenu/sylpheed-kdeservicemenu.pl
+	kdeservicemenu/claws-mail-kdeservicemenu.pl
 
 EXTRA_DIST = \
 	README \
 	README.sylprint \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
-	kdeservicemenu/template_sylpheed-attach-files.desktop \
-	kdeservicemenu/template_sylpheed-compress-attach.desktop \
+	kdeservicemenu/template_claws-mail-attach-files.desktop \
+	kdeservicemenu/template_claws-mail-compress-attach.desktop \
 	$(EXTRA_TOOLS)
 
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)

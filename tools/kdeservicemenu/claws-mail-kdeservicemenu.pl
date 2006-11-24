@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2004 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2004 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -18,18 +18,18 @@
 
 unless ($ARGV[0]) { exit; }
 
-my $sylpheed = "sylpheed-claws --compose --attach";
+my $claws = "claws-mail --compose --attach";
 my $prefix = "/tmp/archive.";
 my $command = find_command($ARGV[0]);
 my ($sel,$att) = split_parts();
 
 if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
-	exec "$sel$sylpheed $att";
+	exec "$sel$claws $att";
 } elsif ($ARGV[0] eq "attachfile") {
-	exec "$sylpheed $sel";
+	exec "$claws $sel";
 } else {
 	exec "$command $prefix$ARGV[0] $sel;"
-	    ."$sylpheed $prefix$ARGV[0]";
+	    ."$claws $prefix$ARGV[0]";
 }
 
 exit;

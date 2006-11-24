@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,10 +149,10 @@ typedef enum
 	STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED,
 	STOCK_PIXMAP_PRIVACY_EMBLEM_WARN,
 	STOCK_PIXMAP_MIME_MESSAGE,
-	STOCK_PIXMAP_SYLPHEED_CLAWS_ICON,
+	STOCK_PIXMAP_CLAWS_MAIL_ICON,
 	STOCK_PIXMAP_READ,
 	STOCK_PIXMAP_TRASH,
-	STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO,
+	STOCK_PIXMAP_CLAWS_MAIL_LOGO,
 	STOCK_PIXMAP_DIR_NOSELECT, 
 	STOCK_PIXMAP_SPAM,
 	STOCK_PIXMAP_SPAM_BTN,

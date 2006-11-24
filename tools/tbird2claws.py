@@ -1,19 +1,19 @@
 #!/usr/bin/python
 
-# Script name : tbird2syl.py
-# Script purpose : Integrate a Thunderbird folder tree to S-Claws
+# Script name : tbird2claws.py
+# Script purpose : Integrate a Thunderbird folder tree to Claws Mail
 # Author : Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
 # Licence : GPL
 # Author: Rodrigo Dias Arruda Senra
 
 #The script receives two parameters from command-line:
-#<Thunderbird folder path> <Sylpheed folder path>
+#<Thunderbird folder path> <Claws Mail folder path>
 
 #Best way to use it is to go to inside yout Thunderbird
 #root mailfolder directory and invoke it as:
 
-#<path>\python2.4 <path>\tbird2syl.py . <path to
-#sylpheed>\Mail
+#<path>\python2.4 <path>\tbird2claws.py . <path to
+#claws-mail>\Mail
 
 import os
 import sys
@@ -24,18 +24,18 @@ __version__ =  '0.3'
 
 __doc__ = r"""
 This module integrates your Mozilla Thunderbird 1.0 tree to
-your sylpheed MH mailbox tree.
+your Claws Mail MH mailbox tree.
 
 The script receives two parameters from command-line:
- <Thunderbird folder path> <Sylpheed folder path>
+ <Thunderbird folder path> <Claws Mail folder path>
 
 Best way to use it is to go to inside yout Thunderbird
 root mailfolder directory and invoke it as:
 
-  <path>\python2.4 <path>\tbird2syl.py . <path to sylpheed>\Mail
+  <path>\python2.4 <path>\tbird2syl.py . <path to claws mail>\Mail
 
 This idiom will avoid the creation of the folder Thunderbird inside
-your sylpheed folder tree.
+your Claws Mail folder tree.
 
 If the names of your directories match in both trees, files should
 be placed in the correct folder.

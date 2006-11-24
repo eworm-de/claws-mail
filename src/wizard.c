@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  * This file (C) 2004 Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
@@ -456,7 +456,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
-	subj = g_strdup_printf(_("Welcome to Sylpheed-Claws "));
+	subj = g_strdup_printf(_("Welcome to Claws Mail "));
 
 	head = g_strdup_printf(
 		"From: %s <%s>\n"
@@ -466,21 +466,21 @@ static void write_welcome_email(WizardWindow *wizard)
 		"X-Face: %s\n"
 		"Face: %s\n"
 		"Content-Type: text/plain; charset=UTF-8\n",
-		_("Sylpheed-Claws Team"),
+		_("Claws Mail Team"),
 		USERS_ML_ADDR,
 		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
 		buf_date, subj, XFACE, FACE);
 	body = g_strdup_printf(
 		_("\n"
-		"Welcome to Sylpheed-Claws\n"
+		"Welcome to Claws Mail\n"
 		"-------------------------\n"
 		"\n"
 		"Now that you have set up your account you can fetch your\n"
 		"mail by clicking the 'Get Mail' button at the left of the\n"
 		"toolbar.\n"
 		"\n"
-		"Sylpheed-Claws has lots of extra features accessible via plugins,\n"
+		"Claws Mail has lots of extra features accessible via plugins,\n"
 		"like anti-spam filtering and learning (via the Bogofilter or\n"
 		"SpamAssassin plugins), privacy protection (via PGP/Mime), an RSS\n"
 		"aggregator, a calendar, and much more. You can load them from\n"
@@ -491,7 +491,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"and change the general Preferences by using\n"
 		"'/Configuration/Preferences'.\n"
 		"\n"
-		"You can find further information in the Sylpheed-Claws manual,\n"
+		"You can find further information in the Claws Mail manual,\n"
 		"which can be accessed by using the menu entry '/Help/Manual'\n"
 		"or online at the URL given below.\n"
 		"\n"
@@ -505,7 +505,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"\n"
 		"LICENSE\n"
 		"-------\n"
-		"Sylpheed-Claws is free software, released under the terms\n"
+		"Claws Mail is free software, released under the terms\n"
 		"of the GNU General Public License, version 2 or later, as\n"
 		"published by the Free Software Foundation, 51 Franklin Street,\n"
 		"Fifth Floor, Boston, MA 02110-1301, USA. The license can be\n"
@@ -513,7 +513,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"\n"
 		"DONATIONS\n"
 		"---------\n"
-		"If you wish to donate to the Sylpheed-Claws project you can do\n"
+		"If you wish to donate to the Claws Mail project you can do\n"
 		"so at <%s>.\n\n"),
 		HOMEPAGE_URI, MANUAL_URI, FAQ_URI, THEMES_URI, MAILING_LIST_URI,
 		GPL_URI, DONATE_URI);
@@ -712,7 +712,7 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	/* create the titlebar */
 	hbox = gtk_hbox_new (FALSE, 12);
 	image = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_CLAWS_ICON);
+			  	STOCK_PIXMAP_CLAWS_MAIL_ICON);
 	gtk_box_pack_start (GTK_BOX(hbox), image, FALSE, FALSE, 0);
      	title_string = g_strconcat ("<span size=\"xx-large\" weight=\"ultrabold\">", title ? title : "", "</span>", NULL);
 	w = gtk_label_new (title_string);
@@ -1103,7 +1103,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	i++;
 	
 	wizard->no_imap_warning = gtk_label_new(_(
-			  "<span weight=\"bold\">Warning: this version of Sylpheed-Claws\n"
+			  "<span weight=\"bold\">Warning: this version of Claws Mail\n"
 			  "has been built without IMAP support.</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->no_imap_warning), TRUE);
 	gtk_table_attach(GTK_TABLE(table), wizard->no_imap_warning, 			      
@@ -1245,7 +1245,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard_read_defaults();
 	
-	wizard->window = gtk_dialog_new_with_buttons (_("Sylpheed-Claws Setup Wizard"),
+	wizard->window = gtk_dialog_new_with_buttons (_("Claws Mail Setup Wizard"),
 			NULL, 0, 
 			GTK_STOCK_GO_BACK, GO_BACK,
 			GTK_STOCK_GO_FORWARD, GO_FORWARD,
@@ -1277,19 +1277,19 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 /*welcome page: 0 */
 	WELCOME_PAGE = i;
-	page = create_page(wizard, _("Welcome to Sylpheed-Claws"));
+	page = create_page(wizard, _("Welcome to Claws Mail"));
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
+			  	STOCK_PIXMAP_CLAWS_MAIL_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
-	text = g_strdup(_("Welcome to the Sylpheed-Claws setup wizard.\n\n"
+	text = g_strdup(_("Welcome to the Claws Mail setup wizard.\n\n"
 			  "We will begin by defining some basic "
 			  "information about you and your most common "
 			  "mail options so that you can start to use "
-			  "Sylpheed-Claws in less than five minutes."));
+			  "Claws Mail in less than five minutes."));
 	widget = gtk_label_new(text);
 	gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
@@ -1350,11 +1350,11 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
 	widget = stock_pixmap_widget(wizard->window, 
-			  	STOCK_PIXMAP_SYLPHEED_CLAWS_LOGO);
+			  	STOCK_PIXMAP_CLAWS_MAIL_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
-	text = g_strdup(_("Sylpheed-Claws is now ready.\n\n"
+	text = g_strdup(_("Claws Mail is now ready.\n\n"
 			  "Click Save to start."));
 	widget = gtk_label_new(text);
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto & The Sylpheed-Claws Team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1967,7 +1967,7 @@ const gchar *get_plugin_dir(void)
 
 	if (!plugin_dir)
 		plugin_dir = g_strconcat(w32_get_module_dir(),
-					 "\\lib\\sylpheed-claws\\plugins\\",
+					 "\\lib\\claws-mail\\plugins\\",
 					 NULL);
 	return plugin_dir;
 #else
@@ -3103,7 +3103,7 @@ FILE *my_tmpfile(void)
 	tmplen = strlen(tmpdir);
 	progname = g_get_prgname();
 	if (progname == NULL)
-		progname = "sylpheed-claws";
+		progname = "claws-mail";
 	proglen = strlen(progname);
 	Xalloca(fname, tmplen + 1 + proglen + sizeof(suffix),
 		return tmpfile());
@@ -4695,6 +4695,15 @@ gint copy_dir(const gchar *src, const gchar *dst)
 		debug_print("copying: %s -> %s\n", old_file, new_file);
 		if (g_file_test(old_file, G_FILE_TEST_IS_REGULAR)) {
 			gint r = copy_file(old_file, new_file, TRUE);
+			if (r < 0)
+				return r;
+		} else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
+			GError *error;
+			gint r = 0;
+			gchar *target = g_file_read_link(old_file, &error);
+			if (target)
+				r = symlink(target, new_file);
+			g_free(target);
 			if (r < 0)
 				return r;
 		} else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {

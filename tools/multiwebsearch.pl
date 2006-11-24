@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -27,11 +27,11 @@ GetOptions("where=s"	=> \$where,
 
 $what =~ s/\s/%20/g;
 
-chdir($ENV{HOME} . "/.sylpheed-claws") 
-	|| die("Can't find your ~/.sylpheed-claws directory\n");
+chdir($ENV{HOME} . "/.claws-mail") 
+	|| die("Can't find your ~/.claws-mail directory\n");
 
 open (CONF, "<multiwebsearch.conf") 
-	|| die("Can't open ~/.sylpheed-claws/multiwebsearch.conf\n");
+	|| die("Can't open ~/.claws-mail/multiwebsearch.conf\n");
 	@conflines = <CONF>;
 close CONF;
 
@@ -50,8 +50,8 @@ if (!$url) {
 	die("No url found with the alias \"$where\"\n");
 } 
 
-open (SYLRC, "<sylpheedrc") 
-	|| die("Can't open ~/.sylpheed-claws/sylpheedrc\n");
+open (SYLRC, "<clawsrc") 
+	|| die("Can't open ~/.claws-mail/clawsrc\n");
 	@rclines = <SYLRC>;
 close SYLRC;
 

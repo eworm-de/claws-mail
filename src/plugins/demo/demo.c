@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws Team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,12 @@ static guint hook_id;
 gint plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your sylpheed-claws version is newer than the version the plugin was built with"));
+		*error = g_strdup(_("Your claws-mail version is newer than the version the plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 8, 11, 39))) {
-		*error = g_strdup(_("Your sylpheed-claws version is too old"));
+		*error = g_strdup(_("Your claws-mail version is too old"));
 		return -1;
 	}
 
@@ -76,7 +76,7 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This Plugin is only a demo of how to write plugins for Sylpheed-Claws. "
+	return _("This Plugin is only a demo of how to write plugins for Claws Mail. "
 	         "It installs a hook for new log output and writes it to stdout."
 	         "\n\n"
 	         "It is not really useful");

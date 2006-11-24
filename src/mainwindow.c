@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2693,7 +2693,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		
 		folderwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(folderwin),
-				     _("Sylpheed-Claws - Folder View"));
+				     _("Claws Mail - Folder View"));
 
 		gtk_window_move(GTK_WINDOW(folderwin),
 				prefs_common.folderwin_x,
@@ -2729,7 +2729,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(messagewin),
-				     _("Sylpheed-Claws - Message View"));
+				     _("Claws Mail - Message View"));
 				     
 		gtk_window_move(GTK_WINDOW(messagewin), 
 				prefs_common.main_msgwin_x,
@@ -3120,7 +3120,7 @@ static void print_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
-		if (alertpanel(_("Exit"), _("Exit Sylpheed-Claws?"),
+		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL)
 		    != G_ALERTALTERNATE)
 			return;

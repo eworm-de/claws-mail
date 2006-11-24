@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -791,7 +791,7 @@ void gtkut_widget_init(void)
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
 {
-#include "pixmaps/sylpheed-claws.xpm"
+#include "pixmaps/claws-mail.xpm"
 	static GdkPixmap *sylpheedclawsxpm;
 	static GdkBitmap *sylpheedclawsxpmmask;
 	
@@ -799,7 +799,7 @@ void gtkut_widget_set_app_icon(GtkWidget *widget)
 	g_return_if_fail(widget->window != NULL);
 	if (!sylpheedclawsxpm) {
 		PIXMAP_CREATE(widget, sylpheedclawsxpm, sylpheedclawsxpmmask,
-			      sylpheed_claws_xpm);
+			      claws_mail_xpm);
 	}		
 	gdk_window_set_icon(widget->window, NULL, sylpheedclawsxpm, sylpheedclawsxpmmask);
 }

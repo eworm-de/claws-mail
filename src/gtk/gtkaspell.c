@@ -19,7 +19,7 @@
 /*
  * Stuphead: (C) 2000,2001 Grigroy Bakunov, Sergey Pinaev
  * Adapted for Sylpheed (Claws) (c) 2001-2002 by Hiroyuki Yamamoto & 
- * The Sylpheed Claws Team.
+ * The Claws Mail Team.
  * Adapted for pspell (c) 2001-2002 Melvin Hadasht
  * Adapted for GNU/aspell (c) 2002 Melvin Hadasht
  */
@@ -1066,7 +1066,7 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 		return FALSE;
 
 	if (misspelled_test(gtkaspell, buf)
-	&& strcasecmp((char *)buf, "sylpheed") && strcasecmp((char *)buf, "sylpheed-claws")) {
+	&& strcasecmp((char *)buf, "sylpheed") && strcasecmp((char *)buf, "claws-mail")) {
 		strncpy(gtkaspell->theword, (gchar *)buf, GTKASPELLWORDSIZE - 1);
 		gtkaspell->theword[GTKASPELLWORDSIZE - 1] = 0;
 		gtkaspell->start_pos  = start;

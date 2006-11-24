@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,7 +170,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return;
 
@@ -275,7 +275,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return 0;
 
@@ -301,7 +301,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return;
 
@@ -770,7 +770,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
 			  "using SSL, but SSL is not available in this "
-			  "build of Sylpheed-Claws. \n\n"
+			  "build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),

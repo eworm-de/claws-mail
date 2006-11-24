@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 my $google = "http://www.google.com/search?q";
 $_ = <>;
 
-chdir($ENV{HOME} . "/.sylpheed-claws") || die("Can't find your .sylpheed-claws directory\n");
+chdir($ENV{HOME} . "/.claws-mail") || die("Can't find your .claws-mail directory\n");
 
-open (SYLRC, "<sylpheedrc") || die("Can't open the sylpheedrc file\n");
+open (SYLRC, "<clawsrc") || die("Can't open the clawsrc file\n");
 	@rclines = <SYLRC>;
 close SYLRC;
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -409,7 +409,7 @@ static gboolean summary_update_folder_item_name(gpointer source, gpointer data);
 GtkTargetEntry summary_drag_types[2] =
 {
 	{"text/uri-list", 0, TARGET_MAIL_URI_LIST},
-	{"sylpheed-claws/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+	{"claws-mail/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY}
 };
 
 static GtkItemFactoryEntry summary_popup_entries[] =

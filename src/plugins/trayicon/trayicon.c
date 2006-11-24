@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws Team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
 	{N_("/_Work Offline"),		NULL, trayicon_toggle_offline_cb,	0, "<CheckItem>"},
 	{N_("/---"),			NULL, NULL,				0, "<Separator>"},
-	{N_("/E_xit Sylpheed-Claws"),	NULL, trayicon_exit_cb,			0, NULL}
+	{N_("/E_xit Claws Mail"),	NULL, trayicon_exit_cb,			0, NULL}
 };
 
 static void set_trayicon_pixmap(TrayIconType icontype)
@@ -261,7 +261,7 @@ static void create_trayicon()
 {
 	gint n_entries = 0;
 
-	trayicon = egg_tray_icon_new("Sylpheed-Claws");
+	trayicon = egg_tray_icon_new("Claws Mail");
 	gtk_widget_realize(GTK_WIDGET(trayicon));
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
 	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
@@ -312,12 +312,12 @@ static void create_trayicon()
 int plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Sylpheed-Claws is newer than the version the Trayicon plugin was built with"));
+		*error = g_strdup(_("Your version of Claws Mail is newer than the version the Trayicon plugin was built with"));
 		return -1;
 	}
 
 	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup(_("Your version of Sylpheed-Claws is too old for the Trayicon plugin"));
+		*error = g_strdup(_("Your version of Claws Mail is too old for the Trayicon plugin"));
 		return -1;
 	}
 

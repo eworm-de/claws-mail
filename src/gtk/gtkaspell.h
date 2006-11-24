@@ -20,7 +20,7 @@
  */
 
 /*
- * Adapted by the Sylpheed Claws Team.
+ * Adapted by the Claws Mail Team.
  */
 
 /*

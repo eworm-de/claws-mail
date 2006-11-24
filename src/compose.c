@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Sylpheed-Claws team
+ * Copyright (C) 1999-2006 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -7730,7 +7730,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(
-		_("Sylpheed-Claws needs network access in order "
+		_("Claws Mail needs network access in order "
 		  "to send this email.")))
 		return;
 	

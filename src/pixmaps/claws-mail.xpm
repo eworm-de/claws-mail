@@ -1,5 +1,5 @@
 /* XPM */
-static char * sylpheed_claws_xpm[] = {
+static char * claws_mail_xpm[] = {
 "50 50 65 1",
 " 	c None",
 ".	c #757474",

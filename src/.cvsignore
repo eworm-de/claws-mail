@@ -1,7 +1,7 @@
 Makefile
 .deps
 .libs
-sylpheed-claws
+claws-mail
 Makefile.in
 tags
 *.swp
