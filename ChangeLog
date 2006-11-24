@@ -1,3 +1,9 @@
+2006-11-24 [paul]	2.6.0cvs13-stable
+
+	* tools/kdeservicemenu/template_claws-mail-compress-attach.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		missed in last commit
+
 2006-11-24 [paul]	2.6.0cvs12-stable
 
 	* .cvsignore
