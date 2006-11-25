@@ -819,7 +819,7 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	
 	if (!item)
 		return;
-	if(FOLDER_SHOWS_TO_HDR(item))
+	if (FOLDER_SHOWS_TO_HDR(item))
 		show_to = TRUE;
 	else
 		show_from = TRUE;
@@ -2341,7 +2341,8 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		case S_COL_DATE:
 		case S_COL_NUMBER:
 			if(type == S_COL_FROM && item != NULL &&
-					FOLDER_SHOWS_TO_HDR(item))
+					FOLDER_SHOWS_TO_HDR(item) &&
+					!summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
 				type = S_COL_TO;
 			if (prefs_common.trans_hdr)
 				title = gettext(col_label[type]);

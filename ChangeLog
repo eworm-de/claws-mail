@@ -1,3 +1,10 @@
+2006-11-25 [paul]	2.6.0cvs14-stable
+
+	* src/summaryview.c
+		backport fix from 2.6.0cvs59:
+		don't change the From column title to
+		To if the To column is visible
+
 2006-11-24 [paul]	2.6.0cvs13-stable
 
 	* tools/kdeservicemenu/template_claws-mail-compress-attach.desktop
