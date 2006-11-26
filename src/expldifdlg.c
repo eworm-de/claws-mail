@@ -229,7 +229,7 @@ static gboolean exp_ldif_move_dn( void ) {
 	/* Set RDN format */
 	menu = gtk_option_menu_get_menu( GTK_OPTION_MENU( expldif_dlg.optmenuRDN ) );
 	menuItem = gtk_menu_get_active( GTK_MENU( menu ) );
-	id = GPOINTER_TO_INT( gtk_object_get_user_data(GTK_OBJECT(menuItem)) );
+	id = GPOINTER_TO_INT( g_object_get_data(G_OBJECT(menuItem), "user_data"));
 	exportldif_set_rdn( _exportCtl_, id );
 
 	exportldif_set_suffix( _exportCtl_, suffix );
@@ -493,7 +493,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	menu = gtk_menu_new();
 
 	menuItem = gtk_menu_item_new_with_label( _( "Unique ID" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
+	g_object_set_data( G_OBJECT( menuItem ), "user_data",
 			GINT_TO_POINTER( EXPORT_LDIF_ID_UID ) );
 	gtk_menu_append( GTK_MENU(menu), menuItem );
 	gtk_widget_show( menuItem );
@@ -506,7 +506,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		), NULL );
 
 	menuItem = gtk_menu_item_new_with_label( _( "Display Name" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
+	g_object_set_data( G_OBJECT( menuItem ), "user_data",
 			GINT_TO_POINTER( EXPORT_LDIF_ID_DNAME ) );
 	gtk_menu_append( GTK_MENU(menu), menuItem );
 	gtk_widget_show( menuItem );
@@ -519,7 +519,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		), NULL );
 
 	menuItem = gtk_menu_item_new_with_label( _( "Email Address" ) );
-	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
+	g_object_set_data( G_OBJECT( menuItem ), "user_data",
 			GINT_TO_POINTER( EXPORT_LDIF_ID_EMAIL ) );
 	gtk_menu_append( GTK_MENU(menu), menuItem );
 	gtk_widget_show( menuItem );

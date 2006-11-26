@@ -1,3 +1,15 @@
+2006-11-26 [paul]	2.6.0cvs63
+
+	* src/expldifdlg.c
+	* src/folderview.c
+	* src/image_viewer.c
+	* src/mainwindow.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/prefswindow.c
+	* src/plugins/pgpcore/prefs_gpg.c
+		replace more deprecated GTK+ functions
+
 2006-11-26 [paul]	2.6.0cvs62
 
 	* src/addr_compl.c

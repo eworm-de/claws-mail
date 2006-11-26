@@ -560,7 +560,8 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 		gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), "");
 		pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
 						prefswindow->empty_page);
-		gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(prefswindow->notebook),
+					      pagenum);
 		return TRUE;
 	}
 
@@ -579,7 +580,8 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
 					page->widget);
-	gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(prefswindow->notebook),
+				      pagenum);
 
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));

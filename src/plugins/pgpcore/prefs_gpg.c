@@ -284,7 +284,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 
 	key_default = gtk_radio_button_new_with_label(key_group,
 			_("Use default GnuPG key"));
-	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_default));
+	key_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(key_default));
 	gtk_widget_show(key_default);
 	gtk_box_pack_start(GTK_BOX(hbox), key_default, FALSE, FALSE, 0);
 
@@ -295,7 +295,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 
 	key_by_from = gtk_radio_button_new_with_label(key_group,
 		_("Select key by your email address"));
-	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_by_from));
+	key_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(key_by_from));
 	gtk_widget_show(key_by_from);
 	gtk_box_pack_start(GTK_BOX(hbox), key_by_from, FALSE, FALSE, 0);
 
@@ -306,7 +306,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 
 	key_custom = gtk_radio_button_new_with_label(key_group,
 		_("Specify key manually"));
-	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_custom));
+	key_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(key_custom));
 	gtk_widget_show(key_custom);
 	gtk_box_pack_start(GTK_BOX(hbox), key_custom, FALSE, FALSE, 0);
 

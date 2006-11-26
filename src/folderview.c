@@ -394,9 +394,9 @@ static void folderview_column_set_titles(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_READ,
 			 &readxpm, &readxpmmask);
 		
-	label_new = gtk_pixmap_new(newxpm, newxpmmask);
-	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
-	label_total = gtk_pixmap_new(readxpm, readxpmmask);
+	label_new = gtk_image_new_from_pixmap(newxpm, newxpmmask);
+	label_unread = gtk_image_new_from_pixmap(unreadxpm, unreadxpmmask);
+	label_total = gtk_image_new_from_pixmap(readxpm, readxpmmask);
 	
 	gtk_clist_column_titles_active(GTK_CLIST(ctree));
 	 

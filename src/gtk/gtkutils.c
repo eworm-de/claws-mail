@@ -772,19 +772,19 @@ void gtkut_widget_init(void)
 
 	clist = gtk_clist_new(1);
 	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(GTK_OBJECT(clist));
+	g_object_ref_sink(G_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
 	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_ctree_new(1, 0);
 	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(GTK_OBJECT(clist));
+	g_object_ref_sink(G_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
 	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_sctree_new_with_titles(1, 0, NULL);
 	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(GTK_OBJECT(clist));
+	g_object_ref_sink(G_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
 	g_object_unref(G_OBJECT(clist));
 }

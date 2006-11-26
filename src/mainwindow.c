@@ -2487,15 +2487,17 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 			item = NULL;
 			if (!g_strncasecmp(url_decoded, "mailto:", 7)) {
  				item = gtk_menu_item_new_with_label ((url_decoded));
-				gtk_signal_connect (GTK_OBJECT(item), "activate",
-						GTK_SIGNAL_FUNC(mailing_list_compose), NULL);
+				g_signal_connect(G_OBJECT(item), "activate",
+						 G_CALLBACK(mailing_list_compose),
+						 NULL);
 			}
  			else if (!g_strncasecmp (url_decoded, "http:", 5) ||
 				 !g_strncasecmp (url_decoded, "https:",6)) {
 
 				item = gtk_menu_item_new_with_label ((url_decoded));
-				gtk_signal_connect (GTK_OBJECT(item), "activate",
-						GTK_SIGNAL_FUNC(mailing_list_open_uri), NULL);
+				g_signal_connect(G_OBJECT(item), "activate",
+						 G_CALLBACK(mailing_list_open_uri),
+						 NULL);
 			} 
 			if (item) {
 				gtk_menu_append (GTK_MENU(menu), item);
