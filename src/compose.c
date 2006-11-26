@@ -1358,7 +1358,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
-	
+
 	g_return_val_if_fail(account != NULL, NULL);
 
 	if (to_sender && account->protocol == A_NNTP &&
@@ -2714,7 +2714,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			else if (!to_all && !to_sender) {
 				/* reply to the last list of recipients */
 				compose_entry_append(compose,
-					  msginfo->to ? msginfo->to : "",
+					  msginfo->from ? msginfo->from : "",
 					  COMPOSE_TO);
 				compose_entry_append(compose,
 					  msginfo->cc ? msginfo->cc : "",
@@ -4110,6 +4110,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		gchar *entry;
 		header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
+
 		g_strstrip(entry);
 		if (entry[0] != '\0') {
 			for (strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
@@ -9288,7 +9289,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	if (g_slist_length(msginfo_list) == 1 && !opening_multiple) {
 		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
 		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
-		
+
 		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
 		    !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 			tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(

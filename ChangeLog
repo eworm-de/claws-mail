@@ -1,3 +1,11 @@
+2006-11-26 [paul]	2.6.0cvs60
+
+	* src/compose.c
+		fix bug that caused the wrong recipient
+		to be selected when replying to a msg
+		which is From one of our accounts to
+		another of our accounts
+
 2006-11-25 [paul]	2.6.0cvs59
 
 	* src/summaryview.c
