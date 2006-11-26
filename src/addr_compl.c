@@ -718,7 +718,7 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 
 	/* Remove idler function... or application may not terminate */
 	if( _completionIdleID_ != 0 ) {
-		gtk_idle_remove( _completionIdleID_ );
+		g_source_remove( _completionIdleID_ );
 		_completionIdleID_ = 0;
 	}
 
@@ -1008,7 +1008,7 @@ static void addrcompl_start_search( void ) {
 
 	/* Sit back and wait until something happens */
 	_completionIdleID_ =
-		gtk_idle_add( ( GtkFunction ) addrcompl_idle, NULL );
+		g_idle_add( ( GtkFunction ) addrcompl_idle, NULL );
 	/* printf( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
 
 	addrindex_start_search( _queryID_ );
@@ -1042,7 +1042,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view,
 
 	/* First remove the idler */
 	if( _completionIdleID_ != 0 ) {
-		gtk_idle_remove( _completionIdleID_ );
+		g_source_remove( _completionIdleID_ );
 		_completionIdleID_ = 0;
 	}
 

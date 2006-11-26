@@ -1,3 +1,10 @@
+2006-11-26 [paul]	2.6.0cvs62
+
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/browseldap.c
+		replace deprecated gtk_idle_... functions
+
 2006-11-26 [paul]	2.6.0cvs61
 
 	* src/compose.c

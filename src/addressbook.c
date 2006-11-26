@@ -3914,7 +3914,7 @@ void addressbook_clear_idler( gint queryID ) {
 	/* printf( "addressbook_clear_idler::%d::\n", queryID ); */
 	ptrQID = GINT_TO_POINTER( queryID );
 	if( ptrQID ) {
-		gtk_idle_remove_by_data( ptrQID );
+		g_idle_remove_by_data( ptrQID );
 	}
 }
 
@@ -3937,7 +3937,7 @@ static void addressbook_search_callback_end(
 	/* Remove idler function */
 	ptrQID = GINT_TO_POINTER( queryID );
 	if( ptrQID ) {
-		gtk_idle_remove_by_data( ptrQID );
+		g_idle_remove_by_data( ptrQID );
 	}
 
 	/* Refresh addressbook contents */
@@ -4016,7 +4016,7 @@ static void addressbook_perform_search(
 	if( queryID == 0 ) return;
 
 	/* Set up idler function */
-	idleID = gtk_idle_add(
+	idleID = g_idle_add(
 			( GtkFunction ) addressbook_search_idle,
 			GINT_TO_POINTER( queryID ) );
 

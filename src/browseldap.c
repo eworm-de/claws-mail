@@ -338,7 +338,7 @@ static gboolean browse_idle( gpointer data ) {
 	if( _searchComplete_ ) {
 		/* Remove idler */
 		if( _browseIdleID_ != 0 ) {
-			gtk_idle_remove( _browseIdleID_ );
+			g_source_remove( _browseIdleID_ );
 			_browseIdleID_ = 0;
 			gtk_clist_select_row(
 				GTK_CLIST( browseldap_dlg.list_entry ), 0, 0 );
@@ -383,7 +383,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	_searchComplete_ = FALSE;
 	_queryID_ = ldaplocate_search_setup(
 			server, dn, browse_callback_entry, browse_callback_end );
-	_browseIdleID_ = gtk_idle_add( ( GtkFunction ) browse_idle, NULL );
+	_browseIdleID_ = g_idle_add( ( GtkFunction ) browse_idle, NULL );
 
 	/* Start search */
 	ldaplocate_search_start( _queryID_ );
@@ -396,7 +396,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	ldaplocate_search_stop( _queryID_ );
 
 	if( _browseIdleID_ != 0 ) {
-		gtk_idle_remove( _browseIdleID_ );
+		g_source_remove( _browseIdleID_ );
 		_browseIdleID_ = 0;
 	}
 	browse_clear_queue();
