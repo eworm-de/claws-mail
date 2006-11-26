@@ -197,9 +197,9 @@ static gboolean searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 {
 	if (prefs_common.summary_quicksearch_dynamic) {
 		if (qs->press_timeout_id != -1) {
-			gtk_timeout_remove(qs->press_timeout_id);
+			g_source_remove(qs->press_timeout_id);
 		}
-		qs->press_timeout_id = gtk_timeout_add(500,
+		qs->press_timeout_id = g_timeout_add(500,
 				searchbar_changed_timeout, qs);
 	}
 

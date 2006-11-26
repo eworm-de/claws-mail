@@ -7865,7 +7865,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	
 	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
-		gtk_timeout_remove(compose->draft_timeout_tag);
+		g_source_remove(compose->draft_timeout_tag);
 		compose->draft_timeout_tag = -1;
 	}
 
@@ -9140,7 +9140,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 
 	if (prefs_common.autosave && 
 	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0)
-		compose->draft_timeout_tag = gtk_timeout_add
+		compose->draft_timeout_tag = g_timeout_add
 			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }
 static gint compose_defer_auto_save_draft(Compose *compose)

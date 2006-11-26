@@ -2604,7 +2604,7 @@ void folderview_reflect_prefs(void)
 static void drag_state_stop(FolderView *folderview)
 {
 	if (folderview->drag_timer)
-		gtk_timeout_remove(folderview->drag_timer);
+		g_source_remove(folderview->drag_timer);
 	folderview->drag_timer = 0;
 	folderview->drag_node = NULL;
 }
@@ -2631,7 +2631,7 @@ static void drag_state_start(FolderView *folderview, GtkCTreeNode *node, FolderI
 	 * we need to call drag_state_stop() */
 	drag_state_stop(folderview);
 	/* request expansion */
-	if (0 != (folderview->drag_timer = gtk_timeout_add
+	if (0 != (folderview->drag_timer = g_timeout_add
 			(prefs_common.hover_timeout, 
 			 (GtkFunction)folderview_defer_expand,
 			 folderview))) {

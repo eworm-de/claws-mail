@@ -1,3 +1,15 @@
+2006-11-26 [paul]	2.6.0cvs61
+
+	* src/compose.c
+	* src/folderview.c
+	* src/inc.c
+	* src/summaryview.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpcore/passphrase.c
+		replace deprecated gtk_timeout_add and
+		gtk_timeout_remove
+
 2006-11-26 [paul]	2.6.0cvs60
 
 	* src/compose.c

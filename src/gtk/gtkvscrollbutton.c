@@ -34,6 +34,7 @@
 #  include "config.h"
 #endif
 
+#include <glib.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkmisc.h>
@@ -305,10 +306,10 @@ gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton)
 	 * above, we might have been removed, and another added.
 	 */
 	g_source_remove(scrollbutton->timer);
-	scrollbutton->timer = gtk_timeout_add(SCROLL_LATER_DELAY,
-					      (GtkFunction)
-					      gtk_real_vscrollbutton_timer,
-					      scrollbutton);
+	scrollbutton->timer = g_timeout_add(SCROLL_LATER_DELAY,
+					    (GtkFunction)
+					    gtk_real_vscrollbutton_timer,
+					    scrollbutton);
     }
     g_object_unref(G_OBJECT(scrollbutton));
     return FALSE;		/* don't keep calling this function */
@@ -322,10 +323,10 @@ static void gtk_vscrollbutton_add_timer(GtkVScrollbutton *scrollbutton)
 
     if (!scrollbutton->timer) {
 	scrollbutton->need_timer = TRUE;
-	scrollbutton->timer = gtk_timeout_add(SCROLL_INITIAL_DELAY,
-					      (GtkFunction)
-					      gtk_vscrollbutton_timer_1st_time,
-					      scrollbutton);
+	scrollbutton->timer = g_timeout_add(SCROLL_INITIAL_DELAY,
+					    (GtkFunction)
+					    gtk_vscrollbutton_timer_1st_time,
+					    scrollbutton);
     }
 }
 
@@ -335,7 +336,7 @@ static void gtk_vscrollbutton_remove_timer(GtkVScrollbutton *scrollbutton)
     g_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
 
     if (scrollbutton->timer) {
-	gtk_timeout_remove(scrollbutton->timer);
+	g_source_remove(scrollbutton->timer);
 	scrollbutton->timer = 0;
     }
     scrollbutton->need_timer = FALSE;
@@ -352,9 +353,9 @@ static gint gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
 	return_val = FALSE;
 	if (scrollbutton->need_timer)
 	    scrollbutton->timer =
-		gtk_timeout_add(SCROLL_TIMER_LENGTH, 
-				(GtkFunction) gtk_real_vscrollbutton_timer,
-				(gpointer) scrollbutton);
+		g_timeout_add(SCROLL_TIMER_LENGTH, 
+			      (GtkFunction) gtk_real_vscrollbutton_timer,
+			      (gpointer) scrollbutton);
 	else {
 	    GDK_THREADS_LEAVE();
 	    return FALSE;

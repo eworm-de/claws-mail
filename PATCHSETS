@@ -2085,3 +2085,4 @@
 ( cvs diff -u -r 1.382.2.333 -r 1.382.2.334 src/compose.c;  ) > 2.6.0cvs58.patchset
 ( cvs diff -u -r 1.395.2.267 -r 1.395.2.268 src/summaryview.c;  ) > 2.6.0cvs59.patchset
 ( cvs diff -u -r 1.382.2.334 -r 1.382.2.335 src/compose.c;  ) > 2.6.0cvs60.patchset
+( cvs diff -u -r 1.382.2.335 -r 1.382.2.336 src/compose.c;  cvs diff -u -r 1.207.2.134 -r 1.207.2.135 src/folderview.c;  cvs diff -u -r 1.149.2.62 -r 1.149.2.63 src/inc.c;  cvs diff -u -r 1.395.2.268 -r 1.395.2.269 src/summaryview.c;  cvs diff -u -r 1.5.2.4 -r 1.5.2.5 src/gtk/gtkvscrollbutton.c;  cvs diff -u -r 1.1.2.51 -r 1.1.2.52 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/plugins/pgpcore/passphrase.c;  ) > 2.6.0cvs61.patchset

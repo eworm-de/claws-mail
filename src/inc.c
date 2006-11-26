@@ -1403,7 +1403,7 @@ static void inc_autocheck_timer_set_interval(guint interval)
 	   the common preferences */
 	if (prefs_common.autochk_newmail && autocheck_data
 	    && prefs_common.work_offline == FALSE) {
-		autocheck_timer = gtk_timeout_add
+		autocheck_timer = g_timeout_add
 			(interval, inc_autocheck_func, autocheck_data);
 		debug_print("added timer = %d\n", autocheck_timer);
 	}
@@ -1418,7 +1418,7 @@ void inc_autocheck_timer_remove(void)
 {
 	if (autocheck_timer) {
 		debug_print("removed timer = %d\n", autocheck_timer);
-		gtk_timeout_remove(autocheck_timer);
+		g_source_remove(autocheck_timer);
 		autocheck_timer = 0;
 	}
 }

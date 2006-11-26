@@ -337,9 +337,9 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
                 debug_print("%% locking passphrase failed\n");
 #endif
             if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
-                    gtk_timeout_add(prefs_gpg_get_config()
-                                    ->store_passphrase_timeout*60*1000,
-                                free_passphrase, NULL);
+                    g_timeout_add(prefs_gpg_get_config()
+                                  ->store_passphrase_timeout*60*1000,
+                                  free_passphrase, NULL);
             }
         }
         debug_print ("%% sending passphrase\n");

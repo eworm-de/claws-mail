@@ -3007,7 +3007,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			data->summaryview = summaryview;
 			data->msginfo = msginfo;
 			data->row = row;
-			gtk_timeout_add(prefs_common.mark_as_read_delay * 1000,
+			g_timeout_add(prefs_common.mark_as_read_delay * 1000,
 				msginfo_mark_as_read_timeout, data);
 		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {
 			msginfo_mark_as_read(summaryview, msginfo, row);
@@ -3397,8 +3397,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		msginfo->msgnum);
 }
 
-void summary_mark_as_read
-(SummaryView *summaryview)
+void summary_mark_as_read(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
