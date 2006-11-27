@@ -103,14 +103,13 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, &mask, 0);
 
 	if (!imageviewer->image) {
-		imageviewer->image = gtk_image_new_from_pixmap(pixmap, mask);
+		imageviewer->image = gtk_pixmap_new(pixmap, mask);
 
 		gtk_scrolled_window_add_with_viewport
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
 	} else
-		gtk_image_set_from_pixmap(GTK_PIXMAP(imageviewer->image),
-					  pixmap, mask);
+		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), pixmap, mask);
 
 	gtk_widget_show(imageviewer->image);
 
@@ -174,8 +173,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	image_viewer_set_notebook_page(_mimeviewer);
 
 	if (imageviewer->image != NULL)
-		gtk_image_set_from_pixmap(GTK_PIXMAP(imageviewer->image),
-					  NULL, NULL);
+		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), NULL, NULL);
 
 	if (imageviewer->scrolledwin) {
 		hadj = gtk_scrolled_window_get_hadjustment

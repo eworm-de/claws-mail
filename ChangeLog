@@ -1,3 +1,8 @@
+2006-11-27 [paul]	2.6.0cvs65
+
+	* src/image_viewer.c
+		revert the last change for now (it's broken)
+
 2006-11-27 [paul]	2.6.0cvs64
 
 	* Makefile.am
