@@ -64,7 +64,7 @@
 #include "log.h"
 #include "remotefolder.h"
 #include "alertpanel.h"
-#include "sylpheed.h"
+#include "claws.h"
 #include "statusbar.h"
 #include "msgcache.h"
 #include "imap-thread.h"
@@ -389,7 +389,7 @@ static gchar *imap_item_get_path		(Folder		*folder,
 static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item);
 
 
-/* data types conversion libetpan <-> sylpheed */
+/* data types conversion libetpan <-> claws */
 static GSList * imap_list_from_lep(IMAPFolder * folder,
 				   clist * list, const gchar * real_path, gboolean all);
 static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist);
@@ -4016,7 +4016,7 @@ static void imap_set_batch (Folder *folder, FolderItem *_item, gboolean batch)
 
 
 
-/* data types conversion libetpan <-> sylpheed */
+/* data types conversion libetpan <-> claws */
 
 
 

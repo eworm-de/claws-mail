@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	claws-mail.png \
 	autogen.sh
 
-if SYLPHEED_GNOME2
+if CLAWS_GNOME2
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 pixmap_DATA=claws-mail.png
@@ -41,7 +41,7 @@ install-data-hook:
         fi
 
 else
-if SYLPHEED_GNOME
+if CLAWS_GNOME
 pixmapdir=$(gnomedatadir)/pixmaps
 pixmap_DATA=claws-mail.png
 gnomapdir=$(gnomedatadir)/gnome/apps/Internet
@@ -57,6 +57,6 @@ endif
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = claws-mail.pc
 
-sylpheedincludedir = $(pkgincludedir)
-sylpheedinclude_HEADERS = \
+clawsincludedir = $(pkgincludedir)
+clawsinclude_HEADERS = \
 	config.h

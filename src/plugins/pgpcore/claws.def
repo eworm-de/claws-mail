@@ -30,6 +30,6 @@ prefs_set_block_label
 prefs_set_default
 prefs_write_open
 prefs_write_param
-sylpheed_get_version
+claws_get_version
 privacy_set_error
 privacy_get_error

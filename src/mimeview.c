@@ -283,7 +283,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
  	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,
  				      "<MimeView>", &popupfactory, mimeview);
 	tooltips = gtk_tooltips_new();
-	gtk_tooltips_set_delay(tooltips, 0); 
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);

@@ -32,7 +32,7 @@
 #endif
 
 #include "version.h"
-#include "common/sylpheed.h"
+#include "common/claws.h"
 #include "mainwindow.h"
 #include "mimeview.h"
 #include "textview.h"

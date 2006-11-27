@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include "gtksctree.h"
-#include "sylpheed-marshal.h"
+#include "claws-marshal.h"
 #include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "utils.h"
@@ -1326,7 +1326,7 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (GtkSCTreeClass, row_popup_menu),
 			      NULL, NULL,
-			      sylpheed_marshal_VOID__POINTER,
+			      claws_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      GDK_TYPE_EVENT);
 	sctree_signals[EMPTY_POPUP_MENU] =
@@ -1335,7 +1335,7 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (GtkSCTreeClass, empty_popup_menu),
 			      NULL, NULL,
-			      sylpheed_marshal_VOID__POINTER,
+			      claws_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      GDK_TYPE_EVENT);
 	sctree_signals[OPEN_ROW] =
@@ -1352,7 +1352,7 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (GtkSCTreeClass, start_drag),
 			      NULL, NULL,
-			      sylpheed_marshal_VOID__INT_POINTER,
+			      claws_marshal_VOID__INT_POINTER,
 			      G_TYPE_NONE, 2,
 			      G_TYPE_INT,
 			      GDK_TYPE_EVENT);

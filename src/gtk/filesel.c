@@ -34,7 +34,7 @@
 #include <gtk/gtkfilechooser.h>
 #include <gtk/gtkfilechooserdialog.h>
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "filesel.h"
 #include "manage_window.h"
 #include "gtkutils.h"

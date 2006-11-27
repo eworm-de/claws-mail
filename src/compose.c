@@ -81,7 +81,7 @@
 #  include <wctype.h>
 #endif
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"

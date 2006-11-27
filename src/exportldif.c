@@ -44,8 +44,8 @@
 #define mkdir(a,b) mkdir(a)
 #endif
 
-#define DFL_DIR_SYLPHEED_OUT  "sylpheed-out"
-#define DFL_FILE_SYLPHEED_OUT "addressbook.ldif"
+#define DFL_DIR_CLAWS_OUT  "claws-mail-out"
+#define DFL_FILE_CLAWS_OUT "addressbook.ldif"
 
 #define FMT_BUFSIZE           2048
 #define XML_BUFSIZE           2048
@@ -621,13 +621,13 @@ static void exportldif_default_values( ExportLdifCtl *ctl ) {
 
 	str = g_strconcat(
 		get_home_dir(), G_DIR_SEPARATOR_S,
-		DFL_DIR_SYLPHEED_OUT, NULL );
+		DFL_DIR_CLAWS_OUT, NULL );
 
 	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, str );
 	g_free( str );
 
 	ctl->fileLdif =
-		mgu_replace_string( ctl->fileLdif, DFL_FILE_SYLPHEED_OUT );
+		mgu_replace_string( ctl->fileLdif, DFL_FILE_CLAWS_OUT );
 	ctl->suffix = mgu_replace_string( ctl->suffix, "" );
 
 	ctl->rdnIndex = EXPORT_LDIF_ID_UID;

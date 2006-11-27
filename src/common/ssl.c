@@ -28,7 +28,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "utils.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
@@ -120,7 +120,7 @@ gint SSL_connect_nb(SSL *ssl)
 	debug_print("waiting for SSL_connect thread...\n");
 	while(!td->done) {
 		/* don't let the interface freeze while waiting */
-		sylpheed_do_idle();
+		claws_do_idle();
 		if (time(NULL) - start_time > 30) {
 			pthread_cancel(pt);
 			td->done = TRUE;

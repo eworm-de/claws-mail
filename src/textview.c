@@ -1022,7 +1022,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        if (parser->state == SC_HTML_HREF) {
 		        /* first time : get and copy the URL */
 		        if (parser->href == NULL) {
-				/* ALF - the sylpheed html parser returns an empty string,
+				/* ALF - the claws html parser returns an empty string,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
 				if (str) {

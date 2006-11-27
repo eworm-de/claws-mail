@@ -1,4 +1,4 @@
-EXTRA_DIST = version.rc plugin.def sylpheed.def mypgpcore.def pgpinline.deps
+EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def pgpinline.deps
 
 
 if OS_WIN32
@@ -15,15 +15,15 @@ plugin_res_ldflag = -Wl,.libs/version.o
 
 export_symbols = -export-symbols $(srcdir)/plugin.def
 
-plugin_deps = libsylpheed.a libmypgpcore.a $(plugin_res) plugin.def
+plugin_deps = libclaws.a libmypgpcore.a $(plugin_res) plugin.def
 
-libsylpheed.a: sylpheed.def
+libclaws.a: claws.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
 libmypgpcore.a: mypgpcore.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L . -lsylpheed  -lmypgpcore
+plugin_ldadd = -L . -lclaws  -lmypgpcore
 
 else
 plugin_res =
@@ -80,4 +80,4 @@ AM_CPPFLAGS = \
 	-Wno-deprecated-declarations
 
 clean-local:
-	rm -f libsylpheed.a
+	rm -f libclaws.a

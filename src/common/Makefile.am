@@ -1,5 +1,5 @@
 PLUGINDIR = $(pkglibdir)/plugins/
-noinst_LTLIBRARIES = libsylpheedcommon.la
+noinst_LTLIBRARIES = libclawscommon.la
 
 if OS_WIN32
 arch_sources = fnmatch.c \
@@ -12,7 +12,7 @@ arch_files =
 arch_header = 
 endif
 
-libsylpheedcommon_la_SOURCES = $(arch_sources) \
+libclawscommon_la_SOURCES = $(arch_sources) \
 	base64.c \
 	hooks.c \
 	log.c \
@@ -31,15 +31,15 @@ libsylpheedcommon_la_SOURCES = $(arch_sources) \
 	ssl_certificate.c \
 	string_match.c \
 	stringtable.c \
-	sylpheed.c \
+	claws.c \
 	template.c \
 	utils.c \
 	uuencode.c \
 	xml.c \
 	xmlprops.c
 
-sylpheedcommonincludedir = $(pkgincludedir)/common
-sylpheedcommoninclude_HEADERS = $(arch_headers) \
+clawscommonincludedir = $(pkgincludedir)/common
+clawscommoninclude_HEADERS = $(arch_headers) \
 	base64.h \
 	defs.h \
 	hooks.h \
@@ -59,7 +59,7 @@ sylpheedcommoninclude_HEADERS = $(arch_headers) \
 	ssl.h \
 	string_match.h \
 	stringtable.h \
-	sylpheed.h \
+	claws.h \
 	template.h \
 	timing.h \
 	utils.h \
@@ -77,7 +77,7 @@ AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" 
 
-libsylpheedcommon_la_LIBADD = \
+libclawscommon_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(OPENSSL_LIBS) \
 	$(CRYPT_LIBS) \

@@ -28,6 +28,6 @@ extern gboolean debug_mode;
 
 void app_will_exit	(GtkWidget *widget, gpointer data);
 gboolean clean_quit	(gpointer data);
-gboolean sylpheed_is_exiting(void);
+gboolean claws_is_exiting(void);
 
 #endif /* __MAIN_H__ */

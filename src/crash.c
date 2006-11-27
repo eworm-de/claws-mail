@@ -49,7 +49,7 @@
 #ifdef SIGTERM
 #include "main.h"
 #endif
-#include "sylpheed.h"
+#include "claws.h"
 #include "crash.h"
 #include "utils.h"
 #include "filesel.h"
@@ -57,7 +57,7 @@
 #include "prefs_common.h"
 
 /*
- * NOTE: the crash dialog is called when sylpheed is not 
+ * NOTE: the crash dialog is called when claws is not 
  * initialized, so do not assume settings are available.
  * for example, loading / creating pixmaps seems not 
  * to be possible.
@@ -282,7 +282,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 
 
 /*!
- *\brief	create debugger script file in sylpheed directory.
+ *\brief	create debugger script file in claws directory.
  *		all the other options (creating temp files) looked too 
  *		convoluted.
  */
@@ -322,7 +322,7 @@ static void crash_create_bug_report(GtkButton *button, const gchar *data)
 }
 
 /*!
- *\brief	launches debugger and attaches it to crashed sylpheed
+ *\brief	launches debugger and attaches it to crashed claws
  */
 static void crash_debug(unsigned long crash_pid, 
 			gchar *exe_image,
@@ -342,7 +342,7 @@ static void crash_debug(unsigned long crash_pid,
 		setuid(getuid());
 
 		/*
-		 * setup debugger to attach to crashed sylpheed
+		 * setup debugger to attach to crashed claws
 		 */
 		*argptr++ = "gdb"; 
 		*argptr++ = "--nw";
@@ -537,7 +537,7 @@ static void crash_handler(int sig)
 		args[3] = buf;
 		args[4] = NULL;
 
-		chdir(sylpheed_get_startup_dir());
+		chdir(claws_get_startup_dir());
 		setgid(getgid());
 		setuid(getuid());
 		execvp(argv0, args);

@@ -51,7 +51,7 @@
 # include <gdk/gdkx.h>
 #endif
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "folderview.h"
@@ -170,7 +170,7 @@ static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
 static void quit_signal_handler         (int sig);
 static void install_basic_sighandlers   (void);
-static void exit_sylpheed		(MainWindow *mainwin);
+static void exit_claws			(MainWindow *mainwin);
 
 #define MAKE_DIR_IF_NOT_EXIST(dir) \
 { \
@@ -234,7 +234,7 @@ static void startup_notification_complete(gboolean with_window)
 }
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
-void sylpheed_gtk_idle(void) 
+void claws_gtk_idle(void) 
 {
 	while(gtk_events_pending()) {
 		gtk_main_iteration();
@@ -511,7 +511,7 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	START_TIMING("startup");
 	
-	if (!sylpheed_init(&argc, &argv)) {
+	if (!claws_init(&argc, &argv)) {
 		return 0;
 	}
 
@@ -729,7 +729,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		account_read_config_all();
 		if(!account_get_list())
-			exit_sylpheed(mainwin);
+			exit_claws(mainwin);
 	}
 
 	
@@ -747,11 +747,11 @@ int main(int argc, char *argv[])
 
 	prefs_matcher_read_config();
 
-	/* make one all-folder processing before using sylpheed */
+	/* make one all-folder processing before using claws */
 	main_window_cursor_wait(mainwin);
 	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
 
-	/* if Sylpheed crashed, rebuild caches */
+	/* if claws crashed, rebuild caches */
 	if (!cmd.crash && crash_file_present) {
 		GTK_EVENTS_FLUSH();
 		debug_print("Claws Mail crashed, checking for new messages in local folders\n");
@@ -785,7 +785,7 @@ int main(int argc, char *argv[])
 		cmd.status_full_folders = NULL;
 	}
 
-	sylpheed_register_idle_function(sylpheed_gtk_idle);
+	claws_register_idle_function(claws_gtk_idle);
 
 	prefs_toolbar_init();
 
@@ -865,7 +865,7 @@ int main(int argc, char *argv[])
 	END_TIMING();
 	gtk_main();
 
-	exit_sylpheed(mainwin);
+	exit_claws(mainwin);
 
 	return 0;
 }
@@ -884,7 +884,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 
 static gboolean sc_exiting = FALSE;
 
-static void exit_sylpheed(MainWindow *mainwin)
+static void exit_claws(MainWindow *mainwin)
 {
 	gchar *filename;
 
@@ -967,7 +967,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	gtkaspell_checkers_quit();
 #endif
 	plugin_unload_all("Common");
-	sylpheed_done();
+	claws_done();
 }
 
 static void parse_cmd_opt(int argc, char *argv[])
@@ -1007,7 +1007,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.attach_files = g_ptr_array_new();
 				}
 				if (*p != G_DIR_SEPARATOR) {
-					file = g_strconcat(sylpheed_get_startup_dir(),
+					file = g_strconcat(claws_get_startup_dir(),
 							   G_DIR_SEPARATOR_S,
 							   p, NULL);
 				} else {
@@ -1190,7 +1190,7 @@ gboolean clean_quit(gpointer data)
 		
 	draft_all_messages();
 	emergency_exit = TRUE;
-	exit_sylpheed(static_mainwindow);
+	exit_claws(static_mainwindow);
 	exit(0);
 
 	return FALSE;
@@ -1240,7 +1240,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	gtk_main_quit();
 }
 
-gboolean sylpheed_is_exiting(void)
+gboolean claws_is_exiting(void)
 {
 	return sc_exiting;
 }

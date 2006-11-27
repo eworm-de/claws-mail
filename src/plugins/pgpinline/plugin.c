@@ -26,18 +26,18 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "version.h"
 #include "pgpinline.h"
 
 gint plugin_init(gchar **error)
 {
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+	if ((claws_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup(_("Your version of Claws Mail is newer than the version the PGP/inline plugin was built with"));
 		return -1;
 	}
 
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
+	if ((claws_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
 		*error = g_strdup(_("Your version of Claws Mail is too old for the PGP/inline plugin"));
 		return -1;
 	}
