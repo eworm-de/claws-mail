@@ -2092,3 +2092,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/image_viewer.c;  ) > 2.6.0cvs65.patchset
 ( cvs diff -u -r 1.382.2.337 -r 1.382.2.338 src/compose.c;  ) > 2.6.0cvs66.patchset
 ( cvs diff -u -r 1.36.2.89 -r 1.36.2.90 src/common/utils.c;  ) > 2.6.0cvs67.patchset
+( cvs diff -u -r 1.5.2.43 -r 1.5.2.44 src/gtk/gtkutils.c;  cvs diff -u -r 1.5.2.6 -r 1.5.2.7 src/gtk/gtkvscrollbutton.c;  ) > 2.6.0cvs68.patchset

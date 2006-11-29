@@ -198,7 +198,7 @@ void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
 
 	scrollbutton->adjustment = adjustment;
 	g_object_ref(G_OBJECT(adjustment));
-	g_object_ref_sink(G_OBJECT(adjustment));
+	gtk_object_sink(G_OBJECT(adjustment));
     }
 }
 
