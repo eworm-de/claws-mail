@@ -1,3 +1,10 @@
+2006-11-29 [colin]	2.6.0cvs66
+
+	* src/compose.c
+		Followup to cvs60: use original list
+		of recipients if replying to a mail
+		in Sent Drafts or Queue.
+
 2006-11-27 [paul]	2.6.0cvs65
 
 	* src/image_viewer.c
