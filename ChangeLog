@@ -1,3 +1,8 @@
+2006-11-29 [colin]	2.6.0cvs67
+
+	* src/common/utils.c
+		Create .mailcap if it doesn't exist
+
 2006-11-29 [colin]	2.6.0cvs66
 
 	* src/compose.c
