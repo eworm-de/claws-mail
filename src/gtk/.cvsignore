@@ -5,5 +5,5 @@ Makefile.in
 *.o
 *.lo
 *.la
-sylpheed-marshal.h
-sylpheed-marshal.c
+claws-marshal.h
+claws-marshal.c
