@@ -1889,7 +1889,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		if ((procheader_headername_equal(header->name, "X-Mailer") ||
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
-		    strstr(header->body, "Claws Mail") != NULL) {
+		    (strstr(header->body, "Claws Mail") != NULL ||
+		     strstr(header->body, "Sylpheed-Claws") != NULL)) {
 			gtk_text_buffer_get_end_iter (buffer, &iter);
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, header->body, -1,

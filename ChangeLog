@@ -1,3 +1,9 @@
+2006-11-30 [paul]	2.6.0cvs70
+
+	* src/textview.c
+		give emphasis to "Sylpheed-Claws"
+		as well as "Claws Mail"
+
 2006-11-30 [colin]	2.6.0cvs69
 
 	* src/wizard.c
