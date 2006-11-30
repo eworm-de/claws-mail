@@ -75,7 +75,6 @@ int USER_PAGE = -1;
 int SMTP_PAGE = -1;
 int RECV_PAGE = -1;
 int MAILBOX_PAGE = -1;
-int SSL_PAGE = -1;
 int DONE_PAGE = -1;
 
 typedef struct
@@ -877,7 +876,11 @@ static void smtp_auth_changed (GtkWidget *btn, gpointer data)
 
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
-	GtkWidget *table = gtk_table_new(1,4, FALSE);
+#ifdef USE_OPENSSL
+	GtkWidget *table = gtk_table_new(5, 2, FALSE);
+#else
+	GtkWidget *table = gtk_table_new(4, 2, FALSE);
+#endif
 	gchar *text;
 	gint i = 0;
 	
@@ -928,6 +931,15 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(table), wizard->smtp_password,	      
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 	i++;
+#ifdef USE_OPENSSL
+	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
+					_("Use SSL to connect to SMTP server"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
+			tmpl.smtpssl);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); 
+	i++;
+#endif
 	smtp_auth_changed(NULL, wizard);
 	return table;
 }
@@ -946,6 +958,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
 		gtk_widget_hide(wizard->no_imap_warning);
+#ifdef USE_OPENSSL
+		gtk_widget_show(wizard->recv_use_ssl);
+#endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
@@ -961,6 +976,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
 		gtk_widget_hide(wizard->no_imap_warning);
+#ifdef USE_OPENSSL
+		gtk_widget_show(wizard->recv_use_ssl);
+#endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
@@ -973,6 +991,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
 		gtk_widget_show(wizard->no_imap_warning);
+#ifdef USE_OPENSSL
+		gtk_widget_hide(wizard->recv_use_ssl);
+#endif
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, FALSE);
 #endif
 	} else if (protocol == A_LOCAL) {
@@ -986,6 +1007,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
+#ifdef USE_OPENSSL
+		gtk_widget_hide(wizard->recv_use_ssl);
+#endif
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 	}
 }
@@ -1002,7 +1026,11 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
+#ifdef USE_OPENSSL
+	GtkWidget *table = gtk_table_new(6,2, FALSE);
+#else
 	GtkWidget *table = gtk_table_new(5,2, FALSE);
+#endif
 	GtkWidget *menu = gtk_menu_new();
 	GtkWidget *menuitem;
 	gchar *text;
@@ -1108,36 +1136,17 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_label_set_use_markup(GTK_LABEL(wizard->no_imap_warning), TRUE);
 	gtk_table_attach(GTK_TABLE(table), wizard->no_imap_warning, 			      
 			 0,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
-	
-	return table;
-}
-
 #ifdef USE_OPENSSL
-static GtkWidget* ssl_page (WizardWindow * wizard)
-{
-	GtkWidget *table = gtk_table_new(2,2, FALSE);
-	gint i = 0;
-	
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-
-	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
-					_("Use SSL to connect to SMTP server"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
-			tmpl.smtpssl);
-	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
-			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); i++;
-	
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to receiving server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl),
 			tmpl.recvssl);
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	
+	i++;
+#endif	
 	return table;
 }
-#endif
 
 static void
 wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
@@ -1332,16 +1341,6 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 		wizard->pages = g_slist_append(wizard->pages, widget);
 	}
-/* ssl page: 5 */
-#ifdef USE_OPENSSL
-	i++;
-	SSL_PAGE = i;
-	widget = create_page (wizard, _("Security"));
-	gtk_box_pack_start (GTK_BOX(widget), ssl_page(wizard), FALSE, FALSE, 0);
-	PACK_WARNING(_("Bold fields must be completed"));
-	
-	wizard->pages = g_slist_append(wizard->pages, widget);
-#endif
 
 /* done page: 6 */
 	i++;

@@ -1,3 +1,9 @@
+2006-11-30 [colin]	2.6.0cvs69
+
+	* src/wizard.c
+		Put the SSL checkboxes in the receiving
+		and sending server pages.
+
 2006-11-29 [colin]	2.6.0cvs68
 
 	* src/gtk/gtkutils.c
