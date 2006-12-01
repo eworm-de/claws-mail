@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2004 Paul Mangan <paul@claws-mail.org>
+#  * Copyright 2004-2006 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -19,51 +19,20 @@
 unless ($ARGV[0]) { exit; }
 
 my $claws = "claws-mail --compose --attach";
-my $prefix = "/tmp/archive.";
-my $command = find_command($ARGV[0]);
-my ($sel,$att) = split_parts();
+my $sel = split_parts();
 
-if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
-	exec "$sel$claws $att";
-} elsif ($ARGV[0] eq "attachfile") {
-	exec "$claws $sel";
-} else {
-	exec "$command $prefix$ARGV[0] $sel;"
-	    ."$claws $prefix$ARGV[0]";
-}
+exec "$claws $sel";
 
 exit;
 
-sub find_command {
-	local($s) = @_;
-	my $com;
-	
-	if ($s eq "gz") 	{ $com = "gzip -c"; }
-	elsif ($s eq "bz2") 	{ $com = "bzip2 -c"; }
-	elsif ($s eq "zip") 	{ $com = "$s -r"; }
-	elsif ($s eq "tar") 	{ $com = "$s -c -f"; }
-	elsif ($s eq "tar.bz2") { $com = "tar -cj -f"; }
-	elsif ($s eq "tar.gz") 	{ $com = "tar -cz -f"; }
-	
-	return $com;
-}
-
 sub split_parts {
 	my $selectedParts = "";
-	my $attachedParts = "";
+	my $count = 0;
 
-	for (my $count = $#ARGV; $count > 0; $count--) {
-		my @s = split("/", $ARGV[$count]);
-		my $p = pop(@s);
-		if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
-			my $psub = $p;
-			$psub =~ s/\s/_/g;
-			my $output = "/tmp/$psub.$ARGV[0]";
-			$selectedParts .= "$command \"$p\" > $output;";
-			$attachedParts .= "$output ";
-		} else {
-			$selectedParts .= "\"$p\" ";
-		}
+	while ($ARGV[$count]) {
+		$selectedParts .= "\"$ARGV[$count]\" ";
+		$count++;
 	}
-	return ($selectedParts,$attachedParts);
+
+	return ($selectedParts);
 }

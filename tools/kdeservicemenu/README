@@ -1,32 +1,19 @@
-sylpheed-kdeservicemenu.pl 
-Version: 1.3
+claws-mail-kdeservicemenu.pl 
+Version: 1.4
 Claws Mail servicemenu for Konqueror
 
 FILES
 o README			You're reading it
 o install.sh			installer script
-o sylpheed-kdeservicemenu.pl	perl program
+o claws-mail-kdeservicemenu.pl	perl program
 o template_sylpheed-attach-files.desktop
-o template_sylpheed-compress-attach.desktop
-				.desktop file templates
+				.desktop file template
 
 DESCRIPTION
-Enables attaching files from Konqueror to a new compose window
-or compression of files/directories and then attaching of
-the archive to a new compose window.
+Enables attaching files from Konqueror to a new compose window.
 
 Adds the following right-click menu item to Konqueror:
-/Claws Mail/Attach file(s)
-/Claws Mail/Attach as GZip File(s)
-/Claws Mail/Attach as BZip File(s)
-/Claws Mail/Attach as Tar Archive
-/Claws Mail/Attach as Bzipped Tar Archive
-/Claws Mail/Attach as Gzipped Tar Archive
-/Claws Mail/Attach as Zip Archive
-
-OPERATION
-All outputted files are created in /tmp
-Original files are preserved when creating [FILE].gz and [FILE].bz2
+/Claws Mail/Attach File(s)
 
 REQUIREMENTS
 Perl 5.x.x
