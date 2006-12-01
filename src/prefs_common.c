@@ -637,6 +637,10 @@ static PrefParam param[] = {
 	{"apply_per_account_filtering_rules", "0", &prefs_common.apply_per_account_filtering_rules, P_ENUM,
 	 NULL, NULL, NULL},
 
+	/* Addressbook */
+	{"addressbook_use_editaddress_dialog", "TRUE", &prefs_common.addressbook_use_editaddress_dialog,
+	 P_BOOL, NULL, NULL, NULL},
+
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
@@ -644,7 +648,6 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.print_cmd, P_STRING, NULL, NULL, NULL},
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
-
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, NULL, NULL, NULL},
 	{"confirm_on_exit", "FALSE", &prefs_common.confirm_on_exit, P_BOOL,
@@ -719,7 +722,7 @@ static PrefParam param[] = {
 
 	{"addressbookeditpersonwin_width", "640", &prefs_common.addressbookeditpersonwin_width, P_INT,
 	 NULL, NULL, NULL},
-	{"addressbookeditpersonwin_height", "-1", &prefs_common.addressbookeditpersonwin_height, P_INT,
+	{"addressbookeditpersonwin_height", "320", &prefs_common.addressbookeditpersonwin_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"addressbookeditgroupwin_width", "580", &prefs_common.addressbookeditgroupwin_width, P_INT,

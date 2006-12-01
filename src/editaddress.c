@@ -41,15 +41,17 @@
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "codeconv.h"
+#include "editaddress.h"
 
 #include "prefs_common.h"
 
 static struct _PersonEdit_dlg {
-	GtkWidget *window;
+	GtkWidget *container;
 	GtkWidget *notebook;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *statusbar;
+	GtkWidget *statusbar;	/* used when prefs_common.addressbook_use_editaddress_dialog is TRUE */
+	GtkWidget *title;	/* used when prefs_common.addressbook_use_editaddress_dialog is FALSE */
 	gint status_cid;
 
 	/* User data tab */
@@ -81,8 +83,13 @@ static struct _PersonEdit_dlg {
 	gint rowIndAttrib;
 	gboolean editNew;
 	gboolean read_only;
-
 } personeditdlg;
+
+/* transient data */
+static AddressBookFile *current_abf = NULL;
+static ItemPerson *current_person = NULL;
+static ItemFolder *current_parent_folder = NULL;
+static EditAddressPostUpdateCallback edit_person_close_post_update_cb = NULL;
 
 typedef enum {
 	EMAIL_COL_EMAIL   = 0,
@@ -96,7 +103,7 @@ typedef enum {
 } PersonEditAttribColumnPos;
 
 #define EDITPERSON_WIDTH      520
-#define EDITPERSON_HEIGHT     340
+#define EDITPERSON_HEIGHT     320
 
 #define EMAIL_N_COLS          3
 #define EMAIL_COL_WIDTH_EMAIL 180
@@ -121,30 +128,56 @@ static void edit_person_status_show( gchar *msg ) {
 
 static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 	*cancelled = FALSE;
+fprintf(stderr, "edit_person_ok\n");
+	if (prefs_common.addressbook_use_editaddress_dialog)
 	gtk_main_quit();
+	else
+		addressbook_edit_person_close( *cancelled );
 }
 
 static void edit_person_cancel(GtkWidget *widget, gboolean *cancelled) {
 	*cancelled = TRUE;
+fprintf(stderr, "edit_person_cancel\n");
+	if (prefs_common.addressbook_use_editaddress_dialog)
 	gtk_main_quit();
+	else
+		addressbook_edit_person_close( *cancelled );
 }
 
 static gint edit_person_delete_event(GtkWidget *widget, GdkEventAny *event, gboolean *cancelled) {
 	*cancelled = TRUE;
+fprintf(stderr, "edit_person_delete_event\n");
+	if (prefs_common.addressbook_use_editaddress_dialog)
 	gtk_main_quit();
+	else
+		addressbook_edit_person_close( *cancelled );
 	return TRUE;
 }
 
 static gboolean edit_person_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
+	if (prefs_common.addressbook_use_editaddress_dialog) {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
+	}
 	}
 	return FALSE;
 }
 
 static gchar *_title_new_ = NULL;
 static gchar *_title_edit_ = NULL;
+
+static void edit_person_set_widgets_title( gchar *text )
+{
+	gchar *label = NULL;
+
+	g_return_if_fail( text != NULL );
+
+	gtk_label_set_text(GTK_LABEL(personeditdlg.title), "");
+	label = g_markup_printf_escaped("<b>%s</b>", text);
+	gtk_label_set_markup(GTK_LABEL(personeditdlg.title), label);
+	g_free(label);
+}
 
 static void edit_person_set_window_title( gint pageNum ) {
 	gchar *sTitle;
@@ -156,10 +189,16 @@ static void edit_person_set_window_title( gint pageNum ) {
 
 	if( pageNum == PAGE_BASIC ) {
 		if( personeditdlg.editNew ) {
-			gtk_window_set_title( GTK_WINDOW(personeditdlg.window), _title_new_ );
+			if (prefs_common.addressbook_use_editaddress_dialog)
+				gtk_window_set_title( GTK_WINDOW(personeditdlg.container), _title_new_ );
+			else
+				edit_person_set_widgets_title( _title_new_ );
 		}
 		else {
-			gtk_window_set_title( GTK_WINDOW(personeditdlg.window), _title_edit_ );
+			if (prefs_common.addressbook_use_editaddress_dialog)
+				gtk_window_set_title( GTK_WINDOW(personeditdlg.container), _title_edit_ );
+			else
+				edit_person_set_widgets_title( _title_edit_ );
 		}
 	}
 	else {
@@ -172,7 +211,10 @@ static void edit_person_set_window_title( gint pageNum ) {
 			sTitle = g_strdup_printf( "%s - %s", _title_edit_, name );
 			g_free( name );
 		}
-		gtk_window_set_title( GTK_WINDOW(personeditdlg.window), sTitle );
+		if (prefs_common.addressbook_use_editaddress_dialog)
+			gtk_window_set_title( GTK_WINDOW(personeditdlg.container), sTitle );
+		else
+			edit_person_set_widgets_title( sTitle );
 		g_free( sTitle );
 	}
 }
@@ -543,15 +585,65 @@ static void edit_person_size_allocate_cb(GtkWidget *widget,
 	prefs_common.addressbookeditpersonwin_height = allocation->height;
 }
 
-static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
-	GtkWidget *window;
+/* build edit person widgets, return a pointer to the main container of the widgetset (a vbox) */
+static GtkWidget* addressbook_edit_person_widgets_create( GtkWidget* container, gboolean *cancelled )
+{
 	GtkWidget *vbox;
 	GtkWidget *vnbox;
 	GtkWidget *notebook;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
+
+	vbox = gtk_vbox_new(FALSE, 4);
+	/* gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); */
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(container), vbox);
+
+	vnbox = gtk_vbox_new(FALSE, 4);
+	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
+	gtk_widget_show(vnbox);
+	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
+
+	/* Notebook */
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
+	gtk_box_pack_start(GTK_BOX(vnbox), notebook, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
+
+	/* Button panel */
+	if (prefs_common.addressbook_use_editaddress_dialog)
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
+				      &ok_btn, GTK_STOCK_OK,
+				      NULL, NULL);
+	else
+		gtkut_stock_with_text_button_set_create(&hbbox,
+					  &cancel_btn, GTK_STOCK_CANCEL, _("Discard"),
+				      &ok_btn, GTK_STOCK_OK, _("Apply"),
+				      NULL, NULL, NULL);
+	gtk_box_pack_end(GTK_BOX(vnbox), hbbox, FALSE, FALSE, 0);
+	gtk_widget_grab_default(ok_btn);
+
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(edit_person_ok), cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(edit_person_cancel), cancelled);
+	g_signal_connect(G_OBJECT(notebook), "switch_page",
+			 G_CALLBACK(edit_person_switch_page), NULL );
+
+	gtk_widget_show_all(vbox);
+
+	personeditdlg.notebook   = notebook;
+	personeditdlg.ok_btn     = ok_btn;
+	personeditdlg.cancel_btn = cancel_btn;
+
+	return vbox;
+}
+
+static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
+	GtkWidget *window;
 	GtkWidget *hsbox;
+	GtkWidget *vbox;
 	GtkWidget *statusbar;
 	static GdkGeometry geometry;
 
@@ -570,43 +662,13 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_person_key_pressed),
 			 cancelled);
 
-	vbox = gtk_vbox_new(FALSE, 4);
-	/* gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); */
-	gtk_widget_show(vbox);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
-
-	vnbox = gtk_vbox_new(FALSE, 4);
-	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
-	gtk_widget_show(vnbox);
-	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
-
-	/* Notebook */
-	notebook = gtk_notebook_new();
-	gtk_widget_show(notebook);
-	gtk_box_pack_start(GTK_BOX(vnbox), notebook, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
+	vbox = addressbook_edit_person_widgets_create(window, cancelled);
 
 	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
-
-	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vnbox), hbbox, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_btn);
-
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-			 G_CALLBACK(edit_person_ok), cancelled);
-	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
-			 G_CALLBACK(edit_person_cancel), cancelled);
-	g_signal_connect(G_OBJECT(notebook), "switch_page",
-			 G_CALLBACK(edit_person_switch_page), NULL );
-
-	gtk_widget_show_all(vbox);
 
 	if (!geometry.min_height) {
 		geometry.min_width = EDITPERSON_WIDTH;
@@ -618,13 +680,42 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	gtk_widget_set_size_request(window, prefs_common.addressbookeditpersonwin_width,
 				    prefs_common.addressbookeditpersonwin_height);
 
-	personeditdlg.window     = window;
-	personeditdlg.notebook   = notebook;
-	personeditdlg.ok_btn     = ok_btn;
-	personeditdlg.cancel_btn = cancel_btn;
+	personeditdlg.container  = window;
 	personeditdlg.statusbar  = statusbar;
 	personeditdlg.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit Person Dialog" );
 
+}
+
+/* parent must be a box */
+static void addressbook_edit_person_widgetset_create( GtkWidget *parent, gboolean *cancelled )
+{
+	GtkWidget *vbox;
+	GtkWidget *label;
+
+	if ( parent == NULL )
+		g_warning("addressbook_edit_person_widgetset_create: parent is NULL");
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(parent), vbox, TRUE, TRUE, 0);
+
+	label = gtk_label_new(_("Edit Person Data"));
+	gtk_label_set_justify( GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	addressbook_edit_person_widgets_create(vbox, cancelled);
+
+	gtk_widget_set_size_request(vbox, EDITPERSON_WIDTH, EDITPERSON_HEIGHT);
+
+	personeditdlg.container = vbox;
+	personeditdlg.title = label;
+	personeditdlg.statusbar  = NULL;
+	personeditdlg.status_cid = 0;
+}
+
+void addressbook_edit_person_widgetset_hide( void )
+{
+	if ( personeditdlg.container )
+		gtk_widget_hide( personeditdlg.container );
 }
 
 static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
@@ -1065,12 +1156,15 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	personeditdlg.attrib_mod = buttonMod;
 }
 
-static void addressbook_edit_person_create( gboolean *cancelled ) {
+static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancelled ) {
+	if (prefs_common.addressbook_use_editaddress_dialog)
 	addressbook_edit_person_dialog_create( cancelled );
+	else
+		addressbook_edit_person_widgetset_create( parent, cancelled );
 	addressbook_edit_person_page_basic( PAGE_BASIC, _( "_User Data" ) );
 	addressbook_edit_person_page_email( PAGE_EMAIL, _( "_Email Addresses" ) );
 	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "O_ther Attributes" ) );
-	gtk_widget_show_all( personeditdlg.window );
+	gtk_widget_show_all( personeditdlg.container );
 }
 
 /*
@@ -1124,6 +1218,118 @@ static void update_sensitivity(void)
 	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only);
 }
 
+static void addressbook_edit_person_flush_transient( void )
+{
+	ItemPerson *person = current_person;
+	EditAddressPostUpdateCallback callback = edit_person_close_post_update_cb;
+
+fprintf(stderr, "addressbook_edit_person_flush_transient\n");
+	/* reset transient data */
+	current_abf = NULL;
+	current_person = NULL;
+	current_parent_folder = NULL;
+	edit_person_close_post_update_cb = NULL;
+
+	/* post action to perform on addressbook side */
+	if (callback) {
+fprintf(stderr, "-> callback %p\n", callback);
+		callback( person );
+	}
+}
+
+void addressbook_edit_person_invalidate( AddressBookFile *abf, ItemFolder *parent_folder,
+										 ItemPerson *person )
+{
+fprintf(stderr, "addressbook_edit_person_invalidate (arg: %p %p %p) (cur: %p %p %p)\n",
+abf, parent_folder, person, current_abf, current_parent_folder, current_person);
+	if (current_abf == NULL &&
+		current_person == NULL &&
+		current_parent_folder == NULL)
+		/* edit address form is already hidden */
+		return;
+
+	/* unconditional invalidation or invalidating the currently edited item */
+	if ( ( abf == NULL && person == NULL && parent_folder == NULL )
+		|| (current_abf == abf ||
+			current_person == person ||
+			current_parent_folder == parent_folder))
+		addressbook_edit_person_close( TRUE );
+}
+
+gboolean addressbook_edit_person_close( gboolean cancelled )
+{
+	GList *listEMail = NULL;
+	GList *listAttrib = NULL;
+	gchar *cn = NULL;
+
+fprintf(stderr, "addressbook_edit_person_close\n");
+	listEMail = edit_person_build_email_list();
+	listAttrib = edit_person_build_attrib_list();
+	if( cancelled ) {
+		addritem_free_list_email( listEMail );
+		addritem_free_list_attribute( listAttrib );
+		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
+		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+
+		if (!prefs_common.addressbook_use_editaddress_dialog)
+			gtk_widget_hide( personeditdlg.container );
+
+		/* no callback, as we're discarding the form */
+		edit_person_close_post_update_cb = NULL;
+		addressbook_edit_person_flush_transient();
+
+		/* set focus to the address list (this is done by the post_update_cb usually) */
+		addressbook_address_list_set_focus();
+		return FALSE;
+	}
+
+	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
+	if( current_person && current_abf ) {
+		/* Update email/attribute list for existing current_person */
+		addrbook_update_address_list( current_abf, current_person, listEMail );
+		addrbook_update_attrib_list( current_abf, current_person, listAttrib );
+	}
+	else {
+		/* Create new current_person and email/attribute list */
+		if( cn == NULL || *cn == '\0' ) {
+			/* Wasting our time */
+			if( listEMail == NULL && listAttrib == NULL ) cancelled = TRUE;
+		}
+		if( ! cancelled && current_abf ) {
+			current_person = addrbook_add_address_list( current_abf, current_parent_folder, listEMail );
+			addrbook_add_attrib_list( current_abf, current_person, listAttrib );
+		}
+	}
+	listEMail = NULL;
+	listAttrib = NULL;
+
+	if( ! cancelled ) {
+		/* Set current_person stuff */
+		gchar *name;
+		addritem_person_set_common_name( current_person, cn );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
+		addritem_person_set_first_name( current_person, name );
+		g_free( name );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
+		addritem_person_set_last_name( current_person, name );
+		g_free( name );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );
+		addritem_person_set_nick_name( current_person, name );
+		g_free( name );
+	}
+	g_free( cn );
+
+	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
+	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+
+	if (!prefs_common.addressbook_use_editaddress_dialog)
+		gtk_widget_hide( personeditdlg.container );
+
+	addressbook_edit_person_flush_transient();
+
+	return TRUE;
+}
+ 
 /*
 * Edit person.
 * Enter: abf    Address book.
@@ -1133,22 +1339,34 @@ static void update_sensitivity(void)
 *        pgMail If TRUE, E-Mail page will be activated.
 * Return: Edited object, or NULL if cancelled.
 */
-ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, ItemPerson *person, gboolean pgMail ) {
+ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_folder, ItemPerson *person,
+									 gboolean pgMail, GtkWidget *parent_container,
+									 void (*post_update_cb) (ItemPerson *person),
+									 gboolean get_focus) {
 	static gboolean cancelled;
-	GList *listEMail = NULL;
-	GList *listAttrib = NULL;
-	gchar *cn = NULL;
 
-	if (!personeditdlg.window)
-		addressbook_edit_person_create(&cancelled);
-	gtk_widget_grab_focus(personeditdlg.ok_btn);
-	gtk_widget_grab_focus(personeditdlg.entry_name);
+fprintf(stderr, "addressbook_edit_person: start\n");
+	/* set transient data */
+	current_abf = abf;
+	current_person = person;
+	current_parent_folder = parent_folder;
+	edit_person_close_post_update_cb = post_update_cb;
+
+	if( !personeditdlg.container )
+		addressbook_edit_person_create(parent_container, &cancelled);
+
+	/* typically, get focus when dialog mode is enabled, or when editing a new address */
+	if( get_focus ) {
+		gtk_widget_grab_focus(personeditdlg.ok_btn);
+		gtk_widget_grab_focus(personeditdlg.entry_name);
+	}
 	
-	personeditdlg.read_only = (abf == NULL);
+	personeditdlg.read_only = (current_abf == NULL);
 	update_sensitivity();
 
-	gtk_widget_show(personeditdlg.window);
-	manage_window_set_transient(GTK_WINDOW(personeditdlg.window));
+	gtk_widget_show(personeditdlg.container);
+	if (prefs_common.addressbook_use_editaddress_dialog)
+		manage_window_set_transient(GTK_WINDOW(personeditdlg.container));
 
 	/* Clear all fields */
 	personeditdlg.rowIndEMail = -1;
@@ -1194,57 +1412,16 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 
 	edit_person_attrib_clear( NULL );
 
-	gtk_main();
-	gtk_widget_hide( personeditdlg.window );
+	if (prefs_common.addressbook_use_editaddress_dialog) {
 
-	listEMail = edit_person_build_email_list();
-	listAttrib = edit_person_build_attrib_list();
-	if( cancelled ) {
-		addritem_free_list_email( listEMail );
-		addritem_free_list_attribute( listAttrib );
-		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
-		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+	gtk_main();
+		gtk_widget_hide( personeditdlg.container );
+
+fprintf(stderr, "addressbook_edit_person: sync end\n");
+		if (!addressbook_edit_person_close( cancelled ))
 		return NULL;
 	}
-
-	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
-	if( person && abf ) {
-		/* Update email/attribute list for existing person */
-		addrbook_update_address_list( abf, person, listEMail );
-		addrbook_update_attrib_list( abf, person, listAttrib );
-	}
-	else {
-		/* Create new person and email/attribute list */
-		if( cn == NULL || *cn == '\0' ) {
-			/* Wasting our time */
-			if( listEMail == NULL && listAttrib == NULL ) cancelled = TRUE;
-		}
-		if( ! cancelled && abf ) {
-			person = addrbook_add_address_list( abf, parent, listEMail );
-			addrbook_add_attrib_list( abf, person, listAttrib );
-		}
-	}
-	listEMail = NULL;
-	listAttrib = NULL;
-
-	if( ! cancelled ) {
-		/* Set person stuff */
-		gchar *name;
-		addritem_person_set_common_name( person, cn );
-		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
-		addritem_person_set_first_name( person, name );
-		g_free( name );
-		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
-		addritem_person_set_last_name( person, name );
-		g_free( name );
-		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );
-		addritem_person_set_nick_name( person, name );
-		g_free( name );
-	}
-	g_free( cn );
-
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+fprintf(stderr, "addressbook_edit_person: async end\n");
 
 	return person;
 }

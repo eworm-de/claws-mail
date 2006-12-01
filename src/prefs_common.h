@@ -306,6 +306,9 @@ struct _PrefsCommon
 	gboolean gpg_warning;
 #endif /* USE_GPGME */
 
+	/* Addressbook */
+	gboolean addressbook_use_editaddress_dialog;
+
 	/* Interface */
 	gboolean sep_folder;
 	gboolean sep_msg;

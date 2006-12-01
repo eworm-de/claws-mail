@@ -510,6 +510,15 @@
     </para>
     <variablelist>
       <varlistentry>
+	<term><literal>addressbook_use_editaddress_dialog</literal></term>
+	<listitem>
+	  <para>
+	Use a dialog to edit person details. '0': use an form embedded in
+	the addressbook's main window. '1' (default): use a separate dialog.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>

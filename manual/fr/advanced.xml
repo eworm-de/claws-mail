@@ -178,6 +178,11 @@
 	  Il existe un certain nombre de préférences cachées dans Claws Mail dont certains utilisateurs, auxquels nous voulions faire plaisir, ne pouvaient pas se passer mais qui n'avaient pas leur place, selon nous, dans l'interface graphique. Vous pouvez changer les options suivantes pendant que Claws Mail ne s'exécute pas dans le fichier ~/.claws-mail/sylpheedrc.
     </para>
     <variablelist>
+       <varlistentry>
+			<term><literal>addressbook_use_editaddress_dialog</literal></term>
+    		<listitem><para>Utilise un dialogue pour l'édition des coordonnées des contacts. '0': utilise un formulaire intégré à la fenêtre principale du carnet d'adresses. '1' (par defaut): utilise un dialogue séparé.
+	  </para></listitem>
+        </varlistentry>
 	    <varlistentry><term>bold_unread</term>
 		    <listitem><para>Montre les messages non lus en gras dans la liste de messages.</para></listitem>
             </varlistentry>

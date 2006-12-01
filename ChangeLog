@@ -1,3 +1,20 @@
+2006-12-01 [wwp]	2.6.0cvs77
+
+	* manual/advanced.xml
+	* manual/fr/advanced.xml
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addressitem.h
+	* src/editaddress.c
+	* src/editaddress.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		add a hidden option to allow embedding the editaddress (edit contact details)
+		dialog into the addressbook's window. This doesn't change the default
+		behaviour.
+
 2006-12-01 [wwp]	2.6.0cvs76
 
 	* src/message_search.c
