@@ -2935,7 +2935,6 @@ static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
 typedef struct  {
 	MsgInfo *msginfo;
 	SummaryView *summaryview;
-	GtkCTreeNode *row;
 } MarkAsReadData;
 
 static int msginfo_mark_as_read_timeout(void *data)
@@ -2946,7 +2945,7 @@ static int msginfo_mark_as_read_timeout(void *data)
 	
 	if (mdata->msginfo == summary_get_selected_msg(mdata->summaryview))
 		msginfo_mark_as_read(mdata->summaryview, mdata->msginfo,
-				     mdata->row); 
+				     mdata->summaryview->selected); 
 
 	g_free(mdata);
 
@@ -3006,7 +3005,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
 			data->summaryview = summaryview;
 			data->msginfo = msginfo;
-			data->row = row;
 			g_timeout_add(prefs_common.mark_as_read_delay * 1000,
 				msginfo_mark_as_read_timeout, data);
 		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {

@@ -2095,3 +2095,4 @@
 ( cvs diff -u -r 1.5.2.43 -r 1.5.2.44 src/gtk/gtkutils.c;  cvs diff -u -r 1.5.2.6 -r 1.5.2.7 src/gtk/gtkvscrollbutton.c;  ) > 2.6.0cvs68.patchset
 ( cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/wizard.c;  ) > 2.6.0cvs69.patchset
 ( cvs diff -u -r 1.96.2.159 -r 1.96.2.160 src/textview.c;  ) > 2.6.0cvs70.patchset
+( cvs diff -u -r 1.395.2.269 -r 1.395.2.270 src/summaryview.c;  ) > 2.6.0cvs71.patchset

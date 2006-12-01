@@ -1,3 +1,12 @@
+2006-12-01 [wwp]	2.6.0cvs71
+
+	* src/summaryview.c
+		As the list may change while the mark as read delay
+		runs, we can't rely on the 'row' pointer, which can
+		be invalid when the timeout is called. As the mark
+		as read is only done if the message is still selected,
+		use summaryview->selected instead. Thanks to Colin.
+
 2006-11-30 [paul]	2.6.0cvs70
 
 	* src/textview.c
