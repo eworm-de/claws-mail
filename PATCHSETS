@@ -2042,3 +2042,4 @@
 ( cvs diff -u -r 1.382.2.321.2.6 -r 1.382.2.321.2.7 src/compose.c;  ) > 2.6.0cvs15.patchset
 ( cvs diff -u -r 1.395.2.264.2.3 -r 1.395.2.264.2.4 src/summaryview.c;  ) > 2.6.0cvs16.patchset
 ( cvs diff -u -r 1.2.2.6.10.1 -r 1.2.2.6.10.2 tools/kdeservicemenu/README;  cvs diff -u -r 1.1.4.1 -r 1.1.4.2 tools/kdeservicemenu/claws-mail-kdeservicemenu.pl;  cvs diff -u -r 1.2.2.3.10.1 -r 1.2.2.3.10.2 tools/kdeservicemenu/install.sh;  cvs diff -u -r 1.1.4.1 -r 1.1.4.2 tools/kdeservicemenu/template_claws-mail-attach-files.desktop;  cvs diff -u -r -1.1.4.1 -r -1.1.4.2 tools/kdeservicemenu/template_claws-mail-compress-attach.desktop;  ) > 2.6.0cvs17.patchset
+( cvs diff -u -r 1.396.2.1135.2.19 -r 1.396.2.1135.2.20 ChangeLog;  cvs diff -u -r 1.96.2.157.2.1 -r 1.96.2.157.2.2 src/textview.c;  ) > 2.6.0cvs18.patchset

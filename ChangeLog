@@ -1,4 +1,11 @@
-2006-12-01 [paul]	2.6.0cvs17
+2006-12-01 [paul]	2.6.0cvs18-stable
+
+	* src/textview.c
+		backported from 2.6.0cvs70:
+		give emphasis to "Sylpheed-Claws"
+		as well as "Claws Mail"
+
+2006-12-01 [paul]	2.6.0cvs17-stable
 
 	* tools/kdeservicemenu/README
 	* tools/kdeservicemenu/claws-mail-kdeservicemenu.pl

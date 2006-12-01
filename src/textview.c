@@ -1022,7 +1022,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        if (parser->state == SC_HTML_HREF) {
 		        /* first time : get and copy the URL */
 		        if (parser->href == NULL) {
-				/* ALF - the sylpheed html parser returns an empty string,
+				/* ALF - the claws html parser returns an empty string,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
 				if (str) {
@@ -1889,7 +1889,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		if ((procheader_headername_equal(header->name, "X-Mailer") ||
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
-		    strstr(header->body, "Claws Mail") != NULL) {
+		    (strstr(header->body, "Claws Mail") != NULL ||
+		     strstr(header->body, "Sylpheed-Claws") != NULL)) {
 			gtk_text_buffer_get_end_iter (buffer, &iter);
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, header->body, -1,
