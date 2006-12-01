@@ -4641,18 +4641,13 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	FILE *outfp = fopen(outpath, "wb");
 	gchar buf[BUFFSIZE];
 
-	if (!fp) {
-		g_free(path);
-		g_free(outpath);
-		return;
-	}
 	if (!outfp) {
 		g_free(path);
 		g_free(outpath);
 		fclose(fp);
 		return;
 	}
-	while (fgets(buf, sizeof (buf), fp) != NULL) {
+	while (fp && fgets(buf, sizeof (buf), fp) != NULL) {
 		gchar **parts = g_strsplit(buf, ";", 3);
 		gchar *trimmed = parts[0];
 		while (trimmed[0] == ' ')
@@ -4670,7 +4665,10 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 		g_strfreev(parts);
 	}
 	fprintf(outfp, "%s; %s\n", type, command);
-	fclose(fp);
+
+	if (fp)
+		fclose(fp);
+
 	fclose(outfp);
 	g_rename(outpath, path);
 }

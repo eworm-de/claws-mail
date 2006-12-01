@@ -1,3 +1,9 @@
+2006-12-01 [paul]	2.6.0cvs20-stable
+
+	* src/common/utils.c
+		backport from 2.6.0cvs67:
+		Create .mailcap if it doesn't exist
+
 2006-12-01 [paul]	2.6.0cvs19-stable
 
 	* src/compose.c
