@@ -1,3 +1,9 @@
+2006-12-01 [paul]	2.6.0cvs21-stable
+
+	* tools/Makefile.am
+		backport from 2.6.0cvs79:
+		remove reference to removed file
+
 2006-12-01 [paul]	2.6.0cvs20-stable
 
 	* src/common/utils.c

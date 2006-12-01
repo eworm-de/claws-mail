@@ -2045,3 +2045,4 @@
 ( cvs diff -u -r 1.396.2.1135.2.19 -r 1.396.2.1135.2.20 ChangeLog;  cvs diff -u -r 1.96.2.157.2.1 -r 1.96.2.157.2.2 src/textview.c;  ) > 2.6.0cvs18.patchset
 ( cvs diff -u -r 1.382.2.321.2.7 -r 1.382.2.321.2.8 src/compose.c;  ) > 2.6.0cvs19.patchset
 ( cvs diff -u -r 1.36.2.86.2.1 -r 1.36.2.86.2.2 src/common/utils.c;  ) > 2.6.0cvs20.patchset
+( cvs diff -u -r 1.25.2.12.4.1 -r 1.25.2.12.4.2 tools/Makefile.am;  ) > 2.6.0cvs21.patchset
