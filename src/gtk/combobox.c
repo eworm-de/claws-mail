@@ -24,6 +24,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <utils.h>
 
 typedef struct _combobox_sel_by_data_ctx {
 	GtkComboBox *combobox;
@@ -78,4 +79,28 @@ gint combobox_get_active_data(GtkComboBox *combobox)
 	gtk_tree_model_get(model, &iter, 1, &data, -1);
 
 	return data;
+}
+
+void combobox_unset_popdown_strings(GtkComboBox *combobox)
+{
+	GtkTreeModel *model;
+	gint count, i;
+
+	g_return_if_fail(combobox != NULL);
+
+	model = gtk_combo_box_get_model(combobox);
+	count = gtk_tree_model_iter_n_children(model, NULL);
+	for (i = 0; i < count; i++)
+		gtk_combo_box_remove_text(combobox, 0);
+}
+
+void combobox_set_popdown_strings(GtkComboBox *combobox,
+				 GList       *list)
+{
+	GList *cur;
+
+	g_return_if_fail(combobox != NULL);
+
+	for (cur = list; cur != NULL; cur = g_list_next(cur))
+		gtk_combo_box_append_text(combobox, (const gchar*) cur->data);
 }

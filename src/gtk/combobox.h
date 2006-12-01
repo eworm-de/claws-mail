@@ -38,4 +38,8 @@ void combobox_select_by_data	(GtkComboBox 		*combobox,
 
 gint combobox_get_active_data	(GtkComboBox 		*combobox);
 
+void combobox_unset_popdown_strings(GtkComboBox		*combobox);
+void combobox_set_popdown_strings(GtkComboBox		*combobox,
+				 GList       *list);
+
 #endif /* __COMBOBOX_H__ */

@@ -359,6 +359,12 @@ struct _PrefsCommon
 	gulong color_new;
 	
 	GList *summary_quicksearch_history;
+	GList *summary_search_from_history;
+	GList *summary_search_to_history;
+	GList *summary_search_subject_history;
+	GList *summary_search_body_history;
+	GList *summary_search_adv_condition_history;
+	GList *message_search_history;
 
 	gint filteringwin_width;
 	gint filteringwin_height;

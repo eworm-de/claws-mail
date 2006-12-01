@@ -50,6 +50,7 @@
 #include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "combobox.h"
 #include "prefs_gtk.h"
 #include "manage_window.h"
 #include "alertpanel.h"
@@ -57,6 +58,7 @@
 #include "matcher_parser.h"
 #include "prefs_matcher.h"
 #include "manual.h"
+#include "prefs_common.h"
 
 static struct SummarySearchWindow {
 	GtkWidget *window;
@@ -107,11 +109,11 @@ static void summary_search_stop_clicked	(GtkButton	*button,
 static void adv_condition_btn_clicked	(GtkButton	*button,
 					 gpointer	 data);
 
-static void from_activated		(void);
-static void to_activated		(void);
-static void subject_activated		(void);
-static void body_activated		(void);
-static void adv_condition_activated	(void);
+static void from_changed			(void);
+static void to_changed				(void);
+static void subject_changed			(void);
+static void body_changed			(void);
+static void adv_condition_changed	(void);
 
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
@@ -236,40 +238,60 @@ static void summary_search_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
 
-	from_entry = gtk_entry_new ();
+	from_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(from_entry), -1);
+	if (prefs_common.summary_search_from_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(from_entry),
+				prefs_common.summary_search_from_history);
 	gtk_widget_show (from_entry);
 	gtk_table_attach (GTK_TABLE (table1), from_entry, 1, 3, 0, 1,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(from_entry), "activate",
-			 G_CALLBACK(from_activated), NULL);
+	g_signal_connect(G_OBJECT(from_entry), "changed",
+			 G_CALLBACK(from_changed), NULL);
 
-	to_entry = gtk_entry_new ();
+	to_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(to_entry), -1);
+	if (prefs_common.summary_search_to_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(to_entry),
+				prefs_common.summary_search_to_history);
 	gtk_widget_show (to_entry);
 	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(to_entry), "activate",
-			 G_CALLBACK(to_activated), NULL);
+	g_signal_connect(G_OBJECT(from_entry), "changed",
+			 G_CALLBACK(from_changed), NULL);
 
-	subject_entry = gtk_entry_new ();
+	subject_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(subject_entry), -1);
+	if (prefs_common.summary_search_subject_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(subject_entry),
+				prefs_common.summary_search_subject_history);
 	gtk_widget_show (subject_entry);
 	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(subject_entry), "activate",
-			 G_CALLBACK(subject_activated), NULL);
+	g_signal_connect(G_OBJECT(from_entry), "changed",
+			 G_CALLBACK(from_changed), NULL);
 
-	body_entry = gtk_entry_new ();
+	body_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
+	if (prefs_common.summary_search_body_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
+				prefs_common.summary_search_body_history);
 	gtk_widget_show (body_entry);
 	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(body_entry), "activate",
-			 G_CALLBACK(body_activated), NULL);
+	g_signal_connect(G_OBJECT(from_entry), "changed",
+			 G_CALLBACK(from_changed), NULL);
 
-	adv_condition_entry = gtk_entry_new ();
+	adv_condition_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(adv_condition_entry), -1);
+	if (prefs_common.summary_search_adv_condition_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(adv_condition_entry),
+				prefs_common.summary_search_adv_condition_history);
 	gtk_widget_show (adv_condition_entry);
 	gtk_table_attach (GTK_TABLE (table1), adv_condition_entry, 1, 2, 4, 5,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(adv_condition_entry), "activate",
-			 G_CALLBACK(adv_condition_activated), NULL);
+	g_signal_connect(G_OBJECT(from_entry), "changed",
+			 G_CALLBACK(from_changed), NULL);
 
 	adv_condition_btn = gtk_button_new_with_label(" ... ");
 	gtk_widget_show (adv_condition_btn);
@@ -448,8 +470,16 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			matcherlist_free(search_window.matcher_list);
 			search_window.matcher_list = NULL;
 		}
-		adv_condition = gtk_entry_get_text(GTK_ENTRY(search_window.adv_condition_entry));
+		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 		if (adv_condition[0] != '\0') {
+
+			/* add to history */
+			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.adv_condition_entry));
+			prefs_common.summary_search_adv_condition_history = add_history(
+					prefs_common.summary_search_adv_condition_history, adv_condition);
+			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.adv_condition_entry),
+					prefs_common.summary_search_adv_condition_history);
+
 			search_window.matcher_list = matcher_parser_get_cond((gchar*)adv_condition, &is_fast);
 			if (!is_fast)
 				interval = 100;
@@ -473,10 +503,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			str_find_func = str_case_find;
 		}
 
-		from_str    = gtk_entry_get_text(GTK_ENTRY(search_window.from_entry));
-		to_str      = gtk_entry_get_text(GTK_ENTRY(search_window.to_entry));
-		subject_str = gtk_entry_get_text(GTK_ENTRY(search_window.subject_entry));
-		body_str    = gtk_entry_get_text(GTK_ENTRY(search_window.body_entry));
+		from_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.from_entry));
+		to_str      = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.to_entry));
+		subject_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.subject_entry));
+		body_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 
 		if (	(from_str[0] == '\0') &&
 				(to_str[0] == '\0') &&
@@ -487,6 +517,32 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			summary_unlock(summaryview);
 			return;
 		}
+
+		/* add to history */
+		if (from_str[0] != '\0')
+			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.from_entry));
+			prefs_common.summary_search_from_history = add_history(
+					prefs_common.summary_search_from_history, from_str);
+			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.from_entry),
+					prefs_common.summary_search_from_history);
+		if (to_str[0] != '\0')
+			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.to_entry));
+			prefs_common.summary_search_to_history = add_history(
+					prefs_common.summary_search_to_history, to_str);
+			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.to_entry),
+					prefs_common.summary_search_to_history);
+		if (subject_str[0] != '\0')
+			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.subject_entry));
+			prefs_common.summary_search_subject_history = add_history(
+					prefs_common.summary_search_subject_history, subject_str);
+			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.subject_entry),
+					prefs_common.summary_search_subject_history);
+		if (body_str[0] != '\0')
+			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.body_entry));
+			prefs_common.summary_search_body_history = add_history(
+					prefs_common.summary_search_body_history, body_str);
+			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.body_entry),
+					prefs_common.summary_search_body_history);
 	}
 
 	search_window.is_searching = TRUE;
@@ -670,17 +726,12 @@ static void summary_search_clear(GtkButton *button, gpointer data)
 {
 	if (gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.adv_search_checkbtn))) {
-		gtk_editable_delete_text(GTK_EDITABLE(search_window.adv_condition_entry),
-					 0, -1);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.adv_condition_entry)->child), "");
 	} else {
-		gtk_editable_delete_text(GTK_EDITABLE(search_window.from_entry),
-					 0, -1);
-		gtk_editable_delete_text(GTK_EDITABLE(search_window.to_entry),
-					 0, -1);
-		gtk_editable_delete_text(GTK_EDITABLE(search_window.subject_entry),
-					 0, -1);
-		gtk_editable_delete_text(GTK_EDITABLE(search_window.body_entry),
-					 0, -1);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.from_entry)->child), "");
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.to_entry)->child), "");
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.subject_entry)->child), "");
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.body_entry)->child), "");
 	}
 	/* stop searching */
 	if (search_window.is_searching) {
@@ -717,8 +768,7 @@ static void adv_condition_btn_done(MatcherList * matchers)
 	str = matcherlist_to_string(matchers);
 
 	if (str != NULL) {
-		gtk_entry_set_text(
-			GTK_ENTRY(search_window.adv_condition_entry), str);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.adv_condition_entry)->child), str);
 		g_free(str);
 	}
 }
@@ -735,10 +785,9 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 
 	g_return_if_fail( search_window.window != NULL );
 
-	/* re-use it the current quicksearch value if it's a condition expression,
+	/* re-use the current search value if it's a condition expression,
 	   otherwise ignore it silently */
-	cond_str = gtk_entry_get_text(
-			GTK_ENTRY(search_window.adv_condition_entry));
+	cond_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 	if (*cond_str != '\0') {
 		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}
@@ -750,29 +799,29 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 	}
 };
 
-static void from_activated(void)
+static void from_changed(void)
+{
+	gtk_widget_grab_focus(search_window.from_entry);
+}
+
+static void to_changed(void)
 {
 	gtk_widget_grab_focus(search_window.to_entry);
 }
 
-static void to_activated(void)
+static void subject_changed(void)
 {
 	gtk_widget_grab_focus(search_window.subject_entry);
 }
 
-static void subject_activated(void)
+static void body_changed(void)
 {
-	gtk_button_clicked(GTK_BUTTON(search_window.next_btn));
+	gtk_widget_grab_focus(search_window.body_entry);
 }
 
-static void body_activated(void)
+static void adv_condition_changed(void)
 {
-	gtk_button_clicked(GTK_BUTTON(search_window.next_btn));
-}
-
-static void adv_condition_activated(void)
-{
-	gtk_button_clicked(GTK_BUTTON(search_window.next_btn));
+	gtk_widget_grab_focus(search_window.adv_condition_entry);
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,

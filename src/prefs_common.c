@@ -886,6 +886,18 @@ void prefs_common_read_config(void)
 		prefs_common_read_history(COMMAND_HISTORY);
 	prefs_common.summary_quicksearch_history =
 		prefs_common_read_history(QUICKSEARCH_HISTORY);
+	prefs_common.summary_search_from_history =
+		prefs_common_read_history(SUMMARY_SEARCH_FROM_HISTORY);
+	prefs_common.summary_search_to_history =
+		prefs_common_read_history(SUMMARY_SEARCH_TO_HISTORY);
+	prefs_common.summary_search_subject_history =
+		prefs_common_read_history(SUMMARY_SEARCH_SUBJECT_HISTORY);
+	prefs_common.summary_search_body_history =
+		prefs_common_read_history(SUMMARY_SEARCH_BODY_HISTORY);
+	prefs_common.summary_search_adv_condition_history =
+		prefs_common_read_history(SUMMARY_SEARCH_ADV_CONDITION_HISTORY);
+	prefs_common.message_search_history =
+		prefs_common_read_history(MESSAGE_SEARCH_HISTORY);
 
 	colorlabel_update_colortable_from_prefs();
 }
@@ -927,6 +939,18 @@ void prefs_common_write_config(void)
 		prefs_common.mime_open_cmd_history);
 	prefs_common_save_history(QUICKSEARCH_HISTORY, 
 		prefs_common.summary_quicksearch_history);
+	prefs_common_save_history(SUMMARY_SEARCH_FROM_HISTORY, 
+		prefs_common.summary_search_from_history);
+	prefs_common_save_history(SUMMARY_SEARCH_TO_HISTORY, 
+		prefs_common.summary_search_to_history);
+	prefs_common_save_history(SUMMARY_SEARCH_SUBJECT_HISTORY, 
+		prefs_common.summary_search_subject_history);
+	prefs_common_save_history(SUMMARY_SEARCH_BODY_HISTORY, 
+		prefs_common.summary_search_body_history);
+	prefs_common_save_history(SUMMARY_SEARCH_ADV_CONDITION_HISTORY, 
+		prefs_common.summary_search_adv_condition_history);
+	prefs_common_save_history(MESSAGE_SEARCH_HISTORY, 
+		prefs_common.message_search_history);
 }
 
 /* make a copy of string 'in' into buffer 'out'. un-escape \ sequences.

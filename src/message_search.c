@@ -47,9 +47,11 @@
 #include "compose.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "combobox.h"
 #include "manage_window.h"
 #include "alertpanel.h"
 #include "manual.h"
+#include "prefs_common.h"
 
 static struct MessageSearchWindow {
 	GtkWidget *window;
@@ -77,7 +79,7 @@ static void message_search_next_clicked	(GtkButton	*button,
 					 gpointer	 data);
 static void message_search_stop_clicked	(GtkButton	*button,
 					 gpointer	 data);
-static void body_activated		(void);
+static void body_changed		(void);
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -181,11 +183,15 @@ static void message_search_create(void)
 	gtk_widget_show (body_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_label, FALSE, FALSE, 0);
 
-	body_entry = gtk_entry_new ();
+	body_entry = gtk_combo_box_entry_new_text ();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
+	if (prefs_common.message_search_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
+				prefs_common.message_search_history);
 	gtk_widget_show (body_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
-	g_signal_connect(G_OBJECT(body_entry), "activate",
-			 G_CALLBACK(body_activated), NULL);
+	g_signal_connect(G_OBJECT(body_entry), "changed",
+			 G_CALLBACK(body_changed), NULL);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);
@@ -262,8 +268,15 @@ static void message_search_execute(gboolean backward)
 	gboolean all_searched = FALSE;
 	const gchar *body_str;
 
-	body_str = gtk_entry_get_text(GTK_ENTRY(search_window.body_entry));
+	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 	if (*body_str == '\0') return;
+
+	/* add to history */
+	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.body_entry));
+	prefs_common.message_search_history = add_history(
+			prefs_common.message_search_history, body_str);
+	combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.body_entry),
+			prefs_common.message_search_history);
 
 	case_sens = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
@@ -334,6 +347,11 @@ static void message_search_execute(gboolean backward)
 	message_hide_stop_button();
 }
 
+static void body_changed(void)
+{
+	gtk_widget_grab_focus(search_window.body_entry);
+}
+
 static void message_search_prev_clicked(GtkButton *button, gpointer data)
 {
 	message_search_execute(TRUE);
@@ -342,11 +360,6 @@ static void message_search_prev_clicked(GtkButton *button, gpointer data)
 static void message_search_next_clicked(GtkButton *button, gpointer data)
 {
 	message_search_execute(FALSE);
-}
-
-static void body_activated(void)
-{
-	gtk_button_clicked(GTK_BUTTON(search_window.next_btn));
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
