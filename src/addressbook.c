@@ -605,7 +605,6 @@ void addressbook_show_buttons(gboolean add_and_delete, gboolean lookup, gboolean
 
 void addressbook_open(Compose *target)
 {
-fprintf(stderr, "addressbook_open: %p\n", target);
 	/* Initialize all static members */
 	if( _clipBoard_ == NULL ) {
 		_clipBoard_ = addrclip_create();
@@ -689,7 +688,6 @@ void addressbook_refresh( void )
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-fprintf(stderr, "key_pressed\n");
 	if (event && event->keyval == GDK_Escape)
 		addressbook_close();
 	else if (event && event->keyval == GDK_Delete) {
@@ -885,7 +883,6 @@ static void addressbook_create(void)
 
 	static GdkGeometry geometry;
 
-fprintf(stderr, "addressbook_create\n");
 	debug_print("Creating addressbook window...\n");
 
 	index_titles[COL_SOURCES] = _("Sources");
@@ -1220,7 +1217,6 @@ fprintf(stderr, "addressbook_create\n");
  * Close address book window and save to file(s).
  */
 static gint addressbook_close( void ) {
-fprintf(stderr, "addressbook_close\n");
 	address_completion_end(addrbook.window);
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_person_invalidate(NULL, NULL, NULL);
@@ -1330,7 +1326,6 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	GList *list, *node;
 	gboolean refreshList = FALSE;
 	
-fprintf(stderr, "addressbook_del_clicked: %p %p\n", button, data);
 	pobj = gtk_ctree_node_get_row_data(ctree, addrbook.opened );
 	g_return_if_fail(pobj != NULL);
 
@@ -1731,7 +1726,6 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	ItemFolder *rootFolder = NULL;
 	AddressObjectType aot;
 
-fprintf(stderr, "addressbook_tree_selected\n");
 	addrbook.treeSelected = node;
 	addrbook.listSelected = NULL;
 	addressbook_status_show( "" );
@@ -1959,7 +1953,6 @@ static void addressbook_treenode_add_list(
 }
 
 static void addressbook_select_all_cb( void ) {
-fprintf(stderr, "addressbook_select_all_cb\n");
 	gtk_clist_select_all(GTK_CLIST(addrbook.clist));
 }
 
@@ -2190,7 +2183,6 @@ static void addressbook_list_row_selected( GtkCTree *clist,
 	AdapterDSource *ads = NULL;
 	AddressDataSource *ds = NULL;
 
-fprintf(stderr, "addressbook_list_row_selected\n");
 	gtk_entry_set_text( entry, "" );
 	addrbook.listSelected = node;
 
@@ -2224,7 +2216,6 @@ static void addressbook_list_row_unselected( GtkCTree *ctree,
 {
 	AddrItemObject *aio;
 
-fprintf(stderr, "addressbook_list_row_unselected\n");
 	aio = gtk_ctree_node_get_row_data( ctree, node );
 	if( aio != NULL ) {
 		/* printf( "list unselect: %d : '%s'\n", aio->type, aio->name ); */
@@ -2813,7 +2804,6 @@ static void addressbook_treenode_delete_cb(
 
 void addressbook_new_address_from_book_post_cb( ItemPerson *person )
 {
-fprintf(stderr, "addressbook_new_address_from_book_post_cb\n");
 	if( person && addrbook.treeSelected == addrbook.opened ) {
 		gtk_clist_unselect_all( GTK_CLIST(addrbook.clist) );
 		addressbook_folder_refresh_one_person(
@@ -2824,7 +2814,6 @@ fprintf(stderr, "addressbook_new_address_from_book_post_cb\n");
 
 void addressbook_new_address_from_folder_post_cb( ItemPerson *person )
 {
-fprintf(stderr, "addressbook_new_address_from_folder_post_cb\n");
 	if( person && addrbook.treeSelected == addrbook.opened) {
 		gtk_sctree_select( GTK_SCTREE(addrbook.ctree), addrbook.opened );
 		addressbook_set_clist(
@@ -2950,7 +2939,6 @@ static void addressbook_move_nodes_up( GtkCTree *ctree, GtkCTreeNode *node ) {
 
 void addressbook_edit_address_post_cb( ItemPerson *person )
 {
-fprintf(stderr, "addressbook_edit_address_post_cb\n");
 	if( person ) {
 		addressbook_folder_refresh_one_person( GTK_CTREE(addrbook.clist), person );
 		invalidate_address_completion();
@@ -3862,7 +3850,6 @@ void addressbook_export_to_file( void ) {
 
 static gboolean addressbook_entry_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-fprintf(stderr, "addressbook_entry_key_pressed\n");
 	if (event && event->keyval == GDK_Return)
 		addressbook_lup_clicked(NULL, NULL);
 	return FALSE;

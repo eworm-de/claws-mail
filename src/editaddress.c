@@ -128,27 +128,24 @@ static void edit_person_status_show( gchar *msg ) {
 
 static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 	*cancelled = FALSE;
-fprintf(stderr, "edit_person_ok\n");
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	gtk_main_quit();
+		gtk_main_quit();
 	else
 		addressbook_edit_person_close( *cancelled );
 }
 
 static void edit_person_cancel(GtkWidget *widget, gboolean *cancelled) {
 	*cancelled = TRUE;
-fprintf(stderr, "edit_person_cancel\n");
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	gtk_main_quit();
+		gtk_main_quit();
 	else
 		addressbook_edit_person_close( *cancelled );
 }
 
 static gint edit_person_delete_event(GtkWidget *widget, GdkEventAny *event, gboolean *cancelled) {
 	*cancelled = TRUE;
-fprintf(stderr, "edit_person_delete_event\n");
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	gtk_main_quit();
+		gtk_main_quit();
 	else
 		addressbook_edit_person_close( *cancelled );
 	return TRUE;
@@ -1223,7 +1220,6 @@ static void addressbook_edit_person_flush_transient( void )
 	ItemPerson *person = current_person;
 	EditAddressPostUpdateCallback callback = edit_person_close_post_update_cb;
 
-fprintf(stderr, "addressbook_edit_person_flush_transient\n");
 	/* reset transient data */
 	current_abf = NULL;
 	current_person = NULL;
@@ -1231,17 +1227,13 @@ fprintf(stderr, "addressbook_edit_person_flush_transient\n");
 	edit_person_close_post_update_cb = NULL;
 
 	/* post action to perform on addressbook side */
-	if (callback) {
-fprintf(stderr, "-> callback %p\n", callback);
+	if (callback)
 		callback( person );
-	}
 }
 
 void addressbook_edit_person_invalidate( AddressBookFile *abf, ItemFolder *parent_folder,
 										 ItemPerson *person )
 {
-fprintf(stderr, "addressbook_edit_person_invalidate (arg: %p %p %p) (cur: %p %p %p)\n",
-abf, parent_folder, person, current_abf, current_parent_folder, current_person);
 	if (current_abf == NULL &&
 		current_person == NULL &&
 		current_parent_folder == NULL)
@@ -1262,7 +1254,6 @@ gboolean addressbook_edit_person_close( gboolean cancelled )
 	GList *listAttrib = NULL;
 	gchar *cn = NULL;
 
-fprintf(stderr, "addressbook_edit_person_close\n");
 	listEMail = edit_person_build_email_list();
 	listAttrib = edit_person_build_attrib_list();
 	if( cancelled ) {
@@ -1345,7 +1336,6 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 									 gboolean get_focus) {
 	static gboolean cancelled;
 
-fprintf(stderr, "addressbook_edit_person: start\n");
 	/* set transient data */
 	current_abf = abf;
 	current_person = person;
@@ -1417,11 +1407,9 @@ fprintf(stderr, "addressbook_edit_person: start\n");
 	gtk_main();
 		gtk_widget_hide( personeditdlg.container );
 
-fprintf(stderr, "addressbook_edit_person: sync end\n");
 		if (!addressbook_edit_person_close( cancelled ))
-		return NULL;
+			return NULL;
 	}
-fprintf(stderr, "addressbook_edit_person: async end\n");
 
 	return person;
 }
