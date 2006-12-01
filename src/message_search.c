@@ -68,6 +68,7 @@ static struct MessageSearchWindow {
 	Compose *compose;
 	gboolean search_compose;
 	gboolean is_searching;
+	gboolean body_entry_has_focus;
 } search_window;
 
 static void message_search_create	(void);
@@ -80,6 +81,10 @@ static void message_search_next_clicked	(GtkButton	*button,
 static void message_search_stop_clicked	(GtkButton	*button,
 					 gpointer	 data);
 static void body_changed		(void);
+static gboolean body_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean body_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -192,6 +197,10 @@ static void message_search_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(body_entry), "changed",
 			 G_CALLBACK(body_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+			 "focus_in_event", G_CALLBACK(body_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+			 "focus_out_event", G_CALLBACK(body_entry_focus_evt_out), NULL);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);
@@ -349,7 +358,22 @@ static void message_search_execute(gboolean backward)
 
 static void body_changed(void)
 {
-	gtk_widget_grab_focus(search_window.body_entry);
+	if (!search_window.body_entry_has_focus)
+		gtk_widget_grab_focus(search_window.body_entry);
+}
+
+static gboolean body_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.body_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean body_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.body_entry_has_focus = FALSE;
+	return FALSE;
 }
 
 static void message_search_prev_clicked(GtkButton *button, gpointer data)

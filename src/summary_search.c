@@ -89,6 +89,11 @@ static struct SummarySearchWindow {
 	MatcherList			*matcher_list;
 
 	gboolean is_searching;
+	gboolean from_entry_has_focus;
+	gboolean to_entry_has_focus;
+	gboolean subject_entry_has_focus;
+	gboolean body_entry_has_focus;
+	gboolean adv_condition_entry_has_focus;
 } search_window;
 
 static void summary_search_create	(void);
@@ -114,6 +119,27 @@ static void to_changed				(void);
 static void subject_changed			(void);
 static void body_changed			(void);
 static void adv_condition_changed	(void);
+
+static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean from_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean to_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean to_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean subject_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean subject_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean body_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean body_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean adv_condition_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
+static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data);
 
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
@@ -248,6 +274,10 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(from_entry)->child),
+			 "focus_in_event", G_CALLBACK(from_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(from_entry)->child),
+			 "focus_out_event", G_CALLBACK(from_entry_focus_evt_out), NULL);
 
 	to_entry = gtk_combo_box_entry_new_text ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(to_entry), -1);
@@ -259,6 +289,10 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
+			 "focus_in_event", G_CALLBACK(to_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
+			 "focus_out_event", G_CALLBACK(to_entry_focus_evt_out), NULL);
 
 	subject_entry = gtk_combo_box_entry_new_text ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(subject_entry), -1);
@@ -270,6 +304,10 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
+			 "focus_in_event", G_CALLBACK(subject_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
+			 "focus_out_event", G_CALLBACK(subject_entry_focus_evt_out), NULL);
 
 	body_entry = gtk_combo_box_entry_new_text ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
@@ -281,6 +319,10 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+			 "focus_in_event", G_CALLBACK(body_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+			 "focus_out_event", G_CALLBACK(body_entry_focus_evt_out), NULL);
 
 	adv_condition_entry = gtk_combo_box_entry_new_text ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(adv_condition_entry), -1);
@@ -292,6 +334,10 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
+			 "focus_in_event", G_CALLBACK(adv_condition_entry_focus_evt_in), NULL);
+	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
+			 "focus_out_event", G_CALLBACK(adv_condition_entry_focus_evt_out), NULL);
 
 	adv_condition_btn = gtk_button_new_with_label(" ... ");
 	gtk_widget_show (adv_condition_btn);
@@ -801,27 +847,102 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 
 static void from_changed(void)
 {
-	gtk_widget_grab_focus(search_window.from_entry);
+	if (!search_window.from_entry_has_focus)
+		gtk_widget_grab_focus(search_window.from_entry);
 }
 
 static void to_changed(void)
 {
-	gtk_widget_grab_focus(search_window.to_entry);
+	if (!search_window.to_entry_has_focus)
+		gtk_widget_grab_focus(search_window.to_entry);
 }
 
 static void subject_changed(void)
 {
-	gtk_widget_grab_focus(search_window.subject_entry);
+	if (!search_window.subject_entry_has_focus)
+		gtk_widget_grab_focus(search_window.subject_entry);
 }
 
 static void body_changed(void)
 {
-	gtk_widget_grab_focus(search_window.body_entry);
+	if (!search_window.body_entry_has_focus)
+		gtk_widget_grab_focus(search_window.body_entry);
 }
 
 static void adv_condition_changed(void)
 {
-	gtk_widget_grab_focus(search_window.adv_condition_entry);
+	if (!search_window.adv_condition_entry_has_focus)
+		gtk_widget_grab_focus(search_window.adv_condition_entry);
+}
+
+static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.from_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean from_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.from_entry_has_focus = FALSE;
+	return FALSE;
+}
+
+static gboolean to_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.to_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean to_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.to_entry_has_focus = FALSE;
+	return FALSE;
+}
+
+static gboolean subject_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.subject_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean subject_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.subject_entry_has_focus = FALSE;
+	return FALSE;
+}
+
+static gboolean body_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.body_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean body_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.body_entry_has_focus = FALSE;
+	return FALSE;
+}
+
+static gboolean adv_condition_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.adv_condition_entry_has_focus = TRUE;
+	return FALSE;
+}
+
+static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+			      	  gpointer data)
+{
+	search_window.adv_condition_entry_has_focus = FALSE;
+	return FALSE;
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
