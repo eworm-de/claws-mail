@@ -1,10 +1,8 @@
 #!/bin/bash
 
 PERL_SCRIPT="claws-mail-kdeservicemenu.pl"
-DESKTOP_TEMPLATE_ONE="template_claws-mail-attach-files.desktop"
-DESKTOP_ONE="claws-mail-attach-files.desktop"
-DESKTOP_TEMPLATE_TWO="template_claws-mail-compress-attach.desktop"
-DESKTOP_TWO="claws-mail-compress-attach.desktop"
+DESKTOP_TEMPLATE="template_claws-mail-attach-files.desktop"
+DESKTOP="claws-mail-attach-files.desktop"
 SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 
 function check_environ {
@@ -19,35 +17,27 @@ if [ -z "$(type 'kde-config' 2> /dev/null)" ]; then
     export PATH=$PATH:$KDEDIR/bin
   fi
 fi
-echo "Okay."
+echo "OK"
 }
 
 function install_all {
-echo "Generating $DESKTOP_ONE ..."
+echo "Generating $DESKTOP ..."
 SED_PREFIX=${PREFIX//\//\\\/}
-sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE_ONE > $DESKTOP_ONE
-echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE"
-mv -f $DESKTOP_ONE $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
-echo "Generating $DESKTOP_TWO ..."
-SED_PREFIX=${PREFIX//\//\\\/}
-sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE_TWO > $DESKTOP_TWO
-echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO"
-mv -f $DESKTOP_TWO $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
+sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE > $DESKTOP
+echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP"
+mv -f $DESKTOP $PREFIX/$SERVICEMENU_DIR/$DESKTOP
 echo "Installing $PREFIX/bin/$PERL_SCRIPT"
 cp -f $PERL_SCRIPT $PREFIX/bin/
 echo "Setting permissions ..."
-chmod 0644 $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
-chmod 0644 $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
+chmod 0644 $PREFIX/$SERVICEMENU_DIR/$DESKTOP
 chmod 0755 $PREFIX/bin/$PERL_SCRIPT
 echo "Finished installation."
 kdialog --msgbox "Finished installation."
 }
 
 function uninstall_all {
-echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE"
-rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
-echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO"
-rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
+echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP"
+rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP
 echo "Removing $PREFIX/bin/$PERL_SCRIPT"
 rm $PREFIX/bin/$PERL_SCRIPT
 echo "Finished uninstall."

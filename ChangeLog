@@ -1,3 +1,14 @@
+2006-12-01 [paul]	2.6.0cvs74
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/claws-mail-kdeservicemenu.pl
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/template_claws-mail-attach-files.desktop
+	* tools/kdeservicemenu/template_claws-mail-compress-attach.desktop
+		simplify this stuff, and in so doing,
+		fix it. (possibly re-extend it again at
+		a later date)
+
 2006-12-01 [wwp]	2.6.0cvs73
 
 	* src/gtk/quicksearch.c
