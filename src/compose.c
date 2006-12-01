@@ -2620,13 +2620,21 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 					  msginfo->from ? msginfo->from : "",
 					  COMPOSE_TO);
 			else if (!to_all && !to_sender) {
-				/* reply to the last list of recipients */
-				compose_entry_append(compose,
-					  msginfo->from ? msginfo->from : "",
-					  COMPOSE_TO);
-				compose_entry_append(compose,
-					  msginfo->cc ? msginfo->cc : "",
-					  COMPOSE_CC);
+				if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+				    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
+				    !folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
+					compose_entry_append(compose,
+						  msginfo->from ? msginfo->from : "",
+						  COMPOSE_TO);
+				} else {
+					/* replying to own mail, use original recp */
+					compose_entry_append(compose,
+						  msginfo->to ? msginfo->to : "",
+						  COMPOSE_TO);
+					compose_entry_append(compose,
+						  msginfo->cc ? msginfo->cc : "",
+						  COMPOSE_CC);
+				}
 			}
 		}
 	} else {

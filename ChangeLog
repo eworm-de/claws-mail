@@ -1,3 +1,11 @@
+2006-12-01 [paul]	2.6.0cvs19-stable
+
+	* src/compose.c
+		backport from 2.6.0cvs66:
+		Followup to cvs60: use original list
+		of recipients if replying to a mail
+		in Sent Drafts or Queue.
+
 2006-12-01 [paul]	2.6.0cvs18-stable
 
 	* src/textview.c
