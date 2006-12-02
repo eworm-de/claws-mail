@@ -1,3 +1,10 @@
+2006-12-02 [paul]	2.6.0cvs80
+
+	* src/exphtmldlg.c
+		fix broken GUI under certain languages
+	* src/expldifdlg.c
+		put the Cancel button to the right
+
 2006-12-01 [paul]	2.6.0cvs79
 
 	* tools/Makefile.am
