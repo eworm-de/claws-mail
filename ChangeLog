@@ -1,3 +1,9 @@
+2006-12-04 [paul]	2.6.0cvs23-stable
+
+	* src/common/utils.c
+		backport from 2.6.0cvs81:
+		Trim tabs from mailcap file too.
+
 2006-12-04 [paul]	2.6.0cvs22-stable
 
 	* src/exphtmldlg.c

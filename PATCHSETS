@@ -2047,3 +2047,4 @@
 ( cvs diff -u -r 1.36.2.86.2.1 -r 1.36.2.86.2.2 src/common/utils.c;  ) > 2.6.0cvs20.patchset
 ( cvs diff -u -r 1.25.2.12.4.1 -r 1.25.2.12.4.2 tools/Makefile.am;  ) > 2.6.0cvs21.patchset
 ( cvs diff -u -r 1.3.2.17.4.1 -r 1.3.2.17.4.2 src/exphtmldlg.c;  cvs diff -u -r 1.1.4.19.10.1 -r 1.1.4.19.10.2 src/expldifdlg.c;  ) > 2.6.0cvs22.patchset
+( cvs diff -u -r 1.36.2.86.2.2 -r 1.36.2.86.2.3 src/common/utils.c;  ) > 2.6.0cvs23.patchset
