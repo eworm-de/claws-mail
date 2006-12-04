@@ -8,10 +8,10 @@ PACKAGE=claws-mail
 dnl version number
 MAJOR_VERSION=2
 MINOR_VERSION=6
-MICRO_VERSION=1
+MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=0
+EXTRA_VERSION=25
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=-stable
 
@@ -47,11 +47,11 @@ if test "$GNOME_CONFIG" != no; then
 	fi
 	AC_SUBST(gnomedatadir)
 fi
-AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
+AM_CONDITIONAL(CLAWS_GNOME, test -n "$gnomedatadir")
 
 dnl GNOME 2.x installed?
 PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)
-AM_CONDITIONAL(SYLPHEED_GNOME2, test x"$ac_enable_gnome2" = x"yes")
+AM_CONDITIONAL(CLAWS_GNOME2, test x"$ac_enable_gnome2" = x"yes")
 
 dnl Claws version
 AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)
@@ -87,7 +87,7 @@ AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
 
-SYLPHEED_ACLOCAL_INCLUDE(m4)
+CLAWS_ACLOCAL_INCLUDE(m4)
   
 dnl ******************************
 dnl Checks for host
@@ -284,7 +284,7 @@ AC_STRUCT_TM
 dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
 dnl may be defined only in wchar.h (this happens with gcc-2.96).
 dnl So we need to use this extended macro.
-SYLPHEED_CHECK_TYPE(wint_t, unsigned int,
+CLAWS_CHECK_TYPE(wint_t, unsigned int,
 [
 #if HAVE_WCHAR_H
 #include <wchar.h>
@@ -808,7 +808,7 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 else
 	AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL(SYLPHEED_LIBETPAN, test "x$libetpan_result" = "xyes")
+AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 
 
 dnl Libgnomeprint
@@ -830,7 +830,7 @@ if test x$ac_cv_enable_gnomeprint = xyes; then
 else
 	AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL(SYLPHEED_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
+AM_CONDITIONAL(CLAWS_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
 
 dnl ****************************
 dnl ** Final configure output **

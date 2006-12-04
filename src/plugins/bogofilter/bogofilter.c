@@ -34,7 +34,7 @@
 #  include <locale.h>
 #endif
 
-#include "common/sylpheed.h"
+#include "common/claws.h"
 #include "common/version.h"
 #include "plugin.h"
 #include "common/utils.h"
@@ -484,12 +484,12 @@ gint plugin_init(gchar **error)
 
 	hook_id = -1;
 
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+	if ((claws_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup(_("Your version of Claws Mail is newer than the version the Bogofilter plugin was built with"));
 		return -1;
 	}
 
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
 		*error = g_strdup(_("Your version of Claws Mail is too old for the Bogofilter plugin"));
 		return -1;
 	}

@@ -46,7 +46,7 @@
 #include "addr_compl.h"
 #include "utils.h"
 #include "prefs_common.h"
-#include "sylpheed.h"
+#include "claws.h"
 #include <pthread.h>
 
 /*!
@@ -661,7 +661,7 @@ static guint _completionIdleID_ = 0;
 
 /*
  * address completion entry ui. the ui (completion list was inspired by galeon's
- * auto completion list). remaining things powered by sylpheed's completion engine.
+ * auto completion list). remaining things powered by claws's completion engine.
  */
 
 #define ENTRY_DATA_TAB_HOOK	"tab_hook"	/* used to lookup entry */
@@ -909,7 +909,7 @@ static gboolean addrcompl_idle( gpointer data ) {
 		_displayQueue_ = NULL;
 	}
 	pthread_mutex_unlock( & _completionMutex_ );
-	sylpheed_do_idle();
+	claws_do_idle();
 
 	return TRUE;
 }

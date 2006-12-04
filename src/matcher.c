@@ -41,7 +41,7 @@
 #include "addr_compl.h"
 #include "codeconv.h"
 #include "quoted-printable.h"
-#include "sylpheed.h"
+#include "claws.h"
 #include <ctype.h>
 
 /*!
@@ -507,7 +507,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 		printf("waiting for test thread\n");
 		while(!td->done) {
 			/* don't let the interface freeze while waiting */
-			sylpheed_do_idle();
+			claws_do_idle();
 			if (time(NULL) - start_time > 30) {
 				pthread_cancel(pt);
 				td->done = TRUE;

@@ -29,7 +29,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkutils.h>
 
-#include "common/sylpheed.h"
+#include "common/claws.h"
 #include "common/version.h"
 #include "plugin.h"
 #include "common/utils.h"

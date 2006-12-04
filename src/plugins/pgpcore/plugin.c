@@ -26,7 +26,7 @@
 #include <glib/gi18n.h>
 
 #include "version.h"
-#include "common/sylpheed.h"
+#include "common/claws.h"
 #include "sgpgme.h"
 #include "prefs_gpg.h"
 #include "pgp_viewer.h"
@@ -34,12 +34,12 @@
 
 gint plugin_init(gchar **error)
 {
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+	if ((claws_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup(_("Your version of Claws Mail is newer than the version the PGP/Core plugin was built with"));
 		return -1;
 	}
 
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
+	if ((claws_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
 		*error = g_strdup(_("Your version of Claws Mail is too old for the PGP/Core plugin"));
 		return -1;
 	}

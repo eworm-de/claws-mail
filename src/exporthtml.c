@@ -43,8 +43,8 @@
 #define mkdir(a,b) mkdir(a)
 #endif
 
-#define DFL_DIR_SYLPHEED_OUT  "sylpheed-out"
-#define DFL_FILE_SYLPHEED_OUT "addressbook.html"
+#define DFL_DIR_CLAWS_OUT  "claws-mail-out"
+#define DFL_FILE_CLAWS_OUT "addressbook.html"
 
 #define FMT_BUFSIZE         2048
 #define SC_HTML_SPACE          "&nbsp;"
@@ -55,7 +55,7 @@
 
 /* Stylesheet names */
 #define FILENAME_NONE       ""
-#define FILENAME_DEFAULT    "sylpheed.css"
+#define FILENAME_DEFAULT    "claws-mail.css"
 #define FILENAME_FULL       "full.css"
 #define FILENAME_CUSTOM     "custom.css"
 #define FILENAME_CUSTOM2    "custom2.css"
@@ -1144,13 +1144,13 @@ static void exporthtml_default_values( ExportHtmlCtl *ctl ) {
 
 	str = g_strconcat(
 		get_home_dir(), G_DIR_SEPARATOR_S,
-		DFL_DIR_SYLPHEED_OUT, NULL );
+		DFL_DIR_CLAWS_OUT, NULL );
 
 	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, str );
 	g_free( str );
 
 	ctl->fileHtml =
-		mgu_replace_string( ctl->fileHtml, DFL_FILE_SYLPHEED_OUT );
+		mgu_replace_string( ctl->fileHtml, DFL_FILE_CLAWS_OUT );
 	ctl->encoding = NULL;
 	ctl->stylesheet = EXPORT_HTML_ID_DEFAULT;
 	ctl->nameFormat = EXPORT_HTML_FIRST_LAST;

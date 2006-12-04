@@ -27,7 +27,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "common/sylpheed.h"
+#include "common/claws.h"
 #include "common/version.h"
 #include "plugin.h"
 #include "utils.h"
@@ -295,7 +295,6 @@ static void create_trayicon()
 		G_CALLBACK(click_cb), NULL);
 
 	tooltips = gtk_tooltips_new();
-	gtk_tooltips_set_delay(tooltips, 1000);
 	gtk_tooltips_enable(tooltips);
 
 	n_entries = sizeof(trayicon_popup_menu_entries) /
@@ -311,12 +310,12 @@ static void create_trayicon()
 
 int plugin_init(gchar **error)
 {
-	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+	if ((claws_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup(_("Your version of Claws Mail is newer than the version the Trayicon plugin was built with"));
 		return -1;
 	}
 
-	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
 		*error = g_strdup(_("Your version of Claws Mail is too old for the Trayicon plugin"));
 		return -1;
 	}
@@ -350,7 +349,7 @@ void plugin_done(void)
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
 
-	if (sylpheed_is_exiting())
+	if (claws_is_exiting())
 		return;
 
 	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);

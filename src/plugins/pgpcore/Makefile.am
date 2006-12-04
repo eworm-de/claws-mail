@@ -1,4 +1,4 @@
-EXTRA_DIST = version.rc plugin.def sylpheed.def
+EXTRA_DIST = version.rc plugin.def claws.def
 
 if OS_WIN32
 
@@ -14,12 +14,12 @@ plugin_res_ldflag = -Wl,.libs/version.o
 
 export_symbols = -export-symbols $(srcdir)/plugin.def
 
-plugin_deps = libsylpheed.a $(plugin_res) plugin.def
+plugin_deps = libclaws.a $(plugin_res) plugin.def
 
-libsylpheed.a: sylpheed.def
+libclaws.a: claws.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L . -lsylpheed
+plugin_ldadd = -L . -lclaws
 
 else
 plugin_res =
@@ -81,5 +81,5 @@ AM_CPPFLAGS = \
 	-Wno-deprecated-declarations
 
 clean-local:
-	rm -f libsylpheed.a
+	rm -f libclaws.a
 

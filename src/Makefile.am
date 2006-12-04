@@ -1,7 +1,7 @@
 
-if SYLPHEED_LIBETPAN
+if CLAWS_LIBETPAN
 etpan_dir = etpan
-etpan_library = etpan/libsylpheedetpan.la
+etpan_library = etpan/libclawsetpan.la
 else
 etpan_dir =
 etpan_library = 
@@ -423,7 +423,7 @@ claws_mail_LDFLAGS = \
 
 claws_mail_LDADD = \
 	$(etpan_library) \
-	gtk/libsylpheedgtk.la \
+	gtk/libclawsgtk.la \
 	$(ASPELL_LIBS) \
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
@@ -466,7 +466,7 @@ claws-mail$(EXEEXT): $(claws_mail_OBJECTS) $(claws_mail_DEPENDENCIES)
 	@rm -f claws-mail$(EXEEXT)
 	@rm -f claws-mail.def claws-mail.base claws-mail.exp libclaws-mail.a .libs/libclaws-mail.a
 	$(LINK) -shared $(claws_mailLDFLAGS) -Wl,--out-implib=libclaws-mail.a -Wl,--export-all-symbols,--exclude-symbols,main $(claws_mail_OBJECTS) -Wl,--no-whole-archive $(claws_mail_LDADD) $(LIBS)
-	dlltool --output-def claws-mail.def --dllname claws-mail$(EXEEXT) --export-all-symbols --exclude-symbols main $(claws_mail_OBJECTS) gtk/.libs/libsylpheedgtk.a
+	dlltool --output-def claws-mail.def --dllname claws-mail$(EXEEXT) --export-all-symbols --exclude-symbols main $(claws_mail_OBJECTS) gtk/.libs/libclawsgtk.a
 	$(LINK) $(claws_mail_LDFLAGS) -Wl,--base-file,claws-mail.base $(claws_mail_OBJECTS) $(claws_mail_LDADD) $(LIBS)
 	sleep 5
 	dlltool --base-file claws-mail.base --input-def claws-mail.def --output-exp claws-mail.exp

@@ -65,7 +65,7 @@ enum
 	Q_PRIVACY_SYSTEM   = 9,
 	Q_ENCRYPT 	   = 10,
 	Q_ENCRYPT_DATA	   = 11,
-	Q_SYLPHEED_HDRS    = 12,
+	Q_CLAWS_HDRS    = 12,
 };
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
@@ -1550,7 +1550,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			if (encrypt_data == NULL) 
 				encrypt_data = g_strdup(p);
 			break;
-		case Q_SYLPHEED_HDRS:
+		case Q_CLAWS_HDRS:
 			/* end of special headers reached */
 			goto send_mail; /* can't "break;break;" */
 		}

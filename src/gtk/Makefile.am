@@ -1,11 +1,11 @@
 PLUGINDIR = $(pkglibdir)/plugins/
 
-noinst_LTLIBRARIES = libsylpheedgtk.la
+noinst_LTLIBRARIES = libclawsgtk.la
 
 EXTRA_DIST = \
-	sylpheed-marshal.list
+	claws-marshal.list
 
-libsylpheedgtk_la_SOURCES = \
+libclawsgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
 	colorsel.c \
@@ -30,10 +30,10 @@ libsylpheedgtk_la_SOURCES = \
 	progressdialog.c \
 	quicksearch.c \
 	sslcertwindow.c \
-	sylpheed-marshal.c
+	claws-marshal.c
 
-sylpheedgtkincludedir = $(pkgincludedir)/gtk
-sylpheedgtkinclude_HEADERS = \
+clawsgtkincludedir = $(pkgincludedir)/gtk
+clawsgtkinclude_HEADERS = \
 	about.h \
 	authors.h \
 	colorlabel.h \
@@ -60,7 +60,7 @@ sylpheedgtkinclude_HEADERS = \
 	progressdialog.h \
 	quicksearch.h \
 	sslcertwindow.h \
-	sylpheed-marshal.h
+	claws-marshal.h
 
 AM_CPPFLAGS = \
 	-I$(srcdir)/../common \
@@ -71,16 +71,16 @@ AM_CPPFLAGS = \
 	$(GNOMEPRINT_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" 
 
-libsylpheedgtk_la_LIBADD = \
-	../common/libsylpheedcommon.la \
+libclawsgtk_la_LIBADD = \
+	../common/libclawscommon.la \
 	$(GTK_LIBS) \
 	$(ASPELL_LIBS) \
 	$(GNOMEPRINT_LIBS)
 
-BUILT_SOURCES=sylpheed-marshal.c sylpheed-marshal.h 
+BUILT_SOURCES=claws-marshal.c claws-marshal.h 
 
-sylpheed-marshal.h: sylpheed-marshal.list
-	$(GLIB_GENMARSHAL) $< --header --prefix=sylpheed_marshal > $@
+claws-marshal.h: claws-marshal.list
+	$(GLIB_GENMARSHAL) $< --header --prefix=claws_marshal > $@
 
-sylpheed-marshal.c: sylpheed-marshal.list
-	$(GLIB_GENMARSHAL) $< --body --prefix=sylpheed_marshal > $@
+claws-marshal.c: claws-marshal.list
+	$(GLIB_GENMARSHAL) $< --body --prefix=claws_marshal > $@

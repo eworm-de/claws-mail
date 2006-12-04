@@ -38,7 +38,7 @@
 #include "folderview.h"
 #include "folder.h"
 #include "prefs_matcher.h"
-#include "sylpheed.h"
+#include "claws.h"
 #include "statusbar.h"
 
 struct _QuickSearch

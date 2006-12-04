@@ -1,20 +1,22 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
-canonicalize_str
+codeconv_set_strict
+conv_codeset_strdup
+conv_get_locale_charset_str_no_utf8
 debug_print_real
 debug_srcname
-file_read_stream_to_str
-generate_mime_boundary
 get_mime_tmp_dir
 my_tmpfile
 privacy_register_system
 privacy_unregister_system
+procmime_decode_content
+procmime_encode_content
 procmime_mimeinfo_free_all
 procmime_mimeinfo_get_parameter
-procmime_mimeinfo_new
 procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mimeinfo
-sylpheed_get_version
+claws_get_version
 privacy_set_error
 privacy_get_error
+privacy_reset_error

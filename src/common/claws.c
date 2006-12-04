@@ -35,14 +35,14 @@
 #  include <locale.h>
 #endif
 
-#include "sylpheed.h"
+#include "claws.h"
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"
 
-static gboolean sylpheed_initialized = FALSE;
+static gboolean claws_initialized = FALSE;
 static gchar *startup_dir;
-static void (*sylpheed_idle_function)(void) = NULL;
+static void (*claws_idle_function)(void) = NULL;
 
 /**
  * Parse program parameters and remove all parameters
@@ -86,16 +86,16 @@ static void parse_parameter(int *argc, char ***argv)
 	}
 }
 
-gboolean sylpheed_init(int *argc, char ***argv)
+gboolean claws_init(int *argc, char ***argv)
 {
-	if (sylpheed_initialized)
+	if (claws_initialized)
 		return TRUE;
 
 	startup_dir = g_get_current_dir();
 
 	parse_parameter(argc, argv);
 
-	debug_print("Starting sylpheed version %08x\n", VERSION_NUMERIC);
+	debug_print("Starting Claws Mail version %08x\n", VERSION_NUMERIC);
 
 	setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
@@ -119,12 +119,12 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	ssl_init();
 #endif
 
-	sylpheed_initialized = TRUE;
+	claws_initialized = TRUE;
 
 	return TRUE;
 }
 
-void sylpheed_done(void)
+void claws_done(void)
 {
 
 #if USE_OPENSSL
@@ -132,23 +132,23 @@ void sylpheed_done(void)
 #endif
 }
 
-const gchar *sylpheed_get_startup_dir(void)
+const gchar *claws_get_startup_dir(void)
 {
 	return startup_dir;
 }
 
-guint sylpheed_get_version(void)
+guint claws_get_version(void)
 {
 	return VERSION_NUMERIC;
 }
 
-void sylpheed_register_idle_function	(void (*idle_func)(void))
+void claws_register_idle_function	(void (*idle_func)(void))
 {
-	sylpheed_idle_function = idle_func;
+	claws_idle_function = idle_func;
 }
 
-void sylpheed_do_idle(void)
+void claws_do_idle(void)
 {
-	if (sylpheed_idle_function != NULL)
-		sylpheed_idle_function();
+	if (claws_idle_function != NULL)
+		claws_idle_function();
 }

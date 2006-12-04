@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef SYLPHEED_H
-#define SYLPHEED_H
+#ifndef CLAWS_H
+#define CLAWS_H
 
 #include <glib.h>
 
-gboolean sylpheed_init			(int *argc, char ***argv);
-void sylpheed_done			(void);
-const gchar *sylpheed_get_startup_dir	(void);
-guint sylpheed_get_version		(void);
-void sylpheed_register_idle_function	(void (*idle_func)(void));
-void sylpheed_do_idle			(void);
+gboolean claws_init			(int *argc, char ***argv);
+void claws_done				(void);
+const gchar *claws_get_startup_dir	(void);
+guint claws_get_version			(void);
+void claws_register_idle_function	(void (*idle_func)(void));
+void claws_do_idle			(void);
 
-#endif /* SYLPHEED_H */
+#endif /* CLAWS_H */
