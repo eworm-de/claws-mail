@@ -1,3 +1,9 @@
+2006-12-04 [colin]	2.6.0cvs82
+
+	* src/common/utils.c
+		Probably fix bug 1066, 'Incorrect mailbox 
+		size displayed'
+
 2006-12-04 [colin]	2.6.0cvs81
 
 	* src/common/utils.c
