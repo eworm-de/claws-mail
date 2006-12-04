@@ -1,4 +1,4 @@
-6th November 2006                                Claws Mail 2.6.0
+4th December 2006                                    Claws Mail 2.6.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,93 +6,53 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
+Claws Mail was previously known as Sylpheed-Claws.
+
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* libetpan 0.48 or greater is now required for IMAP support.
+* Sylpheed-Claws is now known as Claws Mail.
+  The default configuration directory is now ~/.claws-mail. The main
+  configuration file is now called 'clawsrc'. When running this
+  version of Claws Mail for the first time all of the configuration
+  will be automatically migrated to the new location and it will be
+  seamless for the user. A 'sylpheed-claws' symlink pointing to
+  'claws-mail' will be installed, therefore all scripts and other apps
+  configured to use 'sylpheed-claws' will still function correctly.
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* The Compose window now has an /Options/Reply mode/ menu. This
-  enables changing the recipients of a reply on the fly.
-
-* QuickSearch now has a type-ahead option for fast searches.
-
-* Extra symbols are now available for the Quote parser, your name,
-  your email address, the account name, and the organization.
-
-* In the Folder Properties, it is now possible to test the regular
-  expression used in the Simplify Subject RegExp option.
-
-* GSSAPI support has been added for IMAP.
-
-* UIDPLUS support has been added for IMAP.
-
-* A Stop button has been added for Message Body searches, enabling
-  cancelling of a running search. This is available in '/Edit/Search
-  Folder...' and '/Edit/Find in current message...'.
-
-* libSM support has been added. This enables communication with the
-  session manager, so that it is known when the session ends, in
-  order to save the caches, and draft any messages currently being
-  composed.
-
-* Support for Address Book Groups has been added to the Compose
-  window's automatic address completion.
-
-* a new hidden option has been added, 'respect_flowed_format'. This
-  follows RFC3676 with regard to a message part with a Content-Type
-  that includes 'format=flowed' and 'delsp=yes'. This will cause some
-  mails to have long lines, but will fix some URLs that would
-  otherwise be wrapped. By default it is turned off.
-
-* Basic key import/export has been added to the PGP plugins. When
-  generating a new key pair you can export the public key to a key
-  server. When selecting the signature part of a message, if the key
-  is not on your keyring, you will be asked if you want to attempt
-  to import it from a keyserver.
-
-* The TrayIcon now displays 'offline' status.
-
-* More window sizes and placements are remembered across sessions.
-
-* tools/fix_date.sh: Switches to replace non RFC-compliant Date:
-  value, and to use strict RFC matching patterns for dates have been
-  added.
-
-* Several optimisations have been made.
-
-* The manual has been updated.
-
-* Updated translations in Brazilian Portuguese, Czech, Dutch, French,
-  German, Italian, Simplified Chinese, Slovak, Spanish, and Swedish 
+This is a bug fix release.
 
 * Bug fixes:
-	o bug 1035, 'Incorrect handling of flowed lines'
-	o bug 1036, 'Forwarding a mutlipart mail with a "text/html"
-		    block to ms outlook users leeds to freeze of
-		    outlook'
-	o bug 1044, 'claws-mail segfaults while moving mails'
-	o bug 1045, 'claws-mail doesn't remove the mail from the
-		    IMAP Queue folder after sending'
-	o bug 1046, 'jpilot AddressDB.pdb import fail'
-	o bug 1048, 'Spamassassin plugin license problem'
-	o fix broken storage of quote format template when it
-	  contains \-escape sequences
-	o fix crash when printing emails with an xface
-	o fix building on BSDs
-	o fix duplicate error messages when sending
-	o do not delete the contacts when deleting address book
-	  groups
-	o tools/fix_date.sh: fix date value extraction
+	o bug 1053, 'SC fails to reestablish a secure connection'
+	o bug 1054, 'Slowness logging big data chunks'
+	o bug 1057, 'crash on sending s signed message to a
+		     newsgroup'
+	o bug 1060, 'compilation error with Irix's cc'
+	o bug 1061, 'crash on opening signed email'
+	o bug 1066, 'Incorrect mailbox size displayed'
+	o bug 1069, 'Sent mails disappear, BCC or locking problem?'
+	o fix Reply To/Mailing list from the menu
+	o forbid drag and drop from/to different folders of type
+	  F_UNKNOWN
+	o src/ssl_manager.c: fix possible infinite loop
+	o fix Options/Reply mode after draft save
+	o obey always_show_msg option when marking as spam
+	o fix spelling menu when replying
+	o don't change the From column title to To if the To column
+	  is visible
+	o fix the wrong recipient being selected when replying to a
+	  msg which is From one of our accounts To another of our
+	  accounts
+	o fix crash on combining mark_as_read_delay with Hide Read
+ 	  Messages
+	o create ~/.mailcap if it doesn't exist
 
 For further details of the numbered bugs listed above consult
-http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
-
-* and other code reorganisation, cleanups, and more.
+http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 ---------------------------------------------------------------------
-See ChangeLog and README for full information regarding changes in
-this release.
+See ChangeLog for full information regarding changes in this release.
 

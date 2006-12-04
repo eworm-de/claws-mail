@@ -45,25 +45,25 @@ Summary:
 1. What is Claws Mail?
 --------------------------
 
-Claws Mail is the extended version of Sylpheed, a lightweight and
-highly configurable email client and news reader based on the GTK+ GUI
-toolkit, it runs on the X Window System.
+Claws Mail (previously known as Sylpheed-Claws) is a lightweight and
+highly configurable email client and news reader based on the GTK+
+GUI toolkit, it runs on the X Window System.
 
 Claws Mail is free software distributed under the GNU GPL.
 
 To run Claws Mail use 'claws-mail' on the command line.
 
 When claws-mail is executed for the first time a configuration
-'Wizard' will appear prompting you for the minimum information necesary
-to create a new account.
+'Wizard' will appear prompting you for the minimum information
+necessary to create a new account.
 
 
 2. Plugins
 ----------
 
 Claws Mail' capabilities are extended by plugins. It comes with
-the following plugins included, all of which, except SpamAssassin, are
-built automatically if the required libraries are present.
+the following plugins included, all of which are built automatically
+if the required libraries are present.
 
 Plugins are installed in $PREFIX/lib/claws-mail/plugins/
 and have a suffix of '.so'
@@ -178,8 +178,8 @@ http://www.claws-mail.org/plugins.php
   Note: It is not possible to use actions containing %f, %F or %p from the
   compose window. 
 
-  When a command is run, and unless it is run asynchronously, Sylpheed will
-  be insensitive to any interaction and it will wait for the command to 
+  When a command is run, and unless it is run asynchronously, Claws Mail
+  will be insensitive to any interaction and it will wait for the command to 
   finish. If the command takes too long (5 seconds), it will popup a dialog 
   window allowing to stop it. This dialog will also be displayed as soon as
   the command has some output: error messages or even its standard output 
@@ -226,30 +226,12 @@ http://www.claws-mail.org/plugins.php
   Definition:	Part/Dillo: dillo %p&
   Details:	Browse the selected message part in Dillo.
 
-  Purpose:	Clear Sign
-  Definition:	GnuPG/Clear Sign: |gpg-sign-syl|
-  Details:	Clear sign a message. The gpg-sign-syl[2] script is responsible
-		for asking the passphrase and for running gnupg. 
-
-  Purpose:	Verify Clear Signed
-  Definition:	GnuPG/Verify: |gpg --no-tty --verify
-  Details:	Verify clear signed messages. The result is displayed in the
-	 	actions output dialog.
-
-  Purpose:	Decrypt ASCII Armored
-  Definition:	GnuPG/Decrypt: *gpg --no-tty --command-fd 0 --passphrase-fd 0 --decrypt %f|
-  Details:	Decrypt ASCII armored messages. The passphrase is entered 
-		into the opened action's input dialog.
 
   [1] The uudec script can be found in the 'tools' directory of the 
   distribution package. It needs uudecode and ImageMagick's display. The 
   latter can be replaced by any image viewer that can get input from 
   standard input. The script could also be modified to use temporary files 
   instead of standard input. 
-
-  [2] The gpg-sign-syl script can be found in the 'tools' directory of the 
-  distribution package. 
-
 
 
 4. Icon Themes
@@ -319,7 +301,7 @@ http://www.claws-mail.org/plugins.php
   case it did not, run 'aspell config dict-dir' on the shell to get the
   path to the dictionaries.
 
-  Then run Sylpheed and go to /Configuration/Preferences/Compose/Spell Checking.
+  Then run claws-mail and go to /Configuration/Preferences/Compose/Spell Checking.
   Check the box 'Enable spell checker' and use the directory selector to select
   the path where the dictionaries reside.  Within the file selector, go to that
   directory and select *any* file in the file lists.  Click OK. Then, you should
@@ -370,7 +352,7 @@ http://www.claws-mail.org/plugins.php
     Extended Search allows one to define criteria that messages must
     have in order to match and be displayed in the summary view pane.
     Search types titled From, Subject and To are self explanatory.
-    Search type extended allows one to use Sylpheed's powerful
+    Search type extended allows one to use Claws Mail's powerful
     filtering engine to select messages. Examples:
     from regexpcase "foo"
     subject regexp "Bug" & to regexp "claws-mail"
@@ -442,7 +424,7 @@ http://www.claws-mail.org/plugins.php
 	* Configuration->Actions 
 		- add an entry "Dillo: dillo %p&"
         * Configuration->Custom toolbar    
-		- select Sylpheed Actions Feature
+		- select Claws Mail Actions Feature
 	 	- select "Dillo: dillo %p&" from drop down list
 		- choose an icon and click ok
 
@@ -470,22 +452,18 @@ http://www.claws-mail.org/plugins.php
 9. Hidden options
 -----------------
 
-    allow_jisx0201_kana		(default: 0)
-	allow JIS X 0201 Kana (half-width kana) on sending.
-	0: off  1: on
-
     bold_unread			(default: 1)
 	show unread messages using bold font in summary view
 	0: off  1: on
 
     cache_max_mem_usage		(default: 4096)
-	the maximum kB of memory sylpheed should use.
+	the maximum kB of memory Claws Mail should use.
 	It will try to keep the memory usage below this
 	value, but it will always use the assigned
 	amount of memory for speed gain.
 
     cache_min_keep_time		(default: 15)
-	the minimum time in minutes sylpheed will keep
+	the minimum time in minutes Claws Mail will keep
 	the folder cache in memory. If a cache is more
 	recent than this time it will not be freed even
 	if the memory usage is above the maximum. You
@@ -500,12 +478,13 @@ http://www.claws-mail.org/plugins.php
 	account selector
 	0: normal (markup) 1: no markup
 
+    enable_dotted_lines		(default: 0)
+	Use the old dotted line look in the main window
+	GtkTreeView components, (Folder List and Message List),
+	instead of the modern lineless look. 
+
     enable_hscrollbar		(default: 1)
 	enable horizontal scroll bar in summary view
-	0: off  1: on
-
-    enable_rules_hint		(default: 1)
-	enable alternate coloring of items in GtkTreeView
 	0: off  1: on
 
     enable_swap_from		(default: 0)
@@ -522,8 +501,34 @@ http://www.claws-mail.org/plugins.php
 	expand during drag n drop when the mouse cover is held
 	over it
 
+    live_dangerously			(default: 0)
+	Don't ask for confirmation before definitive deletion of
+	emails.
+
+    log_error_color, log_in_color, log_msg_color, log_out_color,
+    log_warn_color
+	The colours used in the log window.  
+
+    mark_as_read_delay			(default: 0)
+	Number of seconds to wait before marking an opened mail
+	as read.
+
+    respect_flowed_format		(default: 0)
+	Respect format=flowed on text/plain message parts. This will
+	cause some mails to have long lines, but will fix some URLs
+	that would otherwise be wrapped.
+ 
+    skip_ssl_cert_check			(default: 0)
+	Disables the verification of SSL certificates. 
+
     statusbar_update_step		(default: 10)
 	update stepping in progress bars
+
+    stripes_color_offset		(default: 4000)
+	Specify the value to use when creating alternately coloured
+	lines in GtkTreeView components. The smaller the value, the
+	less visible the difference in the alternating colours of the
+	lines. 
 
     textview_cursor_visible	 	(default: 0)
 	display the cursor in the message view
@@ -533,9 +538,18 @@ http://www.claws-mail.org/plugins.php
 	number of days to include a message in a thread when using
 	'Thread using subject in addition to standard headers'
 
-    toolbar_detachable		(default: 0)
+    toolbar_detachable			(default: 0)
 	hide handles in the toolbar
 	0: off  1: on
+
+    use_stripes_everywhere		(default: 1)
+	Enable alternately coloured lines in GtkTreeView components. 
+
+    use_stripes_in_summaries		(default: 1)
+	Enable alternately coloured lines in the main window
+	GtkTreeView components, (Folder List and Message List). The
+	only useful way to use this option is to set it to 0 when
+	use_stripes_everywhere is set to 1. 
 
     utf8_instead_of_locale_for_broken_mail	(default: 0)
 	use UTF-8 encoding for broken mails instead of current
@@ -550,7 +564,7 @@ http://www.claws-mail.org/plugins.php
 --------- 
   You will find all of these tools in the 'tools' directory:
 
-  acroread2sylpheed.pl 
+  acroread2claws-mail.pl 
 	send PDFs from Adobe Reader 7
   calypso_convert.pl 
 	import mbox files exported by calypso
@@ -565,6 +579,8 @@ http://www.claws-mail.org/plugins.php
   filter_conv_new.pl
 	convert sylpheed main's filter rules, (>= 0.9.99),
 	into Claws' filtering format
+  fix-date.sh
+	Replace/Add a message's Date field
   freshmeat_search.pl
   	Actions script to lookup the selected text on
 	Freshmeat www.freshmeat.net using the configured
@@ -577,40 +593,36 @@ http://www.claws-mail.org/plugins.php
   google_search.pl
   	Actions script to lookup up the selected text on
 	google using the configured browser
-  gpg-sign-syl
-	GnuPG cleartext-signing script for use with
-	Actions
   kdeservicemenu/*
-  	Service Menus for Konqueror to allow attaching files and
-	compressing/attaching files/directories to a new Compose
-	window
-  kmail2sylpheed.pl
-	convert a Kmail addressbook to a Sylpheed
+  	Service Menus for Konqueror to allow sending
+	files to Claws Mail
+  kmail2claws-mail.pl
+	convert a Kmail addressbook to a Claws Mail
 	addressbook
-  kmail2sylpheed_v2.pl
+  kmail2claws-mail_v2.pl
 	new version of the address book conversion script
 	for newer versions of Kmail/Kaddressbook
-  maildir2sylpheed.pl
+  maildir2claws-mail.pl
   	convert a maildir format mailbox into MH format
   multiwebsearch.pl
   	search any searchable website for the selected text
-  nautilus2sylpheed.sh
+  nautilus2claws-mail.sh
   	enables sending files from the Nautilus file manager
-	to Sylpheed
-  OOo2sylpheed.pl
+	to Claws Mail
+  OOo2claws-mail.pl
 	enable OpenOffice to send documents through
-	sylpheed
-  outlook2sylpheed.pl
-	convert an Outlook contacts list to a Sylpheed
+	Claws Mail
+  outlook2claws-mail.pl
+	convert an Outlook contacts list to a Claws Mail
 	addressbook
   sylprint.pl
-	process a Sylpheed mail and print it using enscript
+	process a Claws Mail message and print it using enscript
 	if available or lpr if not
-  tb2sylpheed
+  tb2claws-mail
 	convert an addressbook exported from The Bat! into 
-	a Sylpheed addressbook
-  tbird2syl.py
-  	integrate a Thunderbird folder tree into Claws
+	a Claws Mail addressbook
+  tbird2claws.py
+  	integrate a Thunderbird folder tree into Claws Mail
   textviewer.sh
   	attempt to view an attachment as plain text
   update-po 
@@ -618,7 +630,9 @@ http://www.claws-mail.org/plugins.php
 	*.po files
   uudec
 	decode UUencoded mails, for use with Actions
-  vcard2xml
+  uuooffice
+	Decode uuencoded attachments and open them with OpenOffice
+  vcard2xml.py
 	import an Evolution vCard
 
 
@@ -635,7 +649,7 @@ Claws Mail-users mailing list.
 http://www.claws-mail.org/MLs.php
 
 Bugs can be reported with Claws' bugzilla at:
-http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
+http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 Of course, you can also post to the Claws Mail-users mailing list.
 
@@ -675,7 +689,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
   After logging in:
 
-   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/claws-mail
+   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/sylpheed-claws
 
 
   b. Installing
@@ -697,6 +711,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 GTK 2 Version
 -------------
+2006-12-04	2.6.1 [first release as Claws Mail]
 2006-11-06	2.6.0
 2006-10-19	2.5.6
 2006-10-12	2.5.5
@@ -784,15 +799,15 @@ Homepage
 User Contributed FAQ
     http://www.claws-mail.org/faq/
 Project page
-    http://sourceforge.net/projects/claws-mail/
+    http://sourceforge.net/projects/sylpheed-claws/
 Downloads
-    http://sourceforge.net/project/showfiles.php?group_id=25528&package_id=147457
+    http://www.claws-mail.org/downloads.php
 Extra Plugins
     http://www.claws-mail.org/plugins.php
 Icon Themes
     http://www.claws-mail.org/themes.php
 CVS webview
-    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/claws-mail/?only_with_tag=gtk2
+    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/sylpheed-claws/?only_with_tag=gtk2
 Mailing Lists
     http://www.claws-mail.org/MLs.php
 Users Mailing List archive
@@ -800,7 +815,7 @@ Users Mailing List archive
 Commits Announcement List archive
     http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/27
 Bug Tracker
-    http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/index.cgi
+    http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 Feature Request Tracker
     http://sourceforge.net/tracker/?group_id=25528&atid=384601
 Patch Tracker
@@ -809,7 +824,7 @@ Internationalisation Status
     http://www.claws-mail.org/i18n.php
 Donations
     http://www.claws-mail.org/sponsors.php
-Planet Sylpheed
+Planet Claws Mail
     http://planet.claws-mail.org/
 Claws Mail for Windows homepage
     http://www.claws-mail.org/win32/
