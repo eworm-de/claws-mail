@@ -4549,9 +4549,9 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
 		gchar **parts = g_strsplit(buf, ";", 3);
 		gchar *trimmed = parts[0];
-		while (trimmed[0] == ' ')
+		while (trimmed[0] == ' ' || trimmed[0] == '\t')
 			trimmed++;
-		while (trimmed[strlen(trimmed)-1] == ' ')
+		while (trimmed[strlen(trimmed)-1] == ' ' || trimmed[strlen(trimmed)-1] == '\t')
 			trimmed[strlen(trimmed)-1] = '\0';
 
 		if (!strcmp(trimmed, type)) {
@@ -4564,13 +4564,13 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 				gchar *testcmd = orig_testcmd;
 				if (strstr(testcmd,";"))
 					*(strstr(testcmd,";")) = '\0';
-				while (testcmd[0] == ' ')
+				while (testcmd[0] == ' ' || testcmd[0] == '\t')
 					testcmd++;
 				while (testcmd[strlen(testcmd)-1] == '\n')
 					testcmd[strlen(testcmd)-1] = '\0';
 				while (testcmd[strlen(testcmd)-1] == '\r')
 					testcmd[strlen(testcmd)-1] = '\0';
-				while (testcmd[strlen(testcmd)-1] == ' ')
+				while (testcmd[strlen(testcmd)-1] == ' ' || testcmd[strlen(testcmd)-1] == '\t')
 					testcmd[strlen(testcmd)-1] = '\0';
 					
 				if (strstr(testcmd, "%s")) {
@@ -4595,13 +4595,13 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 			}
 			
 			trimmed = parts[1];
-			while (trimmed[0] == ' ')
+			while (trimmed[0] == ' ' || trimmed[0] == '\t')
 				trimmed++;
 			while (trimmed[strlen(trimmed)-1] == '\n')
 				trimmed[strlen(trimmed)-1] = '\0';
 			while (trimmed[strlen(trimmed)-1] == '\r')
 				trimmed[strlen(trimmed)-1] = '\0';
-			while (trimmed[strlen(trimmed)-1] == ' ')
+			while (trimmed[strlen(trimmed)-1] == ' ' || trimmed[strlen(trimmed)-1] == '\t')
 				trimmed[strlen(trimmed)-1] = '\0';
 			result = g_strdup(trimmed);
 			g_strfreev(parts);
