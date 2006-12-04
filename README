@@ -55,7 +55,7 @@ To run Claws Mail use 'claws-mail' on the command line.
 
 When claws-mail is executed for the first time a configuration
 'Wizard' will appear prompting you for the minimum information
-necesary to create a new account.
+necessary to create a new account.
 
 
 2. Plugins
@@ -711,6 +711,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 GTK 2 Version
 -------------
+2006-12-04	2.6.1 [first release as Claws Mail]
 2006-11-06	2.6.0
 2006-10-19	2.5.6
 2006-10-12	2.5.5

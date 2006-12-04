@@ -2108,3 +2108,4 @@
 ( cvs diff -u -r 1.36.2.90 -r 1.36.2.91 src/common/utils.c;  ) > 2.6.0cvs81.patchset
 ( cvs diff -u -r 1.36.2.91 -r 1.36.2.92 src/common/utils.c;  ) > 2.6.0cvs82.patchset
 ( cvs diff -u -r 1.8.2.26 -r 1.8.2.27 README;  ) > 2.6.0cvs83.patchset
+( cvs diff -u -r 1.42.2.23 -r 1.42.2.24 NEWS;  cvs diff -u -r 1.8.2.27 -r 1.8.2.28 README;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2163 -r 1.654.2.2164 configure.ac;  cvs diff -u -r 1.30.2.13 -r 1.30.2.14 tools/README;  ) > 2.6.1cvs1.patchset

@@ -1,7 +1,40 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.6.1
+-------
+
+* First release as Claws Mail
+
+* Bug fixes:
+	o bug 1053, 'SC fails to reestablish a secure connection'
+	o bug 1054, 'Slowness logging big data chunks'
+	o bug 1057, 'crash on sending s signed message to a
+		     newsgroup'
+	o bug 1060, 'compilation error with Irix's cc'
+	o bug 1061, 'crash on opening signed email'
+	o bug 1066, 'Incorrect mailbox size displayed'
+	o bug 1069, 'Sent mails disappear, BCC or locking problem?'
+	o fix Reply To/Mailing list from the menu
+	o forbid drag and drop from/to different folders of type
+	  F_UNKNOWN
+	o src/ssl_manager.c: fix possible infinite loop
+	o fix Options/Reply mode after draft save
+	o obey always_show_msg option when marking as spam
+	o fix spelling menu when replying
+	o don't change the From column title to To if the To column
+	  is visible
+	o fix the wrong recipient being selected when replying to a
+	  msg which is From one of our accounts To another of our
+	  accounts
+	o fix crash on combining mark_as_read_delay with Hide Read
+ 	  Messages
+	o create ~/.mailcap if it doesn't exist
+
+
 * 2.6.0
 -------
+
+* Final release as Sylpheed-Claws
 
 * libetpan 0.48 or greater is now required for IMAP support.
 
