@@ -351,14 +351,14 @@ gchar *to_human_readable(off_t size)
 		gb_format = _("%.2fGB");
 	}
 	
-	if (size < 1024) {
+	if (size < (off_t)1024) {
 		g_snprintf(str, sizeof(str), b_format, (gint)size);
 		return str;
-	} else if (size >> 10 < 1024) {
+	} else if (size >> 10 < (off_t)1024) {
 		divide(size, 10, t, r);
 		g_snprintf(str, sizeof(str), kb_format, t, r);
 		return str;
-	} else if (size >> 20 < 1024) {
+	} else if (size >> 20 < (off_t)1024) {
 		divide(size, 20, t, r);
 		g_snprintf(str, sizeof(str), mb_format, t, r);
 		return str;

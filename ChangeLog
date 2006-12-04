@@ -1,3 +1,10 @@
+2006-12-04 [paul]	2.6.0cvs24-stable
+
+	* src/common/utils.c
+		backport from 2.6.0cvs82
+		Probably fix bug 1066, 'Incorrect mailbox 
+		size displayed'
+
 2006-12-04 [paul]	2.6.0cvs23-stable
 
 	* src/common/utils.c
