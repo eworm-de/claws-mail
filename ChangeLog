@@ -1,3 +1,9 @@
+2006-12-04 [colin]	2.6.1cvs2
+
+	* src/compose.c
+		Run pre-send hook only when checking
+		everything
+
 2006-12-04 [paul]	2.6.1cvs1
 
 	* NEWS

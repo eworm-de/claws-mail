@@ -266,7 +266,7 @@ static PrefsAccount *compose_current_mail_account(void);
 static gboolean compose_check_for_valid_recipient
 						(Compose	*compose);
 static gboolean compose_check_entries		(Compose	*compose,
-						 gboolean 	check_subject);
+						 gboolean 	check_everything);
 static gint compose_write_to_file		(Compose	*compose,
 						 FILE		*fp,
 						 gint 		 action,
@@ -4207,7 +4207,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 	return TRUE;
 }
 
-static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
+static gboolean compose_check_entries(Compose *compose, gboolean check_everything)
 {
 	const gchar *str;
 
@@ -4225,7 +4225,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 
 	if (!compose->batch) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-		if (*str == '\0' && check_subject == TRUE) {
+		if (*str == '\0' && check_everything == TRUE) {
 			AlertValue aval;
 
 			aval = alertpanel(_("Send"),
@@ -4236,7 +4236,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 		}
 	}
 
-	if (hooks_invoke(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, compose))
+	if (check_everything && hooks_invoke(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, compose))
 		return FALSE;
 
 	return TRUE;
