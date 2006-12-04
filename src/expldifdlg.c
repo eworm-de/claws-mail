@@ -700,10 +700,9 @@ static void export_ldif_dialog_create( void ) {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox,
-				      &btnCancel, GTK_STOCK_CANCEL, 
-				      &btnPrev, GTK_STOCK_GO_BACK,
-				      &btnNext, GTK_STOCK_GO_FORWARD);
+	gtkut_stock_button_set_create(&hbbox, &btnPrev, GTK_STOCK_GO_BACK,
+				      &btnNext, GTK_STOCK_GO_FORWARD,
+				      &btnCancel, GTK_STOCK_CANCEL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);

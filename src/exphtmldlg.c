@@ -53,9 +53,6 @@
 #define PAGE_FORMAT                1
 #define PAGE_FINISH                2
 
-#define EXPORTHTML_WIDTH           480
-#define EXPORTHTML_HEIGHT          -1
-
 /**
  * Dialog object.
  */
@@ -592,7 +589,7 @@ static void export_html_dialog_create( void ) {
 	GtkWidget *statusbar;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request(window, EXPORTHTML_WIDTH, EXPORTHTML_HEIGHT );
+	gtk_widget_set_size_request(window, -1, -1 );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window),
 		_("Export Address Book to HTML File") );
