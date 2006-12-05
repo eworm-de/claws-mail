@@ -2111,3 +2111,4 @@
 ( cvs diff -u -r 1.42.2.23 -r 1.42.2.24 NEWS;  cvs diff -u -r 1.8.2.27 -r 1.8.2.28 README;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2163 -r 1.654.2.2164 configure.ac;  cvs diff -u -r 1.30.2.13 -r 1.30.2.14 tools/README;  ) > 2.6.1cvs1.patchset
 ( cvs diff -u -r 1.382.2.338 -r 1.382.2.339 src/compose.c;  ) > 2.6.1cvs2.patchset
 ( cvs diff -u -r 1.30.2.14 -r 1.30.2.15 tools/README;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/textviewer.pl;  ) > 2.6.1cvs3.patchset
+( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/wizard.c;  ) > 2.6.1cvs4.patchset

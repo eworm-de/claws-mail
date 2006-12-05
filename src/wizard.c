@@ -447,15 +447,23 @@ static void write_welcome_email(WizardWindow *wizard)
 	gchar *head=NULL;
 	gchar *body=NULL;
 	gchar *msg=NULL;
-	gchar *subj=NULL;
 	const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name));
 	Folder *folder = folder_find_from_path(mailbox);
 	FolderItem *inbox = folder ? folder->inbox:NULL;
 	gchar *file = get_tmp_file();
+	gchar enc_from_name[BUFFSIZE], enc_to_name[BUFFSIZE], enc_subject[BUFFSIZE];
 	
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
-	subj = g_strdup_printf(_("Welcome to Claws Mail "));
+	conv_encode_header_full(enc_subject, sizeof(enc_subject), 
+			_("Welcome to Claws Mail "),
+			strlen("Subject: "), FALSE, CS_INTERNAL);
+	conv_encode_header_full(enc_to_name, sizeof(enc_to_name), 
+			gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
+			strlen("To: "), TRUE, CS_INTERNAL);
+	conv_encode_header_full(enc_from_name, sizeof(enc_from_name), 
+			_("Claws Mail Team"),
+			strlen("From: "), TRUE, CS_INTERNAL);
 
 	head = g_strdup_printf(
 		"From: %s <%s>\n"
@@ -465,11 +473,11 @@ static void write_welcome_email(WizardWindow *wizard)
 		"X-Face: %s\n"
 		"Face: %s\n"
 		"Content-Type: text/plain; charset=UTF-8\n",
-		_("Claws Mail Team"),
+		enc_from_name,
 		USERS_ML_ADDR,
-		gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
+		enc_to_name,
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
-		buf_date, subj, XFACE, FACE);
+		buf_date, enc_subject, XFACE, FACE);
 	body = g_strdup_printf(
 		_("\n"
 		"Welcome to Claws Mail\n"
@@ -524,7 +532,6 @@ static void write_welcome_email(WizardWindow *wizard)
 		MsgFlags flags = { MSG_UNREAD|MSG_NEW, 0};
 		folder_item_add_msg(inbox, file, &flags, FALSE);
 	}
-	g_free(subj);
 	g_free(head);
 	g_free(body);
 	g_free(msg);

@@ -1,3 +1,9 @@
+2006-12-05 [paul]	2.6.1cvs4
+
+	* src/wizard.c
+		encode headers
+		Thanks to Colin
+
 2006-12-05 [paul]	2.6.1cvs3
 
 	* tools/README
