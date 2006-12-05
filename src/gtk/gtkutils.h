@@ -34,6 +34,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkitemfactory.h>
+#include <gtk/gtktreemodel.h>
 #include <stdlib.h>
 #if HAVE_WCHAR_H
 #  include <wchar.h>
@@ -225,4 +226,11 @@ void gtkutils_scroll_one_line	(GtkWidget *widget,
 gboolean gtkutils_scroll_page	(GtkWidget *widget, 
 				 GtkAdjustment *vadj, 
 				 gboolean up);
+
+gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
+				 GtkTreeIter *iter,
+				 const gchar* text);
+gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
+				 GtkTreeIter *iter);
+
 #endif /* __GTKUTILS_H__ */

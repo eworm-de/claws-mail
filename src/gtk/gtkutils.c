@@ -1482,3 +1482,58 @@ void gtkutils_scroll_one_line(GtkWidget *widget, GtkAdjustment *vadj, gboolean u
 		}
 	}
 }
+
+gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
+				 GtkTreeIter *iter,
+				 const gchar* text)
+/* do the same as gtk_tree_model_iter_next, but _prev instead.
+   to use with widgets with one text column (gtk_combo_box_new_text()
+   and with GtkComboBoxEntry's for instance),
+*/
+{
+	GtkTreeIter cur_iter;
+	gchar *cur_value;
+	gboolean valid;
+	gint count;
+
+	g_return_val_if_fail(model != NULL, FALSE);
+	g_return_val_if_fail(iter != NULL, FALSE);
+
+	if (text == NULL || *text == '\0')
+		return FALSE;
+
+	valid = gtk_tree_model_get_iter_first(model, &cur_iter);
+	count = 0;
+	while (valid) {
+		gtk_tree_model_get(model, &cur_iter, 0, &cur_value, -1);
+
+		if (strcmp(text, cur_value) == 0) {
+			if (count <= 0)
+				return FALSE;
+
+			return gtk_tree_model_iter_nth_child(model, iter, NULL, count - 1);
+		}
+
+		valid = gtk_tree_model_iter_next(model, &cur_iter);
+		count++;
+	}
+	return FALSE;		
+}
+
+gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
+				 GtkTreeIter *iter)
+/* do the same as gtk_tree_model_get_iter_first, but _last instead.
+*/
+{
+	gint count;
+
+	g_return_val_if_fail(model != NULL, FALSE);
+	g_return_val_if_fail(iter != NULL, FALSE);
+
+	count = gtk_tree_model_iter_n_children(model, NULL);
+
+	if (count <= 0)
+		return FALSE;
+
+	return gtk_tree_model_iter_nth_child(model, iter, NULL, count - 1);
+}

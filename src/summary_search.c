@@ -948,7 +948,7 @@ static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFoc
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    gpointer data)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && (event->keyval == GDK_Escape)) {
 		/* ESC key will:
 			- stop a running search
 			- close the search window if no search is running
@@ -959,5 +959,39 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			search_window.is_searching = FALSE;
 		}
 	}
+
+	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
+		if (search_window.from_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.from_entry),
+					event->keyval);
+			return TRUE;
+		}
+		if (search_window.to_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.to_entry),
+					event->keyval);
+			return TRUE;
+		}
+		if (search_window.subject_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.subject_entry),
+					event->keyval);
+			return TRUE;
+		}
+		if (search_window.body_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.body_entry),
+					event->keyval);
+			return TRUE;
+		}
+		if (search_window.adv_condition_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.adv_condition_entry),
+					event->keyval);
+			return TRUE;
+		}
+	}
+
 	return FALSE;
 }

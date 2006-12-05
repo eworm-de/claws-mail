@@ -389,8 +389,19 @@ static void message_search_next_clicked(GtkButton *button, gpointer data)
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && (event->keyval == GDK_Escape)) {
 		gtk_widget_hide(search_window.window);
+	}
+
+	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
+		if (search_window.body_entry_has_focus) {
+			combobox_set_value_from_arrow_key(
+					GTK_COMBO_BOX(search_window.body_entry),
+					event->keyval);
+			return TRUE;
+		}
+	}
+
 	return FALSE;
 }
 
