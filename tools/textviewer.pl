@@ -1,5 +1,11 @@
 #!/usr/bin/perl
 
+# COPYRIGHT AND LICENSE
+#        Copyright (C) 2005-2006 H.Merijn Brand
+#
+#        This script is free software; you can redistribute it and/or modify it
+#        under the same terms as Perl and/or Claws Mail itself. (GPL)
+
 use strict;
 use warnings;
 
@@ -27,7 +33,7 @@ GetOptions (
     "h|html"		=> sub { $opt_h = "html" },
     ) or usage (1);
 
-$opt_v and print STDERR "$0 @ARGV\n";
+$opt_v and print "$0 @ARGV\n";
 
 my $file = shift or usage (1, "File argument is missing");
 -f $file         or usage (1, "File argument is not a plain file");
@@ -61,6 +67,8 @@ my %fh = (
 	sxc	=> "xls",		   # OpenOffice spreadsheet
 	odt	=> [ "ooo2txt"		], # OpenOffice writer
 
+	csv	=> "xls",		   # Comma Separated Values
+
 	pl	=> [ "perltidy -st -se",
 		     "cat"		], # Perl
 	pm	=> "pl",
@@ -71,6 +79,8 @@ my %fh = (
 	    sh sed awk
 	    plain
 	    )),
+
+	bz2	=> [ "bzip2 -d < %f | strings" ],
 
 	test	=> [ \&test		], # Internal
 	},
@@ -125,5 +135,5 @@ foreach my $c (@$ref) {
     }
 
 $cmd =~ s/%f\b/$file/g or $cmd .= " $file";
-$opt_v and print STDERR "$cmd\n";
+$opt_v and print "$cmd\n";
 exec $cmd;

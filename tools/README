@@ -31,14 +31,15 @@ Other tools:
   acroread2claws-mail.pl	Send PDFs from Adobe Reader 7
   filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
   filter_conv.pl                Convert old-style Sylpheed filters to filtering
+  fix-date.sh			Replace/Add a message's Date field
   nautilus2claws-mail.sh	Send files from Nautilus
   OOo2claws-mail.pl             Send documents from OpenOffice.org
   sylprint.pl                   Printing engine, explained in README.sylprint
-  update-po                     Update the .po files named on the command line.
+  textviewer.pl			Display various attachments as text 
 
 Extra tools:
-  fix-date.sh			Replace/Add a message's Date field
   gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
+  update-po                     Update the .po files named on the command line.
 
 --------------------------------------------------------------------------------
 Detailed Descriptions:
@@ -451,6 +452,21 @@ Other tools
   Contact: Paul Mangan <paul@claws-mail.org>
   
 
+* fix-date.sh
+
+ WHAT IT DOES
+	It will replace the Date: value w/ the one picked up from
+	more recent Received: field if this field resides in one
+	line. Otherwise, it will take the file modification time
+	(using a RFC 2822-compliant form). If no X-Original-Date already
+	exist, the former Date value will be set in such field.
+
+  HOW TO USE IT
+	fix_date.sh <filename> [<filename>..]
+
+  Contact: wwp <wwp@claws-mail.org>
+
+
 * nautilus2claws-mail.sh
 
   WHAT IT DOES
@@ -503,44 +519,37 @@ Other tools
   Contact: Paul Mangan <paul@claws-mail.org>
 
 
-* update-po
+* textviewer.pl
 
   WHAT IT DOES
-  	This script is a message catalog translator's tool, it updates the .po 
-  	files named on the command line.
+	This script tries to recognise an attachment by using the 'file'
+	command and/or the file extension and then uses the available Linux
+	utilities to make an effort to display it as text. For example
+		.doc			antiword -w 72
+		.txt, .diff, .c, .h,
+  		  .ic. .ec, .cc, .sh,
+  		  .sed, .awk		cat
+		.html			txt2htm	or text2html
+		.xls, .sxc, .csv	xlscat -L
+		.rtf			rtf2text
+		.pdf			pdf2text %f -
+		.odt			ooo2txt
+		.pl, .pm		perltidy -st -se or  cat
+		.bz2			bzip2 -d < %f | strings
 
   HOW TO USE IT
-	This script needs to be copied to and run from the 'po' directory.
-  
-		./update-po lang.po lang2.po ...
+  	Go to /Configuration/Message View/External Programs and enter the
+	path to the script in the "Command for 'Display as text'" box.
+	Now when you right-click an attachment and choose 'Display as text'
+	this script will be invoked.
 
-  	to update one or more <yourlang>.po files from the sourcecode files
- 	 named in POTFILES.in. The old .po file is save in a .po.old file.
-
-  	For example, when you want to update fr.po, run ./update-po fr.po, 
-  	then edit fr.po to update your translation.
-
-  Contact: Wilbert Berendsen <wilbert@oswf.org>
+	
+  Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
 
 --------------------------------------------------------------------------------
 
 Extra tools
 -----------
-
-* fix-date.sh
-
-# usage: fix_date.sh <filename> [<filename>..]
-  WHAT IT DOES
-	It will replace the Date: value w/ the one picked up from
-	more recent Received: field if this field resides in one
-	line. Otherwise, it will take the file modification time
-	(using a RFC 2822-compliant form). If no X-Original-Date already
-	exist, the former Date value will be set in such field.
-
-  HOW TO USE IT
-	fix_date.sh <filename> [<filename>..]
-
-  Contact: wwp <wwp@claws-mail.org>
 
 * gif2xface.pl
 
@@ -575,5 +584,25 @@ Extra tools
   	they will be lost!).
 
   Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
+
+
+* update-po
+
+  WHAT IT DOES
+  	This script is a message catalog translator's tool, it updates the .po 
+  	files named on the command line.
+
+  HOW TO USE IT
+	This script needs to be copied to and run from the 'po' directory.
+  
+		./update-po lang.po lang2.po ...
+
+  	to update one or more <yourlang>.po files from the sourcecode files
+ 	 named in POTFILES.in. The old .po file is save in a .po.old file.
+
+  	For example, when you want to update fr.po, run ./update-po fr.po, 
+  	then edit fr.po to update your translation.
+
+  Contact: Wilbert Berendsen <wilbert@oswf.org> or the Claws Mail Team
 
 --------------------------------------------------------------------------------

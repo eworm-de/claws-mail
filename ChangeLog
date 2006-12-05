@@ -1,3 +1,9 @@
+2006-12-05 [paul]	2.6.1cvs3
+
+	* tools/README
+	* tools/textviewer.pl
+		script updated and description added
+
 2006-12-04 [colin]	2.6.1cvs2
 
 	* src/compose.c
