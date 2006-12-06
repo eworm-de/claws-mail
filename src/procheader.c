@@ -449,8 +449,10 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 
 	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
 		while (get_one_field(buf, sizeof(buf), data, NULL) != -1) {
-			if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
-				strlen("X-Sylpheed-End-Special-Headers:")))
+			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
+				strlen("X-Claws-End-Special-Headers:"))) ||
+			    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+				strlen("X-Sylpheed-End-Special-Headers:"))))
 				break;
 			/* from other mailers */
 			if (!strncmp(buf, "Date: ", 6)

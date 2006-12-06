@@ -1,3 +1,14 @@
+2006-12-06 [paul]	2.6.1cvs9
+
+	* src/compose.c
+	* src/messageview.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/textview.c
+		more renaming
+		Thanks to Colin
+
 2006-12-06 [colin]	2.6.1cvs8
 
 	* src/ssl_manager.c

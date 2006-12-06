@@ -1650,6 +1650,8 @@ static gboolean header_is_internal(Header *header)
 		{"AF:", "NF:", "PS:", "SRH:", "SFN:", "DSR:", "MID:", 
 		 "CFG:", "PT:", "S:", "RQ:", "SSV:", "NSV:", "SSH:", 
 		 "R:", "MAID:", "SCF:", "RMID:", "FMID:", "NAID:", 
+		 "X-Claws-Account-Id:", "X-Claws-Sign:", "X-Claws-Encrypt:", 
+		 "X-Claws-Privacy-System:", "X-Claws-End-Special-Headers:",
 		 "X-Sylpheed-Account-Id:", "X-Sylpheed-Sign:", "X-Sylpheed-Encrypt:", 
 		 "X-Sylpheed-Privacy-System:", "X-Sylpheed-End-Special-Headers:",
 		 NULL};

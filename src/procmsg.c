@@ -65,7 +65,11 @@ enum
 	Q_PRIVACY_SYSTEM   = 9,
 	Q_ENCRYPT 	   = 10,
 	Q_ENCRYPT_DATA	   = 11,
-	Q_CLAWS_HDRS    = 12,
+	Q_CLAWS_HDRS       = 12,
+	Q_PRIVACY_SYSTEM_OLD = 13,
+	Q_ENCRYPT_OLD 	     = 14,
+	Q_ENCRYPT_DATA_OLD   = 15,
+	Q_CLAWS_HDRS_OLD     = 16,
 };
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
@@ -550,8 +554,10 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			/* new way */
-			if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
-				strlen("X-Sylpheed-End-Special-Headers:")))
+			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
+				strlen("X-Claws-End-Special-Headers:"))) ||
+			    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+				strlen("X-Sylpheed-End-Special-Headers:"))))
 				break;
 			/* old way */
 			if (buf[0] == '\r' || buf[0] == '\n') break;
@@ -773,6 +779,10 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
 				       {"FMID:", NULL, FALSE},
+				       {"X-Claws-Privacy-System:", NULL, FALSE},
+				       {"X-Claws-Encrypt:", NULL, FALSE},
+				       {"X-Claws-Encrypt-Data:", NULL, FALSE},
+				       {"X-Claws-End-Special-Headers",    NULL, FALSE},
 				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
@@ -1038,8 +1048,10 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	}
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		/* new way */
-		if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
-			strlen("X-Sylpheed-End-Special-Headers:")))
+		if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
+			strlen("X-Claws-End-Special-Headers:"))) ||
+		    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+			strlen("X-Sylpheed-End-Special-Headers:"))))
 			break;
 		/* old way */
 		if (buf[0] == '\r' || buf[0] == '\n') break;
@@ -1464,6 +1476,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
 				       {"FMID:", NULL, FALSE},
+				       {"X-Claws-Privacy-System:", NULL, FALSE},
+				       {"X-Claws-Encrypt:", NULL, FALSE},
+				       {"X-Claws-Encrypt-Data:", NULL, FALSE},
+				       {"X-Claws-End-Special-Headers:", NULL, FALSE},
 				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
@@ -1539,18 +1555,22 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				fwdmessageid = g_strdup(p);
 			break;
 		case Q_PRIVACY_SYSTEM:
+		case Q_PRIVACY_SYSTEM_OLD:
 			if (privacy_system == NULL) 
 				privacy_system = g_strdup(p);
 			break;
 		case Q_ENCRYPT:
+		case Q_ENCRYPT_OLD:
 			if (p[0] == '1') 
 				encrypt = TRUE;
 			break;
 		case Q_ENCRYPT_DATA:
+		case Q_ENCRYPT_DATA_OLD:
 			if (encrypt_data == NULL) 
 				encrypt_data = g_strdup(p);
 			break;
 		case Q_CLAWS_HDRS:
+		case Q_CLAWS_HDRS_OLD:
 			/* end of special headers reached */
 			goto send_mail; /* can't "break;break;" */
 		}

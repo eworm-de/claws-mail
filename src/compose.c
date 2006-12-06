@@ -1773,6 +1773,11 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 		/* Select Account from queue headers */
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Claws-Account-Id:")) {
+			id = atoi(&queueheader_buf[strlen("X-Claws-Account-Id:")]);
+			account = account_find_from_id(id);
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
 			id = atoi(&queueheader_buf[strlen("X-Sylpheed-Account-Id:")]);
 			account = account_find_from_id(id);
@@ -1792,16 +1797,31 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			account = account_find_from_address(queueheader_buf);
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Claws-Sign:")) {
+			param = atoi(&queueheader_buf[strlen("X-Claws-Sign:")]);
+			use_signing = param;
+			
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Sign:")) {
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Sign:")]);
 			use_signing = param;
 			
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Claws-Encrypt:")) {
+			param = atoi(&queueheader_buf[strlen("X-Claws-Encrypt:")]);
+			use_encryption = param;
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Encrypt:")) {
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Encrypt:")]);
 			use_encryption = param;
 		}
+                if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+                                            sizeof(queueheader_buf), "X-Claws-Privacy-System:")) {
+                        privacy_system = g_strdup(&queueheader_buf[strlen("X-Claws-Privacy-System:")]);
+                }
                 if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
                                             sizeof(queueheader_buf), "X-Sylpheed-Privacy-System:")) {
                         privacy_system = g_strdup(&queueheader_buf[strlen("X-Sylpheed-Privacy-System:")]);
@@ -4543,8 +4563,10 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		"SSH:",			"R:",			"MAID:",
 		"NAID:",		"RMID:",		"FMID:",
 		"SCF:",			"RRCPT:",		"NG:",
+		"X-Claws-Privacy",	"X-Claws-Sign:",	"X-Claws-Encrypt",
+		"X-Claws-End-Special-Headers:", 		"X-Claws-Account-Id:",
 		"X-Sylpheed-Privacy",	"X-Sylpheed-Sign:",	"X-Sylpheed-Encrypt",
-		"X-Sylpheed-End-Special-Headers:",
+		"X-Sylpheed-End-Special-Headers:", 		"X-Sylpheed-Account-Id:",
 		NULL
 		};
 	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
@@ -5024,8 +5046,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	
 	if (compose->privacy_system != NULL) {
-		fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
-		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+		fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system);
+		fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing);
 		if (compose->use_encryption) {
 			gchar *encdata;
 			if (mailac && mailac->encrypt_to_self) {
@@ -5038,12 +5060,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			}
 			if (encdata != NULL) {
 				if (strcmp(encdata, "_DONT_ENCRYPT_")) {
-					fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-					fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", 
+					fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
+					fprintf(fp, "X-Claws-Encrypt-Data:%s\n", 
 						encdata);
 				} /* else we finally dont want to encrypt */
 			} else {
-				fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+				fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
 				/* and if encdata was null, it means there's been a problem in 
 				 * key selection */
 				lock = FALSE;
@@ -5086,7 +5108,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	/* end of headers */
-	fprintf(fp, "X-Sylpheed-End-Special-Headers: 1\n");
+	fprintf(fp, "X-Claws-End-Special-Headers: 1\n");
 
 	if (compose->redirect_filename != NULL) {
 		if (compose_redirect_write_to_file(compose, fp) < 0) {
@@ -7957,7 +7979,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 	/* Save draft infos */
-	fprintf(fp, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
+	fprintf(fp, "X-Claws-Account-Id:%d\n", compose->account->account_id);
 	fprintf(fp, "S:%s\n", compose->account->address);
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
@@ -7971,9 +7993,9 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		fprintf(fp, "RRCPT:1\n");
 	}
 	if (compose->privacy_system) {
-		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
-		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-		fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
+		fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing);
+		fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
+		fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system);
 	}
 
 	/* Message-ID of message replying to */
@@ -7994,7 +8016,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 	/* end of headers */
-	fprintf(fp, "X-Sylpheed-End-Special-Headers: 1\n");
+	fprintf(fp, "X-Claws-End-Special-Headers: 1\n");
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE, action != COMPOSE_AUTO_SAVE) < 0) {
 		fclose(fp);

@@ -1899,8 +1899,10 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 	/* Skip queue header */
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		/* new way */
-		if (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
-			strlen("X-Sylpheed-End-Special-Headers:")))
+		if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
+			strlen("X-Claws-End-Special-Headers:"))) ||
+		   (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+			strlen("X-Sylpheed-End-Special-Headers:"))))
 			break;
 		/* old way */
 		if (buf[0] == '\r' || buf[0] == '\n') break;
