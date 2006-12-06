@@ -3162,12 +3162,12 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 {
 	int fd;
 #ifdef G_OS_WIN32
-	char *template = g_strdup_printf ("%s%csylpheed.XXXXXX",
+	char *template = g_strdup_printf ("%s%cclaws.XXXXXX",
 					  dir, G_DIR_SEPARATOR);
 	fd = mkstemp_name(template, filename);
 	g_free(template);
 #else
-	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	*filename = g_strdup_printf("%s%cclaws.XXXXXX", dir, G_DIR_SEPARATOR);
 	fd = mkstemp(*filename);
 #endif
 	return fdopen(fd, "w+");

@@ -517,7 +517,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_tooltips_set_tip( toolTip, entry_baseDN, _( 
 		"This specifies the name of the directory to be searched " \
 		"on the server. Examples include:\n" \
-		"  dc=sylpheed,dc=org\n" \
+		"  dc=claws-mail,dc=org\n" \
 		"  ou=people,dc=domainname,dc=com\n" \
 		"  o=Organization Name,c=Country\n"
 		),
@@ -732,7 +732,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_tooltips_set_tip( toolTip, entry_bindDN, _( 
 		"The LDAP user account name to be used to connect to the server. " \
 		"This is usually only used for protected servers. This name " \
-		"is typically formatted as: \"cn=user,dc=sylpheed,dc=com\". " \
+		"is typically formatted as: \"cn=user,dc=claws-mail,dc=org\". " \
 		"This is usually left empty when performing a search." ),
 		NULL );
 

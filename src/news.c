@@ -812,7 +812,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	get_rfc822_date(buf, sizeof(buf));
 	fprintf(tmpfp, "Date: %s\r\n", buf);
 	fprintf(tmpfp, "\r\n");
-	fprintf(tmpfp, "removed with sylpheed\r\n");
+	fprintf(tmpfp, "removed with Claws Mail\r\n");
 
 	fclose(tmpfp);
 

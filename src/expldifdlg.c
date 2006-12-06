@@ -478,7 +478,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		GTK_TOOLTIPS(toolTip), entrySuffix, _(
 		"The suffix is used to create a \"Distinguished Name\" " \
 		"(or DN) for an LDAP entry. Examples include:\n" \
-		"  dc=sylpheed,dc=org\n" \
+		"  dc=claws-mail,dc=org\n" \
 		"  ou=people,dc=domainname,dc=com\n" \
 		"  o=Organization Name,c=Country\n"
 		), NULL );
@@ -502,7 +502,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		GTK_TOOLTIPS(toolTip), menuItem, _(
 		"The address book Unique ID is used to create a DN that is " \
 		"formatted similar to:\n" \
-		"  uid=102376,ou=people,dc=sylpheed,dc=org"
+		"  uid=102376,ou=people,dc=claws-mail,dc=org"
 		), NULL );
 
 	menuItem = gtk_menu_item_new_with_label( _( "Display Name" ) );
@@ -515,7 +515,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		GTK_TOOLTIPS(toolTip), menuItem, _(
 		"The address book Display Name is used to create a DN that " \
 		"is formatted similar to:\n" \
-		"  cn=John Doe,ou=people,dc=sylpheed,dc=org"
+		"  cn=John Doe,ou=people,dc=claws-mail,dc=org"
 		), NULL );
 
 	menuItem = gtk_menu_item_new_with_label( _( "Email Address" ) );
@@ -528,7 +528,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		GTK_TOOLTIPS(toolTip), menuItem, _(
 		"The first Email Address belonging to a person is used to " \
 		"create a DN that is formatted similar to:\n" \
-		"  mail=john.doe@domain.com,ou=people,dc=sylpheed,dc=org"
+		"  mail=john.doe@domain.com,ou=people,dc=claws-mail,dc=org"
 		), NULL );
 
 	optmenuRDN = gtk_option_menu_new();

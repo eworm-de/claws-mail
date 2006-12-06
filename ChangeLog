@@ -1,3 +1,14 @@
+2006-12-06 [paul]	2.6.1cvs10
+
+	* src/addrharvest.c
+	* src/editldap.c
+	* src/expldifdlg.c
+	* src/news.c
+	* src/toolbar.c
+	* src/common/utils.c
+		...and more renaming
+		Thanks to Colin
+
 2006-12-06 [paul]	2.6.1cvs9
 
 	* src/compose.c

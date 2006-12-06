@@ -724,7 +724,7 @@ void toolbar_action_execute(GtkWidget    *widget,
 	if (found) 
 		actions_execute(data, i, widget, source);
 	else
-		g_warning ("Error: did not find Sylpheed Action to execute");
+		g_warning ("Error: did not find Claws Action to execute");
 }
 
 static void activate_compose_button (Toolbar           *toolbar,

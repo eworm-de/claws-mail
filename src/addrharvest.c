@@ -50,7 +50,7 @@ static gchar *_headerTo_       = HEADER_TO;
 #define REM_NAME_STRING2 "(Email 2)"
 
 /* Directories to ignore */
-#define DIR_IGNORE ".\t..\t.sylpheed_mark\t.sylpheed_cache"
+#define DIR_IGNORE ".\t..\t.sylpheed_mark\t.sylpheed_claws_cache"
 
 /*
  * Header entry.
