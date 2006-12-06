@@ -1,3 +1,10 @@
+2006-12-06 [colin]	2.6.1cvs8
+
+	* src/ssl_manager.c
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+		Handle multiple certificates per host/port
+
 2006-12-06 [colin]	2.6.1cvs7
 
 	* src/etpan/imap-thread.c

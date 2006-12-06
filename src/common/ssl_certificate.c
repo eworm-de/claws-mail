@@ -128,6 +128,8 @@ SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host, gushort port)
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup)
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
+	unsigned int n;
+	unsigned char md[EVP_MAX_MD_SIZE];	
 	
 	if (host == NULL || x509_cert == NULL) {
 		ssl_certificate_destroy(cert);
@@ -139,6 +141,11 @@ static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, 
 	else
 		cert->host = g_strdup(host);
 	cert->port = port;
+	
+	/* fingerprint */
+	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
+	cert->fingerprint = readable_fingerprint(md, (int)n);
+
 	return cert;
 }
 
@@ -157,7 +164,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 	port = g_strdup_printf("%d", cert->port);
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
-			  cert->host, ".", port, ".cert", NULL);
+			  cert->host, ".", port, ".", cert->fingerprint, ".cert", NULL);
 
 	g_free(port);
 	fp = g_fopen(file, "wb");
@@ -261,6 +268,7 @@ void ssl_certificate_destroy(SSLCertificate *cert)
 	if (cert->x509_cert)
 		X509_free(cert->x509_cert);
 	g_free(cert->host);
+	g_free(cert->fingerprint);
 	g_free(cert);
 	cert = NULL;
 }
@@ -272,25 +280,26 @@ void ssl_certificate_delete_from_disk(SSLCertificate *cert)
 	buf = g_strdup_printf("%d", cert->port);
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
-			  cert->host, ".", buf, ".cert", NULL);
+			  cert->host, ".", buf, ".", cert->fingerprint, ".cert", NULL);
 	g_unlink (file);
-	g_free(buf);
 	g_free(file);
+	g_free(buf);
 }
 
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
+SSLCertificate *ssl_certificate_find (gchar *host, gushort port, const gchar *fingerprint)
 {
-	return ssl_certificate_find_lookup (host, port, TRUE);
+	return ssl_certificate_find_lookup (host, port, fingerprint, TRUE);
 }
 
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup)
+SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gchar *fingerprint, gboolean lookup)
 {
-	gchar *file;
+	gchar *file = NULL;
 	gchar *buf;
 	gchar *fqdn_host;
 	SSLCertificate *cert = NULL;
 	X509 *tmp_x509;
-	FILE *fp;
+	FILE *fp = NULL;
+	gboolean must_rename = FALSE;
 
 	if (lookup)
 		fqdn_host = get_fqdn(host);
@@ -298,18 +307,30 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean
 		fqdn_host = g_strdup(host);
 
 	buf = g_strdup_printf("%d", port);
-	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+	
+	if (fingerprint != NULL) {
+		file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  fqdn_host, ".", buf, ".", fingerprint, ".cert", NULL);
+		fp = g_fopen(file, "rb");
+	}
+	if (fp == NULL) {
+		/* see if we have the old one */
+		g_free(file);
+		file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
 			  fqdn_host, ".", buf, ".cert", NULL);
+		fp = g_fopen(file, "rb");
 
-	g_free(buf);
-	fp = g_fopen(file, "rb");
+		if (fp)
+			must_rename = (fingerprint != NULL);
+	}
 	if (fp == NULL) {
 		g_free(file);
 		g_free(fqdn_host);
+		g_free(buf);
 		return NULL;
 	}
-	
 	
 	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
 		cert = ssl_certificate_new_lookup(tmp_x509, fqdn_host, port, lookup);
@@ -317,8 +338,21 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean
 	}
 	fclose(fp);
 	g_free(file);
-	g_free(fqdn_host);
 	
+	if (must_rename) {
+		gchar *old = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  fqdn_host, ".", buf, ".cert", NULL);
+		gchar *new = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  fqdn_host, ".", buf, ".", fingerprint, ".cert", NULL);
+		move_file(old, new, TRUE);
+		g_free(old);
+		g_free(new);
+	}
+	g_free(buf);
+	g_free(fqdn_host);
+
 	return cert;
 }
 
@@ -370,7 +404,10 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gusho
 	SSLCertificate *known_cert;
 	SSLCertHookData cert_hook_data;
 	gchar *fqdn_host = NULL;	
-	
+	gchar *fingerprint;
+	unsigned int n;
+	unsigned char md[EVP_MAX_MD_SIZE];	
+
 	if (fqdn)
 		fqdn_host = g_strdup(fqdn);
 	else if (host)
@@ -388,8 +425,13 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gusho
 		return FALSE;
 	}
 
-	known_cert = ssl_certificate_find_lookup (fqdn_host, port, FALSE);
+	/* fingerprint */
+	X509_digest(x509_cert, EVP_md5(), md, &n);
+	fingerprint = readable_fingerprint(md, (int)n);
 
+	known_cert = ssl_certificate_find_lookup (fqdn_host, port, fingerprint, FALSE);
+
+	g_free(fingerprint);
 	g_free(fqdn_host);
 
 	if (known_cert == NULL) {

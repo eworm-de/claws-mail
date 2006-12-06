@@ -211,16 +211,24 @@ void ssl_manager_create(void)
 static char *get_server(char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
-	char *first_pos = NULL, *last_pos = NULL, *previous_pos = NULL;
+	char *first_pos = NULL, *last_pos = NULL;
+	char *previous_pos = NULL, *pre_previous_pos = NULL;
 	int previous_dot_pos;
+
+	if (!strchr(tmp, ':')) {
+		/* no fingerprint */
+		if (strstr(tmp, ".cert"))
+			*(strstr(tmp, ".cert")+1) = '.';
+	}
 
 	first_pos = tmp;
 	while (tmp && (tmp = strstr(tmp,".")) != NULL) {
 		tmp++;
+		pre_previous_pos = previous_pos;
 		previous_pos = last_pos;
 		last_pos = tmp;
 	}
-	previous_dot_pos = (previous_pos - first_pos);
+	previous_dot_pos = (pre_previous_pos - first_pos);
 	if (previous_dot_pos - 1 > 0)
 		ret = g_strndup(first_pos, previous_dot_pos - 1);
 	else 
@@ -232,7 +240,40 @@ static char *get_server(char *str)
 static char *get_port(char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
+	char *last_pos = NULL;
+	char *previous_pos = NULL, *pre_previous_pos = NULL;
+
+	if (!strchr(tmp, ':')) {
+		/* no fingerprint */
+		if (strstr(tmp, ".cert"))
+			*(strstr(tmp, ".cert")+1) = '.';
+	}
+
+	while (tmp && (tmp = strstr(tmp,".")) != NULL) {
+		tmp++;
+		pre_previous_pos = previous_pos;
+		previous_pos = last_pos;
+		last_pos = tmp;
+	}
+	if (previous_pos && pre_previous_pos && (int)(previous_pos - pre_previous_pos - 1) > 0)
+		ret = g_strndup(pre_previous_pos, (int)(previous_pos - pre_previous_pos - 1));
+	else
+		ret = g_strdup("0");
+	g_free(tmp);
+	return ret;
+	
+}
+
+static char *get_fingerprint(char *str)
+{
+	char *ret = NULL, *tmp = g_strdup(str);
 	char *previous_pos = NULL, *last_pos = NULL;
+
+	if (!strchr(tmp, ':')) {
+		/* no fingerprint */
+		if (strstr(tmp, ".cert"))
+			*(strstr(tmp, ".cert")+1) = '.';
+	}
 
 	while (tmp && (tmp = strstr(tmp,".")) != NULL) {
 		tmp++;
@@ -242,7 +283,7 @@ static char *get_port(char *str)
 	if (last_pos && previous_pos && (int)(last_pos - previous_pos - 1) > 0)
 		ret = g_strndup(previous_pos, (int)(last_pos - previous_pos - 1));
 	else
-		ret = g_strdup("0");
+		ret = NULL;
 	g_free(tmp);
 	return ret;
 	
@@ -297,7 +338,7 @@ static void ssl_manager_load_certs (void)
 	}
 	
 	while ((d = readdir(dir)) != NULL) {
-		gchar *server, *port;
+		gchar *server, *port, *fp;
 		SSLCertificate *cert;
 
 		if(!strstr(d->d_name, ".cert")) 
@@ -305,15 +346,16 @@ static void ssl_manager_load_certs (void)
 
 		server = get_server(d->d_name);
 		port = get_port(d->d_name);
+		fp = get_fingerprint(d->d_name);
 		
-		
-		cert = ssl_certificate_find_lookup(server, atoi(port), FALSE);
-		
+		cert = ssl_certificate_find_lookup(server, atoi(port), fp, FALSE);
+
 		ssl_manager_list_view_insert_cert(manager.certlist, NULL, 
 						  server, port, cert);
 		
 		g_free(server);
 		g_free(port);
+		g_free(fp);
 		row++;
 	}
 	closedir(dir);

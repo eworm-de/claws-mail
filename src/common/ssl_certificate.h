@@ -40,6 +40,7 @@ struct _SSLCertificate
 	X509 *x509_cert;
 	gchar *host;
 	gushort port;
+	gchar *fingerprint;
 };
 
 typedef struct _SSLCertHookData SSLCertHookData;
@@ -52,8 +53,8 @@ struct _SSLCertHookData
 	gboolean accept;
 };
 
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port);
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup);
+SSLCertificate *ssl_certificate_find (gchar *host, gushort port, const gchar *fingerprint);
+SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gchar *fingerprint, gboolean lookup);
 gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port);
 char* ssl_certificate_to_string(SSLCertificate *cert);
 void ssl_certificate_destroy(SSLCertificate *cert);
