@@ -2818,17 +2818,17 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	to_table = g_hash_table_new(g_str_hash, g_str_equal);
 	if (replyto)
-		g_hash_table_insert(to_table, g_strdup(replyto), GINT_TO_POINTER(1));
-	if (compose->account)
-		g_hash_table_insert(to_table, g_strdup(compose->account->address),
+		g_hash_table_insert(to_table, g_utf8_strdown(replyto, -1), GINT_TO_POINTER(1));
+	if (compose->account) {
+		g_hash_table_insert(to_table, g_utf8_strdown(compose->account->address, -1),
 				    GINT_TO_POINTER(1));
-
+	}
 	/* remove address on To: and that of current account */
 	for (cur = cc_list; cur != NULL; ) {
 		GSList *next = cur->next;
 		gchar *addr;
 
-		addr = g_strdup(cur->data);
+		addr = g_utf8_strdown(cur->data, -1);
 		extract_address(addr);
 
 		if (GPOINTER_TO_INT(g_hash_table_lookup(to_table, addr)) == 1)
