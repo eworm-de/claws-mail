@@ -1350,7 +1350,8 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 		GSList      *cur;
 		MsgInfo     *msginfo, *nmi;	/* newmsginfo */
 		char        *file;
-
+		gboolean     modified_something = FALSE;
+		FolderItem  *last_item = NULL;
 		if (mainwindow_get_mainwindow ())
 			summaryview = mainwindow_get_mainwindow ()->summaryview;
 		for (cur = child_info->msginfo_list; cur; cur = cur->next) {
@@ -1361,25 +1362,26 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 			file = procmsg_get_message_file_path (msginfo);
 			if (!file) 
 				continue;
-			nmi = procheader_parse_file (file, msginfo->flags, FALSE, FALSE);
+			nmi = procheader_parse_file (file, msginfo->flags, TRUE, FALSE);
 			if (!nmi) 
 				continue; /* Deleted? */
 			if (msginfo->mtime != nmi->mtime || msginfo->size != nmi->size) {
-				msginfo->mtime  = nmi->mtime;
-				msginfo->size   = nmi->size;
-				msgcache_update_msg (msginfo->folder->cache, msginfo);
+				nmi->folder = msginfo->folder;
+				nmi->msgnum = msginfo->msgnum;
+				msgcache_update_msg (msginfo->folder->cache, nmi);
+				modified_something = TRUE;
+				last_item = nmi->folder;
 			}
 			procmsg_msginfo_free (nmi);
-
-			/* refresh the message display, but only if this message is still
-			* in focus */
-			if (summaryview
-			    && summaryview->displayed
-			    && summaryview->folder_item == msginfo->folder
-			    && summary_get_msgnum (summaryview, summaryview->displayed) == msginfo->msgnum) {
-				summary_show (summaryview, summaryview->folder_item);
-				summary_select_node (summaryview, summaryview->displayed, TRUE, TRUE);
-			}
+			if (summaryview && summaryview->displayed &&
+		    	    summaryview->folder_item == msginfo->folder &&
+			    summary_get_msgnum(summaryview, summaryview->displayed) == msginfo->msgnum)
+				summary_redisplay_msg(summaryview);
+					
+		}
+		if (modified_something && last_item && 
+		    summaryview && summaryview->folder_item == last_item) {
+			summary_show (summaryview, summaryview->folder_item);
 		}
 		g_slist_free (child_info->msginfo_list);
 		child_info->msginfo_list = NULL;

@@ -2119,3 +2119,4 @@
 ( cvs diff -u -r 1.382.2.339 -r 1.382.2.340 src/compose.c;  cvs diff -u -r 1.94.2.110 -r 1.94.2.111 src/messageview.c;  cvs diff -u -r 1.47.2.36 -r 1.47.2.37 src/procheader.c;  cvs diff -u -r 1.49.2.83 -r 1.49.2.84 src/procmime.c;  cvs diff -u -r 1.150.2.84 -r 1.150.2.85 src/procmsg.c;  cvs diff -u -r 1.96.2.160 -r 1.96.2.161 src/textview.c;  ) > 2.6.1cvs9.patchset
 ( cvs diff -u -r 1.6.10.12 -r 1.6.10.13 src/addrharvest.c;  cvs diff -u -r 1.8.2.15 -r 1.8.2.16 src/editldap.c;  cvs diff -u -r 1.1.4.22 -r 1.1.4.23 src/expldifdlg.c;  cvs diff -u -r 1.101.2.33 -r 1.101.2.34 src/news.c;  cvs diff -u -r 1.43.2.55 -r 1.43.2.56 src/toolbar.c;  cvs diff -u -r 1.36.2.92 -r 1.36.2.93 src/common/utils.c;  ) > 2.6.1cvs10.patchset
 ( cvs diff -u -r 1.382.2.340 -r 1.382.2.341 src/compose.c;  ) > 2.6.1cvs11.patchset
+( cvs diff -u -r 1.12.2.39 -r 1.12.2.40 src/action.c;  ) > 2.6.1cvs12.patchset
