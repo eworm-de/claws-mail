@@ -821,6 +821,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"hide_quotes", "0", &prefs_common.hide_quotes, P_INT,
 	 NULL, NULL, NULL},
+	{"unsafe_ssl_certs", "FALSE", &prefs_common.unsafe_ssl_certs, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -1100,4 +1102,10 @@ gchar *pref_get_pref_from_entry(GtkEntry *entry)
 	g_free(tmp);
 
 	return out?out:"";
+}
+
+/* ugly hack to be able to get this pref from ssl_certificate.c */
+gboolean prefs_common_unsafe_ssl_certs(void)
+{
+	return prefs_common.unsafe_ssl_certs;
 }

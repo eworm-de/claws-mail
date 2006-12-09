@@ -1,3 +1,18 @@
+2006-12-09 [colin]	2.6.1cvs13
+
+	* manual/advanced.xml
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/common/ssl_certificate.c
+		Add a new hidden preference, 'unsafe_ssl_certs',
+		which allows to store multiple certificates per
+		server/port. This is disabled by default because
+		it's less secure (presenting a new certificate
+		instead of a changed one raises less alarms).
+		This will cause Claws to ask about an unknown
+		certificate for people who have used 2.6.1cvs8
+		or greater.
+
 2006-12-09 [colin]	2.6.1cvs12
 
 	* src/action.c

@@ -687,6 +687,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>unsafe_ssl_certs</literal></term>
+	<listitem>
+	<para>
+	Allows Claws to remember multiple SSL certificates for a given 
+	server/port. This is disabled by default.
+	</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>use_stripes_everywhere</literal></term>
 	<listitem>
 	<para>

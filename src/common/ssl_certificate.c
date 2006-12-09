@@ -36,6 +36,20 @@
 
 static GHashTable *warned_expired = NULL;
 
+gboolean prefs_common_unsafe_ssl_certs(void);
+
+static gchar *get_certificate_path(const gchar *host, const gchar *port, const gchar *fp)
+{
+	if (fp != NULL && prefs_common_unsafe_ssl_certs())
+		return g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  host, ".", port, ".", fp, ".cert", NULL);
+	else 
+		return g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  host, ".", port, ".cert", NULL);
+}
+
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
 /* from Courier */
@@ -162,9 +176,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 	g_free(file);
 
 	port = g_strdup_printf("%d", cert->port);
-	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  cert->host, ".", port, ".", cert->fingerprint, ".cert", NULL);
+	file = get_certificate_path(cert->host, port, cert->fingerprint);
 
 	g_free(port);
 	fp = g_fopen(file, "wb");
@@ -278,9 +290,7 @@ void ssl_certificate_delete_from_disk(SSLCertificate *cert)
 	gchar *buf;
 	gchar *file;
 	buf = g_strdup_printf("%d", cert->port);
-	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  cert->host, ".", buf, ".", cert->fingerprint, ".cert", NULL);
+	file = get_certificate_path(cert->host, buf, cert->fingerprint);
 	g_unlink (file);
 	g_free(file);
 	g_free(buf);
@@ -309,17 +319,13 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	buf = g_strdup_printf("%d", port);
 	
 	if (fingerprint != NULL) {
-		file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  fqdn_host, ".", buf, ".", fingerprint, ".cert", NULL);
+		file = get_certificate_path(fqdn_host, buf, fingerprint);
 		fp = g_fopen(file, "rb");
 	}
 	if (fp == NULL) {
 		/* see if we have the old one */
 		g_free(file);
-		file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  fqdn_host, ".", buf, ".cert", NULL);
+		file = get_certificate_path(fqdn_host, buf, NULL);
 		fp = g_fopen(file, "rb");
 
 		if (fp)
@@ -340,13 +346,10 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	g_free(file);
 	
 	if (must_rename) {
-		gchar *old = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  fqdn_host, ".", buf, ".cert", NULL);
-		gchar *new = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
-			  "certs", G_DIR_SEPARATOR_S,
-			  fqdn_host, ".", buf, ".", fingerprint, ".cert", NULL);
-		move_file(old, new, TRUE);
+		gchar *old = get_certificate_path(fqdn_host, buf, NULL);
+		gchar *new = get_certificate_path(fqdn_host, buf, fingerprint);
+		if (strcmp(old, new))
+			move_file(old, new, TRUE);
 		g_free(old);
 		g_free(new);
 	}

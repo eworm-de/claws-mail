@@ -410,6 +410,7 @@ struct _PrefsCommon
 	gint live_dangerously;
 	gint never_send_retrcpt;
 	gint hide_quotes;
+	gboolean unsafe_ssl_certs;
 };
 
 extern PrefsCommon prefs_common;

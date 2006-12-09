@@ -2120,3 +2120,4 @@
 ( cvs diff -u -r 1.6.10.12 -r 1.6.10.13 src/addrharvest.c;  cvs diff -u -r 1.8.2.15 -r 1.8.2.16 src/editldap.c;  cvs diff -u -r 1.1.4.22 -r 1.1.4.23 src/expldifdlg.c;  cvs diff -u -r 1.101.2.33 -r 1.101.2.34 src/news.c;  cvs diff -u -r 1.43.2.55 -r 1.43.2.56 src/toolbar.c;  cvs diff -u -r 1.36.2.92 -r 1.36.2.93 src/common/utils.c;  ) > 2.6.1cvs10.patchset
 ( cvs diff -u -r 1.382.2.340 -r 1.382.2.341 src/compose.c;  ) > 2.6.1cvs11.patchset
 ( cvs diff -u -r 1.12.2.39 -r 1.12.2.40 src/action.c;  ) > 2.6.1cvs12.patchset
+( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 manual/advanced.xml;  cvs diff -u -r 1.204.2.111 -r 1.204.2.112 src/prefs_common.c;  cvs diff -u -r 1.103.2.69 -r 1.103.2.70 src/prefs_common.h;  cvs diff -u -r 1.4.2.14 -r 1.4.2.15 src/common/ssl_certificate.c;  ) > 2.6.1cvs13.patchset
