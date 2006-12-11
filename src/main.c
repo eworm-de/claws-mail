@@ -815,7 +815,7 @@ int main(int argc, char *argv[])
 				   "mailbox, but could not load it. It is "
 				   "probably provided by an out-of-date "
 				   "external plugin. Please reinstall the "
-				   "plugin and try again.\nIt may also be 
+				   "plugin and try again.\nIt may also be "
 				   "due to a failing IMAP account."));
 		exit(1);
 	}
