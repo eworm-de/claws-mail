@@ -1,3 +1,14 @@
+2006-12-11 [colin]	2.6.1cvs16
+
+	* src/prefs_account.c
+		Check for existence of inbox for local
+		accounts too
+	* src/wizard.c
+		Allow setting the port to use for servers
+		by using the usual "server.example.com:port"
+		syntax. Fixes bug 1077, 'sylpheed-claws does 
+		not start when IMAP server is unavailable'
+
 2006-12-11 [colin]	2.6.1cvs15
 
 	* src/prefs_account.c

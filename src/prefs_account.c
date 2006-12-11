@@ -2521,7 +2521,7 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("POP3 server is not entered."));
 		return -1;
 	}
-	if (protocol == A_POP3) {
+	if (protocol == A_POP3 || protocol == A_LOCAL) {
 		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(receive.inbox_entry));
 		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
 	    	if (inbox == NULL) {

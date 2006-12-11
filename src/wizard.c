@@ -545,7 +545,9 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	PrefsAccount *prefs_account = prefs_account_new();
 	GList *account_list = NULL;
 	GtkWidget *menu, *menuitem;
-	
+	gchar *smtp_server, *recv_server;
+	gint smtp_port, recv_port;
+
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_account->protocol = GPOINTER_TO_INT
@@ -641,21 +643,42 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		prefs_account->account_name = g_strdup_printf("%s",
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)));
 
+	recv_server = g_strdup(gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)));
+	smtp_server = g_strdup(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_server)));
+
+	if (prefs_account->protocol != A_LOCAL && strstr(recv_server, ":")) {
+		recv_port = atoi(strstr(recv_server, ":")+1);
+		*(strstr(recv_server, ":")) = '\0';
+		if (prefs_account->protocol == A_IMAP4) {
+			prefs_account->set_imapport = TRUE;
+			prefs_account->imapport = recv_port;
+		} else if (prefs_account->protocol == A_POP3) {
+			prefs_account->set_popport = TRUE;
+			prefs_account->popport = recv_port;
+		}
+	}
+	if (strstr(smtp_server, ":")) {
+		smtp_port = atoi(strstr(smtp_server, ":")+1);
+		*(strstr(smtp_server, ":")) = '\0';
+		prefs_account->set_smtpport = TRUE;
+		prefs_account->smtpport = smtp_port;
+	}
+	
 	prefs_account->name = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->full_name)));
 	prefs_account->address = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->email)));
 	prefs_account->organization = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->organization)));
-	prefs_account->smtp_server = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_server)));
+	prefs_account->smtp_server = g_strdup(smtp_server);
 
 	if (prefs_account->protocol != A_LOCAL)
-		prefs_account->recv_server = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)));
+		prefs_account->recv_server = g_strdup(recv_server);
 	else
-		prefs_account->local_mbox = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)));
+		prefs_account->local_mbox = g_strdup(recv_server);
+
+	g_free(recv_server);
+	g_free(smtp_server);
 
 	prefs_account->userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)));
