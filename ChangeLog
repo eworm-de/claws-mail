@@ -1,7 +1,9 @@
 2006-12-11 [colin]	2.6.1cvs14
 
 	* src/prefs_account.c
-		Fix sensitivity
+		Fix sensitivity. Fixes bug 1076, 'privacy 
+		options are displayed even when pgp plugin 
+		not loaded / available'
 
 2006-12-09 [colin]	2.6.1cvs13
 
