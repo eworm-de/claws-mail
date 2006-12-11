@@ -2122,3 +2122,4 @@
 ( cvs diff -u -r 1.12.2.39 -r 1.12.2.40 src/action.c;  ) > 2.6.1cvs12.patchset
 ( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 manual/advanced.xml;  cvs diff -u -r 1.204.2.111 -r 1.204.2.112 src/prefs_common.c;  cvs diff -u -r 1.103.2.69 -r 1.103.2.70 src/prefs_common.h;  cvs diff -u -r 1.4.2.14 -r 1.4.2.15 src/common/ssl_certificate.c;  ) > 2.6.1cvs13.patchset
 ( cvs diff -u -r 1.105.2.70 -r 1.105.2.71 src/prefs_account.c;  ) > 2.6.1cvs14.patchset
+( cvs diff -u -r 1.105.2.71 -r 1.105.2.72 src/prefs_account.c;  ) > 2.6.1cvs15.patchset

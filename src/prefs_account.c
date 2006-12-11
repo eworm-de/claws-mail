@@ -2521,6 +2521,14 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("POP3 server is not entered."));
 		return -1;
 	}
+	if (protocol == A_POP3) {
+		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(receive.inbox_entry));
+		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
+	    	if (inbox == NULL) {
+			alertpanel_error(_("The default inbox folder doesn't exist."));
+			return -1;
+		}
+	}
 	if (protocol == A_IMAP4 &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.recvserv_entry)) == '\0') {
 		alertpanel_error(_("IMAP4 server is not entered."));
