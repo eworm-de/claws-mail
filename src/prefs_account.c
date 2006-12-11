@@ -2842,6 +2842,7 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		if (id != NULL && strcmp(id, prefsid) == 0) {
 			found = TRUE;
 			gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+			privacy_system_activated(GTK_MENU_ITEM(item));
 		}
 		i++;
 	}
@@ -2858,6 +2859,7 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		g_free(name);
 
 		gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+		privacy_system_activated(GTK_MENU_ITEM(menuitem));
 	}
 
 	g_list_free(children);
