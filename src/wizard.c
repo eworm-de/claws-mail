@@ -911,6 +911,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 #else
 	GtkWidget *table = gtk_table_new(4, 2, FALSE);
 #endif
+	GtkTooltips *tips = gtk_tooltips_new();
 	gchar *text;
 	gint i = 0;
 	
@@ -921,6 +922,12 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	text = get_default_server(wizard, "smtp");
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
 	g_free(text);
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->smtp_server,
+			     _("You can specify the port number by appending it at the end: "
+			       "\"mail.example.com:25\""),
+			     NULL);
+
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">SMTP server address:</span>"), 
 			     wizard->smtp_server, i); i++;
 	wizard->smtp_auth = gtk_check_button_new_with_label(
@@ -1063,6 +1070,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 #endif
 	GtkWidget *menu = gtk_menu_new();
 	GtkWidget *menuitem;
+	GtkTooltips *tips = gtk_tooltips_new();
 	gchar *text;
 	gint i = 0;
 	gint index = 0;
@@ -1110,6 +1118,11 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 	g_free(text);
 	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->recv_server,
+			     _("You can specify the port number by appending it at the end: "
+			       "\"mail.example.com:110\""),
+			     NULL);
+
 	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_label, 			      
