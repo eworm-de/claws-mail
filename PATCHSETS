@@ -2124,3 +2124,4 @@
 ( cvs diff -u -r 1.105.2.70 -r 1.105.2.71 src/prefs_account.c;  ) > 2.6.1cvs14.patchset
 ( cvs diff -u -r 1.105.2.71 -r 1.105.2.72 src/prefs_account.c;  ) > 2.6.1cvs15.patchset
 ( cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/wizard.c;  cvs diff -u -r 1.105.2.72 -r 1.105.2.73 src/prefs_account.c;  ) > 2.6.1cvs16.patchset
+( cvs diff -u -r 1.115.2.114 -r 1.115.2.115 src/main.c;  ) > 2.6.1cvs17.patchset

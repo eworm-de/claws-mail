@@ -1,3 +1,9 @@
+2006-12-11 [colin]	2.6.1cvs17
+
+	* src/main.c
+		Add failing IMAP as a reason for no
+		mailbox
+
 2006-12-11 [colin]	2.6.1cvs16
 
 	* src/prefs_account.c
