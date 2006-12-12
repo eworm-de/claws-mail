@@ -1,3 +1,14 @@
+2006-12-12 [colin]	2.6.1cvs23
+
+	* src/main.c
+		Don't exit when there's an incomplete
+		mailbox configured - leaves a chance 
+		to fix a failing IMAP account. Exit
+		if no mailbox at all is loaded (case
+		of missing plugin).
+		Completes bug 1077's fix (I was wrong
+		in this bug's comment #3).
+
 2006-12-12 [colin]	2.6.1cvs22
 
 	* src/gtk/menu.h

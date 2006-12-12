@@ -728,8 +728,10 @@ int main(int argc, char *argv[])
 		if (!run_wizard(mainwin, FALSE))
 			exit(1);
 		account_read_config_all();
-		if(!account_get_list())
+		if(!account_get_list()) {
 			exit_claws(mainwin);
+			exit(1);
+		}
 	}
 
 	
@@ -811,13 +813,21 @@ int main(int argc, char *argv[])
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);
-		alertpanel_error(_("Claws Mail has detected a configured "
+		if (folder_get_list() != NULL) {
+			alertpanel_error(_("Claws Mail has detected a configured "
+				   "mailbox, but is it incomplete. It is "
+				   "possibly due to a failing IMAP account. Use "
+				   "\"Rebuild folder tree\" on the mailbox's folder "
+				   "to try to fix it."));
+		} else {
+			alertpanel_error(_("Claws Mail has detected a configured "
 				   "mailbox, but could not load it. It is "
 				   "probably provided by an out-of-date "
 				   "external plugin. Please reinstall the "
-				   "plugin and try again.\nIt may also be "
-				   "due to a failing IMAP account."));
-		exit(1);
+				   "plugin and try again."));
+			exit_claws(mainwin);
+			exit(1);
+		}
 	}
 	
 	static_mainwindow = mainwin;
