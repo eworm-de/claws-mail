@@ -1,3 +1,11 @@
+2006-12-12 [colin]	2.6.1cvs24
+
+	* src/wizard.c
+		Add an option to use STARTTLS in the
+		welcome wizard. Fixes bug 1080, 
+		'Using SSL option in wizard for incoming 
+		server does not activate SSL with STARTTLS'
+
 2006-12-12 [colin]	2.6.1cvs23
 
 	* src/main.c

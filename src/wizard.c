@@ -111,6 +111,8 @@ typedef struct
 #ifdef USE_OPENSSL
 	GtkWidget *smtp_use_ssl;
 	GtkWidget *recv_use_ssl;
+	GtkWidget *smtp_use_tls;
+	GtkWidget *recv_use_tls;
 #endif
 	
 	gboolean create_mailbox;
@@ -172,10 +174,10 @@ static PrefParam template_params[] = {
 	 &tmpl.mboxfile, P_STRING, NULL, NULL, NULL},
 	{"mailbox", "Mail",
 	 &tmpl.mailbox, P_STRING, NULL, NULL, NULL},
-	{"smtpssl", "FALSE",
-	 &tmpl.smtpssl, P_BOOL, NULL, NULL, NULL},
-	{"recvssl", "FALSE",
-	 &tmpl.recvssl, P_BOOL, NULL, NULL, NULL},
+	{"smtpssl", "0",
+	 &tmpl.smtpssl, P_INT, NULL, NULL, NULL},
+	{"recvssl", "0",
+	 &tmpl.recvssl, P_INT, NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_INT, NULL, NULL, NULL}
 };
 
@@ -249,11 +251,11 @@ static gchar *accountrc_tmpl =
 	"#mailbox=\n"
 	"\n"
 	"#whether to use ssl on STMP connections\n"
-	"#default is 0\n"
+	"#default is 0, 1 is ssl, 2 is starttls\n"
 	"#smtpssl=\n"
 	"\n"
 	"#whether to use ssl on pop or imap connections\n"
-	"#default is 0\n"
+	"#default is 0, 1 is ssl, 2 is starttls\n"
 	"#recvssl=\n";
 
 static gchar *wizard_get_default_domain_name(void)
@@ -547,6 +549,9 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	GtkWidget *menu, *menuitem;
 	gchar *smtp_server, *recv_server;
 	gint smtp_port, recv_port;
+#ifdef USE_OPENSSL			
+	SSLType smtp_ssl_type, recv_ssl_type;
+#endif
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
@@ -693,15 +698,30 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		prefs_account->use_smtp_auth = TRUE;
 	}
 
-#ifdef USE_OPENSSL			
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
-		prefs_account->ssl_smtp = SSL_TUNNEL;
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl))) {
-		if (prefs_account->protocol == A_IMAP4)
-			prefs_account->ssl_imap = SSL_TUNNEL;
+#ifdef USE_OPENSSL
+	smtp_ssl_type = SSL_NONE;
+	recv_ssl_type = SSL_NONE;	
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl))) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_tls)))
+			smtp_ssl_type = SSL_STARTTLS;
 		else
-			prefs_account->ssl_pop = SSL_TUNNEL;
+			smtp_ssl_type = SSL_TUNNEL;
 	}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl))) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->recv_use_tls)))
+			recv_ssl_type = SSL_STARTTLS;
+		else
+			recv_ssl_type = SSL_TUNNEL;
+	}
+
+	prefs_account->ssl_smtp = smtp_ssl_type;
+
+	if (prefs_account->protocol == A_IMAP4)
+		prefs_account->ssl_imap = recv_ssl_type;
+	else
+		prefs_account->ssl_pop = recv_ssl_type;
+
 #endif
 	if (prefs_account->protocol == A_IMAP4) {
 		gchar *directory = gtk_editable_get_chars(
@@ -907,7 +927,7 @@ static void smtp_auth_changed (GtkWidget *btn, gpointer data)
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
 #ifdef USE_OPENSSL
-	GtkWidget *table = gtk_table_new(5, 2, FALSE);
+	GtkWidget *table = gtk_table_new(6, 2, FALSE);
 #else
 	GtkWidget *table = gtk_table_new(4, 2, FALSE);
 #endif
@@ -972,10 +992,18 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to SMTP server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
-			tmpl.smtpssl);
-	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
+			tmpl.smtpssl != 0);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,     
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); 
 	i++;
+	wizard->smtp_use_tls = gtk_check_button_new_with_label(
+					_("Use SSL via STARTTLS"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_tls),
+			tmpl.smtpssl == 2);
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_tls,      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 16, 0); 
+	i++;
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_use_tls);
 #endif
 	smtp_auth_changed(NULL, wizard);
 	return table;
@@ -997,6 +1025,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->no_imap_warning);
 #ifdef USE_OPENSSL
 		gtk_widget_show(wizard->recv_use_ssl);
+		gtk_widget_show(wizard->recv_use_tls);
 #endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
@@ -1015,6 +1044,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->no_imap_warning);
 #ifdef USE_OPENSSL
 		gtk_widget_show(wizard->recv_use_ssl);
+		gtk_widget_show(wizard->recv_use_tls);
 #endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
@@ -1030,6 +1060,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->no_imap_warning);
 #ifdef USE_OPENSSL
 		gtk_widget_hide(wizard->recv_use_ssl);
+		gtk_widget_hide(wizard->recv_use_tls);
 #endif
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, FALSE);
 #endif
@@ -1046,6 +1077,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_password_label);
 #ifdef USE_OPENSSL
 		gtk_widget_hide(wizard->recv_use_ssl);
+		gtk_widget_hide(wizard->recv_use_tls);
 #endif
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 	}
@@ -1064,7 +1096,7 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 #ifdef USE_OPENSSL
-	GtkWidget *table = gtk_table_new(6,2, FALSE);
+	GtkWidget *table = gtk_table_new(7,2, FALSE);
 #else
 	GtkWidget *table = gtk_table_new(5,2, FALSE);
 #endif
@@ -1183,10 +1215,18 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to receiving server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl),
-			tmpl.recvssl);
+			tmpl.recvssl != 0);
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	i++;
+	wizard->recv_use_tls = gtk_check_button_new_with_label(
+					_("Use SSL via STARTTLS"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_tls),
+			tmpl.recvssl == 2);
+	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_tls,      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 16, 0); 
+	i++;
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_use_tls);
 #endif	
 	return table;
 }
