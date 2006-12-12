@@ -27,7 +27,8 @@
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkoptionmenu.h>
 
-#define MENU_VAL_ID "Sylpheed::Menu::ValueID"
+#define MENU_VAL_ID "Claws::Menu::ValueID"
+#define MENU_VAL_DATA "Claws::Menu::ValueDATA"
 
 #define MENUITEM_ADD(menu, menuitem, label, data) 		 \
 { 								 \

@@ -644,6 +644,10 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 	
 	privacy_enabled = strcmp(system_id, "");
 
+	if (g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA) == NULL ||
+	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA)) == FALSE)
+		privacy_enabled = FALSE;
+
 	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.default_encrypt_reply_chkbtn, privacy_enabled);
 	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
@@ -663,6 +667,7 @@ void update_privacy_system_menu() {
 	menuitem = gtk_menu_item_new_with_label(_("None"));
 	gtk_widget_show(menuitem);
 	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
+	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(FALSE));
 	gtk_menu_append(GTK_MENU(menu), menuitem);
 
 	g_signal_connect(G_OBJECT(menuitem), "activate",
@@ -678,6 +683,8 @@ void update_privacy_system_menu() {
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_widget_show(menuitem);
 		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, id, g_free);
+		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(TRUE));
+
 		gtk_menu_append(GTK_MENU(menu), menuitem);
 
 		g_signal_connect(G_OBJECT(menuitem), "activate",
@@ -2862,12 +2869,16 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		name = g_strdup_printf(_("%s (plugin not loaded)"), prefsid);
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_widget_show(menuitem);
-		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
+		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, prefsid);
+		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(FALSE));
 		gtk_menu_append(GTK_MENU(menu), menuitem);
 		g_free(name);
 
 		gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
 		privacy_system_activated(GTK_MENU_ITEM(menuitem));
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(privacy_system_activated),
+				 NULL);
 	}
 
 	g_list_free(children);
