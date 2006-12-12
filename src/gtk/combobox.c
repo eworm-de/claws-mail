@@ -25,7 +25,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <utils.h>
+#include "gtkutils.h"
 
 typedef struct _combobox_sel_by_data_ctx {
 	GtkComboBox *combobox;

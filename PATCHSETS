@@ -2127,3 +2127,4 @@
 ( cvs diff -u -r 1.115.2.114 -r 1.115.2.115 src/main.c;  ) > 2.6.1cvs17.patchset
 ( cvs diff -u -r 1.115.2.115 -r 1.115.2.116 src/main.c;  ) > 2.6.1cvs18.patchset
 ( cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/wizard.c;  ) > 2.6.1cvs19.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/combobox.c;  ) > 2.6.1cvs20.patchset
