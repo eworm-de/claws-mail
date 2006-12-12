@@ -2859,10 +2859,10 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		gchar *name;
 		GtkWidget *menuitem;
 
-		name = g_strdup_printf(_("Unsupported (%s)"), prefsid);
+		name = g_strdup_printf(_("%s (plugin not loaded)"), prefsid);
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_widget_show(menuitem);
-		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, g_strdup(prefsid), g_free);
+		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
 		gtk_menu_append(GTK_MENU(menu), menuitem);
 		g_free(name);
 

@@ -1,3 +1,9 @@
+2006-12-12 [paul]	2.6.1cvs21
+
+	* src/prefs_account.c
+		complete the fix of bug 1076
+		also be more verbose with the text
+
 2006-12-12 [paul]	2.6.1cvs20
 
 	* src/gtk/combobox.c
