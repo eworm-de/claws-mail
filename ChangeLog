@@ -1,3 +1,15 @@
+2006-12-13 [colin]	2.6.1cvs30
+
+	* src/ldapquery.c
+	* src/ldaputil.c
+		Use the binary safe version of ldap_get_values,
+		to make sure we manipulate null-terminated 
+		strings. Maybe fixes bug 1075, 'claws mail 
+		segfault when completing ldap adresses'
+	* src/syldap.c ** REMOVED **
+	* src/syldap.h ** REMOVED **
+		Remove dead files
+
 2006-12-13 [mones]	2.6.1cvs29
 
 	* po/es.po

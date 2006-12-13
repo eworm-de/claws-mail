@@ -461,15 +461,15 @@ static GSList *ldapqry_add_list_values(
 {
 	GSList *list = NULL;
 	gint i;
-	gchar **vals;
+	struct berval **vals;
 
-	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
+	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
 			/* printf( "lv\t%s: %s\n", attr, vals[i] ); */
-			list = g_slist_append( list, g_strdup( vals[i] ) );
+			list = g_slist_append( list, g_strndup( vals[i]->bv_val, vals[i]->bv_len) );
 		}
 	}
-	ldap_value_free( vals );
+	ldap_value_free_len( vals );
 	return list;
 }
 
@@ -482,15 +482,15 @@ static GSList *ldapqry_add_list_values(
  */
 static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr ) {
 	GSList *list = NULL;
-	gchar **vals;
+	struct berval **vals;
 
-	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
+	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
 			/* printf( "sv\t%s: %s\n", attr, vals[0] ); */
-			list = g_slist_append( list, g_strdup( vals[0] ) );
+			list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
 		}
 	}
-	ldap_value_free( vals );
+	ldap_value_free_len( vals );
 	return list;
 }
 
@@ -1212,17 +1212,19 @@ static GList *ldapqry_load_attrib_values(
 {
 	GList *list = NULL;
 	gint i;
-	gchar **vals;
+	struct berval **vals;
 	NameValuePair *nvp;
 
 	list = listValues;
-	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
+	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
-			nvp = ldapqry_create_name_value( attr, vals[i] );
+			gchar *tmp = g_strndup( vals[i]->bv_val, vals[i]->bv_len);
+			nvp = ldapqry_create_name_value( attr, tmp );
+			g_free(tmp);
 			list = g_list_append( list, nvp );
 		}
 	}
-	ldap_value_free( vals );
+	ldap_value_free_len( vals );
 	return list;
 }
 

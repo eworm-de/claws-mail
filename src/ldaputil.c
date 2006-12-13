@@ -54,7 +54,7 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 	gchar *attribs[2];
 	BerElement *ber;
 	gchar *attribute;
-	gchar **vals;
+	struct berval **vals;
 	struct timeval timeout;
 
 	/* Set timeout */
@@ -87,14 +87,14 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 				if( strcasecmp(
 					attribute, SYLDAP_V3_TEST_ATTR ) == 0 )
 				{
-					vals = ldap_get_values( ld, e, attribute );
+					vals = ldap_get_values_len( ld, e, attribute );
 					if( vals != NULL ) {
 						for( i = 0; vals[i] != NULL; i++ ) {
 							baseDN = g_list_append(
-								baseDN, g_strdup( vals[i] ) );
+								baseDN, g_strndup( vals[i]->bv_val, vals[i]->bv_len ) );
 						}
 					}
-					ldap_value_free( vals );
+					ldap_value_free_len( vals );
 				}
 				ldap_memfree( attribute );
 			}
@@ -125,7 +125,7 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 	gchar *attribs[1];
 	BerElement *ber;
 	gchar *attribute;
-	gchar **vals;
+	struct berval **vals;
 	struct timeval timeout;
 
 	/* Set timeout */
@@ -156,15 +156,16 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 				if( strcasecmp(
 					attribute,
 					SYLDAP_V2_TEST_ATTR ) == 0 ) {
-					vals = ldap_get_values( ld, e, attribute );
+					vals = ldap_get_values_len( ld, e, attribute );
 					if( vals != NULL ) {
 						for( i = 0; vals[i] != NULL; i++ ) {
-							char *ch;
+							char *ch, *tmp;
 							/*
 							 * Strip the 'ldb:' from the
 							 * front of the value.
 							 */
-							ch = ( char * ) strchr( vals[i], ':' );
+							tmp = g_strndup( vals[i]->bv_val, vals[i]->bv_len);
+							ch = ( char * ) strchr( tmp, ':' );
 							if( ch ) {
 								gchar *bn = g_strdup( ++ch );
 								g_strchomp( bn );
@@ -173,9 +174,10 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 									baseDN, g_strdup( bn ) );
 								g_free( bn );
 							}
+							g_free(tmp);
 						}
 					}
-					ldap_value_free( vals );
+					ldap_value_free_len( vals );
 				}
 				ldap_memfree( attribute );
 			}
