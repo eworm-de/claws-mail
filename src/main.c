@@ -501,6 +501,9 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 }
 #endif
 
+static gboolean sc_exiting = FALSE;
+static gboolean sc_starting = FALSE;
+
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -511,6 +514,8 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	START_TIMING("startup");
 	
+	sc_starting = TRUE;
+
 	if (!claws_init(&argc, &argv)) {
 		return 0;
 	}
@@ -873,7 +878,10 @@ int main(int argc, char *argv[])
 	}
 
 	prefs_destroy_cache();
+	
+	sc_starting = FALSE;
 	END_TIMING();
+	
 	gtk_main();
 
 	exit_claws(mainwin);
@@ -892,8 +900,6 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	
 	folder_item_free_cache(item, TRUE);
 }
-
-static gboolean sc_exiting = FALSE;
 
 static void exit_claws(MainWindow *mainwin)
 {
@@ -1254,6 +1260,11 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 gboolean claws_is_exiting(void)
 {
 	return sc_exiting;
+}
+
+gboolean claws_is_starting(void)
+{
+	return sc_starting;
 }
 
 /*

@@ -1,3 +1,9 @@
+2006-12-13 [colin]	2.6.1cvs26
+
+	* src/main.c
+	* src/main.h
+		Add claws_is_starting()
+
 2006-12-13 [mones]	2.6.1cvs25
 
 	* manual/es/advanced.xml
