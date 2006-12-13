@@ -607,11 +607,11 @@ int main(int argc, char *argv[])
 		prefs_destroy_cache();
 		gboolean r = FALSE;
 		if (is_dir_exist(OLD_GTK2_RC_DIR))
-			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 2.6.0"));
+			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, "Sylpheed-Claws 2.6.0");
 		else if (is_dir_exist(OLDER_GTK2_RC_DIR))
-			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.9.15"));
+			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, "Sylpheed-Claws 1.9.15");
 		else if (is_dir_exist(OLD_GTK1_RC_DIR))
-			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.0.5"));
+			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, "Sylpheed-Claws 1.0.5");
 		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0)
 			exit(1);
 	}
