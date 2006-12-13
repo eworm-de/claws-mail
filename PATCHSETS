@@ -2132,3 +2132,4 @@
 ( cvs diff -u -r 1.4.2.8 -r 1.4.2.9 src/gtk/menu.h;  cvs diff -u -r 1.105.2.74 -r 1.105.2.75 src/prefs_account.c;  ) > 2.6.1cvs22.patchset
 ( cvs diff -u -r 1.115.2.116 -r 1.115.2.117 src/main.c;  ) > 2.6.1cvs23.patchset
 ( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/wizard.c;  ) > 2.6.1cvs24.patchset
+( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/es/advanced.xml;  cvs diff -u -r 1.60.2.38 -r 1.60.2.39 po/es.po;  ) > 2.6.1cvs25.patchset

@@ -1,3 +1,9 @@
+2006-12-13 [mones]	2.6.1cvs25
+
+	* manual/es/advanced.xml
+	* po/es.po
+		Synced manual and updated translation
+
 2006-12-12 [colin]	2.6.1cvs24
 
 	* src/wizard.c

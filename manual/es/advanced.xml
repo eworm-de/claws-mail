@@ -593,6 +593,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+        <term><literal>unsafe_ssl_certs</literal></term>
+	<listitem>
+	  <para>
+	Permite a &SC; recordar múltiples certificados SSL para un 
+	servidor/puerto dado. Está deshabilitado por omisión.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>use_stripes_everywhere</literal></term>
 	 <listitem>
 	   <para>
