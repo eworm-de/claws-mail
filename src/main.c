@@ -273,7 +273,7 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	GtkWidget *window = NULL;
 	if (alertpanel(_("Migration of configuration"),
 		       message,
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) != G_ALERTALTERNATE) {
+		       GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL) != G_ALERTALTERNATE) {
 		return FALSE;
 	}
 	

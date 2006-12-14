@@ -1,3 +1,9 @@
+2006-12-14 [colin]	2.6.1cvs35
+
+	* src/main.c
+		"Yes" should be the default choice for
+		migration configuration
+
 2006-12-14 [paul]	2.6.1cvs34
 
 	* src/prefs_summaries.c
