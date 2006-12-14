@@ -58,6 +58,7 @@ typedef struct _SummariesPage
 
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
+	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
  	GtkWidget *optmenu_select_on_entry;
@@ -739,6 +740,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox2;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
+	GtkWidget *spinbtn_mark_as_read_delay;
+	GtkObject *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
 	GtkTooltips *immedexec_tooltip;
@@ -889,6 +892,24 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox4, checkbtn_mark_as_read_on_newwin,
 		 _("Only mark message as read when opened in a new window"));
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox1, FALSE, TRUE, 0);
+
+	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
+		(_("Mark messages as read after ")), FALSE, FALSE, 0);
+
+	spinbtn_mark_as_read_delay_adj = gtk_adjustment_new (0, 0, 60, 1, 10, 10);
+	spinbtn_mark_as_read_delay = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_mark_as_read_delay,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_size_request (spinbtn_mark_as_read_delay, 56, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_mark_as_read_delay),
+				     TRUE);
+	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
+		(_(" seconds")), FALSE, FALSE, 0);
+	gtk_widget_show_all(hbox1);
 
 	vbox5 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox5);
@@ -993,6 +1014,8 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.always_show_msg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
 			prefs_common.mark_as_read_on_new_window);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_mark_as_read_delay),
+			prefs_common.mark_as_read_delay);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_immedexec),
 			prefs_common.immediate_exec);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
@@ -1012,6 +1035,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
+	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
 	prefs_summaries->optmenu_select_on_entry = optmenu_select_on_entry;
@@ -1049,6 +1073,8 @@ void prefs_summaries_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
 	prefs_common.ask_mark_all_read = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_ask_mark_all_read));
+	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON(page->spinbtn_mark_as_read_delay));
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_select_on_entry));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));

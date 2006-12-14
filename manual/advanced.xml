@@ -618,14 +618,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>mark_as_read_delay</literal></term>
-	<listitem>
-	  <para>
-	Number of seconds to wait before marking an opened mail as read.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term><literal>respect_flowed_format</literal></term>
 	<listitem>
 	  <para>
