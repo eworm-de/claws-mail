@@ -220,7 +220,9 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 
 		/* If the string entry is empty -> hide quicksearch bar. If not -> empty it */
 		if (!*str) {
-			quicksearch_hide(quicksearch);
+			summaryview_activate_quicksearch(
+				mainwindow_get_mainwindow()->summaryview, 
+				FALSE);
 		} else {
 			quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
 			gtk_widget_grab_focus(

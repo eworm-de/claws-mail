@@ -299,6 +299,6 @@ gint summaryview_export_mbox_list (SummaryView *summaryview);
 void summaryview_lock(SummaryView *summaryview, FolderItem *item);
 void summaryview_unlock(SummaryView *summaryview, FolderItem *item);
 void summary_reflect_prefs(void);
-void summaryview_activate_quicksearch(SummaryView *summaryview);
+void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show);
 void summary_set_menu_sensitive	(SummaryView		*summaryview);
 #endif /* __SUMMARY_H__ */

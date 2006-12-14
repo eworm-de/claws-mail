@@ -3143,8 +3143,7 @@ static void search_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 
 static void mainwindow_quicksearch(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	prefs_common.show_searchbar = TRUE;
-	summaryview_activate_quicksearch(mainwin->summaryview);
+	summaryview_activate_quicksearch(mainwin->summaryview, TRUE);
 }
 
 static void toggle_folder_cb(MainWindow *mainwin, guint action,

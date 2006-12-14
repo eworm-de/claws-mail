@@ -5407,12 +5407,17 @@ static void tog_searchbar_cb(GtkWidget *w, gpointer data)
 	}
 }
 
-void summaryview_activate_quicksearch(SummaryView *summaryview) 
+void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show) 
 {
+	prefs_common.show_searchbar = show;
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON(summaryview->toggle_search), 
-		TRUE);
-	quicksearch_show(summaryview->quicksearch);
+		show);
+	if (show) {
+		quicksearch_show(summaryview->quicksearch);
+	} else {
+		quicksearch_hide(summaryview->quicksearch);
+	}
 }
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
