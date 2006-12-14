@@ -673,7 +673,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			} else {
 				gint w, h;
 				gdk_pixbuf_get_file_info(filename, &w, &h);
-				if (w > textview->scrolledwin->allocation.width - 100)
+				if (textview->scrolledwin->allocation.width - 100 > 0 &&
+				    w > textview->scrolledwin->allocation.width - 100)
 					pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 
 						textview->scrolledwin->allocation.width - 100, 
 						-1, TRUE, &error);
@@ -2740,3 +2741,20 @@ static void copy_mail_to_uri_cb	(TextView *textview, guint action, void *data)
 			  NULL);
 }
 
+void textview_get_selection_offsets(TextView *textview, gint *sel_start, gint *sel_end)
+{
+		GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextIter start, end;
+		if (gtk_text_buffer_get_selection_bounds(buffer, &start, &end)) {
+			if (sel_start)
+				*sel_start = gtk_text_iter_get_offset(&start);
+			if (sel_end)
+				*sel_end = gtk_text_iter_get_offset(&end);
+		} else {
+			if (sel_start)
+				*sel_start = -1;
+			if (sel_end)
+				*sel_end = -1;
+		}
+}

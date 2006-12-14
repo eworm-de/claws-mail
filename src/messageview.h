@@ -119,6 +119,9 @@ void messageview_learn				(MessageView	*msgview,
 						 gboolean is_spam);
 #ifdef USE_GNOMEPRINT
 void messageview_print				(MsgInfo	*msginfo,
-						 gboolean	 all_headers);
+						 gboolean	 all_headers,
+						 gint		 sel_start,
+						 gint		 sel_end,
+						 gint		 partnum);
 #endif
 #endif /* __MESSAGEVIEW_H__ */

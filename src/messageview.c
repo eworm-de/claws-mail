@@ -1448,7 +1448,7 @@ static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 }
 
 #ifdef USE_GNOMEPRINT
-static void print_mimeview(MimeView *mimeview) 
+static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gint partnum) 
 {
 	if (!mimeview 
 	||  !mimeview->textview
@@ -1457,11 +1457,25 @@ static void print_mimeview(MimeView *mimeview)
 				     "contain text."));
 	else {
 		gtk_widget_realize(mimeview->textview->text);
+		if (partnum > 0) {
+			mimeview_select_part_num(mimeview, partnum);
+		}
+		if (sel_start != -1 && sel_end != -1) {
+			GtkTextIter start, end;
+			GtkTextView *text = GTK_TEXT_VIEW(mimeview->textview->text);
+			GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+
+			gtk_text_buffer_get_iter_at_offset(buffer, &start, sel_start);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end, sel_end);
+			gtk_text_buffer_select_range(buffer, &start, &end);
+		}
+
 		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
 	}
 }
 
-void messageview_print(MsgInfo *msginfo, gboolean all_headers) 
+void messageview_print(MsgInfo *msginfo, gboolean all_headers, 
+			gint sel_start, gint sel_end, gint partnum) 
 {
 	PangoFontDescription *font_desc = NULL;
 	MessageView *tmpview = messageview_create_with_new_window_visible(
@@ -1483,7 +1497,8 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers)
 	tmpview->all_headers = all_headers;
 	if (msginfo && messageview_show(tmpview, msginfo, 
 		tmpview->all_headers) >= 0) {
-			print_mimeview(tmpview->mimeview);
+			print_mimeview(tmpview->mimeview, 
+				sel_start, sel_end, partnum);
 	}
 	messageview_destroy(tmpview);
 }
@@ -1495,6 +1510,8 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 #ifndef USE_GNOMEPRINT
 	gchar *cmdline = NULL;
 	gchar *p;
+#else
+	gint sel_start = -1, sel_end = -1, partnum = 0;
 #endif
 
 	if (!messageview->msginfo) return;
@@ -1514,7 +1531,11 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 	procmsg_print_message(messageview->msginfo, cmdline);
 	g_free(cmdline);
 #else
-	messageview_print(messageview->msginfo, messageview->all_headers);
+	partnum = mimeview_get_selected_part_num(messageview->mimeview);
+	textview_get_selection_offsets(messageview->mimeview->textview,
+		&sel_start, &sel_end);
+	messageview_print(messageview->msginfo, messageview->all_headers, 
+		sel_start, sel_end, partnum);
 #endif
 }
 

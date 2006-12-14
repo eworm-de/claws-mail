@@ -162,6 +162,9 @@ gboolean mimeview_scroll_page		(MimeView 	*mimeview,
 					 gboolean 	 up);
 void mimeview_scroll_one_line		(MimeView 	*mimeview, 
 					 gboolean 	 up);
+gint mimeview_get_selected_part_num	(MimeView 	*mimeview);
+void mimeview_select_part_num		(MimeView 	*mimeview, 
+					 gint 		 i);
 
 
 #ifdef __cplusplus

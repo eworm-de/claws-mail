@@ -427,6 +427,28 @@ MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
 		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 }
 
+gint mimeview_get_selected_part_num(MimeView *mimeview)
+{
+	gint i = 0;
+	GList *rows = GTK_CLIST(mimeview->ctree)->row_list;
+	while (rows) {
+		if (mimeview->opened == GTK_CTREE_NODE(rows))
+			return i;
+		i++;
+		rows = rows->next;
+	}
+	return -1;
+}
+
+void mimeview_select_part_num(MimeView *mimeview, gint i)
+{
+	if (i < 0)
+		return;
+	gtk_clist_unselect_all(GTK_CLIST(mimeview->ctree));
+	gtk_clist_select_row(GTK_CLIST(mimeview->ctree), i, -1);
+	gtkut_clist_set_focus_row(GTK_CLIST(mimeview->ctree), i);
+}
+
 static void mimeview_set_multipart_tree(MimeView *mimeview,
 					MimeInfo *mimeinfo,
 					GtkCTreeNode *parent)

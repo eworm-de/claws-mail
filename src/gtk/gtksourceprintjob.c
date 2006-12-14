@@ -1461,9 +1461,7 @@ paginate_paragraph (GtkSourcePrintJob *job,
 
 		}
 		while (pango_layout_iter_next_line (iter));
-
 		job->priv->available_height -= max - page_skip;
-
 		pango_layout_iter_free (iter);
 		g_object_unref (layout);
 	} else {
@@ -1476,10 +1474,9 @@ paginate_paragraph (GtkSourcePrintJob *job,
 					 job->priv->text_width, 
 					 job->priv->text_height,
 					 &scaled_width, &scaled_height);
-
 		if (scaled_height > max_height) {
 			job->priv->page_count++;
-			job->priv->available_height = job->priv->text_height;
+			job->priv->available_height = job->priv->text_height - scaled_height;
 		} else {
 			job->priv->available_height -= scaled_height;
 		}

@@ -120,6 +120,9 @@ gboolean textview_search_string_backward	(TextView	*textview,
 void textview_cursor_wait(TextView *textview);
 void textview_cursor_normal(TextView *textview);
 void textview_show_icon(TextView *textview, const gchar *stock_id);
+void textview_get_selection_offsets	(TextView 	*textview, 
+					 gint 		*sel_start, 
+					 gint		*sel_end);
 
 #define TEXTVIEW_INSERT(str) \
 	gtk_text_buffer_insert_with_tags_by_name \

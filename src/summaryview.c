@@ -4151,7 +4151,15 @@ void summary_print(SummaryView *summaryview)
 		MsgInfo *msginfo = gtk_ctree_node_get_row_data(
 					GTK_CTREE(summaryview->ctree),
 					node);
-		messageview_print(msginfo, summaryview->messageview->all_headers);
+		gint sel_start = -1, sel_end = -1, partnum = 0;
+		
+		if (node == summaryview->displayed) {
+			partnum = mimeview_get_selected_part_num(summaryview->messageview->mimeview);
+			textview_get_selection_offsets(summaryview->messageview->mimeview->textview,
+				&sel_start, &sel_end);
+		} 
+		messageview_print(msginfo, summaryview->messageview->all_headers,
+			sel_start, sel_end, partnum);
 	}
 #endif
 }
