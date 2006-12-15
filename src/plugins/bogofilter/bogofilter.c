@@ -95,6 +95,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"whitelist_ab", "TRUE", &config.whitelist_ab, P_BOOL,
 	 NULL, NULL, NULL},
+	{"whitelist_ab_folder", "Any", &config.whitelist_ab_folder, P_STRING,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -200,8 +202,20 @@ static void bogofilter_do_filter(BogoFilterData *data)
 		status = -1;
 	} else {
 	
-		if (config.whitelist_ab)
-			start_address_completion(NULL);
+		if (config.whitelist_ab) {
+			gchar *ab_folderpath;
+
+			if (*config.whitelist_ab_folder == '\0' ||
+				strcasecmp(config.whitelist_ab_folder, _("Any")) == 0) {
+				/* match the whole addressbook */
+				ab_folderpath = NULL;
+			} else {
+				/* match the specific book/folder of the addressbook */
+				ab_folderpath = config.whitelist_ab_folder;
+			}
+
+			start_address_completion(ab_folderpath);
+		}
 
 		for (cur = data->msglist; cur; cur = cur->next) {
 			gboolean whitelisted = FALSE;

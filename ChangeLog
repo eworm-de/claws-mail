@@ -1,3 +1,14 @@
+2006-12-15 [wwp]	2.6.1cvs41
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		bogofilter's whitelist can now use a subset of
+		the addressbook (either a book, a subfolder of a book,
+		or the whole addressbook by using "Any"). Re-used there
+		some pref_matcher widgets and mechanisms to match a subset
+		of the addressbook.
+
 2006-12-15 [wwp]	2.6.1cvs40
 
 	* src/wizard.c

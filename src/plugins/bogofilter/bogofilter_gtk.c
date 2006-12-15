@@ -40,6 +40,7 @@
 #include "statusbar.h"
 #include "bogofilter.h"
 #include "menu.h"
+#include "addressbook.h"
 
 struct BogofilterPage
 {
@@ -53,6 +54,14 @@ struct BogofilterPage
 	GtkWidget *max_size;
 	GtkWidget *bogopath;
 	GtkWidget *whitelist_ab;
+	GtkWidget *whitelist_ab_folder_combo;
+};
+
+/*!
+ *\brief	Preset addressbook book/folder items
+ */
+static const gchar *whitelist_ab_folder_text [] = {
+	N_("Any")
 };
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
@@ -70,6 +79,18 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void bogofilter_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
+{
+	struct BogofilterPage *page = (struct BogofilterPage *) data;
+	gchar *folderpath = NULL;
+	gboolean ret = FALSE;
+
+	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(page->whitelist_ab_folder_combo)->entry));
+	ret = addressbook_folder_selection(&folderpath);
+	if ( ret != FALSE && folderpath != NULL)
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(page->whitelist_ab_folder_combo)->entry), folderpath);
+}
+
 static void bogofilter_create_widget_func(PrefsPage * _page,
 					    GtkWindow * window,
 					    gpointer data)
@@ -79,7 +100,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *vbox1, *vbox2;
 	GtkWidget *hbox_max_size;
-	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_bogopath;
+	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_bogopath, *hbox_whitelist;
 
 	GtkWidget *max_size_label;
 	GtkObject *max_size_spinbtn_adj;
@@ -98,6 +119,11 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *bogopath_entry;
 
 	GtkTooltips *tooltips;
+
+	GtkWidget *whitelist_ab_folder_combo;
+	GtkWidget *whitelist_ab_select_btn;
+	GList *combo_items;
+	gint i;
 
 	tooltips = gtk_tooltips_new();
 
@@ -167,11 +193,38 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Only done for messages in MH folders"),
 			NULL);
 
-	whitelist_ab_chkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook"));
+	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_whitelist);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_whitelist, TRUE, TRUE, 0);
+
+	whitelist_ab_chkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook/folder"));
 	gtk_widget_show(whitelist_ab_chkbtn);
-	gtk_box_pack_start(GTK_BOX(vbox2), whitelist_ab_chkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_chkbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_chkbtn,
 			_("Messages coming from your addressbook contacts will be received in the normal folder even if detected as spam"), NULL);
+
+	whitelist_ab_folder_combo = gtk_combo_new();
+	gtk_widget_show(whitelist_ab_folder_combo);
+	gtk_widget_set_size_request(whitelist_ab_folder_combo, 100, -1);
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(whitelist_ab_folder_combo)->entry),
+			       TRUE);
+
+	combo_items = NULL;
+	for (i = 0; i < (gint) (sizeof(whitelist_ab_folder_text) / sizeof(gchar *)); i++) {
+		combo_items = g_list_append(combo_items,
+					    (gpointer) _(whitelist_ab_folder_text[i]));
+	}
+	gtk_combo_set_popdown_strings(GTK_COMBO(whitelist_ab_folder_combo), combo_items);
+	g_list_free(combo_items);
+
+	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_folder_combo, TRUE, TRUE, 0);
+
+	whitelist_ab_select_btn = gtk_button_new_with_label(_(" Select... "));
+	gtk_widget_show (whitelist_ab_select_btn);
+	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, whitelist_ab_select_btn,
+			_("Click this button to select a book or folder in the addressbook"),
+			NULL);
 
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_bogopath);
@@ -196,12 +249,17 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	g_signal_connect(G_OBJECT(save_spam_folder_select), "clicked",
 			G_CALLBACK(foldersel_cb), page);
+	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
+			 G_CALLBACK(bogofilter_whitelist_ab_select_cb), page);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_chkbtn), config->insert_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_chkbtn), config->whitelist_ab);
+	if (config->whitelist_ab_folder != NULL)
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(whitelist_ab_folder_combo)->entry),
+				config->whitelist_ab_folder);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
 	if (config->bogopath != NULL)
@@ -212,6 +270,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->receive_spam = save_spam_checkbtn;
 	page->insert_header = insert_header_chkbtn;
 	page->whitelist_ab = whitelist_ab_chkbtn;
+	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 	page->save_folder = save_spam_folder_entry;
 	page->save_folder_select = save_spam_folder_select;
 	page->bogopath = bogopath_entry;
@@ -248,6 +307,9 @@ static void bogofilter_save_func(PrefsPage *_page)
 
 	/* whitelist_ab */
 	config->whitelist_ab = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->whitelist_ab));
+	g_free(config->whitelist_ab_folder);
+	config->whitelist_ab_folder = gtk_editable_get_chars(
+				GTK_EDITABLE(GTK_COMBO(page->whitelist_ab_folder_combo)->entry), 0, -1);
 
 	/* bogopath */
 	g_free(config->bogopath);
