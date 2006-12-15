@@ -68,6 +68,7 @@
 #include "quicksearch.h"
 #include "manual.h"
 #include "timing.h"
+#include "log.h"
 
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
