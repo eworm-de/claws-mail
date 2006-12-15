@@ -244,6 +244,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, insert_header_chkbtn);
+	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_folder_combo);
+	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_select_btn);
 
 	config = bogofilter_get_config();
 
