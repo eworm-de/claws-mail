@@ -36,6 +36,8 @@
 
 #include "dillo_prefs.h"
 
+#define PLUGIN_NAME (_("Dillo HTML Viewer"))
+
 typedef struct _DilloViewer DilloViewer;
 
 struct _DilloViewer
@@ -165,15 +167,9 @@ static MimeViewerFactory dillo_viewer_factory =
 
 gint plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the Dillo plugin was built with"));
-		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the Dillo plugin"));
-		return -1;
-	}
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
+  		return -1;
 
         dillo_prefs_init();
 
@@ -191,7 +187,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("Dillo HTML Viewer");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

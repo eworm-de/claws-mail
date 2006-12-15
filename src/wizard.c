@@ -458,13 +458,13 @@ static void write_welcome_email(WizardWindow *wizard)
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
 	conv_encode_header_full(enc_subject, sizeof(enc_subject), 
-			_("Welcome to Claws Mail "),
+			Q_("Welcome Mail Subject|Welcome to Claws Mail"),
 			strlen("Subject: "), FALSE, CS_INTERNAL);
 	conv_encode_header_full(enc_to_name, sizeof(enc_to_name), 
 			gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),
 			strlen("To: "), TRUE, CS_INTERNAL);
 	conv_encode_header_full(enc_from_name, sizeof(enc_from_name), 
-			_("Claws Mail Team"),
+			_("The Claws Mail Team"),
 			strlen("From: "), TRUE, CS_INTERNAL);
 
 	head = g_strdup_printf(
@@ -483,7 +483,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	body = g_strdup_printf(
 		_("\n"
 		"Welcome to Claws Mail\n"
-		"-------------------------\n"
+		"---------------------\n"
 		"\n"
 		"Now that you have set up your account you can fetch your\n"
 		"mail by clicking the 'Get Mail' button at the left of the\n"

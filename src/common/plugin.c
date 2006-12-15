@@ -32,6 +32,7 @@
 #include "utils.h"
 #include "plugin.h"
 #include "prefs.h"
+#include "claws.h"
 
 struct _Plugin
 {
@@ -519,4 +520,47 @@ const gchar *plugin_get_version(Plugin *plugin)
 const gchar *plugin_get_error(Plugin *plugin)
 {
 	return plugin->error;
+}
+
+/* Generally called in plugin_init() function of each plugin. It check the
+ * minimal and compiled version of claws binary required by the plugin.
+ * If (@minimum_claws_version == 0 || @compiled_claws_version == 0), don't
+ * check the corresponding version.
+ *
+ * If an error occurs {
+ * 	If @error == NULL { don't allocate error string. }
+ *	If @error != NULL { error string is allocated and must be freed after 
+ *				call function. }
+ * }
+ * Returns: FALSE if an error occurs, TRUE if all is OK.
+ */
+gint check_plugin_version(guint32 minimum_claws_version,
+			 guint32 compiled_claws_version,
+			 const gchar *plugin_name,
+			 gchar **error)
+{
+	guint32 claws_version = claws_get_version();
+
+	if (compiled_claws_version != 0 && claws_version > compiled_claws_version) {
+		if (error != NULL) {
+			*error = (plugin_name && *plugin_name)
+				? g_strdup_printf(_("Your version of Claws Mail is newer than the "
+							"version the '%s' plugin was built with."),
+						plugin_name)
+				: g_strdup(_("Your version of Claws Mail is newer than the "
+							"version the plugin was built with."));
+		}
+		return FALSE;
+	}
+
+	if (minimum_claws_version != 0 && claws_version < minimum_claws_version) {
+		if (error != NULL) {
+			*error = (plugin_name && *plugin_name)
+				? g_strdup_printf(_("Your version of Claws Mail is too old for "
+							"the '%s' plugin."), plugin_name)
+				: g_strdup(_("Your version of Claws Mail is too old for the plugin."));
+		}
+		return FALSE;
+	}
+	return TRUE;
 }

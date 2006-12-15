@@ -56,6 +56,8 @@
 #include "unreadmail.offline.xpm"
 #include "nomail.offline.xpm"
 
+#define PLUGIN_NAME (_("Trayicon"))
+
 static guint item_hook_id;
 static guint folder_hook_id;
 static guint offline_hook_id;
@@ -350,15 +352,9 @@ static void create_trayicon()
 
 int plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the Trayicon plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the Trayicon plugin"));
-		return -1;
-	}
 
 	item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
 	if (item_hook_id == -1) {
@@ -411,7 +407,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("Trayicon");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

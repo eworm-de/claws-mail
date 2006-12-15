@@ -1,3 +1,25 @@
+2006-12-15 [wwp]	2.6.1cvs40
+
+	* src/wizard.c
+	* src/common/plugin.c
+	* src/common/plugin.h
+	* src/gtk/about.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		factorize some translatable strings (plugins-related),
+		fix missing punctuation in several places,
+		remove useless translatable \n in about.c,
+		and factorize plugin init code w/ a new function
+		check_plugin_version() in common/plugin.c.
+		Patch by Fabien Vantard <fzzzzz@gmail.com>.
+
 2006-12-15 [wwp]	2.6.1cvs39
 
 	* src/plugins/bogofilter/bogofilter.c

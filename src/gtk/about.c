@@ -306,8 +306,9 @@ static void about_create(void)
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The Claws Mail Team\n")), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The Claws Mail Team")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; TEAM_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(TEAM_LIST[i], -1, NULL))
@@ -323,8 +324,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nPrevious team members\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("Previous team members")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; EX_TEAM_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(EX_TEAM_LIST[i], -1, NULL))
@@ -340,8 +343,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nThe translation team\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("The translation team")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; TRANS_TEAM_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(TRANS_TEAM_LIST[i], -1, NULL))
@@ -357,8 +362,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nDocumentation team\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("Documentation team")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; DOC_TEAM_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(DOC_TEAM_LIST[i], -1, NULL))
@@ -374,8 +381,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nLogo\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("Logo")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; LOGO_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(LOGO_LIST[i], -1, NULL))
@@ -391,8 +400,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nIcons\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("Icons")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; ICONS_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(ICONS_LIST[i], -1, NULL))
@@ -408,8 +419,10 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\nContributors\n")), -1,
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("Contributors")), -1,
 			"underlined-list-title", NULL);
+	gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
 	for (i = 0; CONTRIBS_LIST[i] != NULL; i++) {
 		if (g_utf8_validate(CONTRIBS_LIST[i], -1, NULL))

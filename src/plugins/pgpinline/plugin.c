@@ -30,17 +30,13 @@
 #include "version.h"
 #include "pgpinline.h"
 
+#define PLUGIN_NAME (_("PGP/inline"))
+
 gint plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the PGP/inline plugin was built with"));
-		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the PGP/inline plugin"));
-		return -1;
-	}
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2, 1, 0, 1),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
+  		return -1;
 
 	pgpinline_init();
 
@@ -54,7 +50,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("PGP/inline");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

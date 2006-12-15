@@ -40,6 +40,8 @@
 
 #include "clamav_plugin.h"
 
+#define PLUGIN_NAME (_("Clam AntiVirus"))
+
 static guint hook_id;
 static MessageCallback message_callback;
 
@@ -194,15 +196,9 @@ gint plugin_init(gchar **error)
 	int ret;
 	unsigned int no;
 
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the ClamAV plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the ClamAV plugin"));
-		return -1;
-	}
 
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
@@ -249,7 +245,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("Clam AntiVirus");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

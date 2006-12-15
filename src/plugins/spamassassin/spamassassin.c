@@ -72,6 +72,8 @@
 #include <pwd.h>
 #endif
 
+#define PLUGIN_NAME (_("SpamAssassin"))
+
 enum {
     CHILD_RUNNING = 1 << 0,
     TIMEOUT_RUNNING = 1 << 1,
@@ -465,15 +467,9 @@ gint plugin_init(gchar **error)
 
 	hook_id = -1;
 
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the SpamAssassin plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the SpamAssassin plugin"));
-		return -1;
-	}
 
 	prefs_set_default(param);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
@@ -520,7 +516,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("SpamAssassin");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

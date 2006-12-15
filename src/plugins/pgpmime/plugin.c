@@ -28,18 +28,15 @@
 #include "version.h"
 #include "common/claws.h"
 #include "pgpmime.h"
+#include "plugin.h"
+
+#define PLUGIN_NAME (_("PGP/MIME"))
 
 gint plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the PGP/MIME plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2, 1, 0, 1),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the PGP/MIME plugin"));
-		return -1;
-	}
 
 	pgpmime_init();
 
@@ -53,7 +50,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("PGP/MIME");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)

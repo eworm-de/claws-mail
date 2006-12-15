@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
- #include <glib.h>
+#include <glib.h>
 #include <glib/gi18n.h>
 
 
@@ -27,6 +27,8 @@
 #include "utils.h"
 #include "hooks.h"
 #include "log.h"
+
+#define PLUGIN_NAME (_("Demo"))
 
 gboolean my_log_hook(gpointer source, gpointer data)
 {
@@ -41,15 +43,9 @@ static guint hook_id;
 
 gint plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your claws-mail version is newer than the version the plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 8, 11, 39),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(0, 8, 11, 39))) {
-		*error = g_strdup(_("Your claws-mail version is too old"));
-		return -1;
-	}
 
 	hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, my_log_hook, NULL);
 	if (hook_id == -1) {
@@ -71,7 +67,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("Demo");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)
@@ -79,7 +75,7 @@ const gchar *plugin_desc(void)
 	return _("This Plugin is only a demo of how to write plugins for Claws Mail. "
 	         "It installs a hook for new log output and writes it to stdout."
 	         "\n\n"
-	         "It is not really useful");
+	         "It is not really useful.");
 }
 
 const gchar *plugin_type(void)

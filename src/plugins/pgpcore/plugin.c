@@ -32,17 +32,13 @@
 #include "pgp_viewer.h"
 #include "plugin.h"
 
+#define PLUGIN_NAME (_("PGP/Core"))
+
 gint plugin_init(gchar **error)
 {
-	if ((claws_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup(_("Your version of Claws Mail is newer than the version the PGP/Core plugin was built with"));
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2, 1, 0, 1),
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
-	}
-
-	if ((claws_get_version() < MAKE_NUMERIC_VERSION(2, 1, 0, 1))) {
-		*error = g_strdup(_("Your version of Claws Mail is too old for the PGP/Core plugin"));
-		return -1;
-	}
 
 	sgpgme_init();
 	prefs_gpg_init();
@@ -60,7 +56,7 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("PGP/Core");
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)
