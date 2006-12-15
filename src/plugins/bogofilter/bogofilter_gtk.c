@@ -52,6 +52,7 @@ struct BogofilterPage
 	GtkWidget *insert_header;
 	GtkWidget *max_size;
 	GtkWidget *bogopath;
+	GtkWidget *whitelist_ab;
 };
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
@@ -92,6 +93,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_spam_folder_select;
 
 	GtkWidget *insert_header_chkbtn;
+	GtkWidget *whitelist_ab_chkbtn;
 	GtkWidget *bogopath_label;
 	GtkWidget *bogopath_entry;
 
@@ -162,8 +164,14 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(insert_header_chkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), insert_header_chkbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, insert_header_chkbtn,
-			_("Only done for mails in MH folders"),
+			_("Only done for messages in MH folders"),
 			NULL);
+
+	whitelist_ab_chkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook"));
+	gtk_widget_show(whitelist_ab_chkbtn);
+	gtk_box_pack_start(GTK_BOX(vbox2), whitelist_ab_chkbtn, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, whitelist_ab_chkbtn,
+			_("Messages coming from your addressbook contacts will never be marked as spam"), NULL);
 
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_bogopath);
@@ -193,6 +201,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_chkbtn), config->insert_header);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_chkbtn), config->whitelist_ab);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
 	if (config->bogopath != NULL)
@@ -202,6 +211,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->process_emails = process_emails_checkbtn;
 	page->receive_spam = save_spam_checkbtn;
 	page->insert_header = insert_header_chkbtn;
+	page->whitelist_ab = whitelist_ab_chkbtn;
 	page->save_folder = save_spam_folder_entry;
 	page->save_folder_select = save_spam_folder_select;
 	page->bogopath = bogopath_entry;
@@ -235,6 +245,9 @@ static void bogofilter_save_func(PrefsPage *_page)
 
 	/* insert_header */
 	config->insert_header = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->insert_header));
+
+	/* whitelist_ab */
+	config->whitelist_ab = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->whitelist_ab));
 
 	/* bogopath */
 	g_free(config->bogopath);

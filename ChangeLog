@@ -1,3 +1,10 @@
+2006-12-15 [ticho]	2.6.1cvs38
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		Add option to whitelist senders found in addressbook. Patch by colin.
+
 2006-12-15 [paul]	2.6.1cvs37
 
 	* src/folderview.c

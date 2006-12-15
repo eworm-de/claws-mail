@@ -49,6 +49,7 @@
 #include "log.h"
 #include "prefs_common.h"
 #include "alertpanel.h"
+#include "addr_compl.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -89,6 +90,8 @@ static PrefParam param[] = {
 	{"bogopath", "bogofilter", &config.bogopath, P_STRING,
 	 NULL, NULL, NULL},
 	{"insert_header", "FALSE", &config.insert_header, P_BOOL,
+	 NULL, NULL, NULL},
+	{"whitelist_ab", "TRUE", &config.whitelist_ab, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -141,6 +144,33 @@ static pthread_mutex_t wait_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER; 
 #endif
 
+static gboolean found_in_addressbook(const gchar *address)
+{
+	gchar *addr = NULL;
+	gboolean found = FALSE;
+	gint num_addr = 0;
+	
+	if (!address)
+		return FALSE;
+	
+	addr = g_strdup(address);
+	extract_address(addr);
+	num_addr = complete_address(addr);
+	if (num_addr > 1) {
+		/* skip first item (this is the search string itself) */
+		int i = 1;
+		for (; i < num_addr && !found; i++) {
+			gchar *caddr = get_complete_address(i);
+			extract_address(caddr);
+			if (strcasecmp(caddr, addr) == 0)
+				found = TRUE;
+			g_free(caddr);
+		}
+	}
+	g_free(addr);
+	return found;
+}
+
 static void bogofilter_do_filter(BogoFilterData *data)
 {
 	GPid bogo_pid;
@@ -167,16 +197,27 @@ static void bogofilter_do_filter(BogoFilterData *data)
 		error = NULL;
 		status = -1;
 	} else {
+	
+		if (config.whitelist_ab)
+			start_address_completion(NULL);
+
 		for (cur = data->msglist; cur; cur = cur->next) {
+			gboolean whitelisted = FALSE;
 			msginfo = (MsgInfo *)cur->data;
 			debug_print("Filtering message %d (%d/%d)\n", msginfo->msgnum, curnum, total);
 
 			if (message_callback != NULL)
 				message_callback(NULL, total, curnum++, data->in_thread);
 
+			if (config.whitelist_ab && msginfo->from && 
+			    found_in_addressbook(msginfo->from))
+				whitelisted = TRUE;
+
 			/* can set flags (SCANNED, ATTACHMENT) but that's ok 
 			 * as GUI updates are hooked not direct */
+
 			file = procmsg_get_message_file(msginfo);
+
 			if (file) {
 				gchar *tmp = g_strdup_printf("%s\n",file);
 				write_all(bogo_stdin, tmp, strlen(tmp));
@@ -214,8 +255,9 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							const gchar *bogosity = *parts[1] == 'S' ? "Spam":
 										 (*parts[1] == 'H' ? "Ham":"Unsure");
 							gchar *tmpstr = g_strdup_printf(
-									"X-Claws-Bogosity: %s, spamicity=%s\n",
-									bogosity, parts[2]);
+									"X-Claws-Bogosity: %s, spamicity=%s%s\n",
+									bogosity, parts[2],
+									whitelisted?" [whitelisted]":"");
 							fwrite(tmpstr, 1, strlen(tmpstr), output);
 							while (fgets(tmpbuf, sizeof(buf), input))
 								fputs(tmpbuf, output);
@@ -226,7 +268,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 						}
 						g_free(tmpfile);
 					}
-					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
+					if (!whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
 						debug_print("message %d is spam\n", msginfo->msgnum);
 						if (config.receive_spam) {
 							data->spams_to_receive = g_slist_prepend(data->spams_to_receive, msginfo);
@@ -250,6 +292,8 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				data->new_hams = g_slist_prepend(data->new_hams, msginfo);
 			}
 		}
+		if (config.whitelist_ab)
+			end_address_completion();
 	}
 	if (status != -1) {
 		close(bogo_stdout);

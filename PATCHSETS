@@ -2145,3 +2145,4 @@
 ( cvs diff -u -r 1.115.2.119 -r 1.115.2.120 src/main.c;  ) > 2.6.1cvs35.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.1cvs36.patchset
 ( cvs diff -u -r 1.207.2.137 -r 1.207.2.138 src/folderview.c;  ) > 2.6.1cvs37.patchset
+( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.1cvs38.patchset

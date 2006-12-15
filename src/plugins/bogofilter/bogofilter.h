@@ -34,6 +34,7 @@ struct _BogofilterConfig
 	guint 			 max_size;
 	gchar			*bogopath;
 	gboolean		 insert_header;
+	gboolean		 whitelist_ab;
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);
