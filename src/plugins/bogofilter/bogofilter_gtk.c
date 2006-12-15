@@ -171,7 +171,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(whitelist_ab_chkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), whitelist_ab_chkbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_chkbtn,
-			_("Messages coming from your addressbook contacts will never be marked as spam"), NULL);
+			_("Messages coming from your addressbook contacts will be received in the normal folder even if detected as spam"), NULL);
 
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_bogopath);

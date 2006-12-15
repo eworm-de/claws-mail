@@ -130,7 +130,7 @@ typedef struct _BogoFilterData {
 	GSList *msglist;
 	GSList *new_hams;
 	GSList *new_spams;
-	GSList *spams_to_receive;
+	GSList *whitelisted_new_spams;
 	gboolean done;
 	int status;
 	gboolean in_thread;
@@ -220,9 +220,11 @@ static void bogofilter_do_filter(BogoFilterData *data)
 
 			if (file) {
 				gchar *tmp = g_strdup_printf("%s\n",file);
+				/* send filename to bogofilter */
 				write_all(bogo_stdin, tmp, strlen(tmp));
 				g_free(tmp);
 				memset(buf, 0, sizeof(buf));
+				/* get the result */
 				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
 					g_warning("bogofilter short read\n");
 					debug_print("message %d is ham\n", msginfo->msgnum);
@@ -238,6 +240,8 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					}
 					parts = g_strsplit(tmp, " ", 0);
 					debug_print("read %s\n", buf);
+					
+					/* note the result if the header if needed */
 					if (parts && parts[0] && parts[1] && parts[2] && 
 					    FOLDER_TYPE(msginfo->folder->folder) == F_MH &&
 					    config.insert_header) {
@@ -268,20 +272,36 @@ static void bogofilter_do_filter(BogoFilterData *data)
 						}
 						g_free(tmpfile);
 					}
-					if (!whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
-						debug_print("message %d is spam\n", msginfo->msgnum);
-						if (config.receive_spam) {
-							data->spams_to_receive = g_slist_prepend(data->spams_to_receive, msginfo);
-						} 
 
+					/* file the mail */
+					if (!whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
+
+						debug_print("message %d is spam\n", msginfo->msgnum);
+						/* Spam will be filtered away */
 						data->mail_filtering_data->filtered = g_slist_prepend(
 							data->mail_filtering_data->filtered, msginfo);
 						data->new_spams = g_slist_prepend(data->new_spams, msginfo);
+
+					} else if (whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
+
+						debug_print("message %d is whitelisted spam\n", msginfo->msgnum);
+						/* Whitelisted spam will *not* be filtered away, but continue
+						 * their trip through filtering as if it was ham. */
+						data->mail_filtering_data->unfiltered = g_slist_prepend(
+							data->mail_filtering_data->unfiltered, msginfo);
+						/* But it gets put in a different list, so that we 
+						 * can still flag it and inform the user that it is
+						 * considered a spam (so that he can teach bogo that 
+						 * it was not). */
+						data->whitelisted_new_spams = g_slist_prepend(data->whitelisted_new_spams, msginfo);
+
 					} else {
+						
 						debug_print("message %d is ham\n", msginfo->msgnum);
 						data->mail_filtering_data->unfiltered = g_slist_prepend(
 							data->mail_filtering_data->unfiltered, msginfo);
 						data->new_hams = g_slist_prepend(data->new_hams, msginfo);
+
 					}
 					g_strfreev(parts);
 				}
@@ -377,7 +397,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	static gboolean warned_error = FALSE;
 	int status = 0;
 	int total = 0, curnum = 0;
-	GSList *spams_to_receive = NULL, *new_hams = NULL, *new_spams = NULL;
+	GSList *new_hams = NULL, *new_spams = NULL, *whitelisted_new_spams = NULL;
 	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 	gchar *bogo_args[4];
 	gboolean ok_to_thread = TRUE;
@@ -424,9 +444,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	to_filter_data = g_new0(BogoFilterData, 1);
 	to_filter_data->msglist = msglist;
 	to_filter_data->mail_filtering_data = mail_filtering_data;
-	to_filter_data->spams_to_receive = NULL;
 	to_filter_data->new_hams = NULL;
 	to_filter_data->new_spams = NULL;
+	to_filter_data->whitelisted_new_spams = NULL;
 	to_filter_data->done = FALSE;
 	to_filter_data->status = -1;
 	to_filter_data->bogo_args = bogo_args;
@@ -462,9 +482,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	bogofilter_do_filter(to_filter_data);	
 #endif
 
-	spams_to_receive = to_filter_data->spams_to_receive;
 	new_hams = to_filter_data->new_hams;
 	new_spams = to_filter_data->new_spams;
+	whitelisted_new_spams = to_filter_data->whitelisted_new_spams;
 	status = to_filter_data->status;
 	g_free(to_filter_data);
 	to_filter_data = NULL;
@@ -473,13 +493,18 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 #endif
 
 
-	/* flag hams */
+	/* unflag hams */
 	for (cur = new_hams; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 	}
-	g_slist_free(new_hams);
-	/* flag spams */
+	/* flag whitelisted spams */
+	for (cur = whitelisted_new_spams; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+	}
+	/* flag spams and delete them if !config.receive_spam 
+	 * (if config.receive_spam is set, we'll move them later) */
 	for (cur = new_spams; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		if (config.receive_spam) {
@@ -488,7 +513,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		}
 	}
-	g_slist_free(new_spams);
 	
 	if (status < 0 || status > 2) { /* I/O or other errors */
 		gchar *msg = NULL;
@@ -519,10 +543,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (status < 0 || status > 2) {
 		g_slist_free(mail_filtering_data->filtered);
 		g_slist_free(mail_filtering_data->unfiltered);
-		g_slist_free(spams_to_receive);
 		mail_filtering_data->filtered = NULL;
 		mail_filtering_data->unfiltered = NULL;
-	} else if (config.receive_spam && spams_to_receive) {
+	} else if (config.receive_spam && new_spams) {
 		FolderItem *save_folder;
 
 		if ((!config.save_folder) ||
@@ -530,17 +553,20 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
 			save_folder = folder_get_default_trash();
 		if (save_folder) {
-			for (cur = spams_to_receive; cur; cur = cur->next) {
+			for (cur = new_spams; cur; cur = cur->next) {
 				msginfo = (MsgInfo *)cur->data;
 				msginfo->is_move = TRUE;
 				msginfo->to_filter_folder = save_folder;
 			}
 		}
 	} 
+	g_slist_free(new_hams);
+	g_slist_free(new_spams);
+	g_slist_free(whitelisted_new_spams);
 
 	if (message_callback != NULL)
 		message_callback(NULL, 0, 0, FALSE);
-	mail_filtering_data->filtered = g_slist_reverse(
+	mail_filtering_data->filtered   = g_slist_reverse(
 		mail_filtering_data->filtered);
 	mail_filtering_data->unfiltered = g_slist_reverse(
 		mail_filtering_data->unfiltered);

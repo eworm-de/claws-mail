@@ -1,3 +1,10 @@
+2006-12-15 [wwp]	2.6.1cvs39
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		flag whitelisted spams as spam, but don't filter it to the spam
+		folder. Thanks to Colin.
+
 2006-12-15 [ticho]	2.6.1cvs38
 
 	* src/plugins/bogofilter/bogofilter.c
