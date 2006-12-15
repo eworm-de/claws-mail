@@ -33,6 +33,7 @@ struct _BogofilterConfig
 	gchar 			*save_folder;
 	guint 			 max_size;
 	gchar			*bogopath;
+	gboolean		 insert_header;
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);

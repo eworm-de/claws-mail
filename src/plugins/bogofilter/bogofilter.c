@@ -88,6 +88,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"bogopath", "bogofilter", &config.bogopath, P_STRING,
 	 NULL, NULL, NULL},
+	{"insert_header", "FALSE", &config.insert_header, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -175,7 +177,6 @@ static void bogofilter_do_filter(BogoFilterData *data)
 			/* can set flags (SCANNED, ATTACHMENT) but that's ok 
 			 * as GUI updates are hooked not direct */
 			file = procmsg_get_message_file(msginfo);
-
 			if (file) {
 				gchar *tmp = g_strdup_printf("%s\n",file);
 				write_all(bogo_stdin, tmp, strlen(tmp));
@@ -196,6 +197,35 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					}
 					parts = g_strsplit(tmp, " ", 0);
 					debug_print("read %s\n", buf);
+					if (parts && parts[0] && parts[1] && parts[2] && 
+					    FOLDER_TYPE(msginfo->folder->folder) == F_MH &&
+					    config.insert_header) {
+						gchar *tmpfile = get_tmp_file();
+						FILE *input = fopen(file, "r");
+						FILE *output = fopen(tmpfile, "w");
+						if (strstr(parts[2], "\n"))
+							*(strstr(parts[2], "\n")) = '\0';
+						if (input && !output) 
+							fclose (input);
+						else if (!input && output)
+							fclose (output);
+						else {
+							gchar tmpbuf[BUFFSIZE];
+							const gchar *bogosity = *parts[1] == 'S' ? "Spam":
+										 (*parts[1] == 'H' ? "Ham":"Unsure");
+							gchar *tmpstr = g_strdup_printf(
+									"X-Claws-Bogosity: %s, spamicity=%s\n",
+									bogosity, parts[2]);
+							fwrite(tmpstr, 1, strlen(tmpstr), output);
+							while (fgets(tmpbuf, sizeof(buf), input))
+								fputs(tmpbuf, output);
+							fclose(input);
+							fclose(output);
+							move_file(tmpfile, file, TRUE);
+							g_free(tmpstr);
+						}
+						g_free(tmpfile);
+					}
 					if (parts && parts[0] && parts[1] && *parts[1] == 'S') {
 						debug_print("message %d is spam\n", msginfo->msgnum);
 						if (config.receive_spam) {

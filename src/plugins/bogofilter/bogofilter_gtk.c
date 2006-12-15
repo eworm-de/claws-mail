@@ -49,6 +49,7 @@ struct BogofilterPage
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
 	GtkWidget *save_folder_select;
+	GtkWidget *insert_header;
 	GtkWidget *max_size;
 	GtkWidget *bogopath;
 };
@@ -90,6 +91,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_spam_folder_entry;
 	GtkWidget *save_spam_folder_select;
 
+	GtkWidget *insert_header_chkbtn;
 	GtkWidget *bogopath_label;
 	GtkWidget *bogopath_entry;
 
@@ -156,6 +158,13 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a folder for storing spam"),
 			NULL);
 
+	insert_header_chkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
+	gtk_widget_show(insert_header_chkbtn);
+	gtk_box_pack_start(GTK_BOX(vbox2), insert_header_chkbtn, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, insert_header_chkbtn,
+			_("Only done for mails in MH folders"),
+			NULL);
+
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_bogopath);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_bogopath, FALSE, FALSE, 0);
@@ -173,6 +182,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
+	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, insert_header_chkbtn);
 
 	config = bogofilter_get_config();
 
@@ -182,6 +192,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_chkbtn), config->insert_header);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
 	if (config->bogopath != NULL)
@@ -190,6 +201,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->max_size = max_size_spinbtn;
 	page->process_emails = process_emails_checkbtn;
 	page->receive_spam = save_spam_checkbtn;
+	page->insert_header = insert_header_chkbtn;
 	page->save_folder = save_spam_folder_entry;
 	page->save_folder_select = save_spam_folder_select;
 	page->bogopath = bogopath_entry;
@@ -220,6 +232,9 @@ static void bogofilter_save_func(PrefsPage *_page)
 	/* save_folder */
 	g_free(config->save_folder);
 	config->save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+
+	/* insert_header */
+	config->insert_header = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->insert_header));
 
 	/* bogopath */
 	g_free(config->bogopath);

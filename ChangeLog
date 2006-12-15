@@ -1,3 +1,12 @@
+2006-12-15 [paul]	2.6.1cvs36
+
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		Add an option to allow inserting an
+		X-Claws-Bogosity header (on MH folders
+		only). Patch by Colin
+
 2006-12-14 [colin]	2.6.1cvs35
 
 	* src/main.c
