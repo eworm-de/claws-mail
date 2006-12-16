@@ -77,6 +77,7 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 
 #if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
+		log_error(_("SSL handshake failed\n"));
 		sock_close(sock);
 		return NULL;
 	}

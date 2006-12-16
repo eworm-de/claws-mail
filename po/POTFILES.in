@@ -9,6 +9,7 @@ src/browseldap.c
 src/common/md5.c
 src/common/nntp.c
 src/common/plugin.c
+src/common/session.c
 src/common/smtp.c
 src/common/socket.c
 src/common/ssl.c

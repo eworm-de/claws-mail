@@ -825,8 +825,14 @@ static IMAPSession *imap_session_new(Folder * folder,
 		authenticated = FALSE;
 	}
 	else {
+#if (LIBETPAN_VERSION_MAJOR > 0 || LIBETPAN_VERSION_MINOR > 48)
+#ifdef USE_OPENSSL
+		if (r == MAILIMAP_ERROR_SSL)
+			log_error(_("SSL handshake failed\n"));
+#endif
+#endif
 		if(!prefs_common.no_recv_err_panel) {
-			alertpanel_error(_("Can't connect to IMAP4 server: %s:%d"),
+			alertpanel_error_log(_("Can't connect to IMAP4 server: %s:%d"),
 					 account->recv_server, port);
 		} else {
 			log_error(_("Can't connect to IMAP4 server: %s:%d\n"),
