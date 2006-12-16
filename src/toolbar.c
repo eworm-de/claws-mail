@@ -154,6 +154,8 @@ static void toolbar_addrbook_cb   		(GtkWidget   	*widget,
 static void toolbar_check_spelling_cb  		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
 #endif
+static void toolbar_cancel_inc_cb		(GtkWidget	*widget,
+						 gpointer	 data);
 
 struct {
 	gchar *index_str;
@@ -192,6 +194,7 @@ struct {
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
 	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
+	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
 };
 
@@ -306,7 +309,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
 					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_PRINT,
-					A_ADDRBOOK, 	A_LEARN_SPAM, A_SYL_ACTIONS };
+					A_ADDRBOOK, 	A_LEARN_SPAM, A_SYL_ACTIONS, A_CANCEL_INC };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -1220,6 +1223,15 @@ static void toolbar_ignore_thread_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+
+	g_return_if_fail(toolbar_item != NULL);
+	inc_cancel_all();
+}
+
+
 static void toolbar_print_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -1391,7 +1403,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #ifdef USE_ASPELL
 		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
 #endif
-		{ A_SYL_ACTIONS,	toolbar_actions_execute_cb	}
+		{ A_SYL_ACTIONS,	toolbar_actions_execute_cb	},
+		{ A_CANCEL_INC,		toolbar_cancel_inc_cb		}
 	};
 
 	num_items = sizeof(callbacks)/sizeof(callbacks[0]);
@@ -1750,6 +1763,12 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 			gtk_widget_show(item);
 			break;
+		case A_CANCEL_INC:
+			toolbar_data->cancel_inc_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->cancel_inc_btn,
+					     _("Cancel receiving"), NULL);
+			break;
 		default:
 			/* find and set the tool tip text */
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips),
@@ -1949,6 +1968,10 @@ void toolbar_main_set_sensitive(gpointer data)
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
 			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+
+	if (toolbar->cancel_inc_btn)
+		SET_WIDGET_COND(toolbar->cancel_inc_btn,
+				M_INC_ACTIVE);
 
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;

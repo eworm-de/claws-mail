@@ -1,3 +1,10 @@
+2006-12-16 [colin]	2.6.1cvs44
+
+	* src/toolbar.c
+	* src/toolbar.h
+		Fix bug 1055, 'Add the 'cancel receive' 
+		in the available events for the toolbar buttons'
+
 2006-12-16 [colin]	2.6.1cvs43
 
 	* po/POTFILES.in

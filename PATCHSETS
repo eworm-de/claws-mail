@@ -2151,3 +2151,4 @@
 ( cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.1cvs41.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.6.1cvs42.patchset
 ( cvs diff -u -r 1.53.2.20 -r 1.53.2.21 po/POTFILES.in;  cvs diff -u -r 1.179.2.139 -r 1.179.2.140 src/imap.c;  cvs diff -u -r 1.6.2.10 -r 1.6.2.11 src/common/nntp.c;  cvs diff -u -r 1.23.2.10 -r 1.23.2.11 src/common/session.c;  ) > 2.6.1cvs43.patchset
+( cvs diff -u -r 1.43.2.56 -r 1.43.2.57 src/toolbar.c;  cvs diff -u -r 1.19.2.12 -r 1.19.2.13 src/toolbar.h;  ) > 2.6.1cvs44.patchset
