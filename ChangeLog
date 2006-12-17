@@ -1,3 +1,13 @@
+2006-12-17 [colin]	2.6.1cvs46
+
+	* src/mimeview.c
+	* src/textview.c
+	* src/gtk/filesel.c
+		Correctly convert from/to UTF8/filename encoding
+		when loading and saving files. Probably fixes
+		bug 1068, 'Claws-Mail uses 100% CPU when looking 
+		for a file to attach and is blocked...'
+
 2006-12-17 [colin]	2.6.1cvs45
 
 	* src/gtk/logwindow.c

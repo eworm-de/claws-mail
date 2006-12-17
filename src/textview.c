@@ -2665,7 +2665,7 @@ static void save_file_cb (TextView *textview, guint action, void *data)
 	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
 		g_free(prefs_common.attach_save_dir);
-		prefs_common.attach_save_dir = g_strdup(filedir);
+		prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
 	}
 
 	g_free(filedir);

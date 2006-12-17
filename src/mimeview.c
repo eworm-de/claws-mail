@@ -1516,7 +1516,8 @@ static void mimeview_save_all(MimeView *mimeview)
 
 	g_free(prefs_common.attach_save_dir);
 	g_free(startdir);
-	prefs_common.attach_save_dir = g_strdup(dirname);
+	prefs_common.attach_save_dir = g_filename_to_utf8(dirname,
+					-1, NULL, NULL, NULL);
 }
 
 static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
@@ -1589,7 +1590,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
 		g_free(prefs_common.attach_save_dir);
-		prefs_common.attach_save_dir = g_strdup(filedir);
+		prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
 	}
 
 	g_free(filedir);

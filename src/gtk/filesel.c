@@ -122,6 +122,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	if (path && strlen(path) > 0) {
 		char *filename = NULL;
 		char *realpath = strdup(path);
+		char *tmp = NULL;
 		if (path[strlen(path)-1] == G_DIR_SEPARATOR) {
 			filename = "";
 		} else if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
@@ -132,15 +133,32 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			free(realpath); 
 			realpath = strdup(get_home_dir());
 		}
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), realpath);
-		if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
-			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
+		if (g_utf8_validate(realpath, -1, NULL))
+			tmp = g_filename_from_utf8(realpath, -1, NULL, NULL, NULL);
+		else
+			tmp = g_strdup(realpath);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), tmp);
+		g_free(tmp);
+		
+		if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
+			if (g_utf8_validate(filename, -1, NULL))
+				tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL);
+			else
+				tmp = g_strdup(filename);
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), tmp);
+			g_free(tmp);
+		}
 		free(realpath);
 	} else {
+		gchar *tmp = NULL;
 		if (!prefs_common.attach_load_dir)
 			prefs_common.attach_load_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
-
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), prefs_common.attach_load_dir);
+		if (g_utf8_validate(prefs_common.attach_load_dir, -1, NULL))
+			tmp = g_filename_from_utf8(prefs_common.attach_load_dir, -1, NULL, NULL, NULL);
+		else
+			tmp = g_strdup(prefs_common.attach_load_dir);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), tmp);
+		g_free(tmp);
 	}
 
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
@@ -161,7 +179,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
 
 		if (!path)
-			prefs_common.attach_load_dir = g_strdup(tmp);
+			prefs_common.attach_load_dir = g_filename_to_utf8(tmp, -1, NULL, NULL, NULL);
 
 		g_free(tmp);
 	}
