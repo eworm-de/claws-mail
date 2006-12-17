@@ -291,9 +291,17 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (head)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, head, -1,
 							 tag, NULL);
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, logtext->text, -1,
-						 tag, NULL);
 
+	if (!g_utf8_validate(logtext->text, -1, NULL)) {
+		gchar * mybuf = g_malloc(strlen(logtext->text)*2 +1);
+		conv_localetodisp(mybuf, strlen(logtext->text)*2 +1, logtext->text);
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, mybuf, -1,
+							 tag, NULL);
+		g_free(mybuf);
+	} else {
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, logtext->text, -1,
+							 tag, NULL);
+	}
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	if (logwindow->clip)

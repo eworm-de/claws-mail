@@ -1,3 +1,10 @@
+2006-12-17 [colin]	2.6.1cvs45
+
+	* src/gtk/logwindow.c
+		Fix bug 1067, 'Claws-Mail uses 100% CPU on an 
+		IMAP folder and is blocked on main thread': 
+		make sure we put utf8 in the log.
+
 2006-12-16 [colin]	2.6.1cvs44
 
 	* src/toolbar.c
