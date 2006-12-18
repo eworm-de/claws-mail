@@ -2326,6 +2326,33 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	return imap_get_path_separator(imap_folder, item->path);
 }
 
+static gchar imap_refresh_path_separator(IMAPFolder *folder, const gchar *subfolder)
+{
+	IMAPSession *session = imap_session_get(FOLDER(folder));
+	clist * lep_list;
+	int r;
+	gchar separator = '\0';
+	
+	g_return_val_if_fail(session != NULL, '/');
+	r = imap_threaded_list((Folder *)folder, "", subfolder, &lep_list);
+	
+	if (r != MAILIMAP_NO_ERROR) {
+		log_warning(_("LIST failed\n"));
+		return '\0';
+	}
+
+	if (clist_count(lep_list) > 0) {
+		clistiter * iter = clist_begin(lep_list); 
+		struct mailimap_mailbox_list * mb;
+		mb = clist_content(iter);
+
+		separator = mb->mb_delimiter;
+		debug_print("got separator: %c\n", folder->last_seen_separator);
+	}
+	mailimap_list_result_free(lep_list);
+	return separator;
+}
+
 static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 {
 	IMAPNameSpace *namespace;
@@ -2334,32 +2361,17 @@ static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 	g_return_val_if_fail(session != NULL, '/');
 
 	if (folder->last_seen_separator == 0) {
-		clist * lep_list;
-		int r = imap_threaded_list((Folder *)folder, "", "", &lep_list);
-		if (r != MAILIMAP_NO_ERROR) {
-			log_warning(_("LIST failed\n"));
-			return '/';
-		}
-		
-		if (clist_count(lep_list) > 0) {
-			clistiter * iter = clist_begin(lep_list); 
-			struct mailimap_mailbox_list * mb;
-			mb = clist_content(iter);
-		
-			folder->last_seen_separator = mb->mb_delimiter;
-			debug_print("got separator: %c\n", folder->last_seen_separator);
-		}
-		mailimap_list_result_free(lep_list);
+		folder->last_seen_separator = imap_refresh_path_separator(folder, "");
+	}
+
+	if (folder->last_seen_separator == 0) {
+		folder->last_seen_separator = imap_refresh_path_separator(folder, "INBOX");
 	}
 
 	if (folder->last_seen_separator != 0) {
 		debug_print("using separator: %c\n", folder->last_seen_separator);
 		return folder->last_seen_separator;
 	}
-
-	namespace = imap_find_namespace(folder, path);
-	if (namespace && namespace->separator)
-		separator = namespace->separator;
 
 	return separator;
 }
