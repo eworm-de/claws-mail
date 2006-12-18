@@ -6960,7 +6960,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Message To format error."));
+			alertpanel_error(_("Template To format error."));
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_TO);
 		}
@@ -6973,7 +6973,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Message Cc format error."));
+			alertpanel_error(_("Template Cc format error."));
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_CC);
 		}
@@ -6986,7 +6986,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Message Bcc format error."));
+			alertpanel_error(_("Template Bcc format error."));
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_BCC);
 		}
@@ -7000,7 +7000,7 @@ void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Message subject format error."));
+			alertpanel_error(_("Template subject format error."));
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
 		}
