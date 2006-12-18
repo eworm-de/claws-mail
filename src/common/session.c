@@ -35,6 +35,7 @@
 
 #include "session.h"
 #include "utils.h"
+#include "log.h"
 
 static gint session_connect_cb		(SockInfo	*sock,
 					 gpointer	 data);

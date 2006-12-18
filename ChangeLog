@@ -1,3 +1,8 @@
+2006-12-18 [wwp]	2.6.1cvs49
+
+	* src/common/session.c
+		Fix a compiler warning (thanks to Fabien).
+
 2006-12-18 [wwp]	2.6.1cvs48
 
 	* src/compose.c
