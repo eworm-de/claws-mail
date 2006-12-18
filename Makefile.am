@@ -60,3 +60,6 @@ pkgconfig_DATA = claws-mail.pc
 clawsincludedir = $(pkgincludedir)
 clawsinclude_HEADERS = \
 	config.h
+
+relnotesdir = $(docdir)
+relnotes_DATA = RELEASE_NOTES

@@ -87,6 +87,7 @@
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
 #define OPENSSL_URI		"http://www.openssl.org/"
+#define RELEASE_NOTES_FILE	"RELEASE_NOTES"
 #define THEMEINFO_FILE		".sylpheed_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_claws_cache"

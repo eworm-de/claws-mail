@@ -1,4 +1,5 @@
 PLUGINDIR = $(pkglibdir)/plugins/
+DOCDIR = $(docdir)
 
 noinst_LTLIBRARIES = libclawsgtk.la
 
@@ -69,7 +70,8 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS) \
 	$(ASPELL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
-	-DPLUGINDIR=\"$(PLUGINDIR)\" 
+	-DPLUGINDIR=\"$(PLUGINDIR)\" \
+	-DDOCDIR=\"$(DOCDIR)\" 
 
 libclawsgtk_la_LIBADD = \
 	../common/libclawscommon.la \

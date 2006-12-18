@@ -90,95 +90,18 @@ void about_show(void)
 		gtk_window_present(GTK_WINDOW(window));
 }
 
-static void about_create(void)
+static GtkWidget *about_create_child_page_info(void)
 {
-	GtkWidget *vbox1;
-	GtkWidget *image;	
- 	GtkWidget *vbox2;
-	GtkWidget *label;
-	GtkWidget *button;
 	GtkWidget *scrolledwin;
-	GtkWidget *notebook;
-	GtkWidget *table;
-	char *markup;
 	GtkWidget *text;
-	GtkWidget *confirm_area;
-	GtkWidget *close_button;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	GtkTextTag *tag;
 	GdkColor uri_color;
-	GdkPixbuf *active_pixbuf;
-	GdkPixbuf *inactive_pixbuf;
-	static GdkGeometry geometry;
+	gchar buf[1024];
+	GtkTextTag *tag;
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
 #endif
-	gchar buf[1024];
-	gint i;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
-	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_widget_set_size_request(window, -1, -1);
-	g_signal_connect(G_OBJECT(window), "delete_event",
-			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
-	g_signal_connect(G_OBJECT(window), "key_press_event",
-			 G_CALLBACK(key_pressed), NULL);
-	gtk_widget_realize(window);
-
-	if (!geometry.min_width) {
-		geometry.min_width = 450;
-		geometry.min_height = 500;
-	}
-
-	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
-				      GDK_HINT_MIN_SIZE);
-
-	vbox1 = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(window), vbox1);
-
-	table = gtk_table_new (2, 1, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox1), table,
-			FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
-
-	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
-	gtk_table_attach (GTK_TABLE (table), image, 0, 1, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND),
-			(GtkAttachOptions) (0), 0, 0);
-
-	vbox2 = gtk_vbox_new (FALSE, 4);
-	gtk_table_attach (GTK_TABLE (table), vbox2, 1, 2, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND),
-			(GtkAttachOptions) (0), 0, 0);
-
-	label = gtk_label_new("");
-	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-	markup = g_markup_printf_escaped
-		("<span weight=\"bold\" size=\"xx-large\">Claws Mail</span>\nversion %s",
-		 VERSION);
-	gtk_label_set_markup(GTK_LABEL(label), markup);
-	g_free(markup);
-
-	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
-	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-
-	label = gtk_label_new
-		(_("Copyright (C) 1999-2006\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-		 "and the Claws Mail team"));
-	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-
-	notebook = gtk_notebook_new();
-	gtk_widget_set_size_request(notebook, -1, 220);
-	gtk_widget_show(notebook);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -276,9 +199,16 @@ static void about_create(void)
 	g_signal_connect(G_OBJECT(text), "leave-notify-event",
 				G_CALLBACK(about_textview_leave_notify), text);
 
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
-				scrolledwin,
-				gtk_label_new_with_mnemonic(_("_Info")));
+	return scrolledwin;
+}
+
+static GtkWidget *about_create_child_page_authors(void)
+{
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
+	gint i;
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -438,9 +368,17 @@ static void about_create(void)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
-				 scrolledwin,
-				 gtk_label_new_with_mnemonic(_("_Authors")));
+	return scrolledwin;
+}
+
+static GtkWidget *about_create_child_page_features(void)
+{
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
+	GdkPixbuf *active_pixbuf;
+	GdkPixbuf *inactive_pixbuf;
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -569,9 +507,17 @@ static void about_create(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("libSM|adds support for session handling\n"), -1);
 
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
-				 scrolledwin,
-				 gtk_label_new_with_mnemonic(_("_Features")));
+	return scrolledwin;
+}
+
+static GtkWidget *about_create_child_page_license(void)
+{
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
+	GdkColor uri_color;
+	GtkTextTag *tag;
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -608,6 +554,10 @@ static void about_create(void)
 		  "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
 		  "MA 02110-1301, USA.\n\n"), -1);
 #ifdef USE_OPENSSL
+	/* textview link style (based upon main prefs) */
+	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+			(GdkColor*)&uri_color);
+
 	tag = gtk_text_buffer_create_tag(buffer, "link",
 		"foreground-gdk", &uri_color,
 		NULL);
@@ -631,9 +581,182 @@ static void about_create(void)
 				G_CALLBACK(about_textview_leave_notify), text);
 #endif
 
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
-				 scrolledwin,
-				 gtk_label_new_with_mnemonic(_("_License")));
+	return scrolledwin;
+}
+
+static gboolean release_notes_available(void)
+{
+	gboolean ret = FALSE;
+	gchar *path = NULL;
+
+	path = g_strconcat(DOCDIR, G_DIR_SEPARATOR_S, RELEASE_NOTES_FILE, NULL);
+	ret = (is_file_exist(path));
+	g_free(path);
+
+	return ret;
+}
+
+static GtkWidget *about_create_child_page_release_notes(void)
+{
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
+	gchar *path, buf[1024];
+	FILE *fp;
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+			GTK_SHADOW_IN);
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
+
+	path = g_strconcat(DOCDIR, G_DIR_SEPARATOR_S, RELEASE_NOTES_FILE, NULL);
+	if ((fp = g_fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		return scrolledwin;
+	}
+	g_free(path);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		const gchar *src_codeset = conv_get_locale_charset_str();
+		const gchar *dest_codeset = CS_UTF_8;
+		gchar *tmp;
+
+		tmp = conv_codeset_strdup(buf, src_codeset, dest_codeset);
+		if (!tmp) {
+			g_warning("Failed to convert character set of action configuration\n");
+			tmp = g_strdup(buf);
+		}
+
+		gtk_text_buffer_insert(buffer, &iter, tmp, -1);
+		g_free(tmp);
+	}
+	fclose(fp);
+
+	return scrolledwin;
+}
+
+static void about_create(void)
+{
+	GtkWidget *vbox1;
+	GtkWidget *image;	
+ 	GtkWidget *vbox2;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *scrolledwin;
+	GtkWidget *notebook;
+	GtkWidget *table;
+	char *markup;
+	GtkWidget *confirm_area;
+	GtkWidget *close_button;
+	static GdkGeometry geometry;
+
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
+	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
+	gtk_widget_set_size_request(window, -1, -1);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
+	gtk_widget_realize(window);
+
+	if (!geometry.min_width) {
+		geometry.min_width = 450;
+		geometry.min_height = 500;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+
+	vbox1 = gtk_vbox_new(FALSE, 8);
+	gtk_container_add(GTK_CONTAINER(window), vbox1);
+
+	table = gtk_table_new (2, 1, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox1), table,
+			FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
+
+	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	gtk_table_attach (GTK_TABLE (table), image, 0, 1, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND),
+			(GtkAttachOptions) (0), 0, 0);
+
+	vbox2 = gtk_vbox_new (FALSE, 4);
+	gtk_table_attach (GTK_TABLE (table), vbox2, 1, 2, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND),
+			(GtkAttachOptions) (0), 0, 0);
+
+	label = gtk_label_new("");
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
+	markup = g_markup_printf_escaped
+		("<span weight=\"bold\" size=\"xx-large\">Claws Mail</span>\nversion %s",
+		 VERSION);
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	g_free(markup);
+
+	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("Copyright (C) 1999-2006\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		 "and the Claws Mail team"));
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
+
+	notebook = gtk_notebook_new();
+	gtk_widget_set_size_request(notebook, -1, 220);
+	gtk_widget_show(notebook);
+
+	if ((scrolledwin = about_create_child_page_info()) != NULL) {
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new_with_mnemonic(_("_Info")));
+	}
+
+	if ((scrolledwin = about_create_child_page_authors()) != NULL) {
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new_with_mnemonic(_("_Authors")));
+	}
+
+	if ((scrolledwin = about_create_child_page_features()) != NULL) {
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new_with_mnemonic(_("_Features")));
+	}
+
+	if ((scrolledwin = about_create_child_page_license()) != NULL) {
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new_with_mnemonic(_("_License")));
+	}
+
+	if (release_notes_available() &&
+			(scrolledwin = about_create_child_page_release_notes()) != NULL) {
+
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+				scrolledwin,
+				gtk_label_new_with_mnemonic(_("_Release Notes")));
+	}
 
 	gtk_box_pack_start(GTK_BOX(vbox1), notebook, TRUE, TRUE, 0);
 
