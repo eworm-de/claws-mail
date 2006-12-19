@@ -2161,3 +2161,4 @@
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_receive.c;  ) > 2.6.1cvs51.patchset
 ( cvs diff -u -r 1.4.2.45 -r 1.4.2.46 src/gtk/about.c;  ) > 2.6.1cvs52.patchset
 ( cvs diff -u -r 1.42.2.28 -r 1.42.2.29 po/fr.po;  ) > 2.6.1cvs53.patchset
+( cvs diff -u -r 1.18.2.18 -r 1.18.2.19 src/jpilot.c;  ) > 2.6.1cvs54.patchset

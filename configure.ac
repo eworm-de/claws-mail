@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=53
+EXTRA_VERSION=54
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -587,7 +587,7 @@ if test "$ac_cv_enable_jpilot" = yes; then
 				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
 	fi
 
-	AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
+	AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock -lpisync"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
 	if test x"$ac_cv_enable_jpilot" = xyes; then
 		AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.)
 	else
