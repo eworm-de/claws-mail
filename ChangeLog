@@ -1,3 +1,8 @@
+2006-12-19 [colin]	2.6.1cvs53
+
+	* po/fr.po
+		Updated by Fabien
+
 2006-12-19 [wwp]	2.6.1cvs52
 
 	* src/gtk/about.c
