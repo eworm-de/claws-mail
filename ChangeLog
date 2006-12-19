@@ -1,3 +1,9 @@
+2006-12-19 [colin]	2.6.1cvs55
+
+	* src/jpilot.c
+		Same as before, without depending on
+		pisock >= 0.12
+
 2006-12-19 [colin]	2.6.1cvs54
 
 	* src/jpilot.c

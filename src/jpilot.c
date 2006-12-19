@@ -38,13 +38,11 @@
 #include <netinet/in.h>
 
 #ifdef HAVE_LIBPISOCK_PI_ARGS_H
-#  include <libpisock/pi-util.h>
 #  include <libpisock/pi-args.h>
 #  include <libpisock/pi-appinfo.h>
 #  include <libpisock/pi-address.h>
 #  include <libpisock/pi-version.h>
 #else
-#  include <pi-util.h>
 #  include <pi-args.h>
 #  include <pi-appinfo.h>
 #  include <pi-address.h>
@@ -159,6 +157,19 @@ enum {
 } name_order;
 
 gboolean convert_charcode = TRUE;
+
+static const gchar *jpilot_get_charset(void)
+{
+	static const gchar *charset = NULL;
+
+	if (charset == NULL)
+		charset = getenv("PILOT_CHARSET");
+
+	if (charset == NULL)
+		charset = CS_CP1252;
+	
+	return charset;
+}
 
 /*
 * Create new pilot file object.
@@ -1105,14 +1116,9 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 			addritem_email_set_address( email, node->data );
 			if (convert_charcode) {
 				gchar *convertBuff = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-				convert_FromPilotChar(CS_INTERNAL, labelEntry, 
-						strlen(labelEntry), &convertBuff);
-#else
 				convertBuff = conv_codeset_strdup( labelEntry, 
-						conv_get_locale_charset_str_no_utf8(), 
+						jpilot_get_charset(), 
 						CS_INTERNAL );
-#endif
 				if (convertBuff)
 					addritem_email_set_remarks( email, convertBuff );
 				g_free( convertBuff );
@@ -1210,14 +1216,9 @@ static void jpilot_load_address(
 
 	if( convert_charcode ) {
 		gchar *nameConv = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-		convert_FromPilotChar(CS_INTERNAL, fullName, 
-				strlen(fullName), &nameConv);
-#else
 		nameConv = conv_codeset_strdup( fullName, 
-				conv_get_locale_charset_str_no_utf8(), 
+				jpilot_get_charset(), 
 				CS_INTERNAL );
-#endif
 		if (nameConv)
 			strncpy2( fullName, nameConv, FULLNAME_BUFSIZE );
 		g_free( nameConv );
@@ -1383,14 +1384,9 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 
 				if( convert_charcode ) {
 					gchar *convertBuff = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-					convert_FromPilotChar(CS_INTERNAL, labelName, 
-							strlen(labelName), &convertBuff);
-#else
 					convertBuff = conv_codeset_strdup( labelName, 
-							conv_get_locale_charset_str_no_utf8(), 
+							jpilot_get_charset(), 
 							CS_INTERNAL );
-#endif
 					if (convertBuff) {
 						labelName = convertBuff;
 					}
@@ -1429,14 +1425,9 @@ GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 			if( labelName ) {
 				if( convert_charcode ) {
 					gchar *convertBuff = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-					convert_FromPilotChar(CS_INTERNAL, labelName, 
-							strlen(labelName), &convertBuff);
-#else
 					convertBuff = conv_codeset_strdup( labelName, 
-							conv_get_locale_charset_str_no_utf8(), 
+							jpilot_get_charset(), 
 							CS_INTERNAL );
-#endif
 					if (convertBuff) {
 						labelName = convertBuff;
 					}
@@ -1530,14 +1521,9 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 				if( *labelName != '\0' ) {
 					if( convert_charcode ) {
 						gchar *convertBuff = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-						convert_FromPilotChar(CS_INTERNAL, labelName, 
-								strlen(labelName), &convertBuff);
-#else
 						convertBuff = conv_codeset_strdup( labelName, 
-								conv_get_locale_charset_str_no_utf8(), 
+								jpilot_get_charset(), 
 								CS_INTERNAL );
-#endif
 						if (convertBuff) {
 							labelName = convertBuff;
 						}
@@ -1596,14 +1582,9 @@ static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 
 		if( convert_charcode ) {
 			gchar *convertBuff = NULL;
-#if (PILOT_LINK_MAJOR > 11)
-			convert_FromPilotChar(CS_INTERNAL, cat->name[i], 
-					strlen(cat->name[i]), &convertBuff);
-#else
 			convertBuff = conv_codeset_strdup( cat->name[i], 
-					conv_get_locale_charset_str_no_utf8(), 
+					jpilot_get_charset(), 
 					CS_INTERNAL );
-#endif
 			if (convertBuff) {
 				addritem_folder_set_name( folder, convertBuff );
 				g_free( convertBuff );
