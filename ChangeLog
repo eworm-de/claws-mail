@@ -1,3 +1,8 @@
+2006-12-19 [wwp]	2.6.1cvs51
+
+	* src/prefs_receive.c
+		Better spacing between widgets in prefs.
+
 2006-12-18 [colin]	2.6.1cvs50
 
 	* src/imap.c

@@ -92,7 +92,6 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *hbox_autochk;
 	GtkWidget *checkbtn_autochk;
-	GtkWidget *label_autochk1;
 	GtkObject *spinbtn_autochk_adj;
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *label_autochk2;
@@ -153,11 +152,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
-			   _("Automatically check for new mail"));
-
-	label_autochk1 = gtk_label_new (_("every"));
-	gtk_widget_show (label_autochk1);
-	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk1, FALSE, FALSE, 0);
+			   _("Automatically check for new mail every"));
 
 	spinbtn_autochk_adj = gtk_adjustment_new (5, 1, 100, 1, 10, 10);
 	spinbtn_autochk = gtk_spin_button_new
@@ -171,7 +166,6 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_autochk2);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk2, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk1);
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, spinbtn_autochk);
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk2);
 
