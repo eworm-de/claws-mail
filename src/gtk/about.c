@@ -39,6 +39,7 @@
 #if HAVE_SYS_UTSNAME_H
 #  include <sys/utsname.h>
 #endif
+#include <errno.h>
 
 #include "about.h"
 #include "gtkutils.h"

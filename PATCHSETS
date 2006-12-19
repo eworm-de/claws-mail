@@ -2159,3 +2159,4 @@
 ( cvs diff -u -r 1.23.2.11 -r 1.23.2.12 src/common/session.c;  ) > 2.6.1cvs49.patchset
 ( cvs diff -u -r 1.179.2.140 -r 1.179.2.141 src/imap.c;  ) > 2.6.1cvs50.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_receive.c;  ) > 2.6.1cvs51.patchset
+( cvs diff -u -r 1.4.2.45 -r 1.4.2.46 src/gtk/about.c;  ) > 2.6.1cvs52.patchset

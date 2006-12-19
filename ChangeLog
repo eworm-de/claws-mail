@@ -1,3 +1,8 @@
+2006-12-19 [wwp]	2.6.1cvs52
+
+	* src/gtk/about.c
+		Add missing #include (thanks to Colin).
+
 2006-12-19 [wwp]	2.6.1cvs51
 
 	* src/prefs_receive.c
