@@ -647,6 +647,9 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
 				    type);
 
+	if (!matchstring || !(*matchstring))
+		quicksearch->in_typing = FALSE;
+
 	g_signal_handlers_block_by_func(G_OBJECT(GTK_COMBO(quicksearch->search_string_entry)->entry),
 			G_CALLBACK(searchbar_changed_cb), quicksearch);
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry),
