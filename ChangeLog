@@ -1,3 +1,9 @@
+2006-12-20 [wwp]	2.6.1cvs57
+
+	* src/prefs_common.c
+	* src/prefs_summaries.c
+		i18n fix and factorize patch, thanks to Fabien.
+
 2006-12-20 [paul]	2.6.1cvs56
 
 	* configure.ac

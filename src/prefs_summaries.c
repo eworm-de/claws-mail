@@ -897,7 +897,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox1, FALSE, TRUE, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
-		(_("Mark messages as read after ")), FALSE, FALSE, 0);
+		(_("Mark messages as read after")), FALSE, FALSE, 0);
 
 	spinbtn_mark_as_read_delay_adj = gtk_adjustment_new (0, 0, 60, 1, 10, 10);
 	spinbtn_mark_as_read_delay = gtk_spin_button_new
@@ -908,7 +908,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_mark_as_read_delay),
 				     TRUE);
 	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
-		(_(" seconds")), FALSE, FALSE, 0);
+		(_("seconds")), FALSE, FALSE, 0);
 	gtk_widget_show_all(hbox1);
 
 	vbox5 = gtk_vbox_new (FALSE, 0);

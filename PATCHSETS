@@ -2164,3 +2164,4 @@
 ( cvs diff -u -r 1.18.2.18 -r 1.18.2.19 src/jpilot.c;  ) > 2.6.1cvs54.patchset
 ( cvs diff -u -r 1.18.2.19 -r 1.18.2.20 src/jpilot.c;  ) > 2.6.1cvs55.patchset
 ( cvs diff -u -r 1.654.2.2217 -r 1.654.2.2218 configure.ac;  cvs diff -u -r 1.115.2.120 -r 1.115.2.121 src/main.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/plugins/bogofilter/bogofilter.c;  ) > 2.6.1cvs56.patchset
+( cvs diff -u -r 1.204.2.112 -r 1.204.2.113 src/prefs_common.c;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/prefs_summaries.c;  ) > 2.6.1cvs57.patchset

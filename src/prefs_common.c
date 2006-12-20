@@ -887,6 +887,10 @@ void prefs_common_read_config(void)
 	g_free(prefs_common.date_format);
 	prefs_common.date_format = tmp;
 
+	tmp = g_strdup(gettext(prefs_common.compose_body_format));
+	g_free(prefs_common.compose_body_format);
+	prefs_common.compose_body_format = tmp;
+
 	prefs_common.mime_open_cmd_history =
 		prefs_common_read_history(COMMAND_HISTORY);
 	prefs_common.summary_quicksearch_history =
