@@ -1085,7 +1085,7 @@ static void parse_cmd_opt(int argc, char *argv[])
  			g_print("%s\n", _("  --status-full [folder]...\n"
  			       "                         show the status of each folder"));
 			g_print("%s\n", _("  --select folder[/msg]  jumps to the specified folder/message\n" 
-			                  "                         folder is a folder id like '#mh/Mailbox/inbox'"));
+			                  "                         folder is a folder id like 'folder/sub_folder'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
 			g_print("%s\n", _("  --exit                 exit Claws Mail"));

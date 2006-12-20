@@ -93,7 +93,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"insert_header", "FALSE", &config.insert_header, P_BOOL,
 	 NULL, NULL, NULL},
-	{"whitelist_ab", "TRUE", &config.whitelist_ab, P_BOOL,
+	{"whitelist_ab", "FALSE", &config.whitelist_ab, P_BOOL,
 	 NULL, NULL, NULL},
 	{"whitelist_ab_folder", "Any", &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
