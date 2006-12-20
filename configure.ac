@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=57
+EXTRA_VERSION=58
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -171,7 +171,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 AM_GNU_GETTEXT_VERSION([0.15])
 AM_GNU_GETTEXT([external])
 
-manualdir='${datarootdir}/${PACKAGE}/manual'
+manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
 	[manualdir="$withval"])
