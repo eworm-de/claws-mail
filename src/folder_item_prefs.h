@@ -61,6 +61,8 @@ struct _FolderItemPrefs {
 #if USE_ASPELL
 	gboolean enable_default_dictionary;
 	gchar *default_dictionary;
+	gboolean enable_default_alt_dictionary;
+	gchar *default_alt_dictionary;
 #endif
 	gboolean save_copy_to_folder;
 	guint color;

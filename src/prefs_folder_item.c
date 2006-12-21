@@ -111,7 +111,9 @@ struct _FolderItemComposePage
 	GtkWidget *optmenu_default_account;
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
+	GtkWidget *checkbtn_enable_default_alt_dictionary;
 	GtkWidget *optmenu_default_dictionary;
+	GtkWidget *optmenu_default_alt_dictionary;
 #endif
 
 	/* apply to sub folders */
@@ -122,6 +124,7 @@ struct _FolderItemComposePage
 	GtkWidget *default_account_rec_checkbtn;
 #if USE_ASPELL
 	GtkWidget *default_dictionary_rec_checkbtn;
+	GtkWidget *default_alt_dictionary_rec_checkbtn;
 #endif
 };
 
@@ -600,6 +603,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary = NULL;
 	GtkWidget *optmenu_default_dictionary = NULL;
+	GtkWidget *checkbtn_enable_default_alt_dictionary = NULL;
+	GtkWidget *optmenu_default_alt_dictionary = NULL;
 #endif
 	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
@@ -608,6 +613,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *default_account_rec_checkbtn = NULL;
 #if USE_ASPELL
 	GtkWidget *default_dictionary_rec_checkbtn = NULL;
+	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
 #endif
 
 	GList *cur_ac;
@@ -810,6 +816,39 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	
 	rowcount++;
+
+	/* Default dictionary */
+	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary: "));
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_alt_dictionary, 0, 1,
+	    		 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),
+	    			     item->prefs->enable_default_alt_dictionary);
+
+	optmenu_default_alt_dictionary = gtk_option_menu_new();
+	gtk_table_attach(GTK_TABLE(table), optmenu_default_alt_dictionary, 1, 2,
+	    		 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_alt_dictionary), 
+				 gtkaspell_dictionary_option_menu_new_with_refresh(
+					 prefs_common.aspell_path, FALSE));
+
+	dictionary = item->prefs->default_alt_dictionary;
+
+	optmenu = GTK_OPTION_MENU(optmenu_default_alt_dictionary);
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	if (dictionary)
+		gtkaspell_set_dictionary_menu_active_item(optmenu_default_alt_dictionary, dictionary);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_alt_dictionary, optmenu_default_alt_dictionary);
+
+	default_alt_dictionary_rec_checkbtn = gtk_check_button_new();
+	gtk_table_attach(GTK_TABLE(table), default_alt_dictionary_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	
+	rowcount++;
 #endif
 
 	gtk_widget_show_all(table);
@@ -828,6 +867,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 #ifdef USE_ASPELL
 	page->checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
 	page->optmenu_default_dictionary = optmenu_default_dictionary;
+	page->checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
+	page->optmenu_default_alt_dictionary = optmenu_default_alt_dictionary;
 #endif
 
 	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
@@ -837,6 +878,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->default_account_rec_checkbtn	  = default_account_rec_checkbtn;
 #if USE_ASPELL
 	page->default_dictionary_rec_checkbtn = default_dictionary_rec_checkbtn;
+	page->default_alt_dictionary_rec_checkbtn = default_alt_dictionary_rec_checkbtn;
 #endif
 
 	address_completion_start(page->window);
@@ -924,6 +966,13 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 		ASSIGN_STRING(prefs->default_dictionary,
 			      gtkaspell_get_dictionary_menu_active_item(menu));
 	}
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn))) {
+		prefs->enable_default_alt_dictionary =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_alt_dictionary));
+		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_alt_dictionary));
+		ASSIGN_STRING(prefs->default_alt_dictionary,
+			      gtkaspell_get_dictionary_menu_active_item(menu));
+	}
 #endif
 
 	folder_item_prefs_save_config(folder);
@@ -949,6 +998,7 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) ||
 #if USE_ASPELL
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn)) ||
 #endif
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))))
 		return TRUE;
@@ -957,6 +1007,7 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) 
 #if USE_ASPELL
 	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn))
+	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn))
 #endif
 		    ))
 		return TRUE;

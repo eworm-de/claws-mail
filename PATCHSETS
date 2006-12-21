@@ -2168,3 +2168,4 @@
 ( cvs diff -u -r 1.654.2.2219 -r 1.654.2.2220 configure.ac;  ) > 2.6.1cvs58.patchset
 ( cvs diff -u -r 1.1.2.56 -r 1.1.2.57 src/gtk/quicksearch.c;  ) > 2.6.1cvs59.patchset
 ( cvs diff -u -r 1.213.2.125 -r 1.213.2.126 src/folder.c;  cvs diff -u -r 1.12.2.15 -r 1.12.2.16 src/html.c;  ) > 2.6.1cvs60.patchset
+( cvs diff -u -r 1.382.2.342 -r 1.382.2.343 src/compose.c;  cvs diff -u -r 1.2.2.5 -r 1.2.2.6 src/folder_item_prefs.h;  cvs diff -u -r 1.204.2.113 -r 1.204.2.114 src/prefs_common.c;  cvs diff -u -r 1.103.2.70 -r 1.103.2.71 src/prefs_common.h;  cvs diff -u -r 1.52.2.29 -r 1.52.2.30 src/prefs_folder_item.c;  cvs diff -u -r 1.5.2.27 -r 1.5.2.28 src/prefs_spelling.c;  cvs diff -u -r 1.9.2.44 -r 1.9.2.45 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/gtk/gtkaspell.h;  ) > 2.6.1cvs61.patchset

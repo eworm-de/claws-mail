@@ -229,6 +229,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"dictionary",  "", &prefs_common.dictionary, P_STRING,
 	 NULL, NULL, NULL},
+	{"alt_dictionary",  "", &prefs_common.alt_dictionary, P_STRING,
+	 NULL, NULL, NULL},
 	{"aspell_sugmode", "1", &prefs_common.aspell_sugmode, P_INT,
 	 NULL, NULL, NULL},
 	{"use_alternate_dict", "FALSE", &prefs_common.use_alternate, P_BOOL,

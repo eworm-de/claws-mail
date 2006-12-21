@@ -972,10 +972,13 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
-	if (item && item->prefs && item->prefs->enable_default_dictionary &&
-	    compose->gtkaspell) {
-		gtkaspell_change_dict(compose->gtkaspell, 
-		    item->prefs->default_dictionary);
+	if (item && item->prefs && compose->gtkaspell) {
+		if (item->prefs->enable_default_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell, 
+				    item->prefs->default_dictionary);
+		if (item->prefs->enable_default_alt_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell, 
+				    item->prefs->default_alt_dictionary);
 		compose_spell_menu_changed(compose);
 	}
 #endif
@@ -1410,10 +1413,13 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 #ifdef USE_ASPELL
 	if (msginfo->folder && msginfo->folder->prefs && 
 	    msginfo->folder->prefs && 
-	    msginfo->folder->prefs->enable_default_dictionary &&
 	    compose->gtkaspell) {
-		gtkaspell_change_dict(compose->gtkaspell, 
-		    msginfo->folder->prefs->default_dictionary);
+		if (msginfo->folder->prefs->enable_default_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell, 
+				    msginfo->folder->prefs->default_dictionary);
+		if (msginfo->folder->prefs->enable_default_alt_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell, 
+				    msginfo->folder->prefs->default_alt_dictionary);
 		compose_spell_menu_changed(compose);
 	}
 #endif
@@ -6374,6 +6380,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	    	    strcmp(prefs_common.dictionary, "")) {
 			gtkaspell = gtkaspell_new(prefs_common.aspell_path,
 						  prefs_common.dictionary,
+						  prefs_common.alt_dictionary,
 						  conv_get_locale_charset_str(),
 						  prefs_common.misspelled_col,
 						  prefs_common.check_while_typing,

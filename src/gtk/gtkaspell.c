@@ -373,6 +373,7 @@ void gtkaspell_checkers_reset_error(void)
 
 GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 			 const gchar *dictionary, 
+			 const gchar *alt_dictionary, 
 			 const gchar *encoding,
 			 gint  misspelled_color,
 			 gboolean check_while_typing,
@@ -391,6 +392,10 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	g_return_val_if_fail(gtktext, NULL);
 	g_return_val_if_fail(dictionary && strlen(dictionary) > 0, 
 			NULL);
+	if (use_alternate) {
+		g_return_val_if_fail(alt_dictionary && strlen(alt_dictionary) > 0, 
+				NULL);
+	}
 	g_return_val_if_fail(dictionary_path && strlen(dictionary_path) > 0, 
 			NULL);
 
@@ -411,7 +416,26 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	gtkaspell->dictionary_path    = g_strdup(dictionary_path);
 
 	gtkaspell->gtkaspeller	      = gtkaspeller;
-	gtkaspell->alternate_speller  = NULL;
+
+	if (use_alternate) {
+		Dictionary 	*alt_dict;
+		GtkAspeller 	*alt_gtkaspeller;
+
+		alt_dict 	       = g_new0(Dictionary, 1);
+		alt_dict->fullname = g_strdup(alt_dictionary);
+		alt_dict->encoding = g_strdup(encoding);
+
+		alt_gtkaspeller    = gtkaspeller_new(alt_dict);
+		dictionary_delete(alt_dict);
+
+		if (!alt_gtkaspeller)
+			return NULL;
+
+		gtkaspell->alternate_speller  = alt_gtkaspeller;
+	} else {
+		gtkaspell->alternate_speller  = NULL;
+	}
+
 	gtkaspell->theword[0]	      = 0x00;
 	gtkaspell->start_pos	      = 0;
 	gtkaspell->end_pos	      = 0;
@@ -466,7 +490,7 @@ void gtkaspell_delete(GtkAspell *gtkaspell)
 	
 	gtkaspeller_delete(gtkaspell->gtkaspeller);
 
-	if (gtkaspell->use_alternate && gtkaspell->alternate_speller)
+	if (gtkaspell->alternate_speller)
 		gtkaspeller_delete(gtkaspell->alternate_speller);
 
 	if (gtkaspell->suggestions_list)
@@ -1720,14 +1744,15 @@ void gtkaspell_free_dictionary_list(GSList *list)
 }
 
 /* FIXME */
-GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
+GtkWidget *gtkaspell_dictionary_option_menu_new_with_refresh(const gchar *aspell_path,
+							     gboolean refresh)
 {
 	GSList *dict_list, *tmp;
 	GtkWidget *item;
 	GtkWidget *menu;
 	Dictionary *dict;
 
-	dict_list = gtkaspell_get_dictionary_list(aspell_path, TRUE);
+	dict_list = gtkaspell_get_dictionary_list(aspell_path, refresh);
 	g_return_val_if_fail(dict_list, NULL);
 
 	menu = gtk_menu_new();
@@ -1745,6 +1770,13 @@ GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
 	gtk_widget_show(menu);
 
 	return menu;
+}
+
+GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
+{
+	return gtkaspell_dictionary_option_menu_new_with_refresh
+		(aspell_path, TRUE);
+
 }
 
 gchar *gtkaspell_get_dictionary_menu_active_item(GtkWidget *menu)

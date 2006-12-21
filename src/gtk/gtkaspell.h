@@ -52,6 +52,7 @@ void 		gtkaspell_checkers_reset_error	(void);
 
 GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
 						 const gchar *dictionary, 
+						 const gchar *alt_dictionary, 
 						 const gchar *encoding,
 						 gint  misspelled_color,
 						 gboolean check_while_typing,
@@ -87,6 +88,9 @@ void 		gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
 GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);
+GtkWidget*	gtkaspell_dictionary_option_menu_new_with_refresh
+							(const gchar *aspell_path,
+							 gboolean     refresh);
 
 gchar*		gtkaspell_get_dictionary_menu_active_item
 							(GtkWidget *menu);

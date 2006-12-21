@@ -145,6 +145,7 @@ struct _PrefsCommon
 	gboolean enable_aspell;
 	gchar *aspell_path;
 	gchar *dictionary;
+	gchar *alt_dictionary;
 	gulong misspelled_col;
 	gint aspell_sugmode;
 	gboolean check_while_typing;
