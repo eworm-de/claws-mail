@@ -123,6 +123,7 @@ struct _GtkAspell
 	gboolean	 check_while_typing;
 	gboolean	 recheck_when_changing_dict;
 	gboolean	 use_alternate;
+	gboolean	 use_both_dicts;
 
 	ContCheckFunc 	 continue_check; 
 
@@ -176,6 +177,8 @@ static GtkAspeller* gtkaspeller_real_delete	(GtkAspeller	*gtkaspeller);
 static gint 		set_dictionary   		(AspellConfig *config, 
 							 Dictionary *dict);
 static void 		set_sug_mode_cb     		(GtkMenuItem *w, 
+							 GtkAspell *gtkaspell);
+static void 		set_use_both_cb     		(GtkMenuItem *w, 
 							 GtkAspell *gtkaspell);
 static void 		set_real_sug_mode		(GtkAspell *gtkaspell, 
 							 const char *themode);
@@ -379,6 +382,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 			 gboolean check_while_typing,
 			 gboolean recheck_when_changing_dict,
 			 gboolean use_alternate,
+			 gboolean use_both_dicts,
 			 GtkTextView *gtktext,
 			 GtkWindow *parent_win,
 			 void (*spell_menu_cb)(void *data),
@@ -451,6 +455,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	gtkaspell->max_sug	      = -1;
 	gtkaspell->suggestions_list   = NULL;
 	gtkaspell->use_alternate      = use_alternate;
+	gtkaspell->use_both_dicts     = use_both_dicts;
 	gtkaspell->parent_window      = GTK_WIDGET(parent_win);
 	gtkaspell->menu_changed_cb = spell_menu_cb;
 	gtkaspell->menu_changed_data = data;
@@ -842,6 +847,19 @@ static void set_sug_mode_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
 		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }
 
+/* set_sug_mode_cb() - Menu callback: Set the suggestion mode */
+static void set_use_both_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
+{
+	gtkaspell->use_both_dicts = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w));
+
+	if (gtkaspell->recheck_when_changing_dict) {
+		gtkaspell_highlight_all(gtkaspell);
+	}
+
+	if (gtkaspell->menu_changed_cb)
+		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
+}
+
 static void set_real_sug_mode(GtkAspell *gtkaspell, const char *themode)
 {
 	gint result;
@@ -937,8 +955,15 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, gchar *word)
 /* misspelled_test() - Just test if word is correctly spelled */  
 static int misspelled_test(GtkAspell *gtkaspell, unsigned char *word) 
 {
-	return aspell_speller_check(gtkaspell->gtkaspeller->checker, (char *)word, -1)
+	gint result = aspell_speller_check(gtkaspell->gtkaspeller->checker, (char *)word, -1)
 				    ? 0 : 1;
+	if (result && gtkaspell->use_both_dicts && gtkaspell->alternate_speller) {
+		use_alternate_dict(gtkaspell);
+		result = aspell_speller_check(gtkaspell->gtkaspeller->checker, (char *)word, -1)
+				    ? 0 : 1;
+		use_alternate_dict(gtkaspell);
+	}
+	return result;
 }
 
 
@@ -2113,7 +2138,22 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 		list = g_slist_append(list, item);
 	}
 
+	item = gtk_check_menu_item_new_with_label(_("Use both dictionaries"));
+	if (gtkaspell->use_both_dicts) {
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+	} 
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(set_use_both_cb),
+			 gtkaspell);
+	gtk_widget_show(item);
+	list = g_slist_append(list, item);
+	
+	item = gtk_menu_item_new();
+        gtk_widget_show(item);
+        list = g_slist_append(list, item);
+	
       	item = gtk_check_menu_item_new_with_label(_("Fast Mode"));
+	gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_FASTMODE) {
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(item),FALSE);
@@ -2125,6 +2165,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	list = g_slist_append(list, item);
 
 	item = gtk_check_menu_item_new_with_label(_("Normal Mode"));
+	gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_NORMALMODE) {
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
@@ -2136,6 +2177,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	list = g_slist_append(list, item);
 
 	item = gtk_check_menu_item_new_with_label(_("Bad Spellers Mode"));
+	gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_BADSPELLERMODE) {
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);

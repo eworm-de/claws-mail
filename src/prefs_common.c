@@ -241,6 +241,8 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
 	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_COLOR,
 	 NULL, NULL, NULL},
+	{"use_both_dicts", "FALSE", &prefs_common.use_both_dicts, P_BOOL,
+	 NULL, NULL, NULL},
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
 	 NULL, NULL, NULL},

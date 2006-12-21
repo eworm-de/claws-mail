@@ -1,3 +1,14 @@
+2006-12-21 [wwp]	2.6.1cvs63
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_spelling.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Allow spell-checking using both current and alternate dictionaries
+		(thanks to Colin).
+
 2006-12-21 [wwp]	2.6.1cvs62
 
 	* src/gtk/gtkaspell.c

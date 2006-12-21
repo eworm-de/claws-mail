@@ -151,6 +151,7 @@ struct _PrefsCommon
 	gboolean check_while_typing;
 	gboolean recheck_when_changing_dict;
 	gboolean use_alternate;
+	gboolean use_both_dicts;
 #endif
         
 	/* Display */
