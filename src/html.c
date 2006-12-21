@@ -50,6 +50,7 @@ static SC_HTMLSymbol symbol_list[] = {
 	{"&trade;" , "(TM)"},
 	{"&#153;", "(TM)"},
 	{"&hellip;", "..."},
+	{"&mdash;", "-"},
 };
 
 static SC_HTMLSymbol ascii_symbol_list[] = {

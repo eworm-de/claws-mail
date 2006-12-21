@@ -1,3 +1,10 @@
+2006-12-21 [colin]	2.6.1cvs60
+
+	* src/folder.c
+		Look for folders by path in all folders
+	* src/html.c
+		add &mdash;
+
 2006-12-20 [colin]	2.6.1cvs59
 
 	* src/gtk/quicksearch.c

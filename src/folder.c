@@ -1142,14 +1142,20 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 {
 	Folder *folder;
 	gpointer d[2];
-
-	folder = folder_get_default_folder();
+	GList *list = folder_get_list();
+	
+	folder = list ? list->data:NULL;
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 
 	d[0] = (gpointer)path;
 	d[1] = NULL;
-	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+	while (d[1] == NULL && list) {
+		folder = FOLDER(list->data);
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_item_find_func, d);
+		list = list->next;
+	}
 	return d[1];
 }
 

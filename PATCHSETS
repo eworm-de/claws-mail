@@ -2167,3 +2167,4 @@
 ( cvs diff -u -r 1.204.2.112 -r 1.204.2.113 src/prefs_common.c;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/prefs_summaries.c;  ) > 2.6.1cvs57.patchset
 ( cvs diff -u -r 1.654.2.2219 -r 1.654.2.2220 configure.ac;  ) > 2.6.1cvs58.patchset
 ( cvs diff -u -r 1.1.2.56 -r 1.1.2.57 src/gtk/quicksearch.c;  ) > 2.6.1cvs59.patchset
+( cvs diff -u -r 1.213.2.125 -r 1.213.2.126 src/folder.c;  cvs diff -u -r 1.12.2.15 -r 1.12.2.16 src/html.c;  ) > 2.6.1cvs60.patchset
