@@ -2344,6 +2344,9 @@ static void switch_to_alternate_cb(GtkWidget *w,
 {
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 	use_alternate_dict(gtkaspell);
+	if (gtkaspell->recheck_when_changing_dict) {
+		gtkaspell_highlight_all(gtkaspell);
+	}
 	if (gtkaspell->menu_changed_cb)
 		gtkaspell->menu_changed_cb(gtkaspell->menu_changed_data);
 }

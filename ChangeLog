@@ -1,3 +1,9 @@
+2006-12-21 [wwp]	2.6.1cvs62
+
+	* src/gtk/gtkaspell.c
+		Apply recheck_when_changing_dict (highlight all mispelled words)
+		when switching to alternate dictionary.
+
 2006-12-21 [wwp]	2.6.1cvs61
 
 	* src/compose.c
