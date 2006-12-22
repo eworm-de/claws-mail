@@ -807,22 +807,22 @@ void gtkut_widget_init(void)
 	GtkWidget *clist;
 
 	clist = gtk_clist_new(1);
-	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(G_OBJECT(clist));
+	gtk_object_ref(GTK_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(G_OBJECT(clist));
+	gtk_object_unref(GTK_OBJECT(clist));
 
 	clist = gtk_ctree_new(1, 0);
-	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(G_OBJECT(clist));
+	gtk_object_ref(GTK_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(G_OBJECT(clist));
+	gtk_object_unref(GTK_OBJECT(clist));
 
 	clist = gtk_sctree_new_with_titles(1, 0, NULL);
-	g_object_ref(G_OBJECT(clist));
-	gtk_object_sink(G_OBJECT(clist));
+	gtk_object_ref(GTK_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(G_OBJECT(clist));
+	gtk_object_unref(GTK_OBJECT(clist));
 }
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)

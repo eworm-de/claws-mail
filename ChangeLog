@@ -1,3 +1,11 @@
+2006-12-22 [colin]	2.6.1cvs65
+
+	* src/gtk/gtkutils.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/summary_search.c
+		A few warning fixes
+
 2006-12-23 [paul]	
 
 	2.7.0-rc2 released

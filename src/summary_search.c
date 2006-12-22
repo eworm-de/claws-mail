@@ -114,12 +114,6 @@ static void summary_search_stop_clicked	(GtkButton	*button,
 static void adv_condition_btn_clicked	(GtkButton	*button,
 					 gpointer	 data);
 
-static void from_changed			(void);
-static void to_changed				(void);
-static void subject_changed			(void);
-static void body_changed			(void);
-static void adv_condition_changed	(void);
-
 static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data);
 static gboolean from_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
@@ -844,36 +838,6 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 		matcherlist_free(matchers);
 	}
 };
-
-static void from_changed(void)
-{
-	if (!search_window.from_entry_has_focus)
-		gtk_widget_grab_focus(search_window.from_entry);
-}
-
-static void to_changed(void)
-{
-	if (!search_window.to_entry_has_focus)
-		gtk_widget_grab_focus(search_window.to_entry);
-}
-
-static void subject_changed(void)
-{
-	if (!search_window.subject_entry_has_focus)
-		gtk_widget_grab_focus(search_window.subject_entry);
-}
-
-static void body_changed(void)
-{
-	if (!search_window.body_entry_has_focus)
-		gtk_widget_grab_focus(search_window.body_entry);
-}
-
-static void adv_condition_changed(void)
-{
-	if (!search_window.adv_condition_entry_has_focus)
-		gtk_widget_grab_focus(search_window.adv_condition_entry);
-}
 
 static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data)

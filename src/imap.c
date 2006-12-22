@@ -293,8 +293,6 @@ static gint imap_status			(IMAPSession	*session,
 					 gint		*unseen,
 					 gboolean	 block);
 
-static IMAPNameSpace *imap_find_namespace	(IMAPFolder	*folder,
-						 const gchar	*path);
 static gchar imap_get_path_separator		(IMAPFolder	*folder,
 						 const gchar	*path);
 static gchar *imap_get_real_path		(IMAPFolder	*folder,
@@ -2266,47 +2264,6 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print("done.\n");
 }
 
-static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,
-						    const gchar *path)
-{
-	IMAPNameSpace *namespace = NULL;
-	gchar *tmp_path, *name;
-
-	if (!path) path = "";
-
-	for (; ns_list != NULL; ns_list = ns_list->next) {
-		IMAPNameSpace *tmp_ns = ns_list->data;
-
-		Xstrcat_a(tmp_path, path, "/", return namespace);
-		Xstrdup_a(name, tmp_ns->name, return namespace);
-		if (tmp_ns->separator && tmp_ns->separator != '/') {
-			subst_char(tmp_path, tmp_ns->separator, '/');
-			subst_char(name, tmp_ns->separator, '/');
-		}
-		if (strncmp(tmp_path, name, strlen(name)) == 0)
-			namespace = tmp_ns;
-	}
-
-	return namespace;
-}
-
-static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
-					  const gchar *path)
-{
-	IMAPNameSpace *namespace;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-
-	namespace = imap_find_namespace_from_list(folder->ns_personal, path);
-	if (namespace) return namespace;
-	namespace = imap_find_namespace_from_list(folder->ns_others, path);
-	if (namespace) return namespace;
-	namespace = imap_find_namespace_from_list(folder->ns_shared, path);
-	if (namespace) return namespace;
-
-	return NULL;
-}
-
 gchar imap_get_path_separator_for_item(FolderItem *item)
 {
 	Folder *folder = NULL;
@@ -2355,7 +2312,6 @@ static gchar imap_refresh_path_separator(IMAPFolder *folder, const gchar *subfol
 
 static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 {
-	IMAPNameSpace *namespace;
 	gchar separator = '/';
 	IMAPSession *session = imap_session_get(FOLDER(folder));
 	g_return_val_if_fail(session != NULL, '/');

@@ -1147,7 +1147,7 @@ static void jpilot_load_address(
 {
 	struct Address addr;
 	gchar **addrEnt;
-	gint num, k;
+	gint k;
 	gint cat_id = 0;
 	guint unique_id;
 	guchar attrib;
@@ -1162,16 +1162,8 @@ static void jpilot_load_address(
 	gchar **lastName = NULL;
 #if (PILOT_LINK_MAJOR > 11)
 	pi_buffer_t *RecordBuffer;
-#endif /* PILOT_LINK_0_12 */
-
-	/* Retrieve address */
-#if (PILOT_LINK_MAJOR < 12)
-	num = unpack_Address(&addr, buf->buf, buf->size);
-	if (num <= 0) {
-		return;
-	}
-#else /* PILOT_LINK_0_12 */
 	RecordBuffer = pi_buffer_new(buf->size);
+
 	memcpy(RecordBuffer->data, buf->buf, buf->size);
 	RecordBuffer->used = buf->size;
 	if (unpack_Address(&addr, RecordBuffer, address_v1) == -1) {
@@ -1179,7 +1171,15 @@ static void jpilot_load_address(
 		return;
 	}
 	pi_buffer_free(RecordBuffer);
-#endif
+#else
+	gint num;
+
+	num = unpack_Address(&addr, buf->buf, buf->size);
+	if (num <= 0) {
+		return;
+	}
+#endif /* PILOT_LINK_0_12 */
+
 	addrEnt = addr.entry;
 	attrib = buf->attrib;
 	unique_id = buf->unique_id;
