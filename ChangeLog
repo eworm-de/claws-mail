@@ -1,3 +1,14 @@
+2006-12-22 [colin]	2.6.1cvs64
+
+	* src/toolbar.c
+	* src/toolbar.h
+		Add a combo to the learn spam button
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/bogofilter/bogofilter.h
+		Allow to store Unsure mails in a specific
+		folder to make better teaching easier
+
 2006-12-21 [wwp]	2.6.1cvs63
 
 	* src/compose.c

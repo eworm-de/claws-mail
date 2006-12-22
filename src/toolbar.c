@@ -89,6 +89,8 @@ static void activate_compose_button 		(Toolbar	*toolbar,
 /* toolbar callbacks */
 static void toolbar_reply			(gpointer 	 data, 
 						 guint 		 action);
+static void toolbar_learn			(gpointer 	 data, 
+						 guint 		 action);
 static void toolbar_delete_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
 static void toolbar_trash_cb			(GtkWidget	*widget,
@@ -237,6 +239,11 @@ static GtkItemFactoryEntry forward_entries[] =
 	{N_("/_Forward"),		"f", 	    toolbar_reply, COMPOSE_FORWARD_INLINE, NULL},
 	{N_("/For_ward as attachment"), "<shift>F", toolbar_reply, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Redirec_t"),		NULL, 	    toolbar_reply, COMPOSE_REDIRECT, NULL}
+};
+static GtkItemFactoryEntry learn_entries[] =
+{
+	{N_("/Learn as _Spam"),		NULL,	toolbar_learn, TRUE, NULL},
+	{N_("/Learn as _Ham"), 		NULL,	toolbar_learn, FALSE, NULL}
 };
 
 
@@ -1007,6 +1014,34 @@ static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_learn(gpointer data, guint as_spam)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		if (as_spam) 
+			mainwindow_learn(mainwin, TRUE);
+		else
+			mainwindow_learn(mainwin, FALSE);
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)toolbar_item->parent;
+		if (as_spam) 
+			messageview_learn(msgview, TRUE);
+		else
+			messageview_learn(msgview, FALSE);
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+	}
+}
+
 static void toolbar_learn_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -1443,6 +1478,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	ComboButton *replysender_combo;
 	ComboButton *fwd_combo;
 	ComboButton *compose_combo;
+	ComboButton *ham_combo;
 
 	GtkTooltips *toolbar_tips;
 	ToolbarSylpheedActions *action_item;
@@ -1559,6 +1595,17 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->learn_ham_btn,
 					   _("Learn Ham"), NULL);			
+			n_menu_entries = sizeof(learn_entries) / 
+				sizeof(learn_entries[0]);
+			ham_combo = gtkut_combo_button_create(toolbar_data->learn_spam_btn,
+					      learn_entries, n_menu_entries,
+					      "<LearnSpam>", (gpointer)toolbar_item);
+			gtk_button_set_relief(GTK_BUTTON(ham_combo->arrow),
+					      GTK_RELIEF_NONE);
+			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
+				  		  GTK_WIDGET_PTR(ham_combo),
+				 		  _("Learn as..."), "Learn");
+			toolbar_data->ham_combo = ham_combo;
 			break;
 		case A_REPLY_MESSAGE:
 			toolbar_data->reply_btn = item;
@@ -1967,6 +2014,10 @@ void toolbar_main_set_sensitive(gpointer data)
 
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
+			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+
+	if (toolbar->ham_combo)
+		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->ham_combo),
 			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
 
 	if (toolbar->cancel_inc_btn)

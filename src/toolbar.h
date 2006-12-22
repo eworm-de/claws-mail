@@ -79,6 +79,8 @@ struct _Toolbar {
 	GtkWidget *separator;
 	GtkWidget *learn_spam_btn;
 	GtkWidget *learn_ham_btn;
+	ComboButton *ham_combo;
+	
 	GtkWidget *cancel_inc_btn;
 	
 	ComposeButtonType compose_btn_type;

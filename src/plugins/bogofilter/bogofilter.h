@@ -36,6 +36,8 @@ struct _BogofilterConfig
 	gboolean		 insert_header;
 	gboolean		 whitelist_ab;
 	gchar			*whitelist_ab_folder;
+	gboolean		 save_unsure;
+	gchar 			*save_unsure_folder;
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);

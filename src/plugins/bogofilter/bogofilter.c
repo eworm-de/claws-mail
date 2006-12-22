@@ -87,6 +87,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"save_folder", NULL, &config.save_folder, P_STRING,
 	 NULL, NULL, NULL},
+	{"save_unsure", "FALSE", &config.save_unsure, P_BOOL,
+	 NULL, NULL, NULL},
+	{"save_unsure_folder", NULL, &config.save_unsure_folder, P_STRING,
+	 NULL, NULL, NULL},
 	{"max_size", "250", &config.max_size, P_INT,
 	 NULL, NULL, NULL},
 	{"bogopath", "bogofilter", &config.bogopath, P_STRING,
@@ -133,6 +137,7 @@ typedef struct _BogoFilterData {
 	gchar **bogo_args;
 	GSList *msglist;
 	GSList *new_hams;
+	GSList *new_unsure;
 	GSList *new_spams;
 	GSList *whitelisted_new_spams;
 	gboolean done;
@@ -311,6 +316,14 @@ static void bogofilter_do_filter(BogoFilterData *data)
 						 * it was not). */
 						data->whitelisted_new_spams = g_slist_prepend(data->whitelisted_new_spams, msginfo);
 
+					} else if (config.save_unsure && parts && parts[0] && parts[1] && *parts[1] == 'U') {
+						
+						debug_print("message %d is unsure\n", msginfo->msgnum);
+						/* Spam will be filtered away */
+						data->mail_filtering_data->filtered = g_slist_prepend(
+							data->mail_filtering_data->filtered, msginfo);
+						data->new_unsure = g_slist_prepend(data->new_unsure, msginfo);
+
 					} else {
 						
 						debug_print("message %d is ham\n", msginfo->msgnum);
@@ -413,7 +426,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	static gboolean warned_error = FALSE;
 	int status = 0;
 	int total = 0, curnum = 0;
-	GSList *new_hams = NULL, *new_spams = NULL, *whitelisted_new_spams = NULL;
+	GSList *new_hams = NULL, *new_spams = NULL;
+	GSList *new_unsure, *whitelisted_new_spams = NULL;
 	gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 	gchar *bogo_args[4];
 	gboolean ok_to_thread = TRUE;
@@ -461,6 +475,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	to_filter_data->msglist = msglist;
 	to_filter_data->mail_filtering_data = mail_filtering_data;
 	to_filter_data->new_hams = NULL;
+	to_filter_data->new_unsure = NULL;
 	to_filter_data->new_spams = NULL;
 	to_filter_data->whitelisted_new_spams = NULL;
 	to_filter_data->done = FALSE;
@@ -499,6 +514,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 #endif
 
 	new_hams = to_filter_data->new_hams;
+	new_unsure = to_filter_data->new_unsure;
 	new_spams = to_filter_data->new_spams;
 	whitelisted_new_spams = to_filter_data->whitelisted_new_spams;
 	status = to_filter_data->status;
@@ -511,6 +527,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	/* unflag hams */
 	for (cur = new_hams; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+	}
+	/* unflag unsure */
+	for (cur = new_unsure; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 	}
@@ -561,22 +582,40 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		g_slist_free(mail_filtering_data->unfiltered);
 		mail_filtering_data->filtered = NULL;
 		mail_filtering_data->unfiltered = NULL;
-	} else if (config.receive_spam && new_spams) {
-		FolderItem *save_folder;
+	} else {
+		if (config.receive_spam && new_spams) {
+			FolderItem *save_folder;
 
-		if ((!config.save_folder) ||
-		    (config.save_folder[0] == '\0') ||
-		    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
-			save_folder = folder_get_default_trash();
-		if (save_folder) {
-			for (cur = new_spams; cur; cur = cur->next) {
-				msginfo = (MsgInfo *)cur->data;
-				msginfo->is_move = TRUE;
-				msginfo->to_filter_folder = save_folder;
+			if ((!config.save_folder) ||
+			    (config.save_folder[0] == '\0') ||
+			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
+				save_folder = folder_get_default_trash();
+			if (save_folder) {
+				for (cur = new_spams; cur; cur = cur->next) {
+					msginfo = (MsgInfo *)cur->data;
+					msginfo->is_move = TRUE;
+					msginfo->to_filter_folder = save_folder;
+				}
+			}
+		}
+		if (config.save_unsure && new_unsure) {
+			FolderItem *save_unsure_folder;
+
+			if ((!config.save_unsure_folder) ||
+			    (config.save_unsure_folder[0] == '\0') ||
+			    ((save_unsure_folder = folder_find_item_from_identifier(config.save_unsure_folder)) == NULL))
+				save_unsure_folder = folder_get_default_inbox();
+			if (save_unsure_folder) {
+				for (cur = new_unsure; cur; cur = cur->next) {
+					msginfo = (MsgInfo *)cur->data;
+					msginfo->is_move = TRUE;
+					msginfo->to_filter_folder = save_unsure_folder;
+				}
 			}
 		}
 	} 
 	g_slist_free(new_hams);
+	g_slist_free(new_unsure);
 	g_slist_free(new_spams);
 	g_slist_free(whitelisted_new_spams);
 
@@ -621,6 +660,8 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			else 
 				/* learn as ham */
 				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
+				
+			debug_print("%s\n", cmd);
 			if ((status = execute_command_line(cmd, FALSE)) != 0)
 				log_error(_("Learning failed; `%s` returned with status %d."),
 						cmd, status);
@@ -668,7 +709,8 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				else 
 					/* learn as ham */
 					cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
-
+				
+				debug_print("%s\n", cmd);
 				if ((status = execute_command_line(cmd, FALSE)) != 0)
 					log_error(_("Learning failed; `%s` returned with status %d."),
 							cmd, status);
@@ -695,7 +737,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				bogo_args[1] = spam ? "-s":"-n";
 			bogo_args[2] = "-b";
 			bogo_args[3] = NULL;
-
+			debug_print("|%s %s %s ...\n", bogo_args[0], bogo_args[1], bogo_args[2]);
 			bogo_forked = g_spawn_async_with_pipes(
 					NULL, bogo_args,NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,
 					NULL, NULL, &bogo_pid, &bogo_stdin,

@@ -50,6 +50,9 @@ struct BogofilterPage
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
 	GtkWidget *save_folder_select;
+	GtkWidget *save_unsure;
+	GtkWidget *save_unsure_folder;
+	GtkWidget *save_unsure_folder_select;
 	GtkWidget *insert_header;
 	GtkWidget *max_size;
 	GtkWidget *bogopath;
@@ -66,15 +69,15 @@ static const gchar *whitelist_ab_folder_text [] = {
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
 {
-	struct BogofilterPage *page = (struct BogofilterPage *) data;
+	GtkWidget *entry = (GtkWidget *) data;
 	FolderItem *item;
 	gchar *item_id;
 	gint newpos = 0;
 	
 	item = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL);
 	if (item && (item_id = folder_item_get_identifier(item)) != NULL) {
-		gtk_editable_delete_text(GTK_EDITABLE(page->save_folder), 0, -1);
-		gtk_editable_insert_text(GTK_EDITABLE(page->save_folder), item_id, strlen(item_id), &newpos);
+		gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
+		gtk_editable_insert_text(GTK_EDITABLE(entry), item_id, strlen(item_id), &newpos);
 		g_free(item_id);
 	}
 }
@@ -100,7 +103,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *vbox1, *vbox2;
 	GtkWidget *hbox_max_size;
-	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_bogopath, *hbox_whitelist;
+	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_save_unsure;
+	GtkWidget *hbox_bogopath, *hbox_whitelist;
 
 	GtkWidget *max_size_label;
 	GtkObject *max_size_spinbtn_adj;
@@ -112,6 +116,10 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_spam_checkbtn;
 	GtkWidget *save_spam_folder_entry;
 	GtkWidget *save_spam_folder_select;
+
+	GtkWidget *save_unsure_checkbtn;
+	GtkWidget *save_unsure_folder_entry;
+	GtkWidget *save_unsure_folder_select;
 
 	GtkWidget *insert_header_chkbtn;
 	GtkWidget *whitelist_ab_chkbtn;
@@ -176,7 +184,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_entry, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the default trash folder"),
+			_("Folder for storing identified spam. Leave empty to use the default trash folder."),
 			NULL);
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
@@ -184,6 +192,28 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_select, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, save_spam_folder_select,
 			_("Click this button to select a folder for storing spam"),
+			NULL);
+
+	hbox_save_unsure = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_save_unsure);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_save_unsure, TRUE, TRUE, 0);
+
+	save_unsure_checkbtn = gtk_check_button_new_with_label(_("When unsure, move in"));
+	gtk_widget_show(save_unsure_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_save_unsure), save_unsure_checkbtn, FALSE, FALSE, 0);
+
+	save_unsure_folder_entry = gtk_entry_new();
+	gtk_widget_show (save_unsure_folder_entry);
+	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_entry, TRUE, TRUE, 0);
+	gtk_tooltips_set_tip(tooltips, save_unsure_folder_entry,
+			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the default inbox folder."),
+			NULL);
+
+	save_unsure_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
+	gtk_widget_show (save_unsure_folder_select);
+	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_select, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, save_unsure_folder_select,
+			_("Click this button to select a folder for storing Unsure mails"),
 			NULL);
 
 	insert_header_chkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
@@ -244,19 +274,25 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, insert_header_chkbtn);
+	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_entry);
+	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
+	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, insert_header_chkbtn);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_folder_combo);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_select_btn);
 
 	config = bogofilter_get_config();
 
 	g_signal_connect(G_OBJECT(save_spam_folder_select), "clicked",
-			G_CALLBACK(foldersel_cb), page);
+			G_CALLBACK(foldersel_cb), save_spam_folder_entry);
+	g_signal_connect(G_OBJECT(save_unsure_folder_select), "clicked",
+			G_CALLBACK(foldersel_cb), save_unsure_folder_entry);
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(bogofilter_whitelist_ab_select_cb), page);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_unsure_checkbtn), config->save_unsure);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_chkbtn), config->insert_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_chkbtn), config->whitelist_ab);
 	if (config->whitelist_ab_folder != NULL)
@@ -264,17 +300,25 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 				config->whitelist_ab_folder);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
+	if (config->save_unsure_folder != NULL)
+		gtk_entry_set_text(GTK_ENTRY(save_unsure_folder_entry), config->save_unsure_folder);
 	if (config->bogopath != NULL)
 		gtk_entry_set_text(GTK_ENTRY(bogopath_entry), config->bogopath);
 
 	page->max_size = max_size_spinbtn;
 	page->process_emails = process_emails_checkbtn;
+
 	page->receive_spam = save_spam_checkbtn;
+	page->save_folder = save_spam_folder_entry;
+	page->save_folder_select = save_spam_folder_select;
+
+	page->save_unsure = save_unsure_checkbtn;
+	page->save_unsure_folder = save_unsure_folder_entry;
+	page->save_unsure_folder_select = save_unsure_folder_select;
+
 	page->insert_header = insert_header_chkbtn;
 	page->whitelist_ab = whitelist_ab_chkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
-	page->save_folder = save_spam_folder_entry;
-	page->save_folder_select = save_spam_folder_select;
 	page->bogopath = bogopath_entry;
 
 	page->page.widget = vbox1;
@@ -303,6 +347,13 @@ static void bogofilter_save_func(PrefsPage *_page)
 	/* save_folder */
 	g_free(config->save_folder);
 	config->save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+
+	/* save_unsure */
+	config->save_unsure = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_unsure));
+
+	/* save_unsure_folder */
+	g_free(config->save_unsure_folder);
+	config->save_unsure_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_unsure_folder), 0, -1);
 
 	/* insert_header */
 	config->insert_header = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->insert_header));
