@@ -114,6 +114,12 @@ static void summary_search_stop_clicked	(GtkButton	*button,
 static void adv_condition_btn_clicked	(GtkButton	*button,
 					 gpointer	 data);
 
+static void from_changed			(void);
+static void to_changed				(void);
+static void subject_changed			(void);
+static void body_changed			(void);
+static void adv_condition_changed	(void);
+
 static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data);
 static gboolean from_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
@@ -281,8 +287,8 @@ static void summary_search_create(void)
 	gtk_widget_show (to_entry);
 	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(from_entry), "changed",
-			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(to_entry), "changed",
+			 G_CALLBACK(to_changed), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
 			 "focus_in_event", G_CALLBACK(to_entry_focus_evt_in), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
@@ -296,8 +302,8 @@ static void summary_search_create(void)
 	gtk_widget_show (subject_entry);
 	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(from_entry), "changed",
-			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(subject_entry), "changed",
+			 G_CALLBACK(subject_changed), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
 			 "focus_in_event", G_CALLBACK(subject_entry_focus_evt_in), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
@@ -311,8 +317,8 @@ static void summary_search_create(void)
 	gtk_widget_show (body_entry);
 	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(from_entry), "changed",
-			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(body_entry), "changed",
+			 G_CALLBACK(body_changed), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
 			 "focus_in_event", G_CALLBACK(body_entry_focus_evt_in), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
@@ -326,8 +332,8 @@ static void summary_search_create(void)
 	gtk_widget_show (adv_condition_entry);
 	gtk_table_attach (GTK_TABLE (table1), adv_condition_entry, 1, 2, 4, 5,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	g_signal_connect(G_OBJECT(from_entry), "changed",
-			 G_CALLBACK(from_changed), NULL);
+	g_signal_connect(G_OBJECT(adv_condition_entry), "changed",
+			 G_CALLBACK(adv_condition_changed), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
 			 "focus_in_event", G_CALLBACK(adv_condition_entry_focus_evt_in), NULL);
 	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
@@ -838,6 +844,36 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 		matcherlist_free(matchers);
 	}
 };
+
+static void from_changed(void)
+{
+	if (!search_window.from_entry_has_focus)
+		gtk_widget_grab_focus(search_window.from_entry);
+}
+
+static void to_changed(void)
+{
+	if (!search_window.to_entry_has_focus)
+		gtk_widget_grab_focus(search_window.to_entry);
+}
+
+static void subject_changed(void)
+{
+	if (!search_window.subject_entry_has_focus)
+		gtk_widget_grab_focus(search_window.subject_entry);
+}
+
+static void body_changed(void)
+{
+	if (!search_window.body_entry_has_focus)
+		gtk_widget_grab_focus(search_window.body_entry);
+}
+
+static void adv_condition_changed(void)
+{
+	if (!search_window.adv_condition_entry_has_focus)
+		gtk_widget_grab_focus(search_window.adv_condition_entry);
+}
 
 static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data)
