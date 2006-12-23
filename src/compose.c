@@ -4251,7 +4251,8 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 
 	if (!compose->batch) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-		if (*str == '\0' && check_everything == TRUE) {
+		if (*str == '\0' && check_everything == TRUE && 
+		    !compose->redirect_filename) {
 			AlertValue aval;
 
 			aval = alertpanel(_("Send"),
