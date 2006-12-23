@@ -1,3 +1,9 @@
+2006-12-23 [paul]	2.6.1cvs68
+
+	* src/compose.c
+		change last commit to use the 'academic'
+		method instead. Thanks to wwp
+
 2006-12-23 [paul]	2.6.1cvs67
 
 	* src/compose.c

@@ -2175,3 +2175,4 @@
 ( cvs diff -u -r 1.5.2.46 -r 1.5.2.47 src/gtk/gtkutils.c;  cvs diff -u -r 1.179.2.141 -r 1.179.2.142 src/imap.c;  cvs diff -u -r 1.18.2.20 -r 1.18.2.21 src/jpilot.c;  cvs diff -u -r 1.15.2.39 -r 1.15.2.40 src/summary_search.c;  ) > 2.6.1cvs65.patchset
 ( cvs diff -u -r 1.15.2.40 -r 1.15.2.41 src/summary_search.c;  ) > 2.6.1cvs66.patchset
 ( cvs diff -u -r 1.382.2.344 -r 1.382.2.345 src/compose.c;  ) > 2.6.1cvs67.patchset
+( cvs diff -u -r 1.382.2.345 -r 1.382.2.346 src/compose.c;  ) > 2.6.1cvs68.patchset
