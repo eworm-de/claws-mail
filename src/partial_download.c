@@ -257,20 +257,19 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		goto bail;
 	}
 	
-	while ((len = fread(buf, sizeof(gchar), sizeof(buf)-1, fp)) > 0) {
-		buf[len]='\0';
-		if (start) {
-			start = FALSE;
-			fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
-					download);
-			
-			if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
-			&& !strncmp(buf, "SC-Marked-For-Download:", 
-			            strlen("SC-Marked-For-Download:"))) {
-				fprintf(fpnew, "%s", 
-				 buf+strlen("SC-Marked-For-Download: x\n"));
-				continue;
-			}
+	fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
+			download);
+	while (fgets(buf, sizeof(buf)-1, fp) != NULL) {
+		if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
+		&& !strncmp(buf, "SC-Marked-For-Download:", 
+		            strlen("SC-Marked-For-Download:"))) {
+			fprintf(fpnew, "%s", 
+			 buf+strlen("SC-Marked-For-Download: x\n"));
+			continue;
+		} else if (strlen(buf) == strlen("SC-Marked-For-Download: x\n")
+		&& !strncmp(buf, "SC-Marked-For-Download:", 
+		            strlen("SC-Marked-For-Download:"))) {
+			continue;
 		}
 		fprintf(fpnew, "%s", buf);
 	}

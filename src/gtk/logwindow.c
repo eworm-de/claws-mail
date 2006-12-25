@@ -137,6 +137,8 @@ LogWindow *log_window_create(void)
 	logwin->text = text;
 	logwin->hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, log_window_append, logwin);
 
+	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(text), logwin->end_mark);
+
 	return logwin;
 }
 
@@ -310,7 +312,8 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (!logwindow->hidden) {
 		GtkAdjustment *vadj = text->vadjustment;
 		gfloat upper = vadj->upper - vadj->page_size;
-		if (vadj->value == upper)
+		if (vadj->value == upper || 
+		    (upper - vadj->value < 16 && vadj->value < 8))
 			gtk_text_view_scroll_mark_onscreen(text, logwindow->end_mark);
 	}
 

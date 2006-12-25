@@ -1,3 +1,11 @@
+2006-12-25 [colin]	2.6.1cvs69
+
+	* src/partial_download.c
+		Fix marking for download or deletion
+		when the header isn't the first
+	* src/gtk/logwindow.c
+		Fix start of scrolling
+
 2006-12-23 [paul]	2.6.1cvs68
 
 	* src/compose.c
