@@ -1,3 +1,9 @@
+2006-12-26 [colin]	2.6.1cvs73
+
+	* src/folder_item_prefs.c
+		Don't forget alt dictionary when
+		renaming/moving folders
+
 2006-12-26 [wwp]	2.6.1cvs72
 
 	* src/folder_item_prefs.c

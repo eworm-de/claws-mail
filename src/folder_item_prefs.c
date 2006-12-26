@@ -274,6 +274,8 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 #if USE_ASPELL
 	tmp_prefs.enable_default_dictionary	= src->prefs->enable_default_dictionary;
 	tmp_prefs.default_dictionary		= g_strdup(src->prefs->default_dictionary);
+	tmp_prefs.enable_default_alt_dictionary	= src->prefs->enable_default_alt_dictionary;
+	tmp_prefs.default_alt_dictionary	= g_strdup(src->prefs->default_alt_dictionary);
 #endif
 	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
 	tmp_prefs.color				= src->prefs->color;
