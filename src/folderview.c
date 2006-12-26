@@ -2422,7 +2422,7 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *no
 }
 
 void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
-		            FolderItem *to_folder)
+		            FolderItem *to_folder, gboolean copy)
 {
 	FolderItem *from_parent = NULL;
 	FolderItem *new_folder = NULL;
@@ -2438,10 +2438,10 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	from_parent = folder_item_parent(from_folder);
 	
 	if (prefs_common.warn_dnd) {
-		buf = g_strdup_printf(_("Do you really want to make folder '%s' a "
-					"sub-folder of '%s' ?"), from_folder->name,
-					to_folder->name);
-		status = alertpanel_full(_("Move folder"), buf,
+		buf = g_strdup_printf(copy ? _("Do you really want to copy folder '%s' in '%s' ?"):
+					     _("Do you really want to make folder '%s' a sub-folder of '%s' ?"), 
+					from_folder->name, to_folder->name);
+		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
 				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,
 				       	 NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 		g_free(buf);
@@ -2452,7 +2452,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 			prefs_common.warn_dnd = FALSE;
 	}
 
-	buf = g_strdup_printf(_("Moving %s to %s..."), from_folder->name, to_folder->name);
+	buf = g_strdup_printf(copy ? _("Copying %s to %s..."):_("Moving %s to %s..."), 
+				from_folder->name, to_folder->name);
 	STATUSBAR_PUSH(folderview->mainwin, buf);
 	g_free(buf);
 	summary_clear_all(folderview->summaryview);
@@ -2463,7 +2464,7 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	main_window_cursor_wait(folderview->mainwin);
 	statusbar_verbosity_set(TRUE);
 	folder_item_update_freeze();
-	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder)) == F_MOVE_OK) {
+	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder, copy)) == F_MOVE_OK) {
 		statusbar_verbosity_set(FALSE);
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
@@ -2484,13 +2485,14 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 			alertpanel_error(_("Source and destination are the same."));
 			break;
 		case F_MOVE_FAILED_DEST_IS_CHILD:
-			alertpanel_error(_("Can't move a folder to one of its children."));
+			alertpanel_error(copy ? _("Can't copy a folder to one of its children."):
+						_("Can't move a folder to one of its children."));
 			break;
 		case F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX:
 			alertpanel_error(_("Folder moving cannot be done between different mailboxes."));
 			break;
 		default:
-			alertpanel_error(_("Move failed!"));
+			alertpanel_error(copy ? _("Copy failed!"):_("Move failed!"));
 			break;
 		}
 	}	
@@ -2912,6 +2914,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			/* comes from folderview */
 			char *source;
 			gboolean folder_is_normal = TRUE;
+			gboolean copy = (drag_context->action == GDK_ACTION_COPY);
 
 			source = data->data + 17;
 			if (gtk_clist_get_selection_info
@@ -2937,7 +2940,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 				return;
 			}
 
-			folderview_move_folder(folderview, src_item, item);
+			folderview_move_folder(folderview, src_item, item, copy);
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		}
 		folderview->nodes_to_recollapse = NULL;

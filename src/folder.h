@@ -798,7 +798,8 @@ gint   folder_item_add_msgs             (FolderItem     *dest,
                                          gboolean        remove_source);
 gint   folder_item_move_to		(FolderItem	*src,
 					 FolderItem	*dest,
-					 FolderItem    **new_item);
+					 FolderItem    **new_item,
+					 gboolean	 copy);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
 gint   folder_item_move_msgs		(FolderItem	*dest,

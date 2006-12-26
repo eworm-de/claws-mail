@@ -254,7 +254,7 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 	if (!to_folder)
 		return;
 	
-	folderview_move_folder(folderview, from_folder, to_folder);
+	folderview_move_folder(folderview, from_folder, to_folder, FALSE);
 }
 
 static void delete_folder_cb(FolderView *folderview, guint action,

@@ -2780,7 +2780,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
         return lastnum;
 }
 		
-FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest) 
+static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest, gboolean copy) 
 {
 	GSList *mlist;
 	FolderItem *new_item;
@@ -2789,7 +2789,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	gchar *old_id, *new_id;
 
 	/* move messages */
-	debug_print("Moving %s to %s\n", src->path, dest->path);
+	debug_print("%s %s to %s\n", copy?"Copying":"Moving", src->path, dest->path);
 	new_item = folder_create_folder(dest, src->name);
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
@@ -2800,13 +2800,16 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		new_item->folder = dest->folder;
 
 	/* move messages */
-	log_message(_("Moving %s to %s...\n"), 
+	log_message(copy ?_("Copying %s to %s...\n"):_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
 
 	mlist = folder_item_get_msg_list(src);
 	
 	if (mlist != NULL) {
-		folder_item_move_msgs(new_item, mlist);
+		if (copy)
+			folder_item_copy_msgs(new_item, mlist);
+		else
+			folder_item_move_msgs(new_item, mlist);
 		procmsg_msg_list_free(mlist);
 	}
 	
@@ -2836,7 +2839,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		if (srcnode && srcnode->data) {
 			next_item = (FolderItem*) srcnode->data;
 			srcnode = srcnode->next;
-			if (folder_item_move_recursive(next_item, new_item) == NULL) {
+			if (folder_item_move_recursive(next_item, new_item, copy) == NULL) {
 				return NULL;
 			}
 		}
@@ -2846,7 +2849,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	debug_print("updating rules : %s => %s\n", old_id, new_id);
 
 	/* if src supports removing, otherwise only copy folder */
-	if (src->folder->klass->remove_folder != NULL)	
+	if (src->folder->klass->remove_folder != NULL && !copy)	
 		src->folder->klass->remove_folder(src->folder, src);
 	folder_write_list();
 
@@ -2860,12 +2863,12 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	return new_item;
 }
 
-gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item)
+gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item, gboolean copy)
 {
 	FolderItem *tmp = folder_item_parent(dest);
 	gchar * src_identifier, * dst_identifier;
 	gchar * phys_srcpath, * phys_dstpath, *tmppath;
-	
+
 	while (tmp) {
 		if (tmp == src) {
 			return F_MOVE_FAILED_DEST_IS_CHILD;
@@ -2887,7 +2890,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		return F_MOVE_FAILED;
 	}
 
-	if (src->folder != dest->folder) {
+	if (src->folder != dest->folder && !copy) {
 		return F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX;
 	}
 
@@ -2907,7 +2910,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		return F_MOVE_FAILED_DEST_IS_PARENT;
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
-	if ((tmp = folder_item_move_recursive(src, dest)) == NULL) {
+	if ((tmp = folder_item_move_recursive(src, dest, copy)) == NULL) {
 		return F_MOVE_FAILED;
 	}
 	

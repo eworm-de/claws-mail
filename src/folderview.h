@@ -122,7 +122,8 @@ void folderview_update_all_updated	(gboolean	 update_summary);
 
 void folderview_move_folder		(FolderView 	*folderview,
 					 FolderItem 	*from_folder,
-					 FolderItem 	*to_folder);
+					 FolderItem 	*to_folder,
+					 gboolean	 copy);
 
 void folderview_set_target_folder_color (gint		color_op);
 
