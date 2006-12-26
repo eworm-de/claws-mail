@@ -901,12 +901,19 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,2, FALSE);
 	gint i = 0;
-	
+	GtkTooltips *tips = gtk_tooltips_new();
+
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	wizard->mailbox_name = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), tmpl.mailbox?tmpl.mailbox:"");
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->mailbox_name,
+			     _("You can also specify an absolute path, for example: "
+			       "\"/home/john/Documents/Mail\""),
+			     NULL);
+
 	GTK_TABLE_ADD_ROW_AT(table, _("<span weight=\"bold\">Mailbox name:</span>"), 
 			     wizard->mailbox_name, i); i++;
 	

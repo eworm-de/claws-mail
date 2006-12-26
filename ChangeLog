@@ -1,3 +1,9 @@
+2006-12-26 [colin]	2.6.1cvs71
+
+	* src/wizard.c
+		Add tooltip to state that specifying
+		full path to mailbox is possible
+
 2006-12-26 [wwp]	2.6.1cvs70
 
 	* src/partial_download.c
