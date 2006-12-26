@@ -1095,7 +1095,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		gchar *real_file = NULL;
 		fileinfo = (MsgFileInfo *)cur->data;
 
-		statusbar_progress_all(curnum, total, 1);
+		statusbar_progress_all(curnum, total, total < 10 ? 1:10);
 		curnum++;
 
 		if (fileinfo->flags) {

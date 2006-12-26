@@ -166,7 +166,10 @@ void imap_logger_append(int direction, const char * str, size_t size)
 	if (size > 8192) {
 		log_print("IMAP4%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
 		return;
-	}
+	} else if (direction == 0 && size > 64) {
+		log_print("IMAP4%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		return;
+	} 
 	buf = malloc(size+1);
 	memset(buf, 0, size+1);
 	strncpy(buf, str, size);
@@ -639,6 +642,7 @@ static void list_run(struct etpan_thread_op * op)
 	clist * list;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
@@ -646,7 +650,6 @@ static void list_run(struct etpan_thread_op * op)
 	r = mailimap_list(param->imap, param->base,
 			  param->wildcard, &list);
 	
-	result = op->result;
 	result->error = r;
 	result->list = list;
 	debug_print("imap list run - end\n");
@@ -698,7 +701,8 @@ static void login_run(struct etpan_thread_op * op)
 #endif
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 #ifdef DISABLE_LOG_DURING_LOGIN
@@ -722,7 +726,6 @@ static void login_run(struct etpan_thread_op * op)
 	mailstream_debug = old_debug;
 #endif
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap login run - end %i\n", r);
 }
@@ -846,12 +849,12 @@ static void noop_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_noop(param->imap);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap noop run - end %i\n", r);
 }
@@ -893,12 +896,12 @@ static void starttls_run(struct etpan_thread_op * op)
 	int r;
 
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_starttls(param->imap);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap starttls run - end %i\n", r);
 	
@@ -972,12 +975,12 @@ static void create_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_create(param->imap, param->mb);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap create run - end %i\n", r);
 }
@@ -1019,12 +1022,12 @@ static void rename_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_rename(param->imap, param->mb, param->new_name);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap rename run - end %i\n", r);
 }
@@ -1067,12 +1070,12 @@ static void delete_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_delete(param->imap, param->mb);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap delete run - end %i\n", r);
 }
@@ -1112,12 +1115,12 @@ static void select_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_select(param->imap, param->mb);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap select run - end %i\n", r);
 }
@@ -1172,12 +1175,12 @@ static void examine_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_examine(param->imap, param->mb);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap examine run - end %i\n", r);
 }
@@ -1259,7 +1262,8 @@ static void search_run(struct etpan_thread_op * op)
 	clist * search_result;
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	/* we copy the mailimap_set because freeing the key is recursive */
@@ -1346,7 +1350,6 @@ static void search_run(struct etpan_thread_op * op)
 		/* free the key (with the imapset) */
 		mailimap_search_key_free(key);
 
-		result = op->result;
 		result->error = r;
 		result->search_result = search_result;
 	}
@@ -1537,14 +1540,14 @@ static void fetch_uid_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	fetch_result = NULL;
 	r = imap_get_messages_list(param->imap, param->first_index,
 				   &fetch_result);
 	
-	result = op->result;
 	result->error = r;
 	result->fetch_result = fetch_result;
 	debug_print("imap fetch_uid run - end %i\n", r);
@@ -1817,7 +1820,8 @@ static void fetch_content_run(struct etpan_thread_op * op)
 	FILE * f;
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	content = NULL;
@@ -1829,7 +1833,6 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		r = imap_fetch_header(param->imap, param->msg_index,
 				      &content, &content_size);
 	
-	result = op->result;
 	result->error = r;
 	
 	if (r == MAILIMAP_NO_ERROR) {
@@ -2194,14 +2197,14 @@ static void fetch_env_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	env_list = NULL;
 	r = imap_get_envelopes_list(param->imap, param->set,
 				    &env_list);
 	
-	result = op->result;
 	result->error = r;
 	result->fetch_env_result = env_list;
 	
@@ -2379,12 +2382,12 @@ static void expunge_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
+	result = op->result;
 
 	CHECK_IMAP();
 
 	r = mailimap_expunge(param->imap);
 	
-	result = op->result;
 	result->error = r;
 	debug_print("imap expunge run - end %i\n", r);
 }
@@ -2427,13 +2430,13 @@ static void copy_run(struct etpan_thread_op * op)
 	struct mailimap_set *source = NULL, *dest = NULL;
 
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	r = mailimap_uidplus_uid_copy(param->imap, param->set, param->mb,
 		&val, &source, &dest);
 	
-	result = op->result;
 	result->error = r;
 	if (r == 0) {
 		result->source = source;
@@ -2494,13 +2497,13 @@ static void store_run(struct etpan_thread_op * op)
 	int r;
 	
 	param = op->param;
-	
+	result = op->result;
+
 	CHECK_IMAP();
 
 	r = mailimap_uid_store(param->imap, param->set,
 			       param->store_att_flags);
 	
-	result = op->result;
 	result->error = r;
 	
 	debug_print("imap store run - end %i\n", r);

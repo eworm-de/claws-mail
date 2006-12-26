@@ -1,3 +1,14 @@
+2006-12-26 [colin]	2.6.1cvs76
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/statusbar.c
+	* src/etpan/imap-thread.c
+		Fix previous commit warnings
+		Make statusbar update every second if total < 20
+		Make IMAP APPEND faster by simplifying log		
+
 2006-12-26 [colin]	2.6.1cvs75
 
 	* src/folder.c

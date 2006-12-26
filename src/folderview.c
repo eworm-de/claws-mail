@@ -2462,7 +2462,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	gtk_widget_set_sensitive(GTK_WIDGET(folderview->ctree), FALSE);
 	inc_lock();
 	main_window_cursor_wait(folderview->mainwin);
-	statusbar_verbosity_set(TRUE);
+
+	statusbar_verbosity_set(FALSE);
 	folder_item_update_freeze();
 	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder, copy)) == F_MOVE_OK) {
 		statusbar_verbosity_set(FALSE);

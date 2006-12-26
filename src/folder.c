@@ -2779,7 +2779,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 
         return lastnum;
 }
-		
+
 static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest, gboolean copy) 
 {
 	GSList *mlist;
