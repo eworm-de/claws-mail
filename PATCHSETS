@@ -2179,3 +2179,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/partial_download.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/gtk/logwindow.c;  ) > 2.6.1cvs69.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/partial_download.c;  cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/gtk/gtkvscrollbutton.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/pgpinline/plugin.c;  ) > 2.6.1cvs70.patchset
 ( cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/wizard.c;  ) > 2.6.1cvs71.patchset
+( cvs diff -u -r 1.2.2.14 -r 1.2.2.15 src/folder_item_prefs.c;  ) > 2.6.1cvs72.patchset

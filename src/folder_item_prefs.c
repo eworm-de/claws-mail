@@ -80,6 +80,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"default_dictionary", NULL, &tmp_prefs.default_dictionary, P_STRING,
 	 NULL, NULL, NULL},
+	{"enable_default_alt_dictionary", "", &tmp_prefs.enable_default_alt_dictionary, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_alt_dictionary", NULL, &tmp_prefs.default_alt_dictionary, P_STRING,
+	 NULL, NULL, NULL},
 #endif	 
 	{"save_copy_to_folder", NULL, &tmp_prefs.save_copy_to_folder, P_BOOL,
 	 NULL, NULL, NULL},
