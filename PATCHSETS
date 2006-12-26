@@ -2184,3 +2184,4 @@
 ( cvs diff -u -r 1.1.4.59 -r 1.1.4.60 src/etpan/imap-thread.c;  ) > 2.6.1cvs74.patchset
 ( cvs diff -u -r 1.213.2.126 -r 1.213.2.127 src/folder.c;  cvs diff -u -r 1.87.2.33 -r 1.87.2.34 src/folder.h;  cvs diff -u -r 1.207.2.138 -r 1.207.2.139 src/folderview.c;  cvs diff -u -r 1.20.2.14 -r 1.20.2.15 src/folderview.h;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/imap_gtk.c;  cvs diff -u -r 1.2.2.22 -r 1.2.2.23 src/mh_gtk.c;  ) > 2.6.1cvs75.patchset
 ( cvs diff -u -r 1.213.2.127 -r 1.213.2.128 src/folder.c;  cvs diff -u -r 1.207.2.139 -r 1.207.2.140 src/folderview.c;  cvs diff -u -r 1.179.2.142 -r 1.179.2.143 src/imap.c;  cvs diff -u -r 1.5.2.12 -r 1.5.2.13 src/statusbar.c;  cvs diff -u -r 1.1.4.60 -r 1.1.4.61 src/etpan/imap-thread.c;  ) > 2.6.1cvs76.patchset
+( cvs diff -u -r 1.5.2.13 -r 1.5.2.14 src/statusbar.c;  ) > 2.6.1cvs77.patchset

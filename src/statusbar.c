@@ -161,22 +161,17 @@ void statusbar_verbosity_set(gboolean verbose)
 void statusbar_progress_all (gint done, gint total, gint step) 
 {
 	gchar buf[32];
-	static time_t last_update = (time_t)NULL;
-	time_t now = time(NULL);
-	if (total && (now - last_update > 0 || total < 20)) {
+	if (total && done % step == 0) {
 		g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
 		gtk_progress_bar_set_text
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
 			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);
-		last_update = now;
 	} else if (total == 0) {
-		last_update = (time_t)NULL;
 		gtk_progress_bar_set_text
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0.0);
 	}
-	
 }
