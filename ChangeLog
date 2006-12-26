@@ -1,3 +1,11 @@
+2006-12-26 [colin]	2.6.1cvs74
+
+	* src/etpan/imap-thread.c
+		Fix bug 1081, 'claws-mail 
+		segfaults when going offline 
+		while it transfers mails via 
+		imap'
+
 2006-12-26 [colin]	2.6.1cvs73
 
 	* src/folder_item_prefs.c
