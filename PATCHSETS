@@ -2177,3 +2177,4 @@
 ( cvs diff -u -r 1.382.2.344 -r 1.382.2.345 src/compose.c;  ) > 2.6.1cvs67.patchset
 ( cvs diff -u -r 1.382.2.345 -r 1.382.2.346 src/compose.c;  ) > 2.6.1cvs68.patchset
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/partial_download.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/gtk/logwindow.c;  ) > 2.6.1cvs69.patchset
+( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/partial_download.c;  cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/gtk/gtkvscrollbutton.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/pgpinline/plugin.c;  ) > 2.6.1cvs70.patchset

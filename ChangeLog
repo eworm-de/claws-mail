@@ -1,3 +1,10 @@
+2006-12-26 [wwp]	2.6.1cvs70
+
+	* src/partial_download.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/plugins/pgpinline/plugin.c
+		Fix for few compiler warnings that matter.
+
 2006-12-25 [colin]	2.6.1cvs69
 
 	* src/partial_download.c

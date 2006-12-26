@@ -141,8 +141,6 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	gchar uidl[POPBUFSIZE];
 	time_t recv_time;
 	time_t now;
-	int len;
-	int start = TRUE;
 	gchar partial_recv[POPBUFSIZE];
 	int err = -1;
 	gchar *filename;

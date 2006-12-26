@@ -26,9 +26,9 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "claws.h"
 #include "version.h"
 #include "pgpinline.h"
+#include "plugin.h"
 
 #define PLUGIN_NAME (_("PGP/inline"))
 
