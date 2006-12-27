@@ -1,3 +1,12 @@
+2006-12-27 [wwp]	2.6.1cvs81
+
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+	* src/compose.c
+		Fix assignment of compose's default and alternate dictionary from
+		account or folder settings. Now gtkaspell_change_dict does rotate
+		dicts only when it's called from a menu cb.
+
 2006-12-27 [wwp]	2.6.1cvs80
 
 	* src/folder_item_prefs.c

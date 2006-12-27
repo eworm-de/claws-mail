@@ -2188,3 +2188,4 @@
 ( cvs diff -u -r 1.179.2.143 -r 1.179.2.144 src/imap.c;  ) > 2.6.1cvs78.patchset
 ( cvs diff -u -r 1.1.2.33 -r 1.1.2.34 src/imap_gtk.c;  cvs diff -u -r 1.2.2.23 -r 1.2.2.24 src/mh_gtk.c;  ) > 2.6.1cvs79.patchset
 ( cvs diff -u -r 1.2.2.16 -r 1.2.2.17 src/folder_item_prefs.c;  ) > 2.6.1cvs80.patchset
+( cvs diff -u -r 1.9.2.47 -r 1.9.2.48 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/gtkaspell.h;  cvs diff -u -r 1.382.2.346 -r 1.382.2.347 src/compose.c;  ) > 2.6.1cvs81.patchset

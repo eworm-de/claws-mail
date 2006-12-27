@@ -2312,9 +2312,16 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 				       gtkaspell->theword);
 }
 
-/* Menu call backs */
-
-gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
+/* change the current dictionary of gtkaspell
+   - if always_set_alt_dict is set, the alternate dict is unconditionally set to the former
+     current dictionary (common use: from menu callbacks)
+   - if always_set_alt_dict is NOT set, the alternate dict will be set to the former
+     current dictionary only if there is no alternate dictionary already set
+     (this is when we need to set the current dictionary then the alternate one
+     when creating a compose window, from the account and folder settings)
+*/
+gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
+							 gboolean always_set_alt_dict)
 {
 	Dictionary 	*dict;       
 	GtkAspeller 	*gtkaspeller;
@@ -2329,14 +2336,6 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 	dict->fullname = g_strdup(dictionary);
 	dict->encoding = g_strdup(gtkaspell->gtkaspeller->dictionary->encoding);
 
-	if (gtkaspell->use_alternate && gtkaspell->alternate_speller &&
-	    dict == gtkaspell->alternate_speller->dictionary) {
-		use_alternate_dict(gtkaspell);
-		dictionary_delete(dict);
-		gtkaspell->alternate_speller->dictionary = NULL;
-		return TRUE;
-	}
-	
 	gtkaspeller = gtkaspeller_new(dict);
 
 	if (!gtkaspeller) {
@@ -2348,9 +2347,16 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 		g_free(message);
 	} else {
 		if (gtkaspell->use_alternate) {
-			if (gtkaspell->alternate_speller)
-				gtkaspeller_delete(gtkaspell->alternate_speller);
-			gtkaspell->alternate_speller = gtkaspell->gtkaspeller;
+			if (gtkaspell->alternate_speller) {
+				if (always_set_alt_dict) {
+					gtkaspeller_delete(gtkaspell->alternate_speller);
+					gtkaspell->alternate_speller = gtkaspell->gtkaspeller;
+				} else
+					gtkaspeller_delete(gtkaspell->gtkaspeller);
+			} else
+				/* should never be reached as the dicts are always set
+				   to a default value */
+				gtkaspell->alternate_speller = gtkaspell->gtkaspeller;
 		} else
 			gtkaspeller_delete(gtkaspell->gtkaspeller);
 
@@ -2363,6 +2369,41 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 	return TRUE;	
 }
 
+/* change the alternate dictionary of gtkaspell (doesn't affect the default dictionary) */
+gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictionary)
+{
+	Dictionary 	*dict;       
+	GtkAspeller 	*gtkaspeller;
+
+	g_return_val_if_fail(gtkaspell, FALSE);
+	g_return_val_if_fail(alt_dictionary, FALSE);
+  
+	dict = g_new0(Dictionary, 1);
+	dict->fullname = g_strdup(alt_dictionary);
+	dict->encoding = g_strdup(gtkaspell->gtkaspeller->dictionary->encoding);
+
+	gtkaspeller = gtkaspeller_new(dict);
+
+	if (!gtkaspeller) {
+		gchar *message;
+		message = g_strdup_printf(_("The spell checker could not change the alternate dictionary.\n%s"), 
+					  gtkaspellcheckers->error_message);
+
+		alertpanel_warning(message); 
+		g_free(message);
+	} else {
+		if (gtkaspell->alternate_speller)
+			gtkaspeller_delete(gtkaspell->alternate_speller);
+		gtkaspell->alternate_speller = gtkaspeller;
+	}
+	
+	dictionary_delete(dict);
+
+	return TRUE;	
+}
+
+/* Menu call backs */
+
 /* change_dict_cb() - Menu callback : change dict */
 static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 {
@@ -2373,7 +2414,7 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 	if (!strcmp2(fullname, _("None")))
 		return;
 
-	gtkaspell_change_dict(gtkaspell, fullname);
+	gtkaspell_change_dict(gtkaspell, fullname, TRUE);
 	if (gtkaspell->recheck_when_changing_dict) {
 		gtkaspell_highlight_all(gtkaspell);
 	}

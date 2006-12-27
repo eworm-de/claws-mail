@@ -975,9 +975,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (item && item->prefs && compose->gtkaspell) {
 		if (item->prefs->enable_default_dictionary)
 			gtkaspell_change_dict(compose->gtkaspell, 
-				    item->prefs->default_dictionary);
+				    item->prefs->default_dictionary, FALSE);
 		if (item->prefs->enable_default_alt_dictionary)
-			gtkaspell_change_dict(compose->gtkaspell, 
+			gtkaspell_change_alt_dict(compose->gtkaspell, 
 				    item->prefs->default_alt_dictionary);
 		compose_spell_menu_changed(compose);
 	}
@@ -1416,9 +1416,9 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	    compose->gtkaspell) {
 		if (msginfo->folder->prefs->enable_default_dictionary)
 			gtkaspell_change_dict(compose->gtkaspell, 
-				    msginfo->folder->prefs->default_dictionary);
+				    msginfo->folder->prefs->default_dictionary, FALSE);
 		if (msginfo->folder->prefs->enable_default_alt_dictionary)
-			gtkaspell_change_dict(compose->gtkaspell, 
+			gtkaspell_change_alt_dict(compose->gtkaspell, 
 				    msginfo->folder->prefs->default_alt_dictionary);
 		compose_spell_menu_changed(compose);
 	}

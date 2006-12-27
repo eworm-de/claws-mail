@@ -69,7 +69,11 @@ void 		gtkaspell_delete		(GtkAspell *gtkaspell);
 guchar*		gtkaspell_get_dict		(GtkAspell *gtkaspell);
 
 gboolean	gtkaspell_change_dict		(GtkAspell *gtkaspell,
-    						 const gchar* dictionary);
+    						 const gchar* dictionary,
+							 gboolean always_set_alt_dict);
+
+gboolean	gtkaspell_change_alt_dict	(GtkAspell *gtkaspell,
+    						 const gchar* alt_dictionary);
 
 guchar*		gtkaspell_get_path		(GtkAspell *gtkaspell);
 
