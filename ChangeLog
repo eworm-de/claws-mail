@@ -1,3 +1,9 @@
+2006-12-27 [wwp]	2.6.1cvs80
+
+	* src/folder_item_prefs.c
+		Fix randomly initialized default-alt-dictionary (folder prefs),
+		complete 2.6.1cvs72.
+
 2006-12-27 [paul]	2.6.1cvs79
 
 	* src/imap_gtk.c

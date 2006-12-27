@@ -185,6 +185,8 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 #if USE_ASPELL
 	prefs->enable_default_dictionary = FALSE;
 	prefs->default_dictionary = NULL;
+	prefs->enable_default_alt_dictionary = FALSE;
+	prefs->default_alt_dictionary = NULL;
 #endif
 	prefs->save_copy_to_folder = FALSE;
 	prefs->color = 0;
