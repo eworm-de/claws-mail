@@ -293,9 +293,11 @@ static gint imap_status			(IMAPSession	*session,
 					 gint		*unseen,
 					 gboolean	 block);
 
-static gchar imap_get_path_separator		(IMAPFolder	*folder,
+static gchar imap_get_path_separator		(IMAPSession	*session,
+						 IMAPFolder	*folder,
 						 const gchar	*path);
-static gchar *imap_get_real_path		(IMAPFolder	*folder,
+static gchar *imap_get_real_path		(IMAPSession	*session,
+						 IMAPFolder	*folder,
 						 const gchar	*path);
 static void imap_synchronise		(FolderItem	*item);
 
@@ -673,6 +675,7 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 		   it will not try to reconnect again and so avoid an
 		   endless loop */
 		rfolder->session = NULL;
+		debug_print("getting session...\n");
 		session = imap_session_get(folder);
 		rfolder->session = SESSION(session);
 		statusbar_pop_all();
@@ -681,13 +684,23 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 }
 
 #define lock_session() {\
-	debug_print("locking session\n"); \
-	session->busy = TRUE;\
+	if (session) { \
+		debug_print("locking session %p (%d)\n", session, session->busy); \
+		if (session->busy) \
+			g_warning("         SESSION WAS LOCKED !!      "); \
+		session->busy = TRUE;\
+	} else {\
+		debug_print("can't lock null session\n"); \
+	}\
 }
 
 #define unlock_session() {\
-	debug_print("unlocking session\n"); \
-	session->busy = FALSE;\
+	if (session) { \
+		debug_print("unlocking session %p\n", session); \
+		session->busy = FALSE;\
+	} else {\
+		debug_print("can't unlock null session\n"); \
+	}\
 }
 
 static IMAPSession *imap_session_get(Folder *folder)
@@ -709,10 +722,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {
 		session = IMAP_SESSION(rfolder->session);
-		/* don't do that yet... 
-		if (session->busy) {
-			return NULL;
-		} */
 	} else {
 		imap_reset_uid_lists(folder);
 		if (time(NULL) - rfolder->last_failure <= 2)
@@ -737,6 +746,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 		return NULL;
 	}
 
+	lock_session();
+
 	/* I think the point of this code is to avoid sending a
 	 * keepalive if we've used the session recently and therefore
 	 * think it's still alive.  Unfortunately, most of the code
@@ -754,7 +765,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	}
 
 	rfolder->session = SESSION(session);
-	
+
 	return IMAP_SESSION(session);
 }
 
@@ -1011,14 +1022,13 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		}
 	}
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	
 	if (!session) {
 		g_free(filename);
 		return NULL;
 	}
-
-	lock_session();
 
 	debug_print("IMAP fetching messages\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
@@ -1080,12 +1090,12 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file_list != NULL, -1);
 	
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		return -1;
 	}
-	lock_session();
-	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
 
 	statusbar_print_all(_("Adding messages..."));
 	total = g_slist_length(file_list);
@@ -1188,12 +1198,13 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 	
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	
 	if (!session) {
 		return -1;
 	}
-	lock_session();
+
 	msginfo = (MsgInfo *)msglist->data;
 	if (msglist->next == NULL)
 		single = TRUE;
@@ -1215,6 +1226,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			infolist = g_slist_prepend(infolist, fileinfo);
 		}
 		infolist = g_slist_reverse(infolist);
+		unlock_session();
 		res = folder_item_add_msgs(dest, infolist, FALSE);
 		for (cur = infolist; cur; cur = cur->next) {
 			MsgFileInfo *info = (MsgFileInfo *)cur->data;
@@ -1232,7 +1244,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		return ok;
 	}
 
-	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
 	seq_list = imap_get_lep_set_from_msglist(msglist);
 	uid_mapping = g_relation_new(2);
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
@@ -1383,11 +1395,12 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		return -1;
 	}
-	lock_session();
+
 	msginfo = (MsgInfo *)msglist->data;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
@@ -1397,7 +1410,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 		return ok;
 	}
 
-	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
 	for (cur = msglist; cur; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		if (!MSG_IS_DELETED(msginfo->flags))
@@ -1488,6 +1501,7 @@ static gint imap_scan_tree(Folder *folder)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		if (!folder->node) {
@@ -1499,7 +1513,6 @@ static gint imap_scan_tree(Folder *folder)
 		return -1;
 	}
 
-	lock_session();
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *real_path;
 		int r;
@@ -1508,12 +1521,12 @@ static gint imap_scan_tree(Folder *folder)
 		Xstrdup_a(root_folder, folder->account->imap_dir, {unlock_session();return -1;});
 		extract_quote(root_folder, '"');
 		subst_char(root_folder,
-			   imap_get_path_separator(IMAP_FOLDER(folder),
+			   imap_get_path_separator(session, IMAP_FOLDER(folder),
 						   root_folder),
 			   '/');
 		strtailchomp(root_folder, '/');
 		real_path = imap_get_real_path
-			(IMAP_FOLDER(folder), root_folder);
+			(session, IMAP_FOLDER(folder), root_folder);
 		debug_print("IMAP root directory: %s\n", real_path);
 
 		/* check if root directory exist */
@@ -1572,7 +1585,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	folder = item->folder;
 	imapfolder = IMAP_FOLDER(folder);
 
-	separator = imap_get_path_separator(imapfolder, item->path);
+	separator = imap_get_path_separator(session, imapfolder, item->path);
 
 	if (folder->ui_func)
 		folder->ui_func(folder, item, folder->ui_func_data);
@@ -1581,7 +1594,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		wildcard[0] = separator;
 		wildcard[1] = '%';
 		wildcard[2] = '\0';
-		real_path = imap_get_real_path(imapfolder, item->path);
+		real_path = imap_get_real_path(session, imapfolder, item->path);
 	} else {
 		wildcard[0] = '%';
 		wildcard[1] = '\0';
@@ -1815,12 +1828,12 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(parent != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		return NULL;
 	}
 
-	lock_session();
 	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0) {
 		dirpath = g_strdup(name);
 	}else if (parent->path)
@@ -1848,7 +1861,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		unlock_session();		
 		return NULL;});
 
-	separator = imap_get_path_separator(IMAP_FOLDER(folder), imap_path);
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), imap_path);
 	imap_path_separator_subst(imap_path, separator);
 	/* remove trailing / for display */
 	strtailchomp(new_name, '/');
@@ -1952,20 +1965,20 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item->path != NULL, -1);
 	g_return_val_if_fail(name != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		return -1;
 	}
-	lock_session();
 
-	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
+	if (strchr(name, imap_get_path_separator(session, IMAP_FOLDER(folder), item->path)) != NULL) {
 		g_warning(_("New folder name must not contain the namespace "
 			    "path separator"));
 		unlock_session();
 		return -1;
 	}
 
-	real_oldpath = imap_get_real_path(IMAP_FOLDER(folder), item->path);
+	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
 
 	g_free(session->mbox);
 	session->mbox = NULL;
@@ -1977,7 +1990,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		return -1;
 	}
 
-	separator = imap_get_path_separator(IMAP_FOLDER(folder), item->path);
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path);
 	if (strchr(item->path, G_DIR_SEPARATOR)) {
 		dirpath = g_path_get_dirname(item->path);
 		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
@@ -2037,17 +2050,17 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->path != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) {
 		return -1;
 	}
-	lock_session();
-	path = imap_get_real_path(IMAP_FOLDER(folder), item->path);
+	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
 
 	ok = imap_cmd_delete(session, path);
 	if (ok != IMAP_SUCCESS) {
 		gchar *tmp = g_strdup_printf("%s%c", path, 
-				imap_get_path_separator(IMAP_FOLDER(folder), path));
+				imap_get_path_separator(session, IMAP_FOLDER(folder), path));
 		g_free(path);
 		path = tmp;
 		ok = imap_cmd_delete(session, path);
@@ -2268,6 +2281,9 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 {
 	Folder *folder = NULL;
 	IMAPFolder *imap_folder = NULL;
+	IMAPSession *session = NULL;
+	gchar result = '/';
+	
 	if (!item)
 		return '/';
 	folder = item->folder;
@@ -2280,12 +2296,15 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	if (!imap_folder)
 		return '/';
 	
-	return imap_get_path_separator(imap_folder, item->path);
+	debug_print("getting session...");
+	session = imap_session_get(FOLDER(folder));
+	result = imap_get_path_separator(session, imap_folder, item->path);
+	unlock_session();
+	return result;
 }
 
-static gchar imap_refresh_path_separator(IMAPFolder *folder, const gchar *subfolder)
+static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *subfolder)
 {
-	IMAPSession *session = imap_session_get(FOLDER(folder));
 	clist * lep_list;
 	int r;
 	gchar separator = '\0';
@@ -2310,18 +2329,16 @@ static gchar imap_refresh_path_separator(IMAPFolder *folder, const gchar *subfol
 	return separator;
 }
 
-static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
+static gchar imap_get_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *path)
 {
 	gchar separator = '/';
-	IMAPSession *session = imap_session_get(FOLDER(folder));
-	g_return_val_if_fail(session != NULL, '/');
 
 	if (folder->last_seen_separator == 0) {
-		folder->last_seen_separator = imap_refresh_path_separator(folder, "");
+		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "");
 	}
 
 	if (folder->last_seen_separator == 0) {
-		folder->last_seen_separator = imap_refresh_path_separator(folder, "INBOX");
+		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "INBOX");
 	}
 
 	if (folder->last_seen_separator != 0) {
@@ -2332,7 +2349,7 @@ static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
 	return separator;
 }
 
-static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)
+static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const gchar *path)
 {
 	gchar *real_path;
 	gchar separator;
@@ -2341,7 +2358,7 @@ static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)
 	g_return_val_if_fail(path != NULL, NULL);
 
 	real_path = imap_utf8_to_modified_utf7(path);
-	separator = imap_get_path_separator(folder, path);
+	separator = imap_get_path_separator(session, folder, path);
 	imap_path_separator_subst(real_path, separator);
 
 	return real_path;
@@ -2408,7 +2425,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	g_free(session->mbox);
 	session->mbox = NULL;
 
-	real_path = imap_get_real_path(folder, path);
+	real_path = imap_get_real_path(session, folder, path);
 
 	ok = imap_cmd_select(session, real_path,
 			     exists, recent, unseen, uid_validity, block);
@@ -2436,7 +2453,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	gchar *real_path;
 	guint mask = 0;
 	
-	real_path = imap_get_real_path(folder, path);
+	real_path = imap_get_real_path(session, folder, path);
 
 	if (messages) {
 		mask |= 1 << 0;
@@ -3165,9 +3182,9 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
-	lock_session();
 
 	if (FOLDER_ITEM(item)->path) 
 		statusbar_print_all(_("Scanning folder %s%c%s ..."),
@@ -3342,9 +3359,10 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(msgnum_list != NULL, NULL);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
-	lock_session();
+
 	debug_print("IMAP getting msginfos\n");
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
@@ -3442,9 +3460,10 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 	if (item->item.path == NULL)
 		return FALSE;
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, FALSE);
-	lock_session();
+
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->item.path));
 	if (selected_folder && time(NULL) - item->use_cache < 2) {
@@ -3454,7 +3473,6 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 			session = imap_reconnect_if_possible(folder, session);
 			if (session == NULL)
 				return FALSE;
-			lock_session();
 		}
 
 		if (session->folder_content_changed
@@ -3503,11 +3521,6 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder == item);
 
-	session = imap_session_get(folder);
-	if (!session) {
-		return;
-	}
-
 	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
 		flags_set |= IMAP_FLAG_FLAGGED;
 	if ( MSG_IS_MARKED(msginfo->flags) && !(newflags & MSG_MARKED))
@@ -3535,7 +3548,12 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 		return;
 	}
 
-	lock_session();
+	debug_print("getting session...\n");
+	session = imap_session_get(folder);
+	if (!session) {
+		return;
+	}
+
 	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 	    NULL, NULL, NULL, NULL, FALSE)) != IMAP_SUCCESS) {
 	    	unlock_session();
@@ -3612,9 +3630,10 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(item != NULL, -1);
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (!session) return -1;
-	lock_session();
+
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	if (ok != IMAP_SUCCESS) {
@@ -3719,12 +3738,13 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		return GINT_TO_POINTER(-1);
 	}
 
+	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (session == NULL) {
 		stuff->done = TRUE;
 		return GINT_TO_POINTER(-1);
 	}
-	lock_session();
+
 	selected_folder = (session->mbox != NULL) &&
 			  (!strcmp(session->mbox, item->path));
 
@@ -3922,7 +3942,10 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 	IMAPFolderItem *_item = data->item;
 	FolderItem *item = (FolderItem *)_item;
 	gint ok = IMAP_ERROR;
-	IMAPSession *session = imap_session_get(item->folder);
+	IMAPSession *session = NULL;
+	
+	debug_print("getting session...\n");
+	session = imap_session_get(item->folder);
 
 	data->msglist = g_slist_reverse(data->msglist);
 	
@@ -3932,7 +3955,6 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 		g_slist_length(data->msglist));
 	
 	if (session) {
-		lock_session();
 		ok = imap_select(session, IMAP_FOLDER(item->folder), item->path,
 			 NULL, NULL, NULL, NULL, FALSE);
 	}
@@ -3941,8 +3963,8 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 	} else {
 		g_warning("can't select mailbox %s\n", item->path);
 	}
-	if (session)
-		unlock_session();
+
+	unlock_session();
 	g_slist_free(data->msglist);	
 	g_free(data);
 	return TRUE;
