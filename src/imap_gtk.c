@@ -53,8 +53,11 @@ static void sync_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static GtkItemFactoryEntry imap_popup_entries[] =
 {
 	{N_("/Create _new folder..."),	 NULL, new_folder_cb,    0, NULL},
+	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/_Rename folder..."),	 NULL, rename_folder_cb, 0, NULL},
 	{N_("/M_ove folder..."),	 NULL, move_folder_cb,   0, NULL},
+	{N_("/Cop_y folder..."),	 NULL, move_folder_cb,   1, NULL},
+	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/_Delete folder..."),	 NULL, delete_folder_cb, 0, NULL},
 	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/Synchronise"),		 NULL, sync_cb,      	0, NULL},
@@ -254,7 +257,7 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 	if (!to_folder)
 		return;
 	
-	folderview_move_folder(folderview, from_folder, to_folder, FALSE);
+	folderview_move_folder(folderview, from_folder, to_folder, action);
 }
 
 static void delete_folder_cb(FolderView *folderview, guint action,
