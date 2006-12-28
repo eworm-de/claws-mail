@@ -1,3 +1,11 @@
+2006-12-28 [wwp]	2.6.1cvs82
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/addressbook.c
+	* src/addressitem.h
+		Save addressbook mainwindow's horizontal and vertical splitter position.
+
 2006-12-27 [wwp]	2.6.1cvs81
 
 	* src/gtk/gtkaspell.c

@@ -825,6 +825,15 @@ static void addressbook_address_list_focus_evt_out(GtkWidget *widget, GdkEventFo
 	address_list_has_focus = FALSE;
 }
 
+/* save hpane and vpane's handle position when it moves */
+static void addressbook_pane_notify_position(GObject *gobject,
+											GParamSpec	*arg1,
+                                            gpointer	 user_data)
+{
+	prefs_common.addressbook_hpaned_pos = gtk_paned_get_position(GTK_PANED(addrbook.hpaned));
+	prefs_common.addressbook_vpaned_pos = gtk_paned_get_position(GTK_PANED(addrbook.vpaned));
+}
+
 /*
 * Create the address book widgets. The address book contains two CTree widgets: the
 * address index tree on the left and the address list on the right.
@@ -1171,6 +1180,8 @@ static void addressbook_create(void)
 				       NULL);
 
 	addrbook.window  = window;
+	addrbook.hpaned  = hpaned;
+	addrbook.vpaned  = vpaned;
 	addrbook.menubar = menubar;
 	addrbook.ctree   = ctree;
 	addrbook.ctree_swin
@@ -1209,6 +1220,15 @@ static void addressbook_create(void)
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, prefs_common.addressbookwin_width,
 				    prefs_common.addressbookwin_height);
+
+	if (!prefs_common.addressbook_use_editaddress_dialog) {
+		gtk_paned_set_position(GTK_PANED(vpaned), prefs_common.addressbook_vpaned_pos);
+		g_signal_connect(G_OBJECT(vpaned), "notify::position",
+				G_CALLBACK(addressbook_pane_notify_position), NULL);
+	}	
+	gtk_paned_set_position(GTK_PANED(hpaned), prefs_common.addressbook_hpaned_pos);
+	g_signal_connect(G_OBJECT(hpaned), "notify::position",
+			G_CALLBACK(addressbook_pane_notify_position), NULL);
 
 	gtk_widget_show_all(window);
 }

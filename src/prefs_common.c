@@ -644,6 +644,10 @@ static PrefParam param[] = {
 	/* Addressbook */
 	{"addressbook_use_editaddress_dialog", "TRUE", &prefs_common.addressbook_use_editaddress_dialog,
 	 P_BOOL, NULL, NULL, NULL},
+	{"addressbook_hpaned_pos", "-1", &prefs_common.addressbook_hpaned_pos,
+	 P_INT, NULL, NULL, NULL},
+	{"addressbook_vpaned_pos", "-1", &prefs_common.addressbook_vpaned_pos,
+	 P_INT, NULL, NULL, NULL},
 
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,

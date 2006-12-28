@@ -60,6 +60,8 @@ typedef struct _AddressBook_win	AddressBook_win;
 struct _AddressBook_win
 {
 	GtkWidget *window;
+	GtkWidget *hpaned;
+	GtkWidget *vpaned;
 	GtkWidget *menubar;
 	GtkWidget *ctree;
 	GtkWidget *ctree_swin;

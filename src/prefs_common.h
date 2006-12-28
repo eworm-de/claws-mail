@@ -310,6 +310,8 @@ struct _PrefsCommon
 
 	/* Addressbook */
 	gboolean addressbook_use_editaddress_dialog;
+	gint addressbook_hpaned_pos;
+	gint addressbook_vpaned_pos;
 
 	/* Interface */
 	gboolean sep_folder;
