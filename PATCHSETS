@@ -2193,3 +2193,4 @@
 ( cvs diff -u -r 1.52.2.30 -r 1.52.2.31 src/prefs_folder_item.c;  ) > 2.6.1cvs83.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/claws.def;  ) > 2.6.1cvs84.patchset
 ( cvs diff -u -r 1.24.2.18 -r 1.24.2.19 Makefile.am;  ) > 2.6.1cvs85.patchset
+( cvs diff -u -r 1.24.2.19 -r 1.24.2.20 Makefile.am;  ) > 2.6.1cvs86.patchset

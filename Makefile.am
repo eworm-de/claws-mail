@@ -39,14 +39,6 @@ install-data-hook:
                 echo "***   $(gtk_update_icon_cache)";			\
 		echo "***";						\
         fi
-
-else
-if CLAWS_GNOME
-pixmapdir=$(gnomedatadir)/pixmaps
-pixmap_DATA=claws-mail.png
-gnomapdir=$(gnomedatadir)/gnome/apps/Internet
-gnomap_DATA=claws-mail.desktop
-endif
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
