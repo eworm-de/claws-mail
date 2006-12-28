@@ -1081,6 +1081,8 @@ static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 	test_string = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->entry_regexp_test_string)));
 
 	if (!regexp || !regexp[0]) {
+		gtk_widget_modify_base(page->entry_simplify_subject,
+				GTK_STATE_NORMAL, NULL);
 		if (test_string) {
 			gtk_entry_set_text(GTK_ENTRY(page->entry_regexp_test_result), test_string);
 			g_free(test_string);
