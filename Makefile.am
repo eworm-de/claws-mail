@@ -20,13 +20,13 @@ EXTRA_DIST = \
 	claws-mail.png \
 	autogen.sh
 
-if CLAWS_GNOME2
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 pixmap_DATA=claws-mail.png
 gnomapdir = $(datadir)/applications
 gnomap_DATA=claws-mail.desktop
 
+if CLAWS_GNOME2
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 
 install-data-hook:
@@ -46,11 +46,6 @@ pixmapdir=$(gnomedatadir)/pixmaps
 pixmap_DATA=claws-mail.png
 gnomapdir=$(gnomedatadir)/gnome/apps/Internet
 gnomap_DATA=claws-mail.desktop
-else
-pixmapdir=
-pixmap_DATA=
-gnomapdir=
-gnomap_DATA=
 endif
 endif
 

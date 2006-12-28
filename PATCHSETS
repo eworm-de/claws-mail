@@ -2192,3 +2192,4 @@
 ( cvs diff -u -r 1.204.2.115 -r 1.204.2.116 src/prefs_common.c;  cvs diff -u -r 1.103.2.72 -r 1.103.2.73 src/prefs_common.h;  cvs diff -u -r 1.60.2.72 -r 1.60.2.73 src/addressbook.c;  cvs diff -u -r 1.5.2.6 -r 1.5.2.7 src/addressitem.h;  ) > 2.6.1cvs82.patchset
 ( cvs diff -u -r 1.52.2.30 -r 1.52.2.31 src/prefs_folder_item.c;  ) > 2.6.1cvs83.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/claws.def;  ) > 2.6.1cvs84.patchset
+( cvs diff -u -r 1.24.2.18 -r 1.24.2.19 Makefile.am;  ) > 2.6.1cvs85.patchset
