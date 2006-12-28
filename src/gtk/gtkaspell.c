@@ -396,10 +396,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	g_return_val_if_fail(gtktext, NULL);
 	g_return_val_if_fail(dictionary && strlen(dictionary) > 0, 
 			NULL);
-	if (use_alternate) {
-		g_return_val_if_fail(alt_dictionary && strlen(alt_dictionary) > 0, 
-				NULL);
-	}
+
 	g_return_val_if_fail(dictionary_path && strlen(dictionary_path) > 0, 
 			NULL);
 
@@ -421,7 +418,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 
 	gtkaspell->gtkaspeller	      = gtkaspeller;
 
-	if (use_alternate) {
+	if (use_alternate && alt_dictionary && *alt_dictionary) {
 		Dictionary 	*alt_dict;
 		GtkAspeller 	*alt_gtkaspeller;
 
