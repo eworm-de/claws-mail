@@ -1,3 +1,10 @@
+2006-12-29 [colin]	2.6.1cvs88
+
+	* src/prefs_folder_item.c
+		Fix bug 1085, 'Apply to subfolder 
+		doesn't work' - I was mistaken saying
+		it worked in every case
+
 2006-12-28 [colin]	2.6.1cvs87
 
 	* src/gtk/gtkaspell.c

@@ -1002,8 +1002,7 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 #endif
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))))
 		return TRUE;
-
-	if ((node == page->item->node) &&
+	else if ((node == page->item->node) && item_protocol(item) == A_NNTP &&
 	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) 
 #if USE_ASPELL
 	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn))
