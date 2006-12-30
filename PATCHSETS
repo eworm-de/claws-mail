@@ -2196,3 +2196,4 @@
 ( cvs diff -u -r 1.24.2.19 -r 1.24.2.20 Makefile.am;  ) > 2.6.1cvs86.patchset
 ( cvs diff -u -r 1.9.2.48 -r 1.9.2.49 src/gtk/gtkaspell.c;  ) > 2.6.1cvs87.patchset
 ( cvs diff -u -r 1.52.2.31 -r 1.52.2.32 src/prefs_folder_item.c;  ) > 2.6.1cvs88.patchset
+( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/prefs_summaries.c;  ) > 2.6.1cvs89.patchset
