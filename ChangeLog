@@ -1,3 +1,11 @@
+2006-12-30 [colin]	2.6.1cvs91
+
+	* src/folder.c
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Don't update filtering and account paths 
+		when copying folders
+
 2006-12-30 [colin]	2.6.1cvs90
 
 	* src/prefs_compose_writing.c

@@ -2846,16 +2846,18 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	}
 	old_id = folder_item_get_identifier(src);
 	new_id = folder_item_get_identifier(new_item);
-	debug_print("updating rules : %s => %s\n", old_id, new_id);
 
 	/* if src supports removing, otherwise only copy folder */
 	if (src->folder->klass->remove_folder != NULL && !copy)	
 		src->folder->klass->remove_folder(src->folder, src);
 	folder_write_list();
 
-	if (old_id != NULL && new_id != NULL) {
-		prefs_filtering_rename_path(old_id, new_id);
-		account_rename_path(old_id, new_id);
+	if (!copy) {
+		debug_print("updating rules : %s => %s\n", old_id, new_id);
+		if (old_id != NULL && new_id != NULL) {
+			prefs_filtering_rename_path(old_id, new_id);
+			account_rename_path(old_id, new_id);
+		}
 	}
 	g_free(old_id);
 	g_free(new_id);
