@@ -225,6 +225,16 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), scroll2, TRUE, TRUE, 0);
 
 	text_value = gtk_text_view_new();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_value, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
 	gtk_widget_show(text_value);
 	gtk_widget_set_size_request(text_value, -1, 120);
 	gtk_container_add(GTK_CONTAINER(scroll2), text_value);

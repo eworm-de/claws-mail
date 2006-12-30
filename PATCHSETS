@@ -2197,3 +2197,4 @@
 ( cvs diff -u -r 1.9.2.48 -r 1.9.2.49 src/gtk/gtkaspell.c;  ) > 2.6.1cvs87.patchset
 ( cvs diff -u -r 1.52.2.31 -r 1.52.2.32 src/prefs_folder_item.c;  ) > 2.6.1cvs88.patchset
 ( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/prefs_summaries.c;  ) > 2.6.1cvs89.patchset
+( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/prefs_quote.c;  cvs diff -u -r 1.12.2.37 -r 1.12.2.38 src/prefs_template.c;  ) > 2.6.1cvs90.patchset

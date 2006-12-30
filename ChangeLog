@@ -1,3 +1,11 @@
+2006-12-30 [colin]	2.6.1cvs90
+
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+	* src/prefs_template.c
+		Use message font for Writing and 
+		Quoting prefs, as well as Templates.
+
 2006-12-30 [colin]	2.6.1cvs89
 
 	* src/prefs_summaries.c

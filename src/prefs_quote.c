@@ -126,6 +126,16 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
 
 	text_quotefmt = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_quotefmt, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
 	gtk_widget_show (text_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_quotefmt), TRUE);
@@ -169,6 +179,16 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
 
 	text_fw_quotefmt = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_fw_quotefmt, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
 	gtk_widget_show (text_fw_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
 			  text_fw_quotefmt);

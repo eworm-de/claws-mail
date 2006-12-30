@@ -256,6 +256,16 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 		(GTK_SCROLLED_WINDOW (scrolledwin_format), GTK_SHADOW_IN);
 
 	text_format = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_format, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
 	gtk_widget_show (text_format);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_format), text_format);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_format), TRUE);
