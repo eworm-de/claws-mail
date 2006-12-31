@@ -797,8 +797,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_with_label
-		(_(" Edit... "));
+	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
@@ -918,7 +917,11 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request(entry_datefmt, 200, -1);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
 
-	button_datefmt = gtk_button_new_with_label (" ... ");
+#if GTK_CHECK_VERSION(2, 8, 0)
+	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
+#else
+	button_datefmt = gtk_button_new_with_label ("Info...");
+#endif
 
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
@@ -940,8 +943,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_with_label
-		(_(" Edit... "));
+	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
