@@ -612,18 +612,13 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 	while (attr) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
-		/*
-		if (strcmp(name, AB_ATTAG_PID) == 0)
-			pid = g_strdup(value);
-		else if (strcmp(name, AB_ATTAG_EID) == 0)
-			eid = g_strdup(value);
-		*/
 		if( strcmp( name, AB_ATTAG_EID ) == 0 )
 			eid = g_strdup( value );
 		attr = g_list_next(attr);
 	}
 	/* email = addrcache_get_email( book->addressCache, pid, eid ); */
 	email = addrcache_get_email(book->addressCache, eid);
+	g_free(eid);
 	if (email) {
 		if (group) {
 			addrcache_group_add_email(book->addressCache, group, 
