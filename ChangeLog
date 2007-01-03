@@ -1,3 +1,9 @@
+2007-01-03 [paul]	2.6.1cvs98
+
+	* tools/maildir2claws-mail.pl
+		only substitute 'sent-mail' if it's
+		the full directory name
+
 2007-01-03 [paul]	2.6.1cvs97
 
 	* ChangeLog

@@ -107,7 +107,7 @@ sub process_dir() {
     	    $direc !~ m/^inbox$/) {
 		my $tmpdir = $direc;
 		$tmpdir =~ s/^$MAIL_dir//;
-		$tmpdir =~ s/sent-mail/sent/;
+		$tmpdir =~ s/^sent-mail$/sent/;
 		$tmpdir =~ s/\/cur$//;
 		$tmpdir =~ s/\/new$//;
 		$tmpdir =~ s/^\///;
@@ -141,7 +141,7 @@ sub process_file {
     		foreach my $spl_str (@spl_str) {
 			$spl_str =~ s/^\.//;
 			$spl_str =~ s/\.directory$//;
-			$spl_str =~ s/sent-mail/sent/;
+			$spl_str =~ s/^sent-mail$/sent/;
 		}
 
     		$nfile = join("/", @spl_str);
