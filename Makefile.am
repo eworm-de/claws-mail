@@ -12,6 +12,7 @@ SUBDIRS = m4 po src $(tools) config doc manual
 EXTRA_DIST = \
 	ChangeLog \
 	ChangeLog.gtk1 \
+	ChangeLog.pre2.0.0 \
 	RELEASE_NOTES \
 	claws-mail-128x128.png \
 	claws-mail-64x64.png \
