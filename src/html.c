@@ -38,23 +38,31 @@ struct _SC_HTMLSymbol
 };
 
 static SC_HTMLSymbol symbol_list[] = {
-	{"&lt;"    , "<"},
-	{"&gt;"    , ">"},
-	{"&amp;"   , "&"},
-	{"&quot;"  , "\""},
-	{"&lsquo;",  "'"},
-	{"&rsquo;",  "'"},
-	{"&ldquo;",  "\""},
-	{"&rdquo;",  "\""},
-	{"&nbsp;"  , " "},
-	{"&trade;" , "(TM)"},
-	{"&hellip;", "..."},
-	{"&bull;", "*"},
-	{"&ndash;", "-"},
-	{"&mdash;", "--"},
-	{"&euro;", "EUR"},
-	{"&cent;", "c"},
-	{"&pound;", "£"},
+	{"&lt;", "\74"},
+	{"&gt;", "\76"},
+	{"&amp;", "\46"},
+	{"&quot;", "\42"},
+	{"&lsquo;", "\47"},
+	{"&rsquo;", "\47"},
+	{"&ldquo;", "\42"},
+	{"&rdquo;", "\42"},
+	{"&laquo;", "\302\253"},
+	{"&raquo;", "\302\273"},
+	{"&nbsp;", "\40"},
+	{"&trade;", "\50\124\115\51"},
+	{"&hellip;", "\56\56\56"},
+	{"&bull;", "\52"},
+	{"&ndash;", "\55"},
+	{"&mdash;", "\55\55"},
+	{"&euro;", "\105\125\122"},
+	{"&cent;", "\302\242"},
+	{"&pound;", "\302\243"},
+	{"&curren;", "\302\244"},
+	{"&yen;", "\302\245"},
+	{"&copy;", "\302\251"},
+	{"&reg;", "\302\256"},
+	{"&iquest;", "\302\277"},
+	{"&iexcl;", "\302\241"}
 };
 
 static SC_HTMLSymbol ascii_symbol_list[] = {
@@ -117,10 +125,64 @@ static SC_HTMLSymbol ascii_symbol_list[] = {
 	{"&ugrave;", "\303\271"},
 	{"&uacute;", "\303\272"},
 	{"&ucirc;" , "\303\273"},
-	{"&yacute;", "\303\275"},
+	{"&yacute;", "\303\275"}
+};
+
+typedef struct _SC_HTMLAltSymbol	SC_HTMLAltSymbol;
+
+struct _SC_HTMLAltSymbol
+{
+	gint key;
+	gchar *const val;
+};
+
+/* http://www.w3schools.com/html/html_entitiesref.asp */
+static SC_HTMLAltSymbol alternate_symbol_list[] = {
+	{  96, "\140"}, 		   /* backtick */
+	{ 153, "\50\124\115\51"},  /* trademark */
+	{ 161, "\302\241"}, 	   /* inverted exclamation mark &iexcl */
+	{ 162, "\302\242"}, 	   /* cent (currency) &cent */
+	{ 163, "\302\243"}, 	   /* pound (currency) &pound */
+	{ 164, "\342\202\254"},    /* currency sign &curren */
+	{ 165, "\302\245"}, 	   /* yen (currency) &yen */
+	{ 169, "\302\251"}, 	   /* copyright sign &copy */
+	{ 174, "\302\256"}, 	   /* registered sign &reg */
+	{ 191, "\302\277"}, 	   /* inverted question mark &iquest */
+	{ 338, "\117\105"}, 	   /* capital ligature OE &OElig */
+	{ 339, "\157\145"}, 	   /* small ligature OE &oelig */
+	{ 352, NULL},			   /* capital S w/caron &Scaron */
+	{ 353, NULL},			   /* small S w/caron &scaron */
+	{ 376, NULL},			   /* cap Y w/ diaeres &Yuml */
+	{ 710, "\136"}, 		   /* circumflex accent &circ */
+	{ 732, "\176"}, 		   /* small tilde &tilde */
+	{8194, "\40"},			   /* en space &ensp */
+	{8195, "\40"},			   /* em space &emsp */
+	{8201, "\40"},			   /* thin space &thinsp */
+	{8204, NULL},			   /* zero width non-joiner &zwnj */
+	{8205, NULL},			   /* zero width joiner &zwj */
+	{8206, NULL},			   /* l-t-r mark &lrm */
+	{8207, NULL},			   /* r-t-l mark &rlm */
+	{8211, "\55"},			   /* en dash &ndash */
+	{8212, "\55\55"},		   /* em dash &mdash */
+	{8216, "\47"},			   /* l single quot mark &lsquo */
+	{8217, "\47"},			   /* r single quot mark &rsquo */
+	{8218, "\54"},			   /* single low-9 quot &sbquo */
+	{8220, "\134"}, 		   /* l double quot mark &ldquo */
+	{8221, "\134"}, 		   /* r double quot mark &rdquo */
+	{8222, "\42"},			   /* double low-9 quot &bdquo */
+	{8224, NULL},			   /* dagger &dagger */
+	{8225, NULL},			   /* double dagger &Dagger */
+	{8226, "\52"},			   /* bullet &bull */
+	{8230, "\56\56\56"},	   /* horizontal ellipsis &hellip */
+	{8240, "\45\157"},		   /* per mile &permil */
+	{8249, "\74"},			   /* l-pointing angle quot &lsaquo */
+	{8250, "\76"},			   /* r-pointing angle quot &rsaquo */
+	{8364, "\105\125\122"},    /* euro &euro */
+	{8482, "\50\124\115\51"}   /* trademark &trade */
 };
 
 static GHashTable *default_symbol_table;
+static GHashTable *alternate_symbol_table;
 
 static SC_HTMLState sc_html_read_line	(SC_HTMLParser	*parser);
 static void sc_html_append_char			(SC_HTMLParser	*parser,
@@ -162,6 +224,13 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 	for (i = 0; i < sizeof(list) / sizeof(list[0]); i++) \
 		g_hash_table_insert(table, list[i].key, list[i].val); \
 }
+#define SYMBOL_TABLE_REF_ADD(table, list) \
+{ \
+	gint i; \
+ \
+	for (i = 0; i < sizeof(list) / sizeof(list[0]); i++) \
+		g_hash_table_insert(table, &list[i].key, list[i].val); \
+}
 
 	if (!default_symbol_table) {
 		default_symbol_table =
@@ -169,10 +238,17 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 		SYMBOL_TABLE_ADD(default_symbol_table, symbol_list);
 		SYMBOL_TABLE_ADD(default_symbol_table, ascii_symbol_list);
 	}
+	if (!alternate_symbol_table) {
+		alternate_symbol_table =
+			g_hash_table_new(g_int_hash, g_int_equal);
+		SYMBOL_TABLE_REF_ADD(alternate_symbol_table, alternate_symbol_list);
+	}
 
 #undef SYMBOL_TABLE_ADD
+#undef SYMBOL_TABLE_REF_ADD
 
 	parser->symbol_table = default_symbol_table;
+	parser->alt_symbol_table = alternate_symbol_table;
 
 	return parser;
 }
@@ -533,94 +609,7 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 			parser->state = SC_HTML_NORMAL;
 			return;
 		} else {
-			char *symb = NULL;
-			switch (ch) {
-			/* http://www.w3schools.com/html/html_entitiesref.asp */
-			case 96:	/* backtick  */
-				symb = "`";
-				break;
-			case 153:	/* trademark */
-				symb = "(TM)";
-				break;
-			case 162:	/* cent (currency)	&cent; */
-				symb = "c";
-				break;
-			case 163:	/* pound (currency)	&pound; */
-				symb = "£";
-				break;
-			case 338:	/* capital ligature OE  &OElig;  */
-				symb = "OE";  
-				break;
-			case 339:	/* small ligature OE	&oelig;  */
-				symb = "oe";  
-				break;
-			case 352:	/* capital S w/caron	&Scaron; */
-			case 353:	/* small S w/caron	&scaron; */
-			case 376:	/* cap Y w/ diaeres	&Yuml;   */
-				break;
-			case 710:	/* circumflex accent	&circ;   */
-				symb = "^";  
-				break;
-			case 732:	/* small tilde		&tilde;  */
-				symb = "~";  
-				break;
-			case 8194:	/* en space		&ensp;   */
-			case 8195:	/* em space		&emsp;   */
-			case 8201:	/* thin space		&thinsp; */
-				symb = " ";  
-				break;
-			case 8204:	/* zero width non-joiner &zwnj;  */
-			case 8205:	/* zero width joiner	&zwj;	*/
-			case 8206:	/* l-t-r mark		&lrm;	*/
-			case 8207:	/* r-t-l mark		&rlm	 */
-				break;
-			case 8211:	/* en dash		&ndash;  */
-				symb = "-";  
-				break;
-			case 8212:	/* em dash		&mdash;  */
-				symb = "--";  
-				break;
-			case 8216:	/* l single quot mark   &lsquo;  */
-			case 8217:	/* r single quot mark   &rsquo;  */
-				symb = "'";  
-				break;
-			case 8218:	/* single low-9 quot	&sbquo;  */
-				symb = ",";  
-				break;
-			case 8220:	/* l double quot mark   &ldquo;  */
-			case 8221:	/* r double quot mark   &rdquo;  */
-				symb = "\"";  
-				break;
-			case 8222:	/* double low-9 quot	&bdquo;  */
-				symb = ",,";  
-				break;
-			case 8224:	/* dagger		&dagger; */
-			case 8225:	/* double dagger	&Dagger; */
-				break;
-			case 8226:	/* bullet	&bull;  */
-				symb = "*";  
-				break;
-			case 8230:	/* horizontal ellipsis  &hellip; */
-				symb = "...";  
-				break;
-			case 8240:	/* per mile		&permil; */
-				symb = "\%o";  
-				break;
-			case 8249:	/* l-pointing angle quot &lsaquo; */
-				symb = "<";  
-				break;
-			case 8250:	/* r-pointing angle quot &rsaquo; */
-				symb = ">";  
-				break;
-			case 8364:	/* euro			&euro;   */
-				symb = "EUR";  
-				break;
-			case 8482:	/* trademark		&trade;  */
-				symb  = "(TM)";  
-				break;
-			default: 
-				break;
-			}
+			const gchar *symb = g_hash_table_lookup(parser->alt_symbol_table, &ch);
 			if (symb) {
 				sc_html_append_str(parser, symb, -1);
 				parser->state = SC_HTML_NORMAL;

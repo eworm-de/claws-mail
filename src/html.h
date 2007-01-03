@@ -52,6 +52,7 @@ struct _SC_HTMLParser
 	CodeConverter *conv;
 
 	GHashTable *symbol_table;
+	GHashTable *alt_symbol_table;
 
 	GString *str;
 	GString *buf;

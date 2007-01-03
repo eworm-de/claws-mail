@@ -1,3 +1,12 @@
+2007-01-03 [wwp]	2.6.1cvs102
+
+	* src/html.c
+	* src/html.h
+		fixed "cent" sign (use the existing ASCII one),
+		decode more HTML entities,
+		converted table ASCII entries to UTF-8,
+		moved a switch() into a hashtable.
+
 2007-01-03 [paul]	2.6.1cvs101
 
 	* src/compose.c
