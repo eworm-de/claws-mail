@@ -1,3 +1,9 @@
+2007-01-03 [paul]	2.6.1cvs100
+
+	* src/html.c
+		add more html entity recognition:
+		pounds, euros, and cents
+
 2007-01-03 [colin]	2.6.1cvs99
 
 	* src/imap_gtk.c

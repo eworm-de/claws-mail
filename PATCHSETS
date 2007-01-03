@@ -2207,3 +2207,4 @@
 ( cvs diff -u -r 1.396.2.1318 -r 1.396.2.1319 ChangeLog;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 ChangeLog.gtk1;  diff -u /dev/null ChangeLog.pre2.0.0;  cvs diff -u -r 1.24.2.20 -r 1.24.2.21 Makefile.am;  cvs diff -u -r -1.2.4.2 -r -1.2.4.3 doc/src/ChangeLog.claws-pre0.8.0;  ) > 2.6.1cvs97.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/maildir2claws-mail.pl;  ) > 2.6.1cvs98.patchset
 ( cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/imap_gtk.c;  ) > 2.6.1cvs99.patchset
+( cvs diff -u -r 1.12.2.18 -r 1.12.2.19 src/html.c;  ) > 2.6.1cvs100.patchset

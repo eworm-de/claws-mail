@@ -52,6 +52,9 @@ static SC_HTMLSymbol symbol_list[] = {
 	{"&bull;", "*"},
 	{"&ndash;", "-"},
 	{"&mdash;", "--"},
+	{"&euro;", "EUR"},
+	{"&cent;", "c"},
+	{"&pound;", "£"},
 };
 
 static SC_HTMLSymbol ascii_symbol_list[] = {
@@ -538,6 +541,12 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 				break;
 			case 153:	/* trademark */
 				symb = "(TM)";
+				break;
+			case 162:	/* cent (currency)	&cent; */
+				symb = "c";
+				break;
+			case 163:	/* pound (currency)	&pound; */
+				symb = "£";
 				break;
 			case 338:	/* capital ligature OE  &OElig;  */
 				symb = "OE";  
