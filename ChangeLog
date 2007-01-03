@@ -1,3 +1,8 @@
+2007-01-03 [paul]	2.6.1cvs95
+
+	* src/gtk/about.c
+		it is 2007, use it in the copyright string
+
 2007-01-03 [paul]	2.6.1cvs94
 
 	* src/html.c
