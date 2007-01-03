@@ -48,9 +48,10 @@ static SC_HTMLSymbol symbol_list[] = {
 	{"&rdquo;",  "\""},
 	{"&nbsp;"  , " "},
 	{"&trade;" , "(TM)"},
-	{"&#153;", "(TM)"},
 	{"&hellip;", "..."},
-	{"&mdash;", "-"},
+	{"&bull;", "*"},
+	{"&ndash;", "-"},
+	{"&mdash;", "--"},
 };
 
 static SC_HTMLSymbol ascii_symbol_list[] = {
@@ -535,6 +536,9 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 			case 96:	/* backtick  */
 				symb = "`";
 				break;
+			case 153:	/* trademark */
+				symb = "(TM)";
+				break;
 			case 338:	/* capital ligature OE  &OElig;  */
 				symb = "OE";  
 				break;
@@ -583,6 +587,9 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 				break;
 			case 8224:	/* dagger		&dagger; */
 			case 8225:	/* double dagger	&Dagger; */
+				break;
+			case 8226:	/* bullet	&bull;  */
+				symb = "*";  
 				break;
 			case 8230:	/* horizontal ellipsis  &hellip; */
 				symb = "...";  

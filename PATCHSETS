@@ -2201,3 +2201,4 @@
 ( cvs diff -u -r 1.213.2.128 -r 1.213.2.129 src/folder.c;  cvs diff -u -r 1.1.2.34 -r 1.1.2.35 src/imap_gtk.c;  cvs diff -u -r 1.2.2.24 -r 1.2.2.25 src/mh_gtk.c;  ) > 2.6.1cvs91.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/prefs_summaries.c;  ) > 2.6.1cvs92.patchset
 ( cvs diff -u -r 1.22.2.10 -r 1.22.2.11 src/addrbook.c;  cvs diff -u -r 1.13.2.23 -r 1.13.2.24 src/common/plugin.c;  cvs diff -u -r 1.1.4.61 -r 1.1.4.62 src/etpan/imap-thread.c;  ) > 2.6.1cvs93.patchset
+( cvs diff -u -r 1.12.2.16 -r 1.12.2.17 src/html.c;  ) > 2.6.1cvs94.patchset
