@@ -49,7 +49,7 @@
 #include "inc.h"
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
-					    FolderItem *queue, gint msgnum);
+					    FolderItem *queue, gint msgnum, gboolean *queued_removed);
 
 enum
 {
@@ -950,15 +950,17 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		if (!MSG_IS_LOCKED(msginfo->flags)) {
 			file = folder_item_fetch_msg(queue, msginfo->msgnum);
 			if (file) {
+				gboolean queued_removed = FALSE;
 				if (procmsg_send_message_queue_full(file, 
 						!procmsg_is_last_for_account(queue, msginfo, elem),
-						errstr, queue, msginfo->msgnum) < 0) {
+						errstr, queue, msginfo->msgnum, &queued_removed) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
 					err++;
 				} else {
 					sent++; 
-					folder_item_remove_msg(queue, msginfo->msgnum);
+					if (!queued_removed)
+						folder_item_remove_msg(queue, msginfo->msgnum);
 				}
 				g_free(file);
 			}
@@ -1465,7 +1467,7 @@ gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 }
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
-					    FolderItem *queue, gint msgnum)
+					    FolderItem *queue, gint msgnum, gboolean *queued_removed)
 {
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
@@ -1754,15 +1756,25 @@ send_mail:
 			
 		if (save_clear_text || tmp_enc_file == NULL) {
 			gboolean saved = FALSE;
+			*queued_removed = FALSE;
 			if (queue && msgnum > 0) {
 				MsgInfo *queued_mail = folder_item_get_msginfo(queue, msgnum);
-				if (folder_item_copy_msg(outbox, queued_mail) >= 0)
+				if (folder_item_move_msg(outbox, queued_mail) >= 0) {
+					debug_print("moved queued mail %d to sent folder\n", msgnum);
 					saved = TRUE;
+					*queued_removed = TRUE;
+				} else if (folder_item_copy_msg(outbox, queued_mail) >= 0) {
+					debug_print("copied queued mail %d to sent folder\n", msgnum);
+					saved = TRUE;
+				}
 				procmsg_msginfo_free(queued_mail);
 			}
-			if (!saved)
+			if (!saved) {
+				debug_print("resaving clear text queued mail to sent folder\n");
 				procmsg_save_to_outbox(outbox, file, TRUE);
+			}
 		} else {
+			debug_print("saving encrpyted queued mail to sent folder\n");
 			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
 		}
 	}
@@ -1830,9 +1842,9 @@ send_mail:
 	return (newsval != 0 ? newsval : mailval);
 }
 
-gint procmsg_send_message_queue(const gchar *file, gchar **errstr, FolderItem *queue, gint msgnum)
+gint procmsg_send_message_queue(const gchar *file, gchar **errstr, FolderItem *queue, gint msgnum, gboolean *queued_removed)
 {
-	gint result = procmsg_send_message_queue_full(file, FALSE, errstr, queue, msgnum);
+	gint result = procmsg_send_message_queue_full(file, FALSE, errstr, queue, msgnum, queued_removed);
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	return result;
 }

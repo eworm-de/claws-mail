@@ -1,3 +1,13 @@
+2007-01-03 [paul]	2.6.1cvs101
+
+	* src/compose.c
+	* src/messageview.c
+	* src/procmsg.c
+	* src/procmsg.h
+		When possible, use move_msg instead of
+		copy_msg + remove_msg to move sent mail
+		from Queue to Sent. 
+
 2007-01-03 [paul]	2.6.1cvs100
 
 	* src/html.c

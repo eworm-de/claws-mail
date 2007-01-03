@@ -4279,6 +4279,7 @@ gint compose_send(Compose *compose)
 	gchar *errstr = NULL;
 	gchar *tmsgid = NULL;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
+	gboolean queued_removed = FALSE;
 
 	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS
 			|| compose->batch == TRUE)
@@ -4341,10 +4342,10 @@ gint compose_send(Compose *compose)
 	}
 	if (msgpath == NULL) {
 		msgpath = folder_item_fetch_msg(folder, msgnum);
-		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum);
+		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum, &queued_removed);
 		g_free(msgpath);
 	} else {
-		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum);
+		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum, &queued_removed);
 		g_unlink(msgpath);
 		g_free(msgpath);
 	}
@@ -4352,7 +4353,8 @@ gint compose_send(Compose *compose)
 		compose->sending = FALSE;
 		compose_allow_user_actions (compose, TRUE);
 		if (val != 0) {
-			folder_item_remove_msg(folder, msgnum);
+			if (!queued_removed)
+				folder_item_remove_msg(folder, msgnum);
 			folder_item_scan(folder);
 			if (tmsgid) {
 				/* make sure we delete that */
@@ -4367,7 +4369,8 @@ gint compose_send(Compose *compose)
 	}
 
 	if (val == 0) {
-		folder_item_remove_msg(folder, msgnum);
+		if (!queued_removed)
+			folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
 		if (tmsgid) {
 			/* make sure we delete that */

@@ -329,7 +329,8 @@ gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
 gint procmsg_send_message_queue		(const gchar *file,
 					 gchar **errstr,
 					 FolderItem *queue, 
-					 gint msgnum);
+					 gint msgnum,
+					 gboolean *queued_removed);
 
 void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
