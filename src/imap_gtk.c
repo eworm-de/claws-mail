@@ -356,7 +356,7 @@ void imap_gtk_synchronise(FolderItem *item)
 	gtk_widget_set_sensitive(folderview->ctree, FALSE);
 	main_window_progress_on(mainwin);
 	GTK_EVENTS_FLUSH();
-	if (folder_item_fetch_all_msg(item) < 0) {
+	if (item->no_select == FALSE && folder_item_fetch_all_msg(item) < 0) {
 		gchar *name;
 
 		name = trim_string(item->name, 32);

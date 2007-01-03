@@ -1,3 +1,9 @@
+2007-01-03 [colin]	2.6.1cvs99
+
+	* src/imap_gtk.c
+		Don't display an error on NOSELECT
+		folders when synchronising
+
 2007-01-03 [paul]	2.6.1cvs98
 
 	* tools/maildir2claws-mail.pl
