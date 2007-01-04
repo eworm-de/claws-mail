@@ -90,6 +90,8 @@ gint qp_decode_line(gchar *str)
 
 	while (*inp != '\0') {
 		if (*inp == '=') {
+			if (inp[1] && inp[2] && inp[1] == '0' && inp[2] == '0')
+				inp += 3;
 			if (inp[1] && inp[2] &&
 			    get_hex_value((guchar *)outp, inp[1], inp[2])
 			    == TRUE) {
@@ -119,6 +121,8 @@ gint qp_decode_const(gchar *out, gint avail, const gchar *str)
 
 	while (*inp != '\0' && avail > 0) {
 		if (*inp == '=') {
+			if (inp[1] && inp[2] && inp[1] == '0' && inp[2] == '0')
+				inp += 3;
 			if (inp[1] && inp[2] &&
 			    get_hex_value((guchar *)outp, inp[1], inp[2])
 			    == TRUE) {
@@ -152,6 +156,8 @@ gint qp_decode_q_encoding(guchar *out, const gchar *in, gint inlen)
 
 	while (inp - in < inlen && *inp != '\0') {
 		if (*inp == '=' && inp + 3 - in <= inlen) {
+			if (inp[1] == '0' && inp[2] == '0')
+				inp += 3;
 			if (get_hex_value(outp, inp[1], inp[2]) == TRUE) {
 				inp += 3;
 			} else {
