@@ -5,6 +5,10 @@
 		line are misinterpreted'. Not a pain to
 		fix in fact.
 
+2007-01-04 [colin]	
+
+	2.7.0-rc3 released
+
 2007-01-04 [wwp]	2.6.1cvs104
 
 	* src/image_viewer.c
