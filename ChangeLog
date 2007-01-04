@@ -1,3 +1,12 @@
+2007-01-04 [colin]	2.6.1cvs103
+
+	* src/image_viewer.c
+		Be cautious there too (same fix as the one
+		in textview from cvs33)
+	* src/messageview.c
+		Don't use any MimeViewer plugin when showing
+		all headers
+
 2007-01-03 [wwp]	2.6.1cvs102
 
 	* src/html.c

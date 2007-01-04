@@ -887,7 +887,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		noticeview_hide(messageview->noticeview);
 
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
-	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
+	if (!all_headers && mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
 	    strcasecmp(mimeinfo->subtype, "plain"))) {
 	    	if (strcasecmp(mimeinfo->subtype, "html"))
 			mimeview_show_part(messageview->mimeview,mimeinfo);
