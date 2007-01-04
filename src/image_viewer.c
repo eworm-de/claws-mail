@@ -85,7 +85,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		if (avail_width > 8) avail_width -= 8;
 		if (avail_height > 8) avail_height -= 8;
 		if (avail_width - 100 > 0 &&
-		    w > avail_width || h > avail_height)
+		    (w > avail_width || h > avail_height))
 			pixbuf = gdk_pixbuf_new_from_file_at_scale(imgfile, avail_width,
 				avail_height, TRUE, &error);
 		else

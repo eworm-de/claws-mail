@@ -1,3 +1,8 @@
+2007-01-04 [wwp]	2.6.1cvs104
+
+	* src/image_viewer.c
+		Force operator precedence (fix a compiler warning).
+
 2007-01-04 [colin]	2.6.1cvs103
 
 	* src/image_viewer.c
