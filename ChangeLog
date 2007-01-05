@@ -1,3 +1,15 @@
+2007-01-05 [colin]	2.6.1cvs107
+
+	* src/common/quoted-printable.c
+		Fix previous commit about bug 1089
+		Thanks to Ralf
+
+2007-01-05 [colin]	2.6.1cvs106
+
+	* src/common/quoted-printable.c
+		Fix my previous commit on bug 1089
+		- Thanks to Ralf :)
+
 2007-01-04 [colin]	2.6.1cvs105
 
 	* src/common/quoted-printable.c
