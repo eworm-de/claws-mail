@@ -4069,7 +4069,7 @@ void mainwindow_jump_to(const gchar *target)
 		return;
 		
 	if (!mainwin) {
-		printf(_("not initialized\n"));
+		printf("not initialized\n");
 		return;
 	}
 
@@ -4081,7 +4081,7 @@ void mainwindow_jump_to(const gchar *target)
 		*p = '\0';
 
 	if ((item = folder_find_item_from_identifier(tmp))) {
-		printf(_("selecting folder '%s'\n"), tmp);
+		printf("selecting folder '%s'\n", tmp);
 		folderview_select(mainwin->folderview, item);
 		main_window_popup(mainwin);
 		g_free(tmp);
@@ -4092,20 +4092,40 @@ void mainwindow_jump_to(const gchar *target)
 	if (msg) {
 		*msg++ = '\0';
 		if ((item = folder_find_item_from_identifier(tmp))) {
-			printf(_("selecting folder '%s'\n"), tmp);
+			printf("selecting folder '%s'\n", tmp);
 			folderview_select(mainwin->folderview, item);
-		} 
+		} else {
+			printf("'%s' not found\n", tmp);
+		}
 		if (item && msg && atoi(msg)) {
-			printf(_("selecting message %d\n"), atoi(msg));
+			printf("selecting message %d\n", atoi(msg));
 			summary_select_by_msgnum(mainwin->summaryview, atoi(msg));
 			summary_display_msg_selected(mainwin->summaryview, FALSE);
 			main_window_popup(mainwin);
 			g_free(tmp);
 			return;
-		} 
+		} else if (item && msg[0] == '<' && msg[strlen(msg)-1] == '>') {
+			MsgInfo *msginfo = NULL;
+			msg++;
+			msg[strlen(msg)-1] = '\0';
+			msginfo = folder_item_get_msginfo_by_msgid(item, msg);
+			if (msginfo) {
+				printf("selecting message %s\n", msg);
+				summary_select_by_msgnum(mainwin->summaryview, msginfo->msgnum);
+				summary_display_msg_selected(mainwin->summaryview, FALSE);
+				main_window_popup(mainwin);
+				g_free(tmp);
+				procmsg_msginfo_free(msginfo);
+				return;
+			} else {
+				printf("'%s' not found\n", msg);
+			}
+		} else {
+			printf("'%s' not found\n", msg);
+		}
+	} else {
+		printf("'%s' not found\n", tmp);
 	}
-	
-	printf("'%s' not found\n", tmp);
 	
 	g_free(tmp);
 }

@@ -1,3 +1,8 @@
+2007-01-05 [colin]	2.6.1cvs109
+
+	* src/mainwindow.c
+		Allow --select'ing emails by Message-ID too
+
 2007-01-05 [colin]	2.6.1cvs108
 
 	* src/common/quoted-printable.c
