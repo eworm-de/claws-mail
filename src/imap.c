@@ -4105,9 +4105,7 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 		}
 
 		if (!all && dup_name[strlen(dup_name)-1] == '/') {
-			g_free(base);
-			free(dup_name);
-			continue;
+			dup_name[strlen(dup_name)-1] = '\0';
 		}
 		
 		loc_name = imap_modified_utf7_to_utf8(base);

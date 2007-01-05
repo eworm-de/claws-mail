@@ -1,3 +1,14 @@
+2007-01-05 [paul]	2.6.1cvs110
+
+	* src/imap.c
+		Fix bug 934, 'sylpheed claws 2.1 
+		doesn't show Exchanges Public Folders'
+		Thanks to Hoa and Colin
+	* src/msgcache.c
+		Refuse to allocate more than 2 MB for a 
+		single field, it's a good indication of
+		cache corruption.
+
 2007-01-05 [colin]	2.6.1cvs109
 
 	* src/mainwindow.c
