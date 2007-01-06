@@ -54,7 +54,8 @@ typedef enum
 	M_NOT_NEWS	      = 1 << 15,
 	M_CAN_LEARN_SPAM      = 1 << 16,
 	M_ACTIONS_EXIST       = 1 << 17,
-	M_HAVE_QUEUED_MAILS   = 1 << 18
+	M_HAVE_QUEUED_MAILS   = 1 << 18,
+	M_WANT_SYNC	      = 1 << 19
 } SensitiveCond;
 
 typedef enum

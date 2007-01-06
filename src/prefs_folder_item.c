@@ -565,6 +565,8 @@ void prefs_folder_item_general_save_func(PrefsPage *page_)
 
 	g_node_traverse(page->item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
 			-1, general_save_recurse_func, page);
+	
+	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 
 }
 

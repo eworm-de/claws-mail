@@ -1,3 +1,20 @@
+2007-01-06 [colin]	2.6.1cvs113
+
+	* src/etpan/imap-thread.c
+		Add casts to int to get certs. Fixes
+		bug 1064, 'crash @ etpan_certificate_check() 
+		when opening an IMAP folder', with latest
+		libetpan CVS or >= 0.49
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/imap_gtk.c
+	* src/news_gtk.c
+	* src/prefs_folder_item.c
+		Grey out the "synchronise" menu items if
+		there's nothing to synchronise.
+	* src/plugins/pgpcore/sgpgme.c
+		Make an error clearer than "Unknown error"
+
 2007-01-06 [colin]	2.6.1cvs112
 
 	* src/messageview.c

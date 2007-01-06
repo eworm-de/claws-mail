@@ -100,6 +100,9 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 		 folder_item_parent(item) == NULL 
 		 && mainwin->lock_count == 0
 		 && news_folder_locked(item->folder) == 0);
+	SET_SENS("/Synchronise",    
+		 item ? (folder_item_parent(item) != NULL && folder_want_synchronise(item->folder))
+			 : FALSE);
 
 #undef SET_SENS
 }

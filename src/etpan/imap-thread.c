@@ -440,7 +440,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 #ifdef USE_OPENSSL
 	struct connect_param *param = (struct connect_param *)data;
 	X509 *cert = NULL;
-
+	
 	if (certificate == NULL || len < 0) {
 		g_warning("no cert presented.\n");
 		return 0;
@@ -502,10 +502,10 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
-	
+
 	if ((result.error == MAILIMAP_NO_ERROR_AUTHENTICATED ||
 	     result.error == MAILIMAP_NO_ERROR_NON_AUTHENTICATED) && !etpan_skip_ssl_cert_check) {
-		cert_len = mailstream_ssl_get_certificate(imap->imap_stream, &certificate);
+		cert_len = (int)mailstream_ssl_get_certificate(imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			return -1;
 		if (certificate) 
@@ -946,9 +946,9 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	threaded_run(folder, &param, &result, starttls_run);
 	
 	debug_print("imap starttls - end\n");
-	
+
 	if (result.error == 0 && !etpan_skip_ssl_cert_check) {
-		cert_len = mailstream_ssl_get_certificate(param.imap->imap_stream, &certificate);
+		cert_len = (int)mailstream_ssl_get_certificate(param.imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			result.error = MAILIMAP_ERROR_STREAM;
 		if (certificate) 

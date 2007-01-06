@@ -490,6 +490,7 @@ static void mailing_list_open_uri(GtkWidget *w, gpointer *data);
 static void mainwindow_quicksearch		(MainWindow 	*mainwin, 
 						 guint 		 action, 
 						 GtkWidget 	*widget);
+static gboolean any_folder_want_synchronise(void);
 
 static GtkItemFactoryEntry mainwin_entries[] =
 {
@@ -2180,6 +2181,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;
 	
+	if (any_folder_want_synchronise())
+		state |= M_WANT_SYNC;
+
 	for ( ; account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
 			state |= M_HAVE_NEWS_ACCOUNT;
@@ -2222,6 +2226,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	} entry[] = {
 		{"/File/Save as...", M_TARGET_EXIST},
 		{"/File/Print..."  , M_TARGET_EXIST},
+		{"/File/Synchronise folders", M_WANT_SYNC},
 		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
@@ -3251,7 +3256,7 @@ static void toggle_work_offline_cb (MainWindow *mainwin, guint action, GtkWidget
 	main_window_toggle_work_offline(mainwin, GTK_CHECK_MENU_ITEM(widget)->active, TRUE);
 }
 
-static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
+static gboolean any_folder_want_synchronise(void)
 {
 	GList *folderlist = folder_get_list();
 	gboolean found = FALSE;
@@ -3260,14 +3265,20 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 	for (; folderlist; folderlist = folderlist->next) {
 		Folder *folder = (Folder *)folderlist->data;
 		if (folder_want_synchronise(folder)) {
-			found = TRUE;
-			break;
+			return TRUE;
 		}
 	}
 	
-	if (!found)
+	return FALSE;
+
+}
+
+static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
+{
+	
+	if (!any_folder_want_synchronise())
 		return;
-		
+
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
 			GTK_STOCK_CANCEL, _("+_Synchronise"), NULL) != G_ALERTALTERNATE)

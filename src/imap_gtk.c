@@ -108,6 +108,8 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Move folder...", 	    folder_is_normal && folder_item_parent(item) != NULL);
 	SET_SENS("/Delete folder...", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
+	SET_SENS("/Synchronise",	    item ? (folder_item_parent(item) == NULL && folder_want_synchronise(item->folder))
+						: FALSE);
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);
 	SET_SENS("/Rebuild folder tree",    folder_item_parent(item) == NULL);

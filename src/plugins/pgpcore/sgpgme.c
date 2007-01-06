@@ -408,6 +408,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 		err = gpgme_op_decrypt(ctx, cipher, plain);
 		if (err != GPG_ERR_NO_ERROR) {
 			debug_print("can't decrypt (%s)\n", gpgme_strerror(err));
+			privacy_set_error("%s", gpgme_strerror(err));
 			gpgmegtk_free_passphrase();
 			gpgme_data_release(plain);
 			return NULL;
