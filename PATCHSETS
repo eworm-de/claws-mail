@@ -2219,3 +2219,4 @@
 ( cvs diff -u -r 1.274.2.159 -r 1.274.2.160 src/mainwindow.c;  ) > 2.6.1cvs109.patchset
 ( cvs diff -u -r 1.179.2.145 -r 1.179.2.146 src/imap.c;  cvs diff -u -r 1.16.2.48 -r 1.16.2.49 src/msgcache.c;  ) > 2.6.1cvs110.patchset
 ( cvs diff -u -r 1.395.2.273 -r 1.395.2.274 src/summaryview.c;  ) > 2.6.1cvs111.patchset
+( cvs diff -u -r 1.94.2.115 -r 1.94.2.116 src/messageview.c;  ) > 2.6.1cvs112.patchset

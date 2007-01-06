@@ -1,3 +1,10 @@
+2007-01-06 [colin]	2.6.1cvs112
+
+	* src/messageview.c
+		Don't try to show a message if updating
+		Maybe fixes bug 1088, 'ctrl-h produces
+		repeatable crash'.
+
 2007-01-06 [colin]	2.6.1cvs111
 
 	* src/summaryview.c

@@ -773,6 +773,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		messageview->mimeview->textview->stop_loading = TRUE;
 		return 0;
 	}
+	if (messageview->updating)
+		return 0;
+
 	if (messageview->toolbar)
 		toolbar_set_learn_button
 			(messageview->toolbar,
