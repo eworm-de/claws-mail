@@ -660,7 +660,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(TRUE, 4);
+	btn_hbox = gtk_hbox_new(FALSE, 4);
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 

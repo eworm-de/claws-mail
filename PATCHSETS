@@ -2222,3 +2222,4 @@
 ( cvs diff -u -r 1.94.2.115 -r 1.94.2.116 src/messageview.c;  ) > 2.6.1cvs112.patchset
 ( cvs diff -u -r 1.1.2.37 -r 1.1.2.38 src/imap_gtk.c;  cvs diff -u -r 1.274.2.160 -r 1.274.2.161 src/mainwindow.c;  cvs diff -u -r 1.39.2.28 -r 1.39.2.29 src/mainwindow.h;  cvs diff -u -r 1.2.2.20 -r 1.2.2.21 src/news_gtk.c;  cvs diff -u -r 1.52.2.33 -r 1.52.2.34 src/prefs_folder_item.c;  cvs diff -u -r 1.1.4.62 -r 1.1.4.63 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/plugins/pgpcore/sgpgme.c;  ) > 2.6.1cvs113.patchset
 ( cvs diff -u -r 1.94.2.116 -r 1.94.2.117 src/messageview.c;  ) > 2.6.1cvs114.patchset
+( cvs diff -u -r 1.43.2.50 -r 1.43.2.51 src/prefs_matcher.c;  ) > 2.6.1cvs115.patchset

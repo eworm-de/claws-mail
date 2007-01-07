@@ -1,3 +1,9 @@
+2007-01-07 [paul]	2.6.1cvs115
+
+	* src/prefs_matcher.c
+		make the hbox content fit better under
+		various languages
+
 2007-01-07 [colin]	2.6.1cvs114
 
 	* src/messageview.c
