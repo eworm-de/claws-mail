@@ -1614,6 +1614,11 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo = messageview->msginfo;
 
+	if (messageview->mimeview->textview &&
+	    messageview->mimeview->textview->loading) {
+		return;
+	}
+
 	messageview->all_headers = 
 			GTK_CHECK_MENU_ITEM(widget)->active;
 	if (!msginfo) return;
