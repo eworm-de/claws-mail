@@ -1,3 +1,10 @@
+2007-01-07 [mones]	2.6.1cvs116
+
+	* manual/es/advanced.xml
+	* po/es.po
+		Synced manual (unhide mark_as_read_delay)
+		and updated translation for release
+
 2007-01-07 [paul]	2.6.1cvs115
 
 	* src/prefs_matcher.c

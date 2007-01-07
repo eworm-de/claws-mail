@@ -670,14 +670,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>mark_as_read_delay</literal></term>
-	<listitem>
-	  <para>
-	Segundos de espera antes he marcar un mensaje como leído.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
         <term><literal>respect_flowed_format</literal></term>
         <listitem>
           <para>
