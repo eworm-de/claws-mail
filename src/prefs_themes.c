@@ -245,7 +245,8 @@ static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func,
 		(*func)(fullentry, data);
 		
 		g_free(fullentry);
-	}	
+	}
+	closedir(dp);
 }
 
 static gboolean prefs_themes_is_system_theme(const gchar *dirname)
