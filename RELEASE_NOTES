@@ -1,4 +1,4 @@
-4th December 2006                                    Claws Mail 2.6.1
+8th January 2007                                     Claws Mail 2.7.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -8,47 +8,147 @@ email client.
 
 Claws Mail was previously known as Sylpheed-Claws.
 
-Notes for this release:
-~~~~~~~~~~~~~~~~~~~~~~~
-
-* Sylpheed-Claws is now known as Claws Mail.
-  The default configuration directory is now ~/.claws-mail. The main
-  configuration file is now called 'clawsrc'. When running this
-  version of Claws Mail for the first time all of the configuration
-  will be automatically migrated to the new location and it will be
-  seamless for the user. A 'sylpheed-claws' symlink pointing to
-  'claws-mail' will be installed, therefore all scripts and other apps
-  configured to use 'sylpheed-claws' will still function correctly.
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-This is a bug fix release.
+* The --select option can now also select emails by Message-ID
+
+* Attaching files from 'mailto:' URIs (&attach=...) is now possible.
+  A dialog is displayed to make sure that the user is aware that the
+  mail will contain attachments
+
+* 'New Message format' has been added to the Compose/Writing options,
+  this works like the Quote format and the same symbols are supported
+
+* Reworked the About dialog, including the addition of a new page, 
+  'Features', which indicates which of the optional features are
+  compiled in and which are not. A 'Release Notes' page was also
+  added
+
+* Added history combo for all search fields (message and text)
+
+* The 'mark_as_read_delay' option is not hidden anymore and can be
+  found in Configuration/Preferences/Summaries
+
+* Added global and per-folder preferences to set the default
+  alternate dictionary
+
+* Allow spell-checking to use both current and alternate dictionaries
+
+* Added an hidden option 'addressbook_use_editaddress_dialog' to
+  embed the contact editor in the addressbook window in contrast to
+  a separate dialog
+
+* Added a hidden option 'unsafe_ssl_certs', to allow storing
+  multiple SSL certificates for a given server/port. You will be
+  asked to accept unknown certificates. Unchecking this option will
+  require you to re-accept previously known certificates
+
+* Allow copying of folders between mailboxes
+
+* Better automatic account selection for mailing lists (searches for
+  the email address in the Delivered-To header also)
+
+* Made the "Synchronise" menu item inactive when there's nothing to
+  synchronise
+
+* Use Message font in Writing and Quoting preferences, as well as in
+  Templates
+
+* Added more HTML symbols to the html to text converter
+
+* Save the addressbook's window size on closing
+
+* Better checks for syntax errors are applied to Templates and Quote
+  formats
+
+* Added a check to avoid trying to use a non-existent folder as
+  default inbox
+
+* Enable setting SSL via STARTTLS from the set-up wizard
+
+* Added handling of ":port" in server addresses in the set-up wizard
+  to specify a port to connect to
+
+* Bogofilter plugin: added an option to print the X-Claws-Bogosity
+  header in emails handled by the Bogofilter plugin (in MH folders
+  only)
+
+* Bogofilter plugin: added an option to whitelist senders found in
+  addressbook
+
+* Bogofilter plugin: Allow storing of Unsure mails in a specific
+  folder to make better teaching easier
+
+* Bogofilter plugin: Improved GUI interaction while Bogofilter is
+  filtering
+
+* TrayIcon plugin: added an "Email from account/..." submenu
+
+* updated Brazilian Portuguese, British English, Catalan, Finnish,
+  French, Italian, Serbian, Simplified Chinese, Slovak, and Spanish
+  translations
 
 * Bug fixes:
-	o bug 1053, 'SC fails to reestablish a secure connection'
-	o bug 1054, 'Slowness logging big data chunks'
-	o bug 1057, 'crash on sending s signed message to a
-		     newsgroup'
-	o bug 1060, 'compilation error with Irix's cc'
-	o bug 1061, 'crash on opening signed email'
-	o bug 1066, 'Incorrect mailbox size displayed'
-	o bug 1069, 'Sent mails disappear, BCC or locking problem?'
-	o fix Reply To/Mailing list from the menu
-	o forbid drag and drop from/to different folders of type
-	  F_UNKNOWN
-	o src/ssl_manager.c: fix possible infinite loop
-	o fix Options/Reply mode after draft save
-	o obey always_show_msg option when marking as spam
-	o fix spelling menu when replying
-	o don't change the From column title to To if the To column
-	  is visible
-	o fix the wrong recipient being selected when replying to a
-	  msg which is From one of our accounts To another of our
-	  accounts
-	o fix crash on combining mark_as_read_delay with Hide Read
- 	  Messages
-	o create ~/.mailcap if it doesn't exist
+	o bug 934,  'sylpheed claws 2.1 doesn't show Exchanges Public
+		     Folders'
+	o bug 1052, 'templates %d and %D{fmt} broken but %af works
+		     fine'
+	o bug 1055, 'Add the 'cancel receive' in the available events
+		     for the toolbar buttons'
+	o bug 1059, 'Better jpilot charset handling'
+	o bug 1064, 'crash @ etpan_certificate_check() when opening
+		     an IMAP folder'
+	o bug 1067, 'Claws-Mail uses 100% CPU on an IMAP folder and is
+		     blocked on main thread'
+	o bug 1072, 'Claws stops fetching newsgroups from server when
+                    newsgroup got deleted' 
+	o bug 1076, 'privacy options are displayed even when pgp
+		     plugin not loaded / available' 
+	o bug 1077, 'sylpheed-claws does not start when IMAP server
+		     is unavailable' 
+	o bug 1080, 'Using SSL option in wizard for incoming server
+                     does not activate SSL with STARTTLS'
+	o bug 1081, 'claws-mail segfaults when going offline while it
+		     transfers mails via imap'
+	o bug 1082, 'incorrect / imprecise error message when imap
+	  	     server provides ssl only through STARTTLS but
+		     SSL is selected'
+	o bug 1085, 'Apply to subfolder doesn't work'
+	o bug 1088, 'ctrl-h produces repeatable crash'.
+	o bug 1089, 'NUL characters in Subject line are
+		     misinterpreted'
+	o fixed encoding of headers in the welcome message
+	o fixed some sensitivity issues in preferences
+	o fixed crash when using Hide read messages with Mark as read
+	  delay 
+	o fixed parsing of mailcap files with tabs
+	o fixed address comparison when replying to all (it was
+	  possible to reply to ourselves if the case was
+	  different) 
+	o fixed folder's cache update after running an Action
+	o fixed hiding of Quicksearch with Esc
+	o fixed printing of selection, message part, and images
+	o fixed page count in printing
+	o IMAP: Fix failure to get separator on LIST "" ""
+	o change manual's target dir to be LFH-compliant
+	o some compilation warning fixes
+	o don't warn about empty subject when redirecting emails
+	o fix scrolling of log window 
+	o partial download: Fix Mark for download/deletion when
+	  the relevant header is not the first one
+	o fixed slowness when appending on IMAP
+	o fixed wrong state of test regexp in folder preferences
+	o made desktop and icon files not dependant on GNOME 2
+	o fixed a little memory leak in the addressbook
+	o don't display errors when synchronising IMAP mailboxes that
+	  have non selectable folders
+	o When possible, move messages from Queue to Sent instead of
+	  copying and deleting
+	o don't use any MimeViewer plugin when showing all headers
+	o tools/maildir2claws-mail.pl: Only substitute 'sent-mail'
+	  if it's the full directory name
+	o disable Control-Space (handle it as Space).
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

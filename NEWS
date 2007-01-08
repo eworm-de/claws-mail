@@ -1,5 +1,86 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.7.0
+-------
+
+* The --select option can now also select emails by Message-ID
+
+* Attaching files from 'mailto:' URIs (&attach=...) is now possible.
+  A dialog is displayed to make sure that the user is aware that the
+  mail will contain attachments
+
+* 'New Message format' has been added to the Compose/Writing options,
+  this works like the Quote format and the same symbols are supported
+
+* Reworked the About dialog, including the addition of a new page, 
+  'Features', which indicates which of the optional features are
+  compiled in and which are not. A 'Release Notes' page was also
+  added
+
+* Added history combo for all search fields (message and text)
+
+* The 'mark_as_read_delay' option is not hidden anymore and can be
+  found in Configuration/Preferences/Summaries
+
+* Added global and per-folder preferences to set the default
+  alternate dictionary
+
+* Allow spell-checking to use both current and alternate dictionaries
+
+* Added an hidden option 'addressbook_use_editaddress_dialog' to
+  embed the contact editor in the addressbook window in contrast to
+  a separate dialog
+
+* Added a hidden option 'unsafe_ssl_certs', to allow storing
+  multiple SSL certificates for a given server/port. You will be
+  asked to accept unknown certificates. Unchecking this option will
+  require you to re-accept previously known certificates
+
+* Allow copying of folders between mailboxes
+
+* Better automatic account selection for mailing lists (searches for
+  the email address in the Delivered-To header also)
+
+* Made the "Synchronise" menu item inactive when there's nothing to
+  synchronise
+
+* Use Message font in Writing and Quoting preferences, as well as in
+  Templates
+
+* Added more HTML symbols to the html to text converter
+
+* Save the addressbook's window size on closing
+
+* Better checks for syntax errors are applied to Templates and Quote
+  formats
+
+* Added a check to avoid trying to use a non-existent folder as
+  default inbox
+
+* Enable setting SSL via STARTTLS from the set-up wizard
+
+* Added handling of ":port" in server addresses in the set-up wizard
+  to specify a port to connect to
+
+* Bogofilter plugin: added an option to print the X-Claws-Bogosity
+  header in emails handled by the Bogofilter plugin (in MH folders
+  only)
+
+* Bogofilter plugin: added an option to whitelist senders found in
+  addressbook
+
+* Bogofilter plugin: Allow storing of Unsure mails in a specific
+  folder to make better teaching easier
+
+* Bogofilter plugin: Improved GUI interaction while Bogofilter is
+  filtering
+
+* TrayIcon plugin: added an "Email from account/..." submenu
+
+* updated Brazilian Portuguese, British English, Catalan, Finnish,
+  French, Italian, Serbian, Simplified Chinese, Slovak, and Spanish
+  translations
+
 * 2.6.1
 -------
 
