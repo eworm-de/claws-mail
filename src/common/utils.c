@@ -4710,8 +4710,10 @@ gint copy_dir(const gchar *src, const gchar *dst)
 		debug_print("copying: %s -> %s\n", old_file, new_file);
 		if (g_file_test(old_file, G_FILE_TEST_IS_REGULAR)) {
 			gint r = copy_file(old_file, new_file, TRUE);
-			if (r < 0)
+			if (r < 0) {
+				g_dir_close(dir);
 				return r;
+			}
 		} else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
 			GError *error;
 			gint r = 0;
@@ -4719,14 +4721,19 @@ gint copy_dir(const gchar *src, const gchar *dst)
 			if (target)
 				r = symlink(target, new_file);
 			g_free(target);
-			if (r < 0)
+			if (r < 0) {
+				g_dir_close(dir);
 				return r;
+			}
 		} else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
 			gint r = copy_dir(old_file, new_file);
-			if (r < 0)
+			if (r < 0) {
+				g_dir_close(dir);
 				return r;
+			}
 		}
 	}
+	g_dir_close(dir);
 	return 0;
 }
 

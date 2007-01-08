@@ -1,3 +1,9 @@
+2007-01-08 [paul]	2.7.0cvs1
+
+	* src/prefs_themes.c
+	* src/common/utils.c
+		Fix resource leaks
+
 2007-01-08 [paul]	2.7.0
 
 	* NEWS
