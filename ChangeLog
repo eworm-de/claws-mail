@@ -1,3 +1,8 @@
+2007-01-08 [paul]	2.7.0cvs2
+
+	* po/nl.po
+		updated by Tim Dijkstra
+
 2007-01-08 [paul]	2.7.0cvs1
 
 	* src/prefs_themes.c
