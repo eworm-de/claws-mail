@@ -1,3 +1,8 @@
+2007-01-09 [colin]	2.7.0cvs3
+
+	* src/gtk/filesel.c
+		Use the same type for alloc and free
+
 2007-01-08 [paul]	2.7.0cvs2
 
 	* po/nl.po

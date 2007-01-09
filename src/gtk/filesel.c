@@ -121,7 +121,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 
 	if (path && strlen(path) > 0) {
 		char *filename = NULL;
-		char *realpath = strdup(path);
+		char *realpath = g_strdup(path);
 		char *tmp = NULL;
 		if (path[strlen(path)-1] == G_DIR_SEPARATOR) {
 			filename = "";
@@ -130,8 +130,8 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			*(strrchr(realpath, G_DIR_SEPARATOR)+1) = '\0';
 		} else {
 			filename = (char *) path;
-			free(realpath); 
-			realpath = strdup(get_home_dir());
+			g_free(realpath); 
+			realpath = g_strdup(get_home_dir());
 		}
 		if (g_utf8_validate(realpath, -1, NULL))
 			tmp = g_filename_from_utf8(realpath, -1, NULL, NULL, NULL);
@@ -148,7 +148,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), tmp);
 			g_free(tmp);
 		}
-		free(realpath);
+		g_free(realpath);
 	} else {
 		gchar *tmp = NULL;
 		if (!prefs_common.attach_load_dir)
@@ -170,7 +170,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	slist_orig = slist;
 	
 	if (slist) {
-		gchar *tmp = strdup(slist->data);
+		gchar *tmp = g_strdup(slist->data);
 
 		if (!path && prefs_common.attach_load_dir)
 			g_free(prefs_common.attach_load_dir);
@@ -226,7 +226,7 @@ static gchar *filesel_select_file(const gchar *title, const gchar *path,
 	GList * list = filesel_create(title, path, FALSE, open, folder_mode, filter);
 	gchar * result = NULL;
 	if (list) {
-		result = strdup(list->data);
+		result = g_strdup(list->data);
 	}
 	g_list_free(list);
 	return result;
