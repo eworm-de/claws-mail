@@ -1,3 +1,9 @@
+2007-01-10 [colin]	2.7.0cvs5
+
+	* src/mainwindow.c
+		Fix bug 1095, 'Crash while changing folder 
+		columns during incorporation'
+
 2007-01-09 [colin]	2.7.0cvs4
 
 	* src/gtk/pluginwindow.c
