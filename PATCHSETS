@@ -2232,3 +2232,4 @@
 ( cvs diff -u -r 1.2.2.29 -r 1.2.2.30 src/gtk/filesel.c;  ) > 2.7.0cvs3.patchset
 ( cvs diff -u -r 1.5.2.40 -r 1.5.2.41 src/gtk/pluginwindow.c;  ) > 2.7.0cvs4.patchset
 ( cvs diff -u -r 1.274.2.161 -r 1.274.2.162 src/mainwindow.c;  ) > 2.7.0cvs5.patchset
+( cvs diff -u -r 1.52.2.34 -r 1.52.2.35 src/prefs_folder_item.c;  ) > 2.7.0cvs6.patchset

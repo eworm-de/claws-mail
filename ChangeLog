@@ -1,3 +1,8 @@
+2007-01-10 [colin]	2.7.0cvs6
+
+	* src/prefs_folder_item.c
+		Factorize strings - patch by Fabien
+
 2007-01-10 [colin]	2.7.0cvs5
 
 	* src/mainwindow.c

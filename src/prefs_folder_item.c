@@ -694,7 +694,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default To */
-		checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
+		checkbtn_default_to = gtk_check_button_new_with_label(_("Default To:"));
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
@@ -715,7 +715,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default address to reply to */
-		checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default To for replies: "));
+		checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default To: for replies"));
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
@@ -736,7 +736,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 	}
 	/* Default account */
-	checkbtn_enable_default_account = gtk_check_button_new_with_label(_("Default account: "));
+	checkbtn_enable_default_account = gtk_check_button_new_with_label(_("Default account"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_account, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_account), 
@@ -787,7 +787,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 #if USE_ASPELL
 	/* Default dictionary */
-	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary: "));
+	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_dictionary, 0, 1,
 	    		 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
@@ -820,7 +820,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Default dictionary */
-	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary: "));
+	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_alt_dictionary, 0, 1,
 	    		 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),
