@@ -1,3 +1,10 @@
+2007-01-11 [wwp]	2.7.0cvs7
+
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Add per-account spellcheck default dictionaries settings.
+
 2007-01-10 [colin]	2.7.0cvs6
 
 	* src/prefs_folder_item.c

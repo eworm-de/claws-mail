@@ -517,6 +517,11 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginf
 
 static MsgInfo *compose_msginfo_new_from_compose(Compose *compose);
 
+#ifdef USE_ASPELL
+static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
+						FolderItem *folder_item);
+#endif
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -972,15 +977,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
-	if (item && item->prefs && compose->gtkaspell) {
-		if (item->prefs->enable_default_dictionary)
-			gtkaspell_change_dict(compose->gtkaspell, 
-				    item->prefs->default_dictionary, FALSE);
-		if (item->prefs->enable_default_alt_dictionary)
-			gtkaspell_change_alt_dict(compose->gtkaspell, 
-				    item->prefs->default_alt_dictionary);
-		compose_spell_menu_changed(compose);
-	}
+	compose_set_dictionaries_from_folder_prefs(compose, item);
 #endif
 
 	if (account->auto_sig)
@@ -1411,17 +1408,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
-	if (msginfo->folder && msginfo->folder->prefs && 
-	    msginfo->folder->prefs && 
-	    compose->gtkaspell) {
-		if (msginfo->folder->prefs->enable_default_dictionary)
-			gtkaspell_change_dict(compose->gtkaspell, 
-				    msginfo->folder->prefs->default_dictionary, FALSE);
-		if (msginfo->folder->prefs->enable_default_alt_dictionary)
-			gtkaspell_change_alt_dict(compose->gtkaspell, 
-				    msginfo->folder->prefs->default_alt_dictionary);
-		compose_spell_menu_changed(compose);
-	}
+		compose_set_dictionaries_from_folder_prefs(compose, msginfo->folder);
 #endif
 
 	if (quote) {
@@ -4120,6 +4107,21 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 		compose_insert_sig(compose, TRUE);
 		undo_unblock(compose->undostruct);
 	}
+
+#ifdef USE_ASPELL
+	/* use account's dict info if set */
+	if (compose->gtkaspell) {
+		if (account->enable_default_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell,
+					account->default_dictionary, FALSE);
+		if (account->enable_default_alt_dictionary)
+			gtkaspell_change_alt_dict(compose->gtkaspell,
+					account->default_alt_dictionary);
+		if (account->enable_default_dictionary
+			|| account->enable_default_alt_dictionary)
+			compose_spell_menu_changed(compose);
+	}
+#endif
 }
 
 gboolean compose_check_for_valid_recipient(Compose *compose) {
@@ -9490,6 +9492,29 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 
 	return newmsginfo;
 }
+
+#ifdef USE_ASPELL
+/* update compose's dictionaries from folder dict settings */
+static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
+						FolderItem *folder_item)
+{
+	g_return_if_fail(compose != NULL);
+
+	if (compose->gtkaspell && folder_item && folder_item->prefs) {
+		FolderItemPrefs *prefs = folder_item->prefs;
+
+		if (prefs->enable_default_dictionary)
+			gtkaspell_change_dict(compose->gtkaspell,
+					prefs->default_dictionary, FALSE);
+		if (folder_item->prefs->enable_default_alt_dictionary)
+			gtkaspell_change_alt_dict(compose->gtkaspell,
+					prefs->default_alt_dictionary);
+		if (prefs->enable_default_dictionary
+			|| prefs->enable_default_alt_dictionary)
+			compose_spell_menu_changed(compose);
+	}
+}
+#endif
 
 /*
  * End of Source.

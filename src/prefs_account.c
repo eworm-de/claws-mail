@@ -163,6 +163,12 @@ static struct Compose {
 	GtkWidget *autobcc_entry;
 	GtkWidget *autoreplyto_chkbtn;
 	GtkWidget *autoreplyto_entry;
+#ifdef USE_ASPELL
+	GtkWidget *checkbtn_enable_default_dictionary;
+	GtkWidget *optmenu_default_dictionary;
+	GtkWidget *checkbtn_enable_default_alt_dictionary;
+	GtkWidget *optmenu_default_alt_dictionary;
+#endif
 } compose;
 
 static struct Privacy {
@@ -264,6 +270,13 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
+
+#if USE_ASPELL
+static void prefs_account_compose_default_dictionary_set_string_from_optmenu
+							(PrefParam *pparam);
+static void prefs_account_compose_default_dictionary_set_optmenu_from_string
+							(PrefParam *pparam);
+#endif
 
 static gchar *privacy_prefs;
 
@@ -440,6 +453,26 @@ static PrefParam param[] = {
 	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
 	 &compose.autoreplyto_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
+
+#if USE_ASPELL
+	{"enable_default_dictionary", "", &tmp_ac_prefs.enable_default_dictionary, P_BOOL,
+	 &compose.checkbtn_enable_default_dictionary,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"default_dictionary", NULL, &tmp_ac_prefs.default_dictionary, P_STRING,
+	 &compose.optmenu_default_dictionary,
+	 prefs_account_compose_default_dictionary_set_string_from_optmenu,
+	 prefs_account_compose_default_dictionary_set_optmenu_from_string},
+
+	{"enable_default_alt_dictionary", "", &tmp_ac_prefs.enable_default_alt_dictionary, P_BOOL,
+	 &compose.checkbtn_enable_default_alt_dictionary,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"default_alt_dictionary", NULL, &tmp_ac_prefs.default_alt_dictionary, P_STRING,
+	 &compose.optmenu_default_alt_dictionary,
+	 prefs_account_compose_default_dictionary_set_string_from_optmenu,
+	 prefs_account_compose_default_dictionary_set_optmenu_from_string},
+#endif	 
 
 	/* Privacy */
 	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
@@ -710,6 +743,17 @@ static void create_widget_func(PrefsPage * _page,
 
 	if (notebook == NULL)
 		prefs_account_create();
+	else {
+		/* reset gtkaspell menus */
+		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary));
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary), 
+				gtkaspell_dictionary_option_menu_new(
+				prefs_common.aspell_path));
+		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose.optmenu_default_alt_dictionary));
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_alt_dictionary), 
+				gtkaspell_dictionary_option_menu_new_with_refresh(
+				prefs_common.aspell_path, FALSE));
+	}
 	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
 
@@ -1881,6 +1925,14 @@ static void prefs_account_compose_create(void)
 	GtkWidget *autobcc_entry;
 	GtkWidget *autoreplyto_chkbtn;
 	GtkWidget *autoreplyto_entry;
+#if USE_ASPELL
+	GtkWidget *frame_dict;
+	GtkWidget *table_dict;
+	GtkWidget *checkbtn_enable_default_dictionary = NULL;
+	GtkWidget *optmenu_default_dictionary = NULL;
+	GtkWidget *checkbtn_enable_default_alt_dictionary = NULL;
+	GtkWidget *optmenu_default_alt_dictionary = NULL;
+#endif
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2006,6 +2058,53 @@ static void prefs_account_compose_create(void)
 
 	SET_TOGGLE_SENSITIVITY (autoreplyto_chkbtn, autoreplyto_entry);
 
+#if USE_ASPELL
+	PACK_FRAME (vbox1, frame_dict, _("Spell check dictionaries"));
+
+	table_dict =  gtk_table_new (2, 2, FALSE);
+	gtk_widget_show (table_dict);
+	gtk_container_add (GTK_CONTAINER (frame_dict), table_dict);
+	gtk_container_set_border_width (GTK_CONTAINER (table_dict), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (table_dict), VSPACING_NARROW_2);
+	gtk_table_set_col_spacings (GTK_TABLE (table_dict), 8);
+
+	/* Default dictionary */
+	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary: "));
+	gtk_table_attach(GTK_TABLE(table_dict), checkbtn_enable_default_dictionary, 0, 1,
+			0, 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
+			tmp_ac_prefs.enable_default_dictionary);
+
+	optmenu_default_dictionary = gtk_option_menu_new();
+	gtk_table_attach(GTK_TABLE(table_dict), optmenu_default_dictionary, 1, 2,
+			0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_dictionary), 
+			gtkaspell_dictionary_option_menu_new(
+			prefs_common.aspell_path));
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_dictionary, optmenu_default_dictionary);
+
+	/* Default dictionary */
+	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary: "));
+	gtk_table_attach(GTK_TABLE(table_dict), checkbtn_enable_default_alt_dictionary, 0, 1,
+			1, 2, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),
+			tmp_ac_prefs.enable_default_alt_dictionary);
+
+	optmenu_default_alt_dictionary = gtk_option_menu_new();
+	gtk_table_attach(GTK_TABLE(table_dict), optmenu_default_alt_dictionary, 1, 2,
+			1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_alt_dictionary), 
+			gtkaspell_dictionary_option_menu_new_with_refresh(
+			prefs_common.aspell_path, FALSE));
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_alt_dictionary, optmenu_default_alt_dictionary);
+
+	gtk_widget_show_all(table_dict);
+#endif
+
 	compose.sigfile_radiobtn = sigfile_radiobtn;
 	compose.entry_sigpath      = entry_sigpath;
 	compose.checkbtn_autosig   = checkbtn_autosig;
@@ -2017,6 +2116,12 @@ static void prefs_account_compose_create(void)
 	compose.autobcc_entry      = autobcc_entry;
 	compose.autoreplyto_chkbtn = autoreplyto_chkbtn;
 	compose.autoreplyto_entry  = autoreplyto_entry;
+#ifdef USE_ASPELL
+	compose.checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
+	compose.optmenu_default_dictionary = optmenu_default_dictionary;
+	compose.checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
+	compose.optmenu_default_alt_dictionary = optmenu_default_alt_dictionary;
+#endif
 }
 
 static void prefs_account_privacy_create(void)
@@ -3360,6 +3465,49 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic.pass_entry, !use_mailcmd);
 }
+
+#if USE_ASPELL
+static void prefs_account_compose_default_dictionary_set_string_from_optmenu
+							(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	if (menuitem == NULL)
+		return;
+
+	str = (gchar **) pparam->data;
+	g_free(*str);
+	*str = gtkaspell_get_dictionary_menu_active_item(menu);
+}
+
+static void prefs_account_compose_default_dictionary_set_optmenu_from_string
+							(PrefParam *pparam)
+{
+	GtkWidget *optionmenu;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gchar *dictionary;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	dictionary = *((gchar **) pparam->data);
+	if (dictionary == NULL)
+		return;
+
+	optionmenu = *pparam->widget;
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optionmenu));
+	if (dictionary)
+		gtkaspell_set_dictionary_menu_active_item(optionmenu, dictionary);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+#endif
 
 void prefs_account_register_page(PrefsPage *page)
 {
