@@ -687,7 +687,7 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 	if (session) { \
 		debug_print("locking session %p (%d)\n", session, session->busy); \
 		if (session->busy) \
-			g_warning("         SESSION WAS LOCKED !!      "); \
+			debug_print("         SESSION WAS LOCKED !!      \n"); \
 		session->busy = TRUE;\
 	} else {\
 		debug_print("can't lock null session\n"); \

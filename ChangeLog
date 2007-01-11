@@ -1,3 +1,10 @@
+2007-01-11 [colin]	2.7.0cvs2-stable
+
+	* src/imap.c
+		From 2.7.0cvs10:
+		move g_warning to debug_print
+		it scares people for no reason
+
 2007-01-11 [paul]	2.7.0cvs1-stable
 
 	* src/imap.c

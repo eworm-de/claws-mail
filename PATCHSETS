@@ -2228,3 +2228,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 doc/man/claws-mail.1;  cvs diff -u -r 1.1.2.37 -r 1.1.2.38 manual/advanced.xml;  ) > 2.6.1cvs118.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 doc/man/claws-mail.1;  ) > 2.6.1cvs119.patchset
 ( cvs diff -u -r 1.179.2.146 -r 1.179.2.147 src/imap.c;  cvs diff -u -r 1.274.2.161 -r 1.274.2.162 src/mainwindow.c;  cvs diff -u -r 1.83.2.96 -r 1.83.2.97 src/mimeview.c;  cvs diff -u -r 1.2.2.29 -r 1.2.2.30 src/gtk/filesel.c;  cvs diff -u -r 1.5.2.40 -r 1.5.2.41 src/gtk/pluginwindow.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/select-keys.c;  ) > 2.7.0cvs1-stable.patchset
+( cvs diff -u -r 1.179.2.146.2.1 -r 1.179.2.146.2.2 src/imap.c;  ) > 2.7.0cvs2-stable.patchset
