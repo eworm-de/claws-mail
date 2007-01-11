@@ -1,3 +1,9 @@
+2007-01-11 [colin]	2.7.0cvs10
+
+	* src/imap.c
+		move g_warning to debug_print
+		it scares people for no reason
+
 2007-01-11 [colin]	2.7.0cvs9
 
 	* po/POTFILES.in
