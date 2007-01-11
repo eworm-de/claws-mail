@@ -2234,3 +2234,4 @@
 ( cvs diff -u -r 1.274.2.161 -r 1.274.2.162 src/mainwindow.c;  ) > 2.7.0cvs5.patchset
 ( cvs diff -u -r 1.52.2.34 -r 1.52.2.35 src/prefs_folder_item.c;  ) > 2.7.0cvs6.patchset
 ( cvs diff -u -r 1.382.2.349 -r 1.382.2.350 src/compose.c;  cvs diff -u -r 1.105.2.76 -r 1.105.2.77 src/prefs_account.c;  cvs diff -u -r 1.49.2.23 -r 1.49.2.24 src/prefs_account.h;  ) > 2.7.0cvs7.patchset
+( cvs diff -u -r 1.179.2.146 -r 1.179.2.147 src/imap.c;  cvs diff -u -r 1.83.2.96 -r 1.83.2.97 src/mimeview.c;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/select-keys.c;  ) > 2.7.0cvs8.patchset

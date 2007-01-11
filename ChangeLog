@@ -1,3 +1,14 @@
+2007-01-11 [paul]	2.7.0cvs8
+
+	* src/imap.c
+		Fix recursion when server lists the
+		current subfolder in the response
+	* src/mimeview.c
+		Fix updating of icon_list/ctree
+	* src/plugins/pgpcore/select-keys.c
+		Fix a few annoyances when choosing
+		keys for the CMS (S/MIME) protocol
+
 2007-01-11 [wwp]	2.7.0cvs7
 
 	* src/compose.c

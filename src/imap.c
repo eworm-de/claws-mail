@@ -4098,7 +4098,7 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 			continue;
 		}
 		
-		if (!all && strcmp(dup_name, real_path) == 0) {
+		if (!all && path_cmp(name, real_path) == 0) {
 			g_free(base);
 			free(dup_name);
 			continue;
