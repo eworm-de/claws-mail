@@ -77,7 +77,7 @@ struct select_keys_s {
 };
 
 
-static void set_row (GtkCList *clist, gpgme_key_t key);
+static void set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto);
 static gpgme_key_t fill_clist (struct select_keys_s *sk, const char *pattern,
 			gpgme_protocol_t proto);
 static void create_dialog (struct select_keys_s *sk);
@@ -95,7 +95,7 @@ static void sort_keys (struct select_keys_s *sk, enum col_titles column);
 static void sort_keys_name (GtkWidget *widget, gpointer data);
 static void sort_keys_email (GtkWidget *widget, gpointer data);
 
-static gboolean use_untrusted (gpgme_key_t);
+static gboolean use_untrusted (gpgme_key_t, gpgme_protocol_t proto);
 
 static void
 update_progress (struct select_keys_s *sk, int running, const char *pattern)
@@ -184,14 +184,14 @@ destroy_key (gpointer data)
 }
 
 static void
-set_row (GtkCList *clist, gpgme_key_t key)
+set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
 {
     const char *s;
     const char *text[N_COL_TITLES];
     char *algo_buf;
     int row;
     gsize by_read = 0, by_written = 0;
-    gchar *ret_str;
+    gchar *ret_str = NULL;
 
     /* first check whether the key is capable of encryption which is not
      * the case for revoked, expired or sign-only keys */
@@ -207,17 +207,38 @@ set_row (GtkCList *clist, gpgme_key_t key)
         s += 8; /* show only the short keyID */
     text[COL_KEYID] = s;
 
+
     s = key->uids->name;
-    if (!s || !strlen(s))
+    if (!s || !*s)
         s = key->uids->uid;
-    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
+    if (proto == GPGME_PROTOCOL_CMS) {
+	if (strstr(s, ",CN="))
+		s = strstr(s, ",CN=")+4;
+	else if (strstr(s, "CN="))
+		s = strstr(s, "CN=")+3;
+    } 
+    
+    ret_str = NULL;
+    if (!g_utf8_validate(s, -1, NULL))
+	    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
     if (ret_str && by_written) {
         s = ret_str;
     }
     text[COL_NAME] = s;
 
-    s = key->uids->email;
-    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
+    if (proto == GPGME_PROTOCOL_CMS && !key->uids->email || !*key->uids->email) {
+	gpgme_user_id_t uid = key->uids->next;
+	if (uid)
+		s = uid->email;
+	else
+		s = key->uids->email;
+    } else {
+        s = key->uids->email;
+    }
+    
+    ret_str = NULL;
+    if (!g_utf8_validate(s, -1, NULL))
+	    ret_str = g_locale_to_utf8 (s, strlen(s), &by_read, &by_written, NULL);
     if (ret_str && by_written) {
         s = ret_str;
     }
@@ -293,12 +314,19 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
 	gpgme_user_id_t uid = key->uids;
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
-        set_row (clist, key ); 
+        set_row (clist, key, proto ); 
 	for (; uid; uid = uid->next) {
-		if (!strcmp(pattern, uid->email)) {
+		gchar *raw_mail = NULL;
+		if (!uid->email)
+			continue;
+		raw_mail = g_strdup(uid->email);
+		extract_address(raw_mail);
+		if (!strcmp(pattern, raw_mail)) {
 			exact_match = TRUE;
+			g_free(raw_mail);
 			break;
 		}
+		g_free(raw_mail);
 	}
 	num_results++;
 	last_key = key;
@@ -310,7 +338,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
  
     if (exact_match == TRUE && num_results == 1) {
 	    if (last_key->uids->validity < GPGME_VALIDITY_FULL && 
-		!use_untrusted(last_key))
+		!use_untrusted(last_key, proto))
 		    exact_match = FALSE;
     }
 
@@ -489,7 +517,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     key = gtk_clist_get_row_data(sk->clist, row);
     if (key) {
         if ( key->uids->validity < GPGME_VALIDITY_FULL ) {
-            use_key = use_untrusted(key);
+            use_key = use_untrusted(key, sk->proto);
             if (!use_key) {
                 debug_print ("** Key untrusted, will not encrypt");
                 return;
@@ -555,10 +583,15 @@ other_btn_cb (GtkWidget *widget, gpointer data)
 
 
 static gboolean
-use_untrusted (gpgme_key_t key)
+use_untrusted (gpgme_key_t key, gpgme_protocol_t proto)
 {
     AlertValue aval;
-    gchar *buf = g_strdup_printf(_("The key of '%s' is not fully trusted.\n"
+    gchar *buf = NULL;
+    
+    if (proto != GPGME_PROTOCOL_OpenPGP)
+    	return TRUE;
+
+    buf = g_strdup_printf(_("The key of '%s' is not fully trusted.\n"
 	       "If you choose to encrypt the message with this key you don't\n"
 	       "know for sure that it will go to the person you mean it to.\n"
 	       "Do you trust it enough to use it anyway?"), key->uids->email);

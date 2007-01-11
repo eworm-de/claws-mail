@@ -2232,6 +2232,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
 
+		{"/View/Set displayed columns/in Folder list..."
+						   , M_UNLOCKED}, 
 		{"/View/Sort"                      , M_EXEC},
 		{"/View/Thread view"               , M_EXEC},
 		{"/View/Expand all threads"        , M_MSG_EXIST},

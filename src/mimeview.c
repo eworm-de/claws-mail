@@ -357,7 +357,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	g_signal_handlers_block_by_func(G_OBJECT(ctree), mimeview_selected,
 					mimeview);
 
-	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
 	icon_list_create(mimeview, mimeinfo);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
@@ -1813,6 +1812,7 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 {
 	GtkCTreeNode *node;
 	node = gtk_ctree_find_by_row_data(GTK_CTREE(mimeview->ctree), NULL, partinfo);
+
 	if (node)
 		gtk_ctree_select(GTK_CTREE(mimeview->ctree), node);
 }		
@@ -1965,7 +1965,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			  GINT_TO_POINTER(mimeview->icon_count));
 	g_object_set_data(G_OBJECT(button), "partinfo", 
 		          mimeinfo);
-	
+
 	switch (mimeinfo->type) {
 		
 	case MIMETYPE_TEXT:
@@ -2171,6 +2171,8 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	GtkRequisition size;
+
+	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
 
 	g_return_if_fail(mimeinfo != NULL);
 

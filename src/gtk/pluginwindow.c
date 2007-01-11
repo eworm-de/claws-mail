@@ -285,6 +285,7 @@ void pluginwindow_create()
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	manage_window_set_transient(window);
 
 	vbox1 = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox1);

@@ -1,3 +1,29 @@
+2007-01-11 [paul]	2.7.0cvs1-stable
+
+	* src/imap.c
+		From 2.7.0cvs8: 
+		Fix recursion when server lists the
+		current subfolder in the response
+	* src/mimeview.c
+		From 2.7.0cvs8:
+		Fix updating of icon_list/ctree
+	* src/plugins/pgpcore/select-keys.c
+		From 2.7.0cvs8:
+		Fix a few annoyances when choosing
+		keys for the CMS (S/MIME) protocol
+	* src/mainwindow.c
+		From 2.7.0cvs5:
+		Fix bug 1095, 'Crash while changing folder
+		columns during incorporation'
+	* src/gtk/pluginwindow.c
+		From 2.7.0cvs4:
+		Set the plugin window transient. Seems
+		like some window managers hide it in
+		the background after "load plugin"...
+	* src/gtk/filesel.c
+		From 2.7.0cvs3:
+		Use the same type for alloc and free
+
 2007-01-08 [paul]	2.7.0
 
 	* NEWS
