@@ -1,3 +1,10 @@
+2007-01-12 [paul]	2.7.0cvs5-stable
+
+	* src/compose.c
+		From 2.7.0cvs16:
+		Strip S/MIME signatures when re-editing
+		S/MIME signed messages.
+
 2007-01-12 [paul]	2.7.0cvs4-stable
 
 	* src/mimeview.c
