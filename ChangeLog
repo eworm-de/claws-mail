@@ -1,3 +1,8 @@
+2007-01-12 [wwp]	2.7.0cvs11
+
+	* src/prefs_account.c
+		Fix compilation w/o aspell (completes 2.7.0cvs7).
+
 2007-01-11 [colin]	2.7.0cvs10
 
 	* src/imap.c

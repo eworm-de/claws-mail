@@ -744,6 +744,7 @@ static void create_widget_func(PrefsPage * _page,
 	if (notebook == NULL)
 		prefs_account_create();
 	else {
+#ifdef USE_ASPELL
 		/* reset gtkaspell menus */
 		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary));
 		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary), 
@@ -753,6 +754,7 @@ static void create_widget_func(PrefsPage * _page,
 		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_alt_dictionary), 
 				gtkaspell_dictionary_option_menu_new_with_refresh(
 				prefs_common.aspell_path, FALSE));
+#endif
 	}
 	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
