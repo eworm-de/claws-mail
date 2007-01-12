@@ -1,3 +1,13 @@
+2007-01-12 [paul]	2.7.0cvs15
+
+	* configure.ac
+	* src/addressbook.c
+	* src/foldersel.c
+	* src/folderview.c
+	* src/main.c
+		no need to define CLAWS anymore, remove
+		all that stuff
+
 2007-01-12 [paul]	2.7.0cvs14
 
 	* src/mimeview.c

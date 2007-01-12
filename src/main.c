@@ -157,9 +157,7 @@ static gint lock_socket_remove		(void);
 static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
 					 GdkInputCondition condition);
-#ifndef CLAWS					 
-static 
-#endif
+
 gchar *get_socket_name		(void);
 
 
@@ -1271,9 +1269,6 @@ gboolean claws_is_starting(void)
  * CLAWS: want this public so crash dialog can delete the
  * lock file too
  */
-#ifndef CLAWS
-static
-#endif
 gchar *get_socket_name(void)
 {
 	static gchar *filename = NULL;

@@ -11,7 +11,7 @@ MINOR_VERSION=7
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=14
+EXTRA_VERSION=15
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -52,9 +52,6 @@ AM_CONDITIONAL(CLAWS_GNOME, test -n "$gnomedatadir")
 dnl GNOME 2.x installed?
 PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)
 AM_CONDITIONAL(CLAWS_GNOME2, test x"$ac_enable_gnome2" = x"yes")
-
-dnl Claws version
-AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)
 
 dnl libtool versioning
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION

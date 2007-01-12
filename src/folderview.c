@@ -1633,31 +1633,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-#if !CLAWS /* keep it here for syncs */
-void folderview_update_item(FolderItem *item, gboolean update_summary)
-{
-	GList *list;
-	FolderView *folderview;
-	GtkCTree *ctree;
-	GtkCTreeNode *node;
-
-	g_return_if_fail(item != NULL);
-
-	for (list = folderview_list; list != NULL; list = list->next) {
-		folderview = (FolderView *)list->data;
-		ctree = GTK_CTREE(folderview->ctree);
-
-		node = gtk_ctree_find_by_row_data(ctree, NULL, item);
-		if (node) {
-			folderview_update_node(folderview, node);
-			if (update_summary && folderview->opened == node)
-				summary_show(folderview->summaryview,
-					     item, FALSE);
-		}
-	}
-}
-#endif
-
 void folderview_update_search_icon(FolderItem *item, gboolean matches)
 {
 	GList *list;

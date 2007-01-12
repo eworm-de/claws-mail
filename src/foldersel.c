@@ -391,22 +391,6 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 		}
 	}
 
-        /* CLAWS: already adds the UI string to the folder name */
-#ifndef CLAWS         
-	if (!item->parent) {
-		switch (FOLDER_TYPE(item->folder)) {
-		case F_MH:
-			Xstrcat_a(name, name, " (MH)", ); break;
-		case F_IMAP:
-			Xstrcat_a(name, name, " (IMAP4)", ); break;
-		case F_NEWS:
-			Xstrcat_a(name, name, " (News)", ); break;
-		default:
-			break;
-		}
-	}
-#endif        
-
 	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0) {
 		name = g_strdup_printf("%s (%d)", name, item->total_msgs);
 	} else if (item->unread_msgs > 0) {
