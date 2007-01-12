@@ -2232,3 +2232,4 @@
 ( cvs diff -u -r 1.49.2.85 -r 1.49.2.86 src/procmime.c;  ) > 2.7.0cvs3.patchset
 ( cvs diff -u -r 1.83.2.96.2.1 -r 1.83.2.96.2.2 src/mimeview.c;  ) > 2.7.0cvs4.patchset
 ( cvs diff -u -r 1.382.2.349 -r 1.382.2.350 src/compose.c;  ) > 2.7.0cvs5-stable.patchset
+( cvs diff -u -r 1.1.4.63 -r 1.1.4.64 src/etpan/imap-thread.c;  ) > 2.7.0cvs6.patchset

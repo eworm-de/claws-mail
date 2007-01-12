@@ -1,3 +1,11 @@
+2007-01-12 [paul]	2.7.0cvs6-stable
+
+	* src/etpan/imap-thread.c
+		From 2.7.0cvs17:
+		Make sure we get rid of the previous mailimap
+		when connecting - just in case disconnect was
+		unclean
+
 2007-01-12 [paul]	2.7.0cvs5-stable
 
 	* src/compose.c
