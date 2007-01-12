@@ -2238,3 +2238,4 @@
 ( cvs diff -u -r 1.53.2.21 -r 1.53.2.22 po/POTFILES.in;  ) > 2.7.0cvs9.patchset
 ( cvs diff -u -r 1.179.2.147 -r 1.179.2.148 src/imap.c;  ) > 2.7.0cvs10.patchset
 ( cvs diff -u -r 1.105.2.77 -r 1.105.2.78 src/prefs_account.c;  ) > 2.7.0cvs11.patchset
+( cvs diff -u -r 1.654.2.2292 -r 1.654.2.2293 configure.ac;  ) > 2.7.0cvs12.patchset
