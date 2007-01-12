@@ -2242,3 +2242,4 @@
 ( cvs diff -u -r 1.49.2.85 -r 1.49.2.86 src/procmime.c;  ) > 2.7.0cvs13.patchset
 ( cvs diff -u -r 1.83.2.97 -r 1.83.2.98 src/mimeview.c;  ) > 2.7.0cvs14.patchset
 ( cvs diff -u -r 1.654.2.2295 -r 1.654.2.2296 configure.ac;  cvs diff -u -r 1.60.2.74 -r 1.60.2.75 src/addressbook.c;  cvs diff -u -r 1.26.2.30 -r 1.26.2.31 src/foldersel.c;  cvs diff -u -r 1.207.2.141 -r 1.207.2.142 src/folderview.c;  cvs diff -u -r 1.115.2.122 -r 1.115.2.123 src/main.c;  ) > 2.7.0cvs15.patchset
+( cvs diff -u -r 1.382.2.350 -r 1.382.2.351 src/compose.c;  ) > 2.7.0cvs16.patchset

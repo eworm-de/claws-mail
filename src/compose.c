@@ -1126,7 +1126,8 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		}
 	}
 	if (privacy != NULL) {
-		compose->privacy_system = g_strdup(privacy);
+		if (compose->privacy_system == NULL)
+			compose->privacy_system = g_strdup(privacy);
 		compose_update_privacy_system_menu_item(compose, FALSE);
 		compose_use_encryption(compose, TRUE);
 	}
@@ -1146,7 +1147,8 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account)
 		}
 	}
 	if (privacy != NULL) {
-		compose->privacy_system = g_strdup(privacy);
+		if (compose->privacy_system == NULL)
+			compose->privacy_system = g_strdup(privacy);
 		compose_update_privacy_system_menu_item(compose, FALSE);
 		compose_use_signing(compose, TRUE);
 	}
@@ -3302,7 +3304,9 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 			/* if we meet a pgp signature, we don't attach it, but
 			 * we force signing. */
-			if (strcmp(content_type, "application/pgp-signature")) {
+			if (strcmp(content_type, "application/pgp-signature") &&
+			    strcmp(content_type, "application/pkcs7-signature") &&
+			    strcmp(content_type, "application/x-pkcs7-signature")) {
 				partname = procmime_mimeinfo_get_parameter(child, "filename");
 				if (partname == NULL)
 					partname = procmime_mimeinfo_get_parameter(child, "name");

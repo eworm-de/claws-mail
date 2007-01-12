@@ -1,3 +1,9 @@
+2007-01-12 [paul]	2.7.0cvs16
+
+	* src/compose.c
+		Strip S/MIME signatures when re-editing
+		S/MIME signed messages.
+
 2007-01-12 [paul]	2.7.0cvs15
 
 	* configure.ac
