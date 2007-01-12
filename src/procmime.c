@@ -2114,6 +2114,7 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 		}
 		fseek(infp, mimeinfo->offset, SEEK_SET);
 		while (fgets(buf, sizeof(buf), infp) == buf) {
+			strcrchomp(buf);
 			if (buf[0] == '\n' && buf[1] == '\0')
 				break;
 			if (skip && (buf[0] == ' ' || buf[0] == '\t'))

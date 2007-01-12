@@ -1,3 +1,10 @@
+2007-01-12 [paul]	2.7.0cvs13
+
+	* src/procmime.c
+		fix Forwarding msgs with attachments
+		that have dos line endings
+		Thanks to Colin
+
 2007-01-12 [wwp]	2.7.0cvs12
 
 	* configure.ac
