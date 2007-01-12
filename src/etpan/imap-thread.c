@@ -415,6 +415,17 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	chashdatum value;
 	mailimap * imap;
 	
+	imap = get_imap(folder);
+	if (imap) {
+		key.data = &folder;
+		key.len = sizeof(folder);
+		value.data = imap;
+		value.len = 0;
+		chash_delete(session_hash, &key, NULL);
+		mailimap_free(imap);
+		debug_print("deleted old imap\n");
+	}
+
 	imap = mailimap_new(0, NULL);
 	
 	key.data = &folder;
@@ -487,6 +498,17 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	mailimap * imap;
 	unsigned char *certificate = NULL;
 	int cert_len;
+
+	imap = get_imap(folder);
+	if (imap) {
+		key.data = &folder;
+		key.len = sizeof(folder);
+		value.data = imap;
+		value.len = 0;
+		chash_delete(session_hash, &key, NULL);
+		mailimap_free(imap);
+		debug_print("deleted old imap\n");
+	}
 
 	imap = mailimap_new(0, NULL);
 	
@@ -2706,6 +2728,17 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	chashdatum value;
 	mailimap * imap;
 	
+	imap = get_imap(folder);
+	if (imap) {
+		key.data = &folder;
+		key.len = sizeof(folder);
+		value.data = imap;
+		value.len = 0;
+		chash_delete(session_hash, &key, NULL);
+		mailimap_free(imap);
+		debug_print("deleted old imap\n");
+	}
+
 	imap = mailimap_new(0, NULL);
 	
 	key.data = &folder;
