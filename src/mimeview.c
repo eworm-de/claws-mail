@@ -339,6 +339,17 @@ void mimeview_init(MimeView *mimeview)
 		GTK_WIDGET_PTR(mimeview->textview));
 }
 
+static gboolean any_part_is_signed(MimeInfo *mimeinfo)
+{
+	while (mimeinfo) {
+		if (privacy_mimeinfo_is_signed(mimeinfo))
+			return TRUE;
+		mimeinfo = procmime_mimeinfo_next(mimeinfo);
+	}
+
+	return FALSE;
+}
+
 void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
@@ -357,6 +368,13 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	g_signal_handlers_block_by_func(G_OBJECT(ctree), mimeview_selected,
 					mimeview);
 
+	/* check if the mail's signed - it can change the mail structure */
+	
+	if (any_part_is_signed(mimeinfo))
+		debug_print("signed mail\n");
+
+	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
+	icon_list_clear(mimeview);
 	icon_list_create(mimeview, mimeinfo);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
@@ -2088,7 +2106,7 @@ static void icon_list_clear (MimeView *mimeview)
 {
 	GList     *child;
 	GtkAdjustment *adj;
-	
+		
 	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
 	for (; child != NULL; child = g_list_next(child)) {
 		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_vbox), 
@@ -2171,8 +2189,6 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	GtkRequisition size;
-
-	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
 
 	g_return_if_fail(mimeinfo != NULL);
 

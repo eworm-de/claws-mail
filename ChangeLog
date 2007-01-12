@@ -1,3 +1,10 @@
+2007-01-12 [paul]	2.7.0cvs14
+
+	* src/mimeview.c
+		check if the mail's signed as
+		it can change the mail structure
+		Thanks to Colin
+
 2007-01-12 [paul]	2.7.0cvs13
 
 	* src/procmime.c
