@@ -4013,7 +4013,7 @@ void summary_unselect_all(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_select_thread(SummaryView *summaryview)
+void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node = summaryview->selected;
@@ -4030,6 +4030,13 @@ void summary_select_thread(SummaryView *summaryview)
 			 FALSE);
 
 	gtk_ctree_select_recursive(ctree, node);
+
+	if (delete_thread) {
+		if (FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS)
+			summary_delete(summaryview);
+		else
+			summary_delete_trash(summaryview);
+	}
 
 	summary_status_show(summaryview);
 }

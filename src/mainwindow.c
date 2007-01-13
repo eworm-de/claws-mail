@@ -390,6 +390,9 @@ static void allsel_cb		 (MainWindow	*mainwin,
 static void select_thread_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void delete_thread_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -520,6 +523,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
 	{N_("/_Edit/Select _thread"),		NULL, select_thread_cb, 0, NULL},
+	{N_("/_Edit/_Delete thread"),		NULL, delete_thread_cb, 0, NULL},
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
@@ -2230,6 +2234,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
+		{"/Edit/Delete thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
 
 		{"/View/Set displayed columns/in Folder list..."
@@ -3791,7 +3796,13 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void select_thread_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
-	summary_select_thread(mainwin->summaryview);
+	summary_select_thread(mainwin->summaryview, FALSE);
+}
+
+static void delete_thread_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_select_thread(mainwin->summaryview, TRUE);
 }
 
 static void create_filter_cb(MainWindow *mainwin, guint action,

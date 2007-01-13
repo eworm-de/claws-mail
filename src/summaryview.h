@@ -271,7 +271,8 @@ void summary_unignore_thread	  (SummaryView 		*summaryview);
 void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
-void summary_select_thread	  (SummaryView		*summaryview);
+void summary_select_thread	  (SummaryView		*summaryview,
+				   gboolean		 delete_thread);
 
 void summary_set_colorlabel	  (SummaryView		*summaryview,
 				   guint		 labelcolor,

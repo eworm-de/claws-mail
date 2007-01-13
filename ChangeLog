@@ -1,3 +1,10 @@
+2007-01-13 [paul]	2.7.0cvs22
+
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		add 'Edit/Delete thread'
+
 2007-01-13 [colin]	2.7.0cvs21
 
 	* src/prefs_account.c
