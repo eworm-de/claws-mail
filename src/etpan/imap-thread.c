@@ -31,6 +31,23 @@ static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
 static GIOChannel * io_channel = NULL;
 
+void delete_imap(Folder *folder, mailimap *imap)
+{
+	chashdatum key;
+	chashdatum value;
+
+	key.data = &folder;
+	key.len = sizeof(folder);
+	value.data = imap;
+	value.len = 0;
+	chash_delete(session_hash, &key, NULL);
+	
+	key.data = &imap;
+	key.len = sizeof(imap);
+	chash_delete(courier_workaround_hash, &key, NULL);
+	debug_print("removing mailimap %p\n", imap);
+	mailimap_free(imap);	
+}
 
 static gboolean thread_manager_event(GIOChannel * source,
     GIOCondition condition,
@@ -417,13 +434,8 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	
 	imap = get_imap(folder);
 	if (imap) {
-		key.data = &folder;
-		key.len = sizeof(folder);
-		value.data = imap;
-		value.len = 0;
-		chash_delete(session_hash, &key, NULL);
-		mailimap_free(imap);
-		debug_print("deleted old imap\n");
+		debug_print("deleting old imap %p\n", imap);
+		delete_imap(folder, imap);
 	}
 
 	imap = mailimap_new(0, NULL);
@@ -501,13 +513,8 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 
 	imap = get_imap(folder);
 	if (imap) {
-		key.data = &folder;
-		key.len = sizeof(folder);
-		value.data = imap;
-		value.len = 0;
-		chash_delete(session_hash, &key, NULL);
-		mailimap_free(imap);
-		debug_print("deleted old imap\n");
+		debug_print("deleting old imap %p\n", imap);
+		delete_imap(folder, imap);
 	}
 
 	imap = mailimap_new(0, NULL);
@@ -615,8 +622,6 @@ void imap_threaded_disconnect(Folder * folder)
 {
 	struct connect_param param;
 	struct connect_result result;
-	chashdatum key;
-	chashdatum value;
 	mailimap * imap;
 	
 	imap = get_imap(folder);
@@ -629,17 +634,12 @@ void imap_threaded_disconnect(Folder * folder)
 	
 	threaded_run(folder, &param, &result, disconnect_run);
 	
-	key.data = &folder;
-	key.len = sizeof(folder);
-	value.data = imap;
-	value.len = 0;
-	chash_delete(session_hash, &key, NULL);
-	
-	key.data = &imap;
-	key.len = sizeof(imap);
-	chash_delete(courier_workaround_hash, &key, NULL);
-	
-	mailimap_free(imap);
+	if (imap == get_imap(folder)) {
+		debug_print("deleting old imap %p\n", imap);
+		delete_imap(folder, imap);
+	} else {
+		debug_print("imap already deleted %p\n", imap);
+	}
 	
 	debug_print("disconnect ok\n");
 }
@@ -2730,13 +2730,8 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	
 	imap = get_imap(folder);
 	if (imap) {
-		key.data = &folder;
-		key.len = sizeof(folder);
-		value.data = imap;
-		value.len = 0;
-		chash_delete(session_hash, &key, NULL);
-		mailimap_free(imap);
-		debug_print("deleted old imap\n");
+		debug_print("deleting old imap %p\n", imap);
+		delete_imap(folder, imap);
 	}
 
 	imap = mailimap_new(0, NULL);

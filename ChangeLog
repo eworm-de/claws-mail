@@ -1,3 +1,9 @@
+2007-01-13 [colin]	2.7.0cvs19
+
+	* src/etpan/imap-thread.c
+		Make sure we don't free the same imap
+		twice
+
 2007-01-13 [colin]	2.7.0cvs18
 
 	* commitHelper

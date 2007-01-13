@@ -2245,3 +2245,4 @@
 ( cvs diff -u -r 1.382.2.350 -r 1.382.2.351 src/compose.c;  ) > 2.7.0cvs16.patchset
 ( cvs diff -u -r 1.1.4.63 -r 1.1.4.64 src/etpan/imap-thread.c;  ) > 2.7.0cvs17.patchset
 ( cvs diff -u -r 1.1.2.33 -r 1.1.2.34 commitHelper;  ) > 2.7.0cvs18.patchset
+( cvs diff -u -r 1.1.4.64 -r 1.1.4.65 src/etpan/imap-thread.c;  ) > 2.7.0cvs19.patchset
