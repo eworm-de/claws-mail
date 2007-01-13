@@ -236,11 +236,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(enable_sa_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), enable_sa_checkbtn, TRUE, TRUE, 0);
 
-	PACK_FRAME(vbox2, frame_transport, _("Transport"));
-	vbox_transport = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_transport);
-	gtk_container_add (GTK_CONTAINER (frame_transport), vbox_transport);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_transport), 8);
+	vbox_transport = gtkut_get_options_frame(vbox2, &frame_transport, _("Transport"));
 
 	table_transport = gtk_table_new (3, 3, FALSE);
 	gtk_widget_show (table_transport);

@@ -135,12 +135,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
 			   _("when re-editing"));
 
-	PACK_FRAME(vbox1, frame, _("Forwarding"));
-	
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);	
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Forwarding"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
@@ -148,12 +143,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
 
-	PACK_FRAME(vbox1, frame, _("Editing"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Editing"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
@@ -225,12 +215,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox1, checkbtn_compose_with_format, 
 			   _("Use format when composing new messages"));
 
-	PACK_FRAME (vbox1, frame_format, _("New message format"));
-
-	vbox_format = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_format);
-	gtk_container_add (GTK_CONTAINER (frame_format), vbox_format);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
+	vbox_format = gtkut_get_options_frame(vbox1, &frame_format, _("New message format"));
 
 	hbox_format = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_format);

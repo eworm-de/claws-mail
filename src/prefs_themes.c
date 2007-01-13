@@ -838,12 +838,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_widget_show (vbox1);
 
-	PACK_FRAME (vbox1, frame1, _("Selector"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("Selector"));
 
 	hbox3 = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox3);

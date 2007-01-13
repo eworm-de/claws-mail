@@ -94,12 +94,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			_("Automatically check signatures"));
 
-	PACK_FRAME(vbox1, frame_passphrase, _("Passphrase"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_passphrase), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Passphrase"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
 			_("Store passphrase in memory"));
@@ -270,12 +265,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
-	PACK_FRAME (vbox, frame1, _("Sign key"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
+	vbox2 = gtkut_get_options_frame(vbox, &frame1, _("Sign key"));
 
 	hbox = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox);

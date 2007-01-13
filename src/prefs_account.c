@@ -1208,12 +1208,7 @@ static void prefs_account_basic_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	PACK_FRAME (vbox1, serv_frame, _("Server information"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (serv_frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &serv_frame, _("Server information"));
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1471,12 +1466,7 @@ static void prefs_account_receive_create(void)
 	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME (vbox1, local_frame, _("Local"));
-
-	local_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (local_vbox);
-	gtk_container_add (GTK_CONTAINER (local_frame), local_vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (local_vbox), VBOX_BORDER);
+	local_vbox = gtkut_get_options_frame(vbox1, &local_frame, _("Local"));
 
 	local_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (local_hbox);
@@ -1504,13 +1494,7 @@ static void prefs_account_receive_create(void)
 			  G_CALLBACK (prefs_account_select_folder_cb),
 			  local_inbox_entry);
 
-	PACK_FRAME (vbox1, frame1, _("POP3"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
-
+	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("POP3"));
 	PACK_CHECK_BUTTON (vbox2, use_apop_chkbtn,
 			   _("Use secure authentication (APOP)"));
 
@@ -1599,12 +1583,7 @@ static void prefs_account_receive_create(void)
 			  G_CALLBACK (prefs_account_select_folder_cb),
 			  inbox_entry);
 
-	PACK_FRAME(vbox1, frame2, _("NNTP"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame2), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame2, _("NNTP"));
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
@@ -1630,12 +1609,7 @@ static void prefs_account_receive_create(void)
 	gtk_spin_button_set_numeric
 		(GTK_SPIN_BUTTON (maxarticle_spinbtn), TRUE);
 
-	PACK_FRAME (vbox1, imap_frame, _("IMAP4"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (imap_frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	vbox2 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP4"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1743,12 +1717,7 @@ static void prefs_account_send_create(void)
 	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME (vbox1, frame, _("Header"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
 
 	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
 
@@ -1769,12 +1738,7 @@ static void prefs_account_send_create(void)
 
 	SET_TOGGLE_SENSITIVITY (customhdr_chkbtn, customhdr_edit_btn);
 
-	PACK_FRAME (vbox1, frame, _("Authentication"));
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_container_add (GTK_CONTAINER (frame), vbox3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+	vbox3 = gtkut_get_options_frame(vbox1, &frame, _("Authentication"));
 
 	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
 		_("SMTP Authentication (SMTP AUTH)"));
@@ -1941,12 +1905,7 @@ static void prefs_account_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_sig, _("Signature"));
-
-	vbox_sig = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_sig);
-	gtk_container_add (GTK_CONTAINER (frame_sig), vbox_sig);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_sig), 8);
+	vbox_sig = gtkut_get_options_frame(vbox1, &frame_sig, _("Signature"));
 
 	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
 			   _("Insert signature automatically"));
@@ -2249,11 +2208,7 @@ static void prefs_account_ssl_create(void)
 	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME (vbox1, pop_frame, _("POP3"));
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (pop_frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &pop_frame, _("POP3"));
 
 	CREATE_RADIO_BUTTONS(vbox2,
 			     pop_nossl_radiobtn,
@@ -2266,11 +2221,7 @@ static void prefs_account_ssl_create(void)
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
 
-	PACK_FRAME (vbox1, imap_frame, _("IMAP4"));
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_container_add (GTK_CONTAINER (imap_frame), vbox3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+	vbox3 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP4"));
 
 	CREATE_RADIO_BUTTONS(vbox3,
 			     imap_nossl_radiobtn,
@@ -2283,11 +2234,7 @@ static void prefs_account_ssl_create(void)
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
 
-	PACK_FRAME (vbox1, nntp_frame, _("NNTP"));
-	vbox4 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox4);
-	gtk_container_add (GTK_CONTAINER (nntp_frame), vbox4);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox4), 8);
+	vbox4 = gtkut_get_options_frame(vbox1, &nntp_frame, _("NNTP"));
 
 	nntp_nossl_radiobtn =
 		gtk_radio_button_new_with_label (NULL, _("Don't use SSL"));
@@ -2301,11 +2248,7 @@ static void prefs_account_ssl_create(void)
 	CREATE_RADIO_BUTTON(vbox4, nntp_ssltunnel_radiobtn, nntp_nossl_radiobtn,
 			    _("Use SSL for NNTP connection"), SSL_TUNNEL);
 
-	PACK_FRAME (vbox1, send_frame, _("Send (SMTP)"));
-	vbox5 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox5);
-	gtk_container_add (GTK_CONTAINER (send_frame), vbox5);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox5), 8);
+	vbox5 = gtkut_get_options_frame(vbox1, &send_frame, _("Send (SMTP)"));
 
 	CREATE_RADIO_BUTTONS(vbox5,
 			     smtp_nossl_radiobtn,
@@ -2521,12 +2464,7 @@ static void prefs_account_advanced_create(void)
 
 	/* special folder setting (maybe these options are redundant) */
 
-	PACK_FRAME (vbox1, folder_frame, _("Folder"));
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_container_add (GTK_CONTAINER (folder_frame), vbox3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+	vbox3 = gtkut_get_options_frame(vbox1, &folder_frame, _("Folder"));
 
 	table = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table);

@@ -1017,6 +1017,24 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 	return button;
 }
 
+GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **frame,
+		const gchar *frame_label)
+{
+	GtkWidget *vbox;
+	
+	*frame = gtk_frame_new(frame_label);
+	gtk_widget_show(*frame);
+	gtk_box_pack_start(GTK_BOX(box), *frame, FALSE, TRUE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(*frame), 0.01, 0.5);
+	
+	vbox = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER (*frame), vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
+	
+	return vbox;
+}
+
 #if HAVE_LIBCOMPFACE
 gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
 {

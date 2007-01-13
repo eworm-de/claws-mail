@@ -118,11 +118,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* Use of external incorporation program */
-	PACK_FRAME(vbox1, frame, _("External incorporation program"));
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER(frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("External incorporation program"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_incext,
 			   _("Use external program for receiving mail"));
@@ -141,11 +137,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
 
 	/* Auto-checking */
-	PACK_FRAME(vbox1, frame, _("Automatic checking"));	
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER(frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Automatic checking"));	
 	
 	hbox_autochk = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autochk);
@@ -173,11 +165,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Check for new mail on startup"));
 
 	/* receive dialog */
-	PACK_FRAME(vbox1, frame, _("Dialogs"));
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Dialogs"));
 	
 	label_recvdialog = gtk_label_new (_("Show receive dialog"));
 	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
@@ -207,21 +195,13 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
 			   _("Don't popup error dialog on receive error"));
 
- 	PACK_FRAME(vbox1, frame, _("After receiving new mail"));
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+ 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("After receiving new mail"));
 
  	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox, _("Go to inbox"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
  			   _("Update all local folders"));
  
- 	PACK_FRAME(vbox2, frame, _("Run command"));
- 	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
- 	gtk_widget_show (vbox3);
- 	gtk_container_add (GTK_CONTAINER (frame), vbox3);
- 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 4);
+ 	vbox3 = gtkut_get_options_frame(vbox2, &frame, _("Run command"));
  	
 	hbox = gtk_hbox_new (TRUE, 8);
 	gtk_widget_show (hbox);

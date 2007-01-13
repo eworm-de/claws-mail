@@ -758,11 +758,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	
-	PACK_FRAME(vbox1, folderview_frame, _("Folder list"));
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER(folderview_frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &folderview_frame, _("Folder list"));
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
@@ -804,11 +800,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
 
-	PACK_FRAME(vbox1, summaryview_frame, _("Message list"));
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER (summaryview_frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &summaryview_frame, _("Message list"));
 
 	hbox1 = gtk_hbox_new (FALSE, 10);
 	gtk_widget_show (hbox1);

@@ -140,13 +140,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_msg, _("Message view"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_msg), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
-
+	vbox2 = gtkut_get_options_frame(vbox1, &frame_msg, _("Message view"));
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -163,12 +157,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox, chkbtn_enable_colors,
 			   _("Enable coloration of message text"));
 
-	PACK_FRAME(vbox2, frame_quote, _("Quote"));
-
-	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox3);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
+	vbox3 = gtkut_get_options_frame(vbox2, &frame_quote, _("Quote"));
 
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox_quote, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_quote), vbox_quotefg, FALSE, TRUE, 0);
@@ -373,12 +362,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
   	gtk_box_pack_start (GTK_BOX(hbox), label_signature, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(chkbtn_enable_colors, label_signature);
 
-	PACK_FRAME(vbox1, frame_folder, _("Folder list"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_folder), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Folder list"));
 
 	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show (hbox);
@@ -417,12 +401,8 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
  	gtk_box_pack_start (GTK_BOX(hbox), label_color_new, FALSE, FALSE, 0);
 
 	/* custom colors */
-	PACK_FRAME (vbox1, frame_custom_colors, _("Color labels"));
-
-	vbox_color_labels = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_color_labels);
-	gtk_container_add (GTK_CONTAINER (frame_custom_colors), vbox_color_labels);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_color_labels), VBOX_BORDER);
+	vbox_color_labels = gtkut_get_options_frame(vbox1,
+				&frame_custom_colors, _("Color labels"));
 
 	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_custom_colors);

@@ -208,11 +208,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(aspell_path_select);
 	gtk_box_pack_start(GTK_BOX(aspell_path_hbox), aspell_path_select, FALSE, FALSE, 0);
 
-	PACK_FRAME(vbox1, automatic_frame, _("Automatic spelling"));
-	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
-	gtk_widget_show(vbox2);
-	gtk_container_add(GTK_CONTAINER(automatic_frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &automatic_frame, _("Automatic spelling"));
 	
 	check_while_typing_checkbtn = gtk_check_button_new_with_label(
 			_("Check while typing"));
@@ -224,10 +220,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_widget_show(recheck_when_changing_dict_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), recheck_when_changing_dict_checkbtn, TRUE, TRUE, 0);
 	
-	PACK_FRAME(vbox1, dictionary_frame, _("Dictionary"));
-	vbox2 = gtk_vbox_new(TRUE, VSPACING_NARROW);
-	gtk_widget_show(vbox2);
-	gtk_container_add(GTK_CONTAINER(dictionary_frame), vbox2);
+	vbox2 = gtkut_get_options_frame(vbox1, &dictionary_frame, _("Dictionary"));
 	
 	table = gtk_table_new(6, 4, FALSE);
 	gtk_widget_show(table);

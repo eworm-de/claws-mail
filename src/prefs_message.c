@@ -105,12 +105,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame, _("Headers"));
-	
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER(frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Headers"));
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
@@ -146,12 +141,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
 
-	PACK_FRAME(vbox1, frame, _("HTML messages"));
-	
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add(GTK_CONTAINER(frame), vbox2);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("HTML messages"));
 
 	PACK_CHECK_BUTTON(vbox2, chkbtn_html,
 			  _("Render HTML messages as text"));
@@ -186,12 +176,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
 
-	PACK_FRAME(vbox1, frame, _("Scroll"));
-
-	vbox_scr = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_scr);
-	gtk_container_add (GTK_CONTAINER (frame), vbox_scr);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_scr), 8);
+	vbox_scr = gtkut_get_options_frame(vbox1, &frame, _("Scroll"));
 
 	PACK_CHECK_BUTTON(vbox_scr, chkbtn_halfpage, _("Half page"));
 

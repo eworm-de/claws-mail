@@ -98,24 +98,15 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME (vbox1, frame_addr, _("Address book"));
-
-	vbox_addr = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_addr);
-	gtk_container_add (GTK_CONTAINER (frame_addr), vbox_addr);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_addr), 8);
+	vbox_addr = gtkut_get_options_frame(vbox1, &frame_addr, _("Address book"));
 
 	PACK_CHECK_BUTTON
 		(vbox_addr, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
 	/* Clip Log */
-	PACK_FRAME (vbox1, frame_cliplog, _("Log Size"));
+	vbox_cliplog = gtkut_get_options_frame(vbox1, &frame_cliplog, _("Log Size"));
 
-	vbox_cliplog = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_cliplog);
-	gtk_container_add (GTK_CONTAINER (frame_cliplog), vbox_cliplog);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_cliplog), 8);
 	PACK_CHECK_BUTTON (vbox_cliplog, checkbtn_cliplog,
 			   _("Clip the log size"));
 	hbox_cliplog = gtk_hbox_new (FALSE, 8);
@@ -151,12 +142,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, label);
 
 	/* On Exit */
-	PACK_FRAME (vbox1, frame_exit, _("On exit"));
-
-	vbox_exit = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_exit);
-	gtk_container_add (GTK_CONTAINER (frame_exit), vbox_exit);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_exit), 8);
+	vbox_exit = gtkut_get_options_frame(vbox1, &frame_exit, _("On exit"));
 
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_confonexit,
 			   _("Confirm on exit"));
