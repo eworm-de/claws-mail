@@ -1,3 +1,14 @@
+2007-01-13 [colin]	2.7.0cvs8-stable
+
+	* src/message_search.c
+	* src/summary_search.c
+		From 2.7.0cvs20:
+		Fix Enter in search windows
+	* src/messageview.c
+		From 2.7.0cvs20:
+		Fix body search starting at the
+		end of the mail (and asking for loop)
+
 2007-01-13 [colin]	2.7.0cvs7-stable
 
 	* commitHelper
