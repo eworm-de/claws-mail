@@ -5,7 +5,7 @@ tmpfile=${0##*/}.tmp
 head -n 16 configure.ac | grep VERSION= > $tmpfile
 source $tmpfile
 EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}-stable"
 nextextra="$EXTRA_VERSION"
 nextextratype="head"
 rm -f $tmpfile
@@ -98,16 +98,16 @@ else
 	EDITOR=$CVSEDITOR
 fi;
 
-echo -e "#please complete the changelog entry below" > /tmp/logentry
-echo -e -n $log >> /tmp/logentry
+echo -e "#please complete the changelog entry below" > /tmp/logentry.$$
+echo -e -n $log >> /tmp/logentry.$$
 
-$EDITOR /tmp/logentry
+$EDITOR /tmp/logentry.$$
 
 echo "--8<----------"
-grep -v "^#" /tmp/logentry > /tmp/log.tmp.$$ \
-&& mv /tmp/log.tmp.$$ /tmp/logentry
-echo >> /tmp/logentry
-cat /tmp/logentry
+grep -v "^#" /tmp/logentry.$$ > /tmp/log.tmp.$$ \
+&& mv /tmp/log.tmp.$$ /tmp/logentry.$$
+echo >> /tmp/logentry.$$
+cat /tmp/logentry.$$
 
 chlog="ChangeLog"
 
@@ -116,7 +116,7 @@ echo -n "Is it ok (write to $chlog and update configure.ac) [y/N]?"
 read ans
 if [ "$ans" == "y" ]; then
 	mv $chlog $chlog.old
-	cat /tmp/logentry > $chlog
+	cat /tmp/logentry.$$ > $chlog
 	cat $chlog.old >> $chlog
 	rm $chlog.old
 
@@ -127,11 +127,11 @@ if [ "$ans" == "y" ]; then
 
 	if [ "$args" != "" ]; then
 		echo commiting $@ PATCHSETS $chlog configure.ac
-		cvs commit -m "`cat /tmp/logentry`" $@ PATCHSETS $chlog configure.ac
+		cvs commit -m "`cat /tmp/logentry.$$`" $@ PATCHSETS $chlog configure.ac
 	else
 		echo commiting recursively
-		cvs commit -m "`cat /tmp/logentry` "
+		cvs commit -m "`cat /tmp/logentry.$$` "
 	fi;
-	rm -f /tmp/logentry
+	rm -f /tmp/logentry.$$
 	wget -O /dev/null -o /dev/null http://www.colino.net/sylpheed-claws/update.php3
 fi

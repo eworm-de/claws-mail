@@ -1,3 +1,11 @@
+2007-01-13 [colin]	2.7.0cvs7-stable
+
+	* commitHelper
+		Allow multiple commitHelpers to run at once
+	* src/etpan/imap-thread.c
+		From 2.7.0cvs19:
+		Make sure we don't free the same imap twice
+
 2007-01-12 [paul]	2.7.0cvs6-stable
 
 	* src/etpan/imap-thread.c
