@@ -2235,3 +2235,4 @@
 ( cvs diff -u -r 1.1.4.63 -r 1.1.4.64 src/etpan/imap-thread.c;  ) > 2.7.0cvs6.patchset
 ( cvs diff -u -r 1.1.2.33 -r 1.1.2.34 commitHelper;  cvs diff -u -r 1.1.4.63.2.1 -r 1.1.4.63.2.2 src/etpan/imap-thread.c;  ) > 2.7.0cvs7-stable.patchset
 ( cvs diff -u -r 1.3.12.22 -r 1.3.12.23 src/message_search.c;  cvs diff -u -r 1.94.2.117 -r 1.94.2.118 src/messageview.c;  cvs diff -u -r 1.15.2.42 -r 1.15.2.43 src/summary_search.c;  ) > 2.7.0cvs8-stable.patchset
+( cvs diff -u -r 1.395.2.274 -r 1.395.2.275 src/summaryview.c;  ) > 2.7.0cvs9-stable.patchset

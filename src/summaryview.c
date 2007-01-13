@@ -4017,12 +4017,14 @@ void summary_select_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node = summaryview->selected;
+	gboolean froze = FALSE;
 
 	if (!node) return;
 
 	while (GTK_CTREE_ROW(node)->parent != NULL)
 		node = GTK_CTREE_ROW(node)->parent;
 
+	START_LONG_OPERATION(summaryview, FALSE);
 	if (node != summaryview->selected)
 		summary_select_node
 			(summaryview, node,
@@ -4031,6 +4033,7 @@ void summary_select_thread(SummaryView *summaryview)
 
 	gtk_ctree_select_recursive(ctree, node);
 
+	END_LONG_OPERATION(summaryview);
 	summary_status_show(summaryview);
 }
 
