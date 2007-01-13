@@ -1,3 +1,12 @@
+2007-01-13 [colin]	2.7.0cvs20
+
+	* src/message_search.c
+	* src/summary_search.c
+		Fix Enter in search windows
+	* src/messageview.c
+		Fix body search starting at the
+		end of the mail (and asking for loop)
+
 2007-01-13 [colin]	2.7.0cvs19
 
 	* src/etpan/imap-thread.c

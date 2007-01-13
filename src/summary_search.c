@@ -960,6 +960,12 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 	}
 
+	if (event && (event->keyval == GDK_Return)) {
+		if (!search_window.is_searching) {
+			summary_search_execute(FALSE, FALSE);
+		}
+	}
+
 	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
 		if (search_window.from_entry_has_focus) {
 			combobox_set_value_from_arrow_key(

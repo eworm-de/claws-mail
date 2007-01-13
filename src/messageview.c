@@ -856,6 +856,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	
+	messageview_set_position(messageview, 0);
+
 	if (messageview->window)
 		gtk_window_set_title(GTK_WINDOW(messageview->window), 
 				_("Claws Mail - Message View"));

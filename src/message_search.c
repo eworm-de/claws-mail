@@ -393,6 +393,10 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(search_window.window);
 	}
 
+	if (event && (event->keyval == GDK_Return)) {
+		message_search_execute(FALSE);
+	}
+
 	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
 		if (search_window.body_entry_has_focus) {
 			combobox_set_value_from_arrow_key(
