@@ -1,3 +1,10 @@
+2007-01-14 [colin]	2.7.0cvs26
+
+	* src/gtk/gtksctree.c
+		Fix bug 1098, 'bogus last row display 
+		after expanding a thread'. Patch by
+		Jindrich Makovicka <makovick@gmail.com>
+
 2007-01-14 [colin]	2.7.0cvs25
 
 	* src/etpan/imap-thread.c

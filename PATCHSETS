@@ -2252,3 +2252,4 @@
 ( cvs diff -u -r 1.395.2.275 -r 1.395.2.276 src/summaryview.c;  ) > 2.7.0cvs23.patchset
 ( cvs diff -u -r 1.1.4.65 -r 1.1.4.66 src/etpan/imap-thread.c;  ) > 2.7.0cvs24.patchset
 ( cvs diff -u -r 1.1.4.66 -r 1.1.4.67 src/etpan/imap-thread.c;  ) > 2.7.0cvs25.patchset
+( cvs diff -u -r 1.1.4.37 -r 1.1.4.38 src/gtk/gtksctree.c;  ) > 2.7.0cvs26.patchset
