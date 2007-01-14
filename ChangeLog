@@ -1,3 +1,12 @@
+2007-01-14 [colin]	2.7.0cvs13-stable
+
+	* src/etpan/imap-thread.c
+		From 2.7.0cvs28:
+		Delete the old imap just after allocating
+		the new one. Makes sure we don't get the
+		same pointer by sheer luck, which feels
+		strange in the debug log.
+
 2007-01-14 [colin]	2.7.0cvs12-stable
 
 	* src/gtk/inputdialog.c

@@ -435,15 +435,16 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	struct connect_result result;
 	chashdatum key;
 	chashdatum value;
-	mailimap * imap;
+	mailimap * imap, * oldimap;
 	
-	imap = get_imap(folder);
-	if (imap) {
-		debug_print("deleting old imap %p\n", imap);
-		delete_imap(folder, imap);
-	}
+	oldimap = get_imap(folder);
 
 	imap = mailimap_new(0, NULL);
+	
+	if (oldimap) {
+		debug_print("deleting old imap %p\n", oldimap);
+		delete_imap(folder, oldimap);
+	}
 	
 	key.data = &folder;
 	key.len = sizeof(folder);
@@ -512,18 +513,19 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	struct connect_result result;
 	chashdatum key;
 	chashdatum value;
-	mailimap * imap;
+	mailimap * imap, * oldimap;
 	unsigned char *certificate = NULL;
 	int cert_len;
-
-	imap = get_imap(folder);
-	if (imap) {
-		debug_print("deleting old imap %p\n", imap);
-		delete_imap(folder, imap);
-	}
+	
+	oldimap = get_imap(folder);
 
 	imap = mailimap_new(0, NULL);
 	
+	if (oldimap) {
+		debug_print("deleting old imap %p\n", oldimap);
+		delete_imap(folder, oldimap);
+	}
+
 	key.data = &folder;
 	key.len = sizeof(folder);
 	value.data = imap;
@@ -2731,16 +2733,17 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	struct connect_cmd_result result;
 	chashdatum key;
 	chashdatum value;
-	mailimap * imap;
+	mailimap * imap, * oldimap;
 	
-	imap = get_imap(folder);
-	if (imap) {
-		debug_print("deleting old imap %p\n", imap);
-		delete_imap(folder, imap);
-	}
+	oldimap = get_imap(folder);
 
 	imap = mailimap_new(0, NULL);
 	
+	if (oldimap) {
+		debug_print("deleting old imap %p\n", oldimap);
+		delete_imap(folder, oldimap);
+	}
+
 	key.data = &folder;
 	key.len = sizeof(folder);
 	value.data = imap;
