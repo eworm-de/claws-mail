@@ -1,3 +1,10 @@
+2007-01-14 [colin]	2.7.0cvs10-stable
+
+	* src/etpan/imap-thread.c
+		From 2.7.0cvs24 and 25:
+		Make sure we don't use an old socket
+		when reconnecting.
+
 2007-01-13 [colin]	2.7.0cvs9-stable
 
 	* src/summaryview.c

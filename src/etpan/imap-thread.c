@@ -45,6 +45,11 @@ void delete_imap(Folder *folder, mailimap *imap)
 	key.data = &imap;
 	key.len = sizeof(imap);
 	chash_delete(courier_workaround_hash, &key, NULL);
+	if (imap->imap_stream) {
+		/* we don't want libetpan to logout */
+		mailstream_close(imap->imap_stream);
+		imap->imap_stream = NULL;
+	}
 	debug_print("removing mailimap %p\n", imap);
 	mailimap_free(imap);	
 }
@@ -337,7 +342,7 @@ static mailimap * get_imap(Folder * folder)
 		return NULL;
 	
 	imap = value.data;
-	
+	debug_print("found imap %p\n", imap);
 	return imap;
 }
 
@@ -453,7 +458,7 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_run);
 	
-	debug_print("connect ok %i\n", result.error);
+	debug_print("connect ok %i with imap %p\n", result.error, imap);
 	
 	return result.error;
 }
@@ -540,7 +545,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 		if (certificate) 
 			free(certificate); 
 	}
-	debug_print("connect %d\n", result.error);
+	debug_print("connect %d with imap %p\n", result.error, imap);
 	
 	return result.error;
 }
@@ -2749,7 +2754,7 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	
 	threaded_run(folder, &param, &result, connect_cmd_run);
 	
-	debug_print("connect_cmd ok %i\n", result.error);
+	debug_print("connect_cmd ok %i with imap %p\n", result.error, imap);
 	
 	return result.error;
 }
