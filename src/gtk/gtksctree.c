@@ -2811,6 +2811,9 @@ gtk_sctree_real_tree_expand (GtkCTree     *ctree,
 	{
 	  GList *tmp_list;
 
+	  if (clist->row_list_end == list)
+	      clist->row_list_end = g_list_last(list);
+
 	  tmp_list = (GList *)GTK_CTREE_NODE_NEXT (node);
 	  tmp_list->prev = list;
 	}
