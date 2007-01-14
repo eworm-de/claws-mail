@@ -90,7 +90,8 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
 	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
-	GtkWidget *chooser = gtk_file_chooser_dialog_new (title, NULL, action, 
+	GtkWidget *chooser = gtk_file_chooser_dialog_new_with_backend
+				(title, NULL, action, "gtk+",
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);

@@ -1,3 +1,10 @@
+2007-01-14 [colin]	2.7.0cvs14-stable
+
+	* src/gtk/filesel.c
+		Use the 'gtk+' backend. Avoids gnome-vfs use,
+		two benefits: faster to open, will fix strange
+		dbus-related crash. Thanks to Pascal Terjan.
+
 2007-01-14 [colin]	2.7.0cvs13-stable
 
 	* src/etpan/imap-thread.c
