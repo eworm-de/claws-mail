@@ -2255,3 +2255,4 @@
 ( cvs diff -u -r 1.1.4.37 -r 1.1.4.38 src/gtk/gtksctree.c;  ) > 2.7.0cvs26.patchset
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/gtk/inputdialog.c;  ) > 2.7.0cvs27.patchset
 ( cvs diff -u -r 1.1.4.67 -r 1.1.4.68 src/etpan/imap-thread.c;  ) > 2.7.0cvs28.patchset
+( cvs diff -u -r 1.2.2.30 -r 1.2.2.31 src/gtk/filesel.c;  ) > 2.7.0cvs29.patchset
