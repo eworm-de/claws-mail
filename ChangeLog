@@ -1,3 +1,9 @@
+2007-01-14 [colin]	2.7.0cvs27
+
+	* src/gtk/inputdialog.c
+		Make sure we don't print passwords in
+		clear text when in debug mode
+
 2007-01-14 [colin]	2.7.0cvs26
 
 	* src/gtk/gtksctree.c
