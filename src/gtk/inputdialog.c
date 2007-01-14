@@ -359,7 +359,10 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	if (remember) {
 		*remember = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(remember_chkbtn));
 	}
-	debug_print("return string = %s\n", str ? str : "(none)");
+	if (is_pass)
+		debug_print("return string = %s\n", str ? "********": ("none"));
+	else
+		debug_print("return string = %s\n", str ? str : "(none)");
 	return str;
 }
 

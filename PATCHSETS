@@ -2238,3 +2238,4 @@
 ( cvs diff -u -r 1.395.2.274 -r 1.395.2.275 src/summaryview.c;  ) > 2.7.0cvs9-stable.patchset
 ( cvs diff -u -r 1.1.4.63.2.2 -r 1.1.4.63.2.3 src/etpan/imap-thread.c;  ) > 2.7.0cvs10-stable.patchset
 ( cvs diff -u -r 1.1.4.37 -r 1.1.4.38 src/gtk/gtksctree.c;  ) > 2.7.0cvs11-stable.patchset
+( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/gtk/inputdialog.c;  ) > 2.7.0cvs12-stable.patchset
