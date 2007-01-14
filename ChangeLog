@@ -1,3 +1,9 @@
+2007-01-14 [colin]	2.7.0cvs25
+
+	* src/etpan/imap-thread.c
+		Close socket manually before
+		freeing the imap struct
+
 2007-01-14 [colin]	2.7.0cvs24
 
 	* src/etpan/imap-thread.c

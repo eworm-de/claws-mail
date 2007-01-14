@@ -45,7 +45,11 @@ void delete_imap(Folder *folder, mailimap *imap)
 	key.data = &imap;
 	key.len = sizeof(imap);
 	chash_delete(courier_workaround_hash, &key, NULL);
-	imap->imap_stream = NULL; /* we don't want libetpan to logout */
+	if (imap->imap_stream) {
+		/* we don't want libetpan to logout */
+		mailstream_close(imap->imap_stream);
+		imap->imap_stream = NULL;
+	}
 	debug_print("removing mailimap %p\n", imap);
 	mailimap_free(imap);	
 }
