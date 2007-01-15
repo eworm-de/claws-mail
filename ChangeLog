@@ -1,3 +1,12 @@
+2007-01-15 [paul]	2.7.0cvs30
+
+	* src/mainwindow.c
+		fix compiler warning
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+		add missing include
+		fix copyright header
+
 2007-01-14 [colin]	2.7.0cvs29
 
 	* src/gtk/filesel.c

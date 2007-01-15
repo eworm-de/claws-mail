@@ -2256,3 +2256,4 @@
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/gtk/inputdialog.c;  ) > 2.7.0cvs27.patchset
 ( cvs diff -u -r 1.1.4.67 -r 1.1.4.68 src/etpan/imap-thread.c;  ) > 2.7.0cvs28.patchset
 ( cvs diff -u -r 1.2.2.30 -r 1.2.2.31 src/gtk/filesel.c;  ) > 2.7.0cvs29.patchset
+( cvs diff -u -r 1.274.2.163 -r 1.274.2.164 src/mainwindow.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/prefs_gpg.h;  ) > 2.7.0cvs30.patchset
