@@ -2689,7 +2689,7 @@ int socket_connect_cmd(mailimap * imap, const char * command,
 	if (r != MAILIMAP_NO_ERROR_AUTHENTICATED
 	&&  r != MAILIMAP_NO_ERROR_NON_AUTHENTICATED) {
 		mailstream_close(s);
-		imap->stream = NULL;
+		imap->imap_stream = NULL;
 		return r;
 	}
 	

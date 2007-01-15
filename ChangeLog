@@ -1,3 +1,11 @@
+2007-01-15 [colin]	2.7.1cvs4
+
+	* src/imap.c
+		Fix 'Check for new folders' when IMAP subdirectory
+		is set
+	* src/etpan/imap-thread.c
+		Fix build
+
 2007-01-15 [colin]	2.7.1cvs3
 
 	* src/etpan/imap-thread.c

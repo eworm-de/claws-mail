@@ -2261,3 +2261,4 @@
 ( cvs diff -u -r 1.42.2.25 -r 1.42.2.26 NEWS;  cvs diff -u -r 1.8.2.29 -r 1.8.2.30 README;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2312 -r 1.654.2.2313 configure.ac;  ) > 2.7.1cvs1.patchset
 ( cvs diff -u -r 1.16.2.9 -r 1.16.2.10 src/matcher_parser_lex.l;  cvs diff -u -r 1.8.2.6 -r 1.8.2.7 src/quote_fmt_lex.l;  cvs diff -u -r 1.25.2.19 -r 1.25.2.20 src/matcher_parser_parse.y;  ) > 2.7.1cvs2.patchset
 ( cvs diff -u -r 1.1.4.68 -r 1.1.4.69 src/etpan/imap-thread.c;  ) > 2.7.1cvs3.patchset
+( cvs diff -u -r 1.179.2.148 -r 1.179.2.149 src/imap.c;  cvs diff -u -r 1.1.4.69 -r 1.1.4.70 src/etpan/imap-thread.c;  ) > 2.7.1cvs4.patchset
