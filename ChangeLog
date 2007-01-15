@@ -1,3 +1,9 @@
+2007-01-15 [colin]	2.7.1cvs3
+
+	* src/etpan/imap-thread.c
+		Fix invalid free on command-connection
+		error
+
 2007-01-15 [wwp]	2.7.1cvs2
 
 	* src/matcher_parser_lex.l
