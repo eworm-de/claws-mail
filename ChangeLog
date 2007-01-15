@@ -1,3 +1,12 @@
+2007-01-15 [paul]	2.7.1cvs1
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+	* configure.ac
+		bump up version number following
+		stable release
+
 2007-01-15 [paul]	2.7.0cvs31
 
 	* AUTHORS
