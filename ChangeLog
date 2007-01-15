@@ -1,3 +1,11 @@
+2007-01-15 [colin]	2.7.1cvs1-stable
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+		From 2.7.1cvs{3,4}:
+		IMAP fixes: crash when connect command doesn't exist
+		better folder checking when an IMAP directory is set
+
 2007-01-15 [paul]	2.7.1
 
 	2.7.1 released
