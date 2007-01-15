@@ -1,3 +1,10 @@
+2007-01-15 [wwp]	2.7.1cvs2
+
+	* src/matcher_parser_lex.l
+	* src/quote_fmt_lex.l
+	* src/matcher_parser_parse.y
+		fix copyright header in lexers and parsers.
+
 2007-01-15 [paul]	2.7.1cvs1
 
 	* NEWS
