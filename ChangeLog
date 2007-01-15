@@ -1,3 +1,11 @@
+2007-01-15 [paul]	2.7.0cvs31
+
+	* AUTHORS
+	* src/gtk/authors.h
+		add Fabien to the Team list
+		add the recent contributors
+		make a few corrections
+
 2007-01-15 [paul]	2.7.0cvs30
 
 	* src/mainwindow.c
