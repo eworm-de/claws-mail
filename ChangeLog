@@ -1,3 +1,13 @@
+2007-01-15 [paul]	2.7.0cvs15-stable
+
+	* src/mainwindow.c
+		From 2.7.0cvs30:
+		fix compiler warning
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+		From 2.7.0cvs30:
+		fix copyright header
+
 2007-01-14 [colin]	2.7.0cvs14-stable
 
 	* src/gtk/filesel.c

@@ -3261,7 +3261,6 @@ static void toggle_work_offline_cb (MainWindow *mainwin, guint action, GtkWidget
 static gboolean any_folder_want_synchronise(void)
 {
 	GList *folderlist = folder_get_list();
-	gboolean found = FALSE;
 
 	/* see if there are synchronised folders */
 	for (; folderlist; folderlist = folderlist->next) {
@@ -3272,7 +3271,6 @@ static gboolean any_folder_want_synchronise(void)
 	}
 	
 	return FALSE;
-
 }
 
 static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
