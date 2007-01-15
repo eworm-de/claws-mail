@@ -1,5 +1,30 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.7.1
+-------
+
+* Bug fixes:
+	o bug 1095, 'Crash while changing folder columns during
+		     incorporation'
+	o bug 1098, 'bogus last row display after expanding a thread'
+	o fix a few annoyances when choosing keys for the CMS (S/MIME)
+	  protocol
+	o fix updating of the mime parts
+	o fix Forwarding msgs with attachments that have dos line
+	  endings
+	o strip S/MIME signatures when re-editing S/MIME signed
+	  messages
+	o fix body search starting at the end of the mail (and asking
+	  for loop)
+	o fix Enter in search windows
+	o fix dbus-related crash in the the GTK+ file selector.
+	o IMAP: fix recursion when server lists the current subfolder
+	  in the response
+	o IMAP: get rid of the previous mailimap when connecting, just
+	  in case disconnect was unclean
+	o IMAP: make sure we don't use an old socket when reconnecting
+
+
 * 2.7.0
 -------
 
