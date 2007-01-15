@@ -1,6 +1,7 @@
 Claws Mail (http://www.claws-mail.org)
 
 	Holger Berndt		<berndth@users.sf.net>
+	Tristan Chabredier	<wwp@claws-mail.org>
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
 	Keith Edmunds 		<keith@midnighthax.com>	
 	Match Grun		<match@dimensional.com>
@@ -17,7 +18,7 @@ Claws Mail (http://www.claws-mail.org)
 	Martin Schaaf		<mascha@ma-scha.de>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
-	Tristan Chabredier		<wwp@claws-mail.org>
+	Fabien Vantard		<fzzzzz@gmail.com>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
 Claws Mail-w32 (http://www.gpg4win.org)
@@ -207,7 +208,6 @@ contributors (in addition to the above; based on Changelog)
 	David Chalmers
 	Chad Robinson
 	Edgar Toernig
-	Fabien Vantard
 	Reza Pakdel
 	Stephan Sachse
 	Thomas Gilgin
@@ -236,3 +236,5 @@ contributors (in addition to the above; based on Changelog)
 	Charles A. Edwards
 	Ales Nosek
 	Michael Hughes
+	Jindrich Makovicka
+	Pascal Terjan

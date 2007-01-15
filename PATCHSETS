@@ -2242,3 +2242,4 @@
 ( cvs diff -u -r 1.1.4.63.2.3 -r 1.1.4.63.2.4 src/etpan/imap-thread.c;  ) > 2.7.0cvs13-stable.patchset
 ( cvs diff -u -r 1.2.2.29.2.1 -r 1.2.2.29.2.2 src/gtk/filesel.c;  ) > 2.7.0cvs14-stable.patchset
 ( cvs diff -u -r 1.274.2.161.2.1 -r 1.274.2.161.2.2 src/mainwindow.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/prefs_gpg.h;  ) > 2.7.0cvs15-stable.patchset
+( cvs diff -u -r 1.100.2.46 -r 1.100.2.47 AUTHORS;  cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/gtk/authors.h;  ) > 2.7.0cvs16-stable.patchset
