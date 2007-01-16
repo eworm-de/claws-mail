@@ -1725,12 +1725,59 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	return IMAP_SUCCESS;
 }
 
-gint imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
 {
 	IMAPSession *session = imap_session_get(folder);
+	gchar *real_path;
+	gchar *wildcard_path;
+	gchar separator;
+	gchar wildcard[3];
+	clist * lep_list;
+	GSList *item_list = NULL, *cur;
+	GList *child_list = NULL;
+	int r;
+
 	if (!session)
-		return -1;
-	return imap_scan_tree_recursive(session, item, subs_only);
+		return NULL;
+
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path);
+
+	if (item->path) {
+		wildcard[0] = separator;
+		wildcard[1] = '%';
+		wildcard[2] = '\0';
+		real_path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+	} else {
+		wildcard[0] = '%';
+		wildcard[1] = '\0';
+		real_path = g_strdup("");
+	}
+
+	Xstrcat_a(wildcard_path, real_path, wildcard,
+		  {g_free(real_path); return NULL;});
+	lep_list = NULL;
+	
+	if (subs_only)
+		r = imap_threaded_lsub(folder, "", wildcard_path, &lep_list);
+	else
+		r = imap_threaded_list(folder, "", wildcard_path, &lep_list);
+	if (r)
+		return NULL;
+
+	item_list = imap_list_from_lep(IMAP_FOLDER(folder),
+			       lep_list, real_path, FALSE);
+	mailimap_list_result_free(lep_list);
+
+	for (cur = item_list; cur != NULL; cur = cur->next) {
+		FolderItem *cur_item = FOLDER_ITEM(cur->data);
+		child_list = g_list_prepend(child_list,
+				imap_get_real_path(session, 
+					IMAP_FOLDER(folder), cur_item->path));
+		folder_item_destroy(cur_item);
+	}
+	child_list = g_list_reverse(child_list);
+	g_slist_free(item_list);
+	return child_list;
 }
 
 static gint imap_create_tree(Folder *folder)
@@ -2078,26 +2125,30 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	return 0;
 }
 
-gint imap_subscribe(Folder *folder, FolderItem *item, gboolean sub)
+gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub)
 {
 	gchar *path;
-	gint r;
+	gint r = -1;
 	IMAPSession *session;
 	debug_print("getting session...\n");
 
 	session = imap_session_get(folder);
-	if (!session || !item->path) {
+	if (!session) {
 		return -1;
 	}
-
-	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
-	if (!path)
+	if (item && item->path) {
+		path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+		if (!path)
+			return -1;
+		if (!strcmp(path, "INBOX") && sub == FALSE)
+			return -1;
+		debug_print("%ssubscribing %s\n", sub?"":"un", path);
+		r = imap_threaded_subscribe(folder, path, sub);
+		g_free(path);
+	} else if (rpath) {
+		r = imap_threaded_subscribe(folder, rpath, sub);
+	} else
 		return -1;
-	if (!strcmp(path, "INBOX") && sub == FALSE)
-		return -1;
-	debug_print("%ssubscribing %s\n", sub?"":"un", path);
-	r = imap_threaded_subscribe(folder, path, sub);
-	g_free(path);
 	return r;
 }
 
@@ -4160,7 +4211,6 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 			free(dup_name);
 			continue;
 		}
-		
 		if (!all && path_cmp(name, real_path) == 0) {
 			g_free(base);
 			free(dup_name);
@@ -4500,12 +4550,12 @@ gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 	return -1;
 }
 
-gint imap_subscribe(Folder *folder, FolderItem *item, gboolean sub)
+gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub)
 {
 	return -1;
 }
 
-gint imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+GList * imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
 {
 	return -1;
 }

@@ -1,3 +1,11 @@
+2007-01-16 [colin]	2.7.1cvs11
+
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+		Manage subscribing to subfolders when only
+		subscribed folders are shown.
+
 2007-01-16 [colin]	2.7.1cvs10
 
 	* src/folderview.c

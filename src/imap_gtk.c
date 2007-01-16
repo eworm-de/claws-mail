@@ -401,7 +401,7 @@ static gboolean imap_gtk_subscribe_func(GNode *node, gpointer data)
 	gboolean action = GPOINTER_TO_INT(data);
 	
 	if (item->path)
-		imap_subscribe(item->folder, item, action);
+		imap_subscribe(item->folder, item, NULL, action);
 
 	return FALSE;
 }
@@ -426,12 +426,34 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	
 	if (action && item->folder->account->imap_subsonly) {
-		alertpanel_notice(_("This folder is already subscribed to. To "
+		GList *child_list = imap_scan_subtree(item->folder, item, FALSE);
+		if (child_list) {
+			GList *cur;
+			int r = -1;
+			gchar *child_folder = input_dialog_combo(_("Subscribe"), 
+					_("Choose a subfolder to subscribe to: "),
+					_("All of them"), child_list, TRUE);
+			if (child_folder && strcmp(child_folder, _("All of them"))) {
+				r = imap_subscribe(item->folder, NULL, child_folder, TRUE);
+			} else if (child_folder) {
+				for (cur = child_list; cur; cur = cur->next) 
+					r = imap_subscribe(item->folder, NULL, (gchar *)cur->data, TRUE);
+			}
+			g_free(child_folder);
+			for (cur = child_list; cur; cur = cur->next) 
+				g_free((gchar *)cur->data);
+			if (r == 0)
+				folderview_rescan_tree(item->folder, FALSE);
+		} else {
+			alertpanel_notice(_("This folder is already subscribed to and "
+				  "has no subfolders. To "
 				  "subscribe to other folders, you must first "
 				  "disable \"Show subscribed folders only\".\n"
 				  "\n"
 				  "Alternatively, you can use \"Create new folder\" "
 				  "to subscribe to a known folder."));
+		}
+		g_list_free(child_list);
 		return;
 	}
 	message = g_strdup_printf
@@ -453,7 +475,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 		g_node_traverse(item->node, G_PRE_ORDER,
 			G_TRAVERSE_ALL, -1, imap_gtk_subscribe_func, GINT_TO_POINTER(action));
 	} else {
-		imap_subscribe(item->folder, item, action);
+		imap_subscribe(item->folder, item, NULL, action);
 	}
 
 	if (!action && item->folder->account->imap_subsonly)
