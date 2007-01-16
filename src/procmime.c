@@ -547,40 +547,49 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	FILE *infp, *outfp;
 	gchar buf[BUFFSIZE];
 	gint restlength, readlength;
+	gint saved_errno = 0;
 
 	g_return_val_if_fail(outfile != NULL, -1);
 	g_return_val_if_fail(mimeinfo != NULL, -1);
 
 	if (mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
-		return -1;
+		return -EINVAL;
 
 	if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		saved_errno = errno;
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
-		return -1;
+		return -(saved_errno);
 	}
 	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+		saved_errno = errno;
 		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
 		fclose(infp);
-		return -1;
+		return -(saved_errno);
 	}
 	if ((outfp = g_fopen(outfile, "wb")) == NULL) {
+		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "fopen");
 		fclose(infp);
-		return -1;
+		return -(saved_errno);
 	}
 
 	restlength = mimeinfo->length;
 
 	while ((restlength > 0) && ((readlength = fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
-		fwrite(buf, 1, readlength, outfp);
+		if (fwrite(buf, 1, readlength, outfp) != readlength) {
+			saved_errno = errno;
+			fclose(outfp);
+			return -(saved_errno);
+		}
 		restlength -= readlength;
 	}
 
 	fclose(infp);
 	if (fclose(outfp) == EOF) {
+		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "fclose");
 		g_unlink(outfile);
-		return -1;
+		return -(saved_errno);
 	}
 
 	return 0;

@@ -400,7 +400,7 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	g_free(filename);
 
 	if (ret < 0) {
-		alertpanel_error(_("Can't get part of multipart message"));
+		alertpanel_error(_("Can't get part of multipart message: %s"), strerror(-ret));
 		g_free(part_filename);
 		return FALSE;
 	}

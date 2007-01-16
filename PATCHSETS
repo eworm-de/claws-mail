@@ -2263,3 +2263,4 @@
 ( cvs diff -u -r 1.1.4.68 -r 1.1.4.69 src/etpan/imap-thread.c;  ) > 2.7.1cvs3.patchset
 ( cvs diff -u -r 1.179.2.148 -r 1.179.2.149 src/imap.c;  cvs diff -u -r 1.1.4.69 -r 1.1.4.70 src/etpan/imap-thread.c;  ) > 2.7.1cvs4.patchset
 ( cvs diff -u -r 1.179.2.149 -r 1.179.2.150 src/imap.c;  ) > 2.7.1cvs5.patchset
+( cvs diff -u -r 1.12.2.41 -r 1.12.2.42 src/action.c;  cvs diff -u -r 1.382.2.351 -r 1.382.2.352 src/compose.c;  cvs diff -u -r 1.83.2.98 -r 1.83.2.99 src/mimeview.c;  cvs diff -u -r 1.49.2.86 -r 1.49.2.87 src/procmime.c;  cvs diff -u -r 1.96.2.164 -r 1.96.2.165 src/textview.c;  ) > 2.7.1cvs6.patchset

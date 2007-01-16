@@ -3277,6 +3277,8 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
      
 	child = (MimeInfo *) mimeinfo->node->children->data;
 	while (child != NULL) {
+		gint err;
+
 		if (child == encrypted) {
 			/* skip this part of tree */
 			NEXT_PART_NOT_CHILD(child);
@@ -3295,8 +3297,8 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		}
 
 		outfile = procmime_get_tmp_file_name(child);
-		if (procmime_get_part(outfile, child) < 0)
-			g_warning("Can't get the part of multipart message.");
+		if ((err = procmime_get_part(outfile, child)) < 0)
+			g_warning("Can't get the part of multipart message. (%s)", strerror(-err));
 		else {
 			gchar *content_type;
 

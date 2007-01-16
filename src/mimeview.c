@@ -1331,6 +1331,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 {
 	gchar *filename = NULL, *uriname, *tmp;
 	MimeInfo *partinfo;
+	gint err;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1382,9 +1383,11 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	g_free(tmp);
 
-	if (procmime_get_part(filename, partinfo) < 0)
+	if ((err = procmime_get_part(filename, partinfo)) < 0)
 		alertpanel_error
-			(_("Couldn't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message: %s"), 
+				strerror(-err));
+
 	uriname = g_strconcat("file://", filename, "\r\n", NULL);
 
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
@@ -1438,7 +1441,8 @@ static gboolean mimeview_write_part(const gchar *filename,
 				    MimeInfo *partinfo)
 {
 	gchar *dir;
-	
+	gint err;
+
 	dir= g_path_get_dirname(filename);
 	if (!is_dir_exist(dir))
 		make_dir_hier(dir);
@@ -1463,9 +1467,10 @@ static gboolean mimeview_write_part(const gchar *filename,
 		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
 
-	if (procmime_get_part(filename, partinfo) < 0) {
+	if ((err = procmime_get_part(filename, partinfo)) < 0) {
 		alertpanel_error
-			(_("Couldn't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message: %s"), 
+				strerror(-err));
 		return FALSE;
 	}
 
@@ -1629,6 +1634,7 @@ static void mimeview_display_as_text(MimeView *mimeview)
 static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 {
 	gchar *filename;
+	gint err;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1640,9 +1646,10 @@ static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
-	if (procmime_get_part(filename, partinfo) < 0)
+	if ((err = procmime_get_part(filename, partinfo)) < 0)
 		alertpanel_error
-			(_("Couldn't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message: %s"), 
+				strerror(-err));
 	else
 		mimeview_view_file(filename, partinfo, NULL, mimeview);
 
@@ -1668,14 +1675,15 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	gchar *cmd;
 	gchar *mime_command = NULL;
 	gchar *content_type = NULL;
-
+	gint err;
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
-	if (procmime_get_part(filename, partinfo) < 0) {
+	if ((err = procmime_get_part(filename, partinfo)) < 0) {
 		alertpanel_error
-			(_("Couldn't save the part of multipart message."));
+			(_("Couldn't save the part of multipart message: %s"), 
+				strerror(-err));
 		g_free(filename);
 		return;
 	}

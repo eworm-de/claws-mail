@@ -657,12 +657,13 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			gchar *filename;
 			ClickableText *uri;
 			gchar *uri_str;
+			gint err;
 			START_TIMING("inserting image");
 
 			filename = procmime_get_tmp_file_name(mimeinfo);
 
-			if (procmime_get_part(filename, mimeinfo) < 0) {
-				g_warning("Can't get the image file.");
+			if ((err = procmime_get_part(filename, mimeinfo)) < 0) {
+				g_warning("Can't get the image file.(%s)", strerror(-err));
 				g_free(filename);
 				END_TIMING();
 				return;
