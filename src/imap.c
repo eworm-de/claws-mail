@@ -1574,7 +1574,7 @@ static gint imap_scan_tree(Folder *folder)
 {
 	gboolean subs_only = FALSE;
 	if (folder->account) {
-		printf(" scanning only subs %d\n", folder->account->imap_subsonly);
+		debug_print(" scanning only subs %d\n", folder->account->imap_subsonly);
 		subs_only = folder->account->imap_subsonly;
 	}
 	return imap_scan_tree_real(folder, subs_only);
