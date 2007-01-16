@@ -1,3 +1,9 @@
+2007-01-16 [paul]	2.7.1cvs7
+
+	* src/summaryview.c
+		Allow folder classes to specify only sort_key or
+		sort_type instead of both or none.
+
 2007-01-16 [paul]	2.7.1cvs6
 
 	* src/action.c

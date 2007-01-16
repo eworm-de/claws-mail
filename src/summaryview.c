@@ -6267,13 +6267,14 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 		summaryview->simplify_subject_preg = summary_compile_simplify_regexp(item->prefs->simplify_subject_regexp);
 
 	/* Sorting */
-	if (folder_get_sort_type(item->folder, &sort_key, &sort_type)) {
-		summaryview->sort_key = sort_key;
-		summaryview->sort_type = sort_type;
-	} else {
-		summaryview->sort_key = item->sort_key;
-		summaryview->sort_type = item->sort_type;
-	}
+	sort_key = item->sort_key;
+	sort_type = item->sort_type;
+
+	folder_get_sort_type(item->folder, &sort_key, &sort_type);
+
+	summaryview->sort_key = sort_key;
+	summaryview->sort_type = sort_type;
+
 	/* Threading */
 	summaryview->threaded = item->threaded;
 	summaryview->thread_collapsed = item->thread_collapsed;
