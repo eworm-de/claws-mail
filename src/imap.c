@@ -1549,9 +1549,11 @@ static gint imap_scan_tree(Folder *folder)
 
 	if (folder->node)
 		item = FOLDER_ITEM(folder->node->data);
+		
 	if (item && !item->path && root_folder) {
 		item->path = g_strdup(root_folder);
 	}
+
 	if (!item || ((item->path || root_folder) &&
 		      strcmp2(item->path, root_folder) != 0)) {
 		folder_tree_destroy(folder);
@@ -1633,9 +1635,13 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			}
 		}
 		if (!new_item) {
-			debug_print("folder '%s' not found. removing...\n",
-				    old_item->path);
-			folder_item_remove(old_item);
+			if (old_item && old_item->path && !strcmp(old_item->path, "INBOX")) {
+				debug_print("not removing INBOX\n");
+			} else {
+				debug_print("folder '%s' not found. removing...\n",
+					    old_item->path);
+				folder_item_remove(old_item);
+			}
 		} else {
 			old_item->no_sub = new_item->no_sub;
 			old_item->no_select = new_item->no_select;
