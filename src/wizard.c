@@ -107,6 +107,7 @@ typedef struct
 	GtkWidget *recv_password_label;
 	GtkWidget *recv_imap_label;
 	GtkWidget *recv_imap_subdir;
+	GtkWidget *subsonly_chkbtn;
 	GtkWidget *no_imap_warning;
 #ifdef USE_OPENSSL
 	GtkWidget *smtp_use_ssl;
@@ -135,6 +136,7 @@ typedef struct _AccountTemplate {
 	gchar *recvuser;
 	gchar *recvpass;
 	gchar *imapdir;
+	gboolean subsonly;
 	gchar *mboxfile;
 	gchar *mailbox;
 	gboolean smtpssl;
@@ -170,6 +172,8 @@ static PrefParam template_params[] = {
 	 &tmpl.recvpass, P_STRING, NULL, NULL, NULL},
 	{"imapdir", "",
 	 &tmpl.imapdir, P_STRING, NULL, NULL, NULL},
+	{"subsonly", "TRUE",
+	 &tmpl.subsonly, P_BOOL, NULL, NULL, NULL},
 	{"mboxfile", "/var/mail/$LOGIN",
 	 &tmpl.mboxfile, P_STRING, NULL, NULL, NULL},
 	{"mailbox", "Mail",
@@ -236,9 +240,13 @@ static gchar *accountrc_tmpl =
 	"#default is empty\n"
 	"#recvpass=\n"
 	"\n"
-	"#imap dir if imap (relative to the home on the server\n"
+	"#imap dir if imap (relative to the home on the server)\n"
 	"#default is empty\n"
 	"#imapdir=\n"
+	"\n"
+	"#show subscribed folders only, if imap\n"
+	"#default is TRUE\n"
+	"#subsonly=\n"
 	"\n"
 	"#mbox file if local\n"
 	"#you can use $LOGIN here\n"
@@ -729,6 +737,9 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		if (directory && strlen(directory)) {
 			prefs_account->imap_dir = g_strdup(directory);
 		}
+		prefs_account->imap_subsonly = 
+			gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(wizard->subsonly_chkbtn));
 		g_free(directory);
 	}
 
@@ -1025,6 +1036,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
+		gtk_widget_hide(wizard->subsonly_chkbtn);
 		gtk_widget_show(wizard->recv_username);
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
@@ -1044,6 +1056,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		gtk_widget_show(wizard->recv_imap_label);
 		gtk_widget_show(wizard->recv_imap_subdir);
+		gtk_widget_show(wizard->subsonly_chkbtn);
 		gtk_widget_show(wizard->recv_username);
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
@@ -1060,6 +1073,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #else
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
+		gtk_widget_hide(wizard->subsonly_chkbtn);
 		gtk_widget_hide(wizard->recv_username);
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
@@ -1078,6 +1092,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->no_imap_warning);
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
+		gtk_widget_hide(wizard->subsonly_chkbtn);
 		gtk_widget_hide(wizard->recv_username);
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
@@ -1103,9 +1118,9 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 #ifdef USE_OPENSSL
-	GtkWidget *table = gtk_table_new(7,2, FALSE);
+	GtkWidget *table = gtk_table_new(8,2, FALSE);
 #else
-	GtkWidget *table = gtk_table_new(5,2, FALSE);
+	GtkWidget *table = gtk_table_new(6,2, FALSE);
 #endif
 	GtkWidget *menu = gtk_menu_new();
 	GtkWidget *menuitem;
@@ -1211,6 +1226,16 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 
 	i++;
+	
+	wizard->subsonly_chkbtn = gtk_check_button_new_with_label(
+			_("Show subscribed folders only"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->subsonly_chkbtn),
+			tmpl.subsonly);
+	gtk_table_attach(GTK_TABLE(table), wizard->subsonly_chkbtn, 			      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
+
+	i++;
+	
 	
 	wizard->no_imap_warning = gtk_label_new(_(
 			  "<span weight=\"bold\">Warning: this version of Claws Mail\n"
@@ -1461,6 +1486,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
+	gtk_widget_hide(wizard->subsonly_chkbtn);
 
 	wizard_protocol_change(wizard, tmpl.recvtype);
 

@@ -25,6 +25,9 @@ void imap_threaded_disconnect(Folder * folder);
 int imap_threaded_list(Folder * folder, const char * base,
 		       const char * wildcard,
 		       clist ** p_result);
+int imap_threaded_lsub(Folder * folder, const char * base,
+		       const char * wildcard,
+		       clist ** p_result);
 int imap_threaded_login(Folder * folder,
 			const char * login, const char * password,
 			const char * type);
@@ -44,6 +47,8 @@ int imap_threaded_select(Folder * folder, const char * mb,
 int imap_threaded_examine(Folder * folder, const char * mb,
 			  gint * exists, gint * recent, gint * unseen,
 			  guint32 * uid_validity);
+int imap_threaded_subscribe(Folder * folder, const char * mb,
+		       gboolean subscribe);
 
 enum {
 	IMAP_SEARCH_TYPE_SIMPLE,

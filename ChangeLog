@@ -1,3 +1,27 @@
+2007-01-16 [colin]	2.7.1cvs8
+
+	* src/filtering.c
+		Bigger buffer for errors
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/wizard.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+	* manual/handling.xml
+		Add subscriptions management. What it changes:
+		Creating a folder subscribes to it
+		Deleting a folder unsubscribes it
+		New contextual menu item allowing to switch between
+		All folders and Subscribed folders, subscribe, and
+		unsubscribe. "Creating" an existing but unsubscribed
+		folder will subscribe it.
+		By default for new accounts, only subscribed folders 
+		are shown.
+
+
 2007-01-16 [paul]	2.7.1cvs7
 
 	* src/summaryview.c

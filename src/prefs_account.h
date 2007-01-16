@@ -167,6 +167,7 @@ struct _PrefsAccount
 	gchar     *tunnelcmd;
 
 	gchar *imap_dir;
+	gboolean imap_subsonly;
 
 	gboolean set_sent_folder;
 	gchar *sent_folder;

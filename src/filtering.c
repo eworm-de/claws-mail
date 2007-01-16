@@ -454,7 +454,7 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
     gboolean * final)
 {
 	gboolean result = TRUE;
-	gchar    buf[50];
+	gchar    buf[256];
         GSList * tmp;
         
         * final = FALSE;

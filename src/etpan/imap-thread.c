@@ -656,6 +656,7 @@ struct list_param {
 	mailimap * imap;
 	const char * base;
 	const char * wildcard;
+	gboolean sub_only;
 };
 
 struct list_result {
@@ -676,9 +677,19 @@ static void list_run(struct etpan_thread_op * op)
 	CHECK_IMAP();
 
 	list = NULL;
-	r = mailimap_list(param->imap, param->base,
-			  param->wildcard, &list);
 	
+	if (param->base == NULL || param->wildcard == NULL) {
+		result->list = list;
+		result->error = -1;
+		debug_print("no base or wildcard (%p %p)\n", param->base, param->wildcard);
+		return;
+	}
+	if (param->sub_only)
+		r = mailimap_lsub(param->imap, param->base,
+			  param->wildcard, &list);
+	else
+		r = mailimap_list(param->imap, param->base,
+			  param->wildcard, &list);
 	result->error = r;
 	result->list = list;
 	debug_print("imap list run - end\n");
@@ -696,7 +707,8 @@ int imap_threaded_list(Folder * folder, const char * base,
 	param.imap = get_imap(folder);
 	param.base = base;
 	param.wildcard = wildcard;
-	
+	param.sub_only = FALSE;
+
 	threaded_run(folder, &param, &result, list_run);
 	
 	* p_result = result.list;
@@ -706,7 +718,79 @@ int imap_threaded_list(Folder * folder, const char * base,
 	return result.error;
 }
 
+int imap_threaded_lsub(Folder * folder, const char * base,
+		       const char * wildcard,
+		       clist ** p_result)
+{
+	struct list_param param;
+	struct list_result result;
+	
+	debug_print("imap lsub - begin\n");
+	
+	param.imap = get_imap(folder);
+	param.base = base;
+	param.wildcard = wildcard;
+	param.sub_only = TRUE;
+	
+	threaded_run(folder, &param, &result, list_run);
+	
+	* p_result = result.list;
+	
+	debug_print("imap lsub - end %p\n", result.list);
+	
+	return result.error;
+}
 
+struct subscribe_param {
+	mailimap * imap;
+	const char * mb;
+	gboolean subscribe;
+};
+
+struct subscribe_result {
+	int error;
+};
+
+static void subscribe_run(struct etpan_thread_op * op)
+{
+	struct subscribe_param * param;
+	struct subscribe_result * result;
+	int r;
+	
+	param = op->param;
+	result = op->result;
+
+	CHECK_IMAP();
+
+	if (param->mb == NULL) {
+		result->error = -1;
+		debug_print("no mb\n");
+		return;
+	}
+	if (param->subscribe)
+		r = mailimap_subscribe(param->imap, param->mb);
+	else
+		r = mailimap_unsubscribe(param->imap, param->mb);
+	result->error = r;
+	debug_print("imap %ssubscribe run - end %d\n", param->subscribe?"":"un", r);
+}
+
+int imap_threaded_subscribe(Folder * folder, const char * mb,
+		       gboolean subscribe)
+{
+	struct subscribe_param param;
+	struct subscribe_result result;
+	
+	debug_print("imap list - begin\n");
+	
+	param.imap = get_imap(folder);
+	param.mb = mb;
+	param.subscribe = subscribe;
+
+	threaded_run(folder, &param, &result, subscribe_run);
+	
+	return result.error;
+}
 
 struct login_param {
 	mailimap * imap;

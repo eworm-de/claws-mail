@@ -49,6 +49,8 @@ static void delete_folder_cb(FolderView *folderview, guint action, GtkWidget *wi
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void sync_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void subscribed_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void subscribe_cb(FolderView *folderview, guint action, GtkWidget *widget);
 
 static GtkItemFactoryEntry imap_popup_entries[] =
 {
@@ -60,8 +62,16 @@ static GtkItemFactoryEntry imap_popup_entries[] =
 	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/_Delete folder..."),	 NULL, delete_folder_cb, 0, NULL},
 	{"/---",			 NULL, NULL,             0, "<Separator>"},
-	{N_("/Synchronise"),		 NULL, sync_cb,      	0, NULL},
+	{N_("/_Synchronise"),		 NULL, sync_cb,      	 0, NULL},
 	{N_("/Down_load messages"),	 NULL, download_cb,      0, NULL},
+	{"/---",			 NULL, NULL,             0, "<Separator>"},
+	{N_("/S_ubscriptions"),		 NULL, NULL,		 0, "<Branch>"},
+	{N_("/Subscriptions/Show only subscribed _folders"),    
+					 NULL, subscribed_cb,  	 0, "<ToggleItem>"},
+	{N_("/Subscriptions/---"),	 NULL, NULL,  		 0, "<Separator>"},
+	{N_("/Subscriptions/_Subscribe..."),NULL, subscribe_cb,  	 1, NULL},
+	{N_("/Subscriptions/_Unsubscribe..."),    
+					 NULL, subscribe_cb, 	 0, NULL},
 	{"/---",			 NULL, NULL,             0, "<Separator>"},
 	{N_("/_Check for new messages"), NULL, update_tree_cb,   0, NULL},
 	{N_("/C_heck for new folders"),	 NULL, update_tree_cb,   1, NULL},
@@ -100,6 +110,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 			!folder_has_parent_of_type(item, F_DRAFT) &&
 			!folder_has_parent_of_type(item, F_QUEUE) &&
 			!folder_has_parent_of_type(item, F_TRASH);
+
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(factory, name, sens)
 
@@ -113,6 +124,10 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);
 	SET_SENS("/Rebuild folder tree",    folder_item_parent(item) == NULL);
+	
+	SET_SENS("/Subscriptions/Unsubscribe...",    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("/Subscriptions/Subscribe...",    TRUE);
+	menu_set_active(factory, "/Subscriptions/Show only subscribed folders", item->folder->account->imap_subsonly);
 
 #undef SET_SENS
 }
@@ -373,6 +388,93 @@ void imap_gtk_synchronise(FolderItem *item)
 	main_window_cursor_normal(mainwin);
 
 }
+
+static void chk_update_val(GtkWidget *widget, gpointer data)
+{
+        gboolean *val = (gboolean *)data;
+	*val = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+}
+
+static gboolean imap_gtk_subscribe_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+	gboolean action = GPOINTER_TO_INT(data);
+	
+	if (item->path)
+		imap_subscribe(item->folder, item, action);
+
+	return FALSE;
+}
+
+static void subscribe_cb(FolderView *folderview, guint action,
+			   GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+	gchar *message, *name;
+	AlertValue avalue;
+	GtkWidget *rec_chk;
+	gboolean recurse = FALSE;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	name = trim_string(item->name, 32);
+	AUTORELEASE_STR(name, {g_free(name); return;});
+	
+	if (action && item->folder->account->imap_subsonly) {
+		alertpanel_notice(_("This folder is already subscribed to. To "
+				  "subscribe to other folders, you must first "
+				  "disable \"Show subscribed folders only\".\n"
+				  "\n"
+				  "Alternatively, you can use \"Create new folder\" "
+				  "to subscribe to a known folder."));
+		return;
+	}
+	message = g_strdup_printf
+		(_("Do you want to %s the '%s' folder?"),
+		   action?_("subscribe"):_("unsubscribe"), name);
+	
+	rec_chk = gtk_check_button_new_with_label(_("Apply to subfolders"));
+	
+	g_signal_connect(G_OBJECT(rec_chk), "toggled", 
+			G_CALLBACK(chk_update_val), &recurse);
+
+	avalue = alertpanel_full(_("Subscriptions"), message,
+		 		 GTK_STOCK_CANCEL, action?_("Subscribe"):_("Unsubscribe"), NULL, FALSE,
+				 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
+	g_free(message);
+	if (avalue != G_ALERTALTERNATE) return;
+	
+	if (recurse) {
+		g_node_traverse(item->node, G_PRE_ORDER,
+			G_TRAVERSE_ALL, -1, imap_gtk_subscribe_func, GINT_TO_POINTER(action));
+	} else {
+		imap_subscribe(item->folder, item, action);
+	}
+
+	if (!action && item->folder->account->imap_subsonly)
+		folderview_rescan_tree(item->folder, FALSE);
+}
+
+static void subscribed_cb(FolderView *folderview, guint action,
+			   GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	
+	if (!item || !item->folder || !item->folder->account)
+		return;
+	if (item->folder->account->imap_subsonly == GTK_CHECK_MENU_ITEM(widget)->active)
+		return;
+
+	item->folder->account->imap_subsonly = GTK_CHECK_MENU_ITEM(widget)->active;
+	folderview_rescan_tree(item->folder, FALSE);
+}
+
 static void download_cb(FolderView *folderview, guint action,
 			GtkWidget *widget)
 {

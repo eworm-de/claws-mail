@@ -132,6 +132,7 @@ static struct Receive {
 	GtkWidget *imap_auth_type_optmenu;
 	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
+	GtkWidget *subsonly_chkbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -593,6 +594,10 @@ static PrefParam param[] = {
 	{"imap_directory", NULL, &tmp_ac_prefs.imap_dir, P_STRING,
 	 &receive.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
 
+	{"imap_subsonly", "TRUE", &tmp_ac_prefs.imap_subsonly, P_BOOL,
+	 &receive.subsonly_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
 	 &advanced.sent_folder_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1014,10 +1019,20 @@ static gint prefs_account_get_new_id(void)
 void destroy_dialog(gpointer data)
 {
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
-	if (!cancelled)
+	if (!cancelled) {
+		gboolean update_fld_list = FALSE;
+		if (ac_prefs->protocol == A_IMAP4 && !new_account) {
+			if ((&tmp_ac_prefs)->imap_subsonly != ac_prefs->imap_subsonly) {
+				update_fld_list = TRUE;
+			} 
+		}
 		*ac_prefs = tmp_ac_prefs;
-	else /* the customhdr_list may have changed, update it anyway */
+		if (update_fld_list)
+			folderview_rescan_tree(ac_prefs->folder, FALSE);
+	} else /* the customhdr_list may have changed, update it anyway */
 		ac_prefs->customhdr_list = (&tmp_ac_prefs)->customhdr_list;
+
+	
 	gtk_main_quit();
 }
 
@@ -1439,6 +1454,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *imap_frame;
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
+	GtkWidget *subsonly_chkbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1650,6 +1666,13 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (imapdir_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_entry, FALSE, FALSE, 0);
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
+
+	PACK_CHECK_BUTTON (hbox1, subsonly_chkbtn,
+			   _("Show only subscribed folders"));
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1674,7 +1697,7 @@ static void prefs_account_receive_create(void)
 
 	receive.imapdir_label		= imapdir_label;
 	receive.imapdir_entry           = imapdir_entry;
-
+	receive.subsonly_chkbtn		= subsonly_chkbtn;
 	receive.local_frame		= local_frame;
 	receive.local_inbox_label	= local_inbox_label;
 	receive.local_inbox_entry	= local_inbox_entry;
@@ -2545,6 +2568,7 @@ static gint prefs_account_apply(void)
 	gchar *new_id = NULL;
 	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic.protocol_optmenu;
 	GtkWidget *optmenu = protocol_optmenu->combobox;
+	gboolean old_subsonly = TRUE;
 
 	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 
@@ -2620,6 +2644,7 @@ static gint prefs_account_apply(void)
 		g_free(old_id);
 		g_free(new_id);
 	}
+	
 	return 0;
 }
 
@@ -3026,6 +3051,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
+		gtk_widget_hide(receive.subsonly_chkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3110,6 +3136,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
+		gtk_widget_hide(receive.subsonly_chkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -3199,6 +3226,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(advanced.tunnelcmd_entry);
 		gtk_widget_show(receive.imapdir_label);
 		gtk_widget_show(receive.imapdir_entry);
+		gtk_widget_show(receive.subsonly_chkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3282,6 +3310,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
+		gtk_widget_hide(receive.subsonly_chkbtn);
 		break;
 	case A_POP3:
 	default:
@@ -3370,6 +3399,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
+		gtk_widget_hide(receive.subsonly_chkbtn);
 		break;
 	}
 

@@ -254,7 +254,8 @@ static gint imap_auth			(IMAPSession	*session,
 					 IMAPAuthType	 type);
 
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
-					 FolderItem	*item);
+					 FolderItem	*item,
+					 gboolean	 subs_only);
 
 static void imap_create_missing_folders	(Folder		*folder);
 static FolderItem *imap_create_special_folder
@@ -1492,7 +1493,7 @@ static gint imap_close(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-static gint imap_scan_tree(Folder *folder)
+gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 {
 	FolderItem *item = NULL;
 	IMAPSession *session;
@@ -1543,7 +1544,7 @@ static gint imap_scan_tree(Folder *folder)
 			return -1;
 		}
 		mailimap_list_result_free(lep_list);
-		
+				
 		g_free(real_path);
 	}
 
@@ -1562,14 +1563,24 @@ static gint imap_scan_tree(Folder *folder)
 		folder->node = item->node = g_node_new(item);
 	}
 
-	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data));
+	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data), subs_only);
 	imap_create_missing_folders(folder);
 	unlock_session();
 
 	return 0;
 }
 
-static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
+static gint imap_scan_tree(Folder *folder)
+{
+	gboolean subs_only = FALSE;
+	if (folder->account) {
+		printf(" scanning only subs %d\n", folder->account->imap_subsonly);
+		subs_only = folder->account->imap_subsonly;
+	}
+	return imap_scan_tree_real(folder, subs_only);
+}
+
+static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gboolean subs_only)
 {
 	Folder *folder;
 	IMAPFolder *imapfolder;
@@ -1609,7 +1620,12 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	Xstrcat_a(wildcard_path, real_path, wildcard,
 		  {g_free(real_path); return IMAP_ERROR;});
 	lep_list = NULL;
-	r = imap_threaded_list(folder, "", wildcard_path, &lep_list);
+	
+	if (subs_only)
+		r = imap_threaded_lsub(folder, "", wildcard_path, &lep_list);
+	else
+		r = imap_threaded_list(folder, "", wildcard_path, &lep_list);
+
 	if (r != MAILIMAP_NO_ERROR) {
 		item_list = NULL;
 	}
@@ -1701,12 +1717,20 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		}
 
 		if (new_item->no_sub == FALSE)
-			imap_scan_tree_recursive(session, new_item);
+			imap_scan_tree_recursive(session, new_item, subs_only);
 	}
 
 	g_slist_free(item_list);
 
 	return IMAP_SUCCESS;
+}
+
+gint imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+{
+	IMAPSession *session = imap_session_get(folder);
+	if (!session)
+		return -1;
+	return imap_scan_tree_recursive(session, item, subs_only);
 }
 
 static gint imap_create_tree(Folder *folder)
@@ -1831,6 +1855,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	const gchar *p;
 	gint ok;
 	gboolean no_select = FALSE, no_sub = FALSE;
+	gboolean exist = FALSE;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
@@ -1877,7 +1902,6 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 	if (strcmp(dirpath, "INBOX") != 0) {
 		GPtrArray *argbuf;
-		gboolean exist = FALSE;
 		int r;
 		clist * lep_list;
 		
@@ -1918,8 +1942,8 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 				} 
 				mailimap_list_result_free(lep_list);
 			}
-
 		}
+		imap_threaded_subscribe(folder, imap_path, TRUE);
 	} else {
 		clist *lep_list;
 		int r;
@@ -1950,6 +1974,12 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		make_dir_hier(dirpath);
 	g_free(dirpath);
 	unlock_session();
+
+	if (exist) {
+		/* folder existed, scan it */
+		folder_item_scan_full(new_item, FALSE);
+	}
+
 	return new_item;
 }
 
@@ -2048,6 +2078,29 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	return 0;
 }
 
+gint imap_subscribe(Folder *folder, FolderItem *item, gboolean sub)
+{
+	gchar *path;
+	gint r;
+	IMAPSession *session;
+	debug_print("getting session...\n");
+
+	session = imap_session_get(folder);
+	if (!session || !item->path) {
+		return -1;
+	}
+
+	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+	if (!path)
+		return -1;
+	if (!strcmp(path, "INBOX") && sub == FALSE)
+		return -1;
+	debug_print("%ssubscribing %s\n", sub?"":"un", path);
+	r = imap_threaded_subscribe(folder, path, sub);
+	g_free(path);
+	return r;
+}
+
 static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 {
 	gint ok;
@@ -2066,6 +2119,7 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	}
 	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
 
+	imap_threaded_subscribe(folder, path, FALSE);
 	ok = imap_cmd_delete(session, path);
 	if (ok != IMAP_SUCCESS) {
 		gchar *tmp = g_strdup_printf("%s%c", path, 
@@ -4441,6 +4495,20 @@ void imap_disconnect_all(void)
 {
 }
 
+gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
+{
+	return -1;
+}
+
+gint imap_subscribe(Folder *folder, FolderItem *item, gboolean sub)
+{
+	return -1;
+}
+
+gint imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+{
+	return -1;
+}
 #endif
 
 void imap_synchronise(FolderItem *item) 

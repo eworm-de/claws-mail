@@ -56,6 +56,23 @@
     </para>
   </section>
 
+  <section id="imap_subscriptions">
+    <title>IMAP subscriptions</title>
+    <para>
+	The IMAP protocol allows one to store a list of subscribed folders. Most
+	mail user agents hide the unsubscribed folders away from the GUI, and have
+	a little window allowing to subscribe to these unsubscribed folders. In
+	Claws Mail, subscriptions are respected by default, and only subscribed
+	folders will be displayed. If you want to see all your folders, you can just
+	uncheck <quote>Show subscribed folders only</quote> in the IMAP mailbox'
+	contextual menu or the account preferences. You'll be able to subscribe and 
+	unsubscribe folders from this contextual menu too. If the unsubscribed 
+	folders are hidden from the list, you will have two ways to subscribe to 
+	a folder: either show all folders, subscribe the ones you want, and hide 
+	unsubscribed folders again; or, if you know the folder's name, use 
+	"Create new folder" in its parent's contextual menu.
+    </para>
+  </section>
   <section id="handling_filters">
     <title>Filtering</title>
     <para>
