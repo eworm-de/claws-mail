@@ -3,8 +3,8 @@
 # Generate the source directory for claws-mail-themes package
 # from the theme tarballs in http://claws-mail.org/themes.php
 #
-# Copyright (c) 2006 Ricardo Mones <ricardo@mones.org>
-#                    Paul Mangan <paul@claws-mail.org>
+# Copyright (c) 2006-2007 Ricardo Mones <ricardo@mones.org>
+#                         Paul Mangan <paul@claws-mail.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -103,8 +103,8 @@ function createThemeMakefileAm()
   echo 'themedir = $(prefix)/share/claws-mail/themes/'${dir} > $MA
   echo "" >> $MA
   echo -n 'dist_theme_DATA =' >> $MA 
-  test -f .sylpheed_themeinfo \
-    && echo " .sylpheed_themeinfo \\" >> $MA;
+  test -f .claws_themeinfo \
+    && echo " .claws_themeinfo \\" >> $MA;
   count=`ls *.xpm | wc -l `;
   i=1;
   for px in `ls -1 *.xpm `; 
