@@ -226,7 +226,7 @@ set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
     }
     text[COL_NAME] = s;
 
-    if (proto == GPGME_PROTOCOL_CMS && !key->uids->email || !*key->uids->email) {
+    if (proto == GPGME_PROTOCOL_CMS && (!key->uids->email || !*key->uids->email)) {
 	gpgme_user_id_t uid = key->uids->next;
 	if (uid)
 		s = uid->email;

@@ -2269,3 +2269,4 @@
 ( cvs diff -u -r 1.179.2.151 -r 1.179.2.152 src/imap.c;  ) > 2.7.1cvs9.patchset
 ( cvs diff -u -r 1.207.2.142 -r 1.207.2.143 src/folderview.c;  ) > 2.7.1cvs10.patchset
 ( cvs diff -u -r 1.179.2.152 -r 1.179.2.153 src/imap.c;  cvs diff -u -r 1.34.2.11 -r 1.34.2.12 src/imap.h;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/imap_gtk.c;  ) > 2.7.1cvs11.patchset
+( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/plugins/pgpcore/select-keys.c;  cvs diff -u -r 1.5.2.41 -r 1.5.2.42 src/gtk/pluginwindow.c;  cvs diff -u -r 1.105.2.80 -r 1.105.2.81 src/prefs_account.c;  ) > 2.7.1cvs12.patchset

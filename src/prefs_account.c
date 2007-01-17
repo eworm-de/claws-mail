@@ -2568,7 +2568,6 @@ static gint prefs_account_apply(void)
 	gchar *new_id = NULL;
 	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic.protocol_optmenu;
 	GtkWidget *optmenu = protocol_optmenu->combobox;
-	gboolean old_subsonly = TRUE;
 
 	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 

@@ -1,3 +1,10 @@
+2007-01-17 [colin]	2.7.1cvs12
+
+	* src/plugins/pgpcore/select-keys.c
+	* src/gtk/pluginwindow.c
+	* src/prefs_account.c
+		Fix warnings
+
 2007-01-16 [colin]	2.7.1cvs11
 
 	* src/imap.c

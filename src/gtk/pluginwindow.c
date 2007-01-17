@@ -36,6 +36,7 @@
 #include "prefs_common.h"
 #include "../inc.h"
 #include "manual.h"
+#include "manage_window.h"
 
 enum {
 	PLUGINWINDOW_NAME,		/*<! plugin name */
