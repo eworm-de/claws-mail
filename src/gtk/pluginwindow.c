@@ -286,7 +286,7 @@ void pluginwindow_create()
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	manage_window_set_transient(window);
+	manage_window_set_transient(GTK_WINDOW(window));
 
 	vbox1 = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox1);
@@ -346,12 +346,8 @@ void pluginwindow_create()
 	gtk_widget_show(get_more_btn);
 	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
 
-	hbox3 = gtk_hbox_new(FALSE, 0);
+	hbox3 = gtk_hbox_new(TRUE, 0);
 	gtk_widget_show(hbox3);
-	hbuttonbox1 = gtk_hbutton_box_new();
-	gtk_widget_show(hbuttonbox1);
-
-	gtk_box_pack_start(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox3, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create_with_help(&hbuttonbox1, &help_btn,
@@ -360,7 +356,7 @@ void pluginwindow_create()
 			&close_btn, GTK_STOCK_CLOSE);
 	gtk_box_set_spacing(GTK_BOX(hbuttonbox1), 6);
 	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_end (GTK_BOX (hbox3), hbuttonbox1, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
 
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
@@ -408,8 +404,6 @@ void pluginwindow_create()
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, prefs_common.pluginswin_width,
 				    prefs_common.pluginswin_height);
-
-	gtk_widget_set_size_request(hbuttonbox1, -1, -1);
 
 	gtk_widget_show(window);
 }
