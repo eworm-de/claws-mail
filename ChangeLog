@@ -1,3 +1,11 @@
+2007-01-17 [colin]	2.7.1cvs18
+
+	* src/summaryview.c
+		Fix bug 1100, 'Highlighted e-mail data not visible 
+		when color label applied.'. Use a weighted average
+		between normal selected foreground color and color
+		label instead of a simple one (3/1 instead 1/1).
+
 2007-01-17 [colin]	2.7.1cvs17
 
 	* src/messageview.c
