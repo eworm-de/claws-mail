@@ -1,3 +1,9 @@
+2007-01-17 [colin]	2.7.1cvs17
+
+	* src/messageview.c
+		Better fix for bug 1088, 'Ctrl-h produces repeatable
+                crash' - don't prevent mail switching while loading
+
 2007-01-17 [colin]	2.7.1cvs16
 
 	* src/folder.c
