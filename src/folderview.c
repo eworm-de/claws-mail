@@ -1131,6 +1131,46 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	inc_unlock();
 }
 
+void folderview_fast_rescan_tree(Folder *folder)
+{
+	GtkWidget *window;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	FolderView *folderview = NULL;
+	GtkAdjustment *pos = NULL;
+	gint height = 0;
+
+	g_return_if_fail(folder != NULL);
+
+	if (!folder->klass->scan_tree) return;
+
+	inc_lock();
+
+	window = label_window_create(_("Scanning folder tree..."));
+
+	if (mainwin)
+		folderview = mainwin->folderview;
+	
+	if (folderview) {
+		pos = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+		height = pos->value;
+	}
+
+	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
+	folder_fast_scan_tree(folder);
+	folder_set_ui_func(folder, NULL, NULL);
+
+	folderview_set_all();
+
+	if (folderview) {
+		pos = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+		gtk_adjustment_set_value(pos, height);
+	}
+	gtk_widget_destroy(window);
+	inc_unlock();
+}
+
 /** folderview_check_new()
  *  Scan and update the folder and return the 
  *  count the number of new messages since last check. 

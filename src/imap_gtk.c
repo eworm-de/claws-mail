@@ -426,13 +426,33 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	
 	if (action && item->folder->account->imap_subsonly) {
-		GList *child_list = imap_scan_subtree(item->folder, item, FALSE);
+		GList *child_list = NULL;
+		
+		message = g_strdup_printf
+			(_("Do you want to look for unsubscribed subfolders of '%s'?"),
+			 name);
+
+		rec_chk = gtk_check_button_new_with_label(_("Look recursively"));
+
+		g_signal_connect(G_OBJECT(rec_chk), "toggled", 
+				G_CALLBACK(chk_update_val), &recurse);
+
+		avalue = alertpanel_full(_("Subscriptions"), message,
+		 			 GTK_STOCK_CANCEL, _("+_Search"), NULL, FALSE,
+					 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
+		g_free(message);
+		if (avalue != G_ALERTALTERNATE) return;
+		
+		child_list = imap_scan_subtree(item->folder, item, TRUE, recurse);
 		if (child_list) {
 			GList *cur;
 			int r = -1;
+			gchar *msg = g_strdup_printf(_("Choose a subfolder of %s to subscribe to: "),
+					item->name); 
 			gchar *child_folder = input_dialog_combo(_("Subscribe"), 
-					_("Choose a subfolder to subscribe to: "),
-					_("All of them"), child_list, TRUE);
+					msg,
+					child_list->next?_("All of them"):child_list->data, child_list, TRUE);
+			g_free(msg);
 			if (child_folder && strcmp(child_folder, _("All of them"))) {
 				r = imap_subscribe(item->folder, NULL, child_folder, TRUE);
 			} else if (child_folder) {
@@ -443,15 +463,10 @@ static void subscribe_cb(FolderView *folderview, guint action,
 			for (cur = child_list; cur; cur = cur->next) 
 				g_free((gchar *)cur->data);
 			if (r == 0)
-				folderview_rescan_tree(item->folder, FALSE);
+				folderview_fast_rescan_tree(item->folder);
 		} else {
 			alertpanel_notice(_("This folder is already subscribed to and "
-				  "has no subfolders. To "
-				  "subscribe to other folders, you must first "
-				  "disable \"Show subscribed folders only\".\n"
-				  "\n"
-				  "Alternatively, you can use \"Create new folder\" "
-				  "to subscribe to a known folder."));
+				  "has no unsubscribed subfolders."));
 		}
 		g_list_free(child_list);
 		return;
@@ -466,7 +481,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 			G_CALLBACK(chk_update_val), &recurse);
 
 	avalue = alertpanel_full(_("Subscriptions"), message,
-		 		 GTK_STOCK_CANCEL, action?_("Subscribe"):_("Unsubscribe"), NULL, FALSE,
+		 		 GTK_STOCK_CANCEL, action?_("+_Subscribe"):_("+_Unsubscribe"), NULL, FALSE,
 				 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
@@ -479,7 +494,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	}
 
 	if (!action && item->folder->account->imap_subsonly)
-		folderview_rescan_tree(item->folder, FALSE);
+		folderview_fast_rescan_tree(item->folder);
 }
 
 static void subscribed_cb(FolderView *folderview, guint action,
@@ -494,7 +509,7 @@ static void subscribed_cb(FolderView *folderview, guint action,
 		return;
 
 	item->folder->account->imap_subsonly = GTK_CHECK_MENU_ITEM(widget)->active;
-	folderview_rescan_tree(item->folder, FALSE);
+	folderview_fast_rescan_tree(item->folder);
 }
 
 static void download_cb(FolderView *folderview, guint action,

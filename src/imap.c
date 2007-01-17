@@ -1725,7 +1725,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	return IMAP_SUCCESS;
 }
 
-GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only, gboolean recursive)
 {
 	IMAPSession *session = imap_session_get(folder);
 	gchar *real_path;
@@ -1734,7 +1734,8 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
 	gchar wildcard[3];
 	clist * lep_list;
 	GSList *item_list = NULL, *cur;
-	GList *child_list = NULL;
+	GList *child_list = NULL, *tmplist = NULL;
+	GSList *sub_list = NULL;
 	int r;
 
 	if (!session)
@@ -1757,26 +1758,68 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
 		  {g_free(real_path); return NULL;});
 	lep_list = NULL;
 	
-	if (subs_only)
-		r = imap_threaded_lsub(folder, "", wildcard_path, &lep_list);
+	if (unsubs_only)
+		statusbar_print_all(_("Looking for unsubscribed folders in %s..."), 
+				item->path?item->path:item->name);
 	else
-		r = imap_threaded_list(folder, "", wildcard_path, &lep_list);
-	if (r)
-		return NULL;
+		statusbar_print_all(_("Looking for subfolders of %s..."), 
+				item->path?item->path:item->name);
 
+	r = imap_threaded_list(folder, "", wildcard_path, &lep_list);
+	if (r) {
+		statusbar_pop_all();
+		return NULL;
+	}
 	item_list = imap_list_from_lep(IMAP_FOLDER(folder),
 			       lep_list, real_path, FALSE);
 	mailimap_list_result_free(lep_list);
 
 	for (cur = item_list; cur != NULL; cur = cur->next) {
 		FolderItem *cur_item = FOLDER_ITEM(cur->data);
+		if (recursive) {
+			tmplist = imap_scan_subtree(folder, cur_item, 
+					unsubs_only, recursive);
+			if (tmplist)
+				child_list = g_list_concat(child_list, tmplist);
+		}
 		child_list = g_list_prepend(child_list,
 				imap_get_real_path(session, 
 					IMAP_FOLDER(folder), cur_item->path));
+		
 		folder_item_destroy(cur_item);
 	}
 	child_list = g_list_reverse(child_list);
 	g_slist_free(item_list);
+
+	if (unsubs_only) {
+		r = imap_threaded_lsub(folder, "", wildcard_path, &lep_list);
+		if (r) {
+			statusbar_pop_all();
+			return NULL;
+		}
+		sub_list = imap_list_from_lep(IMAP_FOLDER(folder),
+				       lep_list, real_path, FALSE);
+		mailimap_list_result_free(lep_list);
+
+		for (cur = sub_list; cur != NULL; cur = cur->next) {
+			FolderItem *cur_item = FOLDER_ITEM(cur->data);
+			GList *oldlitem = NULL;
+			gchar *tmp = imap_get_real_path(session, 
+					IMAP_FOLDER(folder), cur_item->path);
+			folder_item_destroy(cur_item);
+			oldlitem = g_list_find_custom(
+					child_list, tmp, (GCompareFunc)strcmp2);
+			if (oldlitem) {
+				child_list = g_list_remove_link(child_list, oldlitem);
+				g_free(oldlitem->data);
+				g_list_free(oldlitem);
+			}
+			g_free(tmp);
+		}
+	}
+
+	statusbar_pop_all();
+
 	return child_list;
 }
 
@@ -4555,7 +4598,7 @@ gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub
 	return -1;
 }
 
-GList * imap_scan_subtree(Folder *folder, FolderItem *item, gboolean subs_only)
+GList * imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only, gboolean recursive)
 {
 	return -1;
 }

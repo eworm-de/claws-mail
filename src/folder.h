@@ -733,6 +733,7 @@ GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
 void   folder_scan_tree		(Folder *folder, gboolean rebuild);
+void   folder_fast_scan_tree	(Folder *folder);
 FolderItem *folder_create_folder(FolderItem	*parent, const gchar *name);
 gint   folder_item_rename	(FolderItem *item, gchar *newname);
 void   folder_update_op_count		(void);

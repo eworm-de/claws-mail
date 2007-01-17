@@ -1,3 +1,16 @@
+2007-01-17 [colin]	2.7.1cvs16
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+		Manage recursive search of unsubscribed folders
+		Rescan tree without checking for new messages 
+		after subscriptions changed
+
 2007-01-17 [paul]	2.7.1cvs15
 
 	* src/prefs_common.c

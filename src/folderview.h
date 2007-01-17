@@ -112,7 +112,7 @@ void folderview_append_item		(FolderItem	*item);
 
 void folderview_rescan_tree		(Folder		*folder,
 					 gboolean	 rebuild);
-void folderview_rescan_all		(void);
+void folderview_fast_rescan_tree	(Folder 	*folder);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
 

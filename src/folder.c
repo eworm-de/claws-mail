@@ -861,6 +861,44 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 	folder_write_list();
 }
 
+gboolean folder_restore_prefs_func(GNode *node, gpointer data)
+{
+	GHashTable *pptable = (GHashTable *)data;
+	FolderItem *item = (FolderItem *)node->data;
+	
+	folder_item_restore_persist_prefs(item, pptable);
+
+	return FALSE;
+}
+
+void folder_fast_scan_tree(Folder *folder)
+{
+	GHashTable *pptable;
+	FolderUpdateData hookdata;
+	Folder *old_folder = folder;
+
+	if (!folder->klass->scan_tree)
+		return;
+	
+	pptable = folder_persist_prefs_new(folder);
+
+	if (folder->klass->scan_tree(folder) < 0) {
+		return;
+	} 
+
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED;
+	hookdata.item = NULL;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+
+	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_restore_prefs_func, pptable);
+	folder_persist_prefs_free(pptable);
+
+	prefs_matcher_read_config();
+
+	folder_write_list();
+}
+
 FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
