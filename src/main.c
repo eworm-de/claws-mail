@@ -631,10 +631,6 @@ int main(int argc, char *argv[])
 	gtk_accel_map_load (userrc);
 	g_free(userrc);
 
-	gtk_settings_set_long_property(gtk_settings_get_default(), 
-				       "gtk-can-change-accels",
-				       (glong)TRUE, "XProperty");
-
 	CHDIR_RETURN_VAL_IF_FAIL(get_rc_dir(), 1);
 
 	MAKE_DIR_IF_NOT_EXIST(get_mail_base_dir());
@@ -678,7 +674,7 @@ int main(int argc, char *argv[])
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
 #endif
-	
+
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 #ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);

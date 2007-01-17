@@ -2276,3 +2276,4 @@
 ( cvs diff -u -r 1.213.2.130 -r 1.213.2.131 src/folder.c;  cvs diff -u -r 1.87.2.35 -r 1.87.2.36 src/folder.h;  cvs diff -u -r 1.207.2.143 -r 1.207.2.144 src/folderview.c;  cvs diff -u -r 1.20.2.16 -r 1.20.2.17 src/folderview.h;  cvs diff -u -r 1.179.2.153 -r 1.179.2.154 src/imap.c;  cvs diff -u -r 1.34.2.12 -r 1.34.2.13 src/imap.h;  cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/imap_gtk.c;  ) > 2.7.1cvs16.patchset
 ( cvs diff -u -r 1.94.2.118 -r 1.94.2.119 src/messageview.c;  ) > 2.7.1cvs17.patchset
 ( cvs diff -u -r 1.395.2.277 -r 1.395.2.278 src/summaryview.c;  ) > 2.7.1cvs18.patchset
+( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/prefs_other.c;  cvs diff -u -r 1.204.2.118 -r 1.204.2.119 src/prefs_common.c;  cvs diff -u -r 1.103.2.74 -r 1.103.2.75 src/prefs_common.h;  cvs diff -u -r 1.115.2.123 -r 1.115.2.124 src/main.c;  ) > 2.7.1cvs19.patchset

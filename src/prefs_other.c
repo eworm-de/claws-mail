@@ -57,6 +57,7 @@ typedef struct _OtherPage
 	GtkWidget *spinbtn_loglength;
 	GtkWidget *spinbtn_iotimeout;
 	GtkWidget *chkbtn_never_send_retrcpt;
+	GtkWidget *chkbtn_gtk_can_change_accels;
 } OtherPage;
 
 void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -93,6 +94,8 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_iotimeout_adj;
 
 	GtkWidget *chkbtn_never_send_retrcpt;
+	GtkWidget *chkbtn_gtk_can_change_accels;
+	GtkTooltips *gtk_can_change_accels_tooltip;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -184,6 +187,20 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox1, chkbtn_never_send_retrcpt,
 			  _("Never send Return Receipts"));
 
+	PACK_CHECK_BUTTON(vbox1, chkbtn_gtk_can_change_accels,
+			_("Enable customisable menu shortcuts"));
+
+	gtk_can_change_accels_tooltip = gtk_tooltips_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(gtk_can_change_accels_tooltip),
+			chkbtn_gtk_can_change_accels,
+			_("Please restart claws-mail to apply the change !\n"
+				"If checked, you can change shortcuts of most "
+				"of menu items by pressing a key combination over "
+				"them (the shortcut is automatically set).\n"
+				"You can uncheck this if you want to lock all "
+				"existing menu shortcuts."),
+			NULL);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confonexit), 
@@ -198,7 +215,9 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.cliplog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_never_send_retrcpt),
 		prefs_common.never_send_retrcpt);
-	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_gtk_can_change_accels),
+		prefs_common.gtk_can_change_accels);
+
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_loglength),
 		prefs_common.loglength);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
@@ -213,6 +232,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->spinbtn_loglength = spinbtn_loglength;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->chkbtn_never_send_retrcpt = chkbtn_never_send_retrcpt;
+	prefs_other->chkbtn_gtk_can_change_accels = chkbtn_gtk_can_change_accels;
 
 	prefs_other->page.widget = vbox1;
 }
@@ -244,6 +264,8 @@ void prefs_other_save(PrefsPage *_page)
 #endif
 	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_never_send_retrcpt));
+	prefs_common.gtk_can_change_accels = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->chkbtn_gtk_can_change_accels));
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);
@@ -272,6 +294,11 @@ void prefs_other_init(void)
 	page->page.weight = 5.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_other = page;
+
+	gtk_settings_set_long_property(gtk_settings_get_default(),
+			"gtk-can-change-accels",
+			(glong)prefs_common.gtk_can_change_accels,
+			"XProperty");
 }
 
 void prefs_other_done(void)

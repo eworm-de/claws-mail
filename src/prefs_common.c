@@ -694,6 +694,9 @@ static PrefParam param[] = {
 	{"log_out_color", "#0000ef", &prefs_common.log_out_color, P_COLOR,
 	 NULL, NULL, NULL},
 
+	{"gtk_can_change_accels", "TRUE", &prefs_common.gtk_can_change_accels, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{"color_new", "179", &prefs_common.color_new, P_COLOR,
 	 NULL, NULL, NULL},
 

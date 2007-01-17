@@ -350,6 +350,8 @@ struct _PrefsCommon
 	gboolean warn_queued_on_exit;
 
 	gint io_timeout_secs;
+
+	gboolean gtk_can_change_accels;
 	
 	/* Memory cache*/
 	gint cache_max_mem_usage;
