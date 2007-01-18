@@ -4,6 +4,7 @@
 		add command line options:
 		-h for --help
 		-q and --quit for --exit
+		-v for --version
 		print "Unknown option" for unknown options
 
 2007-01-18 [paul]	2.7.1cvs21
