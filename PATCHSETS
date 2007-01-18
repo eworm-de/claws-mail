@@ -2279,3 +2279,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/prefs_other.c;  cvs diff -u -r 1.204.2.118 -r 1.204.2.119 src/prefs_common.c;  cvs diff -u -r 1.103.2.74 -r 1.103.2.75 src/prefs_common.h;  cvs diff -u -r 1.115.2.123 -r 1.115.2.124 src/main.c;  ) > 2.7.1cvs19.patchset
 ( cvs diff -u -r 1.274.2.164 -r 1.274.2.165 src/mainwindow.c;  ) > 2.7.1cvs20.patchset
 ( cvs diff -u -r 1.17.2.13 -r 1.17.2.14 po/ru.po;  ) > 2.7.1cvs21.patchset
+( cvs diff -u -r 1.115.2.124 -r 1.115.2.125 src/main.c;  ) > 2.7.1cvs22.patchset

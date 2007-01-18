@@ -1030,7 +1030,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			}
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
-		} else if (!strncmp(argv[i], "--version", 9)) {
+		} else if (!strncmp(argv[i], "--version", 9) ||
+			   !strncmp(argv[i], "-v", 2)) {
 			puts("Claws Mail version " VERSION);
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
@@ -1063,7 +1064,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
 			cmd.online_mode = ONLINE_MODE_OFFLINE;
-		} else if (!strncmp(argv[i], "--help", 6)) {
+		} else if (!strncmp(argv[i], "--help", 6) ||
+			   !strncmp(argv[i], "-h", 2)) {
 			gchar *base = g_path_get_basename(argv[0]);
 			g_print(_("Usage: %s [OPTION]...\n"), base);
 
@@ -1082,10 +1084,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 			                  "                         folder is a folder id like 'folder/sub_folder'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
-			g_print("%s\n", _("  --exit                 exit Claws Mail"));
+			g_print("%s\n", _("  --exit --quit -q       exit Claws Mail"));
 			g_print("%s\n", _("  --debug                debug mode"));
-			g_print("%s\n", _("  --help                 display this help and exit"));
-			g_print("%s\n", _("  --version              output version information and exit"));
+			g_print("%s\n", _("  --help -h              display this help and exit"));
+			g_print("%s\n", _("  --version -v           output version information and exit"));
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
 
 			g_free(base);
@@ -1097,7 +1099,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
 			puts(RC_DIR);
 			exit(0);
-		} else if (!strncmp(argv[i], "--exit", 6)) {
+		} else if (!strncmp(argv[i], "--exit", 6) ||
+			   !strncmp(argv[i], "--quit", 6) ||
+			   !strncmp(argv[i], "-q", 2)) {
 			cmd.exit = TRUE;
 		} else if (!strncmp(argv[i], "--select", 8) && i+1 < argc) {
 			cmd.target = argv[i+1];
@@ -1121,9 +1125,11 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.subscribe = TRUE;
 					cmd.subscribe_uri = p;
 				}
+			} else {
+				g_print(_("Unknown option\n"));
+				exit(1);
 			}
 		}
-		
 	}
 
 	if (cmd.attach_files && cmd.compose == FALSE) {
