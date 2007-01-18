@@ -1,3 +1,11 @@
+2007-01-18 [colin]	2.7.1cvs25
+
+	* src/main.c
+		Provide a way to migrate without backup
+		Re-ask for migration on next start if 
+		it has been refused and wizard has been 
+		cancelled after.
+
 2007-01-18 [wwp]	2.7.1cvs24
 
 	* src/editaddress.c

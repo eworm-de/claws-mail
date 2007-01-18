@@ -2282,3 +2282,4 @@
 ( cvs diff -u -r 1.115.2.124 -r 1.115.2.125 src/main.c;  ) > 2.7.1cvs22.patchset
 ( cvs diff -u -r 1.60.2.75 -r 1.60.2.76 src/addressbook.c;  ) > 2.7.1cvs23.patchset
 ( cvs diff -u -r 1.14.2.20 -r 1.14.2.21 src/editaddress.c;  ) > 2.7.1cvs24.patchset
+( cvs diff -u -r 1.115.2.125 -r 1.115.2.126 src/main.c;  ) > 2.7.1cvs25.patchset
