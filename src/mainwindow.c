@@ -2195,7 +2195,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		}
 	}
 	
-	if (procmsg_spam_can_learn()) {
+	if (procmsg_spam_can_learn() &&
+	    (mainwin->summaryview->folder_item &&
+	     mainwin->summaryview->folder_item->folder->klass->type != F_UNKNOWN &&
+	     mainwin->summaryview->folder_item->folder->klass->type != F_NEWS)) {
 		state |= M_CAN_LEARN_SPAM;
 	}
 
