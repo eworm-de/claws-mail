@@ -6209,7 +6209,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	gtk_box_pack_start(GTK_BOX(subject_hbox), subject_frame, TRUE, TRUE, 0);
 	gtk_widget_show(subject_frame);
 
-	subject = gtk_hbox_new(FALSE, 0);
+	subject = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(subject), 0);
 	gtk_widget_show(subject);
 

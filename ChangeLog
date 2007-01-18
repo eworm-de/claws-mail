@@ -1,3 +1,10 @@
+2007-01-18 [fabien]	2.7.1cvs28
+
+	* src/prefs_gtk.h
+	* src/compose.c
+		set a 4pix space between "Subject:" label and subject entry in
+		compose window.
+
 2007-01-18 [wwp]	2.7.1cvs27
 
 	* src/addressbook.c

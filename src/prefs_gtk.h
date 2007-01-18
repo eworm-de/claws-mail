@@ -36,6 +36,7 @@ typedef struct _PrefsDialog	PrefsDialog;
 #include "account.h"
 #include "gtk/prefswindow.h"
 
+#define HSPACING_NARROW		4
 #define VSPACING		10
 #define VSPACING_NARROW		4
 #define VSPACING_NARROW_2	2

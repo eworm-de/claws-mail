@@ -2285,3 +2285,4 @@
 ( cvs diff -u -r 1.115.2.125 -r 1.115.2.126 src/main.c;  ) > 2.7.1cvs25.patchset
 ( cvs diff -u -r 1.18.2.6 -r 1.18.2.7 src/addressbook.h;  ) > 2.7.1cvs26.patchset
 ( cvs diff -u -r 1.60.2.76 -r 1.60.2.77 src/addressbook.c;  ) > 2.7.1cvs27.patchset
+( cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/prefs_gtk.h;  cvs diff -u -r 1.382.2.352 -r 1.382.2.353 src/compose.c;  ) > 2.7.1cvs28.patchset
