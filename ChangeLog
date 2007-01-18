@@ -1,3 +1,12 @@
+2007-01-18 [fabien]	2.7.1cvs29
+
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/addr_compl.c
+	* src/prefs_account.c
+		factorize or rewrite some translatable strings.
+
 2007-01-18 [fabien]	2.7.1cvs28
 
 	* src/prefs_gtk.h

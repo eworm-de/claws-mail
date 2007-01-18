@@ -551,7 +551,7 @@ gchar *get_complete_address(gint index)
 				address = get_complete_address_from_name_email(p->name, p->address);
 			} else if (p != NULL && p->address == NULL && p->name != NULL) {
 				/* that's a group */
-				address = g_strdup_printf("%s%s <!--___group___-->", p->name, _(" (Group)"));
+				address = g_strdup_printf("%s (%s) <!--___group___-->", p->name, _("Group"));
 				if (!_groupAddresses_) {
 					_groupAddresses_ = g_hash_table_new(NULL, g_direct_equal);
 				}

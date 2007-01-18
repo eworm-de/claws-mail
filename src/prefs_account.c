@@ -2053,7 +2053,7 @@ static void prefs_account_compose_create(void)
 	gtk_table_set_col_spacings (GTK_TABLE (table_dict), 8);
 
 	/* Default dictionary */
-	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary: "));
+	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary"));
 	gtk_table_attach(GTK_TABLE(table_dict), checkbtn_enable_default_dictionary, 0, 1,
 			0, 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
@@ -2070,7 +2070,7 @@ static void prefs_account_compose_create(void)
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_dictionary, optmenu_default_dictionary);
 
 	/* Default dictionary */
-	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary: "));
+	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary"));
 	gtk_table_attach(GTK_TABLE(table_dict), checkbtn_enable_default_alt_dictionary, 0, 1,
 			1, 2, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),

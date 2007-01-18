@@ -213,7 +213,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_unsure_folder_select);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_select, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, save_unsure_folder_select,
-			_("Click this button to select a folder for storing Unsure mails"),
+			_("Click this button to select a folder for storing Unsure mails."),
 			NULL);
 
 	insert_header_chkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
