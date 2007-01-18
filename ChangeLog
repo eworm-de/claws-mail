@@ -1,3 +1,12 @@
+2007-01-18 [wwp]	2.7.1cvs23
+
+	* src/addressbook.c
+		fix potential crashes in address book's focus_in/out signal handlers,
+		force focus to the edit-person form when clicked the Edit menu entry or
+		button (this only matters if the edit-person form is embedded to the
+		AB window, in that case, focus is not set when browsing the contacts
+		list w/ keys or mouse clicks).
+
 2007-01-18 [paul]	2.7.1cvs22
 
 	* src/main.c
