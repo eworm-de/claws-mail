@@ -1,3 +1,9 @@
+2007-01-18 [fabien]	2.7.1cvs30
+
+	* src/prefs_other.c
+		ability to apply on the fly the recent added
+		'gtk_can_change_accels' pref (no need to restart).
+
 2007-01-18 [fabien]	2.7.1cvs29
 
 	* src/plugins/bogofilter/bogofilter_gtk.c

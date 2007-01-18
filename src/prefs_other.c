@@ -193,11 +193,10 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_can_change_accels_tooltip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(gtk_can_change_accels_tooltip),
 			chkbtn_gtk_can_change_accels,
-			_("Please restart claws-mail to apply the change !\n"
-				"If checked, you can change shortcuts of most "
-				"of menu items by pressing a key combination over "
-				"them (the shortcut is automatically set).\n"
-				"You can uncheck this if you want to lock all "
+			_("If checked, you can change the keyboard shortcuts of "
+				"most of the menu items by focusing on the menu "
+				"item and pressing a key combination.\n"
+				"Uncheck this option if you want to lock all "
 				"existing menu shortcuts."),
 			NULL);
 
@@ -241,6 +240,7 @@ void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
 	MainWindow *mainwindow;
+	gboolean gtk_can_change_accels;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_addaddrbyclick));
@@ -264,12 +264,27 @@ void prefs_other_save(PrefsPage *_page)
 #endif
 	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->chkbtn_never_send_retrcpt));
-	prefs_common.gtk_can_change_accels = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_gtk_can_change_accels));
+
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);
 
+	gtk_can_change_accels = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->chkbtn_gtk_can_change_accels));
+
+	if (prefs_common.gtk_can_change_accels != gtk_can_change_accels) {
+
+		prefs_common.gtk_can_change_accels = gtk_can_change_accels;
+
+		gtk_settings_set_long_property(gtk_settings_get_default(),
+				"gtk-can-change-accels",
+				(glong)prefs_common.gtk_can_change_accels,
+				"XProperty");
+
+		/* gtk_can_change_accels value changed : we have (only if changed)
+		 * to apply the gtk property to all widgets : */
+		gtk_rc_reparse_all_for_settings(gtk_settings_get_default(), TRUE);
+	}
 }
 
 static void prefs_other_destroy_widget(PrefsPage *_page)
