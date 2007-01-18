@@ -766,6 +766,7 @@ int main(int argc, char *argv[])
 
 	mainwin = main_window_create
 		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
+
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
@@ -1211,6 +1212,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.subscribe = TRUE;
 					cmd.subscribe_uri = p;
 				}
+			} else if (!strcmp(argv[i], "--sync")) {
+				/* gtk debug */
 			} else {
 				g_print(_("Unknown option\n"));
 				exit(1);

@@ -1,3 +1,10 @@
+2007-01-18 [colin]	2.7.1cvs31
+
+	* src/main.c
+		Don't error out on --sync option. Although
+		we don't do anything with it, gtk+ handles
+		it, and it's useful for debugging X errors
+
 2007-01-18 [fabien]	2.7.1cvs30
 
 	* src/prefs_other.c
