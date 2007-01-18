@@ -1,16 +1,16 @@
-# translation of sylpheed.po to Russian
-# Russian translation of sylpheed-claws
-# This file is distributed under the same license as the sylpheed-claws package.
+# translation of claws-mail.po to Russian
+# Russian translation of Claws Mail
+# This file is distributed under the same license as the claws-mail package.
 # Ruslan N. Balkin <baron@voices.ru>, 2003.
-# Pavlo & Olena Bohmat <bohm@ukr.net>, 2004-06.
+# Pavlo & Olena Bohmat <bohm@ukr.net>, 2004-07.
 # Исправления в переводе приветствуются :о)
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sylpheed-claws-2.5.2cvs24\n"
+"Project-Id-Version: claws-mail-2.7.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-09-30 18:55+0300\n"
-"PO-Revision-Date: 2006-10-16 14:46+0300\n"
+"PO-Revision-Date: 2006-11-16 12:55+0300\n"
 "Last-Translator: Pavlo Bohmat <bohm@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1375,12 +1375,27 @@ msgstr "/_Орфография/Параметры"
 msgid "/_Options"
 msgstr "/_Параметры"
 
+msgid "/_Options/Reply _mode"
+msgstr "/_Параметры/Режим ответа"
+
+msgid "/_Options/Reply _mode/_Normal"
+msgstr "/_Параметры/Режим ответа/_Обычный"
+
+msgid "/_Options/Reply _mode/_All"
+msgstr "/_Параметры/Режим ответа/_Всем"
+
+msgid "/_Options/Reply _mode/_Sender"
+msgstr "/_Параметры/Режим ответа/_Отправителю"
+
+msgid "/_Options/Reply _mode/_Mailing-list"
+msgstr "/_Параметры/Режим ответа/_Список рассылок"
+
 #: src/compose.c:653
-msgid "/_Options/Privacy System"
+msgid "/_Options/Privacy _System"
 msgstr "/_Параметры/Система безопасности"
 
 #: src/compose.c:654
-msgid "/_Options/Privacy System/None"
+msgid "/_Options/Privacy _System/None"
 msgstr "/_Параметры/Система безопасности/Никакой"
 
 #: src/compose.c:655
@@ -3219,29 +3234,33 @@ msgstr ""
 
 #: src/gtk/about.c:237
 msgid ""
-"Copyright (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-"and the Sylpheed-Claws team"
+"Copyright (C) 1999-2007\n"
+"Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+"and the Claws Mail team"
 msgstr ""
-"Авторское право (C) 1999-2006 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-"и команда Sylpheed-Claws"
+"Авторское право (C) 1999-2007\n"
+"Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+"и команда Claws Mail"
 
 #: src/gtk/about.c:280
-#, fuzzy
 msgid ""
-"Sylpheed-Claws is a lightweight, fast and highly-configurable email client.\n"
+"Claws Mail is a lightweight, fast and highly-configurable email client.\n"
 "\n"
-"For further information visit the Sylpheed-Claws website:\n"
+"For further information visit the Claws Mail website:\n"
 msgstr ""
-"Selpheed-Claws это легкий, быстрый и гибкий почтовый клиент.\n"
+"Claws Mail это лёгкий, быстрый и гибкий почтовый клиент.\n"
 "\n"
-"Более подробная информация на сайте Sylpheed-Claws:\n"
+"Более подробная информация на сайте Claws Mail:\n"
 
 #: src/gtk/about.c:286
 msgid ""
 "\n"
 "\n"
-"Sylpheed-Claws is free software released under the GPL license. If you wish to donate to the Sylpheed-Claws project you can do so at:\n"
+"Claws Mail is free software released under the GPL license. If you wish to donate to the Claws Mail project you can do so at:\n"
 msgstr ""
+"\n"
+"\n"
+"Claws Mail - свободное программное обеспечение, выпущенное согласно лицензии GPL. Если вы желаете оказать безвозмездную помощь проекту Claws Mail, можете сделать так на:\n"
 
 #: src/gtk/about.c:293
 msgid "\n"
@@ -3252,8 +3271,8 @@ msgid "_Info"
 msgstr "_Информация"
 
 #: src/gtk/about.c:332
-msgid "The Sylpheed-Claws Team\n"
-msgstr "Команда Sylpheed-Claws\n"
+msgid "The Claws Mail Team\n"
+msgstr "Команда Claws Mail\n"
 
 #: src/gtk/about.c:349
 msgid ""
@@ -3585,6 +3604,9 @@ msgstr "Словарь: %s"
 #, c-format
 msgid "Use alternate (%s)"
 msgstr "Использовать альтернативный (%s)"
+
+msgid "Use both dictionaries"
+msgstr "Использовать оба словаря"
 
 #: src/gtk/gtkaspell.c:2121
 #: src/prefs_spelling.c:221
@@ -4940,16 +4962,16 @@ msgid "Sylpheed-Claws has been compiled with a more recent GTK+ library than is 
 msgstr ""
 
 #: src/main.c:536
-msgid "Sylpheed-Claws has been compiled with an older GTK+ library than is currently available. This will cause crashes. You need to recompile Sylpheed-Claws."
+msgid "Claws Mail has been compiled with an older GTK+ library than is currently available. This will cause crashes. You need to recompile Claws Mail."
 msgstr ""
 
 #: src/main.c:743
 msgid "Some plugin(s) failed to load. Check the Plugins configuration for more information."
-msgstr "Сбой при загрузке некоторых плагинов. Проверьте настроку плагинов."
+msgstr "Сбой при загрузке некоторых модулей. Проверьте настроку модулей."
 
 #: src/main.c:753
-msgid "Sylpheed-Claws has detected a configured mailbox, but could not load it. It is probably provided by an out-of-date external plugin. Please reinstall the plugin and try again."
-msgstr "Sylpheed-Claws обнаружены настройки почтового ящика, но невозможно использовать их.Возможно это вызвано сбоем устаревшего плагина. Переустановите плагин ипопробуйте снова."
+msgid "Claws Mail has detected a configured mailbox, but could not load it. It is probably provided by an out-of-date external plugin. Please reinstall the plugin and try again."
+msgstr "Claws Mail обнаружены настройки почтового ящика, но невозможно использовать их. Возможно это вызвано сбоем устаревшего модуля. Переустановите модуль ипопробуйте снова."
 
 #: src/main.c:993
 #, c-format
@@ -6082,8 +6104,8 @@ msgid "Exit"
 msgstr "Выход"
 
 #: src/mainwindow.c:3123
-msgid "Exit Sylpheed-Claws?"
-msgstr "Выход Sylpheed-Claws?"
+msgid "Exit Claws Mail?"
+msgstr "Выход Claws Mail?"
 
 #: src/mainwindow.c:3269
 msgid "Folder synchronisation"
@@ -6935,7 +6957,7 @@ msgstr "Указать ключ вручную"
 
 #: src/plugins/pgpcore/prefs_gpg.c:318
 msgid "User or key ID:"
-msgstr "UserID или KeyID:"
+msgstr "Идентификатор пользователя или ключа:"
 
 #: src/plugins/pgpcore/prefs_gpg.c:359
 msgid "No secret key found."
@@ -7551,6 +7573,9 @@ msgstr "/Получить почту"
 msgid "/_Email"
 msgstr "/_Сообщение"
 
+msgid "/_Email from account"
+msgstr "/_Сообщение для уч. записи"
+
 #: src/plugins/trayicon/trayicon.c:97
 msgid "/Open A_ddressbook"
 msgstr "/Открыть адресную книгу"
@@ -7560,8 +7585,8 @@ msgid "/_Work Offline"
 msgstr "/_Работать автономно"
 
 #: src/plugins/trayicon/trayicon.c:101
-msgid "/E_xit Sylpheed-Claws"
-msgstr "/Выход из Sylpheed-Claws"
+msgid "/E_xit Claws Mail"
+msgstr "/Выход из Claws Mail"
 
 #: src/plugins/trayicon/trayicon.c:155
 #, c-format
@@ -7577,11 +7602,11 @@ msgid "/Get Mail"
 msgstr "/Получить почту"
 
 #: src/plugins/trayicon/trayicon.c:295
-msgid "Your version of Sylpheed-Claws is newer than the version the Trayicon plugin was built with"
+msgid "Your version of Claws Mail is newer than the version the Trayicon plugin was built with"
 msgstr ""
 
 #: src/plugins/trayicon/trayicon.c:300
-msgid "Your version of Sylpheed-Claws is too old for the Trayicon plugin"
+msgid "Your version of Claws Mail is too old for the Trayicon plugin"
 msgstr ""
 
 #: src/plugins/trayicon/trayicon.c:306
@@ -7994,7 +8019,7 @@ msgstr "Всегда шифровать сообщение при ответе �
 
 #: src/prefs_account.c:2042
 msgid "Encrypt sent messages with your own key in addition to recipient's"
-msgstr ""
+msgstr "Шифровать отправленные сообщения своим ключом в дополнение к ключу получателя"
 
 #: src/prefs_account.c:2044
 msgid "Save sent encrypted messages as clear text"
@@ -8347,8 +8372,8 @@ msgid ""
 "\\n"
 "%q"
 msgstr ""
-"На %d\\n"
-"%f записано:\\n"
+"В %d\\n"
+"%f пишет:\\n"
 "\\n"
 "%q"
 
@@ -9306,7 +9331,7 @@ msgstr "Циклические цвета цитат"
 
 #: src/prefs_msg_colors.c:186
 msgid "If there are more than 3 quote levels, the colors will be reused"
-msgstr ""
+msgstr "Если будет больше чем 3 уровня цитат, то цвета многократно используются"
 
 #: src/prefs_msg_colors.c:193
 msgid "1st Level"
@@ -9471,14 +9496,13 @@ msgstr "Зафиксировать размер журнала"
 
 #: src/prefs_other.c:125
 msgid "Log window length"
-msgstr "Количество элементов журнала "
+msgstr "Количество элементов журнала"
 
 #: src/prefs_other.c:142
 msgid "0 to stop logging in the log window"
 msgstr "0 останавливает запись информации в журнал"
 
 #: src/prefs_other.c:145
-#, fuzzy
 msgid "lines"
 msgstr "строк"
 
@@ -9560,12 +9584,8 @@ msgid "Automatic checking"
 msgstr "Автоматическая проверка"
 
 #: src/prefs_receive.c:156
-msgid "Automatically check for new mail"
-msgstr "Автоматически проверять наличие новых сообщений"
-
-#: src/prefs_receive.c:158
-msgid "every"
-msgstr "каждые"
+msgid "Automatically check for new mail every"
+msgstr "Автоматически проверять наличие новых сообщений каждые"
 
 #: src/prefs_receive.c:179
 msgid "Check for new mail on startup"
@@ -9830,6 +9850,12 @@ msgstr "Словарь"
 msgid "Default dictionary"
 msgstr "Словарь по умолчанию"
 
+msgid "Default alternate dictionary"
+msgstr "Альтернативный словарь по умолчанию"
+
+msgid "Check with both dictionaries"
+msgstr "Проверять с помощью обоих словарей"
+
 #: src/prefs_spelling.c:261
 msgid "Default suggestion mode"
 msgstr "Режим по умолчанию"
@@ -10021,6 +10047,9 @@ msgstr "Всегда открывать выбранные сообщения"
 msgid "Only mark message as read when opened in a new window"
 msgstr "Отмечать сообщение как прочитанное только при открытии в новом окне"
 
+msgid "Mark messages as read after"
+msgstr "Отмечать сообщение как прочитанное через"
+
 #: src/prefs_summaries.c:903
 msgid "When entering a folder"
 msgstr "При заходе в папку"
@@ -10071,7 +10100,7 @@ msgstr " Установить горячие клавиши... "
 
 #: src/prefs_summaries.c:1077
 msgid "Summaries"
-msgstr "Итоги"
+msgstr "Общее"
 
 #: src/prefs_summary_column.c:81
 #: src/summaryview.c:2348
@@ -10417,22 +10446,20 @@ msgstr "Невозможно открыть файл %s."
 msgid "Couldn't encrypt the email: %s"
 msgstr "Невозможно зашифровать сообщение: %s"
 
-#???
 #: src/procmsg.c:1626
 msgid "Queued message header is broken."
-msgstr "Сообщения в очереди"
+msgstr "Заголовок сообщения в очереди испорчен."
 
-#???
 #: src/procmsg.c:1647
 msgid "An error happened during SMTP session."
-msgstr "При обучении произошла ошибка."
+msgstr "Во время SMTP сессии произошла ошибка."
 
 #: src/procmsg.c:1661
 msgid "No specific account has been found to send, and an error happened during SMTP session."
 msgstr ""
 
 #: src/procmsg.c:1669
-msgid "Couldn't determine sending informations. Maybe the email hasn't been generated by Sylpheed-Claws."
+msgid "Couldn't determine sending informations. Maybe the email hasn't been generated by Claws Mail."
 msgstr ""
 
 #: src/procmsg.c:1687
@@ -10703,12 +10730,12 @@ msgstr ""
 
 #: src/sourcewindow.c:66
 msgid "Source of the message"
-msgstr "Исходник сообщения"
+msgstr "Исходный код сообщения"
 
 #: src/sourcewindow.c:161
 #, c-format
 msgid "%s - Source"
-msgstr "%s - Исходник"
+msgstr "%s - Исходный код"
 
 #: src/ssl_manager.c:157
 msgid "Saved SSL Certificates"
@@ -10912,7 +10939,7 @@ msgstr "/Создать правило обработки/По теме"
 
 #: src/summaryview.c:475
 msgid "/_View/Message _source"
-msgstr "/_Вид/Исходник сообщения"
+msgstr "/_Вид/Исходный код сообщения"
 
 #: src/summaryview.c:476
 msgid "/_View/All _headers"
@@ -11786,11 +11813,30 @@ msgstr "Настройка завершена"
 
 #: src/wizard.c:1339
 msgid ""
-"Sylpheed-Claws is now ready.\n"
+"Claws Mail is now ready.\n"
 "\n"
 "Click Save to start."
 msgstr ""
-"Sylpheed-Claws готов к работе.\n"
+"Claws Mail готов к работе.\n"
 "\n"
 "Щелкните 'Сохранить' для продолжения."
+
+msgid "Use format when composing new messages"
+msgstr "При составлении нового сообщения использовать формат"
+
+msgid "New message format"
+msgstr "Формат нового сообщения"
+
+msgid "Message list"
+msgstr "Список сообщений"
+
+msgid "Ask"
+msgstr "Спрашивать"
+
+msgid "Use default X-Face"
+msgstr "Использоать X-Face по умолчанию"
+
+msgid "_Email from account"
+msgstr "_Сообщение для учётной записи"
+
 

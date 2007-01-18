@@ -1,3 +1,8 @@
+2007-01-18 [paul]	2.7.1cvs21
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2007-01-18 [paul]	2.7.1cvs20
 
 	* src/mainwindow.c
