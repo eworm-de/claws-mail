@@ -1,3 +1,9 @@
+2007-01-18 [wwp]	2.7.1cvs26
+
+	* src/addressbook.h
+		complete 2.7.1cvs23 (one more file was missing from that
+		commit).
+
 2007-01-18 [colin]	2.7.1cvs25
 
 	* src/main.c

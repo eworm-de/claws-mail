@@ -62,6 +62,7 @@ void addressbook_new_address_from_book_post_cb( ItemPerson *person );
 void addressbook_new_address_from_folder_post_cb( ItemPerson *person );
 void addressbook_edit_address_post_cb( ItemPerson *person );
 void addressbook_address_list_set_focus( void );
+void addressbook_address_list_disable_some_actions( void );
 
 #endif /* __ADDRESSBOOK_H__ */
 
