@@ -1,3 +1,10 @@
+2007-01-18 [wwp]	2.7.1cvs27
+
+	* src/addressbook.c
+		fix conflicting address-copy/paste when focus is set
+		to the embedded edit-person form.
+ 
+
 2007-01-18 [wwp]	2.7.1cvs26
 
 	* src/addressbook.h

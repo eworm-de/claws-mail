@@ -815,6 +815,9 @@ static gboolean addressbook_address_index_focus_evt_out(GtkWidget *widget, GdkEv
 											 gpointer data)
 {
 	address_index_has_focus = FALSE;
+	if (!prefs_common.addressbook_use_editaddress_dialog
+			&& !address_list_has_focus)
+		addressbook_address_list_disable_some_actions();
 	return FALSE;
 }
 
@@ -829,6 +832,9 @@ static gboolean addressbook_address_list_focus_evt_out(GtkWidget *widget, GdkEve
 											 gpointer data)
 {
 	address_list_has_focus = FALSE;
+	if (!prefs_common.addressbook_use_editaddress_dialog
+			&& !address_index_has_focus)
+		addressbook_address_list_disable_some_actions();
 	return FALSE;
 }
 
@@ -2974,8 +2980,20 @@ void addressbook_address_list_set_focus( void )
 {
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
 		gtk_window_set_focus(GTK_WINDOW(addrbook.window), addrbook.clist);
-fprintf(stderr, "addressbook_address_list_set_focus: %p\n", addrbook.listSelected );
+		addressbook_list_menu_setup();
 	}
+}
+
+void addressbook_address_list_disable_some_actions(void)
+{
+	/* disable address copy/pasting when editing contact's detail (embedded form) */
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Cut",   FALSE );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Copy",  FALSE );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Paste", FALSE );
+
+	/* we're already editing contact's detail here */
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Edit",  FALSE );
+	gtk_widget_set_sensitive( addrbook.edit_btn, FALSE );
 }
 
 static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget *widget ) {
