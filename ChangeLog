@@ -1,3 +1,9 @@
+2007-01-19 [fabien]	2.7.1cvs36
+
+	* src/textview.c
+		make sure a font change is considered in links of
+		headerview.
+
 2007-01-19 [colin]	2.7.1cvs35
 
 	* src/main.c
