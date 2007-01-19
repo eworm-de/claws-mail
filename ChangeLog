@@ -1,3 +1,8 @@
+2007-01-19 [fabien]	2.7.1cvs32
+
+	* src/wizard.c
+		factorize translatable string
+
 2007-01-18 [colin]	2.7.1cvs31
 
 	* src/main.c

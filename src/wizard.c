@@ -1228,7 +1228,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	i++;
 	
 	wizard->subsonly_chkbtn = gtk_check_button_new_with_label(
-			_("Show subscribed folders only"));
+			_("Show only subscribed folders"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->subsonly_chkbtn),
 			tmpl.subsonly);
 	gtk_table_attach(GTK_TABLE(table), wizard->subsonly_chkbtn, 			      
