@@ -2291,3 +2291,4 @@
 ( cvs diff -u -r 1.115.2.126 -r 1.115.2.127 src/main.c;  ) > 2.7.1cvs31.patchset
 ( cvs diff -u -r 1.1.2.47 -r 1.1.2.48 src/wizard.c;  ) > 2.7.1cvs32.patchset
 ( cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/imap_gtk.c;  cvs diff -u -r 1.105.2.82 -r 1.105.2.83 src/prefs_account.c;  ) > 2.7.1cvs33.patchset
+( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/prefs_msg_colors.c;  ) > 2.7.1cvs34.patchset
