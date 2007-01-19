@@ -1,3 +1,9 @@
+2007-01-19 [paul]	2.7.1cvs33
+
+	* src/imap_gtk.c
+	* src/prefs_account.c
+		a few changes to the English
+
 2007-01-19 [fabien]	2.7.1cvs32
 
 	* src/wizard.c

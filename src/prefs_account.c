@@ -1671,7 +1671,7 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
 	PACK_CHECK_BUTTON (hbox1, subsonly_chkbtn,
-			   _("Show only subscribed folders"));
+			   _("Show subscribed folders only"));
 
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));

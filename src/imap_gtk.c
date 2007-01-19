@@ -127,7 +127,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	
 	SET_SENS("/Subscriptions/Unsubscribe...",    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("/Subscriptions/Subscribe...",    TRUE);
-	menu_set_active(factory, "/Subscriptions/Show only subscribed folders", item->folder->account->imap_subsonly);
+	menu_set_active(factory, "/Subscriptions/Show subscribed folders only", item->folder->account->imap_subsonly);
 
 #undef SET_SENS
 }
@@ -221,7 +221,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 
 	separator = imap_get_path_separator_for_item(item);
 	if (strchr(new_folder, separator) != NULL) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 separator);
 		return;
 	}
@@ -429,10 +429,10 @@ static void subscribe_cb(FolderView *folderview, guint action,
 		GList *child_list = NULL;
 		
 		message = g_strdup_printf
-			(_("Do you want to look for unsubscribed subfolders of '%s'?"),
+			(_("Do you want to search for unsubscribed subfolders of '%s'?"),
 			 name);
 
-		rec_chk = gtk_check_button_new_with_label(_("Look recursively"));
+		rec_chk = gtk_check_button_new_with_label(_("Search recursively"));
 
 		g_signal_connect(G_OBJECT(rec_chk), "toggled", 
 				G_CALLBACK(chk_update_val), &recurse);
@@ -465,7 +465,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 			if (r == 0)
 				folderview_fast_rescan_tree(item->folder);
 		} else {
-			alertpanel_notice(_("This folder is already subscribed to and "
+			alertpanel_notice(_("This folder is already subscribed and "
 				  "has no unsubscribed subfolders."));
 		}
 		g_list_free(child_list);
