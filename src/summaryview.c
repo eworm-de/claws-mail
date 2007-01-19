@@ -551,6 +551,9 @@ SummaryView *summary_create(void)
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *stat_box;
+	GtkWidget *stat_box2;
+	GtkWidget *stat_vbox;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
@@ -574,6 +577,15 @@ SummaryView *summary_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox);
 
+	stat_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(stat_vbox);
+
+	stat_box = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(stat_box);
+	
+	stat_box2 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(stat_box2);
+	
 	search_tip = gtk_tooltips_new();
 	toggle_search = gtk_toggle_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_search),
@@ -586,9 +598,13 @@ SummaryView *summary_create(void)
 	
 	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
 
+	gtk_box_pack_start(GTK_BOX(hbox), stat_vbox, TRUE, TRUE, 0);	
+	gtk_box_pack_start(GTK_BOX(stat_vbox), stat_box, TRUE, TRUE, 0);	
+	gtk_box_pack_start(GTK_BOX(stat_vbox), stat_box2, TRUE, TRUE, 0);	
+
 	hbox_l = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox_l);
-	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(stat_box), hbox_l, TRUE, TRUE, 0);
  
 	statlabel_folder = gtk_label_new("");
 	gtk_widget_show(statlabel_folder);
@@ -611,7 +627,7 @@ SummaryView *summary_create(void)
 	
 	statlabel_msgs = gtk_label_new("");
 	gtk_widget_show(statlabel_msgs);
-	gtk_box_pack_end(GTK_BOX(hbox), statlabel_msgs, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(stat_box), statlabel_msgs, FALSE, FALSE, 4);
 
 	hbox_spc = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox_spc);
@@ -637,6 +653,7 @@ SummaryView *summary_create(void)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 
 	/* status label */
+	gtk_widget_show_all(stat_vbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	/* quick search */
@@ -660,6 +677,9 @@ SummaryView *summary_create(void)
 	summaryview->ctree = ctree;
 	summaryview->hbox = hbox;
 	summaryview->hbox_l = hbox_l;
+	summaryview->hbox_spc = hbox_spc;
+	summaryview->stat_box = stat_box;
+	summaryview->stat_box2 = stat_box2;
 	summaryview->statlabel_folder = statlabel_folder;
 	summaryview->statlabel_select = statlabel_select;
 	summaryview->statlabel_msgs = statlabel_msgs;
@@ -694,6 +714,32 @@ SummaryView *summary_create(void)
 		quicksearch_hide(quicksearch);
 	
 	return summaryview;
+}
+
+void summary_relayout(SummaryView *summaryview)
+{
+	gtk_widget_realize(summaryview->stat_box);
+
+	gtk_widget_ref(summaryview->hbox_l);
+	gtk_widget_ref(summaryview->statlabel_msgs);
+	
+	gtkut_container_remove(GTK_CONTAINER(summaryview->hbox_l->parent), summaryview->hbox_l);
+	gtkut_container_remove(GTK_CONTAINER(summaryview->statlabel_msgs->parent), summaryview->statlabel_msgs);
+
+	if (prefs_common.layout_mode != VERTICAL_LAYOUT) {
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
+		gtk_box_pack_end(GTK_BOX(summaryview->stat_box), summaryview->statlabel_msgs, FALSE, FALSE, 4);
+		gtk_widget_show_all(summaryview->stat_box);
+		gtk_widget_show_all(summaryview->stat_box2);
+	} else {
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
+		gtk_widget_show_all(summaryview->stat_box);
+		gtk_widget_show_all(summaryview->stat_box2);
+	}
+	gtk_widget_unref(summaryview->hbox_l);
+	gtk_widget_unref(summaryview->statlabel_msgs);
+	quicksearch_relayout(summaryview->quicksearch);
 }
 
 static void summary_set_fonts(SummaryView *summaryview)
@@ -3046,9 +3092,8 @@ void summary_open_msg(SummaryView *summaryview)
 	
 	/* CLAWS: if separate message view, don't open a new window
 	 * but rather use the current separated message view */
-	summary_display_msg_full(summaryview, summaryview->selected,
-				 prefs_common.sep_msg ? FALSE : TRUE, 
-				 FALSE);
+	summary_display_msg_full(summaryview, summaryview->selected, 
+				 TRUE, FALSE);
 }
 
 void summary_view_source(SummaryView * summaryview)

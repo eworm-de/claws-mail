@@ -91,6 +91,9 @@ struct _SummaryView
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *hbox_spc;
+	GtkWidget *stat_box;
+	GtkWidget *stat_box2;
 	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
@@ -302,4 +305,5 @@ void summaryview_unlock(SummaryView *summaryview, FolderItem *item);
 void summary_reflect_prefs(void);
 void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show);
 void summary_set_menu_sensitive	(SummaryView		*summaryview);
+void summary_relayout(SummaryView *summaryview);
 #endif /* __SUMMARY_H__ */

@@ -764,8 +764,7 @@ int main(int argc, char *argv[])
 	imap_gtk_init();
 	news_gtk_init();
 
-	mainwin = main_window_create
-		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
+	mainwin = main_window_create();
 
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;

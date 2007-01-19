@@ -463,7 +463,7 @@ QuickSearch *quicksearch_new()
 	GtkWidget *clear_search;
 	GtkWidget *search_condition_expression;
 	GtkWidget *menuitem;
-	GtkTooltips *search_cond_expr_tip;
+	GtkTooltips *tips = gtk_tooltips_new();
 
 	quicksearch = g_new0(QuickSearch, 1);
 
@@ -551,6 +551,9 @@ QuickSearch *quicksearch_new()
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(clear_search), "clicked",
 			 G_CALLBACK(clear_search_cb), quicksearch);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
+			     clear_search,
+			     _("Clear the current search"), NULL);
 	gtk_widget_show(clear_search);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
@@ -563,8 +566,7 @@ QuickSearch *quicksearch_new()
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
 			 G_CALLBACK(search_condition_expr),
 			 quicksearch);
-	search_cond_expr_tip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_cond_expr_tip),
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
 			     search_condition_expression,
 			     _("Edit search criteria"), NULL);
 	gtk_widget_show(search_condition_expression);
@@ -578,6 +580,9 @@ QuickSearch *quicksearch_new()
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",
 			 G_CALLBACK(search_description_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
+			     search_description,
+			     _("Information about extended symbols"), NULL);
 	gtk_widget_show(search_description);
 
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);
@@ -618,6 +623,38 @@ QuickSearch *quicksearch_new()
 	update_extended_buttons(quicksearch);
 
 	return quicksearch;
+}
+
+void quicksearch_relayout(QuickSearch *quicksearch)
+{
+	if (prefs_common.layout_mode != VERTICAL_LAYOUT) {
+#if GTK_CHECK_VERSION(2, 8, 0)
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO);
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT);
+		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR);
+#else
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), _(" Extended Symbols... "));
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), " ... ");
+		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _(" Clear "));
+#endif
+	} else {
+#if GTK_CHECK_VERSION(2, 8, 0)
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), "");
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "");
+		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), "");
+
+		gtk_button_set_image(GTK_BUTTON(quicksearch->search_description),
+			gtk_image_new_from_stock(GTK_STOCK_INFO, GTK_ICON_SIZE_BUTTON));
+		gtk_button_set_image(GTK_BUTTON(quicksearch->search_condition_expression),
+			gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON));
+		gtk_button_set_image(GTK_BUTTON(quicksearch->clear_search),
+			gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_BUTTON));
+#else
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), _("Info"));
+		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "...");
+		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _("Clear"));
+#endif
+	}
 }
 
 GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch)

@@ -606,9 +606,7 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 
 	/* Interface */
-	{"separate_folder", "FALSE", &prefs_common.sep_folder, P_BOOL,
-	 NULL, NULL, NULL},
-	{"separate_message", "FALSE", &prefs_common.sep_msg, P_BOOL,
+	{"layout_mode", "0", &prefs_common.layout_mode, P_INT,
 	 NULL, NULL, NULL},
 
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,

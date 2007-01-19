@@ -60,14 +60,13 @@ typedef enum
 
 typedef enum
 {
-	SEPARATE_NONE	 = 0,
-	SEPARATE_FOLDER	 = 1 << 0,
-	SEPARATE_MESSAGE = 1 << 1,
-	SEPARATE_BOTH	 = (SEPARATE_FOLDER | SEPARATE_MESSAGE)
-} SeparateType;
+	NORMAL_LAYOUT	 = 0,
+	VERTICAL_LAYOUT	 = 1 << 0,
+	WIDE_LAYOUT = 1 << 1
+} LayoutType;
 
 typedef enum
-{
+{	
 	TOOLBAR_NONE		= 0,
 	TOOLBAR_ICON		= 1,
 	TOOLBAR_TEXT		= 2,
@@ -77,27 +76,8 @@ typedef enum
 
 struct _MainWindow
 {
-	SeparateType type;
-
-	union CompositeWin {
-		struct 
-		{
-			GtkWidget *hpaned;
-			GtkWidget *vpaned;
-		} sep_none;
-		struct {
-			GtkWidget *folderwin;
-			GtkWidget *vpaned;
-		} sep_folder;
-		struct {
-			GtkWidget *messagewin;
-			GtkWidget *hpaned;
-		} sep_message;
-		struct {
-			GtkWidget *folderwin;
-			GtkWidget *messagewin;
-		} sep_both;
-	} win;
+	GtkWidget *hpaned;
+	GtkWidget *vpaned;
 
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -150,7 +130,7 @@ struct _MainWindow
 #endif
 };
 
-MainWindow *main_window_create		(SeparateType	 type);
+MainWindow *main_window_create		(void);
 
 void main_window_destroy                (MainWindow *mainwin);
 
@@ -171,15 +151,9 @@ void main_window_set_folder_column	(void);
 void main_window_set_account_menu	(GList		*account_list);
 void main_window_set_account_menu_only_toolbar	(GList		*account_list);
 
-GtkWidget *main_window_get_folder_window	(MainWindow	*mainwin);
-GtkWidget *main_window_get_message_window	(MainWindow	*mainwin);
-
 /* Mailing list support */
 void main_create_mailing_list_menu 	(MainWindow *mainwin, MsgInfo *msginfo);
 gint mailing_list_get_list_post_mailto 	(gchar **url, gchar *mailto, gint maxlen);
-
-void main_window_separation_change	(MainWindow	*mainwin,
-					 SeparateType	 type);
 
 void main_window_toggle_message_view	(MainWindow *mainwin);
 

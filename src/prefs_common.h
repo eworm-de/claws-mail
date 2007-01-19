@@ -314,8 +314,8 @@ struct _PrefsCommon
 	gint addressbook_vpaned_pos;
 
 	/* Interface */
-	gboolean sep_folder;
-	gboolean sep_msg;
+	gboolean layout_mode;
+
 	gint statusbar_update_step;
 	gboolean emulate_emacs;
 	gboolean always_show_msg;

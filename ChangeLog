@@ -1,3 +1,20 @@
+2007-01-19 [colin]	2.7.1cvs35
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/messageview.c
+	* src/messageview.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Drop 'Separate Folder tree' and 'Separate
+		Message View'. Put three layouts in place
+		of it.
+
 2007-01-19 [paul]	2.7.1cvs34
 
 	* src/prefs_msg_colors.c

@@ -1195,28 +1195,6 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
-void messageview_toggle_view_real(MessageView *messageview)
-{
-	MainWindow *mainwin = messageview->mainwin;
-	union CompositeWin *cwin = &mainwin->win;
-	GtkWidget *vpaned = NULL;
-	GtkWidget *container = NULL;
-	
-	switch (mainwin->type) {
-	case SEPARATE_NONE:
-		vpaned = cwin->sep_none.vpaned;
-		container = cwin->sep_none.hpaned;
-		break;
-	case SEPARATE_FOLDER:
-		vpaned = cwin->sep_folder.vpaned;
-		container = mainwin->vbox_body;
-		break;
-	case SEPARATE_MESSAGE:
-	case SEPARATE_BOTH:
-		return;
-	}
-}
-
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
 	gchar *addr = NULL;
@@ -1777,12 +1755,7 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	if (!messageview->menubar) return;
 	ifactory = gtk_item_factory_from_widget(messageview->menubar);
 	if (!ifactory) return;
-	if (messageview->mainwin->type == SEPARATE_MESSAGE) {
-		menuitem = gtk_item_factory_get_widget(ifactory, "/View/All headers");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem),
-			 messageview->mimeview->textview->show_all_headers);
-	}
+
 	if (prefs_common.hide_quotes) {
 		menuitem = NULL;
 		if (prefs_common.hide_quotes == 1)
