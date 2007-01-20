@@ -547,9 +547,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/La_yout"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Layout/_Normal"),		NULL, set_layout_cb, NORMAL_LAYOUT, "<RadioItem>"},
-	{N_("/_View/Layout/_Vertical"),		NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Normal"},
-	{N_("/_View/Layout/_Wide"),		NULL, set_layout_cb, WIDE_LAYOUT, "/View/Layout/Normal"},
+	{N_("/_View/Layout/_Standard"),		NULL, set_layout_cb, NORMAL_LAYOUT, "<RadioItem>"},
+	{N_("/_View/Layout/_Three columns"),	NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Standard"},
+	{N_("/_View/Layout/_Wide message"),	NULL, set_layout_cb, WIDE_LAYOUT, "/View/Layout/Standard"},
+	{N_("/_View/Layout/W_ide message list"),NULL, set_layout_cb, WIDE_MSGLIST_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
@@ -1884,7 +1885,9 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	GtkWidget *ppaned = NULL;
 	GtkWidget *container = NULL;
 	
-	if (prefs_common.layout_mode != WIDE_LAYOUT) {
+	switch (prefs_common.layout_mode) {
+	case NORMAL_LAYOUT:
+	case VERTICAL_LAYOUT:
 		ppaned = mainwin->vpaned;
 		container = mainwin->hpaned;
 		if (ppaned->parent != NULL) {
@@ -1899,7 +1902,8 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			gtk_container_add(GTK_CONTAINER(container), ppaned);
 			gtk_widget_unref(ppaned);
 		}
-	} else {
+		break;
+	case WIDE_LAYOUT:
 		ppaned = mainwin->hpaned;
 		container = mainwin->vpaned;
 		if (mainwin->messageview->vbox->parent != NULL) {
@@ -1912,6 +1916,10 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			gtk_container_add(GTK_CONTAINER(container), mainwin->messageview->vbox);
 			gtk_widget_unref(mainwin->messageview->vbox);
 		}
+		break;
+	case WIDE_MSGLIST_LAYOUT:
+		g_warning("can't hide messageview in this wide msglist layout");
+		break;
 	}
 
 	if (messageview_is_visible(mainwin->messageview))
@@ -2616,7 +2624,11 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		else
 			gtk_widget_destroy(mainwin->hpaned);
 	}
-	if (layout_mode != WIDE_LAYOUT) {
+
+	menu_set_sensitive(ifactory, "/View/Show or hide/Message view", (layout_mode != WIDE_MSGLIST_LAYOUT));
+	switch (layout_mode) {
+	case VERTICAL_LAYOUT:
+	case NORMAL_LAYOUT:
 		hpaned = gtk_hpaned_new();
 		if (layout_mode == VERTICAL_LAYOUT)
 			vpaned = gtk_hpaned_new();
@@ -2641,7 +2653,8 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			       GTK_WIDGET_PTR(mainwin->messageview));
 		gtk_widget_show(vpaned);
 		gtk_widget_queue_resize(vpaned);
-	} else {
+		break;
+	case WIDE_LAYOUT:
 		vpaned = gtk_vpaned_new();
 		hpaned = gtk_hpaned_new();
 		gtk_box_pack_start(GTK_BOX(vbox_body), vpaned, TRUE, TRUE, 0);
@@ -2663,6 +2676,34 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		}
 		gtk_widget_show(vpaned);
 		gtk_widget_queue_resize(vpaned);
+		break;
+	case WIDE_MSGLIST_LAYOUT:
+		vpaned = gtk_vpaned_new();
+		hpaned = gtk_hpaned_new();
+		gtk_box_pack_start(GTK_BOX(vbox_body), vpaned, TRUE, TRUE, 0);
+
+		gtk_paned_add1(GTK_PANED(vpaned),
+			       GTK_WIDGET_PTR(mainwin->summaryview));
+		gtk_paned_add1(GTK_PANED(hpaned),
+			       GTK_WIDGET_PTR(mainwin->folderview));
+
+		gtk_widget_show(hpaned);
+		gtk_widget_queue_resize(hpaned);
+
+		if (messageview_is_visible(mainwin->messageview)) {
+			gtk_paned_add2(GTK_PANED(hpaned),
+			       GTK_WIDGET_PTR(mainwin->messageview));	
+		} else {
+			gtk_widget_ref(GTK_WIDGET_PTR(mainwin->messageview));
+		}
+		gtk_paned_add2(GTK_PANED(vpaned), hpaned);
+
+		gtk_widget_show(vpaned);
+		gtk_widget_queue_resize(vpaned);
+		break;
+	default:
+		g_warning("Unknown layout");
+		return;
 	}
 
 	mainwin->hpaned = hpaned;
@@ -2711,12 +2752,19 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
 }
 
-	if (prefs_common.layout_mode == NORMAL_LAYOUT) {
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Normal", TRUE);
-	} else if (prefs_common.layout_mode == VERTICAL_LAYOUT) {
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Vertical", TRUE);
-	} else if (prefs_common.layout_mode == WIDE_LAYOUT) {
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide", TRUE);
+	switch (prefs_common.layout_mode) {
+	case NORMAL_LAYOUT:
+		SET_CHECK_MENU_ACTIVE("/View/Layout/Standard", TRUE);
+		break;
+	case VERTICAL_LAYOUT:
+		SET_CHECK_MENU_ACTIVE("/View/Layout/Three columns", TRUE);
+		break;
+	case WIDE_LAYOUT:
+		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide message", TRUE);
+		break;
+	case WIDE_MSGLIST_LAYOUT:
+		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide message list", TRUE);
+		break;
 	}
 #undef SET_CHECK_MENU_ACTIVE
 

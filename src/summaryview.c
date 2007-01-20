@@ -713,6 +713,9 @@ SummaryView *summary_create(void)
 	else
 		quicksearch_hide(quicksearch);
 	
+	if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT)
+		gtk_widget_hide(summaryview->toggle_eventbox);
+
 	return summaryview;
 }
 
@@ -726,16 +729,26 @@ void summary_relayout(SummaryView *summaryview)
 	gtkut_container_remove(GTK_CONTAINER(summaryview->hbox_l->parent), summaryview->hbox_l);
 	gtkut_container_remove(GTK_CONTAINER(summaryview->statlabel_msgs->parent), summaryview->statlabel_msgs);
 
-	if (prefs_common.layout_mode != VERTICAL_LAYOUT) {
+	switch (prefs_common.layout_mode) {
+	case NORMAL_LAYOUT:
+	case WIDE_LAYOUT:
+	case WIDE_MSGLIST_LAYOUT:
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
 		gtk_box_pack_end(GTK_BOX(summaryview->stat_box), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
-	} else {
+		if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT)
+			gtk_widget_hide(summaryview->toggle_eventbox);
+		else
+			gtk_widget_show(summaryview->toggle_eventbox);
+		break;
+	case VERTICAL_LAYOUT:
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
+		gtk_widget_show(summaryview->toggle_eventbox);
+		break;
 	}
 	gtk_widget_unref(summaryview->hbox_l);
 	gtk_widget_unref(summaryview->statlabel_msgs);

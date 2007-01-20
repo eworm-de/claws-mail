@@ -1,3 +1,11 @@
+2007-01-20 [colin]	2.7.1cvs37
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+		Add Wide message list layout
+
 2007-01-19 [fabien]	2.7.1cvs36
 
 	* src/textview.c

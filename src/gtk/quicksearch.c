@@ -627,7 +627,10 @@ QuickSearch *quicksearch_new()
 
 void quicksearch_relayout(QuickSearch *quicksearch)
 {
-	if (prefs_common.layout_mode != VERTICAL_LAYOUT) {
+	switch (prefs_common.layout_mode) {
+	case NORMAL_LAYOUT:
+	case WIDE_LAYOUT:
+	case WIDE_MSGLIST_LAYOUT:
 #if GTK_CHECK_VERSION(2, 8, 0)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO);
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT);
@@ -637,7 +640,8 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), " ... ");
 		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _(" Clear "));
 #endif
-	} else {
+		break;
+	case VERTICAL_LAYOUT:
 #if GTK_CHECK_VERSION(2, 8, 0)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), "");
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "");
@@ -654,6 +658,7 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "...");
 		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _("Clear"));
 #endif
+		break;
 	}
 }
 
