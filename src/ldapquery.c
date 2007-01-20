@@ -32,14 +32,13 @@
 #include <string.h>
 #include <lber.h>
 
+#include "ldaputil.h"
 #include "ldapquery.h"
 #include "ldapctrl.h"
 #include "mgutils.h"
 
 #include "addritem.h"
 #include "addrcache.h"
-
-#include "ldapquery.h"
 
 /*
  * Key for thread specific data.
@@ -703,6 +702,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	LDAP *ld = NULL;
 	gint rc;
 	gint version;
+	gchar *uri = NULL;
 
 	/* Initialize connection */
 	/* printf( "===ldapqry_connect===\n" ); */
@@ -714,14 +714,13 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
 	ADDRQUERY_RETVAL(qry) = LDAPRC_INIT;
-	if (!ctl->enableSSL) {
-		ld = ldap_init( ctl->hostName, ctl->port );
-	} else {
-		gchar *uri = g_strdup_printf("ldaps://%s:%d",
+
+	uri = g_strdup_printf("ldap%s://%s:%d",
+				ctl->enableSSL?"s":"",
 				ctl->hostName, ctl->port);
-		ldap_initialize(&ld, uri);
-		g_free(uri);
-	}
+	ldap_initialize(&ld, uri);
+	g_free(uri);
+
 	if (ld == NULL)
 		return ADDRQUERY_RETVAL(qry);
 
@@ -764,7 +763,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	if( ctl->bindDN ) {
 		if( * ctl->bindDN != '\0' ) {
 			/* printf( "binding...\n" ); */
-			rc = ldap_simple_bind_s( ld, ctl->bindDN, ctl->bindPass );
+			rc = claws_ldap_simple_bind_s( ld, ctl->bindDN, ctl->bindPass );
 			/* printf( "rc=%d\n", rc ); */
 			if( rc != LDAP_SUCCESS ) {
 				/*
@@ -793,7 +792,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
  */
 static gint ldapqry_disconnect( LdapQuery *qry ) {
 	/* Disconnect */
-	if( qry->ldap ) ldap_unbind( qry->ldap );
+	if( qry->ldap ) ldap_unbind_ext( qry->ldap, NULL, NULL );
 	qry->ldap = NULL;
 
 	ldapqry_touch( qry );

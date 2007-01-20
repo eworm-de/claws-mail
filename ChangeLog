@@ -1,3 +1,12 @@
+2007-01-20 [colin]	2.7.1cvs38
+
+	* src/ldapquery.c
+	* src/ldaputil.c
+	* src/ldaputil.h
+		Fix bug 1102, 'claws-mail-2.7.1 
+		makes use of deprecated ldap 
+		functions'
+
 2007-01-20 [colin]	2.7.1cvs37
 
 	* src/mainwindow.c
