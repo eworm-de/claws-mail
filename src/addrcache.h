@@ -54,15 +54,6 @@ GList *addrcache_get_list_person	( AddressCache *cache );
 gboolean addrcache_get_dirty		( AddressCache *cache );
 void addrcache_set_dirty		( AddressCache *cache,
 					  const gboolean value );
-gboolean addrcache_get_modified		( AddressCache *cache );
-void addrcache_set_modified		( AddressCache *cache,
-					  const gboolean value );
-gboolean addrcache_get_read_flag	( AddressCache *cache );
-void addrcache_set_read_flag		( AddressCache *cache,
-					  const gboolean value );
-gboolean addrcache_get_accessed		( AddressCache *cache );
-void addrcache_set_accessed		( AddressCache *cache,
-					  const gboolean value );
 gchar *addrcache_get_name		( AddressCache *cache );
 void addrcache_set_name			( AddressCache *cache,
 					  const gchar *value );
@@ -73,9 +64,7 @@ void addrcache_free			( AddressCache *cache );
 gboolean addrcache_check_file		( AddressCache *cache, gchar *path );
 gboolean addrcache_mark_file		( AddressCache *cache, gchar *path );
 
-void addrcache_print_item_list		( GList *list, FILE *stream );
 void addrcache_print			( AddressCache *cache, FILE *stream );
-void addrcache_dump_hash		( AddressCache *cache, FILE *stream );
 
 void addrcache_id_person		( AddressCache *cache, ItemPerson *person );
 void addrcache_id_group			( AddressCache *cache, ItemGroup *group );
@@ -121,16 +110,8 @@ void addrcache_folder_move_folder	( AddressCache *cache,
 					  ItemFolder *target );
 
 AddrItemObject *addrcache_get_object	( AddressCache *cache, const gchar *uid );
-ItemPerson *addrcache_get_person	( AddressCache *cache, const gchar *uid );
-ItemGroup *addrcache_get_group		( AddressCache *cache, const gchar *uid );
 ItemEMail *addrcache_get_email		( AddressCache *cache, const gchar *eid );
 
-UserAttribute *addrcache_person_remove_attrib_id( AddressCache *cache,
-						  const gchar *uid,
-						  const gchar *aid );
-UserAttribute *addrcache_person_remove_attribute( AddressCache *cache,
-						  ItemPerson *person,
-						  UserAttribute *attrib );
 
 ItemGroup *addrcache_remove_group	( AddressCache *cache, ItemGroup *group );
 ItemPerson *addrcache_remove_person	( AddressCache *cache, ItemPerson *person );
@@ -143,19 +124,9 @@ void addrcache_person_move_email	( AddressCache *cache,
 					  ItemEMail *email,
 					  ItemPerson *target );
 
-GList *addrcache_folder_get_address_list( AddressCache *cache, ItemFolder *folder );
-GList *addrcache_folder_get_person_list	( AddressCache *cache, ItemFolder *folder );
-GList *addrcache_folder_get_group_list	( AddressCache *cache, ItemFolder *folder );
-GList *addrcache_folder_get_folder_list	( AddressCache *cache, ItemFolder *folder );
-
-GList *addrcache_get_address_list	( AddressCache *cache );
-GList *addrcache_get_person_list	( AddressCache *cache );
-GList *addrcache_get_group_list		( AddressCache *cache );
-GList *addrcache_get_folder_list	( AddressCache *cache );
 
 GList *addrcache_get_group_for_person	( AddressCache *cache, ItemPerson *person );
 
-ItemFolder *addrcache_find_root_folder	( ItemFolder *folder );
 GList *addrcache_get_all_persons	( AddressCache *cache );
 GList *addrcache_get_all_groups		( AddressCache *cache );
 

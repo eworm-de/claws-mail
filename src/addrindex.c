@@ -137,6 +137,17 @@ struct _AddressIfAttr {
 	gchar *value;
 };
 
+static AddressDataSource *addrindex_create_datasource	( AddressIfType ifType );
+
+static GList *addrindex_ds_get_all_persons	( AddressDataSource *ds );
+static GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );
+static AddressDataSource *addrindex_get_datasource	( AddressIndex *addrIndex,
+						  const gchar *cacheID );
+static AddressInterface *addrindex_get_interface	( AddressIndex *addrIndex,
+						  AddressIfType ifType );
+static gint addrindex_write_to			( AddressIndex *addrIndex,
+					  const gchar *newFile );
+
 /*
  * Define DOM fragment.
  */
@@ -518,7 +529,7 @@ gchar *addrindex_get_cache_id( AddressIndex *addrIndex, AddressDataSource *ds ) 
  * \param cacheID   ID.
  * \return Data source, or NULL if not found.
  */
-AddressDataSource *addrindex_get_datasource(
+static AddressDataSource *addrindex_get_datasource(
 		AddressIndex *addrIndex, const gchar *cacheID )
 {
 	g_return_val_if_fail( addrIndex != NULL, NULL );
@@ -634,14 +645,6 @@ AddressIndex *addrindex_create_index( void ) {
 }
 
 /**
- * Return reference to address index.
- * \return Address index object.
- */
-AddressIndex *addrindex_get_object( void ) {
-	return _addressIndex_;
-}
-
-/**
  * Property - Specify file path to address index file.
  * \param addrIndex Address index.
  * \param value Path to index file.
@@ -659,27 +662,6 @@ void addrindex_set_file_path( AddressIndex *addrIndex, const gchar *value ) {
 void addrindex_set_file_name( AddressIndex *addrIndex, const gchar *value ) {
 	g_return_if_fail( addrIndex != NULL );
 	addrIndex->fileName = mgu_replace_string( addrIndex->fileName, value );
-}
-
-/**
- * Property - Specify file path to be used.
- * \param addrIndex Address index.
- * \param value Path to JPilot file.
- */
-void addrindex_set_dirty( AddressIndex *addrIndex, const gboolean value ) {
-	g_return_if_fail( addrIndex != NULL );
-	addrIndex->dirtyFlag = value;
-}
-
-/**
- * Property - get loaded flag. Note that this flag is set after reading data
- * from the address books.
- * \param addrIndex Address index.
- * \return <i>TRUE</i> if address index data was loaded.
- */
-gboolean addrindex_get_loaded( AddressIndex *addrIndex ) {
-	g_return_val_if_fail( addrIndex != NULL, FALSE );
-	return addrIndex->loadedFlag;
 }
 
 /**
@@ -787,7 +769,7 @@ void addrindex_print_index( AddressIndex *addrIndex, FILE *stream ) {
  * \param  ifType Interface type.
  * \return Address interface, or NULL if not found.
  */
-AddressInterface *addrindex_get_interface(
+static AddressInterface *addrindex_get_interface(
 	AddressIndex *addrIndex, AddressIfType ifType )
 {
 	AddressInterface *retVal = NULL;
@@ -1682,7 +1664,7 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 * return: Status code, from addrIndex->retVal.
 * Note: File will be created in directory specified by addrIndex.
 */
-gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
+static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
 	FILE *fp;
 	gchar *fileSpec;
 #ifndef DEV_STANDALONE
@@ -2376,38 +2358,6 @@ ItemFolder *addrindex_ds_get_root_folder( AddressDataSource *ds ) {
 }
 
 /*
- * Return list of folders for specified data source.
- */
-GList *addrindex_ds_get_list_folder( AddressDataSource *ds ) {
-	GList *retVal = FALSE;
-	AddressInterface *iface;
-
-	if( ds == NULL ) return retVal;
-	iface = ds->interface;
-	if( iface == NULL ) return retVal;
-	if( iface->getListFolder ) {
-		retVal = ( iface->getListFolder ) ( ds->rawDataSource );
-	}
-	return retVal;
-}
-
-/*
- * Return list of persons in root folder for specified data source.
- */
-GList *addrindex_ds_get_list_person( AddressDataSource *ds ) {
-	GList *retVal = FALSE;
-	AddressInterface *iface;
-
-	if( ds == NULL ) return retVal;
-	iface = ds->interface;
-	if( iface == NULL ) return retVal;
-	if( iface->getListPerson ) {
-		retVal = ( iface->getListPerson ) ( ds->rawDataSource );
-	}
-	return retVal;
-}
-
-/*
  * Return name for specified data source.
  */
 gchar *addrindex_ds_get_name( AddressDataSource *ds ) {
@@ -2451,7 +2401,7 @@ gboolean addrindex_ds_get_readonly( AddressDataSource *ds ) {
 /*
  * Return list of all persons for specified data source.
  */
-GList *addrindex_ds_get_all_persons( AddressDataSource *ds ) {
+static GList *addrindex_ds_get_all_persons( AddressDataSource *ds ) {
 	GList *retVal = NULL;
 	AddressInterface *iface;
 
@@ -2467,7 +2417,7 @@ GList *addrindex_ds_get_all_persons( AddressDataSource *ds ) {
 /*
  * Return list of all groups for specified data source.
  */
-GList *addrindex_ds_get_all_groups( AddressDataSource *ds ) {
+static GList *addrindex_ds_get_all_groups( AddressDataSource *ds ) {
 	GList *retVal = NULL;
 	AddressInterface *iface;
 

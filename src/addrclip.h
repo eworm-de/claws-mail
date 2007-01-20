@@ -51,12 +51,6 @@ void addrclip_set_index		( AddressClipboard *clipBoard,
 				  AddressIndex *addrIndex );
 void addrclip_add		( AddressClipboard *clipBoard,
 				  AddrSelectList *asl );
-/*
-void addrclip_add		( AddressClipboard *clipBoard,
-				  GList *addrList );
-*/
-void addrclip_add_item		( AddressClipboard *clipBoard,
-				  AddrSelectItem *item );
 gboolean addrclip_is_empty	( AddressClipboard *clipBoard );
 void addrclip_list_show		( AddressClipboard *clipBoard,
 				  FILE *stream );
@@ -67,13 +61,6 @@ GList *addrclip_paste_copy	( AddressClipboard *clipBoard,
 GList *addrclip_paste_cut	( AddressClipboard *clipBoard,
 				  AddressBookFile *book,
 				  ItemFolder *folder );
-void addrclip_delete_address	( AddressClipboard *clipBoard );
-gint addrclip_paste_person_copy	( AddressClipboard *clipBoard,
-				  AddressBookFile *book,
-				  ItemPerson *person );
-gint addrclip_paste_person_cut	( AddressClipboard *clipBoard,
-				  AddressBookFile *book,
-				  ItemPerson *person );
 
 #endif /* __ADDRRESS_CLIP_H__ */
 

@@ -270,31 +270,6 @@ void addrharvest_free( AddressHarvester *harvester ) {
 }
 
 /*
-* Display object to specified stream.
-* Enter: harvester Harvester.
-*        stream    Output stream.
-*/
-void addrharvest_print( AddressHarvester *harvester, FILE *stream ) {
-	GList *node;
-	HeaderEntry *entry;
-
-	g_return_if_fail( harvester != NULL );
-	fprintf( stream, "Address Harvester:\n" );
-	fprintf( stream, " file path: '%s'\n", harvester->path );
-	fprintf( stream, "max folder: %d'\n", harvester->folderSize );
-
-	node = harvester->headerTable;
-	while( node ) {
-		entry = node->data;
-		fprintf( stream, "   header: %s", entry->header );
-		fprintf( stream, "\t: %s", entry->selected ? "yes" : "no" );
-		fprintf( stream, "\t: %d\n", entry->count );
-		node = g_list_next( node );
-	}
-	fprintf( stream, "  ret val: %d\n", harvester->retVal );
-}
-
-/*
  * Insert address into cache.
  * Enter: harvester Harvester object.
  *        entry     Header object.

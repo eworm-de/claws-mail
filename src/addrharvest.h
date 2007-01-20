@@ -61,8 +61,6 @@ void addrharvest_set_recurse		( AddressHarvester* harvester,
 					  const gboolean value );
 gint addrharvest_get_count		( AddressHarvester* harvester,
 					  const gchar *name );
-void addrharvest_print			( AddressHarvester *harvester,
-					  FILE *stream );
 gint addrharvest_harvest		( AddressHarvester *harvester,
 					  AddressCache *cache,
 					  GList *msgList );

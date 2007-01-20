@@ -42,17 +42,13 @@ PrefsAccount *account_find_from_address		(const gchar	*address);
 PrefsAccount *account_find_from_id		(gint		 id);
 PrefsAccount *account_find_from_item		(FolderItem	*item);
 
-void	      account_set_menu		(void);
 void	      account_set_menu_only_toolbar	(void);
 
-void	      account_foreach		(AccountFunc	 func,
-					 gpointer	 user_data);
 GList	     *account_get_list		(void);
 
 void	      account_edit_open		(void);
 void	      account_add		(void);
 void	      account_open		(PrefsAccount	*ac_prefs);
-void	      account_set_as_default	(PrefsAccount	*ac_prefs);
 void	      account_set_as_recv_at_get_all	(PrefsAccount	*ac_prefs);
 PrefsAccount *account_get_default	(void);
 
@@ -60,7 +56,6 @@ void	      account_set_missing_folder(void);
 FolderItem   *account_get_special_folder(PrefsAccount		*ac_prefs,
 					 SpecialFolderItemType	 type);
 
-void	      account_destroy		(PrefsAccount	*ac_prefs);
 PrefsAccount *account_get_reply_account	(MsgInfo 	*msginfo, 
 					 gboolean	 reply_autosel);
 void 	      account_rename_path	(const gchar 	*old_id, 

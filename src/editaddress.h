@@ -33,6 +33,5 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 void addressbook_edit_person_invalidate( AddressBookFile *abf, ItemFolder *parent_folder,
 										 ItemPerson *person );
 void addressbook_edit_person_widgetset_hide( void );
-gboolean addressbook_edit_person_close( gboolean cancelled );
 
 #endif /* __EDITADDRESS_H__ */

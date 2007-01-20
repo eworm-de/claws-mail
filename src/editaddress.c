@@ -117,6 +117,8 @@ typedef enum {
 #define PAGE_EMAIL             1
 #define PAGE_ATTRIBUTES        2
 
+static gboolean addressbook_edit_person_close( gboolean cancelled );
+
 static void edit_person_status_show( gchar *msg ) {
 	if( personeditdlg.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(personeditdlg.statusbar), personeditdlg.status_cid );
@@ -1248,7 +1250,7 @@ void addressbook_edit_person_invalidate( AddressBookFile *abf, ItemFolder *paren
 		addressbook_edit_person_close( TRUE );
 }
 
-gboolean addressbook_edit_person_close( gboolean cancelled )
+static gboolean addressbook_edit_person_close( gboolean cancelled )
 {
 	GList *listEMail = NULL;
 	GList *listAttrib = NULL;

@@ -103,30 +103,6 @@ void addrcache_set_dirty( AddressCache *cache, const gboolean value ) {
 	g_return_if_fail( cache != NULL );
 	cache->dirtyFlag = value;
 }
-gboolean addrcache_get_modified( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	return cache->modified;
-}
-void addrcache_set_modified( AddressCache *cache, const gboolean value ) {
-	g_return_if_fail( cache != NULL );
-	cache->modified = value;
-}
-gboolean addrcache_get_read_flag( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	return cache->dataRead;
-}
-void addrcache_set_read_flag( AddressCache *cache, const gboolean value ) {
-	g_return_if_fail( cache != NULL );
-	cache->dataRead = value;
-}
-gboolean addrcache_get_accessed( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	return cache->accessFlag;
-}
-void addrcache_set_accessed( AddressCache *cache, const gboolean value ) {
-	g_return_if_fail( cache != NULL );
-	cache->accessFlag = value;
-}
 gchar *addrcache_get_name( AddressCache *cache ) {
 	g_return_val_if_fail( cache != NULL, NULL );
 	return cache->name;
@@ -293,47 +269,6 @@ gboolean addrcache_mark_file( AddressCache *cache, gchar *path ) {
 }
 
 /*
-* Print list of items.
-*/
-void addrcache_print_item_list( GList *list, FILE *stream ) {
-	GList *node = list;
-	while( node ) {
-		AddrItemObject *obj = node->data;
-		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-			addritem_print_item_person( ( ItemPerson * ) obj, stream );
-		}
-		else if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
-			addritem_print_item_group( ( ItemGroup * ) obj, stream );
-		}
-		else if( ADDRITEM_TYPE(obj) == ITEMTYPE_FOLDER ) {
-			addritem_print_item_folder( ( ItemFolder * ) obj, stream );
-		}
-		node = g_list_next( node );
-	}
-	fprintf( stream, "\t---\n" );
-}
-
-/*
-* Print item hash table visitor function.
-*/
-static void addrcache_print_item_vis( gpointer key, gpointer value, gpointer data ) {
-	AddrItemObject *obj = ( AddrItemObject * ) value;
-	FILE *stream = ( FILE * ) data;
-	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-		addritem_print_item_person( ( ItemPerson * ) obj, stream );
-	}
-	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
-		printf( "addrcache: print email\n" );
-	}
-	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
-		addritem_print_item_group( ( ItemGroup * ) obj, stream );
-	}
-	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_FOLDER ) {
-		addritem_print_item_folder( ( ItemFolder * ) obj, stream );
-	}
-}
-
-/*
 * Dump entire address cache hash table contents.
 */
 void addrcache_print( AddressCache *cache, FILE *stream ) {
@@ -345,15 +280,6 @@ void addrcache_print( AddressCache *cache, FILE *stream ) {
 	fprintf( stream, "mod time : %ld\n", (long int)cache->modifyTime );
 	fprintf( stream, "modified : %s\n",  cache->modified ? "yes" : "no" );
 	fprintf( stream, "data read: %s\n",  cache->dataRead ? "yes" : "no" );
-}
-
-/*
-* Dump entire address cache hash table contents.
-*/
-void addrcache_dump_hash( AddressCache *cache, FILE *stream ) {
-	g_return_if_fail( cache != NULL );
-	addrcache_print( cache, stream );
-	g_hash_table_foreach( cache->itemHash, addrcache_print_item_vis, stream );
 }
 
 /*
@@ -696,40 +622,6 @@ AddrItemObject *addrcache_get_object( AddressCache *cache, const gchar *uid ) {
 }
 
 /*
-* Return pointer for specified object ID.
-* param: uid Object ID.
-* return: Person object, or NULL if not found.
-*/
-ItemPerson *addrcache_get_person( AddressCache *cache, const gchar *uid ) {
-	ItemPerson *person = NULL;
-	AddrItemObject *obj = addrcache_get_object( cache, uid );
-
-	if( obj ) {
-		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-			person = ( ItemPerson * ) obj;
-		}
-	}
-	return person;
-}
-
-/*
-* Return pointer for specified object ID.
-* param: uid group ID.
-* return: Group object, or NULL if not found.
-*/
-ItemGroup *addrcache_get_group( AddressCache *cache, const gchar *uid ) {
-	ItemGroup *group = NULL;
-	AddrItemObject *obj = addrcache_get_object( cache, uid );
-
-	if( obj ) {
-		if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
-			group = ( ItemGroup * ) obj;
-		}
-	}
-	return group;
-}
-
-/*
 * Find email address in address cache.
 * param: eid	EMail ID.
 * return: email object for specified object ID and email ID, or NULL if not found.
@@ -744,44 +636,6 @@ ItemEMail *addrcache_get_email( AddressCache *cache, const gchar *eid ) {
 		}
 	}
 	return email;
-}
-
-/*
-* Remove attribute from person.
-* param: uid	Object ID for person.
-*        aid	Attribute ID.
-* return: UserAttribute object, or NULL if not found. Note that object should still be freed.
-*/
-UserAttribute *addrcache_person_remove_attrib_id( AddressCache *cache, const gchar *uid, const gchar *aid ) {
-	UserAttribute *attrib = NULL;
-	ItemPerson *person;
-
-	if( aid == NULL || *aid == '\0' ) return NULL;
-
-	person = addrcache_get_person( cache, uid );
-	if( person ) {
-		attrib = addritem_person_remove_attrib_id( person, aid );
-		cache->dirtyFlag = TRUE;
-	}
-	return attrib;
-}
-
-/*
-* Remove attribute from person.
-* param: person	Person.
-*        attrib	Attribute to remove.
-* return: UserAttribute object. Note that object should still be freed.
-*/
-UserAttribute *addrcache_person_remove_attribute( AddressCache *cache, ItemPerson *person, UserAttribute *attrib ) {
-	UserAttribute *found = NULL;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( person && attrib ) {
-		found = addritem_person_remove_attribute( person, attrib );
-		cache->dirtyFlag = TRUE;
-	}
-	return found;
 }
 
 /*
@@ -970,129 +824,6 @@ void addrcache_person_move_email(
 }
 
 /*
-* Return link list of address items for root level folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to use the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_folder_get_address_list( AddressCache *cache, ItemFolder *folder ) {
-	GList *list = NULL;
-	GList *node = NULL;
-	ItemFolder *f = folder;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( ! f ) f = cache->rootFolder;
-	node = f->listPerson;
-	while( node ) {
-		list = g_list_append( list, node->data );
-		node = g_list_next( node );
-	}
-	node = f->listGroup;
-	while( node ) {
-		list = g_list_append( list, node->data );
-		node = g_list_next( node );
-	}
-	return list;
-}
-
-/*
-* Return link list of persons for specified folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to use the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_folder_get_person_list( AddressCache *cache, ItemFolder *folder ) {
-	ItemFolder *f = folder;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( ! f ) f = cache->rootFolder;
-	return addritem_folder_get_person_list( f );
-}
-
-/*
-* Return link list of group items for specified folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to use the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_folder_get_group_list( AddressCache *cache, ItemFolder *folder ) {
-	ItemFolder *f = folder;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( ! f ) f = cache->rootFolder;
-	return addritem_folder_get_group_list( f );
-}
-
-/*
-* Return link list of folder items for specified folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to used the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_folder_get_folder_list( AddressCache *cache, ItemFolder *folder ) {
-	GList *node = NULL;
-	GList *list = NULL;
-	ItemFolder *f = folder;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( ! f ) f = cache->rootFolder;
-	node = f->listFolder;
-	while( node ) {
-		list = g_list_append( list, node->data );
-		node = g_list_next( node );
-	}
-	return list;
-}
-
-/*
-* Return link list of address items for root level folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to used the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_get_address_list( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
-	return addrcache_folder_get_address_list( cache, cache->rootFolder );
-}
-
-/*
-* Return link list of persons for root level folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to used the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_get_person_list( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
-	return addritem_folder_get_person_list( cache->rootFolder );
-}
-
-/*
-* Return link list of group items in root level folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to used the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_get_group_list( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
-	return cache->rootFolder->listGroup;
-}
-
-/*
-* Return link list of folder items in root level folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to used the
-* addrcache_free_xxx() functions... this will destroy the address cache data!
-* Return: List of items, or NULL if none.
-*/
-GList *addrcache_get_folder_list( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
-	return cache->rootFolder->listFolder;
-}
-
-/*
 * Group visitor function.
 */
 static void addrcache_get_grp_person_vis( gpointer key, gpointer value, gpointer data ) {
@@ -1131,26 +862,6 @@ GList *addrcache_get_group_for_person( AddressCache *cache, ItemPerson *person )
 	list = cache->tempList;
 	cache->tempList = NULL;
 	return list;
-}
-
-/*
-* Find root folder for specified folder.
-* Enter: folder Folder to search.
-* Return: root folder, or NULL if not found.
-*/
-ItemFolder *addrcache_find_root_folder( ItemFolder *folder ) {
-	ItemFolder *item = folder;
-	gint count = 0;
-
-	while( item ) {
-		if( item->isRoot ) break;
-		if( ++count > ADDRCACHE_MAX_SEARCH_COUNT ) {
-			item = NULL;
-			break;
-		}
-		item = ( ItemFolder * ) ADDRITEM_PARENT(folder);
-	}
-	return item;
 }
 
 /*

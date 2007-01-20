@@ -45,6 +45,8 @@
 
 #define ID_TIME_OFFSET            998000000
 
+static void addrbook_print_book		( AddressBookFile *book, FILE *stream );
+
 /**
  * Create new address book
  * \return Address book.
@@ -114,17 +116,6 @@ gboolean addrbook_get_modified(AddressBookFile *book)
 	return book->addressCache->modified;
 }
 
-/**
- * Specify book as modified.
- * \param book  Address book.
- * \param value Indicator.
- */
-void addrbook_set_modified(AddressBookFile *book, const gboolean value)
-{
-	g_return_if_fail(book != NULL);
-	book->addressCache->modified = value;
-}
-
 gboolean addrbook_get_accessed(AddressBookFile *book)
 {
 	g_return_val_if_fail(book != NULL, FALSE);
@@ -146,17 +137,6 @@ gboolean addrbook_get_read_flag(AddressBookFile *book)
 {
 	g_return_val_if_fail(book != NULL, FALSE);
 	return book->addressCache->dataRead;
-}
-
-/**
- * Specify address book as read.
- * \param book  Address book.
- * \param value Value.
- */
-void addrbook_set_read_flag(AddressBookFile *book, const gboolean value)
-{
-	g_return_if_fail(book != NULL);
-	book->addressCache->dataRead = value;
 }
 
 gint addrbook_get_status(AddressBookFile *book)
@@ -201,28 +181,6 @@ void addrbook_set_dirty(AddressBookFile *book, const gboolean value)
 }
 
 /**
- * Empty address book contents.
- * \param book Address book.
- */
-void addrbook_empty_book(AddressBookFile *book)
-{
-	g_return_if_fail(book != NULL);
-
-	/* Free up internal objects */
-	addrcache_clear(book->addressCache);
-	addrcache_set_dirty(book->addressCache, FALSE);
-	g_list_free(book->tempList);
-
-	/* Reset to initial state */
-	book->tempList = NULL;
-	book->tempHash = NULL;
-	book->addressCache->dataRead = FALSE;
-	book->addressCache->modified = FALSE;
-	book->addressCache->accessFlag = FALSE;
-	book->retVal = MGU_SUCCESS;
-}
-
-/**
  * Free address book.
  * \param book Address book.
  */
@@ -256,7 +214,7 @@ void addrbook_free_book(AddressBookFile *book)
  * \param book   Address book.
  * \param stream Output stream.
  */
-void addrbook_print_book(AddressBookFile *book, FILE *stream)
+static void addrbook_print_book(AddressBookFile *book, FILE *stream)
 {
 	g_return_if_fail(book != NULL);
 
@@ -1302,48 +1260,6 @@ gint addrbook_save_data(AddressBookFile *book)
  */
 
 /**
- * Move email item within list of person's email items.
- * \param  book       Address book.
- * \param  person     Person.
- * \param  itemMove   EMail item to move.
- * \param  itemTarget EMail item to move before.
- * \return Moved item.
- */
-ItemEMail *addrbook_move_email_before(AddressBookFile *book, ItemPerson *person,
-				      ItemEMail *itemMove, ItemEMail *itemTarget)
-{
-	ItemEMail *email = NULL;
-
-	g_return_val_if_fail(book != NULL, NULL);
-
-	email = addritem_move_email_before(person, itemMove, itemTarget);
-	if (email) 
-		addrcache_set_dirty(book->addressCache, TRUE);
-	return email;
-}
-
-/**
- * Move email item within list of person's email items.
- * \param  book       Address book.
- * \param  person     Person.
- * \param  itemMove   EMail item to move.
- * \param  itemTarget EMail item after which to move.
- * \return Moved item.
- */
-ItemEMail *addrbook_move_email_after(AddressBookFile *book, ItemPerson *person,
-				     ItemEMail *itemMove, ItemEMail *itemTarget)
-{
-	ItemEMail *email = NULL;
-
-	g_return_val_if_fail(book != NULL, NULL);
-
-	email = addritem_move_email_after(person, itemMove, itemTarget);
-	if (email)
-		addrcache_set_dirty(book->addressCache, TRUE);
-	return email;
-}
-
-/**
  * Hash table callback function for simple deletion of hashtable entries.
  * \param  key   Table key (will be freed).
  * \param  value Value stored in table.
@@ -1759,42 +1675,6 @@ void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList 
 		node = g_list_next( node );
 	}
 	addrcache_set_dirty( book->addressCache, TRUE );
-}
-
-/**
- * Remove folder from address book. Children are re-parented to the parent
- * folder.
- * \param  book   Address book.
- * \param  folder Folder to remove.
- * \return Folder, or <i>NULL</i> if not found. Note that object should still
- *         be freed.
- */
-ItemFolder *addrbook_remove_folder(AddressBookFile *book, ItemFolder *folder)
-{
-	ItemFolder *f;
-
-	g_return_val_if_fail(book != NULL, NULL);
-
-	f = addrcache_remove_folder(book->addressCache, folder);
-	return f;
-}
-
-/**
- * Remove folder from address book. Children are deleted.
- * \param  book   Address book.
- * \param  folder Folder to remove.
- * \return Folder, or <i>NULL</i> if not found. Note that object should still
- *         be freed.
- */
-ItemFolder *addrbook_remove_folder_delete(AddressBookFile *book, 
-					  ItemFolder *folder)
-{
-	ItemFolder *f;
-
-	g_return_val_if_fail(book != NULL, NULL);
-
-	f = addrcache_remove_folder_delete(book->addressCache, folder);
-	return f;
 }
 
 #define WORK_BUFLEN     1024

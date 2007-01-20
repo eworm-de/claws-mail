@@ -89,6 +89,9 @@ static struct EditAccount {
 static GdkPixbuf *mark_pixbuf;
 
 static void account_edit_create		(void);
+static void	      account_destroy		(PrefsAccount	*ac_prefs);
+static void	      account_set_as_default	(PrefsAccount	*ac_prefs);
+static void	      account_set_menu		(void);
 
 static void account_edit_prefs		(GtkWidget *widget, gpointer data);
 static void account_delete		(GtkWidget *widget, gpointer data);
@@ -346,7 +349,7 @@ PrefsAccount *account_find_from_item(FolderItem *item)
 	return ac;
 }
 
-void account_set_menu(void)
+static void account_set_menu(void)
 {
 	main_window_set_account_menu(account_list);
 }
@@ -354,15 +357,6 @@ void account_set_menu(void)
 void account_set_menu_only_toolbar(void)
 {
 	main_window_set_account_menu_only_toolbar(account_list);
-}
-
-void account_foreach(AccountFunc func, gpointer user_data)
-{
-	GList *cur;
-
-	for (cur = account_list; cur != NULL; cur = cur->next)
-		if (func((PrefsAccount *)cur->data, user_data) != 0)
-			return;
 }
 
 GList *account_get_list(void)
@@ -461,7 +455,7 @@ void account_open(PrefsAccount *ac_prefs)
 	main_window_reflect_prefs_all();
 }
 
-void account_set_as_default(PrefsAccount *ac_prefs)
+static void account_set_as_default(PrefsAccount *ac_prefs)
 {
 	PrefsAccount *ap;
 	GList *cur;

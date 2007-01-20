@@ -183,6 +183,10 @@ static AddressBook_win addrbook;
 static GHashTable *_addressBookTypeHash_ = NULL;
 static GList *_addressBookTypeList_ = NULL;
 
+static void addressbook_new_address_from_book_post_cb( ItemPerson *person );
+static void addressbook_new_address_from_folder_post_cb( ItemPerson *person );
+static void addressbook_edit_address_post_cb( ItemPerson *person );
+
 static void addressbook_create			(void);
 static gint addressbook_close			(void);
 static void addressbook_button_set_sensitive	(void);
@@ -2832,7 +2836,7 @@ static void addressbook_treenode_delete_cb(
 	}
 }
 
-void addressbook_new_address_from_book_post_cb( ItemPerson *person )
+static void addressbook_new_address_from_book_post_cb( ItemPerson *person )
 {
 	if( person && addrbook.treeSelected == addrbook.opened ) {
 		gtk_clist_unselect_all( GTK_CLIST(addrbook.clist) );
@@ -2842,7 +2846,7 @@ void addressbook_new_address_from_book_post_cb( ItemPerson *person )
 	addressbook_address_list_set_focus();
 }
 
-void addressbook_new_address_from_folder_post_cb( ItemPerson *person )
+static void addressbook_new_address_from_folder_post_cb( ItemPerson *person )
 {
 	if( person && addrbook.treeSelected == addrbook.opened) {
 		gtk_sctree_select( GTK_SCTREE(addrbook.ctree), addrbook.opened );
@@ -2967,7 +2971,7 @@ static void addressbook_move_nodes_up( GtkCTree *ctree, GtkCTreeNode *node ) {
 	}
 }
 
-void addressbook_edit_address_post_cb( ItemPerson *person )
+static void addressbook_edit_address_post_cb( ItemPerson *person )
 {
 	if( person ) {
 		addressbook_folder_refresh_one_person( GTK_CTREE(addrbook.clist), person );

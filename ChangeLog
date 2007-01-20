@@ -1,3 +1,24 @@
+2007-01-20 [colin]	2.7.1cvs41
+
+	* src/account.c
+	* src/account.h
+	* src/addrbook.c
+	* src/addrbook.h
+	* src/addrcache.c
+	* src/addrcache.h
+	* src/addrclip.c
+	* src/addrclip.h
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addrharvest.c
+	* src/addrharvest.h
+	* src/addrindex.c
+	* src/addrindex.h
+	* src/editaddress.c
+	* src/editaddress.h
+		Make functions that aren't used in other
+		files static
+
 2007-01-20 [colin]	2.7.1cvs40
 
 	* src/account.c
