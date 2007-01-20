@@ -1452,26 +1452,6 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 	return mlist;
 }
 
-GSList *summary_get_msg_list(SummaryView *summaryview)
-{
-	GSList *mlist = NULL;
-	GtkCTree *ctree;
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-
-	ctree = GTK_CTREE(summaryview->ctree);
-
-	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
-		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
-		mlist = g_slist_prepend(mlist, msginfo);
-	}
-
-	mlist = g_slist_reverse(mlist);
-
-	return mlist;
-}
-
 void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	GtkItemFactory *ifactory = summaryview->popupfactory;
@@ -2583,7 +2563,7 @@ unlock:
 	END_TIMING();
 }
 
-gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
+static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 				   GtkCTreeNode *cnode, gpointer data)
 {
 	SummaryView *summaryview = (SummaryView *)data;
@@ -4692,12 +4672,12 @@ void summary_collapse_threads(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
 }
 
-void account_rules_radio_button_toggled_cb(GtkToggleButton *btn, gpointer data)
+static void account_rules_radio_button_toggled_cb(GtkToggleButton *btn, gpointer data)
 {
 	prefs_common.apply_per_account_filtering_rules = GPOINTER_TO_INT(data);
 }
 
-gboolean summary_filter_get_mode(void)
+static gboolean summary_filter_get_mode(void)
 /* ask what to do w/ them: skip them, apply them regardless to the account,
    use the current account */
 {

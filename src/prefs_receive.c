@@ -77,7 +77,7 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 }
 
 
-void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	ReceivePage *prefs_receive = (ReceivePage *) _page;
@@ -288,7 +288,7 @@ void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 }
 
-void prefs_receive_save(PrefsPage *_page)
+static void prefs_receive_save(PrefsPage *_page)
 {
 	ReceivePage *page = (ReceivePage *) _page;
 	gchar *tmp;

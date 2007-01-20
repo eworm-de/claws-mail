@@ -197,25 +197,6 @@ void exporthtml_free( ExportHtmlCtl *ctl ) {
 }
 
 /*
- * Print control object.
- * Enter: ctl    Export control data.
- *        stream Output stream.
- */
-void exporthtml_print( ExportHtmlCtl *ctl, FILE *stream ) {
-	fprintf( stream, "ExportHtmlCtl:\n" );
-	fprintf( stream, "     path: %s\n", ctl->path );
-	fprintf( stream, "directory: %s\n", ctl->dirOutput );
-	fprintf( stream, "     file: %s\n", ctl->fileHtml );
-	fprintf( stream, " settings: %s\n", ctl->settingsFile );
-	fprintf( stream, " encoding: %s\n", ctl->encoding );
-	fprintf( stream, " css file: %d\n", ctl->stylesheet );
-	fprintf( stream, " name fmt: %d\n", ctl->nameFormat );
-	fprintf( stream, "  banding: %d\n", ctl->banding );
-	fprintf( stream, "link mail: %d\n", ctl->linkEMail );
-	fprintf( stream, "show attr: %d\n", ctl->showAttribs );
-}
-
-/*
  * Find style entry.
  * Enter: ctl Export control data.
  * Return: Stylesheet object, or NULL if nothing found. If a default entry is
@@ -236,19 +217,6 @@ static StylesheetEntry *exporthtml_find_stylesheet( ExportHtmlCtl *ctl ) {
 	return retVal;
 }
 
-/*
- * Properties...
- */
-/*
- * Specify path to folder where files are created.
- * Enter: ctl   Export control data.
- *        value Full directory path.
- */
-void exporthtml_set_output_dir( ExportHtmlCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, value );
-	g_strstrip( ctl->dirOutput );
-}
 void exporthtml_set_path( ExportHtmlCtl *ctl, const gchar *value ) {
 	g_return_if_fail( ctl != NULL );
 	ctl->path = mgu_replace_string( ctl->path, value );

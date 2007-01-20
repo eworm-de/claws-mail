@@ -3378,7 +3378,7 @@ static gint is_unchanged_uri_char(char c)
 	}
 }
 
-void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
+static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 {
 	int i;
 	int k;

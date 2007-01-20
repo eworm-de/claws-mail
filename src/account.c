@@ -136,9 +136,9 @@ static void account_create_list_view_images	(GtkWidget *list_view);
 static void account_create_list_view_columns	(GtkWidget *list_view);
 
 static gint account_list_view_get_selected_account_id		(GtkWidget *list_view);
-GtkTreePath *account_list_view_get_selected_account_path	(GtkWidget *list_view);
-PrefsAccount *account_list_view_get_selected_account		(GtkWidget *list_view);
-gboolean account_list_view_select_account			(GtkWidget *list_view, 
+static GtkTreePath *account_list_view_get_selected_account_path	(GtkWidget *list_view);
+static PrefsAccount *account_list_view_get_selected_account		(GtkWidget *list_view);
+static gboolean account_list_view_select_account			(GtkWidget *list_view, 
 								 gint	    account_id);
 
 static void account_list_view_set_default_by_id(GtkWidget *list_view,
@@ -1528,7 +1528,7 @@ static gint account_list_view_get_selected_account_id(GtkWidget *list_view)
 /*!
  *\brief	Get the tree path of the currently selected account
  */
-GtkTreePath *account_list_view_get_selected_account_path(GtkWidget *list_view)
+static GtkTreePath *account_list_view_get_selected_account_path(GtkWidget *list_view)
 {
 	GtkTreeSelection *selector;
 	GtkTreeModel *model;
@@ -1546,7 +1546,7 @@ GtkTreePath *account_list_view_get_selected_account_path(GtkWidget *list_view)
 /*!
  *\brief	Get the account data of the currently selected account
  */
-PrefsAccount *account_list_view_get_selected_account(GtkWidget *list_view)
+static PrefsAccount *account_list_view_get_selected_account(GtkWidget *list_view)
 {
 	GtkTreeSelection *selector;
 	GtkTreeModel *model;
@@ -1568,7 +1568,7 @@ PrefsAccount *account_list_view_get_selected_account(GtkWidget *list_view)
  *
  *\return	gboolean TRUE if found and selected, FALSE if not.
  */
-gboolean account_list_view_select_account(GtkWidget *list_view, gint account_id)
+static gboolean account_list_view_select_account(GtkWidget *list_view, gint account_id)
 {
 	FindAccountInStore fis;
 	GtkTreeModel *model;

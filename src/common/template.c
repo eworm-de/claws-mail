@@ -109,7 +109,7 @@ void template_clear_config(GSList *tmpl_list)
 	g_slist_free(tmpl_list);
 }
 
-gint tmpl_compare(gconstpointer tmpl1, gconstpointer tmpl2)
+static gint tmpl_compare(gconstpointer tmpl1, gconstpointer tmpl2)
 {
 	if ((Template *)tmpl1 == NULL || (Template *)tmpl2 == NULL)
 		return 0;

@@ -61,7 +61,7 @@ typedef struct _ExtProgPage
 	GtkWidget *astextviewer_entry;
 } ExtProgPage;
 
-void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window, 
 			          gpointer data)
 {
 	ExtProgPage *prefs_ext_prog = (ExtProgPage *) _page;
@@ -222,7 +222,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_ext_prog->page.widget = table;
 }
 
-void prefs_ext_prog_save(PrefsPage *_page)
+static void prefs_ext_prog_save(PrefsPage *_page)
 {
 	ExtProgPage *ext_prog = (ExtProgPage *) _page;
 

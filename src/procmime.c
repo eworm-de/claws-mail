@@ -1347,7 +1347,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     guint offset,
 			     guint length);
 
-void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
+static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
 			        {"Content-Transfer-Encoding:",
@@ -1412,7 +1412,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	}
 }
 
-void procmime_parse_multipart(MimeInfo *mimeinfo)
+static void procmime_parse_multipart(MimeInfo *mimeinfo)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
 			        {"Content-Transfer-Encoding:",
@@ -1860,7 +1860,7 @@ static void output_mime_structure(MimeInfo *mimeinfo, int indent)
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, output_func, NULL);
 }
 
-MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset)
+static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset)
 {
 	MimeInfo *mimeinfo;
 	struct stat buf;
@@ -2105,7 +2105,7 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 	fprintf(fp, "\n");
 }
 
-gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
+static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 {
 	FILE *infp;
 	GNode *childnode;
@@ -2166,7 +2166,7 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	return procmime_write_mimeinfo(child, fp);
 }
 
-gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
+static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 {
 	FILE *infp;
 	GNode *childnode;

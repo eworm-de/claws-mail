@@ -62,18 +62,6 @@ void pine_set_file( PineFile* pineFile, const gchar *value ) {
 }
 
 /*
-* Register a callback function. When called, the function will be passed
-* the following arguments:
-*	PineFile object,
-*	File size (long),
-*	Current position (long)
-* This can be used for a progress indicator.
-*/
-void pine_set_callback( PineFile *pineFile, void *func ) {
-	pineFile->cbProgress = func;
-}
-
-/*
  * Free key in table.
  */
 static gint pine_free_table_vis( gpointer key, gpointer value, gpointer data ) {
@@ -108,18 +96,6 @@ void pine_free( PineFile *pineFile ) {
 
 	/* Now release file object */
 	g_free( pineFile );
-}
-
-/*
- * Display object to specified stream.
- * Enter: pineFile File object.
- *        stream   File..
- */
-void pine_print_file( PineFile *pineFile, FILE *stream ) {
-	g_return_if_fail( pineFile != NULL );
-	fprintf( stream, "Pine File:\n" );
-	fprintf( stream, "file spec: '%s'\n", pineFile->path );
-	fprintf( stream, "  ret val: %d\n",   pineFile->retVal );
 }
 
 /*

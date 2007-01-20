@@ -89,7 +89,7 @@ static void set_button_bg_color			(GtkWidget	*widget,
 static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget,
 						 gpointer	 data);
 
-void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	    gpointer data)
 {
 	MsgColorsPage *prefs_msg_colors = (MsgColorsPage *) _page;
@@ -772,7 +772,7 @@ static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
 	gtk_widget_set_style(GTK_WIDGET(widget), newstyle);
 }
 
-void prefs_msg_colors_save(PrefsPage *_page)
+static void prefs_msg_colors_save(PrefsPage *_page)
 {
 	MsgColorsPage *page = (MsgColorsPage *) _page;
 	gint c;

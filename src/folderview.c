@@ -273,11 +273,11 @@ static void folderview_drag_end_cb	 (GtkWidget	   *widget,
 					  GdkDragContext   *drag_context,
 					  FolderView	   *folderview);
 
-void folderview_create_folder_node       (FolderView       *folderview, 
+static void folderview_create_folder_node       (FolderView       *folderview, 
 					  FolderItem       *item);
-gboolean folderview_update_folder	 (gpointer 	    source,
+static gboolean folderview_update_folder	 (gpointer 	    source,
 					  gpointer 	    userdata);
-gboolean folderview_update_item_claws	 (gpointer 	    source,
+static gboolean folderview_update_item_claws	 (gpointer 	    source,
 					  gpointer	    data);
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
@@ -443,7 +443,7 @@ static gboolean folderview_popup_menu(GtkWidget *widget, gpointer data)
 }
 
 
-GtkWidget *folderview_ctree_create(FolderView *folderview)
+static GtkWidget *folderview_ctree_create(FolderView *folderview)
 {
 	GtkWidget *ctree;
 	gint *col_pos;
@@ -1712,7 +1712,7 @@ void folderview_update_search_icon(FolderItem *item, gboolean matches)
 	}
 }
 
-gboolean folderview_update_item_claws(gpointer source, gpointer data)
+static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 {
 	FolderItemUpdateData *update_info = (FolderItemUpdateData *)source;
 	FolderView *folderview = (FolderView *)data;
@@ -2256,7 +2256,7 @@ static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 	prefs_common.folder_col_size[type] = width;
 }
 
-void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem *item)
+static void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem *item)
 {
 	GNode *srcnode;
 
@@ -2277,7 +2277,7 @@ void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem 
 	}
 }
 
-void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
+static void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
@@ -2728,7 +2728,7 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 	}
 }
 
-gboolean folderview_update_folder(gpointer source, gpointer userdata)
+static gboolean folderview_update_folder(gpointer source, gpointer userdata)
 {
 	FolderUpdateData *hookdata;
 	FolderView *folderview;

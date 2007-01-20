@@ -120,7 +120,6 @@ static gint browse_callback_entry(
 	node = listValues;
 	while( node ) {
 		nvp = ( NameValuePair * ) node->data;
-		/* ldapqry_print_name_value( nvp, stdout ); */
 		_displayQueue_ = g_list_append( _displayQueue_, nvp );
 		node->data = NULL;
 		node = g_list_next( node );

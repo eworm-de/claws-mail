@@ -529,19 +529,14 @@ static gint msgcache_get_cache_data_str(gchar *src, gchar **str, gint len,
 	return len;
 }
 
-gchar *strconv_strdup_convert(StringConverter *conv, gchar *srcstr)
-{
-	return g_strdup(srcstr);
-}
-
-gchar *strconv_charset_convert(StringConverter *conv, gchar *srcstr)
+static gchar *strconv_charset_convert(StringConverter *conv, gchar *srcstr)
 {
 	CharsetConverter *charsetconv = (CharsetConverter *) conv;
 
 	return conv_codeset_strdup(srcstr, charsetconv->srccharset, charsetconv->dstcharset);
 }
 
-void strconv_charset_free(StringConverter *conv)
+static void strconv_charset_free(StringConverter *conv)
 {
 	CharsetConverter *charsetconv = (CharsetConverter *) conv;
 

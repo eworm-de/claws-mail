@@ -191,7 +191,7 @@ typedef enum
 
 static GList *compose_list = NULL;
 
-Compose *compose_generic_new			(PrefsAccount	*account,
+static Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item,
 						 GPtrArray 	*attach_files,
@@ -275,7 +275,7 @@ static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose,
 						 gboolean	 force);
-void compose_remove_draft			(Compose	*compose);
+static void compose_remove_draft			(Compose	*compose);
 static gint compose_queue_sub			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item,
@@ -495,9 +495,9 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
 
-gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
+static gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 					    ComposeHeaderEntry *headerentry);
-gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
+static gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
 
@@ -4931,7 +4931,7 @@ static gint compose_remove_reedit_target(Compose *compose, gboolean force)
 	return 0;
 }
 
-void compose_remove_draft(Compose *compose)
+static void compose_remove_draft(Compose *compose)
 {
 	FolderItem *drafts;
 	MsgInfo *msginfo = compose->targetinfo;
@@ -5786,7 +5786,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 	return header_scrolledwin ;
 }
 
-GtkWidget *compose_create_attach(Compose *compose)
+static GtkWidget *compose_create_attach(Compose *compose)
 {
 	GtkWidget *attach_scrwin;
 	GtkWidget *attach_clist;
@@ -9064,7 +9064,7 @@ static void compose_toggle_remove_refs_cb(gpointer data, guint action,
 		compose->remove_references = FALSE;
 }
 
-gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
+static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 					    GdkEventKey *event,
 					    ComposeHeaderEntry *headerentry)
 {
@@ -9096,7 +9096,7 @@ gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 	return FALSE;
 }
 
-gboolean compose_headerentry_changed_cb(GtkWidget *entry,
+static gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 				    ComposeHeaderEntry *headerentry)
 {
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(entry))) != 0) {

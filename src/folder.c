@@ -90,7 +90,7 @@ static void folder_update_op_count_rec	(GNode		*node);
 static void folder_get_persist_prefs_recursive
 					(GNode *node, GHashTable *pptable);
 static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
-void folder_item_read_cache		(FolderItem *item);
+static void folder_item_read_cache		(FolderItem *item);
 gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 static void folder_item_update_with_msg (FolderItem *item, FolderItemUpdateFlags update_flags,
                                          MsgInfo *msg);
@@ -102,7 +102,7 @@ void folder_system_init(void)
 	folder_register_class(news_get_class());
 }
 
-GSList *folder_get_class_list(void)
+static GSList *folder_get_class_list(void)
 {
 	return class_list;
 }
@@ -667,7 +667,7 @@ void folder_set_sort(Folder *folder, guint sort)
 	}
 }
 
-gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
+static gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 	FolderItem *item = (FolderItem *) node->data;
 
 	folder_item_destroy(item);
@@ -816,7 +816,7 @@ void folder_write_list(void)
 	xml_free_tree(rootnode);
 }
 
-gboolean folder_scan_tree_func(GNode *node, gpointer data)
+static gboolean folder_scan_tree_func(GNode *node, gpointer data)
 {
 	GHashTable *pptable = (GHashTable *)data;
 	FolderItem *item = (FolderItem *)node->data;
@@ -861,7 +861,7 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 	folder_write_list();
 }
 
-gboolean folder_restore_prefs_func(GNode *node, gpointer data)
+static gboolean folder_restore_prefs_func(GNode *node, gpointer data)
 {
 	GHashTable *pptable = (GHashTable *)data;
 	FolderItem *item = (FolderItem *)node->data;
@@ -875,7 +875,6 @@ void folder_fast_scan_tree(Folder *folder)
 {
 	GHashTable *pptable;
 	FolderUpdateData hookdata;
-	Folder *old_folder = folder;
 
 	if (!folder->klass->scan_tree)
 		return;
@@ -2104,21 +2103,6 @@ gint folder_item_scan(FolderItem *item)
 	return folder_item_scan_full(item, TRUE);
 }
 
-static gboolean folder_scan_all_items_func(GNode *node, gpointer data)
-{
-	FolderItem *item = node->data;
-
-	folder_item_scan(item);
-
-	return FALSE;
-}
-
-void folder_scan_all_items(Folder * folder)
-{
-	g_node_traverse(folder->node, G_PRE_ORDER,
-			G_TRAVERSE_ALL, -1, folder_scan_all_items_func, NULL);
-}
-
 static void folder_item_scan_foreach_func(gpointer key, gpointer val,
 					  gpointer data)
 {
@@ -2130,7 +2114,7 @@ void folder_item_scan_foreach(GHashTable *table)
 	g_hash_table_foreach(table, folder_item_scan_foreach_func, NULL);
 }
 
-void folder_count_total_cache_memusage(FolderItem *item, gpointer data)
+static void folder_count_total_cache_memusage(FolderItem *item, gpointer data)
 {
 	gint *memusage = (gint *)data;
 
@@ -2171,7 +2155,7 @@ gint folder_item_syncronize_flags(FolderItem *item)
 	return ret;
 }
 
-gint folder_cache_time_compare_func(gconstpointer a, gconstpointer b)
+static gint folder_cache_time_compare_func(gconstpointer a, gconstpointer b)
 {
 	FolderItem *fa = (FolderItem *)a;
 	FolderItem *fb = (FolderItem *)b;
@@ -2179,7 +2163,7 @@ gint folder_cache_time_compare_func(gconstpointer a, gconstpointer b)
 	return (gint) (msgcache_get_last_access_time(fa->cache) - msgcache_get_last_access_time(fb->cache));
 }
 
-void folder_find_expired_caches(FolderItem *item, gpointer data)
+static void folder_find_expired_caches(FolderItem *item, gpointer data)
 {
 	GSList **folder_item_list = (GSList **)data;
 	gint difftime, expiretime;
@@ -2261,7 +2245,7 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 	}
 }
 
-void folder_item_read_cache(FolderItem *item)
+static void folder_item_read_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file;
 	START_TIMING("");
@@ -2414,7 +2398,7 @@ GSList *folder_item_get_msg_list(FolderItem *item)
 	return msgcache_get_msg_list(item->cache);
 }
 
-void msginfo_set_mime_flags(GNode *node, gpointer data)
+static void msginfo_set_mime_flags(GNode *node, gpointer data)
 {
 	MsgInfo *msginfo = data;
 	MimeInfo *mimeinfo = node->data;

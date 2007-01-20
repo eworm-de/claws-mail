@@ -168,19 +168,6 @@ void vcard_free( VCardFile *cardFile ) {
 }
 
 /*
-* Display object to specified stream.
-*/
-void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
-	g_return_if_fail( cardFile != NULL );
-
-	fprintf( stream, "VCardFile:\n" );
-	fprintf( stream, "file spec: '%s'\n", cardFile->path );
-	fprintf( stream, "  ret val: %d\n",   cardFile->retVal );
-	addrcache_print( cardFile->addressCache, stream );
-	addritem_print_item_folder( cardFile->addressCache->rootFolder, stream );
-}
-
-/*
 * Open file for read.
 * return: TRUE if file opened successfully.
 */

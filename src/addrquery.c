@@ -45,23 +45,6 @@ static pthread_mutex_t _requestListMutex_ = PTHREAD_MUTEX_INITIALIZER;
 static gint _currentQueryID_ = 0;
 
 /**
- * Create new address query.
- * \return Initialized address query object.
- */
-QueryRequest *reqreq_create( void ) {
-	QueryRequest *req;
-
-	req = g_new0( QueryRequest, 1 );
-	req->queryID = 0;
-	req->searchType = ADDRSEARCH_NONE;
-	req->searchTerm = NULL;
-	req->callBackEnd = NULL;
-	req->callBackEntry = NULL;
-	req->queryList = NULL;
-	return req;
-}
-
-/**
  * Clear the query.
  * \param req Request query object.
  */

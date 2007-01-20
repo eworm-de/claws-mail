@@ -844,7 +844,7 @@ PrefsCommon *prefs_common_get(void)
 /*
  * Read history list from the specified history file
  */
-GList *prefs_common_read_history(const gchar *history) 
+static GList *prefs_common_read_history(const gchar *history) 
 {
 	FILE *fp;
 	gchar *path;
@@ -923,7 +923,7 @@ void prefs_common_read_config(void)
 /*
  * Save history list to the specified history file
  */
-void prefs_common_save_history(const gchar *history, GList *list)
+static void prefs_common_save_history(const gchar *history, GList *list)
 {
 	GList *cur;
 	FILE *fp;

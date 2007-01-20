@@ -67,7 +67,7 @@ typedef struct _WritingPage
 	GtkWidget *text_format;
 } WritingPage;
 
-void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	WritingPage *prefs_writing = (WritingPage *) _page;
@@ -328,7 +328,7 @@ void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_writing->page.widget = vbox1;
 }
 
-void prefs_compose_writing_save(PrefsPage *_page)
+static void prefs_compose_writing_save(PrefsPage *_page)
 {
 	GtkWidget *menu;
 	GtkWidget *menuitem;

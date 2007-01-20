@@ -811,39 +811,6 @@ static void addressbook_edit_ldap_create( gboolean *cancelled ) {
 	gtk_widget_show_all( ldapedit.window );
 }
 
-void edit_ldap_set_optmenu( GtkOptionMenu *optmenu, const gint value ) {
-	GList *cur;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gint menuVal;
-	gint n = 0;
-
-	g_return_if_fail(optmenu != NULL);
-
-	menu = gtk_option_menu_get_menu(optmenu);
-	for( cur = GTK_MENU_SHELL(menu)->children; cur != NULL; cur = cur->next ) {
-		menuitem = GTK_WIDGET(cur->data);
-		menuVal = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), "user_data"));
-		if( menuVal == value ) {
-			gtk_option_menu_set_history(optmenu, n);
-			return;
-		}
-		n++;
-	}
-	gtk_option_menu_set_history(optmenu, 0);
-}
-
-gint edit_ldap_get_optmenu( GtkOptionMenu *optmenu ) {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	g_return_val_if_fail(optmenu != NULL, -1);
-
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optmenu));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	return GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), "user_data"));
-}
-
 /**
  * Format criteria list for display.
  * \param ctl Control object.

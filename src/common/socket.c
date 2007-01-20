@@ -1449,7 +1449,7 @@ gint sock_write_all(SockInfo *sock, const gchar *buf, gint len)
 	return ret;
 }
 
-gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
+static gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
 {
 	if (fd_check_io(fd, G_IO_IN) < 0)
 		return -1;

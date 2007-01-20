@@ -695,7 +695,7 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 					GTK_TOGGLE_BUTTON(privacy.encrypt_to_self_chkbtn)));
 }
 
-void update_privacy_system_menu() {
+static void update_privacy_system_menu() {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GSList *system_ids, *cur;
@@ -1016,7 +1016,7 @@ static gint prefs_account_get_new_id(void)
 	return last_id + 1;
 }
 
-void destroy_dialog(gpointer data)
+static void destroy_dialog(gpointer data)
 {
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 	if (!cancelled) {

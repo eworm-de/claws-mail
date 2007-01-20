@@ -2015,7 +2015,7 @@ void procmsg_msginfo_change_flags(MsgInfo *msginfo,
  *
  *\return	gboolean TRUE if perm_flags are found
  */
-gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
+static gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 		MsgPermFlags perm_flags, GHashTable *parentmsgs)
 {
 	MsgInfo *tmp;
@@ -2052,7 +2052,7 @@ gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 /*!
  *\brief	Callback for cleaning up hash of parentmsgs
  */
-gboolean parentmsgs_hash_remove(gpointer key,
+static gboolean parentmsgs_hash_remove(gpointer key,
                             gpointer value,
                             gpointer user_data)
 {
@@ -2087,7 +2087,7 @@ gboolean procmsg_msg_has_marked_parent(MsgInfo *info)
 }
 
 
-GSList *procmsg_find_children_func(MsgInfo *info, 
+static GSList *procmsg_find_children_func(MsgInfo *info, 
 				   GSList *children, GSList *all)
 {
 	GSList *cur;

@@ -362,7 +362,7 @@ static void ssl_manager_load_certs (void)
 	g_free(path);
 }
 
-void ssl_manager_close(void) 
+static void ssl_manager_close(void) 
 {
 	gtk_widget_hide(manager.window);
 }

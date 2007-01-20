@@ -62,7 +62,7 @@ const gchar *privacy_get_error (void)
 	}
 }
 
-PrivacySystem *privacy_data_get_system(PrivacyData *data)
+static PrivacySystem *privacy_data_get_system(PrivacyData *data)
 {
 	/* Make sure the cached system is still registered */
 	if (data->system && g_slist_find(systems, data->system))

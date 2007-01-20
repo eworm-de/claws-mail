@@ -124,7 +124,7 @@ static gboolean set_list_selected		 (GtkTreeSelection *selector,
 						  gboolean currently_selected,
 						  ToolbarPage *prefs_toolbar);
 
-void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
+static void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
 {
 	ToolbarPage *prefs_toolbar = (ToolbarPage *) _page;
 	gchar *win_titles[3];
@@ -140,7 +140,7 @@ void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer d
 	prefs_toolbar_populate(prefs_toolbar);
 }
 
-void prefs_toolbar_save(PrefsPage *_page)
+static void prefs_toolbar_save(PrefsPage *_page)
 {
 	ToolbarPage *prefs_toolbar = (ToolbarPage *) _page;
 	GtkTreeView *list_view = GTK_TREE_VIEW(prefs_toolbar->list_view_set);

@@ -116,23 +116,23 @@ static gint news_select_group		 (NNTPSession	*session,
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
 static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
 					  MsgInfo	*msginfo);
-gint news_get_num_list		 	 (Folder 	*folder, 
+static gint news_get_num_list		 	 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  GSList       **list,
 					  gboolean	*old_uids_valid);
-MsgInfo *news_get_msginfo		 (Folder 	*folder, 
+static MsgInfo *news_get_msginfo		 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  gint 		 num);
-GSList *news_get_msginfos		 (Folder 	*folder,
+static GSList *news_get_msginfos		 (Folder 	*folder,
 					  FolderItem 	*item,
 					  GSList 	*msgnum_list);
-gboolean news_scan_required		 (Folder 	*folder,
+static gboolean news_scan_required		 (Folder 	*folder,
 					  FolderItem 	*item);
 
-gint news_post_stream			 (Folder 	*folder, 
+static gint news_post_stream			 (Folder 	*folder, 
 					  FILE 		*fp);
 static gchar *news_folder_get_path	 (Folder	*folder);
-gchar *news_item_get_path		 (Folder	*folder,
+static gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
 static void news_synchronise		 (FolderItem	*item);
 static int news_remove_msg		 (Folder 	*folder, 
@@ -571,7 +571,7 @@ gint news_post(Folder *folder, const gchar *file)
 	return ok;
 }
 
-gint news_post_stream(Folder *folder, FILE *fp)
+static gint news_post_stream(Folder *folder, FILE *fp)
 {
 	NNTPSession *session;
 	gint ok;
@@ -837,7 +837,7 @@ static gchar *news_folder_get_path(Folder *folder)
 	return folder_path;
 }
 
-gchar *news_item_get_path(Folder *folder, FolderItem *item)
+static gchar *news_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
 
@@ -866,7 +866,7 @@ gchar *news_item_get_path(Folder *folder, FolderItem *item)
 	return path;
 }
 
-gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, gboolean *old_uids_valid)
+static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, gboolean *old_uids_valid)
 {
 	NNTPSession *session;
 	gint i, ok, num, first, last, nummsgs = 0;
@@ -939,7 +939,7 @@ static void news_set_msg_flags(FolderItem *item, MsgInfo *msginfo)
 	}
 }
 
-MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
+static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	NNTPSession *session;
 	MsgInfo *msginfo = NULL;
@@ -1166,7 +1166,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	return newlist;
 }
 
-GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
+static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 {
 	NNTPSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
@@ -1220,7 +1220,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	return msginfo_list;
 }
 
-gboolean news_scan_required(Folder *folder, FolderItem *item)
+static gboolean news_scan_required(Folder *folder, FolderItem *item)
 {
 	return TRUE;
 }

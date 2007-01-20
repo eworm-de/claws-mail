@@ -529,7 +529,7 @@ unsigned int i, n;
 /* Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
 #define PILOT_TIME_DELTA (unsigned)(2082844800)
 
-time_t pilot_time_to_unix_time ( unsigned long raw_time ) {
+static time_t pilot_time_to_unix_time ( unsigned long raw_time ) {
    return (time_t)(raw_time - PILOT_TIME_DELTA);
 }
 

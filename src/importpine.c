@@ -66,7 +66,7 @@ static AddressIndex *_imp_addressIndex_;
 /*
 * Edit functions.
 */
-void imp_pine_status_show( gchar *msg ) {
+static void imp_pine_status_show( gchar *msg ) {
 	if( imppine_dlg.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(imppine_dlg.statusbar), imppine_dlg.status_cid );
 		if( msg ) {

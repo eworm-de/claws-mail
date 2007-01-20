@@ -65,7 +65,7 @@
 #define TOOLBAR_ICON_TEXT   "text"     
 #define TOOLBAR_ICON_ACTION "action"    
 
-gboolean      toolbar_is_duplicate		(gint           action,
+static gboolean      toolbar_is_duplicate		(gint           action,
 					      	 ToolbarType	source);
 static void   toolbar_parse_item		(XMLFile        *file,
 					      	 ToolbarType	source);
@@ -285,7 +285,7 @@ static gchar *toolbar_ret_text_from_val(gint val)
 	return toolbar_text[val].index_str;
 }
 
-gboolean toolbar_is_duplicate(gint action, ToolbarType source)
+static gboolean toolbar_is_duplicate(gint action, ToolbarType source)
 {
 	GSList *cur;
 

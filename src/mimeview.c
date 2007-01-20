@@ -85,7 +85,7 @@ static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
 						 MimeViewType	 type);
-gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
+static gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
 						 const gchar	*basedir,
 						 gint		 number);
 static gboolean mimeview_write_part		(const gchar	*filename,
@@ -1403,7 +1403,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
  * \param basedir The target directory
  * \param number Used for dummy filename if attachment is unnamed
  */
-gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
+static gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 				      const gchar *basedir,
 				      gint number)
 {

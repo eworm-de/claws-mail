@@ -28,7 +28,7 @@
 
 static GHashTable *hooklist_table;
 
-GHookList *hooks_get_hooklist(const gchar *hooklist_name)
+static GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 {
 	GHookList *hooklist;
 

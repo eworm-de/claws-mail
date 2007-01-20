@@ -75,7 +75,7 @@ static struct _JPilotEdit {
 /*
 * Edit functions.
 */
-void edit_jpilot_status_show( gchar *msg ) {
+static void edit_jpilot_status_show( gchar *msg ) {
 	if( jpilotedit.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(jpilotedit.statusbar), jpilotedit.status_cid );
 		if( msg ) {

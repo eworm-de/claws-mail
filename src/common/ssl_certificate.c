@@ -134,11 +134,6 @@ char * readable_fingerprint(unsigned char *src, int len)
 	return ret;
 }
 
-SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host, gushort port)
-{
-	return ssl_certificate_new_lookup(x509_cert, host, port, TRUE);
-}
-
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup)
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);

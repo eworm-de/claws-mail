@@ -108,7 +108,7 @@ static gchar *_harv_headerNames_[] = {
 };
 static GList *_harv_messageList_;
 
-void addrgather_dlg_status_show( gchar *msg ) {
+static void addrgather_dlg_status_show( gchar *msg ) {
 	if( addrgather_dlg.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(addrgather_dlg.statusbar),
 			addrgather_dlg.status_cid );

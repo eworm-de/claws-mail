@@ -99,16 +99,6 @@ void addrselect_item_free( AddrSelectItem *item ) {
 }
 
 /**
- * Specify cache ID for specified item.
- * \param item  Address select item.
- * \param value Cache ID.
- */
-void addrselect_set_cache_id( AddrSelectItem *item, const gchar *value ) {
-	g_return_if_fail( item != NULL );
-	item->cacheID = mgu_replace_string( item->cacheID, value );
-}
-
-/**
  * Print address selection item.
  * \param item   Address select item.
  * \param stream Output stream.

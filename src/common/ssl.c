@@ -84,7 +84,7 @@ void ssl_done(void)
 }
 
 #ifdef USE_PTHREAD
-void *SSL_connect_thread(void *data)
+static void *SSL_connect_thread(void *data)
 {
 	thread_data *td = (thread_data *)data;
 	int result = -1;
@@ -98,7 +98,7 @@ void *SSL_connect_thread(void *data)
 }
 #endif
 
-gint SSL_connect_nb(SSL *ssl)
+static gint SSL_connect_nb(SSL *ssl)
 {
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	thread_data *td = g_new0(thread_data, 1);

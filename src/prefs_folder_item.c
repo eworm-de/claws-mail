@@ -135,7 +135,7 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 static gboolean general_save_recurse_func(GNode *node, gpointer data);
 static gboolean compose_save_recurse_func(GNode *node, gpointer data);
 
-gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
+static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
@@ -144,7 +144,7 @@ static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer dat
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
+static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
@@ -457,7 +457,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_regexp_set_subject_example_cb(NULL, page);
 }
 
-void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
+static void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
 {
 	/* FolderItemGeneralPage *page = (FolderItemGeneralPage *) page_; */
 }
@@ -559,7 +559,7 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 		return FALSE;
 }
 
-void prefs_folder_item_general_save_func(PrefsPage *page_) 
+static void prefs_folder_item_general_save_func(PrefsPage *page_) 
 {
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) page_;
 
@@ -580,7 +580,8 @@ static RecvProtocol item_protocol(FolderItem *item)
 		return A_NONE;
 	return item->folder->account->protocol;
 }
-void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
+
+static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
@@ -888,7 +889,7 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->page.widget = table;
 }
 
-void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_) 
+static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_) 
 {
 	FolderItemComposePage *page = (FolderItemComposePage *) page_;
 
@@ -1016,7 +1017,7 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 		return FALSE;
 }
 
-void prefs_folder_item_compose_save_func(PrefsPage *page_) 
+static void prefs_folder_item_compose_save_func(PrefsPage *page_) 
 {
 	FolderItemComposePage *page = (FolderItemComposePage *) page_;
 
@@ -1025,7 +1026,7 @@ void prefs_folder_item_compose_save_func(PrefsPage *page_)
 
 }
 
-gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
+static gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
 {
 	gint newmode = 0;
 	gchar *tmp;

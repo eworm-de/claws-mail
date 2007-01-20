@@ -46,7 +46,7 @@
 static pthread_key_t _queryThreadKey_;
 static gboolean _queryThreadInit_ = FALSE;
 
-gboolean callbackend (gpointer data)
+static gboolean callbackend (gpointer data)
 {
 	LdapQuery *qry = (LdapQuery *)data;
 	qry->callBackEnd( qry, ADDRQUERY_ID(qry), ADDRQUERY_RETVAL(qry), qry->data );
@@ -328,18 +328,6 @@ void ldapqry_set_data( LdapQuery *qry, const gpointer value ) {
 gpointer ldapqry_get_data( LdapQuery *qry ) {
 	g_return_val_if_fail( qry != NULL, NULL );
 	return qry->data;
-}
-
-/**
- * Release the LDAP control data associated with the query.
- * \param qry Query object to process.
- */
-void ldapqry_release_control( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
-	if( qry->control != NULL ) {
-		ldapctl_free( qry->control );
-	}
-	qry->control = NULL;
 }
 
 /**
@@ -1166,17 +1154,6 @@ void ldapqry_free_name_value( NameValuePair *nvp ) {
 		g_free( nvp->value );
 		nvp->name = nvp->value = NULL;
 		g_free( nvp );
-	}
-}
-
-/**
- * Print name/value pair object for debug.
- * \param nvp    Name/value object.
- * \param stream Output stream.
- */
-void ldapqry_print_name_value( NameValuePair *nvp, FILE *stream ) {
-	if( nvp ) {
-		fprintf( stream, "n/v ::%s::%s::\n", nvp->name, nvp->value );
 	}
 }
 

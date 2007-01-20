@@ -245,7 +245,7 @@ static void edit_ldap_bdn_create(void) {
 			GTK_STATUSBAR(statusbar), "Edit LDAP Select Base DN" );
 }
 
-void edit_ldap_bdn_load_data(
+static void edit_ldap_bdn_load_data(
 	const gchar *hostName, const gint iPort, const gint tov,
 	const gchar* bindDN, const gchar *bindPW, int ssl, int tls )
 {

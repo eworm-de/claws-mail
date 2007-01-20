@@ -541,7 +541,7 @@ static void imap_reset_uid_lists(Folder *folder)
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
 
-int imap_get_capabilities(IMAPSession *session)
+static int imap_get_capabilities(IMAPSession *session)
 {
 	struct mailimap_capability_data *capabilities = NULL;
 	clistiter *cur;
@@ -575,7 +575,7 @@ int imap_get_capabilities(IMAPSession *session)
 	return MAILIMAP_NO_ERROR;
 }
 
-gboolean imap_has_capability(IMAPSession *session, const gchar *cap) 
+static gboolean imap_has_capability(IMAPSession *session, const gchar *cap) 
 {
 	GSList *cur;
 	for (cur = session->capability; cur; cur = cur->next) {

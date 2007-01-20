@@ -50,7 +50,7 @@ typedef struct _FontsPage
 #endif
 } FontsPage;
 
-void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       gpointer data)
 {
 	FontsPage *prefs_fonts = (FontsPage *) _page;
@@ -154,7 +154,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_fonts->page.widget = table;
 }
 
-void prefs_fonts_save(PrefsPage *_page)
+static void prefs_fonts_save(PrefsPage *_page)
 {
 	FontsPage *fonts = (FontsPage *) _page;
 

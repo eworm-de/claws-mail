@@ -70,7 +70,7 @@ static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
 	gtk_widget_set_sensitive(widget, !is_active);
 }
 
-void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	MessagePage *prefs_message = (MessagePage *) _page;
@@ -251,7 +251,7 @@ void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->page.widget = vbox1;
 }
 
-void prefs_message_save(PrefsPage *_page)
+static void prefs_message_save(PrefsPage *_page)
 {
 	MessagePage *page = (MessagePage *) _page;
 

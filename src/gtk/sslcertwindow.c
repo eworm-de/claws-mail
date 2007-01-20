@@ -35,9 +35,9 @@
 #include "alertpanel.h"
 #include "hooks.h"
 
-gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
-gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert);
-gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
+static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
+static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert);
+static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
 GtkWidget *cert_presenter(SSLCertificate *cert)
 {
@@ -260,7 +260,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	g_free(buf);
 }
 
-gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
+static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 {
 	gchar *buf, *sig_status;
 	AlertValue val;
@@ -300,7 +300,7 @@ gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	return (val == G_ALERTALTERNATE);
 }
 
-gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
+static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 {
 	gchar *buf, *sig_status;
 	AlertValue val;
@@ -340,7 +340,7 @@ gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	return (val == G_ALERTALTERNATE);
 }
 
-gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert)
+static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert)
 {
 	GtkWidget *old_cert_widget = cert_presenter(old_cert);
 	GtkWidget *new_cert_widget = cert_presenter(new_cert);

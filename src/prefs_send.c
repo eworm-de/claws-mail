@@ -108,7 +108,7 @@ static void prefs_common_encoding_set_optmenu(GtkWidget *widget, TransferEncodin
 }
 
 
-void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	SendPage *prefs_send = (SendPage *) _page;
@@ -300,7 +300,7 @@ void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_send->page.widget = vbox1;
 }
 
-void prefs_send_save(PrefsPage *_page)
+static void prefs_send_save(PrefsPage *_page)
 {
 	SendPage *page = (SendPage *) _page;
 	GtkWidget *menu;

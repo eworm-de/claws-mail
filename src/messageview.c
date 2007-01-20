@@ -732,11 +732,6 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	return ok;
 }
 
-GList *messageview_get_window_list(void)
-{
-	return messageview_list;
-}
-
 static gboolean find_encrypted_func(GNode *node, gpointer data)
 {
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
@@ -1128,7 +1123,7 @@ gboolean messageview_is_visible(MessageView *messageview)
 	return messageview->visible;
 }
 
-void messageview_save_as(MessageView *messageview)
+static void messageview_save_as(MessageView *messageview)
 {
 	gchar *filename = NULL;
 	MsgInfo *msginfo;

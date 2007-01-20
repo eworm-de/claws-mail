@@ -141,7 +141,7 @@ void addrcache_set_name( AddressCache *cache, const gchar *value ) {
 /*
 * Generate next ID.
 */
-void addrcache_next_id( AddressCache *cache ) {
+static void addrcache_next_id( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 	cache->nextID++;
 }
@@ -427,7 +427,7 @@ gboolean addrcache_hash_add_person( AddressCache *cache, ItemPerson *person ) {
 * Add email to hash table.
 * return: TRUE if item added.
 */
-gboolean addrcache_hash_add_email( AddressCache *cache, ItemEMail *email ) {
+static gboolean addrcache_hash_add_email( AddressCache *cache, ItemEMail *email ) {
 	if( g_hash_table_lookup( cache->itemHash, ADDRITEM_ID(email) ) ) {
 		return FALSE;
 	}

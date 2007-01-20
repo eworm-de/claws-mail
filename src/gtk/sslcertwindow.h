@@ -36,8 +36,6 @@
 GtkWidget *cert_presenter(SSLCertificate *cert);
 void sslcertwindow_show_cert(SSLCertificate *cert);
 void sslcertwindow_register_hook(void);
-gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
-gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
 #endif /* USE_OPENSSL */
 #endif /* __SSL_CERTWINDOW_H__ */

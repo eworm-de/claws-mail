@@ -252,28 +252,6 @@ void addrbook_free_book(AddressBookFile *book)
 }
 
 /**
- * Print list of items.
- * \param book   Address book.
- * \param stream Output stream.
- */
-void addrbook_print_item_list(GList *list, FILE *stream)
-{
-	GList *node = list;
-
-	while(node) {
-		AddrItemObject *obj = node->data;
-		if (ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON) 
-			addritem_print_item_person((ItemPerson *) obj, stream); 
-		else if (ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP)
-			addritem_print_item_group((ItemGroup *) obj, stream); 
-		else if (ADDRITEM_TYPE(obj) == ITEMTYPE_FOLDER) 
-			addritem_print_item_folder((ItemFolder *) obj, stream);
-		node = g_list_next(node);
-	}
-	fprintf(stream, "\t---\n");
-}
-
-/**
  * Print address book header.
  * \param book   Address book.
  * \param stream Output stream.
@@ -1239,7 +1217,7 @@ static void addrbook_write_item_folder_vis(gpointer key, gpointer value,
  * \param  newFile Filename of new file (in book's filepath).
  * \return Status code.
  */
-gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
+static gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 {
 	FILE *fp;
 	gchar *fileSpec;
@@ -1781,36 +1759,6 @@ void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList 
 		node = g_list_next( node );
 	}
 	addrcache_set_dirty( book->addressCache, TRUE );
-}
-
-/*
- * Return reference to address book file for specified object by traversing up
- * address book heirarchy.
- *
- * \param aio Book item object.
- * \return Address book, or <i>NULL</i> if not found.
- */
-AddressBookFile *addrbook_item_get_bookfile(AddrItemObject *aio)
-{
-	AddressBookFile *book = NULL;
-
-	if (aio) {
-		ItemFolder *parent = NULL;
-		ItemFolder *root = NULL;
-		if (aio->type == ITEMTYPE_EMAIL) {
-			ItemPerson *person = (ItemPerson *)ADDRITEM_PARENT(aio);
-			if( person ) 
-				parent = (ItemFolder *)ADDRITEM_PARENT(person);
-		}
-		else {
-			parent = (ItemFolder *)ADDRITEM_PARENT(aio);
-		}
-		if (parent) 
-			root = addrcache_find_root_folder(parent);
-		if (root)
-			book = (AddressBookFile *)ADDRITEM_PARENT(root);
-	}
-	return book;
 }
 
 /**

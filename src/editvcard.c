@@ -67,7 +67,7 @@ static struct _VCardEdit {
 /*
 * Edit functions.
 */
-void edit_vcard_status_show( gchar *msg ) {
+static void edit_vcard_status_show( gchar *msg ) {
 	if( vcardedit.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(vcardedit.statusbar), vcardedit.status_cid );
 		if( msg ) {

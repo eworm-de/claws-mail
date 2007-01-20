@@ -32,7 +32,7 @@
 
 static FILE *log_fp = NULL;
 
-gboolean invoke_hook_cb (gpointer data)
+static gboolean invoke_hook_cb (gpointer data)
 {
 	LogText *logtext = (LogText *)data;
 	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, logtext);

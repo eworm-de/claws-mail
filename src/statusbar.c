@@ -129,7 +129,7 @@ void statusbar_pop_all(void)
 	}
 }
 
-gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
+static gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
 

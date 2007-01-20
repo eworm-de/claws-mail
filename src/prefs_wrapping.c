@@ -51,7 +51,7 @@ typedef struct _WrappingPage
 	GtkWidget *checkbtn_autowrap;
 } WrappingPage;
 
-void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	WrappingPage *prefs_wrapping = (WrappingPage *) _page;
@@ -116,7 +116,7 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_wrapping->page.widget = vbox1;
 }
 
-void prefs_wrapping_save(PrefsPage *_page)
+static void prefs_wrapping_save(PrefsPage *_page)
 {
 	WrappingPage *page = (WrappingPage *) _page;
 

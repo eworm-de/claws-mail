@@ -132,7 +132,7 @@ static void prefs_spelling_colorsel(GtkWidget *widget,
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
+static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
 {
 	SpellingPage *prefs_spelling = (SpellingPage *) _page;
 
@@ -384,7 +384,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	prefs_spelling->page.widget = vbox1;
 }
 
-void prefs_spelling_save(PrefsPage *_page)
+static void prefs_spelling_save(PrefsPage *_page)
 {
 	SpellingPage *spelling = (SpellingPage *) _page;
 

@@ -2772,7 +2772,6 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 		}
 		else {
 			printf( "delFlag IS-FALSE\n" );
-			addressbook_clear_idler( queryID );
 		}
 		*/
 #endif

@@ -452,7 +452,7 @@ typedef struct _thread_data {
 #endif
 
 #ifdef USE_PTHREAD
-void *matcher_test_thread(void *data)
+static void *matcher_test_thread(void *data)
 {
 	thread_data *td = (thread_data *)data;
 	int result = -1;
@@ -1030,7 +1030,7 @@ static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
  *
  *\return	gboolean TRUE if matched
  */
-gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
+static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 				gboolean result)
 {
 	gboolean read_headers;
@@ -1780,7 +1780,7 @@ void prefs_matcher_write_config(void)
 
 /* ******************************************************************* */
 
-void matcher_add_rulenames(const gchar *rcpath)
+static void matcher_add_rulenames(const gchar *rcpath)
 {
 	gchar *newpath = g_strconcat(rcpath, ".new", NULL);
 	FILE *src = g_fopen(rcpath, "rb");

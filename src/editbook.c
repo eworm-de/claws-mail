@@ -65,7 +65,7 @@ static struct _AddrBookEdit_Dlg {
 /*
 * Edit functions.
 */
-void edit_book_status_show( gchar *msg ) {
+static void edit_book_status_show( gchar *msg ) {
 	if( addrbookedit_dlg.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(addrbookedit_dlg.statusbar), addrbookedit_dlg.status_cid );
 		if( msg ) {

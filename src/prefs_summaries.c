@@ -712,7 +712,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	keybind.combo = NULL;
 }
 
-void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	SummariesPage *prefs_summaries = (SummariesPage *) _page;
@@ -1012,7 +1012,7 @@ void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->page.widget = vbox1;
 }
 
-void prefs_summaries_save(PrefsPage *_page)
+static void prefs_summaries_save(PrefsPage *_page)
 {
 	SummariesPage *page = (SummariesPage *) _page;
 	GtkWidget *menu;

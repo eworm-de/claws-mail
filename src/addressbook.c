@@ -342,13 +342,13 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 
 /* LUT's and IF stuff */
 static void addressbook_free_treenode		( gpointer data );
-AddressTypeControlItem *addrbookctl_lookup	(gint		 ot);
-AddressTypeControlItem *addrbookctl_lookup_iface(AddressIfType	 ifType);
+static AddressTypeControlItem *addrbookctl_lookup	(gint		 ot);
+static AddressTypeControlItem *addrbookctl_lookup_iface(AddressIfType	 ifType);
 
-void addrbookctl_build_map			(GtkWidget	*window);
-void addrbookctl_build_iflist			(void);
-AdapterInterface *addrbookctl_find_interface	(AddressIfType	 ifType);
-void addrbookctl_build_ifselect			(void);
+static void addrbookctl_build_map			(GtkWidget	*window);
+static void addrbookctl_build_iflist			(void);
+static AdapterInterface *addrbookctl_find_interface	(AddressIfType	 ifType);
+static void addrbookctl_build_ifselect			(void);
 
 static void addrbookctl_free_interface		(AdapterInterface *adapter);
 static void addrbookctl_free_datasource		(AdapterDSource	  *adapter);
@@ -571,7 +571,7 @@ static gchar *addressbook_err2string( ErrMsgTableEntry lut[], gint code ) {
 
 static gboolean lastCanLookup = FALSE;
 
-void addressbook_show_buttons(gboolean add_and_delete, gboolean lookup, gboolean mail_ops)
+static void addressbook_show_buttons(gboolean add_and_delete, gboolean lookup, gboolean mail_ops)
 {
 	if (add_and_delete) {
 		gtk_widget_show(addrbook.edit_btn);
@@ -673,7 +673,7 @@ Compose *addressbook_get_target_compose(void)
 /**
  * Refresh addressbook and save to file(s).
  */
-void addressbook_refresh( void )
+static void addressbook_refresh( void )
 {
 	if (addrbook.window) {
 		if (addrbook.treeSelected) {
@@ -1516,7 +1516,7 @@ static void addressbook_reg_clicked(GtkButton *button, gpointer data)
 	addressbook_new_address_cb( NULL, 0, NULL );
 }
 
-gchar *addressbook_format_address( AddrItemObject * aio ) {
+static gchar *addressbook_format_address( AddrItemObject * aio ) {
 	gchar *buf = NULL;
 	gchar *name = NULL;
 	gchar *address = NULL;
@@ -4064,23 +4064,6 @@ static void addressbook_search_idle( gpointer data ) {
  * Search completion callback function. This removes the query from the idle
  * list.
  *
- * \param queryID Query ID of search request.
- */
-void addressbook_clear_idler( gint queryID ) {
-	gpointer ptrQID;
-
-	/* Remove idler function */
-	/* printf( "addressbook_clear_idler::%d::\n", queryID ); */
-	ptrQID = GINT_TO_POINTER( queryID );
-	if( ptrQID ) {
-		g_idle_remove_by_data( ptrQID );
-	}
-}
-
-/**
- * Search completion callback function. This removes the query from the idle
- * list.
- *
  * \param sender  Sender of query.
  * \param queryID Query ID of search request.
  * \param status  Search status.
@@ -4314,7 +4297,7 @@ ItemObjectType addressbook_type2item( AddressObjectType abType ) {
 /*
 * Build table that controls the rendering of object types.
 */
-void addrbookctl_build_map( GtkWidget *window ) {
+static void addrbookctl_build_map( GtkWidget *window ) {
 	AddressTypeControlItem *atci;
 
 	/* Build icons */
@@ -4513,7 +4496,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 /*
 * Search for specified object type.
 */
-AddressTypeControlItem *addrbookctl_lookup( gint ot ) {
+static AddressTypeControlItem *addrbookctl_lookup( gint ot ) {
 	gint objType = ot;
 	return ( AddressTypeControlItem * ) g_hash_table_lookup( _addressBookTypeHash_, &objType );
 }
@@ -4521,7 +4504,7 @@ AddressTypeControlItem *addrbookctl_lookup( gint ot ) {
 /*
 * Search for specified interface type.
 */
-AddressTypeControlItem *addrbookctl_lookup_iface( AddressIfType ifType ) {
+static AddressTypeControlItem *addrbookctl_lookup_iface( AddressIfType ifType ) {
 	GList *node = _addressBookTypeList_;
 	while( node ) {
 		AddressTypeControlItem *atci = node->data;
@@ -4570,7 +4553,7 @@ static void addrbookctl_free_group( AdapterGroup *adapter ) {
 /**
  * Build GUI interface list.
  */
-void addrbookctl_build_iflist( void ) {
+static void addrbookctl_build_iflist( void ) {
 	AddressTypeControlItem *atci;
 	AdapterInterface *adapter;
 	GList *list = NULL;
@@ -4609,7 +4592,7 @@ void addrbookctl_build_iflist( void ) {
  * \param  ifType Interface type.
  * \return Interface item, or NULL if not found.
  */
-AdapterInterface *addrbookctl_find_interface( AddressIfType ifType ) {
+static AdapterInterface *addrbookctl_find_interface( AddressIfType ifType ) {
 	GList *node = _addressInterfaceList_;
 	while( node ) {
 		AdapterInterface *adapter = node->data;
@@ -4622,7 +4605,7 @@ AdapterInterface *addrbookctl_find_interface( AddressIfType ifType ) {
 /**
  * Build interface list selection.
  */
-void addrbookctl_build_ifselect( void ) {
+static void addrbookctl_build_ifselect( void ) {
 	GList *newList = NULL;
 	gchar *selectStr;
 	gchar **splitStr;

@@ -232,7 +232,7 @@ static void startup_notification_complete(gboolean with_window)
 }
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
-void claws_gtk_idle(void) 
+static void claws_gtk_idle(void) 
 {
 	while(gtk_events_pending()) {
 		gtk_main_iteration();
@@ -240,7 +240,7 @@ void claws_gtk_idle(void)
 	g_usleep(50000);
 }
 
-gboolean defer_check_all(void *data)
+static gboolean defer_check_all(void *data)
 {
 	gboolean autochk = GPOINTER_TO_INT(data);
 
@@ -250,7 +250,7 @@ gboolean defer_check_all(void *data)
 	return FALSE;
 }
 
-gboolean defer_check(void *data)
+static gboolean defer_check(void *data)
 {
 	inc_mail(static_mainwindow, prefs_common.newmail_notify_manu);
 

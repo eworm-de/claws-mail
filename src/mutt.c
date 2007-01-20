@@ -60,18 +60,6 @@ void mutt_set_file( MuttFile* muttFile, const gchar *value ) {
 }
 
 /*
-* Register a callback function. When called, the function will be passed
-* the following arguments:
-*	MuttFile object,
-*	File size (long),
-*	Current position (long)
-* This can be used for a progress indicator.
-*/
-void mutt_set_callback( MuttFile *muttFile, void *func ) {
-	muttFile->cbProgress = func;
-}
-
-/*
  * Free key in table.
  */
 static gint mutt_free_table_vis( gpointer key, gpointer value, gpointer data ) {
@@ -106,16 +94,6 @@ void mutt_free( MuttFile *muttFile ) {
 
 	/* Now release file object */
 	g_free( muttFile );
-}
-
-/*
-* Display object to specified stream.
-*/
-void mutt_print_file( MuttFile *muttFile, FILE *stream ) {
-	g_return_if_fail( muttFile != NULL );
-	fprintf( stream, "MUTT File:\n" );
-	fprintf( stream, "file spec: '%s'\n", muttFile->path );
-	fprintf( stream, "  ret val: %d\n",   muttFile->retVal );
 }
 
 /*
@@ -216,14 +194,6 @@ static void mutt_free_rec( Mutt_ParsedRec *rec ) {
 		rec->name = NULL;
 		g_free( rec );
 	}
-}
-
-/*
- * Print data record.
- * Enter: rec    Data record.
- *        stream File.
- */void mutt_print_rec( Mutt_ParsedRec *rec, FILE *stream ) {
-	fprintf( stream, "\taddr: %s\tname: %s\n", rec->address, rec->name );
 }
 
 /*

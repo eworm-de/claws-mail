@@ -50,7 +50,7 @@ static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
 static GIOChannel * io_channel = NULL;
 
-void delete_imap(Folder *folder, mailimap *imap)
+static void delete_imap(Folder *folder, mailimap *imap)
 {
 	chashdatum key;
 	chashdatum value;
@@ -198,7 +198,7 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 	free(buf);
 }
 
-void imap_logger_append(int direction, const char * str, size_t size) 
+static void imap_logger_append(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
 	gchar **lines;
@@ -2190,7 +2190,7 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 	return MAIL_NO_ERROR;
 }
 
-int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
+static int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
 {
 	struct mailimap_fetch_att * fetch_att;
 	int r;
@@ -2226,7 +2226,7 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
 	return MAIL_NO_ERROR;
 }
 
-int imap_add_header_fetch_att(struct mailimap_fetch_type * fetch_type)
+static int imap_add_header_fetch_att(struct mailimap_fetch_type * fetch_type)
 {
 	struct mailimap_fetch_att * fetch_att;
 	struct mailimap_section * section;
@@ -2771,7 +2771,7 @@ static int subcommand_connect(const char *command,
 	return sockfds[0];
 }
 
-int socket_connect_cmd(mailimap * imap, const char * command,
+static int socket_connect_cmd(mailimap * imap, const char * command,
 		       const char * server, int port)
 {
 	int fd;

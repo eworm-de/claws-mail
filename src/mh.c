@@ -233,7 +233,7 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 	return FALSE;
 }
 
-void mh_get_last_num(Folder *folder, FolderItem *item)
+static void mh_get_last_num(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 	DIR *dp;

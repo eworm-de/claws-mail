@@ -60,7 +60,7 @@ typedef struct _OtherPage
 	GtkWidget *chkbtn_gtk_can_change_accels;
 } OtherPage;
 
-void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	OtherPage *prefs_other = (OtherPage *) _page;
@@ -236,7 +236,7 @@ void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->page.widget = vbox1;
 }
 
-void prefs_other_save(PrefsPage *_page)
+static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
 	MainWindow *mainwindow;

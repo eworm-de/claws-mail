@@ -467,10 +467,10 @@ static void sync_cb		 ( MainWindow *mainwin,
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
 						 gpointer	 data);
-void main_window_reply_cb			(MainWindow 	*mainwin, 
+static void main_window_reply_cb			(MainWindow 	*mainwin, 
 						 guint 		 action,
 						 GtkWidget 	*widget);
-gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
+static gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 						 gpointer 	 userdata);
 
 static gint mailing_list_create_submenu(GtkItemFactory *ifactory,
@@ -2980,7 +2980,7 @@ static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
 	toolbar_toggle(action, mainwin);
 }
 
-void main_window_reply_cb(MainWindow *mainwin, guint action,
+static void main_window_reply_cb(MainWindow *mainwin, guint action,
 			  GtkWidget *widget)
 {
 	MessageView *msgview = (MessageView*)mainwin->messageview;
@@ -3833,7 +3833,7 @@ MainWindow *mainwindow_get_mainwindow(void)
 		return NULL;
 }
 
-gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
+static gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 {
 	ProgressData *data = (ProgressData *) source;
 	MainWindow *mainwin = (MainWindow *) userdata;

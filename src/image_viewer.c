@@ -251,7 +251,7 @@ static void scrolledwin_resize_cb(GtkWidget *scrolledwin, GtkAllocation *alloc,
 		image_viewer_load_image(imageviewer);
 }
 
-MimeViewer *image_viewer_create(void)
+static MimeViewer *image_viewer_create(void)
 {
 	ImageViewer *imageviewer;
 	/*

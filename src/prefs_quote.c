@@ -58,7 +58,7 @@ typedef struct _QuotePage
 	GtkWidget *checkbtn_reply_with_quote;
 } QuotePage;
 
-void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window, 
+static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
 	QuotePage *prefs_quote = (QuotePage *) _page;
@@ -260,7 +260,7 @@ void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_quote->page.widget = vbox1;
 }
 
-void prefs_quote_save(PrefsPage *_page)
+static void prefs_quote_save(PrefsPage *_page)
 {
 	QuotePage *page = (QuotePage *) _page;
 	

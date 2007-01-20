@@ -114,34 +114,6 @@ void exportldif_free( ExportLdifCtl *ctl ) {
 }
 
 /**
- * Print control object.
- * \param ctl    Export control data.
- * \param stream Output stream.
- */
-void exportldif_print( ExportLdifCtl *ctl, FILE *stream ) {
-	fprintf( stream, "ExportLdifCtl:\n" );
-	fprintf( stream, "     path: %s\n", ctl->path );
-	fprintf( stream, "directory: %s\n", ctl->dirOutput );
-	fprintf( stream, "     file: %s\n", ctl->fileLdif );
-	fprintf( stream, "   suffix: %s\n", ctl->suffix );
-	fprintf( stream, "      rdn: %d\n", ctl->rdnIndex );
-	fprintf( stream, "   use DN: %s\n", ctl->useDN ? "y" : "n" );
-	fprintf( stream, " ex EMail: %s\n", ctl->excludeEMail ? "y" : "n" );
-	fprintf( stream, " settings: %s\n", ctl->settingsFile );
-}
-
-/**
- * Specify directory where LDIF files are created.
- * \param ctl   Export control data.
- * \param value Full directory path.
- */
-void exportldif_set_output_dir( ExportLdifCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, value );
-	g_strstrip( ctl->dirOutput );
-}
-
-/**
  * Specify full file specification of LDIF file.
  * \param ctl   Export control data.
  * \param value Full file specification.
@@ -150,17 +122,6 @@ void exportldif_set_path( ExportLdifCtl *ctl, const gchar *value ) {
 	g_return_if_fail( ctl != NULL );
 	ctl->path = mgu_replace_string( ctl->path, value );
 	g_strstrip( ctl->path );
-}
-
-/**
- * Specify file name of LDIF file.
- * \param ctl   Export control data.
- * \param value File name.
- */
-void exportldif_set_file_ldif( ExportLdifCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->fileLdif = mgu_replace_string( ctl->fileLdif, value );
-	g_strstrip( ctl->fileLdif );
 }
 
 /**

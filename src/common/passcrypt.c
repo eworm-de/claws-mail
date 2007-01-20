@@ -34,7 +34,7 @@
 
 #include "passcrypt.h"
 
-void crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
+static void crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		   unsigned chunksize, int decrypt);
 
 void passcrypt_encrypt(gchar *password, guint len)
@@ -54,7 +54,7 @@ unsigned char crypt_cfb_iv[64];
 int crypt_cfb_blocksize = 8;	/* 8 for DES */
 
 #if defined (__FreeBSD__)
-void
+static void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
 {
@@ -74,7 +74,7 @@ static void crypt_cfb_xor(unsigned char *to, const unsigned char *from,
 			  unsigned len);
 static void crypt_unpack(unsigned char *a);
 
-void
+static void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
 {
