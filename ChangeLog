@@ -1,3 +1,8 @@
+2007-01-20 [colin]	2.7.1cvs39
+
+	* src/editldap.c
+		Fix tooltip
+
 2007-01-20 [colin]	2.7.1cvs38
 
 	* src/ldapquery.c

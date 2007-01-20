@@ -474,12 +474,12 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_tooltips_set_tip( toolTip, enable_tls_chkbtn, _( 
 		"Enable secure connection to the LDAP server via TLS."
 		"If connection fails, be sure to check the correct "
-		"configuration in ldap.conf (TLS_CACERT or TLS_CACERTDIR fields)." ),
+		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ),
 		NULL );
 	gtk_tooltips_set_tip( toolTip, enable_ssl_chkbtn, _( 
 		"Enable secure connection to the LDAP server via SSL."
 		"If connection fails, be sure to check the correct "
-		"configuration in ldap.conf (TLS_CACERT or TLS_CACERTDIR fields)." ),
+		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ),
 		NULL );
 
 	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_chkbtn, TRUE, FALSE, 0);
