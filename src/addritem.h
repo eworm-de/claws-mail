@@ -113,7 +113,6 @@ struct _ItemGroup {
 ItemEMail *addritem_create_item_email	( void );
 ItemEMail *addritem_copy_item_email	( ItemEMail *item );
 ItemEMail *addritem_copyfull_item_email	( ItemEMail *item );
-void addritem_email_set_id		( ItemEMail *email, const gchar *value );
 void addritem_email_set_alias		( ItemEMail *email, const gchar *value );
 void addritem_email_set_address		( ItemEMail *email, const gchar *value );
 void addritem_email_set_remarks		( ItemEMail *email, const gchar *value );
@@ -128,7 +127,6 @@ void addritem_free_attribute		( UserAttribute *item );
 
 ItemPerson *addritem_create_item_person	( void );
 ItemPerson *addritem_copy_item_person	( ItemPerson *item );
-void addritem_person_set_id		( ItemPerson *person, const gchar *value );
 void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_nick_name	( ItemPerson *person, const gchar *value );
@@ -143,46 +141,34 @@ void addritem_free_list_attribute	( GList *list );
 ItemGroup *addritem_create_item_group	( void );
 ItemGroup *addritem_copy_item_group	( ItemGroup *item );
 void addritem_free_item_group		( ItemGroup *group );
-void addritem_group_set_id		( ItemGroup *group, const gchar *value );
 void addritem_group_set_name		( ItemGroup *group, const gchar *value );
-void addritem_group_set_remarks		( ItemGroup *group, const gchar *value );
 
 void addritem_print_item_email		( ItemEMail *item, FILE *stream );
-void addritem_print_attribute		( UserAttribute *item, FILE *stream );
 void addritem_print_item_person		( ItemPerson *person, FILE *stream );
 void addritem_print_item_group		( ItemGroup *group, FILE *stream );
 void addritem_print_item_folder		( ItemFolder *folder, FILE *stream );
-void addritem_print_item		( AddrItemObject *aio, FILE *stream );
 
 gboolean addritem_person_add_email		( ItemPerson *person, ItemEMail *email );
-ItemEMail *addritem_person_get_email		( ItemPerson *person, const gchar *eid );
-ItemEMail *addritem_person_remove_email_id	( ItemPerson *person, const gchar *eid );
 ItemEMail *addritem_person_remove_email		( ItemPerson *person, ItemEMail *email );
 
 void addritem_person_add_attribute		( ItemPerson *person, UserAttribute *attrib );
-UserAttribute *addritem_person_get_attribute	( ItemPerson *person, const gchar *aid );
 UserAttribute *addritem_person_remove_attrib_id	( ItemPerson *person, const gchar *aid );
 UserAttribute *addritem_person_remove_attribute	( ItemPerson *person, UserAttribute *attrib );
 
 ItemFolder *addritem_create_item_folder	( void );
 ItemFolder *addritem_copy_item_folder	( ItemFolder *item );
-void addritem_folder_set_id		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_name		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_remarks	( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_hidden		( ItemFolder *folder, const gboolean value );
 void addritem_free_item_folder		( ItemFolder *folder );
-void addritem_free_item_folder_recurse	( ItemFolder *parent );
 
 gboolean addritem_group_add_email	( ItemGroup *group, ItemEMail *email );
-ItemEMail *addritem_group_remove_email	( ItemGroup *group, ItemEMail *email );
-ItemEMail *addritem_group_remove_email_id( ItemGroup *group, const gchar *eid );
 
 gboolean addritem_folder_add_person	( ItemFolder *folder, ItemPerson *item );
 ItemPerson *addritem_folder_remove_person( ItemFolder *group, ItemPerson *person );
 
 gboolean addritem_folder_add_folder	( ItemFolder *folder, ItemFolder *item );
 gboolean addritem_folder_add_group	( ItemFolder *folder, ItemGroup *item );
-void addritem_folder_free_person	( ItemFolder *folder );
 GList *addritem_folder_get_person_list	( ItemFolder *folder );
 GList *addritem_folder_get_group_list	( ItemFolder *folder );
 

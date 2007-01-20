@@ -1,3 +1,9 @@
+2007-01-20 [colin]	2.7.1cvs42
+
+	* src/addritem.c
+	* src/addritem.h
+		Same
+
 2007-01-20 [colin]	2.7.1cvs41
 
 	* src/account.c
