@@ -128,15 +128,6 @@ void ldapqry_set_search_value( LdapQuery *qry, const gchar *value ) {
 }
 
 /**
- * Specify error/status.
- * \param qry   Query object.
- * \param value Status.
- */
-void ldapqry_set_error_status( LdapQuery* qry, const gint value ) {
-	ADDRQUERY_RETVAL(qry) = value;
-}
-
-/**
  * Specify query type.
  * \param qry Query object.
  * \param value Query type, either:
@@ -169,20 +160,6 @@ void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
  */
 void ldapqry_set_query_id( LdapQuery* qry, const gint value ) {
 	ADDRQUERY_ID(qry) = value;
-}
-
-/**
- * Specify maximum number of LDAP entries to retrieve.
- * \param qry Query object.
- * \param value Entries to read.
- */
-void ldapqry_set_entries_read( LdapQuery* qry, const gint value ) {
-	if( value > 0 ) {
-		qry->entriesRead = value;
-	}
-	else {
-		qry->entriesRead = 0;
-	}
 }
 
 /**
@@ -237,7 +214,7 @@ void ldapqry_set_callback_end( LdapQuery *qry, void *func ) {
  * \param qry Query object.
  * \param value Value of stop flag.
  */
-void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
+static void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
 	g_return_if_fail( qry != NULL );
 
 	pthread_mutex_lock( qry->mutexStop );
@@ -251,7 +228,7 @@ void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
  * \param qry Query object.
  * \return Value of stop flag.
  */
-gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
+static gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
 	gboolean value;
 	g_return_val_if_fail( qry != NULL, TRUE );
 
@@ -266,7 +243,7 @@ gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
  * \param qry Query object.
  * \param value Value of busy flag.
  */
-void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
+static void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
 	g_return_if_fail( qry != NULL );
 
 	pthread_mutex_lock( qry->mutexBusy );
@@ -280,7 +257,7 @@ void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
  * \param qry Query object.
  * \return Value of busy flag.
  */
-gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
+static gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
 	gboolean value;
 	g_return_val_if_fail( qry != NULL, FALSE );
 
@@ -295,46 +272,16 @@ gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
  * \param qry Query object.
  * \param value Value of aged flag.
  */
-void ldapqry_set_aged_flag( LdapQuery *qry, const gboolean value ) {
+static void ldapqry_set_aged_flag( LdapQuery *qry, const gboolean value ) {
 	g_return_if_fail( qry != NULL );
 	qry->agedFlag = value;
-}
-
-/**
- * Test value of aged flag.
- * \param qry Query object.
- * \return <i>TRUE</i> if query has been marked as aged (and can be retired).
- */
-gboolean ldapqry_get_aged_flag( LdapQuery *qry ) {
-	g_return_val_if_fail( qry != NULL, TRUE );
-	return qry->agedFlag;
-}
-
-/**
- * Specify user data for query.
- * \param qry Query object.
- * \param value Data to set.
- */
-void ldapqry_set_data( LdapQuery *qry, const gpointer value ) {
-	g_return_if_fail( qry != NULL );
-	qry->data = value;
-}
-
-/**
- * Retrieve user data associated with query.
- * \param qry Query object.
- * \return Data.
- */
-gpointer ldapqry_get_data( LdapQuery *qry ) {
-	g_return_val_if_fail( qry != NULL, NULL );
-	return qry->data;
 }
 
 /**
  * Clear LDAP query member variables.
  * \param qry Query object.
  */
-void ldapqry_clear( LdapQuery *qry ) {
+static void ldapqry_clear( LdapQuery *qry ) {
 	g_return_if_fail( qry != NULL );
 
 	/* Free internal stuff */
@@ -393,30 +340,6 @@ void ldapqry_free( LdapQuery *qry ) {
 
 	/* Now release object */
 	g_free( qry );
-}
-
-/**
- * Display object to specified stream.
- * \param qry    Query object to process.
- * \param stream Output stream.
- */
-void ldapqry_print( const LdapQuery *qry, FILE *stream ) {
-	g_return_if_fail( qry != NULL );
-
-	fprintf( stream, "LdapQuery:\n" );
-	fprintf( stream, "  control?: %s\n",   qry->control ? "yes" : "no" );
-	fprintf( stream, "err/status: %d\n",   ADDRQUERY_RETVAL(qry) );
-	fprintf( stream, "query type: %d\n",   ADDRQUERY_TYPE(qry) );
-	fprintf( stream, "searchType: %d\n",   ADDRQUERY_SEARCHTYPE(qry) );
-	fprintf( stream, "query name: '%s'\n", ADDRQUERY_NAME(qry) );
-	fprintf( stream, "search val: '%s'\n", ADDRQUERY_SEARCHVALUE(qry) );
-	fprintf( stream, "   queryID: %d\n",   ADDRQUERY_ID(qry) );
-	fprintf( stream, "   entries: %d\n",   qry->entriesRead );
-	fprintf( stream, "   elapsed: %d\n",   qry->elapsedTime );
-	fprintf( stream, " stop flag: %s\n",   qry->stopFlag  ? "yes" : "no" );
-	fprintf( stream, " busy flag: %s\n",   qry->busyFlag  ? "yes" : "no" );
-	fprintf( stream, " aged flag: %s\n",   qry->agedFlag  ? "yes" : "no" );
-	fprintf( stream, " completed: %s\n",   qry->completed ? "yes" : "no" );
 }
 
 /**
@@ -953,7 +876,7 @@ static gint ldapqry_perform_locate( LdapQuery *qry );
  * \param  qry Query object to process.
  * \return Error/status code.
  */
-gint ldapqry_search( LdapQuery *qry ) {
+static gint ldapqry_search( LdapQuery *qry ) {
 	gint retVal;
 
 	g_return_val_if_fail( qry != NULL, -1 );
