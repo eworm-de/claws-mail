@@ -217,21 +217,6 @@ static StylesheetEntry *exporthtml_find_stylesheet( ExportHtmlCtl *ctl ) {
 	return retVal;
 }
 
-void exporthtml_set_path( ExportHtmlCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->path = mgu_replace_string( ctl->path, value );
-	g_strstrip( ctl->path );
-}
-void exporthtml_set_file_html( ExportHtmlCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->fileHtml = mgu_replace_string( ctl->fileHtml, value );
-	g_strstrip( ctl->fileHtml );
-}
-void exporthtml_set_encoding( ExportHtmlCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->encoding = mgu_replace_string( ctl->encoding, value );
-	g_strstrip( ctl->encoding );
-}
 void exporthtml_set_stylesheet( ExportHtmlCtl *ctl, const gint value ) {
 	g_return_if_fail( ctl != NULL );
 	ctl->stylesheet = value;

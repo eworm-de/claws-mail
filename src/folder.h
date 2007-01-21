@@ -752,12 +752,10 @@ FolderItem *folder_find_item_from_path		(const gchar	*path);
 FolderClass *folder_get_class_from_string	(const gchar 	*str);
 FolderItem *folder_find_child_item_by_name	(FolderItem	*item,
 						 const gchar	*name);
-gchar      *folder_get_identifier		(Folder		*folder);
 gchar      *folder_item_get_identifier		(FolderItem	*item);
 FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);
 gchar 	   *folder_item_get_name		(FolderItem 	*item);
 
-Folder     *folder_get_default_folder	(void);
 FolderItem *folder_get_default_inbox	(void);
 FolderItem *folder_get_default_outbox	(void);
 FolderItem *folder_get_default_draft	(void);
@@ -820,16 +818,8 @@ void 	folder_item_change_msg_flags	(FolderItem 	*item,
 gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
 /* return value is locale chaset */
-gchar *folder_item_get_cache_file	(FolderItem	*item);
-gchar *folder_item_get_mark_file	(FolderItem	*item);
 gchar * folder_item_get_identifier	(FolderItem * item);
 
-GHashTable *folder_persist_prefs_new	(Folder *folder);
-void folder_persist_prefs_free		(GHashTable *pptable);
-const PersistPrefs *folder_get_persist_prefs
-					(GHashTable *pptable, const char *name);
-
-void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
 void folder_clean_cache_memory		(FolderItem *protected_item);
 void folder_clean_cache_memory_force	(void);
 void folder_item_write_cache		(FolderItem *item);

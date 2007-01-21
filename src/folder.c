@@ -81,6 +81,8 @@ static GSList *folder_unloaded_list = NULL;
 void folder_init		(Folder		*folder,
 				 const gchar	*name);
 
+static gchar *folder_item_get_cache_file	(FolderItem	*item);
+static gchar *folder_item_get_mark_file	(FolderItem	*item);
 static gchar *folder_get_list_path	(void);
 static GNode *folder_get_xml_node	(Folder 	*folder);
 static Folder *folder_get_from_xml	(GNode 		*node);
@@ -94,6 +96,10 @@ static void folder_item_read_cache		(FolderItem *item);
 gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 static void folder_item_update_with_msg (FolderItem *item, FolderItemUpdateFlags update_flags,
                                          MsgInfo *msg);
+static GHashTable *folder_persist_prefs_new	(Folder *folder);
+static void folder_persist_prefs_free		(GHashTable *pptable);
+static void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
+
 
 void folder_system_init(void)
 {
@@ -1229,7 +1235,7 @@ FolderClass *folder_get_class_from_string(const gchar *str)
 	return NULL;
 }
 
-gchar *folder_get_identifier(Folder *folder)
+static gchar *folder_get_identifier(Folder *folder)
 {
 	gchar *type_str;
 
@@ -1362,11 +1368,6 @@ gchar *folder_item_get_name(FolderItem *item)
 		name = g_strdup("");
 
 	return name;
-}
-
-Folder *folder_get_default_folder(void)
-{
-	return folder_list ? FOLDER(folder_list->data) : NULL;
 }
 
 gboolean folder_have_mailbox (void)
@@ -3383,7 +3384,7 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 	return folder->klass->is_msg_changed(folder, item, msginfo);
 }
 
-gchar *folder_item_get_cache_file(FolderItem *item)
+static gchar *folder_item_get_cache_file(FolderItem *item)
 {
 	gchar *path;
 	gchar *file;
@@ -3401,7 +3402,7 @@ gchar *folder_item_get_cache_file(FolderItem *item)
 	return file;
 }
 
-gchar *folder_item_get_mark_file(FolderItem *item)
+static gchar *folder_item_get_mark_file(FolderItem *item)
 {
 	gchar *path;
 	gchar *file;
@@ -3707,7 +3708,7 @@ FolderItem *folder_get_default_processing(void)
  * (note that in claws other options are in the folder_item_prefs_RC
  * file, so those don't need to be included in PersistPref yet) 
  */
-GHashTable *folder_persist_prefs_new(Folder *folder)
+static GHashTable *folder_persist_prefs_new(Folder *folder)
 {
 	GHashTable *pptable;
 
@@ -3717,20 +3718,20 @@ GHashTable *folder_persist_prefs_new(Folder *folder)
 	return pptable;
 }
 
-void folder_persist_prefs_free(GHashTable *pptable)
+static void folder_persist_prefs_free(GHashTable *pptable)
 {
 	g_return_if_fail(pptable);
 	g_hash_table_foreach_remove(pptable, persist_prefs_free, NULL);
 	g_hash_table_destroy(pptable);
 }
 
-const PersistPrefs *folder_get_persist_prefs(GHashTable *pptable, const char *name)
+static const PersistPrefs *folder_get_persist_prefs(GHashTable *pptable, const char *name)
 {
 	if (pptable == NULL || name == NULL) return NULL;
 	return g_hash_table_lookup(pptable, name);
 }
 
-void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
+static void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 {
 	const PersistPrefs *pp;
 	gchar *id = folder_item_get_identifier(item);

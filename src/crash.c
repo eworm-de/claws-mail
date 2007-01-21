@@ -46,9 +46,7 @@
 #	include <gnu/libc-version.h>
 #endif
 
-#ifdef SIGTERM
 #include "main.h"
-#endif
 #include "claws.h"
 #include "crash.h"
 #include "utils.h"
@@ -556,8 +554,7 @@ static void crash_handler(int sig)
  */
 static void crash_cleanup_exit(void)
 {
-	extern gchar *get_socket_name(void);
-	const char *filename = get_socket_name();
+	const char *filename = claws_get_socket_name();
 	g_unlink(filename);
 }
 

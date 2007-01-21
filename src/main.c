@@ -158,9 +158,6 @@ static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
 					 GdkInputCondition condition);
 
-gchar *get_socket_name		(void);
-
-
 static void open_compose_new		(const gchar	*address,
 					 GPtrArray	*attach_files);
 
@@ -1359,7 +1356,7 @@ gboolean claws_is_starting(void)
  * CLAWS: want this public so crash dialog can delete the
  * lock file too
  */
-gchar *get_socket_name(void)
+gchar *claws_get_socket_name(void)
 {
 	static gchar *filename = NULL;
 
@@ -1393,7 +1390,7 @@ static gint prohibit_duplicate_launch(void)
 	gint uxsock;
 	gchar *path;
 
-	path = get_socket_name();
+	path = claws_get_socket_name();
 	uxsock = fd_connect_unix(path);
 	if (uxsock < 0) {
 		g_unlink(path);
@@ -1500,7 +1497,7 @@ static gint lock_socket_remove(void)
 		gdk_input_remove(lock_socket_tag);
 	}
 	fd_close(lock_socket);
-	filename = get_socket_name();
+	filename = claws_get_socket_name();
 	g_unlink(filename);
 #endif
 

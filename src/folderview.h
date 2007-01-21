@@ -105,19 +105,12 @@ void folderview_select_next_marked	(FolderView	*folderview);
 
 FolderItem *folderview_get_selected_item(FolderView	*folderview);
 
-void folderview_update_msg_num		(FolderView	*folderview,
-					 GtkCTreeNode	*row);
-
-void folderview_append_item		(FolderItem	*item);
-
 void folderview_rescan_tree		(Folder		*folder,
 					 gboolean	 rebuild);
 void folderview_fast_rescan_tree	(Folder 	*folder);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
 
-void folderview_update_item_foreach	(GHashTable	*table,
-					 gboolean	 update_summary);
 void folderview_update_all_updated	(gboolean	 update_summary);
 
 void folderview_move_folder		(FolderView 	*folderview,

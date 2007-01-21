@@ -152,15 +152,6 @@ void folder_item_prefs_save_config(FolderItem * item)
 	 */
 }
 
-void folder_item_prefs_set_config(FolderItem * item,
-				  int sort_type, gint sort_mode)
-{
-	g_assert(item);
-	g_warning("folder_item_prefs_set_config() should never be called\n");
-	item->sort_key  = sort_type;
-	item->sort_type = sort_mode;
-}
-
 static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 {
 	prefs->sort_by_number = FALSE;
@@ -214,20 +205,6 @@ void folder_item_prefs_free(FolderItemPrefs * prefs)
 	g_free(prefs->default_to);
 	g_free(prefs->default_reply_to);
 	g_free(prefs);
-}
-
-gint folder_item_prefs_get_sort_mode(FolderItem * item)
-{
-	g_assert(item != NULL);
-	g_warning("folder_item_prefs_get_sort_mode() should never be called\n");
-	return item->sort_key;
-}
-
-gint folder_item_prefs_get_sort_type(FolderItem * item)
-{
-	g_assert(item != NULL);
-	g_warning("folder_item_prefs_get_sort_type() should never be called\n");
-	return item->sort_type;
 }
 
 #define SAFE_STRING(str) \

@@ -402,25 +402,6 @@ gedit_print_real (GeditPrintJobInfo *pji,
 	}
 }
 
-void 
-gedit_print_preview (GtkTextView *view)
-{
-	GeditPrintJobInfo *pji;
-	GtkTextIter start, end;
-
-	gedit_debug (DEBUG_PRINT, "");
-		
-	g_return_if_fail (view != NULL);
-
-	pji = gedit_print_job_info_new (view);
-
-	gtk_text_buffer_get_bounds (pji->doc, &start, &end);
-
-	pji->preview = PREVIEW;
-	gedit_print_preview_real (pji, &start, &end, 
-				  GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))));
-}
-
 static GeditPrintJobInfo *
 gedit_print_job_info_new (GtkTextView* view)
 {	

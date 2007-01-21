@@ -263,6 +263,12 @@ static void destroy_menu(GtkWidget *widget, gpointer user_data);
 /******************************************************************************/
 static gint get_textview_buffer_charcount(GtkTextView *view);
 
+static void 		gtkaspell_free_dictionary_list	(GSList *list);
+static GSList*		gtkaspell_get_dictionary_list	(const char *aspell_path,
+						 gint refresh);
+
+static void 		gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
+
 static gint get_textview_buffer_charcount(GtkTextView *view)
 {
 	GtkTextBuffer *buffer;
@@ -805,29 +811,6 @@ static gboolean set_dictionary(AspellConfig *config, Dictionary *dict)
 	}
 	
 	return TRUE;
-}
-
-guchar *gtkaspell_get_dict(GtkAspell *gtkaspell)
-{
-
-	g_return_val_if_fail(gtkaspell->gtkaspeller->config,     NULL);
-	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
- 	
-	return (guchar *)g_strdup(gtkaspell->gtkaspeller->dictionary->dictname);
-}
-  
-guchar *gtkaspell_get_path(GtkAspell *gtkaspell)
-{
-	guchar *path;
-	Dictionary *dict;
-
-	g_return_val_if_fail(gtkaspell->gtkaspeller->config, NULL);
-	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
-
-	dict = gtkaspell->gtkaspeller->dictionary;
-	path = (guchar *)g_strndup(dict->fullname, dict->dictname - dict->fullname);
-
-	return path;
 }
 
 /* set_sug_mode_cb() - Menu callback: Set the suggestion mode */
@@ -1641,7 +1624,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_widget_show_all(dialog);
 }
 
-void gtkaspell_uncheck_all(GtkAspell * gtkaspell) 
+static void gtkaspell_uncheck_all(GtkAspell * gtkaspell) 
 {
 	GtkTextView *gtktext;
 	GtkTextBuffer *buffer;
@@ -1683,7 +1666,7 @@ static GSList *create_empty_dictionary_list(void)
 }
 
 /* gtkaspell_get_dictionary_list() - returns list of dictionary names */
-GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
+static GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 {
 	GSList *list;
 	Dictionary *dict;
@@ -1753,7 +1736,7 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 	return list;
 }
 
-void gtkaspell_free_dictionary_list(GSList *list)
+static void gtkaspell_free_dictionary_list(GSList *list)
 {
 	Dictionary *dict;
 	GSList *walk;

@@ -180,7 +180,6 @@ static GdkBitmap *unreadxpmmask;
 static GdkPixmap *readxpm;
 static GdkBitmap *readxpmmask;
 
-
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
 static void folderview_set_folders	 (FolderView	*folderview);
@@ -975,75 +974,6 @@ FolderItem *folderview_get_selected_item(FolderView *folderview)
 	return gtk_ctree_node_get_row_data(ctree, folderview->selected);
 }
 
-void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	static GtkCTreeNode *prev_row = NULL;
-	FolderItem *item;
-	gint new, unread, total;
-	gchar *new_str, *unread_str, *total_str;
-	gint *col_pos = folderview->col_pos;
-
-	if (!row) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, row);
-	if (!item) return;
-
-	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_NEW], &new_str);
-	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_UNREAD], &unread_str);
-	gtk_ctree_node_get_text(ctree, row, col_pos[F_COL_TOTAL], &total_str);
-	new = atoi(new_str);
-	unread = atoi(unread_str);
-	total = atoi(total_str);
-
-	prev_row = row;
-
-	folderview_update_node(folderview, row);
-}
-
-void folderview_append_item(FolderItem *item)
-{
-	GList *list;
-	
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	if (folder_item_parent(item)) return;
-
-	for (list = folderview_list; list != NULL; list = list->next) {
-		FolderView *folderview = (FolderView *)list->data;
-		GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-		GtkCTreeNode *node, *child;
-		gint *col_pos = folderview->col_pos;
-
-		node = gtk_ctree_find_by_row_data(ctree, NULL, 
-						  folder_item_parent(item));
-		if (node) {
-			child = gtk_ctree_find_by_row_data(ctree, node, item);
-			if (!child) {
-				gchar *text[N_FOLDER_COLS] =
-					{NULL, "0", "0", "0"};
-
-				gtk_clist_freeze(GTK_CLIST(ctree));
-
-				text[col_pos[F_COL_FOLDER]] = item->name;
-				child = gtk_sctree_insert_node
-					(ctree, node, NULL, text,
-					 FOLDER_SPACING,
-					 folderxpm, folderxpmmask,
-					 folderopenxpm, folderopenxpmmask,
-					 FALSE, FALSE);
-				gtk_ctree_node_set_row_data(ctree, child, item);
-				gtk_ctree_expand(ctree, node);
-				folderview_update_node(folderview, child);
-				folderview_sort_folders(folderview, node,
-							item->folder);
-
-				gtk_clist_thaw(GTK_CLIST(ctree));
-			}
-		}
-	}
-}
-
 static void folderview_set_folders(FolderView *folderview)
 {
 	GList *list;
@@ -1735,26 +1665,6 @@ static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 	}
 	
 	return FALSE;
-}
-
-static void folderview_update_item_foreach_func(gpointer key, gpointer val,
-						gpointer data)
-{
-	/* CLAWS: share this joy with other hook functions ... */
-	folder_item_update((FolderItem *)key, 
-			   (FolderItemUpdateFlags)GPOINTER_TO_INT(data));
-}
-
-void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
-{
-	GList *list;
-	FolderItemUpdateFlags flags;
-	
-	flags = update_summary ?  F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_MSGCNT
-		: 0;
-	for (list = folderview_list; list != NULL; list = list->next)
-		g_hash_table_foreach(table, folderview_update_item_foreach_func, 
-				     GINT_TO_POINTER(flags));
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,

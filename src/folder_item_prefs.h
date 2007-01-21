@@ -70,12 +70,8 @@ struct _FolderItemPrefs {
 
 void folder_item_prefs_read_config(FolderItem * item);
 void folder_item_prefs_save_config(FolderItem * item);
-void folder_item_prefs_set_config(FolderItem * item,
-				  int sort_type, gint sort_mode);
 FolderItemPrefs *folder_item_prefs_new(void);
 void folder_item_prefs_free(FolderItemPrefs * prefs);
-gint folder_item_prefs_get_sort_type(FolderItem * item);
-gint folder_item_prefs_get_sort_mode(FolderItem * item);
 void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest);
 
 #endif /* FOLDER_ITEM_PREFS_H */

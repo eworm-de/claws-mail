@@ -54,8 +54,6 @@ struct _ExportLdifCtl {
 /* Function prototypes */
 ExportLdifCtl *exportldif_create	( void );
 void exportldif_free			( ExportLdifCtl *ctl );
-void exportldif_set_path		( ExportLdifCtl *ctl,
-					  const gchar *value );
 void exportldif_set_file_html		( ExportLdifCtl *ctl,
 					  const gchar *value );
 void exportldif_set_suffix		( ExportLdifCtl *ctl,

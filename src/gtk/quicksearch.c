@@ -70,6 +70,7 @@ struct _QuickSearch
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active);
 static void quicksearch_reset_folder_items(QuickSearch *quicksearch, FolderItem *folder_item);
+static gchar *expand_search_string(const gchar *str);
 
 gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 {
@@ -820,7 +821,7 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 }
 
 /* allow Mutt-like patterns in quick search */
-gchar *expand_search_string(const gchar *search_string)
+static gchar *expand_search_string(const gchar *search_string)
 {
 	int i = 0;
 	gchar term_char, save_char;

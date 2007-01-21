@@ -114,17 +114,6 @@ void exportldif_free( ExportLdifCtl *ctl ) {
 }
 
 /**
- * Specify full file specification of LDIF file.
- * \param ctl   Export control data.
- * \param value Full file specification.
- */
-void exportldif_set_path( ExportLdifCtl *ctl, const gchar *value ) {
-	g_return_if_fail( ctl != NULL );
-	ctl->path = mgu_replace_string( ctl->path, value );
-	g_strstrip( ctl->path );
-}
-
-/**
  * Specify suffix to be used for creating DN entries.
  * \param ctl   Export control data.
  * \param value Suffix.

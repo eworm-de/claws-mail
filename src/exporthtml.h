@@ -61,12 +61,6 @@ struct _ExportHtmlCtl {
 /* Function prototypes */
 ExportHtmlCtl *exporthtml_create( void );
 void exporthtml_free		( ExportHtmlCtl *ctl );
-void exporthtml_set_path	( ExportHtmlCtl *ctl,
-				  const gchar *value );
-void exporthtml_set_file_html	( ExportHtmlCtl *ctl,
-				  const gchar *value );
-void exporthtml_set_encoding	( ExportHtmlCtl *ctl,
-				  const gchar *value );
 void exporthtml_set_stylesheet	( ExportHtmlCtl *ctl,
 				  const gint value );
 void exporthtml_set_name_format	( ExportHtmlCtl *ctl,

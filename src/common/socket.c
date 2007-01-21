@@ -1280,7 +1280,7 @@ gint sock_printf(SockInfo *sock, const gchar *format, ...)
 	return sock_write_all(sock, buf, strlen(buf));
 }
 
-gint fd_read(gint fd, gchar *buf, gint len)
+static gint fd_read(gint fd, gchar *buf, gint len)
 {
 	if (fd_check_io(fd, G_IO_IN) < 0)
 		return -1;
@@ -1546,7 +1546,7 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 	return ret;
 }
 
-gint fd_getline(gint fd, gchar **str)
+static gint fd_getline(gint fd, gchar **str)
 {
 	gchar buf[BUFFSIZE];
 	gint len;

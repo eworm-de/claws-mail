@@ -1,3 +1,28 @@
+2007-01-21 [colin]	2.7.1cvs45
+
+	* src/crash.c
+	* src/exporthtml.c
+	* src/exporthtml.h
+	* src/exportldif.c
+	* src/exportldif.h
+	* src/folder.c
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/gedit-print.c
+	* src/gedit-print.h
+	* src/main.c
+	* src/main.h
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Same
+
 2007-01-21 [colin]	2.7.1cvs44
 
 	* src/common/utils.c

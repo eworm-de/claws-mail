@@ -66,7 +66,6 @@ GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
 
 void 		gtkaspell_delete		(GtkAspell *gtkaspell); 
 
-guchar*		gtkaspell_get_dict		(GtkAspell *gtkaspell);
 
 gboolean	gtkaspell_change_dict		(GtkAspell *gtkaspell,
     						 const gchar* dictionary,
@@ -75,21 +74,14 @@ gboolean	gtkaspell_change_dict		(GtkAspell *gtkaspell,
 gboolean	gtkaspell_change_alt_dict	(GtkAspell *gtkaspell,
     						 const gchar* alt_dictionary);
 
-guchar*		gtkaspell_get_path		(GtkAspell *gtkaspell);
 
 gboolean 	gtkaspell_set_sug_mode		(GtkAspell *gtkaspell, 
 						 gint  themode);
-
-GSList*		gtkaspell_get_dictionary_list	(const char *aspell_path,
-						 gint refresh);
-
-void 		gtkaspell_free_dictionary_list	(GSList *list);
 
 void 		gtkaspell_check_forwards_go	(GtkAspell *gtkaspell);
 void 		gtkaspell_check_backwards	(GtkAspell *gtkaspell);
 
 void 		gtkaspell_check_all		(GtkAspell *gtkaspell);
-void 		gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
 GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);

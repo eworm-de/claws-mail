@@ -30,4 +30,5 @@ void app_will_exit	(GtkWidget *widget, gpointer data);
 gboolean clean_quit	(gpointer data);
 gboolean claws_is_exiting(void);
 gboolean claws_is_starting(void);
+gchar *claws_get_socket_name(void);
 #endif /* __MAIN_H__ */
