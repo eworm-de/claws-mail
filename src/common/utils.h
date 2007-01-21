@@ -455,8 +455,6 @@ gchar *file_read_to_str		(const gchar	*file);
 gchar *file_read_stream_to_str	(FILE		*fp);
 
 /* process execution */
-gint execute_async		(gchar *const	 argv[]);
-gint execute_sync		(gchar *const	 argv[]);
 gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async);
 gchar *get_command_output	(const gchar	*cmdline);

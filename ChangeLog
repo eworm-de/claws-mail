@@ -1,3 +1,12 @@
+2007-01-21 [colin]	2.7.1cvs44
+
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/etpan-thread-manager.h
+		Same (Funny that etpan_thread_unbind
+		is called but not etpan_thread_bind)
+
 2007-01-21 [colin]	2.7.1cvs43
 
 	* src/addrselect.c

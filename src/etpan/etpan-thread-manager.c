@@ -25,19 +25,38 @@
 
 #include "etpan-thread-manager.h"
 
+#include <glib.h>
 #include <stdlib.h>
 #include <pthread.h>
 #include <libetpan/mailsem.h>
 #include <semaphore.h>
 #include <unistd.h>
 
-#include "etpan-log.h"
 #include "etpan-errors.h"
 
 #define POOL_UNBOUND_MAX 4
 
 #define POOL_INIT_SIZE 8
 #define OP_INIT_SIZE 8
+
+static void etpan_thread_free(struct etpan_thread * thread);
+static unsigned int etpan_thread_get_load(struct etpan_thread * thread);
+static int etpan_thread_is_bound(struct etpan_thread * thread);
+static int etpan_thread_manager_is_stopped(struct etpan_thread_manager * manager);
+static void etpan_thread_join(struct etpan_thread * thread);
+static struct etpan_thread * etpan_thread_new(void);
+static int etpan_thread_op_cancelled(struct etpan_thread_op * op);
+static void etpan_thread_op_lock(struct etpan_thread_op * op);
+static void etpan_thread_op_unlock(struct etpan_thread_op * op);
+static void etpan_thread_stop(struct etpan_thread * thread);
+
+#if 0
+static void etpan_thread_bind(struct etpan_thread * thread);
+static int etpan_thread_manager_op_schedule(struct etpan_thread_manager * manager,
+	     struct etpan_thread_op * op);
+static void etpan_thread_manager_start(struct etpan_thread_manager * manager);
+static void etpan_thread_op_cancel(struct etpan_thread_op * op);
+#endif
 
 enum {
   TERMINATE_STATE_NONE,
@@ -90,7 +109,7 @@ void etpan_thread_manager_free(struct etpan_thread_manager * manager)
   free(manager);
 }
 
-struct etpan_thread * etpan_thread_new(void)
+static struct etpan_thread * etpan_thread_new(void)
 {
   struct etpan_thread * thread;
   int r;
@@ -145,7 +164,7 @@ struct etpan_thread * etpan_thread_new(void)
   return NULL;
 }
 
-void etpan_thread_free(struct etpan_thread * thread)
+static void etpan_thread_free(struct etpan_thread * thread)
 {
   mailsem_free(thread->op_sem);
   mailsem_free(thread->stop_sem);
@@ -242,7 +261,7 @@ etpan_thread_manager_terminate_thread(struct etpan_thread_manager * manager,
   
   r = carray_add(manager->thread_pending, thread, NULL);
   if (r < 0) {
-    ETPAN_LOG("complete failure of thread due to lack of memory (thread stop)");
+    g_warning("complete failure of thread due to lack of memory (thread stop)");
   }
   
   etpan_thread_stop(thread);
@@ -319,7 +338,7 @@ static void * thread_run(void * data)
     thread_lock(thread);
     r = carray_add(thread->op_done_list, op, NULL);
     if (r < 0) {
-      ETPAN_LOG("complete failure of thread due to lack of memory (op done)");
+      g_warning("complete failure of thread due to lack of memory (op done)");
     }
     thread_unlock(thread);
     
@@ -350,7 +369,7 @@ int etpan_thread_start(struct etpan_thread * thread)
   return NO_ERROR;
 }
 
-void etpan_thread_stop(struct etpan_thread * thread)
+static void etpan_thread_stop(struct etpan_thread * thread)
 {
   thread_lock(thread);
   thread->terminate_state = TERMINATE_STATE_REQUESTED;
@@ -372,7 +391,7 @@ int etpan_thread_is_stopped(struct etpan_thread * thread)
   return stopped;
 }
 
-void etpan_thread_join(struct etpan_thread * thread)
+static void etpan_thread_join(struct etpan_thread * thread)
 {
   mailsem_down(thread->stop_sem);
   pthread_join(thread->th_id, NULL);
@@ -440,7 +459,7 @@ etpan_thread_manager_get_thread(struct etpan_thread_manager * manager)
   return NULL;
 }
 
-unsigned int etpan_thread_get_load(struct etpan_thread * thread)
+static unsigned int etpan_thread_get_load(struct etpan_thread * thread)
 {
   unsigned int load;
   
@@ -451,17 +470,19 @@ unsigned int etpan_thread_get_load(struct etpan_thread * thread)
   return load;
 }
 
-void etpan_thread_bind(struct etpan_thread * thread)
+#if 0
+static void etpan_thread_bind(struct etpan_thread * thread)
 {
   thread->bound_count ++;
 }
+#endif
 
 void etpan_thread_unbind(struct etpan_thread * thread)
 {
   thread->bound_count --;
 }
 
-int etpan_thread_is_bound(struct etpan_thread * thread)
+static int etpan_thread_is_bound(struct etpan_thread * thread)
 {
   return (thread->bound_count != 0);
 }
@@ -487,17 +508,17 @@ int etpan_thread_op_schedule(struct etpan_thread * thread,
   return NO_ERROR;
 }
 
-void etpan_thread_op_lock(struct etpan_thread_op * op)
+static void etpan_thread_op_lock(struct etpan_thread_op * op)
 {
   pthread_mutex_lock(&op->lock);
 }
 
-void etpan_thread_op_unlock(struct etpan_thread_op * op)
+static void etpan_thread_op_unlock(struct etpan_thread_op * op)
 {
   pthread_mutex_unlock(&op->lock);
 }
 
-int etpan_thread_op_cancelled(struct etpan_thread_op * op)
+static int etpan_thread_op_cancelled(struct etpan_thread_op * op)
 {
   int cancelled;
   
@@ -510,11 +531,12 @@ int etpan_thread_op_cancelled(struct etpan_thread_op * op)
   return cancelled;
 }
 
-void etpan_thread_op_cancel(struct etpan_thread_op * op)
+#if 0
+static void etpan_thread_op_cancel(struct etpan_thread_op * op)
 { 
   etpan_thread_op_lock(op);
   if (op->cancelled) {
-    ETPAN_LOG("cancelled twice");
+    g_warning("cancelled twice");
   }
   op->cancelled = 1;
   if ((op->callback != NULL) && (!op->callback_called)) {
@@ -523,8 +545,10 @@ void etpan_thread_op_cancel(struct etpan_thread_op * op)
   }
   etpan_thread_op_unlock(op);
 }
+#endif
 
-int etpan_thread_manager_op_schedule(struct etpan_thread_manager * manager,
+#if 0
+static int etpan_thread_manager_op_schedule(struct etpan_thread_manager * manager,
     struct etpan_thread_op * op)
 {
   struct etpan_thread * thread;
@@ -539,6 +563,7 @@ int etpan_thread_manager_op_schedule(struct etpan_thread_manager * manager,
  err:
   return ERROR_MEMORY;
 }
+#endif
 
 int etpan_thread_manager_get_fd(struct etpan_thread_manager * manager)
 {
@@ -565,7 +590,7 @@ static void loop_thread_list(carray * op_to_notify,
       op = carray_get(thread->op_done_list, j);
       r = carray_add(op_to_notify, op, NULL);
       if (r < 0) {
-        ETPAN_LOG("complete failure of thread due to lack of memory (callback)");
+        g_warning("complete failure of thread due to lack of memory (callback)");
         break;
       }
     }
@@ -629,10 +654,12 @@ void etpan_thread_manager_loop(struct etpan_thread_manager * manager)
   }
 }
 
-void etpan_thread_manager_start(struct etpan_thread_manager * manager)
+#if 0
+static void etpan_thread_manager_start(struct etpan_thread_manager * manager)
 {
   /* do nothing */
 }
+#endif
 
 void etpan_thread_manager_stop(struct etpan_thread_manager * manager)
 {
@@ -644,7 +671,7 @@ void etpan_thread_manager_stop(struct etpan_thread_manager * manager)
   }
 }
 
-int etpan_thread_manager_is_stopped(struct etpan_thread_manager * manager)
+static int etpan_thread_manager_is_stopped(struct etpan_thread_manager * manager)
 {
   return ((carray_count(manager->thread_pending) == 0) && 
       (carray_count(manager->thread_pool) == 0));

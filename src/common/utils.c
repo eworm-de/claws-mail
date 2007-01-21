@@ -3294,7 +3294,7 @@ gchar *file_read_stream_to_str(FILE *fp)
 	return str;
 }
 
-gint execute_async(gchar *const argv[])
+static gint execute_async(gchar *const argv[])
 {
 	g_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
 
@@ -3307,7 +3307,7 @@ gint execute_async(gchar *const argv[])
 	return 0;
 }
 
-gint execute_sync(gchar *const argv[])
+static gint execute_sync(gchar *const argv[])
 {
 	gint status;
 
