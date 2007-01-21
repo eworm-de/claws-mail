@@ -266,14 +266,8 @@ struct _MailFilteringData
 	GSList  *unfiltered;
 };
 
-GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);
-void procmsg_msg_hash_table_append		(GHashTable	*msg_table,
-						 GSList		*mlist);
-GHashTable *procmsg_to_folder_hash_table_create	(GSList		*mlist);
-
 GSList *procmsg_read_cache		(FolderItem	*item,
 					 gboolean	 scan_file);
-gint	procmsg_get_last_num_in_msg_list(GSList		*mlist);
 void	procmsg_msg_list_free		(GSList		*mlist);
 void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*new_msgs,
@@ -304,16 +298,12 @@ void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,
 					 gchar	         **key,
 					 PrefsFilterType   type);
 
-void	procmsg_empty_trash		(FolderItem	*trash);
 void	procmsg_empty_all_trash		(void);
 
 gint	procmsg_send_queue		(FolderItem	*queue,
 					 gboolean	 save_msgs,
 					 gchar		**errstr);
 gboolean procmsg_queue_is_empty	(FolderItem *queue);
-gint	procmsg_save_to_outbox		(FolderItem	*outbox,
-					 const gchar	*file,
-					 gboolean	 is_queued);
 void	procmsg_print_message		(MsgInfo	*msginfo,
 					 const gchar	*cmdline);
 
@@ -324,8 +314,6 @@ MsgInfo *procmsg_msginfo_get_full_info	(MsgInfo	*msginfo);
 void	 procmsg_msginfo_free		(MsgInfo	*msginfo);
 guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
 
-gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
-					 gconstpointer	 b);
 gint procmsg_send_message_queue		(const gchar *file,
 					 gchar **errstr,
 					 FolderItem *queue, 
@@ -349,13 +337,8 @@ gint procmsg_remove_special_headers	(const gchar 	*in,
 gboolean procmsg_msg_has_flagged_parent	(MsgInfo 	*info,
 					 MsgPermFlags    perm_flags);
 gboolean procmsg_msg_has_marked_parent	(MsgInfo	*info);
-GSList *procmsg_find_children		(MsgInfo	*info);
-void procmsg_update_unread_children	(MsgInfo 	*info,
-					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
-gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo,
-					 PrefsAccount	*ac_prefs);
 void procmsg_msglist_filter		(GSList 	*list, 
 					 PrefsAccount 	*ac, 
 					 GSList 	**filtered,

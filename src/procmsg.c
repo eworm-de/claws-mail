@@ -50,7 +50,8 @@
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
 					    FolderItem *queue, gint msgnum, gboolean *queued_removed);
-
+static void procmsg_update_unread_children	(MsgInfo 	*info,
+					 gboolean 	 newly_marked);
 enum
 {
 	Q_SENDER           = 0,
@@ -71,67 +72,6 @@ enum
 	Q_ENCRYPT_DATA_OLD   = 15,
 	Q_CLAWS_HDRS_OLD     = 16,
 };
-
-GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
-{
-	GHashTable *msg_table;
-
-	if (mlist == NULL) return NULL;
-
-	msg_table = g_hash_table_new(NULL, g_direct_equal);
-	procmsg_msg_hash_table_append(msg_table, mlist);
-
-	return msg_table;
-}
-
-void procmsg_msg_hash_table_append(GHashTable *msg_table, GSList *mlist)
-{
-	GSList *cur;
-	MsgInfo *msginfo;
-
-	if (msg_table == NULL || mlist == NULL) return;
-
-	for (cur = mlist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-
-		g_hash_table_insert(msg_table,
-				    GUINT_TO_POINTER(msginfo->msgnum),
-				    msginfo);
-	}
-}
-
-GHashTable *procmsg_to_folder_hash_table_create(GSList *mlist)
-{
-	GHashTable *msg_table;
-	GSList *cur;
-	MsgInfo *msginfo;
-
-	if (mlist == NULL) return NULL;
-
-	msg_table = g_hash_table_new(NULL, g_direct_equal);
-
-	for (cur = mlist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-		g_hash_table_insert(msg_table, msginfo->to_folder, msginfo);
-	}
-
-	return msg_table;
-}
-
-gint procmsg_get_last_num_in_msg_list(GSList *mlist)
-{
-	GSList *cur;
-	MsgInfo *msginfo;
-	gint last = 0;
-
-	for (cur = mlist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-		if (msginfo && msginfo->msgnum > last)
-			last = msginfo->msgnum;
-	}
-
-	return last;
-}
 
 void procmsg_msg_list_free(GSList *mlist)
 {
@@ -711,7 +651,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	}
 }
 
-void procmsg_empty_trash(FolderItem *trash)
+static void procmsg_empty_trash(FolderItem *trash)
 {
 	GNode *node, *next;
 
@@ -1073,7 +1013,7 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	return 0;
 }
 
-gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
+static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
@@ -1451,19 +1391,6 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 			memusage += strlen(msginfo->extradata->list_owner);
 	}
 	return memusage;
-}
-
-gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
-{
-	const MsgInfo *msginfo1 = a;
-	const MsgInfo *msginfo2 = b;
-
-	if (!msginfo1)
-		return -1;
-	if (!msginfo2)
-		return -1;
-
-	return msginfo1->msgnum - msginfo2->msgnum;
 }
 
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
@@ -2113,7 +2040,7 @@ static GSList *procmsg_find_children_func(MsgInfo *info,
 	return children;
 }
 
-GSList *procmsg_find_children (MsgInfo *info)
+static GSList *procmsg_find_children (MsgInfo *info)
 {
 	GSList *children;
 	GSList *all, *cur;
@@ -2133,7 +2060,7 @@ GSList *procmsg_find_children (MsgInfo *info)
 	return children;
 }
 
-void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
+static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 {
 	GSList *children = procmsg_find_children(info);
 	GSList *cur;
@@ -2177,7 +2104,7 @@ void procmsg_msginfo_set_to_folder(MsgInfo *msginfo, FolderItem *to_folder)
  * \return TRUE if the message was moved and MsgInfo is now invalid,
  *         FALSE otherwise
  */
-gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
+static gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 {
 	MailFilteringData mail_filtering_data;
 			
