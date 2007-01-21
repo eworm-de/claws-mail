@@ -91,15 +91,10 @@ gint sock_connect_async			(const gchar *hostname, gushort port,
 gint sock_connect_async_cancel		(gint id);
 
 /* Basic I/O functions */
-gint sock_printf	(SockInfo *sock, const gchar *format, ...)
-			 G_GNUC_PRINTF(2, 3);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
 gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
 gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
-gchar *sock_getline	(SockInfo *sock);
-gint sock_puts		(SockInfo *sock, const gchar *buf);
-gint sock_peek		(SockInfo *sock, gchar *buf, gint len);
 gint sock_close		(SockInfo *sock);
 
 /* Functions to directly work on FD.  They are needed for pipes */
@@ -111,15 +106,5 @@ gint fd_write		(gint sock, const gchar *buf, gint len);
 gint fd_write_all	(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);
 gint fd_close		(gint sock);
-
-/* Functions for SSL */
-#if USE_OPENSSL
-gint ssl_read		(SSL *ssl, gchar *buf, gint len);
-gint ssl_write		(SSL *ssl, const gchar *buf, gint len);
-gint ssl_write_all	(SSL *ssl, const gchar *buf, gint len);
-gint ssl_gets		(SSL *ssl, gchar *buf, gint len);
-gint ssl_getline	(SSL *ssl, gchar **str);
-gint ssl_peek		(SSL *ssl, gchar *buf, gint len);
-#endif
 
 #endif /* __SOCKET_H__ */

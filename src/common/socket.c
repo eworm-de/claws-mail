@@ -1268,18 +1268,6 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 	return sockinfo;
 }
 
-gint sock_printf(SockInfo *sock, const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE];
-
-	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
-	va_end(args);
-
-	return sock_write_all(sock, buf, strlen(buf));
-}
-
 static gint fd_read(gint fd, gchar *buf, gint len)
 {
 	if (fd_check_io(fd, G_IO_IN) < 0)
@@ -1291,7 +1279,7 @@ static gint fd_read(gint fd, gchar *buf, gint len)
 }
 
 #if USE_OPENSSL
-gint ssl_read(SSL *ssl, gchar *buf, gint len)
+static gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
 	gint err, ret;
 
@@ -1349,7 +1337,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 }
 
 #if USE_OPENSSL
-gint ssl_write(SSL *ssl, const gchar *buf, gint len)
+static gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 {
 	gint ret;
 
@@ -1414,7 +1402,7 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
 }
 
 #if USE_OPENSSL
-gint ssl_write_all(SSL *ssl, const gchar *buf, gint len)
+static gint ssl_write_all(SSL *ssl, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
 
@@ -1505,7 +1493,9 @@ Single-byte send() and recv().
 }
 
 #if USE_OPENSSL
-gint ssl_gets(SSL *ssl, gchar *buf, gint len)
+static gint ssl_peek		(SSL *ssl, gchar *buf, gint len);
+
+static gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
 	gint n;
@@ -1546,89 +1536,9 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 	return ret;
 }
 
-static gint fd_getline(gint fd, gchar **str)
-{
-	gchar buf[BUFFSIZE];
-	gint len;
-	gulong size = 1;
-
-	while ((len = fd_gets(fd, buf, sizeof(buf))) > 0) {
-		size += len;
-		if (!*str)
-			*str = g_strdup(buf);
-		else {
-			*str = g_realloc(*str, size);
-			strcat(*str, buf);
-		}
-		if (buf[len - 1] == '\n'
-#ifdef G_OS_WIN32  /* FIXME This does not seem to be correct. */
-                    || buf[len - 1] == '\r'
-#endif
-                    )
-			break;
-	}
-	if (len == -1 && *str)
-		g_free(*str);
-
-	return len;
-}
-
-#if USE_OPENSSL
-gint ssl_getline(SSL *ssl, gchar **str)
-{
-	gchar buf[BUFFSIZE];
-	gint len;
-	gulong size = 1;
-
-	while ((len = ssl_gets(ssl, buf, sizeof(buf))) > 0) {
-		size += len;
-		if (!*str)
-			*str = g_strdup(buf);
-		else {
-			*str = g_realloc(*str, size);
-			strcat(*str, buf);
-		}
-		if (buf[len - 1] == '\n')
-			break;
-	}
-	if (len == -1 && *str)
-		g_free(*str);
-
-	return len;
-}
-#endif
-
-gchar *sock_getline(SockInfo *sock)
-{
-	gint ret;
-	gchar *str = NULL;
-
-	g_return_val_if_fail(sock != NULL, NULL);
-
-#if USE_OPENSSL
-	if (sock->ssl)
-		ret = ssl_getline(sock->ssl, &str);
-	else
-#endif
-		ret = fd_getline(sock->sock, &str);
-
-	if (ret < 0)
-		sock->state = CONN_DISCONNECTED;
-	return str;
-}
-
-gint sock_puts(SockInfo *sock, const gchar *buf)
-{
-	gint ret;
-
-	if ((ret = sock_write_all(sock, buf, strlen(buf))) < 0)
-		return ret;
-	return sock_write_all(sock, "\r\n", 2);
-}
-
 /* peek at the socket data without actually reading it */
 #if USE_OPENSSL
-gint ssl_peek(SSL *ssl, gchar *buf, gint len)
+static gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 {
 	gint err, ret;
 
@@ -1659,17 +1569,6 @@ gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 	}
 }
 #endif
-
-gint sock_peek(SockInfo *sock, gchar *buf, gint len)
-{
-	g_return_val_if_fail(sock != NULL, -1);
-
-#if USE_OPENSSL
-	if (sock->ssl)
-		return ssl_peek(sock->ssl, buf, len);
-#endif
-	return fd_recv(sock->sock, buf, len, MSG_PEEK);
-}
 
 gint sock_close(SockInfo *sock)
 {

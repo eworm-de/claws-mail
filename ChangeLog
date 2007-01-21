@@ -1,3 +1,9 @@
+2007-01-21 [colin]	2.7.1cvs46
+
+	* src/common/socket.c
+	* src/common/socket.h
+		Same
+
 2007-01-21 [colin]	2.7.1cvs45
 
 	* src/crash.c
