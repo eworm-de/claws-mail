@@ -47,7 +47,6 @@ struct _AddrSelectList_ {
 	GList *listSelect;
 };
 
-AddrSelectItem *addrselect_create_item	( AddrItemObject *aio );
 AddrSelectItem *addrselect_create_node	( AddressObject *obj );
 AddrSelectItem *addrselect_item_copy	( AddrSelectItem *item );
 void addrselect_item_free		( AddrSelectItem *item );
@@ -66,10 +65,6 @@ void addrselect_list_add		( AddrSelectList *asl,
 					  gchar *cacheID );
 void addrselect_list_remove		( AddrSelectList *asl,
 					  AddrItemObject *aio );
-void addrselect_list_show		( AddrSelectList *asl,
-					  FILE *stream );
-void addrselect_list_print		( AddrSelectList *asl,
-					  FILE *stream );
 GList *addrselect_build_list		( AddrSelectList *asl );
 
 #endif /* __ADDR_SELECT_H__ */

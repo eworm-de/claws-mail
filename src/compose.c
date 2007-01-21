@@ -201,6 +201,27 @@ static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode,
 						 gboolean batch);
 
+static void compose_entry_mark_default_to	(Compose	  *compose,
+					 const gchar	  *address);
+static Compose *compose_followup_and_reply_to	(MsgInfo	*msginfo,
+					 gboolean	 quote,
+					 gboolean	 to_all,
+					 gboolean	 to_sender,
+					 const gchar	*body);
+static Compose *compose_forward_multiple	(PrefsAccount	*account, 
+					 GSList		*msginfo_list);
+static Compose *compose_reply			(MsgInfo	*msginfo,
+					 gboolean	 quote,
+					 gboolean	 to_all,
+					 gboolean	 to_ml,
+					 gboolean	 to_sender,
+					 const gchar	*body);
+static Compose *compose_reply_mode		(ComposeMode 	 mode, 
+					 GSList 	*msginfo_list, 
+					 gchar 		*body);
+static void compose_template_apply_fields(Compose *compose, Template *tmpl);
+static void compose_update_privacy_systems_menu(Compose	*compose);
+
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
 static void compose_set_out_encoding		(Compose	*compose);
@@ -1154,7 +1175,7 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account)
 	}
 }	
 
-Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
+static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 {
 	MsgInfo *msginfo;
 	guint list_len;
@@ -1284,7 +1305,7 @@ Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	return compose;
 }
 
-Compose *compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
+static Compose *compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		   gboolean to_ml, gboolean to_sender, 
 		   const gchar *body)
 {
@@ -1292,7 +1313,7 @@ Compose *compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 			      to_sender, FALSE, body);
 }
 
-Compose *compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
+static Compose *compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
 				   gboolean to_sender,
 				   const gchar *body)
@@ -1592,7 +1613,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 #undef INSERT_FW_HEADER
 
-Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
+static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 {
 	Compose *compose;
 	GtkTextView *textview;
@@ -2154,7 +2175,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 	}
 }
 
-void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
+static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
 	static GdkColor yellow;
 	static GdkColor black;
@@ -6791,7 +6812,7 @@ void compose_update_actions_menu(Compose *compose)
 	action_update_compose_menu(ifactory, "/Tools/Actions", compose);
 }
 
-void compose_update_privacy_systems_menu(Compose *compose)
+static void compose_update_privacy_systems_menu(Compose *compose)
 {
 	static gchar *branch_path = "/Options/Privacy System";
 	GtkItemFactory *ifactory;
@@ -6958,7 +6979,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	compose_changed_cb(NULL, compose);
 }
 
-void compose_template_apply_fields(Compose *compose, Template *tmpl)
+static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 {
 	MsgInfo* dummyinfo = NULL;
 	MsgInfo *msginfo = NULL;

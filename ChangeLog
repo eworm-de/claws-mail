@@ -1,3 +1,20 @@
+2007-01-21 [colin]	2.7.1cvs43
+
+	* src/addrselect.c
+	* src/addrselect.h
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/compose.h
+	* src/etpan/Makefile.am
+	* src/gtk/colorlabel.c
+	* src/gtk/colorlabel.h
+	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.h
+	* src/etpan/etpan-log.c ** REMOVED **
+	* src/etpan/etpan-log.h ** REMOVED **
+		Same
+
 2007-01-20 [colin]	2.7.1cvs42
 
 	* src/addritem.c

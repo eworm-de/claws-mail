@@ -28,12 +28,14 @@
 #include "addressitem.h"
 #include "mgutils.h"
 
+static AddrSelectItem *addrselect_create_item	( AddrItemObject *aio );
+
 /**
  * Create a selection record from an address cache item.
  * \param  aio Item object.
  * \return Address select item.
  */
-AddrSelectItem *addrselect_create_item( AddrItemObject *aio ) {
+static AddrSelectItem *addrselect_create_item( AddrItemObject *aio ) {
 	AddrSelectItem *item = NULL;
 
 	if( aio ) {
@@ -237,77 +239,6 @@ static gchar *addrselect_format_address( AddrItemObject * aio ) {
 		}
 	}
 	return buf;
-}
-
-/**
- * Print formatted addresses list to specified stream.
- * \param asl    List to process.
- * \param stream Stream.
- */
-void addrselect_list_print( AddrSelectList *asl, FILE *stream ) {
-	GList *node;
-
-	g_return_if_fail( asl != NULL );
-	fprintf( stream, "show selection...>>>\n" );
-	node = asl->listSelect;
-	while( node != NULL ) {
-		AddrSelectItem *item;
-		AddrItemObject *aio;
-		gchar *addr;
-
-		item = node->data;
-		aio = ( AddrItemObject * ) item->addressItem;
-		if( aio ) {
-			fprintf( stream, "- %d : '%s'\n", aio->type, aio->name );
-			if( aio->type == ADDR_ITEM_GROUP ) {
-				ItemGroup *group = ( ItemGroup * ) aio;
-				GList *node = group->listEMail;
-				while( node ) {
-					ItemEMail *email = node->data;
-					addr = addrselect_format_address(
-						( AddrItemObject * ) email );
-					if( addr ) {
-						fprintf( stream, "\tgrp >%s<\n", addr );
-						g_free( addr );
-					}
-					node = g_list_next( node );
-				}
-			}
-			else {
-				addr = addrselect_format_address( aio );
-				if( addr ) {
-					fprintf( stream, "\t>%s<\n", addr );
-					g_free( addr );
-				}
-			}
-		}
-		else {
-			fprintf( stream, "- NULL" );
-		}
-		node = g_list_next( node );
-	}
-	fprintf( stream, "show selection...<<<\n" );
-}
-
-/**
- * Print address items to specified stream.
- * \param asl    List to process.
- * \param stream Stream.
- */
-void addrselect_list_show( AddrSelectList *asl, FILE *stream ) {
-	GList *node;
-
-	g_return_if_fail( asl != NULL );
-	fprintf( stream, "show selection...>>>\n" );
-	node = asl->listSelect;
-	while( node != NULL ) {
-		AddrSelectItem *item;
-
-		item = node->data;
-		addrselect_item_print( item, stream );
-		node = g_list_next( node );
-	}
-	fprintf( stream, "show selection...<<<\n" );
 }
 
 /**

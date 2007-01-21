@@ -241,30 +241,12 @@ Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 Compose *compose_new_with_list		(PrefsAccount	*account,
 					 GList          *listAddress);
 
-Compose *compose_reply_mode		(ComposeMode 	 mode, 
-					 GSList 	*msginfo_list, 
-					 gchar 		*body);
-/* remove */
-Compose *compose_followup_and_reply_to	(MsgInfo	*msginfo,
-					 gboolean	 quote,
-					 gboolean	 to_all,
-					 gboolean	 to_sender,
-					 const gchar	*body);
-Compose *compose_reply			(MsgInfo	*msginfo,
-					 gboolean	 quote,
-					 gboolean	 to_all,
-					 gboolean	 to_ml,
-					 gboolean	 to_sender,
-					 const gchar	*body);
 Compose *compose_forward		(PrefsAccount *account,
 					 MsgInfo	*msginfo,
 					 gboolean	 as_attach,
 					 const gchar	*body,
 					 gboolean	 no_extedit,
 					 gboolean	 batch);
-Compose *compose_forward_multiple	(PrefsAccount	*account, 
-					 GSList		*msginfo_list);
-/* remove end */
 
 Compose *compose_redirect		(PrefsAccount	*account,
 					 MsgInfo	*msginfo,
@@ -274,19 +256,14 @@ Compose *compose_reedit			(MsgInfo	*msginfo,
 
 GList *compose_get_compose_list		(void);
 
-void compose_template_apply_fields(Compose *compose, Template *tmpl);
-
 void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
 					 ComposeEntryType  type);
 
-void compose_entry_mark_default_to	(Compose	  *compose,
-					 const gchar	  *address);
 
 gint compose_send			(Compose	  *compose);
 
 void compose_update_actions_menu	(Compose	*compose);
-void compose_update_privacy_systems_menu(Compose	*compose);
 void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
 

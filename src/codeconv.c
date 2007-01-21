@@ -108,6 +108,14 @@ typedef enum
 		state = JIS_AUXKANJI;	\
 	}
 
+static CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
+					 const gchar	*dest_charset_str);
+
+static CharSet conv_get_locale_charset			(void);
+static CharSet conv_get_outgoing_charset		(void);
+static CharSet conv_guess_ja_encoding(const gchar *str);
+static gboolean conv_is_ja_locale			(void);
+
 static void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf);
 static void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -533,7 +541,7 @@ static void conv_unreadable_8bit(gchar *str)
 	}
 }
 
-CharSet conv_guess_ja_encoding(const gchar *str)
+static CharSet conv_guess_ja_encoding(const gchar *str)
 {
 	const guchar *p = str;
 	CharSet guessed = C_US_ASCII;
@@ -719,7 +727,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	return conv_iconv_strdup(inbuf, src_code, dest_code);
 }
 
-CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
+static CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 				     const gchar *dest_charset_str)
 {
 	CodeConvFunc code_conv = conv_noconv;
@@ -1227,7 +1235,7 @@ CharSet conv_get_charset_from_str(const gchar *charset)
 	return GPOINTER_TO_UINT(g_hash_table_lookup(table, charset));
 }
 
-CharSet conv_get_locale_charset(void)
+static CharSet conv_get_locale_charset(void)
 {
 	static CharSet cur_charset = -1;
 	const gchar *cur_locale;
@@ -1350,17 +1358,7 @@ const gchar *conv_get_locale_charset_str_no_utf8(void)
 	return codeset ? codeset : CS_INTERNAL;
 }
 
-CharSet conv_get_internal_charset(void)
-{
-	return C_INTERNAL;
-}
-
-const gchar *conv_get_internal_charset_str(void)
-{
-	return CS_INTERNAL;
-}
-
-CharSet conv_get_outgoing_charset(void)
+static CharSet conv_get_outgoing_charset(void)
 {
 	static CharSet out_charset = -1;
 	const gchar *cur_locale;
@@ -1417,31 +1415,6 @@ const gchar *conv_get_outgoing_charset_str(void)
 	return str ? str : CS_UTF_8;
 }
 
-gboolean conv_is_multibyte_encoding(CharSet encoding)
-{
-	switch (encoding) {
-	case C_EUC_JP:
-	case C_EUC_JP_MS:
-	case C_EUC_KR:
-	case C_EUC_TW:
-	case C_EUC_CN:
-	case C_ISO_2022_JP:
-	case C_ISO_2022_JP_2:
-	case C_ISO_2022_JP_3:
-	case C_ISO_2022_KR:
-	case C_ISO_2022_CN:
-	case C_SHIFT_JIS:
-	case C_GB2312:
-	case C_GBK:
-	case C_BIG5:
-	case C_UTF_8:
-	case C_UTF_7:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
-
 const gchar *conv_get_current_locale(void)
 {
 	const gchar *cur_locale;
@@ -1461,7 +1434,7 @@ const gchar *conv_get_current_locale(void)
 	return cur_locale;
 }
 
-gboolean conv_is_ja_locale(void)
+static gboolean conv_is_ja_locale(void)
 {
 	static gint is_ja_locale = -1;
 	const gchar *cur_locale;

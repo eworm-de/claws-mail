@@ -4,7 +4,6 @@ noinst_LTLIBRARIES = libclawsetpan.la
 
 libclawsetpan_la_SOURCES = \
 	etpan-thread-manager.c \
-	etpan-log.c \
 	imap-thread.c
 
 clawsetpanincludedir = $(pkgincludedir)/etpan
@@ -12,7 +11,6 @@ clawsetpaninclude_HEADERS = \
 	etpan-thread-manager-types.h \
 	etpan-thread-manager.h \
 	etpan-errors.h \
-	etpan-log.h \
 	imap-thread.h
 
 AM_CPPFLAGS = \

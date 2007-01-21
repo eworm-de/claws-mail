@@ -156,14 +156,6 @@ GdkColor colorlabel_get_default_color(gint color_index)
 	return default_colors[color_index];
 }
 		
-gchar *colorlabel_get_color_text(gint color_index)
-{
-	G_RETURN_VAL_IF_INVALID_COLOR(color_index, NULL);
-
-	colorlabel_recreate_label(color_index);
-	return label_colors[0][color_index].label;
-}
-
 gchar *colorlabel_get_color_default_text(gint color_index)
 {
 	G_RETURN_VAL_IF_INVALID_COLOR(color_index, NULL);
@@ -218,20 +210,6 @@ static GtkWidget *colorlabel_create_color_widget(GdkColor color)
 			   	((gint)CR(color.red, color.green, color.blue)));
 
 	return widget;
-}
-
-/* XXX: this function to check if menus with colors and labels should
- * be recreated */
-gboolean colorlabel_changed(void)
-{
-	gint n;
-
-	for (n = 0; n < LABEL_COLORS_ELEMS; n++) {
-		if (label_colors[0][n].changed) 
-			return TRUE;
-	}
-
-	return FALSE;
 }
 
 /* XXX: colorlabel_recreate_XXX are there to make sure everything

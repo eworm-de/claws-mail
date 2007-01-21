@@ -39,7 +39,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
 static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert);
 static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
-GtkWidget *cert_presenter(SSLCertificate *cert)
+static GtkWidget *cert_presenter(SSLCertificate *cert)
 {
 	GtkWidget *vbox = NULL;
 	GtkWidget *hbox = NULL;

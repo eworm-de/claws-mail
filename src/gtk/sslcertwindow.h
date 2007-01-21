@@ -33,7 +33,6 @@
 #include <gtk/gtk.h>
 #include "ssl_certificate.h"
 
-GtkWidget *cert_presenter(SSLCertificate *cert);
 void sslcertwindow_show_cert(SSLCertificate *cert);
 void sslcertwindow_register_hook(void);
 

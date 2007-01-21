@@ -32,10 +32,8 @@ void colorlabel_update_colortable_from_prefs(void);
 gint colorlabel_get_color_count			(void);
 GdkColor colorlabel_get_color			(gint		 color_index);
 GdkColor colorlabel_get_default_color	(gint		 color_index);
-gchar *colorlabel_get_color_text		(gint		 color_index);
 gchar *colorlabel_get_color_default_text	(gint		 color_index);
 GtkImage *colorlabel_create_color_pixmap	(GdkColor	 color);
-gboolean colorlabel_changed			(void);
 GtkWidget *colorlabel_create_check_color_menu_item
 						(gint		 color_index,
 						 gboolean	 force,

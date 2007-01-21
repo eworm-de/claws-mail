@@ -170,7 +170,6 @@ struct _CodeConverter
 #define C_INTERNAL		C_UTF_8
 #define CS_INTERNAL		CS_UTF_8
 
-CharSet conv_guess_ja_encoding(const gchar *str);
 
 void conv_utf8todisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_localetodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -186,9 +185,6 @@ gchar *conv_codeset_strdup		(const gchar	*inbuf,
 					 const gchar	*src_code,
 					 const gchar	*dest_code);
 
-CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
-					 const gchar	*dest_charset_str);
-
 gchar *conv_iconv_strdup		(const gchar	*inbuf,
 					 const gchar	*src_code,
 					 const gchar	*dest_code);
@@ -197,17 +193,11 @@ gchar *conv_iconv_strdup_with_cd	(const gchar	*inbuf,
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);
-CharSet conv_get_locale_charset			(void);
 const gchar *conv_get_locale_charset_str	(void);
 const gchar *conv_get_locale_charset_str_no_utf8(void);
-CharSet conv_get_internal_charset		(void);
-const gchar *conv_get_internal_charset_str	(void);
-CharSet conv_get_outgoing_charset		(void);
 const gchar *conv_get_outgoing_charset_str	(void);
-gboolean conv_is_multibyte_encoding		(CharSet	 encoding);
 
 const gchar *conv_get_current_locale		(void);
-gboolean conv_is_ja_locale			(void);
 
 gchar *conv_unmime_header		(const gchar	*str,
                                          const gchar	*default_encoding);
