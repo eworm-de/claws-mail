@@ -79,7 +79,7 @@ void ldapqry_set_callback_start	( LdapQuery *qry, void *func );
 void ldapqry_set_callback_entry	( LdapQuery *qry, void *func );
 void ldapqry_set_callback_end	( LdapQuery *qry, void *func );
 void ldapqry_free		( LdapQuery *qry );
-
+void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value );
 gboolean ldapqry_check_search	( LdapQuery *qry );
 void ldapqry_touch		( LdapQuery *qry );
 gint ldapqry_read_data_th	( LdapQuery *qry );

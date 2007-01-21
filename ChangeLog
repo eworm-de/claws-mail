@@ -1,3 +1,10 @@
+2007-01-21 [colin]	2.7.1cvs49
+
+	* src/ldapquery.c
+	* src/ldapquery.h
+		Revert a static function that shouldn't
+		have been
+
 2007-01-21 [colin]	2.7.1cvs48
 
 	* src/ldapquery.c

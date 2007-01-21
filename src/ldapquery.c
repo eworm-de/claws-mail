@@ -214,7 +214,7 @@ void ldapqry_set_callback_end( LdapQuery *qry, void *func ) {
  * \param qry Query object.
  * \param value Value of stop flag.
  */
-static void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
+void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
 	g_return_if_fail( qry != NULL );
 
 	pthread_mutex_lock( qry->mutexStop );
