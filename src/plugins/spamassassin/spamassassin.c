@@ -252,13 +252,20 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		debug_print("message is spam\n");
 		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 		if (config.receive_spam) {
-			FolderItem *save_folder;
+			FolderItem *save_folder = NULL;
 
 			if ((!config.save_folder) ||
 			    (config.save_folder[0] == '\0') ||
-			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
-				save_folder = folder_get_default_trash();
-
+			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL)) {
+			 	if (mail_filtering_data->account && mail_filtering_data->account->set_trash_folder)
+					save_folder = folder_find_item_from_identifier(
+						mail_filtering_data->account->trash_folder);
+				if (save_folder == NULL && mail_filtering_data->account &&
+				    mail_filtering_data->account->folder)
+				    	save_folder = mail_filtering_data->account->folder->trash;
+				if (save_folder == NULL)
+					save_folder = folder_get_default_trash();
+			}
 			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 			msginfo->is_move = TRUE;

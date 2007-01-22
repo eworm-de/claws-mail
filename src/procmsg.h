@@ -264,6 +264,7 @@ struct _MailFilteringData
 	GSList  *msglist;
 	GSList  *filtered;
 	GSList  *unfiltered;
+	PrefsAccount *account;
 };
 
 GSList *procmsg_read_cache		(FolderItem	*item,

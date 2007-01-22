@@ -377,7 +377,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_entry, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the default trash folder."),
+			_("Folder for storing identified spam. Leave empty to use the trash folder."),
 			NULL);
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));

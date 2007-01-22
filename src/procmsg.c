@@ -2111,7 +2111,8 @@ static gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 	mail_filtering_data.msginfo = msginfo;			
 	mail_filtering_data.msglist = NULL;			
 	mail_filtering_data.filtered = NULL;			
-	mail_filtering_data.unfiltered = NULL;			
+	mail_filtering_data.unfiltered = NULL;
+	mail_filtering_data.account = ac_prefs;	
 	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
 		return TRUE;
 	}
@@ -2156,6 +2157,7 @@ void procmsg_msglist_filter(GSList *list, PrefsAccount *ac,
 	mail_filtering_data.msglist = list;			
 	mail_filtering_data.filtered = NULL;			
 	mail_filtering_data.unfiltered = NULL;	
+	mail_filtering_data.account = ac;	
 			
 	hooks_invoke(MAIL_LISTFILTERING_HOOKLIST, &mail_filtering_data);
 	

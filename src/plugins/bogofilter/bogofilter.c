@@ -584,12 +584,20 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		mail_filtering_data->unfiltered = NULL;
 	} else {
 		if (config.receive_spam && new_spams) {
-			FolderItem *save_folder;
+			FolderItem *save_folder = NULL;
 
 			if ((!config.save_folder) ||
 			    (config.save_folder[0] == '\0') ||
-			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))
-				save_folder = folder_get_default_trash();
+			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL)) {
+			 	if (mail_filtering_data->account && mail_filtering_data->account->set_trash_folder)
+					save_folder = folder_find_item_from_identifier(
+						mail_filtering_data->account->trash_folder);
+				if (save_folder == NULL && mail_filtering_data->account &&
+				    mail_filtering_data->account->folder)
+				    	save_folder = mail_filtering_data->account->folder->trash;
+				if (save_folder == NULL)
+					save_folder = folder_get_default_trash();
+			}
 			if (save_folder) {
 				for (cur = new_spams; cur; cur = cur->next) {
 					msginfo = (MsgInfo *)cur->data;
@@ -599,12 +607,20 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			}
 		}
 		if (config.save_unsure && new_unsure) {
-			FolderItem *save_unsure_folder;
+			FolderItem *save_unsure_folder = NULL;
 
 			if ((!config.save_unsure_folder) ||
 			    (config.save_unsure_folder[0] == '\0') ||
-			    ((save_unsure_folder = folder_find_item_from_identifier(config.save_unsure_folder)) == NULL))
-				save_unsure_folder = folder_get_default_inbox();
+			    ((save_unsure_folder = folder_find_item_from_identifier(config.save_unsure_folder)) == NULL)) {
+			 	if (mail_filtering_data->account)
+					save_unsure_folder = folder_find_item_from_identifier(
+						mail_filtering_data->account->inbox);
+				if (save_unsure_folder == NULL && mail_filtering_data->account &&
+				    mail_filtering_data->account->folder)
+				    	save_unsure_folder = mail_filtering_data->account->folder->inbox;
+				if (save_unsure_folder == NULL)
+					save_unsure_folder = folder_get_default_inbox();
+			}
 			if (save_unsure_folder) {
 				for (cur = new_unsure; cur; cur = cur->next) {
 					msginfo = (MsgInfo *)cur->data;

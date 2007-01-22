@@ -1,3 +1,14 @@
+2007-01-22 [colin]	2.7.1cvs50
+
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Allow moving spams to the account's trash
+		instead of default one
+
 2007-01-21 [colin]	2.7.1cvs49
 
 	* src/ldapquery.c
