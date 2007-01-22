@@ -1017,21 +1017,33 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 	return button;
 }
 
-GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **frame,
+/**
+ * merge some part of code into one function : it creates a frame and add
+ *	these into gtk box widget passed in param.
+ * \param box gtk box where adding new created frame.
+ * \param pframe pointer with which to assign the frame. If NULL, no pointer
+ *	is assigned but the frame is anyway created and added to @box.
+ * \param frame_label frame label of new created frame.
+ */
+GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **pframe,
 		const gchar *frame_label)
 {
 	GtkWidget *vbox;
-	
-	*frame = gtk_frame_new(frame_label);
-	gtk_widget_show(*frame);
-	gtk_box_pack_start(GTK_BOX(box), *frame, FALSE, TRUE, 0);
-	gtk_frame_set_label_align(GTK_FRAME(*frame), 0.01, 0.5);
-	
+	GtkWidget *frame;
+
+	frame = gtk_frame_new(frame_label);
+	gtk_widget_show(frame);
+	gtk_box_pack_start(GTK_BOX(box), frame, FALSE, TRUE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
+
 	vbox = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show(vbox);
-	gtk_container_add(GTK_CONTAINER (*frame), vbox);
+	gtk_container_add(GTK_CONTAINER (frame), vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
-	
+
+	if (pframe != NULL)
+		*pframe = frame;
+
 	return vbox;
 }
 

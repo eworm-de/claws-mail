@@ -1,3 +1,10 @@
+2007-01-22 [fabien]	2.7.1cvs51
+
+	* src/gtk/gtkutils.c
+		gtkut_get_options_frame() : ability to pass
+		a 'NULL' value in frame pointer parameter if
+		we don't need it.
+
 2007-01-22 [colin]	2.7.1cvs50
 
 	* src/procmsg.c
