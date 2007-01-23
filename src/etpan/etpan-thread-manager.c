@@ -39,6 +39,7 @@
 #define POOL_INIT_SIZE 8
 #define OP_INIT_SIZE 8
 
+static int etpan_thread_start(struct etpan_thread * thread);
 static void etpan_thread_free(struct etpan_thread * thread);
 static unsigned int etpan_thread_get_load(struct etpan_thread * thread);
 static int etpan_thread_is_bound(struct etpan_thread * thread);
@@ -356,7 +357,7 @@ static void * thread_run(void * data)
   return NULL;
 }
 
-int etpan_thread_start(struct etpan_thread * thread)
+static int etpan_thread_start(struct etpan_thread * thread)
 {
   int r;
   
@@ -380,7 +381,7 @@ static void etpan_thread_stop(struct etpan_thread * thread)
   /* this thread will be joined in the manager loop */
 }
 
-int etpan_thread_is_stopped(struct etpan_thread * thread)
+static int etpan_thread_is_stopped(struct etpan_thread * thread)
 {
   int stopped;
   

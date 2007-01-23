@@ -188,8 +188,6 @@ gchar *conv_codeset_strdup		(const gchar	*inbuf,
 gchar *conv_iconv_strdup		(const gchar	*inbuf,
 					 const gchar	*src_code,
 					 const gchar	*dest_code);
-gchar *conv_iconv_strdup_with_cd	(const gchar	*inbuf,
-					 iconv_t	 cd);
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);

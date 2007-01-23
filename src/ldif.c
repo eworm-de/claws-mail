@@ -89,23 +89,6 @@ void ldif_set_accessed( LdifFile *ldifFile, const gboolean value ) {
 }
 
 /**
- * Register a progress indicator callback function.
- *
- * \param ldifFile LDIF import control object.
- * \param func     Function to be called. When called, the function will be
- *                 passed the following arguments:
- *
- * <ul>
- * <li>LdifFile object,</li>
- * <li>File size (long),</li>
- * <li>Current position (long)</li>
- * </ul>
- */
-void ldif_set_callback( LdifFile *ldifFile, void *func ) {
-	ldifFile->cbProgress = func;
-}
-
-/**
  * Create field record object.
  * \return Initialized LDIF field object.
  */
@@ -219,45 +202,6 @@ void ldif_free( LdifFile *ldifFile ) {
 
 	/* Now release file object */
 	g_free( ldifFile );
-}
-
-/**
- * Display field record.
- * \param rec    LDIF field object.
- * \param stream File output stream.
- */
-void ldif_print_fieldrec( Ldif_FieldRec *rec, FILE *stream ) {
-	fprintf( stream, "\ttag:\t%s", rec->reserved ? "yes" : "no" );
-	fprintf( stream, "\t%s", rec->selected ? "yes" : "no" );
-	fprintf( stream, "\t:%s:\t:%s:\n", rec->userName, rec->tagName );
-}
-
-/**
- * Display field record.
- * \param key   Key.
- * \param value Value (the LDIF field record).
- * \param data  User data (file output stream).
- * 
- */
-static void ldif_print_file_vis( gpointer key, gpointer value, gpointer data ) {
-	Ldif_FieldRec *rec = value;
-	FILE *stream = data;
-	ldif_print_fieldrec( rec, stream );
-}
-
-/**
- * Display object to specified stream.
- * \param ldifFile LDIF import control object.
- * \param stream   File output stream.
- */
-void ldif_print_file( LdifFile *ldifFile, FILE *stream ) {
-	g_return_if_fail( ldifFile != NULL );
-	fprintf( stream, "LDIF File:\n" );
-	fprintf( stream, "file spec: '%s'\n", ldifFile->path );
-	fprintf( stream, "  ret val: %d\n",   ldifFile->retVal );
-	fprintf( stream, "   fields: {\n" );
-	g_hash_table_foreach( ldifFile->hashFields, ldif_print_file_vis, stream );
-	fprintf( stream, "} ---\n" );
 }
 
 /**

@@ -1048,7 +1048,7 @@ GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **pframe,
 }
 
 #if HAVE_LIBCOMPFACE
-gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
+static gint create_xpm_from_xface(gchar *xpm[], const gchar *xface)
 {
 	static gchar *bit_pattern[] = {
 		"....",

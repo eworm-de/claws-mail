@@ -339,34 +339,6 @@ void addritem_person_set_opened( ItemPerson *person, const gboolean value ) {
 }
 
 /**
- * Test whether person's data is empty.
- * \param  person Person to test.
- * \return <i>TRUE</i> if empty.
- */
-gboolean addritem_person_empty( ItemPerson *person ) {
-	gchar *t;
-
-	if( person == NULL ) return FALSE;
-
-	t = ADDRITEM_NAME(person);
-	if( t != NULL && strlen( t ) > 0 ) return FALSE;
-
-	t = person->firstName;
-	if( t != NULL && strlen( t ) > 0 ) return FALSE;
-
-	t = person->lastName;
-	if( t != NULL && strlen( t ) > 0 ) return FALSE;
-
-	t = person->nickName;
-	if( t != NULL && strlen( t ) > 0 ) return FALSE;
-
-	if( person->listEMail  != NULL ) return FALSE;
-	if( person->listAttrib != NULL ) return FALSE;
-
-	return TRUE;
-}
-
-/**
  * Free linked list of item addresses; both addresses and the list are freed.
  * It is assumed that addresses are *NOT* contained within some other
  * container.
@@ -563,77 +535,6 @@ void addritem_person_add_attribute(
 {
 	g_return_if_fail( person != NULL );
 	person->listAttrib = g_list_append( person->listAttrib, attrib );
-}
-
-/**
- * Remove attribute with specified ID from person.
- * \param  person Person object.
- * \param  aid    Attribute ID to remove.
- * \return UserAttribute object, or <i>NULL</i> if not found. Note that
- *         attribute object should still be freed after calling this method.
- */
-UserAttribute *addritem_person_remove_attrib_id(
-			ItemPerson *person, const gchar *aid )
-{
-	UserAttribute *attrib = NULL;
-	GList *node;
-
-	g_return_val_if_fail( person != NULL, NULL );
-	if( aid == NULL || *aid == '\0' ) return NULL;
-
-	/* Look for attribute */
-	node = person->listAttrib;
-	while( node ) {
-		UserAttribute *attr = node->data;
-		gchar *ida = attr->uid;
-		if( ida ) {
-			if( strcmp( ida, aid ) == 0 ) {
-				attrib = attr;
-			}
-		}
-		node = g_list_next( node );
-	}
-
-	/* Remove email from person's address list */
-	if( person->listAttrib ) {
-		person->listAttrib = g_list_remove( person->listAttrib, attrib );
-	}
-	return attrib;
-}
-
-/**
- * Remove attribute from person.
- * \param  person Person.
- * \param  attrib Attribute to remove.
- * \return UserAttribute object to remove. Note that attribute object should
- *         still be freed.
- */
-UserAttribute *addritem_person_remove_attribute(
-			ItemPerson *person, UserAttribute *attrib )
-{
-	gboolean found = FALSE;
-	GList *node;
-
-	g_return_val_if_fail( person != NULL, NULL );
-	if( attrib == NULL ) return NULL;
-
-	/* Look for attribute */
-	node = person->listAttrib;
-	while( node ) {
-		if( node-> data == attrib ) {
-			found = TRUE;
-			break;
-		}
-		node = g_list_next( node );
-	}
-
-	if( found ) {
-		/* Remove attribute */
-		if( person->listAttrib ) {
-			person->listAttrib = g_list_remove( person->listAttrib, attrib );
-		}
-	}
-	return attrib;
 }
 
 /**
@@ -1075,63 +976,6 @@ GList *addritem_folder_get_group_list( ItemFolder *folder ) {
 		node = g_list_next( node );
 	}
 	return list;
-}
-
-/**
- * Move person's email item.
- * \param  person     Person.
- * \param  itemMove   Item to move.
- * \param  itemTarget Target item before which to move item.
- * \return Reference to item that was moved, or <i>NULL</i> if null arguments
- *         supplied.
- */
-
-ItemEMail *addritem_move_email_before(
-		ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget )
-{
-	gint posT, posM;
-
-	g_return_val_if_fail( person != NULL, NULL );
-
-	if( itemTarget == NULL ) return NULL;
-	if( itemMove == NULL ) return NULL;
-	if( itemMove == itemTarget ) return itemMove;
-
-	posT = g_list_index( person->listEMail, itemTarget );
-	if( posT < 0 ) return NULL;
-	posM = g_list_index( person->listEMail, itemMove );
-	if( posM < 0 ) return NULL;
-	person->listEMail = g_list_remove( person->listEMail, itemMove );
-	person->listEMail = g_list_insert( person->listEMail, itemMove, posT );
-	return itemMove;
-}
-
-/**
- * Move person's email item.
- * \param  person    Person.
- * \param  itemMove  Item to move.
- * \param  itemTarget Target item after which to move item.
- * \return Reference to item that was moved, or <i>NULL</i> if null arguments
- *         supplied.
- */
-ItemEMail *addritem_move_email_after(
-		ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget )
-{
-	gint posT, posM;
-
-	g_return_val_if_fail( person != NULL, NULL );
-
-	if( itemTarget == NULL ) return NULL;
-	if( itemMove == NULL ) return NULL;
-	if( itemMove == itemTarget ) return itemMove;
-
-	posT = g_list_index( person->listEMail, itemTarget );
-	if( posT < 0 ) return NULL;
-	posM = g_list_index( person->listEMail, itemMove );
-	if( posM < 0 ) return NULL;
-	person->listEMail = g_list_remove( person->listEMail, itemMove );
-	person->listEMail = g_list_insert( person->listEMail, itemMove, 1+posT );
-	return itemMove;
 }
 
 /**

@@ -788,42 +788,6 @@ ItemEMail *addrcache_person_remove_email( AddressCache *cache, ItemPerson *perso
 }
 
 /*
-* Move email address in address cache to new person. If member of group, address
-* remains in group.
-* param: cache  Cache.
-*        email  EMail to remove.
-*        target Target person.
-* return: EMail object, or NULL if not found. Note that object should still be freed.
-*/
-void addrcache_person_move_email(
-	AddressCache *cache, ItemEMail *email, ItemPerson *target )
-{
-	ItemPerson *person;
-
-	g_return_if_fail( cache != NULL );
-
-	if( email == NULL ) return;
-	if( target == NULL ) return;
-
-	person = ( ItemPerson * ) ADDRITEM_PARENT(email);
-	if( person ) {
-		ItemEMail *found;
-		found = addritem_person_remove_email( person, email );
-		if( found ) {
-			/*
-			if( person->listEMail ) {
-				person->listEMail = g_list_remove( person->listEMail, found );
-				addritem_person_add_email( target, found );
-				cache->dirtyFlag = TRUE;
-			}
-			*/
-			addritem_person_add_email( target, found );
-			cache->dirtyFlag = TRUE;
-		}
-	}
-}
-
-/*
 * Group visitor function.
 */
 static void addrcache_get_grp_person_vis( gpointer key, gpointer value, gpointer data ) {

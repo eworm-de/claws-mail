@@ -134,7 +134,6 @@ void addritem_person_set_common_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_external_id	( ItemPerson *person, const gchar *value );
 void addritem_person_set_opened		( ItemPerson *person, const gboolean value );
 void addritem_free_item_person		( ItemPerson *person );
-gboolean addritem_person_empty		( ItemPerson *person );
 void addritem_free_list_email		( GList *list );
 void addritem_free_list_attribute	( GList *list );
 
@@ -152,8 +151,6 @@ gboolean addritem_person_add_email		( ItemPerson *person, ItemEMail *email );
 ItemEMail *addritem_person_remove_email		( ItemPerson *person, ItemEMail *email );
 
 void addritem_person_add_attribute		( ItemPerson *person, UserAttribute *attrib );
-UserAttribute *addritem_person_remove_attrib_id	( ItemPerson *person, const gchar *aid );
-UserAttribute *addritem_person_remove_attribute	( ItemPerson *person, UserAttribute *attrib );
 
 ItemFolder *addritem_create_item_folder	( void );
 ItemFolder *addritem_copy_item_folder	( ItemFolder *item );
@@ -171,13 +168,6 @@ gboolean addritem_folder_add_folder	( ItemFolder *folder, ItemFolder *item );
 gboolean addritem_folder_add_group	( ItemFolder *folder, ItemGroup *item );
 GList *addritem_folder_get_person_list	( ItemFolder *folder );
 GList *addritem_folder_get_group_list	( ItemFolder *folder );
-
-ItemEMail *addritem_move_email_before	( ItemPerson *person,
-					  ItemEMail *itemMove,
-					  ItemEMail *itemTarget );
-ItemEMail *addritem_move_email_after	( ItemPerson *person,
-					  ItemEMail *itemMove,
-					  ItemEMail *itemTarget );
 
 void addritem_parse_first_last		( ItemPerson *person );
 GList *addritem_folder_path		( const ItemFolder *folder,

@@ -110,12 +110,10 @@ struct _Ldif_FieldRec_ {
 LdifFile *ldif_create		( void );
 void ldif_set_file		( LdifFile* ldifFile, const gchar *value );
 void ldif_set_accessed		( LdifFile* ldifFile, const gboolean value );
-void ldif_set_callback		( LdifFile *ldifFile, void *func );
 void ldif_field_set_name	( Ldif_FieldRec *rec, const gchar *value );
 void ldif_field_set_selected	( Ldif_FieldRec *rec, const gboolean value );
 void ldif_field_toggle		( Ldif_FieldRec *rec );
 void ldif_free			( LdifFile *ldifFile );
-void ldif_print_fieldrec	( Ldif_FieldRec *rec, FILE *stream );
 void ldif_print_file		( LdifFile *ldifFile, FILE *stream );
 gint ldif_import_data		( LdifFile *ldifFile, AddressCache *cache );
 gint ldif_read_tags		( LdifFile *ldifFile );

@@ -34,9 +34,9 @@
 
 #include "addrquery.h"
 #include "ldapctrl.h"
-#include "ldapserver.h"
 #include "addritem.h"
 #include "addrcache.h"
+#include "ldapserver.h"
 
 typedef struct _LdapQuery LdapQuery;
 struct _LdapQuery {

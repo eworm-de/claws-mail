@@ -1,3 +1,27 @@
+2007-01-23 [colin]	2.7.1cvs52
+
+	* src/toolbar.c
+		Translate toolbar items text if
+		they're translatable (default)
+	* src/addrcache.c
+	* src/addrcache.h
+	* src/addritem.c
+	* src/addritem.h
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/jpilot.c
+	* src/jpilot.h
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapquery.h
+	* src/ldif.c
+	* src/ldif.h
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/etpan-thread-manager.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		More static functions
+
 2007-01-22 [fabien]	2.7.1cvs51
 
 	* src/gtk/gtkutils.c

@@ -91,14 +91,10 @@ void ldapctl_set_max_query_age	( LdapControl* ctl, const gint value );
 void ldapctl_set_matching_option( LdapControl* ctl, const gint value );
 void ldapctl_set_tls		( LdapControl* ctl, const gboolean value );
 void ldapctl_set_ssl		( LdapControl* ctl, const gboolean value );
-void ldapctl_set_criteria_list	( LdapControl* ctl, GList *value );
 GList *ldapctl_get_criteria_list( const LdapControl* ctl );
 void ldapctl_criteria_list_clear( LdapControl *ctl );
 void ldapctl_criteria_list_add	( LdapControl *ctl, gchar *attr );
-void ldapctl_default_attributes	( LdapControl *ctl );
-void ldapctl_clear		( LdapControl *ctl );
 void ldapctl_free		( LdapControl *ctl );
-void ldapctl_default_values	( LdapControl *ctl );
 void ldapctl_print		( const LdapControl *ctl, FILE *stream );
 void ldapctl_copy		( const LdapControl *ctlFrom,
 				  LdapControl *ctlTo );

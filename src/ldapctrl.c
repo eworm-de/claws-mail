@@ -201,17 +201,6 @@ void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
 }
 
 /**
- * Specify search criteria list to be used.
- * \param ctl   Control data object.
- * \param value Linked list of LDAP attribute names to use for search.
- */
-void ldapctl_set_criteria_list( LdapControl* ctl, GList *value ) {
-	g_return_if_fail( ctl != NULL );
-	mgu_free_dlist( ctl->listCriteria );
-	ctl->listCriteria = value;
-}
-
-/**
  * Return search criteria list.
  * \param  ctl  Control data object.
  * \return Linked list of character strings containing LDAP attribute names to
@@ -252,24 +241,10 @@ void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
 }
 
 /**
- * Build criteria list using default attributes.
- * \param ctl  Control object to process.
- */
-void ldapctl_default_attributes( LdapControl *ctl ) {
-	g_return_if_fail( ctl != NULL );
-
-	ldapctl_criteria_list_clear( ctl );
-	ldapctl_criteria_list_add( ctl, LDAPCTL_ATTR_COMMONNAME );
-	ldapctl_criteria_list_add( ctl, LDAPCTL_ATTR_GIVENNAME );
-	ldapctl_criteria_list_add( ctl, LDAPCTL_ATTR_SURNAME );
-	ldapctl_criteria_list_add( ctl, LDAPCTL_ATTR_EMAIL );
-}
-
-/**
  * Clear LDAP server member variables.
  * \param ctl Control object to clear.
  */
-void ldapctl_clear( LdapControl *ctl ) {
+static void ldapctl_clear( LdapControl *ctl ) {
 	g_return_if_fail( ctl != NULL );
 
 	/* Free internal stuff */
@@ -320,33 +295,6 @@ void ldapctl_free( LdapControl *ctl ) {
 
 	/* Now release LDAP control object */
 	g_free( ctl );
-}
-
-/**
- * Setup default (empty) values for specified object.
- * \param ctl  Control object to process.
- */
-void ldapctl_default_values( LdapControl *ctl ) {
-	g_return_if_fail( ctl != NULL );
-
-	/* Clear our destination */
-	ldapctl_clear( ctl );
-
-	/* Copy strings */
-	ctl->hostName = g_strdup( "" );
-	ctl->baseDN = g_strdup( "" );
-	ctl->bindDN = g_strdup( "" );
-	ctl->bindPass = g_strdup( "" );
-	ctl->port = LDAPCTL_DFL_PORT;
-	ctl->maxEntries = LDAPCTL_MAX_ENTRIES;
-	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
-	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
-	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
-	ctl->version = 0;
-	ctl->enableTLS = FALSE;
-	ctl->enableSSL = FALSE;
-
-	ldapctl_default_attributes( ctl );
 }
 
 /**

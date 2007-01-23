@@ -34,10 +34,6 @@ void etpan_thread_op_free(struct etpan_thread_op * op);
 
 /* ** thread creation ** */
 
-int etpan_thread_start(struct etpan_thread * thread);
-
-int etpan_thread_is_stopped(struct etpan_thread * thread);
-
 struct etpan_thread *
 etpan_thread_manager_get_thread(struct etpan_thread_manager * manager);
 

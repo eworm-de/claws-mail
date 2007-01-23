@@ -78,31 +78,21 @@ void jpilot_set_file			( JPilotFile* pilotFile, const gchar *value );
 void jpilot_free			( JPilotFile *pilotFile );
 gint jpilot_get_status			( JPilotFile *pilotFile );
 gboolean jpilot_get_modified		( JPilotFile *pilotFile );
-void jpilot_set_modified		( JPilotFile *pilotFile, const gboolean value );
 gboolean jpilot_get_accessed		( JPilotFile *pilotFile );
 void jpilot_set_accessed		( JPilotFile *pilotFile, const gboolean value );
 gboolean jpilot_get_read_flag		( JPilotFile *pilotFile );
 ItemFolder *jpilot_get_root_folder	( JPilotFile *pilotFile );
 gchar *jpilot_get_name			( JPilotFile *pilotFile );
 
-void jpilot_force_refresh		( JPilotFile *pilotFile );
-void jpilot_print_file			( JPilotFile *jpilotFile, FILE *stream );
-void jpilot_print_short			( JPilotFile *pilotFile, FILE *stream );
 gint jpilot_read_data			( JPilotFile *pilotFile );
 GList *jpilot_get_list_person		( JPilotFile *pilotFile );
 GList *jpilot_get_list_folder		( JPilotFile *pilotFile );
 GList *jpilot_get_all_persons		( JPilotFile *pilotFile );
 
-GList *jpilot_load_label		( JPilotFile *pilotFile, GList *labelList );
-GList *jpilot_get_category_list		( JPilotFile *pilotFile );
-gchar *jpilot_get_category_name		( JPilotFile *pilotFile, gint catID );
-GList *jpilot_load_phone_label		( JPilotFile *pilotFile, GList *labelList );
 GList *jpilot_load_custom_label		( JPilotFile *pilotFile, GList *labelList );
 
-gboolean jpilot_validate		( JPilotFile *pilotFile );
 gchar *jpilot_find_pilotdb		( void );
 
-gint jpilot_test_read_file		( const gchar *fileSpec );
 
 void jpilot_clear_custom_labels		( JPilotFile *pilotFile );
 void jpilot_add_custom_label		( JPilotFile *pilotFile, const gchar *labelName );

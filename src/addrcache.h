@@ -120,10 +120,6 @@ ItemEMail *addrcache_remove_email	( AddressCache *cache, ItemEMail *email );
 ItemEMail *addrcache_person_remove_email( AddressCache *cache,
 					  ItemPerson *person, 
 					  ItemEMail *email );
-void addrcache_person_move_email	( AddressCache *cache,
-					  ItemEMail *email,
-					  ItemPerson *target );
-
 
 GList *addrcache_get_group_for_person	( AddressCache *cache, ItemPerson *person );
 
