@@ -21,6 +21,7 @@
 #define BOGOFILTER_H 1
 
 #include <glib.h>
+#include "folder.h"
 
 typedef struct _BogofilterConfig BogofilterConfig;
 
@@ -48,4 +49,5 @@ void bogofilter_gtk_done(void);
 int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 void bogofilter_register_hook(void);
 void bogofilter_unregister_hook(void);
+FolderItem *bogofilter_get_spam_folder(MsgInfo *msginfo);
 #endif

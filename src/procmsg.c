@@ -2286,19 +2286,31 @@ int procmsg_spam_learner_learn (MsgInfo *info, GSList *list, gboolean spam)
 }
 
 static gchar *spam_folder_item = NULL;
-void procmsg_spam_set_folder (const char *item_identifier)
+static FolderItem * (*procmsg_spam_get_folder_func)(MsgInfo *msginfo) = NULL;
+void procmsg_spam_set_folder (const char *item_identifier, FolderItem *(*spam_get_folder_func)(MsgInfo *info))
 {
 	g_free(spam_folder_item);
 	if (item_identifier)
 		spam_folder_item = g_strdup(item_identifier);
 	else
 		spam_folder_item = NULL;
+	if (spam_get_folder_func != NULL)
+		procmsg_spam_get_folder_func = spam_get_folder_func;
+	else
+		procmsg_spam_get_folder_func = NULL;
 }
 
-FolderItem *procmsg_spam_get_folder (void)
+FolderItem *procmsg_spam_get_folder (MsgInfo *msginfo)
 {
-	FolderItem *item = spam_folder_item ? folder_find_item_from_identifier(spam_folder_item) : NULL;
-	return item ? item : folder_get_default_trash();
+	FolderItem *item = NULL;
+	
+	if (procmsg_spam_get_folder_func) 
+		item = procmsg_spam_get_folder_func(msginfo);
+	if (item == NULL && spam_folder_item)
+		item = folder_find_item_from_identifier(spam_folder_item);
+	if (item == NULL)
+		item = folder_get_default_trash();
+	return item;
 }
 
 static void item_has_queued_mails(FolderItem *item, gpointer data)

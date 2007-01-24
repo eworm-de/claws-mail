@@ -792,7 +792,11 @@ void folder_write_list(void)
 	path = folder_get_list_path();
 	if ((pfile = prefs_write_open(path)) == NULL) return;
 
-	xml_file_put_xml_decl(pfile->fp);
+	if (xml_file_put_xml_decl(pfile->fp) < 0) {
+		prefs_file_close_revert(pfile);
+		g_warning("failed to start write folder list.\n");
+		return;		
+	}
 	tag = xml_tag_new("folderlist");
 
 	xmlnode = xml_node_new(tag, NULL);
@@ -814,11 +818,12 @@ void folder_write_list(void)
 		g_node_append(rootnode, (gpointer) xml_copy_tree(node));
 	}
 
-	xml_write_tree(rootnode, pfile->fp);
-
-	if (prefs_file_close(pfile) < 0)
+	if (xml_write_tree(rootnode, pfile->fp) < 0) {
+		prefs_file_close_revert(pfile);
 		g_warning("failed to write folder list.\n");
-
+	} else if (prefs_file_close(pfile) < 0) {
+		g_warning("failed to write folder list.\n");
+	}
 	xml_free_tree(rootnode);
 }
 

@@ -353,8 +353,8 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo
 void procmsg_register_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
 void procmsg_unregister_spam_learner (int (*learn_func)(MsgInfo *info, GSList *list, gboolean spam));
 gboolean procmsg_spam_can_learn		(void);
-void procmsg_spam_set_folder		(const char *item_identifier);
-FolderItem *procmsg_spam_get_folder	(void);
+void procmsg_spam_set_folder		(const char *item_identifier, FolderItem *(*spam_get_folder_func)(MsgInfo *info));
+FolderItem *procmsg_spam_get_folder	(MsgInfo *msginfo);
 int procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 gboolean procmsg_have_queued_mails_fast (void);
 gboolean procmsg_is_sending(void);

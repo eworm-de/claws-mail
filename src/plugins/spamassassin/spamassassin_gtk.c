@@ -519,12 +519,12 @@ static void spamassassin_save_func(PrefsPage *_page)
 
 	if (!config->enable) {
 		procmsg_unregister_spam_learner(spamassassin_learn);
-		procmsg_spam_set_folder(NULL);
+		procmsg_spam_set_folder(NULL, NULL);
 	} else {
 		if (config->transport == SPAMASSASSIN_TRANSPORT_TCP)
 			debug_print("enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
-		procmsg_spam_set_folder(config->save_folder);
+		procmsg_spam_set_folder(config->save_folder, spamassassin_get_spam_folder);
 	}
 
 	spamassassin_save_config();

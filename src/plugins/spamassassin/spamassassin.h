@@ -21,6 +21,7 @@
 #define SPAMASSASSIN_H 1
 
 #include <glib.h>
+#include "folder.h"
 
 typedef struct _SpamAssassinConfig SpamAssassinConfig;
 
@@ -57,4 +58,6 @@ void spamassassin_gtk_done(void);
 int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 void spamassassin_register_hook(void);
 void spamassassin_unregister_hook(void);
+FolderItem *spamassassin_get_spam_folder(MsgInfo *msginfo);
+
 #endif

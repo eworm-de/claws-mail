@@ -3544,8 +3544,9 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 				continue;
 			if (is_spam) {
 				summary_msginfo_change_flags(msginfo, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
-				if (procmsg_spam_get_folder() != summaryview->folder_item) {
-					summary_move_row_to(summaryview, row, procmsg_spam_get_folder());
+				if (procmsg_spam_get_folder(msginfo) != summaryview->folder_item) {
+					summary_move_row_to(summaryview, row,
+							procmsg_spam_get_folder(msginfo));
 					moved = TRUE;
 				}
 			} else {
@@ -5942,7 +5943,8 @@ static gint func_name(GtkCList *clist,					 \
 CMP_FUNC_DEF(summary_cmp_by_mark,
 	     MSG_IS_MARKED(msginfo1->flags) - MSG_IS_MARKED(msginfo2->flags))
 CMP_FUNC_DEF(summary_cmp_by_status,
-	     MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags))
+	     (-(MSG_IS_SPAM(msginfo1->flags))+(MSG_IS_UNREAD(msginfo1->flags)<<1)+(MSG_IS_NEW(msginfo1->flags)<<2)) 
+	     - (-(MSG_IS_SPAM(msginfo2->flags))+(MSG_IS_UNREAD(msginfo2->flags)<<1)+(MSG_IS_NEW(msginfo2->flags)<<2)) )
 CMP_FUNC_DEF(summary_cmp_by_mime,
 	     MSG_IS_WITH_ATTACHMENT(msginfo1->flags) - MSG_IS_WITH_ATTACHMENT(msginfo2->flags))
 CMP_FUNC_DEF(summary_cmp_by_label,

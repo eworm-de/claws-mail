@@ -542,7 +542,7 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 	const gchar *dest_codeset = CS_INTERNAL;
 	gchar *tmpstr = NULL;
 	const gchar *p;
-
+	int result = 0;
 	g_return_val_if_fail(fp != NULL, -1);
 
 	if (!str) return 0;
@@ -556,28 +556,28 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 	for (p = tmpstr; *p != '\0'; p++) {
 		switch (*p) {
 		case '<':
-			fputs("&lt;", fp);
+			result = fputs("&lt;", fp);
 			break;
 		case '>':
-			fputs("&gt;", fp);
+			result = fputs("&gt;", fp);
 			break;
 		case '&':
-			fputs("&amp;", fp);
+			result = fputs("&amp;", fp);
 			break;
 		case '\'':
-			fputs("&apos;", fp);
+			result = fputs("&apos;", fp);
 			break;
 		case '\"':
-			fputs("&quot;", fp);
+			result = fputs("&quot;", fp);
 			break;
 		default:
-			fputc(*p, fp);
+			result = fputc(*p, fp);
 		}
 	}
 
 	g_free(tmpstr);
-
-	return 0;
+	
+	return (result == EOF ? -1 : 0);
 }
 
 gint xml_file_put_xml_decl(FILE *fp)
@@ -585,8 +585,7 @@ gint xml_file_put_xml_decl(FILE *fp)
 	g_return_val_if_fail(fp != NULL, -1);
 	XML_STRING_TABLE_CREATE();
 
-	fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
-	return 0;
+	return fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
 }
 
 gint xml_file_put_node(FILE *fp, XMLNode *node)
@@ -682,27 +681,37 @@ static gint xml_get_parenthesis(XMLFile *file, gchar *buf, gint len)
 	return 0;
 }
 
-static void xml_write_tree_recursive(GNode *node, FILE *fp)
+#define TRY(func) \
+if (!(func)) \
+{ \
+	g_warning("failed to write part of xml tree\n"); \
+	return -1; \
+} \
+
+static int xml_write_tree_recursive(GNode *node, FILE *fp)
 {
 	gint i, depth;
 	XMLTag *tag;
 	GList *cur;
 
-	g_return_if_fail(node != NULL);
-	g_return_if_fail(fp != NULL);
+	g_return_val_if_fail(node != NULL, -1);
+	g_return_val_if_fail(fp != NULL, -1);
 
 	depth = g_node_depth(node) - 1;
 	for (i = 0; i < depth; i++)
-		fputs("    ", fp);
+		TRY(fputs("    ", fp) != EOF);
+
 	tag = ((XMLNode *) node->data)->tag;
 
-	fprintf(fp, "<%s", tag->tag);
+	TRY(fprintf(fp, "<%s", tag->tag) > 0);
+
 	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
 		XMLAttr *attr = (XMLAttr *) cur->data;
 
-		fprintf(fp, " %s=\"", attr->name);
-		xml_file_put_escape_str(fp, attr->value);
-		fputs("\"", fp);
+		TRY(fprintf(fp, " %s=\"", attr->name) > 0);
+		TRY(xml_file_put_escape_str(fp, attr->value) == 0);
+		TRY(fputs("\"", fp) != EOF);
+		
 	}
 
 	if (node->children) {
@@ -715,19 +724,23 @@ static void xml_write_tree_recursive(GNode *node, FILE *fp)
 
 			cur = child;
 			child = cur->next;
-			xml_write_tree_recursive(cur, fp);
+			TRY(xml_write_tree_recursive(cur, fp) == 0);
 		}
 
 		for (i = 0; i < depth; i++)
-			fputs("    ", fp);
-		fprintf(fp, "</%s>\n", tag->tag);
+			TRY(fputs("    ", fp) != EOF);
+		TRY(fprintf(fp, "</%s>\n", tag->tag) > 0);
 	} else
-		fputs(" />\n", fp);
+		TRY(fputs(" />\n", fp) != EOF);
+	
+	return 0;
 }
 
-void xml_write_tree(GNode *node, FILE *fp)
+#undef TRY
+
+int xml_write_tree(GNode *node, FILE *fp)
 {
-	xml_write_tree_recursive(node, fp);
+	return xml_write_tree_recursive(node, fp);
 }
 
 static gpointer copy_node_func(gpointer nodedata, gpointer data)

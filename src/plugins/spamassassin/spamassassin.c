@@ -456,7 +456,7 @@ gboolean spamassassin_check_username(void)
 				spamassassin_unregister_hook();
 			}
 			procmsg_unregister_spam_learner(spamassassin_learn);
-			procmsg_spam_set_folder(NULL);
+			procmsg_spam_set_folder(NULL, NULL);
 			return FALSE;
 		}
 	}
@@ -501,7 +501,7 @@ gint plugin_init(gchar **error)
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)
 			debug_print("Enabling learner with a remote spamassassin server requires spamc/spamd 3.1.x\n");
 		procmsg_register_spam_learner(spamassassin_learn);
-		procmsg_spam_set_folder(config.save_folder);
+		procmsg_spam_set_folder(config.save_folder, spamassassin_get_spam_folder);
 	}
 
 	return 0;
@@ -517,7 +517,7 @@ void plugin_done(void)
 	g_free(config.save_folder);
 	spamassassin_gtk_done();
 	procmsg_unregister_spam_learner(spamassassin_learn);
-	procmsg_spam_set_folder(NULL);
+	procmsg_spam_set_folder(NULL, NULL);
 	debug_print("SpamAssassin plugin unloaded\n");
 }
 
@@ -582,3 +582,30 @@ void spamassassin_unregister_hook(void)
 	}
 	hook_id = -1;
 }
+
+FolderItem *spamassassin_get_spam_folder(MsgInfo *msginfo)
+{
+	FolderItem *item = folder_find_item_from_identifier(config.save_folder);
+
+	if (item || msginfo == NULL || msginfo->folder == NULL)
+		return item;
+
+	if (msginfo->folder->folder &&
+	    msginfo->folder->folder->account && 
+	    msginfo->folder->folder->account->set_trash_folder) {
+		item = folder_find_item_from_identifier(
+			msginfo->folder->folder->account->trash_folder);
+	}
+
+	if (item == NULL && 
+	    msginfo->folder->folder &&
+	    msginfo->folder->folder->trash)
+		item = msginfo->folder->folder->trash;
+		
+	if (item == NULL)
+		item = folder_get_default_trash();
+		
+	debug_print("SA spam dir: %s\n", folder_item_get_path(item));
+	return item;
+}
+

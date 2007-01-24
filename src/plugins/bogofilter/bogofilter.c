@@ -856,10 +856,36 @@ gint plugin_init(gchar **error)
 	}
 
 	procmsg_register_spam_learner(bogofilter_learn);
-	procmsg_spam_set_folder(config.save_folder);
+	procmsg_spam_set_folder(config.save_folder, bogofilter_get_spam_folder);
 
 	return 0;
 	
+}
+
+FolderItem *bogofilter_get_spam_folder(MsgInfo *msginfo)
+{
+	FolderItem *item = folder_find_item_from_identifier(config.save_folder);
+
+	if (item || msginfo == NULL || msginfo->folder == NULL)
+		return item;
+
+	if (msginfo->folder->folder &&
+	    msginfo->folder->folder->account && 
+	    msginfo->folder->folder->account->set_trash_folder) {
+		item = folder_find_item_from_identifier(
+			msginfo->folder->folder->account->trash_folder);
+	}
+
+	if (item == NULL && 
+	    msginfo->folder->folder &&
+	    msginfo->folder->folder->trash)
+		item = msginfo->folder->folder->trash;
+		
+	if (item == NULL)
+		item = folder_get_default_trash();
+		
+	debug_print("bogo spam dir: %s\n", folder_item_get_path(item));
+	return item;
 }
 
 void plugin_done(void)
@@ -873,7 +899,7 @@ void plugin_done(void)
 	g_free(config.save_folder);
 	bogofilter_gtk_done();
 	procmsg_unregister_spam_learner(bogofilter_learn);
-	procmsg_spam_set_folder(NULL);
+	procmsg_spam_set_folder(NULL, NULL);
 	debug_print("Bogofilter plugin unloaded\n");
 }
 

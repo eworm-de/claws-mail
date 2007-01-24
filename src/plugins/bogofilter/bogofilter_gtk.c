@@ -376,7 +376,7 @@ static void bogofilter_save_func(PrefsPage *_page)
 	}
 
 	procmsg_register_spam_learner(bogofilter_learn);
-	procmsg_spam_set_folder(config->save_folder);
+	procmsg_spam_set_folder(config->save_folder, bogofilter_get_spam_folder);
 
 	bogofilter_save_config();
 }

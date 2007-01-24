@@ -109,7 +109,7 @@ void xml_free_node		(XMLNode	*node);
 void xml_free_tree		(GNode		*node);
 
 void xml_free_tag		(XMLTag 	*tag);
-void xml_write_tree		(GNode		*node,
+int  xml_write_tree		(GNode		*node,
 				 FILE		*fp);
 GNode *xml_copy_tree		(GNode 		*node);
 

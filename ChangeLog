@@ -1,3 +1,22 @@
+2007-01-24 [colin]	2.7.1cvs54
+
+	* src/folder.c
+	* src/common/xml.c
+	* src/common/xml.h
+		Make sure folderlist.xml is correctly
+		written before overwriting it.
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Move spam to the correct trash folder after
+		learning, if spam directory isn't set.
+
 2007-01-23 [paul]	2.7.1cvs53
 
 	* src/plugins/bogofilter/bogofilter_gtk.c
