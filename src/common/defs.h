@@ -88,7 +88,7 @@
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
 #define OPENSSL_URI		"http://www.openssl.org/"
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"
-#define THEMEINFO_FILE		".sylpheed_themeinfo"
+#define THEMEINFO_FILE		".claws_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_claws_cache"
 #define MARK_FILE		".sylpheed_mark"

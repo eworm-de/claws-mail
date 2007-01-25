@@ -192,6 +192,22 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 	return baseDN;
 }
 
+int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *passwd )
+{
+	struct berval cred;
+
+	if ( passwd != NULL ) {
+		cred.bv_val = (char *) passwd;
+		cred.bv_len = strlen( passwd );
+	} else {
+		cred.bv_val = "";
+		cred.bv_len = 0;
+	}
+
+	return ldap_sasl_bind_s( ld, dn, LDAP_SASL_SIMPLE, &cred,
+		NULL, NULL, NULL );
+}
+
 /**
  * Attempt to discover the base DN for the server.
  * \param  host   Host name.
@@ -209,6 +225,7 @@ GList *ldaputil_read_basedn(
 	GList *baseDN = NULL;
 	LDAP *ld = NULL;
 	gint rc;
+	gchar *uri = NULL;
 #ifdef USE_LDAP_TLS
 	gint version;
 #endif
@@ -218,14 +235,12 @@ GList *ldaputil_read_basedn(
 
 	/* Connect to server. */
 
-	if (!ssl) {
-		ld = ldap_init( host, port );
-	} else {
-		gchar *uri = g_strdup_printf("ldaps://%s:%d",
-				host, port);
-		rc = ldap_initialize(&ld, uri);
-		g_free(uri);
-	}
+	uri = g_strdup_printf("ldap%s://%s:%d",
+			ssl?"s":"",
+			host, port);
+	rc = ldap_initialize(&ld, uri);
+	g_free(uri);
+	
 	if( ld == NULL ) {
 		return baseDN;
 	}
@@ -235,12 +250,12 @@ GList *ldaputil_read_basedn(
 		version = LDAP_VERSION3;
 		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
 		if( rc != LDAP_OPT_SUCCESS ) {
-			ldap_unbind( ld );
+			ldap_unbind_ext( ld, NULL, NULL );
 			return baseDN;
 		}
 		rc = ldap_start_tls_s( ld, NULL, NULL );
 		if (rc != 0) {
-			ldap_unbind( ld );
+			ldap_unbind_ext( ld, NULL, NULL );
 			return baseDN;
 		}
 	}
@@ -249,9 +264,9 @@ GList *ldaputil_read_basedn(
 	/* Bind to the server, if required */
 	if( bindDN ) {
 		if( *bindDN != '\0' ) {
-			rc = ldap_simple_bind_s( ld, bindDN, bindPW );
+			rc = claws_ldap_simple_bind_s( ld, bindDN, bindPW );
 			if( rc != LDAP_SUCCESS ) {
-				ldap_unbind( ld );
+				ldap_unbind_ext( ld, NULL, NULL );
 				return baseDN;
 			}
 		}
@@ -264,7 +279,7 @@ GList *ldaputil_read_basedn(
 		baseDN = ldaputil_test_v2( ld, tov );
 	}
 	if (ld && !LDAP_API_ERROR(rc))
-		ldap_unbind( ld );
+		ldap_unbind_ext( ld, NULL, NULL );
 	
 	return baseDN;
 }
@@ -283,16 +298,16 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 	gint rc;
 	gint version;
 #endif
+	gchar *uri = NULL;
+
 	if( host == NULL ) return retVal;
 	if( port < 1 ) return retVal;
-	if (!ssl) {
-		ld = ldap_open( host, port );
-	} else {
-		gchar *uri = g_strdup_printf("ldaps://%s:%d",
+	
+	uri = g_strdup_printf("ldap%s://%s:%d",
+				ssl?"s":"",
 				host, port);
-		ldap_initialize(&ld, uri);
-		g_free(uri);
-	}
+	ldap_initialize(&ld, uri);
+	g_free(uri);
 	if (ld == NULL)
 		return FALSE;
 
@@ -310,19 +325,19 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 		version = LDAP_VERSION3;
 		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
 		if( rc != LDAP_OPT_SUCCESS ) {
-			ldap_unbind( ld );
+			ldap_unbind_ext( ld, NULL, NULL );
 			return FALSE;
 		}
 
 		rc = ldap_start_tls_s( ld, NULL, NULL );
 		if (rc != 0) {
-			ldap_unbind( ld );
+			ldap_unbind_ext( ld, NULL, NULL );
 			return FALSE;
 		}
 	}
 #endif
 	if( ld != NULL ) {
-		ldap_unbind( ld );
+		ldap_unbind_ext( ld, NULL, NULL );
 		retVal = TRUE;
 	}
 	return retVal;

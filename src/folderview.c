@@ -1082,6 +1082,10 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 {
 	GtkWidget *window;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	FolderView *folderview = NULL;
+	GtkAdjustment *pos = NULL;
+	gint height = 0;
 
 	g_return_if_fail(folder != NULL);
 
@@ -1103,12 +1107,26 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	else 
 		window = label_window_create(_("Scanning folder tree..."));
 
+	if (mainwin)
+		folderview = mainwin->folderview;
+	
+	if (folderview) {
+		pos = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+		height = pos->value;
+	}
+
 	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
 	folder_scan_tree(folder, rebuild);
 	folder_set_ui_func(folder, NULL, NULL);
 
 	folderview_set_all();
 
+	if (folderview) {
+		pos = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+		gtk_adjustment_set_value(pos, height);
+	}
 	gtk_widget_destroy(window);
 	inc_unlock();
 }

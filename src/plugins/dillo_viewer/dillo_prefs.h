@@ -23,7 +23,7 @@
  * build the preferences for the dillo plugin.
  */
 
-#ifndef DILLORPREFS_H
+#ifndef DILLOPREFS_H
 #define DILLOPREFS_H
 
 #include <glib.h>

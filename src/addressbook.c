@@ -337,6 +337,9 @@ static void addressbook_folder_remove_one_person(GtkCTree *clist,
 static void addressbook_folder_remove_node	(GtkCTree *clist, 
 						 GtkCTreeNode *node);
 
+static void addressbook_edit_address( gpointer data, guint action, GtkWidget *widget,
+									  gboolean force_focus );
+
 /* LUT's and IF stuff */
 static void addressbook_free_treenode		( gpointer data );
 AddressTypeControlItem *addrbookctl_lookup	(gint		 ot);
@@ -801,28 +804,38 @@ static void addressbook_remarks_clicked(GtkWidget *button, GtkCList *clist)
 	addressbook_sort_list(clist, COL_REMARKS, sort_type);
 }
 
-static void addressbook_address_index_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+static gboolean addressbook_address_index_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 											 gpointer data)
 {
 	address_index_has_focus = TRUE;
+	return FALSE;
 }
 
-static void addressbook_address_index_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+static gboolean addressbook_address_index_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
 											 gpointer data)
 {
 	address_index_has_focus = FALSE;
+	if (!prefs_common.addressbook_use_editaddress_dialog
+			&& !address_list_has_focus)
+		addressbook_address_list_disable_some_actions();
+	return FALSE;
 }
 
-static void addressbook_address_list_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
+static gboolean addressbook_address_list_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 											 gpointer data)
 {
 	address_list_has_focus = TRUE;
+	return FALSE;
 }
 
-static void addressbook_address_list_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
+static gboolean addressbook_address_list_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
 											 gpointer data)
 {
 	address_list_has_focus = FALSE;
+	if (!prefs_common.addressbook_use_editaddress_dialog
+			&& !address_index_has_focus)
+		addressbook_address_list_disable_some_actions();
+	return FALSE;
 }
 
 /* save hpane and vpane's handle position when it moves */
@@ -2226,7 +2239,7 @@ static void addressbook_list_row_selected( GtkCTree *clist,
 	addressbook_list_menu_setup();
 
 	if (!addrbook.target_compose && !prefs_common.addressbook_use_editaddress_dialog)
-		addressbook_edit_address_cb(NULL, 0, NULL);
+		addressbook_edit_address(NULL, 0, NULL, FALSE);
 }
 
 static void addressbook_list_row_unselected( GtkCTree *ctree,
@@ -2968,11 +2981,30 @@ void addressbook_edit_address_post_cb( ItemPerson *person )
 
 void addressbook_address_list_set_focus( void )
 {
-	if (!prefs_common.addressbook_use_editaddress_dialog)
+	if (!prefs_common.addressbook_use_editaddress_dialog) {
 		gtk_window_set_focus(GTK_WINDOW(addrbook.window), addrbook.clist);
+		addressbook_list_menu_setup();
+	}
+}
+
+void addressbook_address_list_disable_some_actions(void)
+{
+	/* disable address copy/pasting when editing contact's detail (embedded form) */
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Cut",   FALSE );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Copy",  FALSE );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Paste", FALSE );
+
+	/* we're already editing contact's detail here */
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Edit",  FALSE );
+	gtk_widget_set_sensitive( addrbook.edit_btn, FALSE );
 }
 
 static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget *widget ) {
+	addressbook_edit_address(data, action, widget, TRUE);
+}
+	
+static void addressbook_edit_address( gpointer data, guint action, GtkWidget *widget,
+									  gboolean force_focus ) {
 	GtkCTree *clist = GTK_CTREE(addrbook.clist);
 	GtkCTree *ctree;
 	AddressObject *obj = NULL, *pobj = NULL;
@@ -3013,7 +3045,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 			person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 			if  ( addressbook_edit_person( abf, NULL, person, TRUE, addrbook.editaddress_vbox,
 										   addressbook_edit_address_post_cb,
-										   prefs_common.addressbook_use_editaddress_dialog?TRUE:FALSE )
+										   (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 				  != NULL ) {
 				if (prefs_common.addressbook_use_editaddress_dialog)
 					addressbook_edit_address_post_cb( person );
@@ -3026,7 +3058,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE, addrbook.editaddress_vbox,
 									  addressbook_edit_address_post_cb,
-									  prefs_common.addressbook_use_editaddress_dialog?TRUE:FALSE )
+									  (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 			!= NULL ) {
 			if (prefs_common.addressbook_use_editaddress_dialog)
 				addressbook_edit_address_post_cb( person );

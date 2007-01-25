@@ -1488,9 +1488,11 @@ static void mimeview_save_all(MimeView *mimeview)
 	if (!mimeview->mimeinfo) return;
 
 	partinfo = mimeview->mimeinfo;
-	if (prefs_common.attach_save_dir)
+	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
 		startdir = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, NULL);
+	else
+		startdir = g_strdup(get_home_dir());
 
 	dirname = filesel_select_file_save_folder(_("Select destination folder"), startdir);
 	if (!dirname) {

@@ -738,7 +738,7 @@ static PrefParam param[] = {
 	{"addressbookeditgroupwin_height", "340", &prefs_common.addressbookeditgroupwin_height, P_INT,
 	 NULL, NULL, NULL},
 
-	{"pluginswin_width", "480", &prefs_common.pluginswin_width, P_INT,
+	{"pluginswin_width", "-1", &prefs_common.pluginswin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"pluginswin_height", "-1", &prefs_common.pluginswin_height, P_INT,
 	 NULL, NULL, NULL},

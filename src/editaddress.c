@@ -1155,7 +1155,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancelled ) {
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	addressbook_edit_person_dialog_create( cancelled );
+		addressbook_edit_person_dialog_create( cancelled );
 	else
 		addressbook_edit_person_widgetset_create( parent, cancelled );
 	addressbook_edit_person_page_basic( PAGE_BASIC, _( "_User Data" ) );
@@ -1357,6 +1357,9 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	gtk_widget_show(personeditdlg.container);
 	if (prefs_common.addressbook_use_editaddress_dialog)
 		manage_window_set_transient(GTK_WINDOW(personeditdlg.container));
+	else
+		if (get_focus)
+			addressbook_address_list_disable_some_actions();
 
 	/* Clear all fields */
 	personeditdlg.rowIndEMail = -1;

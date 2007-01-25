@@ -152,7 +152,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		g_free(realpath);
 	} else {
 		gchar *tmp = NULL;
-		if (!prefs_common.attach_load_dir)
+		if (!prefs_common.attach_load_dir || !*prefs_common.attach_load_dir)
 			prefs_common.attach_load_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
 		if (g_utf8_validate(prefs_common.attach_load_dir, -1, NULL))
 			tmp = g_filename_from_utf8(prefs_common.attach_load_dir, -1, NULL, NULL, NULL);
