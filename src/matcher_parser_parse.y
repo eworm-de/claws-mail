@@ -327,6 +327,7 @@ int matcher_parserwrap(void)
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
 %token MATCHER_CHANGE_SCORE MATCHER_SET_SCORE
 %token MATCHER_STOP MATCHER_HIDE MATCHER_IGNORE
+%token MATCHER_SPAM MATCHER_NOT_SPAM
 
 %start file
 
@@ -683,6 +684,20 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_LOCKED;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_SPAM
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_SPAM;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_SPAM 
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_SPAM;
 	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_PARTIAL

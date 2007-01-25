@@ -1,3 +1,11 @@
+2007-01-25 [colin]	2.7.1cvs55
+
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		Add matching on the spam flag
+
 2007-01-24 [colin]	2.7.1cvs54
 
 	* src/folder.c

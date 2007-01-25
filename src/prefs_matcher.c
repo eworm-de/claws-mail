@@ -133,22 +133,23 @@ enum {
 	CRITERIA_REPLIED = 19,
 	CRITERIA_FORWARDED = 20,
 	CRITERIA_LOCKED = 21,
-	CRITERIA_COLORLABEL = 22,
-	CRITERIA_IGNORE_THREAD = 23,
+	CRITERIA_SPAM = 22,
+	CRITERIA_COLORLABEL = 23,
+	CRITERIA_IGNORE_THREAD = 24,
 
-	CRITERIA_SCORE_GREATER = 24,
-	CRITERIA_SCORE_LOWER = 25,
-	CRITERIA_SCORE_EQUAL = 26,
+	CRITERIA_SCORE_GREATER = 25,
+	CRITERIA_SCORE_LOWER = 26,
+	CRITERIA_SCORE_EQUAL = 27,
 
-	CRITERIA_TEST = 27,
+	CRITERIA_TEST = 28,
 
-	CRITERIA_SIZE_GREATER = 28,
-	CRITERIA_SIZE_SMALLER = 29,
-	CRITERIA_SIZE_EQUAL   = 30,
+	CRITERIA_SIZE_GREATER = 29,
+	CRITERIA_SIZE_SMALLER = 30,
+	CRITERIA_SIZE_EQUAL   = 31,
 	
-	CRITERIA_PARTIAL = 31,
+	CRITERIA_PARTIAL = 32,
 
-	CRITERIA_FOUND_IN_ADDRESSBOOK = 32
+	CRITERIA_FOUND_IN_ADDRESSBOOK = 33,
 };
 
 /*!
@@ -165,6 +166,7 @@ static const gchar *criteria_text [] = {
 	N_("Marked flag"), N_("Deleted flag"),
 	N_("Replied flag"), N_("Forwarded flag"),
 	N_("Locked flag"),
+	N_("Spam flag"),
 	N_("Color label"),
 	N_("Ignored thread"),
 	N_("Score greater than"), N_("Score lower than"),
@@ -951,6 +953,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
 		return CRITERIA_LOCKED;
+	case MATCHCRITERIA_NOT_SPAM:
+	case MATCHCRITERIA_SPAM:
+		return CRITERIA_SPAM;
 	case MATCHCRITERIA_PARTIAL:
 	case MATCHCRITERIA_NOT_PARTIAL:
 		return CRITERIA_PARTIAL;
@@ -1050,6 +1055,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_FORWARDED;
 	case CRITERIA_LOCKED:
 		return MATCHCRITERIA_LOCKED;
+	case CRITERIA_SPAM:
+		return MATCHCRITERIA_SPAM;
 	case CRITERIA_PARTIAL:
 		return MATCHCRITERIA_PARTIAL;
 	case CRITERIA_COLORLABEL:
@@ -1130,6 +1137,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_FORWARDED;
 	case MATCHCRITERIA_LOCKED:
 		return MATCHCRITERIA_NOT_LOCKED;
+	case MATCHCRITERIA_SPAM:
+		return MATCHCRITERIA_NOT_SPAM;
 	case MATCHCRITERIA_PARTIAL:
 		return MATCHCRITERIA_NOT_PARTIAL;
 	case MATCHCRITERIA_COLORLABEL:
@@ -1208,6 +1217,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
@@ -1261,6 +1271,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
 		break;
@@ -1610,6 +1621,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
 		prefs_matcher_disable_widget(matcher.header_combo);
@@ -2035,6 +2047,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_NOT_SPAM:
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:

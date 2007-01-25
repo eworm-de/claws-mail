@@ -78,6 +78,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_COLORLABEL, "~colorlabel"},
 	{MATCHCRITERIA_IGNORE_THREAD, "ignore_thread"},
 	{MATCHCRITERIA_NOT_IGNORE_THREAD, "~ignore_thread"},
+	{MATCHCRITERIA_SPAM, "spam"},
+	{MATCHCRITERIA_NOT_SPAM, "~spam"},
 
 	/* msginfo headers */
 	{MATCHCRITERIA_SUBJECT, "subject"},
@@ -573,6 +575,10 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return MSG_IS_LOCKED(info->flags);
 	case MATCHCRITERIA_NOT_LOCKED:
 		return !MSG_IS_LOCKED(info->flags);
+	case MATCHCRITERIA_SPAM:
+		return MSG_IS_SPAM(info->flags);
+	case MATCHCRITERIA_NOT_SPAM:
+		return !MSG_IS_SPAM(info->flags);
 	case MATCHCRITERIA_COLORLABEL:
 		return MSG_GET_COLORLABEL_VALUE(info->flags) == prop->value; 
 	case MATCHCRITERIA_NOT_COLORLABEL:
@@ -1155,6 +1161,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_FORWARDED:
 		case MATCHCRITERIA_LOCKED:
 		case MATCHCRITERIA_NOT_LOCKED:
+		case MATCHCRITERIA_SPAM:
+		case MATCHCRITERIA_NOT_SPAM:
 		case MATCHCRITERIA_COLORLABEL:
 		case MATCHCRITERIA_NOT_COLORLABEL:
 		case MATCHCRITERIA_IGNORE_THREAD:
@@ -1327,6 +1335,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_SPAM:
+	case MATCHCRITERIA_NOT_SPAM:
 	case MATCHCRITERIA_PARTIAL:
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_IGNORE_THREAD:
