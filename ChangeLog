@@ -1,3 +1,8 @@
+2007-01-25 [mones]	2.7.1cvs60
+
+	* po/es.po
+		updated thousands of strings (well, probably less ;-)
+
 2007-01-25 [colin]	2.7.1cvs59
 
 	* src/matcher.c
