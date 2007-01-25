@@ -1,3 +1,9 @@
+2007-01-25 [wwp]	2.7.1cvs58
+
+	* src/mimeview.c
+		fix handling of empty value in attach_save_directory too, thanks
+		to Colin.
+
 2007-01-25 [wwp]	2.7.1cvs57
 
 	* src/gtk/filesel.c
