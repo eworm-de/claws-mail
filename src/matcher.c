@@ -1805,9 +1805,11 @@ static void matcher_add_rulenames(const gchar *rcpath)
 
 	while (fgets (buf, sizeof(buf), src) != NULL) {
 		if (strlen(buf) > 2 && buf[0] != '['
-		&& strncmp(buf, "rulename \"", 10)) {
-			fwrite("rulename \"\" ",
-				strlen("rulename \"\" "), 1, dst);
+		&& strncmp(buf, "rulename \"", 10)
+		&& strncmp(buf, "enabled rulename \"", 18)
+		&& strncmp(buf, "disabled rulename \"", 18)) {
+			fwrite("enabled rulename \"\" ",
+				strlen("enabled rulename \"\" "), 1, dst);
 		}
 		fwrite(buf, strlen(buf), 1, dst);
 	}

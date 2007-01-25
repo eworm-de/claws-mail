@@ -1,3 +1,9 @@
+2007-01-25 [colin]	2.7.1cvs59
+
+	* src/matcher.c
+		Fix 2nd-run loss of matcherrc on new
+		configurations. 
+
 2007-01-25 [wwp]	2.7.1cvs58
 
 	* src/mimeview.c

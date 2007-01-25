@@ -2316,3 +2316,4 @@
 ( cvs diff -u -r 1.2.4.4 -r 1.2.4.5 src/plugins/dillo_viewer/dillo_prefs.h;  ) > 2.7.1cvs56.patchset
 ( cvs diff -u -r 1.2.2.31 -r 1.2.2.32 src/gtk/filesel.c;  ) > 2.7.1cvs57.patchset
 ( cvs diff -u -r 1.83.2.100 -r 1.83.2.101 src/mimeview.c;  ) > 2.7.1cvs58.patchset
+( cvs diff -u -r 1.75.2.35 -r 1.75.2.36 src/matcher.c;  ) > 2.7.1cvs59.patchset
