@@ -2318,3 +2318,4 @@
 ( cvs diff -u -r 1.83.2.100 -r 1.83.2.101 src/mimeview.c;  ) > 2.7.1cvs58.patchset
 ( cvs diff -u -r 1.75.2.35 -r 1.75.2.36 src/matcher.c;  ) > 2.7.1cvs59.patchset
 ( cvs diff -u -r 1.60.2.41 -r 1.60.2.42 po/es.po;  ) > 2.7.1cvs60.patchset
+( cvs diff -u -r 1.42.2.26 -r 1.42.2.27 NEWS;  cvs diff -u -r 1.8.2.30 -r 1.8.2.31 README;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2372 -r 1.654.2.2373 configure.ac;  ) > 2.7.2cvs1.patchset

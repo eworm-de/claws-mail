@@ -1,4 +1,4 @@
-15th January 2007                                    Claws Mail 2.7.1
+26th January 2007                                    Claws Mail 2.7.2
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -11,30 +11,47 @@ Claws Mail was previously known as Sylpheed-Claws.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
+* Added command line equivalent options:
+  -h for --help
+  -q and --quit for --exit
+  -v for --version
+  "Unknown option" is now printed when unknown command line options
+  are used.
+
+* The wizard for configuration migration, (Sylpheed-Claws to Claws
+  Mail), now has the option to save or not save a backup of the old
+  configuration folder.
+
+* The configuration wizard is now re-run if it was previously
+  cancelled.
+
 * Bug fixes:
-	o bug 1095, 'Crash while changing folder columns during
-		     incorporation'
-	o bug 1098, 'bogus last row display after expanding a thread'
-	o fix a few annoyances when choosing keys for the CMS (S/MIME)
-	  protocol
-	o fix updating of the mime parts
-	o fix Forwarding msgs with attachments that have dos line
-	  endings
-	o strip S/MIME signatures when re-editing S/MIME signed
-	  messages
-	o fix body search starting at the end of the mail (and asking
-	  for loop)
-	o fix Enter in search windows
-	o fix dbus-related crash in the the GTK+ file selector.
-	o IMAP: fix recursion when server lists the current subfolder
-	  in the response
-	o IMAP: get rid of the previous mailimap when connecting, just
-	  in case disconnect was unclean
-	o IMAP: make sure we don't use an old socket when reconnecting
+	o bug 1100, 'Highlighted e-mail data not visible when color
+		     label applied.'
+	o bug 1101, '"Load plugin" button is accidentally hidden'
+	o bug 1102, 'claws-mail-2.7.1 makes use of deprecated ldap 
+		     functions'
+	o IMAP: fixed crash when connect command doesn't exist.
+	o IMAP: better folder checking when an IMAP directory is set.
+	o IMAP: Never remove INBOX when scanning for new folders.
+	  It's a special folder that must exist.
+	o fix vertical scrollbar jumping back to the top when 'Check
+	  for new folders' is used.
+	o fix sensitivity issues of Mark as Spam/Ham context menus.
+	o fix potential crashes in the address book's embedded 'Edit
+	  person' dialogue, and fix conflicting copy/paste menu
+	  entry.
+	o Reflect change of Font configuration in the Header view
+	  clickable links.
+	o fix handling of empty values in attach_load_directory and
+	  attach_save_directory clawsrc options.
+	o fix 2nd-run loss and new configuration loss of filtering
+	  rules on configuration migration.
+	o Bogofilter plugin: fix sensitivity of "Insert X-Bogosity
+	  header" option
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 ---------------------------------------------------------------------
 See ChangeLog for full information regarding changes in this release.
-
