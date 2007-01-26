@@ -11,7 +11,9 @@ cygwin_export_lib =
 endif 
 
 trayicon_la_SOURCES = \
-	trayicon.c
+	trayicon.c \
+	trayicon_prefs.c \
+	trayicon_prefs.h
 
 trayicon_la_LDFLAGS = \
 	-avoid-version -module -no-undefined

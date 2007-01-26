@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2007 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@
 #include "gtk/manage_window.h"
 
 #include "eggtrayicon.h"
+
+#include "trayicon_prefs.h"
 
 #include "newmarkedmail.xpm"
 #include "unreadmarkedmail.xpm"
@@ -383,11 +385,22 @@ int plugin_init(gchar **error)
 	create_trayicon();
 	trayicon_set_accounts_hook(NULL, NULL);
 
+	trayicon_prefs_init();
+
+	if (trayicon_prefs.hide_at_startup && claws_is_starting()) {
+		MainWindow *mainwin = mainwindow_get_mainwindow();
+
+		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+			main_window_hide(mainwin);
+	}
+
 	return 0;
 }
 
 void plugin_done(void)
 {
+	trayicon_prefs_done();
+
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);

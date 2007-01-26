@@ -1,3 +1,13 @@
+2007-01-26 [wwp]	2.7.2cvs2
+
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/trayicon_prefs.c
+	* src/plugins/trayicon/trayicon_prefs.h
+		Add a new TrayIcon option to hide the main window at
+		start-up.
+		Fix trayicon.c copyright header.
+
 2007-01-26 [paul]	2.7.2cvs1
 
 	* NEWS

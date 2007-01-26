@@ -2319,3 +2319,4 @@
 ( cvs diff -u -r 1.75.2.35 -r 1.75.2.36 src/matcher.c;  ) > 2.7.1cvs59.patchset
 ( cvs diff -u -r 1.60.2.41 -r 1.60.2.42 po/es.po;  ) > 2.7.1cvs60.patchset
 ( cvs diff -u -r 1.42.2.26 -r 1.42.2.27 NEWS;  cvs diff -u -r 1.8.2.30 -r 1.8.2.31 README;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2372 -r 1.654.2.2373 configure.ac;  ) > 2.7.2cvs1.patchset
+( cvs diff -u -r 1.4.2.8 -r 1.4.2.9 src/plugins/trayicon/Makefile.am;  cvs diff -u -r 1.14.2.47 -r 1.14.2.48 src/plugins/trayicon/trayicon.c;  diff -u /dev/null src/plugins/trayicon/trayicon_prefs.c;  diff -u /dev/null src/plugins/trayicon/trayicon_prefs.h;  ) > 2.7.2cvs2.patchset
