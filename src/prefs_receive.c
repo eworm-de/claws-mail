@@ -162,7 +162,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk2);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
-			   _("Check for new mail on startup"));
+			   _("Check for new mail on start-up"));
 
 	/* receive dialog */
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Dialogs"));

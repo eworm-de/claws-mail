@@ -141,7 +141,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_warning,
-			_("Display warning on startup if GnuPG doesn't work"));
+			_("Display warning on start-up if GnuPG doesn't work"));
 
 	config = prefs_gpg_get_config();
 
