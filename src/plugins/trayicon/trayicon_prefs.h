@@ -26,7 +26,8 @@ typedef struct _TrayIconPrefs	TrayIconPrefs;
 
 struct _TrayIconPrefs
 {
-	gboolean hide_at_startup;	/**< hide when  */
+	gboolean hide_at_startup;	/**< hide main-window at startup */
+	gboolean close_to_tray;	/**< hide main-window when [X] is clicked */
 };
 
 extern TrayIconPrefs trayicon_prefs;

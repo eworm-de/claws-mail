@@ -33,6 +33,7 @@ typedef struct _MainWindow  MainWindow;
 
 #define OFFLINE_SWITCH_HOOKLIST "offline_switch"
 #define ACCOUNT_LIST_CHANGED_HOOKLIST "account_list_changed"
+#define MAIN_WINDOW_CLOSE "mainwindow_close"
 
 typedef enum
 {
@@ -201,4 +202,5 @@ void mainwindow_learn			      (MainWindow *mainwin,
 void mainwindow_jump_to			      (const gchar 	 *target);
 void mainwindow_show_error		      (void);
 void mainwindow_clear_error		      (MainWindow *mainwin);
+gboolean mainwindow_is_obscured      (void);
 #endif /* __MAINWINDOW_H__ */

@@ -467,6 +467,9 @@ static void sync_cb		 ( MainWindow *mainwin,
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
 						 gpointer	 data);
+static gboolean mainwindow_visibility_event_cb	(GtkWidget	*widget, 
+						 GdkEventVisibility	*state,
+						 gpointer	 data);
 static void main_window_reply_cb			(MainWindow 	*mainwin, 
 						 guint 		 action,
 						 GtkWidget 	*widget);
@@ -882,6 +885,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 static gboolean offline_ask_sync = TRUE;
 static guint lastkey;
+static gboolean is_obscured = FALSE;
 
 static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
                                             GObject *arg1,
@@ -1420,8 +1424,11 @@ MainWindow *main_window_create()
 	   menu items in different menus             */
 	menu_connect_identical_items();
 
-
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
+
+	g_signal_connect(G_OBJECT(window), "visibility_notify_event",
+			 G_CALLBACK(mainwindow_visibility_event_cb), mainwin);
+	gtk_widget_add_events(GTK_WIDGET(window), GDK_VISIBILITY_NOTIFY_MASK);
 
 	if (prefs_common.layout_mode == VERTICAL_LAYOUT)
 		summary_relayout(mainwin->summaryview);	
@@ -2841,8 +2848,11 @@ static gint main_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
+	gboolean close_allowed = TRUE;
 
-	if (mainwin->lock_count == 0)
+	hooks_invoke(MAIN_WINDOW_CLOSE, &close_allowed);
+
+	if (close_allowed && mainwin->lock_count == 0)
 		app_exit_cb(data, 0, widget);
 
 	return TRUE;
@@ -3756,6 +3766,18 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 		return FALSE;
 
 	return FALSE;
+}
+
+static gboolean mainwindow_visibility_event_cb(GtkWidget *widget, GdkEventVisibility *event,
+					  gpointer data)
+{
+	is_obscured = (event->state == GDK_VISIBILITY_FULLY_OBSCURED);
+	return FALSE;
+}
+
+gboolean mainwindow_is_obscured(void)
+{
+	return is_obscured;
 }
 
 #define BREAK_ON_MODIFIER_KEY() \

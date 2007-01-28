@@ -42,10 +42,12 @@ typedef struct _TrayIconPage TrayIconPage;
 struct _TrayIconPage {
         PrefsPage page;
         GtkWidget *hide_at_startup;
+		GtkWidget *close_to_tray;
 };
 
 static PrefParam param[] = {
         {"hide_at_startup", "FALSE", &trayicon_prefs.hide_at_startup, P_BOOL, NULL, NULL, NULL},
+        {"close_to_tray", "FALSE", &trayicon_prefs.close_to_tray, P_BOOL, NULL, NULL, NULL},
         {0,0,0,0,0,0,0}
 };
 
@@ -93,6 +95,8 @@ static void create_trayicon_prefs_page(PrefsPage *page,
         GtkWidget *vbox;
         GtkWidget *hide_at_startup_checkbox;
 	GtkTooltips *hide_at_startup_tooltip;
+        GtkWidget *close_to_tray_checkbox;
+	GtkTooltips *close_to_tray_tooltip;
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
@@ -108,7 +112,18 @@ static void create_trayicon_prefs_page(PrefsPage *page,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(hide_at_startup_tooltip), hide_at_startup_checkbox,
 			     _("Hide Claws Mail at start-up"), NULL);
         
+	close_to_tray_tooltip = gtk_tooltips_new();
+        close_to_tray_checkbox = gtk_check_button_new_with_label
+				(_("Close to tray"));
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(close_to_tray_checkbox),
+                                     trayicon_prefs.close_to_tray);
+        gtk_box_pack_start(GTK_BOX(vbox), close_to_tray_checkbox, FALSE, FALSE, 0);
+        gtk_widget_show(close_to_tray_checkbox);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(close_to_tray_tooltip), close_to_tray_checkbox,
+			     _("Hide Claws Mail using the tray icon instead of closing it\nwhen the window close button is clicked"), NULL);
+
         prefs_page->hide_at_startup = hide_at_startup_checkbox;
+        prefs_page->close_to_tray = close_to_tray_checkbox;
         prefs_page->page.widget = vbox;
 }
 
@@ -126,6 +141,8 @@ static void save_trayicon_prefs(PrefsPage *page)
         
         trayicon_prefs.hide_at_startup = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->hide_at_startup));
+        trayicon_prefs.close_to_tray = gtk_toggle_button_get_active
+				(GTK_TOGGLE_BUTTON(prefs_page->close_to_tray));
         
         pref_file = prefs_write_open(rc_file_path);
         g_free(rc_file_path);

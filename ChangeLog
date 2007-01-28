@@ -1,3 +1,20 @@
+2007-01-28 [wwp]	2.7.2cvs4
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/trayicon_prefs.c
+	* src/plugins/trayicon/trayicon_prefs.h
+		Added a new TrayIcon plugin option to close to tray
+		(WM's hotkey and [X] button will hide the window instead
+		of closing it - closing CM can be done using the tray icon
+		menu or the File menu).
+		Improved visibility handling in trayicon, clicking the
+		trayicon now raise the window to current desktop when it
+		was either minimized/shaded/on another desktop.
+		Thanks to Paul for testing and fixing a strange behaviour
+		in KDE ;-).
+
 2007-01-27 [paul]	2.7.2cvs3
 
 	* src/prefs_folder_item.c

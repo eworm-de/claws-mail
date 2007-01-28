@@ -64,6 +64,7 @@ static guint item_hook_id;
 static guint folder_hook_id;
 static guint offline_hook_id;
 static guint account_hook_id;
+static guint close_hook_id;
 
 static GdkPixmap *newmail_pixmap[2];
 static GdkPixmap *newmail_bitmap[2];
@@ -246,6 +247,20 @@ static gboolean offline_update_hook(gpointer source, gpointer data)
 	return FALSE;
 }
 
+static gboolean trayicon_close_hook(gpointer source, gpointer data)
+{
+	if (source) {
+		gboolean *close_allowed = (gboolean*)source;
+		MainWindow *mainwin = mainwindow_get_mainwindow();
+
+		if (trayicon_prefs.close_to_tray)
+			*close_allowed = FALSE;
+		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+			main_window_hide(mainwin);
+	}
+	return FALSE;
+}
+
 static void resize_cb(GtkWidget *widget, GtkRequisition *req,
 		      gpointer user_data)
 {
@@ -266,8 +281,15 @@ static gboolean click_cb(GtkWidget * widget,
 	switch (event->button) {
 	case 1:
 		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
-			main_window_hide(mainwin);
+			if ((gdk_window_get_state(GTK_WIDGET(mainwin->window)->window)&GDK_WINDOW_STATE_ICONIFIED)
+					|| mainwindow_is_obscured()) {
+				gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+				main_window_show(mainwin);
+			} else {
+				main_window_hide(mainwin);
+			}
 		} else {
+			gtk_window_deiconify(GTK_WINDOW(mainwin->window));
 			main_window_show(mainwin);
         }
 		break;
@@ -378,7 +400,13 @@ int plugin_init(gchar **error)
 
 	account_hook_id = hooks_register_hook (ACCOUNT_LIST_CHANGED_HOOKLIST, trayicon_set_accounts_hook, NULL);
 	if (offline_hook_id == -1) {
-		*error = g_strdup(_("Failed to register offline switch hook"));
+		*error = g_strdup(_("Failed to register account list changed hook"));
+		return -1;
+	}
+
+	close_hook_id = hooks_register_hook (MAIN_WINDOW_CLOSE, trayicon_close_hook, NULL);
+	if (close_hook_id == -1) {
+		*error = g_strdup(_("Failed to register close hook"));
 		return -1;
 	}
 
@@ -405,6 +433,7 @@ void plugin_done(void)
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
 	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
 	hooks_unregister_hook(ACCOUNT_LIST_CHANGED_HOOKLIST, account_hook_id);
+	hooks_unregister_hook(MAIN_WINDOW_CLOSE, close_hook_id);
 
 	if (claws_is_exiting())
 		return;
