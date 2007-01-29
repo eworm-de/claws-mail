@@ -92,6 +92,7 @@ src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
 src/plugins/trayicon/trayicon.c
+src/plugins/trayicon/trayicon_prefs.c
 src/pop.c
 src/prefs_account.c
 src/prefs_actions.c

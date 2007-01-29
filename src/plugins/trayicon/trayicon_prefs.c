@@ -65,7 +65,7 @@ void trayicon_prefs_init(void)
 	gchar *rcpath;
 
 	path[0] = _("Plugins");
-	path[1] = _("TrayIcon");
+	path[1] = _("Trayicon");
 	path[2] = NULL;
 
         prefs_set_default(param);

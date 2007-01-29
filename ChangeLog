@@ -1,3 +1,9 @@
+2007-01-29 [wwp]	2.7.2cvs5
+
+	* po/POTFILES.in
+	* src/plugins/trayicon/trayicon_prefs.c
+		trayicon i18n fixes, thanks to Fabien.
+
 2007-01-28 [wwp]	2.7.2cvs4
 
 	* src/mainwindow.c
