@@ -1,3 +1,9 @@
+2007-01-30 [colin]	2.7.2cvs6
+
+	* src/prefs_ext_prog.c
+		Add 'mousepad' to the list of text editors.
+		Mousepad is XFCE's text editor
+
 2007-01-29 [wwp]	2.7.2cvs5
 
 	* po/POTFILES.in
