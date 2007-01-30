@@ -1,3 +1,10 @@
+2007-01-30 [colin]	2.7.2cvs7
+
+	* src/main.c
+	* src/compose.c
+		Handle local URIs to attach files (file:///...)
+		Fixes attaching files from Thunar for example
+
 2007-01-30 [colin]	2.7.2cvs6
 
 	* src/prefs_ext_prog.c

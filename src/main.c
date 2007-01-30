@@ -1094,17 +1094,23 @@ static void parse_cmd_opt(int argc, char *argv[])
 			}
 		} else if (!strncmp(argv[i], "--attach", 8)) {
 			const gchar *p = argv[i + 1];
-			gchar *file;
+			gchar *file = NULL;
 
 			while (p && *p != '\0' && *p != '-') {
 				if (!cmd.attach_files) {
 					cmd.attach_files = g_ptr_array_new();
 				}
-				if (*p != G_DIR_SEPARATOR) {
+				if ((file = g_filename_from_uri(p, NULL, NULL)) != NULL) {
+					if (!is_file_exist(file)) {
+						g_free(file);
+						file = NULL;
+					}
+				}
+				if (file == NULL && *p != G_DIR_SEPARATOR) {
 					file = g_strconcat(claws_get_startup_dir(),
 							   G_DIR_SEPARATOR_S,
 							   p, NULL);
-				} else {
+				} else if (file == NULL) {
 					file = g_strdup(p);
 				}
 				g_ptr_array_add(cmd.attach_files, file);

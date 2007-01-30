@@ -3132,6 +3132,17 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 	gboolean has_binary = FALSE;
 
 	if (!is_file_exist(file)) {
+		gchar *file_from_uri = g_filename_from_uri(file, NULL, NULL);
+		gboolean result = FALSE;
+		if (file_from_uri && is_file_exist(file_from_uri)) {
+			result = compose_attach_append(
+						compose, file_from_uri,
+						filename,
+						content_type);
+		}
+		g_free(file_from_uri);
+		if (result)
+			return TRUE;
 		alertpanel_error("File %s doesn't exist\n", filename);
 		return FALSE;
 	}
