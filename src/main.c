@@ -1320,6 +1320,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			       _("_Save to Draft"), _("_Discard them"), _("Do_n't quit"));
 		switch (val) {
 			case G_ALERTOTHER:
+				main_window_popup(mainwin);
 				sc_exiting = FALSE;
 				return;
 			case G_ALERTALTERNATE:
@@ -1336,6 +1337,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			       _("Some unsent messages are queued. Exit now?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL)
 		    != G_ALERTALTERNATE) {
+			main_window_popup(mainwin);
 		    	sc_exiting = FALSE;
 			return;
 		}

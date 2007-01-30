@@ -2325,3 +2325,4 @@
 ( cvs diff -u -r 1.53.2.22 -r 1.53.2.23 po/POTFILES.in;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/trayicon/trayicon_prefs.c;  ) > 2.7.2cvs5.patchset
 ( cvs diff -u -r 1.3.2.13 -r 1.3.2.14 src/prefs_ext_prog.c;  ) > 2.7.2cvs6.patchset
 ( cvs diff -u -r 1.115.2.130 -r 1.115.2.131 src/main.c;  cvs diff -u -r 1.382.2.355 -r 1.382.2.356 src/compose.c;  ) > 2.7.2cvs7.patchset
+( cvs diff -u -r 1.115.2.131 -r 1.115.2.132 src/main.c;  ) > 2.7.2cvs8.patchset

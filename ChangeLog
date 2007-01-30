@@ -1,3 +1,10 @@
+2007-01-30 [colin]	2.7.2cvs8
+
+	* src/main.c
+		Fix hidden mainwindow after clicking on
+		the X close button, if compose windows
+		exist and the user chooses not to quit
+
 2007-01-30 [colin]	2.7.2cvs7
 
 	* src/main.c
