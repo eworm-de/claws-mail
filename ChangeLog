@@ -1,3 +1,10 @@
+2007-01-31 [wwp]	2.7.2cvs9
+
+	* src/plugins/trayicon/trayicon.c
+		fix buggy hiding of main window when closing if close-to-tray
+		is not set (bad logics 	in the trayicon hook code).
+		Changed the quit confirmation message too.
+
 2007-01-30 [colin]	2.7.2cvs8
 
 	* src/main.c

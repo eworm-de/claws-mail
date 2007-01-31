@@ -251,12 +251,14 @@ static gboolean trayicon_close_hook(gpointer source, gpointer data)
 {
 	if (source) {
 		gboolean *close_allowed = (gboolean*)source;
+
+		if (trayicon_prefs.close_to_tray) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 
-		if (trayicon_prefs.close_to_tray)
 			*close_allowed = FALSE;
 		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
 			main_window_hide(mainwin);
+	}
 	}
 	return FALSE;
 }
@@ -513,7 +515,7 @@ static void trayicon_toggle_offline_cb( gpointer data, guint action, GtkWidget *
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
-		if (alertpanel(_("Exit"), _("Exit this program?"),
+		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_OK,
 			       NULL) != G_ALERTALTERNATE) {
 			return;
