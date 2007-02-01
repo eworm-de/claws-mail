@@ -287,12 +287,14 @@ static gboolean click_cb(GtkWidget * widget,
 					|| mainwindow_is_obscured()) {
 				gtk_window_deiconify(GTK_WINDOW(mainwin->window));
 				main_window_show(mainwin);
+				gtk_window_present(GTK_WINDOW(mainwin->window));
 			} else {
 				main_window_hide(mainwin);
 			}
 		} else {
 			gtk_window_deiconify(GTK_WINDOW(mainwin->window));
 			main_window_show(mainwin);
+			gtk_window_present(GTK_WINDOW(mainwin->window));
         }
 		break;
 	case 3:
