@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
+#  * Copyright 2003-2007 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -17,7 +17,15 @@
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
 
+# Changes:
+#	Feb 2007: add support for non ISO-8859-1 compatible locales
+#		  by Alex Gorbachenko <agent_007@immo.ru>
+#
+
 use Getopt::Long;
+use URI::Escape;
+use POSIX qw(locale_h);
+use Text::Iconv;
 
 my $where = '';
 my $what  = '';
@@ -25,7 +33,12 @@ my $what  = '';
 GetOptions("where=s"	=> \$where,
 	   "what=s"	=> \$what);
 
-$what =~ s/\s/%20/g;
+$locale = setlocale(LC_CTYPE);
+$locale =~ s/\S+\.//;
+
+$converter = Text::Iconv->new("$locale", "UTF-8");
+$safe=uri_escape($converter->convert("$what"));
+$what=$safe;
 
 chdir($ENV{HOME} . "/.claws-mail") 
 	|| die("Can't find your ~/.claws-mail directory\n");

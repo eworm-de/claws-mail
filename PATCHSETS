@@ -2330,3 +2330,4 @@
 ( cvs diff -u -r 1.9.2.11 -r 1.9.2.12 src/addressadd.c;  cvs diff -u -r 1.65.2.55 -r 1.65.2.56 src/codeconv.c;  cvs diff -u -r 1.96.2.166 -r 1.96.2.167 src/textview.c;  ) > 2.7.2cvs10.patchset
 ( cvs diff -u -r 1.14.2.50 -r 1.14.2.51 src/plugins/trayicon/trayicon.c;  ) > 2.7.2cvs11.patchset
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_other.c;  cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/prefs_summaries.c;  ) > 2.7.2cvs12.patchset
+( cvs diff -u -r 1.100.2.47 -r 1.100.2.48 AUTHORS;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/gtk/authors.h;  cvs diff -u -r 1.3.2.5 -r 1.3.2.6 tools/freshmeat_search.pl;  cvs diff -u -r 1.3.2.5 -r 1.3.2.6 tools/google_search.pl;  cvs diff -u -r 1.3.2.5 -r 1.3.2.6 tools/multiwebsearch.pl;  ) > 2.7.2cvs13.patchset
