@@ -1574,8 +1574,8 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 			continue;
 		}
 
-		/* don't include parentheses in encoded strings */
-		if (addr_field && (*srcp == '(' || *srcp == ')')) {
+		/* don't include parentheses and quotes in encoded strings */
+		if (addr_field && (*srcp == '(' || *srcp == ')' || *srcp == '"')) {
 			LBREAK_IF_REQUIRED(left < 2, FALSE);
 			*destp++ = *srcp++;
 			left--;
@@ -1598,7 +1598,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 					break;
 				/* don't include parentheses in encoded
 				   strings */
-				if (addr_field && (*p == '(' || *p == ')'))
+				if (addr_field && (*p == '(' || *p == ')' || *p == '"'))
 					break;
 
 				mb_len = g_utf8_skip[*p];

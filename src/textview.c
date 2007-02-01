@@ -2703,7 +2703,7 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 	/* Hiroyuki: please put this function in utils.c! */
 	fromname = procheader_get_fromname(fromaddress);
 	extract_address(fromaddress);
-	g_message("adding from textview %s <%s>", fromname, fromaddress);
+
 	/* Add to address book - Match */
 	addressbook_add_contact( fromname, fromaddress, NULL );
 
