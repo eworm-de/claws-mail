@@ -1,3 +1,9 @@
+2007-02-01 [colin]	2.7.2cvs12
+
+	* src/prefs_other.c
+	* src/prefs_summaries.c
+		Move keybinding prefs to the Other page
+
 2007-02-01 [wwp]	2.7.2cvs11
 
 	* src/plugins/trayicon/trayicon.c

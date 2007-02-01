@@ -2329,3 +2329,4 @@
 ( cvs diff -u -r 1.14.2.49 -r 1.14.2.50 src/plugins/trayicon/trayicon.c;  ) > 2.7.2cvs9.patchset
 ( cvs diff -u -r 1.9.2.11 -r 1.9.2.12 src/addressadd.c;  cvs diff -u -r 1.65.2.55 -r 1.65.2.56 src/codeconv.c;  cvs diff -u -r 1.96.2.166 -r 1.96.2.167 src/textview.c;  ) > 2.7.2cvs10.patchset
 ( cvs diff -u -r 1.14.2.50 -r 1.14.2.51 src/plugins/trayicon/trayicon.c;  ) > 2.7.2cvs11.patchset
+( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_other.c;  cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/prefs_summaries.c;  ) > 2.7.2cvs12.patchset
