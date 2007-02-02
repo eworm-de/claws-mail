@@ -63,6 +63,7 @@
 #include "filtering.h"
 #include "partial_download.h"
 #include "gedit-print.h"
+#include "uri_opener.h"
 #include "inc.h"
 #include "log.h"
 
@@ -143,6 +144,9 @@ static void create_filter_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void create_processing_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void open_urls_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -324,6 +328,8 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_processing_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/Create processing rule/by _Subject"),
 					NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/List _URLs..."),	"<shift><control>U", open_urls_cb, 0, NULL},
 	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
 
@@ -1718,6 +1724,12 @@ static void create_processing_cb(gpointer data, guint action,
 				    (PrefsFilterType)action, 1);
 }
 
+static void open_urls_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview_list_urls(messageview);
+}
+
 static void about_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	about_show();
@@ -1790,4 +1802,20 @@ void messageview_learn (MessageView *msgview, gboolean is_spam)
 		toolbar_set_learn_button
 			(msgview->mainwin->toolbar,
 			 MSG_IS_SPAM(msgview->msginfo->flags)?LEARN_HAM:LEARN_SPAM);
+}
+
+void messageview_list_urls (MessageView	*msgview)
+{
+	GSList *cur = msgview->mimeview->textview->uri_list;
+	GSList *newlist = NULL;
+	for (; cur; cur = cur->next) {
+		ClickableText *uri = (ClickableText *)cur->data;
+		if (!uri->uri || !g_ascii_strncasecmp(uri->uri, "mailto:", 7) 
+		||  uri->is_quote)
+			continue;
+		newlist = g_slist_prepend(newlist, uri);
+	}
+	newlist = g_slist_reverse(newlist);
+	uri_opener_open(msgview, newlist);
+	g_slist_free(newlist);
 }

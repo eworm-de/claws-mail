@@ -1,3 +1,16 @@
+2007-02-02 [colin]	2.7.2cvs15
+
+	* src/Makefile.am
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/textview.c
+	* src/textview.h
+	* src/uri_opener.c
+	* src/uri_opener.h
+		Add Tools/List URIs to allow
+		opening any URI in the current mail
+
 2007-02-02 [colin]	2.7.2cvs14
 
 	* src/common/valgrind.h ** NEW FILE **

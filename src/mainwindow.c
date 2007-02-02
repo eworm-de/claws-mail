@@ -394,6 +394,9 @@ static void create_filter_cb	 (MainWindow	*mainwin,
 static void create_processing_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void open_urls_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void prefs_template_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
@@ -831,6 +834,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, create_processing_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/C_reate processing rule/by _Subject"),
 						NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/List _URLs..."),		"<shift><control>U", open_urls_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
@@ -2256,6 +2261,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/List URLs..."                 , M_TARGET_EXIST},
 		{"/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
@@ -3281,6 +3287,15 @@ static void unlock_msgs_cb(MainWindow *mainwin, guint action,
 static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_reedit(mainwin->summaryview);
+}
+
+static void open_urls_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	if (!mainwin->summaryview->displayed && mainwin->summaryview->selected) {
+		summary_display_msg_selected(mainwin->summaryview, 
+			mainwin->messageview->mimeview->textview->show_all_headers);
+	}
+	messageview_list_urls(mainwin->messageview);
 }
 
 static void add_address_cb(MainWindow *mainwin, guint action,

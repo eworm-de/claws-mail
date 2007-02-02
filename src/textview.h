@@ -123,6 +123,10 @@ void textview_show_icon(TextView *textview, const gchar *stock_id);
 void textview_get_selection_offsets	(TextView 	*textview, 
 					 gint 		*sel_start, 
 					 gint		*sel_end);
+gboolean textview_uri_security_check	(TextView 	*textview, 
+					 ClickableText 	*uri);
+gchar *textview_get_visible_uri		(TextView 	*textview, 
+					 ClickableText 	*uri);
 
 #define TEXTVIEW_INSERT(str) \
 	gtk_text_buffer_insert_with_tags_by_name \

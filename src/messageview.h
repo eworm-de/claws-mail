@@ -123,4 +123,5 @@ void messageview_print				(MsgInfo	*msginfo,
 						 gint		 sel_end,
 						 gint		 partnum);
 #endif
+void messageview_list_urls			(MessageView	*msgview);
 #endif /* __MESSAGEVIEW_H__ */

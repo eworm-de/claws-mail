@@ -180,8 +180,6 @@ static gboolean textview_uri_button_pressed	(GtkTextTag 	*tag,
 						 GtkTextIter	*iter,
 						 TextView 	*textview);
 
-static gboolean textview_uri_security_check	(TextView	*textview,
-						 ClickableText	*uri);
 static void textview_uri_list_remove_all	(GSList		*uri_list);
 
 static void textview_toggle_quote		(TextView 	*textview, 
@@ -2446,6 +2444,20 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	return FALSE;
 }
 
+gchar *textview_get_visible_uri		(TextView 	*textview, 
+					 ClickableText 	*uri)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+	gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
+
+	return gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+}
+
 /*!
  *\brief    Check to see if a web URL has been disguised as a different
  *          URL (possible with HTML email).
@@ -2457,23 +2469,15 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
  *\return   gboolean TRUE if the URL is ok, or if the user chose to open
  *          it anyway, otherwise FALSE          
  */
-static gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
+gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 {
 	gchar *visible_str;
 	gboolean retval = TRUE;
-	GtkTextBuffer *buffer;
-	GtkTextIter start, end;
 
 	if (is_uri_string(uri->uri) == FALSE)
 		return TRUE;
 
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
-
-	gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
-	gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
-
-	visible_str = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-
+	visible_str = textview_get_visible_uri(textview, uri);
 	if (visible_str == NULL)
 		return TRUE;
 

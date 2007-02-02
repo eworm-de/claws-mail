@@ -146,6 +146,7 @@ claws_mail_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
+	uri_opener.c \
 	vcard.c \
 	wizard.c
 
@@ -285,6 +286,7 @@ claws_mailinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
+	uri_opener.h \
 	vcard.h \
 	wizard.h
 
