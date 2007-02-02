@@ -33,6 +33,7 @@
 #include "plugin.h"
 #include "prefs.h"
 #include "claws.h"
+#include "valgrind.h"
 
 struct _Plugin
 {
@@ -381,10 +382,9 @@ void plugin_unload(Plugin *plugin)
 		plugin_done();
 	}
 
-	/* comment this line when running valgrind's leak-check if
-	 * you want to be able to get symbols from plugins */
-	g_module_close(plugin->module);
-
+	if (!RUNNING_ON_VALGRIND) {
+		g_module_close(plugin->module);
+	}
 	plugins = g_slist_remove(plugins, plugin);
 	g_free(plugin->filename);
 	g_free(plugin);

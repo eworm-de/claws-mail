@@ -64,6 +64,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	timing.h \
 	utils.h \
 	uuencode.h \
+	valgrind.h \
 	version.h \
 	xml.h \
 	xmlprops.h
