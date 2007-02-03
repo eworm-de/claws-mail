@@ -1003,8 +1003,10 @@ static void exit_claws(MainWindow *mainwin)
 	folder_func_to_all_folders(save_all_caches, NULL);
 	folder_write_list();
 
-	main_window_get_size(mainwin);
-	main_window_get_position(mainwin);
+	if (!emergency_exit) {
+		main_window_get_size(mainwin);
+		main_window_get_position(mainwin);
+	}
 	prefs_common_write_config();
 	account_write_config_all();
 	addressbook_export_to_file();

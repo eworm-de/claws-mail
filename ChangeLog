@@ -1,3 +1,12 @@
+2007-02-03 [colin]	2.7.2cvs18
+
+	* src/main.c
+		Don't save the mainwindow size and
+		position on emergency exit (libSM's
+		"die" callback), Xfce seems to make
+		the window smaller just before the
+		size's saved.
+
 2007-02-03 [colin]	2.7.2cvs17
 
 	* src/plugins/bogofilter/bogofilter.c
