@@ -1,3 +1,21 @@
+2007-02-03 [colin]	2.7.2cvs17
+
+	* src/partial_download.c
+	* src/partial_download.h
+	* src/ssl_manager.c
+	* src/ssl_manager.h
+	* src/uri_opener.c
+	* src/uri_opener.h
+	* src/wizard.c
+	* src/wizard.h
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.h
+		Fix copyright on my files
+
 2007-02-02 [colin]	2.7.2cvs15
 
 	* src/Makefile.am
