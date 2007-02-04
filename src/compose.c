@@ -7354,7 +7354,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	debug_print("Creating attach_property window...\n");
 
-	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose_attach_property");
 	gtk_widget_set_size_request(window, 480, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Properties"));

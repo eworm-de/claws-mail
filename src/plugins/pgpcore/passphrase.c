@@ -93,7 +93,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     
     gtk_menu_popdown(GTK_MENU(summaryview->popupmenu));
 
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "passphrase");
     gtk_window_set_title(GTK_WINDOW(window), _("Passphrase"));
     gtk_window_set_default_size(GTK_WINDOW(window), 375, 100);
     gtk_window_set_resizable(GTK_WINDOW(window), TRUE);

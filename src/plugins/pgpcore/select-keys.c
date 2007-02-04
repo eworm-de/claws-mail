@@ -370,7 +370,7 @@ create_dialog (struct select_keys_s *sk)
     const char *titles[N_COL_TITLES];
 
     g_assert (!sk->window);
-    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    window = gtkut_window_new (GTK_WINDOW_TOPLEVEL, "select-keys");
     gtk_widget_set_size_request (window, 520, 280);
     gtk_container_set_border_width (GTK_CONTAINER (window), 8);
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
