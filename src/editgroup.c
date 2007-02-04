@@ -288,7 +288,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	titles[ GROUP_COL_EMAIL   ] = _("Email Address");
 	titles[ GROUP_COL_REMARKS ] = _("Remarks");
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editgroup");
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Group Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

@@ -149,7 +149,7 @@ void foldersort_open()
 	GtkWidget *folderlist;
 	GtkWidget *label2;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "foldersort");
 	g_object_set_data(G_OBJECT(window), "window", window);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

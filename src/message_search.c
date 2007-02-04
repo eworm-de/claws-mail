@@ -164,7 +164,7 @@ static void message_search_create(void)
 	GtkWidget *close_btn;
 	GtkWidget *stop_btn;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "message_search");
 	gtk_window_set_title (GTK_WINDOW (window),
 			      _("Find in current message"));
 	gtk_widget_set_size_request (window, 450, -1);

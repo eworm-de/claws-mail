@@ -169,7 +169,7 @@ static void addressadd_create( void ) {
 	gint top;
 	static GdkGeometry geometry;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressadd");
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );

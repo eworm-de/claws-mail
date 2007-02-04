@@ -956,6 +956,8 @@ int main(int argc, char *argv[])
 
 	prefs_destroy_cache();
 	
+	compose_reopen_exit_drafts();
+
 	sc_starting = FALSE;
 	END_TIMING();
 	
@@ -1267,9 +1269,10 @@ static void draft_all_messages(void)
 {
 	GList *compose_list = NULL;
 	
+	compose_clear_exit_drafts();
 	while ((compose_list = compose_get_compose_list()) != NULL) {
 		Compose *c = (Compose*)compose_list->data;
-		compose_draft(c);
+		compose_draft(c, COMPOSE_DRAFT_FOR_EXIT);
 	}	
 }
 gboolean clean_quit(gpointer data)
@@ -1316,21 +1319,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	sc_exiting = TRUE;
 	debug_print("exiting\n");
 	if (compose_get_compose_list()) {
-		gint val = alertpanel(_("Really quit?"),
-			       _("Composing message exists."),
-			       _("_Save to Draft"), _("_Discard them"), _("Do_n't quit"));
-		switch (val) {
-			case G_ALERTOTHER:
-				main_window_popup(mainwin);
-				sc_exiting = FALSE;
-				return;
-			case G_ALERTALTERNATE:
-				break;
-			default:
-				draft_all_messages();
-		}
-
-		manage_window_focus_in(mainwin->window, NULL, NULL);
+		draft_all_messages();
 	}
 
 	if (prefs_common.warn_queued_on_exit && get_queued_message_num() > 0) {

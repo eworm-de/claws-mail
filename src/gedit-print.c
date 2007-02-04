@@ -216,7 +216,7 @@ show_printing_dialog (GeditPrintJobInfo *pji, GtkWindow *parent)
 	GtkWidget *label;
 	GtkWidget *progressbar;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "gedit-print");
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);

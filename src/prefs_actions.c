@@ -179,7 +179,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	debug_print("Creating actions configuration window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_actions");
 
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

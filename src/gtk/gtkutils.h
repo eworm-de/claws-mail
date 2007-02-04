@@ -183,6 +183,8 @@ gboolean gtkut_text_view_search_string_backward	(GtkTextView *text, const gchar 
 
 GtkWidget *label_window_create(const gchar *str);
 void gtkut_window_popup			(GtkWidget	*window);
+GtkWidget *gtkut_window_new		(GtkWindowType	 type,
+					 const gchar	*class);
 
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,

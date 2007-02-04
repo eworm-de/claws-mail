@@ -352,7 +352,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	prefswindow->save_width = save_width;
 	prefswindow->save_height = save_height;
 
-	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	prefswindow->window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefswindow");
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
 
 	gtk_window_set_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);

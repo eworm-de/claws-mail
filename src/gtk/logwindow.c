@@ -83,7 +83,7 @@ LogWindow *log_window_create(void)
 
 	logwin = g_new0(LogWindow, 1);
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "logwindow");
 	gtk_window_set_title(GTK_WINDOW(window), _("Protocol log"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",

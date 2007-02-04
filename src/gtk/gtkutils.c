@@ -858,7 +858,7 @@ GtkWidget *label_window_create(const gchar *str)
 	GtkWidget *window;
 	GtkWidget *label;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "gtkutils");
 	gtk_widget_set_size_request(window, 380, 60);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -1566,4 +1566,12 @@ gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 		return FALSE;
 
 	return gtk_tree_model_iter_nth_child(model, iter, NULL, count - 1);
+}
+
+GtkWidget *gtkut_window_new		(GtkWindowType	 type,
+					 const gchar	*class)
+{
+	GtkWidget *window = gtk_window_new(type);
+	gtk_window_set_wmclass(window, class, "Claws Mail");
+	return window;
 }

@@ -154,7 +154,7 @@ static void uri_opener_create(void)
 	GtkWidget *close_btn;
 	GtkWidget *scrolledwin;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "uri_opener");
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Open URLs"));
 

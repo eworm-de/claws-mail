@@ -87,7 +87,7 @@ static void prefs_keybind_select(void)
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_other");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Select key bindings"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

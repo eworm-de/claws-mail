@@ -118,7 +118,7 @@ static void legend_create(void)
 	GtkWidget *table;
 	gint i;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "icon_legend");
 	gtk_window_set_title(GTK_WINDOW(window), _("Icon Legend"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);

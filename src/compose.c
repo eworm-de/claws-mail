@@ -173,13 +173,6 @@ typedef enum
 
 typedef enum
 {
-	COMPOSE_QUIT_EDITING,
-	COMPOSE_KEEP_EDITING,
-	COMPOSE_AUTO_SAVE
-} ComposeDraftAction;
-
-typedef enum
-{
 	COMPOSE_WRITE_FOR_SEND,
 	COMPOSE_WRITE_FOR_STORE
 } ComposeWriteType;
@@ -6162,7 +6155,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 
 	compose->tooltips = gtk_tooltips_new();
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
 
@@ -7361,7 +7354,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	debug_print("Creating attach_property window...\n");
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 	gtk_widget_set_size_request(window, 480, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
@@ -7984,9 +7977,62 @@ static void compose_send_later_cb(gpointer data, guint action,
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }
 
-void compose_draft (gpointer data) 
+void compose_draft (gpointer data, guint action) 
 {
-	compose_draft_cb(data, COMPOSE_QUIT_EDITING, NULL);	
+	compose_draft_cb(data, action, NULL);	
+}
+
+#define DRAFTED_AT_EXIT "drafted_at_exit"
+void compose_clear_exit_drafts(void)
+{
+	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      DRAFTED_AT_EXIT, NULL);
+	if (is_file_exist(filepath))
+		g_unlink(filepath);
+	
+	g_free(filepath);
+}
+
+static void compose_register_draft(MsgInfo *info)
+{
+	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      DRAFTED_AT_EXIT, NULL);
+	FILE *fp = fopen(filepath, "ab");
+	
+	if (fp) {
+		fprintf(fp, "%s\t%d\n", folder_item_get_identifier(info->folder), 
+				info->msgnum);
+		fclose(fp);
+	}
+		
+	g_free(filepath);	
+}
+
+void compose_reopen_exit_drafts(void)
+{
+	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      DRAFTED_AT_EXIT, NULL);
+	FILE *fp = fopen(filepath, "rb");
+	gchar buf[1024];
+	
+	if (fp) {
+		while (fgets(buf, sizeof(buf), fp)) {
+			gchar **parts = g_strsplit(buf, "\t", 2);
+			const gchar *folder = parts[0];
+			int msgnum = parts[1] ? atoi(parts[1]):-1;
+			
+			if (folder && *folder && msgnum > -1) {
+				FolderItem *item = folder_find_item_from_identifier(folder);
+				MsgInfo *info = folder_item_get_msginfo(item, msgnum);
+				if (info)
+					compose_reedit(info, FALSE);
+			}
+			g_strfreev(parts);
+		}	
+		fclose(fp);
+	}	
+	g_free(filepath);
+	compose_clear_exit_drafts();
 }
 
 static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
@@ -8109,12 +8155,15 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 			procmsg_msginfo_set_flags(newmsginfo, 0,
 						  MSG_HAS_ATTACHMENT);
 
+		if (action == COMPOSE_DRAFT_FOR_EXIT) {
+			compose_register_draft(newmsginfo);
+		}
 		procmsg_msginfo_free(newmsginfo);
 	}
 	
 	folder_item_scan(draft);
 	
-	if (action == COMPOSE_QUIT_EDITING) {
+	if (action == COMPOSE_QUIT_EDITING || action == COMPOSE_DRAFT_FOR_EXIT) {
 		lock = FALSE;
 		g_mutex_unlock(compose->mutex); /* must be done before closing */
 		compose_close(compose);

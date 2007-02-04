@@ -137,7 +137,7 @@ static void edit_ldap_bdn_create(void) {
 	GtkWidget *statusbar;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editldap_basedn");
 	gtk_widget_set_size_request(window, 300, 270);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit LDAP - Select Search Base"));

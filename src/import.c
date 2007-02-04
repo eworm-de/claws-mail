@@ -116,7 +116,7 @@ static void import_create(void)
 	GtkWidget *dest_label;
 	GtkWidget *confirm_area;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "import");
 	gtk_window_set_title(GTK_WINDOW(window), _("Import mbox file"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

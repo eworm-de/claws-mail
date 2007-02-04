@@ -152,7 +152,7 @@ void ssl_manager_create(void)
 	GtkWidget *delete_btn;
 	GtkWidget *close_btn;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "ssl_manager");
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Saved SSL Certificates"));
 

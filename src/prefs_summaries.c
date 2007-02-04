@@ -176,7 +176,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 				   -1);
 	}
 
-	datefmt_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	datefmt_win = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_summaries");
 	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
 	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);

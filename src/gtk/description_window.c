@@ -82,7 +82,7 @@ static void description_create(DescriptionWindow * dwindow)
 	int max_width = 0;
 	GtkRequisition req;
 	
-	dwindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	dwindow->window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "description_window");
 	
 	gtk_window_set_title(GTK_WINDOW(dwindow->window),
 			     gettext(dwindow->title));

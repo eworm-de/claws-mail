@@ -662,7 +662,7 @@ static void export_ldif_dialog_create( void ) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "expldifdlg");
 	gtk_widget_set_size_request(window, EXPORTLDIF_WIDTH, EXPORTLDIF_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window),
