@@ -1,3 +1,9 @@
+2007-02-04 [colin]	2.7.2cvs19
+
+	* src/main.c
+		Revert previous patch, can't reproduce
+		it anymore. 
+
 2007-02-03 [colin]	2.7.2cvs18
 
 	* src/main.c
