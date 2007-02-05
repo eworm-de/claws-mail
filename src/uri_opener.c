@@ -156,7 +156,7 @@ static void uri_opener_create(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "uri_opener");
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Open URLs"));
+			      Q_("Dialog title|Open URLs"));
 
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

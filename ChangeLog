@@ -1,3 +1,9 @@
+2007-02-05 [fabien]	2.7.2cvs25
+
+	* po/POTFILES.in
+	* src/uri_opener.c
+		i18n related - 1 fix and 1 message for translators.
+
 2007-02-05 [colin]	2.7.2cvs24
 
 	* src/gtk/quicksearch.c

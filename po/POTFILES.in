@@ -135,4 +135,5 @@ src/summary_search.c
 src/summaryview.c
 src/textview.c
 src/toolbar.c
+src/uri_opener.c
 src/wizard.c
