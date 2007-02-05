@@ -2777,11 +2777,13 @@ void folderview_finish_dnd(const gchar *data, GdkDragContext *drag_context,
 	if (!(item && item->folder && folder_item_parent(item) != NULL
 		    && FOLDER_CLASS(item->folder)->add_msg != NULL))
 	{
-		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);
+		debug_print("item doesn't fit\n");			
 		return;
 	}	
 	if (!list) {
-		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);
+		debug_print("list is empty\n");			
 		return;
 	}
 	for (tmp = list; tmp != NULL; tmp = tmp->next) {
@@ -2792,6 +2794,9 @@ void folderview_finish_dnd(const gchar *data, GdkDragContext *drag_context,
 			info->msginfo = NULL;
 			info->file = (gchar *)tmp->data;
 			msglist = g_slist_prepend(msglist, info);
+			debug_print("file is a mail\n");
+		} else {
+			debug_print("file isn't a mail\n");
 		}
 	}
 	if (msglist) {
@@ -2895,12 +2900,14 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		if (!node) {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);
+			debug_print("no node\n");		
 			return;
 		}
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		if (!item) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+			debug_print("no item\n");
 			return;
 		}
 		folderview_finish_dnd(data->data, drag_context, time, item);
