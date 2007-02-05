@@ -1,3 +1,10 @@
+2007-02-05 [paul]	2.7.2cvs22
+
+	* src/mainwindow.c
+		confirm before emptying trash on exit is
+		a Yes or No answer, use Yes or No in the
+		dialog
+
 2007-02-04 [colin]	2.7.2cvs21
 
 	* src/compose.c
