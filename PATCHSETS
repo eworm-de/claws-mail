@@ -2341,3 +2341,4 @@
 ( cvs diff -u -r 1.382.2.357 -r 1.382.2.358 src/compose.c;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/plugins/pgpcore/select-keys.c;  ) > 2.7.2cvs21.patchset
 ( cvs diff -u -r 1.274.2.171 -r 1.274.2.172 src/mainwindow.c;  ) > 2.7.2cvs22.patchset
 ( cvs diff -u -r 1.207.2.146 -r 1.207.2.147 src/folderview.c;  ) > 2.7.2cvs23.patchset
+( cvs diff -u -r 1.1.2.61 -r 1.1.2.62 src/gtk/quicksearch.c;  ) > 2.7.2cvs24.patchset

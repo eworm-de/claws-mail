@@ -671,17 +671,34 @@ GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch)
 
 void quicksearch_show(QuickSearch *quicksearch)
 {
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	GtkWidget *ctree = NULL;
 	prepare_matcher(quicksearch);
 	gtk_widget_show(quicksearch->hbox_search);
 	update_extended_buttons(quicksearch);
 	gtk_widget_grab_focus(
 		GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
+
+	GTK_EVENTS_FLUSH();
+
+	if (!mainwin || !mainwin->summaryview) {
+		return;
+	}
+	
+	ctree = summary_get_main_widget(mainwin->summaryview);
+	
+	if (ctree && mainwin->summaryview->selected)
+		gtk_ctree_node_moveto(GTK_CTREE(ctree), 
+				mainwin->summaryview->selected, 
+				0, 0.5, 0);
 }
 
 void quicksearch_hide(QuickSearch *quicksearch)
 {
-	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
-	quicksearch_set_active(quicksearch, FALSE);
+	if (quicksearch_is_active(quicksearch)) {
+		quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+		quicksearch_set_active(quicksearch, FALSE);
+	}
 	gtk_widget_hide(quicksearch->hbox_search);
 }
 
