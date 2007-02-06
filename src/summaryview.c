@@ -4071,6 +4071,7 @@ void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
 			 FALSE);
 
 	gtk_ctree_select_recursive(ctree, node);
+	END_LONG_OPERATION(summaryview);
 
 	if (delete_thread) {
 		if (FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS)
@@ -4078,7 +4079,6 @@ void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
 		else
 			summary_delete_trash(summaryview);
 	}
-	END_LONG_OPERATION(summaryview);
 	summary_status_show(summaryview);
 }
 
