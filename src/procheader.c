@@ -546,8 +546,9 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 		case H_SUBJECT:
 			if (msginfo->subject) break;
-                        msginfo->subject = conv_unmime_header(hp, NULL);
-			break;
+			msginfo->subject = conv_unmime_header(hp, NULL);
+			unfold_line(msginfo->subject);
+                       break;
 		case H_MSG_ID:
 			if (msginfo->msgid) break;
 

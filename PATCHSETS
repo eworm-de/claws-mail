@@ -2344,3 +2344,4 @@
 ( cvs diff -u -r 1.1.2.61 -r 1.1.2.62 src/gtk/quicksearch.c;  ) > 2.7.2cvs24.patchset
 ( cvs diff -u -r 1.53.2.23 -r 1.53.2.24 po/POTFILES.in;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/uri_opener.c;  ) > 2.7.2cvs25.patchset
 ( cvs diff -u -r 1.395.2.282 -r 1.395.2.283 src/summaryview.c;  ) > 2.7.2cvs26.patchset
+( cvs diff -u -r 1.47.2.38 -r 1.47.2.39 src/procheader.c;  ) > 2.7.2cvs27.patchset

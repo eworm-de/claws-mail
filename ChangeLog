@@ -1,3 +1,9 @@
+2007-02-07 [paul]	2.7.2cvs27
+
+	* src/procheader.c
+		fix bug 1116, 'summary view allow a 
+		subject line break'
+
 2007-02-06 [colin]	2.7.2cvs26
 
 	* src/summaryview.c
