@@ -1,3 +1,9 @@
+2007-02-07 [colin]	2.7.2cvs30
+
+	* src/ldapquery.c
+		Fix bug 1106, 'Claws crash on exit if LDAPS 
+		autocompletion was used'
+
 2007-02-07 [paul]	2.7.2cvs29
 
 	* src/folder.c

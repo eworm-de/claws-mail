@@ -245,6 +245,8 @@ static gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
  */
 static void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
 	g_return_if_fail( qry != NULL );
+	if (qry->mutexBusy == NULL)
+		return; /* exiting, mutex already freed */
 
 	pthread_mutex_lock( qry->mutexBusy );
 	qry->busyFlag = value;
