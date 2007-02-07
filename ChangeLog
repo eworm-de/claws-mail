@@ -1,3 +1,10 @@
+2007-02-07 [paul]	2.7.2cvs28
+
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/clamav/clamav_plugin.h
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		fix copyright header
+
 2007-02-07 [paul]	2.7.2cvs27
 
 	* src/procheader.c
