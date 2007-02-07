@@ -3987,7 +3987,8 @@ gboolean folder_want_synchronise(Folder *folder)
 	folder_func_to_all_folders(folder_item_want_synchronise_func, want_sync_data);
 	result = want_sync_data->want_sync;
 	g_free(want_sync_data);
-	debug_print("Folder %s wants sync: %d\n", folder->name, result);
+	if (result > 0)
+		debug_print("Folder %s wants sync\n", folder->name);
 	return result;
 }
 

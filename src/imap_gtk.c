@@ -127,7 +127,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	
 	SET_SENS("/Subscriptions/Unsubscribe...",    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("/Subscriptions/Subscribe...",    TRUE);
-	menu_set_active(factory, "/Subscriptions/Show subscribed folders only", item->folder->account->imap_subsonly);
+	menu_set_active(factory, "/Subscriptions/Show only subscribed folders", item->folder->account->imap_subsonly);
 
 #undef SET_SENS
 }
