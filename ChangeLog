@@ -1,3 +1,12 @@
+2007-02-08 [colin]	2.7.2cvs33
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix bug 1110, 'pgpmime fails to process 
+		encapsulated openpgp mime (rfc 3156, 6.1 
+		-> rfc1847)'
+		It was due to an interaction between PGP/Mime
+		and PGP/Inline plugin. 
+
 2007-02-08 [colin]	2.7.2cvs32
 
 	* src/inc.c

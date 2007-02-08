@@ -119,7 +119,7 @@ static gchar *fp_read_noconv(FILE *fp)
 static gchar *get_part_as_string(MimeInfo *mimeinfo)
 {
 	gchar *textdata = NULL;
-
+	gchar *real_data = NULL;
 	g_return_val_if_fail(mimeinfo != NULL, 0);
 	procmime_decode_content(mimeinfo);
 	if (mimeinfo->content == MIMECONTENT_MEM)
@@ -157,7 +157,15 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 			textdata = tmp;
 		}
 	}
-
+	if (textdata && mimeinfo->offset && 
+	    mimeinfo->offset+ mimeinfo->length < strlen(textdata)) {
+		real_data = g_strdup(textdata + mimeinfo->offset);
+		real_data[mimeinfo->length] = '\0';
+		g_free(textdata);
+		textdata = real_data;
+	} else if (textdata && mimeinfo->offset) {
+		debug_print("got data shorter than what it should be\n");
+	}
 	return textdata;	
 }
 
@@ -353,6 +361,7 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 	}
 
 	g_free(textdata);
+
 	return TRUE;
 }
 
