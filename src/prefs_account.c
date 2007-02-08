@@ -2597,7 +2597,8 @@ static gint prefs_account_apply(void)
 		return -1;
 	}
 	if (protocol == A_POP3 || protocol == A_LOCAL) {
-		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(receive.inbox_entry));
+		GtkWidget *inbox_entry = (protocol == A_POP3 ? receive.inbox_entry : receive.local_inbox_entry );
+		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
 		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
 	    	if (inbox == NULL) {
 			alertpanel_error(_("The default inbox folder doesn't exist."));
