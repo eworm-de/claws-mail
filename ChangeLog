@@ -1,3 +1,11 @@
+2007-02-08 [colin]	2.7.2cvs32
+
+	* src/inc.c
+	* src/mbox.c
+	* src/mbox.h
+		Fix bug 1117, 'fcntl locking code 
+		does not work in mbox.c'
+
 2007-02-08 [colin]	2.7.2cvs31
 
 	* src/prefs_account.c

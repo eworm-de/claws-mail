@@ -417,7 +417,6 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 
 		if (fcntl(fd, F_SETLK, &fl) == -1) {
 			g_warning("can't fnctl %s", base);
-			return -1;
 		} else {
 			fcntled = TRUE;
 		}
@@ -451,9 +450,58 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 	return -1;
 }
 
-gint copy_mbox(const gchar *src, const gchar *dest)
+gint copy_mbox(gint srcfd, const gchar *dest)
 {
-	return copy_file(src, dest, TRUE);
+	FILE *dest_fp;
+	ssize_t n_read;
+	gchar buf[BUFSIZ];
+	gboolean err = FALSE;
+	int save_errno = 0;
+
+	if (srcfd < 0) {
+		return -1;
+	}
+
+	if ((dest_fp = g_fopen(dest, "wb")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
+	while ((n_read = read(srcfd, buf, sizeof(buf))) > 0) {
+		if (n_read < sizeof(buf) && errno != 0) {
+			save_errno = errno;
+			break;
+		}
+		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
+			g_warning("writing to %s failed.\n", dest);
+			fclose(dest_fp);
+			g_unlink(dest);
+			return -1;
+		}
+	}
+
+	if (save_errno != 0) {
+		g_warning("error %d reading mbox: %s\n", save_errno,
+				strerror(save_errno));
+		err = TRUE;
+	}
+
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
+	if (err) {
+		g_unlink(dest);
+		return -1;
+	}
+
+	return 0;
 }
 
 void empty_mbox(const gchar *mbox)

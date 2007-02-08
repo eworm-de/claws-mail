@@ -39,7 +39,7 @@ gint lock_mbox		(const gchar	*base,
 gint unlock_mbox	(const gchar	*base,
 			 gint		 fd,
 			 LockType	 type);
-gint copy_mbox		(const gchar	*src,
+gint copy_mbox		(gint		 srcfd,
 			 const gchar	*dest);
 void empty_mbox		(const gchar	*mbox);
 
