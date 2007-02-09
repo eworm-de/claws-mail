@@ -1,3 +1,8 @@
+2007-02-09 [paul]	2.7.2cvs37
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix for the upstream changes in libclamav
+
 2007-02-09 [paul]	2.7.2cvs36
 
 	* src/main.c
