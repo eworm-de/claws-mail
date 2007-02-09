@@ -48,6 +48,7 @@ typedef struct _SendPage
 
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_confirm_send_queued_messages;
+	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *optmenu_senddialog;
 	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_encoding_method;
@@ -128,6 +129,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *menu;
 	GtkWidget *optmenu_senddialog;
 	GtkWidget *checkbtn_confirm_send_queued_messages;
+	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *table;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -143,6 +145,9 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_confirm_send_queued_messages,
 			_("Confirm before sending queued messages"));
+
+	PACK_CHECK_BUTTON(vbox2, checkbtn_never_send_retrcpt,
+			  _("Never send Return Receipts"));
 
 	table = gtk_table_new(3, 2, FALSE);
 	gtk_widget_show(table);
@@ -282,6 +287,8 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.savemsg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confirm_send_queued_messages),
 		prefs_common.confirm_send_queued_messages);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_never_send_retrcpt),
+		prefs_common.never_send_retrcpt);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_senddialog),
 		prefs_common.send_dialog_mode);
 	prefs_common_charset_set_optmenu(optmenu_charset, 
@@ -293,6 +300,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	prefs_send->checkbtn_savemsg = checkbtn_savemsg;
 	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
+ 	prefs_send->checkbtn_never_send_retrcpt = checkbtn_never_send_retrcpt;
 	prefs_send->optmenu_senddialog = optmenu_senddialog;
 	prefs_send->optmenu_charset = optmenu_charset;
 	prefs_send->optmenu_encoding_method = optmenu_encoding;
@@ -310,6 +318,8 @@ static void prefs_send_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_savemsg));
 	prefs_common.confirm_send_queued_messages = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_confirm_send_queued_messages));
+	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_never_send_retrcpt));
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_senddialog));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));

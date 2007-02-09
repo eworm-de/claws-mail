@@ -56,8 +56,8 @@ typedef struct _OtherPage
         GtkWidget *checkbtn_cliplog;
 	GtkWidget *spinbtn_loglength;
 	GtkWidget *spinbtn_iotimeout;
-	GtkWidget *chkbtn_never_send_retrcpt;
-	GtkWidget *chkbtn_gtk_can_change_accels;
+	GtkWidget *checkbtn_gtk_can_change_accels;
+	GtkWidget *checkbtn_askonfilter;
 } OtherPage;
 
 static struct KeybindDialog {
@@ -503,18 +503,17 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
+	GtkWidget *checkbtn_askonfilter;
 
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
-	GtkWidget *chkbtn_gtk_can_change_accels;
+	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkTooltips *gtk_can_change_accels_tooltip;
 	GtkWidget *button_keybind;
 
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
 	GtkObject *spinbtn_iotimeout_adj;
-
-	GtkWidget *chkbtn_never_send_retrcpt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -584,11 +583,11 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox_keys = gtkut_get_options_frame(vbox1, &frame_keys, _("Keyboard shortcuts"));
 
-	PACK_CHECK_BUTTON(vbox_keys, chkbtn_gtk_can_change_accels,
+	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_can_change_accels,
 			_("Enable customisable menu shortcuts"));
 	gtk_can_change_accels_tooltip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(gtk_can_change_accels_tooltip),
-			chkbtn_gtk_can_change_accels,
+			checkbtn_gtk_can_change_accels,
 			_("If checked, you can change the keyboard shortcuts of "
 				"most of the menu items by focusing on the menu "
 				"item and pressing a key combination.\n"
@@ -626,8 +625,13 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(vbox1, chkbtn_never_send_retrcpt,
-			  _("Never send Return Receipts"));
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (hbox1, checkbtn_askonfilter,
+			   _("Ask about account specific filtering rules when "
+			     "filtering manually"));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
@@ -641,15 +645,16 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.warn_queued_on_exit);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cliplog), 
 		prefs_common.cliplog);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_never_send_retrcpt),
-		prefs_common.never_send_retrcpt);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_gtk_can_change_accels),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_can_change_accels),
 		prefs_common.gtk_can_change_accels);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_loglength),
 		prefs_common.loglength);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_askonfilter), 
+		prefs_common.ask_apply_per_account_filtering_rules);
 
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	prefs_other->checkbtn_confonexit = checkbtn_confonexit;
@@ -659,8 +664,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_cliplog = checkbtn_cliplog;
 	prefs_other->spinbtn_loglength = spinbtn_loglength;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
-	prefs_other->chkbtn_never_send_retrcpt = chkbtn_never_send_retrcpt;
-	prefs_other->chkbtn_gtk_can_change_accels = chkbtn_gtk_can_change_accels;
+	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
+	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 
 	prefs_other->page.widget = vbox1;
 }
@@ -691,15 +696,16 @@ static void prefs_other_save(PrefsPage *_page)
 #ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif
-	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_never_send_retrcpt));
+	prefs_common.ask_apply_per_account_filtering_rules = 
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_askonfilter)); 
 
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);
 
 	gtk_can_change_accels = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_gtk_can_change_accels));
+		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_can_change_accels));
 
 	if (prefs_common.gtk_can_change_accels != gtk_can_change_accels) {
 

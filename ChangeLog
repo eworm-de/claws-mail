@@ -1,3 +1,16 @@
+2007-02-09 [paul]	2.7.2cvs34
+
+	* src/compose.c
+		fix default hotkeys
+	* src/prefs_other.c
+	* src/prefs_send.c
+		move "Never send Return Receipts" from
+		prefs_other to prefs_send
+		add an option "Ask about account specific
+		filtering rules..." to prefs_other
+	* src/gtk/gtkutils.c
+		fix a compiler warning
+
 2007-02-08 [colin]	2.7.2cvs33
 
 	* src/plugins/pgpinline/pgpinline.c
