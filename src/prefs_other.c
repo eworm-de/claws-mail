@@ -501,9 +501,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_exit;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
-	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-	GtkWidget *checkbtn_askonfilter;
 
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
@@ -514,6 +512,10 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
 	GtkObject *spinbtn_iotimeout_adj;
+
+	GtkWidget *vbox2;
+	GtkWidget *checkbtn_askonclean;
+	GtkWidget *checkbtn_askonfilter;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -574,9 +576,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (hbox1, checkbtn_cleanonexit,
 			   _("Empty trash on exit"));
-	PACK_CHECK_BUTTON (hbox1, checkbtn_askonclean,
-			   _("Ask before emptying"));
-	SET_TOGGLE_SENSITIVITY (checkbtn_cleanonexit, checkbtn_askonclean);
 
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
 			   _("Warn if there are queued messages"));
@@ -625,11 +624,13 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+	vbox2 = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (hbox1, checkbtn_askonfilter,
+	PACK_CHECK_BUTTON (vbox2, checkbtn_askonclean, 
+			   _("Ask before emptying trash"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_askonfilter,
 			   _("Ask about account specific filtering rules when "
 			     "filtering manually"));
 

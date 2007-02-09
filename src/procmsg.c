@@ -2328,3 +2328,19 @@ gboolean procmsg_have_queued_mails_fast (void)
 	folder_func_to_all_folders(item_has_queued_mails, &result);
 	return result;
 }
+
+static void item_has_trashed_mails(FolderItem *item, gpointer data)
+{
+	gboolean *result = (gboolean *)data;
+	if (*result == TRUE)
+		return;
+	if (folder_has_parent_of_type(item, F_TRASH) && item->total_msgs > 0)
+		*result = TRUE;
+}
+
+gboolean procmsg_have_trashed_mails_fast (void)
+{
+	gboolean result = FALSE;
+	folder_func_to_all_folders(item_has_trashed_mails, &result);
+	return result;
+}

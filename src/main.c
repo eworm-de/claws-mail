@@ -1232,19 +1232,6 @@ static void parse_cmd_opt(int argc, char *argv[])
 	}
 }
 
-static gint get_queued_message_num(void)
-{
-	FolderItem *queue;
-
-	queue = folder_get_default_queue();
-	if (!queue) {
-		return -1;
-	}
-
-	folder_item_scan(queue);
-	return queue->total_msgs;
-}
-
 static void initial_processing(FolderItem *item, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
@@ -1322,7 +1309,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 		draft_all_messages();
 	}
 
-	if (prefs_common.warn_queued_on_exit && get_queued_message_num() > 0) {
+	if (prefs_common.warn_queued_on_exit && procmsg_have_queued_mails_fast()) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL)

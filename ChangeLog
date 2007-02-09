@@ -1,3 +1,20 @@
+2007-02-09 [paul]	2.7.2cvs36
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/procmsg.c
+	* src/procmsg.h
+		fix "warn if there are queued messages" (on exit)
+		option, which only checked the first mailbox's
+		queue
+		don't ask before emptying trash if there are no
+		messages in trash, also check and empty all trash
+		folders
+	* src/prefs_other.c
+		move "Ask before emptying trash" option
+		outside of the "On exit" frame as it's
+		not only an "On exit" option
+
 2007-02-09 [paul]	2.7.2cvs35
 
 	* src/addrgather.c

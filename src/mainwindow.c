@@ -2043,7 +2043,7 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
-	if (confirm) {
+	if (confirm && procmsg_have_trashed_mails_fast()) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
 			       GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL)

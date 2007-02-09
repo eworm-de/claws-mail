@@ -357,6 +357,7 @@ void procmsg_spam_set_folder		(const char *item_identifier, FolderItem *(*spam_g
 FolderItem *procmsg_spam_get_folder	(MsgInfo *msginfo);
 int procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spam);
 gboolean procmsg_have_queued_mails_fast (void);
+gboolean procmsg_have_trashed_mails_fast (void);
 gboolean procmsg_is_sending(void);
 
 #endif /* __PROCMSG_H__ */
