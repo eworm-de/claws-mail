@@ -27,6 +27,12 @@
 #include <glib/gi18n.h>
 #include <clamav.h>
 
+#ifdef CL_DB_STDOPT
+#define NEW_CLAMAV 1
+#else
+#undef NEW_CLAMAV
+#endif
+
 #include "common/claws.h"
 #include "common/version.h"
 #include "plugin.h"
@@ -62,12 +68,21 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+#ifdef NEW_CLAMAV
 static struct cl_engine *engine;
+#else
+static struct cl_node *cl_database;
+#endif
+
 struct scan_parameters {
 	gboolean is_infected;
 
 	struct cl_limits limits;
+#ifdef NEW_CLAMAV
 	struct cl_engine *engine;
+#else
+	struct cl_node *root;
+#endif
 	gboolean scan_archive;
 };
 
@@ -85,9 +100,14 @@ static gboolean scan_func(GNode *node, gpointer data)
 		g_warning("Can't get the part of multipart message.");
 	else {
 		debug_print("Scanning %s\n", outfile);
+#ifdef NEW_CLAMAV
     		if ((ret = cl_scanfile(outfile, &virname, &size, params->engine, 
 				      &params->limits, params->scan_archive)) == CL_VIRUS) {
-			params->is_infected = TRUE;
+#else
+    		if ((ret = cl_scanfile(outfile, &virname, &size, params->root, 
+				      &params->limits, params->scan_archive)) == CL_VIRUS) {
+#endif
+				params->is_infected = TRUE;
 			debug_print("Detected %s virus.\n", virname); 
     		} else {
 			debug_print("No virus detected.\n");
@@ -120,7 +140,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		message_callback(_("ClamAV: scanning message..."));
 
 	params.is_infected = FALSE;
+#ifdef NEW_CLAMAV
 	params.engine = engine;
+#else
+	params.root = cl_database;
+#endif
 
     	params.limits.maxfiles = 1000; /* max files */
     	params.limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
@@ -187,13 +211,23 @@ void clamav_set_message_callback(MessageCallback callback)
 	message_callback = callback;
 }
 
+#ifdef NEW_CLAMAV
 int cl_build(struct cl_engine *engine);
 void cl_free(struct cl_engine *engine);
+#else
+int cl_build(struct cl_node *root);
+void cl_free(struct cl_node *root);
+#endif
+
 gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
 	int ret;
+#ifdef NEW_CLAMAV
 	unsigned int sigs = 0;
+#else
+	unsigned int no;
+#endif
 
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
@@ -212,15 +246,28 @@ gint plugin_init(gchar **error)
 
 	clamav_gtk_init();
 
+#ifdef NEW_CLAMAV
     	if ((ret = cl_load(cl_retdbdir(), &engine, &sigs, CL_DB_STDOPT))) {
 		debug_print("cl_load: %s\n", cl_strerror(ret));
 		*error = g_strdup_printf("cl_load: %s\n", cl_strerror(ret));
 		return -1;
     	}
-
     	debug_print("Database loaded (containing in total %d signatures)\n", sigs);
+#else
+    	if ((ret = cl_loaddbdir(cl_retdbdir(), &cl_database, &no))) {
+		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
+		*error = g_strdup_printf("cl_loaddbdir: %s\n", cl_strerror(ret));
+		return -1;
+    	}
+    	debug_print("Database loaded (containing in total %d signatures)\n", no);
+#endif
 
+
+#ifdef NEW_CLAMAV
     	if((ret = cl_build(engine))) {
+#else
+    	if((ret = cl_build(cl_database))) {
+#endif
 		debug_print("Database initialization error: %s\n", cl_strerror(ret));
 		*error = g_strdup_printf("Database initialization error: %s\n", cl_strerror(ret));
 		return -1;
@@ -236,7 +283,11 @@ void plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);
+#ifdef NEW_CLAMAV
 	cl_free(engine);
+#else
+	cl_free(cl_database);
+#endif
 	clamav_gtk_done();
 
 	debug_print("ClamAV plugin unloaded\n");
