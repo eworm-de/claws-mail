@@ -159,7 +159,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	GtkWidget *folder_type_menu;
 	GtkWidget *folder_type;
-	GtkWidget *dummy_chkbtn;
+	GtkWidget *dummy_checkbtn;
 	GtkWidget *menuitem;
 	SpecialFolderItemType type;
 	
@@ -245,9 +245,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	gtk_option_menu_set_history(GTK_OPTION_MENU(folder_type), type);
 
-	dummy_chkbtn = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_chkbtn), type != F_INBOX);
-	gtk_widget_set_sensitive(dummy_chkbtn, FALSE);
+	dummy_checkbtn = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_checkbtn), type != F_INBOX);
+	gtk_widget_set_sensitive(dummy_checkbtn, FALSE);
 
 	if (type == item->stype && type == F_NORMAL)
 		gtk_widget_set_sensitive(folder_type, TRUE);
@@ -260,7 +260,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach(GTK_TABLE(table), folder_type, 1, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(table), dummy_chkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), dummy_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;

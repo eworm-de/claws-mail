@@ -98,18 +98,18 @@ struct _PrefsDialog
 		 str);\
 }
 
-#define PACK_CHECK_BUTTON(box, chkbtn, label) \
+#define PACK_CHECK_BUTTON(box, checkbtn, label) \
 { \
-	chkbtn = gtk_check_button_new_with_label(label); \
-	gtk_widget_show(chkbtn); \
-	gtk_box_pack_start(GTK_BOX(box), chkbtn, FALSE, TRUE, 0); \
+	checkbtn = gtk_check_button_new_with_label(label); \
+	gtk_widget_show(checkbtn); \
+	gtk_box_pack_start(GTK_BOX(box), checkbtn, FALSE, TRUE, 0); \
 }
 
-#define PACK_END_CHECK_BUTTON(box, chkbtn, label) \
+#define PACK_END_CHECK_BUTTON(box, checkbtn, label) \
 { \
-	chkbtn = gtk_check_button_new_with_label(label); \
-	gtk_widget_show(chkbtn); \
-	gtk_box_pack_end(GTK_BOX(box), chkbtn, FALSE, TRUE, 0); \
+	checkbtn = gtk_check_button_new_with_label(label); \
+	gtk_widget_show(checkbtn); \
+	gtk_box_pack_end(GTK_BOX(box), checkbtn, FALSE, TRUE, 0); \
 }
 
 #define PACK_FRAME(box, frame, label) \

@@ -107,7 +107,7 @@ typedef struct
 	GtkWidget *recv_password_label;
 	GtkWidget *recv_imap_label;
 	GtkWidget *recv_imap_subdir;
-	GtkWidget *subsonly_chkbtn;
+	GtkWidget *subsonly_checkbtn;
 	GtkWidget *no_imap_warning;
 #ifdef USE_OPENSSL
 	GtkWidget *smtp_use_ssl;
@@ -739,7 +739,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		}
 		prefs_account->imap_subsonly = 
 			gtk_toggle_button_get_active(
-				GTK_TOGGLE_BUTTON(wizard->subsonly_chkbtn));
+				GTK_TOGGLE_BUTTON(wizard->subsonly_checkbtn));
 		g_free(directory);
 	}
 
@@ -1036,7 +1036,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
-		gtk_widget_hide(wizard->subsonly_chkbtn);
+		gtk_widget_hide(wizard->subsonly_checkbtn);
 		gtk_widget_show(wizard->recv_username);
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
@@ -1056,7 +1056,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		gtk_widget_show(wizard->recv_imap_label);
 		gtk_widget_show(wizard->recv_imap_subdir);
-		gtk_widget_show(wizard->subsonly_chkbtn);
+		gtk_widget_show(wizard->subsonly_checkbtn);
 		gtk_widget_show(wizard->recv_username);
 		gtk_widget_show(wizard->recv_password);
 		gtk_widget_show(wizard->recv_username_label);
@@ -1073,7 +1073,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #else
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
-		gtk_widget_hide(wizard->subsonly_chkbtn);
+		gtk_widget_hide(wizard->subsonly_checkbtn);
 		gtk_widget_hide(wizard->recv_username);
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
@@ -1092,7 +1092,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->no_imap_warning);
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
-		gtk_widget_hide(wizard->subsonly_chkbtn);
+		gtk_widget_hide(wizard->subsonly_checkbtn);
 		gtk_widget_hide(wizard->recv_username);
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
@@ -1227,11 +1227,11 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 
 	i++;
 	
-	wizard->subsonly_chkbtn = gtk_check_button_new_with_label(
+	wizard->subsonly_checkbtn = gtk_check_button_new_with_label(
 			_("Show only subscribed folders"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->subsonly_chkbtn),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->subsonly_checkbtn),
 			tmpl.subsonly);
-	gtk_table_attach(GTK_TABLE(table), wizard->subsonly_chkbtn, 			      
+	gtk_table_attach(GTK_TABLE(table), wizard->subsonly_checkbtn, 			      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      
 
 	i++;
@@ -1486,7 +1486,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
-	gtk_widget_hide(wizard->subsonly_chkbtn);
+	gtk_widget_hide(wizard->subsonly_checkbtn);
 
 	wizard_protocol_change(wizard, tmpl.recvtype);
 

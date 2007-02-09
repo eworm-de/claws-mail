@@ -230,7 +230,7 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
-	GtkWidget *disable_chkbtn;
+	GtkWidget *disable_checkbtn;
 	GtkWidget *confirm_area;
 	GtkWidget *button1;
 	GtkWidget *button2;
@@ -334,13 +334,13 @@ static void alertpanel_create(const gchar *title,
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox,
 				   FALSE, FALSE, 0);
 
-		disable_chkbtn = gtk_check_button_new_with_label
+		disable_checkbtn = gtk_check_button_new_with_label
 			(_("Show this message next time"));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_checkbtn),
 					     TRUE);
-		gtk_box_pack_start(GTK_BOX(hbox), disable_chkbtn,
+		gtk_box_pack_start(GTK_BOX(hbox), disable_checkbtn,
 				   FALSE, FALSE, 12);
-		g_signal_connect(G_OBJECT(disable_chkbtn), "toggled",
+		g_signal_connect(G_OBJECT(disable_checkbtn), "toggled",
 				 G_CALLBACK(alertpanel_button_toggled),
 				 GUINT_TO_POINTER(G_ALERTDISABLE));
 	}

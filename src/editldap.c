@@ -395,7 +395,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkObject *spinbtn_port_adj;
 	GtkWidget *spinbtn_port;
 #ifdef USE_LDAP_TLS
-	GtkWidget *enable_ssl_chkbtn, *enable_tls_chkbtn;
+	GtkWidget *enable_ssl_checkbtn, *enable_tls_checkbtn;
 #endif
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
@@ -467,23 +467,23 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_port), TRUE);
 	
 #ifdef USE_LDAP_TLS
-	enable_tls_chkbtn = gtk_check_button_new_with_label(_("TLS"));
-	enable_ssl_chkbtn = gtk_check_button_new_with_label(_("SSL"));
-	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_chkbtn, enable_ssl_chkbtn);
-	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_chkbtn, enable_tls_chkbtn);
-	gtk_tooltips_set_tip( toolTip, enable_tls_chkbtn, _( 
+	enable_tls_checkbtn = gtk_check_button_new_with_label(_("TLS"));
+	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("SSL"));
+	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_checkbtn, enable_ssl_checkbtn);
+	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_checkbtn, enable_tls_checkbtn);
+	gtk_tooltips_set_tip( toolTip, enable_tls_checkbtn, _( 
 		"Enable secure connection to the LDAP server via TLS."
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ),
 		NULL );
-	gtk_tooltips_set_tip( toolTip, enable_ssl_chkbtn, _( 
+	gtk_tooltips_set_tip( toolTip, enable_ssl_checkbtn, _( 
 		"Enable secure connection to the LDAP server via SSL."
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ),
 		NULL );
 
-	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_chkbtn, TRUE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_chkbtn, TRUE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_checkbtn, TRUE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_checkbtn, TRUE, FALSE, 0);
 #endif
 
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
@@ -546,10 +546,10 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	ldapedit.spinbtn_port = spinbtn_port;
 	ldapedit.entry_baseDN = entry_baseDN;
 #ifdef USE_LDAP_TLS
-	ldapedit.enable_ssl = enable_ssl_chkbtn;
-	ldapedit.enable_tls = enable_tls_chkbtn;
+	ldapedit.enable_ssl = enable_ssl_checkbtn;
+	ldapedit.enable_tls = enable_tls_checkbtn;
 
-	g_signal_connect(G_OBJECT(enable_ssl_chkbtn), "toggled", \
+	g_signal_connect(G_OBJECT(enable_ssl_checkbtn), "toggled", \
 			 G_CALLBACK(editldap_update_port), NULL); 
 #endif			 
 }

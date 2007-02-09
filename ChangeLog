@@ -1,3 +1,21 @@
+2007-02-09 [paul]	2.7.2cvs35
+
+	* src/addrgather.c
+	* src/alertpanel.c
+	* src/editldap.c
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_gtk.h
+	* src/prefs_matcher.c
+	* src/prefs_message.c
+	* src/prefs_msg_colors.c
+	* src/prefs_summaries.c
+	* src/wizard.c
+	* src/gtk/inputdialog.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		pedantic commit: use 'checkbtn' everywhere
+		instead of a mixture of 'checkbtn' and 'chkbtn'
+
 2007-02-09 [paul]	2.7.2cvs34
 
 	* src/compose.c

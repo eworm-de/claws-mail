@@ -121,8 +121,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_unsure_folder_entry;
 	GtkWidget *save_unsure_folder_select;
 
-	GtkWidget *insert_header_chkbtn;
-	GtkWidget *whitelist_ab_chkbtn;
+	GtkWidget *insert_header_checkbtn;
+	GtkWidget *whitelist_ab_checkbtn;
 	GtkWidget *bogopath_label;
 	GtkWidget *bogopath_entry;
 
@@ -216,10 +216,10 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a folder for storing Unsure mails."),
 			NULL);
 
-	insert_header_chkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
-	gtk_widget_show(insert_header_chkbtn);
-	gtk_box_pack_start(GTK_BOX(vbox2), insert_header_chkbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, insert_header_chkbtn,
+	insert_header_checkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
+	gtk_widget_show(insert_header_checkbtn);
+	gtk_box_pack_start(GTK_BOX(vbox2), insert_header_checkbtn, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, insert_header_checkbtn,
 			_("Only done for messages in MH folders"),
 			NULL);
 
@@ -227,10 +227,10 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_whitelist, TRUE, TRUE, 0);
 
-	whitelist_ab_chkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook/folder"));
-	gtk_widget_show(whitelist_ab_chkbtn);
-	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_chkbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, whitelist_ab_chkbtn,
+	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook/folder"));
+	gtk_widget_show(whitelist_ab_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_checkbtn, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(tooltips, whitelist_ab_checkbtn,
 			_("Messages coming from your addressbook contacts will be received in the normal folder even if detected as spam"), NULL);
 
 	whitelist_ab_folder_combo = gtk_combo_new();
@@ -275,8 +275,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
-	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_folder_combo);
-	SET_TOGGLE_SENSITIVITY(whitelist_ab_chkbtn, whitelist_ab_select_btn);
+	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
+	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
 
 	config = bogofilter_get_config();
 
@@ -291,8 +291,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_unsure_checkbtn), config->save_unsure);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_chkbtn), config->insert_header);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_chkbtn), config->whitelist_ab);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_checkbtn), config->insert_header);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_checkbtn), config->whitelist_ab);
 	if (config->whitelist_ab_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(whitelist_ab_folder_combo)->entry),
 				config->whitelist_ab_folder);
@@ -314,8 +314,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->save_unsure_folder = save_unsure_folder_entry;
 	page->save_unsure_folder_select = save_unsure_folder_select;
 
-	page->insert_header = insert_header_chkbtn;
-	page->whitelist_ab = whitelist_ab_chkbtn;
+	page->insert_header = insert_header_checkbtn;
+	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 	page->bogopath = bogopath_entry;
 

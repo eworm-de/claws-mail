@@ -48,11 +48,11 @@ typedef struct _SummariesPage
 
 	GtkWidget *window;
 
-	GtkWidget *chkbtn_transhdr;
-	GtkWidget *chkbtn_folder_unread;
+	GtkWidget *checkbtn_transhdr;
+	GtkWidget *checkbtn_folder_unread;
 	GtkWidget *spinbtn_ng_abbrev_len;
-	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_threadsubj;
+	GtkWidget *checkbtn_useaddrbook;
+	GtkWidget *checkbtn_threadsubj;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
 
@@ -303,15 +303,15 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	SummariesPage *prefs_summaries = (SummariesPage *) _page;
 	
 	GtkWidget *vbox1;
-	GtkWidget *chkbtn_transhdr;
-	GtkWidget *chkbtn_folder_unread;
+	GtkWidget *checkbtn_transhdr;
+	GtkWidget *checkbtn_folder_unread;
 	GtkWidget *hbox1;
 	GtkWidget *label_ng_abbrev;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkObject *spinbtn_ng_abbrev_len_adj;
 	GtkWidget *vbox2;
-	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_threadsubj;
+	GtkWidget *checkbtn_useaddrbook;
+	GtkWidget *checkbtn_threadsubj;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
@@ -344,7 +344,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	vbox2 = gtkut_get_options_frame(vbox1, &folderview_frame, _("Folder list"));
 
-	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
+	PACK_CHECK_BUTTON (vbox2, checkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -441,7 +441,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, checkbtn_always_show_msg,
 		 _("Always open message when selected"));
 	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_threadsubj,
+		(vbox2, checkbtn_threadsubj,
 		 _("Thread using subject in addition to standard headers"));
 
 	immedexec_tooltip = gtk_tooltips_new();
@@ -477,7 +477,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show_all(hbox1);
 
 	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_useaddrbook,
+		(vbox2, checkbtn_useaddrbook,
 		 _("Display sender using address book"));
 		 
 	hbox2 = gtk_hbox_new (FALSE, 8);
@@ -530,9 +530,9 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox1, checkbtn_ask_mark_all_read,
 		 _("Confirm before marking all mails in a folder as read"));
 	PACK_CHECK_BUTTON
-		(vbox1, chkbtn_transhdr,
+		(vbox1, checkbtn_transhdr,
 		 _("Translate header names"));
-	gtk_tooltips_set_tip(tooltips, chkbtn_transhdr,
+	gtk_tooltips_set_tip(tooltips, checkbtn_transhdr,
 			     _("The display of standard headers (such as 'From:', 'Subject:') "
 			     "will be translated into your language."), NULL);
 	
@@ -543,13 +543,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_summaries->window			= GTK_WIDGET(window);
 	
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_transhdr),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_transhdr),
 			prefs_common.trans_hdr);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_folder_unread),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_unread),
 			prefs_common.display_folder_unread);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_useaddrbook),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_useaddrbook),
 			prefs_common.use_addr_book);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_threadsubj),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_threadsubj),
 			prefs_common.thread_by_subject);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_ng_abbrev_len),
 			prefs_common.ng_abbrev_len);
@@ -572,11 +572,11 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
 
-	prefs_summaries->chkbtn_transhdr = chkbtn_transhdr;
-	prefs_summaries->chkbtn_folder_unread = chkbtn_folder_unread;
+	prefs_summaries->checkbtn_transhdr = checkbtn_transhdr;
+	prefs_summaries->checkbtn_folder_unread = checkbtn_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
-	prefs_summaries->chkbtn_useaddrbook = chkbtn_useaddrbook;
-	prefs_summaries->chkbtn_threadsubj = chkbtn_threadsubj;
+	prefs_summaries->checkbtn_useaddrbook = checkbtn_useaddrbook;
+	prefs_summaries->checkbtn_threadsubj = checkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
@@ -597,13 +597,13 @@ static void prefs_summaries_save(PrefsPage *_page)
 	GtkWidget *menuitem;
 
 	prefs_common.trans_hdr = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->chkbtn_transhdr));
+			GTK_TOGGLE_BUTTON(page->checkbtn_transhdr));
 	prefs_common.display_folder_unread = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->chkbtn_folder_unread));
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_unread));
 	prefs_common.use_addr_book = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->chkbtn_useaddrbook));
+			GTK_TOGGLE_BUTTON(page->checkbtn_useaddrbook));
 	prefs_common.thread_by_subject = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->chkbtn_threadsubj));
+			GTK_TOGGLE_BUTTON(page->checkbtn_threadsubj));
 	prefs_common.ng_abbrev_len = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(page->spinbtn_ng_abbrev_len));
 	

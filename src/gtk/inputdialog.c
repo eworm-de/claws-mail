@@ -65,7 +65,7 @@ static GtkWidget *msg_title;
 static GtkWidget *msg_label;
 static GtkWidget *entry;
 static GtkWidget *combo;
-static GtkWidget *remember_chkbtn;
+static GtkWidget *remember_checkbtn;
 static GtkWidget *ok_button;
 static GtkWidget *icon_q, *icon_p;
 static gboolean is_pass = FALSE;
@@ -104,7 +104,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
 
-	gtk_widget_hide(remember_chkbtn);
+	gtk_widget_hide(remember_checkbtn);
 
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
@@ -125,7 +125,7 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	type = INPUT_DIALOG_INVISIBLE;
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
-	gtk_widget_hide(remember_chkbtn);
+	gtk_widget_hide(remember_checkbtn);
 
 	gtk_widget_hide(icon_q);
 	gtk_widget_show(icon_p);
@@ -156,11 +156,11 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 	gtk_widget_hide(entry);
 	gtk_widget_show(combo);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_chkbtn), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn), FALSE);
 	if (remember)
-		gtk_widget_show(remember_chkbtn);
+		gtk_widget_show(remember_checkbtn);
 	else
-		gtk_widget_hide(remember_chkbtn);
+		gtk_widget_hide(remember_checkbtn);
 
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
@@ -275,8 +275,8 @@ static void input_dialog_create(gboolean is_password)
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
-	remember_chkbtn = gtk_check_button_new_with_label(_("Remember this"));
-	gtk_box_pack_start(GTK_BOX(vbox), remember_chkbtn, FALSE, FALSE, 0);
+	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
+	gtk_box_pack_start(GTK_BOX(vbox), remember_checkbtn, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(TRUE, 0);
 
@@ -291,7 +291,7 @@ static void input_dialog_create(gboolean is_password)
 
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 	
-	gtk_widget_hide(remember_chkbtn);
+	gtk_widget_hide(remember_checkbtn);
 
 	if (is_password)
 		gtk_widget_hide(icon_q);
@@ -321,11 +321,11 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	input_dialog_set(title, message, default_string);
 	gtk_widget_show(dialog);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_chkbtn), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn), FALSE);
 	if (remember)
-		gtk_widget_show(remember_chkbtn);
+		gtk_widget_show(remember_checkbtn);
 	else
-		gtk_widget_hide(remember_chkbtn);
+		gtk_widget_hide(remember_checkbtn);
 
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));
@@ -357,7 +357,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	GTK_EVENTS_FLUSH();
 
 	if (remember) {
-		*remember = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(remember_chkbtn));
+		*remember = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(remember_checkbtn));
 	}
 	if (is_pass)
 		debug_print("return string = %s\n", str ? "********": ("none"));

@@ -46,19 +46,19 @@ typedef struct _MessagePage
 
 	GtkWidget *window;
 
-	GtkWidget *chkbtn_disphdrpane;
-	GtkWidget *chkbtn_disphdr;
-	GtkWidget *chkbtn_dispxface;
+	GtkWidget *checkbtn_disphdrpane;
+	GtkWidget *checkbtn_disphdr;
+	GtkWidget *checkbtn_dispxface;
 
-	GtkWidget *chkbtn_html;
-	GtkWidget *chkbtn_html_plugin;
+	GtkWidget *checkbtn_html;
+	GtkWidget *checkbtn_html_plugin;
 	GtkWidget *spinbtn_linespc;
 
-	GtkWidget *chkbtn_smoothscroll;
+	GtkWidget *checkbtn_smoothscroll;
 	GtkWidget *spinbtn_scrollstep;
-	GtkWidget *chkbtn_halfpage;
+	GtkWidget *checkbtn_halfpage;
 
-	GtkWidget *chkbtn_attach_desc;
+	GtkWidget *checkbtn_attach_desc;
 } MessagePage;
 
 static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
@@ -78,13 +78,13 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
-	GtkWidget *chkbtn_disphdrpane;
-	GtkWidget *chkbtn_disphdr;
-	GtkWidget *chkbtn_dispxface;
+	GtkWidget *checkbtn_disphdrpane;
+	GtkWidget *checkbtn_disphdr;
+	GtkWidget *checkbtn_dispxface;
 
 	GtkWidget *button_edit_disphdr;
-	GtkWidget *chkbtn_html;
-	GtkWidget *chkbtn_html_plugin;
+	GtkWidget *checkbtn_html;
+	GtkWidget *checkbtn_html_plugin;
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
@@ -92,14 +92,14 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *frame;
 	GtkWidget *vbox_scr;
-	GtkWidget *chkbtn_smoothscroll;
+	GtkWidget *checkbtn_smoothscroll;
 	GtkWidget *hbox_scr;
 	GtkWidget *label_scr;
 	GtkObject *spinbtn_scrollstep_adj;
 	GtkWidget *spinbtn_scrollstep;
-	GtkWidget *chkbtn_halfpage;
+	GtkWidget *checkbtn_halfpage;
 
-	GtkWidget *chkbtn_attach_desc;
+	GtkWidget *checkbtn_attach_desc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -107,28 +107,28 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Headers"));
 
-	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
+	PACK_CHECK_BUTTON(vbox2, checkbtn_disphdrpane,
 			  _("Display header pane above message view"));
 
 #if HAVE_LIBCOMPFACE
-	PACK_CHECK_BUTTON(vbox2, chkbtn_dispxface,
+	PACK_CHECK_BUTTON(vbox2, checkbtn_dispxface,
 			  _("Display (X-)Face in message view"));
 #else
-	PACK_CHECK_BUTTON(vbox2, chkbtn_dispxface,
+	PACK_CHECK_BUTTON(vbox2, checkbtn_dispxface,
 			  _("Display Face in message view"));
 #endif
 
-	gtk_widget_set_sensitive(chkbtn_dispxface, 
+	gtk_widget_set_sensitive(checkbtn_dispxface, 
 		!prefs_common.display_header_pane);
 
-	g_signal_connect(G_OBJECT(chkbtn_disphdrpane), "toggled",
-			 G_CALLBACK(disphdr_pane_toggled), chkbtn_dispxface);
+	g_signal_connect(G_OBJECT(checkbtn_disphdrpane), "toggled",
+			 G_CALLBACK(disphdr_pane_toggled), checkbtn_dispxface);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	PACK_CHECK_BUTTON(hbox1, chkbtn_disphdr,
+	PACK_CHECK_BUTTON(hbox1, checkbtn_disphdr,
 			  _("Display headers in message view"));
 
 	button_edit_disphdr = gtk_button_new_from_stock(GTK_STOCK_EDIT);
@@ -139,14 +139,14 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_display_header_open),
 			  NULL);
 
-	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
+	SET_TOGGLE_SENSITIVITY(checkbtn_disphdr, button_edit_disphdr);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("HTML messages"));
 
-	PACK_CHECK_BUTTON(vbox2, chkbtn_html,
+	PACK_CHECK_BUTTON(vbox2, checkbtn_html,
 			  _("Render HTML messages as text"));
 
-	PACK_CHECK_BUTTON(vbox2, chkbtn_html_plugin,
+	PACK_CHECK_BUTTON(vbox2, checkbtn_html_plugin,
 			  _("Render HTML-only messages with plugin if possible"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
@@ -178,13 +178,13 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox_scr = gtkut_get_options_frame(vbox1, &frame, _("Scroll"));
 
-	PACK_CHECK_BUTTON(vbox_scr, chkbtn_halfpage, _("Half page"));
+	PACK_CHECK_BUTTON(vbox_scr, checkbtn_halfpage, _("Half page"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_scr), hbox1, FALSE, TRUE, 0);
 
-	PACK_CHECK_BUTTON(hbox1, chkbtn_smoothscroll, _("Smooth scroll"));
+	PACK_CHECK_BUTTON(hbox1, checkbtn_smoothscroll, _("Smooth scroll"));
 
 	hbox_scr = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_scr);
@@ -208,28 +208,28 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_scr);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), label_scr, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
+	SET_TOGGLE_SENSITIVITY (checkbtn_smoothscroll, hbox_scr)
 
-	PACK_CHECK_BUTTON(vbox1, chkbtn_attach_desc,
+	PACK_CHECK_BUTTON(vbox1, checkbtn_attach_desc,
 			  _("Show attachment descriptions (rather than names)"));
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdrpane),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_disphdrpane),
 		prefs_common.display_header_pane);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_dispxface),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_dispxface),
 		prefs_common.display_xface);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_disphdr),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_disphdr),
 		prefs_common.display_header);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_html),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_html),
 		prefs_common.render_html);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_html_plugin),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_html_plugin),
 		prefs_common.invoke_plugin_on_html);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_smoothscroll),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_smoothscroll),
 		prefs_common.enable_smooth_scroll);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_halfpage),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_halfpage),
 		prefs_common.scroll_halfpage);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbtn_attach_desc),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_attach_desc),
 		prefs_common.attach_desc);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_linespc),
 		prefs_common.line_space);
@@ -237,16 +237,16 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.scroll_step);
 		
 	prefs_message->window = GTK_WIDGET(window);
-	prefs_message->chkbtn_disphdrpane = chkbtn_disphdrpane;
-	prefs_message->chkbtn_dispxface = chkbtn_dispxface;
-	prefs_message->chkbtn_disphdr = chkbtn_disphdr;
-	prefs_message->chkbtn_html = chkbtn_html;
-	prefs_message->chkbtn_html_plugin = chkbtn_html_plugin;
+	prefs_message->checkbtn_disphdrpane = checkbtn_disphdrpane;
+	prefs_message->checkbtn_dispxface = checkbtn_dispxface;
+	prefs_message->checkbtn_disphdr = checkbtn_disphdr;
+	prefs_message->checkbtn_html = checkbtn_html;
+	prefs_message->checkbtn_html_plugin = checkbtn_html_plugin;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
-	prefs_message->chkbtn_smoothscroll = chkbtn_smoothscroll;
+	prefs_message->checkbtn_smoothscroll = checkbtn_smoothscroll;
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
-	prefs_message->chkbtn_halfpage = chkbtn_halfpage;
-	prefs_message->chkbtn_attach_desc = chkbtn_attach_desc;
+	prefs_message->checkbtn_halfpage = checkbtn_halfpage;
+	prefs_message->checkbtn_attach_desc = checkbtn_attach_desc;
 	
 	prefs_message->page.widget = vbox1;
 }
@@ -256,21 +256,21 @@ static void prefs_message_save(PrefsPage *_page)
 	MessagePage *page = (MessagePage *) _page;
 
 	prefs_common.display_header_pane = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_disphdrpane));
+		GTK_TOGGLE_BUTTON(page->checkbtn_disphdrpane));
 	prefs_common.display_xface = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_dispxface));
+		GTK_TOGGLE_BUTTON(page->checkbtn_dispxface));
 	prefs_common.display_header = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_disphdr));
+		GTK_TOGGLE_BUTTON(page->checkbtn_disphdr));
 	prefs_common.render_html = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_html));
+		GTK_TOGGLE_BUTTON(page->checkbtn_html));
 	prefs_common.invoke_plugin_on_html = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_html_plugin));
+		GTK_TOGGLE_BUTTON(page->checkbtn_html_plugin));
 	prefs_common.enable_smooth_scroll = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_smoothscroll));
+		GTK_TOGGLE_BUTTON(page->checkbtn_smoothscroll));
 	prefs_common.scroll_halfpage = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_halfpage));
+		GTK_TOGGLE_BUTTON(page->checkbtn_halfpage));
 	prefs_common.attach_desc = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->chkbtn_attach_desc));
+		GTK_TOGGLE_BUTTON(page->checkbtn_attach_desc));
 	prefs_common.line_space = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_linespc));
 	prefs_common.scroll_step = gtk_spin_button_get_value_as_int(

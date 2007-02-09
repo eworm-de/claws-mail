@@ -80,7 +80,7 @@ struct BasicProtocol {
 
 static struct Basic {
 	GtkWidget *acname_entry;
-	GtkWidget *default_chkbtn;
+	GtkWidget *default_checkbtn;
 
 	GtkWidget *name_entry;
 	GtkWidget *addr_entry;
@@ -97,10 +97,10 @@ static struct Basic {
 	GtkWidget *recvserv_entry;
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
-	GtkWidget *nntpauth_chkbtn;
-	GtkWidget *nntpauth_onconnect_chkbtn;
+	GtkWidget *nntpauth_checkbtn;
+	GtkWidget *nntpauth_onconnect_checkbtn;
 	GtkWidget *localmbox_entry;
-	GtkWidget *mailcmd_chkbtn;
+	GtkWidget *mailcmd_checkbtn;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
 	GtkWidget *pass_label;
@@ -110,11 +110,11 @@ static struct Basic {
 
 static struct Receive {
 	GtkWidget *pop3_frame;
-	GtkWidget *use_apop_chkbtn;
-	GtkWidget *rmmail_chkbtn;
+	GtkWidget *use_apop_checkbtn;
+	GtkWidget *rmmail_checkbtn;
 	GtkWidget *leave_time_entry;
-	GtkWidget *getall_chkbtn;
-	GtkWidget *size_limit_chkbtn;
+	GtkWidget *getall_checkbtn;
+	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_entry;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
@@ -125,14 +125,14 @@ static struct Receive {
 	GtkWidget *local_inbox_entry;
 	GtkWidget *local_inbox_btn;
 
-	GtkWidget *filter_on_recv_chkbtn;
-	GtkWidget *recvatgetall_chkbtn;
+	GtkWidget *filter_on_recv_checkbtn;
+	GtkWidget *recvatgetall_checkbtn;
 	
 	GtkWidget *imap_frame;
 	GtkWidget *imap_auth_type_optmenu;
 	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
-	GtkWidget *subsonly_chkbtn;
+	GtkWidget *subsonly_checkbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -141,13 +141,13 @@ static struct Receive {
 } receive;
 
 static struct Send {
-	GtkWidget *msgid_chkbtn;
-	GtkWidget *customhdr_chkbtn;
-	GtkWidget *smtp_auth_chkbtn;
+	GtkWidget *msgid_checkbtn;
+	GtkWidget *customhdr_checkbtn;
+	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *smtp_auth_type_optmenu;
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
-	GtkWidget *pop_bfr_smtp_chkbtn;
+	GtkWidget *pop_bfr_smtp_checkbtn;
 	GtkWidget *pop_bfr_smtp_tm_entry;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
@@ -158,11 +158,11 @@ static struct Compose {
 	GtkWidget *entry_sigpath;
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *entry_sigsep;
-	GtkWidget *autocc_chkbtn;
+	GtkWidget *autocc_checkbtn;
 	GtkWidget *autocc_entry;
-	GtkWidget *autobcc_chkbtn;
+	GtkWidget *autobcc_checkbtn;
 	GtkWidget *autobcc_entry;
-	GtkWidget *autoreplyto_chkbtn;
+	GtkWidget *autoreplyto_checkbtn;
 	GtkWidget *autoreplyto_entry;
 #ifdef USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
@@ -174,11 +174,11 @@ static struct Compose {
 
 static struct Privacy {
 	GtkWidget *default_privacy_system;
-	GtkWidget *default_encrypt_chkbtn;
-	GtkWidget *default_encrypt_reply_chkbtn;
-	GtkWidget *default_sign_chkbtn;
-	GtkWidget *save_clear_text_chkbtn;
-	GtkWidget *encrypt_to_self_chkbtn;
+	GtkWidget *default_encrypt_checkbtn;
+	GtkWidget *default_encrypt_reply_checkbtn;
+	GtkWidget *default_sign_checkbtn;
+	GtkWidget *save_clear_text_checkbtn;
+	GtkWidget *encrypt_to_self_checkbtn;
 } privacy;
 
 #if USE_OPENSSL
@@ -202,37 +202,37 @@ static struct SSLPrefs {
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
 
-	GtkWidget *use_nonblocking_ssl_chkbtn;
+	GtkWidget *use_nonblocking_ssl_checkbtn;
 } ssl;
 #endif /* USE_OPENSSL */
 
 static struct Advanced {
-	GtkWidget *smtpport_chkbtn;
+	GtkWidget *smtpport_checkbtn;
 	GtkWidget *smtpport_entry;
 	GtkWidget *popport_hbox;
-	GtkWidget *popport_chkbtn;
+	GtkWidget *popport_checkbtn;
 	GtkWidget *popport_entry;
 	GtkWidget *imapport_hbox;
-	GtkWidget *imapport_chkbtn;
+	GtkWidget *imapport_checkbtn;
 	GtkWidget *imapport_entry;
 	GtkWidget *nntpport_hbox;
-	GtkWidget *nntpport_chkbtn;
+	GtkWidget *nntpport_checkbtn;
 	GtkWidget *nntpport_entry;
-	GtkWidget *domain_chkbtn;
+	GtkWidget *domain_checkbtn;
 	GtkWidget *domain_entry;
-	GtkWidget *crosspost_chkbtn;
+	GtkWidget *crosspost_checkbtn;
  	GtkWidget *crosspost_colormenu;
 
-	GtkWidget *tunnelcmd_chkbtn;
+	GtkWidget *tunnelcmd_checkbtn;
 	GtkWidget *tunnelcmd_entry;
 
-	GtkWidget *sent_folder_chkbtn;
+	GtkWidget *sent_folder_checkbtn;
 	GtkWidget *sent_folder_entry;
-	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_checkbtn;
 	GtkWidget *queue_folder_entry;
-	GtkWidget *draft_folder_chkbtn;
+	GtkWidget *draft_folder_checkbtn;
 	GtkWidget *draft_folder_entry;
-	GtkWidget *trash_folder_chkbtn;
+	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
 } advanced;
 
@@ -287,7 +287,7 @@ static PrefParam param[] = {
 	 &basic.acname_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"is_default", "FALSE", &tmp_ac_prefs.is_default, P_BOOL,
-	 &basic.default_chkbtn,
+	 &basic.default_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"name", NULL, &tmp_ac_prefs.name, P_STRING,
@@ -317,17 +317,17 @@ static PrefParam param[] = {
 	 &basic.localmbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_mail_command", "FALSE", &tmp_ac_prefs.use_mail_command, P_BOOL,
-	 &basic.mailcmd_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
+	 &basic.mailcmd_checkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"mail_command", DEFAULT_SENDMAIL_CMD, &tmp_ac_prefs.mail_command, P_STRING,
 	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,
-	 &basic.nntpauth_chkbtn,
+	 &basic.nntpauth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	
 	{"use_nntp_auth_onconnect", "FALSE", &tmp_ac_prefs.use_nntp_auth_onconnect, P_BOOL,
-	 &basic.nntpauth_onconnect_chkbtn,
+	 &basic.nntpauth_onconnect_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
@@ -344,11 +344,11 @@ static PrefParam param[] = {
 
 	/* Receive */
 	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
-	 &receive.use_apop_chkbtn,
+	 &receive.use_apop_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
-	 &receive.rmmail_chkbtn,
+	 &receive.rmmail_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
@@ -356,18 +356,18 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"get_all_mail", "FALSE", &tmp_ac_prefs.getall, P_BOOL,
-	 &receive.getall_chkbtn,
+	 &receive.getall_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"enable_size_limit", "FALSE", &tmp_ac_prefs.enable_size_limit, P_BOOL,
-	 &receive.size_limit_chkbtn,
+	 &receive.size_limit_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"size_limit", "1024", &tmp_ac_prefs.size_limit, P_INT,
 	 &receive.size_limit_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
-	 &receive.filter_on_recv_chkbtn,
+	 &receive.filter_on_recv_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"imap_auth_method", "0", &tmp_ac_prefs.imap_auth_type, P_ENUM,
@@ -376,7 +376,7 @@ static PrefParam param[] = {
 	 prefs_account_imap_auth_type_set_optmenu},
 
 	{"receive_at_get_all", "TRUE", &tmp_ac_prefs.recv_at_getall, P_BOOL,
-	 &receive.recvatgetall_chkbtn,
+	 &receive.recvatgetall_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"max_news_articles", "300", &tmp_ac_prefs.max_articles, P_INT,
@@ -385,15 +385,15 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &p_send.msgid_chkbtn,
+	 &p_send.msgid_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
-	 &p_send.customhdr_chkbtn,
+	 &p_send.customhdr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
-	 &p_send.smtp_auth_chkbtn,
+	 &p_send.smtp_auth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_auth_method", "0", &tmp_ac_prefs.smtp_auth_type, P_ENUM,
@@ -407,7 +407,7 @@ static PrefParam param[] = {
 	 &p_send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
-	 &p_send.pop_bfr_smtp_chkbtn,
+	 &p_send.pop_bfr_smtp_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_before_smtp_timeout", "5", &tmp_ac_prefs.pop_before_smtp_timeout, P_INT,
@@ -432,7 +432,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autocc", "FALSE", &tmp_ac_prefs.set_autocc, P_BOOL,
-	 &compose.autocc_chkbtn,
+	 &compose.autocc_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_cc", NULL, &tmp_ac_prefs.auto_cc, P_STRING,
@@ -440,7 +440,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autobcc", "FALSE", &tmp_ac_prefs.set_autobcc, P_BOOL,
-	 &compose.autobcc_chkbtn,
+	 &compose.autobcc_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_bcc", NULL, &tmp_ac_prefs.auto_bcc, P_STRING,
@@ -448,7 +448,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autoreplyto", "FALSE", &tmp_ac_prefs.set_autoreplyto, P_BOOL,
-	 &compose.autoreplyto_chkbtn,
+	 &compose.autoreplyto_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
@@ -480,19 +480,19 @@ static PrefParam param[] = {
 	 &privacy.default_privacy_system,
 	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
-	 &privacy.default_encrypt_chkbtn,
+	 &privacy.default_encrypt_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_encrypt_reply", "TRUE", &tmp_ac_prefs.default_encrypt_reply, P_BOOL,
-	 &privacy.default_encrypt_reply_chkbtn,
+	 &privacy.default_encrypt_reply_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
-	 &privacy.default_sign_chkbtn,
+	 &privacy.default_sign_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
-	 &privacy.save_clear_text_chkbtn,
+	 &privacy.save_clear_text_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"encrypt_to_self", "FALSE", &tmp_ac_prefs.encrypt_to_self, P_BOOL,
-	 &privacy.encrypt_to_self_chkbtn,
+	 &privacy.encrypt_to_self_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"privacy_prefs", "", &privacy_prefs, P_STRING,
 	 NULL, NULL, NULL},
@@ -516,7 +516,7 @@ static PrefParam param[] = {
 	 prefs_account_enum_set_radiobtn},
 
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
-	 &ssl.use_nonblocking_ssl_chkbtn,
+	 &ssl.use_nonblocking_ssl_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #else
 	/* SSL */
@@ -535,7 +535,7 @@ static PrefParam param[] = {
 
 	/* Advanced */
 	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
-	 &advanced.smtpport_chkbtn,
+	 &advanced.smtpport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_port", "25", &tmp_ac_prefs.smtpport, P_USHORT,
@@ -543,7 +543,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_popport", "FALSE", &tmp_ac_prefs.set_popport, P_BOOL,
-	 &advanced.popport_chkbtn,
+	 &advanced.popport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
@@ -551,7 +551,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
-	 &advanced.imapport_chkbtn,
+	 &advanced.imapport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"imap_port", "143", &tmp_ac_prefs.imapport, P_USHORT,
@@ -559,7 +559,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_nntpport", "FALSE", &tmp_ac_prefs.set_nntpport, P_BOOL,
-	 &advanced.nntpport_chkbtn,
+	 &advanced.nntpport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"nntp_port", "119", &tmp_ac_prefs.nntpport, P_USHORT,
@@ -567,7 +567,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_domain", "FALSE", &tmp_ac_prefs.set_domain, P_BOOL,
-	 &advanced.domain_chkbtn,
+	 &advanced.domain_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"domain", NULL, &tmp_ac_prefs.domain, P_STRING,
@@ -575,7 +575,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
-	 &advanced.tunnelcmd_chkbtn,
+	 &advanced.tunnelcmd_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"tunnelcmd", NULL, &tmp_ac_prefs.tunnelcmd, P_STRING,
@@ -583,7 +583,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"mark_crosspost_read", "FALSE", &tmp_ac_prefs.mark_crosspost_read, P_BOOL,
-	 &advanced.crosspost_chkbtn,
+	 &advanced.crosspost_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"crosspost_color", NULL, &tmp_ac_prefs.crosspost_col, P_ENUM,
@@ -595,32 +595,32 @@ static PrefParam param[] = {
 	 &receive.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"imap_subsonly", "TRUE", &tmp_ac_prefs.imap_subsonly, P_BOOL,
-	 &receive.subsonly_chkbtn,
+	 &receive.subsonly_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
-	 &advanced.sent_folder_chkbtn,
+	 &advanced.sent_folder_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"sent_folder", NULL, &tmp_ac_prefs.sent_folder, P_STRING,
 	 &advanced.sent_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_queue_folder", "FALSE", &tmp_ac_prefs.set_queue_folder, P_BOOL,
-	 &advanced.queue_folder_chkbtn,
+	 &advanced.queue_folder_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"queue_folder", NULL, &tmp_ac_prefs.queue_folder, P_STRING,
 	 &advanced.queue_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_draft_folder", "FALSE", &tmp_ac_prefs.set_draft_folder, P_BOOL,
-	 &advanced.draft_folder_chkbtn,
+	 &advanced.draft_folder_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"draft_folder", NULL, &tmp_ac_prefs.draft_folder, P_STRING,
 	 &advanced.draft_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_trash_folder", "FALSE", &tmp_ac_prefs.set_trash_folder, P_BOOL,
-	 &advanced.trash_folder_chkbtn,
+	 &advanced.trash_folder_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"trash_folder", NULL, &tmp_ac_prefs.trash_folder, P_STRING,
 	 &advanced.trash_folder_entry,
@@ -686,13 +686,13 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA)) == FALSE)
 		privacy_enabled = FALSE;
 
-	gtk_widget_set_sensitive (privacy.default_encrypt_chkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.default_encrypt_reply_chkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.default_sign_chkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.encrypt_to_self_chkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.save_clear_text_chkbtn, 
+	gtk_widget_set_sensitive (privacy.default_encrypt_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.default_encrypt_reply_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.default_sign_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.encrypt_to_self_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy.save_clear_text_checkbtn, 
 		privacy_enabled && !gtk_toggle_button_get_active(
-					GTK_TOGGLE_BUTTON(privacy.encrypt_to_self_chkbtn)));
+					GTK_TOGGLE_BUTTON(privacy.encrypt_to_self_checkbtn)));
 }
 
 static void update_privacy_system_menu() {
@@ -1118,7 +1118,7 @@ static void prefs_account_basic_create(void)
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *acname_entry;
-	GtkWidget *default_chkbtn;
+	GtkWidget *default_checkbtn;
 	GtkWidget *frame1;
 	GtkWidget *table1;
 	GtkWidget *name_entry;
@@ -1141,10 +1141,10 @@ static void prefs_account_basic_create(void)
 	GtkWidget *recvserv_entry;
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
-	GtkWidget *nntpauth_chkbtn;
-	GtkWidget *nntpauth_onconnect_chkbtn;
+	GtkWidget *nntpauth_checkbtn;
+	GtkWidget *nntpauth_onconnect_checkbtn;
 	GtkWidget *localmbox_entry;
-	GtkWidget *mailcmd_chkbtn;
+	GtkWidget *mailcmd_checkbtn;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
 	GtkWidget *pass_label;
@@ -1174,9 +1174,9 @@ static void prefs_account_basic_create(void)
 	gtk_widget_set_size_request (acname_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), acname_entry, TRUE, TRUE, 0);
 
-	default_chkbtn = gtk_check_button_new_with_label (_("Set as default"));
-	gtk_widget_show (default_chkbtn);
-	gtk_box_pack_end (GTK_BOX (hbox), default_chkbtn, TRUE, FALSE, 0);
+	default_checkbtn = gtk_check_button_new_with_label (_("Set as default"));
+	gtk_widget_show (default_checkbtn);
+	gtk_box_pack_end (GTK_BOX (hbox), default_checkbtn, TRUE, FALSE, 0);
 
 	PACK_FRAME (vbox1, frame1, _("Personal information"));
 
@@ -1286,18 +1286,18 @@ static void prefs_account_basic_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 /*  	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 0, 0); */
 
-	nntpauth_chkbtn = gtk_check_button_new_with_label
+	nntpauth_checkbtn = gtk_check_button_new_with_label
 		(_("This server requires authentication"));
-	gtk_widget_show (nntpauth_chkbtn);
+	gtk_widget_show (nntpauth_checkbtn);
 	
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 2, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_checkbtn, 0, 2, 6, 7,
 			  GTK_FILL, 0, 0, 0);
 
-	nntpauth_onconnect_chkbtn = gtk_check_button_new_with_label
+	nntpauth_onconnect_checkbtn = gtk_check_button_new_with_label
 		(_("Authenticate on connect"));
-	gtk_widget_show (nntpauth_onconnect_chkbtn);
+	gtk_widget_show (nntpauth_onconnect_checkbtn);
 
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_onconnect_chkbtn, 2, 4, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_onconnect_checkbtn, 2, 4, 6, 7,
 			  GTK_FILL, 0, 0, 0);
 
 	recvserv_entry = gtk_entry_new ();
@@ -1365,13 +1365,13 @@ static void prefs_account_basic_create(void)
 	gtk_misc_set_alignment (GTK_MISC (smtpserv_label), 1, 0.5);
 /*  	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0); */
 
-	mailcmd_chkbtn = gtk_check_button_new_with_label
+	mailcmd_checkbtn = gtk_check_button_new_with_label
 		(_("Use mail command rather than SMTP server"));
-	gtk_widget_show (mailcmd_chkbtn);
-	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_chkbtn, 0, 4, 5, 6,
+	gtk_widget_show (mailcmd_checkbtn);
+	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_checkbtn, 0, 4, 5, 6,
 			  GTK_EXPAND | GTK_FILL,
 			  0, 0, TABLE_YPAD);
-	g_signal_connect(G_OBJECT(mailcmd_chkbtn), "toggled",
+	g_signal_connect(G_OBJECT(mailcmd_checkbtn), "toggled",
 			 G_CALLBACK(prefs_account_mailcmd_toggled),
 			 NULL);
 
@@ -1393,14 +1393,14 @@ static void prefs_account_basic_create(void)
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 7, 8,
 			  0, 0, 0, 0);
 
-	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, uid_label);
-	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, pass_label);
-	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, uid_entry);
-	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, pass_entry);
-	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, nntpauth_onconnect_chkbtn);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_label);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_label);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_entry);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_entry);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, nntpauth_onconnect_checkbtn);
 
 	basic.acname_entry   = acname_entry;
-	basic.default_chkbtn = default_chkbtn;
+	basic.default_checkbtn = default_checkbtn;
 
 	basic.name_entry = name_entry;
 	basic.addr_entry = addr_entry;
@@ -1415,11 +1415,11 @@ static void prefs_account_basic_create(void)
 	basic.smtpserv_entry   = smtpserv_entry;
 	basic.nntpserv_label   = nntpserv_label;
 	basic.nntpserv_entry   = nntpserv_entry;
-	basic.nntpauth_chkbtn  = nntpauth_chkbtn;
-	basic.nntpauth_onconnect_chkbtn  = nntpauth_onconnect_chkbtn;
+	basic.nntpauth_checkbtn  = nntpauth_checkbtn;
+	basic.nntpauth_onconnect_checkbtn  = nntpauth_onconnect_checkbtn;
 	basic.localmbox_label   = localmbox_label;
 	basic.localmbox_entry   = localmbox_entry;
-	basic.mailcmd_chkbtn   = mailcmd_chkbtn;
+	basic.mailcmd_checkbtn   = mailcmd_checkbtn;
 	basic.mailcmd_label   = mailcmd_label;
 	basic.mailcmd_entry   = mailcmd_entry;
 	basic.uid_label        = uid_label;
@@ -1433,19 +1433,19 @@ static void prefs_account_receive_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
-	GtkWidget *use_apop_chkbtn;
-	GtkWidget *rmmail_chkbtn;
+	GtkWidget *use_apop_checkbtn;
+	GtkWidget *rmmail_checkbtn;
 	GtkWidget *hbox_spc;
 	GtkTooltips *leave_time_tooltip;
 	GtkWidget *leave_time_label;
 	GtkWidget *leave_time_entry;
-	GtkWidget *getall_chkbtn;
+	GtkWidget *getall_checkbtn;
 	GtkWidget *hbox1;
-	GtkWidget *size_limit_chkbtn;
+	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_entry;
 	GtkTooltips *size_limit_tooltip;
 	GtkWidget *label;
-	GtkWidget *filter_on_recv_chkbtn;
+	GtkWidget *filter_on_recv_checkbtn;
 	GtkWidget *vbox3;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
@@ -1454,7 +1454,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *imap_frame;
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
-	GtkWidget *subsonly_chkbtn;
+	GtkWidget *subsonly_checkbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1465,7 +1465,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
-	GtkWidget *recvatgetall_chkbtn;
+	GtkWidget *recvatgetall_checkbtn;
 
 	GtkWidget *hbox2;
 	GtkWidget *frame2;
@@ -1511,10 +1511,10 @@ static void prefs_account_receive_create(void)
 			  local_inbox_entry);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("POP3"));
-	PACK_CHECK_BUTTON (vbox2, use_apop_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, use_apop_checkbtn,
 			   _("Use secure authentication (APOP)"));
 
-	PACK_CHECK_BUTTON (vbox2, rmmail_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, rmmail_checkbtn,
 			   _("Remove messages on server when received"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -1543,18 +1543,18 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY (rmmail_chkbtn, hbox1);
+	SET_TOGGLE_SENSITIVITY (rmmail_checkbtn, hbox1);
 
-	PACK_CHECK_BUTTON (vbox2, getall_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, getall_checkbtn,
 			   _("Download all messages on server"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (hbox1, size_limit_chkbtn, _("Receive size limit"));
+	PACK_CHECK_BUTTON (hbox1, size_limit_checkbtn, _("Receive size limit"));
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(size_limit_tooltip), size_limit_chkbtn,
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(size_limit_tooltip), size_limit_checkbtn,
 			     _("Messages over this limit will be partially retrieved. "
 		   	       "When selecting them you will be able to download them fully "
 			       "or delete them."),
@@ -1569,7 +1569,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY (size_limit_chkbtn, size_limit_entry);
+	SET_TOGGLE_SENSITIVITY (size_limit_checkbtn, size_limit_entry);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -1670,24 +1670,24 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
-	PACK_CHECK_BUTTON (hbox1, subsonly_chkbtn,
+	PACK_CHECK_BUTTON (hbox1, subsonly_checkbtn,
 			   _("Show subscribed folders only"));
 
-	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
+	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
 
 	PACK_CHECK_BUTTON
-		(vbox1, recvatgetall_chkbtn,
+		(vbox1, recvatgetall_checkbtn,
 		 _("'Get Mail' checks for new messages on this account"));
 
 	receive.pop3_frame               = frame1;
-	receive.use_apop_chkbtn          = use_apop_chkbtn;
-	receive.rmmail_chkbtn            = rmmail_chkbtn;
+	receive.use_apop_checkbtn          = use_apop_checkbtn;
+	receive.rmmail_checkbtn            = rmmail_checkbtn;
 	receive.leave_time_entry         = leave_time_entry;
-	receive.getall_chkbtn            = getall_chkbtn;
-	receive.size_limit_chkbtn        = size_limit_chkbtn;
+	receive.getall_checkbtn            = getall_checkbtn;
+	receive.size_limit_checkbtn        = size_limit_checkbtn;
 	receive.size_limit_entry         = size_limit_entry;
-	receive.filter_on_recv_chkbtn    = filter_on_recv_chkbtn;
+	receive.filter_on_recv_checkbtn    = filter_on_recv_checkbtn;
 	receive.inbox_label              = inbox_label;
 	receive.inbox_entry              = inbox_entry;
 	receive.inbox_btn                = inbox_btn;
@@ -1697,13 +1697,13 @@ static void prefs_account_receive_create(void)
 
 	receive.imapdir_label		= imapdir_label;
 	receive.imapdir_entry           = imapdir_entry;
-	receive.subsonly_chkbtn		= subsonly_chkbtn;
+	receive.subsonly_checkbtn		= subsonly_checkbtn;
 	receive.local_frame		= local_frame;
 	receive.local_inbox_label	= local_inbox_label;
 	receive.local_inbox_entry	= local_inbox_entry;
 	receive.local_inbox_btn		= local_inbox_btn;
 
-	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
+	receive.recvatgetall_checkbtn      = recvatgetall_checkbtn;
 
 	receive.frame_maxarticle	= frame2;
 	receive.maxarticle_spinbtn     	= maxarticle_spinbtn;
@@ -1715,12 +1715,12 @@ static void prefs_account_send_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *frame;
-	GtkWidget *msgid_chkbtn;
+	GtkWidget *msgid_checkbtn;
 	GtkWidget *hbox;
-	GtkWidget *customhdr_chkbtn;
+	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
 	GtkWidget *vbox3;
-	GtkWidget *smtp_auth_chkbtn;
+	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
@@ -1730,7 +1730,7 @@ static void prefs_account_send_create(void)
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *vbox_spc;
-	GtkWidget *pop_bfr_smtp_chkbtn;
+	GtkWidget *pop_bfr_smtp_checkbtn;
 	GtkWidget *pop_bfr_smtp_tm_entry;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
@@ -1742,13 +1742,13 @@ static void prefs_account_send_create(void)
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
 
-	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
+	PACK_CHECK_BUTTON (vbox2, msgid_checkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (hbox, customhdr_chkbtn,
+	PACK_CHECK_BUTTON (hbox, customhdr_checkbtn,
 			   _("Add user-defined header"));
 
 	customhdr_edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
@@ -1759,11 +1759,11 @@ static void prefs_account_send_create(void)
 			  G_CALLBACK (prefs_account_edit_custom_header),
 			  NULL);
 
-	SET_TOGGLE_SENSITIVITY (customhdr_chkbtn, customhdr_edit_btn);
+	SET_TOGGLE_SENSITIVITY (customhdr_checkbtn, customhdr_edit_btn);
 
 	vbox3 = gtkut_get_options_frame(vbox1, &frame, _("Authentication"));
 
-	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
+	PACK_CHECK_BUTTON (vbox3, smtp_auth_checkbtn,
 		_("SMTP Authentication (SMTP AUTH)"));
 
 	vbox4 = gtk_vbox_new (FALSE, 0);
@@ -1848,12 +1848,12 @@ static void prefs_account_send_create(void)
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtkut_widget_set_small_font_size (label);
 
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, vbox4);
+	SET_TOGGLE_SENSITIVITY (smtp_auth_checkbtn, vbox4);
 
-	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
+	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_checkbtn,
 		_("Authenticate with POP3 before sending"));
 	
-	g_signal_connect (G_OBJECT (pop_bfr_smtp_chkbtn), "clicked",
+	g_signal_connect (G_OBJECT (pop_bfr_smtp_checkbtn), "clicked",
 			  G_CALLBACK (pop_bfr_smtp_tm_set_sens),
 			  NULL);
 
@@ -1881,14 +1881,14 @@ static void prefs_account_send_create(void)
 
 
 	
-	p_send.msgid_chkbtn     = msgid_chkbtn;
-	p_send.customhdr_chkbtn = customhdr_chkbtn;
+	p_send.msgid_checkbtn     = msgid_checkbtn;
+	p_send.customhdr_checkbtn = customhdr_checkbtn;
 
-	p_send.smtp_auth_chkbtn       = smtp_auth_chkbtn;
+	p_send.smtp_auth_checkbtn       = smtp_auth_checkbtn;
 	p_send.smtp_auth_type_optmenu = optmenu;
 	p_send.smtp_uid_entry         = smtp_uid_entry;
 	p_send.smtp_pass_entry        = smtp_pass_entry;
-	p_send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
+	p_send.pop_bfr_smtp_checkbtn    = pop_bfr_smtp_checkbtn;
 	p_send.pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
 	p_send.pop_auth_timeout_lbl   = pop_auth_timeout_lbl;
 	p_send.pop_auth_minutes_lbl   = pop_auth_minutes_lbl;
@@ -1908,11 +1908,11 @@ static void prefs_account_compose_create(void)
 	GtkWidget *entry_sigsep;
 	GtkWidget *frame;
 	GtkWidget *table;
-	GtkWidget *autocc_chkbtn;
+	GtkWidget *autocc_checkbtn;
 	GtkWidget *autocc_entry;
-	GtkWidget *autobcc_chkbtn;
+	GtkWidget *autobcc_checkbtn;
 	GtkWidget *autobcc_entry;
-	GtkWidget *autoreplyto_chkbtn;
+	GtkWidget *autoreplyto_checkbtn;
 	GtkWidget *autoreplyto_entry;
 #if USE_ASPELL
 	GtkWidget *frame_dict;
@@ -2003,9 +2003,9 @@ static void prefs_account_compose_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	autocc_chkbtn = gtk_check_button_new_with_label (_("Cc"));
-	gtk_widget_show (autocc_chkbtn);
-	gtk_table_attach (GTK_TABLE (table), autocc_chkbtn, 0, 1, 0, 1,
+	autocc_checkbtn = gtk_check_button_new_with_label (_("Cc"));
+	gtk_widget_show (autocc_checkbtn);
+	gtk_table_attach (GTK_TABLE (table), autocc_checkbtn, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
 
 	autocc_entry = gtk_entry_new ();
@@ -2014,11 +2014,11 @@ static void prefs_account_compose_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	SET_TOGGLE_SENSITIVITY (autocc_chkbtn, autocc_entry);
+	SET_TOGGLE_SENSITIVITY (autocc_checkbtn, autocc_entry);
 
-	autobcc_chkbtn = gtk_check_button_new_with_label (_("Bcc"));
-	gtk_widget_show (autobcc_chkbtn);
-	gtk_table_attach (GTK_TABLE (table), autobcc_chkbtn, 0, 1, 1, 2,
+	autobcc_checkbtn = gtk_check_button_new_with_label (_("Bcc"));
+	gtk_widget_show (autobcc_checkbtn);
+	gtk_table_attach (GTK_TABLE (table), autobcc_checkbtn, 0, 1, 1, 2,
 			  GTK_FILL, 0, 0, 0);
 
 	autobcc_entry = gtk_entry_new ();
@@ -2027,11 +2027,11 @@ static void prefs_account_compose_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	SET_TOGGLE_SENSITIVITY (autobcc_chkbtn, autobcc_entry);
+	SET_TOGGLE_SENSITIVITY (autobcc_checkbtn, autobcc_entry);
 
-	autoreplyto_chkbtn = gtk_check_button_new_with_label (_("Reply-To"));
-	gtk_widget_show (autoreplyto_chkbtn);
-	gtk_table_attach (GTK_TABLE (table), autoreplyto_chkbtn, 0, 1, 2, 3,
+	autoreplyto_checkbtn = gtk_check_button_new_with_label (_("Reply-To"));
+	gtk_widget_show (autoreplyto_checkbtn);
+	gtk_table_attach (GTK_TABLE (table), autoreplyto_checkbtn, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);
 
 	autoreplyto_entry = gtk_entry_new ();
@@ -2040,7 +2040,7 @@ static void prefs_account_compose_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	SET_TOGGLE_SENSITIVITY (autoreplyto_chkbtn, autoreplyto_entry);
+	SET_TOGGLE_SENSITIVITY (autoreplyto_checkbtn, autoreplyto_entry);
 
 #if USE_ASPELL
 	PACK_FRAME (vbox1, frame_dict, _("Spell check dictionaries"));
@@ -2094,11 +2094,11 @@ static void prefs_account_compose_create(void)
 	compose.checkbtn_autosig   = checkbtn_autosig;
 	compose.entry_sigsep       = entry_sigsep;
 
-	compose.autocc_chkbtn      = autocc_chkbtn;
+	compose.autocc_checkbtn      = autocc_checkbtn;
 	compose.autocc_entry       = autocc_entry;
-	compose.autobcc_chkbtn     = autobcc_chkbtn;
+	compose.autobcc_checkbtn     = autobcc_checkbtn;
 	compose.autobcc_entry      = autobcc_entry;
-	compose.autoreplyto_chkbtn = autoreplyto_chkbtn;
+	compose.autoreplyto_checkbtn = autoreplyto_checkbtn;
 	compose.autoreplyto_entry  = autoreplyto_entry;
 #ifdef USE_ASPELL
 	compose.checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
@@ -2115,11 +2115,11 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *label;
 	GtkWidget *default_privacy_system;
-	GtkWidget *default_encrypt_chkbtn;
-	GtkWidget *default_encrypt_reply_chkbtn;
-	GtkWidget *default_sign_chkbtn;
-	GtkWidget *save_clear_text_chkbtn;
-	GtkWidget *encrypt_to_self_chkbtn;
+	GtkWidget *default_encrypt_checkbtn;
+	GtkWidget *default_encrypt_reply_checkbtn;
+	GtkWidget *default_sign_checkbtn;
+	GtkWidget *save_clear_text_checkbtn;
+	GtkWidget *encrypt_to_self_checkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2142,26 +2142,26 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (default_privacy_system);
 	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, FALSE, TRUE, 0);
 
-	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, default_sign_checkbtn,
 			   _("Always sign messages"));
-	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, default_encrypt_checkbtn,
 			   _("Always encrypt messages"));
-	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_checkbtn,
 			   _("Always encrypt messages when replying to an "
 			     "encrypted message"));
-	PACK_CHECK_BUTTON (vbox2, encrypt_to_self_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, encrypt_to_self_checkbtn,
 			   _("Encrypt sent messages with your own key in addition to recipient's"));
-	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
+	PACK_CHECK_BUTTON (vbox2, save_clear_text_checkbtn,
 			   _("Save sent encrypted messages as clear text"));
 
-	SET_TOGGLE_SENSITIVITY_REVERSE(encrypt_to_self_chkbtn, save_clear_text_chkbtn);
+	SET_TOGGLE_SENSITIVITY_REVERSE(encrypt_to_self_checkbtn, save_clear_text_checkbtn);
 
 	privacy.default_privacy_system = default_privacy_system;
-	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
-	privacy.default_encrypt_reply_chkbtn = default_encrypt_reply_chkbtn;
-	privacy.default_sign_chkbtn    = default_sign_chkbtn;
-	privacy.save_clear_text_chkbtn = save_clear_text_chkbtn;
-	privacy.encrypt_to_self_chkbtn = encrypt_to_self_chkbtn;
+	privacy.default_encrypt_checkbtn = default_encrypt_checkbtn;
+	privacy.default_encrypt_reply_checkbtn = default_encrypt_reply_checkbtn;
+	privacy.default_sign_checkbtn    = default_sign_checkbtn;
+	privacy.save_clear_text_checkbtn = save_clear_text_checkbtn;
+	privacy.encrypt_to_self_checkbtn = encrypt_to_self_checkbtn;
 }
 
 #if USE_OPENSSL
@@ -2221,7 +2221,7 @@ static void prefs_account_ssl_create(void)
 	GtkWidget *smtp_starttls_radiobtn;
 
 	GtkWidget *vbox6;
-	GtkWidget *use_nonblocking_ssl_chkbtn;
+	GtkWidget *use_nonblocking_ssl_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
@@ -2288,7 +2288,7 @@ static void prefs_account_ssl_create(void)
 	gtk_widget_show (vbox6);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox6, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(vbox6, use_nonblocking_ssl_chkbtn,
+	PACK_CHECK_BUTTON(vbox6, use_nonblocking_ssl_checkbtn,
 			  _("Use non-blocking SSL"));
 
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -2325,7 +2325,7 @@ static void prefs_account_ssl_create(void)
 	ssl.smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
 	ssl.smtp_starttls_radiobtn  = smtp_starttls_radiobtn;
 
-	ssl.use_nonblocking_ssl_chkbtn = use_nonblocking_ssl_chkbtn;
+	ssl.use_nonblocking_ssl_checkbtn = use_nonblocking_ssl_checkbtn;
 }
 
 #undef CREATE_RADIO_BUTTONS
@@ -2337,7 +2337,7 @@ static void crosspost_color_toggled(void)
 	gboolean is_active;
 
 	is_active = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(advanced.crosspost_chkbtn));
+		(GTK_TOGGLE_BUTTON(advanced.crosspost_checkbtn));
 	gtk_widget_set_sensitive(advanced.crosspost_colormenu, is_active);
 }
 
@@ -2392,13 +2392,13 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *folder_frame;
 	GtkWidget *vbox3;
 	GtkWidget *table;
-	GtkWidget *sent_folder_chkbtn;
+	GtkWidget *sent_folder_checkbtn;
 	GtkWidget *sent_folder_entry;
-	GtkWidget *queue_folder_chkbtn;
+	GtkWidget *queue_folder_checkbtn;
 	GtkWidget *queue_folder_entry;
-	GtkWidget *draft_folder_chkbtn;
+	GtkWidget *draft_folder_checkbtn;
 	GtkWidget *draft_folder_entry;
-	GtkWidget *trash_folder_chkbtn;
+	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
 
 #define PACK_HBOX(hbox) \
@@ -2495,13 +2495,13 @@ static void prefs_account_advanced_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
-#define SET_CHECK_BTN_AND_ENTRY(label, chkbtn, entry, n)		\
+#define SET_CHECK_BTN_AND_ENTRY(label, checkbtn, entry, n)		\
 {									\
 	GtkWidget *button;						\
 									\
-	chkbtn = gtk_check_button_new_with_label (label);		\
-	gtk_widget_show (chkbtn);					\
-	gtk_table_attach (GTK_TABLE (table), chkbtn,			\
+	checkbtn = gtk_check_button_new_with_label (label);		\
+	gtk_widget_show (checkbtn);					\
+	gtk_table_attach (GTK_TABLE (table), checkbtn,			\
 			  0, 1, n, n + 1, GTK_FILL, 0, 0, 0);		\
 									\
 	entry = gtk_entry_new ();					\
@@ -2519,45 +2519,45 @@ static void prefs_account_advanced_create(void)
 		 G_CALLBACK (prefs_account_select_folder_cb),		\
 		 entry);						\
 									\
-	SET_TOGGLE_SENSITIVITY (chkbtn, entry);				\
-	SET_TOGGLE_SENSITIVITY (chkbtn, button);			\
+	SET_TOGGLE_SENSITIVITY (checkbtn, entry);				\
+	SET_TOGGLE_SENSITIVITY (checkbtn, button);			\
 }
 
 	SET_CHECK_BTN_AND_ENTRY(_("Put sent messages in"),
-				sent_folder_chkbtn, sent_folder_entry, 0);
+				sent_folder_checkbtn, sent_folder_entry, 0);
 	SET_CHECK_BTN_AND_ENTRY(_("Put queued messages in"),
-				queue_folder_chkbtn, queue_folder_entry, 1);
+				queue_folder_checkbtn, queue_folder_entry, 1);
 	SET_CHECK_BTN_AND_ENTRY(_("Put draft messages in"),
-				draft_folder_chkbtn, draft_folder_entry, 2);
+				draft_folder_checkbtn, draft_folder_entry, 2);
 	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages in"),
-				trash_folder_chkbtn, trash_folder_entry, 3);
+				trash_folder_checkbtn, trash_folder_entry, 3);
 
-	advanced.smtpport_chkbtn	= checkbtn_smtpport;
+	advanced.smtpport_checkbtn	= checkbtn_smtpport;
 	advanced.smtpport_entry		= entry_smtpport;
 	advanced.popport_hbox		= hbox_popport;
-	advanced.popport_chkbtn		= checkbtn_popport;
+	advanced.popport_checkbtn		= checkbtn_popport;
 	advanced.popport_entry		= entry_popport;
 	advanced.imapport_hbox		= hbox_imapport;
-	advanced.imapport_chkbtn	= checkbtn_imapport;
+	advanced.imapport_checkbtn	= checkbtn_imapport;
 	advanced.imapport_entry		= entry_imapport;
 	advanced.nntpport_hbox		= hbox_nntpport;
-	advanced.nntpport_chkbtn	= checkbtn_nntpport;
+	advanced.nntpport_checkbtn	= checkbtn_nntpport;
 	advanced.nntpport_entry		= entry_nntpport;
-	advanced.domain_chkbtn		= checkbtn_domain;
+	advanced.domain_checkbtn		= checkbtn_domain;
 	advanced.domain_entry		= entry_domain;
- 	advanced.crosspost_chkbtn	= checkbtn_crosspost;
+ 	advanced.crosspost_checkbtn	= checkbtn_crosspost;
  	advanced.crosspost_colormenu	= colormenu_crosspost;
 
-	advanced.tunnelcmd_chkbtn	= checkbtn_tunnelcmd;
+	advanced.tunnelcmd_checkbtn	= checkbtn_tunnelcmd;
 	advanced.tunnelcmd_entry	= entry_tunnelcmd;
 
-	advanced.sent_folder_chkbtn  = sent_folder_chkbtn;
+	advanced.sent_folder_checkbtn  = sent_folder_checkbtn;
 	advanced.sent_folder_entry   = sent_folder_entry;
-	advanced.queue_folder_chkbtn  = queue_folder_chkbtn;
+	advanced.queue_folder_checkbtn  = queue_folder_checkbtn;
 	advanced.queue_folder_entry   = queue_folder_entry;
-	advanced.draft_folder_chkbtn = draft_folder_chkbtn;
+	advanced.draft_folder_checkbtn = draft_folder_checkbtn;
 	advanced.draft_folder_entry  = draft_folder_entry;
-	advanced.trash_folder_chkbtn = trash_folder_chkbtn;
+	advanced.trash_folder_checkbtn = trash_folder_checkbtn;
 	advanced.trash_folder_entry  = trash_folder_entry;
 }
 
@@ -2580,7 +2580,7 @@ static gint prefs_account_apply(void)
 		return -1;
 	}
 	if (((protocol == A_POP3) || 
-	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn))) || 
+	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn))) || 
 	     (protocol == A_NONE)) &&
            *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
@@ -2623,7 +2623,7 @@ static gint prefs_account_apply(void)
 	}
 
 	if (protocol == A_LOCAL &&
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn)) && *gtk_entry_get_text(GTK_ENTRY(basic.mailcmd_entry)) == '\0') {
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn)) && *gtk_entry_get_text(GTK_ENTRY(basic.mailcmd_entry)) == '\0') {
 		alertpanel_error(_("mail command is not entered."));
 		return -1;
 	}
@@ -2651,11 +2651,11 @@ static gint prefs_account_apply(void)
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
 	gtk_widget_set_sensitive(p_send.pop_auth_timeout_lbl, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
 	gtk_widget_set_sensitive(p_send.pop_auth_minutes_lbl, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
 }
 
 static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
@@ -2972,11 +2972,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, TRUE);
-		gtk_widget_show(basic.nntpauth_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, TRUE);
+		gtk_widget_show(basic.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, TRUE);
-		gtk_widget_show(basic.nntpauth_onconnect_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, TRUE);
+		gtk_widget_show(basic.nntpauth_onconnect_checkbtn);
 
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, VSPACING_NARROW);
@@ -2996,7 +2996,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.mailcmd_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_chkbtn);
+		gtk_widget_hide(basic.mailcmd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
@@ -3014,25 +3014,25 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		/* update userid/passwd sensitive state */
 
 		prefs_account_nntpauth_toggled
-			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
+			(GTK_TOGGLE_BUTTON(basic.nntpauth_checkbtn), NULL);
 		gtk_widget_hide(receive.pop3_frame);
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.local_frame);
 		gtk_widget_show(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
 				 FALSE);
 		}
 
@@ -3045,13 +3045,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_show(advanced.nntpport_hbox);
-		gtk_widget_show(advanced.crosspost_chkbtn);
+		gtk_widget_show(advanced.crosspost_checkbtn);
 		gtk_widget_show(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
+		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_chkbtn);
+		gtk_widget_hide(receive.subsonly_checkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3060,11 +3060,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
 		gtk_widget_hide(basic.recvserv_label);
@@ -3083,7 +3083,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(basic.mailcmd_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   6, VSPACING_NARROW);
-		gtk_widget_show(basic.mailcmd_chkbtn);
+		gtk_widget_show(basic.mailcmd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   5, VSPACING_NARROW);
 		gtk_widget_hide(basic.uid_label);
@@ -3101,23 +3101,23 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_show(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
 		prefs_account_mailcmd_toggled
-			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
+			(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn), NULL);
 
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
 				 TRUE);
 		}
 
@@ -3130,13 +3130,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_checkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
+		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_chkbtn);
+		gtk_widget_hide(receive.subsonly_checkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -3147,11 +3147,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
 
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
@@ -3173,7 +3173,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.mailcmd_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_chkbtn);
+		gtk_widget_hide(basic.mailcmd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
@@ -3191,23 +3191,23 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive.imap_frame);
 		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
 				 FALSE);
 		}
 
@@ -3220,13 +3220,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_show(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_checkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_show(advanced.tunnelcmd_chkbtn);
+		gtk_widget_show(advanced.tunnelcmd_checkbtn);
 		gtk_widget_show(advanced.tunnelcmd_entry);
 		gtk_widget_show(receive.imapdir_label);
 		gtk_widget_show(receive.imapdir_entry);
-		gtk_widget_show(receive.subsonly_chkbtn);
+		gtk_widget_show(receive.subsonly_checkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3235,11 +3235,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
 
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
@@ -3261,7 +3261,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.mailcmd_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_chkbtn);
+		gtk_widget_hide(basic.mailcmd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   5, 0);
 		gtk_widget_hide(basic.uid_label);
@@ -3280,20 +3280,20 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, FALSE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
+		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, FALSE);
+		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, FALSE);
 
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 	
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), FALSE);
+			(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), FALSE);
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn), FALSE);
+			(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn), FALSE);
 
 #if USE_OPENSSL
 		gtk_widget_hide(ssl.pop_frame);
@@ -3304,13 +3304,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_checkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
+		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_chkbtn);
+		gtk_widget_hide(receive.subsonly_checkbtn);
 		break;
 	case A_POP3:
 	default:
@@ -3320,11 +3320,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
 
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
@@ -3346,7 +3346,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic.mailcmd_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_chkbtn);
+		gtk_widget_hide(basic.mailcmd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
@@ -3365,22 +3365,22 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.local_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_chkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
 
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, TRUE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, TRUE);
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_chkbtn), 
+				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
 				 TRUE);
 		}
 
@@ -3393,13 +3393,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_checkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
+		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced.tunnelcmd_entry);
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_chkbtn);
+		gtk_widget_hide(receive.subsonly_checkbtn);
 		break;
 	}
 
@@ -3418,7 +3418,7 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.pass_label, auth);
 	gtk_widget_set_sensitive(basic.uid_entry,  auth);
 	gtk_widget_set_sensitive(basic.pass_entry, auth);
-	gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, auth);
+	gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, auth);
 }
 
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,

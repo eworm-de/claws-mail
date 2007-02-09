@@ -85,8 +85,8 @@ static struct Matcher {
 	GtkWidget *value_label;
 	GtkWidget *addressbook_folder_label;
 	GtkWidget *addressbook_folder_combo;
-	GtkWidget *case_chkbtn;
-	GtkWidget *regexp_chkbtn;
+	GtkWidget *case_checkbtn;
+	GtkWidget *regexp_checkbtn;
 	GtkWidget *color_optmenu;
 
 	GtkWidget *test_btn;
@@ -385,8 +385,8 @@ static void prefs_matcher_create(void)
 	GtkWidget *bool_op_list;
 	GtkWidget *bool_op_label;
 
-	GtkWidget *regexp_chkbtn;
-	GtkWidget *case_chkbtn;
+	GtkWidget *regexp_checkbtn;
+	GtkWidget *case_checkbtn;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -648,8 +648,8 @@ static void prefs_matcher_create(void)
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox3, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(vbox3, case_chkbtn, _("Case sensitive"));
-	PACK_CHECK_BUTTON(vbox3, regexp_chkbtn, _("Use regexp"));
+	PACK_CHECK_BUTTON(vbox3, case_checkbtn, _("Case sensitive"));
+	PACK_CHECK_BUTTON(vbox3, regexp_checkbtn, _("Use regexp"));
 
 	/* register / substitute / delete */
 
@@ -782,8 +782,8 @@ static void prefs_matcher_create(void)
 	matcher.predicate_combo = predicate_combo;
 	matcher.predicate_flag_list = predicate_flag_list;
 	matcher.predicate_flag_combo = predicate_flag_combo;
-	matcher.case_chkbtn = case_chkbtn;
-	matcher.regexp_chkbtn = regexp_chkbtn;
+	matcher.case_checkbtn = case_checkbtn;
+	matcher.regexp_checkbtn = regexp_checkbtn;
 	matcher.bool_op_list = bool_op_list;
 	matcher.test_btn = test_btn;
 	matcher.addressbook_select_btn = addressbook_select_btn;
@@ -1206,8 +1206,8 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	value_pred = get_sel_from_list(GTK_LIST(matcher.predicate_list));
 	value_pred_flag = get_sel_from_list(GTK_LIST(matcher.predicate_flag_list));
 
-	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn));
-	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn));
+	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn));
+	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn));
 
 	switch (value_criteria) {
 	case CRITERIA_UNREAD:
@@ -1608,8 +1608,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_disable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1635,8 +1635,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1653,8 +1653,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1681,8 +1681,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_enable_widget(matcher.predicate_combo);
 		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_enable_widget(matcher.case_chkbtn);
-		prefs_matcher_enable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_enable_widget(matcher.case_checkbtn);
+		prefs_matcher_enable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1699,8 +1699,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_enable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1724,8 +1724,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_disable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1742,8 +1742,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_enable_widget(matcher.predicate_combo);
 		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_enable_widget(matcher.case_chkbtn);
-		prefs_matcher_enable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_enable_widget(matcher.case_checkbtn);
+		prefs_matcher_enable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
 		break;
@@ -1760,8 +1760,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		prefs_matcher_enable_widget(matcher.predicate_label);
 		prefs_matcher_disable_widget(matcher.predicate_combo);
 		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_chkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_chkbtn);
+		prefs_matcher_disable_widget(matcher.case_checkbtn);
+		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
 		prefs_matcher_disable_widget(matcher.test_btn);
 		prefs_matcher_enable_widget(matcher.addressbook_select_btn);
 		break;
@@ -2159,23 +2159,23 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	
 	switch(prop->matchtype) {
 	case MATCHTYPE_MATCH:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), TRUE);
 		break;
 
 	case MATCHTYPE_MATCHCASE:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 
 	case MATCHTYPE_REGEXP:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), TRUE);
 		break;
 
 	case MATCHTYPE_REGEXPCASE:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 	}
 
