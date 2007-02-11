@@ -8972,10 +8972,13 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 	    && gtk_drag_get_source_widget(context) != 
 	        summary_get_main_widget(mainwindow_get_mainwindow()->summaryview)) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
-		for (tmp = list; tmp != NULL; tmp = tmp->next)
+		for (tmp = list; tmp != NULL; tmp = tmp->next) {
+			gchar *utf8_filename = conv_filename_to_utf8((const gchar *)tmp->data);
 			compose_attach_append
 				(compose, (const gchar *)tmp->data,
-				 (const gchar *)tmp->data, NULL);
+				 utf8_filename, NULL);
+			g_free(utf8_filename);
+		}
 		if (list) compose_changed_cb(NULL, compose);
 		list_free_strings(list);
 		g_list_free(list);
