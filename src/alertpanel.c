@@ -237,11 +237,12 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *button3;
 	const gchar *label2;
 	const gchar *label3;
-	
+	gchar *tmp = title?g_markup_printf_escaped("%s", title)
+			:g_strdup("");
 	gchar *title_full = g_strdup_printf("<span weight=\"bold\" "
 				"size=\"larger\">%s</span>",
-				title?title:"");
-
+				tmp);
+	g_free(tmp);
 	debug_print("Creating alert panel dialog...\n");
 
 	dialog = gtk_dialog_new();

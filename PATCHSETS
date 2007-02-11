@@ -2358,3 +2358,4 @@
 ( cvs diff -u -r 1.13.2.31 -r 1.13.2.32 src/plugins/clamav/clamav_plugin.c;  ) > 2.7.2cvs38.patchset
 ( cvs diff -u -r 1.382.2.359 -r 1.382.2.360 src/compose.c;  ) > 2.7.2cvs39.patchset
 ( cvs diff -u -r 1.65.2.56 -r 1.65.2.57 src/codeconv.c;  ) > 2.7.2cvs40.patchset
+( cvs diff -u -r 1.17.2.31 -r 1.17.2.32 src/alertpanel.c;  ) > 2.7.2cvs41.patchset
