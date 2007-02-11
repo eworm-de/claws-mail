@@ -1,3 +1,8 @@
+2007-02-11 [colin]	2.7.2cvs40
+
+	* src/codeconv.c
+		Recognize .utf8 locales as .UTF-8 ones
+
 2007-02-11 [colin]	2.7.2cvs39
 
 	* src/compose.c
