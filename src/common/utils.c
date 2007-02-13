@@ -3371,7 +3371,6 @@ static gint is_unchanged_uri_char(char c)
 	switch (c) {
 		case '(':
 		case ')':
-		case ',':
 			return 0;
 		default:
 			return 1;
