@@ -249,7 +249,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_folder_combo, TRUE, TRUE, 0);
 
-	whitelist_ab_select_btn = gtk_button_new_with_label(_(" Select... "));
+	whitelist_ab_select_btn = gtk_button_new_with_label(_("Select ..."));
 	gtk_widget_show (whitelist_ab_select_btn);
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_select_btn,

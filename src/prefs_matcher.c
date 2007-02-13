@@ -577,7 +577,7 @@ static void prefs_matcher_create(void)
 			 G_CALLBACK(prefs_matcher_test_info),
 			 NULL);
 
-	addressbook_select_btn = gtk_button_new_with_label(_(" Select... "));
+	addressbook_select_btn = gtk_button_new_with_label(_("Select ..."));
 	gtk_table_attach(GTK_TABLE (criteria_table), addressbook_select_btn, 3, 4, 1, 2,
 			 0, 0, 0, 0);
 	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",
