@@ -2361,3 +2361,4 @@
 ( cvs diff -u -r 1.17.2.31 -r 1.17.2.32 src/alertpanel.c;  ) > 2.7.2cvs41.patchset
 ( cvs diff -u -r 1.43.2.54 -r 1.43.2.55 src/prefs_matcher.c;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.7.2cvs42.patchset
 ( cvs diff -u -r 1.36.2.97 -r 1.36.2.98 src/common/utils.c;  ) > 2.7.2cvs43.patchset
+( cvs diff -u -r 1.25.2.21 -r 1.25.2.22 src/matcher_parser_parse.y;  ) > 2.7.2cvs44.patchset

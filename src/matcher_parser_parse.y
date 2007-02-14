@@ -77,6 +77,7 @@ int matcher_parserlex(void);
 
 void matcher_parser_start_parsing(FILE *f)
 {
+	matcher_parserlineno = 1;
 	matcher_parserrestart(f);
 	account_id = 0;
 	matcher_parserparse();

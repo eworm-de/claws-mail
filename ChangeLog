@@ -1,3 +1,9 @@
+2007-02-14 [wwp]	2.7.2cvs44
+
+	* src/matcher_parser_parse.y
+		Fix missing line number reset (wrong line number might appear
+		when re-loading filtering rules if there's a parser error).
+
 2007-02-13 [colin]	2.7.2cvs43
 
 	* src/common/utils.c
