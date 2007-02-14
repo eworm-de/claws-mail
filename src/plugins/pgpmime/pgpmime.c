@@ -477,7 +477,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	if (getenv("GPG_AGENT_INFO")) {
+	if (getenv("GPG_AGENT_INFO") && prefs_gpg_get_config()->use_agent_if_available) {
 		debug_print("GPG_AGENT_INFO environment defined, running without passphrase callback\n");
 	} else {
    		info.c = ctx;

@@ -31,6 +31,7 @@ typedef enum {
 struct GPGConfig
 {
 	gboolean	 auto_check_signatures;
+	gboolean	 use_agent_if_available;
 	gboolean	 store_passphrase;
 	gint		 store_passphrase_timeout;
 	gboolean	 passphrase_grab;
