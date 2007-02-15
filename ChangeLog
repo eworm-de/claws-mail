@@ -1,3 +1,11 @@
+2007-02-15 [colin]	2.7.2cvs47
+
+	* src/folderview.c
+		Fix a manifestation of bug 1033 (summaryview failing
+		to update for new mails), which happens after editing
+		account preferences or preferences that cause a 
+		folderview reload.
+
 2007-02-15 [colin]	2.7.2cvs46
 
 	* src/addressbook.c

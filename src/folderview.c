@@ -710,6 +710,7 @@ void folderview_set(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	MainWindow *mainwin = folderview->mainwin;
+	FolderItem *sel_item = NULL, *op_item = NULL;
 
 	if (!mainwin)
 		return;
@@ -719,15 +720,23 @@ void folderview_set(FolderView *folderview)
 
 	main_window_cursor_wait(mainwin);
 
+	if (folderview->selected)
+		sel_item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	if (folderview->opened)
+		op_item = gtk_ctree_node_get_row_data(ctree, folderview->opened);
+
 	folderview->selected = NULL;
 	folderview->opened = NULL;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 	gtk_clist_clear(GTK_CLIST(ctree));
-	gtk_clist_thaw(GTK_CLIST(ctree));
-	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	folderview_set_folders(folderview);
+
+	if (sel_item)
+		folderview->selected = gtk_ctree_find_by_row_data(ctree, NULL, sel_item);
+	if (op_item)
+		folderview->opened = gtk_ctree_find_by_row_data(ctree, NULL, op_item);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	main_window_cursor_normal(mainwin);
@@ -1659,6 +1668,7 @@ static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 	if (node) {
 		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME))
 			folderview_update_node(folderview, node);
+
 		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && (folderview->opened == node))
 			if (!quicksearch_is_active(folderview->summaryview->quicksearch))
 				summary_show(folderview->summaryview, update_info->item);
