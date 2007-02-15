@@ -216,6 +216,10 @@
 	* src/plugins/pgpcore/select-keys.c
 		Set wmclass on new windows
 
+2007-02-04 [colin]
+
+	2.8.0-rc1 released
+
 2007-02-04 [colin]	2.7.2cvs20
 
 	* src/compose.c
