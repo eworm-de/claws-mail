@@ -843,12 +843,14 @@ static gboolean addressbook_address_list_focus_evt_out(GtkWidget *widget, GdkEve
 }
 
 /* save hpane and vpane's handle position when it moves */
-static void addressbook_pane_notify_position(GObject *gobject,
-											GParamSpec	*arg1,
-                                            gpointer	 user_data)
+static void addressbook_pane_save_position(void)
 {
-	prefs_common.addressbook_hpaned_pos = gtk_paned_get_position(GTK_PANED(addrbook.hpaned));
-	prefs_common.addressbook_vpaned_pos = gtk_paned_get_position(GTK_PANED(addrbook.vpaned));
+	if (addrbook.hpaned)
+		prefs_common.addressbook_hpaned_pos = 
+			gtk_paned_get_position(GTK_PANED(addrbook.hpaned));
+	if (addrbook.vpaned)
+		prefs_common.addressbook_vpaned_pos = 
+			gtk_paned_get_position(GTK_PANED(addrbook.vpaned));
 }
 
 /*
@@ -1239,13 +1241,14 @@ static void addressbook_create(void)
 				    prefs_common.addressbookwin_height);
 
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
-		gtk_paned_set_position(GTK_PANED(vpaned), prefs_common.addressbook_vpaned_pos);
-		g_signal_connect(G_OBJECT(vpaned), "notify::position",
-				G_CALLBACK(addressbook_pane_notify_position), NULL);
+		if (prefs_common.addressbook_vpaned_pos > 0)
+			gtk_paned_set_position(GTK_PANED(vpaned), 
+				prefs_common.addressbook_vpaned_pos);
 	}	
-	gtk_paned_set_position(GTK_PANED(hpaned), prefs_common.addressbook_hpaned_pos);
-	g_signal_connect(G_OBJECT(hpaned), "notify::position",
-			G_CALLBACK(addressbook_pane_notify_position), NULL);
+	if (prefs_common.addressbook_hpaned_pos > 0)
+		gtk_paned_set_position(GTK_PANED(hpaned), 
+			prefs_common.addressbook_hpaned_pos);
+
 
 	gtk_widget_show_all(window);
 }
@@ -1257,6 +1260,9 @@ static gint addressbook_close( void ) {
 	address_completion_end(addrbook.window);
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_person_invalidate(NULL, NULL, NULL);
+	
+	addressbook_pane_save_position();
+	
 	gtk_widget_hide(addrbook.window);
 	addressbook_export_to_file();
 	return TRUE;
