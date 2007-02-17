@@ -1215,10 +1215,12 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 	}
 
 	if (from_me) {
+		noticeview_set_icon(noticeview, STOCK_PIXMAP_NOTICE_WARN);
 		noticeview_set_text(noticeview, _("You asked for a return receipt in this message."));
 		noticeview_set_button_text(noticeview, NULL);
 		noticeview_set_button_press_callback(noticeview, NULL, NULL);
 	} else {
+		noticeview_set_icon(noticeview, STOCK_PIXMAP_NOTICE_WARN);
 		noticeview_set_text(noticeview, _("This message asks for a return receipt."));
 		noticeview_set_button_text(noticeview, _("Send receipt"));
 		noticeview_set_button_press_callback(noticeview,
@@ -1305,6 +1307,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		}
 	}
 	
+	noticeview_set_icon(noticeview, STOCK_PIXMAP_NOTICE_WARN);
 	noticeview_set_text(noticeview, text);
 	g_free(text);
 	noticeview_set_button_text(noticeview, button1);
