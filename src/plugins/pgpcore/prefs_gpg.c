@@ -36,7 +36,7 @@ static PrefParam param[] = {
 	{"auto_check_signatures", "FALSE",
 	 &prefs_gpg.auto_check_signatures, P_BOOL,
 	 NULL, NULL, NULL},
-	{"use_agent_if_available", "TRUE", &prefs_gpg.use_agent_if_available, P_BOOL,
+	{"use_gpg_agent", "TRUE", &prefs_gpg.use_gpg_agent, P_BOOL,
 	 NULL, NULL, NULL},
 	{"store_passphrase", "FALSE", &prefs_gpg.store_passphrase, P_BOOL,
 	 NULL, NULL, NULL},
@@ -58,7 +58,7 @@ struct GPGPage
 	PrefsPage page;
 
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_use_agent_if_available;
+	GtkWidget *checkbtn_use_gpg_agent;
         GtkWidget *checkbtn_store_passphrase;  
         GtkWidget *spinbtn_store_passphrase;  
         GtkWidget *checkbtn_passphrase_grab;  
@@ -72,7 +72,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	struct GPGPage *page = (struct GPGPage *) _page;
 	struct GPGConfig *config;
 
-	GtkWidget *checkbtn_use_agent_if_available;
+	GtkWidget *checkbtn_use_gpg_agent;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkWidget *checkbtn_auto_check_signatures;
@@ -84,7 +84,6 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label_expire2;
 	GtkWidget *frame_passphrase;
-	GtkWidget *label;
 	GtkTooltips *tooltips;
 	
 	tooltips = gtk_tooltips_new();
@@ -102,21 +101,21 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Passphrase"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_use_agent_if_available,
-			_("Use gpg-agent if it is available"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_use_gpg_agent,
+			_("Use gpg-agent to manage passwords"));
+	if (!getenv("GPG_AGENT_INFO"))
+		gtk_widget_set_sensitive(checkbtn_use_gpg_agent, FALSE);
 
-	label = gtk_label_new(_("Else,"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_widget_show (label);
-
-	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-	
 	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
 			_("Store passphrase in memory"));
+
+	SET_TOGGLE_SENSITIVITY_REVERSE(checkbtn_use_gpg_agent, checkbtn_store_passphrase);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	SET_TOGGLE_SENSITIVITY_REVERSE(checkbtn_use_gpg_agent, hbox1);
 
 	label_expire1 = gtk_label_new(_("Expire after"));
 	gtk_widget_show (label_expire1);
@@ -160,8 +159,12 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	config = prefs_gpg_get_config();
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_auto_check_signatures), config->auto_check_signatures);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_agent_if_available), config->use_agent_if_available);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_store_passphrase), config->store_passphrase);
+	if (!getenv("GPG_AGENT_INFO"))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent), FALSE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent), config->use_gpg_agent);
+	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent)))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_store_passphrase), config->store_passphrase);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_store_passphrase), (float) config->store_passphrase_timeout);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_passphrase_grab), config->passphrase_grab);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gpg_warning), config->gpg_warning);
@@ -171,7 +174,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	page->spinbtn_store_passphrase = spinbtn_store_passphrase;
 	page->checkbtn_passphrase_grab = checkbtn_passphrase_grab;
 	page->checkbtn_gpg_warning = checkbtn_gpg_warning;
-	page->checkbtn_use_agent_if_available = checkbtn_use_agent_if_available;
+	page->checkbtn_use_gpg_agent = checkbtn_use_gpg_agent;
 	page->page.widget = vbox1;
 }
 
@@ -186,8 +189,8 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 
 	config->auto_check_signatures =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_auto_check_signatures));
-	config->use_agent_if_available = 
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_use_agent_if_available));
+	config->use_gpg_agent = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_use_gpg_agent));
 	config->store_passphrase = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_store_passphrase));
 	config->store_passphrase_timeout = 
