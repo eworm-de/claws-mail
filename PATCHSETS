@@ -2366,3 +2366,4 @@
 ( cvs diff -u -r 1.60.2.80 -r 1.60.2.81 src/addressbook.c;  ) > 2.7.2cvs46.patchset
 ( cvs diff -u -r 1.207.2.147 -r 1.207.2.148 src/folderview.c;  ) > 2.7.2cvs47.patchset
 ( cvs diff -u -r 1.94.2.123 -r 1.94.2.124 src/messageview.c;  ) > 2.7.2cvs48.patchset
+( cvs diff -u -r 1.105.2.86 -r 1.105.2.87 src/prefs_account.c;  ) > 2.7.2cvs49.patchset

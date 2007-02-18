@@ -2155,6 +2155,7 @@ static void prefs_account_privacy_create(void)
 			   _("Save sent encrypted messages as clear text"));
 
 	SET_TOGGLE_SENSITIVITY_REVERSE(encrypt_to_self_checkbtn, save_clear_text_checkbtn);
+	SET_TOGGLE_SENSITIVITY_REVERSE(save_clear_text_checkbtn, encrypt_to_self_checkbtn);
 
 	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_checkbtn = default_encrypt_checkbtn;
