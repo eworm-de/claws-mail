@@ -23,6 +23,7 @@ EXTRA_TOOLS = \
 	tbird2claws.py \
 	textviewer.pl \
 	textviewer.sh \
+	thunderbird-filters-convertor.pl \
 	update-po \
 	uudec \
 	uuooffice \

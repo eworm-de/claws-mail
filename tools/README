@@ -35,7 +35,9 @@ Other tools:
   nautilus2claws-mail.sh	Send files from Nautilus
   OOo2claws-mail.pl             Send documents from OpenOffice.org
   sylprint.pl                   Printing engine, explained in README.sylprint
-  textviewer.pl			Display various attachments as text 
+  textviewer.pl			Display various attachments as text
+  thunderbird-filters-convertor.pl
+				Convert Thunderbird filtering rules
 
 Extra tools:
   gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
@@ -545,6 +547,45 @@ Other tools
 
 	
   Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
+
+
+* thunderbird-filters-convertor.pl
+
+  WHAT IT DOES
+	This perl script converts Thunderbird filtering rules into Claws Mail
+	filtering rules. It can be run several times, once for each filter
+	configuration file in Thunderbird.
+
+  HOW TO USE IT
+	The script takes 3 arguments:
+
+	--tbird-file=PATH TO FILE	The full path to the file to be converted
+	--mailbox-name=NAME		The name of the Claws Mail mailbox
+	--account-name=NAME		The name of the account to be used (optional)	
+
+	--tbird-file must point to the Thunderbird filter file (msgFilterRules.dat)
+	that you want to convert, it must contain the full path to the file.
+	--mailbox-name should be given the name of your mailbox in Claws Mail, e.g.
+	if the top-level folder is 'Mailbox (MH)' then this option should be
+	'Mailbox'.
+	--account-name is optional, only needed if you are creating account-specific
+	rules. This is the name of your account in Claws Mail, which should
+	correspond to an account that you had in Thunderbird, e.g. the acount whose
+	rules you are converting.
+
+	This script presumes that your folder hierarchy in Claws Mail matches the
+	one that you had in Thunderbird. If you used the tbird2claws.py script to
+	convert your Thunderbird mailbox, then the folder hierarchy should match.
+
+	If the Claws Mail filtering configuration file (matcherrc) does not exist,
+	the script will create it; if it does exist, the newly converted rules will
+	be appended to it.
+
+  REQUIREMENTS
+	Getopt::Long
+	URI::Escape
+
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 --------------------------------------------------------------------------------
 
