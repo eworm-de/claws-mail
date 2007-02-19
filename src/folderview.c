@@ -1669,7 +1669,9 @@ static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME))
 			folderview_update_node(folderview, node);
 
-		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && (folderview->opened == node))
+		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && 
+		     update_info->item == folderview->summaryview->folder_item &&
+		     update_info->item != NULL)
 			if (!quicksearch_is_active(folderview->summaryview->quicksearch))
 				summary_show(folderview->summaryview, update_info->item);
 	}
@@ -2005,6 +2007,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	START_TIMING("");
 	folderview->selected = row;
 
+	debug_print("newly selected %p, opened %p\n", folderview->selected, 
+			folderview->opened);
 	if (folderview->opened == row) {
 		folderview->open_folder = FALSE;
 		END_TIMING();
@@ -2016,6 +2020,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gtkut_ctree_set_focus_row(ctree, folderview->opened);
 			gtk_ctree_select(ctree, folderview->opened);
 		}
+		folderview->open_folder = FALSE;
 		END_TIMING();
 		return;
 	}
