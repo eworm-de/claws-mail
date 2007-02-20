@@ -353,6 +353,9 @@ EXTRA_DIST = \
 	pixmaps/mime_audio.xpm \
 	pixmaps/mime_image.xpm \
 	pixmaps/mime_message.xpm \
+	pixmaps/mime_pdf.xpm \
+	pixmaps/mime_ps.xpm \
+	pixmaps/mime_calendar.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \
 	pixmaps/mime_text_plain.xpm \

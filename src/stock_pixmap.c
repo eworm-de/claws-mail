@@ -95,6 +95,9 @@
 #include "pixmaps/mime_audio.xpm"
 #include "pixmaps/mime_text_enriched.xpm"
 #include "pixmaps/mime_unknown.xpm"
+#include "pixmaps/mime_pdf.xpm"
+#include "pixmaps/mime_ps.xpm"
+#include "pixmaps/mime_calendar.xpm"
 #include "pixmaps/privacy_signed.xpm"
 #include "pixmaps/privacy_passed.xpm"
 #include "pixmaps/privacy_failed.xpm"
@@ -288,6 +291,9 @@ static StockPixmapData pixmaps[] =
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", NULL},
 	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", NULL},
 	{mime_unknown_xpm			, NULL, NULL, "mime_unknown", NULL},	
+	{mime_pdf_xpm				, NULL, NULL, "mime_pdf", NULL},	
+	{mime_ps_xpm				, NULL, NULL, "mime_ps", NULL},	
+	{mime_calendar_xpm			, NULL, NULL, "mime_calendar", NULL},	
 	{privacy_signed_xpm			, NULL, NULL, "privacy_signed", NULL},
 	{privacy_passed_xpm			, NULL, NULL, "privacy_passed", NULL},
 	{privacy_failed_xpm			, NULL, NULL, "privacy_failed", NULL},	

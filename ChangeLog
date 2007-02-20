@@ -1,3 +1,16 @@
+2007-02-20 [colin]	2.7.2cvs57
+
+	* src/Makefile.am
+	* src/main.c
+	* src/mimeview.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/mime_calendar.xpm
+	* src/pixmaps/mime_pdf.xpm
+	* src/pixmaps/mime_ps.xpm
+		Add icons for text/calendar, application/pdf
+		and application/postscript
+
 2007-02-20 [colin]	2.7.2cvs56
 
 	* autogen.sh

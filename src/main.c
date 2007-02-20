@@ -960,7 +960,7 @@ int main(int argc, char *argv[])
 
 	sc_starting = FALSE;
 	END_TIMING();
-	
+
 	gtk_main();
 
 	exit_claws(mainwin);

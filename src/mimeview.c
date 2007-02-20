@@ -2001,6 +2001,8 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			stockp = STOCK_PIXMAP_MIME_TEXT_HTML;
 		else if  (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "enriched"))
 			stockp = STOCK_PIXMAP_MIME_TEXT_ENRICHED;
+		else if  (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "calendar"))
+			stockp = STOCK_PIXMAP_MIME_TEXT_CALENDAR;
 		else
 			stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;
 		break;
@@ -2008,7 +2010,12 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		stockp = STOCK_PIXMAP_MIME_MESSAGE;
 		break;
 	case MIMETYPE_APPLICATION:
-		stockp = STOCK_PIXMAP_MIME_APPLICATION;
+		if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pdf"))
+			stockp = STOCK_PIXMAP_MIME_PDF;
+		else if  (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "postscript"))
+			stockp = STOCK_PIXMAP_MIME_PS;
+		else
+			stockp = STOCK_PIXMAP_MIME_APPLICATION;
 		break;
 	case MIMETYPE_IMAGE:
 		stockp = STOCK_PIXMAP_MIME_IMAGE;
