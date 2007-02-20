@@ -1,3 +1,8 @@
+2007-02-20 [wwp]	2.7.2cvs55
+
+	* src/matcher_parser_parse.y
+		Fix a duplicate token definition (thanks to iwkse).
+
 2007-02-20 [wwp]	2.7.2cvs54
 
 	* src/matcher_parser_lex.l
