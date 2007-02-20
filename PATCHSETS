@@ -2370,3 +2370,4 @@
 ( cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/pgpcore/prefs_gpg.h;  cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/plugins/pgpcore/sgpgme.c;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/plugins/pgpmime/pgpmime.c;  ) > 2.7.2cvs50.patchset
 ( cvs diff -u -r 1.25.2.15 -r 1.25.2.16 tools/Makefile.am;  cvs diff -u -r 1.30.2.15 -r 1.30.2.16 tools/README;  diff -u /dev/null tools/thunderbird-filters-convertor.pl;  ) > 2.7.2cvs51.patchset
 ( cvs diff -u -r 1.207.2.148 -r 1.207.2.149 src/folderview.c;  ) > 2.7.2cvs52.patchset
+( cvs diff -u -r 1.395.2.283 -r 1.395.2.284 src/summaryview.c;  ) > 2.7.2cvs53.patchset

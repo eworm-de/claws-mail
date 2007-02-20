@@ -5475,6 +5475,7 @@ void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show)
 		quicksearch_show(summaryview->quicksearch);
 	} else {
 		quicksearch_hide(summaryview->quicksearch);
+		summary_grab_focus(summaryview);
 	}
 }
 
