@@ -98,6 +98,7 @@
 #include "pixmaps/mime_pdf.xpm"
 #include "pixmaps/mime_ps.xpm"
 #include "pixmaps/mime_calendar.xpm"
+#include "pixmaps/mime_pgpsig.xpm"
 #include "pixmaps/privacy_signed.xpm"
 #include "pixmaps/privacy_passed.xpm"
 #include "pixmaps/privacy_failed.xpm"
@@ -294,6 +295,7 @@ static StockPixmapData pixmaps[] =
 	{mime_pdf_xpm				, NULL, NULL, "mime_pdf", NULL},	
 	{mime_ps_xpm				, NULL, NULL, "mime_ps", NULL},	
 	{mime_calendar_xpm			, NULL, NULL, "mime_calendar", NULL},	
+	{mime_pgpsig_xpm			, NULL, NULL, "mime_pgpsig", NULL},	
 	{privacy_signed_xpm			, NULL, NULL, "privacy_signed", NULL},
 	{privacy_passed_xpm			, NULL, NULL, "privacy_passed", NULL},
 	{privacy_failed_xpm			, NULL, NULL, "privacy_failed", NULL},	

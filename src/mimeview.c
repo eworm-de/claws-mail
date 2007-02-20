@@ -2010,7 +2010,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		stockp = STOCK_PIXMAP_MIME_MESSAGE;
 		break;
 	case MIMETYPE_APPLICATION:
-		if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pdf"))
+		if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pgp-signature"))
+			stockp = STOCK_PIXMAP_MIME_PGP_SIG;
+		else if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pdf"))
 			stockp = STOCK_PIXMAP_MIME_PDF;
 		else if  (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "postscript"))
 			stockp = STOCK_PIXMAP_MIME_PS;

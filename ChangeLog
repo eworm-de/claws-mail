@@ -1,3 +1,12 @@
+2007-02-20 [colin]	2.7.2cvs58
+
+	* src/Makefile.am
+	* src/mimeview.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/mime_pgpsig.xpm
+		Add icon for application/pgp-signature
+
 2007-02-20 [colin]	2.7.2cvs57
 
 	* src/Makefile.am
