@@ -1,3 +1,5 @@
+%option nounput never-interactive
+
 %{
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
@@ -28,7 +30,6 @@
 #include "matcher_parser_parse.h"
 #endif
 #define MAX_STR_CONST 512
-#define YY_NO_UNPUT 1
 
 static char string_buf[MAX_STR_CONST];
 static char *string_buf_ptr;

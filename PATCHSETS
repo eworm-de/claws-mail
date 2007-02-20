@@ -2371,3 +2371,4 @@
 ( cvs diff -u -r 1.25.2.15 -r 1.25.2.16 tools/Makefile.am;  cvs diff -u -r 1.30.2.15 -r 1.30.2.16 tools/README;  diff -u /dev/null tools/thunderbird-filters-convertor.pl;  ) > 2.7.2cvs51.patchset
 ( cvs diff -u -r 1.207.2.148 -r 1.207.2.149 src/folderview.c;  ) > 2.7.2cvs52.patchset
 ( cvs diff -u -r 1.395.2.283 -r 1.395.2.284 src/summaryview.c;  ) > 2.7.2cvs53.patchset
+( cvs diff -u -r 1.16.2.10 -r 1.16.2.11 src/matcher_parser_lex.l;  cvs diff -u -r 1.8.2.7 -r 1.8.2.8 src/quote_fmt_lex.l;  ) > 2.7.2cvs54.patchset
