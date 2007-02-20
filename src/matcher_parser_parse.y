@@ -73,6 +73,7 @@ void matcher_parserrestart(FILE *input_file);
 void matcher_parser_init(void);
 void matcher_parser_switch_to_buffer(void * new_buffer);
 void matcher_parser_delete_buffer(void * b);
+void matcher_parserpop_buffer_state(void);
 int matcher_parserlex(void);
 
 void matcher_parser_start_parsing(FILE *f)
@@ -102,6 +103,7 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string((const char *) tmp_str);
         matcher_parser_switch_to_buffer(bufstate);
@@ -146,6 +148,7 @@ MatcherList *matcher_parser_get_name(gchar *str)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_NAME;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
@@ -168,6 +171,7 @@ MatcherList *matcher_parser_get_enabled(gchar *str)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_ENABLED;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
 	matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
@@ -190,6 +194,7 @@ MatcherList *matcher_parser_get_account(gchar *str)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_ACCOUNT;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
 	matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
@@ -213,6 +218,7 @@ MatcherList *matcher_parser_get_cond(gchar *str, gboolean *is_fast)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_CONDITION;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
@@ -237,6 +243,7 @@ GSList *matcher_parser_get_action_list(gchar *str)
 	matcher_parserlineno = 1;
 	matcher_parse_op = MATCHER_PARSE_FILTERING_ACTION;
 	matcher_parserrestart(NULL);
+	matcher_parserpop_buffer_state();
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();

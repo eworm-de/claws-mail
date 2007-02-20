@@ -1,3 +1,11 @@
+2007-02-20 [colin]	2.7.2cvs56
+
+	* autogen.sh
+	* src/matcher_parser_parse.y
+	* src/matcher_parser_lex.l
+		Fix big memory leak in flex, and
+		require flex 2.5.31
+
 2007-02-20 [wwp]	2.7.2cvs55
 
 	* src/matcher_parser_parse.y

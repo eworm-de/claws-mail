@@ -2373,3 +2373,4 @@
 ( cvs diff -u -r 1.395.2.283 -r 1.395.2.284 src/summaryview.c;  ) > 2.7.2cvs53.patchset
 ( cvs diff -u -r 1.16.2.10 -r 1.16.2.11 src/matcher_parser_lex.l;  cvs diff -u -r 1.8.2.7 -r 1.8.2.8 src/quote_fmt_lex.l;  ) > 2.7.2cvs54.patchset
 ( cvs diff -u -r 1.25.2.22 -r 1.25.2.23 src/matcher_parser_parse.y;  ) > 2.7.2cvs55.patchset
+( cvs diff -u -r 1.4.2.7 -r 1.4.2.8 autogen.sh;  cvs diff -u -r 1.25.2.23 -r 1.25.2.24 src/matcher_parser_parse.y;  cvs diff -u -r 1.16.2.11 -r 1.16.2.12 src/matcher_parser_lex.l;  ) > 2.7.2cvs56.patchset

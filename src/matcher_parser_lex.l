@@ -26,9 +26,11 @@
 #include "codeconv.h"
 #include "matcher.h"
 #include "matcher_parser_lex.h"
+
 #ifndef YYSTYPE
 #include "matcher_parser_parse.h"
 #endif
+
 #define MAX_STR_CONST 512
 
 static char string_buf[MAX_STR_CONST];
