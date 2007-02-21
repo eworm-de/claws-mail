@@ -2619,7 +2619,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	
 	if (!mlist) return;
 
-	debug_print("\tSetting summary from message data...");
+	debug_print("\tSetting summary from message data...\n");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Setting summary from message data..."));
 	gdk_flush();
