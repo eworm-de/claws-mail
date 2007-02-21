@@ -357,6 +357,8 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
     write(fd, pass, strlen(pass));
     write(fd, "\n", 1);
 #endif
+    g_free(pass);
+
     return GPG_ERR_NO_ERROR;
 }
 

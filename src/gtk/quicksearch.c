@@ -1090,11 +1090,9 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 		MsgInfo *msg = (MsgInfo *)cur->data;
 		statusbar_progress_all(num++,total, interval);
 		if (quicksearch_match(quicksearch, msg)) {
-			procmsg_msginfo_free(msg);
 			result = TRUE;
 			break;
 		}
-		procmsg_msginfo_free(msg);
 		if (num % interval == 0)
 			GTK_EVENTS_FLUSH();
 		if (!quicksearch_is_active(quicksearch))
@@ -1104,7 +1102,7 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 
-	g_slist_free(msglist);
+	procmsg_msg_list_free(msglist);
 	return result;
 }
 

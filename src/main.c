@@ -1322,6 +1322,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	}
 
 	sock_cleanup();
+	summary_clear_list(mainwin->summaryview);
 	if (folderview_get_selected_item(mainwin->folderview))
 		folder_item_close(folderview_get_selected_item(mainwin->folderview));
 	gtk_main_quit();
