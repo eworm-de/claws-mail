@@ -2378,3 +2378,4 @@
 ( cvs diff -u -r 1.155.2.52 -r 1.155.2.53 src/Makefile.am;  cvs diff -u -r 1.83.2.102 -r 1.83.2.103 src/mimeview.c;  cvs diff -u -r 1.25.2.32 -r 1.25.2.33 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.23 -r 1.18.2.24 src/stock_pixmap.h;  diff -u /dev/null src/pixmaps/mime_pgpsig.xpm;  ) > 2.7.2cvs58.patchset
 ( cvs diff -u -r 1.395.2.284 -r 1.395.2.285 src/summaryview.c;  ) > 2.7.2cvs59.patchset
 ( cvs diff -u -r 1.115.2.137 -r 1.115.2.138 src/main.c;  cvs diff -u -r 1.150.2.92 -r 1.150.2.93 src/procmsg.c;  cvs diff -u -r 1.1.2.62 -r 1.1.2.63 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/plugins/pgpcore/passphrase.c;  ) > 2.7.2cvs60.patchset
+( cvs diff -u -r 1.1.2.63 -r 1.1.2.64 src/gtk/quicksearch.c;  ) > 2.7.2cvs61.patchset

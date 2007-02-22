@@ -235,6 +235,10 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	if (event != NULL && event->keyval == GDK_Return) {
+		if (quicksearch->press_timeout_id != -1) {
+			g_source_remove(quicksearch->press_timeout_id);
+			quicksearch->press_timeout_id = -1;
+		}
 		quicksearch->in_typing = FALSE;
 		/* add expression to history list and exec quicksearch */
 		searchbar_run(quicksearch, FALSE);
