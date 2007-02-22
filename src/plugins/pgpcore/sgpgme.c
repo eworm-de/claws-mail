@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -798,5 +800,36 @@ void sgpgme_check_create_key(void)
 		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
 		prefs_gpg_save_config();
 	}	
+}
+
+void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
+{
+	char buf[BUFSIZ];
+	void *result = NULL;
+	ssize_t r = 0;
+	size_t w = 0;
+	
+	if (data == NULL)
+		return NULL;
+	if (len == NULL)
+		return NULL;
+
+	/* I know it's deprecated, but we don't compile with _LARGEFILE */
+	gpgme_data_rewind(data);
+	while ((r = gpgme_data_read(data, buf, BUFSIZ)) > 0) {
+		result = realloc(result, r + w);
+		memcpy(result+w, buf, r);
+		w += r;
+	}
+	
+	*len = w;
+
+	gpgme_data_release(data);
+	if (r < 0) {
+		free(result);
+		*len = 0;
+		return NULL;
+	}
+	return result;
 }
 #endif /* USE_GPGME */

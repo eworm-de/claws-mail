@@ -439,7 +439,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			"\r\n",
 			src_codeset);
 	
-	chars = gpgme_data_release_and_get_mem(plain, &len);
+	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0)
 		fwrite(chars, len, 1, dstfp);
 
@@ -585,10 +585,10 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	}
 
 
-	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
+	sigcontent = sgpgme_data_release_and_get_mem(gpgsig, &len);
 	
 	if (sigcontent == NULL || len <= 0) {
-		g_warning("gpgme_data_release_and_get_mem failed");
+		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Data signing failed, no contents."));
 		gpgme_data_release(gpgtext);
 		g_free(textstr);
@@ -704,10 +704,10 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
-	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
+	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
 
 	if (enccontent == NULL || len <= 0) {
-		g_warning("gpgme_data_release_and_get_mem failed");
+		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		gpgme_data_release(gpgtext);
 		g_free(textstr);

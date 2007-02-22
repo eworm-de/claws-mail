@@ -315,35 +315,35 @@ gpgme_error_t
 gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         const char *passphrase_hint, int prev_bad, int fd)
 {
-    const char *pass;
+    const char *pass = NULL;
 
     if (prefs_gpg_get_config()->store_passphrase && last_pass && !prev_bad)
-        pass = last_pass;
+        pass = g_strdup(last_pass);
     else {
-    gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
-    debug_print ("%% requesting passphrase for '%s'\n ", uid_hint);
-    pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad, FALSE);
-    gpgmegtk_free_passphrase();
-    if (!pass) {
-        debug_print ("%% cancel passphrase entry\n");
-        write(fd, "\n", 1);
-        return GPG_ERR_CANCELED;
-    }
-    else {
-        if (prefs_gpg_get_config()->store_passphrase) {
-            last_pass = g_strdup(pass);
+	gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
+	debug_print ("%% requesting passphrase for '%s'\n ", uid_hint);
+	pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad, FALSE);
+	gpgmegtk_free_passphrase();
+	if (!pass) {
+            debug_print ("%% cancel passphrase entry\n");
+            write(fd, "\n", 1);
+            return GPG_ERR_CANCELED;
+	}
+	else {
+            if (prefs_gpg_get_config()->store_passphrase) {
+        	last_pass = g_strdup(pass);
 #ifndef G_PLATFORM_WIN32
-            if (mlock(last_pass, strlen(last_pass)) == -1)
-                debug_print("%% locking passphrase failed\n");
+        	if (mlock(last_pass, strlen(last_pass)) == -1)
+                    debug_print("%% locking passphrase failed\n");
 #endif
-            if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
-                    g_timeout_add(prefs_gpg_get_config()
-                                  ->store_passphrase_timeout*60*1000,
-                                  free_passphrase, NULL);
+        	if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
+                	g_timeout_add(prefs_gpg_get_config()
+                                      ->store_passphrase_timeout*60*1000,
+                                      free_passphrase, NULL);
+        	}
             }
-        }
-        debug_print ("%% sending passphrase\n");
-    }
+            debug_print ("%% sending passphrase\n");
+	}
     }
 
 #ifdef G_OS_WIN32

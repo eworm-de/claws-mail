@@ -350,7 +350,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	fprintf(dstfp, "MIME-Version: 1.0\n");
 
-	chars = gpgme_data_release_and_get_mem(plain, &len);
+	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0)
 		fwrite(chars, len, 1, dstfp);
 	fclose(dstfp);
@@ -530,12 +530,12 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	sigcontent = gpgme_data_release_and_get_mem(gpgsig, &len);
+	sigcontent = sgpgme_data_release_and_get_mem(gpgsig, &len);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
 
 	if (sigcontent == NULL || len <= 0) {
-		g_warning("gpgme_data_release_and_get_mem failed");
+		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Data signing failed, no contents."));
 		return FALSE;
 	}
@@ -646,12 +646,12 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
-	enccontent = gpgme_data_release_and_get_mem(gpgenc, &len);
+	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
 
 	if (enccontent == NULL || len <= 0) {
-		g_warning("gpgme_data_release_and_get_mem failed");
+		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		gpgme_release(ctx);
 		return FALSE;

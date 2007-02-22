@@ -2379,3 +2379,4 @@
 ( cvs diff -u -r 1.395.2.284 -r 1.395.2.285 src/summaryview.c;  ) > 2.7.2cvs59.patchset
 ( cvs diff -u -r 1.115.2.137 -r 1.115.2.138 src/main.c;  cvs diff -u -r 1.150.2.92 -r 1.150.2.93 src/procmsg.c;  cvs diff -u -r 1.1.2.62 -r 1.1.2.63 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/plugins/pgpcore/passphrase.c;  ) > 2.7.2cvs60.patchset
 ( cvs diff -u -r 1.1.2.63 -r 1.1.2.64 src/gtk/quicksearch.c;  ) > 2.7.2cvs61.patchset
+( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/plugins/pgpcore/sgpgme.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpcore/sgpgme.h;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.45 -r 1.1.2.46 src/plugins/pgpmime/pgpmime.c;  ) > 2.7.2cvs62.patchset
