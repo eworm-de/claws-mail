@@ -2836,50 +2836,52 @@ gboolean addrindex_load_completion(
 			return FALSE;
 		}
 
-		if( book != NULL ) {
-			AddressBookFile *abf = book->rawDataSource;
+		if( folder != NULL ) {
 
-			debug_print("addrindex_load_completion: book %p '%s'\n", book, abf->fileName);
+			GList *items;
+			GList *nodeM;
+			gchar *sName;
+			ItemPerson *person;
 
-			addrindex_load_completion_load_persons( callBackFunc, book );
+			debug_print("addrindex_load_completion: folder %p '%s'\n", folder, folder->obj.name);
+
+			/* Load email addresses */
+			items = addritem_folder_get_person_list( folder );
+			for( ; items != NULL; items = g_list_next( items ) ) {
+				person = items->data;
+				nodeM = person->listEMail;
+
+				/* Figure out name to use */
+				sName = ADDRITEM_NAME(person);
+				if( sName == NULL || *sName == '\0' ) {
+					sName = person->nickName;
+				}
+
+				/* Process each E-Mail address */
+				while( nodeM ) {
+					ItemEMail *email = nodeM->data;
+
+					callBackFunc( sName, email->address, person->nickName, 
+							  ADDRITEM_NAME(email), NULL );
+
+					nodeM = g_list_next( nodeM );
+				}
+			}
+			/* Free up the list */
+			mgu_clear_list( items );
+			g_list_free( items );
 
 			return TRUE;
 
 		} else {
 
-			if( folder != NULL ) {
-				GList *items;
-				GList *nodeM;
-				gchar *sName;
-				ItemPerson *person;
+			if( book != NULL ) {
 
-				debug_print("addrindex_load_completion: folder %p '%s'\n", folder, folder->obj.name);
+				AddressBookFile *abf = book->rawDataSource;
 
-				/* Load email addresses */
-				items = addritem_folder_get_person_list( folder );
-				for( ; items != NULL; items = g_list_next( items ) ) {
-					person = items->data;
-					nodeM = person->listEMail;
+				debug_print("addrindex_load_completion: book %p '%s'\n", book, abf->fileName);
 
-					/* Figure out name to use */
-					sName = ADDRITEM_NAME(person);
-					if( sName == NULL || *sName == '\0' ) {
-						sName = person->nickName;
-					}
-
-					/* Process each E-Mail address */
-					while( nodeM ) {
-						ItemEMail *email = nodeM->data;
-
-						callBackFunc( sName, email->address, person->nickName, 
-								  ADDRITEM_NAME(email), NULL );
-
-						nodeM = g_list_next( nodeM );
-					}
-				}
-				/* Free up the list */
-				mgu_clear_list( items );
-				g_list_free( items );
+				addrindex_load_completion_load_persons( callBackFunc, book );
 
 				return TRUE;
 
