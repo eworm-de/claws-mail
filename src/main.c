@@ -548,6 +548,12 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 
 static gboolean sc_exiting = FALSE;
 static gboolean sc_starting = FALSE;
+static gboolean show_at_startup = TRUE;
+
+void main_set_show_at_startup(gboolean show)
+{
+	show_at_startup = show;
+}
 
 int main(int argc, char *argv[])
 {
@@ -820,7 +826,10 @@ int main(int argc, char *argv[])
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
 
-	main_window_popup(mainwin);
+	/* if crashed, show window early so that the user
+	 * sees what's happening */
+	if (!cmd.crash && crash_file_present)
+		main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);
@@ -892,6 +901,13 @@ int main(int argc, char *argv[])
 
  	plugin_load_standard_plugins ();
        
+	/* if not crashed, show window now */
+	if (!(!cmd.crash && crash_file_present)) {
+		/* apart if something told not to show */
+		if (show_at_startup)
+			main_window_popup(mainwin);
+	}
+
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);

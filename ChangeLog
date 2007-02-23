@@ -1,3 +1,12 @@
+2007-02-23 [colin]	2.7.2cvs70
+
+	* src/main.c
+	* src/main.h
+	* src/plugins/trayicon/trayicon.c
+		Fix blinking mainwin when starting in tray
+		(show mainwindow later in the startup process,
+		 apart if restarting post-crash)
+
 2007-02-23 [colin]	2.7.2cvs69
 
 	* src/folderview.c

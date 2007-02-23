@@ -424,6 +424,7 @@ int plugin_init(gchar **error)
 
 		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
 			main_window_hide(mainwin);
+		main_set_show_at_startup(FALSE);
 	}
 
 	return 0;
