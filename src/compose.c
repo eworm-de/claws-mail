@@ -3781,12 +3781,6 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
 
 		if (quote_str) {
-			if (!wrap_quote) {
-				if (startq_offset == -1) {
-					startq_offset = gtk_text_iter_get_offset(&iter);
-				}
-				goto colorize;
-			}
 			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
 			if (startq_offset == -1) 
 				startq_offset = gtk_text_iter_get_offset(&iter);
@@ -3797,6 +3791,9 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 					quotelevel %= 3;
 				else
 					quotelevel = 2;
+			}
+			if (!wrap_quote) {
+				goto colorize;
 			}
 		} else {
 			if (startq_offset == -1)
@@ -3915,6 +3912,7 @@ colorize:
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &startquote, startq_offset);
 			endquote = iter;
+
 			switch (quotelevel) {
 			case 0:	gtk_text_buffer_apply_tag_by_name(
 					buffer, "quote0", &startquote, &endquote);

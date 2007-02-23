@@ -2385,3 +2385,4 @@
 ( cvs diff -u -r 1.27.2.28 -r 1.27.2.29 src/addr_compl.c;  ) > 2.7.2cvs65.patchset
 ( cvs diff -u -r 1.60.2.81 -r 1.60.2.82 src/addressbook.c;  cvs diff -u -r 1.28.2.23 -r 1.28.2.24 src/addrindex.c;  ) > 2.7.2cvs66.patchset
 ( cvs diff -u -r 1.27.2.29 -r 1.27.2.30 src/addr_compl.c;  ) > 2.7.2cvs67.patchset
+( cvs diff -u -r 1.382.2.360 -r 1.382.2.361 src/compose.c;  ) > 2.7.2cvs68.patchset
