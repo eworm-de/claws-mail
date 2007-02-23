@@ -379,11 +379,13 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 	}
 	
 	if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
+		prefs_gpg_enable_agent(prefs_gpg_get_config()->use_gpg_agent);
     		if (!getenv("GPG_AGENT_INFO") || !prefs_gpg_get_config()->use_gpg_agent) {
         		info.c = ctx;
         		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
     		}
 	} else {
+		prefs_gpg_enable_agent(TRUE);
         	info.c = ctx;
         	gpgme_set_passphrase_cb (ctx, NULL, &info);
 	}

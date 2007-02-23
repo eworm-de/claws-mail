@@ -53,6 +53,8 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+static gchar *saved_gpg_agent_info = NULL;
+
 struct GPGPage
 {
 	PrefsPage page;
@@ -103,7 +105,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_use_gpg_agent,
 			_("Use gpg-agent to manage passwords"));
-	if (!getenv("GPG_AGENT_INFO"))
+	if (saved_gpg_agent_info == NULL)
 		gtk_widget_set_sensitive(checkbtn_use_gpg_agent, FALSE);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
@@ -199,6 +201,8 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_passphrase_grab));
 	config->gpg_warning = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_gpg_warning));
+
+	prefs_gpg_enable_agent(config->use_gpg_agent);
 
 	prefs_gpg_save_config();
 }
@@ -512,10 +516,29 @@ void prefs_gpg_account_free_config(GPGAccountConfig *config)
 static struct GPGPage gpg_page;
 static struct GPGAccountPage gpg_account_page;
 
+void prefs_gpg_enable_agent(gboolean enable)
+{
+	if (enable) {
+		if (saved_gpg_agent_info) {
+			g_setenv("GPG_AGENT_INFO",
+				 saved_gpg_agent_info, TRUE);
+			debug_print("set GPG_AGENT_INFO=%s\n", 
+				saved_gpg_agent_info);
+		} else { 
+			debug_print("Can't enable gpg agent (no GPG_AGENT_INFO)\n");
+		}
+	} else {
+			g_unsetenv("GPG_AGENT_INFO");
+			debug_print("unset GPG_AGENT_INFO=%s\n", 
+				saved_gpg_agent_info);
+	}
+}
+
 void prefs_gpg_init()
 {
 	static gchar *path[3];
 	gchar *rcpath;
+	gchar *tmp = NULL;
 
 	prefs_set_default(param);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
@@ -541,10 +564,17 @@ void prefs_gpg_init()
         gpg_account_page.page.weight = 30.0;
 
         prefs_account_register_page((PrefsPage *) &gpg_account_page);
+	
+	tmp = g_getenv("GPG_AGENT_INFO");
+	if (tmp)
+		saved_gpg_agent_info = g_strdup(tmp);
+
+	prefs_gpg_enable_agent(prefs_gpg_get_config()->use_gpg_agent);
 }
 
 void prefs_gpg_done()
 {
 	prefs_gtk_unregister_page((PrefsPage *) &gpg_page);
 	prefs_account_unregister_page((PrefsPage *) &gpg_account_page);
+	prefs_gpg_enable_agent(TRUE);
 }

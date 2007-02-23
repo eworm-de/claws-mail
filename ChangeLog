@@ -1,3 +1,14 @@
+2007-02-23 [colin]	2.7.2cvs63
+
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Try harder to respect user's choice wrt
+		gpg-agent even with gpg2, by unsetting
+		GPG_AGENT_INFO when necessary.
+
 2007-02-22 [paul]	2.7.2cvs62
 
 	* src/plugins/pgpcore/sgpgme.c

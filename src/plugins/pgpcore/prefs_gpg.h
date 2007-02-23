@@ -52,3 +52,4 @@ struct GPGConfig *prefs_gpg_get_config(void);
 struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account);
 void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config);
 void prefs_gpg_account_free_config(GPGAccountConfig *config);
+void prefs_gpg_enable_agent(gboolean enable);

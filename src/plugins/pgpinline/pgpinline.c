@@ -540,6 +540,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
+	prefs_gpg_enable_agent(prefs_gpg_get_config()->use_gpg_agent);
 	if (!getenv("GPG_AGENT_INFO") || !prefs_gpg_get_config()->use_gpg_agent) {
     		info.c = ctx;
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
