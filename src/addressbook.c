@@ -4750,6 +4750,9 @@ static void addressbook_peek_subfolder_exists_load_folder( ItemFolder *parentFol
 	FolderInfo *fi;
 	FolderPathMatch *nextmatch = NULL;
 
+	if (!parentFolder)
+		return;
+
 	list = parentFolder->listFolder;
 	while ( list ) {
 		folder = list->data;
@@ -4779,6 +4782,7 @@ static void addressbook_peek_subfolder_exists_load_folder( ItemFolder *parentFol
 
 		fi = addressbook_peek_subfolder_exists_create_folderinfo( fiParent->book, folder );
 		addressbook_peek_subfolder_exists_load_folder( folder, fi, nextmatch );
+		g_free(fi);
 		list = g_list_next( list );
 	}
 }
@@ -4823,7 +4827,7 @@ gboolean addressbook_peek_folder_exists( gchar *folderpath,
 	list = addrindex_get_interface_list( _addressIndex_ );
 	while ( list && !folder_path_match.matched ) {
 		AddressInterface *interface = list->data;
-		if ( interface->type == ADDR_IF_BOOK ) {
+		if ( interface && interface->type == ADDR_IF_BOOK ) {
 			nodeDS = interface->listSource;
 			while ( nodeDS && !folder_path_match.matched ) {
 				ds = nodeDS->data;
@@ -4837,7 +4841,8 @@ gboolean addressbook_peek_folder_exists( gchar *folderpath,
 				abf = ds->rawDataSource;
 
 				/* match book name */
-				if ( strcmp(folder_path_match.folder_path[0], abf->fileName) == 0 ) {
+				if ( abf && abf->fileName &&
+				    strcmp(folder_path_match.folder_path[0], abf->fileName) == 0 ) {
 
 					debug_print("matched book name '%s'\n", abf->fileName);
 					folder_path_match.book = ds;
@@ -4859,6 +4864,7 @@ gboolean addressbook_peek_folder_exists( gchar *folderpath,
 						folder_path_match.index = 1;
 						/* this call will set folder_path_match.matched and folder_path_match.folder */
 						addressbook_peek_subfolder_exists_load_folder( rootFolder, fi, &folder_path_match );
+						g_free(fi);
 					}
 				}
 

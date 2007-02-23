@@ -2388,3 +2388,4 @@
 ( cvs diff -u -r 1.382.2.360 -r 1.382.2.361 src/compose.c;  ) > 2.7.2cvs68.patchset
 ( cvs diff -u -r 1.207.2.149 -r 1.207.2.150 src/folderview.c;  cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/imap_gtk.c;  ) > 2.7.2cvs69.patchset
 ( cvs diff -u -r 1.115.2.138 -r 1.115.2.139 src/main.c;  cvs diff -u -r 1.7.2.9 -r 1.7.2.10 src/main.h;  cvs diff -u -r 1.14.2.51 -r 1.14.2.52 src/plugins/trayicon/trayicon.c;  ) > 2.7.2cvs70.patchset
+( cvs diff -u -r 1.60.2.82 -r 1.60.2.83 src/addressbook.c;  ) > 2.7.2cvs71.patchset
