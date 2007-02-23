@@ -265,13 +265,13 @@ static gint add_address(const gchar *name, const gchar *address,
 	g_address_list = g_list_prepend(g_address_list, ae);
 
 	add_address1(name, ae);
-	if (address != NULL)
+	if (address != NULL && *address != '\0')
 		add_address1(address, ae);
 	
-	if (nick != NULL)
+	if (nick != NULL && *nick != '\0')
 		add_address1(nick, ae);
 	
-	if ( alias != NULL ) {
+	if ( alias != NULL && *alias != '\0') {
 		add_address1(alias, ae);
 	}
 
