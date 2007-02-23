@@ -2677,8 +2677,13 @@ static gboolean folderview_update_folder(gpointer source, gpointer userdata)
 		GtkCTreeNode *node;
 
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
-		if (node != NULL)
+		if (node != NULL) {
 			gtk_ctree_remove_node(GTK_CTREE(ctree), node);
+			if (folderview->selected == node)
+				folderview->selected = NULL;
+			if (folderview->opened == node)
+				folderview->opened = NULL;
+		}
 	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDER | FOLDER_REMOVE_FOLDER))
 		folderview_set(folderview);
 

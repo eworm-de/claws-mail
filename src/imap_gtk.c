@@ -486,6 +486,17 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 	
+	
+	if (!action) {
+		if (folderview->opened == folderview->selected ||
+		    gtk_ctree_is_ancestor(ctree,
+					  folderview->selected,
+					  folderview->opened)) {
+			summary_clear_all(folderview->summaryview);
+			folderview->opened = NULL;
+		}
+	}
+
 	if (recurse) {
 		g_node_traverse(item->node, G_PRE_ORDER,
 			G_TRAVERSE_ALL, -1, imap_gtk_subscribe_func, GINT_TO_POINTER(action));
