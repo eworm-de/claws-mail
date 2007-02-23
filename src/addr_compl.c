@@ -102,8 +102,8 @@ typedef struct
 /*******************************************************************************/
 
 static gint	    g_ref_count;	/* list ref count */
-static GList 	   *g_completion_list;	/* list of strings to be checked */
-static GList 	   *g_address_list;	/* address storage */
+static GList 	   *g_completion_list = NULL;	/* list of strings to be checked */
+static GList 	   *g_address_list = NULL;	/* address storage */
 static GCompletion *g_completion;	/* completion object */
 
 static GHashTable *_groupAddresses_ = NULL;
@@ -181,22 +181,11 @@ static void init_all(void)
 	g_return_if_fail(g_completion != NULL);
 }
 
-/**
- * Free up all completion index data.
- */
-static void free_all(void)
+static void free_all_addresses(void)
 {
 	GList *walk;
-	
-	walk = g_list_first(g_completion_list);
-	for (; walk != NULL; walk = g_list_next(walk)) {
-		completion_entry *ce = (completion_entry *) walk->data;
-		g_free(ce->string);
-		g_free(walk->data);
-	}
-	g_list_free(g_completion_list);
-	g_completion_list = NULL;
-	
+	if (!g_address_list)
+		return;
 	walk = g_address_list;
 	for (; walk != NULL; walk = g_list_next(walk)) {
 		address_entry *ae = (address_entry *) walk->data;
@@ -207,7 +196,35 @@ static void free_all(void)
 	}
 	g_list_free(g_address_list);
 	g_address_list = NULL;
+}
+
+static void clear_completion_cache(void);
+static void free_completion_list(void)
+{
+	GList *walk;
+	if (!g_completion_list)
+		return;
 	
+	clear_completion_cache();
+	if (g_completion)
+		g_completion_clear_items(g_completion);
+
+	walk = g_list_first(g_completion_list);
+	for (; walk != NULL; walk = g_list_next(walk)) {
+		completion_entry *ce = (completion_entry *) walk->data;
+		g_free(ce->string);
+		g_free(walk->data);
+	}
+	g_list_free(g_completion_list);
+	g_completion_list = NULL;
+}
+/**
+ * Free up all completion index data.
+ */
+static void free_all(void)
+{
+	free_completion_list();	
+	free_all_addresses();	
 	g_completion_free(g_completion);
 	g_completion = NULL;
 	if (_groupAddresses_)
@@ -281,10 +298,21 @@ static gint add_address(const gchar *name, const gchar *address,
 /**
  * Read address book, creating all entries in the completion index.
  */ 
-static void read_address_book(gchar *folderpath) {	
+static void read_address_book(gchar *folderpath) {
+	free_all_addresses();
+	free_completion_list();
+
 	addrindex_load_completion( add_address, folderpath );
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
+	/* merge the completion entry list into g_completion */
+	if (g_completion_list) {
+		g_completion_add_items(g_completion, g_completion_list);
+		if (debug_get_mode())
+			debug_print("read %d items in %s\n", 
+				g_list_length(g_completion_list),
+				folderpath?folderpath:"(null)");
+	}
 }
 
 /**
@@ -322,22 +350,11 @@ static void clear_completion_cache(void)
  */
 gint start_address_completion(gchar *folderpath)
 {
+	gboolean different_book = FALSE;
 	clear_completion_cache();
 
-	if ((completion_folder_path == NULL && folderpath != NULL) ||
-		(completion_folder_path != NULL && folderpath == NULL) ||
-		(completion_folder_path != NULL && folderpath != NULL &&
-		 strcmp(completion_folder_path, folderpath) != 0)) {
-
-		debug_print("start_address_completion: resetting\n");
-
-		/* TODO: wwp: optimize: only reset when the new folderpath is MORE restrictive than the old one
-		  (the most easy case is when folderpath is NULL and completion_folder_path is != NULL */
-		if (g_ref_count) {
-			free_all();
-			g_ref_count = 0;
-		}
-	}
+	if (strcmp2(completion_folder_path,folderpath))
+		different_book = TRUE;
 
 	g_free(completion_folder_path);
 	if (folderpath != NULL)
@@ -349,10 +366,9 @@ gint start_address_completion(gchar *folderpath)
 		init_all();
 		/* open the address book */
 		read_address_book(folderpath);
-		/* merge the completion entry list into g_completion */
-		if (g_completion_list)
-			g_completion_add_items(g_completion, g_completion_list);
-	}
+	} else if (different_book)
+		read_address_book(folderpath);
+
 	g_ref_count++;
 	debug_print("start_address_completion(%s) ref count %d\n",
 				folderpath, g_ref_count);
@@ -607,11 +623,7 @@ gint invalidate_address_completion(void)
 	if (g_ref_count) {
 		/* simply the same as start_address_completion() */
 		debug_print("Invalidation request for address completion\n");
-		free_all();
-		init_all();
 		read_address_book(completion_folder_path);
-		if (g_completion_list)
-		g_completion_add_items(g_completion, g_completion_list);
 		clear_completion_cache();
 	}
 
@@ -625,12 +637,23 @@ gint invalidate_address_completion(void)
  */
 gint end_address_completion(void)
 {
+	gboolean different_folder = FALSE;
 	clear_completion_cache();
 
+	/* reset the folderpath to NULL */
+	if (completion_folder_path) {
+		g_free(completion_folder_path);
+		completion_folder_path = NULL;
+		different_folder = TRUE;
+	}
 	if (0 == --g_ref_count)
 		free_all();
 
 	debug_print("end_address_completion ref count %d\n", g_ref_count);
+	if (g_ref_count && different_folder) {
+		debug_print("still ref'd, different folder\n");
+		invalidate_address_completion();
+	}
 
 	return g_ref_count; 
 }
