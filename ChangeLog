@@ -1,3 +1,8 @@
+2007-02-23 [paul]	2.7.2cvs64
+
+	* src/plugins/pgpcore/passphrase.c
+		remove 'const '
+
 2007-02-23 [colin]	2.7.2cvs63
 
 	* src/plugins/pgpcore/prefs_gpg.c

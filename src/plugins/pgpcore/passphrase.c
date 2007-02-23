@@ -315,7 +315,7 @@ gpgme_error_t
 gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         const char *passphrase_hint, int prev_bad, int fd)
 {
-    const char *pass = NULL;
+    char *pass = NULL;
 
     if (prefs_gpg_get_config()->store_passphrase && last_pass && !prev_bad)
         pass = g_strdup(last_pass);
