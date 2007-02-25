@@ -1,3 +1,11 @@
+2007-02-25 [paul]	2.7.2cvs72
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/kmail-mailbox2claws-mail.pl  **ADDED**
+	* tools/maildir2claws-mail.pl  **REMOVED**
+		renamed the script, fixed a couple bugs
+
 2007-02-23 [colin]	2.7.2cvs71
 
 	* src/addressbook.c

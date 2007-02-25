@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -14,19 +14,22 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
-#  * Copyright 2003 Paul Mangan <paul@claws-mail.org>
+#  * Copyright 2003-2007 Paul Mangan <paul@claws-mail.org>
 #  *
+#  * 2007-02-25: several fixes for kmail 1.9.6
+#	         --kmaildir now expects the full path
+#		 renamed from maildir2claws-mail.pl to kmail-mailbox2claws-mail.pl
 #  * 2003-10-01: add --debug and --dry-run options
 #  * 2003-09-30: updated/improved by Matthias Förste <itsjustme@users.sourceforge.net>
 #  * 2003-05-27: version one
 
-## script name : maildir2sylpheed.pl
+## script name : kmail-mailbox2claws-mail.pl
 
 ## script purpose : convert a Kmail mailbox into a Claws Mail mailbox
 
-## USAGE: maildir2claws-mail.pl --kmaildir=Mail
+## USAGE: kmail-mailbox2claws-mail.pl --kmaildir=/full/path/to/kmail/mailbox
 
-## tested with Kmail version 1.5.2
+## tested with Kmail version 1.9.6
 
 use strict;
 
@@ -41,7 +44,6 @@ my $PRETEND = '';
 my $DEBUG = '';
 
 my $claws_tmpdir = "$ENV{HOME}/claws_tmp";
-my $kmail_olddir = "$ENV{HOME}/kmail_junk";
 
 GetOptions("kmaildir=s" => \$kmaildir,
 	   "help"	=> \$iNeedHelp,
@@ -53,12 +55,10 @@ if ($kmaildir eq "" || $iNeedHelp) {
 		print "No directory name given\n";
 	}
 	print "Use the following format:\n";
-	print "\tmaildir2claws-mail.pl --kmaildir=mail_folder_name\n\n";
-	print "For example: 'Mail'\n";
+	print "\tkmail-mailbox2claws-mail.pl --kmaildir=full-path-to-kmail-dir\n\n";
 	exit;
 }
 
-$kmaildir = "$ENV{PWD}/$kmaildir" unless '/' eq substr($kmaildir,0,1);
 
 my $count = 1;
 my $MAIL_dir = "$kmaildir";
@@ -74,7 +74,6 @@ if (-d $MAIL_dir) {
 
 unless ($PRETEND) {
 	mkdir("$claws_tmpdir", 0755);
-	system("mv $kmaildir $kmail_olddir");
 	system("mv $claws_tmpdir $ENV{HOME}/Mail");
 
 	print "\n\nSucessfully converted mailbox \"$MAIL_dir\"\n";
@@ -82,8 +81,6 @@ unless ($PRETEND) {
 	print "select \"Rebuild folder tree\"\n";
 	print "You may also need to run \"/File/Folder/Check for ";
 	print "new messages in all folders\"\n\n";
-	print "Your kmail directories have been backed-up to\n";
-	print "$kmail_olddir\n\n";
 }
 
 print "\n";
@@ -107,7 +104,7 @@ sub process_dir() {
     	    $direc !~ m/^inbox$/) {
 		my $tmpdir = $direc;
 		$tmpdir =~ s/^$MAIL_dir//;
-		$tmpdir =~ s/^sent-mail$/sent/;
+		$tmpdir =~ s/\/sent-mail$/sent/;
 		$tmpdir =~ s/\/cur$//;
 		$tmpdir =~ s/\/new$//;
 		$tmpdir =~ s/^\///;
@@ -128,6 +125,8 @@ sub process_file {
   	my $nfile;
   	my $tmpfile = $file;
 
+    	$tmpfile =~ s|^$kmaildir||;
+
   	if ($tmpfile =~ m/\/cur\// || 
 	    $tmpfile =~ m/\/new\//) {
 
@@ -139,13 +138,12 @@ sub process_file {
     		push(@spl_str, "$count");
 
     		foreach my $spl_str (@spl_str) {
-			$spl_str =~ s/^\.//;
 			$spl_str =~ s/\.directory$//;
+			$spl_str =~ s/^\.//;
 			$spl_str =~ s/^sent-mail$/sent/;
 		}
-
     		$nfile = join("/", @spl_str);
-    		$nfile =~ s|$kmaildir|$claws_tmpdir/|;
+		$nfile = $claws_tmpdir.$nfile;
 	}
 
 	if (-e "$file" && $nfile ne "") {

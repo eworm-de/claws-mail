@@ -13,7 +13,7 @@ EXTRA_TOOLS = \
 	google_search.pl \
 	kmail2claws-mail.pl \
 	kmail2claws-mail_v2.pl \
-	maildir2claws-mail.pl \
+	kmail-mailbox2claws-mail.pl \
 	multiwebsearch.pl \
 	nautilus2claws-mail.sh \
 	outlook2claws-mail.pl \

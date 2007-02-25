@@ -24,7 +24,7 @@ Addressbook conversion:
 Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
   convert_mbox.pl		Import mbox files
-  maildir2claws-mail.pl		Convert a maildir mailbox to MH format
+  kmail-mailbox2claws-mail.pl	Convert a kmail mailbox to a Claws Mail mailbox
   tbird2claws.py		Integrate a Thunderbird folder tree into Claws
 
 Other tools:
@@ -342,11 +342,10 @@ Mailbox conversion
 
   Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
 
-* maildir2claws-mail.pl
+* kmail-mailbox2claws-mail.pl
 
   WHAT IT DOES
-	This perl script converts a mailbox in maildir format into
-	Claws Mail' MH format.
+	This perl script converts a kmail mailbox  into Claws Mail' mailbox.
   
   HOW TO USE IT
   
@@ -354,13 +353,12 @@ Mailbox conversion
 	
 	Run the script using:
 	 
-    		perl maildir2claws-mail.pl --kmaildir=mail_folder_name
+    		kmail-mailbox2claws-mail.pl --kmaildir=/full/path/to/kmail/mailbox
 		
 	Start Claws Mail and right-click the toplevel mailbox, i.e
 	"Mailbox (MH)", and select 'Rebuild folder tree'.
 	You may also need to run '/File/Folder/Check for new messages
 	in all folders'
-	Your maildir directory will be backed-up.
 	
 	Additional options:
 		--debug		debug mode
