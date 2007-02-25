@@ -100,6 +100,7 @@
 #include "imap-thread.h"
 #endif
 #include "stock_pixmap.h"
+#include "valgrind.h"
 
 #if USE_OPENSSL
 #  include "ssl.h"
@@ -1338,7 +1339,9 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	}
 
 	sock_cleanup();
-	summary_clear_list(mainwin->summaryview);
+	if (RUNNING_ON_VALGRIND) {
+		summary_clear_list(mainwin->summaryview);
+	}
 	if (folderview_get_selected_item(mainwin->folderview))
 		folder_item_close(folderview_get_selected_item(mainwin->folderview));
 	gtk_main_quit();
