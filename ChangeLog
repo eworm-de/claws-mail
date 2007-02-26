@@ -1,3 +1,22 @@
+2007-02-26 [paul]	2.7.2cvs75
+
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/en_GB.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Miquel Oliete, Tim Brain, Stephan Sachse,
+		me, Flammie Pirinen, Fabien Vantard, Pader Rezso,
+		Pawel Pekala, Frederico Goncalves Guimaraes, Andrej Kacian,
+		Aleksandar Urosevic, and Ralgh Young
+
 2007-02-25 [mones]	2.7.2cvs74
 
 	* po/es.po

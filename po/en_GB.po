@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2007-01-08 07:07+0000\n"
-"PO-Revision-Date: 2006-12-13 12:15+0100\n"
+"PO-Revision-Date: 2007-02-26 08:47+0100\n"
 "Last-Translator: Paul Mangan <paul@claws-mail.org>\n"
 "Language-Team: Paul Mangan <paul@claws-mail.org>\n"
 "MIME-Version: 1.0\n"
@@ -6364,6 +6364,13 @@ msgid "_Unsubscribe"
 msgstr ""
 
 #: src/plugins/clamav/clamav_plugin.c:43
+#: src/plugins/bogofilter/bogofilter_gtk.c:187
+#: src/plugins/spamassassin/spamassassin_gtk.c:380
+msgid ""
+"Folder for storing identified spam. Leave empty to use the trash folder."
+msgstr ""
+"Folder for storing identified spam. Leave empty to use the wastebin folder."
+
 #: src/plugins/clamav/clamav_plugin_gtk.c:212
 msgid "Clam AntiVirus"
 msgstr ""
@@ -9106,8 +9113,12 @@ msgstr ""
 msgid "Socket I/O timeout"
 msgstr ""
 
-#: src/prefs_other.c:199
-msgid "Never send Return Receipts"
+#: src/prefs_other.c:632
+msgid "Ask before emptying trash"
+msgstr "Ask before emptying wastebin"
+
+#: src/prefs_other.c:634
+msgid "Ask about account specific filtering rules when filtering manually"
 msgstr ""
 
 #: src/prefs_quote.c:92
