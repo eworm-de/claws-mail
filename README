@@ -602,8 +602,8 @@ http://www.claws-mail.org/plugins.php
   kmail2claws-mail_v2.pl
 	new version of the address book conversion script
 	for newer versions of Kmail/Kaddressbook
-  maildir2claws-mail.pl
-  	convert a maildir format mailbox into MH format
+  kmail-mailbox2claws-mail.pl
+  	convert a Kmail mailbox into a Claws mail mailbox
   multiwebsearch.pl
   	search any searchable website for the selected text
   nautilus2claws-mail.sh
@@ -623,8 +623,12 @@ http://www.claws-mail.org/plugins.php
 	a Claws Mail addressbook
   tbird2claws.py
   	integrate a Thunderbird folder tree into Claws Mail
+  textviewer.pl
+	Display various attachments as text
   textviewer.sh
   	attempt to view an attachment as plain text
+  thunderbird-filters-convertor.pl
+	convert Thunderbird filtering rules
   update-po 
 	translators' tool that eases the creation of 
 	*.po files
@@ -711,6 +715,7 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 GTK 2 Version
 -------------
+2007-02-26	2.8.0
 2007-01-26	2.7.2
 2007-01-15	2.7.1
 2007-01-08	2.7.0

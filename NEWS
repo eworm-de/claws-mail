@@ -1,5 +1,89 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.8.0
+-------
+
+* Removed 'Separate Folder tree' and 'Separate Message View' and put
+  new layouts in place of it, 'Standard', 'Three columns', 'Wide
+  message' and 'Wide message list'. Accessible from /View/Layout.
+
+* Added IMAP subscriptions
+  Creating a new folder subscribes it. Deleting a folder unsubscribes
+  it. "Creating" an existing but unsubscribed folder will subscribe
+  it. By default, for new accounts, only subscribed folders are shown.
+  A contextual menu item has been added, /Subscriptions,  which allows
+  switching the display between All folders and Subscribed folders
+  only. It also enables the subscribing and unsubscribing of folders. 
+
+* Added the option 'Enable customisable menu shortcuts' to the
+  'Other' preferences page. Turning this off locks the current hot
+  keys, preventing accidental changes.
+
+* Added icons for application/pdf, application/pgp-signature,
+  application/postscript and text/calendar.
+
+* Added /Tools/List URIs
+  Enables opening any or all of the URIs contained in the currently
+  selected mail.
+
+* Added 'spam flag' to the Filtering and Processing Match Types.
+
+* Removed the 'Composing messages exist' dialogue on exit. Instead
+  opened messages are automatically saved to drafts, and re-opened at
+  the next startup.
+
+* Added handling of local URIs, (file:///...), from the --attach
+  command line.
+
+* Added Account options for spellcheck default dictionaries.
+
+* Added 'Edit/Delete thread'.
+
+* Added an option 'Ask about account specific filtering rules...' to
+  the 'Other' page, which was previously a hidden option.
+
+* Some preferences have been re-arranged:
+  Moved the 'Ask before emptying trash' option on the 'Other' page
+  outside of the 'On exit' frame as it's not only an 'On exit' option.
+  Moved 'Never send Return Receipts' from 'Other'  to 'Sending' page.
+  Moved keybinding preferences to the 'Other' page.
+  Added 'mousepad' to the list of text editors on the 'External
+  Programs' page.
+
+* Bogofilter and SpamAssassin plugins:	Enabled moving spam mail to the
+  Account's Trash folder instead of default Trash folder.
+
+* ClamAV plugin: updated for the upstream changes in libclamav, whilst
+  maintaining compatibility with older version of libclamav.
+
+* GPG Plugins: Added an option 'Use gpg-agent to manage passwords' to
+  GPG page of the common preferences. Fixes annoyances with distro-
+  installed gpg-agent, when no pinentry program is installed, and the
+  user is at a loss on why "decryption failed". It can be turned off
+  to bypass gpg-agent. The option is disabled if gpg-agent is not
+  running.
+
+* TrayIcon plugin: Added 'Hide at startup' and 'Close to tray'
+  options.
+  When the 'Close to tray' option is used the Window Manager's hotkey
+  and [X] button will hide the window instead of closing it - closing
+  CM can be done using the tray icon menu or the /File menu.
+  Clicking the trayicon now raises the window to current desktop when
+  it was either minimized or shaded, or when it was on another desktop.
+
+* Added support for non ISO-8859-1 compatible locales to the Actions
+  scripts freshmeat_search.pl, google_search.pl and multiwebsearch.pl.
+		
+* Renamed the maildir2claws-mail.pl script to kmail-mailbox2claws-mail.pl
+  and updated it to work with newer versions of Kmail. 
+
+* Added thunderbird-filters-convertor.pl script, which converts
+  thunderbird filter rules to Claws filter rules.
+
+* Updated Brazilian Portuguese, British English, Czech, Finnish,
+  French, German, Hungarian, Polish, Serbian, Simplified Chinese,
+  Slovak and Spanish translations.
+
 * 2.7.2
 -------
 

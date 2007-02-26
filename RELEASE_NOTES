@@ -1,4 +1,4 @@
-26th January 2007                                    Claws Mail 2.7.2
+26th February 2007                                   Claws Mail 2.8.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,49 +6,114 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-Claws Mail was previously known as Sylpheed-Claws.
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Added command line equivalent options:
-  -h for --help
-  -q and --quit for --exit
-  -v for --version
-  "Unknown option" is now printed when unknown command line options
-  are used.
+* Removed 'Separate Folder tree' and 'Separate Message View' and put
+  new layouts in place of it, 'Standard', 'Three columns', 'Wide
+  message' and 'Wide message list'. Accessible from /View/Layout.
 
-* The wizard for configuration migration, (Sylpheed-Claws to Claws
-  Mail), now has the option to save or not save a backup of the old
-  configuration folder.
+* Added IMAP subscriptions
+  Creating a new folder subscribes it. Deleting a folder unsubscribes
+  it. "Creating" an existing but unsubscribed folder will subscribe
+  it. By default, for new accounts, only subscribed folders are shown.
+  A contextual menu item has been added, /Subscriptions,  which allows
+  switching the display between All folders and Subscribed folders
+  only. It also enables the subscribing and unsubscribing of folders. 
 
-* The configuration wizard is now re-run if it was previously
-  cancelled.
+* Added the option 'Enable customisable menu shortcuts' to the
+  'Other' preferences page. Turning this off locks the current hot
+  keys, preventing accidental changes.
+
+* Added icons for application/pdf, application/pgp-signature,
+  application/postscript and text/calendar.
+
+* Added /Tools/List URIs
+  Enables opening any or all of the URIs contained in the currently
+  selected mail.
+
+* Added 'spam flag' to the Filtering and Processing Match Types.
+
+* Removed the 'Composing messages exist' dialogue on exit. Instead
+  opened messages are automatically saved to drafts, and re-opened at
+  the next startup.
+
+* Added handling of local URIs, (file:///...), from the --attach
+  command line.
+
+* Added Account options for spellcheck default dictionaries.
+
+* Added 'Edit/Delete thread'.
+
+* Added an option 'Ask about account specific filtering rules...' to
+  the 'Other' page, which was previously a hidden option.
+
+* Some preferences have been re-arranged:
+  Moved the 'Ask before emptying trash' option on the 'Other' page
+  outside of the 'On exit' frame as it's not only an 'On exit' option.
+  Moved 'Never send Return Receipts' from 'Other'  to 'Sending' page.
+  Moved keybinding preferences to the 'Other' page.
+  Added 'mousepad' to the list of text editors on the 'External
+  Programs' page.
+
+* Bogofilter and SpamAssassin plugins:	Enabled moving spam mail to the
+  Account's Trash folder instead of default Trash folder.
+
+* ClamAV plugin: updated for the upstream changes in libclamav, whilst
+  maintaining compatibility with older version of libclamav.
+
+* GPG Plugins: Added an option 'Use gpg-agent to manage passwords' to
+  GPG page of the common preferences. Fixes annoyances with distro-
+  installed gpg-agent, when no pinentry program is installed, and the
+  user is at a loss on why "decryption failed". It can be turned off
+  to bypass gpg-agent. The option is disabled if gpg-agent is not
+  running.
+
+* TrayIcon plugin: Added 'Hide at startup' and 'Close to tray'
+  options.
+  When the 'Close to tray' option is used the Window Manager's hotkey
+  and [X] button will hide the window instead of closing it - closing
+  CM can be done using the tray icon menu or the /File menu.
+  Clicking the trayicon now raises the window to current desktop when
+  it was either minimized or shaded, or when it was on another desktop.
+
+* Added support for non ISO-8859-1 compatible locales to the Actions
+  scripts freshmeat_search.pl, google_search.pl and multiwebsearch.pl.
+		
+* Renamed the maildir2claws-mail.pl script to kmail-mailbox2claws-mail.pl
+  and updated it to work with newer versions of Kmail. 
+
+* Added thunderbird-filters-convertor.pl script, which converts
+  thunderbird filter rules to Claws filter rules.
+
+* Updated Brazilian Portuguese, British English, Czech, Finnish,
+  French, German, Hungarian, Polish, Serbian, Simplified Chinese,
+  Slovak and Spanish translations.
 
 * Bug fixes:
-	o bug 1100, 'Highlighted e-mail data not visible when color
-		     label applied.'
-	o bug 1101, '"Load plugin" button is accidentally hidden'
-	o bug 1102, 'claws-mail-2.7.1 makes use of deprecated ldap 
-		     functions'
-	o IMAP: fixed crash when connect command doesn't exist.
-	o IMAP: better folder checking when an IMAP directory is set.
-	o IMAP: Never remove INBOX when scanning for new folders.
-	  It's a special folder that must exist.
-	o fix vertical scrollbar jumping back to the top when 'Check
-	  for new folders' is used.
-	o fix sensitivity issues of Mark as Spam/Ham context menus.
-	o fix potential crashes in the address book's embedded 'Edit
-	  person' dialogue, and fix conflicting copy/paste menu
-	  entry.
-	o Reflect change of Font configuration in the Header view
-	  clickable links.
-	o fix handling of empty values in attach_load_directory and
-	  attach_save_directory clawsrc options.
-	o fix 2nd-run loss and new configuration loss of filtering
-	  rules on configuration migration.
-	o Bogofilter plugin: fix sensitivity of "Insert X-Bogosity
-	  header" option
+	o bug 1033, 'Automatically refresh message list when new
+		     messages arrives'
+	o bug 1106, 'Claws crash on exit if LDAPS autocompletion
+		     was used'
+	o bug 1110, 'pgpmime fails to process encapsulated openpgp
+		     mime (rfc 3156, 6.1 -> rfc1847)'
+	o bug 1116, 'summary view allow a subject line break'
+	o bug 1117, 'fcntl locking code does not work in mbox.c'
+	o bug 1123, 'Segmentation fault while opening address book'
+	o Gentoo bug 165819, 'can't create a "local mbox file" account'
+	* Fixed bug that prevented colorization from working in the
+          Compose window without the wrap quotation option.
+	* Fixed address completion issues.
+	* Fixed focus issues after hiding the Quick Search
+	* Don't encode ',' in URIs before passing it to the browser
+	  command-line.
+	* Fixed markup being shown in the alert panel
+	* Recognize .utf8 locales as .UTF-8 ones
+	* Fixed code conversion when dragging a file
+	* Fixed 'warn if there are queued messages' option, which
+	  only checked the first mailbox's queue
+	* Fixed default hotkeys in Compose's Send menu.
+	* Plug some memory leaks.
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
