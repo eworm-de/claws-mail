@@ -354,6 +354,9 @@ gchar *get_uri_path			(const gchar	*uri);
 gint get_uri_len			(const gchar	*str);
 void decode_uri				(gchar		*decoded_uri,
 					 const gchar	*encoded_uri);
+void decode_uri_with_plus		(gchar 		*decoded_uri, 
+					 const gchar 	*encoded_uri, 
+					 gboolean 	 with_plus);
 gint scan_mailto_url			(const gchar	*mailto,
 					 gchar	       **to,
 					 gchar	       **cc,

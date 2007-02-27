@@ -2500,7 +2500,8 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	const gchar *buf;
 	gint i = 0;
 	buf = *buffer;
-	
+	gboolean with_plus = TRUE;
+
 	if (buf == 0x00) {
 		*url_decoded = '\0';
 		*buffer = NULL;
@@ -2514,6 +2515,8 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	/* First non space and non comment must be a < */
 	if (*buf =='<' ) {
 		buf++;
+		if (!strncmp(buf, "mailto:", strlen("mailto:")))
+			with_plus = FALSE;
 		for (i = 0; *buf != '>' && *buf != 0x00 && i<maxlen; tmp[i++] = *(buf++));
 		buf++;
 	}
@@ -2530,7 +2533,7 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	if (i == maxlen) {
 		return;
 	}
-	decode_uri (url_decoded, (const gchar *)tmp);
+	decode_uri_with_plus (url_decoded, (const gchar *)tmp, with_plus);
 
 	/* Prepare the work for the next url in the list */
 	/* after the closing bracket >, ignore space, comments and tabs */
