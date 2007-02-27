@@ -48,7 +48,6 @@
 #include "folder.h"
 #include "filtering.h"
 #include "addr_compl.h"
-#include "colorlabel.h"
 #include "manual.h"
 #include "combobox.h"
 

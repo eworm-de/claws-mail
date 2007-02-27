@@ -321,6 +321,10 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 
 	if (!matcher.window) {
 		prefs_matcher_create();
+	} else {
+		/* update color label menu */
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(matcher.color_optmenu),
+				colorlabel_create_color_menu());
 	}
 
 	manage_window_set_transient(GTK_WINDOW(matcher.window));

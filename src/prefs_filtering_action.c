@@ -214,6 +214,10 @@ void prefs_filtering_action_open(GSList *action_list,
 
 	if (!filtering_action.window) {
 		prefs_filtering_action_create();
+	} else {
+		/* update color label menu */
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(filtering_action.color_optmenu),
+				colorlabel_create_color_menu());
 	}
 
 	manage_window_set_transient(GTK_WINDOW(filtering_action.window));

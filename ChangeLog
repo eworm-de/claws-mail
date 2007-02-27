@@ -1,3 +1,12 @@
+2007-02-27 [wwp]	2.8.0cvs3
+
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		Update filtering matcher's and action's color label menus
+		when re-opening those dialogs (reflect any change to the
+		color labels list in the preferences).
+
 2007-02-27 [colin]	2.8.0cvs2
 
 	* src/imap.c
