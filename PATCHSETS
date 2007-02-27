@@ -2396,3 +2396,4 @@
 ( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 tools/claws.i18n.status.pl;  ) > 2.8.0cvs1.patchset
 ( cvs diff -u -r 1.179.2.155 -r 1.179.2.156 src/imap.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/etpan/etpan-thread-manager-types.h;  cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/etpan/etpan-thread-manager.c;  cvs diff -u -r 1.1.4.73 -r 1.1.4.74 src/etpan/imap-thread.c;  ) > 2.8.0cvs2.patchset
 ( cvs diff -u -r 1.59.2.53 -r 1.59.2.54 src/prefs_filtering.c;  cvs diff -u -r 1.1.4.33 -r 1.1.4.34 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.55 -r 1.43.2.56 src/prefs_matcher.c;  ) > 2.8.0cvs3.patchset
+( cvs diff -u -r 1.149.2.65 -r 1.149.2.66 src/inc.c;  ) > 2.8.0cvs4.patchset
