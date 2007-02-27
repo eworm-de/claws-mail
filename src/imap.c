@@ -1287,6 +1287,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			g_relation_destroy(uid_mapping);
 			imap_lep_set_free(seq_list);
 			unlock_session();
+			statusbar_pop_all();
 			return -1;
 		}
 	}

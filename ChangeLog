@@ -1,3 +1,11 @@
+2007-02-27 [colin]	2.8.0cvs2
+
+	* src/imap.c
+	* src/etpan/etpan-thread-manager-types.h
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/imap-thread.c
+		Log imap ALERTs as errors in the log.
+
 2007-02-26 [paul]	2.8.0cvs1
 
 	* tools/claws.i18n.status.pl

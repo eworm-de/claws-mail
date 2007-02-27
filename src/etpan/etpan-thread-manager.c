@@ -194,7 +194,9 @@ struct etpan_thread_op * etpan_thread_op_new(void)
   op->cancelled = 0;
   op->param = NULL;
   op->result = NULL;
-  
+  op->finished = 0;
+  op->imap = NULL;
+
   r = pthread_mutex_init(&op->lock, NULL);
   if (r != 0)
     goto free;

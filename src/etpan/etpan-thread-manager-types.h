@@ -68,6 +68,8 @@ struct etpan_thread_op {
   int cancelled;
   void * param;
   void * result;
+  int finished;
+  mailimap *imap;
 };
 
 #endif

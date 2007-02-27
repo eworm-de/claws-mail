@@ -368,13 +368,18 @@ static mailimap * get_imap(Folder * folder)
 
 static void generic_cb(int cancelled, void * result, void * callback_data)
 {
-	int * p_finished;
+	struct etpan_thread_op * op;
 	
-	p_finished = callback_data;
+	op = (struct etpan_thread_op *) callback_data;
 
 	debug_print("generic_cb\n");
-	
-	* p_finished = 1;
+	if (op->imap && op->imap->imap_response_info &&
+	    op->imap->imap_response_info->rsp_alert) {
+		log_error("IMAP4< Alert: %s\n", 
+			op->imap->imap_response_info->rsp_alert);
+		mainwindow_show_error();
+	} 
+	op->finished = 1;
 }
 
 static void threaded_run(Folder * folder, void * param, void * result,
@@ -382,26 +387,27 @@ static void threaded_run(Folder * folder, void * param, void * result,
 {
 	struct etpan_thread_op * op;
 	struct etpan_thread * thread;
-	int finished;
 	
 	imap_folder_ref(folder);
 
 	op = etpan_thread_op_new();
+	
+	op->imap = get_imap(folder);
 	op->param = param;
 	op->result = result;
 	
 	op->cancellable = 0;
 	op->run = func;
 	op->callback = generic_cb;
-	op->callback_data = &finished;
+	op->callback_data = op;
 	op->cleanup = NULL;
 	
-	finished = 0;
+	op->finished = 0;
 	
 	thread = get_thread(folder);
 	etpan_thread_op_schedule(thread, op);
 	
-	while (!finished) {
+	while (!op->finished) {
 		gtk_main_iteration();
 	}
 	
