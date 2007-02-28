@@ -23,7 +23,9 @@
 #include <glib.h>
 #include <gtk/gtkimage.h>
 
-#define COLORLABELS 7
+/* max value of color label index (0..max) - see also procmsg.h */
+#define COLORLABELS 15
+
 #define MAINWIN_COLORMENU 0
 #define SUMMARY_COLORMENU 1
 #define NUM_MENUS 2

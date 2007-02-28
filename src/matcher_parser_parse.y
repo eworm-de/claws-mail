@@ -28,9 +28,7 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
-#include "procmsg.h"
-
-#define MAX_COLORLABELS (MSG_CLABEL_7 - MSG_CLABEL_NONE)
+#include "colorlabel.h"
 
 static gint error = 0;
 static gint bool_op = 0;
@@ -730,7 +728,7 @@ MATCHER_ALL
 	criteria = MATCHCRITERIA_COLORLABEL;
 	value = strtol($2, NULL, 10);
 	if (value < 0) value = 0;
-	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	else if (value > COLORLABELS) value = COLORLABELS;
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_NOT_COLORLABEL MATCHER_INTEGER
@@ -741,7 +739,7 @@ MATCHER_ALL
 	criteria = MATCHCRITERIA_NOT_COLORLABEL;
 	value = strtol($2, NULL, 0);
 	if (value < 0) value = 0;
-	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	else if (value > COLORLABELS) value = COLORLABELS;
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_IGNORE_THREAD

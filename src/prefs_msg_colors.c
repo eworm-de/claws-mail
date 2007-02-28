@@ -422,7 +422,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox_custom_colors2);
 	gtk_box_pack_start (GTK_BOX (hbox_custom_colors), vbox_custom_colors2, FALSE, FALSE, 0);
 
-	for (c = 0; c < 4; c++) {
+	for (c = 0; c < (COLORLABELS>>1)+(COLORLABELS&1); c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
 		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);
@@ -454,7 +454,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			     	     tooltip_entry_text, NULL);
 	}
 
-	for (c = 4; c < COLORLABELS; c++) {
+	for (c = (COLORLABELS>>1)+(COLORLABELS&1); c < COLORLABELS; c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
 		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);

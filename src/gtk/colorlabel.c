@@ -51,18 +51,35 @@ static gchar *labels[COLORLABELS] = {
 	N_("Sky blue"),
 	N_("Blue"),
 	N_("Green"),
-	N_("Brown")
+	N_("Brown"),
+	N_("Grey"),
+	N_("Light brown"),
+	N_("Dark red"),
+	N_("Dark pink"),
+	N_("Steel blue"),
+	N_("Gold"),
+	N_("Bright green"),
+	N_("Magenta")
 };
 
 static GdkColor default_colors[COLORLABELS] = {
 	{ 0, 0xffff, (0x99 << 8), 0x0 },
-	{ 0, 0xffff, 0, 0 },
+	{ 0, 0xffff, 0x0, 0x0 },
 	{ 0, 0xffff, (0x66 << 8), 0xffff },
 	{ 0, 0x0, (0xcc << 8), 0xffff },
 	{ 0, 0x0, 0x0, 0xffff },
 	{ 0, 0x0, (0x99 << 8), 0x0 },
-	{ 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 }
+	{ 0, (0x66 << 8), (0x33 << 8), (0x33 << 8) },
+	{ 0, (0xaa << 8), (0xaa << 8), (0xaa << 8) },
+	{ 0, (0xc0 << 8), (0x72 << 8), (0x54 << 8) },
+	{ 0, (0xc0 << 8), 0x0, 0x0 },
+	{ 0, (0xcc << 8), (0x10 << 8), (0x74 << 8) },
+	{ 0, (0x50 << 8), (0x94 << 8), (0xcd << 8) },
+	{ 0, 0xffff, (0xd5 << 8), 0x0 },
+	{ 0, 0x0, (0xd8 << 8), 0x0 },
+	{ 0, (0xc0 << 8), (0x60 << 8), (0xc0 << 8) }
 };
+
 	
 typedef enum LabelColorChangeFlags_ {
 	LCCF_COLOR = 1 << 0,
@@ -79,7 +96,7 @@ static struct
 	GdkColor		color;
 
 	/* XXX: note that the label member is supposed to be dynamically 
-	 * allocated and fffreed */
+	 * allocated and freed */
 	gchar			*label;
 	GtkWidget		*widget;
 } label_colors[NUM_MENUS][COLORLABELS] = {
@@ -90,8 +107,24 @@ static struct
 	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL }},
     {
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
+	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL },
 	{ LCCF_ALL, { 0 }, NULL, NULL },
@@ -305,7 +338,10 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
-	accel = g_strdup_printf("Ctrl+%c", '1'+color_index);
+	if (color_index < 9)
+		accel = g_strdup_printf("Ctrl+%c", '1'+color_index);
+	else
+		accel = g_strdup_printf("Shift+Ctrl+%c", '1'+color_index%9);
 	label = gtk_label_new(accel);
 	gtk_widget_show(label);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);

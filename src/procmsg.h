@@ -49,27 +49,38 @@ typedef GSList MsgNumberList;
 #define MSG_FORWARDED		(1U << 5)
 #define MSG_POSTFILTERED	(1U << 14)
 
-#define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
-#define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \
-					 ((m) << (MSG_CLABEL_SBIT + 1)) | \
-					 ((l) << (MSG_CLABEL_SBIT + 0)))
+#define MSG_CLABEL_SBIT	(6)		/* start bit of color label */
+/* color labels use 4 bits: 6, 7, 8, 9; bit weight is 7<8<9<6,
+  IOW the color label value itself must be computed from MsgPermFlags
+  bits like this:
+  value =   bit-7-value*2^0
+          + bit-8-value*2^1
+          + bit-9-value*2^2
+          + bit-6-value*2^3 */
 
-#define MSG_CLABEL_NONE		MAKE_MSG_CLABEL(0U, 0U, 0U)
-#define MSG_CLABEL_1		MAKE_MSG_CLABEL(0U, 0U, 1U)
-#define MSG_CLABEL_2		MAKE_MSG_CLABEL(0U, 1U, 0U)
-#define MSG_CLABEL_3		MAKE_MSG_CLABEL(0U, 1U, 1U)
-#define MSG_CLABEL_4		MAKE_MSG_CLABEL(1U, 0U, 0U)
-#define MSG_CLABEL_5		MAKE_MSG_CLABEL(1U, 0U, 1U)
-#define MSG_CLABEL_6		MAKE_MSG_CLABEL(1U, 1U, 0U)
-#define MSG_CLABEL_7		MAKE_MSG_CLABEL(1U, 1U, 1U)
-
-#define MSG_CLABEL_ORANGE	MSG_CLABEL_1
-#define MSG_CLABEL_RED		MSG_CLABEL_2
-#define MSG_CLABEL_PINK		MSG_CLABEL_3
-#define MSG_CLABEL_SKYBLUE	MSG_CLABEL_4
-#define MSG_CLABEL_BLUE		MSG_CLABEL_5
-#define MSG_CLABEL_GREEN	MSG_CLABEL_6
-#define MSG_CLABEL_BROWN	MSG_CLABEL_7
+/* color label permflags masks */
+#define MAKE_MSG_CLABEL(x, h, m, l)	(\
+					 ((x) << (MSG_CLABEL_SBIT + 0)) | \
+					 ((h) << (MSG_CLABEL_SBIT + 3)) | \
+					 ((m) << (MSG_CLABEL_SBIT + 2)) | \
+					 ((l) << (MSG_CLABEL_SBIT + 1)))
+#define MSG_CLABEL_NONE		MAKE_MSG_CLABEL(0U, 0U, 0U, 0U)
+#define MSG_CLABEL_1		MAKE_MSG_CLABEL(0U, 0U, 0U, 1U)
+#define MSG_CLABEL_2		MAKE_MSG_CLABEL(0U, 0U, 1U, 0U)
+#define MSG_CLABEL_3		MAKE_MSG_CLABEL(0U, 0U, 1U, 1U)
+#define MSG_CLABEL_4		MAKE_MSG_CLABEL(0U, 1U, 0U, 0U)
+#define MSG_CLABEL_5		MAKE_MSG_CLABEL(0U, 1U, 0U, 1U)
+#define MSG_CLABEL_6		MAKE_MSG_CLABEL(0U, 1U, 1U, 0U)
+#define MSG_CLABEL_7		MAKE_MSG_CLABEL(0U, 1U, 1U, 1U)
+#define MSG_CLABEL_8		MAKE_MSG_CLABEL(1U, 0U, 0U, 0U)
+#define MSG_CLABEL_9		MAKE_MSG_CLABEL(1U, 0U, 0U, 1U)
+#define MSG_CLABEL_10		MAKE_MSG_CLABEL(1U, 0U, 1U, 0U)
+#define MSG_CLABEL_11		MAKE_MSG_CLABEL(1U, 0U, 1U, 1U)
+#define MSG_CLABEL_12		MAKE_MSG_CLABEL(1U, 1U, 0U, 0U)
+#define MSG_CLABEL_13		MAKE_MSG_CLABEL(1U, 1U, 0U, 1U)
+#define MSG_CLABEL_14		MAKE_MSG_CLABEL(1U, 1U, 1U, 0U)
+#define MSG_CLABEL_15		MAKE_MSG_CLABEL(1U, 1U, 1U, 1U)
+#define MSG_CLABEL_FLAG_MASK	(MSG_CLABEL_15)
 
 #define MSG_IGNORE_THREAD	(1U << 10)   /* ignore threads */
 #define MSG_LOCKED		(1U << 11)   /* msg is locked  */
@@ -81,8 +92,6 @@ typedef GSList MsgNumberList;
 #define	MSG_RESERVED		(1U << 31)
 
 typedef guint32 MsgPermFlags;
-
-#define MSG_CLABEL_FLAG_MASK	(MSG_CLABEL_7)
 
 #define MSG_MOVE		(1U << 0)
 #define MSG_COPY		(1U << 1)
@@ -121,13 +130,14 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_FORWARDED(msg)		(((msg).perm_flags & MSG_FORWARDED) != 0)
 #define MSG_IS_POSTFILTERED(msg)	(((msg).perm_flags & MSG_POSTFILTERED) != 0)
 
+/* color label decoding/encoding (permflag storage bits <-> color list index value)*/
+#define MSG_COLORLABEL_TO_FLAGS(val) (((((guint)(val)) & 7) << (MSG_CLABEL_SBIT+1)) \
+									  | (((guint)(val) & 8) << (MSG_CLABEL_SBIT-3)))
+#define MSG_COLORLABEL_FROM_FLAGS(val) ((((guint)(val) >> (MSG_CLABEL_SBIT+1)) & 7 ) \
+										| (((guint)(val) >> (MSG_CLABEL_SBIT-3)) & 8))
 #define MSG_GET_COLORLABEL(msg)		(((msg).perm_flags & MSG_CLABEL_FLAG_MASK))
-#define MSG_GET_COLORLABEL_VALUE(msg)	(MSG_GET_COLORLABEL(msg) >> MSG_CLABEL_SBIT)
-#define MSG_SET_COLORLABEL_VALUE(msg, val) \
-	MSG_SET_PERM_FLAGS(msg, ((((guint)(val)) & 7) << MSG_CLABEL_SBIT))
-
-#define MSG_COLORLABEL_TO_FLAGS(val) ((((guint)(val)) & 7) << MSG_CLABEL_SBIT)
-#define MSG_COLORLABEL_FROM_FLAGS(val) (val >> MSG_CLABEL_SBIT)
+#define MSG_GET_COLORLABEL_VALUE(msg)	(MSG_COLORLABEL_FROM_FLAGS(MSG_GET_COLORLABEL(msg)))
+#define MSG_SET_COLORLABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, MSG_COLORLABEL_TO_FLAGS(val))
 
 #define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
