@@ -338,15 +338,14 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
-	if (color_index < 9)
+	if (color_index < 9) {
 		accel = g_strdup_printf("Ctrl+%c", '1'+color_index);
-	else
-		accel = g_strdup_printf("Shift+Ctrl+%c", '1'+color_index%9);
-	label = gtk_label_new(accel);
-	gtk_widget_show(label);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
-	g_free(accel);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 4);
+		label = gtk_label_new(accel);
+		gtk_widget_show(label);
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		g_free(accel);
+		gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 4);
+	}
 	return item;
 }
 

@@ -1042,11 +1042,6 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 				   mainwin->menu_factory->accel_group, 
 				   GDK_1+i, GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
-		else
-			gtk_widget_add_accelerator(item, "activate", 
-				   mainwin->menu_factory->accel_group, 
-				   GDK_1+i%9, GDK_SHIFT_MASK | GDK_CONTROL_MASK,
-				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	}
 
 	gtk_widget_show(menu);
