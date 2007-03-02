@@ -473,7 +473,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 	}
 
 	while ((n_read = read(srcfd, buf, sizeof(buf))) > 0) {
-		if (n_read < sizeof(buf) && errno != 0) {
+		if (n_read == -1 && errno != 0) {
 			save_errno = errno;
 			break;
 		}

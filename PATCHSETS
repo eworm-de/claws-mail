@@ -2401,3 +2401,4 @@
 ( cvs diff -u -r 1.274.2.173 -r 1.274.2.174 src/mainwindow.c;  cvs diff -u -r 1.36.2.98 -r 1.36.2.99 src/common/utils.c;  cvs diff -u -r 1.20.2.44 -r 1.20.2.45 src/common/utils.h;  ) > 2.8.0cvs6.patchset
 ( cvs diff -u -r 1.274.2.174 -r 1.274.2.175 src/mainwindow.c;  cvs diff -u -r 1.25.2.24 -r 1.25.2.25 src/matcher_parser_parse.y;  cvs diff -u -r 1.204.2.121 -r 1.204.2.122 src/prefs_common.c;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/prefs_msg_colors.c;  cvs diff -u -r 1.60.2.42 -r 1.60.2.43 src/procmsg.h;  cvs diff -u -r 1.2.2.16 -r 1.2.2.17 src/gtk/colorlabel.c;  cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk/colorlabel.h;  ) > 2.8.0cvs7.patchset
 ( cvs diff -u -r 1.274.2.175 -r 1.274.2.176 src/mainwindow.c;  cvs diff -u -r 1.2.2.17 -r 1.2.2.18 src/gtk/colorlabel.c;  ) > 2.8.0cvs8.patchset
+( cvs diff -u -r 1.28.2.33 -r 1.28.2.34 src/mbox.c;  ) > 2.8.0cvs9.patchset
