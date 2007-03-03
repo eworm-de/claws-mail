@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=9
+EXTRA_VERSION=10
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -828,6 +828,24 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(CLAWS_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
+
+AC_MSG_CHECKING([whether to use valgrind])
+AC_ARG_ENABLE(valgrind,
+	[  --disable-valgrind		Do not use valgrind for debugging],
+	[ac_cv_enable_valgrind=$enableval], [ac_cv_enable_valgrind=yes])
+if test x$ac_cv_enable_valgrind = xyes; then
+	AC_MSG_RESULT(yes)
+	PKG_CHECK_MODULES(VALGRIND, valgrind >= 2.4.0,
+			  ac_cv_enable_valgrind=yes, ac_cv_enable_valgrind=no)
+	if test x"$ac_cv_enable_valgrind" = xyes; then
+		AC_DEFINE(HAVE_VALGRIND, 1, Define if you want valgrind support)
+	else
+		AC_MSG_RESULT(not found)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(CLAWS_VALGRIND, test x"$ac_cv_enable_valgrind" = x"yes")
 
 dnl ****************************
 dnl ** Final configure output **

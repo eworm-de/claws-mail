@@ -1,3 +1,11 @@
+2007-03-03 [colin]	2.8.0cvs10
+
+	* configure.ac
+	* src/main.c
+	* src/common/plugin.c
+		Fix bug 1134, 'Valgrind macros unhandled 
+		by Irix's cc'
+
 2007-03-02 [colin]	2.8.0cvs9
 
 	* src/mbox.c

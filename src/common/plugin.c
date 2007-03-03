@@ -33,8 +33,9 @@
 #include "plugin.h"
 #include "prefs.h"
 #include "claws.h"
+#ifdef HAVE_VALGRIND
 #include "valgrind.h"
-
+#endif
 struct _Plugin
 {
 	gchar	*filename;
@@ -382,9 +383,13 @@ void plugin_unload(Plugin *plugin)
 		plugin_done();
 	}
 
+#ifdef HAVE_VALGRIND
 	if (!RUNNING_ON_VALGRIND) {
 		g_module_close(plugin->module);
 	}
+#else
+	g_module_close(plugin->module);
+#endif
 	plugins = g_slist_remove(plugins, plugin);
 	g_free(plugin->filename);
 	g_free(plugin);
