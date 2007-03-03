@@ -1,3 +1,12 @@
+2007-03-03 [colin]	2.8.0cvs2-stable
+
+	* src/plugins/pgpinline/pgpinline.c
+		Backport 2.8.0cvs11
+		Fix off-by-one, fix double-free. Fixes
+		bug 1135, 'cm-segfault on decrypting 
+		with PGP/inline'
+
+
 2007-03-03 [colin]	2.8.0cvs1-stable
 
 	* src/mainwindow.c
