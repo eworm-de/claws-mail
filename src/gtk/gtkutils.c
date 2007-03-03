@@ -1572,6 +1572,6 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 					 const gchar	*class)
 {
 	GtkWidget *window = gtk_window_new(type);
-	gtk_window_set_wmclass(GTK_WINDOW(window), class, "Claws Mail");
+	gtk_window_set_role(GTK_WINDOW(window), class);
 	return window;
 }

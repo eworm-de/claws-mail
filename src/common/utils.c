@@ -1611,7 +1611,7 @@ gint get_uri_len(const gchar *str)
 /* Decodes URL-Encoded strings (i.e. strings in which spaces are replaced by
  * plusses, and escape characters are used)
  */
-void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
+void decode_uri_with_plus(gchar *decoded_uri, const gchar *encoded_uri, gboolean with_plus)
 {
 	gchar *dec = decoded_uri;
 	const gchar *enc = encoded_uri;
@@ -1626,7 +1626,7 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 				enc += 2;
 			}
 		} else {
-			if (*enc == '+')
+			if (with_plus && *enc == '+')
 				*dec = ' ';
 			else
 				*dec = *enc;
@@ -1636,6 +1636,11 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 	}
 
 	*dec = '\0';
+}
+
+void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
+{
+	decode_uri_with_plus(decoded_uri, encoded_uri, TRUE);
 }
 
 gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
