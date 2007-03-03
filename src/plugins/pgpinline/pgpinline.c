@@ -158,7 +158,7 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 		}
 	}
 	if (textdata && mimeinfo->offset && 
-	    mimeinfo->offset+ mimeinfo->length < strlen(textdata)) {
+	    mimeinfo->offset+ mimeinfo->length <= strlen(textdata)) {
 		real_data = g_strdup(textdata + mimeinfo->offset);
 		real_data[mimeinfo->length] = '\0';
 		g_free(textdata);
@@ -445,8 +445,6 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 
 	fclose(dstfp);
 	
-	gpgme_data_release(plain);
-
 	parseinfo = procmime_scan_file(fname);
 	g_free(fname);
 	

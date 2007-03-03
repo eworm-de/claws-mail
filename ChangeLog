@@ -1,3 +1,10 @@
+2007-03-03 [colin]	2.8.0cvs11
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix off-by-one, fix double-free. Fixes
+		bug 1135, 'cm-segfault on decrypting 
+		with PGP/inline'
+
 2007-03-03 [colin]	2.8.0cvs10
 
 	* configure.ac

@@ -2403,3 +2403,4 @@
 ( cvs diff -u -r 1.274.2.175 -r 1.274.2.176 src/mainwindow.c;  cvs diff -u -r 1.2.2.17 -r 1.2.2.18 src/gtk/colorlabel.c;  ) > 2.8.0cvs8.patchset
 ( cvs diff -u -r 1.28.2.33 -r 1.28.2.34 src/mbox.c;  ) > 2.8.0cvs9.patchset
 ( cvs diff -u -r 1.654.2.2458 -r 1.654.2.2459 configure.ac;  cvs diff -u -r 1.115.2.140 -r 1.115.2.141 src/main.c;  cvs diff -u -r 1.13.2.26 -r 1.13.2.27 src/common/plugin.c;  ) > 2.8.0cvs10.patchset
+( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpinline/pgpinline.c;  ) > 2.8.0cvs11.patchset
