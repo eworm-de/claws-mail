@@ -1,3 +1,9 @@
+2007-03-04 [colin]	2.8.0cvs16
+
+	* src/imap.c
+		Fix bug 1140, wrong return value
+		without libetpan
+
 2007-03-04 [wwp]	2.8.0cvs15
 
 	* src/addr_compl.c
