@@ -1,3 +1,13 @@
+2007-03-04 [colin]	2.8.0cvs17
+
+	* src/filtering.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+		Add 'Mark as spam' and 'Mark as ham' filtering
+		actions. Fixes bug 1138.
+
 2007-03-04 [colin]	2.8.0cvs16
 
 	* src/imap.c

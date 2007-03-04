@@ -141,6 +141,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_UNLOCK, "unlock"},
 	{MATCHACTION_MARK_AS_READ, "mark_as_read"},
 	{MATCHACTION_MARK_AS_UNREAD, "mark_as_unread"},
+	{MATCHACTION_MARK_AS_SPAM, "mark_as_spam"},
+	{MATCHACTION_MARK_AS_HAM, "mark_as_ham"},
 	{MATCHACTION_FORWARD, "forward"},
 	{MATCHACTION_FORWARD_AS_ATTACHMENT, "forward_as_attachment"},
 	{MATCHACTION_EXECUTE, "execute"},

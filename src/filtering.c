@@ -326,6 +326,19 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		procmsg_msginfo_set_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 	
+	case MATCHACTION_MARK_AS_SPAM:
+		procmsg_spam_learner_learn(info, NULL, TRUE);
+		procmsg_msginfo_change_flags(info, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
+		if (procmsg_spam_get_folder(info)) {
+			info->is_move = TRUE;
+			info->to_filter_folder = procmsg_spam_get_folder(info);
+		}
+		return TRUE;
+
+	case MATCHACTION_MARK_AS_HAM:
+		procmsg_spam_learner_learn(info, NULL, FALSE);
+		return TRUE;
+	
 	case MATCHACTION_COLOR:
 		procmsg_msginfo_unset_flags(info, MSG_CLABEL_FLAG_MASK, 0); 
 		procmsg_msginfo_set_flags(info, MSG_COLORLABEL_TO_FLAGS(action->labelcolor), 0);
@@ -490,6 +503,7 @@ static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 	case MATCHACTION_MOVE:
 	case MATCHACTION_DELETE:
 	case MATCHACTION_STOP:
+	case MATCHACTION_MARK_AS_SPAM:
 		return TRUE; /* MsgInfo invalid for message */
 	default:
 		return FALSE;
@@ -567,6 +581,8 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_UNLOCK:
 	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
+	case MATCHACTION_MARK_AS_SPAM:
+	case MATCHACTION_MARK_AS_HAM:
 	case MATCHACTION_STOP:
 	case MATCHACTION_HIDE:
 	case MATCHACTION_IGNORE:

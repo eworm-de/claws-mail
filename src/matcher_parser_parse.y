@@ -323,6 +323,7 @@ int matcher_parserwrap(void)
 %token MATCHER_LOCK MATCHER_UNLOCK
 %token MATCHER_EXECUTE
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
+%token MATCHER_MARK_AS_SPAM MATCHER_MARK_AS_HAM
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL
 %token MATCHER_OR MATCHER_AND  
 %token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_REDIRECT 
@@ -1170,6 +1171,20 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_UNREAD;
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+}
+| MATCHER_MARK_AS_SPAM
+{
+	gint action_type = 0;
+
+	action_type = MATCHACTION_MARK_AS_SPAM;
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+}
+| MATCHER_MARK_AS_HAM
+{
+	gint action_type = 0;
+
+	action_type = MATCHACTION_MARK_AS_HAM;
 	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING

@@ -130,6 +130,8 @@ typedef enum Action_ {
 	ACTION_UNLOCK,
 	ACTION_MARK_AS_READ,
 	ACTION_MARK_AS_UNREAD,
+	ACTION_MARK_AS_SPAM,
+	ACTION_MARK_AS_HAM,
 	ACTION_FORWARD,
 	ACTION_FORWARD_AS_ATTACHMENT,
 	ACTION_REDIRECT,
@@ -156,6 +158,8 @@ static struct {
 	{ N_("Unlock"),			ACTION_UNLOCK	},
 	{ N_("Mark as read"),		ACTION_MARK_AS_READ },
 	{ N_("Mark as unread"),		ACTION_MARK_AS_UNREAD },
+	{ N_("Mark as spam"),		ACTION_MARK_AS_SPAM },
+	{ N_("Mark as ham"),		ACTION_MARK_AS_HAM },
 	{ N_("Forward"),		ACTION_FORWARD  },
 	{ N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
 	{ N_("Redirect"),		ACTION_REDIRECT },
@@ -737,6 +741,10 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_MARK_AS_READ;
 	case ACTION_MARK_AS_UNREAD:
 		return MATCHACTION_MARK_AS_UNREAD;
+	case ACTION_MARK_AS_SPAM:
+		return MATCHACTION_MARK_AS_SPAM;
+	case ACTION_MARK_AS_HAM:
+		return MATCHACTION_MARK_AS_HAM;
 	case ACTION_FORWARD:
 		return MATCHACTION_FORWARD;
 	case ACTION_FORWARD_AS_ATTACHMENT:
@@ -840,6 +848,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
         case ACTION_UNLOCK:
         case ACTION_MARK_AS_READ:
         case ACTION_MARK_AS_UNREAD:
+        case ACTION_MARK_AS_SPAM:
+        case ACTION_MARK_AS_HAM:
 	default:
 		break;
 	}
@@ -1221,6 +1231,8 @@ static void prefs_filtering_action_type_select(GtkList *list,
 	case ACTION_UNLOCK:
 	case ACTION_MARK_AS_READ:
 	case ACTION_MARK_AS_UNREAD:
+	case ACTION_MARK_AS_SPAM:
+	case ACTION_MARK_AS_HAM:
         case ACTION_STOP:
         case ACTION_HIDE:
 	case ACTION_IGNORE:
@@ -1499,6 +1511,14 @@ static gboolean prefs_filtering_actions_selected
 	case MATCHACTION_MARK_AS_UNREAD:
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
 				     ACTION_MARK_AS_UNREAD);
+		break;
+	case MATCHACTION_MARK_AS_SPAM:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MARK_AS_SPAM);
+		break;
+	case MATCHACTION_MARK_AS_HAM:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MARK_AS_HAM);
 		break;
 	case MATCHACTION_FORWARD:
 		list_id = get_list_id_from_account_id(action->account_id);
