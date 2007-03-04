@@ -2406,3 +2406,4 @@
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpinline/pgpinline.c;  ) > 2.8.0cvs11.patchset
 ( cvs diff -u -r 1.179.2.156 -r 1.179.2.157 src/imap.c;  ) > 2.8.0cvs12.patchset
 ( cvs diff -u -r 1.27.2.30 -r 1.27.2.31 src/addr_compl.c;  ) > 2.8.0cvs13.patchset
+( cvs diff -u -r 1.27.2.31 -r 1.27.2.32 src/addr_compl.c;  ) > 2.8.0cvs14.patchset

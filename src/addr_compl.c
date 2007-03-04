@@ -473,6 +473,7 @@ static void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
 			ItemEMail *email = (ItemEMail *)cur->data;
 			ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 			
+fprintf(stderr, "-> email %p person %p\n", email, person);
 			gchar *addr = get_complete_address_from_name_email(
 				ADDRITEM_NAME(person), email->address);
 			if (addresses)
@@ -1013,6 +1014,7 @@ static void addrcompl_load_local( void ) {
 
 		/* Append contents to end of display queue */
 		addrcompl_add_queue( address );
+		g_free( address );
 	}
 }
 
