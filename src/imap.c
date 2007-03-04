@@ -31,6 +31,7 @@
 #include "imap_gtk.h"
 #include "inc.h"
 #include "xml.h"
+#include "alertpanel.h"
 
 #ifdef HAVE_LIBETPAN
 
@@ -63,7 +64,6 @@
 #include "inputdialog.h"
 #include "log.h"
 #include "remotefolder.h"
-#include "alertpanel.h"
 #include "claws.h"
 #include "statusbar.h"
 #include "msgcache.h"

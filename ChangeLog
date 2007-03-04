@@ -1,3 +1,12 @@
+2007-03-04 [colin]	2.8.0cvs3-stable
+
+	* src/imap.c
+	* src/addr_compl.c
+		Backports fixes from 2.8.0cvs{12,13}
+		fix: alertpanel.h included only in #ifdef HAVE_LIBETPAN
+		Maybe fix bug 1136, 'Crash in group 
+		address completion'
+
 2007-03-03 [colin]	2.8.0cvs2-stable
 
 	* src/plugins/pgpinline/pgpinline.c
