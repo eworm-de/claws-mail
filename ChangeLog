@@ -1,3 +1,8 @@
+2007-03-04 [iwkse]	2.8.0cvs12
+
+	* src/imap.c
+		fix: alertpanel.h included only in #ifdef HAVE_LIBETPAN
+
 2007-03-03 [colin]	2.8.0cvs11
 
 	* src/plugins/pgpinline/pgpinline.c
