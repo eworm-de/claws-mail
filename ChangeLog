@@ -1,3 +1,9 @@
+2007-03-04 [colin]	2.8.0cvs4-stable
+
+	* src/imap.c
+		Backport fix from 2.8.0cvs16
+		Fix return value without libetpan
+
 2007-03-04 [colin]	2.8.0cvs3-stable
 
 	* src/imap.c

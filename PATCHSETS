@@ -2396,3 +2396,4 @@
 ( cvs diff -u -r 1.274.2.173 -r 1.274.2.174 src/mainwindow.c;  cvs diff -u -r 1.28.2.33 -r 1.28.2.34 src/mbox.c;  cvs diff -u -r 1.36.2.98 -r 1.36.2.99 src/common/utils.c;  cvs diff -u -r 1.20.2.44 -r 1.20.2.45 src/common/utils.h;  cvs diff -u -r 1.5.2.53 -r 1.5.2.54 src/gtk/gtkutils.c;  ) > 2.8.0cvs1.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpinline/pgpinline.c;  ) > 2.8.0cvs2.patchset
 ( cvs diff -u -r 1.179.2.155 -r 1.179.2.156 src/imap.c;  cvs diff -u -r 1.27.2.30 -r 1.27.2.31 src/addr_compl.c;  ) > 2.8.0cvs3.patchset
+( cvs diff -u -r 1.179.2.155.2.1 -r 1.179.2.155.2.2 src/imap.c;  ) > 2.8.0cvs4.patchset

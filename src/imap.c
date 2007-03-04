@@ -4600,7 +4600,7 @@ gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub
 
 GList * imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only, gboolean recursive)
 {
-	return -1;
+	return NULL;
 }
 #endif
 
