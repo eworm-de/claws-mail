@@ -1014,7 +1014,6 @@ static void addrcompl_load_local( void ) {
 
 		/* Append contents to end of display queue */
 		addrcompl_add_queue( address );
-		g_free( address );
 	}
 }
 

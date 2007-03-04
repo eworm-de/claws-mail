@@ -1,3 +1,8 @@
+2007-03-04 [wwp]	2.8.0cvs15
+
+	* src/addr_compl.c
+		Rollback cvs14: don't free stuff that is managed in g_list.
+
 2007-03-04 [wwp]	2.8.0cvs14
 
 	* src/addr_compl.c
