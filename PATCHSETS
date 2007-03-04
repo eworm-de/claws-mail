@@ -2405,3 +2405,4 @@
 ( cvs diff -u -r 1.654.2.2458 -r 1.654.2.2459 configure.ac;  cvs diff -u -r 1.115.2.140 -r 1.115.2.141 src/main.c;  cvs diff -u -r 1.13.2.26 -r 1.13.2.27 src/common/plugin.c;  ) > 2.8.0cvs10.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/pgpinline/pgpinline.c;  ) > 2.8.0cvs11.patchset
 ( cvs diff -u -r 1.179.2.156 -r 1.179.2.157 src/imap.c;  ) > 2.8.0cvs12.patchset
+( cvs diff -u -r 1.27.2.30 -r 1.27.2.31 src/addr_compl.c;  ) > 2.8.0cvs13.patchset

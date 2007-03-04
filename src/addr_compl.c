@@ -196,6 +196,9 @@ static void free_all_addresses(void)
 	}
 	g_list_free(g_address_list);
 	g_address_list = NULL;
+	if (_groupAddresses_)
+		g_hash_table_destroy(_groupAddresses_);
+	_groupAddresses_ = NULL;
 }
 
 static void clear_completion_cache(void);
@@ -227,9 +230,6 @@ static void free_all(void)
 	free_all_addresses();	
 	g_completion_free(g_completion);
 	g_completion = NULL;
-	if (_groupAddresses_)
-		g_hash_table_destroy(_groupAddresses_);
-	_groupAddresses_ = NULL;
 }
 
 /**
@@ -573,6 +573,7 @@ gchar *get_complete_address(gint index)
 				}
 				if (!g_hash_table_lookup(_groupAddresses_, GINT_TO_POINTER(g_str_hash(address)))) {
 					g_hash_table_insert(_groupAddresses_, GINT_TO_POINTER(g_str_hash(address)), p->grp_emails);
+
 				}
 			}
 		}
@@ -858,11 +859,14 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(cw->list_view)));
 	GdkPixbuf *pixbuf;
 	
-	if (!group_pixbuf)
+	if (!group_pixbuf) {
 		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_TWO, &group_pixbuf);
-	if (!email_pixbuf)
+		g_object_ref(G_OBJECT(group_pixbuf));
+	}
+	if (!email_pixbuf) {
 		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_ONE, &email_pixbuf);
-
+		g_object_ref(G_OBJECT(email_pixbuf));
+	}
 	/* printf( "\t\tAdding :%s\n", address ); */
 	if (strstr(address, " <!--___group___-->")) {
 		is_group = TRUE;
