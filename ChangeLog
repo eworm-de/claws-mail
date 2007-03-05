@@ -1,3 +1,9 @@
+2007-03-05 [wwp]	2.8.0cvs18
+
+	* src/filtering.c
+		Fix mark_as_ham filtering/processing action: spam flag
+		was not unset.
+
 2007-03-04 [colin]	2.8.0cvs17
 
 	* src/filtering.c

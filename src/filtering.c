@@ -337,6 +337,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	case MATCHACTION_MARK_AS_HAM:
 		procmsg_spam_learner_learn(info, NULL, FALSE);
+		procmsg_msginfo_unset_flags(info, MSG_SPAM, 0);
 		return TRUE;
 	
 	case MATCHACTION_COLOR:
