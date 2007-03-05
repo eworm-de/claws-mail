@@ -2414,3 +2414,4 @@
 ( cvs diff -u -r 1.25.2.26 -r 1.25.2.27 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.35 -r 1.1.4.36 src/prefs_filtering_action.c;  cvs diff -u -r 1.75.2.37 -r 1.75.2.38 src/matcher.c;  cvs diff -u -r 1.39.2.11 -r 1.39.2.12 src/matcher.h;  cvs diff -u -r 1.60.2.27 -r 1.60.2.28 src/filtering.c;  cvs diff -u -r 1.21.2.11 -r 1.21.2.12 src/filtering.h;  ) > 2.8.0cvs19.patchset
 ( cvs diff -u -r 1.25.2.27 -r 1.25.2.28 src/matcher_parser_parse.y;  ) > 2.8.0cvs20.patchset
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.8.0cvs21.patchset
+( cvs diff -u -r 1.27.2.33 -r 1.27.2.34 src/addr_compl.c;  ) > 2.8.0cvs22.patchset

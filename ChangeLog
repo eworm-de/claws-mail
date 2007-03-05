@@ -1,3 +1,8 @@
+2007-03-05 [wwp]	2.8.0cvs22
+
+	* src/addr_compl.c
+		Remove debug statement (accidentally committed w/ cvs14).
+
 2007-03-05 [paul]	2.8.0cvs21
 
 	* src/plugins/pgpcore/prefs_gpg.c
