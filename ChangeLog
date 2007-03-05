@@ -1,3 +1,8 @@
+2007-03-05 [paul]	2.8.0cvs21
+
+	* src/plugins/pgpcore/prefs_gpg.c
+		fix compiler warning
+
 2007-03-05 [wwp]	2.8.0cvs20
 
 	* src/matcher_parser_parse.y
