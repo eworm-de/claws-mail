@@ -153,6 +153,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_STOP, "stop"},
 	{MATCHACTION_HIDE, "hide"},
 	{MATCHACTION_IGNORE, "ignore"},
+	{MATCHACTION_ADD_TO_ADDRESSBOOK, "add_to_addressbook"}
 };
 
 enum {

@@ -34,6 +34,8 @@
 #include "prefs_gtk.h"
 #include "compose.h"
 #include "prefs_common.h"
+#include "addrbook.h"
+#include "addr_compl.h"
 
 #define PREFSBUFSIZE		1024
 
@@ -58,7 +60,7 @@ static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar 
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
-				      gint labelcolor, gint score)
+				      gint labelcolor, gint score, gchar * header)
 {
 	FilteringAction * action;
 
@@ -71,6 +73,11 @@ FilteringAction * filteringaction_new(int type, int account_id,
 	} else {
 		action->destination       = NULL;
 	}
+	if (header) {
+		action->header	  = g_strdup(header);
+	} else {
+		action->header       = NULL;
+	}
 	action->labelcolor = labelcolor;	
         action->score = score;
 	return action;
@@ -79,6 +86,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 void filteringaction_free(FilteringAction * action)
 {
 	g_return_if_fail(action);
+	g_free(action->header);
 	g_free(action->destination);
 	g_free(action);
 }
@@ -402,6 +410,71 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
                 procmsg_msginfo_set_flags(info, MSG_IGNORE_THREAD, 0);
                 return TRUE;
 
+	case MATCHACTION_ADD_TO_ADDRESSBOOK:
+		{
+			AddressDataSource *book = NULL;
+			AddressBookFile *abf = NULL;
+			ItemFolder *folder = NULL;
+			gchar buf[BUFFSIZE];
+			Header *header;
+			gint errors = 0;
+
+			if (!addressbook_peek_folder_exists(action->destination, &book, &folder)) {
+				g_warning("addressbook folder not found '%s'\n", action->destination);
+				return FALSE;
+			}
+			if (!book) {
+				g_warning("addressbook_peek_folder_exists returned NULL book\n");
+				return FALSE;
+			}
+
+			abf = book->rawDataSource;
+
+			/* get the header */
+			procheader_get_header_from_msginfo(info, buf, sizeof(buf), action->header);
+			header = procheader_parse_header(buf);
+
+			/* add all addresses that are not already in */
+			if (header && *header->body && (*header->body != '\0')) {
+				GSList *address_list = NULL;
+				GSList *walk = NULL;
+				gchar *path = NULL;
+
+				if (action->destination == NULL ||
+						strcasecmp(action->destination, _("Any")) == 0 ||
+						*(action->destination) == '\0')
+					path = NULL;
+				else
+					path = action->destination;
+				start_address_completion(path);
+
+				address_list = address_list_append(address_list, header->body);
+				for (walk = address_list; walk != NULL; walk = walk->next) {
+					gchar *stripped_addr = g_strdup(walk->data);
+					extract_address(stripped_addr);
+
+					if (complete_address(walk->data) <= 1) {
+						debug_print("adding address '%s' to addressbook '%s'\n",
+								stripped_addr, action->destination);
+						if (!addrbook_add_contact(abf, folder, stripped_addr, stripped_addr, NULL)) {
+							g_warning("contact could not been added\n");
+							errors++;
+						}
+					} else {
+						debug_print("address '%s' already found in addressbook '%s', skipping\n",
+								stripped_addr, action->destination);
+					}
+					g_free(stripped_addr);
+				}
+
+				g_slist_free(address_list);
+				end_address_completion();
+			} else {
+				g_warning("header '%s' not set or empty\n", action->header);
+			}
+			return (errors == 0);
+		}
+
 	default:
 		break;
 	}
@@ -560,6 +633,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 {
 	const gchar *command_str;
 	gchar * quoted_dest;
+	gchar * quoted_header;
 	
 	command_str = get_matchparser_tab_str(action->type);
 
@@ -606,6 +680,14 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_SET_SCORE:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->score);
 		return dest;  
+
+	case MATCHACTION_ADD_TO_ADDRESSBOOK:
+		quoted_header = matcher_quote_str(action->header);
+		quoted_dest = matcher_quote_str(action->destination);
+		g_snprintf(dest, destlen, "%s \"%s\" \"%s\"", command_str, quoted_header, quoted_dest);
+		g_free(quoted_dest);
+		g_free(quoted_header);
+		return dest;
 
 	default:
 		return NULL;

@@ -2411,3 +2411,4 @@
 ( cvs diff -u -r 1.179.2.157 -r 1.179.2.158 src/imap.c;  ) > 2.8.0cvs16.patchset
 ( cvs diff -u -r 1.60.2.25 -r 1.60.2.26 src/filtering.c;  cvs diff -u -r 1.75.2.36 -r 1.75.2.37 src/matcher.c;  cvs diff -u -r 1.39.2.10 -r 1.39.2.11 src/matcher.h;  cvs diff -u -r 1.25.2.25 -r 1.25.2.26 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.34 -r 1.1.4.35 src/prefs_filtering_action.c;  ) > 2.8.0cvs17.patchset
 ( cvs diff -u -r 1.60.2.26 -r 1.60.2.27 src/filtering.c;  ) > 2.8.0cvs18.patchset
+( cvs diff -u -r 1.25.2.26 -r 1.25.2.27 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.35 -r 1.1.4.36 src/prefs_filtering_action.c;  cvs diff -u -r 1.75.2.37 -r 1.75.2.38 src/matcher.c;  cvs diff -u -r 1.39.2.11 -r 1.39.2.12 src/matcher.h;  cvs diff -u -r 1.60.2.27 -r 1.60.2.28 src/filtering.c;  cvs diff -u -r 1.21.2.11 -r 1.21.2.12 src/filtering.h;  ) > 2.8.0cvs19.patchset

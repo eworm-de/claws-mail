@@ -1,3 +1,13 @@
+2007-03-05 [wwp]	2.8.0cvs19
+
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/filtering.c
+	* src/filtering.h
+		Add new 'add_to_addressbook' filtering/processing action.
+
 2007-03-05 [wwp]	2.8.0cvs18
 
 	* src/filtering.c

@@ -333,6 +333,7 @@ int matcher_parserwrap(void)
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
 %token MATCHER_CHANGE_SCORE MATCHER_SET_SCORE
+%token MATCHER_ADD_TO_ADDRESSBOOK
 %token MATCHER_STOP MATCHER_HIDE MATCHER_IGNORE
 %token MATCHER_SPAM MATCHER_NOT_SPAM
 
@@ -1104,7 +1105,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_EXECUTE;
 	cmd = $2;
-	action = filteringaction_new(action_type, 0, cmd, 0, 0);
+	action = filteringaction_new(action_type, 0, cmd, 0, 0, NULL);
 }
 | MATCHER_MOVE MATCHER_STRING
 {
@@ -1113,7 +1114,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_MOVE;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0, NULL);
 }
 | MATCHER_COPY MATCHER_STRING
 {
@@ -1122,56 +1123,56 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_COPY;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0, NULL);
 }
 | MATCHER_DELETE
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_DELETE;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_MARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_UNMARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNMARK;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_LOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_LOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_UNLOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNLOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_MARK_AS_READ
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_READ;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_MARK_AS_UNREAD
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_UNREAD;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_MARK_AS_SPAM
 {
@@ -1197,7 +1198,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	account_id = strtol($2, NULL, 10);
 	destination = $3;
 	action = filteringaction_new(action_type,
-            account_id, destination, 0, 0);
+            account_id, destination, 0, 0, NULL);
 }
 | MATCHER_FORWARD_AS_ATTACHMENT MATCHER_INTEGER MATCHER_STRING
 {
@@ -1209,7 +1210,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	account_id = strtol($2, NULL, 10);
 	destination = $3;
 	action = filteringaction_new(action_type,
-            account_id, destination, 0, 0);
+            account_id, destination, 0, 0, NULL);
 }
 | MATCHER_REDIRECT MATCHER_INTEGER MATCHER_STRING
 {
@@ -1221,7 +1222,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	account_id = strtol($2, NULL, 10);
 	destination = $3;
 	action = filteringaction_new(action_type,
-            account_id, destination, 0, 0);
+            account_id, destination, 0, 0, NULL);
 }
 | MATCHER_COLOR MATCHER_INTEGER
 {
@@ -1230,7 +1231,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_COLOR;
 	color = strtol($2, NULL, 10);
-	action = filteringaction_new(action_type, 0, NULL, color, 0);
+	action = filteringaction_new(action_type, 0, NULL, color, 0, NULL);
 }
 | MATCHER_CHANGE_SCORE MATCHER_INTEGER
 {
@@ -1238,7 +1239,7 @@ MATCHER_EXECUTE MATCHER_STRING
         
         score = strtol($2, NULL, 10);
 	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
-				     NULL, 0, score);
+				     NULL, 0, score, NULL);
 }
 /* backward compatibility */
 | MATCHER_SCORE MATCHER_INTEGER
@@ -1247,7 +1248,7 @@ MATCHER_EXECUTE MATCHER_STRING
         
         score = strtol($2, NULL, 10);
 	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
-				     NULL, 0, score);
+				     NULL, 0, score, NULL);
 }
 | MATCHER_SET_SCORE MATCHER_INTEGER
 {
@@ -1255,18 +1256,31 @@ MATCHER_EXECUTE MATCHER_STRING
         
         score = strtol($2, NULL, 10);
 	action = filteringaction_new(MATCHACTION_SET_SCORE, 0,
-				     NULL, 0, score);
+				     NULL, 0, score, NULL);
 }
 | MATCHER_HIDE
 {
-	action = filteringaction_new(MATCHACTION_HIDE, 0, NULL, 0, 0);
+	action = filteringaction_new(MATCHACTION_HIDE, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_IGNORE
 {
-	action = filteringaction_new(MATCHACTION_IGNORE, 0, NULL, 0, 0);
+	action = filteringaction_new(MATCHACTION_IGNORE, 0, NULL, 0, 0, NULL);
+}
+| MATCHER_ADD_TO_ADDRESSBOOK MATCHER_STRING
+{
+	header = g_strdup($2);
+} MATCHER_STRING
+{
+	gchar *addressbook = NULL;
+	gint action_type = 0;
+
+	action_type = MATCHACTION_ADD_TO_ADDRESSBOOK;
+	addressbook = $2;
+	action = filteringaction_new(action_type, 0, addressbook, 0, 0, header);
+	g_free(header);
 }
 | MATCHER_STOP
 {
-	action = filteringaction_new(MATCHACTION_STOP, 0, NULL, 0, 0);
+	action = filteringaction_new(MATCHACTION_STOP, 0, NULL, 0, 0, NULL);
 }
 ;

@@ -74,6 +74,7 @@ static void prefs_filtering_action_type_selection_changed(GtkList *list,
 static void prefs_filtering_action_type_select(GtkList *list,
     GtkWidget *widget, gpointer user_data);
 static void prefs_filtering_action_select_dest(void);
+static void prefs_filtering_action_select_addressbook(void);
 static void prefs_filtering_action_up(void);
 static void prefs_filtering_action_down(void);
 static void prefs_filtering_action_set_dialog(GSList *action_list);
@@ -115,6 +116,11 @@ static struct FilteringAction_ {
 	GtkWidget *color_label;
 	GtkWidget *color_optmenu;
 	GtkWidget *score_label;
+	GtkWidget *header_label;
+	GtkWidget *header_combo;
+	GtkWidget *header_entry;
+	GtkWidget *addressbook_label;
+	GtkWidget *addressbook_btn;
 
 	gint current_action;
 } filtering_action;
@@ -141,6 +147,7 @@ typedef enum Action_ {
 	ACTION_SET_SCORE,
 	ACTION_HIDE,
 	ACTION_IGNORE,
+	ACTION_ADD_TO_ADDRESSBOOK,
 	ACTION_STOP,
 	/* add other action constants */
 } Action;
@@ -169,6 +176,7 @@ static struct {
 	{ N_("Set score"),		ACTION_SET_SCORE},
 	{ N_("Hide"),		        ACTION_HIDE	},
 	{ N_("Ignore thread"),	        ACTION_IGNORE	},
+	{ N_("Add to address book"),	ACTION_ADD_TO_ADDRESSBOOK	},
 	{ N_("Stop filter"),		ACTION_STOP	},
 };
 
@@ -272,6 +280,11 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *color_label;
 	GtkWidget *account_label;
 	GtkWidget *account_combo;
+	GtkWidget *header_label;
+	GtkWidget *header_combo;
+	GtkWidget *header_entry;
+	GtkWidget *addressbook_label;
+	GtkWidget *addressbook_btn;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
         GList * cur;
@@ -417,6 +430,24 @@ static void prefs_filtering_action_create(void)
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(account_combo)->entry),
 			       FALSE);
 
+	/* header */
+
+	header_label = gtk_label_new(_("Header name"));
+	gtk_widget_show(header_label);
+	gtk_misc_set_alignment(GTK_MISC(header_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), header_label, FALSE, FALSE, 0);
+
+	header_combo = gtk_combo_new();
+	gtk_widget_show(header_combo);
+	gtk_widget_set_size_request(header_combo, 120, -1);
+	gtkut_combo_set_items(GTK_COMBO (header_combo),
+			      "From", "To", "Cc", "Reply-To", "Sender",
+			      NULL);
+	gtk_box_pack_start (GTK_BOX (hbox1), header_combo,
+			    TRUE, TRUE, 0);
+	header_entry = GTK_COMBO(header_combo)->entry;
+	gtk_entry_set_editable(GTK_ENTRY(header_entry), TRUE);
+
 	/* destination */
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
@@ -449,6 +480,11 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment (GTK_MISC (score_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
 
+	addressbook_label = gtk_label_new (_("Book/folder"));
+	gtk_widget_show(addressbook_label);
+	gtk_misc_set_alignment(GTK_MISC(addressbook_label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox1), addressbook_label, FALSE, FALSE, 0);
+
 	dest_entry = gtk_entry_new ();
 	gtk_widget_set_size_request (dest_entry, 150, -1);
 	gtk_widget_show (dest_entry);
@@ -464,6 +500,13 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (dest_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_select_dest),
+			  NULL);
+
+	addressbook_btn = gtk_button_new_with_label (_("Select ..."));
+	gtk_widget_show (addressbook_btn);
+	gtk_box_pack_start (GTK_BOX (hbox1), addressbook_btn, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (addressbook_btn), "clicked",
+			  G_CALLBACK(prefs_filtering_action_select_addressbook),
 			  NULL);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
@@ -571,6 +614,11 @@ static void prefs_filtering_action_create(void)
 	filtering_action.color_label   = color_label;
 	filtering_action.color_optmenu = color_optmenu;
 	filtering_action.score_label = score_label;
+	filtering_action.header_label = header_label;
+	filtering_action.header_combo = header_combo;
+	filtering_action.header_entry = header_entry;
+	filtering_action.addressbook_label = addressbook_label;
+	filtering_action.addressbook_btn = addressbook_btn;
 	filtering_action.ok_btn = ok_btn;
 	filtering_action.action_list_view = action_list_view;
 }
@@ -765,6 +813,8 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_CHANGE_SCORE;
 	case ACTION_SET_SCORE:
 		return MATCHACTION_SET_SCORE;
+	case ACTION_ADD_TO_ADDRESSBOOK:
+		return MATCHACTION_ADD_TO_ADDRESSBOOK;
 	default:
 		return -1;
 	}
@@ -789,6 +839,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
         FilteringAction * action;
         gchar * score_str = NULL;
         gint score;
+	gchar * header = NULL;
         
 	action_id = get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
 	action_type = prefs_filtering_action_get_matching_from_action(action_id);
@@ -838,6 +889,22 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		}
                 score = strtol(score_str, NULL, 10);
                 break;
+	case ACTION_ADD_TO_ADDRESSBOOK:
+		header = gtk_editable_get_chars(GTK_EDITABLE(filtering_action.header_entry), 0, -1);
+		if (*header == '\0') {
+			if (alert)
+                                alertpanel_error(_("Header is not set."));
+			g_free(header);
+			return NULL;
+		}
+		destination = gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1);
+		if (*destination == '\0') {
+			if (alert)
+                                alertpanel_error(_("Target addressbook/folder is not set."));
+			g_free(destination);
+			return NULL;
+		}
+		break;
 	case ACTION_STOP:
 	case ACTION_HIDE:
 	case ACTION_IGNORE:
@@ -853,9 +920,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	default:
 		break;
 	}
-	
 	action = filteringaction_new(action_type, account_id,
-            destination, labelcolor, score);
+            destination, labelcolor, score, header);
 	
 	g_free(destination);
 	g_free(score_str);
@@ -1139,6 +1205,20 @@ static void prefs_filtering_action_select_dest(void)
 	g_free(path);
 }
 
+static void prefs_filtering_action_select_addressbook(void)
+{
+	gchar *folderpath = NULL;
+	gchar *prev = NULL;
+	gboolean ret = FALSE;
+
+	prev = g_strdup(gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1));
+	folderpath = prev;
+	ret = addressbook_folder_selection(&folderpath);
+	if ( ret != FALSE && folderpath != NULL)
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), folderpath);
+	g_free(prev);
+}
+
 static void prefs_filtering_action_type_selection_changed(GtkList *list,
     gpointer user_data)
 {
@@ -1177,6 +1257,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 	case ACTION_MOVE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1190,10 +1271,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_COPY:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1207,10 +1296,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_DELETE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, FALSE);
@@ -1224,6 +1321,13 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_MARK:
 	case ACTION_UNMARK:
@@ -1238,6 +1342,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 	case ACTION_IGNORE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, FALSE);
@@ -1251,10 +1356,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_FORWARD:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1268,10 +1381,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1285,10 +1406,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_REDIRECT:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1302,10 +1431,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_EXECUTE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1318,10 +1455,18 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_COLOR:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_hide(filtering_action.dest_entry);
 		gtk_widget_hide(filtering_action.dest_btn);
@@ -1333,11 +1478,19 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_show(filtering_action.color_optmenu);
 		gtk_widget_show(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	case ACTION_CHANGE_SCORE:
 	case ACTION_SET_SCORE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
@@ -1350,6 +1503,38 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
 		gtk_widget_show(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
+		break;
+	case ACTION_ADD_TO_ADDRESSBOOK:
+		gtk_widget_hide(filtering_action.account_label);
+		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_hide(filtering_action.account_combo);
+		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_show(filtering_action.dest_entry);
+		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
+		gtk_widget_hide(filtering_action.dest_btn);
+		gtk_widget_set_sensitive(filtering_action.dest_btn, FALSE);
+		gtk_widget_hide(filtering_action.dest_label);
+		gtk_widget_set_sensitive(filtering_action.dest_label, FALSE);
+		gtk_widget_hide(filtering_action.recip_label);
+		gtk_widget_hide(filtering_action.exec_label);
+		gtk_widget_hide(filtering_action.exec_btn);
+		gtk_widget_hide(filtering_action.color_optmenu);
+		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_show(filtering_action.header_label);
+		gtk_widget_show(filtering_action.header_combo);
+		gtk_widget_show(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, TRUE);
+		gtk_widget_show(filtering_action.addressbook_label);
+		gtk_widget_show(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, TRUE);
 		break;
 	}
 }
@@ -1570,9 +1755,15 @@ static gboolean prefs_filtering_actions_selected
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
 				     ACTION_IGNORE);
 		break;
+	case MATCHACTION_ADD_TO_ADDRESSBOOK:
+		if (action->header)
+			gtk_entry_set_text(GTK_ENTRY(filtering_action.header_entry), action->header);
+		else
+			gtk_entry_set_text(GTK_ENTRY(filtering_action.header_entry), "");
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_ADD_TO_ADDRESSBOOK);
 	}
 
 	filteringaction_free(action); /* XXX: memleak */
 	return TRUE;
 }
-

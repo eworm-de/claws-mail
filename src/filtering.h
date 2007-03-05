@@ -31,6 +31,7 @@ struct _FilteringAction {
 	gchar  *destination;
 	gint	labelcolor;
 	gint	score;
+	gchar  *header;
 };
 
 typedef struct _FilteringAction FilteringAction;
@@ -56,7 +57,7 @@ enum {
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
-                                      gint labelcolor, gint score);
+                                      gint labelcolor, gint score, gchar *header);
 void filteringaction_free(FilteringAction *action);
 FilteringAction * filteringaction_parse(gchar **str);
 gboolean filteringaction_apply_action_list (GSList *action_list, MsgInfo *info);

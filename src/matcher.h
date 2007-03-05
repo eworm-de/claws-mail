@@ -132,6 +132,7 @@ enum {
 	MA_(STOP),
 	MA_(HIDE),
 	MA_(IGNORE),
+	MA_(ADD_TO_ADDRESSBOOK),
 	/* boolean operations */
 	MB_(OR),
 	MB_(AND)
