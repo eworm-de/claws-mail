@@ -1179,14 +1179,14 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_SPAM;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_MARK_AS_HAM
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_HAM;
-	action = filteringaction_new(action_type, 0, NULL, 0, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING
 {
