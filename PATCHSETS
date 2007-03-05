@@ -2415,3 +2415,4 @@
 ( cvs diff -u -r 1.25.2.27 -r 1.25.2.28 src/matcher_parser_parse.y;  ) > 2.8.0cvs20.patchset
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.8.0cvs21.patchset
 ( cvs diff -u -r 1.27.2.33 -r 1.27.2.34 src/addr_compl.c;  ) > 2.8.0cvs22.patchset
+( cvs diff -u -r 1.155.2.53 -r 1.155.2.54 src/Makefile.am;  cvs diff -u -r 1.49.2.89 -r 1.49.2.90 src/procmime.c;  ) > 2.8.0cvs23.patchset

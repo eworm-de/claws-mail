@@ -1,3 +1,10 @@
+2007-03-05 [colin]	2.8.0cvs23
+
+	* src/Makefile.am
+	* src/procmime.c
+		Fix mime/globs path on NetBSD
+		patch by George Michaelson
+
 2007-03-05 [wwp]	2.8.0cvs22
 
 	* src/addr_compl.c

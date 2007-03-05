@@ -1123,7 +1123,12 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 	
-	if ((fp = g_fopen("/usr/share/mime/globs", "rb")) == NULL) {
+#if defined(__NetBSD__)
+	if ((fp = g_fopen(DATAROOTDIR "/mime/globs", "rb")) == NULL) 
+#else
+	if ((fp = g_fopen("/usr/share/mime/globs", "rb")) == NULL) 
+#endif
+	{
 		fp_is_glob_file = FALSE;
 		if ((fp = g_fopen("/etc/mime.types", "rb")) == NULL) {
 			if ((fp = g_fopen(SYSCONFDIR "/mime.types", "rb")) 
