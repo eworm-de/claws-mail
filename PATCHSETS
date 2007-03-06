@@ -2398,3 +2398,4 @@
 ( cvs diff -u -r 1.179.2.155 -r 1.179.2.156 src/imap.c;  cvs diff -u -r 1.27.2.30 -r 1.27.2.31 src/addr_compl.c;  ) > 2.8.0cvs3.patchset
 ( cvs diff -u -r 1.179.2.155.2.1 -r 1.179.2.155.2.2 src/imap.c;  ) > 2.8.0cvs4.patchset
 ( cvs diff -u -r 1.9.2.10 -r 1.9.2.11 po/cs.po;  ) > 2.8.0cvs5.patchset
+( cvs diff -u -r 1.155.2.53 -r 1.155.2.54 src/Makefile.am;  cvs diff -u -r 1.49.2.89 -r 1.49.2.90 src/procmime.c;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.8.0cvs6.patchset

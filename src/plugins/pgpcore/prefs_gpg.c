@@ -538,7 +538,7 @@ void prefs_gpg_init()
 {
 	static gchar *path[3];
 	gchar *rcpath;
-	gchar *tmp = NULL;
+	const gchar *tmp = NULL;
 
 	prefs_set_default(param);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);

@@ -454,6 +454,7 @@ AM_CPPFLAGS = \
 	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DDATAROOTDIR=\""$(datarootdir)"\" \
 	$(ASPELL_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \

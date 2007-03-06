@@ -1,3 +1,13 @@
+2007-03-06 [paul]	2.8.0cvs6-stable
+
+	* src/Makefile.am
+	* src/procmime.c
+		backported from 2.8.0cvs23
+		Fix mime/globs path on NetBSD
+	* src/plugins/pgpcore/prefs_gpg.c
+		backported from 2.8.0cvs21
+		fix compiler warning
+
 2007-03-06 [paul]	2.8.0cvs5-stable
 
 	* po/cs.po
