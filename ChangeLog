@@ -1,3 +1,8 @@
+2007-03-06 [paul]	2.8.0cvs24
+
+	* po/cs.po
+		corrected by by Tim <timbrain@post.cz>
+
 2007-03-05 [colin]	2.8.0cvs23
 
 	* src/Makefile.am
