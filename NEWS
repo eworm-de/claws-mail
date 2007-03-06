@@ -1,5 +1,20 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.8.1
+-------
+
+* Bug fixes:
+	o bug 1129, '"local mbox file" account isn't retrieving 
+		     mails'
+	o bug 1135, 'cm-segfault on decrypting with PGP/inline'
+	o bug 1136, 'Crash in group address completion'
+	* Fix "After receiving new mail, go to inbox" on IMAP, and
+	  restrict it to manual fetching only
+	* Fix alertpanel.h only included in #ifdef HAVE_LIBETPAN
+	* Fix return value without libetpan
+	* Use gtk_window_set_role instead of gtk_window_set_wmclass
+	* Fix mime/globs path on NetBSD
+
 * 2.8.0
 -------
 

@@ -1,3 +1,11 @@
+2007-03-06 [paul]	2.8.1
+
+	* configure.ac
+	* NEWS
+	* README
+	* RELEASE_NOTES
+		2.8.1 released
+
 2007-03-06 [paul]	2.8.0cvs6-stable
 
 	* src/Makefile.am
