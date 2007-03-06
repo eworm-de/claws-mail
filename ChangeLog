@@ -1,3 +1,12 @@
+2007-03-06 [paul]	2.8.1cvs1
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+	* configure.ac
+		bump version number following
+		stable release
+
 2007-03-06 [paul]	2.8.0cvs24
 
 	* po/cs.po
