@@ -106,6 +106,8 @@ static GList *mainwin_list = NULL;
 static GdkCursor *watch_cursor = NULL;
 static GdkCursor *hand_cursor = NULL;
 
+static gint iconified_count = 0;
+
 static void main_window_menu_callback_block	(MainWindow	*mainwin);
 static void main_window_menu_callback_unblock	(MainWindow	*mainwin);
 
@@ -472,6 +474,9 @@ static gboolean mainwindow_focus_in_event	(GtkWidget	*widget,
 						 gpointer	 data);
 static gboolean mainwindow_visibility_event_cb	(GtkWidget	*widget, 
 						 GdkEventVisibility	*state,
+						 gpointer	 data);
+static gboolean mainwindow_state_event_cb	(GtkWidget	*widget, 
+						 GdkEventWindowState	*state,
 						 gpointer	 data);
 static void main_window_reply_cb			(MainWindow 	*mainwin, 
 						 guint 		 action,
@@ -1432,6 +1437,8 @@ MainWindow *main_window_create()
 
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 
+	g_signal_connect(G_OBJECT(window), "window_state_event",
+			 G_CALLBACK(mainwindow_state_event_cb), mainwin);
 	g_signal_connect(G_OBJECT(window), "visibility_notify_event",
 			 G_CALLBACK(mainwindow_visibility_event_cb), mainwin);
 	gtk_widget_add_events(GTK_WIDGET(window), GDK_VISIBILITY_NOTIFY_MASK);
@@ -3791,6 +3798,22 @@ static gboolean mainwindow_visibility_event_cb(GtkWidget *widget, GdkEventVisibi
 					  gpointer data)
 {
 	is_obscured = (event->state == GDK_VISIBILITY_FULLY_OBSCURED);
+	return FALSE;
+}
+
+static gboolean mainwindow_state_event_cb(GtkWidget *widget, GdkEventWindowState *state,
+					  gpointer data)
+{
+	if (!claws_is_starting()
+		&& state->changed_mask&GDK_WINDOW_STATE_ICONIFIED
+		&& state->new_window_state&GDK_WINDOW_STATE_ICONIFIED) {
+
+		if (iconified_count > 0)
+			hooks_invoke(MAIN_WINDOW_GOT_ICONIFIED, NULL);
+		iconified_count++;
+	}
+	if (state->new_window_state == 0)
+		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(widget), FALSE);
 	return FALSE;
 }
 

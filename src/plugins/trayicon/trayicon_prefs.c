@@ -43,11 +43,13 @@ struct _TrayIconPage {
         PrefsPage page;
         GtkWidget *hide_at_startup;
 		GtkWidget *close_to_tray;
+		GtkWidget *hide_when_iconified;
 };
 
 static PrefParam param[] = {
         {"hide_at_startup", "FALSE", &trayicon_prefs.hide_at_startup, P_BOOL, NULL, NULL, NULL},
         {"close_to_tray", "FALSE", &trayicon_prefs.close_to_tray, P_BOOL, NULL, NULL, NULL},
+        {"hide_when_iconified", "FALSE", &trayicon_prefs.hide_when_iconified, P_BOOL, NULL, NULL, NULL},
         {0,0,0,0,0,0,0}
 };
 
@@ -97,6 +99,8 @@ static void create_trayicon_prefs_page(PrefsPage *page,
 	GtkTooltips *hide_at_startup_tooltip;
         GtkWidget *close_to_tray_checkbox;
 	GtkTooltips *close_to_tray_tooltip;
+        GtkWidget *hide_when_iconified_checkbox;
+	GtkTooltips *hide_when_iconified_tooltip;
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
@@ -122,8 +126,19 @@ static void create_trayicon_prefs_page(PrefsPage *page,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(close_to_tray_tooltip), close_to_tray_checkbox,
 			     _("Hide Claws Mail using the tray icon instead of closing it\nwhen the window close button is clicked"), NULL);
 
+	hide_when_iconified_tooltip = gtk_tooltips_new();
+        hide_when_iconified_checkbox = gtk_check_button_new_with_label
+				(_("Minimize to tray"));
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hide_when_iconified_checkbox),
+                                     trayicon_prefs.hide_when_iconified);
+        gtk_box_pack_start(GTK_BOX(vbox), hide_when_iconified_checkbox, FALSE, FALSE, 0);
+        gtk_widget_show(hide_when_iconified_checkbox);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(hide_when_iconified_tooltip), hide_when_iconified_checkbox,
+			     _("Hide Claws Mail using the tray icon instead of minimizing it"), NULL);
+
         prefs_page->hide_at_startup = hide_at_startup_checkbox;
         prefs_page->close_to_tray = close_to_tray_checkbox;
+        prefs_page->hide_when_iconified = hide_when_iconified_checkbox;
         prefs_page->page.widget = vbox;
 }
 
@@ -143,6 +158,8 @@ static void save_trayicon_prefs(PrefsPage *page)
 				(GTK_TOGGLE_BUTTON(prefs_page->hide_at_startup));
         trayicon_prefs.close_to_tray = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->close_to_tray));
+        trayicon_prefs.hide_when_iconified = gtk_toggle_button_get_active
+				(GTK_TOGGLE_BUTTON(prefs_page->hide_when_iconified));
         
         pref_file = prefs_write_open(rc_file_path);
         g_free(rc_file_path);

@@ -34,6 +34,7 @@ typedef struct _MainWindow  MainWindow;
 #define OFFLINE_SWITCH_HOOKLIST "offline_switch"
 #define ACCOUNT_LIST_CHANGED_HOOKLIST "account_list_changed"
 #define MAIN_WINDOW_CLOSE "mainwindow_close"
+#define MAIN_WINDOW_GOT_ICONIFIED "mainwindow_iconified"
 
 typedef enum
 {

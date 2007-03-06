@@ -28,6 +28,7 @@ struct _TrayIconPrefs
 {
 	gboolean hide_at_startup;	/**< hide main-window at startup */
 	gboolean close_to_tray;	/**< hide main-window when [X] is clicked */
+	gboolean hide_when_iconified;	/**< hide main-window when it got iconified */
 };
 
 extern TrayIconPrefs trayicon_prefs;

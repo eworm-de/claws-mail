@@ -1,3 +1,15 @@
+2007-03-06 [wwp]	2.8.1cvs2
+
+	* src/gtk/gtkutils.c
+	* src/plugins/trayicon/trayicon_prefs.h
+	* src/plugins/trayicon/trayicon_prefs.c
+	* src/plugins/trayicon/trayicon.c
+	* src/mainwindow.h
+	* src/mainwindow.c
+		Add a new trayicon (optional) feature: minimize to tray. When enabled,
+		minimizing Claws-Mail main window will hide it to the trayicon instead.
+
+
 2007-03-06 [paul]	2.8.1cvs1
 
 	* NEWS

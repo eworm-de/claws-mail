@@ -65,6 +65,7 @@ static guint folder_hook_id;
 static guint offline_hook_id;
 static guint account_hook_id;
 static guint close_hook_id;
+static guint iconified_hook_id;
 
 static GdkPixmap *newmail_pixmap[2];
 static GdkPixmap *newmail_bitmap[2];
@@ -263,6 +264,18 @@ static gboolean trayicon_close_hook(gpointer source, gpointer data)
 	return FALSE;
 }
 
+static gboolean trayicon_got_iconified_hook(gpointer source, gpointer data)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	if (trayicon_prefs.hide_when_iconified
+			&& GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))
+			&& !gtk_window_get_skip_taskbar_hint(GTK_WINDOW(mainwin->window))) {
+		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), TRUE);
+	}
+	return FALSE;
+}
+
 static void resize_cb(GtkWidget *widget, GtkRequisition *req,
 		      gpointer user_data)
 {
@@ -286,6 +299,7 @@ static gboolean click_cb(GtkWidget * widget,
 			if ((gdk_window_get_state(GTK_WIDGET(mainwin->window)->window)&GDK_WINDOW_STATE_ICONIFIED)
 					|| mainwindow_is_obscured()) {
 				gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+				gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), FALSE);
 				main_window_show(mainwin);
 				gtk_window_present(GTK_WINDOW(mainwin->window));
 			} else {
@@ -293,6 +307,7 @@ static gboolean click_cb(GtkWidget * widget,
 			}
 		} else {
 			gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+			gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), FALSE);
 			main_window_show(mainwin);
 			gtk_window_present(GTK_WINDOW(mainwin->window));
         }
@@ -414,6 +429,12 @@ int plugin_init(gchar **error)
 		return -1;
 	}
 
+	iconified_hook_id = hooks_register_hook (MAIN_WINDOW_GOT_ICONIFIED, trayicon_got_iconified_hook, NULL);
+	if (offline_hook_id == -1) {
+		*error = g_strdup(_("Failed to register got iconified hook"));
+		return -1;
+	}
+
 	create_trayicon();
 	trayicon_set_accounts_hook(NULL, NULL);
 
@@ -439,6 +460,7 @@ void plugin_done(void)
 	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
 	hooks_unregister_hook(ACCOUNT_LIST_CHANGED_HOOKLIST, account_hook_id);
 	hooks_unregister_hook(MAIN_WINDOW_CLOSE, close_hook_id);
+	hooks_unregister_hook(MAIN_WINDOW_GOT_ICONIFIED, iconified_hook_id);
 
 	if (claws_is_exiting())
 		return;
