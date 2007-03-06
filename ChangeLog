@@ -1,3 +1,8 @@
+2007-03-06 [paul]	2.8.0cvs5-stable
+
+	* po/cs.po
+		corrected by by Tim <timbrain@post.cz>
+
 2007-03-04 [colin]	2.8.0cvs4-stable
 
 	* src/imap.c
