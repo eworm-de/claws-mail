@@ -40,6 +40,7 @@ static gchar *quote_desc_strings[] = {
 	"%D{fmt}",	N_("customized date format (see 'man strftime')"), /* date expression */
 	"%d",		N_("Date"), /* date */
 	"%f",		N_("From"), /* from */
+	"%A",		N_("email address of sender"), /* email address */
 	"%N",		N_("full name of sender"), /* full name */
 	"%F",		N_("first name of sender"), /* first name */
 	"%L",		N_("last name of sender"), /* last name */

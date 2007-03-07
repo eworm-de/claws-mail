@@ -70,6 +70,7 @@ int quote_fmt_firsttime = 1;
 %}
 
 <S_NORMAL>"%X" /* cursor pos */ return SET_CURSOR_POS;
+<S_NORMAL>"%A" /* email address */ return SHOW_MAIL_ADDRESS;
 <S_NORMAL>"%c" /* cc */ return SHOW_CC;
 <S_NORMAL>"%d" /* date */ return SHOW_DATE;
 <S_NORMAL>"%D" /* date */ { BEGIN S_DATE; return SHOW_DATE_EXPR; }

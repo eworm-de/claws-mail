@@ -490,7 +490,7 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 %token SHOW_DATE SHOW_FROM SHOW_FULLNAME SHOW_FIRST_NAME SHOW_LAST_NAME
 %token SHOW_SENDER_INITIAL SHOW_SUBJECT SHOW_TO SHOW_MESSAGEID
 %token SHOW_PERCENT SHOW_CC SHOW_REFERENCES SHOW_MESSAGE
-%token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
+%token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB SHOW_MAIL_ADDRESS
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token SHOW_ACCOUNT_FULL_NAME SHOW_ACCOUNT_MAIL_ADDRESS SHOW_ACCOUNT_NAME SHOW_ACCOUNT_ORGANIZATION
@@ -588,6 +588,15 @@ special:
 	{
 		if (msginfo->from)
 			INSERT(msginfo->from);
+	}
+	| SHOW_MAIL_ADDRESS
+	{
+		if (msginfo->from) {
+			gchar *stripped_address = g_strdup(msginfo->from);
+			extract_address(stripped_address);
+			INSERT(stripped_address);
+			g_free(stripped_address);
+		}
 	}
 	| SHOW_FULLNAME
 	{
