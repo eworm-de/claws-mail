@@ -1,3 +1,14 @@
+2007-03-09 [paul]	2.8.1cvs5
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/claws-mail-compose-insert-files.pl
+		added a script which enables inserting files
+		into the message body of a new Claws Mail
+		Compose window from the command line. Additionally
+		To, Cc, Subject and files to attach to the message
+		can be specified.
+
 2007-03-09 [wwp]	2.8.1cvs4
 
 	* src/addr_compl.c

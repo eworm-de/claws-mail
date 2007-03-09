@@ -1,6 +1,7 @@
 EXTRA_TOOLS = \
 	OOo2claws-mail.pl \
 	acroread2claws-mail.pl \
+	claws-mail-compose-insert-files.pl \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \

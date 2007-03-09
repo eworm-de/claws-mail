@@ -29,6 +29,8 @@ Mailbox conversion:
 
 Other tools:
   acroread2claws-mail.pl	Send PDFs from Adobe Reader 7
+  claws-mail-compose-insert-files.pl
+				Insert files into a new Compose window
   filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
   filter_conv.pl                Convert old-style Sylpheed filters to filtering
   fix-date.sh			Replace/Add a message's Date field
@@ -409,6 +411,26 @@ Other tools
   
   Contact: Paul Mangan <paul@claws-mail.org>
 
+* claws-mail-compose-insert-files.pl
+
+  WHAT IT DOES
+	This script enables inserting files into the message body of a new 
+	Claws Mail Compose window from the command line. Additionally To,
+	Cc, Subject and files to attach to the message can be specified. 
+
+  HOW TO USE IT
+  	claws-mail-compose-insert-files.pl [options]
+	Options:
+		--help -h
+		--to mail@address.net[,mail2@address.net]
+		--cc mail@address.net[,mail2@address.net]
+		--subject "My subject"
+		--attach FILE
+		--insert FILE
+
+	--attach and --insert can be used multiple times
+  
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 * filter_conv_new.pl
 
