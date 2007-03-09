@@ -546,6 +546,33 @@ guint complete_address(const gchar *str)
 }
 
 /**
+ * complete_matches_found() returns the number of matched addresses according
+ * to the completion mechanism. Unlike complete_address(), the returned value
+ * doesn't count str itself. If there's no match, it returns 0.
+ * To get a list of completion matches, see complete_address() instead.
+ */
+guint complete_matches_found(const gchar *str)
+{
+	GList *result = NULL;
+	gchar *d = NULL;
+
+	g_return_val_if_fail(str != NULL, 0);
+
+	/* g_completion is case sensitive */
+	d = g_utf8_strdown(str, -1);
+
+	clear_completion_cache();
+	g_completion_prefix = g_strdup(str);
+
+	result = g_completion_complete(g_completion, d, NULL);
+
+	g_free(g_completion_prefix);
+	g_free(d);
+
+	return g_list_length(result);
+}
+
+/**
  * Return a complete address from the index.
  * \param index Index of entry that was found (by the previous call to
  *              <code>complete_address()</code>

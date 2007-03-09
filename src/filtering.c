@@ -453,7 +453,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					gchar *stripped_addr = g_strdup(walk->data);
 					extract_address(stripped_addr);
 
-					if (complete_address(walk->data) <= 1) {
+					if (complete_matches_found(walk->data) == 0) {
 						debug_print("adding address '%s' to addressbook '%s'\n",
 								stripped_addr, action->destination);
 						if (!addrbook_add_contact(abf, folder, stripped_addr, stripped_addr, NULL)) {
