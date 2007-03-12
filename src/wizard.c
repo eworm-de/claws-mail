@@ -685,6 +685,10 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->organization)));
 	prefs_account->smtp_server = g_strdup(smtp_server);
 
+	prefs_account->inbox = g_strdup_printf("#mh/%s/inbox",
+			g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name))));
+	prefs_account->local_inbox = g_strdup(prefs_account->inbox);
+
 	if (prefs_account->protocol != A_LOCAL)
 		prefs_account->recv_server = g_strdup(recv_server);
 	else

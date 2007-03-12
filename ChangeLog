@@ -1,3 +1,16 @@
+2007-03-12 [colin]	2.8.1cvs8
+
+	* src/wizard.c
+		Fix bug 1145, 'Setting a different name 
+		for the Mailbox name isn't reflected in 
+		default account settings'. Patch by wwp
+
+2007-03-12 [colin]	2.8.1cvs7
+
+	* src/summaryview.c
+		Fix bug 1143, 'Add number of messages to be 
+		deleted to confirmation dialog'
+
 2007-03-12 [wwp]	2.8.1cvs6
 
 	* src/folderview.c
