@@ -179,7 +179,7 @@ struct _PrefsCommon
 	gboolean inline_img;
 
 	gboolean trans_hdr;
-	gboolean display_folder_unread;
+	gint display_folder_unread;
 	gint ng_abbrev_len;
 
 	gboolean show_searchbar;

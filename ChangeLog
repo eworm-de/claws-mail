@@ -1,3 +1,18 @@
+2007-03-12 [wwp]	2.8.1cvs6
+
+	* src/folderview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_summaries.c
+		Changed the option that displays unread messages count
+		next to the folder name in folder list: it is now
+		possible to either display nothing, display the
+		unread messages number only or the unread and total messages
+		numbers. The patch includes this extra feature as well
+		as some minor fixes by rewriting the algo in folderview.c.
+		Thanks to Paul for the original idea and implementation, plus
+		testing and proof-reading!
+
 2007-03-09 [paul]	2.8.1cvs5
 
 	* tools/Makefile.am

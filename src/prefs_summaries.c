@@ -49,7 +49,7 @@ typedef struct _SummariesPage
 	GtkWidget *window;
 
 	GtkWidget *checkbtn_transhdr;
-	GtkWidget *checkbtn_folder_unread;
+	GtkWidget *optmenu_folder_unread;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkWidget *checkbtn_useaddrbook;
 	GtkWidget *checkbtn_threadsubj;
@@ -304,7 +304,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *checkbtn_transhdr;
-	GtkWidget *checkbtn_folder_unread;
+	GtkWidget *hbox0;
+	GtkWidget *optmenu_folder_unread;
 	GtkWidget *hbox1;
 	GtkWidget *label_ng_abbrev;
 	GtkWidget *spinbtn_ng_abbrev_len;
@@ -344,8 +345,24 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	vbox2 = gtkut_get_options_frame(vbox1, &folderview_frame, _("Folder list"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_folder_unread,
-			   _("Display unread number next to folder name"));
+	hbox0 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox0);
+	gtk_box_pack_start(GTK_BOX (vbox2), hbox0, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Display message number next to folder name"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
+
+ 	optmenu_folder_unread = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_folder_unread);
+ 	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("No"), 0);
+	MENUITEM_ADD (menu, menuitem, _("Unread messages"), 1);
+	MENUITEM_ADD (menu, menuitem, _("Unread and Total messages"), 2);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_folder_unread), menu);
+	gtk_box_pack_start(GTK_BOX(hbox0), optmenu_folder_unread, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -545,7 +562,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_transhdr),
 			prefs_common.trans_hdr);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_unread),
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_folder_unread),
 			prefs_common.display_folder_unread);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_useaddrbook),
 			prefs_common.use_addr_book);
@@ -573,7 +590,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.next_unread_msg_dialog);
 
 	prefs_summaries->checkbtn_transhdr = checkbtn_transhdr;
-	prefs_summaries->checkbtn_folder_unread = checkbtn_folder_unread;
+	prefs_summaries->optmenu_folder_unread = optmenu_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
 	prefs_summaries->checkbtn_useaddrbook = checkbtn_useaddrbook;
 	prefs_summaries->checkbtn_threadsubj = checkbtn_threadsubj;
@@ -598,8 +615,12 @@ static void prefs_summaries_save(PrefsPage *_page)
 
 	prefs_common.trans_hdr = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_transhdr));
-	prefs_common.display_folder_unread = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_folder_unread));
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_folder_unread));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	prefs_common.display_folder_unread = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+
 	prefs_common.use_addr_book = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_useaddrbook));
 	prefs_common.thread_by_subject = gtk_toggle_button_get_active(

@@ -1530,37 +1530,55 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		mask = openmask = searchmask;
 	}
 
-	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0 &&
-	    prefs_common.display_folder_unread) {
-		str = g_strdup_printf("%s (%d%s)", name, item->total_msgs,
-				      add_unread_mark ? "+" : "");
-		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
-					xpm, mask, openxpm, openmask,
-					FALSE, GTK_CTREE_ROW(node)->expanded);
-		g_free(str);
-	} else if (((item->unread_msgs > 0 || add_unread_mark) &&
-		    prefs_common.display_folder_unread) 
-		   || add_sub_match_mark) {
-
-		if (item->unread_msgs > 0)
-			str = g_strdup_printf("%s (%d%s%s)", name, item->unread_msgs,
-					      add_unread_mark || add_sub_match_mark ? "+" : "", 
-				              item->unreadmarked_msgs > 0 ? "!":"");
-		else
-			str = g_strdup_printf("%s (+)", name);
-		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
-					xpm, mask, openxpm, openmask,
-					FALSE, GTK_CTREE_ROW(node)->expanded);
-		g_free(str);
+	str = NULL;
+	if (prefs_common.display_folder_unread) {
+		if (folder_has_parent_of_type(item, F_QUEUE)) {
+			/* only total_msgs matters here */
+			if (item->total_msgs > 0) {
+				/* show total number (should be equal to the unread number)
+				   and signs if any */
+				str = g_strdup_printf("%s (%d%s%s)",
+							name, item->total_msgs,
+							(add_unread_mark || add_sub_match_mark) ? "+" : "", 
+							(item->unreadmarked_msgs > 0) ? "!" : "");
+			}
 	} else {
-		str = g_strdup_printf("%s%s", name, 
-			              item->unreadmarked_msgs > 0 ? " (!)":"");
-	
+			if (prefs_common.display_folder_unread == 1) {
+				if (item->unread_msgs > 0) {
+					/* show unread number and signs */
+					str = g_strdup_printf("%s (%d%s%s)",
+								name, item->unread_msgs,
+								(add_unread_mark || add_sub_match_mark) ? "+" : "", 
+								(item->unreadmarked_msgs > 0) ? "!" : "");
+				}
+			} else {
+				if (item->total_msgs > 0) {
+					/* show unread number, total number and signs if any */
+					str = g_strdup_printf("%s (%d/%d%s%s)",
+								name, item->unread_msgs, item->total_msgs,
+								(add_unread_mark || add_sub_match_mark) ? "+" : "", 
+								(item->unreadmarked_msgs > 0) ? "!" : "");
+				}
+			}
+		}
+		if ((str == NULL) &&
+			(add_unread_mark || add_sub_match_mark || (item->unreadmarked_msgs > 0))) {
+			/* no unread/total numbers, but at least one sign */
+			str = g_strdup_printf("%s (%s%s)",
+						name,
+						(add_unread_mark || add_sub_match_mark) ? "+" : "", 
+						(item->unreadmarked_msgs > 0) ? "!" : "");
+		}
+	}
+	if (str == NULL) {
+		/* last fallback, folder name only or with ! sign */
+		str = g_strdup_printf("%s%s",
+					name, (item->unreadmarked_msgs > 0) ? " (!)" : "");
+	}
 		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
-	}
 	g_free(name);
 
 	if (!folder_item_parent(item)) {
