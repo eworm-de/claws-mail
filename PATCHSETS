@@ -2426,3 +2426,4 @@
 ( cvs diff -u -r 1.395.2.285 -r 1.395.2.286 src/summaryview.c;  ) > 2.8.1cvs7.patchset
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/wizard.c;  ) > 2.8.1cvs8.patchset
 ( cvs diff -u -r 1.115.2.141 -r 1.115.2.142 src/main.c;  ) > 2.8.1cvs9.patchset
+( cvs diff -u -r 1.1.4.26 -r 1.1.4.27 src/gtk/logwindow.c;  ) > 2.8.1cvs10.patchset

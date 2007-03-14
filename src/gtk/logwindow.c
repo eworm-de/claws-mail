@@ -110,6 +110,7 @@ LogWindow *log_window_create(void)
 	g_object_ref(G_OBJECT(logwin->buffer));
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(text), NULL);
 	logwin->hidden = TRUE;
+	logwin->never_shown = TRUE;
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	logwin->end_mark = gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
@@ -203,7 +204,11 @@ void log_window_show(LogWindow *logwin)
 	GtkTextMark *mark;
 
 	logwin->hidden = FALSE;
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), logwin->buffer);
+
+	if (logwin->never_shown)
+		gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), logwin->buffer);
+
+	logwin->never_shown = FALSE;
 
 	mark = gtk_text_buffer_get_mark(buffer, "end");
 	gtk_text_view_scroll_mark_onscreen(text, mark);
@@ -322,7 +327,6 @@ static gboolean log_window_append(gpointer source, gpointer data)
 
 static void hide_cb(GtkWidget *widget, LogWindow *logwin)
 {
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(logwin->text), NULL);
 	logwin->hidden = TRUE;
 }
 
