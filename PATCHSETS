@@ -2425,3 +2425,4 @@
 ( cvs diff -u -r 1.207.2.150 -r 1.207.2.151 src/folderview.c;  cvs diff -u -r 1.204.2.122 -r 1.204.2.123 src/prefs_common.c;  cvs diff -u -r 1.103.2.76 -r 1.103.2.77 src/prefs_common.h;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/prefs_summaries.c;  ) > 2.8.1cvs6.patchset
 ( cvs diff -u -r 1.395.2.285 -r 1.395.2.286 src/summaryview.c;  ) > 2.8.1cvs7.patchset
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/wizard.c;  ) > 2.8.1cvs8.patchset
+( cvs diff -u -r 1.115.2.141 -r 1.115.2.142 src/main.c;  ) > 2.8.1cvs9.patchset

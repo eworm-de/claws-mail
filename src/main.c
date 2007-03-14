@@ -123,7 +123,7 @@ static SnDisplay *sn_display = NULL;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
-
+static gchar *x_display = NULL;
 typedef enum 
 {
 	ONLINE_MODE_DONT_CHANGE,
@@ -1400,6 +1400,10 @@ static gint prohibit_duplicate_launch(void)
 
 	path = claws_get_socket_name();
 	uxsock = fd_connect_unix(path);
+	
+	if (x_display == NULL)
+		x_display = g_strdup(g_getenv("DISPLAY"));
+
 	if (uxsock < 0) {
 		g_unlink(path);
 		return fd_open_unix(path);
@@ -1485,8 +1489,19 @@ static gint prohibit_duplicate_launch(void)
 		gchar *str = g_strdup_printf("select %s\n", cmd.target);
 		fd_write_all(uxsock, str, strlen(str));
 		g_free(str);
-	} else
-		fd_write_all(uxsock, "popup\n", 6);
+	} else {
+		gchar buf[BUFSIZ];
+		fd_write_all(uxsock, "get_display\n", 12);
+		fd_gets(uxsock, buf, sizeof(buf));
+		if (strcmp2(buf, x_display)) {
+			printf("Claws Mail is already running on display %s.\n",
+				buf);
+		} else {
+			fd_close(uxsock);
+			uxsock = fd_connect_unix(path);
+			fd_write_all(uxsock, "popup\n", 6);
+		}
+	}
 
 	fd_close(uxsock);
 	return -1;
@@ -1551,6 +1566,8 @@ static void lock_socket_input_cb(gpointer data,
 
 	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
+	} else if (!strncmp(buf, "get_display", 11)) {
+		fd_write_all(sock, x_display, strlen(x_display));
 	} else if (!strncmp(buf, "receive_all", 11)) {
 		inc_all_account_mail(mainwin, FALSE,
 				     prefs_common.newmail_notify_manu);
