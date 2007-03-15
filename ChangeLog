@@ -1,3 +1,8 @@
+2007-03-15 [paul]	2.8.1cvs14
+
+	* src/prefs_spelling.c
+		fix English usage
+
 2007-03-15 [paul]	2.8.1cvs13
 
 	* src/common/quoted-printable.c

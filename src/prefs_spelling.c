@@ -208,7 +208,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_widget_show(aspell_path_select);
 	gtk_box_pack_start(GTK_BOX(aspell_path_hbox), aspell_path_select, FALSE, FALSE, 0);
 
-	vbox2 = gtkut_get_options_frame(vbox1, &automatic_frame, _("Automatic spelling"));
+	vbox2 = gtkut_get_options_frame(vbox1, &automatic_frame, _("Automatic spell checking"));
 	
 	check_while_typing_checkbtn = gtk_check_button_new_with_label(
 			_("Check while typing"));
