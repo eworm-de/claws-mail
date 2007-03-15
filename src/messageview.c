@@ -1103,6 +1103,13 @@ gboolean messageview_search_string(MessageView *messageview, const gchar *str,
 {
 	TextView *text;
 
+	if (messageview->mimeview->type == MIMEVIEW_VIEWER) {
+		MimeViewer *viewer = messageview->mimeview->mimeviewer;
+		if (viewer && viewer->text_search) {
+			return viewer->text_search(viewer, FALSE, str, case_sens);
+		}
+	}
+
 	text = messageview_get_current_textview(messageview);
 	if (text)
 		return textview_search_string(text, str, case_sens);
@@ -1114,6 +1121,13 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 					    gboolean case_sens)
 {
 	TextView *text;
+
+	if (messageview->mimeview->type == MIMEVIEW_VIEWER) {
+		MimeViewer *viewer = messageview->mimeview->mimeviewer;
+		if (viewer && viewer->text_search) {
+			return viewer->text_search(viewer, TRUE, str, case_sens);
+		}
+	}
 
 	text = messageview_get_current_textview(messageview);
 	if (text)	

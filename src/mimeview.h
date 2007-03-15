@@ -125,6 +125,9 @@ struct _MimeViewer
 	gchar 		*(*get_selection)	(MimeViewer *);
 	gboolean	(*scroll_page)		(MimeViewer *, gboolean up);
 	void		(*scroll_one_line)	(MimeViewer *, gboolean up);
+	gboolean	(*text_search)		(MimeViewer *, gboolean backward,
+						 const gchar *str, 
+						 gboolean case_sensitive);
 	MimeView	*mimeview;
 };
 
