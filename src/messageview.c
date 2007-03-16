@@ -1462,6 +1462,13 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 		if (partnum > 0) {
 			mimeview_select_part_num(mimeview, partnum);
 		}
+		if (mimeview->type == MIMEVIEW_VIEWER) {
+			MimeViewer *viewer = mimeview->mimeviewer;
+			if (viewer && viewer->print) {
+				viewer->print(viewer);
+				return;
+			}
+		}
 		if (sel_start != -1 && sel_end != -1) {
 			GtkTextIter start, end;
 			GtkTextView *text = GTK_TEXT_VIEW(mimeview->textview->text);

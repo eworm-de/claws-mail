@@ -128,6 +128,7 @@ struct _MimeViewer
 	gboolean	(*text_search)		(MimeViewer *, gboolean backward,
 						 const gchar *str, 
 						 gboolean case_sensitive);
+	void		(*print)		(MimeViewer *);
 	MimeView	*mimeview;
 };
 
