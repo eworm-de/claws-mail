@@ -1,3 +1,8 @@
+2007-03-16 [wwp]	2.8.1cvs18
+
+	* tools/mairix.sh
+		Added a wrapper to mairix to the tools folder.
+
 2007-03-16 [colin]	2.8.1cvs17
 
 	* src/messageview.c
