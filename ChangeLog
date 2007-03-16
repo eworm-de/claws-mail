@@ -1,3 +1,19 @@
+2007-03-16 [wwp]	2.8.1cvs19
+
+	* src/action.c
+		Fix logics issues around the action IO dialog:
+		- disable entry widget and exec button when
+		  the exec button is clicked (don't wait for any
+		  output line) - fix possible disabling/re-enabling/
+		  re-disabling of those widgets
+		- raise an error if executing a %as{} action either
+		  empty or invalid, instead of failing silently
+		- don't close the dialog if the abort button has been
+		  clicked and if there was no output yet
+		- set focus to the abort button when the exec button
+		  is clicked
+		- fix capitalization of a warning message
+
 2007-03-16 [wwp]	2.8.1cvs18
 
 	* tools/mairix.sh

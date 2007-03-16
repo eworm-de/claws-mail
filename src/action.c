@@ -607,13 +607,23 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 	action_string = g_strndup(sbegin, send - sbegin);
 	
 	action_list = matcher_parser_get_action_list(action_string);
+	if (action_list == NULL) {
+		gchar *tmp = g_strdup(action_string);
+
+		g_strstrip(tmp);
+		if (*tmp == '\0')
+			alertpanel_error(_("There is no filtering action set"));
+		else
+			alertpanel_error(_("Invalid filtering action(s):\n%s"), tmp);
+		g_free(action_string);
+		g_free(tmp);
+		return FALSE;
+	}
 	g_free(action_string);
-	if (action_list == NULL) return FALSE;
 	
 	/* apply actions on each message info */
 	for (p = msglist; p && p->data; p = g_slist_next(p)) {
 		filteringaction_apply_action_list(action_list, (MsgInfo *) p->data);
-		
 	}
 
 	if (summaryview) {
@@ -912,7 +922,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				close(chld_err[1]);
 				close(chld_status[0]);
 
-				debug_print("Child: Waiting for grandchild\n");
+				debug_print("Child: waiting for grandchild\n");
 				waitpid(gch_pid, NULL, 0);
 				debug_print("Child: grandchild ended\n");
 				write(chld_status[1], "0\n", 2);
@@ -1030,11 +1040,8 @@ static gint wait_for_children(Children *children)
 	if (children->nb)
 		return FALSE;
 
-	if (!children->dialog) {
+	if (!children->dialog)
 		free_children(children);
-	} else if (!children->output) {
-		gtk_widget_destroy(children->dialog);
-	}
 
 	return FALSE;
 }
@@ -1047,7 +1054,6 @@ static void send_input(GtkWidget *w, gpointer data)
 	child_info->tag_in = gdk_input_add(child_info->chld_in,
 					   GDK_INPUT_WRITE,
 					   catch_input, children);
-	gtk_widget_set_sensitive(children->input_hbox, FALSE);
 }
 
 static gint delete_io_dialog_cb(GtkWidget *w, GdkEvent *e, gpointer data)
@@ -1402,6 +1408,9 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	if (!(cond && GDK_INPUT_WRITE))
 		return;
 
+	gtk_widget_set_sensitive(children->input_hbox, FALSE);
+	gtk_widget_grab_focus(children->abort_btn);
+
 	gdk_input_remove(child_info->tag_in);
 	child_info->tag_in = -1;
 
@@ -1428,8 +1437,6 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	g_free(input);
 
-	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
-	gtk_widget_set_sensitive(children->input_hbox, TRUE);
 	close(child_info->chld_in);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");

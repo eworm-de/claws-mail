@@ -2435,3 +2435,4 @@
 ( cvs diff -u -r 1.8.2.5 -r 1.8.2.6 .cvsignore;  ) > 2.8.1cvs16.patchset
 ( cvs diff -u -r 1.94.2.125 -r 1.94.2.126 src/messageview.c;  cvs diff -u -r 1.20.2.19 -r 1.20.2.20 src/mimeview.h;  ) > 2.8.1cvs17.patchset
 ( diff -u /dev/null tools/mairix.sh;  ) > 2.8.1cvs18.patchset
+( cvs diff -u -r 1.12.2.42 -r 1.12.2.43 src/action.c;  ) > 2.8.1cvs19.patchset
