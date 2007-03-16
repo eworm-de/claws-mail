@@ -1,3 +1,9 @@
+2007-03-16 [wwp]	2.8.1cvs20
+
+	* tools/Makefile.am
+	* tools/README
+		Updated to deal w/ the new mairix.sh tool.
+
 2007-03-16 [wwp]	2.8.1cvs19
 
 	* src/action.c
