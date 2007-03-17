@@ -1,3 +1,8 @@
+2007-03-17 [paul]	2.8.1cvs22
+
+	* src/main.c
+		fix a typo, and be a little more verbose.
+
 2007-03-17 [wwp]	2.8.1cvs21
 
 	* src/inc.c

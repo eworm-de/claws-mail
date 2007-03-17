@@ -915,10 +915,10 @@ int main(int argc, char *argv[])
 		main_window_cursor_normal(mainwin);
 		if (folder_get_list() != NULL) {
 			alertpanel_error(_("Claws Mail has detected a configured "
-				   "mailbox, but is it incomplete. It is "
+				   "mailbox, but it is incomplete. It is "
 				   "possibly due to a failing IMAP account. Use "
-				   "\"Rebuild folder tree\" on the mailbox's folder "
-				   "to try to fix it."));
+				   "\"Rebuild folder tree\" on the mailbox parent "
+				   "folder's context menu to try to fix it."));
 		} else {
 			alertpanel_error(_("Claws Mail has detected a configured "
 				   "mailbox, but could not load it. It is "
