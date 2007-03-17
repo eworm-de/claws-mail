@@ -1,3 +1,8 @@
+2007-03-17 [wwp]	2.8.1cvs21
+
+	* src/inc.c
+		Fix a compiler warning.
+
 2007-03-16 [wwp]	2.8.1cvs20
 
 	* tools/Makefile.am

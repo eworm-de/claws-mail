@@ -146,12 +146,12 @@ static void inc_notify_cmd		(gint new_msgs,
  **/
 static void inc_finished(MainWindow *mainwin, gboolean new_messages, gboolean autocheck)
 {
-	FolderItem *item;
-
 	if (prefs_common.scan_all_after_inc)
 		folderview_check_new(NULL);
 
 	if (!autocheck && prefs_common.open_inbox_on_inc) {
+		FolderItem *item = NULL;
+
 		if (cur_account && cur_account->inbox)
 			item = folder_find_item_from_identifier(cur_account->inbox);
 		if (item == NULL && cur_account->folder)
