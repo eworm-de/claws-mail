@@ -425,6 +425,7 @@ void account_add(void)
 		if (ac_prefs->protocol == A_IMAP4)
 			folder->klass->create_tree(folder);
 		folderview_set_all();
+		folder_write_list();
 	}
 }
 
@@ -508,6 +509,8 @@ void account_set_missing_folder(void)
 			folder_add(folder);
 			if (ap->protocol == A_IMAP4)
 				folder->klass->create_tree(folder);
+			folder_write_list();
+
 		}
 	}
 }
@@ -1049,6 +1052,7 @@ static void account_delete(GtkWidget *widget, gpointer data)
 			cur = g_slist_next(cur);
 		}
 	}
+	folder_write_list();
 }
 
 static void account_up(GtkWidget *widget, gpointer data)

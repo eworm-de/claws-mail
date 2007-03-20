@@ -1,3 +1,9 @@
+2007-03-20 [colin]	2.8.1cvs24
+
+	* src/account.c
+		Write folderlist after adding/deleting accounts
+		that have folders
+
 2007-03-20 [colin]	2.8.1cvs23
 
 	* src/imap.c
