@@ -1492,6 +1492,7 @@ static gint prohibit_duplicate_launch(void)
 	} else {
 		gchar buf[BUFSIZ];
 		fd_write_all(uxsock, "get_display\n", 12);
+		memset(buf, 0, sizeof(buf));
 		fd_gets(uxsock, buf, sizeof(buf));
 		if (strcmp2(buf, x_display)) {
 			printf("Claws Mail is already running on display %s.\n",
