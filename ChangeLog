@@ -1,3 +1,10 @@
+2007-03-20 [colin]	2.8.1cvs23
+
+	* src/imap.c
+	* src/remotefolder.h
+		Fix bug 1153, 'CM segfaults if IMAP folder is 
+		selected while scanning prior to update'
+
 2007-03-17 [paul]	2.8.1cvs22
 
 	* src/main.c

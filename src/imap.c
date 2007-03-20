@@ -723,14 +723,19 @@ static IMAPSession *imap_session_get(Folder *folder)
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {
 		session = IMAP_SESSION(rfolder->session);
+	} else if (rfolder->connecting) {
+		debug_print("already connecting\n");
+		return NULL;
 	} else {
 		imap_reset_uid_lists(folder);
 		if (time(NULL) - rfolder->last_failure <= 2)
 			return NULL;
+		rfolder->connecting = TRUE;
 		session = imap_session_new(folder, folder->account);
 	}
 	if(session == NULL) {
 		rfolder->last_failure = time(NULL);
+		rfolder->connecting = FALSE;
 		return NULL;
 	}
 
@@ -744,6 +749,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 		session_destroy(SESSION(session));
 		rfolder->session = NULL;
 		rfolder->last_failure = time(NULL);
+		rfolder->connecting = FALSE;
 		return NULL;
 	}
 
@@ -766,6 +772,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	}
 
 	rfolder->session = SESSION(session);
+	rfolder->connecting = FALSE;
 
 	return IMAP_SESSION(session);
 }

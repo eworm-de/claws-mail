@@ -35,6 +35,7 @@ struct _RemoteFolder
 
 	Session *session;
 	time_t last_failure;
+	gboolean connecting;
 };
 
 void        folder_remote_folder_init	(Folder		*folder,
