@@ -745,7 +745,7 @@ static gint mh_scan_tree(Folder *folder)
 				    "Can't create folder.", dir); \
 			return -1; \
 		} \
-		if (make_dir(dir) < 0) \
+		if (make_dir_hier(dir) < 0) \
 			return -1; \
 	} \
 }
