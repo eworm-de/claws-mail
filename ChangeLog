@@ -1,3 +1,13 @@
+2007-03-20 [colin]	2.8.1cvs25
+
+	* src/folder.c
+	* src/folder.h
+	* src/prefs_account.c
+	* src/wizard.c
+		Fix default inbox weirdnesses (after wizard,
+		if path is Mail, mailbox identifier is #mh/Mailbox,
+		and when creating new accounts)
+
 2007-03-20 [colin]	2.8.1cvs24
 
 	* src/account.c

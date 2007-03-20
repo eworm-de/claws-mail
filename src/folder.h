@@ -757,6 +757,7 @@ FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);
 gchar 	   *folder_item_get_name		(FolderItem 	*item);
 
 FolderItem *folder_get_default_inbox	(void);
+FolderItem *folder_get_default_inbox_for_class(FolderType type);
 FolderItem *folder_get_default_outbox	(void);
 FolderItem *folder_get_default_draft	(void);
 FolderItem *folder_get_default_queue	(void);

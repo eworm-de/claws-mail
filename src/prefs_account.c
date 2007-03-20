@@ -778,12 +778,24 @@ static void create_widget_func(PrefsPage * _page,
 		g_free(buf);
 		def_ac = account_get_default();
 		if (def_ac) {
+			FolderItem *item = folder_get_default_inbox_for_class(F_MH);
 			gtk_entry_set_text(GTK_ENTRY(basic.name_entry),
 					   def_ac->name ? def_ac->name : "");
 			gtk_entry_set_text(GTK_ENTRY(basic.addr_entry),
 					   def_ac->address ? def_ac->address : "");
 			gtk_entry_set_text(GTK_ENTRY(basic.org_entry),
 					   def_ac->organization ? def_ac->organization : "");
+			if (!item) {
+				item = folder_get_default_inbox();
+			}
+			if (item) {
+				gchar *id = folder_item_get_identifier(item);
+				gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry),
+					id);
+				gtk_entry_set_text(GTK_ENTRY(receive.local_inbox_entry),
+					id);
+				g_free(id);
+			}
 		}
 	} else
 		prefs_set_dialog(param);

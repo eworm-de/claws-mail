@@ -1406,6 +1406,26 @@ FolderItem *folder_get_default_inbox(void)
 	return NULL;
 }
 
+FolderItem *folder_get_default_inbox_for_class(FolderType type)
+{
+	GList *flist;
+
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->inbox == NULL)
+			continue;
+		if (folder->klass->type != type)
+			continue;
+
+		return folder->inbox;
+	}
+
+	return NULL;
+}
+
 FolderItem *folder_get_default_outbox(void)
 {
 	GList *flist;

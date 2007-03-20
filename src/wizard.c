@@ -556,6 +556,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	GList *account_list = NULL;
 	GtkWidget *menu, *menuitem;
 	gchar *smtp_server, *recv_server;
+	gchar *tmp;
 	gint smtp_port, recv_port;
 #ifdef USE_OPENSSL			
 	SSLType smtp_ssl_type, recv_ssl_type;
@@ -685,8 +686,10 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->organization)));
 	prefs_account->smtp_server = g_strdup(smtp_server);
 
+	tmp = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
 	prefs_account->inbox = g_strdup_printf("#mh/%s/inbox",
-			g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name))));
+			(tmp && !strcmp("Mail", tmp))?_("Mailbox"):tmp);
+	g_free(tmp);
 	prefs_account->local_inbox = g_strdup(prefs_account->inbox);
 
 	if (prefs_account->protocol != A_LOCAL)
@@ -1336,8 +1339,14 @@ set_sens:
 				current_page > 0);
 		gtk_dialog_set_response_sensitive (dialog, GO_FORWARD, 
 				current_page < (num_pages - 1));
-		gtk_dialog_set_response_sensitive (dialog, FINISHED, 
-				current_page == (num_pages - 1));
+		if (current_page == (num_pages -1)) {
+			gtk_dialog_set_response_sensitive (dialog, FINISHED, TRUE);
+			gtk_dialog_set_default_response(GTK_DIALOG(wizard->window), FINISHED);
+		} else {
+			gtk_dialog_set_response_sensitive (dialog, FINISHED, FALSE);
+			gtk_dialog_set_default_response(GTK_DIALOG(wizard->window), GO_FORWARD);
+		}
+
 	}
 }
 
