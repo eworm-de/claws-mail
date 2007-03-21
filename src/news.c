@@ -252,7 +252,7 @@ static Session *news_session_new(const gchar *server, gushort port,
 
 	g_return_val_if_fail(server != NULL, NULL);
 
-	log_message(_("creating NNTP connection to %s:%d ...\n"), server, port);
+	log_message(LOG_PROTOCOL, _("creating NNTP connection to %s:%d ...\n"), server, port);
 
 #if USE_OPENSSL
 	session = nntp_session_new(server, port, buf, userid, passwd, ssl_type);
@@ -342,7 +342,7 @@ static NNTPSession *news_session_get(Folder *folder)
 
 	if (nntp_mode(NNTP_SESSION(rfolder->session), FALSE)
 	    != NN_SUCCESS) {
-		log_warning(_("NNTP connection to %s:%d has been"
+		log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
 			    folder->account->nntp_server,
 			    folder->account->set_nntpport ?
@@ -472,7 +472,7 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-			log_warning(_("can't retrieve newsgroup list\n"));
+			log_warning(LOG_PROTOCOL, _("can't retrieve newsgroup list\n"));
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 			g_free(filename);
@@ -585,7 +585,7 @@ static gint news_post_stream(Folder *folder, FILE *fp)
 
 	ok = nntp_post(session, fp);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't post article.\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't post article.\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
@@ -611,7 +611,7 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 
 	ok = recv_write_to_file(SESSION(session)->sock, filename);
 	if (ok < 0) {
-		log_warning(_("couldn't retrieve article %d\n"), num);
+		log_warning(LOG_PROTOCOL, _("couldn't retrieve article %d\n"), num);
 		if (ok == -2)
 			return NN_SOCKET;
 		else
@@ -660,7 +660,7 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	if (ok == NN_SUCCESS)
 		session->group = g_strdup(group);
 	else
-		log_warning(_("couldn't select group: %s\n"), group);
+		log_warning(LOG_PROTOCOL, _("couldn't select group: %s\n"), group);
 
 	return ok;
 }
@@ -885,7 +885,7 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't set group: %s\n"), item->path);
+		log_warning(LOG_PROTOCOL, _("couldn't set group: %s\n"), item->path);
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return -1;
 	}
@@ -894,7 +894,7 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 	if (num <= 0)
 		remove_all_numbered_files(dir);
 	else if (last < first)
-		log_warning(_("invalid article range: %d - %d\n"),
+		log_warning(LOG_PROTOCOL, _("invalid article range: %d - %d\n"),
 			    first, last);
 	else {
 		for (i = first; i <= last; i++) {
@@ -914,7 +914,7 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 #define READ_TO_LISTEND(hdr) \
 	while (!(buf[0] == '.' && buf[1] == '\r')) { \
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
-			log_warning(_("error occurred while getting %s.\n"), hdr); \
+			log_warning(LOG_PROTOCOL, _("error occurred while getting %s.\n"), hdr); \
 			return msginfo; \
 		} \
 	}
@@ -952,14 +952,14 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &news_class, NULL);
 
-	log_message(_("getting xover %d in %s...\n"),
+	log_message(LOG_PROTOCOL, _("getting xover %d in %s...\n"),
 		    num, item->path);
 	ok = nntp_xover(session, num, num);
 	
 	news_folder_lock(NEWS_FOLDER(item->folder));
 	
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xover\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xover\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -969,14 +969,14 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	}
 	
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(_("error occurred while getting xover.\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred while getting xover.\n"));
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return NULL;
 	}
 	
 	msginfo = news_parse_xover(buf);
 	if (!msginfo) {
-		log_warning(_("invalid xover line: %s\n"), buf);
+		log_warning(LOG_PROTOCOL, _("invalid xover line: %s\n"), buf);
 	}
 
 	READ_TO_LISTEND("xover");
@@ -994,7 +994,7 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	ok = nntp_xhdr(session, "to", num, num);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xhdr\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -1004,7 +1004,7 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	}
 
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(_("error occurred while getting xhdr.\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
@@ -1015,7 +1015,7 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	ok = nntp_xhdr(session, "cc", num, num);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xhdr\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -1025,7 +1025,7 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	}
 
 	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(_("error occurred while getting xhdr.\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return msginfo;
 	}
@@ -1049,11 +1049,11 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
-	log_message(_("getting xover %d - %d in %s...\n"),
+	log_message(LOG_PROTOCOL, _("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
 	ok = nntp_xover(session, begin, end);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xover\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xover\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -1065,7 +1065,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xover.\n"));
+			log_warning(LOG_PROTOCOL, _("error occurred while getting xover.\n"));
 			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
@@ -1079,7 +1079,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 		msginfo = news_parse_xover(buf);
 		if (!msginfo) {
-			log_warning(_("invalid xover line: %s\n"), buf);
+			log_warning(LOG_PROTOCOL, _("invalid xover line: %s\n"), buf);
 			continue;
 		}
 
@@ -1098,7 +1098,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	ok = nntp_xhdr(session, "to", begin, end);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xhdr\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -1111,7 +1111,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xhdr.\n"));
+			log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
 			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}
@@ -1130,7 +1130,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	ok = nntp_xhdr(session, "cc", begin, end);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("couldn't get xhdr\n"));
+		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
 		if (ok == NN_SOCKET) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
@@ -1143,7 +1143,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xhdr.\n"));
+			log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
 			news_folder_unlock(NEWS_FOLDER(item->folder));
 			return newlist;
 		}

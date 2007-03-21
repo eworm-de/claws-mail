@@ -134,7 +134,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
 
-	log_message(_("Sending message using command: %s\n"), command);
+	log_message(LOG_PROTOCOL, _("Sending message using command: %s\n"), command);
 
 	argv = strsplit_with_quote(command, " ", 0);
 
@@ -149,7 +149,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 				     NULL) == FALSE) {
 		g_snprintf(buf, sizeof(buf),
 			   _("Couldn't execute command: %s"), command);
-		log_warning("%s\n", buf);
+		log_warning(LOG_PROTOCOL, "%s\n", buf);
 		alertpanel_error("%s", buf);
 		g_strfreev(argv);
 		return -1;
@@ -185,7 +185,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 		g_snprintf(buf, sizeof(buf),
 			   _("Error occurred while executing command: %s"),
 			   command);
-		log_warning("%s\n", buf);
+		log_warning(LOG_PROTOCOL, "%s\n", buf);
 		alertpanel_error("%s", buf);
 		return -1;
 	}
@@ -325,7 +325,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
 		    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 			g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
-			log_message(buf);
+			log_message(LOG_PROTOCOL, buf);
 			progress_dialog_set_label(dialog->dialog, buf);
 			progress_dialog_list_set_status(dialog->dialog, 0, _("POP before SMTP"));
 			GTK_EVENTS_FLUSH();
@@ -335,7 +335,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		g_snprintf(buf, sizeof(buf), _("Connecting to SMTP server: %s ..."),
 			   ac_prefs->smtp_server);
 		progress_dialog_set_label(dialog->dialog, buf);
-		log_message("%s\n", buf);
+		log_message(LOG_PROTOCOL, "%s\n", buf);
 
 		session_set_recv_message_notify(session, send_recv_message, dialog);
 		session_set_send_data_progressive_notify
@@ -392,12 +392,12 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		}
 		ret = -1;
 	} else if (SMTP_SESSION(session)->state == SMTP_MAIL_SENT_OK) {
-		log_message("%s\n", _("Mail sent successfully."));
+		log_message(LOG_PROTOCOL, "%s\n", _("Mail sent successfully."));
 		ret = 0;
 	} else if (session->state == SESSION_EOF &&
 		   SMTP_SESSION(session)->state == SMTP_QUIT) {
 		/* consider EOF right after QUIT successful */
-		log_warning("%s\n", _("Connection closed by the remote host."));
+		log_warning(LOG_PROTOCOL, "%s\n", _("Connection closed by the remote host."));
 		ret = 0;
 	} else if (session->state == SESSION_ERROR ||
 		   session->state == SESSION_EOF ||
@@ -648,11 +648,11 @@ static void send_put_error(Session *session)
 	}
 
 	if (err_msg) {
-		log_error("%s\n", err_msg);
+		log_error(LOG_PROTOCOL, "%s\n", err_msg);
 		g_free(err_msg);
 	} else {
 		if (log_msg)
-			log_warning("%s\n", log_msg);
+			log_warning(LOG_PROTOCOL, "%s\n", log_msg);
 	}
 }
 

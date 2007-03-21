@@ -1169,7 +1169,7 @@ gint folderview_check_new(Folder *folder)
 					if (folder) {
 						summaryview_unlock(folderview->summaryview, item);
 						if (FOLDER_TYPE(item->folder) == F_NEWS || FOLDER_IS_LOCAL(folder)) {
-							log_error(_("Couldn't scan folder %s\n"),
+							log_error(LOG_PROTOCOL, _("Couldn't scan folder %s\n"),
 								item->path ? item->path:item->name);
 							continue;
 						} else if (!FOLDER_IS_LOCAL(folder)) {

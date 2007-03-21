@@ -573,7 +573,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			warned_error = TRUE;
 		} else {
 			gchar *tmp = g_strdup_printf("%s\n", msg);
-			log_error(tmp);
+			log_error(LOG_PROTOCOL, tmp);
 			g_free(tmp);
 		}
 		g_free(msg);
@@ -680,7 +680,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				
 			debug_print("%s\n", cmd);
 			if ((status = execute_command_line(cmd, FALSE)) != 0)
-				log_error(_("Learning failed; `%s` returned with status %d."),
+				log_error(LOG_PROTOCOL, _("Learning failed; `%s` returned with status %d."),
 						cmd, status);
 			g_free(cmd);
 			g_free(file);
@@ -729,7 +729,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				
 				debug_print("%s\n", cmd);
 				if ((status = execute_command_line(cmd, FALSE)) != 0)
-					log_error(_("Learning failed; `%s` returned with status %d."),
+					log_error(LOG_PROTOCOL, _("Learning failed; `%s` returned with status %d."),
 							cmd, status);
 
 				g_free(cmd);
@@ -785,7 +785,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					status = WEXITSTATUS(status);
 			}
 			if (!bogo_forked || status != 0) {
-				log_error(_("Learning failed; `%s %s %s` returned with error:\n%s"),
+				log_error(LOG_PROTOCOL, _("Learning failed; `%s %s %s` returned with error:\n%s"),
 						bogo_args[0], bogo_args[1], bogo_args[2], 
 						error ? error->message:_("Unknown error"));
 				if (error)

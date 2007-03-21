@@ -679,7 +679,7 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 		perror("socketpair");
 		return NULL;
 	}
-	log_message("launching tunnel command \"%s\"\n", tunnelcmd);
+	log_message(LOG_PROTOCOL, "launching tunnel command \"%s\"\n", tunnelcmd);
 	if (fork() == 0) {
 		close(fd[0]);
 		close(0);
@@ -1390,7 +1390,7 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
                         n = write(fd, buf, len);
 
 		if (n <= 0) {
-			log_error(_("write on fd%d: %s\n"), fd, strerror(errno));
+			log_error(LOG_PROTOCOL, _("write on fd%d: %s\n"), fd, strerror(errno));
 			return -1;
 		}
 		len -= n;

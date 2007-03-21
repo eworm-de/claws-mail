@@ -70,14 +70,14 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 	SockInfo *sock;
 
 	if ((sock = sock_connect(server, port)) == NULL) {
-		log_warning(_("Can't connect to NNTP server: %s:%d\n"),
+		log_warning(LOG_PROTOCOL, _("Can't connect to NNTP server: %s:%d\n"),
 			    server, port);
 		return NULL;
 	}
 
 #if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		log_error(_("SSL handshake failed\n"));
+		log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 		sock_close(sock);
 		return NULL;
 	}
@@ -179,7 +179,7 @@ gint nntp_group(NNTPSession *session, const gchar *group,
 
 	if (sscanf(buf, "%d %d %d %d", &resp, num, first, last)
 	    != 4) {
-		log_warning(_("protocol error: %s\n"), buf);
+		log_warning(LOG_PROTOCOL, _("protocol error: %s\n"), buf);
 		return NN_PROTOCOL;
 	}
 
@@ -202,7 +202,7 @@ gint nntp_get_article(NNTPSession *session, const gchar *cmd, gint num,
 
 	extract_parenthesis(buf, '<', '>');
 	if (buf[0] == '\0') {
-		log_warning(_("protocol error\n"));
+		log_warning(LOG_PROTOCOL, _("protocol error\n"));
 		*msgid = g_strdup("0");
 	} else
 		*msgid = g_strdup(buf);
@@ -242,13 +242,13 @@ gint nntp_next(NNTPSession *session, gint *num, gchar **msgid)
 		return ok;
 
 	if (sscanf(buf, "%d %d", &resp, num) != 2) {
-		log_warning(_("protocol error: %s\n"), buf);
+		log_warning(LOG_PROTOCOL, _("protocol error: %s\n"), buf);
 		return NN_PROTOCOL;
 	}
 
 	extract_parenthesis(buf, '<', '>');
 	if (buf[0] == '\0') {
-		log_warning(_("protocol error\n"));
+		log_warning(LOG_PROTOCOL, _("protocol error\n"));
 		return NN_PROTOCOL;
 	}
 	*msgid = g_strdup(buf);
@@ -298,7 +298,7 @@ gint nntp_post(NNTPSession *session, FILE *fp)
 
 	msg = get_outgoing_rfc2822_str(fp);
 	if (sock_write_all(SESSION(session)->sock, msg, strlen(msg)) < 0) {
-		log_warning(_("Error occurred while posting\n"));
+		log_warning(LOG_PROTOCOL, _("Error occurred while posting\n"));
 		g_free(msg);
 		return NN_SOCKET;
 	}
@@ -371,14 +371,14 @@ static gint nntp_gen_send(SockInfo *sock, const gchar *format, ...)
 
 	if (verbose) {
 		if (!g_ascii_strncasecmp(buf, "AUTHINFO PASS", 13))
-			log_print("NNTP> AUTHINFO PASS ********\n");
+			log_print(LOG_PROTOCOL, "NNTP> AUTHINFO PASS ********\n");
 		else
-			log_print("NNTP> %s\n", buf);
+			log_print(LOG_PROTOCOL, "NNTP> %s\n", buf);
 	}
 
 	strcat(buf, "\r\n");
 	if (sock_write_all(sock, buf, strlen(buf)) < 0) {
-		log_warning(_("Error occurred while sending command\n"));
+		log_warning(LOG_PROTOCOL, _("Error occurred while sending command\n"));
 		return NN_SOCKET;
 	}
 
@@ -393,7 +393,7 @@ static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size)
 	strretchomp(buf);
 
 	if (verbose)
-		log_print("NNTP< %s\n", buf);
+		log_print(LOG_PROTOCOL, "NNTP< %s\n", buf);
 
 	return NN_SUCCESS;
 }

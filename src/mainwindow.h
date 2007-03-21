@@ -122,6 +122,7 @@ struct _MainWindow
 	SummaryView	*summaryview;
 	MessageView	*messageview;
 	LogWindow	*logwin;
+	LogWindow	*filtering_debugwin;
 
 	gint	progressindicator_hook;
 	

@@ -27,31 +27,52 @@
 #include <glib.h>
 
 #define LOG_APPEND_TEXT_HOOKLIST "log_append_text"
+#define DEBUG_FILTERING_APPEND_TEXT_HOOKLIST "debug_append_text"
+
 #define LOG_TIME_LEN 11
+
+typedef enum
+{
+	LOG_PROTOCOL = 0,
+	LOG_DEBUG_FILTERING,
+	/* reserved */
+	LOG_INSTANCE_MAX
+} LogInstance;
 
 typedef enum
 {
 	LOG_NORMAL,
 	LOG_MSG,
 	LOG_WARN,
-	LOG_ERROR
+	LOG_ERROR,
+	LOG_STATUS_OK,
+	LOG_STATUS_NOK,
+	LOG_STATUS_SKIP
 } LogType;
 
 typedef struct _LogText LogText;
 
 struct _LogText
 {
+	LogInstance  instance;
 	gchar		*text;
 	LogType		 type;	
 };
 
 /* logging */
-void set_log_file	(const gchar *filename);
-void close_log_file	(void);
-void log_verbosity_set	(gboolean verbose);
-void log_print		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_error		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void set_log_file	(LogInstance instance, const gchar *filename);
+void close_log_file	(LogInstance instance);
+const char *get_log_hook(LogInstance instance);
+void set_log_title(LogInstance instance, gchar *title);
+gchar *get_log_title(LogInstance instance);
+void set_log_prefs(LogInstance instance, int* logwin_width, int* logwin_height);
+void get_log_prefs(LogInstance instance, int** logwin_width, int** logwin_height);
+void log_print		(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_message	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_warning	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_error		(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_status_ok	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_status_nok	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void log_status_skip	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 #endif /* LOG_H */

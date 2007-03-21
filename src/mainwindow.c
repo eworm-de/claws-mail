@@ -199,6 +199,9 @@ static void addressbook_open_cb	(MainWindow	*mainwin,
 static void log_window_show_cb	(MainWindow	*mainwin,
 				 guint		 action,
 				 GtkWidget	*widget);
+static void filtering_debug_window_show_cb	(MainWindow	*mainwin,
+				 guint		 action,
+				 GtkWidget	*widget);
 
 static void inc_cancel_cb		(MainWindow	*mainwin,
 					 guint		 action,
@@ -860,6 +863,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, ssl_manager_open_cb, 0, NULL},
 #endif
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/Filtering debug window"),	NULL, filtering_debug_window_show_cb, 0, NULL},
 	{N_("/_Tools/_Log window"),		"<shift><control>L", log_window_show_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
@@ -1286,15 +1290,39 @@ MainWindow *main_window_create()
 
 	gtk_widget_hide(offline_switch);
 	gtk_widget_hide(warning_btn);
+
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
 	mainwin->messageview = messageview = messageview_create(mainwin);
-	mainwin->logwin      = log_window_create();
 
+	/* init log instances data before creating log views */
+	set_log_title(LOG_PROTOCOL, _("Protocol log"));
+	set_log_prefs(LOG_PROTOCOL,
+			&prefs_common.logwin_width,
+			&prefs_common.logwin_height);
+	set_log_title(LOG_DEBUG_FILTERING, _("Filtering/processing debug log"));
+	set_log_prefs(LOG_DEBUG_FILTERING,
+			&prefs_common.filtering_debugwin_width,
+			&prefs_common.filtering_debugwin_height);
+
+	/* setup log windows */
+	mainwin->logwin = log_window_create(LOG_PROTOCOL);
 	log_window_init(mainwin->logwin);
-	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
+
+	mainwin->filtering_debugwin = log_window_create(LOG_DEBUG_FILTERING);
+	log_window_set_clipping(mainwin->logwin,
+				prefs_common.cliplog,
 				prefs_common.loglength);
+
+	log_window_init(mainwin->filtering_debugwin);
+	log_window_set_clipping(mainwin->filtering_debugwin,
+				prefs_common.filtering_debug_cliplog,
+				prefs_common.filtering_debug_loglength);
+	if (prefs_common.enable_filtering_debug)
+		log_message(LOG_DEBUG_FILTERING, _("filtering debug enabled\n"));
+	else
+		log_message(LOG_DEBUG_FILTERING, _("filtering debug disabled\n"));
 
 	folderview->mainwin      = mainwin;
 	folderview->summaryview  = summaryview;
@@ -3155,6 +3183,12 @@ static void log_window_show_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	log_window_show(mainwin->logwin);
+}
+
+static void filtering_debug_window_show_cb(MainWindow *mainwin, guint action,
+			       GtkWidget *widget)
+{
+	log_window_show(mainwin->filtering_debugwin);
 }
 
 static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

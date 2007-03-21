@@ -25,25 +25,43 @@
 
 #include <stdio.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include "utils.h"
 #include "log.h"
 #include "hooks.h"
 
-static FILE *log_fp = NULL;
+static FILE *log_fp[LOG_INSTANCE_MAX] = {
+	NULL,
+	NULL
+};
+
+typedef struct _LogInstanceData LogInstanceData;
+
+struct _LogInstanceData {
+	const char *hook;
+	gchar *title;
+	int *prefs_logwin_width;
+	int *prefs_logwin_height;
+};
+
+static LogInstanceData log_instances[LOG_INSTANCE_MAX] = {
+	{ LOG_APPEND_TEXT_HOOKLIST, NULL, NULL, NULL },
+	{ DEBUG_FILTERING_APPEND_TEXT_HOOKLIST, NULL, NULL, NULL }
+};
 
 static gboolean invoke_hook_cb (gpointer data)
 {
 	LogText *logtext = (LogText *)data;
-	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, logtext);
+	hooks_invoke(get_log_hook(logtext->instance), logtext);
 	g_free(logtext->text);
 	g_free(logtext);
 	return FALSE;
 }
 
-void set_log_file(const gchar *filename)
+void set_log_file(LogInstance instance, const gchar *filename)
 {
-	if (log_fp)
+	if (log_fp[instance])
 		return;
 
 	/* backup old logfile if existing */
@@ -56,20 +74,49 @@ void set_log_file(const gchar *filename)
 		g_free(backupname);
 	}
 
-	log_fp = g_fopen(filename, "wb");
-	if (!log_fp)
+	log_fp[instance] = g_fopen(filename, "wb");
+	if (!log_fp[instance])
 		FILE_OP_ERROR(filename, "fopen");
 }
 
-void close_log_file(void)
+void close_log_file(LogInstance instance)
 {
-	if (log_fp) {
-		fclose(log_fp);
-		log_fp = NULL;
+	if (log_fp[instance]) {
+		fclose(log_fp[instance]);
+		log_fp[instance] = NULL;
 	}
 }
 
-void log_print(const gchar *format, ...)
+const char *get_log_hook(LogInstance instance)
+{
+	return log_instances[instance].hook;
+}
+
+void set_log_title(LogInstance instance, gchar *title)
+{
+	log_instances[instance].title = title;
+}
+
+gchar *get_log_title(LogInstance instance)
+{
+	return log_instances[instance].title;
+}
+
+void set_log_prefs(LogInstance instance, int* logwin_width, int* logwin_height)
+{
+	log_instances[instance].prefs_logwin_width = logwin_width;
+	log_instances[instance].prefs_logwin_height = logwin_height;
+}
+
+void get_log_prefs(LogInstance instance, int** logwin_width, int** logwin_height)
+{
+	if (logwin_width)
+		*logwin_width = log_instances[instance].prefs_logwin_width;
+	if (logwin_height)
+		*logwin_height = log_instances[instance].prefs_logwin_height;
+}
+
+void log_print(LogInstance instance, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
@@ -85,18 +132,19 @@ void log_print(const gchar *format, ...)
 
 	if (debug_get_mode()) fputs(buf, stdout);
 
+	logtext->instance = instance;
 	logtext->text = g_strdup(buf);
 	logtext->type = LOG_NORMAL;
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 	
-	if (log_fp) {
-		fputs(buf, log_fp);
-		fflush(log_fp);
+	if (log_fp[instance]) {
+		fputs(buf, log_fp[instance]);
+		fflush(log_fp[instance]);
 	}
 }
 
-void log_message(const gchar *format, ...)
+void log_message(LogInstance instance, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
@@ -111,20 +159,22 @@ void log_message(const gchar *format, ...)
 	va_end(args);
 
 	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
+
+	logtext->instance = instance;
 	logtext->text = g_strdup(buf + LOG_TIME_LEN);
 	logtext->type = LOG_MSG;
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp) {
-		fwrite(buf, 1, LOG_TIME_LEN, log_fp);
-		fputs("* message: ", log_fp);
-		fputs(buf + LOG_TIME_LEN, log_fp);
-		fflush(log_fp);
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("* message: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
 	}
 }
 
-void log_warning(const gchar *format, ...)
+void log_warning(LogInstance instance, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
@@ -139,20 +189,22 @@ void log_warning(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
+
+	logtext->instance = instance;
 	logtext->text = g_strdup(buf + LOG_TIME_LEN);
 	logtext->type = LOG_WARN;
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp) {
-		fwrite(buf, 1, LOG_TIME_LEN, log_fp);
-		fputs("** warning: ", log_fp);
-		fputs(buf + LOG_TIME_LEN, log_fp);
-		fflush(log_fp);
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("** warning: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
 	}
 }
 
-void log_error(const gchar *format, ...)
+void log_error(LogInstance instance, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
@@ -167,15 +219,107 @@ void log_error(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
+
+	logtext->instance = instance;
 	logtext->text = g_strdup(buf + LOG_TIME_LEN);
 	logtext->type = LOG_ERROR;
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp) {
-		fwrite(buf, 1, LOG_TIME_LEN, log_fp);
-		fputs("*** error: ", log_fp);
-		fputs(buf + LOG_TIME_LEN, log_fp);
-		fflush(log_fp);
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("*** error: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
+	}
+}
+
+void log_status_ok(LogInstance instance, const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
+	time_t t;
+	LogText *logtext = g_new0(LogText, 1);
+
+	time(&t);
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+
+	va_start(args, format);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
+	va_end(args);
+
+	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
+
+	logtext->instance = instance;
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_STATUS_OK;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("* OK: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
+	}
+}
+
+void log_status_nok(LogInstance instance, const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
+	time_t t;
+	LogText *logtext = g_new0(LogText, 1);
+
+	time(&t);
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+
+	va_start(args, format);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
+	va_end(args);
+
+	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
+
+	logtext->instance = instance;
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_STATUS_NOK;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("* NOT OK: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
+	}
+}
+
+void log_status_skip(LogInstance instance, const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
+	time_t t;
+	LogText *logtext = g_new0(LogText, 1);
+
+	time(&t);
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+
+	va_start(args, format);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
+	va_end(args);
+
+	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
+
+	logtext->instance = instance;
+	logtext->text = g_strdup(buf + LOG_TIME_LEN);
+	logtext->type = LOG_STATUS_SKIP;
+	
+	g_timeout_add(0, invoke_hook_cb, logtext);
+
+	if (log_fp[instance]) {
+		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
+		fputs("* SKIPPED: ", log_fp[instance]);
+		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		fflush(log_fp[instance]);
 	}
 }

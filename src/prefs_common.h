@@ -338,11 +338,25 @@ struct _PrefsCommon
 
     gboolean cliplog;
     guint loglength;
+
 	gulong log_msg_color;
 	gulong log_warn_color;
 	gulong log_error_color;
 	gulong log_in_color;
 	gulong log_out_color;
+	gulong log_status_ok_color;
+	gulong log_status_nok_color;
+	gulong log_status_skip_color;
+
+	gboolean enable_filtering_debug;
+	gint filtering_debug_level;
+	gboolean enable_filtering_debug_inc;
+	gboolean enable_filtering_debug_manual;
+	gboolean enable_filtering_debug_folder_proc;
+	gboolean enable_filtering_debug_pre_proc;
+	gboolean enable_filtering_debug_post_proc;
+    gboolean filtering_debug_cliplog;
+    guint filtering_debug_loglength;
 
     gboolean confirm_on_exit;
 	gboolean clean_on_exit;
@@ -403,6 +417,8 @@ struct _PrefsCommon
 	gint accountswin_height;
 	gint logwin_width;
 	gint logwin_height;
+	gint filtering_debugwin_width;
+	gint filtering_debugwin_height;
 	gint folderselwin_width;
 	gint folderselwin_height;
 	gint addressaddwin_width;

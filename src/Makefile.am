@@ -109,6 +109,7 @@ claws_mail_SOURCES = \
 	prefs_fonts.c \
 	prefs_gtk.c \
 	prefs_image_viewer.c \
+	prefs_logging.c \
 	prefs_matcher.c \
 	prefs_message.c \
 	prefs_msg_colors.c \
@@ -250,6 +251,7 @@ claws_mailinclude_HEADERS = \
 	prefs_fonts.h \
 	prefs_gtk.h \
 	prefs_image_viewer.h \
+	prefs_logging.h \
 	prefs_matcher.h \
 	prefs_message.h \
 	prefs_msg_colors.h \

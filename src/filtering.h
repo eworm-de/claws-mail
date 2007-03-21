@@ -52,6 +52,20 @@ enum {
 	FILTERING_ACCOUNT_RULES_USE_CURRENT = 2
 };
 
+typedef enum {
+	FILTERING_INCORPORATION,
+	FILTERING_MANUALLY,
+	FILTERING_FOLDER_PROCESSING,
+	FILTERING_PRE_PROCESSING,
+	FILTERING_POST_PROCESSING
+} FilteringInvocationType;
+
+typedef enum {
+	FILTERING_DEBUG_LEVEL_LOW,
+	FILTERING_DEBUG_LEVEL_MED,
+	FILTERING_DEBUG_LEVEL_HIGH
+} FilteringDebugLevel;
+	
 /* extern GSList * prefs_filtering; */
 
 
@@ -72,7 +86,8 @@ void filteringprop_free(FilteringProp *prop);
 FilteringProp * filteringprop_parse(gchar **str);
 
 void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info);
-gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount *ac_prefs);
+gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount *ac_prefs,
+								   FilteringInvocationType context, gchar *extra_info);
 
 gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action);
 void prefs_filtering_write_config(void);

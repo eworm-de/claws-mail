@@ -71,6 +71,7 @@
 #include "prefs_summaries.h"
 #include "prefs_themes.h"
 #include "prefs_other.h"
+#include "prefs_logging.h"
 #include "prefs_send.h"
 #include "prefs_wrapping.h"
 #include "prefs_compose_writing.h"
@@ -723,7 +724,13 @@ int main(int argc, char *argv[])
 		if (rename_force("claws.log", "claws.log.bak") < 0)
 			FILE_OP_ERROR("claws.log", "rename");
 	}
-	set_log_file("claws.log");
+	set_log_file(LOG_PROTOCOL, "claws.log");
+
+	if (is_file_exist("filtering.log")) {
+		if (rename_force("filtering.log", "filtering.log.bak") < 0)
+			FILE_OP_ERROR("filtering.log", "rename");
+	}
+	set_log_file(LOG_DEBUG_FILTERING, "filtering.log");
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
@@ -742,6 +749,7 @@ int main(int argc, char *argv[])
 	prefs_summaries_init();
 	prefs_message_init();
 	prefs_other_init();
+	prefs_logging_init();
 	prefs_receive_init();
 	prefs_send_init();
 #ifdef USE_ASPELL
@@ -1038,7 +1046,8 @@ static void exit_claws(MainWindow *mainwin)
 	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
 
-	close_log_file();
+	close_log_file(LOG_PROTOCOL);
+	close_log_file(LOG_DEBUG_FILTERING);
 
 #ifdef HAVE_LIBETPAN
 	imap_main_done();

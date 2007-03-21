@@ -857,7 +857,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	
 	if (send_queue_lock) {
 		/* Avoid having to translate two similar strings */
-		log_warning("%s\n", _("Already trying to send."));
+		log_warning(LOG_PROTOCOL, "%s\n", _("Already trying to send."));
 		if (errstr) {
 			if (*errstr) g_free(*errstr);
 			*errstr = g_strdup_printf(_("Already trying to send."));
@@ -2121,7 +2121,8 @@ static gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 
 	/* filter if enabled in prefs or move to inbox if not */
 	if((filtering_rules != NULL) &&
-	   filter_message_by_msginfo(filtering_rules, msginfo, ac_prefs)) {
+		filter_message_by_msginfo(filtering_rules, msginfo, ac_prefs,
+				FILTERING_INCORPORATION, NULL)) {
 		return TRUE;
 	}
 		

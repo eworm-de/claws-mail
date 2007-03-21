@@ -788,7 +788,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s..."), server);
 	statusbar_print_all("%s", buf);
-	log_message("%s\n", buf);
+	log_message(LOG_PROTOCOL, "%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	GTK_EVENTS_FLUSH();
@@ -807,7 +807,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 					 server, port);
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
 		} else {
-			log_error(_("Can't connect to POP3 server: %s:%d\n"),
+			log_error(LOG_PROTOCOL, _("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		}
 		session->inc_state = INC_CONNECT_ERROR;
@@ -1195,9 +1195,9 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 
 	if (log_msg) {
 		if (fatal_error)
-			log_error("%s\n", log_msg);
+			log_error(LOG_PROTOCOL, "%s\n", log_msg);
 		else
-			log_warning("%s\n", log_msg);
+			log_warning(LOG_PROTOCOL, "%s\n", log_msg);
 	}
 	if (prefs_common.no_recv_err_panel && fatal_error)
 		mainwindow_show_error();
@@ -1223,7 +1223,7 @@ static void inc_cancel(IncProgressDialog *dialog)
 
 	session->inc_state = INC_CANCEL;
 
-	log_message(_("Incorporation cancelled\n"));
+	log_message(LOG_PROTOCOL, _("Incorporation cancelled\n"));
 }
 
 gboolean inc_is_active(void)

@@ -1810,13 +1810,13 @@ void messageview_learn (MessageView *msgview, gboolean is_spam)
 		if (procmsg_spam_learner_learn(msgview->msginfo, NULL, TRUE) == 0)
 			procmsg_msginfo_set_flags(msgview->msginfo, MSG_SPAM, 0);
 		else
-			log_error(_("An error happened while learning.\n"));
+			log_error(LOG_PROTOCOL, _("An error happened while learning.\n"));
 		
 	} else {
 		if (procmsg_spam_learner_learn(msgview->msginfo, NULL, FALSE) == 0)
 			procmsg_msginfo_unset_flags(msgview->msginfo, MSG_SPAM, 0);
 		else
-			log_error(_("An error happened while learning.\n"));
+			log_error(LOG_PROTOCOL, _("An error happened while learning.\n"));
 	}
 	if (msgview->toolbar)
 		toolbar_set_learn_button

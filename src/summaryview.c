@@ -3557,7 +3557,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 			summary_set_row_marks(summaryview, row);
 		}
 	} else {
-		log_error(_("An error happened while learning.\n"));
+		log_error(LOG_PROTOCOL, _("An error happened while learning.\n"));
 	}
 
 	prefs_common.immediate_exec = immediate_exec;
@@ -4824,7 +4824,8 @@ static void summary_filter_func(MsgInfo *msginfo)
 	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return;
 
-	filter_message_by_msginfo(filtering_rules, msginfo, NULL);
+	filter_message_by_msginfo(filtering_rules, msginfo, NULL,
+			FILTERING_MANUALLY, NULL);
 }
 
 void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
@@ -5598,7 +5599,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				if (procmsg_spam_learner_learn(msginfo, NULL, FALSE) == 0)
 					summary_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
 				else
-					log_error(_("An error happened while learning.\n"));
+					log_error(LOG_PROTOCOL, _("An error happened while learning.\n"));
 		} else if (!MSG_IS_REPLIED(msginfo->flags) &&
 			 !MSG_IS_FORWARDED(msginfo->flags)) {
 			marked_unread = TRUE;

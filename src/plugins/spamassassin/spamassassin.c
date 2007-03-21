@@ -158,7 +158,7 @@ static MsgStatus msg_is_spam(FILE *fp)
 	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
-		log_error(_("SpamAssassin plugin couldn't connect to spamd.\n"));
+		log_error(LOG_PROTOCOL, _("SpamAssassin plugin couldn't connect to spamd.\n"));
 		debug_print("failed to setup transport\n");
 		return MSG_FILTERING_ERROR;
 	}
@@ -174,7 +174,7 @@ static MsgStatus msg_is_spam(FILE *fp)
 	}
 
 	if (message_filter(&trans, config.username, flags, &m) != EX_OK) {
-		log_error(_("SpamAssassin plugin filtering failed.\n"));
+		log_error(LOG_PROTOCOL, _("SpamAssassin plugin filtering failed.\n"));
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
 		return MSG_FILTERING_ERROR;
@@ -200,7 +200,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	/* SPAMASSASSIN_DISABLED : keep test for compatibility purpose */
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_warning(_("SpamAssassin plugin is disabled by its preferences.\n"));
+		log_warning(LOG_PROTOCOL, _("SpamAssassin plugin is disabled by its preferences.\n"));
 		return FALSE;
 	}
 	debug_print("Filtering message %d\n", msginfo->msgnum);
@@ -292,7 +292,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			warned_error = TRUE;
 		} else {
 			gchar *tmp = g_strdup_printf("%s\n", msg);
-			log_error(tmp);
+			log_error(LOG_PROTOCOL, tmp);
 			g_free(tmp);
 		}
 	}
@@ -495,7 +495,7 @@ gint plugin_init(gchar **error)
 	}
 
 	if (!config.enable || config.transport == SPAMASSASSIN_DISABLED) {
-		log_warning(_("SpamAssassin plugin is loaded but disabled by its preferences.\n"));
+		log_warning(LOG_PROTOCOL, _("SpamAssassin plugin is loaded but disabled by its preferences.\n"));
 	}
 	else {
 		if (config.transport == SPAMASSASSIN_TRANSPORT_TCP)

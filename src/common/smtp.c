@@ -148,7 +148,7 @@ gint smtp_from(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
-	log_print("%sSMTP> %s\n", (session->is_esmtp?"E":""), buf);
+	log_print(LOG_PROTOCOL, "%sSMTP> %s\n", (session->is_esmtp?"E":""), buf);
 
 	return SM_OK;
 }
@@ -173,7 +173,7 @@ static gint smtp_auth(SMTPSession *session)
 		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0))
 		smtp_auth_plain(session);
 	else {
-		log_warning(_("SMTP AUTH not available\n"));
+		log_warning(LOG_PROTOCOL, _("SMTP AUTH not available\n"));
 		return SM_AUTHFAIL;
 	}
 
@@ -194,13 +194,13 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 buf) < 0)
 				return SM_ERROR;
-			log_print("ESMTP> [USERID]\n");
+			log_print(LOG_PROTOCOL, "ESMTP> [USERID]\n");
 		} else {
 			/* Server rejects AUTH */
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 "*") < 0)
 				return SM_ERROR;
-			log_print("ESMTP> *\n");
+			log_print(LOG_PROTOCOL, "ESMTP> *\n");
 		}
 		break;
 	case SMTPAUTH_CRAM_MD5:
@@ -216,7 +216,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 			challenge = g_malloc(strlen(msg + 4) + 1);
 			challengelen = base64_decode(challenge, msg + 4, -1);
 			challenge[challengelen] = '\0';
-			log_print("ESMTP< [Decoded: %s]\n", challenge);
+			log_print(LOG_PROTOCOL, "ESMTP< [Decoded: %s]\n", challenge);
 
 			g_snprintf(buf, sizeof(buf), "%s", session->pass);
 			md5_hex_hmac(hexdigest, challenge, challengelen,
@@ -225,7 +225,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 			response = g_strdup_printf
 				("%s %s", session->user, hexdigest);
-			log_print("ESMTP> [Encoded: %s]\n", response);
+			log_print(LOG_PROTOCOL, "ESMTP> [Encoded: %s]\n", response);
 
 			response64 = g_malloc((strlen(response) + 3) * 2 + 1);
 			base64_encode(response64, response, strlen(response));
@@ -234,14 +234,14 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 response64) < 0)
 				return SM_ERROR;
-			log_print("ESMTP> %s\n", response64);
+			log_print(LOG_PROTOCOL, "ESMTP> %s\n", response64);
 			g_free(response64);
 		} else {
 			/* Server rejects AUTH */
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 "*") < 0)
 				return SM_ERROR;
-			log_print("ESMTP> *\n");
+			log_print(LOG_PROTOCOL, "ESMTP> *\n");
 		}
 		break;
 	case SMTPAUTH_DIGEST_MD5:
@@ -249,7 +249,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
         	/* stop smtp_auth when no correct authtype */
 		if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "*") < 0)
 			return SM_ERROR;
-		log_print("ESMTP> *\n");
+		log_print(LOG_PROTOCOL, "ESMTP> *\n");
 		break;
 	}
 
@@ -271,7 +271,7 @@ static gint smtp_auth_login_user_recv(SMTPSession *session, const gchar *msg)
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
 
-	log_print("ESMTP> [PASSWORD]\n");
+	log_print(LOG_PROTOCOL, "ESMTP> [PASSWORD]\n");
 
 	return SM_OK;
 }
@@ -288,7 +288,7 @@ static gint smtp_ehlo(SMTPSession *session)
 		   session->hostname ? session->hostname : get_domain_name());
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
-	log_print("ESMTP> %s\n", buf);
+	log_print(LOG_PROTOCOL, "ESMTP> %s\n", buf);
 
 	return SM_OK;
 }
@@ -337,7 +337,7 @@ static gint smtp_starttls(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "STARTTLS") < 0)
 		return SM_ERROR;
-	log_print("ESMTP> STARTTLS\n");
+	log_print(LOG_PROTOCOL, "ESMTP> STARTTLS\n");
 
 	return SM_OK;
 }
@@ -350,7 +350,7 @@ static gint smtp_auth_cram_md5(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "AUTH CRAM-MD5") < 0)
 		return SM_ERROR;
-	log_print("ESMTP> AUTH CRAM-MD5\n");
+	log_print(LOG_PROTOCOL, "ESMTP> AUTH CRAM-MD5\n");
 
 	return SM_OK;
 }
@@ -401,7 +401,7 @@ static gint smtp_auth_plain(SMTPSession *session)
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
 
-	log_print("ESMTP> [AUTH PLAIN]\n");
+	log_print(LOG_PROTOCOL, "ESMTP> [AUTH PLAIN]\n");
 
 	g_free(b64buf);
 
@@ -415,7 +415,7 @@ static gint smtp_auth_login(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "AUTH LOGIN") < 0)
 		return SM_ERROR;
-	log_print("ESMTP> AUTH LOGIN\n");
+	log_print(LOG_PROTOCOL, "ESMTP> AUTH LOGIN\n");
 
 	return SM_OK;
 }
@@ -430,7 +430,7 @@ static gint smtp_helo(SMTPSession *session)
 		   session->hostname ? session->hostname : get_domain_name());
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
-	log_print("SMTP> %s\n", buf);
+	log_print(LOG_PROTOCOL, "SMTP> %s\n", buf);
 
 	return SM_OK;
 }
@@ -452,7 +452,7 @@ static gint smtp_rcpt(SMTPSession *session)
 		g_snprintf(buf, sizeof(buf), "RCPT TO:<%s>", to);
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
-	log_print("SMTP> %s\n", buf);
+	log_print(LOG_PROTOCOL, "SMTP> %s\n", buf);
 
 	session->cur_to = session->cur_to->next;
 
@@ -465,7 +465,7 @@ static gint smtp_data(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "DATA") < 0)
 		return SM_ERROR;
-	log_print("SMTP> DATA\n");
+	log_print(LOG_PROTOCOL, "SMTP> DATA\n");
 
 	return SM_OK;
 }
@@ -492,7 +492,7 @@ gint smtp_quit(SMTPSession *session)
 	session->state = SMTP_QUIT;
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "QUIT");
-	log_print("SMTP> QUIT\n");
+	log_print(LOG_PROTOCOL, "SMTP> QUIT\n");
 
 	return SM_OK;
 }
@@ -503,7 +503,7 @@ static gint smtp_eom(SMTPSession *session)
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, ".") < 0)
 		return SM_ERROR;
-	log_print("SMTP> . (EOM)\n");
+	log_print(LOG_PROTOCOL, "SMTP> . (EOM)\n");
 
 	return SM_OK;
 }
@@ -515,7 +515,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	gint ret = 0;
 	
 	if (strlen(msg) < 4) {
-		log_warning(_("bad SMTP response\n"));
+		log_warning(LOG_PROTOCOL, _("bad SMTP response\n"));
 		return -1;
 	}
 
@@ -527,16 +527,16 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_AUTH_LOGIN_USER:
 	case SMTP_AUTH_LOGIN_PASS:
 	case SMTP_AUTH_CRAM_MD5:
-		log_print("ESMTP< %s\n", msg);
+		log_print(LOG_PROTOCOL, "ESMTP< %s\n", msg);
 		break;
 	default:
-		log_print("SMTP< %s\n", msg);
+		log_print(LOG_PROTOCOL, "SMTP< %s\n", msg);
 		break;
 	}
 
 	if (msg[0] == '5' && msg[1] == '0' &&
 	    (msg[2] == '4' || msg[2] == '3' || msg[2] == '1')) {
-		log_warning(_("error occurred on SMTP session\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_ERROR;
 		g_free(smtp_session->error_msg);
@@ -545,7 +545,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	}
 
 	if (!strncmp(msg, "535", 3)) {
-		log_warning(_("error occurred on authentication\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred on authentication\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_AUTHFAIL;
 		g_free(smtp_session->error_msg);
@@ -554,7 +554,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	}
 
 	if (msg[0] != '1' && msg[0] != '2' && msg[0] != '3') {
-		log_warning(_("error occurred on SMTP session\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_ERROR;
 		g_free(smtp_session->error_msg);
@@ -565,7 +565,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	if (msg[3] == '-')
 		cont = TRUE;
 	else if (msg[3] != ' ' && msg[3] != '\0') {
-		log_warning(_("bad SMTP response\n"));
+		log_warning(LOG_PROTOCOL, _("bad SMTP response\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_UNRECOVERABLE;
 		return -1;
@@ -600,7 +600,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		if (smtp_session->max_message_size > 0
 		&& smtp_session->max_message_size < 
 		   smtp_session->send_data_len) {
-			log_warning(_("Message is too big "
+			log_warning(LOG_PROTOCOL, _("Message is too big "
 			      "(Maximum size is %s)\n"),
 			      to_human_readable(
 			       (off_t)(smtp_session->max_message_size)));
@@ -632,7 +632,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_STARTTLS:
 #if USE_OPENSSL
 		if (session_start_tls(session) < 0) {
-			log_warning(_("couldn't start TLS session\n"));
+			log_warning(LOG_PROTOCOL, _("couldn't start TLS session\n"));
 			smtp_session->state = SMTP_ERROR;
 			smtp_session->error_val = SM_ERROR;
 			return -1;
@@ -673,7 +673,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case SMTP_ERROR:
 	default:
-		log_warning(_("error occurred on SMTP session\n"));
+		log_warning(LOG_PROTOCOL, _("error occurred on SMTP session\n"));
 		smtp_session->error_val = SM_ERROR;
 		return -1;
 	}

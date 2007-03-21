@@ -163,7 +163,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
 			g_warning("can't initialize SSL.");
-			log_error(_("SSL handshake failed\n"));
+			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 			session->state = SESSION_ERROR;
 			return -1;
 		}

@@ -23,6 +23,8 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
+#include "log.h"
+
 typedef struct _LogWindow	LogWindow;
 
 struct _LogWindow
@@ -36,6 +38,9 @@ struct _LogWindow
 	GdkColor error_color;
 	GdkColor in_color;
 	GdkColor out_color;
+	GdkColor status_ok_color;
+	GdkColor status_nok_color;
+	GdkColor status_skip_color;
 
 	gboolean clip;
 	guint	 clip_length;
@@ -47,7 +52,7 @@ struct _LogWindow
 	gboolean never_shown;
 };
 
-LogWindow *log_window_create(void);
+LogWindow *log_window_create(LogInstance instance);
 void log_window_init(LogWindow *logwin);
 void log_window_show(LogWindow *logwin);
 void log_window_show_error(LogWindow *logwin);

@@ -147,14 +147,14 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	session->state = POP3_GETAUTH_APOP;
 
 	if ((start = strchr(session->greeting, '<')) == NULL) {
-		log_error(_("Required APOP timestamp not found "
+		log_error(LOG_PROTOCOL, _("Required APOP timestamp not found "
 			    "in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
 	if ((end = strchr(start, '>')) == NULL || end == start + 1) {
-		log_error(_("Timestamp syntax error in greeting\n"));
+		log_error(LOG_PROTOCOL, _("Timestamp syntax error in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
@@ -180,7 +180,7 @@ static gint pop3_getrange_stat_send(Pop3Session *session)
 static gint pop3_getrange_stat_recv(Pop3Session *session, const gchar *msg)
 {
 	if (sscanf(msg, "%d %d", &session->count, &session->total_bytes) != 2) {
-		log_error(_("POP3 protocol error\n"));
+		log_error(LOG_PROTOCOL, _("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -207,7 +207,7 @@ static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
 	gint last;
 
 	if (sscanf(msg, "%d", &last) == 0) {
-		log_warning(_("POP3 protocol error\n"));
+		log_warning(LOG_PROTOCOL, _("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -253,7 +253,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 
 		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2 ||
 		    num <= 0 || num > session->count) {
-			log_warning(_("invalid UIDL response: %s\n"), buf);
+			log_warning(LOG_PROTOCOL, _("invalid UIDL response: %s\n"), buf);
 			continue;
 		}
 
@@ -490,9 +490,9 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 	va_end(args);
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
-		log_print("POP3> PASS ********\n");
+		log_print(LOG_PROTOCOL, "POP3> PASS ********\n");
 	else
-		log_print("POP3> %s\n", buf);
+		log_print(LOG_PROTOCOL, "POP3> %s\n", buf);
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 }
@@ -774,9 +774,9 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    msg->partial_recv == POP3_TOTALLY_RECEIVED &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
-			log_message
-				(_("POP3: Deleting expired message "
-				   "%d\n"), session->cur_msg);
+			log_message(LOG_PROTOCOL, 
+					_("POP3: Deleting expired message %d\n"),
+					session->cur_msg);
 			session->cur_total_bytes += size;
 			pop3_delete_send(session);
 			return POP3_DELETE;
@@ -790,9 +790,9 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 			} else if (msg->partial_recv == POP3_MUST_COMPLETE_RECV)
 				break;
 
-			log_message
-				(_("POP3: Skipping message %d (%d bytes)\n"),
-				   session->cur_msg, size);
+			log_message(LOG_PROTOCOL, 
+					_("POP3: Skipping message %d (%d bytes)\n"),
+					session->cur_msg, size);
 		}
 		
 		if (size == 0 || msg->received || size_limit_over) {
@@ -814,7 +814,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 {
 	Pop3ErrorValue ok;
 
-	log_print("POP3< %s\n", msg);
+	log_print(LOG_PROTOCOL, "POP3< %s\n", msg);
 
 	if (!strncmp(msg, "+OK", 3))
 		ok = PS_SUCCESS;
@@ -823,34 +823,34 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 		    strstr(msg + 4, "Lock") ||
 		    strstr(msg + 4, "LOCK") ||
 		    strstr(msg + 4, "wait")) {
-			log_error(_("mailbox is locked\n"));
+			log_error(LOG_PROTOCOL, _("mailbox is locked\n"));
 			ok = PS_LOCKBUSY;
 		} else if (strcasestr(msg + 4, "timeout")) {
-			log_error(_("Session timeout\n"));
+			log_error(LOG_PROTOCOL, _("Session timeout\n"));
 			ok = PS_ERROR;
 		} else {
 			switch (session->state) {
 #if USE_OPENSSL
 			case POP3_STLS:
-				log_error(_("couldn't start TLS session\n"));
+				log_error(LOG_PROTOCOL, _("couldn't start TLS session\n"));
 				ok = PS_ERROR;
 				break;
 #endif
 			case POP3_GETAUTH_USER:
 			case POP3_GETAUTH_PASS:
 			case POP3_GETAUTH_APOP:
-				log_error(_("error occurred on authentication\n"));
+				log_error(LOG_PROTOCOL, _("error occurred on authentication\n"));
 				ok = PS_AUTHFAIL;
 				break;
 			case POP3_GETRANGE_LAST:
 			case POP3_GETRANGE_UIDL:
 			case POP3_TOP:
-				log_warning(_("command not supported\n"));
+				log_warning(LOG_PROTOCOL, _("command not supported\n"));
 				ok = PS_NOTSUPPORTED;
 				break;
 				
 			default:
-				log_error(_("error occurred on POP3 session\n"));
+				log_error(LOG_PROTOCOL, _("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
 			}
 		}
@@ -1044,7 +1044,7 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 		}
 		break;
 	case POP3_TOP:
-		log_warning(_("TOP command unsupported\n"));
+		log_warning(LOG_PROTOCOL, _("TOP command unsupported\n"));
 		if (pop3_session->cur_msg == pop3_session->count)
 			pop3_logout_send(pop3_session);
 		else {

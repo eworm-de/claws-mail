@@ -2848,7 +2848,7 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 		new_item->folder = dest->folder;
 
 	/* move messages */
-	log_message(copy ?_("Copying %s to %s...\n"):_("Moving %s to %s...\n"), 
+	log_message(LOG_PROTOCOL, copy ?_("Copying %s to %s...\n"):_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
 
 	mlist = folder_item_get_msg_list(src);
@@ -3863,14 +3863,16 @@ void folder_item_apply_processing(FolderItem *item)
 		statusbar_progress_all(curmsg++,total, 10);
 
                 /* apply pre global rules */
-		filter_message_by_msginfo(pre_global_processing, msginfo, NULL);
+		filter_message_by_msginfo(pre_global_processing, msginfo, NULL,
+				FILTERING_PRE_PROCESSING, NULL);
 		
                 /* apply rules of the folder */
-		filter_message_by_msginfo(processing_list, msginfo, NULL);
+		filter_message_by_msginfo(processing_list, msginfo, NULL,
+				FILTERING_FOLDER_PROCESSING, item->name);
 
                 /* apply post global rules */
-		filter_message_by_msginfo(post_global_processing, msginfo, NULL);
-                
+		filter_message_by_msginfo(post_global_processing, msginfo, NULL,
+				FILTERING_POST_PROCESSING, NULL);
 	}
 	prefs_common.apply_per_account_filtering_rules = last_apply_per_account;
 

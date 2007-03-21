@@ -53,8 +53,6 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-        GtkWidget *checkbtn_cliplog;
-	GtkWidget *spinbtn_loglength;
 	GtkWidget *spinbtn_iotimeout;
 	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *checkbtn_askonfilter;
@@ -487,16 +485,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_addr;
 	GtkWidget *checkbtn_addaddrbyclick;
 	
-	GtkWidget *frame_cliplog;
-	GtkWidget *vbox_cliplog;
-	GtkWidget *hbox_cliplog;
-	GtkWidget *checkbtn_cliplog;
-	GtkWidget *loglength_label;
-	GtkWidget *spinbtn_loglength;
-	GtkObject *spinbtn_loglength_adj;
-	GtkTooltips *loglength_tooltip;
-	GtkWidget *label;
-
 	GtkWidget *frame_exit;
 	GtkWidget *vbox_exit;
 	GtkWidget *checkbtn_confonexit;
@@ -526,43 +514,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON
 		(vbox_addr, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
-
-	/* Clip Log */
-	vbox_cliplog = gtkut_get_options_frame(vbox1, &frame_cliplog, _("Log Size"));
-
-	PACK_CHECK_BUTTON (vbox_cliplog, checkbtn_cliplog,
-			   _("Clip the log size"));
-	hbox_cliplog = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_cliplog), hbox_cliplog);
-	gtk_widget_show (hbox_cliplog);
-	
-	loglength_label = gtk_label_new (_("Log window length"));
-	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
-			    FALSE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (loglength_label));
-	
-	loglength_tooltip = gtk_tooltips_new();
-
-	spinbtn_loglength_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
-	spinbtn_loglength = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_loglength_adj), 1, 0);
-	gtk_widget_show (spinbtn_loglength);
-	gtk_box_pack_start (GTK_BOX (hbox_cliplog), spinbtn_loglength,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_loglength), 64, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_loglength), TRUE);
-
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), spinbtn_loglength,
-			     _("0 to stop logging in the log window"),
-			     NULL);
-
-	label = gtk_label_new(_("lines"));
-	gtk_widget_show (label);
-  	gtk_box_pack_start(GTK_BOX(hbox_cliplog), label, FALSE, FALSE, 0);
-
-	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_label);
-	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, spinbtn_loglength);
-	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, label);
 
 	/* On Exit */
 	vbox_exit = gtkut_get_options_frame(vbox1, &frame_exit, _("On exit"));
@@ -644,13 +595,9 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.ask_on_clean);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_warnqueued), 
 		prefs_common.warn_queued_on_exit);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cliplog), 
-		prefs_common.cliplog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_can_change_accels),
 		prefs_common.gtk_can_change_accels);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_loglength),
-		prefs_common.loglength);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
 
@@ -662,8 +609,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_cleanonexit = checkbtn_cleanonexit;
 	prefs_other->checkbtn_askonclean = checkbtn_askonclean;
 	prefs_other->checkbtn_warnqueued = checkbtn_warnqueued;
-	prefs_other->checkbtn_cliplog = checkbtn_cliplog;
-	prefs_other->spinbtn_loglength = spinbtn_loglength;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
@@ -674,7 +619,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
-	MainWindow *mainwindow;
 	gboolean gtk_can_change_accels;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
@@ -687,10 +631,6 @@ static void prefs_other_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_askonclean));
 	prefs_common.warn_queued_on_exit = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_warnqueued)); 
-	prefs_common.cliplog = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_cliplog));
-	prefs_common.loglength = gtk_spin_button_get_value_as_int(
-		GTK_SPIN_BUTTON(page->spinbtn_loglength));
 	prefs_common.io_timeout_secs = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_iotimeout));
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
@@ -700,10 +640,6 @@ static void prefs_other_save(PrefsPage *_page)
 	prefs_common.ask_apply_per_account_filtering_rules = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_askonfilter)); 
-
-	mainwindow = mainwindow_get_mainwindow();
-	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
-				prefs_common.loglength);
 
 	gtk_can_change_accels = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_can_change_accels));

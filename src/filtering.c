@@ -36,12 +36,15 @@
 #include "prefs_common.h"
 #include "addrbook.h"
 #include "addr_compl.h"
+#include "log.h"
 
 #define PREFSBUFSIZE		1024
 
 GSList * pre_global_processing = NULL;
 GSList * post_global_processing = NULL;
 GSList * filtering_rules = NULL;
+
+gboolean debug_filtering_session = FALSE;
 
 static gboolean filtering_is_final_action(FilteringAction *filtering_action);
 
@@ -500,25 +503,156 @@ gboolean filteringaction_apply_action_list(GSList *action_list, MsgInfo *info)
 
 static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info,
 							PrefsAccount *ac_prefs)
+
+/* this function returns true if a filtering rule applies regarding to its account
+   data and if it does, if the conditions list match.
+
+   per-account data of a filtering rule is either matched against current account
+   when filtering is done manually, or against the account currently used for
+   retrieving messages when it's an manual or automatic fetching of messages.
+   per-account data match doesn't apply to pre-/post-/folder-processing rules.
+
+   when filtering messages manually:
+    - either the filtering rule is not account-based and it will be processed
+	- or it's per-account and we check if we HAVE TO match it against the current
+	  account (according to user-land settings, per-account rules might have to
+	  be skipped, or only the rules that match the current account have to be
+	  applied, or all rules will have to be applied regardless to if they are
+	  account-based or not)
+
+   notes about debugging output in that function:
+   when not matching, log_status_skip() is used, otherwise log_status_ok() is used
+   no debug output is done when filtering_debug_level is low
+*/
 {
 	gboolean matches = FALSE;
 
 	if (ac_prefs != NULL) {
 		matches = ((filtering->account_id == 0)
 					|| (filtering->account_id == ac_prefs->account_id));
+
+		/* debug output */
+		if (debug_filtering_session) {
+			if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+				if (filtering->account_id == 0) {
+					log_status_ok(LOG_DEBUG_FILTERING,
+							_("rule is not account-based\n"));
+				} else {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+						log_status_ok(LOG_DEBUG_FILTERING,
+								_("rule is account-based [id=%d, name='%s'], "
+								"matching the account currently used to retrieve messages\n"),
+								ac_prefs->account_id, ac_prefs->account_name);
+					}
+				}
+			}
+			else
+			if (!matches) {
+				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+					log_status_skip(LOG_DEBUG_FILTERING,
+							_("rule is account-based, "
+							"not matching the account currently used to retrieve messages\n"));
+				} else {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("rule is account-based [id=%d, name='%s'], "
+								"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
+								filtering->account_id, account->account_name,
+								ac_prefs->account_id, ac_prefs->account_name);
+					}
+				}
+			}
+		}
 	} else {
 		switch (prefs_common.apply_per_account_filtering_rules) {
 		case FILTERING_ACCOUNT_RULES_FORCE:
 			/* apply filtering rules regardless to the account info */
 			matches = TRUE;
+
+			/* debug output */
+			if (debug_filtering_session) {
+				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+					if (filtering->account_id == 0) {
+						log_status_ok(LOG_DEBUG_FILTERING,
+								_("rule is not account-based, "
+								"all rules are applied on user request anyway\n"));
+					} else {
+						PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+						log_status_ok(LOG_DEBUG_FILTERING,
+								_("rule is account-based [id=%d, name='%s'], "
+								"but all rules are applied on user request\n"),
+								filtering->account_id, account->account_name);
+					}
+				}
+			}
 			break;
 		case FILTERING_ACCOUNT_RULES_SKIP:
 			/* don't apply filtering rules that belong to an account */
 			matches = (filtering->account_id == 0);
+
+			/* debug output */
+			if (debug_filtering_session) {
+				if (!matches) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("rule is account-based [id=%d, name='%s'], "
+								"skipped on user request\n"),
+								filtering->account_id, account->account_name);
+					} else {
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("rule is account-based, "
+								"skipped on user request\n"));
+					}
+				} else {
+					if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						log_status_ok(LOG_DEBUG_FILTERING,
+								_("rule is not account-based\n"));
+					}
+				}
+			}
 			break;
 		case FILTERING_ACCOUNT_RULES_USE_CURRENT:
 			matches = ((filtering->account_id == 0)
 					|| (filtering->account_id == cur_account->account_id));
+
+			/* debug output */
+			if (debug_filtering_session) {
+				if (!matches) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("rule is account-based [id=%d, name='%s'], "
+								"not matching current account [id=%d, name='%s']\n"),
+								filtering->account_id, account->account_name,
+								cur_account->account_id, cur_account->account_name);
+					} else {
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("rule is account-based, "
+								"not matching current account\n"));
+					}
+				} else {
+					if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						if (filtering->account_id == 0) {
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is not account-based\n"));
+						} else {
+							PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is account-based [id=%d, name='%s'], "
+									"current account [id=%d, name='%s']\n"),
+									account->account_id, account->account_name,
+									cur_account->account_id, cur_account->account_name);
+						}
+					}
+				}
+			}
 			break;
 		}
 	}
@@ -547,12 +681,20 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
         * final = FALSE;
         for (tmp = filtering->action_list ; tmp != NULL ; tmp = tmp->next) {
                 FilteringAction * action;
-                
+
                 action = tmp->data;
-                
+				filteringaction_to_string(buf, sizeof buf, action);
+				if (debug_filtering_session)
+					log_print(LOG_DEBUG_FILTERING, _("applying action [ %s ]\n"), buf);
+
                 if (FALSE == (result = filteringaction_apply(action, info))) {
-                        g_warning("No further processing after rule %s\n",
-                            filteringaction_to_string(buf, sizeof buf, action));
+					if (debug_filtering_session) {
+						if (action->type != MATCHACTION_STOP)
+							log_warning(LOG_DEBUG_FILTERING, _("action could not apply\n"));
+						log_print(LOG_DEBUG_FILTERING,
+								_("no further processing after action [ %s ]\n"), buf);
+					} else
+						g_warning("No further processing after rule %s\n", buf);
                 }
                 
                 if (filtering_is_final_action(action)) {
@@ -595,11 +737,43 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
 	for (l = filtering_list, final = FALSE, apply_next = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
-		if (filtering->enabled && filtering_match_condition(filtering, info, ac_prefs)) {
-			apply_next = filtering_apply_rule(filtering, info, &final);
-                        if (final)
-                                break;
-		}		
+		if (filtering->enabled) {
+			if (debug_filtering_session) {
+				gchar *buf = filteringprop_to_string(filtering);
+				if (filtering->name && *filtering->name != '\0') {
+					log_print(LOG_DEBUG_FILTERING,
+						_("processing rule '%s' [ %s ]\n"),
+						filtering->name, buf);
+				} else {
+					log_print(LOG_DEBUG_FILTERING,
+						_("processing rule <unnamed> [ %s ]\n"),
+						buf);
+				}
+			}
+
+			if (filtering_match_condition(filtering, info, ac_prefs)) {
+				apply_next = filtering_apply_rule(filtering, info, &final);
+				if (final)
+					break;
+			}
+
+		} else {
+			if (debug_filtering_session) {
+				gchar *buf = filteringprop_to_string(filtering);
+				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+					if (filtering->name && *filtering->name != '\0') {
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("disabled rule '%s' [ %s ]\n"),
+								filtering->name, buf);
+					} else {
+						log_status_skip(LOG_DEBUG_FILTERING,
+								_("disabled rule <unnamed> [ %s ]\n"),
+								buf);
+					}
+				}
+				g_free(buf);
+			}
+		}
 	}
 
 	/* put in inbox if a final rule could not be applied, or
@@ -624,8 +798,61 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
  *		processing. E.g. \ref inc.c::inc_start moves the 
  *		message to the inbox. 	
  */
-gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* ac_prefs)
+gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* ac_prefs,
+								   FilteringInvocationType context, gchar *extra_info)
 {
+	if (prefs_common.enable_filtering_debug) {
+		gchar *tmp = _("undetermined");
+
+		switch (context) {
+		case FILTERING_INCORPORATION:
+			tmp = _("incorporation");
+			debug_filtering_session = prefs_common.enable_filtering_debug_inc;
+			break;
+		case FILTERING_MANUALLY:
+			tmp = _("manually");
+			debug_filtering_session = prefs_common.enable_filtering_debug_manual;
+			break;
+		case FILTERING_FOLDER_PROCESSING:
+			tmp = _("folder processing");
+			debug_filtering_session = prefs_common.enable_filtering_debug_folder_proc;
+			break;
+		case FILTERING_PRE_PROCESSING:
+			tmp = _("pre-processing");
+			debug_filtering_session = prefs_common.enable_filtering_debug_pre_proc;
+			break;
+		case FILTERING_POST_PROCESSING:
+			tmp = _("post-processing");
+			debug_filtering_session = prefs_common.enable_filtering_debug_post_proc;
+			break;
+		default:
+			debug_filtering_session = FALSE;
+			break;
+		}
+		if (debug_filtering_session) {
+			gchar *file = procmsg_get_message_file_path(info);
+			gchar *spc = g_strnfill(LOG_TIME_LEN + 1, ' ');
+
+			/* show context info and essential info about the message */
+			if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+				log_print(LOG_DEBUG_FILTERING,
+						_("filtering message (%s%s%s)\n"
+						"%smessage file: %s\n%sDate: %s\n%sFrom: %s\n%sTo: %s\n%sSubject: %s\n"),
+						tmp, extra_info ? _(": ") : "", extra_info ? extra_info : "",
+						spc, file, spc, info->date, spc, info->from,
+						spc, info->to, spc, info->subject);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						_("filtering message (%s%s%s)\n"
+						"%smessage file: %s\n"),
+						tmp, extra_info ? _(": ") : "", extra_info ? extra_info : "",
+						spc, file);
+			}
+			g_free(file);
+			g_free(spc);
+		}
+	} else
+		debug_filtering_session = FALSE;
 	return filter_msginfo(flist, info, ac_prefs);
 }
 

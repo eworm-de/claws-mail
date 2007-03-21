@@ -46,7 +46,8 @@ static gboolean key_pressed			(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 LogWindow	*logwin);
 static void size_allocate_cb	(GtkWidget *widget,
-					 GtkAllocation *allocation);
+					 GtkAllocation *allocation,
+					 gpointer data);
 static gboolean log_window_append		(gpointer 	 source,
 						 gpointer   	 data);
 static void log_window_clip			(LogWindow	*logwin,
@@ -61,15 +62,24 @@ static void log_window_popup_menu_extend	(GtkTextView	*textview,
  *\brief	Save Gtk object size to prefs dataset
  */
 static void size_allocate_cb(GtkWidget *widget,
-					 GtkAllocation *allocation)
+					 GtkAllocation *allocation,
+					 gpointer data)
 {
+	gint *prefs_logwin_width = NULL;
+	gint *prefs_logwin_height = NULL;
+	LogInstance instance = GPOINTER_TO_INT(data);
+
 	g_return_if_fail(allocation != NULL);
 
-	prefs_common.logwin_width = allocation->width;
-	prefs_common.logwin_height = allocation->height;
+	get_log_prefs(instance, &prefs_logwin_width, &prefs_logwin_height);
+	g_return_if_fail(prefs_logwin_width != NULL);
+	g_return_if_fail(prefs_logwin_height != NULL);
+
+	*prefs_logwin_width = allocation->width;
+	*prefs_logwin_height = allocation->height;
 }
 
-LogWindow *log_window_create(void)
+LogWindow *log_window_create(LogInstance instance)
 {
 	LogWindow *logwin;
 	GtkWidget *window;
@@ -78,13 +88,19 @@ LogWindow *log_window_create(void)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 	static GdkGeometry geometry;
+	gint *prefs_logwin_width = NULL;
+	gint *prefs_logwin_height = NULL;
 
 	debug_print("Creating log window...\n");
+
+	get_log_prefs(instance, &prefs_logwin_width, &prefs_logwin_height);
+	g_return_val_if_fail(prefs_logwin_width != NULL, NULL);
+	g_return_val_if_fail(prefs_logwin_height != NULL, NULL);
 
 	logwin = g_new0(LogWindow, 1);
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "logwindow");
-	gtk_window_set_title(GTK_WINDOW(window), _("Protocol log"));
+	gtk_window_set_title(GTK_WINDOW(window), get_log_title(instance));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
@@ -121,7 +137,7 @@ LogWindow *log_window_create(void)
 	gtk_widget_show(text);
 
 	g_signal_connect(G_OBJECT(window), "size_allocate",
-			 G_CALLBACK(size_allocate_cb), NULL);
+			 G_CALLBACK(size_allocate_cb), GINT_TO_POINTER(instance));
 
 	if (!geometry.min_height) {
 		geometry.min_width = 520;
@@ -130,25 +146,27 @@ LogWindow *log_window_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.logwin_width,
-				    prefs_common.logwin_height);
+	gtk_widget_set_size_request(window, *prefs_logwin_width,
+				    *prefs_logwin_height);
 
 	logwin->window = window;
 	logwin->scrolledwin = scrolledwin;
 	logwin->text = text;
-	logwin->hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, log_window_append, logwin);
+	logwin->hook_id = hooks_register_hook(get_log_hook(instance), log_window_append, logwin);
 
 	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(text), logwin->end_mark);
 
 	return logwin;
 }
 
+#define LOG_COLORS 8
+
 void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
 	GdkColormap *colormap;
-	GdkColor color[5];
-	gboolean success[5];
+	GdkColor color[LOG_COLORS];
+	gboolean success[LOG_COLORS];
 	gint i;
 
 	gtkut_convert_int_to_gdk_color(prefs_common.log_msg_color, &color[0]);
@@ -156,25 +174,33 @@ void log_window_init(LogWindow *logwin)
 	gtkut_convert_int_to_gdk_color(prefs_common.log_error_color, &color[2]);
 	gtkut_convert_int_to_gdk_color(prefs_common.log_in_color, &color[3]);
 	gtkut_convert_int_to_gdk_color(prefs_common.log_out_color, &color[4]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_status_ok_color, &color[5]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_status_nok_color, &color[6]);
+	gtkut_convert_int_to_gdk_color(prefs_common.log_status_skip_color, &color[7]);
 
 	logwin->msg_color = color[0];
 	logwin->warn_color = color[1];
 	logwin->error_color = color[2];
 	logwin->in_color = color[3];
 	logwin->out_color = color[4];
+	logwin->status_ok_color = color[5];
+	logwin->status_nok_color = color[6];
+	logwin->status_skip_color = color[7];
 
 	colormap = gdk_drawable_get_colormap(logwin->window->window);
-	gdk_colormap_alloc_colors(colormap, color, 5, FALSE, TRUE, success);
+	gdk_colormap_alloc_colors(colormap, color, LOG_COLORS, FALSE, TRUE, success);
 
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < LOG_COLORS; i++) {
 		if (success[i] == FALSE) {
 			GtkStyle *style;
 
 			g_warning("LogWindow: color allocation failed\n");
 			style = gtk_widget_get_style(logwin->window);
 			logwin->msg_color = logwin->warn_color =
-			logwin->error_color = logwin->in_color =
-			logwin->out_color = style->black;
+					logwin->error_color = logwin->in_color =
+					logwin->out_color = logwin->status_ok_color =
+					logwin->status_nok_color = logwin->status_skip_color =
+					style->black;
 			break;
 		}
 	}
@@ -195,7 +221,18 @@ void log_window_init(LogWindow *logwin)
 	gtk_text_buffer_create_tag(buffer, "output",
 				   "foreground-gdk", &logwin->out_color,
 				   NULL);
+	gtk_text_buffer_create_tag(buffer, "status_ok",
+				   "foreground-gdk", &logwin->status_ok_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "status_nok",
+				   "foreground-gdk", &logwin->status_nok_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "status_skip",
+				   "foreground-gdk", &logwin->status_skip_color,
+				   NULL);
 }
+
+#undef LOG_COLORS
 
 void log_window_show(LogWindow *logwin)
 {
@@ -275,24 +312,38 @@ static gboolean log_window_append(gpointer source, gpointer data)
 		tag = "error";
 		head = "*** ";
 		break;
+	case LOG_STATUS_OK:
+		tag = "status_ok";
+		head = "> ";
+		break;
+	case LOG_STATUS_NOK:
+		tag = "status_nok";
+		head = "> ";
+		break;
+	case LOG_STATUS_SKIP:
+		tag = "status_skip";
+		head = "> skipped: ";
+		break;
 	default:
 		tag = NULL;
 		break;
 	}
-  
-	if (tag == NULL) {
-		if (strstr(logtext->text, "] POP3>")
-		||  strstr(logtext->text, "] IMAP4>")
-		||  strstr(logtext->text, "] SMTP>")
-		||  strstr(logtext->text, "] ESMTP>")
-		||  strstr(logtext->text, "] NNTP>"))
-			tag = "output";
-		if (strstr(logtext->text, "] POP3<")
-		||  strstr(logtext->text, "] IMAP4<")
-		||  strstr(logtext->text, "] SMTP<")
-		||  strstr(logtext->text, "] ESMTP<")
-		||  strstr(logtext->text, "] NNTP<"))
-			tag = "input";
+
+	if (logtext->instance == LOG_PROTOCOL) {
+		if (tag == NULL) {
+			if (strstr(logtext->text, "] POP3>")
+			||  strstr(logtext->text, "] IMAP4>")
+			||  strstr(logtext->text, "] SMTP>")
+			||  strstr(logtext->text, "] ESMTP>")
+			||  strstr(logtext->text, "] NNTP>"))
+				tag = "output";
+			if (strstr(logtext->text, "] POP3<")
+			||  strstr(logtext->text, "] IMAP4<")
+			||  strstr(logtext->text, "] SMTP<")
+			||  strstr(logtext->text, "] ESMTP<")
+			||  strstr(logtext->text, "] NNTP<"))
+				tag = "input";
+		}
 	}
 
 	if (head)

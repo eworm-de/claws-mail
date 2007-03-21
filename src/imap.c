@@ -641,7 +641,7 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 					"login refused.%s"),
 					SESSION(session)->server, ext_info);
 			} else {
-				log_error(_("Connection to %s failed: "
+				log_error(LOG_PROTOCOL, _("Connection to %s failed: "
 					"login refused.%s\n"),
 					SESSION(session)->server, ext_info);
 			}
@@ -658,12 +658,12 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 	   connection, if yes we don't try to reconnect */
 	debug_print("reconnecting\n");
 	if (rfolder->session == NULL) {
-		log_warning(_("Connecting to %s failed"),
+		log_warning(LOG_PROTOCOL, _("Connecting to %s failed"),
 			    folder->account->recv_server);
 		session_destroy(SESSION(session));
 		session = NULL;
 	} else {
-		log_warning(_("IMAP4 connection to %s has been"
+		log_warning(LOG_PROTOCOL, _("IMAP4 connection to %s has been"
 			    " disconnected. Reconnecting...\n"),
 			    folder->account->recv_server);
 		statusbar_print_all(_("IMAP4 connection to %s has been"
@@ -845,14 +845,14 @@ static IMAPSession *imap_session_new(Folder * folder,
 #if (LIBETPAN_VERSION_MAJOR > 0 || LIBETPAN_VERSION_MINOR > 48)
 #ifdef USE_OPENSSL
 		if (r == MAILIMAP_ERROR_SSL)
-			log_error(_("SSL handshake failed\n"));
+			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 #endif
 #endif
 		if(!prefs_common.no_recv_err_panel) {
 			alertpanel_error_log(_("Can't connect to IMAP4 server: %s:%d"),
 					 account->recv_server, port);
 		} else {
-			log_error(_("Can't connect to IMAP4 server: %s:%d\n"),
+			log_error(LOG_PROTOCOL, _("Can't connect to IMAP4 server: %s:%d\n"),
 					 account->recv_server, port);
 		} 
 		
@@ -881,7 +881,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 
 		ok = imap_cmd_starttls(session);
 		if (ok != IMAP_SUCCESS) {
-			log_warning(_("Can't start TLS session.\n"));
+			log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
 			session_destroy(SESSION(session));
 			return NULL;
 		}
@@ -892,7 +892,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 		session->cmd_count = 1;
 	}
 #endif
-	log_message("IMAP connection is %s-authenticated\n",
+	log_message(LOG_PROTOCOL, "IMAP connection is %s-authenticated\n",
 		    (session->authenticated) ? "pre" : "un");
 	
 	return session;
@@ -929,7 +929,7 @@ try_again:
 			goto try_again;
 		} else {
 			if (prefs_common.no_recv_err_panel) {
-				log_error(_("Couldn't login to IMAP server %s."), account->recv_server);
+				log_error(LOG_PROTOCOL, _("Couldn't login to IMAP server %s."), account->recv_server);
 				mainwindow_show_error();
 			} else
 				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
@@ -1434,13 +1434,13 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 		numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags\n"));
+		log_warning(LOG_PROTOCOL, _("can't set deleted flags\n"));
 		unlock_session();
 		return ok;
 	}
 	ok = imap_cmd_expunge(session);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
+		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		unlock_session();
 		return ok;
 	}
@@ -2006,7 +2006,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		argbuf = g_ptr_array_new();
 		r = imap_threaded_list(folder, "", imap_path, &lep_list);
 		if (r != MAILIMAP_NO_ERROR) {
-			log_warning(_("can't create mailbox: LIST failed\n"));
+			log_warning(LOG_PROTOCOL, _("can't create mailbox: LIST failed\n"));
 			g_free(imap_path);
 			g_free(dirpath);
 			ptr_array_free_strings(argbuf);
@@ -2022,7 +2022,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		if (!exist) {
 			ok = imap_cmd_create(session, imap_path);
 			if (ok != IMAP_SUCCESS) {
-				log_warning(_("can't create mailbox\n"));
+				log_warning(LOG_PROTOCOL, _("can't create mailbox\n"));
 				g_free(imap_path);
 				g_free(dirpath);
 				unlock_session();
@@ -2140,7 +2140,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	ok = imap_cmd_rename(session, real_oldpath, real_newpath);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't rename mailbox: %s to %s\n"),
+		log_warning(LOG_PROTOCOL, _("can't rename mailbox: %s to %s\n"),
 			    real_oldpath, real_newpath);
 		g_free(real_oldpath);
 		g_free(newpath);
@@ -2232,7 +2232,7 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	}
 
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't delete mailbox\n"));
+		log_warning(LOG_PROTOCOL, _("can't delete mailbox\n"));
 		g_free(path);
 		unlock_session();
 		return -1;
@@ -2478,7 +2478,7 @@ static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folde
 	r = imap_threaded_list((Folder *)folder, "", subfolder, &lep_list);
 	
 	if (r != MAILIMAP_NO_ERROR) {
-		log_warning(_("LIST failed\n"));
+		log_warning(LOG_PROTOCOL, _("LIST failed\n"));
 		return '\0';
 	}
 
@@ -2595,7 +2595,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	ok = imap_cmd_select(session, real_path,
 			     exists, recent, unseen, uid_validity, block);
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("can't select folder: %s\n"), real_path);
+		log_warning(LOG_PROTOCOL, _("can't select folder: %s\n"), real_path);
 	else {
 		session->mbox = g_strdup(path);
 		session->folder_content_changed = FALSE;
@@ -2704,21 +2704,21 @@ static gint imap_cmd_login(IMAPSession *session,
 		gint ok = IMAP_ERROR;
 		if (imap_has_capability(session, "STARTTLS")) {
 #if USE_OPENSSL
-			log_warning(_("Server requires TLS to log in.\n"));
+			log_warning(LOG_PROTOCOL, _("Server requires TLS to log in.\n"));
 			ok = imap_cmd_starttls(session);
 			if (ok != IMAP_SUCCESS) {
-				log_warning(_("Can't start TLS session.\n"));
+				log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
 				return IMAP_ERROR;
 			} else {
 				/* refresh capas */
 				imap_free_capabilities(session);
 				if (imap_get_capabilities(session) != MAILIMAP_NO_ERROR) {
-					log_warning(_("Can't refresh capabilities.\n"));
+					log_warning(LOG_PROTOCOL, _("Can't refresh capabilities.\n"));
 					return IMAP_ERROR;
 				}
 			}
 #else		
-			log_error(_("Connection to %s failed: "
+			log_error(LOG_PROTOCOL, _("Connection to %s failed: "
 					"server requires TLS, but Claws Mail "
 					"has been compiled without OpenSSL "
 					"support.\n"),
@@ -2726,22 +2726,22 @@ static gint imap_cmd_login(IMAPSession *session,
 			return IMAP_ERROR;
 #endif
 		} else {
-			log_error(_("Server logins are disabled.\n"));
+			log_error(LOG_PROTOCOL, _("Server logins are disabled.\n"));
 			return IMAP_ERROR;
 		}
 	}
 
-	log_print("IMAP4> Logging %s to %s using %s\n", 
+	log_print(LOG_PROTOCOL, "IMAP4> Logging %s to %s using %s\n", 
 			user,
 			SESSION(session)->server,
 			type);
 	r = imap_threaded_login(session->folder, user, pass, type);
 	if (r != MAILIMAP_NO_ERROR) {
-		log_print("IMAP4< Error logging in to %s\n",
+		log_print(LOG_PROTOCOL, "IMAP4< Error logging in to %s\n",
 				SESSION(session)->server);
 		ok = IMAP_ERROR;
 	} else {
-		log_print("IMAP4< Login to %s successful\n",
+		log_print(LOG_PROTOCOL, "IMAP4< Login to %s successful\n",
 				SESSION(session)->server);
 		ok = IMAP_SUCCESS;
 	}
@@ -3812,7 +3812,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 		&numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: %d\n"), uid);
+		log_warning(LOG_PROTOCOL, _("can't set deleted flags: %d\n"), uid);
 		unlock_session();
 		return ok;
 	}
@@ -3827,7 +3827,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		g_free(uidstr);
 	}
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
+		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		unlock_session();
 		return ok;
 	}

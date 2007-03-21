@@ -43,6 +43,8 @@
 #include "quoted-printable.h"
 #include "claws.h"
 #include <ctype.h>
+#include "prefs_common.h"
+#include "log.h"
 
 /*!
  *\brief	Keyword lookup element
@@ -161,6 +163,8 @@ enum {
 	MATCH_ALL = 1,
 	MATCH_ONE = 2
 };
+
+extern gboolean debug_filtering_session;
 
 /*!
  *\brief	Look up table with keywords defined in \sa matchparser_tab
@@ -323,22 +327,53 @@ static gboolean match_with_addresses_in_addressbook
 			for (; i < num_addr && !found; i++) {
 				gchar *addr = get_complete_address(i);
 				extract_address(addr);
-				if (strcasecmp(addr, walk->data) == 0)
+				if (strcasecmp(addr, walk->data) == 0) {
 					found = TRUE;
+
+					/* debug output */
+					if (debug_filtering_session
+							&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+						log_print(LOG_DEBUG_FILTERING,
+								"address [ %s ] matches\n",
+								(gchar *)walk->data);
+					}
+				}
 				g_free(addr);
 			}
+		}
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH
+				&& !found) {
+			log_print(LOG_DEBUG_FILTERING,
+					"address [ %s ] doesn't match\n",
+					(gchar *)walk->data);
 		}
 		g_free(walk->data);
 
 		if (match == MATCH_ALL) {
 			/* if matching all addresses, stop if one doesn't match */
-			if (!found)
-			break;
+			if (!found) {
+				/* debug output */
+				if (debug_filtering_session
+						&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+					log_print(LOG_DEBUG_FILTERING,
+							"not all address match (matching all)\n");
+				}
+				break;
+			}
 		} else if (match == MATCH_ANY) {
 			/* if matching any address, stop if one does match */
-			if (found)
+			if (found) {
+				/* debug output */
+				if (debug_filtering_session
+						&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+					log_print(LOG_DEBUG_FILTERING,
+							"at least one address matches (matching any)\n");
+				}
 				break;
-	}
+			}
+		}
 		/* MATCH_ONE: there should be only one loop iteration */
 	}
 
@@ -356,10 +391,12 @@ static gboolean match_with_addresses_in_addressbook
  *\return	gboolean TRUE if str matches the condition in the 
  *		matcher structure
  */
-static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
+static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
+										const gchar *debug_context)
 {
 	gchar *str1;
 	gchar *str2;
+	gboolean ret = FALSE;
 
 	if (str == NULL)
 		return FALSE;
@@ -383,12 +420,50 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 			return FALSE;
 		
 		if (regexec(prop->preg, str, 0, NULL, 0) == 0)
-			return TRUE;
+			ret = TRUE;
 		else
-			return FALSE;
+			ret = FALSE;
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			gchar *stripped = g_strdup(str);
+
+			strretchomp(stripped);
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s value [ %s ] matches regular expression [ %s ]\n",
+						debug_context, stripped, prop->expr);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s value [ %s ] doesn't matches regular expression [ %s ]\n",
+						debug_context, stripped, prop->expr);
+			}
+			g_free(stripped);
+		}
+		break;
 			
 	case MATCHTYPE_MATCH:
-		return (strstr(str, prop->expr) != NULL);
+		ret = (strstr(str, prop->expr) != NULL);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			gchar *stripped = g_strdup(str);
+
+			strretchomp(stripped);
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s value [ %s ] contains [ %s ] (case sensitive)\n",
+						debug_context, stripped, prop->expr);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s value [ %s ] doesn't contains [ %s ] (case sensitive)\n",
+						debug_context, stripped, prop->expr);
+			}
+			g_free(stripped);
+		}
+		break;
 
 	/* FIXME: put upper in unesc_str */
 	case MATCHTYPE_MATCHCASE:
@@ -398,15 +473,36 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 		str1 = alloca(strlen(str) + 1);
 		strcpy(str1, str);
 		g_strup(str1);
-		return (strstr(str1, str2) != NULL);
+		ret = (strstr(str1, str2) != NULL);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			gchar *stripped = g_strdup(str);
+
+			strretchomp(stripped);
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s value [ %s ] contains [ %s ] (case insensitive)\n",
+						debug_context, stripped, prop->expr);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"%s [ %s ] doesn't contains [ %s ] (case insensitive)\n",
+						debug_context, stripped, prop->expr);
+			}
+			g_free(stripped);
+		}
+		break;
 		
 	default:
-		return FALSE;
+		break;
 	}
+	return ret;
 }
 
 /* FIXME body search is a hack. */
-static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str)
+static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str,
+												const gchar *debug_context)
 {
 	gchar *utf = NULL;
 	gchar tmp[BUFFSIZE];
@@ -421,10 +517,10 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 		utf = conv_codeset_strdup
 			(tmp, conv_get_locale_charset_str_no_utf8(),
 			 CS_INTERNAL);
-		res = matcherprop_string_match(prop, utf);
+		res = matcherprop_string_match(prop, utf, debug_context);
 		g_free(utf);
 	} else {
-		res = matcherprop_string_match(prop, tmp);
+		res = matcherprop_string_match(prop, tmp, debug_context);
 	}
 	
 	if (res == FALSE && (strchr(prop->expr, '=') || strchr(prop->expr, '_')
@@ -436,10 +532,10 @@ static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *
 			utf = conv_codeset_strdup
 				(str, conv_get_locale_charset_str_no_utf8(),
 				 CS_INTERNAL);
-			res = matcherprop_string_match(prop, utf);
+			res = matcherprop_string_match(prop, utf, debug_context);
 			g_free(utf);
 		} else {
-			res = matcherprop_string_match(prop, str);
+			res = matcherprop_string_match(prop, str, debug_context);
 		}
 	}
 
@@ -503,6 +599,14 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 		return FALSE;
 
 #if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+	/* debug output */
+	if (debug_filtering_session
+			&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+		log_print(LOG_DEBUG_FILTERING,
+				"starting threaded command [ %s ]\n",
+				cmd);
+	}
+
 	td->cmd = cmd;
 	td->done = FALSE;
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
@@ -525,9 +629,25 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	}
 	g_free(td);
 #else
+	/* debug output */
+	if (debug_filtering_session
+			&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+		log_print(LOG_DEBUG_FILTERING,
+				"starting synchronous command [ %s ]\n",
+				cmd);
+	}
+
 	retval = system(cmd);
 #endif
 	debug_print("Command exit code: %d\n", retval);
+
+	/* debug output */
+	if (debug_filtering_session
+			&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+		log_print(LOG_DEBUG_FILTERING,
+				"command returned [ %d ]\n",
+				retval);
+	}
 
 	g_free(cmd);
 	return (retval == 0);
@@ -549,7 +669,7 @@ gboolean matcherprop_match(MatcherProp *prop,
 
 	switch(prop->criteria) {
 	case MATCHCRITERIA_ALL:
-		return 1;
+		return TRUE;
 	case MATCHCRITERIA_UNREAD:
 		return MSG_IS_UNREAD(info->flags);
 	case MATCHCRITERIA_NOT_UNREAD:
@@ -583,76 +703,288 @@ gboolean matcherprop_match(MatcherProp *prop,
 	case MATCHCRITERIA_NOT_SPAM:
 		return !MSG_IS_SPAM(info->flags);
 	case MATCHCRITERIA_COLORLABEL:
-		return MSG_GET_COLORLABEL_VALUE(info->flags) == prop->value; 
+	{
+		gint color = MSG_GET_COLORLABEL_VALUE(info->flags);
+		gboolean ret = (color == prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message color value [ %d ] matches color value [ %d ]\n",
+						color, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message color value [ %d ] doesn't matches color value [ %d ]\n",
+						color, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_NOT_COLORLABEL:
-		return MSG_GET_COLORLABEL_VALUE(info->flags) != prop->value;
+	{
+		gint color = MSG_GET_COLORLABEL_VALUE(info->flags);
+		gboolean ret = (color != prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message color value [ %d ] matches color value [ %d ]\n",
+						color, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message color value [ %d ] doesn't matches color value [ %d ]\n",
+						color, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_IGNORE_THREAD:
 		return MSG_IS_IGNORE_THREAD(info->flags);
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return !MSG_IS_IGNORE_THREAD(info->flags);
 	case MATCHCRITERIA_SUBJECT:
-		return matcherprop_string_match(prop, info->subject);
+		return matcherprop_string_match(prop, info->subject, _("subject"));
 	case MATCHCRITERIA_NOT_SUBJECT:
-		return !matcherprop_string_match(prop, info->subject);
+		return !matcherprop_string_match(prop, info->subject, _("subject"));
 	case MATCHCRITERIA_FROM:
-		return matcherprop_string_match(prop, info->from);
+		return matcherprop_string_match(prop, info->from, _("From: header"));
 	case MATCHCRITERIA_NOT_FROM:
-		return !matcherprop_string_match(prop, info->from);
+		return !matcherprop_string_match(prop, info->from, _("From: header"));
 	case MATCHCRITERIA_TO:
-		return matcherprop_string_match(prop, info->to);
+		return matcherprop_string_match(prop, info->to, _("To: header"));
 	case MATCHCRITERIA_NOT_TO:
-		return !matcherprop_string_match(prop, info->to);
+		return !matcherprop_string_match(prop, info->to, _("To: header"));
 	case MATCHCRITERIA_CC:
-		return matcherprop_string_match(prop, info->cc);
+		return matcherprop_string_match(prop, info->cc, _("Cc: header"));
 	case MATCHCRITERIA_NOT_CC:
-		return !matcherprop_string_match(prop, info->cc);
+		return !matcherprop_string_match(prop, info->cc, _("Cc: header"));
 	case MATCHCRITERIA_TO_OR_CC:
-		return matcherprop_string_match(prop, info->to)
-			|| matcherprop_string_match(prop, info->cc);
+		return matcherprop_string_match(prop, info->to, _("To: header"))
+			|| matcherprop_string_match(prop, info->cc, _("Cc: header"));
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-		return !(matcherprop_string_match(prop, info->to)
-		|| matcherprop_string_match(prop, info->cc));
+		return !(matcherprop_string_match(prop, info->to, _("To:"))
+		|| matcherprop_string_match(prop, info->cc, _("Cc:")));
 	case MATCHCRITERIA_AGE_GREATER:
+	{
+		gboolean ret;
+		gint age;
+
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) > prop->value;
+		age = ((t - info->date_t) / (60 * 60 * 24));
+		ret = (age > prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message age [ %d ] is greater than [ %d ]\n",
+						age, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message age [ %d ] is not greater than [ %d ]\n",
+						age, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_AGE_LOWER:
+	{
+		gboolean ret;
+		gint age;
+
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) < prop->value;
+		age = ((t - info->date_t) / (60 * 60 * 24));
+		ret = (age < prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message age [ %d ] is lower than [ %d ]\n",
+						age, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message age [ %d ] is not lower than [ %d ]\n",
+						age, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_SCORE_GREATER:
-		return info->score > prop->value;
+	{
+		gboolean ret = (info->score > prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is greater than [ %d ]\n",
+						info->score, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is not greater than [ %d ]\n",
+						info->score, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_SCORE_LOWER:
-		return info->score < prop->value;
+	{
+		gboolean ret = (info->score < prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is lower than [ %d ]\n",
+						info->score, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is not lower than [ %d ]\n",
+						info->score, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_SCORE_EQUAL:
-		return info->score == prop->value;
+	{
+		gboolean ret = (info->score == prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is equal to [ %d ]\n",
+						info->score, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message score [ %d ] is not equal to [ %d ]\n",
+						info->score, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_SIZE_GREATER:
+	{
 		/* FIXME: info->size is an off_t */
-		return info->size > (off_t) prop->value;
-	case MATCHCRITERIA_SIZE_EQUAL:
-		/* FIXME: info->size is an off_t */
-		return info->size == (off_t) prop->value;
+		gboolean ret = (info->size > (off_t) prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is greater than [ %d ]\n",
+						info->size, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is not greater than [ %d ]\n",
+						info->size, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_SIZE_SMALLER:
+	{
 		/* FIXME: info->size is an off_t */
-		return info->size <  (off_t) prop->value;
+		gboolean ret = (info->size < (off_t) prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is smaller than [ %d ]\n",
+						info->size, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is not smaller than [ %d ]\n",
+						info->size, prop->value);
+			}
+		}
+		return ret;
+	}
+	case MATCHCRITERIA_SIZE_EQUAL:
+	{
+		/* FIXME: info->size is an off_t */
+		gboolean ret = (info->size == (off_t) prop->value);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is equal to [ %d ]\n",
+						info->size, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message size [ %ld ] is not equal to [ %d ]\n",
+						info->size, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_PARTIAL:
+	{
 		/* FIXME: info->size is an off_t */
-		return (info->total_size != 0 && info->size != (off_t)info->total_size);
+		gboolean ret = (info->total_size != 0 && info->size != (off_t)info->total_size);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message is partially downloaded, size [ %ld ] is less than total size [ %d ])\n",
+						info->size, info->total_size);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message is not partially downloaded\n");
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_NOT_PARTIAL:
+	{
 		/* FIXME: info->size is an off_t */
-		return (info->total_size == 0 || info->size == (off_t)info->total_size);
+		gboolean ret = (info->total_size == 0 || info->size == (off_t)info->total_size);
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message is not partially downloaded\n");
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message is partially downloaded, size [ %ld ] is less than total size [ %d ])\n",
+						info->size, info->total_size);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_NEWSGROUPS:
-		return matcherprop_string_match(prop, info->newsgroups);
+		return matcherprop_string_match(prop, info->newsgroups, _("Newsgroups: header"));
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
-		return !matcherprop_string_match(prop, info->newsgroups);
+		return !matcherprop_string_match(prop, info->newsgroups, _("Newsgroups: header"));
 	case MATCHCRITERIA_INREPLYTO:
-		return matcherprop_string_match(prop, info->inreplyto);
+		return matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header"));
 	case MATCHCRITERIA_NOT_INREPLYTO:
-		return !matcherprop_string_match(prop, info->inreplyto);
+		return !matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header"));
 	/* FIXME: Using inreplyto, but matching the (newly implemented)
          * list of references is better */
-        case MATCHCRITERIA_REFERENCES:
-		return matcherprop_string_match(prop, info->inreplyto);
+	case MATCHCRITERIA_REFERENCES:
+		return matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header (references)"));
 	case MATCHCRITERIA_NOT_REFERENCES:
-		return !matcherprop_string_match(prop, info->inreplyto);
+		return !matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header (references)"));
 	case MATCHCRITERIA_TEST:
 		return matcherprop_match_test(prop, info);
 	case MATCHCRITERIA_NOT_TEST:
@@ -736,9 +1068,9 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		if (procheader_headername_equal(header->name,
 						matcher->header)) {
 			if (matcher->criteria == MATCHCRITERIA_HEADER)
-				result = matcherprop_string_match(matcher, header->body);
+				result = matcherprop_string_match(matcher, header->body, _("header"));
 			else
-				result = !matcherprop_string_match(matcher, header->body);
+				result = !matcherprop_string_match(matcher, header->body, _("header"));
 			procheader_header_free(header);
 			return result;
 		}
@@ -747,13 +1079,13 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		}
 		break;
 	case MATCHCRITERIA_HEADERS_PART:
-		return matcherprop_string_match(matcher, buf);
-	case MATCHCRITERIA_MESSAGE:
-		return matcherprop_string_decode_match(matcher, buf);
-	case MATCHCRITERIA_NOT_MESSAGE:
-		return !matcherprop_string_decode_match(matcher, buf);
+		return matcherprop_string_match(matcher, buf, _("header line"));
 	case MATCHCRITERIA_NOT_HEADERS_PART:
-		return !matcherprop_string_match(matcher, buf);
+		return !matcherprop_string_match(matcher, buf, _("headers line"));
+	case MATCHCRITERIA_MESSAGE:
+		return matcherprop_string_decode_match(matcher, buf, _("message line"));
+	case MATCHCRITERIA_NOT_MESSAGE:
+		return !matcherprop_string_decode_match(matcher, buf, _("message line"));
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
 		{
@@ -971,10 +1303,10 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
-		return matcherprop_string_decode_match(matcher, line);
+		return matcherprop_string_decode_match(matcher, line, _("body line"));
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
-		return !matcherprop_string_decode_match(matcher, line);
+		return !matcherprop_string_decode_match(matcher, line, _("body line"));
 	}
 	return FALSE;
 }
@@ -1148,6 +1480,12 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	for (l = matchers->matchers; l != NULL ;l = g_slist_next(l)) {
 		MatcherProp *matcher = (MatcherProp *) l->data;
 
+		if (debug_filtering_session) {
+			gchar *buf = matcherprop_to_string(matcher);
+			log_print(LOG_DEBUG_FILTERING, _("checking if message matches [ %s ]\n"), buf);
+			g_free(buf);
+		}
+
 		switch(matcher->criteria) {
 		case MATCHCRITERIA_ALL:
 		case MATCHCRITERIA_UNREAD:
@@ -1200,11 +1538,15 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_PARTIAL:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
+					if (debug_filtering_session)
+						log_status_ok(LOG_DEBUG_FILTERING, _("message matches\n"));
 					return TRUE;
 				}
 			}
 			else {
 				if (matchers->bool_and) {
+					if (debug_filtering_session)
+						log_status_nok(LOG_DEBUG_FILTERING, _("message does not match\n"));
 					return FALSE;
 				}
 			}
@@ -1214,14 +1556,25 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	/* test the condition on the file */
 
 	if (matcherlist_match_file(matchers, info, result)) {
-		if (!matchers->bool_and)
+		if (!matchers->bool_and) {
+			if (debug_filtering_session)
+				log_status_ok(LOG_DEBUG_FILTERING, _("message matches\n"));
 			return TRUE;
-	}
-	else {
-		if (matchers->bool_and)
+		}
+	} else {
+		if (matchers->bool_and) {
+			if (debug_filtering_session)
+				log_status_nok(LOG_DEBUG_FILTERING, _("message does not match\n"));
 			return FALSE;
+		}
 	}
 
+	if (debug_filtering_session) {
+		if (result)
+			log_status_ok(LOG_DEBUG_FILTERING, _("message matches\n"));
+		else
+			log_status_nok(LOG_DEBUG_FILTERING, _("message does not match\n"));
+	}
 	return result;
 }
 
