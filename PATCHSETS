@@ -2445,3 +2445,4 @@
 ( cvs diff -u -r 1.79.2.52 -r 1.79.2.53 src/mh.c;  ) > 2.8.1cvs26.patchset
 ( cvs diff -u -r 1.115.2.143 -r 1.115.2.144 src/main.c;  ) > 2.8.1cvs27.patchset
 ( cvs diff -u -r 1.49.2.90 -r 1.49.2.91 src/procmime.c;  ) > 2.8.1cvs28.patchset
+( cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/etpan/Makefile.am;  cvs diff -u -r 1.1.4.74 -r 1.1.4.75 src/etpan/imap-thread.c;  ) > 2.8.1cvs29.patchset

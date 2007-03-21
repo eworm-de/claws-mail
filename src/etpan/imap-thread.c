@@ -38,6 +38,7 @@
 #include <log.h>
 #include "etpan-thread-manager.h"
 #include "utils.h"
+#include "mainwindow.h"
 #include "ssl_certificate.h"
 #include "socket.h"
 

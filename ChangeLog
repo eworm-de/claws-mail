@@ -1,3 +1,9 @@
+2007-03-21 [paul]	2.8.1cvs29
+
+	* src/etpan/Makefile.am
+	* src/etpan/imap-thread.c
+		add missing #include
+
 2007-03-21 [colin]	2.8.1cvs28
 
 	* src/procmime.c
