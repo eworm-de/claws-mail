@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=34
+EXTRA_VERSION=35
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -444,6 +444,8 @@ if test $ac_cv_enable_maemo = yes; then
 	AC_SUBST(MAEMO_LIBS)
 	if test $ac_cv_enable_maemo = no; then
 		AC_MSG_ERROR(libosso or hildon-libs not found)
+	else
+		AC_DEFINE(MAEMO, 1, Build for maemo)
 	fi
 fi
 

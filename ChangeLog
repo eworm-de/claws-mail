@@ -1,3 +1,10 @@
+2007-03-21 [colin]	2.8.1cvs35
+
+	* configure.ac
+		Fix previous commit
+	* claws-mail.desktop
+		Remove .png from the Icon, it's useless
+
 2007-03-21 [colin]	2.8.1cvs34
 
 	* configure.ac

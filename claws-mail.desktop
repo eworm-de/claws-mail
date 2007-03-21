@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=Claws Mail
 Exec=claws-mail
-Icon=claws-mail.png
+Icon=claws-mail
 Info="Claws Mail"
 Categories=GTK;Network;Email;
 Comment="Gtk+ based Mail Client"
