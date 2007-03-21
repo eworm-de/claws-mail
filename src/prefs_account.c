@@ -351,10 +351,15 @@ static PrefParam param[] = {
 	 &receive.rmmail_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+#ifndef MAEMO
 	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
 	 &receive.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
-
+#else
+	{"message_leave_time", "30", &tmp_ac_prefs.msg_leave_time, P_INT,
+	 &receive.leave_time_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+#endif
 	{"get_all_mail", "FALSE", &tmp_ac_prefs.getall, P_BOOL,
 	 &receive.getall_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},

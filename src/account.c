@@ -680,8 +680,12 @@ static void account_edit_create(void)
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	g_signal_connect (G_OBJECT (window), "delete_event",
 			  G_CALLBACK (account_delete_event), NULL);
+#ifdef MAEMO
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
+#else
 	g_signal_connect (G_OBJECT (window), "key_press_event",
 			  G_CALLBACK (account_key_pressed), NULL);
+#endif			  
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_widget_realize(window);
 
@@ -799,7 +803,7 @@ static void account_edit_create(void)
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;
-		geometry.min_height = 350;
+		geometry.min_height = 380;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
@@ -810,6 +814,9 @@ static void account_edit_create(void)
 	edit_account.window    = window;
 	edit_account.list_view = list_view;
 	edit_account.close_btn = close_btn;
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(edit_account.window));
+#endif
 }
 
 static void account_edit_prefs(GtkWidget *widget, gpointer data)

@@ -432,8 +432,14 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 			 G_CALLBACK(apply_button_clicked), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
 			 G_CALLBACK(window_closed), prefswindow);
+
+#ifdef MAEMO
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(prefswindow->window));
+#else
 	g_signal_connect(G_OBJECT(prefswindow->window), "key_press_event",
 			   G_CALLBACK(prefswindow_key_pressed), &(prefswindow->window));
+#endif
+
 	/* connect to callback only if we hhave non-NULL pointers to store size to */
 	if (prefswindow->save_width && prefswindow->save_height) {
 		g_signal_connect(G_OBJECT(prefswindow->window), "size_allocate",
@@ -450,7 +456,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 			geometry.min_height = 550;
 		}
 	}
-
 	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 	if (prefswindow->save_width && prefswindow->save_height) {
@@ -459,6 +464,9 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	}
 
 	gtk_widget_show(prefswindow->window);
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(prefswindow->window));
+#endif
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,

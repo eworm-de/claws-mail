@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=31
+EXTRA_VERSION=32
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -431,6 +431,18 @@ dnl check if GDB is somewhere
 		AC_DEFINE(CRASH_DIALOG, 1, Pop up crash dialog)
 	fi
 	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
+fi
+
+dnl Maemo platform
+AC_ARG_ENABLE(maemo,
+	[  --enable-maemo   Build for the Maemo platform [default=no]],
+	[ac_cv_enable_maemo=$enableval], [ac_cv_enable_maemo=no])
+if test $ac_cv_enable_maemo = yes; then
+	AC_MSG_CHECKING([whether to build for Maemo])
+	if test $ac_cv_enable_maemo = yes; then
+		AC_DEFINE(MAEMO, 1, Build for Maemo)
+	fi
+	AC_MSG_RESULT($ac_cv_enable_maemo)
 fi
 
 dnl Check for X-Face support
@@ -921,6 +933,7 @@ echo "Libgnomeprint : $ac_cv_enable_gnomeprint"
 echo "LibSM         : $ac_cv_enable_libsm"
 echo "Manual        : $ac_cv_enable_manual"
 echo "Plugins       : $PLUGINS"
+echo "Maemo  build  : $ac_cv_enable_maemo"
 echo "Config dir    : $ac_cv_with_config_dir"
 echo ""
 echo "The binary will be installed in $prefix/bin"

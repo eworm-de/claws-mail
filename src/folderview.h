@@ -132,5 +132,6 @@ void folderview_finish_dnd		(const gchar 		*data,
 					 GdkDragContext 	*drag_context,
 			   		 guint 			 time, 
 					 FolderItem 		*item);
+void folderview_close_opened		(FolderView 		*folderview);
 
 #endif /* __FOLDERVIEW_H__ */

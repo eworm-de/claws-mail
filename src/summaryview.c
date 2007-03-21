@@ -256,6 +256,10 @@ static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
+static gint summary_folder_eventbox_pressed	
+					(GtkWidget		*eventbox,
+					 GdkEventButton		*event,
+					 SummaryView		*summaryview);
 static gboolean summary_button_pressed	(GtkWidget		*ctree,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
@@ -351,7 +355,9 @@ static gboolean summary_drag_motion_cb(GtkWidget      *widget,
 					  gint            y,
 					  guint           time,
 					  SummaryView	 *summaryview);
-
+static void summary_drag_end(GtkWidget *widget,
+					  GdkDragContext *drag_context,
+					  SummaryView 	 *summaryview);
 /* custom compare functions for sorting */
 
 static gint summary_cmp_by_mark		(GtkCList		*clist,
@@ -404,7 +410,8 @@ static void summary_find_answers	(SummaryView 	*summaryview,
 					 MsgInfo	*msg);
 
 static gboolean summary_update_msg	(gpointer source, gpointer data);
-static gboolean summary_update_folder_item_name(gpointer source, gpointer data);
+static gboolean summary_update_folder_item_hook(gpointer source, gpointer data);
+static gboolean summary_update_folder_hook(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[2] =
 {
@@ -562,7 +569,6 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *toggle_search;
-	GtkTooltips *search_tip;
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 	QuickSearch *quicksearch;
@@ -570,6 +576,7 @@ SummaryView *summary_create(void)
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
+	summaryview->tips = gtk_tooltips_new();
 #define SUMMARY_VBOX_SPACING 3
 	vbox = gtk_vbox_new(FALSE, SUMMARY_VBOX_SPACING);
 	
@@ -586,13 +593,12 @@ SummaryView *summary_create(void)
 	stat_box2 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(stat_box2);
 	
-	search_tip = gtk_tooltips_new();
 	toggle_search = gtk_toggle_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_search),
 				     prefs_common.show_searchbar);
 	gtk_widget_show(toggle_search);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_tip),
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
 			     toggle_search,
 			     _("Toggle quick search bar"), NULL);
 	
@@ -693,7 +699,11 @@ SummaryView *summary_create(void)
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 	summaryview->folder_item_update_callback_id =
 		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST,
-				summary_update_folder_item_name,
+				summary_update_folder_item_hook,
+				(gpointer) summaryview);
+	summaryview->folder_update_callback_id =
+		hooks_register_hook(FOLDER_UPDATE_HOOKLIST,
+				summary_update_folder_hook,
 				(gpointer) summaryview);
 
 	summaryview->target_list = gtk_target_list_new(summary_drag_types, 2);
@@ -713,7 +723,8 @@ SummaryView *summary_create(void)
 	else
 		quicksearch_hide(quicksearch);
 	
-	if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT)
+	if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT ||
+	    prefs_common.layout_mode == LITTLE_LAYOUT)
 		gtk_widget_hide(summaryview->toggle_eventbox);
 
 	return summaryview;
@@ -737,17 +748,23 @@ void summary_relayout(SummaryView *summaryview)
 		gtk_box_pack_end(GTK_BOX(summaryview->stat_box), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
-		if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT)
+		if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT ||
+		    prefs_common.layout_mode == LITTLE_LAYOUT)
 			gtk_widget_hide(summaryview->toggle_eventbox);
 		else
 			gtk_widget_show(summaryview->toggle_eventbox);
 		break;
 	case VERTICAL_LAYOUT:
+	case LITTLE_LAYOUT:
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
-		gtk_widget_show(summaryview->toggle_eventbox);
+		if (prefs_common.layout_mode == LITTLE_LAYOUT)
+			gtk_widget_hide(summaryview->toggle_eventbox);
+		else
+			gtk_widget_show(summaryview->toggle_eventbox);
+			
 		break;
 	}
 	gtk_widget_unref(summaryview->hbox_l);
@@ -793,6 +810,27 @@ static void summary_set_fonts(SummaryView *summaryview)
 	pango_font_description_free(font_desc);
 }
 
+static void summary_set_folder_pixmap(SummaryView *summaryview, StockPixmap icon)
+{
+	GtkWidget *pixmap; 
+	if (!summaryview->folder_pixmap_eventbox) {
+		summaryview->folder_pixmap_eventbox = gtk_event_box_new();
+		gtk_widget_show(summaryview->folder_pixmap_eventbox);
+		gtk_box_pack_start(GTK_BOX(summaryview->hbox_l), summaryview->folder_pixmap_eventbox, FALSE, FALSE, 4);
+		gtk_box_reorder_child(GTK_BOX(summaryview->hbox_l), summaryview->folder_pixmap_eventbox, 0); /* search_toggle before */
+		g_signal_connect(G_OBJECT(summaryview->folder_pixmap_eventbox), "button_press_event",
+			 G_CALLBACK(summary_folder_eventbox_pressed),
+			 summaryview);
+	}
+	if (summaryview->folder_pixmap)
+		gtk_widget_destroy(summaryview->folder_pixmap);
+
+	pixmap = stock_pixmap_widget(summaryview->hbox_l, icon);
+	gtk_container_add(GTK_CONTAINER(summaryview->folder_pixmap_eventbox), pixmap);
+	gtk_widget_show(pixmap);
+	summaryview->folder_pixmap = pixmap; 
+}
+
 void summary_init(SummaryView *summaryview)
 {
 	GtkWidget *pixmap;
@@ -833,11 +871,7 @@ void summary_init(SummaryView *summaryview)
 
 	summary_set_fonts(summaryview);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox_l, STOCK_PIXMAP_DIR_OPEN);
-	gtk_box_pack_start(GTK_BOX(summaryview->hbox_l), pixmap, FALSE, FALSE, 4);
-	gtk_box_reorder_child(GTK_BOX(summaryview->hbox_l), pixmap, 0);
-	gtk_widget_show(pixmap);
-	summaryview->folder_pixmap = pixmap;
+	summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
@@ -994,9 +1028,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 
-	if (!is_refresh)
+	if (!is_refresh) {
 		main_create_mailing_list_menu (summaryview->mainwin, NULL);
-
+		if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+			if (item) {
+				mainwindow_enter_folder(summaryview->mainwin);
+				gtk_widget_grab_focus(summaryview->ctree);
+			}
+		}
+	}
 	if (!prefs_common.summary_quicksearch_sticky
 	 && !prefs_common.summary_quicksearch_recurse
 	 && !quicksearch_is_running(summaryview->quicksearch)
@@ -3002,7 +3042,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	if (!new_window) {
 		if (summaryview->displayed == row)
 			return;
-		else
+		else if (summaryview->messageview)
 			summaryview->messageview->filtered = FALSE;
 	}			
 	g_return_if_fail(row != NULL);
@@ -3017,7 +3057,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	
 	g_return_if_fail(msginfo);
 
-	if (new_window) {
+	if (new_window && prefs_common.layout_mode != LITTLE_LAYOUT) {
 		MessageView *msgview;
 
 		msgview = messageview_create_with_new_window(summaryview->mainwin);
@@ -3025,18 +3065,33 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	} else {
 		MessageView *msgview;
 
-		msgview = summaryview->messageview;
-		summaryview->last_displayed = summaryview->displayed;
-		summaryview->displayed = row;
-		if (!messageview_is_visible(msgview)) {
-			main_window_toggle_message_view(summaryview->mainwin);
-			GTK_EVENTS_FLUSH();
+		if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+			if (summaryview->ext_messageview == NULL)
+				summaryview->ext_messageview = messageview_create_with_new_window(summaryview->mainwin);
+			else
+				gtkut_window_popup(summaryview->ext_messageview->window);
+			msgview = summaryview->ext_messageview;
+			summaryview->last_displayed = summaryview->displayed;
+			summaryview->displayed = row;
+			val = messageview_show(msgview, msginfo, all_headers);
+			if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
+				gtk_widget_grab_focus(summaryview->ctree);
+			gtkut_ctree_node_move_if_on_the_edge(ctree, row,
+				GTK_CLIST(summaryview->ctree)->focus_row);
+		} else {
+			msgview = summaryview->messageview;
+			summaryview->last_displayed = summaryview->displayed;
+			summaryview->displayed = row;
+			if (!messageview_is_visible(msgview)) {
+				main_window_toggle_message_view(summaryview->mainwin);
+				GTK_EVENTS_FLUSH();
+			}
+			val = messageview_show(msgview, msginfo, all_headers);
+			if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
+				gtk_widget_grab_focus(summaryview->ctree);
+			gtkut_ctree_node_move_if_on_the_edge(ctree, row,
+				GTK_CLIST(summaryview->ctree)->focus_row);
 		}
-		val = messageview_show(msgview, msginfo, all_headers);
-		if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
-			gtk_widget_grab_focus(summaryview->ctree);
-		gtkut_ctree_node_move_if_on_the_edge(ctree, row,
-			GTK_CLIST(summaryview->ctree)->focus_row);
 	}
 
 	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)) {
@@ -3101,6 +3156,10 @@ void summary_view_source(SummaryView * summaryview)
 	msginfo = gtk_ctree_node_get_row_data(ctree, summaryview->selected);
 	source_window_show_msg(srcwin, msginfo);
 	source_window_show(srcwin);
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(srcwin->window));
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(srcwin->window));
+#endif
 }
 
 void summary_reedit(SummaryView *summaryview)
@@ -3171,6 +3230,8 @@ gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
 
 void summary_toggle_view(SummaryView *summaryview)
 {
+	if (prefs_common.layout_mode == LITTLE_LAYOUT)
+		return;
 	if (!messageview_is_visible(summaryview->messageview) &&
 	    summaryview->selected)
 		summary_display_msg(summaryview,
@@ -5229,6 +5290,9 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
 			 G_CALLBACK(summary_drag_data_get),
 			 summaryview);
+	g_signal_connect(G_OBJECT(ctree), "drag_end",
+			 G_CALLBACK(summary_drag_end),
+			 summaryview);
 
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
 			  summary_drag_types, 2,
@@ -5282,6 +5346,16 @@ void summary_set_column_order(SummaryView *summaryview)
 
 
 /* callback functions */
+
+static gint summary_folder_eventbox_pressed(GtkWidget *eventbox, GdkEventButton *event,
+					    SummaryView *summaryview)
+{
+	if (event) {
+		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		mainwindow_exit_folder(summaryview->mainwin);
+	}
+	return TRUE;
+}
 
 static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 				   SummaryView *summaryview)
@@ -5402,6 +5476,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		/* FALLTHROUGH */	
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		mainwindow_exit_folder(summaryview->mainwin);
 		return TRUE;
 	case GDK_Home:
 	case GDK_End:
@@ -5539,6 +5614,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	if (summary_is_locked(summaryview)
 	&& !GTK_SCTREE(ctree)->selecting_range
+	&& summaryview->messageview
 	&& summaryview->messageview->mimeview
 	&& summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
 	&& summaryview->messageview->mimeview->textview->loading) {
@@ -5823,6 +5899,29 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	context = gtk_drag_begin(widget, summaryview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
+	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		gint min, max, mid;
+		GtkWidget *paned = GTK_WIDGET_PTR(summaryview)->parent;
+		if (paned && GTK_IS_PANED(paned)) {
+	        	mainwindow_reset_paned(GTK_PANED(paned));
+		}
+	}
+}
+
+static gboolean summary_return_to_list(void *data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	mainwindow_enter_folder(summaryview->mainwin);
+	return FALSE;
+}
+
+static void summary_drag_end	   (GtkWidget	    *widget, 
+				   GdkDragContext   *drag_context,
+                                   SummaryView 	    *summaryview)
+{
+	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		g_timeout_add(250, summary_return_to_list, summaryview);
+	}
 }
 
 static void summary_drag_data_get(GtkWidget        *widget,
@@ -6207,8 +6306,6 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	GtkWidget *ctree = summaryview->ctree;
 	GtkWidget *pixmap; 
 
-	gtk_widget_destroy(summaryview->folder_pixmap);
-
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DELETED, &deletedxpm, &deletedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW, &newxpm, &newxpmmask);
@@ -6226,11 +6323,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MOVED, &movedxpm, &movedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_COPIED, &copiedxpm, &copiedxpmmask);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
-	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
-	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 1); /* search_toggle before */
-	gtk_widget_show(pixmap);
-	summaryview->folder_pixmap = pixmap; 
+	summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_remove (GTK_CONTAINER(summaryview->toggle_search), 
@@ -6369,7 +6462,32 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 	return FALSE;
 }
 
-static gboolean summary_update_folder_item_name(gpointer source, gpointer data)
+static void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
+{
+	guint new, unread, unreadmarked, marked, total;
+	if (prefs_common.layout_mode != LITTLE_LAYOUT)
+		return;
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	if (removed_item) {
+		total -= removed_item->total_msgs;
+		new -= removed_item->new_msgs;
+		unread -= removed_item->unread_msgs;
+	}
+	
+	if (new > 0 || unread > 0) {
+		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN_HRM);
+		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
+			     summaryview->folder_pixmap_eventbox,
+			     _("Go back to the folder list (You have unread messages)"), NULL);
+	} else {
+		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
+		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
+			     summaryview->folder_pixmap_eventbox,
+			     _("Go back to the folder list"), NULL);
+	}
+}
+
+static gboolean summary_update_folder_item_hook(gpointer source, gpointer data)
 {
 	FolderItemUpdateData *hookdata = (FolderItemUpdateData *)source;
 	SummaryView *summaryview = (SummaryView *)data;
@@ -6383,6 +6501,20 @@ static gboolean summary_update_folder_item_name(gpointer source, gpointer data)
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), name);
 		g_free(name);
 	}
+	summary_update_unread(summaryview, NULL);
+
+	return FALSE;
+}
+
+static gboolean summary_update_folder_hook(gpointer source, gpointer data)
+{
+	FolderUpdateData *hookdata;
+	SummaryView *summaryview = (SummaryView *)data;
+	hookdata = source;
+	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+		summary_update_unread(summaryview, hookdata->item);
+	else
+		summary_update_unread(summaryview, NULL);
 
 	return FALSE;
 }

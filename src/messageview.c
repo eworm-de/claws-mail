@@ -472,9 +472,12 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 			 msgview);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(messageview_delete_cb), msgview);
+#ifdef MAEMO
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
+#else
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), msgview);
-
+#endif
 	messageview_add_toolbar(msgview, window);
 
 	if (show) {
@@ -900,6 +903,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 
 	g_free(file);
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(messageview->window));
+#endif
 
 	return 0;
 }
@@ -918,6 +924,8 @@ void messageview_reflect_prefs_pixmap_theme(void)
 
 void messageview_clear(MessageView *messageview)
 {
+	if (!messageview)
+		return;
 	procmsg_msginfo_free(messageview->msginfo);
 	messageview->msginfo = NULL;
 	messageview->filtered = FALSE;
@@ -930,6 +938,12 @@ void messageview_destroy(MessageView *messageview)
 {
 	debug_print("destroy messageview\n");
 	messageview_list = g_list_remove(messageview_list, messageview);
+
+	if (messageview->mainwin->summaryview->messageview == messageview)
+		messageview->mainwin->summaryview->messageview = NULL;
+
+	if (messageview->mainwin->summaryview->ext_messageview == messageview)
+		messageview->mainwin->summaryview->ext_messageview = NULL;
 
 	if (!messageview->deferred_destroy) {
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,

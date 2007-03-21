@@ -101,7 +101,6 @@ static PrefParam param_os_specific[] = {
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
 	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
-
 	/* Message */
 	{"attach_save_directory", NULL,
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
@@ -162,7 +161,7 @@ static PrefParam param[] = {
 	P_BOOL, NULL, NULL, NULL},
  	{"newmail_notify_cmd", "", &SPECIFIC_PREFS.newmail_notify_cmd, P_STRING,
  	 NULL, NULL, NULL},
-	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
+	{"receive_dialog_mode", "2", &prefs_common.recv_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
 	{"receivewin_width", "460", &prefs_common.receivewin_width, P_INT,
 	 NULL, NULL, NULL},
@@ -178,7 +177,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"confirm_send_queued_messages", "FALSE", &prefs_common.confirm_send_queued_messages,
 	 P_BOOL, NULL, NULL, NULL},
-	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
+	{"send_dialog_mode", "1", &prefs_common.send_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
 	{"sendwin_width", "460", &prefs_common.sendwin_width, P_INT,
 	 NULL, NULL, NULL},
@@ -296,6 +295,7 @@ static PrefParam param[] = {
 	  &prefs_common.normalfont_gtk1,	P_STRING, NULL, NULL, NULL},
 
 	/* new fonts */
+#ifndef MAEMO
 	{"widget_font_gtk2",	NULL,
 	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
@@ -306,7 +306,18 @@ static PrefParam param[] = {
 	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
 	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
-
+#else
+	{"widget_font_gtk2",	NULL,
+	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
+	{"message_font_gtk2",	"Monospace 8",
+	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
+        {"print_font_gtk2",     "Monospace 8",
+         &SPECIFIC_PREFS.printfont,             P_STRING, NULL, NULL, NULL},
+	{"small_font_gtk2",	"Sans 8",
+	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
+	{"normal_font_gtk2",	"Sans 8",
+	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
+#endif
 	/* custom colors */
 	{"custom_color1", "#ff9900", &prefs_common.custom_colorlabel[0].color, P_COLOR,
 	 NULL, NULL, NULL},
@@ -400,22 +411,29 @@ static PrefParam param[] = {
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
+#else
+	{"toolbar_style", "1", &prefs_common.toolbar_style, P_ENUM,
+	 NULL, NULL, NULL},
+#endif
 	{"toolbar_detachable", "FALSE", &prefs_common.toolbar_detachable, P_BOOL,
 	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,
 	 NULL, NULL, NULL},
-
+#else
+	{"show_searchbar", "FALSE", &prefs_common.show_searchbar, P_BOOL,
+	 NULL, NULL, NULL},
+#endif
 
 	{"summary_col_show_mark", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_MARK], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_unread", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_STATUS], P_BOOL, NULL, NULL, NULL},
-	{"summary_col_show_mime", "TRUE",
-	 &prefs_common.summary_col_visible[S_COL_MIME], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_subject", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_SUBJECT], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_from", "TRUE",
@@ -424,6 +442,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_visible[S_COL_TO], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_date", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_DATE], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_mime", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_MIME], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_size", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_SIZE], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_number", "FALSE",
@@ -462,12 +482,22 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_STATUS], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_mime", "10",
 	 &prefs_common.summary_col_size[S_COL_MIME], P_INT, NULL, NULL, NULL},
+#ifndef MAEMO
 	{"summary_col_size_subject", "200",
 	 &prefs_common.summary_col_size[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_from", "120",
 	 &prefs_common.summary_col_size[S_COL_FROM], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_to", "120",
 	 &prefs_common.summary_col_size[S_COL_TO], P_INT, NULL, NULL, NULL},
+#else
+	{"summary_col_size_subject", "300",
+	 &prefs_common.summary_col_size[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_from", "150",
+	 &prefs_common.summary_col_size[S_COL_FROM], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_to", "150",
+	 &prefs_common.summary_col_size[S_COL_TO], P_INT, NULL, NULL, NULL},
+
+#endif
 	{"summary_col_size_date", "118",
 	 &prefs_common.summary_col_size[S_COL_DATE], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_size", "45",
@@ -509,6 +539,7 @@ static PrefParam param[] = {
 	{"folder_col_pos_total", "3",
 	 &prefs_common.folder_col_pos[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
 
+#ifndef MAEMO
 	{"folder_col_size_folder", "120",
 	 &prefs_common.folder_col_size[F_COL_FOLDER], P_INT, NULL, NULL, NULL},
 	{"folder_col_size_new", "32",
@@ -517,7 +548,16 @@ static PrefParam param[] = {
 	 &prefs_common.folder_col_size[F_COL_UNREAD], P_INT, NULL, NULL, NULL},
 	{"folder_col_size_total", "32",
 	 &prefs_common.folder_col_size[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
-
+#else
+	{"folder_col_size_folder", "400",
+	 &prefs_common.folder_col_size[F_COL_FOLDER], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_new", "32",
+	 &prefs_common.folder_col_size[F_COL_NEW], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_unread", "32",
+	 &prefs_common.folder_col_size[F_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	{"folder_col_size_total", "32",
+	 &prefs_common.folder_col_size[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
+#endif
 	{"summaryview_width", "500", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},
 	{"summaryview_height", "244", &prefs_common.summaryview_height, P_INT,
@@ -546,6 +586,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"mainwin_y", "64", &prefs_common.mainwin_y, P_INT,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"mainwin_width", "800", &prefs_common.mainwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"mainwin_height", "600", &prefs_common.mainwin_height, P_INT,
@@ -562,6 +603,24 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_height", "560", &prefs_common.compose_height, P_INT,
 	 NULL, NULL, NULL},
+#else
+	{"mainwin_width", "700", &prefs_common.mainwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"mainwin_height", "470", &prefs_common.mainwin_height, P_INT,
+	 NULL, NULL, NULL},
+	{"messagewin_width", "700", &prefs_common.msgwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"messagewin_height", "470", &prefs_common.msgwin_height, P_INT,
+	 NULL, NULL, NULL},
+	{"sourcewin_width", "700", &prefs_common.sourcewin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"sourcewin_height", "470", &prefs_common.sourcewin_height, P_INT,
+	 NULL, NULL, NULL},
+	{"compose_width", "700", &prefs_common.compose_width, P_INT,
+	 NULL, NULL, NULL},
+	{"compose_height", "470", &prefs_common.compose_height, P_INT,
+	 NULL, NULL, NULL},
+#endif
 	{"compose_x", "0", &prefs_common.compose_x, P_INT,
 	 NULL, NULL, NULL},
 	{"compose_y", "0", &prefs_common.compose_y, P_INT,
@@ -638,9 +697,13 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 
 	/* Interface */
+#ifndef MAEMO
 	{"layout_mode", "0", &prefs_common.layout_mode, P_INT,
 	 NULL, NULL, NULL},
-
+#else
+	{"layout_mode", "5", &prefs_common.layout_mode, P_INT,
+	 NULL, NULL, NULL},
+#endif
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
 	{"always_show_message_when_selected", "FALSE",
@@ -700,8 +763,13 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"summary_quicksearch_recurse", "1", &prefs_common.summary_quicksearch_recurse, P_INT,
 	 NULL, NULL, NULL},
+#else
+	{"summary_quicksearch_recurse", "0", &prefs_common.summary_quicksearch_recurse, P_INT,
+	 NULL, NULL, NULL},
+#endif
 
 	{"io_timeout_secs", "60", &prefs_common.io_timeout_secs,
 	 P_INT, NULL, NULL, NULL},

@@ -95,6 +95,7 @@ struct _SummaryView
 	GtkWidget *stat_box;
 	GtkWidget *stat_box2;
 	GtkWidget *folder_pixmap;
+	GtkWidget *folder_pixmap_eventbox;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
@@ -128,6 +129,7 @@ struct _SummaryView
 	FolderView   *folderview;
 	HeaderView   *headerview;
 	MessageView  *messageview;
+	MessageView  *ext_messageview;
 	QuickSearch  *quicksearch;
 
 	FolderItem *folder_item;
@@ -162,8 +164,11 @@ private:
 
 	/* update folder label when renaming */
 	gint folder_item_update_callback_id;
+	gint folder_update_callback_id;
 
 	GtkTargetList *target_list; /* DnD */
+	
+	GtkTooltips *tips;
 };
 
 SummaryView	*summary_create(void);

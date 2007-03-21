@@ -232,8 +232,12 @@ static void summary_search_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+#ifdef MAEMO
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
+#else
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
+#endif
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -482,6 +486,9 @@ static void summary_search_create(void)
 	search_window.stop_btn = stop_btn;
 	search_window.matcher_list = NULL;
 	search_window.is_searching = is_searching;
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(search_window.window));
+#endif
 }
 
 static void summary_search_execute(gboolean backward, gboolean search_all)

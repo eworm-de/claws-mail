@@ -65,7 +65,8 @@ typedef enum
 	NORMAL_LAYOUT	 = 0,
 	VERTICAL_LAYOUT	 = 1 << 0,
 	WIDE_LAYOUT = 1 << 1,
-	WIDE_MSGLIST_LAYOUT = 1 << 2
+	WIDE_MSGLIST_LAYOUT = 1 << 2,
+	LITTLE_LAYOUT
 } LayoutType;
 
 typedef enum
@@ -132,6 +133,7 @@ struct _MainWindow
 #ifdef HAVE_LIBSM
 	gpointer smc_conn;
 #endif
+	gboolean	 in_folder;
 };
 
 MainWindow *main_window_create		(void);
@@ -204,5 +206,15 @@ void mainwindow_learn			      (MainWindow *mainwin,
 void mainwindow_jump_to			      (const gchar 	 *target);
 void mainwindow_show_error		      (void);
 void mainwindow_clear_error		      (MainWindow *mainwin);
-gboolean mainwindow_is_obscured      (void);
+gboolean mainwindow_is_obscured		      (void);
+void mainwindow_exit_folder		      (MainWindow *mainwin);
+void mainwindow_enter_folder		      (MainWindow *mainwin);
+void mainwindow_reset_paned		      (GtkPaned *paned);
+
+#ifdef MAEMO
+gboolean maemo_mainwindow_is_fullscreen               (GtkWidget *widget);
+void maemo_window_full_screen_if_needed               (GtkWindow *window);
+void maemo_connect_key_press_to_mainwindow    (GtkWindow *window);
+#endif
+
 #endif /* __MAINWINDOW_H__ */

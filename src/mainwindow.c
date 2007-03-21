@@ -565,6 +565,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Layout/_Three columns"),	NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/Layout/_Wide message"),	NULL, set_layout_cb, WIDE_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/Layout/W_ide message list"),NULL, set_layout_cb, WIDE_MSGLIST_LAYOUT, "/View/Layout/Standard"},
+	{N_("/_View/Layout/_Little screen"),	NULL, set_layout_cb, LITTLE_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
@@ -1052,7 +1053,6 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 				   GDK_1+i, GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	}
-
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
 	mainwin->colorlabel_menu = menu;
@@ -1471,8 +1471,10 @@ MainWindow *main_window_create()
 			 G_CALLBACK(mainwindow_visibility_event_cb), mainwin);
 	gtk_widget_add_events(GTK_WIDGET(window), GDK_VISIBILITY_NOTIFY_MASK);
 
-	if (prefs_common.layout_mode == VERTICAL_LAYOUT)
+	if (prefs_common.layout_mode == VERTICAL_LAYOUT ||
+	    prefs_common.layout_mode == LITTLE_LAYOUT) {
 		summary_relayout(mainwin->summaryview);	
+	}
 
 	gtk_widget_show(mainwin->window);
 
@@ -1913,9 +1915,16 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 	gtk_widget_unref(message_wid);
 }
 
-static void mainwin_reset_paned(GtkPaned *paned)
+void mainwindow_reset_paned(GtkPaned *paned)
 {
 		gint min, max, mid;
+
+		if (gtk_paned_get_child1(GTK_PANED(paned)))
+			gtk_widget_show(gtk_paned_get_child1(GTK_PANED(paned)));
+		if (gtk_paned_get_child2(GTK_PANED(paned)))
+			gtk_widget_show(gtk_paned_get_child2(GTK_PANED(paned)));
+
+GTK_EVENTS_FLUSH();
         	g_object_get (G_OBJECT(paned),
                         	"min-position",
                         	&min, NULL);
@@ -1923,8 +1932,35 @@ static void mainwin_reset_paned(GtkPaned *paned)
                         	"max-position",
                         	&max, NULL);
 		mid = (min+max)/2;
-
 		gtk_paned_set_position(GTK_PANED(paned), mid);
+}
+
+static void mainwin_paned_show_first(GtkPaned *paned)
+{
+		gint max;
+        	g_object_get (G_OBJECT(paned),
+                        	"max-position",
+                        	&max, NULL);
+
+		if (gtk_paned_get_child1(GTK_PANED(paned)))
+			gtk_widget_show(gtk_paned_get_child1(GTK_PANED(paned)));
+		if (gtk_paned_get_child2(GTK_PANED(paned)))
+			gtk_widget_hide(gtk_paned_get_child2(GTK_PANED(paned)));
+		gtk_paned_set_position(GTK_PANED(paned), max);
+}
+
+static void mainwin_paned_show_last(GtkPaned *paned)
+{
+		gint min;
+        	g_object_get (G_OBJECT(paned),
+                        	"min-position",
+                        	&min, NULL);
+
+		if (gtk_paned_get_child1(GTK_PANED(paned)))
+			gtk_widget_hide(gtk_paned_get_child1(GTK_PANED(paned)));
+		if (gtk_paned_get_child2(GTK_PANED(paned)))
+			gtk_widget_show(gtk_paned_get_child2(GTK_PANED(paned)));
+		gtk_paned_set_position(GTK_PANED(paned), min);
 }
 
 void main_window_toggle_message_view(MainWindow *mainwin)
@@ -1936,6 +1972,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
 	case VERTICAL_LAYOUT:
+	case LITTLE_LAYOUT:
 		ppaned = mainwin->vpaned;
 		container = mainwin->hpaned;
 		if (ppaned->parent != NULL) {
@@ -2653,18 +2690,28 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	GtkWidget *vbox_body = mainwin->vbox_body;
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
-
+	gboolean first_set = (mainwin->hpaned == NULL);
 	debug_print("Setting widgets... ");
 
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
+	if (layout_mode == LITTLE_LAYOUT && first_set) {
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
 				    prefs_common.folderview_width,
 				    prefs_common.folderview_height);
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
+				    0,0);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
+				    0,0);
+	} else {
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
+				    prefs_common.folderview_width,
+				    prefs_common.folderview_height);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
 				    prefs_common.summaryview_width,
 				    prefs_common.summaryview_height);
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
 				    prefs_common.msgview_width,
 				    prefs_common.msgview_height);
+	}
 
 	mainwin->messageview->statusbar = mainwin->statusbar;
 	mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
@@ -2677,10 +2724,12 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			gtk_widget_destroy(mainwin->hpaned);
 	}
 
-	menu_set_sensitive(ifactory, "/View/Show or hide/Message view", (layout_mode != WIDE_MSGLIST_LAYOUT));
+	menu_set_sensitive(ifactory, "/View/Show or hide/Message view", 
+		(layout_mode != WIDE_MSGLIST_LAYOUT && layout_mode != LITTLE_LAYOUT));
 	switch (layout_mode) {
 	case VERTICAL_LAYOUT:
 	case NORMAL_LAYOUT:
+	case LITTLE_LAYOUT:
 		hpaned = gtk_hpaned_new();
 		if (layout_mode == VERTICAL_LAYOUT)
 			vpaned = gtk_hpaned_new();
@@ -2704,6 +2753,9 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_paned_add2(GTK_PANED(vpaned),
 			       GTK_WIDGET_PTR(mainwin->messageview));
 		gtk_widget_show(vpaned);
+		if (layout_mode == LITTLE_LAYOUT && first_set) {
+			mainwin_paned_show_first(GTK_PANED(hpaned));
+		}
 		gtk_widget_queue_resize(vpaned);
 		break;
 	case WIDE_LAYOUT:
@@ -2761,6 +2813,28 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	mainwin->hpaned = hpaned;
 	mainwin->vpaned = vpaned;
 
+	if (layout_mode == LITTLE_LAYOUT) {
+		if (mainwin->messageview->visible)
+			main_window_toggle_message_view(mainwin);
+	} 
+
+	if (layout_mode == LITTLE_LAYOUT && first_set) {
+		gtk_widget_realize(mainwin->window);
+		gtk_widget_realize(mainwin->folderview->ctree);
+		gtk_widget_realize(mainwin->summaryview->hbox);
+		gtk_widget_realize(mainwin->summaryview->hbox_l);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
+				    prefs_common.folderview_width,
+				    prefs_common.folderview_height);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
+				    0,0);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
+				    0,0);
+		gtk_widget_set_size_request(GTK_WIDGET(mainwin->window),
+				prefs_common.mainwin_width,
+				prefs_common.mainwin_height);
+		gtk_paned_set_position(GTK_PANED(mainwin->hpaned), 800);
+	} 
 	/* remove headerview if not in prefs */
 	headerview_set_visibility(mainwin->messageview->headerview,
 				  prefs_common.display_header_pane);
@@ -2816,6 +2890,9 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		break;
 	case WIDE_MSGLIST_LAYOUT:
 		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide message list", TRUE);
+		break;
+	case LITTLE_LAYOUT:
+		SET_CHECK_MENU_ACTIVE("/View/Layout/Little screen", TRUE);
 		break;
 	}
 #undef SET_CHECK_MENU_ACTIVE
@@ -2908,7 +2985,6 @@ static void main_window_size_allocate_cb(GtkWidget *widget,
 					 gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-
 	main_window_get_size(mainwin);
 }
 
@@ -3066,7 +3142,7 @@ static void set_layout_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	LayoutType layout_mode = action;
-
+	LayoutType old_layout_mode = prefs_common.layout_mode;
 	if (mainwin->menu_lock_count) {
 		return;
 	}
@@ -3078,12 +3154,20 @@ static void set_layout_cb(MainWindow *mainwin, guint action,
 		return;
 	}
 	
-	if (!mainwin->messageview->visible)
+	if (!mainwin->messageview->visible && layout_mode != LITTLE_LAYOUT)
+		main_window_toggle_message_view(mainwin);
+	else if (mainwin->messageview->visible && layout_mode == LITTLE_LAYOUT)
 		main_window_toggle_message_view(mainwin);
 
 	main_window_separation_change(mainwin, layout_mode);
-
-	mainwin_reset_paned(GTK_PANED(mainwin->vpaned));
+	mainwindow_reset_paned(GTK_PANED(mainwin->vpaned));
+	if (old_layout_mode == LITTLE_LAYOUT && layout_mode != LITTLE_LAYOUT) {
+		mainwindow_reset_paned(GTK_PANED(mainwin->hpaned));
+	}
+	if (old_layout_mode != LITTLE_LAYOUT && layout_mode == LITTLE_LAYOUT) {
+		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
+		mainwindow_exit_folder(mainwin);
+	}
 	summary_relayout(mainwin->summaryview);	
 }
 
@@ -3890,6 +3974,15 @@ gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			folderview_select_next_unread(mainwin->folderview, TRUE);
 		}
 		break;
+#ifdef MAEMO
+	case GDK_F6:
+		if (maemo_mainwindow_is_fullscreen(widget)) {
+                	gtk_window_unfullscreen(GTK_WINDOW(widget));
+                } else {
+                	gtk_window_fullscreen(GTK_WINDOW(widget));
+                }
+		break;
+#endif
 	default:
 		break;
 	}
@@ -4034,3 +4127,40 @@ void mainwindow_jump_to(const gchar *target)
 	
 	g_free(tmp);
 }
+
+void mainwindow_exit_folder(MainWindow *mainwin) {
+	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		folderview_close_opened(mainwin->folderview);
+		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
+		mainwin->in_folder = FALSE;
+	}
+}
+
+void mainwindow_enter_folder(MainWindow *mainwin) {
+	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		mainwin_paned_show_last(GTK_PANED(mainwin->hpaned));
+		mainwin->in_folder = TRUE;
+	}
+}
+
+#ifdef MAEMO
+gboolean maemo_mainwindow_is_fullscreen(GtkWidget *widget)
+{
+	gint w, h;
+	gtk_window_get_size(GTK_WINDOW(widget), &w, &h); 
+	return (w == 800);
+}
+
+void maemo_window_full_screen_if_needed (GtkWindow *window)
+{
+	if (maemo_mainwindow_is_fullscreen(mainwindow_get_mainwindow()->window)) {
+		gtk_window_fullscreen(GTK_WINDOW(window));
+	}
+}
+
+void maemo_connect_key_press_to_mainwindow (GtkWindow *window)
+{
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(mainwindow_key_pressed), mainwindow_get_mainwindow());
+}
+#endif

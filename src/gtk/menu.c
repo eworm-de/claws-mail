@@ -35,6 +35,11 @@
 #include "menu.h"
 #include "utils.h"
 
+#ifdef MAEMO
+#include <hildon-widgets/hildon-program.h>
+#include <gtk/gtkmain.h>
+#endif
+
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) ;
 
 
@@ -42,14 +47,23 @@ GtkWidget *menubar_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 			  guint n_entries, const gchar *path, gpointer data)
 {
 	GtkItemFactory *factory;
-
+	GtkWidget *menubar;
+	
+#ifdef MAEMO
+	factory = gtk_item_factory_new(GTK_TYPE_MENU, path, NULL);
+#else
 	factory = gtk_item_factory_new(GTK_TYPE_MENU_BAR, path, NULL);
+#endif
 	gtk_item_factory_set_translate_func(factory, menu_translate,
 					    NULL, NULL);
 	gtk_item_factory_create_items(factory, n_entries, entries, data);
 	gtk_window_add_accel_group (GTK_WINDOW (window), factory->accel_group);
 
-	return gtk_item_factory_get_widget(factory, path);
+	menubar  = gtk_item_factory_get_widget(factory, path);
+#ifdef MAEMO
+	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
+#endif
+	return menubar;
 }
 
 GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,

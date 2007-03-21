@@ -251,6 +251,10 @@ void log_window_show(LogWindow *logwin)
 	gtk_text_view_scroll_mark_onscreen(text, mark);
 
 	gtk_widget_show(logwin->window);
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(logwin->window));
+	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(logwin->window));
+#endif
 }
 
 static void log_window_jump_to_error(LogWindow *logwin)

@@ -634,6 +634,10 @@ void addressbook_open(Compose *target)
 	}
 
 	gtk_widget_show_all(addrbook.window);
+#ifdef MAEMO
+		maemo_window_full_screen_if_needed(GTK_WINDOW(addrbook.window));
+		maemo_connect_key_press_to_mainwindow(GTK_WINDOW(addrbook.window));
+#endif
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_person_widgetset_hide();
 

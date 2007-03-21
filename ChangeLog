@@ -1,3 +1,33 @@
+2007-03-21 [colin]	2.8.1cvs32
+
+	* claws-mail-40x40.png
+	* claws-mail-26x26.png
+	* src/account.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/folderview.c
+	* src/folderview.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/messageview.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/authors.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/logwindow.c
+	* src/gtk/menu.c
+	* src/gtk/prefswindow.c
+		Add Maemo port (patch mainly by Jean-Luc Biort)
+		Add a new 'Little screen' layout to help on such
+		platforms (patch by me)
+		Make some default preferences different (more
+		adapted) on Maemo (patch by me)
+
 2007-03-21 [wwp]	2.8.1cvs31
 
 	* src/prefs_logging.c

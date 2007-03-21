@@ -2014,6 +2014,28 @@ static gboolean postpone_select(void *data)
 	return FALSE;
 }
 
+void folderview_close_opened(FolderView *folderview)
+{
+	if (folderview->opened) {
+		FolderItem *olditem;
+		
+		olditem = gtk_ctree_node_get_row_data(folderview->ctree, folderview->opened);
+		if (olditem) {
+			gchar *buf = g_strdup_printf(_("Closing Folder %s..."), 
+				olditem->path ? olditem->path:olditem->name);
+			/* will be null if we just moved the previously opened folder */
+			STATUSBAR_PUSH(folderview->mainwin, buf);
+			main_window_cursor_wait(folderview->mainwin);
+			g_free(buf);
+			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
+			summary_show(folderview->summaryview, NULL);
+			folder_item_close(olditem);
+			main_window_cursor_normal(folderview->mainwin);
+			STATUSBAR_POP(folderview->mainwin);
+		}
+	}
+	folderview->opened = NULL;
+}
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {
@@ -2058,24 +2080,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	/* Save cache for old folder */
 	/* We don't want to lose all caches if sylpheed crashed */
-	if (folderview->opened) {
-		FolderItem *olditem;
-		
-		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
-		if (olditem) {
-			buf = g_strdup_printf(_("Closing Folder %s..."), 
-				olditem->path ? olditem->path:olditem->name);
-			/* will be null if we just moved the previously opened folder */
-			STATUSBAR_PUSH(folderview->mainwin, buf);
-			main_window_cursor_wait(folderview->mainwin);
-			g_free(buf);
-			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
-			summary_show(folderview->summaryview, NULL);
-			folder_item_close(olditem);
-			main_window_cursor_normal(folderview->mainwin);
-			STATUSBAR_POP(folderview->mainwin);
-		}
-	}
+	folderview_close_opened(folderview);
 
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */

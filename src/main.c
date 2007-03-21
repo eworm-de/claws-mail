@@ -114,6 +114,24 @@
 
 #include "timing.h"
 
+#ifdef MAEMO
+#include <hildon-widgets/hildon-program.h>
+#include <gtk/gtkmain.h>
+#include <libosso.h>
+
+#define OSSO_EXAMPLE_NAME    "claws-mail"
+#define OSSO_EXAMPLE_SERVICE "org.maemo."OSSO_EXAMPLE_NAME
+#define OSSO_EXAMPLE_OBJECT  "/org/maemo/"OSSO_EXAMPLE_NAME
+#define OSSO_EXAMPLE_IFACE   "org.maemo."OSSO_EXAMPLE_NAME
+
+typedef struct _AppData AppData;
+struct _AppData {
+    HildonProgram *program;
+    HildonWindow *window;
+    osso_context_t *osso_context;
+};
+#endif
+
 gchar *prog_version;
 gchar *argv0;
 
@@ -186,6 +204,34 @@ static void exit_claws			(MainWindow *mainwin);
 }
 
 static MainWindow *static_mainwindow;
+
+#ifdef MAEMO
+static HildonProgram *static_hildonprogram;
+void exit_event_handler(gboolean die_now, gpointer data)
+{
+	AppData *appdata;
+	appdata = (AppData *) data;
+	/* Do whatever application needs to do before exiting */
+	exit_claws(static_mainwindow);
+	hildon_banner_show_information(GTK_WIDGET(appdata->window), NULL,
+                                   _("Exiting..."));
+
+}
+
+/* Callback for normal D-BUS messages */
+gint dbus_req_handler(const gchar * interface, const gchar * method,
+                      GArray * arguments, gpointer data,
+                      osso_rpc_t * retval)
+{
+    AppData *appdata;
+    appdata = (AppData *) data;
+
+    osso_system_note_infoprint(appdata->osso_context, method, retval);
+    osso_rpc_free_val(retval);
+
+    return OSSO_OK;
+}
+#endif
 static gboolean emergency_exit = FALSE;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -560,6 +606,10 @@ void main_set_show_at_startup(gboolean show)
 
 int main(int argc, char *argv[])
 {
+#ifdef MAEMO
+	osso_context_t *osso_context;
+	osso_return_t result;
+#endif
 	gchar *userrc;
 	MainWindow *mainwin;
 	FolderView *folderview;
@@ -620,6 +670,13 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
+#ifdef MAEMO
+	osso_context = osso_initialize(PACKAGE, VERSION, TRUE, NULL);
+	if (osso_context == NULL) {
+		return OSSO_ERROR;
+	}
+	static_hildonprogram = HILDON_PROGRAM(hildon_program_get_instance());
+#endif	
 	gdk_rgb_init();
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
 	gtk_widget_set_default_visual(gdk_rgb_get_visual());
@@ -778,7 +835,29 @@ int main(int argc, char *argv[])
 	news_gtk_init();
 
 	mainwin = main_window_create();
+#ifdef MAEMO
+	AppData *appdata;
+	appdata = g_new0(AppData, 1);
+	appdata->program = static_hildonprogram;
+	appdata->window = mainwin->window;
+	appdata->osso_context = osso_context;
+	result = osso_rpc_set_cb_f(appdata->osso_context, 
+	                        OSSO_EXAMPLE_SERVICE, 
+	                        OSSO_EXAMPLE_OBJECT, 
+	                        OSSO_EXAMPLE_IFACE,
+	                        dbus_req_handler, appdata);
+	if (result != OSSO_OK) {
+		return OSSO_ERROR;
+	}
 
+	/* Add handler for Exit D-BUS messages */
+	result = osso_application_set_exit_cb(appdata->osso_context,
+	                                        exit_event_handler,
+	                                        (gpointer) appdata);
+	if (result != OSSO_OK) {
+		return OSSO_ERROR;
+	}
+#endif
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
@@ -989,6 +1068,9 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
+#ifdef MAEMO
+	osso_deinitialize(osso_context);
+#endif
 	exit_claws(mainwin);
 
 	return 0;
@@ -1716,3 +1798,10 @@ static void install_basic_sighandlers()
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
 #endif /* !G_OS_WIN32 */
 }
+
+#ifdef MAEMO
+HildonProgram *hildon_program()
+{
+	return static_hildonprogram;
+}
+#endif

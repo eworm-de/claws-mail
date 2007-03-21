@@ -367,7 +367,6 @@ static gboolean attach_button_pressed	(GtkWidget	*widget,
 static gboolean attach_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-
 static void compose_send_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -6154,6 +6153,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	compose->tooltips = gtk_tooltips_new();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
+
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
 
@@ -6170,11 +6170,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MIN_SIZE);
-	
+
+#ifndef MAEMO	
 	if (compose_force_window_origin)
 		gtk_widget_set_uposition(window, prefs_common.compose_x, 
 				 prefs_common.compose_y);
-
+#endif
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(compose_delete_cb), compose);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
@@ -6310,8 +6311,17 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	paned = gtk_vpaned_new();
 	gtk_paned_set_gutter_size(GTK_PANED(paned), 12);
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
+#ifdef MAEMO
+	if( maemo_mainwindow_is_fullscreen(mainwindow_get_mainwindow()->window) )
+		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 300 : 280);
+	else
+		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 250 : 230);
+	gtk_paned_add1(GTK_PANED(paned), edit_vbox);
+	gtk_paned_add2(GTK_PANED(paned), notebook);
+#else
 	gtk_paned_add1(GTK_PANED(paned), notebook);
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
+#endif
 	gtk_widget_show_all(paned);
 
 
@@ -6503,6 +6513,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 		gtk_widget_realize(window);
 	} else {
 		gtk_widget_show(window);
+#ifdef MAEMO
+		maemo_window_full_screen_if_needed(GTK_WINDOW(window));
+		maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
+#endif
 	}
 	
 	return compose;

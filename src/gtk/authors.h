@@ -9,6 +9,7 @@ static char *TEAM_LIST[] = {
 "Paul Mangan <paul@claws-mail.org>",
 "Martin Schaaf <mascha1@users.sf.net>",
 "Fabien Vantard <fzzzzz@gmail.com>",
+"Fabien Vantard <fzzzzz@gmail.com>",
 NULL
 };
 
@@ -88,6 +89,7 @@ static char *CONTRIBS_LIST[] = {
 "Fabio Junior Beneditto",
 "M. Benkmann",
 "Wilbert Berendsen",
+"Jean-Luc Biord",
 "Eugene Brevdo",
 "André Filipe de Assunção e Brito",
 "Henrik Carlqvist",
