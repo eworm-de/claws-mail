@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=33
+EXTRA_VERSION=34
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -438,11 +438,13 @@ AC_ARG_ENABLE(maemo,
 	[  --enable-maemo   Build for the Maemo platform [default=no]],
 	[ac_cv_enable_maemo=$enableval], [ac_cv_enable_maemo=no])
 if test $ac_cv_enable_maemo = yes; then
-	AC_MSG_CHECKING([whether to build for Maemo])
-	if test $ac_cv_enable_maemo = yes; then
-		AC_DEFINE(MAEMO, 1, Build for Maemo)
+	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs, ac_cv_enable_maemo=yes,
+		  ac_cv_enable_maemo=no)
+	AC_SUBST(MAEMO_CFLAGS)
+	AC_SUBST(MAEMO_LIBS)
+	if test $ac_cv_enable_maemo = no; then
+		AC_MSG_ERROR(libosso or hildon-libs not found)
 	fi
-	AC_MSG_RESULT($ac_cv_enable_maemo)
 fi
 
 dnl Check for X-Face support

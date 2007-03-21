@@ -447,7 +447,8 @@ claws_mail_LDADD = \
 	$(SM_LIBS) \
 	$(LIBICONV) \
 	$(STARTUP_NOTIFICATION_LIBS) \
-	$(LIBETPAN_LIBS)
+	$(LIBETPAN_LIBS) \
+	$(MAEMO_LIBS)
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Claws-Mail\" \
@@ -464,6 +465,7 @@ AM_CPPFLAGS = \
 	$(GNOMEPRINT_CFLAGS) \
 	$(LIBETPAN_CPPFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS) \
+	$(MAEMO_CFLAGS) \
 	-Wno-unused-function
 	 
 #no-unused-function is there because of bison stuff
