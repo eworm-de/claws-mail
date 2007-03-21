@@ -1,3 +1,9 @@
+2007-03-21 [colin]	2.8.1cvs33
+
+	* src/main.c
+		Fix unconditional "error happened" when
+		sending via command-line. "lol @ myself"
+
 2007-03-21 [colin]	2.8.1cvs32
 
 	* claws-mail-40x40.png

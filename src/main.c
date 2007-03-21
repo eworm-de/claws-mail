@@ -1731,6 +1731,7 @@ static void send_queue(void)
 {
 	GList *list;
 	gchar *errstr = NULL;
+	gboolean error = FALSE;
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;
 
@@ -1742,6 +1743,9 @@ static void send_queue(void)
 			if (res) {
 				folder_item_scan(folder->queue);
 			}
+			
+			if (res < 0)
+				error = TRUE;
 		}
 	}
 	if (errstr) {
@@ -1750,7 +1754,7 @@ static void send_queue(void)
 		g_free(errstr);
 		alertpanel_error_log(tmp);
 		g_free(tmp);
-	} else {
+	} else if (error) {
 		alertpanel_error_log("Some errors occurred "
 				"while sending queued messages.");
 	}
