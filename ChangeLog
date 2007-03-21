@@ -1,3 +1,9 @@
+2007-03-21 [wwp]	2.8.1cvs31
+
+	* src/prefs_logging.c
+	* src/prefs_logging.h
+		Fixed copyright header of newly added files.
+
 2007-03-21 [wwp]	2.8.1cvs30
 
 	* src/Makefile.am
