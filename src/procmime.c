@@ -1371,6 +1371,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	guint content_start, i;
 	FILE *fp;
         gchar *tmp;
+	gint len = 0;
 
 	procmime_decode_content(mimeinfo);
 
@@ -1404,12 +1405,15 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	content_start = ftell(fp);
 	fclose(fp);
 	
+	len = mimeinfo->length - (content_start - mimeinfo->offset);
+	if (len < 0)
+		len = 0;
 	procmime_parse_mimepart(mimeinfo,
 				hentry[0].body, hentry[1].body,
 				hentry[2].body, hentry[3].body,
 				hentry[4].body, hentry[5].body,
 				mimeinfo->data.filename, content_start,
-				mimeinfo->length - (content_start - mimeinfo->offset));
+				len);
 	
 	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
@@ -1457,12 +1461,15 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo)
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
 			if (lastoffset != -1) {
+				gint len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
+				if (len < 0)
+					len = 0;
 				result = procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, hentry[5].body,
 							mimeinfo->data.filename, lastoffset,
-							(ftell(fp) - strlen(buf)) - lastoffset - 1);
+							len);
 			}
 			
 			if (buf[2 + boundary_len]     == '-' &&

@@ -1,3 +1,10 @@
+2007-03-21 [colin]	2.8.1cvs28
+
+	* src/procmime.c
+		Fix bug 1157, 'some broken messages confuse 
+		mime parser'. Make sure we can't have MimeInfos
+		with negative sizes.
+
 2007-03-20 [colin]	2.8.1cvs27
 
 	* src/main.c
