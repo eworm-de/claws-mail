@@ -2195,7 +2195,7 @@ gboolean is_file_entry_exist(const gchar *file)
 
 gboolean dirent_is_regular_file(struct dirent *d)
 {
-#ifdef HAVE_DIRENT_D_TYPE
+#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
 	if (d->d_type == DT_REG)
 		return TRUE;
 	else if (d->d_type != DT_UNKNOWN)
@@ -2207,7 +2207,7 @@ gboolean dirent_is_regular_file(struct dirent *d)
 
 gboolean dirent_is_directory(struct dirent *d)
 {
-#ifdef HAVE_DIRENT_D_TYPE
+#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
 	if (d->d_type == DT_DIR)
 		return TRUE;
 	else if (d->d_type != DT_UNKNOWN)

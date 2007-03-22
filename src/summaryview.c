@@ -724,7 +724,7 @@ SummaryView *summary_create(void)
 		quicksearch_hide(quicksearch);
 	
 	if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT ||
-	    prefs_common.layout_mode == LITTLE_LAYOUT)
+	    prefs_common.layout_mode == SMALL_LAYOUT)
 		gtk_widget_hide(summaryview->toggle_eventbox);
 
 	return summaryview;
@@ -749,18 +749,18 @@ void summary_relayout(SummaryView *summaryview)
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
 		if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT ||
-		    prefs_common.layout_mode == LITTLE_LAYOUT)
+		    prefs_common.layout_mode == SMALL_LAYOUT)
 			gtk_widget_hide(summaryview->toggle_eventbox);
 		else
 			gtk_widget_show(summaryview->toggle_eventbox);
 		break;
 	case VERTICAL_LAYOUT:
-	case LITTLE_LAYOUT:
+	case SMALL_LAYOUT:
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
-		if (prefs_common.layout_mode == LITTLE_LAYOUT)
+		if (prefs_common.layout_mode == SMALL_LAYOUT)
 			gtk_widget_hide(summaryview->toggle_eventbox);
 		else
 			gtk_widget_show(summaryview->toggle_eventbox);
@@ -1030,7 +1030,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (!is_refresh) {
 		main_create_mailing_list_menu (summaryview->mainwin, NULL);
-		if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		if (prefs_common.layout_mode == SMALL_LAYOUT) {
 			if (item) {
 				mainwindow_enter_folder(summaryview->mainwin);
 				gtk_widget_grab_focus(summaryview->ctree);
@@ -3057,7 +3057,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	
 	g_return_if_fail(msginfo);
 
-	if (new_window && prefs_common.layout_mode != LITTLE_LAYOUT) {
+	if (new_window && prefs_common.layout_mode != SMALL_LAYOUT) {
 		MessageView *msgview;
 
 		msgview = messageview_create_with_new_window(summaryview->mainwin);
@@ -3065,7 +3065,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	} else {
 		MessageView *msgview;
 
-		if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+		if (prefs_common.layout_mode == SMALL_LAYOUT) {
 			if (summaryview->ext_messageview == NULL)
 				summaryview->ext_messageview = messageview_create_with_new_window(summaryview->mainwin);
 			else
@@ -3230,7 +3230,7 @@ gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
 
 void summary_toggle_view(SummaryView *summaryview)
 {
-	if (prefs_common.layout_mode == LITTLE_LAYOUT)
+	if (prefs_common.layout_mode == SMALL_LAYOUT)
 		return;
 	if (!messageview_is_visible(summaryview->messageview) &&
 	    summaryview->selected)
@@ -5899,7 +5899,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	context = gtk_drag_begin(widget, summaryview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
-	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		gint min, max, mid;
 		GtkWidget *paned = GTK_WIDGET_PTR(summaryview)->parent;
 		if (paned && GTK_IS_PANED(paned)) {
@@ -5919,7 +5919,7 @@ static void summary_drag_end	   (GtkWidget	    *widget,
 				   GdkDragContext   *drag_context,
                                    SummaryView 	    *summaryview)
 {
-	if (prefs_common.layout_mode == LITTLE_LAYOUT) {
+	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		g_timeout_add(250, summary_return_to_list, summaryview);
 	}
 }
@@ -6465,7 +6465,7 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 static void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
-	if (prefs_common.layout_mode != LITTLE_LAYOUT)
+	if (prefs_common.layout_mode != SMALL_LAYOUT)
 		return;
 	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
 	if (removed_item) {

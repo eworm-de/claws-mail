@@ -66,7 +66,7 @@ typedef enum
 	VERTICAL_LAYOUT	 = 1 << 0,
 	WIDE_LAYOUT = 1 << 1,
 	WIDE_MSGLIST_LAYOUT = 1 << 2,
-	LITTLE_LAYOUT
+	SMALL_LAYOUT
 } LayoutType;
 
 typedef enum

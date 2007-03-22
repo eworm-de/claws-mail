@@ -70,6 +70,7 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS) \
 	$(ASPELL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
+	$(MAEMO_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDOCDIR=\"$(DOCDIR)\" 
 
@@ -77,7 +78,8 @@ libclawsgtk_la_LIBADD = \
 	../common/libclawscommon.la \
 	$(GTK_LIBS) \
 	$(ASPELL_LIBS) \
-	$(GNOMEPRINT_LIBS)
+	$(GNOMEPRINT_LIBS) \
+	$(MAEMO_LIBS)
 
 BUILT_SOURCES=claws-marshal.c claws-marshal.h 
 

@@ -1,3 +1,14 @@
+2007-03-22 [colin]	2.8.1cvs36
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+		Rename "little screen" to "Small screen"
+	* src/gtk/Makefile.am
+	* src/common/utils.c
+	* src/mh.c
+		Fix Maemo-related compilation problems
+
 2007-03-21 [colin]	2.8.1cvs35
 
 	* configure.ac
