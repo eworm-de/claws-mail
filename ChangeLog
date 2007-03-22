@@ -1,3 +1,13 @@
+2007-03-22 [colin]	2.8.1cvs38
+
+	* src/addrindex.c
+	* src/ldapctrl.h
+	* src/ldapquery.c
+		Add any attribute specified in LDAP servers'
+		Search attributes to the Other Attributes tab
+		of contacts; Add 'telephoneNumber' in the
+		default list.
+
 2007-03-22 [colin]	2.8.1cvs37
 
 	* src/folderview.c

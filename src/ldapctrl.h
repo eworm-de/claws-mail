@@ -44,8 +44,9 @@
 #define LDAPCTL_ATTR_COMMONNAME "cn"
 #define LDAPCTL_ATTR_GIVENNAME  "givenName"
 #define LDAPCTL_ATTR_SURNAME    "sn"
+#define LDAPCTL_ATTR_PHONE     "telephoneNumber"
 
-#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn"
+#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn, telephoneNumber"
 
 /*
  * Search matching options.

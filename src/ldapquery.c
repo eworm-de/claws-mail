@@ -353,12 +353,16 @@ void ldapqry_free( LdapQuery *qry ) {
  */
 static void ldapqry_free_lists(
 		GSList *listName, GSList *listAddr, GSList *listFirst,
-		GSList *listLast )
+		GSList *listLast, GSList *other_attrs )
 {
+	GSList *cur = other_attrs;
 	mgu_free_list( listName );
 	mgu_free_list( listAddr );
 	mgu_free_list( listFirst );
 	mgu_free_list( listLast );
+	for(;cur; cur = cur->next)
+		addritem_free_attribute((UserAttribute *)cur->data);
+	g_slist_free(other_attrs);
 }
 
 /**
@@ -430,9 +434,9 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 static GList *ldapqry_build_items_fl(
 		AddressCache *cache, LdapQuery *qry, gchar *dn,
 		GSList *listName, GSList *listAddr, GSList *listFirst,
-		GSList *listLast )
+		GSList *listLast, GSList *attributes )
 {
-	GSList *nodeAddress;
+	GSList *nodeAddress, *cur;
 	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL;
 	gboolean allocated;
 	ItemPerson *person;
@@ -483,6 +487,12 @@ static GList *ldapqry_build_items_fl(
 	addritem_person_set_last_name( person, lastName );
 	addrcache_id_person( cache, person );
 	addritem_person_set_external_id( person, dn );
+	
+	for (cur = attributes; cur; cur = cur->next) {
+		UserAttribute *attrib = addritem_copy_attribute((UserAttribute *)cur->data);
+		addritem_person_add_attribute( person, attrib );
+	}
+	
 	addrcache_folder_add_person( cache, ADDRQUERY_FOLDER(qry), person );
 
 	qry->entriesRead++;
@@ -525,6 +535,7 @@ static GList *ldapqry_process_single_entry(
 	BerElement *ber;
 	GSList *listName = NULL, *listAddress = NULL;
 	GSList *listFirst = NULL, *listLast = NULL;
+	GSList *other_attrs = NULL;
 	GList *listReturn;
 
 	listReturn = NULL;
@@ -535,7 +546,6 @@ static GList *ldapqry_process_single_entry(
 	/* Process all attributes */
 	for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 		attribute = ldap_next_attribute( ld, e, ber ) ) {
-
 		if( strcasecmp( attribute, ctl->attribEMail ) == 0 ) {
 			listAddress = ldapqry_add_list_values( ld, e, attribute );
 		}
@@ -547,19 +557,28 @@ static GList *ldapqry_process_single_entry(
 		}
 		else if( strcasecmp( attribute, ctl->attribLName ) == 0 ) {
 			listLast = ldapqry_add_single_value( ld, e, attribute );
+		} else {
+			GSList *attlist = ldapqry_add_single_value( ld, e, attribute );
+			UserAttribute *attrib = addritem_create_attribute();
+			const gchar *attvalue = attlist?((gchar *)attlist->data):NULL;
+			if (attvalue) {
+				addritem_attrib_set_name( attrib, attribute );
+				addritem_attrib_set_value( attrib, attvalue );
+				other_attrs = g_slist_prepend(other_attrs, attrib);
+			}
+			mgu_free_list(attlist);
 		}
-
 		/* Free memory used to store attribute */
 		ldap_memfree( attribute );
 	}
 
 	/* Format and add items to cache */
 	listReturn = ldapqry_build_items_fl(
-		cache, qry, dnEntry, listName, listAddress, listFirst, listLast );
+		cache, qry, dnEntry, listName, listAddress, listFirst, listLast, other_attrs );
 
 	/* Free up */
-	ldapqry_free_lists( listName, listAddress, listFirst, listLast );
-	listName = listAddress = listFirst = listLast = NULL;
+	ldapqry_free_lists( listName, listAddress, listFirst, listLast, other_attrs );
+	listName = listAddress = listFirst = listLast = other_attrs = NULL;
 
 	if( ber != NULL ) {
 		ber_free( ber, 0 );

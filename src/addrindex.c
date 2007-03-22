@@ -1340,6 +1340,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		else if( strcmp( name, ATTAG_LDAP_CRITERIA ) == 0 ) {
 			g_free( criteria );
 			criteria = g_strdup( value );
+			printf("criteria %s\n", criteria);
 		}
 		else if( strcmp( name, ATTAG_LDAP_MAX_ENTRY ) == 0 ) {
 			ldapctl_set_max_entries( ctl, ivalue );
