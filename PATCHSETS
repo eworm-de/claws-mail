@@ -2456,3 +2456,4 @@
 ( cvs diff -u -r 1.207.2.153 -r 1.207.2.154 src/folderview.c;  cvs diff -u -r 1.20.2.19 -r 1.20.2.20 src/folderview.h;  cvs diff -u -r 1.274.2.180 -r 1.274.2.181 src/mainwindow.c;  cvs diff -u -r 1.395.2.289 -r 1.395.2.290 src/summaryview.c;  ) > 2.8.1cvs37.patchset
 ( cvs diff -u -r 1.28.2.24 -r 1.28.2.25 src/addrindex.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/ldapctrl.h;  cvs diff -u -r 1.3.2.16 -r 1.3.2.17 src/ldapquery.c;  ) > 2.8.1cvs38.patchset
 ( cvs diff -u -r 1.59.2.54 -r 1.59.2.55 src/prefs_filtering.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/gtk/combobox.h;  ) > 2.8.1cvs39.patchset
+( cvs diff -u -r 1.12.2.43 -r 1.12.2.44 src/action.c;  ) > 2.8.1cvs40.patchset
