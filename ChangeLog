@@ -1,3 +1,9 @@
+2007-03-22 [colin]	2.8.1cvs39
+
+	* src/prefs_filtering.c
+	* src/gtk/combobox.h
+		Fix escaping account names in filtering prefs
+
 2007-03-22 [colin]	2.8.1cvs38
 
 	* src/addrindex.c

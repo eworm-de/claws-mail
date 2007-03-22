@@ -33,6 +33,17 @@
 			-1); \
 }
 
+#define COMBOBOX_ADD_ESCAPED(menu, label, data) 		 \
+{ 								 \
+	gchar *tmp_esc = g_markup_printf_escaped("%s", label);	 \
+	gtk_list_store_append(menu, &iter); 			 \
+	gtk_list_store_set(menu, &iter, 			 \
+			0, (tmp_esc ? tmp_esc : ""), 		 \
+			1, data, 				 \
+			-1); 					 \
+	g_free(tmp_esc);					 \
+}
+
 void combobox_select_by_data	(GtkComboBox 		*combobox,
 				 gint		 data);
 
