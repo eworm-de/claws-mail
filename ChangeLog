@@ -1,3 +1,15 @@
+2007-03-22 [colin]	2.8.1cvs37
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+		Try to prevent race conditions when
+		changing the folder list
+	* src/summaryview.c
+		Fix possible red folder icon when
+		switching from Small screen layout
+		to any other
+
 2007-03-22 [colin]	2.8.1cvs36
 
 	* src/mainwindow.c

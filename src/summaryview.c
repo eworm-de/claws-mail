@@ -6465,8 +6465,18 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 static void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
-	if (prefs_common.layout_mode != SMALL_LAYOUT)
+	static gboolean tips_initialized = FALSE;
+
+	if (prefs_common.layout_mode != SMALL_LAYOUT) {
+		if (tips_initialized) {
+			summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
+			     summaryview->folder_pixmap_eventbox,
+			     NULL, NULL);
+			tips_initialized = FALSE;
+		} 
 		return;
+	}
 	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
 	if (removed_item) {
 		total -= removed_item->total_msgs;
@@ -6475,11 +6485,13 @@ static void summary_update_unread(SummaryView *summaryview, FolderItem *removed_
 	}
 	
 	if (new > 0 || unread > 0) {
+		tips_initialized = TRUE;
 		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN_HRM);
 		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
 			     summaryview->folder_pixmap_eventbox,
 			     _("Go back to the folder list (You have unread messages)"), NULL);
 	} else {
+		tips_initialized = TRUE;
 		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
 			     summaryview->folder_pixmap_eventbox,

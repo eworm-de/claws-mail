@@ -2340,6 +2340,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
 		{"/Configuration", M_UNLOCKED},
+		{"/Configuration/Preferences for current account...", M_UNLOCKED},
+		{"/Configuration/Create new account...", M_UNLOCKED},
+		{"/Configuration/Edit accounts...", M_UNLOCKED},
 
 		{NULL, 0}
 	};

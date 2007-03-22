@@ -620,6 +620,7 @@ FolderView *folderview_create(void)
 	
 	folderview->target_list = gtk_target_list_new(folderview_drag_types, 2);
 	folderview_list = g_list_append(folderview_list, folderview);
+	folderview->deferred_refresh_id = -1;
 
 	return folderview;
 }
@@ -706,6 +707,23 @@ void folderview_init(FolderView *folderview)
 	}
 }
 
+static gboolean folderview_defer_set(gpointer data)
+{
+	FolderView *folderview = (FolderView *)data;
+	MainWindow *mainwin = folderview->mainwin;
+	
+	if (!mainwin)
+		return FALSE;
+	if (mainwin->lock_count)
+		return TRUE;
+		
+	printf("doing deferred folderview_set now\n");
+	folderview_set(folderview);
+
+	folderview->deferred_refresh_id = -1;
+	return FALSE;
+}
+
 void folderview_set(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
@@ -715,6 +733,15 @@ void folderview_set(FolderView *folderview)
 	if (!mainwin)
 		return;
 
+	if (mainwin->lock_count) {
+		if (folderview->deferred_refresh_id == -1)
+			folderview->deferred_refresh_id = 
+				g_timeout_add(500, folderview_defer_set, folderview);
+		printf("deferred folderview_set\n");
+		return;
+	}
+
+	inc_lock();
 	debug_print("Setting folder info...\n");
 	STATUSBAR_PUSH(mainwin, _("Setting folder info..."));
 
@@ -741,6 +768,7 @@ void folderview_set(FolderView *folderview)
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	main_window_cursor_normal(mainwin);
 	STATUSBAR_POP(mainwin);
+	inc_unlock();
 }
 
 void folderview_set_all(void)
