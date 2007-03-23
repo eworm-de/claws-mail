@@ -2148,7 +2148,6 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		unlock_session();
 		return -1;
 	}
-
 	g_free(item->name);
 	item->name = g_strdup(name);
 
@@ -3200,9 +3199,11 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	gchar **paths = data;
 	const gchar *oldpath = paths[0];
 	const gchar *newpath = paths[1];
+	gchar *real_oldpath, *real_newpath;
 	gchar *base;
 	gchar *new_itempath;
 	gint oldpathlen;
+	IMAPSession *session = imap_session_get(item->folder);
 
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
@@ -3217,9 +3218,18 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	else
 		new_itempath = g_strconcat(newpath, G_DIR_SEPARATOR_S, base,
 					   NULL);
+
+	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path);
 	g_free(item->path);
 	item->path = new_itempath;
+	
+	real_newpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path);
+	
+	imap_threaded_subscribe(item->folder, real_oldpath, FALSE);
+	imap_threaded_subscribe(item->folder, real_newpath, TRUE);
 
+	g_free(real_oldpath);
+	g_free(real_newpath);
 	return FALSE;
 }
 
