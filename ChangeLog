@@ -1,3 +1,10 @@
+2007-03-23 [wwp]	2.8.1cvs41
+
+	* src/action.c
+		Reverted that part of the action dialog closure logics, to
+		pre-2.8.1cvs19. Managing action dialog w/ no output may be
+		done later in a different way (or may not).
+
 2007-03-22 [wwp]	2.8.1cvs40
 
 	* src/action.c

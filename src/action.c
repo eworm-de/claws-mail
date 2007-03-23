@@ -1042,8 +1042,7 @@ static gint wait_for_children(Children *children)
 
 	if (!children->dialog) {
 		free_children(children);
-	} else if (!children->output
-			&& (children->action_type & (ACTION_PIPE_OUT | ACTION_INSERT))) {
+	} else if (!children->output) {
 		gtk_widget_destroy(children->dialog);
 	}
 
