@@ -1,3 +1,9 @@
+2007-03-23 [colin]	2.8.1cvs43
+
+	* src/prefs_common.c
+		Maemo: as the platform is light on RAM, allow
+		caches to be discarded faster.
+
 2007-03-23 [colin]	2.8.1cvs42
 
 	* src/Makefile.am

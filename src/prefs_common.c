@@ -942,10 +942,17 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
 	 NULL, NULL, NULL},
 	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
 	 NULL, NULL, NULL},
+#else
+	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
+	 NULL, NULL, NULL},
+	{"cache_min_keep_time", "0", &prefs_common.cache_min_keep_time, P_INT,
+	 NULL, NULL, NULL},
+#endif
 	{"thread_by_subject_max_age", "10", &prefs_common.thread_by_subject_max_age,
 	P_INT, NULL, NULL, NULL },
 	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
