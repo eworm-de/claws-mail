@@ -370,6 +370,7 @@ EXTRA_DIST = \
 	pixmaps/notice_warn.xpm \
 	pixmaps/offline.xpm \
 	pixmaps/online.xpm \
+	pixmaps/open_mail.xpm \
 	pixmaps/outbox_hrm.xpm \
 	pixmaps/outbox.xpm \
 	pixmaps/paste.xpm \

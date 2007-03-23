@@ -8298,6 +8298,11 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
+void compose_close_toolbar(Compose *compose)
+{
+	compose_close_cb(compose, 0, NULL);
+}
+
 static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;

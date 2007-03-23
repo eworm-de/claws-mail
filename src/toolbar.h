@@ -100,6 +100,9 @@ struct _Toolbar {
 	GtkWidget *spellcheck_btn;
 #endif
 
+	GtkWidget *open_mail_btn;
+	GtkWidget *close_window_btn;
+
 	GSList    *action_list;
 	GSList    *item_list;
 
@@ -159,6 +162,7 @@ enum {
 	A_REPLY_SENDER,
 	A_REPLY_ALL,
 	A_REPLY_ML,
+	A_OPEN_MAIL,
 	A_FORWARD,
 	A_TRASH,
 	A_DELETE_REAL,
@@ -187,6 +191,7 @@ enum {
 	/* common items */
 	A_SYL_ACTIONS,
 	A_CANCEL_INC,
+	A_CLOSE,
 
 	A_SEPARATOR,
 

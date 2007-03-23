@@ -2458,3 +2458,4 @@
 ( cvs diff -u -r 1.59.2.54 -r 1.59.2.55 src/prefs_filtering.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/gtk/combobox.h;  ) > 2.8.1cvs39.patchset
 ( cvs diff -u -r 1.12.2.43 -r 1.12.2.44 src/action.c;  ) > 2.8.1cvs40.patchset
 ( cvs diff -u -r 1.12.2.44 -r 1.12.2.45 src/action.c;  ) > 2.8.1cvs41.patchset
+( cvs diff -u -r 1.155.2.56 -r 1.155.2.57 src/Makefile.am;  cvs diff -u -r 1.382.2.362 -r 1.382.2.363 src/compose.c;  cvs diff -u -r 1.50.2.32 -r 1.50.2.33 src/compose.h;  cvs diff -u -r 1.25.2.33 -r 1.25.2.34 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.24 -r 1.18.2.25 src/stock_pixmap.h;  cvs diff -u -r 1.395.2.290 -r 1.395.2.291 src/summaryview.c;  cvs diff -u -r 1.68.2.34 -r 1.68.2.35 src/summaryview.h;  cvs diff -u -r 1.43.2.61 -r 1.43.2.62 src/toolbar.c;  cvs diff -u -r 1.19.2.15 -r 1.19.2.16 src/toolbar.h;  diff -u /dev/null src/pixmaps/open_mail.xpm;  ) > 2.8.1cvs42.patchset

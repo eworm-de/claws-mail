@@ -298,6 +298,7 @@ gint compose_queue			(Compose *compose,
 					 gchar **msgpath,
 					 gboolean remove_reedit_target);
 gboolean compose_close			(Compose *compose);
+void compose_close_toolbar		(Compose *compose);
 void compose_clear_exit_drafts		(void);
 void compose_reopen_exit_drafts		(void);
 #endif /* __COMPOSE_H__ */

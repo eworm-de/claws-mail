@@ -1,3 +1,20 @@
+2007-03-23 [colin]	2.8.1cvs42
+
+	* src/Makefile.am
+	* src/compose.c
+	* src/compose.h
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/toolbar.c
+	* src/toolbar.h
+	* src/pixmaps/open_mail.xpm
+		Maemo changes: Add the possibility to have
+		"Open Email" and "Close Window" buttons on 
+		toolbars (and use them in Maemo's default
+		toolbars)
+
 2007-03-23 [wwp]	2.8.1cvs41
 
 	* src/action.c

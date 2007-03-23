@@ -138,6 +138,10 @@ static void toolbar_send_later_cb		(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_draft_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
+static void toolbar_close_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_open_mail_cb		(GtkWidget	*widget,
+						 gpointer	 data);
 static void toolbar_insert_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_attach_cb			(GtkWidget	*widget,
@@ -197,6 +201,8 @@ struct {
 #endif
 	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
+	{ "A_OPEN_MAIL",	N_("Open email")			   },
+	{ "A_CLOSE",		N_("Close window")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
 };
 
@@ -402,9 +408,14 @@ static void toolbar_set_default_main(void)
 		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,
 			(gchar*)Q_("Toolbar|Compose") },
 		{ A_SEPARATOR,     0,                                 ("")         },
+#ifdef MAEMO
+		{ A_OPEN_MAIL,     STOCK_PIXMAP_OPEN_MAIL,            _("Open")    },
+#endif
 		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY,           _("Reply")   }, 
+#ifndef MAEMO
 		{ A_REPLY_ALL,     STOCK_PIXMAP_MAIL_REPLY_TO_ALL,    _("All")     },
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
+#endif
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
@@ -453,10 +464,17 @@ static void toolbar_set_default_compose(void)
 		{ A_SENDL,     		STOCK_PIXMAP_MAIL_SEND_QUEUE,   _("Send later") 	},
 		{ A_DRAFT,     		STOCK_PIXMAP_MAIL,              _("Draft")      	},
 		{ A_SEPARATOR, 		0,                               ("")           	}, 
+#ifndef MAEMO
 		{ A_INSERT,    		STOCK_PIXMAP_INSERT_FILE,       _("Insert")     	},
+#endif
 		{ A_ATTACH,    		STOCK_PIXMAP_MAIL_ATTACH,       _("Attach")     	},
 		{ A_SEPARATOR, 		0,                               ("")           	},
 		{ A_ADDRBOOK,  		STOCK_PIXMAP_ADDRESS_BOOK,      _("Address")    	}
+#ifdef MAEMO
+		,
+		{ A_SEPARATOR, 		0,                               ("")           	}, 
+		{ A_CLOSE,		STOCK_PIXMAP_CLOSE,		_("Close")		}
+#endif
 	};
 	
 	gint i;
@@ -503,6 +521,11 @@ static void toolbar_set_default_msgview(void)
 		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN,             _("Spam")    },
 #endif
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
+#ifdef MAEMO
+		,
+		{ A_SEPARATOR, 		0,                               ("")	   }, 
+		{ A_CLOSE,		STOCK_PIXMAP_CLOSE,		_("Close") }
+#endif
 	};
 	
 	gint i;
@@ -1304,6 +1327,52 @@ static void toolbar_draft_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_DRAFT, data);
 }
 
+static void toolbar_close_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *messageview;
+	Compose *compose;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		app_will_exit(NULL, mainwin);
+		break;
+	case TOOLBAR_MSGVIEW:
+		messageview = (MessageView *)toolbar_item->parent;
+		messageview_destroy(messageview);
+		break;
+	case TOOLBAR_COMPOSE:
+		compose = (Compose *)toolbar_item->parent;
+		compose_close_toolbar(compose);
+		break;
+	}
+}
+
+static void toolbar_open_mail_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_open_row(NULL, mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		debug_print("toolbar event not supported\n");
+		break;
+	case TOOLBAR_COMPOSE:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
 static void toolbar_insert_cb(GtkWidget *widget, gpointer data)
 {
 	compose_toolbar_cb(A_INSERT, data);
@@ -1428,6 +1497,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_SEND,		toolbar_send_cb       		},
 		{ A_SENDL,		toolbar_send_later_cb 		},
 		{ A_DRAFT,		toolbar_draft_cb      		},
+		{ A_OPEN_MAIL,		toolbar_open_mail_cb		},
+		{ A_CLOSE,		toolbar_close_cb		},
 		{ A_INSERT,		toolbar_insert_cb     		},
 		{ A_ATTACH,		toolbar_attach_cb     		},
 		{ A_SIG,		toolbar_sig_cb	      		},
@@ -1553,6 +1624,18 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     toolbar_data->send_btn,
 					   _("Send Queued Messages"), NULL);
+			break;
+		case A_CLOSE:
+			toolbar_data->close_window_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->close_window_btn,
+					   _("Close window"), NULL);
+			break;
+		case A_OPEN_MAIL:
+			toolbar_data->open_mail_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->open_mail_btn,
+					   _("Open email"), NULL);
 			break;
 		case A_COMPOSE_EMAIL:
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
@@ -1954,6 +2037,14 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(toolbar->compose_news_btn, 
 			M_HAVE_ACCOUNT);
 	}
+	if (toolbar->close_window_btn) {
+		SET_WIDGET_COND(toolbar->compose_news_btn, 
+			M_UNLOCKED);
+	}
+	if (toolbar->open_mail_btn) {
+		SET_WIDGET_COND(toolbar->open_mail_btn, 
+			M_TARGET_EXIST);
+	}
 	if (toolbar->reply_btn) {
 		SET_WIDGET_COND(toolbar->reply_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
@@ -2116,7 +2207,8 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->prev_btn         	= NULL;
 	toolbar->next_btn         	= NULL;
 	toolbar->exec_btn         	= NULL;
-
+	toolbar->open_mail_btn		= NULL;
+	toolbar->close_window_btn	= NULL;
 	/* compose buttons */ 
 	toolbar->sendl_btn        	= NULL;
 	toolbar->draft_btn        	= NULL;

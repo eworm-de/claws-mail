@@ -69,6 +69,7 @@
 #include "pixmaps/mail_reply_to_author.xpm"
 #include "pixmaps/mail_send.xpm"
 #include "pixmaps/mail_send_queue.xpm"
+#include "pixmaps/open_mail.xpm"
 #include "pixmaps/news_compose.xpm"
 #include "pixmaps/paste.xpm"
 #include "pixmaps/preferences.xpm"
@@ -241,6 +242,7 @@ static StockPixmapData pixmaps[] =
 	{mail_send_xpm				, NULL, NULL, "mail_send", NULL},
 	{mail_send_queue_xpm			, NULL, NULL, "mail_send_queue", NULL},
 	{mail_xpm				, NULL, NULL, "mail_sign", NULL},
+	{open_mail_xpm				, NULL, NULL, "open_mail", NULL},
 	{mark_xpm				, NULL, NULL, "mark", NULL},
 	{new_xpm				, NULL, NULL, "new", NULL},
 	{news_compose_xpm			, NULL, NULL, "news_compose", NULL},

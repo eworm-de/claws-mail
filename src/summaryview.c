@@ -269,8 +269,6 @@ static gboolean summary_button_released	(GtkWidget		*ctree,
 static gboolean summary_key_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static void summary_open_row		(GtkSCTree		*sctree,
-					 SummaryView		*summaryview);
 static void summary_tree_expanded	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 SummaryView		*summaryview);
@@ -5565,7 +5563,7 @@ void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show)
 	}
 }
 
-static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
+void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
 	if (FOLDER_SHOWS_TO_HDR(summaryview->folder_item))
 		summary_reedit(summaryview);
