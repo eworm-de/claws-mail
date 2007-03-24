@@ -36,6 +36,7 @@
 #include <math.h>
 #include <setjmp.h>
 
+#include "main.h"
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "compose.h"
@@ -176,6 +177,7 @@ struct {
 	{ "A_REPLY_SENDER",  	N_("Reply to Sender")                      },
 	{ "A_REPLY_ALL",     	N_("Reply to All")                         },
 	{ "A_REPLY_ML",      	N_("Reply to Mailing-list")                },
+	{ "A_OPEN_MAIL",	N_("Open email")			   },
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
 	{ "A_TRASH",        	N_("Trash Message")   	                   },
 	{ "A_DELETE_REAL",    	N_("Delete Message")                       },
@@ -201,7 +203,6 @@ struct {
 #endif
 	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
-	{ "A_OPEN_MAIL",	N_("Open email")			   },
 	{ "A_CLOSE",		N_("Close window")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
 };
@@ -319,7 +320,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 	if (source == TOOLBAR_MAIN) {
 		gint main_items[]   = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
-					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
+					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL, 	A_FORWARD, 
 					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_PRINT,
 					A_ADDRBOOK, 	A_LEARN_SPAM, A_SYL_ACTIONS, A_CANCEL_INC };
@@ -336,7 +337,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 #ifdef USE_ASPELL
 					A_CHECK_SPELLING, 
 #endif
-					A_SYL_ACTIONS };	
+					A_SYL_ACTIONS, A_CLOSE };	
 
 		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
@@ -345,7 +346,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
 				        A_TRASH, A_DELETE_REAL,       A_GOTO_PREV,	  A_GOTO_NEXT,
-					A_ADDRBOOK,	 A_LEARN_SPAM, A_SYL_ACTIONS };	
+					A_ADDRBOOK,	 A_LEARN_SPAM, A_SYL_ACTIONS, A_CLOSE };	
 
 		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));

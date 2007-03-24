@@ -1,3 +1,8 @@
+2007-03-24 [paul]	2.8.1cvs45
+
+	* src/toolbar.c
+		fix toolbar (broken in 2.8.1cvs42)
+
 2007-03-23 [colin]	2.8.1cvs44
 
 	* src/imap.c
