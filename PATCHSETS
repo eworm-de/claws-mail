@@ -2463,3 +2463,4 @@
 ( cvs diff -u -r 1.179.2.160 -r 1.179.2.161 src/imap.c;  ) > 2.8.1cvs44.patchset
 ( cvs diff -u -r 1.43.2.62 -r 1.43.2.63 src/toolbar.c;  ) > 2.8.1cvs45.patchset
 ( cvs diff -u -r 1.155.2.57 -r 1.155.2.58 src/Makefile.am;  cvs diff -u -r 1.25.2.34 -r 1.25.2.35 src/stock_pixmap.c;  diff -u /dev/null src/pixmaps/edit_extern.xpm;  diff -u /dev/null src/pixmaps/mail_sign.xpm;  ) > 2.8.1cvs46.patchset
+( cvs diff -u -r 1.207.2.154 -r 1.207.2.155 src/folderview.c;  cvs diff -u -r 1.2.2.9 -r 1.2.2.10 tools/kdeservicemenu/README;  ) > 2.8.1cvs47.patchset

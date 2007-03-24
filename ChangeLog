@@ -1,3 +1,10 @@
+2007-03-24 [paul]	2.8.1cvs47
+
+	* src/folderview.c
+		an improvement to English usage
+	* tools/kdeservicemenu/README
+		updated Claws url
+
 2007-03-24 [paul]	2.8.1cvs46
 
 	* src/Makefile.am
