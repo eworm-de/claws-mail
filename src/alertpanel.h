@@ -63,8 +63,8 @@ AlertValue alertpanel_with_widget	(const gchar *title,
 				  	 const gchar *button2_label,
 				  	 const gchar *button3_label,
 					 gboolean     can_disable,
-				  	 GtkWidget *widget);
-
+				 	 AlertValue   default_value,
+					 GtkWidget   *widget);
 
 void alertpanel_notice	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);

@@ -1,3 +1,16 @@
+2007-03-24 [wwp]	2.8.1cvs48
+
+	* src/alertpanel.c
+	* src/alertpanel.h
+	* src/messageview.c
+	* src/summaryview.c
+		Fix wrong action performed when closing the
+		"ask about account specific filtering rules
+		when filtering manually" dialog by pressing Escape.
+		Fix wrong order of buttons in the "return receipt
+		notification - the message was sent to several of
+		your accounts" dialog.
+
 2007-03-24 [paul]	2.8.1cvs47
 
 	* src/folderview.c

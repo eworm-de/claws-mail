@@ -1402,8 +1402,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 				  "accounts.\n"
 				  "Please choose which account do you want to "
 				  "use for sending the receipt notification:"),
-			        _("_Send Notification"), _("+_Cancel"), NULL,
-			        FALSE, optmenu) != G_ALERTDEFAULT)
+			        _("_Cancel"), _("_Send Notification"), NULL,
+			        FALSE, G_ALERTDEFAULT, optmenu) != G_ALERTALTERNATE)
 		return NULL;
 	return account_find_from_id(account_id);
 }
