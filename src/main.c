@@ -119,10 +119,10 @@
 #include <gtk/gtkmain.h>
 #include <libosso.h>
 
-#define OSSO_EXAMPLE_NAME    "claws-mail"
-#define OSSO_EXAMPLE_SERVICE "org.maemo."OSSO_EXAMPLE_NAME
-#define OSSO_EXAMPLE_OBJECT  "/org/maemo/"OSSO_EXAMPLE_NAME
-#define OSSO_EXAMPLE_IFACE   "org.maemo."OSSO_EXAMPLE_NAME
+#define OSSO_NAME    "clawsmail"
+#define OSSO_SERVICE "com.nokia."OSSO_NAME
+#define OSSO_OBJECT  "/com/nokia/"OSSO_NAME
+#define OSSO_IFACE   "com.nokia."OSSO_NAME
 
 typedef struct _AppData AppData;
 struct _AppData {
@@ -671,7 +671,7 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 #ifdef MAEMO
-	osso_context = osso_initialize(PACKAGE, VERSION, TRUE, NULL);
+	osso_context = osso_initialize(OSSO_SERVICE, "2.8.1", TRUE, NULL);
 	if (osso_context == NULL) {
 		return OSSO_ERROR;
 	}
@@ -842,10 +842,10 @@ int main(int argc, char *argv[])
 	appdata->window = mainwin->window;
 	appdata->osso_context = osso_context;
 	result = osso_rpc_set_cb_f(appdata->osso_context, 
-	                        OSSO_EXAMPLE_SERVICE, 
-	                        OSSO_EXAMPLE_OBJECT, 
-	                        OSSO_EXAMPLE_IFACE,
-	                        dbus_req_handler, appdata);
+                OSSO_SERVICE, 
+                OSSO_OBJECT, 
+                OSSO_IFACE,
+                dbus_req_handler, appdata);
 	if (result != OSSO_OK) {
 		return OSSO_ERROR;
 	}
