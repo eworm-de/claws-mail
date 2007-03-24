@@ -322,6 +322,7 @@ EXTRA_DIST = \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
 	pixmaps/drafts_open.xpm \
+	pixmaps/edit_exec.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
 	pixmaps/forwarded.xpm \
@@ -349,6 +350,7 @@ EXTRA_DIST = \
 	pixmaps/mail_reply.xpm \
 	pixmaps/mail_send_queue.xpm \
 	pixmaps/mail_send.xpm \
+	pixmaps/mail_sign.xpm \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
 	pixmaps/mime_application.xpm \

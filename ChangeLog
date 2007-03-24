@@ -1,3 +1,11 @@
+2007-03-24 [paul]	2.8.1cvs46
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/pixmaps/edit_extern.xpm
+	* src/pixmaps/mail_sign.xpm
+		rescue long lost icons
+
 2007-03-24 [paul]	2.8.1cvs45
 
 	* src/toolbar.c

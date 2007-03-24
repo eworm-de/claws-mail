@@ -42,6 +42,7 @@
 #include "pixmaps/continue.xpm"
 #include "pixmaps/deleted.xpm"
 #include "pixmaps/error.xpm"
+#include "pixmaps/edit_extern.xpm"
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/group.xpm"
 #include "pixmaps/interface.xpm"
@@ -69,6 +70,7 @@
 #include "pixmaps/mail_reply_to_author.xpm"
 #include "pixmaps/mail_send.xpm"
 #include "pixmaps/mail_send_queue.xpm"
+#include "pixmaps/mail_sign.xpm"
 #include "pixmaps/open_mail.xpm"
 #include "pixmaps/news_compose.xpm"
 #include "pixmaps/paste.xpm"
@@ -208,7 +210,7 @@ static StockPixmapData pixmaps[] =
 	{dir_open_hrm_mark_xpm			, NULL, NULL, "dir_open_hrm_mark", NULL},
 	{down_arrow_xpm				, NULL, NULL, "down_arrow", NULL},
 	{up_arrow_xpm				, NULL, NULL, "up_arrow", NULL},
-	{mail_compose_xpm			, NULL, NULL, "edit_extern", NULL},
+	{edit_extern_xpm			, NULL, NULL, "edit_extern", NULL},
 	{error_xpm				, NULL, NULL, "error", NULL},
 	{exec_xpm				, NULL, NULL, "exec", NULL},
 	{forwarded_xpm				, NULL, NULL, "forwarded", NULL},
@@ -241,7 +243,7 @@ static StockPixmapData pixmaps[] =
 	{mail_reply_to_author_xpm		, NULL, NULL, "mail_reply_to_author", NULL},
 	{mail_send_xpm				, NULL, NULL, "mail_send", NULL},
 	{mail_send_queue_xpm			, NULL, NULL, "mail_send_queue", NULL},
-	{mail_xpm				, NULL, NULL, "mail_sign", NULL},
+	{mail_sign_xpm				, NULL, NULL, "mail_sign", NULL},
 	{open_mail_xpm				, NULL, NULL, "open_mail", NULL},
 	{mark_xpm				, NULL, NULL, "mark", NULL},
 	{new_xpm				, NULL, NULL, "new", NULL},
