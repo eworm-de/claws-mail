@@ -119,7 +119,7 @@
 #include <gtk/gtkmain.h>
 #include <libosso.h>
 
-#define OSSO_NAME    "clawsmail"
+#define OSSO_NAME    "claws_mail"
 #define OSSO_SERVICE "com.nokia."OSSO_NAME
 #define OSSO_OBJECT  "/com/nokia/"OSSO_NAME
 #define OSSO_IFACE   "com.nokia."OSSO_NAME

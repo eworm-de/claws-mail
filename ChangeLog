@@ -1,3 +1,8 @@
+2007-03-25 [colin]	2.8.1cvs50
+
+	* src/main.c
+		Fix OSSO_NAME on Maemo (patch by Jean-Luc)
+
 2007-03-24 [colin]	2.8.1cvs49
 
 	* src/main.c
