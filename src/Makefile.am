@@ -322,7 +322,7 @@ EXTRA_DIST = \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
 	pixmaps/drafts_open.xpm \
-	pixmaps/edit_exec.xpm \
+	pixmaps/edit_extern.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
 	pixmaps/forwarded.xpm \

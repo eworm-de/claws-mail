@@ -2467,3 +2467,4 @@
 ( cvs diff -u -r 1.17.2.32 -r 1.17.2.33 src/alertpanel.c;  cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/alertpanel.h;  cvs diff -u -r 1.94.2.128 -r 1.94.2.129 src/messageview.c;  cvs diff -u -r 1.395.2.291 -r 1.395.2.292 src/summaryview.c;  ) > 2.8.1cvs48.patchset
 ( cvs diff -u -r 1.115.2.147 -r 1.115.2.148 src/main.c;  ) > 2.8.1cvs49.patchset
 ( cvs diff -u -r 1.115.2.148 -r 1.115.2.149 src/main.c;  ) > 2.8.1cvs50.patchset
+( cvs diff -u -r 1.155.2.58 -r 1.155.2.59 src/Makefile.am;  ) > 2.8.1cvs51.patchset
