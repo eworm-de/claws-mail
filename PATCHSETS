@@ -2468,3 +2468,4 @@
 ( cvs diff -u -r 1.115.2.147 -r 1.115.2.148 src/main.c;  ) > 2.8.1cvs49.patchset
 ( cvs diff -u -r 1.115.2.148 -r 1.115.2.149 src/main.c;  ) > 2.8.1cvs50.patchset
 ( cvs diff -u -r 1.155.2.58 -r 1.155.2.59 src/Makefile.am;  ) > 2.8.1cvs51.patchset
+( cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/wizard.c;  ) > 2.8.1cvs52.patchset

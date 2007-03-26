@@ -1,3 +1,8 @@
+2007-03-26 [paul]	2.8.1cvs52
+
+	* src/wizard.c
+		update FACE header in welcome message
+
 2007-03-25 [colin]	2.8.1cvs51
 
 	* src/Makefile.am
