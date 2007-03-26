@@ -921,7 +921,9 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		while (node != NULL) {
 			int res = 0;
 			next = node->next;
+			send_queue_lock = FALSE;
 			res = procmsg_send_queue(FOLDER_ITEM(node->data), save_msgs, errstr);
+			send_queue_lock = TRUE;
 			if (res < 0) 
 				err = -res;
 			else
