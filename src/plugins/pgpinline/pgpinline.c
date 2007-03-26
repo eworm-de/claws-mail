@@ -379,6 +379,9 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	gpgme_ctx_t ctx;
 	gchar *chars;
 	size_t len;
+	const gchar *begin_indicator = "-----BEGIN PGP MESSAGE-----";
+	const gchar *end_indicator = "-----END PGP MESSAGE-----";
+	gchar *pos;
 	
 	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
 		return NULL;
@@ -438,10 +441,31 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			"Content-Transfer-Encoding: 8bit\r\n"
 			"\r\n",
 			src_codeset);
+
+	/* Store any part before encrypted text */
+	pos = strstr(textdata, begin_indicator);
+	if (pos != NULL && (pos - textdata) > 0) {
+	    fwrite(textdata, pos - textdata, 1, dstfp);
+	}
 	
+	fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 
+		strlen(_("\n--- Start of PGP/Inline encrypted data ---\n")), 
+		1, dstfp);
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0)
 		fwrite(chars, len, 1, dstfp);
+
+	/* Store any part after encrypted text */
+	fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 
+		strlen(_("--- End of PGP/Inline encrypted data ---\n")), 
+		1, dstfp);
+	if (pos != NULL) {
+	    pos = strstr(pos, end_indicator);
+	    if (pos != NULL && *pos != '\0') {
+		pos += strlen(end_indicator);
+		fwrite(pos, strlen(pos), 1, dstfp);
+	    }
+	}
 
 	fclose(dstfp);
 	

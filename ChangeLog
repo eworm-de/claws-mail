@@ -1,3 +1,10 @@
+2007-03-26 [colin]	2.8.1cvs54
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix bug 1111, 'PGP/inline plugin hides text 
+		around encrypted text block'. Patch based on
+		a patch from Michal Cihar.
+
 2007-03-26 [wwp]	2.8.1cvs53
 
 	* src/procmsg.c
