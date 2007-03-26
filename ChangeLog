@@ -1,3 +1,8 @@
+2007-03-26 [colin]	2.8.1cvs55
+
+	* src/compose.c
+		Enable popup-menu signal
+
 2007-03-26 [colin]	2.8.1cvs54
 
 	* src/plugins/pgpinline/pgpinline.c

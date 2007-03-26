@@ -6089,6 +6089,17 @@ static void compose_spell_menu_changed(void *data)
 }
 #endif
 
+static gboolean compose_popup_menu(GtkWidget *widget, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	GdkEventButton event;
+	
+	event.button = 3;
+	event.time = gtk_get_current_event_time();
+
+	return text_clicked(compose->text, &event, compose);
+}
+
 static gboolean compose_force_window_origin = TRUE;
 static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 						 gboolean batch)
@@ -6292,6 +6303,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 			 G_CALLBACK(text_inserted), compose);
 	g_signal_connect(G_OBJECT(text), "button_press_event",
 			 G_CALLBACK(text_clicked), compose);
+	g_signal_connect(G_OBJECT(text), "popup-menu",
+			 G_CALLBACK(compose_popup_menu), compose);
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			 G_CALLBACK(compose_changed_cb), compose);
 
