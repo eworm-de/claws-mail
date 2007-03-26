@@ -1,3 +1,8 @@
+2007-03-26 [colin]	2.8.1cvs56
+
+	* src/compose.c
+		More popup-menu (in attachments list)
+
 2007-03-26 [colin]	2.8.1cvs55
 
 	* src/compose.c

@@ -2472,3 +2472,4 @@
 ( cvs diff -u -r 1.150.2.94 -r 1.150.2.95 src/procmsg.c;  ) > 2.8.1cvs53.patchset
 ( cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/plugins/pgpinline/pgpinline.c;  ) > 2.8.1cvs54.patchset
 ( cvs diff -u -r 1.382.2.363 -r 1.382.2.364 src/compose.c;  ) > 2.8.1cvs55.patchset
+( cvs diff -u -r 1.382.2.364 -r 1.382.2.365 src/compose.c;  ) > 2.8.1cvs56.patchset

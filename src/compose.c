@@ -5808,6 +5808,17 @@ static GtkWidget *compose_create_header(Compose *compose)
 	return header_scrolledwin ;
 }
 
+static gboolean popup_attach_button_pressed(GtkWidget *widget, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	GdkEventButton event;
+	
+	event.button = 3;
+	event.time = gtk_get_current_event_time();
+
+	return attach_button_pressed(compose->attach_clist, &event, compose);
+}
+
 static GtkWidget *compose_create_attach(Compose *compose)
 {
 	GtkWidget *attach_scrwin;
@@ -5864,6 +5875,8 @@ static GtkWidget *compose_create_attach(Compose *compose)
 			 G_CALLBACK(attach_selected), compose);
 	g_signal_connect(G_OBJECT(attach_clist), "button_press_event",
 			 G_CALLBACK(attach_button_pressed), compose);
+	g_signal_connect(G_OBJECT(attach_clist), "popup-menu",
+			 G_CALLBACK(popup_attach_button_pressed), compose);
 	g_signal_connect(G_OBJECT(attach_clist), "key_press_event",
 			 G_CALLBACK(attach_key_pressed), compose);
 
