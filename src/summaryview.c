@@ -5264,8 +5264,15 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(summary_button_pressed),
 			 summaryview);
+#ifndef MAEMO
 	g_signal_connect(G_OBJECT(ctree), "popup-menu",
 			 G_CALLBACK(summary_popup_menu), summaryview);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(ctree), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(ctree), "tap-and-hold",
+			 G_CALLBACK(summary_popup_menu), summaryview);
+#endif
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(summary_button_released),
 			 summaryview);

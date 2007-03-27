@@ -1,3 +1,10 @@
+2007-03-27 [colin]	2.8.1cvs57
+
+	* src/compose.c
+	* src/folderview.c
+	* src/summaryview.c
+		Enable tap-and-hold on Maemo
+
 2007-03-26 [colin]	2.8.1cvs56
 
 	* src/compose.c

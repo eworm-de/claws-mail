@@ -5875,8 +5875,15 @@ static GtkWidget *compose_create_attach(Compose *compose)
 			 G_CALLBACK(attach_selected), compose);
 	g_signal_connect(G_OBJECT(attach_clist), "button_press_event",
 			 G_CALLBACK(attach_button_pressed), compose);
+#ifndef MAEMO
 	g_signal_connect(G_OBJECT(attach_clist), "popup-menu",
 			 G_CALLBACK(popup_attach_button_pressed), compose);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(attach_clist), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(attach_clist), "tap-and-hold",
+			 G_CALLBACK(popup_attach_button_pressed), compose);
+#endif
 	g_signal_connect(G_OBJECT(attach_clist), "key_press_event",
 			 G_CALLBACK(attach_key_pressed), compose);
 
@@ -6316,8 +6323,15 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 			 G_CALLBACK(text_inserted), compose);
 	g_signal_connect(G_OBJECT(text), "button_press_event",
 			 G_CALLBACK(text_clicked), compose);
+#ifndef MAEMO
 	g_signal_connect(G_OBJECT(text), "popup-menu",
 			 G_CALLBACK(compose_popup_menu), compose);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(text), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(text), "tap-and-hold",
+			 G_CALLBACK(compose_popup_menu), compose);
+#endif
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			 G_CALLBACK(compose_changed_cb), compose);
 

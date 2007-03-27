@@ -516,8 +516,15 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(folderview_button_pressed),
 			 folderview);
+#ifndef MAEMO
 	g_signal_connect(G_OBJECT(ctree), "popup-menu",
 			 G_CALLBACK(folderview_popup_menu), folderview);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(ctree), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(ctree), "tap-and-hold",
+			 G_CALLBACK(folderview_popup_menu), folderview);
+#endif
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(folderview_button_released),
 			 folderview);
