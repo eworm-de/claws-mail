@@ -2523,6 +2523,21 @@ static gint folderview_clist_compare(GtkCList *clist,
 	FolderItem *item1 = ((GtkCListRow *)ptr1)->data;
 	FolderItem *item2 = ((GtkCListRow *)ptr2)->data;
 
+	if (item1->order > 0 && item2->order > 0)  // if we have an order item, use it
+	{
+		return item1->order - item2->order;
+	}
+
+	// if only one folder has an order it comes first
+	if (item1->order > 0)
+	{
+		return -1;
+	}
+	if (item2->order > 0)
+	{
+		return 1;
+	}
+
 	if (!item1->name)
 		return (item2->name != NULL);
 	if (!item2->name)

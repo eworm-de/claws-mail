@@ -1,3 +1,14 @@
+2007-03-28 [colin]	2.8.1cvs61
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+		Add the possibility to sort folders arbitrarily
+		(via editing of folderlist.xml only). Patch by
+		Martin P <mp26+claws@os.inf.tu-dresden.de>
+		Fixes bug 1166, 'Folder ordering is fixed and cannot 
+		be changed by the user'
+
 2007-03-28 [colin]	2.8.1cvs60
 
 	* src/mimeview.c

@@ -347,6 +347,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->unreadmarked_msgs = 0;
 	item->marked_msgs = 0;
 	item->total_msgs = 0;
+	item->order = 0;
 	item->last_num = -1;
 	item->cache = NULL;
 	item->no_sub = FALSE;
@@ -528,6 +529,8 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			item->unreadmarked_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "marked"))
 			item->marked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "order"))
+			item->order = atoi(attr->value);
 		else if (!strcmp(attr->name, "total"))
 			item->total_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "no_sub"))
@@ -631,6 +634,7 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	xml_tag_add_attr(tag, xml_attr_new_int("unreadmarked", item->unreadmarked_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("marked", item->marked_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("total", item->total_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("order", item->order));
 
 	if (item->account)
 		xml_tag_add_attr(tag, xml_attr_new_int("account_id", item->account->account_id));

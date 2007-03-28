@@ -620,6 +620,8 @@ struct _FolderItem
 	gint unreadmarked_msgs;
 	gint marked_msgs;
 
+	gint order;
+
 	gint last_num;
 
 	MsgCache *cache;
