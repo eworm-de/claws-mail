@@ -2474,3 +2474,4 @@
 ( cvs diff -u -r 1.382.2.363 -r 1.382.2.364 src/compose.c;  ) > 2.8.1cvs55.patchset
 ( cvs diff -u -r 1.382.2.364 -r 1.382.2.365 src/compose.c;  ) > 2.8.1cvs56.patchset
 ( cvs diff -u -r 1.382.2.365 -r 1.382.2.366 src/compose.c;  cvs diff -u -r 1.207.2.155 -r 1.207.2.156 src/folderview.c;  cvs diff -u -r 1.395.2.292 -r 1.395.2.293 src/summaryview.c;  ) > 2.8.1cvs57.patchset
+( cvs diff -u -r 1.382.2.366 -r 1.382.2.367 src/compose.c;  ) > 2.8.1cvs58.patchset

@@ -1,3 +1,9 @@
+2007-03-28 [colin]	2.8.1cvs58
+
+	* src/compose.c
+		Don't dynamically update title on Maemo
+		Patch by Jean-Luc Biord
+
 2007-03-27 [colin]	2.8.1cvs57
 
 	* src/compose.c

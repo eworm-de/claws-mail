@@ -4000,11 +4000,16 @@ static void compose_set_title(Compose *compose)
 	subject = gtk_editable_get_chars(
 			GTK_EDITABLE(compose->subject_entry), 0, -1);
 
+#ifndef MAEMO
 	if (subject && strlen(subject))
 		str = g_strdup_printf(_("%s - Compose message%s"),
 				      subject, edited);	
 	else
 		str = g_strdup_printf(_("[no subject] - Compose message%s"), edited);
+#else
+	str = g_strdup(_("Compose message"));
+#endif
+
 	gtk_window_set_title(GTK_WINDOW(compose->window), str);
 	g_free(str);
 	g_free(subject);
@@ -8937,7 +8942,9 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	compose->modified = TRUE;
+#ifndef MAEMO
 	compose_set_title(compose);
+#endif
 }
 
 static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)
