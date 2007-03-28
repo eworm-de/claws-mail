@@ -1,3 +1,14 @@
+2007-03-28 [colin]	2.8.1cvs59
+
+	* src/mainwindow.c
+		Fix a layout issue when presenting
+		mainwindow in Small screen layout
+	* src/toolbar.c
+	* src/toolbar.h
+		Add a "Go to folder list" button for
+		mainwindow, and make it default in
+		the Maemo build
+
 2007-03-28 [colin]	2.8.1cvs58
 
 	* src/compose.c

@@ -187,6 +187,7 @@ struct {
 	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			   },
 	{ "A_PRINT",	     	N_("Print")				   },
 	{ "A_LEARN_SPAM",	N_("Learn Spam or Ham")			   },
+	{ "A_GO_FOLDERS",   	N_("Go to folder list")       		   },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -323,7 +324,8 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL, 	A_FORWARD, 
 					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_PRINT,
-					A_ADDRBOOK, 	A_LEARN_SPAM, A_SYL_ACTIONS, A_CANCEL_INC };
+					A_ADDRBOOK, 	A_LEARN_SPAM, A_GO_FOLDERS, 
+					A_SYL_ACTIONS, A_CANCEL_INC };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -403,7 +405,11 @@ static void toolbar_set_default_main(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get Mail") },
+#ifdef MAEMO
+		{ A_GO_FOLDERS,    STOCK_PIXMAP_DIR_OPEN,             _("Folders") },
+		{ A_SEPARATOR,     0,                                 ("")         }, 
+#endif
+		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get Mail")},
 		{ A_SEPARATOR,     0,                                 ("")         }, 
 		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
 		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,
@@ -1467,6 +1473,23 @@ static MainWindow *get_mainwin(gpointer data)
 	return mainwin;
 }
 
+static void toolbar_go_folders_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin = NULL;
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		break;
+	default:
+		g_warning("wrong toolbar type\n");
+		return;
+	}
+
+	gtk_widget_grab_focus(mainwin->folderview->ctree);
+	mainwindow_exit_folder(mainwin);
+}
+
 static void toolbar_buttons_cb(GtkWidget   *widget, 
 			       ToolbarItem *item)
 {
@@ -1494,6 +1517,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
 		{ A_PRINT,		toolbar_print_cb		},
 		{ A_LEARN_SPAM,		toolbar_learn_cb		},
+		{ A_GO_FOLDERS,		toolbar_go_folders_cb		},
 
 		{ A_SEND,		toolbar_send_cb       		},
 		{ A_SENDL,		toolbar_send_later_cb 		},
@@ -1600,6 +1624,12 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		
 		switch (toolbar_item->index) {
 
+		case A_GO_FOLDERS:
+			toolbar_data->folders_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->folders_btn,
+					   _("Go to folder list"), NULL);
+			break;
 		case A_RECEIVE_ALL:
 			toolbar_data->getall_btn = item;
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
@@ -2191,6 +2221,7 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 void toolbar_init(Toolbar * toolbar) {
 
 	toolbar->toolbar          	= NULL;
+	toolbar->folders_btn		= NULL;
 	toolbar->get_btn          	= NULL;
 	toolbar->getall_btn       	= NULL;
 	toolbar->getall_combo       	= NULL;

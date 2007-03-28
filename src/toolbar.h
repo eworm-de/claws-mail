@@ -49,6 +49,7 @@ typedef enum
 struct _Toolbar {
 	GtkWidget *toolbar;
 
+	GtkWidget *folders_btn;
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
 	ComboButton *getall_combo;
@@ -172,6 +173,7 @@ enum {
 	A_IGNORE_THREAD,
 	A_PRINT,
 	A_LEARN_SPAM,
+	A_GO_FOLDERS,
 
 	/* compose toolbar */
 	A_SEND,

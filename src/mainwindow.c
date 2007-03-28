@@ -2653,6 +2653,13 @@ void main_window_popup(MainWindow *mainwin)
 		main_window_show(mainwin);
 
 	gtkut_window_popup(mainwin->window);
+	if (prefs_common.layout_mode == SMALL_LAYOUT) {
+		if (mainwin->in_folder) {
+			mainwindow_enter_folder(mainwin);
+		} else {
+			mainwindow_exit_folder(mainwin);
+		}
+	}
 }
 
 void main_window_show(MainWindow *mainwin)
