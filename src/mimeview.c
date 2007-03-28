@@ -1970,6 +1970,19 @@ static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
 	}
 }
 
+static gboolean icon_popup_menu(GtkWidget *widget, gpointer data)
+{
+	MimeView *mimeview = (MimeView *)data;
+	MimeInfo *partinfo = g_object_get_data(G_OBJECT(widget), "partinfo");
+
+	g_object_set_data(G_OBJECT(mimeview->popupmenu),
+			  "pop_partinfo", partinfo);
+	gtk_menu_popup(GTK_MENU(mimeview->popupmenu),
+		       NULL, NULL, NULL, NULL,
+		       0, gtk_get_current_event_time());
+	return TRUE;
+}
+
 static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo) 
 {
 	GtkWidget *pixmap = NULL;
@@ -2111,6 +2124,15 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_widget_show_all(button);
 	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 
 			    mimeview_mime_types, 1, GDK_ACTION_COPY);
+#ifndef MAEMO
+	g_signal_connect(G_OBJECT(button), "popup-menu",
+			 G_CALLBACK(icon_popup_menu), mimeview);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(button), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(button), "tap-and-hold",
+			 G_CALLBACK(icon_popup_menu), mimeview);
+#endif
 	g_signal_connect(G_OBJECT(button), "button_release_event", 
 			 G_CALLBACK(icon_clicked_cb), mimeview);
 	g_signal_connect(G_OBJECT(button), "key_press_event", 
