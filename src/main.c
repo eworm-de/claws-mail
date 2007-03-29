@@ -207,6 +207,8 @@ static MainWindow *static_mainwindow;
 
 #ifdef MAEMO
 static HildonProgram *static_hildonprogram;
+static osso_context_t *static_osso_context;
+
 void exit_event_handler(gboolean die_now, gpointer data)
 {
 	AppData *appdata;
@@ -676,6 +678,7 @@ int main(int argc, char *argv[])
 		return OSSO_ERROR;
 	}
 	static_hildonprogram = HILDON_PROGRAM(hildon_program_get_instance());
+	static_osso_context = osso_context;
 #endif	
 	gdk_rgb_init();
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
@@ -1804,8 +1807,12 @@ static void install_basic_sighandlers()
 }
 
 #ifdef MAEMO
-HildonProgram *hildon_program()
+HildonProgram *hildon_program(void)
 {
 	return static_hildonprogram;
+}
+osso_context_t *get_osso_context(void)
+{
+	return static_osso_context;
 }
 #endif

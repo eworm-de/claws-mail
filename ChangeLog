@@ -1,3 +1,11 @@
+2007-03-29 [colin]	2.8.1cvs62
+
+	* src/main.c
+	* src/common/Makefile.am
+	* src/common/utils.c
+		Maybe make URI opening work in Maemo
+		Requires testing :)
+
 2007-03-28 [colin]	2.8.1cvs61
 
 	* src/folder.c

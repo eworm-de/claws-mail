@@ -58,6 +58,11 @@
 #  include <fcntl.h>
 #endif
 
+#ifdef MAEMO
+#include <libosso.h>
+#include <osso-browser-interface.h>
+#endif
+
 #include "utils.h"
 #include "socket.h"
 #include "../codeconv.h"
@@ -3409,10 +3414,10 @@ static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
+#ifndef MAEMO
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
-
 	g_return_val_if_fail(uri != NULL, -1);
 
 	/* an option to choose whether to use encode_uri or not ? */
@@ -3431,7 +3436,12 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	}
 
 	execute_command_line(buf, TRUE);
-
+#else
+	extern osso_context_t *get_osso_context(void);
+	osso_rpc_run_with_defaults(get_osso_context(), "osso_browser",
+					OSSO_BROWSER_OPEN_NEW_WINDOW_REQ, NULL, 
+					DBUS_TYPE_STRING, uri, DBUS_TYPE_INVALID);
+#endif
 	return 0;
 }
 
