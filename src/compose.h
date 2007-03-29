@@ -111,6 +111,9 @@ struct _Compose
 	GtkWidget *savemsg_checkbtn;
 	GtkWidget *savemsg_entry;
 
+	/* Headers notebook */
+	GtkWidget *notebook;
+
 	/* Textedit */
 	GtkWidget *edit_vbox;
 	GtkWidget *ruler_hbox;

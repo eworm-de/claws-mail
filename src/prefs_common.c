@@ -262,8 +262,13 @@ static PrefParam param[] = {
 	{"default_reply_list", "TRUE", &prefs_common.default_reply_list, P_BOOL,
 	 NULL, NULL, NULL},
 
+#ifndef MAEMO
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
 	 NULL, NULL, NULL},
+#else
+	{"show_ruler", "FALSE", &prefs_common.show_ruler, P_BOOL,
+	 NULL, NULL, NULL},
+#endif
 
 	/* Quote */
 	{"reply_quote_mark", "> ", &prefs_common.quotemark, P_STRING,

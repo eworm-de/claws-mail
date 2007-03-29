@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#ifdef _XOPEN_SOURCE
+#if (defined (_XOPEN_SOURCE) && !defined (_BSD_SOURCE))
 #define _BSD_SOURCE
 #endif
 

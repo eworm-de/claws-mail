@@ -1,3 +1,14 @@
+2007-03-29 [colin]	2.8.1cvs66
+
+	* src/compose.c
+	* src/compose.h
+		Maemo: dynamically switch headers/text position
+	* src/prefs_common.c
+		Maemo: hide compose's ruler by default
+	* src/common/socket.c
+	* src/common/socket.h
+		Fix build warning
+
 2007-03-29 [colin]	2.8.1cvs65
 
 	* src/common/socket.c

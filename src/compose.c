@@ -6361,12 +6361,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 300 : 280);
 	else
 		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 250 : 230);
-	gtk_paned_add1(GTK_PANED(paned), edit_vbox);
-	gtk_paned_add2(GTK_PANED(paned), notebook);
-#else
+#endif
 	gtk_paned_add1(GTK_PANED(paned), notebook);
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
-#endif
 	gtk_widget_show_all(paned);
 
 
@@ -6409,6 +6406,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 
 	compose->paned = paned;
 
+	compose->notebook      = notebook;
 	compose->edit_vbox     = edit_vbox;
 	compose->ruler_hbox    = ruler_hbox;
 	compose->ruler         = ruler;
@@ -8937,6 +8935,44 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 
 	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))
 		compose->focused_editable = widget;
+	
+#ifdef MAEMO
+	if (GTK_IS_TEXT_VIEW(widget) 
+	    && gtk_paned_get_child1(GTK_PANED(compose->paned)) != compose->edit_vbox) {
+		gtk_widget_ref(compose->notebook);
+		gtk_widget_ref(compose->edit_vbox);
+		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->notebook);
+		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->edit_vbox);
+		gtk_paned_add1(GTK_PANED(compose->paned), compose->edit_vbox);
+		gtk_paned_add2(GTK_PANED(compose->paned), compose->notebook);
+		gtk_widget_unref(compose->notebook);
+		gtk_widget_unref(compose->edit_vbox);
+		g_signal_handlers_block_by_func(G_OBJECT(widget),
+					G_CALLBACK(compose_grab_focus_cb),
+					compose);
+		gtk_widget_grab_focus(widget);
+		g_signal_handlers_unblock_by_func(G_OBJECT(widget),
+					G_CALLBACK(compose_grab_focus_cb),
+					compose);
+	} else if (!GTK_IS_TEXT_VIEW(widget) 
+		   && gtk_paned_get_child1(GTK_PANED(compose->paned)) != compose->notebook) {
+		gtk_widget_ref(compose->notebook);
+		gtk_widget_ref(compose->edit_vbox);
+		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->notebook);
+		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->edit_vbox);
+		gtk_paned_add1(GTK_PANED(compose->paned), compose->notebook);
+		gtk_paned_add2(GTK_PANED(compose->paned), compose->edit_vbox);
+		gtk_widget_unref(compose->notebook);
+		gtk_widget_unref(compose->edit_vbox);
+		g_signal_handlers_block_by_func(G_OBJECT(widget),
+					G_CALLBACK(compose_grab_focus_cb),
+					compose);
+		gtk_widget_grab_focus(widget);
+		g_signal_handlers_unblock_by_func(G_OBJECT(widget),
+					G_CALLBACK(compose_grab_focus_cb),
+					compose);
+	}
+#endif
 }
 
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
