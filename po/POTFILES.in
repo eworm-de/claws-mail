@@ -108,6 +108,7 @@ src/prefs_folder_item.c
 src/prefs_fonts.c
 src/prefs_gtk.c
 src/prefs_image_viewer.c
+src/prefs_logging.c
 src/prefs_matcher.c
 src/prefs_message.c
 src/prefs_msg_colors.c

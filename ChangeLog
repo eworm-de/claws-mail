@@ -1,3 +1,20 @@
+2007-03-29 [wwp]	2.8.1cvs65
+
+	* po/POTFILES.in
+		Updated list of files for translation, thanks
+		to Fabien.
+
+2007-03-29 [wwp]	2.8.1cvs64
+
+	* po/POTFILES.in
+		Updated list of files for translation, thanks
+		to Fabien.
+
+2007-03-29 [wwp]	2.8.1cvs63
+
+	* po/POTFILES.in
+		Updated files list for translations, thanks to Fabien.
+
 2007-03-29 [colin]	2.8.1cvs62
 
 	* src/main.c
