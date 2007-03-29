@@ -1,3 +1,8 @@
+2007-03-29 [colin]	2.8.1cvs67
+
+	* src/prefs_ext_prog.c
+		The browser pref is irrelevant on Maemo
+
 2007-03-29 [colin]	2.8.1cvs66
 
 	* src/compose.c

@@ -116,7 +116,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			 
 	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
-
+#ifdef MAEMO
+	gtk_widget_set_sensitive(uri_label, FALSE);
+#endif
 	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, 0, 1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
@@ -125,6 +127,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	uri_combo = gtk_combo_new ();
 	gtk_widget_show (uri_combo);
+#ifdef MAEMO
+	gtk_widget_set_sensitive(uri_combo, FALSE);
+#endif
 	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
