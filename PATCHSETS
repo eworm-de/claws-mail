@@ -2480,5 +2480,3 @@
 ( cvs diff -u -r 1.213.2.137 -r 1.213.2.138 src/folder.c;  cvs diff -u -r 1.87.2.38 -r 1.87.2.39 src/folder.h;  cvs diff -u -r 1.207.2.156 -r 1.207.2.157 src/folderview.c;  ) > 2.8.1cvs61.patchset
 ( cvs diff -u -r 1.115.2.149 -r 1.115.2.150 src/main.c;  cvs diff -u -r 1.24.2.12 -r 1.24.2.13 src/common/Makefile.am;  cvs diff -u -r 1.36.2.100 -r 1.36.2.101 src/common/utils.c;  ) > 2.8.1cvs62.patchset
 ( cvs diff -u -r 1.53.2.24 -r 1.53.2.25 po/POTFILES.in;  ) > 2.8.1cvs63.patchset
-( cvs diff -u -r 1.53.2.24 -r 1.53.2.25 po/POTFILES.in;  ) > 2.8.1cvs64.patchset
-( cvs diff -u -r 1.53.2.24 -r 1.53.2.25 po/POTFILES.in;  ) > 2.8.1cvs65.patchset
