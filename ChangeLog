@@ -1,3 +1,9 @@
+2007-03-29 [wwp]	2.8.1cvs64
+
+	* src/prefs_logging.c
+		Fix sensitivity of clip-log widgets in prefs/logging,
+		thanks to Fabien.
+
 2007-03-29 [wwp]	2.8.1cvs63
 
 	* po/POTFILES.in

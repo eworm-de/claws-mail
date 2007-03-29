@@ -269,9 +269,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, optmenu_filteringdebug_level);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, checkbtn_debug_cliplog);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, label_debug_level);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, debug_loglength_label);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, spinbtn_debug_loglength);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filteringdebug, label);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cliplog), 
 		prefs_common.cliplog);
