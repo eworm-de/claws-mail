@@ -2481,3 +2481,4 @@
 ( cvs diff -u -r 1.115.2.149 -r 1.115.2.150 src/main.c;  cvs diff -u -r 1.24.2.12 -r 1.24.2.13 src/common/Makefile.am;  cvs diff -u -r 1.36.2.100 -r 1.36.2.101 src/common/utils.c;  ) > 2.8.1cvs62.patchset
 ( cvs diff -u -r 1.53.2.24 -r 1.53.2.25 po/POTFILES.in;  ) > 2.8.1cvs63.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/prefs_logging.c;  ) > 2.8.1cvs64.patchset
+( cvs diff -u -r 1.13.2.28 -r 1.13.2.29 src/common/socket.c;  cvs diff -u -r 1.13.2.12 -r 1.13.2.13 src/common/socket.h;  ) > 2.8.1cvs65.patchset

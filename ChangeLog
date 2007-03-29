@@ -1,3 +1,11 @@
+2007-03-29 [colin]	2.8.1cvs65
+
+	* src/common/socket.c
+	* src/common/socket.h
+		Fix build when MAEMO_CFLAGS contains
+		_X_OPENSOURCE (resolv.h errors as long
+		as we don't add _BSD_SOURCE. Ugly).
+
 2007-03-29 [wwp]	2.8.1cvs64
 
 	* src/prefs_logging.c

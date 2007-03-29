@@ -21,6 +21,10 @@
 #  include "config.h"
 #endif
 
+#ifdef _XOPEN_SOURCE
+#define _BSD_SOURCE
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 
