@@ -1,3 +1,12 @@
+2007-03-30 [paul]	2.8.1cvs68
+
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		update summary when changing layout type
+		(fixes wrong folder icon being displayed)
+		Thanks to Colin
+
 2007-03-29 [colin]	2.8.1cvs67
 
 	* src/prefs_ext_prog.c

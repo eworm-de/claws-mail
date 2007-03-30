@@ -1475,7 +1475,8 @@ MainWindow *main_window_create()
 	    prefs_common.layout_mode == SMALL_LAYOUT) {
 		summary_relayout(mainwin->summaryview);	
 	}
-
+	summary_update_unread(mainwin->summaryview, NULL);
+	
 	gtk_widget_show(mainwin->window);
 
 	/* initialize views */
@@ -3179,6 +3180,7 @@ static void set_layout_cb(MainWindow *mainwin, guint action,
 		mainwindow_exit_folder(mainwin);
 	}
 	summary_relayout(mainwin->summaryview);	
+	summary_update_unread(mainwin->summaryview, NULL);
 }
 
 void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline,

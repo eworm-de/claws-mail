@@ -312,4 +312,5 @@ void summary_reflect_prefs(void);
 void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show);
 void summary_set_menu_sensitive	(SummaryView		*summaryview);
 void summary_relayout(SummaryView *summaryview);
+void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item);
 #endif /* __SUMMARY_H__ */

@@ -5906,7 +5906,6 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
-		gint min, max, mid;
 		GtkWidget *paned = GTK_WIDGET_PTR(summaryview)->parent;
 		if (paned && GTK_IS_PANED(paned)) {
 	        	mainwindow_reset_paned(GTK_PANED(paned));
@@ -6468,7 +6467,7 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 	return FALSE;
 }
 
-static void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
+void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
 	static gboolean tips_initialized = FALSE;
