@@ -187,6 +187,8 @@ gboolean gtkut_text_view_search_string_backward	(GtkTextView *text, const gchar 
 					gboolean case_sens);
 
 GtkWidget *label_window_create(const gchar *str);
+void label_window_destroy(GtkWidget *widget);
+
 void gtkut_window_popup			(GtkWidget	*window);
 #ifdef MAEMO
 HildonWindow *gtkut_window_new		(GtkWindowType	 type,

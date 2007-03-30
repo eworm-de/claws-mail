@@ -294,13 +294,17 @@ gint fd_open_unix(const gchar *path)
 	strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
 
 	if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		perror("bind");
+		gchar *buf = g_strdup_printf("can't bind to %s", path);
+		perror(buf);
+		g_free(buf);
 		close(sock);
 		return -1;
 	}
 
 	if (listen(sock, 1) < 0) {
-		perror("listen");
+		gchar *buf = g_strdup_printf("can't listen on %s", path);
+		perror(buf);
+		g_free(buf);
 		close(sock);
 		return -1;		
 	}

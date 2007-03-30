@@ -1,3 +1,17 @@
+2007-03-30 [colin]	2.8.1cvs70
+
+	* src/common/socket.c
+		Better error reporting on unix socket
+		failure (bind usually)
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Label window: add a pulsing progress
+		bar to show we're not hung :)
+	* src/folderview.c
+	* src/main.c
+	* src/plugins/pgpcore/sgpgme.c
+		Update API
+
 2007-03-30 [colin]	2.8.1cvs69
 
 	* src/pop.c

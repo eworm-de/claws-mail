@@ -354,7 +354,7 @@ backup_mode:
 		GTK_EVENTS_FLUSH();
 		
 		r = copy_dir(old_cfg_dir, new_cfg_dir);
-		gtk_widget_destroy(window);
+		label_window_destroy(window);
 		
 		/* if copy failed, we'll remove the partially copied
 		 * new directory */
@@ -372,7 +372,7 @@ backup_mode:
 		GTK_EVENTS_FLUSH();
 		
 		r = g_rename(old_cfg_dir, new_cfg_dir);
-		gtk_widget_destroy(window);
+		label_window_destroy(window);
 		
 		/* if g_rename failed, we'll try to copy */
 		if (r != 0) {

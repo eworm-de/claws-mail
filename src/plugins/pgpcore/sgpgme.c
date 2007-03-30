@@ -700,7 +700,7 @@ again:
 	err = gpgme_op_genkey(ctx, key_parms, NULL, NULL);
 	g_free(key_parms);
 
-	gtk_widget_destroy(window);
+	label_window_destroy(window);
 
 	if (err) {
 		alertpanel_error(_("Couldn't generate a new key pair: %s"), gpgme_strerror(err));

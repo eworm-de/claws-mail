@@ -1101,7 +1101,7 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 		gtk_adjustment_set_value(pos, height);
 	}
-	gtk_widget_destroy(window);
+	label_window_destroy(window);
 	inc_unlock();
 }
 
@@ -1141,7 +1141,7 @@ void folderview_fast_rescan_tree(Folder *folder)
 					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 		gtk_adjustment_set_value(pos, height);
 	}
-	gtk_widget_destroy(window);
+	label_window_destroy(window);
 	inc_unlock();
 }
 
@@ -1269,7 +1269,7 @@ void folderview_check_new_all(void)
 	folder_write_list();
 	folderview_set_all();
 
-	gtk_widget_destroy(window);
+	label_window_destroy(window);
 	main_window_unlock(folderview->mainwin);
 	inc_unlock();
 }

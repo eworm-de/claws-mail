@@ -854,13 +854,32 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
 }
 
+static gboolean move_bar = FALSE;
+static gint move_bar_id = -1;
+
+static gboolean move_bar_cb(gpointer data)
+{
+	GtkWidget *w = (GtkWidget *)data;
+	if (!move_bar)
+		return FALSE;
+
+	if (!GTK_IS_PROGRESS_BAR(w)) {
+		return FALSE;
+	}
+
+	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(w));
+	GTK_EVENTS_FLUSH();
+	return TRUE;
+}
+
 GtkWidget *label_window_create(const gchar *str)
 {
 	GtkWidget *window;
-	GtkWidget *label;
+	GtkWidget *label, *vbox, *hbox;
+	GtkWidget *wait_progress = gtk_progress_bar_new();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "gtkutils");
-	gtk_widget_set_size_request(window, 380, 60);
+	gtk_widget_set_size_request(window, 380, 70);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(window), str);
@@ -869,15 +888,39 @@ GtkWidget *label_window_create(const gchar *str)
 	manage_window_set_transient(GTK_WINDOW(window));
 
 	label = gtk_label_new(str);
-	gtk_container_add(GTK_CONTAINER(window), label);
+	
+	vbox = gtk_vbox_new(FALSE, 6);
+	hbox = gtk_hbox_new(FALSE, 6);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, FALSE, 0);
+	hbox = gtk_hbox_new(FALSE, 6);
+	gtk_box_pack_start(GTK_BOX(hbox), wait_progress, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_widget_show(label);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
+	gtk_widget_show_all(vbox);
 
 	gtk_widget_show_now(window);
 	
+	if (move_bar_id == -1) {
+		move_bar_id = g_timeout_add(200, move_bar_cb, wait_progress);
+		move_bar = TRUE;
+	}
+
 	GTK_EVENTS_FLUSH();
 
 	return window;
+}
+
+void label_window_destroy(GtkWidget *window)
+{
+	move_bar = FALSE;
+	g_source_remove(move_bar_id);
+	move_bar_id = -1;
+	GTK_EVENTS_FLUSH();
+	gtk_widget_destroy(window);	
 }
 
 GtkWidget *gtkut_account_menu_new(GList			*ac_list,
