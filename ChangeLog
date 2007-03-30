@@ -1,3 +1,10 @@
+2007-03-30 [colin]	2.8.1cvs69
+
+	* src/pop.c
+	* src/prefs_common.c
+		Fix possible trashing of history and uidl
+		files on disk full problems
+
 2007-03-30 [paul]	2.8.1cvs68
 
 	* src/mainwindow.c

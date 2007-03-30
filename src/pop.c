@@ -633,9 +633,16 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 	return;
 }
 
+#define TRY(func) \
+if (!(func)) \
+{ \
+	g_warning("failed to write\n"); \
+	goto err_write;			\
+} \
+
 gint pop3_write_uidl_list(Pop3Session *session)
 {
-	gchar *path;
+	gchar *path, *tmp_path;
 	FILE *fp;
 	Pop3MsgInfo *msg;
 	gint n;
@@ -650,28 +657,51 @@ gint pop3_write_uidl_list(Pop3Session *session)
 			   "uidl", G_DIR_SEPARATOR_S,
 			   session->ac_prefs->recv_server,
 			   "-", sanitized_uid, NULL);
-	
+	tmp_path = g_strconcat(path, ".tmp", NULL);
+
 	g_free(sanitized_uid);
 
-	if ((fp = g_fopen(path, "wb")) == NULL) {
-		FILE_OP_ERROR(path, "fopen");
-		g_free(path);
-		return -1;
+	if ((fp = g_fopen(tmp_path, "wb")) == NULL) {
+		FILE_OP_ERROR(tmp_path, "fopen");
+		goto err_write;
 	}
 
 	for (n = 1; n <= session->count; n++) {
 		msg = &session->msg[n];
 		if (msg->uidl && msg->received &&
 		    (!msg->deleted || session->state != POP3_DONE))
-			fprintf(fp, "%s\t%ld\t%d\n", 
-				msg->uidl, (long int) msg->recv_time, msg->partial_recv);
+			TRY(fprintf(fp, "%s\t%ld\t%d\n", 
+				msg->uidl, (long int) 
+				msg->recv_time, 
+				msg->partial_recv) 
+			    > 0);
 	}
 
-	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp_path, "fclose");
+		fp = NULL;
+		goto err_write;
+	}
+	fp = NULL;
+#ifdef G_OS_WIN32
+	g_unlink(path);
+#endif
+	if (g_rename(tmp_path, path) < 0) {
+		FILE_OP_ERROR(path, "rename");
+		goto err_write;
+	}
 	g_free(path);
-
+	g_free(tmp_path);
 	return 0;
+err_write:
+	if (fp)
+		fclose(fp);
+	g_free(path);
+	g_free(tmp_path);
+	return -1;
 }
+
+#undef TRY
 
 static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 				   guint len, const gchar *prefix)

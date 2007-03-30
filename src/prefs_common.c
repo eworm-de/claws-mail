@@ -1064,6 +1064,13 @@ void prefs_common_read_config(void)
 	colorlabel_update_colortable_from_prefs();
 }
 
+#define TRY(func) \
+if (!(func)) \
+{ \
+	g_warning("failed to write\n"); \
+	goto out;			\
+} \
+
 /*
  * Save history list to the specified history file
  */
@@ -1071,24 +1078,44 @@ static void prefs_common_save_history(const gchar *history, GList *list)
 {
 	GList *cur;
 	FILE *fp;
-	gchar *path;
+	gchar *path, *tmp_path;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
-	if ((fp = g_fopen(path, "wb")) == NULL) {
-		FILE_OP_ERROR(path, "fopen");
-		g_free(path);
-		return;
+	tmp_path = g_strconcat(path, ".tmp", NULL);
+
+	if ((fp = g_fopen(tmp_path, "wb")) == NULL) {
+		FILE_OP_ERROR(tmp_path, "fopen");
+		goto out;
 	}
 
 	for (cur = list; cur != NULL; cur = cur->next) {
-		fputs((gchar *)cur->data, fp);
-		fputc('\n', fp);
+		TRY(fputs((gchar *)cur->data, fp) != EOF &&
+		    fputc('\n', fp) != EOF);
 	}
 
-	fclose(fp);
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp_path, "fclose");
+		fp = NULL;
+		goto out;
+	}
+	fp = NULL;
+#ifdef G_OS_WIN32
+	g_unlink(path);
+#endif
+	if (g_rename(tmp_path, path) < 0) {
+		FILE_OP_ERROR(path, "rename");
+		goto out;
+	}
+
+out:
+	if (fp)
+		fclose(fp);
+	g_free(tmp_path);
 	g_free(path);
 }
+
+#undef TRY
 
 void prefs_common_write_config(void)
 {
