@@ -102,7 +102,11 @@
 #else
 #  define ACTIONS_RC		"actionsrc"
 #  define COMMAND_HISTORY	"command_history"
+# ifndef MAEMO
 #  define DEFAULT_SIGNATURE	".signature"
+# else
+#  define DEFAULT_SIGNATURE	"MyDocs/signature.txt"
+# endif
 #endif
 
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"
@@ -111,7 +115,11 @@
 /* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t -i"
 #define DEFAULT_BROWSER_CMD	"firefox '%s'"
+#ifndef MAEMO
 #define DEFAULT_EDITOR_CMD	"gedit '%s'"
+#else
+#define DEFAULT_EDITOR_CMD	"maemopad '%s'"
+#endif
 #define DEFAULT_MIME_CMD	"metamail -d -b -x -c %s '%s'"
 #define DEFAULT_IMAGE_VIEWER_CMD "display '%s'"
 #define DEFAULT_AUDIO_PLAYER_CMD "play '%s'"

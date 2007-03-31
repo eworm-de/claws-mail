@@ -1,3 +1,15 @@
+2007-03-31 [colin]	2.8.1cvs79
+
+	* src/prefs_account.c
+		Create signature file if it doesn't exist
+		before editing
+	* src/prefs_toolbar.c
+		Maemo: Move "Use default" on the left so
+		that people can find it
+	* src/common/defs.h
+		Maemo: make default editor "Maemopad", 
+		default signature file "MyDocs/signature.txt"
+
 2007-03-31 [colin]	2.8.1cvs78
 
 	* src/prefs_account.c
