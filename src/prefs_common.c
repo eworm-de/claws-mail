@@ -886,6 +886,9 @@ static PrefParam param[] = {
 	{"folderitemwin_height", "-1", &prefs_common.folderitemwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"zero_replacement_char", "0", &prefs_common.zero_replacement, P_STRING,
+	 NULL, NULL, NULL},
+
 	{"editaccountwin_width", "500", &prefs_common.editaccountwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"editaccountwin_height", "-1", &prefs_common.editaccountwin_height, P_INT,

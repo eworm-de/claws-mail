@@ -1621,9 +1621,9 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_UNREAD], "-");
 		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  "-");
 	} else {
-		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_NEW],    itos(item->new_msgs));
-		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_UNREAD], itos(item->unread_msgs));
-		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  itos(item->total_msgs));
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_NEW],    item->new_msgs    > 0 ? itos(item->new_msgs)    : prefs_common.zero_replacement);
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_UNREAD], item->unread_msgs > 0 ? itos(item->unread_msgs) : prefs_common.zero_replacement);
+		gtk_ctree_node_set_text(ctree, node, col_pos[F_COL_TOTAL],  item->total_msgs  > 0 ? itos(item->total_msgs)  : prefs_common.zero_replacement);
 	}
 
 	if (folder_has_parent_of_type(item, F_OUTBOX) ||

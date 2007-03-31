@@ -411,6 +411,7 @@ struct _PrefsCommon
 	gint prefswin_height;
 	gint folderitemwin_width;
 	gint folderitemwin_height;
+	gchar *zero_replacement;
 	gint editaccountwin_width;
 	gint editaccountwin_height;
 	gint accountswin_width;

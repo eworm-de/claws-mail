@@ -1,3 +1,11 @@
+2007-03-31 [colin]	2.8.1cvs77
+
+	* src/folderview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Fix bug 1167, 'Allow not displaying zeros 
+		in folder list'. Patch by MartinP
+
 2007-03-31 [colin]	2.8.1cvs76
 
 	* AUTHORS
