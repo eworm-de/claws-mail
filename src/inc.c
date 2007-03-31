@@ -1452,7 +1452,6 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 		length = prefs_common.autochk_itv; /* minutes */
 
 	if (force_ask) {
-		overridden_yes = (time_t)0;
 		overridden_no = (time_t)0;
 	}
 

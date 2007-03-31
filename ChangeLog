@@ -1,3 +1,9 @@
+2007-03-31 [colin]	2.8.1cvs73
+
+	* src/inc.c
+		If we're currently "overriding for %d minutes",
+		don't ask
+
 2007-03-31 [colin]	2.8.1cvs72
 
 	* src/compose.c
