@@ -1,3 +1,10 @@
+2007-03-31 [colin]	2.8.1cvs75
+
+	* src/imap.c
+		Apply patch from bug 1172, direct
+		access to the folder's session instead
+		of using getter. Patch by MartinP
+
 2007-03-31 [paul]	2.8.1cvs74
 
 	* src/gtk/authors.h

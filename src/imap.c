@@ -1431,8 +1431,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
 
 	ok = imap_set_message_flags
-		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
-		numlist, IMAP_FLAG_DELETED, TRUE);
+		(session, numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(LOG_PROTOCOL, _("can't set deleted flags\n"));
 		unlock_session();
@@ -3819,8 +3818,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	numlist.data = GINT_TO_POINTER(uid);
 	
 	ok = imap_set_message_flags
-		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
-		&numlist, IMAP_FLAG_DELETED, TRUE);
+		(session, &numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(LOG_PROTOCOL, _("can't set deleted flags: %d\n"), uid);
 		unlock_session();
