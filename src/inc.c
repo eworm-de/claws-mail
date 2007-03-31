@@ -172,7 +172,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 	if (inc_lock_count) return;
 
 	if (prefs_common.work_offline && 
-	    !inc_offline_should_override(
+	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return;
@@ -277,7 +277,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 	if (inc_lock_count) return 0;
 
 	if (prefs_common.work_offline && 
-	    !inc_offline_should_override(
+	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return 0;
@@ -303,7 +303,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	gint account_new_msgs = 0;
 	
 	if (prefs_common.work_offline && 
-	    !inc_offline_should_override(
+	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return;
@@ -1441,7 +1441,7 @@ static gint inc_autocheck_func(gpointer data)
 	return FALSE;
 }
 
-gboolean inc_offline_should_override(const gchar *msg)
+gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 {
 	static time_t overridden_yes = 0;
 	static time_t overridden_no  = 0;
@@ -1451,6 +1451,11 @@ gboolean inc_offline_should_override(const gchar *msg)
 	if (prefs_common.autochk_newmail)
 		length = prefs_common.autochk_itv; /* minutes */
 
+	if (force_ask) {
+		overridden_yes = (time_t)0;
+		overridden_no = (time_t)0;
+	}
+
 	if (prefs_common.work_offline) {
 		gchar *tmp = NULL;
 		
@@ -1459,21 +1464,30 @@ gboolean inc_offline_should_override(const gchar *msg)
 		else if (time(NULL) - overridden_no < length * 60) /* seconds */
 			 return FALSE;
 
-		tmp = g_strdup_printf(
+		if (!force_ask)
+			tmp = g_strdup_printf(
 				_("%s%sYou're working offline. Override for %d minutes?"),
 				msg?msg:"", 
 				msg?"\n\n":"",
 				length);
+		else
+			tmp = g_strdup_printf(
+				_("%s%sYou're working offline. Override?"),
+				msg?msg:"", 
+				msg?"\n\n":"");
 
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       GTK_STOCK_NO, "+" GTK_STOCK_YES, _("On_ly once"));
+			       GTK_STOCK_NO, "+" GTK_STOCK_YES, 
+				!force_ask? _("On_ly once"):NULL);
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {
-			overridden_yes = time(NULL);
+			if (!force_ask)
+				overridden_yes = time(NULL);
 			return TRUE;
 		} else if (answer == G_ALERTDEFAULT) {
-			overridden_no  = time(NULL);
+			if (!force_ask)
+				overridden_no  = time(NULL);
 			return FALSE;
 		} else {
 			overridden_yes = (time_t)0;

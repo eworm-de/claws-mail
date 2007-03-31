@@ -7989,7 +7989,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	Compose *compose = (Compose *)data;
 	
 	if (prefs_common.work_offline && 
-	    !inc_offline_should_override(
+	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
 		  "to send this email.")))
 		return;

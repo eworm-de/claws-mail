@@ -1,3 +1,19 @@
+2007-03-31 [colin]	2.8.1cvs72
+
+	* src/compose.c
+	* src/imap.c
+	* src/inc.c
+	* src/inc.h
+	* src/messageview.c
+	* src/news.c
+	* src/plugins/spamassassin/spamassassin.c
+		Offline override: Add a parameter to allow
+		asking even if the override timer is running.
+		Allows to ask every time the user makes an
+		explicit action needing online access (such
+		as Get Mail), and not when the action is 
+		implicit (such as opening an IMAP folder)
+
 2007-03-31 [colin]	2.8.1cvs71
 
 	* src/inc.c
