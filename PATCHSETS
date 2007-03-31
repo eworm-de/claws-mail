@@ -2494,3 +2494,4 @@
 ( cvs diff -u -r 1.179.2.162 -r 1.179.2.163 src/imap.c;  ) > 2.8.1cvs75.patchset
 ( cvs diff -u -r 1.100.2.48 -r 1.100.2.49 AUTHORS;  ) > 2.8.1cvs76.patchset
 ( cvs diff -u -r 1.207.2.158 -r 1.207.2.159 src/folderview.c;  cvs diff -u -r 1.204.2.128 -r 1.204.2.129 src/prefs_common.c;  cvs diff -u -r 1.103.2.78 -r 1.103.2.79 src/prefs_common.h;  ) > 2.8.1cvs77.patchset
+( cvs diff -u -r 1.105.2.89 -r 1.105.2.90 src/prefs_account.c;  ) > 2.8.1cvs78.patchset

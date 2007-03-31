@@ -1193,8 +1193,12 @@ static void prefs_account_basic_create(void)
 
 	default_checkbtn = gtk_check_button_new_with_label (_("Set as default"));
 	gtk_widget_show (default_checkbtn);
+#ifndef MAEMO
 	gtk_box_pack_end (GTK_BOX (hbox), default_checkbtn, TRUE, FALSE, 0);
-
+#else
+	gtk_box_pack_start (GTK_BOX (vbox1), default_checkbtn, FALSE, FALSE, 0);
+	
+#endif
 	PACK_FRAME (vbox1, frame1, _("Personal information"));
 
 	table1 = gtk_table_new (3, 2, FALSE);
@@ -1344,16 +1348,25 @@ static void prefs_account_basic_create(void)
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
 	gtk_widget_set_size_request (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
+	pass_entry = gtk_entry_new ();
+	gtk_widget_show (pass_entry);
+	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
+#ifndef MAEMO
 	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	pass_entry = gtk_entry_new ();
-	gtk_widget_show (pass_entry);
-	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+#else
+	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 4, 7, 8,
+			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 1, 4, 8, 9,
+			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+#endif
 	gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
 
 	nntpserv_label = gtk_label_new (_("News server"));
@@ -1407,9 +1420,14 @@ static void prefs_account_basic_create(void)
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
+#ifndef MAEMO
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 7, 8,
 			  0, 0, 0, 0);
-
+#else
+	gtk_misc_set_alignment (GTK_MISC (pass_label), 1, 0.5);
+	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 0, 1, 8, 9,
+			  GTK_FILL, 0, 0, 0);
+#endif
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_entry);
@@ -1835,6 +1853,17 @@ static void prefs_account_send_create(void)
 	gtk_widget_set_size_request (smtp_uid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_uid_entry, TRUE, TRUE, 0);
 
+#ifdef MAEMO
+	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
+#endif
 	label = gtk_label_new (_("Password"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -1843,8 +1872,8 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (smtp_pass_entry);
 	gtk_widget_set_size_request (smtp_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_pass_entry, TRUE, TRUE, 0);
-	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
 
+	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
 	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
 	hbox = gtk_hbox_new (FALSE, 8);

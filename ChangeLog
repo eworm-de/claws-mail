@@ -1,3 +1,10 @@
+2007-03-31 [colin]	2.8.1cvs78
+
+	* src/prefs_account.c
+		Maemo: rework account prefs so
+		that less horizontal scrolling
+		is required
+
 2007-03-31 [colin]	2.8.1cvs77
 
 	* src/folderview.c
