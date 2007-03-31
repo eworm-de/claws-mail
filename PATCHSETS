@@ -2490,3 +2490,4 @@
 ( cvs diff -u -r 1.149.2.68 -r 1.149.2.69 src/inc.c;  ) > 2.8.1cvs71.patchset
 ( cvs diff -u -r 1.382.2.368 -r 1.382.2.369 src/compose.c;  cvs diff -u -r 1.179.2.161 -r 1.179.2.162 src/imap.c;  cvs diff -u -r 1.149.2.69 -r 1.149.2.70 src/inc.c;  cvs diff -u -r 1.29.2.11 -r 1.29.2.12 src/inc.h;  cvs diff -u -r 1.94.2.129 -r 1.94.2.130 src/messageview.c;  cvs diff -u -r 1.101.2.37 -r 1.101.2.38 src/news.c;  cvs diff -u -r 1.18.2.49 -r 1.18.2.50 src/plugins/spamassassin/spamassassin.c;  ) > 2.8.1cvs72.patchset
 ( cvs diff -u -r 1.149.2.70 -r 1.149.2.71 src/inc.c;  ) > 2.8.1cvs73.patchset
+( cvs diff -u -r 1.1.2.34 -r 1.1.2.35 src/gtk/authors.h;  ) > 2.8.1cvs74.patchset

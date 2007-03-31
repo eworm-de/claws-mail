@@ -1,3 +1,8 @@
+2007-03-31 [paul]	2.8.1cvs74
+
+	* src/gtk/authors.h
+		no need to list Fabien twice!
+
 2007-03-31 [colin]	2.8.1cvs73
 
 	* src/inc.c

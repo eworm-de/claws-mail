@@ -9,7 +9,6 @@ static char *TEAM_LIST[] = {
 "Paul Mangan <paul@claws-mail.org>",
 "Martin Schaaf <mascha1@users.sf.net>",
 "Fabien Vantard <fzzzzz@gmail.com>",
-"Fabien Vantard <fzzzzz@gmail.com>",
 NULL
 };
 
