@@ -2487,3 +2487,4 @@
 ( cvs diff -u -r 1.274.2.182 -r 1.274.2.183 src/mainwindow.c;  cvs diff -u -r 1.395.2.293 -r 1.395.2.294 src/summaryview.c;  cvs diff -u -r 1.68.2.35 -r 1.68.2.36 src/summaryview.h;  ) > 2.8.1cvs68.patchset
 ( cvs diff -u -r 1.56.2.48 -r 1.56.2.49 src/pop.c;  cvs diff -u -r 1.204.2.127 -r 1.204.2.128 src/prefs_common.c;  ) > 2.8.1cvs69.patchset
 ( cvs diff -u -r 1.207.2.157 -r 1.207.2.158 src/folderview.c;  cvs diff -u -r 1.115.2.150 -r 1.115.2.151 src/main.c;  cvs diff -u -r 1.13.2.30 -r 1.13.2.31 src/common/socket.c;  cvs diff -u -r 1.5.2.56 -r 1.5.2.57 src/gtk/gtkutils.c;  cvs diff -u -r 1.4.2.33 -r 1.4.2.34 src/gtk/gtkutils.h;  cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/plugins/pgpcore/sgpgme.c;  ) > 2.8.1cvs70.patchset
+( cvs diff -u -r 1.149.2.68 -r 1.149.2.69 src/inc.c;  ) > 2.8.1cvs71.patchset

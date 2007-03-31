@@ -1,3 +1,9 @@
+2007-03-31 [colin]	2.8.1cvs71
+
+	* src/inc.c
+		Override offline: "No" answer shouldn't
+		re-ask after 3 seconds, but 10 minutes. 
+
 2007-03-30 [colin]	2.8.1cvs70
 
 	* src/common/socket.c
