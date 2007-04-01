@@ -55,9 +55,11 @@
 #include "remotefolder.h"
 #include "base64.h"
 #include "combobox.h"
+#include "setup.h"
 
 static gboolean cancelled;
 static gboolean new_account;
+static gboolean create_mailbox;
 
 static PrefsAccount tmp_ac_prefs;
 
@@ -773,6 +775,7 @@ static void create_widget_func(PrefsPage * _page,
 
 	tmp_ac_prefs = *ac_prefs;
 
+	create_mailbox = FALSE;
 	if (new_account) {
 		PrefsAccount *def_ac;
 		gchar *buf;
@@ -800,6 +803,8 @@ static void create_widget_func(PrefsPage * _page,
 				gtk_entry_set_text(GTK_ENTRY(receive.local_inbox_entry),
 					id);
 				g_free(id);
+			} else {
+				create_mailbox = TRUE;
 			}
 		}
 	} else
@@ -2647,6 +2652,19 @@ static gint prefs_account_apply(void)
 		GtkWidget *inbox_entry = (protocol == A_POP3 ? receive.inbox_entry : receive.local_inbox_entry );
 		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
 		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
+		if (!inbox && create_mailbox) {
+			gchar *id = NULL;
+			setup_write_mailbox_path(mainwindow_get_mainwindow(), "Mail");
+			id = folder_item_get_identifier(folder_get_default_inbox_for_class(F_MH));
+			gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry),
+				id);
+			gtk_entry_set_text(GTK_ENTRY(receive.local_inbox_entry),
+				id);
+			g_free(id);
+			mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
+			create_mailbox = FALSE;
+			inbox =  folder_find_item_from_identifier(mailbox);
+		}
 	    	if (inbox == NULL) {
 			alertpanel_error(_("The default inbox folder doesn't exist."));
 			return -1;

@@ -1,3 +1,11 @@
+2007-04-01 [colin]	2.8.1cvs80
+
+	* src/prefs_account.c
+		If no MH mailbox exist, when creating a POP/Local
+		account, just create and use the default one 
+		instead of bailing with a "Mailbox doesn't exist"
+		error
+
 2007-03-31 [colin]	2.8.1cvs79
 
 	* src/prefs_account.c
