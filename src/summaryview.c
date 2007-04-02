@@ -642,7 +642,9 @@ SummaryView *summary_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+#endif
 	gtk_widget_set_size_request(vbox,
 			     prefs_common.summaryview_width,
 			     prefs_common.summaryview_height);
@@ -664,6 +666,9 @@ SummaryView *summary_create(void)
 	quicksearch = quicksearch_new();
 	gtk_box_pack_start(GTK_BOX(vbox), quicksearch_get_widget(quicksearch), FALSE, FALSE, 0);
 
+#ifdef MAEMO
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+#endif
 	quicksearch_set_execute_callback(quicksearch, quicksearch_execute_cb, summaryview);
 
   	g_signal_connect (G_OBJECT(toggle_search), "toggled",

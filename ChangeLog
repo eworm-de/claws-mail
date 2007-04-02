@@ -1,3 +1,11 @@
+2007-04-02 [colin]	2.8.1cvs83
+
+	* src/summaryview.c
+		Maemo: Put status and quicksearch at the top
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/spamassassin/spamassassin.c
+		Derive trash from inbox if possible
+
 2007-04-02 [paul]	2.8.1cvs82
 
 	* src/plugins/bogofilter/bogofilter_gtk.c

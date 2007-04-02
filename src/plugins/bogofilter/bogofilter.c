@@ -590,14 +590,41 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			if ((!config.save_folder) ||
 			    (config.save_folder[0] == '\0') ||
 			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL)) {
-			 	if (mail_filtering_data->account && mail_filtering_data->account->set_trash_folder)
+			 	if (mail_filtering_data->account && mail_filtering_data->account->set_trash_folder) {
 					save_folder = folder_find_item_from_identifier(
 						mail_filtering_data->account->trash_folder);
+					if (save_folder)
+						debug_print("found trash folder from account's advanced settings\n");
+				}
 				if (save_folder == NULL && mail_filtering_data->account &&
-				    mail_filtering_data->account->folder)
+				    mail_filtering_data->account->folder) {
 				    	save_folder = mail_filtering_data->account->folder->trash;
-				if (save_folder == NULL)
+					if (save_folder)
+						debug_print("found trash folder from account's trash\n");
+				}
+				if (save_folder == NULL && mail_filtering_data->account &&
+				    !mail_filtering_data->account->folder)  {
+					if (mail_filtering_data->account->inbox) {
+						FolderItem *item = folder_find_item_from_identifier(
+							mail_filtering_data->account->inbox);
+						if (item && item->folder->trash) {
+							save_folder = item->folder->trash;
+							debug_print("found trash folder from account's inbox\n");
+						}
+					} 
+					if (!save_folder && mail_filtering_data->account->local_inbox) {
+						FolderItem *item = folder_find_item_from_identifier(
+							mail_filtering_data->account->local_inbox);
+						if (item && item->folder->trash) {
+							save_folder = item->folder->trash;
+							debug_print("found trash folder from account's local_inbox\n");
+						}
+					}
+				}
+				if (save_folder == NULL) {
+					debug_print("using default trash folder\n");
 					save_folder = folder_get_default_trash();
+				}
 			}
 			if (save_folder) {
 				for (cur = new_spams; cur; cur = cur->next) {
@@ -619,6 +646,23 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				if (save_unsure_folder == NULL && mail_filtering_data->account &&
 				    mail_filtering_data->account->folder)
 				    	save_unsure_folder = mail_filtering_data->account->folder->inbox;
+				if (save_unsure_folder == NULL && mail_filtering_data->account &&
+				    !mail_filtering_data->account->folder)  {
+					if (mail_filtering_data->account->inbox) {
+						FolderItem *item = folder_find_item_from_identifier(
+							mail_filtering_data->account->inbox);
+						if (item) {
+							save_unsure_folder = item;
+						}
+					} 
+					if (!save_unsure_folder && mail_filtering_data->account->local_inbox) {
+						FolderItem *item = folder_find_item_from_identifier(
+							mail_filtering_data->account->local_inbox);
+						if (item) {
+							save_unsure_folder = item;
+						}
+					}
+				}
 				if (save_unsure_folder == NULL)
 					save_unsure_folder = folder_get_default_inbox();
 			}
