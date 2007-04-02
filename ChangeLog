@@ -1,3 +1,13 @@
+2007-04-02 [colin]	2.8.1cvs81
+
+	* src/image_viewer.c
+		Fix transparent images by using
+		GtkImage
+	* src/messageview.c
+		Flush events (on new windows) to avoid
+		having the textview's image resize fail
+		to know the available width
+
 2007-04-01 [colin]	2.8.1cvs80
 
 	* src/prefs_account.c

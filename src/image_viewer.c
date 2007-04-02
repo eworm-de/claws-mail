@@ -38,7 +38,8 @@ MimeViewerFactory image_viewer_factory;
 void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
 					  gint * sw, gint * sh);
 static void image_viewer_clear_viewer(MimeViewer *imageviewer);
-
+static void scrolledwin_resize_cb(GtkWidget *scrolledwin, GtkAllocation *alloc,
+				  ImageViewer *imageviewer);
 struct _ImageViewer
 {
 	MimeViewer mimeviewer;
@@ -67,8 +68,6 @@ static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
 static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
 {
 	GdkPixbuf *pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	gint avail_width;
 	gint avail_height;
 	GError *error = NULL;
@@ -101,18 +100,23 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		return;
 	}
 
-	gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, &mask, 0);
-
 	if (!imageviewer->image) {
-		imageviewer->image = gtk_pixmap_new(pixmap, mask);
+		imageviewer->image = gtk_image_new();
 
 		gtk_scrolled_window_add_with_viewport
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
-	} else
-		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), pixmap, mask);
+	}
+	
+	g_signal_handlers_block_by_func(G_OBJECT(imageviewer->scrolledwin), 
+			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
+
+	gtk_image_set_from_pixbuf(GTK_IMAGE(imageviewer->image), pixbuf);
 
 	gtk_widget_show(imageviewer->image);
+	GTK_EVENTS_FLUSH();
+	g_signal_handlers_unblock_by_func(G_OBJECT(imageviewer->scrolledwin), 
+			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
 
 	g_object_unref(pixbuf);
 }
@@ -173,8 +177,10 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 
 	image_viewer_set_notebook_page(_mimeviewer);
 
-	if (imageviewer->image != NULL)
-		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), NULL, NULL);
+	if (imageviewer->image != NULL) {
+		gtk_widget_destroy(imageviewer->image);
+		imageviewer->image = NULL;
+	}
 
 	if (imageviewer->scrolledwin) {
 		hadj = gtk_scrolled_window_get_hadjustment

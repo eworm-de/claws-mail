@@ -856,13 +856,18 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	textview_set_all_headers(messageview->mimeview->textview, 
 			messageview->all_headers);
 
+#ifdef MAEMO
+	maemo_window_full_screen_if_needed(GTK_WINDOW(messageview->window));
+#endif
+	if (messageview->window) {
+		gtk_window_set_title(GTK_WINDOW(messageview->window), 
+				_("Claws Mail - Message View"));
+		GTK_EVENTS_FLUSH();
+	}
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	
 	messageview_set_position(messageview, 0);
 
-	if (messageview->window)
-		gtk_window_set_title(GTK_WINDOW(messageview->window), 
-				_("Claws Mail - Message View"));
 	if (messageview->window && msginfo->subject) {
 		subject = g_strdup(msginfo->subject);
 		if (!g_utf8_validate(subject, -1, NULL)) {
@@ -903,9 +908,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 
 	g_free(file);
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(messageview->window));
-#endif
 
 	return 0;
 }
