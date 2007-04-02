@@ -2498,3 +2498,4 @@
 ( cvs diff -u -r 1.105.2.90 -r 1.105.2.91 src/prefs_account.c;  cvs diff -u -r 1.30.2.32 -r 1.30.2.33 src/prefs_toolbar.c;  cvs diff -u -r 1.9.2.34 -r 1.9.2.35 src/common/defs.h;  ) > 2.8.1cvs79.patchset
 ( cvs diff -u -r 1.105.2.91 -r 1.105.2.92 src/prefs_account.c;  ) > 2.8.1cvs80.patchset
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/image_viewer.c;  cvs diff -u -r 1.94.2.130 -r 1.94.2.131 src/messageview.c;  ) > 2.8.1cvs81.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 2.8.1cvs82.patchset

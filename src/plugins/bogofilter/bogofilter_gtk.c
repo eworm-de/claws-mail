@@ -198,7 +198,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_save_unsure);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_save_unsure, TRUE, TRUE, 0);
 
-	save_unsure_checkbtn = gtk_check_button_new_with_label(_("When unsure, move in"));
+	save_unsure_checkbtn = gtk_check_button_new_with_label(_("When unsure, move to"));
 	gtk_widget_show(save_unsure_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_save_unsure), save_unsure_checkbtn, FALSE, FALSE, 0);
 
@@ -227,11 +227,11 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_whitelist, TRUE, TRUE, 0);
 
-	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Whitelist senders present in addressbook/folder"));
+	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Whitelist senders found in address book/folder"));
 	gtk_widget_show(whitelist_ab_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_checkbtn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_checkbtn,
-			_("Messages coming from your addressbook contacts will be received in the normal folder even if detected as spam"), NULL);
+			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"), NULL);
 
 	whitelist_ab_folder_combo = gtk_combo_new();
 	gtk_widget_show(whitelist_ab_folder_combo);
@@ -253,7 +253,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (whitelist_ab_select_btn);
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_select_btn,
-			_("Click this button to select a book or folder in the addressbook"),
+			_("Click this button to select a book or folder in the address book"),
 			NULL);
 
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
