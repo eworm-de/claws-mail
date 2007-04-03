@@ -1,3 +1,10 @@
+2007-04-03 [colin]	2.8.1cvs87
+
+	* src/imap.c
+		Fix crash with Citadel, and try to make
+		things work. this server (and specifically 
+		STATUS and APPEND at least) seems broken.
+
 2007-04-03 [colin]	2.8.1cvs86
 
 	* src/folderview.c

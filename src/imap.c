@@ -2665,15 +2665,19 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 
 	if (messages) {
 		mask |= 1 << 0;
+		*messages = 0;
 	}
 	if (uid_next) {
 		mask |= 1 << 2;
+		*uid_next = 0;
 	}
 	if (uid_validity) {
 		mask |= 1 << 3;
+		*uid_validity = 0;
 	}
 	if (unseen) {
 		mask |= 1 << 4;
+		*unseen = 0;
 	}
 	r = imap_threaded_status(FOLDER(folder), real_path, 
 		&data_status, mask);
@@ -2698,31 +2702,38 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 		info = clist_content(iter);
 		switch (info->st_att) {
 		case MAILIMAP_STATUS_ATT_MESSAGES:
-			* messages = info->st_value;
-			got_values |= 1 << 0;
+			if (messages) {
+				* messages = info->st_value;
+				got_values |= 1 << 0;
+			}
 			break;
 			
 		case MAILIMAP_STATUS_ATT_UIDNEXT:
-			* uid_next = info->st_value;
-			got_values |= 1 << 2;
+			if (uid_next) {
+				* uid_next = info->st_value;
+				got_values |= 1 << 2;
+			}
 			break;
 			
 		case MAILIMAP_STATUS_ATT_UIDVALIDITY:
-			* uid_validity = info->st_value;
-			got_values |= 1 << 3;
+			if (uid_validity) {
+				* uid_validity = info->st_value;
+				got_values |= 1 << 3;
+			}
 			break;
 			
 		case MAILIMAP_STATUS_ATT_UNSEEN:
-			* unseen = info->st_value;
-			got_values |= 1 << 4;
+			if (unseen) {
+				* unseen = info->st_value;
+				got_values |= 1 << 4;
+			}
 			break;
 		}
 	}
 	mailimap_mailbox_data_status_free(data_status);
 	
 	if (got_values != mask) {
-		debug_print("status: incomplete values received (%d)\n", got_values);
-		return IMAP_ERROR;
+		g_warning("status: incomplete values received (%d)\n", got_values);
 	}
 	return IMAP_SUCCESS;
 }
