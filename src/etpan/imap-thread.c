@@ -65,7 +65,7 @@ static void delete_imap(Folder *folder, mailimap *imap)
 	key.data = &imap;
 	key.len = sizeof(imap);
 	chash_delete(courier_workaround_hash, &key, NULL);
-	if (imap->imap_stream) {
+	if (imap && imap->imap_stream) {
 		/* we don't want libetpan to logout */
 		mailstream_close(imap->imap_stream);
 		imap->imap_stream = NULL;
@@ -1008,10 +1008,10 @@ int imap_threaded_noop(Folder * folder, unsigned int * p_exists)
 	
 	imap = get_imap(folder);
 	param.imap = imap;
-	
+
 	threaded_run(folder, &param, &result, noop_run);
 	
-	if (imap->imap_selection_info != NULL) {
+	if (imap && imap->imap_selection_info != NULL) {
 		* p_exists = imap->imap_selection_info->sel_exists;
 	}
 	else {
@@ -1086,7 +1086,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	
 	debug_print("imap starttls - end\n");
 
-	if (result.error == 0 && !etpan_skip_ssl_cert_check) {
+	if (result.error == 0 && param.imap && !etpan_skip_ssl_cert_check) {
 		cert_len = (int)mailstream_ssl_get_certificate(param.imap->imap_stream, &certificate);
 		if (etpan_certificate_check(certificate, cert_len, &param) < 0)
 			result.error = MAILIMAP_ERROR_STREAM;
@@ -1283,7 +1283,7 @@ int imap_threaded_select(Folder * folder, const char * mb,
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;
 	
-	if (imap->imap_selection_info == NULL)
+	if (!imap || imap->imap_selection_info == NULL)
 		return MAILIMAP_ERROR_PARSE;
 	
 	* exists = imap->imap_selection_info->sel_exists;
@@ -1343,7 +1343,7 @@ int imap_threaded_examine(Folder * folder, const char * mb,
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;
 	
-	if (imap->imap_selection_info == NULL)
+	if (!imap || imap->imap_selection_info == NULL)
 		return MAILIMAP_ERROR_PARSE;
 	
 	* exists = imap->imap_selection_info->sel_exists;
@@ -2799,7 +2799,8 @@ static int socket_connect_cmd(mailimap * imap, const char * command,
 	if (r != MAILIMAP_NO_ERROR_AUTHENTICATED
 	&&  r != MAILIMAP_NO_ERROR_NON_AUTHENTICATED) {
 		mailstream_close(s);
-		imap->imap_stream = NULL;
+		if (imap)
+			imap->imap_stream = NULL;
 		return r;
 	}
 	

@@ -1,3 +1,19 @@
+2007-04-03 [colin]	2.8.1cvs85
+
+	* src/inc.c
+		Fix double-ask of offline override in
+		certain cases
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+		Much more efficient way to synchronise
+		for offline use
+	* src/etpan/imap-thread.c
+		Fix possible segs
+	* src/folder.c
+	* src/gtk/quicksearch.c
+		Fix some GUI lags
+
 2007-04-03 [paul]	2.8.1cvs84
 
 	* src/filtering.c

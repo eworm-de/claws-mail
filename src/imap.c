@@ -959,22 +959,22 @@ static gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	return imap_fetch_msg_full(folder, item, uid, TRUE, TRUE);
 }
 
-static guint get_size_with_crs(MsgInfo *info) 
+static guint get_file_size_with_crs(const gchar *filename) 
 {
 	FILE *fp = NULL;
 	guint cnt = 0;
 	gchar buf[4096];
 	
-	if (info == NULL)
+	if (filename == NULL)
 		return -1;
 	
-	fp = procmsg_open_message(info);
+	fp = fopen(filename, "rb");
 	if (!fp)
 		return -1;
 	
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
 		cnt += strlen(buf);
-		if (!strstr(buf, "\r") && strstr(buf, "\n"))
+		if (!strstr(buf, "\r\n") && strstr(buf, "\n"))
 			cnt++;
 	}
 	
@@ -1005,9 +1005,8 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		/* see whether the local file represents the whole message
 		 * or not. As the IMAP server reports size with \r chars,
 		 * we have to update the local file (UNIX \n only) size */
-		MsgInfo *msginfo = imap_parse_msg(filename, item);
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
-		guint have_size = get_size_with_crs(msginfo);
+		guint have_size = get_file_size_with_crs(filename);
 
 		if (cached)
 			debug_print("message %d has been already %scached (%d/%d).\n", uid,
@@ -1016,17 +1015,14 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		
 		if (cached && (cached->size <= have_size || !body)) {
 			procmsg_msginfo_free(cached);
-			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
 			return filename;
 		} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
 			debug_print("message not cached and file recent, considering file complete\n");
-			procmsg_msginfo_free(msginfo);
 			file_strip_crs(filename);
 			return filename;
 		} else {
 			procmsg_msginfo_free(cached);
-			procmsg_msginfo_free(msginfo);
 		}
 	}
 
@@ -1061,6 +1057,55 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 	unlock_session();
 	file_strip_crs(filename);
 	return filename;
+}
+
+static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint uid)
+{
+	gchar *path, *filename;
+	guint size = 0;
+	MsgInfo *cached = msgcache_get_msg(item->cache,uid);
+	
+	if (!cached)
+		return FALSE;
+
+	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		return FALSE;
+
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(uid), NULL);
+	g_free(path);
+	if (is_file_exist(filename)) {
+		if (cached && cached->total_size == cached->size) {
+			/* fast path */
+			g_free(filename);
+			return TRUE;
+		}
+		size = get_file_size_with_crs(filename);
+		g_free(filename);
+	}
+	if (cached && size >= cached->size) {
+		cached->total_size = cached->size;
+		procmsg_msginfo_free(cached);
+		return TRUE;
+	}
+	if (cached)
+		procmsg_msginfo_free(cached);
+	return FALSE;	
+}
+
+void imap_cache_msg(FolderItem *item, gint msgnum)
+{
+	Folder *folder = NULL;
+	
+	if (!item)
+		return;
+	folder = item->folder;
+	
+	if (!imap_is_msg_fully_cached(folder, item, msgnum)) {
+		gchar *tmp = imap_fetch_msg_full(folder, item, msgnum, TRUE, TRUE);
+		debug_print("fetched %s\n", tmp);
+		g_free(tmp);
+	}
 }
 
 static gint imap_add_msg(Folder *folder, FolderItem *dest, 

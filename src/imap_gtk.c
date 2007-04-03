@@ -40,6 +40,7 @@
 #include "imap.h"
 #include "inc.h"
 #include "prefs_common.h"
+#include "statusbar.h"
 #include "summaryview.h"
 
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -373,13 +374,25 @@ void imap_gtk_synchronise(FolderItem *item)
 	gtk_widget_set_sensitive(folderview->ctree, FALSE);
 	main_window_progress_on(mainwin);
 	GTK_EVENTS_FLUSH();
-	if (item->no_select == FALSE && folder_item_fetch_all_msg(item) < 0) {
-		gchar *name;
+	if (item->no_select == FALSE) {
+		GSList *mlist;
+		GSList *cur;
+		gint num = 0;
+		gint total = item->total_msgs;
 
-		name = trim_string(item->name, 32);
-		alertpanel_error(_("Error occurred while downloading messages in '%s'."), name);
-		g_free(name);
+		mlist = folder_item_get_msg_list(item);
+		for (cur = mlist; cur != NULL; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			imap_cache_msg(msginfo->folder, msginfo->msgnum);
+			statusbar_progress_all(num++,total, 100);
+			if (num % 100 == 0)
+				GTK_EVENTS_FLUSH();
+		}
+
+		statusbar_progress_all(0,0,0);
+		procmsg_msg_list_free(mlist);
 	}
+
 	folder_set_ui_func(item->folder, NULL, NULL);
 	main_window_progress_off(mainwin);
 	gtk_widget_set_sensitive(folderview->ctree, TRUE);

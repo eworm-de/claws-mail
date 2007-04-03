@@ -1081,14 +1081,17 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 				 FolderItem *src)
 {
-	GSList *msglist = folder_item_get_msg_list(src);
+	GSList *msglist = NULL;
 	GSList *cur;
 	gboolean result = FALSE;
-	gint num = 0, total = src->total_msgs;
+	gint num = 0, total = 0;
 	gint interval = quicksearch_is_fast(quicksearch) ? 5000:100;
 
 	statusbar_print_all(_("Searching in %s... \n"),
 		src->path ? src->path : "(null)");
+		
+	msglist = folder_item_get_msg_list(src);
+	total = src->total_msgs;
 	folder_item_update_freeze();
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		MsgInfo *msg = (MsgInfo *)cur->data;

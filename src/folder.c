@@ -2590,6 +2590,8 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 					folder->ui_func_data ?
 					folder->ui_func_data :
 					GINT_TO_POINTER(num));
+		if (num % 50 == 0)
+			GTK_EVENTS_FLUSH();
 
 		msg = folder_item_fetch_msg(item, msginfo->msgnum);
 		if (!msg) {

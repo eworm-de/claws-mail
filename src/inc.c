@@ -1481,8 +1481,7 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 				!force_ask? _("On_ly once"):NULL);
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {
-			if (!force_ask)
-				overridden_yes = time(NULL);
+			overridden_yes = time(NULL);
 			return TRUE;
 		} else if (answer == G_ALERTDEFAULT) {
 			if (!force_ask)
