@@ -2069,6 +2069,11 @@ void folderview_close_opened(FolderView *folderview)
 			STATUSBAR_POP(folderview->mainwin);
 		}
 	}
+
+	if (folderview->opened &&
+	    !GTK_CTREE_ROW(folderview->opened)->children)
+		gtk_ctree_collapse(folderview->ctree, folderview->opened);
+
 	folderview->opened = NULL;
 }
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
@@ -2079,6 +2084,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	FolderItem *item;
 	gchar *buf;
 	int res = 0;
+	GtkCTreeNode *old_opened = folderview->opened;
 	START_TIMING("");
 	folderview->selected = row;
 
@@ -2115,8 +2121,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	/* Save cache for old folder */
 	/* We don't want to lose all caches if sylpheed crashed */
+	/* resets folderview->opened to NULL */
 	folderview_close_opened(folderview);
-
+	
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */
 	if (item->folder) 
@@ -2130,9 +2137,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	if (!GTK_CTREE_ROW(row)->children)
 		gtk_ctree_expand(ctree, row);
-	if (folderview->opened &&
-	    !GTK_CTREE_ROW(folderview->opened)->children)
-		gtk_ctree_collapse(ctree, folderview->opened);
 
 	/* ungrab the mouse event */
 	if (GTK_WIDGET_HAS_GRAB(ctree)) {
@@ -2185,8 +2189,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	folder_clean_cache_memory(item);
 
 	if (!opened) {
-		gtkut_ctree_set_focus_row(ctree, folderview->opened);
-		gtk_ctree_select(ctree, folderview->opened);
+		gtkut_ctree_set_focus_row(ctree, old_opened);
+		gtk_ctree_select(ctree, old_opened);
+		folderview->opened = old_opened;
 	} else {
 		folderview->opened = row;
 		if (gtk_ctree_node_is_visible(ctree, row)

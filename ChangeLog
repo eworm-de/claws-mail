@@ -1,3 +1,8 @@
+2007-04-03 [colin]	2.8.1cvs86
+
+	* src/folderview.c
+		Fix icons on folder close
+
 2007-04-03 [colin]	2.8.1cvs85
 
 	* src/inc.c
