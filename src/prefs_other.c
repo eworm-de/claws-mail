@@ -56,6 +56,7 @@ typedef struct _OtherPage
 	GtkWidget *spinbtn_iotimeout;
 	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *checkbtn_askonfilter;
+	GtkWidget *checkbtn_real_time_sync;
 } OtherPage;
 
 static struct KeybindDialog {
@@ -504,7 +505,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_askonfilter;
-
+	GtkWidget *checkbtn_real_time_sync;
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -584,6 +585,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonfilter,
 			   _("Ask about account specific filtering rules when "
 			     "filtering manually"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_real_time_sync,
+			   _("Synchronise offline folders as soon as possible"));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
@@ -603,6 +606,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_askonfilter), 
 		prefs_common.ask_apply_per_account_filtering_rules);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_real_time_sync), 
+		prefs_common.real_time_sync);
 
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	prefs_other->checkbtn_confonexit = checkbtn_confonexit;
@@ -612,6 +617,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
+	prefs_other->checkbtn_real_time_sync = checkbtn_real_time_sync;
 
 	prefs_other->page.widget = vbox1;
 }
@@ -640,6 +646,9 @@ static void prefs_other_save(PrefsPage *_page)
 	prefs_common.ask_apply_per_account_filtering_rules = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_askonfilter)); 
+	prefs_common.real_time_sync = 
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync)); 
 
 	gtk_can_change_accels = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_can_change_accels));

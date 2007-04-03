@@ -434,6 +434,7 @@ struct _PrefsCommon
 	gint never_send_retrcpt;
 	gint hide_quotes;
 	gboolean unsafe_ssl_certs;
+	gboolean real_time_sync;
 };
 
 extern PrefsCommon prefs_common;

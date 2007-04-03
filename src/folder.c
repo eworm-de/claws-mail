@@ -100,7 +100,6 @@ static GHashTable *folder_persist_prefs_new	(Folder *folder);
 static void folder_persist_prefs_free		(GHashTable *pptable);
 static void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
 
-
 void folder_system_init(void)
 {
 	folder_register_class(mh_get_class());
@@ -2054,7 +2053,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 				}
 				g_slist_free(unfiltered);
 			}
-		} 
+			if (prefs_common.real_time_sync)
+				folder_item_synchronise(item);
+		} else {
+			if (prefs_common.real_time_sync)
+				folder_item_synchronise(item);
+		}
 
 		g_slist_free(newmsg_list);
 
@@ -3974,12 +3978,22 @@ void folder_item_update_thaw(void)
 	}
 }
 
+void folder_item_synchronise(FolderItem *item)
+{
+	if (!item)
+		return;
+	if (item->prefs->offlinesync && item->folder->klass->synchronise) {
+		statusbar_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
+		item->folder->klass->synchronise(item);
+		statusbar_pop_all();
+	}
+}
+
 static void folder_item_synchronise_func(FolderItem *item, gpointer data)
 {
 	Folder *folder = (Folder *)data;
 	if (folder == NULL || item->folder == folder) {
-		if(item->prefs->offlinesync && item->folder->klass->synchronise)
-			item->folder->klass->synchronise(item);
+		folder_item_synchronise(item);
 	}
 }
 

@@ -979,7 +979,13 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"unsafe_ssl_certs", "FALSE", &prefs_common.unsafe_ssl_certs, P_BOOL,
 	 NULL, NULL, NULL},
-
+#ifndef MAEMO
+	{"real_time_sync", "FALSE", &prefs_common.real_time_sync, P_BOOL,
+	 NULL, NULL, NULL},
+#else
+	{"real_time_sync", "TRUE", &prefs_common.real_time_sync, P_BOOL,
+	 NULL, NULL, NULL},
+#endif
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

@@ -239,6 +239,8 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 						batch);
 			}
 			/* we don't reference the msginfos, because caller will do */
+			if (prefs_common.real_time_sync)
+				folder_item_synchronise(last_item);
 			g_slist_free(batch);
 			batch = NULL;
 		}

@@ -852,5 +852,5 @@ void folder_item_change_type		(FolderItem *item,
 gboolean folder_get_sort_type		(Folder		*folder,
 					 FolderSortKey	*sort_key,
 					 FolderSortType	*sort_type);
-
+void folder_item_synchronise		(FolderItem *item);
 #endif /* __FOLDER_H__ */

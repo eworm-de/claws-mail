@@ -1,3 +1,14 @@
+2007-04-03 [paul]	2.8.1cvs84
+
+	* src/filtering.c
+	* src/folder.c
+	* src/folder.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_other.c
+		Fix sync being done too late
+		Thanks to Colin
+
 2007-04-02 [colin]	2.8.1cvs83
 
 	* src/summaryview.c
