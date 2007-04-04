@@ -4674,6 +4674,11 @@ GList * imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only
 {
 	return NULL;
 }
+
+void imap_cache_msg(FolderItem *item, gint msgnum)
+{
+}
+
 #endif
 
 void imap_synchronise(FolderItem *item) 
