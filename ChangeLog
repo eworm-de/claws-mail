@@ -1,3 +1,9 @@
+2007-04-05 [colin]	2.8.1cvs90
+
+	* src/mainwindow.c
+		Don't sync when switching offline from
+		command line - it's usually too late :)
+
 2007-04-05 [paul]	2.8.1cvs89
 
 	* src/Makefile.am

@@ -3224,8 +3224,9 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 			_("Do you want to synchronise your folders now?"),
 			GTK_STOCK_CANCEL, _("+_Synchronise"), NULL) != G_ALERTALTERNATE)
 		return;
-
-	folder_synchronise(NULL);
+	
+	if (offline_ask_sync)
+		folder_synchronise(NULL);
 }
 
 static void online_switch_clicked (GtkButton *btn, gpointer data) 
