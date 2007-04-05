@@ -1,5 +1,5 @@
 /* XPM */
-static char * outbox_hrm_mark_xpm[] = {
+static char * outbox_close_hrm_mark_xpm[] = {
 "16 16 9 1",
 " 	c None",
 ".	c #FFFFFF",

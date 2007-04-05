@@ -76,6 +76,10 @@
 #include "pixmaps/paste.xpm"
 #include "pixmaps/preferences.xpm"
 #include "pixmaps/properties.xpm"
+#include "pixmaps/queue_close.xpm"
+#include "pixmaps/queue_close_hrm.xpm"
+#include "pixmaps/queue_open.xpm"
+#include "pixmaps/queue_open_hrm.xpm"
 #include "pixmaps/claws-mail_icon.xpm"
 #include "pixmaps/claws-mail_logo.xpm"
 #include "pixmaps/address_book.xpm"
@@ -118,25 +122,39 @@
 #include "pixmaps/check_spelling.xpm"
 
 #include "pixmaps/dir_close.xpm"
+#include "pixmaps/dir_close_hrm.xpm"
 #include "pixmaps/dir_open.xpm"
 #include "pixmaps/dir_open_hrm.xpm"
-#include "pixmaps/inbox.xpm"
-#include "pixmaps/inbox_hrm.xpm"
-#include "pixmaps/outbox.xpm"
-#include "pixmaps/outbox_hrm.xpm"
+#include "pixmaps/inbox_open.xpm"
+#include "pixmaps/inbox_open_hrm.xpm"
+#include "pixmaps/inbox_close.xpm"
+#include "pixmaps/inbox_close_hrm.xpm"
+#include "pixmaps/outbox_open.xpm"
+#include "pixmaps/outbox_open_hrm.xpm"
+#include "pixmaps/outbox_close.xpm"
+#include "pixmaps/outbox_close_hrm.xpm"
 #include "pixmaps/trash.xpm"
 #include "pixmaps/trash_btn.xpm"
 #include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
 #include "pixmaps/dir_close_mark.xpm"
+#include "pixmaps/dir_close_hrm_mark.xpm"
 #include "pixmaps/dir_open_mark.xpm"
 #include "pixmaps/dir_open_hrm_mark.xpm"
-#include "pixmaps/inbox_mark.xpm"
-#include "pixmaps/inbox_hrm_mark.xpm"
-#include "pixmaps/outbox_mark.xpm"
-#include "pixmaps/outbox_hrm_mark.xpm"
+#include "pixmaps/inbox_open_mark.xpm"
+#include "pixmaps/inbox_open_hrm_mark.xpm"
+#include "pixmaps/inbox_close_mark.xpm"
+#include "pixmaps/inbox_close_hrm_mark.xpm"
+#include "pixmaps/outbox_open_mark.xpm"
+#include "pixmaps/outbox_open_hrm_mark.xpm"
+#include "pixmaps/outbox_close_mark.xpm"
+#include "pixmaps/outbox_close_hrm_mark.xpm"
 #include "pixmaps/trash_mark.xpm"
+#include "pixmaps/queue_close_mark.xpm"
+#include "pixmaps/queue_close_hrm_mark.xpm"
+#include "pixmaps/queue_open_mark.xpm"
+#include "pixmaps/queue_open_hrm_mark.xpm"
 #include "pixmaps/trash_hrm_mark.xpm"
 #include "pixmaps/drafts_close_mark.xpm"
 #include "pixmaps/drafts_open_mark.xpm"
@@ -201,11 +219,11 @@ static StockPixmapData pixmaps[] =
 	{continue_xpm				, NULL, NULL, "continue", NULL},
 	{deleted_xpm				, NULL, NULL, "deleted", NULL},
 	{dir_close_xpm				, NULL, NULL, "dir_close", NULL},
-	{dir_close_xpm				, NULL, NULL, "dir_close_hrm", NULL},
+	{dir_close_hrm_xpm			, NULL, NULL, "dir_close_hrm", NULL},
 	{dir_open_xpm				, NULL, NULL, "dir_open", NULL},
 	{dir_open_hrm_xpm			, NULL, NULL, "dir_open_hrm", NULL},
 	{dir_close_mark_xpm			, NULL, NULL, "dir_close_mark", NULL},
-	{dir_close_mark_xpm			, NULL, NULL, "dir_close_hrm_mark", NULL},
+	{dir_close_hrm_mark_xpm			, NULL, NULL, "dir_close_hrm_mark", NULL},
 	{dir_open_mark_xpm			, NULL, NULL, "dir_open_mark", NULL},
 	{dir_open_hrm_mark_xpm			, NULL, NULL, "dir_open_hrm_mark", NULL},
 	{down_arrow_xpm				, NULL, NULL, "down_arrow", NULL},
@@ -216,14 +234,14 @@ static StockPixmapData pixmaps[] =
 	{forwarded_xpm				, NULL, NULL, "forwarded", NULL},
 	{group_xpm				, NULL, NULL, "group", NULL},
 	{ignorethread_xpm			, NULL, NULL, "ignorethread", NULL},
-	{inbox_xpm				, NULL, NULL, "inbox_close", NULL},
-	{inbox_hrm_xpm				, NULL, NULL, "inbox_close_hrm", NULL},
-	{inbox_xpm				, NULL, NULL, "inbox_open", NULL},
-	{inbox_hrm_xpm				, NULL, NULL, "inbox_open_hrm", NULL},
-	{inbox_mark_xpm				, NULL, NULL, "inbox_close_mark", NULL},
-	{inbox_hrm_mark_xpm			, NULL, NULL, "inbox_close_hrm_mark", NULL},
-	{inbox_mark_xpm				, NULL, NULL, "inbox_open_mark", NULL},
-	{inbox_hrm_mark_xpm			, NULL, NULL, "inbox_open_hrm_mark", NULL},
+	{inbox_close_xpm			, NULL, NULL, "inbox_close", NULL},
+	{inbox_close_hrm_xpm			, NULL, NULL, "inbox_close_hrm", NULL},
+	{inbox_open_xpm				, NULL, NULL, "inbox_open", NULL},
+	{inbox_open_hrm_xpm			, NULL, NULL, "inbox_open_hrm", NULL},
+	{inbox_close_mark_xpm			, NULL, NULL, "inbox_close_mark", NULL},
+	{inbox_close_hrm_mark_xpm		, NULL, NULL, "inbox_close_hrm_mark", NULL},
+	{inbox_open_mark_xpm			, NULL, NULL, "inbox_open_mark", NULL},
+	{inbox_open_hrm_mark_xpm		, NULL, NULL, "inbox_open_hrm_mark", NULL},
 	{paste_xpm				, NULL, NULL, "insert_file", NULL},
 	{interface_xpm				, NULL, NULL, "interface", NULL},
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
@@ -248,30 +266,30 @@ static StockPixmapData pixmaps[] =
 	{mark_xpm				, NULL, NULL, "mark", NULL},
 	{new_xpm				, NULL, NULL, "new", NULL},
 	{news_compose_xpm			, NULL, NULL, "news_compose", NULL},
-	{outbox_xpm				, NULL, NULL, "outbox_close", NULL},
-	{outbox_hrm_xpm				, NULL, NULL, "outbox_close_hrm", NULL},
-	{outbox_xpm				, NULL, NULL, "outbox_open", NULL},
-	{outbox_hrm_xpm				, NULL, NULL, "outbox_open_hrm", NULL},
-	{outbox_mark_xpm			, NULL, NULL, "outbox_close_mark", NULL},
-	{outbox_hrm_mark_xpm			, NULL, NULL, "outbox_close_hrm_mark", NULL},
-	{outbox_mark_xpm			, NULL, NULL, "outbox_open_mark", NULL},
-	{outbox_hrm_mark_xpm			, NULL, NULL, "outbox_open_hrm_mark", NULL},
+	{outbox_close_xpm			, NULL, NULL, "outbox_close", NULL},
+	{outbox_close_hrm_xpm			, NULL, NULL, "outbox_close_hrm", NULL},
+	{outbox_open_xpm			, NULL, NULL, "outbox_open", NULL},
+	{outbox_open_hrm_xpm			, NULL, NULL, "outbox_open_hrm", NULL},
+	{outbox_close_mark_xpm			, NULL, NULL, "outbox_close_mark", NULL},
+	{outbox_close_hrm_mark_xpm		, NULL, NULL, "outbox_close_hrm_mark", NULL},
+	{outbox_open_mark_xpm			, NULL, NULL, "outbox_open_mark", NULL},
+	{outbox_open_hrm_mark_xpm		, NULL, NULL, "outbox_open_hrm_mark", NULL},
 	{replied_xpm				, NULL, NULL, "replied", NULL},
 	{paste_xpm				, NULL, NULL, "paste", NULL},
 	{preferences_xpm			, NULL, NULL, "preferences", NULL},
 	{properties_xpm				, NULL, NULL, "properties", NULL},
-	{outbox_xpm				, NULL, NULL, "queue_close", NULL},
-	{outbox_hrm_xpm				, NULL, NULL, "queue_close_hrm", NULL},
-	{outbox_xpm				, NULL, NULL, "queue_open", NULL},
-	{outbox_hrm_xpm				, NULL, NULL, "queue_open_hrm", NULL},
+	{queue_close_xpm			, NULL, NULL, "queue_close", NULL},
+	{queue_close_hrm_xpm			, NULL, NULL, "queue_close_hrm", NULL},
+	{queue_open_xpm				, NULL, NULL, "queue_open", NULL},
+	{queue_open_hrm_xpm			, NULL, NULL, "queue_open_hrm", NULL},
 	{trash_xpm				, NULL, NULL, "trash_open", NULL},
 	{trash_hrm_xpm				, NULL, NULL, "trash_open_hrm", NULL},
 	{trash_xpm				, NULL, NULL, "trash_close", NULL},
 	{trash_hrm_xpm				, NULL, NULL, "trash_close_hrm", NULL},
-	{outbox_mark_xpm			, NULL, NULL, "queue_close_mark", NULL},
-	{outbox_hrm_mark_xpm			, NULL, NULL, "queue_close_hrm_mark", NULL},
-	{outbox_mark_xpm			, NULL, NULL, "queue_open_mark", NULL},
-	{outbox_hrm_mark_xpm			, NULL, NULL, "queue_open_hrm_mark", NULL},
+	{queue_close_mark_xpm			, NULL, NULL, "queue_close_mark", NULL},
+	{queue_close_hrm_mark_xpm		, NULL, NULL, "queue_close_hrm_mark", NULL},
+	{queue_open_mark_xpm			, NULL, NULL, "queue_open_mark", NULL},
+	{queue_open_hrm_mark_xpm		, NULL, NULL, "queue_open_hrm_mark", NULL},
 	{trash_mark_xpm				, NULL, NULL, "trash_open_mark", NULL},
 	{trash_hrm_mark_xpm			, NULL, NULL, "trash_open_hrm_mark", NULL},
 	{trash_mark_xpm				, NULL, NULL, "trash_close_mark", NULL},

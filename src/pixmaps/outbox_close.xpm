@@ -1,5 +1,5 @@
 /* XPM */
-static char * outbox_xpm[] = {
+static char * outbox_close_xpm[] = {
 "16 16 8 1",
 " 	c None",
 ".	c #020204",

@@ -316,10 +316,13 @@ EXTRA_DIST = \
 	pixmaps/continue.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
+	pixmaps/dir_close_hrm.xpm \
 	pixmaps/dir_noselect.xpm \
         pixmaps/dir_open_hrm.xpm \
 	pixmaps/dir_open.xpm \
 	pixmaps/down_arrow.xpm \
+	pixmaps/drafts_close.xpm \
+	pixmaps/drafts_open.xpm \
 	pixmaps/drafts_close.xpm \
 	pixmaps/drafts_open.xpm \
 	pixmaps/edit_extern.xpm \
@@ -331,8 +334,10 @@ EXTRA_DIST = \
 	pixmaps/ham_btn.xpm \
 	pixmaps/ignorethread.xpm \
 	pixmaps/inactive.xpm \
-	pixmaps/inbox_hrm.xpm \
-	pixmaps/inbox.xpm \
+	pixmaps/inbox_open_hrm.xpm \
+	pixmaps/inbox_open.xpm \
+	pixmaps/inbox_close_hrm.xpm \
+	pixmaps/inbox_close.xpm \
 	pixmaps/interface.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/key.xpm \
@@ -373,8 +378,14 @@ EXTRA_DIST = \
 	pixmaps/offline.xpm \
 	pixmaps/online.xpm \
 	pixmaps/open_mail.xpm \
-	pixmaps/outbox_hrm.xpm \
-	pixmaps/outbox.xpm \
+	pixmaps/outbox_close.xpm \
+	pixmaps/outbox_close_hrm.xpm \
+	pixmaps/outbox_open.xpm \
+	pixmaps/outbox_open_hrm.xpm \
+	pixmaps/outbox_close_mark.xpm \
+	pixmaps/outbox_close_hrm_mark.xpm \
+	pixmaps/outbox_open_mark.xpm \
+	pixmaps/outbox_open_hrm_mark.xpm \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
 	pixmaps/privacy_expired.xpm \
@@ -389,6 +400,14 @@ EXTRA_DIST = \
 	pixmaps/privacy_emblem_signed.xpm \
 	pixmaps/privacy_emblem_warn.xpm \
 	pixmaps/properties.xpm \
+	pixmaps/queue_close.xpm \
+	pixmaps/queue_close_hrm.xpm \
+	pixmaps/queue_close_hrm_mark.xpm \
+	pixmaps/queue_close_mark.xpm \
+	pixmaps/queue_open.xpm \
+	pixmaps/queue_open_hrm.xpm \
+	pixmaps/queue_open_hrm_mark.xpm \
+	pixmaps/queue_open_mark.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
@@ -405,14 +424,15 @@ EXTRA_DIST = \
 	pixmaps/up_arrow.xpm \
 	pixmaps/vcard.xpm \
 	pixmaps/dir_close_mark.xpm \
+	pixmaps/dir_close_hrm_mark.xpm \
 	pixmaps/dir_open_hrm_mark.xpm \
 	pixmaps/dir_open_mark.xpm \
 	pixmaps/drafts_close_mark.xpm \
 	pixmaps/drafts_open_mark.xpm \
-	pixmaps/inbox_hrm_mark.xpm \
-	pixmaps/inbox_mark.xpm \
-	pixmaps/outbox_hrm_mark.xpm \
-	pixmaps/outbox_mark.xpm \
+	pixmaps/inbox_open_hrm_mark.xpm \
+	pixmaps/inbox_open_mark.xpm \
+	pixmaps/inbox_close_hrm_mark.xpm \
+	pixmaps/inbox_close_mark.xpm \
 	pixmaps/trash_hrm_mark.xpm \
 	pixmaps/trash_mark.xpm \
 	pixmaps/moved.xpm \
