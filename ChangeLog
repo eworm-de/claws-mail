@@ -55,6 +55,10 @@
 	* src/plugins/bogofilter/bogofilter_gtk.c
 		a few English changes
 
+2007-04-02 [paul]
+
+	2.9.0-rc1 released
+
 2007-04-02 [colin]	2.8.1cvs81
 
 	* src/image_viewer.c
