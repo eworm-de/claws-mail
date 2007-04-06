@@ -1,3 +1,15 @@
+2007-04-06 [colin]	2.8.1cvs91
+
+	* src/pixmaps/queue_close.xpm
+	* src/pixmaps/queue_close_hrm.xpm
+	* src/pixmaps/queue_close_hrm_mark.xpm
+	* src/pixmaps/queue_close_mark.xpm
+	* src/pixmaps/queue_open.xpm
+	* src/pixmaps/queue_open_hrm.xpm
+	* src/pixmaps/queue_open_hrm_mark.xpm
+	* src/pixmaps/queue_open_mark.xpm
+		Move the clock one pixel down :)
+
 2007-04-05 [colin]	2.8.1cvs90
 
 	* src/mainwindow.c
