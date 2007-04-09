@@ -118,7 +118,7 @@
 #ifndef MAEMO
 #define DEFAULT_EDITOR_CMD	"gedit '%s'"
 #else
-#define DEFAULT_EDITOR_CMD	"maemopad '%s'"
+#define DEFAULT_EDITOR_CMD	"leafpad '%s'"
 #endif
 #define DEFAULT_MIME_CMD	"metamail -d -b -x -c %s '%s'"
 #define DEFAULT_IMAGE_VIEWER_CMD "display '%s'"

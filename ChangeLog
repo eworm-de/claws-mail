@@ -1,3 +1,9 @@
+2007-04-09 [colin]	2.8.1cvs92
+
+	* src/common/defs.h
+		Use leafpad by default on Maemo. Patch
+		by Jean-Luc Biord.
+
 2007-04-06 [colin]	2.8.1cvs91
 
 	* src/pixmaps/queue_close.xpm
