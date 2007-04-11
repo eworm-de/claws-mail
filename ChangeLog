@@ -1,3 +1,10 @@
+2007-04-11 [colin]	2.8.1cvs93
+
+	* src/main.c
+		don't scan for new mail on startup if --select
+		is specified (or race conditions arise). If so,
+		do both sequentially.
+
 2007-04-09 [colin]	2.8.1cvs92
 
 	* src/common/defs.h

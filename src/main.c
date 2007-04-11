@@ -307,6 +307,13 @@ static gboolean defer_check(void *data)
 
 static gboolean defer_jump(void *data)
 {
+	if (cmd.receive_all) {
+		defer_check_all(GINT_TO_POINTER(FALSE));
+	} else if (prefs_common.chk_on_startup) {
+		defer_check_all(GINT_TO_POINTER(TRUE));
+	} else if (cmd.receive) {
+		defer_check(NULL);
+	} 
 	mainwindow_jump_to(data);
 	return FALSE;
 }
@@ -1032,11 +1039,11 @@ int main(int argc, char *argv[])
 	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
 
-	if (cmd.receive_all) {
+	if (cmd.receive_all && !cmd.target) {
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
-	} else if (prefs_common.chk_on_startup) {
+	} else if (prefs_common.chk_on_startup && !cmd.target) {
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(TRUE));
-	} else if (cmd.receive) {
+	} else if (cmd.receive && !cmd.target) {
 		g_timeout_add(1000, defer_check, NULL);
 	} else {
 		gtk_widget_grab_focus(folderview->ctree);
