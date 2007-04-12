@@ -1,3 +1,10 @@
+2007-04-12 [colin]	2.8.1cvs94
+
+	* src/folder.c
+		Force folder scan if necessary after
+		copying mails, to be able to reapply
+		flags.
+
 2007-04-11 [colin]	2.8.1cvs93
 
 	* src/main.c

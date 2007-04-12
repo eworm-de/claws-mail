@@ -3167,18 +3167,23 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		if (num >= 0) {
 			MsgInfo *newmsginfo = NULL;
 
-			if (folderscan) {
+			if (!folderscan && num > 0) {
+				newmsginfo = get_msginfo(dest, num);
+				if (newmsginfo != NULL) {
+					add_msginfo_to_cache(dest, newmsginfo, msginfo);
+				}
+			}
+			if (newmsginfo == NULL) {
+				if (!folderscan) {
+					folder_item_scan_full(dest, FALSE);
+					folderscan = TRUE;
+				}
 				if (msginfo->msgid != NULL) {
 					newmsginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
 					if (newmsginfo != NULL) {
 						copy_msginfo_flags(msginfo, newmsginfo);
 						num = newmsginfo->msgnum;
 					}
-				}
-			} else {
-				newmsginfo = get_msginfo(dest, num);
-				if (newmsginfo != NULL) {
-					add_msginfo_to_cache(dest, newmsginfo, msginfo);
 				}
 			}
 
