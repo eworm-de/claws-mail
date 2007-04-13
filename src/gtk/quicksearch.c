@@ -228,7 +228,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		} else {
 			quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
 			gtk_widget_grab_focus(
-					GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
+					mainwindow_get_mainwindow()->summaryview->ctree);
 		}
 
 		return TRUE;

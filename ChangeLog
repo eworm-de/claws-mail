@@ -1,3 +1,9 @@
+2007-04-13 [colin]	2.8.1cvs97
+
+	* src/gtk/quicksearch.c
+		Give the focus back to summaryview when
+		emptying the quicksearch with Esc
+
 2007-04-13 [colin]	2.8.1cvs96
 
 	* src/message_search.c
