@@ -278,7 +278,7 @@ static void message_search_execute(gboolean backward)
 	const gchar *body_str;
 
 	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
-	if (*body_str == '\0') return;
+	if (!body_str || *body_str == '\0') return;
 
 	/* add to history */
 	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.body_entry));

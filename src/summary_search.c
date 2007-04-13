@@ -524,7 +524,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			search_window.matcher_list = NULL;
 		}
 		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
-		if (adv_condition[0] != '\0') {
+		if (adv_condition && adv_condition[0] != '\0') {
 
 			/* add to history */
 			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.adv_condition_entry));
@@ -561,6 +561,12 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		subject_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.subject_entry));
 		body_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 
+		if (!from_str || !to_str || !subject_str || !body_str) {
+			/* TODO: warn if no search criteria? (or make buttons enabled only when
+ 			 * at least one search criteria has been set */
+			summary_unlock(summaryview);
+			return;
+		}
 		if (	(from_str[0] == '\0') &&
 				(to_str[0] == '\0') &&
 				(subject_str[0] == '\0') &&
@@ -841,7 +847,7 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 	/* re-use the current search value if it's a condition expression,
 	   otherwise ignore it silently */
 	cond_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
-	if (*cond_str != '\0') {
+	if (cond_str && *cond_str != '\0') {
 		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}
 

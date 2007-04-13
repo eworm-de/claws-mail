@@ -1,3 +1,11 @@
+2007-04-13 [colin]	2.8.1cvs96
+
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/summary_search.c
+		Fix possibles crashes when getting text
+		from gtk combos
+
 2007-04-13 [colin]	2.8.1cvs95
 
 	* src/pop.c

@@ -561,7 +561,7 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 	GtkTreeModel *model;
 
 	entry_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(dispheader.hdr_combo));
-	if (entry_text[0] == '\0') {
+	if (!entry_text || entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
 		return;
 	}
