@@ -2511,3 +2511,4 @@
 ( cvs diff -u -r 1.9.2.35 -r 1.9.2.36 src/common/defs.h;  ) > 2.8.1cvs92.patchset
 ( cvs diff -u -r 1.115.2.151 -r 1.115.2.152 src/main.c;  ) > 2.8.1cvs93.patchset
 ( cvs diff -u -r 1.213.2.140 -r 1.213.2.141 src/folder.c;  ) > 2.8.1cvs94.patchset
+( cvs diff -u -r 1.56.2.49 -r 1.56.2.50 src/pop.c;  ) > 2.8.1cvs95.patchset

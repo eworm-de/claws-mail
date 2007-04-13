@@ -263,6 +263,12 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 			   		session->uidl_table, id);
 		session->msg[num].recv_time = recv_time;
 
+		if (recv_time != RECV_TIME_NONE) {
+			debug_print("num %d uidl %s: already got it\n", num, id);		
+		} else {
+			debug_print("num %d uidl %s: unknown\n", num, id);
+		}
+
 		partial_recv = (gint)g_hash_table_lookup(
 					session->partial_recv_table, id);
 
@@ -330,6 +336,9 @@ static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *data,
 static gint pop3_retr_send(Pop3Session *session)
 {
 	session->state = POP3_RETR;
+	debug_print("retrieving %d [%s]\n", session->cur_msg, 
+		session->msg[session->cur_msg].uidl ?
+		 session->msg[session->cur_msg].uidl:" ");
 	pop3_gen_send(session, "RETR %d", session->cur_msg);
 	return PS_SUCCESS;
 }
@@ -805,8 +814,8 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
 			log_message(LOG_PROTOCOL, 
-					_("POP3: Deleting expired message %d\n"),
-					session->cur_msg);
+					_("POP3: Deleting expired message %d [%s]\n"),
+					session->cur_msg, msg->uidl?msg->uidl:" ");
 			session->cur_total_bytes += size;
 			pop3_delete_send(session);
 			return POP3_DELETE;
@@ -821,8 +830,8 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 				break;
 
 			log_message(LOG_PROTOCOL, 
-					_("POP3: Skipping message %d (%d bytes)\n"),
-					session->cur_msg, size);
+					_("POP3: Skipping message %d [%s] (%d bytes)\n"),
+					session->cur_msg, msg->uidl?msg->uidl:" ", size);
 		}
 		
 		if (size == 0 || msg->received || size_limit_over) {

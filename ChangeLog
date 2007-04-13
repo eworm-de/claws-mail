@@ -1,3 +1,8 @@
+2007-04-13 [colin]	2.8.1cvs95
+
+	* src/pop.c
+		Add some UIDL debugging
+
 2007-04-12 [colin]	2.8.1cvs94
 
 	* src/folder.c
