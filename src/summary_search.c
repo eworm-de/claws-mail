@@ -525,7 +525,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		}
 		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 		if (!adv_condition)
-			adv_condition = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.adv_condition_entry)));
+			adv_condition = gtk_editable_get_chars(
+					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.adv_condition_entry))),0,-1);
 		if (adv_condition && adv_condition[0] != '\0') {
 
 			/* add to history */
@@ -539,6 +540,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			if (!is_fast)
 				interval = 100;
 			/* TODO: check for condition parsing error and show an error dialog */
+			g_free(adv_condition);
 		} else {
 			/* TODO: warn if no search condition? (or make buttons enabled only when
 				at least one search condition has been set */
@@ -564,13 +566,17 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		body_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 
 		if (!from_str)
-			from_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.from_entry)));
+			from_str = gtk_editable_get_chars(
+					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.from_entry))),0,-1);
 		if (!to_str)
-			to_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.to_entry)));
+			to_str = gtk_editable_get_chars(
+					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.to_entry))),0,-1);
 		if (!subject_str)
-			subject_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.subject_entry)));
+			subject_str = gtk_editable_get_chars(
+					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.subject_entry))),0,-1);
 		if (!body_str)
-			body_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.body_entry)));
+			body_str = gtk_editable_get_chars(
+					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.body_entry))),0,-1);
 
 		if (!from_str || !to_str || !subject_str || !body_str) {
 			/* TODO: warn if no search criteria? (or make buttons enabled only when
@@ -782,6 +788,11 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		if (i % interval == 0)
 			GTK_EVENTS_FLUSH();
 	}
+
+	g_free(from_str);
+	g_free(to_str);
+	g_free(subject_str);
+	g_free(body_str);
 
 	search_window.is_searching = FALSE;
 	summary_hide_stop_button();

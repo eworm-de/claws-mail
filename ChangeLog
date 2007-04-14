@@ -1,3 +1,11 @@
+2007-04-14 [colin]	2.8.1cvs99
+
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/summary_search.c
+	* src/gtk/combobox.c
+		Fix allocations
+
 2007-04-14 [wwp]	2.8.1cvs98
 
 	* src/gtk/combobox.c

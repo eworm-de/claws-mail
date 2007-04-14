@@ -279,7 +279,8 @@ static void message_search_execute(gboolean backward)
 
 	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 	if (!body_str)
-		body_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.body_entry)));
+		body_str = gtk_editable_get_chars(
+				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.body_entry))),0,-1);
 	if (!body_str || *body_str == '\0') return;
 
 	/* add to history */
@@ -356,6 +357,7 @@ static void message_search_execute(gboolean backward)
 
 	search_window.is_searching = FALSE;
 	message_hide_stop_button();
+	g_free(body_str);
 }
 
 static void body_changed(void)

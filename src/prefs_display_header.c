@@ -562,7 +562,8 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 
 	entry_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(dispheader.hdr_combo));
 	if (!entry_text)
-		entry_text = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(dispheader.hdr_combo)));
+		entry_text = gtk_editable_get_chars(
+				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(dispheader.hdr_combo))),0,-1);
 	if (!entry_text || entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
 		return;
@@ -588,6 +589,8 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 					   dp->name, dp);
 
 	prefs_display_header_set_list();
+	
+	g_free(entry_text);
 }
 
 static void prefs_display_header_register_cb(GtkButton *btn,
