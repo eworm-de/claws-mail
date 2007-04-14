@@ -135,10 +135,12 @@ gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 	if (gtk_combo_box_get_active_iter(combobox, &iter)) {
 		/* if current text is in list, get prev or next one */
 
-		if (keyval == GDK_Up)
-			valid = gtkut_tree_model_text_iter_prev(model, &iter,
-						gtk_combo_box_get_active_text(combobox));
-		else
+		if (keyval == GDK_Up) {
+			const gchar *text = gtk_combo_box_get_active_text(combobox);
+			if (!text)
+				text = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(combobox)));
+			valid = gtkut_tree_model_text_iter_prev(model, &iter, text);
+		} else
 		if (keyval == GDK_Down)
 			valid = gtk_tree_model_iter_next(model, &iter);
 

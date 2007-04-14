@@ -524,6 +524,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			search_window.matcher_list = NULL;
 		}
 		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
+		if (!adv_condition)
+			adv_condition = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.adv_condition_entry)));
 		if (adv_condition && adv_condition[0] != '\0') {
 
 			/* add to history */
@@ -560,6 +562,15 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		to_str      = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.to_entry));
 		subject_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.subject_entry));
 		body_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
+
+		if (!from_str)
+			from_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.from_entry)));
+		if (!to_str)
+			to_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.to_entry)));
+		if (!subject_str)
+			subject_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.subject_entry)));
+		if (!body_str)
+			body_str = gtk_entry_get_text(gtk_bin_get_child(GTK_BIN(search_window.body_entry)));
 
 		if (!from_str || !to_str || !subject_str || !body_str) {
 			/* TODO: warn if no search criteria? (or make buttons enabled only when

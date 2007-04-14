@@ -1,3 +1,12 @@
+2007-04-14 [wwp]	2.8.1cvs98
+
+	* src/gtk/combobox.c
+	* src/message_search.c
+	* src/summary_search.c
+	* src/prefs_display_header.c
+		Workaround a bug with GTK+ 2.6.x where gtk_combo_box_get_active_text()
+		returns NULL, get the text value directly from the GtkEntry child.
+
 2007-04-13 [colin]	2.8.1cvs97
 
 	* src/gtk/quicksearch.c
