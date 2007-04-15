@@ -1,3 +1,8 @@
+2007-04-15 [mones]	2.8.1cvs100
+
+	* po/es.po
+		Updated for release
+
 2007-04-14 [colin]	2.8.1cvs99
 
 	* src/message_search.c
