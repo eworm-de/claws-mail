@@ -1,5 +1,73 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.9.0
+-------
+
+* Added a Maemo port
+  The Maemo port touches several areas: using the correct APIs for
+  a good integration, adding of a new layout suited for small
+  screens, Maemo-specific default preferences changes, Maemo-specific
+  GUI improvements, etc.
+
+* Added more customisable colour labels
+
+* Added 'Mark as spam', 'Mark as ham', and 'Add to address book'
+  filtering actions
+
+* Added a new Quote Format symbol, %A, to insert the sender's email 
+  address
+
+* Changed the option to display unread message counts next to folder
+  names: it is now possible to display the total count of messages
+  too. Configurable from Display/Summaries
+
+* If Claws Mail is already running on another display, attempting to
+  start it will mention that instead of popping up the window on the
+  other display
+
+* Added debugging of filtering/processing rules. Configurable from
+  Other/Logging options page
+
+* Added handling of the contextual menu key in compose windows and
+  MIME parts list
+
+* Added a "pulsing" progressbar in the label window used when
+  rebuilding folder tree, etc, in order to show activity
+
+* Improved "Offline mode override" dialogue to avoid asking
+  repeatedly, but still ask on explicit user actions
+
+* Improved the creation of POP/Local accounts when no MH mailbox
+  exist: create the default one
+
+* Write folderlist directly after adding/deleting accounts that have
+  folders
+
+* Added logging IMAP ALERTs as errors in the log
+
+* Added a way for MimeViewer plugins to implement search in a part's
+  body
+
+* Updated, added and replaced some icons
+
+* Added display of any LDAP specified Search attributes 
+
+* Added 'telephoneNumber' in the default LDAP list of attributes
+
+* Updated the Face header in the welcome message
+
+* Added the option to minimize to tray in the Trayicon plugin
+
+* Added a wrapper to mairix in the tools folder, tools/mailrix.sh
+
+* Added a script which enables inserting files into the message body
+  of a new Compose window from the command line,
+  tools/claws-mail-compose-insert-files.pl
+
+* Updated Brazilian Portuguese, Catalan, Czech, French, German,
+  Hungarian, Polish,Serbian, Simplified Chinese, and Spanish
+  translations
+
 * 2.8.1
 -------
 
