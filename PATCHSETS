@@ -2519,3 +2519,4 @@
 ( cvs diff -u -r 1.60.2.43 -r 1.60.2.44 po/es.po;  ) > 2.8.1cvs100.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 po/ca.po;  cvs diff -u -r 1.9.2.11 -r 1.9.2.12 po/cs.po;  cvs diff -u -r 1.58.2.30 -r 1.58.2.31 po/de.po;  cvs diff -u -r 1.5.2.4 -r 1.5.2.5 po/hu.po;  cvs diff -u -r 1.10.2.12 -r 1.10.2.13 po/pl.po;  cvs diff -u -r 1.50.2.24 -r 1.50.2.25 po/pt_BR.po;  cvs diff -u -r 1.17.2.26 -r 1.17.2.27 po/sr.po;  cvs diff -u -r 1.5.2.22 -r 1.5.2.23 po/zh_CN.po;  ) > 2.8.1cvs101.patchset
 ( cvs diff -u -r 1.42.2.30 -r 1.42.2.31 po/fr.po;  ) > 2.8.1cvs102.patchset
+( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/gtk/authors.h;  ) > 2.9.0cvs1.patchset

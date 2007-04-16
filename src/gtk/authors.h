@@ -39,6 +39,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[fi] Flammie Pirinen <flammie@iki.fi>",
 "[fr] Fabien Vantard <fzzzzz@gmail.com>",
 "[hr] Dragan <drleskov@inet.hr>",
+"[hu] Pader Rezso <rezso@rezso.net>",
 "[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
 "[ja] Rui Hirokawa <rui_hirokawa@ybb.ne.jp>",
 "[ko] SungHyun Nam <namsh@kldp.org>",
