@@ -1,3 +1,17 @@
+2007-04-16 [paul]	2.8.1cvs101
+
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/hu.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Miquel Oliete, Tim Brain, Stephan Sachse,
+		Pader Rezso, Emil Nowak, Frederico Goncalves Guimaraes,
+		Aleksandar Urosevic, and Ralgh Young
+
 2007-04-15 [mones]	2.8.1cvs100
 
 	* po/es.po
