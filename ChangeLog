@@ -1,3 +1,13 @@
+2007-04-17 [wwp]	2.9.0cvs5
+
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/ldapupdate.c
+		Fix --disable-ldap build,
+		fix some LDAP annoyances on 
+		searches, thanks to Colin.
+
 2007-04-17 [wwp]	2.9.0cvs4
 
 	* src/ldapupdate.c

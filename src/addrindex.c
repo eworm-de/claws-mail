@@ -1721,6 +1721,7 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 	g_return_val_if_fail( addrIndex != NULL, -1 );
 	nodeIf = addrIndex->interfaceList;
 
+#ifdef USE_LDAP
 	/* save LDAP interfaces */
 	while ( nodeIf ) {
 		AddressInterface *iface = nodeIf->data;
@@ -1749,7 +1750,7 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 		}
 		nodeIf = g_list_next( nodeIf );
 	}
-
+#endif
 	addrIndex->retVal = MGU_NO_FILE;
 	if( addrIndex->fileName == NULL || *addrIndex->fileName == '\0' ) return addrIndex->retVal;
 	if( addrIndex->filePath == NULL || *addrIndex->filePath == '\0' ) return addrIndex->retVal;

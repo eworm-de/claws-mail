@@ -421,6 +421,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 							address, 
 							returned_remarks);
 			person->status = ADD_ENTRY;
+#ifdef USE_LDAP
 			if (fi->book->type == ADBOOKTYPE_LDAP) {
 				LdapServer *server = (LdapServer *) fi->book;
 				ldapsvr_set_modified(server, TRUE);
@@ -432,6 +433,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 					return server->retVal;
 				}
 			}
+#endif
 			g_free(returned_name);
 			g_free(returned_remarks);
 			if( person ) retVal = TRUE;

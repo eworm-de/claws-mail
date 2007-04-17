@@ -883,9 +883,6 @@ void ldapsvr_update_book(LdapServer *server, ItemPerson *item) {
 	else {
 		ItemFolder *folder = server->addressCache->rootFolder;
 		node = folder->listFolder;
-		if (node)
-			node = g_list_copy(node);
-		node = g_list_prepend(node, server->addressCache->rootFolder);
 		if (node) {
 			while (node) {
 				AddrItemObject *aio = node->data;
@@ -919,7 +916,6 @@ void ldapsvr_update_book(LdapServer *server, ItemPerson *item) {
 				}
 				node = g_list_next(node);
 			}
-			g_list_free(node);
 		}
 	}
 	head = contacts;

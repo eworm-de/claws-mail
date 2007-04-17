@@ -1466,11 +1466,13 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				if (pobj->type == ADDR_ITEM_FOLDER)
 					addritem_folder_remove_person(ADAPTER_FOLDER(pobj)->itemFolder, item);
 				item = addrbook_remove_person( abf, item );
+#ifdef USE_LDAP
 				if (ds->type == ADDR_IF_LDAP) {
 					LdapServer *server = ds->rawDataSource;
 					ldapsvr_set_modified(server, TRUE);
 					ldapsvr_update_book(server, item);
 				}
+#endif
 				if( item ) {
 					addritem_free_item_person( item );
 				}
@@ -1904,6 +1906,8 @@ static void addressbook_list_menu_setup( void ) {
 	else if( pobj->type != ADDR_INTERFACE ) {
 		/* Parent object is not an interface */
 		ds = addressbook_find_datasource( addrbook.treeSelected );
+		if (!ds)
+			return;
 		iface = ds->interface;
 		if( ! iface->readOnly ) {
 			/* Folder or group */
@@ -2883,6 +2887,104 @@ static void addressbook_new_address_from_folder_post_cb( ItemPerson *person )
 	addressbook_address_list_set_focus();
 }
 
+/**
+ * Label (a format string) that is used to name each folder.
+ */
+static gchar *_queryFolderLabel_ = N_( "Search '%s'" );
+
+/**
+ * Search ctree widget callback function.
+ * \param  pA Pointer to node.
+ * \param  pB Pointer to data item being sought.
+ * \return Zero (0) if folder found.
+ */
+static int addressbook_treenode_find_folder_cb( gconstpointer pA, gconstpointer pB ) {
+	AddressObject *aoA;
+
+	aoA = ( AddressObject * ) pA;
+	if( aoA->type == ADDR_ITEM_FOLDER ) {
+		ItemFolder *folder, *fld;
+
+		fld = ADAPTER_FOLDER(aoA)->itemFolder;
+		folder = ( ItemFolder * ) pB;
+		if( fld == folder ) return 0;	/* Found folder */
+	}
+	return 1;
+}
+
+static ItemFolder * addressbook_setup_subf(
+		AddressDataSource *ds, gchar *title,
+		GtkCTreeNode *pNode )
+{
+	AddrBookBase *adbase;
+	AddressCache *cache;
+	ItemFolder *folder;
+	GtkCTree *ctree;
+	GtkCTreeNode *nNode;
+	gchar *name;
+	AddressObjectType aoType = ADDR_NONE;
+	GList *children;
+	/* Setup a query */
+	if( *title == '\0' || strlen( title ) < 1 ) return NULL;
+
+	if( ds->type == ADDR_IF_LDAP ) {
+#if USE_LDAP
+		aoType = ADDR_LDAP_QUERY;
+#endif
+	}
+	else {
+		return NULL;
+	}
+
+	ctree = GTK_CTREE(addrbook.ctree);
+	/* Get reference to address cache */	
+	adbase = ( AddrBookBase * ) ds->rawDataSource;
+	cache = adbase->addressCache;
+	
+	if ((children = addrcache_get_list_folder(cache)) != NULL) {
+		GList *cur = children;
+		for (; cur; cur = cur->next) {
+			ItemFolder *child = (ItemFolder *) cur->data;
+			if (!strcmp2(ADDRITEM_NAME(child), title)) {
+				nNode = gtk_ctree_find_by_row_data_custom(
+					ctree, NULL, child,
+					addressbook_treenode_find_folder_cb );
+				if( nNode ) {
+					addrindex_remove_results( ds, child );
+					while( child->listPerson ) {
+						ItemPerson *item = ( ItemPerson * ) child->listPerson->data;
+						item = addrcache_remove_person( cache, item );
+						if( item ) {
+							addritem_free_item_person( item );
+							item = NULL;
+						}
+					}
+					gtk_sctree_select( GTK_SCTREE(ctree), nNode );
+					addrbook.treeSelected = nNode;
+				}	
+				return child;
+			}
+		}
+	}
+	
+	/* Create a folder */
+	folder = addrcache_add_new_folder( cache, NULL );
+	name = g_strdup_printf( "%s", title );
+	addritem_folder_set_name( folder, name );
+	addritem_folder_set_remarks( folder, "" );
+	g_free( name );
+
+	/* Now let's see the folder */
+	nNode = addressbook_node_add_folder( pNode, ds, folder, aoType );
+	gtk_ctree_expand( ctree, pNode );
+	if( nNode ) {
+		gtk_sctree_select( GTK_SCTREE(ctree), nNode );
+		addrbook.treeSelected = nNode;
+		return folder;
+	}
+	return NULL;
+}
+
 static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *widget ) {
 	AddressObject *pobj = NULL;
 	AddressDataSource *ds = NULL;
@@ -2908,11 +3010,36 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 	if( pobj->type == ADDR_DATASOURCE ) {
 		if (ADAPTER_DSOURCE(pobj)->subType == ADDR_BOOK ||
 		    ADAPTER_DSOURCE(pobj)->subType == ADDR_LDAP) {
-			/* New address */
-			ItemPerson *person = addressbook_edit_person( abf, NULL, NULL, FALSE,
+			ItemPerson *person;
+			ItemFolder *folder = NULL;
+#ifdef USE_LDAP
+			if (abf->type == ADDR_IF_LDAP) {
+				GtkCTreeNode *parentNode;
+				ds = addressbook_find_datasource( GTK_CTREE_NODE( addrbook.treeSelected ) );
+				if( ds == NULL ) return;
+
+				/* We must have a datasource that is an external interface */
+				if( ! ds->interface->haveLibrary ) return;
+				if( ! ds->interface->externalQuery ) return;
+
+				if( pobj->type == ADDR_ITEM_FOLDER ) {
+					parentNode = GTK_CTREE_ROW(GTK_CTREE_NODE( addrbook.treeSelected ) )->parent;
+				}
+				else {
+					parentNode = GTK_CTREE_NODE( addrbook.treeSelected );
+				}
+				folder = addressbook_setup_subf( ds, _("New Contacts"), parentNode );
+
+				pobj = gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), addrbook.treeSelected);
+				ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
+				abf = ds->rawDataSource;
+			}
+#endif
+			person = addressbook_edit_person( abf, folder, NULL, FALSE,
 								  addrbook.editaddress_vbox,
 								  addressbook_new_address_from_book_post_cb,
 								  TRUE );
+#ifdef USE_LDAP
 			if (abf->type == ADDR_IF_LDAP) {
 				LdapServer *server = ds->rawDataSource;
 				ldapsvr_set_modified(server, TRUE);
@@ -2924,6 +3051,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 					return;
 				}
 			}
+#endif
 			if (prefs_common.addressbook_use_editaddress_dialog)
 				addressbook_new_address_from_book_post_cb( person );
 		}
@@ -2931,10 +3059,36 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 	else if( pobj->type == ADDR_ITEM_FOLDER ) {
 		/* New address */
 		ItemFolder *folder = ADAPTER_FOLDER(pobj)->itemFolder;
-		ItemPerson *person = addressbook_edit_person( abf, folder, NULL, FALSE,
+		ItemPerson *person;
+#ifdef USE_LDAP
+		if (abf->type == ADDR_IF_LDAP) {
+			GtkCTreeNode *parentNode;
+			ds = addressbook_find_datasource( GTK_CTREE_NODE( addrbook.treeSelected ) );
+			if( ds == NULL ) return;
+
+			/* We must have a datasource that is an external interface */
+			if( ! ds->interface->haveLibrary ) return;
+			if( ! ds->interface->externalQuery ) return;
+
+			if( pobj->type == ADDR_ITEM_FOLDER ) {
+				parentNode = GTK_CTREE_ROW(GTK_CTREE_NODE( addrbook.treeSelected ) )->parent;
+			}
+			else {
+				parentNode = GTK_CTREE_NODE( addrbook.treeSelected );
+			}
+			folder = addressbook_setup_subf( ds, _("New Contacts"), parentNode );
+			if (!folder)
+				return;
+			pobj = gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), addrbook.treeSelected);
+			ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
+			abf = ds->rawDataSource;
+		}
+#endif
+		person = addressbook_edit_person( abf, folder, NULL, FALSE,
 							  addrbook.editaddress_vbox,
 							  addressbook_new_address_from_folder_post_cb,
 							  TRUE );
+#ifdef USE_LDAP
 		if (abf->type == ADDR_IF_LDAP) {
 			LdapServer *server = ds->rawDataSource;
 			ldapsvr_set_modified(server, TRUE);
@@ -2946,6 +3100,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 				return;
 			}
 		}
+#endif
 		if (prefs_common.addressbook_use_editaddress_dialog)
 			addressbook_new_address_from_folder_post_cb( person );
 	}
@@ -3106,10 +3261,12 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 										   addressbook_edit_address_post_cb,
 										   (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 				  != NULL ) { 
+#ifdef USE_LDAP
 				if (abf->type == ADDR_IF_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
+#endif
 				if (prefs_common.addressbook_use_editaddress_dialog)
 					addressbook_edit_address_post_cb( person );
 			}
@@ -3123,10 +3280,12 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 									  addressbook_edit_address_post_cb,
 									  (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 			!= NULL ) {
+#ifdef USE_LDAP
 				if (abf->type == ADDR_IF_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
+#endif
 				if (prefs_common.addressbook_use_editaddress_dialog)
 					addressbook_edit_address_post_cb( person );
 		}
@@ -3416,26 +3575,6 @@ static int addressbook_treenode_find_group_cb( gconstpointer pA, gconstpointer p
 		grp = ADAPTER_GROUP(aoA)->itemGroup;
 		group = ( ItemGroup * ) pB;
 		if( grp == group ) return 0;	/* Found group */
-	}
-	return 1;
-}
-
-/**
- * Search ctree widget callback function.
- * \param  pA Pointer to node.
- * \param  pB Pointer to data item being sought.
- * \return Zero (0) if folder found.
- */
-static int addressbook_treenode_find_folder_cb( gconstpointer pA, gconstpointer pB ) {
-	AddressObject *aoA;
-
-	aoA = ( AddressObject * ) pA;
-	if( aoA->type == ADDR_ITEM_FOLDER ) {
-		ItemFolder *folder, *fld;
-
-		fld = ADAPTER_FOLDER(aoA)->itemFolder;
-		folder = ( ItemFolder * ) pB;
-		if( fld == folder ) return 0;	/* Found folder */
 	}
 	return 1;
 }
@@ -4168,11 +4307,6 @@ static void addressbook_search_callback_end(
 }
 
 /**
- * Label (a format string) that is used to name each folder.
- */
-static gchar *_queryFolderLabel_ = N_( "Search '%s'" );
-
-/**
  * Perform search.
  *
  * \param ds         Data source to search.
@@ -4186,12 +4320,12 @@ static void addressbook_perform_search(
 	AddrBookBase *adbase;
 	AddressCache *cache;
 	ItemFolder *folder;
-	GtkCTree *ctree;
-	GtkCTreeNode *nNode;
 	gchar *name;
 	gint queryID;
 	guint idleID;
+#ifdef USE_LDAP
 	AddressObjectType aoType = ADDR_NONE;
+#endif
 
 	/* Setup a query */
 	if( *searchTerm == '\0' || strlen( searchTerm ) < 1 ) return;
@@ -4204,26 +4338,14 @@ static void addressbook_perform_search(
 	else {
 		return;
 	}
-
 	/* Get reference to address cache */	
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	cache = adbase->addressCache;
 
 	/* Create a folder for the search results */
-	folder = addrcache_add_new_folder( cache, NULL );
 	name = g_strdup_printf( _queryFolderLabel_, searchTerm );
-	addritem_folder_set_name( folder, name );
-	addritem_folder_set_remarks( folder, "" );
+	folder = addressbook_setup_subf(ds, name, pNode);
 	g_free( name );
-
-	/* Now let's see the folder */
-	ctree = GTK_CTREE(addrbook.ctree);
-	nNode = addressbook_node_add_folder( pNode, ds, folder, aoType );
-	gtk_ctree_expand( ctree, pNode );
-	if( nNode ) {
-		gtk_sctree_select( GTK_SCTREE(ctree), nNode );
-		addrbook.treeSelected = nNode;
-	}
 
 	/* Setup the search */
 	queryID = addrindex_setup_explicit_search(
