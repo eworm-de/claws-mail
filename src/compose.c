@@ -5657,6 +5657,48 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 	g_free(tmpstr);
 }
 
+static void compose_add_to_addressbook_cb(GtkMenuItem *menuitem, gpointer user_data)
+{
+	gchar *address;
+
+	g_return_if_fail(user_data != NULL);
+
+	address = g_strdup(gtk_entry_get_text(GTK_ENTRY(user_data)));
+	g_strstrip(address);
+	if (*address != '\0') {
+		gchar *name = procheader_get_fromname(address);
+		extract_address(address);
+		addressbook_add_contact(name, address, NULL);
+	}
+	g_free(address);
+}
+
+static void compose_entry_popup_extend(GtkEntry *entry, GtkMenu *menu, gpointer user_data)
+{
+	GtkWidget *menuitem;
+	gchar *address;
+
+	g_return_if_fail(menu != NULL);
+	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
+
+	menuitem = gtk_separator_menu_item_new();
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("Add to address _book"));
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+
+	address = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
+	g_strstrip(address);
+	if (*address == '\0') {
+		gtk_widget_set_sensitive(GTK_WIDGET(menuitem), FALSE);
+	}
+
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(compose_add_to_addressbook_cb), entry);
+	gtk_widget_show(menuitem);
+}
+
 static void compose_create_header_entry(Compose *compose) 
 {
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
@@ -5684,9 +5726,12 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
-	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1, compose->header_nextrow, compose->header_nextrow+1, GTK_SHRINK, GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
+			compose->header_nextrow, compose->header_nextrow+1,
+			GTK_SHRINK, GTK_FILL, 0, 0);
 	if (compose->header_last) {	
-		const gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
+		const gchar *last_header_entry = gtk_entry_get_text(
+				GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
 		string = headers;
 		while (*string != NULL) {
 			if (!strcmp(*string, last_header_entry))
@@ -5717,7 +5762,9 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_widget_show(entry);
 	gtk_tooltips_set_tip(compose->tooltips, entry,
 		_("Use <tab> to autocomplete from addressbook"), NULL);
-	gtk_table_attach(GTK_TABLE(compose->header_table), entry, 1, 2, compose->header_nextrow, compose->header_nextrow+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(compose->header_table), entry, 1, 2,
+			compose->header_nextrow, compose->header_nextrow+1,
+			GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
         g_signal_connect(G_OBJECT(entry), "key-press-event", 
 			 G_CALLBACK(compose_headerentry_key_press_event_cb), 
@@ -5738,6 +5785,9 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect(G_OBJECT(entry), "drag-drop",
 			 G_CALLBACK(compose_drag_drop),
 			 compose);
+	g_signal_connect(G_OBJECT(entry), "populate-popup",
+			 G_CALLBACK(compose_entry_popup_extend),
+			 NULL);
 	
 	address_completion_register_entry(GTK_ENTRY(entry), TRUE);
 
@@ -6622,6 +6672,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	g_signal_connect(G_OBJECT(optmenu), "changed",
 			G_CALLBACK(account_activated),
 			compose);
+	g_signal_connect(G_OBJECT(from_name), "populate-popup",
+			 G_CALLBACK(compose_entry_popup_extend),
+			 NULL);
 
 	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);

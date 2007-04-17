@@ -1,3 +1,9 @@
+2007-04-17 [wwp]	2.9.0cvs2
+
+	* src/compose.c
+		Prepend "Add to address book" to the context menu of compose window's sender and
+		recipient fields.
+
 2007-04-16 [paul]	2.9.0cvs1
 
 	* src/gtk/authors.h
