@@ -1,3 +1,9 @@
+2007-04-17 [wwp]	2.9.0cvs4
+
+	* src/ldapupdate.c
+		Fix more mixed decls, sensitive w/ strict ANSI-C89 compilers
+		like gcc 2.9x. Thanks to Colin.
+
 2007-04-17 [wwp]	2.9.0cvs3
 
 	* src/Makefile.am

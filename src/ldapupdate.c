@@ -380,6 +380,8 @@ void update_rdn(Rdn *rdn, gchar *head, gchar *tail) {
 Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 	Rdn *rdn;
 	gchar *pos, *compare;
+	gchar *rest;
+	gchar *val;
 	g_return_val_if_fail(hash != NULL || dn != NULL, NULL);
 	
 	pos = g_strstr_len(dn, strlen(dn), "=");
@@ -388,8 +390,8 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 	if (!pos)
 		return NULL;
 	pos++;
-	gchar *rest = g_strstr_len(pos, strlen(pos), ",");
-	gchar *val = g_strndup(pos, rest - pos);
+	rest = g_strstr_len(pos, strlen(pos), ",");
+	val = g_strndup(pos, rest - pos);
 	if (val == NULL) {
 		if (compare)
 			g_free(compare);
@@ -666,8 +668,9 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 	}
 	mailList = g_hash_table_lookup(contact , "mail");
 	if (mailList) {
+		char **tmp;
 		mail = g_malloc(sizeof(*mail));
-		char **tmp = g_malloc(sizeof(*tmp));
+		tmp = g_malloc(sizeof(*tmp));
 		mail = tmp;
 		while (mailList) {
 			EmailKeyValue *item = mailList->data;
@@ -783,8 +786,9 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 	mailList = g_hash_table_lookup(contact , "mail");
 	if (mailList) {
 		if (!(strcmp("mail", NoRemove->attribute) == 0 && g_list_length(mailList) == 1)) {
+			char **tmp;
 			mail = g_malloc(sizeof(*mail));
-			char **tmp = g_malloc(sizeof(*tmp));
+			tmp = g_malloc(sizeof(*tmp));
 			mail = tmp;
 			while (mailList) {
 				EmailKeyValue *item = mailList->data;
