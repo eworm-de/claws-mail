@@ -40,6 +40,7 @@
 #include "addrquery.h"
 #include "addr_compl.h"
 #include "utils.h"
+#include "alertpanel.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
@@ -56,6 +57,7 @@
 #include "ldapserver.h"
 #include "ldapctrl.h"
 #include "ldapquery.h"
+#include "ldapupdate.h"
 #include "ldaputil.h"
 #endif
 
@@ -290,14 +292,15 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface = addrindex_create_interface(
 			ADDR_IF_LDAP, "LDAP", TAG_IF_LDAP, TAG_DS_LDAP );
 #ifdef USE_LDAP
+	iface->readOnly = FALSE;
 	/* iface->haveLibrary = ldapsvr_test_ldap_lib(); */
 	iface->haveLibrary = ldaputil_test_ldap_lib();
 	iface->useInterface = iface->haveLibrary;
-	/* iface->getModifyFlag = ( void * ) ldapsvr_get_modified; */
+	iface->getModifyFlag = ( void * ) ldapsvr_get_modified;
 	iface->getAccessFlag = ( void * ) ldapsvr_get_accessed;
-	/* iface->getReadFlag   = ( void * ) ldapsvr_get_read_flag; */
+	iface->getReadFlag   = ( void * ) ldapsvr_get_read_flag;
 	iface->getStatusCode = ( void * ) ldapsvr_get_status;
-	/* iface->getReadData   = ( void * ) ldapsvr_read_data; */
+	iface->getReadData   = ( void * ) ldapsvr_read_data;
 	iface->getRootFolder = ( void * ) ldapsvr_get_root_folder;
 	iface->getListFolder = ( void * ) ldapsvr_get_list_folder;
 	iface->getListPerson = ( void * ) ldapsvr_get_list_person;
@@ -1713,7 +1716,39 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 * return: Status code, from addrIndex->retVal.
 */
 gint addrindex_save_data( AddressIndex *addrIndex ) {
+	GList *nodeIf, *nodeDS;
+
 	g_return_val_if_fail( addrIndex != NULL, -1 );
+	nodeIf = addrIndex->interfaceList;
+
+	/* save LDAP interfaces */
+	while ( nodeIf ) {
+		AddressInterface *iface = nodeIf->data;
+		if( iface->type == ADDR_IF_LDAP ) {
+			nodeDS = iface->listSource;
+			while( nodeDS ) {
+				AddressDataSource *ds = nodeDS->data;
+				LdapServer *abf = ds->rawDataSource;
+				if( ldapsvr_get_read_flag( abf ) ) {
+					if( ldapsvr_get_modified( abf ) ) {
+						ldapsvr_update_book( abf, NULL );
+						if( abf->retVal != LDAPRC_SUCCESS ) {
+							alertpanel( _("Address(es) update"),
+								_("Update failed. Changes not written to Directory."),
+								GTK_STOCK_CLOSE, NULL, NULL );
+						}
+						else {
+							abf->retVal = MGU_SUCCESS;
+							ldapsvr_set_modified( abf, FALSE );
+						}
+					}
+				}
+				nodeDS = g_list_next( nodeDS );
+			}
+			break;
+		}
+		nodeIf = g_list_next( nodeIf );
+	}
 
 	addrIndex->retVal = MGU_NO_FILE;
 	if( addrIndex->fileName == NULL || *addrIndex->fileName == '\0' ) return addrIndex->retVal;

@@ -46,6 +46,9 @@
 #include "addrbook.h"
 #include "addrindex.h"
 #include "manage_window.h"
+#include "ldapserver.h"
+#include "ldapupdate.h"
+#include "alertpanel.h"
 
 typedef struct {
 	AddressBookFile	*book;
@@ -339,7 +342,8 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 	list = addrindex_get_interface_list( addrIndex );
 	while( list ) {
 		AddressInterface *interface = list->data;
-		if( interface->type == ADDR_IF_BOOK ) {
+		if( interface->type == ADDR_IF_BOOK || 
+				interface->type == ADDR_IF_LDAP ) {
 			nodeDS = interface->listSource;
 			while( nodeDS ) {
 				ds = nodeDS->data;
@@ -378,6 +382,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 	ItemPerson *person = NULL;
 	FolderInfo *fi = NULL;
 	addressadd_cancelled = FALSE;
+
 	if( ! addressadd_dlg.window ) addressadd_create();
 	gtk_widget_grab_focus(addressadd_dlg.ok_btn);
 	gtk_widget_show(addressadd_dlg.window);
@@ -415,6 +420,18 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 							returned_name, 
 							address, 
 							returned_remarks);
+			person->status = ADD_ENTRY;
+			if (fi->book->type == ADBOOKTYPE_LDAP) {
+				LdapServer *server = (LdapServer *) fi->book;
+				ldapsvr_set_modified(server, TRUE);
+				ldapsvr_update_book(server, person);
+				if (server->retVal != LDAPRC_SUCCESS) {
+					alertpanel( _("Add address(es)"),
+						_("Can't add the specified address"),
+						GTK_STOCK_CLOSE, NULL, NULL );
+					return server->retVal;
+				}
+			}
 			g_free(returned_name);
 			g_free(returned_remarks);
 			if( person ) retVal = TRUE;

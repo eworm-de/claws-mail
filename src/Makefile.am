@@ -73,6 +73,7 @@ claws_mail_SOURCES = \
 	ldaplocate.c \
 	ldapquery.c \
 	ldapserver.c \
+	ldapupdate.c \
 	ldaputil.c \
 	ldif.c \
 	localfolder.c \
@@ -214,6 +215,7 @@ claws_mailinclude_HEADERS = \
 	ldaplocate.h \
 	ldapquery.h \
 	ldapserver.h \
+	ldapupdate.h \
 	ldaputil.h \
 	ldif.h \
 	localfolder.h \
@@ -318,7 +320,7 @@ EXTRA_DIST = \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_close_hrm.xpm \
 	pixmaps/dir_noselect.xpm \
-        pixmaps/dir_open_hrm.xpm \
+    pixmaps/dir_open_hrm.xpm \
 	pixmaps/dir_open.xpm \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \

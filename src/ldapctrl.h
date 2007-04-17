@@ -45,8 +45,9 @@
 #define LDAPCTL_ATTR_GIVENNAME  "givenName"
 #define LDAPCTL_ATTR_SURNAME    "sn"
 #define LDAPCTL_ATTR_PHONE     "telephoneNumber"
+#define LDAPCTL_ATTR_DISPLAYNAME "displayName"
 
-#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn, telephoneNumber"
+#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn, displayName, telephoneNumber"
 
 /*
  * Search matching options.
@@ -75,6 +76,7 @@ struct _LdapControl {
 	gchar     *attribCName;
 	gchar     *attribFName;
 	gchar     *attribLName;
+	gchar	  *attribDName;
 	GList     *listCriteria;
 	pthread_mutex_t *mutexCtl;
 };

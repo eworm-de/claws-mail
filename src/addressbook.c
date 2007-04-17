@@ -89,6 +89,7 @@
 #include <pthread.h>
 #include "ldapserver.h"
 #include "editldap.h"
+#include "ldapupdate.h"
 
 #define ADDRESSBOOK_LDAP_BUSYMSG "Busy"
 #endif
@@ -534,17 +535,21 @@ static ErrMsgTableEntry _lutErrorsGeneral_[] = {
  * Lookup table of error messages for LDAP errors.
  */
 static ErrMsgTableEntry _lutErrorsLDAP_[] = {
-	{ LDAPRC_SUCCESS,	N_("Success") },
-	{ LDAPRC_CONNECT,	N_("Error connecting to LDAP server") },
-	{ LDAPRC_INIT,		N_("Error initializing LDAP") },
-	{ LDAPRC_BIND,		N_("Error binding to LDAP server") },
-	{ LDAPRC_SEARCH,	N_("Error searching LDAP database") },
-	{ LDAPRC_TIMEOUT,	N_("Timeout performing LDAP operation") },
-	{ LDAPRC_CRITERIA,	N_("Error in LDAP search criteria") },
-	{ LDAPRC_NOENTRIES,	N_("No LDAP entries found for search criteria") },
-	{ LDAPRC_STOP_FLAG,	N_("LDAP search terminated on request") },
-	{ LDAPRC_TLS,		N_("Error starting TLS connection") },
-	{ 0,			NULL }
+	{ LDAPRC_SUCCESS,			N_("Success") },
+	{ LDAPRC_CONNECT,			N_("Error connecting to LDAP server") },
+	{ LDAPRC_INIT,				N_("Error initializing LDAP") },
+	{ LDAPRC_BIND,				N_("Error binding to LDAP server") },
+	{ LDAPRC_SEARCH,			N_("Error searching LDAP database") },
+	{ LDAPRC_TIMEOUT,			N_("Timeout performing LDAP operation") },
+	{ LDAPRC_CRITERIA,			N_("Error in LDAP search criteria") },
+	{ LDAPRC_NOENTRIES,			N_("No LDAP entries found for search criteria") },
+	{ LDAPRC_STOP_FLAG,			N_("LDAP search terminated on request") },
+	{ LDAPRC_TLS,				N_("Error starting TLS connection") },
+	{ LDAPRC_NODN,				N_("Distinguised Name (dn) is missing") },
+	{ LDAPRC_NAMING_VIOLATION,		N_("Missing required information") },
+	{ LDAPRC_ALREADY_EXIST,			N_("Another contact exists with that key") },
+	{ LDAPRC_STRONG_AUTH,			N_("Strong(er) authentication required") },
+	{ 0,					NULL }
 };
 #endif
 
@@ -1456,10 +1461,16 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			}
 			else if( aio->type == ADDR_ITEM_PERSON ) {
 				ItemPerson *item = ( ItemPerson * ) aio;
+				item->status = DELETE_ENTRY; 
 				addressbook_folder_remove_one_person( clist, item );
 				if (pobj->type == ADDR_ITEM_FOLDER)
 					addritem_folder_remove_person(ADAPTER_FOLDER(pobj)->itemFolder, item);
 				item = addrbook_remove_person( abf, item );
+				if (ds->type == ADDR_IF_LDAP) {
+					LdapServer *server = ds->rawDataSource;
+					ldapsvr_set_modified(server, TRUE);
+					ldapsvr_update_book(server, item);
+				}
 				if( item ) {
 					addritem_free_item_person( item );
 				}
@@ -1881,7 +1892,8 @@ static void addressbook_list_menu_setup( void ) {
 		iface = ds->interface;
 		if( ! iface->readOnly ) {
 			menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
-			menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
+			if (iface->type != ADDR_IF_LDAP)
+				menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 			if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
 			if( ! addrselect_test_empty( _addressSelect_ ) ) canCut = TRUE;
@@ -1902,7 +1914,8 @@ static void addressbook_list_menu_setup( void ) {
 			}
 			/* Folder */
 			if( pobj->type == ADDR_ITEM_FOLDER ) {
-				menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
+				if (iface->type != ADDR_IF_LDAP)
+					menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
 				if( obj ) canEdit = TRUE;
 			}
 			if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
@@ -1912,7 +1925,7 @@ static void addressbook_list_menu_setup( void ) {
 		if( iface->type == ADDR_IF_LDAP ) {
 			if( obj ) canBrowse = TRUE;
 			canEdit = TRUE;
-			canDelete = FALSE;
+			canDelete = TRUE;
 		}
 	}
 	if( ! addrselect_test_empty( _addressSelect_ ) ) canCopy = TRUE;
@@ -2849,6 +2862,7 @@ static void addressbook_treenode_delete_cb(
 static void addressbook_new_address_from_book_post_cb( ItemPerson *person )
 {
 	if( person && addrbook.treeSelected == addrbook.opened ) {
+		person->status = ADD_ENTRY;
 		gtk_clist_unselect_all( GTK_CLIST(addrbook.clist) );
 		addressbook_folder_refresh_one_person(
 			GTK_CTREE(addrbook.clist), person );
@@ -2859,6 +2873,7 @@ static void addressbook_new_address_from_book_post_cb( ItemPerson *person )
 static void addressbook_new_address_from_folder_post_cb( ItemPerson *person )
 {
 	if( person && addrbook.treeSelected == addrbook.opened) {
+		person->status = ADD_ENTRY;
 		gtk_sctree_select( GTK_SCTREE(addrbook.ctree), addrbook.opened );
 		addressbook_set_clist(
 			gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree),
@@ -2872,22 +2887,43 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 	AddressObject *pobj = NULL;
 	AddressDataSource *ds = NULL;
 	AddressBookFile *abf = NULL;
-
+	debug_print("adding address\n");
 	pobj = gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), addrbook.treeSelected);
-	if( pobj == NULL ) return;
+	if( pobj == NULL ) {
+		debug_print("no row data\n");
+		return;
+	}
 	ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
-	if( ds == NULL ) return;
+	if( ds == NULL ) {
+		debug_print("no datasource\n");
+		return;
+	}
 
 	abf = ds->rawDataSource;
-	if( abf == NULL ) return;
+	if( abf == NULL ) {
+		printf("no addressbook file\n");
+		return;
+	}
 
 	if( pobj->type == ADDR_DATASOURCE ) {
-		if( ADAPTER_DSOURCE(pobj)->subType == ADDR_BOOK ) {
+		if (ADAPTER_DSOURCE(pobj)->subType == ADDR_BOOK ||
+		    ADAPTER_DSOURCE(pobj)->subType == ADDR_LDAP) {
 			/* New address */
 			ItemPerson *person = addressbook_edit_person( abf, NULL, NULL, FALSE,
-														  addrbook.editaddress_vbox,
-														  addressbook_new_address_from_book_post_cb,
-														  TRUE );
+								  addrbook.editaddress_vbox,
+								  addressbook_new_address_from_book_post_cb,
+								  TRUE );
+			if (abf->type == ADDR_IF_LDAP) {
+				LdapServer *server = ds->rawDataSource;
+				ldapsvr_set_modified(server, TRUE);
+				ldapsvr_update_book(server, NULL);
+				if (server->retVal != LDAPRC_SUCCESS) {
+					alertpanel( _("Add address(es)"),
+						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
+						GTK_STOCK_CLOSE, NULL, NULL );
+					return;
+				}
+			}
 			if (prefs_common.addressbook_use_editaddress_dialog)
 				addressbook_new_address_from_book_post_cb( person );
 		}
@@ -2896,9 +2932,20 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 		/* New address */
 		ItemFolder *folder = ADAPTER_FOLDER(pobj)->itemFolder;
 		ItemPerson *person = addressbook_edit_person( abf, folder, NULL, FALSE,
-													  addrbook.editaddress_vbox,
-													  addressbook_new_address_from_folder_post_cb,
-													  TRUE );
+							  addrbook.editaddress_vbox,
+							  addressbook_new_address_from_folder_post_cb,
+							  TRUE );
+		if (abf->type == ADDR_IF_LDAP) {
+			LdapServer *server = ds->rawDataSource;
+			ldapsvr_set_modified(server, TRUE);
+			ldapsvr_update_book(server, NULL);
+			if (server->retVal != LDAPRC_SUCCESS) {
+				alertpanel( _("Add address(es)"),
+						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
+					GTK_STOCK_CLOSE, NULL, NULL );
+				return;
+			}
+		}
 		if (prefs_common.addressbook_use_editaddress_dialog)
 			addressbook_new_address_from_folder_post_cb( person );
 	}
@@ -2951,7 +2998,7 @@ static AddressBookFile *addressbook_get_book_file() {
 
 	ds = addressbook_find_datasource( addrbook.treeSelected );
 	if( ds == NULL ) return NULL;
-	if( ds->type == ADDR_IF_BOOK ) abf = ds->rawDataSource;
+	if( ds->type == ADDR_IF_BOOK || ds->type == ADDR_IF_LDAP ) abf = ds->rawDataSource;
 	return abf;
 }
 
@@ -2984,6 +3031,7 @@ static void addressbook_move_nodes_up( GtkCTree *ctree, GtkCTreeNode *node ) {
 static void addressbook_edit_address_post_cb( ItemPerson *person )
 {
 	if( person ) {
+
 		addressbook_folder_refresh_one_person( GTK_CTREE(addrbook.clist), person );
 		invalidate_address_completion();
 	}
@@ -3057,7 +3105,11 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 			if  ( addressbook_edit_person( abf, NULL, person, TRUE, addrbook.editaddress_vbox,
 										   addressbook_edit_address_post_cb,
 										   (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
-				  != NULL ) {
+				  != NULL ) { 
+				if (abf->type == ADDR_IF_LDAP) {
+					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
+					person->status = UPDATE_ENTRY;
+				}
 				if (prefs_common.addressbook_use_editaddress_dialog)
 					addressbook_edit_address_post_cb( person );
 			}
@@ -3071,8 +3123,12 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 									  addressbook_edit_address_post_cb,
 									  (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 			!= NULL ) {
-			if (prefs_common.addressbook_use_editaddress_dialog)
-				addressbook_edit_address_post_cb( person );
+				if (abf->type == ADDR_IF_LDAP) {
+					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
+					person->status = UPDATE_ENTRY;
+				}
+				if (prefs_common.addressbook_use_editaddress_dialog)
+					addressbook_edit_address_post_cb( person );
 		}
 		return;
 	}
@@ -3207,6 +3263,9 @@ static void addressbook_folder_load_one_person(
 			gchar *str = addressbook_format_item_clist( person, email );
 			if( str ) {
 				text[COL_NAME] = str;
+			}
+			else if( person->nickName ) {
+				text[COL_NAME] = person->nickName;
 			}
 			else {
 				text[COL_NAME] = ADDRITEM_NAME(person);

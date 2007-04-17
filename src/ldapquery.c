@@ -353,13 +353,14 @@ void ldapqry_free( LdapQuery *qry ) {
  */
 static void ldapqry_free_lists(
 		GSList *listName, GSList *listAddr, GSList *listFirst,
-		GSList *listLast, GSList *other_attrs )
+		GSList *listLast, GSList *listDisplay, GSList *other_attrs )
 {
 	GSList *cur = other_attrs;
 	mgu_free_list( listName );
 	mgu_free_list( listAddr );
 	mgu_free_list( listFirst );
 	mgu_free_list( listLast );
+	mgu_free_list( listDisplay );
 	for(;cur; cur = cur->next)
 		addritem_free_attribute((UserAttribute *)cur->data);
 	g_slist_free(other_attrs);
@@ -434,7 +435,7 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 static GList *ldapqry_build_items_fl(
 		AddressCache *cache, LdapQuery *qry, gchar *dn,
 		GSList *listName, GSList *listAddr, GSList *listFirst,
-		GSList *listLast, GSList *attributes )
+		GSList *listLast, GSList *listDisplay, GSList *attributes )
 {
 	GSList *nodeAddress, *cur;
 	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL;
@@ -448,6 +449,11 @@ static GList *ldapqry_build_items_fl(
 	if( folder == NULL ) return listReturn;
 	if( listAddr == NULL ) return listReturn;
 
+	if ( listDisplay ) {
+		allocated = FALSE;
+		fullName = listDisplay->data;
+	}
+
 	/* Find longest first name in list */
 	firstName = mgu_slist_longest_entry( listFirst );
 
@@ -456,27 +462,29 @@ static GList *ldapqry_build_items_fl(
 		lastName = listLast->data;
 	}
 
-	/* Find longest common name */
-	allocated = FALSE;
-	fullName = mgu_slist_longest_entry( listName );
-	if( fullName == NULL ) {
-		/* Format a full name from first and last names */
-		if( firstName ) {
-			if( lastName ) {
-				fullName = g_strdup_printf( "%s %s", firstName, lastName );
+	if ( fullName == NULL ) {
+		/* Find longest common name */
+		allocated = FALSE;
+		fullName = mgu_slist_longest_entry( listName );
+		if( fullName == NULL ) {
+			/* Format a full name from first and last names */
+			if( firstName ) {
+				if( lastName ) {
+					fullName = g_strdup_printf( "%s %s", firstName, lastName );
+				}
+				else {
+					fullName = g_strdup_printf( "%s", firstName );
+				}
 			}
 			else {
-				fullName = g_strdup_printf( "%s", firstName );
+				if( lastName ) {
+					fullName = g_strdup_printf( "%s", lastName );
+				}
 			}
-		}
-		else {
-			if( lastName ) {
-				fullName = g_strdup_printf( "%s", lastName );
+			if( fullName ) {
+				g_strchug( fullName ); g_strchomp( fullName );
+				allocated = TRUE;
 			}
-		}
-		if( fullName ) {
-			g_strchug( fullName ); g_strchomp( fullName );
-			allocated = TRUE;
 		}
 	}
 
@@ -485,6 +493,7 @@ static GList *ldapqry_build_items_fl(
 	addritem_person_set_common_name( person, fullName );
 	addritem_person_set_first_name( person, firstName );
 	addritem_person_set_last_name( person, lastName );
+	addritem_person_set_nick_name( person, fullName );
 	addrcache_id_person( cache, person );
 	addritem_person_set_external_id( person, dn );
 	
@@ -505,6 +514,7 @@ static GList *ldapqry_build_items_fl(
 		addrcache_id_email( cache, email );
 		addrcache_person_add_email( cache, person, email );
 		addritem_person_add_email( person, email );
+		/*addritem_print_item_email(email, stdout);*/
 		listReturn = g_list_append( listReturn, email );
 		nodeAddress = g_slist_next( nodeAddress );
 	}
@@ -535,6 +545,7 @@ static GList *ldapqry_process_single_entry(
 	BerElement *ber;
 	GSList *listName = NULL, *listAddress = NULL;
 	GSList *listFirst = NULL, *listLast = NULL;
+	GSList *listDisplay = NULL;
 	GSList *other_attrs = NULL;
 	GList *listReturn;
 
@@ -557,6 +568,8 @@ static GList *ldapqry_process_single_entry(
 		}
 		else if( strcasecmp( attribute, ctl->attribLName ) == 0 ) {
 			listLast = ldapqry_add_single_value( ld, e, attribute );
+		} else if( strcasecmp( attribute, ctl->attribDName ) == 0 ) {
+			listDisplay = ldapqry_add_single_value( ld, e, attribute );
 		} else {
 			GSList *attlist = ldapqry_add_single_value( ld, e, attribute );
 			UserAttribute *attrib = addritem_create_attribute();
@@ -574,11 +587,11 @@ static GList *ldapqry_process_single_entry(
 
 	/* Format and add items to cache */
 	listReturn = ldapqry_build_items_fl(
-		cache, qry, dnEntry, listName, listAddress, listFirst, listLast, other_attrs );
+		cache, qry, dnEntry, listName, listAddress, listFirst, listLast, listDisplay, other_attrs );
 
 	/* Free up */
-	ldapqry_free_lists( listName, listAddress, listFirst, listLast, other_attrs );
-	listName = listAddress = listFirst = listLast = other_attrs = NULL;
+	ldapqry_free_lists( listName, listAddress, listFirst, listLast, listDisplay, other_attrs );
+	listName = listAddress = listFirst = listLast = listDisplay = other_attrs = NULL;
 
 	if( ber != NULL ) {
 		ber_free( ber, 0 );
@@ -845,6 +858,11 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 			qry->callBackEntry( qry, ADDRQUERY_ID(qry), listEMail, qry->data );
 		}
 		else {
+			/*GList *node = listEMail;
+			while (node) {
+				addritem_print_item_email(node->data, stdout);
+				node = g_list_next(node);
+			}*/
 			g_list_free( listEMail );
 		}
 		pthread_mutex_unlock( qry->mutexEntry );

@@ -53,6 +53,13 @@ typedef enum {
 	ADDRFOLDER_QUERY_RESULTS
 } AddressFolderType;
 
+typedef enum {
+	NONE,
+	ADD_ENTRY,
+	UPDATE_ENTRY,
+	DELETE_ENTRY
+} ContactStatus;
+
 typedef struct _AddrItemObject AddrItemObject;
 struct _AddrItemObject {
 	ItemObjectType type;
@@ -72,6 +79,7 @@ struct _ItemPerson {
 	GList    *listEMail;
 	GList    *listAttrib;
 	gboolean isOpened;
+	ContactStatus status;
 };
 
 typedef struct _ItemEMail ItemEMail;

@@ -83,6 +83,7 @@ static struct _PersonEdit_dlg {
 	gint rowIndAttrib;
 	gboolean editNew;
 	gboolean read_only;
+	gboolean ldap;
 } personeditdlg;
 
 /* transient data */
@@ -471,7 +472,7 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 
 static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
 	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
-	if( attrib && !personeditdlg.read_only) {
+	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
 		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
@@ -500,7 +501,7 @@ static void edit_person_attrib_delete( gpointer data ) {
 		personeditdlg.rowIndAttrib = -1 + row;
 	} 
 	
-	if (!personeditdlg.read_only)
+	if (!personeditdlg.read_only && !personeditdlg.ldap)
 		gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
 	
 	edit_person_status_show( NULL );
@@ -986,7 +987,7 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
 	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_attrib), 0) != NULL;
 
-	if (personeditdlg.read_only)
+	if (personeditdlg.read_only || personeditdlg.ldap)
 		return;
 
 	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
@@ -1201,20 +1202,20 @@ static void update_sensitivity(void)
 	gtk_widget_set_sensitive(personeditdlg.entry_name,    !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.entry_first,   !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.entry_last,    !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_nick,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_nick,    !personeditdlg.read_only && !personeditdlg.ldap);
 	gtk_widget_set_sensitive(personeditdlg.entry_email,   !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_alias,   !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_remarks, !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_alias,   !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.entry_remarks, !personeditdlg.read_only && !personeditdlg.ldap);
 	gtk_widget_set_sensitive(personeditdlg.email_up,      !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_down,    !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_del,     !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_mod,     !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_add,     !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_atname,  !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_atvalue, !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.attrib_add,    !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.attrib_del,    !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_atname,  !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.entry_atvalue, !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.attrib_add,    !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.attrib_del,    !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only && !personeditdlg.ldap);
 }
 
 static void addressbook_edit_person_flush_transient( void )
@@ -1343,6 +1344,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	current_person = person;
 	current_parent_folder = parent_folder;
 	edit_person_close_post_update_cb = post_update_cb;
+	personeditdlg.ldap = (abf->type == ADBOOKTYPE_LDAP)? TRUE : FALSE;
 
 	if( !personeditdlg.container )
 		addressbook_edit_person_create(parent_container, &cancelled);

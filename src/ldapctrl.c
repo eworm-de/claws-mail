@@ -52,6 +52,7 @@ LdapControl *ldapctl_create( void ) {
 	ctl->attribCName = g_strdup( LDAPCTL_ATTR_COMMONNAME );
 	ctl->attribFName = g_strdup( LDAPCTL_ATTR_GIVENNAME );
 	ctl->attribLName = g_strdup( LDAPCTL_ATTR_SURNAME );
+	ctl->attribDName = g_strdup( LDAPCTL_ATTR_DISPLAYNAME );
 	ctl->maxEntries = LDAPCTL_MAX_ENTRIES;
 	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
@@ -256,6 +257,7 @@ static void ldapctl_clear( LdapControl *ctl ) {
 	g_free( ctl->attribCName );
 	g_free( ctl->attribFName );
 	g_free( ctl->attribLName );
+	g_free( ctl->attribDName );
 
 	ldapctl_criteria_list_clear( ctl );
 
@@ -269,6 +271,7 @@ static void ldapctl_clear( LdapControl *ctl ) {
 	ctl->attribCName = NULL;
 	ctl->attribFName = NULL;
 	ctl->attribLName = NULL;
+	ctl->attribDName = NULL;
 	ctl->maxEntries = 0;
 	ctl->timeOut = 0;
 	ctl->maxQueryAge = 0;
@@ -316,6 +319,7 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "attr comn: '%s'\n", ctl->attribCName );
 	fprintf( stream, "attr frst: '%s'\n", ctl->attribFName );
 	fprintf( stream, "attr last: '%s'\n", ctl->attribLName );
+	fprintf( stream, "attr disn: '%s'\n", ctl->attribDName );
 	fprintf( stream, "max entry: %d\n",   ctl->maxEntries );
 	fprintf( stream, "  timeout: %d\n",   ctl->timeOut );
 	fprintf( stream, "  max age: %d\n",   ctl->maxQueryAge );
@@ -361,6 +365,7 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	ctlTo->attribCName = g_strdup( ctlFrom->attribCName );
 	ctlTo->attribFName = g_strdup( ctlFrom->attribFName );
 	ctlTo->attribLName = g_strdup( ctlFrom->attribLName );
+	ctlTo->attribDName = g_strdup( ctlFrom->attribDName );
 
 	/* Copy search criteria */
 	node = ctlFrom->listCriteria;

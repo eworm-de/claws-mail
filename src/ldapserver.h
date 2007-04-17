@@ -45,6 +45,10 @@
 #define LDAPRC_NOENTRIES  -7
 #define LDAPRC_STOP_FLAG  -8
 #define LDAPRC_TLS        -9
+#define LDAPRC_NODN		  -10
+#define LDAPRC_NAMING_VIOLATION  -11
+#define LDAPRC_ALREADY_EXIST -12
+#define LDAPRC_STRONG_AUTH -13
 
 typedef struct _LdapServer LdapServer;
 struct _LdapServer {
@@ -72,6 +76,7 @@ void ldapsvr_set_modified	( LdapServer *server, const gboolean value );
 gboolean ldapsvr_get_read_flag	( LdapServer *server );
 gboolean ldapsvr_get_search_flag( LdapServer *server );
 void ldapsvr_set_search_flag	( LdapServer *server, const gboolean value );
+gint ldapsvr_read_data ( LdapServer *server );
 
 void ldapsvr_print_data		( LdapServer *server, FILE *stream );
 void ldapsvr_cancel_read	( LdapServer *server );

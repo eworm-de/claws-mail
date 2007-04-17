@@ -1,3 +1,22 @@
+2007-04-17 [wwp]	2.9.0cvs3
+
+	* src/Makefile.am
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapquery.c
+	* src/ldapserver.c
+	* src/ldapserver.h
+	* src/ldapupdate.c
+	* src/ldapupdate.h
+		Add LDAP write support. Patch mostly by 
+		Michael <mir at datanom dot net>
+
 2007-04-17 [wwp]	2.9.0cvs2
 
 	* src/compose.c

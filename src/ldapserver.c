@@ -39,6 +39,7 @@
 #include "ldapctrl.h"
 #include "ldapquery.h"
 #include "ldapserver.h"
+#include "ldaputil.h"
 #include "utils.h"
 #include "adbookbase.h"
 
@@ -693,6 +694,20 @@ LdapQuery *ldapsvr_new_explicit_search(
 	g_free( name );
 
 	return qry;
+}
+
+gint ldapsvr_read_data( LdapServer *server )
+{
+	g_return_val_if_fail( server != NULL, -1 );
+
+	//printf( "...addrbook_read_data :%s:\n", addrcache_get_name( server->addressCache ) );
+	
+	addrcache_clear(server->addressCache);
+	server->addressCache->modified = FALSE;
+	server->addressCache->accessFlag = FALSE;
+	server->addressCache->dataRead = TRUE;
+	addrcache_set_dirty(server->addressCache, FALSE);
+	return 0;
 }
 
 #endif	/* USE_LDAP */

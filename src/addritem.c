@@ -224,6 +224,7 @@ ItemPerson *addritem_create_item_person( void ) {
 	person->listAttrib = NULL;
 	person->externalID = NULL;
 	person->isOpened = FALSE;
+	person->status = NONE;
 	return person;
 }
 
@@ -243,6 +244,7 @@ ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 		itemNew->lastName = g_strdup( item->lastName );
 		itemNew->nickName = g_strdup( item->nickName );
 		itemNew->externalID = g_strdup( item->externalID );
+		itemNew->status = item->status;
 	}
 	return itemNew;
 }
@@ -463,6 +465,17 @@ void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 		addritem_print_attribute( node->data, stream );
 		node = g_list_next( node );
 	}
+	gchar *current_status;
+	switch (person->status) {
+		case NONE: current_status = g_strdup("Unchanged"); break;
+		case ADD_ENTRY: current_status = g_strdup("New"); break;
+		case UPDATE_ENTRY: current_status = g_strdup("Updated"); break;
+		case DELETE_ENTRY: current_status = g_strdup("Deleted"); break;
+		default: current_status = g_strdup("Unknown");
+	}
+	fprintf( stream, "\t\tStatus: %s\n", current_status );
+	if ( current_status )
+		g_free(current_status);
 	fprintf( stream, "\t===\n" );
 }
 
