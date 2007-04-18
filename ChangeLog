@@ -1,7 +1,7 @@
 2007-04-18 [colin]	2.9.0cvs6
 
 	* src/gtk/pluginwindow.c
-		Fix closing with the window's [X]
+		Fix bug 1185, 'Pluginwindow's [X] button doesn't save'
 
 2007-04-17 [wwp]	2.9.0cvs5
 
