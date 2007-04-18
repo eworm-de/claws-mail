@@ -1,3 +1,9 @@
+2007-04-18 [paul]	2.9.0cvs8
+
+	* src/pop.c
+		fix for CVE-2007-1558 (APOP)
+		Thanks to Colin
+
 2007-04-18 [paul]	2.9.0cvs7
 
 	* src/messageview.c
