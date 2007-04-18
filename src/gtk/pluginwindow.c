@@ -72,6 +72,13 @@ static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 	inc_unlock();
 }
 
+static gint pluginwindow_delete_cb(GtkWidget *widget, GdkEventAny *event,
+				  PluginWindow *pluginwindow)
+{
+	close_cb(NULL,pluginwindow);
+	return TRUE;
+}
+
 static void set_plugin_list(PluginWindow *pluginwindow)
 {
 	GSList *plugins, *cur, *unloaded;
@@ -374,6 +381,8 @@ void pluginwindow_create()
 			 G_CALLBACK(pluginwindow_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			   G_CALLBACK(pluginwindow_key_pressed), pluginwindow);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(pluginwindow_delete_cb), pluginwindow);
 
 	tooltips = gtk_tooltips_new();
 

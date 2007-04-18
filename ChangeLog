@@ -1,3 +1,8 @@
+2007-04-18 [colin]	2.9.0cvs6
+
+	* src/gtk/pluginwindow.c
+		Fix closing with the window's [X]
+
 2007-04-17 [wwp]	2.9.0cvs5
 
 	* src/addressadd.c
