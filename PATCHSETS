@@ -2525,3 +2525,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/ldapupdate.c;  ) > 2.9.0cvs4.patchset
 ( cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/addressadd.c;  cvs diff -u -r 1.60.2.85 -r 1.60.2.86 src/addressbook.c;  cvs diff -u -r 1.28.2.26 -r 1.28.2.27 src/addrindex.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/ldapupdate.c;  ) > 2.9.0cvs5.patchset
 ( cvs diff -u -r 1.5.2.44 -r 1.5.2.45 src/gtk/pluginwindow.c;  ) > 2.9.0cvs6.patchset
+( cvs diff -u -r 1.94.2.131 -r 1.94.2.132 src/messageview.c;  cvs diff -u -r 1.83.2.104 -r 1.83.2.105 src/mimeview.c;  cvs diff -u -r 1.395.2.295 -r 1.395.2.296 src/summaryview.c;  cvs diff -u -r 1.2.2.32 -r 1.2.2.33 src/gtk/filesel.c;  ) > 2.9.0cvs7.patchset

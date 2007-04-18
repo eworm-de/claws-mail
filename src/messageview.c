@@ -1172,7 +1172,19 @@ static void messageview_save_as(MessageView *messageview)
 		Xstrdup_a(filename, msginfo->subject, return);
 		subst_for_filename(filename);
 	}
-	dest = filesel_select_file_save(_("Save as"), filename);
+	if (filename && !g_utf8_validate(filename, -1, NULL)) {
+		gchar *oldstr = filename;
+		filename = conv_codeset_strdup(filename,
+					       conv_get_locale_charset_str(),
+					       CS_UTF_8);
+		if (!filename) {
+			g_warning("messageview_save_as(): faild to convert character set.");
+			filename = g_strdup(oldstr);
+		}
+		dest = filesel_select_file_save(_("Save as"), filename);
+		g_free(filename);
+	} else
+		dest = filesel_select_file_save(_("Save as"), filename);
 	if (!dest) return;
 	if (is_file_exist(dest)) {
 		AlertValue aval;

@@ -1,3 +1,13 @@
+2007-04-18 [paul]	2.9.0cvs7
+
+	* src/messageview.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/gtk/filesel.c
+		Fix encoding woes wrt saving of
+		mails and parts
+		Thanks to Colin
+
 2007-04-18 [colin]	2.9.0cvs6
 
 	* src/gtk/pluginwindow.c
