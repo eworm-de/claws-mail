@@ -1,3 +1,23 @@
+2007-04-18 [paul]	2.9.0cvs1-stable
+
+	* configure.ac
+		add EXTRA_GTK2_VERSION=-stable
+	* src/gtk/authors.h
+		backported from 2.9.0cvs1
+		add Pader Rezso
+	* src/gtk/pluginwindow.c
+		backported from 2.9.0cvs6
+		Fix bug 1185, 'Pluginwindow's [X] button doesn't save'
+	* src/messageview.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/gtk/filesel.c
+		backported from 2.9.0cvs7
+		Fix encoding woes wrt saving of mails and parts
+	* src/pop.c
+		backported from 2.9.0cvs8
+		fix for CVE-2007-1558 (APOP)
+
 2007-04-16 [paul]	2.9.0
 
 	* NEWS

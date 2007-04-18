@@ -4174,8 +4174,7 @@ void summary_save_as(SummaryView *summaryview)
 		Xstrdup_a(filename, msginfo->subject, return);
 		subst_for_filename(filename);
 	}
-	if (g_getenv ("G_BROKEN_FILENAMES") &&
-	    filename && !g_utf8_validate(filename, -1, NULL)) {
+	if (filename && !g_utf8_validate(filename, -1, NULL)) {
 		gchar *oldstr = filename;
 		filename = conv_codeset_strdup(filename,
 					       conv_get_locale_charset_str(),

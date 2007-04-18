@@ -134,17 +134,18 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			g_free(realpath); 
 			realpath = g_strdup(get_home_dir());
 		}
+		tmp = NULL;
 		if (g_utf8_validate(realpath, -1, NULL))
 			tmp = g_filename_from_utf8(realpath, -1, NULL, NULL, NULL);
-		else
+		if (tmp == NULL)
 			tmp = g_strdup(realpath);
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), tmp);
 		g_free(tmp);
-		
 		if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
+			tmp = NULL;
 			if (g_utf8_validate(filename, -1, NULL))
 				tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL);
-			else
+			if (tmp == NULL)
 				tmp = g_strdup(filename);
 			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), tmp);
 			g_free(tmp);
@@ -156,7 +157,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			prefs_common.attach_load_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
 		if (g_utf8_validate(prefs_common.attach_load_dir, -1, NULL))
 			tmp = g_filename_from_utf8(prefs_common.attach_load_dir, -1, NULL, NULL, NULL);
-		else
+		if (tmp == NULL)
 			tmp = g_strdup(prefs_common.attach_load_dir);
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), tmp);
 		g_free(tmp);

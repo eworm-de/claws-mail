@@ -1370,10 +1370,14 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	}
 	if (filename == NULL)
 		filename = g_path_get_basename("Unnamed part");
-		
 
-	tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL);
-	
+	if (!g_utf8_validate(filename, -1, NULL))
+		tmp = conv_codeset_strdup(filename,
+				conv_get_locale_charset_str(),
+				CS_UTF_8);
+	else
+		tmp = g_strdup(filename);
+
 	if (tmp == NULL) {
 		g_warning("filename not in UTF-8");
 		tmp = g_strdup("Unnamed part");
@@ -1589,8 +1593,15 @@ static void mimeview_save_as(MimeView *mimeview)
 	
 	if (!g_utf8_validate(partname, -1, NULL)) {
 		gchar *tmp = conv_filename_to_utf8(partname);
-		g_free(partname);
-		partname = tmp;
+		if (!tmp) {
+			tmp = conv_codeset_strdup(partname,
+				conv_get_locale_charset_str(),
+				CS_UTF_8);
+		}
+		if (tmp) {
+			g_free(partname);
+			partname = tmp;
+		}
 	}
 
 	subst_for_filename(partname);
