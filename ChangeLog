@@ -1,3 +1,10 @@
+2007-04-19 [paul]	2.9.0cvs2-stable
+
+	* manual/advanced.xml
+	* manual/glossary.xml
+		backported from 2.9.0cvs9
+		fix typos
+
 2007-04-18 [paul]	2.9.0cvs1-stable
 
 	* configure.ac
