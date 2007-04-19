@@ -275,7 +275,7 @@ static void message_search_execute(gboolean backward)
 	Compose *compose = search_window.compose;
 	gboolean case_sens;
 	gboolean all_searched = FALSE;
-	const gchar *body_str;
+	gchar *body_str;
 
 	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 	if (!body_str)

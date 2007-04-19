@@ -1,3 +1,9 @@
+2007-04-19 [wwp]	2.9.1cvs2
+
+	* src/prefs_display_header.c
+	* src/message_search.c
+		Fix few warnings (g_free of const gchar*).
+
 2007-04-19 [paul]	2.9.1cvs1
 
 	* NEWS
