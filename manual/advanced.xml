@@ -136,7 +136,7 @@
     </para><para>
 	Processing rules are accompanied by Pre-processing and Post-processing 
 	rules. Like Processing rules, they apply only when opening a folder, 
-	but like Filtering rules, they are shared accross all folders. You can 
+	but like Filtering rules, they are shared across all folders. You can 
 	configure them from the <quote>Tools</quote> menu. Pre-processing rules
 	are executed before the folder's specific Processing rules, while 
 	Post-processing rules are executed afterwards.

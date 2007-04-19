@@ -1,3 +1,9 @@
+2007-04-19 [paul]	2.9.0cvs9
+
+	* manual/advanced.xml
+	* manual/glossary.xml
+		fix typos
+
 2007-04-18 [paul]	2.9.0cvs8
 
 	* src/pop.c
