@@ -1,5 +1,16 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.9.1
+-------
+
+* Security fix:
+	o Fix for CVE-2007-1558 (APOP)
+	  http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1558
+
+* Bug fixes
+	o Fix bug 1185, 'Pluginwindow's [X] button doesn't save'
+	o Fix encoding woes wrt saving of mails and parts
+
 * 2.9.0
 -------
 

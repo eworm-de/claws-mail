@@ -2528,3 +2528,4 @@
 ( cvs diff -u -r 1.94.2.131 -r 1.94.2.132 src/messageview.c;  cvs diff -u -r 1.83.2.104 -r 1.83.2.105 src/mimeview.c;  cvs diff -u -r 1.395.2.295 -r 1.395.2.296 src/summaryview.c;  cvs diff -u -r 1.2.2.32 -r 1.2.2.33 src/gtk/filesel.c;  ) > 2.9.0cvs7.patchset
 ( cvs diff -u -r 1.56.2.50 -r 1.56.2.51 src/pop.c;  ) > 2.9.0cvs8.patchset
 ( cvs diff -u -r 1.1.2.38 -r 1.1.2.39 manual/advanced.xml;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/glossary.xml;  ) > 2.9.0cvs9.patchset
+( cvs diff -u -r 1.42.2.30 -r 1.42.2.31 NEWS;  cvs diff -u -r 1.8.2.34 -r 1.8.2.35 README;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2585 -r 1.654.2.2586 configure.ac;  ) > 2.9.1cvs1.patchset

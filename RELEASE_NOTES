@@ -1,4 +1,4 @@
-16th April 2007                                      Claws Mail 2.9.0
+19th April 2007                                      Claws Mail 2.9.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,118 +6,23 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This release fixes a security bug (CVE-2007-1558) which affects APOP
+users. If you're using APOP for POP3 authentication you are strongly
+advised to upgrade.
+
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Added a Maemo port
-  The Maemo port touches several areas: using the correct APIs for
-  a good integration, adding of a new layout suited for small
-  screens, Maemo-specific default preferences changes, Maemo-specific
-  GUI improvements, etc.
-
-* Added more customisable colour labels
-
-* Added 'Mark as spam', 'Mark as ham', and 'Add to address book'
-  filtering actions
-
-* Added a new Quote Format symbol, %A, to insert the sender's email 
-  address
-
-* Changed the option to display unread message counts next to folder
-  names: it is now possible to display the total count of messages
-  too. Configurable from Display/Summaries
-
-* If Claws Mail is already running on another display, attempting to
-  start it will mention that instead of popping up the window on the
-  other display
-
-* Added debugging of filtering/processing rules. Configurable from
-  Other/Logging options page
-
-* Added handling of the contextual menu key in compose windows and
-  MIME parts list
-
-* Added a "pulsing" progressbar in the label window used when
-  rebuilding folder tree, etc, in order to show activity
-
-* Improved "Offline mode override" dialogue to avoid asking
-  repeatedly, but still ask on explicit user actions
-
-* Improved the creation of POP/Local accounts when no MH mailbox
-  exist: create the default one
-
-* Write folderlist directly after adding/deleting accounts that have
-  folders
-
-* Added logging IMAP ALERTs as errors in the log
-
-* Added a way for MimeViewer plugins to implement search in a part's
-  body
-
-* Updated, added and replaced some icons
-
-* Added display of any LDAP specified Search attributes 
-
-* Added 'telephoneNumber' in the default LDAP list of attributes
-
-* Updated the Face header in the welcome message
-
-* Added the option to minimize to tray in the Trayicon plugin
-
-* Added a wrapper to mairix in the tools folder, tools/mailrix.sh
-
-* Added a script which enables inserting files into the message body
-  of a new Compose window from the command line,
-  tools/claws-mail-compose-insert-files.pl
-
-* Updated Brazilian Portuguese, Catalan, Czech, French, German,
-  Hungarian, Polish,Serbian, Simplified Chinese, and Spanish
-  translations
+* Security fix:
+	o Fix for CVE-2007-1558 (APOP)
+	  http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1558
 
 * Bug fixes
-	o Fix bug 1111, 'PGP/inline plugin hides text 
-			 around encrypted text block'
-	o Fix bug 1134, 'Valgrind macros unhandled 
-			 by Irix's cc'
-	o Fix bug 1140, 'wrong return value without libetpan'
-	o Fix bug 1143, 'Add number of messages to be 
-			 deleted to confirmation dialog'
-	o Fix bug 1145, 'Setting a different name 
-			 for the Mailbox name isn't reflected in 
-			 default account settings'
-	o Fix bug 1149, 'crash on logwindow close'
-	o Fix bug 1153, 'CM segfaults if IMAP folder is 
-			 selected while scanning prior to update'
-	o Fix bug 1157, 'some broken messages confuse 
-			 mime parser'
-	o Fix bug 1167, 'Allow not displaying zeros 
-			 in folder list'
-	o Fix '+' in mailto URIs for List-* headers
-	o Fix decoding of some quoted-printable parts
-	o Fix English usage
-	o Fix logics issues around the action IO dialog:
-	o Fix default inbox weirdnesses
-	o Fix unconditional "error happened" when sending via 
-	  command line
-	o Fix some race conditions when changing the folder list
-	o Fix escaping account names in filtering prefs
-	o Fix unsubscription/resubscription after renaming IMAP 
-	  folders
-	o Fix wrong action performed when closing the "ask about 
-	  account specific filtering rules when filtering manually" 
-	  dialog by pressing Escape.
-	o Fix getting a false error when sending queued message
-	  whereas the sending was fine (if there are subfolders in
-	  the queue folder)
-	o Fix possible trashing of history and uidl files on disk full 
-	  problems
-	o Fix transparent images 
-	o Fix image sizes in new Message windows
-	o IMAP: Fix crash with Citadel
-	o Don't scan for new mail on startup if --select is specified
-	o Fix possibles crashes when getting text from gtk combos
-	o Workaround a bug with GTK+ 2.6.x where 
-	  gtk_combo_box_get_active_text() returns NULL
+	o Fix bug 1185, 'Pluginwindow's [X] button doesn't save'
+	o Fix encoding woes wrt saving of mails and parts
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
