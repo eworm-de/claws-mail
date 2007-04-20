@@ -2004,6 +2004,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 
 	switch (event->keyval) {
+	case GDK_Right:
 	case GDK_Return:
 		if (folderview->selected) {
 			folderview_select_node(folderview,
