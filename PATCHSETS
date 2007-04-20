@@ -2536,3 +2536,4 @@
 ( cvs diff -u -r 1.382.2.371 -r 1.382.2.372 src/compose.c;  ) > 2.9.1cvs6.patchset
 ( cvs diff -u -r 1.50.2.34 -r 1.50.2.35 src/compose.h;  ) > 2.9.1cvs7.patchset
 ( cvs diff -u -r 1.207.2.160 -r 1.207.2.161 src/folderview.c;  cvs diff -u -r 1.274.2.184 -r 1.274.2.185 src/mainwindow.c;  ) > 2.9.1cvs8.patchset
+( cvs diff -u -r 1.43.2.64 -r 1.43.2.65 src/toolbar.c;  ) > 2.9.1cvs9.patchset

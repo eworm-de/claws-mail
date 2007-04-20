@@ -1,3 +1,9 @@
+2007-04-20 [colin]	2.9.1cvs9
+
+	* src/toolbar.c
+		Fix bug 1190, 'dir_open' button doesn't work'
+		(Maemo)
+
 2007-04-20 [colin]	2.9.1cvs8
 
 	* src/folderview.c
