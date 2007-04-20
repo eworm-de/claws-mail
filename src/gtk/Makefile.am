@@ -50,6 +50,7 @@ clawsgtkinclude_HEADERS = \
 	gtksourceprintjob.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
+	headers.h \
 	icon_legend.h \
 	inputdialog.h \
 	logwindow.h \
