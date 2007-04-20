@@ -470,6 +470,7 @@ QuickSearch *quicksearch_new()
 	GtkWidget *search_condition_expression;
 	GtkWidget *menuitem;
 	GtkTooltips *tips = gtk_tooltips_new();
+	gint index;
 
 	quicksearch = g_new0(QuickSearch, 1);
 
@@ -492,6 +493,10 @@ QuickSearch *quicksearch_new()
 	MENUITEM_ADD (search_type, menuitem, _("To"), QUICK_SEARCH_TO);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
+	MENUITEM_ADD (search_type, menuitem, _("From, To or Subject"), QUICK_SEARCH_MIXED);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+	                 G_CALLBACK(searchtype_changed),
 			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem, _("Extended"), QUICK_SEARCH_EXTENDED);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
@@ -532,7 +537,10 @@ QuickSearch *quicksearch_new()
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
+	index = menu_find_option_menu_index(GTK_OPTION_MENU(search_type_opt), 
+					GINT_TO_POINTER(prefs_common.summary_quicksearch_type),
+					NULL);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), index);
 
 	gtk_widget_show(search_type);
 
@@ -819,6 +827,8 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 	case QUICK_SEARCH_TO:
 		searched_header = msginfo->to;
 		break;
+	case QUICK_SEARCH_MIXED:
+		break;
 	case QUICK_SEARCH_EXTENDED:
 		break;
 	default:
@@ -827,8 +837,15 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 	}
 	quicksearch->matching = TRUE;
 	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED &&
+	    prefs_common.summary_quicksearch_type != QUICK_SEARCH_MIXED &&
 	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
+		result = TRUE;
+	else if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_MIXED &&
+		quicksearch->search_string && (
+		(msginfo->to && strcasestr(msginfo->to, quicksearch->search_string) != NULL) ||
+		(msginfo->from && strcasestr(msginfo->from, quicksearch->search_string) != NULL) ||
+		(msginfo->subject && strcasestr(msginfo->subject, quicksearch->search_string) != NULL)  ))
 		result = TRUE;
 	else if ((quicksearch->matcher_list != NULL) &&
 	         matcherlist_match(quicksearch->matcher_list, msginfo))
