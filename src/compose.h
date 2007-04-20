@@ -220,6 +220,8 @@ struct _Compose
 	gboolean updating;
 	gboolean deferred_destroy;
 	ComposeMode rmode;
+	GtkWidget *first_combo;
+	GtkWidget *first_entry;
 };
 
 struct _AttachInfo

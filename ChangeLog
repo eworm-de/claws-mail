@@ -1,3 +1,8 @@
+2007-04-20 [colin]	2.9.1cvs7
+
+	* src/compose.h
+		complete previous commit
+
 2007-04-20 [colin]	2.9.1cvs6
 
 	* src/compose.c
