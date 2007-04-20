@@ -5528,6 +5528,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_t:
 	case GDK_l:
 	case GDK_c:
+	case GDK_a:
 		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
 			g_signal_stop_emission_by_name(G_OBJECT(widget), 
                                        "key_press_event");

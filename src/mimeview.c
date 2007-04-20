@@ -125,6 +125,7 @@ static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
 					 gboolean	 automatic);
+static void mimeview_select_next_part	(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
 					 const gchar	*cmd,
@@ -165,11 +166,12 @@ static void mimeview_launch_cb(MimeView *mimeview)
 }
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
-	{N_("/_Open"),		  NULL, mimeview_launch_cb,	  0, NULL},
-	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
-	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
-	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL},
-	{N_("/Save _all..."),	  NULL, mimeview_save_all,	  0, NULL},
+	{N_("/_Open (l)"),		  NULL, mimeview_launch_cb,	  0, NULL},
+	{N_("/Open _with (o)..."),	  NULL, mimeview_open_with,	  0, NULL},
+	{N_("/_Display as text (t)"), 	  NULL, mimeview_display_as_text, 0, NULL},
+	{N_("/_Save as (y)..."),	  NULL, mimeview_save_as,	  0, NULL},
+	{N_("/Save _all..."),	 	  NULL, mimeview_save_all,	  0, NULL},
+	{N_("/Next part (a)"),	 	  NULL, mimeview_select_next_part,0, NULL},
 };
 
 static GtkTargetEntry mimeview_mime_types[] =
@@ -1197,18 +1199,18 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 				 partinfo->type == MIMETYPE_IMAGE ||
 				 partinfo->type == MIMETYPE_MULTIPART))
 			menu_set_sensitive(mimeview->popupfactory,
-					   "/Display as text", FALSE);
+					   "/Display as text (t)", FALSE);
 		else
 			menu_set_sensitive(mimeview->popupfactory,
-					   "/Display as text", TRUE);
+					   "/Display as text (t)", TRUE);
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
 		    !g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))
 			menu_set_sensitive(mimeview->popupfactory,
-					   "/Open", FALSE);
+					   "/Open (l)", FALSE);
 		else
 			menu_set_sensitive(mimeview->popupfactory,
-					   "/Open", TRUE);
+					   "/Open (l)", TRUE);
 
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
 				  "pop_partinfo", partinfo);
@@ -1228,6 +1230,44 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 {
 	mimeview_key_pressed(mimeview->ctree, event, mimeview);
+}
+
+static void mimeview_select_next_part(MimeView *mimeview)
+{
+	gboolean is_next = FALSE;
+
+	GList *child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (; child != NULL; child = g_list_next(child)) {
+		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
+		    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(child->data))) {
+			is_next = TRUE;
+		} else if (GTK_IS_TOGGLE_BUTTON(child->data) &&
+			   is_next) {
+			toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(child->data), TRUE);
+			icon_selected(mimeview, -1, 
+				(MimeInfo *)g_object_get_data(G_OBJECT(child->data),
+			 	      "partinfo"));
+			is_next = FALSE;
+			break;
+		}
+	}
+	if (is_next) {
+		/* we were on the last one, go to first */
+		child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+		for (; child != NULL; child = g_list_next(child)) {
+			if (GTK_IS_TOGGLE_BUTTON(child->data)) {
+				toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
+				gtk_toggle_button_set_active
+					(GTK_TOGGLE_BUTTON(child->data), TRUE);
+				icon_selected(mimeview, -1, 
+					(MimeInfo *)g_object_get_data(G_OBJECT(child->data),
+			 			"partinfo"));
+				break;
+			}
+		}
+	}
 }
 
 #define BREAK_ON_MODIFIER_KEY() \
@@ -1311,6 +1351,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_check_signature(mimeview);
+		return TRUE;
+	case GDK_a:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_select_next_part(mimeview);
 		return TRUE;
 	default:
 		break;
@@ -1957,6 +2002,11 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		KEY_PRESS_EVENT_STOP();
 		mimeview_check_signature(mimeview);
 		return TRUE;
+	case GDK_a:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_select_next_part(mimeview);
+		return TRUE;
 	default:
 		break;
 	}
@@ -2183,7 +2233,7 @@ static void icon_list_toggle_by_mime_info(MimeView	*mimeview,
 			 	      "partinfo") == (gpointer)mimeinfo) {
 			toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(child->data), TRUE);
+				(GTK_TOGGLE_BUTTON(child->data), TRUE);	
 		}				 
 	}
 }
