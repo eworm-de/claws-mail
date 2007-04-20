@@ -500,6 +500,27 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 	return ret;
 }
 
+/*!
+ *\brief	Find out if the string-ed list matches a condition
+ *
+ *\param	prop Matcher structure
+ *\param	list GSList of strings to check
+ *
+ *\return	gboolean TRUE if str matches the condition in the 
+ *		matcher structure
+ */
+static gboolean matcherprop_list_match(MatcherProp *prop, const GSList *list,
+const gchar *debug_context)
+{
+	const GSList *cur;
+
+	for(cur = list; cur != NULL; cur = cur->next) {
+		if (matcherprop_string_match(prop, (gchar *)cur->data, debug_context))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 /* FIXME body search is a hack. */
 static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str,
 												const gchar *debug_context)
@@ -979,12 +1000,10 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header"));
 	case MATCHCRITERIA_NOT_INREPLYTO:
 		return !matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header"));
-	/* FIXME: Using inreplyto, but matching the (newly implemented)
-         * list of references is better */
 	case MATCHCRITERIA_REFERENCES:
-		return matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header (references)"));
+		return matcherprop_list_match(prop, info->references, _("References: header"));
 	case MATCHCRITERIA_NOT_REFERENCES:
-		return !matcherprop_string_match(prop, info->inreplyto, _("InReplyTo: header (references)"));
+		return !matcherprop_list_match(prop, info->references, _("References: header"));
 	case MATCHCRITERIA_TEST:
 		return matcherprop_match_test(prop, info);
 	case MATCHCRITERIA_NOT_TEST:
