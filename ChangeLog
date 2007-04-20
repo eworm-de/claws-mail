@@ -1,3 +1,9 @@
+2007-04-20 [colin]	2.9.1cvs6
+
+	* src/compose.c
+		Fix bug 1187, 'Reply-to addressee disappears 
+		when reply-to text box is clicked...' (Maemo)
+
 2007-04-20 [wwp]	2.9.1cvs5
 
 	* po/POTFILES.in

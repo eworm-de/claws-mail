@@ -5798,6 +5798,12 @@ static void compose_create_header_entry(Compose *compose)
 
         compose->header_nextrow++;
 	compose->header_last = headerentry;
+	
+	if (!compose->first_combo)
+		compose->first_combo = combo;
+	if (!compose->first_entry)
+		compose->first_entry = entry;
+		
 }
 
 static void compose_add_header_entry(Compose *compose, gchar *header, gchar *text) 
@@ -5816,10 +5822,19 @@ static void compose_remove_header_entries(Compose *compose)
 	for (list = compose->header_list; list; list = list->next) {
 		ComposeHeaderEntry *headerentry = 
 			(ComposeHeaderEntry *)list->data;
+		if (headerentry->combo == compose->first_combo)
+			compose->first_combo = NULL;
+		if (headerentry->entry == compose->first_entry)
+			compose->first_entry = NULL;
 		gtk_widget_destroy(headerentry->combo);
 		gtk_widget_destroy(headerentry->entry);
 		g_free(headerentry);
 	}
+	if (compose->first_combo)
+		gtk_widget_destroy(compose->first_combo);
+	if (compose->first_entry)
+		gtk_widget_destroy(compose->first_entry);
+	compose->header_last = NULL;
 	g_slist_free(compose->header_list);
 	compose->header_list = NULL;
 	compose->header_nextrow = 1;
