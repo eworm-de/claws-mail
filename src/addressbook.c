@@ -3403,6 +3403,7 @@ static void addressbook_folder_load_one_person(
 	gchar *text[N_LIST_COLS];
 	gboolean flgFirst = TRUE, haveAddr = FALSE;
 	GList *node;
+	AddressBookFile *abf = addressbook_get_book_file();
 
 	if( person == NULL ) return;
 
@@ -3423,9 +3424,11 @@ static void addressbook_folder_load_one_person(
 			if( str ) {
 				text[COL_NAME] = str;
 			}
-			else if( person->nickName ) {
+#ifdef USE_LDAP
+			else if( abf->type == ADDR_IF_LDAP && person->nickName ) {
 				text[COL_NAME] = person->nickName;
 			}
+#endif
 			else {
 				text[COL_NAME] = ADDRITEM_NAME(person);
 			}

@@ -1,3 +1,11 @@
+2007-04-20 [wwp]	2.9.1cvs11
+
+	* src/addressbook.c
+		Fix the use of display name in name column,
+		it has been overriden w/ the use of nickname
+		by 2.9.0cvs3. Now nickname is used (if any)
+		in case of LDAP books only.
+
 2007-04-20 [colin]	2.9.1cvs10
 
 	* src/mimeview.c

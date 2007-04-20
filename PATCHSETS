@@ -2538,3 +2538,4 @@
 ( cvs diff -u -r 1.207.2.160 -r 1.207.2.161 src/folderview.c;  cvs diff -u -r 1.274.2.184 -r 1.274.2.185 src/mainwindow.c;  ) > 2.9.1cvs8.patchset
 ( cvs diff -u -r 1.43.2.64 -r 1.43.2.65 src/toolbar.c;  ) > 2.9.1cvs9.patchset
 ( cvs diff -u -r 1.83.2.105 -r 1.83.2.106 src/mimeview.c;  cvs diff -u -r 1.395.2.297 -r 1.395.2.298 src/summaryview.c;  cvs diff -u -r 1.96.2.168 -r 1.96.2.169 src/textview.c;  ) > 2.9.1cvs10.patchset
+( cvs diff -u -r 1.60.2.87 -r 1.60.2.88 src/addressbook.c;  ) > 2.9.1cvs11.patchset
