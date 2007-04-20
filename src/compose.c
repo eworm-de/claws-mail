@@ -2131,7 +2131,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		header = N_("To:");
 		break;
 	}
-	header = prefs_common.trans_hdr ? gettext(header) : header;
+	header = prefs_common_translated_header_name(header);
 	
 	cur = begin = (gchar *)address;
 	
@@ -4183,13 +4183,13 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		g_strstrip(entry);
 		if (entry[0] != '\0') {
 			for (strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
-				if (!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+				if (!strcmp(header, prefs_common_translated_header_name(*strptr))) {
 					compose->to_list = address_list_append(compose->to_list, entry);
 					recipient_found = TRUE;
 				}
 			}
 			for (strptr = recipient_headers_news; *strptr != NULL; strptr++) {
-				if (!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+				if (!strcmp(header, prefs_common_translated_header_name(*strptr))) {
 					compose->newsgroup_list = newsgroup_list_append(compose->newsgroup_list, entry);
 					recipient_found = TRUE;
 				}
@@ -4214,7 +4214,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 			g_strstrip(entry);
 			if (strcmp(entry, compose->account->auto_cc)
-			||  strcmp(header, (prefs_common.trans_hdr ? gettext("Cc:") : "Cc:"))) {
+			||  strcmp(header, prefs_common_translated_header_name("Cc:"))) {
 				found_other = TRUE;
 				g_free(entry);
 				break;
@@ -4245,7 +4245,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 			g_strstrip(entry);
 			if (strcmp(entry, compose->account->auto_bcc)
-			||  strcmp(header, (prefs_common.trans_hdr ? gettext("Bcc:") : "Bcc:"))) {
+			||  strcmp(header, prefs_common_translated_header_name("Bcc:"))) {
 				found_other = TRUE;
 				g_free(entry);
 				break;
@@ -4477,8 +4477,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 
 	debug_print("Writing redirect header\n");
 
-	cc_hdr = prefs_common.trans_hdr ? _("Cc:") : "Cc:";
- 	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
+	cc_hdr = prefs_common_translated_header_name("Cc:");
+ 	to_hdr = prefs_common_translated_header_name("To:");
 
 	first_to_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
@@ -5312,7 +5312,7 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 	fieldstr = g_string_sized_new(64);
 
 	fieldname_w_colon = g_strconcat(fieldname, ":", NULL);
-	trans_fieldname = (prefs_common.trans_hdr ? gettext(fieldname_w_colon) : fieldname_w_colon);
+	trans_fieldname = prefs_common_translated_header_name(fieldname_w_colon);
 
 	for (list = compose->header_list; list; list = list->next) {
     		headerentry = ((ComposeHeaderEntry *)list->data);
@@ -5574,7 +5574,7 @@ static gchar *compose_get_header(Compose *compose)
 		subst_char(headervalue, '\n', ' ');
 		string = std_headers;
 		while (*string != NULL) {
-			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
+			headername_trans = prefs_common_translated_header_name(*string);
 			if (!strcmp(headername_trans,headername_wcolon))
 				standard_header = TRUE;
 			string++;
@@ -5717,7 +5717,7 @@ static void compose_create_header_entry(Compose *compose)
 	combo = gtk_combo_new();
 	string = headers; 
 	while(*string != NULL) {
-		combo_list = g_list_append(combo_list, (prefs_common.trans_hdr ? gettext(*string) : *string));
+		combo_list = g_list_append(combo_list, prefs_common_translated_header_name(*string));
 	        string++;
 	}
 	gtk_combo_set_popdown_strings(GTK_COMBO(combo), combo_list);
@@ -5744,10 +5744,10 @@ static void compose_create_header_entry(Compose *compose)
 	if (!compose->header_last || !standard_header) {
 		switch(compose->account->protocol) {
 			case A_NNTP:
-				header = prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:";
+				header = prefs_common_translated_header_name("Newsgroups:");
 				break;
 			default:
-				header = prefs_common.trans_hdr ? _("To:") : "To:";
+				header = prefs_common_translated_header_name("To:");
 				break;
 		}								    
 	}
@@ -6566,9 +6566,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 	menu_set_sensitive(ifactory, "/Options/Reply mode", compose->mode == COMPOSE_REPLY);
 
 	if (account->protocol != A_NNTP)
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("To:") : "To:");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry),
+				prefs_common_translated_header_name("To:"));
 	else
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry),
+				prefs_common_translated_header_name("Newsgroups:"));
 
 	addressbook_set_target_compose(compose);
 	
@@ -9698,7 +9700,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 		gchar *entry = gtk_editable_get_chars(
 								GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 
-		if ( strcasecmp(header, (prefs_common.trans_hdr ? gettext("To:") : "To:")) == 0 ) {
+		if ( strcasecmp(header, prefs_common_translated_header_name("To:")) == 0 ) {
 			if ( newmsginfo->to == NULL ) {
 				newmsginfo->to = g_strdup(entry);
 			} else {
@@ -9707,7 +9709,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 				newmsginfo->to = tmp;
 			}
 		} else
-		if ( strcasecmp(header, (prefs_common.trans_hdr ? gettext("Cc:") : "Cc:")) == 0 ) {
+		if ( strcasecmp(header, prefs_common_translated_header_name("Cc:")) == 0 ) {
 			if ( newmsginfo->cc == NULL ) {
 				newmsginfo->cc = g_strdup(entry);
 			} else {
@@ -9717,7 +9719,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 			}
 		} else
 		if ( strcasecmp(header,
-						(prefs_common.trans_hdr ? gettext("Newsgroups:") : "Newsgroups:")) == 0 ) {
+						prefs_common_translated_header_name("Newsgroups:")) == 0 ) {
 			if ( newmsginfo->newsgroups == NULL ) {
 				newmsginfo->newsgroups = g_strdup(entry);
 			} else {

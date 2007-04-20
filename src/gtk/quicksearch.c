@@ -482,19 +482,23 @@ QuickSearch *quicksearch_new()
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
 
 	search_type = gtk_menu_new();
-	MENUITEM_ADD (search_type, menuitem, _("Subject"), QUICK_SEARCH_SUBJECT);
+	MENUITEM_ADD (search_type, menuitem,
+			prefs_common_translated_header_name("Subject"), QUICK_SEARCH_SUBJECT);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_changed),
 			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem, _("From"), QUICK_SEARCH_FROM);
+	MENUITEM_ADD (search_type, menuitem,
+			prefs_common_translated_header_name("From"), QUICK_SEARCH_FROM);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_changed),
 			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem, _("To"), QUICK_SEARCH_TO);
+	MENUITEM_ADD (search_type, menuitem,
+			prefs_common_translated_header_name("To"), QUICK_SEARCH_TO);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_changed),
 			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem, _("From, To or Subject"), QUICK_SEARCH_MIXED);
+	MENUITEM_ADD (search_type, menuitem,
+			prefs_common_translated_header_name("From, To or Subject"), QUICK_SEARCH_MIXED);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 	                 G_CALLBACK(searchtype_changed),
 			 quicksearch);

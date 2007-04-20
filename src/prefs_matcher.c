@@ -155,28 +155,51 @@ enum {
 /*!
  *\brief	Descriptive text for conditions
  */
-static const gchar *criteria_text [] = {
-	N_("All messages"), N_("Subject"),
-	N_("From"), N_("To"), N_("Cc"), N_("To or Cc"),
-	N_("Newsgroups"), N_("In reply to"), N_("References"),
-	N_("Age greater than"), N_("Age lower than"),
-	N_("Header"), N_("Headers part"),
-	N_("Body part"), N_("Whole message"),
-	N_("Unread flag"), N_("New flag"),
-	N_("Marked flag"), N_("Deleted flag"),
-	N_("Replied flag"), N_("Forwarded flag"),
-	N_("Locked flag"),
-	N_("Spam flag"),
-	N_("Color label"),
-	N_("Ignored thread"),
-	N_("Score greater than"), N_("Score lower than"),
-	N_("Score equal to"),
-	N_("Test"),
-	N_("Size greater than"), 
-	N_("Size smaller than"),
-	N_("Size exactly"),
-	N_("Partially downloaded"),
-	N_("Found in addressbook")
+typedef struct _struct_criteria_text struct_criteria_text;
+struct _struct_criteria_text {
+	const gchar	*text;
+	gboolean	 contains_header_name;
+	/* if contains_header_name is TRUE, prefs_common_translated_headername(text)
+	   will be used
+	*/
+};
+
+static struct_criteria_text criteria_text [] = {
+	{ N_("All messages"), FALSE },
+	{ N_("Subject"), TRUE },
+	{ N_("From"), TRUE },
+	{ N_("To"), TRUE },
+	{ N_("Cc"), TRUE },
+	{ N_("To or Cc"), TRUE },
+	{ N_("Newsgroups"), TRUE },
+	{ N_("In reply to"), TRUE },
+	{ N_("References"), TRUE },
+	{ N_("Age greater than"), FALSE },
+	{ N_("Age lower than"), FALSE },
+	{ N_("Header"), FALSE },
+	{ N_("Headers part"), FALSE },
+	{ N_("Body part"), FALSE },
+	{ N_("Whole message"), FALSE },
+	{ N_("Unread flag"), FALSE },
+	{ N_("New flag"), FALSE },
+	{ N_("Marked flag"), FALSE },
+	{ N_("Deleted flag"), FALSE },
+	{ N_("Replied flag"), FALSE },
+	{ N_("Forwarded flag"), FALSE },
+	{ N_("Locked flag"), FALSE },
+	{ N_("Spam flag"), FALSE },
+	{ N_("Color label"), FALSE },
+	{ N_("Ignored thread"), FALSE },
+	{ N_("Score greater than"), FALSE },
+	{ N_("Score lower than"), FALSE },
+	{ N_("Score equal to"), FALSE },
+	{ N_("Test"), FALSE },
+	{ N_("Size greater than"), FALSE }, 
+	{ N_("Size smaller than"), FALSE },
+	{ N_("Size exactly"), FALSE },
+	{ N_("Partially downloaded"), FALSE },
+	{ N_("Found in addressbook"), FALSE },
+	{ NULL, FALSE }
 };
 
 /*!
@@ -473,9 +496,13 @@ static void prefs_matcher_create(void)
 
 	combo_items = NULL;
 
-	for (i = 0; i < (gint) (sizeof(criteria_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(criteria_text[i]));
+	for (i = 0; criteria_text[i].text != NULL; i++) {
+		if (criteria_text[i].contains_header_name)
+			combo_items = g_list_append(combo_items,
+					    (gpointer) prefs_common_translated_header_name(criteria_text[i].text));
+		else
+			combo_items = g_list_append(combo_items,
+					    (gpointer) gettext(criteria_text[i].text));
 	}
 	gtk_combo_set_popdown_strings(GTK_COMBO(criteria_combo), combo_items);
 

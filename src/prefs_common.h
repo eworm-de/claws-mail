@@ -449,5 +449,6 @@ void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt);
 void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt);
 gchar *pref_get_pref_from_textview(GtkTextView *textview);
 gchar *pref_get_pref_from_entry(GtkEntry *entry);
+const gchar *prefs_common_translated_header_name(const gchar *header_name);
 
 #endif /* __PREFS_COMMON_H__ */

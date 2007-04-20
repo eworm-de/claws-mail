@@ -839,10 +839,12 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* a
 			if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
 				log_print(LOG_DEBUG_FILTERING,
 						_("filtering message (%s%s%s)\n"
-						"%smessage file: %s\n%sDate: %s\n%sFrom: %s\n%sTo: %s\n%sSubject: %s\n"),
+						"%smessage file: %s\n%s%s %s\n%s%s %s\n%s%s %s\n%s%s %s\n"),
 						tmp, extra_info ? _(": ") : "", extra_info ? extra_info : "",
-						spc, file, spc, info->date, spc, info->from,
-						spc, info->to, spc, info->subject);
+						spc, file, spc, prefs_common_translated_header_name("Date:"), info->date,
+						spc, prefs_common_translated_header_name("From:"), info->from,
+						spc, prefs_common_translated_header_name("To:"), info->to,
+						spc, prefs_common_translated_header_name("Subject:"), info->subject);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
 						_("filtering message (%s%s%s)\n"

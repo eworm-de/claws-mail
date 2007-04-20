@@ -1,3 +1,29 @@
+2007-04-20 [wwp]	2.9.1cvs5
+
+	* po/POTFILES.in
+	* src/addressbook.c
+	* src/compose.c
+	* src/filtering.c
+	* src/headerview.c
+	* src/matcher.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_display_header.c
+	* src/prefs_matcher.c
+	* src/summaryview.c
+	* src/gtk/headers.h
+	* src/gtk/quicksearch.c
+		Translate more header names according to the relevant option value,
+		mostly in filtering debug messages (reported by Tim <timbrain@post.cz>).
+		Replaced nearly all uses of prefs_common.trans_hdr with a call
+		to prefs_common_translated_header_name().
+		Added a headers.h reference file that contains known header names
+		(RFC2822 and others) to the translation process' input, so that
+		translated header names will still exist even if no occurrence of
+		_("headername") is found anymore in the sources.
+		Don't translate column name 'Number' following to trans_hdr option
+		value as it's not a header name.
+
 2007-04-20 [colin]	2.9.1cvs4
 
 	* src/gtk/quicksearch.c

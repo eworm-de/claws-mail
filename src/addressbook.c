@@ -1131,15 +1131,15 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_lup_clicked), NULL);
 
 	to_btn = gtk_button_new_with_label
-		(prefs_common.trans_hdr ? _("To:") : "To:");
+		(prefs_common_translated_header_name("To:"));
 	GTK_WIDGET_SET_FLAGS(to_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), to_btn, TRUE, TRUE, 0);
 	cc_btn = gtk_button_new_with_label
-		(prefs_common.trans_hdr ? _("Cc:") : "Cc:");
+		(prefs_common_translated_header_name("Cc:"));
 	GTK_WIDGET_SET_FLAGS(cc_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), cc_btn, TRUE, TRUE, 0);
 	bcc_btn = gtk_button_new_with_label
-		(prefs_common.trans_hdr ? _("Bcc:") : "Bcc:");
+		(prefs_common_translated_header_name("Bcc:"));
 	GTK_WIDGET_SET_FLAGS(bcc_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 

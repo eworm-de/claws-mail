@@ -2426,10 +2426,10 @@ static void summary_set_column_titles(SummaryView *summaryview)
 					FOLDER_SHOWS_TO_HDR(item) &&
 					!summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
 				type = S_COL_TO;
-			if (prefs_common.trans_hdr)
+			if(type == S_COL_NUMBER)
 				title = gettext(col_label[type]);
 			else
-				title = col_label[type];
+				title = prefs_common_translated_header_name(col_label[type]);
 			break;
 		default:
 			title = gettext(col_label[type]);

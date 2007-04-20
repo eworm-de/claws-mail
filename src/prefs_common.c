@@ -1302,3 +1302,20 @@ gboolean prefs_common_unsafe_ssl_certs(void)
 {
 	return prefs_common.unsafe_ssl_certs;
 }
+
+/**
+   return the translated name of a header, if the translate_header option is
+   set, otherwise return the untranslated header name (header_name itself).
+   this function is provided for convenience, it's an interface to
+   prefs_common.trans_hdr.
+   works with header names either with or without trailing colon, provided
+   that gettext found such header name in the sources (they should all be
+   found in src/gtk/headers.h anyway).
+*/
+const gchar *prefs_common_translated_header_name(const gchar *header_name)
+{
+	if (header_name != NULL || *header_name == '\0')
+		return header_name;
+
+	return prefs_common.trans_hdr ? gettext(header_name) : header_name;
+}

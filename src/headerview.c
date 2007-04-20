@@ -48,8 +48,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "base64.h"
-
-#define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
+#include "headers.h"
 
 #if HAVE_LIBCOMPFACE
 #define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
@@ -92,13 +91,13 @@ HeaderView *headerview_create(void)
 	hbox2 = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, FALSE, 0);
 
-	from_header_label    = gtk_label_new(TR("From:"));
+	from_header_label    = gtk_label_new(prefs_common_translated_header_name("From:"));
 	from_body_label      = gtk_label_new("");
-	to_header_label      = gtk_label_new(TR("To:"));
+	to_header_label      = gtk_label_new(prefs_common_translated_header_name("To:"));
 	to_body_label        = gtk_label_new("");
-	ng_header_label      = gtk_label_new(TR("Newsgroups:"));
+	ng_header_label      = gtk_label_new(prefs_common_translated_header_name("Newsgroups:"));
 	ng_body_label        = gtk_label_new("");
-	subject_header_label = gtk_label_new(TR("Subject:"));
+	subject_header_label = gtk_label_new(prefs_common_translated_header_name("Subject:"));
 	subject_body_label   = gtk_label_new("");
 
 	gtk_label_set_selectable(GTK_LABEL(from_body_label), TRUE);
