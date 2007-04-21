@@ -82,7 +82,7 @@ static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 {
 	gint index;
 	index = menu_find_option_menu_index(GTK_OPTION_MENU(quicksearch->search_type_opt), 
-					GINT_TO_POINTER(prefs_common.summary_quicksearch_type),
+					GINT_TO_POINTER(type),
 					NULL);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), index);	
 }
