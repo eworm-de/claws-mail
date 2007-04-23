@@ -1314,7 +1314,7 @@ gboolean prefs_common_unsafe_ssl_certs(void)
 */
 const gchar *prefs_common_translated_header_name(const gchar *header_name)
 {
-	if (header_name != NULL || *header_name == '\0')
+	if (header_name == NULL || *header_name == '\0')
 		return header_name;
 
 	return prefs_common.trans_hdr ? gettext(header_name) : header_name;
