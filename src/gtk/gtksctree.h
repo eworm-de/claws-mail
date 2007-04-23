@@ -40,6 +40,7 @@ struct _GtkSCTree {
 	gboolean show_stripes;
 	GtkTooltips *tips;
 	gboolean always_expand_recursively;
+	gboolean force_additive_sel;
 };
 
 struct _GtkSCTreeClass {

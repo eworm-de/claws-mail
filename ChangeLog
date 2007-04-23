@@ -1,3 +1,34 @@
+2007-04-23 [colin]	2.9.1cvs17
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+	* src/pixmaps/selection.xpm
+		Fix bug 1193, 'Need a way to multi-select
+		items'. Add a toggle button to the summaryview
+		to switch between normal and multiple selection
+		(Maemo)
+
+2007-04-23 [colin]	2.9.1cvs16
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+	* src/pixmaps/selection.xpm
+		Fix bug 1193, 'Need a way to multi-
+		select items'
+		Add a toggle button in the summaryview
+		to enable normal or multiple selection.
+		(Maemo)
+
 2007-04-23 [colin]	2.9.1cvs15
 
 	* src/compose.c
