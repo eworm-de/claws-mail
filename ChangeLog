@@ -1,3 +1,8 @@
+2007-04-23 [colin]	2.9.1cvs15
+
+	* src/compose.c
+		Fix bug 1196, 'Edit>Select All doesn't work' (Maemo)
+
 2007-04-21 [colin]	2.9.1cvs14
 
 	* src/gtk/quicksearch.c

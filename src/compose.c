@@ -8607,15 +8607,21 @@ static void entry_allsel(GtkWidget *entry)
 
 static void compose_cut_cb(Compose *compose)
 {
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    )
 		entry_cut_clipboard(compose->focused_editable);
 }
 
 static void compose_copy_cb(Compose *compose)
 {
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    )
 		entry_copy_clipboard(compose->focused_editable);
 }
 
@@ -8635,8 +8641,11 @@ static void compose_paste_cb(Compose *compose)
 static void compose_paste_as_quote_cb(Compose *compose)
 {
 	gint wrap_quote = prefs_common.linewrap_quote;
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable)) {
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    ) {
 		/* let text_insert() (called directly or at a later time
 		 * after the gtk_editable_paste_clipboard) know that 
 		 * text is to be inserted as a quotation. implemented
@@ -8660,8 +8669,11 @@ static void compose_paste_no_wrap_cb(Compose *compose)
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    )
 		entry_paste_clipboard(compose, compose->focused_editable, FALSE,
 			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
@@ -8672,8 +8684,11 @@ static void compose_paste_wrap_cb(Compose *compose)
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    )
 		entry_paste_clipboard(compose, compose->focused_editable, TRUE,
 			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
@@ -8681,8 +8696,11 @@ static void compose_paste_wrap_cb(Compose *compose)
 
 static void compose_allsel_cb(Compose *compose)
 {
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
+	if (compose->focused_editable 
+#ifndef MAEMO
+	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
+#endif
+	    )
 		entry_allsel(compose->focused_editable);
 }
 

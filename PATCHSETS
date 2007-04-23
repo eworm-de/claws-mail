@@ -2542,3 +2542,4 @@
 ( cvs diff -u -r 1.20.2.13 -r 1.20.2.14 src/gtk/Makefile.am;  ) > 2.9.1cvs12.patchset
 ( cvs diff -u -r 1.1.2.68 -r 1.1.2.69 src/gtk/quicksearch.c;  ) > 2.9.1cvs13.patchset
 ( cvs diff -u -r 1.1.2.69 -r 1.1.2.70 src/gtk/quicksearch.c;  ) > 2.9.1cvs14.patchset
+( cvs diff -u -r 1.382.2.372 -r 1.382.2.373 src/compose.c;  ) > 2.9.1cvs15.patchset
