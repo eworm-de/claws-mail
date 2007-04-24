@@ -2550,3 +2550,4 @@
 ( cvs diff -u -r 1.4.2.49 -r 1.4.2.50 src/gtk/about.c;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/pixmaps/active.xpm;  cvs diff -u -r 1.1.16.1 -r 1.1.16.2 src/pixmaps/checkbox_off.xpm;  cvs diff -u -r 1.1.16.1 -r 1.1.16.2 src/pixmaps/checkbox_on.xpm;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/pixmaps/inactive.xpm;  ) > 2.9.1cvs20.patchset
 ( cvs diff -u -r 1.155.2.62 -r 1.155.2.63 src/Makefile.am;  cvs diff -u -r 1.25.2.37 -r 1.25.2.38 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.26 -r 1.18.2.27 src/stock_pixmap.h;  ) > 2.9.1cvs21.patchset
 ( cvs diff -u -r 1.382.2.373 -r 1.382.2.374 src/compose.c;  ) > 2.9.1cvs22.patchset
+( cvs diff -u -r 1.207.2.161 -r 1.207.2.162 src/folderview.c;  ) > 2.9.1cvs23.patchset

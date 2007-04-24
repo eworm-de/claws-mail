@@ -2005,12 +2005,23 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_Right:
+#ifndef MAEMO
 	case GDK_Return:
+#endif
 		if (folderview->selected) {
 			folderview_select_node(folderview,
 					       folderview->selected);
 		}
 		break;
+#ifdef MAEMO
+	case GDK_Return:
+		if (folderview->selected && GTK_CTREE_ROW(folderview->selected)->children) {
+			gtk_ctree_toggle_expansion(
+				GTK_CTREE(folderview->ctree),
+				folderview->selected);
+		}
+		break;	
+#endif
 	case GDK_space:
 		if (folderview->selected) {
 			if (folderview->opened == folderview->selected &&
