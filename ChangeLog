@@ -1,3 +1,10 @@
+2007-04-24 [paul]	2.9.1cvs21
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+		complete last commit
+
 2007-04-24 [paul]	2.9.1cvs20
 
 	* src/gtk/about.c

@@ -299,7 +299,6 @@ BUILT_SOURCES = \
 	quote_fmt_parse.h
 
 EXTRA_DIST = \
-	pixmaps/active.xpm \
 	pixmaps/addr_one.xpm \
 	pixmaps/addr_two.xpm \
 	pixmaps/address_book.xpm \
@@ -335,7 +334,6 @@ EXTRA_DIST = \
 	pixmaps/group.xpm \
 	pixmaps/ham_btn.xpm \
 	pixmaps/ignorethread.xpm \
-	pixmaps/inactive.xpm \
 	pixmaps/inbox_open_hrm.xpm \
 	pixmaps/inbox_open.xpm \
 	pixmaps/inbox_close_hrm.xpm \
