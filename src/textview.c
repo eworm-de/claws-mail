@@ -69,8 +69,6 @@
 #include "inputdialog.h"
 #include "timing.h"
 
-gint previousquotelevel = -1;
-
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -609,7 +607,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		return;
 	}
 
-	previousquotelevel = -1;
+	textview->prev_quote_level = -1;
 
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
@@ -1408,7 +1406,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 			g_free(utf8buf);
 		}
 do_quote:
-		if ( previousquotelevel != real_quotelevel ) {
+		if ( textview->prev_quote_level != real_quotelevel ) {
 			ClickableText *uri;
 			uri = g_new0(ClickableText, 1);
 			uri->uri = g_strdup("");
@@ -1428,14 +1426,20 @@ do_quote:
 			textview->uri_list =
 				g_slist_prepend(textview->uri_list, uri);
 		
-			previousquotelevel = real_quotelevel;
+			textview->prev_quote_level = real_quotelevel;
 		} else {
 			GSList *last = textview->uri_list;
-			ClickableText *lasturi = (ClickableText *)last->data;
+			ClickableText *lasturi = NULL;
 			gint e_len = 0, n_len = 0;
 			
+			if (textview->uri_list) {
+				lasturi = (ClickableText *)last->data;
+			} else {
+				printf("oops (%d %d)\n",
+					real_quotelevel, textview->prev_quote_level);
+			}		
 			if (lasturi->is_quote == FALSE) {
-				previousquotelevel = -1;
+				textview->prev_quote_level = -1;
 				goto do_quote;
 			}
 			e_len = lasturi->data ? strlen(lasturi->data):0;
@@ -1446,7 +1450,7 @@ do_quote:
 		}
 	} else {
 		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);
-		previousquotelevel = -1;
+		textview->prev_quote_level = -1;
 	}
 }
 
@@ -1526,6 +1530,7 @@ void textview_clear(TextView *textview)
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
 	textview->uri_hover = NULL;
+	textview->prev_quote_level = -1;
 
 	textview->body_pos = 0;
 	if (textview->image) 
@@ -1550,6 +1555,7 @@ void textview_destroy(TextView *textview)
 
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
+	textview->prev_quote_level = -1;
 
 	g_free(textview);
 }

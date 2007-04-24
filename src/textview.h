@@ -81,6 +81,7 @@ struct _TextView
 	GtkWidget *image;
 	gboolean loading;
 	gboolean stop_loading;
+	gint prev_quote_level;
 };
 
 TextView *textview_create		(void);
