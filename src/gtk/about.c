@@ -404,8 +404,8 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_create_tag(buffer, "bold", "weight", PANGO_WEIGHT_BOLD,
 				   NULL);
 
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_ACTIVE, &active_pixbuf);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_INACTIVE, &inactive_pixbuf);
+	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_ON, &active_pixbuf);
+	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_OFF, &inactive_pixbuf);
 
 #if INET6
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);

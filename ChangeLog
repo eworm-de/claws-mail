@@ -1,3 +1,13 @@
+2007-04-24 [paul]	2.9.1cvs20
+
+	* src/gtk/about.c
+	* src/pixmaps/active.xpm
+	* src/pixmaps/checkbox_off.xpm
+	* src/pixmaps/checkbox_on.xpm
+	* src/pixmaps/inactive.xpm
+		kick out the blobs
+		remove transparent border from checkbox icons
+
 2007-04-24 [wwp]	2.9.1cvs19
 
 	* src/textview.c
