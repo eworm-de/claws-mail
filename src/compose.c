@@ -340,7 +340,7 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gpointer	 data);
 
 static void compose_create_header_entry	(Compose *compose);
-static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
+static void compose_add_header_entry	(Compose *compose, const gchar *header, gchar *text);
 static void compose_remove_header_entries(Compose *compose);
 
 static void compose_update_priority_menu_item(Compose * compose);
@@ -2105,7 +2105,7 @@ GList *compose_get_compose_list(void)
 void compose_entry_append(Compose *compose, const gchar *address,
 			  ComposeEntryType type)
 {
-	gchar *header;
+	const gchar *header;
 	gchar *cur, *begin;
 	gboolean in_quote = FALSE;
 	if (!address || *address == '\0') return;
@@ -4472,8 +4472,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	const gchar *headerentryname;
-	gchar *cc_hdr;
-	gchar *to_hdr;
+	const gchar *cc_hdr;
+	const gchar *to_hdr;
 
 	debug_print("Writing redirect header\n");
 
@@ -5297,11 +5297,12 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 					            const gchar *fieldname,
 					            const gchar *seperator)
 {
-	gchar *str, *fieldname_w_colon, *trans_fieldname;
+	gchar *str, *fieldname_w_colon;
 	gboolean add_field = FALSE;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
-	const gchar * headerentryname;
+	const gchar *headerentryname;
+	const gchar *trans_fieldname;
 	GString *fieldstr;
 
 	if (IS_IN_CUSTOM_HEADER(fieldname))
@@ -5546,7 +5547,7 @@ static gchar *compose_get_header(Compose *compose)
 		gchar *tmp;
 		gchar *headername;
 		gchar *headername_wcolon;
-		gchar *headername_trans;
+		const gchar *headername_trans;
 		gchar *headervalue;
 		gchar **string;
 		gboolean standard_header = FALSE;
@@ -5575,7 +5576,7 @@ static gchar *compose_get_header(Compose *compose)
 		string = std_headers;
 		while (*string != NULL) {
 			headername_trans = prefs_common_translated_header_name(*string);
-			if (!strcmp(headername_trans,headername_wcolon))
+			if (!strcmp(headername_trans, headername_wcolon))
 				standard_header = TRUE;
 			string++;
 		}
@@ -5717,7 +5718,7 @@ static void compose_create_header_entry(Compose *compose)
 	combo = gtk_combo_new();
 	string = headers; 
 	while(*string != NULL) {
-		combo_list = g_list_append(combo_list, prefs_common_translated_header_name(*string));
+		combo_list = g_list_append(combo_list, (gchar*)prefs_common_translated_header_name(*string));
 	        string++;
 	}
 	gtk_combo_set_popdown_strings(GTK_COMBO(combo), combo_list);
@@ -5806,7 +5807,7 @@ static void compose_create_header_entry(Compose *compose)
 		
 }
 
-static void compose_add_header_entry(Compose *compose, gchar *header, gchar *text) 
+static void compose_add_header_entry(Compose *compose, const gchar *header, gchar *text) 
 {
 	ComposeHeaderEntry *last_header;
 	
