@@ -5798,13 +5798,10 @@ static void compose_create_header_entry(Compose *compose)
         headerentry->headernum = compose->header_nextrow;
 
         compose->header_nextrow++;
-	compose->header_last = headerentry;
-	
-	if (!compose->first_combo)
-		compose->first_combo = combo;
-	if (!compose->first_entry)
-		compose->first_entry = entry;
-		
+	compose->header_last = headerentry;		
+	compose->header_list =
+		g_slist_append(compose->header_list,
+			       headerentry);
 }
 
 static void compose_add_header_entry(Compose *compose, const gchar *header, gchar *text) 
@@ -5812,7 +5809,7 @@ static void compose_add_header_entry(Compose *compose, const gchar *header, gcha
 	ComposeHeaderEntry *last_header;
 	
 	last_header = compose->header_last;
-	
+
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(last_header->combo)->entry), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 }
@@ -5823,18 +5820,10 @@ static void compose_remove_header_entries(Compose *compose)
 	for (list = compose->header_list; list; list = list->next) {
 		ComposeHeaderEntry *headerentry = 
 			(ComposeHeaderEntry *)list->data;
-		if (headerentry->combo == compose->first_combo)
-			compose->first_combo = NULL;
-		if (headerentry->entry == compose->first_entry)
-			compose->first_entry = NULL;
 		gtk_widget_destroy(headerentry->combo);
 		gtk_widget_destroy(headerentry->entry);
 		g_free(headerentry);
 	}
-	if (compose->first_combo)
-		gtk_widget_destroy(compose->first_combo);
-	if (compose->first_entry)
-		gtk_widget_destroy(compose->first_entry);
 	compose->header_last = NULL;
 	g_slist_free(compose->header_list);
 	compose->header_list = NULL;
@@ -9373,10 +9362,6 @@ static gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 				    ComposeHeaderEntry *headerentry)
 {
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(entry))) != 0) {
-		headerentry->compose->header_list =
-			g_slist_append(headerentry->compose->header_list,
-				       headerentry);
-		
 		compose_create_header_entry(headerentry->compose);
 		g_signal_handlers_disconnect_matched
 			(G_OBJECT(entry), G_SIGNAL_MATCH_DATA,
