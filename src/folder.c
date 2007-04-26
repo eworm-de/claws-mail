@@ -2525,7 +2525,11 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 	if (folder->klass->fetch_msg_full == NULL)
 		return folder_item_fetch_msg(item, num);
 
-	msgfile = folder->klass->fetch_msg_full(folder, item, num, 
+	if (item->prefs->offlinesync && prefs_common.real_time_sync)
+		msgfile = folder->klass->fetch_msg_full(folder, item, num, 
+						TRUE, TRUE);
+	else
+		msgfile = folder->klass->fetch_msg_full(folder, item, num, 
 						headers, body);
 
 	if (msgfile != NULL) {
