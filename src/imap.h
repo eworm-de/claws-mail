@@ -43,5 +43,4 @@ void imap_cache_msg(FolderItem *item, gint msgnum);
 
 void imap_cancel_all(void);
 gboolean imap_cancel_all_enabled(void);
-gboolean imap_is_busy(Folder *folder);
 #endif /* __IMAP_H__ */

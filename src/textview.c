@@ -1392,7 +1392,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		fg_color = quote_tag_str;
 	}
 
-	if (prefs_common.enable_color && (strcmp(buf,"-- \n") == 0 || textview->is_in_signature)) {
+	if (prefs_common.enable_color && 
+	    (strcmp(buf,"-- \n") == 0 || strcmp(buf, "- -- \n") == 0 || textview->is_in_signature)) {
 		fg_color = "signature";
 		textview->is_in_signature = TRUE;
 	}

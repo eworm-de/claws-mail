@@ -304,6 +304,7 @@ static gchar *imap_get_real_path		(IMAPSession	*session,
 						 IMAPFolder	*folder,
 						 const gchar	*path);
 static void imap_synchronise		(FolderItem	*item);
+static gboolean imap_is_busy		(Folder *folder);
 
 static void imap_free_capabilities	(IMAPSession 	*session);
 
@@ -4656,7 +4657,7 @@ gboolean imap_cancel_all_enabled(void)
 	return FALSE;
 }
 
-gboolean imap_is_busy(Folder *folder)
+static gboolean imap_is_busy(Folder *folder)
 {
 	IMAPSession *imap_session;
 	RemoteFolder *rfolder;
@@ -4766,11 +4767,6 @@ void imap_cancel_all(void)
 }
 
 gboolean imap_cancel_all_enabled(void)
-{
-	return FALSE;
-}
-
-gboolean imap_is_busy(Folder *folder)
 {
 	return FALSE;
 }

@@ -1,3 +1,13 @@
+2007-04-26 [colin]	2.9.1cvs28
+
+	* src/imap.c
+	* src/imap.h
+		Fix uselessly exported function
+	* src/textview.c
+		Consider "- -- \n" as signature separator
+		(that's what signature separators look like
+		 in PGP/Inline signed mails)
+
 2007-04-26 [colin]	2.9.1cvs27
 
 	* configure.ac
