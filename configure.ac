@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=26
+EXTRA_VERSION=27
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -805,18 +805,18 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
 	   LIBETPAN_LIBS="`$libetpanconfig --libs`"
 	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
-	   if test "$LIBETPAN_VERSION" -lt "048"; then
-		AC_MSG_RESULT([*** Claws Mail requires libetpan 0.48 or newer. See http://www.etpan.org/])
+	   if test "$LIBETPAN_VERSION" -lt "049"; then
+		AC_MSG_RESULT([*** Claws Mail requires libetpan 0.49 or newer. See http://www.etpan.org/])
 		AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 support.])
-                AC_MSG_ERROR([libetpan 0.48 not found])
+                AC_MSG_ERROR([libetpan 0.49 not found])
 	   fi
 	   AC_SUBST(LIBETPAN_FLAGS)
 	   AC_SUBST(LIBETPAN_LIBS)
 	   AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP support.)
 	else
-	   AC_MSG_RESULT([*** Claws Mail requires libetpan 0.48 or newer. See http://www.etpan.org/ ])
+	   AC_MSG_RESULT([*** Claws Mail requires libetpan 0.49 or newer. See http://www.etpan.org/ ])
 	   AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 support.])
-           AC_MSG_ERROR([libetpan 0.48 not found])
+           AC_MSG_ERROR([libetpan 0.49 not found])
 	fi
 else
 	AC_MSG_RESULT(no)

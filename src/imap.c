@@ -169,6 +169,8 @@ struct _IMAPFolderItem
 
 	GHashTable *flags_set_table;
 	GHashTable *flags_unset_table;
+	guint32 last_change;
+	guint32 last_sync;
 };
 
 static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item);
@@ -3534,6 +3536,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		return 0;
 	}
 
+	item->last_change = time(NULL);
 	nummsgs = get_list_of_uids(session, folder, item, &uidlist);
 
 	if (nummsgs < 0) {
@@ -3751,6 +3754,7 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		if ((uid_next != item->uid_next) || (exists != item->item.total_msgs)
 		    || unseen != item->item.unread_msgs || uid_val != item->item.mtime) {
 			unlock_session(session);
+			item->last_change = time(NULL);
 			return TRUE;
 		}
 	}
@@ -4775,7 +4779,13 @@ gboolean imap_is_busy(Folder *folder)
 
 void imap_synchronise(FolderItem *item) 
 {
+	if (IMAP_FOLDER_ITEM(item)->last_sync == IMAP_FOLDER_ITEM(item)->last_change) {
+		debug_print("%s already synced\n", item->path?item->path:item->name);
+		return;
+	}
+	debug_print("syncing %s\n", item->path?item->path:item->name);
 	imap_gtk_synchronise(item);
+	IMAP_FOLDER_ITEM(item)->last_sync = IMAP_FOLDER_ITEM(item)->last_change;
 }
 
 static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
@@ -4792,7 +4802,13 @@ static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "uidnext"))
 			IMAP_FOLDER_ITEM(item)->uid_next = atoi(attr->value);
+		if (!strcmp(attr->name, "last_sync"))
+			IMAP_FOLDER_ITEM(item)->last_sync = atoi(attr->value);
+		if (!strcmp(attr->name, "last_change"))
+			IMAP_FOLDER_ITEM(item)->last_change = atoi(attr->value);
 	}
+	if (IMAP_FOLDER_ITEM(item)->last_change == 0)
+		IMAP_FOLDER_ITEM(item)->last_change = time(NULL);
 #endif
 }
 
@@ -4805,6 +4821,10 @@ static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item)
 #ifdef HAVE_LIBETPAN
 	xml_tag_add_attr(tag, xml_attr_new_int("uidnext", 
 			IMAP_FOLDER_ITEM(item)->uid_next));
+	xml_tag_add_attr(tag, xml_attr_new_int("last_sync", 
+			IMAP_FOLDER_ITEM(item)->last_sync));
+	xml_tag_add_attr(tag, xml_attr_new_int("last_change", 
+			IMAP_FOLDER_ITEM(item)->last_change));
 
 #endif
 	return tag;
