@@ -40,4 +40,8 @@ gint imap_scan_tree_real(Folder *folder, gboolean subs_only);
 gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub);
 GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only, gboolean recursive);
 void imap_cache_msg(FolderItem *item, gint msgnum);
+
+void imap_cancel_all(void);
+gboolean imap_cancel_all_enabled(void);
+gboolean imap_is_busy(Folder *folder);
 #endif /* __IMAP_H__ */

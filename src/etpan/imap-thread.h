@@ -116,4 +116,6 @@ int imap_threaded_copy(Folder * folder, struct mailimap_set * set,
 int imap_threaded_store(Folder * folder, struct mailimap_set * set,
 			struct mailimap_store_att_flags * store_att_flags);
 
+void imap_threaded_cancel(Folder * folder);
+
 #endif

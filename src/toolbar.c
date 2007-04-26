@@ -56,6 +56,7 @@
 #include "prefs_common.h"
 #include "prefs_toolbar.h"
 #include "alertpanel.h"
+#include "imap.h"
 
 /* elements */
 #define TOOLBAR_TAG_INDEX        "toolbar"
@@ -1294,6 +1295,7 @@ static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
 
 	g_return_if_fail(toolbar_item != NULL);
 	inc_cancel_all();
+	imap_cancel_all();
 }
 
 

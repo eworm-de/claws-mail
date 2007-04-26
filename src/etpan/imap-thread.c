@@ -41,6 +41,7 @@
 #include "mainwindow.h"
 #include "ssl_certificate.h"
 #include "socket.h"
+#include "remotefolder.h"
 
 #define DISABLE_LOG_DURING_LOGIN
 
@@ -2873,6 +2874,16 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	
 	return result.error;
 }
+
+void imap_threaded_cancel(Folder * folder)
+{
+	mailimap * imap;
+	
+	imap = get_imap(folder);
+	if (imap->imap_stream != NULL)
+		mailstream_cancel(imap->imap_stream);
+}
+
 #else
 
 void imap_main_init(void)
@@ -2882,6 +2893,10 @@ void imap_main_done(void)
 {
 }
 void imap_main_set_timeout(int sec)
+{
+}
+
+void imap_threaded_cancel(Folder * folder);
 {
 }
 

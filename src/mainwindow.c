@@ -2241,6 +2241,8 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 
 	if (inc_is_active())
 		state |= M_INC_ACTIVE;
+	if (imap_cancel_all_enabled())
+		state |= M_INC_ACTIVE;
 
 	if (mainwin->summaryview->deleted > 0 ||
 	    mainwin->summaryview->moved > 0 ||
@@ -3291,6 +3293,7 @@ static void filtering_debug_window_show_cb(MainWindow *mainwin, guint action,
 static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	inc_cancel_all();
+	imap_cancel_all();
 }
 
 static void move_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

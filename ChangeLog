@@ -1,3 +1,13 @@
+2007-04-26 [hoa]	2.9.1cvs26
+
+	* src/imap.c
+	* src/imap.h
+	* src/mainwindow.c
+	* src/toolbar.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		cancellation of IMAP operations is now allowed.
+
 2007-04-26 [colin]	2.9.1cvs25
 
 	* src/folder.c
