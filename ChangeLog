@@ -1,3 +1,8 @@
+2007-04-27 [colin]	2.9.1cvs29
+
+	* src/imap.c
+		Fix build without libetpan (my bad!)
+
 2007-04-26 [colin]	2.9.1cvs28
 
 	* src/imap.c

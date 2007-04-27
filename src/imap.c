@@ -4775,6 +4775,7 @@ gboolean imap_cancel_all_enabled(void)
 
 void imap_synchronise(FolderItem *item) 
 {
+#ifdef HAVE_LIBETPAN
 	if (IMAP_FOLDER_ITEM(item)->last_sync == IMAP_FOLDER_ITEM(item)->last_change) {
 		debug_print("%s already synced\n", item->path?item->path:item->name);
 		return;
@@ -4782,6 +4783,7 @@ void imap_synchronise(FolderItem *item)
 	debug_print("syncing %s\n", item->path?item->path:item->name);
 	imap_gtk_synchronise(item);
 	IMAP_FOLDER_ITEM(item)->last_sync = IMAP_FOLDER_ITEM(item)->last_change;
+#endif
 }
 
 static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
