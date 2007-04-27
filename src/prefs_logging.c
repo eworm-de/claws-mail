@@ -114,7 +114,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox_logging = gtkut_get_options_frame(vbox1, &frame_logging, _("Protocol log"));
 
 	PACK_CHECK_BUTTON (vbox_logging, checkbtn_cliplog,
-			   _("Clip the log size"));
+			   _("Restrict the log size"));
 	hbox_cliplog = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_logging), hbox_cliplog);
 	gtk_widget_show (hbox_cliplog);
@@ -149,24 +149,26 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	/* Filtering/processing debug log */
 	vbox_filteringdebug_log = gtkut_get_options_frame(vbox1,
-				&frame_logging, _("Filtering/processing debug log"));
+				&frame_logging, _("Filtering/processing log"));
 
 	PACK_CHECK_BUTTON (vbox_filteringdebug_log, checkbtn_filteringdebug,
-			   _("Enable debugging of filtering/processing rules"));
+			   _("Enable logging of filtering/processing rules"));
 	hbox_filteringdebug = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_filteringdebug_log), hbox_filteringdebug);
 	gtk_widget_show (hbox_filteringdebug);
 
 	filteringdebug_tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(filteringdebug_tooltip), checkbtn_filteringdebug,
-			     _("If checked, turns on debugging of filtering and processing rules.\n"
-					"Debug log is available from 'Tools/Filtering debug window'.\n"
-					"Caution: enabling this option will slow down the filtering/processing, "
-					"this might be critical when applying many rules upon thousands of messages."),
-			     NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(filteringdebug_tooltip),
+			     checkbtn_filteringdebug,
+			     _("If checked, turns on logging of filtering and processing rules.\n"
+				"The log is accessible from 'Tools/Filtering log'.\n"
+				"Caution: enabling this option will slow down the filtering/processing, "
+				"this might be critical when applying many rules upon thousands of "
+				"messages."),
+				NULL);
 
 	vbox_filteringdebug = gtkut_get_options_frame(vbox_filteringdebug_log, &frame_filteringdebug,
-							_("Debugging of filtering/processing rules when.."));
+							_("Log filtering/processing when..."));
 
 	PACK_CHECK_BUTTON (vbox_filteringdebug, checkbtn_filteringdebug_inc,
 			   _("filtering at incorporation"));
@@ -208,7 +210,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox_filteringdebug_level);
 	gtk_box_pack_start(GTK_BOX (vbox_filteringdebug_log), hbox_filteringdebug_level, FALSE, FALSE, 0);
 
-	label_debug_level = gtk_label_new (_("Debug level"));
+	label_debug_level = gtk_label_new (_("Log level"));
 	gtk_widget_show (label_debug_level);
 	gtk_box_pack_start(GTK_BOX(hbox_filteringdebug_level), label_debug_level, FALSE, FALSE, 0);
 
@@ -224,16 +226,23 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox_filteringdebug_level), optmenu_filteringdebug_level, FALSE, FALSE, 0);
 
 	filteringdebug_level_tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(filteringdebug_level_tooltip), optmenu_filteringdebug_level,
-			     _("Select the level of detail displayed if debugging is enabled.\n"
-				"Choose low level to see when rules are applied, what conditions match or not and what actions are performed.\n"
-				"Choose medium level to see more detail about the message that is being processed, and why rules are skipped.\n"
-				"Choose high level to explicitely show the reason why all rules are skipped or not, and why all conditions are matching or not.\n"
-				"Caution: the higher the level is, the more it will impact the performances."),
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(filteringdebug_level_tooltip),
+			     optmenu_filteringdebug_level,
+			     _("Select the level of detail of the logging.\n"
+				"Choose Low to see when rules are applied, which "
+				"conditions match or don't match and what actions are "
+				"performed.\n"
+				"Choose Medium to see more details about the message "
+				"that is being processed, and why rules are skipped.\n"
+				"Choose High to explicitly show the reason why all "
+				"rules are processed or skipped, and why all conditions "
+				"are matched or not matched.\n"
+				"Caution: the higher the level, the greater the "
+				"impact on performance."),
 			     NULL);
 
 	PACK_CHECK_BUTTON (vbox_filteringdebug_log, checkbtn_debug_cliplog,
-			   _("Clip the log size"));
+			   _("Restrict the log size"));
 	hbox_debug_cliplog = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_filteringdebug_log), hbox_debug_cliplog);
 	gtk_widget_show (hbox_debug_cliplog);
@@ -336,9 +345,9 @@ static void prefs_logging_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_filteringdebug));
 	if (filtering_debug_enabled != prefs_common.enable_filtering_debug) {
 		if (prefs_common.enable_filtering_debug)
-			log_message(LOG_DEBUG_FILTERING, _("filtering debug enabled\n"));
+			log_message(LOG_DEBUG_FILTERING, _("filtering log enabled\n"));
 		else
-			log_message(LOG_DEBUG_FILTERING, _("filtering debug disabled\n"));
+			log_message(LOG_DEBUG_FILTERING, _("filtering log disabled\n"));
 	}
 	prefs_common.enable_filtering_debug_inc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_filteringdebug_inc));

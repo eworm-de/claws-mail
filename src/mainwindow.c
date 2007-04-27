@@ -864,8 +864,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, ssl_manager_open_cb, 0, NULL},
 #endif
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Filtering debug window"),	NULL, filtering_debug_window_show_cb, 0, NULL},
-	{N_("/_Tools/_Log window"),		"<shift><control>L", log_window_show_cb, 0, NULL},
+	{N_("/_Tools/Filtering Log"),		NULL, filtering_debug_window_show_cb, 0, NULL},
+	{N_("/_Tools/Protocol _Log"),		"<shift><control>L", log_window_show_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/C_hange current account"),
@@ -1320,9 +1320,9 @@ MainWindow *main_window_create()
 				prefs_common.filtering_debug_cliplog,
 				prefs_common.filtering_debug_loglength);
 	if (prefs_common.enable_filtering_debug)
-		log_message(LOG_DEBUG_FILTERING, _("filtering debug enabled\n"));
+		log_message(LOG_DEBUG_FILTERING, _("filtering log enabled\n"));
 	else
-		log_message(LOG_DEBUG_FILTERING, _("filtering debug disabled\n"));
+		log_message(LOG_DEBUG_FILTERING, _("filtering log disabled\n"));
 
 	folderview->mainwin      = mainwin;
 	folderview->summaryview  = summaryview;

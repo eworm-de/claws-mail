@@ -1,3 +1,9 @@
+2007-04-27 [paul]	2.9.1cvs30
+
+	* src/mainwindow.c
+	* src/prefs_logging.c
+		improvements to english usage
+
 2007-04-27 [colin]	2.9.1cvs29
 
 	* src/imap.c
