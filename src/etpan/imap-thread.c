@@ -1524,15 +1524,19 @@ int imap_threaded_search(Folder * folder, int search_type,
 
 
 
+static int imap_get_msg_att_info(struct mailimap_msg_att * msg_att,
+				 uint32_t * puid,
+				 char ** pheaders,
+				 size_t * pref_size,
+				 struct mailimap_msg_att_dynamic ** patt_dyn);
 
 static int
-uid_list_to_env_list(clist * fetch_result, carray ** result)
+result_to_uid_list(clist * fetch_result, carray ** result)
 {
 	clistiter * cur;
 	int r;
 	int res;
 	carray * tab;
-	unsigned int i;
 	
 	tab = carray_new(128);
 	if (tab == NULL) {
@@ -1543,31 +1547,13 @@ uid_list_to_env_list(clist * fetch_result, carray ** result)
 	for(cur = clist_begin(fetch_result) ; cur != NULL ;
 	    cur = clist_next(cur)) {
 		struct mailimap_msg_att * msg_att;
-		clistiter * item_cur;
 		uint32_t uid;
-		size_t size;
 		uint32_t * puid;
 		
 		msg_att = clist_content(cur);
 		
 		uid = 0;
-		size = 0;
-		for(item_cur = clist_begin(msg_att->att_list) ;
-		    item_cur != NULL ;
-		    item_cur = clist_next(item_cur)) {
-			struct mailimap_msg_att_item * item;
-			
-			item = clist_content(item_cur);
-			
-			switch (item->att_type) {
-			case MAILIMAP_MSG_ATT_ITEM_STATIC:
-				switch (item->att_data.att_static->att_type) {
-				case MAILIMAP_MSG_ATT_UID:
-					uid = item->att_data.att_static->att_data.att_uid;
-					break;
-				}
-			}
-		}
+		imap_get_msg_att_info(msg_att, &uid, NULL, NULL, NULL);
 		
 		puid = malloc(sizeof(* puid));
 		if (puid == NULL) {
@@ -1589,8 +1575,7 @@ uid_list_to_env_list(clist * fetch_result, carray ** result)
 	return MAILIMAP_NO_ERROR;
   
  free_list:
-	for(i = 0 ; i < carray_count(tab) ; i++)
-		mailmessage_free(carray_get(tab, i));
+	imap_fetch_uid_list_free(tab);
  err:
 	return res;
 }
@@ -1644,7 +1629,7 @@ static int imap_get_messages_list(mailimap * imap,
 	}
 
 	env_list = NULL;
-	r = uid_list_to_env_list(fetch_result, &env_list);
+	r = result_to_uid_list(fetch_result, &env_list);
 	mailimap_fetch_list_free(fetch_result);
 	
 	* result = env_list;
@@ -1685,9 +1670,14 @@ static void fetch_uid_run(struct etpan_thread_op * op)
 	CHECK_IMAP();
 
 	fetch_result = NULL;
+	mailstream_logger = NULL;
+	log_print(LOG_PROTOCOL, "IMAP4- [fetching UIDs...]\n");
+
 	r = imap_get_messages_list(param->imap, param->first_index,
 				   &fetch_result);
 	
+	mailstream_logger = imap_logger_cmd;
+
 	result->error = r;
 	result->fetch_result = fetch_result;
 	debug_print("imap fetch_uid run - end %i\n", r);
@@ -1730,6 +1720,228 @@ void imap_fetch_uid_list_free(carray * uid_list)
 		free(puid);
 	}
 	carray_free(uid_list);
+}
+
+
+
+
+static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn);
+
+static int
+result_to_uid_flags_list(clist * fetch_result, carray ** result)
+{
+	clistiter * cur;
+	int r;
+	int res;
+	carray * tab;
+	
+	tab = carray_new(128);
+	if (tab == NULL) {
+		res = MAILIMAP_ERROR_MEMORY;
+		goto err;
+	}
+	
+	for(cur = clist_begin(fetch_result) ; cur != NULL ;
+	    cur = clist_next(cur)) {
+		struct mailimap_msg_att * msg_att;
+		uint32_t uid;
+		uint32_t * puid;
+		struct mailimap_msg_att_dynamic * att_dyn;
+		int flags;
+		int * pflags;
+		
+		msg_att = clist_content(cur);
+		
+		uid = 0;
+		att_dyn = NULL;
+		imap_get_msg_att_info(msg_att, &uid, NULL, NULL, &att_dyn);
+		if (uid == 0)
+			continue;
+		if (att_dyn == NULL)
+			continue;
+		
+		flags = imap_flags_to_flags(att_dyn);
+		
+		puid = malloc(sizeof(* puid));
+		if (puid == NULL) {
+			res = MAILIMAP_ERROR_MEMORY;
+			goto free_list;
+		}
+		* puid = uid;
+		
+		r = carray_add(tab, puid, NULL);
+		if (r < 0) {
+			free(puid);
+			res = MAILIMAP_ERROR_MEMORY;
+			goto free_list;
+		}
+		pflags = malloc(sizeof(* pflags));
+		if (pflags == NULL) {
+			res = MAILIMAP_ERROR_MEMORY;
+			goto free_list;
+		}
+		* pflags = flags;
+		r = carray_add(tab, pflags, NULL);
+		if (r < 0) {
+			free(pflags);
+			res = MAILIMAP_ERROR_MEMORY;
+			goto free_list;
+		}
+	}
+		
+	* result = tab;
+
+	return MAILIMAP_NO_ERROR;
+  
+ free_list:
+	imap_fetch_uid_flags_list_free(tab);
+ err:
+	return res;
+}
+
+static int imap_get_messages_flags_list(mailimap * imap,
+					uint32_t first_index,
+					carray ** result)
+{
+	carray * env_list;
+	int r;
+	struct mailimap_fetch_att * fetch_att;
+	struct mailimap_fetch_type * fetch_type;
+	struct mailimap_set * set;
+	clist * fetch_result;
+	int res;
+	
+	set = mailimap_set_new_interval(first_index, 0);
+	if (set == NULL) {
+		res = MAILIMAP_ERROR_MEMORY;
+		goto err;
+	}
+
+	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
+	if (fetch_type == NULL) {
+		res = MAILIMAP_ERROR_MEMORY;
+		goto free_set;
+	}
+
+	fetch_att = mailimap_fetch_att_new_flags();
+	if (fetch_att == NULL) {
+		res = MAILIMAP_ERROR_MEMORY;
+		goto free_fetch_type;
+	}
+	
+	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	if (r != MAILIMAP_NO_ERROR) {
+		mailimap_fetch_att_free(fetch_att);
+		res = MAILIMAP_ERROR_MEMORY;
+		goto free_fetch_type;
+	}
+	
+	fetch_att = mailimap_fetch_att_new_uid();
+	if (fetch_att == NULL) {
+		res = MAILIMAP_ERROR_MEMORY;
+		goto free_fetch_type;
+	}
+
+	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	if (r != MAILIMAP_NO_ERROR) {
+		mailimap_fetch_att_free(fetch_att);
+		res = MAILIMAP_ERROR_MEMORY;
+		goto free_fetch_type;
+	}
+
+	r = mailimap_uid_fetch(imap, set,
+			       fetch_type, &fetch_result);
+
+	mailimap_fetch_type_free(fetch_type);
+	mailimap_set_free(set);
+
+	if (r != MAILIMAP_NO_ERROR) {
+		res = r;
+		goto err;
+	}
+
+	env_list = NULL;
+	r = result_to_uid_flags_list(fetch_result, &env_list);
+	mailimap_fetch_list_free(fetch_result);
+	
+	* result = env_list;
+
+	return MAILIMAP_NO_ERROR;
+
+ free_fetch_type:
+	mailimap_fetch_type_free(fetch_type);
+ free_set:
+	mailimap_set_free(set);
+ err:
+	return res;
+}
+
+
+
+static void fetch_uid_flags_run(struct etpan_thread_op * op)
+{
+	struct fetch_uid_param * param;
+	struct fetch_uid_result * result;
+	carray * fetch_result;
+	int r;
+	
+	param = op->param;
+	result = op->result;
+
+	CHECK_IMAP();
+
+	fetch_result = NULL;
+	r = imap_get_messages_flags_list(param->imap, param->first_index,
+					 &fetch_result);
+	
+	result->error = r;
+	result->fetch_result = fetch_result;
+	debug_print("imap fetch_uid run - end %i\n", r);
+}
+
+int imap_threaded_fetch_uid_flags(Folder * folder, uint32_t first_index,
+				  carray ** fetch_result)
+{
+	struct fetch_uid_param param;
+	struct fetch_uid_result result;
+	mailimap * imap;
+	
+	debug_print("imap fetch_uid - begin\n");
+	
+	imap = get_imap(folder);
+	param.imap = imap;
+	param.first_index = first_index;
+	
+	mailstream_logger = NULL;
+	log_print(LOG_PROTOCOL, "IMAP4- [fetching flags...]\n");
+
+	threaded_run(folder, &param, &result, fetch_uid_flags_run);
+
+	mailstream_logger = imap_logger_cmd;
+
+	
+	if (result.error != MAILIMAP_NO_ERROR)
+		return result.error;
+	
+	debug_print("imap fetch_uid - end\n");
+	
+	* fetch_result = result.fetch_result;
+	
+	return result.error;
+}
+
+
+void imap_fetch_uid_flags_list_free(carray * uid_flags_list)
+{
+	unsigned int i;
+	
+	for(i = 0 ; i < carray_count(uid_flags_list) ; i ++) {
+		void * data;
+		
+		data = carray_get(uid_flags_list, i);
+		free(data);
+	}
+	carray_free(uid_flags_list);
 }
 
 

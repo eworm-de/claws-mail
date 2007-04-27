@@ -401,6 +401,9 @@ static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist);
 static GSList * imap_get_lep_set_from_msglist(MsgInfoList *msglist);
 static GSList * imap_uid_list_from_lep(clist * list);
 static GSList * imap_uid_list_from_lep_tab(carray * list);
+static GSList * imap_uid_list_from_lep_uid_flags_tab(carray * list);
+static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
+						   GHashTable * hash);
 static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 				       FolderItem *item);
 static void imap_lep_set_free(GSList *seq_list);
@@ -3330,8 +3333,8 @@ static void *get_list_of_uids_thread(void *data)
 	gint ok, nummsgs = 0, lastuid_old;
 	IMAPSession *session;
 	GSList *uidlist, *elem;
+	int r = -1;
 	clist * lep_uidlist;
-	int r;
 
 	session = stuff->session;
 	if (session == NULL) {
@@ -3348,32 +3351,34 @@ static void *get_list_of_uids_thread(void *data)
 
 	uidlist = NULL;
 	
-	r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, NULL,
+	if (folder->account && folder->account->low_bandwidth) {
+		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, NULL,
 				 &lep_uidlist);
+	}
 	
 	if (r == MAILIMAP_NO_ERROR) {
-		GSList * fetchuid_list;
-		
-		fetchuid_list =
+		GSList * fetchuid_list =
 			imap_uid_list_from_lep(lep_uidlist);
 		mailimap_search_result_free(lep_uidlist);
 		
 		uidlist = g_slist_concat(fetchuid_list, uidlist);
-	}
-	else {
-		GSList * fetchuid_list;
+	} else {
 		carray * lep_uidtab;
-		
-		r = imap_threaded_fetch_uid(folder, item->lastuid + 1,
-					    &lep_uidtab);
+		r = imap_threaded_fetch_uid(folder, 1,
+				    &lep_uidtab);
 		if (r == MAILIMAP_NO_ERROR) {
-			fetchuid_list =
+			GSList * fetchuid_list =
 				imap_uid_list_from_lep_tab(lep_uidtab);
 			imap_fetch_uid_list_free(lep_uidtab);
 			uidlist = g_slist_concat(fetchuid_list, uidlist);
 		}
 	}
 	
+	if (r != MAILIMAP_NO_ERROR) {
+		stuff->done = TRUE;
+		return GINT_TO_POINTER(-1);
+	}
+
 	lastuid_old = item->lastuid;
 	*msgnum_list = g_slist_copy(item->uid_list);
 	nummsgs = g_slist_length(*msgnum_list);
@@ -3973,39 +3978,35 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 {
 	get_flags_data *stuff = (get_flags_data *)data;
 	Folder *folder = stuff->folder;
-	FolderItem *item = stuff->item;
+	FolderItem *fitem = (FolderItem *) stuff->item;
 	MsgInfoList *msginfo_list = stuff->msginfo_list;
 	GRelation *msgflags = stuff->msgflags;
-	gboolean full_search = stuff->full_search;
+	GSList *elem;
+	GSList * fetchuid_list;
+	carray * lep_uidtab;
 	IMAPSession *session;
+	gint ok;
+	int r;
+	GHashTable *flags_hash = NULL;
+	gboolean full_search = stuff->full_search;
 	GSList *sorted_list = NULL;
 	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL;
 	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted;
-	GSList *elem;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
-	GString *cmd_buf;
-	gint ok;
-	gint exists_cnt, unseen_cnt;
 	gboolean selected_folder;
+	gint exists_cnt, unseen_cnt;
 	
-	if (folder == NULL || item == NULL) {
-		stuff->done = TRUE;
-		return GINT_TO_POINTER(-1);
-	}
-
-	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	if (session == NULL) {
 		stuff->done = TRUE;
 		return GINT_TO_POINTER(-1);
 	}
-
 	selected_folder = (session->mbox != NULL) &&
-			  (!strcmp(session->mbox, item->path));
+			  (!strcmp(session->mbox, fitem->path));
 
 	if (!selected_folder) {
-		ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+		ok = imap_select(session, IMAP_FOLDER(folder), fitem->path,
 			&exists_cnt, NULL, &unseen_cnt, NULL, TRUE);
 		if (ok != IMAP_SUCCESS) {
 			stuff->done = TRUE;
@@ -4017,11 +4018,9 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			reverse_seen = TRUE;
 	} 
 	else {
-		if (item->unread_msgs > item->total_msgs / 2)
+		if (fitem->unread_msgs > fitem->total_msgs / 2)
 			reverse_seen = TRUE;
 	}
-
-	cmd_buf = g_string_new(NULL);
 
 	sorted_list = g_slist_sort(g_slist_copy(msginfo_list), compare_msginfo);
 	if (!full_search) {
@@ -4032,43 +4031,32 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		seq_list = g_slist_append(NULL, set);
 	}
 
-	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
-		struct mailimap_set * imapset;
-		clist * lep_uidlist;
-		int r;
-		
-		imapset = cur->data;
-		if (reverse_seen) {
-			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN,
-						 full_search ? NULL:imapset, &lep_uidlist);
-		}
-		else {
-			r = imap_threaded_search(folder,
-						 IMAP_SEARCH_TYPE_UNSEEN,
-						 full_search ? NULL:imapset, &lep_uidlist);
-		}
-		if (r == MAILIMAP_NO_ERROR) {
-			GSList * uidlist;
-			
-			uidlist = imap_uid_list_from_lep(lep_uidlist);
-			mailimap_search_result_free(lep_uidlist);
-			
-			unseen = g_slist_concat(unseen, uidlist);
-		}
-		
-		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED,
-					 full_search ? NULL:imapset, &lep_uidlist);
-		if (r == MAILIMAP_NO_ERROR) {
-			GSList * uidlist;
+	if (folder->account && folder->account->low_bandwidth) {
+		for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
+			struct mailimap_set * imapset;
+			clist * lep_uidlist;
+			int r;
 
-			uidlist = imap_uid_list_from_lep(lep_uidlist);
-			mailimap_search_result_free(lep_uidlist);
+			imapset = cur->data;
+			if (reverse_seen) {
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN,
+							 full_search ? NULL:imapset, &lep_uidlist);
+			}
+			else {
+				r = imap_threaded_search(folder,
+							 IMAP_SEARCH_TYPE_UNSEEN,
+							 full_search ? NULL:imapset, &lep_uidlist);
+			}
+			if (r == MAILIMAP_NO_ERROR) {
+				GSList * uidlist;
 
-			flagged = g_slist_concat(flagged, uidlist);
-		}
+				uidlist = imap_uid_list_from_lep(lep_uidlist);
+				mailimap_search_result_free(lep_uidlist);
 
-		if (item->opened || item->processing_pending || item == folder->inbox) {
-			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
+				unseen = g_slist_concat(unseen, uidlist);
+			}
+
+			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED,
 						 full_search ? NULL:imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
@@ -4076,67 +4064,111 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				uidlist = imap_uid_list_from_lep(lep_uidlist);
 				mailimap_search_result_free(lep_uidlist);
 
-				answered = g_slist_concat(answered, uidlist);
+				flagged = g_slist_concat(flagged, uidlist);
 			}
 
-			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
-						 full_search ? NULL:imapset, &lep_uidlist);
-			if (r == MAILIMAP_NO_ERROR) {
-				GSList * uidlist;
+			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
+							 full_search ? NULL:imapset, &lep_uidlist);
+				if (r == MAILIMAP_NO_ERROR) {
+					GSList * uidlist;
 
-				uidlist = imap_uid_list_from_lep(lep_uidlist);
-				mailimap_search_result_free(lep_uidlist);
+					uidlist = imap_uid_list_from_lep(lep_uidlist);
+					mailimap_search_result_free(lep_uidlist);
 
-				deleted = g_slist_concat(deleted, uidlist);
+					answered = g_slist_concat(answered, uidlist);
+				}
+
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
+							 full_search ? NULL:imapset, &lep_uidlist);
+				if (r == MAILIMAP_NO_ERROR) {
+					GSList * uidlist;
+
+					uidlist = imap_uid_list_from_lep(lep_uidlist);
+					mailimap_search_result_free(lep_uidlist);
+
+					deleted = g_slist_concat(deleted, uidlist);
+				}
 			}
+		}
+		p_unseen = unseen;
+		p_answered = answered;
+		p_flagged = flagged;
+		p_deleted = deleted;
+
+	} else {
+		r = imap_threaded_fetch_uid_flags(folder, 1, &lep_uidtab);
+		if (r == MAILIMAP_NO_ERROR) {
+			fetchuid_list =
+				imap_uid_list_from_lep_uid_flags_tab(lep_uidtab);
+
+			flags_hash = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
+			imap_flags_hash_from_lep_uid_flags_tab(lep_uidtab, flags_hash);
+			imap_fetch_uid_flags_list_free(lep_uidtab);
 		}
 	}
-
-	p_unseen = unseen;
-	p_answered = answered;
-	p_flagged = flagged;
-	p_deleted = deleted;
-
 	for (elem = sorted_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
 		MsgPermFlags flags;
-		gboolean wasnew;
+		gboolean wasnew, waspostfiltered;
 		
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		if (item->opened || item->processing_pending || item == folder->inbox) {
-			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
-		} else {
-			flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
-		}
-		if (reverse_seen)
-			flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
-		if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
-			if (!reverse_seen) {
-				flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
+		waspostfiltered = (flags & MSG_POSTFILTERED);
+	
+		if (folder->account && folder->account->low_bandwidth) {
+			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
+				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
 			} else {
-				flags &= ~(MSG_UNREAD | MSG_NEW);
+				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
 			}
-		}
-		
-		if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
-			flags |= MSG_MARKED;
-		else
-			flags &= ~MSG_MARKED;
+			if (reverse_seen)
+				flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
+			if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
+				if (!reverse_seen) {
+					flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
+				} else {
+					flags &= ~(MSG_UNREAD | MSG_NEW);
+				}
+			}
 
-		if (item->opened || item->processing_pending || item == folder->inbox) {
-			if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
-				flags |= MSG_REPLIED;
+			if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
+				flags |= MSG_MARKED;
 			else
-				flags &= ~MSG_REPLIED;
-			if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
-				flags |= MSG_DELETED;
-			else
-				flags &= ~MSG_DELETED;
+				flags &= ~MSG_MARKED;
+
+			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
+				if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
+					flags |= MSG_REPLIED;
+				else
+					flags &= ~MSG_REPLIED;
+				if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
+					flags |= MSG_DELETED;
+				else
+					flags &= ~MSG_DELETED;
+			}
+		} else {
+			if (flags_hash != NULL) {
+				gint * puid;
+
+				puid = malloc(sizeof(* puid));
+				* puid = msginfo->msgnum;
+
+				flags = GPOINTER_TO_INT(g_hash_table_lookup(flags_hash, puid));
+				free(puid);
+			}
+
+			if ((flags & MSG_UNREAD) == 0)
+				flags &= ~MSG_NEW;
+			else if (wasnew)
+				flags |= MSG_NEW;
 		}
+		if (waspostfiltered)
+			flags |= MSG_POSTFILTERED;
 		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
+	g_hash_table_destroy(flags_hash);
 
 	imap_lep_set_free(seq_list);
 	g_slist_free(flagged);
@@ -4144,10 +4176,9 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	g_slist_free(answered);
 	g_slist_free(unseen);
 	g_slist_free(sorted_list);
-	g_string_free(cmd_buf, TRUE);
 
-	stuff->done = TRUE;
 	unlock_session(session);
+	stuff->done = TRUE;
 	return GINT_TO_POINTER(0);
 }
 
@@ -4509,6 +4540,45 @@ static GSList * imap_uid_list_from_lep_tab(carray * list)
 	}
 	result = g_slist_reverse(result);
 	return result;
+}
+
+static GSList * imap_uid_list_from_lep_uid_flags_tab(carray * list)
+{
+	unsigned int i;
+	GSList * result;
+	
+	result = NULL;
+	
+	for(i = 0 ; i < carray_count(list) ; i += 2) {
+		uint32_t * puid;
+		
+		puid = carray_get(list, i);
+		result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
+	}
+	result = g_slist_reverse(result);
+	return result;
+}
+
+static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
+						   GHashTable * hash)
+{
+	unsigned int i;
+	GSList * result;
+	
+	result = NULL;
+	
+	for(i = 0 ; i < carray_count(list) ; i += 2) {
+		uint32_t * puid;
+		int * pflags;
+		gint * pguid;
+		
+		puid = carray_get(list, i);
+		pflags = carray_get(list, i + 1);
+		pguid = malloc(sizeof(* pguid));
+		* pguid = * puid;
+		
+		g_hash_table_insert(hash, pguid, GINT_TO_POINTER(* pflags));
+	}
 }
 
 static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,

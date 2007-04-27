@@ -86,6 +86,11 @@ int imap_threaded_fetch_uid(Folder * folder, uint32_t first_index,
 
 void imap_fetch_uid_list_free(carray * uid_list);
 
+int imap_threaded_fetch_uid_flags(Folder * folder, uint32_t first_index,
+				  carray ** fetch_result);
+
+void imap_fetch_uid_flags_list_free(carray * uid_flags_list);
+
 int imap_threaded_fetch_content(Folder * folder, uint32_t msg_index,
 				int with_body,
 				const char * filename);

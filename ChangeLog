@@ -1,3 +1,21 @@
+2007-04-27 [colin]	2.9.1cvs31
+
+	* src/folder.c
+		Freeze/thaw when sync'ing flags
+	* src/imap.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Add a way to use UID FETCH instead
+		of searches to fetch message lists
+		and flags. More expensive towards
+		bandwidth, less expensive towards
+		server's CPU. Probably fixes 
+		bug 1158, 'Scanning new folders on 
+		Exchange 2007 extremely slow'.
+		Patch 95% by Hoa.
+
 2007-04-27 [paul]	2.9.1cvs30
 
 	* src/mainwindow.c

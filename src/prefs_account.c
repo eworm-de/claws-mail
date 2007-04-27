@@ -135,6 +135,7 @@ static struct Receive {
 	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
+	GtkWidget *low_bandwidth_checkbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -603,6 +604,10 @@ static PrefParam param[] = {
 
 	{"imap_subsonly", "TRUE", &tmp_ac_prefs.imap_subsonly, P_BOOL,
 	 &receive.subsonly_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"low_bandwidth", "TRUE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
+	 &receive.low_bandwidth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
@@ -1495,6 +1500,7 @@ static void prefs_account_receive_create(void)
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
+	GtkWidget *low_bandwidth_checkbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1713,6 +1719,16 @@ static void prefs_account_receive_create(void)
 	PACK_CHECK_BUTTON (hbox1, subsonly_checkbtn,
 			   _("Show subscribed folders only"));
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
+
+	PACK_CHECK_BUTTON (hbox1, low_bandwidth_checkbtn,
+			   _("Bandwidth-efficient mode"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), low_bandwidth_checkbtn,
+			     _("This mode uses less bandwidth, but can be slower with some servers."),
+			     NULL);
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1738,6 +1754,7 @@ static void prefs_account_receive_create(void)
 	receive.imapdir_label		= imapdir_label;
 	receive.imapdir_entry           = imapdir_entry;
 	receive.subsonly_checkbtn		= subsonly_checkbtn;
+	receive.low_bandwidth_checkbtn		= low_bandwidth_checkbtn;
 	receive.local_frame		= local_frame;
 	receive.local_inbox_label	= local_inbox_label;
 	receive.local_inbox_entry	= local_inbox_entry;
@@ -3119,6 +3136,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
 		gtk_widget_hide(receive.subsonly_checkbtn);
+		gtk_widget_hide(receive.low_bandwidth_checkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3204,6 +3222,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
 		gtk_widget_hide(receive.subsonly_checkbtn);
+		gtk_widget_hide(receive.low_bandwidth_checkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -3294,6 +3313,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive.imapdir_label);
 		gtk_widget_show(receive.imapdir_entry);
 		gtk_widget_show(receive.subsonly_checkbtn);
+		gtk_widget_show(receive.low_bandwidth_checkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
@@ -3378,6 +3398,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
 		gtk_widget_hide(receive.subsonly_checkbtn);
+		gtk_widget_hide(receive.low_bandwidth_checkbtn);
 		break;
 	case A_POP3:
 	default:
@@ -3467,6 +3488,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive.imapdir_label);
 		gtk_widget_hide(receive.imapdir_entry);
 		gtk_widget_hide(receive.subsonly_checkbtn);
+		gtk_widget_hide(receive.low_bandwidth_checkbtn);
 		break;
 	}
 

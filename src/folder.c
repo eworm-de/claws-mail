@@ -1779,6 +1779,7 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 		MsgPermFlags permflags = 0;
 		gboolean skip;
 
+		folder_item_update_freeze();
 		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 			msginfo = (MsgInfo *) cur->data;
 		
@@ -1796,6 +1797,7 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 					~permflags & msginfo->flags.perm_flags, 0);
 			}
 		}
+		folder_item_update_thaw();
 	}
 	folder_item_set_batch(item, FALSE);
 	g_relation_destroy(relation);	
