@@ -79,6 +79,7 @@ typedef enum
 PrefsAccount *cur_account;
 
 static GList *account_list = NULL;
+static gboolean account_list_dirty = FALSE;
 
 static struct EditAccount {
 	GtkWidget *window;
@@ -179,6 +180,14 @@ static void account_row_changed_while_drag_drop	(GtkTreeModel *model,
 						 GtkTreeIter  *iter,
 						 gpointer      arg3,
 						 GtkTreeView  *list_view);
+
+void account_flush_state(void)
+{
+	account_set_menu();
+	main_window_reflect_prefs_all();
+
+	account_list_dirty = FALSE;
+}
 
 void account_read_config_all(void)
 {
@@ -368,6 +377,8 @@ void account_edit_open(void)
 {
 	inc_lock();
 
+	account_list_dirty = FALSE;
+
 	if (compose_get_compose_list()) {
 		alertpanel_error(_("Some composing windows are open.\n"
 				   "Please close all the composing "
@@ -394,7 +405,7 @@ void account_add(void)
 {
 	PrefsAccount *ac_prefs;
 
-	ac_prefs = prefs_account_open(NULL);
+	ac_prefs = prefs_account_open(NULL, &account_list_dirty);
 
 	if (!ac_prefs) return;
 
@@ -433,6 +444,7 @@ void account_open(PrefsAccount *ac_prefs)
 {
 	gboolean prev_default;
 	gchar *ac_name;
+	gboolean account_dirty = FALSE;
 
 	g_return_if_fail(ac_prefs != NULL);
 
@@ -440,20 +452,22 @@ void account_open(PrefsAccount *ac_prefs)
 	Xstrdup_a(ac_name, ac_prefs->account_name ? ac_prefs->account_name : "",
 		  return);
 
-	prefs_account_open(ac_prefs);
+	prefs_account_open(ac_prefs, &account_dirty);
 
-	if (!prev_default && ac_prefs->is_default)
-		account_set_as_default(ac_prefs);
+	if (account_dirty) {
+		if (!prev_default && ac_prefs->is_default)
+			account_set_as_default(ac_prefs);
 
-	if (ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
-		folder_set_name(FOLDER(ac_prefs->folder),
-				ac_prefs->account_name);
-		folderview_set_all();
+		if (ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
+			folder_set_name(FOLDER(ac_prefs->folder),
+					ac_prefs->account_name);
+			folderview_set_all();
+		}
+
+		account_write_config_all();
+
+		account_flush_state();
 	}
-
-	account_write_config_all();
-	account_set_menu();
-	main_window_reflect_prefs_all();
 }
 
 static void account_set_as_default(PrefsAccount *ac_prefs)
@@ -871,6 +885,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
 		alertpanel_error(_("Accounts with remote folders cannot be copied."));
 		return;
 	}
+	account_list_dirty = TRUE;
 	
 	ac_clon = prefs_account_new();
 	/* copy fields */
@@ -1020,6 +1035,7 @@ static void account_delete(GtkWidget *widget, gpointer data)
 		 	    GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
 			    NULL, ALERT_WARNING, G_ALERTDEFAULT) != G_ALERTALTERNATE)
 		return;
+	account_list_dirty = TRUE;
 
 	if (ac_prefs->folder) {
 		FolderItem *item;
@@ -1073,6 +1089,7 @@ static void account_up(GtkWidget *widget, gpointer data)
 	
 	if (!sel) 
 		return;
+	account_list_dirty = TRUE;
 
 	up = gtk_tree_path_copy(sel);
 	if (!up) {
@@ -1112,6 +1129,7 @@ static void account_down(GtkWidget *widget, gpointer data)
 	
 	if (!sel) 
 		return;
+	account_list_dirty = TRUE;
 
 	dn = gtk_tree_path_copy(sel);
 	if (!dn) {
@@ -1156,8 +1174,7 @@ static void account_set_default(GtkWidget *widget, gpointer data)
 	account_list_view_set();
 	
 	cur_account = ac_prefs;
-	account_set_menu();
-	main_window_reflect_prefs_all();
+	account_flush_state();
 }
 
 static void account_edit_close(GtkWidget *widget, gpointer data)
@@ -1171,8 +1188,8 @@ static void account_edit_close(GtkWidget *widget, gpointer data)
 		cur_account = ac_prefs;
 	}
 
-	account_set_menu();
-	main_window_reflect_prefs_all();
+	if (account_list_dirty)
+		account_flush_state();
 
 	gtk_widget_hide(edit_account.window);
 
