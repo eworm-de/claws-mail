@@ -115,7 +115,6 @@ static struct Receive {
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
 	GtkWidget *leave_time_entry;
-	GtkWidget *getall_checkbtn;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_entry;
 	GtkWidget *inbox_label;
@@ -363,9 +362,6 @@ static PrefParam param[] = {
 	 &receive.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #endif
-	{"get_all_mail", "FALSE", &tmp_ac_prefs.getall, P_BOOL,
-	 &receive.getall_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"enable_size_limit", "FALSE", &tmp_ac_prefs.enable_size_limit, P_BOOL,
 	 &receive.size_limit_checkbtn,
@@ -1486,7 +1482,6 @@ static void prefs_account_receive_create(void)
 	GtkTooltips *leave_time_tooltip;
 	GtkWidget *leave_time_label;
 	GtkWidget *leave_time_entry;
-	GtkWidget *getall_checkbtn;
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_entry;
@@ -1592,9 +1587,6 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY (rmmail_checkbtn, hbox1);
-
-	PACK_CHECK_BUTTON (vbox2, getall_checkbtn,
-			   _("Download all messages on server"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1742,7 +1734,6 @@ static void prefs_account_receive_create(void)
 	receive.use_apop_checkbtn          = use_apop_checkbtn;
 	receive.rmmail_checkbtn            = rmmail_checkbtn;
 	receive.leave_time_entry         = leave_time_entry;
-	receive.getall_checkbtn            = getall_checkbtn;
 	receive.size_limit_checkbtn        = size_limit_checkbtn;
 	receive.size_limit_entry         = size_limit_entry;
 	receive.filter_on_recv_checkbtn    = filter_on_recv_checkbtn;

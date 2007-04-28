@@ -923,7 +923,6 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	/* receive */
 	ACP_FASSIGN(rmmail);
 	ACP_FASSIGN(msg_leave_time);
-	ACP_FASSIGN(getall);
 	ACP_FASSIGN(recv_at_getall);
 	ACP_FASSIGN(sd_rmmail_on_download);
 	ACP_FASSIGN(sd_filter_on_recv);
