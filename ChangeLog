@@ -1,3 +1,10 @@
+2007-04-29 [wwp]	2.9.1cvs34
+
+	* src/mainwindow.c
+	* configure.ac
+		Fix few grammatical errors (patch by David Relson < relson at
+		osagesoftware dot com >).
+
 2007-04-28 [colin]	2.9.1cvs33
 
 	* src/account.c
