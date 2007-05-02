@@ -90,8 +90,10 @@
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"
 #define THEMEINFO_FILE		".claws_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"
-#define CACHE_FILE		".sylpheed_claws_cache"
-#define MARK_FILE		".sylpheed_mark"
+#define OLD_CACHE_FILE		".sylpheed_claws_cache"
+#define CACHE_FILE		".claws_cache"
+#define OLD_MARK_FILE		".sylpheed_mark"
+#define MARK_FILE		".claws_mark"
 #define CACHE_VERSION		24
 #define MARK_VERSION		2
 
