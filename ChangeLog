@@ -1,3 +1,11 @@
+2007-05-02 [colin]	2.9.1cvs38
+
+	* src/textview.c
+		Fix bug 1209, 'Clicking on address 
+		in header (mailto uri) selects 
+		default account'. Patch adapted from
+		G.P. Halkes' patch.
+
 2007-05-02 [colin]	2.9.1cvs37
 
 	* src/grouplistdialog.c

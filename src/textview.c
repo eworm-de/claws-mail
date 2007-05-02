@@ -2418,6 +2418,8 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					folder_item = textview->messageview->msginfo->folder;
 					if (folder_item->prefs && folder_item->prefs->enable_default_account)
 						account = account_find_from_id(folder_item->prefs->default_account);
+					if (!account)
+						account = account_find_from_item(folder_item);
 				}
 				compose_new_with_folderitem(account, folder_item, uri->uri + 7);
 			}
