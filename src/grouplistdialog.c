@@ -44,6 +44,7 @@
 #include <string.h>
 
 #include "grouplistdialog.h"
+#include "mainwindow.h"
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "utils.h"
@@ -391,6 +392,7 @@ static void grouplist_expand_upwards(GtkCTree *ctree, const gchar *name) {
 
 static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 {
+	static GdkCursor *watch_cursor = NULL;
 	GSList *cur;
 	GtkCTreeNode *node;
 	GPatternSpec *pspec;
@@ -401,6 +403,12 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	if (!pattern || *pattern == '\0')
 		pattern = "*";
 
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new(GDK_WATCH);
+	gdk_window_set_cursor(dialog->window, watch_cursor);
+	main_window_cursor_wait(mainwindow_get_mainwindow());
+	GTK_EVENTS_FLUSH();
+	
 	if (refresh) {
 		ack = TRUE;
 		grouplist_clear();
@@ -411,6 +419,8 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 		if (group_list == NULL && ack == TRUE) {
 			alertpanel_error(_("Can't retrieve newsgroup list."));
 			locked = FALSE;
+			gdk_window_set_cursor(dialog->window, NULL);
+			main_window_cursor_normal(mainwindow_get_mainwindow());
 			return;
 		}
 	} else
@@ -445,6 +455,9 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	grouplist_hash_done();
 
 	gtk_label_set_text(GTK_LABEL(status_label), _("Done."));
+
+	gdk_window_set_cursor(dialog->window, NULL);
+	main_window_cursor_normal(mainwindow_get_mainwindow());
 
 	locked = FALSE;
 }

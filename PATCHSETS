@@ -2564,3 +2564,4 @@
 ( cvs diff -u -r 1.274.2.187 -r 1.274.2.188 src/mainwindow.c;  cvs diff -u -r 1.654.2.2617 -r 1.654.2.2618 configure.ac;  ) > 2.9.1cvs34.patchset
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 manual/glossary.xml;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 manual/plugins.xml;  ) > 2.9.1cvs35.patchset
 ( cvs diff -u -r 1.213.2.143 -r 1.213.2.144 src/folder.c;  cvs diff -u -r 1.9.2.36 -r 1.9.2.37 src/common/defs.h;  ) > 2.9.1cvs36.patchset
+( cvs diff -u -r 1.14.2.17 -r 1.14.2.18 src/grouplistdialog.c;  ) > 2.9.1cvs37.patchset
