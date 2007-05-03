@@ -26,6 +26,7 @@
 typedef struct _Template	Template;
 
 struct _Template {
+	gchar *load_filename;
 	gchar *name;
 	gchar *subject;
 	gchar *to;

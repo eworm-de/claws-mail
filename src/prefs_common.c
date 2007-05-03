@@ -846,7 +846,7 @@ static PrefParam param[] = {
 	{"matcherwin_height", "-1", &prefs_common.matcherwin_height, P_INT,
 	 NULL, NULL, NULL},
 
-	{"templateswin_width", "440", &prefs_common.templateswin_width, P_INT,
+	{"templateswin_width", "480", &prefs_common.templateswin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"templateswin_height", "-1", &prefs_common.templateswin_height, P_INT,
 	 NULL, NULL, NULL},

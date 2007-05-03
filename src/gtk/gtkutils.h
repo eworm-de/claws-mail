@@ -247,4 +247,11 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 				 GtkTreeIter *iter);
 
+gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
+				     GtkTreeIter *iter1, 
+				     GtkTreeIter *iter2);
+
+gint gtkut_list_view_get_selected_row(GtkWidget *list_view);
+gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);
+
 #endif /* __GTKUTILS_H__ */

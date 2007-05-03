@@ -45,6 +45,7 @@ static Template *template_load(gchar *filename)
 	}
 
 	tmpl = g_new(Template, 1);
+	tmpl->load_filename = g_strdup(filename);;
 	tmpl->name = NULL;
 	tmpl->subject = NULL;
 	tmpl->to = NULL;
@@ -88,6 +89,7 @@ static Template *template_load(gchar *filename)
 
 void template_free(Template *tmpl)
 {
+	g_free(tmpl->load_filename);
 	g_free(tmpl->name);
 	g_free(tmpl->subject);
 	g_free(tmpl->to);
@@ -111,14 +113,33 @@ void template_clear_config(GSList *tmpl_list)
 
 static gint tmpl_compare(gconstpointer tmpl1, gconstpointer tmpl2)
 {
+	gchar *basename1, *basename2;
+	long filenum1, filenum2;
+	gint ret = 0;
+
 	if ((Template *)tmpl1 == NULL || (Template *)tmpl2 == NULL)
 		return 0;
 
-	if (((Template *)tmpl1)->name == NULL || ((Template *)tmpl2)->name == NULL)
+	if (((Template *)tmpl1)->load_filename == NULL || ((Template *)tmpl2)->load_filename == NULL)
 		return 0;
 
-	return (gint) strcmp((char *)((Template *)tmpl1)->name, 
-			     (char *)((Template *)tmpl2)->name);
+	basename1 = g_path_get_basename(((Template *)tmpl1)->load_filename);
+	basename2 = g_path_get_basename(((Template *)tmpl2)->load_filename);
+	filenum1 = atol(basename1);
+	filenum2 = atol(basename2);
+	g_free(basename1);
+	g_free(basename2);
+
+	if (filenum1 == 0 || filenum2 == 0)
+		return 0;
+
+	if (filenum1 < filenum2)
+		ret = -1;
+	else
+		if (filenum1 > filenum2)
+			ret = 1;
+			
+	return ret;
 }
 
 GSList *template_read_config(void)

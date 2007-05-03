@@ -1630,3 +1630,74 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 	return window;
 }
 #endif
+
+gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
+				     GtkTreeIter *iter1, 
+				     GtkTreeIter *iter2)
+{
+	GtkTreePath *path1 = gtk_tree_model_get_path(model, iter1);
+	GtkTreePath *path2 = gtk_tree_model_get_path(model, iter2);
+	gboolean result;
+
+	result = gtk_tree_path_compare(path1, path2) == 0;
+
+	gtk_tree_path_free(path1);
+	gtk_tree_path_free(path2);
+	
+	return result;
+}
+
+/*!
+ *\brief	Get selected row number.
+ */
+gint gtkut_list_view_get_selected_row(GtkWidget *list_view)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(list_view);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	int n_rows = gtk_tree_model_iter_n_children(model, NULL);
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	int row;
+
+	if (n_rows == 0) 
+		return -1;
+	
+	selection = gtk_tree_view_get_selection(view);
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return -1;
+	
+	/* get all iterators and compare them... */
+	for (row = 0; row < n_rows; row++) {
+		GtkTreeIter itern;
+
+		gtk_tree_model_iter_nth_child(model, &itern, NULL, row);
+		if (gtkut_tree_iter_comp(model, &iter, &itern))
+			return row;
+	}
+	
+	return -1;
+}
+
+/*!
+ *\brief	Select a row by its number.
+ */
+gboolean gtkut_list_view_select_row(GtkWidget *list, gint row)
+{
+	GtkTreeView *list_view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(list_view);
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
+		return FALSE;
+	
+	gtk_tree_selection_select_iter(selection, &iter);
+
+	path = gtk_tree_model_get_path(model, &iter);
+	gtk_tree_view_set_cursor(list_view, path, NULL, FALSE);
+	gtk_tree_path_free(path);
+	
+	return TRUE;
+}
+

@@ -142,8 +142,6 @@ static void prefs_filtering_list_view_get_rule_info	(GtkWidget *list,
 
 static GtkWidget *prefs_filtering_list_view_create	(void);
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view);
-static gint prefs_filtering_get_selected_row		(GtkWidget *list_view);
-static gboolean prefs_filtering_list_view_select_row	(GtkWidget *list, gint row);
 
 static gboolean prefs_filtering_selected		(GtkTreeSelection *selector,
 							 GtkTreeModel *model, 
@@ -1047,7 +1045,7 @@ static void prefs_filtering_register_cb(void)
 
 static void prefs_filtering_substitute_cb(void)
 {
-	gint selected_row = prefs_filtering_get_selected_row
+	gint selected_row = gtkut_list_view_get_selected_row
 		(filtering.cond_list_view);
 	FilteringProp *prop;
 	gboolean enabled;
@@ -1083,7 +1081,7 @@ static void prefs_filtering_delete_cb(void)
 	GtkTreeIter iter;
 	gint row;
 	
-	row = prefs_filtering_get_selected_row(filtering.cond_list_view);
+	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row <= 0) 
 		return;	
 
@@ -1107,7 +1105,7 @@ static void prefs_filtering_top(void)
 	GtkTreeIter top, sel;
 	GtkTreeModel *model;
 
-	row = prefs_filtering_get_selected_row(filtering.cond_list_view);
+	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row <= 1) 
 		return;
 
@@ -1118,7 +1116,7 @@ static void prefs_filtering_top(void)
 		return;
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &sel, &top);
-	prefs_filtering_list_view_select_row(filtering.cond_list_view, 1);
+	gtkut_list_view_select_row(filtering.cond_list_view, 1);
 }
 
 static void prefs_filtering_up(void)
@@ -1127,7 +1125,7 @@ static void prefs_filtering_up(void)
 	GtkTreeIter top, sel;
 	GtkTreeModel *model;
 
-	row = prefs_filtering_get_selected_row(filtering.cond_list_view);
+	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row <= 1) 
 		return;
 		
@@ -1138,7 +1136,7 @@ static void prefs_filtering_up(void)
 		return;
 
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
-	prefs_filtering_list_view_select_row(filtering.cond_list_view, row - 1);
+	gtkut_list_view_select_row(filtering.cond_list_view, row - 1);
 }
 
 static void prefs_filtering_down(void)
@@ -1149,7 +1147,7 @@ static void prefs_filtering_down(void)
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view));	
 	n_rows = gtk_tree_model_iter_n_children(model, NULL);
-	row = prefs_filtering_get_selected_row(filtering.cond_list_view);
+	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row < 1 || row >= n_rows - 1)
 		return;
 
@@ -1158,7 +1156,7 @@ static void prefs_filtering_down(void)
 		return;
 			
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
-	prefs_filtering_list_view_select_row(filtering.cond_list_view, row + 1);
+	gtkut_list_view_select_row(filtering.cond_list_view, row + 1);
 }
 
 static void prefs_filtering_bottom(void)
@@ -1169,7 +1167,7 @@ static void prefs_filtering_bottom(void)
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view));	
 	n_rows = gtk_tree_model_iter_n_children(model, NULL);
-	row = prefs_filtering_get_selected_row(filtering.cond_list_view);
+	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row < 1 || row >= n_rows - 1)
 		return;
 
@@ -1178,7 +1176,7 @@ static void prefs_filtering_bottom(void)
 		return;
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &top, &sel);		
-	prefs_filtering_list_view_select_row(filtering.cond_list_view, n_rows - 1);
+	gtkut_list_view_select_row(filtering.cond_list_view, n_rows - 1);
 }
 
 static void prefs_filtering_select_set(FilteringProp *prop)
@@ -1502,73 +1500,6 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 		 "text", PREFS_FILTERING_RULE,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
-}
-
-static gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
-				     GtkTreeIter *iter1, 
-				     GtkTreeIter *iter2)
-{
-	GtkTreePath *path1 = gtk_tree_model_get_path(model, iter1);
-	GtkTreePath *path2 = gtk_tree_model_get_path(model, iter2);
-	gboolean result;
-
-	result = gtk_tree_path_compare(path1, path2) == 0;
-
-	gtk_tree_path_free(path1);
-	gtk_tree_path_free(path2);
-	
-	return result;
-}
-
-/*!
- *\brief	Get selected row number.
- */
-static gint prefs_filtering_get_selected_row(GtkWidget *list_view)
-{
-	GtkTreeView *view = GTK_TREE_VIEW(list_view);
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	int n_rows = gtk_tree_model_iter_n_children(model, NULL);
-	GtkTreeSelection *selection;
-	GtkTreeIter iter;
-	int row;
-
-	if (n_rows == 0) 
-		return -1;
-	
-	selection = gtk_tree_view_get_selection(view);
-	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
-		return -1;
-	
-	/* get all iterators and compare them... */
-	for (row = 0; row < n_rows; row++) {
-		GtkTreeIter itern;
-
-		gtk_tree_model_iter_nth_child(model, &itern, NULL, row);
-		if (gtkut_tree_iter_comp(model, &iter, &itern))
-			return row;
-	}
-	
-	return -1;
-}
-
-static gboolean prefs_filtering_list_view_select_row(GtkWidget *list, gint row)
-{
-	GtkTreeView *list_view = GTK_TREE_VIEW(list);
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(list_view);
-	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
-	GtkTreeIter iter;
-	GtkTreePath *path;
-
-	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
-		return FALSE;
-	
-	gtk_tree_selection_select_iter(selection, &iter);
-
-	path = gtk_tree_model_get_path(model, &iter);
-	gtk_tree_view_set_cursor(list_view, path, NULL, FALSE);
-	gtk_tree_path_free(path);
-	
-	return TRUE;
 }
 
 /*!
