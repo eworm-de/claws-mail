@@ -58,6 +58,7 @@ struct BogofilterPage
 	GtkWidget *bogopath;
 	GtkWidget *whitelist_ab;
 	GtkWidget *whitelist_ab_folder_combo;
+	GtkWidget *mark_as_read;
 };
 
 /*!
@@ -105,6 +106,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox_max_size;
 	GtkWidget *hbox_process_emails, *hbox_save_spam, *hbox_save_unsure;
 	GtkWidget *hbox_bogopath, *hbox_whitelist;
+	GtkWidget *hbox_mark_as_read;
 
 	GtkWidget *max_size_label;
 	GtkObject *max_size_spinbtn_adj;
@@ -125,6 +127,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *whitelist_ab_checkbtn;
 	GtkWidget *bogopath_label;
 	GtkWidget *bogopath_entry;
+
+	GtkWidget *mark_as_read_checkbtn;
 
 	GtkTooltips *tooltips;
 
@@ -271,12 +275,21 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Path to bogofilter executable"),
 			NULL);
 
+	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_mark_as_read);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_mark_as_read, TRUE, TRUE, 0);
+
+	mark_as_read_checkbtn = gtk_check_button_new_with_label(_("Mark spam as read"));
+	gtk_widget_show(mark_as_read_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_mark_as_read), mark_as_read_checkbtn, FALSE, FALSE, 0);
+
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
+	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
 
 	config = bogofilter_get_config();
 
@@ -302,6 +315,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 		gtk_entry_set_text(GTK_ENTRY(save_unsure_folder_entry), config->save_unsure_folder);
 	if (config->bogopath != NULL)
 		gtk_entry_set_text(GTK_ENTRY(bogopath_entry), config->bogopath);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mark_as_read_checkbtn), config->mark_as_read);
 
 	page->max_size = max_size_spinbtn;
 	page->process_emails = process_emails_checkbtn;
@@ -318,6 +332,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 	page->bogopath = bogopath_entry;
+
+	page->mark_as_read = mark_as_read_checkbtn;
 
 	page->page.widget = vbox1;
 }
@@ -368,6 +384,9 @@ static void bogofilter_save_func(PrefsPage *_page)
 
 	/* max_size */
 	config->max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
+
+	/* mark_as_read */
+	config->mark_as_read = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->mark_as_read));
 
 	if (config->process_emails) {
 		bogofilter_register_hook();

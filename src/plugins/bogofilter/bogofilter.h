@@ -40,6 +40,7 @@ struct _BogofilterConfig
 	gchar			*whitelist_ab_folder;
 	gboolean		 save_unsure;
 	gchar 			*save_unsure_folder;
+	gboolean		 mark_as_read;
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);

@@ -108,6 +108,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"username", "", &config.username, P_STRING,
 	 NULL, NULL, NULL},
+	{"mark_as_read", "TRUE", &config.mark_as_read, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -293,7 +295,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					save_folder = folder_get_default_trash();
 				}
 			}
-			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+			if (config.mark_as_read)
+				procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 			msginfo->is_move = TRUE;
 			msginfo->to_filter_folder = save_folder;

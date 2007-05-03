@@ -1,3 +1,15 @@
+2007-05-03 [wwp]	2.9.1cvs40
+
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter.h
+	* src/plugins/bogofilter/bogofilter_gtk.c
+		Added an option to conditionally mark saved spam
+		as read	(default is and was to do so).
+		Satisfies feature request 1708539 on sf.net tracker.
+
 2007-05-03 [colin]	2.9.1cvs39
 
 	* src/inc.c

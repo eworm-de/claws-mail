@@ -47,6 +47,7 @@ struct _SpamAssassinConfig
 	guint 			 max_size;
 	guint 			 timeout;
 	gchar			*username;
+	gboolean		 mark_as_read;
 };
 
 SpamAssassinConfig *spamassassin_get_config	      (void);

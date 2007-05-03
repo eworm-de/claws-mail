@@ -58,6 +58,7 @@ struct SpamAssassinPage
 	GtkWidget *save_folder_select;
 	GtkWidget *max_size;
 	GtkWidget *timeout;
+	GtkWidget *mark_as_read;
 
 	SpamAssassinTransport	trans;
 };
@@ -187,6 +188,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *frame_transport, *table_transport, *vbox_transport;
 	GtkWidget *hbox_spamd, *hbox_max_size, *hbox_timeout;
 	GtkWidget *hbox_process_emails, *hbox_save_spam;
+	GtkWidget *hbox_mark_as_read;
 
 	GtkWidget *enable_sa_checkbtn;
 
@@ -219,6 +221,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_spam_checkbtn;
 	GtkWidget *save_spam_folder_entry;
 	GtkWidget *save_spam_folder_select;
+
+	GtkWidget *mark_as_read_checkbtn;
 
 	GtkTooltips *tooltips;
 
@@ -387,6 +391,15 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a folder for storing spam"),
 			NULL);
 
+	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_mark_as_read);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_mark_as_read, TRUE, TRUE, 0);
+
+	mark_as_read_checkbtn = gtk_check_button_new_with_label(
+			_("Mark spam as read"));
+	gtk_widget_show(mark_as_read_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_mark_as_read), mark_as_read_checkbtn, TRUE, TRUE, 0);
+
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, frame_transport);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_max_size);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_timeout);
@@ -394,6 +407,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_process_emails);
+	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
 
 	config = spamassassin_get_config();
 
@@ -414,6 +428,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_spam_folder_entry), config->save_folder);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mark_as_read_checkbtn), config->mark_as_read);
 
 	page->enable_sa_checkbtn = enable_sa_checkbtn;
 	page->transport_label = transport_label;
@@ -429,6 +444,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->receive_spam = save_spam_checkbtn;
 	page->save_folder = save_spam_folder_entry;
 	page->save_folder_select = save_spam_folder_select;
+	page->mark_as_read = mark_as_read_checkbtn;
 
 	active = 0;
 	for (i = 0; i < (sizeof(transports) / sizeof(struct Transport)); i++) {
@@ -510,6 +526,9 @@ static void spamassassin_save_func(PrefsPage *_page)
 
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
+
+	/* mark_as_read */
+	config->mark_as_read = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->mark_as_read));
 
 	if (config->process_emails) {
 		spamassassin_register_hook();

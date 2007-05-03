@@ -102,6 +102,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"whitelist_ab_folder", "Any", &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
+	{"mark_as_read", "TRUE", &config.mark_as_read, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -546,7 +548,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	for (cur = new_spams; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		if (config.receive_spam) {
-			procmsg_msginfo_change_flags(msginfo, MSG_SPAM, 0, ~0, 0);
+			if (config.mark_as_read)
+				procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
 		} else {
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		}
