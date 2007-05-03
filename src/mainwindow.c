@@ -2275,8 +2275,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Synchronise folders", M_WANT_SYNC},
 		{"/File/Exit"      , M_UNLOCKED},
 
-		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
-		{"/Edit/Delete thread"		   , M_SINGLE_TARGET_EXIST},
+		{"/Edit/Select thread"		   , M_TARGET_EXIST},
+		{"/Edit/Delete thread"		   , M_TARGET_EXIST},
 		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
 
 		{"/View/Set displayed columns/in Folder list..."

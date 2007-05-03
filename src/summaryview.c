@@ -4159,22 +4159,27 @@ void summary_unselect_all(SummaryView *summaryview)
 void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node = summaryview->selected;
+	GtkCTreeNode *node = NULL;
 	gboolean froze = FALSE;
+	GList *cur = NULL;
+	GList *copy = NULL;
+	if (!GTK_CLIST(summaryview->ctree)->selection) 
+		return;
 
-	if (!node) return;
-
-	while (GTK_CTREE_ROW(node)->parent != NULL)
-		node = GTK_CTREE_ROW(node)->parent;
 
 	START_LONG_OPERATION(summaryview, FALSE);
-	if (node != summaryview->selected)
-		summary_select_node
-			(summaryview, node,
-			 messageview_is_visible(summaryview->messageview),
-			 FALSE);
+	copy = g_list_copy(GTK_CLIST(summaryview->ctree)->selection);
+	for (cur = copy; cur != NULL && cur->data != NULL;
+	     cur = cur->next) {
+		node = GTK_CTREE_NODE(cur->data);
+		if (!node)
+			continue;
+		while (GTK_CTREE_ROW(node)->parent != NULL)
+			node = GTK_CTREE_ROW(node)->parent;
 
-	gtk_ctree_select_recursive(ctree, node);
+		gtk_ctree_select_recursive(ctree, node);
+	}
+	g_list_free(copy);
 	END_LONG_OPERATION(summaryview);
 
 	if (delete_thread) {
