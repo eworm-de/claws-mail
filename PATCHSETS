@@ -2566,3 +2566,4 @@
 ( cvs diff -u -r 1.213.2.143 -r 1.213.2.144 src/folder.c;  cvs diff -u -r 1.9.2.36 -r 1.9.2.37 src/common/defs.h;  ) > 2.9.1cvs36.patchset
 ( cvs diff -u -r 1.14.2.17 -r 1.14.2.18 src/grouplistdialog.c;  ) > 2.9.1cvs37.patchset
 ( cvs diff -u -r 1.96.2.171 -r 1.96.2.172 src/textview.c;  ) > 2.9.1cvs38.patchset
+( cvs diff -u -r 1.149.2.72 -r 1.149.2.73 src/inc.c;  ) > 2.9.1cvs39.patchset
