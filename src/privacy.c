@@ -396,6 +396,40 @@ gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
 	return system->get_encrypt_data(recp_names);
 }
 
+const gchar *privacy_get_encrypt_warning(const gchar *id)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, NULL);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return NULL;
+	if (!system->can_encrypt)
+		return NULL;
+	if (system->get_encrypt_warning == NULL)
+		return NULL;
+
+	return system->get_encrypt_warning();
+}
+
+void privacy_inhibit_encrypt_warning(const gchar *id, gboolean inhibit)
+{
+	PrivacySystem *system;
+
+	g_return_if_fail(id != NULL);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return;
+	if (!system->can_encrypt)
+		return;
+	if (system->inhibit_encrypt_warning == NULL)
+		return;
+
+	system->inhibit_encrypt_warning(inhibit);
+}
+
 gboolean privacy_encrypt(const gchar *id, MimeInfo *mimeinfo, const gchar *encdata)
 {
 	PrivacySystem *system;

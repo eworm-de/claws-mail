@@ -4343,6 +4343,8 @@ gint compose_send(Compose *compose)
 		} else if (val == -5) {
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Couldn't get recipient encryption key."));
+		} else if (val == -6) {
+			/* silent error */
 		} else if (val == -3) {
 			if (privacy_peek_error())
 			alertpanel_error(_("Could not queue message for sending:\n\n"
@@ -4975,6 +4977,32 @@ gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item, gchar **ms
 {
 	return compose_queue_sub (compose, msgnum, item, msgpath, FALSE, remove_reedit_target);
 }
+
+static gboolean compose_warn_encryption(Compose *compose)
+{
+	const gchar *warning = privacy_get_encrypt_warning(compose->privacy_system);
+	AlertValue val = G_ALERTALTERNATE;
+	
+	if (warning == NULL)
+		return TRUE;
+
+	val = alertpanel_full(_("Encryption warning"), warning,
+		  GTK_STOCK_CANCEL, _("+C_ontinue"), NULL,
+		  TRUE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
+	if (val & G_ALERTDISABLE) {
+		val &= ~G_ALERTDISABLE;
+		if (val == G_ALERTALTERNATE)
+			privacy_inhibit_encrypt_warning(compose->privacy_system,
+				TRUE);
+	}
+
+	if (val == G_ALERTALTERNATE) {
+		return TRUE;
+	} else {
+		return FALSE;
+	} 
+}
+
 static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, 
 			      gchar **msgpath, gboolean check_subject,
 			      gboolean remove_reedit_target)
@@ -5095,6 +5123,13 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing);
 		if (compose->use_encryption) {
 			gchar *encdata;
+			if (!compose_warn_encryption(compose)) {
+				lock = FALSE;
+				fclose(fp);
+				g_unlink(tmp);
+				g_free(tmp);
+				return -6;
+			}
 			if (mailac && mailac->encrypt_to_self) {
 				GSList *tmp_list = g_slist_copy(compose->to_list);
 				tmp_list = g_slist_append(tmp_list, compose->account->address);
@@ -8088,6 +8123,8 @@ static void compose_send_later_cb(gpointer data, guint action,
 	} else if (val == -5) {
 		alertpanel_error(_("Could not queue message for sending:\n\n"
 				   "Couldn't get recipient encryption key."));
+	} else if (val == -6) {
+		/* silent error */
 	}
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }

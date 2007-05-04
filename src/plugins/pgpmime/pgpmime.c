@@ -569,6 +569,23 @@ gchar *pgpmime_get_encrypt_data(GSList *recp_names)
 	return sgpgme_get_encrypt_data(recp_names, GPGME_PROTOCOL_OpenPGP);
 }
 
+static const gchar *pgpmime_get_encrypt_warning(void)
+{
+	if (prefs_gpg_should_skip_encryption_warning(pgpmime_system.id))
+		return NULL;
+	else
+		return _("Please note that email headers, like Subject, "
+			 "are not encrypted by the PGP/Mime system.");
+}
+
+static void pgpmime_inhibit_encrypt_warning(gboolean inhibit)
+{
+	if (inhibit)
+		prefs_gpg_add_skip_encryption_warning(pgpmime_system.id);
+	else
+		prefs_gpg_remove_skip_encryption_warning(pgpmime_system.id);
+}
+
 gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 {
 	MimeInfo *msgcontent, *encmultipart, *newinfo;
@@ -706,6 +723,8 @@ static PrivacySystem pgpmime_system = {
 	TRUE,
 	pgpmime_get_encrypt_data,
 	pgpmime_encrypt,
+	pgpmime_get_encrypt_warning,
+	pgpmime_inhibit_encrypt_warning,
 };
 
 void pgpmime_init()

@@ -651,6 +651,23 @@ static gchar *pgpinline_get_encrypt_data(GSList *recp_names)
 	return sgpgme_get_encrypt_data(recp_names, GPGME_PROTOCOL_OpenPGP);
 }
 
+static const gchar *pgpinline_get_encrypt_warning(void)
+{
+	if (prefs_gpg_should_skip_encryption_warning(pgpinline_system.id))
+		return NULL;
+	else
+		return _("Please note that attachments are not encrypted by "
+		 "the PGP/Inline system, nor are email headers, like Subject.");
+}
+
+static void pgpinline_inhibit_encrypt_warning(gboolean inhibit)
+{
+	if (inhibit)
+		prefs_gpg_add_skip_encryption_warning(pgpinline_system.id);
+	else
+		prefs_gpg_remove_skip_encryption_warning(pgpinline_system.id);
+}
+
 static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 {
 	MimeInfo *msgcontent;
@@ -781,6 +798,8 @@ static PrivacySystem pgpinline_system = {
 	TRUE,
 	pgpinline_get_encrypt_data,
 	pgpinline_encrypt,
+	pgpinline_get_encrypt_warning,
+	pgpinline_inhibit_encrypt_warning,
 };
 
 void pgpinline_init()

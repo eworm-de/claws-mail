@@ -1,3 +1,15 @@
+2007-05-04 [colin]	2.9.1cvs43
+
+	* src/compose.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Add an API to warn about encryption limits,
+		and allow to disable these warnings
+
 2007-05-03 [colin]	2.9.1cvs42
 
 	* src/summaryview.c

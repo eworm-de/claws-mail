@@ -37,6 +37,7 @@ struct GPGConfig
 	gboolean	 passphrase_grab;
 	gboolean	 gpg_warning;
 	gboolean	 gpg_ask_create_key;
+	gchar		*skip_encryption_warning;
 };
 
 struct GPGAccountConfig
@@ -53,3 +54,6 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account);
 void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config);
 void prefs_gpg_account_free_config(GPGAccountConfig *config);
 void prefs_gpg_enable_agent(gboolean enable);
+void prefs_gpg_add_skip_encryption_warning(const gchar *systemid);
+void prefs_gpg_remove_skip_encryption_warning(const gchar *systemid);
+gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid);

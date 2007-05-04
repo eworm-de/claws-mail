@@ -49,6 +49,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"gpg_ask_create_key", "TRUE", &prefs_gpg.gpg_ask_create_key, P_BOOL,
 	 NULL, NULL, NULL},
+	{"skip_encryption_warning", "", &prefs_gpg.skip_encryption_warning, P_STRING,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -577,4 +579,67 @@ void prefs_gpg_done()
 	prefs_gtk_unregister_page((PrefsPage *) &gpg_page);
 	prefs_account_unregister_page((PrefsPage *) &gpg_account_page);
 	prefs_gpg_enable_agent(TRUE);
+}
+
+gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid)
+{
+	gchar **systems = NULL;
+	int i = 0;
+	if (prefs_gpg_get_config()->skip_encryption_warning == NULL)
+		return FALSE;
+	systems = g_strsplit(prefs_gpg_get_config()->skip_encryption_warning,
+				",", -1);
+	while (systems && systems[i]) {
+		printf(" cmp %s %s\n", systems[i], systemid);
+		if (!strcmp(systems[i],systemid)) {
+			g_strfreev(systems);
+			return TRUE;
+		}
+		i++;
+	}
+	g_strfreev(systems);
+	return FALSE;
+}
+
+void prefs_gpg_add_skip_encryption_warning(const gchar *systemid)
+{
+	gchar *tmp = NULL;
+	if (prefs_gpg_get_config()->skip_encryption_warning == NULL)
+		prefs_gpg_get_config()->skip_encryption_warning =
+			g_strdup_printf("%s,", systemid);
+	else if (!prefs_gpg_should_skip_encryption_warning(systemid)) {
+		tmp = g_strdup_printf("%s%s,",
+			prefs_gpg_get_config()->skip_encryption_warning,
+			systemid);
+		g_free(prefs_gpg_get_config()->skip_encryption_warning);
+		prefs_gpg_get_config()->skip_encryption_warning = tmp;
+	}
+	prefs_gpg_save_config();
+}
+
+void prefs_gpg_remove_skip_encryption_warning(const gchar *systemid)
+{
+	gchar **systems = NULL;
+	int i = 0;
+	if (prefs_gpg_get_config()->skip_encryption_warning == NULL)
+		return;
+
+	if (prefs_gpg_should_skip_encryption_warning(systemid)) {
+		systems = g_strsplit(prefs_gpg_get_config()->skip_encryption_warning,
+				",", -1);
+		g_free(prefs_gpg_get_config()->skip_encryption_warning);
+		prefs_gpg_get_config()->skip_encryption_warning = NULL;
+
+		while (systems && systems[i]) {
+			if (!strcmp(systems[i],systemid)) {
+				i++;
+				continue;
+			}
+			prefs_gpg_add_skip_encryption_warning(systems[i]);
+			i++;
+		}
+		
+		g_strfreev(systems);
+	}
+	prefs_gpg_save_config();
 }

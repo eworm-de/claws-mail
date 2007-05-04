@@ -61,6 +61,7 @@ gboolean privacy_sign				(const gchar  *system,
 						 PrefsAccount *account);
 gchar *privacy_get_encrypt_data			(const gchar  *system,
 						 GSList       *recp_names);
+const gchar *privacy_get_encrypt_warning	(const gchar  *system);
 gboolean privacy_encrypt			(const gchar  *system,
 						 MimeInfo     *mimeinfo,
 						 const gchar  *encdata);
@@ -95,6 +96,8 @@ struct _PrivacySystem {
 	gchar		*(*get_encrypt_data)	(GSList *recp_names);
 	gboolean	 (*encrypt)		(MimeInfo *mimeinfo,
 						 const gchar *encrypt_data);
+	const gchar	*(*get_encrypt_warning)	(void);
+	void 		 (*inhibit_encrypt_warning)	(gboolean inhibit);
 };
 
 struct _PrivacyData {
