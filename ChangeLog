@@ -1,3 +1,14 @@
+2007-05-05 [wwp]	2.9.1cvs44
+
+	* src/messageview.c
+	* src/mh.c
+	* src/prefs_actions.c
+	* src/prefs_gtk.c
+	* src/summaryview.c
+	* src/common/xml.c
+		Fix "faild" typos everywhere and capitalization of
+		some g_warnings.
+
 2007-05-04 [colin]	2.9.1cvs43
 
 	* src/compose.c

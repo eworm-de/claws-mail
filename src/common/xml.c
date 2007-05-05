@@ -549,7 +549,7 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 
 	tmpstr = conv_codeset_strdup(str, src_codeset, dest_codeset);
 	if (!tmpstr) {
-		g_warning("xml_file_put_escape_str(): Faild to convert character set.");
+		g_warning("xml_file_put_escape_str(): Failed to convert character set.");
 		tmpstr = g_strdup(str);
 	}
 

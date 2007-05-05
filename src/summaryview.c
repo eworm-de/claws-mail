@@ -4215,7 +4215,7 @@ void summary_save_as(SummaryView *summaryview)
 					       conv_get_locale_charset_str(),
 					       CS_UTF_8);
 		if (!filename) {
-			g_warning("summary_save_as(): faild to convert character set.");
+			g_warning("summary_save_as(): failed to convert character set.");
 			filename = g_strdup(oldstr);
 		}
 		dest = filesel_select_file_save(_("Save as"), filename);

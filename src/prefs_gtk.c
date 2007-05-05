@@ -181,7 +181,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				tmp = g_strdup("");
 			}
 			if (!tmp) {
-				g_warning("failed to convert character set.");
+				g_warning("Failed to convert character set.");
 				tmp = g_strdup(value);
 			}
 			g_free(*((gchar **)param[i].data));
@@ -237,7 +237,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 #define TRY(func) \
 if (!(func)) \
 { \
-	g_warning("failed to write configuration to file\n"); \
+	g_warning("Failed to write configuration to file\n"); \
 	if (orig_fp) fclose(orig_fp); \
 	prefs_file_close_revert(pfile); \
 	g_free(rcpath); \
@@ -265,7 +265,7 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 	}
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning("failed to write configuration to file\n");
+		g_warning("Failed to write configuration to file\n");
 		if (orig_fp) fclose(orig_fp);
 		g_free(rcpath);
 		return;
@@ -321,7 +321,7 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 
 	if (orig_fp) fclose(orig_fp);
 	if (prefs_file_close(pfile) < 0)
-		g_warning("failed to write configuration to file\n");
+		g_warning("Failed to write configuration to file\n");
 	g_free(rcpath);
 
 	debug_print("Configuration is saved.\n");
@@ -439,7 +439,7 @@ void prefs_set_default(PrefParam *param)
 								    CS_INTERNAL)
 						: g_strdup("");
 					if (!tmp) {
-						g_warning("faild to convert character set.");
+						g_warning("Failed to convert character set.");
 						tmp = g_strdup(envstr);
 					}
 					*((gchar **)param[i].data) = tmp;
@@ -1061,7 +1061,7 @@ static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *labe
 	sections_table = g_hash_table_lookup(whole_cache, rcfile);
 	
 	if (sections_table == NULL) {
-		g_warning("can't find %s in the whole cache\n", rcfile);
+		g_warning("Can't find %s in the whole cache\n", rcfile);
 		return FALSE;
 	}
 	values_table = g_hash_table_lookup(sections_table, label);
