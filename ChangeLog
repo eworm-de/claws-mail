@@ -1,3 +1,12 @@
+2007-05-06 [paul]	2.9.1cvs45
+
+	* src/compose.c
+	* src/ldapquery.c
+	* src/privacy.h
+	* src/summary_search.c
+	* src/summaryview.c
+		fix build warnings
+
 2007-05-05 [wwp]	2.9.1cvs44
 
 	* src/messageview.c

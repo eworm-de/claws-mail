@@ -439,7 +439,7 @@ static GList *ldapqry_build_items_fl(
 {
 	GSList *nodeAddress, *cur;
 	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL;
-	gboolean allocated;
+	gboolean allocated = FALSE;
 	ItemPerson *person;
 	ItemEMail *email;
 	ItemFolder *folder;

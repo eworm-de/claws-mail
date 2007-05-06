@@ -104,4 +104,7 @@ struct _PrivacyData {
 	PrivacySystem	*system;
 };
 
+void privacy_inhibit_encrypt_warning		(const gchar *id,
+						 gboolean inhibit);
+
 #endif /* PRIVACY_H */

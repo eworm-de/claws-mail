@@ -122,6 +122,7 @@
 #include "message_search.h"
 #include "combobox.h"
 #include "hooks.h"
+#include "privacy.h"
 
 enum
 {

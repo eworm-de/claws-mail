@@ -256,9 +256,11 @@ static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
+#ifdef MAEMO
 static void summary_toggle_multiple_pressed
 					(GtkWidget		*widget,
 					 SummaryView		*summaryview);
+#endif
 static gint summary_folder_eventbox_pressed	
 					(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
@@ -5409,14 +5411,14 @@ static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 		summary_toggle_view(summaryview);
 	return TRUE;
 }
-
+#ifdef MAEMO
 static void summary_toggle_multiple_pressed(GtkWidget *widget,
 				   SummaryView *summaryview)
 {
 	GTK_SCTREE(summaryview->ctree)->force_additive_sel = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
-
+#endif
 static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				       SummaryView *summaryview)
 {
