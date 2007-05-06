@@ -388,6 +388,7 @@ EXTRA_DIST = \
 	pixmaps/outbox_open_hrm_mark.xpm \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
+	pixmaps/printer.xpm \
 	pixmaps/privacy_expired.xpm \
 	pixmaps/privacy_failed.xpm \
 	pixmaps/privacy_passed.xpm \

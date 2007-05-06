@@ -1,3 +1,11 @@
+2007-05-06 [colin]	2.9.1cvs46
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/printer.xpm
+		Add a printer icon
+
 2007-05-06 [paul]	2.9.1cvs45
 
 	* src/compose.c
