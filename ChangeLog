@@ -1,3 +1,9 @@
+2007-05-06 [wwp]	2.9.1cvs47
+
+	* tools/uudec
+		Fix missing dash to `display` command-line, reported
+		by Georg Himmrich <georg at mails d0t diesind d0t net>.
+
 2007-05-06 [colin]	2.9.1cvs46
 
 	* src/Makefile.am
