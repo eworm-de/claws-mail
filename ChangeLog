@@ -1,3 +1,12 @@
+2007-05-07 [paul]	2.9.1cvs6-stable
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/printer.xpm
+		backported from 2.9.1cvs46
+		Add a printer icon
+
 2007-05-07 [paul]	2.9.1cvs5
 
 	* manual/glossary.xml
