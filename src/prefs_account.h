@@ -198,7 +198,7 @@ void prefs_account_write_config_all	(GList		*account_list);
 
 void prefs_account_free			(PrefsAccount	*ac_prefs);
 
-PrefsAccount *prefs_account_open	(PrefsAccount	*ac_prefs);
+PrefsAccount *prefs_account_open	(PrefsAccount	*ac_prefs, gboolean *dirty);
 
 const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id);
 void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value);

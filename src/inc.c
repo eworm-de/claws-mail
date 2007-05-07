@@ -303,7 +303,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	gint account_new_msgs = 0;
 	
 	if (prefs_common.work_offline && 
-	    !inc_offline_should_override(TRUE,
+	    !inc_offline_should_override( (autocheck == FALSE),
 		_("Claws Mail needs network access in order "
 		  "to get mails.")))
 		return;

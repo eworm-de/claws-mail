@@ -1058,7 +1058,7 @@ static void destroy_dialog(gpointer data)
 	gtk_main_quit();
 }
 
-PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
+PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
 {
 	gchar *title;
 
@@ -1090,6 +1090,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 
 	inc_unlock();
 
+	if (!cancelled && dirty != NULL)
+		*dirty = TRUE;
 	if (cancelled && new_account) {
 		prefs_account_free(ac_prefs);
 		return NULL;

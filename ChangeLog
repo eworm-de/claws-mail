@@ -1,3 +1,31 @@
+2007-05-07 [paul]	2.9.1cvs5
+
+	* manual/glossary.xml
+	* manual/plugins.xml
+		backported from 2.9.1cvs35
+		updates
+	* src/account.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+		backported from 2.9.1cvs32
+		Don't reflect accounts changes to the mainwindow when it's
+		not necessary.
+	* src/inc.c
+		backported from 2.9.1cvs39
+		Fix bug 1211, 'Offline dialog message bugs/annoyances...'
+	* src/compose.c
+	* src/ldapquery.c
+	* src/privacy.h
+	* src/summary_search.c
+	* src/summaryview.c
+		backported from 2.9.1cvs45
+		fix build warnings
+	* src/textview.c
+		backported from 2.9.1cvs38
+		Fix bug 1209, 'Clicking on address 
+		in header (mailto uri) selects 
+		default account'.
+
 2007-05-07 [paul]	2.9.1cvs4-stable
 
 	* src/compose.c

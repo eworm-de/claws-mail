@@ -503,8 +503,9 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	gboolean all_searched = FALSE;
 	gboolean matched = FALSE;
 	gboolean body_matched = FALSE;
-	const gchar *from_str = NULL, *to_str = NULL, *subject_str = NULL;
-	const gchar *body_str = NULL, *adv_condition = NULL;
+	gchar *from_str = NULL, *to_str = NULL, *subject_str = NULL;
+	gchar *body_str = NULL;
+	gchar *adv_condition = NULL;
 	StrFindFunc str_find_func = NULL;
 	gboolean is_fast = TRUE;
 	gint interval = 1000;

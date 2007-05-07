@@ -529,6 +529,20 @@
 -->    
 <variablelist>
   <title>P</title>
+  <varlistentry id="gt_pdf">
+    <term>
+	<acronym>PDF</acronym>
+    </term>
+    <listitem>
+      <para>
+	Portable Document Format. An open binary file format developed by Adobe
+	Systems to allow interchanging of printable documents between different
+	platforms. Inherits some features from <xref linkend="gt_postscript" />
+	but not being a language made it easier to process, especially on 
+	desktop computers.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_pgp_inline">
     <term>
 	<acronym>PGP</acronym> Inline
@@ -574,6 +588,20 @@
 	Post Office Protocol (version 3). A protocol for retrieving email from 
 	a remote server. Messages can be automatically removed from server 
 	after downloading.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry id="gt_postscript">
+    <term>
+	<acronym>PostScript</acronym>
+    </term>
+    <listitem>
+      <para>
+	Page description language primarily used and understood by printing 
+	devices to generate its output. Was developed by Adobe Systems and 
+	is now a widely used standard in the printing industry. As it's a
+	fully featured interpreted language it requires some processing power
+	to deal with.
       </para>
     </listitem>
   </varlistentry>

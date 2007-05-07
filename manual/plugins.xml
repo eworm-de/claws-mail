@@ -153,6 +153,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>AttachWarner</term>
+	<listitem>
+	  <para> 
+	Reminds you about possibly forgotten attachments. Checks for common
+	expressions found when attaching a file and warns you if no attachment
+	was added to the mail you're sending.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>AttRemover</term>
 	<listitem>
 	  <para> 
@@ -176,7 +186,8 @@
 	  <para>
 	Handles signature verification and decryption of encrypted messages in 
 	S/MIME, OpenPGP and ascii-armored PGP formats. Doesn't handle 
-	passphrases.
+	passphrases. The development of this plugin has been discontinued
+	because its functions are avaliable in the PGP plugins. 
 	  </para>
 	</listitem>
       </varlistentry>
@@ -204,6 +215,8 @@
 	  <para>
 	Provides direct support for Maildir++ mailboxes. With this plugin you 
 	can share your Maildir++ mailbox with other mailers or IMAP servers.
+	The development of this plugin has been discontinued. If you're
+	a developer and want to adopt it then don't hesitate to contact us.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -222,6 +235,16 @@
 	Intended to extend the filtering possibilities of Claws Mail. It 
 	provides a Perl interface to Claws Mail' filtering mechanism, 
 	allowing the use of full Perl power in email filters.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>PDF Viewer</term>
+	<listitem>
+	  <para>
+	This plugin provides direct rendering of PDF and PostScript attachments
+	in the Claws Mail message view. It also allows browsing, zooming and 
+	displaying detailed information about such attachments.
 	  </para>
 	</listitem>
       </varlistentry>
