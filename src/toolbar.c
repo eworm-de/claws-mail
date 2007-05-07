@@ -187,7 +187,7 @@ struct {
 	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			   },
 	{ "A_PRINT",	     	N_("Print")				   },
 	{ "A_LEARN_SPAM",	N_("Learn Spam or Ham")			   },
-	{ "A_GO_FOLDERS",   	N_("Go to folder list")       		   },
+	{ "A_GO_FOLDERS",   	N_("Open folder/Go to folder list")        },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -1486,8 +1486,15 @@ static void toolbar_go_folders_cb(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-	gtk_widget_grab_focus(mainwin->folderview->ctree);
-	mainwindow_exit_folder(mainwin);
+	if (!mainwin->in_folder) {
+		FolderItem *item = folderview_get_selected_item(mainwin->folderview);
+		if (item) {
+			folderview_select(mainwin->folderview, item);
+		}
+	} else {
+		gtk_widget_grab_focus(mainwin->folderview->ctree);
+		mainwindow_exit_folder(mainwin);
+	}
 }
 
 static void toolbar_buttons_cb(GtkWidget   *widget, 

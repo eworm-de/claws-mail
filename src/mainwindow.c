@@ -4145,15 +4145,15 @@ void mainwindow_exit_folder(MainWindow *mainwin) {
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		folderview_close_opened(mainwin->folderview);
 		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
-		mainwin->in_folder = FALSE;
 	}
+	mainwin->in_folder = FALSE;
 }
 
 void mainwindow_enter_folder(MainWindow *mainwin) {
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		mainwin_paned_show_last(GTK_PANED(mainwin->hpaned));
-		mainwin->in_folder = TRUE;
 	}
+	mainwin->in_folder = TRUE;
 }
 
 #ifdef MAEMO

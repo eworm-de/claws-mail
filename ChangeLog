@@ -1,3 +1,29 @@
+2007-05-07 [paul]	2.9.1cvs1-stable
+
+	* src/compose.c
+	* src/compose.h
+		backported from 2.9.1cvs6 and 2.9.1cvs7
+		Fix bug 1187, 'Reply-to addressee disappears
+		when reply-to text box is clicked...' (Maemo)
+	* src/folderview.c
+	* src/mainwindow.c
+		backported from 2.9.1cvs8
+		Fix bug 1194, 'Hardware keys move from email
+		list to account/directory list, but not back
+		to email list...' (Maemo)
+	* src/message_search.c
+	* src/prefs_display_header.c
+		backported from 2.9.1cvs2
+		Fix few warnings (g_free of const gchar*).
+	* src/toolbar.c
+		backported from 2.9.1cvs9
+		Fix bug 1190, 'dir_open' button doesn't work'
+		(Maemo)
+	* tools/uudec
+		backported from 2.9.1cvs47
+		Fix missing dash to `display` command-line, reported
+		by Georg Himmrich <georg at mails d0t diesind d0t net>.
+
 2007-04-19 [paul]	2.9.1
 
 	2.9.1 unleashed!

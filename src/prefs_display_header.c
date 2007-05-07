@@ -557,7 +557,7 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 {
 	GtkTreeView *list_view;
 	DisplayHeaderProp *dp;
-	const gchar *entry_text;
+	gchar *entry_text;
 	GtkTreeModel *model;
 
 	entry_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(dispheader.hdr_combo));
