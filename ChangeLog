@@ -1,3 +1,25 @@
+2007-05-07 [paul]	2.9.1cvs4-stable
+
+	* src/compose.c
+		backported from 2.9.1cvs24
+		Fix bug 1198, 'Reply-all "disappearing" address bug 
+		persists...'
+	* src/folder.c
+		backported from 2.9.1cvs25
+		Always fetch body+headers in folders that are
+		synched for offline use, if "Synchronise as
+		soon as possible" is set.
+		Fixes bug 1200, 'Add option to always retrieve full
+		messages'
+	* src/procmime.c
+		backported from 2.9.1cvs27
+		Fix double fetching of mails if
+		first try failed
+	* src/textview.c
+	* src/textview.h
+		backported from 2.9.1cvs19
+		Fix a crash in textview
+
 2007-05-07 [paul]	2.9.1cvs3-stable
 
 	* src/pixmaps/selection.xpm

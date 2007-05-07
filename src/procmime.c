@@ -190,10 +190,8 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename || !is_file_exist(filename)) {
 		g_free(filename);
-		filename = procmsg_get_message_file(msginfo);
-	}
-	if (!filename || !is_file_exist(filename)) 
 		return NULL;
+	}
 
 	if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
