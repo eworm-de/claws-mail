@@ -166,6 +166,7 @@
 #include "pixmaps/copied.xpm"
 #include "pixmaps/active.xpm"
 #include "pixmaps/inactive.xpm"
+#include "pixmaps/selection.xpm"
 #include "pixmaps/empty.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -342,6 +343,7 @@ static StockPixmapData pixmaps[] =
 	{copied_xpm				, NULL, NULL, "copied", NULL},
 	{active_xpm				, NULL, NULL, "active", NULL},
 	{inactive_xpm				, NULL, NULL, "inactive", NULL},
+	{selection_xpm				, NULL, NULL, "selection", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 

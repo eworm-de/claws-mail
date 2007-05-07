@@ -411,6 +411,7 @@ EXTRA_DIST = \
 	pixmaps/quicksearch.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
+	pixmaps/selection.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
 	pixmaps/claws-mail_icon.xpm \

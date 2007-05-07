@@ -1468,6 +1468,9 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 
+	if (!range && !additive && sctree->force_additive_sel)
+		additive = TRUE;
+
 	GTK_CLIST(sctree)->focus_row = row;
 
 	if (!additive) {

@@ -1,3 +1,26 @@
+2007-05-07 [paul]	2.9.1cvs2-stable
+
+	* src/compose.c
+		backported from 2.9.1cvs15
+		Fix bug 1196, 'Edit>Select All doesn't work' (Maemo)
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		backported from 2.9.1cvs16
+		Fix bug 1193, 'Need a way to multi-
+		select items'
+		Add a toggle button in the summaryview
+		to enable normal or multiple selection.
+		(Maemo)
+	* src/gtk/quicksearch.c
+		backported from 2.9.1cvs13 and 2.9.1cvs14
+		Fix changing quicksearch type (after Esc,
+		after changing Recursive, ...)
+
 2007-05-07 [paul]	2.9.1cvs1-stable
 
 	* src/compose.c

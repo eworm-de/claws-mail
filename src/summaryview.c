@@ -256,6 +256,9 @@ static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
+static void summary_toggle_multiple_pressed
+					(GtkWidget		*widget,
+					 SummaryView		*summaryview);
 static gint summary_folder_eventbox_pressed	
 					(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
@@ -564,6 +567,9 @@ SummaryView *summary_create(void)
 	GtkWidget *statlabel_msgs;
 	GtkWidget *hbox_spc;
 	GtkWidget *toggle_eventbox;
+#ifdef MAEMO
+	GtkWidget *multiple_sel_togbtn;
+#endif
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *toggle_search;
@@ -620,14 +626,27 @@ SummaryView *summary_create(void)
 	/* toggle view button */
 	toggle_eventbox = gtk_event_box_new();
 	gtk_widget_show(toggle_eventbox);
+	
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
+
 	toggle_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(toggle_arrow);
 	gtk_container_add(GTK_CONTAINER(toggle_eventbox), toggle_arrow);
 	g_signal_connect(G_OBJECT(toggle_eventbox), "button_press_event",
 			 G_CALLBACK(summary_toggle_pressed),
 			 summaryview);
-	
+
+#ifdef MAEMO
+	multiple_sel_togbtn = gtk_toggle_button_new();
+	gtk_widget_show(multiple_sel_togbtn);
+	gtk_box_pack_end(GTK_BOX(hbox), multiple_sel_togbtn, FALSE, FALSE, 4);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
+			     multiple_sel_togbtn,
+			     _("Toggle multiple selection"), NULL);
+	g_signal_connect(G_OBJECT(multiple_sel_togbtn), "toggled",
+			 G_CALLBACK(summary_toggle_multiple_pressed),
+			 summaryview);
+#endif
 	
 	statlabel_msgs = gtk_label_new("");
 	gtk_widget_show(statlabel_msgs);
@@ -694,6 +713,9 @@ SummaryView *summary_create(void)
 	summaryview->statlabel_msgs = statlabel_msgs;
 	summaryview->toggle_eventbox = toggle_eventbox;
 	summaryview->toggle_arrow = toggle_arrow;
+#ifdef MAEMO
+	summaryview->multiple_sel_togbtn = multiple_sel_togbtn;
+#endif
 	summaryview->toggle_search = toggle_search;
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
@@ -810,6 +832,7 @@ static void summary_set_fonts(SummaryView *summaryview)
 	gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
 	gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
 	gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
+	/* ici */
 	pango_font_description_free(font_desc);
 }
 
@@ -880,6 +903,13 @@ void summary_init(SummaryView *summaryview)
 	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
 	gtk_widget_show(pixmap);
 	summaryview->quick_search_pixmap = pixmap;
+	
+#ifdef MAEMO
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
+	gtk_container_add(GTK_CONTAINER(summaryview->multiple_sel_togbtn), pixmap);
+	gtk_widget_show(pixmap);
+	summaryview->multiple_sel_image = pixmap;
+#endif
 
 	/* Init summaryview prefs */
 	summaryview->sort_key = SORT_BY_NONE;
@@ -5375,6 +5405,13 @@ static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 	return TRUE;
 }
 
+static void summary_toggle_multiple_pressed(GtkWidget *widget,
+				   SummaryView *summaryview)
+{
+	GTK_SCTREE(summaryview->ctree)->force_additive_sel = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+}
+
 static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				       SummaryView *summaryview)
 {
@@ -6340,6 +6377,15 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_container_add(GTK_CONTAINER(summaryview->toggle_search), pixmap);
 	gtk_widget_show(pixmap);
 	summaryview->quick_search_pixmap = pixmap;
+
+#ifdef MAEMO
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
+	gtk_container_remove (GTK_CONTAINER(summaryview->multiple_sel_togbtn), 
+			      summaryview->multiple_sel_image);
+	gtk_container_add(GTK_CONTAINER(summaryview->multiple_sel_togbtn), pixmap);
+	gtk_widget_show(pixmap);
+	summaryview->multiple_sel_togbtn = pixmap;
+#endif
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);

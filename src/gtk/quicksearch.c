@@ -78,6 +78,15 @@ gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 	return quicksearch->is_fast;
 }
 
+static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
+{
+	gint index;
+	index = menu_find_option_menu_index(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+					GINT_TO_POINTER(type),
+					NULL);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), index);	
+}
+
 static void prepare_matcher(QuickSearch *quicksearch)
 {
 	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
@@ -284,8 +293,7 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 	prefs_common.summary_quicksearch_recurse = checked;
 
 	/* reselect the search type */
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
-				    prefs_common.summary_quicksearch_type);
+	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	if (!search_string || strlen(search_string) == 0) {
 		return TRUE;
@@ -308,8 +316,7 @@ static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
 	prefs_common.summary_quicksearch_sticky = checked;
 
 	/* reselect the search type */
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
-				    prefs_common.summary_quicksearch_type);
+	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	return TRUE;
 }
@@ -322,8 +329,7 @@ static gboolean searchtype_dynamic_changed(GtkMenuItem *widget, gpointer data)
 	prefs_common.summary_quicksearch_dynamic = checked;
 
 	/* reselect the search type */
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
-				    prefs_common.summary_quicksearch_type);
+	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	return TRUE;
 }
@@ -530,7 +536,8 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_dynamic_changed),
 			 quicksearch);
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	quicksearch->search_type_opt = search_type_opt;
+	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
 
@@ -615,7 +622,6 @@ QuickSearch *quicksearch_new()
 
 	quicksearch->hbox_search = hbox_search;
 	quicksearch->search_type = search_type;
-	quicksearch->search_type_opt = search_type_opt;
 	quicksearch->search_string_entry = search_string_entry;
 	quicksearch->search_condition_expression = search_condition_expression;
 	quicksearch->search_description = search_description;
@@ -709,8 +715,7 @@ void quicksearch_hide(QuickSearch *quicksearch)
 void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 		     const gchar *matchstring)
 {
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt),
-				    type);
+	quicksearch_set_type(quicksearch, type);
 
 	if (!matchstring || !(*matchstring))
 		quicksearch->in_typing = FALSE;
