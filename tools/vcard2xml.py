@@ -17,10 +17,10 @@ Copyright © 2003 Bogdan Sumanariu <zarrok@yahoo.com>
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-  script name : evolutionvcard2sylpheed.py
+  script name : evolutionvcard2claws.py
 
  script purpose : convert an evolution addressbook VCARD file 
- into a Sylpheed addressbook
+ into a Claws Mail addressbook
 
  tested with evolution 1.2.x, and 1.4.x
 
@@ -75,14 +75,14 @@ def readVCARD (file) :
 				 
 
 ###############################################################################################
-## writes on a given file an xml representation for sylpheed addressbook received as a hash  ##
+## writes on a given file an xml representation for claws-mail addressbook received as a hash  ##
 ###############################################################################################
 
 def writeXMLREPR (vcard,file,uid) :
 
 	"""
 	based on <vcard> and <uid> writes only recognized tags (the ones defined in <keywds> list)
-	NOTE: <url> and <org> tag will be written as attributes (there are such tags in sylpheed's
+	NOTE: <url> and <org> tag will be written as attributes (there are such tags in claws-mail's
 	      XML schema)
 	"""
 	if len (vcard.keys()) == 0 : return

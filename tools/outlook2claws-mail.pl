@@ -16,7 +16,7 @@
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
-# outlook2sylpheed.pl -- perl script to convert an Outlook generated 
+# outlook2claws-mail.pl -- perl script to convert an Outlook generated 
 # 			 contact list into a Claws Mail XML address book.
 # 
 # This script is based on:
@@ -103,9 +103,9 @@ sub write_address {
 	my($al, $em, $re) = @_;
 	if ($em eq "") {
 		$em = "No e-mail address"; 
-		# email is a must -> no address breaks sylpheed display
-		# (sylpheed says file is ok but no name is shown) 
-		# maybe this is a bug on sylpheed?
+		# email is a must -> no address breaks claws-mail display
+		# (claws-mail says file is ok but no name is shown) 
+		# maybe this is a bug on claws-mail?
 	}
 	print NEWB "      <address uid=\"", $time++, "\" ";
 	print NEWB "alias=\"", $al, "\" email=\"", $em, "\" remarks=\"", $re, "\" />\n";

@@ -37,7 +37,7 @@ use Getopt::Long;
 
 GetOptions("tbfile=s" => \$tbfile);
 
-#$tbfile = '/home/urke/bin/sylpheed/tb2ldif/thebat-addressbook.csv';
+#$tbfile = '/home/urke/bin/claws-mail/tb2ldif/thebat-addressbook.csv';
 $total_addresses = 0;
 
 chdir;

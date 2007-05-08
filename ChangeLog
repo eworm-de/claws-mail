@@ -1,3 +1,35 @@
+2007-05-08 [paul]	2.9.1cvs48
+
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/dillo_viewer/dillo_prefs.h
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/pgp_viewer.c
+	* src/plugins/pgpcore/pgp_viewer.h
+	* src/plugins/pgpcore/plugin.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/prefs_gpg.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+	* src/plugins/pgpinline/plugin.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/README
+	* tools/README
+	* tools/README.sylprint
+	* tools/outlook2claws-mail.pl
+	* tools/sylprint.pl
+	* tools/tb2claws-mail
+	* tools/tbird2claws.py
+	* tools/update-po
+	* tools/vcard2xml.py
+	* tools/kdeservicemenu/README
+		cleanups and corrections
+
 2007-05-06 [wwp]	2.9.1cvs47
 
 	* tools/uudec

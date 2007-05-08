@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# sylprint.pl - process a Sylpheed mail and print it using enscript or lpr
+# sylprint.pl - process a Claws Mail mail and print it using enscript or lpr
 # 
 # (c) 2001 by Ricardo Mones Lastra <mones@aic.uniovi.es>
 # This program is released under the GNU General Public License.
@@ -204,7 +204,7 @@ for ($lang) {
                 last;
         };
 }
-# headers as given by Sylpheed
+# headers as given by Claws Mail
 %cabs = ("Date",0,"From",1,"To",2,"Cc",3,"Newsgroups",4,"Subject",5);
 @cabn = ("Date","From","To","Cc","Newsgroups","Subject");
 @cont = ("","","","","","");

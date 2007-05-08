@@ -371,7 +371,7 @@ Mailbox conversion
 	
   Contact: Paul Mangan <paul@claws-mail.org>
 
-* tbird2syl.py
+* tbird2claws.py
 
   WHAT IT DOES
 	This python script integrates a Thunderbird folder tree into 
@@ -385,7 +385,7 @@ Mailbox conversion
 	The best way to use it is to go to inside your Thunderbird
 	root mailfolder directory and invoke it as:
 
-		<path>\python2.4 <path>\tbird2syl.py . <path to Claws Mail>\Mail
+		<path>\python2.4 <path>\tbird2claws.py . <path to Claws Mail>\Mail
 
   Contact: Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
 
@@ -635,8 +635,8 @@ Extra tools
 	This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
   	into an X-Face graphic suitable for inclusion into custom headers of
   	Claws Mail. An X-Face allows to quickly identify (or be identified
-	as) the sender of a mail message in a xface-capable MUA (like sylpheed
-	-claws).
+	as) the sender of a mail message in a xface-capable MUA (like Claws
+	Mail).
 
   HOW TO USE IT
 	After obtaining the desired image for your X-Face you should:
