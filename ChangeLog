@@ -1,3 +1,12 @@
+2007-05-08 [paul]	2.9.2cvs1
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+	* configure.ac
+		bump version number following
+		stable release
+
 2007-05-08 [paul]	2.9.1cvs48
 
 	* src/plugins/demo/demo.c

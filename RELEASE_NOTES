@@ -1,4 +1,4 @@
-19th April 2007                                      Claws Mail 2.9.1
+8th May 2007                                         Claws Mail 2.9.2
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,23 +6,33 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-Notes for this release:
-~~~~~~~~~~~~~~~~~~~~~~~
-
-This release fixes a security bug (CVE-2007-1558) which affects APOP
-users. If you're using APOP for POP3 authentication you are strongly
-advised to upgrade.
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Security fix:
-	o Fix for CVE-2007-1558 (APOP)
-	  http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1558
+* Added a printer icon.
 
 * Bug fixes
-	o Fix bug 1185, 'Pluginwindow's [X] button doesn't save'
-	o Fix encoding woes wrt saving of mails and parts
+	o bug 1187, 'Reply-to addressee disappears when reply-to text
+		     box is clicked...' (Maemo)
+	o bug 1190, 'dir_open' button doesn't work' (Maemo)
+	o bug 1193, 'Need a way to multi-select items'
+	o bug 1194, 'Hardware keys move from email list to account/
+		     directory list, but not back to email list...'
+		     (Maemo)
+	o bug 1196, 'Edit>Select All doesn't work' (Maemo)
+	o bug 1198, 'Reply-all "disappearing" address bug
+		     persists...'
+	o bug 1200, 'Add option to always retrieve full messages'
+	o bug 1209, 'Clicking on address in header (mailto uri)
+		     selects default account'
+	o bug 1211, 'Offline dialog message bugs/annoyances...'
+	o Don't reflect accounts changes to the mainwindow when it's
+	  not necessary.
+	o Fix double fetching of mails if first try failed
+	o Fix a crash in textview
+	o Fix changing quicksearch type (after Esc, after changing
+	  Recursive, ...)
+	o tools/uudec Fix missing dash to `display` command-line
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
