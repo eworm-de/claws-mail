@@ -536,10 +536,10 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_dynamic_changed),
 			 quicksearch);
 
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+
 	quicksearch->search_type_opt = search_type_opt;
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
 
 	gtk_widget_show(search_type);
 
