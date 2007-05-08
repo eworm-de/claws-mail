@@ -1,19 +1,19 @@
 
 NAME
-	sylprint.pl - process a Sylpheed mail and print it using 
+	sylprint.pl - process a Claws Mail mail and print it using 
 	enscript if available (or lpr if not)
 
 SYNTAX
 	sylprint.pl '%s' [-r] [options]
 
 DESCRIPTION
-	Sylprint is a perl script for printing mails from Sylpheed
+	Sylprint is a perl script for printing mails from Claws Mail
 	mailer. Syntax given is appropiate (and designed) for usage 
-	in the "Printing" box of Sylpheed that appears when going
+	in the "Printing" box of Claws Mail that appears when going
 	Configuration->Common Preferences menu, Other tab.
 
 	Sylprint translates the english header names given by 
-	Sylpheed into the local language if available. Also wraps
+	Claws Mail into the local language if available. Also wraps
 	long lines without breaking words, and indents headers, all
 	in order to make a nicer and easier to read hardcopy.
 
@@ -136,7 +136,7 @@ ENVIRONMENT
 	LANG	If defined is used to guess the language that should
 		be tried for translating and the charset encoding.
 	
-	HOME	For getting Sylpheed user's config directory.
+	HOME	For getting Claws Mail user's config directory.
 
 	USER	For building temp files.
 
@@ -149,7 +149,7 @@ FILES
 		script. Settings in this file may be overriden by
 		command line options. Must be stored in the same
 		directory of the script and/or in the ~/.claws-mail
-		one (Sylpheed user's configuration directory).
+		one (Claws Mail user's configuration directory).
 	
 	/tmp/sylprint.username.number
 		Temporary files created to store a processed mail.
@@ -173,7 +173,7 @@ SEE ALSO
 	enscript(1), lpr(1), gv(1)
 
 LIMITATIONS
-	Supported languages are only those supported by Sylpheed.
+	Supported languages are only those supported by Claws Mail.
 	 
 	Supported encodings are only those supported by enscript.
 	Charset encodings not supported by enscript are printed via
@@ -199,7 +199,7 @@ BUGS
 AUTHOR
 	The original author is Ricardo Mones Lastra, but much more
 	people have, indirectly, contributed to this by providing
-	Sylpheed translations, here used again:
+	Claws Mail translations, here used again:
 	
         	Alfons Hoogervorst; Andreas Hinz; Ante Karamatiæ;
         	Danilo Bodei; Dmitry S. Sivachenko; Fabio Junior 

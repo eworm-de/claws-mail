@@ -6,7 +6,7 @@ FILES
 o README			You're reading it
 o install.sh			installer script
 o claws-mail-kdeservicemenu.pl	perl program
-o template_sylpheed-attach-files.desktop
+o template_claws-attach-files.desktop
 				.desktop file template
 
 DESCRIPTION

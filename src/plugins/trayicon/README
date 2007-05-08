@@ -22,12 +22,3 @@ into it indicates new mail.
 The icon also has a tooltip. If you keep the mouse 1 second over the
 icon a tooltip showing the text "New: xxx, Unread: xxx, Total: xxx"
 will appear, where xxx is the number of new, unread and total messages.
-
-It is planned to add a popup menu that can be opened with the right mouse
-button to execute some quick actions.  Ideas for the menu are currently
-to start a check for new mails and to open a compose window.
-
-Another idea is to allow to hide the sylpheed main window completely by
-clicking on the icon with the left mouse button. This currently breaks
-the automatic mail check. If these problems have been solved the feature
-will be available.

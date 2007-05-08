@@ -17,7 +17,7 @@
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
 
-# update-po -- for Sylpheed
+# update-po -- for Claws Mail
 # by Wilbert Berendsen
 # This script updates the .po files named on the command line.
 # Run this script from within the po/ directory!

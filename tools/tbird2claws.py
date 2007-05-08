@@ -44,7 +44,7 @@ This is an alpha release, so it may be a little rough around the edges.
 Nevertheless, I used it with great success to convert a very large and
 deep folder tree.
 
-Please, do backup your sylpheed (destination) folder tree before trying
+Please, do backup your claws-mail (destination) folder tree before trying
 this out. Live safe and die old!
 
 This code is released in the public domain.
@@ -90,7 +90,7 @@ def make_messages(outputdir, filepath, offsets, start):
 	start +=1
 
 def process_file(filepath, outputdir):
-    """Integrates a Thunderbird message file into a sylpheed message diretory.
+    """Integrates a Thunderbird message file into a claws-mail message diretory.
     """  
     offs = harvest_offsets(filepath)
     make_messages(outputdir, filepath, offs, 1)
@@ -98,7 +98,7 @@ def process_file(filepath, outputdir):
 
 def convert_tree(in_treepath, out_treepath):
     """Traverse your thunderbird tree, converting each message file found into
-    a sylpheed message directory.
+    a claws-mail message directory.
     """
     for path,subs,files in os.walk(in_treepath):
         if files:
