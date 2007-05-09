@@ -300,10 +300,11 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 	time_t timer;
 	struct tm *lt;
 	char buf[100];
+	struct tm buft;
 	gchar *filename;
 
 	timer = time(NULL);
-	lt = localtime(&timer);
+	lt = localtime_r(&timer, &buft);
 	strftime(buf, sizeof buf, "claws-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
 	if (NULL != (filename = filesel_select_file_save(_("Save crash information"), buf))
 	&&  *filename)

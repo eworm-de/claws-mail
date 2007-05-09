@@ -122,9 +122,10 @@ void log_print(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
-	
+	struct tm buft;
+
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -150,9 +151,10 @@ void log_message(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -180,9 +182,10 @@ void log_warning(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -210,9 +213,10 @@ void log_error(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -240,9 +244,10 @@ void log_status_ok(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -270,9 +275,10 @@ void log_status_nok(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
@@ -300,9 +306,10 @@ void log_status_skip(LogInstance instance, const gchar *format, ...)
 	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText *logtext = g_new0(LogText, 1);
+	struct tm buft;
 
 	time(&t);
-	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime_r(&t, &buft));
 
 	va_start(args, format);
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);

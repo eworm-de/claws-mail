@@ -2817,10 +2817,11 @@ evaluate_format_string (GtkSourcePrintJob *job, const gchar *format)
 	const struct tm *tm;
 	time_t now;
 	gunichar ch;
-	
+	struct tm lt;
+
 	/* get time */
 	time (&now);
-	tm = localtime (&now);
+	tm = localtime_r(&now, &lt);
 
 	/* analyze format string and replace the codes we know */
 	eval = g_string_new_len (NULL, strlen (format));

@@ -548,6 +548,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	statusbar_print_all(_("Exporting to mbox..."));
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		int len;
+		gchar buft[BUFFSIZE];
 		msginfo = (MsgInfo *)cur->data;
 
 		msg_fp = procmsg_open_message(msginfo);
@@ -566,7 +567,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		extract_address(buf);
 
 		fprintf(mbox_fp, "From %s %s",
-			buf, ctime(&msginfo->date_t));
+			buf, ctime_r(&msginfo->date_t, buft));
 
 		buf[0] = '\0';
 		

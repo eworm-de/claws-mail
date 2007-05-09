@@ -1,3 +1,18 @@
+2007-05-09 [colin]	2.9.2cvs3
+
+	* src/crash.c
+	* src/exporthtml.c
+	* src/mbox.c
+	* src/prefs_summaries.c
+	* src/procheader.c
+	* src/common/log.c
+	* src/common/utils.c
+	* src/gtk/gtksourceprintjob.c
+	* src/gtk/sslcertwindow.c
+		Use the re-entrant variant of time functions
+		Probably fixes bug 1217, 'reentrancy problems 
+		with time functions'
+
 2007-05-09 [colin]	2.9.2cvs2
 
 	* src/imap.c

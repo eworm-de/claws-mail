@@ -951,6 +951,7 @@ void exporthtml_process(
 	time_t tt;
 	gchar *dsName;
 	static gchar *title;
+	gchar buf[512];
 
 	htmlFile = g_fopen( ctl->path, "wb" );
 	if( ! htmlFile ) {
@@ -977,7 +978,7 @@ void exporthtml_process(
 	exporthtml_fmt_folder( ctl, htmlFile, rootFolder );
 
 	tt = time( NULL );
-	fprintf( htmlFile, "<p>%s</p>\n", ctime( &tt ) );
+	fprintf( htmlFile, "<p>%s</p>\n", ctime_r( &tt, buf ) );
 	fprintf( htmlFile, "<hr width=\"100%%\"></hr>\n" );
 
 	fprintf( htmlFile, "</body>\n" );

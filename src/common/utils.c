@@ -3541,9 +3541,10 @@ time_t tzoffset_sec(time_t *now)
 {
 	struct tm gmt, *lt;
 	gint off;
-
-	gmt = *gmtime(now);
-	lt = localtime(now);
+	struct tm buf1, buf2;
+	
+	gmt = *gmtime_r(now, &buf1);
+	lt = localtime_r(now, &buf2);
 
 	off = (lt->tm_hour - gmt.tm_hour) * 60 + lt->tm_min - gmt.tm_min;
 
@@ -3571,9 +3572,10 @@ gchar *tzoffset(time_t *now)
 	struct tm gmt, *lt;
 	gint off;
 	gchar sign = '+';
+	struct tm buf1, buf2;
 
-	gmt = *gmtime(now);
-	lt = localtime(now);
+	gmt = *gmtime_r(now, &buf1);
+	lt = localtime_r(now, &buf2);
 
 	off = (lt->tm_hour - gmt.tm_hour) * 60 + lt->tm_min - gmt.tm_min;
 
@@ -3605,11 +3607,13 @@ void get_rfc822_date(gchar *buf, gint len)
 	time_t t;
 	gchar day[4], mon[4];
 	gint dd, hh, mm, ss, yyyy;
+	struct tm buf1;
+	gchar buf2[BUFFSIZE];
 
 	t = time(NULL);
-	lt = localtime(&t);
+	lt = localtime_r(&t, &buf1);
 
-	sscanf(asctime(lt), "%3s %3s %d %d:%d:%d %d\n",
+	sscanf(asctime_r(lt, buf2), "%3s %3s %d %d:%d:%d %d\n",
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
@@ -3786,9 +3790,10 @@ gchar *generate_msgid(gchar *buf, gint len)
 	struct tm *lt;
 	time_t t;
 	gchar *addr;
+	struct tm buft;
 
 	t = time(NULL);
-	lt = localtime(&t);
+	lt = localtime_r(&t, &buft);
 
 	addr = g_strconcat("@", get_domain_name(), NULL);
 
@@ -4871,30 +4876,6 @@ static void init_time_names(void)
 	time_am_pm = Q_("For use by strftime (default 12-hour time format)|%I:%M:%S %p");
 
 	time_names_init_done = TRUE;
-#if 0
-	{
-	struct tm *lt;
-	time_t now = time(NULL), next;
-	gchar buf_a[1024], buf_b[1024];
-	
-	printf("test strftime:\n");
-	tzset();
-	for (next = now; next < now + 86400*365*2; next++) {
-		lt = localtime(&now);
-		strftime(buf_a, 1024, 
-			"%a,%A,%b,%B,%c,%C,%d,%D,%e,%F,%G,%g,%h,%H,%I "
-			"%j,%k,%l,%m,%M,%n,%p,%P,%r,%R,%s,%S,%t,%T,%u,%U,%V"
-			"%w,%W,%x,%X,%y,%Y,%z,%Z,%%,%EY,%OY", lt);
-		fast_strftime(buf_b, 1024, 
-			"%a,%A,%b,%B,%c,%C,%d,%D,%e,%F,%G,%g,%h,%H,%I "
-			"%j,%k,%l,%m,%M,%n,%p,%P,%r,%R,%s,%S,%t,%T,%u,%U,%V"
-			"%w,%W,%x,%X,%y,%Y,%z,%Z,%%,%EY,%OY", lt);
-		if (strcmp(buf_a, buf_b)) {
-			printf("diff: \n%s\n%s\n", buf_a, buf_b);
-		}
-	}
-	}
-#endif
 }
 
 #define CHECK_SIZE() {			\

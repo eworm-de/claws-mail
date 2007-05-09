@@ -59,6 +59,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	unsigned char md[EVP_MAX_MD_SIZE];	
 	ASN1_TIME *validity;
 	time_t exp_time_t;
+	struct tm lt;
 
 	/* issuer */	
 	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
@@ -115,7 +116,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	}
 	
 	memset(buf, 0, sizeof(buf));
-	strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime(&exp_time_t));
+	strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&exp_time_t, &lt));
 	exp_date = buf? g_strdup(buf):g_strdup("?");
 
 	/* fingerprint */

@@ -743,9 +743,10 @@ static void date_format_entry_on_change(GtkEditable *editable,
 	struct tm *cal_time;
 	gchar buffer[100];
 	gchar *text;
+	struct tm lt;
 
 	cur_time = time(NULL);
-	cal_time = localtime(&cur_time);
+	cal_time = localtime_r(&cur_time, &lt);
 	buffer[0] = 0;
 	text = gtk_editable_get_chars(editable, 0, -1);
 	if (text)

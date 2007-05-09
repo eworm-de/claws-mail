@@ -914,8 +914,9 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	gchar *default_format = "%y/%m/%d(%a) %H:%M";
 	gchar *str;
 	const gchar *src_codeset, *dest_codeset;
+	struct tm buf;
 
-	lt = localtime(&timer);
+	lt = localtime_r(&timer, &buf);
 
 	if (prefs_common.date_format)
 		fast_strftime(dest, len, prefs_common.date_format, lt);
