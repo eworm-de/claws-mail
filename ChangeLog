@@ -1,3 +1,8 @@
+2007-05-09 [colin]	2.9.2cvs2
+
+	* src/imap.c
+		Fix crasher when reconnection fails
+
 2007-05-08 [paul]	2.9.2cvs1
 
 	* NEWS

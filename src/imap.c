@@ -792,8 +792,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 			debug_print("disconnected!\n");
 			session = imap_reconnect_if_possible(folder, session);
 		}
-		
-		session->cancelled = FALSE;
+		if (session)
+			session->cancelled = FALSE;
 	}
 
 	rfolder->session = SESSION(session);
@@ -4702,7 +4702,8 @@ void imap_cancel_all(void)
 				imap_threaded_cancel(folder);
 				rfolder = (RemoteFolder *) folder;
 				imap_session = (IMAPSession *) rfolder->session;
-				imap_session->cancelled = 1;
+				if (imap_session)
+					imap_session->cancelled = 1;
 			}
 		}
 	}
