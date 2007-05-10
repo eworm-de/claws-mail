@@ -4168,7 +4168,9 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			flags |= MSG_POSTFILTERED;
 		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
-	g_hash_table_destroy(flags_hash);
+	
+	if (flags_hash)
+		g_hash_table_destroy(flags_hash);
 
 	imap_lep_set_free(seq_list);
 	g_slist_free(flagged);

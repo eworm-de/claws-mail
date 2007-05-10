@@ -1,3 +1,9 @@
+2007-05-10 [colin]	2.9.2cvs4
+
+	* src/imap.c
+		Fix g_warnings, thanks to Brian
+		Morrison
+
 2007-05-09 [colin]	2.9.2cvs3
 
 	* src/crash.c
