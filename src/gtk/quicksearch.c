@@ -66,6 +66,10 @@ struct _QuickSearch
 	gboolean			 is_fast;
 	gboolean			 in_typing;
 	guint				 press_timeout_id;
+
+	/* dynamic and autorun qs settings are exclusive*/
+	GtkWidget 			 *dynamic_menuitem;
+	GtkWidget 			 *autorun_menuitem;
 };
 
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
@@ -206,6 +210,12 @@ static int searchbar_changed_timeout(void *data)
 
 static gboolean searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 {
+	if (!qs->has_focus && prefs_common.summary_quicksearch_autorun) {
+		gtk_widget_grab_focus(qs->search_string_entry);
+		searchbar_run(qs, TRUE);
+		return FALSE;
+	}
+
 	if (prefs_common.summary_quicksearch_dynamic) {
 		if (qs->press_timeout_id != -1) {
 			g_source_remove(qs->press_timeout_id);
@@ -327,6 +337,27 @@ static gboolean searchtype_dynamic_changed(GtkMenuItem *widget, gpointer data)
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
 
 	prefs_common.summary_quicksearch_dynamic = checked;
+	if (checked)
+		gtk_check_menu_item_set_active(
+				GTK_CHECK_MENU_ITEM(quicksearch->autorun_menuitem),
+				FALSE);
+
+	/* reselect the search type */
+	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
+
+	return TRUE;
+}
+
+static gboolean searchtype_autorun_changed(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+
+	prefs_common.summary_quicksearch_autorun = checked;
+	if (checked)
+		gtk_check_menu_item_set_active(
+				GTK_CHECK_MENU_ITEM(quicksearch->dynamic_menuitem),
+				FALSE);
 
 	/* reselect the search type */
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
@@ -542,6 +573,18 @@ QuickSearch *quicksearch_new()
 
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_dynamic_changed),
+			 quicksearch);
+
+	menuitem = gtk_check_menu_item_new_with_label(_("Run on select"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					prefs_common.summary_quicksearch_autorun);
+
+	quicksearch->autorun_menuitem = menuitem;
+
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_autorun_changed),
 			 quicksearch);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);

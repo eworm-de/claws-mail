@@ -1,3 +1,12 @@
+2007-05-10 [wwp]	2.9.2cvs5
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gtk/quicksearch.c
+		Add a quicksearch option to automatically run
+		a search selected from the history (this option
+		is exclusive towards type-ahead).
+
 2007-05-10 [colin]	2.9.2cvs4
 
 	* src/imap.c
