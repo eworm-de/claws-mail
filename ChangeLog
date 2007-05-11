@@ -1,3 +1,10 @@
+2007-05-11 [colin]	2.9.2cvs6
+
+	* src/gtk/filesel.c
+		Use Hildon's file chooser on Maemo. Patch
+		by Jean-Luc Biord; fixes part 2 of bug 1201,
+		'File attachment "manipulation" bugs...'
+
 2007-05-10 [wwp]	2.9.2cvs5
 
 	* src/prefs_common.c

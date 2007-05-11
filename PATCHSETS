@@ -2581,3 +2581,4 @@
 ( cvs diff -u -r 1.23.2.22 -r 1.23.2.23 src/crash.c;  cvs diff -u -r 1.5.2.18 -r 1.5.2.19 src/exporthtml.c;  cvs diff -u -r 1.28.2.34 -r 1.28.2.35 src/mbox.c;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/prefs_summaries.c;  cvs diff -u -r 1.47.2.39 -r 1.47.2.40 src/procheader.c;  cvs diff -u -r 1.6.2.10 -r 1.6.2.11 src/common/log.c;  cvs diff -u -r 1.36.2.101 -r 1.36.2.102 src/common/utils.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gtk/gtksourceprintjob.c;  cvs diff -u -r 1.9.2.16 -r 1.9.2.17 src/gtk/sslcertwindow.c;  ) > 2.9.2cvs3.patchset
 ( cvs diff -u -r 1.179.2.172 -r 1.179.2.173 src/imap.c;  ) > 2.9.2cvs4.patchset
 ( cvs diff -u -r 1.204.2.133 -r 1.204.2.134 src/prefs_common.c;  cvs diff -u -r 1.103.2.81 -r 1.103.2.82 src/prefs_common.h;  cvs diff -u -r 1.1.2.70 -r 1.1.2.71 src/gtk/quicksearch.c;  ) > 2.9.2cvs5.patchset
+( cvs diff -u -r 1.2.2.33 -r 1.2.2.34 src/gtk/filesel.c;  ) > 2.9.2cvs6.patchset

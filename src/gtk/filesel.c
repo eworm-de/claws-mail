@@ -34,6 +34,10 @@
 #include <gtk/gtkfilechooser.h>
 #include <gtk/gtkfilechooserdialog.h>
 
+#ifdef MAEMO
+#include <hildon-widgets/hildon-file-chooser-dialog.h>
+#endif
+
 #include "claws.h"
 #include "filesel.h"
 #include "manage_window.h"
@@ -90,11 +94,25 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
 	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
+#ifdef MAEMO
+	GtkWidget *chooser;
+	if( path && strcmp(path, get_plugin_dir()) == 0 ) {
+		chooser = gtk_file_chooser_dialog_new_with_backend
+					(title, NULL, action, "gtk+",
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					action_btn, GTK_RESPONSE_ACCEPT, 
+					NULL);
+	}
+	else {
+		chooser = hildon_file_chooser_dialog_new (NULL, action);
+	}
+#else
 	GtkWidget *chooser = gtk_file_chooser_dialog_new_with_backend
 				(title, NULL, action, "gtk+",
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);
+#endif
 	if (filter != NULL) {
 		GtkFileFilter *file_filter = gtk_file_filter_new();
 		gtk_file_filter_add_pattern(file_filter, filter);
@@ -163,7 +181,12 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		g_free(tmp);
 	}
 
+#ifdef MAEMO
+        if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK 
+		|| gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT)
+#else
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
+#endif
 		slist = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (chooser));
 	
 	manage_window_focus_out(chooser, NULL, NULL);
