@@ -1,3 +1,9 @@
+2007-05-13 [wwp]	2.9.2cvs7
+
+	* src/gtk/logwindow.c
+		fix raising log windows when they are either minimized or
+		in background.
+
 2007-05-11 [colin]	2.9.2cvs6
 
 	* src/gtk/filesel.c
