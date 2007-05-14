@@ -1,3 +1,10 @@
+2007-05-14 [colin]	2.9.2cvs8
+
+	* manual/xml2pdf
+		Fix bashism, search for xml catalog 
+		in /usr/local/share/xml/catalog too
+		Patch by Pawel
+
 2007-05-13 [wwp]	2.9.2cvs7
 
 	* src/gtk/logwindow.c

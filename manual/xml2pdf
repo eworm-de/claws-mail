@@ -44,7 +44,8 @@ then
 	CATALOG_FILES=$XML_CATALOG_FILES
 else
 	echo "warning: XML_CATALOG_FILES is not set or empty"
-	CATALOG_FILES="/usr/local/etc/xml/catalog /etc/xml/catalog $HOME/xml/catalog"
+	CATALOG_FILES="/usr/local/etc/xml/catalog /etc/xml/catalog
+                       /usr/local/share/xml/catalog $HOME/xml/catalog"
 fi
 KEY="http://docbook.sourceforge.net/release/xsl/current"
 
@@ -65,8 +66,8 @@ do
 				continue
 		fi
 
-		test "${DOCBOOKXSLPATH:0:7}" == "file://" && \
-			DOCBOOKXSLPATH=${DOCBOOKXSLPATH:7}
+		test "`echo ${DOCBOOKXSLPATH} | cut -c 1-7`" = "file://" && \
+			DOCBOOKXSLPATH=`echo ${DOCBOOKXSLPATH} | cut -c 8-`
 		if [ -n "$DOCBOOKXSLPATH" ]
 		then
 			echo "docbook-xsl path found: $DOCBOOKXSLPATH"
