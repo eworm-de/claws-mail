@@ -882,6 +882,10 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		g_free(subject);
 	}
 
+	if (msginfo && msginfo->folder) {
+		msginfo->folder->last_seen = msginfo->msgnum;	
+	}
+
 	main_create_mailing_list_menu(messageview->mainwin, messageview->msginfo);
 
 	if (messageview->msginfo->extradata

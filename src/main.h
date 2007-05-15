@@ -32,5 +32,6 @@ gboolean claws_is_exiting(void);
 gboolean claws_is_starting(void);
 gchar *claws_get_socket_name(void);
 void main_set_show_at_startup(gboolean show);
+gboolean claws_crashed(void);
 
 #endif /* __MAIN_H__ */

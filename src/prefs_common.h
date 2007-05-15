@@ -70,7 +70,8 @@ typedef enum
 	SELECTONENTRY_NUM,
 	SELECTONENTRY_NMU,
 	SELECTONENTRY_MNU,
-	SELECTONENTRY_MUN
+	SELECTONENTRY_MUN,
+	SELECTONENTRY_LAST
 } SelectOnEntry;
 
 typedef enum
@@ -198,6 +199,9 @@ struct _PrefsCommon
 	gboolean thread_by_subject;
 	gint thread_by_subject_max_age; /*!< Max. age of a thread which was threaded
 					 *   by subject (days) */
+
+	gchar *last_opened_folder;
+	gboolean goto_last_folder_on_startup;
 
 	ToolbarStyle toolbar_style;
 	gboolean toolbar_detachable;

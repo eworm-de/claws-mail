@@ -2584,3 +2584,4 @@
 ( cvs diff -u -r 1.2.2.33 -r 1.2.2.34 src/gtk/filesel.c;  ) > 2.9.2cvs6.patchset
 ( cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/gtk/logwindow.c;  ) > 2.9.2cvs7.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/xml2pdf;  ) > 2.9.2cvs8.patchset
+( cvs diff -u -r 1.213.2.144 -r 1.213.2.145 src/folder.c;  cvs diff -u -r 1.87.2.40 -r 1.87.2.41 src/folder.h;  cvs diff -u -r 1.115.2.152 -r 1.115.2.153 src/main.c;  cvs diff -u -r 1.7.2.10 -r 1.7.2.11 src/main.h;  cvs diff -u -r 1.94.2.133 -r 1.94.2.134 src/messageview.c;  cvs diff -u -r 1.204.2.134 -r 1.204.2.135 src/prefs_common.c;  cvs diff -u -r 1.103.2.82 -r 1.103.2.83 src/prefs_common.h;  cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/prefs_summaries.c;  cvs diff -u -r 1.395.2.302 -r 1.395.2.303 src/summaryview.c;  ) > 2.9.2cvs9.patchset

@@ -963,6 +963,10 @@ static PrefParam param[] = {
 #endif
 	{"thread_by_subject_max_age", "10", &prefs_common.thread_by_subject_max_age,
 	P_INT, NULL, NULL, NULL },
+	{"last_opened_folder", "", &prefs_common.last_opened_folder,
+	P_STRING, NULL, NULL, NULL },
+	{"goto_last_folder_on_startup", "FALSE", &prefs_common.goto_last_folder_on_startup,
+	P_BOOL, NULL, NULL, NULL },
 	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_dynamic", "0", &prefs_common.summary_quicksearch_dynamic, P_INT,

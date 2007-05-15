@@ -56,6 +56,7 @@ typedef struct _SummariesPage
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
 
+	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *spinbtn_mark_as_read_delay;
@@ -321,6 +322,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_dispitem;
 
 	GtkWidget *hbox2;
+	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *spinbtn_mark_as_read_delay;
@@ -367,6 +369,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_reopen_last_folder,
+		 _("Open last opened folder at startup"));
 
 	label_ng_abbrev = gtk_label_new
 		(_("Abbreviate newsgroup names longer than"));
@@ -428,6 +434,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		      SELECTONENTRY_MNU);
 	MENUITEM_ADD (menu, menuitem, _("Select first marked (or unread or new) message"),
 		      SELECTONENTRY_MUN);
+	MENUITEM_ADD (menu, menuitem, _("Select last opened message"),
+		      SELECTONENTRY_LAST);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_select_on_entry, FALSE, FALSE, 0);
@@ -573,6 +581,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(entry_datefmt), 
 			prefs_common.date_format?prefs_common.date_format:"");	
 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_reopen_last_folder),
+			prefs_common.goto_last_folder_on_startup);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
 			prefs_common.always_show_msg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
@@ -596,6 +606,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->checkbtn_threadsubj = checkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
+	prefs_summaries->checkbtn_reopen_last_folder = checkbtn_reopen_last_folder;
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
@@ -632,6 +643,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.date_format = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_datefmt), 0, -1);	
 
+	prefs_common.goto_last_folder_on_startup = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_reopen_last_folder));
 	prefs_common.always_show_msg = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));
 	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(

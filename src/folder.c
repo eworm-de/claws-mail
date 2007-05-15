@@ -57,6 +57,7 @@
 #include "gtkutils.h"
 #include "timing.h"
 #include "compose.h"
+#include "main.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -586,8 +587,14 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 				g_warning("account_id: %s not found\n", attr->value);
 			else
 				item->account = account;
-		} else if (!strcmp(attr->name, "apply_sub"))
+		} else if (!strcmp(attr->name, "apply_sub")) {
 			item->apply_sub = *attr->value == '1' ? TRUE : FALSE;
+		} else if (!strcmp(attr->name, "last_seen")) {
+			if (!claws_crashed())
+				item->last_seen = atoi(attr->value);
+			else
+				item->last_seen = 0;
+		}
 	}
 }
 
@@ -639,6 +646,8 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 		xml_tag_add_attr(tag, xml_attr_new_int("account_id", item->account->account_id));
 	if (item->apply_sub)
 		xml_tag_add_attr(tag, xml_attr_new("apply_sub", "1"));
+
+	xml_tag_add_attr(tag, xml_attr_new_int("last_seen", item->last_seen));
 
 	return tag;
 }

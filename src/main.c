@@ -607,6 +607,11 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 static gboolean sc_exiting = FALSE;
 static gboolean sc_starting = FALSE;
 static gboolean show_at_startup = TRUE;
+static gboolean claws_crashed_bool = FALSE;
+
+gboolean claws_crashed(void) {
+	return claws_crashed_bool;
+}
 
 void main_set_show_at_startup(gboolean show)
 {
@@ -787,6 +792,9 @@ int main(int argc, char *argv[])
 	remove_all_files(get_tmp_dir());
 	remove_all_files(get_mime_tmp_dir());
 
+	if (!cmd.crash && crash_file_present)
+		claws_crashed_bool = TRUE;
+
 	if (is_file_exist("claws.log")) {
 		if (rename_force("claws.log", "claws.log.bak") < 0)
 			FILE_OP_ERROR("claws.log", "rename");
@@ -927,7 +935,7 @@ int main(int argc, char *argv[])
 
 	/* if crashed, show window early so that the user
 	 * sees what's happening */
-	if (!cmd.crash && crash_file_present)
+	if (claws_crashed())
 		main_window_popup(mainwin);
 
 #ifdef HAVE_LIBETPAN
@@ -944,7 +952,7 @@ int main(int argc, char *argv[])
 	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
 
 	/* if claws crashed, rebuild caches */
-	if (!cmd.crash && crash_file_present) {
+	if (claws_crashed()) {
 		GTK_EVENTS_FLUSH();
 		debug_print("Claws Mail crashed, checking for new messages in local folders\n");
 		folder_item_update_thaw();
@@ -1001,7 +1009,7 @@ int main(int argc, char *argv[])
  	plugin_load_standard_plugins ();
        
 	/* if not crashed, show window now */
-	if (!(!cmd.crash && crash_file_present)) {
+	if (!claws_crashed()) {
 		/* apart if something told not to show */
 		if (show_at_startup)
 			main_window_popup(mainwin);
@@ -1038,6 +1046,12 @@ int main(int argc, char *argv[])
 	folder_item_update_thaw();
 	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
+
+	if (!cmd.target && prefs_common.goto_last_folder_on_startup &&
+	    folder_find_item_from_identifier(prefs_common.last_opened_folder) != NULL &&
+	    !claws_crashed()) {
+		cmd.target = prefs_common.last_opened_folder;
+	}
 
 	if (cmd.receive_all && !cmd.target) {
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
@@ -1092,9 +1106,10 @@ static void save_all_caches(FolderItem *item, gpointer data)
 		return;
 	}
 
-	if (item->opened)
+	if (item->opened) {
 		folder_item_close(item);
-	
+	}
+
 	folder_item_free_cache(item, TRUE);
 }
 
@@ -1117,6 +1132,7 @@ static void exit_claws(MainWindow *mainwin)
 
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
 		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
+		prefs_common.last_opened_folder = folder_item_get_identifier(item);
 	}
 
 	/* save all state before exiting */

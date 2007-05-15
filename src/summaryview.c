@@ -1373,6 +1373,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 								     MSG_NEW, FALSE);
 				break;
+			case SELECTONENTRY_LAST:
+				if (summaryview->folder_item) {
+					node = summary_find_msg_by_msgnum(summaryview, 
+							summaryview->folder_item->last_seen);
+				}
+				break;
  			default:
 				node = NULL;
  		}

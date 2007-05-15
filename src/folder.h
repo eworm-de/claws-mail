@@ -661,6 +661,7 @@ struct _FolderItem
 	SpecialFolderItemType parent_stype;
 	gboolean processing_pending;
 	gboolean scanning;
+	guint last_seen;
 };
 
 struct _PersistPrefs
