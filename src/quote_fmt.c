@@ -55,11 +55,16 @@ static gchar *quote_desc_strings[] = {
 	"%Q",		N_("quoted message body"), /* quoted message */
 	"%m",		N_("message body without signature"), /* message with no signature */
 	"%q",		N_("quoted message body without signature"), /* quoted message with no signature */
+	"%T",		N_("current dictionary"), /* current dictionary */
 	"%X",		N_("cursor position"), /* X marks the cursor spot */
-	"%af",		N_("Account property: your name"), /* full name in compose account */
-	"%am",		N_("Account property: your email address"), /* mail address in compose account */
-	"%an",		N_("Account property: account name"), /* compose account name itself */
-	"%ao",		N_("Account property: organization"), /* organization in compose account */
+	"%af",		N_("account property: your name"), /* full name in compose account */
+	"%am",		N_("account property: your email address"), /* mail address in compose account */
+	"%an",		N_("account property: account name"), /* compose account name itself */
+	"%ao",		N_("account property: organization"), /* organization in compose account */
+	"%aT",		N_("account property: default dictionary"), /* main dict (if enabled) in account */
+	"%ABc",		N_("address book completion: Cc"), /* completion of 'Cc' from address book */
+	"%ABf",		N_("address book completion: From"), /* completion of 'From' from address book */
+	"%ABt",		N_("address book completion: To"), /* completion of 'To' from address book */
 	"\\%", 		N_("literal %"),
 	"\\\\",		N_("literal backslash"),
 	"\\?",		N_("literal question mark"),
@@ -70,8 +75,8 @@ static gchar *quote_desc_strings[] = {
 	"\\t", 		N_("tab"),
 	"\\n", 		N_("linefeed"),
 	"",		NULL,
-	"?x{expr}\n",	N_("insert expr if x is set\n(where x is one of the dfNFLIstcnri characters or af, ao)"),
-	"!x{expr}\n",	N_("insert expr if x is not set\n(where x is one of the dfNFLIstcnri characters or af, ao)"),
+	"?x{expr}\n",	N_("insert expr if x is set\n(where x is one of the dfNFLIstcnriT characters or ad, af, ao, aT, ABc, ABf, ABt)"),
+	"!x{expr}\n",	N_("insert expr if x is not set\n(where x is one of the dfNFLIstcnriT characters or ad, af, ao, aT, ABc, ABf, ABt)"),
 	"|f{sub_expr}\n",	N_("insert file:\nsub_expr is evaluated as a filename to insert"), /* insert file */
 	"|p{sub_expr}\n\n",	N_("insert program output:\nsub_expr is evaluated as a command-line to get\nthe output from"), /* insert program output */
 	"|i{sub_expr}\n\n",	N_("insert user input:\nsub_expr is a variable to be replaced by\nuser-entered text"), /* insert user input */

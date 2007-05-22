@@ -1,3 +1,36 @@
+2007-05-22 [wwp]	2.9.2cvs10
+
+	* src/compose.c
+	* src/prefs_template.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Added template/quote format syntactical elements
+		to show and query:
+			- current dictionary
+			  %T to show (shows empty if not set or not enabled),
+			  ?T and !T to check if the default dictionary is
+			  enabled and set
+			- current account's default dictionary
+			  %aT to show (empty if not set or not enabled),
+			  ?aT and !aT to check if it's enabled and set
+			- name completion for an address, from the address
+			  book
+			  %ABf, %ABt, %ABc respectively show the full name got
+			  from the address book if From, To or Cc match a single
+			  contact.
+			  ?ABf, !ABf, ?ABt, !ABt, ?ABc and !ABc check if completion
+			  matches any contact and if the full name is non-empty.
+			  If From, To or Cc are lists of email addresses, only
+			  the first address will be checked.
+		In compose.c, fix msginfo's To, Cc and Newsgroup address lists,
+		that could show a trailing ','.
+		Also, template/quote_fmt parser now shows the line number in case
+		of parser error.
+
 2007-05-15 [colin]	2.9.2cvs9
 
 	* src/main.c

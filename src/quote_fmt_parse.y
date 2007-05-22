@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "codeconv.h"
 #include "procheader.h"
+#include "addr_compl.h"
 #include "gtk/inputdialog.h"
 
 #include "quote_fmt.h"
@@ -46,6 +47,7 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static PrefsAccount *account = NULL;
+static gchar default_dictionary[BUFFSIZE];
 static gboolean *visible = NULL;
 static gboolean dry_run = FALSE;
 static gint maxsize = 0;
@@ -70,6 +72,7 @@ static gint error = 0;
 static gint cursor_pos = -1;
 
 extern int quote_fmt_firsttime;
+extern int line;
 
 static void add_visibility(gboolean val)
 {
@@ -160,12 +163,18 @@ void quote_fmt_reset_vartable(void)
 
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
-			PrefsAccount *compose_account)
+			PrefsAccount *compose_account,
+			GtkAspell *compose_gtkaspell)
 {
+	gchar *dict = gtkaspell_get_default_dictionary(compose_gtkaspell);
 	quote_str = my_quote_str;
 	body = my_body;
 	msginfo = info;
 	account = compose_account;
+	if (dict)
+		strncpy2(default_dictionary, dict, sizeof(default_dictionary));
+	else
+		*default_dictionary = '\0';
 	dry_run = my_dry_run;
 	stacksize = 0;
 	add_visibility(TRUE);
@@ -174,6 +183,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	current = &main_expr;
 	clear_buffer();
 	error = 0;
+	line = 1;
 
 	if (!var_table)
 		var_table = g_hash_table_new_full(g_str_hash, g_str_equal, 
@@ -188,7 +198,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 
 void quote_fmterror(char *str)
 {
-	g_warning("Error: %s\n", str);
+	g_warning("Error: %s at line %d\n", str, line);
 	error = 1;
 }
 
@@ -478,6 +488,44 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 	g_free(text);
 }
 
+static gchar *quote_fmt_complete_address(const gchar *addr)
+{
+	gint count;
+	gchar *res, *tmp, *email_addr;
+	gchar **split;
+
+	debug_print("quote_fmt_complete_address: %s\n", addr);
+	if (addr == NULL)
+		return NULL;
+
+	/* if addr is a list of message, try the 1st element only */
+	split = g_strsplit(addr, ",", -1);
+	if (!split || !split[0] || *split[0] == '\0') {
+		g_strfreev(split);
+		return NULL;
+	}
+
+	Xstrdup_a(email_addr, split[0], return NULL);
+	extract_address(email_addr);
+	if (!*email_addr) {
+		g_strfreev(split);
+		return NULL;
+	}
+
+	res = NULL;
+	start_address_completion(NULL);
+	if (1 < (count = complete_address(email_addr))) {
+		tmp = get_complete_address(1);
+		res = procheader_get_fromname(tmp);
+		g_free(tmp);
+	}
+	end_address_completion();
+	g_strfreev(split);
+
+	debug_print("quote_fmt_complete_address: matched %s\n", res);
+	return res;
+}
+
 %}
 
 %union {
@@ -494,16 +542,29 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token SHOW_ACCOUNT_FULL_NAME SHOW_ACCOUNT_MAIL_ADDRESS SHOW_ACCOUNT_NAME SHOW_ACCOUNT_ORGANIZATION
+%token SHOW_ACCOUNT_DICT
+%token SHOW_DICT
+%token SHOW_ADDRESSBOOK_COMPLETION_FOR_CC
+%token SHOW_ADDRESSBOOK_COMPLETION_FOR_FROM
+%token SHOW_ADDRESSBOOK_COMPLETION_FOR_TO
 /* tokens QUERY */
 %token QUERY_DATE QUERY_FROM
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
 %token QUERY_MESSAGEID QUERY_CC QUERY_REFERENCES
-%token QUERY_ACCOUNT_FULL_NAME QUERY_ACCOUNT_ORGANIZATION
+%token QUERY_ACCOUNT_FULL_NAME QUERY_ACCOUNT_ORGANIZATION QUERY_ACCOUNT_DICT
+%token QUERY_DICT
+%token QUERY_CC_FOUND_IN_ADDRESSBOOK
+%token QUERY_FROM_FOUND_IN_ADDRESSBOOK
+%token QUERY_TO_FOUND_IN_ADDRESSBOOK
 /* tokens QUERY_NOT */
 %token QUERY_NOT_DATE QUERY_NOT_FROM
 %token QUERY_NOT_FULLNAME QUERY_NOT_SUBJECT QUERY_NOT_TO QUERY_NOT_NEWSGROUPS
 %token QUERY_NOT_MESSAGEID QUERY_NOT_CC QUERY_NOT_REFERENCES
-%token QUERY_NOT_ACCOUNT_FULL_NAME QUERY_NOT_ACCOUNT_ORGANIZATION
+%token QUERY_NOT_ACCOUNT_FULL_NAME QUERY_NOT_ACCOUNT_ORGANIZATION QUERY_NOT_ACCOUNT_DICT
+%token QUERY_NOT_DICT
+%token QUERY_NOT_CC_FOUND_IN_ADDRESSBOOK
+%token QUERY_NOT_FROM_FOUND_IN_ADDRESSBOOK
+%token QUERY_NOT_TO_FOUND_IN_ADDRESSBOOK
 /* other tokens */
 %token INSERT_FILE INSERT_PROGRAMOUTPUT INSERT_USERINPUT
 %token OPARENT CPARENT
@@ -684,6 +745,18 @@ special:
 		if (account && account->organization)
 			INSERT(account->organization);
 	}
+	| SHOW_ACCOUNT_DICT
+	{
+		if (account && account->enable_default_dictionary) {
+			gchar *dictname = g_path_get_basename(account->default_dictionary);
+			INSERT(dictname);
+			g_free(dictname);
+		}
+	}
+	| SHOW_DICT
+	{
+		INSERT(default_dictionary);
+	}
 	| SHOW_BACKSLASH
 	{
 		INSERT("\\");
@@ -719,6 +792,30 @@ special:
 	| SET_CURSOR_POS
 	{
 		cursor_pos = current->bufsize;
+	}
+	| SHOW_ADDRESSBOOK_COMPLETION_FOR_CC
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->cc);
+		if (tmp) {
+			INSERT(tmp);
+			g_free(tmp);
+		}
+	}
+	| SHOW_ADDRESSBOOK_COMPLETION_FOR_FROM
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->from);
+		if (tmp) {
+			INSERT(tmp);
+			g_free(tmp);
+		}
+	}
+	| SHOW_ADDRESSBOOK_COMPLETION_FOR_TO
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->to);
+		if (tmp) {
+			INSERT(tmp);
+			g_free(tmp);
+		}
 	};
 
 query:
@@ -816,6 +913,53 @@ query:
 	OPARENT quote_fmt CPARENT
 	{
 		remove_visibility();
+	}
+	| QUERY_ACCOUNT_DICT
+	{
+		add_visibility(account != NULL && account->enable_default_dictionary == TRUE &&
+				account->default_dictionary != NULL && *account->default_dictionary != '\0');
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_DICT
+	{
+		add_visibility(*default_dictionary != '\0');
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_CC_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->cc);
+		add_visibility(tmp != NULL && *tmp != '\0');
+		g_free(tmp);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_FROM_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->from);
+		add_visibility(tmp != NULL && *tmp != '\0');
+		g_free(tmp);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_TO_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->to);
+		add_visibility(tmp != NULL && *tmp != '\0');
+		g_free(tmp);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
 	};
 
 query_not:
@@ -909,6 +1053,53 @@ query_not:
 	| QUERY_NOT_ACCOUNT_ORGANIZATION
 	{
 		add_visibility(account == NULL || account->organization == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_ACCOUNT_DICT
+	{
+		add_visibility(account == NULL || account->enable_default_dictionary == FALSE
+				|| *account->default_dictionary == '\0');
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_DICT
+	{
+		add_visibility(*default_dictionary == '\0');
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_CC_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->cc);
+		add_visibility(tmp == NULL || *tmp == '\0');
+		g_free(tmp);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_FROM_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->from);
+		add_visibility(tmp == NULL || *tmp == '\0');
+		g_free(tmp);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_TO_FOUND_IN_ADDRESSBOOK
+	{
+		gchar *tmp = quote_fmt_complete_address(msginfo->to);
+		add_visibility(tmp == NULL || *tmp == '\0');
+		g_free(tmp);
 	}
 	OPARENT quote_fmt CPARENT
 	{

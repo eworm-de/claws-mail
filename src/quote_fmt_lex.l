@@ -35,6 +35,7 @@
  * see notes below.
  */
 int quote_fmt_firsttime = 1;
+int line = -1;
 %}
 
 %%
@@ -86,16 +87,21 @@ int quote_fmt_firsttime = 1;
 <S_NORMAL>"%r" /* references */ return SHOW_REFERENCES;
 <S_NORMAL>"%s" /* subject */ return SHOW_SUBJECT;
 <S_NORMAL>"%t" /* to */ return SHOW_TO;
+<S_NORMAL>"%T" /* current dictionary */ return SHOW_DICT;
 <S_NORMAL>"%Q" /* quoted message */ return SHOW_QUOTED_MESSAGE;
 <S_NORMAL>"%q" /* quoted message with no signature */ return SHOW_QUOTED_MESSAGE_NO_SIGNATURE;
 <S_NORMAL>"%af" /* full name in compose account */ return SHOW_ACCOUNT_FULL_NAME;
 <S_NORMAL>"%am" /* mail address in compose account */ return SHOW_ACCOUNT_MAIL_ADDRESS;
 <S_NORMAL>"%an" /* compose account name itself */ return SHOW_ACCOUNT_NAME;
 <S_NORMAL>"%ao" /* organization in compose account */ return SHOW_ACCOUNT_ORGANIZATION;
+<S_NORMAL>"%aT" /* main dict (if enabled) in compose account */ return SHOW_ACCOUNT_DICT;
+<S_NORMAL>"%ABc" /* completion of 'Cc' from the address book */ return SHOW_ADDRESSBOOK_COMPLETION_FOR_CC;
+<S_NORMAL>"%ABf" /* completion of 'From' from the address book */ return SHOW_ADDRESSBOOK_COMPLETION_FOR_FROM;
+<S_NORMAL>"%ABt" /* completion of 'To' from the address book */ return SHOW_ADDRESSBOOK_COMPLETION_FOR_TO;
 "\\\%" /* % */ return SHOW_PERCENT;
 "\\\\" /* \ */ return SHOW_BACKSLASH;
 "\\t"|"\t" /* tab */ return SHOW_TAB;
-"\\n"|"\n" /* return */ return SHOW_EOL;
+"\\n"|"\n" /* return */ { if (yytext[0] == '\n') line++; return SHOW_EOL; }
 "\\?" /* ? */ return SHOW_QUESTION_MARK;
 "\\!" return SHOW_EXCLAMATION_MARK;
 "\\|" return SHOW_PIPE;
@@ -106,12 +112,17 @@ int quote_fmt_firsttime = 1;
 "?N"|"?F"|"?L"|"?I" /* query from name */ return QUERY_FULLNAME;
 "?s" /* query subject */ return QUERY_SUBJECT;
 "?t" /* query to */ return QUERY_TO;
+"?T" /* query current dictionary set and enabled */ return QUERY_DICT;
 "?c" /* query cc */ return QUERY_CC;
 "?n" /* query newsgroups */ return QUERY_NEWSGROUPS;
 "?i" /* query message-id */ return QUERY_MESSAGEID;
 "?r" /* query references */ return QUERY_REFERENCES;
 "?af" /* query full name in compose account */ return QUERY_ACCOUNT_FULL_NAME;
 "?ao" /* query organization in compose account */ return QUERY_ACCOUNT_ORGANIZATION;
+"?aT" /* query account main dict enabled */ return QUERY_ACCOUNT_DICT;
+"?ABc" /* query completion for 'Cc' in address book */ return QUERY_CC_FOUND_IN_ADDRESSBOOK;
+"?ABf" /* query completion for 'From' in address book */ return QUERY_FROM_FOUND_IN_ADDRESSBOOK;
+"?ABt" /* query completion for 'To' in address book */ return QUERY_TO_FOUND_IN_ADDRESSBOOK;
 "|f" /* insert file */ return INSERT_FILE;
 "|p" /* insert program output */ return INSERT_PROGRAMOUTPUT;
 "|i" /* insert user input */ return INSERT_USERINPUT;
@@ -120,12 +131,17 @@ int quote_fmt_firsttime = 1;
 "!N"|"!F"|"!L"|"!I" /* query not(from name) */ return QUERY_NOT_FULLNAME;
 "!s" /* query not(subject) */ return QUERY_NOT_SUBJECT;
 "!t" /* query not(to) */ return QUERY_NOT_TO;
+"!T" /* query not(current dictionary set and enabled) */ return QUERY_NOT_DICT;
 "!c" /* query not(cc) */ return QUERY_NOT_CC;
 "!n" /* query not(newsgroups) */ return QUERY_NOT_NEWSGROUPS;
 "!i" /* query not(message-id) */ return QUERY_NOT_MESSAGEID;
 "!r" /* query not(references) */ return QUERY_NOT_REFERENCES;
 "!af" /* query not(full name in compose account) */ return QUERY_NOT_ACCOUNT_FULL_NAME;
 "!ao" /* query not(organization in compose account) */ return QUERY_NOT_ACCOUNT_ORGANIZATION;
+"!aT" /* query not(account main dict enabled and set) */ return QUERY_NOT_ACCOUNT_DICT;
+"!ABc" /* query not(completion for 'Cc' in address book) */ return QUERY_NOT_CC_FOUND_IN_ADDRESSBOOK;
+"!ABf" /* query not(completion for 'From' in address book) */ return QUERY_NOT_FROM_FOUND_IN_ADDRESSBOOK;
+"!ABt" /* query not(completion for 'To' in address book) */ return QUERY_NOT_TO_FOUND_IN_ADDRESSBOOK;
 <S_DATE>"{" return OPARENT;
 <S_DATE>"}" { BEGIN S_NORMAL; return CPARENT; }
 <S_NORMAL>"{" return OPARENT;

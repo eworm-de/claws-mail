@@ -557,7 +557,7 @@ gboolean prefs_template_string_is_valid(gchar *string)
 		MsgInfo dummyinfo;
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, NULL);
 		quote_fmt_scan_string(string);
 		quote_fmt_parse();
 		parsed_buf = quote_fmt_get_buffer();

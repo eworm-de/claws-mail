@@ -2588,4 +2588,13 @@ static gint find_gtkaspeller(gconstpointer aa, gconstpointer bb)
 
 	return 1;
 }
+
+gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell)
+{
+	if (gtkaspell && gtkaspell->gtkaspeller &&
+			gtkaspell->gtkaspeller->dictionary)
+		return gtkaspell->gtkaspeller->dictionary->dictname;
+	else
+		return NULL;
+}
 #endif

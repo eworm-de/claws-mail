@@ -103,5 +103,7 @@ void 		gtkaspell_sugmode_option_menu_set	(GtkOptionMenu *optmenu,
 gint 		gtkaspell_get_sugmode_from_option_menu	(GtkOptionMenu *optmenu);
 GSList*		gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 
+gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell);
+
 #endif /* USE_ASPELL */
 #endif /* __GTKASPELL_H__ */

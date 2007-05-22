@@ -1041,7 +1041,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			pref_get_unescaped_pref(tmp, prefs_common.compose_subject_format);
 
 			subject = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
-			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account);
+			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account,
+					compose->gtkaspell);
 			quote_fmt_scan_string(tmp);
 			quote_fmt_parse();
 
@@ -2533,7 +2534,8 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (qmark != NULL) {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+				compose->gtkaspell);
 		quote_fmt_scan_string(qmark);
 		quote_fmt_parse();
 
@@ -2550,7 +2552,8 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 			while (*trimmed_body == '\n')
 				trimmed_body++;
 
-		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account);
+		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account,
+				compose->gtkaspell);
 		if (need_unescape) {
 			gchar *tmp = NULL;
 
@@ -7150,7 +7153,8 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	}
 
 	if (tmpl->to && *tmpl->to != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+				compose->gtkaspell);
 		quote_fmt_scan_string(tmpl->to);
 		quote_fmt_parse();
 
@@ -7163,7 +7167,8 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	}
 
 	if (tmpl->cc && *tmpl->cc != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+				compose->gtkaspell);
 		quote_fmt_scan_string(tmpl->cc);
 		quote_fmt_parse();
 
@@ -7176,7 +7181,8 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	}
 
 	if (tmpl->bcc && *tmpl->bcc != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+				compose->gtkaspell);
 		quote_fmt_scan_string(tmpl->bcc);
 		quote_fmt_parse();
 
@@ -7190,7 +7196,8 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 	/* process the subject */
 	if (tmpl->subject && *tmpl->subject != '\0') {
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+				compose->gtkaspell);
 		quote_fmt_scan_string(tmpl->subject);
 		quote_fmt_parse();
 
@@ -9760,7 +9767,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 		if ( strcasecmp(header, prefs_common_translated_header_name("To:")) == 0 ) {
 			if ( newmsginfo->to == NULL ) {
 				newmsginfo->to = g_strdup(entry);
-			} else {
+			} else if (entry && *entry) {
 				gchar *tmp = g_strconcat(newmsginfo->to, ", ", entry, NULL);
 				g_free(newmsginfo->to);
 				newmsginfo->to = tmp;
@@ -9769,7 +9776,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 		if ( strcasecmp(header, prefs_common_translated_header_name("Cc:")) == 0 ) {
 			if ( newmsginfo->cc == NULL ) {
 				newmsginfo->cc = g_strdup(entry);
-			} else {
+			} else if (entry && *entry) {
 				gchar *tmp = g_strconcat(newmsginfo->cc, ", ", entry, NULL);
 				g_free(newmsginfo->cc);
 				newmsginfo->cc = tmp;
@@ -9779,7 +9786,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 						prefs_common_translated_header_name("Newsgroups:")) == 0 ) {
 			if ( newmsginfo->newsgroups == NULL ) {
 				newmsginfo->newsgroups = g_strdup(entry);
-			} else {
+			} else if (entry && *entry) {
 				gchar *tmp = g_strconcat(newmsginfo->newsgroups, ", ", entry, NULL);
 				g_free(newmsginfo->newsgroups);
 				newmsginfo->newsgroups = tmp;
