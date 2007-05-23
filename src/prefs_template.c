@@ -550,7 +550,7 @@ static GSList *prefs_template_get_list(void)
 	return tmpl_list;
 }
 
-gboolean prefs_template_string_is_valid(gchar *string)
+gboolean prefs_template_string_is_valid(gchar *string, gint *line)
 {
 	if (string && *string != '\0') {
 		gchar *parsed_buf;
@@ -565,8 +565,11 @@ gboolean prefs_template_string_is_valid(gchar *string)
 		quote_fmt_scan_string(string);
 		quote_fmt_parse();
 		parsed_buf = quote_fmt_get_buffer();
-		if (!parsed_buf)
+		if (!parsed_buf) {
+			if (line)
+				*line = quote_fmt_get_line();
 			return FALSE;
+		}
 		quote_fmt_reset_vartable();
 	}
 	return TRUE;
@@ -585,6 +588,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
 	GtkTreeModel *model;
+	gint line;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(templates.list_view));
 
@@ -597,8 +601,12 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 			g_free(value);
 		value = NULL;
 		}
-	if (!prefs_template_string_is_valid(value)) {
-		alertpanel_error(_("Template body format error."));	
+	if (!prefs_template_string_is_valid(value, &line)) {
+		gchar *msg;
+
+		msg = g_strdup_printf(_("Template body format error at line %d."), line);
+		alertpanel_error(msg);
+		g_free(msg);
 		g_free(value);
 		return FALSE;
 	}
@@ -635,22 +643,22 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 		subject = NULL;
 	}
 
-	if (!prefs_template_string_is_valid(to)) {
+	if (!prefs_template_string_is_valid(to, NULL)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(cc)) {
+	if (!prefs_template_string_is_valid(cc, NULL)) {
 		alertpanel_error(_("Template Cc format error."));	
 		g_free(cc);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(bcc)) {
+	if (!prefs_template_string_is_valid(bcc, NULL)) {
 		alertpanel_error(_("Template Bcc format error."));	
 		g_free(bcc);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(subject)) {
+	if (!prefs_template_string_is_valid(subject, NULL)) {
 		alertpanel_error(_("Template subject format error."));	
 		g_free(subject);
 		return FALSE;

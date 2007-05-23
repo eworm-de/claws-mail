@@ -332,6 +332,7 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+	gint line = -1;
 
 	WritingPage *page = (WritingPage *) _page;
 	prefs_common.auto_exteditor = 
@@ -365,12 +366,15 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
 	prefs_common.compose_subject_format = pref_get_pref_from_entry(
 			GTK_ENTRY(page->entry_subject));
-	if (!prefs_template_string_is_valid(prefs_common.compose_subject_format))
+	if (!prefs_template_string_is_valid(prefs_common.compose_subject_format, NULL))
 		alertpanel_error(_("New message subject format error."));
 	prefs_common.compose_body_format = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_format));
-	if (!prefs_template_string_is_valid(prefs_common.compose_body_format))
-		alertpanel_error(_("New message body format error."));
+	if (!prefs_template_string_is_valid(prefs_common.compose_body_format, &line)) {
+		gchar *msg = g_strdup_printf(_("New message body format error at line %d."), line);
+		alertpanel_error(msg);
+		g_free(msg);
+	}
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)

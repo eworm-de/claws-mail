@@ -1081,7 +1081,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_quote_fmt(compose, dummyinfo,
 			        	  prefs_common.compose_body_format,
 			        	  NULL, tmp, FALSE, TRUE,
-						  _("New message body format error."));
+						  _("New message body format error at line %d."));
 			quote_fmt_reset_vartable();
 
 			g_free(tmp);
@@ -1443,7 +1443,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_quote_fmt(compose, compose->replyinfo,
 			          prefs_common.quotefmt,
 			          qmark, body, FALSE, TRUE,
-					  _("Message reply format error."));
+					  _("Message reply format error at line %d."));
 		quote_fmt_reset_vartable();
 	}
 	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
@@ -1560,7 +1560,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose_quote_fmt(compose, full_msginfo,
 			          prefs_common.fw_quotefmt,
 			          qmark, body, FALSE, TRUE,
-					  _("Message forward format error."));
+					  _("Message forward format error at line %d."));
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
 
@@ -2055,7 +2055,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
 	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE, FALSE,
-					  _("Message redirect format error."));
+					  _("Message redirect format error at line %d."));
 	quote_fmt_reset_vartable();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
 
@@ -2582,7 +2582,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(err_msg);
+			gint line = quote_fmt_get_line();
+			gchar *msg = g_strdup_printf(err_msg, line);
+			alertpanel_error(msg);
+			g_free(msg);
 			goto error;
 		}
 	} else
@@ -7063,7 +7066,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	gchar *qmark;
 	gchar *parsed_str = NULL;
 	gint cursor_pos = 0;
-	const gchar *err_msg = _("Template body format error.");
+	const gchar *err_msg = _("Template body format error at line %d.");
 	if (!tmpl) return;
 
 	/* process the body */
@@ -9488,7 +9491,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_place_cursor(buffer, iter);
 
 		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE, FALSE,
-						  _("Quote format error."));
+						  _("Quote format error at line %d."));
 		quote_fmt_reset_vartable();
 		g_free(new_text);
 		g_object_set_data(G_OBJECT(compose->text), "paste_as_quotation",

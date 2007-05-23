@@ -37,53 +37,56 @@
  * When adding new lines, remember to put 2 strings for each line
  */
 static gchar *quote_desc_strings[] = {
-	"%D{fmt}",	N_("customized date format (see 'man strftime')"), /* date expression */
-	"%d",		N_("Date"), /* date */
-	"%f",		N_("From"), /* from */
-	"%A",		N_("email address of sender"), /* email address */
-	"%N",		N_("full name of sender"), /* full name */
-	"%F",		N_("first name of sender"), /* first name */
-	"%L",		N_("last name of sender"), /* last name */
-	"%I",		N_("initials of sender"), /* initial of sender */
-	"%s",		N_("Subject"), /* subject */ 
-	"%t",		N_("To"), /* to */ 
-	"%c",		N_("Cc"), /* cc */ 
-	"%n",		N_("Newsgroups"), /* newsgroups */ 
-	"%r",		N_("References"), /* references */ 
-	"%i",		N_("Message-ID"), /* message-id */ 
-	"%M",		N_("message body"), /* message */
-	"%Q",		N_("quoted message body"), /* quoted message */
-	"%m",		N_("message body without signature"), /* message with no signature */
-	"%q",		N_("quoted message body without signature"), /* quoted message with no signature */
-	"%T",		N_("current dictionary"), /* current dictionary */
-	"%X",		N_("cursor position"), /* X marks the cursor spot */
-	"%af",		N_("account property: your name"), /* full name in compose account */
-	"%am",		N_("account property: your email address"), /* mail address in compose account */
-	"%an",		N_("account property: account name"), /* compose account name itself */
-	"%ao",		N_("account property: organization"), /* organization in compose account */
-	"%aT",		N_("account property: default dictionary"), /* main dict (if enabled) in account */
-	"%ABc",		N_("address book completion: Cc"), /* completion of 'Cc' from address book */
-	"%ABf",		N_("address book completion: From"), /* completion of 'From' from address book */
-	"%ABt",		N_("address book completion: To"), /* completion of 'To' from address book */
-	"\\%", 		N_("literal %"),
-	"\\\\",		N_("literal backslash"),
-	"\\?",		N_("literal question mark"),
-	"\\!",		N_("literal exclamation mark"),
-	"\\|",		N_("literal pipe"),
-	"\\{",		N_("literal opening curly brace"),
-	"\\}",		N_("literal closing curly brace"),
-	"\\t", 		N_("tab"),
-	"\\n", 		N_("linefeed"),
-	"",		NULL,
-	"?x{expr}\n",	N_("insert expr if x is set\n(where x is one of the dfNFLIstcnriT characters or ad, af, ao, aT, ABc, ABf, ABt)"),
-	"!x{expr}\n",	N_("insert expr if x is not set\n(where x is one of the dfNFLIstcnriT characters or ad, af, ao, aT, ABc, ABf, ABt)"),
-	"|f{sub_expr}\n",	N_("insert file:\nsub_expr is evaluated as a filename to insert"), /* insert file */
-	"|p{sub_expr}\n\n",	N_("insert program output:\nsub_expr is evaluated as a command-line to get\nthe output from"), /* insert program output */
-	"|i{sub_expr}\n\n",	N_("insert user input:\nsub_expr is a variable to be replaced by\nuser-entered text"), /* insert user input */
-	"",		NULL,
-	N_("terms definition:"),	NULL,
-	"expr",			N_("text that can contain any of the symbols above"),
-	"sub_expr\n",	N_("text that can contain any of the symbols above\nbut ?x{}, !x{}, |f{}, |p{} and |i{}"),
+	N_("<span weight=\"bold\">symbols:</span>"),				NULL,
+	"%date_fmt{<span style=\"oblique\">fmt</span>} (%D{<span style=\"oblique\">fmt</span>})",	N_("customized date format (see 'man strftime')"), /* date expression */
+	"%date (%d)",				N_("Date"), /* date */
+	"%from (%f)",				N_("From"), /* from */
+	"%email (%A)",				N_("email address of sender"), /* email address */
+	"%fullname (%N)",			N_("full name of sender"), /* full name */
+	"%firstname (%F)",			N_("first name of sender"), /* first name */
+	"%lastname (%L)",			N_("last name of sender"), /* last name */
+	"%initials (%I)",			N_("initials of sender"), /* initial of sender */
+	"%subject (%s)",			N_("Subject"), /* subject */ 
+	"%to (%t)",					N_("To"), /* to */ 
+	"%cc (%c)",					N_("Cc"), /* cc */ 
+	"%newsgroups (%n)",			N_("Newsgroups"), /* newsgroups */ 
+	"%references (%r)",			N_("References"), /* references */ 
+	"%messageid (%i)",			N_("Message-ID"), /* message-id */ 
+	"%msg (%M)",				N_("message body"), /* message */
+	"%quoted_msg (%Q)",			N_("quoted message body"), /* quoted message */
+	"%msg_no_sig (%m)",			N_("message body without signature"), /* message with no signature */
+	"%quoted_msg_no_sig (%q)",	N_("quoted message body without signature"), /* quoted message with no signature */
+	"%dict (%T)",				N_("current dictionary"), /* current dictionary */
+	"%cursor (%X)",				N_("cursor position"), /* X marks the cursor spot */
+	"%account_fullname (%af)",	N_("account property: your name"), /* full name in compose account */
+	"%account_email (%ae)",		N_("account property: your email address"), /* mail address in compose account */
+	"%account_name (%an)",		N_("account property: account name"), /* compose account name itself */
+	"%account_org (%ao)",		N_("account property: organization"), /* organization in compose account */
+	"%account_dict (%aT)",		N_("account property: default dictionary"), /* main dict (if enabled) in account */
+	"%addrbook_cc (%ABc)",		N_("address book <span style=\"oblique\">completion</span>: Cc"), /* completion of 'Cc' from address book */
+	"%addrbook_from (%ABf)",	N_("address book <span style=\"oblique\">completion</span>: From"), /* completion of 'From' from address book */
+	"%addrbook_to (%ABt)",		N_("address book <span style=\"oblique\">completion</span>: To"), /* completion of 'To' from address book */
+	"\\%", 				N_("literal %"),
+	"\\\\",				N_("literal backslash"),
+	"\\?",				N_("literal question mark"),
+	"\\!",				N_("literal exclamation mark"),
+	"\\|",				N_("literal pipe"),
+	"\\{",				N_("literal opening curly brace"),
+	"\\}",				N_("literal closing curly brace"),
+	"\\t", 				N_("tab"),
+	"\\n", 				N_("new line"),
+	"",					NULL,
+	N_("<span weight=\"bold\">commands:</span>"),		NULL,
+	"?x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
+	"!x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is not set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
+	"|file{<span style=\"oblique\">sub_expr</span>}\n(|f{<span style=\"oblique\">sub_expr</span>})",		N_("insert file:\n<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file to insert"), /* insert file */
+	"|program{<span style=\"oblique\">sub_expr</span>}\n(|p{<span style=\"oblique\">sub_expr</span>})\n",	N_("insert program output:\n<span style=\"oblique\">sub_expr</span> is evaluated as a command-line to get\nthe output from"), /* insert program output */
+	"|input{<span style=\"oblique\">sub_expr</span>}\n(|i{<span style=\"oblique\">sub_expr</span>})\n",		N_("insert user input:\n<span style=\"oblique\">sub_expr</span> is a variable to be replaced by\nuser-entered text"), /* insert user input */
+	"",					NULL,
+	N_("<span weight=\"bold\">definition of terms:</span>"),	NULL,
+	"<span style=\"oblique\">expr</span>\n",			N_("text that can contain any of the symbols or\ncommands above"),
+	"<span style=\"oblique\">sub_expr</span>\n",		N_("text that can contain any of the symbols (no\ncommands) above"),
+	"<span style=\"oblique\">completion</span>\n\n\n",	N_("completion from address book only works with the first\naddress of the header, it outputs the full name\nof the contact if that address matches exactly\none contact in the address book"),
 	NULL,NULL
 };
 
@@ -92,7 +95,7 @@ static DescriptionWindow quote_desc_win = {
 	NULL,
         2,
         N_("Description of symbols"),
-	N_("The following symbols can be used:"),
+	N_("The following symbols and commands can be used:"),
         quote_desc_strings
 };
 

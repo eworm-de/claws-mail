@@ -138,6 +138,11 @@ gchar *quote_fmt_get_buffer(void)
 		return current->buffer;
 }
 
+gint quote_fmt_get_line(void)
+{
+	return line;
+}
+
 gint quote_fmt_get_cursor_pos(void)
 {
 	return cursor_pos;	

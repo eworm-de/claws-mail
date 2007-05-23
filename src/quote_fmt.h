@@ -11,6 +11,7 @@
 void quote_fmt_quote_description(void);
 
 gchar *quote_fmt_get_buffer(void);
+gint quote_fmt_get_line(void);
 #ifdef USE_ASPELL
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,

@@ -1,3 +1,23 @@
+2007-05-23 [wwp]	2.9.2cvs13
+
+	* src/compose.c
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+	* src/prefs_template.c
+	* src/prefs_template.h
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Introduced new syntax elements (symbols and commands)
+		in templates/quote_fmt. Compatibility w/ old
+		symbols is kept.
+		Updated and reworked the corresponding Information
+		dialog.
+		Display the line number in dialogs that talk about
+		parser errors (in addition to the error message in
+		output).
+
 2007-05-23 [wwp]	2.9.2cvs12
 
 	* src/quote_fmt_parse.y
