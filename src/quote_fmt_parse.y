@@ -166,8 +166,8 @@ void quote_fmt_reset_vartable(void)
 #ifdef USE_ASPELL
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
-			PrefsAccount *account,
-			GtkAspell *gtkaspell);
+			PrefsAccount *compose_account,
+			GtkAspell *compose_gtkaspell)
 #else
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
