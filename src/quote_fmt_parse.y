@@ -47,7 +47,9 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static PrefsAccount *account = NULL;
+#ifdef USE_ASPELL
 static gchar default_dictionary[BUFFSIZE];
+#endif
 static gboolean *visible = NULL;
 static gboolean dry_run = FALSE;
 static gint maxsize = 0;
@@ -161,20 +163,28 @@ void quote_fmt_reset_vartable(void)
 	}
 }
 
+#ifdef USE_ASPELL
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
-			PrefsAccount *compose_account,
-			GtkAspell *compose_gtkaspell)
+			PrefsAccount *account,
+			GtkAspell *gtkaspell);
+#else
+void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
+		    const gchar *my_body, gboolean my_dry_run,
+			PrefsAccount *compose_account)
+#endif
 {
-	gchar *dict = gtkaspell_get_default_dictionary(compose_gtkaspell);
 	quote_str = my_quote_str;
 	body = my_body;
 	msginfo = info;
 	account = compose_account;
+#ifdef USE_ASPELL
+	gchar *dict = gtkaspell_get_default_dictionary(compose_gtkaspell);
 	if (dict)
 		strncpy2(default_dictionary, dict, sizeof(default_dictionary));
 	else
 		*default_dictionary = '\0';
+#endif
 	dry_run = my_dry_run;
 	stacksize = 0;
 	add_visibility(TRUE);
@@ -747,15 +757,19 @@ special:
 	}
 	| SHOW_ACCOUNT_DICT
 	{
+#ifdef USE_ASPELL
 		if (account && account->enable_default_dictionary) {
 			gchar *dictname = g_path_get_basename(account->default_dictionary);
 			INSERT(dictname);
 			g_free(dictname);
 		}
+#endif
 	}
 	| SHOW_DICT
 	{
+#ifdef USE_ASPELL
 		INSERT(default_dictionary);
+#endif
 	}
 	| SHOW_BACKSLASH
 	{
@@ -916,8 +930,12 @@ query:
 	}
 	| QUERY_ACCOUNT_DICT
 	{
+#ifdef USE_ASPELL
 		add_visibility(account != NULL && account->enable_default_dictionary == TRUE &&
 				account->default_dictionary != NULL && *account->default_dictionary != '\0');
+#else
+		add_visibility(FALSE);
+#endif
 	}
 	OPARENT quote_fmt CPARENT
 	{
@@ -925,7 +943,11 @@ query:
 	}
 	| QUERY_DICT
 	{
+#ifdef USE_ASPELL
 		add_visibility(*default_dictionary != '\0');
+#else
+		add_visibility(FALSE);
+#endif
 	}
 	OPARENT quote_fmt CPARENT
 	{
@@ -1060,8 +1082,12 @@ query_not:
 	}
 	| QUERY_NOT_ACCOUNT_DICT
 	{
+#ifdef USE_ASPELL
 		add_visibility(account == NULL || account->enable_default_dictionary == FALSE
 				|| *account->default_dictionary == '\0');
+#else
+		add_visibility(FALSE);
+#endif
 	}
 	OPARENT quote_fmt CPARENT
 	{
@@ -1069,7 +1095,11 @@ query_not:
 	}
 	| QUERY_NOT_DICT
 	{
+#ifdef USE_ASPELL
 		add_visibility(*default_dictionary == '\0');
+#else
+		add_visibility(FALSE);
+#endif
 	}
 	OPARENT quote_fmt CPARENT
 	{
