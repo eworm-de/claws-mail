@@ -1,3 +1,9 @@
+2007-05-25 [paul]	2.9.2cvs15
+
+	* src/common/socket.c
+		fix sometimes crasher on cancelling
+		message sending
+
 2007-05-25 [colin]	2.9.2cvs14
 
 	* src/imap.c

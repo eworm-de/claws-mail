@@ -447,6 +447,9 @@ static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
 guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 		     gpointer data)
 {
+	if (!sock)
+		return FALSE;
+
 	sock->callback = func;
 	sock->condition = condition;
 	sock->data = data;
