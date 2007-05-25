@@ -1,3 +1,11 @@
+2007-05-25 [colin]	2.9.2cvs14
+
+	* src/imap.c
+		Fix a memory leak
+	* src/imap_gtk.c
+		Be more helpful in the subscription
+		message
+
 2007-05-23 [wwp]	2.9.2cvs13
 
 	* src/compose.c

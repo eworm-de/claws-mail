@@ -401,7 +401,6 @@ static GSList * imap_get_lep_set_from_numlist(MsgNumberList *numlist);
 static GSList * imap_get_lep_set_from_msglist(MsgInfoList *msglist);
 static GSList * imap_uid_list_from_lep(clist * list);
 static GSList * imap_uid_list_from_lep_tab(carray * list);
-static GSList * imap_uid_list_from_lep_uid_flags_tab(carray * list);
 static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
 						   GHashTable * hash);
 static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
@@ -3982,7 +3981,6 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	MsgInfoList *msginfo_list = stuff->msginfo_list;
 	GRelation *msgflags = stuff->msgflags;
 	GSList *elem;
-	GSList * fetchuid_list;
 	carray * lep_uidtab;
 	IMAPSession *session;
 	gint ok;
@@ -4099,9 +4097,6 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	} else {
 		r = imap_threaded_fetch_uid_flags(folder, 1, &lep_uidtab);
 		if (r == MAILIMAP_NO_ERROR) {
-			fetchuid_list =
-				imap_uid_list_from_lep_uid_flags_tab(lep_uidtab);
-
 			flags_hash = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
 			imap_flags_hash_from_lep_uid_flags_tab(lep_uidtab, flags_hash);
 			imap_fetch_uid_flags_list_free(lep_uidtab);
@@ -4535,23 +4530,6 @@ static GSList * imap_uid_list_from_lep_tab(carray * list)
 	result = NULL;
 	
 	for(i = 0 ; i < carray_count(list) ; i ++) {
-		uint32_t * puid;
-		
-		puid = carray_get(list, i);
-		result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
-	}
-	result = g_slist_reverse(result);
-	return result;
-}
-
-static GSList * imap_uid_list_from_lep_uid_flags_tab(carray * list)
-{
-	unsigned int i;
-	GSList * result;
-	
-	result = NULL;
-	
-	for(i = 0 ; i < carray_count(list) ; i += 2) {
 		uint32_t * puid;
 		
 		puid = carray_get(list, i);

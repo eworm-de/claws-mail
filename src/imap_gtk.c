@@ -479,7 +479,9 @@ static void subscribe_cb(FolderView *folderview, guint action,
 				folderview_fast_rescan_tree(item->folder);
 		} else {
 			alertpanel_notice(_("This folder is already subscribed and "
-				  "has no unsubscribed subfolders."));
+				  "has no unsubscribed subfolders.\n\nIf there are new folders, "
+				  "created and subscribed to from another client, use \"Check "
+				  "for new folders\" at the mailbox's root folder."));
 		}
 		g_list_free(child_list);
 		return;

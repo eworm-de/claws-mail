@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=13
+EXTRA_VERSION=14
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -145,6 +145,10 @@ case "$target" in
         pthread_name=pthreadGC2
 	CFLAGS="$CFLAGS -mms-bitfields"
 	LIBS="$LIBS -l${pthread_name} -lws2_32 -lregex"
+	;;
+*-sun-solaris2.8)
+	CPPFLAGS="$CPPFLAGS -D_POSIX_PTHREAD_SEMANTICS"
+	CFLAGS="$CFLAGS -DSOLARIS"
 	;;
 esac
   
