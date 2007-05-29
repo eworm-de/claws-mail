@@ -1,3 +1,9 @@
+2007-05-29 [colin]	2.9.2cvs16
+
+	* src/imap.c
+		Fix loss of local flags when moving mails
+		on IMAP in high-bandwidth mode (UID FETCH)
+
 2007-05-25 [paul]	2.9.2cvs15
 
 	* src/common/socket.c

@@ -4104,14 +4104,14 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	}
 	for (elem = sorted_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
-		MsgPermFlags flags;
-		gboolean wasnew, waspostfiltered;
-		
+		MsgPermFlags flags, oldflags;
+		gboolean wasnew;
+
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		waspostfiltered = (flags & MSG_POSTFILTERED);
-	
+		oldflags = flags & ~(MSG_NEW|MSG_UNREAD|MSG_REPLIED|MSG_MARKED|MSG_DELETED);
+
 		if (folder->account && folder->account->low_bandwidth) {
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
 				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
@@ -4158,9 +4158,9 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				flags &= ~MSG_NEW;
 			else if (wasnew)
 				flags |= MSG_NEW;
+			flags |= oldflags;
 		}
-		if (waspostfiltered)
-			flags |= MSG_POSTFILTERED;
+
 		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
 	
