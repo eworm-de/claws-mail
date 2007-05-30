@@ -60,7 +60,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 gint procheader_get_one_field(gchar *buf, size_t len, FILE *fp,
 			      HeaderEntry hentry[])
 {
-fprintf(stderr, "procheader_get_one_field:\n");
 	return generic_get_one_field(buf, len, fp, hentry,
 				     (getlinefunc)fgets, (peekcharfunc)file_peekchar,
 				     TRUE);
@@ -69,7 +68,6 @@ fprintf(stderr, "procheader_get_one_field:\n");
 static gint string_get_one_field(gchar *buf, size_t len, char **str,
 				 HeaderEntry hentry[])
 {
-fprintf(stderr, "string_get_one_field:\n");
 	return generic_get_one_field(buf, len, str, hentry,
 				     (getlinefunc)string_getline,
 				     (peekcharfunc)string_peekchar,
@@ -78,7 +76,6 @@ fprintf(stderr, "string_get_one_field:\n");
 
 static char *string_getline(char *buf, size_t len, char **str)
 {
-fprintf(stderr, "string_getline:\n");
 	if (!*str || !**str)
 		return NULL;
 
@@ -109,7 +106,6 @@ static gint generic_get_one_field(gchar *buf, size_t len, void *data,
 	gint hnum = 0;
 	HeaderEntry *hp = NULL;
 
-fprintf(stderr, "generic_get_one_field:\n");
 	if (hentry != NULL) {
 		/* skip non-required headers */
 		do {
@@ -167,7 +163,6 @@ fprintf(stderr, "generic_get_one_field:\n");
 
 gint procheader_get_one_field_asis(gchar *buf, size_t len, FILE *fp)
 {
-fprintf(stderr, "procheader_get_one_field_asis:\n");
 	return generic_get_one_field(buf, len, fp, NULL,
 				     (getlinefunc)fgets, 
 				     (peekcharfunc)file_peekchar,
@@ -180,7 +175,6 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	GPtrArray *headers;
 	Header *header;
 
-fprintf(stderr, "\nprocheader_get_header_array_asis:\n");
 	g_return_val_if_fail(fp != NULL, NULL);
 
 	headers = g_ptr_array_new();
@@ -264,7 +258,6 @@ Header * procheader_parse_header(gchar * buf)
 	gchar *p = buf;
 	Header * header;
 
-fprintf(stderr, "procheader_parse_header:\n");
 	if ((*buf == ':') || (*buf == ' '))
 		return NULL;
 
@@ -288,7 +281,6 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 	gint hnum;
 	gchar *p;
 
-fprintf(stderr, "\nprocheader_get_header_fields:\n");
 	if (hentry == NULL) return;
 
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
@@ -316,7 +308,6 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 	FILE *fp;
 	MsgInfo *msginfo;
 
-fprintf(stderr, "\nprocheader_parse_file:\n");
 	if (stat(file, &s) < 0) {
 		FILE_OP_ERROR(file, "stat");
 		return NULL;
@@ -343,7 +334,6 @@ fprintf(stderr, "\nprocheader_parse_file:\n");
 MsgInfo *procheader_parse_str(const gchar *str, MsgFlags flags, gboolean full,
 			      gboolean decrypted)
 {
-fprintf(stderr, "procheader_parse_str:\n");
 	return parse_stream(&str, TRUE, flags, full, decrypted);
 }
 
@@ -431,14 +421,12 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 
 HeaderEntry* procheader_get_headernames(gboolean full)
 {
-fprintf(stderr, "\nprocheader_get_headernames:\n");
 	return full ? hentry_full : hentry_short;
 }
 
 MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 				 gboolean decrypted)
 {
-fprintf(stderr, "procheader_parse_stream:\n");
 	return parse_stream(fp, FALSE, flags, full, decrypted);
 }
 
@@ -956,7 +944,6 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
                                { NULL, NULL, FALSE } };
 	gint val;
 
-fprintf(stderr, "procheader_get_header_from_msginfo:\n");
         hentry[0].name = header;
        
 	g_return_val_if_fail(msginfo != NULL, -1);
