@@ -56,6 +56,7 @@
 #include "base64.h"
 #include "combobox.h"
 #include "setup.h"
+#include "quote_fmt.h"
 
 static gboolean cancelled;
 static gboolean new_account;
@@ -71,6 +72,33 @@ static GtkWidget *signature_browse_button;
 static GtkWidget *signature_edit_button;
 
 static GSList *prefs_pages = NULL;
+
+typedef struct AccountPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+} AccountPage;
+
+typedef struct TemplatesPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *compose_subject_format;
+	GtkWidget *compose_body_format;
+	GtkWidget *checkbtn_reply_with_format;
+	GtkWidget *reply_quotemark;
+	GtkWidget *reply_body_format;
+	GtkWidget *checkbtn_forward_with_format;
+	GtkWidget *forward_quotemark;
+	GtkWidget *forward_body_format;
+} TemplatesPage;
+
+static AccountPage account_page;
+static TemplatesPage templates_page;
 
 struct BasicProtocol {
 	GtkWidget *combobox;
@@ -637,6 +665,46 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+static PrefParam templates_param[] = {
+	{"compose_with_format", "FALSE", &tmp_ac_prefs.compose_with_format, P_BOOL,
+	 &templates_page.checkbtn_compose_with_format,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"compose_subject_format", NULL, &tmp_ac_prefs.compose_subject_format, P_STRING,
+	 &templates_page.compose_subject_format,
+	 prefs_set_escaped_data_from_entry, prefs_set_entry_from_escaped},
+
+	{"compose_body_format", NULL, &tmp_ac_prefs.compose_body_format, P_STRING,
+	 &templates_page.compose_body_format,
+	 prefs_set_escaped_data_from_text, prefs_set_text_from_escaped},
+
+	{"reply_with_format", "FALSE", &tmp_ac_prefs.reply_with_format, P_BOOL,
+	 &templates_page.checkbtn_reply_with_format,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"reply_quotemark", NULL, &tmp_ac_prefs.reply_quotemark, P_STRING,
+	 &templates_page.reply_quotemark,
+	 prefs_set_data_from_entry, prefs_set_entry_from_escaped},
+
+	{"reply_body_format", NULL, &tmp_ac_prefs.reply_body_format, P_STRING,
+	 &templates_page.reply_body_format,
+	 prefs_set_escaped_data_from_text, prefs_set_text_from_escaped},
+
+	{"forward_with_format", "FALSE", &tmp_ac_prefs.forward_with_format, P_BOOL,
+	 &templates_page.checkbtn_forward_with_format,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"forward_quotemark", NULL, &tmp_ac_prefs.forward_quotemark, P_STRING,
+	 &templates_page.forward_quotemark,
+	 prefs_set_data_from_entry, prefs_set_entry_from_escaped},
+
+	{"forward_body_format", NULL, &tmp_ac_prefs.forward_body_format, P_STRING,
+	 &templates_page.forward_body_format,
+	 prefs_set_escaped_data_from_text, prefs_set_text_from_escaped},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
 static gint prefs_account_get_new_id		(void);
 
 static void prefs_account_create		(void);
@@ -671,15 +739,7 @@ static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 static void prefs_account_edit_custom_header	(void);
 
 static gint prefs_account_apply			(void);
-
-typedef struct AccountPage
-{
-        PrefsPage page;
- 
-        GtkWidget *vbox;
-} AccountPage;
-
-static AccountPage account_page;
+static gint prefs_templates_apply		(void);
 
 static void privacy_system_activated(GtkMenuItem *menuitem)
 {
@@ -743,7 +803,7 @@ static void update_privacy_system_menu() {
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);
 }
 
-static void create_widget_func(PrefsPage * _page,
+static void account_create_widget_func(PrefsPage * _page,
                                            GtkWindow * window,
                                            gpointer data)
 {
@@ -751,7 +811,7 @@ static void create_widget_func(PrefsPage * _page,
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 	GtkWidget *vbox;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox);
 
 	if (notebook == NULL)
@@ -818,25 +878,35 @@ static void create_widget_func(PrefsPage * _page,
 	page->page.widget = vbox;
 }
 
-static void destroy_widget_func(PrefsPage *_page)
+static void account_destroy_widget_func(PrefsPage *_page)
 {
 	AccountPage *page = (AccountPage *) _page;
 
 	gtk_container_remove(GTK_CONTAINER (page->vbox), notebook);
 }
 
-static gboolean can_close_func(PrefsPage *page_)
+static gboolean account_can_close_func(PrefsPage *_page)
 {	
+	AccountPage *page = (AccountPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
 	return prefs_account_apply() >= 0;
 }
 
-static void save_func(PrefsPage * _page)
+static void account_save_func(PrefsPage *_page)
 {
+	AccountPage *page = (AccountPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
 	if (prefs_account_apply() >= 0)
 		cancelled = FALSE;
 }
 
-void prefs_account_init()
+void register_account_page(void)
 {
 	static gchar *path[2];
 
@@ -845,12 +915,122 @@ void prefs_account_init()
         
 	account_page.page.path = path;
 	account_page.page.weight = 1000.0;
-	account_page.page.create_widget = create_widget_func;
-	account_page.page.destroy_widget = destroy_widget_func;
-	account_page.page.save_page = save_func;
-	account_page.page.can_close = can_close_func;
+	account_page.page.create_widget = account_create_widget_func;
+	account_page.page.destroy_widget = account_destroy_widget_func;
+	account_page.page.save_page = account_save_func;
+	account_page.page.can_close = account_can_close_func;
 
 	prefs_account_register_page((PrefsPage *) &account_page);
+}
+
+static void templates_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+/*	PrefsAccount *ac_prefs = (PrefsAccount *) data; */
+	GtkWidget *vbox;
+
+	vbox = gtk_vbox_new(FALSE, VSPACING);
+	gtk_widget_show(vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
+
+	/* compose/reply/forward formats */
+	quotefmt_create_new_msg_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_compose_with_format,
+				_("Use a specific format for new messages"),
+				&page->compose_subject_format,
+				&page->compose_body_format,
+				FALSE);
+	quotefmt_create_reply_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_reply_with_format,
+				_("Use a specific reply quote format"),
+				&page->reply_quotemark,
+				&page->reply_body_format,
+				FALSE);
+	quotefmt_create_forward_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_forward_with_format,
+				_("Use a specific forward quote format"),
+				&page->forward_quotemark,
+				&page->forward_body_format,
+				FALSE);
+	quotefmt_add_info_button(window, vbox);
+
+	if (new_account) {
+		prefs_set_dialog_to_default(templates_param);
+	} else
+		prefs_set_dialog(templates_param);
+
+	page->vbox = vbox;
+
+	page->page.widget = vbox;
+}
+
+static void templates_destroy_widget_func(PrefsPage *_page)
+{
+	/* TemplatesPage *page = (TemplatesPage *) _page; */
+}
+
+static void prefs_account_check_templates(void)
+{
+	quotefmt_check_new_msg_formats(tmp_ac_prefs.compose_with_format,
+									tmp_ac_prefs.compose_subject_format,
+									tmp_ac_prefs.compose_body_format);
+	quotefmt_check_reply_formats(tmp_ac_prefs.reply_with_format,
+									tmp_ac_prefs.reply_body_format);
+	quotefmt_check_forward_formats(tmp_ac_prefs.forward_with_format,
+									tmp_ac_prefs.forward_body_format);
+}
+
+static gboolean templates_can_close_func(PrefsPage *_page)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_templates_apply() >= 0;
+}
+
+static void templates_save_func(PrefsPage *_page)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	prefs_account_check_templates();
+	if (prefs_templates_apply() >= 0)
+			cancelled = FALSE;
+}
+
+void register_templates_page(void)
+{
+	static gchar *path[2];
+
+	path[0] = _("Templates");
+	path[1] = NULL;
+        
+	templates_page.page.path = path;
+	templates_page.page.weight = 1000.0;
+	templates_page.page.create_widget = templates_create_widget_func;
+	templates_page.page.destroy_widget = templates_destroy_widget_func;
+	templates_page.page.save_page = templates_save_func;
+	templates_page.page.can_close = templates_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &templates_page);
+}
+
+void prefs_account_init()
+{
+	register_account_page();
+	register_templates_page();
 }
 
 PrefsAccount *prefs_account_new(void)
@@ -860,6 +1040,7 @@ PrefsAccount *prefs_account_new(void)
 	ac_prefs = g_new0(PrefsAccount, 1);
 	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
 	prefs_set_default(param);
+	prefs_set_default(templates_param);
 	*ac_prefs = tmp_ac_prefs;
 	ac_prefs->account_id = prefs_account_get_new_id();
 
@@ -883,6 +1064,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
 	prefs_read_config(param, label, rcpath, NULL);
+	prefs_read_config(templates_param, label, rcpath, NULL);
 	g_free(rcpath);
 
 	*ac_prefs = tmp_ac_prefs;
@@ -969,6 +1151,13 @@ void prefs_account_write_config_all(GList *account_list)
 			privacy_prefs = NULL;
 		    	return;
  		}
+		if (prefs_write_param(templates_param, pfile->fp) < 0) {
+			g_warning("failed to write configuration to file\n");
+			prefs_file_close_revert(pfile);
+		g_free(privacy_prefs);
+		privacy_prefs = NULL;
+		    	return;
+ 		}
 		g_free(privacy_prefs);
 		privacy_prefs = NULL;
 
@@ -1001,6 +1190,7 @@ void prefs_account_free(PrefsAccount *ac_prefs)
 
 	tmp_ac_prefs = *ac_prefs;
 	prefs_free(param);
+	prefs_free(templates_param);
 }
 
 const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id)
@@ -2720,6 +2910,12 @@ static gint prefs_account_apply(void)
 		g_free(new_id);
 	}
 	
+	return 0;
+}
+
+static gint prefs_templates_apply(void)
+{
+	prefs_set_data_from_dialog(templates_param);
 	return 0;
 }
 

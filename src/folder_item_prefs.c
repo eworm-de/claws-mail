@@ -95,6 +95,25 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"offlinesync", "FALSE", &tmp_prefs.offlinesync, P_BOOL,
 	 NULL, NULL, NULL},
+
+	{"compose_with_format", "FALSE", &tmp_prefs.compose_with_format, P_BOOL,
+	 NULL, NULL, NULL},
+	{"compose_subject_format", NULL, &tmp_prefs.compose_subject_format, P_STRING,
+	 NULL, NULL, NULL},
+	{"compose_body_format", NULL, &tmp_prefs.compose_body_format, P_STRING,
+	 NULL, NULL, NULL},
+	{"reply_with_format", "FALSE", &tmp_prefs.reply_with_format, P_BOOL,
+	 NULL, NULL, NULL},
+	{"reply_quotemark", NULL, &tmp_prefs.reply_quotemark, P_STRING,
+	 NULL, NULL, NULL},
+	{"reply_body_format", NULL, &tmp_prefs.reply_body_format, P_STRING,
+	 NULL, NULL, NULL},
+	{"forward_with_format", "FALSE", &tmp_prefs.forward_with_format, P_BOOL,
+	 NULL, NULL, NULL},
+	{"forward_quotemark", NULL, &tmp_prefs.forward_quotemark, P_STRING,
+	 NULL, NULL, NULL},
+	{"forward_body_format", NULL, &tmp_prefs.forward_body_format, P_STRING,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -188,6 +207,16 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->newmailcheck = TRUE;
 	prefs->offlinesync = FALSE;
 
+	prefs->compose_with_format = FALSE;
+	prefs->compose_subject_format = NULL;
+	prefs->compose_body_format = NULL;
+	prefs->reply_with_format = FALSE;
+	prefs->reply_quotemark = NULL;
+	prefs->reply_body_format = NULL;
+	prefs->forward_with_format = FALSE;
+	prefs->forward_quotemark = NULL;
+	prefs->forward_body_format = NULL;
+
 	return prefs;
 }
 
@@ -204,6 +233,12 @@ void folder_item_prefs_free(FolderItemPrefs * prefs)
 {
 	g_free(prefs->default_to);
 	g_free(prefs->default_reply_to);
+	g_free(prefs->compose_subject_format);
+	g_free(prefs->compose_body_format);
+	g_free(prefs->reply_quotemark);
+	g_free(prefs->reply_body_format);
+	g_free(prefs->forward_quotemark);
+	g_free(prefs->forward_body_format);
 	g_free(prefs);
 }
 
@@ -258,6 +293,16 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 #endif
 	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
 	tmp_prefs.color				= src->prefs->color;
+
+	tmp_prefs.compose_with_format = src->prefs->compose_with_format;
+	tmp_prefs.compose_subject_format = g_strdup(src->prefs->compose_subject_format);
+	tmp_prefs.compose_body_format = g_strdup(src->prefs->compose_body_format);
+	tmp_prefs.reply_with_format = src->prefs->reply_with_format;
+	tmp_prefs.reply_quotemark = g_strdup(src->prefs->reply_quotemark);
+	tmp_prefs.reply_body_format = g_strdup(src->prefs->reply_body_format);
+	tmp_prefs.forward_with_format = src->prefs->forward_with_format;
+	tmp_prefs.forward_quotemark = g_strdup(src->prefs->forward_quotemark);
+	tmp_prefs.forward_body_format = g_strdup(src->prefs->forward_body_format);
 
 	*dest->prefs = tmp_prefs;
 	folder_item_prefs_save_config(dest);

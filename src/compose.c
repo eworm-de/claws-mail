@@ -178,6 +178,13 @@ typedef enum
 	COMPOSE_WRITE_FOR_STORE
 } ComposeWriteType;
 
+typedef enum
+{
+	COMPOSE_QUOTE_FORCED,
+	COMPOSE_QUOTE_CHECK,
+	COMPOSE_QUOTE_SKIP
+} ComposeQuoteMode;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -198,14 +205,14 @@ static Compose *compose_create			(PrefsAccount	*account,
 static void compose_entry_mark_default_to	(Compose	  *compose,
 					 const gchar	  *address);
 static Compose *compose_followup_and_reply_to	(MsgInfo	*msginfo,
-					 gboolean	 quote,
+					 ComposeQuoteMode	 quote_mode,
 					 gboolean	 to_all,
 					 gboolean	 to_sender,
 					 const gchar	*body);
 static Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
 static Compose *compose_reply			(MsgInfo	*msginfo,
-					 gboolean	 quote,
+					 ComposeQuoteMode	 quote_mode,
 					 gboolean	 to_all,
 					 gboolean	 to_ml,
 					 gboolean	 to_sender,
@@ -503,8 +510,10 @@ static void text_inserted		(GtkTextBuffer	*buffer,
 					 const gchar	*text,
 					 gint		 len,
 					 Compose	*compose);
-static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
-				  gboolean to_all, gboolean to_ml,
+static Compose *compose_generic_reply(MsgInfo *msginfo,
+				  ComposeQuoteMode quote_mode,
+				  gboolean to_all,
+				  gboolean to_ml,
 				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
@@ -971,6 +980,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	GtkTextBuffer *textbuf;
 	GtkTextIter iter;
 	GtkItemFactory *ifactory;
+	gchar *subject_format = NULL;
+	gchar *body_format = NULL;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
@@ -1024,11 +1035,22 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	}
 	compose_add_field_list( compose, listAddress );
 
-	if (prefs_common.compose_with_format) {
+	if (item && item->prefs && item->prefs->compose_with_format) {
+		subject_format = item->prefs->compose_subject_format;
+		body_format = item->prefs->compose_body_format;
+	} else if (account->compose_with_format) {
+		subject_format = account->compose_subject_format;
+		body_format = account->compose_body_format;
+	} else if (prefs_common.compose_with_format) {
+		subject_format = prefs_common.compose_subject_format;
+		body_format = prefs_common.compose_body_format;
+	}
+
+	if (subject_format || body_format) {
 		MsgInfo* dummyinfo = NULL;
 
-		if ( prefs_common.compose_subject_format
-			 && *prefs_common.compose_subject_format != '\0' )
+		if ( subject_format
+			 && *subject_format != '\0' )
 		{
 			gchar *subject = NULL;
 			gchar *tmp = NULL;
@@ -1037,8 +1059,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			dummyinfo = compose_msginfo_new_from_compose(compose);
 
 			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(prefs_common.compose_subject_format)+1);
-			pref_get_unescaped_pref(tmp, prefs_common.compose_subject_format);
+			tmp = malloc(strlen(subject_format)+1);
+			pref_get_unescaped_pref(tmp, subject_format);
 
 			subject = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
 #ifdef USE_ASPELL
@@ -1061,8 +1083,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			g_free(tmp);
 		}
 
-		if ( prefs_common.compose_body_format
-			 && *prefs_common.compose_body_format != '\0' )
+		if ( body_format
+			 && *body_format != '\0' )
 		{
 			GtkTextView *text;
 			GtkTextBuffer *buffer;
@@ -1079,7 +1101,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 
 			compose_quote_fmt(compose, dummyinfo,
-			        	  prefs_common.compose_body_format,
+			        	  body_format,
 			        	  NULL, tmp, FALSE, TRUE,
 						  _("New message body format error at line %d."));
 			quote_fmt_reset_vartable();
@@ -1189,56 +1211,56 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 
 	switch (mode) {
 	case COMPOSE_REPLY:
-		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_CHECK,
 		    	      FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose = compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_FORCED, 
 			FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose = compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_SKIP, 
 			FALSE, prefs_common.default_reply_list, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
-		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_CHECK,
 			      FALSE, FALSE, TRUE, body);
 		break;
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
 		compose = compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
+					      COMPOSE_QUOTE_CHECK,
 					      FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose = compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_FORCED, 
 			FALSE, FALSE, TRUE, body);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose = compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_SKIP, 
 			FALSE, FALSE, TRUE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
-		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_CHECK,
 			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose = compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_FORCED, 
 			TRUE, FALSE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose = compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_SKIP, 
 			TRUE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_LIST:
-		compose = compose_reply(msginfo, prefs_common.reply_with_quote,
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_CHECK,
 			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose = compose_reply(msginfo, TRUE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_FORCED, 
 			FALSE, TRUE, FALSE, body);
 		break;
 	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose = compose_reply(msginfo, FALSE, 
+		compose = compose_reply(msginfo, COMPOSE_QUOTE_SKIP, 
 			FALSE, TRUE, FALSE, NULL);
 		break;
 	case COMPOSE_FORWARD:
@@ -1264,7 +1286,7 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 		compose = compose_redirect(NULL, msginfo, FALSE);
 		break;
 	default:
-		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
+		g_warning("compose_reply_mode(): invalid Compose Mode: %d\n", mode);
 	}
 	
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
@@ -1303,20 +1325,24 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 	return compose;
 }
 
-static Compose *compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean to_ml, gboolean to_sender, 
+static Compose *compose_reply(MsgInfo *msginfo,
+				   ComposeQuoteMode quote_mode,
+				   gboolean to_all,
+				   gboolean to_ml,
+				   gboolean to_sender, 
 		   const gchar *body)
 {
-	return compose_generic_reply(msginfo, quote, to_all, to_ml, 
+	return compose_generic_reply(msginfo, quote_mode, to_all, to_ml, 
 			      to_sender, FALSE, body);
 }
 
-static Compose *compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
+static Compose *compose_followup_and_reply_to(MsgInfo *msginfo,
+				   ComposeQuoteMode quote_mode,
 				   gboolean to_all,
 				   gboolean to_sender,
 				   const gchar *body)
 {
-	return compose_generic_reply(msginfo, quote, to_all, FALSE, 
+	return compose_generic_reply(msginfo, quote_mode, to_all, FALSE, 
 			      to_sender, TRUE, body);
 }
 
@@ -1362,7 +1388,8 @@ static void compose_extract_original_charset(Compose *compose)
 				compose);			\
 }
 
-static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
+static Compose *compose_generic_reply(MsgInfo *msginfo,
+				  ComposeQuoteMode quote_mode,
 				  gboolean to_all, gboolean to_ml,
 				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
@@ -1374,6 +1401,9 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	PrefsAccount *reply_account;
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
+	gboolean quote = FALSE;
+	gchar *qmark = NULL;
+	gchar *body_fmt = NULL;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1392,6 +1422,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 			return NULL;
 	} else
 		reply_account = account;
+	/* wwp: TODO: why isn't reply_account used below? shouldn't we use reply_account instead of account? */
 
 	compose = compose_create(account, COMPOSE_REPLY, FALSE);
 
@@ -1432,17 +1463,33 @@ static Compose *compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose_set_dictionaries_from_folder_prefs(compose, msginfo->folder);
 #endif
 
-	if (quote) {
-		gchar *qmark;
+	if (quote_mode == COMPOSE_QUOTE_FORCED ||
+			(quote_mode == COMPOSE_QUOTE_CHECK && prefs_common.reply_with_quote)) {
+		/* use the reply format of folder (if enabled), or the account's one
+		   (if enabled) or fallback to the global reply format, which is always
+		   enabled (even if empty), and use the relevant quotemark */
+		quote = TRUE;
+		if (msginfo->folder && msginfo->folder->prefs &&
+				msginfo->folder->prefs->reply_with_format) {
+			qmark = msginfo->folder->prefs->reply_quotemark;
+			body_fmt = msginfo->folder->prefs->reply_body_format;
 
-		if (prefs_common.quotemark && *prefs_common.quotemark)
+		} else if (account->reply_with_format) {
+			qmark = account->reply_quotemark;
+			body_fmt = account->reply_body_format;
+
+		} else {
 			qmark = prefs_common.quotemark;
-		else
-			qmark = "> ";
+			body_fmt = prefs_common.quotefmt;
+		}
+	}
 
+	if (quote) {
+		/* empty quotemark is not allowed */
+		if (qmark && !*qmark);
+			qmark = "> ";
 		compose_quote_fmt(compose, compose->replyinfo,
-			          prefs_common.quotefmt,
-			          qmark, body, FALSE, TRUE,
+			          body_fmt, qmark, body, FALSE, TRUE,
 					  _("Message reply format error at line %d."));
 		quote_fmt_reset_vartable();
 	}
@@ -1544,22 +1591,37 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		g_free(msgfile);
 	} else {
-		gchar *qmark;
+		gchar *qmark = NULL;
+		gchar *body_fmt = prefs_common.fw_quotefmt;
 		MsgInfo *full_msginfo;
 
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!full_msginfo)
 			full_msginfo = procmsg_msginfo_copy(msginfo);
 
-		if (prefs_common.fw_quotemark &&
-		    *prefs_common.fw_quotemark)
+		/* use the forward format of folder (if enabled), or the account's one
+		   (if enabled) or fallback to the global forward format, which is always
+		   enabled (even if empty), and use the relevant quotemark */
+		if (msginfo->folder && msginfo->folder->prefs &&
+				msginfo->folder->prefs->forward_with_format) {
+			qmark = msginfo->folder->prefs->forward_quotemark;
+			body_fmt = msginfo->folder->prefs->forward_body_format;
+
+		} else if (account->forward_with_format) {
+			qmark = account->forward_quotemark;
+			body_fmt = account->forward_body_format;
+
+		} else {
 			qmark = prefs_common.fw_quotemark;
-		else
+			body_fmt = prefs_common.fw_quotefmt;
+		}
+
+		/* empty quotemark is not allowed */
+		if (qmark && !*qmark)
 			qmark = "> ";
 
 		compose_quote_fmt(compose, full_msginfo,
-			          prefs_common.fw_quotefmt,
-			          qmark, body, FALSE, TRUE,
+			          body_fmt, qmark, body, FALSE, TRUE,
 					  _("Message forward format error at line %d."));
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);

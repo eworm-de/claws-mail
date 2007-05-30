@@ -1,3 +1,16 @@
+2007-05-30 [wwp]	2.9.2cvs20
+
+	* src/compose.c
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_folder_item.c
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+		Implemented per-account and per-folder
+		compose/reply/forward formats.
+
 2007-05-30 [wwp]	2.9.2cvs19
 
 	* src/prefs_compose_writing.c

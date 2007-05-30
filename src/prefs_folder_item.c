@@ -46,6 +46,7 @@
 #include "folder_item_prefs.h"
 #include "gtk/colorsel.h"
 #include "string_match.h"
+#include "quote_fmt.h"
 
 #if USE_ASPELL
 #include "gtkaspell.h"
@@ -59,6 +60,7 @@
 
 typedef struct _FolderItemGeneralPage FolderItemGeneralPage;
 typedef struct _FolderItemComposePage FolderItemComposePage;
+typedef struct _FolderItemTemplatesPage FolderItemTemplatesPage;
 static gboolean can_save = TRUE;
 
 struct _FolderItemGeneralPage
@@ -128,12 +130,32 @@ struct _FolderItemComposePage
 #endif
 };
 
+struct _FolderItemTemplatesPage
+{
+	PrefsPage page;
+
+	FolderItem *item;
+
+	GtkWidget *window;
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *compose_subject_format;
+	GtkWidget *compose_body_format;
+	GtkWidget *checkbtn_reply_with_format;
+	GtkWidget *reply_quotemark;
+	GtkWidget *reply_body_format;
+	GtkWidget *checkbtn_forward_with_format;
+	GtkWidget *forward_quotemark;
+	GtkWidget *forward_body_format;
+};
+
 
 static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage *page);
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page);
+static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesPage *page);
 
 static gboolean general_save_recurse_func(GNode *node, gpointer data);
 static gboolean compose_save_recurse_func(GNode *node, gpointer data);
+static gboolean templates_save_recurse_func(GNode *node, gpointer data);
 
 static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
@@ -1026,6 +1048,160 @@ static void prefs_folder_item_compose_save_func(PrefsPage *page_)
 
 }
 
+static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
+						   GtkWindow * window,
+                                		   gpointer data)
+{
+	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_;
+	FolderItem *item = (FolderItem *) data;
+
+	GtkWidget *vbox_formats;
+
+	page->item	   = item;
+
+	/* compose/reply/forward formats */
+	vbox_formats = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox_formats);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_formats), VBOX_BORDER);
+
+	quotefmt_create_new_msg_fmt_widgets(
+				window,
+				vbox_formats,
+				&page->checkbtn_compose_with_format,
+				_("Use a specific format for new messages"),
+				&page->compose_subject_format,
+				&page->compose_body_format,
+				FALSE);
+	quotefmt_create_reply_fmt_widgets(
+				window,
+				vbox_formats,
+				&page->checkbtn_reply_with_format,
+				_("Use a specific reply quote format"),
+				&page->reply_quotemark,
+				&page->reply_body_format,
+				FALSE);
+	quotefmt_create_forward_fmt_widgets(
+				window,
+				vbox_formats,
+				&page->checkbtn_forward_with_format,
+				_("Use a specific forward quote format"),
+				&page->forward_quotemark,
+				&page->forward_body_format,
+				FALSE);
+	quotefmt_add_info_button(window, vbox_formats);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
+			item->prefs->compose_with_format);
+	pref_set_entry_from_pref(GTK_ENTRY(page->compose_subject_format),
+			item->prefs->compose_subject_format);
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->compose_body_format),
+			item->prefs->compose_body_format);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format),
+			item->prefs->reply_with_format);
+	pref_set_entry_from_pref(GTK_ENTRY(page->reply_quotemark),
+			item->prefs->reply_quotemark);
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->reply_body_format),
+			item->prefs->reply_body_format);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format),
+			item->prefs->forward_with_format);
+	pref_set_entry_from_pref(GTK_ENTRY(page->forward_quotemark),
+			item->prefs->forward_quotemark);
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->forward_body_format),
+			item->prefs->forward_body_format);
+
+	gtk_widget_show_all(vbox_formats);
+
+	page->window = GTK_WIDGET(window);
+
+	page->page.widget = vbox_formats;
+}
+
+static void prefs_folder_item_templates_destroy_widget_func(PrefsPage *page_) 
+{
+	/* FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_; */
+}
+
+/** \brief  Save the prefs in page to folder.
+ *
+ *  If the folder is not the one  specified in page->item, then only those properties 
+ *  that have the relevant 'apply to sub folders' button checked are saved
+ */
+static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesPage *page)
+{
+	FolderItemPrefs *prefs = folder->prefs;
+	gboolean all = FALSE;
+
+	if (folder->path == NULL)
+		return;
+
+	if (page->item == folder) 
+		all = TRUE;
+
+	g_return_if_fail(prefs != NULL);
+
+	/* save and check formats */
+
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format))) {
+		prefs->compose_with_format =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
+		prefs->compose_subject_format = pref_get_pref_from_entry(
+				GTK_ENTRY(page->compose_subject_format));
+		prefs->compose_body_format = pref_get_pref_from_textview(
+				GTK_TEXT_VIEW(page->compose_body_format));
+		quotefmt_check_new_msg_formats(prefs->compose_with_format,
+										prefs->compose_subject_format,
+										prefs->compose_body_format);
+	}
+
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format))) {
+		prefs->reply_with_format =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format));
+		prefs->reply_quotemark = gtk_editable_get_chars(
+				GTK_EDITABLE(page->reply_quotemark), 0, -1);
+		prefs->reply_body_format = pref_get_pref_from_textview(
+				GTK_TEXT_VIEW(page->reply_body_format));
+		quotefmt_check_reply_formats(prefs->reply_with_format,
+										prefs->reply_body_format);
+	}
+
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format))) {
+		prefs->forward_with_format =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format));
+		prefs->forward_quotemark = gtk_editable_get_chars(
+				GTK_EDITABLE(page->forward_quotemark), 0, -1);
+		prefs->forward_body_format = pref_get_pref_from_textview(
+				GTK_TEXT_VIEW(page->forward_body_format));
+		quotefmt_check_forward_formats(prefs->forward_with_format,
+										prefs->forward_body_format);
+	}
+
+	folder_item_prefs_save_config(folder);
+}	
+
+static gboolean templates_save_recurse_func(GNode *node, gpointer data)
+{
+	FolderItem *item = (FolderItem *) node->data;
+	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) data;
+
+	g_return_val_if_fail(item != NULL, TRUE);
+	g_return_val_if_fail(page != NULL, TRUE);
+
+	templates_save_folder_prefs(item, page);
+
+	return FALSE;
+}
+
+static void prefs_folder_item_templates_save_func(PrefsPage *page_) 
+{
+	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_;
+
+	g_node_traverse(page->item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
+			-1, templates_save_recurse_func, page);
+
+}
+
 static gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
 {
 	gint newmode = 0;
@@ -1181,6 +1357,22 @@ static void register_compose_page(void)
 	prefs_folder_item_register_page((PrefsPage *) &folder_item_compose_page);
 }
 
+static void register_templates_page(void)
+{
+	static gchar *pfi_templates_path[2];
+	static FolderItemTemplatesPage folder_item_templates_page;
+
+	pfi_templates_path[0] = _("Templates");
+	pfi_templates_path[1] = NULL;
+
+        folder_item_templates_page.page.path = pfi_templates_path;
+        folder_item_templates_page.page.create_widget = prefs_folder_item_templates_create_widget_func;
+        folder_item_templates_page.page.destroy_widget = prefs_folder_item_templates_destroy_widget_func;
+        folder_item_templates_page.page.save_page = prefs_folder_item_templates_save_func;
+        
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_templates_page);
+}
+
 static GSList *prefs_pages = NULL;
 
 void prefs_folder_item_open(FolderItem *item)
@@ -1189,6 +1381,7 @@ void prefs_folder_item_open(FolderItem *item)
 	if (prefs_pages == NULL) {
 		register_general_page();
 		register_compose_page();
+		register_templates_page();
 	}
 
 	if (item->path) {

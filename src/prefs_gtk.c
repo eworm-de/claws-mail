@@ -720,6 +720,24 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 	}
 }
 
+void prefs_set_escaped_data_from_entry(PrefParam *pparam)
+{
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	switch (pparam->type) {
+	case P_STRING:
+		str = (gchar **)pparam->data;
+		g_free(*str);
+		*str = pref_get_pref_from_entry(GTK_ENTRY(*pparam->widget));
+		break;
+	default:
+		g_warning("Invalid escaped PrefType for GtkEntry widget: %d\n",
+			  pparam->type);
+	}
+}
+
 void prefs_set_entry(PrefParam *pparam)
 {
 	gchar **str;
@@ -743,6 +761,24 @@ void prefs_set_entry(PrefParam *pparam)
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d\n",
+			  pparam->type);
+	}
+}
+
+void prefs_set_entry_from_escaped(PrefParam *pparam)
+{
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	switch (pparam->type) {
+	case P_STRING:
+		str = (gchar **)pparam->data;
+		pref_set_entry_from_pref(GTK_ENTRY(*pparam->widget),
+				   *str ? *str : "");
+		break;
+	default:
+		g_warning("Invalid escaped PrefType for GtkEntry widget: %d\n",
 			  pparam->type);
 	}
 }
@@ -800,6 +836,24 @@ void prefs_set_data_from_text(PrefParam *pparam)
 	}
 }
 
+void prefs_set_escaped_data_from_text(PrefParam *pparam)
+{
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	switch (pparam->type) {
+	case P_STRING:
+		str = (gchar **)pparam->data;
+		g_free(*str);
+		*str = pref_get_pref_from_textview(GTK_TEXT_VIEW(*pparam->widget));
+		break;
+	default:
+		g_warning("Invalid escaped PrefType for GtkText widget: %d\n",
+			  pparam->type);
+	}
+}
+
 void prefs_set_text(PrefParam *pparam)
 {
 	gchar *buf, *sp, *bufp;
@@ -839,6 +893,24 @@ void prefs_set_text(PrefParam *pparam)
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkTextView widget: %d\n",
+			  pparam->type);
+	}
+}
+
+void prefs_set_text_from_escaped(PrefParam *pparam)
+{
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	switch (pparam->type) {
+	case P_STRING:
+		str = (gchar **)pparam->data;
+		pref_set_textview_from_pref(GTK_TEXT_VIEW(*pparam->widget),
+				 *str ? *str : "");
+		break;
+	default:
+		g_warning("Invalid escaped PrefType for GtkTextView widget: %d\n",
 			  pparam->type);
 	}
 }

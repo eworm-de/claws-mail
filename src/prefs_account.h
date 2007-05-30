@@ -131,6 +131,15 @@ struct _PrefsAccount
 	gboolean  enable_default_alt_dictionary;
 	gchar	 *default_alt_dictionary;
 #endif
+	gboolean  compose_with_format;
+	gchar	 *compose_subject_format;
+	gchar	 *compose_body_format;
+	gboolean  reply_with_format;
+	gchar	 *reply_quotemark;
+	gchar	 *reply_body_format;
+	gboolean  forward_with_format;
+	gchar	 *forward_quotemark;
+	gchar	 *forward_body_format;
 
 	/* Privacy */
 	gchar	 *default_privacy_system;
