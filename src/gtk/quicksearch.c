@@ -571,6 +571,8 @@ QuickSearch *quicksearch_new()
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 					prefs_common.summary_quicksearch_dynamic);
 
+	quicksearch->dynamic_menuitem = menuitem;
+
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_dynamic_changed),
 			 quicksearch);
