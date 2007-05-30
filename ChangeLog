@@ -1,3 +1,13 @@
+2007-05-30 [wwp]	2.9.2cvs19
+
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+	* src/procheader.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+		Internal API changes (factorize quote format
+		prefs and checks).
+
 2007-05-30 [colin]	2.9.2cvs18
 
 	* src/compose.c

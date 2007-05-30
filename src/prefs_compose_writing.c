@@ -105,17 +105,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 
-	GtkWidget *frame_format;
-	GtkWidget *checkbtn_compose_with_format;
-	GtkWidget *vbox_format;
-	GtkWidget *hbox_format;
-	GtkWidget *label_subject;
-	GtkWidget *entry_subject;
-	GtkWidget *scrolledwin_format;
-	GtkWidget *text_format;
-	GtkWidget *hbox_formatdesc;
-	GtkWidget *btn_formatdesc;
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -212,66 +201,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_compose_with_format, 
-			   _("Use format when composing new messages"));
-
-	vbox_format = gtkut_get_options_frame(vbox1, &frame_format, _("New message format"));
-
-	hbox_format = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_format);
-	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_format, FALSE, FALSE, 0);
-
-	label_subject = gtk_label_new (_("Subject"));
-	gtk_widget_show (label_subject);
-	gtk_box_pack_start (GTK_BOX (hbox_format), label_subject, FALSE, FALSE, 0);
-
-	entry_subject = gtk_entry_new ();
-	gtk_widget_show (entry_subject);
-	gtk_box_pack_start (GTK_BOX (hbox_format), entry_subject, TRUE, TRUE, 0);
-	gtk_widget_set_size_request (entry_subject, 100, -1);
-
-	scrolledwin_format = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_format);
-	gtk_box_pack_start (GTK_BOX (vbox_format), scrolledwin_format,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_format),
-		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type
-		(GTK_SCROLLED_WINDOW (scrolledwin_format), GTK_SHADOW_IN);
-
-	text_format = gtk_text_view_new ();
-	if (prefs_common.textfont) {
-		PangoFontDescription *font_desc;
-
-		font_desc = pango_font_description_from_string
-						(prefs_common.textfont);
-		if (font_desc) {
-			gtk_widget_modify_font(text_format, font_desc);
-			pango_font_description_free(font_desc);
-		}
-	}
-	gtk_widget_show (text_format);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_format), text_format);
-	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_format), TRUE);
-	gtk_widget_set_size_request(text_format, -1, 100);
-
-	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox_formatdesc);
-	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_formatdesc, FALSE, FALSE, 0);
-
-#if GTK_CHECK_VERSION(2, 8, 0)
-	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	btn_formatdesc =
-		gtk_button_new_with_label (_(" Description of symbols... "));
-#endif
-	gtk_widget_show (btn_formatdesc);
-	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
-			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(window));
-
-	SET_TOGGLE_SENSITIVITY(checkbtn_compose_with_format, frame_format);
+	quotefmt_create_new_msg_fmt_widgets(
+				window,
+				vbox1,
+				&prefs_writing->checkbtn_compose_with_format,
+				_("New message format"),
+				&prefs_writing->entry_subject,
+				&prefs_writing->text_format,
+				TRUE);
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
@@ -291,11 +228,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
-
-	prefs_writing->checkbtn_compose_with_format
-								 = checkbtn_compose_with_format;
-	prefs_writing->entry_subject = entry_subject;
-	prefs_writing->text_format	 = text_format;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -332,7 +264,6 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	gint line = -1;
 
 	WritingPage *page = (WritingPage *) _page;
 	prefs_common.auto_exteditor = 
@@ -366,15 +297,11 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
 	prefs_common.compose_subject_format = pref_get_pref_from_entry(
 			GTK_ENTRY(page->entry_subject));
-	if (!prefs_template_string_is_valid(prefs_common.compose_subject_format, NULL))
-		alertpanel_error(_("New message subject format error."));
 	prefs_common.compose_body_format = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_format));
-	if (!prefs_template_string_is_valid(prefs_common.compose_body_format, &line)) {
-		gchar *msg = g_strdup_printf(_("New message body format error at line %d."), line);
-		alertpanel_error(msg);
-		g_free(msg);
-	}
+	quotefmt_check_new_msg_formats(prefs_common.compose_with_format,
+									prefs_common.compose_subject_format,
+									prefs_common.compose_body_format);
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)

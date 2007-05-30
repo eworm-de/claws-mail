@@ -68,147 +68,43 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_quote;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
-	GtkWidget *label_quotemark;
-	GtkWidget *entry_quotemark;
-	GtkWidget *scrolledwin_quotefmt;
-	GtkWidget *text_quotefmt;
-
-	GtkWidget *entry_fw_quotemark;
-	GtkWidget *text_fw_quotefmt;
 
 	GtkWidget *entry_quote_chars;
 	GtkWidget *label_quote_chars;
 	
-	GtkWidget *btn_quotedesc;
-
 	GtkWidget *checkbtn_reply_with_quote;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	/* reply */
-
 	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_with_quote, _("Reply will quote by default"));
 
-	PACK_FRAME (vbox1, frame_quote, _("Reply format"));
+	/* reply */
 
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_widget_show (label_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
-
-	entry_quotemark = gtk_entry_new ();
-	gtk_widget_show (entry_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (entry_quotemark, 64, -1);
-
-	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
-
-	text_quotefmt = gtk_text_view_new ();
-	if (prefs_common.textfont) {
-		PangoFontDescription *font_desc;
-
-		font_desc = pango_font_description_from_string
-						(prefs_common.textfont);
-		if (font_desc) {
-			gtk_widget_modify_font(text_quotefmt, font_desc);
-			pango_font_description_free(font_desc);
-		}
-	}
-	gtk_widget_show (text_quotefmt);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
-	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_quotefmt), TRUE);
-	gtk_widget_set_size_request(text_quotefmt, -1, 100);
+	quotefmt_create_reply_fmt_widgets(
+				window,
+				vbox1,
+				NULL,
+				NULL,
+				&prefs_quote->entry_quotemark,
+				&prefs_quote->text_quotefmt,
+				FALSE);
 
 	/* forward */
 
-	PACK_FRAME (vbox1, frame_quote, _("Forward format"));
+	quotefmt_create_forward_fmt_widgets(
+				window,
+				vbox1,
+				NULL,
+				NULL,
+				&prefs_quote->entry_fw_quotemark,
+				&prefs_quote->text_fw_quotefmt,
+				FALSE);
 
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+	/* info button */
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_widget_show (label_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
-
-	entry_fw_quotemark = gtk_entry_new ();
-	gtk_widget_show (entry_fw_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_fw_quotemark,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (entry_fw_quotemark, 64, -1);
-
-	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
-
-	text_fw_quotefmt = gtk_text_view_new ();
-	if (prefs_common.textfont) {
-		PangoFontDescription *font_desc;
-
-		font_desc = pango_font_description_from_string
-						(prefs_common.textfont);
-		if (font_desc) {
-			gtk_widget_modify_font(text_fw_quotefmt, font_desc);
-			pango_font_description_free(font_desc);
-		}
-	}
-	gtk_widget_show (text_fw_quotefmt);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
-			  text_fw_quotefmt);
-	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_fw_quotefmt), TRUE);
-	gtk_widget_set_size_request (text_fw_quotefmt, -1, 100);
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-#if GTK_CHECK_VERSION(2, 8, 0)
-	btn_quotedesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	btn_quotedesc =
-		gtk_button_new_with_label (_(" Description of symbols... "));
-#endif
-	gtk_widget_show (btn_quotedesc);
-	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(btn_quotedesc), "clicked",
-			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(window));
+	quotefmt_add_info_button(window, vbox1);
 
 	/* quote chars */
 
@@ -237,23 +133,22 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
 
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(text_quotefmt), prefs_common.quotefmt);
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(text_fw_quotefmt), prefs_common.fw_quotefmt);
-
-	gtk_entry_set_text(GTK_ENTRY(entry_quotemark), 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_reply_with_quote),
+			prefs_common.reply_with_quote);
+	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_quotemark), 
 			prefs_common.quotemark?prefs_common.quotemark:"");
-	gtk_entry_set_text(GTK_ENTRY(entry_fw_quotemark), 
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
+			prefs_common.quotefmt);
+
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_fw_quotefmt),
+			prefs_common.fw_quotefmt);
+	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_fw_quotemark), 
 			prefs_common.fw_quotemark?prefs_common.fw_quotemark:"");
+
 	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
 			prefs_common.quote_chars?prefs_common.quote_chars:"");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_reply_with_quote),
-			prefs_common.reply_with_quote);
 	
 	prefs_quote->window		= GTK_WIDGET(window);
-	prefs_quote->text_quotefmt	= text_quotefmt;
-	prefs_quote->text_fw_quotefmt	= text_fw_quotefmt;
-	prefs_quote->entry_quotemark	= entry_quotemark;
-	prefs_quote->entry_fw_quotemark	= entry_fw_quotemark;
 	prefs_quote->entry_quote_chars	= entry_quote_chars;
 	prefs_quote->checkbtn_reply_with_quote
 					= checkbtn_reply_with_quote;
@@ -263,7 +158,6 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_quote_save(PrefsPage *_page)
 {
 	QuotePage *page = (QuotePage *) _page;
-	gint line = -1;
 	
 	g_free(prefs_common.quotefmt); 
 	prefs_common.quotefmt = NULL;
@@ -278,19 +172,11 @@ static void prefs_quote_save(PrefsPage *_page)
 	
 	prefs_common.quotefmt = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_quotefmt));
-	if (!prefs_template_string_is_valid(prefs_common.quotefmt, &line)) {
-		gchar *msg = g_strdup_printf(_("Message reply format error at line %d."), line);
-		alertpanel_error(msg);
-		g_free(msg);
-	}
+	quotefmt_check_reply_formats(TRUE, prefs_common.quotefmt);
 
 	prefs_common.fw_quotefmt = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_fw_quotefmt));
-	if (!prefs_template_string_is_valid(prefs_common.fw_quotefmt, &line)) {
-		gchar *msg = g_strdup_printf(_("Message forward format error at line %d."), line);
-		alertpanel_error(msg);
-		g_free(msg);
-	}
+	quotefmt_check_forward_formats(TRUE, prefs_common.fw_quotefmt);
 
 	prefs_common.quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_quotemark), 0, -1);

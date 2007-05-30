@@ -30,6 +30,12 @@
 #include "description_window.h"
 #include "gtkutils.h"
 
+#include "prefs_gtk.h"
+#include "prefs_common.h"
+#include "quote_fmt.h"
+#include "alertpanel.h"
+#include "prefs_template.h"
+
 
 /*
  * Strings describing quote format strings
@@ -106,3 +112,339 @@ void quote_fmt_quote_description(GtkWidget *widget, GtkWidget *pref_window)
 	description_window_create(&quote_desc_win);
 }
 
+void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
+						GtkWidget *parent_box,
+						GtkWidget **checkbtn_compose_with_format,
+						gchar *checkbtn_compose_text,
+						GtkWidget **edit_subject_format,
+						GtkWidget **edit_body_format,
+						gboolean add_info_button)
+{
+	GtkWidget *checkbtn_use_format = NULL;
+	GtkWidget *frame_format;
+	GtkWidget *vbox_format;
+	GtkWidget *hbox_format;
+	GtkWidget *label_subject;
+	GtkWidget *entry_subject;
+	GtkWidget *scrolledwin_format;
+	GtkWidget *text_format;
+
+	if (add_info_button)
+		g_return_if_fail(parent_window != NULL);
+	g_return_if_fail(parent_box != NULL);
+	if (checkbtn_compose_with_format) {
+		g_return_if_fail(checkbtn_compose_with_format != NULL);
+		g_return_if_fail(checkbtn_compose_text != NULL);
+	}
+	g_return_if_fail(edit_subject_format != NULL);
+	g_return_if_fail(edit_body_format != NULL);
+
+	if (checkbtn_compose_with_format)
+		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, 
+				   _("Use format when composing new messages"));
+
+	vbox_format = gtkut_get_options_frame(parent_box, &frame_format, checkbtn_compose_text);
+
+	if (checkbtn_compose_with_format)
+		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_format);
+
+	hbox_format = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_format);
+	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_format, FALSE, FALSE, 0);
+
+	label_subject = gtk_label_new (_("Subject"));
+	gtk_widget_show (label_subject);
+	gtk_box_pack_start (GTK_BOX (hbox_format), label_subject, FALSE, FALSE, 0);
+
+	entry_subject = gtk_entry_new ();
+	gtk_widget_show (entry_subject);
+	gtk_box_pack_start (GTK_BOX (hbox_format), entry_subject, TRUE, TRUE, 0);
+	gtk_widget_set_size_request (entry_subject, 100, -1);
+
+	scrolledwin_format = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_format);
+	gtk_box_pack_start (GTK_BOX (vbox_format), scrolledwin_format,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_format),
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_format), GTK_SHADOW_IN);
+
+	text_format = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_format, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
+	gtk_widget_show(text_format);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_format), text_format);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_format), TRUE);
+	gtk_widget_set_size_request(text_format, -1, 100);
+
+	if (add_info_button)
+		quotefmt_add_info_button(parent_window, vbox_format);
+
+	if (checkbtn_compose_with_format)
+		*checkbtn_compose_with_format = checkbtn_use_format;
+	*edit_subject_format = entry_subject;
+	*edit_body_format = text_format;
+}
+
+void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
+						GtkWidget *parent_box,
+						GtkWidget **checkbtn_reply_with_format,
+						gchar *checkbtn_reply_text,
+						GtkWidget **edit_reply_quotemark,
+						GtkWidget **edit_reply_format,
+						gboolean add_info_button)
+{
+	GtkWidget *checkbtn_use_format = NULL;
+	GtkWidget *frame_quote;
+	GtkWidget *vbox_quote;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *label_quotemark;
+	GtkWidget *entry_quotemark;
+	GtkWidget *scrolledwin_quotefmt;
+	GtkWidget *text_quotefmt;
+
+	if (add_info_button)
+		g_return_if_fail(parent_window != NULL);
+	g_return_if_fail(parent_box != NULL);
+	if (checkbtn_reply_with_format) {
+		g_return_if_fail(checkbtn_reply_with_format != NULL);
+		g_return_if_fail(checkbtn_reply_text != NULL);
+	}
+	g_return_if_fail(edit_reply_quotemark != NULL);
+	g_return_if_fail(edit_reply_format != NULL);
+
+	if (checkbtn_reply_with_format)
+		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, checkbtn_reply_text);
+
+	PACK_FRAME (parent_box, frame_quote, _("Reply format"));
+
+	if (checkbtn_reply_with_format)
+		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_quote);
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quotemark = gtk_label_new (_("Quotation mark"));
+	gtk_widget_show (label_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
+
+	entry_quotemark = gtk_entry_new ();
+	gtk_widget_show (entry_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
+	gtk_widget_set_size_request (entry_quotemark, 64, -1);
+
+	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_quotefmt);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
+
+	text_quotefmt = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_quotefmt, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
+	gtk_widget_show(text_quotefmt);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_quotefmt), TRUE);
+	gtk_widget_set_size_request(text_quotefmt, -1, 100);
+
+	if (add_info_button)
+		quotefmt_add_info_button(parent_window, vbox_quote);
+
+	if (checkbtn_reply_with_format)
+		*checkbtn_reply_with_format = checkbtn_use_format;
+	*edit_reply_quotemark = entry_quotemark;
+	*edit_reply_format = text_quotefmt;
+}
+
+void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
+						GtkWidget *parent_box,
+						GtkWidget **checkbtn_forward_with_format,
+						gchar *checkbtn_forward_text,
+						GtkWidget **edit_fw_quotemark,
+						GtkWidget **edit_fw_format,
+						gboolean add_info_button)
+{
+	GtkWidget *checkbtn_use_format = NULL;
+	GtkWidget *frame_quote;
+	GtkWidget *vbox_quote;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *label_quotemark;
+	GtkWidget *entry_fw_quotemark;
+	GtkWidget *scrolledwin_quotefmt;
+	GtkWidget *text_fw_quotefmt;
+
+	if (add_info_button)
+		g_return_if_fail(parent_window != NULL);
+	g_return_if_fail(parent_box != NULL);
+	if (checkbtn_forward_with_format) {
+		g_return_if_fail(checkbtn_forward_with_format != NULL);
+		g_return_if_fail(checkbtn_forward_text != NULL);
+	}
+	g_return_if_fail(edit_fw_quotemark != NULL);
+	g_return_if_fail(edit_fw_format != NULL);
+
+	if (checkbtn_forward_with_format)
+		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, checkbtn_forward_text);
+
+	PACK_FRAME (parent_box, frame_quote, _("Forward format"));
+
+	if (checkbtn_forward_with_format)
+		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_quote);
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quotemark = gtk_label_new (_("Quotation mark"));
+	gtk_widget_show (label_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
+
+	entry_fw_quotemark = gtk_entry_new ();
+	gtk_widget_show (entry_fw_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_fw_quotemark,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_size_request (entry_fw_quotemark, 64, -1);
+
+	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_quotefmt);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
+
+	text_fw_quotefmt = gtk_text_view_new ();
+	if (prefs_common.textfont) {
+		PangoFontDescription *font_desc;
+
+		font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(text_fw_quotefmt, font_desc);
+			pango_font_description_free(font_desc);
+		}
+	}
+	gtk_widget_show(text_fw_quotefmt);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
+			  text_fw_quotefmt);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_fw_quotefmt), TRUE);
+	gtk_widget_set_size_request (text_fw_quotefmt, -1, 100);
+
+	if (add_info_button)
+		quotefmt_add_info_button(parent_window, vbox_quote);
+
+	if (checkbtn_forward_with_format)
+		*checkbtn_forward_with_format = checkbtn_use_format;
+	*edit_fw_quotemark = entry_fw_quotemark;
+	*edit_fw_format = text_fw_quotefmt;
+}
+
+void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
+{
+	GtkWidget *hbox_formatdesc;
+	GtkWidget *btn_formatdesc;
+
+	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox_formatdesc);
+	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE, 0);
+
+#if GTK_CHECK_VERSION(2, 8, 0)
+	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
+#else
+	btn_formatdesc =
+		gtk_button_new_with_label (_("Description of symbols..."));
+#endif
+	gtk_widget_show (btn_formatdesc);
+	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
+			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(parent_window));
+}
+
+
+void quotefmt_check_new_msg_formats(gboolean use_format,
+									gchar *subject_fmt,
+									gchar *body_fmt)
+{
+	gint line;
+
+	if (use_format &&
+			!prefs_template_string_is_valid(subject_fmt, NULL))
+		alertpanel_error(_("New message subject format error."));
+	if (use_format &&
+			!prefs_template_string_is_valid(body_fmt, &line)) {
+		gchar *msg = g_strdup_printf(_("New message body format error at line %d."), line);
+		alertpanel_error(msg);
+		g_free(msg);
+	}
+}
+
+void quotefmt_check_reply_formats(gboolean use_format,
+									gchar *body_fmt)
+{
+	gint line;
+
+	if (use_format &&
+			!prefs_template_string_is_valid(body_fmt, &line)) {
+		gchar *msg = g_strdup_printf(_("Message reply format error at line %d."), line);
+		alertpanel_error(msg);
+		g_free(msg);
+	}
+}
+
+void quotefmt_check_forward_formats(gboolean use_format,
+									gchar *body_fmt)
+{
+	gint line;
+
+	if (use_format &&
+			!prefs_template_string_is_valid(body_fmt, &line)) {
+		gchar *msg = g_strdup_printf(_("Message forward format error at line %d."), line);
+		alertpanel_error(msg);
+		g_free(msg);
+	}
+}
