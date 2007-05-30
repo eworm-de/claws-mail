@@ -1206,6 +1206,7 @@ gint folderview_check_new(Folder *folder)
 						if (FOLDER_TYPE(item->folder) == F_NEWS || FOLDER_IS_LOCAL(folder)) {
 							log_error(LOG_PROTOCOL, _("Couldn't scan folder %s\n"),
 								item->path ? item->path:item->name);
+							STATUSBAR_POP(folderview->mainwin);
 							continue;
 						} else if (!FOLDER_IS_LOCAL(folder)) {
 							STATUSBAR_POP(folderview->mainwin);

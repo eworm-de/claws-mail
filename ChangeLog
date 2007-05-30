@@ -1,3 +1,15 @@
+2007-05-30 [colin]	2.9.2cvs17
+
+	* src/crash.c
+		Ask for backtrace on all threads. Patch by
+		Pawel
+	* src/folderview.c
+		Fix stale news statusbar when scanning fails.
+		Patch by Pawel
+	* src/ldapupdate.c
+		Fix some LDAP write updates bugs. Patch
+		by Michael Rasmussen
+
 2007-05-29 [colin]	2.9.2cvs16
 
 	* src/imap.c

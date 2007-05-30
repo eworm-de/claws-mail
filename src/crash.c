@@ -80,7 +80,7 @@ static void		 crash_cleanup_exit		(void);
 
 /***/
 
-static const gchar *DEBUG_SCRIPT = "bt\nkill\nq";
+static const gchar *DEBUG_SCRIPT = "thread all apply\nbt full\nkill\nq";
 
 /***/
 

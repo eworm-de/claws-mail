@@ -21,6 +21,17 @@
  * Functions necessary to access LDAP servers.
  */
 
+/*
+ * Outstanding bugs
+ * 1) When adding a contact to an empty addressbook from the pop-up menu
+ * when right-clicking on an email address causes claws-mail to crash in
+ * addritem.c line 965. Severity: Show stopper.
+ * 2) Updating a contact gets lost if the user makes a new search on the
+ * same LdapServer. Severity: Medium.
+ * 3) After adding a new contact the displayName for the contact is empty
+ * until the user makes a reread from the LdapServer. Severity: minor.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -491,8 +502,8 @@ void clean_up(LDAP *ld, LdapServer *server, GHashTable *contact) {
 	}
 	if (ld)
 		ldapsvr_disconnect(ld);
-	ldapsvr_force_refresh(server);
-/*	ldapsvr_free_all_query(server);*/
+/*	ldapsvr_force_refresh(server);
+	ldapsvr_free_all_query(server);*/
 }
 
 /**
@@ -567,6 +578,7 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
 	gchar *mod_op;
 	int i;
 
+	g_return_if_fail(mods != NULL);
 	fprintf( stderr, "Type\n");
 	for (i = 0; NULL != mods[i]; i++) {
 		LDAPMod *mod = (LDAPMod *) mods[i];
@@ -582,6 +594,27 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
 		while (*vals) {
 			fprintf( stderr, "\t%s\n", *vals++);
 		}
+	}
+}
+
+/**
+ * Make a compare for every new value we want to store in the
+ * directory with the current values. Great tool for debugging
+ * against invalid syntax in attributes
+ *
+ * \param ld AddressBook resource
+ * \param dn dn for the entry
+ * \param cnt Number of attributes to compare
+ * \param  mods LDAPMod structure
+ */
+void ldapsvr_compare_attr(LDAP *ld, gchar *dn, gint cnt, LDAPMod *mods[]) {
+	int i, rc;
+	
+	g_return_if_fail(ld != NULL || dn != NULL || cnt >= 0 || mods != NULL);
+	for (i = 0; i < cnt; i++) {
+		rc = ldap_compare_s(ld, dn, mods[i]->mod_type, mods[i]->mod_vals.modv_strvals[0]);
+		fprintf(stderr, "ldap_compare for (%s:%s)\" failed[0x%x]: %s\n",
+        	mods[i]->mod_type, mods[i]->mod_vals.modv_strvals[0], rc, ldap_err2string(rc));
 	}
 }
 
@@ -710,6 +743,47 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 }
 
 /**
+ * Deside which kind of operation is required to handle
+ * updating the specified attribute
+ *
+ * \param ld AddressBook resource
+ * \param dn dn for the entry
+ * \param attr Attribute
+ * \param value New value
+ * \return int, return will be LDAP_MOD_ADD, LDAP_MOD_REPLACE, or LDAP_MOD_DELETE
+ */
+int ldapsvr_deside_operation(LDAP *ld, char *dn, char *attr, char *value) {
+	int rc;
+	gboolean dummy = FALSE;
+
+	g_return_val_if_fail(ld != NULL || dn != NULL || attr != NULL, -1);
+	if (value == NULL)
+		return -1;
+	/* value containing empty string cause invalid syntax. A bug in
+	 * the LDAP library? Therefore we add a dummy value
+	 */
+	if (strcmp(value,"") == 0) {
+		value = g_strdup("thisisonlyadummy");
+		dummy = TRUE;
+	}
+	rc = ldap_compare_s(ld, dn, attr, value);
+	debug_print("ldap_compare for (%s:%s)\" error_code[0x%x]: %s\n",
+       	attr, value, rc, ldap_err2string(rc));
+	switch (rc) {
+		case LDAP_COMPARE_FALSE: 
+			if (dummy)
+				return LDAP_MOD_DELETE;
+			else
+				return LDAP_MOD_REPLACE;
+		case LDAP_COMPARE_TRUE: return -1;
+		case LDAP_NO_SUCH_ATTRIBUTE: return LDAP_MOD_ADD;
+		case LDAP_UNDEFINED_TYPE: return -2;
+		case LDAP_INVALID_SYNTAX: return -2;
+		default: return -2;
+	}
+}
+
+/**
  * Update contact to LDAP
  *
  * \param server AddressBook resource
@@ -727,6 +801,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 	char **mail = NULL;
 	char *sn[] = {NULL, NULL};
 	GList *mailList;
+	int mod_op;
 
 	g_return_if_fail(server != NULL || contact != NULL);
 	ld = ldapsvr_connect(server->control);
@@ -773,18 +848,39 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		return;
 	}
 	param = g_hash_table_lookup(contact , "cn");
-	if (param && (strcmp(param, NoRemove->value) != 0 && strcmp("cn", NoRemove->attribute) != 0)) {
-		SETMOD(mods[cnt], modarr[cnt], LDAP_MOD_REPLACE, "displayName", cn, param);
+	mod_op = ldapsvr_deside_operation(ld, dn, "displayName", param);
+	if (mod_op >= 0 && (strcmp(param, NoRemove->value) != 0 && strcmp("cn", NoRemove->attribute) != 0)) {
+		if (mod_op == LDAP_MOD_DELETE) {
+			/* Setting param to NULL instructs OpenLDAP to remove any
+			 * value stored for this attribute and remove the attribute
+			 * completely. Should multiple instances of an attribute be
+			 * allowed in the future param is required to have the value
+			 * store for the attribute which is going to be deleted
+			 */
+			param = NULL;
+		}
+		SETMOD(mods[cnt], modarr[cnt], mod_op, "displayName", cn, param);
 		cnt++;
 		g_hash_table_insert(contact, "displayName", param);
 	}
 	param = g_hash_table_lookup(contact , "givenName");
-	if (param && (strcmp(param, NoRemove->value) != 0 && strcmp("givenName", NoRemove->attribute) != 0)) {
-		SETMOD(mods[cnt], modarr[cnt], LDAP_MOD_REPLACE, "givenName", givenName, param);
+	mod_op = ldapsvr_deside_operation(ld, dn, "givenName", param);
+	if (mod_op >= 0 && (strcmp(param, NoRemove->value) != 0 && strcmp("givenName", NoRemove->attribute) != 0)) {
+		if (mod_op == LDAP_MOD_DELETE) {
+			/* Setting param to NULL instructs OpenLDAP to remove any
+			 * value stored for this attribute and remove the attribute
+			 * completely. Should multiple instances of an attribute be
+			 * allowed in the future param is required to have the value
+			 * store for the attribute which is going to be deleted
+			 */
+			param = NULL;
+		}
+		SETMOD(mods[cnt], modarr[cnt], mod_op, "givenName", givenName, param);
 		cnt++;
 	}
 	mailList = g_hash_table_lookup(contact , "mail");
 	if (mailList) {
+		debug_print("# of mail: %d\n", g_list_length(mailList));
 		if (!(strcmp("mail", NoRemove->attribute) == 0 && g_list_length(mailList) == 1)) {
 			char **tmp;
 			mail = g_malloc(sizeof(*mail));
@@ -796,13 +892,33 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 				mailList = g_list_next(mailList);
 			}
 			*tmp = NULL;
+			/*
+			 * At least one email address is required
+			 * in which case it will always be a replace
+			 */
 			SETMODS(mods[cnt], modarr[cnt], LDAP_MOD_REPLACE, "mail", mail);
 			cnt++;
 		}
 	}
+	else {
+		/*
+		 * an error condition since at least one email adress
+		 * is required. Should never occur though.
+		 */
+	}
 	param = g_hash_table_lookup(contact , "sn");
-	if (param && (strcmp(param, NoRemove->value) != 0 && strcmp("sn", NoRemove->attribute) != 0)) {
-		SETMOD(mods[cnt], modarr[cnt], LDAP_MOD_REPLACE, "sn", sn, param);
+	mod_op = ldapsvr_deside_operation(ld, dn, "sn", param);
+	if (mod_op >= 0 && (strcmp(param, NoRemove->value) != 0 && strcmp("sn", NoRemove->attribute) != 0)) {
+		if (mod_op == LDAP_MOD_DELETE) {
+			/* Setting param to NULL instructs OpenLDAP to remove any
+			 * value stored for this attribute and remove the attribute
+			 * completely. Should multiple instances of an attribute be
+			 * allowed in the future param is required to have the value
+			 * store for the attribute which is going to be deleted
+			 */
+			param = NULL;
+		}
+		SETMOD(mods[cnt], modarr[cnt], mod_op, "sn", sn, param);
 		cnt++;
 	}
 	debug_print("newDN: %s\n", dn);
@@ -821,6 +937,11 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		if (mail)
 			g_free(mail);
 	}
+	/* If we do not make changes persistent at this point then changes
+	 * will be lost if the user makes new search on the same server since
+	 * changes are only present in Claws' internal cache. This issue has to
+	 * be solved in addressbook.c since this involves access to structures
+	 * which are only accessible in addressbook.c */
 	clean_up(ld, server, contact);
 }
 
