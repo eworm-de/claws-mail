@@ -1,3 +1,11 @@
+2007-05-30 [colin]	2.9.2cvs18
+
+	* src/compose.c
+		Fix race where it's possible to re-click Send
+		between end of SMTP session and end of "move to
+		sent folder" when sending an email with send
+		dialog enabled.
+
 2007-05-30 [colin]	2.9.2cvs17
 
 	* src/crash.c

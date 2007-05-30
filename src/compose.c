@@ -4406,8 +4406,6 @@ gint compose_send(Compose *compose)
 		g_free(msgpath);
 	}
 	if (!discard_window) {
-		compose->sending = FALSE;
-		compose_allow_user_actions (compose, TRUE);
 		if (val != 0) {
 			if (!queued_removed)
 				folder_item_remove_msg(folder, msgnum);
@@ -4437,8 +4435,11 @@ gint compose_send(Compose *compose)
 				procmsg_msginfo_free(tmp);
 			}
 		}
-		if (!discard_window)
+		if (!discard_window) {
+			compose->sending = FALSE;
+			compose_allow_user_actions (compose, TRUE);
 			compose_close(compose);
+		}
 	} else {
 		if (errstr) {
 			gchar *tmp = g_strdup_printf(_("%s\nUse \"Send queued messages\" from "
