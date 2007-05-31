@@ -7,7 +7,7 @@ clamav_plugin_la_SOURCES = \
 	clamav_plugin_gtk.c clamav_plugin.h
 
 clamav_plugin_la_LDFLAGS = \
-	-avoid-version -module -no-undefined
+	-avoid-version -module
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
 else

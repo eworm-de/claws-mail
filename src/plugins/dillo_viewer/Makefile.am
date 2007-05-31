@@ -7,7 +7,7 @@ dillo_viewer_la_SOURCES = \
          dillo_prefs.c dillo_prefs.h
 
 dillo_viewer_la_LDFLAGS = \
-	-avoid-version -module -no-undefined
+	-avoid-version -module
 
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
