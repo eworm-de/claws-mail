@@ -1,3 +1,14 @@
+2007-05-31 [wwp]	2.9.2cvs26
+
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+		Re-organized writing options a bit:
+		 - renamed the Quoting page to Templates
+		 - moved all composing templates to that page
+		 - moved non-templates options to the Writing one,
+		   grouped reply-related options, reordered reply and
+		   forward options.
+
 2007-05-31 [wwp]	2.9.2cvs25
 
 	* src/compose.c

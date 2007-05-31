@@ -55,6 +55,7 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 	GtkWidget *spinbtn_undolevel;
+	GtkWidget *checkbtn_reply_with_quote;
 	GtkWidget *checkbtn_default_reply_list;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
@@ -62,9 +63,7 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *optmenu_dnd_insert_or_attach;
-	GtkWidget *checkbtn_compose_with_format;
-	GtkWidget *entry_subject;
-	GtkWidget *text_format;
+	GtkWidget *entry_quote_chars;
 } WritingPage;
 
 static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -88,6 +87,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkObject *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
 
+	GtkWidget *checkbtn_reply_with_quote;
 	GtkWidget *checkbtn_default_reply_list;
 
 	GtkWidget *checkbtn_forward_as_attachment;
@@ -104,6 +104,13 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *optmenu_dnd_insert_or_attach;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+
+	GtkWidget *frame_quote;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *vbox_quote;
+	GtkWidget *entry_quote_chars;
+	GtkWidget *label_quote_chars;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -123,14 +130,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			   _("when forwarding"));
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
 			   _("when re-editing"));
-
-	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Forwarding"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
-			   _("Forward as attachment"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
-			   _("Keep the original 'From' header when redirecting"));
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Editing"));
 
@@ -172,8 +171,21 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 	
-	PACK_CHECK_BUTTON (vbox1, checkbtn_default_reply_list,
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Replying"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_reply_with_quote,
+			   _("Reply will quote by default"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_default_reply_list,
 			   _("Reply button invokes mailing list reply"));
+
+	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Forwarding"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
+			   _("Forward as attachment"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
+			   _("Keep the original 'From' header when redirecting"));
 
 	/* dnd insert or attach */
 	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));
@@ -201,14 +213,33 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
-	quotefmt_create_new_msg_fmt_widgets(
-				window,
-				vbox1,
-				&prefs_writing->checkbtn_compose_with_format,
-				_("New message format"),
-				&prefs_writing->entry_subject,
-				&prefs_writing->text_format,
-				TRUE);
+	/* quote chars */
+
+	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
+	gtk_widget_show (label_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
+
+	entry_quote_chars = gtk_entry_new ();
+	gtk_widget_show (entry_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
+
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
@@ -223,11 +254,13 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	
 	prefs_writing->checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
-	prefs_writing->checkbtn_redirect_keep_from =
-		checkbtn_redirect_keep_from;
+	prefs_writing->checkbtn_redirect_keep_from = checkbtn_redirect_keep_from;
+	prefs_writing->checkbtn_reply_with_quote     = checkbtn_reply_with_quote;
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
+
+	prefs_writing->entry_quote_chars	= entry_quote_chars;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -247,15 +280,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		prefs_common.forward_account_autosel);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_reedit_account_autosel),
 		prefs_common.reedit_account_autosel);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_reply_with_quote),
+			prefs_common.reply_with_quote);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_default_reply_list),
 		prefs_common.default_reply_list);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_dnd_insert_or_attach),
 		prefs_common.compose_dnd_mode);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_compose_with_format),
-			prefs_common.compose_with_format);
-	pref_set_entry_from_pref(GTK_ENTRY(prefs_writing->entry_subject), prefs_common.compose_subject_format);
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_writing->text_format), prefs_common.compose_body_format);
+	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
+			prefs_common.quote_chars?prefs_common.quote_chars:"");
 
 	prefs_writing->page.widget = vbox1;
 }
@@ -285,6 +317,8 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_account_autosel));
 	prefs_common.reedit_account_autosel =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reedit_account_autosel));
+	prefs_common.reply_with_quote = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_quote));
 	prefs_common.default_reply_list =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_list));
 	
@@ -293,15 +327,9 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 	prefs_common.compose_dnd_mode = GPOINTER_TO_INT
 		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
-	prefs_common.compose_with_format =
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
-	prefs_common.compose_subject_format = pref_get_pref_from_entry(
-			GTK_ENTRY(page->entry_subject));
-	prefs_common.compose_body_format = pref_get_pref_from_textview(
-			GTK_TEXT_VIEW(page->text_format));
-	quotefmt_check_new_msg_formats(prefs_common.compose_with_format,
-									prefs_common.compose_subject_format,
-									prefs_common.compose_body_format);
+	prefs_common.quote_chars = gtk_editable_get_chars(
+			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
+	remove_space(prefs_common.quote_chars);
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)

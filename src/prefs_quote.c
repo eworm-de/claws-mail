@@ -48,14 +48,15 @@ typedef struct _QuotePage
 
 	GtkWidget *window;
 
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *entry_subject;
+	GtkWidget *text_format;
 	GtkWidget *entry_quotemark;
 	GtkWidget *text_quotefmt;
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
-	GtkWidget *entry_quote_chars;
 	GtkWidget *label_quote_chars;
 	GtkWidget *btn_quotedesc;
-	GtkWidget *checkbtn_reply_with_quote;
 } QuotePage;
 
 static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -63,28 +64,28 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 {
 	QuotePage *prefs_quote = (QuotePage *) _page;
 	
-	GtkWidget *vbox1;
-	GtkWidget *frame_quote;
-	GtkWidget *vbox_quote;
-	GtkWidget *hbox1;
-	GtkWidget *hbox2;
+	GtkWidget *vbox;
 
-	GtkWidget *entry_quote_chars;
-	GtkWidget *label_quote_chars;
-	
-	GtkWidget *checkbtn_reply_with_quote;
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	/* new message */
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_with_quote, _("Reply will quote by default"));
+	quotefmt_create_new_msg_fmt_widgets(
+				window,
+				vbox,
+				&prefs_quote->checkbtn_compose_with_format,
+				_("New message format"),
+				&prefs_quote->entry_subject,
+				&prefs_quote->text_format,
+				FALSE);
 
 	/* reply */
 
 	quotefmt_create_reply_fmt_widgets(
 				window,
-				vbox1,
+				vbox,
 				NULL,
 				NULL,
 				&prefs_quote->entry_quotemark,
@@ -95,7 +96,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	quotefmt_create_forward_fmt_widgets(
 				window,
-				vbox1,
+				vbox,
 				NULL,
 				NULL,
 				&prefs_quote->entry_fw_quotemark,
@@ -104,37 +105,8 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	/* info button */
 
-	quotefmt_add_info_button(window, vbox1);
+	quotefmt_add_info_button(window, vbox);
 
-	/* quote chars */
-
-	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
-
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
-	gtk_widget_show (label_quote_chars);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
-
-	entry_quote_chars = gtk_entry_new ();
-	gtk_widget_show (entry_quote_chars);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_reply_with_quote),
-			prefs_common.reply_with_quote);
 	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_quotemark), 
 			prefs_common.quotemark?prefs_common.quotemark:"");
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
@@ -145,20 +117,23 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_fw_quotemark), 
 			prefs_common.fw_quotemark?prefs_common.fw_quotemark:"");
 
-	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
-			prefs_common.quote_chars?prefs_common.quote_chars:"");
-	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_compose_with_format),
+			prefs_common.compose_with_format);
+	pref_set_entry_from_pref(GTK_ENTRY(prefs_quote->entry_subject), prefs_common.compose_subject_format);
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_format), prefs_common.compose_body_format);
+
 	prefs_quote->window		= GTK_WIDGET(window);
-	prefs_quote->entry_quote_chars	= entry_quote_chars;
-	prefs_quote->checkbtn_reply_with_quote
-					= checkbtn_reply_with_quote;
-	prefs_quote->page.widget = vbox1;
+	prefs_quote->page.widget = vbox;
 }
 
 static void prefs_quote_save(PrefsPage *_page)
 {
 	QuotePage *page = (QuotePage *) _page;
 	
+	g_free(prefs_common.compose_subject_format); 
+	prefs_common.compose_subject_format = NULL;
+	g_free(prefs_common.compose_body_format); 
+	prefs_common.compose_body_format = NULL;
 	g_free(prefs_common.quotefmt); 
 	prefs_common.quotefmt = NULL;
 	g_free(prefs_common.fw_quotefmt); 
@@ -170,6 +145,16 @@ static void prefs_quote_save(PrefsPage *_page)
 	g_free(prefs_common.quote_chars); 
 	prefs_common.quote_chars = NULL;
 	
+	prefs_common.compose_with_format =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
+	prefs_common.compose_subject_format = pref_get_pref_from_entry(
+			GTK_ENTRY(page->entry_subject));
+	prefs_common.compose_body_format = pref_get_pref_from_textview(
+			GTK_TEXT_VIEW(page->text_format));
+	quotefmt_check_new_msg_formats(prefs_common.compose_with_format,
+									prefs_common.compose_subject_format,
+									prefs_common.compose_body_format);
+
 	prefs_common.quotefmt = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_quotefmt));
 	quotefmt_check_reply_formats(TRUE, prefs_common.quotefmt);
@@ -182,12 +167,6 @@ static void prefs_quote_save(PrefsPage *_page)
 			GTK_EDITABLE(page->entry_quotemark), 0, -1);
 	prefs_common.fw_quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_fw_quotemark), 0, -1);
-	prefs_common.quote_chars = gtk_editable_get_chars(
-			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
-	prefs_common.reply_with_quote = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_quote));
-
-	remove_space(prefs_common.quote_chars);
 }
 
 static void prefs_quote_destroy_widget(PrefsPage *_page)
@@ -202,7 +181,7 @@ void prefs_quote_init(void)
 	static gchar *path[3];
 
 	path[0] = _("Compose");
-	path[1] = _("Quoting");
+	path[1] = _("Templates");
 	path[2] = NULL;
 
 	page = g_new0(QuotePage, 1);
