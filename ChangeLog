@@ -1,3 +1,9 @@
+2007-05-31 [colin]	2.9.2cvs24
+
+	* src/addressbook.c
+		Fix missing display name when modifying
+		LDAP. Patch by Michael Rasmussen
+
 2007-05-31 [wwp]	2.9.2cvs23
 
 	* src/plugins/bogofilter/Makefile.am

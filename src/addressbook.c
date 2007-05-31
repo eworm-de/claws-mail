@@ -3426,7 +3426,14 @@ static void addressbook_folder_load_one_person(
 			}
 #ifdef USE_LDAP
 			else if( abf->type == ADDR_IF_LDAP && person->nickName ) {
-				text[COL_NAME] = person->nickName;
+				if (person->nickName) {
+					if (strcmp(person->nickName, "") != 0) {
+						text[COL_NAME] = person->nickName;
+					}
+					else {
+						text[COL_NAME] = ADDRITEM_NAME(person);
+					}
+				}
 			}
 #endif
 			else {
