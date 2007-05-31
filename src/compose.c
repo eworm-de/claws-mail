@@ -1398,7 +1398,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	GtkItemFactory *ifactory;
 	Compose *compose;
 	PrefsAccount *account = NULL;
-	PrefsAccount *reply_account;
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
 	gboolean quote = FALSE;
@@ -1411,18 +1410,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
 
 	g_return_val_if_fail(account != NULL, NULL);
-
-	if (to_sender && account->protocol == A_NNTP &&
-	    !followup_and_reply_to) {
-		reply_account =
-			account_find_from_address(account->address);
-		if (!reply_account)
-			reply_account = compose_current_mail_account();
-		if (!reply_account)
-			return NULL;
-	} else
-		reply_account = account;
-	/* wwp: TODO: why isn't reply_account used below? shouldn't we use reply_account instead of account? */
 
 	compose = compose_create(account, COMPOSE_REPLY, FALSE);
 
