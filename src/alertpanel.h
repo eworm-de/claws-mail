@@ -42,6 +42,8 @@ typedef enum
 } AlertType;
 #define G_ALERT_VALUE_MASK	0x0000ffff
 
+#define ALERTPANEL_OPENED_HOOKLIST "alertpanel_opened_hooklist"
+
 AlertValue alertpanel_full(const gchar *title, const gchar *message,
 			   const gchar *button1_label,
 			   const gchar *button2_label,

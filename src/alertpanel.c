@@ -41,9 +41,8 @@
 #define TITLE_HEIGHT		72
 #define MESSAGE_HEIGHT		62
 
-gboolean alertpanel_is_open = FALSE;
 static AlertValue value;
-
+static gboolean alertpanel_is_open = FALSE;
 static GtkWidget *dialog;
 
 static void alertpanel_show		(void);
@@ -94,9 +93,10 @@ AlertValue alertpanel_full(const gchar *title, const gchar *message,
 {
 	if (alertpanel_is_open)
 		return -1;
-	else
+	else {
 		alertpanel_is_open = TRUE;
-	
+		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
+	}
 	alertpanel_create(title, message, button1_label, button2_label,
 			  button3_label, can_disable, widget, alert_type,
 			  default_value);
@@ -121,8 +121,10 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 {
 	if (alertpanel_is_open)
 		return;
-	else
+	else {
 		alertpanel_is_open = TRUE;
+		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
+	}
 
 	alertpanel_create(title, message, GTK_STOCK_CLOSE, NULL, NULL,
 			  FALSE, NULL, type, G_ALERTDEFAULT);
@@ -213,6 +215,8 @@ static void alertpanel_show(void)
 	GTK_EVENTS_FLUSH();
 
 	alertpanel_is_open = FALSE;
+	hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
+
 	inc_unlock();
 }
 

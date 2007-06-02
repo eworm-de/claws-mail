@@ -25,11 +25,12 @@
  * Outstanding bugs
  * 1) When adding a contact to an empty addressbook from the pop-up menu
  * when right-clicking on an email address causes claws-mail to crash in
- * addritem.c line 965. Severity: Show stopper.
+ * addritem.c line 965. Severity: Show stopper. Solved in 2.9.2cvs17
  * 2) Updating a contact gets lost if the user makes a new search on the
- * same LdapServer. Severity: Medium.
+ * same LdapServer. Severity: Medium. Solved in 2.9.2cvs17 (patch added to solve 1) also solved this bug)
  * 3) After adding a new contact the displayName for the contact is empty
  * until the user makes a reread from the LdapServer. Severity: minor.
+ * Solved in 2.9.2cvs24
  */
 
 #ifdef HAVE_CONFIG_H
@@ -500,6 +501,16 @@ void clean_up(LDAP *ld, LdapServer *server, GHashTable *contact) {
 		if (displayName)
 			person->nickName = g_strdup(displayName);
 	}
+	if (server->retVal != LDAPRC_SUCCESS) {
+		if (person) {
+			ItemPerson *res = 
+				addrcache_remove_person(server->addressCache, person);
+			if (!res)
+				g_critical(N_("ldapsvr_update_book: Could not clean cache\n"));
+			else
+				addritem_free_item_person(res);
+		}
+	}
 	if (ld)
 		ldapsvr_disconnect(ld);
 /*	ldapsvr_force_refresh(server);
@@ -652,6 +663,7 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 	}
 	if (email == NULL) {
 		server->retVal = LDAPRC_NODN;
+		clean_up(ld, server, contact);
 		return;
 	}
 	base_dn = g_strdup_printf("mail=%s,%s", email, server->control->baseDN);
@@ -834,6 +846,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 				fprintf(stderr, "new dn: %s\n", newRdn);
 				fprintf(stderr, "LDAP Error(ldap_modrdn2_s) failed[0x%x]: %s\n", rc, ldap_err2string(rc));
 				g_free(newRdn);
+				clean_up(ld, server, contact);
 				return;
 			}
 		}
@@ -967,6 +980,7 @@ void ldapsvr_delete_contact(LdapServer *server, GHashTable *contact) {
 		clean_up(ld, server, contact);
 		return;
 	}
+	server->retVal = LDAPRC_SUCCESS;
 	rc = ldap_delete_ext_s(ld, dn, NULL, NULL);
 	if (rc) {
 		fprintf(stderr, "ldap_modify for dn=%s\" failed[0x%x]: %s\n",

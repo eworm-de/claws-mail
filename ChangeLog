@@ -1,3 +1,14 @@
+2007-06-02 [colin]	2.9.2cvs27
+
+	* src/addressbook.c
+		Fix possible crash, fix ldap write bugs
+	* src/ldapupdate.c
+		Fix ldap write bugs - patch by Michael
+		Rasmussen
+	* src/alertpanel.c
+	* src/alertpanel.h
+		Add a hook whenever alertpanel opens/closes
+
 2007-05-31 [wwp]	2.9.2cvs26
 
 	* src/prefs_compose_writing.c

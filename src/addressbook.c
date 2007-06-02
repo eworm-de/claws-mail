@@ -3048,6 +3048,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 					alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
 						GTK_STOCK_CLOSE, NULL, NULL );
+					server->retVal = LDAPRC_SUCCESS;
 					return;
 				}
 			}
@@ -3425,7 +3426,8 @@ static void addressbook_folder_load_one_person(
 				text[COL_NAME] = str;
 			}
 #ifdef USE_LDAP
-			else if( abf->type == ADDR_IF_LDAP && person->nickName ) {
+			else if( abf && abf->type == ADDR_IF_LDAP && 
+				 person && person->nickName ) {
 				if (person->nickName) {
 					if (strcmp(person->nickName, "") != 0) {
 						text[COL_NAME] = person->nickName;
