@@ -1,3 +1,12 @@
+2007-06-03 [wwp]	2.9.2cvs28
+
+	* src/prefs_account.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		Added a way to force preloading of all pages
+		(prefswindow).
+		Moved tabs to pages in account prefs.
+
 2007-06-02 [colin]	2.9.2cvs27
 
 	* src/addressbook.c

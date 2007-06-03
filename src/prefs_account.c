@@ -64,7 +64,6 @@ static gboolean create_mailbox;
 
 static PrefsAccount tmp_ac_prefs;
 
-static GtkWidget *notebook;
 static GtkWidget *sigfile_radiobtn;
 static GtkWidget *sigcmd_radiobtn;
 static GtkWidget *entry_sigpath;
@@ -73,42 +72,12 @@ static GtkWidget *signature_edit_button;
 
 static GSList *prefs_pages = NULL;
 
-typedef struct AccountPage
-{
-    PrefsPage page;
-
-    GtkWidget *vbox;
-} AccountPage;
-
-typedef struct TemplatesPage
+typedef struct BasicPage
 {
     PrefsPage page;
 
     GtkWidget *vbox;
 
-	GtkWidget *checkbtn_compose_with_format;
-	GtkWidget *compose_subject_format;
-	GtkWidget *compose_body_format;
-	GtkWidget *checkbtn_reply_with_format;
-	GtkWidget *reply_quotemark;
-	GtkWidget *reply_body_format;
-	GtkWidget *checkbtn_forward_with_format;
-	GtkWidget *forward_quotemark;
-	GtkWidget *forward_body_format;
-} TemplatesPage;
-
-static AccountPage account_page;
-static TemplatesPage templates_page;
-
-struct BasicProtocol {
-	GtkWidget *combobox;
-	GtkWidget *label;
-	GtkWidget *descrlabel;
-	GtkWidget *no_imap_warn_icon;
-	GtkWidget *no_imap_warn_label;
-};
-
-static struct Basic {
 	GtkWidget *acname_entry;
 	GtkWidget *default_checkbtn;
 
@@ -136,9 +105,14 @@ static struct Basic {
 	GtkWidget *pass_label;
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
-} basic;
+} BasicPage;
 
-static struct Receive {
+typedef struct ReceivePage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *pop3_frame;
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
@@ -168,9 +142,14 @@ static struct Receive {
 	GtkWidget *maxarticle_label;
 	GtkWidget *maxarticle_spinbtn;
 	GtkObject *maxarticle_spinbtn_adj;
-} receive;
+} ReceivePage;
 
-static struct Send {
+typedef struct SendPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *msgid_checkbtn;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
@@ -181,9 +160,14 @@ static struct Send {
 	GtkWidget *pop_bfr_smtp_tm_entry;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
-} p_send;
+} SendPage;
 
-static struct Compose {
+typedef struct ComposePage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *sigfile_radiobtn;
 	GtkWidget *entry_sigpath;
 	GtkWidget *checkbtn_autosig;
@@ -200,19 +184,45 @@ static struct Compose {
 	GtkWidget *checkbtn_enable_default_alt_dictionary;
 	GtkWidget *optmenu_default_alt_dictionary;
 #endif
-} compose;
+} ComposePage;
 
-static struct Privacy {
+typedef struct TemplatesPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
+	GtkWidget *checkbtn_compose_with_format;
+	GtkWidget *compose_subject_format;
+	GtkWidget *compose_body_format;
+	GtkWidget *checkbtn_reply_with_format;
+	GtkWidget *reply_quotemark;
+	GtkWidget *reply_body_format;
+	GtkWidget *checkbtn_forward_with_format;
+	GtkWidget *forward_quotemark;
+	GtkWidget *forward_body_format;
+} TemplatesPage;
+
+typedef struct PrivacyPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_checkbtn;
 	GtkWidget *default_encrypt_reply_checkbtn;
 	GtkWidget *default_sign_checkbtn;
 	GtkWidget *save_clear_text_checkbtn;
 	GtkWidget *encrypt_to_self_checkbtn;
-} privacy;
+} PrivacyPage;
 
-#if USE_OPENSSL
-static struct SSLPrefs {
+typedef struct SSLPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *pop_frame;
 	GtkWidget *pop_nossl_radiobtn;
 	GtkWidget *pop_ssltunnel_radiobtn;
@@ -233,10 +243,14 @@ static struct SSLPrefs {
 	GtkWidget *smtp_starttls_radiobtn;
 
 	GtkWidget *use_nonblocking_ssl_checkbtn;
-} ssl;
-#endif /* USE_OPENSSL */
+} SSLPage;
 
-static struct Advanced {
+typedef struct AdvancedPage
+{
+    PrefsPage page;
+
+    GtkWidget *vbox;
+
 	GtkWidget *smtpport_checkbtn;
 	GtkWidget *smtpport_entry;
 	GtkWidget *popport_hbox;
@@ -264,7 +278,26 @@ static struct Advanced {
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
-} advanced;
+} AdvancedPage;
+
+static BasicPage basic_page;
+static ReceivePage receive_page;
+static SendPage send_page;
+static ComposePage compose_page;
+static TemplatesPage templates_page;
+static PrivacyPage privacy_page;
+#if USE_OPENSSL
+static SSLPage ssl_page;
+#endif
+static AdvancedPage advanced_page;
+
+struct BasicProtocol {
+	GtkWidget *combobox;
+	GtkWidget *label;
+	GtkWidget *descrlabel;
+	GtkWidget *no_imap_warn_icon;
+	GtkWidget *no_imap_warn_label;
+};
 
 static char *protocol_names[] = {
 	N_("POP3"),
@@ -294,6 +327,7 @@ static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 
+static void crosspost_color_toggled(void);
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam);
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam);
 
@@ -311,356 +345,232 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 
 static gchar *privacy_prefs;
 
-static PrefParam param[] = {
-	/* Basic */
+static PrefParam basic_param[] = {
 	{"account_name", NULL, &tmp_ac_prefs.account_name, P_STRING,
-	 &basic.acname_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.acname_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"is_default", "FALSE", &tmp_ac_prefs.is_default, P_BOOL,
-	 &basic.default_checkbtn,
+	 &basic_page.default_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"name", NULL, &tmp_ac_prefs.name, P_STRING,
-	 &basic.name_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.name_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"address", NULL, &tmp_ac_prefs.address, P_STRING,
-	 &basic.addr_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.addr_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"organization", NULL, &tmp_ac_prefs.organization, P_STRING,
-	 &basic.org_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.org_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"protocol", NULL, &tmp_ac_prefs.protocol, P_ENUM,
-	 (GtkWidget **)&basic.protocol_optmenu,
+	 (GtkWidget **)&basic_page.protocol_optmenu,
 	 prefs_account_protocol_set_data_from_optmenu,
 	 prefs_account_protocol_set_optmenu},
 
 	{"receive_server", NULL, &tmp_ac_prefs.recv_server, P_STRING,
-	 &basic.recvserv_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.recvserv_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"smtp_server", NULL, &tmp_ac_prefs.smtp_server, P_STRING,
-	 &basic.smtpserv_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.smtpserv_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"nntp_server", NULL, &tmp_ac_prefs.nntp_server, P_STRING,
-	 &basic.nntpserv_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.nntpserv_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"local_mbox", "/var/mail", &tmp_ac_prefs.local_mbox, P_STRING,
-	 &basic.localmbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.localmbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_mail_command", "FALSE", &tmp_ac_prefs.use_mail_command, P_BOOL,
-	 &basic.mailcmd_checkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
+	 &basic_page.mailcmd_checkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"mail_command", DEFAULT_SENDMAIL_CMD, &tmp_ac_prefs.mail_command, P_STRING,
-	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,
-	 &basic.nntpauth_checkbtn,
+	 &basic_page.nntpauth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	
 	{"use_nntp_auth_onconnect", "FALSE", &tmp_ac_prefs.use_nntp_auth_onconnect, P_BOOL,
-	 &basic.nntpauth_onconnect_checkbtn,
+	 &basic_page.nntpauth_onconnect_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
-	 &basic.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
-	 &basic.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &basic_page.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.inbox, P_STRING,
-	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
 
-	{"local_inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.local_inbox, P_STRING,
-	 &receive.local_inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
-
-	/* Receive */
+static PrefParam receive_param[] = {
 	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
-	 &receive.use_apop_checkbtn,
+	 &receive_page.use_apop_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
-	 &receive.rmmail_checkbtn,
+	 &receive_page.rmmail_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 #ifndef MAEMO
 	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
-	 &receive.leave_time_entry,
+	 &receive_page.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #else
 	{"message_leave_time", "30", &tmp_ac_prefs.msg_leave_time, P_INT,
-	 &receive.leave_time_entry,
+	 &receive_page.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #endif
 
 	{"enable_size_limit", "FALSE", &tmp_ac_prefs.enable_size_limit, P_BOOL,
-	 &receive.size_limit_checkbtn,
+	 &receive_page.size_limit_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"size_limit", "1024", &tmp_ac_prefs.size_limit, P_INT,
-	 &receive.size_limit_entry,
+	 &receive_page.size_limit_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
-	 &receive.filter_on_recv_checkbtn,
+	 &receive_page.filter_on_recv_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"imap_auth_method", "0", &tmp_ac_prefs.imap_auth_type, P_ENUM,
-	 &receive.imap_auth_type_optmenu,
+	 &receive_page.imap_auth_type_optmenu,
 	 prefs_account_imap_auth_type_set_data_from_optmenu,
 	 prefs_account_imap_auth_type_set_optmenu},
 
 	{"receive_at_get_all", "TRUE", &tmp_ac_prefs.recv_at_getall, P_BOOL,
-	 &receive.recvatgetall_checkbtn,
+	 &receive_page.recvatgetall_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"max_news_articles", "300", &tmp_ac_prefs.max_articles, P_INT,
-	 &receive.maxarticle_spinbtn,
+	 &receive_page.maxarticle_spinbtn,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
-	/* Send */
+	{"inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.inbox, P_STRING,
+	 &receive_page.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"local_inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.local_inbox, P_STRING,
+	 &receive_page.local_inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"imap_directory", NULL, &tmp_ac_prefs.imap_dir, P_STRING,
+	 &receive_page.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"imap_subsonly", "TRUE", &tmp_ac_prefs.imap_subsonly, P_BOOL,
+	 &receive_page.subsonly_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"low_bandwidth", "TRUE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
+	 &receive_page.low_bandwidth_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+static PrefParam send_param[] = {
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &p_send.msgid_checkbtn,
+	 &send_page.msgid_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
-	 &p_send.customhdr_checkbtn,
+	 &send_page.customhdr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
-	 &p_send.smtp_auth_checkbtn,
+	 &send_page.smtp_auth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_auth_method", "0", &tmp_ac_prefs.smtp_auth_type, P_ENUM,
-	 &p_send.smtp_auth_type_optmenu,
+	 &send_page.smtp_auth_type_optmenu,
 	 prefs_account_smtp_auth_type_set_data_from_optmenu,
 	 prefs_account_smtp_auth_type_set_optmenu},
 
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
-	 &p_send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &send_page.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_PASSWORD,
-	 &p_send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &send_page.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
-	 &p_send.pop_bfr_smtp_checkbtn,
+	 &send_page.pop_bfr_smtp_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_before_smtp_timeout", "5", &tmp_ac_prefs.pop_before_smtp_timeout, P_INT,
-	 &p_send.pop_bfr_smtp_tm_entry,
+	 &send_page.pop_bfr_smtp_tm_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-	/* Compose */
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+static PrefParam compose_param[] = {
 	{"signature_type", "0", &tmp_ac_prefs.sig_type, P_ENUM,
-	 &compose.sigfile_radiobtn,
+	 &compose_page.sigfile_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 	{"signature_path", "~" G_DIR_SEPARATOR_S DEFAULT_SIGNATURE,
-	 &tmp_ac_prefs.sig_path, P_STRING, &compose.entry_sigpath,
+	 &tmp_ac_prefs.sig_path, P_STRING, &compose_page.entry_sigpath,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"auto_signature", "TRUE", &tmp_ac_prefs.auto_sig, P_BOOL,
-	 &compose.checkbtn_autosig,
+	 &compose_page.checkbtn_autosig,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	 
 	{"signature_separator", "-- ", &tmp_ac_prefs.sig_sep, P_STRING,
-	 &compose.entry_sigsep, 
+	 &compose_page.entry_sigsep, 
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autocc", "FALSE", &tmp_ac_prefs.set_autocc, P_BOOL,
-	 &compose.autocc_checkbtn,
+	 &compose_page.autocc_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_cc", NULL, &tmp_ac_prefs.auto_cc, P_STRING,
-	 &compose.autocc_entry,
+	 &compose_page.autocc_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autobcc", "FALSE", &tmp_ac_prefs.set_autobcc, P_BOOL,
-	 &compose.autobcc_checkbtn,
+	 &compose_page.autobcc_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_bcc", NULL, &tmp_ac_prefs.auto_bcc, P_STRING,
-	 &compose.autobcc_entry,
+	 &compose_page.autobcc_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autoreplyto", "FALSE", &tmp_ac_prefs.set_autoreplyto, P_BOOL,
-	 &compose.autoreplyto_checkbtn,
+	 &compose_page.autoreplyto_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
-	 &compose.autoreplyto_entry,
+	 &compose_page.autoreplyto_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 #if USE_ASPELL
 	{"enable_default_dictionary", "", &tmp_ac_prefs.enable_default_dictionary, P_BOOL,
-	 &compose.checkbtn_enable_default_dictionary,
+	 &compose_page.checkbtn_enable_default_dictionary,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"default_dictionary", NULL, &tmp_ac_prefs.default_dictionary, P_STRING,
-	 &compose.optmenu_default_dictionary,
+	 &compose_page.optmenu_default_dictionary,
 	 prefs_account_compose_default_dictionary_set_string_from_optmenu,
 	 prefs_account_compose_default_dictionary_set_optmenu_from_string},
 
 	{"enable_default_alt_dictionary", "", &tmp_ac_prefs.enable_default_alt_dictionary, P_BOOL,
-	 &compose.checkbtn_enable_default_alt_dictionary,
+	 &compose_page.checkbtn_enable_default_alt_dictionary,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"default_alt_dictionary", NULL, &tmp_ac_prefs.default_alt_dictionary, P_STRING,
-	 &compose.optmenu_default_alt_dictionary,
+	 &compose_page.optmenu_default_alt_dictionary,
 	 prefs_account_compose_default_dictionary_set_string_from_optmenu,
 	 prefs_account_compose_default_dictionary_set_optmenu_from_string},
-#endif	 
-
-	/* Privacy */
-	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
-	 &privacy.default_privacy_system,
-	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
-	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
-	 &privacy.default_encrypt_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_encrypt_reply", "TRUE", &tmp_ac_prefs.default_encrypt_reply, P_BOOL,
-	 &privacy.default_encrypt_reply_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
-	 &privacy.default_sign_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
-	 &privacy.save_clear_text_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"encrypt_to_self", "FALSE", &tmp_ac_prefs.encrypt_to_self, P_BOOL,
-	 &privacy.encrypt_to_self_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"privacy_prefs", "", &privacy_prefs, P_STRING,
-	 NULL, NULL, NULL},
-#if USE_OPENSSL
-	/* SSL */
-	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
-	 &ssl.pop_nossl_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
-	 &ssl.imap_nossl_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
-	 &ssl.nntp_nossl_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
-	 &ssl.smtp_nossl_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-
-	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
-	 &ssl.use_nonblocking_ssl_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 #else
-	/* SSL */
-	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
-	 NULL, NULL, NULL},
-	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
-	 NULL, NULL, NULL},
-	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
-	 NULL, NULL, NULL},
-	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	{"enable_default_dictionary", "", &tmp_ac_prefs.enable_default_dictionary, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
+	{"default_dictionary", NULL, &tmp_ac_prefs.default_dictionary, P_STRING,
 	 NULL, NULL, NULL},
-#endif /* USE_OPENSSL */
 
-	/* Advanced */
-	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
-	 &advanced.smtpport_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"enable_default_alt_dictionary", "", &tmp_ac_prefs.enable_default_alt_dictionary, P_BOOL,
+	 NULL, NULL, NULL},
 
-	{"smtp_port", "25", &tmp_ac_prefs.smtpport, P_USHORT,
-	 &advanced.smtpport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_popport", "FALSE", &tmp_ac_prefs.set_popport, P_BOOL,
-	 &advanced.popport_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
-	 &advanced.popport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
-	 &advanced.imapport_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"imap_port", "143", &tmp_ac_prefs.imapport, P_USHORT,
-	 &advanced.imapport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_nntpport", "FALSE", &tmp_ac_prefs.set_nntpport, P_BOOL,
-	 &advanced.nntpport_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"nntp_port", "119", &tmp_ac_prefs.nntpport, P_USHORT,
-	 &advanced.nntpport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_domain", "FALSE", &tmp_ac_prefs.set_domain, P_BOOL,
-	 &advanced.domain_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"domain", NULL, &tmp_ac_prefs.domain, P_STRING,
-	 &advanced.domain_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
-	 &advanced.tunnelcmd_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"tunnelcmd", NULL, &tmp_ac_prefs.tunnelcmd, P_STRING,
-	 &advanced.tunnelcmd_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"mark_crosspost_read", "FALSE", &tmp_ac_prefs.mark_crosspost_read, P_BOOL,
-	 &advanced.crosspost_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"crosspost_color", NULL, &tmp_ac_prefs.crosspost_col, P_ENUM,
-	 &advanced.crosspost_colormenu,
-	 prefs_account_crosspost_set_data_from_colormenu,
-	 prefs_account_crosspost_set_colormenu},
-
-	{"imap_directory", NULL, &tmp_ac_prefs.imap_dir, P_STRING,
-	 &receive.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
-
-	{"imap_subsonly", "TRUE", &tmp_ac_prefs.imap_subsonly, P_BOOL,
-	 &receive.subsonly_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"low_bandwidth", "TRUE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
-	 &receive.low_bandwidth_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
-	 &advanced.sent_folder_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"sent_folder", NULL, &tmp_ac_prefs.sent_folder, P_STRING,
-	 &advanced.sent_folder_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_queue_folder", "FALSE", &tmp_ac_prefs.set_queue_folder, P_BOOL,
-	 &advanced.queue_folder_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"queue_folder", NULL, &tmp_ac_prefs.queue_folder, P_STRING,
-	 &advanced.queue_folder_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_draft_folder", "FALSE", &tmp_ac_prefs.set_draft_folder, P_BOOL,
-	 &advanced.draft_folder_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"draft_folder", NULL, &tmp_ac_prefs.draft_folder, P_STRING,
-	 &advanced.draft_folder_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_trash_folder", "FALSE", &tmp_ac_prefs.set_trash_folder, P_BOOL,
-	 &advanced.trash_folder_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"trash_folder", NULL, &tmp_ac_prefs.trash_folder, P_STRING,
-	 &advanced.trash_folder_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	{"default_alt_dictionary", NULL, &tmp_ac_prefs.default_alt_dictionary, P_STRING,
+	 NULL, NULL, NULL},
+#endif	 
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -705,18 +615,172 @@ static PrefParam templates_param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-static gint prefs_account_get_new_id		(void);
+static PrefParam privacy_param[] = {
+	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
+	 &privacy_page.default_privacy_system,
+	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
 
-static void prefs_account_create		(void);
-static void prefs_account_basic_create		(void);
-static void prefs_account_receive_create	(void);
-static void prefs_account_send_create		(void);
-static void prefs_account_compose_create	(void);
-static void prefs_account_privacy_create	(void);
+	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
+	 &privacy_page.default_encrypt_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"default_encrypt_reply", "TRUE", &tmp_ac_prefs.default_encrypt_reply, P_BOOL,
+	 &privacy_page.default_encrypt_reply_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
+	 &privacy_page.default_sign_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
+	 &privacy_page.save_clear_text_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"encrypt_to_self", "FALSE", &tmp_ac_prefs.encrypt_to_self, P_BOOL,
+	 &privacy_page.encrypt_to_self_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"privacy_prefs", "", &privacy_prefs, P_STRING,
+	 NULL, NULL, NULL},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+static PrefParam ssl_param[] = {
 #if USE_OPENSSL
-static void prefs_account_ssl_create		(void);
+	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
+	 &ssl_page.pop_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
+
+	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
+	 &ssl_page.imap_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
+
+	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
+	 &ssl_page.nntp_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
+
+	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	 &ssl_page.smtp_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
+
+	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
+	 &ssl_page.use_nonblocking_ssl_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+#else
+	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
+	 NULL, NULL, NULL},
 #endif /* USE_OPENSSL */
-static void prefs_account_advanced_create	(void);
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+static PrefParam advanced_param[] = {
+	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
+	 &advanced_page.smtpport_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"smtp_port", "25", &tmp_ac_prefs.smtpport, P_USHORT,
+	 &advanced_page.smtpport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_popport", "FALSE", &tmp_ac_prefs.set_popport, P_BOOL,
+	 &advanced_page.popport_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
+	 &advanced_page.popport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
+	 &advanced_page.imapport_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_port", "143", &tmp_ac_prefs.imapport, P_USHORT,
+	 &advanced_page.imapport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_nntpport", "FALSE", &tmp_ac_prefs.set_nntpport, P_BOOL,
+	 &advanced_page.nntpport_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"nntp_port", "119", &tmp_ac_prefs.nntpport, P_USHORT,
+	 &advanced_page.nntpport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_domain", "FALSE", &tmp_ac_prefs.set_domain, P_BOOL,
+	 &advanced_page.domain_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"domain", NULL, &tmp_ac_prefs.domain, P_STRING,
+	 &advanced_page.domain_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
+	 &advanced_page.tunnelcmd_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"tunnelcmd", NULL, &tmp_ac_prefs.tunnelcmd, P_STRING,
+	 &advanced_page.tunnelcmd_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"mark_crosspost_read", "FALSE", &tmp_ac_prefs.mark_crosspost_read, P_BOOL,
+	 &advanced_page.crosspost_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"crosspost_color", NULL, &tmp_ac_prefs.crosspost_col, P_ENUM,
+	 &advanced_page.crosspost_colormenu,
+	 prefs_account_crosspost_set_data_from_colormenu,
+	 prefs_account_crosspost_set_colormenu},
+
+	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
+	 &advanced_page.sent_folder_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"sent_folder", NULL, &tmp_ac_prefs.sent_folder, P_STRING,
+	 &advanced_page.sent_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_queue_folder", "FALSE", &tmp_ac_prefs.set_queue_folder, P_BOOL,
+	 &advanced_page.queue_folder_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"queue_folder", NULL, &tmp_ac_prefs.queue_folder, P_STRING,
+	 &advanced_page.queue_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_draft_folder", "FALSE", &tmp_ac_prefs.set_draft_folder, P_BOOL,
+	 &advanced_page.draft_folder_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"draft_folder", NULL, &tmp_ac_prefs.draft_folder, P_STRING,
+	 &advanced_page.draft_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_trash_folder", "FALSE", &tmp_ac_prefs.set_trash_folder, P_BOOL,
+	 &advanced_page.trash_folder_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"trash_folder", NULL, &tmp_ac_prefs.trash_folder, P_STRING,
+	 &advanced_page.trash_folder_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+static gint prefs_account_get_new_id		(void);
 
 static void prefs_account_select_folder_cb	(GtkWidget	*widget,
 						 gpointer	 data);
@@ -738,9 +802,6 @@ static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 
 static void prefs_account_edit_custom_header	(void);
 
-static gint prefs_account_apply			(void);
-static gint prefs_templates_apply		(void);
-
 static void privacy_system_activated(GtkMenuItem *menuitem)
 {
 	const gchar* system_id;
@@ -754,13 +815,13 @@ static void privacy_system_activated(GtkMenuItem *menuitem)
 	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA)) == FALSE)
 		privacy_enabled = FALSE;
 
-	gtk_widget_set_sensitive (privacy.default_encrypt_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.default_encrypt_reply_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.default_sign_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.encrypt_to_self_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy.save_clear_text_checkbtn, 
+	gtk_widget_set_sensitive (privacy_page.default_encrypt_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_encrypt_reply_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_sign_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.encrypt_to_self_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.save_clear_text_checkbtn, 
 		privacy_enabled && !gtk_toggle_button_get_active(
-					GTK_TOGGLE_BUTTON(privacy.encrypt_to_self_checkbtn)));
+					GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));
 }
 
 static void update_privacy_system_menu() {
@@ -800,535 +861,18 @@ static void update_privacy_system_menu() {
 		
 	}
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);
-}
-
-static void account_create_widget_func(PrefsPage * _page,
-                                           GtkWindow * window,
-                                           gpointer data)
-{
-	AccountPage *page = (AccountPage *) _page;
-	PrefsAccount *ac_prefs = (PrefsAccount *) data;
-	GtkWidget *vbox;
-
-	vbox = gtk_vbox_new(FALSE, VSPACING);
-	gtk_widget_show(vbox);
-
-	if (notebook == NULL)
-		prefs_account_create();
-	else {
-#ifdef USE_ASPELL
-		/* reset gtkaspell menus */
-		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary));
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_dictionary), 
-				gtkaspell_dictionary_option_menu_new(
-				prefs_common.aspell_path));
-		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose.optmenu_default_alt_dictionary));
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_default_alt_dictionary), 
-				gtkaspell_dictionary_option_menu_new_with_refresh(
-				prefs_common.aspell_path, FALSE));
-#endif
-	}
-	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
-
-	update_privacy_system_menu();
-
-	tmp_ac_prefs = *ac_prefs;
-
-	create_mailbox = FALSE;
-	if (new_account) {
-		PrefsAccount *def_ac;
-		gchar *buf;
-
-		prefs_set_dialog_to_default(param);
-		buf = g_strdup_printf(_("Account%d"), ac_prefs->account_id);
-		gtk_entry_set_text(GTK_ENTRY(basic.acname_entry), buf);
-		g_free(buf);
-		def_ac = account_get_default();
-		if (def_ac) {
-			FolderItem *item = folder_get_default_inbox_for_class(F_MH);
-			gtk_entry_set_text(GTK_ENTRY(basic.name_entry),
-					   def_ac->name ? def_ac->name : "");
-			gtk_entry_set_text(GTK_ENTRY(basic.addr_entry),
-					   def_ac->address ? def_ac->address : "");
-			gtk_entry_set_text(GTK_ENTRY(basic.org_entry),
-					   def_ac->organization ? def_ac->organization : "");
-			if (!item) {
-				item = folder_get_default_inbox();
-			}
-			if (item) {
-				gchar *id = folder_item_get_identifier(item);
-				gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry),
-					id);
-				gtk_entry_set_text(GTK_ENTRY(receive.local_inbox_entry),
-					id);
-				g_free(id);
-			} else {
-				create_mailbox = TRUE;
-			}
-		}
-	} else
-		prefs_set_dialog(param);
-
-	pop_bfr_smtp_tm_set_sens (NULL, NULL);
-	
-	page->vbox = vbox;
-
-	page->page.widget = vbox;
-}
-
-static void account_destroy_widget_func(PrefsPage *_page)
-{
-	AccountPage *page = (AccountPage *) _page;
-
-	gtk_container_remove(GTK_CONTAINER (page->vbox), notebook);
-}
-
-static gboolean account_can_close_func(PrefsPage *_page)
-{	
-	AccountPage *page = (AccountPage *) _page;
-
-	if (!page->page.page_open)
-		return TRUE;
-
-	return prefs_account_apply() >= 0;
-}
-
-static void account_save_func(PrefsPage *_page)
-{
-	AccountPage *page = (AccountPage *) _page;
-
-	if (!page->page.page_open)
-		return;
-
-	if (prefs_account_apply() >= 0)
-		cancelled = FALSE;
-}
-
-void register_account_page(void)
-{
-	static gchar *path[2];
-
-	path[0] = _("Account");
-	path[1] = NULL;
-        
-	account_page.page.path = path;
-	account_page.page.weight = 1000.0;
-	account_page.page.create_widget = account_create_widget_func;
-	account_page.page.destroy_widget = account_destroy_widget_func;
-	account_page.page.save_page = account_save_func;
-	account_page.page.can_close = account_can_close_func;
-
-	prefs_account_register_page((PrefsPage *) &account_page);
-}
-
-static void templates_create_widget_func(PrefsPage * _page,
-                                           GtkWindow * window,
-                                           gpointer data)
-{
-	TemplatesPage *page = (TemplatesPage *) _page;
-/*	PrefsAccount *ac_prefs = (PrefsAccount *) data; */
-	GtkWidget *vbox;
-
-	vbox = gtk_vbox_new(FALSE, VSPACING);
-	gtk_widget_show(vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
-
-	/* compose/reply/forward formats */
-	quotefmt_create_new_msg_fmt_widgets(
-				window,
-				vbox,
-				&page->checkbtn_compose_with_format,
-				_("Use a specific format for new messages"),
-				&page->compose_subject_format,
-				&page->compose_body_format,
-				FALSE);
-	quotefmt_create_reply_fmt_widgets(
-				window,
-				vbox,
-				&page->checkbtn_reply_with_format,
-				_("Use a specific reply quote format"),
-				&page->reply_quotemark,
-				&page->reply_body_format,
-				FALSE);
-	quotefmt_create_forward_fmt_widgets(
-				window,
-				vbox,
-				&page->checkbtn_forward_with_format,
-				_("Use a specific forward quote format"),
-				&page->forward_quotemark,
-				&page->forward_body_format,
-				FALSE);
-	quotefmt_add_info_button(window, vbox);
-
-	if (new_account) {
-		prefs_set_dialog_to_default(templates_param);
-	} else
-		prefs_set_dialog(templates_param);
-
-	page->vbox = vbox;
-
-	page->page.widget = vbox;
-}
-
-static void templates_destroy_widget_func(PrefsPage *_page)
-{
-	/* TemplatesPage *page = (TemplatesPage *) _page; */
-}
-
-static void prefs_account_check_templates(void)
-{
-	quotefmt_check_new_msg_formats(tmp_ac_prefs.compose_with_format,
-									tmp_ac_prefs.compose_subject_format,
-									tmp_ac_prefs.compose_body_format);
-	quotefmt_check_reply_formats(tmp_ac_prefs.reply_with_format,
-									tmp_ac_prefs.reply_body_format);
-	quotefmt_check_forward_formats(tmp_ac_prefs.forward_with_format,
-									tmp_ac_prefs.forward_body_format);
-}
-
-static gboolean templates_can_close_func(PrefsPage *_page)
-{
-	TemplatesPage *page = (TemplatesPage *) _page;
-
-	if (!page->page.page_open)
-		return TRUE;
-
-	return prefs_templates_apply() >= 0;
-}
-
-static void templates_save_func(PrefsPage *_page)
-{
-	TemplatesPage *page = (TemplatesPage *) _page;
-
-	if (!page->page.page_open)
-		return;
-
-	prefs_account_check_templates();
-	if (prefs_templates_apply() >= 0)
-			cancelled = FALSE;
-}
-
-void register_templates_page(void)
-{
-	static gchar *path[2];
-
-	path[0] = _("Templates");
-	path[1] = NULL;
-        
-	templates_page.page.path = path;
-	templates_page.page.weight = 1000.0;
-	templates_page.page.create_widget = templates_create_widget_func;
-	templates_page.page.destroy_widget = templates_destroy_widget_func;
-	templates_page.page.save_page = templates_save_func;
-	templates_page.page.can_close = templates_can_close_func;
-
-	prefs_account_register_page((PrefsPage *) &templates_page);
-}
-
-void prefs_account_init()
-{
-	register_account_page();
-	register_templates_page();
-}
-
-PrefsAccount *prefs_account_new(void)
-{
-	PrefsAccount *ac_prefs;
-
-	ac_prefs = g_new0(PrefsAccount, 1);
-	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-	prefs_set_default(param);
-	prefs_set_default(templates_param);
-	*ac_prefs = tmp_ac_prefs;
-	ac_prefs->account_id = prefs_account_get_new_id();
-
-	ac_prefs->privacy_prefs = g_hash_table_new(g_str_hash, g_str_equal);
-
-	return ac_prefs;
-}
-
-void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
-{
-	const gchar *p = label;
-	gchar *rcpath;
-	gint id;
-	gchar **strv, **cur;
-
-	g_return_if_fail(ac_prefs != NULL);
-	g_return_if_fail(label != NULL);
-
-	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-	tmp_ac_prefs.privacy_prefs = ac_prefs->privacy_prefs;
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
-	prefs_read_config(param, label, rcpath, NULL);
-	prefs_read_config(templates_param, label, rcpath, NULL);
-	g_free(rcpath);
-
-	*ac_prefs = tmp_ac_prefs;
-	while (*p && !g_ascii_isdigit(*p)) p++;
-	id = atoi(p);
-	if (id < 0) g_warning("wrong account id: %d\n", id);
-	ac_prefs->account_id = id;
-
-	if (ac_prefs->protocol == A_APOP) {
-		debug_print("converting protocol A_APOP to new prefs.\n");
-		ac_prefs->protocol = A_POP3;
-		ac_prefs->use_apop_auth = TRUE;
-	}
-
-	if (privacy_prefs != NULL) {
-		strv = g_strsplit(privacy_prefs, ",", 0);
-		for (cur = strv; *cur != NULL; cur++) {
-			gchar *encvalue, *value;
-
-			encvalue = strchr(*cur, '=');
-			if (encvalue == NULL)
-				continue;
-			encvalue[0] = '\0';
-			encvalue++;
-
-			value = g_malloc0(strlen(encvalue));
-			if (base64_decode(value, encvalue, strlen(encvalue)) > 0)
-				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), g_strdup(value));
-			g_free(value);
-		}
-		g_strfreev(strv);
-		g_free(privacy_prefs);
-		privacy_prefs = NULL;
-	}
-
-	prefs_custom_header_read_config(ac_prefs);
-}
-
-static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_data)
-{
-	GString *str = (GString *) user_data;
-	gchar *encvalue;
-	gchar *value = (gchar *) _value;
-
-	if (str->len > 0)
-		g_string_append_c(str, ',');
-
-	encvalue = g_malloc0(B64LEN(strlen(value)) + 1);
-	base64_encode(encvalue, (gchar *) value, strlen(value));
-	g_string_append_printf(str, "%s=%s", (gchar *) key, encvalue);
-	g_free(encvalue);
-}
-
-void prefs_account_write_config_all(GList *account_list)
-{
-	GList *cur;
-	gchar *rcpath;
-	PrefFile *pfile;
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_free(rcpath);
-		return;
-	}
-	g_free(rcpath);
-
-	for (cur = account_list; cur != NULL; cur = cur->next) {
-		GString *str;
-
-		tmp_ac_prefs = *(PrefsAccount *)cur->data;
-		if (fprintf(pfile->fp, "[Account: %d]\n",
-			    tmp_ac_prefs.account_id) <= 0)
-			return;
-
-		str = g_string_sized_new(32);
-		g_hash_table_foreach(tmp_ac_prefs.privacy_prefs, create_privacy_prefs, str);
-		privacy_prefs = str->str;		    
-		g_string_free(str, FALSE);
-
-		if (prefs_write_param(param, pfile->fp) < 0) {
-			g_warning("failed to write configuration to file\n");
-			prefs_file_close_revert(pfile);
-			g_free(privacy_prefs);
-			privacy_prefs = NULL;
-		    	return;
- 		}
-		if (prefs_write_param(templates_param, pfile->fp) < 0) {
-			g_warning("failed to write configuration to file\n");
-			prefs_file_close_revert(pfile);
-		g_free(privacy_prefs);
-		privacy_prefs = NULL;
-		    	return;
- 		}
-		g_free(privacy_prefs);
-		privacy_prefs = NULL;
-
-		if (cur->next) {
-			if (fputc('\n', pfile->fp) == EOF) {
-				FILE_OP_ERROR(rcpath, "fputc");
-				prefs_file_close_revert(pfile);
-				return;
-			}
-		}
-	}
-
-	if (prefs_file_close(pfile) < 0)
-		g_warning("failed to write configuration to file\n");
-}
-
-static gboolean free_privacy_prefs(gpointer key, gpointer value, gpointer user_data)
-{
-	g_free(key);
-	g_free(value);
-
-	return TRUE;
-}
-
-void prefs_account_free(PrefsAccount *ac_prefs)
-{
-	if (!ac_prefs) return;
-
-	g_hash_table_foreach_remove(ac_prefs->privacy_prefs, free_privacy_prefs, NULL);
-
-	tmp_ac_prefs = *ac_prefs;
-	prefs_free(param);
-	prefs_free(templates_param);
-}
-
-const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id)
-{
-	return g_hash_table_lookup(account->privacy_prefs, id);
-}
-
-void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value)
-{
-	gchar *orig_key = NULL, *value;
-
-	if (g_hash_table_lookup_extended(account->privacy_prefs, id, (gpointer *)(gchar *) &orig_key, (gpointer *)(gchar *) &value)) {
-		g_hash_table_remove(account->privacy_prefs, id);
-
-		g_free(orig_key);
-		g_free(value);
-	}
-
-	if (new_value != NULL)
-		g_hash_table_insert(account->privacy_prefs, g_strdup(id), g_strdup(new_value));
-}
-
-static gint prefs_account_get_new_id(void)
-{
-	GList *ac_list;
-	PrefsAccount *ac;
-	static gint last_id = 0;
-
-	for (ac_list = account_get_list(); ac_list != NULL;
-	     ac_list = ac_list->next) {
-		ac = (PrefsAccount *)ac_list->data;
-		if (last_id < ac->account_id)
-			last_id = ac->account_id;
-	}
-
-	return last_id + 1;
-}
-
-static void destroy_dialog(gpointer data)
-{
-	PrefsAccount *ac_prefs = (PrefsAccount *) data;
-	if (!cancelled) {
-		gboolean update_fld_list = FALSE;
-		if (ac_prefs->protocol == A_IMAP4 && !new_account) {
-			if ((&tmp_ac_prefs)->imap_subsonly != ac_prefs->imap_subsonly) {
-				update_fld_list = TRUE;
-			} 
-		}
-		*ac_prefs = tmp_ac_prefs;
-		if (update_fld_list)
-			folderview_rescan_tree(ac_prefs->folder, FALSE);
-	} else /* the customhdr_list may have changed, update it anyway */
-		ac_prefs->customhdr_list = (&tmp_ac_prefs)->customhdr_list;
-
-	
-	gtk_main_quit();
-}
-
-PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
-{
-	gchar *title;
-
-	if (prefs_rc_is_readonly(ACCOUNT_RC))
-		return ac_prefs;
-
-	debug_print("Opening account preferences window...\n");
-
-	inc_lock();
-
-	cancelled = TRUE;
-
-	if (!ac_prefs) {
-		ac_prefs = prefs_account_new();
-		new_account = TRUE;
-	} else
-		new_account = FALSE;
-
-	if (new_account)
-		title = g_strdup (_("Preferences for new account"));
-	else
-		title = g_strdup_printf (_("%s - Account preferences"),
-				ac_prefs->account_name);
-
-	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog,
-			&prefs_common.editaccountwin_width, &prefs_common.editaccountwin_height);
-	g_free(title);
-	gtk_main();
-
-	inc_unlock();
-
-	if (!cancelled && dirty != NULL)
-		*dirty = TRUE;
-	if (cancelled && new_account) {
-		prefs_account_free(ac_prefs);
-		return NULL;
-	} else 
-		return ac_prefs;
-}
-
-static void prefs_account_create(void)
-{
-	gint page = 0;
-
-	debug_print("Creating account preferences window...\n");
-
-	notebook = gtk_notebook_new ();
-	gtk_widget_show(notebook);
-	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
-	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
-	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
-	
-	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
-
-	gtk_widget_ref(notebook);
-
-	/* create all widgets on notebook */
-	prefs_account_basic_create();
-	SET_NOTEBOOK_LABEL(notebook, _("_Basic"), page++);
-	prefs_account_receive_create();
-	SET_NOTEBOOK_LABEL(notebook, _("_Receive"), page++);
-	prefs_account_send_create();
-	SET_NOTEBOOK_LABEL(notebook, _("_Send"), page++);
-	prefs_account_compose_create();
-	SET_NOTEBOOK_LABEL(notebook, _("Co_mpose"), page++);
-	prefs_account_privacy_create();
-	SET_NOTEBOOK_LABEL(notebook, _("_Privacy"), page++);
-#if USE_OPENSSL
-	prefs_account_ssl_create();
-	SET_NOTEBOOK_LABEL(notebook, _("SS_L"), page++);
-#endif /* USE_OPENSSL */
-	prefs_account_advanced_create();
-	SET_NOTEBOOK_LABEL(notebook, _("A_dvanced"), page++);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy_page.default_privacy_system), menu);
 }
 
 #define TABLE_YPAD 2
 
-static void prefs_account_basic_create(void)
+static void basic_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	BasicPage *page = (BasicPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 	GtkWidget *hbox;
 	GtkWidget *label;
@@ -1373,7 +917,6 @@ static void prefs_account_basic_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	hbox = gtk_hbox_new (FALSE, 8);
@@ -1632,37 +1175,81 @@ static void prefs_account_basic_create(void)
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_entry);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, nntpauth_onconnect_checkbtn);
 
-	basic.acname_entry   = acname_entry;
-	basic.default_checkbtn = default_checkbtn;
+	page->acname_entry   = acname_entry;
+	page->default_checkbtn = default_checkbtn;
 
-	basic.name_entry = name_entry;
-	basic.addr_entry = addr_entry;
-	basic.org_entry  = org_entry;
+	page->name_entry = name_entry;
+	page->addr_entry = addr_entry;
+	page->org_entry  = org_entry;
 
-	basic.serv_frame       = serv_frame;
-	basic.serv_table       = serv_table;
-	basic.protocol_optmenu = (gpointer)protocol_optmenu;
-	basic.recvserv_label   = recvserv_label;
-	basic.recvserv_entry   = recvserv_entry;
-	basic.smtpserv_label   = smtpserv_label;
-	basic.smtpserv_entry   = smtpserv_entry;
-	basic.nntpserv_label   = nntpserv_label;
-	basic.nntpserv_entry   = nntpserv_entry;
-	basic.nntpauth_checkbtn  = nntpauth_checkbtn;
-	basic.nntpauth_onconnect_checkbtn  = nntpauth_onconnect_checkbtn;
-	basic.localmbox_label   = localmbox_label;
-	basic.localmbox_entry   = localmbox_entry;
-	basic.mailcmd_checkbtn   = mailcmd_checkbtn;
-	basic.mailcmd_label   = mailcmd_label;
-	basic.mailcmd_entry   = mailcmd_entry;
-	basic.uid_label        = uid_label;
-	basic.pass_label       = pass_label;
-	basic.uid_entry        = uid_entry;
-	basic.pass_entry       = pass_entry;
+	page->serv_frame       = serv_frame;
+	page->serv_table       = serv_table;
+	page->protocol_optmenu = (gpointer)protocol_optmenu;
+	page->recvserv_label   = recvserv_label;
+	page->recvserv_entry   = recvserv_entry;
+	page->smtpserv_label   = smtpserv_label;
+	page->smtpserv_entry   = smtpserv_entry;
+	page->nntpserv_label   = nntpserv_label;
+	page->nntpserv_entry   = nntpserv_entry;
+	page->nntpauth_checkbtn  = nntpauth_checkbtn;
+	page->nntpauth_onconnect_checkbtn  = nntpauth_onconnect_checkbtn;
+	page->localmbox_label   = localmbox_label;
+	page->localmbox_entry   = localmbox_entry;
+	page->mailcmd_checkbtn   = mailcmd_checkbtn;
+	page->mailcmd_label   = mailcmd_label;
+	page->mailcmd_entry   = mailcmd_entry;
+	page->uid_label        = uid_label;
+	page->pass_label       = pass_label;
+	page->uid_entry        = uid_entry;
+	page->pass_entry       = pass_entry;
+
+	create_mailbox = FALSE;
+	if (new_account) {
+		PrefsAccount *def_ac;
+		gchar *buf;
+
+		prefs_set_dialog_to_default(basic_param);
+		buf = g_strdup_printf(_("Account%d"), ac_prefs->account_id);
+		gtk_entry_set_text(GTK_ENTRY(basic_page.acname_entry), buf);
+		g_free(buf);
+		def_ac = account_get_default();
+		if (def_ac) {
+			FolderItem *item = folder_get_default_inbox_for_class(F_MH);
+			gtk_entry_set_text(GTK_ENTRY(basic_page.name_entry),
+					   def_ac->name ? def_ac->name : "");
+			gtk_entry_set_text(GTK_ENTRY(basic_page.addr_entry),
+					   def_ac->address ? def_ac->address : "");
+			gtk_entry_set_text(GTK_ENTRY(basic_page.org_entry),
+					   def_ac->organization ? def_ac->organization : "");
+			if (!item) {
+				item = folder_get_default_inbox();
+			}
+			if (item) {
+				gchar *id = folder_item_get_identifier(item);
+				gtk_entry_set_text(GTK_ENTRY(receive_page.inbox_entry),
+					id);
+				gtk_entry_set_text(GTK_ENTRY(receive_page.local_inbox_entry),
+					id);
+				g_free(id);
+			} else {
+				create_mailbox = TRUE;
+			}
+		}
+	} else
+		prefs_set_dialog(basic_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
 }
 
-static void prefs_account_receive_create(void)
+static void receive_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	ReceivePage *page = (ReceivePage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
@@ -1712,7 +1299,6 @@ static void prefs_account_receive_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	local_vbox = gtkut_get_options_frame(vbox1, &local_frame, _("Local"));
@@ -1920,38 +1506,54 @@ static void prefs_account_receive_create(void)
 		(vbox1, recvatgetall_checkbtn,
 		 _("'Get Mail' checks for new messages on this account"));
 
-	receive.pop3_frame               = frame1;
-	receive.use_apop_checkbtn          = use_apop_checkbtn;
-	receive.rmmail_checkbtn            = rmmail_checkbtn;
-	receive.leave_time_entry         = leave_time_entry;
-	receive.size_limit_checkbtn        = size_limit_checkbtn;
-	receive.size_limit_entry         = size_limit_entry;
-	receive.filter_on_recv_checkbtn    = filter_on_recv_checkbtn;
-	receive.inbox_label              = inbox_label;
-	receive.inbox_entry              = inbox_entry;
-	receive.inbox_btn                = inbox_btn;
+	page->pop3_frame               = frame1;
+	page->use_apop_checkbtn          = use_apop_checkbtn;
+	page->rmmail_checkbtn            = rmmail_checkbtn;
+	page->leave_time_entry         = leave_time_entry;
+	page->size_limit_checkbtn        = size_limit_checkbtn;
+	page->size_limit_entry         = size_limit_entry;
+	page->filter_on_recv_checkbtn    = filter_on_recv_checkbtn;
+	page->inbox_label              = inbox_label;
+	page->inbox_entry              = inbox_entry;
+	page->inbox_btn                = inbox_btn;
 
-	receive.imap_frame               = imap_frame;
-	receive.imap_auth_type_optmenu   = optmenu;
+	page->imap_frame               = imap_frame;
+	page->imap_auth_type_optmenu   = optmenu;
 
-	receive.imapdir_label		= imapdir_label;
-	receive.imapdir_entry           = imapdir_entry;
-	receive.subsonly_checkbtn		= subsonly_checkbtn;
-	receive.low_bandwidth_checkbtn		= low_bandwidth_checkbtn;
-	receive.local_frame		= local_frame;
-	receive.local_inbox_label	= local_inbox_label;
-	receive.local_inbox_entry	= local_inbox_entry;
-	receive.local_inbox_btn		= local_inbox_btn;
+	page->imapdir_label		= imapdir_label;
+	page->imapdir_entry           = imapdir_entry;
+	page->subsonly_checkbtn		= subsonly_checkbtn;
+	page->low_bandwidth_checkbtn		= low_bandwidth_checkbtn;
+	page->local_frame		= local_frame;
+	page->local_inbox_label	= local_inbox_label;
+	page->local_inbox_entry	= local_inbox_entry;
+	page->local_inbox_btn		= local_inbox_btn;
 
-	receive.recvatgetall_checkbtn      = recvatgetall_checkbtn;
+	page->recvatgetall_checkbtn      = recvatgetall_checkbtn;
 
-	receive.frame_maxarticle	= frame2;
-	receive.maxarticle_spinbtn     	= maxarticle_spinbtn;
-	receive.maxarticle_spinbtn_adj 	= maxarticle_spinbtn_adj;
+	page->frame_maxarticle	= frame2;
+	page->maxarticle_spinbtn     	= maxarticle_spinbtn;
+	page->maxarticle_spinbtn_adj 	= maxarticle_spinbtn_adj;
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(receive_param);
+	} else
+		prefs_set_dialog(receive_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
 }
 
-static void prefs_account_send_create(void)
+static void send_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	SendPage *page = (SendPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *frame;
@@ -1977,7 +1579,6 @@ static void prefs_account_send_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
@@ -2129,24 +1730,40 @@ static void prefs_account_send_create(void)
 	pop_auth_minutes_lbl = gtk_label_new(_("minutes"));
 	gtk_widget_show (pop_auth_minutes_lbl);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_minutes_lbl, FALSE, FALSE, 0);
-
-
 	
-	p_send.msgid_checkbtn     = msgid_checkbtn;
-	p_send.customhdr_checkbtn = customhdr_checkbtn;
+	page->msgid_checkbtn     = msgid_checkbtn;
+	page->customhdr_checkbtn = customhdr_checkbtn;
 
-	p_send.smtp_auth_checkbtn       = smtp_auth_checkbtn;
-	p_send.smtp_auth_type_optmenu = optmenu;
-	p_send.smtp_uid_entry         = smtp_uid_entry;
-	p_send.smtp_pass_entry        = smtp_pass_entry;
-	p_send.pop_bfr_smtp_checkbtn    = pop_bfr_smtp_checkbtn;
-	p_send.pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
-	p_send.pop_auth_timeout_lbl   = pop_auth_timeout_lbl;
-	p_send.pop_auth_minutes_lbl   = pop_auth_minutes_lbl;
+	page->smtp_auth_checkbtn       = smtp_auth_checkbtn;
+	page->smtp_auth_type_optmenu = optmenu;
+	page->smtp_uid_entry         = smtp_uid_entry;
+	page->smtp_pass_entry        = smtp_pass_entry;
+	page->pop_bfr_smtp_checkbtn    = pop_bfr_smtp_checkbtn;
+	page->pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
+	page->pop_auth_timeout_lbl   = pop_auth_timeout_lbl;
+	page->pop_auth_minutes_lbl   = pop_auth_minutes_lbl;
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(send_param);
+	} else
+		prefs_set_dialog(send_param);
+
+	pop_bfr_smtp_tm_set_sens (NULL, NULL);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
 }
-
-static void prefs_account_compose_create(void)
+	
+static void compose_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	ComposePage *page = (ComposePage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 	GtkWidget *sig_hbox;
 	GtkWidget *hbox1;
@@ -2176,7 +1793,6 @@ static void prefs_account_compose_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox_sig = gtkut_get_options_frame(vbox1, &frame_sig, _("Signature"));
@@ -2340,27 +1956,108 @@ static void prefs_account_compose_create(void)
 	gtk_widget_show_all(table_dict);
 #endif
 
-	compose.sigfile_radiobtn = sigfile_radiobtn;
-	compose.entry_sigpath      = entry_sigpath;
-	compose.checkbtn_autosig   = checkbtn_autosig;
-	compose.entry_sigsep       = entry_sigsep;
+	page->sigfile_radiobtn = sigfile_radiobtn;
+	page->entry_sigpath      = entry_sigpath;
+	page->checkbtn_autosig   = checkbtn_autosig;
+	page->entry_sigsep       = entry_sigsep;
 
-	compose.autocc_checkbtn      = autocc_checkbtn;
-	compose.autocc_entry       = autocc_entry;
-	compose.autobcc_checkbtn     = autobcc_checkbtn;
-	compose.autobcc_entry      = autobcc_entry;
-	compose.autoreplyto_checkbtn = autoreplyto_checkbtn;
-	compose.autoreplyto_entry  = autoreplyto_entry;
+	page->autocc_checkbtn      = autocc_checkbtn;
+	page->autocc_entry       = autocc_entry;
+	page->autobcc_checkbtn     = autobcc_checkbtn;
+	page->autobcc_entry      = autobcc_entry;
+	page->autoreplyto_checkbtn = autoreplyto_checkbtn;
+	page->autoreplyto_entry  = autoreplyto_entry;
 #ifdef USE_ASPELL
-	compose.checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
-	compose.optmenu_default_dictionary = optmenu_default_dictionary;
-	compose.checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
-	compose.optmenu_default_alt_dictionary = optmenu_default_alt_dictionary;
+	page->checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
+	page->optmenu_default_dictionary = optmenu_default_dictionary;
+	page->checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
+	page->optmenu_default_alt_dictionary = optmenu_default_alt_dictionary;
 #endif
+
+#ifdef USE_ASPELL
+	/* reset gtkaspell menus */
+	if (compose_page.optmenu_default_dictionary != NULL) {
+		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose_page.optmenu_default_dictionary));
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose_page.optmenu_default_dictionary), 
+				gtkaspell_dictionary_option_menu_new(
+				prefs_common.aspell_path));
+		gtk_option_menu_remove_menu(GTK_OPTION_MENU(compose_page.optmenu_default_alt_dictionary));
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose_page.optmenu_default_alt_dictionary), 
+				gtkaspell_dictionary_option_menu_new_with_refresh(
+				prefs_common.aspell_path, FALSE));
+	}
+#endif
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(compose_param);
+	} else
+		prefs_set_dialog(compose_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
+}
+	
+static void templates_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+	GtkWidget *vbox;
+
+	vbox = gtk_vbox_new(FALSE, VSPACING);
+	gtk_widget_show(vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
+
+	/* compose/reply/forward formats */
+	quotefmt_create_new_msg_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_compose_with_format,
+				_("Use a specific format for new messages"),
+				&page->compose_subject_format,
+				&page->compose_body_format,
+				FALSE);
+	quotefmt_create_reply_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_reply_with_format,
+				_("Use a specific reply quote format"),
+				&page->reply_quotemark,
+				&page->reply_body_format,
+				FALSE);
+	quotefmt_create_forward_fmt_widgets(
+				window,
+				vbox,
+				&page->checkbtn_forward_with_format,
+				_("Use a specific forward quote format"),
+				&page->forward_quotemark,
+				&page->forward_body_format,
+				FALSE);
+	quotefmt_add_info_button(window, vbox);
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(templates_param);
+	} else
+		prefs_set_dialog(templates_param);
+
+	page->vbox = vbox;
+
+	page->page.widget = vbox;
 }
 
-static void prefs_account_privacy_create(void)
+static void privacy_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	PrivacyPage *page = (PrivacyPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
@@ -2374,7 +2071,6 @@ static void prefs_account_privacy_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -2408,14 +2104,27 @@ static void prefs_account_privacy_create(void)
 	SET_TOGGLE_SENSITIVITY_REVERSE(encrypt_to_self_checkbtn, save_clear_text_checkbtn);
 	SET_TOGGLE_SENSITIVITY_REVERSE(save_clear_text_checkbtn, encrypt_to_self_checkbtn);
 
-	privacy.default_privacy_system = default_privacy_system;
-	privacy.default_encrypt_checkbtn = default_encrypt_checkbtn;
-	privacy.default_encrypt_reply_checkbtn = default_encrypt_reply_checkbtn;
-	privacy.default_sign_checkbtn    = default_sign_checkbtn;
-	privacy.save_clear_text_checkbtn = save_clear_text_checkbtn;
-	privacy.encrypt_to_self_checkbtn = encrypt_to_self_checkbtn;
-}
+	page->default_privacy_system = default_privacy_system;
+	page->default_encrypt_checkbtn = default_encrypt_checkbtn;
+	page->default_encrypt_reply_checkbtn = default_encrypt_reply_checkbtn;
+	page->default_sign_checkbtn    = default_sign_checkbtn;
+	page->save_clear_text_checkbtn = save_clear_text_checkbtn;
+	page->encrypt_to_self_checkbtn = encrypt_to_self_checkbtn;
 
+	update_privacy_system_menu();
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(privacy_param);
+	} else
+		prefs_set_dialog(privacy_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
+}
+	
 #if USE_OPENSSL
 
 #define CREATE_RADIO_BUTTON(box, btn, btn_p, label, data)		\
@@ -2445,8 +2154,13 @@ static void prefs_account_privacy_create(void)
 	CREATE_RADIO_BUTTON(box, btn3, btn1, btn3_label, btn3_data);	\
 }
 
-static void prefs_account_ssl_create(void)
+static void ssl_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
+	SSLPage *page = (SSLPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
 	GtkWidget *vbox1;
 
 	GtkWidget *pop_frame;
@@ -2480,7 +2194,6 @@ static void prefs_account_ssl_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &pop_frame, _("POP3"));
@@ -2558,68 +2271,50 @@ static void prefs_account_ssl_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtkut_widget_set_small_font_size (label);
 
-	ssl.pop_frame               = pop_frame;
-	ssl.pop_nossl_radiobtn      = pop_nossl_radiobtn;
-	ssl.pop_ssltunnel_radiobtn  = pop_ssltunnel_radiobtn;
-	ssl.pop_starttls_radiobtn   = pop_starttls_radiobtn;
+	page->pop_frame               = pop_frame;
+	page->pop_nossl_radiobtn      = pop_nossl_radiobtn;
+	page->pop_ssltunnel_radiobtn  = pop_ssltunnel_radiobtn;
+	page->pop_starttls_radiobtn   = pop_starttls_radiobtn;
 
-	ssl.imap_frame              = imap_frame;
-	ssl.imap_nossl_radiobtn     = imap_nossl_radiobtn;
-	ssl.imap_ssltunnel_radiobtn = imap_ssltunnel_radiobtn;
-	ssl.imap_starttls_radiobtn  = imap_starttls_radiobtn;
+	page->imap_frame              = imap_frame;
+	page->imap_nossl_radiobtn     = imap_nossl_radiobtn;
+	page->imap_ssltunnel_radiobtn = imap_ssltunnel_radiobtn;
+	page->imap_starttls_radiobtn  = imap_starttls_radiobtn;
 
-	ssl.nntp_frame              = nntp_frame;
-	ssl.nntp_nossl_radiobtn     = nntp_nossl_radiobtn;
-	ssl.nntp_ssltunnel_radiobtn = nntp_ssltunnel_radiobtn;
+	page->nntp_frame              = nntp_frame;
+	page->nntp_nossl_radiobtn     = nntp_nossl_radiobtn;
+	page->nntp_ssltunnel_radiobtn = nntp_ssltunnel_radiobtn;
 
-	ssl.send_frame              = send_frame;
-	ssl.smtp_nossl_radiobtn     = smtp_nossl_radiobtn;
-	ssl.smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
-	ssl.smtp_starttls_radiobtn  = smtp_starttls_radiobtn;
+	page->send_frame              = send_frame;
+	page->smtp_nossl_radiobtn     = smtp_nossl_radiobtn;
+	page->smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
+	page->smtp_starttls_radiobtn  = smtp_starttls_radiobtn;
 
-	ssl.use_nonblocking_ssl_checkbtn = use_nonblocking_ssl_checkbtn;
+	page->use_nonblocking_ssl_checkbtn = use_nonblocking_ssl_checkbtn;
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(ssl_param);
+	} else
+		prefs_set_dialog(ssl_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
 }
 
 #undef CREATE_RADIO_BUTTONS
 #undef CREATE_RADIO_BUTTON
 #endif /* USE_OPENSSL */
-
-static void crosspost_color_toggled(void)
+	
+static void advanced_create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
-	gboolean is_active;
+	AdvancedPage *page = (AdvancedPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 
-	is_active = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(advanced.crosspost_checkbtn));
-	gtk_widget_set_sensitive(advanced.crosspost_colormenu, is_active);
-}
-
-static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
-{
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(advanced.crosspost_colormenu));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	*((gint *)pparam->data) = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), "color"));
-}
-
-static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
-{
-	gint colorlabel = *((gint *)pparam->data);
-	GtkOptionMenu *colormenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	gtk_option_menu_set_history(colormenu, colorlabel);
-	menu = gtk_option_menu_get_menu(colormenu);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
-}
-
-
-static void prefs_account_advanced_create(void)
-{
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
@@ -2671,7 +2366,6 @@ static void prefs_account_advanced_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW_2);
@@ -2784,81 +2478,92 @@ static void prefs_account_advanced_create(void)
 	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages in"),
 				trash_folder_checkbtn, trash_folder_entry, 3);
 
-	advanced.smtpport_checkbtn	= checkbtn_smtpport;
-	advanced.smtpport_entry		= entry_smtpport;
-	advanced.popport_hbox		= hbox_popport;
-	advanced.popport_checkbtn		= checkbtn_popport;
-	advanced.popport_entry		= entry_popport;
-	advanced.imapport_hbox		= hbox_imapport;
-	advanced.imapport_checkbtn	= checkbtn_imapport;
-	advanced.imapport_entry		= entry_imapport;
-	advanced.nntpport_hbox		= hbox_nntpport;
-	advanced.nntpport_checkbtn	= checkbtn_nntpport;
-	advanced.nntpport_entry		= entry_nntpport;
-	advanced.domain_checkbtn		= checkbtn_domain;
-	advanced.domain_entry		= entry_domain;
- 	advanced.crosspost_checkbtn	= checkbtn_crosspost;
- 	advanced.crosspost_colormenu	= colormenu_crosspost;
+	page->smtpport_checkbtn	= checkbtn_smtpport;
+	page->smtpport_entry		= entry_smtpport;
+	page->popport_hbox		= hbox_popport;
+	page->popport_checkbtn		= checkbtn_popport;
+	page->popport_entry		= entry_popport;
+	page->imapport_hbox		= hbox_imapport;
+	page->imapport_checkbtn	= checkbtn_imapport;
+	page->imapport_entry		= entry_imapport;
+	page->nntpport_hbox		= hbox_nntpport;
+	page->nntpport_checkbtn	= checkbtn_nntpport;
+	page->nntpport_entry		= entry_nntpport;
+	page->domain_checkbtn		= checkbtn_domain;
+	page->domain_entry		= entry_domain;
+ 	page->crosspost_checkbtn	= checkbtn_crosspost;
+ 	page->crosspost_colormenu	= colormenu_crosspost;
 
-	advanced.tunnelcmd_checkbtn	= checkbtn_tunnelcmd;
-	advanced.tunnelcmd_entry	= entry_tunnelcmd;
+	page->tunnelcmd_checkbtn	= checkbtn_tunnelcmd;
+	page->tunnelcmd_entry	= entry_tunnelcmd;
 
-	advanced.sent_folder_checkbtn  = sent_folder_checkbtn;
-	advanced.sent_folder_entry   = sent_folder_entry;
-	advanced.queue_folder_checkbtn  = queue_folder_checkbtn;
-	advanced.queue_folder_entry   = queue_folder_entry;
-	advanced.draft_folder_checkbtn = draft_folder_checkbtn;
-	advanced.draft_folder_entry  = draft_folder_entry;
-	advanced.trash_folder_checkbtn = trash_folder_checkbtn;
-	advanced.trash_folder_entry  = trash_folder_entry;
+	page->sent_folder_checkbtn  = sent_folder_checkbtn;
+	page->sent_folder_entry   = sent_folder_entry;
+	page->queue_folder_checkbtn  = queue_folder_checkbtn;
+	page->queue_folder_entry   = queue_folder_entry;
+	page->draft_folder_checkbtn = draft_folder_checkbtn;
+	page->draft_folder_entry  = draft_folder_entry;
+	page->trash_folder_checkbtn = trash_folder_checkbtn;
+	page->trash_folder_entry  = trash_folder_entry;
+
+	tmp_ac_prefs = *ac_prefs;
+
+	if (new_account) {
+		prefs_set_dialog_to_default(advanced_param);
+	} else
+		prefs_set_dialog(advanced_param);
+
+	page->vbox = vbox1;
+
+	page->page.widget = vbox1;
 }
-
-static gint prefs_account_apply(void)
+	
+static gint prefs_basic_apply(void)
 {
 	RecvProtocol protocol;
 	gchar *old_id = NULL;
 	gchar *new_id = NULL;
-	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic.protocol_optmenu;
+	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic_page.protocol_optmenu;
 	GtkWidget *optmenu = protocol_optmenu->combobox;
 
 	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 
-	if (*gtk_entry_get_text(GTK_ENTRY(basic.acname_entry)) == '\0') {
+	if (*gtk_entry_get_text(GTK_ENTRY(basic_page.acname_entry)) == '\0') {
 		alertpanel_error(_("Account name is not entered."));
 		return -1;
 	}
-	if (*gtk_entry_get_text(GTK_ENTRY(basic.addr_entry)) == '\0') {
+	if (*gtk_entry_get_text(GTK_ENTRY(basic_page.addr_entry)) == '\0') {
 		alertpanel_error(_("Mail address is not entered."));
 		return -1;
 	}
 	if (((protocol == A_POP3) || 
-	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn))) || 
+	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic_page.mailcmd_checkbtn))) || 
 	     (protocol == A_NONE)) &&
-           *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
+           *gtk_entry_get_text(GTK_ENTRY(basic_page.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
 	}
 	if ((protocol == A_POP3 || protocol == A_IMAP4) &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.uid_entry)) == '\0') {
+	    *gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)) == '\0') {
 		alertpanel_error(_("User ID is not entered."));
 		return -1;
 	}
 	if (protocol == A_POP3 &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.recvserv_entry)) == '\0') {
+	    *gtk_entry_get_text(GTK_ENTRY(basic_page.recvserv_entry)) == '\0') {
 		alertpanel_error(_("POP3 server is not entered."));
 		return -1;
 	}
 	if (protocol == A_POP3 || protocol == A_LOCAL) {
-		GtkWidget *inbox_entry = (protocol == A_POP3 ? receive.inbox_entry : receive.local_inbox_entry );
+		GtkWidget *inbox_entry = (protocol == A_POP3 ? receive_page.inbox_entry : receive_page.local_inbox_entry );
 		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
 		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
 		if (!inbox && create_mailbox) {
 			gchar *id = NULL;
 			setup_write_mailbox_path(mainwindow_get_mainwindow(), "Mail");
 			id = folder_item_get_identifier(folder_get_default_inbox_for_class(F_MH));
-			gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry),
+			gtk_entry_set_text(GTK_ENTRY(receive_page.inbox_entry),
 				id);
-			gtk_entry_set_text(GTK_ENTRY(receive.local_inbox_entry),
+			gtk_entry_set_text(GTK_ENTRY(receive_page.local_inbox_entry),
 				id);
 			g_free(id);
 			mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
@@ -2871,24 +2576,24 @@ static gint prefs_account_apply(void)
 		}
 	}
 	if (protocol == A_IMAP4 &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.recvserv_entry)) == '\0') {
+	    *gtk_entry_get_text(GTK_ENTRY(basic_page.recvserv_entry)) == '\0') {
 		alertpanel_error(_("IMAP4 server is not entered."));
 		return -1;
 	}
 	if (protocol == A_NNTP &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.nntpserv_entry)) == '\0') {
+	    *gtk_entry_get_text(GTK_ENTRY(basic_page.nntpserv_entry)) == '\0') {
 		alertpanel_error(_("NNTP server is not entered."));
 		return -1;
 	}
 
 	if (protocol == A_LOCAL &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.localmbox_entry)) == '\0') {
+	    *gtk_entry_get_text(GTK_ENTRY(basic_page.localmbox_entry)) == '\0') {
 		alertpanel_error(_("local mailbox filename is not entered."));
 		return -1;
 	}
 
 	if (protocol == A_LOCAL &&
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn)) && *gtk_entry_get_text(GTK_ENTRY(basic.mailcmd_entry)) == '\0') {
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic_page.mailcmd_checkbtn)) && *gtk_entry_get_text(GTK_ENTRY(basic_page.mailcmd_entry)) == '\0') {
 		alertpanel_error(_("mail command is not entered."));
 		return -1;
 	}
@@ -2898,7 +2603,7 @@ static gint prefs_account_apply(void)
 				protocol == A_IMAP4 ? "imap":"nntp",
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
-	prefs_set_data_from_dialog(param);
+	prefs_set_data_from_dialog(basic_param);
 	
 	if (protocol == A_IMAP4 || protocol == A_NNTP) {
 		new_id = g_strdup_printf("#%s/%s",
@@ -2913,20 +2618,753 @@ static gint prefs_account_apply(void)
 	return 0;
 }
 
+static gint prefs_receive_apply(void)
+{
+	prefs_set_data_from_dialog(receive_param);
+	return 0;
+}
+
+static gint prefs_send_apply(void)
+{
+	prefs_set_data_from_dialog(send_param);
+	return 0;
+}
+
+static gint prefs_compose_apply(void)
+{
+	prefs_set_data_from_dialog(compose_param);
+	return 0;
+}
+
 static gint prefs_templates_apply(void)
 {
 	prefs_set_data_from_dialog(templates_param);
 	return 0;
 }
 
+static gint prefs_privacy_apply(void)
+{
+	prefs_set_data_from_dialog(privacy_param);
+	return 0;
+}
+
+#if USE_OPENSSL
+static gint prefs_ssl_apply(void)
+{
+	prefs_set_data_from_dialog(ssl_param);
+	return 0;
+}
+#endif
+
+static gint prefs_advanced_apply(void)
+{
+	prefs_set_data_from_dialog(advanced_param);
+	return 0;
+}
+
+static void basic_destroy_widget_func(PrefsPage *_page)
+{
+	/* BasicPage *page = (BasicPage *) _page; */
+}
+
+static void receive_destroy_widget_func(PrefsPage *_page)
+{
+	/* ReceivePage *page = (ReceivePage *) _page; */
+}
+
+static void send_destroy_widget_func(PrefsPage *_page)
+{
+	/* SendPage *page = (SendPage *) _page; */
+}
+
+static void compose_destroy_widget_func(PrefsPage *_page)
+{
+	/* ComposePage *page = (ComposePage *) _page; */
+}
+
+static void templates_destroy_widget_func(PrefsPage *_page)
+{
+	/* TemplatesPage *page = (TemplatesPage *) _page; */
+}
+
+static void privacy_destroy_widget_func(PrefsPage *_page)
+{
+	/* PrivacyPage *page = (PrivacyPage *) _page; */
+}
+
+#if USE_OPENSSL
+static void ssl_destroy_widget_func(PrefsPage *_page)
+{
+	/* SSLPage *page = (SSLPage *) _page; */
+}
+#endif
+
+static void advanced_destroy_widget_func(PrefsPage *_page)
+{
+	/* AdvancedPage *page = (AdvancedPage *) _page; */
+}
+
+static gboolean basic_can_close_func(PrefsPage *_page)
+{	
+	BasicPage *page = (BasicPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_basic_apply() >= 0;
+}
+
+static gboolean receive_can_close_func(PrefsPage *_page)
+{	
+	ReceivePage *page = (ReceivePage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_receive_apply() >= 0;
+}
+
+static gboolean send_can_close_func(PrefsPage *_page)
+{	
+	SendPage *page = (SendPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_send_apply() >= 0;
+}
+
+static gboolean compose_can_close_func(PrefsPage *_page)
+{	
+	ComposePage *page = (ComposePage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_compose_apply() >= 0;
+}
+
+static gboolean templates_can_close_func(PrefsPage *_page)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_templates_apply() >= 0;
+}
+
+static gboolean privacy_can_close_func(PrefsPage *_page)
+{
+	PrivacyPage *page = (PrivacyPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_privacy_apply() >= 0;
+}
+
+#if USE_OPENSSL
+static gboolean ssl_can_close_func(PrefsPage *_page)
+{
+	SSLPage *page = (SSLPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_ssl_apply() >= 0;
+}
+#endif
+
+static gboolean advanced_can_close_func(PrefsPage *_page)
+{
+	AdvancedPage *page = (AdvancedPage *) _page;
+
+	if (!page->page.page_open)
+		return TRUE;
+
+	return prefs_advanced_apply() >= 0;
+}
+
+static void basic_save_func(PrefsPage *_page)
+{
+	BasicPage *page = (BasicPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_basic_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void receive_save_func(PrefsPage *_page)
+{
+	ReceivePage *page = (ReceivePage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_receive_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void send_save_func(PrefsPage *_page)
+{
+	SendPage *page = (SendPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_send_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void compose_save_func(PrefsPage *_page)
+{
+	ComposePage *page = (ComposePage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_compose_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void templates_save_func(PrefsPage *_page)
+{
+	TemplatesPage *page = (TemplatesPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	quotefmt_check_new_msg_formats(tmp_ac_prefs.compose_with_format,
+									tmp_ac_prefs.compose_subject_format,
+									tmp_ac_prefs.compose_body_format);
+	quotefmt_check_reply_formats(tmp_ac_prefs.reply_with_format,
+									tmp_ac_prefs.reply_body_format);
+	quotefmt_check_forward_formats(tmp_ac_prefs.forward_with_format,
+									tmp_ac_prefs.forward_body_format);
+	if (prefs_templates_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void privacy_save_func(PrefsPage *_page)
+{
+	PrivacyPage *page = (PrivacyPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_privacy_apply() >= 0)
+		cancelled = FALSE;
+}
+
+#if USE_OPENSSL
+static void ssl_save_func(PrefsPage *_page)
+{
+	SSLPage *page = (SSLPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_ssl_apply() >= 0)
+		cancelled = FALSE;
+}
+#endif
+
+static void advanced_save_func(PrefsPage *_page)
+{
+	AdvancedPage *page = (AdvancedPage *) _page;
+
+	if (!page->page.page_open)
+		return;
+
+	if (prefs_advanced_apply() >= 0)
+		cancelled = FALSE;
+}
+
+static void register_basic_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Basic");
+	path[2] = NULL;
+        
+	basic_page.page.path = path;
+	basic_page.page.weight = 1000.0;
+	basic_page.page.create_widget = basic_create_widget_func;
+	basic_page.page.destroy_widget = basic_destroy_widget_func;
+	basic_page.page.save_page = basic_save_func;
+	basic_page.page.can_close = basic_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &basic_page);
+}
+
+static void register_receive_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Receive");
+	path[2] = NULL;
+        
+	receive_page.page.path = path;
+	receive_page.page.weight = 1000.0;
+	receive_page.page.create_widget = receive_create_widget_func;
+	receive_page.page.destroy_widget = receive_destroy_widget_func;
+	receive_page.page.save_page = receive_save_func;
+	receive_page.page.can_close = receive_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &receive_page);
+}
+
+static void register_send_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Send");
+	path[2] = NULL;
+        
+	send_page.page.path = path;
+	send_page.page.weight = 1000.0;
+	send_page.page.create_widget = send_create_widget_func;
+	send_page.page.destroy_widget = send_destroy_widget_func;
+	send_page.page.save_page = send_save_func;
+	send_page.page.can_close = send_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &send_page);
+}
+
+static void register_compose_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Compose");
+	path[2] = NULL;
+        
+	compose_page.page.path = path;
+	compose_page.page.weight = 1000.0;
+	compose_page.page.create_widget = compose_create_widget_func;
+	compose_page.page.destroy_widget = compose_destroy_widget_func;
+	compose_page.page.save_page = compose_save_func;
+	compose_page.page.can_close = compose_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &compose_page);
+}
+
+static void register_templates_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Templates");
+	path[2] = NULL;
+        
+	templates_page.page.path = path;
+	templates_page.page.weight = 1000.0;
+	templates_page.page.create_widget = templates_create_widget_func;
+	templates_page.page.destroy_widget = templates_destroy_widget_func;
+	templates_page.page.save_page = templates_save_func;
+	templates_page.page.can_close = templates_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &templates_page);
+}
+
+static void register_privacy_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Privacy");
+	path[2] = NULL;
+        
+	privacy_page.page.path = path;
+	privacy_page.page.weight = 1000.0;
+	privacy_page.page.create_widget = privacy_create_widget_func;
+	privacy_page.page.destroy_widget = privacy_destroy_widget_func;
+	privacy_page.page.save_page = privacy_save_func;
+	privacy_page.page.can_close = privacy_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &privacy_page);
+}
+
+#if USE_OPENSSL
+static void register_ssl_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("SSL");
+	path[2] = NULL;
+        
+	ssl_page.page.path = path;
+	ssl_page.page.weight = 1000.0;
+	ssl_page.page.create_widget = ssl_create_widget_func;
+	ssl_page.page.destroy_widget = ssl_destroy_widget_func;
+	ssl_page.page.save_page = ssl_save_func;
+	ssl_page.page.can_close = ssl_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &ssl_page);
+}
+#endif
+
+static void register_advanced_page(void)
+{
+	static gchar *path[3];
+
+	path[0] = _("Account");
+	path[1] = _("Advanced");
+	path[2] = NULL;
+        
+	advanced_page.page.path = path;
+	advanced_page.page.weight = 1000.0;
+	advanced_page.page.create_widget = advanced_create_widget_func;
+	advanced_page.page.destroy_widget = advanced_destroy_widget_func;
+	advanced_page.page.save_page = advanced_save_func;
+	advanced_page.page.can_close = advanced_can_close_func;
+
+	prefs_account_register_page((PrefsPage *) &advanced_page);
+}
+
+void prefs_account_init()
+{
+	register_basic_page();
+	register_receive_page();
+	register_send_page();
+	register_compose_page();
+	register_templates_page();
+	register_privacy_page();
+#if USE_OPENSSL
+	register_ssl_page();
+#endif
+	register_advanced_page();
+}
+
+PrefsAccount *prefs_account_new(void)
+{
+	PrefsAccount *ac_prefs;
+
+	ac_prefs = g_new0(PrefsAccount, 1);
+	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
+	prefs_set_default(basic_param);
+	prefs_set_default(receive_param);
+	prefs_set_default(send_param);
+	prefs_set_default(compose_param);
+	prefs_set_default(templates_param);
+	prefs_set_default(privacy_param);
+	prefs_set_default(ssl_param);
+	prefs_set_default(advanced_param);
+	*ac_prefs = tmp_ac_prefs;
+	ac_prefs->account_id = prefs_account_get_new_id();
+
+	ac_prefs->privacy_prefs = g_hash_table_new(g_str_hash, g_str_equal);
+
+	return ac_prefs;
+}
+
+void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
+{
+	const gchar *p = label;
+	gchar *rcpath;
+	gint id;
+	gchar **strv, **cur;
+
+	g_return_if_fail(ac_prefs != NULL);
+	g_return_if_fail(label != NULL);
+
+	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
+	tmp_ac_prefs.privacy_prefs = ac_prefs->privacy_prefs;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
+	prefs_read_config(basic_param, label, rcpath, NULL);
+	prefs_read_config(receive_param, label, rcpath, NULL);
+	prefs_read_config(send_param, label, rcpath, NULL);
+	prefs_read_config(compose_param, label, rcpath, NULL);
+	prefs_read_config(templates_param, label, rcpath, NULL);
+	prefs_read_config(privacy_param, label, rcpath, NULL);
+	prefs_read_config(ssl_param, label, rcpath, NULL);
+	prefs_read_config(advanced_param, label, rcpath, NULL);
+	g_free(rcpath);
+
+	*ac_prefs = tmp_ac_prefs;
+	while (*p && !g_ascii_isdigit(*p)) p++;
+	id = atoi(p);
+	if (id < 0) g_warning("wrong account id: %d\n", id);
+	ac_prefs->account_id = id;
+
+	if (ac_prefs->protocol == A_APOP) {
+		debug_print("converting protocol A_APOP to new prefs.\n");
+		ac_prefs->protocol = A_POP3;
+		ac_prefs->use_apop_auth = TRUE;
+	}
+
+	if (privacy_prefs != NULL) {
+		strv = g_strsplit(privacy_prefs, ",", 0);
+		for (cur = strv; *cur != NULL; cur++) {
+			gchar *encvalue, *value;
+
+			encvalue = strchr(*cur, '=');
+			if (encvalue == NULL)
+				continue;
+			encvalue[0] = '\0';
+			encvalue++;
+
+			value = g_malloc0(strlen(encvalue));
+			if (base64_decode(value, encvalue, strlen(encvalue)) > 0)
+				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), g_strdup(value));
+			g_free(value);
+		}
+		g_strfreev(strv);
+		g_free(privacy_prefs);
+		privacy_prefs = NULL;
+	}
+
+	prefs_custom_header_read_config(ac_prefs);
+}
+
+static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_data)
+{
+	GString *str = (GString *) user_data;
+	gchar *encvalue;
+	gchar *value = (gchar *) _value;
+
+	if (str->len > 0)
+		g_string_append_c(str, ',');
+
+	encvalue = g_malloc0(B64LEN(strlen(value)) + 1);
+	base64_encode(encvalue, (gchar *) value, strlen(value));
+	g_string_append_printf(str, "%s=%s", (gchar *) key, encvalue);
+	g_free(encvalue);
+}
+
+#define WRITE_PARAM(PARAM_TABLE) \
+		if (prefs_write_param(PARAM_TABLE, pfile->fp) < 0) { \
+			g_warning("failed to write configuration to file\n"); \
+			prefs_file_close_revert(pfile); \
+			g_free(privacy_prefs); \
+			privacy_prefs = NULL; \
+		    	return; \
+ 		}
+
+void prefs_account_write_config_all(GList *account_list)
+{
+	GList *cur;
+	gchar *rcpath;
+	PrefFile *pfile;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
+	if ((pfile = prefs_write_open(rcpath)) == NULL) {
+		g_free(rcpath);
+		return;
+	}
+	g_free(rcpath);
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+		GString *str;
+
+		tmp_ac_prefs = *(PrefsAccount *)cur->data;
+		if (fprintf(pfile->fp, "[Account: %d]\n",
+			    tmp_ac_prefs.account_id) <= 0)
+			return;
+
+		str = g_string_sized_new(32);
+		g_hash_table_foreach(tmp_ac_prefs.privacy_prefs, create_privacy_prefs, str);
+		privacy_prefs = str->str;		    
+		g_string_free(str, FALSE);
+
+		WRITE_PARAM(basic_param)
+		WRITE_PARAM(receive_param)
+		WRITE_PARAM(send_param)
+		WRITE_PARAM(compose_param)
+		WRITE_PARAM(templates_param)
+		WRITE_PARAM(privacy_param)
+		WRITE_PARAM(ssl_param)
+		WRITE_PARAM(advanced_param)
+
+		g_free(privacy_prefs);
+		privacy_prefs = NULL;
+
+		if (cur->next) {
+			if (fputc('\n', pfile->fp) == EOF) {
+				FILE_OP_ERROR(rcpath, "fputc");
+				prefs_file_close_revert(pfile);
+				return;
+			}
+		}
+	}
+
+	if (prefs_file_close(pfile) < 0)
+		g_warning("failed to write configuration to file\n");
+}
+#undef WRITE_PARAM
+
+static gboolean free_privacy_prefs(gpointer key, gpointer value, gpointer user_data)
+{
+	g_free(key);
+	g_free(value);
+
+	return TRUE;
+}
+
+void prefs_account_free(PrefsAccount *ac_prefs)
+{
+	if (!ac_prefs) return;
+
+	g_hash_table_foreach_remove(ac_prefs->privacy_prefs, free_privacy_prefs, NULL);
+
+	tmp_ac_prefs = *ac_prefs;
+	prefs_free(basic_param);
+	prefs_free(receive_param);
+	prefs_free(send_param);
+	prefs_free(compose_param);
+	prefs_free(templates_param);
+	prefs_free(privacy_param);
+	prefs_free(ssl_param);
+	prefs_free(advanced_param);
+}
+
+const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id)
+{
+	return g_hash_table_lookup(account->privacy_prefs, id);
+}
+
+void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value)
+{
+	gchar *orig_key = NULL, *value;
+
+	if (g_hash_table_lookup_extended(account->privacy_prefs, id, (gpointer *)(gchar *) &orig_key, (gpointer *)(gchar *) &value)) {
+		g_hash_table_remove(account->privacy_prefs, id);
+
+		g_free(orig_key);
+		g_free(value);
+	}
+
+	if (new_value != NULL)
+		g_hash_table_insert(account->privacy_prefs, g_strdup(id), g_strdup(new_value));
+}
+
+static gint prefs_account_get_new_id(void)
+{
+	GList *ac_list;
+	PrefsAccount *ac;
+	static gint last_id = 0;
+
+	for (ac_list = account_get_list(); ac_list != NULL;
+	     ac_list = ac_list->next) {
+		ac = (PrefsAccount *)ac_list->data;
+		if (last_id < ac->account_id)
+			last_id = ac->account_id;
+	}
+
+	return last_id + 1;
+}
+
+static void destroy_dialog(gpointer data)
+{
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+	if (!cancelled) {
+		gboolean update_fld_list = FALSE;
+		if (ac_prefs->protocol == A_IMAP4 && !new_account) {
+			if ((&tmp_ac_prefs)->imap_subsonly != ac_prefs->imap_subsonly) {
+				update_fld_list = TRUE;
+			} 
+		}
+		*ac_prefs = tmp_ac_prefs;
+		if (update_fld_list)
+			folderview_rescan_tree(ac_prefs->folder, FALSE);
+	} else /* the customhdr_list may have changed, update it anyway */
+		ac_prefs->customhdr_list = (&tmp_ac_prefs)->customhdr_list;
+
+	
+	gtk_main_quit();
+}
+
+PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
+{
+	gchar *title;
+
+	if (prefs_rc_is_readonly(ACCOUNT_RC))
+		return ac_prefs;
+
+	debug_print("Opening account preferences window...\n");
+
+	inc_lock();
+
+	cancelled = TRUE;
+
+	if (!ac_prefs) {
+		ac_prefs = prefs_account_new();
+		new_account = TRUE;
+	} else
+		new_account = FALSE;
+
+	if (new_account)
+		title = g_strdup (_("Preferences for new account"));
+	else
+		title = g_strdup_printf (_("%s - Account preferences"),
+				ac_prefs->account_name);
+
+	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog,
+			&prefs_common.editaccountwin_width, &prefs_common.editaccountwin_height,
+			TRUE);
+	g_free(title);
+	gtk_main();
+
+	inc_unlock();
+
+	if (!cancelled && dirty != NULL)
+		*dirty = TRUE;
+	if (cancelled && new_account) {
+		prefs_account_free(ac_prefs);
+		return NULL;
+	} else 
+		return ac_prefs;
+}
+
+static void crosspost_color_toggled(void)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(advanced_page.crosspost_checkbtn));
+	gtk_widget_set_sensitive(advanced_page.crosspost_colormenu, is_active);
+}
+
+static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(advanced_page.crosspost_colormenu));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((gint *)pparam->data) = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), "color"));
+}
+
+static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
+{
+	gint colorlabel = *((gint *)pparam->data);
+	GtkOptionMenu *colormenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	gtk_option_menu_set_history(colormenu, colorlabel);
+	menu = gtk_option_menu_get_menu(colormenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
 {
-	gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
-	gtk_widget_set_sensitive(p_send.pop_auth_timeout_lbl, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
-	gtk_widget_set_sensitive(p_send.pop_auth_minutes_lbl, 
-				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn)));
+	gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn)));
+	gtk_widget_set_sensitive(send_page.pop_auth_timeout_lbl, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn)));
+	gtk_widget_set_sensitive(send_page.pop_auth_minutes_lbl, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn)));
 }
 
 static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
@@ -3230,7 +3668,7 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 {
 	RecvProtocol protocol;
-	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *)basic.protocol_optmenu;
+	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *)basic_page.protocol_optmenu;
 
 	protocol = combobox_get_active_data(combobox);
 
@@ -3240,448 +3678,448 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	case A_NNTP:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
-		gtk_widget_show(basic.nntpserv_label);
-		gtk_widget_show(basic.nntpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.nntpserv_label);
+		gtk_widget_show(basic_page.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   0, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, TRUE);
-		gtk_widget_show(basic.nntpauth_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_checkbtn, TRUE);
+		gtk_widget_show(basic_page.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, TRUE);
-		gtk_widget_show(basic.nntpauth_onconnect_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, TRUE);
+		gtk_widget_show(basic_page.nntpauth_onconnect_checkbtn);
 
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   1, VSPACING_NARROW);
-		gtk_widget_hide(basic.recvserv_label);
-		gtk_widget_hide(basic.recvserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.recvserv_label);
+		gtk_widget_hide(basic_page.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   2, 0);
-		gtk_widget_show(basic.smtpserv_label);
-		gtk_widget_show(basic.smtpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.smtpserv_label);
+		gtk_widget_show(basic_page.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   4, VSPACING_NARROW);
-		gtk_widget_hide(basic.localmbox_label);
-		gtk_widget_hide(basic.localmbox_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.localmbox_label);
+		gtk_widget_hide(basic_page.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   3, 0);
-		gtk_widget_hide(basic.mailcmd_label);
-		gtk_widget_hide(basic.mailcmd_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_label);
+		gtk_widget_hide(basic_page.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   5, 0);
-		gtk_widget_show(basic.uid_label);
-		gtk_widget_show(basic.pass_label);
-		gtk_widget_show(basic.uid_entry);
-		gtk_widget_show(basic.pass_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.uid_label);
+		gtk_widget_show(basic_page.pass_label);
+		gtk_widget_show(basic_page.uid_entry);
+		gtk_widget_show(basic_page.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_label, TRUE);
-		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_label,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
 
 		/* update userid/passwd sensitive state */
 
 		prefs_account_nntpauth_toggled
-			(GTK_TOGGLE_BUTTON(basic.nntpauth_checkbtn), NULL);
-		gtk_widget_hide(receive.pop3_frame);
-		gtk_widget_hide(receive.imap_frame);
-		gtk_widget_hide(receive.local_frame);
-		gtk_widget_show(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
+			(GTK_TOGGLE_BUTTON(basic_page.nntpauth_checkbtn), NULL);
+		gtk_widget_hide(receive_page.pop3_frame);
+		gtk_widget_hide(receive_page.imap_frame);
+		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_show(receive_page.frame_maxarticle);
+		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive_page.recvatgetall_checkbtn, TRUE);
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
+			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
+				(GTK_TOGGLE_BUTTON(receive_page.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
+				(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn),
 				 FALSE);
 		}
 
 #if USE_OPENSSL
-		gtk_widget_hide(ssl.pop_frame);
-		gtk_widget_hide(ssl.imap_frame);
-		gtk_widget_show(ssl.nntp_frame);
-		gtk_widget_show(ssl.send_frame);
+		gtk_widget_hide(ssl_page.pop_frame);
+		gtk_widget_hide(ssl_page.imap_frame);
+		gtk_widget_show(ssl_page.nntp_frame);
+		gtk_widget_show(ssl_page.send_frame);
 #endif
-		gtk_widget_hide(advanced.popport_hbox);
-		gtk_widget_hide(advanced.imapport_hbox);
-		gtk_widget_show(advanced.nntpport_hbox);
-		gtk_widget_show(advanced.crosspost_checkbtn);
-		gtk_widget_show(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
-		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(receive.imapdir_label);
-		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_checkbtn);
-		gtk_widget_hide(receive.low_bandwidth_checkbtn);
+		gtk_widget_hide(advanced_page.popport_hbox);
+		gtk_widget_hide(advanced_page.imapport_hbox);
+		gtk_widget_show(advanced_page.nntpport_hbox);
+		gtk_widget_show(advanced_page.crosspost_checkbtn);
+		gtk_widget_show(advanced_page.crosspost_colormenu);
+		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
+		gtk_widget_hide(advanced_page.tunnelcmd_entry);
+		gtk_widget_hide(receive_page.imapdir_label);
+		gtk_widget_hide(receive_page.imapdir_entry);
+		gtk_widget_hide(receive_page.subsonly_checkbtn);
+		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
-		gtk_widget_hide(basic.nntpserv_label);
-		gtk_widget_hide(basic.nntpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.nntpserv_label);
+		gtk_widget_hide(basic_page.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_onconnect_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   1, 0);
-		gtk_widget_hide(basic.recvserv_label);
-		gtk_widget_hide(basic.recvserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.recvserv_label);
+		gtk_widget_hide(basic_page.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   2, 0);
-		gtk_widget_show(basic.smtpserv_label);
-		gtk_widget_show(basic.smtpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.smtpserv_label);
+		gtk_widget_show(basic_page.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   4, VSPACING_NARROW);
-		gtk_widget_show(basic.localmbox_label);
-		gtk_widget_show(basic.localmbox_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.localmbox_label);
+		gtk_widget_show(basic_page.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   3, VSPACING_NARROW);
-		gtk_widget_show(basic.mailcmd_label);
-		gtk_widget_show(basic.mailcmd_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.mailcmd_label);
+		gtk_widget_show(basic_page.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   6, VSPACING_NARROW);
-		gtk_widget_show(basic.mailcmd_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.mailcmd_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   5, VSPACING_NARROW);
-		gtk_widget_hide(basic.uid_label);
-		gtk_widget_hide(basic.pass_label);
-		gtk_widget_hide(basic.uid_entry);
-		gtk_widget_hide(basic.pass_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.uid_label);
+		gtk_widget_hide(basic_page.pass_label);
+		gtk_widget_hide(basic_page.uid_entry);
+		gtk_widget_hide(basic_page.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, 0);
 
-		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_label, TRUE);
-		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
-		gtk_widget_hide(receive.pop3_frame);
-		gtk_widget_hide(receive.imap_frame);
-		gtk_widget_show(receive.local_frame);
-		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_label,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_hide(receive_page.pop3_frame);
+		gtk_widget_hide(receive_page.imap_frame);
+		gtk_widget_show(receive_page.local_frame);
+		gtk_widget_hide(receive_page.frame_maxarticle);
+		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive_page.recvatgetall_checkbtn, TRUE);
 		prefs_account_mailcmd_toggled
-			(GTK_TOGGLE_BUTTON(basic.mailcmd_checkbtn), NULL);
+			(GTK_TOGGLE_BUTTON(basic_page.mailcmd_checkbtn), NULL);
 
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
+			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
+				(GTK_TOGGLE_BUTTON(receive_page.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
+				(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn),
 				 TRUE);
 		}
 
 #if USE_OPENSSL
-		gtk_widget_hide(ssl.pop_frame);
-		gtk_widget_hide(ssl.imap_frame);
-		gtk_widget_hide(ssl.nntp_frame);
-		gtk_widget_show(ssl.send_frame);
+		gtk_widget_hide(ssl_page.pop_frame);
+		gtk_widget_hide(ssl_page.imap_frame);
+		gtk_widget_hide(ssl_page.nntp_frame);
+		gtk_widget_show(ssl_page.send_frame);
 #endif
-		gtk_widget_hide(advanced.popport_hbox);
-		gtk_widget_hide(advanced.imapport_hbox);
-		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_checkbtn);
-		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
-		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(receive.imapdir_label);
-		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_checkbtn);
-		gtk_widget_hide(receive.low_bandwidth_checkbtn);
+		gtk_widget_hide(advanced_page.popport_hbox);
+		gtk_widget_hide(advanced_page.imapport_hbox);
+		gtk_widget_hide(advanced_page.nntpport_hbox);
+		gtk_widget_hide(advanced_page.crosspost_checkbtn);
+		gtk_widget_hide(advanced_page.crosspost_colormenu);
+		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
+		gtk_widget_hide(advanced_page.tunnelcmd_entry);
+		gtk_widget_hide(receive_page.imapdir_label);
+		gtk_widget_hide(receive_page.imapdir_entry);
+		gtk_widget_hide(receive_page.subsonly_checkbtn);
+		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
 		gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_show(protocol_optmenu->no_imap_warn_label);
 #endif
-		gtk_widget_hide(basic.nntpserv_label);
-		gtk_widget_hide(basic.nntpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.nntpserv_label);
+		gtk_widget_hide(basic_page.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_onconnect_checkbtn);
 
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   1, 0);
-		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
-		gtk_widget_set_sensitive(basic.recvserv_entry, TRUE);
-		gtk_widget_show(basic.recvserv_label);
-		gtk_widget_show(basic.recvserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_set_sensitive(basic_page.recvserv_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.recvserv_entry, TRUE);
+		gtk_widget_show(basic_page.recvserv_label);
+		gtk_widget_show(basic_page.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   2, VSPACING_NARROW);
-		gtk_widget_show(basic.smtpserv_label);
-		gtk_widget_show(basic.smtpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.smtpserv_label);
+		gtk_widget_show(basic_page.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   4, VSPACING_NARROW);
-		gtk_widget_hide(basic.localmbox_label);
-		gtk_widget_hide(basic.localmbox_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.localmbox_label);
+		gtk_widget_hide(basic_page.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   3, 0);
-		gtk_widget_hide(basic.mailcmd_label);
-		gtk_widget_hide(basic.mailcmd_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_label);
+		gtk_widget_hide(basic_page.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   5, 0);
-		gtk_widget_show(basic.uid_label);
-		gtk_widget_show(basic.pass_label);
-		gtk_widget_show(basic.uid_entry);
-		gtk_widget_show(basic.pass_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.uid_label);
+		gtk_widget_show(basic_page.pass_label);
+		gtk_widget_show(basic_page.uid_entry);
+		gtk_widget_show(basic_page.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_label, TRUE);
-		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
-		gtk_widget_hide(receive.pop3_frame);
-		gtk_widget_show(receive.imap_frame);
-		gtk_widget_hide(receive.local_frame);
-		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
-		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
-		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_label,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_hide(receive_page.pop3_frame);
+		gtk_widget_show(receive_page.imap_frame);
+		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_hide(receive_page.frame_maxarticle);
+		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive_page.recvatgetall_checkbtn, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_checkbtn), FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
+			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
+				(GTK_TOGGLE_BUTTON(receive_page.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
+				(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn),
 				 FALSE);
 		}
 
 #if USE_OPENSSL
-		gtk_widget_hide(ssl.pop_frame);
-		gtk_widget_show(ssl.imap_frame);
-		gtk_widget_hide(ssl.nntp_frame);
-		gtk_widget_show(ssl.send_frame);
+		gtk_widget_hide(ssl_page.pop_frame);
+		gtk_widget_show(ssl_page.imap_frame);
+		gtk_widget_hide(ssl_page.nntp_frame);
+		gtk_widget_show(ssl_page.send_frame);
 #endif
-		gtk_widget_hide(advanced.popport_hbox);
-		gtk_widget_show(advanced.imapport_hbox);
-		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_checkbtn);
-		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_show(advanced.tunnelcmd_checkbtn);
-		gtk_widget_show(advanced.tunnelcmd_entry);
-		gtk_widget_show(receive.imapdir_label);
-		gtk_widget_show(receive.imapdir_entry);
-		gtk_widget_show(receive.subsonly_checkbtn);
-		gtk_widget_show(receive.low_bandwidth_checkbtn);
+		gtk_widget_hide(advanced_page.popport_hbox);
+		gtk_widget_show(advanced_page.imapport_hbox);
+		gtk_widget_hide(advanced_page.nntpport_hbox);
+		gtk_widget_hide(advanced_page.crosspost_checkbtn);
+		gtk_widget_hide(advanced_page.crosspost_colormenu);
+		gtk_widget_show(advanced_page.tunnelcmd_checkbtn);
+		gtk_widget_show(advanced_page.tunnelcmd_entry);
+		gtk_widget_show(receive_page.imapdir_label);
+		gtk_widget_show(receive_page.imapdir_entry);
+		gtk_widget_show(receive_page.subsonly_checkbtn);
+		gtk_widget_show(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
-		gtk_widget_hide(basic.nntpserv_label);
-		gtk_widget_hide(basic.nntpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.nntpserv_label);
+		gtk_widget_hide(basic_page.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_onconnect_checkbtn);
 
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   1, 0);
-		gtk_widget_set_sensitive(basic.recvserv_label, FALSE);
-		gtk_widget_set_sensitive(basic.recvserv_entry, FALSE);
-		gtk_widget_hide(basic.recvserv_label);
-		gtk_widget_hide(basic.recvserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_set_sensitive(basic_page.recvserv_label, FALSE);
+		gtk_widget_set_sensitive(basic_page.recvserv_entry, FALSE);
+		gtk_widget_hide(basic_page.recvserv_label);
+		gtk_widget_hide(basic_page.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   2, VSPACING_NARROW);
-		gtk_widget_show(basic.smtpserv_label);
-		gtk_widget_show(basic.smtpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.smtpserv_label);
+		gtk_widget_show(basic_page.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   4, VSPACING_NARROW);
-		gtk_widget_hide(basic.localmbox_label);
-		gtk_widget_hide(basic.localmbox_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.localmbox_label);
+		gtk_widget_hide(basic_page.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   3, 0);
-		gtk_widget_hide(basic.mailcmd_label);
-		gtk_widget_hide(basic.mailcmd_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_label);
+		gtk_widget_hide(basic_page.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   5, 0);
-		gtk_widget_hide(basic.uid_label);
-		gtk_widget_hide(basic.pass_label);
-		gtk_widget_hide(basic.uid_entry);
-		gtk_widget_hide(basic.pass_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.uid_label);
+		gtk_widget_hide(basic_page.pass_label);
+		gtk_widget_hide(basic_page.uid_entry);
+		gtk_widget_hide(basic_page.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.uid_label,  FALSE);
-		gtk_widget_set_sensitive(basic.pass_label, FALSE);
-		gtk_widget_set_sensitive(basic.uid_entry,  FALSE);
-		gtk_widget_set_sensitive(basic.pass_entry, FALSE);
-		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
-		gtk_widget_hide(receive.pop3_frame);
-		gtk_widget_hide(receive.imap_frame);
-		gtk_widget_hide(receive.local_frame);
-		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, FALSE);
-		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, FALSE);
+		gtk_widget_set_sensitive(basic_page.uid_label,  FALSE);
+		gtk_widget_set_sensitive(basic_page.pass_label, FALSE);
+		gtk_widget_set_sensitive(basic_page.uid_entry,  FALSE);
+		gtk_widget_set_sensitive(basic_page.pass_entry, FALSE);
+		gtk_widget_set_sensitive(receive_page.pop3_frame, FALSE);
+		gtk_widget_hide(receive_page.pop3_frame);
+		gtk_widget_hide(receive_page.imap_frame);
+		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_hide(receive_page.frame_maxarticle);
+		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, FALSE);
+		gtk_widget_set_sensitive(receive_page.recvatgetall_checkbtn, FALSE);
 
-		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
-		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 	
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), FALSE);
+			(GTK_TOGGLE_BUTTON(receive_page.filter_on_recv_checkbtn), FALSE);
 		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn), FALSE);
+			(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn), FALSE);
 
 #if USE_OPENSSL
-		gtk_widget_hide(ssl.pop_frame);
-		gtk_widget_hide(ssl.imap_frame);
-		gtk_widget_hide(ssl.nntp_frame);
-		gtk_widget_show(ssl.send_frame);
+		gtk_widget_hide(ssl_page.pop_frame);
+		gtk_widget_hide(ssl_page.imap_frame);
+		gtk_widget_hide(ssl_page.nntp_frame);
+		gtk_widget_show(ssl_page.send_frame);
 #endif
-		gtk_widget_hide(advanced.popport_hbox);
-		gtk_widget_hide(advanced.imapport_hbox);
-		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_checkbtn);
-		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
-		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(receive.imapdir_label);
-		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_checkbtn);
-		gtk_widget_hide(receive.low_bandwidth_checkbtn);
+		gtk_widget_hide(advanced_page.popport_hbox);
+		gtk_widget_hide(advanced_page.imapport_hbox);
+		gtk_widget_hide(advanced_page.nntpport_hbox);
+		gtk_widget_hide(advanced_page.crosspost_checkbtn);
+		gtk_widget_hide(advanced_page.crosspost_colormenu);
+		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
+		gtk_widget_hide(advanced_page.tunnelcmd_entry);
+		gtk_widget_hide(receive_page.imapdir_label);
+		gtk_widget_hide(receive_page.imapdir_entry);
+		gtk_widget_hide(receive_page.subsonly_checkbtn);
+		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_POP3:
 	default:
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
-		gtk_widget_hide(basic.nntpserv_label);
-		gtk_widget_hide(basic.nntpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.nntpserv_label);
+		gtk_widget_hide(basic_page.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   0, 0);
-		gtk_widget_set_sensitive(basic.nntpauth_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_checkbtn);
 
-		gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, FALSE);
-		gtk_widget_hide(basic.nntpauth_onconnect_checkbtn);
+		gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, FALSE);
+		gtk_widget_hide(basic_page.nntpauth_onconnect_checkbtn);
 
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   1, 0);
-		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
-		gtk_widget_set_sensitive(basic.recvserv_entry, TRUE);
-		gtk_widget_show(basic.recvserv_label);
-		gtk_widget_show(basic.recvserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_set_sensitive(basic_page.recvserv_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.recvserv_entry, TRUE);
+		gtk_widget_show(basic_page.recvserv_label);
+		gtk_widget_show(basic_page.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   2, VSPACING_NARROW);
-		gtk_widget_show(basic.smtpserv_label);
-		gtk_widget_show(basic.smtpserv_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.smtpserv_label);
+		gtk_widget_show(basic_page.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   4, VSPACING_NARROW);
-		gtk_widget_hide(basic.localmbox_label);
-		gtk_widget_hide(basic.localmbox_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.localmbox_label);
+		gtk_widget_hide(basic_page.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   3, 0);
-		gtk_widget_hide(basic.mailcmd_label);
-		gtk_widget_hide(basic.mailcmd_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_label);
+		gtk_widget_hide(basic_page.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   6, 0);
-		gtk_widget_hide(basic.mailcmd_checkbtn);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_hide(basic_page.mailcmd_checkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   5, 0);
-		gtk_widget_show(basic.uid_label);
-		gtk_widget_show(basic.pass_label);
-		gtk_widget_show(basic.uid_entry);
-		gtk_widget_show(basic.pass_entry);
-  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+		gtk_widget_show(basic_page.uid_label);
+		gtk_widget_show(basic_page.pass_label);
+		gtk_widget_show(basic_page.uid_entry);
+		gtk_widget_show(basic_page.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
-		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_label, TRUE);
-		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
-		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
-		gtk_widget_show(receive.pop3_frame);
-		gtk_widget_hide(receive.imap_frame);
-		gtk_widget_hide(receive.local_frame);
-		gtk_widget_hide(receive.frame_maxarticle);
-		gtk_widget_set_sensitive(receive.filter_on_recv_checkbtn, TRUE);
-		gtk_widget_set_sensitive(receive.recvatgetall_checkbtn, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_label,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_set_sensitive(receive_page.pop3_frame, TRUE);
+		gtk_widget_show(receive_page.pop3_frame);
+		gtk_widget_hide(receive_page.imap_frame);
+		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_hide(receive_page.frame_maxarticle);
+		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
+		gtk_widget_set_sensitive(receive_page.recvatgetall_checkbtn, TRUE);
 
-		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
-		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.smtpserv_label, TRUE);
 
 		/* update pop_before_smtp sensitivity */
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_checkbtn, TRUE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, TRUE);
 		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.filter_on_recv_checkbtn), 
+				(GTK_TOGGLE_BUTTON(receive_page.filter_on_recv_checkbtn), 
 				TRUE);
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(receive.recvatgetall_checkbtn),
+				(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn),
 				 TRUE);
 		}
 
 #if USE_OPENSSL
-		gtk_widget_show(ssl.pop_frame);
-		gtk_widget_hide(ssl.imap_frame);
-		gtk_widget_hide(ssl.nntp_frame);
-		gtk_widget_show(ssl.send_frame);
+		gtk_widget_show(ssl_page.pop_frame);
+		gtk_widget_hide(ssl_page.imap_frame);
+		gtk_widget_hide(ssl_page.nntp_frame);
+		gtk_widget_show(ssl_page.send_frame);
 #endif
-		gtk_widget_show(advanced.popport_hbox);
-		gtk_widget_hide(advanced.imapport_hbox);
-		gtk_widget_hide(advanced.nntpport_hbox);
-		gtk_widget_hide(advanced.crosspost_checkbtn);
-		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_hide(advanced.tunnelcmd_checkbtn);
-		gtk_widget_hide(advanced.tunnelcmd_entry);
-		gtk_widget_hide(receive.imapdir_label);
-		gtk_widget_hide(receive.imapdir_entry);
-		gtk_widget_hide(receive.subsonly_checkbtn);
-		gtk_widget_hide(receive.low_bandwidth_checkbtn);
+		gtk_widget_show(advanced_page.popport_hbox);
+		gtk_widget_hide(advanced_page.imapport_hbox);
+		gtk_widget_hide(advanced_page.nntpport_hbox);
+		gtk_widget_hide(advanced_page.crosspost_checkbtn);
+		gtk_widget_hide(advanced_page.crosspost_colormenu);
+		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
+		gtk_widget_hide(advanced_page.tunnelcmd_entry);
+		gtk_widget_hide(receive_page.imapdir_label);
+		gtk_widget_hide(receive_page.imapdir_entry);
+		gtk_widget_hide(receive_page.subsonly_checkbtn);
+		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	}
 
-	gtk_widget_queue_resize(basic.serv_frame);
+	gtk_widget_queue_resize(basic_page.serv_frame);
 }
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
@@ -3692,11 +4130,11 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 	if (!GTK_WIDGET_SENSITIVE (GTK_WIDGET (button)))
 		return;
 	auth = gtk_toggle_button_get_active (button);
-	gtk_widget_set_sensitive(basic.uid_label,  auth);
-	gtk_widget_set_sensitive(basic.pass_label, auth);
-	gtk_widget_set_sensitive(basic.uid_entry,  auth);
-	gtk_widget_set_sensitive(basic.pass_entry, auth);
-	gtk_widget_set_sensitive(basic.nntpauth_onconnect_checkbtn, auth);
+	gtk_widget_set_sensitive(basic_page.uid_label,  auth);
+	gtk_widget_set_sensitive(basic_page.pass_label, auth);
+	gtk_widget_set_sensitive(basic_page.uid_entry,  auth);
+	gtk_widget_set_sensitive(basic_page.pass_entry, auth);
+	gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, auth);
 }
 
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
@@ -3706,12 +4144,12 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 
 	use_mailcmd = gtk_toggle_button_get_active (button);
 
-	gtk_widget_set_sensitive(basic.mailcmd_entry,  use_mailcmd);
-	gtk_widget_set_sensitive(basic.mailcmd_label, use_mailcmd);
-	gtk_widget_set_sensitive(basic.smtpserv_entry, !use_mailcmd);
-	gtk_widget_set_sensitive(basic.smtpserv_label, !use_mailcmd);
-	gtk_widget_set_sensitive(basic.uid_entry,  !use_mailcmd);
-	gtk_widget_set_sensitive(basic.pass_entry, !use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.mailcmd_entry,  use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.mailcmd_label, use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.smtpserv_entry, !use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.smtpserv_label, !use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.uid_entry,  !use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.pass_entry, !use_mailcmd);
 }
 
 #if USE_ASPELL
@@ -3760,6 +4198,7 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 void prefs_account_register_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_append(prefs_pages, page);
+	
 }
 
 void prefs_account_unregister_page(PrefsPage *page)

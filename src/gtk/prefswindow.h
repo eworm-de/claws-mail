@@ -48,7 +48,8 @@ void prefswindow_open_full		(const gchar *title,
 					 GSList *prefs_pages,
 					 gpointer data,
 					 GtkDestroyNotify func,
-					 gint *save_width, gint *save_height);
+					 gint *save_width, gint *save_height,
+					 gboolean preload_pages);
 
 void prefswindow_open			(const gchar *title, 
 					 GSList *prefs_pages,

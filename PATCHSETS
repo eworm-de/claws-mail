@@ -2603,3 +2603,4 @@
 ( cvs diff -u -r 1.382.2.382 -r 1.382.2.383 src/compose.c;  ) > 2.9.2cvs25.patchset
 ( cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/prefs_quote.c;  ) > 2.9.2cvs26.patchset
 ( cvs diff -u -r 1.60.2.89 -r 1.60.2.90 src/addressbook.c;  cvs diff -u -r 1.17.2.33 -r 1.17.2.34 src/alertpanel.c;  cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/alertpanel.h;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/ldapupdate.c;  ) > 2.9.2cvs27.patchset
+( cvs diff -u -r 1.105.2.96 -r 1.105.2.97 src/prefs_account.c;  cvs diff -u -r 1.12.2.33 -r 1.12.2.34 src/gtk/prefswindow.c;  cvs diff -u -r 1.7.2.8 -r 1.7.2.9 src/gtk/prefswindow.h;  ) > 2.9.2cvs28.patchset

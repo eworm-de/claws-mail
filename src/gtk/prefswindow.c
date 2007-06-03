@@ -248,7 +248,24 @@ static gint prefswindow_tree_sort_by_weight(GtkTreeModel *model,
 	      (i1 < i2 ?  1 : (i1 > i2 ? -1 : 0)));
 }
 				  
-static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
+static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_pages)
+{
+	GSList *cur;
+
+	prefs_pages = g_slist_reverse(prefs_pages);
+	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
+		PrefsPage *page = (PrefsPage *) cur->data;
+
+		if (!page->page_open) {
+			page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
+			gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
+			page->page_open = TRUE;
+		}
+	}
+	prefs_pages = g_slist_reverse(prefs_pages);
+}
+
+static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages, PrefsWindow *prefswindow, gboolean preload_pages)
 {
 	GtkTreeStore *store = GTK_TREE_STORE(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(tree_view)));
@@ -330,6 +347,9 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 					     PREFS_PAGE_WEIGHT,
 					     GTK_SORT_DESCENDING);
 
+	if (preload_pages)
+		prefswindow_build_all_pages(prefswindow, prefs_pages);
+
 	/* select first one */					     
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter))
@@ -337,7 +357,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func,
-							 gint *save_width, gint *save_height)
+							 gint *save_width, gint *save_height, gboolean preload_pages)
 {
 	PrefsWindow *prefswindow;
 	gint x = gdk_screen_width();
@@ -411,7 +431,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_widget_show(prefswindow->empty_page);
 	gtk_container_add(GTK_CONTAINER(prefswindow->notebook), prefswindow->empty_page);
 
-	prefswindow_build_tree(prefswindow->tree_view, prefs_pages);		
+	prefswindow_build_tree(prefswindow->tree_view, prefs_pages, prefswindow, preload_pages);		
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
@@ -472,7 +492,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
 					 gint *save_width, gint *save_height)
 {
-	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height);
+	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height, FALSE);
 }
 
 /*!
