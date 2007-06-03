@@ -1,3 +1,15 @@
+2007-06-03 [wwp]	2.9.2cvs30
+
+	* src/prefs_gtk.c
+		Don't decode leading ENV_ and ~ in P_PASSWORD
+		values.
+
+2007-06-03 [wwp]	2.9.2cvs29
+
+	* src/prefs_gtk.c
+		Don't decode leading ENV_ and ~ in P_PASSWORD
+		values.
+
 2007-06-03 [wwp]	2.9.2cvs28
 
 	* src/prefs_account.c

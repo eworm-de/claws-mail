@@ -425,7 +425,6 @@ void prefs_set_default(PrefParam *param)
 
 		switch (param[i].type) {
 		case P_STRING:
-		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
 			if (param[i].defval != NULL) {
 				if (!strncasecmp(param[i].defval, "ENV_", 4)) {
@@ -449,6 +448,17 @@ void prefs_set_default(PrefParam *param)
 							    param[i].defval + 1,
 							    NULL);
 				else if (param[i].defval[0] != '\0')
+					*((gchar **)param[i].data) =
+						g_strdup(param[i].defval);
+				else
+					*((gchar **)param[i].data) = NULL;
+			} else
+				*((gchar **)param[i].data) = NULL;
+			break;
+		case P_PASSWORD:
+			g_free(*((gchar **)param[i].data));
+			if (param[i].defval != NULL) {
+				if (param[i].defval[0] != '\0')
 					*((gchar **)param[i].data) =
 						g_strdup(param[i].defval);
 				else
@@ -633,7 +643,6 @@ void prefs_set_dialog_to_default(PrefParam *param)
 
 		switch (tmpparam.type) {
 		case P_STRING:
-		case P_PASSWORD:
 			if (tmpparam.defval) {
 				if (!g_ascii_strncasecmp(tmpparam.defval, "ENV_", 4)) {
 					str_data = g_strdup(g_getenv(param[i].defval + 4));
@@ -648,6 +657,9 @@ void prefs_set_dialog_to_default(PrefParam *param)
 					break;
 				}
 			}
+			tmpparam.data = &tmpparam.defval;
+			break;
+		case P_PASSWORD:
 			tmpparam.data = &tmpparam.defval;
 			break;
 		case P_INT:
