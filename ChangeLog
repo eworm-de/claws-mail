@@ -1,3 +1,10 @@
+2007-06-04 [wwp]	2.9.2cvs34
+
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Better fix for compiling w/o aspell (rollbacks
+		2.9.2cvs31).
+
 2007-06-04 [wwp]	2.9.2cvs33
 
 	* src/account.c

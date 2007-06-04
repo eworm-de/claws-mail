@@ -125,12 +125,10 @@ struct _PrefsAccount
 	gchar    *auto_bcc;
 	gboolean  set_autoreplyto;
 	gchar    *auto_replyto;
-#ifdef USE_ASPELL
 	gboolean  enable_default_dictionary;
 	gchar	 *default_dictionary;
 	gboolean  enable_default_alt_dictionary;
 	gchar	 *default_alt_dictionary;
-#endif
 	gboolean  compose_with_format;
 	gchar	 *compose_subject_format;
 	gchar	 *compose_body_format;

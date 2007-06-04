@@ -179,10 +179,12 @@ typedef struct ComposePage
 	GtkWidget *autobcc_entry;
 	GtkWidget *autoreplyto_checkbtn;
 	GtkWidget *autoreplyto_entry;
+#if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *optmenu_default_dictionary;
 	GtkWidget *checkbtn_enable_default_alt_dictionary;
 	GtkWidget *optmenu_default_alt_dictionary;
+#endif
 } ComposePage;
 
 typedef struct TemplatesPage
