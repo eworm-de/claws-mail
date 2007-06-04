@@ -37,6 +37,8 @@
 
 #define BUFFSIZE	8192
 
+static gchar monthstr[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
+
 typedef char *(*getlinefunc) (char *, size_t, void *);
 typedef int (*peekcharfunc) (void *);
 typedef int (*getcharfunc) (void *);
@@ -61,7 +63,7 @@ gint procheader_get_one_field(gchar *buf, size_t len, FILE *fp,
 			      HeaderEntry hentry[])
 {
 	return generic_get_one_field(buf, len, fp, hentry,
-				     (getlinefunc)fgets, (peekcharfunc)file_peekchar,
+				     (getlinefunc)fgets_crlf, (peekcharfunc)file_peekchar,
 				     TRUE);
 }
 
@@ -76,12 +78,25 @@ static gint string_get_one_field(gchar *buf, size_t len, char **str,
 
 static char *string_getline(char *buf, size_t len, char **str)
 {
+	gboolean is_cr = FALSE;
+	gboolean last_was_cr = FALSE;
+
 	if (!*str || !**str)
 		return NULL;
 
-	for (; **str && len > 1; --len)
-		if ((*buf++ = *(*str)++) == '\n')
+	for (; **str && len > 1; --len) {
+		is_cr = (**str == '\r');
+		if ((*buf++ = *(*str)++) == '\n') {
 		    break;
+		}
+		if (last_was_cr) {
+			*(--buf) = '\n';
+			buf++;
+		    break;
+		}
+		last_was_cr = is_cr;
+	}
+		
 	*buf = '\0';
 
 	return buf;
@@ -164,7 +179,7 @@ static gint generic_get_one_field(gchar *buf, size_t len, void *data,
 gint procheader_get_one_field_asis(gchar *buf, size_t len, FILE *fp)
 {
 	return generic_get_one_field(buf, len, fp, NULL,
-				     (getlinefunc)fgets, 
+				     (getlinefunc)fgets_crlf, 
 				     (peekcharfunc)file_peekchar,
 				     FALSE);
 }
@@ -749,11 +764,15 @@ static gint procheader_scan_date_string(const gchar *str,
 					gchar *zone)
 {
 	gint result;
+	gint month_n;
+	gchar zone1[3];
+	gchar zone2[3];
 
 	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %5s",
 			weekday, day, month, year, hh, mm, ss, zone);
 	if (result == 8) return 0;
 
+	/* RFC2822 */
 	result = sscanf(str, "%3s,%d %9s %d %2d:%2d:%2d %5s",
 			weekday, day, month, year, hh, mm, ss, zone);
 	if (result == 8) return 0;
@@ -789,6 +808,32 @@ static gint procheader_scan_date_string(const gchar *str,
 			day, month, year, hh, mm);
 	if (result == 5) return 0;
 
+	/* RFC3339 subset */
+	*weekday = '\0';
+	result = sscanf(str, "%4d-%2d-%2d %2d:%2d:%2d+%2s:%2s",
+			year, &month_n, day, hh, mm, ss, zone1, zone2);
+	if (result == 8) {
+		if (1 <= month_n && month_n <= 12) {
+			strncpy2(month, monthstr+((month_n-1)*3), 4);
+			*zone = '+';
+			strncpy2(zone+1, zone1, 3);
+			strncpy2(zone+3, zone2, 3);
+			return 0;
+		}
+	}
+
+	/* RFC3339 subset */
+	*zone = '\0';
+	*weekday = '\0';
+	result = sscanf(str, "%4d-%2d-%2d %2d:%2d:%2d",
+			year, &month_n, day, hh, mm, ss);
+	if (result == 6) {
+		if (1 <= month_n && month_n <= 12) {
+			strncpy2(month, monthstr+((month_n-1)*3), 4);
+			return 0;
+		}
+	}
+
 	return -1;
 }
 
@@ -798,7 +843,6 @@ static gint procheader_scan_date_string(const gchar *str,
  */
 gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 {
-	static gchar monthstr[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
 	gchar weekday[11];
 	gint day;
 	gchar month[10];
@@ -851,7 +895,6 @@ gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 
 time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 {
-	static gchar monthstr[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
 	gchar weekday[11];
 	gint day;
 	gchar month[10];

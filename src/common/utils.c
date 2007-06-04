@@ -3304,6 +3304,38 @@ gchar *file_read_stream_to_str(FILE *fp)
 	return str;
 }
 
+
+char *fgets_crlf(char *buf, int size, FILE *stream)
+{
+	gboolean is_cr = FALSE;
+	gboolean last_was_cr = FALSE;
+	int c = 0;
+	char *cs;
+
+	cs = buf;
+	while (--size > 0 && (c = getc(stream)) != EOF)
+	{
+		*cs++ = c;
+		is_cr = (c == '\r');
+		if (c == '\n') {
+			break;
+		}
+		if (last_was_cr) {
+			*(--cs) = '\n';
+			cs++;
+			ungetc(c, stream);
+			break;
+		}
+		last_was_cr = is_cr;
+	}
+	if (c == EOF && cs == buf)
+		return NULL;
+
+	*cs = '\0';
+
+	return buf;	
+}
+
 static gint execute_async(gchar *const argv[])
 {
 	g_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);

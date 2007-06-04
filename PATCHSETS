@@ -2607,3 +2607,4 @@
 ( cvs diff -u -r 1.10.2.31 -r 1.10.2.32 src/prefs_gtk.c;  ) > 2.9.2cvs29.patchset
 ( cvs diff -u -r 1.10.2.31 -r 1.10.2.32 src/prefs_gtk.c;  ) > 2.9.2cvs30.patchset
 ( cvs diff -u -r 1.105.2.97 -r 1.105.2.98 src/prefs_account.c;  ) > 2.9.2cvs31.patchset
+( cvs diff -u -r 1.47.2.42 -r 1.47.2.43 src/procheader.c;  cvs diff -u -r 1.36.2.102 -r 1.36.2.103 src/common/utils.c;  cvs diff -u -r 1.20.2.45 -r 1.20.2.46 src/common/utils.h;  ) > 2.9.2cvs32.patchset

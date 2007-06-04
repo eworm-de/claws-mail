@@ -457,6 +457,8 @@ gint str_write_to_file		(const gchar	*str,
 gchar *file_read_to_str		(const gchar	*file);
 gchar *file_read_stream_to_str	(FILE		*fp);
 
+char *fgets_crlf(char *buf, int size, FILE *stream);
+
 /* process execution */
 gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async);
