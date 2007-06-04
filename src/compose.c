@@ -1473,7 +1473,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	if (quote) {
 		/* empty quotemark is not allowed */
-		if (qmark && !*qmark);
+		if (qmark == NULL || *qmark == '\0')
 			qmark = "> ";
 		compose_quote_fmt(compose, compose->replyinfo,
 			          body_fmt, qmark, body, FALSE, TRUE,
