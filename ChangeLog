@@ -1,3 +1,12 @@
+2007-06-04 [wwp]	2.9.2cvs33
+
+	* src/account.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/procmsg.c
+		It's now possible to disable mail filtering plugins
+		on a per-account basis.
+
 2007-06-04 [wwp]	2.9.2cvs32
 
 	* src/procheader.c

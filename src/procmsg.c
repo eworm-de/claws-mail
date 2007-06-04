@@ -2117,9 +2117,10 @@ static gboolean procmsg_msginfo_filter(MsgInfo *msginfo, PrefsAccount* ac_prefs)
 	mail_filtering_data.filtered = NULL;			
 	mail_filtering_data.unfiltered = NULL;
 	mail_filtering_data.account = ac_prefs;	
-	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
+
+	if (!ac_prefs || ac_prefs->filterhook_on_recv)
+		if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return TRUE;
-	}
 
 	/* filter if enabled in prefs or move to inbox if not */
 	if((filtering_rules != NULL) &&
@@ -2164,6 +2165,7 @@ void procmsg_msglist_filter(GSList *list, PrefsAccount *ac,
 	mail_filtering_data.unfiltered = NULL;	
 	mail_filtering_data.account = ac;	
 			
+	if (!ac || ac->filterhook_on_recv)
 	hooks_invoke(MAIL_LISTFILTERING_HOOKLIST, &mail_filtering_data);
 	
 	if (mail_filtering_data.filtered == NULL &&

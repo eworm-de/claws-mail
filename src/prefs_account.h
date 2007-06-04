@@ -87,10 +87,10 @@ struct _PrefsAccount
 	gint msg_leave_time;
 	gboolean recv_at_getall;
 	gboolean sd_rmmail_on_download;
-	gboolean sd_filter_on_recv;
 	gboolean enable_size_limit;
 	gint size_limit;
 	gboolean filter_on_recv;
+	gboolean filterhook_on_recv;
 	gchar *inbox;
 	gchar *local_inbox;
 	gint max_articles;
