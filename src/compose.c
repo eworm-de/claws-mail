@@ -7126,6 +7126,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	buffer = gtk_text_view_get_buffer(text);
 
 	if (tmpl->value) {
+		/* FIXME - use per-folder/account quotemark */
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
 		else
@@ -9533,6 +9534,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 			len = strlen(text);
 
 		new_text = g_strndup(text, len);
+
+		/* FIXME - use per-folder/account quotemark */
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
 		else

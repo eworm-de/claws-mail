@@ -1,3 +1,8 @@
+2007-06-04 [colin]	2.9.2cvs39
+
+	* src/compose.c
+		More work for wwp :)
+
 2007-06-04 [wwp]	2.9.2cvs38
 
 	* src/compose.c
