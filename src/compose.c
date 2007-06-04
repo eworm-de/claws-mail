@@ -1604,7 +1604,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		}
 
 		/* empty quotemark is not allowed */
-		if (qmark && !*qmark)
+		if (qmark == NULL || *qmark == '\0')
 			qmark = "> ";
 
 		compose_quote_fmt(compose, full_msginfo,

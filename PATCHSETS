@@ -2613,3 +2613,4 @@
 ( cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_quote.c;  ) > 2.9.2cvs35.patchset
 ( cvs diff -u -r 1.382.2.383 -r 1.382.2.384 src/compose.c;  ) > 2.9.2cvs36.patchset
 ( cvs diff -u -r 1.382.2.384 -r 1.382.2.385 src/compose.c;  ) > 2.9.2cvs37.patchset
+( cvs diff -u -r 1.382.2.385 -r 1.382.2.386 src/compose.c;  ) > 2.9.2cvs38.patchset

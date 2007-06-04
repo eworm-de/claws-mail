@@ -1,3 +1,8 @@
+2007-06-04 [wwp]	2.9.2cvs38
+
+	* src/compose.c
+		Same as 2.9.2cvs36 but for forwarding.
+
 2007-06-04 [colin]	2.9.2cvs37
 
 	* src/compose.c
