@@ -2612,3 +2612,4 @@
 ( cvs diff -u -r 1.105.2.99 -r 1.105.2.100 src/prefs_account.c;  cvs diff -u -r 1.49.2.30 -r 1.49.2.31 src/prefs_account.h;  ) > 2.9.2cvs34.patchset
 ( cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_quote.c;  ) > 2.9.2cvs35.patchset
 ( cvs diff -u -r 1.382.2.383 -r 1.382.2.384 src/compose.c;  ) > 2.9.2cvs36.patchset
+( cvs diff -u -r 1.382.2.384 -r 1.382.2.385 src/compose.c;  ) > 2.9.2cvs37.patchset

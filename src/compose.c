@@ -1569,7 +1569,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	if (as_attach) {
 		gchar *msgfile;
 
-		msgfile = procmsg_get_message_file_path(msginfo);
+		msgfile = procmsg_get_message_file(msginfo);
 		if (!is_file_exist(msgfile))
 			g_warning("%s: file not exist\n", msgfile);
 		else
@@ -1702,7 +1702,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	
 	undo_block(compose->undostruct);
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
-		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
+		msgfile = procmsg_get_message_file((MsgInfo *)msginfo->data);
 
 		if (!is_file_exist(msgfile))
 			g_warning("%s: file not exist\n", msgfile);
@@ -2074,7 +2074,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	filename = procmsg_get_message_file_path(msginfo);
+	filename = procmsg_get_message_file(msginfo);
 
 	if (filename == NULL) {
 		compose->updating = FALSE;
@@ -3398,9 +3398,10 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 			/* if we meet a pgp signature, we don't attach it, but
 			 * we force signing. */
-			if (strcmp(content_type, "application/pgp-signature") &&
+			if ((strcmp(content_type, "application/pgp-signature") &&
 			    strcmp(content_type, "application/pkcs7-signature") &&
-			    strcmp(content_type, "application/x-pkcs7-signature")) {
+			    strcmp(content_type, "application/x-pkcs7-signature"))
+			    || compose->mode == COMPOSE_REDIRECT) {
 				partname = procmime_mimeinfo_get_parameter(child, "filename");
 				if (partname == NULL)
 					partname = procmime_mimeinfo_get_parameter(child, "name");
@@ -9733,7 +9734,9 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 				if (procmime_msginfo_is_encrypted(orig_msginfo)) {
 					originally_enc = TRUE;
 				}
-			} 
+				tmp_msginfo->folder = orig_msginfo->folder;
+				tmp_msginfo->msgnum = orig_msginfo->msgnum; 
+			}
 		}
 	}
 
