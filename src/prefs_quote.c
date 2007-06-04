@@ -55,7 +55,6 @@ typedef struct _QuotePage
 	GtkWidget *text_quotefmt;
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
-	GtkWidget *label_quote_chars;
 	GtkWidget *btn_quotedesc;
 } QuotePage;
 
@@ -142,8 +141,6 @@ static void prefs_quote_save(PrefsPage *_page)
 	prefs_common.quotemark = NULL;
 	g_free(prefs_common.fw_quotemark); 
 	prefs_common.fw_quotemark = NULL;
-	g_free(prefs_common.quote_chars); 
-	prefs_common.quote_chars = NULL;
 	
 	prefs_common.compose_with_format =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));

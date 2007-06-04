@@ -1,3 +1,10 @@
+2007-06-04 [wwp]	2.9.2cvs35
+
+	* src/prefs_compose_writing.c
+	* src/prefs_quote.c
+		Fix a bug where Quotation characters (prefs/compose/writing)
+		was cleared (introduced w/ 2.9.2cvs26).
+
 2007-06-04 [wwp]	2.9.2cvs34
 
 	* src/prefs_account.c

@@ -2610,3 +2610,4 @@
 ( cvs diff -u -r 1.47.2.42 -r 1.47.2.43 src/procheader.c;  cvs diff -u -r 1.36.2.102 -r 1.36.2.103 src/common/utils.c;  cvs diff -u -r 1.20.2.45 -r 1.20.2.46 src/common/utils.h;  ) > 2.9.2cvs32.patchset
 ( cvs diff -u -r 1.61.2.63 -r 1.61.2.64 src/account.c;  cvs diff -u -r 1.105.2.98 -r 1.105.2.99 src/prefs_account.c;  cvs diff -u -r 1.49.2.29 -r 1.49.2.30 src/prefs_account.h;  cvs diff -u -r 1.150.2.95 -r 1.150.2.96 src/procmsg.c;  ) > 2.9.2cvs33.patchset
 ( cvs diff -u -r 1.105.2.99 -r 1.105.2.100 src/prefs_account.c;  cvs diff -u -r 1.49.2.30 -r 1.49.2.31 src/prefs_account.h;  ) > 2.9.2cvs34.patchset
+( cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_quote.c;  ) > 2.9.2cvs35.patchset

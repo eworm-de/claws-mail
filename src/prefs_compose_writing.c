@@ -327,6 +327,7 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 	prefs_common.compose_dnd_mode = GPOINTER_TO_INT
 		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
+	g_free(prefs_common.quote_chars); 
 	prefs_common.quote_chars = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
 	remove_space(prefs_common.quote_chars);
