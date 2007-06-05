@@ -2616,3 +2616,4 @@
 ( cvs diff -u -r 1.382.2.385 -r 1.382.2.386 src/compose.c;  ) > 2.9.2cvs38.patchset
 ( cvs diff -u -r 1.382.2.386 -r 1.382.2.387 src/compose.c;  ) > 2.9.2cvs39.patchset
 ( cvs diff -u -r 1.382.2.387 -r 1.382.2.388 src/compose.c;  cvs diff -u -r 1.50.2.35 -r 1.50.2.36 src/compose.h;  ) > 2.9.2cvs40.patchset
+( cvs diff -u -r 1.149.2.73 -r 1.149.2.74 src/inc.c;  ) > 2.9.2cvs41.patchset

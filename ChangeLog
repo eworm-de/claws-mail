@@ -1,3 +1,9 @@
+2007-06-05 [wwp]	2.9.2cvs41
+
+	* src/inc.c
+		Fix incoming messages from local accounts always getting filtered
+		(even if the account prefs say don't), thanks to Colin.
+
 2007-06-05 [wwp]	2.9.2cvs40
 
 	* src/compose.c

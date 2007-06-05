@@ -1318,6 +1318,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
+	g_return_val_if_fail(account != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
 		debug_print("%s: no messages in local mailbox.\n", mbox);
@@ -1339,7 +1340,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account
 	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
-	msgs = proc_mbox(dest, tmp_mbox, TRUE, account);
+	msgs = proc_mbox(dest, tmp_mbox, account->filter_on_recv, account);
 
 	g_unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);
