@@ -137,6 +137,7 @@ struct _FolderItemTemplatesPage
 	FolderItem *item;
 
 	GtkWidget *window;
+	GtkWidget *table;
 	GtkWidget *checkbtn_compose_with_format;
 	GtkWidget *compose_subject_format;
 	GtkWidget *compose_body_format;
@@ -146,6 +147,11 @@ struct _FolderItemTemplatesPage
 	GtkWidget *checkbtn_forward_with_format;
 	GtkWidget *forward_quotemark;
 	GtkWidget *forward_body_format;
+
+	/* apply to sub folders */
+	GtkWidget *new_msg_format_rec_checkbtn;
+	GtkWidget *reply_format_rec_checkbtn;
+	GtkWidget *forward_format_rec_checkbtn;
 };
 
 
@@ -173,7 +179,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
-
 
 	GtkWidget *table;
 	GtkWidget *hbox;
@@ -1055,40 +1060,127 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_;
 	FolderItem *item = (FolderItem *) data;
 
-	GtkWidget *vbox_formats;
+	GtkWidget *table;
+	GtkWidget *label;
+	guint rowcount;
+	GtkWidget *vbox;
+	GtkWidget *alignment;
+	GtkWidget *new_msg_format_rec_checkbtn;
+	GtkWidget *reply_format_rec_checkbtn;
+	GtkWidget *forward_format_rec_checkbtn;
 
 	page->item	   = item;
 
-	/* compose/reply/forward formats */
-	vbox_formats = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox_formats);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_formats), VBOX_BORDER);
+	/* Table */
+	table = gtk_table_new(5, 3, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	rowcount = 0;
+
+	/* Apply to subfolders */
+	label = gtk_label_new(_("Apply to\nsubfolders"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	rowcount++;
+
+	/* compose format */
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
 	quotefmt_create_new_msg_fmt_widgets(
 				window,
-				vbox_formats,
+				vbox,
 				&page->checkbtn_compose_with_format,
 				_("Use a specific format for new messages"),
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				FALSE);
+
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
+
+	new_msg_format_rec_checkbtn = gtk_check_button_new();
+	gtk_box_pack_start (GTK_BOX(vbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
+	alignment = gtk_alignment_new(0, 1, 0, 0);	
+	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
+
+	rowcount++;
+
+	/* reply format */
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
 	quotefmt_create_reply_fmt_widgets(
 				window,
-				vbox_formats,
+				vbox,
 				&page->checkbtn_reply_with_format,
 				_("Use a specific reply quote format"),
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				FALSE);
+
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
+
+	reply_format_rec_checkbtn = gtk_check_button_new();
+	gtk_box_pack_start (GTK_BOX(vbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
+	alignment = gtk_alignment_new(0, 1, 0, 0);	
+	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
+
+	rowcount++;
+
+	/* forward format */
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
 	quotefmt_create_forward_fmt_widgets(
 				window,
-				vbox_formats,
+				vbox,
 				&page->checkbtn_forward_with_format,
 				_("Use a specific forward quote format"),
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				FALSE);
-	quotefmt_add_info_button(window, vbox_formats);
+
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
+
+	forward_format_rec_checkbtn = gtk_check_button_new();
+	gtk_box_pack_start (GTK_BOX(vbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
+	alignment = gtk_alignment_new(0, 1, 0, 0);	
+	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
+
+	rowcount++;
+
+	/* information button */
+	vbox = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
+	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	rowcount++;
+	quotefmt_add_info_button(window, vbox);
+
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
 			item->prefs->compose_with_format);
@@ -1111,11 +1203,16 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->forward_body_format),
 			item->prefs->forward_body_format);
 
-	gtk_widget_show_all(vbox_formats);
+	gtk_widget_show_all(table);
 
 	page->window = GTK_WIDGET(window);
+	page->table = table;
 
-	page->page.widget = vbox_formats;
+	page->new_msg_format_rec_checkbtn = new_msg_format_rec_checkbtn;
+	page->reply_format_rec_checkbtn = reply_format_rec_checkbtn;
+	page->forward_format_rec_checkbtn = forward_format_rec_checkbtn;
+
+	page->page.widget = table;
 }
 
 static void prefs_folder_item_templates_destroy_widget_func(PrefsPage *page_) 
@@ -1143,7 +1240,7 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 
 	/* save and check formats */
 
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format))) {
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->new_msg_format_rec_checkbtn))) {
 		prefs->compose_with_format =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
 		prefs->compose_subject_format = pref_get_pref_from_entry(
@@ -1155,7 +1252,7 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 										prefs->compose_body_format);
 	}
 
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format))) {
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->reply_format_rec_checkbtn))) {
 		prefs->reply_with_format =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format));
 		prefs->reply_quotemark = gtk_editable_get_chars(
@@ -1163,10 +1260,11 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 		prefs->reply_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->reply_body_format));
 		quotefmt_check_reply_formats(prefs->reply_with_format,
+										prefs->reply_quotemark,
 										prefs->reply_body_format);
 	}
 
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format))) {
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->forward_format_rec_checkbtn))) {
 		prefs->forward_with_format =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format));
 		prefs->forward_quotemark = gtk_editable_get_chars(
@@ -1174,6 +1272,7 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 		prefs->forward_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->forward_body_format));
 		quotefmt_check_forward_formats(prefs->forward_with_format,
+										prefs->forward_quotemark,
 										prefs->forward_body_format);
 	}
 
@@ -1189,6 +1288,17 @@ static gboolean templates_save_recurse_func(GNode *node, gpointer data)
 	g_return_val_if_fail(page != NULL, TRUE);
 
 	templates_save_folder_prefs(item, page);
+
+	/* optimise by not continuing if none of the 'apply to sub folders'
+	   check boxes are selected - and optimise the checking by only doing
+	   it once */
+	if ((node == page->item->node) &&
+	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->new_msg_format_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->reply_format_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->forward_format_rec_checkbtn))))
+		return TRUE;
+	else 
+		return FALSE;
 
 	return FALSE;
 }

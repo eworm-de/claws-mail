@@ -152,18 +152,17 @@ static void prefs_quote_save(PrefsPage *_page)
 									prefs_common.compose_subject_format,
 									prefs_common.compose_body_format);
 
-	prefs_common.quotefmt = pref_get_pref_from_textview(
-			GTK_TEXT_VIEW(page->text_quotefmt));
-	quotefmt_check_reply_formats(TRUE, prefs_common.quotefmt);
-
-	prefs_common.fw_quotefmt = pref_get_pref_from_textview(
-			GTK_TEXT_VIEW(page->text_fw_quotefmt));
-	quotefmt_check_forward_formats(TRUE, prefs_common.fw_quotefmt);
-
 	prefs_common.quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_quotemark), 0, -1);
+	prefs_common.quotefmt = pref_get_pref_from_textview(
+			GTK_TEXT_VIEW(page->text_quotefmt));
+	quotefmt_check_reply_formats(TRUE, prefs_common.quotemark, prefs_common.quotefmt);
+
 	prefs_common.fw_quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_fw_quotemark), 0, -1);
+	prefs_common.fw_quotefmt = pref_get_pref_from_textview(
+			GTK_TEXT_VIEW(page->text_fw_quotefmt));
+	quotefmt_check_forward_formats(TRUE, prefs_common.fw_quotemark, prefs_common.fw_quotefmt);
 }
 
 static void prefs_quote_destroy_widget(PrefsPage *_page)

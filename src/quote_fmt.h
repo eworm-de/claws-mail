@@ -54,8 +54,10 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 									gchar *subject_fmt,
 									gchar *body_fmt);
 void quotefmt_check_reply_formats(gboolean use_format,
+									gchar *quotation_mark,
 									gchar *body_fmt);
 void quotefmt_check_forward_formats(gboolean use_format,
+									gchar *quotation_mark,
 									gchar *body_fmt);
 
 #endif /* __QUOTE_FMT_H__ */

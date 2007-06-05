@@ -2857,8 +2857,10 @@ static void templates_save_func(PrefsPage *_page)
 									tmp_ac_prefs.compose_subject_format,
 									tmp_ac_prefs.compose_body_format);
 	quotefmt_check_reply_formats(tmp_ac_prefs.reply_with_format,
+									tmp_ac_prefs.reply_quotemark,
 									tmp_ac_prefs.reply_body_format);
 	quotefmt_check_forward_formats(tmp_ac_prefs.forward_with_format,
+									tmp_ac_prefs.forward_quotemark,
 									tmp_ac_prefs.forward_body_format);
 	if (prefs_templates_apply() >= 0)
 		cancelled = FALSE;

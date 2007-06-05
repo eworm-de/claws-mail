@@ -1,3 +1,16 @@
+2007-06-05 [wwp]	2.9.2cvs42
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+		Per-folder templates can now be applied recursively.
+		Always save per-folder templates (formats were erroneously
+		saved only if they were enabled).
+		Check for validity of quotation marks everywhere there
+		are defined.
+
 2007-06-05 [wwp]	2.9.2cvs41
 
 	* src/inc.c
