@@ -1,3 +1,11 @@
+2007-06-05 [wwp]	2.9.2cvs40
+
+	* src/compose.c
+	* src/compose.h
+		Use per-folder/per-account quote chars when applying a
+		template or inserting text as well. Const'ify some
+		vars more.
+
 2007-06-04 [colin]	2.9.2cvs39
 
 	* src/compose.c

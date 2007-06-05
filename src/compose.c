@@ -199,6 +199,7 @@ static Compose *compose_generic_new			(PrefsAccount	*account,
 						 GList          *listAddress );
 
 static Compose *compose_create			(PrefsAccount	*account,
+						 FolderItem		 *item,
 						 ComposeMode	 mode,
 						 gboolean batch);
 
@@ -980,8 +981,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	GtkTextBuffer *textbuf;
 	GtkTextIter iter;
 	GtkItemFactory *ifactory;
-	gchar *subject_format = NULL;
-	gchar *body_format = NULL;
+	const gchar *subject_format = NULL;
+	const gchar *body_format = NULL;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
@@ -989,7 +990,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
  	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_NEW, FALSE);
+	compose = compose_create(account, item, COMPOSE_NEW, FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
@@ -1401,8 +1402,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
 	gboolean quote = FALSE;
-	gchar *qmark = NULL;
-	gchar *body_fmt = NULL;
+	const gchar *qmark = NULL;
+	const gchar *body_fmt = NULL;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1411,7 +1412,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_REPLY, FALSE);
+	compose = compose_create(account, msginfo->folder, COMPOSE_REPLY, FALSE);
 
 	compose->updating = TRUE;
 
@@ -1538,7 +1539,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 				(msginfo)))
 		account = cur_account;
 
-	compose = compose_create(account, COMPOSE_FORWARD, batch);
+	compose = compose_create(account, msginfo->folder, COMPOSE_FORWARD, batch);
 
 	compose->updating = TRUE;
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
@@ -1578,8 +1579,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		g_free(msgfile);
 	} else {
-		gchar *qmark = NULL;
-		gchar *body_fmt = prefs_common.fw_quotefmt;
+		const gchar *qmark = NULL;
+		const gchar *body_fmt = prefs_common.fw_quotefmt;
 		MsgInfo *full_msginfo;
 
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
@@ -1692,7 +1693,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 		MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
 	}
 
-	compose = compose_create(account, COMPOSE_FORWARD, FALSE);
+	compose = compose_create(account, ((MsgInfo *)msginfo_list->data)->folder, COMPOSE_FORWARD, FALSE);
 
 	compose->updating = TRUE;
 
@@ -1932,7 +1933,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
         }
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_REEDIT, batch);
+	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
 	
 	compose->replyinfo = replyinfo;
 	compose->fwdinfo = fwdinfo;
@@ -2061,7 +2062,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 					prefs_common.reply_account_autosel);
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account, COMPOSE_REDIRECT, batch);
+	compose = compose_create(account, msginfo->folder, COMPOSE_REDIRECT, batch);
 
 	compose->updating = TRUE;
 
@@ -6286,7 +6287,9 @@ static gboolean compose_popup_menu(GtkWidget *widget, gpointer data)
 }
 
 static gboolean compose_force_window_origin = TRUE;
-static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
+static Compose *compose_create(PrefsAccount *account,
+						 FolderItem *folder,
+						 ComposeMode mode,
 						 gboolean batch)
 {
 	Compose   *compose;
@@ -6342,6 +6345,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode,
 
 	compose->batch = batch;
 	compose->account = account;
+	compose->folder = folder;
 	
 	compose->mutex = g_mutex_new();
 	compose->set_cursor_pos = -1;
@@ -7107,6 +7111,44 @@ void compose_reflect_prefs_pixmap_theme(void)
 	}
 }
 
+static const gchar *compose_quote_char_from_context(Compose *compose)
+{
+	const gchar *qmark = NULL;
+
+	g_return_val_if_fail(compose != NULL, NULL);
+
+	switch (compose->mode) {
+		/* use forward-specific quote char */
+		case COMPOSE_FORWARD:
+		case COMPOSE_FORWARD_AS_ATTACH:
+		case COMPOSE_FORWARD_INLINE:
+			if (compose->folder && compose->folder->prefs &&
+					compose->folder->prefs->forward_with_format)
+				qmark = compose->folder->prefs->forward_quotemark;
+			else if (compose->account->forward_with_format)
+				qmark = compose->account->forward_quotemark;
+			else
+				qmark = prefs_common.fw_quotemark;
+			break;
+
+		/* use reply-specific quote char in all other modes */
+		default:
+			if (compose->folder && compose->folder->prefs &&
+					compose->folder->prefs->reply_with_format)
+				qmark = compose->folder->prefs->reply_quotemark;
+			else if (compose->account->reply_with_format)
+				qmark = compose->account->reply_quotemark;
+			else
+				qmark = prefs_common.quotemark;
+			break;
+	}
+
+	if (qmark == NULL || *qmark == '\0')
+		qmark = "> ";
+
+	return qmark;
+}
+
 static void compose_template_apply(Compose *compose, Template *tmpl,
 				   gboolean replace)
 {
@@ -7114,7 +7156,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	GtkTextBuffer *buffer;
 	GtkTextMark *mark;
 	GtkTextIter iter;
-	gchar *qmark;
+	const gchar *qmark;
 	gchar *parsed_str = NULL;
 	gint cursor_pos = 0;
 	const gchar *err_msg = _("Template body format error at line %d.");
@@ -7126,11 +7168,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	buffer = gtk_text_view_get_buffer(text);
 
 	if (tmpl->value) {
-		/* FIXME - use per-folder/account quotemark */
-		if (prefs_common.quotemark && *prefs_common.quotemark)
-			qmark = prefs_common.quotemark;
-		else
-			qmark = "> ";
+		qmark = compose_quote_char_from_context(compose);
 
 		if (compose->replyinfo != NULL) {
 
@@ -9528,18 +9566,14 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 					compose);
 	if (paste_as_quotation) {
 		gchar *new_text;
-		gchar *qmark;
+		const gchar *qmark;
 
 		if (len < 0)
 			len = strlen(text);
 
 		new_text = g_strndup(text, len);
 
-		/* FIXME - use per-folder/account quotemark */
-		if (prefs_common.quotemark && *prefs_common.quotemark)
-			qmark = prefs_common.quotemark;
-		else
-			qmark = "> ";
+		qmark = compose_quote_char_from_context(compose);
 
 		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 		gtk_text_buffer_place_cursor(buffer, iter);

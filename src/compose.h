@@ -37,6 +37,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "codeconv.h"
 #include "template.h"
 #include "textview.h"
+#include "folder.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -185,6 +186,7 @@ struct _Compose
 	GSList *newsgroup_list;
 
 	PrefsAccount *account;
+	FolderItem *folder;
 
 	UndoMain *undostruct;
 
