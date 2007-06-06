@@ -2619,3 +2619,4 @@
 ( cvs diff -u -r 1.149.2.73 -r 1.149.2.74 src/inc.c;  ) > 2.9.2cvs41.patchset
 ( cvs diff -u -r 1.105.2.100 -r 1.105.2.101 src/prefs_account.c;  cvs diff -u -r 1.52.2.39 -r 1.52.2.40 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/prefs_quote.c;  cvs diff -u -r 1.8.2.18 -r 1.8.2.19 src/quote_fmt.c;  cvs diff -u -r 1.5.12.10 -r 1.5.12.11 src/quote_fmt.h;  ) > 2.9.2cvs42.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/ldapupdate.c;  ) > 2.9.2cvs43.patchset
+( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/ldapupdate.c;  ) > 2.9.2cvs44.patchset

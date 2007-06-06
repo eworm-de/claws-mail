@@ -714,8 +714,7 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 	mailList = g_hash_table_lookup(contact , "mail");
 	if (mailList) {
 		char **tmp;
-		mail = g_malloc(sizeof(*mail));
-		tmp = g_malloc(sizeof(*tmp));
+		tmp = g_malloc(sizeof(*tmp) * (g_list_length(mailList)+1));
 		mail = tmp;
 		while (mailList) {
 			EmailKeyValue *item = mailList->data;
@@ -930,8 +929,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		debug_print("# of mail: %d\n", g_list_length(mailList));
 		if (!(strcmp("mail", NoRemove->attribute) == 0 && g_list_length(mailList) == 1)) {
 			char **tmp;
-			mail = g_malloc(sizeof(*mail));
-			tmp = g_malloc(sizeof(*tmp));
+			tmp = g_malloc(sizeof(*tmp) * (g_list_length(mailList)+1));
 			mail = tmp;
 			while (mailList) {
 				EmailKeyValue *item = mailList->data;
