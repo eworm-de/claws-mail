@@ -872,9 +872,26 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 			 */
 			param = NULL;
 		}
-		SETMOD(mods[cnt], modarr[cnt], mod_op, "displayName", cn, param);
-		cnt++;
-		g_hash_table_insert(contact, "displayName", param);
+		if (mod_op == LDAP_MOD_REPLACE && strcmp(param, "") == 0) {
+			/* Having an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we treate this as a request for deleting
+			 * the attribute.
+			 */
+			mod_op = LDAP_MOD_DELETE;
+			param = NULL;
+		}
+		if (mod_op == LDAP_MOD_ADD && strcmp(param, "") == 0) {
+			/* Adding an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we silently refuse to add this entry
+			 */
+		}
+		else {
+			SETMOD(mods[cnt], modarr[cnt], mod_op, "displayName", cn, param);
+			cnt++;
+			g_hash_table_insert(contact, "displayName", param);
+		}
 	}
 	param = g_hash_table_lookup(contact , "givenName");
 	mod_op = ldapsvr_deside_operation(ld, dn, "givenName", param);
@@ -888,8 +905,25 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 			 */
 			param = NULL;
 		}
-		SETMOD(mods[cnt], modarr[cnt], mod_op, "givenName", givenName, param);
-		cnt++;
+		if (mod_op == LDAP_MOD_REPLACE && strcmp(param, "") == 0) {
+			/* Having an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we treate this as a request for deleting
+			 * the attribute.
+			 */
+			mod_op = LDAP_MOD_DELETE;
+			param = NULL;
+		}
+		if (mod_op == LDAP_MOD_ADD && strcmp(param, "") == 0) {
+			/* Adding an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we silently refuse to add this entry
+			 */
+		}
+		else {
+			SETMOD(mods[cnt], modarr[cnt], mod_op, "givenName", givenName, param);
+			cnt++;
+		}
 	}
 	mailList = g_hash_table_lookup(contact , "mail");
 	if (mailList) {
@@ -931,8 +965,25 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 			 */
 			param = NULL;
 		}
-		SETMOD(mods[cnt], modarr[cnt], mod_op, "sn", sn, param);
-		cnt++;
+		if (mod_op == LDAP_MOD_REPLACE && strcmp(param, "") == 0) {
+			/* Having an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we treate this as a request for deleting
+			 * the attribute.
+			 */
+			mod_op = LDAP_MOD_DELETE;
+			param = NULL;
+		}
+		if (mod_op == LDAP_MOD_ADD && strcmp(param, "") == 0) {
+			/* Adding an empty string is considered a syntax error in
+			 * ldap. E.g attributes with empty strings are not allowed
+			 * in which case we silently refuse to add this entry
+			 */
+		}
+		else {
+			SETMOD(mods[cnt], modarr[cnt], mod_op, "sn", sn, param);
+			cnt++;
+		}
 	}
 	debug_print("newDN: %s\n", dn);
 	if (NoRemove)

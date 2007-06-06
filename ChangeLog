@@ -1,3 +1,9 @@
+2007-06-06 [colin]	2.9.2cvs43
+
+	* src/ldapupdate.c
+		Patch by Michael Rasmussus to help
+		bug 1232
+
 2007-06-05 [wwp]	2.9.2cvs42
 
 	* src/prefs_account.c
