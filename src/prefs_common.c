@@ -1235,16 +1235,20 @@ void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
 	GtkTextBuffer *buffer;
 	gchar *out = NULL;
 
-	g_return_if_fail( txt != NULL );
 	g_return_if_fail( textview != NULL );
 
 	buffer = gtk_text_view_get_buffer(textview);
-	out = malloc(strlen(txt)+1);
 
-	pref_get_unescaped_pref(out, txt);
+	if (!txt) {
+		gtk_text_buffer_set_text(buffer, "", -1);
+	} else {
+		out = malloc(strlen(txt)+1);
 
-	gtk_text_buffer_set_text(buffer, out?out:"", -1);
-	g_free(out);
+		pref_get_unescaped_pref(out, txt);
+
+		gtk_text_buffer_set_text(buffer, out?out:"", -1);
+		g_free(out);
+	}
 }
 
 /* set the contents of a gtkentry widget from the internal \-escaped
@@ -1253,15 +1257,17 @@ void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt)
 {
 	gchar *out = NULL;
 
-	g_return_if_fail( txt != NULL );
 	g_return_if_fail( entry != NULL );
+	if (!txt) {
+		gtk_entry_set_text(entry, "");
+	} else {
+		out = malloc(strlen(txt)+1);
 
-	out = malloc(strlen(txt)+1);
+		pref_get_unescaped_pref(out, txt);
 
-	pref_get_unescaped_pref(out, txt);
-
-	gtk_entry_set_text(entry, out?out:"");
-	g_free(out);
+		gtk_entry_set_text(entry, out?out:"");
+		g_free(out);
+	}
 }
 
 /* get the \-escaped internal representation of a pref from the contents of
