@@ -811,10 +811,11 @@ static gint sock_connect_async_get_address_info_cb(GList *addr_list,
 
 	conn_data->addr_list = addr_list;
 	conn_data->cur_addr = addr_list;
-	conn_data->canonical_name = conn_data->lookup_data->canonical_name;
-	conn_data->lookup_data->canonical_name = NULL;
-	conn_data->lookup_data = NULL;
-
+	if (conn_data->lookup_data) {
+		conn_data->canonical_name = conn_data->lookup_data->canonical_name;
+		conn_data->lookup_data->canonical_name = NULL;
+		conn_data->lookup_data = NULL;
+	}
 	return sock_connect_address_list_async(conn_data);
 }
 

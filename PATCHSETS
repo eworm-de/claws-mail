@@ -2623,3 +2623,4 @@
 ( cvs diff -u -r 1.204.2.135 -r 1.204.2.136 src/prefs_common.c;  ) > 2.9.2cvs45.patchset
 ( cvs diff -u -r 1.36.2.103 -r 1.36.2.104 src/common/utils.c;  ) > 2.9.2cvs46.patchset
 ( cvs diff -u -r 1.12.2.34 -r 1.12.2.35 src/gtk/prefswindow.c;  ) > 2.9.2cvs47.patchset
+( cvs diff -u -r 1.13.2.32 -r 1.13.2.33 src/common/socket.c;  ) > 2.9.2cvs48.patchset
