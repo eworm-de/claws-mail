@@ -267,7 +267,8 @@ static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_
 
 static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 									PrefsWindow *prefswindow,
-									gboolean preload_pages)
+									gboolean preload_pages,
+									gboolean activate_child)
 {
 	GtkTreeStore *store = GTK_TREE_STORE(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(tree_view)));
@@ -352,15 +353,22 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 	if (preload_pages)
 		prefswindow_build_all_pages(prefswindow, prefs_pages);
 
-	/* select first one */					     
+	/* select first one or its first child if necessary */
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
-	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter))
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		if (activate_child && gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
+			GtkTreeIter parent = iter;
+			if (!gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &iter, &parent))
+				iter = parent;
+		}
 		gtk_tree_selection_select_iter(selection, &iter);
+	}
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 gpointer data, GtkDestroyNotify func,
-							 gint *save_width, gint *save_height, gboolean preload_pages)
+							 gint *save_width, gint *save_height,
+							 gboolean preload_pages, gboolean activate_child)
 {
 	PrefsWindow *prefswindow;
 	gint x = gdk_screen_width();
@@ -440,7 +448,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_widget_show(prefswindow->empty_page);
 	gtk_container_add(GTK_CONTAINER(prefswindow->notebook), prefswindow->empty_page);
 
-	prefswindow_build_tree(prefswindow->tree_view, prefs_pages, prefswindow, preload_pages);		
+	prefswindow_build_tree(prefswindow->tree_view, prefs_pages, prefswindow,
+							preload_pages, activate_child);
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
@@ -502,7 +511,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
 					 gint *save_width, gint *save_height)
 {
-	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height, FALSE);
+	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height,
+						  FALSE, FALSE);
 }
 
 /*!

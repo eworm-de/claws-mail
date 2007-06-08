@@ -1,3 +1,10 @@
+2007-06-08 [wwp]	2.9.2cvs49
+
+	* src/prefs_account.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		Activate the Basic page when opening account prefs.
+
 2007-06-08 [wwp]	2.9.2cvs48
 
 	* src/common/socket.c
