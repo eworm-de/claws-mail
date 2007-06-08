@@ -265,7 +265,9 @@ static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_
 	prefs_pages = g_slist_reverse(prefs_pages);
 }
 
-static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages, PrefsWindow *prefswindow, gboolean preload_pages)
+static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
+									PrefsWindow *prefswindow,
+									gboolean preload_pages)
 {
 	GtkTreeStore *store = GTK_TREE_STORE(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(tree_view)));
@@ -356,7 +358,8 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages, Pr
 		gtk_tree_selection_select_iter(selection, &iter);
 }
 
-void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func,
+void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
+							 gpointer data, GtkDestroyNotify func,
 							 gint *save_width, gint *save_height, gboolean preload_pages)
 {
 	PrefsWindow *prefswindow;
@@ -386,8 +389,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	prefswindow->scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(prefswindow->scrolledwindow1);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->scrolledwindow1, 0, 1, 0, 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1),
+			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->scrolledwindow1,
+			0, 1, 0, 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
 
 	prefswindow->tree_view = prefswindow_tree_view_create(prefswindow);
 	gtk_widget_show(prefswindow->tree_view);
@@ -397,7 +402,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	prefswindow->frame = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->frame);
 	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->frame), GTK_SHADOW_IN);
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->frame, 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
+	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->frame,
+			1, 2, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
 
 	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
 	gtk_widget_show(prefswindow->table2);
@@ -406,7 +412,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
 	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_OUT);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->labelframe, 0, 1, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 1, 1);
+	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->labelframe,
+			0, 1, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 1, 1);
 
 	prefswindow->pagelabel = gtk_label_new("");
 	gtk_widget_show(prefswindow->pagelabel);
@@ -416,7 +423,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	prefswindow->scrolledwindow2 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(prefswindow->scrolledwindow2);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
+			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	prefswindow->notebook = gtk_notebook_new();
 	gtk_widget_show(prefswindow->notebook);
@@ -425,7 +433,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
 					prefswindow->notebook);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->scrolledwindow2, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->scrolledwindow2,
+			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
 
 	prefswindow->empty_page = gtk_label_new("");
 	gtk_widget_show(prefswindow->empty_page);
@@ -442,7 +451,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	gtk_widget_show_all(prefswindow->confirm_area);
 
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->confirm_area, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->confirm_area,
+			0, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 
 	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "clicked", 
 			 G_CALLBACK(ok_button_clicked), prefswindow);
@@ -612,6 +622,9 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 				      pagenum);
 
 	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, 0);
+	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, 0);
 

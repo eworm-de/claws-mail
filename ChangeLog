@@ -1,3 +1,10 @@
+2007-06-08 [wwp]	2.9.2cvs47
+
+	* src/gtk/prefswindow.c
+		Wrap some long lines, and reset horizontal scroller's adjusment
+		(this was already done, vertically), when changing tab (not page)
+		in prefs windows.
+
 2007-06-08 [paul]	2.9.2cvs46
 
 	* src/common/utils.c
