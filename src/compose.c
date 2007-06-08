@@ -8258,22 +8258,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }
 
-void compose_draft (gpointer data, guint action) 
-{
-	compose_draft_cb(data, action, NULL);	
-}
-
 #define DRAFTED_AT_EXIT "drafted_at_exit"
-void compose_clear_exit_drafts(void)
-{
-	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				      DRAFTED_AT_EXIT, NULL);
-	if (is_file_exist(filepath))
-		g_unlink(filepath);
-	
-	g_free(filepath);
-}
-
 static void compose_register_draft(MsgInfo *info)
 {
 	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
@@ -8289,34 +8274,7 @@ static void compose_register_draft(MsgInfo *info)
 	g_free(filepath);	
 }
 
-void compose_reopen_exit_drafts(void)
-{
-	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				      DRAFTED_AT_EXIT, NULL);
-	FILE *fp = fopen(filepath, "rb");
-	gchar buf[1024];
-	
-	if (fp) {
-		while (fgets(buf, sizeof(buf), fp)) {
-			gchar **parts = g_strsplit(buf, "\t", 2);
-			const gchar *folder = parts[0];
-			int msgnum = parts[1] ? atoi(parts[1]):-1;
-			
-			if (folder && *folder && msgnum > -1) {
-				FolderItem *item = folder_find_item_from_identifier(folder);
-				MsgInfo *info = folder_item_get_msginfo(item, msgnum);
-				if (info)
-					compose_reedit(info, FALSE);
-			}
-			g_strfreev(parts);
-		}	
-		fclose(fp);
-	}	
-	g_free(filepath);
-	compose_clear_exit_drafts();
-}
-
-static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
+gboolean compose_draft (gpointer data, guint action) 
 {
 	Compose *compose = (Compose *)data;
 	FolderItem *draft;
@@ -8328,10 +8286,13 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	FILE *fp;
 	gboolean target_locked = FALSE;
 	
-	if (lock) return;
+	if (lock) return FALSE;
+
+	if (compose->sending)
+		return TRUE;
 
 	draft = account_get_special_folder(compose->account, F_DRAFT);
-	g_return_if_fail(draft != NULL);
+	g_return_val_if_fail(draft != NULL, FALSE);
 	
 	if (!g_mutex_trylock(compose->mutex)) {
 		/* we don't want to lock the mutex once it's available,
@@ -8339,7 +8300,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		 * it is compose_close - which means once unlocked,
 		 * the compose struct will be freed */
 		debug_print("couldn't lock mutex, probably sending\n");
-		return;
+		return FALSE;
 	}
 	
 	lock = TRUE;
@@ -8415,8 +8376,29 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
 		g_unlink(tmp);
 		g_free(tmp);
-		if (action != COMPOSE_AUTO_SAVE)
-			alertpanel_error(_("Could not save draft."));
+		if (action != COMPOSE_AUTO_SAVE) {
+			if (action != COMPOSE_DRAFT_FOR_EXIT)
+				alertpanel_error(_("Could not save draft."));
+			else {
+				AlertValue val;
+				gtkut_window_popup(compose->window);
+				val = alertpanel_full(_("Could not save draft"),
+					_("Could not save draft.\n"
+					"Do you want to cancel exit or discard this email?"),
+					  _("_Cancel exit"), _("_Discard email"), NULL,
+					  FALSE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				if (val == G_ALERTALTERNATE) {
+					lock = FALSE;
+					g_mutex_unlock(compose->mutex); /* must be done before closing */
+					compose_close(compose);
+					return TRUE;
+				} else {
+					lock = FALSE;
+					g_mutex_unlock(compose->mutex); /* must be done before closing */
+					return FALSE;
+				}
+			}
+		}
 		goto unlock;
 	}
 	g_free(tmp);
@@ -8448,7 +8430,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		lock = FALSE;
 		g_mutex_unlock(compose->mutex); /* must be done before closing */
 		compose_close(compose);
-		return;
+		return TRUE;
 	} else {
 		struct stat s;
 		gchar *path;
@@ -8484,6 +8466,49 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 unlock:
 	lock = FALSE;
 	g_mutex_unlock(compose->mutex);
+	return TRUE;
+}
+
+void compose_clear_exit_drafts(void)
+{
+	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      DRAFTED_AT_EXIT, NULL);
+	if (is_file_exist(filepath))
+		g_unlink(filepath);
+	
+	g_free(filepath);
+}
+
+void compose_reopen_exit_drafts(void)
+{
+	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      DRAFTED_AT_EXIT, NULL);
+	FILE *fp = fopen(filepath, "rb");
+	gchar buf[1024];
+	
+	if (fp) {
+		while (fgets(buf, sizeof(buf), fp)) {
+			gchar **parts = g_strsplit(buf, "\t", 2);
+			const gchar *folder = parts[0];
+			int msgnum = parts[1] ? atoi(parts[1]):-1;
+			
+			if (folder && *folder && msgnum > -1) {
+				FolderItem *item = folder_find_item_from_identifier(folder);
+				MsgInfo *info = folder_item_get_msginfo(item, msgnum);
+				if (info)
+					compose_reedit(info, FALSE);
+			}
+			g_strfreev(parts);
+		}	
+		fclose(fp);
+	}	
+	g_free(filepath);
+	compose_clear_exit_drafts();
+}
+
+static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	compose_draft(data, action);
 }
 
 static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)

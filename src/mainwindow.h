@@ -203,7 +203,8 @@ gboolean mainwindow_key_pressed		      (GtkWidget 	 *widget,
 MainWindow *mainwindow_get_mainwindow 	      (void);
 void mainwindow_learn			      (MainWindow *mainwin,
 					       gboolean is_spam);
-void mainwindow_jump_to			      (const gchar 	 *target);
+void mainwindow_jump_to			      (const gchar 	 *target,
+					       gboolean popup);
 void mainwindow_show_error		      (void);
 void mainwindow_clear_error		      (MainWindow *mainwin);
 gboolean mainwindow_is_obscured		      (void);

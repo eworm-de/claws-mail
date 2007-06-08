@@ -314,7 +314,7 @@ static gboolean defer_jump(void *data)
 	} else if (cmd.receive) {
 		defer_check(NULL);
 	} 
-	mainwindow_jump_to(data);
+	mainwindow_jump_to(data, FALSE);
 	return FALSE;
 }
 
@@ -1387,15 +1387,19 @@ static void initial_processing(FolderItem *item, gpointer data)
 	STATUSBAR_POP(mainwin);
 }
 
-static void draft_all_messages(void)
+static gboolean draft_all_messages(void)
 {
 	GList *compose_list = NULL;
 	
 	compose_clear_exit_drafts();
-	while ((compose_list = compose_get_compose_list()) != NULL) {
+	compose_list = compose_get_compose_list();
+	while (compose_list != NULL) {
 		Compose *c = (Compose*)compose_list->data;
-		compose_draft(c, COMPOSE_DRAFT_FOR_EXIT);
-	}	
+		if (!compose_draft(c, COMPOSE_DRAFT_FOR_EXIT))
+			return FALSE;
+		compose_list = compose_list->next;
+	}
+	return TRUE;
 }
 gboolean clean_quit(gpointer data)
 {
@@ -1441,7 +1445,11 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	sc_exiting = TRUE;
 	debug_print("exiting\n");
 	if (compose_get_compose_list()) {
-		draft_all_messages();
+		if (!draft_all_messages()) {
+			main_window_popup(mainwin);
+			sc_exiting = FALSE;
+			return;
+		}
 	}
 
 	if (prefs_common.warn_queued_on_exit && procmsg_have_queued_mails_fast()) {
@@ -1733,7 +1741,7 @@ static void lock_socket_input_cb(gpointer data,
  		if (folders) g_ptr_array_free(folders, TRUE);
 	} else if (!strncmp(buf, "select ", 7)) {
 		const gchar *target = buf+7;
-		mainwindow_jump_to(target);
+		mainwindow_jump_to(target, TRUE);
 	} else if (!strncmp(buf, "exit", 4)) {
 		app_will_exit(NULL, mainwin);
 	}

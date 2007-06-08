@@ -1,3 +1,17 @@
+2007-06-08 [wwp]	2.9.2cvs50
+
+	* src/compose.c
+	* src/compose.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Provide a way out of automatic draft saving on IMAP, when
+		exiting offline.
+		Prevent drafting while sending and quitting while sending.
+		Thanks for Colin.
+
+
+
 2007-06-08 [wwp]	2.9.2cvs49
 
 	* src/prefs_account.c

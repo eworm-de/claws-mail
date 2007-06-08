@@ -283,7 +283,7 @@ void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
 
 void compose_destroy_all                (void);
-void compose_draft	                (gpointer data, guint action);
+gboolean compose_draft	                (gpointer data, guint action);
 void compose_toolbar_cb			(gint 		action, 
 					 gpointer 	data);
 void compose_reply_from_messageview	(MessageView 	*msgview, 

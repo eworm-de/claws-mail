@@ -4071,7 +4071,7 @@ void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)
 	summary_mark_as_spam(mainwin->summaryview, is_spam, NULL);
 }
 
-void mainwindow_jump_to(const gchar *target)
+void mainwindow_jump_to(const gchar *target, gboolean popup)
 {
 	gchar *tmp = NULL;
 	gchar *p = NULL;
@@ -4097,7 +4097,8 @@ void mainwindow_jump_to(const gchar *target)
 	if ((item = folder_find_item_from_identifier(tmp))) {
 		printf("selecting folder '%s'\n", tmp);
 		folderview_select(mainwin->folderview, item);
-		main_window_popup(mainwin);
+		if (popup)
+			main_window_popup(mainwin);
 		g_free(tmp);
 		return;
 	}
@@ -4115,7 +4116,8 @@ void mainwindow_jump_to(const gchar *target)
 			printf("selecting message %d\n", atoi(msg));
 			summary_select_by_msgnum(mainwin->summaryview, atoi(msg));
 			summary_display_msg_selected(mainwin->summaryview, FALSE);
-			main_window_popup(mainwin);
+			if (popup)
+				main_window_popup(mainwin);
 			g_free(tmp);
 			return;
 		} else if (item && msg[0] == '<' && msg[strlen(msg)-1] == '>') {
@@ -4127,7 +4129,8 @@ void mainwindow_jump_to(const gchar *target)
 				printf("selecting message %s\n", msg);
 				summary_select_by_msgnum(mainwin->summaryview, msginfo->msgnum);
 				summary_display_msg_selected(mainwin->summaryview, FALSE);
-				main_window_popup(mainwin);
+				if (popup)
+					main_window_popup(mainwin);
 				g_free(tmp);
 				procmsg_msginfo_free(msginfo);
 				return;
