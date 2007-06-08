@@ -31,6 +31,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <sys/param.h>
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -2040,20 +2041,20 @@ const gchar *get_domain_name(void)
 
 	if (!domain_name) {
 		struct hostent *hp;
-		struct utsname uts;
+		char hostname[256];
 
-		if (uname(&uts) < 0) {
-			perror("uname");
+		if (gethostname(hostname, sizeof(hostname)) != 0) {
+			perror("gethostname");
 			domain_name = "unknown";
 		} else {
-			if ((hp = my_gethostbyname(uts.nodename)) == NULL) {
+			hostname[sizeof(hostname) - 1] = '\0';
+			if ((hp = my_gethostbyname(hostname)) == NULL) {
 				perror("gethostbyname");
-				domain_name = g_strdup(uts.nodename);
+				domain_name = g_strdup(hostname);
 			} else {
 				domain_name = g_strdup(hp->h_name);
 			}
 		}
-
 		debug_print("domain name = %s\n", domain_name);
 	}
 

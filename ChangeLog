@@ -1,3 +1,10 @@
+2007-06-08 [paul]	2.9.2cvs46
+
+	* src/common/utils.c
+		use gethostname() instead of uname()
+		based on a patch by Michael Hughes
+		<Sylpheed-Claws_user@thehugheslogcabin.net>
+
 2007-06-07 [wwp]	2.9.2cvs45
 
 	* src/prefs_common.c
