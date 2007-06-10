@@ -1,3 +1,9 @@
+2007-06-10 [wwp]	2.9.2cvs51
+
+	* src/gtk/pluginwindow.c
+		Fix button bar in plugin window, was centered and not
+		behaving like other dialogs w/ such button bar.
+
 2007-06-08 [wwp]	2.9.2cvs50
 
 	* src/compose.c
