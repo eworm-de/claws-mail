@@ -275,7 +275,7 @@ void pluginwindow_create()
 	GtkWidget *label13;
 	GtkWidget *scrolledwindow3;
 	GtkWidget *plugin_desc;
-	GtkWidget *hbuttonbox1;
+	GtkWidget *hbuttonbox1, *hbox3;
 	GtkWidget *help_btn;
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
@@ -353,13 +353,17 @@ void pluginwindow_create()
 	gtk_widget_show(get_more_btn);
 	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
 
+	hbox3 = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show(hbox3);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox3, FALSE, FALSE, 0);
+
 	gtkut_stock_button_set_create_with_help(&hbuttonbox1, &help_btn,
 			&load_btn, _("Load Plugin..."),
 			&unload_btn, _("Unload Plugin"),
 			&close_btn, GTK_STOCK_CLOSE);
 	gtk_box_set_spacing(GTK_BOX(hbuttonbox1), 6);
 	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_end(GTK_BOX(vbox1), hbuttonbox1, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox3), hbuttonbox1, FALSE, FALSE, 0);
 
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
