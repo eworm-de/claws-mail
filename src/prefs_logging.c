@@ -72,7 +72,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_network_log;
 	GtkWidget *hbox_clip_network_log;
 	GtkWidget *checkbtn_clip_network_log;
-	GtkWidget *network_log_length_label;
 	GtkWidget *spinbtn_network_log_length;
 	GtkObject *spinbtn_network_log_length_adj;
 	GtkTooltips *network_log_length_tooltip;
@@ -80,7 +79,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox1_filtering_log;
 	GtkWidget *hbox_clip_filtering_log;
 	GtkWidget *checkbtn_clip_filtering_log;
-	GtkWidget *filtering_log_length_label;
 	GtkWidget *spinbtn_filtering_log_length;
 	GtkObject *spinbtn_filtering_log_length_adj;
 	GtkTooltips *filtering_log_length_tooltip;
@@ -113,16 +111,12 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* Protocol log */
 	vbox_network_log = gtkut_get_options_frame(vbox1, &frame_logging, _("Network log"));
 
-	PACK_CHECK_BUTTON (vbox_network_log, checkbtn_clip_network_log,
-			   _("Restrict the log size"));
 	hbox_clip_network_log = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_network_log), hbox_clip_network_log);
 	gtk_widget_show (hbox_clip_network_log);
-	
-	network_log_length_label = gtk_label_new (_("Log window length"));
-	gtk_box_pack_start (GTK_BOX (hbox_clip_network_log), network_log_length_label,
-			    FALSE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (network_log_length_label));
+
+	PACK_CHECK_BUTTON (hbox_clip_network_log, checkbtn_clip_network_log,
+			   _("Restrict the log window to"));
 	
 	network_log_length_tooltip = gtk_tooltips_new();
 
@@ -143,7 +137,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label);
   	gtk_box_pack_start(GTK_BOX(hbox_clip_network_log), label, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_clip_network_log, network_log_length_label);
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_network_log, spinbtn_network_log_length);
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_network_log, label);
 
@@ -200,11 +193,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_post_proc);
 	gtk_widget_show (hbox_filtering_log_post_proc);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_filtering_log_inc);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_filtering_log_manual);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_filtering_log_folder_proc);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_filtering_log_pre_proc);
-	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_filtering_log_post_proc);
+	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, frame_filtering_log);
 
 	hbox_filtering_log_level = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_filtering_log_level);
@@ -241,16 +230,11 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				"impact on performance."),
 			     NULL);
 
-	PACK_CHECK_BUTTON (vbox1_filtering_log, checkbtn_clip_filtering_log,
-			   _("Restrict the log size"));
 	hbox_clip_filtering_log = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_clip_filtering_log);
 	gtk_widget_show (hbox_clip_filtering_log);
-	
-	filtering_log_length_label = gtk_label_new (_("Log window length"));
-	gtk_box_pack_start (GTK_BOX (hbox_clip_filtering_log), filtering_log_length_label,
-			    FALSE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (filtering_log_length_label));
+	PACK_CHECK_BUTTON (hbox_clip_filtering_log, checkbtn_clip_filtering_log,
+			   _("Restrict the log window to"));
 	
 	filtering_log_length_tooltip = gtk_tooltips_new();
 
@@ -271,10 +255,9 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label);
   	gtk_box_pack_start(GTK_BOX(hbox_clip_filtering_log), label, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_clip_filtering_log, filtering_log_length_label);
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_filtering_log, spinbtn_filtering_log_length);
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_filtering_log, label);
-
+	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, hbox_clip_filtering_log);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, optmenu_filtering_log_level);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_clip_filtering_log);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, label_filtering_log_level);

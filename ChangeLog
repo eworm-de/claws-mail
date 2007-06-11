@@ -1,3 +1,9 @@
+2007-06-11 [paul]	2.9.2cvs54
+
+	* src/prefs_logging.c
+		rework log window length widgets
+		and some sensitivity fixes
+
 2007-06-11 [paul]	2.9.2cvs53
 
 	* src/mainwindow.c
