@@ -2628,3 +2628,4 @@
 ( cvs diff -u -r 1.382.2.388 -r 1.382.2.389 src/compose.c;  cvs diff -u -r 1.50.2.36 -r 1.50.2.37 src/compose.h;  cvs diff -u -r 1.115.2.153 -r 1.115.2.154 src/main.c;  cvs diff -u -r 1.274.2.189 -r 1.274.2.190 src/mainwindow.c;  cvs diff -u -r 1.39.2.36 -r 1.39.2.37 src/mainwindow.h;  ) > 2.9.2cvs50.patchset
 ( cvs diff -u -r 1.5.2.45 -r 1.5.2.46 src/gtk/pluginwindow.c;  ) > 2.9.2cvs51.patchset
 ( cvs diff -u -r 1.5.2.46 -r 1.5.2.47 src/gtk/pluginwindow.c;  ) > 2.9.2cvs52.patchset
+( cvs diff -u -r 1.274.2.190 -r 1.274.2.191 src/mainwindow.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/prefs_logging.c;  ) > 2.9.2cvs53.patchset

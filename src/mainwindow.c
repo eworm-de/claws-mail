@@ -865,7 +865,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #endif
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Filtering Log"),		NULL, filtering_debug_window_show_cb, 0, NULL},
-	{N_("/_Tools/Protocol _Log"),		"<shift><control>L", log_window_show_cb, 0, NULL},
+	{N_("/_Tools/Network _Log"),		"<shift><control>L", log_window_show_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/C_hange current account"),
@@ -1297,7 +1297,7 @@ MainWindow *main_window_create()
 	mainwin->messageview = messageview = messageview_create(mainwin);
 
 	/* init log instances data before creating log views */
-	set_log_title(LOG_PROTOCOL, _("Protocol log"));
+	set_log_title(LOG_PROTOCOL, _("Network log"));
 	set_log_prefs(LOG_PROTOCOL,
 			&prefs_common.logwin_width,
 			&prefs_common.logwin_height);

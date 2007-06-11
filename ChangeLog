@@ -1,3 +1,10 @@
+2007-06-11 [paul]	2.9.2cvs53
+
+	* src/mainwindow.c
+	* src/prefs_logging.c
+		rename 'Protocol Log' to 'Network Log'
+		and some function renaming
+
 2007-06-10 [wwp]	2.9.2cvs52
 
 	* src/gtk/pluginwindow.c
