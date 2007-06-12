@@ -889,10 +889,10 @@ void folderview_select_next_marked(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
-	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	EntryAction last_summary_select_prio = prefs_common.summary_select_prio[0];
 	gboolean last_open = prefs_common.always_show_msg;
 	
-	prefs_common.select_on_entry = SELECTONENTRY_MNU;
+	prefs_common.summary_select_prio[0] = ACTION_MARKED;
 	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_marked(ctree, folderview->opened))
@@ -910,7 +910,7 @@ void folderview_select_next_marked(FolderView *folderview)
 		folderview_select_node(folderview, node);
 
 out:
-	prefs_common.select_on_entry = last_sel;
+	prefs_common.summary_select_prio[0] = last_summary_select_prio;
 	prefs_common.always_show_msg = last_open;
 }
 
@@ -937,10 +937,10 @@ void folderview_select_next_unread(FolderView *folderview, gboolean force_open)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
-	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	EntryAction last_summary_select_prio = prefs_common.summary_select_prio[0];
 	gboolean last_open = prefs_common.always_show_msg;
 	
-	prefs_common.select_on_entry = SELECTONENTRY_UNM;
+	prefs_common.summary_select_prio[0] = ACTION_UNREAD;
 	prefs_common.always_show_msg = force_open ? TRUE : last_open;
 
 	if ((node = folderview_find_next_unread(ctree, folderview->opened))
@@ -958,7 +958,7 @@ void folderview_select_next_unread(FolderView *folderview, gboolean force_open)
 		folderview_select_node(folderview, node);
 
 out:
-	prefs_common.select_on_entry = last_sel;
+	prefs_common.summary_select_prio[0] = last_summary_select_prio;
 	prefs_common.always_show_msg = last_open;
 }
 
@@ -985,10 +985,10 @@ void folderview_select_next_new(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node = NULL;
-	SelectOnEntry last_sel = prefs_common.select_on_entry;
+	EntryAction last_summary_select_prio = prefs_common.summary_select_prio[0];
 	gboolean last_open = prefs_common.always_show_msg;
 	
-	prefs_common.select_on_entry = SELECTONENTRY_NUM;
+	prefs_common.summary_select_prio[0] = ACTION_NEW;
 	prefs_common.always_show_msg = TRUE;
 
 	if ((node = folderview_find_next_new(ctree, folderview->opened))
@@ -1006,7 +1006,7 @@ void folderview_select_next_new(FolderView *folderview)
 		folderview_select_node(folderview, node);
 
 out:
-	prefs_common.select_on_entry = last_sel;
+	prefs_common.summary_select_prio[0] = last_summary_select_prio;
 	prefs_common.always_show_msg = last_open;
 }
 

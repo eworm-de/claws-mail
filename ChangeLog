@@ -1,3 +1,16 @@
+2007-06-12 [colin]	2.9.2cvs57
+
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/folderview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_summaries.c
+	* src/prefs_summary_open.c
+	* src/prefs_summary_open.h
+	* src/summaryview.c
+		Make "when entering a folder" actions more personalisable
+
 2007-06-12 [wwp]	2.9.2cvs56
 
 	* tools/README

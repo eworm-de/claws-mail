@@ -120,6 +120,7 @@ src/prefs_send.c
 src/prefs_spelling.c
 src/prefs_summaries.c
 src/prefs_summary_column.c
+src/prefs_summary_open.c
 src/prefs_template.c
 src/prefs_themes.c
 src/prefs_toolbar.c

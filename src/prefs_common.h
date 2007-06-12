@@ -76,6 +76,17 @@ typedef enum
 
 typedef enum
 {
+	ACTION_UNSET = 0, /* for backward compatibility */
+	ACTION_MARKED,
+	ACTION_NEW,
+	ACTION_UNREAD,
+	ACTION_LAST_OPENED,
+	ACTION_LAST_LIST,
+	ACTION_NOTHING
+} EntryAction;
+
+typedef enum
+{
 	NEXTUNREADMSGDIALOG_ALWAYS,
 	NEXTUNREADMSGDIALOG_ASSUME_YES,
 	NEXTUNREADMSGDIALOG_ASSUME_NO
@@ -327,6 +338,9 @@ struct _PrefsCommon
 	gboolean mark_as_read_delay;
 	gboolean immediate_exec;
 	SelectOnEntry select_on_entry;
+
+	EntryAction summary_select_prio[6];
+
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;

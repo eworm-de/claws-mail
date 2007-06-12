@@ -33,6 +33,7 @@
 
 #include "prefs_common.h"
 #include "prefs_gtk.h"
+#include "prefs_summary_open.h"
 #include "prefs_summary_column.h"
 #include "prefs_folder_column.h"
 
@@ -62,7 +63,6 @@ typedef struct _SummariesPage
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
- 	GtkWidget *optmenu_select_on_entry;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
 } SummariesPage;
@@ -333,10 +333,11 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label, *label_fill;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
- 	GtkWidget *optmenu_select_on_entry;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *folderview_frame;
 	GtkWidget *summaryview_frame;
+	GtkWidget *button_edit_actions;
+
 	GtkTooltips *tooltips;
 
 	tooltips = gtk_tooltips_new();
@@ -413,32 +414,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	label = gtk_label_new (_("When entering a folder"));
-	gtk_widget_show (label);
-	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
-
- 	optmenu_select_on_entry = gtk_option_menu_new ();
- 	gtk_widget_show (optmenu_select_on_entry);
- 	
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Do nothing"), SELECTONENTRY_NOTHING);
-	MENUITEM_ADD (menu, menuitem, _("Select first unread (or new or marked) message"),
-		      SELECTONENTRY_UNM);
-	MENUITEM_ADD (menu, menuitem, _("Select first unread (or marked or new) message"),
-		      SELECTONENTRY_UMN);
-	MENUITEM_ADD (menu, menuitem, _("Select first new (or unread or marked) message"),
-		      SELECTONENTRY_NUM);
-	MENUITEM_ADD (menu, menuitem, _("Select first new (or marked or unread) message"),
-		      SELECTONENTRY_NMU);
-	MENUITEM_ADD (menu, menuitem, _("Select first marked (or new or unread) message"),
-		      SELECTONENTRY_MNU);
-	MENUITEM_ADD (menu, menuitem, _("Select first marked (or unread or new) message"),
-		      SELECTONENTRY_MUN);
-	MENUITEM_ADD (menu, menuitem, _("Select last opened message"),
-		      SELECTONENTRY_LAST);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_select_on_entry), menu);
-	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_select_on_entry, FALSE, FALSE, 0);
+	button_edit_actions = gtk_button_new_with_label(_("Set default selection when entering a folder"));
+	gtk_widget_show (button_edit_actions);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_actions,
+			  FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (button_edit_actions), "clicked",
+			  G_CALLBACK (prefs_summary_open_open),
+			  NULL);
 
 	/* Next Unread Message Dialog */
 	hbox1 = gtk_hbox_new (FALSE, 10);
@@ -594,8 +576,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
 			prefs_common.ask_mark_all_read);
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_select_on_entry),
-			prefs_common.select_on_entry);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
 
@@ -612,7 +592,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
-	prefs_summaries->optmenu_select_on_entry = optmenu_select_on_entry;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 
 	prefs_summaries->page.widget = vbox1;
@@ -656,11 +635,6 @@ static void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(page->spinbtn_mark_as_read_delay));
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_select_on_entry));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.select_on_entry = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
-	
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_nextunreadmsgdialog));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_common.next_unread_msg_dialog = GPOINTER_TO_INT

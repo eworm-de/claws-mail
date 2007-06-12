@@ -121,6 +121,7 @@ claws_mail_SOURCES = \
 	prefs_spelling.c \
 	prefs_summaries.c \
 	prefs_summary_column.c \
+	prefs_summary_open.c \
 	prefs_folder_column.c \
 	prefs_template.c \
 	prefs_themes.c \
@@ -264,6 +265,7 @@ claws_mailinclude_HEADERS = \
 	prefs_spelling.h \
 	prefs_summaries.h \
 	prefs_summary_column.h \
+	prefs_summary_open.h \
 	prefs_folder_column.h \
 	prefs_template.h \
 	prefs_themes.h \

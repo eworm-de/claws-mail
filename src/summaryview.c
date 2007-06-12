@@ -59,6 +59,7 @@
 #include "sourcewindow.h"
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
+#include "prefs_summary_open.h"
 #include "prefs_filtering.h"
 #include "account.h"
 #include "compose.h"
@@ -1312,85 +1313,64 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
 		}
 	} else {
- 		switch (prefs_common.select_on_entry) {
- 			case SELECTONENTRY_MNU:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
+		/* backward compat */
+		int i = 0;
+		gboolean set = FALSE, stop = FALSE;
+		for (i = 0; i < 6; i++) {
+			EntryAction act = prefs_common.summary_select_prio[i];
+
+			if (act != ACTION_UNSET) {
+				set = TRUE;
 				break;
- 			case SELECTONENTRY_MUN:
+			}
+		}
+		if (!set)
+			prefs_summary_open_set_defaults();
+
+ 		for (i = 0; i < 6 && node == NULL; i++) {
+			EntryAction act = prefs_common.summary_select_prio[i];
+			
+			switch(act) {
+			case ACTION_MARKED:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
+					     MSG_MARKED, FALSE);
 				break;
- 			case SELECTONENTRY_NMU:
+			case ACTION_NEW:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
+					     MSG_NEW, FALSE);
 				break;
- 			case SELECTONENTRY_NUM:
+			case ACTION_UNREAD:
 				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
+					     MSG_UNREAD, FALSE);
 				break;
- 			case SELECTONENTRY_UNM:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
-				break;
- 			case SELECTONENTRY_UMN:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_MARKED, FALSE);
-				if (node == NULL)
-					node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_NEW, FALSE);
-				break;
-			case SELECTONENTRY_LAST:
+			case ACTION_LAST_OPENED:
 				if (summaryview->folder_item) {
 					node = summary_find_msg_by_msgnum(summaryview, 
 							summaryview->folder_item->last_seen);
 				}
 				break;
- 			default:
+			case ACTION_LAST_LIST:
+				if (GTK_CLIST(ctree)->row_list != NULL) {
+					node = gtk_ctree_node_nth
+						(ctree,
+						 item->sort_type == SORT_DESCENDING
+						 ? 0 : GTK_CLIST(ctree)->rows - 1);
+				}
+				break;
+			case ACTION_NOTHING:
+			case ACTION_UNSET:
 				node = NULL;
- 		}
-
-		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
-			node = gtk_ctree_node_nth
-				(ctree,
-				 item->sort_type == SORT_DESCENDING
-				 ? 0 : GTK_CLIST(ctree)->rows - 1);
+				stop = TRUE;
+				break;
+			}
+			
+			if (stop || node)
+				break;
 		}
+
 		summary_unlock(summaryview);
-		summary_select_node(summaryview, node,
+		if (node)
+			summary_select_node(summaryview, node,
 				    prefs_common.always_show_msg,
 				    TRUE);
 		summary_lock(summaryview);
