@@ -2631,3 +2631,4 @@
 ( cvs diff -u -r 1.274.2.190 -r 1.274.2.191 src/mainwindow.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/prefs_logging.c;  ) > 2.9.2cvs53.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/prefs_logging.c;  ) > 2.9.2cvs54.patchset
 ( cvs diff -u -r 1.30.2.20 -r 1.30.2.21 tools/README;  ) > 2.9.2cvs55.patchset
+( cvs diff -u -r 1.30.2.21 -r 1.30.2.22 tools/README;  ) > 2.9.2cvs56.patchset
