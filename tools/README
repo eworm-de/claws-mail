@@ -34,8 +34,7 @@ Other tools:
   filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
   filter_conv.pl                Convert old-style Sylpheed filters to filtering
   fix-date.sh			Replace/Add a message's Date field
-  mairix.sh                     Indexed search in virtual folders (mairix
-                                wrapper)
+  mairix.sh                     mairix wrapper to search for messages in folders.
   nautilus2claws-mail.sh	Send files from Nautilus
   OOo2claws-mail.pl             Send documents from OpenOffice.org
   sylprint.pl                   Printing engine, explained in README.sylprint
@@ -501,7 +500,10 @@ Other tools
 
   HOW TO USE IT
 	mairix.sh
-	mairix.sh <rcfile> [<options>..]
+	mairix.sh <mairix rcfile> [<mairix options>..]
+    
+    For instance:    
+    mairix.sh ~/.mairixrc s:word1,word2
 
   Contact: wwp <wwp@claws-mail.org>
 
