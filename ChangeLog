@@ -1,3 +1,9 @@
+2007-06-14 [wwp]	2.9.2cvs58
+
+	* src/gtk/pluginwindow.c
+		Yet another attempt to fix sizing/alignment of the
+		button bar in plugins window.
+
 2007-06-12 [colin]	2.9.2cvs57
 
 	* po/POTFILES.in

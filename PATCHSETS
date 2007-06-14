@@ -2633,3 +2633,4 @@
 ( cvs diff -u -r 1.30.2.20 -r 1.30.2.21 tools/README;  ) > 2.9.2cvs55.patchset
 ( cvs diff -u -r 1.30.2.21 -r 1.30.2.22 tools/README;  ) > 2.9.2cvs56.patchset
 ( cvs diff -u -r 1.53.2.26 -r 1.53.2.27 po/POTFILES.in;  cvs diff -u -r 1.155.2.64 -r 1.155.2.65 src/Makefile.am;  cvs diff -u -r 1.207.2.163 -r 1.207.2.164 src/folderview.c;  cvs diff -u -r 1.204.2.136 -r 1.204.2.137 src/prefs_common.c;  cvs diff -u -r 1.103.2.83 -r 1.103.2.84 src/prefs_common.h;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/prefs_summaries.c;  diff -u /dev/null src/prefs_summary_open.c;  diff -u /dev/null src/prefs_summary_open.h;  cvs diff -u -r 1.395.2.303 -r 1.395.2.304 src/summaryview.c;  ) > 2.9.2cvs57.patchset
+( cvs diff -u -r 1.5.2.47 -r 1.5.2.48 src/gtk/pluginwindow.c;  ) > 2.9.2cvs58.patchset
