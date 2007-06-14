@@ -326,8 +326,15 @@ static void chk_update_val(GtkWidget *widget, gpointer data)
 
 static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cfg_dir, const gchar *oldversion)
 {
-	gchar *message = g_strdup_printf(_("Configuration for %s (or previous) found.\n"
+	gchar *message = g_strdup_printf(_("Configuration for %s found.\n"
 			 "Do you want to migrate this configuration?"), oldversion);
+	gchar *message2 = g_strdup_printf(_("\n\nYour Sylpheed filtering rules can be converted by a\n"
+			     "script available at %s."), TOOLS_URI);
+
+	if (!strcmp(oldversion, "Sylpheed"))
+		message = g_strconcat(message, message2, NULL);
+	g_free(message2);
+
 	gint r = 0;
 	GtkWidget *window = NULL;
 	GtkWidget *keep_backup_chk;
@@ -742,13 +749,16 @@ int main(int argc, char *argv[])
 		 * and migration succeeded, and FALSE otherwise.
 		 */
 		if (is_dir_exist(OLD_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, "Sylpheed-Claws 2.6.0");
+			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 2.6.0 (or older)"));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLDER_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, "Sylpheed-Claws 1.9.15");
+			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.9.15 (or older)"));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLD_GTK1_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, "Sylpheed-Claws 1.0.5");
+			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.0.5 (or older)"));
+			asked_for_migration = TRUE;
+		} else if (is_dir_exist(SYLPHEED_RC_DIR)) {
+			r = migrate_old_config(SYLPHEED_RC_DIR, RC_DIR, "Sylpheed");
 			asked_for_migration = TRUE;
 		}
 		
