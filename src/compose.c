@@ -9742,6 +9742,7 @@ gboolean compose_close(Compose *compose)
 		 * drafting to be done, before destroying the compose under
 		 * it. */
 		debug_print("waiting for drafting to finish...\n");
+		compose_allow_user_actions(compose, FALSE);
 		g_timeout_add (500, (GSourceFunc) compose_close, compose);
 		return FALSE;
 	}

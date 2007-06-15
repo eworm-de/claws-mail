@@ -1,3 +1,9 @@
+2007-06-15 [paul]	2.9.2cvs60
+
+	* src/compose.c
+		fix bug when one closing a compose window
+		during autosave
+
 2007-06-14 [paul]	2.9.2cvs59
 
 	* src/main.c
