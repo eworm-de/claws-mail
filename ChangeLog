@@ -1,3 +1,17 @@
+2007-06-15 [colin]	2.9.2cvs61
+
+	* src/action.c
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/folderview.c
+	* src/message_search.c
+	* src/mimeview.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+		Allow GDK_KP_Enter to do the same as GDK_Return
+		Patch by Michael Rasmussen
+
 2007-06-15 [paul]	2.9.2cvs60
 
 	* src/compose.c

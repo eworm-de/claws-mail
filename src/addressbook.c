@@ -4123,7 +4123,7 @@ void addressbook_export_to_file( void ) {
 
 static gboolean addressbook_entry_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Return)
+	if (event && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter))
 		addressbook_lup_clicked(NULL, NULL);
 	return FALSE;
 }

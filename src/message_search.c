@@ -397,7 +397,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(search_window.window);
 	}
 
-	if (event && (event->keyval == GDK_Return)) {
+	if (event && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
 		message_search_execute(FALSE);
 	}
 

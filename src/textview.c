@@ -2000,6 +2000,7 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		mimeview_scroll_page(messageview->mimeview, TRUE);
 		break;
 	case GDK_Return:
+	case GDK_KP_Enter:
 		mimeview_scroll_one_line
 			(messageview->mimeview, (event->state &
 				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);

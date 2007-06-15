@@ -996,7 +996,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 	}
 
-	if (event && (event->keyval == GDK_Return)) {
+	if (event && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
 		if (!search_window.is_searching) {
 			summary_search_execute(FALSE, FALSE);
 		}

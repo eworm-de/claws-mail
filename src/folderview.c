@@ -2008,6 +2008,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Right:
 #ifndef MAEMO
 	case GDK_Return:
+	case GDK_KP_Enter:
 #endif
 		if (folderview->selected) {
 			folderview_select_node(folderview,

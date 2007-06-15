@@ -1308,6 +1308,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
 	case GDK_Return:
+	case GDK_KP_Enter:
 		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		return TRUE;
@@ -1948,6 +1949,7 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
 	case GDK_Return:
+	case GDK_KP_Enter:
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 			KEY_PRESS_EVENT_STOP();
 			mimeview_scroll_one_line(mimeview,

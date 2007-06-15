@@ -5491,6 +5491,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			mimeview_scroll_page(messageview->mimeview, TRUE);
 			break;
 		case GDK_Return:	/* Scroll up/down one line */
+		case GDK_KP_Enter:
 			handled = TRUE;
 			if (summaryview->displayed != summaryview->selected) {
 				summary_display_msg(summaryview,
