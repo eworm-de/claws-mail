@@ -186,6 +186,7 @@ static char *CONTRIBS_LIST[] = {
 "Pawel Pêkala",
 "Don Quijote",
 "Jens Rantil",
+"Michael Rasmussen",
 "Ravemax",
 "Ivan Rayner",
 "David Relson",
@@ -240,6 +241,5 @@ static char *CONTRIBS_LIST[] = {
 "Gál Zoltán",
 "Marien Zwart",
 "Martin Zwickel",
-"Michael Rasmussen",
 NULL
 };
