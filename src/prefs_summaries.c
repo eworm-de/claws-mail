@@ -462,7 +462,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			     NULL);
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_mark_as_read_on_newwin,
-		 _("Only mark message as read when opened in a new window"));
+		 _("Only mark message as read when opened \n"
+		   "in a new window, replied to, or forwarded"));
 		 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);

@@ -1745,11 +1745,16 @@ send_mail:
 			}
 			
 			if (msginfo != NULL) {
+				MsgPermFlags to_unset = 0;
+
+				if (prefs_common.mark_as_read_on_new_window)
+					to_unset = (MSG_NEW|MSG_UNREAD);
+
 				if (replymessageid != NULL) {
-					procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
+					procmsg_msginfo_unset_flags(msginfo, to_unset|MSG_FORWARDED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 				}  else {
-					procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED, 0);
+					procmsg_msginfo_unset_flags(msginfo, to_unset|MSG_REPLIED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_FORWARDED, 0);
 				}
 				procmsg_msginfo_free(msginfo);

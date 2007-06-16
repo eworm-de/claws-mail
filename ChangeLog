@@ -1,3 +1,11 @@
+2007-06-16 [colin]	2.9.2cvs65
+
+	* src/prefs_summaries.c
+	* src/procmsg.c
+		Change the pref "Only mark as read when opened
+		in new window" to "..., replied to or forwarded".
+		Based on a patch by Paul Rolland.
+
 2007-06-16 [paul]	2.9.2cvs64
 
 	* src/gtk/authors.h

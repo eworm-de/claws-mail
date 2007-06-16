@@ -2640,3 +2640,4 @@
 ( cvs diff -u -r 1.94.2.134 -r 1.94.2.135 src/messageview.c;  ) > 2.9.2cvs62.patchset
 ( cvs diff -u -r 1.100.2.49 -r 1.100.2.50 AUTHORS;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/gtk/authors.h;  ) > 2.9.2cvs63.patchset
 ( cvs diff -u -r 1.1.2.37 -r 1.1.2.38 src/gtk/authors.h;  ) > 2.9.2cvs64.patchset
+( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/prefs_summaries.c;  cvs diff -u -r 1.150.2.96 -r 1.150.2.97 src/procmsg.c;  ) > 2.9.2cvs65.patchset
