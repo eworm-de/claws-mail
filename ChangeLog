@@ -1,3 +1,9 @@
+2007-06-16 [colin]	2.9.2cvs62
+
+	* src/messageview.c
+		Fix messageview_copy_clipboard to take advantage
+		of plugins' get_selection.
+
 2007-06-15 [colin]	2.9.2cvs61
 
 	* src/action.c

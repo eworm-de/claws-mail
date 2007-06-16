@@ -1080,17 +1080,13 @@ MimeInfo *messageview_get_selected_mime_part(MessageView *messageview)
 
 void messageview_copy_clipboard(MessageView *messageview)
 {
-	TextView *text;
-
-	text = messageview_get_current_textview(messageview);
+	gchar *text = messageview_get_selection(messageview);
 	if (text) {
-		GtkTextView *textview = GTK_TEXT_VIEW(text->text);
-		GtkTextBuffer *buffer = gtk_text_view_get_buffer(textview);
-		GtkClipboard *clipboard
-			= gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-
-		gtk_text_buffer_copy_clipboard(buffer, clipboard);
+		gtk_clipboard_set_text(
+			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+			text, -1);
 	}
+	g_free(text);
 }
 
 void messageview_select_all(MessageView *messageview)
