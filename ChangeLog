@@ -1,3 +1,9 @@
+2007-06-16 [colin]	2.9.2cvs63
+
+	* AUTHORS
+	* src/gtk/authors.h
+		Add Michael Rasmussen in authors list
+
 2007-06-16 [colin]	2.9.2cvs62
 
 	* src/messageview.c
