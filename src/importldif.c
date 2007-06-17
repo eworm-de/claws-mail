@@ -447,14 +447,14 @@ static gboolean imp_ldif_file_move() {
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), sFile );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryName), sName );
 
-	if( *sFile == '\0'|| strlen( sFile ) < 1 ) {
+	if( *sFile == '\0' ) {
 		sMsg = _( "Please select a file." );
 		gtk_widget_grab_focus(impldif_dlg.entryFile);
 		errFlag = TRUE;
 	}
 
-	if( *sName == '\0'|| strlen( sName ) < 1 ) {
-		if( ! errFlag ) sMsg = _( "Address book name must be supplied." );
+	if( ! errFlag && *sName == '\0' ) {
+		sMsg = _( "Address book name must be supplied." );
 		gtk_widget_grab_focus(impldif_dlg.entryName);
 		errFlag = TRUE;
 	}
@@ -469,7 +469,7 @@ static gboolean imp_ldif_file_move() {
 			retVal = TRUE;
 		}
 		else {
-			sMsg = _( "Error reading LDIF fields." );
+			sMsg = imp_ldif_err2string( _lutErrorsLDIF_, _ldifFile_->retVal );
 		}
 	}
 	imp_ldif_status_show( sMsg );
@@ -536,6 +536,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 		}
 		else {
 			gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
+			_ldifFile_->dirtyFlag = TRUE;
 		}
 	}
 	else if( pageNum == PAGE_ATTRIBUTES ) {
@@ -544,7 +545,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-					     GTK_STOCK_SAVE);
+					     GTK_STOCK_CLOSE);
 			imp_ldif_finish_show();
 		}
 	}
@@ -808,12 +809,6 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 
 	/* Next row */
 	++top;
-	label = gtk_label_new( _( "???" ) );
-	/*
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	*/
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 
 	/*
 	 * Use an event box to attach some help in the form of a tooltip.

@@ -1,3 +1,12 @@
+2007-06-17 [wwp]	2.9.2cvs68
+
+	* src/ldif.c
+	* src/importldif.c
+		LDIF import: better error handling, minor code
+		and UI cleanup, and renamed the Save button
+		to Close, as imported stuff is already saved
+		when the Save button is shown.
+
 2007-06-17 [colin]	2.9.2cvs67
 
 	* src/prefs_summaries.c

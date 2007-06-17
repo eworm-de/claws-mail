@@ -257,6 +257,8 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 
 	while( i < LDIFBUFSIZE-1 ) {
 		ch = fgetc( ldifFile->file );
+		if (ferror( ldifFile->file ))
+			ldifFile->retVal = MGU_ERROR_READ;
 		if( ch == '\0' || ch == EOF ) {
 			if( i == 0 ) return NULL;
 			break;
@@ -841,6 +843,11 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 	posEnd = ftell( ldifFile->file );
 	fseek( ldifFile->file, 0L, SEEK_SET );
 
+	if (posEnd == 0) {
+		ldifFile->retVal = MGU_EOF;
+		return;
+	}
+		
 	/* Process file */
 	while( ! flagEOF ) {
 		gchar *line = ldif_get_line( ldifFile );
@@ -888,6 +895,12 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 						tagName, LDIF_TAG_EMAIL ) == 0 )
 					{
 						flagMail = TRUE;
+					}
+				} else {
+					g_strstrip(line);
+					if (*line != '\0') {
+						debug_print("ldif: bad format: '%s'\n", line);
+						ldifFile->retVal = MGU_BAD_FORMAT;
 					}
 				}
 			}

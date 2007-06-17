@@ -2643,3 +2643,4 @@
 ( cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/prefs_summaries.c;  cvs diff -u -r 1.150.2.96 -r 1.150.2.97 src/procmsg.c;  ) > 2.9.2cvs65.patchset
 ( cvs diff -u -r 1.17.2.34 -r 1.17.2.35 src/alertpanel.c;  ) > 2.9.2cvs66.patchset
 ( cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/prefs_summaries.c;  cvs diff -u -r 1.150.2.97 -r 1.150.2.98 src/procmsg.c;  ) > 2.9.2cvs67.patchset
+( cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/ldif.c;  cvs diff -u -r 1.14.2.13 -r 1.14.2.14 src/importldif.c;  ) > 2.9.2cvs68.patchset
