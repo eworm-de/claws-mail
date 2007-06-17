@@ -1,3 +1,9 @@
+2007-06-17 [colin]	2.9.2cvs67
+
+	* src/prefs_summaries.c
+	* src/procmsg.c
+		Don't set as read when forwarded, only replied to
+
 2007-06-17 [paul]	2.9.2cvs66
 
 	* src/alertpanel.c

@@ -1754,7 +1754,7 @@ send_mail:
 					procmsg_msginfo_unset_flags(msginfo, to_unset|MSG_FORWARDED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 				}  else {
-					procmsg_msginfo_unset_flags(msginfo, to_unset|MSG_REPLIED, 0);
+					procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_FORWARDED, 0);
 				}
 				procmsg_msginfo_free(msginfo);
