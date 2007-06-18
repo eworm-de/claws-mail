@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=68
+EXTRA_VERSION=69
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -310,9 +310,13 @@ dnl ** common code **
 dnl *****************
 
 dnl check for glib
-AM_PATH_GLIB_2_0(2.6.0,,
-	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
-	gmodule gobject gthread)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6 gmodule-2.0 >= 2.6 gobject-2.0 >= 2.6 gthread-2.0 >= 2.6)
+      
+GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
+AC_SUBST(GLIB_GENMARSHAL)
+
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
 
 dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
 syl_save_LIBS=$LIBS
@@ -400,8 +404,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AM_PATH_GTK_2_0(2.6.0,,
-	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6)
 
 dnl --disable-deprecated switch for GTK2 purification
 AC_ARG_ENABLE(deprecated, [  --disable-deprecated  Disable deprecated GTK functions. ],

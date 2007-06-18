@@ -1,3 +1,8 @@
+2007-06-18 [paul]	2.9.2cvs69
+
+	* configure.ac
+		use pkgconfig to check for gtk and glib
+
 2007-06-17 [wwp]	2.9.2cvs68
 
 	* src/ldif.c
