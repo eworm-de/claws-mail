@@ -89,6 +89,7 @@ static struct _ImpLdif_Dlg {
 	GtkWidget *labelRecords;
 	GtkWidget *btnPrev;
 	GtkWidget *btnNext;
+	GtkWidget *btnProceed;
 	GtkWidget *btnCancel;
 	GtkWidget *statusbar;
 	gint      status_cid;
@@ -490,7 +491,9 @@ static void imp_ldif_finish_show() {
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelFile), _ldifFile_->path );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelRecords), itos( _ldifFile_->importCount ) );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
-	gtk_widget_set_sensitive( impldif_dlg.btnNext, FALSE );
+	gtk_widget_hide( impldif_dlg.btnNext );
+	gtk_widget_show( impldif_dlg.btnProceed );
+	gtk_widget_set_sensitive( impldif_dlg.btnProceed, FALSE );
 	if( _ldifFile_->retVal == MGU_SUCCESS ) {
 		sMsg = _( "LDIF file imported successfully." );
 	}
@@ -514,6 +517,8 @@ static void imp_ldif_prev( GtkWidget *widget ) {
 		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 		gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
+		gtk_widget_hide( impldif_dlg.btnProceed );
+		gtk_widget_show( impldif_dlg.btnNext );
 	}
 	imp_ldif_message();
 }
@@ -533,6 +538,9 @@ static void imp_ldif_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_ATTRIBUTES );
 			imp_ldif_message();
 			gtk_widget_set_sensitive( impldif_dlg.btnPrev, TRUE );
+			gtk_widget_hide( impldif_dlg.btnNext );
+			gtk_widget_show( impldif_dlg.btnProceed );
+			gtk_widget_set_sensitive( impldif_dlg.btnProceed, TRUE );
 		}
 		else {
 			gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
@@ -945,6 +953,7 @@ static void imp_ldif_dialog_create() {
 	GtkWidget *hbbox;
 	GtkWidget *btnPrev;
 	GtkWidget *btnNext;
+	GtkWidget *btnProceed;
 	GtkWidget *btnCancel;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
@@ -989,6 +998,14 @@ static void imp_ldif_dialog_create() {
 				      &btnCancel, GTK_STOCK_CANCEL, 
 				      &btnPrev, GTK_STOCK_GO_BACK,
 				      &btnNext, GTK_STOCK_GO_FORWARD);
+
+	btnProceed = gtk_button_new_with_mnemonic(_("Proceed"));
+	gtk_button_set_image(GTK_BUTTON(btnProceed),
+			gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON));
+	GTK_WIDGET_SET_FLAGS(btnProceed, GTK_CAN_DEFAULT);
+	gtk_box_pack_start(GTK_BOX(hbbox), btnProceed, TRUE, TRUE, 0);
+	gtk_widget_hide(btnProceed);
+
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);
@@ -997,6 +1014,8 @@ static void imp_ldif_dialog_create() {
 	g_signal_connect(G_OBJECT(btnPrev), "clicked",
 			 G_CALLBACK(imp_ldif_prev), NULL);
 	g_signal_connect(G_OBJECT(btnNext), "clicked",
+			 G_CALLBACK(imp_ldif_next), NULL);
+	g_signal_connect(G_OBJECT(btnProceed), "clicked",
 			 G_CALLBACK(imp_ldif_next), NULL);
 	g_signal_connect(G_OBJECT(btnCancel), "clicked",
 			 G_CALLBACK(imp_ldif_cancel), NULL);
@@ -1007,6 +1026,7 @@ static void imp_ldif_dialog_create() {
 	impldif_dlg.notebook   = notebook;
 	impldif_dlg.btnPrev    = btnPrev;
 	impldif_dlg.btnNext    = btnNext;
+	impldif_dlg.btnProceed = btnProceed;
 	impldif_dlg.btnCancel  = btnCancel;
 	impldif_dlg.statusbar  = statusbar;
 	impldif_dlg.status_cid = gtk_statusbar_get_context_id(
@@ -1037,9 +1057,11 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 
 	if( ! impldif_dlg.window )
 		imp_ldif_create();
-		
+
 	gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
 			     GTK_STOCK_CANCEL);
+	gtk_widget_hide(impldif_dlg.btnProceed);
+	gtk_widget_show(impldif_dlg.btnNext);
 
 	impldif_dlg.cancelled = FALSE;
 	gtk_widget_show(impldif_dlg.window);
