@@ -2646,3 +2646,4 @@
 ( cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/ldif.c;  cvs diff -u -r 1.14.2.13 -r 1.14.2.14 src/importldif.c;  ) > 2.9.2cvs68.patchset
 ( cvs diff -u -r 1.654.2.2699 -r 1.654.2.2700 configure.ac;  ) > 2.9.2cvs69.patchset
 ( cvs diff -u -r 1.14.2.14 -r 1.14.2.15 src/importldif.c;  ) > 2.9.2cvs70.patchset
+( cvs diff -u -r 1.382.2.390 -r 1.382.2.391 src/compose.c;  cvs diff -u -r 1.94.2.135 -r 1.94.2.136 src/messageview.c;  ) > 2.9.2cvs71.patchset

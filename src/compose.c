@@ -1505,6 +1505,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
+	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -1650,6 +1651,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
+	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -1751,6 +1753,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
+	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -2036,6 +2039,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
+	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -2144,6 +2148,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	compose->modified = FALSE;
 	compose_set_title(compose);
 	compose->updating = FALSE;
+	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -6623,7 +6628,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
 	compose->exteditor_tag     = -1;
-	compose->draft_timeout_tag = -1;
+	compose->draft_timeout_tag = -2; /* inhibit auto-drafting while loading */
 
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
@@ -8218,7 +8223,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 		  "to send this email.")))
 		return;
 	
-	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
+	if (compose->draft_timeout_tag >= 0) { /* CLAWS: disable draft timeout */
 		g_source_remove(compose->draft_timeout_tag);
 		compose->draft_timeout_tag = -1;
 	}
@@ -9636,7 +9641,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 	g_signal_stop_emission_by_name(G_OBJECT(buffer), "insert-text");
 
 	if (prefs_common.autosave && 
-	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0)
+	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0 &&
+	    compose->draft_timeout_tag != -2 /* disabled while loading */)
 		compose->draft_timeout_tag = g_timeout_add
 			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }

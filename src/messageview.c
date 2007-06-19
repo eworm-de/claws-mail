@@ -888,11 +888,11 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	main_create_mailing_list_menu(messageview->mainwin, messageview->msginfo);
 
-	if (messageview->msginfo->extradata
+	if (messageview->msginfo && messageview->msginfo->extradata
 	    && messageview->msginfo->extradata->partial_recv)
 		partial_recv_show(messageview->noticeview, 
 				  messageview->msginfo);
-	else if (messageview->msginfo->extradata &&
+	else if (messageview->msginfo && messageview->msginfo->extradata &&
 	    (messageview->msginfo->extradata->dispositionnotificationto || 
 	     messageview->msginfo->extradata->returnreceiptto) &&
 	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags) &&

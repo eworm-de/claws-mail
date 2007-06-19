@@ -1,3 +1,11 @@
+2007-06-19 [colin]	2.9.2cvs71
+
+	* src/compose.c
+	* src/messageview.c
+		Fix crash mentioned in bug 1246
+		Race condition when automatically drafting
+		due to insertion on reedit.
+
 2007-06-18 [wwp]	2.9.2cvs70
 
 	* src/importldif.c
