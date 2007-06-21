@@ -36,7 +36,7 @@
 
 gint plugin_init(gchar **error)
 {
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2, 1, 0, 1),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -47,11 +47,12 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	pgp_viewer_done();
 	prefs_gpg_done();
 	sgpgme_done();
+	return TRUE;
 }
 
 const gchar *plugin_name(void)

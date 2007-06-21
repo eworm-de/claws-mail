@@ -229,7 +229,7 @@ gint plugin_init(gchar **error)
 	unsigned int no;
 #endif
 
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -279,7 +279,7 @@ gint plugin_init(gchar **error)
 	
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);
@@ -291,6 +291,7 @@ void plugin_done(void)
 	clamav_gtk_done();
 
 	debug_print("ClamAV plugin unloaded\n");
+	return TRUE;
 }
 
 const gchar *plugin_name(void)

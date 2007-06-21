@@ -43,7 +43,7 @@ static guint hook_id;
 
 gint plugin_init(gchar **error)
 {
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 8, 11, 39),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -58,11 +58,12 @@ gint plugin_init(gchar **error)
 	return 0;
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, hook_id);
 
 	printf("Demo plugin unloaded\n");
+	return TRUE;
 }
 
 const gchar *plugin_name(void)

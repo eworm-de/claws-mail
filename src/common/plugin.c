@@ -49,6 +49,7 @@ struct _Plugin
 	
 	GSList *rdeps;
 	gchar *error;
+	gboolean unloaded_hidden;
 };
 
 const gchar *plugin_feature_names[] =
@@ -116,11 +117,17 @@ void plugin_save_list(void)
 		for (plugin_cur = plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
 			plugin = (Plugin *) plugin_cur->data;
 			
+			if (plugin->unloaded_hidden)
+				continue;
+
 			if (!strcmp(plugin->type(), type_cur->data))
 				fprintf(pfile->fp, "%s\n", plugin->filename);
 		}
 		for (plugin_cur = unloaded_plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
 			plugin = (Plugin *) plugin_cur->data;
+
+			if (plugin->unloaded_hidden)
+				continue;
 			
 			if (!strcmp(plugin->type(), type_cur->data))
 				fprintf(pfile->fp, "%s\n", plugin->filename);
@@ -252,6 +259,8 @@ static gchar *plugin_check_features(struct PluginFeature *features) {
 	for(; cur; cur = cur->next) {
 		Plugin *p = (Plugin *)cur->data;
 		struct PluginFeature *cur_features = p->provides();
+		if (p->unloaded_hidden)
+			continue;
 		for (j = 0; cur_features[j].type != PLUGIN_NOTHING; j++) {
 			for (i = 0; features[i].type != PLUGIN_NOTHING; i++) {
 				if (cur_features[j].type == features[i].type &&
@@ -292,8 +301,14 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 
 	/* check duplicate plugin path name */
 	if (plugin_is_loaded(filename)) {
-		*error = g_strdup(_("Plugin already loaded"));
-		return NULL;		
+		plugin = plugin_get_by_filename(filename);
+		if (plugin->unloaded_hidden) {
+			/* reshow it */
+			goto init_plugin;
+		} else {
+			*error = g_strdup(_("Plugin already loaded"));
+			return NULL;		
+		}
 	}			       
 	
 	plugin_remove_from_unloaded_list(filename);
@@ -314,6 +329,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
+init_plugin:
 	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
 	    !g_module_symbol(plugin->module, "plugin_desc", &plugin_desc) ||
 	    !g_module_symbol(plugin->module, "plugin_version", &plugin_version) ||
@@ -322,6 +338,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	    !g_module_symbol(plugin->module, "plugin_provides", (gpointer)&plugin_provides) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer)&plugin_init)) {
 		*error = g_strdup(g_module_error());
+		if (plugin->unloaded_hidden)
+			return NULL;
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -330,6 +348,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	if (strcmp(plugin_licence(), "GPL")
 	&&  strncmp(plugin_licence(), "GPL-compatible", strlen("GPL-compatible"))) {
 		*error = g_strdup(_("This module is not licenced under a GPL compatible licence."));
+		if (plugin->unloaded_hidden)
+			return NULL;
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -337,12 +357,16 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 
 	if (!strcmp(plugin_type(), "GTK")) {
 		*error = g_strdup(_("This module is for Claws Mail GTK1."));
+		if (plugin->unloaded_hidden)
+			return NULL;
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
 	}
 
 	if ((*error = plugin_check_features(plugin_provides())) != NULL) {
+		if (plugin->unloaded_hidden)
+			return NULL;
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -355,6 +379,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	plugin->provides = plugin_provides;
 	plugin->filename = g_strdup(filename);
 	plugin->error = NULL;
+
 	if ((ok = plugin_init(error)) < 0) {
 		if (*error)
 			plugin->error = g_strdup(*error);
@@ -362,7 +387,9 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 		return NULL;
 	}
 
-	plugins = g_slist_append(plugins, plugin);
+	if (!plugin->unloaded_hidden)
+		plugins = g_slist_append(plugins, plugin);
+	plugin->unloaded_hidden = FALSE;
 
 	debug_print("Plugin %s (from file %s) loaded\n", plugin->name(), filename);
 
@@ -371,28 +398,37 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 
 void plugin_unload(Plugin *plugin)
 {
-	void (*plugin_done) (void);
+	gboolean (*plugin_done) (void);
+	gboolean can_unload = TRUE;
 
 	plugin_unload_rdeps(plugin);
+
+	if (plugin->unloaded_hidden)
+		return;
 
 	if (plugin->error) {
 		plugin_remove_from_unloaded_list(plugin->filename);
 		return;
 	}
 	if (g_module_symbol(plugin->module, "plugin_done", (gpointer) &plugin_done)) {
-		plugin_done();
+		can_unload = plugin_done();
 	}
 
+	if (can_unload) {
 #ifdef HAVE_VALGRIND
-	if (!RUNNING_ON_VALGRIND) {
-		g_module_close(plugin->module);
-	}
+		if (!RUNNING_ON_VALGRIND) {
+			g_module_close(plugin->module);
+		}
 #else
-	g_module_close(plugin->module);
+		g_module_close(plugin->module);
 #endif
-	plugins = g_slist_remove(plugins, plugin);
-	g_free(plugin->filename);
-	g_free(plugin);
+		plugins = g_slist_remove(plugins, plugin);
+		g_free(plugin->filename);
+		g_free(plugin);
+	} else {
+		plugin->unloaded_hidden = TRUE;
+	}
+
 }
 
 void plugin_load_all(const gchar *type)
@@ -502,7 +538,15 @@ void plugin_load_standard_plugins (void)
 
 GSList *plugin_get_list(void)
 {
-	return g_slist_copy(plugins);
+	GSList *new = NULL;
+	GSList *cur = plugins;
+	for (; cur; cur = cur->next) {
+		Plugin *p = (Plugin *)cur->data;
+		if (!p->unloaded_hidden)
+			new = g_slist_prepend(new, p);
+	}
+	new = g_slist_reverse(new);
+	return new;
 }
 
 GSList *plugin_get_unloaded_list(void)

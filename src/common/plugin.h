@@ -42,7 +42,7 @@ struct PluginFeature {
 
 /* Functions to implement by the plugin */
 gint plugin_init		(gchar		**error);
-void plugin_done		(void);
+gboolean plugin_done		(void);
 const gchar *plugin_name	(void);
 const gchar *plugin_desc	(void);
 const gchar *plugin_version	(void);

@@ -883,7 +883,7 @@ gint plugin_init(gchar **error)
 
 	hook_id = -1;
 
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -937,7 +937,7 @@ FolderItem *bogofilter_get_spam_folder(MsgInfo *msginfo)
 	return item;
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	if (hook_id != -1) {
 		bogofilter_unregister_hook();
@@ -950,6 +950,7 @@ void plugin_done(void)
 	procmsg_unregister_spam_learner(bogofilter_learn);
 	procmsg_spam_set_folder(NULL, NULL);
 	debug_print("Bogofilter plugin unloaded\n");
+	return TRUE;
 }
 
 const gchar *plugin_name(void)

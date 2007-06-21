@@ -504,7 +504,7 @@ gint plugin_init(gchar **error)
 
 	hook_id = -1;
 
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -538,7 +538,7 @@ gint plugin_init(gchar **error)
 	
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	if (hook_id != -1) {
 		spamassassin_unregister_hook();
@@ -549,6 +549,7 @@ void plugin_done(void)
 	procmsg_unregister_spam_learner(spamassassin_learn);
 	procmsg_spam_set_folder(NULL, NULL);
 	debug_print("SpamAssassin plugin unloaded\n");
+	return TRUE;
 }
 
 const gchar *plugin_name(void)

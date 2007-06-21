@@ -395,7 +395,7 @@ static void create_trayicon()
 
 int plugin_init(gchar **error)
 {
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(0, 9, 3, 86),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
@@ -451,7 +451,7 @@ int plugin_init(gchar **error)
 	return 0;
 }
 
-void plugin_done(void)
+gboolean plugin_done(void)
 {
 	trayicon_prefs_done();
 
@@ -463,7 +463,7 @@ void plugin_done(void)
 	hooks_unregister_hook(MAIN_WINDOW_GOT_ICONIFIED, iconified_hook_id);
 
 	if (claws_is_exiting())
-		return;
+		return TRUE;
 
 	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
 	
@@ -472,6 +472,7 @@ void plugin_done(void)
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
 	}
+	return TRUE;
 }
 
 const gchar *plugin_name(void)
