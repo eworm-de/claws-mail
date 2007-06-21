@@ -4,7 +4,8 @@
 	* src/common/plugin.h
 		Change plugin API to know whether it's safe to 
 		unload plugins or whether we should just hide
-		them
+		them. Fixes bug 1248, 'Core dumps after 
+		unloading plugin and clicking on load plugins'
 	* src/plugins/bogofilter/bogofilter.c
 	* src/plugins/clamav/clamav_plugin.c
 	* src/plugins/demo/demo.c
