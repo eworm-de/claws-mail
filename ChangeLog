@@ -1,3 +1,11 @@
+2007-06-24 [colin]	2.9.2cvs73
+
+	* src/news_gtk.c
+		Fix bug 1249, 'Error handling for 
+		news errors needs modification'
+		Only popup error if the according
+		pref in Prefs/Receive is set.
+
 2007-06-21 [colin]	2.9.2cvs72
 
 	* src/common/plugin.c

@@ -299,7 +299,10 @@ void news_gtk_synchronise(FolderItem *item)
 		gchar *name;
 
 		name = trim_string(item->name, 32);
-		alertpanel_error(_("Error occurred while downloading messages in '%s'."), name);
+		if (prefs_common.no_recv_err_panel)
+			log_error(LOG_PROTOCOL, _("Error occurred while downloading messages in '%s'."), name);
+		else
+			alertpanel_error(_("Error occurred while downloading messages in '%s'."), name);
 		g_free(name);
 	}
 	folder_set_ui_func(item->folder, NULL, NULL);
