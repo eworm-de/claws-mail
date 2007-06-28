@@ -44,4 +44,27 @@ EXTRA_DIST = \
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)
 
 all-local:
+	if [ ! -d kdeservicemenu -a ! -e kdeservicemenu ]; then \
+	mkdir kdeservicemenu; \
+	fi; \
+	for file in $(EXTRA_TOOLS); do \
+	if [ ! -e ${top_builddir}/tools/$$file ]; then \
+	todir=${top_builddir}/tools; \
+	dir=$$(dirname $$file); \
+	if [ ! $$dir = . ]; then \
+	todir=$$todir/$$dir; \
+	fi; \
+	cp ${top_srcdir}/tools/$$file $$todir; \
+	fi; \
+	done;
 	$(MAKE_EXE)
+
+distclean-local:
+	if [ ! ${top_builddir} = ${top_srcdir} ]; then \
+	for file in $(EXTRA_TOOLS); do \
+	rm -f $$file; \
+	done; \
+	if [ -d kdeservicemenu ]; then \
+	rmdir --ignore-fail-on-non-empty kdeservicemenu; \
+	fi; \
+	fi

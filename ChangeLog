@@ -1,3 +1,12 @@
+2007-06-28 [paul]	2.9.2cvs74
+
+	* tools/Makefile.am
+		fix bug in the autotools build system.
+		Files cataloged under EXTRA_DIST were never
+		automatically copied to the build tree.
+		(fix 'make distcheck')
+		Patch by Michael Rasmussen.
+
 2007-06-24 [colin]	2.9.2cvs73
 
 	* src/news_gtk.c
