@@ -2068,7 +2068,8 @@ void folderview_close_opened(FolderView *folderview)
 	if (folderview->opened) {
 		FolderItem *olditem;
 		
-		olditem = gtk_ctree_node_get_row_data(folderview->ctree, folderview->opened);
+		olditem = gtk_ctree_node_get_row_data(GTK_CTREE(folderview->ctree), 
+						      folderview->opened);
 		if (olditem) {
 			gchar *buf = g_strdup_printf(_("Closing Folder %s..."), 
 				olditem->path ? olditem->path:olditem->name);
@@ -2086,7 +2087,7 @@ void folderview_close_opened(FolderView *folderview)
 
 	if (folderview->opened &&
 	    !GTK_CTREE_ROW(folderview->opened)->children)
-		gtk_ctree_collapse(folderview->ctree, folderview->opened);
+		gtk_ctree_collapse(GTK_CTREE(folderview->ctree), folderview->opened);
 
 	folderview->opened = NULL;
 }

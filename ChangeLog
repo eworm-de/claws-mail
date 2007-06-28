@@ -1,3 +1,8 @@
+2007-06-28 [paul]	2.9.2cvs75
+
+	* src/folderview.c
+		fix build warnings
+
 2007-06-28 [paul]	2.9.2cvs74
 
 	* tools/Makefile.am
