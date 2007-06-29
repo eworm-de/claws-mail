@@ -2651,3 +2651,4 @@
 ( cvs diff -u -r 1.2.2.21 -r 1.2.2.22 src/news_gtk.c;  ) > 2.9.2cvs73.patchset
 ( cvs diff -u -r 1.25.2.19 -r 1.25.2.20 tools/Makefile.am;  ) > 2.9.2cvs74.patchset
 ( cvs diff -u -r 1.207.2.165 -r 1.207.2.166 src/folderview.c;  ) > 2.9.2cvs75.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/headers.h;  ) > 2.9.2cvs76.patchset

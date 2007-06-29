@@ -39,7 +39,7 @@ static struct {
 	{ N_("Return-Receipt-To"),			  N_("Return-Receipt-To:") },
 	{ N_("User-Agent"), 				  N_("User-Agent:") },
 	{ N_("Content-Type"),				  N_("Content-Type:") },
-	{ N_("Content-Transfert-Encoding"),   N_("Content-Transfert-Encoding:") },
+	{ N_("Content-Transfer-Encoding"),    N_("Content-Transfer-Encoding:") },
 	{ N_("MIME-Version"),				  N_("MIME-Version:") },
 	{ N_("Precedence"), 				  N_("Precedence:") },
 	{ N_("Organization"),				  N_("Organization:") },

@@ -1,3 +1,8 @@
+2007-06-29 [wwp]	2.9.2cvs76
+
+	* src/gtk/headers.h
+		Fix a typo (thanks to Ricardo for finding this out).
+
 2007-06-28 [paul]	2.9.2cvs75
 
 	* src/folderview.c
