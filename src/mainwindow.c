@@ -576,6 +576,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
 	{N_("/_View/_Sort/by S_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _Date"),		NULL, sort_summary_cb, SORT_BY_DATE, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by Thread date"),	NULL, sort_summary_cb, SORT_BY_THREAD_DATE, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _From"),		NULL, sort_summary_cb, SORT_BY_FROM, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _To"),		NULL, sort_summary_cb, SORT_BY_TO, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by S_ubject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, "/View/Sort/by number"},
@@ -2595,6 +2596,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_path = "/View/Sort/by Size"; break;
 	case SORT_BY_DATE:
 		menu_path = "/View/Sort/by Date"; break;
+	case SORT_BY_THREAD_DATE:
+		menu_path = "/View/Sort/by Thread date"; break;
 	case SORT_BY_FROM:
 		menu_path = "/View/Sort/by From"; break;
 	case SORT_BY_TO:
@@ -2613,6 +2616,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_path = "/View/Sort/by score"; break;
 	case SORT_BY_LOCKED:
 		menu_path = "/View/Sort/by locked"; break;
+	case SORT_BY_TAGS:
+		menu_path = "/View/Sort/by tag"; break;
 	case SORT_BY_NONE:
 	default:
 		menu_path = "/View/Sort/Don't sort"; break;

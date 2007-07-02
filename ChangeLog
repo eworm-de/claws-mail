@@ -1,3 +1,13 @@
+2007-07-02 [colin]	2.10.0cvs2
+
+	* src/folder.h
+	* src/mainwindow.c
+	* src/procmsg.h
+	* src/summaryview.c
+		Add View/Sort/by Thread date
+		Fixes bug 1233, 'Capability to sort 
+		threads by most recent message'
+
 2007-07-02 [colin]	2.10.0cvs1
 
 	* src/Makefile.am

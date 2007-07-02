@@ -81,7 +81,8 @@ typedef enum
 	SORT_BY_MIME,
 	SORT_BY_TO,
 	SORT_BY_LOCKED,
-	SORT_BY_TAGS
+	SORT_BY_TAGS,
+	SORT_BY_THREAD_DATE
 } FolderSortKey;
 
 typedef enum

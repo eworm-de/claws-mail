@@ -195,6 +195,7 @@ struct _MsgInfo
 	off_t  size;
 	time_t mtime;
 	time_t date_t;
+	time_t thread_date;
 
 	MsgFlags flags;
 

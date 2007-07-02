@@ -399,6 +399,9 @@ static gint summary_cmp_by_size		(GtkCList		*clist,
 static gint summary_cmp_by_date		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_thread_date	(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
 static gint summary_cmp_by_from		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -2449,7 +2452,8 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		SORT_BY_NUMBER,
 		SORT_BY_SCORE,
 		SORT_BY_LOCKED,
-		SORT_BY_TAGS
+		SORT_BY_TAGS,
+		SORT_BY_THREAD_DATE
 	};
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
@@ -2618,6 +2622,9 @@ void summary_sort(SummaryView *summaryview,
 	case SORT_BY_DATE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_date;
 		break;
+	case SORT_BY_THREAD_DATE:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_thread_date;
+		break;
 	case SORT_BY_FROM:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
@@ -2681,6 +2688,31 @@ unlock:
 	g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
 	END_TIMING();
+}
+
+static gboolean summary_update_thread_age(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = node->data;
+	time_t *most_recent = (time_t *)data;
+
+	if (msginfo->date_t > *most_recent) {
+		*most_recent = msginfo->date_t;
+	}
+	return FALSE;
+}	
+
+static void summary_find_thread_age(GNode *gnode)
+{
+	MsgInfo *msginfo = (MsgInfo *)gnode->data;
+	time_t most_recent;
+	gchar b[256],b2[256];
+	if (!msginfo)
+		return;
+	most_recent = msginfo->thread_date = msginfo->date_t;
+
+	g_node_traverse(gnode, G_IN_ORDER, G_TRAVERSE_ALL, -1, summary_update_thread_age, &most_recent);
+
+	msginfo->thread_date = most_recent;
 }
 
 static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
@@ -2767,8 +2799,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		START_TIMING("threaded");
 		root = procmsg_get_thread_tree(mlist);
 
+		
 		for (gnode = root->children; gnode != NULL;
 		     gnode = gnode->next) {
+			summary_find_thread_age(gnode);
 			node = gtk_sctree_insert_gnode
 				(ctree, NULL, node, gnode,
 				 summary_insert_gnode_func, summaryview);
@@ -6419,6 +6453,20 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 		(msginfo1->subject, msginfo2->subject);
 }
 
+static gint summary_cmp_by_thread_date(GtkCList *clist,
+				   gconstpointer ptr1,
+				   gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+	gint thread_diff = msginfo1->thread_date - msginfo2->thread_date;
+	
+	if (msginfo1->thread_date > 0 && msginfo2->thread_date > 0)
+		return thread_diff;
+	else 
+		return msginfo1->date_t - msginfo2->date_t;
+}
+
 static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 				gconstpointer ptr2)
 {
@@ -6470,7 +6518,7 @@ static gint summary_cmp_by_tags(GtkCList *clist, gconstpointer ptr1,
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
-	
+	gint res;
 	g_return_val_if_fail(sv, -1);
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_TAGS]])->text;
@@ -6482,7 +6530,8 @@ static gint summary_cmp_by_tags(GtkCList *clist, gconstpointer ptr1,
 	if (!str2)
  		return -1;
  
-	return g_utf8_collate(str1, str2);
+	res = g_utf8_collate(str1, str2);
+	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
  
 static gint summary_cmp_by_simplified_subject
